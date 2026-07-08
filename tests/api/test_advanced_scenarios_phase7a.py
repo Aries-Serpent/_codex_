@@ -7,16 +7,19 @@ focusing on:
 - Complex request/response scenarios
 - Network failure recovery patterns
 """
-
 import concurrent.futures
 import time
 from datetime import datetime
 from typing import Any, Dict, List, Optional
-
-import pytest
 from fastapi import FastAPI, HTTPException
 from fastapi.testclient import TestClient
 from pydantic import BaseModel
+        import random
+        import unicodedata
+import concurrent.futures
+from concurrent.futures import ThreadPoolExecutor
+
+
 
 
 class TestAdvancedAuthenticationScenarios:
@@ -336,7 +339,6 @@ class TestNetworkFailureRecoveryPatterns:
 
     def test_exponential_backoff_with_jitter(self):
         """Test exponential backoff with jitter"""
-        import random
 
         class ExponentialBackoffRetry:
             def __init__(self, base_delay: float = 1, max_retries: int = 5):
@@ -561,7 +563,6 @@ class TestEdgeCasesAndCornerCases:
 
     def test_unicode_normalization(self):
         """Test unicode normalization in requests"""
-        import unicodedata
 
         test_strings = [
             "café",  # é as single character
@@ -595,8 +596,6 @@ class TestEdgeCasesAndCornerCases:
         assert len(model2.items) == 10000, "Collection must not be empty"
 
 
-import concurrent.futures
-from concurrent.futures import ThreadPoolExecutor
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

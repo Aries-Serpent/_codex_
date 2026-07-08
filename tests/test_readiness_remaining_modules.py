@@ -4,22 +4,22 @@ These tests focus on import-time coverage for modules flagged by
 ``tools/validate_production_readiness.py`` while stubbing optional
 dependencies so imports remain lightweight and offline-friendly.
 """
-
 from __future__ import annotations
-
 import importlib
 import sys
 import types
 from collections.abc import Iterable
 from types import SimpleNamespace
+    from pathlib import Path
+    from pathlib import Path
 
-import pytest
+
+
 
 
 @pytest.fixture(scope="session", autouse=True)
 def ensure_src_on_path():
     """Guarantee the repository sources are importable during tests."""
-    from pathlib import Path
 
     src_path = str(Path(__file__).resolve().parent.parent / "src")
     if src_path not in sys.path:
@@ -394,7 +394,6 @@ def test_imports_succeed(module_path, monkeypatch):
     monkeypatch.setenv("CODEX_FORCE_CPU", "1")
     monkeypatch.setenv("TRANSFORMERS_OFFLINE", "1")
     monkeypatch.setenv("HF_DATASETS_OFFLINE", "1")
-    from pathlib import Path
 
     src_path = str(Path(__file__).resolve().parent.parent / "src")
     if src_path not in sys.path:

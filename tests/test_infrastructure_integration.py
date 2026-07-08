@@ -9,10 +9,10 @@ Tests for CI/CD infrastructure components:
 
 Coverage: 50+ tests for infrastructure integration
 """
-
 import time
+        import hashlib
 
-import pytest
+
 
 
 class TestWorkflowDispatch:
@@ -142,7 +142,6 @@ class TestArtifactManagement:
     
     def test_download_artifact_checksum_validation(self):
         """Validate downloaded artifact checksum"""
-        import hashlib
         
         artifact_data = b"test data"
         checksum = hashlib.sha256(artifact_data).hexdigest()

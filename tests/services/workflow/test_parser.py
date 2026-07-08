@@ -200,6 +200,7 @@ class TestWorkflowParserMethods:
 
     def test_parse_content_handles_unexpected_job_parsing_error(self, monkeypatch):
         """Test parse_content degrades cleanly when job parsing raises an unexpected error."""
+import pytest
         parser = WorkflowParser()
         monkeypatch.setattr(parser, "_parse_jobs", raise_exception(RuntimeError("boom")))
         result = parser.parse_content(

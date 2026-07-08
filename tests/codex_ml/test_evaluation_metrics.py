@@ -118,5 +118,6 @@ class TestEvaluationMetrics:
 
     def test_log_loss(self):
         """Test log loss."""
+import pytest
         log_loss = 0.3
         assert log_loss >= 0, "log_loss must be greater than zero"

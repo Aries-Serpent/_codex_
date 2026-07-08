@@ -3,14 +3,13 @@ Test Tokenizer Sp
 
 Test module for tokenizer sp.
 """
-
-import pathlib
-
-import pytest
-
 spm = pytest.importorskip("sentencepiece")
-
+import pathlib
 from codex_ml.tokenization.sp_trainer import SPTokenizer
+
+
+
+
 
 
 def test_sentencepiece_trainer_roundtrip(tmp_path: pathlib.Path) -> None:

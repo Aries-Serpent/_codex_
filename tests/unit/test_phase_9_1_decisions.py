@@ -19,18 +19,17 @@ Run tests:
   pytest tests/unit/test_phase_9_1_decisions.py::test_agent_accuracy -v
   pytest tests/unit/test_phase_9_1_decisions.py -k "high_risk" -v
 """
-
 import sqlite3
 import sys
 import time
 from pathlib import Path
+from phase_9_1_confidence_scorer import ConfidenceScorer
+from phase_9_1_decision_logger import DecisionLogger, create_decision_record
 
-import pytest
+
 
 # Import the modules under test
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts/ci"))
-from phase_9_1_confidence_scorer import ConfidenceScorer
-from phase_9_1_decision_logger import DecisionLogger, create_decision_record
 
 
 class TestDecisionLogging:

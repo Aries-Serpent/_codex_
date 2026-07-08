@@ -13,6 +13,11 @@ from codex.skills.compression import CompressionResult, compress_skill, install_
 
 def _make_skill_dir(root: Path, skill_id: str, version: str = "1.0.0") -> Path:
     """Create a minimal skill directory for testing."""
+import pytest
+        from unittest.mock import patch
+        from unittest.mock import patch
+        from unittest.mock import patch
+        from unittest.mock import patch
     slug = skill_id.replace(".", "_")
     skill_dir = root / slug
     skill_dir.mkdir(parents=True)
@@ -38,7 +43,6 @@ class TestCompressSkill:
         out_dir = tmp_path / "dist"
 
         # Patch _find_skill_dir to return our temp dir
-        from unittest.mock import patch
 
         with patch("codex.skills.compression._find_skill_dir", return_value=skill_dir):
             with patch("codex.skills.compression._7Z_BIN", None):  # force zip fallback
@@ -54,7 +58,6 @@ class TestCompressSkill:
         skill_dir = _make_skill_dir(tmp_path / "skills", "my.test.skill")
         out_dir = tmp_path / "dist"
 
-        from unittest.mock import patch
 
         with patch("codex.skills.compression._find_skill_dir", return_value=skill_dir):
             with patch("codex.skills.compression._7Z_BIN", None):
@@ -64,7 +67,6 @@ class TestCompressSkill:
         assert result.version == "1.0.0", "Result must not be empty"
 
     def test_compress_missing_skill_raises(self, tmp_path):
-        from unittest.mock import patch
 
         with patch("codex.skills.compression._find_skill_dir", return_value=None):
             with pytest.raises(FileNotFoundError, match="Skill directory not found"):
@@ -74,7 +76,6 @@ class TestCompressSkill:
         skill_dir = _make_skill_dir(tmp_path / "skills", "test.manifest.update")
         out_dir = tmp_path / "dist"
 
-        from unittest.mock import patch
 
         with patch("codex.skills.compression._find_skill_dir", return_value=skill_dir):
             with patch("codex.skills.compression._7Z_BIN", None):

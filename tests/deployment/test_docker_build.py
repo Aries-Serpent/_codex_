@@ -3,12 +3,11 @@ Test Docker Build
 
 Test module for docker build.
 """
-
 import os
 import shutil
 import subprocess
 
-import pytest
+
 
 DOCKER = shutil.which("docker")
 # Skip Docker build tests in CI due to pip install failures inside container

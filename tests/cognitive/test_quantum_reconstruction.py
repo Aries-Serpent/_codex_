@@ -9,15 +9,14 @@ Validates:
 - Pattern promotion (reconstruction event → new pattern candidate)
 - "continue with next phase task" trigger is always emitted on reconstruction
 """
-
 from __future__ import annotations
-
 from pathlib import Path
 from unittest.mock import MagicMock, patch
-
-import pytest
-
 from codex.cognitive.session_hook import SessionContextInjector
+
+
+
+
 
 # ---------------------------------------------------------------------------
 # Fixture: failing API + seeded tmp pattern library

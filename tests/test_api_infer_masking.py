@@ -3,25 +3,24 @@ Test Api Infer Masking
 
 Test module for api infer masking.
 """
-
-import sys
-
-import pytest
-
 pytest.importorskip("torch", reason="PyTorch is required for API service tests")
+fastapi = pytest.importorskip("fastapi")
+import sys
+    import torch
+from fastapi.testclient import TestClient
+from services.api.main import app
+
+
+
 
 # Check for PyTorch 2.x + Python 3.12 isinstance bug
 try:
-    import torch
 
     _TORCH_312_BUG = sys.version_info >= (3, 12) and torch.__version__.startswith("2.")
 except ImportError: # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
     _TORCH_312_BUG = False
 
-fastapi = pytest.importorskip("fastapi")
-from fastapi.testclient import TestClient
 
-from services.api.main import app
 
 client = TestClient(app)
 

@@ -3,16 +3,15 @@ Test Corrupt Checkpoint Load
 
 Test module for corrupt checkpoint load.
 """
-
-import pytest
-
+torch = pytest.importorskip("torch")
 from codex_ml.utils.checkpointing import (
+
+
     CheckpointLoadError,
     load_training_checkpoint,
     save_checkpoint,
 )
 
-torch = pytest.importorskip("torch")
 
 
 class TinyModel(torch.nn.Module):

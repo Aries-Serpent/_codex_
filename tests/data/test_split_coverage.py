@@ -8,14 +8,26 @@ Phase: 14.1 - Core Module Testing
 Created: 2026-01-18
 AI Agency Policy Compliance: ✅
 """
-
 from __future__ import annotations
-
 import json
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
+            from codex_ml.data import split
+            from codex_ml.data.split import split_dataset
+            from codex_ml.data.split import split_dataset
+            from codex_ml.data.split import split_dataset
+            from codex_ml.data.split import split_dataset
+            from codex_ml.data.split import split_dataset
+            from codex_ml.data.split import split_dataset
+            from codex_ml.data.split import split_dataset
+            from codex_ml.data.split import split_dataset
+            from codex_ml.data.split import split_dataset
+            from codex_ml.data.split import split_dataset
+            from codex_ml.data.split import compute_split_indices
+            from codex_ml.data.split import compute_split_indices
 
-import pytest
+
+
 
 if TYPE_CHECKING:
     pass
@@ -58,7 +70,6 @@ class TestModuleImport:
     def test_split_module_importable(self) -> None:
         """Verify split module can be imported."""
         try:
-            from codex_ml.data import split
 
             assert split is not None, "split must be initialized"
         except ImportError as e:
@@ -67,7 +78,6 @@ class TestModuleImport:
     def test_split_function_importable(self) -> None:
         """Verify split function can be imported."""
         try:
-            from codex_ml.data.split import split_dataset
 
             assert callable(split_dataset), "Data must not be empty"
         except ImportError:
@@ -85,7 +95,6 @@ class TestTrainValTestSplit:
     def test_default_split_ratios(self, sample_dataset: list[dict]) -> None:
         """Test default 80/10/10 split ratios."""
         try:
-            from codex_ml.data.split import split_dataset
 
             train, val, test = split_dataset(
                 sample_dataset,
@@ -102,7 +111,6 @@ class TestTrainValTestSplit:
     def test_custom_split_ratios(self, sample_dataset: list[dict]) -> None:
         """Test custom split ratios."""
         try:
-            from codex_ml.data.split import split_dataset
 
             train, val, test = split_dataset(
                 sample_dataset,
@@ -119,7 +127,6 @@ class TestTrainValTestSplit:
     def test_split_preserves_all_data(self, sample_dataset: list[dict]) -> None:
         """Test that split preserves all data."""
         try:
-            from codex_ml.data.split import split_dataset
 
             train, val, test = split_dataset(sample_dataset)
             total = len(train) + len(val) + len(test)
@@ -139,7 +146,6 @@ class TestDeterministicSplitting:
     def test_seeded_split_deterministic(self, sample_dataset: list[dict]) -> None:
         """Test that seeded splits are deterministic."""
         try:
-            from codex_ml.data.split import split_dataset
 
             train1, val1, test1 = split_dataset(sample_dataset, seed=42)
             train2, val2, test2 = split_dataset(sample_dataset, seed=42)
@@ -152,7 +158,6 @@ class TestDeterministicSplitting:
     def test_different_seeds_different_splits(self, sample_dataset: list[dict]) -> None:
         """Test that different seeds produce different splits."""
         try:
-            from codex_ml.data.split import split_dataset
 
             train1, _, _ = split_dataset(sample_dataset, seed=42)
             train2, _, _ = split_dataset(sample_dataset, seed=123)
@@ -172,7 +177,6 @@ class TestStratifiedSplitting:
     def test_stratified_split_by_label(self) -> None:
         """Test stratified split by label."""
         try:
-            from codex_ml.data.split import split_dataset
 
             # Create dataset with labels
             dataset = [{"id": i, "label": i % 2} for i in range(100)]
@@ -198,7 +202,6 @@ class TestEdgeCases:
     def test_empty_dataset(self) -> None:
         """Test splitting empty dataset."""
         try:
-            from codex_ml.data.split import split_dataset
 
             train, val, test = split_dataset([])
             assert len(train) == 0, "Train must not be empty"
@@ -210,7 +213,6 @@ class TestEdgeCases:
     def test_single_element_dataset(self) -> None:
         """Test splitting single element dataset."""
         try:
-            from codex_ml.data.split import split_dataset
 
             train, val, test = split_dataset([{"id": 1}])
             total = len(train) + len(val) + len(test)
@@ -221,7 +223,6 @@ class TestEdgeCases:
     def test_invalid_ratios(self, sample_dataset: list[dict]) -> None:
         """Test that invalid ratios are rejected."""
         try:
-            from codex_ml.data.split import split_dataset
 
             with pytest.raises(ValueError):
                 split_dataset(
@@ -245,7 +246,6 @@ class TestSplitUtils:
     def test_compute_split_indices(self) -> None:
         """Test computing split indices."""
         try:
-            from codex_ml.data.split import compute_split_indices
 
             indices = compute_split_indices(100, train=0.8, val=0.1, test=0.1)
             assert len(indices["train"]) == 80, "Collection must not be empty"
@@ -257,7 +257,6 @@ class TestSplitUtils:
     def test_split_indices_no_overlap(self) -> None:
         """Test that split indices don't overlap."""
         try:
-            from codex_ml.data.split import compute_split_indices
 
             indices = compute_split_indices(100, train=0.8, val=0.1, test=0.1)
             all_indices = set(indices["train"]) | set(indices["val"]) | set(indices["test"])

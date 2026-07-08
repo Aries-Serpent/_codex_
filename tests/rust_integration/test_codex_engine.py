@@ -4,8 +4,16 @@ Integration tests for codex_engine Rust module.
 These tests validate the Rust-Python bridge and ensure that the
 high-performance orchestration layer works correctly from Python.
 """
+        from codex_engine import SwarmState
+        from codex_engine import SwarmState
+        from codex_engine import SwarmState
+        from codex_engine import Orchestrator, SwarmState
+        from codex_engine import Task, TaskQueue
+        import concurrent.futures
+        from codex_engine import SwarmState
+        import time
+        from codex_engine import Task, TaskQueue
 
-import pytest
 
 # Note: These tests will work once maturin build completes
 # For now, they serve as documentation of expected API
@@ -14,7 +22,6 @@ import pytest
 def test_swarm_state_creation():
     """Test creating a SwarmState instance."""
     try:
-        from codex_engine import SwarmState
 
         state = SwarmState()
         assert state.get_agent_count() == 0, "Count must be greater than zero"
@@ -25,7 +32,6 @@ def test_swarm_state_creation():
 def test_agent_registration():
     """Test registering agents with SwarmState."""
     try:
-        from codex_engine import SwarmState
 
         state = SwarmState()
 
@@ -45,7 +51,6 @@ def test_agent_registration():
 def test_agent_status_management():
     """Test updating and querying agent status."""
     try:
-        from codex_engine import SwarmState
 
         state = SwarmState()
 
@@ -68,7 +73,6 @@ def test_agent_status_management():
 def test_orchestrator_lifecycle():
     """Test starting and stopping the orchestrator."""
     try:
-        from codex_engine import Orchestrator, SwarmState
 
         state = SwarmState()
         orch = Orchestrator(state)
@@ -87,7 +91,6 @@ def test_orchestrator_lifecycle():
 def test_task_queue_operations():
     """Test task submission and retrieval."""
     try:
-        from codex_engine import Task, TaskQueue
 
         queue = TaskQueue()
 
@@ -110,9 +113,7 @@ def test_task_queue_operations():
 def test_concurrent_agent_registration():
     """Test that multiple agents can be registered concurrently."""
     try:
-        import concurrent.futures
 
-        from codex_engine import SwarmState
 
         state = SwarmState()
 
@@ -133,9 +134,7 @@ def test_concurrent_agent_registration():
 def test_high_throughput_task_queue():
     """Test that task queue can handle high throughput."""
     try:
-        import time
 
-        from codex_engine import Task, TaskQueue
 
         queue = TaskQueue()
 

@@ -1,19 +1,18 @@
-pytest.importorskip("tensorboard")
 """
 Test Cache Flush Threshold
 
 Test module for cache flush threshold.
 """
-
-import pytest
-
+pytest.importorskip("tensorboard")
 pytest.importorskip("numpy")
-
 from src.training.cache import TokenCache
+    import numpy as np
+
+
+
 
 
 def test_cache_flush_threshold(tmp_path):
-    import numpy as np
 
     cache = TokenCache(tmp_path, rows_per_shard=3)
     batch = {

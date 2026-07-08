@@ -3,7 +3,6 @@ Test Session Logging
 
 Test module for session logging.
 """
-
 import importlib
 import json
 import logging
@@ -15,7 +14,7 @@ import sys
 import time
 import uuid
 
-import pytest
+
 
 
 def _import_any(paths):

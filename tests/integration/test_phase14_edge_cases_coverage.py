@@ -8,15 +8,17 @@ Test Coverage Target: 40+ edge case tests for Phase 14.3
 
 Created: 2026-01-18 (Phase 14.3)
 """
-
 from __future__ import annotations
-
 import math
 import sys
 import tempfile
 from pathlib import Path
+        from threading import Lock
+        from threading import Lock
+        import os
 
-import pytest
+
+
 
 # =============================================================================
 # Numeric Edge Cases
@@ -469,7 +471,6 @@ class TestConcurrencyEdgeCases:
 
     def test_thread_safety_basic(self):
         """Test basic thread safety concepts."""
-        from threading import Lock
 
         lock = Lock()
         counter = [0]  # Use list for mutability
@@ -481,7 +482,6 @@ class TestConcurrencyEdgeCases:
 
     def test_race_condition_prevention(self):
         """Test race condition prevention pattern."""
-        from threading import Lock
 
         class ThreadSafeCounter:
             def __init__(self):
@@ -586,7 +586,6 @@ class TestConfigurationEdgeCases:
 
     def test_environment_variable_fallback(self):
         """Test environment variable fallback pattern."""
-        import os
 
         # Clear any existing value
         key = "TEST_EDGE_CASE_VAR"

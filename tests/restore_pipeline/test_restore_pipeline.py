@@ -3,18 +3,36 @@
 All tests generate synthetic images programmatically — no external files required.
 Designed to run with ``pytest -q --tb=short -W error``.
 """
-
-import pytest
-pytest.importorskip("numpy")
-
 from __future__ import annotations
-
+pytest.importorskip("numpy")
 import subprocess
 import sys
 from pathlib import Path
-
 import numpy as np
-import pytest
+    import cv2
+    from restore_pipeline import PipelineConfig
+    from restore_pipeline.io import load_image, save_image
+    from restore_pipeline.io import load_image
+    from restore_pipeline.io import load_image
+    from restore_pipeline.metrics import psnr
+    from restore_pipeline.metrics import ssim
+    from restore_pipeline.metrics import psnr, ssim
+    from restore_pipeline import process
+    from restore_pipeline import process
+    from restore_pipeline import process
+    from restore_pipeline import PipelineConfig, process
+    from restore_pipeline import PipelineConfig, process
+    from restore_pipeline import PipelineConfig, process
+    from restore_pipeline import process
+    from restore_pipeline import process
+    from restore_pipeline import PipelineConfig, process
+    from restore_pipeline import PipelineConfig, process
+    from restore_pipeline.io import load_image, save_image
+    from restore_pipeline.io import save_image
+
+
+
+
 
 # ── Fixtures ──────────────────────────────────────────────────────────────────
 
@@ -37,7 +55,6 @@ def noisy_image(clean_image: np.ndarray) -> np.ndarray:
 @pytest.fixture()
 def blurry_noisy_image(clean_image: np.ndarray) -> np.ndarray:
     """Add blur AND noise."""
-    import cv2
 
     blurred = cv2.GaussianBlur(clean_image, (5, 5), 1.5)
     rng = np.random.default_rng(7)
@@ -67,7 +84,6 @@ def test_import_no_deprecation_warnings() -> None:
 
 
 def test_config_defaults() -> None:
-    from restore_pipeline import PipelineConfig
 
     cfg = PipelineConfig()
     assert cfg.algorithm == "auto"
@@ -80,7 +96,6 @@ def test_config_defaults() -> None:
 
 
 def test_save_and_load_roundtrip(clean_image: np.ndarray, tmp_dir: Path) -> None:
-    from restore_pipeline.io import load_image, save_image
 
     out = tmp_dir / "roundtrip.png"
     save_image(clean_image, out)
@@ -94,14 +109,12 @@ def test_save_and_load_roundtrip(clean_image: np.ndarray, tmp_dir: Path) -> None
 
 
 def test_load_nonexistent_raises() -> None:
-    from restore_pipeline.io import load_image
 
     with pytest.raises(FileNotFoundError):
         load_image("/nonexistent/path/image.png")
 
 
 def test_load_unsupported_ext_raises(tmp_dir: Path) -> None:
-    from restore_pipeline.io import load_image
 
     bogus = tmp_dir / "file.xyz"
     bogus.write_bytes(b"data")
@@ -113,7 +126,6 @@ def test_load_unsupported_ext_raises(tmp_dir: Path) -> None:
 
 
 def test_psnr_identical_images(clean_image: np.ndarray) -> None:
-    from restore_pipeline.metrics import psnr
 
     score = psnr(clean_image, clean_image)
     # Identical images → capped at 100 dB
@@ -121,14 +133,12 @@ def test_psnr_identical_images(clean_image: np.ndarray) -> None:
 
 
 def test_ssim_identical_images(clean_image: np.ndarray) -> None:
-    from restore_pipeline.metrics import ssim
 
     score = ssim(clean_image, clean_image)
     assert score > 0.99
 
 
 def test_metrics_show_improvement(clean_image: np.ndarray, noisy_image: np.ndarray) -> None:
-    from restore_pipeline.metrics import psnr, ssim
 
     clean_psnr = psnr(clean_image, clean_image)
     noisy_psnr = psnr(clean_image, noisy_image)
@@ -143,7 +153,6 @@ def test_metrics_show_improvement(clean_image: np.ndarray, noisy_image: np.ndarr
 
 
 def test_pipeline_returns_uint8(noisy_image: np.ndarray) -> None:
-    from restore_pipeline import process
 
     restored, _metrics = process(noisy_image)
     assert restored.dtype == np.uint8
@@ -151,14 +160,12 @@ def test_pipeline_returns_uint8(noisy_image: np.ndarray) -> None:
 
 
 def test_pipeline_output_has_same_spatial_shape(noisy_image: np.ndarray) -> None:
-    from restore_pipeline import process
 
     restored, _ = process(noisy_image)
     assert restored.shape[:2] == noisy_image.shape[:2]
 
 
 def test_pipeline_with_uint8_input(noisy_image: np.ndarray) -> None:
-    from restore_pipeline import process
 
     u8 = (noisy_image * 255).astype(np.uint8)
     restored, _ = process(u8)
@@ -169,7 +176,6 @@ def test_pipeline_psnr_improves_over_degraded(
     clean_image: np.ndarray, noisy_image: np.ndarray
 ) -> None:
     """Denoised image should have higher PSNR than the degraded input vs reference."""
-    from restore_pipeline import PipelineConfig, process
 
     # Use neutral colour enhancement so PSNR measures denoising faithfully
     cfg = PipelineConfig(
@@ -187,7 +193,6 @@ def test_pipeline_psnr_improves_over_degraded(
 
 
 def test_pipeline_ssim_reasonable(clean_image: np.ndarray, noisy_image: np.ndarray) -> None:
-    from restore_pipeline import PipelineConfig, process
 
     # Use neutral settings to measure structural similarity faithfully
     cfg = PipelineConfig(
@@ -204,7 +209,6 @@ def test_pipeline_ssim_reasonable(clean_image: np.ndarray, noisy_image: np.ndarr
 
 
 def test_pipeline_deblur_flag(blurry_noisy_image: np.ndarray) -> None:
-    from restore_pipeline import PipelineConfig, process
 
     cfg = PipelineConfig(deblur=True, algorithm="nl_means")
     restored, _ = process(blurry_noisy_image, config=cfg)
@@ -215,7 +219,6 @@ def test_pipeline_deblur_flag(blurry_noisy_image: np.ndarray) -> None:
 
 
 def test_pipeline_inpaint(clean_image: np.ndarray) -> None:
-    from restore_pipeline import process
 
     mask = np.zeros((64, 64), dtype=np.uint8)
     mask[20:30, 20:30] = 255  # small inpaint region
@@ -232,7 +235,6 @@ def test_pipeline_inpaint(clean_image: np.ndarray) -> None:
 def test_pipeline_with_reference_for_color_transfer(
     noisy_image: np.ndarray, clean_image: np.ndarray
 ) -> None:
-    from restore_pipeline import process
 
     restored, metrics = process(noisy_image, reference=clean_image)
     assert restored.dtype == np.uint8
@@ -243,7 +245,6 @@ def test_pipeline_with_reference_for_color_transfer(
 
 
 def test_pipeline_opencv_algorithm(noisy_image: np.ndarray) -> None:
-    from restore_pipeline import PipelineConfig, process
 
     cfg = PipelineConfig(algorithm="opencv")
     restored, _ = process(noisy_image, config=cfg)
@@ -254,8 +255,6 @@ def test_pipeline_opencv_algorithm(noisy_image: np.ndarray) -> None:
 
 
 def test_pipeline_file_integration(clean_image: np.ndarray, tmp_dir: Path) -> None:
-    from restore_pipeline import PipelineConfig, process
-    from restore_pipeline.io import load_image, save_image
 
     # Build a noisy degraded image
     rng = np.random.default_rng(99)
@@ -291,7 +290,6 @@ def test_pipeline_file_integration(clean_image: np.ndarray, tmp_dir: Path) -> No
 
 def test_cli_smoke_run(clean_image: np.ndarray, tmp_dir: Path) -> None:
     """Run the CLI as a subprocess with a synthetic noisy image."""
-    from restore_pipeline.io import save_image
 
     rng = np.random.default_rng(3)
     noise = rng.normal(0, 0.08, clean_image.shape).astype(np.float32)

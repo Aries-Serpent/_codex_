@@ -9,12 +9,12 @@ Covers:
 - optional_scope decorator: pass-through with/without validator
 - scope_metadata introspection helper
 """
-
 from __future__ import annotations
-
-import pytest
-
 from security.decorators import (
+from security.scope_validator import (
+
+
+
     clear_scope_validator,
     get_scope_validator,
     optional_scope,
@@ -23,7 +23,6 @@ from security.decorators import (
     scope_metadata,
     set_scope_validator,
 )
-from security.scope_validator import (
     InsufficientScopeError,
     InvalidScopeError,
     ScopeValidationResult,

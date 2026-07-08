@@ -2,10 +2,13 @@
 
 Tests for validating ML model architecture, weights, and outputs.
 """
-
 from unittest.mock import MagicMock
+        import math
+        import math
+        import json
+        import json
 
-import pytest
+
 
 
 class TestModelArchitectureValidation:
@@ -106,14 +109,12 @@ class TestModelWeightValidation:
 
     def test_no_nan_weights(self):
         """Test no NaN values in weights."""
-        import math
 
         mock_weights = [0.01, -0.02, 0.03]
         assert not any(math.isnan(w) for w in mock_weights), "Condition must be true"
 
     def test_no_inf_weights(self):
         """Test no infinite values in weights."""
-        import math
 
         mock_weights = [0.01, -0.02, 0.03]
         assert not any(math.isinf(w) for w in mock_weights), "Condition must be true"
@@ -241,7 +242,6 @@ class TestModelConfigValidation:
 
     def test_config_serializable(self):
         """Test config can be serialized."""
-        import json
 
         config = {"hidden_size": 768, "num_layers": 12}
         serialized = json.dumps(config)
@@ -249,7 +249,6 @@ class TestModelConfigValidation:
 
     def test_config_loadable(self):
         """Test config can be loaded."""
-        import json
 
         config_str = '{"hidden_size": 768}'
         loaded = json.loads(config_str)

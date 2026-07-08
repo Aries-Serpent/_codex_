@@ -3,19 +3,18 @@ Test Evaluation Cli
 
 Test module for evaluation cli.
 """
-
 from __future__ import annotations
-
+pytest.importorskip("omegaconf")
 import inspect
 import json
 from pathlib import Path
-
-import pytest
 from click.testing import CliRunner
-
-pytest.importorskip("omegaconf")
-
 from codex_ml.cli.codex_cli import codex
+
+
+
+
+
 
 
 def test_evaluate_cli_writes_metrics_log(tmp_path: Path) -> None:

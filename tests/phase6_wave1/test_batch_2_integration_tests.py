@@ -2,6 +2,7 @@
 PHASE 6 WAVE 1 - TIER-1 Integration Tests (Batch 2A-2C: Tests 36-60)
 Module interconnection and system integration tests
 """
+import pytest
 import importlib.util
 
 

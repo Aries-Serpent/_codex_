@@ -3,8 +3,31 @@ Tests for codex.archive.consolidate module.
 
 This module contains tests for consolidation planning utilities.
 """
-
+import pytest
 from pathlib import Path
+        from codex.archive.consolidate import _serialise_path
+        from codex.archive.consolidate import _serialise_path
+        from codex.archive.consolidate import _in_excludes
+        from codex.archive.consolidate import _in_excludes
+        import time
+        from codex.archive.consolidate import _freshness
+        import time
+        from codex.archive.consolidate import _freshness
+        import time
+        from codex.archive.consolidate import _freshness
+        import time
+        from codex.archive.consolidate import _freshness
+        from codex.archive.consolidate import _path_fitness
+        from codex.archive.consolidate import _path_fitness
+        from codex.archive.consolidate import _path_fitness
+        from codex.archive.consolidate import _path_fitness
+        from codex.archive.consolidate import _complexity_penalty
+        from codex.archive.consolidate import _complexity_penalty
+        from codex.archive.consolidate import _complexity_penalty
+        from codex.archive.consolidate import _usage_heuristic
+        from codex.archive.consolidate import _usage_heuristic
+        from codex.archive.consolidate import logger
+
 
 
 class TestSerialisePath:
@@ -12,7 +35,6 @@ class TestSerialisePath:
 
     def test_relative_path(self, tmp_path):
         """Test serializing a relative path."""
-        from codex.archive.consolidate import _serialise_path
 
         file_path = tmp_path / "src" / "module.py"
         file_path.parent.mkdir(parents=True, exist_ok=True)
@@ -24,7 +46,6 @@ class TestSerialisePath:
 
     def test_path_outside_root(self, tmp_path):
         """Test serializing a path outside root."""
-        from codex.archive.consolidate import _serialise_path
 
         file_path = Path("/some/other/path.py")
 
@@ -39,7 +60,6 @@ class TestInExcludes:
 
     def test_matching_pattern(self):
         """Test file matching exclude pattern."""
-        from codex.archive.consolidate import _in_excludes
 
         path = Path("src/__pycache__/module.pyc")
         patterns = ["*/__pycache__/*"]
@@ -50,7 +70,6 @@ class TestInExcludes:
 
     def test_not_matching(self):
         """Test file not matching pattern."""
-        from codex.archive.consolidate import _in_excludes
 
         path = Path("src/module.py")
         patterns = ["*.pyc"]
@@ -65,9 +84,7 @@ class TestFreshness:
 
     def test_recent_file(self):
         """Test freshness for recently modified file."""
-        import time
 
-        from codex.archive.consolidate import _freshness
 
         now = time.time()
         mtime = now - (3 * 86400)  # 3 days ago
@@ -78,9 +95,7 @@ class TestFreshness:
 
     def test_week_old_file(self):
         """Test freshness for week-old file."""
-        import time
 
-        from codex.archive.consolidate import _freshness
 
         now = time.time()
         mtime = now - (15 * 86400)  # 15 days ago
@@ -91,9 +106,7 @@ class TestFreshness:
 
     def test_month_old_file(self):
         """Test freshness for month-old file."""
-        import time
 
-        from codex.archive.consolidate import _freshness
 
         now = time.time()
         mtime = now - (60 * 86400)  # 60 days ago
@@ -104,9 +117,7 @@ class TestFreshness:
 
     def test_old_file(self):
         """Test freshness for old file."""
-        import time
 
-        from codex.archive.consolidate import _freshness
 
         now = time.time()
         mtime = now - (400 * 86400)  # 400 days ago
@@ -121,7 +132,6 @@ class TestPathFitness:
 
     def test_src_codex_path(self):
         """Test fitness for src/codex path."""
-        from codex.archive.consolidate import _path_fitness
 
         result = _path_fitness("src/codex/module.py")
 
@@ -129,7 +139,6 @@ class TestPathFitness:
 
     def test_legacy_path(self):
         """Test fitness penalty for legacy path."""
-        from codex.archive.consolidate import _path_fitness
 
         result = _path_fitness("legacy/old_module.py")
 
@@ -137,7 +146,6 @@ class TestPathFitness:
 
     def test_v2_path(self):
         """Test fitness bonus for v2 suffix."""
-        from codex.archive.consolidate import _path_fitness
 
         result = _path_fitness("src/codex/module_v2.py")
 
@@ -145,7 +153,6 @@ class TestPathFitness:
 
     def test_regular_path(self):
         """Test fitness for regular path."""
-        from codex.archive.consolidate import _path_fitness
 
         result = _path_fitness("random/path.py")
 
@@ -157,7 +164,6 @@ class TestComplexityPenalty:
 
     def test_small_file(self):
         """Test penalty for small file."""
-        from codex.archive.consolidate import _complexity_penalty
 
         result = _complexity_penalty(1024, 50)
 
@@ -165,7 +171,6 @@ class TestComplexityPenalty:
 
     def test_large_file(self):
         """Test penalty for large file."""
-        from codex.archive.consolidate import _complexity_penalty
 
         result = _complexity_penalty(256 * 1024, 1000)
 
@@ -173,7 +178,6 @@ class TestComplexityPenalty:
 
     def test_max_penalty(self):
         """Test penalty is capped at 0.4."""
-        from codex.archive.consolidate import _complexity_penalty
 
         result = _complexity_penalty(1024 * 1024, 5000)
 
@@ -185,7 +189,6 @@ class TestUsageHeuristic:
 
     def test_legacy_path(self):
         """Test heuristic for legacy path."""
-        from codex.archive.consolidate import _usage_heuristic
 
         result = _usage_heuristic(Path("legacy/old.py"))
 
@@ -193,7 +196,6 @@ class TestUsageHeuristic:
 
     def test_regular_path(self):
         """Test heuristic for regular path."""
-        from codex.archive.consolidate import _usage_heuristic
 
         result = _usage_heuristic(Path("src/module.py"))
 
@@ -206,7 +208,6 @@ class TestModuleLevel:
 
     def test_logger_exists(self):
         """Test logger is configured."""
-        from codex.archive.consolidate import logger
 
         assert logger is not None, "logger must be initialized"
         assert logger.name == "codex.archive.consolidate", "name is not valid"

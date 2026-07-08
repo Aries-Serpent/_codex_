@@ -3,19 +3,20 @@ Test Db Utils
 
 Test module for db utils.
 """
+import pytest
+import sqlite3
+    from src.codex.logging.db_utils import (
+    from codex.logging.db_utils import (
 
 # Auto-generated tests for db_utils.py
-import sqlite3
 
 # Try both namespaces for imports
 try:
-    from src.codex.logging.db_utils import (
         infer_columns,
         infer_probable_table,
         list_tables,
     )
 except ImportError:
-    from codex.logging.db_utils import (
         infer_columns,
         infer_probable_table,
         list_tables,

@@ -6,15 +6,14 @@ Tests cover:
   - SearchCache: memoization, cache hits/misses
   - Context discovery: git parsing, PR number detection
 """
-
 import tempfile
 import time
 from pathlib import Path
-
-import pytest
-
 from codex.utils.context_discovery import discover_git_context, get_pr_number
 from codex.utils.session_cache import FileCache, SearchCache
+
+
+
 
 
 class TestFileCache:

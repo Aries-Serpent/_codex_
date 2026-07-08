@@ -3,19 +3,18 @@ Test Checkpoint Hashing
 
 Test module for checkpoint hashing.
 """
-
+    torch = pytest.importorskip("torch")
 from pathlib import Path
+    from codex.training import save_checkpoint
 
-import pytest
+
 
 pytestmark = [pytest.mark.smoke, pytest.mark.requires_torch]
 
 
 def test_project_save_checkpoint_hashes(tmp_path: Path):
     # Import lazily to avoid heavy deps at collection time
-    torch = pytest.importorskip("torch")
 
-    from codex.training import save_checkpoint
 
     class M(torch.nn.Module):
         def __init__(self):

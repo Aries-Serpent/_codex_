@@ -7,19 +7,18 @@ Tests cover:
 - Error handling
 - Integration with Hydra
 """
-
 from __future__ import annotations
-
 import sys
 import tempfile
 from pathlib import Path
 from unittest.mock import Mock, patch
+    from codex_ml.cli import train
 
-import pytest
+
+
 
 # Import module under test
 try:
-    from codex_ml.cli import train
 except ImportError:
     pytest.skip("train module not available", allow_module_level=True)
 

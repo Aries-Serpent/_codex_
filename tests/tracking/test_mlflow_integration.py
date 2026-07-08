@@ -8,15 +8,23 @@ Validates that:
 4. Artifacts are logged correctly
 5. Offline-first design is maintained
 """
-
+        not pytest.importorskip("mlflow", reason="MLflow not available"), reason="Requires MLflow"
+        pytest.importorskip("yaml")
 import json
 import tempfile
 from pathlib import Path
+from src.codex_ml.tracking.writers import (
+        import yaml
+        import yaml
+        import yaml
+                import mlflow
+                import mlflow
+        import yaml
+        import yaml
 
-import pytest
+
 
 # Import tracking writers
-from src.codex_ml.tracking.writers import (
     CompositeWriter,
     MLflowWriter,
     NdjsonWriter,
@@ -84,7 +92,6 @@ class TestMLflowWriter:
     """Test MLflow writer integration"""
 
     @pytest.mark.skipif(
-        not pytest.importorskip("mlflow", reason="MLflow not available"), reason="Requires MLflow"
     )
     def test_mlflow_writer_initialization(self):
         """Verify MLflow writer can be initialized"""
@@ -197,8 +204,6 @@ class TestTrackingConfiguration:
 
     def test_tracking_config_has_required_fields(self):
         """Verify tracking config has required fields"""
-        pytest.importorskip("yaml")
-        import yaml
 
         config_path = (
             Path(__file__).parent.parent.parent / "configs" / "base" / "tracking" / "default.yaml"
@@ -218,8 +223,6 @@ class TestTrackingConfiguration:
 
     def test_tracking_config_offline_first(self):
         """Verify tracking config follows offline-first design"""
-        pytest.importorskip("yaml")
-        import yaml
 
         config_path = (
             Path(__file__).parent.parent.parent / "configs" / "base" / "tracking" / "default.yaml"
@@ -237,8 +240,6 @@ class TestTrackingConfiguration:
 
     def test_tracking_config_artifact_settings(self):
         """Verify tracking config has artifact tracking settings"""
-        pytest.importorskip("yaml")
-        import yaml
 
         config_path = (
             Path(__file__).parent.parent.parent / "configs" / "base" / "tracking" / "default.yaml"
@@ -260,7 +261,6 @@ class TestMlflowIntegration:
     """Integration tests for MLflow tracking"""
 
     @pytest.mark.skipif(
-        not pytest.importorskip("mlflow", reason="MLflow not available"), reason="Requires MLflow"
     )
     def test_mlflow_creates_local_mlruns(self):
         """Verify MLflow creates local mlruns directory when enabled"""
@@ -268,7 +268,6 @@ class TestMlflowIntegration:
             uri = f"file:{tmpdir}/mlruns"
 
             try:
-                import mlflow
 
                 mlflow.set_tracking_uri(uri)
                 mlflow.set_experiment("test_experiment")
@@ -285,7 +284,6 @@ class TestMlflowIntegration:
                 pytest.skip(f"MLflow integration test failed: {e}")
 
     @pytest.mark.skipif(
-        not pytest.importorskip("mlflow", reason="MLflow not available"), reason="Requires MLflow"
     )
     def test_mlflow_logs_artifacts(self):
         """Verify MLflow can log artifacts"""
@@ -293,7 +291,6 @@ class TestMlflowIntegration:
             uri = f"file:{tmpdir}/mlruns"
 
             try:
-                import mlflow
 
                 mlflow.set_tracking_uri(uri)
                 mlflow.set_experiment("test_experiment")
@@ -374,8 +371,6 @@ class TestOfflineFirstDesign:
 
     def test_file_based_mlflow_uri_default(self):
         """Verify default MLflow URI is file-based"""
-        pytest.importorskip("yaml")
-        import yaml
 
         config_path = (
             Path(__file__).parent.parent.parent / "configs" / "base" / "tracking" / "default.yaml"
@@ -393,8 +388,6 @@ class TestOfflineFirstDesign:
 
     def test_ndjson_always_enabled(self):
         """Verify NDJSON is always enabled as fallback"""
-        pytest.importorskip("yaml")
-        import yaml
 
         config_path = (
             Path(__file__).parent.parent.parent / "configs" / "base" / "tracking" / "default.yaml"

@@ -3,19 +3,18 @@ Test Eval Loop Cpu
 
 Test module for eval loop cpu.
 """
-
 from __future__ import annotations
-
+torch = pytest.importorskip("torch")
 import json
 import math
 import types
-
-import pytest
-
 from codex_ml.metrics.evaluator import batch_metrics
 from codex_ml.training.eval import evaluate
 
-torch = pytest.importorskip("torch")
+
+
+
+
 
 
 def _make_batch(size: int = 2) -> dict[str, object]:

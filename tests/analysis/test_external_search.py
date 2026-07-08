@@ -8,11 +8,12 @@ Test External Search
 
 Test module for external search.
 """
-
+import pytest
 import json
 from pathlib import Path
-
 from codex_ml.analysis.providers import ExternalWebSearch
+
+
 
 
 def _write_offline_index(path: Path, query: str = "codex") -> None:

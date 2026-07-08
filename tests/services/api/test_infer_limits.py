@@ -1,14 +1,14 @@
 """Inference-serving safeguards for :mod:`services.api.main`."""
-
 from __future__ import annotations
-
+fastapi = pytest.importorskip("fastapi")  # ensure FastAPI is available
 import importlib
 import types
-
-import pytest
-
-fastapi = pytest.importorskip("fastapi")  # ensure FastAPI is available
 from fastapi.testclient import TestClient
+        from services.api import main as api_main
+
+
+
+
 
 
 class _StubTokenizer:
@@ -38,7 +38,6 @@ class _StubModel:
     def __call__(self, input_ids):
         logits = [[[0 for _ in range(self._vocab_size)] for _ in range(self._vocab_size)]]
         logits[0][-1][0] = 1
-        from services.api import main as api_main
 
         return {"logits": api_main.torch.tensor(logits)}
 

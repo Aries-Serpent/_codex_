@@ -3,12 +3,46 @@ RAG Integration Tests — Day 3 Advanced Patterns
 RAG module end-to-end patterns, index health, retrieval latency,
 meta-tensor safety, recovery mechanisms, index freshness, and retrieval metrics.
 """
-
 import tempfile
 import time
 from pathlib import Path
+            from codex_ml.rag import RAGIndexer
+            from codex_ml.rag import RAGIndexer
+            from codex_ml.rag import RAGRetriever
+            from codex_ml.rag import RAGIndexer
+            from codex_ml.rag import RAGRetriever
+            from codex_ml.rag import RAGRetriever
+            from codex_ml.rag import RAGRetriever
+            from codex_ml.rag import RAGRetriever
+            from codex_ml.rag import RAGIndexer
+            from codex_ml.rag import RAGIndexer
+            from codex_ml.rag import RAGIndexer
+            from codex_ml.rag import RAGIndexer
+            from codex_ml.rag import RAGIndexer
+            from codex_ml.rag import RAGRetriever
+            from codex_ml.rag import RAGRetriever
+            from codex_ml.rag import RAGRetriever
+            from codex_ml.rag import RAGRetriever
+            from codex_ml.rag import RAGIndexer
+            import torch
+            from codex_ml.rag import RAGRetriever
+            import torch
+            from codex_ml.rag import RAGRetriever
+            from codex_ml.rag import RAGRetriever
+            from codex_ml.rag import RAGRetriever
+            from codex_ml.rag import RAGIndexer
+            from codex_ml.rag import RAGIndexer
+            from codex_ml.rag import RAGIndexer
+            from codex_ml.rag import RAGIndexer
+            from codex_ml.rag import RAGIndexer
+            from codex_ml.rag import RAGIndexer
+            from codex_ml.rag import compute_precision_at_k
+            from codex_ml.rag import compute_recall_at_k
+            from codex_ml.rag import compute_ndcg
+            from codex_ml.rag import compute_mrr
+            from codex_ml.rag import compute_map
 
-import pytest
+
 
 
 class TestRAGEndToEndPatterns:
@@ -17,7 +51,6 @@ class TestRAGEndToEndPatterns:
     def test_rag_index_creation(self):
         """RAG index should be creatable."""
         try:
-            from codex_ml.rag import RAGIndexer
         except (ImportError, AttributeError):
             pytest.skip("RAG indexer not available")
 
@@ -30,7 +63,6 @@ class TestRAGEndToEndPatterns:
     def test_rag_index_add_documents(self):
         """RAG index should accept documents."""
         try:
-            from codex_ml.rag import RAGIndexer
         except (ImportError, AttributeError):
             pytest.skip("RAG indexer not available")
 
@@ -45,7 +77,6 @@ class TestRAGEndToEndPatterns:
     def test_rag_retrieval_basic(self):
         """RAG should retrieve documents."""
         try:
-            from codex_ml.rag import RAGRetriever
         except (ImportError, AttributeError):
             pytest.skip("RAG retriever not available")
 
@@ -60,7 +91,6 @@ class TestRAGEndToEndPatterns:
     def test_rag_index_persist_load(self):
         """RAG index should persist and load."""
         try:
-            from codex_ml.rag import RAGIndexer
         except (ImportError, AttributeError):
             pytest.skip("RAG indexer not available")
 
@@ -84,7 +114,6 @@ class TestRAGEndToEndPatterns:
     def test_rag_empty_query_handling(self):
         """RAG should handle empty queries."""
         try:
-            from codex_ml.rag import RAGRetriever
         except (ImportError, AttributeError):
             pytest.skip("RAG retriever not available")
 
@@ -99,7 +128,6 @@ class TestRAGEndToEndPatterns:
     def test_rag_large_k_retrieval(self):
         """RAG should handle large k values."""
         try:
-            from codex_ml.rag import RAGRetriever
         except (ImportError, AttributeError):
             pytest.skip("RAG retriever not available")
 
@@ -114,7 +142,6 @@ class TestRAGEndToEndPatterns:
     def test_rag_retrieval_with_filters(self):
         """RAG should support filtering."""
         try:
-            from codex_ml.rag import RAGRetriever
         except (ImportError, AttributeError):
             pytest.skip("RAG retriever not available")
 
@@ -129,7 +156,6 @@ class TestRAGEndToEndPatterns:
     def test_rag_retrieval_relevance_scores(self):
         """RAG retrieval should include relevance scores."""
         try:
-            from codex_ml.rag import RAGRetriever
         except (ImportError, AttributeError):
             pytest.skip("RAG retriever not available")
 
@@ -150,7 +176,6 @@ class TestRAGIndexHealth:
     def test_index_document_count(self):
         """Index should report document count."""
         try:
-            from codex_ml.rag import RAGIndexer
         except (ImportError, AttributeError):
             pytest.skip("RAG indexer not available")
 
@@ -164,7 +189,6 @@ class TestRAGIndexHealth:
     def test_index_memory_usage(self):
         """Index should report memory usage."""
         try:
-            from codex_ml.rag import RAGIndexer
         except (ImportError, AttributeError):
             pytest.skip("RAG indexer not available")
 
@@ -178,7 +202,6 @@ class TestRAGIndexHealth:
     def test_index_integrity_check(self):
         """Index should support integrity checks."""
         try:
-            from codex_ml.rag import RAGIndexer
         except (ImportError, AttributeError):
             pytest.skip("RAG indexer not available")
 
@@ -192,7 +215,6 @@ class TestRAGIndexHealth:
     def test_index_statistics(self):
         """Index should provide statistics."""
         try:
-            from codex_ml.rag import RAGIndexer
         except (ImportError, AttributeError):
             pytest.skip("RAG indexer not available")
 
@@ -206,7 +228,6 @@ class TestRAGIndexHealth:
     def test_index_health_score(self):
         """Index should have health score."""
         try:
-            from codex_ml.rag import RAGIndexer
         except (ImportError, AttributeError):
             pytest.skip("RAG indexer not available")
 
@@ -225,7 +246,6 @@ class TestRetrievalLatency:
     def test_retrieval_latency_measurement(self):
         """Retrieval latency should be measurable."""
         try:
-            from codex_ml.rag import RAGRetriever
         except (ImportError, AttributeError):
             pytest.skip("RAG retriever not available")
 
@@ -243,7 +263,6 @@ class TestRetrievalLatency:
     def test_retrieval_performance_acceptable(self):
         """Retrieval should complete in reasonable time."""
         try:
-            from codex_ml.rag import RAGRetriever
         except (ImportError, AttributeError):
             pytest.skip("RAG retriever not available")
 
@@ -262,7 +281,6 @@ class TestRetrievalLatency:
     def test_retrieval_latency_scaling(self):
         """Retrieval latency should scale reasonably."""
         try:
-            from codex_ml.rag import RAGRetriever
         except (ImportError, AttributeError):
             pytest.skip("RAG retriever not available")
 
@@ -284,7 +302,6 @@ class TestRetrievalLatency:
     def test_batch_retrieval_efficiency(self):
         """Batch retrieval should be efficient."""
         try:
-            from codex_ml.rag import RAGRetriever
         except (ImportError, AttributeError):
             pytest.skip("RAG retriever not available")
 
@@ -307,9 +324,7 @@ class TestMetaTensorSafety:
     def test_rag_embeddings_not_meta(self):
         """RAG embeddings should not be on meta device."""
         try:
-            from codex_ml.rag import RAGIndexer
 
-            import torch
         except (ImportError, AttributeError):
             pytest.skip("RAG indexer not available")
 
@@ -328,9 +343,7 @@ class TestMetaTensorSafety:
     def test_rag_model_parameters_device(self):
         """RAG model parameters should be on valid device."""
         try:
-            from codex_ml.rag import RAGRetriever
 
-            import torch
         except (ImportError, AttributeError):
             pytest.skip("RAG retriever not available")
 
@@ -347,7 +360,6 @@ class TestMetaTensorSafety:
     def test_rag_device_consistency(self):
         """RAG components should be on consistent device."""
         try:
-            from codex_ml.rag import RAGRetriever
         except (ImportError, AttributeError):
             pytest.skip("RAG retriever not available")
 
@@ -367,7 +379,6 @@ class TestRAGRecoveryMechanisms:
     def test_rag_fallback_on_empty_results(self):
         """RAG should fallback on empty results."""
         try:
-            from codex_ml.rag import RAGRetriever
         except (ImportError, AttributeError):
             pytest.skip("RAG retriever not available")
 
@@ -383,7 +394,6 @@ class TestRAGRecoveryMechanisms:
     def test_rag_error_recovery(self):
         """RAG should recover from errors gracefully."""
         try:
-            from codex_ml.rag import RAGRetriever
         except (ImportError, AttributeError):
             pytest.skip("RAG retriever not available")
 
@@ -399,7 +409,6 @@ class TestRAGRecoveryMechanisms:
     def test_rag_index_rebuild(self):
         """RAG should support index rebuilding."""
         try:
-            from codex_ml.rag import RAGIndexer
         except (ImportError, AttributeError):
             pytest.skip("RAG indexer not available")
 
@@ -416,7 +425,6 @@ class TestRAGRecoveryMechanisms:
     def test_rag_corrupted_index_detection(self):
         """RAG should detect corrupted indexes."""
         try:
-            from codex_ml.rag import RAGIndexer
         except (ImportError, AttributeError):
             pytest.skip("RAG indexer not available")
 
@@ -436,7 +444,6 @@ class TestRAGIndexFreshness:
     def test_index_freshness_timestamp(self):
         """Index should track freshness timestamp."""
         try:
-            from codex_ml.rag import RAGIndexer
         except (ImportError, AttributeError):
             pytest.skip("RAG indexer not available")
 
@@ -450,7 +457,6 @@ class TestRAGIndexFreshness:
     def test_index_freshness_check(self):
         """Index freshness should be checkable."""
         try:
-            from codex_ml.rag import RAGIndexer
         except (ImportError, AttributeError):
             pytest.skip("RAG indexer not available")
 
@@ -464,7 +470,6 @@ class TestRAGIndexFreshness:
     def test_index_staleness_detection(self):
         """Index should detect staleness."""
         try:
-            from codex_ml.rag import RAGIndexer
         except (ImportError, AttributeError):
             pytest.skip("RAG indexer not available")
 
@@ -479,7 +484,6 @@ class TestRAGIndexFreshness:
     def test_index_refresh_required_check(self):
         """Should check if refresh is needed."""
         try:
-            from codex_ml.rag import RAGIndexer
         except (ImportError, AttributeError):
             pytest.skip("RAG indexer not available")
 
@@ -497,7 +501,6 @@ class TestRetrievalQualityMetrics:
     def test_retrieval_precision_at_k(self):
         """Should compute precision@k."""
         try:
-            from codex_ml.rag import compute_precision_at_k
         except (ImportError, AttributeError):
             pytest.skip("compute_precision_at_k not available")
 
@@ -512,7 +515,6 @@ class TestRetrievalQualityMetrics:
     def test_retrieval_recall_at_k(self):
         """Should compute recall@k."""
         try:
-            from codex_ml.rag import compute_recall_at_k
         except (ImportError, AttributeError):
             pytest.skip("compute_recall_at_k not available")
 
@@ -527,7 +529,6 @@ class TestRetrievalQualityMetrics:
     def test_retrieval_ndcg(self):
         """Should compute NDCG."""
         try:
-            from codex_ml.rag import compute_ndcg
         except (ImportError, AttributeError):
             pytest.skip("compute_ndcg not available")
 
@@ -542,7 +543,6 @@ class TestRetrievalQualityMetrics:
     def test_retrieval_mrr(self):
         """Should compute Mean Reciprocal Rank."""
         try:
-            from codex_ml.rag import compute_mrr
         except (ImportError, AttributeError):
             pytest.skip("compute_mrr not available")
 
@@ -557,7 +557,6 @@ class TestRetrievalQualityMetrics:
     def test_retrieval_map(self):
         """Should compute Mean Average Precision."""
         try:
-            from codex_ml.rag import compute_map
         except (ImportError, AttributeError):
             pytest.skip("compute_map not available")
 

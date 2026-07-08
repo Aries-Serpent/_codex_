@@ -3,8 +3,9 @@ Test Split Indices
 
 Test module for split indices.
 """
-
+import pytest
 from codex_ml.data import split_indices
+
 
 
 def test_split_indices_deterministic():

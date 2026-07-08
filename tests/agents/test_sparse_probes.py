@@ -183,6 +183,7 @@ class TestTopKLabels:
 
     def test_top_k_labels_k_larger_than_size(self):
         """Test when k > number of labels."""
+import pytest
         logits = [0.5, 1.2]
         names = ["a", "b"]
 

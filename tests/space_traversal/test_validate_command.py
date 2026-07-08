@@ -167,6 +167,7 @@ def test_validate_command_fails_when_missing_artifacts():
 
 def test_stage_s5_creates_component_gaps():
     """Test that stage_s5_gaps creates component_gaps.json."""
+import pytest
     audit_runner = load_audit_runner()
 
     with tempfile.TemporaryDirectory() as tmp_dir:

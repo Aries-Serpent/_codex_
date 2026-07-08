@@ -6,17 +6,18 @@ Covers:
 - Decision loop dry-run mode
 - Session persistence helpers
 """
-
 from __future__ import annotations
-
+    return pytest.importorskip("autonomy_scheduler", reason="autonomy_scheduler not importable")
 import json
 import os
 import sys
 import time
 from pathlib import Path
 from unittest.mock import patch
+        import gc
 
-import pytest
+
+
 
 SCRIPTS_DIR = Path(__file__).resolve().parents[2] / "scripts"
 
@@ -25,7 +26,6 @@ def _import_scheduler():
     """Import autonomy_scheduler, skipping if unavailable."""
     if str(SCRIPTS_DIR) not in sys.path:
         sys.path.insert(0, str(SCRIPTS_DIR))
-    return pytest.importorskip("autonomy_scheduler", reason="autonomy_scheduler not importable")
 
 
 class TestBudgetCap:
@@ -114,7 +114,6 @@ class TestDecisionLoop:
         _healthy = {"status": "ok", "returncode": 0, "stderr_snippet": ""}
 
         # STABILIZATION V2: Add explicit resource cleanup and isolation
-        import gc
 
         gc.collect()  # Force garbage collection before test
 

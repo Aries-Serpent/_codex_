@@ -2,20 +2,19 @@
 Tests for Phase 4 — Prompt Registry
 (src/codex/autonomy/prompt_registry.py)
 """
-
 from __future__ import annotations
-
 import textwrap
 from pathlib import Path
-
-import pytest
-
 from codex.autonomy.prompt_registry import (
+from codex.autonomy.registry import AutonomyMode, ControlClass
+
+
+
+
     PromptMetadata,
     PromptRegistry,
     PromptRegistryError,
 )
-from codex.autonomy.registry import AutonomyMode, ControlClass
 
 
 def _write_registry(tmp_path: Path, content: str) -> Path:

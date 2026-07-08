@@ -3,19 +3,51 @@ Phase 26: CLI Edge Case Tests - Batch 2
 Target: 25+ edge case tests for CLI entry points
 Coverage Target: src/codex_ml/cli/codex_cli.py (846 lines, 0% → 60%+)
 """
-
 import contextlib
 import os
 from io import StringIO
 from unittest.mock import patch
-
-import pytest
-
 from codex.logging.structured_logger import logger
+    from codex_ml.cli import codex_cli
+        import subprocess
+        from unittest.mock import MagicMock
+        import subprocess
+        import time
+        from unittest.mock import MagicMock
+        import sys
+        import sys
+        import sys
+        import subprocess
+        from unittest.mock import MagicMock
+        import threading
+        import signal
+        import signal
+        import platform
+        import signal
+        import subprocess
+        from unittest.mock import MagicMock, patch
+        import signal
+        import threading
+        import signal
+        import sys
+        import sys
+        from io import BytesIO
+        import sys
+        from unittest.mock import MagicMock
+        import sys
+        import threading
+            import unicodedata
+            import pathlib
+        import tempfile
+        import threading
+        import time
+        import tempfile
+
+
+
 
 # Import CLI modules
 try:
-    from codex_ml.cli import codex_cli
 except ImportError:
     codex_cli = None
 
@@ -34,8 +66,6 @@ class TestCLIEdgeCases:
 
     def test_cli_invalid_command_execution(self):
         """Test CLI execution of invalid/non-existent command"""
-        import subprocess
-        from unittest.mock import MagicMock
 
         mock_result = MagicMock()
         mock_result.returncode = 127  # Command not found
@@ -72,9 +102,6 @@ class TestCLIEdgeCases:
 
     def test_cli_command_timeout(self):
         """Test CLI command execution with timeout"""
-        import subprocess
-        import time
-        from unittest.mock import MagicMock
 
         with patch("subprocess.Popen") as mock_popen:
             mock_process = MagicMock()
@@ -107,7 +134,6 @@ class TestCLIEdgeCases:
 
     def test_cli_command_with_stdin_redirect(self):
         """Test CLI command reading from stdin"""
-        import sys
 
         test_input = "test input data\nline 2\nline 3\n"
         mock_stdin = StringIO(test_input)
@@ -126,7 +152,6 @@ class TestCLIEdgeCases:
 
     def test_cli_command_with_stdout_redirect(self):
         """Test CLI command writing to stdout"""
-        import sys
 
         captured_output = StringIO()
 
@@ -142,7 +167,6 @@ class TestCLIEdgeCases:
 
     def test_cli_command_with_stderr_redirect(self):
         """Test CLI command writing to stderr"""
-        import sys
 
         captured_errors = StringIO()
 
@@ -158,8 +182,6 @@ class TestCLIEdgeCases:
 
     def test_cli_command_chain_execution(self):
         """Test CLI command pipeline/chain execution"""
-        import subprocess
-        from unittest.mock import MagicMock
 
         with patch("subprocess.run") as mock_run:
             # Simulate pipeline: cmd1 | cmd2 | cmd3
@@ -241,7 +263,6 @@ class TestCLIEdgeCases:
 
     def test_cli_concurrent_execution(self):
         """Test CLI concurrent execution safety"""
-        import threading
 
         results = []
 
@@ -276,7 +297,6 @@ class TestCLIEdgeCases:
 
     def test_cli_sigint_handling(self):
         """Test CLI SIGINT (Ctrl+C) handling"""
-        import signal
 
         cleanup_called = []
 
@@ -298,7 +318,6 @@ class TestCLIEdgeCases:
 
     def test_cli_sigterm_handling(self):
         """Test CLI SIGTERM handling for graceful shutdown"""
-        import signal
 
         termination_detected = []
 
@@ -315,8 +334,6 @@ class TestCLIEdgeCases:
 
     def test_cli_sighup_handling(self):
         """Test CLI SIGHUP handling for reload"""
-        import platform
-        import signal
 
         if platform.system() == "Windows":
             pytest.skip("SIGHUP not available on Windows")
@@ -335,8 +352,6 @@ class TestCLIEdgeCases:
 
     def test_cli_signal_during_subprocess(self):
         """Test signal handling when subprocess is running"""
-        import subprocess
-        from unittest.mock import MagicMock, patch
 
         with patch("subprocess.Popen") as mock_popen:
             mock_process = MagicMock()
@@ -352,8 +367,6 @@ class TestCLIEdgeCases:
 
     def test_cli_signal_race_condition(self):
         """Test signal handling for race conditions"""
-        import signal
-        import threading
 
         signal_count = []
         lock = threading.Lock()
@@ -376,7 +389,6 @@ class TestCLIEdgeCases:
 
     def test_cli_multiple_signals_sequence(self):
         """Test CLI handling multiple signals in sequence"""
-        import signal
 
         signals_received = []
 
@@ -406,7 +418,6 @@ class TestCLIEdgeCases:
 
     def test_cli_large_input_handling(self):
         """Test CLI handling of large input streams"""
-        import sys
 
         # Generate large input (10MB)
         large_input = "x" * (10 * 1024 * 1024)
@@ -429,8 +440,6 @@ class TestCLIEdgeCases:
 
     def test_cli_binary_input_handling(self):
         """Test CLI handling of binary input"""
-        import sys
-        from io import BytesIO
 
         binary_data = b"\x00\x01\x02\xff\xfe\xfd"
         mock_stdin = BytesIO(binary_data)
@@ -445,8 +454,6 @@ class TestCLIEdgeCases:
 
     def test_cli_output_to_closed_pipe(self):
         """Test CLI writing to closed pipe (BrokenPipeError)"""
-        import sys
-        from unittest.mock import MagicMock
 
         mock_stdout = MagicMock()
         mock_stdout.write.side_effect = BrokenPipeError()
@@ -462,7 +469,6 @@ class TestCLIEdgeCases:
 
     def test_cli_input_from_closed_pipe(self):
         """Test CLI reading from closed pipe (EOF)"""
-        import sys
 
         # Empty input simulates closed pipe
         mock_stdin = StringIO("")
@@ -478,7 +484,6 @@ class TestCLIEdgeCases:
 
     def test_cli_concurrent_io_operations(self):
         """Test CLI thread-safe I/O operations"""
-        import threading
 
         output_buffer = StringIO()
         results = []
@@ -546,7 +551,6 @@ class TestCLIEdgeCases:
             decoded = encoded.decode("utf-8")
             assert decoded == unicode_str, "decoded is not valid"
             # Normalization check
-            import unicodedata
 
             normalized = unicodedata.normalize("NFC", unicode_str)
             assert isinstance(normalized, str)
@@ -566,7 +570,6 @@ class TestCLIEdgeCases:
             assert ".." in dangerous_path or dangerous_path.startswith("/"), "Condition must be true"
 
             # Sanitize by resolving and checking
-            import pathlib
 
             try:
                 # In real implementation, this would be validated
@@ -577,7 +580,6 @@ class TestCLIEdgeCases:
 
     def test_cli_resource_cleanup_on_error(self):
         """Test CLI properly cleans up resources on error"""
-        import tempfile
 
         resources_created = []
 
@@ -602,8 +604,6 @@ class TestCLIEdgeCases:
 
     def test_cli_concurrent_command_execution(self):
         """Test CLI isolates concurrent command executions"""
-        import threading
-        import time
 
         execution_results = []
         lock = threading.Lock()
@@ -731,7 +731,6 @@ class TestCLIConfigEdgeCases:
 
     def test_cli_config_file_invalid_yaml(self):
         """Test CLI with invalid YAML in config file"""
-        import tempfile
 
         with tempfile.NamedTemporaryFile(mode="w", suffix=".yml", delete=False) as f:
             f.write("invalid: yaml: content: [")

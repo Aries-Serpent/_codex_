@@ -3,22 +3,21 @@
 
 CLI smoke tests for the evaluation runner (Typer app).
 """
-
 from __future__ import annotations
-
+pytest.importorskip("typer")
+pytest.importorskip("datasets")
 import json
 from pathlib import Path
-
-import pytest
-
-pytest.importorskip("typer")
-
-
-pytest.importorskip("datasets")
-
 from typer.testing import CliRunner
-
 from codex_ml.eval import eval_runner
+
+
+
+
+
+
+
+
 
 
 def test_eval_runner_smoke(tmp_path: Path):

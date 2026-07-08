@@ -3,9 +3,49 @@ Tests for Context Management System
 
 Comprehensive tests for all context management modules.
 """
-
+import pytest
 import tempfile
 from pathlib import Path
+        from context_management.normalizer import ContextNormalizer
+        from context_management.normalizer import ContextNormalizer
+        from context_management.normalizer import ContextNormalizer
+        import unicodedata
+        from context_management.normalizer import ContextNormalizer
+        import unicodedata
+        from context_management.normalizer import ContextNormalizer
+        import unicodedata
+        from context_management.normalizer import ContextNormalizer
+        from context_management.normalizer import ContextNormalizer
+        from context_management.normalizer import ContextNormalizer
+        from context_management.normalizer import ContextNormalizer
+        from context_management.fingerprint import StatementFingerprinter
+        from context_management.fingerprint import StatementFingerprinter
+        from context_management.fingerprint import StatementFingerprinter
+        from context_management.fingerprint import StatementFingerprinter
+        from context_management.deduplicator import SemanticDeduplicator
+        from context_management.deduplicator import SemanticDeduplicator
+        from context_management.deduplicator import SemanticDeduplicator
+        from context_management.budget import ContentPriority, TokenBudgetEnforcer
+        from context_management.budget import ContentPriority, TokenBudgetEnforcer
+        from context_management.budget import ContentPriority, TokenBudgetEnforcer
+        from context_management.guardrails import LoopGuardrail
+        from context_management.guardrails import LoopGuardrail
+        from context_management.guardrails import LoopGuardrail
+        from context_management.guardrails import LoopGuardrail
+        from context_management.memory import ContextMemory
+        from context_management.memory import ContextMemory
+        from context_management.memory import ContextMemory
+        from context_management.memory import ContextMemory
+        from context_management.observability import ContextObserver
+        from context_management.observability import ContextObserver
+        from context_management.observability import AlertSeverity, ContextObserver
+        from context_management.observability import ContextObserver
+        from context_management.pruning import PriorityPruner
+        from context_management.pruning import PriorityPruner, PruneStrategy
+        from context_management.pruning import PriorityPruner
+        from context_management import (
+        from context_management.budget import ContentPriority
+
 
 
 class TestContextNormalizer:
@@ -13,7 +53,6 @@ class TestContextNormalizer:
 
     def test_normalize_basic(self):
         """Test basic text normalization."""
-        from context_management.normalizer import ContextNormalizer
 
         normalizer = ContextNormalizer()
 
@@ -24,7 +63,6 @@ class TestContextNormalizer:
 
     def test_normalize_lowercase(self):
         """Test lowercase conversion."""
-        from context_management.normalizer import ContextNormalizer
 
         normalizer = ContextNormalizer(lowercase=True)
         result = normalizer.normalize("Hello WORLD")
@@ -32,7 +70,6 @@ class TestContextNormalizer:
 
     def test_normalize_unicode(self):
         """Test unicode normalization."""
-        from context_management.normalizer import ContextNormalizer
 
         normalizer = ContextNormalizer(normalize_unicode=True)
         # Test with combining characters
@@ -41,9 +78,7 @@ class TestContextNormalizer:
 
     def test_unicode_nfc_nfd_cafe_equivalence(self):
         """NFC precomposed and NFD decomposed forms of café normalize to the same output."""
-        import unicodedata
 
-        from context_management.normalizer import ContextNormalizer
 
         # NFC: é as single precomposed code point U+00E9
         nfc_cafe = "caf\u00e9"
@@ -69,9 +104,7 @@ class TestContextNormalizer:
 
     def test_unicode_nfd_input_becomes_nfc(self):
         """NFD decomposed input is explicitly converted to NFC form."""
-        import unicodedata
 
-        from context_management.normalizer import ContextNormalizer
 
         # String with multiple decomposed accented characters:
         # "naïve résumé" in NFD form
@@ -91,9 +124,7 @@ class TestContextNormalizer:
 
     def test_unicode_multiple_combining_marks(self):
         """Strings with stacked combining diacritical marks are handled."""
-        import unicodedata
 
-        from context_management.normalizer import ContextNormalizer
 
         # U+006F (o) + U+0302 (combining circumflex) + U+0308 (combining umlaut)
         text_with_marks = "o\u0302\u0308"
@@ -107,7 +138,6 @@ class TestContextNormalizer:
 
     def test_unicode_normalize_disabled_preserves_nfd(self):
         """When normalize_unicode=False, NFD and NFC forms are NOT equated."""
-        from context_management.normalizer import ContextNormalizer
 
         nfc_cafe = "caf\u00e9"  # precomposed NFC
         nfd_cafe = "cafe\u0301"  # decomposed NFD
@@ -121,7 +151,6 @@ class TestContextNormalizer:
 
     def test_strip_ansi(self):
         """Test ANSI code stripping."""
-        from context_management.normalizer import ContextNormalizer
 
         normalizer = ContextNormalizer(strip_ansi=True)
         result = normalizer.normalize("\x1b[31mred text\x1b[0m")
@@ -130,7 +159,6 @@ class TestContextNormalizer:
 
     def test_extract_key_signals(self):
         """Test key signal extraction."""
-        from context_management.normalizer import ContextNormalizer
 
         normalizer = ContextNormalizer()
         text = """
@@ -155,7 +183,6 @@ class TestStatementFingerprinter:
 
     def test_fingerprint_basic(self):
         """Test basic fingerprinting."""
-        from context_management.fingerprint import StatementFingerprinter
 
         fp = StatementFingerprinter()
         result = fp.fingerlogger.info("This is a test statement")
@@ -167,7 +194,6 @@ class TestStatementFingerprinter:
 
     def test_fingerprint_exact_match(self):
         """Test exact hash matching."""
-        from context_management.fingerprint import StatementFingerprinter
 
         fp = StatementFingerprinter()
 
@@ -179,7 +205,6 @@ class TestStatementFingerprinter:
 
     def test_fingerprint_semantic_match(self):
         """Test semantic hash matching."""
-        from context_management.fingerprint import StatementFingerprinter
 
         fp = StatementFingerprinter()
 
@@ -194,7 +219,6 @@ class TestStatementFingerprinter:
 
     def test_similarity_calculation(self):
         """Test similarity calculation."""
-        from context_management.fingerprint import StatementFingerprinter
 
         fp = StatementFingerprinter()
 
@@ -218,7 +242,6 @@ class TestSemanticDeduplicator:
 
     def test_deduplicate_exact(self):
         """Test exact duplicate removal."""
-        from context_management.deduplicator import SemanticDeduplicator
 
         dedup = SemanticDeduplicator(similarity_threshold=1.0)
 
@@ -238,7 +261,6 @@ class TestSemanticDeduplicator:
 
     def test_deduplicate_semantic(self):
         """Test semantic duplicate removal."""
-        from context_management.deduplicator import SemanticDeduplicator
 
         dedup = SemanticDeduplicator(similarity_threshold=0.85)
 
@@ -255,7 +277,6 @@ class TestSemanticDeduplicator:
 
     def test_is_duplicate(self):
         """Test duplicate checking."""
-        from context_management.deduplicator import SemanticDeduplicator
 
         dedup = SemanticDeduplicator()
 
@@ -273,7 +294,6 @@ class TestTokenBudgetEnforcer:
 
     def test_add_content(self):
         """Test adding content to budget."""
-        from context_management.budget import ContentPriority, TokenBudgetEnforcer
 
         enforcer = TokenBudgetEnforcer(hard_limit=1000, soft_limit=800)
 
@@ -285,7 +305,6 @@ class TestTokenBudgetEnforcer:
 
     def test_budget_limits(self):
         """Test budget limit enforcement."""
-        from context_management.budget import ContentPriority, TokenBudgetEnforcer
 
         enforcer = TokenBudgetEnforcer(hard_limit=100, soft_limit=80)
 
@@ -300,7 +319,6 @@ class TestTokenBudgetEnforcer:
 
     def test_get_context(self):
         """Test context retrieval."""
-        from context_management.budget import ContentPriority, TokenBudgetEnforcer
 
         enforcer = TokenBudgetEnforcer()
 
@@ -316,7 +334,6 @@ class TestLoopGuardrail:
 
     def test_record_action(self):
         """Test action recording."""
-        from context_management.guardrails import LoopGuardrail
 
         guardrail = LoopGuardrail(max_consecutive_repeats=3)
 
@@ -329,7 +346,6 @@ class TestLoopGuardrail:
 
     def test_detect_consecutive_repeats(self):
         """Test consecutive repeat detection."""
-        from context_management.guardrails import LoopGuardrail
 
         guardrail = LoopGuardrail(max_consecutive_repeats=3)
 
@@ -343,7 +359,6 @@ class TestLoopGuardrail:
 
     def test_no_violation_with_artifacts(self):
         """Test no violation when producing artifacts."""
-        from context_management.guardrails import LoopGuardrail
 
         guardrail = LoopGuardrail(max_consecutive_repeats=2)
 
@@ -356,7 +371,6 @@ class TestLoopGuardrail:
 
     def test_check_before_action(self):
         """Test pre-action checking."""
-        from context_management.guardrails import LoopGuardrail
 
         guardrail = LoopGuardrail(max_consecutive_repeats=3)
 
@@ -373,7 +387,6 @@ class TestContextMemory:
 
     def test_store_and_retrieve(self):
         """Test basic store and retrieve."""
-        from context_management.memory import ContextMemory
 
         memory = ContextMemory(max_chunk_tokens=1000)
 
@@ -385,7 +398,6 @@ class TestContextMemory:
 
     def test_chunking(self):
         """Test content chunking."""
-        from context_management.memory import ContextMemory
 
         memory = ContextMemory(max_chunk_tokens=50)
 
@@ -398,7 +410,6 @@ class TestContextMemory:
 
     def test_map_reduce_summarize(self):
         """Test map-reduce summarization."""
-        from context_management.memory import ContextMemory
 
         # Simple summarizer for testing
         def simple_summarizer(text):
@@ -414,7 +425,6 @@ class TestContextMemory:
 
     def test_persistence(self):
         """Test persistence to disk."""
-        from context_management.memory import ContextMemory
 
         with tempfile.TemporaryDirectory() as tmpdir:
             path = Path(tmpdir) / "memory"
@@ -435,7 +445,6 @@ class TestContextObserver:
 
     def test_logging(self):
         """Test structured logging."""
-        from context_management.observability import ContextObserver
 
         observer = ContextObserver()
         observer.set_correlation_ids(correlation_id="test-123")
@@ -448,7 +457,6 @@ class TestContextObserver:
 
     def test_metrics(self):
         """Test metrics collection."""
-        from context_management.observability import ContextObserver
 
         observer = ContextObserver(enable_metrics=True)
 
@@ -461,7 +469,6 @@ class TestContextObserver:
 
     def test_alerts(self):
         """Test alert generation."""
-        from context_management.observability import AlertSeverity, ContextObserver
 
         observer = ContextObserver(enable_alerts=True)
 
@@ -475,7 +482,6 @@ class TestContextObserver:
 
     def test_correlation_context(self):
         """Test correlation ID context management."""
-        from context_management.observability import ContextObserver
 
         observer = ContextObserver()
 
@@ -490,7 +496,6 @@ class TestPriorityPruner:
 
     def test_prune_basic(self):
         """Test basic pruning."""
-        from context_management.pruning import PriorityPruner
 
         pruner = PriorityPruner()
 
@@ -501,7 +506,6 @@ class TestPriorityPruner:
 
     def test_prune_keep_errors(self):
         """Test that errors are kept."""
-        from context_management.pruning import PriorityPruner, PruneStrategy
 
         pruner = PriorityPruner()
 
@@ -512,7 +516,6 @@ class TestPriorityPruner:
 
     def test_prune_batch(self):
         """Test batch pruning."""
-        from context_management.pruning import PriorityPruner
 
         pruner = PriorityPruner()
 
@@ -535,14 +538,12 @@ class TestContextManagementIntegration:
 
     def test_full_pipeline(self):
         """Test full context management pipeline."""
-        from context_management import (
             ContextNormalizer,
             ContextObserver,
             LoopGuardrail,
             SemanticDeduplicator,
             TokenBudgetEnforcer,
         )
-        from context_management.budget import ContentPriority
 
         # Initialize components
         normalizer = ContextNormalizer()

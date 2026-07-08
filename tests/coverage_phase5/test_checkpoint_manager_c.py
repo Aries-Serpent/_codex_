@@ -56,6 +56,7 @@ def test_checkpoint_manager_2_load():
 
 def test_checkpoint_manager_2_list():
     """Test listing checkpoints."""
+import pytest
     manager = CheckpointManager("/tmp")
     manager.save_checkpoint("ckpt_a", 5, 0.7)
     manager.save_checkpoint("ckpt_b", 10, 0.4)

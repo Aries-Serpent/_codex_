@@ -3,20 +3,19 @@
 These tests validate that capabilities work together correctly
 and that changes in one capability don't break others.
 """
-
 from __future__ import annotations
-
-from typing import Any
-
-import pytest
-
 pytest.importorskip("hypothesis")
-
-
-pytest.importorskip("hypothesis", reason="hypothesis required for property tests")
-
+from typing import Any
 from hypothesis import assume, given, settings
 from hypothesis import strategies as st
+        import re
+
+
+
+
+
+
+
 
 # =============================================================================
 # Configuration + Logging Integration
@@ -151,7 +150,6 @@ class SecureLogger:
 
     def scrub(self, message: str) -> str:
         """Scrub PII from message."""
-        import re
 
         result = message
         for pattern, replacement in self.PII_PATTERNS:

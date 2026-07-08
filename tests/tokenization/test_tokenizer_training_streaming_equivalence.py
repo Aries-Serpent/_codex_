@@ -3,22 +3,20 @@ Test Tokenizer Training Streaming Equivalence
 
 Test module for tokenizer training streaming equivalence.
 """
-
+pytest.importorskip("tokenizers")
+pytest.importorskip("sentencepiece")
 import json
-
-import pytest
-
-pytest.importorskip("tokenizers")
-
-pytest.importorskip("tokenizers")
-try:
     from tokenizers import Tokenizer
+from src.tokenization.train_tokenizer import TrainTokenizerConfig, train
+
+
+
+
+try:
 except ImportError:
     pytest.skip("tokenizers not available")
 
 
-pytest.importorskip("sentencepiece")
-from src.tokenization.train_tokenizer import TrainTokenizerConfig, train
 
 
 def test_bpe_streaming_equivalence(tmp_path):
@@ -76,8 +74,6 @@ def test_bpe_streaming_equivalence(tmp_path):
 
 
 def test_sentencepiece_streaming_equivalence(tmp_path):
-    pytest.importorskip("tokenizers")
-    pytest.importorskip("sentencepiece")
 
     corpus = tmp_path / "spm.txt"
     corpus.write_text("zero one\nzero two\n", encoding="utf-8")

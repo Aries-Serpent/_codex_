@@ -14,19 +14,23 @@ Physics Reference Tables Applied:
 - Table 4, Eq #6: Operator wiring tests
 - Table 1, Eq #49: J = Coverage/Runtime optimization
 """
-
-import pytest
-
 pytest.importorskip("numpy")
-
 from agents.mental_mapping import (
+from agents.physics_orchestrator import (
+from agents.quantum_game_theory import (
+        import numpy as np
+        import numpy as np
+        import numpy as np
+        import numpy as np
+
+
+
     EdgeType,
     MentalMappingModel,
     MentalNode,
     NodeType,
     ReasoningStep,
 )
-from agents.physics_orchestrator import (
     ActionPath,
     ActionType,
     DecisionState,
@@ -36,7 +40,6 @@ from agents.physics_orchestrator import (
     PhysicsInspiredOrchestrator,
     SwarmIntelligence,
 )
-from agents.quantum_game_theory import (
     NUMPY_AVAILABLE,
     BlueRedTeamSimulator,
     ClassicalGameEngine,
@@ -275,7 +278,6 @@ class TestPhase2_QuantumGameTheory_Corrected:
     @pytest.mark.skipif(not NUMPY_AVAILABLE, reason="numpy required")
     def test_quantum_game_engine_initialization(self):
         """Table 4, Eq #1: Initialization test"""
-        import numpy as np
 
         blue_strats = ["defend_perimeter", "active_monitoring"]
         red_strats = ["brute_force", "social_engineer"]
@@ -293,7 +295,6 @@ class TestPhase2_QuantumGameTheory_Corrected:
     @pytest.mark.skipif(not NUMPY_AVAILABLE, reason="numpy required")
     def test_classical_game_engine_initialization(self):
         """Table 4, Eq #1: Classical variant"""
-        import numpy as np
 
         blue_strats = ["strategy1"]
         red_strats = ["strategy2"]
@@ -311,7 +312,6 @@ class TestPhase2_QuantumGameTheory_Corrected:
     @pytest.mark.skipif(not NUMPY_AVAILABLE, reason="numpy required")
     def test_blue_red_team_simulator_initialization(self):
         """Table 4, Eq #1: Blue-Red team simulation"""
-        import numpy as np
 
         blue_strats = ["def1"]
         red_strats = ["att1"]
@@ -348,7 +348,6 @@ class TestPhase2_QuantumGameTheory_Corrected:
     @pytest.mark.skipif(not NUMPY_AVAILABLE, reason="numpy required")
     def test_payoff_operator_creation(self):
         """Table 4, Eq #6: Operator wiring - payoff calculation"""
-        import numpy as np
 
         payoff_matrix = np.array([[0.5, 0.5], [0.5, 0.5]])
 

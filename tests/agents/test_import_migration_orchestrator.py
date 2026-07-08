@@ -10,14 +10,28 @@ Test Categories:
 - Migration execution (dry run and actual)
 - End-to-end workflow integration
 """
-
 import shutil
 import tempfile
 from pathlib import Path
-
-import pytest
-
 from agents.physics_orchestrator import ImportMigration, ImportMigrationOrchestrator
+from training.model import Model
+from models.classifier import Classifier
+import training.trainer as trainer
+import models.utils
+from training.data import DataLoader
+from src.training.model import Model
+from src.models.classifier import Classifier
+from training.pipeline import Pipeline
+from training.model import Model
+from models.classifier import Classifier
+import training.trainer as trainer
+import models.preprocessing
+from training.data import load_data
+from src.training.model import Model
+from src.models.classifier import Classifier
+
+
+
 
 
 class TestImportMigration:
@@ -91,9 +105,6 @@ class TestImportMigrationOrchestrator:
         # Create test Python files with deprecated imports
         test_file1 = repo_path / "module1.py"
         test_file1.write_text("""
-from training.model import Model
-from models.classifier import Classifier
-import training.trainer as trainer
 
 def test():
     pass
@@ -101,8 +112,6 @@ def test():
 
         test_file2 = repo_path / "module2.py"
         test_file2.write_text("""
-import models.utils
-from training.data import DataLoader
 
 class MyClass:
     pass
@@ -111,8 +120,6 @@ class MyClass:
         # Create file that should be skipped (already migrated)
         test_file3 = repo_path / "module3.py"
         test_file3.write_text("""
-from src.training.model import Model
-from src.models.classifier import Classifier
 
 def already_migrated():
     pass
@@ -123,7 +130,6 @@ def already_migrated():
         nested_dir.mkdir()
         nested_file = nested_dir / "nested.py"
         nested_file.write_text("""
-from training.pipeline import Pipeline
 """)
 
         yield repo_path
@@ -319,9 +325,6 @@ class TestImportMigrationWorkflow:
 
         # Create multiple files with various patterns
         (repo_path / "app.py").write_text("""
-from training.model import Model
-from models.classifier import Classifier
-import training.trainer as trainer
 
 def main():
     model = Model()
@@ -329,8 +332,6 @@ def main():
 """)
 
         (repo_path / "utils.py").write_text("""
-import models.preprocessing
-from training.data import load_data
 
 def preprocess():
     return models.preprocessing.clean()
@@ -386,8 +387,6 @@ def preprocess():
 
         # Create file with only modern imports
         (repo_path / "modern.py").write_text("""
-from src.training.model import Model
-from src.models.classifier import Classifier
 
 def test():
     pass

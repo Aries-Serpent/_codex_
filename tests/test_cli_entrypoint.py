@@ -3,19 +3,18 @@ Test Cli Entrypoint
 
 Test module for cli entrypoint.
 """
-
 from __future__ import annotations
-
+    torch = pytest.importorskip("torch")
 from pathlib import Path
-
-import pytest
-
 from src import cli
+
+
+
+
 
 
 @pytest.mark.usefixtures("tmp_path")
 def test_cli_runs_with_simple_config(tmp_path: Path) -> None:
-    torch = pytest.importorskip("torch")
     if not hasattr(torch, "nn") or not hasattr(torch.nn, "Linear"):
         pytest.skip("torch.nn.Linear is unavailable in this environment")
 

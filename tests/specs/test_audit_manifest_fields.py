@@ -3,16 +3,15 @@ Test Audit Manifest Fields
 
 Test module for audit manifest fields.
 """
-
 from __future__ import annotations
-
 import importlib.util
 import json
 import subprocess
 import sys
 from pathlib import Path
 
-import pytest
+
+
 
 
 def _run(args: list[str]) -> subprocess.CompletedProcess[str]:

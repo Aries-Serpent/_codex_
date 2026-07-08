@@ -7,15 +7,17 @@ Targets the lines not covered by Phase 7 unit/integration tests:
 - main() CLI entry points in all three modules
 - SelfHealingValidator._save_to_history exception path
 """
-
 from __future__ import annotations
-
+import pytest
 import importlib.util
 import json
 import sys
 from io import StringIO
 from pathlib import Path
 from unittest.mock import patch
+        import types
+
+
 
 # ---------------------------------------------------------------------------
 # Module loading
@@ -186,7 +188,6 @@ class TestActionProposerMain:
     def _register_sensor_mod(self):
         """Ensure the inner `from scripts.cognitive.sensors.monitoring_sensor import ...` resolves."""
         # Build a minimal fake package chain in sys.modules
-        import types
 
         for pkg in ("scripts", "scripts.cognitive", "scripts.cognitive.sensors"):
             if pkg not in sys.modules:

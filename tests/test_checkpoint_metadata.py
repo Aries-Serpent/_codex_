@@ -3,16 +3,15 @@ Test Checkpoint Metadata
 
 Test module for checkpoint metadata.
 """
-
+pytest.importorskip("torch")
 import subprocess
 from pathlib import Path
-
-import pytest
-
-pytest.importorskip("torch")
-
 import torch
 from codex_ml.utils.checkpointing import save_checkpoint
+
+
+
+
 
 
 def test_checkpoint_records_git_and_env(tmp_path):

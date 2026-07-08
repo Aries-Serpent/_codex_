@@ -4,27 +4,35 @@ Extended tests for complete dataset loader suite
 Author: mbaetiong
 Generated: 2025-11-19 04:02:05
 """
-
+pytest.importorskip("numpy")
+    @pytest.mark.skipif(not pytest.importorskip("pyarrow"), reason="Requires pyarrow")
+    @pytest.mark.skipif(not pytest.importorskip("h5py"), reason="Requires h5py")
 import tempfile
 from pathlib import Path
-
-import pytest
-
-pytest.importorskip("numpy")
-
-
 from codex_ml.data import load_dataset
+        import pandas as pd
+        from src.codex_ml.data.loaders.parquet_loader import load_parquet
+        import pandas as pd
+        from src.codex_ml.data.loaders.parquet_loader import load_parquet
+        import pyarrow as pa
+        import pyarrow.ipc as ipc
+        from src.codex_ml.data.loaders.arrow_loader import load_arrow
+        import h5py
+        import numpy as np
+        from src.codex_ml.data.loaders.hdf5_loader import load_hdf5
+
+
+
+
+
 
 
 class TestParquetLoader:
     """Test Parquet loader"""
 
-    @pytest.mark.skipif(not pytest.importorskip("pyarrow"), reason="Requires pyarrow")
     def test_load_parquet_basic(self):
         """Test basic Parquet loading"""
-        import pandas as pd
 
-        from src.codex_ml.data.loaders.parquet_loader import load_parquet
 
         # Create sample Parquet
         df = pd.DataFrame({"text": ["Sample 1", "Sample 2", "Sample 3"], "label": [0, 1, 0]})
@@ -38,12 +46,9 @@ class TestParquetLoader:
         assert len(dataset) == 3, "Dataset must not be empty"
         assert dataset[0]["text"] == "Sample 1", "Data must not be empty"
 
-    @pytest.mark.skipif(not pytest.importorskip("pyarrow"), reason="Requires pyarrow")
     def test_load_parquet_batched(self):
         """Test batched Parquet loading"""
-        import pandas as pd
 
-        from src.codex_ml.data.loaders.parquet_loader import load_parquet
 
         # Create larger dataset
         df = pd.DataFrame({"id": range(100), "value": range(100, 200)})
@@ -61,13 +66,9 @@ class TestParquetLoader:
 class TestArrowLoader:
     """Test Arrow IPC loader"""
 
-    @pytest.mark.skipif(not pytest.importorskip("pyarrow"), reason="Requires pyarrow")
     def test_load_arrow_basic(self):
         """Test basic Arrow loading"""
-        import pyarrow as pa
-        import pyarrow.ipc as ipc
 
-        from src.codex_ml.data.loaders.arrow_loader import load_arrow
 
         # Create sample Arrow file
         schema = pa.schema([("text", pa.string()), ("label", pa.int64())])
@@ -90,13 +91,9 @@ class TestArrowLoader:
 class TestHDF5Loader:
     """Test HDF5 loader"""
 
-    @pytest.mark.skipif(not pytest.importorskip("h5py"), reason="Requires h5py")
     def test_load_hdf5_basic(self):
         """Test basic HDF5 loading"""
-        import h5py
-        import numpy as np
 
-        from src.codex_ml.data.loaders.hdf5_loader import load_hdf5
 
         # Create sample HDF5
         data = np.random.rand(100, 10)

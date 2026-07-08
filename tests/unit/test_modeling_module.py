@@ -3,16 +3,15 @@ Test Modeling Module
 
 Test module for modeling module.
 """
-
 from __future__ import annotations
-
-from types import SimpleNamespace
-
-import pytest
-
 pytest.importorskip("torch")
-
+from types import SimpleNamespace
 from src import modeling
+
+
+
+
+
 
 
 class FakeModel:

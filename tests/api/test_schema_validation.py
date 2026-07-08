@@ -8,12 +8,12 @@ Created: 2026-01-18
 Phase: 16.1 - API Contract Testing
 Tests: 20+
 """
-
 import json
 import re
 from pathlib import Path
+            import yaml
 
-import pytest
+
 
 # Repository root
 REPO_ROOT = Path(__file__).parents[2]
@@ -80,7 +80,6 @@ class TestYAMLSchemaValidation:
             pytest.skip("configs/ directory not found")
 
         try:
-            import yaml
         except ImportError:
             pytest.skip("PyYAML not installed")
 

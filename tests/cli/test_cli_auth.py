@@ -4,11 +4,10 @@ Tests for the ``codex auth`` CLI subcommands.
 Validates ``codex auth register``, ``codex auth login``, and
 ``codex auth logout`` via the Click test runner.
 """
-
-import pytest
 from click.testing import CliRunner
-
 from codex.cli import cli
+
+
 
 # ---------------------------------------------------------------------------
 # Fixtures

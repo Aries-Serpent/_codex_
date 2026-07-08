@@ -268,8 +268,9 @@ class TestStateTransitions:
 
     def test_error_recovery(self):
         """Test ERROR can transition to STOPPING or INITIALIZING."""
-        try:
+import pytest
             from src.mcp.lifecycle import VALID_TRANSITIONS, ServerState
+        try:
 
             assert ServerState.STOPPING in VALID_TRANSITIONS[ServerState.ERROR], "Error should be raised or set"
             assert ServerState.INITIALIZING in VALID_TRANSITIONS[ServerState.ERROR], "Error should be raised or set"

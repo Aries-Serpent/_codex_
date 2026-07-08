@@ -192,6 +192,12 @@ def setup_test_environment() -> dict[str, Any]:
     Returns:
         Dictionary with registry, authenticator, authorizer, limiter
     """
+import pytest
+        import time
+        import time
+    import time
+    import glob
+    from io import StringIO
     return {
         "registry": create_test_registry(["tool1", "tool2"]),
         "authenticator": MCPAuthenticator(),
@@ -221,13 +227,11 @@ class PerformanceTimer:
 
     def start(self):
         """Start timing."""
-        import time
 
         self.start_time = time.time()
 
     def stop(self):
         """Stop timing."""
-        import time
 
         self.end_time = time.time()
 
@@ -247,7 +251,6 @@ def benchmark_operation(
     Returns:
         Dictionary with min, max, average execution times
     """
-    import time
 
     times = []
     for _ in range(iterations):
@@ -323,7 +326,6 @@ def assert_raises_mcp_error(
 # Test Cleanup Utilities
 def cleanup_test_files(directory: str, pattern: str = "test_*.tmp"):
     """Clean up temporary test files."""
-    import glob
 
     if not os.path.exists(directory):
         return
@@ -347,7 +349,6 @@ def capture_log_output(func: Callable, *args, **kwargs) -> tuple:
     Returns:
         Tuple of (result, log_records)
     """
-    from io import StringIO
 
     log_stream = StringIO()
     handler = logging.StreamHandler(log_stream)

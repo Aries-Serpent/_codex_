@@ -3,6 +3,9 @@ Test Verify Conflicts
 
 Test module for verify conflicts.
 """
+import importlib.util
+from contextlib import contextmanager
+from pathlib import Path
 
 #!/usr/bin/env python
 """
@@ -11,11 +14,7 @@ Tests for scripts/remediation/verify_conflicts.py
 Validates that the whitelist parsing logic correctly handles
 duplicate module paths according to SHIM_INVENTORY.yaml.
 """
-import importlib.util
-from contextlib import contextmanager
-from pathlib import Path
 
-import pytest
 
 # Constants
 SHIM_INVENTORY_FILENAME = "SHIM_INVENTORY.yaml"

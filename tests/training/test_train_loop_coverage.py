@@ -8,21 +8,26 @@ Tests focus on:
 - Early stopping
 - Gradient accumulation
 """
-
+pytest.importorskip("torch")
 import tempfile
 from pathlib import Path
-
-import pytest
-
-pytest.importorskip("torch")
-
-# Import with graceful fallback for torch
-try:
     from torch.optim import Adam
-
     import torch
     import torch.nn as nn
     from torch.utils.data import DataLoader, Dataset
+        from codex_ml.utils.checkpoint import save_checkpoint
+        from codex_ml.utils.checkpoint import load_checkpoint, save_checkpoint
+        from codex_ml.utils.checkpoint import load_checkpoint, save_checkpoint
+        from codex_ml.utils.checkpoint import load_checkpoint, save_checkpoint
+        from codex_ml.utils.checkpoint import load_checkpoint, save_checkpoint
+        from torch.optim.lr_scheduler import StepLR
+
+
+
+
+# Import with graceful fallback for torch
+try:
+
 
     HAS_TORCH = True
 except ImportError:
@@ -178,7 +183,6 @@ class TestCheckpointSavingLoading:
 
     def test_save_checkpoint_basic(self, simple_model, temp_checkpoint_dir):
         """Test basic checkpoint saving."""
-        from codex_ml.utils.checkpoint import save_checkpoint
 
         checkpoint_path = temp_checkpoint_dir / "checkpoint.pt"
 
@@ -195,7 +199,6 @@ class TestCheckpointSavingLoading:
 
     def test_load_checkpoint_basic(self, simple_model, temp_checkpoint_dir):
         """Test basic checkpoint loading."""
-        from codex_ml.utils.checkpoint import load_checkpoint, save_checkpoint
 
         checkpoint_path = temp_checkpoint_dir / "checkpoint.pt"
 
@@ -217,7 +220,6 @@ class TestCheckpointSavingLoading:
 
     def test_checkpoint_with_optimizer_state(self, simple_model, temp_checkpoint_dir):
         """Test checkpoint with optimizer state."""
-        from codex_ml.utils.checkpoint import load_checkpoint, save_checkpoint
 
         optimizer = Adam(simple_model.parameters(), lr=0.001)
         checkpoint_path = temp_checkpoint_dir / "checkpoint_with_opt.pt"
@@ -237,7 +239,6 @@ class TestCheckpointSavingLoading:
 
     def test_checkpoint_metadata(self, simple_model, temp_checkpoint_dir):
         """Test checkpoint with metadata."""
-        from codex_ml.utils.checkpoint import load_checkpoint, save_checkpoint
 
         checkpoint_path = temp_checkpoint_dir / "checkpoint_meta.pt"
 
@@ -259,7 +260,6 @@ class TestCheckpointSavingLoading:
 
     def test_resume_from_checkpoint(self, simple_model, temp_checkpoint_dir, simple_dataloader):
         """Test resuming training from checkpoint."""
-        from codex_ml.utils.checkpoint import load_checkpoint, save_checkpoint
 
         optimizer = Adam(simple_model.parameters(), lr=0.001)
         checkpoint_path = temp_checkpoint_dir / "resume.pt"
@@ -434,7 +434,6 @@ class TestTrainingConfiguration:
 
     def test_learning_rate_scheduling(self, simple_model):
         """Test learning rate scheduling."""
-        from torch.optim.lr_scheduler import StepLR
 
         optimizer = Adam(simple_model.parameters(), lr=0.1)
         scheduler = StepLR(optimizer, step_size=2, gamma=0.1)

@@ -3,20 +3,19 @@ Test Hf Trainer Hello
 
 Test module for hf trainer hello.
 """
-
-# BEGIN: CODEX_SMOKE_TRAINER
+pytest.importorskip("transformers")
+datasets = pytest.importorskip("datasets")
 import tempfile
 from pathlib import Path
-
-import pytest
-
-pytest.importorskip("transformers")
-
-
-datasets = pytest.importorskip("datasets")
-
 from codex_ml.utils.hf_pinning import load_from_pretrained
 from transformers import (
+
+# BEGIN: CODEX_SMOKE_TRAINER
+
+
+
+
+
     AutoModelForCausalLM,
     AutoTokenizer,
     DataCollatorForLanguageModeling,

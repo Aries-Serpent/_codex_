@@ -54,6 +54,7 @@ class TestParallelParser:
 
     def test_thread_safe_node_ids(self, tmp_path):
         """Test thread-safe node ID generation."""
+import pytest
         for i in range(10):
             (tmp_path / f"file{i}.py").write_text("def func(): pass")
 

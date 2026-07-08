@@ -2,23 +2,31 @@
 Integration tests for admin automation agent.
 Tests the complete workflow of agent operations.
 """
-
 import os
-
-# Import agent components
 import sys
 from datetime import UTC, datetime
 from pathlib import Path
 from unittest.mock import Mock, patch
+    from agent import AdminAutomationAgent
+        from scripts.phase10.automated_secrets_manager import GitHubSecretsManager
+        from scripts.phase10.automated_secrets_manager import GitHubSecretsManager
+        from src.codex.security_utils import redact_sensitive_value
+        import logging
+        from src.codex.security_utils import redact_secret_name
+        from src.codex.security_utils import redact_dict_with_secret_keys
+            from scripts.phase10.automated_secrets_manager import GitHubSecretsManager
+        from unittest.mock import MagicMock
+        import socket
 
-import pytest
+
+# Import agent components
+
 
 sys.path.insert(
     0, str(Path(__file__).parent.parent / ".github" / "agents" / "admin-automation-agent" / "src")
 ) # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 
 try:
-    from agent import AdminAutomationAgent
 except ImportError:
     AdminAutomationAgent = None
 
@@ -119,7 +127,6 @@ class TestSecretsManagerIntegration:
     def secrets_manager(self, mock_requests):
         """Create a secrets manager instance."""
         # Import here to avoid issues if not available
-        from scripts.phase10.automated_secrets_manager import GitHubSecretsManager
 
         with patch.dict(os.environ, {"GITHUB_TOKEN": "test_token"}):
             return GitHubSecretsManager(owner="test-owner", repo="test-repo", token="test_token")
@@ -190,7 +197,6 @@ class TestWorkflowIntegration:
     def test_workflow_error_recovery(self):
         """Test that workflows can recover from errors."""
         # Test retry logic exists
-        from scripts.phase10.automated_secrets_manager import GitHubSecretsManager
 
         # Verify error handling in secrets manager
         with patch.dict(os.environ, {"GITHUB_TOKEN": "test"}):
@@ -203,7 +209,6 @@ class TestSecurityCompliance:
 
     def test_no_secrets_in_logs(self, tmp_path, caplog):
         """Test that secrets are never logged in clear text."""
-        from src.codex.security_utils import redact_sensitive_value
 
         # Simulate a raw secret value - NEVER log this directly.
         # The test verifies that redact_sensitive_value() fully masks it.
@@ -218,7 +223,6 @@ class TestSecurityCompliance:
 
         # Log only the already-redacted placeholder.
         # nosec: safe_value is a [REDACTED] string - raw token never reaches the logger.
-        import logging
 
         logger = logging.getLogger(__name__)
         logger.info(
@@ -230,7 +234,6 @@ class TestSecurityCompliance:
 
     def test_secret_name_redaction(self):
         """Test that sensitive secret names are redacted."""
-        from src.codex.security_utils import redact_secret_name
 
         sensitive_names = ["PROD_DATABASE_PASSWORD", "AWS_SECRET_ACCESS_KEY", "PRIVATE_KEY"]
 
@@ -240,7 +243,6 @@ class TestSecurityCompliance:
 
     def test_dict_key_redaction(self):
         """Test that dictionary keys containing secrets are redacted."""
-        from src.codex.security_utils import redact_dict_with_secret_keys
 
         secrets_dict = {"GITHUB_TOKEN": "value1", "API_KEY": "value2", "SECRET_KEY": "value3"}
 
@@ -331,14 +333,12 @@ class TestErrorScenarios:
     def test_missing_github_token(self):
         """Test behavior when GitHub token is missing."""
         with patch.dict(os.environ, {}, clear=True):
-            from scripts.phase10.automated_secrets_manager import GitHubSecretsManager
 
             manager = GitHubSecretsManager("owner", "repo", token=None)
             assert manager.token is None, "token is not valid"
 
     def test_api_rate_limit_handling(self):
         """Test handling of GitHub API rate limits."""
-        from unittest.mock import MagicMock
 
         mock_response = MagicMock()
         mock_response.status_code = 429
@@ -349,7 +349,6 @@ class TestErrorScenarios:
 
     def test_network_error_handling(self):
         """Test handling of network errors."""
-        import socket
 
         def failing_request():
             raise socket.timeout("Connection timed out")

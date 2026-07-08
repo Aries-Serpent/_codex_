@@ -1,16 +1,15 @@
 from __future__ import annotations
-
-from unittest.mock import MagicMock
-
-import pytest
-
 pytest.importorskip("fastapi")
+from unittest.mock import MagicMock
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.testclient import TestClient
 from starlette.middleware.base import BaseHTTPMiddleware
-
 from services.msp_gateway.middleware.rate_limit import (
+
+
+
+
     RateLimitMiddleware,
     TokenBucket,
     rate_limiter,

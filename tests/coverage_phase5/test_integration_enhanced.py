@@ -7,11 +7,10 @@ Target: ≥75% mutation score
 Modules: integrations, codex_bridge, restore_pipeline
 Pattern: 100% semantic assertions, 5+ per test, comprehensive edge cases
 """
-
 from enum import Enum
 from typing import Any, Dict
 
-import pytest
+
 
 
 class IntegrationStatus(Enum):

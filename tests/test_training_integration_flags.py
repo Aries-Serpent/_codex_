@@ -3,19 +3,21 @@ Test Training Integration Flags
 
 Test module for training integration flags.
 """
-
+np = pytest.importorskip("numpy")
+    torch = pytest.importorskip("torch")
 import contextlib
 import sys
 import types
 from collections.abc import Iterator
 from types import SimpleNamespace
+    import codex_ml.training.functional_training as ft
+    import codex_ml.training.__init__ as tr
+    import codex_ml.training.__init__ as tr
 
-import pytest
 
-np = pytest.importorskip("numpy")
+
 
 try:
-    torch = pytest.importorskip("torch")
 except (ImportError, AttributeError) as exc:  # pragma: no cover - runtime guard
     pytest.skip(f"PyTorch runtime not available: {exc}", allow_module_level=True)
 
@@ -76,7 +78,6 @@ def _dummy_batch(seq_len: int = 4) -> dict[str, torch.Tensor]:
 
 
 def test_train_uses_autocast_and_clip(monkeypatch, disable_torch_profiler):
-    import codex_ml.training.functional_training as ft
 
     counters = {"autocast": 0, "clip": 0, "mlflow": 0}
 
@@ -167,7 +168,6 @@ def test_train_uses_autocast_and_clip(monkeypatch, disable_torch_profiler):
 
 
 def test_evaluate_model_uses_autocast(monkeypatch):
-    import codex_ml.training.__init__ as tr
 
     counters = {"autocast": 0}
 
@@ -191,7 +191,6 @@ def test_evaluate_model_uses_autocast(monkeypatch):
 
 
 def test_run_functional_training_uses_mlflow(monkeypatch, tmp_path):
-    import codex_ml.training.__init__ as tr
 
     entered: list[str] = []
 

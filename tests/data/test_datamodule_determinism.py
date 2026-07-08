@@ -7,6 +7,7 @@ from codex_ml.data.datamodule import DataModule
 
 def test_datamodule_determinism():
     """Identical seeds produce identical batches; differing seeds do not."""
+import pytest
 
     dm1 = DataModule(train=list(range(10)), val=list(range(10)), test=list(range(10)), seed=7)
     dm2 = DataModule(train=list(range(10)), val=list(range(10)), test=list(range(10)), seed=7)

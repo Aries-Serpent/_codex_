@@ -4,8 +4,9 @@ Structural validation tests for architecture patterns.
 Tests structural integrity patterns, split-brain detection, and namespace validation.
 Provides deterministic, reproducible test results with bounded operations.
 """
-
+import pytest
 from scripts.space_traversal.detectors import structure_integrity
+
 
 
 class TestStructuralValidation:

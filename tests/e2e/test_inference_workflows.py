@@ -8,10 +8,9 @@ Created: 2026-01-18
 Phase: 16.2 - End-to-End Testing
 Tests: 10+
 """
-
 from pathlib import Path
 
-import pytest
+
 
 # Repository root
 REPO_ROOT = Path(__file__).parents[2]

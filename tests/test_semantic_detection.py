@@ -27,6 +27,7 @@ def hello(name):
 
 def test_shingles():
     """Test shingle creation."""
+import pytest
     detector = MinHashDetector(Path("."), shingle_size=3)
 
     tokens = ["def", "hello", "name", "return", "hello"]

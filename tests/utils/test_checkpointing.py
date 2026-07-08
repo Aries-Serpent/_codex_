@@ -3,16 +3,15 @@ Test Checkpointing
 
 Test module for checkpointing.
 """
-
 from __future__ import annotations
-
+    pytest.importorskip("torch")
 import importlib
 
-import pytest
+
+
 
 
 def test_set_seed(tmp_path):
-    pytest.importorskip("torch")
     mod = importlib.import_module("codex_ml.utils.checkpointing")
     seeds = mod.set_seed(42, tmp_path)
     assert seeds["python"] == 42, "Condition must be true"
@@ -20,7 +19,6 @@ def test_set_seed(tmp_path):
 
 
 def test_load_checkpoint_corrupt(tmp_path):
-    pytest.importorskip("torch")
     mod = importlib.import_module("codex_ml.utils.checkpointing")
     bad = tmp_path / "bad.pt"
     bad.write_bytes(b"garbage")

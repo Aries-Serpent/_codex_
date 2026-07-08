@@ -6,13 +6,12 @@ D3 Orchestration exit criteria #3: Agent recovery integration tests.
 Validates that the agent orchestration system can detect, report, and recover
 from agent failures — the core resilience requirement for D3 level 5.
 """
-
 from __future__ import annotations
-
 import json
 from pathlib import Path
 
-import pytest
+
+
 
 # ---------------------------------------------------------------------------
 # Fixtures

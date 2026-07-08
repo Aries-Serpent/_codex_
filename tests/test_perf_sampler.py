@@ -3,8 +3,9 @@ Test Perf Sampler
 
 Test module for perf sampler.
 """
-
+import pytest
 from tools.perf.sampler import PerfSampler
+
 
 
 def test_sampler_runs(tmp_path, monkeypatch):

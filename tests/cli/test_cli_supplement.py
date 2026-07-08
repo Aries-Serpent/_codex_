@@ -8,13 +8,38 @@ Tests cover:
 - Configuration variations
 - Performance considerations
 """
-
 import json
 import os
 import tempfile
-
-import pytest
 from click.testing import CliRunner
+        import click
+        import click
+        import click
+        import click
+        import click
+        import click
+        import click
+        import click
+        import click
+        import click
+        import click
+        import click
+        import click
+        import click
+        import click
+        import click
+        import click
+            import click
+        import click
+        import click
+        import click
+        import click
+        import click
+        import click
+        import time
+        import click
+
+
 
 # ============================================================================
 # Advanced Argument Tests
@@ -30,7 +55,6 @@ class TestAdvancedArguments:
         return CliRunner()
 
     def test_variable_number_of_arguments(self, runner):
-        import click
 
         @click.command()
         @click.argument("files", nargs=-1)
@@ -42,7 +66,6 @@ class TestAdvancedArguments:
         assert "Processing 3 files" in result.output, "Result must not be empty"
 
     def test_no_arguments_for_variadic(self, runner):
-        import click
 
         @click.command()
         @click.argument("files", nargs=-1, required=False)
@@ -54,7 +77,6 @@ class TestAdvancedArguments:
         assert "Processing 0 files" in result.output, "Result must not be empty"
 
     def test_argument_with_callback(self, runner):
-        import click
 
         def validate_number(ctx, param, value):
             if value < 0:
@@ -73,7 +95,6 @@ class TestAdvancedArguments:
         assert result.exit_code != 0, "Result must not be empty"
 
     def test_argument_nargs_range(self, runner):
-        import click
 
         @click.command()
         @click.argument("numbers", type=int, nargs=3)
@@ -99,7 +120,6 @@ class TestComplexWorkflows:
         return CliRunner()
 
     def test_chained_operations(self, runner):
-        import click
 
         @click.group()
         def cli():
@@ -125,7 +145,6 @@ class TestComplexWorkflows:
         assert "Data loaded" in result.output, "Result must not be empty"
 
     def test_nested_groups(self, runner):
-        import click
 
         @click.group()
         def cli():
@@ -148,7 +167,6 @@ class TestComplexWorkflows:
         assert "Users:" in result.output, "Result must not be empty"
 
     def test_command_with_context(self, runner):
-        import click
 
         @click.command()
         @click.pass_context
@@ -192,7 +210,6 @@ class TestConfigurationVariations:
             os.remove(temp_path)
 
     def test_config_environment_variable(self, runner):
-        import click
 
         pass  # removed redundant `import os` (top-level import used)
 
@@ -208,7 +225,6 @@ class TestConfigurationVariations:
         assert "Using /path/to/config" in result.output, "Result must not be empty"
 
     def test_config_from_file(self, runner, temp_config):
-        import click
 
         @click.command()
         @click.argument("config", type=click.File("r"))
@@ -221,7 +237,6 @@ class TestConfigurationVariations:
         assert "Debug: True" in result.output, "Result must not be empty"
 
     def test_config_with_defaults(self, runner):
-        import click
 
         @click.command()
         @click.option("--timeout", type=int, default=30)
@@ -233,7 +248,6 @@ class TestConfigurationVariations:
         assert "Timeout: 30, Retries: 3" in result.output
 
     def test_config_override(self, runner):
-        import click
 
         @click.command()
         @click.option("--timeout", type=int, default=30)
@@ -258,7 +272,6 @@ class TestStateManagement:
         return CliRunner()
 
     def test_state_persistence_across_subcommands(self, runner):
-        import click
 
         @click.group(invoke_without_command=True)
         @click.pass_context
@@ -278,7 +291,6 @@ class TestStateManagement:
         assert "Initialized" in result.output, "Result must not be empty"
 
     def test_stateful_option(self, runner):
-        import click
 
         @click.command()
         @click.option("--verbose", is_flag=True, is_eager=True)
@@ -310,7 +322,6 @@ class TestErrorRecovery:
         return CliRunner()
 
     def test_command_retry_logic(self, runner):
-        import click
 
         attempt = 0
 
@@ -327,7 +338,6 @@ class TestErrorRecovery:
         # Result depends on retry implementation
 
     def test_error_with_suggestion(self, runner):
-        import click
 
         @click.command()
         @click.argument("command")
@@ -344,7 +354,6 @@ class TestErrorRecovery:
         assert "Valid commands" in result.output, "Result must not be empty"
 
     def test_graceful_degradation(self, runner):
-        import click
 
         @click.command()
         @click.option("--feature", is_flag=True)
@@ -376,7 +385,6 @@ class TestIOVariations:
         return CliRunner()
 
     def test_stdin_processing(self, runner):
-        import click
 
         @click.command()
         def cmd():
@@ -397,7 +405,6 @@ class TestIOVariations:
             f2_path = f2.name
 
         try:
-            import click
 
             @click.command()
             @click.argument("files", type=click.File("r"), nargs=-1)
@@ -413,7 +420,6 @@ class TestIOVariations:
             os.remove(f2_path)
 
     def test_output_to_file(self, runner):
-        import click
 
         with tempfile.TemporaryDirectory() as tmpdir:
             output_file = os.path.join(tmpdir, "output.txt")
@@ -445,7 +451,6 @@ class TestCommandDiscovery:
         return CliRunner()
 
     def test_command_help(self, runner):
-        import click
 
         @click.command()
         @click.option("--name", help="Your name")
@@ -460,7 +465,6 @@ class TestCommandDiscovery:
         assert "A simple command" in result.output, "Result must not be empty"
 
     def test_group_commands_listing(self, runner):
-        import click
 
         @click.group()
         def cli():
@@ -482,7 +486,6 @@ class TestCommandDiscovery:
         assert "cmd2" in result.output, "Result must not be empty"
 
     def test_command_aliases(self, runner):
-        import click
 
         @click.group()
         def cli():
@@ -511,7 +514,6 @@ class TestPerformanceAndLimits:
         return CliRunner()
 
     def test_command_with_many_options(self, runner):
-        import click
 
         # Dynamically create command with many options using functools.wraps
         def create_command_with_options():
@@ -532,7 +534,6 @@ class TestPerformanceAndLimits:
         assert result.exit_code == 0, "Result must not be empty"
 
     def test_command_with_large_input(self, runner):
-        import click
 
         @click.command()
         def cmd():
@@ -543,9 +544,7 @@ class TestPerformanceAndLimits:
         assert "10000" in result.output, "Result must not be empty"
 
     def test_command_execution_time(self, runner):
-        import time
 
-        import click
 
         @click.command()
         def cmd():

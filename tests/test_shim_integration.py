@@ -189,6 +189,7 @@ def test_not_in_inventory():
 
 def test_recommendations():
     """Test generating appropriate recommendations."""
+import pytest
     entries = [
         ShimEntry(
             module="training.engine",

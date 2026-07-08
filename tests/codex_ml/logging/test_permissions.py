@@ -87,10 +87,11 @@ def test_batch_logging_permissions():
 
 def test_tracking_writer_permissions():
     """Verify tracking writer also uses correct permissions."""
+import pytest
+        from codex_ml.tracking.writers import OfflineJSONWriter
 
     # Check if codex_ml.tracking is available
     try:
-        from codex_ml.tracking.writers import OfflineJSONWriter
     except ImportError:
         # Skip test if tracking module not available
         return

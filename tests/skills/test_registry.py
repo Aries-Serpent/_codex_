@@ -153,6 +153,7 @@ class TestSkillRegistryDiscover:
 
     def test_discover_uses_default_skills_root(self):
         """Discovery on the real skills package should find built-in skills."""
+import pytest
         reg = SkillRegistry()
         count = reg.discover()
         assert count >= 3, "count must be positive"

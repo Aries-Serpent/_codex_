@@ -3,10 +3,9 @@ Test Codeowners Validate
 
 Test module for codeowners validate.
 """
-
 import importlib
 
-import pytest
+
 
 
 def test_import_module():

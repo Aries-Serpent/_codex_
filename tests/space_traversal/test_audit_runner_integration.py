@@ -179,6 +179,10 @@ def test_audit_runner_coverage_integration(tmp_path: Path):
 
 def test_audit_runner_trends_integration(tmp_path: Path):
     """Test audit runner with trends enabled."""
+import pytest
+    import importlib.util
+    import time
+    import importlib.util
     import importlib.util
 
     audit_runner_path = (
@@ -194,7 +198,6 @@ def test_audit_runner_trends_integration(tmp_path: Path):
     reports_dir.mkdir()
 
     # Create historical data
-    import time
 
     historical = {"timestamp": time.time() - 86400, "capabilities": [{"id": "cap1", "score": 0.7}]}
     (artifacts_dir / "capabilities_scored_old.json").write_text(json.dumps(historical))
@@ -235,7 +238,6 @@ def test_audit_runner_trends_integration(tmp_path: Path):
 
 def test_duplication_ratio_fallback():
     """Test that duplication_ratio falls back to simple mode on error."""
-    import importlib.util
 
     audit_runner_path = (
         Path(__file__).resolve().parents[2] / "scripts" / "space_traversal" / "audit_runner.py"
@@ -257,7 +259,6 @@ def test_duplication_ratio_fallback():
 
 def test_duplication_ratio_without_cache():
     """Test duplication_ratio without file_cache (backward compat)."""
-    import importlib.util
 
     audit_runner_path = (
         Path(__file__).resolve().parents[2] / "scripts" / "space_traversal" / "audit_runner.py"

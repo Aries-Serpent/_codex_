@@ -4,14 +4,13 @@ Test Eval Fallback Module
 Tests for the fallback evaluation metrics module.
 Tests synthetic data metrics, token encoding, and perplexity proxy.
 """
-
 from __future__ import annotations
-
 import math
-
-import pytest
-
 from codex_ml.eval.fallback import (
+
+
+
+
     IGNORE_INDEX,
     SyntheticSummary,
     _encode_tokens,

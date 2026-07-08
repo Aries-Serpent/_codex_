@@ -3,15 +3,14 @@ Test Checkpoint Sha Rng
 
 Test module for checkpoint sha rng.
 """
-
 from __future__ import annotations
-
 import json
 from pathlib import Path
-
-import pytest
-
 from codex_ml.utils.checkpoint import load_checkpoint, save_checkpoint
+
+
+
+
 
 
 class _Dummy:

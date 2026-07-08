@@ -3,11 +3,12 @@ Test Cli Structured Logging
 
 Test module for cli structured logging.
 """
-
 from __future__ import annotations
-
+import pytest
 import subprocess
 import sys
+
+
 
 
 def test_eval_override_failure_sets_nonzero_exit() -> None:

@@ -3,10 +3,11 @@ Test Detector Inference Serving
 
 Test module for detector inference serving.
 """
-
 from __future__ import annotations
-
+import pytest
 from scripts.space_traversal.detectors.inference_serving import detect
+
+
 
 
 def test_inference_serving_detector_basic_path_signals():

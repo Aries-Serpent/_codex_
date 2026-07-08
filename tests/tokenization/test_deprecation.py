@@ -3,20 +3,19 @@ Test Deprecation
 
 Test module for deprecation.
 """
-
 from __future__ import annotations
-
 import warnings
+from src.tokenization.api import legacy_tokenizer
+    from src.tokenization.api import HFTokenizerAdapter as _HF  # type: ignore
 
-import pytest
+
+
 
 # Always import the shim; it exists in this repo
-from src.tokenization.api import legacy_tokenizer
 
 # The direct adapter may not exist in minimal environments; skip if missing.
 HFTokenizerAdapter = None
 try:
-    from src.tokenization.api import HFTokenizerAdapter as _HF  # type: ignore
 
     HFTokenizerAdapter = _HF
 except ImportError:

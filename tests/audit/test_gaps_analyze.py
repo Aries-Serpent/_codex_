@@ -3,13 +3,12 @@ Test Gaps Analyze
 
 Test module for gaps analyze.
 """
-
 import json
 import subprocess
 import sys
 from pathlib import Path
 
-import pytest
+
 
 TOOL = Path("tools/gaps_analyze.py")
 

@@ -3,15 +3,14 @@ Test Eval Runner Max Samples
 
 Test module for eval runner max samples.
 """
-
+pytest.importorskip("datasets")
 import json
 from pathlib import Path
-
-import pytest
-
-pytest.importorskip("datasets")
-
 from codex_ml.eval.eval_runner import evaluate_datasets
+
+
+
+
 
 
 def test_evaluate_datasets_max_samples(tmp_path: Path):

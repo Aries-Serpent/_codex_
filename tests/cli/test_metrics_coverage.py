@@ -8,15 +8,15 @@ Phase: 14.1 - Core Module Testing
 Created: 2026-01-18
 AI Agency Policy Compliance: ✅
 """
-
 from __future__ import annotations
-
 import subprocess
 import sys
 from pathlib import Path
 from typing import TYPE_CHECKING
+            from codex_ml.cli import metrics_cli
 
-import pytest
+
+
 
 if TYPE_CHECKING:
     pass
@@ -53,7 +53,6 @@ class TestModuleImport:
     def test_metrics_cli_module_importable(self) -> None:
         """Verify metrics_cli module can be imported."""
         try:
-            from codex_ml.cli import metrics_cli
 
             assert metrics_cli is not None, "metrics_cli must be initialized"
         except ImportError as e:

@@ -4,8 +4,25 @@ Targeted tests to cross 30% threshold - Phase 1 completion.
 Focus: Uncovered methods in physics_orchestrator and high-value quick wins.
 Strategy: Test methods that add coverage efficiently.
 """
+        from agents.physics_orchestrator import (
+        from agents.physics_orchestrator import (
+        from agents.physics_orchestrator import (
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
+        from agents.physics_orchestrator import (
+        from agents.quantum_game_theory import ClassicalGameEngine
+        from agents.quantum_game_theory import QuantumInspiredGameEngine
+            from agents.codex_client.codex_client import bridge
+            from agents.codex_client.codex_client import config
+            from agents.codex_client.codex_client import models
+        from agents.advanced_physics_calculators import FluidFlowScheduler
+        from agents.advanced_physics_calculators import ChaoticAttractor
+        from agents.advanced_physics_calculators import FractalAnalyzer
+        from agents.mental_mapping import MentalMappingModel, MentalNode, NodeType
+        from agents.mental_mapping import EdgeType, MentalEdge, MentalMappingModel
+        from agents.workflow_navigator import WorkflowNavigator
+        from agents.workflow_navigator import WorkflowNavigator
+        from agents.workflow_navigator import (
 
-import pytest
 
 
 class TestPhysicsOrchestratorUncoveredMethods:
@@ -13,7 +30,6 @@ class TestPhysicsOrchestratorUncoveredMethods:
 
     def test_assess_situation(self):
         """Test assess_situation method."""
-        from agents.physics_orchestrator import (
             DecisionState,
             PhysicsInspiredOrchestrator,
         )
@@ -28,7 +44,6 @@ class TestPhysicsOrchestratorUncoveredMethods:
 
     def test_act_with_none_path(self):
         """Test act method when no optimal path provided."""
-        from agents.physics_orchestrator import (
             DecisionState,
             PhysicsInspiredOrchestrator,
         )
@@ -43,7 +58,6 @@ class TestPhysicsOrchestratorUncoveredMethods:
 
     def test_act_with_valid_path(self):
         """Test act method with a valid action path."""
-        from agents.physics_orchestrator import (
             ActionPath,
             ActionType,
             DecisionState,
@@ -63,7 +77,6 @@ class TestPhysicsOrchestratorUncoveredMethods:
 
     def test_load_config_default(self):
         """Test load_config with default values."""
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orchestrator = PhysicsInspiredOrchestrator()
         config = orchestrator.load_config()
@@ -73,7 +86,6 @@ class TestPhysicsOrchestratorUncoveredMethods:
 
     def test_optimize_paths(self):
         """Test optimize method with multiple paths."""
-        from agents.physics_orchestrator import (
             ActionPath,
             ActionType,
             PhysicsInspiredOrchestrator,
@@ -112,7 +124,6 @@ class TestQuantumGameTheoryEngines:
 
     def test_classical_game_engine_initialization(self):
         """Test ClassicalGameEngine can be created."""
-        from agents.quantum_game_theory import ClassicalGameEngine
 
         try:
             engine = ClassicalGameEngine(
@@ -128,7 +139,6 @@ class TestQuantumGameTheoryEngines:
 
     def test_quantum_inspired_engine_initialization(self):
         """Test QuantumInspiredGameEngine initialization."""
-        from agents.quantum_game_theory import QuantumInspiredGameEngine
 
         try:
             engine = QuantumInspiredGameEngine(
@@ -147,7 +157,6 @@ class TestCodexClientExpanded:
     def test_bridge_has_expected_functions(self):
         """Test bridge module has expected functions."""
         try:
-            from agents.codex_client.codex_client import bridge
 
             # Should have some callable functions or classes
             assert hasattr(bridge, "__name__")
@@ -157,7 +166,6 @@ class TestCodexClientExpanded:
     def test_config_module_structure(self):
         """Test config module structure."""
         try:
-            from agents.codex_client.codex_client import config
 
             # Should be a valid module
             assert hasattr(config, "__name__")
@@ -167,7 +175,6 @@ class TestCodexClientExpanded:
     def test_models_module_structure(self):
         """Test models module structure."""
         try:
-            from agents.codex_client.codex_client import models
 
             # Should be a valid module
             assert hasattr(models, "__name__")
@@ -180,7 +187,6 @@ class TestAdvancedPhysicsAdvancedPatterns:
 
     def test_fluid_flow_scheduler_schedule_task(self):
         """Test FluidFlowScheduler can schedule tasks."""
-        from agents.advanced_physics_calculators import FluidFlowScheduler
 
         scheduler = FluidFlowScheduler()
 
@@ -190,7 +196,6 @@ class TestAdvancedPhysicsAdvancedPatterns:
 
     def test_chaotic_attractor_iterate(self):
         """Test ChaoticAttractor iteration."""
-        from agents.advanced_physics_calculators import ChaoticAttractor
 
         attractor = ChaoticAttractor(attractor_type="logistic")
 
@@ -202,7 +207,6 @@ class TestAdvancedPhysicsAdvancedPatterns:
 
     def test_fractal_analyzer_measure_complexity(self):
         """Test FractalAnalyzer complexity measurement."""
-        from agents.advanced_physics_calculators import FractalAnalyzer
 
         analyzer = FractalAnalyzer()
 
@@ -226,7 +230,6 @@ class TestMentalMappingGraphOperations:
 
     def test_model_get_node(self):
         """Test getting a node from the model."""
-        from agents.mental_mapping import MentalMappingModel, MentalNode, NodeType
 
         model = MentalMappingModel()
 
@@ -250,7 +253,6 @@ class TestMentalMappingGraphOperations:
 
     def test_model_add_edge(self):
         """Test adding an edge to the model."""
-        from agents.mental_mapping import EdgeType, MentalEdge, MentalMappingModel
 
         model = MentalMappingModel()
 
@@ -276,7 +278,6 @@ class TestWorkflowNavigatorDynamicWorkflows:
 
     def test_create_dynamic_workflow_audit(self):
         """Test creating dynamic audit workflow."""
-        from agents.workflow_navigator import WorkflowNavigator
 
         nav = WorkflowNavigator()
 
@@ -288,7 +289,6 @@ class TestWorkflowNavigatorDynamicWorkflows:
 
     def test_create_dynamic_workflow_test(self):
         """Test creating dynamic test workflow."""
-        from agents.workflow_navigator import WorkflowNavigator
 
         nav = WorkflowNavigator()
 
@@ -299,7 +299,6 @@ class TestWorkflowNavigatorDynamicWorkflows:
 
     def test_unregister_workflow(self):
         """Test unregistering a workflow."""
-        from agents.workflow_navigator import (
             Workflow,
             WorkflowFrequency,
             WorkflowNavigator,

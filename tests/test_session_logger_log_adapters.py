@@ -3,12 +3,13 @@ Test Session Logger Log Adapters
 
 Test module for session logger log adapters.
 """
-
+import pytest
 import importlib
 import json
 import sqlite3
 import sys
 from pathlib import Path
+
 
 
 def test_session_logger_falls_back_to_log_adapters(monkeypatch, tmp_path):

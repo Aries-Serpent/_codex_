@@ -3,8 +3,10 @@
 Tests for API contracts, performance characteristics,
 and response time requirements.
 """
-
+import pytest
 import time
+        import threading
+
 
 
 class TestAPIPerformance:
@@ -39,7 +41,6 @@ class TestAPIPerformance:
 
     def test_concurrent_request_handling(self):
         """Test concurrent request handling"""
-        import threading
 
         results = []
 

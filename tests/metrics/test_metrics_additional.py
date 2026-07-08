@@ -123,8 +123,9 @@ def test_generation_scores():
 
 def test_evaluator_batch_metrics_text_and_loss():
     """batch_metrics derives text metrics and perplexity when available."""
-
+import pytest
     from codex_ml.metrics import evaluator
+
 
     outputs = SimpleNamespace(loss=0.0, predictions=["a", "b"])
     batch = {"references": ["a", "c"]}

@@ -3,10 +3,11 @@ Test Report Merge
 
 Test module for report merge.
 """
-
+import pytest
 import json
 import subprocess
 import sys
+
 
 
 def test_report_merge(tmp_path):

@@ -1,22 +1,21 @@
 """Regression tests for Codex orchestration helpers."""
-
 from __future__ import annotations
-
 import importlib
 import sys
 import types
 from pathlib import Path
-
-import pytest
-
 import cli.task_sequence as task_sequence
 import configs.base_config as base_config
+    import torch
+    from torch.utils.data import DataLoader
+
+
+
+
 
 ROOT = Path(__file__).resolve().parents[1]
 
 try:  # Optional dependency for evaluation helper tests
-    import torch
-    from torch.utils.data import DataLoader
 except ImportError:  # pragma: no cover - torch may be unavailable
     torch = None  # type: ignore
     DataLoader = None  # type: ignore

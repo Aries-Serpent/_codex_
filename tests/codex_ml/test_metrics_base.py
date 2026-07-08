@@ -4,12 +4,14 @@ Test Metrics Base (metrics_base.py)
 Comprehensive unit tests for the binary classification metrics in metrics_base.py.
 Tests accuracy, perplexity, precision, recall, and f1_score.
 """
-
 from __future__ import annotations
-
+import pytest
 import math
-
 from codex_ml.metrics_base import accuracy, f1_score, perplexity, precision, recall
+        from codex_ml import metrics_base
+
+
+
 
 
 class TestAccuracy:
@@ -187,7 +189,6 @@ class TestEdgeCases:
         assert accuracy(preds, labels) == 1.0
 
     def test_all_module_exports(self) -> None:
-        from codex_ml import metrics_base
 
         expected_exports = ["accuracy", "perplexity", "precision", "recall", "f1_score"]
         for name in expected_exports:

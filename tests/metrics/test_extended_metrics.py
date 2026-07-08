@@ -3,8 +3,9 @@ Test Extended Metrics
 
 Test module for extended metrics.
 """
-
+import pytest
 from codex_ml.metrics.evaluator import batch_metrics
+
 
 
 def test_batch_metrics_text_metrics():

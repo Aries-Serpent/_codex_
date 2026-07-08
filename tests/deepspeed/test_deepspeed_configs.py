@@ -494,6 +494,7 @@ class TestConfigValidation:
 
     def test_validate_memory_config(self):
         """Test memory-related configuration validation"""
+import pytest
         config = {
             "zero_optimization": {
                 "stage": 3,

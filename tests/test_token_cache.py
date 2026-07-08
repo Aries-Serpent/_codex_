@@ -3,15 +3,14 @@ Test Token Cache
 
 Test module for token cache.
 """
-
 from __future__ import annotations
-
 from typing import Any
-
-import pytest
-
 from codex_ml.registry.token_cache import GLOBAL_TOKEN_LRU, TokenLRU
 from codex_ml.registry.tokenizers import encode_cached
+
+
+
+
 
 
 class _SpyTokenizer:

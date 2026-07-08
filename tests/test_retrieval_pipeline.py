@@ -2,20 +2,20 @@
 Test Retrieval Pipeline
 Tests for embedding, FAISS store, and search functionality
 """
-
+pytest.importorskip("sentence_transformers")
+pytest.importorskip("faiss")
 import json
 import tempfile
 from pathlib import Path
+from codex.retrieval import (
+    import shutil
 
-import pytest
+
 
 # Skip if dependencies not available
-pytest.importorskip("sentence_transformers")
-pytest.importorskip("faiss")
 
 pytestmark = pytest.mark.requires_faiss
 
-from codex.retrieval import (
     FAISSStore,
     RetrievalEngine,
     build_embeddings,
@@ -62,7 +62,6 @@ def temp_index_dir():
     yield temp_dir
 
     # Cleanup
-    import shutil
 
     shutil.rmtree(temp_dir, ignore_errors=True)
 

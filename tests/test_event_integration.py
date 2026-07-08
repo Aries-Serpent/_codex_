@@ -59,11 +59,12 @@ def test_emitter_uses_publisher_and_emits_events():
 
 def test_emitter_falls_back_to_event_bus(monkeypatch):
     """When no cloud env vars are set, the local publisher is used."""
+import pytest
+    from codex_ml.training.event_integration import TrainingEventEmitter
 
     monkeypatch.delenv("AZURE_EVENT_GRID_ENDPOINT", raising=False)
     monkeypatch.delenv("AWS_EVENT_BUS_NAME", raising=False)
 
-    from codex_ml.training.event_integration import TrainingEventEmitter
 
     emitter = TrainingEventEmitter()
     assert emitter.emit_training_started("demo", {}) is True

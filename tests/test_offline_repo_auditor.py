@@ -3,15 +3,16 @@ Test Offline Repo Auditor
 
 Test module for offline repo auditor.
 """
+import pytest
+from tools.offline_repo_auditor import IntuitiveAptitude
+import os
+import torch
 
 # [Test]: Offline Auditor Sanity
 # > Generated: 2025-08-26 20:36:12 | Author: mbaetiong
 
-from tools.offline_repo_auditor import IntuitiveAptitude
 
 SAMPLE_PY = '''
-import os
-import torch
 # TODO: implement training loop
 
 class Model:

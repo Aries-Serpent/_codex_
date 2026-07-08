@@ -2,14 +2,13 @@
 """
 Unit tests for Security Cache Manager
 """
-
 import json
 from datetime import datetime, timezone
-
-import pytest
-
 from scripts.ci.security_cache_manager import SecurityCacheManager
 from scripts.ci.security_findings_trend_analyzer import SecurityFindingsTrendAnalyzer
+
+
+
 
 
 @pytest.fixture

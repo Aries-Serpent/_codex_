@@ -4,13 +4,16 @@ Determinism tests: cross-process/dual-run checks with seeding.
 Tests verify that running evaluation twice with same seed and deterministic=True
 produces identical results.
 """
-
+pytest.importorskip("torch", reason="PyTorch required for tests")
 import os
+        import torch
+        from codex_ml.evaluation.loop import evaluate_epoch
+        import torch
+        from codex_ml.evaluation.loop import evaluate_epoch
 
-import pytest
+
 
 # Skip entire module if torch is not available or unloadable
-pytest.importorskip("torch", reason="PyTorch required for tests")
 pytestmark = pytest.mark.skipif(
     os.environ.get("RUN_REPRO_TESTS", "0") != "1",
     reason="Set RUN_REPRO_TESTS=1 to enable determinism tests",
@@ -22,8 +25,6 @@ def test_determinism_dual_run():
     Test that two evaluation runs with same seed and deterministic=True produce identical results.
     """
     try:
-        import torch
-        from codex_ml.evaluation.loop import evaluate_epoch
     except ImportError:
         pytest.skip("torch not available")
     else:
@@ -77,8 +78,6 @@ def test_determinism_with_metrics():
     Test determinism with metrics included.
     """
     try:
-        import torch
-        from codex_ml.evaluation.loop import evaluate_epoch
     except ImportError:
         pytest.skip("torch not available")
     else:

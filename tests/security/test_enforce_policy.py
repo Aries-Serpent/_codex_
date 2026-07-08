@@ -3,13 +3,12 @@ Test Enforce Policy
 
 Test module for enforce policy.
 """
-
 import json
 import subprocess
 import sys
 from pathlib import Path
 
-import pytest
+
 
 # Use absolute path to the tool so it works even when cwd changes
 TOOL = Path(__file__).parent.parent.parent / "scripts" / "security" / "enforce_policy.py"

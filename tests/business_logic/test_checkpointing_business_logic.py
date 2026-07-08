@@ -9,12 +9,16 @@ Tests cover:
 - Corruption detection
 - Recovery mechanisms
 """
-
-# pragma: allowlist secret # pragma: allowlist secret
 import json
 from datetime import UTC, datetime
+            from datetime import timedelta
+        import hashlib
+        import hashlib
+        import time
+        import time
 
-import pytest
+# pragma: allowlist secret # pragma: allowlist secret
+
 
 
 class TestCheckpointCreation:
@@ -110,7 +114,6 @@ class TestCheckpointRetention:
         base_time = datetime.now(UTC)
 
         for i in range(5):
-            from datetime import timedelta
 
             cp_time = base_time - timedelta(days=i)
             checkpoints.append({"epoch": i, "timestamp": cp_time.isoformat()})
@@ -391,7 +394,6 @@ class TestMetadataManagement:
 
     def test_metadata_hash(self):
         """Test metadata includes content hash."""
-        import hashlib
 
         content = b"checkpoint_content"
         content_hash = hashlib.sha256(content).hexdigest()
@@ -436,7 +438,6 @@ class TestCorruptionDetection:
 
     def test_checksum_verification(self):
         """Test checksum verification."""
-        import hashlib
 
         content = b"checkpoint_data"
         expected_hash = hashlib.md5(content).hexdigest()
@@ -498,7 +499,6 @@ class TestCheckpointMetrics:
 
     def test_track_save_duration(self):
         """Test tracking checkpoint save time."""
-        import time
 
         start = time.time()
         # Simulate save
@@ -510,7 +510,6 @@ class TestCheckpointMetrics:
 
     def test_track_load_duration(self):
         """Test tracking checkpoint load time."""
-        import time
 
         start = time.time()
         # Simulate load

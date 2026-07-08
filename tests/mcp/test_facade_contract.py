@@ -3,15 +3,18 @@ Test Facade Contract
 
 Test module for facade contract.
 """
-
-import importlib
-
-import pytest
-
 fastapi = pytest.importorskip("fastapi")
 pytest.importorskip("fastapi.testclient")
-
+import importlib
 from fastapi.testclient import TestClient
+        from src.mcp.middleware.rate_limit_middleware import clear_buckets
+        from mcp.server import jsonrpc_adapter
+        import mcp.server.adapter_loader as adapter_loader
+        from mcp.server import jsonrpc_adapter
+
+
+
+
 
 
 @pytest.fixture(autouse=True)
@@ -51,14 +54,12 @@ def fake_adapter_loader(monkeypatch):
 
     fake = FakeAdapter()
     try:
-        from src.mcp.middleware.rate_limit_middleware import clear_buckets
 
         clear_buckets()
     except ImportError:
         _ = None  # suppressed: no action needed
     monkeypatch.setattr("mcp.server.adapter_loader.load_adapter", lambda: (fake, "fake.adapter"))
     try:
-        from mcp.server import jsonrpc_adapter
 
         monkeypatch.setattr(jsonrpc_adapter, "_ADAPTER_LOADER", lambda: (fake, "fake.adapter"))
         jsonrpc_adapter.clear_adapter_cache()
@@ -71,8 +72,6 @@ def _load_app():
     module = importlib.import_module("src.mcp.server.facade_fastapi")
     app = importlib.reload(module).APP
     try:
-        import mcp.server.adapter_loader as adapter_loader
-        from mcp.server import jsonrpc_adapter
 
         jsonrpc_adapter.clear_adapter_cache()
         jsonrpc_adapter._ADAPTER_LOADER = adapter_loader.load_adapter

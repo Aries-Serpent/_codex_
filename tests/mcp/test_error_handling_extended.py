@@ -4,10 +4,9 @@ Extended tests for MCP error handling capability.
 Covers error hierarchy, error responses, validation, rate limiting errors,
 and unauthorized access patterns.
 """
-
-import pytest
-
 from mcp.errors import (
+
+
     MCPError,
     RateLimitExceeded,
     ToolNotFound,

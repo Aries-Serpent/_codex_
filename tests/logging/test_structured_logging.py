@@ -3,18 +3,17 @@ Test Structured Logging
 
 Test module for structured logging.
 """
+from __future__ import annotations
+import json
+from datetime import datetime, timezone
+from pathlib import Path
 
 #!/usr/bin/env python
 # Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
 # Purpose: Validate structured (NDJSON) logging write/read locally.
 
-from __future__ import annotations
 
-import json
-from datetime import datetime, timezone
-from pathlib import Path
 
-import pytest
 
 
 @pytest.mark.smoke

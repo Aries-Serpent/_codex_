@@ -17,11 +17,12 @@ from smoke tests per the Phase 9.2 guardrail on __main__ demo blocks.
 
 #AFTERMATH_METRIC - Phase 9.2 CLI smoke tests for agents entrypoints
 """
-
 from __future__ import annotations
-
+import pytest
 import subprocess
 import sys
+
+
 
 
 def _run_module(module: str, *args: str, timeout: int = 30) -> subprocess.CompletedProcess:

@@ -388,6 +388,7 @@ class TestCLIDocumentationCompleteness:
 
     def test_help_includes_examples(self, cli_runner):
         """Commands should ideally include usage examples in help."""
+import pytest
         result = cli_runner.invoke(duplication_group, ["check", "--help"])
         assert result.exit_code == 0, "Result must not be empty"
         # Check for common indicator of examples

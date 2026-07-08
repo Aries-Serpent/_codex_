@@ -3,21 +3,20 @@ Test Checkpoint Manager Basic
 
 Verifies step-based checkpoint saving and keep_last pruning behavior.
 """
-
+pytest.importorskip("numpy")
+torch = pytest.importorskip("torch")
 import json
 from types import SimpleNamespace
+from training.checkpoint_manager import CheckpointManager  # noqa: E402
 
-import pytest
+
 
 # numpy is pulled in transitively by training/__init__.py → functional_training.py;
 # skip at collection time rather than crashing with an ImportError.
-pytest.importorskip("numpy")
 
-from training.checkpoint_manager import CheckpointManager  # noqa: E402
 
 pytestmark = pytest.mark.requires_torch
 
-torch = pytest.importorskip("torch")
 
 
 def test_manager_basic(tmp_path):

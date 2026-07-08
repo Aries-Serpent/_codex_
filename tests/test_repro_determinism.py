@@ -3,16 +3,15 @@ Test Repro Determinism
 
 Test module for repro determinism.
 """
-
-import pytest
-
 pytest.importorskip("numpy")
 pytest.importorskip("torch")
-
 import numpy as np
-
 import torch
 from codex_ml.utils.repro import set_reproducible
+
+
+
+
 
 
 def model():

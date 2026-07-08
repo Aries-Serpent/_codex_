@@ -1,23 +1,25 @@
-pytest.importorskip("mlflow")
 """
 Test Eval Cli
 
 Test module for eval cli.
 """
-
+pytest.importorskip("mlflow")
+pytest.importorskip("typer")
+torch = pytest.importorskip("torch", reason="PyTorch required for evaluation CLI tests")
 import json
 from pathlib import Path
+from typer.testing import CliRunner
+from codex_ml.evaluation import cli as eval_cli
+    import codex_ml.logging.registry as reg_mod
+    import codex_ml.logging.registry as reg_mod
+    import codex_ml.logging.registry as reg_mod
 
-import pytest
 
-pytest.importorskip("typer")
+
 
 
 # Skip entire module if torch is not available or unloadable
-torch = pytest.importorskip("torch", reason="PyTorch required for evaluation CLI tests")
-from typer.testing import CliRunner
 
-from codex_ml.evaluation import cli as eval_cli
 
 
 class DummyModel(torch.nn.Module):
@@ -86,7 +88,6 @@ def test_run_command_json_output(tmp_path: Path, monkeypatch):
     monkeypatch.setattr(eval_cli, "_load_config", fake_load_config)
     monkeypatch.setenv("PYTHONHASHSEED", "0")
     # Patch the actual module where build_loggers is defined
-    import codex_ml.logging.registry as reg_mod
 
     monkeypatch.setattr(reg_mod, "build_loggers", fake_build_loggers)
 
@@ -210,7 +211,6 @@ def test_run_command_with_invalid_device(tmp_path: Path, monkeypatch):
         return [DummyLogger(tmp_path / "metrics.ndjson")]
 
     monkeypatch.setattr(eval_cli, "_load_config", fake_load_config)
-    import codex_ml.logging.registry as reg_mod
 
     monkeypatch.setattr(reg_mod, "build_loggers", fake_build_loggers)
 
@@ -270,7 +270,6 @@ def test_run_command_with_deterministic_flag(tmp_path: Path, monkeypatch):
         return [DummyLogger(tmp_path / "metrics.ndjson")]
 
     monkeypatch.setattr(eval_cli, "_load_config", fake_load_config)
-    import codex_ml.logging.registry as reg_mod
 
     monkeypatch.setattr(reg_mod, "build_loggers", fake_build_loggers)
     monkeypatch.setenv("PYTHONHASHSEED", "0")

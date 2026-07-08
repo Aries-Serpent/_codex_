@@ -4,12 +4,16 @@ AST Pattern Library and Consistency Tests
 Provides reusable AST patterns for code analysis and ensures
 consistent AST usage across the codebase.
 """
-
+import pytest
 import ast
 from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Optional
+from abc import abstractmethod
+from dataclasses import dataclass
+from dataclasses import dataclass
+
 
 
 @dataclass
@@ -209,7 +213,6 @@ def test_pattern_library_init():
 def test_abstract_method_detection():
     """Test detection of abstract methods."""
     source = """
-from abc import abstractmethod
 
 class Base:
     @abstractmethod
@@ -242,7 +245,6 @@ def real_impl():
 def test_dataclass_detection():
     """Test detection of dataclasses."""
     source = """
-from dataclasses import dataclass
 
 @dataclass
 class Point:
@@ -296,7 +298,6 @@ def test_analyze_file(tmp_path):
     """Test file analysis."""
     test_file = tmp_path / "test.py"
     test_file.write_text("""
-from dataclasses import dataclass
 
 @dataclass
 class Config:

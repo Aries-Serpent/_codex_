@@ -188,6 +188,7 @@ class TestPValueProperty:
         self, control: list[float], treatment: list[float]
     ) -> None:
         """When significant=False, winner must be 'inconclusive'."""
+import pytest
         result = run_ab_test(control, treatment)
         if not result.significant:
             assert result.winner == "inconclusive", (

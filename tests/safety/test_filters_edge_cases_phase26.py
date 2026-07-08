@@ -11,13 +11,15 @@ Comprehensive edge case testing for safety filters covering:
 
 Part of Phase 26: Coverage 70% → 75-80%
 """
-
 from unittest.mock import Mock, patch
+from codex_ml.safety.filters import (
+        import time
+        import time
+        import threading
 
-import pytest
+
 
 # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
-from codex_ml.safety.filters import (
     REDACT_PLACEHOLDER,
     SafetyFilters,
     sanitize_output,
@@ -86,7 +88,6 @@ class TestSafetyFiltersEdgeCases:
         filters = SafetyFilters.from_defaults()
         # Potential catastrophic backtracking patterns
         text = "a" * 1000 + "!"
-        import time
 
         start = time.time()
         result = sanitize_prompt(text, filters=filters)
@@ -285,7 +286,6 @@ class TestPerformanceEdgeCases:
         filters = SafetyFilters.from_defaults()
         # Generate text with many potential matches
         text = " ".join([f"key{i}=val{i}" for i in range(1000)])
-        import time
 
         start = time.time()
         result = sanitize_prompt(text, filters=filters)
@@ -324,7 +324,6 @@ class TestConcurrencyEdgeCases:
     def test_thread_safety_indication(self):
         """Test that filters work with threading (basic check)."""
         filters = SafetyFilters.from_defaults()
-        import threading
 
         results = []
 

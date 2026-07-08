@@ -1,18 +1,20 @@
 """
-pytest.importorskip("tensorboard")
 Test Trainer Extended
 
 Test module for trainer extended.
 """
-
 from __future__ import annotations
-
+pytest.importorskip("tensorboard")
 import json
+    import torch
+from logging_utils import LoggingConfig
+from src.training.trainer import CheckpointConfig, Trainer, TrainerConfig
+        import torch.profiler as profiler_module
 
-import pytest
+
+
 
 try:
-    import torch
 except (ImportError, AttributeError) as exc:  # pragma: no cover - runtime guard
     pytest.skip(f"PyTorch runtime not available: {exc}", allow_module_level=True)
 
@@ -20,8 +22,6 @@ torch_data = getattr(torch, "utils", None)
 if torch_data is None or not hasattr(torch_data, "data"):
     pytest.skip("torch.utils.data not available", allow_module_level=True)
 
-from logging_utils import LoggingConfig
-from src.training.trainer import CheckpointConfig, Trainer, TrainerConfig
 
 DataLoader = torch_data.data.DataLoader  # type: ignore[attr-defined]
 TensorDataset = torch_data.data.TensorDataset  # type: ignore[attr-defined]
@@ -31,7 +31,6 @@ TensorDataset = torch_data.data.TensorDataset  # type: ignore[attr-defined]
 def disable_torch_profiler(monkeypatch):
     """Disable PyTorch profiler to avoid Protocol isinstance issues."""
     try:
-        import torch.profiler as profiler_module
 
         # Disable profiler record function to prevent Protocol isinstance errors
         if hasattr(profiler_module, "_record_function_enter"):

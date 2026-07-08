@@ -1,3 +1,4 @@
+import pytest
 #     def test_approval_detected_plain_text(self):
 #         assert _is_approved(PR_BODY_PLAIN_APPROVAL), "Condition must be true"
 # Validates the FULL cost gate lifecycle:

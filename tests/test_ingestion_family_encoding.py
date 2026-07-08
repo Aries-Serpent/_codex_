@@ -3,22 +3,21 @@ Test Ingestion Family Encoding
 
 Test module for ingestion family encoding.
 """
-import pytest
-
 pytest.importorskip("charset_normalizer")
-
 import json
 import sys
 from pathlib import Path
+from ingestion.csv_ingestor import load_csv
+from ingestion.file_ingestor import read_file
+from ingestion.json_ingestor import load_json
+from ingestion.utils import read_text_file
+
+
 
 ROOT = Path(__file__).resolve().parents[1] / "src"
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from ingestion.csv_ingestor import load_csv
-from ingestion.file_ingestor import read_file
-from ingestion.json_ingestor import load_json
-from ingestion.utils import read_text_file
 
 ENCODINGS = ["iso-8859-1", "cp1252", "utf-16", "auto"]
 

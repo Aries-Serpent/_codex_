@@ -5,13 +5,13 @@ PS-02 Enhancement: Tests for advanced bridge features:
 - Multi-client support
 - Protocol encoding/decoding
 """
-
 import tempfile
 import time
-
-import pytest
-
 from bridge_protocol_v2 import (
+        import os
+
+
+
     COMPRESSION_THRESHOLD,
     MIN_COMPRESSION_SAVINGS,
     PROTOCOL_VERSION,
@@ -52,7 +52,6 @@ class TestMessageCompression:
 
     def test_compress_incompressible(self):
         """Random data may not compress well."""
-        import os
 
         data = os.urandom(COMPRESSION_THRESHOLD + 1000)
         compressed, was_compressed = compress_message(data)

@@ -130,4 +130,5 @@ class TestMockAdapter:
 
     def test_provider_name(self, adapter):
         """Test provider name."""
+import pytest
         assert adapter.provider_name == "mock", "provider_name is not valid"

@@ -3,10 +3,9 @@ Test Path Traversal
 
 Test module for path traversal.
 """
-
-import pytest
-
 from security import SecurityError, validate_input
+
+
 
 
 def test_path_traversal_blocked() -> None:

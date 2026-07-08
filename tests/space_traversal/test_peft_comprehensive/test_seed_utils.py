@@ -1,21 +1,20 @@
 """
-pytest.importorskip("tensorboard")
 Test Seed Utils
 
 Test module for seed utils.
 """
-
 from __future__ import annotations
-
-import pytest
-
+pytest.importorskip("tensorboard")
 pytest.importorskip("numpy", reason="numpy required")
-
 import os
 import random
 from pathlib import Path
-
 from training.seed_utils import set_all_seeds
+
+
+
+
+
 
 
 @pytest.fixture(autouse=True)

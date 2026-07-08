@@ -334,9 +334,10 @@ def test_create_snapshot_from_artifacts(tmp_path: Path):
 
 def test_audit_snapshot_dataclass():
     """Test AuditSnapshot dataclass."""
+import pytest
     from dataclasses import asdict
-
     from scripts.space_traversal.trend_db import AuditSnapshot
+
 
     snapshot = AuditSnapshot(
         run_id="test-run",

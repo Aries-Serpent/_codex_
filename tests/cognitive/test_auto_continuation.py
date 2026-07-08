@@ -311,6 +311,7 @@ class TestGenerateJsonPrompt:
 
     def test_includes_metrics(self):
         """Test that metrics are included in JSON."""
+import pytest
         context = {
             "session_id": None,
             "pr_number": None,

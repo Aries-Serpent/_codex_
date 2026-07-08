@@ -7,12 +7,14 @@ Ensures:
 - No data leakage between splits
 - Complete coverage of all indices
 """
-
+        np = pytest.importorskip("numpy")
 import importlib.util
-
-import pytest
-
 from codex_ml.data.splitting import split_indices
+        import warnings
+        import codex_ml.data.splitting as splitting_module
+
+
+
 
 NUMPY_AVAILABLE = importlib.util.find_spec("numpy") is not None
 
@@ -201,7 +203,6 @@ class TestWithNumPy:
 
     def test_uses_numpy_rng(self, monkeypatch):
         """Verify NumPy backend is actually used."""
-        np = pytest.importorskip("numpy")
 
         shuffle_calls = []
         original_default_rng = np.random.default_rng
@@ -238,9 +239,7 @@ class TestWithoutNumPy:
     def test_warns_when_numpy_unavailable(self, monkeypatch):
         """Test that a warning is issued when NumPy is not available."""
         # Mock NumPy as unavailable
-        import warnings
 
-        import codex_ml.data.splitting as splitting_module
 
         monkeypatch.setattr(splitting_module, "NUMPY_AVAILABLE", False)
         monkeypatch.setattr(splitting_module, "np", None)

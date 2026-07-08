@@ -4,8 +4,11 @@ Extended tests for MCP multi-tenant capability.
 Covers tenant isolation, tenant-specific configurations, resource separation,
 and multi-tenant security patterns.
 """
-
+import pytest
 from mcp.auth import Principal
+    import hashlib
+    import threading
+
 
 
 def test_tenant_principal_creation():
@@ -118,7 +121,6 @@ def test_tenant_specific_tools():
 
 def test_tenant_data_encryption():
     """Test tenant data encryption pattern."""
-    import hashlib
 
     def encrypt_tenant_data(tenant_id: str, data: str) -> str:
         # Mock encryption using tenant-specific key
@@ -150,7 +152,6 @@ def test_tenant_audit_logging():
 
 def test_multi_tenant_concurrent_access():
     """Test concurrent access from multiple tenants."""
-    import threading
 
     results = {"tenant1": 0, "tenant2": 0}
     lock = threading.Lock()

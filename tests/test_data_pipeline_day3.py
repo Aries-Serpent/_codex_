@@ -3,12 +3,49 @@ Data Pipeline Tests — Day 3 Advanced Patterns
 Data loading with various formats (JSON, CSV, Parquet), transformation,
 validation, error recovery, checkpointing, batch processing, and integrity.
 """
-
 import json
 import tempfile
 from pathlib import Path
+            from codex_ml.data import load_json
+            from codex_ml.data import load_csv
+            from codex_ml.data import load_parquet
+            import pandas as pd
+            from codex_ml.data import load_jsonl
+            from codex_ml.data import load_data
+            from codex_ml.data import load_csv
+            from codex_ml.data import normalize
+            from codex_ml.data import scale
+            from codex_ml.data import fill_missing
+            from codex_ml.data import deduplicate
+            from codex_ml.data import filter_data
+            from codex_ml.data import transform
+            from codex_ml.data import validate_schema
+            from codex_ml.data import validate_types
+            from codex_ml.data import validate_required
+            from codex_ml.data import validate_ranges
+            from codex_ml.data import validate_custom
+            from codex_ml.data import Checkpointer
+            from codex_ml.data import Checkpointer
+            from codex_ml.data import Checkpointer
+            from codex_ml.data import process_with_recovery
+            from codex_ml.data import create_batches
+            from codex_ml.data import BatchIterator
+            from codex_ml.data import create_batches
+            from codex_ml.data import collate_batch
+            from codex_ml.data import pad_batch
+            from codex_ml.data import AsyncBatchLoader
+            from codex_ml.data import compute_checksum
+            from codex_ml.data import verify_integrity
+            from codex_ml.data import detect_corruption
+            from codex_ml.data import check_nulls
+            from codex_ml.data import check_duplicates
+            from codex_ml.data import check_consistency
+            from codex_ml.data import DataPipeline
+            from codex_ml.data import DataPipeline
+            from codex_ml.data import DataPipeline
+            from codex_ml.data import DataPipeline
 
-import pytest
+
 
 
 class TestDataLoadingFormats:
@@ -17,7 +54,6 @@ class TestDataLoadingFormats:
     def test_load_json_file(self):
         """Should load JSON files."""
         try:
-            from codex_ml.data import load_json
         except (ImportError, AttributeError):
             pytest.skip("load_json not available")
 
@@ -35,7 +71,6 @@ class TestDataLoadingFormats:
     def test_load_csv_file(self):
         """Should load CSV files."""
         try:
-            from codex_ml.data import load_csv
         except (ImportError, AttributeError):
             pytest.skip("load_csv not available")
 
@@ -53,12 +88,10 @@ class TestDataLoadingFormats:
     def test_load_parquet_file(self):
         """Should load Parquet files."""
         try:
-            from codex_ml.data import load_parquet
         except (ImportError, AttributeError):
             pytest.skip("load_parquet not available")
 
         try:
-            import pandas as pd
         except ImportError:
             pytest.skip("pandas not installed")
 
@@ -76,7 +109,6 @@ class TestDataLoadingFormats:
     def test_load_jsonl_file(self):
         """Should load JSONL files."""
         try:
-            from codex_ml.data import load_jsonl
         except (ImportError, AttributeError):
             pytest.skip("load_jsonl not available")
 
@@ -95,7 +127,6 @@ class TestDataLoadingFormats:
     def test_load_multiple_formats(self):
         """Should support loading multiple formats via unified interface."""
         try:
-            from codex_ml.data import load_data
         except (ImportError, AttributeError):
             pytest.skip("load_data not available")
 
@@ -126,7 +157,6 @@ class TestDataLoadingFormats:
     def test_load_with_encoding_specification(self):
         """Should support encoding specification."""
         try:
-            from codex_ml.data import load_csv
         except (ImportError, AttributeError):
             pytest.skip("load_csv not available")
 
@@ -148,7 +178,6 @@ class TestDataTransformation:
     def test_normalize_numeric_values(self):
         """Should normalize numeric values."""
         try:
-            from codex_ml.data import normalize
         except (ImportError, AttributeError):
             pytest.skip("normalize not available")
 
@@ -162,7 +191,6 @@ class TestDataTransformation:
     def test_scale_features(self):
         """Should scale features."""
         try:
-            from codex_ml.data import scale
         except (ImportError, AttributeError):
             pytest.skip("scale not available")
 
@@ -176,7 +204,6 @@ class TestDataTransformation:
     def test_fill_missing_values(self):
         """Should fill missing values."""
         try:
-            from codex_ml.data import fill_missing
         except (ImportError, AttributeError):
             pytest.skip("fill_missing not available")
 
@@ -190,7 +217,6 @@ class TestDataTransformation:
     def test_deduplicate_records(self):
         """Should deduplicate records."""
         try:
-            from codex_ml.data import deduplicate
         except (ImportError, AttributeError):
             pytest.skip("deduplicate not available")
 
@@ -204,7 +230,6 @@ class TestDataTransformation:
     def test_filter_by_condition(self):
         """Should filter data by condition."""
         try:
-            from codex_ml.data import filter_data
         except (ImportError, AttributeError):
             pytest.skip("filter_data not available")
 
@@ -218,7 +243,6 @@ class TestDataTransformation:
     def test_transform_with_function(self):
         """Should transform data with function."""
         try:
-            from codex_ml.data import transform
         except (ImportError, AttributeError):
             pytest.skip("transform not available")
 
@@ -236,7 +260,6 @@ class TestSchemaValidation:
     def test_validate_schema_presence(self):
         """Should validate schema presence."""
         try:
-            from codex_ml.data import validate_schema
         except (ImportError, AttributeError):
             pytest.skip("validate_schema not available")
 
@@ -251,7 +274,6 @@ class TestSchemaValidation:
     def test_validate_field_types(self):
         """Should validate field types."""
         try:
-            from codex_ml.data import validate_types
         except (ImportError, AttributeError):
             pytest.skip("validate_types not available")
 
@@ -266,7 +288,6 @@ class TestSchemaValidation:
     def test_validate_required_fields(self):
         """Should validate required fields present."""
         try:
-            from codex_ml.data import validate_required
         except (ImportError, AttributeError):
             pytest.skip("validate_required not available")
 
@@ -281,7 +302,6 @@ class TestSchemaValidation:
     def test_validate_field_ranges(self):
         """Should validate field ranges."""
         try:
-            from codex_ml.data import validate_ranges
         except (ImportError, AttributeError):
             pytest.skip("validate_ranges not available")
 
@@ -296,7 +316,6 @@ class TestSchemaValidation:
     def test_validate_custom_rules(self):
         """Should support custom validation rules."""
         try:
-            from codex_ml.data import validate_custom
         except (ImportError, AttributeError):
             pytest.skip("validate_custom not available")
 
@@ -319,7 +338,6 @@ class TestErrorRecoveryCheckpointing:
     def test_checkpoint_save(self):
         """Should save checkpoints."""
         try:
-            from codex_ml.data import Checkpointer
         except (ImportError, AttributeError):
             pytest.skip("Checkpointer not available")
 
@@ -335,7 +353,6 @@ class TestErrorRecoveryCheckpointing:
     def test_checkpoint_load(self):
         """Should load checkpoints."""
         try:
-            from codex_ml.data import Checkpointer
         except (ImportError, AttributeError):
             pytest.skip("Checkpointer not available")
 
@@ -353,7 +370,6 @@ class TestErrorRecoveryCheckpointing:
     def test_checkpoint_resume(self):
         """Should resume from checkpoint."""
         try:
-            from codex_ml.data import Checkpointer
         except (ImportError, AttributeError):
             pytest.skip("Checkpointer not available")
 
@@ -370,7 +386,6 @@ class TestErrorRecoveryCheckpointing:
     def test_error_recovery_mechanism(self):
         """Should recover from errors in processing."""
         try:
-            from codex_ml.data import process_with_recovery
         except (ImportError, AttributeError):
             pytest.skip("process_with_recovery not available")
 
@@ -392,7 +407,6 @@ class TestBatchProcessing:
     def test_batch_creation(self):
         """Should create batches."""
         try:
-            from codex_ml.data import create_batches
         except (ImportError, AttributeError):
             pytest.skip("create_batches not available")
 
@@ -406,7 +420,6 @@ class TestBatchProcessing:
     def test_batch_iteration(self):
         """Should iterate over batches."""
         try:
-            from codex_ml.data import BatchIterator
         except (ImportError, AttributeError):
             pytest.skip("BatchIterator not available")
 
@@ -425,7 +438,6 @@ class TestBatchProcessing:
     def test_batch_shuffling(self):
         """Should support batch shuffling."""
         try:
-            from codex_ml.data import create_batches
         except (ImportError, AttributeError):
             pytest.skip("create_batches not available")
 
@@ -441,7 +453,6 @@ class TestBatchProcessing:
     def test_batch_collation(self):
         """Should collate batches."""
         try:
-            from codex_ml.data import collate_batch
         except (ImportError, AttributeError):
             pytest.skip("collate_batch not available")
 
@@ -455,7 +466,6 @@ class TestBatchProcessing:
     def test_batch_padding(self):
         """Should support batch padding."""
         try:
-            from codex_ml.data import pad_batch
         except (ImportError, AttributeError):
             pytest.skip("pad_batch not available")
 
@@ -469,7 +479,6 @@ class TestBatchProcessing:
     def test_batch_async_loading(self):
         """Should support async batch loading."""
         try:
-            from codex_ml.data import AsyncBatchLoader
         except (ImportError, AttributeError):
             pytest.skip("AsyncBatchLoader not available")
 
@@ -489,7 +498,6 @@ class TestDataIntegrity:
     def test_data_checksum_computation(self):
         """Should compute data checksums."""
         try:
-            from codex_ml.data import compute_checksum
         except (ImportError, AttributeError):
             pytest.skip("compute_checksum not available")
 
@@ -503,7 +511,6 @@ class TestDataIntegrity:
     def test_data_integrity_verification(self):
         """Should verify data integrity."""
         try:
-            from codex_ml.data import verify_integrity
         except (ImportError, AttributeError):
             pytest.skip("verify_integrity not available")
 
@@ -518,7 +525,6 @@ class TestDataIntegrity:
     def test_data_corruption_detection(self):
         """Should detect data corruption."""
         try:
-            from codex_ml.data import detect_corruption
         except (ImportError, AttributeError):
             pytest.skip("detect_corruption not available")
 
@@ -532,7 +538,6 @@ class TestDataIntegrity:
     def test_data_null_check(self):
         """Should check for null values."""
         try:
-            from codex_ml.data import check_nulls
         except (ImportError, AttributeError):
             pytest.skip("check_nulls not available")
 
@@ -546,7 +551,6 @@ class TestDataIntegrity:
     def test_data_duplicate_check(self):
         """Should check for duplicates."""
         try:
-            from codex_ml.data import check_duplicates
         except (ImportError, AttributeError):
             pytest.skip("check_duplicates not available")
 
@@ -560,7 +564,6 @@ class TestDataIntegrity:
     def test_data_consistency_check(self):
         """Should check data consistency."""
         try:
-            from codex_ml.data import check_consistency
         except (ImportError, AttributeError):
             pytest.skip("check_consistency not available")
 
@@ -578,7 +581,6 @@ class TestDataPipelineIntegration:
     def test_pipeline_end_to_end(self):
         """Should execute end-to-end pipeline."""
         try:
-            from codex_ml.data import DataPipeline
         except (ImportError, AttributeError):
             pytest.skip("DataPipeline not available")
 
@@ -597,7 +599,6 @@ class TestDataPipelineIntegration:
     def test_pipeline_with_config(self):
         """Should support pipeline configuration."""
         try:
-            from codex_ml.data import DataPipeline
         except (ImportError, AttributeError):
             pytest.skip("DataPipeline not available")
 
@@ -615,7 +616,6 @@ class TestDataPipelineIntegration:
     def test_pipeline_statistics_tracking(self):
         """Should track pipeline statistics."""
         try:
-            from codex_ml.data import DataPipeline
         except (ImportError, AttributeError):
             pytest.skip("DataPipeline not available")
 
@@ -629,7 +629,6 @@ class TestDataPipelineIntegration:
     def test_pipeline_error_handling(self):
         """Should handle pipeline errors gracefully."""
         try:
-            from codex_ml.data import DataPipeline
         except (ImportError, AttributeError):
             pytest.skip("DataPipeline not available")
 

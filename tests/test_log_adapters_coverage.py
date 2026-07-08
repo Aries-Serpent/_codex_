@@ -3,16 +3,17 @@ Comprehensive tests for codex.monkeypatch.log_adapters module.
 
 Tests cover all logging functions with various configurations and edge cases.
 """
-
 from __future__ import annotations
-
+import pytest
 import os
 import sqlite3
 import tempfile
 from pathlib import Path
 from unittest.mock import MagicMock, patch
-
 from codex.monkeypatch.log_adapters import (
+
+
+
     _ensure_table,
     _resolve_path,
     log_event,

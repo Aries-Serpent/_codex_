@@ -3,10 +3,9 @@ Tests for repository organization compression script
 
 Tests compression logic, ratio calculation, original file removal, and error handling.
 """
-
 from __future__ import annotations
 
-import pytest
+
 
 
 class TestCompressHistoricalFiles:

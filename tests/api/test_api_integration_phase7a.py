@@ -3,11 +3,12 @@
 Tests for interactions between API components, service layer,
 and external integrations.
 """
-
 from typing import Dict
 from unittest.mock import Mock, patch
+                import requests
+                import requests
 
-import pytest
+
 
 
 class TestAPIServiceIntegration:
@@ -611,7 +612,6 @@ class TestAPIClientIntegration:
                 self.base_url = base_url
 
             def get_users(self):
-                import requests
 
                 response = requests.get(f"{self.base_url}/users")
                 return response.json()
@@ -630,7 +630,6 @@ class TestAPIClientIntegration:
                 self.base_url = base_url
 
             def create_user(self, data):
-                import requests
 
                 response = requests.post(f"{self.base_url}/users", json=data)
                 return response.json()

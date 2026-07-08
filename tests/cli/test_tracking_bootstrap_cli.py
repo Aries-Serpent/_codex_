@@ -3,11 +3,12 @@ Test Tracking Bootstrap Cli
 
 Test module for tracking bootstrap cli.
 """
-
+import pytest
 import json
 import subprocess
 import sys
 from pathlib import Path
+
 
 
 def _run(*argv: str) -> tuple[int, dict]:

@@ -8,8 +8,10 @@ Tests cover:
 - Hook execution
 - Progress tracking
 """
-
+import pytest
 from enum import Enum
+        import time
+
 
 
 class CallbackEvent(Enum):
@@ -207,7 +209,6 @@ class TestMetricCollection:
 
     def test_metric_timestamp(self):
         """Test recording metric timestamps."""
-        import time
 
         metrics = {"value": 0.87, "timestamp": time.time(), "epoch": 1}
 

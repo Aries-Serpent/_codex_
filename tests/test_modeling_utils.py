@@ -3,13 +3,12 @@ Test Modeling Utils
 
 Test module for modeling utils.
 """
-
 import types
-
-import pytest
-
 from codex_ml.utils import modeling
 from tests.helpers.optional_dependencies import import_optional_dependency
+
+
+
 
 import_optional_dependency("transformers")
 import_optional_dependency("torch")

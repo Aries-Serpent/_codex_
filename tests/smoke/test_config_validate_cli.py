@@ -3,10 +3,13 @@ Test Config Validate Cli
 
 Test module for config validate cli.
 """
-
 from pathlib import Path
+        from typer.testing import CliRunner
+        from codex_ml.cli.validate import app
+        from typer.testing import CliRunner
+        from codex_ml.cli.validate import app
 
-import pytest
+
 
 pytestmark = pytest.mark.smoke
 
@@ -15,9 +18,7 @@ def test_validate_ok(tmp_path: Path):
     """Test config validation with valid config."""
     # Import here to handle optional dependencies
     try:
-        from typer.testing import CliRunner
 
-        from codex_ml.cli.validate import app
     except ImportError:
         pytest.skip("Typer not available")
     else:
@@ -37,9 +38,7 @@ def test_validate_bad(tmp_path: Path):
     """Test config validation with invalid config."""
     # Import here to handle optional dependencies
     try:
-        from typer.testing import CliRunner
 
-        from codex_ml.cli.validate import app
     except ImportError:
         pytest.skip("Typer not available")
     else:

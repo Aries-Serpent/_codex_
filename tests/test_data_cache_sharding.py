@@ -3,9 +3,10 @@ Test Data Cache Sharding
 
 Test module for data cache sharding.
 """
+import pytest
+from codex_ml.data.sharding import shard_range
 
 # BEGIN: CODEX_TEST_DATA_CACHE_SHARD
-from codex_ml.data.sharding import shard_range
 
 
 def test_shard_cover():

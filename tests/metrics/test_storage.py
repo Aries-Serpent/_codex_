@@ -3,19 +3,18 @@ Tests for Metric Storage
 
 Tests dual JSON + SQLite storage implementation.
 """
-
 import json
 import sqlite3
 import tempfile
 from pathlib import Path
-
-import pytest
-
 from codex.metrics.duplication import (
+from codex.metrics.storage import MetricStorage
+
+
+
     DuplicateBlock,
     DuplicationRatio,
 )
-from codex.metrics.storage import MetricStorage
 
 
 class TestMetricStorage:

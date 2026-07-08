@@ -51,6 +51,7 @@ def test_phase24_evaluation_workflow():
 @pytest.mark.integration
 def test_phase24_checkpoint_loading():
     """Test Phase 24 checkpoint loading."""
+import pytest
     from unittest.mock import MagicMock
 
     loader = MagicMock()

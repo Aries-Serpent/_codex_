@@ -11,13 +11,27 @@ Systematically applies integration and exception handling:
 
 Target: +3-4% coverage gain (62% → 66%)
 """
-
-import pytest
-
 pytest.importorskip("numpy", reason="numpy not installed")
-pytest.importorskip("numpy")
-
 import numpy as np
+        from agents.physics_integration import PhysicsIntegration
+        from agents.physics_integration import PhysicsIntegration
+        from agents.physics_integration import PhysicsIntegration
+        from agents.physics_integration import PhysicsIntegration
+        from agents.physics_integration import PhysicsIntegration
+        from agents.physics_integration import PhysicsIntegration
+        from agents.exceptions import PhysicsError
+        from agents.exceptions import ValidationError
+        from agents.exceptions import ConvergenceError
+        from agents.exceptions import InvariantViolationError
+        from agents.exceptions import CausalityViolationError
+        from agents.physics_orchestrator import PhysicsOrchestrator
+        from agents.quantum_game_theory import QuantumInspiredGameEngine
+        from agents.mental_mapping import MentalMappingModel
+        from agents.agent_memory import AgentMemory
+        from agents.self_healing import SelfHealingEngine
+
+
+
 
 
 class TestPhase2_PhysicsIntegration:
@@ -28,14 +42,12 @@ class TestPhase2_PhysicsIntegration:
 
     def test_physics_integration_initialization(self):
         """Test PhysicsIntegration initialization"""
-        from agents.physics_integration import PhysicsIntegration
 
         integration = PhysicsIntegration()
         assert integration is not None, "integration must be initialized"
 
     def test_orchestrator_coupling(self):
         """Test coupling between orchestrators (Eq #16)"""
-        from agents.physics_integration import PhysicsIntegration
 
         integration = PhysicsIntegration()
         if hasattr(integration, "couple_orchestrators"):
@@ -44,7 +56,6 @@ class TestPhase2_PhysicsIntegration:
 
     def test_classical_orchestrator_access(self):
         """Test accessing classical orchestrator"""
-        from agents.physics_integration import PhysicsIntegration
 
         integration = PhysicsIntegration()
         if hasattr(integration, "classical"):
@@ -53,7 +64,6 @@ class TestPhase2_PhysicsIntegration:
 
     def test_advanced_orchestrator_access(self):
         """Test accessing advanced orchestrator"""
-        from agents.physics_integration import PhysicsIntegration
 
         integration = PhysicsIntegration()
         if hasattr(integration, "advanced"):
@@ -62,7 +72,6 @@ class TestPhase2_PhysicsIntegration:
 
     def test_sync_orchestrators(self):
         """Test synchronizing orchestrator states (Eq #3)"""
-        from agents.physics_integration import PhysicsIntegration
 
         integration = PhysicsIntegration()
         if hasattr(integration, "sync"):
@@ -71,7 +80,6 @@ class TestPhase2_PhysicsIntegration:
 
     def test_data_flow_between_modules(self):
         """Test data flow integration (Eq #5)"""
-        from agents.physics_integration import PhysicsIntegration
 
         integration = PhysicsIntegration()
         if hasattr(integration, "transfer_data"):
@@ -98,7 +106,6 @@ class TestPhase2_ExceptionHandling:
 
     def test_exception_types(self):
         """Test custom exception types"""
-        from agents.exceptions import PhysicsError
 
         error = PhysicsError("Test error")
         assert error is not None, "error must be initialized"
@@ -106,28 +113,24 @@ class TestPhase2_ExceptionHandling:
 
     def test_validation_error(self):
         """Test ValidationError exception"""
-        from agents.exceptions import ValidationError
 
         error = ValidationError("Invalid input")
         assert error is not None, "error must be initialized"
 
     def test_convergence_error(self):
         """Test ConvergenceError exception"""
-        from agents.exceptions import ConvergenceError
 
         error = ConvergenceError("Failed to converge")
         assert error is not None, "error must be initialized"
 
     def test_invariant_violation_error(self):
         """Test InvariantViolationError"""
-        from agents.exceptions import InvariantViolationError
 
         error = InvariantViolationError("Σρ ≠ 1")
         assert error is not None, "error must be initialized"
 
     def test_causality_violation_error(self):
         """Test CausalityViolationError"""
-        from agents.exceptions import CausalityViolationError
 
         error = CausalityViolationError("v > c")
         assert error is not None, "error must be initialized"
@@ -450,7 +453,6 @@ class TestPhase2_ModuleInterfaces:
 
     def test_physics_orchestrator_interface(self):
         """Test PhysicsOrchestrator public interface"""
-        from agents.physics_orchestrator import PhysicsOrchestrator
 
         orch = PhysicsOrchestrator()
         # Should have key methods
@@ -458,7 +460,6 @@ class TestPhase2_ModuleInterfaces:
 
     def test_quantum_game_theory_interface(self):
         """Test quantum game theory interface"""
-        from agents.quantum_game_theory import QuantumInspiredGameEngine
 
         # Can create instance
         blue = np.array([0.5, 0.5])
@@ -470,21 +471,18 @@ class TestPhase2_ModuleInterfaces:
 
     def test_mental_mapping_interface(self):
         """Test mental mapping interface"""
-        from agents.mental_mapping import MentalMappingModel
 
         model = MentalMappingModel()
         assert model is not None, "model must be initialized"
 
     def test_agent_memory_interface(self):
         """Test agent memory interface"""
-        from agents.agent_memory import AgentMemory
 
         memory = AgentMemory()
         assert memory is not None, "memory must be initialized"
 
     def test_self_healing_interface(self):
         """Test self-healing interface"""
-        from agents.self_healing import SelfHealingEngine
 
         engine = SelfHealingEngine()
         assert engine is not None, "engine must be initialized"

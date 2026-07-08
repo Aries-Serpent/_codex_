@@ -9,16 +9,15 @@ Tests cover:
 - Early stopping
 - Checkpoint integration
 """
-
+pytest.importorskip("torch")
 import tempfile
 from pathlib import Path
 from unittest.mock import MagicMock, Mock
-
-import pytest
-
-pytest.importorskip("torch")
-
 import torch
+
+
+
+
 
 # Mark all tests in this module
 pytestmark = pytest.mark.ml_comprehensive

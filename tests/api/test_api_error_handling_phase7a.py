@@ -3,8 +3,9 @@
 Tests for HTTP error responses, exception handling,
 and error recovery mechanisms.
 """
-
+import pytest
 from fastapi import HTTPException
+
 
 
 class TestAPIErrorHandling:

@@ -3,8 +3,9 @@ Test Registry Basic
 
 Test module for registry basic.
 """
-
+import pytest
 from codex_ml.plugins.registry import Registry
+
 
 
 def test_register_and_get() -> None:

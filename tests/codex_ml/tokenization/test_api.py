@@ -1,6 +1,5 @@
-import pytest
-
 from codex_ml.tokenization.api import (
+
     BOS_TOKEN,
     EOS_TOKEN,
     PAD_TOKEN,

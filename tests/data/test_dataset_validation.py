@@ -72,6 +72,7 @@ class TestValidationResult:
 
     def test_result_to_dict(self):
         """Test converting result to dict."""
+import pytest
         result = ValidationResult(
             rule_name="test",
             is_valid=False,

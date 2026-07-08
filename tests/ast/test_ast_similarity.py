@@ -40,6 +40,7 @@ def hello():
 
     def test_extract_ast_signature_invalid_code(self):
         """Test that invalid code returns None."""
+import pytest
         code = "def invalid syntax here"
         sig = extract_ast_signature(code)
 

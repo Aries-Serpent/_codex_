@@ -3,22 +3,25 @@ Test Repro Rng Roundtrip
 
 Test module for repro rng roundtrip.
 """
-
+import pytest
 import json
 import random
 from pathlib import Path
+    from codex_utils import repro
+        import numpy as np  # type: ignore
+        import numpy as np  # type: ignore
+        import numpy as np  # type: ignore
+
 
 
 def test_rng_roundtrip(tmp_path: Path):
     # Import lazily to avoid hard dependency on torch/numpy in environments
     # where those packages are not present.
-    from codex_utils import repro
 
     # 1) Set a seed and capture initial samples
     state = repro.set_seed(1234, deterministic=True)
     seq1 = [random.random() for _ in range(3)]
     try:
-        import numpy as np  # type: ignore
 
         np_seq1 = np.random.rand(3).tolist()
     except ImportError:
@@ -33,7 +36,6 @@ def test_rng_roundtrip(tmp_path: Path):
     # 3) Mutate RNG streams
     _ = [random.random() for _ in range(5)]
     try:
-        import numpy as np  # type: ignore
 
         _ = np.random.rand(5).tolist()
     except ImportError:
@@ -45,7 +47,6 @@ def test_rng_roundtrip(tmp_path: Path):
     seq2 = [random.random() for _ in range(3)]
     assert seq1 == seq2, "Python RNG did not restore deterministically"
     try:
-        import numpy as np  # type: ignore
 
         np_seq2 = np.random.rand(3).tolist()
     except ImportError:

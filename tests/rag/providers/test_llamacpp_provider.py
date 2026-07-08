@@ -9,14 +9,13 @@ Tests the LlamaCppEmbeddingProvider class covering:
 - Context window handling
 - Error handling and recovery
 """
-
 from unittest.mock import MagicMock, patch
+    from codex.rag.providers.llamacpp_provider import LlamaCppEmbeddingProvider
 
-import pytest
+
 
 # Import the provider (may be optional if llama-cpp-python not available)
 try:
-    from codex.rag.providers.llamacpp_provider import LlamaCppEmbeddingProvider
 
     LLAMACPP_AVAILABLE = True
 except ImportError:

@@ -3,17 +3,16 @@ Test Pipeline Validation
 
 Test module for pipeline validation.
 """
+from __future__ import annotations
+from pathlib import Path
 
 #!/usr/bin/env python
 # Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
 # Purpose: Validate basic data pipeline assets (presence, simple schema checks).
 # Skips gracefully if no data present.
 
-from __future__ import annotations
 
-from pathlib import Path
 
-import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 DATA_DIR = REPO_ROOT / "data"

@@ -9,15 +9,14 @@ Tests cover:
 
 All tests use mocked responses - no real Zendesk API calls.
 """
-
 from __future__ import annotations
-
-import pytest
-
 responses = pytest.importorskip("responses")
 from responses import matchers
-
 from zendesk.api_client import ZendeskAPIClient, ZendeskConfig
+
+
+
+
 
 # ==============================================================================
 # FIXTURES

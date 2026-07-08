@@ -4,10 +4,21 @@ Targeted tests for physics_orchestrator module.
 Focuses on highest-impact classes and methods to maximize coverage/time efficiency.
 Uses Physics Reference Table strategy for time-efficient testing.
 """
-
 import math
+        from agents.physics_orchestrator import ForceVector
+        from agents.physics_orchestrator import ForceVector
+        from agents.physics_orchestrator import ActionPath, ActionType
+        from agents.physics_orchestrator import ActionPath, ActionType
+        from agents.physics_orchestrator import ActionPath, ActionType
+        from agents.physics_orchestrator import DecisionState
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
+        from agents.physics_orchestrator import (
+            from agents.physics_orchestrator import ImportMigrationOrchestrator
+            from agents.physics_orchestrator import DiffusionFlowModel
+            from agents.physics_orchestrator import EnergyLandscape
+            from agents.physics_orchestrator import SwarmIntelligence
 
-import pytest
+
 
 
 class TestForceVector:
@@ -15,7 +26,6 @@ class TestForceVector:
 
     def test_initialization(self):
         """Test ForceVector can be created."""
-        from agents.physics_orchestrator import ForceVector
 
         force = ForceVector(name="gravity", magnitude=0.8, direction=math.pi / 2)
 
@@ -25,7 +35,6 @@ class TestForceVector:
 
     def test_get_components(self):
         """Test force vector component calculation."""
-        from agents.physics_orchestrator import ForceVector
 
         # Force pointing right (0 radians)
         force = ForceVector(name="test", magnitude=1.0, direction=0.0, priority=1.0)
@@ -40,7 +49,6 @@ class TestActionPath:
 
     def test_initialization(self):
         """Test ActionPath can be created."""
-        from agents.physics_orchestrator import ActionPath, ActionType
 
         path = ActionPath(
             action_type=ActionType.TEST,
@@ -55,7 +63,6 @@ class TestActionPath:
 
     def test_calculate_total_energy(self):
         """Test total energy calculation."""
-        from agents.physics_orchestrator import ActionPath, ActionType
 
         path = ActionPath(
             action_type=ActionType.TEST,
@@ -74,7 +81,6 @@ class TestActionPath:
 
     def test_calculate_optimization_score(self):
         """Test optimization score calculation."""
-        from agents.physics_orchestrator import ActionPath, ActionType
 
         path = ActionPath(
             action_type=ActionType.TEST,
@@ -99,7 +105,6 @@ class TestDecisionState:
 
     def test_initialization(self):
         """Test DecisionState can be created."""
-        from agents.physics_orchestrator import DecisionState
 
         state = DecisionState(
             current_position="start",
@@ -119,7 +124,6 @@ class TestPhysicsInspiredOrchestrator:
 
     def test_initialization(self):
         """Test orchestrator can be initialized."""
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orchestrator = PhysicsInspiredOrchestrator()
 
@@ -128,7 +132,6 @@ class TestPhysicsInspiredOrchestrator:
 
     def test_orchestrate_basic(self):
         """Test basic orchestration."""
-        from agents.physics_orchestrator import (
             ActionPath,
             ActionType,
             DecisionState,
@@ -172,7 +175,6 @@ class TestImportMigrationOrchestrator:
     def test_import_migration_exists(self):
         """Test ImportMigrationOrchestrator can be imported."""
         try:
-            from agents.physics_orchestrator import ImportMigrationOrchestrator
 
             assert ImportMigrationOrchestrator is not None, "ImportMigrationOrchestrator must be initialized"
         except ImportError:
@@ -185,7 +187,6 @@ class TestAdvancedPhysicsPatterns:
     def test_diffusion_flow_model_import(self):
         """Test DiffusionFlowModel can be imported."""
         try:
-            from agents.physics_orchestrator import DiffusionFlowModel
 
             assert DiffusionFlowModel is not None, "DiffusionFlowModel must be initialized"
         except ImportError:
@@ -194,7 +195,6 @@ class TestAdvancedPhysicsPatterns:
     def test_energy_landscape_import(self):
         """Test EnergyLandscape can be imported."""
         try:
-            from agents.physics_orchestrator import EnergyLandscape
 
             assert EnergyLandscape is not None, "EnergyLandscape must be initialized"
         except ImportError:
@@ -203,7 +203,6 @@ class TestAdvancedPhysicsPatterns:
     def test_swarm_intelligence_import(self):
         """Test SwarmIntelligence can be imported."""
         try:
-            from agents.physics_orchestrator import SwarmIntelligence
 
             assert SwarmIntelligence is not None, "SwarmIntelligence must be initialized"
         except ImportError:

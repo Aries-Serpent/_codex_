@@ -3,23 +3,23 @@ Test Codex Utils Offline
 
 Test module for codex utils offline.
 """
-
 import json
 import os
 import types
 from pathlib import Path
 from urllib.parse import urlparse
-
-import pytest
-
 from codex_utils import (
+from codex_utils import repro as repro_mod
+        import psutil as _real_psutil
+
+
+
     NDJSONLogger,
     OfflineTB,
     bootstrap_mlflow_env,
     mlflow_offline_session,
     sample_system_metrics,
 )
-from codex_utils import repro as repro_mod
 
 
 class _FakeRun:
@@ -231,7 +231,6 @@ def test_sample_system_metrics_with_psutil(monkeypatch):
     # ordering and conftest autouse fixtures that call psutil before the patch is
     # applied (which can otherwise cause the cached CPU percentage to "leak").
     try:
-        import psutil as _real_psutil
     except ModuleNotFoundError:
         _real_psutil = types.SimpleNamespace()
         monkeypatch.setattr("codex_utils.logging_setup.psutil", _real_psutil, raising=False)

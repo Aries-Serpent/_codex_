@@ -3,10 +3,9 @@ Test Feature Freshness Drift
 
 Test module for feature freshness drift.
 """
-
 import importlib
 
-import pytest
+
 
 
 def test_import_module():

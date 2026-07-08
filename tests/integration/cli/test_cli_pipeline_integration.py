@@ -100,6 +100,7 @@ def test_cli_pipeline_missing_data_config():
 @pytest.mark.integration
 def test_cli_pipeline_invalid_checkpoint():
     """Test CLI handles invalid checkpoint configuration."""
+import pytest
     pipeline = _load_pipeline_module()
 
     config = _make_config(trainer={"checkpoint": "invalid_string"})

@@ -2,11 +2,10 @@
 
 Tests for chaos engineering fault injection scenarios.
 """
-
 import time
 from unittest.mock import MagicMock
 
-import pytest
+
 
 
 class TestNetworkFaultInjection:

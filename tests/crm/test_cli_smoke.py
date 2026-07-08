@@ -3,12 +3,13 @@ Test Cli Smoke
 
 Test module for cli smoke.
 """
-
 from __future__ import annotations
-
+import pytest
 import tempfile
 from pathlib import Path
 from subprocess import check_call
+
+
 
 
 def _run_cli(*args: str) -> None:

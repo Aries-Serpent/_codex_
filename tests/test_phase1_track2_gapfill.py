@@ -5,9 +5,12 @@ These tests provide comprehensive coverage for previously untested modules:
 - restore_pipeline, services.audio, cognitive_brain, and utilities
 - 200+ test methods targeting 1000+ statement coverage
 """
-
+import pytest
 import json
 from datetime import datetime
+        import re
+        import time
+
 
 
 class TestRestorePipelineLogic:
@@ -324,7 +327,6 @@ class TestDataValidation:
 
     def test_string_format_validation(self):
         """Test string format validation."""
-        import re
 
         email_pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
         valid_emails = ["test@example.com", "user.name@domain.co.uk"]
@@ -384,7 +386,6 @@ class TestErrorHandling:
 
     def test_timeout_error_handling(self):
         """Test timeout error handling."""
-        import time
 
         timeout = 0.1
         start = time.time()

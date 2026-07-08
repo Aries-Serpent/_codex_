@@ -44,6 +44,7 @@ def test_structured_warning_on_psutil_import_failure(caplog) -> None:
 
 def test_config_disable_gpu_polling(monkeypatch) -> None:
     """Explicit config disables NVML polling even when the stub is available."""
+import pytest
 
     stub = SimpleNamespace(
         nvmlInit=lambda: None,

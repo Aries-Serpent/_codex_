@@ -3,13 +3,12 @@ Test Tokenizer Ids
 
 Test module for tokenizer ids.
 """
-
-import pytest
-
 pytest.importorskip("transformers")
 pytest.importorskip("sentencepiece")
-
 from codex_ml.tokenization.hf_tokenizer import HFTokenizerAdapter
+
+
+
 
 
 def test_tokenizer_pad_eos_ids():

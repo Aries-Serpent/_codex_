@@ -9,21 +9,35 @@ Tests target:
 - Determinism helpers
 - Model initialization utilities
 """
-
 from __future__ import annotations
-
 import json
 import logging
 import random
 import tempfile
 from pathlib import Path
 from unittest.mock import MagicMock, patch
+    import torch
+        from codex_ml.utils.checksum import sha256sum
+        from codex_ml.train_loop import _set_seed
+        from codex_ml.train_loop import set_cudnn_deterministic
+        import os
+        from codex_ml.train_loop import _resolve_dtype
+        from codex_ml.train_loop import _resolve_device
+        from codex_ml.train_loop import _load_or_create_model
+        from training.trainer import TrainingState
+        from training.engine_hf_trainer import build_training_args
+        from training.engine_hf_trainer import HFTrainerConfig
+        from codex_ml.detectors.core import clamp01
+        from codex_ml.detectors.core import DetectorResult
+        from training.engine_hf_trainer import _compute_metrics
+        from codex_ml.train_loop import _resolve_dtype
+                from codex_ml.train_loop import _load_or_create_model
 
-import pytest
+
+
 
 # Defensive imports for optional dependencies
 try:
-    import torch
 
     HAS_TORCH = True
 except ImportError:
@@ -64,7 +78,6 @@ class TestCheckpointUtilities:
 
     def test_checkpoint_integrity_check(self):
         """Test checkpoint integrity verification."""
-        from codex_ml.utils.checksum import sha256sum
 
         with tempfile.TemporaryDirectory() as tmpdir:
             test_file = Path(tmpdir) / "test.txt"
@@ -205,7 +218,6 @@ class TestRNGStateManagement:
 
     def test_seed_set_deterministically(self):
         """Test seed setting produces deterministic results."""
-        from codex_ml.train_loop import _set_seed
 
         seed1 = _set_seed(42)
         assert seed1 == 42, "seed1 is not valid"
@@ -224,7 +236,6 @@ class TestDeterminismHelpers:
 
     def test_cudnn_determinism_disabled_by_default(self):
         """Test CUDNN determinism is optional."""
-        from codex_ml.train_loop import set_cudnn_deterministic
 
         # Should not raise
         set_cudnn_deterministic(False)
@@ -232,7 +243,6 @@ class TestDeterminismHelpers:
     @pytest.mark.skipif(not HAS_TORCH, reason="torch required")
     def test_torch_determinism_setting(self):
         """Test torch determinism settings."""
-        import os
 
         # Set CUBLAS_WORKSPACE_CONFIG if available
         os.environ["CUBLAS_WORKSPACE_CONFIG"] = ":16:8"
@@ -242,7 +252,6 @@ class TestDeterminismHelpers:
 
     def test_dtype_resolution(self):
         """Test dtype resolution from string."""
-        from codex_ml.train_loop import _resolve_dtype
 
         # Test valid dtypes
         dtype_fp32 = _resolve_dtype("float32")
@@ -253,7 +262,6 @@ class TestDeterminismHelpers:
 
     def test_device_resolution(self):
         """Test device resolution from string."""
-        from codex_ml.train_loop import _resolve_device
 
         device_cpu = _resolve_device("cpu")
         assert device_cpu is not None or device_cpu is None, "device_cpu must be initialized"
@@ -312,7 +320,6 @@ class TestModelInitialization:
         mock_model = MagicMock()
         mock_instantiate.return_value = mock_model
 
-        from codex_ml.train_loop import _load_or_create_model
 
         model = _load_or_create_model(identifier="gpt2", device="cpu", dtype="float32")
 
@@ -362,14 +369,12 @@ class TestTrainingConfiguration:
 
     def test_training_config_creation(self):
         """Test training config can be created with default values."""
-        from training.trainer import TrainingState
 
         state = TrainingState()
         assert state is not None, "state must be initialized"
 
     def test_training_args_parsing(self):
         """Test training arguments can be parsed."""
-        from training.engine_hf_trainer import build_training_args
 
         args = build_training_args(
             output_dir=os.path.join(tempfile.gettempdir(), "test"),
@@ -396,7 +401,6 @@ class TestTrainingConfiguration:
 
     def test_hf_trainer_config_validation(self):
         """Test HuggingFace trainer config validation."""
-        from training.engine_hf_trainer import HFTrainerConfig
 
         config = HFTrainerConfig(
             output_dir=os.path.join(tempfile.gettempdir(), "test"),
@@ -456,7 +460,6 @@ class TestCapabilityDetectors:
 
     def test_detector_result_scoring(self):
         """Test capability detector result scoring."""
-        from codex_ml.detectors.core import clamp01
 
         # Test clamping to [0, 1]
         assert clamp01(0.5) == 0.5, "Condition must be true"
@@ -467,7 +470,6 @@ class TestCapabilityDetectors:
 
     def test_detector_result_structure(self):
         """Test DetectorResult has expected structure."""
-        from codex_ml.detectors.core import DetectorResult
 
         result = DetectorResult(
             score=0.75,
@@ -569,7 +571,6 @@ class TestEvaluationUtilities:
 
     def test_metric_computation_mock(self):
         """Test metric computation with mocked predictions."""
-        from training.engine_hf_trainer import _compute_metrics
 
         predictions = MagicMock()
         predictions.predictions = [[0.1, 0.9], [0.8, 0.2]]
@@ -630,7 +631,6 @@ class TestEdgeCasesAndErrorHandling:
 
     def test_invalid_dtype_specification(self):
         """Test handling of invalid dtype."""
-        from codex_ml.train_loop import _resolve_dtype
 
         # Should handle gracefully
         result = _resolve_dtype("invalid_dtype")
@@ -642,7 +642,6 @@ class TestEdgeCasesAndErrorHandling:
             mock_inst.side_effect = ValueError("Model not found")
 
             with pytest.raises(ValueError):
-                from codex_ml.train_loop import _load_or_create_model
 
                 _load_or_create_model("nonexistent_model")
 

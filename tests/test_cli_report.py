@@ -7,21 +7,36 @@ Tests cover:
 - Exit codes
 - Error handling
 """
-
 from __future__ import annotations
-
-import json
-
-import pytest
-
 pytest.importorskip("typer")
+import json
+    from typer.testing import CliRunner
+    from codex_ml.evaluation.cli import app
+    from typer.testing import CliRunner
+    from codex_ml.evaluation.cli import app
+    from typer.testing import CliRunner
+    from codex_ml.evaluation.cli import app
+    from typer.testing import CliRunner
+    from codex_ml.evaluation.cli import app
+    from typer.testing import CliRunner
+    from codex_ml.evaluation.cli import app
+    from typer.testing import CliRunner
+    from codex_ml.evaluation.cli import app
+    from typer.testing import CliRunner
+    from codex_ml.evaluation.cli import app
+    from typer.testing import CliRunner
+    from codex_ml.evaluation.cli import app
+    from typer.testing import CliRunner
+    from codex_ml.evaluation.cli import app
+
+
+
+
 
 
 def test_report_aggregates_metrics(tmp_path):
     """Test report command aggregates NDJSON metrics."""
-    from typer.testing import CliRunner
 
-    from codex_ml.evaluation.cli import app
 
     runner = CliRunner()
 
@@ -54,9 +69,7 @@ def test_report_aggregates_metrics(tmp_path):
 
 def test_report_determinism_match(tmp_path):
     """Test report comparison with matching results."""
-    from typer.testing import CliRunner
 
-    from codex_ml.evaluation.cli import app
 
     runner = CliRunner()
 
@@ -96,9 +109,7 @@ def test_report_determinism_match(tmp_path):
 
 def test_report_determinism_mismatch(tmp_path):
     """Test report comparison with mismatched results (exit code 4)."""
-    from typer.testing import CliRunner
 
-    from codex_ml.evaluation.cli import app
 
     runner = CliRunner()
 
@@ -156,9 +167,7 @@ def test_report_determinism_mismatch(tmp_path):
 
 def test_report_missing_input_file(tmp_path):
     """Test report with missing input file (exit code 2)."""
-    from typer.testing import CliRunner
 
-    from codex_ml.evaluation.cli import app
 
     runner = CliRunner()
 
@@ -172,9 +181,7 @@ def test_report_missing_input_file(tmp_path):
 
 def test_report_no_epoch_records(tmp_path):
     """Test report with no epoch records (exit code 3)."""
-    from typer.testing import CliRunner
 
-    from codex_ml.evaluation.cli import app
 
     runner = CliRunner()
 
@@ -193,9 +200,7 @@ def test_report_no_epoch_records(tmp_path):
 
 def test_report_human_readable_output(tmp_path):
     """Test report with human-readable (non-JSON) output."""
-    from typer.testing import CliRunner
 
-    from codex_ml.evaluation.cli import app
 
     runner = CliRunner()
 
@@ -222,9 +227,7 @@ def test_report_human_readable_output(tmp_path):
 
 def test_report_missing_compare_file(tmp_path):
     """Test report with missing compare file (exit code 2)."""
-    from typer.testing import CliRunner
 
-    from codex_ml.evaluation.cli import app
 
     runner = CliRunner()
 
@@ -258,9 +261,7 @@ def test_report_missing_compare_file(tmp_path):
 
 def test_report_compare_no_epoch_records(tmp_path):
     """Test report comparison when compare file has no epoch records."""
-    from typer.testing import CliRunner
 
-    from codex_ml.evaluation.cli import app
 
     runner = CliRunner()
 
@@ -297,9 +298,7 @@ def test_report_compare_no_epoch_records(tmp_path):
 
 def test_report_handles_empty_metrics(tmp_path):
     """Test report handles records with empty metrics dict."""
-    from typer.testing import CliRunner
 
-    from codex_ml.evaluation.cli import app
 
     runner = CliRunner()
 

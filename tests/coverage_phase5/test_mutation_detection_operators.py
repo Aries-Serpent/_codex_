@@ -25,6 +25,7 @@ def divide(a: float, b: float) -> float:
 
 class TestArithmeticOperations:
     """Test arithmetic operations for mutation detection."""
+import pytest
 
     def test_add_positive_numbers(self):
         assert add(2, 3) == 5

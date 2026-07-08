@@ -4,7 +4,6 @@ Target: 12 tests for codex handlers
 Focus: Coverage gap closure from 20% → 22%+
 """
 
-import pytest
 
 
 class TestHandlersCore:

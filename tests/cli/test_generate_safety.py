@@ -3,16 +3,15 @@ Test Generate Safety
 
 Test module for generate safety.
 """
-
 from __future__ import annotations
-
 import importlib
 import json
 import sys
 from pathlib import Path
 from types import SimpleNamespace
 
-import pytest
+
+
 
 
 def _install_runtime_stubs(module, monkeypatch: pytest.MonkeyPatch, output_text: str) -> None:

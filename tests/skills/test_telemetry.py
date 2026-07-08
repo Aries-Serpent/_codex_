@@ -1,15 +1,15 @@
 """Tests for Skills telemetry module."""
-
 from __future__ import annotations
-
 import json
 import os
 from unittest.mock import patch
-
-import pytest
-
 from codex.skills.models import BudgetUsed, ExecutionMetrics
 from codex.skills.telemetry import (
+        from codex.skills.models import TelemetryEvent
+
+
+
+
     emit_event,
     read_events,
     skill_invocation_span,
@@ -68,7 +68,6 @@ class TestEmitEvent:
         assert not telemetry_path.exists(), "Condition must be true"
 
     def test_emit_returns_telemetry_event(self, telemetry_path, sample_metrics):
-        from codex.skills.models import TelemetryEvent
 
         event = emit_event(
             skill_id="test.skill",

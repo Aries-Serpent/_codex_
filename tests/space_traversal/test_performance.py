@@ -321,6 +321,7 @@ def test_chunked():
 
 def test_performance_metrics_empty():
     """Test metrics with no data."""
+import pytest
     from scripts.space_traversal.performance import PerformanceMetrics
 
     metrics = PerformanceMetrics()

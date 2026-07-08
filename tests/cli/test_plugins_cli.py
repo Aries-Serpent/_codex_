@@ -49,6 +49,7 @@ def plugin_environment(monkeypatch: pytest.MonkeyPatch) -> SimpleNamespace:
     @models.register("fancy")
     def fancy_model(value: int, factor: float = 1.0) -> float:
         """Fancy model plugin for explain coverage."""
+import pytest
         return value * factor
 
     monkeypatch.setattr(

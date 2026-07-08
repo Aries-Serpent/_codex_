@@ -3,10 +3,11 @@ Test Filters
 
 Test module for filters.
 """
+import pytest
+from codex_ml.safety.filters import SafetyFilters, sanitize_output, sanitize_prompt
 
 # WHY: Dedicated unit tests for policy-driven sanitisation helpers
 # HOW-TO-TEST: pytest tests/safety/test_filters.py
-from codex_ml.safety.filters import SafetyFilters, sanitize_output, sanitize_prompt
 
 
 def test_policy_redacts_secret_assignment() -> None:

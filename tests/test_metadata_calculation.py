@@ -200,6 +200,7 @@ from codex.logging.structured_logger import logger
 
 def run_tests():
     """Run all tests."""
+import pytest
     logger.info("Running property-based tests for metadata calculations...\n")
 
     if not HYP_AVAILABLE:

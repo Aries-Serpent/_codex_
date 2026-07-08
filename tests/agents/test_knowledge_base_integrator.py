@@ -3,13 +3,15 @@ Tests for agents.knowledge_base_integrator module.
 
 This module contains tests for the Zendesk knowledge base integration shim.
 """
-
+pydantic = pytest.importorskip("pydantic")
 from unittest.mock import MagicMock, patch
+        from agents.knowledge_base_integrator import build_context
+        from agents.knowledge_base_integrator import build_context
+        from agents.knowledge_base_integrator import __all__
 
-import pytest
+
 
 # Skip all tests if pydantic is not available (required by zendesk modules)
-pydantic = pytest.importorskip("pydantic")
 
 
 class TestBuildContext:
@@ -18,7 +20,6 @@ class TestBuildContext:
     @patch("agents.knowledge_base_integrator.ZendeskRAGBridge")
     def test_build_context_calls_bridge(self, MockBridge):
         """Test build_context calls bridge correctly."""
-        from agents.knowledge_base_integrator import build_context
 
         mock_bridge = MagicMock()
         mock_bridge.retrieve_ticket_context.return_value = ["ctx1", "ctx2"]
@@ -34,7 +35,6 @@ class TestBuildContext:
     @patch("agents.knowledge_base_integrator.ZendeskRAGBridge")
     def test_build_context_custom_top_k(self, MockBridge):
         """Test build_context with custom top_k."""
-        from agents.knowledge_base_integrator import build_context
 
         mock_bridge = MagicMock()
         mock_bridge.retrieve_ticket_context.return_value = []
@@ -50,7 +50,6 @@ class TestModuleExports:
 
     def test_all_exports(self):
         """Test __all__ exports."""
-        from agents.knowledge_base_integrator import __all__
 
         assert "build_context" in __all__, "Condition must be true"
         assert "ZendeskRAGBridge" in __all__, "Condition must be true"

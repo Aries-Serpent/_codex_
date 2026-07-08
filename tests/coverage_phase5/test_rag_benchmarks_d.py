@@ -55,6 +55,7 @@ def test_benchmark_fixture_3_retrieve():
 
 def test_benchmark_fixture_3_missing():
     """Test missing metric retrieval."""
+import pytest
     fixture = BenchmarkFixture("bench3")
     value = fixture.get_metric("nonexistent")
 

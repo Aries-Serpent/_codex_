@@ -2,9 +2,16 @@
 Tests for MCP observability features.
 Covers logging, metrics, tracing, and monitoring capabilities.
 """
-
+import pytest
 import logging
 from io import StringIO
+    import uuid
+    from mcp.errors import MCPError, RateLimitExceeded, ToolNotFound
+    import time
+    from mcp.rate_limit import MCPRateLimiter
+    from mcp.errors import ToolNotFound, ValidationError
+    from mcp.registry import MCPToolRegistry
+
 
 # NOTE: Do not manually manipulate sys.path. The conftest.py already adds src/ to sys.path.
 
@@ -31,7 +38,6 @@ def test_logging_configuration():
 
 def test_request_id_tracing():
     """Test X-Request-Id header for request tracing."""
-    import uuid
 
     # Simulate request ID generation
     request_id = str(uuid.uuid4())
@@ -42,7 +48,6 @@ def test_request_id_tracing():
 
 def test_error_logging_with_context():
     """Test that errors are logged with appropriate context."""
-    from mcp.errors import MCPError, RateLimitExceeded, ToolNotFound
 
     # Errors should have meaningful messages for logging
     errors_to_test = [
@@ -80,7 +85,6 @@ def test_metrics_collection_interface():
 
 def test_performance_monitoring():
     """Test performance monitoring capabilities."""
-    import time
 
     start_time = time.time()
     # Simulate some work
@@ -124,7 +128,6 @@ def test_audit_logging():
 
 def test_rate_limit_metrics():
     """Test rate limiting metrics collection."""
-    from mcp.rate_limit import MCPRateLimiter
 
     limiter = MCPRateLimiter(rate=10.0, capacity=5, seed=42)
 
@@ -144,7 +147,6 @@ def test_rate_limit_metrics():
 
 def test_error_rate_tracking():
     """Test error rate tracking for observability."""
-    from mcp.errors import ToolNotFound, ValidationError
 
     error_counts = {"ToolNotFound": 0, "ValidationError": 0, "total": 0}
 
@@ -164,7 +166,6 @@ def test_error_rate_tracking():
 
 def test_registry_metrics():
     """Test metrics for tool registry operations."""
-    from mcp.registry import MCPToolRegistry
 
     registry = MCPToolRegistry()
 

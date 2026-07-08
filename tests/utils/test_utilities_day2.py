@@ -1,4 +1,5 @@
 """Day 2: Utilities and helpers"""
+import pytest
 
 
 class TestUtilities:

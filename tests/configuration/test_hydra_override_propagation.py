@@ -71,6 +71,7 @@ def test_seed_and_safeguard_overrides_are_respected(
     hydra_components: tuple[Callable[..., object], Callable[..., object], type], tmp_path: Path
 ) -> None:
     """CLI-style overrides must propagate to the structured config dataclass."""
+import pytest
 
     compose, initialize, _ = hydra_components
 

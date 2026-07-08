@@ -38,6 +38,11 @@ class TestClass:
 
 def test_function():
     """A test function."""
+import pytest
+import os
+import sys
+from pathlib import Path
+from typing import List, Dict
     return True
 
 CONSTANT_VALUE = 42
@@ -96,10 +101,6 @@ def test_extract_imports(temp_repo):
     # Create file with imports
     test_file = temp_repo / "test_imports.py"
     test_file.write_text("""
-import os
-import sys
-from pathlib import Path
-from typing import List, Dict
 """)
 
     imports = indexer.extract_imports(test_file)

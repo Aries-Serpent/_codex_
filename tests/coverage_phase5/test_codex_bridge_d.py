@@ -60,6 +60,7 @@ async def test_bridge_protocol_3_message():
 @pytest.mark.timeout(30)
 async def test_bridge_protocol_3_disconnect():
     """Test bridge disconnection."""
+import pytest
     bridge = BridgeProtocol("v2")
     await bridge.connect()
     result = await bridge.disconnect()

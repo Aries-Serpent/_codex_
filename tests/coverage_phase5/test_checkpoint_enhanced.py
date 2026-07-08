@@ -7,18 +7,17 @@ Target: ≥75% mutation score
 Modules: checkpoint_manager, saas_integration
 Pattern: 100% semantic assertions, 5+ per test, comprehensive edge cases
 """
-
 import tempfile
 from dataclasses import dataclass
 from datetime import datetime
 from typing import (  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+
     Any,
     Dict,
     Optional,
 )
 
 # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
-import pytest
 
 
 @dataclass

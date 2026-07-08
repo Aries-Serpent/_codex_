@@ -12,11 +12,12 @@ Tests cover:
 
 #AFTERMATH_METRIC - Phase 9.2 MCP flatten files tests (conceptual)
 """
-
 from __future__ import annotations
-
+import pytest
 import hashlib  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 from pathlib import Path
+
+
 
 
 class TestPathFlattening:

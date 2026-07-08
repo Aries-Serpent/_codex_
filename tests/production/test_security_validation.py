@@ -4,14 +4,20 @@ Production Security Validation Tests
 Tests security controls for SQL injection, XSS, CSRF, and input sanitization.
 All tests are deterministic and isolated with no external dependencies.
 """
-
 import html
 import re
 import sqlite3
-
-import pytest
-
 from codex.security.sanitization import sanitize_html, sanitize_integer
+    import secrets
+    import secrets
+    from datetime import datetime, timedelta
+    import secrets
+    from pathlib import Path
+    import shlex
+    import json
+
+
+
 
 # SQL Injection Prevention Tests
 
@@ -155,7 +161,6 @@ def test_xss_attribute_injection():
 
 def test_csrf_token_generation():
     """Test that CSRF tokens are generated correctly."""
-    import secrets
 
     token1 = secrets.token_hex(32)
     token2 = secrets.token_hex(32)
@@ -167,7 +172,6 @@ def test_csrf_token_generation():
 
 def test_csrf_token_validation():
     """Test CSRF token validation logic."""
-    import secrets
 
     session_token = secrets.token_hex(32)
     valid_token = session_token
@@ -182,7 +186,6 @@ def test_csrf_token_validation():
 
 def test_csrf_token_expiration():
     """Test CSRF token expiration logic."""
-    from datetime import datetime, timedelta
 
     creation_time = datetime.now()
     expiry_time = creation_time + timedelta(hours=1)
@@ -197,7 +200,6 @@ def test_csrf_token_expiration():
 
 def test_csrf_double_submit_cookie():
     """Test double-submit cookie CSRF protection pattern."""
-    import secrets
 
     # Generate token for cookie and form
     token = secrets.token_hex(32)
@@ -290,7 +292,6 @@ def test_input_sanitization_integer():
 
 def test_input_sanitization_path_traversal():
     """Test prevention of path traversal attacks in file paths."""
-    from pathlib import Path
 
     def safe_join(base_dir, user_path):
         base = Path(base_dir).resolve()
@@ -315,7 +316,6 @@ def test_input_sanitization_path_traversal():
 
 def test_input_sanitization_command_injection():
     """Test prevention of command injection in system calls."""
-    import shlex
 
     def sanitize_shell_arg(arg):
         # Use shlex.quote to escape shell metacharacters
@@ -337,7 +337,6 @@ def test_input_sanitization_command_injection():
 
 def test_input_sanitization_json_injection():
     """Test prevention of JSON injection attacks."""
-    import json
 
     def _safe_json_value(value):
         # Serialize and deserialize to ensure proper escaping

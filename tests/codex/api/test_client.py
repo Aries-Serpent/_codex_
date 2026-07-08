@@ -117,8 +117,9 @@ class TestApiClientErrorHandling:
 
     def test_timeout_handling(self):
         """Test handling of timeout errors."""
-        try:
+import pytest
             from src.codex.api import client
+        try:
 
             if hasattr(client, "ApiClient"):
                 api_client = client.ApiClient(timeout=1)

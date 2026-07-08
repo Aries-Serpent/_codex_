@@ -1,12 +1,12 @@
 from __future__ import annotations
-
-import importlib
-
-import pytest
-
 pytest.importorskip("fastapi")
+import importlib
 from fastapi import HTTPException, Request
 from fastapi.testclient import TestClient
+        import asyncio
+
+
+
 
 
 @pytest.fixture()
@@ -31,7 +31,6 @@ def test_get_request_id_and_authenticate_request(main_module) -> None:
 def test_get_request_context_missing_raises(main_module) -> None:
     request = Request({"type": "http", "headers": [], "method": "GET", "path": "/"})
     with pytest.raises(HTTPException) as exc:
-        import asyncio
 
         asyncio.run(main_module.get_request_context(request))
     assert exc.value.status_code == 401, "Value must be initialized"

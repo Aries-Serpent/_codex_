@@ -4,8 +4,9 @@ Comprehensive test suite for functional training capability.
 Tests reproducibility, determinism, checkpointing, validation, and safeguards.
 Following High Maturity Achievement Plan patterns (target: 15-20 tests).
 """
+        from scripts.space_traversal.detectors import functional_training
+        from scripts.space_traversal.detectors.functional_training import detect
 
-import pytest
 
 
 class TestFunctionalTrainingDetector:
@@ -13,13 +14,11 @@ class TestFunctionalTrainingDetector:
 
     def test_detector_import(self):
         """Verify functional training detector can be imported."""
-        from scripts.space_traversal.detectors import functional_training
 
         assert hasattr(functional_training, "detect")
 
     def test_detector_contract(self):
         """Test detector follows required contract."""
-        from scripts.space_traversal.detectors.functional_training import detect
 
         result = detect({"files": []})
         assert "id" in result, "Result must not be empty"

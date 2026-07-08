@@ -3,12 +3,12 @@ Test Registry
 
 Test module for registry.
 """
-
 import sys
 import types
 from importlib.metadata import EntryPoint
+from codex_ml.registry.base import (
 
-import pytest
+
 
 # Provide a lightweight OmegaConf stub so importing codex_ml does not require the
 # optional dependency in minimal test environments.
@@ -98,7 +98,6 @@ if (
     transformers.PreTrainedModel = PreTrainedModel
     sys.modules["transformers"] = transformers
 
-from codex_ml.registry.base import (
     Registry,
     RegistryConflictError,
     RegistryLoadError,

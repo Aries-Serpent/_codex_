@@ -3,10 +3,11 @@ Test Verify Pins
 
 Test module for verify pins.
 """
-
+import pytest
 import subprocess
 import sys
 from pathlib import Path
+
 
 
 def test_verify_pins(tmp_path: Path) -> None:

@@ -3,10 +3,22 @@ Tests for codex.release.manifest module.
 
 This module contains tests for release manifest handling.
 """
-
 import json
+        from codex.release.manifest import Component
+        from codex.release.manifest import Component
+        from codex.release.manifest import Symlink
+        from codex.release.manifest import Component, Manifest
+        from codex.release.manifest import _require
+        from codex.release.manifest import _require
+        from codex.release.manifest import _is_rel_safe
+        from codex.release.manifest import _is_rel_safe
+        from codex.release.manifest import _is_rel_safe
+        from codex.release.manifest import load_manifest
+        from codex.release.manifest import load_manifest
+        from codex.release.manifest import load_manifest
+        from codex.release.manifest import load_manifest
 
-import pytest
+
 
 
 class TestComponent:
@@ -14,7 +26,6 @@ class TestComponent:
 
     def test_basic_creation(self):
         """Test Component basic creation."""
-        from codex.release.manifest import Component
 
         component = Component(tombstone="tombstone_1", dest_path="path/to/dest")
 
@@ -26,7 +37,6 @@ class TestComponent:
 
     def test_custom_values(self):
         """Test Component with custom values."""
-        from codex.release.manifest import Component
 
         component = Component(
             tombstone="ts",
@@ -45,7 +55,6 @@ class TestSymlink:
 
     def test_basic_creation(self):
         """Test Symlink basic creation."""
-        from codex.release.manifest import Symlink
 
         symlink = Symlink(link_path="path/to/link", target="path/to/target")
 
@@ -58,7 +67,6 @@ class TestManifest:
 
     def test_basic_creation(self):
         """Test Manifest basic creation."""
-        from codex.release.manifest import Component, Manifest
 
         manifest = Manifest(
             release_id="release_1",
@@ -82,14 +90,12 @@ class TestRequire:
 
     def test_require_true(self):
         """Test _require with true condition."""
-        from codex.release.manifest import _require
 
         # Should not raise
         _require(True, "This should not raise")
 
     def test_require_false(self):
         """Test _require with false condition."""
-        from codex.release.manifest import _require
 
         with pytest.raises(ValueError, match="Test error"):
             _require(False, "Test error")
@@ -100,20 +106,17 @@ class TestIsRelSafe:
 
     def test_relative_path(self):
         """Test relative path is safe."""
-        from codex.release.manifest import _is_rel_safe
 
         assert _is_rel_safe("path/to/file") is True, "Condition must be true"
         assert _is_rel_safe("file.txt") is True, "Condition must be true"
 
     def test_absolute_path(self):
         """Test absolute path is not safe."""
-        from codex.release.manifest import _is_rel_safe
 
         assert _is_rel_safe("/path/to/file") is False, "Condition must be true"
 
     def test_path_traversal(self):
         """Test path traversal is not safe."""
-        from codex.release.manifest import _is_rel_safe
 
         assert _is_rel_safe("../parent") is False, "Condition must be true"
         assert _is_rel_safe("path/../other") is False, "Condition must be true"
@@ -124,7 +127,6 @@ class TestLoadManifest:
 
     def test_valid_manifest(self, tmp_path):
         """Test loading a valid manifest."""
-        from codex.release.manifest import load_manifest
 
         manifest_data = {
             "release_id": "test_release_1",
@@ -148,7 +150,6 @@ class TestLoadManifest:
 
     def test_missing_release_id(self, tmp_path):
         """Test manifest without release_id."""
-        from codex.release.manifest import load_manifest
 
         manifest_data = {
             "version": "1.0.0",
@@ -165,7 +166,6 @@ class TestLoadManifest:
 
     def test_missing_version(self, tmp_path):
         """Test manifest without version."""
-        from codex.release.manifest import load_manifest
 
         manifest_data = {
             "release_id": "test_release_1",
@@ -182,7 +182,6 @@ class TestLoadManifest:
 
     def test_empty_components(self, tmp_path):
         """Test manifest with empty components."""
-        from codex.release.manifest import load_manifest
 
         manifest_data = {
             "release_id": "test_release_1",

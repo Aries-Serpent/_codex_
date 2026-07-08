@@ -9,9 +9,11 @@ Tests cover:
 - Timeout handling
 - Resource cleanup
 """
-
+import pytest
 from enum import Enum
 from time import time
+        import random
+
 
 
 class CircuitState(Enum):
@@ -124,7 +126,6 @@ class TestRetryLogic:
 
     def test_retry_with_jitter(self):
         """Test retry with jitter to prevent thundering herd."""
-        import random
 
         base_delay = 1.0
         delays = []

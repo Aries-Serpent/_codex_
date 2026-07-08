@@ -3,10 +3,9 @@ Test Checkpointing Utils Extra
 
 Test module for checkpointing utils extra.
 """
-
-import pytest
-
 from codex_ml.utils import checkpointing as ckpt
+
+
 
 
 class DummyModel:

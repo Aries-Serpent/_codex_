@@ -4,16 +4,17 @@ Production Performance Benchmarks
 Tests performance characteristics for training, data loading, and API operations.
 All tests are deterministic with fixed seeds and no external dependencies.
 """
-
-import pytest
-
 pytest.importorskip("numpy")
-
-
 import json
 import time
-
 import numpy as np
+    from collections import defaultdict
+    from time import time as get_time
+
+
+
+
+
 
 # Training Loop Performance Tests
 
@@ -352,8 +353,6 @@ def test_api_request_validation_performance():
 
 def test_api_rate_limiting_overhead():
     """Test performance overhead of rate limiting logic."""
-    from collections import defaultdict
-    from time import time as get_time
 
     # Simple rate limiter
     rate_limits = defaultdict(list)

@@ -3,21 +3,20 @@ Test Checkpoint Manifest
 
 Test module for checkpoint manifest.
 """
-
 from __future__ import annotations
-
-import pytest
-
 pytest.importorskip("numpy", reason="numpy required")
-
+    torch = pytest.importorskip("torch")
 import json
 from pathlib import Path
-
 from training import checkpointing
 
 
+
+
+
+
+
 def _require_torch():
-    torch = pytest.importorskip("torch")
     if not hasattr(torch, "nn") or not hasattr(torch, "optim"):
         pytest.skip("torch.nn and torch.optim are required for checkpoint tests")
     return torch

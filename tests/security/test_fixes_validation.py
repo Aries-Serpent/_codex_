@@ -3,15 +3,18 @@ Validation tests to ensure all 5 test fixes from job 61355404613 are working.
 
 This module serves as a smoke test to verify that the critical fixes remain functional.
 """
-
-import pytest
-
 pytest.importorskip("numpy")
+    from src.security.audit_logger import AuditLogger
+    from src.utils.log_sanitizer import sanitize_log
+    from src.security.core import SecurityError, enforce_absolute_path
+        from src.security.encryption import EncryptionError
+    import numpy as np
+
+
 
 
 def test_audit_logger_log_dir_parameter(tmp_path):
     """Verify AuditLogger accepts log_dir parameter."""
-    from src.security.audit_logger import AuditLogger
 
     # Should not raise TypeError
     test_dir = tmp_path / "test_audit"
@@ -21,7 +24,6 @@ def test_audit_logger_log_dir_parameter(tmp_path):
 
 def test_sanitize_log_alias_exists():
     """Verify sanitize_log alias is exported."""
-    from src.utils.log_sanitizer import sanitize_log
 
     # Should be importable and callable
     result = sanitize_log("test message")
@@ -30,7 +32,6 @@ def test_sanitize_log_alias_exists():
 
 def test_security_error_and_enforce_absolute_path():
     """Verify SecurityError and enforce_absolute_path exist."""
-    from src.security.core import SecurityError, enforce_absolute_path
 
     # Should raise SecurityError for relative paths
     with pytest.raises(SecurityError):
@@ -40,7 +41,6 @@ def test_security_error_and_enforce_absolute_path():
 def test_encryption_error_not_frozen():
     """Verify EncryptionError is a regular exception, not a frozen dataclass."""
     try:
-        from src.security.encryption import EncryptionError
 
         # Should be able to instantiate with message
         error = EncryptionError("test error")
@@ -54,7 +54,6 @@ def test_sparse_computation_tolerance():
     """Verify sparse computation test uses appropriate tolerance."""
     # Instead of checking source code, verify that the test function itself
     # accepts the tolerance parameters by checking the actual test behavior
-    import numpy as np
 
     # Replicate the sparse computation scenario that was causing failures
     np.random.seed(42)

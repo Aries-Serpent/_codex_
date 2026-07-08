@@ -9,11 +9,18 @@ Tests cover:
 
 Phase 48: Coverage improvement for 0% coverage module.
 """
-
 import os
 from unittest.mock import MagicMock, patch
+            from experiments import manager
+        from experiments.manager import init_experiment
+        from experiments.manager import init_experiment
+                from experiments.manager import init_experiment
+                from experiments.manager import init_experiment
+            import experiments
+            from experiments import manager
+            from codex_ml.utils.optional import optional_dependency_error
 
-import pytest
+
 
 
 class TestInitExperiment:
@@ -22,7 +29,6 @@ class TestInitExperiment:
     def test_import_experiments_manager(self):
         """Test that experiments manager module can be imported."""
         try:
-            from experiments import manager
 
             assert hasattr(manager, "init_experiment")
         except ImportError:
@@ -31,7 +37,6 @@ class TestInitExperiment:
     @patch.dict(os.environ, {"EXPERIMENT_BACKEND": "file"}, clear=False)
     def test_init_experiment_file_backend_no_mlflow(self):
         """Test init_experiment with file backend when mlflow not available."""
-        from experiments.manager import init_experiment
 
         # Should raise ImportError wrapper when mlflow not available
         with pytest.raises(ImportError):
@@ -41,7 +46,6 @@ class TestInitExperiment:
     @patch("experiments.manager.mlflow")
     def test_init_experiment_file_backend_with_mlflow(self, mock_mlflow):
         """Test init_experiment with file backend and mocked mlflow."""
-        from experiments.manager import init_experiment
 
         # Mock the mlflow module at import time
         with patch.dict("sys.modules", {"mlflow": mock_mlflow}):
@@ -62,7 +66,6 @@ class TestInitExperiment:
 
         with patch.dict("sys.modules", {"mlflow": mock_mlflow}):
             try:
-                from experiments.manager import init_experiment
 
                 with pytest.raises(RuntimeError, match="MLFLOW_TRACKING_URI must be set"):
                     init_experiment("test_experiment")
@@ -80,7 +83,6 @@ class TestInitExperiment:
 
         with patch.dict("sys.modules", {"mlflow": mock_mlflow}):
             try:
-                from experiments.manager import init_experiment
 
                 init_experiment("test_experiment")
                 # Should set tracking URI and experiment
@@ -94,7 +96,6 @@ class TestModuleImports:
     def test_experiments_package_exists(self):
         """Test experiments package can be imported."""
         try:
-            import experiments
 
             assert experiments is not None, "experiments must be initialized"
         except ImportError:
@@ -103,7 +104,6 @@ class TestModuleImports:
     def test_manager_module_exists(self):
         """Test manager module exists."""
         try:
-            from experiments import manager
 
             assert manager is not None, "manager must be initialized"
         except ImportError:
@@ -116,7 +116,6 @@ class TestOptionalDependencyError:
     def test_optional_dependency_error_raised(self):
         """Test that optional_dependency_error is properly raised."""
         try:
-            from codex_ml.utils.optional import optional_dependency_error
 
             error = optional_dependency_error("test_pkg", purpose="testing")
             assert "test_pkg" in str(error) or error is not None, "error must be initialized"

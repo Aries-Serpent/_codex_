@@ -204,6 +204,7 @@
 
 class TestGenerateIndexEdgeCases:
     """Edge cases for generate_index."""
+import pytest
 
     def test_returns_false_for_empty_dir(self, tmp_path, monkeypatch):
         docs = tmp_path / "docs"

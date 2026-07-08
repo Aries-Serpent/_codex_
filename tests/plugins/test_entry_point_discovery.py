@@ -3,10 +3,12 @@ Test Entry Point Discovery
 
 Test module for entry point discovery.
 """
-
+import pytest
 import types
-
 from codex_ml.plugins.registry import Registry
+    import importlib.metadata
+
+
 
 
 def test_entry_point_discovery(monkeypatch) -> None:
@@ -35,7 +37,6 @@ def test_entry_point_discovery(monkeypatch) -> None:
         return Eps()
 
     # Patch importlib.metadata.entry_points which is imported in registry.py
-    import importlib.metadata
 
     monkeypatch.setattr(importlib.metadata, "entry_points", fake_entry_points)
 

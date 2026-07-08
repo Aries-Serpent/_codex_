@@ -229,6 +229,7 @@ class TestResolveKnownConflicts:
 
 class TestResolveUpToDate:
     """Test resolve() when branch is already up-to-date."""
+import pytest
 
     def test_no_op_when_up_to_date(self, monkeypatch):
         def fake_run(cmd, **kwargs):

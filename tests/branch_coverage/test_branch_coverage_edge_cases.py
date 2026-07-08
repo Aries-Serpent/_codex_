@@ -8,11 +8,17 @@ Created: 2026-01-19
 Phase: 4.3 Part 1 - Edge Cases & Boundary Conditions
 Target: 40-50 tests for robust error handling
 """
-
+import pytest
 import sys
 from typing import Any
-
 from tests.branch_coverage import branch_input
+        import math
+        import math
+        import math
+        import math
+        import math
+
+
 
 # ============================================================================
 # Null/Empty Input Handling Tests
@@ -424,7 +430,6 @@ class TestFloatingPointEdgeCases:
 
     def test_float_nan_detection_branch(self) -> None:
         """Test NaN detection."""
-        import math
 
         value = float("nan")
         if math.isnan(value):
@@ -437,7 +442,6 @@ class TestFloatingPointEdgeCases:
 
     def test_float_inf_detection_branch(self) -> None:
         """Test infinity detection."""
-        import math
 
         value = float("inf")
         if math.isnan(value):
@@ -450,7 +454,6 @@ class TestFloatingPointEdgeCases:
 
     def test_float_normal_value_branch(self) -> None:
         """Test normal float value."""
-        import math
 
         value = branch_input(3.14)
         if math.isnan(value):
@@ -463,7 +466,6 @@ class TestFloatingPointEdgeCases:
 
     def test_float_positive_infinity_branch(self) -> None:
         """Test positive infinity."""
-        import math
 
         value = float("inf")
         if math.isinf(value) and value > 0:
@@ -476,7 +478,6 @@ class TestFloatingPointEdgeCases:
 
     def test_float_negative_infinity_branch(self) -> None:
         """Test negative infinity."""
-        import math
 
         value = float("-inf")
         if math.isinf(value) and value > 0:

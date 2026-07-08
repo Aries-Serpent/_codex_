@@ -4,8 +4,29 @@ Comprehensive coverage tests for physics_orchestrator.py module.
 Strategy: Test all major classes, methods, and code paths to maximize coverage.
 Target: Increase physics_orchestrator.py from 20% to 60%+
 """
-
+import pytest
 from pathlib import Path
+        from agents.physics_orchestrator import DecisionState
+        from agents.physics_orchestrator import DecisionState
+        from agents.physics_orchestrator import ActionPath, ActionType
+        from agents.physics_orchestrator import ActionPath, ActionType
+        from agents.physics_orchestrator import ActionPath, ActionType
+        from agents.physics_orchestrator import ActionType
+        from agents.physics_orchestrator import ForceVector
+        from agents.physics_orchestrator import ForceVector
+        from agents.physics_orchestrator import ForceVector
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
+        from agents.physics_orchestrator import (
+        from agents.physics_orchestrator import (
+        from agents.physics_orchestrator import (
+        from agents.physics_orchestrator import (
+        from agents.physics_orchestrator import (
+        from agents.physics_orchestrator import (
+        from agents.physics_orchestrator import (
+        from agents.physics_orchestrator import (
+        from agents.physics_orchestrator import (
+
 
 # ============================================================================
 # PHYSICS_ORCHESTRATOR - DECISION STATE TESTS
@@ -17,7 +38,6 @@ class TestDecisionState:
 
     def test_decision_state_creation(self):
         """Test DecisionState can be created."""
-        from agents.physics_orchestrator import DecisionState
 
         state = DecisionState(current_position="start", goal_position="end")
 
@@ -28,7 +48,6 @@ class TestDecisionState:
 
     def test_decision_state_with_all_params(self):
         """Test DecisionState with all parameters."""
-        from agents.physics_orchestrator import DecisionState
 
         state = DecisionState(
             current_position="here",
@@ -57,7 +76,6 @@ class TestActionPath:
 
     def test_action_path_creation(self):
         """Test ActionPath can be created."""
-        from agents.physics_orchestrator import ActionPath, ActionType
 
         path = ActionPath(action_type=ActionType.TEST, description="Run tests")
 
@@ -66,7 +84,6 @@ class TestActionPath:
 
     def test_action_path_calculate_total_energy(self):
         """Test calculate_total_energy method."""
-        from agents.physics_orchestrator import ActionPath, ActionType
 
         path = ActionPath(
             action_type=ActionType.AUDIT,
@@ -83,7 +100,6 @@ class TestActionPath:
 
     def test_action_path_calculate_optimization_score(self):
         """Test calculate_optimization_score method."""
-        from agents.physics_orchestrator import ActionPath, ActionType
 
         path = ActionPath(
             action_type=ActionType.REFACTOR,
@@ -102,7 +118,6 @@ class TestActionPath:
 
     def test_action_type_enum_values(self):
         """Test ActionType enum has expected values."""
-        from agents.physics_orchestrator import ActionType
 
         assert ActionType.AUDIT is not None, "AUDIT must be initialized"
         assert ActionType.REFACTOR is not None, "REFACTOR must be initialized"
@@ -122,7 +137,6 @@ class TestForceVector:
 
     def test_force_vector_creation(self):
         """Test ForceVector can be created."""
-        from agents.physics_orchestrator import ForceVector
 
         force = ForceVector(name="momentum", magnitude=0.8, direction=45.0)
 
@@ -132,7 +146,6 @@ class TestForceVector:
 
     def test_force_vector_get_components(self):
         """Test get_components method."""
-        from agents.physics_orchestrator import ForceVector
 
         force = ForceVector(name="force1", magnitude=1.0, direction=0.0)  # 0 radians
 
@@ -143,7 +156,6 @@ class TestForceVector:
 
     def test_force_vector_with_3d_direction(self):
         """Test ForceVector with 3D direction vector."""
-        from agents.physics_orchestrator import ForceVector
 
         force = ForceVector(name="3d_force", magnitude=2.0, direction=[1.0, 0.0, 0.0])
 
@@ -163,7 +175,6 @@ class TestPhysicsInspiredOrchestratorCore:
 
     def test_orchestrator_initialization(self):
         """Test orchestrator can be initialized."""
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orch = PhysicsInspiredOrchestrator()
 
@@ -174,7 +185,6 @@ class TestPhysicsInspiredOrchestratorCore:
 
     def test_orchestrator_with_config_path(self):
         """Test orchestrator with custom config path."""
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         # Non-existent path should use defaults
         orch = PhysicsInspiredOrchestrator(config_path=Path("/nonexistent/config.json"))
@@ -184,7 +194,6 @@ class TestPhysicsInspiredOrchestratorCore:
 
     def test_assess_situation(self):
         """Test assess_situation method."""
-        from agents.physics_orchestrator import (
             DecisionState,
             PhysicsInspiredOrchestrator,
         )
@@ -200,7 +209,6 @@ class TestPhysicsInspiredOrchestratorCore:
 
     def test_deliberate_paths(self):
         """Test deliberate_paths method."""
-        from agents.physics_orchestrator import (
             ActionPath,
             ActionType,
             DecisionState,
@@ -231,7 +239,6 @@ class TestPhysicsInspiredOrchestratorCore:
 
     def test_optimize_path_method(self):
         """Test optimize_path method."""
-        from agents.physics_orchestrator import (
             ActionPath,
             ActionType,
             DecisionState,
@@ -261,7 +268,6 @@ class TestPhysicsInspiredOrchestratorCore:
 
     def test_act_with_none_path(self):
         """Test act method when no path provided."""
-        from agents.physics_orchestrator import (
             DecisionState,
             PhysicsInspiredOrchestrator,
         )
@@ -277,7 +283,6 @@ class TestPhysicsInspiredOrchestratorCore:
 
     def test_act_with_valid_path(self):
         """Test act method with valid path."""
-        from agents.physics_orchestrator import (
             ActionPath,
             ActionType,
             DecisionState,
@@ -298,7 +303,6 @@ class TestPhysicsInspiredOrchestratorCore:
 
     def test_orchestrate_full_cycle(self):
         """Test full orchestrate cycle."""
-        from agents.physics_orchestrator import (
             ActionPath,
             ActionType,
             DecisionState,
@@ -335,7 +339,6 @@ class TestOrchestratorHelpers:
 
     def test_calculate_distance(self):
         """Test _calculate_distance helper."""
-        from agents.physics_orchestrator import (
             DecisionState,
             PhysicsInspiredOrchestrator,
         )
@@ -350,7 +353,6 @@ class TestOrchestratorHelpers:
 
     def test_calculate_entropy(self):
         """Test _calculate_entropy helper."""
-        from agents.physics_orchestrator import (
             DecisionState,
             PhysicsInspiredOrchestrator,
         )
@@ -365,7 +367,6 @@ class TestOrchestratorHelpers:
 
     def test_calculate_potentials(self):
         """Test potential calculation helpers."""
-        from agents.physics_orchestrator import (
             DecisionState,
             PhysicsInspiredOrchestrator,
         )

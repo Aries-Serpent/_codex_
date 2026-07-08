@@ -3,13 +3,13 @@ Test Audit Pipeline
 
 Test module for audit pipeline.
 """
-
 import importlib.util
 import json
 import subprocess
 from pathlib import Path
+    import re
 
-import pytest
+
 
 # Q005 canonical fix (deep research 2026-02-23):
 # audit_runner.py gracefully degrades when its sub-scanners are not on PYTHONPATH,
@@ -35,7 +35,6 @@ KNOWN_ERROR_PATTERNS = [
 
 def is_known_error(stderr: str) -> bool:
     """Check if error matches known patterns."""
-    import re
 
     stderr_lower = stderr.lower()
     return any(re.search(pattern.lower(), stderr_lower) for pattern in KNOWN_ERROR_PATTERNS)

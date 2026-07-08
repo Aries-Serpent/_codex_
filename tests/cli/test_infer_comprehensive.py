@@ -3,11 +3,11 @@ Tests for codex_ml.cli.infer module.
 
 Tests model inference CLI functionality.
 """
-
 import subprocess
 import sys
+            from codex_ml.cli import infer
 
-import pytest
+
 
 
 class TestInferModuleImport:
@@ -16,7 +16,6 @@ class TestInferModuleImport:
     def test_infer_module_import(self):
         """Test that infer module can be imported."""
         try:
-            from codex_ml.cli import infer
 
             assert infer is not None, "infer must be initialized"
         except ImportError as e:

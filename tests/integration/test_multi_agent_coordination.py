@@ -80,6 +80,7 @@ class TestEdgeCases:
 
     def test_partial_failure_handling(self):
         """Test handling partial operation failures."""
+import pytest
         # 3 operations: 2 succeed, 1 fails
         # Rollback strategy
         # State consistency maintained

@@ -8,18 +8,17 @@ This file contains enhanced test coverage for CLI RAG module focusing on:
 - Argument validation
 - Integration scenarios
 """
-
+pytest.importorskip("typer")
 import json
 from unittest.mock import MagicMock, patch
-
-import pytest
-
-pytest.importorskip("typer")
-
 from typer.testing import CliRunner
+    from codex.cli_rag import app
+
+
+
+
 
 try:
-    from codex.cli_rag import app
 
     HAS_CLI_RAG = True
 except ImportError:

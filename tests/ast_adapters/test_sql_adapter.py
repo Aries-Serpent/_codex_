@@ -67,6 +67,7 @@ class TestSQLASTAdapter:
 
     def test_parse_insert(self, adapter):
         """Test parsing INSERT statement."""
+import pytest
         sql = "INSERT INTO users (id, name) VALUES (1, 'Alice')"
         root = adapter.parse(sql)
 

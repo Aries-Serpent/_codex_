@@ -3,9 +3,10 @@ Test Toy Trainer
 
 Test module for toy trainer.
 """
-
+import pytest
 import subprocess
 import sys
+
 
 
 def test_toy_trainer_runs(tmp_path):

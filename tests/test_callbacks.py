@@ -3,10 +3,10 @@ Test Callbacks
 
 Test module for callbacks.
 """
-
 from typing import Any
+        from codex_ml.training.callbacks import EarlyStopping
 
-import pytest
+
 
 
 def _make_early_stopping(patience: int, min_delta: float, mode: str):
@@ -23,7 +23,6 @@ def _make_early_stopping(patience: int, min_delta: float, mode: str):
     """
     EarlyStopping = None
     try:
-        from codex_ml.training.callbacks import EarlyStopping
     except (ImportError, AttributeError) as e:
         # If import fails, skip tests rather than erroring the entire suite.
         pytest.skip(f"EarlyStopping import failed: {e}")

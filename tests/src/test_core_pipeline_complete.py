@@ -3,6 +3,31 @@ Test Core Pipeline Complete
 
 Test module for core pipeline complete.
 """
+import importlib
+import json
+import tempfile
+from pathlib import Path
+        import ast
+        import ast
+        import ast
+        import ast
+        import ast
+        import ast
+        import ast
+        import ast
+        import ast
+        import ast
+        import ast
+        import ast
+        import ast
+        import ast
+        import ast
+        import ast
+        import ast
+        import ast
+        import ast
+        import ast
+        import os
 
 #! /usr/bin/env python3
 """
@@ -10,12 +35,7 @@ Test suite for core pipeline: code ingestion, AST transformation, RAG retrieval,
 Complete test coverage for Phase 9.1 - 100 comprehensive tests
 """
 
-import importlib
-import json
-import tempfile
-from pathlib import Path
 
-import pytest
 
 # ============================================================================
 # CODE INGESTION TESTS (20 tests)
@@ -226,21 +246,18 @@ class TestASTTransformation:
 
     def test_ast_parse_valid(self):
         """Test parsing valid Python"""
-        import ast
 
         tree = ast.parse("x = 1 + 2")
         assert isinstance(tree, ast.Module)
 
     def test_ast_syntax_error(self):
         """Test syntax error handling"""
-        import ast
 
         with pytest.raises(SyntaxError):
             ast.parse("def incomplete(")
 
     def test_ast_node_traversal(self):
         """Test traversing AST nodes"""
-        import ast
 
         tree = ast.parse("def f():\n    return 1")
         nodes = list(ast.walk(tree))
@@ -248,7 +265,6 @@ class TestASTTransformation:
 
     def test_ast_function_extraction(self):
         """Test extracting functions"""
-        import ast
 
         tree = ast.parse("def f1(): pass\ndef f2(): pass")
         funcs = [n for n in ast.walk(tree) if isinstance(n, ast.FunctionDef)]
@@ -256,7 +272,6 @@ class TestASTTransformation:
 
     def test_ast_class_extraction(self):
         """Test extracting classes"""
-        import ast
 
         tree = ast.parse("class C:\n    pass")
         classes = [n for n in ast.walk(tree) if isinstance(n, ast.ClassDef)]
@@ -264,7 +279,6 @@ class TestASTTransformation:
 
     def test_ast_import_detection(self):
         """Test detecting imports"""
-        import ast
 
         tree = ast.parse("import os\nfrom pathlib import Path")
         imports = [n for n in ast.walk(tree) if isinstance(n, (ast.Import, ast.ImportFrom))]
@@ -272,7 +286,6 @@ class TestASTTransformation:
 
     def test_ast_variable_names(self):
         """Test extracting variable names"""
-        import ast
 
         tree = ast.parse("x = 1\ny = 2")
         names = [n.id for n in ast.walk(tree) if isinstance(n, ast.Name)]
@@ -280,7 +293,6 @@ class TestASTTransformation:
 
     def test_ast_docstring(self):
         """Test extracting docstrings"""
-        import ast
 
         tree = ast.parse('def f():\n    """doc"""\n    pass')
         func = tree.body[0]
@@ -289,7 +301,6 @@ class TestASTTransformation:
 
     def test_ast_line_numbers(self):
         """Test line number tracking"""
-        import ast
 
         tree = ast.parse("x = 1\ny = 2")
         assigns = [n for n in ast.walk(tree) if isinstance(n, ast.Assign)]
@@ -297,7 +308,6 @@ class TestASTTransformation:
 
     def test_ast_complexity(self):
         """Test complexity calculation"""
-        import ast
 
         code = "if x:\n    for i in range(10):\n        pass"
         tree = ast.parse(code)
@@ -306,7 +316,6 @@ class TestASTTransformation:
 
     def test_ast_nested_functions(self):
         """Test nested function detection"""
-        import ast
 
         code = "def outer():\n    def inner(): pass"
         tree = ast.parse(code)
@@ -315,7 +324,6 @@ class TestASTTransformation:
 
     def test_ast_decorator_detection(self):
         """Test detecting decorators"""
-        import ast
 
         code = "@decorator\ndef f(): pass"
         tree = ast.parse(code)
@@ -324,7 +332,6 @@ class TestASTTransformation:
 
     def test_ast_async_functions(self):
         """Test async function detection"""
-        import ast
 
         code = "async def f(): pass"
         tree = ast.parse(code)
@@ -333,7 +340,6 @@ class TestASTTransformation:
 
     def test_ast_comprehensions(self):
         """Test list comprehension detection"""
-        import ast
 
         code = "[x for x in range(10)]"
         tree = ast.parse(code)
@@ -342,7 +348,6 @@ class TestASTTransformation:
 
     def test_ast_lambda(self):
         """Test lambda detection"""
-        import ast
 
         code = "f = lambda x: x + 1"
         tree = ast.parse(code)
@@ -351,7 +356,6 @@ class TestASTTransformation:
 
     def test_ast_exception_handlers(self):
         """Test exception handler detection"""
-        import ast
 
         code = "try:\n    pass\nexcept:\n    pass"
         tree = ast.parse(code)
@@ -360,7 +364,6 @@ class TestASTTransformation:
 
     def test_ast_with_statement(self):
         """Test with statement detection"""
-        import ast
 
         code = "with open('f') as f:\n    pass"
         tree = ast.parse(code)
@@ -369,7 +372,6 @@ class TestASTTransformation:
 
     def test_ast_global_statement(self):
         """Test global statement detection"""
-        import ast
 
         code = "def f():\n    global x\n    x = 1"
         tree = ast.parse(code)
@@ -378,7 +380,6 @@ class TestASTTransformation:
 
     def test_ast_assert_statement(self):
         """Test assert statement detection"""
-        import ast
 
         code = "assert x == 1"
         tree = ast.parse(code)
@@ -387,7 +388,6 @@ class TestASTTransformation:
 
     def test_ast_empty_module(self):
         """Test parsing empty module"""
-        import ast
 
         tree = ast.parse("")
         assert isinstance(tree, ast.Module)
@@ -524,7 +524,6 @@ class TestConfiguration:
 
     def test_config_env_override(self):
         """Test environment override"""
-        import os
 
         os.environ["TEST_VAR"] = "value"
         assert os.environ.get("TEST_VAR") == "value", "Value must be initialized"

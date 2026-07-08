@@ -10,10 +10,9 @@ This module contains comprehensive tests for:
 
 CRITICAL: These tests validate disaster recovery capability.
 """
-
 from unittest.mock import Mock
 
-import pytest
+
 
 
 class TestDatabaseRollback:

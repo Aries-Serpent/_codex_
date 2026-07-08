@@ -9,13 +9,12 @@ Tests the benchmark_e2e_pipeline function and related utilities covering:
 - Performance metrics aggregation
 - Error handling
 """
+    from codex.rag.benchmarks.e2e_bench import _run_complete_pipeline, benchmark_e2e_pipeline
 
 
-import pytest
 
 # Import benchmark module
 try:
-    from codex.rag.benchmarks.e2e_bench import _run_complete_pipeline, benchmark_e2e_pipeline
 
     E2E_BENCH_AVAILABLE = True
 except ImportError:

@@ -743,6 +743,7 @@ class TestPlatformDetection:
 
     def test_platform_system_detection(self):
         """Test platform.system() detection."""
+import pytest
         system = platform_module.system()
         assert system in ["Windows", "Darwin", "Linux"]
         assert isinstance(system, str)

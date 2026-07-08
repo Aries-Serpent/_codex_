@@ -39,8 +39,11 @@ class Base:
 
     file2 = source_dir / "file2.py"
     file2.write_text("""
+import pytest
 from abc import ABC, abstractmethod
 from typing import Protocol
+import abc
+import typing
 
 class AbstractBase(ABC):
     @abstractmethod
@@ -154,8 +157,6 @@ def test_stub_cleanup_ast_attributes(tmp_path):
 
     file_ast = source_dir / "ast_test.py"
     file_ast.write_text("""
-import abc
-import typing
 
 class MyABC(abc.ABC):
     @abc.abstractmethod

@@ -27,6 +27,9 @@ def test_server_listtools_request() -> None:
     of tools, not wrapped in an object like {"tools": [...], "version": "..."}.
     This matches JSON-RPC client expectations and the MCP specification.
     """
+import pytest
+        import sys
+    from mcp.server.stdio import MockStdioTransport
     # Arrange
     registry = ToolRegistry()
     registry.register(Tool(name="tool1", description="First tool"))
@@ -211,7 +214,6 @@ def test_stdio_transport_builds_reader_from_event_loop(monkeypatch: pytest.Monke
             self.connected = (factory(), pipe)
 
     async def _verify_reader_creation() -> tuple[bool, bool]:
-        import sys
 
         loop = _FakeLoop()
         transport = StdioTransport(reader=None, writer=None)
@@ -355,7 +357,6 @@ def test_close_swallows_writer_wait_closed_errors() -> None:
 
 
 def test_mock_stdio_transport_buffers_messages() -> None:
-    from mcp.server.stdio import MockStdioTransport
 
     async def _exercise() -> tuple[
         Optional[dict[str, Any]],

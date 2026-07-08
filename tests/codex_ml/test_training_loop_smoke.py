@@ -6,8 +6,9 @@ Test Training Loop Smoke
 
 Test module for training loop smoke.
 """
-
+import pytest
 from codex_ml.training import loop
+
 
 
 def test_train_one_step_reduces_loss():

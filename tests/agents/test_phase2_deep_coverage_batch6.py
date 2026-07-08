@@ -12,13 +12,38 @@ Systematically applies advanced physics patterns:
 
 Target: +4-5% coverage gain (47% → 52%)
 """
-
-import pytest
-
 pytest.importorskip("numpy", reason="numpy not installed")
-pytest.importorskip("numpy")
-
 import numpy as np
+        from agents.advanced_physics_calculators import ChaoticAttractor
+        from agents.advanced_physics_calculators import ChaoticAttractor
+        from agents.advanced_physics_calculators import ChaoticAttractor
+        from agents.advanced_physics_calculators import ChaoticAttractor
+        from agents.advanced_physics_calculators import ChaoticAttractor
+        from agents.advanced_physics_calculators import ChaoticNeuralNetwork
+        from agents.advanced_physics_calculators import ChaoticNeuralNetwork
+        from agents.advanced_physics_calculators import ChaoticNeuralNetwork
+        from agents.advanced_physics_calculators import ChaoticNeuralNetwork
+        from agents.advanced_physics_calculators import FractalAnalyzer
+        from agents.advanced_physics_calculators import FractalAnalyzer
+        from agents.advanced_physics_calculators import FractalAnalyzer
+        from agents.advanced_physics_calculators import FractalAnalyzer
+        from agents.advanced_physics_calculators import FractalAnalyzer
+        from agents.advanced_physics_calculators import FluidChannel
+        from agents.advanced_physics_calculators import FluidFlowScheduler
+        from agents.advanced_physics_calculators import FluidChannel, FluidFlowScheduler
+        from agents.advanced_physics_calculators import EMFieldRouter
+        from agents.advanced_physics_calculators import WavePropagator
+        from agents.advanced_physics_calculators import RelativityScheduler
+        from agents.advanced_physics_calculators import RelativityScheduler
+        from agents.advanced_physics_calculators import AdvancedPhysicsOrchestrator
+        from agents.advanced_physics_calculators import AdvancedPhysicsOrchestrator
+        from agents.advanced_physics_calculators import AdvancedPhysicsOrchestrator
+        from agents.advanced_physics_calculators import AdvancedPhysicsOrchestrator
+        from agents.advanced_physics_calculators import AdvancedPhysicsOrchestrator
+        from agents.advanced_physics_calculators import AdvancedPhysicsOrchestrator
+
+
+
 
 
 class TestPhase2_ChaoticAttractors:
@@ -29,7 +54,6 @@ class TestPhase2_ChaoticAttractors:
 
     def test_chaotic_attractor_initialization(self):
         """Test ChaoticAttractor initialization"""
-        from agents.advanced_physics_calculators import ChaoticAttractor
 
         attractor = ChaoticAttractor(attractor_type="logistic")
         assert attractor is not None, "attractor must be initialized"
@@ -37,7 +61,6 @@ class TestPhase2_ChaoticAttractors:
 
     def test_logistic_map_iteration(self):
         """Test logistic map x_{n+1} = r*x_n*(1-x_n)"""
-        from agents.advanced_physics_calculators import ChaoticAttractor
 
         attractor = ChaoticAttractor(attractor_type="logistic")
         initial_state = attractor.state.copy()
@@ -48,7 +71,6 @@ class TestPhase2_ChaoticAttractors:
 
     def test_lorenz_attractor(self):
         """Test Lorenz system attractor"""
-        from agents.advanced_physics_calculators import ChaoticAttractor
 
         attractor = ChaoticAttractor(attractor_type="lorenz")
         assert attractor.parameters.get("sigma") == 10.0, "attract is not valid"
@@ -59,7 +81,6 @@ class TestPhase2_ChaoticAttractors:
 
     def test_henon_map(self):
         """Test Henon map attractor"""
-        from agents.advanced_physics_calculators import ChaoticAttractor
 
         attractor = ChaoticAttractor(attractor_type="henon")
         assert attractor.parameters.get("a") == 1.4, "attract is not valid"
@@ -70,7 +91,6 @@ class TestPhase2_ChaoticAttractors:
 
     def test_attractor_history_tracking(self):
         """Test attractor history recording"""
-        from agents.advanced_physics_calculators import ChaoticAttractor
 
         attractor = ChaoticAttractor(attractor_type="logistic")
         attractor.iterate(steps=20)
@@ -78,7 +98,6 @@ class TestPhase2_ChaoticAttractors:
 
     def test_chaotic_neural_network_initialization(self):
         """Test ChaoticNeuralNetwork initialization"""
-        from agents.advanced_physics_calculators import ChaoticNeuralNetwork
 
         network = ChaoticNeuralNetwork(num_neurons=10)
         assert network is not None, "network must be initialized"
@@ -86,7 +105,6 @@ class TestPhase2_ChaoticAttractors:
 
     def test_chaotic_network_evolution(self):
         """Test chaotic neural network evolution"""
-        from agents.advanced_physics_calculators import ChaoticNeuralNetwork
 
         network = ChaoticNeuralNetwork(num_neurons=5)
         state = network.evolve(steps=10)
@@ -95,7 +113,6 @@ class TestPhase2_ChaoticAttractors:
 
     def test_generate_test_parameters(self):
         """Test chaotic parameter generation"""
-        from agents.advanced_physics_calculators import ChaoticNeuralNetwork
 
         network = ChaoticNeuralNetwork(num_neurons=3)
         param_ranges = [(0.0, 1.0), (10.0, 20.0)]
@@ -109,7 +126,6 @@ class TestPhase2_ChaoticAttractors:
 
     def test_inject_chaos(self):
         """Test chaos injection for exploration"""
-        from agents.advanced_physics_calculators import ChaoticNeuralNetwork
 
         network = ChaoticNeuralNetwork(num_neurons=1)
         decision = 0.5
@@ -127,7 +143,6 @@ class TestPhase2_FractalGeometry:
 
     def test_fractal_analyzer_initialization(self):
         """Test FractalAnalyzer initialization"""
-        from agents.advanced_physics_calculators import FractalAnalyzer
 
         analyzer = FractalAnalyzer(max_depth=10)
         assert analyzer is not None, "analyzer must be initialized"
@@ -135,7 +150,6 @@ class TestPhase2_FractalGeometry:
 
     def test_box_counting_dimension(self):
         """Test box-counting fractal dimension D = log(N)/log(1/ε)"""
-        from agents.advanced_physics_calculators import FractalAnalyzer
 
         analyzer = FractalAnalyzer()
         # Create a simple 1D point set
@@ -147,7 +161,6 @@ class TestPhase2_FractalGeometry:
 
     def test_fractal_dimension_2d(self):
         """Test fractal dimension for 2D points"""
-        from agents.advanced_physics_calculators import FractalAnalyzer
 
         analyzer = FractalAnalyzer()
         # Create a 2D point set
@@ -159,7 +172,6 @@ class TestPhase2_FractalGeometry:
 
     def test_analyze_code_tree(self):
         """Test fractal analysis of code tree"""
-        from agents.advanced_physics_calculators import FractalAnalyzer
 
         analyzer = FractalAnalyzer()
         tree = {
@@ -178,7 +190,6 @@ class TestPhase2_FractalGeometry:
 
     def test_self_similar_patterns(self):
         """Test detection of self-similar patterns"""
-        from agents.advanced_physics_calculators import FractalAnalyzer
 
         analyzer = FractalAnalyzer()
         # Test self-similarity detection
@@ -196,7 +207,6 @@ class TestPhase2_FluidDynamics:
 
     def test_fluid_channel_initialization(self):
         """Test FluidChannel initialization"""
-        from agents.advanced_physics_calculators import FluidChannel
 
         channel = FluidChannel(name="test_channel")
         assert channel is not None, "channel must be initialized"
@@ -204,14 +214,12 @@ class TestPhase2_FluidDynamics:
 
     def test_fluid_flow_scheduler_initialization(self):
         """Test FluidFlowScheduler initialization"""
-        from agents.advanced_physics_calculators import FluidFlowScheduler
 
         scheduler = FluidFlowScheduler()
         assert scheduler is not None, "scheduler must be initialized"
 
     def test_add_channel(self):
         """Test adding channel to flow scheduler"""
-        from agents.advanced_physics_calculators import FluidChannel, FluidFlowScheduler
 
         scheduler = FluidFlowScheduler()
         channel = FluidChannel(name="ch1", capacity=10.0)
@@ -264,7 +272,6 @@ class TestPhase2_ElectromagneticFields:
 
     def test_em_field_router_initialization(self):
         """Test EMFieldRouter initialization"""
-        from agents.advanced_physics_calculators import EMFieldRouter
 
         router = EMFieldRouter()
         assert router is not None, "router must be initialized"
@@ -323,7 +330,6 @@ class TestPhase2_WavePropagation:
 
     def test_wave_propagator_initialization(self):
         """Test WavePropagator initialization"""
-        from agents.advanced_physics_calculators import WavePropagator
 
         propagator = WavePropagator()
         assert propagator is not None, "propagator must be initialized"
@@ -394,14 +400,12 @@ class TestPhase2_RelativisticEffects:
 
     def test_relativity_scheduler_initialization(self):
         """Test RelativityScheduler initialization"""
-        from agents.advanced_physics_calculators import RelativityScheduler
 
         scheduler = RelativityScheduler()
         assert scheduler is not None, "scheduler must be initialized"
 
     def test_time_dilation_factor(self):
         """Test time dilation γ = 1/√(1-v²/c²)"""
-        from agents.advanced_physics_calculators import RelativityScheduler
 
         scheduler = RelativityScheduler()
         if hasattr(scheduler, "time_dilation_factor"):
@@ -454,14 +458,12 @@ class TestPhase2_AdvancedPhysicsOrchestrator:
 
     def test_advanced_orchestrator_initialization(self):
         """Test AdvancedPhysicsOrchestrator initialization"""
-        from agents.advanced_physics_calculators import AdvancedPhysicsOrchestrator
 
         orchestrator = AdvancedPhysicsOrchestrator()
         assert orchestrator is not None, "orchestrator must be initialized"
 
     def test_chaos_exploration(self):
         """Test chaos-based exploration"""
-        from agents.advanced_physics_calculators import AdvancedPhysicsOrchestrator
 
         orchestrator = AdvancedPhysicsOrchestrator()
         if hasattr(orchestrator, "explore_with_chaos"):
@@ -470,7 +472,6 @@ class TestPhase2_AdvancedPhysicsOrchestrator:
 
     def test_fractal_decomposition(self):
         """Test fractal decomposition"""
-        from agents.advanced_physics_calculators import AdvancedPhysicsOrchestrator
 
         orchestrator = AdvancedPhysicsOrchestrator()
         if hasattr(orchestrator, "fractal_decompose"):
@@ -480,7 +481,6 @@ class TestPhase2_AdvancedPhysicsOrchestrator:
 
     def test_fluid_routing(self):
         """Test fluid-based routing"""
-        from agents.advanced_physics_calculators import AdvancedPhysicsOrchestrator
 
         orchestrator = AdvancedPhysicsOrchestrator()
         if hasattr(orchestrator, "route_with_fluid"):
@@ -491,7 +491,6 @@ class TestPhase2_AdvancedPhysicsOrchestrator:
 
     def test_field_based_influence(self):
         """Test EM field-based influence propagation"""
-        from agents.advanced_physics_calculators import AdvancedPhysicsOrchestrator
 
         orchestrator = AdvancedPhysicsOrchestrator()
         if hasattr(orchestrator, "propagate_influence"):
@@ -502,7 +501,6 @@ class TestPhase2_AdvancedPhysicsOrchestrator:
 
     def test_wave_consensus(self):
         """Test wave-based consensus"""
-        from agents.advanced_physics_calculators import AdvancedPhysicsOrchestrator
 
         orchestrator = AdvancedPhysicsOrchestrator()
         if hasattr(orchestrator, "wave_consensus"):

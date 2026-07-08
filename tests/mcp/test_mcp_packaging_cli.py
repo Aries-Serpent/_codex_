@@ -4,20 +4,19 @@ Tests for MCP packaging CLI features: --estimate (PS-11) and --exclude (PS-12).
 Tests the select_components.py functions directly (unit tests)
 and the mcp-package CLI argument parsing (integration tests).
 """
-
 import importlib.machinery
 import importlib.util
 import sys
 from pathlib import Path
 from unittest.mock import MagicMock, patch
+import select_components
 
-import pytest
+
 
 # Add scripts/mcp to path so we can import select_components
 scripts_mcp = Path(__file__).resolve().parents[2] / "scripts" / "mcp"
 sys.path.insert(0, str(scripts_mcp))
 
-import select_components
 
 
 def _load_mcp_package_module():

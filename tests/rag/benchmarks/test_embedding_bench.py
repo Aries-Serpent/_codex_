@@ -9,13 +9,12 @@ Tests the benchmark_embedding_providers function covering:
 - Error handling
 - Result aggregation
 """
+    from codex.rag.benchmarks.embedding_bench import (
 
 
-import pytest
 
 # Import benchmark module
 try:
-    from codex.rag.benchmarks.embedding_bench import (
         _get_provider,
         benchmark_embedding_providers,
     )

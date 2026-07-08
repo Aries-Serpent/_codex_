@@ -87,6 +87,7 @@ class TestChunk:
 
     def test_chunk_metadata_default(self):
         """Test default metadata is empty dict."""
+import pytest
         from rag.pipelines.chunking import Chunk
 
         chunk = Chunk(content="Test", start_index=0, end_index=4)

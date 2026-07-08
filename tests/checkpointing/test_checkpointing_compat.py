@@ -3,13 +3,12 @@ Test Checkpointing Compat
 
 Test module for checkpointing compat.
 """
-
 from __future__ import annotations
-
 import importlib
 import warnings
 
-import pytest
+
+
 
 
 def test_checkpointing_compat_emits_deprecation_and_forwards_attributes():

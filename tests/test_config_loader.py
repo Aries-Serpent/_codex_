@@ -42,6 +42,10 @@ database:
     errors_dir.mkdir()
     errors_config = errors_dir / "defaults.yaml"
     errors_config.write_text("""
+import pytest
+        import codex.utils.config_loader as config_loader_module
+        import codex.utils.config_loader as config_loader_module
+        import builtins
 config_errors:
   missing_config:
     code: "CONFIG_001"
@@ -203,7 +207,6 @@ class TestGlobalFunctions:
         test_loader = ConfigLoader(repo_root=temp_config_dir)
 
         # Monkeypatch get_loader to return our test loader
-        import codex.utils.config_loader as config_loader_module
 
         monkeypatch.setattr(config_loader_module, "_global_loader", test_loader)
 
@@ -216,7 +219,6 @@ class TestGlobalFunctions:
         """Test global load_error_config function."""
         test_loader = ConfigLoader(repo_root=temp_config_dir)
 
-        import codex.utils.config_loader as config_loader_module
 
         monkeypatch.setattr(config_loader_module, "_global_loader", test_loader)
 
@@ -269,7 +271,6 @@ class TestEdgeCases:
     ) -> None:
         """Test behavior when PyYAML is not available."""
         # Simulate missing yaml by making import fail
-        import builtins
 
         original_import = builtins.__import__
 

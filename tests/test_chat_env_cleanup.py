@@ -7,6 +7,7 @@ from codex.chat import ChatSession
 
 def test_chat_env_cleanup(tmp_path, monkeypatch):
     """`CODEX_SESSION_ID` should not persist after the session exits."""
+import pytest
 
     db = tmp_path / "chat.db"
     monkeypatch.delenv("CODEX_SESSION_ID", raising=False)

@@ -1,20 +1,21 @@
 """Smoke tests for codex.cli_roles CLI entrypoint."""
-
 from __future__ import annotations
-
 import sys
 from pathlib import Path
 from unittest.mock import MagicMock, patch
+    import typer
+    from typer.testing import CliRunner
+        from codex import cli_roles as _cli_roles
+        from codex import cli_roles as _cli_roles
 
-import pytest
+
+
 
 # Skip if typer is not properly installed
 try:
-    import typer
 
     if not hasattr(typer, "Typer"):
         pytest.skip("typer package not properly installed", allow_module_level=True)
-    from typer.testing import CliRunner
 except (ImportError, AttributeError):
     pytest.skip("typer package not available", allow_module_level=True)
 
@@ -51,7 +52,6 @@ def test_cli_roles_help(cli_runner: CliRunner, mock_deps):
     # (alerts #12788 / #12789) without relying on pytest.skip() being modelled
     # as a no-return function.
     try:
-        from codex import cli_roles as _cli_roles
 
         result = cli_runner.invoke(_cli_roles.app, ["--help"])
     except ImportError:
@@ -66,7 +66,6 @@ def test_cli_roles_help(cli_runner: CliRunner, mock_deps):
 
 def test_cli_roles_list(cli_runner: CliRunner, mock_deps):
     try:
-        from codex import cli_roles as _cli_roles
 
         result = cli_runner.invoke(_cli_roles.app, ["export-matrix", "--help"])
     except ImportError:

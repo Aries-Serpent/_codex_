@@ -252,6 +252,7 @@ class TestConfigDocumentation:
 
     def test_hydra_docs_exist(self):
         """Verify Hydra configuration documentation exists."""
+import pytest
         hydra_paths = [
             DOCS_DIR / "hydra_quickstart.md",
             DOCS_DIR / "hydra_defaults_and_sweeps.md",

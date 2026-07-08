@@ -10,18 +10,19 @@ Comprehensive test coverage for:
 - Statistics display
 - Metrics export
 """
-
+pytest.importorskip("typer")
 import importlib.util
 import json
 from unittest.mock import MagicMock, patch
-
-import pytest
-
-pytest.importorskip("typer")
-
 from typer.testing import CliRunner
-
 from codex.cli_rag import app
+        from codex.rag import IndexOperation, TenantOperationResult
+        from codex.rag import IndexOperation, TenantOperationResult
+
+
+
+
+
 
 
 @pytest.fixture
@@ -413,7 +414,6 @@ class TestMergeCommand:
     @patch("codex.rag.manage_tenant_indices")
     def test_merge_success(self, mock_manage, runner):
         """Test successful merge."""
-        from codex.rag import IndexOperation, TenantOperationResult
 
         mock_manage.return_value = TenantOperationResult(
             success=True,
@@ -444,7 +444,6 @@ class TestMergeCommand:
     @patch("codex.rag.manage_tenant_indices")
     def test_merge_failure(self, mock_manage, runner):
         """Test merge failure."""
-        from codex.rag import IndexOperation, TenantOperationResult
 
         mock_manage.return_value = TenantOperationResult(
             success=False,

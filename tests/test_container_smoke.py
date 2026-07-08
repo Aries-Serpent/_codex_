@@ -3,7 +3,6 @@ Test Container Smoke
 
 Test module for container smoke.
 """
-
 import os
 import re
 import shlex
@@ -11,10 +10,10 @@ import shutil
 import subprocess
 import sys
 from pathlib import Path
-
-import pytest
-
 from codex.logging.structured_logger import logger
+
+
+
 
 
 def docker_available() -> bool:

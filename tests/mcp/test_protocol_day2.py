@@ -1,4 +1,5 @@
 """Day 2: mcp - Protocol tests"""
+import pytest
 
 
 class TestMCPProtocol:

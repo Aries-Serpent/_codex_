@@ -3,8 +3,9 @@ Test Noop Logger
 
 Test module for noop logger.
 """
-
+import pytest
 from src.codex_ml.utils import experiment_tracking_mlflow as etm
+
 
 
 def test_noop_logger_exposes_tracking_uri_env_default(monkeypatch):

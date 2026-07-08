@@ -4,8 +4,9 @@ Extended tests for MCP authorization and authentication.
 Covers credential hashing, principal management, authorization checks,
 session tokens, and permission verification.
 """
-
+import pytest
 from mcp.auth import MCPAuthenticator, MCPAuthorizer, Principal, hash_credential
+
 
 
 def test_hash_credential():

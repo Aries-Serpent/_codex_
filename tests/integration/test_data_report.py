@@ -3,13 +3,13 @@ Test Data Report
 
 Test module for data report.
 """
-
 from __future__ import annotations
-
+    build_data_drift = pytest.importorskip("hhg_logistics.monitor.data_report").build_data_drift
 import csv
 from pathlib import Path
 
-import pytest
+
+
 
 
 def _write_csv(path: Path, rows: list[dict[str, int]]) -> None:
@@ -21,7 +21,6 @@ def _write_csv(path: Path, rows: list[dict[str, int]]) -> None:
 
 
 def test_data_report_smoke(tmp_path: Path) -> None:
-    build_data_drift = pytest.importorskip("hhg_logistics.monitor.data_report").build_data_drift
 
     reference = tmp_path / "ref.csv"
     current = tmp_path / "cur.csv"

@@ -4,12 +4,12 @@ Tests for MCP schema validation capability.
 Covers Pydantic models, JSON Schema validation, OpenAPI integration,
 and data validation patterns used across MCP.
 """
-
 from typing import Any, Optional
-
-import pytest
 from pydantic import BaseModel
 from pydantic import ValidationError as PydanticValidationError
+    from enum import Enum
+
+
 
 
 # Sample Pydantic models for MCP tool requests/responses
@@ -219,7 +219,6 @@ def test_openapi_schema_generation():
 
 def test_schema_with_enums():
     """Test schema validation with enum fields."""
-    from enum import Enum
 
     class ToolStatus(str, Enum):
         ACTIVE = "active"

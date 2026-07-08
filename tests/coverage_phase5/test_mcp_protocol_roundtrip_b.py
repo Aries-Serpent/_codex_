@@ -47,6 +47,7 @@ def test_float_roundtrip(value: float):
 )
 def test_complex_nested_structure(data: list[Dict[str, int]]):
     """Test complex nested structures."""
+import pytest
     message = {"nested": data}
     encoded = json.dumps(message)
     decoded = json.loads(encoded)

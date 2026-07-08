@@ -3,17 +3,17 @@ Test Integrity Snapshot
 
 Test module for integrity snapshot.
 """
-
 from __future__ import annotations
-
 import hashlib
 import importlib.util
 import json
 from pathlib import Path
-
-import pytest
-
 from codex_ml.utils.checkpoint_integrity import (
+    from omegaconf import OmegaConf  # type: ignore
+
+
+
+
     attach_integrity,
     sha256_file,
     snapshot_config,
@@ -64,7 +64,6 @@ def _has_omegaconf() -> bool:
 
 @pytest.mark.skipif(not _has_omegaconf(), reason="OmegaConf not available")
 def test_snapshot_config_omegaconf() -> None:
-    from omegaconf import OmegaConf  # type: ignore
 
     cfg = OmegaConf.create({"model_name": "tiny", "epochs": 2, "unused": True})
     snap = snapshot_config(cfg)  # type: ignore[arg-type]

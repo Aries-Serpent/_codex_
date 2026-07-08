@@ -3,10 +3,11 @@ Test Registry Basic
 
 Test module for registry basic.
 """
-
 from __future__ import annotations
-
+import pytest
 from common.registry import Registry
+
+
 
 
 def test_registry_register_and_get() -> None:

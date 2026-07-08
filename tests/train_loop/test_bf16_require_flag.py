@@ -3,12 +3,11 @@ Test Bf16 Require Flag
 
 Test module for bf16 require flag.
 """
-
 import importlib
 import sys
 import types
 
-import pytest
+
 
 
 def test_bf16_require_flag_private_guard(monkeypatch):

@@ -5,12 +5,15 @@ without requiring model downloads or network access.
 
 Set RUN_LORA_TESTS=1 to enable these tests.
 """
-
 from __future__ import annotations
-
+    LoraConfig = pytest.importorskip("peft").LoraConfig
 import os
+    import sys
+    from pathlib import Path
+        from lora._test_utils import (
 
-import pytest
+
+
 
 # Skip all tests unless RUN_LORA_TESTS=1
 pytestmark = pytest.mark.skipif(
@@ -29,7 +32,6 @@ def test_lora_config_shapes_sanity():
 
     Does NOT require network/model downloads.
     """
-    LoraConfig = pytest.importorskip("peft").LoraConfig
 
     # Create basic LoRA config
     config = LoraConfig(
@@ -58,7 +60,6 @@ def test_lora_config_shapes_sanity():
 
 def test_lora_available():
     """Test that LoRA/PEFT is available for use."""
-    peft = pytest.importorskip("peft")
 
     # Verify key classes are available
     assert hasattr(peft, "LoraConfig")
@@ -68,7 +69,6 @@ def test_lora_available():
 
 def test_lora_config_validation():
     """Test LoRA config parameter validation."""
-    LoraConfig = pytest.importorskip("peft").LoraConfig
 
     # Valid config should not raise
     config = LoraConfig(r=16, lora_alpha=32)
@@ -87,8 +87,6 @@ def test_lora_config_validation():
 
 def test_lora_test_utils_available():
     """Test that LoRA test utilities are available and functional."""
-    import sys
-    from pathlib import Path
 
     # Add models directory to path
     _REPO_ROOT = Path(__file__).parent.parent.parent
@@ -97,7 +95,6 @@ def test_lora_test_utils_available():
         sys.path.insert(0, str(_MODELS_DIR))
 
     try:
-        from lora._test_utils import (
             create_mock_lora_config,
             create_mock_tensor,
             get_lora_param_count,

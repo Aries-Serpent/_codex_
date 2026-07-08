@@ -278,6 +278,7 @@ class TestEdgeCases:
 
     def test_split_with_strings(self):
         """Test split with string items."""
+import pytest
         items = ["apple", "banana", "cherry", "date", "elderberry"]
         train, val = data_utils.split_dataset(items, train_ratio=0.8, seed=42)
 

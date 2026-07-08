@@ -16,26 +16,29 @@ Covers:
 
 #AFTERMATH_METRIC - Phase 9.2 class API contract tests
 """
-
 from __future__ import annotations
-
+import pytest
 from pathlib import Path
 from unittest.mock import patch
-
 from agents.developer_orchestrator import (
+from agents.physics_orchestrator import (
+from agents.self_healing import (
+from agents.workflow_navigator import (
+        import math
+
+
+
     AppType,
     CodeComponent,
     DevelopmentPhase,
     PhysicsGuidedDeveloperOrchestrator,
     RequirementVariable,
 )
-from agents.physics_orchestrator import (
     ActionPath,
     ActionType,
     DecisionState,
     ForceVector,
 )
-from agents.self_healing import (
     DetectedIssue,
     DiagnosticResult,
     IssueSeverity,
@@ -44,7 +47,6 @@ from agents.self_healing import (
     SelfHealingEngine,
     run_diagnostics,
 )
-from agents.workflow_navigator import (
     StepStatus,
     Workflow,
     WorkflowFrequency,
@@ -550,7 +552,6 @@ class TestForceVector:
     """ForceVector field and method contracts."""
 
     def test_magnitude_computed_from_xyz(self) -> None:
-        import math
 
         fv = ForceVector(x=3.0, y=4.0, z=0.0)
         expected = math.hypot(3.0, 4.0)

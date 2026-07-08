@@ -1,19 +1,19 @@
 """
 Tests for performance-optimized vectorized quantum orchestrator.
 """
-
-import pytest
-
 np = pytest.importorskip("numpy")
-
 from codex.quantum_orchestrator.optimized import (
+from codex.quantum_orchestrator.orchestrator import (
+        import time
+
+
+
     BatchGradientComputer,
     SpatialIndex,
     VectorizedEvolution,
     apply_batch_state,
     extract_batch_state,
 )
-from codex.quantum_orchestrator.orchestrator import (
     PhysicsConstants,
     create_orchestrator,
 )
@@ -260,7 +260,6 @@ class TestVectorizedPerformance:
         dt = 0.1
 
         # Time vectorized evolution (should be fast)
-        import time
 
         start = time.time()
         for _ in range(10):

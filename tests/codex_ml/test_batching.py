@@ -346,6 +346,7 @@ class TestBatchingMiddleware:
     @pytest.mark.asyncio
     async def test_shutdown_flushes_queue(self):
         """Test that shutdown flushes remaining requests"""
+import pytest
 
         def process_fn(inputs):
             return [x * 2 for x in inputs]

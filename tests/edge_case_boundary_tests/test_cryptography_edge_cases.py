@@ -11,9 +11,11 @@ Categories tested:
 - C5: Digital Signatures (verification, key mismatches)
 - C6: Random Number Generation (entropy, nonce reuse)
 """
-
+import pytest
 import hashlib
 import hmac
+        import random
+
 
 
 class TestEncryptionDecryption:
@@ -375,7 +377,6 @@ class TestCryptographicRandomness:
 
         # Act
         # Generate samples and check distribution
-        import random
 
         values = [random.randint(0, 9) for _ in range(samples)]
         distribution = [values.count(i) for i in range(10)]

@@ -1,10 +1,11 @@
 """Tests for the session-aware structured logger."""
-
 from __future__ import annotations
-
+import pytest
 import json
-
 from codex_ml.logging.session_logger import SessionLogger
+
+
+
 
 
 def test_session_logger_redacts_sensitive_fields(tmp_path):

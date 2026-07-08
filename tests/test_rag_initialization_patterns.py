@@ -2,22 +2,22 @@
 
 Focuses on CPU-default SentenceTransformer initialization after PR #3020 changes.
 """
-
 from __future__ import annotations
-
+np = pytest.importorskip("numpy")
 import os
 import sys
 import types
 from dataclasses import dataclass
 from pathlib import Path
-
-import pytest
-
-np = pytest.importorskip("numpy")
-
 from codex.rag.embeddings import LocalSentenceTransformerProvider
 from codex.rag.indexer import embed_chunks
 from codex.rag.retriever import Retriever
+    from codex.rag import retriever as retriever_module
+
+
+
+
+
 
 
 @dataclass
@@ -63,7 +63,6 @@ def sentence_transformer_spy(monkeypatch: pytest.MonkeyPatch) -> SentenceTransfo
     fake_module = types.SimpleNamespace(SentenceTransformer=FakeSentenceTransformer)
     monkeypatch.setitem(sys.modules, "sentence_transformers", fake_module)
     # Also patch the module-level SentenceTransformer variable in retriever module
-    from codex.rag import retriever as retriever_module
 
     monkeypatch.setattr(retriever_module, "SentenceTransformer", FakeSentenceTransformer)
     return SentenceTransformerSpy(calls=calls, instances=instances)

@@ -1,0 +1,14 @@
+# Base evaluation metrics configuration
+# Provides default metric setup for evaluation runs
+
+metrics:
+  - accuracy
+  
+metric_params:
+  accuracy: {}
+  
+# Common metric defaults
+enable_metrics: true
+metric_aggregation: mean
+save_metrics: true
+metrics_output_dir: ${oc.env:CODEX_METRICS_DIR,"${hydra:runtime.cwd}/metrics"}

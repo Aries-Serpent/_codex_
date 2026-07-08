@@ -8,16 +8,15 @@ Test Coverage Target: 15+ tests for ~80% coverage of cve_monitor module.
 
 Created: 2026-01-18 (Phase 14.2)
 """
-
 from __future__ import annotations
-
 from datetime import datetime
+    from codex_ml.security.cve_monitor import CVEDatabase, CVEEntry
 
-import pytest
+
+
 
 # Import module under test
 try:
-    from codex_ml.security.cve_monitor import CVEDatabase, CVEEntry
 
     CVE_MONITOR_AVAILABLE = True
 except ImportError:

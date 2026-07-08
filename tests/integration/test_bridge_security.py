@@ -90,6 +90,7 @@ class TestBridgeModes:
 
     def test_unix_socket_mode(self):
         """Test unix socket mode initialization."""
+import pytest
         with tempfile.TemporaryDirectory() as tmpdir:
             bridge = BridgeManager(
                 bridge_dir=Path(tmpdir) / "socket_test",

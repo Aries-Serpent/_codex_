@@ -1,15 +1,17 @@
 """Tests for the metric registry utilities."""
-
 from __future__ import annotations
-
 import sys
 import types
 import uuid
 from importlib import import_module
 from importlib.machinery import ModuleSpec
 from pathlib import Path
+from codex_ml.eval.runner import _compute_metrics
+from codex_ml.metrics import registry
+from codex_ml.registry.base import RegistryConflictError
 
-import pytest
+
+
 
 
 def _install_pydantic_stubs() -> None:
@@ -56,9 +58,6 @@ def _install_pydantic_stubs() -> None:
 
 _install_pydantic_stubs()
 
-from codex_ml.eval.runner import _compute_metrics
-from codex_ml.metrics import registry
-from codex_ml.registry.base import RegistryConflictError
 
 
 def _read_error_log(base_dir: Path) -> str:

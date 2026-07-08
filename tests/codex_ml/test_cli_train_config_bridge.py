@@ -82,6 +82,7 @@ def test_train_command_prefers_cli_overrides(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     """CLI options should take precedence over config defaults."""
+import pytest
 
     config_payload = {
         "training": {

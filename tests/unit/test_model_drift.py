@@ -12,12 +12,12 @@ Tests cover:
 - T09: First epoch auto-sets baseline; second epoch triggers drift
 - T10: ModelDriftDetector raises ValueError on bad inputs
 """
-
 from __future__ import annotations
-
-import pytest
-
 from codex_ml.monitoring.model_drift import (
+        import random
+
+
+
     ConfidenceStats,
     DriftResult,
     ModelDriftDetector,
@@ -51,7 +51,6 @@ class TestJensenShannonDivergence:
 
     def test_result_bounded_zero_one(self):
         """JSD must always lie in [0, 1]."""
-        import random
 
         rng = random.Random(42)
         for _ in range(20):

@@ -3,17 +3,18 @@ Test Decoder Only
 
 Test module for decoder only.
 """
-
 from __future__ import annotations
-
-import pytest
-
+torch = pytest.importorskip("torch")
+    pytest.importorskip("peft")
 from codex_ml.models.decoder_only import DecoderOnlyLM, ModelConfig
 from codex_ml.models.generate import generate
+    from peft import LoraConfig, get_peft_model
+
+
+
 
 pytestmark = pytest.mark.requires_torch
 
-torch = pytest.importorskip("torch")
 
 
 def _tiny_model() -> DecoderOnlyLM:
@@ -82,8 +83,6 @@ def test_generate_smoke() -> None:
 
 
 def test_lora_attach() -> None:
-    pytest.importorskip("peft")
-    from peft import LoraConfig, get_peft_model
 
     m = _tiny_model()
     cfg = LoraConfig(r=2, lora_alpha=4, lora_dropout=0.0, target_modules=["qkv"])

@@ -3,12 +3,13 @@ Test Metrics Text Values
 
 Test module for metrics text values.
 """
-
+    pytest.importorskip("nltk")
+    pytest.importorskip("rouge_score")
 import math
-
-import pytest
-
 from codex_ml.metrics.metrics_deprecated import bleu, perplexity, rouge_l, token_accuracy
+
+
+
 
 
 def test_basic_perplexity_and_accuracy():
@@ -23,8 +24,6 @@ def test_basic_perplexity_and_accuracy():
 
 
 def test_bleu_and_rouge_identical(monkeypatch):
-    pytest.importorskip("nltk")
-    pytest.importorskip("rouge_score")
     cand = ["the cat is on the mat"]
     ref = ["the cat is on the mat"]
     b = bleu(cand, ref)

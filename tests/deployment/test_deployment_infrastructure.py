@@ -3,10 +3,10 @@ Test deployment infrastructure configuration patterns.
 
 Part of deployment-infrastructure capability maturity improvement.
 """
-
 from pathlib import Path
+    from pathlib import Path
 
-import pytest
+
 
 
 def test_deployment_directory_exists():
@@ -37,7 +37,6 @@ def test_docker_artifacts_present():
 
 def test_deployment_config_patterns():
     """Verify common deployment configuration patterns."""
-    from pathlib import Path
 
     # Look for common deployment file patterns
     patterns = [

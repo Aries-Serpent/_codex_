@@ -8,14 +8,13 @@ This test suite covers:
 - Startup and shutdown hooks
 - Request tracking and graceful shutdown
 """
-
 from __future__ import annotations
-
 from unittest.mock import AsyncMock, MagicMock
-
-import pytest
-
 from mcp.lifecycle import (
+
+
+
+
     VALID_TRANSITIONS,
     HealthStatus,
     InvalidStateTransition,

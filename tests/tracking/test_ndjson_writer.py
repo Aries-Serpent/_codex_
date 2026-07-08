@@ -3,11 +3,13 @@ Test Ndjson Writer
 
 Test module for ndjson writer.
 """
-
+import pytest
 import json
 from pathlib import Path
-
 from codex_ml.tracking import init_experiment
+    from codex_ml.logging.run_logger import RunLogger
+
+
 
 
 class DummyCfg:
@@ -40,7 +42,6 @@ def test_ndjson_basic(tmp_path: Path) -> None:
 
 
 def test_structured_metric_produces_manifest(tmp_path: Path) -> None:
-    from codex_ml.logging.run_logger import RunLogger
 
     run_logger = RunLogger(tmp_path, "run-structured")
     run_logger.log_metric(

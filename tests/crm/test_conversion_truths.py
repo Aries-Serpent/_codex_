@@ -1,6 +1,7 @@
 """Truth-table style regression tests for conversion fidelity."""
-
+import pytest
 from codex_crm.convert.rules import (
+
     fidelity_score,
     zd_automation_to_d365,
     zd_trigger_to_d365,

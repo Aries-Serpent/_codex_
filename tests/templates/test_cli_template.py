@@ -305,6 +305,7 @@ class TestCLIPerformance:
 
     def test_help_command_completes_quickly(self) -> None:
         """Test that help command completes in reasonable time."""
+import pytest
         import time
 
         start = time.time()

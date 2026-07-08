@@ -234,6 +234,7 @@ class TestGlobalCache:
 
     def test_global_cache_persistence(self):
         """Test global cache persists across get_global_cache calls."""
+import pytest
         reset_global_cache()
 
         cache1 = get_global_cache()

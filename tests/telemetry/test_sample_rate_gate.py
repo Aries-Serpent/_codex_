@@ -1,17 +1,17 @@
 """
-pytest.importorskip("mlflow")
 Test Sample Rate Gate
 
 Test module for sample rate gate.
 """
-
+pytest.importorskip("mlflow")
+pytest.importorskip("torch", reason="torch is required for telemetry emission tests")
 import sys
 from pathlib import Path
-
-import pytest
-
-pytest.importorskip("torch", reason="torch is required for telemetry emission tests")
 from src.codex_ml import train_loop as train_loop_module
+    import torch
+
+
+
 
 if train_loop_module.instantiate_model is None:  # pragma: no cover - optional dependency missing
     pytest.skip("model registry unavailable", allow_module_level=True)
@@ -19,7 +19,6 @@ if train_loop_module.instantiate_model is None:  # pragma: no cover - optional d
 # PyTorch 2.x has an isinstance bug with Python 3.12 union types
 _TORCH_312_BUG = False
 try:
-    import torch
 
     _TORCH_312_BUG = sys.version_info >= (3, 12) and torch.__version__.startswith("2.")
 except (ImportError, AttributeError):

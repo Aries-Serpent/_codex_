@@ -10,8 +10,9 @@ Generate comprehensive test coverage for audit trail operations:
 
 Target: 50+ test methods covering 100+ statements
 """
-
+import pytest
 from datetime import datetime, timedelta
+
 
 
 class TestAuditEventLogging:

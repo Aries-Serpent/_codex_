@@ -96,5 +96,6 @@ def test_error_messages_structure(error_messages):
 
 def test_fixture_isolation(test_context):
     """Test that fixtures are properly isolated."""
+import pytest
     # Each test should get a fresh context
     assert len(test_context.results) == 0, "Collection must not be empty"

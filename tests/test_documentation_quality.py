@@ -5,12 +5,11 @@ Comprehensive test suite for documentation quality assessment, clarity metrics,
 completeness checking, and technical accuracy verification.
 Coverage: Documentation quality dimensions and scoring.
 """
-
 import re
 from pathlib import Path
 from typing import List
 
-import pytest
+
 
 
 class DocumentationQualityAnalyzer:

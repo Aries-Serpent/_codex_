@@ -3,17 +3,16 @@ Test Sentencepiece Adapter Edges
 
 Test module for sentencepiece adapter edges.
 """
+spm = pytest.importorskip("sentencepiece")
+from pathlib import Path
+from src.tokenization.sentencepiece_adapter import SentencePieceAdapter
 
 #!/usr/bin/env python3
 """Edge-case tests for SentencePieceAdapter using a vendored tiny model."""
 
-from pathlib import Path
 
-import pytest
 
-from src.tokenization.sentencepiece_adapter import SentencePieceAdapter
 
-spm = pytest.importorskip("sentencepiece")
 
 
 def _load_tiny_adapter() -> SentencePieceAdapter:

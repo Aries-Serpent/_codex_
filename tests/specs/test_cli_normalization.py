@@ -3,10 +3,11 @@ Test Cli Normalization
 
 Test module for cli normalization.
 """
-
 from __future__ import annotations
-
+import pytest
 import argparse
+
+
 
 
 def _parser():

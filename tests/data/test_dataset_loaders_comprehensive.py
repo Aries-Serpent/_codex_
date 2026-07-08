@@ -9,13 +9,13 @@ Tests cover:
 - Caching behavior
 - Manifest generation
 """
-
 import csv
 import json
 import tempfile
 from pathlib import Path
+        import random
 
-import pytest
+
 
 # Mark all tests in this module
 pytestmark = pytest.mark.ml_comprehensive
@@ -93,7 +93,6 @@ class TestDeterministicSplitting:
 
     def test_split_dataset_reproducible(self):
         """Test that splitting is reproducible with same seed"""
-        import random
 
         dataset = list(range(100))
 

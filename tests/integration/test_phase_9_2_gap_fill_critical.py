@@ -17,17 +17,17 @@ Gap-fill strategy:
 
 Authority: @mbaetiong (D-tier autonomy)
 """
-
 import sys
 import time
 from unittest import mock
+from phase_9_2_cascade_orchestrator import (
+from phase_9_2_pattern_router import (
 
-import pytest
+
 
 # Import the modules to test
 sys.path.insert(0, str(get_repo_root() / 'scripts/ci'))
 
-from phase_9_2_cascade_orchestrator import (
     CascadeOrchestrator,
     FailureLog,
     FixAttempt,
@@ -41,7 +41,6 @@ from phase_9_2_cascade_orchestrator import (
     get_confidence_level,
     run_command,
 )
-from phase_9_2_pattern_router import (
     PatternMatcher,
     PatternRouter,
 )

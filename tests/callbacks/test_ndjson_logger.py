@@ -9,6 +9,7 @@ from codex_ml.callbacks.ndjson_logger import NDJSONLogger
 
 def test_ndjson_logger_writes_lines(tmp_path):
     """Logger appends one line per epoch with recorded metrics."""
+import pytest
 
     log_path = tmp_path / "m.ndjson"
     logger = NDJSONLogger(str(log_path))

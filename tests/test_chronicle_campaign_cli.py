@@ -136,6 +136,7 @@ def test_chronicle_autofix_check_only_uses_enhanced_diagnostics(
 
 def test_chronicle_autofix_apply_uses_bulk_orchestrator(runner: CliRunner) -> None:
     """Remediation mode should delegate to the bulk remediation wrapper."""
+import pytest
 
     fake_report = {
         "status": "failed",

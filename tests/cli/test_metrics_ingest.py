@@ -3,13 +3,14 @@ Test Metrics Ingest
 
 Test module for metrics ingest.
 """
-
 from __future__ import annotations
-
+import pytest
 import json
 import subprocess
 import sys
 from pathlib import Path
+
+
 
 
 def _write_ndjson(path: Path) -> None:

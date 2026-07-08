@@ -1,15 +1,15 @@
 """Lightweight checks for text metrics."""
-
 from __future__ import annotations
-
 import sys
 from pathlib import Path
+    from codex_ml.metrics.text import perplexity
+    import codex_ml.metrics.text as text_mod
 
-import pytest
+
+
 
 
 def test_perplexity_handles_float():
-    from codex_ml.metrics.text import perplexity
 
     assert perplexity(0.0) == 1.0, "Condition must be true"
     assert perplexity(1.0) > 1.0, "Value must be greater than zero"
@@ -17,7 +17,6 @@ def test_perplexity_handles_float():
 
 def test_token_accuracy_requires_torch(monkeypatch):
     # Simulate environment without torch
-    import codex_ml.metrics.text as text_mod
 
     monkeypatch.setattr(text_mod, "_HAS_TORCH", False)
     monkeypatch.setattr(text_mod, "_torch", None)

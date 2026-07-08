@@ -3,9 +3,10 @@ Test Activations
 
 Test module for activations.
 """
+import pytest
+from codex_ml.models.activations import get_activation
 
 # BEGIN: CODEX_TEST_ACT
-from codex_ml.models.activations import get_activation
 
 
 def test_activation_registry_smoke():

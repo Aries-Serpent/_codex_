@@ -1,20 +1,20 @@
 """
-pytest.importorskip("mlflow")
 Test Gradient Accumulation Tail Flush
 
 Test module for gradient accumulation tail flush.
 """
-
 from __future__ import annotations
-
+pytest.importorskip("mlflow")
+torch = pytest.importorskip("torch")
 import types
 from pathlib import Path
-
-import pytest
-
 from codex_ml.training.functional_training import TrainConfig, train
+        from packaging.version import Version
 
-torch = pytest.importorskip("torch")
+
+
+
+
 
 
 class _FakeTokenizer:
@@ -118,7 +118,6 @@ def counting_optimizer(monkeypatch: pytest.MonkeyPatch) -> None:
 def _torch_version_less_than(version_str: str) -> bool:
     """Check if torch version is less than the specified version using semantic versioning."""
     try:
-        from packaging.version import Version
 
         return Version(torch.__version__.split("+")[0]) < Version(version_str)
     except ImportError:

@@ -5,15 +5,28 @@ Critical validation for model initialization on meta device
 DR-003 Guard: PyTorch 2.x + Python 3.12 isinstance union-type bug
 Fixed in torch >= 2.2.0
 """
-
 import sys
+    import torch
+            from codex_ml.models.factory import create_model_factory
+            from codex_ml.models.factory import validate_model_ready
+            import torch.nn as nn
+            from codex_ml.models.factory import create_model_factory
+            import torch.nn as nn
+            from codex_ml.models.peft_hooks import LoraBuildCfg
+            from codex_ml.models.peft_hooks import LoraBuildCfg
+            from codex_ml.models.peft_hooks import LoraBuildCfg, build_lora
+            import torch.nn as nn
+            from codex_ml.models.factory import _resolve_dtype
+            from codex_ml.models.factory import create_model_factory
+            import os
+            import torch
+            import torch.nn as nn
 
-import pytest
+
 
 # Guard for PyTorch 2.x + Python 3.12 isinstance() union-type bug
 _TORCH_312_BUG = False
 try:
-    import torch
     _TORCH_312_BUG = (
         sys.version_info >= (3, 12)
         and tuple(int(x) for x in torch.__version__.split(".")[:2]) < (2, 2)
@@ -34,7 +47,6 @@ class TestMetaTensorValidation:
     def test_no_meta_tensors_on_model_creation(self):
         """Model creation should not leave parameters on meta device."""
         try:
-            from codex_ml.models.factory import create_model_factory
         except (ImportError, AttributeError):
             pytest.skip("Model factory not available")
 
@@ -57,13 +69,11 @@ class TestMetaTensorValidation:
     def test_model_ready_no_meta(self):
         """Model should be fully initialized after creation."""
         try:
-            from codex_ml.models.factory import validate_model_ready
         except (ImportError, AttributeError):
             pytest.skip("validate_model_ready not available")
 
         # If function exists, it should not raise
         try:
-            import torch.nn as nn
             model = nn.Linear(10, 10)
             result = validate_model_ready(model)
             assert result is True, "Result must not be empty"
@@ -74,7 +84,6 @@ class TestMetaTensorValidation:
     def test_device_placement_cpu(self):
         """Model parameters should be on CPU after creation."""
         try:
-            from codex_ml.models.factory import create_model_factory
         except (ImportError, AttributeError):
             pytest.skip("Model factory not available")
 
@@ -92,7 +101,6 @@ class TestMetaTensorValidation:
     def test_device_placement_validation(self):
         """Validate device placement consistency across model."""
         try:
-            import torch.nn as nn
         except ImportError:
             pytest.skip("PyTorch not installed")
 
@@ -114,7 +122,6 @@ class TestPEFTCompatibility:
     def test_peft_target_modules_configuration(self):
         """LoRA configuration should specify valid target modules."""
         try:
-            from codex_ml.models.peft_hooks import LoraBuildCfg
         except (ImportError, AttributeError):
             pytest.skip("LoraBuildCfg not available")
 
@@ -132,7 +139,6 @@ class TestPEFTCompatibility:
     def test_lora_config_defaults(self):
         """LoRA config should have sensible defaults."""
         try:
-            from codex_ml.models.peft_hooks import LoraBuildCfg
         except (ImportError, AttributeError):
             pytest.skip("LoraBuildCfg not available")
 
@@ -147,12 +153,10 @@ class TestPEFTCompatibility:
     def test_lora_build_no_peft(self):
         """Should handle graceful fallback when PEFT not installed."""
         try:
-            from codex_ml.models.peft_hooks import LoraBuildCfg, build_lora
         except (ImportError, AttributeError):
             pytest.skip("LoRA functions not available")
 
         try:
-            import torch.nn as nn
         except ImportError:
             pytest.skip("PyTorch not installed")
 
@@ -171,7 +175,6 @@ class TestModelInitialization:
     def test_model_factory_dtype_resolution(self):
         """Model factory should resolve dtype correctly."""
         try:
-            from codex_ml.models.factory import _resolve_dtype
         except (ImportError, AttributeError):
             pytest.skip("_resolve_dtype not available")
 
@@ -189,12 +192,10 @@ class TestModelInitialization:
     def test_model_factory_quantization_config(self):
         """Quantization config should be properly validated."""
         try:
-            from codex_ml.models.factory import create_model_factory
         except (ImportError, AttributeError):
             pytest.skip("Model factory not available")
 
         try:
-            import os
             os.environ.pop("CODEX_ML_QUANTIZATION", None)
 
             factory = create_model_factory()
@@ -205,8 +206,6 @@ class TestModelInitialization:
     def test_model_forward_pass_ready(self):
         """Model should be ready for forward pass after init."""
         try:
-            import torch
-            import torch.nn as nn
         except ImportError:
             pytest.skip("PyTorch not installed")
 

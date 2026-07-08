@@ -3,12 +3,15 @@ Test Mlflow Adapter
 
 Test module for mlflow adapter.
 """
-
 from __future__ import annotations
+import pytest
+    from codex_ml.utils.experiment_tracking_mlflow import maybe_mlflow
+    import builtins
+    from codex_ml.utils.experiment_tracking_mlflow import maybe_mlflow
+
 
 
 def test_maybe_mlflow_noop_when_disabled():
-    from codex_ml.utils.experiment_tracking_mlflow import maybe_mlflow
 
     with maybe_mlflow(enable=False) as mlf:
         mlf.log_params({"a": 1})
@@ -17,7 +20,6 @@ def test_maybe_mlflow_noop_when_disabled():
 
 
 def test_maybe_mlflow_import_guard(monkeypatch):
-    import builtins
 
     real_import = builtins.__import__
 
@@ -27,7 +29,6 @@ def test_maybe_mlflow_import_guard(monkeypatch):
         return real_import(name, *args, **kwargs)
 
     monkeypatch.setattr(builtins, "__import__", fake_import)
-    from codex_ml.utils.experiment_tracking_mlflow import maybe_mlflow
 
     with maybe_mlflow(enable=True) as mlf:
         mlf.log_params({"x": "y"})

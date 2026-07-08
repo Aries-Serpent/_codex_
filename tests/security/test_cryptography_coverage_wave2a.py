@@ -8,16 +8,22 @@ Covers CVE fixes:
   - CVE-2024-0727: PKCS12 DoS crash
   - CVE-2026-34073: DNS constraint bypass
 """
-
 import os
-
-import pytest
-
-try:
     from cryptography.hazmat.backends import default_backend
     from cryptography.hazmat.primitives import hashes, serialization
     from cryptography.hazmat.primitives.asymmetric import padding, rsa
     from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+        from cryptography.hazmat.primitives import padding as crypto_padding
+        from cryptography.hazmat.primitives.serialization import load_pem_private_key
+        from cryptography.hazmat.primitives import hashes
+        from cryptography.hazmat.primitives import hashes
+        from cryptography.hazmat.primitives import hmac
+        from cryptography.hazmat.primitives import hmac
+        from cryptography.hazmat.primitives import hmac
+
+
+
+try:
 
     HAS_CRYPTOGRAPHY = True
 except ImportError:
@@ -196,7 +202,6 @@ class TestCryptographyEncryption:
         # Encrypt
         encryptor = cipher.encryptor()
         # Add padding for CBC mode
-        from cryptography.hazmat.primitives import padding as crypto_padding
 
         padder = crypto_padding.PKCS7(128).padder()
         padded_data = padder.update(sample_data) + padder.finalize()
@@ -286,7 +291,6 @@ class TestCryptographyEncryption:
         )
 
         # Deserialize
-        from cryptography.hazmat.primitives.serialization import load_pem_private_key
 
         restored_key = load_pem_private_key(private_pem, backend=default_backend())
 
@@ -320,7 +324,6 @@ class TestCryptographyEncryption:
 
     def test_hash_computation_sha256(self, sample_data):
         """Test SHA256 hash computation."""
-        from cryptography.hazmat.primitives import hashes
 
         digest = hashes.Hash(hashes.SHA256(), backend=default_backend())
         digest.update(sample_data)
@@ -331,7 +334,6 @@ class TestCryptographyEncryption:
 
     def test_hash_computation_sha512(self, sample_data):
         """Test SHA512 hash computation."""
-        from cryptography.hazmat.primitives import hashes
 
         digest = hashes.Hash(hashes.SHA512(), backend=default_backend())
         digest.update(sample_data)
@@ -342,7 +344,6 @@ class TestCryptographyEncryption:
 
     def test_hmac_generation_verification(self, sample_data):
         """Test HMAC generation and verification."""
-        from cryptography.hazmat.primitives import hmac
 
         key = os.urandom(32)
 
@@ -358,7 +359,6 @@ class TestCryptographyEncryption:
 
     def test_hmac_verification_fails_on_tampering(self, sample_data):
         """Test that HMAC verification fails on tampering."""
-        from cryptography.hazmat.primitives import hmac
 
         key = os.urandom(32)
 
@@ -376,7 +376,6 @@ class TestCryptographyEncryption:
 
     def test_hmac_verification_fails_with_wrong_key(self, sample_data):
         """Test that HMAC verification fails with wrong key."""
-        from cryptography.hazmat.primitives import hmac
 
         key1 = os.urandom(32)
         key2 = os.urandom(32)

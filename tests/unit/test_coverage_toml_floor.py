@@ -3,12 +3,15 @@ Test Coverage Toml Floor
 
 Test module for coverage toml floor.
 """
-
 from __future__ import annotations
+import pytest
+    import noxfile  # type: ignore
+    import noxfile  # type: ignore
+    import noxfile  # type: ignore
+
 
 
 def test_toml_fail_under_from_str_parses_valid_value() -> None:
-    import noxfile  # type: ignore
 
     text = """
     [tool.coverage.report]
@@ -19,7 +22,6 @@ def test_toml_fail_under_from_str_parses_valid_value() -> None:
 
 
 def test_toml_fail_under_from_str_absent_returns_none() -> None:
-    import noxfile  # type: ignore
 
     text = """
     [tool.coverage.report]
@@ -30,7 +32,6 @@ def test_toml_fail_under_from_str_absent_returns_none() -> None:
 
 
 def test_toml_fail_under_from_str_non_int_returns_none() -> None:
-    import noxfile  # type: ignore
 
     text = """
     [tool.coverage.report]

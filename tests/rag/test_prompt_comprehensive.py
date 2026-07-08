@@ -228,8 +228,9 @@ class TestPromptBackwardCompatibility:
 
     def test_legacy_format_compatibility(self):
         """Test that prompts can use legacy format if needed."""
-        # This tests that old delimiter constants still exist
+import pytest
         from codex.rag.prompt import CONTEXT_END, CONTEXT_START
+        # This tests that old delimiter constants still exist
 
         # Basic check that they can be used in string formatting
         prompt = f"{CONTEXT_START}\nContent\n{CONTEXT_END}"

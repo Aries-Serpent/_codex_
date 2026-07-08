@@ -3,20 +3,19 @@ Test Functional Training Main
 
 Test module for functional training main.
 """
-
+torch = pytest.importorskip("torch")
 import sys
 import types
 from pathlib import Path
 from typing import Any
-
-import pytest
-
 import codex.training as ft
 from omegaconf import OmegaConf
 
+
+
+
 pytestmark = pytest.mark.requires_torch
 
-torch = pytest.importorskip("torch")
 
 
 def test_main_invokes_run_hf_trainer(monkeypatch, tmp_path: Path):

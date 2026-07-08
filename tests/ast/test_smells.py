@@ -45,6 +45,7 @@ def too_many_args(a, b, c, d, e, f, g, h):
 
     def test_detect_deep_nesting(self):
         """Test detection of deeply nested code."""
+import pytest
         code = """
 def nested():
     if True:

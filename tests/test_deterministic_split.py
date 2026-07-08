@@ -3,12 +3,11 @@ Test Deterministic Split
 
 Test module for deterministic split.
 """
-
 from __future__ import annotations
-
-import pytest
-
 from codex_ml.data.split_utils import deterministic_split
+
+
+
 
 
 def test_deterministic_split_reproducible():

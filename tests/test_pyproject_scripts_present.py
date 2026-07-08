@@ -3,24 +3,23 @@ Test Pyproject Scripts Present
 
 Test module for pyproject scripts present.
 """
-
 from __future__ import annotations
-
 from pathlib import Path
+    import tomllib as _toml  # type: ignore[attr-defined]
+        import tomli as _toml  # type: ignore
+
+
 
 # Prefer stdlib tomllib (3.11+); fallback to tomli if installed
 try:
-    import tomllib as _toml  # type: ignore[attr-defined]
 except ImportError:  # pragma: no cover
     try:
-        import tomli as _toml  # type: ignore
     except ImportError:  # pragma: no cover
         _toml = None
 
 
 def test_pyproject_scripts_have_canonical_entrypoints():
     if _toml is None:
-        import pytest
 
         pytest.skip("tomllib/tomli not available in test environment")
     root = Path(__file__).resolve().parents[1]

@@ -3,17 +3,16 @@ Test Config Compose
 
 Test module for config compose.
 """
-
+hydra = pytest.importorskip("hydra", reason="hydra-core not installed")
 import os
 import tempfile
 from pathlib import Path
-
-import pytest
-
 from omegaconf import OmegaConf
 
+
+
+
 # Use pytest.importorskip for collection-safe conditional imports
-hydra = pytest.importorskip("hydra", reason="hydra-core not installed")
 
 # Validate that required hydra functions are available
 compose = getattr(hydra, "compose", None)

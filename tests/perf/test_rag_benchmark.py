@@ -9,15 +9,16 @@ Created: 2026-01-18
 Phase: 15.0 - Performance Testing & Benchmarking
 Target: Establish performance baseline for RAG operations
 """
-
 import gc
 import hashlib
 import os
 import time
 from dataclasses import dataclass
 from typing import Any
+        import psutil
+        import concurrent.futures
 
-import pytest
+
 
 # ============================================================================
 # Benchmark Utilities
@@ -52,7 +53,6 @@ class RAGBenchmarkResult:
 def get_memory_mb() -> float:
     """Get current memory usage in MB."""
     try:
-        import psutil
 
         return psutil.Process(os.getpid()).memory_info().rss / 1024 / 1024
     except ImportError:
@@ -405,7 +405,6 @@ class TestEndToEndRAGBenchmarks:
     )
     def test_concurrent_rag_requests(self) -> None:
         """Benchmark concurrent RAG request handling."""
-        import concurrent.futures
 
         def process_query(query: str) -> str:
             # Simulate processing

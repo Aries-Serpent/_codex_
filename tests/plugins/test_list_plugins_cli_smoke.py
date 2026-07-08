@@ -3,12 +3,13 @@ Test List Plugins Cli Smoke
 
 Test module for list plugins cli smoke.
 """
-
 from __future__ import annotations
-
+import pytest
 import json
 import subprocess
 import sys
+
+
 
 
 def test_list_plugins_json_smoke() -> None:

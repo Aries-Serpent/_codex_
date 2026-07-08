@@ -11,20 +11,19 @@ Tests cover:
 
 #AFTERMATH_METRIC - Phase 9.2 MCP component selection tests
 """
-
 from __future__ import annotations
-
 import json
-
-# Import the module under test
 import sys
 from pathlib import Path
+from select_components import (
 
-import pytest
+
+
+# Import the module under test
+
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent / "scripts" / "mcp"))
 
-from select_components import (
     expand_globs,
     filter_by_globs,
     filter_by_topic,

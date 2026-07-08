@@ -3,10 +3,11 @@ Test Fences Tool
 
 Test module for fences tool.
 """
-
+import pytest
 import subprocess
 import sys
 from pathlib import Path
+
 
 ROOT = Path(__file__).resolve().parents[1]
 TOOL = ROOT / "tools" / "validate_fences.py"

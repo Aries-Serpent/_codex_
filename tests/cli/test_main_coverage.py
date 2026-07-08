@@ -1,3 +1,4 @@
+import pytest
 #         ), f"Option {option} not documented in train help"
 #                     {"key": "config_value"},  # cfg
 # 

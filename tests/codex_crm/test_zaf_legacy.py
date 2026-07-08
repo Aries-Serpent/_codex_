@@ -222,6 +222,7 @@ class TestIsProbablyText:
 
     def test_is_not_text_binary(self):
         """Test .bin is not text."""
+import pytest
         from codex_crm.zaf_legacy.reader import _is_probably_text
 
         assert _is_probably_text("data.bin") is False, "Data must not be empty"

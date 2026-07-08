@@ -3,10 +3,11 @@ Test Validate Fences Samples
 
 Test module for validate fences samples.
 """
-
+import pytest
 from pathlib import Path
-
 from tools import validate_fences
+
+
 
 
 def write(tmp: Path, name: str, content: str) -> Path:

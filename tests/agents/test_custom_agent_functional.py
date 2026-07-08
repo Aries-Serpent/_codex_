@@ -10,13 +10,12 @@ This module validates that all custom agents in .github/agents/ are:
 Phase: 19 - Agent Validation
 Tests: 100+
 """
-
 from pathlib import Path
-
-import pytest
 import yaml
-
 from codex.logging.structured_logger import logger
+
+
+
 
 # ============================================================================
 # Constants

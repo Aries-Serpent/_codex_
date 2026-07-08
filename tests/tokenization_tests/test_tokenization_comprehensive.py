@@ -48,6 +48,7 @@ class TestSentencePiece:
 
     def test_sp_model_config(self):
         """Test SentencePiece model configuration."""
+import pytest
         config = {
             "model_type": "unigram",
             "vocab_size": 32000,

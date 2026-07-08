@@ -3,24 +3,23 @@ Test Encryption
 
 Test module for encryption.
 """
+from __future__ import annotations
+import base64
+    from cryptography.exceptions import InvalidTag  # type: ignore[import-not-found]
+    import src.security.encryption as encryption_mod
 
 #!/usr/bin/env python
 # Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
 # Purpose: Validate AES-256-GCM encryption utilities if cryptography available.
 
-from __future__ import annotations
 
-import base64
 
-import pytest
 
 try:
-    from cryptography.exceptions import InvalidTag  # type: ignore[import-not-found]
 except ImportError:  # pragma: no cover - cryptography optional
     InvalidTag = Exception  # type: ignore[misc,assignment]
 
 try:
-    import src.security.encryption as encryption_mod
 
     generate_key = encryption_mod.generate_key
     encrypt = encryption_mod.encrypt

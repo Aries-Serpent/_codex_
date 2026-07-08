@@ -4,13 +4,12 @@ Comprehensive test suite for MCP Lifecycle Management.
 Tests cover startup, shutdown, health checks, resource management, and error scenarios.
 Follows the High Maturity Achievement Plan requirements.
 """
-
 import asyncio
 from unittest.mock import AsyncMock, Mock
-
-import pytest
-
 from src.services.mcp.lifecycle import LifecycleManager
+
+
+
 
 
 class TestLifecycleManagerBasics:

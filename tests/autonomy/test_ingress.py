@@ -2,16 +2,17 @@
 Tests for Phase 3 — Ingress Gateway
 (src/codex/autonomy/ingress.py)
 """
-
 from __future__ import annotations
-
+import pytest
 from codex.autonomy.ingress import (
+from codex.autonomy.registry import AutonomyMode, AutonomyRegistry
+
+
     IngressDecision,
     IngressEvent,
     IngressGateway,
     IngressResult,
 )
-from codex.autonomy.registry import AutonomyMode, AutonomyRegistry
 
 
 def _reg(**kwargs) -> AutonomyRegistry:

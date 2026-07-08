@@ -10,10 +10,9 @@ This test module implements mutation-killing tests with high mutation kill rate 
 Expected coverage gain: +0.5-1pp
 Target mutation kill rate: 85%+
 """
-
 from unittest.mock import Mock
 
-import pytest
+
 
 
 class TestMutationKillerBoundaries:

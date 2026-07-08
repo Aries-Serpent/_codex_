@@ -7,13 +7,12 @@ including attack vectors, bypass attempts, and performance testing.
 Test Coverage: 30+ tests targeting 70%+ coverage
 Phase: 3.2 - Safety Module Testing
 """
-
 from __future__ import annotations
+    from codex_ml.safety.sanitizers import (
 
-import pytest
+
 
 try:
-    from codex_ml.safety.sanitizers import (
         SafetyConfig,
         sanitize_output,  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
         sanitize_prompt,

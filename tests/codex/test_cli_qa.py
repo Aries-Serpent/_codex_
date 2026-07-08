@@ -1,18 +1,17 @@
 """Smoke test for codex.cli_qa Typer app."""
-
 from __future__ import annotations
+    import typer
+    from typer.testing import CliRunner
+    from codex import cli_qa
 
-import pytest
+
 
 # Skip if typer is not properly installed
 try:
-    import typer
 
     if not hasattr(typer, "Typer"):
         pytest.skip("typer package not properly installed", allow_module_level=True)
-    from typer.testing import CliRunner
 
-    from codex import cli_qa
 
     TYPER_AVAILABLE = True
 except (ImportError, AttributeError):

@@ -3,11 +3,11 @@ Tests for codex_ml.cli.main module.
 
 Tests main CLI entry point functionality.
 """
-
 import subprocess
 import sys
+            from codex_ml.cli import main
 
-import pytest
+
 
 
 class TestMainModuleImport:
@@ -16,7 +16,6 @@ class TestMainModuleImport:
     def test_main_module_import(self):
         """Test that main module can be imported."""
         try:
-            from codex_ml.cli import main
 
             assert main is not None, "main must be initialized"
         except ImportError as e:

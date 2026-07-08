@@ -1,20 +1,21 @@
 """
 Tests for RAG Embeddings Module
 """
-
+np = pytest.importorskip("numpy")
 import importlib.util
 import os
 import tempfile
 from pathlib import Path
 from unittest.mock import MagicMock, patch
+    from codex.rag.embeddings import (
+    import torch as _torch
+        import gc
 
-import pytest
 
-np = pytest.importorskip("numpy")
+
 
 # Conditional imports for RAG dependencies - safely handled at test runtime
 try:
-    from codex.rag.embeddings import (
         CachedEmbeddingProvider,
         LocalSentenceTransformerProvider,
         OpenAIEmbeddingProvider,
@@ -43,7 +44,6 @@ pytestmark = pytest.mark.skipif(
 
 # Guard for tests that require real SentenceTransformer models on CPU
 try:
-    import torch as _torch
 
     _cuda_available = _torch.cuda.is_available()
 except (ImportError, RuntimeError):
@@ -210,7 +210,6 @@ class TestOpenAIEmbeddingProvider:
 
     def test_destructor_clears_key(self):
         """Test that destructor clears API key"""
-        import gc
 
         with patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"}):  # pragma: allowlist secret
             provider = OpenAIEmbeddingProvider()

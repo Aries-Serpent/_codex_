@@ -1,7 +1,8 @@
 from __future__ import annotations
-
+import pytest
 from services.ita.app.knowledge_base import KnowledgeBaseEntry, search_knowledge
 from services.ita.app.models import KnowledgeSearchRequest
+
 
 
 def test_knowledge_entry_score_is_normalized() -> None:

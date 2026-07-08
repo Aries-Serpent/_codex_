@@ -1,16 +1,16 @@
 from __future__ import annotations
-
+np = pytest.importorskip("numpy")
 import json
 from pathlib import Path
-
-import pytest
-
-np = pytest.importorskip("numpy")
-
 from codex.rag.cache.embedding_cache import EmbeddingCache
 from codex.rag.embeddings import CachedEmbeddingProvider, OpenAIEmbeddingProvider
 from codex.rag.indexer import persist_index
 from codex.rag.retriever import Retriever
+    from codex.rag import indexer
+
+
+
+
 
 
 def test_openai_provider_requires_api_key(monkeypatch):
@@ -55,7 +55,6 @@ def test_persist_index_with_faiss_mock(monkeypatch, tmp_path):
         def write_index(self, index, path):
             Path(path).write_text(f"fake-index:{index.ntotal}", encoding="utf-8")
 
-    from codex.rag import indexer
 
     monkeypatch.setattr(indexer, "faiss", FakeFaiss())
     embeddings = np.random.randn(2, 4).astype(np.float32)

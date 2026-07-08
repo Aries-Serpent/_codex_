@@ -1,19 +1,18 @@
 """
 Tests for VectorStore Interface and FAISS Implementation
 """
-
-import tempfile
-
-import pytest
-
 np = pytest.importorskip("numpy")
 pytest.importorskip("faiss", reason="faiss-cpu not installed (pip install faiss-cpu)")
+import tempfile
 from codex.retrieval.stores.base import (
+from codex.retrieval.stores.faiss_store import FAISSStore
+
+
+
     DimensionMismatchError,
     VectorNotFoundError,
     VectorStore,
 )
-from codex.retrieval.stores.faiss_store import FAISSStore
 
 
 class TestVectorStoreInterface:

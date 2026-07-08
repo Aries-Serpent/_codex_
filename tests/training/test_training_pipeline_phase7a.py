@@ -6,19 +6,42 @@ Comprehensive coverage for training pipeline functionality including:
 - Callback integration
 - Training state management
 """
-
 from __future__ import annotations
-
 import json  # pragma: allowlist secret
 import logging
 import tempfile
 from pathlib import Path
 from unittest.mock import MagicMock
+    import torch
+        from codex_ml.train_loop import ReasoningRuntime
+        from codex_ml.train_loop import ReasoningConfig
+        from codex_ml.train_loop import ToyDataset
+        from codex_ml.train_loop import demo_epoch
+        from codex_ml.utils.checkpoint import load_checkpoint, save_checkpoint
+        from codex_ml.train_loop import _attempt_resume
+        from codex_ml.train_loop import Callback
+        from codex_ml.train_loop import Callback
+        from codex_ml.train_loop import Callback
+        from codex_ml.train_loop import Callback
+        from codex_ml.train_loop import merge_callback_results
+        from codex_ml.train_loop import EvaluationCallback
+        from codex_ml.train_loop import LoggingCallback
+        from training.engine_hf_trainer import HFTrainerConfig
+        from training.engine_hf_trainer import build_training_args
+        from training.engine_hf_trainer import load_training_arguments
+        from training.engine_hf_trainer import _seed_everything
+        from training.engine_hf_trainer import _worker_init_fn
+        from training.trainer import TrainingState
+        from training.trainer import TrainingState
+        from training.trainer import CheckpointConfig
+        from training.trainer import Trainer
+        from training.engine_hf_trainer import _compute_metrics
+        from codex_ml.train_loop import _attempt_resume
 
-import pytest  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+
+
 
 try:
-    import torch
 
     HAS_TORCH = True
 except ImportError:
@@ -39,7 +62,6 @@ class TestTrainLoopEntryPoints:
 
     def test_train_loop_init_with_config(self):
         """Test train loop initialization with configuration."""
-        from codex_ml.train_loop import ReasoningRuntime
 
         # Can't instantiate without all required fields, but can mock
         runtime = MagicMock(spec=ReasoningRuntime)
@@ -47,14 +69,12 @@ class TestTrainLoopEntryPoints:
 
     def test_train_config_validation(self):
         """Test training configuration validation."""
-        from codex_ml.train_loop import ReasoningConfig
 
         config = ReasoningConfig(enabled=False)
         assert config.enabled is False, "enabled is not valid"
 
     def test_training_dataset_setup(self):
         """Test training dataset can be set up."""
-        from codex_ml.train_loop import ToyDataset
 
         if HAS_TORCH:
             dataset = ToyDataset(
@@ -67,7 +87,6 @@ class TestTrainLoopEntryPoints:
 
     def test_demo_epoch_generation(self):
         """Test demo epoch can be generated."""
-        from codex_ml.train_loop import demo_epoch
 
         epoch_result = demo_epoch(epoch=1, grad_accum=1)
 
@@ -98,7 +117,6 @@ class TestCheckpointLifecycle:
 
     def test_checkpoint_save_cycle(self):
         """Test checkpoint save cycle."""
-        from codex_ml.utils.checkpoint import load_checkpoint, save_checkpoint
 
         with tempfile.TemporaryDirectory() as tmpdir:
             ckpt_path = Path(tmpdir) / "checkpoint.pt"
@@ -137,7 +155,6 @@ class TestCheckpointLifecycle:
 
     def test_checkpoint_resume_from_path(self):
         """Test resuming from checkpoint path."""
-        from codex_ml.train_loop import _attempt_resume
 
         model = MagicMock()
         optimizer = MagicMock()
@@ -200,7 +217,6 @@ class TestCallbacksAndHooks:
 
     def test_callback_on_train_start(self):
         """Test on_train_start callback."""
-        from codex_ml.train_loop import Callback
 
         callback = Callback()
         state = {"epoch": 0, "step": 0}
@@ -210,7 +226,6 @@ class TestCallbacksAndHooks:
 
     def test_callback_on_epoch_start(self):
         """Test on_epoch_start callback."""
-        from codex_ml.train_loop import Callback
 
         callback = Callback()
 
@@ -219,7 +234,6 @@ class TestCallbacksAndHooks:
 
     def test_callback_on_epoch_end(self):
         """Test on_epoch_end callback."""
-        from codex_ml.train_loop import Callback
 
         callback = Callback()
         metrics = {"loss": 0.5, "accuracy": 0.95}
@@ -229,7 +243,6 @@ class TestCallbacksAndHooks:
 
     def test_callback_on_train_end(self):
         """Test on_train_end callback."""
-        from codex_ml.train_loop import Callback
 
         callback = Callback()
 
@@ -238,7 +251,6 @@ class TestCallbacksAndHooks:
 
     def test_merge_callback_results(self):
         """Test merging callback results."""
-        from codex_ml.train_loop import merge_callback_results
 
         base = {"loss": 0.5, "accuracy": 0.95}
         addon = {"f1": 0.92}
@@ -250,7 +262,6 @@ class TestCallbacksAndHooks:
 
     def test_evaluation_callback_integration(self):
         """Test evaluation callback integration."""
-        from codex_ml.train_loop import EvaluationCallback
 
         callback = MagicMock(spec=EvaluationCallback)
         callback.on_epoch_end = MagicMock()
@@ -262,7 +273,6 @@ class TestCallbacksAndHooks:
 
     def test_logging_callback_integration(self):
         """Test logging callback integration."""
-        from codex_ml.train_loop import LoggingCallback
 
         callback = MagicMock(spec=LoggingCallback)
         callback.on_epoch_end = MagicMock()
@@ -283,7 +293,6 @@ class TestTrainerConfiguration:
 
     def test_hf_trainer_config_creation(self):
         """Test HFTrainerConfig creation."""
-        from training.engine_hf_trainer import HFTrainerConfig
 
         config = HFTrainerConfig(
             output_dir=os.path.join(tempfile.gettempdir(), "test"),
@@ -302,7 +311,6 @@ class TestTrainerConfiguration:
 
     def test_build_trainer_args(self):
         """Test building training arguments."""
-        from training.engine_hf_trainer import build_training_args
 
         args = build_training_args(
             output_dir=os.path.join(tempfile.gettempdir(), "test"),
@@ -315,7 +323,6 @@ class TestTrainerConfiguration:
 
     def test_load_training_arguments_from_config(self):
         """Test loading training arguments from config."""
-        from training.engine_hf_trainer import load_training_arguments
 
         with tempfile.TemporaryDirectory() as tmpdir:
             config_path = Path(tmpdir) / "config.yaml"
@@ -331,14 +338,12 @@ per_device_train_batch_size: 8
 
     def test_training_seed_setting(self):
         """Test seed setting for reproducibility."""
-        from training.engine_hf_trainer import _seed_everything
 
         # Should not raise
         _seed_everything(seed=42)
 
     def test_worker_init_function(self):
         """Test worker init function for DataLoader."""
-        from training.engine_hf_trainer import _worker_init_fn
 
         # Should not raise
         _worker_init_fn(worker_id=0)
@@ -354,14 +359,12 @@ class TestTrainingLoopControl:
 
     def test_training_state_creation(self):
         """Test TrainingState can be created."""
-        from training.trainer import TrainingState
 
         state = TrainingState()
         assert state is not None, "state must be initialized"
 
     def test_training_state_attribute_access(self):
         """Test TrainingState attribute access."""
-        from training.trainer import TrainingState
 
         state = TrainingState()
 
@@ -370,7 +373,6 @@ class TestTrainingLoopControl:
 
     def test_checkpoint_config_creation(self):
         """Test CheckpointConfig creation."""
-        from training.trainer import CheckpointConfig
 
         config = CheckpointConfig(
             dir=os.path.join(tempfile.gettempdir(), "checkpoints"),
@@ -384,7 +386,6 @@ class TestTrainingLoopControl:
 
     def test_trainer_initialization(self):
         """Test Trainer initialization."""
-        from training.trainer import Trainer
 
         trainer = Trainer(
             model=MagicMock(),
@@ -522,7 +523,6 @@ class TestEvaluationDuringTraining:
 
     def test_compute_metrics_callback(self):
         """Test compute_metrics callback."""
-        from training.engine_hf_trainer import _compute_metrics
 
         eval_pred = MagicMock()
         eval_pred.predictions = [[0.1, 0.9], [0.8, 0.2]]
@@ -542,7 +542,6 @@ class TestResumeCapabilities:
 
     def test_resume_from_checkpoint(self):
         """Test resuming training from checkpoint."""
-        from codex_ml.train_loop import _attempt_resume
 
         model = MagicMock()
         optimizer = MagicMock()

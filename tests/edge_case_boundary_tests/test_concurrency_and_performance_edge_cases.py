@@ -10,12 +10,11 @@ Categories tested:
 - J2: Race Conditions (atomicity, consistency)
 - K1: Performance Boundaries (memory, CPU, throughput)
 """
-
 import threading
 import time
 from pathlib import Path
 
-import pytest
+
 
 
 class TestFileSystemOperations:

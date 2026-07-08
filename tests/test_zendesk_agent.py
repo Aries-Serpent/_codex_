@@ -402,6 +402,7 @@ class TestZendeskAgentCoreExports:
 
     def test_all_exports(self):
         """Test that __all__ includes expected exports."""
+import pytest
         from src.codex.zendesk import agent
 
         if hasattr(agent, "__all__"):

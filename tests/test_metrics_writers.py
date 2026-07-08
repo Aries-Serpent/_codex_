@@ -1,17 +1,16 @@
 """
-pytest.importorskip("tensorboard")
 Test Metrics Writers
 
 Test module for metrics writers.
 """
-
-import pytest
-
+pytest.importorskip("tensorboard")
 pytest.importorskip("numpy", reason="numpy required for training module")
-
 from pathlib import Path
-
 from training.engine_hf_trainer import CSVMetricsWriter, NDJSONMetricsWriter
+
+
+
+
 
 
 def test_csv_metrics_writer(tmp_path: Path):

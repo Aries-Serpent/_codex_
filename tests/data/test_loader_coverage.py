@@ -8,15 +8,51 @@ Phase: 14.1 - Core Module Testing
 Created: 2026-01-18
 AI Agency Policy Compliance: ✅
 """
-
 from __future__ import annotations
-
 import json
 from pathlib import Path
 from typing import TYPE_CHECKING, Iterator
 from unittest.mock import MagicMock
+        from codex_ml.config import DataConfig
+            from codex_ml.data import loader
+            from codex_ml.data.loader import (
+            from codex_ml.data.loader import load_dataset as load_dataset
+            from codex_ml.data.loader import load_texts as load_texts
+            from codex_ml.data.loader import stream_texts as stream_texts
+            from codex_ml.data.loader import CacheManifest
+            from codex_ml.data.loader import CacheManifest
+            from codex_ml.data.loader import CacheManifest
+            from codex_ml.data.loader import CacheManifest
+            from codex_ml.data.loader import CacheManifest
+            from codex_ml.data.loader import CacheManifest
+            from codex_ml.data.loader import CacheManifest
+            from codex_ml.data.loader import DataPreparationError
+            from codex_ml.data.loader import DataPreparationError
+            from codex_ml.data.loader import DataPreparationError
+            from codex_ml.data.loader import load_texts
+            from codex_ml.data.loader import load_texts
+            from codex_ml.data.loader import stream_texts
+            from codex_ml.data.loader import stream_texts
+            from codex_ml.data.loader import load_dataset
+            from codex_ml.data.loader import load_dataset
+            from codex_ml.data.loader import seeded_shuffle
+            from codex_ml.data.loader import seeded_shuffle
+            from codex_ml.data.loader import take_n
+            from codex_ml.data.loader import take_n
+            from codex_ml.data.loader import take_n
+            from codex_ml.data.loader import apply_safety_filter
+            from codex_ml.data.loader import apply_safety_filter
+            from codex_ml.data.loader import prepare_data_from_config
+            from codex_ml.data.loader import prepare_data_from_config
+            from codex_ml.data.loader import DataPreparationError
+            from codex_ml.data.loader import load_texts
+            from codex_ml.data.loader import CacheManifest
+            from codex_ml.data.loader import CacheManifest
+            from codex_ml.config import DataConfig
+            from codex_ml.data import loader
 
-import pytest
+
+
 
 if TYPE_CHECKING:
     pass
@@ -74,7 +110,6 @@ def temp_cache_dir(tmp_path: Path) -> Path:
 def sample_data_config():
     """Create a sample DataConfig for testing."""
     try:
-        from codex_ml.config import DataConfig
 
         return DataConfig(
             data_path="test_data",
@@ -103,7 +138,6 @@ class TestModuleImport:
     def test_loader_module_importable(self) -> None:
         """Verify loader module can be imported."""
         try:
-            from codex_ml.data import loader
 
             assert loader is not None, "loader must be initialized"
         except ImportError as e:
@@ -112,13 +146,9 @@ class TestModuleImport:
     def test_exports_available(self) -> None:
         """Verify __all__ exports are accessible."""
         try:
-            from codex_ml.data.loader import (
                 CacheManifest,
                 DataPreparationError,
             )
-            from codex_ml.data.loader import load_dataset as load_dataset
-            from codex_ml.data.loader import load_texts as load_texts
-            from codex_ml.data.loader import stream_texts as stream_texts
 
             assert CacheManifest is not None, "CacheManifest must be initialized"
             assert DataPreparationError is not None, "DataPreparationError must be initialized"
@@ -137,7 +167,6 @@ class TestCacheManifest:
     def test_cache_manifest_creation(self) -> None:
         """Test creating a CacheManifest instance."""
         try:
-            from codex_ml.data.loader import CacheManifest
 
             manifest = CacheManifest(
                 source="test_source",
@@ -153,7 +182,6 @@ class TestCacheManifest:
     def test_cache_manifest_default_values(self) -> None:
         """Test CacheManifest default values."""
         try:
-            from codex_ml.data.loader import CacheManifest
 
             manifest = CacheManifest()
             assert manifest.version == "1", "version is not valid"
@@ -168,7 +196,6 @@ class TestCacheManifest:
     def test_cache_manifest_to_dict(self) -> None:
         """Test CacheManifest.to_dict() method."""
         try:
-            from codex_ml.data.loader import CacheManifest
 
             manifest = CacheManifest(source="test", num_records=50)
             result = manifest.to_dict()
@@ -183,7 +210,6 @@ class TestCacheManifest:
     def test_cache_manifest_write(self, tmp_path: Path) -> None:
         """Test CacheManifest.write() method."""
         try:
-            from codex_ml.data.loader import CacheManifest
 
             manifest = CacheManifest(source="test_file", num_records=100)
             manifest_path = tmp_path / "manifest.json"
@@ -197,7 +223,6 @@ class TestCacheManifest:
     def test_cache_manifest_load(self, tmp_path: Path) -> None:
         """Test CacheManifest.load() method."""
         try:
-            from codex_ml.data.loader import CacheManifest
 
             manifest_path = tmp_path / "manifest.json"
             manifest_path.write_text(
@@ -219,7 +244,6 @@ class TestCacheManifest:
     def test_cache_manifest_load_missing_file(self, tmp_path: Path) -> None:
         """Test CacheManifest.load() with missing file."""
         try:
-            from codex_ml.data.loader import CacheManifest
 
             missing_path = tmp_path / "nonexistent.json"
             result = CacheManifest.load(missing_path)
@@ -230,7 +254,6 @@ class TestCacheManifest:
     def test_cache_manifest_load_invalid_json(self, tmp_path: Path) -> None:
         """Test CacheManifest.load() with invalid JSON."""
         try:
-            from codex_ml.data.loader import CacheManifest
 
             invalid_path = tmp_path / "invalid.json"
             invalid_path.write_text("not valid json {{{")
@@ -251,7 +274,6 @@ class TestDataPreparationError:
     def test_exception_is_runtime_error(self) -> None:
         """Verify DataPreparationError is a RuntimeError subclass."""
         try:
-            from codex_ml.data.loader import DataPreparationError
 
             assert issubclass(DataPreparationError, RuntimeError)
         except ImportError:
@@ -260,7 +282,6 @@ class TestDataPreparationError:
     def test_exception_can_be_raised(self) -> None:
         """Verify DataPreparationError can be raised and caught."""
         try:
-            from codex_ml.data.loader import DataPreparationError
 
             with pytest.raises(DataPreparationError):
                 raise DataPreparationError("Test error")
@@ -270,7 +291,6 @@ class TestDataPreparationError:
     def test_exception_message(self) -> None:
         """Verify exception message is preserved."""
         try:
-            from codex_ml.data.loader import DataPreparationError
 
             msg = "Custom error message"
             try:
@@ -292,7 +312,6 @@ class TestLoadTexts:
     def test_load_texts_from_file(self, temp_text_file: Path) -> None:
         """Test loading texts from a file."""
         try:
-            from codex_ml.data.loader import load_texts
 
             texts = load_texts(str(temp_text_file))
             assert isinstance(texts, (list, Iterator))
@@ -304,7 +323,6 @@ class TestLoadTexts:
     def test_load_texts_empty_file(self, tmp_path: Path) -> None:
         """Test loading texts from empty file."""
         try:
-            from codex_ml.data.loader import load_texts
 
             empty_file = tmp_path / "empty.txt"
             empty_file.write_text("")
@@ -328,7 +346,6 @@ class TestStreamTexts:
     def test_stream_texts_returns_iterator(self, temp_text_file: Path) -> None:
         """Test that stream_texts returns an iterator."""
         try:
-            from codex_ml.data.loader import stream_texts
 
             result = stream_texts(str(temp_text_file))
             # Should be an iterator or iterable
@@ -339,7 +356,6 @@ class TestStreamTexts:
     def test_stream_texts_lazy_evaluation(self, temp_jsonl_file: Path) -> None:
         """Test that stream_texts is lazily evaluated."""
         try:
-            from codex_ml.data.loader import stream_texts
 
             stream = stream_texts(str(temp_jsonl_file))
             # Should not immediately load all data
@@ -360,7 +376,6 @@ class TestLoadDataset:
     def test_load_dataset_from_jsonl(self, temp_jsonl_file: Path) -> None:
         """Test loading dataset from JSONL file."""
         try:
-            from codex_ml.data.loader import load_dataset
 
             dataset = load_dataset(str(temp_jsonl_file))
             assert dataset is not None, "dataset must be initialized"
@@ -375,7 +390,6 @@ class TestLoadDataset:
     def test_load_dataset_with_split(self, temp_jsonl_file: Path) -> None:
         """Test loading dataset with split specification."""
         try:
-            from codex_ml.data.loader import load_dataset
 
             dataset = load_dataset(str(temp_jsonl_file), split="train")
             assert dataset is not None, "dataset must be initialized"
@@ -397,7 +411,6 @@ class TestSeededShuffle:
     def test_seeded_shuffle_deterministic(self) -> None:
         """Test that seeded_shuffle is deterministic."""
         try:
-            from codex_ml.data.loader import seeded_shuffle
 
             data = [1, 2, 3, 4, 5]
             result1 = seeded_shuffle(data.copy(), seed=42)
@@ -409,7 +422,6 @@ class TestSeededShuffle:
     def test_seeded_shuffle_different_seeds(self) -> None:
         """Test that different seeds produce different results."""
         try:
-            from codex_ml.data.loader import seeded_shuffle
 
             data = list(range(100))  # Larger list for more reliable difference
             result1 = seeded_shuffle(data.copy(), seed=42)
@@ -431,7 +443,6 @@ class TestTakeN:
     def test_take_n_limits_results(self) -> None:
         """Test that take_n limits the number of results."""
         try:
-            from codex_ml.data.loader import take_n
 
             data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
             result = list(take_n(iter(data), 3))
@@ -443,7 +454,6 @@ class TestTakeN:
     def test_take_n_handles_short_iterator(self) -> None:
         """Test take_n with iterator shorter than n."""
         try:
-            from codex_ml.data.loader import take_n
 
             data = [1, 2]
             result = list(take_n(iter(data), 10))
@@ -454,7 +464,6 @@ class TestTakeN:
     def test_take_n_with_zero(self) -> None:
         """Test take_n with n=0."""
         try:
-            from codex_ml.data.loader import take_n
 
             data = [1, 2, 3]
             result = list(take_n(iter(data), 0))
@@ -474,7 +483,6 @@ class TestApplySafetyFilter:
     def test_safety_filter_exists(self) -> None:
         """Verify apply_safety_filter function exists."""
         try:
-            from codex_ml.data.loader import apply_safety_filter
 
             assert callable(apply_safety_filter), "Condition must be true"
         except ImportError:
@@ -483,7 +491,6 @@ class TestApplySafetyFilter:
     def test_safety_filter_filters_content(self) -> None:
         """Test that safety filter can filter content."""
         try:
-            from codex_ml.data.loader import apply_safety_filter
 
             texts = ["safe text", "another safe one"]
             result = apply_safety_filter(texts)
@@ -507,7 +514,6 @@ class TestPrepareDataFromConfig:
     def test_prepare_data_function_exists(self) -> None:
         """Verify prepare_data_from_config function exists."""
         try:
-            from codex_ml.data.loader import prepare_data_from_config
 
             assert callable(prepare_data_from_config), "Data must not be empty"
         except ImportError:
@@ -516,7 +522,6 @@ class TestPrepareDataFromConfig:
     def test_prepare_data_with_mock_config(self, sample_data_config) -> None:
         """Test prepare_data_from_config with a mock config."""
         try:
-            from codex_ml.data.loader import prepare_data_from_config
 
             # This may fail due to missing data, but function should be callable
             with pytest.raises((FileNotFoundError, DataPreparationError, Exception)):
@@ -525,7 +530,6 @@ class TestPrepareDataFromConfig:
             pytest.skip("prepare_data_from_config not available")
         except NameError:
             # DataPreparationError may not be imported
-            from codex_ml.data.loader import DataPreparationError
 
             with pytest.raises((FileNotFoundError, DataPreparationError, Exception)):
                 prepare_data_from_config(sample_data_config)
@@ -542,7 +546,6 @@ class TestEdgeCases:
     def test_load_nonexistent_file(self) -> None:
         """Test loading from non-existent file."""
         try:
-            from codex_ml.data.loader import load_texts
 
             with pytest.raises((FileNotFoundError, IOError, OSError)):
                 list(load_texts("/nonexistent/path/file.txt"))
@@ -552,7 +555,6 @@ class TestEdgeCases:
     def test_cache_manifest_with_special_characters(self, tmp_path: Path) -> None:
         """Test CacheManifest with special characters in source."""
         try:
-            from codex_ml.data.loader import CacheManifest
 
             manifest = CacheManifest(source="path/with spaces/and-special_chars!@#")
             manifest_path = tmp_path / "manifest.json"
@@ -565,7 +567,6 @@ class TestEdgeCases:
     def test_large_num_records(self) -> None:
         """Test CacheManifest with large num_records value."""
         try:
-            from codex_ml.data.loader import CacheManifest
 
             manifest = CacheManifest(num_records=10_000_000)
             assert manifest.num_records == 10_000_000, "num_records is not valid"
@@ -586,7 +587,6 @@ class TestConfigIntegration:
     def test_dataconfig_importable(self) -> None:
         """Verify DataConfig can be imported."""
         try:
-            from codex_ml.config import DataConfig
 
             assert DataConfig is not None, "DataConfig must be initialized"
         except ImportError:
@@ -595,7 +595,6 @@ class TestConfigIntegration:
     def test_loader_uses_dataconfig(self) -> None:
         """Verify loader module uses DataConfig type."""
         try:
-            from codex_ml.data import loader
 
             # Check if DataConfig is imported in the module
             source = Path(loader.__file__).read_text()

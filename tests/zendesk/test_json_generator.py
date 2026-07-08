@@ -7,14 +7,13 @@ Tests cover:
 - Export formats (ChatGPT, Zendesk AI)
 - All built-in templates
 """
-
 from __future__ import annotations
-
 import json
-
-import pytest
-
 from zendesk.json_generator import (
+
+
+
+
     ScriptTemplate,
     TemplateVariable,
     ZendeskJSONGenerator,

@@ -156,5 +156,6 @@ class TestRepoMapIntegration:
 
     def test_can_call_list_key_files(self) -> None:
         """Test calling list_key_files on REPO_ROOT."""
+import pytest
         result = repo_map._list_key_files(repo_map.REPO_ROOT)
         assert isinstance(result, list)

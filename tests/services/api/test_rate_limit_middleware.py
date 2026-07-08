@@ -40,6 +40,7 @@ def test_rate_limit_blocks_requests_after_threshold(monkeypatch: pytest.MonkeyPa
 
 def test_infer_rejects_prompts_beyond_context(monkeypatch: pytest.MonkeyPatch) -> None:
     """Context guards should reject prompts that exceed the configured token limit."""
+import pytest
 
     module = _reload_api(monkeypatch)
     monkeypatch.setenv("API_RATE_LIMIT", "0")

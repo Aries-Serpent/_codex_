@@ -68,6 +68,7 @@ def test_checkpoint_roundtrip():
 
 def test_checkpoint_with_nested_state():
     """Test checkpoint with nested state."""
+import pytest
     checkpoint = Checkpoint(
         checkpoint_id="ckpt_003",
         state={

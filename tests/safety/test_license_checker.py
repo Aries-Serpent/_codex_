@@ -3,15 +3,14 @@ Test License Checker
 
 Test module for license checker.
 """
-
 import json
 import shutil
 import subprocess
 import types
-
-import pytest
-
 import scripts.check_licenses as check_licenses
+
+
+
 
 
 @pytest.mark.skipif(shutil.which("pip-licenses") is None, reason="pip-licenses not installed")

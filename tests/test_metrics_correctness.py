@@ -3,12 +3,13 @@ Test Metrics Correctness
 
 Test module for metrics correctness.
 """
-
+    pytest.importorskip("nltk")
+    pytest.importorskip("rouge_score")
 import math
-
-import pytest
-
 from codex_ml.metrics import metrics_deprecated as M
+
+
+
 
 
 def test_perplexity_from_logits():
@@ -40,7 +41,6 @@ def test_token_accuracy_known_value():
 
 
 def test_bleu_score():
-    pytest.importorskip("nltk")
     # Use longer text for reliable BLEU (short texts can give 0.0 due to 4-gram requirements)
     text = "hello world this is a test"
     score = M.bleu([text], [text])
@@ -49,7 +49,6 @@ def test_bleu_score():
 
 
 def test_bleu_known_value():
-    pytest.importorskip("nltk")
     # Use longer text for reliable BLEU computation
     text = "the quick brown fox jumps over the lazy dog"
     score = M.bleu([text], [text])
@@ -58,14 +57,12 @@ def test_bleu_known_value():
 
 
 def test_rouge_l_score():
-    pytest.importorskip("rouge_score")
     result = M.rouge_l(["hello world"], ["hello world"])
     assert result is not None, "result must be initialized"
     assert result["rougeL_f"] == pytest.approx(1.0), "Result must not be empty"
 
 
 def test_rouge_l_known_value():
-    pytest.importorskip("rouge_score")
     r = M.rouge_l(["a b c"], ["a b c"])
     assert r is not None, "r must be initialized"
     assert r["rougeL_f"] == pytest.approx(1.0), "Condition must be true"

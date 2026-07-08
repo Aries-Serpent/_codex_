@@ -3,8 +3,9 @@ Test Precommit Config Exists
 
 Test module for precommit config exists.
 """
-
+import pytest
 import pathlib
+
 
 
 def test_precommit_config_exists():

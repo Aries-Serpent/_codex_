@@ -3,10 +3,9 @@ Test Training Config Negative
 
 Test module for training config negative.
 """
-
-import pytest
-
 from codex_ml.config import TrainingConfig
+
+
 
 
 def test_training_config_invalid_epochs():

@@ -3,14 +3,16 @@ Test List Plugins Degrade
 
 Test module for list plugins degrade.
 """
-
 from __future__ import annotations
-
+import pytest
 import json
 import sys
 import types
-
 import codex_ml.cli.list_plugins as cli
+    import codex_ml.plugins as plugins_pkg
+
+
+
 
 
 def test_list_plugins_handles_missing_registry(monkeypatch, capsys) -> None:
@@ -38,7 +40,6 @@ def test_list_plugins_handles_missing_registry(monkeypatch, capsys) -> None:
     programmatic.registry = lambda: _BrokenRegistry()  # type: ignore[attr-defined]
     monkeypatch.setitem(sys.modules, "codex_ml.plugins.programmatic", programmatic)
 
-    import codex_ml.plugins as plugins_pkg
 
     plugins_pkg.programmatic = programmatic
 

@@ -3,11 +3,11 @@ Tests for codex_ml.cli.tokenizer module.
 
 Tests tokenizer CLI functionality.
 """
-
 import subprocess
 import sys
+            from codex_ml.cli import tokenizer
 
-import pytest
+
 
 
 class TestTokenizerModuleImport:
@@ -16,7 +16,6 @@ class TestTokenizerModuleImport:
     def test_tokenizer_module_import(self):
         """Test that tokenizer module can be imported."""
         try:
-            from codex_ml.cli import tokenizer
 
             assert tokenizer is not None, "tokenizer must be initialized"
         except ImportError as e:

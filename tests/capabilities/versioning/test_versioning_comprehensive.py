@@ -522,6 +522,7 @@ class TestTagManager:
 
     def test_filter_tags(self):
         """Filter tags by pattern."""
+import pytest
         manager = TagManager()
         manager.create_tag("v1.0.0", "abc")
         manager.create_tag("v1.1.0", "def")

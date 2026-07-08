@@ -1,12 +1,14 @@
 """Tests for encoding detection helpers."""
-
 from __future__ import annotations
-
+import pytest
 from pathlib import Path
+    from ingestion.encoding_detect import autodetect_encoding, detect_encoding
+    from ingestion.encoding_detect import detect_encoding
+
+
 
 
 def test_detect_encoding_handles_various_encodings(tmp_path: Path) -> None:
-    from ingestion.encoding_detect import autodetect_encoding, detect_encoding
 
     utf8 = tmp_path / "utf8.txt"
     utf8.write_text("hello", encoding="utf-8")
@@ -20,7 +22,6 @@ def test_detect_encoding_handles_various_encodings(tmp_path: Path) -> None:
 
 
 def test_detect_encoding_missing_file_returns_default(tmp_path: Path) -> None:
-    from ingestion.encoding_detect import detect_encoding
 
     missing = tmp_path / "missing.txt"
     assert detect_encoding(missing, default="utf-8") == "utf-8"

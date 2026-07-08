@@ -1,6 +1,11 @@
 # Toy model configuration (CPU-friendly).
-name: "toy-lm"
-dtype: "fp32"
-hidden_dim: 64
-layers: 2
-dropout: 0.1
+model:
+  name: "toy-lm"
+  dtype: "fp32"
+  hidden_dim: 64
+  layers: 2
+  dropout: 0.1
+
+# Backwards compatibility aliases
+name: ${model.name}
+dtype: ${model.dtype}

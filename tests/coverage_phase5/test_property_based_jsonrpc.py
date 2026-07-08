@@ -48,6 +48,7 @@ def test_message_ids_are_valid(msg_id: int):
 @given(st.text(min_size=1, max_size=255, alphabet=st.characters(blacklist_characters='\\/"')))
 def test_method_names_preserved(method_name: str):
     """Property: Method names are preserved through roundtrip."""
+import pytest
     assume(not any(c in method_name for c in ["\\", "'\""]))
 
     message = {"jsonrpc": "2.0", "method": method_name, "params": {}}

@@ -1,3 +1,4 @@
+import pytest
 from agents.self_healing import SelfHealingEngine
 from agents.workflow_navigator import WorkflowNavigator
 from cognitive_brain.base import Planner

@@ -3,17 +3,16 @@ Test Bestk Retention
 
 Test module for bestk retention.
 """
-
 from __future__ import annotations
-
+torch = pytest.importorskip("torch")
 import json
 import pickle
-
-import pytest
-
 from codex_ml.utils.checkpoint import save_checkpoint
 
-torch = pytest.importorskip("torch")
+
+
+
+
 
 
 def test_bestk_retention_prunes_extras(tmp_path):

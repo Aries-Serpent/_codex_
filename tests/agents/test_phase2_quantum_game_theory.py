@@ -11,8 +11,35 @@ Based on toolkit analysis:
 Applying Table 4 equations #1-#20 for deep module coverage
 Expected gain: +40-45% on this module (24.18% → 65%+)
 """
+        ActionType = pytest.importorskip("agents.physics_orchestrator").ActionType
+            from agents.quantum_game_theory import QuantumInspiredGameEngine
+            from agents.quantum_game_theory import BlueRedTeamSimulator
+            from agents.quantum_game_theory import PayoffOperator
+            from agents.quantum_game_theory import QuantumGameState
+            from agents.quantum_game_theory import StrategySpace
+            from agents.quantum_game_theory import EntanglementGame
+            from agents.quantum_game_theory import StrategyType
+            from agents.quantum_game_theory import QuantumInspiredGameEngine
+            from agents.quantum_game_theory import QuantumGameState
+            from agents.quantum_game_theory import StrategyState, TeamType
+            from agents.quantum_game_theory import QuantumInspiredGameEngine
+            from agents.quantum_game_theory import QuantumInspiredGameEngine
+            from agents.quantum_game_theory import QuantumGameState
+            from agents.quantum_game_theory import QuantumInspiredGameEngine
+            from agents.quantum_game_theory import QuantumInspiredGameEngine
+            from agents.quantum_game_theory import QuantumInspiredGameEngine
+            from agents.quantum_game_theory import QuantumInspiredGameEngine
+            from agents.quantum_game_theory import QuantumInspiredGameEngine
+            from agents.quantum_game_theory import QuantumInspiredGameEngine
+            from agents.quantum_game_theory import QuantumInspiredGameEngine
+            from agents.quantum_game_theory import BlueRedTeamSimulator
+            from agents.quantum_game_theory import BlueRedTeamSimulator
+            from agents.quantum_game_theory import BlueRedTeamSimulator
+            from agents.quantum_game_theory import QuantumInspiredGameEngine
+            from agents.quantum_game_theory import QuantumInspiredGameEngine
+            from agents.quantum_game_theory import StrategySpace
+            from agents.quantum_game_theory import PayoffOperator
 
-import pytest
 
 
 class TestPhase2_QuantumGameTheory_Table4_Eq1:
@@ -21,7 +48,6 @@ class TestPhase2_QuantumGameTheory_Table4_Eq1:
     def test_quantum_inspired_game_engine_init(self):
         """Test QuantumInspiredGameEngine initialization."""
         try:
-            from agents.quantum_game_theory import QuantumInspiredGameEngine
 
             engine = QuantumInspiredGameEngine()
             assert engine is not None, "engine must be initialized"
@@ -31,7 +57,6 @@ class TestPhase2_QuantumGameTheory_Table4_Eq1:
     def test_blue_red_team_simulator_init(self):
         """Test BlueRedTeamSimulator initialization."""
         try:
-            from agents.quantum_game_theory import BlueRedTeamSimulator
 
             sim = BlueRedTeamSimulator()
             assert sim is not None, "sim must be initialized"
@@ -41,7 +66,6 @@ class TestPhase2_QuantumGameTheory_Table4_Eq1:
     def test_payoff_operator_init(self):
         """Test PayoffOperator initialization."""
         try:
-            from agents.quantum_game_theory import PayoffOperator
 
             op = PayoffOperator()
             assert op is not None, "op must be initialized"
@@ -51,7 +75,6 @@ class TestPhase2_QuantumGameTheory_Table4_Eq1:
     def test_quantum_game_state_init(self):
         """Test QuantumGameState initialization."""
         try:
-            from agents.quantum_game_theory import QuantumGameState
 
             state = QuantumGameState()
             assert state is not None, "state must be initialized"
@@ -61,7 +84,6 @@ class TestPhase2_QuantumGameTheory_Table4_Eq1:
     def test_strategy_space_init(self):
         """Test StrategySpace initialization."""
         try:
-            from agents.quantum_game_theory import StrategySpace
 
             space = StrategySpace()
             assert space is not None, "space must be initialized"
@@ -71,7 +93,6 @@ class TestPhase2_QuantumGameTheory_Table4_Eq1:
     def test_entanglement_game_init(self):
         """Test EntanglementGame using Eq #9 (Bell states)."""
         try:
-            from agents.quantum_game_theory import EntanglementGame
 
             game = EntanglementGame()
             assert game is not None, "game must be initialized"
@@ -84,7 +105,6 @@ class TestPhase2_QuantumGameTheory_Table4_Eq2:
 
     def test_action_type_enum_all_values(self):
         """Test all ActionType enum values comprehensively."""
-        ActionType = pytest.importorskip("agents.physics_orchestrator").ActionType
 
         action_types = list(ActionType)
 
@@ -99,7 +119,6 @@ class TestPhase2_QuantumGameTheory_Table4_Eq2:
 
     def test_action_type_enum_access_by_name(self):
         """Test ActionType enum access by name."""
-        ActionType = pytest.importorskip("agents.physics_orchestrator").ActionType
 
         # Get first enum value
         action_types = list(ActionType)
@@ -112,7 +131,6 @@ class TestPhase2_QuantumGameTheory_Table4_Eq2:
     def test_strategy_type_enum_if_exists(self):
         """Test StrategyType enum if it exists."""
         try:
-            from agents.quantum_game_theory import StrategyType
 
             strategies = list(StrategyType)
             assert len(strategies) > 0, "Strategies must not be empty"
@@ -129,7 +147,6 @@ class TestPhase2_QuantumGameTheory_Table4_Eq3:
     def test_game_engine_properties(self):
         """Test QuantumInspiredGameEngine properties."""
         try:
-            from agents.quantum_game_theory import QuantumInspiredGameEngine
 
             engine = QuantumInspiredGameEngine()
 
@@ -148,7 +165,6 @@ class TestPhase2_QuantumGameTheory_Table4_Eq3:
     def test_game_state_properties(self):
         """Test QuantumGameState properties."""
         try:
-            from agents.quantum_game_theory import QuantumGameState
 
             state = QuantumGameState()
 
@@ -172,7 +188,6 @@ class TestPhase2_QuantumGameTheory_Table4_Eq3:
     def test_strategy_space_properties(self):
         """Test StrategyState properties (StrategySpace doesn't exist, using StrategyState)."""
         try:
-            from agents.quantum_game_theory import StrategyState, TeamType
 
             state = StrategyState(team=TeamType.BLUE, strategies=["s1", "s2"])
 
@@ -192,7 +207,6 @@ class TestPhase2_QuantumGameTheory_Table4_Eq9:
     def test_create_entangled_state(self):
         """Test creation of entangled game state."""
         try:
-            from agents.quantum_game_theory import QuantumInspiredGameEngine
 
             engine = QuantumInspiredGameEngine()
 
@@ -209,7 +223,6 @@ class TestPhase2_QuantumGameTheory_Table4_Eq9:
     def test_measure_entanglement(self):
         """Test entanglement measurement."""
         try:
-            from agents.quantum_game_theory import QuantumInspiredGameEngine
 
             engine = QuantumInspiredGameEngine()
 
@@ -222,7 +235,6 @@ class TestPhase2_QuantumGameTheory_Table4_Eq9:
     def test_bell_state_validation(self):
         """Test Bell state validation."""
         try:
-            from agents.quantum_game_theory import QuantumGameState
 
             state = QuantumGameState()
 
@@ -240,7 +252,6 @@ class TestPhase2_QuantumGameTheory_Table4_Eq11:
     def test_strategy_optimization(self):
         """Test strategy optimization via action functional."""
         try:
-            from agents.quantum_game_theory import QuantumInspiredGameEngine
 
             engine = QuantumInspiredGameEngine()
 
@@ -253,7 +264,6 @@ class TestPhase2_QuantumGameTheory_Table4_Eq11:
     def test_payoff_calculation(self):
         """Test payoff calculation."""
         try:
-            from agents.quantum_game_theory import QuantumInspiredGameEngine
 
             engine = QuantumInspiredGameEngine()
 
@@ -266,7 +276,6 @@ class TestPhase2_QuantumGameTheory_Table4_Eq11:
     def test_nash_equilibrium_search(self):
         """Test Nash equilibrium search."""
         try:
-            from agents.quantum_game_theory import QuantumInspiredGameEngine
 
             engine = QuantumInspiredGameEngine()
 
@@ -283,7 +292,6 @@ class TestPhase2_QuantumGameTheory_GameEngines:
     def test_play_game_method(self):
         """Test play_game method."""
         try:
-            from agents.quantum_game_theory import QuantumInspiredGameEngine
 
             engine = QuantumInspiredGameEngine()
 
@@ -301,7 +309,6 @@ class TestPhase2_QuantumGameTheory_GameEngines:
     def test_simulate_round_method(self):
         """Test simulate_round method."""
         try:
-            from agents.quantum_game_theory import QuantumInspiredGameEngine
 
             engine = QuantumInspiredGameEngine()
 
@@ -313,7 +320,6 @@ class TestPhase2_QuantumGameTheory_GameEngines:
     def test_update_state_method(self):
         """Test update_state method."""
         try:
-            from agents.quantum_game_theory import QuantumInspiredGameEngine
 
             engine = QuantumInspiredGameEngine()
 
@@ -325,7 +331,6 @@ class TestPhase2_QuantumGameTheory_GameEngines:
     def test_reset_game_method(self):
         """Test reset_game method."""
         try:
-            from agents.quantum_game_theory import QuantumInspiredGameEngine
 
             engine = QuantumInspiredGameEngine()
 
@@ -342,7 +347,6 @@ class TestPhase2_QuantumGameTheory_BlueRedSimulator:
     def test_blue_team_strategy(self):
         """Test blue team strategy generation."""
         try:
-            from agents.quantum_game_theory import BlueRedTeamSimulator
 
             sim = BlueRedTeamSimulator()
 
@@ -355,7 +359,6 @@ class TestPhase2_QuantumGameTheory_BlueRedSimulator:
     def test_red_team_strategy(self):
         """Test red team strategy generation."""
         try:
-            from agents.quantum_game_theory import BlueRedTeamSimulator
 
             sim = BlueRedTeamSimulator()
 
@@ -368,7 +371,6 @@ class TestPhase2_QuantumGameTheory_BlueRedSimulator:
     def test_simulate_attack_defense(self):
         """Test attack-defense simulation."""
         try:
-            from agents.quantum_game_theory import BlueRedTeamSimulator
 
             sim = BlueRedTeamSimulator()
 
@@ -389,7 +391,6 @@ class TestPhase2_QuantumGameTheory_EdgeCases:
     def test_game_engine_with_zero_players(self):
         """Test game engine with zero players."""
         try:
-            from agents.quantum_game_theory import QuantumInspiredGameEngine
 
             try:
                 QuantumInspiredGameEngine(num_players=0)
@@ -403,7 +404,6 @@ class TestPhase2_QuantumGameTheory_EdgeCases:
     def test_game_engine_with_many_players(self):
         """Test game engine with many players."""
         try:
-            from agents.quantum_game_theory import QuantumInspiredGameEngine
 
             try:
                 engine = QuantumInspiredGameEngine(num_players=100)
@@ -417,7 +417,6 @@ class TestPhase2_QuantumGameTheory_EdgeCases:
     def test_strategy_space_high_dimension(self):
         """Test strategy space with high dimension."""
         try:
-            from agents.quantum_game_theory import StrategySpace
 
             try:
                 space = StrategySpace(dimension=1000)
@@ -430,7 +429,6 @@ class TestPhase2_QuantumGameTheory_EdgeCases:
     def test_payoff_matrix_asymmetric(self):
         """Test asymmetric payoff matrix."""
         try:
-            from agents.quantum_game_theory import PayoffOperator
 
             # Test with asymmetric matrix if supported
             try:

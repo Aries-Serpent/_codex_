@@ -3,11 +3,10 @@ Test Semgrep Rules
 
 Test module for semgrep rules.
 """
-
 import shutil
 import subprocess
 
-import pytest
+
 
 SEMGREP = shutil.which("semgrep")
 

@@ -10,19 +10,18 @@ Covers:
 - Concurrent session isolation (logout one session, other remains valid)
 - Token rotation preserves user identity
 """  # pragma: allowlist secret
-
 from __future__ import annotations
-
-import pytest
-
 pytest.importorskip("fastapi") # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
-
 from codex.api.auth_routes import create_auth_router
 from codex.auth.authenticator import Authenticator
 from codex.auth.token_manager import TokenManager, TokenType
 from codex.auth.user_store import UserStore
+
+
+
+
 
 # ---------------------------------------------------------------------------
 # Fixtures

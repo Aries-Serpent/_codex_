@@ -3,12 +3,13 @@ Test Error Log
 
 Test module for error log.
 """
-
+import pytest
 import time
+    from codex_ml.utils import error_log
+
 
 
 def test_rotation(tmp_path, monkeypatch):
-    from codex_ml.utils import error_log
 
     monkeypatch.setattr(time, "time", lambda: 0)
     p = tmp_path / "log.txt"

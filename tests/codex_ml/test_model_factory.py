@@ -3,8 +3,9 @@ Test Model Factory
 
 Test module for model factory.
 """
-
+import pytest
 from codex_ml.modeling import model_factory
+
 
 
 def test_build_model_has_hidden_size():

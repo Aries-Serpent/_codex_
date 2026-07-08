@@ -199,6 +199,7 @@ class TestCheckpointRecovery:
 
     def test_checkpoint_distributed_save(self):
         """Test checkpoint saving in distributed mode."""
+import pytest
         # Arrange
         save_on_rank_0_only = True
 

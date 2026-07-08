@@ -10,17 +10,24 @@ Test Coverage Goals:
   - Error handling (25%): Invalid inputs, missing keys
   - Edge cases (15%): Empty data, unicode, optional dependencies
 """
-
 from __future__ import annotations
-
 import json
 from unittest.mock import patch
+    from codex.archive import sigstore_client
+        import importlib
+        import hashlib
+        import hashlib
+        import hashlib
+        import hashlib
+        import os
+        import os
+            import os
 
-import pytest
+
+
 
 # Import the module to test
 try:
-    from codex.archive import sigstore_client
 except ImportError:
     pytest.skip("sigstore_client module not importable", allow_module_level=True)
 
@@ -47,7 +54,6 @@ class TestSignerInitialization:
     def test_signer_with_disabled_signing(self) -> None:
         """Test Signer with signing disabled."""
         # Reload to pick up new environment
-        import importlib
         importlib.reload(sigstore_client)
         assert sigstore_client is not None, "sigstore_client must be initialized"
 
@@ -161,7 +167,6 @@ class TestSigningFallback:
 
     def test_fallback_signing_deterministic(self) -> None:
         """Test fallback signing is deterministic."""
-        import hashlib
         data = b"test"
         hash1 = hashlib.sha256(data).digest()
         hash2 = hashlib.sha256(data).digest()
@@ -169,14 +174,12 @@ class TestSigningFallback:
 
     def test_fallback_produces_valid_hash(self) -> None:
         """Test fallback produces valid SHA-256 hash."""
-        import hashlib
         data = b"test data"
         result = hashlib.sha256(data).digest()
         assert len(result) == 32, "Result must not be empty"
 
     def test_fallback_different_data_different_hash(self) -> None:
         """Test fallback produces different hash for different data."""
-        import hashlib
         data1 = b"test1"
         data2 = b"test2"
         hash1 = hashlib.sha256(data1).digest()
@@ -185,7 +188,6 @@ class TestSigningFallback:
 
     def test_fallback_empty_data(self) -> None:
         """Test fallback hashing empty data."""
-        import hashlib
         result = hashlib.sha256(b"").digest()
         assert isinstance(result, bytes)
         assert len(result) == 32, "Result must not be empty"
@@ -208,13 +210,11 @@ class TestSigningInterface:
     def test_enable_signing_environment(self) -> None:
         """Test signing enabled via environment variable."""
         # Environment variable check should work
-        import os
         assert os.environ.get('CODEX_ENABLE_SIGNING') == 'true', "Condition must be true"
 
     @patch.dict('os.environ', {}, clear=True)
     def test_disable_signing_by_default(self) -> None:
         """Test signing disabled by default."""
-        import os
         assert os.environ.get('CODEX_ENABLE_SIGNING') is None, "Condition must be true"
 
 
@@ -318,7 +318,6 @@ class TestErrorHandling:
         """Test invalid environment variable value."""
         with patch.dict('os.environ', {'CODEX_ENABLE_SIGNING': 'invalid'}):
             # Should handle gracefully
-            import os
             value = os.environ.get('CODEX_ENABLE_SIGNING')
             assert isinstance(value, str)
 

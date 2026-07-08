@@ -10,15 +10,43 @@ Tests cover:
 - Error handling and edge cases
 - Report generation and serialization
 """
-
 from __future__ import annotations
-
+import pytest
 import json
 import tempfile
 from pathlib import Path
 from unittest.mock import Mock, patch
-
 from codex.analyze.static.analyzer import (
+        import ast
+import os
+import sys
+from pathlib import Path
+        import ast
+from typing import Dict, List
+from collections import defaultdict
+        import ast
+import os
+import os
+from os import path
+        import ast
+import sys
+import os
+import ast
+        import ast
+        import ast
+        import ast
+        import ast
+        import ast
+        import ast
+        import ast
+        import ast
+        import ast
+import os
+        from datetime import datetime, timezone
+        from datetime import datetime, timezone
+
+
+
     MAX_FILE_SIZE_KB,
     MAX_FILES_TO_ANALYZE,
     ComplexityMetrics,
@@ -163,12 +191,8 @@ class TestImportExtraction:
 
     def test_extract_simple_imports(self) -> None:
         """Test extracting simple imports."""
-        import ast
 
         code = """
-import os
-import sys
-from pathlib import Path
 """
         tree = ast.parse(code)
         imports = _extract_imports(tree)
@@ -179,11 +203,8 @@ from pathlib import Path
 
     def test_extract_from_imports(self) -> None:
         """Test extracting 'from' imports."""
-        import ast
 
         code = """
-from typing import Dict, List
-from collections import defaultdict
 """
         tree = ast.parse(code)
         imports = _extract_imports(tree)
@@ -193,12 +214,8 @@ from collections import defaultdict
 
     def test_extract_imports_no_duplicates(self) -> None:
         """Test import extraction removes duplicates."""
-        import ast
 
         code = """
-import os
-import os
-from os import path
 """
         tree = ast.parse(code)
         imports = _extract_imports(tree)
@@ -207,12 +224,8 @@ from os import path
 
     def test_extract_imports_sorted(self) -> None:
         """Test imports are returned sorted."""
-        import ast
 
         code = """
-import sys
-import os
-import ast
 """
         tree = ast.parse(code)
         imports = _extract_imports(tree)
@@ -225,7 +238,6 @@ class TestExportExtraction:
 
     def test_extract_function_exports(self) -> None:
         """Test extracting public functions."""
-        import ast
 
         code = """
 def public_func():
@@ -242,7 +254,6 @@ def _private_func():
 
     def test_extract_class_exports(self) -> None:
         """Test extracting public classes."""
-        import ast
 
         code = """
 class PublicClass:
@@ -259,7 +270,6 @@ class _PrivateClass:
 
     def test_extract_all_variable(self) -> None:
         """Test extracting from __all__ variable."""
-        import ast
 
         code = """
 __all__ = ["func1", "func2", "Class1"]
@@ -282,7 +292,6 @@ class Class1:
 
     def test_extract_exports_sorted(self) -> None:
         """Test exports are returned sorted."""
-        import ast
 
         code = """
 def zebra():
@@ -305,7 +314,6 @@ class TestComplexityCalculation:
 
     def test_simple_function_complexity(self) -> None:
         """Test complexity of simple function."""
-        import ast
 
         code = """
 def simple():
@@ -318,7 +326,6 @@ def simple():
 
     def test_if_statement_increases_complexity(self) -> None:
         """Test if statement increases complexity."""
-        import ast
 
         code = """
 def func(x):
@@ -333,7 +340,6 @@ def func(x):
 
     def test_multiple_branches_complexity(self) -> None:
         """Test multiple branches increase complexity."""
-        import ast
 
         code = """
 def func(x, y):
@@ -349,7 +355,6 @@ def func(x, y):
 
     def test_loop_increases_complexity(self) -> None:
         """Test loops increase complexity."""
-        import ast
 
         code = """
 def func(items):
@@ -365,7 +370,6 @@ def func(items):
 
     def test_cognitive_complexity_estimate(self) -> None:
         """Test cognitive complexity is estimated."""
-        import ast
 
         code = """
 def func(x):
@@ -420,7 +424,6 @@ class TestFileAnalysis:
         """Test analyzing a simple Python file."""
         test_file = tmp_path / "test.py"
         test_file.write_text("""
-import os
 
 def hello():
     return "world"
@@ -522,7 +525,6 @@ class TestStaticReport:
 
     def test_report_to_dict(self, tmp_path: Path) -> None:
         """Test converting report to dictionary."""
-        from datetime import datetime, timezone
 
         file_analysis = FileAnalysis(
             path="test.py",
@@ -551,7 +553,6 @@ class TestStaticReport:
 
     def test_report_save(self, tmp_path: Path) -> None:
         """Test saving report to file."""
-        from datetime import datetime, timezone
 
         report = StaticReport(
             snapshot_id="test",

@@ -26,6 +26,7 @@ def compare_values(a: int, b: int) -> str:
 
 class TestConditionalMutations:
     """Test conditionals for mutation detection."""
+import pytest
 
     def test_is_even_true(self):
         assert is_even(2) is True, "Condition must be true"

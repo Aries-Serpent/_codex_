@@ -1,3 +1,4 @@
+import pytest
 #         )
 # Test module for mcp cli.
 # 

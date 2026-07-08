@@ -1,15 +1,15 @@
 """Smoke tests for :mod:`codex.evidence`."""
-
 from __future__ import annotations
-
 import json
 from pathlib import Path
+    from codex import evidence
+    from codex.evidence import utc_now
 
-import pytest
+
+
 
 
 def test_append_evidence_writes_record(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    from codex import evidence
 
     monkeypatch.setenv("CODEX_EVIDENCE_DIR", str(tmp_path))
     evidence.append_evidence("record.ndjson", {"foo": "bar"})
@@ -22,7 +22,6 @@ def test_append_evidence_writes_record(tmp_path: Path, monkeypatch: pytest.Monke
 
 
 def test_utc_now_format() -> None:
-    from codex.evidence import utc_now
 
     stamp = utc_now()
     assert stamp.endswith("Z"), "Condition must be true"

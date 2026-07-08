@@ -3,11 +3,15 @@
 Validates that both "rougeL" and "rouge_l" resolve to the same offline
 implementation and produce identical results.
 """
-
 import sys
 from pathlib import Path
+    from codex_ml.metrics.registry import get_metric
+    from codex_ml.metrics.registry import list_metrics
+    from codex_ml.metrics.registry import get_metric
+    from codex_ml.metrics.registry import get_metric
+    from codex_ml.metrics.registry import get_metric
 
-import pytest
+
 
 # Add src to path
 _REPO_ROOT = Path(__file__).parent.parent.parent
@@ -18,7 +22,6 @@ if str(_SRC_DIR) not in sys.path:
 
 def test_rouge_aliases_resolve_and_match():
     """Test that rougeL and rouge_l are aliases to the same implementation."""
-    from codex_ml.metrics.registry import get_metric
 
     # Both keys should resolve without error
     fn_camel = get_metric("rougeL")
@@ -40,7 +43,6 @@ def test_rouge_aliases_resolve_and_match():
 
 def test_registry_lists_normalized_name():
     """Test that the registry lists the normalized (lowercase) name."""
-    from codex_ml.metrics.registry import list_metrics
 
     # Registry normalizes names to lowercase for listing
     names = list_metrics()
@@ -49,7 +51,6 @@ def test_registry_lists_normalized_name():
 
 def test_both_aliases_resolve_to_offline_implementation():
     """Test that both alias keys resolve to the offline implementation."""
-    from codex_ml.metrics.registry import get_metric
 
     fn_camel = get_metric("rougeL")
     fn_snake = get_metric("rouge_l")
@@ -77,7 +78,6 @@ def test_both_aliases_resolve_to_offline_implementation():
 )
 def test_rouge_l_core_cases(pred: str, ref: str, min_score: float):
     """Test ROUGE-L on core cases using both aliases."""
-    from codex_ml.metrics.registry import get_metric
 
     fn = get_metric("rougeL")
     score = fn([pred], [ref])
@@ -87,7 +87,6 @@ def test_rouge_l_core_cases(pred: str, ref: str, min_score: float):
 
 def test_alias_produces_identical_results():
     """Verify both aliases produce identical results on the same inputs."""
-    from codex_ml.metrics.registry import get_metric
 
     fn_camel = get_metric("rougeL")
     fn_snake = get_metric("rouge_l")

@@ -8,16 +8,22 @@ Created: 2026-01-18
 Phase: 15.1 - Property-Based Testing
 Target: Verify serialization round-trips
 """
-
 import base64
 import json
 from typing import Any
-
-import pytest
-
-try: # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
     from hypothesis import assume, given
     from hypothesis import strategies as st
+        from urllib.parse import quote, unquote
+        from urllib.parse import quote, unquote
+        import ast
+        import hashlib
+        import hashlib
+        import hashlib
+        import hashlib
+
+
+
+try: # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 
     HAS_HYPOTHESIS = True
 except ImportError:
@@ -254,7 +260,6 @@ class TestURLEncodingProperties:
     )
     def test_url_safe_chars_unchanged(self, s: str) -> None:
         """URL-safe characters are not encoded."""
-        from urllib.parse import quote, unquote
 
         encoded = quote(s, safe="")
         # For URL-safe chars, encoding should only use the chars themselves
@@ -264,7 +269,6 @@ class TestURLEncodingProperties:
     @given(st.text(max_size=200))
     def test_url_encode_roundtrip(self, s: str) -> None:
         """URL encode then decode is identity."""
-        from urllib.parse import quote, unquote
 
         encoded = quote(s, safe="")
         decoded = unquote(encoded)
@@ -327,7 +331,6 @@ class TestPickleProperties:
     @given(st.lists(st.integers(), max_size=100))
     def test_repr_eval_for_simple_lists(self, lst: list[int]) -> None:
         """repr() can be eval'd back for simple lists using ast.literal_eval."""
-        import ast
 
         repr_str = repr(lst)
         # Use ast.literal_eval for safe evaluation of literals
@@ -353,7 +356,6 @@ class TestChecksumProperties:
     @given(st.binary(max_size=1000))
     def test_md5_deterministic(self, data: bytes) -> None:
         """MD5 hash is deterministic."""
-        import hashlib
 
         hash1 = hashlib.md5(
             data, usedforsecurity=False
@@ -366,7 +368,6 @@ class TestChecksumProperties:
     @given(st.binary(max_size=1000))
     def test_sha256_deterministic(self, data: bytes) -> None:
         """SHA256 hash is deterministic."""
-        import hashlib
 
         hash1 = hashlib.sha256(data).hexdigest()
         hash2 = hashlib.sha256(data).hexdigest()
@@ -375,7 +376,6 @@ class TestChecksumProperties:
     @given(st.binary(max_size=1000))
     def test_sha256_length(self, data: bytes) -> None:
         """SHA256 hash always has 64 hex characters."""
-        import hashlib
 
         hash_hex = hashlib.sha256(data).hexdigest()
         assert len(hash_hex) == 64, "Hash_hex must not be empty"
@@ -383,7 +383,6 @@ class TestChecksumProperties:
     @given(st.binary(min_size=1, max_size=500), st.binary(min_size=1, max_size=500))
     def test_different_data_different_hash(self, data1: bytes, data2: bytes) -> None:
         """Different data (usually) produces different hashes."""
-        import hashlib
 
         assume(data1 != data2)
         hash1 = hashlib.sha256(data1).hexdigest()

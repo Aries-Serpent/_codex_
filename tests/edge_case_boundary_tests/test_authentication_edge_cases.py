@@ -11,9 +11,10 @@ Categories tested:
 - A5: OAuth Flow (state validation, redirect URIs)
 - A6: Session Management (fixation, isolation, cleanup)
 """
-
+import pytest
 from datetime import datetime, timedelta
 from unittest.mock import MagicMock
+
 
 
 class TestTokenExpiration:

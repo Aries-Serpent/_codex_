@@ -3,16 +3,17 @@ Test Attach Artifacts
 
 Test module for attach artifacts.
 """
-
 from __future__ import annotations
-
+import pytest
 import json
 from pathlib import Path
+        from common.mlflow_guard import log_dict_safe
+
+
 
 
 def test_log_dict_safe(tmp_path: Path, monkeypatch) -> None:
     try:
-        from common.mlflow_guard import log_dict_safe
     except ImportError:  # pragma: no cover - optional dependency missing
         return
 

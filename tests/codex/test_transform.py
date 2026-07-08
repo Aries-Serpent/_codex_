@@ -7,8 +7,30 @@ Tests cover:
 - Refactoring rules
 - Dry-run mode
 """
-
+import pytest
 from pathlib import Path
+        from codex.transform.transformer import transform
+        from codex.transform.transformer import transform
+import os
+        from codex.transform.transformer import transform
+        from codex.transform.transformer import Tier, transform
+        from codex.transform.transformer import transform
+import requests
+        from codex.transform.transformer import transform
+        from codex.transform.transformer import transform
+import os
+        from codex.transform.transformer import _create_diff
+        from codex.transform.transformer import _apply_pathlib_migration
+import os
+        from codex.transform.transformer import Tier
+        from codex.transform.transformer import Tier, transform
+import os
+        from codex.transform.transformer import transform
+import os
+        from codex.transform.transformer import Patch, Tier
+        from codex.transform.transformer import transform
+        from codex.transform.transformer import transform
+
 
 
 class TestTransformer:
@@ -16,7 +38,6 @@ class TestTransformer:
 
     def test_transform_creates_patches_dir(self, tmp_path: Path):
         """Test that transform creates patches directory."""
-        from codex.transform.transformer import transform
 
         source_dir = tmp_path / "source"
         source_dir.mkdir()
@@ -29,13 +50,11 @@ class TestTransformer:
 
     def test_transform_detects_pathlib_migration(self, tmp_path: Path):
         """Test detection of pathlib migration opportunities."""
-        from codex.transform.transformer import transform
 
         source_dir = tmp_path / "source"
         source_dir.mkdir()
         (source_dir / "test.py").write_text(
             """
-import os
 
 path = os.path.join("a", "b")
 exists = os.path.exists(path)
@@ -51,7 +70,6 @@ exists = os.path.exists(path)
 
     def test_transform_dry_run_no_modification(self, tmp_path: Path):
         """Test that dry run doesn't modify files."""
-        from codex.transform.transformer import transform
 
         source_dir = tmp_path / "source"
         source_dir.mkdir()
@@ -65,7 +83,6 @@ exists = os.path.exists(path)
 
     def test_transform_tier_a_only(self, tmp_path: Path):
         """Test applying only Tier A transformations."""
-        from codex.transform.transformer import Tier, transform
 
         source_dir = tmp_path / "source"
         source_dir.mkdir()
@@ -78,13 +95,11 @@ exists = os.path.exists(path)
 
     def test_transform_tier_c_suggestions(self, tmp_path: Path):
         """Test Tier C suggestions for async conversion."""
-        from codex.transform.transformer import transform
 
         source_dir = tmp_path / "source"
         source_dir.mkdir()
         (source_dir / "test.py").write_text(
             """
-import requests
 
 def fetch():
     return requests.get("http://example.com")
@@ -102,7 +117,6 @@ def fetch():
 
     def test_transform_result_to_dict(self, tmp_path: Path):
         """Test TransformResult serialization."""
-        from codex.transform.transformer import transform
 
         source_dir = tmp_path / "source"
         source_dir.mkdir()
@@ -119,13 +133,11 @@ def fetch():
 
     def test_transform_result_save(self, tmp_path: Path):
         """Test saving TransformResult to files."""
-        from codex.transform.transformer import transform
 
         source_dir = tmp_path / "source"
         source_dir.mkdir()
         (source_dir / "test.py").write_text(
             """
-import os
 path = os.path.join("a", "b")
 """,
             encoding="utf-8",
@@ -145,7 +157,6 @@ class TestPatchGeneration:
 
     def test_create_diff(self):
         """Test unified diff creation."""
-        from codex.transform.transformer import _create_diff
 
         original = "line1\nline2\nline3\n"
         modified = "line1\nmodified\nline3\n"
@@ -159,10 +170,8 @@ class TestPatchGeneration:
 
     def test_pathlib_migration_patterns(self):
         """Test pathlib migration pattern application."""
-        from codex.transform.transformer import _apply_pathlib_migration
 
         content = """
-import os
 path = os.path.join("a", "b")
 exists = os.path.exists(path)
 dirname = os.path.dirname(path)
@@ -179,7 +188,6 @@ class TestTierClassification:
 
     def test_tier_enum(self):
         """Test Tier enum values."""
-        from codex.transform.transformer import Tier
 
         assert Tier.A.value == "safe_auto_apply", "Value must be initialized"
         assert Tier.B.value == "apply_with_tests", "Value must be initialized"
@@ -187,13 +195,11 @@ class TestTierClassification:
 
     def test_patch_tier_assignment(self, tmp_path: Path):
         """Test that patches are assigned correct tiers."""
-        from codex.transform.transformer import Tier, transform
 
         source_dir = tmp_path / "source"
         source_dir.mkdir()
         (source_dir / "test.py").write_text(
             """
-import os
 path = os.path.join("a", "b")
 """,
             encoding="utf-8",
@@ -206,13 +212,11 @@ path = os.path.join("a", "b")
 
     def test_patch_has_description(self, tmp_path: Path):
         """Test that patches have descriptions."""
-        from codex.transform.transformer import transform
 
         source_dir = tmp_path / "source"
         source_dir.mkdir()
         (source_dir / "test.py").write_text(
             """
-import os
 os.path.exists("file")
 """,
             encoding="utf-8",
@@ -230,7 +234,6 @@ class TestPatch:
 
     def test_patch_to_dict(self):
         """Test Patch serialization."""
-        from codex.transform.transformer import Patch, Tier
 
         patch = Patch(
             file_path="test.py",
@@ -255,7 +258,6 @@ class TestErrorHandling:
 
     def test_transform_handles_read_errors(self, tmp_path: Path):
         """Test graceful handling of file read errors."""
-        from codex.transform.transformer import transform
 
         source_dir = tmp_path / "source"
         source_dir.mkdir()
@@ -273,7 +275,6 @@ class TestErrorHandling:
 
     def test_transform_empty_directory(self, tmp_path: Path):
         """Test transform on empty directory."""
-        from codex.transform.transformer import transform
 
         source_dir = tmp_path / "source"
         source_dir.mkdir()

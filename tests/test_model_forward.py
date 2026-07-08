@@ -1,14 +1,13 @@
 """MiniLM forward pass shape test."""
-
-import sys
-
-import pytest
-
 torch = pytest.importorskip("torch", reason="torch not installed")
+import sys
+from codex_ml.models import MiniLM, MiniLMConfig
+
+
+
 
 _TORCH_312_BUG = sys.version_info >= (3, 12) and torch.__version__.startswith("2.")
 
-from codex_ml.models import MiniLM, MiniLMConfig
 
 
 @pytest.mark.ml

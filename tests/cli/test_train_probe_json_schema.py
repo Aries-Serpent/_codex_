@@ -3,14 +3,16 @@ Test Train Probe Json Schema
 
 Test module for train probe json schema.
 """
-
 from __future__ import annotations
-
+import pytest
 import json
 import subprocess
 import sys
 from pathlib import Path
 from typing import Any
+    import os
+
+
 
 SCHEMA_PATH = Path(__file__).parents[1] / "schemas" / "train_probe.schema.json"
 SCHEMA = json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))
@@ -24,7 +26,6 @@ def _validate(payload: dict[str, Any]) -> None:
 
 
 def test_train_probe_json_output() -> None:
-    import os
 
     command = (
         "import codex_ml.cli.hydra_main as H; "

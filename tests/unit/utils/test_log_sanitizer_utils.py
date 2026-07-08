@@ -93,6 +93,7 @@ def test_sanitize_dict_for_log_empty():
 
 def test_sanitize_dict_for_log_preserves_keys():
     """Test sanitize_dict_for_log preserves key names."""
+import pytest
     data = {"key1": "val1", "key2": "val2"}
     result = sanitize_dict_for_log(data)
     assert "key1" in result, "Result must not be empty"

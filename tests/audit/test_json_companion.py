@@ -1,10 +1,11 @@
 """
 Test that S6 render writes a JSON companion file with expected schema keys
 """
-
+import pytest
 import json
-
 from scripts.space_traversal import audit_runner as runner
+
+
 
 
 def make_cfg(tmp_path):

@@ -3,13 +3,13 @@ Test Data Gate
 
 Test module for data gate.
 """
-
 from __future__ import annotations
-
+    run_data_drift_gate = pytest.importorskip("hhg_logistics.monitor.data_gate").run_data_drift_gate
 import csv
 from pathlib import Path
 
-import pytest
+
+
 
 
 def _write_csv(path: Path, rows: list[dict[str, int]]) -> None:
@@ -21,7 +21,6 @@ def _write_csv(path: Path, rows: list[dict[str, int]]) -> None:
 
 
 def test_data_gate_non_abort(tmp_path: Path) -> None:
-    run_data_drift_gate = pytest.importorskip("hhg_logistics.monitor.data_gate").run_data_drift_gate
 
     reference = tmp_path / "ref.csv"
     current = tmp_path / "cur.csv"
@@ -44,7 +43,6 @@ def test_data_gate_non_abort(tmp_path: Path) -> None:
 
 
 def test_data_gate_abort(tmp_path: Path) -> None:
-    run_data_drift_gate = pytest.importorskip("hhg_logistics.monitor.data_gate").run_data_drift_gate
 
     reference = tmp_path / "ref.csv"
     current = tmp_path / "cur.csv"

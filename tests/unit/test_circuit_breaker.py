@@ -14,16 +14,15 @@ Covers:
 - Thread-safety smoke test (concurrent calls)
 - Invalid constructor arguments raise ValueError
 """
-
 from __future__ import annotations
-
 import threading
 import time
 from unittest.mock import MagicMock
-
-import pytest
-
 from codex.resilience import CircuitBreaker, CircuitOpenError, CircuitState
+
+
+
+
 
 # ---------------------------------------------------------------------------
 # Helpers

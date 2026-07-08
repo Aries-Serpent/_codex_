@@ -3,14 +3,14 @@ Test Metrics Collector Mlflow
 
 Test module for metrics collector mlflow.
 """
-
 from __future__ import annotations
-
 import os
 from dataclasses import dataclass
 from pathlib import Path
+    from codex_addons.metrics import collector
 
-import pytest
+
+
 
 
 @dataclass
@@ -31,7 +31,6 @@ class _Snapshot:
 def test_metrics_collector_enforces_local_mlflow(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    from codex_addons.metrics import collector
 
     recorded: dict[str, object] = {}
 

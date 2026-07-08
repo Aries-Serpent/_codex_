@@ -196,6 +196,7 @@ class TestReproducibilityRegression:
 
     def test_seed_recording_deterministic(self, tmp_path):
         """Test that seed recording is deterministic across runs."""
+import pytest
         seed = 777
         snapshots = []
 

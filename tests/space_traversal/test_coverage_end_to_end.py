@@ -3,13 +3,12 @@ Test Coverage End To End
 
 Test module for coverage end to end.
 """
-
 import json
 import subprocess
 import sys
 from pathlib import Path
 
-import pytest
+
 
 SCRIPT = "scripts/space_traversal/coverage_ingest_stub.py"
 FIXTURE = "tests/fixtures/sample_coverage.xml"

@@ -12,18 +12,22 @@ Focus on 7 critical E2E scenarios:
 
 These E2E tests validate 70%+ coverage across codex module.
 """
-
 import json
 import tempfile
 import threading  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 import time
 from datetime import datetime, timedelta
 from typing import Generator
-
-import pytest
-
 from codex.logging.session_db import SessionDB
 from codex.logging.structured_logger import logger
+        from codex.quantum_orchestrator.orchestrator import (
+        from codex.quantum_orchestrator.orchestrator import (
+        from codex.cognitive.brain_interface import BrainInterface
+        from codex.cognitive.brain_interface import BrainInterface
+    import sqlite3
+
+
+
 
 
 class TestSessionLifecycleE2E:
@@ -448,7 +452,6 @@ class TestQuantumOrchestratorWorkflowE2E:
 
     def test_task_submission_monitoring_retrieval(self, temp_dir: str):
         """Test: Submit task → monitor progress → retrieve results."""
-        from codex.quantum_orchestrator.orchestrator import (
             QuantumRelativisticDiracOrchestrator,
         )
 
@@ -495,7 +498,6 @@ class TestQuantumOrchestratorWorkflowE2E:
 
     def test_task_dependency_ordering_e2e(self, temp_dir: str):
         """Test E2E task dependency ordering."""
-        from codex.quantum_orchestrator.orchestrator import (
             QuantumRelativisticDiracOrchestrator,
         )
 
@@ -528,7 +530,6 @@ class TestCognitiveBrainTrainingE2E:
 
     def test_pattern_training_prediction_loop(self, temp_dir: str):
         """Test: Feed patterns → train → predict → verify."""
-        from codex.cognitive.brain_interface import BrainInterface
 
         brain = BrainInterface(state_dir=temp_dir, enable_caching=True)
 
@@ -556,7 +557,6 @@ class TestCognitiveBrainTrainingE2E:
 
     def test_model_adaptation_over_time(self, temp_dir: str):
         """Test model adaptation with multiple feedback cycles."""
-        from codex.cognitive.brain_interface import BrainInterface
 
         brain = BrainInterface(state_dir=temp_dir, cache_ttl_seconds=60)
 
@@ -579,7 +579,6 @@ class TestCognitiveBrainTrainingE2E:
 
 # Import sqlite3 for the stress test
 try:
-    import sqlite3
 except ImportError:
     sqlite3 = None
 

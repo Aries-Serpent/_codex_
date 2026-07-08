@@ -4,9 +4,35 @@ Comprehensive test suite for safeguards keyword detection capability.
 Tests keyword detection, context-aware patterns, density calculation,
 and validation following High Maturity Achievement Plan (target: 15-20 tests).
 """
-
+import pytest
 import tempfile
 from pathlib import Path
+        from scripts.space_traversal.detectors import detector_safeguards
+        from scripts.space_traversal.detectors.detector_safeguards import detect
+        from scripts.space_traversal.detectors.detector_safeguards import (
+        from scripts.space_traversal.detectors.detector_safeguards import (
+        from scripts.space_traversal.detectors.detector_safeguards import (
+        from scripts.space_traversal.detectors.detector_safeguards import (
+        from scripts.space_traversal.detectors.detector_safeguards import (
+        from scripts.space_traversal.detectors.detector_safeguards import (
+        from scripts.space_traversal.detectors.detector_safeguards import (
+        from scripts.space_traversal.detectors.detector_safeguards import (
+        from scripts.space_traversal.detectors.detector_safeguards import (
+        from scripts.space_traversal.detectors.detector_safeguards import (
+        from scripts.space_traversal.detectors.detector_safeguards import (
+        from scripts.space_traversal.detectors.detector_safeguards import (
+        from scripts.space_traversal.detectors.detector_safeguards import (
+        from scripts.space_traversal.detectors.detector_safeguards import (
+        from scripts.space_traversal.detectors.detector_safeguards import (
+        from scripts.space_traversal.detectors.detector_safeguards import (
+        from scripts.space_traversal.detectors.detector_safeguards import (
+        from scripts.space_traversal.detectors.detector_safeguards import detect
+        from scripts.space_traversal.detectors.detector_safeguards import detect
+        from scripts.space_traversal.detectors.detector_safeguards import detect
+        from scripts.space_traversal.detectors.detector_safeguards import MAX_READ_BYTES
+        from scripts.space_traversal.detectors.detector_safeguards import _read_text
+        from scripts.space_traversal.detectors.detector_safeguards import (
+
 
 
 class TestSafeguardsDetector:
@@ -14,13 +40,11 @@ class TestSafeguardsDetector:
 
     def test_detector_import(self):
         """Test safeguards detector can be imported."""
-        from scripts.space_traversal.detectors import detector_safeguards
 
         assert hasattr(detector_safeguards, "detect")
 
     def test_detector_contract(self):
         """Test detector follows required contract."""
-        from scripts.space_traversal.detectors.detector_safeguards import detect
 
         result = detect({"files": []})
         assert "id" in result, "Result must not be empty"
@@ -28,7 +52,6 @@ class TestSafeguardsDetector:
 
     def test_keyword_list_complete(self):
         """Test safeguard keyword list is comprehensive."""
-        from scripts.space_traversal.detectors.detector_safeguards import (
             SAFEGUARD_KEYWORDS,
         )
 
@@ -46,7 +69,6 @@ class TestKeywordDetection:
 
     def test_sha256_detection(self):
         """Test sha256 keyword detection."""
-        from scripts.space_traversal.detectors.detector_safeguards import (
             SAFEGUARD_KEYWORDS,
         )
 
@@ -54,7 +76,6 @@ class TestKeywordDetection:
 
     def test_checksum_detection(self):
         """Test checksum keyword detection."""
-        from scripts.space_traversal.detectors.detector_safeguards import (
             SAFEGUARD_KEYWORDS,
         )
 
@@ -62,7 +83,6 @@ class TestKeywordDetection:
 
     def test_validation_detection(self):
         """Test validation keyword detection."""
-        from scripts.space_traversal.detectors.detector_safeguards import (
             SAFEGUARD_KEYWORDS,
         )
 
@@ -71,7 +91,6 @@ class TestKeywordDetection:
 
     def test_sanitize_detection(self):
         """Test sanitize keyword detection."""
-        from scripts.space_traversal.detectors.detector_safeguards import (
             SAFEGUARD_KEYWORDS,
         )
 
@@ -79,7 +98,6 @@ class TestKeywordDetection:
 
     def test_authentication_detection(self):
         """Test authentication keywords."""
-        from scripts.space_traversal.detectors.detector_safeguards import (
             SAFEGUARD_KEYWORDS,
         )
 
@@ -88,7 +106,6 @@ class TestKeywordDetection:
 
     def test_rate_limit_detection(self):
         """Test rate limiting keywords."""
-        from scripts.space_traversal.detectors.detector_safeguards import (
             SAFEGUARD_KEYWORDS,
         )
 
@@ -96,7 +113,6 @@ class TestKeywordDetection:
 
     def test_timeout_detection(self):
         """Test timeout keyword detection."""
-        from scripts.space_traversal.detectors.detector_safeguards import (
             SAFEGUARD_KEYWORDS,
         )
 
@@ -104,7 +120,6 @@ class TestKeywordDetection:
 
     def test_bounds_check_detection(self):
         """Test bounds checking keywords."""
-        from scripts.space_traversal.detectors.detector_safeguards import (
             SAFEGUARD_KEYWORDS,
         )
 
@@ -116,7 +131,6 @@ class TestContextAwareDetection:
 
     def test_try_except_pattern(self):
         """Test try-except pattern detection."""
-        from scripts.space_traversal.detectors.detector_safeguards import (
             DEFENSIVE_PATTERNS,
         )
 
@@ -126,7 +140,6 @@ class TestContextAwareDetection:
 
     def test_null_check_pattern(self):
         """Test null/None check pattern."""
-        from scripts.space_traversal.detectors.detector_safeguards import (
             DEFENSIVE_PATTERNS,
         )
 
@@ -135,7 +148,6 @@ class TestContextAwareDetection:
 
     def test_assertion_pattern(self):
         """Test assertion pattern detection."""
-        from scripts.space_traversal.detectors.detector_safeguards import (
             DEFENSIVE_PATTERNS,
         )
 
@@ -144,7 +156,6 @@ class TestContextAwareDetection:
 
     def test_error_raise_pattern(self):
         """Test explicit error raising pattern."""
-        from scripts.space_traversal.detectors.detector_safeguards import (
             DEFENSIVE_PATTERNS,
         )
 
@@ -157,7 +168,6 @@ class TestSafeguardDensity:
 
     def test_density_calculation_empty(self):
         """Test density with no safeguards."""
-        from scripts.space_traversal.detectors.detector_safeguards import (
             _calculate_safeguard_density,
         )
 
@@ -166,7 +176,6 @@ class TestSafeguardDensity:
 
     def test_density_calculation_full(self):
         """Test density with all files having safeguards."""
-        from scripts.space_traversal.detectors.detector_safeguards import (
             _calculate_safeguard_density,
         )
 
@@ -176,7 +185,6 @@ class TestSafeguardDensity:
 
     def test_density_calculation_partial(self):
         """Test density with partial safeguard coverage."""
-        from scripts.space_traversal.detectors.detector_safeguards import (
             _calculate_safeguard_density,
         )
 
@@ -186,7 +194,6 @@ class TestSafeguardDensity:
 
     def test_density_zero_files(self):
         """Test density calculation with zero files (edge case)."""
-        from scripts.space_traversal.detectors.detector_safeguards import (
             _calculate_safeguard_density,
         )
 
@@ -199,7 +206,6 @@ class TestDetectorIntegration:
 
     def test_detect_with_safeguards(self):
         """Test detection with files containing safeguards."""
-        from scripts.space_traversal.detectors.detector_safeguards import detect
 
         # Create test file with safeguards
         with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False) as f:
@@ -229,7 +235,6 @@ def process(data):
 
     def test_detect_without_safeguards(self):
         """Test detection with files lacking safeguards."""
-        from scripts.space_traversal.detectors.detector_safeguards import detect
 
         # Create test file without safeguards
         with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False) as f:
@@ -249,7 +254,6 @@ def simple_function(x):
 
     def test_deterministic_detection(self):
         """Test that detection is deterministic."""
-        from scripts.space_traversal.detectors.detector_safeguards import detect
 
         file_index = {"files": []}
 
@@ -267,7 +271,6 @@ class TestSafeguardsValidation:
 
     def test_bounded_read_safeguard(self):
         """Test that MAX_READ_BYTES safeguard exists."""
-        from scripts.space_traversal.detectors.detector_safeguards import MAX_READ_BYTES
 
         # Safeguard: bounded read to prevent memory issues
         assert MAX_READ_BYTES > 0, "MAX_READ_BYTES must be greater than zero"
@@ -275,7 +278,6 @@ class TestSafeguardsValidation:
 
     def test_validation_in_read_function(self):
         """Test validation in file reading."""
-        from scripts.space_traversal.detectors.detector_safeguards import _read_text
 
         # Test with non-existent file (validation should handle)
         result = _read_text(Path("/nonexistent/file.txt"))
@@ -283,7 +285,6 @@ class TestSafeguardsValidation:
 
     def test_deterministic_keyword_set(self):
         """Test that keyword set is deterministic (frozenset sorted at creation)."""
-        from scripts.space_traversal.detectors.detector_safeguards import (
             SAFEGUARD_KEYWORDS,
         )
 

@@ -3,22 +3,21 @@ Test Nvml Optional
 
 Test module for nvml optional.
 """
-
 from __future__ import annotations
-
 import importlib.util
 from numbers import Number
+from codex_ml.monitoring.microhelpers import get_gpu_stats
+    import codex_ml.monitoring.microhelpers as mh
 
-import pytest
+
+
 
 _HAS_NVML = importlib.util.find_spec("pynvml") is not None
 
-from codex_ml.monitoring.microhelpers import get_gpu_stats
 
 
 def test_nvml_absent_graceful(monkeypatch):
     # Force module-level symbols to None so we exercise the fallback
-    import codex_ml.monitoring.microhelpers as mh
 
     for name in [
         "nvmlInit",

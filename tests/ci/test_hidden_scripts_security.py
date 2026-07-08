@@ -9,20 +9,26 @@ Comprehensive test suite covering:
 
 All tests enforce zero token exposure in logs and full audit coverage.
 """
-
+import pytest
 import json
 import sys
 import tempfile
 import unittest
 from datetime import datetime
 from pathlib import (
+from unittest.mock import patch
+from _hidden_scripts_manager import (
+            from scripts.ci._token_resolver import TokenResolutionError
+            from scripts.ci._token_resolver import TokenResolutionError
+import json
+import sys
+from codex.logging.structured_logger import logger
+
     Path,  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 )
-from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "ci"))
 
-from _hidden_scripts_manager import (
     AuditLogEntry,
     HiddenScriptsManager,
     ScriptMetadata,
@@ -68,7 +74,6 @@ class TestAccessControl(unittest.TestCase):
         """
         with patch("_hidden_scripts_manager.get_token") as mock_get_token:
             # Simulate fallback token source (not CODEX_MASTER_KEY)
-            from scripts.ci._token_resolver import TokenResolutionError
             mock_get_token.side_effect = TokenResolutionError("No elevated token")
 
             is_allowed, msg = self.manager.validate_access_control("test_script")
@@ -98,7 +103,6 @@ class TestAccessControl(unittest.TestCase):
         """
         with patch("_hidden_scripts_manager.get_token") as mock_get_token:
             # Simulate rate limit error
-            from scripts.ci._token_resolver import TokenResolutionError
             mock_get_token.side_effect = TokenResolutionError(
                 "API rate limit exceeded (429 Too Many Requests)"
             )
@@ -348,9 +352,6 @@ class TestScenario8bIntegration(unittest.TestCase):
         """Full Scenario 8b integration test."""
         # Vulnerability detector script
         vulnerability_detector = """
-import json
-import sys
-from codex.logging.structured_logger import logger
 
 # Simulated vulnerability detection logic
 vulnerabilities = [

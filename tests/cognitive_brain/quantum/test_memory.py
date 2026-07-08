@@ -699,6 +699,7 @@ class TestCompression:
 
     def test_compressed_pattern_size(self, pattern_compressor):
         """Test 5.5: Compressed patterns are smaller than originals."""
+import pytest
         # Fit and compress
         training_patterns = [
             {f"feature{i}": np.random.random() for i in range(20)} for _ in range(100)

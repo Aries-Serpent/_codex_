@@ -10,14 +10,19 @@ Tests integration with:
 Author: Copilot Agent
 Generated: 2025-12-24
 """
-
 from __future__ import annotations
-
-import pytest
-
 from rag.pipelines.chunking import Chunk, ChunkingPipeline
 from rag.pipelines.embedding import EmbeddingPipeline
 from rag.pipelines.quantum_retrieval import (
+        from rag.pipelines.retrieval import RetrievalResult
+            from agents.agent_memory import AgentMemory
+            from rag.pipelines.retrieval import RetrievalResult
+            from mcp.metrics.mcp_metrics import MCPMetrics
+            from agents.quantum_game_theory import QuantumGame as QuantumGame
+    import time
+
+
+
     QuantumEnhancedRetrieval,
     QuantumRelevanceScorer,
     record_scoring_pattern,
@@ -31,7 +36,6 @@ class TestQuantumRetrievalWithAgentMemory:
         """Test recording patterns in agent memory."""
         scorer = QuantumRelevanceScorer()
 
-        from rag.pipelines.retrieval import RetrievalResult
 
         results = [
             RetrievalResult(
@@ -67,14 +71,12 @@ class TestQuantumRetrievalWithAgentMemory:
     def test_memory_stores_effective_patterns(self):
         """Test that effective patterns are stored correctly."""
         try:
-            from agents.agent_memory import AgentMemory
 
             AgentMemory()  # Instantiated to verify import works
 
             # Create test retrieval
             scorer = QuantumRelevanceScorer(alpha=0.7, beta=0.2, gamma=0.1)
 
-            from rag.pipelines.retrieval import RetrievalResult
 
             results = [
                 RetrievalResult(
@@ -101,7 +103,6 @@ class TestQuantumRetrievalWithMCPMetrics:
     def test_metrics_tracking(self):
         """Test that quantum retrieval can be tracked with MCP metrics."""
         try:
-            from mcp.metrics.mcp_metrics import MCPMetrics
 
             MCPMetrics()  # Instantiated to verify import works
 
@@ -230,7 +231,6 @@ class TestQuantumRetrievalWithQuantumGameTheory:
         # Could use quantum game theory to evaluate strategies
         try:
             # Import check: verify quantum_game_theory module is available for integration
-            from agents.quantum_game_theory import QuantumGame as QuantumGame
 
             # Game would use retrieval scores as inputs
             # game = QuantumGame(...)
@@ -438,7 +438,6 @@ class TestPhysicsIntegration:
 # Performance test
 def test_quantum_retrieval_performance():
     """Test that quantum retrieval performs reasonably."""
-    import time
 
     chunker = ChunkingPipeline()
     embedder = EmbeddingPipeline()

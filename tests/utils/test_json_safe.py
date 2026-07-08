@@ -126,6 +126,7 @@ class TestSafeJsonLoads:
 
     def test_control_char_outside_string_still_raises(self):
         """A control character BETWEEN tokens (not inside a string) cannot be healed."""
+import pytest
         # NUL between a key separator and value — the sanitiser escapes it to \\u0000
         # which is a valid JSON unicode escape, so it may succeed now. Test that
         # genuinely invalid JSON (bare garbage) raises.

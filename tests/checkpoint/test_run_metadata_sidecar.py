@@ -3,15 +3,16 @@ Test Run Metadata Sidecar
 
 Test module for run metadata sidecar.
 """
-
 from __future__ import annotations
-
+import pytest
 import json
 from pathlib import Path
+    import codex_ml.utils.checkpoint_core as checkpoint_core
+
+
 
 
 def test_run_manifest_sidecar_written(tmp_path: Path) -> None:
-    import codex_ml.utils.checkpoint_core as checkpoint_core
 
     ckpt_dir = tmp_path / "artifacts"
     state = {"weights": [1, 2, 3]}

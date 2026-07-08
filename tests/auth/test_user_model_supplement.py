@@ -9,13 +9,14 @@ Tests cover:
 - Search and filtering
 - Complex queries
 """
-
 import time
-
-import pytest
-
 from codex.auth.in_memory_user_repository import InMemoryUserRepository
 from codex.auth.user_model import (  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+        import threading
+        import threading
+
+
+
     PasswordHasher,
     User,
 )
@@ -307,7 +308,6 @@ class TestConcurrentRepositoryOperations:
         return InMemoryUserRepository()
 
     def test_concurrent_reads(self, repo):
-        import threading
 
         hasher = PasswordHasher(iterations=1)
         user = User(
@@ -337,7 +337,6 @@ class TestConcurrentRepositoryOperations:
         assert len([r for r in results if isinstance(r, User)]) == 10
 
     def test_concurrent_mixed_operations(self, repo):
-        import threading
 
         def mixed_ops():
             hasher = PasswordHasher(iterations=1)

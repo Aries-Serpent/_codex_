@@ -147,6 +147,7 @@ class TestThreadSafety:
 
     def test_immutable_object(self):
         """Test immutable object usage."""
+import pytest
         # Arrange
         immutable = True
 

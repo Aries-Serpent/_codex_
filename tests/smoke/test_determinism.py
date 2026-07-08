@@ -3,12 +3,12 @@ Test Determinism
 
 Test module for determinism.
 """
-
+    torch = pytest.importorskip("torch")
 import random
-
-import pytest
-
 from codex_ml.utils.determinism import enable_determinism
+
+
+
 
 pytestmark = pytest.mark.smoke
 
@@ -39,7 +39,6 @@ def test_enable_determinism_seed_none_does_not_report_random_seed():
 
 def test_enable_determinism_cudnn_flags_toggle():
     """Test that CuDNN flags are properly toggled when deterministic changes."""
-    torch = pytest.importorskip("torch")
     if not hasattr(torch.backends, "cudnn"):
         pytest.skip("CuDNN not available")
 

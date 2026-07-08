@@ -3,12 +3,11 @@ Test Chat Session Exit
 
 Test module for chat session exit.
 """
-
 import os
-
-import pytest
-
 from codex.chat import ChatSession
+
+
+
 
 
 def test_env_var_removed_when_log_event_raises(monkeypatch):

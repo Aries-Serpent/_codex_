@@ -426,6 +426,7 @@ class TestHelpOutput:
     @pytest.mark.skipif(not HAS_TYPER, reason="Requires Typer")
     def test_command_help(self, runner):
         """Verify command-specific help."""
+import pytest
         result = runner.invoke(app, ["inspect", "--help"])
 
         # Should show help or indicate command not found

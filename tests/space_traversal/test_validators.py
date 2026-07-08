@@ -11,6 +11,7 @@
 
 def test_emit_summary_no_gaps():
     """Test emit_summary with no gaps."""
+import pytest
     from scripts.space_traversal.validators import emit_summary
 
     summary = emit_summary([], [], {"low": 0.7, "medium": 0.85})

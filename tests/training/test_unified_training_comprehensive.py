@@ -1,5 +1,4 @@
 """
-pytest.importorskip("mlflow")
 Comprehensive tests for unified training module (unified_training.py).
 
 Tests cover:
@@ -10,15 +9,15 @@ Tests cover:
 - Callback system
 - Error handling and edge cases
 """
-
 from __future__ import annotations
-
+pytest.importorskip("mlflow")
 import tempfile
 from unittest.mock import Mock, patch
-
-import pytest
-
 from codex_ml.training.unified_training import (
+
+
+
+
     ContinualPhase,
     UnifiedTrainingConfig,
     _materialise_mapping,

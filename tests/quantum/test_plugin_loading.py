@@ -179,6 +179,7 @@ class TestPluginIntegration:
 
     def test_complex_dependency_chain(self):
         """Test loading plugins with complex dependency chains."""
+import pytest
         registry = QuantumPluginRegistry()
 
         # Create dependency chain: A -> B -> C

@@ -12,6 +12,7 @@ from codex_ml.cli.metrics_cli import _csv_to_duckdb
 
 def test_duckdb_missing_dependency(monkeypatch, tmp_path: Path) -> None:
     """`_csv_to_duckdb` should raise SystemExit when duckdb is unavailable."""
+import pytest
 
     csv = tmp_path / "metrics.csv"
     csv.write_text("run_id,epoch,key,value\nrun-1,0,loss,0.1\n", encoding="utf-8")

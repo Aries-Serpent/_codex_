@@ -7,8 +7,36 @@ and catch obvious regressions.
 
 Run with: pytest tests/smoke/test_readiness_smoke.py -v
 """
+        pytest.importorskip("numpy")
+        from agents.agent_memory import AgentMemory
+        from agents.agent_memory import AgentMemory
+        from agents.agent_memory import AgentMemory
+        from agents.agent_memory import AgentMemory
+        from agents.physics_orchestrator import PhysicsOrchestrator
+        from agents.physics_orchestrator import PhysicsOrchestrator
+        from agents.physics_orchestrator import DecisionState
+        from agents.physics_orchestrator import ForceVector
+        from agents.mental_mapping import MentalMappingModel, NodeType
+        from agents.mental_mapping import MentalMappingModel
+        from agents.mental_mapping import MentalMappingModel, NodeType
+        from agents.mental_mapping import EdgeType, MentalMappingModel, NodeType
+        from agents.workflow_navigator import WorkflowNavigator, WorkflowStep
+        from agents.workflow_navigator import WorkflowNavigator
+        from agents.workflow_navigator import WorkflowNavigator, WorkflowStep
+        from agents.workflow_navigator import WorkflowNavigator, WorkflowStep
+            from agents.advanced_physics_calculators import ChaoticAttractor
+        from agents.advanced_physics_calculators import ChaoticAttractor
+        from agents.quantum_game_theory import QuantumGameState, StrategyState
+        from agents.quantum_game_theory import StrategyState, TeamType
+        from agents.exceptions import (
+        from agents.exceptions import AgentImportError
+        from agents.agent_memory import AgentMemory
+        from agents.physics_orchestrator import DecisionState
+        from agents.agent_memory import AgentMemory
+        from agents.workflow_navigator import WorkflowNavigator, WorkflowStep
+        from agents.agent_memory import AgentMemory
+        from agents.mental_mapping import MentalMappingModel, NodeType
 
-import pytest
 
 
 class TestAgentMemorySmoke:
@@ -16,20 +44,17 @@ class TestAgentMemorySmoke:
 
     def test_memory_import(self):
         """Test that AgentMemory can be imported."""
-        from agents.agent_memory import AgentMemory
 
         assert AgentMemory is not None, "AgentMemory must be initialized"
 
     def test_memory_creation(self):
         """Test basic memory instance creation."""
-        from agents.agent_memory import AgentMemory
 
         memory = AgentMemory()
         assert memory is not None, "memory must be initialized"
 
     def test_memory_store_retrieve(self):
         """Test basic store and retrieve operations."""
-        from agents.agent_memory import AgentMemory
 
         memory = AgentMemory()
 
@@ -42,7 +67,6 @@ class TestAgentMemorySmoke:
 
     def test_memory_update(self):
         """Test memory update operations."""
-        from agents.agent_memory import AgentMemory
 
         memory = AgentMemory()
 
@@ -62,20 +86,17 @@ class TestPhysicsOrchestratorSmoke:
 
     def test_orchestrator_import(self):
         """Test that PhysicsOrchestrator can be imported."""
-        from agents.physics_orchestrator import PhysicsOrchestrator
 
         assert PhysicsOrchestrator is not None, "PhysicsOrchestrator must be initialized"
 
     def test_orchestrator_creation(self):
         """Test basic orchestrator instance creation."""
-        from agents.physics_orchestrator import PhysicsOrchestrator
 
         orchestrator = PhysicsOrchestrator()
         assert orchestrator is not None, "orchestrator must be initialized"
 
     def test_decision_state_creation(self):
         """Test DecisionState creation."""
-        from agents.physics_orchestrator import DecisionState
 
         state = DecisionState(
             current_position="start", goal_position="end", available_resources=0.8
@@ -86,7 +107,6 @@ class TestPhysicsOrchestratorSmoke:
 
     def test_force_vector_creation(self):
         """Test ForceVector creation and magnitude calculation."""
-        from agents.physics_orchestrator import ForceVector
 
         force = ForceVector(name="test", x=3.0, y=4.0, z=0.0)
         assert force is not None, "force must be initialized"
@@ -99,21 +119,18 @@ class TestMentalMappingSmoke:
 
     def test_mental_mapping_import(self):
         """Test that MentalMappingModel can be imported."""
-        from agents.mental_mapping import MentalMappingModel, NodeType
 
         assert MentalMappingModel is not None, "MentalMappingModel must be initialized"
         assert NodeType is not None, "NodeType must be initialized"
 
     def test_model_creation(self):
         """Test basic model instance creation."""
-        from agents.mental_mapping import MentalMappingModel
 
         model = MentalMappingModel()
         assert model is not None, "model must be initialized"
 
     def test_node_creation(self):
         """Test creating nodes in the mental map."""
-        from agents.mental_mapping import MentalMappingModel, NodeType
 
         model = MentalMappingModel()
         node = model.create_node(NodeType.CONCEPT, content="test concept")
@@ -124,7 +141,6 @@ class TestMentalMappingSmoke:
 
     def test_node_connection(self):
         """Test connecting nodes."""
-        from agents.mental_mapping import EdgeType, MentalMappingModel, NodeType
 
         model = MentalMappingModel()
         node1 = model.create_node(NodeType.CONCEPT, content="concept1")
@@ -144,21 +160,18 @@ class TestWorkflowNavigatorSmoke:
 
     def test_navigator_import(self):
         """Test that WorkflowNavigator can be imported."""
-        from agents.workflow_navigator import WorkflowNavigator, WorkflowStep
 
         assert WorkflowNavigator is not None, "WorkflowNavigator must be initialized"
         assert WorkflowStep is not None, "WorkflowStep must be initialized"
 
     def test_navigator_creation(self):
         """Test basic navigator instance creation."""
-        from agents.workflow_navigator import WorkflowNavigator
 
         navigator = WorkflowNavigator()
         assert navigator is not None, "navigator must be initialized"
 
     def test_workflow_creation(self):
         """Test creating a workflow."""
-        from agents.workflow_navigator import WorkflowNavigator, WorkflowStep
 
         navigator = WorkflowNavigator()
         steps = [
@@ -172,7 +185,6 @@ class TestWorkflowNavigatorSmoke:
 
     def test_workflow_navigation(self):
         """Test navigating through workflow steps."""
-        from agents.workflow_navigator import WorkflowNavigator, WorkflowStep
 
         navigator = WorkflowNavigator()
         steps = [
@@ -199,7 +211,6 @@ class TestAdvancedPhysicsSmoke:
         """Test graceful handling when numpy is not available."""
         # This should not crash even if numpy is missing
         try:
-            from agents.advanced_physics_calculators import ChaoticAttractor
 
             assert ChaoticAttractor is not None, "ChaoticAttractor must be initialized"
         except ImportError as e:
@@ -208,8 +219,6 @@ class TestAdvancedPhysicsSmoke:
 
     def test_chaotic_attractor_creation(self):
         """Test ChaoticAttractor creation (requires numpy)."""
-        pytest.importorskip("numpy")
-        from agents.advanced_physics_calculators import ChaoticAttractor
 
         attractor = ChaoticAttractor(attractor_type="logistic")
         assert attractor is not None, "attractor must be initialized"
@@ -221,14 +230,12 @@ class TestQuantumGameTheorySmoke:
 
     def test_quantum_import(self):
         """Test that quantum modules can be imported."""
-        from agents.quantum_game_theory import QuantumGameState, StrategyState
 
         assert QuantumGameState is not None, "QuantumGameState must be initialized"
         assert StrategyState is not None, "StrategyState must be initialized"
 
     def test_strategy_state_creation(self):
         """Test StrategyState creation."""
-        from agents.quantum_game_theory import StrategyState, TeamType
 
         state = StrategyState(team=TeamType.BLUE, strategies=["cooperate", "defect"])
         assert state is not None, "state must be initialized"
@@ -240,7 +247,6 @@ class TestExceptionHandlingSmoke:
 
     def test_agent_error_import(self):
         """Test that custom exceptions can be imported."""
-        from agents.exceptions import (
             AgentConfigError,
             AgentError,
             AgentImportError,
@@ -251,7 +257,6 @@ class TestExceptionHandlingSmoke:
 
     def test_agent_import_error_message(self):
         """Test AgentImportError provides helpful message."""
-        from agents.exceptions import AgentImportError
 
         error = AgentImportError("test_module", package_name="test-package")
         message = str(error)
@@ -266,8 +271,6 @@ class TestIntegrationSmoke:
 
     def test_memory_with_physics(self):
         """Test AgentMemory integration with PhysicsOrchestrator."""
-        from agents.agent_memory import AgentMemory
-        from agents.physics_orchestrator import DecisionState
 
         memory = AgentMemory()
         state = DecisionState(
@@ -285,8 +288,6 @@ class TestIntegrationSmoke:
 
     def test_workflow_with_memory(self):
         """Test WorkflowNavigator integration with AgentMemory."""
-        from agents.agent_memory import AgentMemory
-        from agents.workflow_navigator import WorkflowNavigator, WorkflowStep
 
         navigator = WorkflowNavigator()
         memory = AgentMemory()
@@ -304,8 +305,6 @@ class TestIntegrationSmoke:
 
     def test_mental_map_with_memory(self):
         """Test MentalMapping integration with AgentMemory."""
-        from agents.agent_memory import AgentMemory
-        from agents.mental_mapping import MentalMappingModel, NodeType
 
         model = MentalMappingModel()
         memory = AgentMemory()

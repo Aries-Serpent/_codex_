@@ -3,10 +3,11 @@ Comprehensive tests for bridge_types module.
 
 Tests cover all message types, enums, and factory functions for bridge communication.
 """
-
 from __future__ import annotations
-
+import pytest
 from bridge_types import (
+
+
     BaseMessage,
     ContextUpdate,
     ErrorMessage,

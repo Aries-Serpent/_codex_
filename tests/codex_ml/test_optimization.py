@@ -144,6 +144,7 @@ class TestOptimization:
 
     def test_parameter_groups(self):
         """Test parameter groups configuration."""
+import pytest
         # Arrange
         param_groups = [{"params": [], "lr": 1e-4}, {"params": [], "lr": 1e-5}]
 

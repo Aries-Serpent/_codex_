@@ -5,8 +5,28 @@ Applies Quantum Test Methodology:
 - Measurement Pattern: Tests tool execution (state collapse)
 - Safeguard Validation: Tests bounds and limits
 """
+            from src.tools import registry
+            from src.tools.registry import ToolDefinition
+            from src.tools.registry import ToolResult
+            from src.tools.registry import ToolRegistry
+            from src.tools.registry import MAX_TOOL_NAME_LENGTH, MAX_TOOLS
+            from src.tools.registry import ToolDefinition
+            from src.tools.registry import ToolDefinition
+            from src.tools.registry import ToolDefinition
+            from src.tools.registry import ToolResult
+            from src.tools.registry import ToolResult
+            from src.tools.registry import ToolResult
+            from src.tools.registry import ToolRegistry
+            from src.tools.registry import ToolRegistry
+            from src.tools.registry import ToolRegistry
+            from src.tools.registry import ToolRegistry
+            from src.tools.registry import ToolRegistry
+            from src.tools.registry import ToolRegistry
+            from src.tools.registry import ToolRegistry
+            from src.tools.registry import MAX_TOOL_NAME_LENGTH
+            from src.tools.registry import MAX_TOOLS
+            from src.tools.registry import logger
 
-import pytest
 
 # ==================== Import Tests ====================
 
@@ -17,7 +37,6 @@ class TestModuleImports:
     def test_module_import(self):
         """Test that registry module can be imported."""
         try:
-            from src.tools import registry
 
             assert registry is not None, "registry must be initialized"
         except ImportError:
@@ -26,7 +45,6 @@ class TestModuleImports:
     def test_tool_definition_import(self):
         """Test ToolDefinition class import."""
         try:
-            from src.tools.registry import ToolDefinition
 
             assert ToolDefinition is not None, "ToolDefinition must be initialized"
         except ImportError:
@@ -35,7 +53,6 @@ class TestModuleImports:
     def test_tool_result_import(self):
         """Test ToolResult class import."""
         try:
-            from src.tools.registry import ToolResult
 
             assert ToolResult is not None, "ToolResult must be initialized"
         except ImportError:
@@ -44,7 +61,6 @@ class TestModuleImports:
     def test_tool_registry_import(self):
         """Test ToolRegistry class import."""
         try:
-            from src.tools.registry import ToolRegistry
 
             assert ToolRegistry is not None, "ToolRegistry must be initialized"
         except ImportError:
@@ -53,7 +69,6 @@ class TestModuleImports:
     def test_constants_import(self):
         """Test constants are defined."""
         try:
-            from src.tools.registry import MAX_TOOL_NAME_LENGTH, MAX_TOOLS
 
             assert MAX_TOOLS == 1000, "MAX_TOOLS is not valid"
             assert MAX_TOOL_NAME_LENGTH == 100, "Length must be greater than zero"
@@ -70,7 +85,6 @@ class TestToolDefinition:
     def test_tool_definition_creation(self):
         """Test creating ToolDefinition."""
         try:
-            from src.tools.registry import ToolDefinition
 
             def handler():
                 pass
@@ -85,7 +99,6 @@ class TestToolDefinition:
     def test_tool_definition_defaults(self):
         """Test default values."""
         try:
-            from src.tools.registry import ToolDefinition
 
             tool = ToolDefinition(name="test", description="desc", handler=lambda: None)
             assert tool.parameters == {}, "parameters is not valid"
@@ -98,7 +111,6 @@ class TestToolDefinition:
     def test_tool_definition_custom_values(self):
         """Test custom values."""
         try:
-            from src.tools.registry import ToolDefinition
 
             tool = ToolDefinition(
                 name="custom",
@@ -126,7 +138,6 @@ class TestToolResult:
     def test_tool_result_success(self):
         """Test successful result."""
         try:
-            from src.tools.registry import ToolResult
 
             result = ToolResult(success=True, output="Success!")
             assert result.success is True, "Result must not be empty"
@@ -138,7 +149,6 @@ class TestToolResult:
     def test_tool_result_failure(self):
         """Test failure result."""
         try:
-            from src.tools.registry import ToolResult
 
             result = ToolResult(success=False, error="Something went wrong")
             assert result.success is False, "Result must not be empty"
@@ -149,7 +159,6 @@ class TestToolResult:
     def test_tool_result_defaults(self):
         """Test default values."""
         try:
-            from src.tools.registry import ToolResult
 
             result = ToolResult(success=True)
             assert result.output is None, "Result must not be empty"
@@ -168,7 +177,6 @@ class TestToolRegistry:
     def test_registry_creation(self):
         """Test creating ToolRegistry."""
         try:
-            from src.tools.registry import ToolRegistry
 
             registry = ToolRegistry()
             assert registry is not None, "registry must be initialized"
@@ -178,7 +186,6 @@ class TestToolRegistry:
     def test_register_tool(self):
         """Test registering a tool."""
         try:
-            from src.tools.registry import ToolRegistry
 
             registry = ToolRegistry()
 
@@ -195,7 +202,6 @@ class TestToolRegistry:
     def test_register_empty_name_fails(self):
         """Test that empty name fails registration."""
         try:
-            from src.tools.registry import ToolRegistry
 
             registry = ToolRegistry()
             result = registry.register(name="", handler=lambda: None, description="Empty name tool")
@@ -206,7 +212,6 @@ class TestToolRegistry:
     def test_register_none_name_fails(self):
         """Test that None name fails registration."""
         try:
-            from src.tools.registry import ToolRegistry
 
             registry = ToolRegistry()
             result = registry.register(
@@ -219,7 +224,6 @@ class TestToolRegistry:
     def test_register_with_parameters(self):
         """Test registering tool with parameters."""
         try:
-            from src.tools.registry import ToolRegistry
 
             registry = ToolRegistry()
             result = registry.register(
@@ -235,7 +239,6 @@ class TestToolRegistry:
     def test_register_with_confirmation(self):
         """Test registering tool requiring confirmation."""
         try:
-            from src.tools.registry import ToolRegistry
 
             registry = ToolRegistry()
             result = registry.register(
@@ -251,7 +254,6 @@ class TestToolRegistry:
     def test_register_with_timeout(self):
         """Test registering tool with custom timeout."""
         try:
-            from src.tools.registry import ToolRegistry
 
             registry = ToolRegistry()
             result = registry.register(
@@ -274,7 +276,6 @@ class TestSafeguards:
     def test_max_tool_name_length_constant(self):
         """Test MAX_TOOL_NAME_LENGTH is defined."""
         try:
-            from src.tools.registry import MAX_TOOL_NAME_LENGTH
 
             assert MAX_TOOL_NAME_LENGTH > 0, "MAX_TOOL_NAME_LENGTH must be greater than zero"
             assert MAX_TOOL_NAME_LENGTH == 100, "Length must be greater than zero"
@@ -284,7 +285,6 @@ class TestSafeguards:
     def test_max_tools_constant(self):
         """Test MAX_TOOLS is defined."""
         try:
-            from src.tools.registry import MAX_TOOLS
 
             assert MAX_TOOLS > 0, "MAX_TOOLS must be greater than zero"
             assert MAX_TOOLS == 1000, "MAX_TOOLS is not valid"
@@ -294,7 +294,6 @@ class TestSafeguards:
     def test_logger_configured(self):
         """Test that logger is configured."""
         try:
-            from src.tools.registry import logger
 
             assert logger is not None, "logger must be initialized"
         except ImportError:

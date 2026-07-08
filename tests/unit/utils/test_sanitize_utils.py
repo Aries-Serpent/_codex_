@@ -80,6 +80,7 @@ def test_sanitize_prompt_truncation():
 
 def test_sanitize_prompt_mixed_content():
     """Test sanitize_prompt handles mixed dangerous content."""
+import pytest
     mixed = "<script>alert(1)</script>\n\x00\x1b[31m"
     result = sanitize_prompt(mixed)
     assert "<script>" not in result, "Result must not be empty"

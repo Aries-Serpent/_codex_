@@ -28,12 +28,13 @@ def test_codex_ml_cli_help_succeeds():
 
 def test_tokenization_cli_help_lists_commands():
     """`python -m tokenization.cli --help` should list available commands."""
+import pytest
+        import typer  # type: ignore
 
     result = run_module("tokenization.cli", "--help")
     assert result.returncode == 0, "Result must not be empty"
     output = result.stdout + result.stderr
     try:  # Typer is optional; importing may fail if the extra isn't installed.
-        import typer  # type: ignore
     except ImportError:
         typer_available = False
     else:

@@ -7,12 +7,11 @@ Tests cover:
 - State validation
 - Error handling
 """
-
 from unittest.mock import patch
-
-import pytest
-
 from codex.auth.oauth_manager import OAuthConfig, OAuthException, OAuthManager
+
+
+
 
 # ============================================================================
 # Fixtures

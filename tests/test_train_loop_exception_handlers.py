@@ -16,14 +16,22 @@ This test file addresses these untested handlers:
 7. Exception in data drift detection
 8. Exception in session logging
 """
-
 import tempfile
 from pathlib import Path
 from unittest.mock import Mock, patch
-
-import pytest
-
 from codex.logging.structured_logger import logger
+            from codex_ml.train_loop import attach_reasoning_adapters
+        from codex_ml.config import ConfigError
+        from codex_ml.train_loop import ToyDataset
+        from codex_ml.monitoring import metrics_enabled
+            from codex_ml.codex_structured_logging import get_session_logger
+        from codex_ml.training.dp_config import DifferentialPrivacyConfig
+        from codex_ml.utils.checksum import sha256sum
+            from codex_ml.utils.seeding import set_reproducible
+            from codex.alerting import TrainingAlertManager
+
+
+
 
 
 class TestTrainLoopExceptionHandlers:
@@ -55,7 +63,6 @@ class TestTrainLoopExceptionHandlers:
         # This test validates the defensive pattern used in the module
         # where _HAS_REASONING_ADAPTERS is False when import fails
         try:
-            from codex_ml.train_loop import attach_reasoning_adapters
             # If import succeeds, adapters are available
             assert attach_reasoning_adapters is not None or True
         except ImportError:
@@ -69,7 +76,6 @@ class TestTrainLoopExceptionHandlers:
         Expected behavior: Proper error message and graceful degradation
         Coverage impact: +2 points
         """
-        from codex_ml.config import ConfigError
         
         with pytest.raises(ConfigError):
             raise ConfigError("Invalid training configuration")
@@ -81,7 +87,6 @@ class TestTrainLoopExceptionHandlers:
         Expected behavior: Raises clear error message
         Coverage impact: +2 points
         """
-        from codex_ml.train_loop import ToyDataset
         
         # If torch is available, dataset should work
         try:
@@ -135,7 +140,6 @@ class TestTrainLoopExceptionHandlers:
         Expected behavior: Skip metric collection and continue training
         Coverage impact: +2 points
         """
-        from codex_ml.monitoring import metrics_enabled
         
         # Test that metrics collection is optional
         # If metrics fail, training should continue
@@ -172,7 +176,6 @@ class TestTrainLoopExceptionHandlers:
         """
         # Test that logging failures don't crash training
         try:
-            from codex_ml.codex_structured_logging import get_session_logger
             logger = get_session_logger()
             # Should not raise even if logging is unavailable
             assert logger is not None or True
@@ -187,7 +190,6 @@ class TestTrainLoopExceptionHandlers:
         Expected behavior: Clear error message during initialization
         Coverage impact: +2 points
         """
-        from codex_ml.training.dp_config import DifferentialPrivacyConfig
         
         # Test that invalid DP config raises appropriate error
         with pytest.raises((ValueError, TypeError)):
@@ -204,7 +206,6 @@ class TestTrainLoopExceptionHandlers:
         Expected behavior: Log warning and continue
         Coverage impact: +2 points
         """
-        from codex_ml.utils.checksum import sha256sum
         
         # Test that checksum errors don't crash training
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -226,7 +227,6 @@ class TestTrainLoopExceptionHandlers:
         Coverage impact: +2 points
         """
         try:
-            from codex_ml.utils.seeding import set_reproducible
             # Should not raise - graceful degradation if unavailable
             assert set_reproducible is not None or True
         except (ImportError, AttributeError):
@@ -241,7 +241,6 @@ class TestTrainLoopExceptionHandlers:
         Coverage impact: +2 points
         """
         try:
-            from codex.alerting import TrainingAlertManager
             # Alerts are optional - should not crash training
             assert TrainingAlertManager is not None or True
         except (ImportError, AttributeError):

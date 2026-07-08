@@ -10,14 +10,26 @@ without any special hardware or credentials.
 
 Resolution: DEPLOYMENT_READINESS_S92.md B-03 (partial)
 """
-
 from __future__ import annotations
-
 import importlib
 import sys
 from pathlib import Path
+        import bridge_manager
+        import bridge_manager
+        from codex_ml.safety import sandbox
+        from codex_ml.safety import sandbox
+        import codex_ml.safety as safety
+        from bridge_manager import BridgeLock
+        from bridge_manager import bridge_lock
+        import bridge_manager
+        from scripts.ci.batch_scan_integration import (
+        from scripts.ci.batch_scan_integration import BatchScanResult
+        from scripts.ci.batch_scan_integration import BatchScanRunner
+        import importlib.util as _ilu
+        import importlib.util as _ilu
 
-import pytest
+
+
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -45,13 +57,11 @@ class TestCoreImports:
 
     def test_bridge_manager_import(self):
         """bridge_manager must import on Linux AND Windows (fcntl guard)."""
-        import bridge_manager
 
         assert hasattr(bridge_manager, "BridgeLock")
 
     def test_bridge_manager_has_msvcrt_or_fcntl(self):
         """At least one locking backend must be compiled in."""
-        import bridge_manager
 
         assert bridge_manager._HAS_FCNTL or bridge_manager._HAS_MSVCRT, (
             "Neither fcntl (POSIX) nor msvcrt (Windows) is available — "
@@ -60,7 +70,6 @@ class TestCoreImports:
 
     def test_sandbox_import(self):
         """safety.sandbox imports cleanly; resource guard is correct."""
-        from codex_ml.safety import sandbox
 
         assert callable(sandbox.run_in_sandbox), "Condition must be true"
 
@@ -69,7 +78,6 @@ class TestCoreImports:
         When resource module is unavailable, enforce_limits=True must raise
         RuntimeError — not silently proceed.
         """
-        from codex_ml.safety import sandbox
 
         if sandbox._HAS_RESOURCE:
             pytest.skip("resource module available — enforce_limits path not exercised")
@@ -82,7 +90,6 @@ class TestCoreImports:
         If the sandbox module raises on import, safety.__init__ must provide
         a stub that raises RuntimeError instead of crashing the import.
         """
-        import codex_ml.safety as safety
 
         # The __init__ should always export run_in_sandbox (real or stub).
         assert callable(safety.run_in_sandbox), "Condition must be true"
@@ -98,7 +105,6 @@ class TestBridgeLockPlatform:
 
     def test_bridge_lock_acquire_release(self, tmp_path):
         """Lock acquire + release round-trip must succeed."""
-        from bridge_manager import BridgeLock
 
         lock = BridgeLock(tmp_path / "test.lock")
         acquired = lock.acquire(timeout=2)
@@ -107,14 +113,12 @@ class TestBridgeLockPlatform:
 
     def test_bridge_lock_context_manager(self, tmp_path):
         """bridge_lock context manager must not raise."""
-        from bridge_manager import bridge_lock
 
         with bridge_lock(tmp_path / "ctx.lock"):
             pass  # no exception = success
 
     def test_bridge_lock_platform_backend(self):
         """Verify the active backend matches the current platform."""
-        import bridge_manager
 
         if sys.platform == "win32":
             assert bridge_manager._HAS_MSVCRT, "msvcrt not available on Windows"
@@ -132,7 +136,6 @@ class TestBatchScanRunnerAPI:
 
     def test_batch_scan_runner_importable(self):
         """BatchScanRunner must be importable."""
-        from scripts.ci.batch_scan_integration import (
             BatchScanResult,
             BatchScanRunner,
         )
@@ -142,7 +145,6 @@ class TestBatchScanRunnerAPI:
 
     def test_batch_scan_result_dataclass(self):
         """BatchScanResult must carry ok flag, passed, failed counts."""
-        from scripts.ci.batch_scan_integration import BatchScanResult
 
         result = BatchScanResult(
             group="quick",
@@ -161,7 +163,6 @@ class TestBatchScanRunnerAPI:
 
     def test_batch_scan_runner_preview_method(self):
         """BatchScanRunner.preview() must return a string without executing tests."""
-        from scripts.ci.batch_scan_integration import BatchScanRunner
 
         runner = BatchScanRunner(workers=1)
         # preview() returns a str describing what would run
@@ -184,7 +185,6 @@ class TestEnvPreflightValidator:
 
     def test_preflight_importable(self):
         """rvs_env_preflight must be importable as a module."""
-        import importlib.util as _ilu
 
         path = ROOT / "scripts" / "ci" / "rvs_env_preflight.py"
         spec = _ilu.spec_from_file_location("rvs_env_preflight", path)
@@ -196,7 +196,6 @@ class TestEnvPreflightValidator:
 
     def test_preflight_required_packages_non_empty(self):
         """PACKAGE_GROUPS must list at least the core group."""
-        import importlib.util as _ilu
 
         path = ROOT / "scripts" / "ci" / "rvs_env_preflight.py"
         if "rvs_env_preflight" in sys.modules:

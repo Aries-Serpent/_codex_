@@ -3,15 +3,20 @@ Test Codex Sequence Validations
 
 Test module for codex sequence validations.
 """
-
 from __future__ import annotations
-
+    torch = pytest.importorskip("torch")
+    base = pytest.importorskip("configs.base_config")
 import os
 import sys
 import types
 from pathlib import Path
+    from src.training.functional_training import TrainCfg, evaluate_dataloader
+    from src.training.functional_training import TrainCfg, run_custom_trainer
+    from cli.task_sequence import setup_mlflow_tracking
+    from cli.task_sequence import setup_mlflow_tracking
 
-import pytest
+
+
 
 
 def _build_dummy_dataset(torch):
@@ -31,8 +36,6 @@ def _build_dummy_dataset(torch):
 
 
 def test_evaluate_dataloader_runs() -> None:
-    torch = pytest.importorskip("torch")
-    from src.training.functional_training import TrainCfg, evaluate_dataloader
 
     dataset = _build_dummy_dataset(torch)
     loader = torch.utils.data.DataLoader(dataset, batch_size=2)
@@ -60,8 +63,6 @@ def test_evaluate_dataloader_runs() -> None:
 
 
 def test_gradient_accumulation_optimizer_steps(monkeypatch) -> None:
-    torch = pytest.importorskip("torch")
-    from src.training.functional_training import TrainCfg, run_custom_trainer
 
     dataset = _build_dummy_dataset(torch)
     step_counter = {"steps": 0}
@@ -121,13 +122,11 @@ def test_gradient_accumulation_optimizer_steps(monkeypatch) -> None:
 
 
 def test_base_config_module_loads() -> None:
-    base = pytest.importorskip("configs.base_config")
     assert isinstance(getattr(base, "BASE_TRAINING_CONFIG", {}), dict)
     assert "gradient_accumulation_steps" in base.BASE_TRAINING_CONFIG, "Condition must be true"
 
 
 def test_mlflow_optional(monkeypatch) -> None:
-    from cli.task_sequence import setup_mlflow_tracking
 
     monkeypatch.setitem(sys.modules, "mlflow", None)
     assert setup_mlflow_tracking(Path("mlruns"), dry_run=True) is False
@@ -136,7 +135,6 @@ def test_mlflow_optional(monkeypatch) -> None:
 def test_setup_mlflow_tracking_enforces_file_uri(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    from cli.task_sequence import setup_mlflow_tracking
 
     recorded: dict[str, str] = {}
 

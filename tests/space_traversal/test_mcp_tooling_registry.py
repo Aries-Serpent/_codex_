@@ -3,8 +3,9 @@ Tests for MCP tooling registry detector.
 
 Tests detection of tool registry, mcp.json, and plugin management.
 """
-
+import pytest
 from scripts.space_traversal.detectors import mcp_tooling_registry
+
 
 
 def test_detect_no_registry():

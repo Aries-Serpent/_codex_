@@ -8,20 +8,20 @@ Comprehensive test suite covering:
 
 Target: 95%+ state accuracy, <2 minute resume time, 100% pass rate
 """
-
 from __future__ import annotations
-
 import json
 import logging
 import tempfile
 import time  # pragma: allowlist secret
 from pathlib import Path
-
-import pytest
-
 from codex.brain.checkpoint_manager import CheckpointManager
 from codex.brain.session_resume import SessionResume
 from codex.brain.session_serializer import (
+import os
+
+
+
+
     SessionSerializer,
     create_agent_state_snapshot,
     create_context_snapshot,
@@ -664,7 +664,6 @@ class TestEndToEndIntegration:
 
 
 # Add os import for test file
-import os
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v", "--tb=short"])

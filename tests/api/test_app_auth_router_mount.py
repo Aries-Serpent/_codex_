@@ -4,12 +4,12 @@ Validates that the FastAPI application factory mounts the auth router at
 ``/api/auth`` and that the core auth endpoints (register, login, logout,
 refresh) are reachable.
 """
-
-import pytest
-
 pytest.importorskip("fastapi")
-
 from fastapi.testclient import TestClient
+    from codex.api.app import app  # lazy import keeps test isolation
+
+
+
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -18,7 +18,6 @@ from fastapi.testclient import TestClient
 
 def _make_client() -> "TestClient":
     """Import the app and return a test client."""
-    from codex.api.app import app  # lazy import keeps test isolation
 
     return TestClient(app, raise_server_exceptions=False)
 

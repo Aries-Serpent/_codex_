@@ -76,6 +76,7 @@ async def test_json_rpc_null_params():
 @pytest.mark.timeout(30)
 async def test_json_rpc_timeout_handling():
     """Test handling of timeouts in JSON-RPC requests."""
+import pytest
     registry = ToolRegistry()
     server = MCPServer(tool_registry=registry)
 

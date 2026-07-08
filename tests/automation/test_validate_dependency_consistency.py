@@ -7,16 +7,17 @@ Tests cover the following improvements:
 4. _is_downgrade() version comparison with explanatory comments
 5. --strict flag behavior (warnings-only by default)
 """
-
-# Import the validator
 import sys
 import tempfile
 from pathlib import Path
+from validate_dependency_consistency import DependencyValidator
+        import inspect
+        import scripts.ci.validate_dependency_consistency as val_module
 
-import pytest
+# Import the validator
+
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "ci"))
-from validate_dependency_consistency import DependencyValidator
 
 
 class TestParseRequirement:
@@ -385,9 +386,7 @@ class TestStrictFlagBehavior:
         """Test that --strict flag is properly documented."""
         # The help text should indicate warnings-only by default
         # This is implicit in the main() function
-        import inspect
 
-        import scripts.ci.validate_dependency_consistency as val_module
 
         source = inspect.getsource(val_module.main)
         # Should have explanatory text about warnings-only mode

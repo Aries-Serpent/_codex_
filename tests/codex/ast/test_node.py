@@ -3,8 +3,22 @@ Tests for codex.ast.node module.
 
 This module contains tests for standardized AST node representation.
 """
-
+import pytest
 from pathlib import Path
+        from codex.ast.node import NodeType
+        from codex.ast.node import NodeType
+        from codex.ast.node import NodeType
+        from codex.ast.node import NodeType
+        from codex.ast.node import SourceLocation
+        from codex.ast.node import SourceLocation
+        from codex.ast.node import NodeType, SourceLocation, StandardizedASTNode
+        from codex.ast.node import NodeType, SourceLocation, StandardizedASTNode
+        from codex.ast.node import NodeType, SourceLocation, StandardizedASTNode
+        from codex.ast.node import NodeType, SourceLocation, StandardizedASTNode
+        from codex.ast.node import NodeType, SourceLocation, StandardizedASTNode
+        from codex.ast.node import NodeType, SourceLocation, StandardizedASTNode
+        from codex.ast.node import NodeType, SourceLocation, StandardizedASTNode
+
 
 
 class TestNodeType:
@@ -12,25 +26,21 @@ class TestNodeType:
 
     def test_module_type(self):
         """Test MODULE type."""
-        from codex.ast.node import NodeType
 
         assert NodeType.MODULE.value == "module", "Value must be initialized"
 
     def test_function_type(self):
         """Test FUNCTION type."""
-        from codex.ast.node import NodeType
 
         assert NodeType.FUNCTION.value == "function", "Value must be initialized"
 
     def test_class_type(self):
         """Test CLASS type."""
-        from codex.ast.node import NodeType
 
         assert NodeType.CLASS.value == "class", "Value must be initialized"
 
     def test_all_types_exist(self):
         """Test all expected types exist."""
-        from codex.ast.node import NodeType
 
         types = [
             "MODULE",
@@ -55,7 +65,6 @@ class TestSourceLocation:
 
     def test_basic_creation(self):
         """Test SourceLocation basic creation."""
-        from codex.ast.node import SourceLocation
 
         loc = SourceLocation(
             file_path=Path("/path/to/file.py"),
@@ -73,7 +82,6 @@ class TestSourceLocation:
 
     def test_str_representation(self):
         """Test __str__ method."""
-        from codex.ast.node import SourceLocation
 
         loc = SourceLocation(
             file_path=Path("src/module.py"),
@@ -95,7 +103,6 @@ class TestStandardizedASTNode:
 
     def test_basic_creation(self):
         """Test StandardizedASTNode basic creation."""
-        from codex.ast.node import NodeType, SourceLocation, StandardizedASTNode
 
         loc = SourceLocation(
             file_path=Path("test.py"), line_start=1, column_start=0, line_end=10, column_end=0
@@ -117,7 +124,6 @@ class TestStandardizedASTNode:
 
     def test_with_docstring(self):
         """Test node with docstring."""
-        from codex.ast.node import NodeType, SourceLocation, StandardizedASTNode
 
         loc = SourceLocation(Path("t.py"), 1, 0, 5, 0)
 
@@ -133,7 +139,6 @@ class TestStandardizedASTNode:
 
     def test_with_decorators(self):
         """Test node with decorators."""
-        from codex.ast.node import NodeType, SourceLocation, StandardizedASTNode
 
         loc = SourceLocation(Path("t.py"), 1, 0, 5, 0)
 
@@ -150,7 +155,6 @@ class TestStandardizedASTNode:
 
     def test_add_child(self):
         """Test add_child method."""
-        from codex.ast.node import NodeType, SourceLocation, StandardizedASTNode
 
         loc = SourceLocation(Path("t.py"), 1, 0, 10, 0)
 
@@ -170,7 +174,6 @@ class TestStandardizedASTNode:
 
     def test_add_multiple_children(self):
         """Test adding multiple children."""
-        from codex.ast.node import NodeType, SourceLocation, StandardizedASTNode
 
         loc = SourceLocation(Path("t.py"), 1, 0, 10, 0)
 
@@ -187,7 +190,6 @@ class TestStandardizedASTNode:
 
     def test_type_hints(self):
         """Test node with type hints."""
-        from codex.ast.node import NodeType, SourceLocation, StandardizedASTNode
 
         loc = SourceLocation(Path("t.py"), 1, 0, 5, 0)
 
@@ -204,7 +206,6 @@ class TestStandardizedASTNode:
 
     def test_metadata(self):
         """Test node with metadata."""
-        from codex.ast.node import NodeType, SourceLocation, StandardizedASTNode
 
         loc = SourceLocation(Path("t.py"), 1, 0, 5, 0)
 

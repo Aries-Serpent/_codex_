@@ -3,6 +3,16 @@ Test Mcp Package Flatten
 
 Test module for mcp package flatten.
 """
+import json
+import subprocess  # Using stdlib subprocess.run which supports timeout parameter
+import tempfile
+from pathlib import Path
+from codex.logging.structured_logger import logger
+            import zipfile
+            import zipfile
+            import zipfile
+            import zipfile
+            import zipfile
 
 #! /usr/bin/env python3
 """
@@ -10,14 +20,8 @@ Test suite for scripts/mcp/package_flatten.sh
 Tests bash script logic for flattening and packaging
 """
 
-import json
-import subprocess  # Using stdlib subprocess.run which supports timeout parameter
-import tempfile
-from pathlib import Path
 
-import pytest
 
-from codex.logging.structured_logger import logger
 
 
 @pytest.fixture
@@ -128,7 +132,6 @@ class TestPackageFlattenScript:
                 pytest.skip(f"Script execution failed: {result.stderr}")
 
             # Extract and check manifest
-            import zipfile
 
             with zipfile.ZipFile(output_zip, "r") as zf:
                 assert "manifest.json" in zf.namelist(), "manifest.json not found in package"
@@ -158,7 +161,6 @@ class TestPackageFlattenScript:
                 pytest.skip(f"Script execution failed: {result.stderr}")
 
             # Check flattened filenames
-            import zipfile
 
             with zipfile.ZipFile(output_zip, "r") as zf:
                 filenames = zf.namelist()
@@ -183,7 +185,6 @@ class TestPackageFlattenScript:
             if result.returncode != 0:
                 pytest.skip(f"Script execution failed: {result.stderr}")
 
-            import zipfile
 
             with zipfile.ZipFile(output_zip, "r") as zf:
                 manifest_data = zf.read("manifest.json")
@@ -211,7 +212,6 @@ class TestPackageFlattenScript:
             if result.returncode != 0:
                 pytest.skip(f"Script execution failed: {result.stderr}")
 
-            import zipfile
 
             with zipfile.ZipFile(output_zip, "r") as zf:
                 manifest_data = zf.read("manifest.json")
@@ -239,7 +239,6 @@ class TestPackageFlattenScript:
             if result.returncode != 0:
                 pytest.skip(f"Script execution failed: {result.stderr}")
 
-            import zipfile
 
             with zipfile.ZipFile(output_zip, "r") as zf:
                 assert "README_dataset.md" in zf.namelist(), "README_dataset.md not found"

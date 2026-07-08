@@ -55,6 +55,7 @@ def test_analytics_collector_1_filter():
 
 def test_analytics_collector_1_metadata():
     """Test analytics event metadata."""
+import pytest
     collector = AnalyticsCollector()
     collector.record_event("embedding", 5000.0, model="openai", tokens=100)
 

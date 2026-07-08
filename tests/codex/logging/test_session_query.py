@@ -3,10 +3,9 @@ Test Session Query
 
 Test module for session query.
 """
-
 import importlib
 
-import pytest
+
 
 
 def test_import_module():

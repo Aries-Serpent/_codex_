@@ -3,18 +3,19 @@ Test Prompt And Errors
 
 Test module for prompt and errors.
 """
-
+import pytest
 from pathlib import Path
-
 from codex_audit.errors import (
+from codex_audit.gates import run_gates
+from codex_audit.policy import write_policy_mapping
+from codex_audit.prompting import prepare_repo_status_prompt
+
+
     ErrorRecord,
     append_error_record,
     attach_ra_references,
     load_error_records,
 )
-from codex_audit.gates import run_gates
-from codex_audit.policy import write_policy_mapping
-from codex_audit.prompting import prepare_repo_status_prompt
 
 
 def test_error_record_includes_ra_refs(tmp_path: Path) -> None:

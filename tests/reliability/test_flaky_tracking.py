@@ -1,3 +1,4 @@
+import pytest
 #         assert ", "Condition must be true"
 #         assert "test_example" in markdown, "Condition must be true"
 #         assert "25.0%" in markdown, "Condition must be true"

@@ -3,9 +3,26 @@ Tests for codex.metrics.duplication module.
 
 This module contains tests for duplication detection and ratio calculation.
 """
-
+import pytest
 from pathlib import Path
 from unittest.mock import patch
+        from codex.metrics.duplication import DuplicateBlock
+        from codex.metrics.duplication import DuplicateBlock
+        from codex.metrics.duplication import DuplicateBlock
+        from codex.metrics.duplication import DuplicationRatio
+        from codex.metrics.duplication import DuplicateBlock, DuplicationRatio
+        from codex.metrics.duplication import DuplicationRatio
+        from codex.metrics.duplication import (
+        from codex.metrics.duplication import DuplicationDetector
+        from codex.metrics.duplication import DuplicationDetector
+        import subprocess
+        from codex.metrics.duplication import DuplicationDetector
+        from codex.metrics.duplication import DuplicationDetector
+        from codex.metrics.duplication import DEFAULT_MIN_LINES
+        from codex.metrics.duplication import DEFAULT_MIN_TOKENS
+        from codex.metrics.duplication import TRIVIAL_PATTERNS
+        from codex.metrics.duplication import logger
+
 
 
 class TestDuplicateBlock:
@@ -13,7 +30,6 @@ class TestDuplicateBlock:
 
     def test_default_values(self):
         """Test DuplicateBlock default values."""
-        from codex.metrics.duplication import DuplicateBlock
 
         block = DuplicateBlock(
             hash="abc123", lines=(1, 10), occurrences=[{"file": "test.py", "start": 1, "end": 10}]
@@ -27,7 +43,6 @@ class TestDuplicateBlock:
 
     def test_custom_values(self):
         """Test DuplicateBlock with custom values."""
-        from codex.metrics.duplication import DuplicateBlock
 
         block = DuplicateBlock(
             hash="xyz789",
@@ -46,7 +61,6 @@ class TestDuplicateBlock:
 
     def test_to_dict(self):
         """Test DuplicateBlock serialization."""
-        from codex.metrics.duplication import DuplicateBlock
 
         block = DuplicateBlock(
             hash="abc123",
@@ -70,7 +84,6 @@ class TestDuplicationRatio:
 
     def test_default_values(self):
         """Test DuplicationRatio default values."""
-        from codex.metrics.duplication import DuplicationRatio
 
         ratio = DuplicationRatio(ratio=0.15, total_lines=1000, duplicate_lines=150)
 
@@ -83,7 +96,6 @@ class TestDuplicationRatio:
 
     def test_custom_values(self):
         """Test DuplicationRatio with custom values."""
-        from codex.metrics.duplication import DuplicateBlock, DuplicationRatio
 
         blocks = [
             DuplicateBlock(hash="a", lines=(1, 5), occurrences=[]),
@@ -105,7 +117,6 @@ class TestDuplicationRatio:
 
     def test_to_dict(self):
         """Test DuplicationRatio serialization."""
-        from codex.metrics.duplication import DuplicationRatio
 
         ratio = DuplicationRatio(
             ratio=0.1, total_lines=100, duplicate_lines=10, files_scanned=5, files_with_duplicates=2
@@ -126,7 +137,6 @@ class TestDuplicationDetector:
 
     def test_init_defaults(self):
         """Test DuplicationDetector initialization with defaults."""
-        from codex.metrics.duplication import (
             DEFAULT_MIN_LINES,
             DEFAULT_MIN_TOKENS,
             DuplicationDetector,
@@ -140,7 +150,6 @@ class TestDuplicationDetector:
 
     def test_init_custom(self):
         """Test DuplicationDetector with custom parameters."""
-        from codex.metrics.duplication import DuplicationDetector
 
         detector = DuplicationDetector(min_lines=10, min_tokens=100, ignore_trivial=False)
 
@@ -151,7 +160,6 @@ class TestDuplicationDetector:
     @patch("codex.metrics.duplication.subprocess.run")
     def test_detect_with_pylint_not_found(self, mock_run):
         """Test handling when pylint is not found."""
-        from codex.metrics.duplication import DuplicationDetector
 
         mock_run.side_effect = FileNotFoundError("pylint not found")
 
@@ -163,9 +171,7 @@ class TestDuplicationDetector:
     @patch("codex.metrics.duplication.subprocess.run")
     def test_detect_with_pylint_timeout(self, mock_run):
         """Test handling when pylint times out."""
-        import subprocess
 
-        from codex.metrics.duplication import DuplicationDetector
 
         mock_run.side_effect = subprocess.TimeoutExpired(cmd="pylint", timeout=300)
 
@@ -177,7 +183,6 @@ class TestDuplicationDetector:
     @patch("codex.metrics.duplication.subprocess.run")
     def test_detect_with_pylint_error(self, mock_run):
         """Test handling when pylint has an error."""
-        from codex.metrics.duplication import DuplicationDetector
 
         mock_run.side_effect = Exception("Some error")
 
@@ -192,19 +197,16 @@ class TestModuleConstants:
 
     def test_default_min_lines(self):
         """Test DEFAULT_MIN_LINES constant."""
-        from codex.metrics.duplication import DEFAULT_MIN_LINES
 
         assert DEFAULT_MIN_LINES == 4, "DEFAULT_MIN_LINES is not valid"
 
     def test_default_min_tokens(self):
         """Test DEFAULT_MIN_TOKENS constant."""
-        from codex.metrics.duplication import DEFAULT_MIN_TOKENS
 
         assert DEFAULT_MIN_TOKENS == 50, "DEFAULT_MIN_TOKENS is not valid"
 
     def test_trivial_patterns(self):
         """Test TRIVIAL_PATTERNS constant."""
-        from codex.metrics.duplication import TRIVIAL_PATTERNS
 
         assert isinstance(TRIVIAL_PATTERNS, list)
         assert len(TRIVIAL_PATTERNS) > 0, "Trivial_patterns must not be empty"
@@ -213,7 +215,6 @@ class TestModuleConstants:
 
     def test_logger_exists(self):
         """Test logger is configured."""
-        from codex.metrics.duplication import logger
 
         assert logger is not None, "logger must be initialized"
         assert logger.name == "codex.metrics.duplication", "name is not valid"

@@ -2,8 +2,15 @@
 Target: src/ingestion/*.py - Increase coverage from 20-35% to 70%+
 Strategy: 80+ tests for ingestion utilities and operations
 """
-
+import pytest
 from unittest.mock import Mock
+        import json
+        import json
+        import json
+        import json
+        import json
+                    import json
+
 
 
 class TestCSVIngestor:
@@ -72,7 +79,6 @@ class TestJSONIngestor:
 
     def test_parse_json_object(self):
         """Test parsing JSON object"""
-        import json
 
         data = '{"key": "value"}'
         parsed = json.loads(data)
@@ -80,7 +86,6 @@ class TestJSONIngestor:
 
     def test_parse_json_array(self):
         """Test parsing JSON array"""
-        import json
 
         data = "[1, 2, 3]"
         parsed = json.loads(data)
@@ -88,7 +93,6 @@ class TestJSONIngestor:
 
     def test_parse_json_nested(self):
         """Test parsing nested JSON"""
-        import json
 
         data = '{"outer": {"inner": "value"}}'
         parsed = json.loads(data)
@@ -96,7 +100,6 @@ class TestJSONIngestor:
 
     def test_json_null_handling(self):
         """Test JSON null handling"""
-        import json
 
         data = '{"key": null}'
         parsed = json.loads(data)
@@ -104,7 +107,6 @@ class TestJSONIngestor:
 
     def test_json_boolean_handling(self):
         """Test JSON boolean handling"""
-        import json
 
         data = '{"true_val": true, "false_val": false}'
         parsed = json.loads(data)
@@ -421,7 +423,6 @@ class TestErrorHandling:
         def parse_safe(data, format_type):
             try:
                 if format_type == "json":
-                    import json
 
                     return json.loads(data)
                 return None

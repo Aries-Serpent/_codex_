@@ -3,15 +3,15 @@ Tests for codex_ml.cli.migrate_data module.
 
 Tests CLI functionality for migrating assignment mapping files between versions.
 """
-
 import json
 import subprocess
 import sys
 import tempfile
 from pathlib import Path
 from unittest.mock import patch
+            from codex_ml.cli import migrate_data
 
-import pytest
+
 
 
 class TestMigrateDataCLI:
@@ -95,7 +95,6 @@ class TestMigrateDataFunctions:
     def test_migrate_data_import(self):
         """Test that migrate_data module can be imported."""
         try:
-            from codex_ml.cli import migrate_data
 
             assert hasattr(migrate_data, "app")
             assert hasattr(migrate_data, "migrate")

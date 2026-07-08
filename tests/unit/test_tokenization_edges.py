@@ -280,9 +280,10 @@ class TestTokenizationErrorRecovery:
 
     def test_tokenize_recovery_after_error(self):
         """Verify tokenizer can recover after encountering an error."""
+import pytest
+            from transformers import AutoTokenizer
         # Arrange
         try:
-            from transformers import AutoTokenizer
         except ImportError:
             pytest.skip("transformers not available")
 

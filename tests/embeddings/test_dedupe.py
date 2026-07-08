@@ -3,8 +3,9 @@ Test Dedupe
 
 Test module for dedupe.
 """
-
+import pytest
 from mcp.embeddings.dedupe import InMemoryDeduper
+
 
 
 def test_dedupe():

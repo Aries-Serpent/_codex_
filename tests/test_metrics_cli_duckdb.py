@@ -3,15 +3,14 @@ Test Metrics Cli Duckdb
 
 Test module for metrics cli duckdb.
 """
-
 from __future__ import annotations
-
 import sys
 import types
-
-import pytest
-
 from codex_ml.cli.metrics_cli import _csv_to_duckdb
+
+
+
+
 
 
 class DummyConnection:

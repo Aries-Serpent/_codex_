@@ -7,10 +7,11 @@ Validates that:
 3. Hydra can find configurations in all roots
 4. Configuration structure documentation exists
 """
-
+        pytest.importorskip("yaml")
 from pathlib import Path
+        import yaml
 
-import pytest
+
 
 
 class TestConfigConsolidation:
@@ -141,8 +142,6 @@ class TestHydraConfigAccess:
 
     def test_yaml_files_parse_correctly(self):
         """Verify YAML files in configs/ are valid"""
-        pytest.importorskip("yaml")
-        import yaml
 
         repo_root = Path(__file__).parent.parent.parent
         canonical_root = repo_root / "configs"

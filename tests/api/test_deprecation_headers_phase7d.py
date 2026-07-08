@@ -3,9 +3,10 @@
 This test suite verifies that all deprecated endpoints return correct
 RFC 8594 compliant headers and that migration paths are documented.
 """
-
-import pytest
 from fastapi.testclient import TestClient
+        from codex.api.app import app
+        from codex.api.app import app
+
 
 
 class TestLegacyEndpointDeprecationHeaders:
@@ -14,7 +15,6 @@ class TestLegacyEndpointDeprecationHeaders:
     @pytest.fixture
     def client(self):
         """Create a test client for the API."""
-        from codex.api.app import app
 
         return TestClient(app)
 
@@ -287,7 +287,6 @@ class TestDeprecationHeadersRFC8594Compliance:
     @pytest.fixture
     def client(self):
         """Create a test client for the API."""
-        from codex.api.app import app
 
         return TestClient(app)
 

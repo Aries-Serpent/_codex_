@@ -3,16 +3,21 @@ Test Loader Registry
 
 Test module for loader registry.
 """
-
 from __future__ import annotations
-
 import tempfile
+    from codex_ml.models.loader_registry import (
+    from codex_ml.models.loader_registry import (
+    import codex_ml.models as models_api
+    from codex_ml.models.loader_registry import register_model, unregister_model
+    from codex_ml.utils import modeling
+    from codex_ml.modeling import codex_model_loader
+    from codex_ml.models.loader_registry import register_model, unregister_model
 
-import pytest
+
+
 
 
 def test_register_and_get_model():
-    from codex_ml.models.loader_registry import (
         get_model,
         list_models,
         register_model,
@@ -33,7 +38,6 @@ def test_register_and_get_model():
 
 
 def test_registry_disable_env(monkeypatch):
-    from codex_ml.models.loader_registry import (
         get_model,
         register_model,
         unregister_model,
@@ -54,7 +58,6 @@ def test_registry_disable_env(monkeypatch):
 
 
 def test_get_model_entry_points_can_enable_after_initial_disabled_call(monkeypatch):
-    import codex_ml.models as models_api
 
     calls: list[bool] = []
 
@@ -74,8 +77,6 @@ def test_get_model_entry_points_can_enable_after_initial_disabled_call(monkeypat
 
 
 def test_modeling_prefers_registry():
-    from codex_ml.models.loader_registry import register_model, unregister_model
-    from codex_ml.utils import modeling
 
     if modeling is None:
         pytest.skip("modeling module unavailable (torch/transformers not installed)")
@@ -93,8 +94,6 @@ def test_modeling_prefers_registry():
 
 
 def test_loader_prefers_registry_kwargs():
-    from codex_ml.modeling import codex_model_loader
-    from codex_ml.models.loader_registry import register_model, unregister_model
 
     captured: dict[str, object] = {}
 

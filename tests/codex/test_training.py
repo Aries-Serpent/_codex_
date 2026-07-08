@@ -1,12 +1,14 @@
 """Targeted tests for :mod:`codex.training` helpers."""
-
 from __future__ import annotations
-
 import importlib
 import sys
 import types
+    from codex.training import _safe_perplexity, _safe_token_accuracy
+    from codex.training import _codex_config_hash
+    from codex.training import _build_safe_ckpt_payload
 
-import pytest
+
+
 
 # Skip if PyTorch-dependent modules cannot be imported
 try:
@@ -25,7 +27,6 @@ def test_safe_token_metrics(monkeypatch: pytest.MonkeyPatch) -> None:
     stub_tokenization = types.SimpleNamespace(TokenizerAdapter=type("TokenizerAdapter", (), {}))
     monkeypatch.setitem(sys.modules, "src.tokenization", stub_tokenization)
 
-    from codex.training import _safe_perplexity, _safe_token_accuracy
 
     assert _safe_token_accuracy([1, 2], [1, 3]) == 0.5
     assert _safe_token_accuracy([], []) == 0.0
@@ -34,7 +35,6 @@ def test_safe_token_metrics(monkeypatch: pytest.MonkeyPatch) -> None:
 
 @pytest.mark.skipif(not TRAINING_AVAILABLE, reason="Training module requires PyTorch")
 def test_config_hash_stable() -> None:
-    from codex.training import _codex_config_hash
 
     cfg = {"a": 1, "b": {"c": 2}}
     first = _codex_config_hash(cfg)
@@ -53,7 +53,6 @@ class _Dummy:
 @pytest.mark.skipif(not TRAINING_AVAILABLE, reason="Training module requires PyTorch")
 @pytest.mark.parametrize("extra", [None, {"note": "ok"}])
 def test_build_safe_ckpt_payload(extra):
-    from codex.training import _build_safe_ckpt_payload
 
     payload = _build_safe_ckpt_payload(_Dummy(), _Dummy(), epoch=3, extra=extra)
     assert payload["meta"].get("saved_at"), "Condition must be true"

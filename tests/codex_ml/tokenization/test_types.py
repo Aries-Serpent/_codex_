@@ -1,3 +1,4 @@
+import pytest
 from codex_ml.tokenization._types import (
     BOS_TOKEN,
     EOS_TOKEN,

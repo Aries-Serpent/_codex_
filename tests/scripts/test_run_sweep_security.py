@@ -84,6 +84,7 @@ class TestOverrideValidation:
 
     def test_allow_safe_special_chars(self) -> None:
         """Allow safe special characters in values."""
+import pytest
         _validate_override("path", os.path.join(tempfile.gettempdir(), "data/file.txt"))
         _validate_override("expr", "x+y")
         _validate_override("ratio", "1:2")

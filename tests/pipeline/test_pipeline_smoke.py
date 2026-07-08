@@ -3,17 +3,16 @@ Test Pipeline Smoke
 
 Test module for pipeline smoke.
 """
-
-import pytest
-
 from codex_ml.config import (
+from codex_ml.pipeline import run_codex_pipeline
+
+
     PretrainingConfig,
     RLHFConfig,
     SFTConfig,
     TrainingWeights,
     ValidationThresholds,
 )
-from codex_ml.pipeline import run_codex_pipeline
 
 
 @pytest.fixture(autouse=True)

@@ -111,8 +111,9 @@ class TestSigstoreClientErrors:
 
     def test_connection_error_handling(self):
         """Test handling of connection errors."""
-        try:
+import pytest
             from src.codex.archive import sigstore_client
+        try:
 
             if hasattr(sigstore_client, "SigstoreClient"):
                 client = sigstore_client.SigstoreClient()

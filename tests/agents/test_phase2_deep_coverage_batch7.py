@@ -11,13 +11,30 @@ Systematically applies memory and cognitive patterns:
 
 Target: +4-5% coverage gain (52% → 57%)
 """
-
-import pytest
-
 pytest.importorskip("numpy", reason="numpy not installed")
-pytest.importorskip("numpy")
-
 import numpy as np
+        from agents.agent_memory import AgentMemory
+        from agents.agent_memory import AgentMemory
+        from agents.agent_memory import AgentMemory
+        from agents.agent_memory import AgentMemory
+        from agents.agent_memory import AgentMemory
+        from agents.agent_memory import AgentMemory
+        from agents.agent_memory import AgentMemory
+        from agents.mental_mapping import MentalMap
+        from datetime import UTC, datetime
+        from agents.mental_mapping import MentalMap, MentalNode, NodeType
+        from datetime import UTC, datetime
+        from agents.mental_mapping import MentalMap, MentalNode, NodeType
+        from agents.mental_mapping import MentalMap
+        from agents.mental_mapping import MentalMap
+        from datetime import UTC, datetime
+        from agents.mental_mapping import MentalMap, MentalNode, NodeType
+        from agents.mental_mapping import MentalMap
+        from agents.mental_mapping import MentalMap
+        from collections import deque
+
+
+
 
 
 class TestPhase2_AgentMemory:
@@ -28,14 +45,12 @@ class TestPhase2_AgentMemory:
 
     def test_agent_memory_initialization(self):
         """Test AgentMemory initialization"""
-        from agents.agent_memory import AgentMemory
 
         memory = AgentMemory()
         assert memory is not None, "memory must be initialized"
 
     def test_store_memory_item(self):
         """Test storing a memory item persists it for retrieval."""
-        from agents.agent_memory import AgentMemory
 
         memory = AgentMemory()
         memory.store_memory(key="test_store", value="test_value")
@@ -45,7 +60,6 @@ class TestPhase2_AgentMemory:
 
     def test_retrieve_memory_item(self):
         """Test retrieving a memory item"""
-        from agents.agent_memory import AgentMemory
 
         memory = AgentMemory()
         if hasattr(memory, "store") and hasattr(memory, "retrieve"):
@@ -58,7 +72,6 @@ class TestPhase2_AgentMemory:
 
     def test_memory_search(self):
         """Test searching memory"""
-        from agents.agent_memory import AgentMemory
 
         memory = AgentMemory()
         if hasattr(memory, "search"):
@@ -68,7 +81,6 @@ class TestPhase2_AgentMemory:
 
     def test_memory_consolidation(self):
         """Test memory consolidation runs without error."""
-        from agents.agent_memory import AgentMemory
 
         memory = AgentMemory()
         memory.store_memory(key="c1", value="data1")
@@ -79,7 +91,6 @@ class TestPhase2_AgentMemory:
 
     def test_memory_types(self):
         """Test different memory types (episodic, semantic, procedural)"""
-        from agents.agent_memory import AgentMemory
 
         memory = AgentMemory()
         # Test if memory supports different types
@@ -94,7 +105,6 @@ class TestPhase2_AgentMemory:
 
     def test_long_term_memory_encoding(self):
         """Test encoding into long-term memory"""
-        from agents.agent_memory import AgentMemory
 
         memory = AgentMemory()
         if hasattr(memory, "encode"):
@@ -123,16 +133,13 @@ class TestPhase2_MentalMapping:
 
     def test_mental_map_initialization(self):
         """Test MentalMap initialization"""
-        from agents.mental_mapping import MentalMap
 
         mental_map = MentalMap()
         assert mental_map is not None, "mental_map must be initialized"
 
     def test_add_concept_to_map(self):
         """Test adding a concept node to the mental map."""
-        from datetime import UTC, datetime
 
-        from agents.mental_mapping import MentalMap, MentalNode, NodeType
 
         ts = datetime.now(UTC).isoformat()
         mental_map = MentalMap()
@@ -144,9 +151,7 @@ class TestPhase2_MentalMapping:
 
     def test_create_relationship(self):
         """Test creating a relationship (edge) between two concepts."""
-        from datetime import UTC, datetime
 
-        from agents.mental_mapping import MentalMap, MentalNode, NodeType
 
         ts = datetime.now(UTC).isoformat()
         mental_map = MentalMap()
@@ -161,7 +166,6 @@ class TestPhase2_MentalMapping:
 
     def test_find_path_between_concepts(self):
         """Test finding path between concepts (Eq #39)"""
-        from agents.mental_mapping import MentalMap
 
         mental_map = MentalMap()
         if hasattr(mental_map, "find_path"):
@@ -170,7 +174,6 @@ class TestPhase2_MentalMapping:
 
     def test_shortest_path_algorithm(self):
         """Test shortest path finding"""
-        from agents.mental_mapping import MentalMap
 
         mental_map = MentalMap()
         if hasattr(mental_map, "shortest_path"):
@@ -179,9 +182,7 @@ class TestPhase2_MentalMapping:
 
     def test_concept_activation(self):
         """Test concept activation via think_through_problem (activation spreading)."""
-        from datetime import UTC, datetime
 
-        from agents.mental_mapping import MentalMap, MentalNode, NodeType
 
         ts = datetime.now(UTC).isoformat()
         mental_map = MentalMap()
@@ -198,7 +199,6 @@ class TestPhase2_MentalMapping:
 
     def test_mental_model_construction(self):
         """Test constructing mental model (Eq #55)"""
-        from agents.mental_mapping import MentalMap
 
         mental_map = MentalMap()
         if hasattr(mental_map, "build_model"):
@@ -207,7 +207,6 @@ class TestPhase2_MentalMapping:
 
     def test_spatial_reasoning(self):
         """Test spatial reasoning capabilities"""
-        from agents.mental_mapping import MentalMap
 
         mental_map = MentalMap()
         if hasattr(mental_map, "spatial_reason"):
@@ -230,7 +229,6 @@ class TestPhase2_GraphAlgorithms:
 
     def test_breadth_first_search(self):
         """Test BFS traversal"""
-        from collections import deque
 
         graph = {"A": ["B", "C"], "B": ["D"], "C": ["D"], "D": []}
         start = "A"

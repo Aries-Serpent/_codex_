@@ -2,12 +2,11 @@
 
 Tests for src/services/mcp/lifecycle.py to improve module coverage.
 """
-
 from unittest.mock import AsyncMock, Mock
-
-import pytest
-
 from src.services.mcp.lifecycle import LifecycleManager
+
+
+
 
 
 class TestLifecycleManagerInitialization:

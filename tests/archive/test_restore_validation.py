@@ -225,6 +225,7 @@ class TestHealthCheck:
         self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
     ) -> None:
         """Operational backend should pass the health check."""
+import pytest
 
         db_path = tmp_path / ".codex" / "archive.sqlite"
         monkeypatch.setenv("CODEX_ARCHIVE_BACKEND", "sqlite")

@@ -7,13 +7,32 @@ functionality to push coverage to 95%.
 Author: Copilot AI Agent
 Version: 1.0.0
 """
-
-import pytest
-
 pytest.importorskip("numpy", reason="numpy not installed")
-pytest.importorskip("numpy")
-
 import numpy as np
+        from agents.physics_orchestrator import ActionPath, ActionType
+        from agents.physics_orchestrator import ForceVector
+        from agents.physics_orchestrator import EnergyLandscape
+        from agents.quantum_game_theory import TeamType
+        from agents.quantum_game_theory import QuantumInspiredGameEngine
+        from agents.mental_mapping import MentalMappingModel, NodeType
+        from agents.mental_mapping import EdgeType, MentalMappingModel, NodeType
+        from agents.mental_mapping import EdgeType, MentalMappingModel, NodeType
+        from agents.self_healing import IssueSeverity
+        from agents.self_healing import RemediationAction
+        from agents.advanced_physics_calculators import FluidChannel
+        from agents.workflow_navigator import WorkflowNavigator, WorkflowStep
+        from agents.workflow_navigator import WorkflowNavigator, WorkflowStep
+        from agents.physics_orchestrator import PhysicsOrchestrator
+        from agents.agent_memory import AgentMemory
+        from agents.mental_mapping import MentalMappingModel, NodeType
+        from agents.agent_memory import AgentMemory
+        from agents.mental_mapping import MentalMappingModel, NodeType
+        from agents.physics_orchestrator import DecisionState, PhysicsOrchestrator
+        from agents.agent_memory import AgentMemory
+        from agents.mental_mapping import MentalMappingModel
+
+
+
 
 
 class TestUncoveredPaths_PhysicsOrchestrator:
@@ -21,7 +40,6 @@ class TestUncoveredPaths_PhysicsOrchestrator:
 
     def test_all_action_types(self):
         """Test ActionPath with all ActionType values"""
-        from agents.physics_orchestrator import ActionPath, ActionType
 
         action_types = [
             ActionType.RESEARCH,
@@ -37,7 +55,6 @@ class TestUncoveredPaths_PhysicsOrchestrator:
 
     def test_force_vector_all_directions(self):
         """Test ForceVector with various direction vectors"""
-        from agents.physics_orchestrator import ForceVector
 
         directions = [
             [1, 0, 0],
@@ -54,7 +71,6 @@ class TestUncoveredPaths_PhysicsOrchestrator:
 
     def test_energy_landscape_various_temperatures(self):
         """Test EnergyLandscape across temperature range"""
-        from agents.physics_orchestrator import EnergyLandscape
 
         temps = [0.001, 0.1, 1.0, 10.0, 100.0, 1000.0, 10000.0]
 
@@ -68,7 +84,6 @@ class TestUncoveredPaths_QuantumGame:
 
     def test_team_type_enum_values(self):
         """Test all TeamType enum values"""
-        from agents.quantum_game_theory import TeamType
 
         teams = [TeamType.BLUE, TeamType.RED]
 
@@ -77,7 +92,6 @@ class TestUncoveredPaths_QuantumGame:
 
     def test_quantum_inspired_engine_all_parameters(self):
         """Test QuantumInspiredGameEngine with various parameters"""
-        from agents.quantum_game_theory import QuantumInspiredGameEngine
 
         # Different strategy distributions
         strategies = [
@@ -100,7 +114,6 @@ class TestUncoveredPaths_MentalMapping:
 
     def test_all_node_types_comprehensive(self):
         """Test all NodeType enum values comprehensively"""
-        from agents.mental_mapping import MentalMappingModel, NodeType
 
         model = MentalMappingModel()
 
@@ -125,7 +138,6 @@ class TestUncoveredPaths_MentalMapping:
 
     def test_all_edge_types_comprehensive(self):
         """Test all EdgeType enum values comprehensively"""
-        from agents.mental_mapping import EdgeType, MentalMappingModel, NodeType
 
         model = MentalMappingModel()
 
@@ -151,7 +163,6 @@ class TestUncoveredPaths_MentalMapping:
 
     def test_graph_metrics_various_graph_sizes(self):
         """Test calculate_metrics on various graph sizes"""
-        from agents.mental_mapping import EdgeType, MentalMappingModel, NodeType
 
         for size in [1, 2, 5, 10, 20]:
             model = MentalMappingModel()
@@ -177,7 +188,6 @@ class TestUncoveredPaths_SelfHealing:
 
     def test_issue_severity_all_levels(self):
         """Test IssueSeverity enum all values"""
-        from agents.self_healing import IssueSeverity
 
         severities = [
             IssueSeverity.LOW,
@@ -191,7 +201,6 @@ class TestUncoveredPaths_SelfHealing:
 
     def test_remediation_action_all_fields(self):
         """Test RemediationAction with all field combinations"""
-        from agents.self_healing import RemediationAction
 
         # Minimal
         action1 = RemediationAction(action_type="fix", description="Fix it")
@@ -214,7 +223,6 @@ class TestUncoveredPaths_AdvancedCalculators:
 
     def test_fluid_channel_all_field_combinations(self):
         """Test FluidChannel with all field combinations"""
-        from agents.advanced_physics_calculators import FluidChannel
 
         # Using name
         c1 = FluidChannel(name="pipe1", cross_section=1.0, length=10.0)
@@ -230,7 +238,6 @@ class TestUncoveredPaths_WorkflowNavigator:
 
     def test_workflow_status_all_states(self):
         """Test workflow status in all possible states"""
-        from agents.workflow_navigator import WorkflowNavigator, WorkflowStep
 
         navigator = WorkflowNavigator()
 
@@ -258,7 +265,6 @@ class TestUncoveredPaths_WorkflowNavigator:
 
     def test_suggest_next_action_all_scenarios(self):
         """Test suggest_next_action in all scenarios"""
-        from agents.workflow_navigator import WorkflowNavigator, WorkflowStep
 
         navigator = WorkflowNavigator()
 
@@ -280,7 +286,6 @@ class TestRarelyUsed_AllModules:
 
     def test_physics_orchestrator_config_variations(self):
         """Test PhysicsOrchestrator with various configurations"""
-        from agents.physics_orchestrator import PhysicsOrchestrator
 
         # Default config
         orch1 = PhysicsOrchestrator()
@@ -292,7 +297,6 @@ class TestRarelyUsed_AllModules:
 
     def test_agent_memory_statistics_method(self):
         """Test AgentMemory statistics method"""
-        from agents.agent_memory import AgentMemory
 
         memory = AgentMemory()
 
@@ -306,7 +310,6 @@ class TestRarelyUsed_AllModules:
 
     def test_mental_mapping_save_load(self):
         """Test MentalMappingModel save/load functionality"""
-        from agents.mental_mapping import MentalMappingModel, NodeType
 
         model = MentalMappingModel()
         model.create_node(NodeType.PROBLEM, {"test": True})
@@ -321,9 +324,6 @@ class TestCompleteCodePaths_Integration:
 
     def test_complete_agent_lifecycle(self):
         """Test complete lifecycle of agent components"""
-        from agents.agent_memory import AgentMemory
-        from agents.mental_mapping import MentalMappingModel, NodeType
-        from agents.physics_orchestrator import DecisionState, PhysicsOrchestrator
 
         # Initialize all components
         orchestrator = PhysicsOrchestrator()
@@ -351,8 +351,6 @@ class TestCompleteCodePaths_Integration:
 
     def test_error_handling_chain(self):
         """Test error handling propagation through modules"""
-        from agents.agent_memory import AgentMemory
-        from agents.mental_mapping import MentalMappingModel
 
         memory = AgentMemory()
         model = MentalMappingModel()

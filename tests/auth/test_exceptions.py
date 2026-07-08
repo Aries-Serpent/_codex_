@@ -332,6 +332,7 @@ class TestExceptionHierarchy:
 
     def test_can_raise_and_catch(self):
         """Test that exceptions can be raised and caught."""
+import pytest
 
         def _raise_authentication() -> None:
             raise AuthenticationError("Test error")

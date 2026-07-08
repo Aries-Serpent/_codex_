@@ -8,16 +8,28 @@ Tests cover:
 - Secret management
 - XSS/injection prevention
 """
-
 from __future__ import annotations
-
 from pathlib import Path
+    from src.security.core import (
+    from src.security.content_filters import (
+        import logging
+        from src.utils.log_sanitizer import sanitize_log
+        from src.security.core import SecurityError, enforce_absolute_path
+            from src.security.encryption import decrypt, encrypt, generate_key
+            from src.security.encryption import hash_password, verify_password
+            from src.security.secrets import get_secret
+            from src.security.secrets import get_secret
+            from src.security.secrets import mask_secrets
+            from src.security.audit_logger import log_audit_event
+            from src.security.audit_logger import AuditLogger
+        import re
+            import re
 
-import pytest
+
+
 
 # Test security core if available # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 try:
-    from src.security.core import (
         check_permissions,
         sanitize_path,
         validate_input,
@@ -29,7 +41,6 @@ except ImportError:
 
 # Test content filters
 try:
-    from src.security.content_filters import (
         filter_sql_injection,
         sanitize_html,
         validate_email,
@@ -137,7 +148,6 @@ class TestSecurityPatterns:
 
     def test_password_not_logged(self, caplog) -> None:
         """Test that passwords are not logged."""
-        import logging
 
         logger = logging.getLogger("security_test")
 
@@ -150,7 +160,6 @@ class TestSecurityPatterns:
 
     def test_sanitize_log_message(self) -> None:
         """Test log message sanitization."""
-        from src.utils.log_sanitizer import sanitize_log
 
         sensitive_msg = "Error: API key abc123def456 failed"
         sanitized = sanitize_log(sensitive_msg)
@@ -160,7 +169,6 @@ class TestSecurityPatterns:
 
     def test_path_validation_absolute_only(self) -> None:
         """Test path validation enforces absolute paths."""
-        from src.security.core import SecurityError, enforce_absolute_path
 
         relative_path = "../dangerous/path"
 
@@ -175,7 +183,6 @@ class TestEncryptionUtilities:
     def test_encrypt_decrypt_roundtrip(self) -> None:
         """Test encryption and decryption roundtrip."""
         try:
-            from src.security.encryption import decrypt, encrypt, generate_key
 
             # Generate proper 32-byte key
             key = generate_key()
@@ -196,7 +203,6 @@ class TestEncryptionUtilities:
     def test_hash_password(self) -> None:
         """Test password hashing."""
         try:
-            from src.security.encryption import hash_password, verify_password
 
             password = "mypassword123"
             hashed = hash_password(password)
@@ -217,7 +223,6 @@ class TestSecretsManagement:
     def test_get_secret_from_env(self, monkeypatch) -> None:
         """Test retrieving secret from environment."""
         try:
-            from src.security.secrets import get_secret
 
             monkeypatch.setenv("TEST_SECRET", "secret_value")
 
@@ -229,7 +234,6 @@ class TestSecretsManagement:
     def test_secret_not_found_raises(self) -> None:
         """Test missing secret raises error."""
         try:
-            from src.security.secrets import get_secret
 
             with pytest.raises((KeyError, ValueError)):
                 get_secret("NONEXISTENT_SECRET", required=True)
@@ -239,7 +243,6 @@ class TestSecretsManagement:
     def test_mask_secret_in_logs(self) -> None:
         """Test secrets are masked in log output."""
         try:
-            from src.security.secrets import mask_secrets
 
             log_line = "API_KEY=abc123 response=success"
             masked = mask_secrets(log_line)
@@ -257,7 +260,6 @@ class TestAuditLogging:
     def test_audit_log_creation(self, tmp_path: Path) -> None:
         """Test creating audit log entries."""
         try:
-            from src.security.audit_logger import log_audit_event
 
             log_dir = tmp_path / "audit"
             log_dir.mkdir()
@@ -279,7 +281,6 @@ class TestAuditLogging:
     def test_audit_log_contains_required_fields(self, tmp_path: Path) -> None:
         """Test audit logs contain required fields."""
         try:
-            from src.security.audit_logger import AuditLogger
 
             logger = AuditLogger(log_dir=tmp_path)
             logger.log_event(
@@ -310,7 +311,6 @@ class TestInputValidation:
 
     def test_validate_string_pattern(self) -> None:
         """Test string pattern validation."""
-        import re
 
         def validate_username(username: str) -> bool:
             pattern = r"^[a-zA-Z0-9_]{3,20}$"
@@ -324,7 +324,6 @@ class TestInputValidation:
         """Test filename sanitization."""
 
         def sanitize_filename(filename: str) -> str:
-            import re
 
             # Remove dangerous characters
             safe = re.sub(r"[^\w\s.-]", "", filename)

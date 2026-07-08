@@ -3,17 +3,17 @@ Test Artifact Pipeline
 
 Test module for artifact pipeline.
 """
-
-#!/usr/bin/env python
-
+    pytest.importorskip("jsonschema")
 import json
 import subprocess
 import sys
 from pathlib import Path
-
-import pytest
-
 from scripts.space_traversal import (
+
+#!/usr/bin/env python
+
+
+
     coverage_ingest_stub,
     decode_validate_and_extract,
     stable_manifest,
@@ -55,7 +55,6 @@ def test_decode_and_extract(tmp_path: Path):
 
 
 def test_decode_and_validate_roundtrip(tmp_path: Path) -> None:
-    pytest.importorskip("jsonschema")
     output = tmp_path / "decoded.json"
     extract = tmp_path / "gaps.json"
     result = decode_validate_and_extract.decode_and_validate(

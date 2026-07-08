@@ -1,12 +1,12 @@
 """
 Tests for JSON AST Adapter.
 """
-
 from pathlib import Path
-
-import pytest
-
 from codex.ast_adapters.json_adapter import JSONASTAdapter
+        import json
+
+
+
 
 
 class TestJSONASTAdapter:
@@ -331,7 +331,6 @@ class TestJSONASTAdapter:
         """Test parsing large arrays"""
         # Create a large array with 1000 items
         items = [{"id": i, "value": f"item_{i}"} for i in range(1000)]
-        import json
 
         json_source = json.dumps({"items": items})
 

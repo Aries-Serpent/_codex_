@@ -7,9 +7,8 @@ These tests are "integration-style" — they exercise real module code paths
 using tight budgets to force early exit, validating the safety mechanisms.
 All filesystem writes are redirected to tmp_path, so no repo state is mutated.
 """
-
 from __future__ import annotations
-
+    return pytest.importorskip(name, reason=f"{name} not importable")
 import json
 import sys
 import threading
@@ -17,7 +16,8 @@ import time
 from pathlib import Path
 from unittest.mock import patch
 
-import pytest
+
+
 
 SCRIPTS_DIR = Path(__file__).resolve().parents[2] / "scripts"
 
@@ -27,7 +27,6 @@ def _import(name: str):
         sys.path.insert(0, str(SCRIPTS_DIR))
     # Always re-import with cleared cache to pick up patched env
     sys.modules.pop(name, None)
-    return pytest.importorskip(name, reason=f"{name} not importable")
 
 
 # ── budget_uncertainty (Phase 4/5) ──────────────────────────────────────────

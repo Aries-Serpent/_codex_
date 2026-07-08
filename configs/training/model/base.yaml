@@ -1,7 +1,7 @@
 model:
   name: sshleifer/tiny-gpt2
   tokenizer_name: sshleifer/tiny-gpt2
-  dtype: float32
+  dtype: fp32
   device: cpu
   trust_remote_code: false
   load_config: {}

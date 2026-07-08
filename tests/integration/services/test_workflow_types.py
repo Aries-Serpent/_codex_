@@ -56,6 +56,7 @@ def test_workflow_step_construction():
 @pytest.mark.integration
 def test_workflow_job_if_condition():
     """Test WorkflowJob if-condition handling."""
+import pytest
     job = WorkflowJob(
         id=100,
         run_id=200,

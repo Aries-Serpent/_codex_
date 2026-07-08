@@ -3,11 +3,12 @@ Test System Metrics Cpu Fallback
 
 Test module for system metrics cpu fallback.
 """
-
 from __future__ import annotations
-
+import pytest
 import importlib
 import sys
+
+
 
 
 def test_collect_without_nvml(monkeypatch):

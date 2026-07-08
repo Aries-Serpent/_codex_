@@ -3,10 +3,11 @@ Test Perf Snapshot
 
 Test module for perf snapshot.
 """
-
+import pytest
 import json
 import subprocess
 import sys
+
 
 LOG = """steps/s: 12.5
 epoch_time_s: 44.2

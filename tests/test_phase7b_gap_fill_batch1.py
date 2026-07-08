@@ -10,13 +10,61 @@ Gap-filling strategy:
   4. optional_dependencies.py (62.50% → 100%)
   5. seed.py (62.50% → 100%)
 """
-
 from __future__ import annotations
-
 import sys
 from pathlib import Path
+        from codex_ml.utils.seed_registry import (
+        from codex_ml.utils.seed_registry import (
+        from codex_ml.utils.seed_registry import (
+        from codex_ml.utils.seed_registry import (
+        from codex_ml.utils.seed_registry import (
+        from codex_ml.utils.seed_registry import (
+        from codex_ml.utils.seed_registry import (
+        from codex_ml.utils.seed_registry import (
+        from codex_ml.utils.seed_registry import (
+        from codex_ml.registry.metrics import MetricsRegistry
+        from codex_ml.registry.metrics import MetricsRegistry
+        from codex_ml.registry.metrics import MetricsRegistry
+        from codex_ml.registry.metrics import MetricsRegistry
+        from codex_ml.registry.metrics import MetricsRegistry
+        from codex_ml.registry.metrics import MetricsRegistry
+        from codex_ml.utils.optional import get_optional_module
+        from codex_ml.utils.optional import get_optional_module
+        from codex_ml.utils.optional import get_optional_module
+        from codex_ml.utils.optional import get_optional_module
+        from codex_ml.utils.optional_dependencies import check_optional
+        from codex_ml.utils.optional_dependencies import check_optional
+        from codex_ml.utils.optional_dependencies import check_optional
+        from codex_ml.utils.optional_dependencies import check_optional
+        from codex_ml.utils.seed import set_seed
+        from codex_ml.utils.seed import set_seed
+        from codex_ml.utils.seed import set_seed
+        from codex_ml.utils.seed import set_seed
+        import random
+        from codex_ml.utils.seed import set_seed
+        from codex_ml.utils.seed import set_seed
+        from codex_ml.utils.hf_revision import normalize_hf_revision
+        from codex_ml.utils.hf_revision import normalize_hf_revision
+        from codex_ml.utils.hf_revision import normalize_hf_revision
+        from codex_ml.utils.hf_revision import normalize_hf_revision
+        from codex_ml.utils.yaml_support import load_yaml
+        from codex_ml.utils.yaml_support import load_yaml
+        from codex_ml.utils.yaml_support import load_yaml
+        from codex_ml.utils.yaml_support import load_yaml
+        from codex_ml.utils.seed_registry import register_seed_snapshot
+        from codex_ml.utils.optional import get_optional_module
+        from codex_ml.utils.seed import set_seed
+        from codex_ml.registry.metrics import MetricsRegistry
+        from codex_ml.utils.seed import set_seed
+            import numpy as np
+        from codex_ml.utils.yaml_support import load_yaml
+        from codex_ml.utils.hf_revision import normalize_hf_revision
+        from codex_ml.utils import seed_registry
+        from codex_ml.utils import seed
+        from codex_ml.utils import optional
 
-import pytest
+
+
 
 # Add src to path for imports
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -34,7 +82,6 @@ class TestSeedRegistry:
 
     def test_register_seed_snapshot_none_state(self):
         """Test registering with None state (no-op)."""
-        from codex_ml.utils.seed_registry import (
             get_last_seed_snapshot,
             register_seed_snapshot,
         )
@@ -45,7 +92,6 @@ class TestSeedRegistry:
 
     def test_register_seed_snapshot_python_state(self):
         """Test registering Python RNG state."""
-        from codex_ml.utils.seed_registry import (
             get_last_seed_snapshot,
             register_seed_snapshot,
         )
@@ -58,7 +104,6 @@ class TestSeedRegistry:
 
     def test_register_seed_snapshot_numpy_state(self):
         """Test registering NumPy RNG state."""
-        from codex_ml.utils.seed_registry import (
             get_last_seed_snapshot,
             register_seed_snapshot,
         )
@@ -70,7 +115,6 @@ class TestSeedRegistry:
 
     def test_register_seed_snapshot_torch_state(self):
         """Test registering PyTorch RNG state."""
-        from codex_ml.utils.seed_registry import (
             get_last_seed_snapshot,
             register_seed_snapshot,
         )
@@ -82,7 +126,6 @@ class TestSeedRegistry:
 
     def test_register_seed_snapshot_torch_cuda_state(self):
         """Test registering PyTorch CUDA RNG state."""
-        from codex_ml.utils.seed_registry import (
             get_last_seed_snapshot,
             register_seed_snapshot,
         )
@@ -94,7 +137,6 @@ class TestSeedRegistry:
 
     def test_register_all_states_simultaneously(self):
         """Test registering all RNG states at once."""
-        from codex_ml.utils.seed_registry import (
             get_last_seed_snapshot,
             register_seed_snapshot,
         )
@@ -119,7 +161,6 @@ class TestSeedRegistry:
 
     def test_register_overwrites_previous_state(self):
         """Test that new registrations overwrite previous ones."""
-        from codex_ml.utils.seed_registry import (
             get_last_seed_snapshot,
             register_seed_snapshot,
         )
@@ -134,7 +175,6 @@ class TestSeedRegistry:
 
     def test_get_last_seed_snapshot_initial_state(self):
         """Test initial snapshot returns all None values."""
-        from codex_ml.utils.seed_registry import (
             get_last_seed_snapshot,
         )
 
@@ -145,7 +185,6 @@ class TestSeedRegistry:
 
     def test_get_last_seed_snapshot_returns_copy(self):
         """Test that get_last_seed_snapshot returns a copy, not reference."""
-        from codex_ml.utils.seed_registry import (
             get_last_seed_snapshot,
             register_seed_snapshot,
         )
@@ -171,20 +210,17 @@ class TestMetricsRegistry:
 
     def test_metrics_registry_import(self):
         """Test that metrics registry can be imported."""
-        from codex_ml.registry.metrics import MetricsRegistry
 
         assert MetricsRegistry is not None, "MetricsRegistry must be initialized"
 
     def test_metrics_registry_init(self):
         """Test MetricsRegistry initialization."""
-        from codex_ml.registry.metrics import MetricsRegistry
 
         registry = MetricsRegistry()
         assert registry is not None, "registry must be initialized"
 
     def test_metrics_registry_register_metric(self):
         """Test registering a metric."""
-        from codex_ml.registry.metrics import MetricsRegistry
 
         registry = MetricsRegistry()
 
@@ -199,7 +235,6 @@ class TestMetricsRegistry:
 
     def test_metrics_registry_get_metric(self):
         """Test retrieving a registered metric."""
-        from codex_ml.registry.metrics import MetricsRegistry
 
         registry = MetricsRegistry()
 
@@ -215,7 +250,6 @@ class TestMetricsRegistry:
 
     def test_metrics_registry_list_metrics(self):
         """Test listing available metrics."""
-        from codex_ml.registry.metrics import MetricsRegistry
 
         registry = MetricsRegistry()
         try:
@@ -226,7 +260,6 @@ class TestMetricsRegistry:
 
     def test_metrics_registry_error_on_duplicate(self):
         """Test error handling when registering duplicate metric."""
-        from codex_ml.registry.metrics import MetricsRegistry
 
         registry = MetricsRegistry()
 
@@ -255,13 +288,11 @@ class TestOptional:
 
     def test_optional_import(self):
         """Test that optional module can be imported."""
-        from codex_ml.utils.optional import get_optional_module
 
         assert get_optional_module is not None, "get_optional_module must be initialized"
 
     def test_optional_get_existing_module(self):
         """Test getting an existing module."""
-        from codex_ml.utils.optional import get_optional_module
 
         try:
             json_module = get_optional_module("json")
@@ -272,7 +303,6 @@ class TestOptional:
 
     def test_optional_get_missing_module(self):
         """Test getting a non-existent module."""
-        from codex_ml.utils.optional import get_optional_module
 
         try:
             result = get_optional_module("nonexistent_module_xyz_123")
@@ -283,7 +313,6 @@ class TestOptional:
 
     def test_optional_module_with_default(self):
         """Test get_optional_module with default value."""
-        from codex_ml.utils.optional import get_optional_module
 
         try:
             default = {"default": "value"}
@@ -303,13 +332,11 @@ class TestOptionalDependencies:
 
     def test_optional_dependencies_import(self):
         """Test importing optional_dependencies module."""
-        from codex_ml.utils.optional_dependencies import check_optional
 
         assert check_optional is not None, "check_optional must be initialized"
 
     def test_check_optional_builtin(self):
         """Test checking for built-in module."""
-        from codex_ml.utils.optional_dependencies import check_optional
 
         try:
             result = check_optional("sys")
@@ -319,7 +346,6 @@ class TestOptionalDependencies:
 
     def test_check_optional_missing(self):
         """Test checking for missing module."""
-        from codex_ml.utils.optional_dependencies import check_optional
 
         try:
             result = check_optional("nonexistent_xyz_module_123")
@@ -329,7 +355,6 @@ class TestOptionalDependencies:
 
     def test_check_optional_with_version(self):
         """Test checking module with version constraint."""
-        from codex_ml.utils.optional_dependencies import check_optional
 
         try:
             result = check_optional("sys", ">=0")
@@ -348,13 +373,11 @@ class TestSeed:
 
     def test_seed_import(self):
         """Test importing seed module."""
-        from codex_ml.utils.seed import set_seed
 
         assert set_seed is not None, "set_seed must be initialized"
 
     def test_set_seed_with_integer(self):
         """Test setting seed with integer value."""
-        from codex_ml.utils.seed import set_seed
 
         try:
             set_seed(42)
@@ -364,7 +387,6 @@ class TestSeed:
 
     def test_set_seed_with_zero(self):
         """Test setting seed to 0."""
-        from codex_ml.utils.seed import set_seed
 
         try:
             set_seed(0)
@@ -374,7 +396,6 @@ class TestSeed:
 
     def test_set_seed_with_large_number(self):
         """Test setting seed to large number."""
-        from codex_ml.utils.seed import set_seed
 
         try:
             set_seed(2**31 - 1)
@@ -384,9 +405,7 @@ class TestSeed:
 
     def test_set_seed_reproducibility(self):
         """Test that same seed produces reproducible results."""
-        import random
 
-        from codex_ml.utils.seed import set_seed
 
         set_seed(42)
         val1 = random.random()
@@ -398,7 +417,6 @@ class TestSeed:
 
     def test_set_seed_with_devices(self):
         """Test setting seed with specific devices."""
-        from codex_ml.utils.seed import set_seed
 
         try:
             # Try setting with devices parameter if supported
@@ -418,13 +436,11 @@ class TestHFRevision:
 
     def test_hf_revision_import(self):
         """Test importing hf_revision module."""
-        from codex_ml.utils.hf_revision import normalize_hf_revision
 
         assert normalize_hf_revision is not None, "normalize_hf_revision must be initialized"
 
     def test_normalize_hf_revision_with_tag(self):
         """Test normalizing HF revision with tag."""
-        from codex_ml.utils.hf_revision import normalize_hf_revision
 
         try:
             result = normalize_hf_revision("v1.0")
@@ -434,7 +450,6 @@ class TestHFRevision:
 
     def test_normalize_hf_revision_with_branch(self):
         """Test normalizing HF revision with branch."""
-        from codex_ml.utils.hf_revision import normalize_hf_revision
 
         try:
             result = normalize_hf_revision("main")
@@ -444,7 +459,6 @@ class TestHFRevision:
 
     def test_normalize_hf_revision_with_commit(self):
         """Test normalizing HF revision with commit hash."""
-        from codex_ml.utils.hf_revision import normalize_hf_revision
 
         try:
             result = normalize_hf_revision("abc123def456")
@@ -463,13 +477,11 @@ class TestYamlSupport:
 
     def test_yaml_support_import(self):
         """Test importing yaml_support module."""
-        from codex_ml.utils.yaml_support import load_yaml
 
         assert load_yaml is not None, "load_yaml must be initialized"
 
     def test_load_yaml_from_string(self):
         """Test loading YAML from string."""
-        from codex_ml.utils.yaml_support import load_yaml
 
         try:
             yaml_str = "key: value\nnested:\n  key: value2"
@@ -480,7 +492,6 @@ class TestYamlSupport:
 
     def test_load_yaml_with_lists(self):
         """Test loading YAML with lists."""
-        from codex_ml.utils.yaml_support import load_yaml
 
         try:
             yaml_str = "items:\n  - item1\n  - item2\n  - item3"
@@ -491,7 +502,6 @@ class TestYamlSupport:
 
     def test_load_yaml_empty_string(self):
         """Test loading empty YAML string."""
-        from codex_ml.utils.yaml_support import load_yaml
 
         try:
             result = load_yaml("")
@@ -511,7 +521,6 @@ class TestErrorPathCoverage:
 
     def test_seed_registry_with_invalid_state_type(self):
         """Test seed registry with invalid state types."""
-        from codex_ml.utils.seed_registry import register_seed_snapshot
 
         try:
             register_seed_snapshot(python_state=123)  # Invalid type
@@ -521,7 +530,6 @@ class TestErrorPathCoverage:
 
     def test_optional_module_none_input(self):
         """Test optional module with None input."""
-        from codex_ml.utils.optional import get_optional_module
 
         try:
             result = get_optional_module(None)
@@ -531,7 +539,6 @@ class TestErrorPathCoverage:
 
     def test_seed_set_with_negative_value(self):
         """Test setting seed with negative value."""
-        from codex_ml.utils.seed import set_seed
 
         try:
             set_seed(-1)
@@ -541,7 +548,6 @@ class TestErrorPathCoverage:
 
     def test_metrics_registry_with_none_metric(self):
         """Test metrics registry with None metric."""
-        from codex_ml.registry.metrics import MetricsRegistry
 
         registry = MetricsRegistry()
         try:
@@ -561,10 +567,8 @@ class TestEdgeCases:
 
     def test_seed_reproducibility_with_numpy(self):
         """Test seed reproducibility with numpy if available."""
-        from codex_ml.utils.seed import set_seed
 
         try:
-            import numpy as np
 
             set_seed(42)
             arr1 = np.random.randn(5)
@@ -578,7 +582,6 @@ class TestEdgeCases:
 
     def test_yaml_support_with_special_characters(self):
         """Test YAML support with special characters."""
-        from codex_ml.utils.yaml_support import load_yaml
 
         try:
             yaml_str = 'text: "value with: special | chars"'
@@ -589,7 +592,6 @@ class TestEdgeCases:
 
     def test_hf_revision_with_special_chars(self):
         """Test HF revision with special characters."""
-        from codex_ml.utils.hf_revision import normalize_hf_revision
 
         try:
             result = normalize_hf_revision("v1.0-beta+build.123")
@@ -608,20 +610,17 @@ class TestModuleExports:
 
     def test_seed_registry_exports(self):
         """Test seed_registry module exports."""
-        from codex_ml.utils import seed_registry
 
         assert hasattr(seed_registry, "register_seed_snapshot")
         assert hasattr(seed_registry, "get_last_seed_snapshot")
 
     def test_seed_exports(self):
         """Test seed module exports."""
-        from codex_ml.utils import seed
 
         assert hasattr(seed, "set_seed")
 
     def test_optional_exports(self):
         """Test optional module exports."""
-        from codex_ml.utils import optional
 
         assert hasattr(optional, "get_optional_module")
 

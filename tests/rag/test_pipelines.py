@@ -102,8 +102,9 @@ class TestRagPackage:
 
     def test_rag_pipelines_accessible(self):
         """Test that pipelines subpackage is accessible."""
-        try:
+import pytest
             from src.rag import pipelines
+        try:
 
             assert pipelines is not None, "pipelines must be initialized"
         except ImportError:

@@ -3,12 +3,15 @@
 Tests for ``src/codex/security/__init__.py``, ``log_sanitizer.py``, and
 ``sanitization.py``.  Exercises the public API, edge cases, and error paths.
 """
-
 from __future__ import annotations
-
-import pytest
-
 from codex.security import (
+from codex.security.log_sanitizer import (
+from codex.security.log_sanitizer import mask_sensitive as ls_mask_sensitive
+from codex.security.log_sanitizer import sanitize_log as ls_sanitize_log
+from codex.security.sanitization import sanitize_html
+
+
+
     hash_secure,
     mask_email,
     mask_password,
@@ -17,15 +20,11 @@ from codex.security import (
     sanitize_log,
     sanitize_url,
 )
-from codex.security.log_sanitizer import (
     mask_secrets,
     safe_log,
     safe_log_message,
     sanitize_dict_for_log,
 )
-from codex.security.log_sanitizer import mask_sensitive as ls_mask_sensitive
-from codex.security.log_sanitizer import sanitize_log as ls_sanitize_log
-from codex.security.sanitization import sanitize_html
 
 # ============================================================================
 # mask_token

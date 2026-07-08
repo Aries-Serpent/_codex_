@@ -10,16 +10,15 @@ Tests cover:
 - Edge cases (missing fields, empty inputs)
 - Performance (<500ms target)
 """
-
 import json
 import tempfile
 import time
 from pathlib import Path
+from scripts.ci.codeql_findings_formatter import (
 
-import pytest
+
 
 # Import the formatter module
-from scripts.ci.codeql_findings_formatter import (
     _convert_confidence_to_percent,
     _generate_fix_pattern,
     _generate_markdown_report,

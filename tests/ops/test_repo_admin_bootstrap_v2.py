@@ -3,11 +3,13 @@ Test Repo Admin Bootstrap V2
 
 Test module for repo admin bootstrap v2.
 """
-
 from __future__ import annotations
-
+import pytest
 import json
 from importlib import import_module
+    import scripts.ops.codex_repo_admin_bootstrap as mod
+
+
 
 
 def _m():
@@ -48,7 +50,6 @@ def test_detect_default_branch_in_apply_mode(monkeypatch):
             return FakeResp(200, {"default_branch": "trunk"})
         return FakeResp(202, {})
 
-    import scripts.ops.codex_repo_admin_bootstrap as mod
 
     monkeypatch.setenv("CODEX_NET_MODE", "online_allowlist")
     monkeypatch.setenv("CODEX_ALLOWLIST_HOSTS", "api.github.com")

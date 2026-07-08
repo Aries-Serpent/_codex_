@@ -3,8 +3,9 @@ Test Unified Logger
 
 Test module for unified logger.
 """
-
+import pytest
 from codex_ml.logging.unified_logger import LoggerBackend, get_logger_registry
+
 
 
 class DummyBackend(LoggerBackend):

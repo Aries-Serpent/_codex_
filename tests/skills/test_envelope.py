@@ -1,18 +1,19 @@
 """Tests for the ExecutionEnvelope."""
-
 from __future__ import annotations
-
-import pytest
-
 from codex.skills.envelope import ExecutionEnvelope
 from codex.skills.models import (
+from codex.skills.registry import SkillRegistry, reset_registry
+        import tests.skills._envelope_test_handlers as _handlers_mod
+        import os
+
+
+
     BudgetConfig,
     DocMeta,
     PolicyConfig,
     SkillManifest,
     TelemetryConfig,
 )
-from codex.skills.registry import SkillRegistry, reset_registry
 
 # Handler functions live in a separate module so this module does not import
 # itself when ExecutionEnvelope dynamically loads the entrypoint.
@@ -172,7 +173,6 @@ class TestExecutionEnvelopeRetries:
         reg.register(_make_manifest(entrypoint=f"{_H}:flaky_handler"))
         # Inject the real implementation into the handler module to avoid
         # coupling state to this test module.
-        import tests.skills._envelope_test_handlers as _handlers_mod
 
         mod = _handlers_mod
         original = getattr(mod, "flaky_handler", None)
@@ -191,7 +191,6 @@ class TestExecutionEnvelopeRetries:
 
 class TestTelemetryEmission:
     def test_telemetry_emit_jsonl_called(self, tmp_path):
-        import os
 
         os.environ["CODEX_SKILL_TELEMETRY_PATH"] = str(tmp_path / "events.jsonl")
         try:

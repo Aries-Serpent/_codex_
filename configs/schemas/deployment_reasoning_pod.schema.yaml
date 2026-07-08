@@ -1,6 +1,6 @@
 $schema: https://json-schema.org/draft/2020-12/schema
 $id: https://codexml.dev/schemas/deployment_reasoning_pod.schema.yaml
-title: ReasoningPodDeployment
+$title: ReasoningPodDeployment
 type: object
 additionalProperties: false
 required:

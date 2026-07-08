@@ -5,14 +5,13 @@ Phase 3 Wave 5 Lane 1 — L1_SECURITY
 OWASP Coverage: A02 (Cryptographic Failures), A05 (Misconfiguration), A09 (Logging/Monitoring)
 Test Count: 16 tests
 """
-
 import hashlib
 import json
 import re
 from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional
 
-import pytest
+
 
  # pragma: allowlist secret
 

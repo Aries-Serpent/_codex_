@@ -3,19 +3,16 @@ Test Train Tokenizer Smoke
 
 Test module for train tokenizer smoke.
 """
-
+pytest.importorskip("sentencepiece")
 import json
-
-import pytest
-
-pytest.importorskip("sentencepiece")
-pytest.importorskip("sentencepiece")
 from src.tokenization.train_tokenizer import TrainTokenizerConfig, train
+    from tokenizers import Tokenizer
+
+
+
 
 
 def test_train_tokenizer_smoke(tmp_path):
-    pytest.importorskip("sentencepiece")
-    from tokenizers import Tokenizer
 
     corpus = tmp_path / "corpus.txt"
     corpus.write_text("hello world\n" * 5)

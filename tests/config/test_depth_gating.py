@@ -5,13 +5,14 @@ Procedure:
 1. Run full audit at depth=4 (default) collect file count in context_index.json
 2. Run full audit at depth=2 and confirm reduced count and warning present in manifest.
 """
-
+import pytest
 import json
 import os
 import shutil
 import subprocess
 import sys
 from pathlib import Path
+
 
 
 def run(depth_default=None, depth=None):

@@ -16,6 +16,7 @@ def build_query():
 """
 
 SRC_DICT_DRIVEN = """
+import pytest
 mapcol = {"select": ["event_time", "user_id", "message"], "timestamp": "event_time"}
 def build_query(mapcol=mapcol):
     return (

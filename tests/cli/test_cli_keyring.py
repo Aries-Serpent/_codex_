@@ -8,18 +8,18 @@ Covers:
 - auth status with/without cached credentials
 - Login --save flag triggers credential caching
 """
-
 from __future__ import annotations
-
 import json
 import sys
 from pathlib import Path
 from unittest.mock import MagicMock, patch
-
-import pytest
 from click.testing import CliRunner
-
 from codex.cli import cli
+        import builtins
+
+
+
+
 
 
 def _get_cli_module():
@@ -135,7 +135,6 @@ class TestJSONFileFallback:
         tmp_dir, cache_file = tmp_cache_dir
 
         # Make keyring import raise ImportError
-        import builtins
 
         original_import = builtins.__import__
 

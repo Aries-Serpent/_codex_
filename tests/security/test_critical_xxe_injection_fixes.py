@@ -7,11 +7,30 @@ Tests ensure that:
 2. Command injection via shell=True is prevented (session_recovery_monitor.py)
 3. Code injection via unsafe __import__ is prevented (validate_test_env.py)
 """
-
 from pathlib import Path
 from unittest.mock import MagicMock, patch
+        import sys
+        from validate_codex_master_key_implementation import run_command
+        import sys
+        from validate_codex_master_key_implementation import run_command
+        import sys
+        from validate_codex_master_key_implementation import run_command
+        import sys
+        from session_recovery_monitor import run_command
+        import sys
+        from session_recovery_monitor import run_command
+        import sys
+        from session_recovery_monitor import run_command
+        import sys
+        from session_recovery_monitor import get_recovery_metrics
+        import sys
+        from validate_test_env import check_plugin
+        import sys
+        from validate_test_env import check_plugin
+        import sys
+                import re
 
-import pytest
+
 
 # ==============================================================================
 # TEST 1: Command Injection - validate_codex_master_key_implementation.py
@@ -23,10 +42,8 @@ class TestValidateCodexMasterKeyCommandInjection:
     def test_run_command_requires_list_not_string(self):
         """SECURITY: run_command() must reject string commands to prevent shell injection."""
         # Import the module
-        import sys
         sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "ci"))
         
-        from validate_codex_master_key_implementation import run_command
         
         # Test 1: String command should raise ValueError
         with pytest.raises(ValueError) as exc_info:
@@ -37,10 +54,8 @@ class TestValidateCodexMasterKeyCommandInjection:
     
     def test_run_command_accepts_list(self):
         """SECURITY: run_command() must accept list-based commands."""
-        import sys
         sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "ci"))
         
-        from validate_codex_master_key_implementation import run_command
         
         # Test: List command should work
         # Using 'echo' with list-based arguments
@@ -49,10 +64,8 @@ class TestValidateCodexMasterKeyCommandInjection:
     
     def test_run_command_prevents_shell_metacharacter_execution(self):
         """SECURITY: Shell metacharacters must be treated as literals, not executed."""
-        import sys
         sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "ci"))
         
-        from validate_codex_master_key_implementation import run_command
         
         # Test: Command injection attempt via shell metacharacters
         # With shell=False, these characters are passed as literal arguments
@@ -75,10 +88,8 @@ class TestSessionRecoveryMonitorCommandInjection:
     
     def test_run_command_requires_list_not_string(self):
         """SECURITY: run_command() must reject string commands to prevent shell injection."""
-        import sys
         sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "ci"))
         
-        from session_recovery_monitor import run_command
         
         # Test: String command should raise ValueError
         with pytest.raises(ValueError) as exc_info:
@@ -89,10 +100,8 @@ class TestSessionRecoveryMonitorCommandInjection:
     
     def test_run_command_accepts_list(self):
         """SECURITY: run_command() must accept list-based commands."""
-        import sys
         sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "ci"))
         
-        from session_recovery_monitor import run_command
         
         # Test: List command should work (or return None if subprocess fails gracefully)
         result = run_command(["python", "--version"])
@@ -101,10 +110,8 @@ class TestSessionRecoveryMonitorCommandInjection:
     
     def test_run_command_prevents_piping_injection(self):
         """SECURITY: Pipe operators must be treated as literals, not executed."""
-        import sys
         sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "ci"))
         
-        from session_recovery_monitor import run_command
         
         # Test: Pipe injection attempt
         # With shell=False, pipe is passed as literal argument, not executed
@@ -118,10 +125,8 @@ class TestSessionRecoveryMonitorCommandInjection:
     
     def test_get_recovery_metrics_uses_list_command(self):
         """SECURITY: get_recovery_metrics() must use list-based command."""
-        import sys
         sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "ci"))
         
-        from session_recovery_monitor import get_recovery_metrics
         
         # Mock the subprocess.run to verify it's called with shell=False
         with patch("session_recovery_monitor.subprocess.run") as mock_run:
@@ -148,10 +153,8 @@ class TestValidateTestEnvCodeInjection:
     
     def test_check_plugin_requires_whitelisted_imports(self):
         """SECURITY: check_plugin() must only allow whitelisted plugin names."""
-        import sys
         sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts"))
         
-        from validate_test_env import check_plugin
         
         # Test 1: Whitelisted plugin should work
         success, msg = check_plugin("pytest", "pytest")
@@ -170,10 +173,8 @@ class TestValidateTestEnvCodeInjection:
     
     def test_check_plugin_prevents_arbitrary_imports(self):
         """SECURITY: check_plugin() must prevent arbitrary module imports."""
-        import sys
         sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts"))
         
-        from validate_test_env import check_plugin
         
         # Attempt dangerous imports
         dangerous_modules = [
@@ -195,7 +196,6 @@ class TestValidateTestEnvCodeInjection:
     
     def test_check_plugin_whitelist_completeness(self):
         """SECURITY: Verify the whitelist contains expected pytest plugins."""
-        import sys
         sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts"))
         
         
@@ -267,7 +267,6 @@ class TestSubprocessSecurityPatterns:
             # Verify calls use list syntax: ["cmd", "arg1", "arg2"]
             # Not string syntax: "cmd arg1 arg2"
             if "run_command(" in content:
-                import re
                 # Find all run_command calls
                 matches = re.findall(r'run_command\((.*?)\)', content, re.DOTALL)
                 for match in matches:

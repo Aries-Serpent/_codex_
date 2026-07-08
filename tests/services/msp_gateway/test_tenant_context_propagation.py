@@ -4,20 +4,22 @@ Integration tests for tenant context propagation.
 Verifies that tenant context correctly propagates through the entire request
 lifecycle, including middleware stack, routers, and nested operations.
 """
-
 from __future__ import annotations
-
-import pytest
-
 pytest.importorskip("fastapi")
 pytest.importorskip("pydantic_settings")
-
 from fastapi import FastAPI, Request
 from fastapi.testclient import TestClient
-
 from services.msp_gateway.middleware import RateLimitMiddleware, TenantContextMiddleware
 from services.msp_gateway.middleware import tenant_context as tc_module
 from services.msp_gateway.middleware.tenant_context import TenantRegistry
+    from starlette.middleware.base import BaseHTTPMiddleware
+    from pydantic import BaseModel
+    import logging
+
+
+
+
+
 
 
 def test_tenant_context_propagation_basic(
@@ -68,7 +70,6 @@ def test_tenant_context_propagation_through_middleware_stack(
     # Custom middleware to verify context is available
     middleware_checks = []
 
-    from starlette.middleware.base import BaseHTTPMiddleware
 
     class VerifyContextMiddleware(BaseHTTPMiddleware):
         async def dispatch(self, request: Request, call_next):
@@ -235,7 +236,6 @@ def test_tenant_context_propagation_with_request_body(
     app = FastAPI()
     app.add_middleware(TenantContextMiddleware)
 
-    from pydantic import BaseModel
 
     class DataRequest(BaseModel):
         item: str
@@ -281,7 +281,6 @@ def test_tenant_context_propagation_logging_integration(
 
     logged_requests = []
 
-    import logging
 
     class TenantAwareHandler(logging.Handler):
         def emit(self, record):

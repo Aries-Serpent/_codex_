@@ -3,11 +3,12 @@ Test Detectors Cli
 
 Test module for detectors cli.
 """
-
 from __future__ import annotations
-
+import pytest
 import importlib
 import json
+
+
 
 
 def test_cli_detectors_run_integration(capsys):

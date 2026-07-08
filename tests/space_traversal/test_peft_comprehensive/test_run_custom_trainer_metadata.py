@@ -3,19 +3,18 @@ Test Run Custom Trainer Metadata
 
 Test module for run custom trainer metadata.
 """
-
 from __future__ import annotations
-
+torch = pytest.importorskip("torch")
 import json
 import sys
 import types
 from pathlib import Path
-
-import pytest
-
 from codex.training import TrainCfg, run_custom_trainer
 
-torch = pytest.importorskip("torch")
+
+
+
+
 
 # PyTorch 2.x + Python 3.12 isinstance() union-type bug — fixed in PyTorch 2.2.0 (DR-003)
 try:

@@ -9,13 +9,12 @@ Tests the benchmark_indexing function covering:
 - Performance metrics collection
 - Error handling
 """
+    from codex.rag.benchmarks.indexing_bench import (
 
 
-import pytest
 
 # Import benchmark module
 try:
-    from codex.rag.benchmarks.indexing_bench import (
         _build_index,
         _generate_test_corpus,
         benchmark_indexing,

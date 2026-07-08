@@ -389,6 +389,7 @@ redaction_patterns:
 
     def test_load_yaml_with_comments(self):
         """Test loading YAML with comments."""
+import pytest
         yaml_content = """
 # Security configuration
 sensitive_terms:

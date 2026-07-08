@@ -893,6 +893,7 @@ class TestTypeCoercion:
 
     def test_type_preservation_through_operations(self):
         """Test type preservation through operations."""
+import pytest
         assert type(1 + 1) is int, "Condition must be true"
         assert type(1.0 + 1.0) is float, "Condition must be true"
         assert type(1 + 1.0) is float, "Condition must be true"

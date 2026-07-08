@@ -7,10 +7,49 @@ Focus: ChaoticAttractor, ChaoticNeuralNetwork, FractalAnalyzer, FluidChannel,
        FluidFlowScheduler, EMFieldRouter, WavePropagator, RelativityScheduler,
        AdvancedPhysicsOrchestrator
 """
-
-import pytest
-
 pytest.importorskip("numpy")
+        from agents.advanced_physics_calculators import ChaoticAttractor
+        from agents.advanced_physics_calculators import ChaoticAttractor
+        from agents.advanced_physics_calculators import ChaoticAttractor
+        from agents.advanced_physics_calculators import ChaoticAttractor
+        from agents.advanced_physics_calculators import ChaoticNeuralNetwork
+        from agents.advanced_physics_calculators import ChaoticNeuralNetwork
+        from agents.advanced_physics_calculators import ChaoticNeuralNetwork
+        from agents.advanced_physics_calculators import FractalAnalyzer
+        from agents.advanced_physics_calculators import FractalAnalyzer
+        from agents.advanced_physics_calculators import FractalAnalyzer
+        from agents.advanced_physics_calculators import FractalAnalyzer
+        from agents.advanced_physics_calculators import FluidChannel
+        from agents.advanced_physics_calculators import FluidChannel
+        from agents.advanced_physics_calculators import FluidChannel
+        from agents.advanced_physics_calculators import FluidChannel
+        from agents.advanced_physics_calculators import FluidFlowScheduler
+        from agents.advanced_physics_calculators import FluidFlowScheduler
+        from agents.advanced_physics_calculators import FluidFlowScheduler
+        from agents.advanced_physics_calculators import EMFieldRouter
+        from agents.advanced_physics_calculators import EMFieldRouter
+        from agents.advanced_physics_calculators import EMFieldRouter
+        from agents.advanced_physics_calculators import WavePropagator
+        from agents.advanced_physics_calculators import WavePropagator
+        from agents.advanced_physics_calculators import WavePropagator
+        from agents.advanced_physics_calculators import WavePropagator
+        from agents.advanced_physics_calculators import RelativityScheduler
+        import numpy as np
+        from agents.advanced_physics_calculators import RelativityScheduler
+        import numpy as np
+        from agents.advanced_physics_calculators import RelativityScheduler
+        import numpy as np
+        from agents.advanced_physics_calculators import RelativityScheduler
+        import numpy as np
+        from agents.advanced_physics_calculators import RelativityScheduler
+        from agents.advanced_physics_calculators import AdvancedPhysicsOrchestrator
+        from agents.advanced_physics_calculators import AdvancedPhysicsOrchestrator
+        from agents.advanced_physics_calculators import AdvancedPhysicsOrchestrator
+        from agents.advanced_physics_calculators import AdvancedPhysicsOrchestrator
+        from agents.advanced_physics_calculators import (
+        from agents.advanced_physics_calculators import (
+
+
 
 # ============================================================================
 # CHAOTIC ATTRACTOR TESTS
@@ -22,7 +61,6 @@ class TestChaoticAttractor:
 
     def test_chaotic_attractor_initialization(self):
         """Test ChaoticAttractor initialization."""
-        from agents.advanced_physics_calculators import ChaoticAttractor
 
         attractor = ChaoticAttractor(initial_state=(1.0, 1.0, 1.0))
 
@@ -31,7 +69,6 @@ class TestChaoticAttractor:
 
     def test_lorenz_attractor(self):
         """Test Lorenz attractor evolution."""
-        from agents.advanced_physics_calculators import ChaoticAttractor
 
         attractor = ChaoticAttractor(
             initial_state=(1.0, 1.0, 1.0), sigma=10.0, rho=28.0, beta=8.0 / 3.0
@@ -44,7 +81,6 @@ class TestChaoticAttractor:
 
     def test_attractor_trajectory(self):
         """Test generating attractor trajectory."""
-        from agents.advanced_physics_calculators import ChaoticAttractor
 
         attractor = ChaoticAttractor()
 
@@ -55,7 +91,6 @@ class TestChaoticAttractor:
 
     def test_lyapunov_exponent(self):
         """Test computing Lyapunov exponent."""
-        from agents.advanced_physics_calculators import ChaoticAttractor
 
         attractor = ChaoticAttractor()
 
@@ -76,7 +111,6 @@ class TestChaoticNeuralNetwork:
 
     def test_chaotic_nn_initialization(self):
         """Test ChaoticNeuralNetwork initialization."""
-        from agents.advanced_physics_calculators import ChaoticNeuralNetwork
 
         nn = ChaoticNeuralNetwork(input_size=3, hidden_size=5, output_size=2)
 
@@ -86,7 +120,6 @@ class TestChaoticNeuralNetwork:
 
     def test_forward_pass(self):
         """Test forward pass through chaotic network."""
-        from agents.advanced_physics_calculators import ChaoticNeuralNetwork
 
         nn = ChaoticNeuralNetwork(input_size=2, hidden_size=4, output_size=1)
 
@@ -98,7 +131,6 @@ class TestChaoticNeuralNetwork:
 
     def test_activation_function(self):
         """Test chaotic activation function."""
-        from agents.advanced_physics_calculators import ChaoticNeuralNetwork
 
         nn = ChaoticNeuralNetwork(input_size=1, hidden_size=2, output_size=1)
 
@@ -117,7 +149,6 @@ class TestFractalAnalyzer:
 
     def test_fractal_analyzer_initialization(self):
         """Test FractalAnalyzer initialization."""
-        from agents.advanced_physics_calculators import FractalAnalyzer
 
         analyzer = FractalAnalyzer()
 
@@ -125,7 +156,6 @@ class TestFractalAnalyzer:
 
     def test_compute_fractal_dimension(self):
         """Test computing fractal dimension."""
-        from agents.advanced_physics_calculators import FractalAnalyzer
 
         analyzer = FractalAnalyzer()
 
@@ -141,7 +171,6 @@ class TestFractalAnalyzer:
 
     def test_mandelbrot_iteration(self):
         """Test Mandelbrot set iteration."""
-        from agents.advanced_physics_calculators import FractalAnalyzer
 
         analyzer = FractalAnalyzer()
 
@@ -154,7 +183,6 @@ class TestFractalAnalyzer:
 
     def test_julia_set(self):
         """Test Julia set computation."""
-        from agents.advanced_physics_calculators import FractalAnalyzer
 
         analyzer = FractalAnalyzer()
 
@@ -175,7 +203,6 @@ class TestFluidChannel:
 
     def test_fluid_channel_initialization(self):
         """Test FluidChannel initialization."""
-        from agents.advanced_physics_calculators import FluidChannel
 
         channel = FluidChannel(length=10.0, width=2.0, height=1.0)
 
@@ -185,7 +212,6 @@ class TestFluidChannel:
 
     def test_reynolds_number(self):
         """Test Reynolds number calculation."""
-        from agents.advanced_physics_calculators import FluidChannel
 
         channel = FluidChannel(length=10.0, width=2.0)
 
@@ -196,7 +222,6 @@ class TestFluidChannel:
 
     def test_pressure_drop(self):
         """Test pressure drop calculation."""
-        from agents.advanced_physics_calculators import FluidChannel
 
         channel = FluidChannel(length=10.0, width=2.0)
 
@@ -208,7 +233,6 @@ class TestFluidChannel:
 
     def test_flow_regime(self):
         """Test determining flow regime."""
-        from agents.advanced_physics_calculators import FluidChannel
 
         channel = FluidChannel(length=5.0, width=1.0)
 
@@ -229,7 +253,6 @@ class TestFluidFlowScheduler:
 
     def test_fluid_flow_scheduler_initialization(self):
         """Test FluidFlowScheduler initialization."""
-        from agents.advanced_physics_calculators import FluidFlowScheduler
 
         scheduler = FluidFlowScheduler(num_channels=3)
 
@@ -238,7 +261,6 @@ class TestFluidFlowScheduler:
 
     def test_schedule_flow(self):
         """Test scheduling flow across channels."""
-        from agents.advanced_physics_calculators import FluidFlowScheduler
 
         scheduler = FluidFlowScheduler(num_channels=2)
 
@@ -249,7 +271,6 @@ class TestFluidFlowScheduler:
 
     def test_optimize_distribution(self):
         """Test optimizing flow distribution."""
-        from agents.advanced_physics_calculators import FluidFlowScheduler
 
         scheduler = FluidFlowScheduler(num_channels=3)
 
@@ -270,7 +291,6 @@ class TestEMFieldRouter:
 
     def test_em_field_router_initialization(self):
         """Test EMFieldRouter initialization."""
-        from agents.advanced_physics_calculators import EMFieldRouter
 
         router = EMFieldRouter(grid_size=10)
 
@@ -279,7 +299,6 @@ class TestEMFieldRouter:
 
     def test_calculate_field_strength(self):
         """Test calculating electromagnetic field strength."""
-        from agents.advanced_physics_calculators import EMFieldRouter
 
         router = EMFieldRouter(grid_size=5)
 
@@ -291,7 +310,6 @@ class TestEMFieldRouter:
 
     def test_route_signal(self):
         """Test routing signal through EM field."""
-        from agents.advanced_physics_calculators import EMFieldRouter
 
         router = EMFieldRouter(grid_size=10)
 
@@ -312,7 +330,6 @@ class TestWavePropagator:
 
     def test_wave_propagator_initialization(self):
         """Test WavePropagator initialization."""
-        from agents.advanced_physics_calculators import WavePropagator
 
         # Use actual constructor parameters
         propagator = WavePropagator(grid_size=30, wave_speed=1.0)
@@ -322,7 +339,6 @@ class TestWavePropagator:
 
     def test_add_source(self):
         """Test adding wave sources."""
-        from agents.advanced_physics_calculators import WavePropagator
 
         propagator = WavePropagator(grid_size=30)
 
@@ -332,7 +348,6 @@ class TestWavePropagator:
 
     def test_propagate_wave(self):
         """Test wave propagation."""
-        from agents.advanced_physics_calculators import WavePropagator
 
         propagator = WavePropagator(grid_size=30, wave_speed=1.0)
         propagator.add_source(position=(15, 15), amplitude=1.0, frequency=1.0)
@@ -343,7 +358,6 @@ class TestWavePropagator:
 
     def test_interference_pattern(self):
         """Test wave interference calculation."""
-        from agents.advanced_physics_calculators import WavePropagator
 
         propagator = WavePropagator(grid_size=30)
         propagator.add_source(position=(10, 15), amplitude=1.0, frequency=1.0)
@@ -366,7 +380,6 @@ class TestRelativityScheduler:
 
     def test_relativity_scheduler_initialization(self):
         """Test RelativityScheduler initialization."""
-        from agents.advanced_physics_calculators import RelativityScheduler
 
         scheduler = RelativityScheduler()
 
@@ -375,9 +388,7 @@ class TestRelativityScheduler:
 
     def test_add_agent(self):
         """Test adding an agent to the scheduler."""
-        import numpy as np
 
-        from agents.advanced_physics_calculators import RelativityScheduler
 
         scheduler = RelativityScheduler(speed_of_light=100.0)
 
@@ -391,9 +402,7 @@ class TestRelativityScheduler:
 
     def test_time_dilation(self):
         """Test time dilation calculation."""
-        import numpy as np
 
-        from agents.advanced_physics_calculators import RelativityScheduler
 
         scheduler = RelativityScheduler(speed_of_light=100.0)
 
@@ -410,9 +419,7 @@ class TestRelativityScheduler:
 
     def test_lorentz_factor(self):
         """Test Lorentz factor calculation."""
-        import numpy as np
 
-        from agents.advanced_physics_calculators import RelativityScheduler
 
         scheduler = RelativityScheduler(speed_of_light=100.0)
 
@@ -424,9 +431,7 @@ class TestRelativityScheduler:
 
     def test_communication_delay(self):
         """Test communication delay between agents."""
-        import numpy as np
 
-        from agents.advanced_physics_calculators import RelativityScheduler
 
         scheduler = RelativityScheduler(speed_of_light=100.0)
 
@@ -448,7 +453,6 @@ class TestAdvancedPhysicsOrchestrator:
 
     def test_orchestrator_initialization(self):
         """Test AdvancedPhysicsOrchestrator initialization."""
-        from agents.advanced_physics_calculators import AdvancedPhysicsOrchestrator
 
         orchestrator = AdvancedPhysicsOrchestrator()
 
@@ -456,7 +460,6 @@ class TestAdvancedPhysicsOrchestrator:
 
     def test_coordinate_calculators(self):
         """Test coordinating multiple physics calculators."""
-        from agents.advanced_physics_calculators import AdvancedPhysicsOrchestrator
 
         orchestrator = AdvancedPhysicsOrchestrator()
 
@@ -468,7 +471,6 @@ class TestAdvancedPhysicsOrchestrator:
 
     def test_get_calculator(self):
         """Test getting specific calculator."""
-        from agents.advanced_physics_calculators import AdvancedPhysicsOrchestrator
 
         orchestrator = AdvancedPhysicsOrchestrator()
 
@@ -480,7 +482,6 @@ class TestAdvancedPhysicsOrchestrator:
 
     def test_optimize_system(self):
         """Test system optimization."""
-        from agents.advanced_physics_calculators import AdvancedPhysicsOrchestrator
 
         orchestrator = AdvancedPhysicsOrchestrator()
 
@@ -501,7 +502,6 @@ class TestPhysicsIntegration:
 
     def test_chaotic_to_neural_pipeline(self):
         """Test pipeline from chaotic attractor to neural network."""
-        from agents.advanced_physics_calculators import (
             ChaoticAttractor,
             ChaoticNeuralNetwork,
         )
@@ -519,7 +519,6 @@ class TestPhysicsIntegration:
 
     def test_fluid_and_em_coordination(self):
         """Test coordinating fluid flow and EM routing."""
-        from agents.advanced_physics_calculators import (
             EMFieldRouter,
             FluidFlowScheduler,
         )

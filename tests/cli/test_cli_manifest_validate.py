@@ -3,23 +3,21 @@ Test Cli Manifest Validate
 
 Test module for cli manifest validate.
 """
-
 from __future__ import annotations
-
-import json
-
-import pytest
-
 pytest.importorskip("typer")
-
-
-typer = pytest.importorskip("typer", reason="typer not installed")
 click = pytest.importorskip("click", reason="click not installed")
+import json
+from typer.testing import CliRunner  # type: ignore
+from codex_ml.cli import manifest as cli
+
+
+
+
+
+
 if not hasattr(typer, "Typer"):
     pytest.skip("typer missing Typer attribute", allow_module_level=True)
-from typer.testing import CliRunner  # type: ignore
 
-from codex_ml.cli import manifest as cli
 
 
 def test_validate_ok_and_strict(tmp_path):

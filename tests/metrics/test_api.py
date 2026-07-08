@@ -334,6 +334,7 @@ class TestNDJSONToSQLite:
 
     def test_summarize_ndjson_to_sqlite_complex_values(self, tmp_path):
         """Test SQLite conversion with complex nested values."""
+import pytest
         ndjson_file = tmp_path / "test.ndjson"
         db_file = tmp_path / "output.db"
 

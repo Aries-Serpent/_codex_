@@ -8,13 +8,13 @@ Tests the full embeddings pipeline including:
 4. Performance metrics
 5. Integration with session tracking
 """
-
 import json
 import time
-
-import pytest
-
 from codex.logging.session_embeddings import SessionEmbeddings
+        import threading
+
+
+
 
 
 class TestPhase4EmbeddingsIntegration:
@@ -257,7 +257,6 @@ class TestPhase4EmbeddingsIntegration:
 
     def test_thread_safety(self, embeddings):
         """Test basic thread safety (concurrent access)."""
-        import threading
 
         def add_sessions(start_id, count):
             for i in range(count):

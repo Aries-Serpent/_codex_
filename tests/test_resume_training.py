@@ -1,17 +1,16 @@
 """
-pytest.importorskip("mlflow")
 Test Resume Training
 
 Test module for resume training.
 """
-
-import json
-
-import pytest
-
+pytest.importorskip("mlflow")
 torch = pytest.importorskip("torch", reason="Torch required for resume / optimizer tests")
-
+import json
 from codex_ml.train_loop import run_training
+
+
+
+
 
 
 @pytest.fixture()

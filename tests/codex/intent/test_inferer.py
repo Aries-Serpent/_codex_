@@ -4,8 +4,22 @@ Tests for codex.intent.inferer module.
 This module contains tests for the Intent Inferer that combines
 heuristics and LLM-based analysis for code intent inference.
 """
-
+import pytest
 from datetime import datetime, timezone
+        from codex.intent.inferer import InputSpec
+        from codex.intent.inferer import InputSpec
+        from codex.intent.inferer import InputSpec
+        from codex.intent.inferer import OutputSpec
+        from codex.intent.inferer import OutputSpec
+        from codex.intent.inferer import IntentSpec
+        from codex.intent.inferer import IntentSpec
+        from codex.intent.inferer import InputSpec, IntentSpec, OutputSpec
+        from codex.intent.inferer import IntentSpec
+        from codex.intent.inferer import IntentSpec
+        from codex.intent.inferer import IntentSpec
+        from codex.intent.inferer import InputSpec, IntentSpec, OutputSpec
+        from codex.intent.inferer import logger
+
 
 
 class TestInputSpec:
@@ -13,7 +27,6 @@ class TestInputSpec:
 
     def test_required_fields(self):
         """Test InputSpec with required fields only."""
-        from codex.intent.inferer import InputSpec
 
         spec = InputSpec(name="arg1", type="cli_arg")
 
@@ -23,7 +36,6 @@ class TestInputSpec:
 
     def test_optional_required(self):
         """Test InputSpec with required=False."""
-        from codex.intent.inferer import InputSpec
 
         spec = InputSpec(name="optional_arg", type="env_var", required=False)
 
@@ -31,7 +43,6 @@ class TestInputSpec:
 
     def test_all_input_types(self):
         """Test all valid input types."""
-        from codex.intent.inferer import InputSpec
 
         types = ["cli_arg", "stdin", "file", "env_var", "network"]
 
@@ -45,7 +56,6 @@ class TestOutputSpec:
 
     def test_basic_creation(self):
         """Test OutputSpec basic creation."""
-        from codex.intent.inferer import OutputSpec
 
         spec = OutputSpec(name="result", type="stdout")
 
@@ -54,7 +64,6 @@ class TestOutputSpec:
 
     def test_all_output_types(self):
         """Test all valid output types."""
-        from codex.intent.inferer import OutputSpec
 
         types = ["stdout", "stderr", "file", "network", "return_value"]
 
@@ -68,7 +77,6 @@ class TestIntentSpec:
 
     def test_basic_creation(self):
         """Test IntentSpec with minimal fields."""
-        from codex.intent.inferer import IntentSpec
 
         spec = IntentSpec(
             snapshot_id="snap_123", timestamp=datetime.now(timezone.utc), goal="Process input data"
@@ -81,7 +89,6 @@ class TestIntentSpec:
 
     def test_default_lists(self):
         """Test IntentSpec default list values."""
-        from codex.intent.inferer import IntentSpec
 
         spec = IntentSpec(
             snapshot_id="snap_123", timestamp=datetime.now(timezone.utc), goal="Test goal"
@@ -96,7 +103,6 @@ class TestIntentSpec:
 
     def test_with_inputs_outputs(self):
         """Test IntentSpec with inputs and outputs."""
-        from codex.intent.inferer import InputSpec, IntentSpec, OutputSpec
 
         inputs = [InputSpec(name="data", type="stdin")]
         outputs = [OutputSpec(name="result", type="stdout")]
@@ -114,7 +120,6 @@ class TestIntentSpec:
 
     def test_inference_methods(self):
         """Test all valid inference methods."""
-        from codex.intent.inferer import IntentSpec
 
         methods = ["heuristic", "llm", "hybrid"]
 
@@ -129,7 +134,6 @@ class TestIntentSpec:
 
     def test_confidence_bounds(self):
         """Test confidence score values."""
-        from codex.intent.inferer import IntentSpec
 
         # Low confidence
         spec_low = IntentSpec(
@@ -145,7 +149,6 @@ class TestIntentSpec:
 
     def test_llm_provenance(self):
         """Test LLM provenance reference."""
-        from codex.intent.inferer import IntentSpec
 
         spec = IntentSpec(
             snapshot_id="snap",
@@ -159,7 +162,6 @@ class TestIntentSpec:
 
     def test_to_dict(self):
         """Test IntentSpec serialization."""
-        from codex.intent.inferer import InputSpec, IntentSpec, OutputSpec
 
         now = datetime.now(timezone.utc)
         spec = IntentSpec(
@@ -190,7 +192,6 @@ class TestModuleLevel:
 
     def test_logger_exists(self):
         """Test logger is configured."""
-        from codex.intent.inferer import logger
 
         assert logger is not None, "logger must be initialized"
         assert logger.name == "codex.intent.inferer", "name is not valid"

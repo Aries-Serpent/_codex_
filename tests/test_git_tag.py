@@ -32,6 +32,10 @@ def test_current_commit_happy_path(monkeypatch):
     - Replace subprocess.check_output with a fake that returns a commit string/bytes.
     - Ensure git_tag.current_commit() returns the decoded commit SHA without newline.
     """
+import pytest
+    git_module = pytest.importorskip("codex_ml.tracking.git_tag")
+    from codex_ml.tracking import git_tag
+    from codex_ml.tracking import git_tag
     from codex_ml.tracking import git_tag
 
     def fake_check_output(cmd, **kw):
@@ -50,7 +54,6 @@ def test_current_commit_happy_path_direct(monkeypatch):
     Direct-function import happy path:
     - Skip the test if the direct function import is not available.
     """
-    git_module = pytest.importorskip("codex_ml.tracking.git_tag")
     current_commit = git_module.current_commit
 
     def fake_check_output(cmd, **kw):
@@ -67,7 +70,6 @@ def test_current_commit_error_returns_none(monkeypatch):
     Module-style: when subprocess.check_output raises CalledProcessError, the
     function should return None.
     """
-    from codex_ml.tracking import git_tag
 
     def boom(*a, **k):
         raise subprocess.CalledProcessError(128, cmd=["git", "rev-parse", "HEAD"])
@@ -81,7 +83,6 @@ def test_current_commit_error_returns_none_direct(monkeypatch):
     Direct-function: skip if direct import not available. Ensure None is returned
     when subprocess.check_output raises CalledProcessError.
     """
-    git_module = pytest.importorskip("codex_ml.tracking.git_tag")
     current_commit = git_module.current_commit
 
     def boom(*a, **k):
@@ -100,7 +101,6 @@ def test_handles_missing_repo_or_git(monkeypatch, stderr_msg):
     CalledProcessError with an informative stderr should cause current_commit()
     to return None.
     """
-    from codex_ml.tracking import git_tag
 
     class Err(subprocess.CalledProcessError):
         def __init__(self):
@@ -122,7 +122,6 @@ def test_current_commit_handles_missing_repo_or_git_direct(monkeypatch, stderr_m
     Direct-function test for missing git/repo scenarios. Skips if direct import
     isn't available.
     """
-    git_module = pytest.importorskip("codex_ml.tracking.git_tag")
     current_commit = git_module.current_commit
 
     class Err(subprocess.CalledProcessError):

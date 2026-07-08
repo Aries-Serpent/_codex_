@@ -1,9 +1,10 @@
 """
 Tests for MCP authentication and authorization.
 """
+import pytest
+from mcp.auth import (
 
 # NOTE: Do not manually manipulate sys.path. The conftest.py already adds src/ to sys.path.
-from mcp.auth import (
     MCPAuthenticator,
     MCPAuthorizer,
     Principal,

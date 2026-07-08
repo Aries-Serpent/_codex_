@@ -1,6 +1,7 @@
 """Tests for the CRM CDM loader utilities."""
-
+import pytest
 from codex_crm.cdm import load_cdm, load_mapping
+
 
 
 def test_load_cdm_packaged_resources():

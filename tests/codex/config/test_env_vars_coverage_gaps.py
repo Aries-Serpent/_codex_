@@ -11,13 +11,54 @@ Identified gaps:
 - _ensure_validated() double validation prevention
 - Validator edge cases with various return types
 """
-
 from __future__ import annotations
-
 import os
 import uuid
+        from codex.config.env_vars import EnvironmentManager
+        from codex.config.env_vars import EnvironmentManager
+        from codex.config.env_vars import EnvironmentManager
+        from codex.config.env_vars import EnvironmentManager
+        from codex.config.env_vars import EnvironmentManager
+        from codex.config.env_vars import EnvironmentManager
+        from codex.config.env_vars import EnvironmentManager
+        from codex.config.env_vars import EnvironmentManager
+        from codex.config.env_vars import EnvironmentManager
+        from codex.config.env_vars import EnvironmentManager
+        from codex.config.env_vars import EnvironmentManager
+        from codex.config.env_vars import EnvironmentManager
+        from codex.config.env_vars import EnvironmentManager
+        from codex.config.env_vars import EnvironmentManager
+        from codex.config.env_vars import EnvironmentManager
+        from codex.config.env_vars import EnvironmentManager
+        from codex.config.env_vars import EnvironmentManager
+        from codex.config.env_vars import EnvironmentManager
+        from codex.config.env_vars import EnvironmentManager
+        from codex.config.env_vars import EnvironmentManager
+        from codex.config.env_vars import EnvironmentManager
+        from codex.config.env_vars import EnvironmentManager
+        from codex.config.env_vars import EnvironmentManager
+        from codex.config.env_vars import EnvironmentManager
+        from codex.config.env_vars import EnvironmentManager
+        from codex.config.env_vars import EnvironmentManager
+        from codex.config.env_vars import EnvironmentManager
+        from codex.config.env_vars import EnvironmentManager
+        from codex.config.env_vars import EnvironmentManager
+        from codex.config.env_vars import EnvironmentManager
+        from codex.config.env_vars import EnvironmentManager
+        from codex.config.env_vars import EnvironmentManager
+        from codex.config.env_vars import EnvironmentManager
+        from codex.config.env_vars import EnvironmentManager
+        from codex.config.env_vars import EnvironmentManager
+        from codex.config.env_vars import EnvironmentManager
+        from codex.config.env_vars import EnvironmentManager
+        from codex.config.env_vars import EnvironmentManager
+        from codex.config.env_vars import EnvironmentManager
+        from codex.config.env_vars import EnvironmentManager
+        from codex.config.env_vars import EnvironmentManager
+        from codex.config.env_vars import EnvironmentManager
 
-import pytest
+
+
 
 
 class TestBooleanValidationEdgeCases:
@@ -37,7 +78,6 @@ class TestBooleanValidationEdgeCases:
 
     def test_is_sqlite_pool_enabled_with_true_uppercase(self, clean_env):
         """Test SQLite pool with 'TRUE' (uppercase)."""
-        from codex.config.env_vars import EnvironmentManager
 
         os.environ["CODEX_SQLITE_POOL"] = "TRUE"
         manager = EnvironmentManager(lazy_validation=True)
@@ -45,7 +85,6 @@ class TestBooleanValidationEdgeCases:
 
     def test_is_sqlite_pool_enabled_with_true_mixed_case(self, clean_env):
         """Test SQLite pool with 'True' (mixed case)."""
-        from codex.config.env_vars import EnvironmentManager
 
         os.environ["CODEX_SQLITE_POOL"] = "True"
         manager = EnvironmentManager(lazy_validation=True)
@@ -53,7 +92,6 @@ class TestBooleanValidationEdgeCases:
 
     def test_is_sqlite_pool_enabled_with_yes(self, clean_env):
         """Test SQLite pool with 'yes' (lowercase)."""
-        from codex.config.env_vars import EnvironmentManager
 
         os.environ["CODEX_SQLITE_POOL"] = "yes"
         manager = EnvironmentManager(lazy_validation=True)
@@ -61,7 +99,6 @@ class TestBooleanValidationEdgeCases:
 
     def test_is_sqlite_pool_enabled_with_yes_uppercase(self, clean_env):
         """Test SQLite pool with 'YES' (uppercase)."""
-        from codex.config.env_vars import EnvironmentManager
 
         os.environ["CODEX_SQLITE_POOL"] = "YES"
         manager = EnvironmentManager(lazy_validation=True)
@@ -69,7 +106,6 @@ class TestBooleanValidationEdgeCases:
 
     def test_is_sqlite_pool_enabled_with_false_uppercase(self, clean_env):
         """Test SQLite pool with 'FALSE' (uppercase)."""
-        from codex.config.env_vars import EnvironmentManager
 
         os.environ["CODEX_SQLITE_POOL"] = "FALSE"
         manager = EnvironmentManager(lazy_validation=True)
@@ -77,7 +113,6 @@ class TestBooleanValidationEdgeCases:
 
     def test_is_sqlite_pool_enabled_with_false_mixed_case(self, clean_env):
         """Test SQLite pool with 'False' (mixed case)."""
-        from codex.config.env_vars import EnvironmentManager
 
         os.environ["CODEX_SQLITE_POOL"] = "False"
         manager = EnvironmentManager(lazy_validation=True)
@@ -85,7 +120,6 @@ class TestBooleanValidationEdgeCases:
 
     def test_is_sqlite_pool_enabled_with_no(self, clean_env):
         """Test SQLite pool with 'no' (lowercase)."""
-        from codex.config.env_vars import EnvironmentManager
 
         os.environ["CODEX_SQLITE_POOL"] = "no"
         manager = EnvironmentManager(lazy_validation=True)
@@ -93,7 +127,6 @@ class TestBooleanValidationEdgeCases:
 
     def test_is_sqlite_pool_enabled_with_no_uppercase(self, clean_env):
         """Test SQLite pool with 'NO' (uppercase)."""
-        from codex.config.env_vars import EnvironmentManager
 
         os.environ["CODEX_SQLITE_POOL"] = "NO"
         manager = EnvironmentManager(lazy_validation=True)
@@ -101,7 +134,6 @@ class TestBooleanValidationEdgeCases:
 
     def test_force_cpu_validation_true_variants(self, clean_env):
         """Test CODEX_FORCE_CPU accepts all true variants."""
-        from codex.config.env_vars import EnvironmentManager
 
         for value in ("1", "true", "True", "TRUE", "yes", "YES"):
             os.environ["CODEX_FORCE_CPU"] = value
@@ -110,7 +142,6 @@ class TestBooleanValidationEdgeCases:
 
     def test_force_cpu_validation_false_variants(self, clean_env):
         """Test CODEX_FORCE_CPU accepts all false variants."""
-        from codex.config.env_vars import EnvironmentManager
 
         for value in ("0", "false", "False", "FALSE", "no", "NO"):
             os.environ["CODEX_FORCE_CPU"] = value
@@ -135,7 +166,6 @@ class TestGetMethodEdgeCases:
 
     def test_get_unknown_var_no_default_returns_empty_string(self, clean_env):
         """Test getting unknown variable with no default returns empty string."""
-        from codex.config.env_vars import EnvironmentManager
 
         manager = EnvironmentManager(lazy_validation=True)
         result = manager.get("UNKNOWN_VARIABLE_XYZ")
@@ -144,7 +174,6 @@ class TestGetMethodEdgeCases:
 
     def test_get_with_empty_string_value(self, clean_env):
         """Test getting variable with empty string value."""
-        from codex.config.env_vars import EnvironmentManager
 
         os.environ["CODEX_SESSION_LOG_DIR"] = ""
         manager = EnvironmentManager(lazy_validation=True)
@@ -154,7 +183,6 @@ class TestGetMethodEdgeCases:
 
     def test_get_parameter_default_overrides_configured_default(self, clean_env):
         """Test that parameter default overrides configured default."""
-        from codex.config.env_vars import EnvironmentManager
 
         manager = EnvironmentManager(lazy_validation=True)
         # CODEX_SESSION_LOG_DIR has configured default of ".codex/sessions"
@@ -164,7 +192,6 @@ class TestGetMethodEdgeCases:
 
     def test_get_with_none_parameter_default_uses_configured(self, clean_env):
         """Test that None parameter default uses configured default."""
-        from codex.config.env_vars import EnvironmentManager
 
         manager = EnvironmentManager(lazy_validation=True)
         result = manager.get("CODEX_SESSION_LOG_DIR", default=None)
@@ -173,7 +200,6 @@ class TestGetMethodEdgeCases:
 
     def test_get_multiple_calls_consistent(self, clean_env):
         """Test that multiple get() calls return consistent values."""
-        from codex.config.env_vars import EnvironmentManager
 
         os.environ["CODEX_FORCE_CPU"] = "1"
         manager = EnvironmentManager(lazy_validation=True)
@@ -199,7 +225,6 @@ class TestPathFallbackLogic:
 
     def test_get_db_path_uses_log_db_path_first(self, clean_env, tmp_path):
         """Test that CODEX_LOG_DB_PATH is preferred over CODEX_DB_PATH."""
-        from codex.config.env_vars import EnvironmentManager
 
         log_db = str(tmp_path / "log.db")
         alt_db = str(tmp_path / "alt.db")
@@ -212,7 +237,6 @@ class TestPathFallbackLogic:
 
     def test_get_db_path_falls_back_to_db_path(self, clean_env, tmp_path):
         """Test fallback to CODEX_DB_PATH when CODEX_LOG_DB_PATH is not set."""
-        from codex.config.env_vars import EnvironmentManager
 
         alt_db = str(tmp_path / "alt.db")
         os.environ["CODEX_DB_PATH"] = alt_db
@@ -224,7 +248,6 @@ class TestPathFallbackLogic:
 
     def test_get_db_path_with_empty_log_db_uses_fallback(self, clean_env, tmp_path):
         """Test that empty CODEX_LOG_DB_PATH triggers fallback."""
-        from codex.config.env_vars import EnvironmentManager
 
         alt_db = str(tmp_path / "alt.db")
         os.environ["CODEX_LOG_DB_PATH"] = ""
@@ -253,7 +276,6 @@ class TestDoubleValidationPrevention:
 
     def test_ensure_validated_skips_second_validation(self, clean_env):
         """Test that _ensure_validated() prevents double validation."""
-        from codex.config.env_vars import EnvironmentManager
 
         manager = EnvironmentManager(lazy_validation=True)
         assert manager._validated is False
@@ -271,7 +293,6 @@ class TestDoubleValidationPrevention:
 
     def test_multiple_operations_use_cached_validation(self, clean_env):
         """Test that multiple operations don't retrigger validation."""
-        from codex.config.env_vars import EnvironmentManager
 
         manager = EnvironmentManager(lazy_validation=True)
 
@@ -301,7 +322,6 @@ class TestValidatorBehavior:
 
     def test_vendor_purge_validation_variants(self, clean_env):
         """Test CODEX_VENDOR_PURGE validation with all variants."""
-        from codex.config.env_vars import EnvironmentManager
 
         for value in ("1", "0", "true", "false", "yes", "no"):
             os.environ["CODEX_VENDOR_PURGE"] = value
@@ -310,7 +330,6 @@ class TestValidatorBehavior:
 
     def test_abort_on_gpu_pull_validation(self, clean_env):
         """Test CODEX_ABORT_ON_GPU_PULL validation."""
-        from codex.config.env_vars import EnvironmentManager
 
         for value in ("1", "true", "yes"):
             os.environ["CODEX_ABORT_ON_GPU_PULL"] = value
@@ -319,7 +338,6 @@ class TestValidatorBehavior:
 
     def test_dependency_evidence_enable_validation(self, clean_env):
         """Test CODEX_DEPENDENCY_EVIDENCE_ENABLE validation."""
-        from codex.config.env_vars import EnvironmentManager
 
         for value in ("1", "0", "true", "false"):
             os.environ["CODEX_DEPENDENCY_EVIDENCE_ENABLE"] = value
@@ -328,7 +346,6 @@ class TestValidatorBehavior:
 
     def test_collect_coverage_validation(self, clean_env):
         """Test CODEX_COLLECT_COVERAGE validation."""
-        from codex.config.env_vars import EnvironmentManager
 
         for value in ("1", "0", "true", "false", "yes", "no"):
             os.environ["CODEX_COLLECT_COVERAGE"] = value
@@ -353,7 +370,6 @@ class TestValidationErrorMessages:
 
     def test_single_validation_error_message(self, clean_env):
         """Test error message for single validation failure."""
-        from codex.config.env_vars import EnvironmentManager
 
         os.environ["CODEX_FORCE_CPU"] = "invalid"
 
@@ -366,7 +382,6 @@ class TestValidationErrorMessages:
 
     def test_multiple_validation_errors_newline_separated(self, clean_env):
         """Test error message for multiple validation failures."""
-        from codex.config.env_vars import EnvironmentManager
 
         os.environ["CODEX_FORCE_CPU"] = "invalid1"
         os.environ["CODEX_SQLITE_POOL"] = "invalid2"
@@ -397,7 +412,6 @@ class TestSessionIdEdgeCases:
 
     def test_get_session_id_sets_environment(self, clean_env):
         """Test that get_session_id() sets the environment variable."""
-        from codex.config.env_vars import EnvironmentManager
 
         manager = EnvironmentManager(lazy_validation=True)
         session_id = manager.get_session_id()
@@ -407,7 +421,6 @@ class TestSessionIdEdgeCases:
 
     def test_get_session_id_with_existing_env_value(self, clean_env):
         """Test get_session_id uses existing environment value."""
-        from codex.config.env_vars import EnvironmentManager
 
         test_id = str(uuid.uuid4())
         os.environ["CODEX_SESSION_ID"] = test_id
@@ -419,7 +432,6 @@ class TestSessionIdEdgeCases:
 
     def test_get_session_id_generates_valid_uuid(self, clean_env):
         """Test that generated session ID is a valid UUID."""
-        from codex.config.env_vars import EnvironmentManager
 
         manager = EnvironmentManager(lazy_validation=True)
         session_id = manager.get_session_id()
@@ -446,7 +458,6 @@ class TestDumpConfigCompleteness:
 
     def test_dump_config_includes_all_env_vars(self, clean_env):
         """Test that dump_config includes all configured variables."""
-        from codex.config.env_vars import EnvironmentManager
 
         manager = EnvironmentManager(lazy_validation=True)
         config = manager.dump_config()
@@ -460,7 +471,6 @@ class TestDumpConfigCompleteness:
 
     def test_dump_config_uses_get_method(self, clean_env):
         """Test that dump_config respects get() fallback logic."""
-        from codex.config.env_vars import EnvironmentManager
 
         manager = EnvironmentManager(lazy_validation=True)
         config = manager.dump_config()
@@ -473,7 +483,6 @@ class TestDumpConfigCompleteness:
 
     def test_dump_config_reflects_environment_values(self, clean_env):
         """Test that dump_config reflects actual environment values."""
-        from codex.config.env_vars import EnvironmentManager
 
         os.environ["CODEX_FORCE_CPU"] = "0"
         manager = EnvironmentManager(lazy_validation=True)
@@ -499,7 +508,6 @@ class TestLogDirCreation:
 
     def test_get_log_dir_nested_path_creation(self, clean_env, tmp_path):
         """Test that get_log_dir creates nested parent directories."""
-        from codex.config.env_vars import EnvironmentManager
 
         nested_path = str(tmp_path / "a" / "b" / "c" / "logs")
         os.environ["CODEX_SESSION_LOG_DIR"] = nested_path
@@ -513,7 +521,6 @@ class TestLogDirCreation:
 
     def test_get_log_dir_idempotent(self, clean_env, tmp_path):
         """Test that get_log_dir can be called multiple times safely."""
-        from codex.config.env_vars import EnvironmentManager
 
         log_path = str(tmp_path / "logs")
         os.environ["CODEX_SESSION_LOG_DIR"] = log_path
@@ -543,7 +550,6 @@ class TestEnvironmentVariableDefaults:
 
     def test_python_version_has_default(self, clean_env):
         """Test CODEX_ENV_PYTHON_VERSION has default."""
-        from codex.config.env_vars import EnvironmentManager
 
         manager = EnvironmentManager(lazy_validation=True)
         value = manager.get("CODEX_ENV_PYTHON_VERSION")
@@ -551,7 +557,6 @@ class TestEnvironmentVariableDefaults:
 
     def test_optional_language_versions_no_default(self, clean_env):
         """Test optional language versions have None as default."""
-        from codex.config.env_vars import EnvironmentManager
 
         manager = EnvironmentManager(lazy_validation=True)
         for var in ["CODEX_ENV_NODE_VERSION", "CODEX_ENV_RUST_VERSION",
@@ -562,7 +567,6 @@ class TestEnvironmentVariableDefaults:
 
     def test_force_cpu_defaults_to_one(self, clean_env):
         """Test CODEX_FORCE_CPU defaults to '1'."""
-        from codex.config.env_vars import EnvironmentManager
 
         manager = EnvironmentManager(lazy_validation=True)
         value = manager.get("CODEX_FORCE_CPU")
@@ -570,7 +574,6 @@ class TestEnvironmentVariableDefaults:
 
     def test_cpu_minimal_defaults_to_zero(self, clean_env):
         """Test CODEX_CPU_MINIMAL defaults to '0'."""
-        from codex.config.env_vars import EnvironmentManager
 
         manager = EnvironmentManager(lazy_validation=True)
         value = manager.get("CODEX_CPU_MINIMAL")
@@ -578,7 +581,6 @@ class TestEnvironmentVariableDefaults:
 
     def test_vendor_purge_defaults_to_one(self, clean_env):
         """Test CODEX_VENDOR_PURGE defaults to '1'."""
-        from codex.config.env_vars import EnvironmentManager
 
         manager = EnvironmentManager(lazy_validation=True)
         value = manager.get("CODEX_VENDOR_PURGE")
@@ -586,7 +588,6 @@ class TestEnvironmentVariableDefaults:
 
     def test_abort_on_gpu_pull_defaults_to_zero(self, clean_env):
         """Test CODEX_ABORT_ON_GPU_PULL defaults to '0'."""
-        from codex.config.env_vars import EnvironmentManager
 
         manager = EnvironmentManager(lazy_validation=True)
         value = manager.get("CODEX_ABORT_ON_GPU_PULL")
@@ -594,7 +595,6 @@ class TestEnvironmentVariableDefaults:
 
     def test_dependency_evidence_enable_defaults_to_one(self, clean_env):
         """Test CODEX_DEPENDENCY_EVIDENCE_ENABLE defaults to '1'."""
-        from codex.config.env_vars import EnvironmentManager
 
         manager = EnvironmentManager(lazy_validation=True)
         value = manager.get("CODEX_DEPENDENCY_EVIDENCE_ENABLE")
@@ -602,7 +602,6 @@ class TestEnvironmentVariableDefaults:
 
     def test_collect_coverage_defaults_to_zero(self, clean_env):
         """Test CODEX_COLLECT_COVERAGE defaults to '0'."""
-        from codex.config.env_vars import EnvironmentManager
 
         manager = EnvironmentManager(lazy_validation=True)
         value = manager.get("CODEX_COLLECT_COVERAGE")

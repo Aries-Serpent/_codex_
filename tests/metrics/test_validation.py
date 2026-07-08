@@ -81,6 +81,7 @@ class TestMetricValidation:
 
     def test_validate_known_metrics_if_available(self):
         """Test validation of known metrics if registry is available."""
+import pytest
         metrics = get_all_registered_metrics()
 
         if not metrics:

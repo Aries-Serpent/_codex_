@@ -3,16 +3,15 @@ Test Sweep Expand
 
 Test module for sweep expand.
 """
-
 from __future__ import annotations
-
+yaml = pytest.importorskip("yaml")
 import os
 import subprocess
 from pathlib import Path
 
-import pytest
 
-yaml = pytest.importorskip("yaml")
+
+
 
 ROOT = Path(__file__).resolve().parents[2]
 

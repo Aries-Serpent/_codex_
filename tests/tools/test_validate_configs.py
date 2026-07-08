@@ -3,19 +3,18 @@ Test Validate Configs
 
 Test module for validate configs.
 """
-
 from __future__ import annotations
-
+pytest.importorskip("jsonschema")
 import json
 from pathlib import Path
+from tools import validate_configs
 
-import pytest
+
+
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
-pytest.importorskip("jsonschema")
 
-from tools import validate_configs
 
 
 def test_validate_pair_for_training_profile():

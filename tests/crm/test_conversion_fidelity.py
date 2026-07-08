@@ -3,8 +3,9 @@ Test Conversion Fidelity
 
 Test module for conversion fidelity.
 """
-
+import pytest
 from codex_crm.convert.rules import fidelity_score
+
 
 
 def test_fidelity_bounds() -> None:

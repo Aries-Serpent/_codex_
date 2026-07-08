@@ -4,26 +4,68 @@ Test Codex Auth Module - Token Manager Extended Tests
 Comprehensive unit tests for production authentication functionality.
 Part of IP-004: Production Authentication Implementation.
 """
-
 from __future__ import annotations
-
 import time
 import warnings
+        from codex.auth.token_manager import TokenManager
+        from codex.auth.token_manager import TokenManager
+        from codex.auth.token_manager import TokenManager
+        from codex.auth.token_manager import TokenManager
+        from codex.auth.token_manager import TokenManager
+        from codex.auth.token_manager import TokenManager
+        from codex.auth.token_manager import TokenManager
+        from codex.auth.token_manager import TokenManager, TokenType
+        from codex.auth.token_manager import TokenManager
+        from codex.auth.token_manager import TokenManager
+        from codex.auth.token_manager import TokenManager, TokenType
+        from codex.auth.token_manager import TokenManager
+        from codex.auth.token_manager import TokenManager
+        from codex.auth.token_manager import TokenManager
+        from codex.auth.token_manager import TokenManager
+        from codex.auth.token_manager import TokenManager
+        from codex.auth.token_manager import TokenManager
+        from codex.auth.token_manager import TokenClaims, TokenManager, TokenType
+        from codex.auth.token_manager import TokenManager, TokenType
+        from codex.auth.token_manager import TokenManager
+        from codex.auth.token_manager import TokenManager
+        from codex.auth.token_manager import TokenManager
+        from codex.auth.token_manager import TokenManager
+        from codex.auth.token_manager import TokenManager
+        from codex.auth.token_manager import TokenManager
+        from codex.auth.token_manager import TokenManager
+        from codex.auth.token_manager import TokenManager
+        from codex.auth.token_manager import TokenManager
+        from codex.auth.token_manager import TokenManager
+        from codex.auth.token_manager import TokenManager
+        from codex.auth.token_manager import TokenManager
+        from codex.auth.token_manager import TokenManager
+        from codex.auth.token_manager import TokenManager
+        from codex.auth.token_manager import SessionInfo
+        from codex.auth.token_manager import SessionInfo
+        from codex.auth.token_manager import SessionInfo
+        from codex.auth.token_manager import SessionInfo
+        from codex.auth.token_manager import TokenClaims, TokenType
+        from codex.auth.token_manager import TokenClaims, TokenType
+        from codex.auth.token_manager import TokenClaims, TokenType
+        from codex.auth.token_manager import TokenType
+        from codex.auth.token_manager import TokenType
+        from codex.auth.token_manager import TokenManager
+        from codex.auth.token_manager import TokenManager
+        from codex.auth.token_manager import TokenManager
 
-import pytest
+
+
 
 
 class TestTokenManagerInitialization:
     """Tests for TokenManager initialization."""
 
     def test_init_with_secret_key(self) -> None:
-        from codex.auth.token_manager import TokenManager
 
         tm = TokenManager(secret_key="test-secret-key-12345")
         assert tm is not None, "tm must be initialized"
 
     def test_init_without_secret_key_warns(self) -> None:
-        from codex.auth.token_manager import TokenManager
 
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter("always")
@@ -32,14 +74,12 @@ class TestTokenManagerInitialization:
             assert "Auto-generating" in str(w[0].message), "Condition must be true"
 
     def test_init_creates_empty_revoked_tokens(self) -> None:
-        from codex.auth.token_manager import TokenManager
 
         tm = TokenManager(secret_key="test-secret")
         assert isinstance(tm._revoked_tokens, set)
         assert len(tm._revoked_tokens) == 0, "Collection must not be empty"
 
     def test_init_creates_empty_sessions(self) -> None:
-        from codex.auth.token_manager import TokenManager
 
         tm = TokenManager(secret_key="test-secret")
         assert isinstance(tm._sessions, dict)
@@ -50,14 +90,12 @@ class TestAccessTokenGeneration:
     """Tests for access token generation."""
 
     def test_generate_access_token_returns_string(self) -> None:
-        from codex.auth.token_manager import TokenManager
 
         tm = TokenManager(secret_key="test-secret")
         token = tm.generate_access_token("user123")
         assert isinstance(token, str)
 
     def test_generate_access_token_format(self) -> None:
-        from codex.auth.token_manager import TokenManager
 
         tm = TokenManager(secret_key="test-secret")
         token = tm.generate_access_token("user123")
@@ -65,7 +103,6 @@ class TestAccessTokenGeneration:
         assert len(parts) == 3, "Parts must not be empty"
 
     def test_generate_access_token_with_scope(self) -> None:
-        from codex.auth.token_manager import TokenManager
 
         tm = TokenManager(secret_key="test-secret")
         token = tm.generate_access_token("user123", scope="read write")
@@ -73,7 +110,6 @@ class TestAccessTokenGeneration:
         assert claims.scope == "read write", "scope is not valid"
 
     def test_generate_access_token_has_correct_type(self) -> None:
-        from codex.auth.token_manager import TokenManager, TokenType
 
         tm = TokenManager(secret_key="test-secret")
         token = tm.generate_access_token("user123")
@@ -85,14 +121,12 @@ class TestRefreshTokenGeneration:
     """Tests for refresh token generation."""
 
     def test_generate_refresh_token_returns_string(self) -> None:
-        from codex.auth.token_manager import TokenManager
 
         tm = TokenManager(secret_key="test-secret")
         token = tm.generate_refresh_token("user123")
         assert isinstance(token, str)
 
     def test_generate_refresh_token_format(self) -> None:
-        from codex.auth.token_manager import TokenManager
 
         tm = TokenManager(secret_key="test-secret")
         token = tm.generate_refresh_token("user123")
@@ -100,7 +134,6 @@ class TestRefreshTokenGeneration:
         assert len(parts) == 3, "Parts must not be empty"
 
     def test_generate_refresh_token_has_correct_type(self) -> None:
-        from codex.auth.token_manager import TokenManager, TokenType
 
         tm = TokenManager(secret_key="test-secret")
         token = tm.generate_refresh_token("user123")
@@ -112,7 +145,6 @@ class TestSessionTokenGeneration:
     """Tests for session token generation."""
 
     def test_generate_session_token_returns_tuple(self) -> None:
-        from codex.auth.token_manager import TokenManager
 
         tm = TokenManager(secret_key="test-secret")
         result = tm.generate_session_token("user123")
@@ -120,14 +152,12 @@ class TestSessionTokenGeneration:
         assert len(result) == 2, "Result must not be empty"
 
     def test_generate_session_token_creates_session(self) -> None:
-        from codex.auth.token_manager import TokenManager
 
         tm = TokenManager(secret_key="test-secret")
         _token, session_id = tm.generate_session_token("user123")
         assert session_id in tm._sessions, "Condition must be true"
 
     def test_generate_session_token_with_mfa(self) -> None:
-        from codex.auth.token_manager import TokenManager
 
         tm = TokenManager(secret_key="test-secret")
         _token, session_id = tm.generate_session_token("user123", mfa_verified=True)
@@ -135,7 +165,6 @@ class TestSessionTokenGeneration:
         assert session.mfa_verified is True, "mfa_verified is not valid"
 
     def test_generate_session_token_with_ip(self) -> None:
-        from codex.auth.token_manager import TokenManager
 
         tm = TokenManager(secret_key="test-secret")
         _token, session_id = tm.generate_session_token("user123", ip_address="192.168.1.100")
@@ -143,7 +172,6 @@ class TestSessionTokenGeneration:
         assert session.ip_address == "192.168.1.100", "ip_address is not valid"
 
     def test_generate_session_token_with_user_agent(self) -> None:
-        from codex.auth.token_manager import TokenManager
 
         tm = TokenManager(secret_key="test-secret")
         _token, session_id = tm.generate_session_token("user123", user_agent="Mozilla/5.0")
@@ -155,7 +183,6 @@ class TestTokenValidation:
     """Tests for token validation."""
 
     def test_validate_access_token(self) -> None:
-        from codex.auth.token_manager import TokenManager
 
         tm = TokenManager(secret_key="test-secret")
         token = tm.generate_access_token("user123")
@@ -163,7 +190,6 @@ class TestTokenValidation:
         assert claims.sub == "user123", "sub is not valid"
 
     def test_validate_expired_token_raises(self) -> None:
-        from codex.auth.token_manager import TokenClaims, TokenManager, TokenType
 
         tm = TokenManager(secret_key="test-secret")
         # Create an already expired token
@@ -180,7 +206,6 @@ class TestTokenValidation:
             tm.validate_token(token)
 
     def test_validate_token_wrong_type_raises(self) -> None:
-        from codex.auth.token_manager import TokenManager, TokenType
 
         tm = TokenManager(secret_key="test-secret")
         token = tm.generate_access_token("user123")
@@ -189,7 +214,6 @@ class TestTokenValidation:
             tm.validate_token(token, expected_type=TokenType.REFRESH)
 
     def test_validate_invalid_token_raises(self) -> None:
-        from codex.auth.token_manager import TokenManager
 
         tm = TokenManager(secret_key="test-secret")
 
@@ -197,7 +221,6 @@ class TestTokenValidation:
             tm.validate_token("invalid.token.here")
 
     def test_validate_tampered_token_raises(self) -> None:
-        from codex.auth.token_manager import TokenManager
 
         tm = TokenManager(secret_key="test-secret")
         token = tm.generate_access_token("user123")
@@ -214,7 +237,6 @@ class TestTokenRevocation:
     """Tests for token revocation."""
 
     def test_revoke_token(self) -> None:
-        from codex.auth.token_manager import TokenManager
 
         tm = TokenManager(secret_key="test-secret")
         token = tm.generate_access_token("user123")
@@ -223,7 +245,6 @@ class TestTokenRevocation:
         assert result is True, "Result must not be empty"
 
     def test_revoke_token_prevents_validation(self) -> None:
-        from codex.auth.token_manager import TokenManager
 
         tm = TokenManager(secret_key="test-secret")
         token = tm.generate_access_token("user123")
@@ -234,14 +255,12 @@ class TestTokenRevocation:
             tm.validate_token(token)
 
     def test_revoke_invalid_token_returns_false(self) -> None:
-        from codex.auth.token_manager import TokenManager
 
         tm = TokenManager(secret_key="test-secret")
         result = tm.revoke_token("invalid.token.here")
         assert result is False, "Result must not be empty"
 
     def test_revoke_all_user_tokens(self) -> None:
-        from codex.auth.token_manager import TokenManager
 
         tm = TokenManager(secret_key="test-secret")
 
@@ -254,7 +273,6 @@ class TestTokenRevocation:
         assert count == 3, "Count must be greater than zero"
 
     def test_revoke_all_user_tokens_no_sessions(self) -> None:
-        from codex.auth.token_manager import TokenManager
 
         tm = TokenManager(secret_key="test-secret")
         count = tm.revoke_all_user_tokens("nonexistent")
@@ -265,7 +283,6 @@ class TestRefreshAccessToken:
     """Tests for refreshing access tokens."""
 
     def test_refresh_access_token(self) -> None:
-        from codex.auth.token_manager import TokenManager
 
         tm = TokenManager(secret_key="test-secret")
         refresh_token = tm.generate_refresh_token("user123")
@@ -274,7 +291,6 @@ class TestRefreshAccessToken:
         assert isinstance(new_access_token, str)
 
     def test_refresh_with_invalid_token_raises(self) -> None:
-        from codex.auth.token_manager import TokenManager
 
         tm = TokenManager(secret_key="test-secret")
 
@@ -282,7 +298,6 @@ class TestRefreshAccessToken:
             tm.refresh_access_token("invalid.token.here")
 
     def test_refresh_with_access_token_raises(self) -> None:
-        from codex.auth.token_manager import TokenManager
 
         tm = TokenManager(secret_key="test-secret")
         access_token = tm.generate_access_token("user123")
@@ -295,7 +310,6 @@ class TestSessionManagement:
     """Tests for session management."""
 
     def test_get_session(self) -> None:
-        from codex.auth.token_manager import TokenManager
 
         tm = TokenManager(secret_key="test-secret")
         _token, session_id = tm.generate_session_token("user123")
@@ -305,14 +319,12 @@ class TestSessionManagement:
         assert session.user_id == "user123", "user_id is not valid"
 
     def test_get_nonexistent_session(self) -> None:
-        from codex.auth.token_manager import TokenManager
 
         tm = TokenManager(secret_key="test-secret")
         session = tm.get_session("nonexistent")
         assert session is None, "session is not valid"
 
     def test_get_user_sessions(self) -> None:
-        from codex.auth.token_manager import TokenManager
 
         tm = TokenManager(secret_key="test-secret")
         tm.generate_session_token("user123")
@@ -323,7 +335,6 @@ class TestSessionManagement:
         assert len(sessions) == 2, "Sessions must not be empty"
 
     def test_cleanup_expired_sessions(self) -> None:
-        from codex.auth.token_manager import TokenManager
 
         tm = TokenManager(secret_key="test-secret")
 
@@ -340,7 +351,6 @@ class TestSessionInfo:
     """Tests for SessionInfo data class."""
 
     def test_session_info_creation(self) -> None:
-        from codex.auth.token_manager import SessionInfo
 
         now = time.time()
         session = SessionInfo(
@@ -353,7 +363,6 @@ class TestSessionInfo:
         assert session.user_id == "user123", "user_id is not valid"
 
     def test_session_is_active(self) -> None:
-        from codex.auth.token_manager import SessionInfo
 
         now = time.time()
         session = SessionInfo(
@@ -365,7 +374,6 @@ class TestSessionInfo:
         assert session.is_active() is True, "Condition must be true"
 
     def test_session_is_not_active(self) -> None:
-        from codex.auth.token_manager import SessionInfo
 
         now = time.time()
         session = SessionInfo(
@@ -377,7 +385,6 @@ class TestSessionInfo:
         assert session.is_active(timeout=1800) is False, "Condition must be true"
 
     def test_session_update_activity(self) -> None:
-        from codex.auth.token_manager import SessionInfo
 
         now = time.time()
         session = SessionInfo(
@@ -396,7 +403,6 @@ class TestTokenClaims:
     """Tests for TokenClaims data class."""
 
     def test_token_claims_creation(self) -> None:
-        from codex.auth.token_manager import TokenClaims, TokenType
 
         now = time.time()
         claims = TokenClaims(
@@ -409,7 +415,6 @@ class TestTokenClaims:
         assert claims.type == TokenType.ACCESS, "type is not valid"
 
     def test_token_claims_to_dict(self) -> None:
-        from codex.auth.token_manager import TokenClaims, TokenType
 
         now = time.time()
         claims = TokenClaims(
@@ -427,7 +432,6 @@ class TestTokenClaims:
         assert data["scope"] == "read write", "Data must not be empty"
 
     def test_token_claims_from_dict(self) -> None:
-        from codex.auth.token_manager import TokenClaims, TokenType
 
         now = time.time()
         data = {
@@ -448,14 +452,12 @@ class TestTokenType:
     """Tests for TokenType enum."""
 
     def test_token_type_values(self) -> None:
-        from codex.auth.token_manager import TokenType
 
         assert TokenType.ACCESS.value == "access", "Value must be initialized"
         assert TokenType.REFRESH.value == "refresh", "Value must be initialized"
         assert TokenType.SESSION.value == "session", "Value must be initialized"
 
     def test_token_type_from_value(self) -> None:
-        from codex.auth.token_manager import TokenType
 
         assert TokenType("access") == TokenType.ACCESS, "Condition must be true"
         assert TokenType("refresh") == TokenType.REFRESH, "Condition must be true"
@@ -466,16 +468,13 @@ class TestTokenExpiry:
     """Tests for token expiry constants."""
 
     def test_access_token_expiry(self) -> None:
-        from codex.auth.token_manager import TokenManager
 
         assert TokenManager.ACCESS_TOKEN_EXPIRY == 900, "ACCESS_TOKEN_EXPIRY is not valid"
 
     def test_refresh_token_expiry(self) -> None:
-        from codex.auth.token_manager import TokenManager
 
         assert TokenManager.REFRESH_TOKEN_EXPIRY == 604800, "REFRESH_TOKEN_EXPIRY is not valid"
 
     def test_session_token_expiry(self) -> None:
-        from codex.auth.token_manager import TokenManager
 
         assert TokenManager.SESSION_TOKEN_EXPIRY == 2592000, "SESSION_TOKEN_EXPIRY is not valid"

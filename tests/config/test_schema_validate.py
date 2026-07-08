@@ -3,11 +3,12 @@ Test: schema_validate.py (P4)
 - Ensures report generated even if workflow.yaml present
 - Validates normalized weights warning absent when sum==1
 """
-
+import pytest
 import json
 import subprocess
 import sys
 from pathlib import Path
+
 
 
 def test_schema_validation():

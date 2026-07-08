@@ -3,13 +3,12 @@ Test Smt Policy
 
 Test module for smt policy.
 """
-
 from __future__ import annotations
+    import z3  # type: ignore
 
-import pytest
+
 
 try:
-    import z3  # type: ignore
 except ImportError:  # pragma: no cover
     z3 = None  # type: ignore
 

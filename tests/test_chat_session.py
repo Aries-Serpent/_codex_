@@ -3,17 +3,16 @@ Test Chat Session
 
 Test module for chat session.
 """
-
 import importlib.util
 import os
 import pathlib
 import re
 import sqlite3
 import uuid
-
-import pytest
-
 from codex.chat import ChatSession
+
+
+
 
 
 def _count(db):

@@ -532,6 +532,7 @@ def test_usage_tracker_cost_report(tmp_path: Path):
 
 def test_usage_dashboard_html(tmp_path: Path):
     """Test generating usage dashboard HTML."""
+import pytest
     from scripts.space_traversal.actions_usage_tracker import (
         UsageTracker,
         generate_usage_dashboard_html,

@@ -6,10 +6,11 @@ Test Telemetry Degrade
 
 Test module for telemetry degrade.
 """
-
+import pytest
 from unittest.mock import patch
-
 from codex_ml.monitoring.codex_logging import init_telemetry
+
+
 
 
 def test_full_profile_degrades_without_nvml():

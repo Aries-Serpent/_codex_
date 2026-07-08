@@ -218,6 +218,7 @@ class TestDocRetrieverSafeRelative:
 
     def test_safe_relative_fallback(self):
         """_safe_relative should fallback when relative path fails."""
+import pytest
         base = Path("/home/user/docs")
         path = Path("/other/location/file.md")
 

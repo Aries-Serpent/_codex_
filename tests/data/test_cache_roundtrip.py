@@ -1,23 +1,22 @@
-pytest.importorskip("tensorboard")
 """
 Test Cache Roundtrip
 
 Test module for cache roundtrip.
 """
-
-import pytest
-
+pytest.importorskip("tensorboard")
 np = pytest.importorskip("numpy")
 pytest.importorskip("transformers")
-
 from codex_ml.utils.hf_pinning import load_from_pretrained
 from src.training.cache import TokenCache
 from src.training.datasets import TextDataset
+    from codex_ml.utils.hf_pinning import HFModelUnavailableError
+    from transformers import AutoTokenizer
+
+
+
 
 
 def test_cache_roundtrip(tmp_path):
-    from codex_ml.utils.hf_pinning import HFModelUnavailableError
-    from transformers import AutoTokenizer
 
     # Load tokenizer without invalid revision parameter
     try:

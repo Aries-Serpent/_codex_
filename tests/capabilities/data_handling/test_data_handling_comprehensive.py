@@ -7,23 +7,22 @@ Tests cover:
 - Imbalance checks
 - Dataset versioning
 """
-
 from __future__ import annotations
-
+pytest.importorskip("hypothesis")
 import hashlib
 import json
 from collections import Counter
 from typing import Any
-
-import pytest
-
-pytest.importorskip("hypothesis")
-
-
-pytest.importorskip("hypothesis", reason="hypothesis required for property tests")
-
 from hypothesis import given, settings
 from hypothesis import strategies as st
+        import random
+
+
+
+
+
+
+
 
 # --- Schema Validation Tests ---
 
@@ -103,7 +102,6 @@ class DeterministicShuffle:
 
     def shuffle(self, data: list) -> list:
         """Shuffle data deterministically."""
-        import random
 
         rng = random.Random(self.seed)
         result = data.copy()

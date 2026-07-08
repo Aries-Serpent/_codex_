@@ -3,16 +3,16 @@
 Covers DirichletBeliefs, budget_cap decorator, BudgetExceeded,
 scenario functions, persist_result, and main entry point.
 """
-
 from __future__ import annotations
-
+    return pytest.importorskip("budget_uncertainty", reason="budget_uncertainty not importable")
 import json
 import sys
 import time
 from pathlib import Path
 from unittest.mock import patch
 
-import pytest
+
+
 
 # ── Import helper ────────────────────────────────────────────────────────────
 
@@ -23,7 +23,6 @@ def _import():
     scripts_dir = str(repo_root / "scripts")
     if scripts_dir not in sys.path:
         sys.path.insert(0, scripts_dir)
-    return pytest.importorskip("budget_uncertainty", reason="budget_uncertainty not importable")
 
 
 # ── DirichletBeliefs ─────────────────────────────────────────────────────────

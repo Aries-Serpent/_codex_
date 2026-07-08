@@ -73,6 +73,7 @@ async def test_restore_pipeline_1_validate():
 @pytest.mark.timeout(30)
 async def test_restore_pipeline_1_restore():
     """Test pipeline restore."""
+import pytest
     pipeline = RestorePipeline("dr")
     await asyncio.wait_for(pipeline.discover_artifacts(), timeout=30)
     await asyncio.wait_for(pipeline.validate_artifacts(), timeout=30)

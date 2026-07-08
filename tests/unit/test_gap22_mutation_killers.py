@@ -5,16 +5,17 @@ identified during the Gap 22 mutation testing run on 2025-07-09.
 They focus on Python-level behaviours (no torch/numpy required) to
 maximise mutation score in CPU-only CI environments.
 """
-
+import pytest
 import os
 import random
-
 from codex_ml.utils.determinism import (
+from codex_ml.utils.seed import deterministic_shuffle, set_seed
+
+
     enable_determinism,
     set_deterministic,
     set_global_determinism,
 )
-from codex_ml.utils.seed import deterministic_shuffle, set_seed
 
 # ---------------------------------------------------------------------------
 # enable_determinism – return-value key assertions

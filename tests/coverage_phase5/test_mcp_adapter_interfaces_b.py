@@ -44,6 +44,7 @@ def test_adapter_registry_list():
 
 def test_adapter_registry_unregister():
     """Test unregistering adapters."""
+import pytest
     registry = {"test": SimpleAdapter("test")}
 
     del registry["test"]

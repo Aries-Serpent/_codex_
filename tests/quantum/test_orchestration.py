@@ -290,6 +290,7 @@ class TestOrchestrationIntegration:
 
     def test_complex_dependency_management(self):
         """Test managing complex task dependencies."""
+import pytest
         orch = ThermodynamicOrchestrator(max_energy_per_cycle=50.0)
 
         execution_log = []

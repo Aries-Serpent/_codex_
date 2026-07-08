@@ -4,19 +4,18 @@ Test Classification Metrics
 Comprehensive unit tests for the classification metrics module.
 Tests accuracy, precision, recall, F1 score, and StreamingAccuracy.
 """
-
 from __future__ import annotations
-
-import numpy as np
-import pytest
-
 pytest.importorskip("numpy")
+torch = pytest.importorskip("torch")
+import numpy as np
+from codex_ml.metrics.classification import (
+
+
+
 
 
 # Skip if torch not available
-torch = pytest.importorskip("torch")
 
-from codex_ml.metrics.classification import (
     StreamingAccuracy,
     _to_numpy,
     accuracy,

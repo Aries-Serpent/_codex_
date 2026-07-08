@@ -3,18 +3,17 @@ Test Infer Cli Lora
 
 Test module for infer cli lora.
 """
-
 from __future__ import annotations
-
+torch = pytest.importorskip("torch")
 from pathlib import Path
-
-import pytest
-
 import codex_ml.cli.infer as infer
+
+
+
+
 
 pytestmark = pytest.mark.requires_torch
 
-torch = pytest.importorskip("torch")
 
 
 def test_infer_passes_lora_args(monkeypatch, tmp_path: Path) -> None:

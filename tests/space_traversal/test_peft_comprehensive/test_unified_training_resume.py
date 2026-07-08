@@ -6,14 +6,15 @@ Test Unified Training Resume
 
 Test module for unified training resume.
 """
-
 from __future__ import annotations
-
+import pytest
 from codex_ml.training.unified_training import (
+from codex_ml.utils.checkpoint_core import save_checkpoint
+
+
     UnifiedTrainingConfig,
     run_unified_training,
 )
-from codex_ml.utils.checkpoint_core import save_checkpoint
 
 
 def test_resume_flag(tmp_path):

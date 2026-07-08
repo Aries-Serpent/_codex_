@@ -3,6 +3,14 @@ Test Status Update Generator
 
 Test module for status update generator.
 """
+    jsonschema = pytest.importorskip("jsonschema", reason="jsonschema not installed")
+import json
+import subprocess
+import sys
+from pathlib import Path
+import sys
+from tools.generate_status_update import validate_report
+    import tempfile
 
 #!/usr/bin/env python3
 """
@@ -14,12 +22,7 @@ Tests that the generated status update:
 3. Produces valid, well-formed output
 """
 
-import json
-import subprocess
-import sys
-from pathlib import Path
 
-import pytest
 
 # Paths
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -200,7 +203,6 @@ def test_repro_registry():
 
 def test_report_validates_against_schema():
     """Test that the report validates against the JSON schema."""
-    jsonschema = pytest.importorskip("jsonschema", reason="jsonschema not installed")
 
     with open(SCHEMA) as f:
         schema = json.load(f)
@@ -234,9 +236,7 @@ def test_validation_failure_exits_with_error():
     # We'll test this by mocking a validation failure
     # Create a simple test script that imports and calls validate_report with invalid data
     test_script = """
-import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from tools.generate_status_update import validate_report
 
 # Test with invalid report (missing required fields)
 invalid_report = {"metadata": {}}
@@ -244,7 +244,6 @@ is_valid, errors = validate_report(invalid_report)
 sys.exit(0 if is_valid else 1)
 """
 
-    import tempfile
 
     with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False) as f:
         f.write(f"from pathlib import Path\n{test_script}")

@@ -1,20 +1,19 @@
 """Unit tests for :mod:`tokenizer.fast_tokenizer` thin wrapper."""
-
 from __future__ import annotations
-
-from uuid import uuid4
-
-import pytest
-
-from tokenizer.fast_tokenizer import FastTokenizerWrapper
-
-
-@pytest.fixture()
-def trained_tokenizer_json(tmp_path):
     Tokenizer = pytest.importorskip("tokenizers").Tokenizer
     WordLevel = pytest.importorskip("tokenizers.models").WordLevel
     Whitespace = pytest.importorskip("tokenizers.pre_tokenizers").Whitespace
     WordLevelTrainer = pytest.importorskip("tokenizers.trainers").WordLevelTrainer
+from uuid import uuid4
+from tokenizer.fast_tokenizer import FastTokenizerWrapper
+
+
+
+
+
+
+@pytest.fixture()
+def trained_tokenizer_json(tmp_path):
 
     corpus = ["hello world", "foo bar baz", "chatbot"]
     tok = Tokenizer(WordLevel(unk_token="[UNK]"))

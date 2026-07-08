@@ -7,10 +7,70 @@ This module contains tests for:
 - Phase 4.3: Retrieval Optimization (retrieval_optimizer.py)
 - Phase 4.4: Workflow Optimization (workflow_optimizer.py)
 """
-
+import pytest
 import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
+        from codex.cognitive.knowledge_distiller import KnowledgeType
+        from codex.cognitive.knowledge_distiller import KnowledgeType
+        from codex.cognitive.knowledge_distiller import KnowledgePriority
+        from codex.cognitive.knowledge_distiller import (
+        from codex.cognitive.knowledge_distiller import (
+        from codex.cognitive.knowledge_distiller import (
+        from codex.cognitive.knowledge_distiller import KnowledgeStore
+        from codex.cognitive.knowledge_distiller import (
+        from codex.cognitive.knowledge_distiller import (
+        from codex.cognitive.knowledge_distiller import LearningExtractor
+        from codex.cognitive.knowledge_distiller import LearningExtractor
+        from codex.cognitive.knowledge_distiller import KnowledgeDistiller
+        from codex.cognitive.knowledge_distiller import KnowledgeDistiller
+        from codex.cognitive.knowledge_distiller import KnowledgeDistiller
+        from codex.cognitive.context_compressor import CompressionStrategy
+        from codex.cognitive.context_compressor import ContextType
+        from codex.cognitive.context_compressor import CompressedContext, ContextType
+        from codex.cognitive.context_compressor import CompressedContext, ContextType
+        from codex.cognitive.context_compressor import TokenEstimator
+        from codex.cognitive.context_compressor import KeyPointExtractor
+        from codex.cognitive.context_compressor import ExtractiveSummarizer
+        from codex.cognitive.context_compressor import ContextCompressor
+        from codex.cognitive.context_compressor import ContextCompressor
+        from codex.cognitive.context_compressor import ContextCompressor
+        from codex.cognitive.context_compressor import ContextCompressor
+        from codex.cognitive.retrieval_optimizer import RetrievalStrategy
+        from codex.cognitive.retrieval_optimizer import TaskType
+        from codex.cognitive.retrieval_optimizer import (
+        from codex.cognitive.retrieval_optimizer import (
+        from codex.cognitive.retrieval_optimizer import (
+        from codex.cognitive.retrieval_optimizer import RetrievalCache
+        from codex.cognitive.retrieval_optimizer import RetrievalCache
+        from codex.cognitive.retrieval_optimizer import TaskType, TaskTypeDetector
+        from codex.cognitive.retrieval_optimizer import TaskType, TaskTypeDetector
+        from codex.cognitive.retrieval_optimizer import RetrievalOptimizer
+        from codex.cognitive.retrieval_optimizer import RetrievalOptimizer
+        from codex.cognitive.retrieval_optimizer import RetrievalOptimizer
+        from codex.cognitive.retrieval_optimizer import RetrievalOptimizer
+        from codex.cognitive.workflow_optimizer import WorkflowStatus
+        from codex.cognitive.workflow_optimizer import WorkflowCategory
+        from codex.cognitive.workflow_optimizer import OptimizationType
+        from codex.cognitive.workflow_optimizer import WorkflowCategory, WorkflowInfo
+        from codex.cognitive.workflow_optimizer import WorkflowCategory, WorkflowInfo
+        from codex.cognitive.workflow_optimizer import (
+        from codex.cognitive.workflow_optimizer import (
+        from codex.cognitive.workflow_optimizer import (
+        from codex.cognitive.workflow_optimizer import (
+        from codex.cognitive.workflow_optimizer import ImmutableRegistry
+        from codex.cognitive.workflow_optimizer import ImmutableRegistry
+        from codex.cognitive.workflow_optimizer import ImmutableRegistry
+        from codex.cognitive.workflow_optimizer import CheckpointManager
+        from codex.cognitive.workflow_optimizer import CheckpointManager
+        from codex.cognitive.workflow_optimizer import CheckpointManager
+        from codex.cognitive.workflow_optimizer import WorkflowOptimizer
+        from codex.cognitive.workflow_optimizer import WorkflowOptimizer
+        from codex.cognitive.workflow_optimizer import WorkflowOptimizer
+        from codex.cognitive.knowledge_distiller import KnowledgeDistiller
+        from codex.cognitive.retrieval_optimizer import RetrievalOptimizer
+        from codex.cognitive.context_compressor import ContextCompressor
+
 
 
 # ============================================================================
@@ -21,7 +81,6 @@ class TestKnowledgeType:
 
     def test_knowledge_types_exist(self):
         """Test all knowledge types are defined."""
-        from codex.cognitive.knowledge_distiller import KnowledgeType
 
         assert hasattr(KnowledgeType, "FACTUAL")
         assert hasattr(KnowledgeType, "PROCEDURAL")
@@ -31,7 +90,6 @@ class TestKnowledgeType:
 
     def test_knowledge_type_values(self):
         """Test knowledge type values."""
-        from codex.cognitive.knowledge_distiller import KnowledgeType
 
         assert KnowledgeType.FACTUAL.value == "factual", "Value must be initialized"
         assert KnowledgeType.PROCEDURAL.value == "procedural", "Value must be initialized"
@@ -42,7 +100,6 @@ class TestKnowledgePriority:
 
     def test_priority_levels_exist(self):
         """Test all priority levels are defined."""
-        from codex.cognitive.knowledge_distiller import KnowledgePriority
 
         assert hasattr(KnowledgePriority, "CRITICAL")
         assert hasattr(KnowledgePriority, "HIGH")
@@ -55,7 +112,6 @@ class TestKnowledgeItem:
 
     def test_knowledge_item_creation(self):
         """Test creating a knowledge item."""
-        from codex.cognitive.knowledge_distiller import (
             KnowledgeItem,
             KnowledgePriority,
             KnowledgeType,
@@ -80,7 +136,6 @@ class TestKnowledgeItem:
 
     def test_knowledge_item_to_dict(self):
         """Test converting knowledge item to dict."""
-        from codex.cognitive.knowledge_distiller import (
             KnowledgeItem,
             KnowledgePriority,
             KnowledgeType,
@@ -107,7 +162,6 @@ class TestKnowledgeItem:
 
     def test_knowledge_item_from_dict(self):
         """Test creating knowledge item from dict."""
-        from codex.cognitive.knowledge_distiller import (
             KnowledgeItem,
             KnowledgePriority,
             KnowledgeType,
@@ -136,7 +190,6 @@ class TestKnowledgeStore:
 
     def test_store_creation(self):
         """Test creating a knowledge store."""
-        from codex.cognitive.knowledge_distiller import KnowledgeStore
 
         with tempfile.TemporaryDirectory() as tmpdir:
             store_path = Path(tmpdir) / "knowledge_store.json"
@@ -145,7 +198,6 @@ class TestKnowledgeStore:
 
     def test_store_add_and_get(self):
         """Test adding and getting items."""
-        from codex.cognitive.knowledge_distiller import (
             KnowledgeItem,
             KnowledgePriority,
             KnowledgeStore,
@@ -177,7 +229,6 @@ class TestKnowledgeStore:
 
     def test_store_search(self):
         """Test searching the store."""
-        from codex.cognitive.knowledge_distiller import (
             KnowledgeItem,
             KnowledgePriority,
             KnowledgeStore,
@@ -211,7 +262,6 @@ class TestLearningExtractor:
 
     def test_extract_from_text(self):
         """Test extracting learnings from text."""
-        from codex.cognitive.knowledge_distiller import LearningExtractor
 
         extractor = LearningExtractor()
         text = "The issue was a missing import.\nFixed by adding the import."
@@ -221,7 +271,6 @@ class TestLearningExtractor:
 
     def test_extract_from_commit_messages(self):
         """Test extracting from commit messages."""
-        from codex.cognitive.knowledge_distiller import LearningExtractor
 
         extractor = LearningExtractor()
         messages = [
@@ -238,7 +287,6 @@ class TestKnowledgeDistiller:
 
     def test_distiller_creation(self):
         """Test creating a distiller."""
-        from codex.cognitive.knowledge_distiller import KnowledgeDistiller
 
         with tempfile.TemporaryDirectory() as tmpdir:
             store_path = Path(tmpdir) / "knowledge_store.json"
@@ -247,7 +295,6 @@ class TestKnowledgeDistiller:
 
     def test_distill_from_session(self):
         """Test distilling from a session."""
-        from codex.cognitive.knowledge_distiller import KnowledgeDistiller
 
         with tempfile.TemporaryDirectory() as tmpdir:
             store_path = Path(tmpdir) / "knowledge_store.json"
@@ -263,7 +310,6 @@ class TestKnowledgeDistiller:
 
     def test_add_critical_knowledge(self):
         """Test adding critical knowledge."""
-        from codex.cognitive.knowledge_distiller import KnowledgeDistiller
 
         with tempfile.TemporaryDirectory() as tmpdir:
             store_path = Path(tmpdir) / "knowledge_store.json"
@@ -288,7 +334,6 @@ class TestCompressionStrategy:
 
     def test_strategies_exist(self):
         """Test all strategies are defined."""
-        from codex.cognitive.context_compressor import CompressionStrategy
 
         assert hasattr(CompressionStrategy, "EXTRACTIVE")
         assert hasattr(CompressionStrategy, "ABSTRACTIVE")
@@ -300,7 +345,6 @@ class TestContextType:
 
     def test_context_types_exist(self):
         """Test all context types are defined."""
-        from codex.cognitive.context_compressor import ContextType
 
         assert hasattr(ContextType, "SESSION_LOG")
         assert hasattr(ContextType, "COMMIT_HISTORY")
@@ -313,7 +357,6 @@ class TestCompressedContext:
 
     def test_compressed_context_creation(self):
         """Test creating compressed context."""
-        from codex.cognitive.context_compressor import CompressedContext, ContextType
 
         ctx = CompressedContext(
             context_id="CTX-00001",
@@ -333,7 +376,6 @@ class TestCompressedContext:
 
     def test_compressed_context_to_dict(self):
         """Test converting to dict."""
-        from codex.cognitive.context_compressor import CompressedContext, ContextType
 
         ctx = CompressedContext(
             context_id="CTX-00001",
@@ -358,7 +400,6 @@ class TestTokenEstimator:
 
     def test_estimate_tokens(self):
         """Test token estimation."""
-        from codex.cognitive.context_compressor import TokenEstimator
 
         text = "This is a test string with some words."
         tokens = TokenEstimator.estimate_tokens(text)
@@ -371,7 +412,6 @@ class TestKeyPointExtractor:
 
     def test_extract_key_points(self):
         """Test extracting key points."""
-        from codex.cognitive.context_compressor import KeyPointExtractor
 
         extractor = KeyPointExtractor()
         text = "Fixed the bug in module.\nDecided to use new approach."
@@ -385,7 +425,6 @@ class TestExtractiveSummarizer:
 
     def test_summarize_text(self):
         """Test summarizing text."""
-        from codex.cognitive.context_compressor import ExtractiveSummarizer
 
         summarizer = ExtractiveSummarizer(target_ratio=0.3)
         text = "This is the first sentence. This is the second sentence. This is the third sentence. This is the fourth sentence."
@@ -400,7 +439,6 @@ class TestContextCompressor:
 
     def test_compressor_creation(self):
         """Test creating a compressor."""
-        from codex.cognitive.context_compressor import ContextCompressor
 
         with tempfile.TemporaryDirectory() as tmpdir:
             index_path = Path(tmpdir) / "context_index.json"
@@ -409,7 +447,6 @@ class TestContextCompressor:
 
     def test_compress_session_log(self):
         """Test compressing a session log."""
-        from codex.cognitive.context_compressor import ContextCompressor
 
         with tempfile.TemporaryDirectory() as tmpdir:
             index_path = Path(tmpdir) / "context_index.json"
@@ -423,7 +460,6 @@ class TestContextCompressor:
 
     def test_compress_commit_history(self):
         """Test compressing commit history."""
-        from codex.cognitive.context_compressor import ContextCompressor
 
         with tempfile.TemporaryDirectory() as tmpdir:
             index_path = Path(tmpdir) / "context_index.json"
@@ -440,7 +476,6 @@ class TestContextCompressor:
 
     def test_get_compression_stats(self):
         """Test getting compression stats."""
-        from codex.cognitive.context_compressor import ContextCompressor
 
         with tempfile.TemporaryDirectory() as tmpdir:
             index_path = Path(tmpdir) / "context_index.json"
@@ -458,7 +493,6 @@ class TestRetrievalStrategy:
 
     def test_strategies_exist(self):
         """Test all strategies are defined."""
-        from codex.cognitive.retrieval_optimizer import RetrievalStrategy
 
         assert hasattr(RetrievalStrategy, "PROACTIVE")
         assert hasattr(RetrievalStrategy, "REACTIVE")
@@ -470,7 +504,6 @@ class TestTaskType:
 
     def test_task_types_exist(self):
         """Test all task types are defined."""
-        from codex.cognitive.retrieval_optimizer import TaskType
 
         assert hasattr(TaskType, "BUG_FIX")
         assert hasattr(TaskType, "FEATURE")
@@ -483,7 +516,6 @@ class TestRetrievalResult:
 
     def test_retrieval_result_creation(self):
         """Test creating a retrieval result."""
-        from codex.cognitive.retrieval_optimizer import (
             RetrievalResult,
             RetrievalStrategy,
         )
@@ -502,7 +534,6 @@ class TestRetrievalResult:
 
     def test_retrieval_result_to_dict(self):
         """Test converting to dict."""
-        from codex.cognitive.retrieval_optimizer import (
             RetrievalResult,
             RetrievalStrategy,
         )
@@ -526,7 +557,6 @@ class TestRetrievalMetrics:
 
     def test_metrics_record(self):
         """Test recording metrics."""
-        from codex.cognitive.retrieval_optimizer import (
             RetrievalMetrics,
             RetrievalResult,
             RetrievalStrategy,
@@ -553,7 +583,6 @@ class TestRetrievalCache:
 
     def test_cache_set_and_get(self):
         """Test setting and getting cache."""
-        from codex.cognitive.retrieval_optimizer import RetrievalCache
 
         cache = RetrievalCache(max_size=10)
         cache.set("key1", [{"id": "1"}])
@@ -564,7 +593,6 @@ class TestRetrievalCache:
 
     def test_cache_expiry(self):
         """Test cache expiry."""
-        from codex.cognitive.retrieval_optimizer import RetrievalCache
 
         cache = RetrievalCache(max_size=10)
         cache.set("key1", [{"id": "1"}])
@@ -578,7 +606,6 @@ class TestTaskTypeDetector:
 
     def test_detect_bug_fix(self):
         """Test detecting bug fix task."""
-        from codex.cognitive.retrieval_optimizer import TaskType, TaskTypeDetector
 
         detector = TaskTypeDetector()
         task_type = detector.detect("Fix the error in module")
@@ -586,7 +613,6 @@ class TestTaskTypeDetector:
 
     def test_detect_security(self):
         """Test detecting security task."""
-        from codex.cognitive.retrieval_optimizer import TaskType, TaskTypeDetector
 
         detector = TaskTypeDetector()
         task_type = detector.detect("Address security vulnerability")
@@ -598,7 +624,6 @@ class TestRetrievalOptimizer:
 
     def test_optimizer_creation(self):
         """Test creating an optimizer."""
-        from codex.cognitive.retrieval_optimizer import RetrievalOptimizer
 
         with tempfile.TemporaryDirectory() as tmpdir:
             store_path = Path(tmpdir) / "knowledge_store.json"
@@ -607,7 +632,6 @@ class TestRetrievalOptimizer:
 
     def test_get_session_startup_context(self):
         """Test getting session startup context."""
-        from codex.cognitive.retrieval_optimizer import RetrievalOptimizer
 
         with tempfile.TemporaryDirectory() as tmpdir:
             store_path = Path(tmpdir) / "knowledge_store.json"
@@ -619,7 +643,6 @@ class TestRetrievalOptimizer:
 
     def test_retrieve(self):
         """Test retrieval."""
-        from codex.cognitive.retrieval_optimizer import RetrievalOptimizer
 
         with tempfile.TemporaryDirectory() as tmpdir:
             store_path = Path(tmpdir) / "knowledge_store.json"
@@ -632,7 +655,6 @@ class TestRetrievalOptimizer:
 
     def test_get_metrics(self):
         """Test getting metrics."""
-        from codex.cognitive.retrieval_optimizer import RetrievalOptimizer
 
         with tempfile.TemporaryDirectory() as tmpdir:
             store_path = Path(tmpdir) / "knowledge_store.json"
@@ -650,7 +672,6 @@ class TestWorkflowStatus:
 
     def test_statuses_exist(self):
         """Test all statuses are defined."""
-        from codex.cognitive.workflow_optimizer import WorkflowStatus
 
         assert hasattr(WorkflowStatus, "QUEUED")
         assert hasattr(WorkflowStatus, "IN_PROGRESS")
@@ -665,7 +686,6 @@ class TestWorkflowCategory:
 
     def test_categories_exist(self):
         """Test all categories are defined."""
-        from codex.cognitive.workflow_optimizer import WorkflowCategory
 
         assert hasattr(WorkflowCategory, "SECURITY")
         assert hasattr(WorkflowCategory, "TESTING")
@@ -679,7 +699,6 @@ class TestOptimizationType:
 
     def test_types_exist(self):
         """Test all optimization types are defined."""
-        from codex.cognitive.workflow_optimizer import OptimizationType
 
         assert hasattr(OptimizationType, "CONSOLIDATION")
         assert hasattr(OptimizationType, "CACHING")
@@ -692,7 +711,6 @@ class TestWorkflowInfo:
 
     def test_workflow_info_creation(self):
         """Test creating workflow info."""
-        from codex.cognitive.workflow_optimizer import WorkflowCategory, WorkflowInfo
 
         info = WorkflowInfo(
             name="CodeQL",
@@ -713,7 +731,6 @@ class TestWorkflowInfo:
 
     def test_workflow_info_to_dict(self):
         """Test converting to dict."""
-        from codex.cognitive.workflow_optimizer import WorkflowCategory, WorkflowInfo
 
         info = WorkflowInfo(
             name="Test",
@@ -739,7 +756,6 @@ class TestOptimizationRecommendation:
 
     def test_recommendation_creation(self):
         """Test creating a recommendation."""
-        from codex.cognitive.workflow_optimizer import (
             OptimizationRecommendation,
             OptimizationType,
         )
@@ -763,7 +779,6 @@ class TestWorkflowCategorizer:
 
     def test_categorize_security(self):
         """Test categorizing security workflows."""
-        from codex.cognitive.workflow_optimizer import (
             WorkflowCategorizer,
             WorkflowCategory,
         )
@@ -774,7 +789,6 @@ class TestWorkflowCategorizer:
 
     def test_categorize_testing(self):
         """Test categorizing testing workflows."""
-        from codex.cognitive.workflow_optimizer import (
             WorkflowCategorizer,
             WorkflowCategory,
         )
@@ -789,7 +803,6 @@ class TestCacheOptimizer:
 
     def test_analyze_cache_usage(self):
         """Test analyzing cache usage."""
-        from codex.cognitive.workflow_optimizer import (
             CacheOptimizer,
             WorkflowCategory,
             WorkflowInfo,
@@ -836,7 +849,6 @@ class TestImmutableRegistry:
 
     def test_registry_creation(self):
         """Test creating a registry."""
-        from codex.cognitive.workflow_optimizer import ImmutableRegistry
 
         with tempfile.TemporaryDirectory() as tmpdir:
             registry_path = Path(tmpdir) / "immutable_registry.json"
@@ -845,7 +857,6 @@ class TestImmutableRegistry:
 
     def test_register_component(self):
         """Test registering a component."""
-        from codex.cognitive.workflow_optimizer import ImmutableRegistry
 
         with tempfile.TemporaryDirectory() as tmpdir:
             registry_path = Path(tmpdir) / "immutable_registry.json"
@@ -864,7 +875,6 @@ class TestImmutableRegistry:
 
     def test_verify_component(self):
         """Test verifying a component."""
-        from codex.cognitive.workflow_optimizer import ImmutableRegistry
 
         with tempfile.TemporaryDirectory() as tmpdir:
             registry_path = Path(tmpdir) / "immutable_registry.json"
@@ -887,7 +897,6 @@ class TestCheckpointManager:
 
     def test_manager_creation(self):
         """Test creating a manager."""
-        from codex.cognitive.workflow_optimizer import CheckpointManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             cp_path = Path(tmpdir) / "checkpoints.json"
@@ -896,7 +905,6 @@ class TestCheckpointManager:
 
     def test_create_checkpoint(self):
         """Test creating a checkpoint."""
-        from codex.cognitive.workflow_optimizer import CheckpointManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             cp_path = Path(tmpdir) / "checkpoints.json"
@@ -914,7 +922,6 @@ class TestCheckpointManager:
 
     def test_get_latest_checkpoint(self):
         """Test getting latest checkpoint."""
-        from codex.cognitive.workflow_optimizer import CheckpointManager
 
         with tempfile.TemporaryDirectory() as tmpdir:
             cp_path = Path(tmpdir) / "checkpoints.json"
@@ -933,7 +940,6 @@ class TestWorkflowOptimizer:
 
     def test_optimizer_creation(self):
         """Test creating an optimizer."""
-        from codex.cognitive.workflow_optimizer import WorkflowOptimizer
 
         with tempfile.TemporaryDirectory() as tmpdir:
             optimizer = WorkflowOptimizer(
@@ -944,7 +950,6 @@ class TestWorkflowOptimizer:
 
     def test_analyze_all_empty(self):
         """Test analyzing with no workflows."""
-        from codex.cognitive.workflow_optimizer import WorkflowOptimizer
 
         with tempfile.TemporaryDirectory() as tmpdir:
             optimizer = WorkflowOptimizer(
@@ -957,7 +962,6 @@ class TestWorkflowOptimizer:
 
     def test_get_optimization_report(self):
         """Test generating optimization report."""
-        from codex.cognitive.workflow_optimizer import WorkflowOptimizer
 
         with tempfile.TemporaryDirectory() as tmpdir:
             optimizer = WorkflowOptimizer(
@@ -977,8 +981,6 @@ class TestPlan4Integration:
 
     def test_knowledge_to_retrieval_flow(self):
         """Test knowledge distillation to retrieval flow."""
-        from codex.cognitive.knowledge_distiller import KnowledgeDistiller
-        from codex.cognitive.retrieval_optimizer import RetrievalOptimizer
 
         with tempfile.TemporaryDirectory() as tmpdir:
             store_path = Path(tmpdir) / "knowledge_store.json"
@@ -1000,7 +1002,6 @@ class TestPlan4Integration:
 
     def test_context_compression_flow(self):
         """Test context compression and retrieval."""
-        from codex.cognitive.context_compressor import ContextCompressor
 
         with tempfile.TemporaryDirectory() as tmpdir:
             index_path = Path(tmpdir) / "context_index.json"

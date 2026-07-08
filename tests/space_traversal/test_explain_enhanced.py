@@ -128,9 +128,10 @@ def test_normalize_weights():
 
 def test_command_explain_output_format(tmp_path, capsys):
     """Test that command_explain produces correctly formatted output."""
+import pytest
     import argparse
-
     from scripts.space_traversal.audit_runner import command_explain
+
 
     # Create test data
     artifacts_dir = tmp_path / "audit_artifacts"

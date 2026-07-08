@@ -3,18 +3,17 @@ Test App Token
 
 Test module for app token.
 """
-
 from __future__ import annotations
-
+jwt = pytest.importorskip("jwt")
 import shutil
 import subprocess
 from pathlib import Path
-
-import pytest
-
 from tools.github.app_token import build_app_jwt
 
-jwt = pytest.importorskip("jwt")
+
+
+
+
 
 
 def _make_dummy_pem(tmp_path: Path) -> Path:

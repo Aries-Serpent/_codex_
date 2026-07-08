@@ -9,15 +9,56 @@ Covers previously-uncovered branches in:
 - src/codex/rag/indexer.py     (embed_chunks ImportError, build_index_from_files
                                 missing-files path, manage_tenant_indices error branch)
 """
-
 from __future__ import annotations
-
+pytest.importorskip(
+        pytest.importorskip(
+        pytest.importorskip(
 import sys
 from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
+        from codex.rag import retriever as _mod
+        from codex.rag import retriever as _mod
+        from codex.rag import retriever as _mod
+        from codex.rag import retriever as _mod
+        from codex.rag import retriever as _mod
+        from codex.rag import retriever as _mod
+        import time
+        import time
+        import time
+        import time
+        import time
+        from codex.rag import retriever as _mod
+        from codex.rag import retriever as _mod
+        from codex.rag import retriever as _mod
+        from codex.rag.utils import has_meta_tensors
+        from codex.rag.utils import has_meta_tensors
+        from codex.rag.utils import has_meta_tensors
+        from codex.rag.utils import has_meta_tensors
+        from codex.rag.utils import has_meta_tensors
+        from codex.rag.utils import has_meta_tensors
+        from codex.rag.utils import has_meta_tensors
+        from codex.rag.utils import safe_model_to_device
+        from codex.rag.utils import safe_model_to_device
+        from codex.rag.utils import safe_model_to_device
+        from codex.rag.utils import safe_model_to_device
+        from codex.rag.utils import safe_model_to_device
+        from codex.rag.utils import safe_model_to_device
+        from codex.rag.utils import _try_model_to
+        from codex.rag.utils import _try_model_to
+        from codex.rag.utils import _try_model_to
+        from codex.rag._model_utils import safe_load_sentence_transformer
+        from codex.rag import _model_utils as _mu
+        from codex.rag._model_utils import safe_load_sentence_transformer
+        from codex.rag._model_utils import safe_load_sentence_transformer
+        from codex.rag import indexer as _mod
+        from codex.rag import indexer as _mod
+        from codex.rag import indexer as _mod
+        from codex.rag.ingestion.chunker import ChunkingConfig, ChunkingStrategy, SentenceChunker
+        from codex.rag.ingestion.chunker import ChunkingConfig, ChunkingStrategy, FixedSizeChunker
 
-import pytest
+
+
 
 # ---------------------------------------------------------------------------
 # Make sure src/ is importable regardless of cwd
@@ -30,7 +71,6 @@ if str(_SRC) not in sys.path:
 # Skip entire module if numpy (a transitive RAG dependency) is missing so
 # tests can be collected without error in minimal environments.
 # ---------------------------------------------------------------------------
-pytest.importorskip(
     "numpy",
     reason="numpy not installed — RAG coverage tests require the full RAG extras",
 )
@@ -39,7 +79,6 @@ pytest.importorskip(
 def _import_retriever():
     """Import codex.rag.retriever with a clearer error message on failure."""
     try:
-        from codex.rag import retriever as _mod
     except ImportError as exc:
         raise ImportError(
             "Failed to import codex.rag.retriever; ensure codex.rag and its "
@@ -68,7 +107,6 @@ class TestRetrieverLoadModelErrors:
                 r._load_model()
 
     def test_load_model_propagates_runtime_error(self):
-        from codex.rag import retriever as _mod
 
         sentinel = MagicMock()  # non-None SentenceTransformer sentinel
         with patch.object(_mod, "SentenceTransformer", sentinel):
@@ -145,7 +183,6 @@ class TestRetrieverReload:
 
 class TestMultiIndexRetriever:
     def test_query_merges_results_from_multiple_retrievers(self):
-        from codex.rag import retriever as _mod
 
         mir = _mod.MultiIndexRetriever.__new__(_mod.MultiIndexRetriever)
 
@@ -165,7 +202,6 @@ class TestMultiIndexRetriever:
         assert results[0]["index_name"] == "idx1", "Result must not be empty"
 
     def test_query_handles_retriever_exception(self):
-        from codex.rag import retriever as _mod
 
         mir = _mod.MultiIndexRetriever.__new__(_mod.MultiIndexRetriever)
         r1 = MagicMock()
@@ -178,7 +214,6 @@ class TestMultiIndexRetriever:
         assert results == [], "Result must not be empty"
 
     def test_get_stats_delegates_to_retrievers(self):
-        from codex.rag import retriever as _mod
 
         mir = _mod.MultiIndexRetriever.__new__(_mod.MultiIndexRetriever)
         r1 = MagicMock()
@@ -195,7 +230,6 @@ class TestMultiIndexRetriever:
 
 class TestCachedRetriever:
     def _make_cached_retriever(self):
-        from codex.rag import retriever as _mod
 
         cr = _mod.CachedRetriever.__new__(_mod.CachedRetriever)
         cr.cache_ttl = 60
@@ -241,7 +275,6 @@ class TestCachedRetriever:
         cache_timestamps; query_cache is NOT consulted by _is_cache_valid(),
         so clearing it would have no bearing on the result.
         """
-        import time
 
         cr = self._make_cached_retriever()
         key = "k1"
@@ -254,7 +287,6 @@ class TestCachedRetriever:
         assert cr._is_cache_valid(key) is False, "Condition must be true"
 
     def test_is_cache_valid_false_for_expired_entry(self):
-        import time
 
         cr = self._make_cached_retriever()
         cr.cache_ttl = 0  # immediately expired
@@ -262,7 +294,6 @@ class TestCachedRetriever:
         assert cr._is_cache_valid("k1") is False, "Condition must be true"
 
     def test_cache_hit_returns_cached_results(self):
-        import time
 
         cr = self._make_cached_retriever()
         cached = [{"text": "cached", "score": 0.1}]
@@ -286,7 +317,6 @@ class TestCachedRetriever:
         assert cr.query_cache.get(key) == expected, "Condition must be true"
 
     def test_clear_cache_empties_all(self):
-        import time
 
         cr = self._make_cached_retriever()
         cr.query_cache.put("k1", [])
@@ -300,7 +330,6 @@ class TestCachedRetriever:
         assert stats["ttl"] == 60, "Condition must be true"
 
     def test_invalidate_expired_removes_stale_entries(self):
-        import time
 
         cr = self._make_cached_retriever()
         cr.cache_ttl = 0  # immediately expired
@@ -317,14 +346,12 @@ class TestCachedRetriever:
 
 class TestRAGRetriever:
     def test_query_raises_when_not_loaded(self):
-        from codex.rag import retriever as _mod
 
         rr = _mod.RAGRetriever()
         with pytest.raises(RuntimeError, match="not initialised"):
             rr.query("anything")
 
     def test_load_creates_retriever(self, tmp_path):
-        from codex.rag import retriever as _mod
 
         mock_retriever = MagicMock()
         with patch.object(_mod, "Retriever", return_value=mock_retriever):
@@ -335,7 +362,6 @@ class TestRAGRetriever:
         assert rr._retriever is mock_retriever, "_retriever is not valid"
 
     def test_query_delegates_to_retriever(self, tmp_path):
-        from codex.rag import retriever as _mod
 
         mock_retriever = MagicMock()
         mock_retriever.query.return_value = [{"text": "r", "score": 0.1}]
@@ -352,7 +378,6 @@ class TestRAGRetriever:
 
 class TestHasMetaTensorsSubmoduleWalk:
     def test_submodule_with_meta_param_returns_true(self):
-        from codex.rag.utils import has_meta_tensors
 
         meta_param = SimpleNamespace(is_meta=True)
         submod = SimpleNamespace(
@@ -366,7 +391,6 @@ class TestHasMetaTensorsSubmoduleWalk:
         assert has_meta_tensors(model) is True, "has_meta_tens is not valid"
 
     def test_submodule_with_meta_device_param_returns_true(self):
-        from codex.rag.utils import has_meta_tensors
 
         device = SimpleNamespace(type="meta")
         param = SimpleNamespace(is_meta=False, device=device)
@@ -381,7 +405,6 @@ class TestHasMetaTensorsSubmoduleWalk:
         assert has_meta_tensors(model) is True, "has_meta_tens is not valid"
 
     def test_submodule_with_meta_buffer_returns_true(self):
-        from codex.rag.utils import has_meta_tensors
 
         meta_buf = SimpleNamespace(is_meta=True)
         submod = SimpleNamespace(
@@ -395,7 +418,6 @@ class TestHasMetaTensorsSubmoduleWalk:
         assert has_meta_tensors(model) is True, "has_meta_tens is not valid"
 
     def test_model_device_attribute_meta_returns_true(self):
-        from codex.rag.utils import has_meta_tensors
 
         device = SimpleNamespace(type="meta")
         model = SimpleNamespace(
@@ -406,14 +428,12 @@ class TestHasMetaTensorsSubmoduleWalk:
         assert has_meta_tensors(model) is True, "has_meta_tens is not valid"
 
     def test_exception_in_has_meta_tensors_returns_none(self):
-        from codex.rag.utils import has_meta_tensors
 
         model = SimpleNamespace(parameters=MagicMock(side_effect=RuntimeError("boom")))
         result = has_meta_tensors(model)
         assert result is None, "Result must not be empty"
 
     def test_named_parameters_typeerror_fallback(self):
-        from codex.rag.utils import has_meta_tensors
 
         def named_params_raises_on_kwarg(**kwargs):
             if kwargs:
@@ -430,7 +450,6 @@ class TestHasMetaTensorsSubmoduleWalk:
         assert result is False, "Result must not be empty"
 
     def test_named_buffers_typeerror_fallback(self):
-        from codex.rag.utils import has_meta_tensors
 
         def named_bufs_raises_on_kwarg(**kwargs):
             if kwargs:
@@ -454,7 +473,6 @@ class TestHasMetaTensorsSubmoduleWalk:
 
 class TestSafeModelToDevice:
     def test_returns_model_when_has_meta_tensors_is_none(self):
-        from codex.rag.utils import safe_model_to_device
 
         model = object()
         with patch("codex.rag.utils.has_meta_tensors", return_value=None):
@@ -462,7 +480,6 @@ class TestSafeModelToDevice:
         assert result is model, "Result must not be empty"
 
     def test_raises_when_meta_tensors_and_no_to_empty(self):
-        from codex.rag.utils import safe_model_to_device
 
         model = SimpleNamespace()  # no to_empty attribute
         with patch("codex.rag.utils.has_meta_tensors", return_value=True):
@@ -470,7 +487,6 @@ class TestSafeModelToDevice:
                 safe_model_to_device(model, device="cpu")
 
     def test_meta_path_calls_to_empty_and_reset_parameters(self):
-        from codex.rag.utils import safe_model_to_device
 
         inner_mod = MagicMock()
         inner_mod.reset_parameters = MagicMock()
@@ -484,7 +500,6 @@ class TestSafeModelToDevice:
         assert result is model, "Result must not be empty"
 
     def test_meta_path_skips_reset_when_no_modules(self):
-        from codex.rag.utils import safe_model_to_device
 
         model = SimpleNamespace()
         materialized = SimpleNamespace()
@@ -495,7 +510,6 @@ class TestSafeModelToDevice:
         assert result is materialized, "Result must not be empty"
 
     def test_import_error_falls_back_to_try_model_to(self):
-        from codex.rag.utils import safe_model_to_device
 
         model = SimpleNamespace()
         model.to = MagicMock(return_value=model)
@@ -505,7 +519,6 @@ class TestSafeModelToDevice:
         assert result is model, "Result must not be empty"
 
     def test_generic_exception_raises_runtime_error(self):
-        from codex.rag.utils import safe_model_to_device
 
         with patch("codex.rag.utils.has_meta_tensors", side_effect=RuntimeError("crash")):
             with pytest.raises(RuntimeError):
@@ -519,7 +532,6 @@ class TestSafeModelToDevice:
 
 class TestTryModelTo:
     def test_calls_to_with_kwargs(self):
-        from codex.rag.utils import _try_model_to
 
         model = MagicMock()
         model.to.return_value = model
@@ -528,7 +540,6 @@ class TestTryModelTo:
         model.to.assert_called()
 
     def test_typeerror_fallback_to_positional(self):
-        from codex.rag.utils import _try_model_to
 
         model = MagicMock()
         model.to.side_effect = [TypeError("no kwargs"), model]
@@ -536,7 +547,6 @@ class TestTryModelTo:
         assert result is model, "Result must not be empty"
 
     def test_returns_model_when_no_to_method(self):
-        from codex.rag.utils import _try_model_to
 
         model = SimpleNamespace()  # no .to()
         result = _try_model_to(model, "cpu")
@@ -550,11 +560,9 @@ class TestTryModelTo:
 
 class TestModelUtilsSafeLoad:
     def test_raises_on_load_failure(self):
-        pytest.importorskip(
             "sentence_transformers",
             reason="sentence_transformers not installed — skipping meta-tensor load tests",
         )
-        from codex.rag._model_utils import safe_load_sentence_transformer
 
         with patch(
             "sentence_transformers.SentenceTransformer",
@@ -565,11 +573,9 @@ class TestModelUtilsSafeLoad:
 
     def test_raises_attributeerror_on_missing_to_empty(self):
         """Raise RuntimeError when meta fallback returns a model without to_empty()."""
-        pytest.importorskip(
             "sentence_transformers",
             reason="sentence_transformers not installed — skipping meta-tensor load tests",
         )
-        from codex.rag import _model_utils as _mu
 
         no_to_empty_model = MagicMock(spec=[])  # no to_empty attribute
 
@@ -586,7 +592,6 @@ class TestModelUtilsSafeLoad:
 
     def test_meta_fallback_materializes_and_returns_model(self, monkeypatch):
         """Meta fallback should materialize to CPU and verify all params are non-meta."""
-        from codex.rag._model_utils import safe_load_sentence_transformer
 
         fake_st_module = SimpleNamespace()
         materialized_model = MagicMock()
@@ -610,7 +615,6 @@ class TestModelUtilsSafeLoad:
 
     def test_meta_fallback_raises_when_meta_params_remain(self, monkeypatch):
         """Meta fallback should fail if any parameter remains on the meta device."""
-        from codex.rag._model_utils import safe_load_sentence_transformer
 
         fake_st_module = SimpleNamespace()
         materialized_model = MagicMock()
@@ -637,7 +641,6 @@ class TestModelUtilsSafeLoad:
 
 class TestIndexerEmbedChunksImportError:
     def test_embed_chunks_raises_on_missing_sentence_transformers(self):
-        from codex.rag import indexer as _mod
 
         with patch.dict("sys.modules", {"sentence_transformers": None}):
             with pytest.raises(ImportError):
@@ -654,7 +657,6 @@ class TestIndexerEmbedChunksImportError:
 
 class TestIndexerBuildIndexErrors:
     def test_build_index_from_files_raises_when_no_valid_files(self, tmp_path):
-        from codex.rag import indexer as _mod
 
         nonexistent = tmp_path / "does_not_exist.txt"
         with pytest.raises(ValueError, match="No valid input files found"):
@@ -672,7 +674,6 @@ class TestIndexerBuildIndexErrors:
 
 class TestManageTenantIndicesError:
     def test_invalid_operation_returns_failure(self, tmp_path):
-        from codex.rag import indexer as _mod
 
         result = _mod.manage_tenant_indices(
             tenant_id="t1",
@@ -693,7 +694,6 @@ class TestSentenceChunkerEdgeCases:
 
     def test_sentence_chunker_handles_whitespace_only_split(self):
         """Verify SentenceChunker filters out whitespace-only sentences."""
-        from codex.rag.ingestion.chunker import ChunkingConfig, ChunkingStrategy, SentenceChunker
 
         config = ChunkingConfig(
             strategy=ChunkingStrategy.SENTENCE,
@@ -710,7 +710,6 @@ class TestSentenceChunkerEdgeCases:
 
     def test_fixed_size_chunker_min_chunk_size_filter(self):
         """Cover FixedSizeChunker filtering of sub-minimum chunks."""
-        from codex.rag.ingestion.chunker import ChunkingConfig, ChunkingStrategy, FixedSizeChunker
 
         config = ChunkingConfig(
             strategy=ChunkingStrategy.FIXED_SIZE,

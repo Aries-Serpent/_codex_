@@ -9,11 +9,12 @@ Tests for 4-layer cache hierarchy (L1-L4):
 
 Coverage: 40+ tests for cache management validation
 """
-
 import hashlib
 import time
+        import datetime
+        import time
 
-import pytest
+
 
 
 class TestL1ArtifactCache: # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
@@ -71,7 +72,6 @@ class TestL1ArtifactCache: # pragma: allowlist secret # pragma: allowlist secret
     
     def test_l1_cache_expiration(self):
         """Artifact cache expiration after 7 days"""
-        import datetime
         cache_created = datetime.datetime.now() - datetime.timedelta(days=5)
         cache_ttl_days = 7
         
@@ -382,7 +382,6 @@ class TestCachePerformance:
     
     def test_cache_key_generation_speed(self):
         """Cache key generation < 1ms per key"""
-        import time
         
         start = time.time()
         for i in range(1000):

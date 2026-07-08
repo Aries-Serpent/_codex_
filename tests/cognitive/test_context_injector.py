@@ -15,15 +15,15 @@ Test Categories:
 - Performance constraints (< 50ms total)
 - Integration with OODA loop
 """
-
 import asyncio
 import time
 from datetime import datetime, timedelta
-
 import numpy as np
-import pytest
-
 from scripts.cognitive.context_injector import (
+    from scripts.cognitive.ooda_loop_executor import OODAExecutor, StateProvider
+
+
+
     ConfidenceMetrics,
     ContextFusionEngine,
     ContextInjector,
@@ -533,7 +533,6 @@ async def test_metrics_aggregation():
 @pytest.mark.asyncio
 async def test_context_injector_with_executor_integration():
     """Test context injector integration with OODA executor."""
-    from scripts.cognitive.ooda_loop_executor import OODAExecutor, StateProvider
     
     class TestStateProvider(StateProvider):
         def get_repo_state(self):

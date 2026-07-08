@@ -3,10 +3,11 @@ Test Eval Minimal Cli
 
 Test module for eval minimal cli.
 """
-
+import pytest
 from pathlib import Path
-
 from codex_ml.cli import eval_minimal
+
+
 
 
 class DummyLoop:

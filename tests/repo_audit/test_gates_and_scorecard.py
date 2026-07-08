@@ -3,12 +3,13 @@ Test Gates And Scorecard
 
 Test module for gates and scorecard.
 """
-
+import pytest
 from pathlib import Path
-
 from codex_audit.gates import run_gates
 from codex_audit.policy import write_policy_mapping
 from codex_audit.scorecard import render_scorecard
+
+
 
 
 def test_run_gates_and_render_scorecard(tmp_path: Path) -> None:

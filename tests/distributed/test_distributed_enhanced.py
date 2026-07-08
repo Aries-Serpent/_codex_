@@ -8,17 +8,19 @@ Tests for accelerate initialization guards, CPU fallback,
 mock multi-GPU coordination, gradient synchronization,
 distributed data loaders, and checkpoint synchronization.
 """
-
+import pytest
 import os
 import sys
 from pathlib import Path
 from unittest.mock import Mock, patch
+import accelerate_init_guard
+        from unittest.mock import MagicMock
+
 
 # Add training directory to path
 training_dir = Path(__file__).parent.parent.parent / "training"
 sys.path.insert(0, str(training_dir))
 
-import accelerate_init_guard
 
 
 class TestAccelerateAvailability:
@@ -196,7 +198,6 @@ class TestGradientSynchronization:
     @patch("src.training.accelerate_init_guard.Accelerator", create=True)
     def test_gradient_accumulation_mock(self, mock_accelerator):
         """Test gradient accumulation with accelerator"""
-        from unittest.mock import MagicMock
 
         mock_acc = MagicMock()
         mock_accelerator.return_value = mock_acc

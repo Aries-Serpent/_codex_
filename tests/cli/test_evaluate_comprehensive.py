@@ -7,17 +7,16 @@ Tests cover:
 - Error handling
 - Integration with Hydra
 """
-
 from __future__ import annotations
-
 import sys
 from unittest.mock import Mock, patch
+    import codex_ml.cli.evaluate as evaluate
 
-import pytest
+
+
 
 # Import module under test
 try:
-    import codex_ml.cli.evaluate as evaluate
 except ImportError:
     pytest.skip("evaluate module not available", allow_module_level=True)
 

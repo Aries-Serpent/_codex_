@@ -1,4 +1,5 @@
 """Day 2: Compatibility and regression tests"""
+import pytest
 
 
 class TestCompatibility:

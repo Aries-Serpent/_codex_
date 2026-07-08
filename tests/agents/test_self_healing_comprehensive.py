@@ -5,14 +5,34 @@ Target: 38.16% → 70%+ coverage
 Strategy: Test all main classes and their core methods
 Focus: DetectedIssue, RemediationAction, DiagnosticResult, SelfHealingEngine
 """
-
 import tempfile
 from pathlib import Path
+    from agents.self_healing import RemediationAction
+        from agents.self_healing import IssueType
+        from agents.self_healing import IssueSeverity
+        from agents.self_healing import DetectedIssue, IssueSeverity, IssueType
+        from agents.self_healing import DetectedIssue, IssueSeverity, IssueType
+        from agents.self_healing import DetectedIssue, IssueSeverity, IssueType
+        from agents.self_healing import DetectedIssue, IssueSeverity, IssueType
+        from agents.self_healing import RemediationAction
+        from agents.self_healing import RemediationAction
+        from agents.self_healing import DiagnosticResult
+        from agents.self_healing import SelfHealingEngine
+        from agents.self_healing import SelfHealingEngine
+        from agents.self_healing import SelfHealingEngine
+        from agents.self_healing import SelfHealingEngine
+        from agents.self_healing import SelfHealingEngine
+        from agents.self_healing import SelfHealingEngine
+        from agents.self_healing import (
+        from agents.self_healing import RemediationAction, SelfHealingEngine
+        from agents.self_healing import SelfHealingEngine
+        from agents.self_healing import SelfHealingEngine
+        from agents.self_healing import IssueType, SelfHealingEngine
+        from agents.self_healing import SelfHealingEngine
 
-import pytest
+
 
 try:
-    from agents.self_healing import RemediationAction
 except ImportError:
     RemediationAction = None  # type: ignore[assignment,misc]
 
@@ -26,7 +46,6 @@ class TestIssueTypeEnum:
 
     def test_issue_type_values(self):
         """Test all IssueType enum values exist."""
-        from agents.self_healing import IssueType
 
         assert IssueType.TEST_FAILURE is not None, "TEST_FAILURE must be initialized"
         assert IssueType.BUILD_FAILURE is not None, "BUILD_FAILURE must be initialized"
@@ -41,7 +60,6 @@ class TestIssueTypeEnum:
 
     def test_issue_severity_values(self):
         """Test IssueSeverity enum values exist."""
-        from agents.self_healing import IssueSeverity
 
         assert IssueSeverity.CRITICAL is not None, "CRITICAL must be initialized"
         assert IssueSeverity.HIGH is not None, "HIGH must be initialized"
@@ -60,7 +78,6 @@ class TestDetectedIssue:
 
     def test_detected_issue_creation(self):
         """Test basic DetectedIssue creation."""
-        from agents.self_healing import DetectedIssue, IssueSeverity, IssueType
 
         issue = DetectedIssue(
             issue_type=IssueType.TEST_FAILURE,
@@ -75,7 +92,6 @@ class TestDetectedIssue:
 
     def test_detected_issue_with_all_fields(self):
         """Test DetectedIssue with all optional fields."""
-        from agents.self_healing import DetectedIssue, IssueSeverity, IssueType
 
         issue = DetectedIssue(
             issue_type=IssueType.IMPORT_ERROR,
@@ -102,7 +118,6 @@ class TestDetectedIssue:
 
     def test_detected_issue_to_dict(self):
         """Test DetectedIssue.to_dict() method."""
-        from agents.self_healing import DetectedIssue, IssueSeverity, IssueType
 
         issue = DetectedIssue(
             issue_type=IssueType.BUILD_FAILURE,
@@ -121,7 +136,6 @@ class TestDetectedIssue:
 
     def test_detected_issue_auto_title(self):
         """Test that title is auto-generated from description."""
-        from agents.self_healing import DetectedIssue, IssueSeverity, IssueType
 
         long_desc = "This is a very long description that should be truncated for the title"
         issue = DetectedIssue(
@@ -144,7 +158,6 @@ class TestRemediationAction:
 
     def test_remediation_action_creation(self):
         """Test basic RemediationAction creation."""
-        from agents.self_healing import RemediationAction
 
         try:
             action = RemediationAction(
@@ -160,7 +173,6 @@ class TestRemediationAction:
 
     def test_remediation_action_with_steps(self):
         """Test RemediationAction with multiple steps."""
-        from agents.self_healing import RemediationAction
 
         try:
             action = RemediationAction(
@@ -185,7 +197,6 @@ class TestDiagnosticResult:
 
     def test_diagnostic_result_creation(self):
         """Test basic DiagnosticResult creation."""
-        from agents.self_healing import DiagnosticResult
 
         try:
             result = DiagnosticResult(
@@ -215,7 +226,6 @@ class TestSelfHealingEngineCore:
 
     def test_engine_initialization(self):
         """Test SelfHealingEngine can be initialized."""
-        from agents.self_healing import SelfHealingEngine
 
         engine = SelfHealingEngine()
 
@@ -226,7 +236,6 @@ class TestSelfHealingEngineCore:
 
     def test_engine_with_custom_repo_root(self):
         """Test SelfHealingEngine with custom repo root."""
-        from agents.self_healing import SelfHealingEngine
 
         custom_path = Path(os.path.join(tempfile.gettempdir(), "test_repo"))
         engine = SelfHealingEngine(repo_root=custom_path)
@@ -235,7 +244,6 @@ class TestSelfHealingEngineCore:
 
     def test_detect_issues_from_logs(self):
         """Test detecting issues from log output."""
-        from agents.self_healing import SelfHealingEngine
 
         engine = SelfHealingEngine()
 
@@ -254,7 +262,6 @@ class TestSelfHealingEngineCore:
 
     def test_detect_import_error(self):
         """Test detecting import errors."""
-        from agents.self_healing import SelfHealingEngine
 
         engine = SelfHealingEngine()
 
@@ -271,7 +278,6 @@ class TestSelfHealingEngineCore:
 
     def test_detect_dependency_conflict(self):
         """Test detecting dependency conflicts."""
-        from agents.self_healing import SelfHealingEngine
 
         engine = SelfHealingEngine()
 
@@ -283,7 +289,6 @@ class TestSelfHealingEngineCore:
 
     def test_diagnose_issue(self):
         """Test diagnosing a detected issue from log output."""
-        from agents.self_healing import SelfHealingEngine
 
         engine = SelfHealingEngine()
 
@@ -298,7 +303,6 @@ class TestSelfHealingEngineCore:
 
     def test_suggest_remediation(self):
         """Test suggesting remediation for an issue."""
-        from agents.self_healing import (
             DetectedIssue,
             IssueSeverity,
             IssueType,
@@ -321,7 +325,6 @@ class TestSelfHealingEngineCore:
 
     def test_apply_remediation(self):
         """Test applying a remediation action (dry run)."""
-        from agents.self_healing import RemediationAction, SelfHealingEngine
 
         engine = SelfHealingEngine()
 
@@ -341,7 +344,6 @@ class TestSelfHealingEngineCore:
 
     def test_analyze_test_failures(self):
         """Test analyzing test failures specifically."""
-        from agents.self_healing import SelfHealingEngine
 
         engine = SelfHealingEngine()
 
@@ -358,7 +360,6 @@ class TestSelfHealingEngineCore:
 
     def test_check_dependencies(self):
         """Test checking dependency status."""
-        from agents.self_healing import SelfHealingEngine
 
         engine = SelfHealingEngine()
 
@@ -379,7 +380,6 @@ class TestIssuePatternMatching:
 
     def test_register_custom_pattern(self):
         """Test registering custom issue detection pattern."""
-        from agents.self_healing import IssueType, SelfHealingEngine
 
         engine = SelfHealingEngine()
 
@@ -401,7 +401,6 @@ class TestIssuePatternMatching:
 
     def test_match_test_failure_pattern(self):
         """Test matching test failure patterns."""
-        from agents.self_healing import SelfHealingEngine
 
         engine = SelfHealingEngine()
 

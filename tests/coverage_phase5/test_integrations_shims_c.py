@@ -60,6 +60,7 @@ async def test_shim_2_call():
 @pytest.mark.timeout(30)
 async def test_shim_2_shutdown():
     """Test shim shutdown."""
+import pytest
     shim = ExternalServiceShim("service_2")
     await shim.initialize()
     result = await shim.shutdown()

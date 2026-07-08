@@ -3,17 +3,16 @@ Test Ddp Env Optin Smoke
 
 Test module for ddp env optin smoke.
 """
-
 from __future__ import annotations
-
-import pytest
-
 ddp = pytest.importorskip("codex_ml.distributed", reason="distributed module required")
+        import torch.distributed as dist  # type: ignore
+
+
+
 
 
 def _torch_distributed_available() -> bool:
     try:
-        import torch.distributed as dist  # type: ignore
 
         return bool(getattr(dist, "is_available", lambda: False)())
     except ImportError:

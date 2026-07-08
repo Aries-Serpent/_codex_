@@ -4,12 +4,14 @@ Covers:
   - _get_branch_head_sha() : parses the GitHub branches API response
   - main() self-suppress   : skips posting when branch HEAD ≠ COMMIT_SHA
 """
-
 from __future__ import annotations
-
+import pytest
 import sys
 from pathlib import Path
 from unittest.mock import (
+import post_rescue_comment as prc
+
+
     patch,  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 )
 
@@ -20,7 +22,6 @@ SCRIPTS_CI = Path(__file__).resolve().parents[2] / "scripts" / "ci"
 if str(SCRIPTS_CI) not in sys.path:
     sys.path.insert(0, str(SCRIPTS_CI))
 
-import post_rescue_comment as prc
 
 
 class TestGetBranchHeadSha:

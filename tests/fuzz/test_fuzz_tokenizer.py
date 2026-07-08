@@ -128,6 +128,7 @@ def test_fuzz_normalise_text_string_returns_list(text):
 @settings(max_examples=100, deadline=None)
 def test_fuzz_extract_texts_from_line_never_raises(line):
     """Fuzz: _extract_texts_from_line must never raise on arbitrary input."""
+import pytest
     _, _extract_texts_from_line = _import_jsonl()
     try:
         result = list(_extract_texts_from_line(line))

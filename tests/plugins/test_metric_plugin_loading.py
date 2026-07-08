@@ -3,6 +3,7 @@
 
 def test_metric_plugins_graceful_with_no_entry_points():
     """Plugin system works even when no entry points are defined."""
+import pytest
     # This test verifies the system is graceful when:
     # - No plugins are installed
     # - importlib.metadata is available but returns no entry points

@@ -1,16 +1,15 @@
 """
-pytest.importorskip("tensorboard")
 Test Train Smoke
 
 Test module for train smoke.
 """
-
-import math
-
-import pytest
-
+pytest.importorskip("tensorboard")
 torch = pytest.importorskip("torch")
 training_ft = pytest.importorskip("training.functional_training")
+import math
+
+
+
 
 TrainCfg = training_ft.TrainCfg
 run_custom_trainer = training_ft.run_custom_trainer

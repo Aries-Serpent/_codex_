@@ -12,10 +12,9 @@ Pattern Applied:
 - ✅ Boundary condition testing
 - ✅ Error handling with message validation
 """
-
 from typing import Any, Dict, List
 
-import pytest
+
 
 
 class JSONRPCRouter:

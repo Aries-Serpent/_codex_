@@ -55,6 +55,7 @@ async def test_worker_pool_submit():
 @pytest.mark.timeout(30)
 async def test_worker_pool_wait_all():
     """Test waiting for all workers to complete."""
+import pytest
     pool = WorkerPool(4)
 
     for _ in range(3):

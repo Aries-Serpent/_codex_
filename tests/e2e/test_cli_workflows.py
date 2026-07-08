@@ -8,12 +8,12 @@ Created: 2026-01-18
 Phase: 16.2 - End-to-End Testing
 Tests: 15+
 """
-
 import subprocess
 import sys
 from pathlib import Path
+        import tempfile
 
-import pytest
+
 
 # Repository root
 REPO_ROOT = Path(__file__).parents[2]
@@ -165,7 +165,6 @@ class TestCLIOutputWorkflow:
 
     def test_output_directory_writable(self):
         """Verify output directories can be created."""
-        import tempfile
 
         with tempfile.TemporaryDirectory() as tmpdir:
             output_path = Path(tmpdir) / "test_output"

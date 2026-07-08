@@ -3,10 +3,9 @@ Test Metrics Export
 
 Test module for metrics export.
 """
-
 import importlib
 
-import pytest
+
 
 
 def test_import_module():

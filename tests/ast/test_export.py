@@ -362,6 +362,7 @@ class TestExportKnowledgeGraphFunction:
 
     def test_export_different_formats(self, sample_nodes):
         """Test exporting to different formats."""
+import pytest
         for fmt in [
             ExportFormat.JSON,
             ExportFormat.GRAPHML,

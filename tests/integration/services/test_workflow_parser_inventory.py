@@ -28,6 +28,7 @@ jobs:
 @pytest.mark.integration
 def test_workflow_parser_invalid_yaml():
     """Test WorkflowParser handles invalid YAML."""
+import pytest
     invalid_yaml = "{ invalid yaml: [ unclosed"
     parser = WorkflowParser()
     with pytest.raises(ValueError, match="Invalid YAML"):

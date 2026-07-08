@@ -1,18 +1,17 @@
 """
 Tests for the high-level Authenticator service.
 """
-
-import pytest
-
 from src.codex.auth.authenticator import Authenticator, LoginResult
 from src.codex.auth.exceptions import (
+from src.codex.auth.mfa_provider import MFAProvider
+from src.codex.auth.token_manager import TokenManager, TokenType
+from src.codex.auth.user_store import UserStore
+
+
     InvalidCredentialsError,
     MFARequiredError,
     MFAVerificationError,
 )
-from src.codex.auth.mfa_provider import MFAProvider
-from src.codex.auth.token_manager import TokenManager, TokenType
-from src.codex.auth.user_store import UserStore
 
 # ---------------------------------------------------------------------------
 # Helpers # pragma: allowlist secret # pragma: allowlist secret

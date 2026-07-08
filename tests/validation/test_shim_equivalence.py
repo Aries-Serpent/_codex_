@@ -4,11 +4,10 @@ Test shim equivalence - verify that legacy and canonical imports expose equivale
 This test validates that shim modules correctly forward all public APIs from legacy modules,
 ensuring import path changes don't break functionality.
 """
-
 import importlib
 import os
 
-import pytest
+
 
 DEFAULT_MIN_OVERLAP = 3
 

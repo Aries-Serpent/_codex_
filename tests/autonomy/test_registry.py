@@ -2,15 +2,14 @@
 Tests for Phase 1 — Autonomy State Registry
 (src/codex/autonomy/registry.py)
 """
-
 from __future__ import annotations
-
 import textwrap
 from pathlib import Path
-
-import pytest
-
 from codex.autonomy.registry import (
+
+
+
+
     AutonomyMode,
     AutonomyPolicyError,
     AutonomyRegistry,

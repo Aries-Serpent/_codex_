@@ -3,16 +3,18 @@ Comprehensive tests for Pattern 38 (RP-033): Mock Object Cleanup Missing
 
 Tests the detection and auto-fixing of mock objects without proper cleanup.
 """
-
 import sys
 from pathlib import Path
+from auto_fix_common_issues import CommonIssueFixer
+from unittest.mock import Mock
+from unittest.mock import MagicMock
+from unittest.mock import Mock, MagicMock, AsyncMock, PropertyMock
 
-import pytest
+
 
 # Add scripts/ci to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "ci"))
 
-from auto_fix_common_issues import CommonIssueFixer
 
 
 class TestRP033MockCleanup:
@@ -33,7 +35,6 @@ class TestRP033MockCleanup:
 
         test_file = tests_dir / "test_mock.py"
         test_file.write_text("""
-from unittest.mock import Mock
 
 def test_example():
     mock = Mock()
@@ -52,7 +53,6 @@ def test_example():
 
         test_file = tests_dir / "test_mock.py"
         test_file.write_text("""
-from unittest.mock import MagicMock
 
 def test_example():
     magic_mock = MagicMock()
@@ -221,7 +221,6 @@ def test_example():
 
         test_file = tests_dir / "test_mock.py"
         test_file.write_text("""
-from unittest.mock import Mock, MagicMock, AsyncMock, PropertyMock
 
 def test_mocks():
     mock = Mock()

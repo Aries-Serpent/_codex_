@@ -519,6 +519,7 @@ class TestQITesting:
     Tests for the QI_TESTING improvement area that drives the
     quantum-compliance-tuning-agent iterative tuning loop via QuantumPlansetEngine.
     """
+import pytest
 
     @pytest.fixture
     def engine(self) -> QuantumPlansetEngine:

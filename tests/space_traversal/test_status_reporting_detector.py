@@ -1,8 +1,9 @@
 """
 Tests for status_reporting detector (v1.4.0)
 """
-
+import pytest
 from scripts.space_traversal.detectors.status_reporting import detect
+
 
 
 def test_status_reporting_detector_basic():

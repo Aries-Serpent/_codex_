@@ -1,11 +1,12 @@
 """Tests for the lightweight performance profiler."""
-
 from __future__ import annotations
-
+import pytest
 import json
 import time
-
 from codex_ml.perf.profiler import PerformanceProfiler
+
+
+
 
 
 def test_performance_profiler_collects_timings(tmp_path):

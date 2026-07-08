@@ -1,21 +1,20 @@
 """
-pytest.importorskip("mlflow")
 Test Training Metadata Logging
 
 Test module for training metadata logging.
 """
-
 from __future__ import annotations
-
+pytest.importorskip("mlflow")
+torch = pytest.importorskip("torch")
 import builtins
 import json
 from pathlib import Path
-
-import pytest
-
 from codex_ml.training import run_functional_training
 
-torch = pytest.importorskip("torch")
+
+
+
+
 
 
 def test_run_functional_training_records_metadata(

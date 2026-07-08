@@ -7,15 +7,18 @@ Top 5 CI scripts tested:
 4. scripts/ci/ci_pattern_pipeline.py     — CI pattern orchestrator
 5. scripts/ci/check_pr_comments.py       — PR comment gate
 """
-
 from __future__ import annotations
-
 import importlib
 import importlib.util
 import sys
 from pathlib import Path
+        import importlib.util
+        import importlib.util
+        import json
+        import importlib.util
 
-import pytest
+
+
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 CI_DIR = REPO_ROOT / "scripts" / "ci"
@@ -193,7 +196,6 @@ class TestCheckDeferralLanguage:
 class TestBatchScanIntegration:
     @pytest.fixture
     def mod(self):
-        import importlib.util
 
         _sys = sys
         spec = importlib.util.spec_from_file_location(
@@ -263,7 +265,6 @@ class TestBatchScanIntegration:
 class TestCiPatternPipeline:
     @pytest.fixture
     def mod(self):
-        import importlib.util
 
         spec = importlib.util.spec_from_file_location(
             "ci_pattern_pipeline",
@@ -278,7 +279,6 @@ class TestCiPatternPipeline:
         report = {"status": "ok", "fixed": 0, "checked": 0, "patterns": {}}
         mod._write_artefact(str(artefact), report, recorded=0, pipeline_status="ok")
         assert artefact.exists(), "Condition must be true"
-        import json
 
         loaded = json.loads(artefact.read_text())
         assert loaded["pipeline_status"] == "ok", "Condition must be true"
@@ -304,7 +304,6 @@ class TestCiPatternPipeline:
 class TestCheckPrComments:
     @pytest.fixture
     def mod(self):
-        import importlib.util
 
         spec = importlib.util.spec_from_file_location(
             "check_pr_comments",

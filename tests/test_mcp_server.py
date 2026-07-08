@@ -3,6 +3,11 @@ Test Mcp Server
 
 Test module for mcp server.
 """
+import sys
+from pathlib import Path
+from codex.logging.structured_logger import logger
+    from mcp.config import MCPConfig
+    from mcp.server import MCPJSONRPCServer
 
 #!/usr/bin/env python3
 """
@@ -10,12 +15,8 @@ Test script for MCP JSON-RPC Server.
 Verifies complete functionality of the server.
 """
 
-import sys
-from pathlib import Path
 
-import pytest
 
-from codex.logging.structured_logger import logger
 
 
 def find_repo_root() -> Path:
@@ -39,8 +40,6 @@ sys.path.insert(0, str(repo_root))
 
 # Try to import MCP modules - skip tests if not available
 try:
-    from mcp.config import MCPConfig
-    from mcp.server import MCPJSONRPCServer
 
     MCP_AVAILABLE = True
 except ImportError:

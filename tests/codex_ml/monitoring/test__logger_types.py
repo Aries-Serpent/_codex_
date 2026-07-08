@@ -3,10 +3,9 @@ Test  Logger Types
 
 Test module for  logger types.
 """
-
 import importlib
 
-import pytest
+
 
 
 def test_import_module():

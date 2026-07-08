@@ -1,11 +1,10 @@
 from __future__ import annotations
-
-import importlib
-
-import pytest
-
 pytest.importorskip("fastapi")
+import importlib
 from fastapi.testclient import TestClient
+
+
+
 
 
 def test_create_app_health_and_root() -> None:

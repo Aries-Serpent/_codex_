@@ -1,14 +1,16 @@
 """Unit tests for codex_ml.utils.reproducibility_hardening."""
-
 from __future__ import annotations
-
+import pytest
 import json
 import os
 import sys
 from pathlib import Path
 from unittest.mock import patch
-
 from codex_ml.utils.reproducibility_hardening import (
+        import numpy  # noqa: F401 — availability probe only
+
+
+
     ReproducibilityManager,
     create_reproducibility_manifest,
     enable_deterministic_training,
@@ -38,7 +40,6 @@ def test_enable_deterministic_training_sets_pythonhashseed():
 def test_enable_deterministic_training_numpy_seeded_when_available():
     # Probe whether numpy is installed; the assertion adapts based on availability.
     try:
-        import numpy  # noqa: F401 — availability probe only
 
         status = enable_deterministic_training(seed=1)
         assert status.get("numpy") is True, "Condition must be true"

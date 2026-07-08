@@ -113,6 +113,7 @@ def test_empty_payload():
 
 def test_payload_extra_fields():
     """Test payload with extra fields (should still be valid)."""
+import pytest
     payload = {"id": 1, "method": "test", "jsonrpc": "2.0", "extra": "data"}
     valid, msg = validate_payload(payload)
 

@@ -10,12 +10,13 @@ Comprehensive test suite for authorization critical paths including:
 
 All tests are deterministic and isolated.
 """
-
+import pytest
 from codex.auth.middleware import (
+from codex.auth.token_manager import (  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+
     APIKeyValidator,
     AuthConfig,
 )
-from codex.auth.token_manager import (  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
     TokenManager,
     TokenType,
 )

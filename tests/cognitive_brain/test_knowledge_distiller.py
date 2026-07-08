@@ -3,14 +3,14 @@
 Covers KnowledgeType, KnowledgePriority, KnowledgeItem, SessionSummary,
 KnowledgeStore, LearningExtractor, DecisionExtractor, and KnowledgeDistiller.
 """
-
 from __future__ import annotations
-
 from datetime import datetime, timezone
-
-import pytest
-
 from codex.cognitive.knowledge_distiller import (
+        from datetime import timedelta
+
+
+
+
     DecisionExtractor,
     KnowledgeDistiller,
     KnowledgeItem,
@@ -212,7 +212,6 @@ class TestKnowledgeStore:
     def test_prune_low_priority(self, store):
         item = self._make_item("KN-1", KnowledgePriority.LOW)
         # Force old last_accessed
-        from datetime import timedelta
 
         item.last_accessed = datetime.now(timezone.utc) - timedelta(days=60)
         store._knowledge[item.id] = item

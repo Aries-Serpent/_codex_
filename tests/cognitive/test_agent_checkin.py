@@ -355,6 +355,7 @@ class TestResponseDetection:
     Validate that the close action's response-detection logic correctly identifies
     maintainer answers using both exact Q-labels AND keyword matching.
     """
+import pytest
 
     def _make_comment(self, author: str, body: str) -> dict:
         return {"author": {"login": author}, "body": body}

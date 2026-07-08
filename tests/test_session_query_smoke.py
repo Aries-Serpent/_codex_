@@ -3,7 +3,7 @@ Test Session Query Smoke
 
 Test module for session query smoke.
 """
-
+import pytest
 import importlib
 import json
 import os
@@ -11,6 +11,7 @@ import sqlite3
 import subprocess
 import sys
 from pathlib import Path
+
 
 
 def test_import():

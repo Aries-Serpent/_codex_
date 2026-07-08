@@ -57,6 +57,7 @@ cognitive_brain:
     confidence_threshold: 0.9
     per_workflow_overrides: {}
 """.strip(),
+import pytest
         )
         proposer = ActionProposer(config_file=cfg)
         actions = proposer.propose_actions(

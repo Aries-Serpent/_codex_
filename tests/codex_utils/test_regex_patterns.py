@@ -1,15 +1,14 @@
 """Ensure codex_utils regex patterns remain importable and valid."""
-
 from __future__ import annotations
-
 import re
+    from codex_utils import regex_patterns
 
-import pytest
+
+
 
 
 @pytest.mark.parametrize("pattern_name", ["ENV_ASSIGNMENT", "PEM_BLOCK"])
 def test_patterns_compile(pattern_name: str) -> None:
-    from codex_utils import regex_patterns
 
     pattern = getattr(regex_patterns, pattern_name)
     assert isinstance(pattern, (str, re.Pattern))

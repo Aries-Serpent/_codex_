@@ -9,6 +9,7 @@ from codex.logging.db_utils import get_columns, infer_probable_table
 
 def test_db_utils_table_name() -> None:
     """`infer_probable_table` should select the expected table."""
+import pytest
 
     con = sqlite3.connect(":memory:")
     con.execute("CREATE TABLE other (id INTEGER)")

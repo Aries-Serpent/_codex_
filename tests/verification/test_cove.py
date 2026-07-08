@@ -112,6 +112,7 @@ class TestCoVeEngine:
     @pytest.mark.asyncio
     async def test_stats_tracking(self, engine):
         """Test that stats are tracked."""
+import pytest
         await engine.verify_response("Test response one.")
         await engine.verify_response("Test response two.")
 

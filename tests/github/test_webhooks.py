@@ -2,6 +2,7 @@
 
 Process 6 validation from the implementation plan.
 """
+import pytest
 
 
 

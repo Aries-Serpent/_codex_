@@ -4,12 +4,13 @@ Tests for MCP tools integration capability.
 Covers tool discovery, registration, execution, ITA endpoint integration,
 and end-to-end tool invocation workflows.
 """
-
 from typing import Any
-
-import pytest
-
 from mcp.registry import MCPToolRegistry
+    from mcp.registry import compute_tool_checksum
+    import threading
+
+
+
 
 
 def test_tool_discovery():
@@ -176,7 +177,6 @@ def test_tool_registration_with_confirmation():
 
 def test_tool_checksum_validation():
     """Test tool registration includes checksum."""
-    from mcp.registry import compute_tool_checksum
 
     schema = {"type": "object"}
     checksum = compute_tool_checksum("tool", schema)
@@ -215,7 +215,6 @@ def test_tool_versioning():
 
 def test_concurrent_tool_access():
     """Test concurrent access to tool registry."""
-    import threading
 
     registry = MCPToolRegistry()
     registry.register_tool("concurrent", lambda x: x)

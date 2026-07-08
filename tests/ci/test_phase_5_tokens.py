@@ -54,6 +54,7 @@ class TestScenario1MasterKeyNormal:
     Tests the primary token resolution path when CODEX_MASTER_KEY is available.
     This is the normal, expected operating condition.
     """
+import pytest
 
     def test_scenario_1_master_key_normal(
         self, env_with_master_key: Dict[str, str], token_log_capture: Any

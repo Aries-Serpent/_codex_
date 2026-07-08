@@ -7,9 +7,10 @@ exercised by the torch-dependent tests in tests/test_rag_utils.py:
   - lines 105-106: meta tensor detected in a submodule's parameter
   - lines 138-141: exception handler (ValueError/TypeError/RuntimeError)
 """
+import pytest
 from unittest.mock import MagicMock, patch
-
 from codex.rag.utils import check_for_meta_tensors
+
 
 
 class TestCheckForMetaTensorsMocked:

@@ -3,8 +3,11 @@ Test Resolve Dtype And Device
 
 Test module for resolve dtype and device.
 """
-
+import pytest
 import importlib
+        import torch  # type: ignore
+        import torch  # type: ignore
+
 
 
 def test_resolve_dtype_and_device_no_crash():
@@ -20,7 +23,6 @@ def test_resolve_dtype_and_device_no_crash():
     out_fp16 = resolve_dtype("fp16")
 
     try:
-        import torch  # type: ignore
 
         # Handle both actual torch types and mocks
         if out_f32 is not None and not isinstance(out_f32, type(None)):
@@ -52,7 +54,6 @@ def test_resolve_dtype_and_device_no_crash():
     dev = resolve_device(None)
     # Accept either torch.device or "cpu"
     try:
-        import torch  # type: ignore
 
         assert isinstance(dev, torch.device) or str(dev) == "cpu" or dev == "cpu"
     except ImportError:

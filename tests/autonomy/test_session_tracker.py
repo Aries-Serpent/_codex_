@@ -7,13 +7,13 @@ Validates:
 - Session metrics counting
 - Tombstone record creation for stale sessions
 """
-
+    return pytest.importorskip("session_tracker", reason="session_tracker not importable")
 import json
 import sys
 from pathlib import Path
 from unittest.mock import patch
 
-import pytest
+
 
 SCRIPTS_DIR = Path(__file__).resolve().parents[2] / "scripts"
 
@@ -22,7 +22,6 @@ def _import_tracker():
     """Dynamically import session_tracker module."""
     if str(SCRIPTS_DIR) not in sys.path:
         sys.path.insert(0, str(SCRIPTS_DIR))
-    return pytest.importorskip("session_tracker", reason="session_tracker not importable")
 
 
 class TestSessionTrackerImport:

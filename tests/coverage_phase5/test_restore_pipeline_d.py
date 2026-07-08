@@ -72,6 +72,7 @@ async def test_restore_pipeline_3_validate():
 @pytest.mark.timeout(30)
 async def test_restore_pipeline_3_restore():
     """Test pipeline restore."""
+import pytest
     pipeline = RestorePipeline("dr")
     await pipeline.discover_artifacts()
     await pipeline.validate_artifacts()

@@ -6,9 +6,9 @@ Tests cover:
 - Drift detection against baselines
 - Defaults coverage testing
 """
-
 from __future__ import annotations
-
+pytest.importorskip("hypothesis")
+pytest.importorskip("pydantic", reason="pydantic required for config validation")
 import hashlib
 import json
 import sys
@@ -16,14 +16,16 @@ import tempfile
 from pathlib import Path
 from typing import Any
 from unittest.mock import MagicMock
+from hypothesis import given, settings
+from hypothesis import strategies as st
+from pydantic import (
+    import yaml
 
-import pytest
-
-pytest.importorskip("hypothesis")
 
 
-pytest.importorskip("hypothesis", reason="hypothesis required for property tests")
-pytest.importorskip("pydantic", reason="pydantic required for config validation")
+
+
+
 
 # Ensure real torch is in sys.modules if available; only mock if torch is not installed
 try:
@@ -31,9 +33,6 @@ try:
 except ImportError:
     sys.modules["torch"] = MagicMock()
 
-from hypothesis import given, settings
-from hypothesis import strategies as st
-from pydantic import (
     BaseModel,
     ConfigDict,
     Field,
@@ -180,7 +179,6 @@ def validate_config(path_or_dict) -> TrainConfig:
     """Validate config from path or dict."""
     if isinstance(path_or_dict, dict):
         return validate_config_dict(path_or_dict)
-    import yaml
 
     with open(path_or_dict) as f:
         data = yaml.safe_load(f) or {}

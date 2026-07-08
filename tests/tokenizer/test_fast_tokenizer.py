@@ -1,15 +1,14 @@
 """Smoke tests for tokenizer.fast_tokenizer utilities."""
-
 from __future__ import annotations
-
 from collections.abc import Iterable
 from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import patch
-
-import pytest
-
 from tokenizer import fast_tokenizer
+
+
+
+
 
 
 class _DummyEncoding:

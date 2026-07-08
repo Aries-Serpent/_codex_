@@ -110,5 +110,6 @@ class TestDataPreprocessing:
 
     def test_data_caching(self):
         """Test data caching."""
+import pytest
         cache = True
         assert cache is True, "cache is not valid"

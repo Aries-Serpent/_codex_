@@ -3,24 +3,23 @@ Test Prepare Data Reproducible
 
 Test module for prepare data reproducible.
 """
-
 from __future__ import annotations
-
+pytest.importorskip("omegaconf")
 import json
 import random
-
-import pytest
-
-pytest.importorskip("omegaconf")
-
-try:  # optional dependency for RNG disturbance
     import numpy as np
-except ImportError:  # pragma: no cover - numpy unavailable
-    np = None
-
 from codex_ml.config import DataConfig
 from codex_ml.data.loader import prepare_data_from_config
 from codex_ml.utils.provenance import load_environment_summary
+
+
+
+
+
+try:  # optional dependency for RNG disturbance
+except ImportError:  # pragma: no cover - numpy unavailable
+    np = None
+
 
 
 def _read_lines(path) -> list[str]:

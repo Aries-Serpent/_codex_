@@ -9,21 +9,20 @@ Comprehensive test coverage for codex_ml/cli/codex_cli.py focusing on:
 - Integration with subcommands
 - Edge cases and boundary conditions
 """
-
 from unittest.mock import patch
-
-import pytest
-
-try:
     import click
     from click.testing import CliRunner
+    from codex_ml.cli.codex_cli import (
+
+
+
+try:
 
     HAS_CLICK = True
 except ImportError:
     HAS_CLICK = False
 
 try:
-    from codex_ml.cli.codex_cli import (
         codex,
         config_sweep,
         evaluate,

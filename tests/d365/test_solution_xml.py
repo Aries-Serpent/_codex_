@@ -3,18 +3,17 @@ Test Solution Xml
 
 Test module for solution xml.
 """
-
 from __future__ import annotations
-
-from pathlib import Path
-
-import pytest
-
 pytest.importorskip("defusedxml", reason="defusedxml required for XML security tests")
-from defusedxml import ElementTree
-
 pytest.importorskip("codex.dynamics.solution_xml", reason="codex.dynamics not installed")
+from pathlib import Path
+from defusedxml import ElementTree
 from codex.dynamics.solution_xml import (
+
+
+
+
+
     emit_solution_xml,
     load_solution_manifest,
 )

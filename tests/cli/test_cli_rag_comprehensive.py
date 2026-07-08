@@ -9,22 +9,23 @@ Tests cover:
 - Tenant management commands
 - Error handling and edge cases
 """
-
 from __future__ import annotations
-
+pytest.importorskip("typer")
 import json
 import tempfile
 from pathlib import Path
 from unittest.mock import MagicMock, patch
-
-import pytest
-
-pytest.importorskip("typer")
-
-
 from typer.testing import CliRunner
-
 from codex.cli_rag import _format_bytes, _validate_files, app
+        from typer import BadParameter
+        from typer import BadParameter
+
+
+
+
+
+
+
 
 
 @pytest.fixture
@@ -73,14 +74,12 @@ class TestValidateFiles:
 
     def test_validate_files_no_matches(self):
         """Verify error raised when no files match."""
-        from typer import BadParameter
 
         with pytest.raises(BadParameter, match="No valid files found"):
             _validate_files(["/nonexistent/path/*.txt"])
 
     def test_validate_files_empty_list(self):
         """Verify error raised for empty file list."""
-        from typer import BadParameter
 
         with pytest.raises(BadParameter):
             _validate_files([])

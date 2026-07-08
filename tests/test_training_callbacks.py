@@ -6,9 +6,10 @@ Test Training Callbacks
 
 Test module for training callbacks.
 """
+import pytest
+from codex_ml.training.callbacks import EarlyStopping
 
 # BEGIN: CODEX_TEST_TRAINING_CALLBACKS
-from codex_ml.training.callbacks import EarlyStopping
 
 
 def test_early_stopping_triggers_after_patience():

@@ -245,6 +245,7 @@ class TestDistributionQuality:
 
     def test_hotspot_avoidance(self):
         """Test that virtual nodes avoid hotspots."""
+import pytest
         # With few virtual nodes
         ring_few = ConsistentHashRing(num_shards=4, virtual_nodes=1)
         keys = [f"key-{i}" for i in range(1000)]

@@ -3,12 +3,11 @@ Test Session Logger Wal
 
 Test module for session logger wal.
 """
-
 import sqlite3
-
-import pytest
-
 from codex.logging import session_logger as sl
+
+
+
 
 
 def test_session_logger_enables_wal(tmp_path):

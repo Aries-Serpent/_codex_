@@ -8,20 +8,19 @@ Tests for:
 - Performance benchmarks
 - Integrity checks
 """
-
 import sqlite3
 import sys
 import tempfile
 from datetime import datetime, timedelta
 from pathlib import Path
 from unittest.mock import MagicMock, patch
+from codex.session_db import SessionDB
 
-import pytest
+
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "src"))
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from codex.session_db import SessionDB
 
 
 class TestSessionDB:

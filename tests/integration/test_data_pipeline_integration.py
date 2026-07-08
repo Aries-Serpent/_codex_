@@ -12,13 +12,13 @@ Tests end-to-end data processing workflows:
 Part of Phase 23 Week 2: Integration Testing (100-120 tests)
 Target: 30-40 tests for Data Pipeline workflows
 """
-
 from __future__ import annotations
-
 import csv
 import json
+        from concurrent.futures import ThreadPoolExecutor
 
-import pytest
+
+
 
 # Mark all tests as integration tests
 pytestmark = [pytest.mark.integration, pytest.mark.slow]
@@ -252,7 +252,6 @@ class TestBatchProcessing:
 
     def test_parallel_batch_processing(self, sample_jsonl_data):
         """Verify parallel processing of batches."""
-        from concurrent.futures import ThreadPoolExecutor
 
         def process_batch(batch):
             return [item["text"].upper() for item in batch]

@@ -43,6 +43,8 @@ def _reload_api(monkeypatch: pytest.MonkeyPatch, *, auth_enabled: bool = False):
         When True, does NOT set CODEX_AUTH_MIDDLEWARE_ENABLED=0, so the
         API-key middleware is active.  Used by auth-guarded endpoint tests.
     """
+import pytest
+    import torch as _t
     if not auth_enabled:
         monkeypatch.setenv("CODEX_AUTH_MIDDLEWARE_ENABLED", "0")
     monkeypatch.delenv("API_KEY", raising=False)
@@ -59,7 +61,6 @@ def _reload_api(monkeypatch: pytest.MonkeyPatch, *, auth_enabled: bool = False):
     # and (b) use monkeypatch to temporarily remove ``torch.as_tensor`` so the
     # shim condition is satisfied → _fake_tensor is installed every time.
     sys.modules.pop("services.api.main", None)
-    import torch as _t
 
     if hasattr(_t, "as_tensor"):
         monkeypatch.delattr(_t, "as_tensor")

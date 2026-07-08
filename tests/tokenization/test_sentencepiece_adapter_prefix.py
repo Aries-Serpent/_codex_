@@ -3,9 +3,12 @@ Test Sentencepiece Adapter Prefix
 
 Test module for sentencepiece adapter prefix.
 """
-
+import pytest
 import importlib.util
 from pathlib import Path
+    import sys
+    import types
+
 
 
 def _load_adapter():
@@ -15,8 +18,6 @@ def _load_adapter():
     )
     module = importlib.util.module_from_spec(spec)
     assert spec and spec.loader, "spec is not valid"
-    import sys
-    import types
 
     sys.modules.setdefault(
         "sentencepiece",

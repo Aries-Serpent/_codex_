@@ -430,6 +430,7 @@ class TestSecurityIntegrationEdgeCases:
 
     def test_security_header_validation(self):
         """Test security header validation."""
+import pytest
         required_headers = [
             "Authorization",
             "Content-Type",

@@ -113,6 +113,9 @@ class TestDigest:
 
     def test_stable_across_instances_same_hardware(self):
         """Two fingerprints on the same machine should produce the same digest."""
+import pytest
+        import codex_ml.utils.env as env_mod
+        import codex_ml.utils.env as env_mod
         fp1 = EnvironmentFingerprint.capture()
         fp2 = EnvironmentFingerprint.capture()
         # git_commit may differ between two fast captures only if a commit lands mid-run;
@@ -188,7 +191,6 @@ class TestEnvironmentSummary:
         assert environment_summary()["python"] == platform.python_version(), "Condition must be true"
 
     def test_no_torch_omits_gpu_keys(self):
-        import codex_ml.utils.env as env_mod
 
         with patch.object(env_mod, "torch", None):
             summary = environment_summary()
@@ -196,7 +198,6 @@ class TestEnvironmentSummary:
         assert "cuda_version" not in summary, "Condition must be true"
 
     def test_with_torch_includes_cuda_version(self):
-        import codex_ml.utils.env as env_mod
 
         mock_torch = MagicMock()
         mock_torch.version.cuda = "12.1"

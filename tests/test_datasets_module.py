@@ -3,19 +3,18 @@ Test Datasets Module
 
 Test module for datasets module.
 """
-
 from __future__ import annotations
+pytest.importorskip("torch", reason="PyTorch required for tests")
+    import torch
+from data.datasets import (
 
-import pytest
+
 
 # Skip entire module if torch is not available or unloadable
-pytest.importorskip("torch", reason="PyTorch required for tests")
 try:
-    import torch
 except (ImportError, AttributeError) as exc:  # pragma: no cover - runtime guard
     pytest.skip(f"PyTorch runtime not available: {exc}", allow_module_level=True)
 
-from data.datasets import (
     DataLoaderConfig,
     build_text_classification_dataloaders,
     load_text_classification_dataset,

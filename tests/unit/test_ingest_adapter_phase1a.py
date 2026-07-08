@@ -14,17 +14,16 @@ Comprehensive test coverage for the ingest adapter module covering:
 Tests follow patterns from existing codebase, use fixtures for temp directories,
 and include edge case coverage, error paths, and integration scenarios.
 """  # pragma: allowlist secret # pragma: allowlist secret
-
 import hashlib  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 import json
 import zipfile
 from datetime import datetime, timezone
 from pathlib import Path
 from unittest.mock import Mock, patch
-
-import pytest
-
 from src.codex.ingest.adapter import (
+
+
+
     MAX_FILE_SIZE_MB,
     MAX_FILES_COUNT,
     MAX_TOTAL_SIZE_MB,

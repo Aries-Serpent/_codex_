@@ -6,8 +6,9 @@ and auto-healer fix application mechanisms.
 
 Coverage: 30+ tests for auto-healer loop validation
 """
+        import time
+    import sys
 
-import pytest
 
 
 class TestAutoHealerPatternRP001:
@@ -438,7 +439,6 @@ class TestAutoHealerPerformance:
     def test_pattern_detection_performance(self):
         """Pattern detection must complete in < 1s per workflow"""
         # 200+ workflows × 1s = acceptable overhead
-        import time
         start = time.time()
         
         # Simulate detection on 10 workflows
@@ -465,7 +465,6 @@ class TestAutoHealerPerformance:
 def test_auto_healer_test_count():
     """Verify at least 30 auto-healer tests created"""
     # Count test methods in this file
-    import sys
     current_module = sys.modules[__name__]
     
     test_methods = [

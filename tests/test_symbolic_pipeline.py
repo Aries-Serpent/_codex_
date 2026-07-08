@@ -3,16 +3,15 @@ Test Symbolic Pipeline
 
 Test module for symbolic pipeline.
 """
-
 import math
+    import transformers
+    from codex_ml.symbolic_pipeline import (
 
-import pytest
+
 
 py = pytest
 
 try:
-    import transformers
-    from codex_ml.symbolic_pipeline import (
         ModelHandle,
         PretrainCfg,
         RewardModelCfg,

@@ -7,11 +7,37 @@ Tests cover Click-based CLI for tombstone archive operations:
 - Metadata parsing
 - Service integration
 """
-
 from unittest.mock import Mock, patch
-
-import pytest
 from click.testing import CliRunner
+            from src.codex.archive.cli import _parse_metadata
+            from src.codex.archive.cli import _parse_metadata
+            from src.codex.archive.cli import _parse_metadata
+            import click
+            from src.codex.archive.cli import _parse_metadata
+            from src.codex.archive.cli import _resolve_commit
+            from src.codex.archive.cli import _resolve_commit
+            from src.codex.archive.cli import _resolve_commit
+            from src.codex.archive.cli import cli
+            from src.codex.archive.cli import cli
+            from src.codex.archive.cli import cli
+            from src.codex.archive.cli import cli
+            import logging
+            from src.codex.archive.cli import _batch_progress_logger
+            import logging
+            from src.codex.archive.cli import _batch_progress_logger
+            from src.codex.archive.cli import _service
+            from src.codex.archive.cli import _service
+            import logging
+            from src.codex.archive.cli import _setup_logger
+            from src.codex.archive.cli import _load_config
+            from src.codex.archive.cli import _load_config
+            from src.codex.archive.cli import logger
+            from src.codex.archive import cli
+            from src.codex.archive.cli import redact_text_credentials
+            from src.codex.archive.cli import redact_url_credentials
+            from src.codex.archive.cli import cli
+
+
 
 # ==================== Fixtures ====================
 
@@ -53,7 +79,6 @@ class TestParseMetadata:
     def test_parse_valid_metadata(self):
         """Test parsing valid key=value entries."""
         try:
-            from src.codex.archive.cli import _parse_metadata
 
             result = _parse_metadata(["key1=value1", "key2=value2"])
             assert result == {"key1": "value1", "key2": "value2"}
@@ -63,7 +88,6 @@ class TestParseMetadata:
     def test_parse_metadata_with_equals_in_value(self):
         """Test parsing values containing equals sign."""
         try:
-            from src.codex.archive.cli import _parse_metadata
 
             result = _parse_metadata(["key=value=with=equals"])
             assert result == {"key": "value=with=equals"}, "Result must not be empty"
@@ -73,7 +97,6 @@ class TestParseMetadata:
     def test_parse_metadata_strips_whitespace(self):
         """Test that keys and values are stripped."""
         try:
-            from src.codex.archive.cli import _parse_metadata
 
             result = _parse_metadata(["  key  =  value  "])
             assert result == {"key": "value"}, "Result must not be empty"
@@ -83,9 +106,7 @@ class TestParseMetadata:
     def test_parse_metadata_invalid_format_raises(self):
         """Test that missing equals raises BadParameter."""
         try:
-            import click
 
-            from src.codex.archive.cli import _parse_metadata
 
             with pytest.raises(click.BadParameter):
                 _parse_metadata(["invalid_no_equals"])
@@ -102,7 +123,6 @@ class TestResolveCommit:
     def test_resolve_commit_passes_through(self):
         """Test that non-HEAD commits pass through."""
         try:
-            from src.codex.archive.cli import _resolve_commit
 
             result = _resolve_commit("abc123def")
             assert result == "abc123def", "Result must not be empty"
@@ -112,7 +132,6 @@ class TestResolveCommit:
     def test_resolve_head_uppercase(self):
         """Test HEAD keyword resolution (uppercase)."""
         try:
-            from src.codex.archive.cli import _resolve_commit
 
             with patch("subprocess.run") as mock_run:
                 mock_run.return_value = Mock(stdout="abc123def456\n")
@@ -124,7 +143,6 @@ class TestResolveCommit:
     def test_resolve_head_lowercase(self):
         """Test head keyword resolution (lowercase)."""
         try:
-            from src.codex.archive.cli import _resolve_commit
 
             with patch("subprocess.run") as mock_run:
                 mock_run.return_value = Mock(stdout="abc123def456\n")
@@ -143,7 +161,6 @@ class TestCLIGroup:
     def test_cli_group_exists(self):
         """Test that CLI group is defined."""
         try:
-            from src.codex.archive.cli import cli
 
             assert cli is not None, "cli must be initialized"
         except ImportError:
@@ -152,7 +169,6 @@ class TestCLIGroup:
     def test_cli_group_has_help(self):
         """Test CLI group has help text."""
         try:
-            from src.codex.archive.cli import cli
 
             assert cli.help is not None, "help must be initialized"
         except ImportError:
@@ -161,7 +177,6 @@ class TestCLIGroup:
     def test_cli_invocation(self, cli_runner):
         """Test CLI can be invoked."""
         try:
-            from src.codex.archive.cli import cli
 
             result = cli_runner.invoke(cli, ["--help"])
             assert result.exit_code == 0, "Result must not be empty"
@@ -179,7 +194,6 @@ class TestConfigShowCommand:
     def test_config_show_exists(self, cli_runner):
         """Test config-show command exists."""
         try:
-            from src.codex.archive.cli import cli
 
             result = cli_runner.invoke(cli, ["config-show", "--help"])
             # Should either succeed or show help
@@ -197,9 +211,7 @@ class TestBatchProgressLogger:
     def test_batch_progress_logger_creation(self, mock_config):
         """Test batch progress logger can be created."""
         try:
-            import logging
 
-            from src.codex.archive.cli import _batch_progress_logger
 
             logger = logging.getLogger("test")
             callback = _batch_progress_logger(logger, mock_config)
@@ -210,9 +222,7 @@ class TestBatchProgressLogger:
     def test_batch_progress_callback(self, mock_config, capsys):
         """Test batch progress callback outputs status."""
         try:
-            import logging
 
-            from src.codex.archive.cli import _batch_progress_logger
 
             logger = logging.getLogger("test")
             mock_config.batch.progress_interval = 1
@@ -235,7 +245,6 @@ class TestServiceInitialization:
     def test_service_with_default_config(self):
         """Test service creation with default config."""
         try:
-            from src.codex.archive.cli import _service
 
             with patch("src.codex.archive.cli._load_config") as mock_load:
                 mock_config = Mock()
@@ -249,7 +258,6 @@ class TestServiceInitialization:
     def test_service_with_custom_config(self):
         """Test service creation with custom config."""
         try:
-            from src.codex.archive.cli import _service
 
             custom_config = Mock()
             with patch("src.codex.archive.cli.ArchiveService") as mock_svc:
@@ -268,9 +276,7 @@ class TestSetupLogger:
     def test_setup_logger_returns_logger(self):
         """Test that setup_logger returns a Logger instance."""
         try:
-            import logging
 
-            from src.codex.archive.cli import _setup_logger
 
             mock_config = Mock()
             mock_config.logging = Mock()
@@ -292,7 +298,6 @@ class TestLoadConfig:
     def test_load_config_default(self):
         """Test loading default configuration."""
         try:
-            from src.codex.archive.cli import _load_config
 
             with patch("src.codex.archive.config.ArchiveAppConfig.load") as mock_load:
                 mock_load.return_value = Mock()
@@ -304,7 +309,6 @@ class TestLoadConfig:
     def test_load_config_custom_file(self, tmp_path):
         """Test loading configuration from custom file."""
         try:
-            from src.codex.archive.cli import _load_config
 
             config_file = tmp_path / "config.yaml"
             config_file.write_text("# test config")
@@ -326,7 +330,6 @@ class TestModuleImports:
     def test_logger_defined(self):
         """Test logger is properly configured."""
         try:
-            from src.codex.archive.cli import logger
 
             assert logger is not None, "logger must be initialized"
         except ImportError:
@@ -335,7 +338,6 @@ class TestModuleImports:
     def test_click_imported(self):
         """Test click is imported."""
         try:
-            from src.codex.archive import cli
 
             # Should be able to access click through the module
             assert hasattr(cli, "cli")
@@ -352,7 +354,6 @@ class TestRedactionFunctions:
     def test_redact_text_credentials_imported(self):
         """Test redact_text_credentials is available."""
         try:
-            from src.codex.archive.cli import redact_text_credentials
 
             assert callable(redact_text_credentials), "Condition must be true"
         except ImportError:
@@ -361,7 +362,6 @@ class TestRedactionFunctions:
     def test_redact_url_credentials_imported(self):
         """Test redact_url_credentials is available."""
         try:
-            from src.codex.archive.cli import redact_url_credentials
 
             assert callable(redact_url_credentials), "Condition must be true"
         except ImportError:
@@ -377,7 +377,6 @@ class TestCLIIntegration:
     def test_cli_commands_registered(self, cli_runner):
         """Test that expected commands are registered."""
         try:
-            from src.codex.archive.cli import cli
 
             result = cli_runner.invoke(cli, ["--help"])
             output = result.output.lower()

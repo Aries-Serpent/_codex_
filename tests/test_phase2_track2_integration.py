@@ -10,8 +10,9 @@ Generate comprehensive test coverage for cross-module integration:
 
 Target: 60+ test methods covering remaining coverage gaps
 """  # pragma: allowlist secret
-
+import pytest
 from datetime import datetime, timedelta
+
 
 
 class TestSystemConfiguration:

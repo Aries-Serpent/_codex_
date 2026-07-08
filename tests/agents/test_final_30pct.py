@@ -4,8 +4,20 @@ Final push to 30% coverage - Simple property and method tests
 Focus on untested simple methods and properties in large modules
 Based on Coverage Uplift Table recommendations
 """
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
+        from agents.physics_orchestrator import ForceVector
+        from agents.advanced_physics_calculators import ChaoticNeuralNetwork
+        from agents.advanced_physics_calculators import ChaoticNeuralNetwork
+        from agents.workflow_navigator import WorkflowNavigator
+        from agents.workflow_navigator import WorkflowNavigator
+        from agents.self_healing import SelfHealingEngine
+        from agents.quantum_game_theory import TeamType
+        from agents.mental_mapping import NodeType
+        from agents.mental_mapping import EdgeType
+        from agents.agent_memory import AgentMemory
+        from agents.developer_orchestrator import AppType
+        from agents.physics_integration import PhysicsIntegration
 
-import pytest
 
 
 class TestPhysicsOrchestratorSimpleMethods:
@@ -13,7 +25,6 @@ class TestPhysicsOrchestratorSimpleMethods:
 
     def test_orchestrator_string_representation(self):
         """Test string representation."""
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orch = PhysicsInspiredOrchestrator()
         if hasattr(orch, "__str__"):
@@ -23,7 +34,6 @@ class TestPhysicsOrchestratorSimpleMethods:
 
     def test_force_vector_basic(self):
         """Test ForceVector basic usage."""
-        from agents.physics_orchestrator import ForceVector
 
         try:
             # Try basic construction
@@ -38,7 +48,6 @@ class TestAdvancedCalculatorsGetters:
 
     def test_chaotic_network_evolve(self):
         """Test ChaoticNeuralNetwork evolve method."""
-        from agents.advanced_physics_calculators import ChaoticNeuralNetwork
 
         try:
             network = ChaoticNeuralNetwork(num_neurons=3)
@@ -48,7 +57,6 @@ class TestAdvancedCalculatorsGetters:
 
     def test_chaotic_network_generate_params(self):
         """Test generate_test_parameters method."""
-        from agents.advanced_physics_calculators import ChaoticNeuralNetwork
 
         try:
             network = ChaoticNeuralNetwork(num_neurons=3)
@@ -63,7 +71,6 @@ class TestWorkflowNavigatorSimple:
 
     def test_list_workflows_basic(self):
         """Test list_workflows method."""
-        from agents.workflow_navigator import WorkflowNavigator
 
         nav = WorkflowNavigator()
         if hasattr(nav, "list_workflows"):
@@ -72,7 +79,6 @@ class TestWorkflowNavigatorSimple:
 
     def test_get_workflow_by_name(self):
         """Test get_workflow method."""
-        from agents.workflow_navigator import WorkflowNavigator
 
         nav = WorkflowNavigator()
         if hasattr(nav, "get_workflow"):
@@ -90,7 +96,6 @@ class TestSelfHealingSimple:
 
     def test_engine_string_repr(self):
         """Test SelfHealingEngine string representation."""
-        from agents.self_healing import SelfHealingEngine
 
         engine = SelfHealingEngine()
         if hasattr(engine, "__str__"):
@@ -104,7 +109,6 @@ class TestQuantumGameTheorySimple:
 
     def test_team_type_enum(self):
         """Test TeamType enum."""
-        from agents.quantum_game_theory import TeamType
 
         assert TeamType.BLUE is not None, "BLUE must be initialized"
         assert TeamType.RED is not None, "RED must be initialized"
@@ -119,7 +123,6 @@ class TestMentalMappingSimple:
 
     def test_node_type_enum(self):
         """Test NodeType enum."""
-        from agents.mental_mapping import NodeType
 
         # Iterate all values
         for node_type in NodeType:
@@ -127,7 +130,6 @@ class TestMentalMappingSimple:
 
     def test_edge_type_enum(self):
         """Test EdgeType enum."""
-        from agents.mental_mapping import EdgeType
 
         # Iterate all values
         for edge_type in EdgeType:
@@ -139,7 +141,6 @@ class TestAgentMemorySimple:
 
     def test_memory_basic_init(self):
         """Test AgentMemory basic initialization."""
-        from agents.agent_memory import AgentMemory
 
         try:
             memory = AgentMemory()
@@ -154,7 +155,6 @@ class TestDeveloperOrchestratorSimple:
 
     def test_app_type_enum(self):
         """Test AppType enum."""
-        from agents.developer_orchestrator import AppType
 
         # Iterate all values
         for app_type in AppType:
@@ -166,7 +166,6 @@ class TestPhysicsIntegrationSimple:
 
     def test_integration_basic(self):
         """Test PhysicsIntegration basic usage."""
-        from agents.physics_integration import PhysicsIntegration
 
         try:
             integration = PhysicsIntegration()

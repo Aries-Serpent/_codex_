@@ -4,15 +4,17 @@ Tests for metrics_collector.py and dashboard_generator.py
 This module tests the session metrics collection and dashboard generation
 for the cognitive brain system.
 """
-
+import pytest
 import json
 import sys
 from pathlib import Path
+from dashboard_generator import (
+from metrics_collector import (
+
 
 # Add scripts/cognitive to path for import
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "cognitive"))
 
-from dashboard_generator import (
     calculate_health_score,
     format_duration,
     generate_dashboard,
@@ -21,7 +23,6 @@ from dashboard_generator import (
     generate_trend_indicator,
     get_health_status,
 )
-from metrics_collector import (
     calculate_trends,
     extract_session_metrics,
     generate_ascii_chart,

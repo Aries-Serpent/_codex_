@@ -588,6 +588,7 @@ class TestModerationCounter:
 
     def test_counter_increments_on_review(self) -> None:
         """_moderation_decisions_total increments when review() is called."""
+import pytest
         from codex_ml.safety.moderation import (
             ModerationAdapter,
             ModerationSettings,

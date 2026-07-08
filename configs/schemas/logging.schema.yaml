@@ -1,6 +1,6 @@
 $schema: https://json-schema.org/draft/2020-12/schema
 $id: https://codexml.dev/schemas/logging.schema.yaml
-title: LoggingConfig
+$title: LoggingConfig
 type: object
 additionalProperties: false
 required:

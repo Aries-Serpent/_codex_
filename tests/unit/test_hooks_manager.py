@@ -3,10 +3,11 @@ Test Hooks Manager
 
 Test module for hooks manager.
 """
-
 from __future__ import annotations
-
+import pytest
 from common.hooks import BaseHook, HookManager
+
+
 
 
 class CounterHook(BaseHook):

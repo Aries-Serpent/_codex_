@@ -11,8 +11,10 @@ Usage:
     generator = UnitTestGenerator(spec)
     test_code = generator.generate_complete_test_suite()
 """
-
 from dataclasses import dataclass, field
+from unittest.mock import Mock, patch, MagicMock
+from {self.spec.module_path} import {self.spec.class_name}
+
 
 
 @dataclass
@@ -74,9 +76,6 @@ Test Categories:
 - Integration tests
 """
 
-import pytest
-from unittest.mock import Mock, patch, MagicMock
-from {self.spec.module_path} import {self.spec.class_name}
 
 
 class Test{self.spec.class_name}_{self.spec.method_name}:

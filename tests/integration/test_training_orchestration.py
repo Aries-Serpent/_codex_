@@ -3,9 +3,14 @@ Integration tests for ML training orchestration.
 
 Tests curriculum learning, multi-phase training, and training state management.
 """
-
+import pytest
 import tempfile
 from pathlib import Path
+        from codex_ml.training import curriculum
+        from codex_ml.training import curriculum
+        from codex_ml.training import engine
+            import json
+
 
 
 class TestCurriculumLearning:
@@ -13,13 +18,11 @@ class TestCurriculumLearning:
 
     def test_curriculum_import(self):
         """Test curriculum module can be imported."""
-        from codex_ml.training import curriculum
 
         assert curriculum is not None, "curriculum must be initialized"
 
     def test_curriculum_has_expected_functions(self):
         """Test curriculum module has expected functions."""
-        from codex_ml.training import curriculum
 
         # Check for curriculum-related attributes
         assert hasattr(curriculum, "__name__")
@@ -114,7 +117,6 @@ class TestMultiPhaseTraining:
 
     def test_multi_phase_import(self):
         """Test multi-phase training modules can be imported."""
-        from codex_ml.training import engine
 
         assert engine is not None, "engine must be initialized"
 
@@ -247,7 +249,6 @@ class TestTrainingState:
         with tempfile.TemporaryDirectory() as tmpdir:
             state_file = Path(tmpdir) / "state.json"
 
-            import json
 
             state = {"epoch": 5, "loss": 0.3}
 

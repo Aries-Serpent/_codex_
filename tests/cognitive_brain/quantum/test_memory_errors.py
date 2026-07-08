@@ -3,21 +3,24 @@ Phase 8.1 Error Handling Tests - QuantumMemoryManager, PatternCompressor, Memory
 
 Tests error conditions, edge cases, and robustness of memory management components.
 """
-
-from datetime import datetime, timezone
-
-import pytest
-
 np = pytest.importorskip("numpy")
-
+from datetime import datetime, timezone
 from cognitive_brain.integrations.memory_integration import (
-    MemoryAugmentedComplianceAssessor,
-)
 from cognitive_brain.models.quantum_metrics import QuantumMetricRepository
 from cognitive_brain.quantum.coherence_monitor import CoherenceMonitor
 from cognitive_brain.quantum.compression import PatternCompressor
 from cognitive_brain.quantum.config import QuantumConfig
 from cognitive_brain.quantum.memory import MemoryPattern, QuantumMemoryManager
+        from cognitive_brain.quantum.compression import CompressedPattern
+        from cognitive_brain.experiments.complex_scenarios import (
+        from cognitive_brain.quantum.compression import CompressedPattern
+        from cognitive_brain.quantum.compression import CompressedPattern
+
+
+
+
+    MemoryAugmentedComplianceAssessor,
+)
 
 
 @pytest.fixture
@@ -189,7 +192,6 @@ class TestPatternCompressorErrors:
         compressor.fit([{"f1": 0.5, "f2": 0.3}, {"f1": 0.6, "f2": 0.4}])
 
         # Create invalid compressed pattern (wrong dimensions)
-        from cognitive_brain.quantum.compression import CompressedPattern
 
         invalid = CompressedPattern(
             pattern_id="invalid",
@@ -234,7 +236,6 @@ class TestMemoryIntegrationErrors:
         )
         assessor.compressor = None  # Force no compressor
 
-        from cognitive_brain.experiments.complex_scenarios import (
             generate_complex_scenarios,
         )
 
@@ -323,7 +324,6 @@ class TestDecompressionBackwardCompatibility:
         compressor.fit([{"f1": 0.5, "f2": 0.3, "f3": 0.7}, {"f1": 0.6, "f2": 0.4, "f3": 0.8}])
 
         # Create old-style compressed pattern (no variable_bits in metadata)
-        from cognitive_brain.quantum.compression import CompressedPattern
 
         old_pattern = CompressedPattern(
             pattern_id="old",
@@ -344,7 +344,6 @@ class TestDecompressionBackwardCompatibility:
         compressor = PatternCompressor(target_dimensions=2)
         compressor.fit([{"f1": 0.5, "f2": 0.3}, {"f1": 0.6, "f2": 0.4}])
 
-        from cognitive_brain.quantum.compression import CompressedPattern
 
         pattern = CompressedPattern(
             pattern_id="missing",

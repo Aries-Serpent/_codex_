@@ -3,16 +3,18 @@
 This module provides additional test coverage for plan document management,
 including file discovery, caching, and interaction with the filesystem.
 """
-
 from __future__ import annotations
-
 import tempfile
 from pathlib import Path
 from unittest.mock import patch
-
-import pytest
-
 from codex_plans import list_plan_documents
+        import threading
+        from pathlib import Path
+        from pathlib import Path
+
+
+
+
 
 
 class TestListPlanDocumentsFilesystemInteraction:
@@ -66,7 +68,6 @@ class TestListPlanDocumentsFilesystemInteraction:
 
     def test_concurrent_access(self):
         """Test concurrent access to plan documents."""
-        import threading
 
         with tempfile.TemporaryDirectory() as tmpdir:
             base_path = Path(tmpdir)
@@ -259,7 +260,6 @@ class TestListPlanDocumentsWithMocks:
     @patch("pathlib.Path.glob")
     def test_with_mocked_glob(self, mock_glob):
         """Test list_plan_documents with mocked glob."""
-        from pathlib import Path
 
         mock_glob.return_value = [
             Path("/mock/plan1.md"),
@@ -273,7 +273,6 @@ class TestListPlanDocumentsWithMocks:
     @patch("pathlib.Path.resolve")
     def test_with_mocked_resolve(self, mock_resolve):
         """Test with mocked path resolution."""
-        from pathlib import Path
 
         mock_resolve.return_value = Path("/resolved/path")
 

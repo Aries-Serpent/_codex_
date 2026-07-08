@@ -3,11 +3,12 @@ Test Aggregate
 
 Test module for aggregate.
 """
-
 from __future__ import annotations
-
+import pytest
 from codex_ml.detectors.aggregate import scorecard
 from codex_ml.detectors.core import DetectorResult
+
+
 
 
 def _mk(name, s):

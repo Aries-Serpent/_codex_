@@ -1,8 +1,9 @@
 """
 Tests for ml_serving detector (v1.4.0)
 """
-
+import pytest
 from scripts.space_traversal.detectors.ml_serving import detect
+
 
 
 def test_ml_serving_detector_basic():

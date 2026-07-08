@@ -279,6 +279,7 @@ class TestDocLinter:
 
     def test_clean_doc(self):
         """Clean documentation has no issues."""
+import pytest
         linter = DocLinter()
         content = "# Title\n\nShort description."
         issues = linter.lint(content)

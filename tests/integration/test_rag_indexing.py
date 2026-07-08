@@ -3,10 +3,25 @@ Integration tests for RAG indexing functionality.
 
 Tests text chunking, embedding generation, and FAISS index building.
 """
-
 import importlib.util
+        from codex.rag.indexer import chunk_text
+        from codex.rag.indexer import chunk_text
+        from codex.rag.indexer import chunk_text
+        from codex.rag.indexer import chunk_text
+        from codex.rag.indexer import chunk_text
+        from codex.rag.indexer import chunk_text
+        from codex.rag.indexer import chunk_text
+        from codex.rag.indexer import embed_chunks
+        from codex.rag.indexer import embed_chunks
+        from codex.rag.indexer import embed_chunks
+        from codex.rag import indexer
+        from codex.rag.indexer import chunk_text
+            from codex.rag.indexer import save_index
+            from codex.rag.indexer import load_index
+        from codex.rag import indexer
+        from codex.rag import indexer
 
-import pytest
+
 
 # Check if required dependencies are available
 try:
@@ -38,14 +53,12 @@ class TestChunkText:
 
     def test_chunk_text_import(self):
         """Test chunk_text can be imported."""
-        from codex.rag.indexer import chunk_text
 
         assert chunk_text is not None, "chunk_text must be initialized"
         assert callable(chunk_text), "Condition must be true"
 
     def test_chunk_text_basic(self):
         """Test chunk_text with basic input."""
-        from codex.rag.indexer import chunk_text
 
         text = "Hello world. This is a test."
         chunks = chunk_text(text, chunk_size=20, overlap=5)
@@ -57,7 +70,6 @@ class TestChunkText:
 
     def test_chunk_text_empty_returns_empty(self):
         """Test chunk_text with empty string returns empty list."""
-        from codex.rag.indexer import chunk_text
 
         chunks = chunk_text("", chunk_size=100, overlap=10)
 
@@ -65,21 +77,18 @@ class TestChunkText:
 
     def test_chunk_text_invalid_chunk_size_raises(self):
         """Test chunk_text raises on invalid chunk_size."""
-        from codex.rag.indexer import chunk_text
 
         with pytest.raises(ValueError, match="chunk_size must be positive"):
             chunk_text("test", chunk_size=0, overlap=0)
 
     def test_chunk_text_invalid_overlap_raises(self):
         """Test chunk_text raises on invalid overlap."""
-        from codex.rag.indexer import chunk_text
 
         with pytest.raises(ValueError, match="overlap must be non-negative"):
             chunk_text("test", chunk_size=100, overlap=-1)
 
     def test_chunk_text_overlap_ge_chunk_size(self):
         """Test chunk_text handles overlap >= chunk_size."""
-        from codex.rag.indexer import chunk_text
 
         # Should auto-adjust overlap
         chunks = chunk_text("test text here", chunk_size=5, overlap=128)
@@ -89,7 +98,6 @@ class TestChunkText:
 
     def test_chunk_text_respects_overlap(self):
         """Test chunk_text respects overlap parameter."""
-        from codex.rag.indexer import chunk_text
 
         text = "A" * 100
         chunks = chunk_text(text, chunk_size=30, overlap=10)
@@ -103,14 +111,12 @@ class TestEmbedChunks:
 
     def test_embed_chunks_import(self):
         """Test embed_chunks can be imported."""
-        from codex.rag.indexer import embed_chunks
 
         assert embed_chunks is not None, "embed_chunks must be initialized"
         assert callable(embed_chunks), "Condition must be true"
 
     def test_embed_chunks_empty_returns_empty(self):
         """Test embed_chunks with empty list."""
-        from codex.rag.indexer import embed_chunks
 
         result = embed_chunks([])
 
@@ -119,7 +125,6 @@ class TestEmbedChunks:
 
     def test_embed_chunks_requires_model(self):
         """Test embed_chunks requires model or profile."""
-        from codex.rag.indexer import embed_chunks
 
         chunks = [(0, 10, "test text")]
 
@@ -138,7 +143,6 @@ class TestIndexerMetadata:
 
     def test_indexer_has_metadata_functions(self):
         """Test indexer module has metadata functions."""
-        from codex.rag import indexer
 
         # Should have functions for metadata handling
         assert hasattr(indexer, "chunk_text")
@@ -146,7 +150,6 @@ class TestIndexerMetadata:
 
     def test_indexer_chunk_metadata(self):
         """Test chunk metadata includes position information."""
-        from codex.rag.indexer import chunk_text
 
         text = "Hello world. This is a test."
         chunks = chunk_text(text, chunk_size=50, overlap=10)
@@ -164,7 +167,6 @@ class TestIndexSaveLoad:
     def test_save_index_import(self):
         """Test save_index function exists."""
         try:
-            from codex.rag.indexer import save_index
 
             assert save_index is not None, "save_index must be initialized"
         except ImportError:
@@ -173,7 +175,6 @@ class TestIndexSaveLoad:
     def test_load_index_import(self):
         """Test load_index function exists."""
         try:
-            from codex.rag.indexer import load_index
 
             assert load_index is not None, "load_index must be initialized"
         except ImportError:
@@ -185,7 +186,6 @@ class TestFAISSIntegration:
 
     def test_faiss_import_handled(self):
         """Test indexer handles FAISS import gracefully."""
-        from codex.rag import indexer
 
         # Should import without error even if FAISS unavailable
         assert indexer is not None, "indexer must be initialized"
@@ -194,6 +194,5 @@ class TestFAISSIntegration:
         """Test FAISS is treated as optional dependency."""
         # FAISS is optional - test that indexer still imports without it
         # Should not crash if FAISS unavailable
-        from codex.rag import indexer
 
         assert indexer is not None, "indexer must be initialized"

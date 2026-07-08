@@ -3,8 +3,14 @@ Tests for training.accelerate_init_guard module.
 
 This module contains tests for the legacy accelerate_init_guard compatibility layer.
 """
-
+import pytest
 import warnings
+            from training.accelerate_init_guard import (
+            from training.accelerate_init_guard import __all__
+            from training.accelerate_init_guard import is_accelerate_available
+            from training.accelerate_init_guard import is_gpu_available
+            from training.accelerate_init_guard import get_distributed_env_info
+
 
 
 class TestLegacyImport:
@@ -14,7 +20,6 @@ class TestLegacyImport:
         """Test all exported functions exist."""
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", DeprecationWarning)
-            from training.accelerate_init_guard import (
                 AccelerateInitResult,
                 get_distributed_env_info,
                 is_accelerate_available,
@@ -33,7 +38,6 @@ class TestLegacyImport:
         """Test __all__ exports."""
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", DeprecationWarning)
-            from training.accelerate_init_guard import __all__
 
             expected = [
                 "AccelerateInitResult",
@@ -50,7 +54,6 @@ class TestLegacyImport:
         """Test is_accelerate_available returns bool."""
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", DeprecationWarning)
-            from training.accelerate_init_guard import is_accelerate_available
 
             result = is_accelerate_available()
             assert isinstance(result, bool)
@@ -59,7 +62,6 @@ class TestLegacyImport:
         """Test is_gpu_available returns bool."""
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", DeprecationWarning)
-            from training.accelerate_init_guard import is_gpu_available
 
             result = is_gpu_available()
             # Should return bool (True or False depending on environment)
@@ -69,7 +71,6 @@ class TestLegacyImport:
         """Test get_distributed_env_info returns dict."""
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", DeprecationWarning)
-            from training.accelerate_init_guard import get_distributed_env_info
 
             result = get_distributed_env_info()
             assert isinstance(result, dict)

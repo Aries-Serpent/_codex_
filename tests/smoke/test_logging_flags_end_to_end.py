@@ -3,15 +3,14 @@ Test Logging Flags End To End
 
 Test module for logging flags end to end.
 """
-
-# BEGIN: CODEX_SMOKE_LOGGING_FLAGS
 import argparse
 import importlib.util
 import os
 import tempfile
 from pathlib import Path
 
-import pytest
+# BEGIN: CODEX_SMOKE_LOGGING_FLAGS
+
 
 
 def test_deploy_logging_flags_bootstrap_and_log():

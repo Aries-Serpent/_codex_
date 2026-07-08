@@ -3,11 +3,12 @@ Test Run Schema
 
 Test module for run schema.
 """
-
+import pytest
 import json
 from pathlib import Path
-
 from codex_ml.tracking import init_experiment
+
+
 
 SCHEMA_DIR = Path(__file__).resolve().parents[2] / "schemas"
 PARAMS_SCHEMA = json.loads((SCHEMA_DIR / "run_params.schema.json").read_text(encoding="utf-8"))

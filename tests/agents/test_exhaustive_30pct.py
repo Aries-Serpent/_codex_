@@ -4,6 +4,27 @@ Ultra-final push to 30% - Last 2.67% needed.
 Maximum density tests - every line counts.
 Applying: Physics Ref Tables 1, 2, 3 - All strategies combined.
 """
+import pytest
+        import math
+        from agents.physics_orchestrator import ForceVector
+        from agents.physics_orchestrator import ActionPath, ActionType
+        from agents.physics_orchestrator import DecisionState
+        from agents.quantum_game_theory import StrategyState, TeamType
+        from agents.quantum_game_theory import StrategyState, TeamType
+        from agents.workflow_navigator import Workflow, WorkflowFrequency
+        from agents.workflow_navigator import Workflow, WorkflowFrequency, WorkflowStep
+        from agents.advanced_physics_calculators import ChaoticAttractor
+        from agents.advanced_physics_calculators import FluidChannel
+        from agents.self_healing import DetectedIssue, IssueSeverity, IssueType
+        from agents.self_healing import DetectedIssue, IssueSeverity, IssueType
+        from agents.developer_orchestrator import AppType
+        from agents.mental_mapping import EdgeType
+        from agents import exceptions
+        from agents.exceptions import AgentImportError
+        from agents.physics_integration import HybridPhysicsOrchestrator
+        from agents.physics_orchestrator import ActionPath, ActionType
+        from agents.quantum_game_theory import StrategyState, TeamType
+        from agents.self_healing import SelfHealingEngine
 
 
 class TestPhysicsOrchestratorExhaustive:
@@ -11,9 +32,7 @@ class TestPhysicsOrchestratorExhaustive:
 
     def test_force_vector_all_quadrants(self):
         """Test force vectors in all quadrants."""
-        import math
 
-        from agents.physics_orchestrator import ForceVector
 
         # Test all 4 quadrants
         f1 = ForceVector("q1", 1.0, 0.0)  # 0°
@@ -25,7 +44,6 @@ class TestPhysicsOrchestratorExhaustive:
 
     def test_action_path_all_action_types(self):
         """Test action paths for all action types."""
-        from agents.physics_orchestrator import ActionPath, ActionType
 
         for action_type in ActionType:
             path = ActionPath(action_type=action_type, description=f"Test {action_type.value}")
@@ -33,7 +51,6 @@ class TestPhysicsOrchestratorExhaustive:
 
     def test_decision_state_various_resources(self):
         """Test decision state with various resource levels."""
-        from agents.physics_orchestrator import DecisionState
 
         for resources in [10.0, 50.0, 100.0, 500.0]:
             state = DecisionState(
@@ -47,7 +64,6 @@ class TestQuantumGameTheoryExhaustive:
 
     def test_all_team_types(self):
         """Test all team types."""
-        from agents.quantum_game_theory import StrategyState, TeamType
 
         for team in TeamType:
             state = StrategyState(team=team, strategies=["s1", "s2"])
@@ -55,7 +71,6 @@ class TestQuantumGameTheoryExhaustive:
 
     def test_strategy_counts(self):
         """Test various strategy counts."""
-        from agents.quantum_game_theory import StrategyState, TeamType
 
         for count in [1, 2, 3, 5]:
             strategies = [f"s{i}" for i in range(count)]
@@ -68,7 +83,6 @@ class TestWorkflowNavigatorExhaustive:
 
     def test_all_frequency_levels(self):
         """Test all frequency levels."""
-        from agents.workflow_navigator import Workflow, WorkflowFrequency
 
         for freq in WorkflowFrequency:
             wf = Workflow(
@@ -82,7 +96,6 @@ class TestWorkflowNavigatorExhaustive:
 
     def test_workflow_with_multiple_steps(self):
         """Test workflow with multiple steps."""
-        from agents.workflow_navigator import Workflow, WorkflowFrequency, WorkflowStep
 
         steps = [
             WorkflowStep(id="s1", action="Action 1"),
@@ -106,7 +119,6 @@ class TestAdvancedPhysicsExhaustive:
 
     def test_all_attractor_types(self):
         """Test all chaotic attractor types."""
-        from agents.advanced_physics_calculators import ChaoticAttractor
 
         for attractor_type in ["logistic", "henon", "lorenz", "rossler"]:
             try:
@@ -118,7 +130,6 @@ class TestAdvancedPhysicsExhaustive:
 
     def test_fluid_channel_capacities(self):
         """Test fluid channels with various capacities."""
-        from agents.advanced_physics_calculators import FluidChannel
 
         for capacity in [10.0, 100.0, 1000.0]:
             channel = FluidChannel(channel_id=f"ch_{capacity}", capacity=capacity)
@@ -130,7 +141,6 @@ class TestSelfHealingExhaustive:
 
     def test_all_severity_levels(self):
         """Test all severity levels."""
-        from agents.self_healing import DetectedIssue, IssueSeverity, IssueType
 
         for severity in IssueSeverity:
             issue = DetectedIssue(
@@ -144,7 +154,6 @@ class TestSelfHealingExhaustive:
 
     def test_all_issue_types(self):
         """Test all issue types."""
-        from agents.self_healing import DetectedIssue, IssueSeverity, IssueType
 
         for issue_type in IssueType:
             issue = DetectedIssue(
@@ -162,7 +171,6 @@ class TestDeveloperOrchestratorExhaustive:
 
     def test_all_app_types(self):
         """Test all app types."""
-        from agents.developer_orchestrator import AppType
 
         # Test all app type values
         for app_type in AppType:
@@ -181,7 +189,6 @@ class TestMentalMappingExhaustive:
 
     def test_edge_types(self):
         """Test edge types."""
-        from agents.mental_mapping import EdgeType
 
         # Check if edge types exist
         if hasattr(EdgeType, "SUPPORTS"):
@@ -195,7 +202,6 @@ class TestExceptionsExhaustive:
 
     def test_all_exception_types(self):
         """Test all custom exception types."""
-        from agents import exceptions
 
         # Test hierarchy
         assert hasattr(exceptions, "AgentError")
@@ -207,7 +213,6 @@ class TestExceptionsExhaustive:
 
     def test_exception_messages(self):
         """Test exception messages are helpful."""
-        from agents.exceptions import AgentImportError
 
         for module in ["numpy", "scipy", "torch"]:
             error = AgentImportError(module)
@@ -221,7 +226,6 @@ class TestPhysicsIntegrationExhaustive:
 
     def test_decision_history_operations(self):
         """Test decision history operations."""
-        from agents.physics_integration import HybridPhysicsOrchestrator
 
         orch = HybridPhysicsOrchestrator()
 
@@ -238,7 +242,6 @@ class TestMultiOrchestratorPatternsExpanded:
 
     def test_conservation_across_modules(self):
         """Test conservation pattern (Table 3, Eq #4, #32, #33)."""
-        from agents.physics_orchestrator import ActionPath, ActionType
 
         # Create paths representing work in different modules
         paths = [
@@ -252,7 +255,6 @@ class TestMultiOrchestratorPatternsExpanded:
 
     def test_coherence_invariant(self):
         """Test coherence invariant (Table 3, Eq #15, #54)."""
-        from agents.quantum_game_theory import StrategyState, TeamType
 
         # Multiple states should maintain normalization
         states = [
@@ -266,7 +268,6 @@ class TestMultiOrchestratorPatternsExpanded:
 
     def test_sentinel_pattern_simulation(self):
         """Test sentinel monitoring pattern (Table 3, Eq #4)."""
-        from agents.self_healing import SelfHealingEngine
 
         # Sentinel agent monitors multiple engines
         engines = [SelfHealingEngine() for _ in range(2)]

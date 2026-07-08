@@ -3,8 +3,44 @@ Mutation Testing Baseline — Day 3 Atomic Tests
 Comprehensive atomic mutation tests (single assertion each) targeting weak assertion areas
 in core logic, boundary conditions, type coercion, error cases, and conditional logic.
 """
+            from codex_ml.config_schema import validate_batch_size
+            from codex_ml.config_schema import validate_learning_rate
+            from codex_ml.config_schema import ConfigSchema
+            from codex_ml.config_schema import ConfigSchema
+            from codex_ml.config_schema import ConfigSchema
+            from codex_ml.config_schema import validate_dropout
+            from codex_ml.models.factory import validate_model_dims
+            from codex_ml.models.factory import LlmConfig
+            from codex_ml.models.factory import LlmConfig
+            from codex_ml.models.factory import validate_ffn_dims
+            from codex_ml.models.factory import LlmConfig
+            from codex_ml.models.peft_hooks import LoraBuildCfg
+            from codex_ml.models.peft_hooks import LoraBuildCfg
+            from codex_ml.models.peft_hooks import LoraBuildCfg
+            from codex_ml.models.peft_hooks import LoraBuildCfg
+            from codex_ml.models.peft_hooks import LoraBuildCfg
+            from codex_ml.models.peft_hooks import LoraBuildCfg
+            from codex_ml.models.peft_hooks import LoraBuildCfg
+            from codex_ml.tokenization import get_tokenizer
+            from codex_ml.tokenization import get_tokenizer
+            from codex_ml.tokenization import get_tokenizer
+            from codex_ml.tokenization import get_tokenizer
+            from codex_ml.tokenization import get_tokenizer
+            from codex_ml.tokenization import get_tokenizer
+            from codex_ml.tokenization import get_tokenizer
+            from codex_ml.tokenization import get_tokenizer
+            from codex_ml.models.factory import _resolve_dtype
+            from codex_ml.models.factory import _resolve_dtype
+            from codex_ml.models.factory import _resolve_dtype
+            from codex_ml.registry import Registry
+            import torch
+            import torch.nn as nn
+            import torch.nn as nn
+            from codex_ml.tokenization import get_tokenizer
+            from codex_ml.config_schema import validate_value
+            from codex_ml.config_schema import validate_value
+            from codex_ml.config_schema import validate_positive
 
-import pytest
 
 
 class TestConfigValueMutations:
@@ -13,7 +49,6 @@ class TestConfigValueMutations:
     def test_batch_size_greater_than_zero(self):
         """Mutant: batch_size must be > 0."""
         try:
-            from codex_ml.config_schema import validate_batch_size
         except (ImportError, AttributeError):
             pytest.skip("validate_batch_size not available")
 
@@ -23,7 +58,6 @@ class TestConfigValueMutations:
     def test_learning_rate_not_negative(self):
         """Mutant: learning_rate must be >= 0."""
         try:
-            from codex_ml.config_schema import validate_learning_rate
         except (ImportError, AttributeError):
             pytest.skip("validate_learning_rate not available")
 
@@ -33,7 +67,6 @@ class TestConfigValueMutations:
     def test_num_epochs_positive(self):
         """Mutant: num_epochs must be positive."""
         try:
-            from codex_ml.config_schema import ConfigSchema
         except (ImportError, AttributeError):
             pytest.skip("ConfigSchema not available")
 
@@ -46,7 +79,6 @@ class TestConfigValueMutations:
     def test_warmup_steps_non_negative(self):
         """Mutant: warmup_steps must be >= 0."""
         try:
-            from codex_ml.config_schema import ConfigSchema
         except (ImportError, AttributeError):
             pytest.skip("ConfigSchema not available")
 
@@ -59,7 +91,6 @@ class TestConfigValueMutations:
     def test_max_seq_length_positive(self):
         """Mutant: max_seq_length must be > 0."""
         try:
-            from codex_ml.config_schema import ConfigSchema
         except (ImportError, AttributeError):
             pytest.skip("ConfigSchema not available")
 
@@ -72,7 +103,6 @@ class TestConfigValueMutations:
     def test_dropout_in_valid_range(self):
         """Mutant: dropout must be in [0, 1]."""
         try:
-            from codex_ml.config_schema import validate_dropout
         except (ImportError, AttributeError):
             pytest.skip("validate_dropout not available")
 
@@ -86,7 +116,6 @@ class TestModelParameterMutations:
     def test_hidden_size_divisible_by_heads(self):
         """Mutant: hidden_size should be divisible by num_heads."""
         try:
-            from codex_ml.models.factory import validate_model_dims
         except (ImportError, AttributeError):
             pytest.skip("validate_model_dims not available")
 
@@ -99,7 +128,6 @@ class TestModelParameterMutations:
     def test_num_layers_positive(self):
         """Mutant: num_layers must be positive."""
         try:
-            from codex_ml.models.factory import LlmConfig
         except (ImportError, AttributeError):
             pytest.skip("LlmConfig not available")
 
@@ -112,7 +140,6 @@ class TestModelParameterMutations:
     def test_attention_heads_positive(self):
         """Mutant: attention_heads must be positive."""
         try:
-            from codex_ml.models.factory import LlmConfig
         except (ImportError, AttributeError):
             pytest.skip("LlmConfig not available")
 
@@ -125,7 +152,6 @@ class TestModelParameterMutations:
     def test_intermediate_size_greater_than_hidden(self):
         """Mutant: intermediate_size > hidden_size."""
         try:
-            from codex_ml.models.factory import validate_ffn_dims
         except (ImportError, AttributeError):
             pytest.skip("validate_ffn_dims not available")
 
@@ -138,7 +164,6 @@ class TestModelParameterMutations:
     def test_vocab_size_positive(self):
         """Mutant: vocab_size must be positive."""
         try:
-            from codex_ml.models.factory import LlmConfig
         except (ImportError, AttributeError):
             pytest.skip("LlmConfig not available")
 
@@ -155,7 +180,6 @@ class TestLoraParameterMutations:
     def test_lora_r_greater_than_zero(self):
         """Mutant: LoRA rank r must be > 0."""
         try:
-            from codex_ml.models.peft_hooks import LoraBuildCfg
         except (ImportError, AttributeError):
             pytest.skip("LoraBuildCfg not available")
 
@@ -165,7 +189,6 @@ class TestLoraParameterMutations:
     def test_lora_alpha_greater_than_zero(self):
         """Mutant: LoRA alpha must be > 0."""
         try:
-            from codex_ml.models.peft_hooks import LoraBuildCfg
         except (ImportError, AttributeError):
             pytest.skip("LoraBuildCfg not available")
 
@@ -175,7 +198,6 @@ class TestLoraParameterMutations:
     def test_lora_dropout_at_min_boundary(self):
         """Mutant: LoRA dropout == 0.0 is valid."""
         try:
-            from codex_ml.models.peft_hooks import LoraBuildCfg
         except (ImportError, AttributeError):
             pytest.skip("LoraBuildCfg not available")
 
@@ -185,7 +207,6 @@ class TestLoraParameterMutations:
     def test_lora_dropout_at_max_boundary(self):
         """Mutant: LoRA dropout == 1.0 is valid."""
         try:
-            from codex_ml.models.peft_hooks import LoraBuildCfg
         except (ImportError, AttributeError):
             pytest.skip("LoraBuildCfg not available")
 
@@ -195,7 +216,6 @@ class TestLoraParameterMutations:
     def test_lora_target_modules_not_empty(self):
         """Mutant: target_modules must not be empty."""
         try:
-            from codex_ml.models.peft_hooks import LoraBuildCfg
         except (ImportError, AttributeError):
             pytest.skip("LoraBuildCfg not available")
 
@@ -205,7 +225,6 @@ class TestLoraParameterMutations:
     def test_lora_default_rank_is_eight(self):
         """Mutant: default LoRA rank must be exactly 8."""
         try:
-            from codex_ml.models.peft_hooks import LoraBuildCfg
         except (ImportError, AttributeError):
             pytest.skip("LoraBuildCfg not available")
 
@@ -215,7 +234,6 @@ class TestLoraParameterMutations:
     def test_lora_default_alpha_is_sixteen(self):
         """Mutant: default LoRA alpha must be exactly 16."""
         try:
-            from codex_ml.models.peft_hooks import LoraBuildCfg
         except (ImportError, AttributeError):
             pytest.skip("LoraBuildCfg not available")
 
@@ -229,7 +247,6 @@ class TestBatchEncodingMutations:
     def test_batch_encode_result_not_empty(self):
         """Mutant: batch encode result must not be empty."""
         try:
-            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer not available")
 
@@ -247,7 +264,6 @@ class TestBatchEncodingMutations:
     def test_batch_encode_input_ids_present(self):
         """Mutant: batch encode must produce input_ids."""
         try:
-            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer not available")
 
@@ -265,7 +281,6 @@ class TestBatchEncodingMutations:
     def test_batch_encode_count_matches_input(self):
         """Mutant: batch result count must match input count."""
         try:
-            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer not available")
 
@@ -284,7 +299,6 @@ class TestBatchEncodingMutations:
     def test_batch_encode_tokens_positive(self):
         """Mutant: each encoded result must have tokens."""
         try:
-            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer not available")
 
@@ -307,7 +321,6 @@ class TestStringOperationMutations:
     def test_tokenize_simple_text(self):
         """Mutant: simple text should tokenize."""
         try:
-            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer not available")
 
@@ -324,7 +337,6 @@ class TestStringOperationMutations:
     def test_decode_returns_string(self):
         """Mutant: decode must return string."""
         try:
-            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer not available")
 
@@ -342,7 +354,6 @@ class TestStringOperationMutations:
     def test_empty_string_handling(self):
         """Mutant: empty string should be handled."""
         try:
-            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer not available")
 
@@ -360,7 +371,6 @@ class TestStringOperationMutations:
     def test_whitespace_strip_behavior(self):
         """Mutant: whitespace handling should be consistent."""
         try:
-            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer not available")
 
@@ -383,7 +393,6 @@ class TestConditionalLogicMutations:
     def test_dtype_none_check(self):
         """Mutant: dtype None should be checked correctly."""
         try:
-            from codex_ml.models.factory import _resolve_dtype
         except (ImportError, AttributeError):
             pytest.skip("_resolve_dtype not available")
 
@@ -393,7 +402,6 @@ class TestConditionalLogicMutations:
     def test_dtype_case_insensitive_fp32(self):
         """Mutant: fp32 case should not matter."""
         try:
-            from codex_ml.models.factory import _resolve_dtype
         except (ImportError, AttributeError):
             pytest.skip("_resolve_dtype not available")
 
@@ -406,7 +414,6 @@ class TestConditionalLogicMutations:
     def test_dtype_case_insensitive_bf16(self):
         """Mutant: bf16 case should not matter."""
         try:
-            from codex_ml.models.factory import _resolve_dtype
         except (ImportError, AttributeError):
             pytest.skip("_resolve_dtype not available")
 
@@ -419,7 +426,6 @@ class TestConditionalLogicMutations:
     def test_registry_contains_check(self):
         """Mutant: registry contains must work."""
         try:
-            from codex_ml.registry import Registry
         except (ImportError, AttributeError):
             pytest.skip("Registry not available")
 
@@ -433,8 +439,6 @@ class TestConditionalLogicMutations:
     def test_model_ready_validation(self):
         """Mutant: model ready check must work."""
         try:
-            import torch
-            import torch.nn as nn
         except ImportError:
             pytest.skip("PyTorch not installed")
 
@@ -445,7 +449,6 @@ class TestConditionalLogicMutations:
     def test_device_type_equality_check(self):
         """Mutant: device type equality must be correct."""
         try:
-            import torch.nn as nn
         except ImportError:
             pytest.skip("PyTorch not installed")
 
@@ -461,7 +464,6 @@ class TestBoundaryConditionMutations:
     def test_single_element_batch(self):
         """Mutant: single element batch must work."""
         try:
-            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer not available")
 
@@ -478,7 +480,6 @@ class TestBoundaryConditionMutations:
     def test_max_value_handling(self):
         """Mutant: maximum values should be handled."""
         try:
-            from codex_ml.config_schema import validate_value
         except (ImportError, AttributeError):
             pytest.skip("validate_value not available")
 
@@ -491,7 +492,6 @@ class TestBoundaryConditionMutations:
     def test_min_value_handling(self):
         """Mutant: minimum values should be handled."""
         try:
-            from codex_ml.config_schema import validate_value
         except (ImportError, AttributeError):
             pytest.skip("validate_value not available")
 
@@ -504,7 +504,6 @@ class TestBoundaryConditionMutations:
     def test_zero_special_case(self):
         """Mutant: zero should be handled specially."""
         try:
-            from codex_ml.config_schema import validate_positive
         except (ImportError, AttributeError):
             pytest.skip("validate_positive not available")
 

@@ -198,10 +198,11 @@ class TestOfflineCapability:
 
     def test_full_pipeline_offline(self, tmp_path):
         """Test complete RAG pipeline offline."""
-        try:
+import pytest
             from codex.rag.embeddings import TfidfEmbeddingProvider
             from codex.rag.indexer import chunk_text, persist_index
             from codex.rag.retriever import Retriever
+        try:
 
             # Create test document
             doc_path = tmp_path / "test.md"

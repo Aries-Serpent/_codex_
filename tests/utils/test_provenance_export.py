@@ -3,17 +3,16 @@ Test Provenance Export
 
 Test module for provenance export.
 """
-
 from __future__ import annotations
-
+pytest.importorskip("omegaconf")
 import hashlib
 import json
-
-import pytest
-
 from codex_ml.utils import provenance
 
-pytest.importorskip("omegaconf")
+
+
+
+
 
 
 def test_export_environment_creates_artifacts(monkeypatch: pytest.MonkeyPatch, tmp_path) -> None:

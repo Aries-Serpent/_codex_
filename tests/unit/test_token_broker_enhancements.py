@@ -4,14 +4,16 @@ Tests for Phase 2.1 — Token Broker Enhancements
 
 Tests all new components integrated into src/codex/autonomy/token_broker.py
 """
-
 from __future__ import annotations
-
+import pytest
 import json
 import time
-
 from codex.autonomy.registry import AutonomyMode, AutonomyRegistry, ControlClass
 from codex.autonomy.token_broker import (
+    import base64
+
+
+
     CircuitBreakerState,  # pragma: allowlist secret # pragma: allowlist secret
     TokenBroker,
     TokenCircuitBreaker,
@@ -538,7 +540,6 @@ class TestTokenBrokerIntegration:
 
 def _create_jwt(payload: dict) -> str:
     """Create a minimal JWT token for testing (no signature verification)."""
-    import base64
 
     # Header
     header = (

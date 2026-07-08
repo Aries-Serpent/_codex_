@@ -3,6 +3,9 @@ Test Workflow Orchestration Extended
 
 Test module for workflow orchestration extended.
 """
+import tempfile
+from agents.mental_mapping import reset_clock, set_clock
+from agents.workflow_navigator import (
 
 #! /usr/bin/env python3
 """
@@ -10,12 +13,8 @@ Test suite for agents/workflow_navigator.py
 Comprehensive tests for workflow orchestration and state management
 """
 
-import tempfile
 
-import pytest
 
-from agents.mental_mapping import reset_clock, set_clock
-from agents.workflow_navigator import (
     StepStatus,
     Workflow,
     WorkflowFrequency,

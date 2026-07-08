@@ -10,18 +10,17 @@ Tests cover:
 - Multi-client support (Protocol v2)
 - Resource cleanup
 """
-
 import json
 import logging
 import os
 from pathlib import Path
 from unittest.mock import patch
+    from bridge_manager import (
 
-import pytest
+
 
 # Handle imports for optional dependencies
 try:
-    from bridge_manager import (
         BridgeLock,
         BridgeManager,
         BridgeMode,

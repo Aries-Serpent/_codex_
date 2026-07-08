@@ -8,6 +8,8 @@ from typing import Any
 
 def test_chat_session_records_events(monkeypatch, tmp_path):
     """ChatSession should emit start/end and message events while restoring env."""
+import pytest
+    from codex.chat import ChatSession
     events: list[tuple[str, str, str, Any]] = []
 
     def fake_log(session_id: str, role: str, message: str, db_path=None, meta=None):
@@ -17,7 +19,6 @@ def test_chat_session_records_events(monkeypatch, tmp_path):
     monkeypatch.setattr("codex.chat.log_event", fake_log)
     monkeypatch.delenv("CODEX_SESSION_ID", raising=False)
 
-    from codex.chat import ChatSession
 
     with ChatSession("session-123") as chat:
         assert os.environ.get("CODEX_SESSION_ID") == "session-123", "Condition must be true"

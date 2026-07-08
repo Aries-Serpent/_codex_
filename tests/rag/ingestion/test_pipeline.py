@@ -1,22 +1,30 @@
 """
 Tests for Ingestion Pipeline Module.
 """
-
 import os
 import tempfile
 from pathlib import Path
 from unittest.mock import patch
-
-import pytest
-
 from codex.rag.ingestion.pipeline import (
+from codex.rag.ingestion.validator import ValidationConfig
+        from codex.rag.ingestion.chunker import Chunk
+        import shutil
+        from unittest.mock import patch
+        from unittest.mock import patch
+        from codex.rag.ingestion.validator import DocumentFormat, ValidationResult
+        from unittest.mock import call, patch
+        import threading
+        from unittest.mock import patch
+        from codex.rag.ingestion.chunker import Chunk
+
+
+
     BatchIngestionResult,
     IngestionConfig,
     IngestionPipeline,
     IngestionResult,
     IngestionStatus,
 )
-from codex.rag.ingestion.validator import ValidationConfig
 
 
 class TestIngestionStatus:
@@ -49,7 +57,6 @@ class TestIngestionResult:
 
     def test_chunk_count(self):
         """Test chunk_count property."""
-        from codex.rag.ingestion.chunker import Chunk
 
         result = IngestionResult(
             document_id="test",
@@ -173,7 +180,6 @@ class TestIngestionPipeline:
         yield Path(temp_dir)
 
         # Cleanup
-        import shutil
 
         shutil.rmtree(temp_dir)
 
@@ -360,7 +366,6 @@ class TestIngestionPipelineRetry:
 
     def test_ingest_with_retry_exhausts_retries(self, tmp_path):
         """_ingest_with_retry returns FAILED after all retries are exhausted."""
-        from unittest.mock import patch
 
         f = tmp_path / "bad.txt"
         f.write_text("data")
@@ -377,7 +382,6 @@ class TestIngestionPipelineRetry:
 
     def test_ingest_with_retry_no_retry_on_validation_failure(self, tmp_path):
         """Validation failures are not retried."""
-        from unittest.mock import patch
 
         f = tmp_path / "short.txt"
         f.write_text("x")  # too short to pass default validation
@@ -388,7 +392,6 @@ class TestIngestionPipelineRetry:
             status=IngestionStatus.FAILED,
         )
         # Give it a validation_result so retry guard fires
-        from codex.rag.ingestion.validator import DocumentFormat, ValidationResult
 
         failed.validation_result = ValidationResult(
             is_valid=False,
@@ -408,7 +411,6 @@ class TestIngestionPipelineRetry:
 
     def test_retry_with_sleep_called(self, tmp_path):
         """time.sleep is called between retries with escalating delays."""
-        from unittest.mock import call, patch
 
         f = tmp_path / "err.txt"
         f.write_text("data")
@@ -471,7 +473,6 @@ class TestIngestionPipelineCallback:
         """on_document_complete fires for each document even in parallel mode."""
         completed = []
 
-        import threading
 
         lock = threading.Lock()
 
@@ -495,7 +496,6 @@ class TestIngestFilesParallelExceptions:
 
     def test_parallel_future_exception_counted_as_failure(self, tmp_path):
         """An exception from a ThreadPoolExecutor future increments failed count."""
-        from unittest.mock import patch
 
         for i in range(2):
             (tmp_path / f"f{i}.txt").write_text("content")
@@ -558,7 +558,6 @@ class TestBatchResultUpdateHelper:
 
     def test_update_success_increments_chunks(self):
         """Successful result adds chunk count to batch total."""
-        from codex.rag.ingestion.chunker import Chunk
 
         pipeline = IngestionPipeline()
         batch = BatchIngestionResult(total_documents=1)

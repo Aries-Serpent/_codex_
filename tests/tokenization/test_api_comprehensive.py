@@ -6,11 +6,19 @@ Tests for src/tokenization/api.py covering:
 - Legacy proxy attribute access
 - Deprecation warnings
 """
-
 import warnings
 from unittest.mock import patch
+    from src.tokenization.api import _LegacyTokenizerProxy
+    from src.tokenization.api import _LegacyTokenizerProxy
+    from src.tokenization.api import _LegacyTokenizerProxy
+    from src.tokenization.api import _LegacyTokenizerProxy
+    from src.tokenization.api import legacy_tokenizer
+    from src.tokenization.api import __all__
+    from src.tokenization.api import _LegacyTokenizerProxy
+    from src.tokenization.api import _LegacyTokenizerProxy
+    from src.tokenization.api import _LegacyTokenizerProxy
 
-import pytest
+
 
 
 def test_import_error_fallback_hf_adapter():
@@ -72,7 +80,6 @@ def test_import_error_messages_are_descriptive():
 
 def test_legacy_proxy_call_with_warning():
     """Test: Legacy Proxy - Verify __call__ forwards with deprecation warning."""
-    from src.tokenization.api import _LegacyTokenizerProxy
 
     # Create proxy instance
     proxy = _LegacyTokenizerProxy()
@@ -97,7 +104,6 @@ def test_legacy_proxy_call_with_warning():
 
 def test_legacy_proxy_getattr_with_warning():
     """Test: Legacy Proxy - Verify __getattr__ forwards attributes with warning."""
-    from src.tokenization.api import _LegacyTokenizerProxy
 
     _LegacyTokenizerProxy()
 
@@ -115,7 +121,6 @@ def test_legacy_proxy_getattr_with_warning():
 
 def test_legacy_proxy_raises_when_adapter_unavailable():
     """Test: Legacy Proxy - Verify ImportError when adapter unavailable."""
-    from src.tokenization.api import _LegacyTokenizerProxy
 
     proxy = _LegacyTokenizerProxy()
 
@@ -152,7 +157,6 @@ def test_api_module_issues_deprecation_warning():
 
 def test_legacy_tokenizer_proxy_has_slots():
     """Test: Legacy Proxy - Verify __slots__ is defined."""
-    from src.tokenization.api import _LegacyTokenizerProxy
 
     # Verify __slots__ is defined (memory optimization)
     assert hasattr(_LegacyTokenizerProxy, "__slots__")
@@ -161,7 +165,6 @@ def test_legacy_tokenizer_proxy_has_slots():
 
 def test_legacy_tokenizer_has_docstring():
     """Test: Legacy Proxy - Verify legacy_tokenizer has documentation."""
-    from src.tokenization.api import legacy_tokenizer
 
     # Verify docstring exists
     assert hasattr(legacy_tokenizer, "__doc__")
@@ -171,7 +174,6 @@ def test_legacy_tokenizer_has_docstring():
 
 def test_api_exports_correct_names():
     """Test: API Exports - Verify __all__ contains expected exports."""
-    from src.tokenization.api import __all__
 
     # Verify expected exports
     expected = {"HFTokenizerAdapter", "SentencePieceTokenizer", "legacy_tokenizer"}
@@ -195,7 +197,6 @@ def test_deprecation_warning_message_format():
 
 def test_proxy_getattr_with_none_canonical():
     """Test: Legacy Proxy __getattr__ - Handle None canonical correctly."""
-    from src.tokenization.api import _LegacyTokenizerProxy
 
     proxy = _LegacyTokenizerProxy()
 
@@ -207,7 +208,6 @@ def test_proxy_getattr_with_none_canonical():
 
 def test_proxy_call_with_none_canonical():
     """Test: Legacy Proxy __call__ - Handle None canonical correctly."""
-    from src.tokenization.api import _LegacyTokenizerProxy
 
     proxy = _LegacyTokenizerProxy()
 
@@ -253,7 +253,6 @@ def test_sentencepiece_tokenizer_import_error():
 
 def test_legacy_proxy_forwards_with_args_kwargs():
     """Test: Legacy Proxy - Verify forwarding works with args and kwargs."""
-    from src.tokenization.api import _LegacyTokenizerProxy
 
     proxy = _LegacyTokenizerProxy()
 

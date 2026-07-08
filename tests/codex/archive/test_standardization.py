@@ -3,8 +3,18 @@ Tests for codex.archive.standardization module.
 
 This module contains tests for SLSA L3 standardization layer.
 """
-
+import pytest
 from unittest.mock import MagicMock, patch
+        from codex.archive.standardization import StandardizationMetadata
+        from codex.archive.standardization import StandardizationMetadata
+        from codex.archive.standardization import StandardizationMetadata
+        from codex.archive.standardization import StandardizationManager
+        from codex.archive.standardization import StandardizationManager
+        from codex.archive.standardization import StandardizationManager
+        from codex.archive.standardization import STANDARDIZATION_VERSION
+        from codex.archive.standardization import SLSA_LEVEL
+        from codex.archive.standardization import logger
+
 
 
 class TestStandardizationMetadata:
@@ -12,7 +22,6 @@ class TestStandardizationMetadata:
 
     def test_default_values(self):
         """Test StandardizationMetadata default values."""
-        from codex.archive.standardization import StandardizationMetadata
 
         metadata = StandardizationMetadata()
 
@@ -27,7 +36,6 @@ class TestStandardizationMetadata:
 
     def test_custom_values(self):
         """Test StandardizationMetadata with custom values."""
-        from codex.archive.standardization import StandardizationMetadata
 
         metadata = StandardizationMetadata(
             schema_version="3.0", slsa_level="L4", signature="sig_abc123", issuer="sigstore.dev"
@@ -40,7 +48,6 @@ class TestStandardizationMetadata:
 
     def test_to_dict(self):
         """Test to_dict method omits None values."""
-        from codex.archive.standardization import StandardizationMetadata
 
         metadata = StandardizationMetadata(signature="sig_123", issuer="test_issuer")
 
@@ -63,7 +70,6 @@ class TestStandardizationManager:
     @patch.dict("os.environ", {"CODEX_ENABLE_SIGNING": "false"})
     def test_init_signing_disabled(self, MockValidator, MockClient):
         """Test initialization with signing disabled."""
-        from codex.archive.standardization import StandardizationManager
 
         manager = StandardizationManager(enable_signing=False)
 
@@ -74,7 +80,6 @@ class TestStandardizationManager:
     @patch("codex.archive.standardization.EvidenceSchemaValidator")
     def test_init_verify_only(self, MockValidator, MockClient):
         """Test initialization in verify-only mode."""
-        from codex.archive.standardization import StandardizationManager
 
         MockClient.return_value = MagicMock()
 
@@ -86,7 +91,6 @@ class TestStandardizationManager:
     @patch("codex.archive.standardization.EvidenceSchemaValidator")
     def test_has_schema_validator(self, MockValidator, MockClient):
         """Test manager has schema validator."""
-        from codex.archive.standardization import StandardizationManager
 
         MockValidator.return_value = MagicMock()
 
@@ -100,19 +104,16 @@ class TestModuleConstants:
 
     def test_standardization_version(self):
         """Test STANDARDIZATION_VERSION constant."""
-        from codex.archive.standardization import STANDARDIZATION_VERSION
 
         assert STANDARDIZATION_VERSION == "2.0", "STANDARDIZATION_VERSION is not valid"
 
     def test_slsa_level(self):
         """Test SLSA_LEVEL constant."""
-        from codex.archive.standardization import SLSA_LEVEL
 
         assert SLSA_LEVEL == "L3", "SLSA_LEVEL is not valid"
 
     def test_logger_exists(self):
         """Test logger is configured."""
-        from codex.archive.standardization import logger
 
         assert logger is not None, "logger must be initialized"
         assert logger.name == "codex.archive.standardization", "name is not valid"

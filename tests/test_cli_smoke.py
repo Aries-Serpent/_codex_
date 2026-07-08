@@ -3,11 +3,12 @@ Test Cli Smoke
 
 Test module for cli smoke.
 """
-
+import pytest
 import json
 from pathlib import Path
-
 from codex_digest.cli import main
+
+
 
 
 def test_cli_smoke(tmp_path: Path):

@@ -3,15 +3,14 @@ Test Checkpoint Commit Meta
 
 Test module for checkpoint commit meta.
 """
-
+torch = pytest.importorskip("torch")
 import subprocess
 from pathlib import Path
-
-import pytest
-
-torch = pytest.importorskip("torch")
-
 from codex_ml.utils.checkpointing import save_checkpoint
+
+
+
+
 
 
 @pytest.mark.ml

@@ -1,19 +1,21 @@
 """
-pytest.importorskip("mlflow")
 Test Cli Prompt Sanitisation
 
 Test module for cli prompt sanitisation.
 """
-
 from __future__ import annotations
-
-import importlib.util
-import os
-
-import pytest
-
+pytest.importorskip("mlflow")
 pytest.importorskip("hydra")
 pytest.importorskip("omegaconf")
+import importlib.util
+import os
+from codex_ml.cli.evaluate import _sanitize_eval_config
+from codex_ml.cli.train import _run_from_cfg
+from omegaconf import OmegaConf
+
+
+
+
 
 os.environ.setdefault("CODEX_ALLOW_MISSING_HYDRA_EXTRA", "1") # pragma: allowlist secret # pragma: allowlist secret
  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
@@ -23,9 +25,6 @@ try:  # pragma: no cover - hydra stub may omit utils
 except ModuleNotFoundError:
     pytest.skip("Hydra utilities unavailable", allow_module_level=True)
 
-from codex_ml.cli.evaluate import _sanitize_eval_config
-from codex_ml.cli.train import _run_from_cfg
-from omegaconf import OmegaConf
 
 
 def _make_base_cfg() -> dict:

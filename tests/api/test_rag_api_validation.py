@@ -8,19 +8,18 @@ Covers:
 - MergeIndicesRequest field presence and type validation
 - _ensure_subpath path-traversal guard
 """
-
 from __future__ import annotations
-
-from pathlib import Path
-
-import pytest
-
 pytest.importorskip("fastapi")
 pytest.importorskip("slowapi")
+from pathlib import Path
 from fastapi import HTTPException
 from pydantic import ValidationError
-
 from codex.api.rag_api import MergeIndicesRequest, _ensure_subpath, _validate_path_segment
+
+
+
+
+
 
 # ---------------------------------------------------------------------------
 # MergeIndicesRequest.source_indices — min_length=2 (Pydantic v2)

@@ -3,20 +3,19 @@ Test Peft Lora Smoke
 
 Test module for peft lora smoke.
 """
-
 from __future__ import annotations
-
-import pytest
-
 torch = pytest.importorskip("torch")
 pytest.importorskip("transformers")
 peft = pytest.importorskip("peft")
-
 from codex_ml.models.peft_hooks import LoraBuildCfg, build_lora
+    from transformers import AutoModelForSequenceClassification, BertConfig
+
+
+
+
 
 
 def _tiny_torch_model():
-    from transformers import AutoModelForSequenceClassification, BertConfig
 
     cfg = BertConfig(
         hidden_size=32,

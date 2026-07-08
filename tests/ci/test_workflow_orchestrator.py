@@ -3,16 +3,15 @@ Tests for Workflow Orchestrator.
 
 Tests the telemetry-driven workflow orchestration logic.
 """
-
-# Import the module to test
 import sys
 from pathlib import Path
+from workflow_orchestrator import WorkflowOrchestrator
 
-import pytest
+# Import the module to test
+
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "ci"))
 
-from workflow_orchestrator import WorkflowOrchestrator
 
 
 class TestWorkflowOrchestrator:

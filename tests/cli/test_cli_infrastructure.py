@@ -8,14 +8,53 @@ Tests cover:
 - Logging and monitoring
 - Performance and benchmarks
 """
-
 import json
 import os
 import tempfile
 import time
-
-import pytest
 from click.testing import CliRunner
+        import click
+        import click
+        import click
+        import click
+        import logging
+        import click
+        import click
+        import click
+        import click
+        import click
+        import click
+        import click
+        import click
+        import click
+        import click
+        import click
+        import click
+        import click
+        import click
+        import click
+        import click
+        import click
+        import click
+        import click
+        import click
+        import click
+        import click
+        import click
+        import click
+        import click
+        import click
+        import click
+        import click
+        import click
+        import click
+        import click
+        import click
+        import click
+        import click
+        import click
+
+
 
 
 class TestAdvancedCLIPatterns:
@@ -27,7 +66,6 @@ class TestAdvancedCLIPatterns:
         return CliRunner()
 
     def test_command_with_multiple_subgroups(self, runner):
-        import click
 
         @click.group()
         def cli():
@@ -49,7 +87,6 @@ class TestAdvancedCLIPatterns:
         assert result.exit_code == 0, "Result must not be empty"
 
     def test_command_chaining(self, runner):
-        import click
 
         @click.group(chain=True)
         def cli():
@@ -68,7 +105,6 @@ class TestAdvancedCLIPatterns:
         assert result is not None, "result must be initialized"
 
     def test_dynamic_command_generation(self, runner):
-        import click
 
         @click.group()
         def cli():
@@ -86,7 +122,6 @@ class TestAdvancedCLIPatterns:
         assert cli is not None, "cli must be initialized"
 
     def test_command_with_lazy_loading(self, runner):
-        import click
 
         @click.group()
         def cli():
@@ -110,9 +145,7 @@ class TestCLILogging:
         return CliRunner()
 
     def test_command_with_logging(self, runner):
-        import logging
 
-        import click
 
         @click.command()
         @click.option("--verbose", is_flag=True)
@@ -126,7 +159,6 @@ class TestCLILogging:
         assert result.exit_code == 0, "Result must not be empty"
 
     def test_progress_bar(self, runner):
-        import click
 
         @click.command()
         def cmd():
@@ -139,7 +171,6 @@ class TestCLILogging:
         assert result.exit_code == 0, "Result must not be empty"
 
     def test_structured_logging(self, runner):
-        import click
 
         pass  # removed redundant `import json` (top-level import used)
 
@@ -152,7 +183,6 @@ class TestCLILogging:
         assert "Test" in result.output, "Result must not be empty"
 
     def test_log_file_output(self, runner):
-        import click
 
         with tempfile.TemporaryDirectory() as tmpdir:
             log_file = os.path.join(tmpdir, "app.log")
@@ -176,7 +206,6 @@ class TestCLIConfigManagement:
         return CliRunner()
 
     def test_config_from_environment(self, runner):
-        import click
 
         @click.command()
         def cmd():
@@ -187,7 +216,6 @@ class TestCLIConfigManagement:
         assert "test_key" in result.output, "Result must not be empty"
 
     def test_config_precedence(self, runner):
-        import click
 
         @click.command()
         @click.option("--config", type=click.File("r"), default=None)
@@ -199,7 +227,6 @@ class TestCLIConfigManagement:
         assert result.exit_code == 0, "Result must not be empty"
 
     def test_profile_based_config(self, runner):
-        import click
 
         @click.command()
         @click.option("--profile", default="default")
@@ -212,7 +239,6 @@ class TestCLIConfigManagement:
         assert "Debug: True" in result.output, "Result must not be empty"
 
     def test_config_validation(self, runner):
-        import click
 
         @click.command()
         @click.option("--port", type=int)
@@ -225,7 +251,6 @@ class TestCLIConfigManagement:
         assert result.exit_code == 0, "Result must not be empty"
 
     def test_config_merging(self, runner):
-        import click
 
         @click.command()
         def cmd():
@@ -247,7 +272,6 @@ class TestCLIAuthentication:
         return CliRunner()
 
     def test_api_key_authentication(self, runner):
-        import click
 
         @click.command()
         @click.option("--api-key", envvar="API_KEY")
@@ -260,7 +284,6 @@ class TestCLIAuthentication:
         assert "Authenticated" in result.output, "Result must not be empty"
 
     def test_token_based_auth(self, runner):
-        import click
 
         @click.command()
         def cmd():
@@ -275,7 +298,6 @@ class TestCLIAuthentication:
         assert "Token valid" in result.output, "Result must not be empty"
 
     def test_oauth_login_flow(self, runner):
-        import click
 
         @click.command()
         def cmd():
@@ -287,7 +309,6 @@ class TestCLIAuthentication:
         assert "Visit:" in result.output, "Result must not be empty"
 
     def test_credential_caching(self, runner):
-        import click
 
         with tempfile.TemporaryDirectory() as tmpdir:
             cache_file = os.path.join(tmpdir, "cache")
@@ -312,7 +333,6 @@ class TestCLIInfrastructure:
         return CliRunner()
 
     def test_deployment_command(self, runner):
-        import click
 
         @click.command()
         @click.argument("environment")
@@ -323,7 +343,6 @@ class TestCLIInfrastructure:
         assert "production" in result.output, "Result must not be empty"
 
     def test_health_check_command(self, runner):
-        import click
 
         @click.command()
         def health():
@@ -335,7 +354,6 @@ class TestCLIInfrastructure:
         assert "ok" in result.output, "Result must not be empty"
 
     def test_backup_command(self, runner):
-        import click
 
         with tempfile.TemporaryDirectory() as tmpdir:
 
@@ -350,7 +368,6 @@ class TestCLIInfrastructure:
             assert "Backed up" in result.output, "Result must not be empty"
 
     def test_restore_command(self, runner):
-        import click
 
         @click.command()
         @click.argument("backup_file")
@@ -365,7 +382,6 @@ class TestCLIInfrastructure:
         assert result.exit_code != 0, "Result must not be empty"
 
     def test_migration_command(self, runner):
-        import click
 
         @click.command()
         @click.option("--dry-run", is_flag=True)
@@ -388,7 +404,6 @@ class TestCLIMonitoring:
         return CliRunner()
 
     def test_metrics_command(self, runner):
-        import click
 
         @click.command()
         def metrics():
@@ -400,7 +415,6 @@ class TestCLIMonitoring:
         assert "%" in result.output, "Result must not be empty"
 
     def test_logs_command(self, runner):
-        import click
 
         @click.command()
         @click.option("--lines", type=int, default=10)
@@ -412,7 +426,6 @@ class TestCLIMonitoring:
         assert "Log line 5" in result.output, "Result must not be empty"
 
     def test_trace_command(self, runner):
-        import click
 
         @click.command()
         @click.argument("request_id")
@@ -434,7 +447,6 @@ class TestCLIPipelineOperations:
         return CliRunner()
 
     def test_pipeline_trigger(self, runner):
-        import click
 
         @click.command()
         @click.argument("pipeline_name")
@@ -445,7 +457,6 @@ class TestCLIPipelineOperations:
         assert "test-pipeline" in result.output, "Result must not be empty"
 
     def test_pipeline_status(self, runner):
-        import click
 
         @click.command()
         @click.argument("run_id")
@@ -457,7 +468,6 @@ class TestCLIPipelineOperations:
         assert "Status:" in result.output, "Result must not be empty"
 
     def test_pipeline_logs(self, runner):
-        import click
 
         @click.command()
         @click.argument("run_id")
@@ -478,7 +488,6 @@ class TestCLIDataOperations:
         return CliRunner()
 
     def test_import_command(self, runner):
-        import click
 
         with tempfile.NamedTemporaryFile(mode="w", suffix=".csv", delete=False) as f:
             f.write("id,name\n1,Alice\n2,Bob\n")
@@ -498,7 +507,6 @@ class TestCLIDataOperations:
             os.remove(csv_file)
 
     def test_export_command(self, runner):
-        import click
 
         with tempfile.TemporaryDirectory() as tmpdir:
             output_file = os.path.join(tmpdir, "export.json")
@@ -514,7 +522,6 @@ class TestCLIDataOperations:
             assert result.exit_code == 0, "Result must not be empty"
 
     def test_transform_command(self, runner):
-        import click
 
         @click.command()
         @click.argument("input_file", type=click.File("r"))
@@ -538,7 +545,6 @@ class TestCLIInteractivity:
         return CliRunner()
 
     def test_confirmation_prompt(self, runner):
-        import click
 
         @click.command()
         def cmd():
@@ -551,7 +557,6 @@ class TestCLIInteractivity:
         assert "Continuing" in result.output, "Result must not be empty"
 
     def test_choice_prompt(self, runner):
-        import click
 
         @click.command()
         def cmd():
@@ -562,7 +567,6 @@ class TestCLIInteractivity:
         assert "Selected: a" in result.output, "Result must not be empty"
 
     def test_password_prompt(self, runner):
-        import click
 
         @click.command()
         def cmd():
@@ -573,7 +577,6 @@ class TestCLIInteractivity:
         assert "Password received" in result.output, "Result must not be empty"
 
     def test_table_output(self, runner):
-        import click
 
         @click.command()
         def cmd():
@@ -595,7 +598,6 @@ class TestCLIComplexScenarios:
         return CliRunner()
 
     def test_multi_step_wizard(self, runner):
-        import click
 
         @click.group()
         def wizard():
@@ -613,7 +615,6 @@ class TestCLIComplexScenarios:
         assert "Step 1" in result.output, "Result must not be empty"
 
     def test_conditional_command_flow(self, runner):
-        import click
 
         @click.command()
         @click.option("--mode", type=click.Choice(["fast", "slow"]))
@@ -627,7 +628,6 @@ class TestCLIComplexScenarios:
         assert "Fast mode" in result.output, "Result must not be empty"
 
     def test_error_recovery_flow(self, runner):
-        import click
 
         @click.command()
         def cmd():
@@ -642,7 +642,6 @@ class TestCLIComplexScenarios:
         assert "Recovered" in result.output, "Result must not be empty"
 
     def test_parallel_operations(self, runner):
-        import click
 
         @click.command()
         def cmd():

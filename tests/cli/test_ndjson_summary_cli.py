@@ -3,12 +3,13 @@ Test Ndjson Summary Cli
 
 Test module for ndjson summary cli.
 """
-
+import pytest
 import csv
 import json
 from pathlib import Path
-
 from codex_ml.cli.ndjson_summary import main
+
+
 
 
 def _write_ndjson(path: Path, rows: list[dict]) -> None:

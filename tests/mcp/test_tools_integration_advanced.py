@@ -2,12 +2,13 @@
 Advanced tests for MCP tools integration.
 Focus: ITA endpoint integration, tool chaining, concurrent execution.
 """
-
 import threading
-
-import pytest
-
 from mcp.registry import MCPToolRegistry
+    import time
+    import time
+
+
+
 
 
 def test_ita_endpoint_wrapper_pattern():
@@ -60,7 +61,6 @@ def test_tool_composition():
 
 def test_async_tool_execution_pattern():
     """Test async tool execution pattern."""
-    import time
 
     registry = MCPToolRegistry()
 
@@ -219,7 +219,6 @@ def test_tool_state_management():
 
 def test_tool_performance_tracking():
     """Test tracking tool performance metrics."""
-    import time
 
     registry = MCPToolRegistry()
     metrics = {}

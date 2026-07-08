@@ -80,6 +80,7 @@ async def test_e2e_error_handling():
 @pytest.mark.timeout(30)
 async def test_e2e_complex_workflow():
     """Test complex multi-step workflow."""
+import pytest
     scenario = EndToEndScenario("complex")
 
     for i in range(10):

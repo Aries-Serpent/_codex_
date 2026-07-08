@@ -1,17 +1,19 @@
 """
 Tests for RAG Retriever Module
 """
-
 import importlib.util
 import tempfile
 from pathlib import Path
+    from codex.rag.indexer import build_index_from_files
+    from codex.rag.retriever import MultiIndexRetriever, Retriever
+    import torch as _torch
+        from unittest.mock import patch
+        from unittest.mock import MagicMock
 
-import pytest
+
 
 # Conditional imports for RAG dependencies - safely handled at test runtime
 try:
-    from codex.rag.indexer import build_index_from_files
-    from codex.rag.retriever import MultiIndexRetriever, Retriever
 
     RAG_RETRIEVER_AVAILABLE = True
 except ImportError:
@@ -32,7 +34,6 @@ pytestmark = pytest.mark.skipif(
 
 # Guard for tests that require real SentenceTransformer models on CPU
 try:
-    import torch as _torch
 
     _cuda_available = _torch.cuda.is_available()
 except (ImportError, RuntimeError):
@@ -513,7 +514,6 @@ class TestMultiIndexRetrieverErrorPaths:
 
     def test_init_exception_during_index_load(self):
         """Test exception handling during index loading in __init__ (line 297-298)"""
-        from unittest.mock import patch
 
         with tempfile.TemporaryDirectory() as tmpdir:
             tmpdir = Path(tmpdir)
@@ -574,7 +574,6 @@ class TestMultiIndexRetrieverErrorPaths:
 
     def test_query_all_indices_fail(self):
         """Test when all indices fail during query"""
-        from unittest.mock import MagicMock
 
         with tempfile.TemporaryDirectory() as tmpdir:
             tmpdir = Path(tmpdir)

@@ -9,10 +9,9 @@ This test suite covers:
 
 Process 2 validation from the implementation plan.
 """
-
 from __future__ import annotations
 
-import pytest
+
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Fixtures

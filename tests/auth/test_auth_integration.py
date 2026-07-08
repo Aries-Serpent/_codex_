@@ -8,20 +8,24 @@ Tests cover:
 - Edge case combinations
 - Full workflow testing
 """
-
-import pytest
-
 from codex.auth.authenticator import Authenticator
 from codex.auth.exceptions import (
+from codex.auth.mfa_provider import MFAProvider
+from codex.auth.token_manager import TokenManager, TokenType
+from codex.auth.user_store import UserStore
+        import pyotp
+        import threading
+        import threading
+        import threading
+        import time
+
+
     InvalidCredentialsError,
     MFARequiredError,
     MFAVerificationError,  # pragma: allowlist secret
     UserAlreadyExistsError,
     UserNotFoundError,
 )
-from codex.auth.mfa_provider import MFAProvider
-from codex.auth.token_manager import TokenManager, TokenType
-from codex.auth.user_store import UserStore
 
 # ============================================================================
 # Exception Tests
@@ -154,7 +158,6 @@ class TestAuthenticationIntegration:
         secret = auth_system.mfa_provider.register_mfa(user.user_id, "sha256")
 
         # Generate valid code
-        import pyotp
 
         totp = pyotp.TOTP(secret.secret)
         code = totp.now()
@@ -318,7 +321,6 @@ class TestConcurrentAccess:
         )
 
     def test_concurrent_registration(self, auth_system):
-        import threading
 
         users = []
         errors = []
@@ -344,7 +346,6 @@ class TestConcurrentAccess:
         assert len(users) + len(errors) == 5, "Users must not be empty"
 
     def test_concurrent_login(self, auth_system):
-        import threading
 
         # Pre-create user
         auth_system.register("quinn", "quinn@example.com", "Str0ngPass!")
@@ -368,7 +369,6 @@ class TestConcurrentAccess:
         assert len([r for r in results if hasattr(r, "access_token")]) == 10
 
     def test_concurrent_token_operations(self, auth_system):
-        import threading
 
         auth_system.register("robin", "robin@example.com", "Str0ngPass!")
         result = auth_system.login("robin", "Str0ngPass!")
@@ -480,7 +480,6 @@ class TestResourceCleanup:
         tm = TokenManager(secret_key="expiry-key")
 
         # Create expired token
-        import time
 
         token = tm.create_token("user123", TokenType.ACCESS, expires_in=1)
 

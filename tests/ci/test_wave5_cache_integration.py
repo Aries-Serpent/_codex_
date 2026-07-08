@@ -348,6 +348,7 @@ class TestCachePerformanceBenchmarks:
 
     def test_cache_write_performance(self) -> None:
         """Test cache write performance (target: <1ms per write)."""
+import pytest
         cache = UnifiedCache(max_size=10000)
         
         # Benchmark writes

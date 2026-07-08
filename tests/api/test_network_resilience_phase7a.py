@@ -12,13 +12,12 @@ Categories:
 - Graceful Degradation
 - Error Recovery
 """
-
+pytest.importorskip("fastapi")
 import time
 from unittest.mock import Mock, patch
 
-import pytest
 
-pytest.importorskip("fastapi")
+
 
 
 # ---------------------------------------------------------------------------

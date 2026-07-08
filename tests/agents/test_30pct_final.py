@@ -4,8 +4,23 @@ Final push to 30% - Ultra-targeted tests for maximum efficiency.
 Strategy: Test simple getters, properties, and low-hanging fruit methods.
 Physics Reference: Table #49 (J = Coverage/Runtime) - maximize efficiency.
 """
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
+        from agents.quantum_game_theory import StrategyState, TeamType
+        from agents.workflow_navigator import WorkflowNavigator
+        from agents.workflow_navigator import WorkflowNavigator
+        from agents.advanced_physics_calculators import FluidChannel
+        from agents.advanced_physics_calculators import ChaoticAttractor
+        from agents.mental_mapping import MentalMappingModel
+        from agents.mental_mapping import MentalMappingModel
+        from agents.self_healing import SelfHealingEngine
+        from agents.self_healing import DetectedIssue, IssueSeverity, IssueType
+        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
+        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
+        from agents.physics_integration import HybridPhysicsOrchestrator
+        from agents.physics_integration import HybridPhysicsOrchestrator
+            from agents.agent_memory import AgentMemory
 
-import pytest
 
 
 class TestPhysicsOrchestratorSimpleMethods:
@@ -13,7 +28,6 @@ class TestPhysicsOrchestratorSimpleMethods:
 
     def test_deliberate_method_exists(self):
         """Test deliberate method."""
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orchestrator = PhysicsInspiredOrchestrator()
 
@@ -26,7 +40,6 @@ class TestPhysicsOrchestratorSimpleMethods:
 
     def test_reflect_method_exists(self):
         """Test reflect method."""
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orchestrator = PhysicsInspiredOrchestrator()
 
@@ -43,7 +56,6 @@ class TestQuantumGameTheoryHelpers:
 
     def test_strategy_state_probabilities(self):
         """Test getting probabilities from strategy state."""
-        from agents.quantum_game_theory import StrategyState, TeamType
 
         state = StrategyState(team=TeamType.BLUE, strategies=["s1", "s2"])
 
@@ -60,7 +72,6 @@ class TestWorkflowNavigatorHelpers:
 
     def test_get_all_workflows(self):
         """Test retrieving all workflows."""
-        from agents.workflow_navigator import WorkflowNavigator
 
         nav = WorkflowNavigator()
         workflows = nav.list_workflows()
@@ -70,7 +81,6 @@ class TestWorkflowNavigatorHelpers:
 
     def test_workflow_exists_check(self):
         """Test checking if workflow exists."""
-        from agents.workflow_navigator import WorkflowNavigator
 
         nav = WorkflowNavigator()
 
@@ -84,7 +94,6 @@ class TestAdvancedPhysicsSimpleMethods:
 
     def test_fluid_channel_reset(self):
         """Test fluid channel reset."""
-        from agents.advanced_physics_calculators import FluidChannel
 
         channel = FluidChannel(channel_id="test", capacity=100.0)
 
@@ -100,7 +109,6 @@ class TestAdvancedPhysicsSimpleMethods:
 
     def test_chaotic_attractor_reset(self):
         """Test chaotic attractor reset."""
-        from agents.advanced_physics_calculators import ChaoticAttractor
 
         attractor = ChaoticAttractor(attractor_type="logistic")
 
@@ -120,7 +128,6 @@ class TestMentalMappingSimpleMethods:
 
     def test_model_clear(self):
         """Test clearing the model."""
-        from agents.mental_mapping import MentalMappingModel
 
         model = MentalMappingModel()
 
@@ -134,7 +141,6 @@ class TestMentalMappingSimpleMethods:
 
     def test_model_node_count(self):
         """Test getting node count."""
-        from agents.mental_mapping import MentalMappingModel
 
         model = MentalMappingModel()
 
@@ -147,7 +153,6 @@ class TestSelfHealingSimpleMethods:
 
     def test_engine_get_capabilities(self):
         """Test getting engine capabilities."""
-        from agents.self_healing import SelfHealingEngine
 
         engine = SelfHealingEngine()
 
@@ -160,7 +165,6 @@ class TestSelfHealingSimpleMethods:
 
     def test_detected_issue_severity_check(self):
         """Test issue severity comparison."""
-        from agents.self_healing import DetectedIssue, IssueSeverity, IssueType
 
         issue1 = DetectedIssue(
             issue_id="test1",
@@ -188,7 +192,6 @@ class TestDeveloperOrchestratorSimpleMethods:
 
     def test_orchestrator_get_current_phase(self):
         """Test getting current phase."""
-        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
 
         orch = PhysicsGuidedDeveloperOrchestrator()
 
@@ -196,7 +199,6 @@ class TestDeveloperOrchestratorSimpleMethods:
 
     def test_orchestrator_component_count(self):
         """Test getting component count."""
-        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
 
         orch = PhysicsGuidedDeveloperOrchestrator()
 
@@ -209,7 +211,6 @@ class TestPhysicsIntegrationSimpleMethods:
 
     def test_orchestrator_session_info(self):
         """Test getting session information."""
-        from agents.physics_integration import HybridPhysicsOrchestrator
 
         orch = HybridPhysicsOrchestrator()
 
@@ -218,7 +219,6 @@ class TestPhysicsIntegrationSimpleMethods:
 
     def test_orchestrator_make_decision_basic(self):
         """Test basic decision making."""
-        from agents.physics_integration import HybridPhysicsOrchestrator
 
         orch = HybridPhysicsOrchestrator()
 
@@ -236,7 +236,6 @@ class TestAgentMemorySimpleMethods:
     def test_agent_memory_basics(self):
         """Test basic agent memory functionality."""
         try:
-            from agents.agent_memory import AgentMemory
 
             memory = AgentMemory()
             assert memory is not None, "memory must be initialized"

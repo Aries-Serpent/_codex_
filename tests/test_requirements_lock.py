@@ -10,6 +10,7 @@ def test_requirements_lock_exists() -> None:
     path relative to this test file so the assertion holds even when the tests
     execute from within a virtualenv-specific directory.
     """
+import pytest
 
     root = Path(__file__).resolve().parent.parent
     assert (root / "requirements/lock.txt").is_file(), "Condition must be true"

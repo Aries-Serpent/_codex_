@@ -3,15 +3,14 @@ Integration Tests for Duplication Detection System
 
 Tests end-to-end workflows combining detection, storage, and CLI.
 """
-
 import json
 import tempfile
 from pathlib import Path
-
-import pytest
-
 from codex.metrics.duplication import calculate_duplication_ratio, detect_duplicates
 from codex.metrics.storage import MetricStorage
+
+
+
 
 
 class TestFullWorkflow:

@@ -11,16 +11,15 @@ Covers:
 - Recency ranking
 - Prompt block rendering
 """
-
 from __future__ import annotations
-
 import json
 from pathlib import Path
 from unittest.mock import MagicMock, patch
-
-import pytest
-
 from codex.cognitive.session_hook import (
+
+
+
+
     MAX_CONTEXT_TOKENS,
     SessionContextInjector,
     SessionContextPayload,

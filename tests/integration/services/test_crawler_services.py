@@ -71,6 +71,7 @@ def test_content_differ_no_changes():
 @pytest.mark.integration
 def test_zendesk_sync_rate_limiting():
     """Test ZendeskKnowledgeSyncService rate limiting."""
+import pytest
     service = ZendeskKnowledgeSyncService(
         api_token="test_token",
         subdomain="test",

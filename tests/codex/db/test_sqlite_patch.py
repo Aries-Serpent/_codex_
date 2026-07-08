@@ -6,16 +6,27 @@ Phase 6 tests covering:
 - Pragma application
 - Auto-enable from environment
 """
-
 from __future__ import annotations
-
 import importlib
 import os
 import sqlite3
 import threading
 from unittest.mock import MagicMock
+        from codex.db.sqlite_patch import PooledConnectionProxy
+        from codex.db.sqlite_patch import _key
+        from codex.db.sqlite_patch import _apply_pragmas
+        from codex.db.sqlite_patch import pooled_connect
+        from codex.db.sqlite_patch import PooledConnectionProxy, _close_all
+        from codex.db.sqlite_patch import _CONN_POOL, _POOL_LOCK, _close_all
+        from codex.db.sqlite_patch import enable_pooling, pooled_connect
+        from codex.db.sqlite_patch import _ORIG_CONNECT, disable_pooling, enable_pooling
+        from codex.db.sqlite_patch import auto_enable_from_env, pooled_connect
+        from codex.db.sqlite_patch import auto_enable_from_env, pooled_connect
+        from codex.db.sqlite_patch import _ORIG_CONNECT, auto_enable_from_env
+        from codex.db.sqlite_patch import _CONN_POOL, _close_all
 
-import pytest
+
+
 
 
 def test_import_module():
@@ -38,7 +49,6 @@ class TestPooledConnectionProxy:
     @pytest.fixture
     def proxy(self, mock_connection):
         """Create a PooledConnectionProxy instance."""
-        from codex.db.sqlite_patch import PooledConnectionProxy
 
         key = ("test.db", os.getpid(), threading.get_ident(), "session1")
         return PooledConnectionProxy(mock_connection, key)
@@ -65,7 +75,6 @@ class TestKeyGeneration:
     @pytest.fixture
     def key_func(self):
         """Import _key function."""
-        from codex.db.sqlite_patch import _key
 
         return _key
 
@@ -116,7 +125,6 @@ class TestApplyPragmas:
     @pytest.fixture
     def apply_pragmas(self):
         """Import _apply_pragmas function."""
-        from codex.db.sqlite_patch import _apply_pragmas
 
         return _apply_pragmas
 
@@ -159,7 +167,6 @@ class TestPooledConnect:
     @pytest.fixture
     def pooled_connect(self):
         """Import pooled_connect function."""
-        from codex.db.sqlite_patch import pooled_connect
 
         return pooled_connect
 
@@ -176,7 +183,6 @@ class TestPooledConnect:
 
     def test_pooled_connect_with_pooling_enabled(self, pooled_connect, tmp_path, clean_env):
         """Test pooled_connect returns proxy when pooling enabled."""
-        from codex.db.sqlite_patch import PooledConnectionProxy, _close_all
 
         os.environ["CODEX_SQLITE_POOL"] = "1"
         db_path = str(tmp_path / "test.db")
@@ -189,7 +195,6 @@ class TestPooledConnect:
 
     def test_pooled_connect_reuses_connection(self, pooled_connect, tmp_path, clean_env):
         """Test that pooled_connect reuses connections."""
-        from codex.db.sqlite_patch import _CONN_POOL, _POOL_LOCK, _close_all
 
         os.environ["CODEX_SQLITE_POOL"] = "1"
         db_path = str(tmp_path / "test.db")
@@ -220,7 +225,6 @@ class TestEnableDisablePooling:
 
     def test_enable_pooling(self, save_connect):
         """Test enable_pooling replaces sqlite3.connect."""
-        from codex.db.sqlite_patch import enable_pooling, pooled_connect
 
         enable_pooling()
 
@@ -228,7 +232,6 @@ class TestEnableDisablePooling:
 
     def test_disable_pooling(self, save_connect):
         """Test disable_pooling restores original connect."""
-        from codex.db.sqlite_patch import _ORIG_CONNECT, disable_pooling, enable_pooling
 
         enable_pooling()
         disable_pooling()
@@ -256,7 +259,6 @@ class TestAutoEnableFromEnv:
 
     def test_auto_enable_when_env_set_to_1(self, clean_env, save_connect):
         """Test auto enable when CODEX_SQLITE_POOL=1."""
-        from codex.db.sqlite_patch import auto_enable_from_env, pooled_connect
 
         os.environ["CODEX_SQLITE_POOL"] = "1"
 
@@ -266,7 +268,6 @@ class TestAutoEnableFromEnv:
 
     def test_auto_enable_when_env_set_to_true(self, clean_env, save_connect):
         """Test auto enable when CODEX_SQLITE_POOL=true."""
-        from codex.db.sqlite_patch import auto_enable_from_env, pooled_connect
 
         os.environ["CODEX_SQLITE_POOL"] = "true"
 
@@ -276,7 +277,6 @@ class TestAutoEnableFromEnv:
 
     def test_no_enable_when_env_not_set(self, clean_env, save_connect):
         """Test no enable when env var not set."""
-        from codex.db.sqlite_patch import _ORIG_CONNECT, auto_enable_from_env
 
         auto_enable_from_env()
 
@@ -289,7 +289,6 @@ class TestCloseAll:
 
     def test_close_all_clears_pool(self, tmp_path):
         """Test that _close_all clears the connection pool."""
-        from codex.db.sqlite_patch import _CONN_POOL, _close_all
 
         # Add a connection to pool
         db_path = str(tmp_path / "test.db")

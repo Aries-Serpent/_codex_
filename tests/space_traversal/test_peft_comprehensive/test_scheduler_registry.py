@@ -1,19 +1,18 @@
 """
-pytest.importorskip("mlflow")
 Test Scheduler Registry
 
 Test module for scheduler registry.
 """
-
 from __future__ import annotations
-
-import pytest
-
+pytest.importorskip("mlflow")
 pytest.importorskip("torch")
-
-
 import torch
 from codex_ml.training.schedulers.registry import get_scheduler_registry
+
+
+
+
+
 
 
 def test_registry_lists_builtins():

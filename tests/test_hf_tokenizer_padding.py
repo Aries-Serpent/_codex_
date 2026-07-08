@@ -3,13 +3,12 @@ Test Hf Tokenizer Padding
 
 Test module for hf tokenizer padding.
 """
-
-import pytest
-
 pytest.importorskip("transformers")
 pytest.importorskip("sentencepiece")
-
 from codex_ml.tokenization.hf_tokenizer import HFTokenizerAdapter
+
+
+
 
 
 def test_encode_with_padding_and_truncation():

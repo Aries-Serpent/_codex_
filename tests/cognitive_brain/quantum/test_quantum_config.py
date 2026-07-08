@@ -288,6 +288,7 @@ class TestIntegrationScenarios:
 
     def test_emergency_disable_scenario(self, monkeypatch):
         """Test emergency disable by setting quantum_mode=false."""
+import pytest
         monkeypatch.setenv("CODEX_QUANTUM_MODE", "false")
         monkeypatch.setenv("CODEX_QUANTUM_SUPERPOSITION", "true")
         monkeypatch.setenv("CODEX_QUANTUM_ENTANGLEMENT", "true")

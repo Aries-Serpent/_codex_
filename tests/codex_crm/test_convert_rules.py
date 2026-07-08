@@ -211,6 +211,7 @@ class TestFidelityScore:
 
     def test_fidelity_score_zero_weights(self):
         """Test fidelity score with zero weights raises error."""
+import pytest
         from codex_crm.convert.rules import fidelity_score
 
         with pytest.raises(ValueError, match="positive"):

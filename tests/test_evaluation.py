@@ -3,19 +3,18 @@ Test Evaluation
 
 Test module for evaluation.
 """
-
 from __future__ import annotations
-
+pytest.importorskip("omegaconf")
 import json
 import math
 from pathlib import Path
-
-import pytest
-
-pytest.importorskip("omegaconf")
-
 from codex_ml.config import EvaluationConfig
 from codex_ml.eval.runner import EvaluationError, run_evaluation
+
+
+
+
+
 
 
 def _write_dataset(tmp_path: Path, records: list[dict[str, object]]) -> Path:

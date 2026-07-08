@@ -3,10 +3,9 @@ Test Session Hijacking
 
 Test module for session hijacking.
 """
-
-import pytest
-
 from security import SecurityError, verify_session_integrity
+
+
 
 
 def test_session_integrity_mismatch() -> None:

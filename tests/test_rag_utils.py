@@ -4,15 +4,24 @@ Tests for RAG Utils Module
 This module tests the utility functions in src/codex/rag/utils.py,
 with specific focus on meta tensor handling and model loading.
 """
-
 import tempfile
 from pathlib import Path
 from unittest.mock import MagicMock, patch
+    import torch
+    from sentence_transformers import SentenceTransformer
+    from codex.rag.utils import (
+            import torch as _torch  # type: ignore[import-untyped]
+            import torch as _torch  # type: ignore[import-untyped]
+            import torch as _torch  # type: ignore[import-untyped]
+            import torch as _torch  # type: ignore[import-untyped]
+        from datetime import datetime
+        from datetime import datetime
+        from datetime import datetime
+        from huggingface_hub.errors import HfHubHTTPError
 
-import pytest
+
 
 try:
-    import torch
 except ImportError:  # pragma: no cover - optional
     torch = None
 
@@ -32,11 +41,9 @@ skip_if_no_cuda = pytest.mark.skipif(
 
 # Conditional imports for RAG dependencies
 try:
-    from sentence_transformers import SentenceTransformer
 
     if torch is None:
         raise ImportError("torch unavailable")
-    from codex.rag.utils import (
         ProvenanceMetadata,
         check_for_meta_tensors,
         safe_model_load,
@@ -68,7 +75,6 @@ class TestCheckForMetaTensors:
         causes in PyTorch >=2.0 (see conftest.py for details).
         """
         try:
-            import torch as _torch  # type: ignore[import-untyped]
 
             if hasattr(_torch, "set_default_device"):
                 _torch.set_default_device(None)
@@ -87,7 +93,6 @@ class TestCheckForMetaTensors:
         interferes with meta tensor handling in PyTorch >=2.0.
         """
         try:
-            import torch as _torch  # type: ignore[import-untyped]
 
             if hasattr(_torch, "set_default_device"):
                 _torch.set_default_device(None)
@@ -155,7 +160,6 @@ class TestSafeModelLoadV2:
     def setup_method(self, method: object) -> None:
         """Clear default device before each test to prevent meta-device leakage."""
         try:
-            import torch as _torch  # type: ignore[import-untyped]
 
             if hasattr(_torch, "set_default_device"):
                 _torch.set_default_device(None)
@@ -166,7 +170,6 @@ class TestSafeModelLoadV2:
     def teardown_method(self, method: object) -> None:
         """Clear default device after each test to prevent meta-device leakage."""
         try:
-            import torch as _torch  # type: ignore[import-untyped]
 
             if hasattr(_torch, "set_default_device"):
                 _torch.set_default_device(None)
@@ -264,7 +267,6 @@ class TestProvenanceMetadata:
 
     def test_creation(self):
         """Test creating ProvenanceMetadata"""
-        from datetime import datetime
 
         prov = ProvenanceMetadata(
             source_file=Path("test.md"),
@@ -282,7 +284,6 @@ class TestProvenanceMetadata:
 
     def test_to_dict(self):
         """Test converting ProvenanceMetadata to dict"""
-        from datetime import datetime
 
         prov = ProvenanceMetadata(
             source_file=Path("test.md"),
@@ -329,7 +330,6 @@ class TestProvenanceMetadata:
 
     def test_round_trip(self):
         """Test converting to dict and back"""
-        from datetime import datetime
 
         original = ProvenanceMetadata(
             source_file=Path("test.md"),
@@ -359,7 +359,6 @@ class TestIntegrationMetaTensorHandling:
         # Use a small model for faster testing
         model_name = "sentence-transformers/all-MiniLM-L6-v2"
 
-        from huggingface_hub.errors import HfHubHTTPError
 
         with tempfile.TemporaryDirectory() as tmpdir:
             try:

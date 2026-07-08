@@ -4,11 +4,12 @@ Tests for src/codex/rag/ingestion/validator.py
 Covers DocumentValidator, DocumentFormat, ValidationConfig,
 ValidationResult, and validate_document().
 """
-
+import pytest
 import tempfile
 from pathlib import Path
-
 from codex.rag.ingestion.validator import (
+
+
     DocumentFormat,
     DocumentValidator,
     ValidationConfig,

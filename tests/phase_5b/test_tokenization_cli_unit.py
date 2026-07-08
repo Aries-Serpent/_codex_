@@ -8,14 +8,13 @@ Tests cover:
 - Error handling
 - SystemExit handling
 """
-
 import sys
 from pathlib import Path
 from unittest.mock import MagicMock, patch
-
-import pytest
-
 from tokenization.cli import (
+
+
+
     _append_error_block,
     _fail,
     _fallback_echo,

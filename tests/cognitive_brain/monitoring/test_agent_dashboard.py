@@ -11,8 +11,9 @@ Tests for:
 - Trend computation
 - Prometheus no-op stubs
 """
-
+import pytest
 from cognitive_brain.monitoring.agent_dashboard import (
+
     _PROMETHEUS_AVAILABLE,
     AgentDashboard,
     AgentHealthMetrics,

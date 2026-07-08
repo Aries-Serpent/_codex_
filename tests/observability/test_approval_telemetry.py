@@ -5,23 +5,22 @@ Phase 12 Wave 2 - D3.2 Deliverable
 
 Tests the complete telemetry collection pipeline, SLA monitoring, and alert generation.
 """
-
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
+from approval_event_schema import (
+from approval_telemetry_collector import (
+from sla_monitoring import (
 
-import pytest
+
 
 # Add scripts/observability to path
 sys.path.insert(0, str(Path(__file__).parent))
 
-from approval_event_schema import (
     ApprovalEventValidator,
 )
-from approval_telemetry_collector import (
     ApprovalTelemetryCollector,
 )
-from sla_monitoring import (
     ApprovalServiceIntegration,
     ComplianceReporter,
     SLAMonitor,

@@ -8,17 +8,16 @@ Tests cover:
 - Scope validation
 - Error handling and exceptions
 """
-
 from datetime import (  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+from unittest.mock import MagicMock, patch
+from src.codex.auth.oauth_manager import (
+
     datetime,
     timedelta,
     timezone,
 )
-from unittest.mock import MagicMock, patch
 
-import pytest  # pragma: allowlist secret
 
-from src.codex.auth.oauth_manager import (
     OAuthConfig,
     OAuthException,
     OAuthManager,

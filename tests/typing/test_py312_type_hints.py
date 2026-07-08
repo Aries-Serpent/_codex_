@@ -3,14 +3,22 @@ Validate type hints work correctly in Python 3.12.
 
 Tests PEP 585 (list[T]), PEP 604 (X | Y), and generic types.
 """
-
 from __future__ import annotations
-
 import sys
 from collections.abc import Callable
 from typing import Any, Literal, Optional, TypeVar, get_type_hints
+            from codex_ml.evaluation import cli
+            from codex_ml.data import loaders
+            from codex_ml.utils import toml_compat
+        from typing import Generic
+            from typing_extensions import TypedDict
+        import asyncio
+        from collections.abc import Callable
+        from functools import wraps
+        from typing import TypeVar
 
-import pytest
+
+
 
 # Module-level TypeVar for generic tests
 T = TypeVar("T")
@@ -83,7 +91,6 @@ class TestCodexMLTypeHints:
     def test_evaluation_cli_type_hints(self):
         """Test type hints in evaluation CLI module."""
         try:
-            from codex_ml.evaluation import cli
 
             # Check if module has type-hinted functions
             if hasattr(cli, "_load_training_config"):
@@ -95,7 +102,6 @@ class TestCodexMLTypeHints:
     def test_data_loaders_type_hints(self):
         """Test type hints in data loaders module."""
         try:
-            from codex_ml.data import loaders
 
             # Module should be importable and have type hints
             assert loaders is not None, "loaders must be initialized"
@@ -105,7 +111,6 @@ class TestCodexMLTypeHints:
     def test_utils_toml_compat_type_hints(self):
         """Test type hints in TOML compatibility module."""
         try:
-            from codex_ml.utils import toml_compat
 
             # Module should be importable
             assert toml_compat is not None, "toml_compat must be initialized"
@@ -128,7 +133,6 @@ class TestGenericTypeHints:
 
     def test_generic_class(self):
         """Test generic class type hints."""
-        from typing import Generic
 
         class Container(Generic[T]):
             def __init__(self, value: T) -> None:
@@ -231,7 +235,6 @@ class TestPython312SpecificFeatures:
     def test_typing_extensions_compatibility(self):
         """Test that typing_extensions works with Python 3.12."""
         try:
-            from typing_extensions import TypedDict
 
             config: TypedDict(
                 "ConfigDict",
@@ -280,7 +283,6 @@ class TestRealWorldTypeHints:
 
     def test_async_type_hints(self):
         """Test type hints on async functions."""
-        import asyncio
 
         async def async_func(x: int) -> str:
             await asyncio.sleep(0.001)
@@ -292,9 +294,6 @@ class TestRealWorldTypeHints:
 
     def test_decorator_with_type_hints(self):
         """Test that decorators preserve type hints."""
-        from collections.abc import Callable
-        from functools import wraps
-        from typing import TypeVar
 
         F = TypeVar("F", bound=Callable[..., Any])
 

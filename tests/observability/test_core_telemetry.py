@@ -1,6 +1,7 @@
+import pytest
 import unittest
-
 from scripts.observability.core_telemetry_collector import CoreTelemetryCollector
+
 
 
 class TestCoreTelemetry(unittest.TestCase):

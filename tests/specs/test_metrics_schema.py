@@ -3,16 +3,15 @@ Test Metrics Schema
 
 Test module for metrics schema.
 """
-
 from __future__ import annotations
-
 import json
 from pathlib import Path
+    import jsonschema  # type: ignore
 
-import pytest
+
+
 
 try:
-    import jsonschema  # type: ignore
 except ImportError:  # pragma: no cover
     jsonschema = None  # type: ignore
 

@@ -11,24 +11,23 @@ Tests cascade orchestrator on 100+ diverse CI failure scenarios covering:
 
 Authority: @mbaetiong (D-mode, fully autonomous)
 """
-
 import sys
 import time
 from pathlib import Path
+from phase_9_2_cascade_orchestrator import (
+from phase_9_2_pattern_router import PatternRouter
 
-import pytest
+
 
 # Add scripts/ci to path - compute repo root correctly
 repo_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(repo_root / "scripts" / "ci"))
 
-from phase_9_2_cascade_orchestrator import (
     CascadeOrchestrator,
     FailureLog,
     FixStatus,
     PatternDetector,
 )
-from phase_9_2_pattern_router import PatternRouter
 
 
 class TestPatternDetection:

@@ -12,18 +12,16 @@ Tests cover:
 - Metadata validation
 - Distributed checkpointing
 """
-
+pytest.importorskip("torch")
 import tempfile
 from pathlib import Path
+import torch
 
-import pytest
 
-pytest.importorskip("torch")
+
 
 
 # Skip entire module if torch is not available or unloadable
-pytest.importorskip("torch", reason="PyTorch required for tests")
-import torch
 
 # Mark all tests in this module
 pytestmark = pytest.mark.ml_comprehensive

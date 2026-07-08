@@ -205,6 +205,7 @@ class TestAAISBatchAsync:
 
     def test_async_matches_sync(self):
         """Async and sync paths must produce identical scores for the same input."""
+import pytest
         items = [{"id": f"i{n}", "text": f"sample text {n}"} for n in range(5)]
         sync_result = aais_batch_run({"items": items})
         async_result = asyncio.run(aais_batch_run_async({"items": items}))

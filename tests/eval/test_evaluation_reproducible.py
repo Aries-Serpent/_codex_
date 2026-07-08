@@ -3,25 +3,24 @@ Test Evaluation Reproducible
 
 Test module for evaluation reproducible.
 """
-
 from __future__ import annotations
-
+pytest.importorskip("omegaconf")
 import json
 import random
 from pathlib import Path
-
-import pytest
-
-pytest.importorskip("omegaconf")
-
-try:  # optional dependency for RNG disturbance
     import numpy as np
-except ImportError:  # pragma: no cover - numpy unavailable
-    np = None
-
 from codex_ml.config import EvaluationConfig
 from codex_ml.eval.runner import run_evaluation
 from codex_ml.utils.provenance import load_environment_summary
+
+
+
+
+
+try:  # optional dependency for RNG disturbance
+except ImportError:  # pragma: no cover - numpy unavailable
+    np = None
+
 
 # Note: SerializableModelConfig, MockSerializableModel, and serializable_mock_model
 # fixture are now defined in tests/conftest.py as shared fixtures for reuse across

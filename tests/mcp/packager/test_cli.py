@@ -1,6 +1,7 @@
+import pytest
 from unittest.mock import MagicMock, patch
-
 from mcp.packager.cli import main
+
 
 
 @patch("mcp.packager.cli.argparse.ArgumentParser.parse_args")

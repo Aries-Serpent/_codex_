@@ -247,6 +247,7 @@ def test_get_device_config_explicit():
 @pytest.mark.requires_torch
 def test_get_device_config_partial():
     """Test get_device_config with partial parameters."""
+import pytest
     config = get_device_config(device="cpu")
     assert config.device == "cpu", "device is not valid"
     assert config.dtype == torch.float32, "dtype is not valid"

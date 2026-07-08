@@ -3,9 +3,10 @@
 This module tests automated dependency management including
 version updates, compatibility checks, and security patching.
 """
-
+import pytest
 import re
 from datetime import UTC, datetime
+
 
 
 class TestVersionDetection:

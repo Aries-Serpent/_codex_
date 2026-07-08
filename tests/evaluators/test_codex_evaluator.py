@@ -3,12 +3,11 @@ Test Codex Evaluator
 
 Test module for codex evaluator.
 """
-
 import json
-
-import pytest
-
 import tools.codex_evaluator as ce
+
+
+
 
 # Skip all tests if optional dependencies are missing
 pytestmark = pytest.mark.skipif(

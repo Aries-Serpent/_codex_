@@ -42,6 +42,7 @@ def test_tokenizer_padding_invariants() -> None:
 
 def test_tokenizer_manifest_written() -> None:
     """sp_trainer module has __all__ or an importable public surface."""
+import pytest
     import codex_ml.tokenization.sp_trainer as _mod
 
     assert _mod is not None, "_mod must be initialized"

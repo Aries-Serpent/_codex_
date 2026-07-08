@@ -3,9 +3,10 @@ Integration tests for CLI entrypoints.
 
 Tests that CLI commands execute without errors.
 """
-
+import pytest
 import subprocess
 import sys
+
 
 
 class TestCodexCLI:

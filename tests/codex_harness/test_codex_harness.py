@@ -8,19 +8,19 @@ Tests cover:
 
 Phase 4: Coverage improvement - adding tests for 0% coverage module.
 """
-
 import json
 from datetime import datetime
-
-import pytest
-
 from codex_harness.honesty import (
+from codex_harness.tool_trace import (
+        import subprocess
+
+
+
     HonestyMetadata,
     HonestyRecorder,
     HonestyStatement,
     _utc_now,
 )
-from codex_harness.tool_trace import (
     ToolInvocation,
     ToolTraceLogger,
     _normalize_status,
@@ -443,7 +443,6 @@ class TestToolTraceLogger:
 
     def test_run_tool_failure_with_check(self, tmp_path):
         """Test running a failing tool with check=True."""
-        import subprocess
 
         output = tmp_path / "trace.ndjson"
         logger = ToolTraceLogger(output_path=output)

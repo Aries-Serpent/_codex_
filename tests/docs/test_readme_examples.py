@@ -8,10 +8,11 @@ Created: 2026-01-18
 Phase: 16.0 - Documentation Testing & Validation
 Tests: 10+
 """
-
+import pytest
 import ast
 import re
 from pathlib import Path
+
 
 # Repository root
 REPO_ROOT = Path(__file__).parents[2]

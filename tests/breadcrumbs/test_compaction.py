@@ -3,15 +3,14 @@ Test Compaction
 
 Test module for compaction.
 """
-
-from pathlib import Path
-
-import pytest
-
 pytest.importorskip("pandas")
-
+from pathlib import Path
 from tools import compact_ledger_to_parquet as clp
 from tools import ledger
+
+
+
+
 
 
 def test_parquet_roundtrip(tmp_path: Path) -> None:

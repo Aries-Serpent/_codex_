@@ -1,19 +1,26 @@
 """
 Tests for RAG Indexer Module
 """
-
+np = pytest.importorskip("numpy")
+        pytest.importorskip("codex.rag.indexer", reason="manage_tenant_indices not available")
 import importlib.util
 import json
 import tempfile
 from pathlib import Path
+    from codex.rag.indexer import (
+    import torch as _torch
+        from codex.rag.indexer import manage_tenant_indices
+        from codex.rag.indexer import manage_tenant_indices
+        from codex.rag.indexer import manage_tenant_indices
+        from codex.rag.indexer import manage_tenant_indices
+        from codex.rag.indexer import manage_tenant_indices
+        from codex.rag.indexer import manage_tenant_indices
 
-import pytest
 
-np = pytest.importorskip("numpy")
+
 
 # Conditional imports for RAG dependencies - safely handled at test runtime
 try:
-    from codex.rag.indexer import (
         build_index_from_files,
         chunk_text,
         embed_chunks,
@@ -40,7 +47,6 @@ pytestmark = pytest.mark.skipif(
 
 # Guard for tests that require real SentenceTransformer models on CPU
 try:
-    import torch as _torch
 
     _cuda_available = _torch.cuda.is_available()
 except (ImportError, RuntimeError):
@@ -438,8 +444,6 @@ class TestManageTenantIndices:
 
     def test_invalid_operation(self):
         """Test with invalid operation"""
-        pytest.importorskip("codex.rag.indexer", reason="manage_tenant_indices not available")
-        from codex.rag.indexer import manage_tenant_indices
 
         with tempfile.TemporaryDirectory() as tmpdir:
             result = manage_tenant_indices(
@@ -450,8 +454,6 @@ class TestManageTenantIndices:
 
     def test_create_missing_files(self):
         """Test CREATE operation without files parameter"""
-        pytest.importorskip("codex.rag.indexer", reason="manage_tenant_indices not available")
-        from codex.rag.indexer import manage_tenant_indices
 
         with tempfile.TemporaryDirectory() as tmpdir:
             result = manage_tenant_indices(
@@ -462,8 +464,6 @@ class TestManageTenantIndices:
 
     def test_list_empty(self):
         """Test LIST operation with no indices"""
-        pytest.importorskip("codex.rag.indexer", reason="manage_tenant_indices not available")
-        from codex.rag.indexer import manage_tenant_indices
 
         with tempfile.TemporaryDirectory() as tmpdir:
             result = manage_tenant_indices(
@@ -474,8 +474,6 @@ class TestManageTenantIndices:
 
     def test_delete_nonexistent(self):
         """Test DELETE operation on non-existent index"""
-        pytest.importorskip("codex.rag.indexer", reason="manage_tenant_indices not available")
-        from codex.rag.indexer import manage_tenant_indices
 
         with tempfile.TemporaryDirectory() as tmpdir:
             result = manage_tenant_indices(
@@ -485,8 +483,6 @@ class TestManageTenantIndices:
 
     def test_merge_missing_param(self):
         """Test MERGE operation without merge_name"""
-        pytest.importorskip("codex.rag.indexer", reason="manage_tenant_indices not available")
-        from codex.rag.indexer import manage_tenant_indices
 
         with tempfile.TemporaryDirectory() as tmpdir:
             result = manage_tenant_indices(
@@ -497,8 +493,6 @@ class TestManageTenantIndices:
 
     def test_update_missing_files(self):
         """Test UPDATE operation without files parameter"""
-        pytest.importorskip("codex.rag.indexer", reason="manage_tenant_indices not available")
-        from codex.rag.indexer import manage_tenant_indices
 
         with tempfile.TemporaryDirectory() as tmpdir:
             result = manage_tenant_indices(

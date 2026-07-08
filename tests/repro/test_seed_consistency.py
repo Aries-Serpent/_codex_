@@ -212,12 +212,11 @@ class TestSeedConsistency:
         assert numbers_42 != numbers_123, "Different seeds should produce different sequences"
 
     @pytest.mark.skipif(
-        not pytest.importorskip("torch", reason="PyTorch not available"), reason="Requires PyTorch"
     )
     def test_torch_deterministic_with_same_seed(self):
         """Verify PyTorch operations are deterministic with same seed"""
 import pytest
-pytest.importorskip("torch")
+        not pytest.importorskip("torch", reason="PyTorch not available"), reason="Requires PyTorch"
 
         import torch
 
@@ -248,6 +247,7 @@ def temp_output_dir():
 @pytest.fixture
 def sample_config():
     """Provide sample configuration for testing"""
+import pytest
     return {
         "learning_rate": 1e-4,
         "batch_size": 32,

@@ -3,8 +3,9 @@ Test Tokenizer
 
 Test module for tokenizer.
 """
-
+import pytest
 from codex_ml.tokenization.hf_tokenizer import HFTokenizerAdapter
+
 
 
 def test_multilingual_tokenizer_roundtrip():

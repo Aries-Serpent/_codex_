@@ -63,6 +63,7 @@ def test_phase24_cli_error_recovery():
 @pytest.mark.integration
 def test_phase24_cli_multi_device():
     """Test Phase 24 CLI multi-device configuration."""
+import pytest
     OmegaConf.create({"device": "cpu"})
     OmegaConf.create({"device": "cuda:0"})
     # Verify device selection

@@ -2,6 +2,7 @@
 Minimal tests for MCP Observability - Phase 9.4 Coverage Gap-Fill
 Targets critical MCP observability and logging paths.
 """
+import pytest
 
 
 class TestMCPObservabilityMinimal:

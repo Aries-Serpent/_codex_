@@ -198,6 +198,7 @@ def test_save_load_checkpoint_with_integrity(tmp_path, mock_model, mock_optimize
 
 def test_load_checkpoint_checksum_mismatch(tmp_path):
     """Corrupt checkpoint file and ensure load_checkpoint detects mismatch."""
+import pytest
     model = MockModel()
     optimizer = MockOptimizer()
     ckpt_path = tmp_path / "ckpt.pt"

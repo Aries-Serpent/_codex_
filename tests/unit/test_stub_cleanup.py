@@ -4,13 +4,21 @@ Covers StubInfo, StubAnalyzer, find_stubs, prioritize_stubs, and
 generate_stub_report.  All filesystem interactions use pytest's
 tmp_path fixture – no real source directories are touched.
 """
-
 from __future__ import annotations
-
+import pytest
 import textwrap
 from pathlib import Path
-
 from codex_ml.utils.stub_cleanup import (
+            from abc import abstractmethod
+            from abc import ABC
+            from abc import abstractmethod
+            from abc import ABC
+            import abc
+            import abc
+            from abc import abstractmethod
+
+
+
     StubAnalyzer,
     StubInfo,
     find_stubs,
@@ -229,7 +237,6 @@ class TestAnalyzeFileNotImplementedError:
             tmp_path,
             "mod.py",
             """\
-            from abc import abstractmethod
 
             class Base:
                 @abstractmethod
@@ -246,7 +253,6 @@ class TestAnalyzeFileNotImplementedError:
             tmp_path,
             "mod.py",
             """\
-            from abc import ABC
 
             class Base(ABC):
                 def do_thing(self):
@@ -499,7 +505,6 @@ class TestIsAbstractMethod:
             tmp_path,
             "mod.py",
             """\
-            from abc import abstractmethod
 
             class Base:
                 @abstractmethod
@@ -515,7 +520,6 @@ class TestIsAbstractMethod:
             tmp_path,
             "mod.py",
             """\
-            from abc import ABC
 
             class Base(ABC):
                 def run(self):
@@ -550,7 +554,6 @@ class TestIsAbstractMethod:
             tmp_path,
             "mod.py",
             """\
-            import abc
 
             class Base:
                 @abc.abstractmethod
@@ -566,7 +569,6 @@ class TestIsAbstractMethod:
             tmp_path,
             "mod.py",
             """\
-            import abc
 
             class Base(abc.ABC):
                 def run(self):
@@ -581,7 +583,6 @@ class TestIsAbstractMethod:
             tmp_path,
             "mod.py",
             """\
-            from abc import abstractmethod
 
             @abstractmethod
             def standalone():

@@ -12,25 +12,28 @@ Tests complete workflows from CLI entry point through training and evaluation:
 
 Part of Phase 5B-II: Integration Test Development
 """
-
 from __future__ import annotations
-
 import json
 import logging
 from unittest.mock import Mock, patch
+    from click.testing import CliRunner
+    from codex_ml.cli.codex_cli import (
+    from codex_ml.config import load_app_config
+    from codex_ml.training import UnifiedTrainer
+            from codex_ml.cli import codex_cli
+            from codex_ml.cli import codex_cli
 
-import pytest
+
+
 
 # Conditional imports with graceful degradation
 try:
-    from click.testing import CliRunner
 
     CLICK_AVAILABLE = True
 except ImportError:
     CLICK_AVAILABLE = False
 
 try:
-    from codex_ml.cli.codex_cli import (
         codex,
         config_sweep,
         deploy,
@@ -52,14 +55,12 @@ except (ImportError, AttributeError):
     CODEX_CLI_AVAILABLE = False
 
 try:
-    from codex_ml.config import load_app_config
 
     CONFIG_AVAILABLE = True
 except ImportError:
     CONFIG_AVAILABLE = False
 
 try:
-    from codex_ml.training import UnifiedTrainer
 
     TRAINER_AVAILABLE = True
 except ImportError:
@@ -463,7 +464,6 @@ class TestCodexMLCLIEndToEnd:
     def test_cli_version_compatibility(self):
         """Test: CLI maintains compatibility with ML pipeline API."""
         try:
-            from codex_ml.cli import codex_cli
 
             assert hasattr(codex_cli, "codex"), "Main CLI entrypoint should exist"
             assert hasattr(codex_cli, "train"), "Train command should exist"
@@ -548,7 +548,6 @@ class TestCodexMLCLIErrorPaths:
     def test_graceful_degradation_with_missing_dependencies(self):
         """Test: CLI degrades gracefully when optional dependencies missing."""
         try:
-            from codex_ml.cli import codex_cli
 
             assert hasattr(codex_cli, "codex")
         except ImportError:

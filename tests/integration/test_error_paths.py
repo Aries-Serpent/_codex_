@@ -3,16 +3,32 @@ Integration tests for error paths and exception handling.
 
 Tests exception propagation, graceful degradation, and recovery mechanisms.
 """
-
+pytest.importorskip("torch", reason="PyTorch required for tests")
 import importlib.util
 import tempfile
 from pathlib import Path
 from unittest.mock import Mock, patch
+        from codex_ml.interfaces.contracts import TrainingContractError
+        from codex_ml.training.loop import train_epoch
+        from codex_ml.training.loop import run_minimal_training
+        from codex_ml.checkpointing.checkpoint_core import save_checkpoint
+        from codex_ml.checkpointing.checkpoint_core import load_checkpoint
+        from codex_ml.checkpointing.checkpoint_core import (
+            from codex.archive.dal import SqliteDAL
+            import uuid
+            from codex.archive.dal import SqliteDAL
+            from codex.rag.retriever import Retriever
+            from codex.rag.indexer import chunk_text
+            from codex.rag.embeddings import OpenAI
+        from codex_ml.distributed.minimal import _warn_missing_dist
+        from codex_ml.distributed.minimal import _warn_failed_init
+            from codex_ml.logging.metrics import MetricLogger
+            from codex.config.config_loader import EnvVarConfig
+            from codex_ml.evaluation.metrics.accuracy import AccuracyMetric
 
-import pytest
+
 
 # Skip entire module if torch is not available or unloadable
-pytest.importorskip("torch", reason="PyTorch required for tests")
 
 
 class TestTrainingErrorPaths:
@@ -20,8 +36,6 @@ class TestTrainingErrorPaths:
 
     def test_train_epoch_model_step_exception(self):
         """Test train_epoch when model.step raises exception."""
-        from codex_ml.interfaces.contracts import TrainingContractError
-        from codex_ml.training.loop import train_epoch
 
         model = Mock()
         model.step.side_effect = RuntimeError("Model step failed")
@@ -32,7 +46,6 @@ class TestTrainingErrorPaths:
 
     def test_run_minimal_training_invalid_run_dir(self):
         """Test run_minimal_training with invalid run_dir."""
-        from codex_ml.training.loop import run_minimal_training
 
         with tempfile.TemporaryDirectory() as tmpdir:
             # Use nested directory that needs to be created
@@ -50,7 +63,6 @@ class TestCheckpointErrorPaths:
 
     def test_save_checkpoint_without_torch(self):
         """Test save_checkpoint without PyTorch installed."""
-        from codex_ml.checkpointing.checkpoint_core import save_checkpoint
 
         with patch("codex_ml.checkpointing.checkpoint_core.torch", None):
             with tempfile.TemporaryDirectory() as tmpdir:
@@ -59,7 +71,6 @@ class TestCheckpointErrorPaths:
 
     def test_load_checkpoint_without_torch(self):
         """Test load_checkpoint without PyTorch installed."""
-        from codex_ml.checkpointing.checkpoint_core import load_checkpoint
 
         with patch("codex_ml.checkpointing.checkpoint_core.torch", None):
             with pytest.raises(RuntimeError, match="PyTorch required"):
@@ -67,7 +78,6 @@ class TestCheckpointErrorPaths:
 
     def test_load_checkpoint_corrupt_metadata(self):
         """Test load_checkpoint with corrupt metadata file."""
-        from codex_ml.checkpointing.checkpoint_core import (
             load_checkpoint,
             save_checkpoint,
         )
@@ -98,7 +108,6 @@ class TestDALErrorPaths:
     def test_sqlite_dal_invalid_db_path(self):
         """Test SqliteDAL with invalid database path."""
         try:
-            from codex.archive.dal import SqliteDAL
 
             # Use invalid path (e.g., directory without write permissions)
             with tempfile.TemporaryDirectory() as tmpdir:
@@ -115,9 +124,7 @@ class TestDALErrorPaths:
     def test_sqlite_dal_concurrent_writes(self):
         """Test SqliteDAL with sequential writes (SQLite is thread-local)."""
         try:
-            import uuid
 
-            from codex.archive.dal import SqliteDAL
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 db_path = Path(tmpdir) / "test.db"
@@ -162,7 +169,6 @@ class TestRAGErrorPaths:
     def test_retriever_load_model_import_error(self):
         """Test Retriever handles missing dependencies."""
         try:
-            from codex.rag.retriever import Retriever
 
             with patch("codex.rag.retriever.SentenceTransformer", None):
                 with pytest.raises(
@@ -175,7 +181,6 @@ class TestRAGErrorPaths:
     def test_indexer_chunk_text_invalid_params(self):
         """Test chunk_text parameter validation."""
         try:
-            from codex.rag.indexer import chunk_text
 
             # overlap >= chunk_size with non-default overlap
             with pytest.raises(ValueError):
@@ -186,7 +191,6 @@ class TestRAGErrorPaths:
     def test_embeddings_provider_missing_openai(self):
         """Test embedding provider handles missing OpenAI."""
         try:
-            from codex.rag.embeddings import OpenAI
 
             # If OpenAI is None, should be handled gracefully
             if OpenAI is None:
@@ -201,7 +205,6 @@ class TestDistributedErrorPaths:
 
     def test_warn_missing_dist_called(self):
         """Test _warn_missing_dist is called when dist unavailable."""
-        from codex_ml.distributed.minimal import _warn_missing_dist
 
         # Should issue warning without crashing
         with pytest.warns(RuntimeWarning, match="torch.distributed"):
@@ -209,7 +212,6 @@ class TestDistributedErrorPaths:
 
     def test_warn_failed_init_with_exception(self):
         """Test _warn_failed_init with real exception."""
-        from codex_ml.distributed.minimal import _warn_failed_init
 
         error = ConnectionError("Backend initialization failed")
 
@@ -223,7 +225,6 @@ class TestLoggingErrorPaths:
     def test_metric_logger_invalid_path(self):
         """Test MetricLogger with invalid file path."""
         try:
-            from codex_ml.logging.metrics import MetricLogger
 
             # Try to write to read-only location
             with tempfile.TemporaryDirectory() as tmpdir:
@@ -244,7 +245,6 @@ class TestConfigErrorPaths:
     def test_env_var_config_type_mismatch(self):
         """Test EnvVarConfig with type mismatches."""
         try:
-            from codex.config.config_loader import EnvVarConfig
 
             with patch.dict("os.environ", {"TEST_VAR": "not_a_number"}):
                 config = EnvVarConfig()
@@ -263,7 +263,6 @@ class TestEvaluationErrorPaths:
     def test_accuracy_metric_empty_batch(self):
         """Test AccuracyMetric with empty batch."""
         try:
-            from codex_ml.evaluation.metrics.accuracy import AccuracyMetric
 
             metric = AccuracyMetric()
 

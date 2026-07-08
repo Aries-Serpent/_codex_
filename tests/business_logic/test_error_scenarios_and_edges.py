@@ -9,6 +9,9 @@ Tests cover:
 - State inconsistencies
 - Recovery mechanisms
 """
+import pytest
+        import json
+        import re
 
 
 class TestBoundaryConditions:
@@ -145,7 +148,6 @@ class TestInvalidInputs:
 
     def test_malformed_json(self):
         """Test malformed JSON."""
-        import json
 
         try:
             json.loads("{not valid json}")
@@ -156,7 +158,6 @@ class TestInvalidInputs:
 
     def test_invalid_regex(self):
         """Test invalid regex pattern."""
-        import re
 
         try:
             re.compile("[invalid(")

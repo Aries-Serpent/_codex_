@@ -10,16 +10,15 @@ Tests cover:
 - Error handling and retry logic
 - JSON dataset generation
 """
-
 import json
 import tempfile
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 from urllib.error import URLError
-
-import pytest
-
 from src.services.crawler.zendesk_sync import (
+
+
+
     ArticleMetadata,
     SyncResult,
     ZendeskKnowledgeSyncService,

@@ -3,13 +3,12 @@ Test Reward Models Rlhf
 
 Test module for reward models rlhf.
 """
-
 from __future__ import annotations
-
-import pytest
-
 from codex_ml.reward_models.rlhf import RewardModel, RLTrainer
 from codex_ml.rl.simple_agent import RandomAgent
+
+
+
 
 
 def test_reward_model_learn_calibrates_scale_and_bias():

@@ -7,13 +7,25 @@ Phase 6 tests covering:
 - Session ID generation
 - Log directory and DB path resolution
 """
-
 from __future__ import annotations
-
 import os
 import uuid
+        from codex.config.env_vars import EnvVarConfig
+        from codex.config.env_vars import EnvVarConfig
+        from codex.config.env_vars import EnvVarConfig
+        from codex.config.env_vars import EnvVarConfig
+        from codex.config.env_vars import EnvironmentManager
+        from codex.config.env_vars import EnvironmentManager
+        from codex.config.env_vars import EnvironmentManager
+        from codex.config.env_vars import EnvironmentManager
+        from codex.config.env_vars import EnvironmentManager
+        from codex.config.env_vars import EnvironmentManager
+        from codex.config.env_vars import EnvironmentManager
+        from codex.config.env_vars import env_manager
+        from codex.config.env_vars import EnvironmentManager, env_manager
 
-import pytest
+
+
 
 
 class TestEnvVarConfig:
@@ -21,7 +33,6 @@ class TestEnvVarConfig:
 
     def test_create_basic_config(self):
         """Test creating basic environment variable config."""
-        from codex.config.env_vars import EnvVarConfig
 
         config = EnvVarConfig(name="TEST_VAR")
         assert config.name == "TEST_VAR", "name is not valid"
@@ -32,7 +43,6 @@ class TestEnvVarConfig:
 
     def test_create_config_with_defaults(self):
         """Test creating config with default value."""
-        from codex.config.env_vars import EnvVarConfig
 
         config = EnvVarConfig(
             name="TEST_VAR",
@@ -44,7 +54,6 @@ class TestEnvVarConfig:
 
     def test_create_config_with_validator(self):
         """Test creating config with validator."""
-        from codex.config.env_vars import EnvVarConfig
 
         def validator(v):
             return v in ("0", "1")
@@ -59,7 +68,6 @@ class TestEnvVarConfig:
 
     def test_create_required_config(self):
         """Test creating required environment variable config."""
-        from codex.config.env_vars import EnvVarConfig
 
         config = EnvVarConfig(name="REQUIRED_VAR", required=True)
         assert config.required is True, "required is not valid"
@@ -85,13 +93,11 @@ class TestEnvironmentManager:
     @pytest.fixture
     def manager(self, clean_env):
         """Create EnvironmentManager with lazy validation."""
-        from codex.config.env_vars import EnvironmentManager
 
         return EnvironmentManager(lazy_validation=True)
 
     def test_instantiation_with_lazy_validation(self, clean_env):
         """Test that manager can be created with lazy validation."""
-        from codex.config.env_vars import EnvironmentManager
 
         manager = EnvironmentManager(lazy_validation=True)
         assert manager._lazy_validation is True, "_lazy_validation is not valid"
@@ -99,7 +105,6 @@ class TestEnvironmentManager:
 
     def test_instantiation_with_eager_validation(self, clean_env):
         """Test that manager validates on init by default."""
-        from codex.config.env_vars import EnvironmentManager
 
         # Should not raise with no required vars
         manager = EnvironmentManager(lazy_validation=False)
@@ -142,7 +147,6 @@ class TestEnvironmentManager:
 
     def test_get_log_dir_creates_directory(self, clean_env, tmp_path):
         """Test that get_log_dir creates directory if not exists."""
-        from codex.config.env_vars import EnvironmentManager
 
         log_dir = str(tmp_path / "test_logs")
         os.environ["CODEX_SESSION_LOG_DIR"] = log_dir
@@ -156,7 +160,6 @@ class TestEnvironmentManager:
 
     def test_get_db_path(self, clean_env, tmp_path):
         """Test getting database path."""
-        from codex.config.env_vars import EnvironmentManager
 
         db_path = str(tmp_path / "test.db")
         os.environ["CODEX_LOG_DB_PATH"] = db_path
@@ -214,7 +217,6 @@ class TestEnvironmentManagerValidation:
 
     def test_validation_fails_on_invalid_value(self, clean_env):
         """Test validation fails for invalid values."""
-        from codex.config.env_vars import EnvironmentManager
 
         # Set invalid value for CODEX_SQLITE_POOL (expects "0" or "1")
         os.environ["CODEX_SQLITE_POOL"] = "invalid"
@@ -224,7 +226,6 @@ class TestEnvironmentManagerValidation:
 
     def test_validation_passes_with_valid_values(self, clean_env):
         """Test validation passes with valid values."""
-        from codex.config.env_vars import EnvironmentManager
 
         os.environ["CODEX_SQLITE_POOL"] = "1"
         os.environ["CODEX_FORCE_CPU"] = "1"
@@ -238,12 +239,10 @@ class TestGlobalEnvManager:
 
     def test_global_instance_exists(self):
         """Test that global env_manager exists."""
-        from codex.config.env_vars import env_manager
 
         assert env_manager is not None, "env_manager must be initialized"
 
     def test_global_instance_is_environment_manager(self):
         """Test that global instance is EnvironmentManager."""
-        from codex.config.env_vars import EnvironmentManager, env_manager
 
         assert isinstance(env_manager, EnvironmentManager)

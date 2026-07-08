@@ -7,15 +7,16 @@ Verifies:
   - ci.monitor.proactive returns error on missing credentials (not an import error)
   - PDALoopConfig model field is present on SkillManifest
 """
-
 from __future__ import annotations
-
-import pytest
-
 from codex.skills.ci_monitor_proactive.handler import run as monitor_run
 from codex.skills.models import PDALoopConfig, SkillManifest
 from codex.skills.pda_loop_logger.handler import run as pda_run
 from codex.skills.registry import get_registry, reset_registry
+        import yaml
+        import importlib
+
+
+
 
 # ---------------------------------------------------------------------------
 # Fixtures
@@ -95,7 +96,6 @@ class TestPDALoopConfig:
         assert m.pda_loop is None, "pda_loop is not valid"
 
     def test_manifest_with_pda_loop_parsed(self):
-        import yaml
 
         raw = """
 id: test.pda.skill
@@ -246,7 +246,6 @@ class TestCIMonitorProactiveHandler:
         assert "status" in result, "Result must not be empty"
 
     def test_entrypoint_is_callable(self, fresh_registry):
-        import importlib
 
         skill = fresh_registry.resolve("ci.monitor.proactive")
         mod_path, func_name = skill.manifest.entrypoint.rsplit(":", 1)

@@ -7,14 +7,39 @@ Comprehensive testing for RAG caching layer:
 - Cache invalidation
 - Cache persistence
 """
-
+np = pytest.importorskip("numpy")
 import json
 import tempfile
 import time
+            from codex.rag.cache import EmbeddingCache, EmbeddingCacheConfig
+            from codex.rag.cache import EmbeddingCache, EmbeddingCacheConfig
+            from codex.rag.cache import EmbeddingCache, EmbeddingCacheConfig
+            from codex.rag.cache import EmbeddingCache, EmbeddingCacheConfig
+            from codex.rag.cache import EmbeddingCache
+            from codex.rag.cache import DocumentCache
+            from codex.rag.cache import DocumentCache
+            from codex.rag.cache import DocumentCache
+            from codex.rag.cache import QueryCache
+            from codex.rag.cache import QueryCache
+            from codex.rag.cache import QueryCache
+            from codex.rag.cache import EmbeddingCache
+            from codex.rag.cache import EmbeddingCache
+            from codex.rag.cache import EmbeddingCache
+            from codex.rag.cache import EmbeddingCache
+            from codex.rag.cache import EmbeddingCache
+            import sys
+            from codex.rag.cache import EmbeddingCache
+            from codex.rag.cache import EmbeddingCache
+            from codex.rag.cache import EmbeddingCache
+            import threading
+            from codex.rag.cache import EmbeddingCache
+            from codex.rag.cache import EmbeddingCache
+            from codex.rag.embeddings import TfidfEmbeddingProvider
+            from codex.rag.cache import QueryCache
+            from codex.rag.retriever import CodexRetriever
 
-import pytest
 
-np = pytest.importorskip("numpy")
+
 
 
 class TestEmbeddingCache:
@@ -23,7 +48,6 @@ class TestEmbeddingCache:
     def test_embedding_cache_initialization(self):
         """Test embedding cache initialization."""
         try:
-            from codex.rag.cache import EmbeddingCache, EmbeddingCacheConfig
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 config = EmbeddingCacheConfig(enable_disk_cache=True, disk_cache_path=tmpdir)
@@ -35,7 +59,6 @@ class TestEmbeddingCache:
     def test_embedding_cache_hit(self):
         """Test embedding cache hit."""
         try:
-            from codex.rag.cache import EmbeddingCache, EmbeddingCacheConfig
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 config = EmbeddingCacheConfig(enable_disk_cache=True, disk_cache_path=tmpdir)
@@ -58,7 +81,6 @@ class TestEmbeddingCache:
     def test_embedding_cache_miss(self):
         """Test embedding cache miss."""
         try:
-            from codex.rag.cache import EmbeddingCache, EmbeddingCacheConfig
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 config = EmbeddingCacheConfig(enable_disk_cache=True, disk_cache_path=tmpdir)
@@ -74,7 +96,6 @@ class TestEmbeddingCache:
     def test_embedding_cache_persistence(self):
         """Test that embedding cache persists across instances."""
         try:
-            from codex.rag.cache import EmbeddingCache, EmbeddingCacheConfig
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 config = EmbeddingCacheConfig(enable_disk_cache=True, disk_cache_path=tmpdir)
@@ -96,7 +117,6 @@ class TestEmbeddingCache:
     def test_embedding_cache_eviction(self):
         """Test cache eviction policy."""
         try:
-            from codex.rag.cache import EmbeddingCache
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 # Create cache with small max size
@@ -119,7 +139,6 @@ class TestDocumentCache:
     def test_document_cache_basic(self):
         """Test basic document caching."""
         try:
-            from codex.rag.cache import DocumentCache
 
             cache = DocumentCache()
 
@@ -141,7 +160,6 @@ class TestDocumentCache:
     def test_document_cache_with_embeddings(self):
         """Test caching documents with pre-computed embeddings."""
         try:
-            from codex.rag.cache import DocumentCache
 
             cache = DocumentCache()
 
@@ -161,7 +179,6 @@ class TestDocumentCache:
     def test_document_cache_bulk_operations(self):
         """Test bulk document caching operations."""
         try:
-            from codex.rag.cache import DocumentCache
 
             cache = DocumentCache()
 
@@ -188,7 +205,6 @@ class TestQueryCache:
     def test_query_cache_basic(self):
         """Test basic query caching."""
         try:
-            from codex.rag.cache import QueryCache
 
             cache = QueryCache()
 
@@ -209,7 +225,6 @@ class TestQueryCache:
     def test_query_cache_with_filters(self):
         """Test query caching with filters."""
         try:
-            from codex.rag.cache import QueryCache
 
             cache = QueryCache()
 
@@ -238,7 +253,6 @@ class TestQueryCache:
     def test_query_cache_ttl(self):
         """Test query cache time-to-live."""
         try:
-            from codex.rag.cache import QueryCache
 
             cache = QueryCache(ttl=1)  # 1 second TTL
 
@@ -269,7 +283,6 @@ class TestCacheInvalidation:
     def test_cache_clear_all(self):
         """Test clearing entire cache."""
         try:
-            from codex.rag.cache import EmbeddingCache
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 cache = EmbeddingCache(cache_dir=tmpdir)
@@ -291,7 +304,6 @@ class TestCacheInvalidation:
     def test_cache_delete_specific(self):
         """Test deleting specific cache entries."""
         try:
-            from codex.rag.cache import EmbeddingCache
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 cache = EmbeddingCache(cache_dir=tmpdir)
@@ -314,7 +326,6 @@ class TestCacheInvalidation:
     def test_cache_invalidate_pattern(self):
         """Test invalidating cache entries by pattern."""
         try:
-            from codex.rag.cache import EmbeddingCache
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 cache = EmbeddingCache(cache_dir=tmpdir)
@@ -343,7 +354,6 @@ class TestCachePerformance:
     def test_cache_lookup_speed(self):
         """Test cache lookup performance."""
         try:
-            from codex.rag.cache import EmbeddingCache
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 cache = EmbeddingCache(cache_dir=tmpdir)
@@ -366,7 +376,6 @@ class TestCachePerformance:
     def test_cache_write_speed(self):
         """Test cache write performance."""
         try:
-            from codex.rag.cache import EmbeddingCache
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 cache = EmbeddingCache(cache_dir=tmpdir)
@@ -385,9 +394,7 @@ class TestCachePerformance:
     def test_cache_memory_efficiency(self):
         """Test cache memory efficiency."""
         try:
-            import sys
 
-            from codex.rag.cache import EmbeddingCache
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 cache = EmbeddingCache(cache_dir=tmpdir)
@@ -412,7 +419,6 @@ class TestCacheConsistency:
     def test_cache_key_hashing(self):
         """Test that cache keys are properly hashed."""
         try:
-            from codex.rag.cache import EmbeddingCache
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 cache = EmbeddingCache(cache_dir=tmpdir)
@@ -433,7 +439,6 @@ class TestCacheConsistency:
     def test_cache_collision_handling(self):
         """Test cache collision handling."""
         try:
-            from codex.rag.cache import EmbeddingCache
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 cache = EmbeddingCache(cache_dir=tmpdir)
@@ -453,9 +458,7 @@ class TestCacheConsistency:
     def test_cache_concurrent_access(self):
         """Test cache thread safety."""
         try:
-            import threading
 
-            from codex.rag.cache import EmbeddingCache
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 cache = EmbeddingCache(cache_dir=tmpdir)
@@ -491,8 +494,6 @@ class TestCacheIntegration:
     def test_cache_with_embeddings(self):
         """Test cache integration with embedding generation."""
         try:
-            from codex.rag.cache import EmbeddingCache
-            from codex.rag.embeddings import TfidfEmbeddingProvider
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 cache = EmbeddingCache(cache_dir=tmpdir)
@@ -517,8 +518,6 @@ class TestCacheIntegration:
     def test_cache_with_retrieval(self):
         """Test cache integration with retrieval."""
         try:
-            from codex.rag.cache import QueryCache
-            from codex.rag.retriever import CodexRetriever
 
             cache = QueryCache()
             retriever = CodexRetriever()

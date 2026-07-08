@@ -241,8 +241,9 @@ class TestModuleImports:
 
     def test_all_exports(self):
         """Test that key classes are exported."""
-        try:
+import pytest
             from src.agent.core import (
+        try:
                 AgentConfig,
                 AgentCore,
                 TaskResult,

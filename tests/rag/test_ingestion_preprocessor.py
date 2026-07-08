@@ -4,8 +4,11 @@ Tests for src/codex/rag/ingestion/preprocessor.py
 Covers DocumentPreprocessor, PreprocessingConfig, PreprocessingResult,
 NormalizationLevel, preprocess_text(), and normalize_text().
 """
-
+import pytest
 from codex.rag.ingestion.preprocessor import (
+        import unicodedata
+        import unicodedata
+
     DocumentPreprocessor,
     NormalizationLevel,
     PreprocessingConfig,
@@ -117,7 +120,6 @@ class TestDocumentPreprocessor:
 
     def test_unicode_nfc_nfd_cafe_equivalence(self):
         """NFC precomposed and NFD decomposed café produce identical output under NFKC."""
-        import unicodedata
 
         cfg = PreprocessingConfig(normalize_unicode=True, unicode_form="NFKC", lowercase=False)
         pp = DocumentPreprocessor(cfg)
@@ -155,7 +157,6 @@ class TestDocumentPreprocessor:
 
     def test_unicode_nfc_no_change_when_already_normalized(self):
         """NFC input with NFKC form records no change when text is already NFKC."""
-        import unicodedata
 
         cfg = PreprocessingConfig(
             normalize_unicode=True,

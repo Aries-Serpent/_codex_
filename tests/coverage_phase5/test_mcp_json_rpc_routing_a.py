@@ -117,6 +117,7 @@ def test_json_rpc_version_negotiation():
 
 def test_json_rpc_large_payload():
     """Test handling of large JSON-RPC payloads."""
+import pytest
     registry = ToolRegistry()
     tools = [Tool(name=f"tool_{i}", description=f"Tool {i}") for i in range(100)]
     for tool in tools:

@@ -352,6 +352,7 @@ class TestDistributedTracing:
 
     def test_trace_hierarchy(self):
         """Create trace with parent-child spans."""
+import pytest
         tracer = Tracer()
         parent = tracer.start_span("request", trace_id="trace-1")
         child = tracer.start_span("db_query", trace_id="trace-1", parent_id=parent.span_id)

@@ -6,19 +6,22 @@ Covers:
   - /health — legacy endpoint backward-compatibility
   - Root endpoint lists readiness/liveness in the endpoints dict
 """
-
 from __future__ import annotations
-
 from pathlib import Path
 from unittest.mock import patch
+    from fastapi.testclient import TestClient
+    import tempfile
+    import monitoring.dashboard_api as _da  # type: ignore[import]
+        from monitoring import dashboard_api as da  # type: ignore[import]
+        from monitoring import dashboard_api as _da  # type: ignore[import]
 
-import pytest
+
+
 
 # ---------------------------------------------------------------------------
 # Import the app; skip the entire module if FastAPI is unavailable
 # ---------------------------------------------------------------------------
 try:
-    from fastapi.testclient import TestClient
 
     _FASTAPI_AVAILABLE = True
 except ImportError:  # pragma: no cover
@@ -29,9 +32,7 @@ pytestmark = pytest.mark.skipif(not _FASTAPI_AVAILABLE, reason="fastapi[testclie
 
 @pytest.fixture(scope="module")
 def client():
-    import tempfile
 
-    import monitoring.dashboard_api as _da  # type: ignore[import]
 
     # Import inside fixture so the skip above works cleanly
 
@@ -78,7 +79,6 @@ class TestLivenessProbe:
 
 class TestReadinessProbe:
     def test_returns_200_when_ready(self, client, tmp_path):
-        from monitoring import dashboard_api as da  # type: ignore[import]
 
         with patch.object(da, "Path", return_value=tmp_path):
             resp = client.get("/readiness")
@@ -98,7 +98,6 @@ class TestReadinessProbe:
         assert "timestamp" in data, "Data must not be empty"
 
     def test_returns_503_when_mkdir_fails(self, client):
-        from monitoring import dashboard_api as _da  # type: ignore[import]
 
         class _FailPath:
             """Fake Path that raises OSError on mkdir."""

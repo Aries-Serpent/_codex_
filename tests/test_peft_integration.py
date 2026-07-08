@@ -3,18 +3,19 @@ Test Peft Integration
 
 Test module for peft integration.
 """
-
+peft = pytest.importorskip("peft")
 import sys
-
-import pytest
-
 from codex_ml.models import MiniLM, MiniLMConfig
 from codex_ml.peft.peft_adapter import apply_lora
+    import torch as _torch_peft
+        import torch.profiler as profiler_module
+        import torch
 
-peft = pytest.importorskip("peft")
+
+
+
 
 try:
-    import torch as _torch_peft
 
     _TORCH_312_BUG = sys.version_info >= (3, 12) and _torch_peft.__version__.startswith("2.")
 except (ImportError, AttributeError):
@@ -25,9 +26,7 @@ except (ImportError, AttributeError):
 def disable_torch_profiler(monkeypatch):
     """Disable PyTorch profiler to avoid Protocol isinstance issues."""
     try:
-        import torch.profiler as profiler_module
 
-        import torch
 
         # Disable profiler record function to prevent Protocol isinstance errors
         if hasattr(profiler_module, "_record_function_enter"):

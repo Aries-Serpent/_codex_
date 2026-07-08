@@ -3,19 +3,19 @@
 Covers apply, list_feature_views, list_entities, get_online_features,
 materialize, get_feature_view, Entity, FeatureView, and FeatureServiceResult.
 """
-
 from __future__ import annotations
-
+    return pytest.importorskip(
 from datetime import datetime, timezone
 from unittest.mock import MagicMock, patch
+    from pathlib import Path
 
-import pytest
+
+
 
 # ── Import helpers ──────────────────────────────────────────────────────────
 
 
 def _import():
-    return pytest.importorskip(
         "codex_ml.features.feast_compat",
         reason="codex_ml.features.feast_compat not importable",
     )
@@ -253,7 +253,6 @@ class TestFeastCompatibleStore:
 
 def _init_store(store) -> None:
     """Manually initialize a FeastCompatibleStore with a mocked native store."""
-    from pathlib import Path
 
     store._repo_path = Path(".feature_store")
     store._native = MagicMock()

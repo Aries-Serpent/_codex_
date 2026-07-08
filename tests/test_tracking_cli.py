@@ -1,10 +1,12 @@
 """Smoke tests for :mod:`codex_ml.cli.tracking_cli`."""
-
 from __future__ import annotations
-
+import pytest
 import sys
 from pathlib import Path
 from unittest.mock import MagicMock
+    from codex_ml.cli import tracking_cli
+
+
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 SRC_DIR = REPO_ROOT / "src"
@@ -23,7 +25,6 @@ def test_enable_mlflow_and_wandb(monkeypatch):
     dummy_wandb.init.return_value = dummy_run
     monkeypatch.setitem(sys.modules, "wandb", dummy_wandb)
 
-    from codex_ml.cli import tracking_cli
 
     mlflow_result = tracking_cli._enable_mlflow("file:/tmp/mlruns")
     wandb_result = tracking_cli._enable_wandb("proj", mode="offline")

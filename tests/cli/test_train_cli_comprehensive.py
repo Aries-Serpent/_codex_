@@ -6,11 +6,32 @@ Tests cover:
 - Sequence coercion functions
 - Training pipeline integration
 """
-
 from pathlib import Path
 from unittest.mock import patch
+        from codex_ml.cli.train import _to_path
+            from codex_ml.cli.train import _to_path
+            from codex_ml.cli.train import _to_path
+        from codex_ml.cli.train import _cfg_to_dict
+        from codex_ml.cli.train import _cfg_to_dict
+            from omegaconf import OmegaConf
+            from codex_ml.cli.train import _cfg_to_dict
+        from codex_ml.cli.train import _cfg_to_list
+        from codex_ml.cli.train import _cfg_to_list
+        from codex_ml.cli.train import _cfg_to_list
+        from codex_ml.cli.train import _coerce_sequence
+        from codex_ml.cli.train import _coerce_sequence
+        from codex_ml.cli.train import _coerce_sequence
+        from codex_ml.cli.train import _coerce_sequence
+        from codex_ml.cli.train import _coerce_sequence
+        from codex_ml.cli.train import _coerce_sequence
+        from codex_ml.cli.train import _sanitize_prompt_sequence
+        from codex_ml.cli.train import _sanitize_prompt_sequence
+        from codex_ml.cli.train import _sanitize_prompt_sequence
+        from codex_ml.cli import train
+        from codex_ml.cli import train
+            import importlib
 
-import pytest
+
 
 
 class TestPathConversion:
@@ -18,14 +39,12 @@ class TestPathConversion:
 
     def test_to_path_with_none(self):
         """Test _to_path returns None for None input."""
-        from codex_ml.cli.train import _to_path
 
         assert _to_path(None) is None, "Condition must be true"
 
     def test_to_path_with_string(self):
         """Test _to_path converts string to Path."""
         with patch("codex_ml.cli.train.to_absolute_path", return_value="/abs/path"):
-            from codex_ml.cli.train import _to_path
 
             result = _to_path("relative/path")
             assert isinstance(result, Path)
@@ -34,7 +53,6 @@ class TestPathConversion:
     def test_to_path_with_path_object(self):
         """Test _to_path handles Path objects."""
         with patch("codex_ml.cli.train.to_absolute_path", return_value="/abs/path"):
-            from codex_ml.cli.train import _to_path
 
             result = _to_path(Path("relative/path"))
             assert isinstance(result, Path)
@@ -45,7 +63,6 @@ class TestConfigConversion:
 
     def test_cfg_to_dict_with_regular_dict(self):
         """Test _cfg_to_dict with regular dict."""
-        from codex_ml.cli.train import _cfg_to_dict
 
         input_dict = {"key": "value", "nested": {"inner": 1}}
         result = _cfg_to_dict(input_dict)
@@ -54,7 +71,6 @@ class TestConfigConversion:
 
     def test_cfg_to_dict_with_none(self):
         """Test _cfg_to_dict with None returns empty dict."""
-        from codex_ml.cli.train import _cfg_to_dict
 
         result = _cfg_to_dict(None)
         assert result == {}, "Result must not be empty"
@@ -62,10 +78,8 @@ class TestConfigConversion:
     def test_cfg_to_dict_with_omegaconf(self):
         """Test _cfg_to_dict with OmegaConf DictConfig."""
         try:
-            from omegaconf import OmegaConf
 
             cfg = OmegaConf.create({"model": "gpt2", "epochs": 10})
-            from codex_ml.cli.train import _cfg_to_dict
 
             result = _cfg_to_dict(cfg)
             assert isinstance(result, dict)
@@ -75,7 +89,6 @@ class TestConfigConversion:
 
     def test_cfg_to_list_with_regular_list(self):
         """Test _cfg_to_list with regular list."""
-        from codex_ml.cli.train import _cfg_to_list
 
         input_list = [1, 2, 3]
         result = _cfg_to_list(input_list)
@@ -84,14 +97,12 @@ class TestConfigConversion:
 
     def test_cfg_to_list_with_none(self):
         """Test _cfg_to_list with None returns empty list."""
-        from codex_ml.cli.train import _cfg_to_list
 
         result = _cfg_to_list(None)
         assert result == [], "Result must not be empty"
 
     def test_cfg_to_list_with_single_value(self):
         """Test _cfg_to_list with single value wraps in list."""
-        from codex_ml.cli.train import _cfg_to_list
 
         result = _cfg_to_list("single_value")
         assert result == ["single_value"], "Result must not be empty"
@@ -102,20 +113,17 @@ class TestSequenceCoercion:
 
     def test_coerce_sequence_with_none(self):
         """Test _coerce_sequence returns None for None."""
-        from codex_ml.cli.train import _coerce_sequence
 
         assert _coerce_sequence(None) is None, "Condition must be true"
 
     def test_coerce_sequence_with_list(self):
         """Test _coerce_sequence preserves list."""
-        from codex_ml.cli.train import _coerce_sequence
 
         result = _coerce_sequence([1, 2, 3])
         assert result == [1, 2, 3]
 
     def test_coerce_sequence_with_tuple(self):
         """Test _coerce_sequence converts tuple to list."""
-        from codex_ml.cli.train import _coerce_sequence
 
         result = _coerce_sequence((1, 2, 3))
         assert result == [1, 2, 3]
@@ -123,7 +131,6 @@ class TestSequenceCoercion:
 
     def test_coerce_sequence_with_set(self):
         """Test _coerce_sequence converts set to list."""
-        from codex_ml.cli.train import _coerce_sequence
 
         result = _coerce_sequence({1, 2, 3})
         assert isinstance(result, list)
@@ -131,14 +138,12 @@ class TestSequenceCoercion:
 
     def test_coerce_sequence_with_string(self):
         """Test _coerce_sequence wraps string in list."""
-        from codex_ml.cli.train import _coerce_sequence
 
         result = _coerce_sequence("hello")
         assert result == ["hello"], "Result must not be empty"
 
     def test_coerce_sequence_with_invalid_type(self):
         """Test _coerce_sequence returns None for invalid types."""
-        from codex_ml.cli.train import _coerce_sequence
 
         result = _coerce_sequence(123)
         assert result is None, "Result must not be empty"
@@ -149,7 +154,6 @@ class TestSanitizePromptSequence:
 
     def test_sanitize_prompt_sequence_basic(self):
         """Test _sanitize_prompt_sequence with basic strings."""
-        from codex_ml.cli.train import _sanitize_prompt_sequence
 
         result, _changed = _sanitize_prompt_sequence(["hello", "world"])
         assert isinstance(result, list)
@@ -157,7 +161,6 @@ class TestSanitizePromptSequence:
 
     def test_sanitize_prompt_sequence_empty(self):
         """Test _sanitize_prompt_sequence with empty list."""
-        from codex_ml.cli.train import _sanitize_prompt_sequence
 
         result, changed = _sanitize_prompt_sequence([])
         assert result == [], "Result must not be empty"
@@ -165,7 +168,6 @@ class TestSanitizePromptSequence:
 
     def test_sanitize_prompt_sequence_mixed_types(self):
         """Test _sanitize_prompt_sequence with mixed types."""
-        from codex_ml.cli.train import _sanitize_prompt_sequence
 
         result, _changed = _sanitize_prompt_sequence(["text", 123, {"key": "value"}])
         assert isinstance(result, list)
@@ -177,7 +179,6 @@ class TestTrainCLIIntegration:
 
     def test_module_imports(self):
         """Test that module can be imported."""
-        from codex_ml.cli import train
 
         assert hasattr(train, "_to_path")
         assert hasattr(train, "_cfg_to_dict")
@@ -187,7 +188,6 @@ class TestTrainCLIIntegration:
 
     def test_logger_configured(self):
         """Test that logger is properly configured."""
-        from codex_ml.cli import train
 
         assert hasattr(train, "LOGGER")
 
@@ -195,7 +195,6 @@ class TestTrainCLIIntegration:
         """Test that module handles hydra import errors gracefully."""
         # Module should be importable even if hydra is missing
         try:
-            import importlib
 
             importlib.reload(__import__("codex_ml.cli.train"))
         except (ValueError, TypeError) as e:

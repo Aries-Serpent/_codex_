@@ -3,23 +3,29 @@ Test Cli
 
 Test module for cli.
 """
-
+pytest.importorskip("mlflow")
+pytest.importorskip("typer")
+    pytest.importorskip("torch", reason="torch not installed")
 import importlib
 import os
 import subprocess
 import sys
 from pathlib import Path
-
-import pytest
-
-pytest.importorskip("mlflow")
-pytest.importorskip("typer")
-
 from click.testing import CliRunner
 from typer.testing import CliRunner as TyperCliRunner
+from codex_cli.app import app as codex_cli_app
+    import mlflow
+    import concurrent.futures as cf
+    from codex.cli import _fix_pool
+    import builtins
+    from codex.cli import _fix_pool
+    import mlflow
+
+
+
+
 
 cli_module = importlib.import_module("codex.cli")
-from codex_cli.app import app as codex_cli_app
 
 
 @pytest.mark.parametrize(
@@ -111,7 +117,6 @@ def test_cli_run_valid() -> None:
 
 def test_cli_module_run_ingest(tmp_path: Path) -> None:
     # Skip if mlflow is not available
-    pytest.importorskip("mlflow", reason="mlflow not installed")
 
     data_dir = tmp_path / "data"
     data_dir.mkdir()
@@ -122,7 +127,6 @@ def test_cli_module_run_ingest(tmp_path: Path) -> None:
     mlruns_dir.mkdir()
 
     # Pre-initialize MLflow experiment
-    import mlflow
 
     mlflow.set_tracking_uri(f"file:{mlruns_dir}")
     try:
@@ -149,9 +153,7 @@ def test_cli_module_run_ingest(tmp_path: Path) -> None:
 
 
 def test_fix_pool_executor_created() -> None:
-    import concurrent.futures as cf
 
-    from codex.cli import _fix_pool
 
     try:
         _fix_pool(max_workers=2)
@@ -168,9 +170,7 @@ def test_fix_pool_executor_created() -> None:
 
 
 def test_fix_pool_missing_cf(monkeypatch) -> None:
-    import builtins
 
-    from codex.cli import _fix_pool
 
     real_import = builtins.__import__
 
@@ -192,12 +192,10 @@ def test_typer_cli_help() -> None:
 
 
 def test_typer_cli_track_smoke(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    pytest.importorskip("mlflow", reason="mlflow not installed")
     target = tmp_path / "mlruns"
     monkeypatch.setenv("MLFLOW_TRACKING_URI", f"file:{target}")
 
     # Initialize MLflow experiment before tracking
-    import mlflow
 
     mlflow.set_tracking_uri(f"file:{target}")
     mlflow.create_experiment("default", artifact_location=str(target))
@@ -209,7 +207,6 @@ def test_typer_cli_track_smoke(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) 
 
 
 def test_typer_cli_split_and_checkpoint_smoke(tmp_path: Path) -> None:
-    pytest.importorskip("torch", reason="torch not installed")
     runner = TyperCliRunner()
     split = runner.invoke(codex_cli_app, ["split-smoke", "--seed", "42"])
     assert split.exit_code == 0, "exit_code is not valid"

@@ -3,17 +3,16 @@ Test Checkpoint Manager
 
 Test module for checkpoint manager.
 """
-
 from __future__ import annotations
-
 import types
 from pathlib import Path
-
-import pytest
-
 from codex_ml.utils import checkpoint_manager
 from codex_ml.utils.checkpoint_manager import load_checkpoint, save_checkpoint
 from codex_ml.utils.safe_pickle import safe_pickle_dump
+
+
+
+
 
 
 def test_save_and_load_roundtrip(tmp_path: Path) -> None:

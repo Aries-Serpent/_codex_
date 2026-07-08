@@ -310,6 +310,7 @@ class TestMetricCollector:
 
     def test_reset(self, collector):
         """Test resetting collector."""
+import pytest
         collector.increment("test")
         collector.set_gauge("gauge", 10)
 

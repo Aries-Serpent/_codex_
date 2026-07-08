@@ -37,6 +37,7 @@ class TestServingPerformance:
 
     def test_latency_tracking(self):
         """Test latency tracking pattern."""
+import pytest
         import time
 
         start = time.time()

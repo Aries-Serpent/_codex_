@@ -5,7 +5,6 @@ Tests the logic for categorizing PRs by size and determining
 the appropriate validation strategy.
 """
 
-import pytest
 
 
 def calculate_pr_size(changed_files: int) -> tuple[str, str]:

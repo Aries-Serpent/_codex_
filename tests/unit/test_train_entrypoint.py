@@ -3,18 +3,17 @@ Test Train Entrypoint
 
 Test module for train entrypoint.
 """
-
 from __future__ import annotations
-
-import pytest
-
 from omegaconf import OmegaConf
+        import hhg_logistics.train as train_module
+
+
+
 
 
 def test_train_guard_noop(tmp_path):
     train_module = None
     try:
-        import hhg_logistics.train as train_module
     except ImportError:
         pytest.skip("imports failed due to optional deps")
 

@@ -3,19 +3,38 @@
 Covers all public methods with mocked urllib responses so no real
 network calls are made. Zero external dependencies.
 """
-
 from __future__ import annotations
-
 import json
 import logging
 import unittest.mock as mock
 import urllib.error
 from io import BytesIO
 from urllib.parse import urlparse
-
-import pytest
-
 from codex.github.mcp_poster import GitHubMCPPoster, main
+    from urllib.parse import parse_qs, urlparse
+    from urllib.parse import parse_qs, urlparse
+    from io import BytesIO
+    import sys
+    from io import BytesIO
+    import argparse
+    from unittest.mock import MagicMock
+    import codex.github.mcp_poster as pm
+    from codex.github.mcp_poster import main
+    from codex.github.mcp_poster import main
+    from codex.github.mcp_poster import GitHubMCPPoster
+    from codex.github.mcp_poster import GitHubMCPPoster
+    from codex.github.mcp_poster import GitHubMCPPoster
+        from codex.github.mcp_poster import GitHubMCPPoster
+        from codex.github.mcp_poster import GitHubMCPPoster
+        from email.message import Message as _Msg
+        from codex.github.mcp_poster import GitHubMCPPoster
+        from email.message import Message as _Msg
+        from codex.github.mcp_poster import GitHubMCPPoster
+        from codex.github.mcp_poster import GitHubMCPPoster
+
+
+
+
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -326,7 +345,6 @@ def test_list_pull_requests_head_filter_adds_owner_prefix(poster, monkeypatch):
     monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
     poster.list_pull_requests("myorg/repo", head="my-branch")
 
-    from urllib.parse import parse_qs, urlparse
 
     qs = parse_qs(urlparse(captured["url"]).query)
     assert qs.get("head") == ["myorg:my-branch"], "Condition must be true"
@@ -342,7 +360,6 @@ def test_list_pull_requests_head_with_colon_not_modified(poster, monkeypatch):
     monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
     poster.list_pull_requests("myorg/repo", head="otherorg:their-branch")
 
-    from urllib.parse import parse_qs, urlparse
 
     qs = parse_qs(urlparse(captured["url"]).query)
     # Should NOT re-prefix: the value already contains an owner
@@ -890,7 +907,6 @@ def test_merge_branch_records_cb_pattern_already_exists(poster, monkeypatch):
 
 def test_set_repo_variable_reraises_non_404_http_error(poster, monkeypatch):
     """set_repo_variable re-raises HTTPError whose code is not 404 (line 240)."""
-    from io import BytesIO
 
     hdrs = mock.MagicMock()
     hdrs.get = lambda key, default="": default  # No Retry-After, no rate-limit headers
@@ -922,7 +938,6 @@ def test_record_cb_pattern_cognitive_brain_available(poster, monkeypatch):
     fake_module.MemoryPattern = FakeMemoryPattern
     fake_module.SQLiteMemory = FakeSQLiteMemory
 
-    import sys
 
     # Inject the fake module so the import inside _record_cb_pattern succeeds.
     # Clean up after to avoid contaminating other tests.
@@ -946,7 +961,6 @@ def test_record_cb_pattern_cognitive_brain_available(poster, monkeypatch):
 
 def test_request_raises_after_retry_exhaustion(poster, monkeypatch):
     """_request raises last_exc when all retries are consumed on rate-limit (line 607)."""
-    from io import BytesIO
 
     hdrs = mock.MagicMock()
     hdrs.get = lambda key, default="": "1" if key == "Retry-After" else default
@@ -968,7 +982,6 @@ def test_request_raises_after_retry_exhaustion(poster, monkeypatch):
 
 def test_cli_no_subcommand_returns_zero(monkeypatch):
     """main() with no recognised subcommand reaches return 0 (branch 751->766)."""
-    import argparse
 
     monkeypatch.setenv("CODEX_MASTER_KEY", "tok")
 
@@ -992,7 +1005,6 @@ def test_cli_no_subcommand_returns_zero(monkeypatch):
 
 def test_get_method_returns_json(poster, monkeypatch):
     """_get() parses JSON from a successful GET response."""
-    from unittest.mock import MagicMock
 
     fake_resp = MagicMock()
     fake_resp.__enter__ = lambda s: s
@@ -1068,8 +1080,6 @@ def test_commit_files_pipeline(poster, monkeypatch, tmp_path):
 
 def test_cli_commit_files(monkeypatch, tmp_path):
     """CLI commit-files command calls commit_files and prints the SHA."""
-    import codex.github.mcp_poster as pm
-    from codex.github.mcp_poster import main
 
     src = tmp_path / "file.txt"
     src.write_text("hello", encoding="utf-8")
@@ -1104,7 +1114,6 @@ def test_cli_commit_files(monkeypatch, tmp_path):
 
 def test_cli_commit_files_bad_mapping(monkeypatch, tmp_path):
     """CLI commit-files returns 1 when a --file mapping is malformed."""
-    from codex.github.mcp_poster import main
 
     monkeypatch.setenv("CODEX_MASTER_KEY", "tok")
     rc = main(
@@ -1348,7 +1357,6 @@ def test_cli_upsert_discussion_comment(monkeypatch, tmp_path):
         captured_body["body"] = body
         return {"id": "DC_1", "url": "https://u"}
 
-    from codex.github.mcp_poster import GitHubMCPPoster
 
     monkeypatch.setattr(GitHubMCPPoster, "upsert_discussion_comment", fake_upsert)
     f = tmp_path / "update.md"
@@ -1377,7 +1385,6 @@ def test_cli_post_ci_pattern_summary(monkeypatch, tmp_path):
         captured["session_id"] = session_id
         return {"id": "DC_s", "url": "https://u/s"}
 
-    from codex.github.mcp_poster import GitHubMCPPoster
 
     monkeypatch.setattr(GitHubMCPPoster, "post_ci_pattern_summary", fake_post)
     f = tmp_path / "summary.md"
@@ -1407,7 +1414,6 @@ def test_cli_post_continuation(monkeypatch, tmp_path):
         captured["body"] = body
         return {"id": "DC_c", "url": "https://u/c"}
 
-    from codex.github.mcp_poster import GitHubMCPPoster
 
     monkeypatch.setattr(GitHubMCPPoster, "post_continuation_chain", fake_chain)
     f = tmp_path / "chain.md"
@@ -1429,7 +1435,6 @@ class TestCheckTokenHealth:
         """No token → healthy=False, expiry_warning set."""
         for key in ("CODEX_MASTER_KEY", "CODEX_BACKUP_KEY", "GITHUB_TOKEN"):
             monkeypatch.delenv(key, raising=False)
-        from codex.github.mcp_poster import GitHubMCPPoster
 
         poster = GitHubMCPPoster(token=None)
         result = poster.check_token_health()
@@ -1440,7 +1445,6 @@ class TestCheckTokenHealth:
     def test_expired_token_returns_unhealthy(self, monkeypatch):
         """HTTP 401 → healthy=False, expiry_warning mentions rotation."""
         monkeypatch.setenv("CODEX_MASTER_KEY", "ghp_expired")
-        from codex.github.mcp_poster import GitHubMCPPoster
 
         poster = GitHubMCPPoster()
 
@@ -1462,10 +1466,8 @@ class TestCheckTokenHealth:
 
     def test_healthy_token_with_full_scopes(self, monkeypatch):
         """200 response with repo+workflow scopes → healthy=True."""
-        from email.message import Message as _Msg
 
         monkeypatch.setenv("CODEX_MASTER_KEY", "ghp_valid")
-        from codex.github.mcp_poster import GitHubMCPPoster
 
         poster = GitHubMCPPoster()
 
@@ -1494,10 +1496,8 @@ class TestCheckTokenHealth:
 
     def test_missing_scopes_on_master_key_warns(self, monkeypatch):
         """200 but missing scopes → healthy=False, warning mentions missing scopes."""
-        from email.message import Message as _Msg
 
         monkeypatch.setenv("CODEX_MASTER_KEY", "ghp_limited")
-        from codex.github.mcp_poster import GitHubMCPPoster
 
         poster = GitHubMCPPoster()
 
@@ -1527,7 +1527,6 @@ class TestCheckTokenHealth:
         """Token source is tracked correctly for each env var."""
         for key in ("CODEX_MASTER_KEY", "CODEX_BACKUP_KEY", "GITHUB_TOKEN"):
             monkeypatch.delenv(key, raising=False)
-        from codex.github.mcp_poster import GitHubMCPPoster
 
         monkeypatch.setenv("CODEX_BACKUP_KEY", "backup_token")
         poster = GitHubMCPPoster()

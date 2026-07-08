@@ -3,14 +3,14 @@ Chaos engineering tests for inference server.
 
 Tests failure scenarios, resilience, and recovery mechanisms.
 """
-
+pytest.importorskip("fastapi")
 import time
 from unittest.mock import patch
-
-import pytest
-
-pytest.importorskip("fastapi")
 from fastapi.testclient import TestClient
+    from src.codex_ml.serving.inference_server import create_app
+
+
+
 
 # Reusable stub prediction result returned by mocked ModelServer.predict calls.
 # Using descriptive values so assertion failures are immediately legible in CI logs.
@@ -28,7 +28,6 @@ _STUB_PREDICTION = [
 @pytest.fixture
 def chaos_client():
     """Create test client for chaos testing."""
-    from src.codex_ml.serving.inference_server import create_app
 
     # create_app() takes optional config parameter, not enable_auth
     # Authentication is controlled via env vars (CODEX_API_KEYS, CODEX_JWT_SECRET)

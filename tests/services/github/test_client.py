@@ -679,6 +679,7 @@ class TestWorkflowOperations:
     @pytest.mark.asyncio
     async def test_rerun_workflow(self, client):
         """Test re-running a workflow."""
+import pytest
         mock_response = MagicMock()
         mock_response.status_code = 201
         mock_response.headers = {}

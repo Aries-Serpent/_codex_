@@ -3,8 +3,21 @@ Final push to 30% coverage - strategic high-value tests.
 
 Focus: Methods that are simple but add coverage quickly.
 """
+        from agents.physics_orchestrator import ActionType
+        from agents.physics_orchestrator import DecisionState
+        from agents.physics_orchestrator import ActionPath, ActionType
+        from agents.workflow_navigator import (
+        from agents.workflow_navigator import Workflow, WorkflowFrequency, WorkflowStep
+        from agents.quantum_game_theory import StrategyState, TeamType
+        from agents.quantum_game_theory import StrategyState, TeamType
+        from agents.advanced_physics_calculators import FluidFlowScheduler
+        from agents.advanced_physics_calculators import FluidChannel, FluidFlowScheduler
+        from agents.advanced_physics_calculators import ChaoticNeuralNetwork
+        from agents.mental_mapping import MentalMappingModel
+        from agents.mental_mapping import MentalMappingModel
+        from agents.self_healing import SelfHealingEngine
+        from agents.self_healing import DetectedIssue, IssueSeverity, IssueType
 
-import pytest
 
 
 class TestPhysicsOrchestratorAdditional:
@@ -12,7 +25,6 @@ class TestPhysicsOrchestratorAdditional:
 
     def test_action_type_enum_all_values(self):
         """Test all ActionType enum values."""
-        from agents.physics_orchestrator import ActionType
 
         # Test each enum value exists
         assert ActionType.AUDIT is not None, "AUDIT must be initialized"
@@ -26,7 +38,6 @@ class TestPhysicsOrchestratorAdditional:
 
     def test_decision_state_with_all_parameters(self):
         """Test DecisionState with all parameters."""
-        from agents.physics_orchestrator import DecisionState
 
         state = DecisionState(
             current_position="start",
@@ -42,7 +53,6 @@ class TestPhysicsOrchestratorAdditional:
 
     def test_action_path_with_all_scores(self):
         """Test ActionPath with all score parameters."""
-        from agents.physics_orchestrator import ActionPath, ActionType
 
         path = ActionPath(
             action_type=ActionType.TEST,
@@ -70,7 +80,6 @@ class TestWorkflowNavigatorAdditional:
 
     def test_register_and_retrieve_workflow(self):
         """Test workflow registration and retrieval flow."""
-        from agents.workflow_navigator import (
             Workflow,
             WorkflowFrequency,
             WorkflowNavigator,
@@ -98,7 +107,6 @@ class TestWorkflowNavigatorAdditional:
 
     def test_workflow_to_dict_serialization(self):
         """Test Workflow can be serialized to dict."""
-        from agents.workflow_navigator import Workflow, WorkflowFrequency, WorkflowStep
 
         wf = Workflow(
             workflow_id="TEST",
@@ -122,7 +130,6 @@ class TestQuantumGameTheoryAdditional:
 
     def test_strategy_state_collapse(self):
         """Test strategy state collapse method."""
-        from agents.quantum_game_theory import StrategyState, TeamType
 
         state = StrategyState(team=TeamType.BLUE, strategies=["s1", "s2", "s3"])
 
@@ -133,7 +140,6 @@ class TestQuantumGameTheoryAdditional:
 
     def test_strategy_state_normalization(self):
         """Test wavefunction normalization."""
-        from agents.quantum_game_theory import StrategyState, TeamType
 
         state = StrategyState(team=TeamType.BLUE, strategies=["s1", "s2"])
 
@@ -152,7 +158,6 @@ class TestAdvancedPhysicsCalculatorsAdditional:
 
     def test_fluid_flow_scheduler_initialization(self):
         """Test FluidFlowScheduler can be initialized."""
-        from agents.advanced_physics_calculators import FluidFlowScheduler
 
         scheduler = FluidFlowScheduler()
 
@@ -161,7 +166,6 @@ class TestAdvancedPhysicsCalculatorsAdditional:
 
     def test_fluid_channel_add(self):
         """Test adding a fluid channel."""
-        from agents.advanced_physics_calculators import FluidChannel, FluidFlowScheduler
 
         scheduler = FluidFlowScheduler()
 
@@ -173,7 +177,6 @@ class TestAdvancedPhysicsCalculatorsAdditional:
 
     def test_chaotic_neural_network_basic(self):
         """Test ChaoticNeuralNetwork initialization."""
-        from agents.advanced_physics_calculators import ChaoticNeuralNetwork
 
         try:
             network = ChaoticNeuralNetwork(input_size=3, hidden_size=5)
@@ -187,7 +190,6 @@ class TestMentalMappingAdditional:
 
     def test_model_has_nodes_dict(self):
         """Test MentalMappingModel has nodes storage."""
-        from agents.mental_mapping import MentalMappingModel
 
         model = MentalMappingModel()
 
@@ -196,7 +198,6 @@ class TestMentalMappingAdditional:
 
     def test_model_has_edges_list(self):
         """Test MentalMappingModel has edges storage."""
-        from agents.mental_mapping import MentalMappingModel
 
         model = MentalMappingModel()
 
@@ -209,7 +210,6 @@ class TestSelfHealingAdditional:
 
     def test_engine_initialization(self):
         """Test SelfHealingEngine basic initialization."""
-        from agents.self_healing import SelfHealingEngine
 
         engine = SelfHealingEngine()
 
@@ -218,7 +218,6 @@ class TestSelfHealingAdditional:
 
     def test_detected_issue_to_dict(self):
         """Test DetectedIssue serialization."""
-        from agents.self_healing import DetectedIssue, IssueSeverity, IssueType
 
         issue = DetectedIssue(
             issue_id="test",

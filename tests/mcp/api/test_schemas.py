@@ -1,3 +1,4 @@
+import pytest
 from mcp.api.schemas import (
     ErrorCodes,
     HealthResponse,

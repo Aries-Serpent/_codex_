@@ -3,16 +3,15 @@ Test Codex Model
 
 Test module for codex model.
 """
-
+pytest.importorskip("torch")
 import importlib.util
 from pathlib import Path
-
-import pytest
-
-pytest.importorskip("torch")
-
 import torch
 from codex_ml.codex_model import ModelConfig, build_codex_model
+
+
+
+
 
 
 def test_build_codex_model_cpu(tmp_path: Path) -> None:

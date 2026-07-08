@@ -5,12 +5,11 @@ Comprehensive test suite for documentation consolidation, markdown syntax valida
 duplicate detection, and cross-reference integrity.
 Coverage: Documentation structure and consolidation logic.
 """
-
 import re
 from pathlib import Path
 from typing import List, Tuple
 
-import pytest
+
 
 
 class DocumentationRegistry:

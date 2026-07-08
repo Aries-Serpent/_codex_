@@ -2,6 +2,7 @@
 Minimal tests for Agent Core - Phase 9.4 Coverage Gap-Fill
 Targets critical agent initialization and lifecycle paths.
 """
+import pytest
 
 
 class TestAgentCoreMinimal:

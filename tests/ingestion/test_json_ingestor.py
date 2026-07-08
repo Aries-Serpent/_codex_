@@ -1,11 +1,12 @@
 """Smoke tests for :mod:`ingestion.json_ingestor`."""
-
 from __future__ import annotations
-
 import json
 from pathlib import Path
+    from ingestion import json_ingestor
+    from ingestion import json_ingestor
 
-import pytest
+
+
 
 
 @pytest.fixture
@@ -23,7 +24,6 @@ def sample_jsonl_file(tmp_path: Path) -> Path:
 
 
 def test_json_ingestor_reads_list(sample_json_file: Path) -> None:
-    from ingestion import json_ingestor
 
     rows = json_ingestor.load_json(sample_json_file)
     assert len(rows) == 2, "Rows must not be empty"
@@ -31,7 +31,6 @@ def test_json_ingestor_reads_list(sample_json_file: Path) -> None:
 
 
 def test_json_ingestor_reads_jsonl(sample_jsonl_file: Path) -> None:
-    from ingestion import json_ingestor
 
     with pytest.raises(Exception):
         json_ingestor.load_json(sample_jsonl_file)

@@ -78,7 +78,6 @@ def test_partial_dataset_parsing(tmp_path):
 
 def test_split_length_normalization():
     """Test split lengths normalize to dataset size."""
-    torch = pytest.importorskip("torch")
 
     dataset = torch.utils.data.TensorDataset(torch.randn(100, 10), torch.randint(0, 2, (100,)))
 
@@ -88,7 +87,6 @@ def test_split_length_normalization():
 
 def test_split_error_conditions():
     """Test split_dataset handles error conditions."""
-    torch = pytest.importorskip("torch")
 
     torch.utils.data.TensorDataset(torch.randn(10, 5), torch.randint(0, 2, (10,)))
 
@@ -109,7 +107,6 @@ def test_split_error_conditions():
 
 def test_deterministic_split_reproducibility():
     """Test splits are reproducible with fixed seed."""
-    torch = pytest.importorskip("torch")
 
     dataset = torch.utils.data.TensorDataset(torch.randn(100, 10), torch.randint(0, 2, (100,)))
 
@@ -136,7 +133,6 @@ def test_tsv_dataset_text_extraction(tmp_path):
 
 def test_collate_fn_missing_keys():
     """Test collate function handles missing required keys."""
-    torch = pytest.importorskip("torch")
 
     batch = [
         {"attention_mask": torch.ones(4)},  # Missing input_ids
@@ -149,7 +145,7 @@ def test_collate_fn_missing_keys():
 
 def test_dataloader_batch_size_override(tmp_path):
     """Test dataloader respects batch size configuration."""
-    torch = pytest.importorskip("torch")
+import pytest
 
     data_file = tmp_path / "data.tsv"
     data_file.write_text("a\t1\nb\t0\nc\t1\nd\t0\n")

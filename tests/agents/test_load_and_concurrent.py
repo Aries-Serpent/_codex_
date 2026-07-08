@@ -7,18 +7,20 @@ Tests system behavior under:
 - Memory pressure (large data sets)
 - Sustained operations (endurance testing)
 """
-
 import concurrent.futures
 import tempfile
 import threading
 import time
 from pathlib import Path
-
-import pytest
-
 from agents.agent_memory import AgentMemory, MemoryEntry
 from agents.physics_integration import HybridPhysicsOrchestrator
 from codex.logging.structured_logger import logger
+        from agents.agent_memory import ContextFrame
+        import sys
+        from agents.agent_memory import MemoryEntry
+
+
+
 
 
 class TestConcurrentMemoryAccess:
@@ -247,7 +249,6 @@ class TestMemoryPressure:
 
     def test_large_context_frames(self):
         """Test handling large context frames."""
-        from agents.agent_memory import ContextFrame
 
         # Create frame with many active memories
         large_frame = ContextFrame(
@@ -291,7 +292,6 @@ class TestEnduranceTesting:
 
     def test_memory_leak_detection(self):
         """Test for memory leaks in repeated operations."""
-        import sys
 
         with tempfile.NamedTemporaryFile(delete=False, suffix=".db") as temp_file:
             temp_path = Path(temp_file.name)
@@ -330,7 +330,6 @@ class TestRaceConditions:
 
     def test_counter_increment_race(self):
         """Test concurrent counter increments (classic race condition test)."""
-        from agents.agent_memory import MemoryEntry
 
         entry = MemoryEntry(
             memory_id="counter_test",

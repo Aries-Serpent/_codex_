@@ -13,7 +13,6 @@ Target: 100+ tests across all schemas
 Authority: Lane 3 Unified Documentation Agent
 """
 
-import pytest
 
 
 # Fixtures for common test data

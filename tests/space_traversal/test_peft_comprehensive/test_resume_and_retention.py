@@ -3,20 +3,21 @@ Test Resume And Retention
 
 Test module for resume and retention.
 """
-
 from __future__ import annotations
-
+import pytest
 import json
 import tempfile
 from pathlib import Path
-
 from codex_ml.training.rng_checkpoint import RNGState
 from codex_ml.training.unified_training import (
+from codex_ml.utils.checkpoint_core import CheckpointMeta
+
+
+
     UnifiedTrainingConfig,
     _emit_checkpoint_epoch,
     run_unified_training,
 )
-from codex_ml.utils.checkpoint_core import CheckpointMeta
 
 
 def test_emit_checkpoint_respects_retention(monkeypatch, tmp_path: Path) -> None:

@@ -3,10 +3,9 @@ Test Evaluate
 
 Test module for evaluate.
 """
-
 import importlib
 
-import pytest
+
 
 
 def test_import_module():

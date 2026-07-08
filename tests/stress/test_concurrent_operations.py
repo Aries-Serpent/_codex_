@@ -3,16 +3,23 @@ Stress tests for concurrent operations and resource limits.
 
 Tests parallel execution, thread safety, and resource management.
 """
-
 import tempfile
 import time
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from unittest.mock import Mock
-
-import pytest
-
 from codex.logging.structured_logger import logger
+        from codex_ml.training.loop import train_one_step
+            from codex_ml.logging.metrics import MetricLogger
+                import json
+        from codex_ml.training.loop import train_epoch
+            from codex_ml.logging.metrics import MetricLogger
+        from codex.utils.path_utils import sanitize_filename, windows_safe_timestamp
+        from codex_ml.checkpointing.checkpoint_core import _ensure_dir
+        from codex_ml.training.loop import train_one_step
+
+
+
 
 
 class TestConcurrentDAL:
@@ -32,7 +39,6 @@ class TestConcurrentTraining:
 
     def test_parallel_loss_computation(self):
         """Test parallel loss computations."""
-        from codex_ml.training.loop import train_one_step
 
         def compute_loss(initial_loss):
             """Compute loss in thread."""
@@ -58,7 +64,6 @@ class TestConcurrentTraining:
         for production use.
         """
         try:
-            from codex_ml.logging.metrics import MetricLogger
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 log_file = Path(tmpdir) / "concurrent_metrics.ndjson"
@@ -83,7 +88,6 @@ class TestConcurrentTraining:
                 assert len(lines) >= 15, "Lines must not be empty"
                 assert len(lines) <= 20, "Lines must not be empty"
                 # Validate each line is valid JSON
-                import json
 
                 for line in lines:
                     if line:  # Skip empty lines
@@ -97,7 +101,6 @@ class TestResourceLimits:
 
     def test_large_batch_processing(self):
         """Test processing of large batches."""
-        from codex_ml.training.loop import train_epoch
 
         model = Mock()
         model.step.return_value = {"loss": 1.0}
@@ -113,7 +116,6 @@ class TestResourceLimits:
     def test_many_small_files(self):
         """Test handling many small files."""
         try:
-            from codex_ml.logging.metrics import MetricLogger
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 # Create many log files
@@ -134,7 +136,6 @@ class TestThreadSafety:
 
     def test_concurrent_path_operations(self):
         """Test concurrent path utility operations."""
-        from codex.utils.path_utils import sanitize_filename, windows_safe_timestamp
 
         def generate_timestamp(thread_id):
             """Generate timestamp in thread."""
@@ -160,7 +161,6 @@ class TestThreadSafety:
 
     def test_concurrent_checkpoint_operations(self):
         """Test concurrent checkpoint directory operations."""
-        from codex_ml.checkpointing.checkpoint_core import _ensure_dir
 
         def create_checkpoint_dir(dir_id):
             """Create checkpoint directory in thread."""
@@ -187,7 +187,6 @@ class TestStressTiming:
         Note: This test validates functional behavior (loss reduction) but does not
         enforce strict wall-clock timing to avoid flakiness on slower CI runners.
         """
-        from codex_ml.training.loop import train_one_step
 
         start_time = time.time()
 

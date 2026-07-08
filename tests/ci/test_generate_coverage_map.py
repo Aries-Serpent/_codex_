@@ -303,7 +303,12 @@ class TestPrDelta:
 
     def _make_map_json(self, tmp_path: Path, subdir: str, xml_content: str) -> Path:
         """Build a coverage_map.json from XML content and return its path."""
+import pytest
         import json as _json
+        from generate_coverage_map import pr_delta
+        import io as _io
+        from contextlib import redirect_stdout
+        from generate_coverage_map import pr_delta
 
         d = tmp_path / subdir
         d.mkdir()
@@ -314,7 +319,6 @@ class TestPrDelta:
         return map_path
 
     def test_pr_delta_returns_int(self, tmp_path):
-        from generate_coverage_map import pr_delta
 
         base_map = self._make_map_json(
             tmp_path, "base", _minimal_xml("src/codex/utils.py", 1.0, [1, 2, 3], [])
@@ -326,10 +330,7 @@ class TestPrDelta:
         assert isinstance(result, int)
 
     def test_pr_delta_detects_regression(self, tmp_path):
-        import io as _io
-        from contextlib import redirect_stdout
 
-        from generate_coverage_map import pr_delta
 
         base_map = self._make_map_json(
             tmp_path, "base", _minimal_xml("src/codex/utils.py", 1.0, [1, 2, 3], [])

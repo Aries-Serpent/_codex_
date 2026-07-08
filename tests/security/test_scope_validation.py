@@ -337,6 +337,7 @@ class TestHierarchicalScopes:
 
     def test_read_does_not_imply_write(self):
         """Test read scope does not grant write."""
+import pytest
         validator = ScopeValidator(["repo:read"])
 
         with pytest.raises(InsufficientScopeError):

@@ -3,8 +3,9 @@ Test Run Unit Tests
 
 Test module for run unit tests.
 """
-
+import pytest
 from codex_ml.metrics.metrics_deprecated import run_unit_tests
+
 
 
 def test_run_unit_tests_counts(tmp_path):

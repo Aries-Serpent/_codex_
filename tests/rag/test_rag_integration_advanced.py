@@ -6,14 +6,37 @@ Comprehensive testing for complex RAG workflows:
 - Concurrent access and thread safety
 - Performance benchmarks and optimization
 """
-
+np = pytest.importorskip("numpy")
 import tempfile
 import threading
 import time
+            from src.codex.rag.embeddings import TfidfEmbeddingProvider
+            from src.codex.rag.indexer import CodexIndexer
+            from src.codex.rag.retriever import CodexRetriever
+            from src.codex.rag.retriever import CodexRetriever
+            from src.codex.rag.indexer import CodexIndexer
+            from src.codex.rag.indexer import CodexIndexer
+            from src.codex.rag.indexer import CodexIndexer
+            from src.codex.rag.indexer import CodexIndexer
+            from src.codex.rag.retriever import CodexRetriever
+            from src.codex.rag.embeddings import TfidfEmbeddingProvider
+            import sys
+            from src.codex.rag.embeddings import TfidfEmbeddingProvider
+            from src.codex.rag.embeddings import TfidfEmbeddingProvider
+            from src.codex.rag.indexer import CodexIndexer
+            from src.codex.rag.retriever import CodexRetriever
+            from src.codex.rag.indexer import CodexIndexer
+            from src.codex.rag.retriever import CodexRetriever
+            from src.codex.rag.embeddings import TfidfEmbeddingProvider
+            from src.codex.rag.retriever import CodexRetriever
+            from src.codex.rag.indexer import CodexIndexer
+            from src.codex.rag.embeddings import TfidfEmbeddingProvider
+            from src.codex.rag.embeddings import TfidfEmbeddingProvider
+            from src.codex.rag.indexer import CodexIndexer
+            from src.codex.rag.indexer import CodexIndexer
 
-import pytest
 
-np = pytest.importorskip("numpy")
+
 
 
 class TestComplexWorkflows:
@@ -22,9 +45,6 @@ class TestComplexWorkflows:
     def test_full_rag_pipeline(self):
         """Test complete RAG pipeline from indexing to retrieval."""
         try:
-            from src.codex.rag.embeddings import TfidfEmbeddingProvider
-            from src.codex.rag.indexer import CodexIndexer
-            from src.codex.rag.retriever import CodexRetriever
 
             # Initialize components
             TfidfEmbeddingProvider()
@@ -62,7 +82,6 @@ class TestComplexWorkflows:
     def test_multi_query_workflow(self):
         """Test workflow with multiple sequential queries."""
         try:
-            from src.codex.rag.retriever import CodexRetriever
 
             retriever = CodexRetriever()
 
@@ -89,7 +108,6 @@ class TestComplexWorkflows:
     def test_incremental_indexing(self):
         """Test incremental document indexing."""
         try:
-            from src.codex.rag.indexer import CodexIndexer
 
             indexer = CodexIndexer()
 
@@ -119,7 +137,6 @@ class TestComplexWorkflows:
     def test_update_and_reindex_workflow(self):
         """Test updating documents and reindexing."""
         try:
-            from src.codex.rag.indexer import CodexIndexer
 
             indexer = CodexIndexer()
 
@@ -155,7 +172,6 @@ class TestStressTests:
     def test_index_1000_documents(self):
         """Test indexing 1000+ documents."""
         try:
-            from src.codex.rag.indexer import CodexIndexer
 
             indexer = CodexIndexer()
 
@@ -189,8 +205,6 @@ class TestStressTests:
     def test_retrieve_from_large_index(self):
         """Test retrieval from index with 1000+ documents."""
         try:
-            from src.codex.rag.indexer import CodexIndexer
-            from src.codex.rag.retriever import CodexRetriever
 
             indexer = CodexIndexer()
             retriever = CodexRetriever()
@@ -231,7 +245,6 @@ class TestStressTests:
     def test_batch_embedding_1000_texts(self):
         """Test batch embedding of 1000 texts."""
         try:
-            from src.codex.rag.embeddings import TfidfEmbeddingProvider
 
             provider = TfidfEmbeddingProvider()
 
@@ -255,9 +268,7 @@ class TestStressTests:
     def test_memory_usage_large_dataset(self):
         """Test memory usage with large dataset."""
         try:
-            import sys
 
-            from src.codex.rag.embeddings import TfidfEmbeddingProvider
 
             provider = TfidfEmbeddingProvider()
 
@@ -286,7 +297,6 @@ class TestConcurrentAccess:
     def test_concurrent_embedding_generation(self):
         """Test concurrent embedding generation."""
         try:
-            from src.codex.rag.embeddings import TfidfEmbeddingProvider
 
             provider = TfidfEmbeddingProvider()
             errors = []
@@ -320,7 +330,6 @@ class TestConcurrentAccess:
     def test_concurrent_indexing(self):
         """Test concurrent document indexing."""
         try:
-            from src.codex.rag.indexer import CodexIndexer
 
             indexer = CodexIndexer()
             errors = []
@@ -354,7 +363,6 @@ class TestConcurrentAccess:
     def test_concurrent_retrieval(self):
         """Test concurrent document retrieval."""
         try:
-            from src.codex.rag.retriever import CodexRetriever
 
             retriever = CodexRetriever()
             errors = []
@@ -388,8 +396,6 @@ class TestConcurrentAccess:
     def test_read_write_concurrency(self):
         """Test concurrent reads and writes."""
         try:
-            from src.codex.rag.indexer import CodexIndexer
-            from src.codex.rag.retriever import CodexRetriever
 
             indexer = CodexIndexer()
             retriever = CodexRetriever()
@@ -438,7 +444,6 @@ class TestPerformanceBenchmarks:
     def test_embedding_throughput(self):
         """Benchmark embedding generation throughput."""
         try:
-            from src.codex.rag.embeddings import TfidfEmbeddingProvider
 
             provider = TfidfEmbeddingProvider()
 
@@ -466,7 +471,6 @@ class TestPerformanceBenchmarks:
     def test_retrieval_latency(self):
         """Benchmark retrieval latency."""
         try:
-            from src.codex.rag.retriever import CodexRetriever
 
             retriever = CodexRetriever()
 
@@ -496,7 +500,6 @@ class TestPerformanceBenchmarks:
     def test_indexing_speed(self):
         """Benchmark document indexing speed."""
         try:
-            from src.codex.rag.indexer import CodexIndexer
 
             indexer = CodexIndexer()
 
@@ -530,7 +533,6 @@ class TestScalability:
     def test_linear_scaling(self):
         """Test that performance scales linearly with data size."""
         try:
-            from src.codex.rag.embeddings import TfidfEmbeddingProvider
 
             provider = TfidfEmbeddingProvider()
 
@@ -560,7 +562,6 @@ class TestScalability:
     def test_cache_effectiveness(self):
         """Test that caching improves performance."""
         try:
-            from src.codex.rag.embeddings import TfidfEmbeddingProvider
 
             provider = TfidfEmbeddingProvider()
 
@@ -592,7 +593,6 @@ class TestResourceManagement:
     def test_cleanup_after_operations(self):
         """Test that resources are cleaned up properly."""
         try:
-            from src.codex.rag.indexer import CodexIndexer
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 indexer = CodexIndexer(index_path=str(tmpdir))
@@ -615,7 +615,6 @@ class TestResourceManagement:
     def test_graceful_shutdown(self):
         """Test graceful shutdown under load."""
         try:
-            from src.codex.rag.indexer import CodexIndexer
 
             indexer = CodexIndexer()
 

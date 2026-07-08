@@ -11,6 +11,7 @@
 
 class TestAgentHints:
     """Verify agent hint content for each decision branch."""
+import pytest
 
     def test_hints_reject_escalation(self):
         # Force a reject via _generate_agent_hints directly

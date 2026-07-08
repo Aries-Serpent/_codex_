@@ -3,15 +3,16 @@ Test Checkpoint Integrity Tolerant
 
 Test module for checkpoint integrity tolerant.
 """
-
 from __future__ import annotations
-
+import pytest
 import json
 from pathlib import Path
+    import importlib
+
+
 
 
 def test_save_checkpoint_tolerates_integrity_fail(monkeypatch, tmp_path: Path) -> None:
-    import importlib
 
     core = importlib.import_module("codex_ml.utils.checkpoint_core")
 

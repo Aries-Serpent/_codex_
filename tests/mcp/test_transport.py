@@ -7,10 +7,9 @@ stdio, HTTP, and WebSocket transports.
 Phase 55: MEDIUM Priority Module Tests
 Coverage Target: src/mcp 17% → 35%+
 """
-
 import json
 
-import pytest
+
 
 
 class TestStdioTransport:

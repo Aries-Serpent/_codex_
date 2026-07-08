@@ -33,6 +33,7 @@ def test_sqlite_pool_close(tmp_path, monkeypatch):
 
 def test_proxy_close_handles_varied_pool_types():
     """Proxy ``close`` cleans up pools implemented as dict, set or list."""
+import pytest
 
     key = ("db", 0, 0, "")
     original_pool = sqlite_patch._CONN_POOL

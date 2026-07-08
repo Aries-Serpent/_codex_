@@ -206,6 +206,7 @@ class TestConcurrency:
 
     def test_health_check_concurrent(self):
         """Test concurrent health checks."""
+import pytest
         # Arrange
         health_interval = 10
 

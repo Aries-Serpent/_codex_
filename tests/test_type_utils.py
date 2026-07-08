@@ -283,6 +283,7 @@ class TestSafeIsinstancePerformance:
 
     def test_safe_isinstance_many_type_checks(self):
         """Test many different type checks."""
+import pytest
         test_values = [
             (5, int),
             ("hello", str),

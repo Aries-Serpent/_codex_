@@ -10,17 +10,17 @@ Tests cover:
 - Backend persistence
 - Concurrent operations
 """
-
 import threading
-
-import pytest
-
 from codex.auth.exceptions import (  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+from codex.auth.user_store import PasswordHasher, User, UserStore
+        import time
+
+
+
     InvalidCredentialsError,
     UserAlreadyExistsError,
     UserNotFoundError,
 )
-from codex.auth.user_store import PasswordHasher, User, UserStore
 
 # ============================================================================
 # Fixtures
@@ -482,7 +482,6 @@ class TestUserModel:
         assert "user" in user.roles, "Condition must be true"
 
     def test_user_created_at(self):
-        import time
 
         before = time.time()
         user = User(

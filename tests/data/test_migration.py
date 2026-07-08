@@ -442,6 +442,9 @@ class TestDataMigrationRollback:
 
     def test_large_dataset_rollback_performance(self, tmp_path):
         """Test rollback performance with large dataset."""
+import pytest
+        import time
+        from codex_ml.data.migration import AssignmentMappingMigration
         v3_file = tmp_path / "large_v3.json"
         # Create 1000 items
         items = [
@@ -461,9 +464,7 @@ class TestDataMigrationRollback:
         }
         v3_file.write_text(json.dumps(v3_data), encoding="utf-8")
 
-        import time
 
-        from codex_ml.data.migration import AssignmentMappingMigration
 
         start = time.time()
         v2_data = AssignmentMappingMigration.rollback_v3_to_v2(v3_file)

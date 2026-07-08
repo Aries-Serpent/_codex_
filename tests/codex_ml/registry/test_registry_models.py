@@ -3,8 +3,9 @@ Test Models
 
 Test module for models.
 """
-
+import pytest
 from codex_ml.registry import models
+
 
 
 def test_models_facade_exports_registry_functions():

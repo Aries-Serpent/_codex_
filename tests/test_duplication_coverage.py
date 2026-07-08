@@ -4,15 +4,16 @@ Comprehensive tests for codex.analysis.duplication module.
 Tests cover duplication analysis functionality including file hashing,
 severity assessment, and comprehensive duplication reports.
 """
-
 from __future__ import annotations
-
+import pytest
 import hashlib
 import tempfile
 from pathlib import Path
 from unittest.mock import patch
-
 from codex.analysis.duplication import (
+
+
+
     DEFAULT_EXTENSIONS,
     DuplicationReport,
     _assess_severity,

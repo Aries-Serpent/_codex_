@@ -3,8 +3,23 @@ Tests for codex.archive.plan module.
 
 This module contains tests for archive planning functionality.
 """
-
+import pytest
 from pathlib import Path
+        from codex.archive.plan import PlanEntry
+        from codex.archive.plan import _has_deprecation_tag
+        from codex.archive.plan import _has_deprecation_tag
+        from codex.archive.plan import _has_deprecation_tag
+        from codex.archive.plan import _has_deprecation_tag
+        from codex.archive.plan import _has_deprecation_tag
+        from codex.archive.plan import _in_excludes
+        from codex.archive.plan import _in_excludes
+        from codex.archive.plan import _in_excludes
+        from codex.archive.plan import _in_excludes
+        from codex.archive.plan import DEPRECATION_PAT
+        from codex.archive.plan import DEPRECATION_PAT
+        from codex.archive.plan import DEPRECATION_PAT
+        from codex.archive.plan import logger
+
 
 
 class TestPlanEntry:
@@ -12,7 +27,6 @@ class TestPlanEntry:
 
     def test_basic_creation(self):
         """Test PlanEntry basic creation."""
-        from codex.archive.plan import PlanEntry
 
         entry = PlanEntry(
             path="src/old_module.py", # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
@@ -48,7 +62,6 @@ class TestHasDeprecationTag:
 
     def test_deprecated_keyword(self, tmp_path):
         """Test detecting DEPRECATED keyword."""
-        from codex.archive.plan import _has_deprecation_tag
 
         file_path = tmp_path / "test.py"
         file_path.write_text("# DEPRECATED: Do not use")
@@ -59,7 +72,6 @@ class TestHasDeprecationTag:
 
     def test_legacy_keyword(self, tmp_path):
         """Test detecting LEGACY keyword."""
-        from codex.archive.plan import _has_deprecation_tag
 
         file_path = tmp_path / "test.py"
         file_path.write_text("# This is LEGACY code")
@@ -70,7 +82,6 @@ class TestHasDeprecationTag:
 
     def test_prune_me_keyword(self, tmp_path):
         """Test detecting PRUNE_ME keyword."""
-        from codex.archive.plan import _has_deprecation_tag
 
         file_path = tmp_path / "test.py"
         file_path.write_text("# PRUNE_ME after migration")
@@ -81,7 +92,6 @@ class TestHasDeprecationTag:
 
     def test_no_deprecation(self, tmp_path):
         """Test file without deprecation markers."""
-        from codex.archive.plan import _has_deprecation_tag
 
         file_path = tmp_path / "test.py"
         file_path.write_text("def foo(): pass")
@@ -92,7 +102,6 @@ class TestHasDeprecationTag:
 
     def test_nonexistent_file(self, tmp_path):
         """Test with nonexistent file."""
-        from codex.archive.plan import _has_deprecation_tag
 
         file_path = tmp_path / "nonexistent.py"
 
@@ -106,7 +115,6 @@ class TestInExcludes:
 
     def test_matching_pattern(self):
         """Test file matching exclude pattern."""
-        from codex.archive.plan import _in_excludes
 
         path = Path("src/__pycache__/module.pyc")
         excludes = ["*/__pycache__/*"]
@@ -117,7 +125,6 @@ class TestInExcludes:
 
     def test_not_matching(self):
         """Test file not matching exclude pattern."""
-        from codex.archive.plan import _in_excludes
 
         path = Path("src/module.py")
         excludes = ["*/__pycache__/*"]
@@ -128,7 +135,6 @@ class TestInExcludes:
 
     def test_multiple_patterns(self):
         """Test multiple exclude patterns."""
-        from codex.archive.plan import _in_excludes
 
         path = Path("node_modules/package.json")
         excludes = ["*.pyc", "node_modules/*", "*.log"]
@@ -139,7 +145,6 @@ class TestInExcludes:
 
     def test_empty_excludes(self):
         """Test with empty exclude list."""
-        from codex.archive.plan import _in_excludes
 
         path = Path("any/file.py")
         excludes = []
@@ -154,20 +159,17 @@ class TestDeprecationPattern:
 
     def test_pattern_exists(self):
         """Test DEPRECATION_PAT constant exists."""
-        from codex.archive.plan import DEPRECATION_PAT
 
         assert DEPRECATION_PAT is not None, "DEPRECATION_PAT must be initialized"
 
     def test_pattern_matches_deprecated(self):
         """Test pattern matches DEPRECATED."""
-        from codex.archive.plan import DEPRECATION_PAT
 
         assert DEPRECATION_PAT.search("DEPRECATED"), "Condition must be true"
         assert DEPRECATION_PAT.search("deprecated"), "Condition must be true"
 
     def test_pattern_matches_legacy(self):
         """Test pattern matches LEGACY."""
-        from codex.archive.plan import DEPRECATION_PAT
 
         assert DEPRECATION_PAT.search("LEGACY"), "Condition must be true"
         assert DEPRECATION_PAT.search("legacy"), "Condition must be true"
@@ -178,7 +180,6 @@ class TestModuleLevel:
 
     def test_logger_exists(self):
         """Test logger is configured."""
-        from codex.archive.plan import logger
 
         assert logger is not None, "logger must be initialized"
         assert logger.name == "codex.archive.plan", "name is not valid"

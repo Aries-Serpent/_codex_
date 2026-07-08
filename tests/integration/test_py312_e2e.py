@@ -3,14 +3,26 @@ End-to-end integration tests for Python 3.12.
 
 Tests complete workflows to ensure no subtle compatibility issues.
 """
-
 from __future__ import annotations
-
 import subprocess
 import sys
 from pathlib import Path
+            import tomllib
+            import codex_ml  # noqa: F401
+                import codex_ml.evaluation  # noqa: F401
+                import codex_ml.data  # noqa: F401
+                import codex_ml.models  # noqa: F401
+        import asyncio
+        import asyncio
+        import asyncio
+        import json
+            import tomllib
+            import tomllib
+        import asyncio
+        from typing import Any, Dict, List, Optional
 
-import pytest
+
+
 
 
 @pytest.mark.integration
@@ -44,7 +56,6 @@ class TestPython312Integration:
 
         # Try importing tomllib (Python 3.11+)
         try:
-            import tomllib
 
             assert tomllib is not None, "tomllib must be initialized"
         except ImportError:
@@ -54,13 +65,11 @@ class TestPython312Integration:
         """Test that codex_ml modules can be imported."""
         try:
             # Try importing core modules (availability check only)
-            import codex_ml  # noqa: F401
 
             # These may fail if dependencies aren't installed, so catch gracefully
             optional_imports = []
 
             try:
-                import codex_ml.evaluation  # noqa: F401
 
                 optional_imports.append("evaluation")
             except ImportError:
@@ -68,7 +77,6 @@ class TestPython312Integration:
                 _ = None  # suppressed: no action needed
 
             try:
-                import codex_ml.data  # noqa: F401
 
                 optional_imports.append("data")
             except ImportError:
@@ -76,7 +84,6 @@ class TestPython312Integration:
                 _ = None  # suppressed: no action needed
 
             try:
-                import codex_ml.models  # noqa: F401
 
                 optional_imports.append("models")
             except ImportError:
@@ -169,7 +176,6 @@ class TestAsyncWorkflows:
     @pytest.mark.asyncio
     async def test_basic_async_workflow(self):
         """Test basic async workflow."""
-        import asyncio
 
         async def fetch_data(id: int):
             await asyncio.sleep(0.001)
@@ -201,7 +207,6 @@ class TestAsyncWorkflows:
     @pytest.mark.asyncio
     async def test_async_context_manager_workflow(self):
         """Test async context manager workflow."""
-        import asyncio
 
         class AsyncResource:
             def __init__(self):
@@ -237,7 +242,6 @@ class TestAsyncWorkflows:
     @pytest.mark.asyncio
     async def test_async_generator_workflow(self):
         """Test async generator workflow."""
-        import asyncio
 
         async def async_range(n):
             for i in range(n):
@@ -257,7 +261,6 @@ class TestDataProcessingWorkflow:
 
     def test_json_workflow(self, tmp_path):
         """Test JSON processing workflow."""
-        import json
 
         # Create test data
         data = {
@@ -293,7 +296,6 @@ class TestDataProcessingWorkflow:
     def test_toml_workflow(self, tmp_path):
         """Test TOML processing workflow."""
         try:
-            import tomllib
         except ImportError:
             pytest.skip("tomllib not available")
         else:
@@ -367,7 +369,6 @@ class TestFullSystemIntegration:
             pytest.skip("pyproject.toml not found")
 
         try:
-            import tomllib
 
             with open(pyproject_path, "rb") as f:
                 data = tomllib.load(f)
@@ -396,7 +397,6 @@ class TestFullSystemIntegration:
     @pytest.mark.asyncio
     async def test_concurrent_operations(self):
         """Test concurrent operations work correctly."""
-        import asyncio
 
         async def task(n):
             await asyncio.sleep(0.01)
@@ -427,7 +427,6 @@ class TestBackwardCompatibility:
 
     def test_typing_compatibility(self):
         """Test typing compatibility."""
-        from typing import Any, Dict, List, Optional
 
         # Old style should still work
         def old_style(data: Dict[str, Any]) -> Optional[List[str]]:

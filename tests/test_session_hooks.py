@@ -3,7 +3,7 @@ Test Session Hooks
 
 Test module for session hooks.
 """
-
+import pytest
 import json
 import os
 import pathlib
@@ -12,8 +12,9 @@ import sys
 import tempfile
 import unittest
 from datetime import datetime, timezone
-
 from codex.logging import session_hooks
+
+
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 SHELL_HELPER = ROOT / "scripts" / "session_logging.sh"

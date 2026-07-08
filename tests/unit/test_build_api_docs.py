@@ -59,6 +59,7 @@ class TestFilterModules:
         marked the submodule as importable. This test ensures filter_modules correctly
         rejects the submodule instead of marking it as importable.
         """
+import pytest
         # Create a fake base package WITHOUT the submodule
         package_dir = tmp_path / "fake_codex_ml"
         package_dir.mkdir()

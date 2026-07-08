@@ -3,24 +3,25 @@ Comprehensive test suite for codex_ml.metrics module
 Phase 7A Wave 2 Lane 2.2: ML Metrics Testing
 Test Categories: Unit (60), Integration (30), Edge Cases (25), Error Handling (15)
 """
-
+from __future__ import annotations
 pytest.importorskip("torch")
 pytest.importorskip("numpy")
-
-from __future__ import annotations
-
 import numpy as np
-import pytest
-
 import torch
 from codex_ml.metrics.classification import (
+from codex_ml.metrics.core import Metric, MetricRegistry
+            import time
+        import time
+
+
+
+
     StreamingAccuracy,
     accuracy,
     f1,
     precision,
     recall,
 )
-from codex_ml.metrics.core import Metric, MetricRegistry
 
 # ============================================================================
 # FIXTURES (Reusable test data and mocks)
@@ -562,7 +563,6 @@ class TestPerformance:
             benchmark(accuracy, preds, labels)
         else:
             # Just ensure it completes quickly
-            import time
 
             start = time.time()
             accuracy(preds, labels)
@@ -572,7 +572,6 @@ class TestPerformance:
     def test_streaming_accuracy_batched_performance(self):
         """Test streaming accuracy performance with many batches."""
         metric = StreamingAccuracy()
-        import time
 
         start = time.time()
         for _ in range(1000):

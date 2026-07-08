@@ -1,15 +1,17 @@
 """
 Tests for MLOps integration bridge.
 """
-
+pytest.importorskip("numpy")
 import logging
 import time
-
-import pytest
-
-pytest.importorskip("numpy")
-
 from codex.quantum_orchestrator.mlops_bridge import (
+from codex.quantum_orchestrator.orchestrator import create_orchestrator
+        import json
+            import numpy as np
+
+
+
+
     DistributedCoordinator,
     LoggingAdapter,
     Metric,
@@ -17,7 +19,6 @@ from codex.quantum_orchestrator.mlops_bridge import (
     MetricType,
     create_observable_orchestrator,
 )
-from codex.quantum_orchestrator.orchestrator import create_orchestrator
 
 
 class TestMetricsCollector:
@@ -65,7 +66,6 @@ class TestMetricsCollector:
         json_output = collector.export_json()
 
         # Should be valid JSON
-        import json
 
         data = json.loads(json_output)
         assert isinstance(data, list)
@@ -308,7 +308,6 @@ class TestIntegration:
             )
             # Set lower initial probability so tasks need evolution
             task = obs_orch.orchestrator.state.tasks[f"task{i}"]
-            import numpy as np
 
             task.spinor.components = np.array([0.4 + 0j, 0.3 + 0j, 0.0 + 0j, 0.0 + 0j])
             task.spinor.normalize()

@@ -3,14 +3,13 @@ Test Checkpoint Util
 
 Test module for checkpoint util.
 """
-
-import pytest
-
+torch = pytest.importorskip("torch")
 from codex_ml.utils.checkpoint import load_checkpoint, save_checkpoint
+
+
 
 pytestmark = pytest.mark.requires_torch
 
-torch = pytest.importorskip("torch")
 
 
 def test_save_and_load_checkpoint(tmp_path):

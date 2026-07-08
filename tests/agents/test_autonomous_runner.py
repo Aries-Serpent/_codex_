@@ -6,11 +6,31 @@ Tests the autonomous agent execution capabilities including:
 - Report generation and cleanup
 - Error handling
 """
-
 import json
 from unittest.mock import AsyncMock, MagicMock, patch
+            from src.agents.autonomous_runner import (
+            from src.agents.autonomous_runner import AutonomousAgent
+            from src.agents.autonomous_runner import AutonomousAgent
+            from src.agents.autonomous_runner import AutonomousAgent
+            from src.agents.autonomous_runner import AutonomousAgent
+            from src.agents.autonomous_runner import MAX_TASK_LENGTH, AutonomousAgent
+            from src.agents.autonomous_runner import AutonomousAgent
+            from src.agents.autonomous_runner import AutonomousAgent
+            from src.agents.autonomous_runner import AutonomousAgent
+            from src.config.openai_client import ExecutionResult
+            from src.agents.autonomous_runner import AutonomousAgent
+            from src.config.openai_client import ExecutionResult
+            from src.agents.autonomous_runner import MAX_REPORTS_COUNT, AutonomousAgent
+            from src.agents.autonomous_runner import AutonomousAgent
+            import asyncio
+            from src.agents.autonomous_runner import main
+            import os
+            from src.agents.autonomous_runner import main
+            from src.agents.autonomous_runner import AutonomousAgent
+            from src.agents.autonomous_runner import AutonomousAgent
+            from src.agents.autonomous_runner import AutonomousAgent
 
-import pytest
+
 
 
 class TestMaxConstants:
@@ -19,7 +39,6 @@ class TestMaxConstants:
     def test_constants_defined(self):
         """Test that safeguard constants are defined."""
         try:
-            from src.agents.autonomous_runner import (
                 MAX_REPORTS_COUNT,
                 MAX_RESPONSE_LENGTH,
                 MAX_TASK_LENGTH,
@@ -38,7 +57,6 @@ class TestAutonomousAgentInit:
     def test_agent_init_default_path(self, tmp_path):
         """Test agent initialization with default path."""
         try:
-            from src.agents.autonomous_runner import AutonomousAgent
 
             with patch("src.agents.autonomous_runner.CodexOpenAIClient") as mock_client:
                 mock_client.return_value = MagicMock()
@@ -52,7 +70,6 @@ class TestAutonomousAgentInit:
     def test_agent_init_custom_path(self, tmp_path):
         """Test agent initialization with custom path."""
         try:
-            from src.agents.autonomous_runner import AutonomousAgent
 
             custom_path = tmp_path / "custom_reports"
 
@@ -83,7 +100,6 @@ class TestAutonomousAgentExecute:
     async def test_execute_empty_task(self, tmp_path):
         """Test execution with empty task returns error."""
         try:
-            from src.agents.autonomous_runner import AutonomousAgent
 
             with patch("src.agents.autonomous_runner.CodexOpenAIClient") as mock_client:
                 mock_client_instance = MagicMock()
@@ -111,7 +127,6 @@ class TestAutonomousAgentExecute:
     async def test_execute_none_task(self, tmp_path):
         """Test execution with None task returns error."""
         try:
-            from src.agents.autonomous_runner import AutonomousAgent
 
             with patch("src.agents.autonomous_runner.CodexOpenAIClient") as mock_client:
                 mock_client_instance = MagicMock()
@@ -138,7 +153,6 @@ class TestAutonomousAgentExecute:
     async def test_execute_truncates_long_task(self, tmp_path):
         """Test that very long tasks are truncated."""
         try:
-            from src.agents.autonomous_runner import MAX_TASK_LENGTH, AutonomousAgent
 
             with patch("src.agents.autonomous_runner.CodexOpenAIClient") as mock_client:
                 mock_client_instance = MagicMock()
@@ -173,7 +187,6 @@ class TestAutonomousAgentExecute:
     async def test_execute_dry_run_mode(self, tmp_path):
         """Test execution in dry-run mode."""
         try:
-            from src.agents.autonomous_runner import AutonomousAgent
 
             with patch("src.agents.autonomous_runner.CodexOpenAIClient") as mock_client:
                 mock_client_instance = MagicMock()
@@ -206,7 +219,6 @@ class TestAutonomousAgentExecute:
     async def test_execute_logs_execution(self, tmp_path):
         """Test that execution is logged."""
         try:
-            from src.agents.autonomous_runner import AutonomousAgent
 
             with patch("src.agents.autonomous_runner.CodexOpenAIClient") as mock_client:
                 mock_client_instance = MagicMock()
@@ -241,8 +253,6 @@ class TestSaveReport:
     async def test_save_report_creates_file(self, tmp_path):
         """Test that report file is created."""
         try:
-            from src.agents.autonomous_runner import AutonomousAgent
-            from src.config.openai_client import ExecutionResult
 
             with patch("src.agents.autonomous_runner.CodexOpenAIClient") as mock_client:
                 mock_client_instance = MagicMock()
@@ -281,8 +291,6 @@ class TestSaveReport:
     async def test_save_report_content(self, tmp_path):
         """Test report content structure."""
         try:
-            from src.agents.autonomous_runner import AutonomousAgent
-            from src.config.openai_client import ExecutionResult
 
             with patch("src.agents.autonomous_runner.CodexOpenAIClient") as mock_client:
                 mock_client_instance = MagicMock()
@@ -318,7 +326,6 @@ class TestCleanupOldReports:
     def test_cleanup_removes_old_reports(self, tmp_path):
         """Test that old reports are removed when exceeding limit."""
         try:
-            from src.agents.autonomous_runner import MAX_REPORTS_COUNT, AutonomousAgent
 
             with patch("src.agents.autonomous_runner.CodexOpenAIClient") as mock_client:
                 mock_client_instance = MagicMock()
@@ -341,7 +348,6 @@ class TestCleanupOldReports:
     def test_cleanup_keeps_recent_reports(self, tmp_path):
         """Test that recent reports are kept."""
         try:
-            from src.agents.autonomous_runner import AutonomousAgent
 
             with patch("src.agents.autonomous_runner.CodexOpenAIClient") as mock_client:
                 mock_client_instance = MagicMock()
@@ -379,9 +385,7 @@ class TestMainFunction:
     async def test_main_function_exists(self):
         """Test that main function exists and is async."""
         try:
-            import asyncio
 
-            from src.agents.autonomous_runner import main
 
             assert asyncio.iscoroutinefunction(main), "Condition must be true"
         except ImportError:
@@ -401,9 +405,7 @@ class TestMainFunction:
     async def test_main_uses_environment_variables(self, tmp_path):
         """Test that main reads from environment variables."""
         try:
-            import os
 
-            from src.agents.autonomous_runner import main
 
             with (
                 patch.dict(
@@ -450,7 +452,6 @@ class TestEdgeCases:
     async def test_execute_with_special_characters(self, tmp_path):
         """Test execution with special characters in task."""
         try:
-            from src.agents.autonomous_runner import AutonomousAgent
 
             with patch("src.agents.autonomous_runner.CodexOpenAIClient") as mock_client:
                 mock_client_instance = MagicMock()
@@ -482,7 +483,6 @@ class TestEdgeCases:
     async def test_execute_with_model_preference(self, tmp_path):
         """Test execution with specific model preference."""
         try:
-            from src.agents.autonomous_runner import AutonomousAgent
 
             with patch("src.agents.autonomous_runner.CodexOpenAIClient") as mock_client:
                 mock_client_instance = MagicMock()
@@ -513,7 +513,6 @@ class TestEdgeCases:
     async def test_execute_with_auto_model(self, tmp_path):
         """Test execution with auto model selection."""
         try:
-            from src.agents.autonomous_runner import AutonomousAgent
 
             with patch("src.agents.autonomous_runner.CodexOpenAIClient") as mock_client:
                 mock_client_instance = MagicMock()

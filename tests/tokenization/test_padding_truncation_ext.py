@@ -3,12 +3,12 @@ Test Padding Truncation Ext
 
 Test module for padding truncation ext.
 """
-
+    mod = pytest.importorskip("codex_ml.tokenization.cli", reason="tokenization CLI unavailable")
 import importlib
 import os
 import pathlib
 
-import pytest
+
 
 pytestmark = pytest.mark.requires_sentencepiece
 
@@ -19,7 +19,6 @@ def _maybe_get_cli():
     Tests skip cleanly if optional deps (e.g., sentencepiece) are absent.
     """
 
-    mod = pytest.importorskip("codex_ml.tokenization.cli", reason="tokenization CLI unavailable")
     if importlib.util.find_spec("sentencepiece") is None:
         pytest.skip("sentencepiece not installed; skipping tokenization CLI tests")
     root = pathlib.Path(__file__).resolve().parents[1]

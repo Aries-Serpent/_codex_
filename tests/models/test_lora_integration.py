@@ -3,14 +3,13 @@ Test Lora Integration
 
 Test module for lora integration.
 """
-
-import pytest
-
+torch = pytest.importorskip("torch")
 from codex_ml.models.registry import get_model
+
+
 
 pytestmark = pytest.mark.requires_torch
 
-torch = pytest.importorskip("torch")
 nn = torch.nn
 
 

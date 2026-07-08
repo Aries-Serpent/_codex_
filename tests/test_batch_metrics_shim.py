@@ -3,21 +3,20 @@ Test Batch Metrics Shim
 
 Test module for batch metrics shim.
 """
-
 from __future__ import annotations
-
+torch = pytest.importorskip("torch")
 import types
-
-import pytest
-
 from codex_ml.metrics.evaluator import batch_metrics
+
+
+
+
 
 
 class _Outputs(types.SimpleNamespace):
     pass
 
 
-torch = pytest.importorskip("torch")
 
 
 def test_batch_metrics_produces_expected_keys() -> None:

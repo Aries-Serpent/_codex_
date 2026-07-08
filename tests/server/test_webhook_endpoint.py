@@ -3,18 +3,19 @@ Tests for the inbound GitHub webhook endpoints:
   POST /webhook/github        — HMAC-SHA256 verified event receiver
   GET  /api/webhooks/recent   — recent event log query
 """
-
 from __future__ import annotations
-
+pytest.importorskip("fastapi")
 import hashlib
 import hmac
 import importlib
 import json
-
-import pytest
-
-pytest.importorskip("fastapi")
 from fastapi.testclient import TestClient
+    import cognitive_app.src.server.cli_api_server as _mod
+    from cognitive_app.src.server.cli_api_server import app
+
+
+
+
 
  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 # ---------------------------------------------------------------------------
@@ -41,10 +42,8 @@ def _make_client(db_path: str, monkeypatch, **extra_env: str) -> TestClient:
     for key, value in extra_env.items():
         monkeypatch.setenv(key, value)
 
-    import cognitive_app.src.server.cli_api_server as _mod
 
     importlib.reload(_mod)
-    from cognitive_app.src.server.cli_api_server import app
 
     return TestClient(app, raise_server_exceptions=False)
 

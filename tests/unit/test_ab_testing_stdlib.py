@@ -18,15 +18,17 @@ covers:
 
 All inputs are fixed (no random seeds, no I/O, deterministic).
 """
-
 from __future__ import annotations
-
 import math
 from unittest.mock import patch
-
-import pytest
-
 from codex_ml.experiments.ab_testing import (
+        import codex_ml.experiments.ab_testing as _module
+        import codex_ml.experiments.ab_testing as _module
+        import codex_ml.experiments.ab_testing as _module
+
+
+
+
     ABTestResult,
     _mean,
     _regularized_incomplete_beta,
@@ -292,7 +294,6 @@ class TestRunAbTestStdlibPath:
 
     def _run_with_stdlib(self, ctrl, trt, alpha=0.05):
         """Patch away scipy so the stdlib branch executes."""
-        import codex_ml.experiments.ab_testing as _module
 
         with patch.object(_module, "_SCIPY_AVAILABLE", False):
             return run_ab_test(ctrl, trt, alpha=alpha)
@@ -332,14 +333,12 @@ class TestRunAbTestStdlibPath:
         assert lo < hi, "lo is not valid"
 
     def test_stdlib_insufficient_control_raises(self):
-        import codex_ml.experiments.ab_testing as _module
 
         with patch.object(_module, "_SCIPY_AVAILABLE", False):
             with pytest.raises(ValueError, match="control group"):
                 run_ab_test([1.0], [2.0, 3.0])
 
     def test_stdlib_insufficient_treatment_raises(self):
-        import codex_ml.experiments.ab_testing as _module
 
         with patch.object(_module, "_SCIPY_AVAILABLE", False):
             with pytest.raises(ValueError, match="treatment group"):

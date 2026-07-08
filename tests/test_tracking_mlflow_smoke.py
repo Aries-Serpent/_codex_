@@ -3,12 +3,11 @@ Test Tracking Mlflow Smoke
 
 Test module for tracking mlflow smoke.
 """
-
+mlflow = pytest.importorskip("mlflow", reason="mlflow not installed")
 from pathlib import Path
 
-import pytest
 
-mlflow = pytest.importorskip("mlflow", reason="mlflow not installed")
+
 
 pytestmark = [pytest.mark.smoke]
 

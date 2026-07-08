@@ -3,11 +3,11 @@ Tests for codex_ml.cli.generate module.
 
 Tests model generation CLI functionality.
 """
-
 import subprocess
 import sys
+            from codex_ml.cli import generate
 
-import pytest
+
 
 
 class TestGenerateModuleImport:
@@ -16,7 +16,6 @@ class TestGenerateModuleImport:
     def test_generate_module_import(self):
         """Test that generate module can be imported."""
         try:
-            from codex_ml.cli import generate
 
             assert generate is not None, "generate must be initialized"
         except ImportError as e:

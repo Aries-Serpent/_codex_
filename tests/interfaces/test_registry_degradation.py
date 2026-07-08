@@ -3,15 +3,16 @@ Test Registry Degradation
 
 Test module for registry degradation.
 """
-
 from __future__ import annotations
-
+import pytest
 import importlib
 import json
 import sys
 import types
-
 import codex_ml.cli.list_plugins as list_plugins
+
+
+
 
 
 def test_programmatic_registry_failure_degrades_to_legacy(monkeypatch, capsys):

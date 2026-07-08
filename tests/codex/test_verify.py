@@ -7,9 +7,28 @@ Tests cover:
 - Flakiness detection
 - Test generation
 """
-
+import pytest
 import json
 from pathlib import Path
+        from codex.verify.comparator import ComparisonMode, compare
+        from codex.verify.comparator import ComparisonMode, compare
+        from codex.verify.comparator import ComparisonMode, compare
+        from codex.verify.comparator import ComparisonMode, compare
+        from codex.verify.comparator import ComparisonMode, compare
+        from codex.verify.comparator import ComparisonMode, compare
+        from codex.verify.comparator import ComparisonMode, _normalize_output
+        from codex.verify.comparator import ComparisonMode, _normalize_output
+        from codex.verify.comparator import ComparisonMode, _normalize_output
+        from codex.verify.comparator import ComparisonMode, _compare_outputs
+        from codex.verify.comparator import ComparisonMode, _compare_outputs
+        from codex.verify.comparator import ComparisonMode, _compare_outputs
+        from codex.verify.comparator import _hash_output
+        from codex.verify.comparator import _hash_output
+        from codex.verify.comparator import generate_tests
+        from codex.verify.comparator import generate_tests
+        from codex.verify.comparator import ComparisonDetail, ComparisonMode
+        from codex.verify.comparator import ComparisonMode, compare
+
 
 
 class TestBehaviorComparator:
@@ -17,7 +36,6 @@ class TestBehaviorComparator:
 
     def test_compare_identical_outputs(self, tmp_path: Path):
         """Test comparison of identical outputs."""
-        from codex.verify.comparator import ComparisonMode, compare
 
         baseline_dir = tmp_path / "baseline"
         patched_dir = tmp_path / "patched"
@@ -36,7 +54,6 @@ class TestBehaviorComparator:
 
     def test_compare_different_outputs(self, tmp_path: Path):
         """Test comparison of different outputs."""
-        from codex.verify.comparator import ComparisonMode, compare
 
         baseline_dir = tmp_path / "baseline"
         patched_dir = tmp_path / "patched"
@@ -52,7 +69,6 @@ class TestBehaviorComparator:
 
     def test_compare_fuzzy_mode(self, tmp_path: Path):
         """Test fuzzy comparison mode."""
-        from codex.verify.comparator import ComparisonMode, compare
 
         baseline_dir = tmp_path / "baseline"
         patched_dir = tmp_path / "patched"
@@ -70,7 +86,6 @@ class TestBehaviorComparator:
 
     def test_compare_no_entry_point(self, tmp_path: Path):
         """Test comparison when no entry point is found."""
-        from codex.verify.comparator import ComparisonMode, compare
 
         baseline_dir = tmp_path / "baseline"
         patched_dir = tmp_path / "patched"
@@ -86,7 +101,6 @@ class TestBehaviorComparator:
 
     def test_comparison_result_to_dict(self, tmp_path: Path):
         """Test ComparisonResult serialization."""
-        from codex.verify.comparator import ComparisonMode, compare
 
         baseline_dir = tmp_path / "baseline"
         patched_dir = tmp_path / "patched"
@@ -107,7 +121,6 @@ class TestBehaviorComparator:
 
     def test_comparison_result_save(self, tmp_path: Path):
         """Test saving ComparisonResult to file."""
-        from codex.verify.comparator import ComparisonMode, compare
 
         baseline_dir = tmp_path / "baseline"
         patched_dir = tmp_path / "patched"
@@ -133,7 +146,6 @@ class TestOutputNormalization:
 
     def test_normalize_strict(self):
         """Test strict mode normalization (no changes)."""
-        from codex.verify.comparator import ComparisonMode, _normalize_output
 
         output = "  line1  \n  line2  \n"
         result = _normalize_output(output, ComparisonMode.STRICT)
@@ -142,7 +154,6 @@ class TestOutputNormalization:
 
     def test_normalize_fuzzy(self):
         """Test fuzzy mode normalization."""
-        from codex.verify.comparator import ComparisonMode, _normalize_output
 
         output = "  line2  \n  line1  \n  "
         result = _normalize_output(output, ComparisonMode.FUZZY)
@@ -153,7 +164,6 @@ class TestOutputNormalization:
 
     def test_normalize_semantic(self):
         """Test semantic mode normalization."""
-        from codex.verify.comparator import ComparisonMode, _normalize_output
 
         output = "Timestamp: 2025-12-17T12:00:00 ID: abc12345-1234-1234-1234-123456789012"
         result = _normalize_output(output, ComparisonMode.SEMANTIC)
@@ -167,7 +177,6 @@ class TestOutputComparison:
 
     def test_compare_outputs_match(self):
         """Test comparing matching outputs."""
-        from codex.verify.comparator import ComparisonMode, _compare_outputs
 
         match, diff = _compare_outputs("hello", "hello", ComparisonMode.STRICT)
 
@@ -176,7 +185,6 @@ class TestOutputComparison:
 
     def test_compare_outputs_mismatch(self):
         """Test comparing mismatched outputs."""
-        from codex.verify.comparator import ComparisonMode, _compare_outputs
 
         match, diff = _compare_outputs("hello", "world", ComparisonMode.STRICT)
 
@@ -186,7 +194,6 @@ class TestOutputComparison:
 
     def test_compare_outputs_fuzzy_whitespace(self):
         """Test fuzzy comparison ignores whitespace."""
-        from codex.verify.comparator import ComparisonMode, _compare_outputs
 
         match, _diff = _compare_outputs("  hello  ", "hello", ComparisonMode.FUZZY)
 
@@ -198,7 +205,6 @@ class TestHashOutput:
 
     def test_hash_output_deterministic(self):
         """Test that output hashing is deterministic."""
-        from codex.verify.comparator import _hash_output
 
         output = "test output"
         hash1 = _hash_output(output)
@@ -209,7 +215,6 @@ class TestHashOutput:
 
     def test_hash_output_different(self):
         """Test that different outputs have different hashes."""
-        from codex.verify.comparator import _hash_output
 
         hash1 = _hash_output("output1")
         hash2 = _hash_output("output2")
@@ -222,7 +227,6 @@ class TestTestGeneration:
 
     def test_generate_tests_creates_file(self, tmp_path: Path):
         """Test that test generation creates test file."""
-        from codex.verify.comparator import generate_tests
 
         source_dir = tmp_path / "source"
         source_dir.mkdir()
@@ -244,7 +248,6 @@ class TestTestGeneration:
 
     def test_generated_test_content(self, tmp_path: Path):
         """Test content of generated test file."""
-        from codex.verify.comparator import generate_tests
 
         source_dir = tmp_path / "source"
         source_dir.mkdir()
@@ -272,7 +275,6 @@ class TestComparisonDetail:
 
     def test_comparison_detail_creation(self):
         """Test creating ComparisonDetail."""
-        from codex.verify.comparator import ComparisonDetail, ComparisonMode
 
         detail = ComparisonDetail(
             input_ref="input.txt",
@@ -290,7 +292,6 @@ class TestFlakiness:
 
     def test_flakiness_check_in_result(self, tmp_path: Path):
         """Test that flakiness check is included in result."""
-        from codex.verify.comparator import ComparisonMode, compare
 
         baseline_dir = tmp_path / "baseline"
         patched_dir = tmp_path / "patched"

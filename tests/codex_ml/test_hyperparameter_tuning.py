@@ -101,5 +101,6 @@ class TestHyperparameterTuning:
 
     def test_hyperband_algorithm(self):
         """Test Hyperband algorithm."""
+import pytest
         algorithm = "hyperband"
         assert algorithm == "hyperband", "algorithm is not valid"

@@ -3,13 +3,14 @@ Test Gh Api Wrapper
 
 Test module for gh api wrapper.
 """
-
 from __future__ import annotations
-
+import pytest
 import os
 import subprocess
 import sys
 from pathlib import Path
+
+
 
 
 def test_print_curl_redacts_token() -> None:

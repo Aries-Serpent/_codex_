@@ -3,17 +3,16 @@ Test Eval With Metrics
 
 Test module for eval with metrics.
 """
-
 import math
 from types import SimpleNamespace
-
-import pytest
-
 from codex_ml.metrics.evaluator import batch_metrics
 from codex_ml.training.eval import evaluate
+    import torch
+
+
+
 
 try:  # pragma: no cover - torch optional in CI
-    import torch
 except ImportError:  # pragma: no cover - skip when torch unavailable
     torch = None  # type: ignore[assignment]
 

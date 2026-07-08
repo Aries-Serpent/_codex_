@@ -175,6 +175,7 @@ class TestSLAPolicyRegistry:
 
     def test_get_policy(self):
         """Test retrieving a policy from registry."""
+import pytest
         policy = SLAPolicy(
             name="test_policy",
             metric=SLAMetric.FIRST_RESPONSE,

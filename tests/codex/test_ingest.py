@@ -7,10 +7,26 @@ Tests cover:
 - Content hashing and determinism
 - Error handling and safeguards
 """
-
 from pathlib import Path
+        from codex.ingest.adapter import ingest
+        from codex.ingest.adapter import ingest
+        from codex.ingest.adapter import ingest
+        from codex.ingest.adapter import ingest
+        from codex.ingest.adapter import ingest
+        from codex.ingest.adapter import ingest
+        from codex.ingest.adapter import ingest
+        from codex.ingest.adapter import ingest
+        from codex.ingest.manifest import parse_manifest
+        from codex.ingest.manifest import parse_manifest
+        from codex.ingest.manifest import parse_manifest
+        from codex.ingest.manifest import parse_manifest
+        from codex.ingest.manifest import parse_manifest
+        from codex.ingest.manifest import parse_manifest
+        from codex.ingest.adapter import _compute_content_hash
+        from codex.ingest.adapter import _compute_content_hash
+        from codex.ingest.adapter import _compute_content_hash
 
-import pytest
+
 
 
 class TestIngestAdapter:
@@ -18,7 +34,6 @@ class TestIngestAdapter:
 
     def test_ingest_single_file(self, tmp_path: Path):
         """Test ingesting a single Python file."""
-        from codex.ingest.adapter import ingest
 
         # Create test file
         test_file = tmp_path / "test_script.py"
@@ -39,7 +54,6 @@ class TestIngestAdapter:
 
     def test_ingest_directory(self, tmp_path: Path):
         """Test ingesting a directory of Python files."""
-        from codex.ingest.adapter import ingest
 
         # Create test directory
         source_dir = tmp_path / "source"
@@ -60,7 +74,6 @@ class TestIngestAdapter:
 
     def test_ingest_with_manifest(self, tmp_path: Path):
         """Test ingesting with a manifest file."""
-        from codex.ingest.adapter import ingest
 
         # Create test file
         test_file = tmp_path / "script.py"
@@ -93,7 +106,6 @@ metadata:
 
     def test_ingest_custom_snapshot_id(self, tmp_path: Path):
         """Test ingesting with a custom snapshot ID."""
-        from codex.ingest.adapter import ingest
 
         test_file = tmp_path / "test.py"
         test_file.write_text("x = 1\n", encoding="utf-8")
@@ -108,7 +120,6 @@ metadata:
 
     def test_ingest_deterministic_hash(self, tmp_path: Path):
         """Test that content hash is deterministic."""
-        from codex.ingest.adapter import ingest
 
         test_file = tmp_path / "test.py"
         test_file.write_text("content = 'fixed'\n", encoding="utf-8")
@@ -123,7 +134,6 @@ metadata:
 
     def test_ingest_file_not_found(self, tmp_path: Path):
         """Test error handling for non-existent file."""
-        from codex.ingest.adapter import ingest
 
         artifacts_dir = tmp_path / "artifacts"
         artifacts_dir.mkdir()
@@ -133,7 +143,6 @@ metadata:
 
     def test_ingest_creates_artifact_directories(self, tmp_path: Path):
         """Test that ingest creates expected subdirectories."""
-        from codex.ingest.adapter import ingest
 
         test_file = tmp_path / "test.py"
         test_file.write_text("pass\n", encoding="utf-8")
@@ -149,7 +158,6 @@ metadata:
 
     def test_snapshot_to_dict(self, tmp_path: Path):
         """Test snapshot serialization."""
-        from codex.ingest.adapter import ingest
 
         test_file = tmp_path / "test.py"
         test_file.write_text("pass\n", encoding="utf-8")
@@ -170,7 +178,6 @@ class TestManifestParser:
 
     def test_parse_minimal_manifest(self, tmp_path: Path):
         """Test parsing a minimal valid manifest."""
-        from codex.ingest.manifest import parse_manifest
 
         manifest_file = tmp_path / "manifest.yaml"
         manifest_file.write_text(
@@ -191,7 +198,6 @@ source:
 
     def test_parse_full_manifest(self, tmp_path: Path):
         """Test parsing a complete manifest with all fields."""
-        from codex.ingest.manifest import parse_manifest
 
         manifest_file = tmp_path / "manifest.yaml"
         manifest_file.write_text(
@@ -237,7 +243,6 @@ metadata:
 
     def test_parse_manifest_missing_version(self, tmp_path: Path):
         """Test error on missing version."""
-        from codex.ingest.manifest import parse_manifest
 
         manifest_file = tmp_path / "manifest.yaml"
         manifest_file.write_text(
@@ -254,7 +259,6 @@ source:
 
     def test_parse_manifest_invalid_version_format(self, tmp_path: Path):
         """Test error on invalid version format."""
-        from codex.ingest.manifest import parse_manifest
 
         manifest_file = tmp_path / "manifest.yaml"
         manifest_file.write_text(
@@ -272,7 +276,6 @@ source:
 
     def test_parse_manifest_constraint_bounds(self, tmp_path: Path):
         """Test constraint bounds validation."""
-        from codex.ingest.manifest import parse_manifest
 
         manifest_file = tmp_path / "manifest.yaml"
         manifest_file.write_text(
@@ -292,7 +295,6 @@ constraints:
 
     def test_manifest_to_dict(self, tmp_path: Path):
         """Test manifest serialization."""
-        from codex.ingest.manifest import parse_manifest
 
         manifest_file = tmp_path / "manifest.yaml"
         manifest_file.write_text(
@@ -317,7 +319,6 @@ class TestContentHash:
 
     def test_hash_single_file(self, tmp_path: Path):
         """Test hashing a single file."""
-        from codex.ingest.adapter import _compute_content_hash
 
         test_file = tmp_path / "test.py"
         test_file.write_text("content\n", encoding="utf-8")
@@ -330,7 +331,6 @@ class TestContentHash:
 
     def test_hash_directory_deterministic(self, tmp_path: Path):
         """Test that directory hashing is deterministic."""
-        from codex.ingest.adapter import _compute_content_hash
 
         test_dir = tmp_path / "source"
         test_dir.mkdir()
@@ -344,7 +344,6 @@ class TestContentHash:
 
     def test_hash_different_content(self, tmp_path: Path):
         """Test that different content produces different hashes."""
-        from codex.ingest.adapter import _compute_content_hash
 
         file1 = tmp_path / "file1.py"
         file2 = tmp_path / "file2.py"

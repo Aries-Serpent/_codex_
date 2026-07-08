@@ -6,12 +6,25 @@ Phase 7 tests covering:
 - Mental mapping data structures
 - MentalMap class operations
 """
-
 from __future__ import annotations
-
 from datetime import datetime
+        from agents.mental_mapping import _default_clock
+        from agents.mental_mapping import get_timestamp, reset_clock, set_clock
+        from agents.mental_mapping import get_timestamp, reset_clock, set_clock
+        from agents.mental_mapping import get_timestamp, reset_clock, set_clock
+        from agents.mental_mapping import NodeType
+        from agents.mental_mapping import NodeType
+            from agents.mental_mapping import ReasoningChain
+            from agents.mental_mapping import (
+            from agents.mental_mapping import NodeType as NodeType
+        from agents.mental_mapping import NodeType
+            from agents.mental_mapping import MentalMappingModel
+        from agents.mental_mapping import NodeType
+            from agents.mental_mapping import SelfAppraisal
+            from agents.mental_mapping import DecisionPath
 
-import pytest
+
+
 
 
 class TestClockAbstraction:
@@ -19,7 +32,6 @@ class TestClockAbstraction:
 
     def test_default_clock_returns_iso_format(self):
         """Test that default clock returns ISO format timestamp."""
-        from agents.mental_mapping import _default_clock
 
         result = _default_clock()
         # Should be parseable as ISO format
@@ -27,7 +39,6 @@ class TestClockAbstraction:
 
     def test_get_timestamp_uses_current_clock(self):
         """Test get_timestamp uses the configured clock."""
-        from agents.mental_mapping import get_timestamp, reset_clock, set_clock
 
         try:
             # Set a custom clock
@@ -39,7 +50,6 @@ class TestClockAbstraction:
 
     def test_set_clock_overrides_default(self):
         """Test set_clock overrides the default clock."""
-        from agents.mental_mapping import get_timestamp, reset_clock, set_clock
 
         try:
             custom_time = "2025-06-15T12:30:00"
@@ -50,7 +60,6 @@ class TestClockAbstraction:
 
     def test_reset_clock_restores_default(self):
         """Test reset_clock restores default behavior."""
-        from agents.mental_mapping import get_timestamp, reset_clock, set_clock
 
         set_clock(lambda: "fixed")
         reset_clock()
@@ -65,7 +74,6 @@ class TestNodeType:
 
     def test_node_types_exist(self):
         """Test all expected node types exist."""
-        from agents.mental_mapping import NodeType
 
         assert NodeType.PROBLEM.value == "problem", "Value must be initialized"
         assert NodeType.HYPOTHESIS.value == "hypothesis", "Value must be initialized"
@@ -73,7 +81,6 @@ class TestNodeType:
 
     def test_node_type_iteration(self):
         """Test that NodeType is iterable."""
-        from agents.mental_mapping import NodeType
 
         types = list(NodeType)
         assert len(types) >= 3, "Types must not be empty"
@@ -86,7 +93,6 @@ class TestReasoningChain:
     def ReasoningChain(self):
         """Import ReasoningChain class."""
         try:
-            from agents.mental_mapping import ReasoningChain
 
             return ReasoningChain
         except ImportError:
@@ -121,10 +127,8 @@ class TestMentalMapNode:
     def MentalMapNode(self):
         """Import MentalMapNode class."""
         try:
-            from agents.mental_mapping import (
                 MentalMapNode,
             )
-            from agents.mental_mapping import NodeType as NodeType
 
             return MentalMapNode
         except ImportError:
@@ -134,7 +138,6 @@ class TestMentalMapNode:
     @pytest.fixture
     def NodeType(self):
         """Import NodeType enum."""
-        from agents.mental_mapping import NodeType
 
         return NodeType
 
@@ -174,7 +177,6 @@ class TestMentalMap:
     def MentalMap(self):
         """Import MentalMap class."""
         try:
-            from agents.mental_mapping import MentalMappingModel
 
             return MentalMappingModel
         except ImportError:
@@ -184,7 +186,6 @@ class TestMentalMap:
     @pytest.fixture
     def NodeType(self):
         """Import NodeType enum."""
-        from agents.mental_mapping import NodeType
 
         return NodeType
 
@@ -243,7 +244,6 @@ class TestSelfAppraisal:
     def SelfAppraisal(self):
         """Import SelfAppraisal class if available."""
         try:
-            from agents.mental_mapping import SelfAppraisal
 
             return SelfAppraisal
         except ImportError:
@@ -267,7 +267,6 @@ class TestDecisionPath:
     def DecisionPath(self):
         """Import DecisionPath class if available."""
         try:
-            from agents.mental_mapping import DecisionPath
 
             return DecisionPath
         except ImportError:

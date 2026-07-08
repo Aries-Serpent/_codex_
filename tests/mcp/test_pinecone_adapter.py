@@ -3,13 +3,12 @@ Test Pinecone Adapter
 
 Test module for pinecone adapter.
 """
+from mcp.backends.pinecone_adapter import PineconeAdapter
 
 # Unit tests for PineconeAdapter using monkeypatch to fake pinecone SDK.
 # Tests are import-safe and do not require provider credentials or network access.
 
-import pytest
 
-from mcp.backends.pinecone_adapter import PineconeAdapter
 
 
 class FakeIndex:

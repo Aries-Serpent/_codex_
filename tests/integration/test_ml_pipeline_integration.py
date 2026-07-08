@@ -8,19 +8,18 @@ Tests cover:
 - Offline mode integration
 - Configuration integration
 """
-
+pytest.importorskip("torch")
 import sys
 import tempfile
 from pathlib import Path
+import torch
+        import os
 
-import pytest
 
-pytest.importorskip("torch")
+
 
 
 # Skip entire module if torch is not available or unloadable
-pytest.importorskip("torch", reason="PyTorch required for tests")
-import torch
 
 # Mark all tests in this module - skip by default (slow)
 pytestmark = [pytest.mark.ml_comprehensive, pytest.mark.integration, pytest.mark.slow]
@@ -113,7 +112,6 @@ class TestOfflineModeIntegration:
 
     def test_offline_environment_variables(self):
         """Test offline mode via environment variables"""
-        import os
 
         # Set offline mode
         os.environ["CODEX_OFFLINE_MODE"] = "1"

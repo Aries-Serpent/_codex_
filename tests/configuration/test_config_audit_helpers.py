@@ -23,6 +23,7 @@ from codex_ml.cli import config
         (
             "first",
             dedent("""
+import pytest
                 defaults:
                   - _self_
                   - trainer: base

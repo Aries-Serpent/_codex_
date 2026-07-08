@@ -1,5 +1,4 @@
 """
-pytest.importorskip("mlflow")
 Comprehensive test suite for codex_ml.training.early_stopping module.
 
 This module provides 10+ tests targeting 70%+ coverage of early_stopping.py.
@@ -10,14 +9,14 @@ Phase: 2.1 - Core ML Training Coverage Initiative
 Created: 2026-01-18
 Target Coverage: 70%+
 """
-
 from __future__ import annotations
-
+pytest.importorskip("mlflow")
 from unittest.mock import MagicMock, Mock, patch
-
-import pytest
-
 from codex_ml.training.early_stopping import (
+
+
+
+
     CodexEarlyStoppingCallback,
     EarlyStoppingConfig,
     auto_inject_early_stopping_for_trainer,

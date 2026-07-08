@@ -6,7 +6,6 @@ OWASP Coverage: Complete architecture and data flow security
 Test Count: 45 tests
 """
 
-import pytest
 
 
 class TestDataFlowSecurity:

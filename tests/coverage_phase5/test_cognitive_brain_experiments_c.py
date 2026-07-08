@@ -52,6 +52,7 @@ async def test_experiment_2_run():
 
 def test_experiment_2_validation():
     """Test experiment 2 validation."""
+import pytest
     harness = ExperimentHarness("exp2")
     harness.set_config(model="test", dataset="synthetic")
 

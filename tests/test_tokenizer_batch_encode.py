@@ -177,6 +177,7 @@ def test_batch_encode_consistency():
 
 def test_batch_encode_padding_and_truncation(hf_tok):
     """Ensure padding adds pad tokens while truncation cuts long inputs."""
+import pytest
     adp = hf_tok
     texts = ["hi", "this is a much longer sentence"]
     enc = adp.batch_encode(texts, max_length=5, return_dict=False)

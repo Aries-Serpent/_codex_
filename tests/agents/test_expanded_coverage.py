@@ -3,8 +3,29 @@ Additional coverage tests for mental_mapping, quantum_game_theory, and self_heal
 
 Final push to reach Phase 1 target (30% coverage).
 """
+        from agents.mental_mapping import NodeType
+        from agents.mental_mapping import EdgeType
+        from datetime import datetime, timezone
+        from agents.mental_mapping import MentalNode, NodeType
+        from agents.mental_mapping import EdgeType, MentalEdge
+        from agents.mental_mapping import MentalMappingModel
+        from datetime import datetime, timezone
+        from agents.mental_mapping import MentalMappingModel, MentalNode, NodeType
+        from agents.quantum_game_theory import NUMPY_AVAILABLE, PayoffOperator
+            import numpy as np
+        from agents.quantum_game_theory import QuantumGameState, StrategyState
+        from agents.quantum_game_theory import NUMPY_AVAILABLE, ClassicalGameEngine
+            import numpy as np
+        from agents.self_healing import IssueType
+        from agents.self_healing import RemediationAction
+        from agents.self_healing import SelfHealingEngine
+        from agents.self_healing import DiagnosticResult
+        from agents import agent_memory
+            from agents.agent_memory import AgentMemory
+        from agents.advanced_physics_calculators import ChaoticAttractor
+        from agents.advanced_physics_calculators import FractalAnalyzer
+        from agents.advanced_physics_calculators import FluidChannel
 
-import pytest
 
 
 class TestMentalMappingExpanded:
@@ -12,7 +33,6 @@ class TestMentalMappingExpanded:
 
     def test_node_type_enum(self):
         """Test NodeType enum."""
-        from agents.mental_mapping import NodeType
 
         assert NodeType.OBSERVATION is not None, "OBSERVATION must be initialized"
         assert NodeType.REASONING is not None, "REASONING must be initialized"
@@ -20,16 +40,13 @@ class TestMentalMappingExpanded:
 
     def test_edge_type_enum(self):
         """Test EdgeType enum."""
-        from agents.mental_mapping import EdgeType
 
         assert EdgeType.CAUSES is not None, "CAUSES must be initialized"
         assert EdgeType.SUPPORTS is not None, "SUPPORTS must be initialized"
 
     def test_mental_node_creation(self):
         """Test MentalNode can be created."""
-        from datetime import datetime, timezone
 
-        from agents.mental_mapping import MentalNode, NodeType
 
         node = MentalNode(
             node_id="test-1",
@@ -44,7 +61,6 @@ class TestMentalMappingExpanded:
 
     def test_mental_edge_creation(self):
         """Test MentalEdge can be created."""
-        from agents.mental_mapping import EdgeType, MentalEdge
 
         edge = MentalEdge(
             edge_id="edge1",
@@ -61,7 +77,6 @@ class TestMentalMappingExpanded:
 
     def test_mental_mapping_model_init(self):
         """Test MentalMappingModel initialization."""
-        from agents.mental_mapping import MentalMappingModel
 
         model = MentalMappingModel()
 
@@ -71,9 +86,7 @@ class TestMentalMappingExpanded:
 
     def test_add_node(self):
         """Test adding a node to the model."""
-        from datetime import datetime, timezone
 
-        from agents.mental_mapping import MentalMappingModel, MentalNode, NodeType
 
         model = MentalMappingModel()
         node = MentalNode(
@@ -94,13 +107,11 @@ class TestQuantumGameTheoryExpanded:
 
     def test_payoff_operator_creation(self):
         """Test PayoffOperator can be created."""
-        from agents.quantum_game_theory import NUMPY_AVAILABLE, PayoffOperator
 
         if not NUMPY_AVAILABLE:
             pytest.skip("PayoffOperator requires numpy")
 
         try:
-            import numpy as np
 
             # PayoffOperator requires payoff_matrix
             payoff_matrix = np.array([[1.0, 0.5], [0.5, 1.0]])
@@ -112,7 +123,6 @@ class TestQuantumGameTheoryExpanded:
 
     def test_quantum_game_state_creation(self):
         """Test QuantumGameState can be created."""
-        from agents.quantum_game_theory import QuantumGameState, StrategyState
 
         try:
             state = QuantumGameState(
@@ -125,13 +135,11 @@ class TestQuantumGameTheoryExpanded:
 
     def test_classical_game_engine_init(self):
         """Test ClassicalGameEngine initialization."""
-        from agents.quantum_game_theory import NUMPY_AVAILABLE, ClassicalGameEngine
 
         if not NUMPY_AVAILABLE:
             pytest.skip("ClassicalGameEngine requires numpy")
 
         try:
-            import numpy as np
 
             # ClassicalGameEngine requires 4 arguments
             blue_strategies = ["defend", "attack"]
@@ -157,14 +165,12 @@ class TestSelfHealingExpanded:
 
     def test_issue_type_enum(self):
         """Test IssueType enum."""
-        from agents.self_healing import IssueType
 
         assert IssueType.BUILD_FAILURE is not None, "BUILD_FAILURE must be initialized"
         assert IssueType.TEST_FAILURE is not None, "TEST_FAILURE must be initialized"
 
     def test_remediation_action_creation(self):
         """Test RemediationAction can be created."""
-        from agents.self_healing import RemediationAction
 
         action = RemediationAction(
             action_id="fix-1",
@@ -179,7 +185,6 @@ class TestSelfHealingExpanded:
 
     def test_self_healing_engine_init(self):
         """Test SelfHealingEngine initialization."""
-        from agents.self_healing import SelfHealingEngine
 
         engine = SelfHealingEngine()
 
@@ -188,7 +193,6 @@ class TestSelfHealingExpanded:
 
     def test_diagnostic_result_creation(self):
         """Test DiagnosticResult can be created."""
-        from agents.self_healing import DiagnosticResult
 
         result = DiagnosticResult(health_score=0.9)
 
@@ -202,14 +206,12 @@ class TestAgentMemoryExpanded:
 
     def test_import(self):
         """Test agent_memory module import."""
-        from agents import agent_memory
 
         assert agent_memory is not None, "agent_memory must be initialized"
 
     def test_has_classes(self):
         """Test agent_memory has expected classes."""
         try:
-            from agents.agent_memory import AgentMemory
 
             assert AgentMemory is not None, "AgentMemory must be initialized"
         except (ImportError, AttributeError):
@@ -222,7 +224,6 @@ class TestAdvancedPhysicsCalculatorsExpanded:
 
     def test_chaotic_attractor_initialization(self):
         """Test ChaoticAttractor with different types."""
-        from agents.advanced_physics_calculators import ChaoticAttractor
 
         # Test henon type
         attractor = ChaoticAttractor(attractor_type="henon")
@@ -234,14 +235,12 @@ class TestAdvancedPhysicsCalculatorsExpanded:
 
     def test_fractal_analyzer_initialization(self):
         """Test FractalAnalyzer can be initialized."""
-        from agents.advanced_physics_calculators import FractalAnalyzer
 
         analyzer = FractalAnalyzer()
         assert analyzer is not None, "analyzer must be initialized"
 
     def test_fluid_channel_creation(self):
         """Test FluidChannel can be created."""
-        from agents.advanced_physics_calculators import FluidChannel
 
         channel = FluidChannel(channel_id="pipe1", capacity=100.0)
 

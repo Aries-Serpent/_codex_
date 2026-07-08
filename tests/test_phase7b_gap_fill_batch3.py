@@ -11,13 +11,80 @@ Gap-filling targets:
   5. base.py registry (41.44% → 100%)
   6. text metrics (41.18% → 100%)
 """
-
 from __future__ import annotations
-
 import sys
 from pathlib import Path
+        from codex_ml.registry.token_cache import TokenCache
+        from codex_ml.registry.token_cache import TokenCache
+        from codex_ml.registry.token_cache import TokenCache
+        from codex_ml.registry.token_cache import TokenCache
+        from codex_ml.registry.token_cache import TokenCache
+        from codex_ml.registry.token_cache import TokenCache
+        from codex_ml.registry.token_cache import TokenCache
+        from codex_ml.registry.token_cache import TokenCache
+        from codex_ml.registry.token_cache import TokenCache
+        from codex_ml.registry.token_cache import TokenCache
+        from codex_ml.registry.token_cache import TokenCache
+        from codex_ml.interfaces.tokenizer_hf import HFTokenizer
+        from codex_ml.interfaces.tokenizer_hf import HFTokenizer
+        from codex_ml.interfaces.tokenizer_hf import HFTokenizer
+        from codex_ml.interfaces.tokenizer_hf import HFTokenizer
+        from codex_ml.interfaces.tokenizer_hf import HFTokenizer
+        from codex_ml.interfaces.tokenizer_hf import HFTokenizer
+        from codex_ml.interfaces.tokenizer_hf import HFTokenizer
+        from codex_ml.interfaces.tokenizer_hf import HFTokenizer
+        from codex_ml.interfaces.tokenizer_hf import HFTokenizer
+        from codex_ml.interfaces.tokenizer_hf import HFTokenizer
+        from codex_ml.training.dataloader_utils import create_dataloader
+        from codex_ml.training.dataloader_utils import create_dataloader
+        from codex_ml.training.dataloader_utils import create_dataloader
+        from codex_ml.training.dataloader_utils import create_dataloader
+        from codex_ml.training.dataloader_utils import create_dataloader
+        from codex_ml.training.dataloader_utils import create_dataloader
+        from codex_ml.training.dataloader_utils import create_dataloader
+        from codex_ml.training.dataloader_utils import create_dataloader
+        from codex_ml.training.dataloader_utils import create_dataloader
+        from codex_ml.training.dataloader_utils import create_dataloader
+        from data.manifest import Manifest
+        from data.manifest import Manifest
+        from data.manifest import Manifest
+        from data.manifest import Manifest
+        from data.manifest import Manifest
+        from data.manifest import Manifest
+        from data.manifest import Manifest
+        from data.manifest import Manifest
+        from data.manifest import Manifest
+        from data.manifest import Manifest
+        from codex_ml.registry.base import BaseRegistry
+        from codex_ml.registry.base import BaseRegistry
+        from codex_ml.registry.base import BaseRegistry
+        from codex_ml.registry.base import BaseRegistry
+        from codex_ml.registry.base import BaseRegistry
+        from codex_ml.registry.base import BaseRegistry
+        from codex_ml.registry.base import BaseRegistry
+        from codex_ml.registry.base import BaseRegistry
+        from codex_ml.registry.base import BaseRegistry
+        from codex_ml.registry.base import BaseRegistry
+        from codex_ml.metrics.text import calculate_perplexity
+        from codex_ml.metrics.text import calculate_perplexity
+        from codex_ml.metrics.text import calculate_perplexity
+        from codex_ml.metrics.text import calculate_bleu
+        from codex_ml.metrics.text import calculate_rouge
+        from codex_ml.metrics.text import calculate_similarity
+        from codex_ml.metrics.text import calculate_token_accuracy
+        from codex_ml.metrics.text import calculate_length_ratio
+        from codex_ml.metrics.text import calculate_f1
+        from codex_ml.metrics.text import calculate_bleu
+        from codex_ml.metrics.text import calculate_similarity
+        from codex_ml.registry.token_cache import TokenCache
+        from codex_ml.interfaces.tokenizer_hf import HFTokenizer
+        from codex_ml.training.dataloader_utils import create_dataloader
+        from data.manifest import Manifest
+        from codex_ml.registry.base import BaseRegistry
+        from codex_ml.metrics.text import calculate_similarity
 
-import pytest
+
+
 
 # Add src to path for imports
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -35,13 +102,11 @@ class TestTokenCache:
 
     def test_token_cache_import(self):
         """Test importing token_cache module."""
-        from codex_ml.registry.token_cache import TokenCache
 
         assert TokenCache is not None, "TokenCache must be initialized"
 
     def test_token_cache_init(self):
         """Test TokenCache initialization."""
-        from codex_ml.registry.token_cache import TokenCache
 
         try:
             cache = TokenCache()
@@ -51,7 +116,6 @@ class TestTokenCache:
 
     def test_token_cache_with_max_size(self):
         """Test TokenCache with max size."""
-        from codex_ml.registry.token_cache import TokenCache
 
         try:
             cache = TokenCache(max_size=1000)
@@ -61,7 +125,6 @@ class TestTokenCache:
 
     def test_token_cache_set_get(self):
         """Test setting and getting tokens."""
-        from codex_ml.registry.token_cache import TokenCache
 
         try:
             cache = TokenCache()
@@ -73,7 +136,6 @@ class TestTokenCache:
 
     def test_token_cache_multiple_sets(self):
         """Test setting multiple tokens."""
-        from codex_ml.registry.token_cache import TokenCache
 
         try:
             cache = TokenCache()
@@ -86,7 +148,6 @@ class TestTokenCache:
 
     def test_token_cache_delete(self):
         """Test deleting token from cache."""
-        from codex_ml.registry.token_cache import TokenCache
 
         try:
             cache = TokenCache()
@@ -99,7 +160,6 @@ class TestTokenCache:
 
     def test_token_cache_clear(self):
         """Test clearing entire cache."""
-        from codex_ml.registry.token_cache import TokenCache
 
         try:
             cache = TokenCache()
@@ -113,7 +173,6 @@ class TestTokenCache:
 
     def test_token_cache_size(self):
         """Test getting cache size."""
-        from codex_ml.registry.token_cache import TokenCache
 
         try:
             cache = TokenCache()
@@ -126,7 +185,6 @@ class TestTokenCache:
 
     def test_token_cache_contains(self):
         """Test checking if token exists in cache."""
-        from codex_ml.registry.token_cache import TokenCache
 
         try:
             cache = TokenCache()
@@ -138,7 +196,6 @@ class TestTokenCache:
 
     def test_token_cache_non_existent_token(self):
         """Test getting non-existent token."""
-        from codex_ml.registry.token_cache import TokenCache
 
         try:
             cache = TokenCache()
@@ -149,7 +206,6 @@ class TestTokenCache:
 
     def test_token_cache_eviction_lru(self):
         """Test LRU eviction when cache is full."""
-        from codex_ml.registry.token_cache import TokenCache
 
         try:
             cache = TokenCache(max_size=3)
@@ -172,13 +228,11 @@ class TestTokenizerHF:
 
     def test_tokenizer_hf_import(self):
         """Test importing tokenizer_hf module."""
-        from codex_ml.interfaces.tokenizer_hf import HFTokenizer
 
         assert HFTokenizer is not None, "HFTokenizer must be initialized"
 
     def test_tokenizer_hf_init(self):
         """Test HFTokenizer initialization."""
-        from codex_ml.interfaces.tokenizer_hf import HFTokenizer
 
         try:
             tokenizer = HFTokenizer()
@@ -188,7 +242,6 @@ class TestTokenizerHF:
 
     def test_tokenizer_hf_with_model_name(self):
         """Test HFTokenizer with model name."""
-        from codex_ml.interfaces.tokenizer_hf import HFTokenizer
 
         try:
             tokenizer = HFTokenizer(model_name="gpt2")
@@ -198,7 +251,6 @@ class TestTokenizerHF:
 
     def test_tokenizer_hf_encode(self):
         """Test encoding text."""
-        from codex_ml.interfaces.tokenizer_hf import HFTokenizer
 
         try:
             tokenizer = HFTokenizer()
@@ -209,7 +261,6 @@ class TestTokenizerHF:
 
     def test_tokenizer_hf_decode(self):
         """Test decoding tokens."""
-        from codex_ml.interfaces.tokenizer_hf import HFTokenizer
 
         try:
             tokenizer = HFTokenizer()
@@ -221,7 +272,6 @@ class TestTokenizerHF:
 
     def test_tokenizer_hf_encode_decode_roundtrip(self):
         """Test encode-decode roundtrip."""
-        from codex_ml.interfaces.tokenizer_hf import HFTokenizer
 
         try:
             tokenizer = HFTokenizer()
@@ -234,7 +284,6 @@ class TestTokenizerHF:
 
     def test_tokenizer_hf_vocab_size(self):
         """Test getting vocab size."""
-        from codex_ml.interfaces.tokenizer_hf import HFTokenizer
 
         try:
             tokenizer = HFTokenizer()
@@ -245,7 +294,6 @@ class TestTokenizerHF:
 
     def test_tokenizer_hf_special_tokens(self):
         """Test handling special tokens."""
-        from codex_ml.interfaces.tokenizer_hf import HFTokenizer
 
         try:
             tokenizer = HFTokenizer()
@@ -256,7 +304,6 @@ class TestTokenizerHF:
 
     def test_tokenizer_hf_add_tokens(self):
         """Test adding custom tokens."""
-        from codex_ml.interfaces.tokenizer_hf import HFTokenizer
 
         try:
             tokenizer = HFTokenizer()
@@ -267,7 +314,6 @@ class TestTokenizerHF:
 
     def test_tokenizer_hf_tokenize_batch(self):
         """Test batch tokenization."""
-        from codex_ml.interfaces.tokenizer_hf import HFTokenizer
 
         try:
             tokenizer = HFTokenizer()
@@ -288,13 +334,11 @@ class TestDataloaderUtils:
 
     def test_dataloader_utils_import(self):
         """Test importing dataloader_utils module."""
-        from codex_ml.training.dataloader_utils import create_dataloader
 
         assert create_dataloader is not None, "create_dataloader must be initialized"
 
     def test_create_dataloader_basic(self):
         """Test creating basic dataloader."""
-        from codex_ml.training.dataloader_utils import create_dataloader
 
         try:
             data = [1, 2, 3, 4, 5]
@@ -305,7 +349,6 @@ class TestDataloaderUtils:
 
     def test_create_dataloader_with_batch_size(self):
         """Test creating dataloader with batch size."""
-        from codex_ml.training.dataloader_utils import create_dataloader
 
         try:
             data = list(range(100))
@@ -317,7 +360,6 @@ class TestDataloaderUtils:
 
     def test_create_dataloader_with_shuffle(self):
         """Test creating dataloader with shuffling."""
-        from codex_ml.training.dataloader_utils import create_dataloader
 
         try:
             data = list(range(50))
@@ -328,7 +370,6 @@ class TestDataloaderUtils:
 
     def test_create_dataloader_with_num_workers(self):
         """Test creating dataloader with multiple workers."""
-        from codex_ml.training.dataloader_utils import create_dataloader
 
         try:
             data = list(range(100))
@@ -339,7 +380,6 @@ class TestDataloaderUtils:
 
     def test_dataloader_iteration(self):
         """Test iterating over dataloader."""
-        from codex_ml.training.dataloader_utils import create_dataloader
 
         try:
             data = list(range(40))
@@ -353,7 +393,6 @@ class TestDataloaderUtils:
 
     def test_dataloader_collate_fn(self):
         """Test custom collate function."""
-        from codex_ml.training.dataloader_utils import create_dataloader
 
         try:
             data = [[1, 2], [3, 4], [5, 6]]
@@ -368,7 +407,6 @@ class TestDataloaderUtils:
 
     def test_dataloader_sampler(self):
         """Test using custom sampler."""
-        from codex_ml.training.dataloader_utils import create_dataloader
 
         try:
             data = list(range(100))
@@ -379,7 +417,6 @@ class TestDataloaderUtils:
 
     def test_dataloader_pin_memory(self):
         """Test pin_memory setting."""
-        from codex_ml.training.dataloader_utils import create_dataloader
 
         try:
             data = list(range(50))
@@ -390,7 +427,6 @@ class TestDataloaderUtils:
 
     def test_dataloader_drop_last(self):
         """Test drop_last setting."""
-        from codex_ml.training.dataloader_utils import create_dataloader
 
         try:
             data = list(range(25))  # Not divisible by 10
@@ -411,13 +447,11 @@ class TestManifest:
 
     def test_manifest_import(self):
         """Test importing manifest module."""
-        from data.manifest import Manifest
 
         assert Manifest is not None, "Manifest must be initialized"
 
     def test_manifest_init(self):
         """Test Manifest initialization."""
-        from data.manifest import Manifest
 
         try:
             manifest = Manifest()
@@ -427,7 +461,6 @@ class TestManifest:
 
     def test_manifest_add_file(self):
         """Test adding file to manifest."""
-        from data.manifest import Manifest
 
         try:
             manifest = Manifest()
@@ -438,7 +471,6 @@ class TestManifest:
 
     def test_manifest_add_multiple_files(self):
         """Test adding multiple files."""
-        from data.manifest import Manifest
 
         try:
             manifest = Manifest()
@@ -450,7 +482,6 @@ class TestManifest:
 
     def test_manifest_get_file(self):
         """Test getting file info."""
-        from data.manifest import Manifest
 
         try:
             manifest = Manifest()
@@ -462,7 +493,6 @@ class TestManifest:
 
     def test_manifest_list_files(self):
         """Test listing all files."""
-        from data.manifest import Manifest
 
         try:
             manifest = Manifest()
@@ -475,7 +505,6 @@ class TestManifest:
 
     def test_manifest_remove_file(self):
         """Test removing file from manifest."""
-        from data.manifest import Manifest
 
         try:
             manifest = Manifest()
@@ -487,7 +516,6 @@ class TestManifest:
 
     def test_manifest_total_size(self):
         """Test calculating total manifest size."""
-        from data.manifest import Manifest
 
         try:
             manifest = Manifest()
@@ -500,7 +528,6 @@ class TestManifest:
 
     def test_manifest_to_dict(self):
         """Test converting manifest to dict."""
-        from data.manifest import Manifest
 
         try:
             manifest = Manifest()
@@ -512,7 +539,6 @@ class TestManifest:
 
     def test_manifest_from_dict(self):
         """Test creating manifest from dict."""
-        from data.manifest import Manifest
 
         try:
             manifest_dict = {"files": [{"name": "test.txt", "size": 1024}]}
@@ -532,13 +558,11 @@ class TestRegistryBase:
 
     def test_registry_base_import(self):
         """Test importing registry base module."""
-        from codex_ml.registry.base import BaseRegistry
 
         assert BaseRegistry is not None, "BaseRegistry must be initialized"
 
     def test_registry_base_init(self):
         """Test BaseRegistry initialization."""
-        from codex_ml.registry.base import BaseRegistry
 
         try:
             registry = BaseRegistry()
@@ -548,7 +572,6 @@ class TestRegistryBase:
 
     def test_registry_register_item(self):
         """Test registering an item."""
-        from codex_ml.registry.base import BaseRegistry
 
         try:
             registry = BaseRegistry()
@@ -559,7 +582,6 @@ class TestRegistryBase:
 
     def test_registry_get_item(self):
         """Test retrieving registered item."""
-        from codex_ml.registry.base import BaseRegistry
 
         try:
             registry = BaseRegistry()
@@ -571,7 +593,6 @@ class TestRegistryBase:
 
     def test_registry_list_items(self):
         """Test listing all items."""
-        from codex_ml.registry.base import BaseRegistry
 
         try:
             registry = BaseRegistry()
@@ -584,7 +605,6 @@ class TestRegistryBase:
 
     def test_registry_remove_item(self):
         """Test removing item from registry."""
-        from codex_ml.registry.base import BaseRegistry
 
         try:
             registry = BaseRegistry()
@@ -596,7 +616,6 @@ class TestRegistryBase:
 
     def test_registry_clear(self):
         """Test clearing registry."""
-        from codex_ml.registry.base import BaseRegistry
 
         try:
             registry = BaseRegistry()
@@ -610,7 +629,6 @@ class TestRegistryBase:
 
     def test_registry_contains(self):
         """Test checking if item exists."""
-        from codex_ml.registry.base import BaseRegistry
 
         try:
             registry = BaseRegistry()
@@ -622,7 +640,6 @@ class TestRegistryBase:
 
     def test_registry_size(self):
         """Test getting registry size."""
-        from codex_ml.registry.base import BaseRegistry
 
         try:
             registry = BaseRegistry()
@@ -635,7 +652,6 @@ class TestRegistryBase:
 
     def test_registry_update_item(self):
         """Test updating existing item."""
-        from codex_ml.registry.base import BaseRegistry
 
         try:
             registry = BaseRegistry()
@@ -657,13 +673,11 @@ class TestTextMetrics:
 
     def test_text_metrics_import(self):
         """Test importing text metrics module."""
-        from codex_ml.metrics.text import calculate_perplexity
 
         assert calculate_perplexity is not None, "calculate_perplexity must be initialized"
 
     def test_calculate_perplexity_basic(self):
         """Test basic perplexity calculation."""
-        from codex_ml.metrics.text import calculate_perplexity
 
         try:
             result = calculate_perplexity(logits=[1.0, 2.0, 3.0])
@@ -673,7 +687,6 @@ class TestTextMetrics:
 
     def test_calculate_perplexity_zero_entropy(self):
         """Test perplexity with zero entropy."""
-        from codex_ml.metrics.text import calculate_perplexity
 
         try:
             result = calculate_perplexity(logits=[0.0])
@@ -683,7 +696,6 @@ class TestTextMetrics:
 
     def test_text_bleu_score(self):
         """Test BLEU score calculation."""
-        from codex_ml.metrics.text import calculate_bleu
 
         try:
             reference = "the quick brown fox"
@@ -695,7 +707,6 @@ class TestTextMetrics:
 
     def test_text_rouge_score(self):
         """Test ROUGE score calculation."""
-        from codex_ml.metrics.text import calculate_rouge
 
         try:
             reference = "the quick brown fox jumps"
@@ -707,7 +718,6 @@ class TestTextMetrics:
 
     def test_text_similarity_score(self):
         """Test text similarity scoring."""
-        from codex_ml.metrics.text import calculate_similarity
 
         try:
             text1 = "hello world"
@@ -719,7 +729,6 @@ class TestTextMetrics:
 
     def test_text_token_accuracy(self):
         """Test token accuracy metric."""
-        from codex_ml.metrics.text import calculate_token_accuracy
 
         try:
             pred_tokens = ["the", "cat", "sat"]
@@ -731,7 +740,6 @@ class TestTextMetrics:
 
     def test_text_length_ratio(self):
         """Test text length ratio."""
-        from codex_ml.metrics.text import calculate_length_ratio
 
         try:
             text1 = "hello world"
@@ -743,7 +751,6 @@ class TestTextMetrics:
 
     def test_text_f1_score(self):
         """Test F1 score for text."""
-        from codex_ml.metrics.text import calculate_f1
 
         try:
             pred = "the quick brown fox"
@@ -755,7 +762,6 @@ class TestTextMetrics:
 
     def test_text_metrics_edge_empty_string(self):
         """Test metrics with empty strings."""
-        from codex_ml.metrics.text import calculate_bleu
 
         try:
             score = calculate_bleu("", "")
@@ -765,7 +771,6 @@ class TestTextMetrics:
 
     def test_text_metrics_edge_None_input(self):
         """Test metrics with None input."""
-        from codex_ml.metrics.text import calculate_similarity
 
         try:
             score = calculate_similarity(None, "test")
@@ -784,7 +789,6 @@ class TestCoverageCompletionCases:
 
     def test_token_cache_concurrent_access(self):
         """Test token cache with concurrent operations."""
-        from codex_ml.registry.token_cache import TokenCache
 
         try:
             cache = TokenCache()
@@ -797,7 +801,6 @@ class TestCoverageCompletionCases:
 
     def test_tokenizer_hf_long_text(self):
         """Test tokenizer with very long text."""
-        from codex_ml.interfaces.tokenizer_hf import HFTokenizer
 
         try:
             tokenizer = HFTokenizer()
@@ -809,7 +812,6 @@ class TestCoverageCompletionCases:
 
     def test_dataloader_empty_data(self):
         """Test dataloader with empty data."""
-        from codex_ml.training.dataloader_utils import create_dataloader
 
         try:
             loader = create_dataloader([], batch_size=10)
@@ -820,7 +822,6 @@ class TestCoverageCompletionCases:
 
     def test_manifest_special_filenames(self):
         """Test manifest with special filenames."""
-        from data.manifest import Manifest
 
         try:
             manifest = Manifest()
@@ -837,7 +838,6 @@ class TestCoverageCompletionCases:
 
     def test_registry_duplicate_items(self):
         """Test registry with duplicate registrations."""
-        from codex_ml.registry.base import BaseRegistry
 
         try:
             registry = BaseRegistry()
@@ -850,7 +850,6 @@ class TestCoverageCompletionCases:
 
     def test_text_metrics_unicode(self):
         """Test metrics with unicode text."""
-        from codex_ml.metrics.text import calculate_similarity
 
         try:
             text1 = "Héllo wörld 你好"

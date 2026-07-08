@@ -5,8 +5,27 @@ Applies Quantum Test Methodology:
 - Measurement Pattern: Tests exception handling (state collapse)
 - Decoherence Pattern: Tests error isolation
 """
+            from common import error_handling
+            from common.error_handling import safe_execute
+            from common.error_handling import safe_call
+            from common.error_handling import logger
+            from common.error_handling import safe_execute
+            from common.error_handling import safe_execute
+            from common.error_handling import safe_execute
+            from common.error_handling import safe_execute
+            from common.error_handling import safe_execute
+            from common.error_handling import safe_execute
+            from common.error_handling import safe_execute
+            from common.error_handling import safe_call
+            from common.error_handling import safe_call
+            from common.error_handling import safe_call
+            from common.error_handling import safe_call
+            from common.error_handling import safe_call
+            from common.error_handling import safe_call
+            from common.error_handling import safe_execute
+            from common.error_handling import safe_call
+            from common.error_handling import safe_call
 
-import pytest
 
 # ==================== Import Tests ====================
 
@@ -17,7 +36,6 @@ class TestModuleImports:
     def test_module_import(self):
         """Test that error_handling module can be imported."""
         try:
-            from common import error_handling
 
             assert error_handling is not None, "error_handling must be initialized"
         except ImportError:
@@ -26,7 +44,6 @@ class TestModuleImports:
     def test_safe_execute_import(self):
         """Test safe_execute decorator import."""
         try:
-            from common.error_handling import safe_execute
 
             assert safe_execute is not None, "safe_execute must be initialized"
         except ImportError:
@@ -35,7 +52,6 @@ class TestModuleImports:
     def test_safe_call_import(self):
         """Test safe_call function import."""
         try:
-            from common.error_handling import safe_call
 
             assert safe_call is not None, "safe_call must be initialized"
         except ImportError:
@@ -44,7 +60,6 @@ class TestModuleImports:
     def test_logger_configured(self):
         """Test that logger is configured."""
         try:
-            from common.error_handling import logger
 
             assert logger is not None, "logger must be initialized"
         except ImportError:
@@ -60,7 +75,6 @@ class TestSafeExecuteDecorator:
     def test_successful_execution(self):
         """Test decorator allows successful execution."""
         try:
-            from common.error_handling import safe_execute
 
             @safe_execute("test_operation")
             def successful_func():
@@ -74,7 +88,6 @@ class TestSafeExecuteDecorator:
     def test_exception_returns_default(self):
         """Test decorator catches exception and returns default."""
         try:
-            from common.error_handling import safe_execute
 
             @safe_execute("failing_operation", default_return="fallback")
             def failing_func():
@@ -88,7 +101,6 @@ class TestSafeExecuteDecorator:
     def test_default_return_none(self):
         """Test default return is None when not specified."""
         try:
-            from common.error_handling import safe_execute
 
             @safe_execute("test_op")
             def error_func():
@@ -102,7 +114,6 @@ class TestSafeExecuteDecorator:
     def test_specific_exception_type(self):
         """Test catching specific exception type."""
         try:
-            from common.error_handling import safe_execute
 
             @safe_execute("test_op", exception_types=(ValueError,), default_return="caught")
             def value_error_func():
@@ -116,7 +127,6 @@ class TestSafeExecuteDecorator:
     def test_unhandled_exception_type_raises(self):
         """Test that unhandled exception types propagate."""
         try:
-            from common.error_handling import safe_execute
 
             @safe_execute("test_op", exception_types=(ValueError,))
             def type_error_func():
@@ -130,7 +140,6 @@ class TestSafeExecuteDecorator:
     def test_preserves_function_name(self):
         """Test that decorator preserves function name."""
         try:
-            from common.error_handling import safe_execute
 
             @safe_execute("test_op")
             def named_function():
@@ -143,7 +152,6 @@ class TestSafeExecuteDecorator:
     def test_log_level_parameter(self):
         """Test different log levels."""
         try:
-            from common.error_handling import safe_execute
 
             @safe_execute("test_op", log_level="error")
             def error_log_func():
@@ -165,7 +173,6 @@ class TestSafeCallFunction:
     def test_successful_call(self):
         """Test successful function call."""
         try:
-            from common.error_handling import safe_call
 
             def add(a, b):
                 return a + b
@@ -178,7 +185,6 @@ class TestSafeCallFunction:
     def test_exception_returns_default(self):
         """Test exception returns default value."""
         try:
-            from common.error_handling import safe_call
 
             def failing():
                 raise RuntimeError("error")
@@ -191,7 +197,6 @@ class TestSafeCallFunction:
     def test_kwargs_passed(self):
         """Test keyword arguments are passed."""
         try:
-            from common.error_handling import safe_call
 
             def greet(name, greeting="Hello"):
                 return f"{greeting}, {name}!"
@@ -204,7 +209,6 @@ class TestSafeCallFunction:
     def test_operation_name_parameter(self):
         """Test operation_name parameter."""
         try:
-            from common.error_handling import safe_call
 
             def risky():
                 raise ValueError("risky")
@@ -217,7 +221,6 @@ class TestSafeCallFunction:
     def test_specific_exception_types(self):
         """Test catching specific exception types."""
         try:
-            from common.error_handling import safe_call
 
             def value_error():
                 raise ValueError("value")
@@ -230,7 +233,6 @@ class TestSafeCallFunction:
     def test_unhandled_exception_raises(self):
         """Test unhandled exceptions propagate."""
         try:
-            from common.error_handling import safe_call
 
             def type_error():
                 raise TypeError("type")
@@ -250,7 +252,6 @@ class TestEdgeCases:
     def test_nested_safe_execute(self):
         """Test nested decorated functions."""
         try:
-            from common.error_handling import safe_execute
 
             @safe_execute("outer")
             def outer():
@@ -268,7 +269,6 @@ class TestEdgeCases:
     def test_safe_call_with_lambda(self):
         """Test safe_call with lambda function."""
         try:
-            from common.error_handling import safe_call
 
             result = safe_call(lambda x: x * 2, 5)
             assert result == 10, "Result must not be empty"
@@ -278,7 +278,6 @@ class TestEdgeCases:
     def test_safe_call_with_none_function(self):
         """Test safe_call behavior with None function name."""
         try:
-            from common.error_handling import safe_call
 
             def no_name_func():
                 return "works"

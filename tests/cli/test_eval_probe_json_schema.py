@@ -3,16 +3,15 @@ Test Eval Probe Json Schema
 
 Test module for eval probe json schema.
 """
-
 from __future__ import annotations
-
 import json
 import subprocess
 import sys
 from pathlib import Path
 from typing import Any
 
-import pytest
+
+
 
 SCHEMA_PATH = Path(__file__).parents[1] / "schemas" / "eval_probe.schema.json"
 SCHEMA = json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))

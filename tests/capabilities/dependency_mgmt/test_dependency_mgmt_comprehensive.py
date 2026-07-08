@@ -7,18 +7,17 @@ Tests cover:
 - Vendor verification
 - Dependency graph analysis
 """
-
 from __future__ import annotations
-
+pytest.importorskip("hypothesis", reason="hypothesis required for property tests")
 import hashlib
 import json
 import re
 from functools import total_ordering
 from typing import Any
 
-import pytest
 
-pytest.importorskip("hypothesis", reason="hypothesis required for property tests")
+
+
 
 
 # --- Dependency Version Tests ---

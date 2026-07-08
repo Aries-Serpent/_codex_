@@ -50,6 +50,7 @@ class TestStreamingParser:
 
     def test_parse_nonexistent_file(self):
         """Test parsing nonexistent file raises error."""
+import pytest
         parser = StreamingParser()
 
         with pytest.raises(FileNotFoundError):

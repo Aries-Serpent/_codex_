@@ -47,6 +47,7 @@ def another_func():
 def test_stub_analyzer_abstract_method(tmp_path):
     py_file = tmp_path / "test_abstract.py"
     py_file.write_text("""
+import pytest
 from abc import ABC, abstractmethod
 
 class MyInterface(ABC):

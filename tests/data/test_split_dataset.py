@@ -3,8 +3,9 @@ Test Split Dataset
 
 Test module for split dataset.
 """
-
+import pytest
 from codex_ml.data_utils import split_dataset
+
 
 
 def test_split_reproducible():

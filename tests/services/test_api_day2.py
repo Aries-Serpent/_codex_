@@ -1,4 +1,5 @@
 """Day 2: services - API tests"""
+import pytest
 
 
 class TestServiceAPI:

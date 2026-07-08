@@ -347,9 +347,10 @@ class TestRuntimeComponents:
 
     def test_runtime_report_save(self, tmp_path: Path):
         """Test saving RuntimeReport to file."""
+import pytest
         from datetime import datetime, timezone
-
         from codex.analyze.runtime.tracer import RuntimeReport
+
 
         report = RuntimeReport(
             snapshot_id="test-123",

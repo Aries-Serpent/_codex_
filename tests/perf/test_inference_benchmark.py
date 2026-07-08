@@ -8,14 +8,15 @@ Created: 2026-01-18
 Phase: 15.0 - Performance Testing & Benchmarking
 Target: Establish performance baseline for inference operations
 """
-
 import gc
 import os
 import time
 from dataclasses import dataclass
 from typing import Any
+        import psutil
+        import random
 
-import pytest
+
 
 # ============================================================================
 # Benchmark Utilities
@@ -48,7 +49,6 @@ class InferenceBenchmarkResult:
 def get_memory_mb() -> float:
     """Get current memory usage in MB."""
     try:
-        import psutil
 
         return psutil.Process(os.getpid()).memory_info().rss / 1024 / 1024
     except ImportError:
@@ -254,7 +254,6 @@ class TestInferenceLatencyBenchmarks:
 
     def test_sampling_latency(self) -> None:
         """Benchmark token sampling latency."""
-        import random
 
         def sample_token(logits: list[float], temperature: float = 1.0) -> int:
             # Softmax

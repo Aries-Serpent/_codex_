@@ -3,14 +3,17 @@ Test Repo Map
 
 Test module for repo map.
 """
-
 from __future__ import annotations
-
+import pytest
 import sys
 import types
 from pathlib import Path
-
 from click.testing import CliRunner
+    from codex_ml.cli.codex_cli import codex
+    from codex_ml.cli.codex_cli import codex
+
+
+
 
 
 def _ensure_config_settings_stub() -> None:
@@ -45,7 +48,6 @@ def test_repo_map_lists_visible_top_level_entries() -> None:
     """Ensure repo-map CLI lists all visible entries and omits hidden ones."""
     _ensure_config_settings_stub()
 
-    from codex_ml.cli.codex_cli import codex
 
     runner = CliRunner()
     result = runner.invoke(codex, ["repo-map"])
@@ -67,7 +69,6 @@ def test_repo_map_lists_visible_top_level_entries() -> None:
 def test_repo_map_reasoning_view_includes_control_surface() -> None:
     _ensure_config_settings_stub()
 
-    from codex_ml.cli.codex_cli import codex
 
     runner = CliRunner()
     result = runner.invoke(codex, ["repo-map", "--reasoning"])

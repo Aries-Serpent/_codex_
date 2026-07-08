@@ -9,13 +9,17 @@ Tests cover:
 - Webhook handling
 - Error cases
 """
-
 import json
 from unittest.mock import Mock, patch
-
-import pytest
-
 from codex.auth.github_app import (  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+        import time
+        import hashlib
+        import hmac
+        import hashlib
+        import hmac
+
+
+
     GitHubApp,
     GitHubInstallation,
 )
@@ -86,7 +90,6 @@ class TestGitHubInstallation:
         assert len(installation.permissions) == len(permissions), "Permissions must not be empty"
 
     def test_installation_created_at(self):
-        import time
 
         before = time.time()
         installation = GitHubInstallation(
@@ -324,8 +327,6 @@ class TestWebhookHandling:
     """GitHub App webhook handling."""
 
     def test_verify_webhook_signature(self, github_app):
-        import hashlib
-        import hmac
 
         payload = json.dumps({"action": "opened"}).encode()
         secret = github_app.webhook_secret.encode()
@@ -436,8 +437,6 @@ class TestIntegration:
         payload_bytes = json.dumps(payload).encode()
 
         # Verify signature
-        import hashlib
-        import hmac
 
         secret = github_app.webhook_secret.encode()
         signature = "sha256=" + hmac.new(secret, payload_bytes, hashlib.sha256).hexdigest()

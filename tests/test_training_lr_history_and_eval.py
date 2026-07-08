@@ -1,15 +1,14 @@
 """
-pytest.importorskip("mlflow")
 Test Training Lr History And Eval
 
 Test module for training lr history and eval.
 """
-
-import pytest
-
+pytest.importorskip("mlflow")
 torch = pytest.importorskip("torch", reason="Requires torch for optimizer / scheduler tests")
-
 from codex_ml.train_loop import run_training
+
+
+
 
 
 def dummy_eval_fn(epoch: int, state):

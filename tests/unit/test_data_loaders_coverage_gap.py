@@ -254,6 +254,7 @@ class TestValidateRecords:
 
     def test_validate_records_with_mixed_types(self):
         """Test validating records with mixed data types."""
+import pytest
         records = [
             {
                 "string": "text",

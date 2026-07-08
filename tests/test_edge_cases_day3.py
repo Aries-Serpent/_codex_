@@ -2,10 +2,50 @@
 Day 3: Edge Cases & Integration Tests
 Advanced error handling, boundary conditions, and module integration
 """
-
 import tempfile
+            import torch.nn as nn
+            import torch
+            import torch.nn as nn
+            import torch
+            import torch.nn as nn
+            import torch
+            import torch.nn as nn
+            import torch
+            import torch.nn as nn
+            from codex_ml.tokenization import get_tokenizer
+            from codex_ml.tokenization import get_tokenizer
+            from codex_ml.tokenization import get_tokenizer
+            from codex_ml.tokenization import get_tokenizer
+            from codex_ml.tokenization import get_tokenizer
+            from codex_ml.pipeline import Pipeline
+            from codex_ml.pipeline import Pipeline
+            from codex_ml.pipeline import Pipeline
+            from codex_ml.pipeline import Pipeline
+            from codex_ml.data_utils import validate_schema
+            from codex_ml.data_utils import validate_schema
+            from codex_ml.data_utils import validate_required_fields
+            from codex_ml.data_utils import validate_range
+            import threading
+            from codex_ml.registry import Registry
+            from codex_ml.data_utils import load_data_parallel
+            from codex_ml.data_utils import load_data
+            from codex_ml.models.factory import create_model_factory
+            import torch
+            import torch.nn as nn
+            from codex_ml.tokenization import get_tokenizer
+            from pathlib import Path
+            import torch
+            import torch.nn as nn
+        import time
+            from codex_ml.tokenization import get_tokenizer
+        import time
+            import torch
+            import torch.nn as nn
+            import gc
+            import torch
+            import torch.nn as nn
 
-import pytest
+
 
 
 class TestModelEdgeCases:
@@ -14,7 +54,6 @@ class TestModelEdgeCases:
     def test_model_zero_parameters(self):
         """Should handle models with no parameters."""
         try:
-            import torch.nn as nn
         except ImportError:
             pytest.skip("PyTorch not available")
 
@@ -25,8 +64,6 @@ class TestModelEdgeCases:
     def test_model_very_large_parameters(self):
         """Should handle models with large parameter counts."""
         try:
-            import torch
-            import torch.nn as nn
         except ImportError:
             pytest.skip("PyTorch not available")
 
@@ -38,8 +75,6 @@ class TestModelEdgeCases:
     def test_model_mixed_dtypes(self):
         """Should handle models with mixed parameter dtypes."""
         try:
-            import torch
-            import torch.nn as nn
         except ImportError:
             pytest.skip("PyTorch not available")
 
@@ -53,8 +88,6 @@ class TestModelEdgeCases:
     def test_model_with_buffers(self):
         """Should handle models with registered buffers."""
         try:
-            import torch
-            import torch.nn as nn
         except ImportError:
             pytest.skip("PyTorch not available")
 
@@ -67,8 +100,6 @@ class TestModelEdgeCases:
     def test_model_with_hooks(self):
         """Should handle models with registered hooks."""
         try:
-            import torch
-            import torch.nn as nn
         except ImportError:
             pytest.skip("PyTorch not available")
 
@@ -92,7 +123,6 @@ class TestTokenizationEdgeCases:
     def test_tokenizer_empty_string(self):
         """Should handle empty string gracefully."""
         try:
-            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer not available")
 
@@ -109,7 +139,6 @@ class TestTokenizationEdgeCases:
     def test_tokenizer_very_long_sequence(self):
         """Should handle very long sequences."""
         try:
-            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer not available")
 
@@ -127,7 +156,6 @@ class TestTokenizationEdgeCases:
     def test_tokenizer_null_bytes(self):
         """Should handle null bytes gracefully."""
         try:
-            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer not available")
 
@@ -145,7 +173,6 @@ class TestTokenizationEdgeCases:
     def test_tokenizer_emoji_handling(self):
         """Should handle emoji characters."""
         try:
-            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer not available")
 
@@ -163,7 +190,6 @@ class TestTokenizationEdgeCases:
     def test_tokenizer_repeated_characters(self):
         """Should handle repeated characters."""
         try:
-            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer not available")
 
@@ -185,7 +211,6 @@ class TestPipelineEdgeCases:
     def test_pipeline_with_no_steps(self):
         """Should handle empty pipeline."""
         try:
-            from codex_ml.pipeline import Pipeline
         except (ImportError, AttributeError):
             pytest.skip("Pipeline not available")
 
@@ -198,7 +223,6 @@ class TestPipelineEdgeCases:
     def test_pipeline_with_circular_dependency(self):
         """Should detect circular dependencies."""
         try:
-            from codex_ml.pipeline import Pipeline
         except (ImportError, AttributeError):
             pytest.skip("Pipeline not available")
 
@@ -217,7 +241,6 @@ class TestPipelineEdgeCases:
     def test_pipeline_with_missing_dependency(self):
         """Should handle missing step dependencies."""
         try:
-            from codex_ml.pipeline import Pipeline
         except (ImportError, AttributeError):
             pytest.skip("Pipeline not available")
 
@@ -235,7 +258,6 @@ class TestPipelineEdgeCases:
     def test_pipeline_step_timeout(self):
         """Should handle step timeouts."""
         try:
-            from codex_ml.pipeline import Pipeline
         except (ImportError, AttributeError):
             pytest.skip("Pipeline not available")
 
@@ -252,7 +274,6 @@ class TestDataValidation:
     def test_schema_validation_passes(self):
         """Should validate correct data."""
         try:
-            from codex_ml.data_utils import validate_schema
         except (ImportError, AttributeError):
             pytest.skip("Schema validation not available")
 
@@ -271,7 +292,6 @@ class TestDataValidation:
     def test_schema_validation_fails(self):
         """Should reject incorrect data."""
         try:
-            from codex_ml.data_utils import validate_schema
         except (ImportError, AttributeError):
             pytest.skip("Schema validation not available")
 
@@ -290,7 +310,6 @@ class TestDataValidation:
     def test_required_fields_validation(self):
         """Should validate required fields."""
         try:
-            from codex_ml.data_utils import validate_required_fields
         except (ImportError, AttributeError):
             pytest.skip("Field validation not available")
 
@@ -306,7 +325,6 @@ class TestDataValidation:
     def test_range_validation(self):
         """Should validate numeric ranges."""
         try:
-            from codex_ml.data_utils import validate_range
         except (ImportError, AttributeError):
             pytest.skip("Range validation not available")
 
@@ -326,9 +344,7 @@ class TestConcurrency:
     def test_threadsafe_registry_access(self):
         """Registry should be thread-safe."""
         try:
-            import threading
 
-            from codex_ml.registry import Registry
         except (ImportError, AttributeError):
             pytest.skip("Registry or threading not available")
 
@@ -357,7 +373,6 @@ class TestConcurrency:
     def test_parallel_data_loading(self):
         """Data loading should support parallelism."""
         try:
-            from codex_ml.data_utils import load_data_parallel
         except (ImportError, AttributeError):
             pytest.skip("Parallel loading not available")
 
@@ -376,8 +391,6 @@ class TestIntegration:
     def test_end_to_end_data_to_model(self):
         """Should flow from data loading to model."""
         try:
-            from codex_ml.data_utils import load_data
-            from codex_ml.models.factory import create_model_factory
         except (ImportError, AttributeError):
             pytest.skip("Data or model utilities not available")
 
@@ -396,9 +409,6 @@ class TestIntegration:
     def test_tokenizer_model_compatibility(self):
         """Tokenizer output should work with model."""
         try:
-            import torch
-            import torch.nn as nn
-            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer or PyTorch not available")
 
@@ -419,10 +429,7 @@ class TestIntegration:
     def test_checkpoint_recovery_flow(self):
         """Should recover from checkpoint."""
         try:
-            from pathlib import Path
 
-            import torch
-            import torch.nn as nn
         except ImportError:
             pytest.skip("PyTorch not available")
 
@@ -446,9 +453,7 @@ class TestPerformanceCharacteristics:
 
     def test_batch_encoding_speed(self):
         """Batch encoding should be efficient."""
-        import time
         try:
-            from codex_ml.tokenization import get_tokenizer
         except (ImportError, AttributeError):
             pytest.skip("Tokenizer not available")
 
@@ -470,10 +475,7 @@ class TestPerformanceCharacteristics:
 
     def test_model_forward_speed(self):
         """Model forward pass should be efficient."""
-        import time
         try:
-            import torch
-            import torch.nn as nn
         except ImportError:
             pytest.skip("PyTorch not available")
 
@@ -496,10 +498,7 @@ class TestPerformanceCharacteristics:
     def test_memory_efficiency(self):
         """Should not leak memory."""
         try:
-            import gc
 
-            import torch
-            import torch.nn as nn
         except ImportError:
             pytest.skip("PyTorch not available")
 

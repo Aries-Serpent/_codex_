@@ -4,13 +4,21 @@ Validates that sequential compliance decisions correctly propagate session
 context, that decision chains are deterministic given identical seeds, and that
 the Bayesian EM update integrates cleanly with the chain output.
 """
-
 from __future__ import annotations
-
 import uuid
 from typing import Any
+    from cognitive_brain.integrations.compliance_integration import (
+    from cognitive_brain.quantum.config import QuantumConfig
+        import tempfile
+        from cognitive_brain.models.quantum_metrics import QuantumMetricRepository
+        from cognitive_brain.quantum.coherence_monitor import CoherenceMonitor
+        from cognitive_brain.analytics.bayesian import BayesianAssessor, CPDTable
+        from cognitive_brain.analytics.bayesian import BayesianAssessor, CPDTable
+        from cognitive_brain.analytics.bayesian import BayesianAssessor, CPDTable
+        from cognitive_brain.analytics.bayesian import BayesianAssessor, CPDTable
 
-import pytest
+
+
 
 # ---------------------------------------------------------------------------
 # Lightweight stubs — used when the real cognitive-brain stack is unavailable
@@ -54,17 +62,12 @@ class _StubCompliance:
 # ---------------------------------------------------------------------------
 
 try:
-    from cognitive_brain.integrations.compliance_integration import (
         AuditResult,
         QuantumComplianceAssessor,
     )
-    from cognitive_brain.quantum.config import QuantumConfig
 
     def _make_assessor() -> QuantumComplianceAssessor:
-        import tempfile
 
-        from cognitive_brain.models.quantum_metrics import QuantumMetricRepository
-        from cognitive_brain.quantum.coherence_monitor import CoherenceMonitor
 
         cfg = QuantumConfig()
         with tempfile.NamedTemporaryFile(suffix=".db", delete=False) as f:
@@ -199,7 +202,6 @@ class TestBayesianEMChainIntegration:
 
     def test_em_update_shifts_probabilities(self):
         """After EM update with corpus, CPD probabilities change (learning occurs)."""
-        from cognitive_brain.analytics.bayesian import BayesianAssessor, CPDTable
 
         table = CPDTable(
             node="compliance",
@@ -221,7 +223,6 @@ class TestBayesianEMChainIntegration:
 
     def test_em_update_probabilities_sum_to_one(self):
         """Post-EM distribution must still sum to 1.0 (normalisation check)."""
-        from cognitive_brain.analytics.bayesian import BayesianAssessor, CPDTable
 
         table = CPDTable(
             node="risk",
@@ -244,7 +245,6 @@ class TestBayesianEMChainIntegration:
 
     def test_em_update_empty_corpus_is_noop(self):
         """Calling update_cpds_em with an empty corpus must leave CPDs unchanged."""
-        from cognitive_brain.analytics.bayesian import BayesianAssessor, CPDTable
 
         table = CPDTable(
             node="decision",
@@ -261,7 +261,6 @@ class TestBayesianEMChainIntegration:
 
     def test_em_update_with_parent_nodes(self):
         """EM update correctly handles CPDs with parent nodes."""
-        from cognitive_brain.analytics.bayesian import BayesianAssessor, CPDTable
 
         table = CPDTable(
             node="approval",

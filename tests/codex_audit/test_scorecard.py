@@ -3,10 +3,9 @@ Test Scorecard
 
 Test module for scorecard.
 """
-
 import importlib
 
-import pytest
+
 
 
 def test_import_module():

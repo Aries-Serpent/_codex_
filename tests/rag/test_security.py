@@ -7,10 +7,10 @@ changes in one component affect another (cache + retriever).
 Phase 54: HIGH Priority Module Tests
 Coverage Target: src/rag 33% → 50%+
 """
-
 import tempfile
+        import re
 
-import pytest
+
 
 
 class TestRAGInputSanitization:
@@ -145,7 +145,6 @@ class TestRAGAccessControl:
 
     def test_sensitive_content_redaction(self):
         """Sensitive content is redacted in responses."""
-        import re
 
         def redact_pii(text):
             # Redact email addresses

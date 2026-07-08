@@ -3,12 +3,11 @@ Test Minilm Forward
 
 Test module for minilm forward.
 """
-
-import pytest
-
 torch = pytest.importorskip("torch", reason="torch not installed")
 import torch.nn.functional as F
 from codex_ml.models import MiniLM, MiniLMConfig
+
+
 
 
 def test_minilm_overfits_tiny_batch():

@@ -7,13 +7,21 @@ Tests for token management including:
 - Token expiry
 - Secret key management
 """
-
 from __future__ import annotations
+from codex.auth.token_manager import (  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+        import time as _time
+        import time as _time
+        import time as _time
+        from datetime import datetime
+        import time as _time
+        import time as _time
+        import secrets as _secrets
+        import secrets as _secrets
+        from codex.auth.token_manager import TokenManager
+
 
 # pragma: allowlist secret # pragma: allowlist secret
-import pytest
 
-from codex.auth.token_manager import (  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
     TokenManager,
     TokenType,
 )
@@ -320,7 +328,6 @@ class TestTokenExpiry:
 
     def test_token_not_expired_on_creation(self, token_manager):
         """Test token is not expired on creation."""
-        import time as _time
         token = token_manager.create_access_token("user123")
         claims = token_manager.validate_token(token)
         is_expired = claims.exp < _time.time()
@@ -328,7 +335,6 @@ class TestTokenExpiry:
 
     def test_token_expires_after_timeout(self, token_manager_custom_timeout):
         """Test token expires after timeout."""
-        import time as _time
         token = token_manager_custom_timeout.create_access_token(
             "user123", expires_in=1  # 1 second
         )
@@ -338,8 +344,6 @@ class TestTokenExpiry:
 
     def test_get_token_expiry_time(self, token_manager):
         """Test getting token expiry time via claims."""
-        import time as _time
-        from datetime import datetime
         token = token_manager.create_access_token("user123", expires_in=3600)
         claims = token_manager.validate_token(token)
         expiry = datetime.fromtimestamp(claims.exp)
@@ -349,7 +353,6 @@ class TestTokenExpiry:
 
     def test_get_time_until_expiry(self, token_manager):
         """Test getting time until expiry via claims."""
-        import time as _time
         token = token_manager.create_access_token("user123", expires_in=7200)
         claims = token_manager.validate_token(token)
         seconds = claims.exp - _time.time()
@@ -359,7 +362,6 @@ class TestTokenExpiry:
 
     def test_should_refresh_token(self, token_manager):
         """Test checking if token should be refreshed via expiry."""
-        import time as _time
         token = token_manager.create_access_token("user123", expires_in=300)
         claims = token_manager.validate_token(token)
         # Token is fresh, shouldn't need refresh yet (expiry > 60 seconds away)
@@ -382,7 +384,6 @@ class TestSecretKeyManagement:
 
     def test_token_manager_generate_secret_key(self):
         """Test generating a secret key using secrets module."""
-        import secrets as _secrets
         secret = _secrets.token_hex(32)
         assert secret is not None, "secret must be initialized"
         assert isinstance(secret, str)
@@ -390,9 +391,7 @@ class TestSecretKeyManagement:
 
     def test_token_manager_rotate_secret_key(self, token_manager):
         """Test creating new token manager with rotated key."""
-        import secrets as _secrets
 
-        from codex.auth.token_manager import TokenManager
 
         new_secret = _secrets.token_hex(32)
         new_manager = TokenManager(secret_key=new_secret)

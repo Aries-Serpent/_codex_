@@ -77,8 +77,9 @@ class TestSecurityScannerRules:
 
     def test_add_custom_rule(self):
         """Test adding custom rule."""
-        try:
+import pytest
             from src.codex.security import scanner
+        try:
 
             if hasattr(scanner, "SecurityScanner"):
                 s = scanner.SecurityScanner()

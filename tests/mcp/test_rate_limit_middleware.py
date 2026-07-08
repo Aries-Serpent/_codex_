@@ -3,18 +3,21 @@ Test Rate Limit Middleware
 
 Test module for rate limit middleware.
 """
-
-import time
-
-import pytest
-
 fastapi = pytest.importorskip("fastapi")
 pytest.importorskip("fastapi.testclient")
-
+import time
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
-
 from mcp.middleware.rate_limit_middleware import (
+    from unittest.mock import MagicMock, patch
+    from mcp.middleware.rate_limit_middleware import _RedisBackend
+    from unittest.mock import MagicMock, patch
+    from mcp.middleware.rate_limit_middleware import _RedisBackend
+
+
+
+
+
     RateLimitMiddleware,
     clear_buckets,
 )
@@ -53,9 +56,7 @@ def test_redis_backend_multi_worker_simulation():
     two processes sharing the same key space both count against the
     same limit (no double-allowance).
     """
-    from unittest.mock import MagicMock, patch
 
-    from mcp.middleware.rate_limit_middleware import _RedisBackend
 
     mock_redis_module = MagicMock()
     mock_conn = MagicMock()
@@ -77,9 +78,7 @@ def test_redis_backend_multi_worker_simulation():
 
 def test_redis_backend_fail_open_on_error():
     """Redis unavailable → backend must allow the request (fail-open)."""
-    from unittest.mock import MagicMock, patch
 
-    from mcp.middleware.rate_limit_middleware import _RedisBackend
 
     # Use only MagicMock — no real redis import needed to test fail-open behavior
     mock_redis_module = MagicMock()

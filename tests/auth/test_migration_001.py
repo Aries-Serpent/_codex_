@@ -7,12 +7,15 @@ Covers:
 - Verification step
 - Missing snapshot file → exit code 2
 """
-
 from __future__ import annotations
-
+import pytest
 import importlib.util
 import json
 from pathlib import Path
+from codex.auth.sqlite_user_repository import SQLiteUserRepository
+from codex.auth.user_store import UserStore
+
+
 
 # Load migration module (filename starts with a digit — not a valid package name)
 _MIGRATION_FILE = (
@@ -30,8 +33,6 @@ export_userstore_snapshot = _migration.export_userstore_snapshot
 import_snapshot_to_sqlite = _migration.import_snapshot_to_sqlite
 verify_migration = _migration.verify_migration
 
-from codex.auth.sqlite_user_repository import SQLiteUserRepository
-from codex.auth.user_store import UserStore
 
 
 def _populate_store(n: int = 10) -> UserStore:

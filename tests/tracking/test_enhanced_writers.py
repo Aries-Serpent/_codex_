@@ -266,6 +266,7 @@ class TestCreateMLflowTracker:
 
     def test_tracker_has_all_writers(self):
         """Test tracker has all writer types."""
+import pytest
         from codex_ml.tracking.writers import create_mlflow_tracker
 
         tracker = create_mlflow_tracker()

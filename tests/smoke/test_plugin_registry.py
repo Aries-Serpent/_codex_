@@ -3,12 +3,12 @@ Test Plugin Registry
 
 Test module for plugin registry.
 """
-
 import subprocess
 import sys
 from pathlib import Path
+        from codex_ml.plugins.registry import discover, get  # type: ignore
 
-import pytest
+
 
 pytestmark = pytest.mark.smoke
 
@@ -24,7 +24,6 @@ def test_entrypoint_discovery(tmp_path: Path):
     assert (pkg_root / "pyproject.toml").exists(), "Condition must be true"
     _pip("install", "-e", str(pkg_root))
     try:
-        from codex_ml.plugins.registry import discover, get  # type: ignore
 
         eps = discover()
         assert "dummy" in eps, f"discovered={list(eps.keys())}"

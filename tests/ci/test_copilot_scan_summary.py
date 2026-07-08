@@ -4,10 +4,9 @@ Unit tests for @copilot scan-summary command parsing and response generation.
 
 Tests the Phase 7 implementation of conversational commands for security findings.
 """
-
-import pytest
-
 from scripts.ci.copilot_security_agent_handoff import (
+
+
     SEVERITY_EMOJI,
     ScanSummaryQuery,
     generate_scan_summary_response,

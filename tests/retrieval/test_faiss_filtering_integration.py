@@ -103,6 +103,7 @@ class TestFAISSStoreFiltering:
 
     def test_filtering_preserves_score_order(self, store_with_data):
         """Test that filtering preserves similarity score ordering"""
+import pytest
         query = np.array([1.0, 0.0, 0.0], dtype=np.float32)
 
         results = store_with_data.search(query, top_k=5, filters={"category": "tech"})

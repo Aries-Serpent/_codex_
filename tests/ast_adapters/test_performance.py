@@ -11,14 +11,16 @@ Performance Targets:
 - JSON: <1s for 10000+ items
 - SQL: <1s for 100+ tables
 """
-
-import time
-
-import pytest
-
 pytest.importorskip("libcst", reason="libcst optional dependency — PythonASTAdapter unavailable")
-
+import time
 from codex.ast_adapters import (
+        import json
+        import json
+        import json
+
+
+
+
     JSONASTAdapter,
     PythonASTAdapter,
     SQLASTAdapter,
@@ -151,7 +153,6 @@ class TestJSONPerformance:
     def test_large_json_array(self):
         """Test parsing JSON with 10000+ items."""
         # Generate large JSON array (10000 items)
-        import json
 
         data = {
             "items": [
@@ -189,7 +190,6 @@ class TestJSONPerformance:
 
     def test_deeply_nested_json(self):
         """Test parsing deeply nested JSON structures."""
-        import json
 
         # Generate 50-level deep nesting
         data = {"level_0": {}}
@@ -313,7 +313,6 @@ class TestMemoryEfficiency:
 
     def test_json_memory_efficient(self):
         """Verify JSON adapter doesn't leak memory."""
-        import json
 
         adapter = JSONASTAdapter()
 

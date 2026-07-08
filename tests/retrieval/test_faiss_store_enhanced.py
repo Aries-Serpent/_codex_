@@ -1,15 +1,14 @@
 """
 Comprehensive tests for FAISS Vector Store with safeguards
 """
-
-import tempfile
-
-import pytest
-
 np = pytest.importorskip("numpy")
-
 pytest.importorskip("faiss", reason="faiss-cpu not installed (pip install faiss-cpu)")
+import tempfile
 from codex.retrieval.stores.faiss_store import MAX_VECTORS, FAISSStore
+
+
+
+
 
 
 @pytest.fixture

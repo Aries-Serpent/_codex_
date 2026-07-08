@@ -12,12 +12,11 @@ Covers:
 - GracefulDegradation suppresses only specified exception types
 - Multiple failures return consistent fallback
 """
-
 from __future__ import annotations
-
-import pytest
-
 from codex.resilience import DegradationError, GracefulDegradation
+
+
+
 
 # ---------------------------------------------------------------------------
 # Helpers

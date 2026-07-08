@@ -3,16 +3,15 @@ Test Tracking Guard Matrix
 
 Test module for tracking guard matrix.
 """
-
 import importlib
 import os
+        import sys
 
-import pytest
+
 
 
 def _reload():
     if "codex_ml.monitoring.codex_logging" in list(globals()):
-        import sys
 
         sys.modules.pop("codex_ml.monitoring.codex_logging", None)
     return importlib.import_module("codex_ml.monitoring.codex_logging")

@@ -1,12 +1,12 @@
 """Tests for scripts/ci/check_workflow_yaml.py — Gap 35 CI health fix."""
-
 from __future__ import annotations
-
 import sys
 from pathlib import Path
 from unittest.mock import MagicMock, patch
+import check_workflow_yaml as cwv  # noqa: E402
 
-import pytest
+
+
 
 # ---------------------------------------------------------------------------
 # Path setup
@@ -15,7 +15,6 @@ _SCRIPTS_CI = str(Path(__file__).resolve().parent.parent.parent / "scripts" / "c
 if _SCRIPTS_CI not in sys.path:
     sys.path.insert(0, _SCRIPTS_CI)
 
-import check_workflow_yaml as cwv  # noqa: E402
 
 # ---------------------------------------------------------------------------
 # validate_syntax tests

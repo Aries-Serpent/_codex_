@@ -4,12 +4,13 @@ Test Cognitive Adapter Module
 Tests for the cognitive adapter that helps legacy agents transition
 to the new cognitive architecture.
 """
-
 from __future__ import annotations
-
+import pytest
 from datetime import UTC, datetime
 from typing import Any, Optional
 from unittest.mock import MagicMock, patch
+
+
 
 # We need to mock the cognitive_brain imports since they require specific setup
 with patch.dict(

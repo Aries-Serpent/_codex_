@@ -6,12 +6,12 @@ Tests for managing MCP client-server sessions.
 Phase 56: Integration Tests
 Coverage Target: src/mcp 32% → 45%+
 """
-
 from dataclasses import dataclass
 from enum import Enum, auto
 from typing import Any, Optional
+        import time
 
-import pytest
+
 
 
 class SessionState(Enum):
@@ -198,7 +198,6 @@ class TestSessionTimeout:
 
     def test_session_idle_timeout(self):
         """Sessions timeout after idle period."""
-        import time
 
         class SessionTimeout:
             def __init__(self, timeout_seconds):

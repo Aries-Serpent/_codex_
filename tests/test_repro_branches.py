@@ -3,14 +3,13 @@ Test Repro Branches
 
 Test module for repro branches.
 """
-
 from __future__ import annotations
-
-import pytest
-
+torch = pytest.importorskip("torch")
 from codex_ml.utils.repro import set_reproducible
 
-torch = pytest.importorskip("torch")
+
+
+
 
 if not hasattr(torch, "use_deterministic_algorithms"):
     pytest.skip("torch missing determinism helpers", allow_module_level=True)

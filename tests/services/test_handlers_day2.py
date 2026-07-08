@@ -1,4 +1,5 @@
 """Day 2: services - Handler tests"""
+import pytest
 
 
 class TestServiceHandlers:

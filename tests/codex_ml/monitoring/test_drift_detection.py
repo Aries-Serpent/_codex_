@@ -3,10 +3,9 @@ Test Drift Detection
 
 Test module for drift detection.
 """
-
 import importlib
 
-import pytest
+
 
 
 def test_import_module():

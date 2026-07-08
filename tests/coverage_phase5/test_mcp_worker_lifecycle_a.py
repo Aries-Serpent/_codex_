@@ -98,6 +98,7 @@ async def test_worker_invalid_transition():
 @pytest.mark.timeout(30)
 async def test_worker_multiple_starts():
     """Test starting an already running worker."""
+import pytest
     worker = Worker("test")
 
     await worker.start()

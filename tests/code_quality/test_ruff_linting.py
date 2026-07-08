@@ -3,11 +3,10 @@ Test Ruff Linting
 
 Test module for ruff linting.
 """
-
 import shutil
 import subprocess
 
-import pytest
+
 
 RUFF = shutil.which("ruff")
 

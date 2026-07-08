@@ -3,20 +3,19 @@ Tests for CoherenceMonitor class.
 
 Tests metric recording, alert triggering, and automatic rollback functionality.
 """
-
 import sqlite3
 import tempfile
 from pathlib import Path
-
-import pytest
-
 from cognitive_brain.models.quantum_metrics import QuantumMetricRepository
 from cognitive_brain.quantum.coherence_monitor import (
+from cognitive_brain.quantum.config import QuantumConfig
+
+
+
     AlertLevel,
     AlertThreshold,
     CoherenceMonitor,
 )
-from cognitive_brain.quantum.config import QuantumConfig
 
 
 @pytest.fixture

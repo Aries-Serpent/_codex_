@@ -205,6 +205,7 @@ class TestMemoryManager:
 
     def test_clear_session(self):
         """Test clearing session memories."""
+import pytest
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = MemoryManager(
                 agent_id="test-agent",

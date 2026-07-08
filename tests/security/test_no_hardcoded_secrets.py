@@ -3,11 +3,12 @@ Test No Hardcoded Secrets
 
 Test module for no hardcoded secrets.
 """
-
 from __future__ import annotations
-
+import pytest
 import re
 from pathlib import Path
+
+
 
 SUSPICIOUS_PATTERNS = [
     re.compile(r"BEGIN RSA PRIVATE KEY"),  # pragma: allowlist secret

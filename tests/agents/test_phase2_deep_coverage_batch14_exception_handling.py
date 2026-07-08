@@ -7,13 +7,38 @@ validation failures, and edge cases that trigger exceptions.
 Author: Copilot AI Agent
 Version: 1.0.0
 """
-
-import pytest
-
 pytest.importorskip("numpy", reason="numpy not installed")
-pytest.importorskip("numpy")
-
 import numpy as np
+        from agents.physics_orchestrator import HamiltonianEvolver
+        from agents.physics_orchestrator import SwarmIntelligence
+        from agents.physics_orchestrator import EnergyState
+        from agents.physics_orchestrator import DecisionState
+        from agents.agent_memory import AgentMemory
+        from agents.agent_memory import AgentMemory
+        from agents.agent_memory import AgentMemory
+        from agents.agent_memory import AgentMemory
+        from agents.mental_mapping import EdgeType, MentalMappingModel
+        from agents.mental_mapping import MentalMappingModel, NodeType
+        from agents.mental_mapping import MentalMappingModel
+        from agents.mental_mapping import EdgeType, MentalMappingModel, NodeType
+        from agents.quantum_game_theory import StrategyState
+        from agents.quantum_game_theory import PayoffOperator
+        from agents.quantum_game_theory import QuantumGameState, StrategyState
+        from agents.self_healing import DetectedIssue, IssueSeverity, IssueType
+        from agents.self_healing import RemediationAction
+        from agents.self_healing import DiagnosticResult
+        from agents.workflow_navigator import WorkflowNavigator
+        from agents.workflow_navigator import WorkflowNavigator, WorkflowStep
+        from agents.workflow_navigator import WorkflowNavigator, WorkflowStep
+        from agents.workflow_navigator import WorkflowNavigator, WorkflowStep
+        from agents.physics_integration import PhysicsIntegration
+        from agents.physics_integration import PhysicsIntegration
+        from agents.physics_orchestrator import ForceVector
+        from agents.advanced_physics_calculators import FluidChannel
+        from agents.physics_orchestrator import EnergyLandscape
+
+
+
 
 
 class TestExceptionHandling_PhysicsOrchestrator:
@@ -21,7 +46,6 @@ class TestExceptionHandling_PhysicsOrchestrator:
 
     def test_hamiltonian_evolver_invalid_grid_size(self):
         """Test HamiltonianEvolver with invalid grid sizes"""
-        from agents.physics_orchestrator import HamiltonianEvolver
 
         # Valid cases
         evolver = HamiltonianEvolver(grid_size=4)
@@ -32,7 +56,6 @@ class TestExceptionHandling_PhysicsOrchestrator:
 
     def test_swarm_intelligence_edge_cases(self):
         """Test SwarmIntelligence edge cases"""
-        from agents.physics_orchestrator import SwarmIntelligence
 
         # Zero particles edge case
         swarm = SwarmIntelligence(num_particles=0)
@@ -44,7 +67,6 @@ class TestExceptionHandling_PhysicsOrchestrator:
 
     def test_energy_state_negative_values(self):
         """Test EnergyState with negative energy/entropy"""
-        from agents.physics_orchestrator import EnergyState
 
         # Negative energy (allowed in some physics contexts)
         state = EnergyState(configuration={}, energy=-10.0, entropy=0.5)
@@ -56,7 +78,6 @@ class TestExceptionHandling_PhysicsOrchestrator:
 
     def test_decision_state_none_positions(self):
         """Test DecisionState with None positions"""
-        from agents.physics_orchestrator import DecisionState
 
         # None current position
         state = DecisionState(current_position=None, goal_position="goal")
@@ -72,7 +93,6 @@ class TestExceptionHandling_AgentMemory:
 
     def test_store_memory_with_special_characters(self):
         """Test storing memory with special characters"""
-        from agents.agent_memory import AgentMemory
 
         memory = AgentMemory()
 
@@ -86,7 +106,6 @@ class TestExceptionHandling_AgentMemory:
 
     def test_store_memory_with_large_content(self):
         """Test storing very large content"""
-        from agents.agent_memory import AgentMemory
 
         memory = AgentMemory()
 
@@ -98,7 +117,6 @@ class TestExceptionHandling_AgentMemory:
 
     def test_search_with_special_regex_chars(self):
         """Test search with regex special characters"""
-        from agents.agent_memory import AgentMemory
 
         memory = AgentMemory()
 
@@ -109,7 +127,6 @@ class TestExceptionHandling_AgentMemory:
 
     def test_filter_with_empty_criteria(self):
         """Test filter with empty criteria dict"""
-        from agents.agent_memory import AgentMemory
 
         memory = AgentMemory()
         results = memory.filter(criteria={})
@@ -121,7 +138,6 @@ class TestExceptionHandling_MentalMapping:
 
     def test_connect_nonexistent_nodes(self):
         """Test connecting nodes that don't exist"""
-        from agents.mental_mapping import EdgeType, MentalMappingModel
 
         model = MentalMappingModel()
 
@@ -136,7 +152,6 @@ class TestExceptionHandling_MentalMapping:
 
     def test_create_node_with_invalid_properties(self):
         """Test create_node with various property types"""
-        from agents.mental_mapping import MentalMappingModel, NodeType
 
         model = MentalMappingModel()
 
@@ -150,7 +165,6 @@ class TestExceptionHandling_MentalMapping:
 
     def test_shortest_path_nonexistent_nodes(self):
         """Test shortest_path with nodes that don't exist"""
-        from agents.mental_mapping import MentalMappingModel
 
         model = MentalMappingModel()
 
@@ -160,7 +174,6 @@ class TestExceptionHandling_MentalMapping:
 
     def test_bfs_from_disconnected_component(self):
         """Test BFS from disconnected graph component"""
-        from agents.mental_mapping import EdgeType, MentalMappingModel, NodeType
 
         model = MentalMappingModel()
 
@@ -189,7 +202,6 @@ class TestExceptionHandling_QuantumGame:
 
     def test_strategy_state_invalid_team(self):
         """Test StrategyState with various team types"""
-        from agents.quantum_game_theory import StrategyState
 
         # String team
         state = StrategyState("custom_team", np.array([0.5, 0.5]))
@@ -201,7 +213,6 @@ class TestExceptionHandling_QuantumGame:
 
     def test_payoff_operator_empty_matrix(self):
         """Test PayoffOperator with edge case matrices"""
-        from agents.quantum_game_theory import PayoffOperator
 
         # 1x1 matrix
         matrix = np.array([[1.0]])
@@ -210,7 +221,6 @@ class TestExceptionHandling_QuantumGame:
 
     def test_quantum_game_state_zero_entanglement(self):
         """Test QuantumGameState with zero entanglement"""
-        from agents.quantum_game_theory import QuantumGameState, StrategyState
 
         blue = StrategyState("blue", np.array([0.5, 0.5]))
         red = StrategyState("red", np.array([0.5, 0.5]))
@@ -225,7 +235,6 @@ class TestExceptionHandling_SelfHealing:
 
     def test_detected_issue_minimal_fields(self):
         """Test DetectedIssue with minimal required fields"""
-        from agents.self_healing import DetectedIssue, IssueSeverity, IssueType
 
         # Minimal fields - should auto-generate missing ones
         issue = DetectedIssue(
@@ -238,7 +247,6 @@ class TestExceptionHandling_SelfHealing:
 
     def test_remediation_action_minimal_fields(self):
         """Test RemediationAction with minimal fields"""
-        from agents.self_healing import RemediationAction
 
         # Minimal fields
         action = RemediationAction(action_type="fix", description="Fix the issue")
@@ -247,7 +255,6 @@ class TestExceptionHandling_SelfHealing:
 
     def test_diagnostic_result_empty(self):
         """Test DiagnosticResult with no issues"""
-        from agents.self_healing import DiagnosticResult
 
         # Empty diagnostic
         result = DiagnosticResult()
@@ -261,7 +268,6 @@ class TestExceptionHandling_WorkflowNavigator:
 
     def test_navigate_without_workflow(self):
         """Test navigation with no current workflow"""
-        from agents.workflow_navigator import WorkflowNavigator
 
         navigator = WorkflowNavigator()
 
@@ -274,7 +280,6 @@ class TestExceptionHandling_WorkflowNavigator:
 
     def test_navigate_to_invalid_index(self):
         """Test navigation to out-of-bounds index"""
-        from agents.workflow_navigator import WorkflowNavigator, WorkflowStep
 
         navigator = WorkflowNavigator()
 
@@ -299,7 +304,6 @@ class TestExceptionHandling_WorkflowNavigator:
 
     def test_next_step_at_end(self):
         """Test next_step when at end of workflow"""
-        from agents.workflow_navigator import WorkflowNavigator, WorkflowStep
 
         navigator = WorkflowNavigator()
 
@@ -317,7 +321,6 @@ class TestExceptionHandling_WorkflowNavigator:
 
     def test_previous_step_at_beginning(self):
         """Test previous_step when at beginning"""
-        from agents.workflow_navigator import WorkflowNavigator, WorkflowStep
 
         navigator = WorkflowNavigator()
 
@@ -339,7 +342,6 @@ class TestExceptionHandling_PhysicsIntegration:
 
     def test_physics_integration_no_orchestrators(self):
         """Test PhysicsIntegration with no orchestrators configured"""
-        from agents.physics_integration import PhysicsIntegration
 
         integration = PhysicsIntegration()
         # Should initialize without errors
@@ -347,7 +349,6 @@ class TestExceptionHandling_PhysicsIntegration:
 
     def test_transfer_data_none_values(self):
         """Test data transfer with None values"""
-        from agents.physics_integration import PhysicsIntegration
 
         integration = PhysicsIntegration()
 
@@ -363,14 +364,12 @@ class TestValidationFailures_AllModules:
 
     def test_force_vector_zero_magnitude(self):
         """Test ForceVector with zero magnitude"""
-        from agents.physics_orchestrator import ForceVector
 
         force = ForceVector("zero_force", magnitude=0.0, direction=[0, 0, 0])
         assert force.magnitude == 0.0, "magnitude is not valid"
 
     def test_fluid_channel_invalid_name(self):
         """Test FluidChannel with various name values"""
-        from agents.advanced_physics_calculators import FluidChannel
 
         # Empty name
         channel = FluidChannel(name="", cross_section=1.0, length=10.0)
@@ -383,7 +382,6 @@ class TestValidationFailures_AllModules:
 
     def test_energy_landscape_extreme_temperature(self):
         """Test EnergyLandscape with extreme temperatures"""
-        from agents.physics_orchestrator import EnergyLandscape
 
         # Very high temperature
         landscape = EnergyLandscape(temperature=10000.0)

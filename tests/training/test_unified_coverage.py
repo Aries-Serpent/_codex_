@@ -8,16 +8,57 @@ Phase: 14.1 - Core Module Testing
 Created: 2026-01-18
 AI Agency Policy Compliance: ✅
 """
-
 from __future__ import annotations
-
 import tempfile
 from dataclasses import asdict
 from pathlib import Path
 from typing import TYPE_CHECKING
 from unittest.mock import MagicMock
+        from codex_ml.training.unified_training import UnifiedTrainingConfig
+            from codex_ml.training import unified_training
+            from codex_ml.training.unified_training import UnifiedTrainingConfig
+            from codex_ml.training.unified_training import run_unified_training
+            from codex_ml.training.unified_training import UnifiedTrainingConfig
+            from codex_ml.training.unified_training import UnifiedTrainingConfig
+            from codex_ml.training.unified_training import UnifiedTrainingConfig
+            from codex_ml.training.unified_training import UnifiedTrainingConfig
+            from codex_ml.training.unified_training import ContinualPhase
+            from codex_ml.training.unified_training import ContinualPhase
+            from codex_ml.training.unified_training import ContinualPhase
+            from codex_ml.training.unified_training import ContinualPhase
+            from codex_ml.training.unified_training import ContinualPhase
+            from codex_ml.training.unified_training import _to_plain_container
+            from codex_ml.training.unified_training import _to_plain_container
+            from codex_ml.training.unified_training import _to_plain_container
+            from codex_ml.training.unified_training import _materialise_mapping
+            from codex_ml.training.unified_training import _materialise_mapping
+            from codex_ml.training.unified_training import _materialise_mapping
+            from codex_ml.training.strategies import resolve_strategy
+            from codex_ml.training.strategies import resolve_strategy
+            from codex_ml.training.device_strategy import DeviceConfig
+            from codex_ml.training.device_strategy import DeviceMapper
+            from codex_ml.training.rng_checkpoint import RNGState
+            from codex_ml.utils.checkpoint_core import CheckpointMeta
+            from codex_ml.utils.checkpoint_core import save_checkpoint
+            from codex_ml.utils.checkpoint_core import load_checkpoint
+            from codex_ml.logging.mlflow_guard import (
+            from codex_ml.logging.mlflow_guard import init_mlflow_safe
+            from codex_ml.training.strategies import TrainingCallback
+            from codex_ml.training.strategies import TrainingResult
+            from codex_ml.utils.repro import set_seed
+            from codex_ml.utils.repro import capture_environment
+            import random
+            from codex_ml.utils.repro import set_seed
+            from codex_ml.training.unified_training import UnifiedTrainingConfig
+            from codex_ml.training.unified_training import UnifiedTrainingConfig
+            from codex_ml.training.unified_training import UnifiedTrainingConfig
+            from codex_ml.training.unified_training import UnifiedTrainingConfig
+            from codex_ml.training.unified_training import UnifiedTrainingConfig
+            from codex_ml.training.unified_training import UnifiedTrainingConfig
+            from codex_ml.training.unified_training import UnifiedTrainingConfig
 
-import pytest
+
+
 
 if TYPE_CHECKING:
     pass
@@ -63,7 +104,6 @@ def mock_torch():
 def sample_training_config():
     """Create a sample UnifiedTrainingConfig for testing."""
     try:
-        from codex_ml.training.unified_training import UnifiedTrainingConfig
 
         return UnifiedTrainingConfig(
             model_name="test-model",
@@ -89,7 +129,6 @@ class TestModuleImport:
     def test_unified_training_module_importable(self) -> None:
         """Verify unified_training module can be imported."""
         try:
-            from codex_ml.training import unified_training
 
             assert unified_training is not None, "unified_training must be initialized"
         except ImportError as e:
@@ -98,7 +137,6 @@ class TestModuleImport:
     def test_unified_training_config_importable(self) -> None:
         """Verify UnifiedTrainingConfig can be imported."""
         try:
-            from codex_ml.training.unified_training import UnifiedTrainingConfig
 
             assert UnifiedTrainingConfig is not None, "UnifiedTrainingConfig must be initialized"
         except ImportError:
@@ -107,7 +145,6 @@ class TestModuleImport:
     def test_run_unified_training_importable(self) -> None:
         """Verify run_unified_training can be imported."""
         try:
-            from codex_ml.training.unified_training import run_unified_training
 
             assert callable(run_unified_training), "Condition must be true"
         except ImportError:
@@ -125,7 +162,6 @@ class TestUnifiedTrainingConfig:
     def test_config_creation_with_defaults(self) -> None:
         """Test creating config with default values."""
         try:
-            from codex_ml.training.unified_training import UnifiedTrainingConfig
 
             config = UnifiedTrainingConfig(model_name="test")
             assert config.model_name == "test", "model_name is not valid"
@@ -136,7 +172,6 @@ class TestUnifiedTrainingConfig:
     def test_config_creation_with_custom_values(self) -> None:
         """Test creating config with custom values."""
         try:
-            from codex_ml.training.unified_training import UnifiedTrainingConfig
 
             config = UnifiedTrainingConfig(
                 model_name="custom-model",
@@ -164,7 +199,6 @@ class TestUnifiedTrainingConfig:
     def test_config_accepts_various_epochs(self, epochs: int) -> None:
         """Test config accepts various epoch values."""
         try:
-            from codex_ml.training.unified_training import UnifiedTrainingConfig
 
             config = UnifiedTrainingConfig(model_name="test", epochs=epochs)
             assert config.epochs == epochs, "epochs is not valid"
@@ -175,7 +209,6 @@ class TestUnifiedTrainingConfig:
     def test_config_accepts_various_batch_sizes(self, batch_size: int) -> None:
         """Test config accepts various batch sizes."""
         try:
-            from codex_ml.training.unified_training import UnifiedTrainingConfig
 
             config = UnifiedTrainingConfig(model_name="test", batch_size=batch_size)
             assert config.batch_size == batch_size, "batch_size is not valid"
@@ -194,7 +227,6 @@ class TestContinualPhase:
     def test_continual_phase_creation(self) -> None:
         """Test creating a ContinualPhase instance."""
         try:
-            from codex_ml.training.unified_training import ContinualPhase
 
             phase = ContinualPhase(name="phase1", epochs=2)
             assert phase.name == "phase1", "name is not valid"
@@ -205,7 +237,6 @@ class TestContinualPhase:
     def test_continual_phase_with_dataset(self) -> None:
         """Test ContinualPhase with dataset config."""
         try:
-            from codex_ml.training.unified_training import ContinualPhase
 
             phase = ContinualPhase(
                 name="phase1",
@@ -219,7 +250,6 @@ class TestContinualPhase:
     def test_continual_phase_replay_ratio_validation(self) -> None:
         """Test ContinualPhase replay_ratio validation."""
         try:
-            from codex_ml.training.unified_training import ContinualPhase
 
             # Valid ratio
             phase = ContinualPhase(name="test", replay_ratio=0.5)
@@ -235,7 +265,6 @@ class TestContinualPhase:
     def test_continual_phase_invalid_replay_ratio(self) -> None:
         """Test ContinualPhase rejects invalid replay_ratio."""
         try:
-            from codex_ml.training.unified_training import ContinualPhase
 
             with pytest.raises(ValueError):
                 ContinualPhase(name="test", replay_ratio=1.5)
@@ -247,7 +276,6 @@ class TestContinualPhase:
     def test_continual_phase_invalid_epochs(self) -> None:
         """Test ContinualPhase rejects invalid epochs."""
         try:
-            from codex_ml.training.unified_training import ContinualPhase
 
             with pytest.raises(ValueError):
                 ContinualPhase(name="test", epochs=0)
@@ -268,7 +296,6 @@ class TestHelperFunctions:
     def test_to_plain_container_dict(self) -> None:
         """Test _to_plain_container with dict input."""
         try:
-            from codex_ml.training.unified_training import _to_plain_container
 
             result = _to_plain_container({"a": 1, "b": {"c": 2}})
             assert result == {"a": 1, "b": {"c": 2}}
@@ -278,7 +305,6 @@ class TestHelperFunctions:
     def test_to_plain_container_list(self) -> None:
         """Test _to_plain_container with list input."""
         try:
-            from codex_ml.training.unified_training import _to_plain_container
 
             result = _to_plain_container([1, 2, {"a": 3}])
             assert result == [1, 2, {"a": 3}]
@@ -288,7 +314,6 @@ class TestHelperFunctions:
     def test_to_plain_container_primitive(self) -> None:
         """Test _to_plain_container with primitive types."""
         try:
-            from codex_ml.training.unified_training import _to_plain_container
 
             assert _to_plain_container(42) == 42, "Condition must be true"
             assert _to_plain_container("test") == "test", "Condition must be true"
@@ -300,7 +325,6 @@ class TestHelperFunctions:
     def test_materialise_mapping_none(self) -> None:
         """Test _materialise_mapping with None input."""
         try:
-            from codex_ml.training.unified_training import _materialise_mapping
 
             result = _materialise_mapping(None)
             assert result == {}, "Result must not be empty"
@@ -310,7 +334,6 @@ class TestHelperFunctions:
     def test_materialise_mapping_dict(self) -> None:
         """Test _materialise_mapping with dict input."""
         try:
-            from codex_ml.training.unified_training import _materialise_mapping
 
             result = _materialise_mapping({"key": "value"})
             assert result == {"key": "value"}, "Result must not be empty"
@@ -320,7 +343,6 @@ class TestHelperFunctions:
     def test_materialise_mapping_invalid_type(self) -> None:
         """Test _materialise_mapping with invalid type."""
         try:
-            from codex_ml.training.unified_training import _materialise_mapping
 
             with pytest.raises(TypeError):
                 _materialise_mapping("not a mapping")
@@ -339,7 +361,6 @@ class TestStrategyResolution:
     def test_resolve_strategy_importable(self) -> None:
         """Verify resolve_strategy can be imported."""
         try:
-            from codex_ml.training.strategies import resolve_strategy
 
             assert callable(resolve_strategy), "Condition must be true"
         except ImportError:
@@ -349,7 +370,6 @@ class TestStrategyResolution:
     def test_resolve_strategy_valid_backends(self, backend: str) -> None:
         """Test resolve_strategy with valid backend names."""
         try:
-            from codex_ml.training.strategies import resolve_strategy
 
             strategy = resolve_strategy(backend)
             assert strategy is not None, "strategy must be initialized"
@@ -371,7 +391,6 @@ class TestDeviceConfiguration:
     def test_device_config_importable(self) -> None:
         """Verify DeviceConfig can be imported."""
         try:
-            from codex_ml.training.device_strategy import DeviceConfig
 
             assert DeviceConfig is not None, "DeviceConfig must be initialized"
         except ImportError:
@@ -380,7 +399,6 @@ class TestDeviceConfiguration:
     def test_device_mapper_importable(self) -> None:
         """Verify DeviceMapper can be imported."""
         try:
-            from codex_ml.training.device_strategy import DeviceMapper
 
             assert DeviceMapper is not None, "DeviceMapper must be initialized"
         except ImportError:
@@ -398,7 +416,6 @@ class TestRNGStateManagement:
     def test_rng_state_importable(self) -> None:
         """Verify RNGState can be imported."""
         try:
-            from codex_ml.training.rng_checkpoint import RNGState
 
             assert RNGState is not None, "RNGState must be initialized"
         except ImportError:
@@ -416,7 +433,6 @@ class TestCheckpointIntegration:
     def test_checkpoint_meta_importable(self) -> None:
         """Verify CheckpointMeta can be imported."""
         try:
-            from codex_ml.utils.checkpoint_core import CheckpointMeta
 
             assert CheckpointMeta is not None, "CheckpointMeta must be initialized"
         except ImportError:
@@ -425,7 +441,6 @@ class TestCheckpointIntegration:
     def test_save_checkpoint_importable(self) -> None:
         """Verify save_checkpoint can be imported."""
         try:
-            from codex_ml.utils.checkpoint_core import save_checkpoint
 
             assert callable(save_checkpoint), "Condition must be true"
         except ImportError:
@@ -434,7 +449,6 @@ class TestCheckpointIntegration:
     def test_load_checkpoint_importable(self) -> None:
         """Verify load_checkpoint can be imported."""
         try:
-            from codex_ml.utils.checkpoint_core import load_checkpoint
 
             assert callable(load_checkpoint), "Condition must be true"
         except ImportError:
@@ -452,7 +466,6 @@ class TestMLflowIntegration:
     def test_mlflow_guard_importable(self) -> None:
         """Verify MLflow guard functions are importable."""
         try:
-            from codex_ml.logging.mlflow_guard import (
                 init_mlflow_safe,
                 log_metric_safe,
                 log_params_safe,
@@ -467,7 +480,6 @@ class TestMLflowIntegration:
     def test_init_mlflow_safe_graceful_failure(self) -> None:
         """Test init_mlflow_safe handles missing MLflow gracefully."""
         try:
-            from codex_ml.logging.mlflow_guard import init_mlflow_safe
 
             # Should not raise even without MLflow
             init_mlflow_safe(experiment_name="test")
@@ -488,7 +500,6 @@ class TestTrainingCallbacks:
     def test_training_callback_importable(self) -> None:
         """Verify TrainingCallback can be imported."""
         try:
-            from codex_ml.training.strategies import TrainingCallback
 
             assert TrainingCallback is not None, "TrainingCallback must be initialized"
         except ImportError:
@@ -497,7 +508,6 @@ class TestTrainingCallbacks:
     def test_training_result_importable(self) -> None:
         """Verify TrainingResult can be imported."""
         try:
-            from codex_ml.training.strategies import TrainingResult
 
             assert TrainingResult is not None, "TrainingResult must be initialized"
         except ImportError:
@@ -515,7 +525,6 @@ class TestReproducibility:
     def test_set_seed_importable(self) -> None:
         """Verify set_seed can be imported."""
         try:
-            from codex_ml.utils.repro import set_seed
 
             assert callable(set_seed), "Condition must be true"
         except ImportError:
@@ -524,7 +533,6 @@ class TestReproducibility:
     def test_capture_environment_importable(self) -> None:
         """Verify capture_environment can be imported."""
         try:
-            from codex_ml.utils.repro import capture_environment
 
             assert callable(capture_environment), "Condition must be true"
         except ImportError:
@@ -533,9 +541,7 @@ class TestReproducibility:
     def test_set_seed_deterministic(self) -> None:
         """Test that set_seed produces deterministic results."""
         try:
-            import random
 
-            from codex_ml.utils.repro import set_seed
 
             set_seed(42)
             val1 = random.random()
@@ -557,7 +563,6 @@ class TestErrorHandling:
     def test_config_validation_empty_model_name(self) -> None:
         """Test config validation with empty model name."""
         try:
-            from codex_ml.training.unified_training import UnifiedTrainingConfig
 
             # Empty model name may be accepted or rejected
             config = UnifiedTrainingConfig(model_name="")
@@ -568,7 +573,6 @@ class TestErrorHandling:
     def test_config_validation_negative_batch_size(self) -> None:
         """Test config rejects negative batch size."""
         try:
-            from codex_ml.training.unified_training import UnifiedTrainingConfig
 
             # Negative batch size should be rejected
             with pytest.raises((ValueError, TypeError)):
@@ -588,7 +592,6 @@ class TestOutputDirectoryHandling:
     def test_config_output_dir_path(self, temp_output_dir: Path) -> None:
         """Test config accepts Path-like output directory."""
         try:
-            from codex_ml.training.unified_training import UnifiedTrainingConfig
 
             config = UnifiedTrainingConfig(
                 model_name="test",
@@ -610,7 +613,6 @@ class TestBackendSelection:
     def test_config_accepts_functional_backend(self) -> None:
         """Test config accepts functional backend."""
         try:
-            from codex_ml.training.unified_training import UnifiedTrainingConfig
 
             config = UnifiedTrainingConfig(
                 model_name="test",
@@ -623,7 +625,6 @@ class TestBackendSelection:
     def test_config_accepts_legacy_backend(self) -> None:
         """Test config accepts legacy backend."""
         try:
-            from codex_ml.training.unified_training import UnifiedTrainingConfig
 
             config = UnifiedTrainingConfig(
                 model_name="test",
@@ -646,7 +647,6 @@ class TestGradientClipping:
     def test_config_accepts_grad_clip_norm(self, grad_clip_norm: float | None) -> None:
         """Test config accepts various gradient clipping values."""
         try:
-            from codex_ml.training.unified_training import UnifiedTrainingConfig
 
             config = UnifiedTrainingConfig(
                 model_name="test",
@@ -669,7 +669,6 @@ class TestDataTypeConfiguration:
     def test_config_accepts_dtype(self, dtype: str) -> None:
         """Test config accepts various dtype values."""
         try:
-            from codex_ml.training.unified_training import UnifiedTrainingConfig
 
             config = UnifiedTrainingConfig(
                 model_name="test",

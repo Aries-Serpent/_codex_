@@ -318,6 +318,7 @@ def test_pooled_connection_multithread_reads(monkeypatch, tmp_path):
 
 def test_session_logger_dedupe_wal(monkeypatch, tmp_path):
     """Ensure session_logger avoids redundant WAL PRAGMA invocations."""
+import pytest
 
     monkeypatch.setenv("CODEX_SQLITE_POOL", "0")
     monkeypatch.delenv("CODEX_DB_POOL", raising=False)

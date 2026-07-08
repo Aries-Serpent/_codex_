@@ -10,18 +10,18 @@ Test Coverage Goals:
   - Error handling (25%): Invalid language, malformed files
   - Edge cases (15%): Empty files, unicode, multiple languages
 """
-
 from __future__ import annotations
-
 import argparse
 import json
 from pathlib import Path
+    from codex.cli import ast_cli
+            from codex.ast_adapters import PythonASTAdapter
 
-import pytest
+
+
 
 # Import the module to test
 try:
-    from codex.cli import ast_cli
 except ImportError:
     pytest.skip("ast_cli module not importable", allow_module_level=True)
 
@@ -425,7 +425,6 @@ class TestModuleStructure:
         """Test AST adapters are imported."""
         # Should import adapters for multiple languages
         try:
-            from codex.ast_adapters import PythonASTAdapter
             assert PythonASTAdapter is not None, "PythonASTAdapter must be initialized"
         except ImportError:
             pytest.skip("ast_adapters module not available")

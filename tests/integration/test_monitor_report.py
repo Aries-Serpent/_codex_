@@ -3,13 +3,13 @@ Test Monitor Report
 
 Test module for monitor report.
 """
-
 from __future__ import annotations
-
+    serve_report = pytest.importorskip("hhg_logistics.monitor.serve_report")
 import csv
 from pathlib import Path
 
-import pytest
+
+
 
 
 def _write_csv(path: Path) -> None:
@@ -33,7 +33,6 @@ def _write_csv(path: Path) -> None:
 
 
 def test_build_report(tmp_path: Path) -> None:
-    serve_report = pytest.importorskip("hhg_logistics.monitor.serve_report")
 
     reference = tmp_path / "ref.csv"
     current = tmp_path / "cur.csv"

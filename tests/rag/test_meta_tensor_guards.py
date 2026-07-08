@@ -9,12 +9,12 @@ Tests for all guard rail components:
 
 This module is part of Phase 13.2: RAG Meta-Tensor Safety
 """
-
 from datetime import UTC, datetime
-
-import pytest
-
 from codex.rag.materialization_prevention import (
+from codex.rag.meta_tensor_guard import (
+
+
+
     MaterializationEvent,
     MaterializationMonitor,
     MaterializationPreventionFramework,
@@ -23,7 +23,6 @@ from codex.rag.materialization_prevention import (
     TensorLocation,
     prevent_meta_tensor_materialization,
 )
-from codex.rag.meta_tensor_guard import (
     GuardRailReport,
     GuardRailStatus,
     MetaTensorException,

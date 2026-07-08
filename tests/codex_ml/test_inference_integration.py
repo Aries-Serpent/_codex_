@@ -2,17 +2,17 @@
 Integration Tests for Inference Serving
 Tests FastAPI endpoints with TestClient
 """
-
-import time
-
-import pytest
-
 pytest.importorskip("fastapi")
+import time
 from fastapi.testclient import TestClient
+    from src.codex_ml.serving.inference_server import (
+        import concurrent.futures
+
+
+
 
 # Try to import FastAPI components
 try:
-    from src.codex_ml.serving.inference_server import (
         ModelServer,
         RateLimiter,
         create_app,
@@ -106,7 +106,6 @@ class TestInferenceServerIntegration:
 
     def test_concurrent_requests(self, client):
         """Test handling multiple concurrent requests"""
-        import concurrent.futures
 
         def make_request():
             response = client.post("/predict", json={"inputs": ["test"]})

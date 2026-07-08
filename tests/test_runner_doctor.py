@@ -3,6 +3,8 @@ Test Runner Doctor
 
 Test module for runner doctor.
 """
+import pytest
+    import tools.runner_doctor as rd  # type: ignore
 
 SAMPLE = {
     "runners": [
@@ -13,7 +15,6 @@ SAMPLE = {
 
 
 def test_parse_offline(tmp_path, monkeypatch):
-    import tools.runner_doctor as rd  # type: ignore
 
     def fake_req(path, token, method="GET"):
         assert path.startswith("/repos/"), "Condition must be true"

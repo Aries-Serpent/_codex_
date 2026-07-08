@@ -166,6 +166,7 @@ class TestBooleanConfigs:
 
     def test_boolean_config_patterns(self, env_manager):
         """Test configurations that might be boolean."""
+import pytest
         # Check for any boolean-related configs
         possible_bool_configs = [
             "CODEX_SQLITE_POOL",

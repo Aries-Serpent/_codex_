@@ -267,6 +267,7 @@ class TestJSDProperties:
     @settings(max_examples=50)
     def test_jsd_result_in_unit_interval(self, pq: tuple[list[float], list[float]]) -> None:
         """JSD must always be in [0, 1]."""
+import pytest
         p, q = pq
         result = jensen_shannon_divergence(p, q)
         assert 0.0 <= result <= 1.0, f"JSD must be in [0, 1], got {result}"

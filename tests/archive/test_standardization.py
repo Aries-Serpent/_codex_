@@ -3,14 +3,13 @@ Test Standardization
 
 Test module for standardization.
 """
+from codex.archive.evidence_schema import EvidenceSchemaValidator
+from codex.archive.standardization import (
 
 # tests/archive/test_standardization.py
 """Tests for standardization layer."""
 
-import pytest
 
-from codex.archive.evidence_schema import EvidenceSchemaValidator
-from codex.archive.standardization import (
     SLSA_LEVEL,
     STANDARDIZATION_VERSION,
     StandardizationManager,

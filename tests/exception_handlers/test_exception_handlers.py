@@ -8,14 +8,16 @@ Created: 2026-01-18
 Phase: 14.4 - Final Gaps & Branch Coverage
 Target: 100% coverage of exception handlers
 """
-
 import importlib
 import json
 import tempfile
 from typing import Any
 from unittest.mock import patch
+            import urllib.request
+        import asyncio
+            import math
 
-import pytest
+
 
 # ============================================================================
 # Exception Handlers: File Operations
@@ -139,7 +141,6 @@ class TestNetworkExceptions:
     def test_connection_error_handler(self) -> None:
         """Test ConnectionError handling."""
         with patch("urllib.request.urlopen", side_effect=ConnectionError("No network")):
-            import urllib.request
 
             result = None
             try:
@@ -370,7 +371,6 @@ class TestAsyncExceptions:
 
     def test_cancelled_error_handler(self) -> None:
         """Test task cancellation handling."""
-        import asyncio
 
         result = None
         try:
@@ -406,7 +406,6 @@ class TestDataProcessingExceptions:
         """Test OverflowError handling."""
         result = None
         try:
-            import math
 
             math.exp(1000)  # Will overflow
         except OverflowError:

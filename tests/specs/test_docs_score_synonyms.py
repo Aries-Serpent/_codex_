@@ -3,13 +3,12 @@ Test Docs Score Synonyms
 
 Test module for docs score synonyms.
 """
-
 from __future__ import annotations
-
-import pytest
-
 pytest.importorskip("jinja2")
 pytest.importorskip("yaml")
+
+
+
 
 # Skip entire module - functions _docs_score and _expand_doc_tokens removed from audit_runner
 pytestmark = pytest.mark.skip(

@@ -7,11 +7,10 @@ Target: ≥75% mutation score
 Modules: cognitive_brain, services.audio, crm integration
 Pattern: 100% semantic assertions, 5+ per test, comprehensive edge cases
 """
-
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
 
-import pytest
+
 
 
 @dataclass

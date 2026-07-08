@@ -154,6 +154,7 @@ class TestDumpJson:
 
     def test_dump_json_indented(self):
         """Test that JSON output is indented."""
+import pytest
         from codex_crm.zd_admin.generate import _dump_json
 
         result = _dump_json({"key": "value"})

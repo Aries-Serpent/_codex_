@@ -247,6 +247,7 @@ class TestModelLoading:
 
     def test_model_config_override(self):
         """Test model config override."""
+import pytest
         # Arrange
         overrides = {"hidden_dropout_prob": 0.1}
 

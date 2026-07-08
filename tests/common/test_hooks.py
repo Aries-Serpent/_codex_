@@ -1,12 +1,13 @@
 """Smoke tests for :mod:`common.hooks`."""
-
 from __future__ import annotations
-
 import json
 from pathlib import Path
 from typing import Any
+    from common.hooks import HookManager
+    from common.hooks import NDJSONLogHook
 
-import pytest
+
+
 
 
 class _RecorderHook:
@@ -22,7 +23,6 @@ class _RecorderHook:
 
 @pytest.mark.parametrize("method", ["on_init", "on_step_end"])
 def test_hook_manager_dispatch(method: str) -> None:
-    from common.hooks import HookManager
 
     hook = _RecorderHook()
     manager = HookManager([hook])
@@ -32,7 +32,6 @@ def test_hook_manager_dispatch(method: str) -> None:
 
 
 def test_ndjson_log_hook(tmp_path: Path) -> None:
-    from common.hooks import NDJSONLogHook
 
     target = tmp_path / "logs" / "events.jsonl"
     hook = NDJSONLogHook(target)

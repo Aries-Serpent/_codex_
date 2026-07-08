@@ -3,9 +3,10 @@ Test Tenant Isolation
 
 Test module for tenant isolation.
 """
+import pytest
+from mcp.backends.mock_backend import InMemoryMockBackend
 
 # Tenant isolation tests for adapters (mock-based)
-from mcp.backends.mock_backend import InMemoryMockBackend
 
 
 def test_tenant_isolation():

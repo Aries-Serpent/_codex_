@@ -10,10 +10,11 @@ Tests for:
 Note: These tests validate the audit_runner capabilities
 independent of specific version numbers.
 """
-
 import os
+        import hashlib
+        import hmac
 
-import pytest
+
 
 
 class TestTrendAggregation:
@@ -257,8 +258,6 @@ class TestWebhookNotification:
 
     def test_webhook_signature_validation(self):
         """Test webhook signature validation."""
-        import hashlib
-        import hmac
 
         secret = "test_secret_key"
         payload = '{"event": "test"}'

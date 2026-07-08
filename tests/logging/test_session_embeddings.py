@@ -10,21 +10,19 @@ Test coverage:
     - Error handling (corrupted files, invalid input)
     - Threading (concurrent access)
 """
-
-import pytest
-pytest.importorskip("numpy")
-
 from __future__ import annotations
-
+pytest.importorskip("numpy")
 import json
 import tempfile
 import threading
 from pathlib import Path
-
 import numpy as np
-import pytest
-
 from codex.logging.session_embeddings import SessionEmbeddings
+
+
+
+
+
 
 
 class TestSessionEmbeddingsInit:

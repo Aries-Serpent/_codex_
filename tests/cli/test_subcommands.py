@@ -3,11 +3,10 @@ Test Subcommands
 
 Test module for subcommands.
 """
-
-import pytest
 from click.testing import CliRunner
-
 from codex_ml.cli.codex_cli import codex
+
+
 
 
 def test_metrics_server_help():

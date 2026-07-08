@@ -3,12 +3,11 @@ Test Helm Chart
 
 Test module for helm chart.
 """
-
 import shutil
 import subprocess
 from pathlib import Path
 
-import pytest
+
 
 HELM = shutil.which("helm")
 HELM_CHART_DIR = Path("deploy/helm")

@@ -3,10 +3,11 @@ Test Recall Score
 
 Test module for recall score.
 """
-
 from __future__ import annotations
-
+import pytest
 from codex_ml.metrics.metric_implementations import RecallScore
+
+
 
 
 def test_recall_binary() -> None:

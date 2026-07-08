@@ -3,8 +3,14 @@ Test Metric Implementations
 
 Test module for metric implementations.
 """
+            from codex_ml.metrics.metric_implementations import _to_flat_list
+            from codex_ml.metrics.metric_implementations import _to_flat_list
+            from codex_ml.metrics.metric_implementations import _to_flat_list
+            from codex_ml.metrics.metric_implementations import MetricBase
+            from codex_ml.metrics.metric_implementations import MetricBase
+            from codex_ml.metrics.metric_implementations import _ClassificationStats
+            from codex_ml.metrics.metric_implementations import _ClassificationStats
 
-import pytest
 
 
 class TestFlatListHelper:
@@ -13,7 +19,6 @@ class TestFlatListHelper:
     def test_flat_list_with_list(self):
         """Test flattening a simple list."""
         try:
-            from codex_ml.metrics.metric_implementations import _to_flat_list
 
             result = _to_flat_list([1, 2, 3])
             assert result == [1, 2, 3]
@@ -23,7 +28,6 @@ class TestFlatListHelper:
     def test_flat_list_with_nested_list(self):
         """Test flattening a nested list."""
         try:
-            from codex_ml.metrics.metric_implementations import _to_flat_list
 
             result = _to_flat_list([[1, 2], [3, 4]])
             assert result == [1, 2, 3, 4]
@@ -33,7 +37,6 @@ class TestFlatListHelper:
     def test_flat_list_with_scalar(self):
         """Test flattening a scalar value."""
         try:
-            from codex_ml.metrics.metric_implementations import _to_flat_list
 
             result = _to_flat_list(42)
             assert result == [42], "Result must not be empty"
@@ -47,7 +50,6 @@ class TestMetricBase:
     def test_metric_base_name(self):
         """Test MetricBase stores name."""
         try:
-            from codex_ml.metrics.metric_implementations import MetricBase
 
             class DummyMetric(MetricBase):
                 def update(self, predictions, targets):
@@ -64,7 +66,6 @@ class TestMetricBase:
     def test_metric_base_abstract(self):
         """Test MetricBase cannot be instantiated directly."""
         try:
-            from codex_ml.metrics.metric_implementations import MetricBase
 
             with pytest.raises(TypeError):
                 MetricBase("test")
@@ -78,7 +79,6 @@ class TestClassificationStats:
     def test_classification_stats_creation(self):
         """Test creating classification stats."""
         try:
-            from codex_ml.metrics.metric_implementations import _ClassificationStats
 
             stats = _ClassificationStats()
             assert stats is not None, "stats must be initialized"
@@ -88,7 +88,6 @@ class TestClassificationStats:
     def test_classification_stats_update(self):
         """Test updating classification stats."""
         try:
-            from codex_ml.metrics.metric_implementations import _ClassificationStats
 
             stats = _ClassificationStats()
             stats.update([0, 1, 1], [0, 1, 0])

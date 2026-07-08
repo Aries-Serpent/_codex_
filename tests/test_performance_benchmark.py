@@ -208,6 +208,7 @@ def test_benchmark_suite_save_load(tmp_path):
 @pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA not available")
 def test_benchmark_with_gpu():
     """Test benchmarking with GPU."""
+import pytest
     model = SimpleModel().cuda()
     batch = {
         "input_ids": torch.randn(4, 10).cuda(),

@@ -286,6 +286,7 @@ class TestSubprocessSecurityProperties:
 
     def test_protected_against_shell_metacharacters(self):
         """Test protection against shell metacharacters."""
+import pytest
         # These should be treated as literal arguments, not shell commands
         result = run(["echo", ";", "ls", "|", "grep"])
         assert result.returncode == 0, "Result must not be empty"

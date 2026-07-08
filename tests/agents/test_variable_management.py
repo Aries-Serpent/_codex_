@@ -4,16 +4,19 @@ Unit tests for scripts/tools/variable_manager.py
 Run:
     python -m pytest tests/agents/test_variable_management.py -v
 """
-
 from __future__ import annotations
-
+import pytest
 import json
 import os
 import sys
 import unittest
 from unittest.mock import MagicMock, patch
-
 from scripts.ci._token_resolver import get_token
+from variable_manager import (
+        import importlib
+
+
+
 
 # Ensure scripts/ and src/ are importable
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
@@ -21,7 +24,6 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "src"))
 # scripts/tools is on the path directly so `import variable_manager` works
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "scripts", "tools"))
 
-from variable_manager import (
     GitHubAPIError,
     VariableManager,
     _resolve_token,
@@ -367,7 +369,6 @@ class TestBrainClientMechanism(unittest.TestCase):
 
     def test_falls_back_to_urllib_on_brain_error(self):
         """BrainClientError causes fallback to urllib."""
-        import importlib
 
         tools_vm = importlib.import_module("variable_manager")
 

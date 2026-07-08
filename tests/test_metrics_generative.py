@@ -5,16 +5,19 @@ Test Metrics Generative
 
 Test module for metrics generative.
 """
+import pytest
+import json
+from pathlib import Path
+from codex_ml.config import EvaluationConfig
+from codex_ml.eval.runner import run_evaluation
+from codex_ml.metrics.registry import get_metric, list_metrics
+    from codex_ml.metrics import registry
+    import codex_ml.eval.metrics as metrics_module
 
 #!/usr/bin/env python3
 """Tests for optional generative metrics (BLEU, ROUGE-L) behavior."""
 
-import json
-from pathlib import Path
 
-from codex_ml.config import EvaluationConfig
-from codex_ml.eval.runner import run_evaluation
-from codex_ml.metrics.registry import get_metric, list_metrics
 
 
 def test_bleu_optional_behavior():
@@ -130,7 +133,6 @@ def test_runner_handles_rouge_float_return(tmp_path: Path, monkeypatch):
         return 0.95  # Return float directly
 
     # Register mock metric in registry instead of patching module
-    from codex_ml.metrics import registry
 
     monkeypatch.setitem(registry._METRIC_REGISTRY, "rouge_l", mock_rouge_l)
 
@@ -163,7 +165,6 @@ def test_runner_handles_rouge_dict_return(tmp_path: Path, monkeypatch):
     def mock_rouge_l(preds, targets):
         return {"rougeL_f": 0.88, "rougeL": 0.88}
 
-    import codex_ml.eval.metrics as metrics_module
 
     monkeypatch.setattr(metrics_module, "rouge_l", mock_rouge_l)
 

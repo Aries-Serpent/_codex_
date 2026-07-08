@@ -1,9 +1,12 @@
 """Tests for :mod:`codex_ml.tracking.offline`."""
-
 from __future__ import annotations
-
+import pytest
 import sys
 from pathlib import Path
+    from codex_ml.tracking.offline import decide_offline, export_env_lines
+    from codex_ml.tracking.offline import NDJSONLogger
+
+
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 SRC_DIR = REPO_ROOT / "src"
@@ -12,7 +15,6 @@ if str(SRC_DIR) not in sys.path:
 
 
 def test_decide_offline_prefers_file_uri(monkeypatch, tmp_path):
-    from codex_ml.tracking.offline import decide_offline, export_env_lines
 
     monkeypatch.setenv("MLFLOW_TRACKING_URI", "")
     decision = decide_offline(prefer_offline=True, allow_remote=False, mlruns_dir=tmp_path)
@@ -24,7 +26,6 @@ def test_decide_offline_prefers_file_uri(monkeypatch, tmp_path):
 
 
 def test_ndjson_logger_writes_and_rotates(tmp_path):
-    from codex_ml.tracking.offline import NDJSONLogger
 
     log_path = tmp_path / "metrics.ndjson"
     logger = NDJSONLogger(log_path, max_bytes=30, backup_count=1, enable_rotation=True)

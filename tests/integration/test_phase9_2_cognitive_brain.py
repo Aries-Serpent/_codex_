@@ -8,10 +8,13 @@ Covers:
 - Checkpoint/recovery procedures
 - 20+ recovery scenarios
 """
-
 from pathlib import Path
+        import re
+        import re
+        import re
+        import re
 
-import pytest
+
 
 # ============================================================================
 # Pattern Ingestion Tests (10 tests)
@@ -59,7 +62,6 @@ class TestPatternIngestion:
         content = catalog_path.read_text()
         
         # Extract confidence values
-        import re
         confidence_matches = re.findall(r'Confidence[^:]*:\s*(0\.\d+)', content)
         
         for conf_str in confidence_matches:
@@ -71,7 +73,6 @@ class TestPatternIngestion:
         catalog_path = Path('.codex/PHASE_9_2_LTM_PATTERNS.md')
         content = catalog_path.read_text()
         
-        import re
         sr_matches = re.findall(r'Success Rate:\s*(\d+)%', content)
         
         for sr_str in sr_matches:
@@ -98,7 +99,6 @@ class TestPatternIngestion:
         content = catalog_path.read_text()
         
         # Extract pattern IDs and prerequisites
-        import re
         pattern_ids = set(re.findall(r'### (RP-\d+|L-\d+|C-\d+)', content))
         prerequisites = re.findall(r'Prerequisite Patterns:\s*(.+)', content)
         
@@ -139,7 +139,6 @@ class TestPatternIngestion:
         catalog_path = Path('.codex/PHASE_9_2_LTM_PATTERNS.md')
         content = catalog_path.read_text()
         
-        import re
         fp_matches = re.findall(r'False Positive Risk:\s*(\d+)%', content)
         
         for fp_str in fp_matches:

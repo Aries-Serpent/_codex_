@@ -7,18 +7,17 @@ Tests cover:
 - Rollout/rollback automation
 - Docker image management
 """
-
 from __future__ import annotations
-
+pytest.importorskip("hypothesis", reason="hypothesis required for property tests")
 import hashlib
 import json
 import time
 from enum import Enum
 from typing import Any
 
-import pytest
 
-pytest.importorskip("hypothesis", reason="hypothesis required for property tests")
+
+
 
 
 # --- Build Attestation Tests ---

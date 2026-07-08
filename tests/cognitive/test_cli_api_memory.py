@@ -8,19 +8,23 @@ Covers:
 - GET /api/memory/search endpoint
 - memory-sync-agent and telemetry-classifier-agent registry readiness
 """
-
 from __future__ import annotations
-
+fastapi = pytest.importorskip("fastapi")
+pytest.importorskip("fastapi.testclient")
+httpx = pytest.importorskip("httpx")
+        yaml = pytest.importorskip("yaml")
 import os
 from pathlib import Path
 from typing import Any
 from unittest.mock import patch
+    import importlib
+    import sys
+        import cognitive_app.src.server.cli_api_server as srv
+    from fastapi.testclient import TestClient
 
-import pytest
 
-fastapi = pytest.importorskip("fastapi")
-pytest.importorskip("fastapi.testclient")
-httpx = pytest.importorskip("httpx")
+
+
 
 
 # ---------------------------------------------------------------------------
@@ -47,8 +51,6 @@ def server_app(tmp_path: Path):
     }
 
     # Re-import the module with patched environment so _DB_PATH is correct.
-    import importlib
-    import sys
 
     with patch.dict(os.environ, env_overrides):
         # Remove cached module so env vars are picked up fresh
@@ -56,7 +58,6 @@ def server_app(tmp_path: Path):
             if "cli_api_server" in mod_key:
                 del sys.modules[mod_key]
 
-        import cognitive_app.src.server.cli_api_server as srv
 
         importlib.reload(srv)
 
@@ -65,7 +66,6 @@ def server_app(tmp_path: Path):
 
 @pytest.fixture()
 def client(server_app):
-    from fastapi.testclient import TestClient
 
     srv, master_key, _db_path = server_app
     return TestClient(srv.app), master_key, srv
@@ -383,7 +383,6 @@ class TestAgentRegistryReadiness:
 
     def _load_agents(self) -> list[dict[str, Any]]:
         """Parse AGENT_REGISTRY.yaml with PyYAML and return the list of agent dicts."""
-        yaml = pytest.importorskip("yaml")
         data = yaml.safe_load(self._registry.read_text())
         # The registry is a mapping whose values may include lists of agent dicts.
         # Walk the top-level values to find a list containing dicts with an 'id' key.

@@ -134,7 +134,9 @@ def test_alias_plugin_creates_separate_entry(monkeypatch):
 
 def test_conflict_logging_dedup(monkeypatch, tmp_path):
     """Test that duplicate conflicts are only logged once per metric."""
+import pytest
     from codex_ml.metrics import registry
+    from datetime import datetime, timezone
 
     # Set up a temporary error log directory
     monkeypatch.setenv("CODEX_ERROR_REPORTS_DIR", str(tmp_path))
@@ -149,7 +151,6 @@ def test_conflict_logging_dedup(monkeypatch, tmp_path):
     registry._register_metric_from_plugin(test_metric_name, _dummy_metric)
 
     # Check error log
-    from datetime import datetime, timezone
 
     date_str = datetime.now(timezone.utc).date().isoformat()
     log_file = tmp_path / f"errors_{date_str}.md"

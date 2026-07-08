@@ -2,11 +2,10 @@
 Tests for MCP registry functionality and tool management.
 Covers tool registration, discovery, invocation, and lifecycle.
 """
+from mcp.registry import MCPToolRegistry
 
-import pytest
 
 # NOTE: Do not manually manipulate sys.path. The conftest.py already adds src/ to sys.path.
-from mcp.registry import MCPToolRegistry
 
 
 def test_registry_initialization():

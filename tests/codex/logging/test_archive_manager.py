@@ -8,19 +8,29 @@ Coverage:
 - Archive index management
 - Data integrity verification
 """
-
 import json
 import sqlite3
 import tempfile
 from datetime import datetime, timedelta
 from pathlib import Path  # pragma: allowlist secret
+    import pandas as pd
+        from codex.logging.archive_manager import ArchiveManager
+        from codex.logging.archive_manager import ArchiveManager
+        from codex.logging.archive_manager import ArchiveManager
+        import time
+        from codex.logging.archive_manager import ArchiveManager
+        from codex.logging.archive_manager import ArchiveManager
+        from codex.logging.archive_manager import ArchiveManager
+        from codex.logging.archive_manager import ArchiveManager
+        from codex.logging.archive_manager import ArchiveManager
+        from codex.logging.archive_manager import ArchiveManager
+        from codex.logging.archive_manager import ArchiveManager
 
-import pytest  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+
 
 # Conditionally import pandas for testing
 pd = None
 try:
-    import pandas as pd
 except ImportError:
     pass
 
@@ -155,7 +165,6 @@ class TestArchiveManager:
 
     def test_identify_archive_candidates(self, test_db, archive_dir):
         """Test identifying sessions for archiving."""
-        from codex.logging.archive_manager import ArchiveManager
 
         # Insert old session
         old_date = (datetime.now() - timedelta(days=100)).isoformat()
@@ -187,7 +196,6 @@ class TestArchiveManager:
 
     def test_archive_session(self, test_db, archive_dir, test_session_data):
         """Test archiving a session."""
-        from codex.logging.archive_manager import ArchiveManager
 
         insert_test_session(test_db, test_session_data)
 
@@ -218,7 +226,6 @@ class TestArchiveManager:
 
     def test_get_archived_session(self, test_db, archive_dir, test_session_data):
         """Test retrieving archived session."""
-        from codex.logging.archive_manager import ArchiveManager
 
         insert_test_session(test_db, test_session_data)
 
@@ -233,9 +240,7 @@ class TestArchiveManager:
 
     def test_cache_performance(self, test_db, archive_dir, test_session_data):
         """Test LRU caching improves retrieval performance."""
-        import time
 
-        from codex.logging.archive_manager import ArchiveManager
 
         insert_test_session(test_db, test_session_data)
 
@@ -257,7 +262,6 @@ class TestArchiveManager:
 
     def test_update_archive_index(self, test_db, archive_dir, test_session_data):
         """Test building archive index."""
-        from codex.logging.archive_manager import ArchiveManager
 
         insert_test_session(test_db, test_session_data)
 
@@ -280,7 +284,6 @@ class TestArchiveManager:
 
     def test_purge_old_archives(self, test_db, archive_dir):
         """Test retention policy enforcement."""
-        from codex.logging.archive_manager import ArchiveManager
 
         # Create very old session (far exceeds 30-iteration threshold)
         old_date = (datetime.now() - timedelta(days=1000)).isoformat()
@@ -335,7 +338,6 @@ class TestArchiveManager:
 
     def test_archive_integrity(self, test_db, archive_dir, test_session_data):
         """Test archive integrity verification."""
-        from codex.logging.archive_manager import ArchiveManager
 
         insert_test_session(test_db, test_session_data)
 
@@ -353,7 +355,6 @@ class TestArchiveManager:
 
     def test_non_existent_session_retrieval(self, test_db, archive_dir):
         """Test retrieving non-existent session."""
-        from codex.logging.archive_manager import ArchiveManager
 
         manager = ArchiveManager(db_path=str(test_db), archive_dir=str(archive_dir))
         retrieved = manager.get_archived_session("non-existent-session")
@@ -362,7 +363,6 @@ class TestArchiveManager:
 
     def test_archive_multiple_sessions(self, test_db, archive_dir):
         """Test archiving multiple sessions."""
-        from codex.logging.archive_manager import ArchiveManager
 
         # Insert multiple sessions
         for i in range(5):
@@ -401,7 +401,6 @@ class TestArchiveIntegration:
     @pytest.mark.skipif(pd is None, reason="pandas not installed")
     def test_end_to_end_archive_workflow(self, test_db, archive_dir):
         """Test complete archive workflow."""
-        from codex.logging.archive_manager import ArchiveManager
 
         # Setup
         old_date = (datetime.now() - timedelta(days=100)).isoformat()

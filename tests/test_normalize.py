@@ -22,13 +22,22 @@ def hello():
 """)
 
         file2.write_text("""# This is file 2
+import pytest
+        from tools.dupinv.normalize import NormalizedDetector
+        from tools.dupinv.normalize import NormalizedDetector
+        from tools.dupinv.normalize import NormalizedDetector
+        from tools.dupinv.normalize import NormalizedDetector
+        from tools.dupinv.normalize import NormalizedDetector
+    from tools.dupinv.normalize import PythonNormalizer
+    from tools.dupinv.normalize import JavaScriptNormalizer
+        from tools.dupinv.normalize import NormalizedDetector
+    import sys
 def hello():
     # Say hello to the world
     logger.info('hello')
 """)
 
         # Run normalized detector
-        from tools.dupinv.normalize import NormalizedDetector
 
         detector = NormalizedDetector(root)
         groups = detector.scan()
@@ -60,7 +69,6 @@ def test_normalized_detector_ignores_whitespace():
 """)
 
         # Run normalized detector
-        from tools.dupinv.normalize import NormalizedDetector
 
         detector = NormalizedDetector(root)
         groups = detector.scan()
@@ -94,7 +102,6 @@ function hello() {
 """)
 
         # Run normalized detector
-        from tools.dupinv.normalize import NormalizedDetector
 
         detector = NormalizedDetector(root)
         groups = detector.scan()
@@ -123,7 +130,6 @@ def test_normalized_detector_different_logic_not_matched():
 """)
 
         # Run normalized detector
-        from tools.dupinv.normalize import NormalizedDetector
 
         detector = NormalizedDetector(root)
         groups = detector.scan()
@@ -146,7 +152,6 @@ def test_normalized_detector_skips_exact_duplicates():
         file2.write_text(content)
 
         # Run normalized detector
-        from tools.dupinv.normalize import NormalizedDetector
 
         detector = NormalizedDetector(root)
         groups = detector.scan()
@@ -157,7 +162,6 @@ def test_normalized_detector_skips_exact_duplicates():
 
 def test_python_normalizer_removes_docstrings():
     """Test that Python docstrings are removed."""
-    from tools.dupinv.normalize import PythonNormalizer
 
     normalizer = PythonNormalizer()
 
@@ -179,7 +183,6 @@ def test_python_normalizer_removes_docstrings():
 
 def test_javascript_normalizer_removes_multiline_comments():
     """Test that JavaScript multi-line comments are removed."""
-    from tools.dupinv.normalize import JavaScriptNormalizer
 
     normalizer = JavaScriptNormalizer()
 
@@ -215,7 +218,6 @@ def test_normalized_detector_handles_empty_files():
         file2.write_text("")
 
         # Run normalized detector
-        from tools.dupinv.normalize import NormalizedDetector
 
         detector = NormalizedDetector(root)
         groups = detector.scan()
@@ -226,7 +228,6 @@ def test_normalized_detector_handles_empty_files():
 
 if __name__ == "__main__":
     # Run tests manually
-    import sys
 
     test_functions = [
         test_normalized_detector_ignores_comments,

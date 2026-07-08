@@ -3,12 +3,11 @@ Test Data Registry
 
 Test module for data registry.
 """
-
 from importlib import metadata
-
-import pytest
-
 from codex_ml.data.registry import _DatasetRegistry
+
+
+
 
 
 def test_dataset_registry_register_and_get() -> None:

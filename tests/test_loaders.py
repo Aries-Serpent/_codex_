@@ -3,15 +3,14 @@ Test Loaders
 
 Test module for loaders.
 """
-
-# BEGIN: CODEX_DATA_TESTS
 import json
 from pathlib import Path
 from types import SimpleNamespace
-
-import pytest
-
 from codex_ml.data import collect_stats, iter_jsonl, iter_txt, stream_paths
+
+# BEGIN: CODEX_DATA_TESTS
+
+
 
 
 def _write(tmp: Path, name: str, lines):

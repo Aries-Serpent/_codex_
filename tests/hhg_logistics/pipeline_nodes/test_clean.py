@@ -3,10 +3,9 @@ Test Clean
 
 Test module for clean.
 """
-
 import importlib
 
-import pytest
+
 
 
 def test_import_module():

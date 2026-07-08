@@ -3,10 +3,11 @@ Test Train Minimal Cli
 
 Test module for train minimal cli.
 """
-
+import pytest
 from pathlib import Path
-
 from codex_ml.cli import train_minimal
+
+
 
 
 class DummyLoop:

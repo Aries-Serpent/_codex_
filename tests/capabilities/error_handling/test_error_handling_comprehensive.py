@@ -7,24 +7,22 @@ Tests cover:
 - Dead-letter queues
 - Self-remediation scripts
 """
-
 from __future__ import annotations
-
+pytest.importorskip("hypothesis")
 import time
 from collections import deque
 from collections.abc import Callable
 from enum import Enum
 from typing import Any
-
-import pytest
-
-pytest.importorskip("hypothesis")
-
-
-pytest.importorskip("hypothesis", reason="hypothesis required for property tests")
-
 from hypothesis import given, settings
 from hypothesis import strategies as st
+
+
+
+
+
+
+
 
 # --- Exception Hierarchy Tests ---
 

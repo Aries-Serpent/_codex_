@@ -1,3 +1,4 @@
+import pytest
 #     assert ", "Condition must be true"
 pytest.importorskip("mlflow")
 # @pytest.mark.templates
@@ -482,6 +483,7 @@ pytest.importorskip("mlflow")
 @pytest.mark.templates
 def test_diff_style_guide_v12_has_schema_requirements() -> None:
     """Verify diff style guide v1.2 includes schema validation requirements."""
+import pytest
     contents = read_template("diff_style_guide_v1.2.md")
 
     assert "schema validation passes" in contents, "Content must not be empty"

@@ -108,8 +108,9 @@ class TestEvidenceSchemaConstants:
 
     def test_schema_version_defined(self):
         """Test that schema version is defined."""
-        try:
+import pytest
             from src.codex.archive import evidence_schema
+        try:
 
             if hasattr(evidence_schema, "SCHEMA_VERSION"):
                 assert evidence_schema.SCHEMA_VERSION is not None, "SCHEMA_VERSION must be initialized"

@@ -8,19 +8,19 @@ This module provides extensive coverage of core security functions including:
 - Path validation
 - Permission checks
 """
-
 from __future__ import annotations
-
 import json
 import logging
 import time
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from unittest.mock import MagicMock
-
-import pytest
-
 from security.core import (
+        import timeit
+
+
+
+
     check_permissions,
     enforce_absolute_path,
     hmac_compare,
@@ -496,7 +496,6 @@ class TestHmacCompare:
     def test_hmac_compare_timing_resistance(self):
         """Test timing-resistant comparison."""
         # This is a security property - should take similar time
-        import timeit
 
         t1 = timeit.timeit(lambda: hmac_compare("a" * 100, "a" * 100), number=100)
         t2 = timeit.timeit(lambda: hmac_compare("a" * 100, "b" * 100), number=100)

@@ -5,10 +5,11 @@ These tests ensure that:
 2. The chaos marker is properly registered
 3. Configuration generators can run without errors
 """
-
+import pytest
 import subprocess
 import sys
 from pathlib import Path
+
 
 
 def test_chaos_marker_registered():

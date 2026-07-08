@@ -11,16 +11,16 @@ This test suite covers:
 
 All tests skip gracefully if CODEX_MASTER_KEY is unavailable or libsodium unavailable.
 """
-
 from __future__ import annotations
-
 import base64
 from typing import (  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+    from datetime import datetime, timezone
+
+
     Any,
     Optional,
 )
 
-import pytest
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Fixtures
@@ -70,7 +70,6 @@ def mock_public_key_response():
 @pytest.fixture
 def test_secret_name_base() -> str:
     """Return base name for test secrets (timestamped)."""
-    from datetime import datetime, timezone
 
     ts = datetime.now(tz=timezone.utc).strftime("%Y%m%d_%H%M%S")
     return f"CODEX_API_TEST_SECRET_{ts}"

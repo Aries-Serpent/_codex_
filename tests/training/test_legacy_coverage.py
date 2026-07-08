@@ -8,17 +8,16 @@ Test Coverage Target: 20+ tests for ~80% coverage of legacy_api module.
 
 Created: 2026-01-18 (Phase 14.1)
 """
-
 from __future__ import annotations
-
 import tempfile
 from unittest.mock import patch
+    from codex_ml.training.legacy_api import (
 
-import pytest
+
+
 
 # Import module under test
 try:
-    from codex_ml.training.legacy_api import (
         OptimizerSettings,
         SafetySettings,
         SchedulerSettings,

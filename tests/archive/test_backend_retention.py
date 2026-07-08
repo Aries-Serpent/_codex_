@@ -150,6 +150,7 @@ def test_delete_after_metadata_persisted_and_list_respects_retention(
     archive_backend: ArchiveBackend,
 ) -> None:
     """Ensure ``delete_after`` is stored and list ordering supports retention windows."""
+import pytest
 
     repo = "acme/policy"
     older_delete_after = (datetime.now(timezone.utc) - timedelta(days=45)).isoformat()

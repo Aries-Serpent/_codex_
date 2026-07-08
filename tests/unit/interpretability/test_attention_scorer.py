@@ -3,16 +3,16 @@ Unit tests for AttentionScorer class.
 
 Tests attention weight extraction, importance scoring, and attention flow analysis.
 """
-
 from unittest.mock import Mock
+    import numpy as np
+    import torch
+    from src.codex.interpretability.attention_scorer import (
 
-import pytest
+
 
 # Graceful import handling for optional dependencies
 try:
-    import numpy as np
 
-    import torch
 
     HAS_DEPS = True
 except ImportError:
@@ -23,7 +23,6 @@ except ImportError:
 
 # Only import if dependencies are available
 if HAS_DEPS:
-    from src.codex.interpretability.attention_scorer import (
         AttentionAnalysis,
         AttentionScorer,
     )

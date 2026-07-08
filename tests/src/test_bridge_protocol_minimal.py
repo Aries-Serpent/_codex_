@@ -2,6 +2,9 @@
 Bridge Protocol V2 Minimal Tests - Phase 9.4 Coverage Gap-Fill
 Comprehensive minimal tests for bridge protocol message handling.
 """
+import pytest
+        import json
+            import json
 
 
 class TestBridgeProtocolValidation:
@@ -93,7 +96,6 @@ class TestBridgeProtocolSerialization:
 
     def test_bridge_json_serialization(self):
         """Test JSON serialization."""
-        import json
 
         message = {"jsonrpc": "2.0", "method": "test.method", "params": {"key": "value"}, "id": 1}
 
@@ -134,7 +136,6 @@ class TestBridgeProtocolRobustness:
 
         # Should not crash when handling malformed input
         try:
-            import json
 
             json.loads(invalid_json)
         except json.JSONDecodeError:

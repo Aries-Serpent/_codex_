@@ -1,11 +1,12 @@
 """Tests for metrics CLI table-name validation flags."""
-
 from __future__ import annotations
-
+import pytest
 import json
 import subprocess
 import sys
 from pathlib import Path
+
+
 
 
 def run_cli(args: list[str]) -> tuple[int, str, str]:

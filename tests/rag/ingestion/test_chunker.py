@@ -1,10 +1,17 @@
 """
 Tests for Document Chunker Module.
 """
-
-import pytest
-
 from codex.rag.ingestion.chunker import (
+        from codex.rag.ingestion.chunker import chunk_document
+        from codex.rag.ingestion.chunker import chunk_document
+        from codex.rag.ingestion.chunker import chunk_document
+        from codex.rag.ingestion.chunker import chunk_document
+        from codex.rag.ingestion.chunker import ParagraphChunker
+        from codex.rag.ingestion.chunker import ParagraphChunker
+        from codex.rag.ingestion.chunker import SlidingWindowChunker
+        from codex.rag.ingestion.chunker import SlidingWindowChunker
+
+
     Chunk,
     Chunker,
     ChunkingConfig,
@@ -436,13 +443,11 @@ class TestChunkDocumentFunction:
     """Tests for the chunk_document() convenience function."""
 
     def test_basic_chunk_document(self):
-        from codex.rag.ingestion.chunker import chunk_document
 
         chunks = chunk_document("Hello world " * 50)
         assert len(chunks) >= 1, "Chunks must not be empty"
 
     def test_chunk_document_with_strategy(self):
-        from codex.rag.ingestion.chunker import chunk_document
 
         chunks = chunk_document(
             "Sentence one. Sentence two. Sentence three.",
@@ -452,7 +457,6 @@ class TestChunkDocumentFunction:
         assert len(chunks) >= 1, "Chunks must not be empty"
 
     def test_chunk_document_sliding_window(self):
-        from codex.rag.ingestion.chunker import chunk_document
 
         # text must exceed default window_step (500) to produce ≥2 windows.
         # chunk_size must exceed default min_chunk_size (100) so chunks aren't filtered.
@@ -461,7 +465,6 @@ class TestChunkDocumentFunction:
         assert len(chunks) >= 2, "Chunks must not be empty"
 
     def test_chunk_document_empty(self):
-        from codex.rag.ingestion.chunker import chunk_document
 
         assert chunk_document("") == [], "Condition must be true"
 
@@ -471,7 +474,6 @@ class TestParagraphChunkerEdgeCases:
 
     def test_paragraph_large_single_paragraph(self):
         """Single paragraph exceeding max_chunk_size triggers split."""
-        from codex.rag.ingestion.chunker import ParagraphChunker
 
         config = ChunkingConfig(max_chunk_size=50, paragraph_separator="\n\n")
         chunker = ParagraphChunker(config)
@@ -481,7 +483,6 @@ class TestParagraphChunkerEdgeCases:
 
     def test_paragraph_empty_paragraphs_skipped(self):
         """Empty paragraphs between real ones are skipped."""
-        from codex.rag.ingestion.chunker import ParagraphChunker
 
         config = ChunkingConfig(paragraph_separator="\n\n")
         chunker = ParagraphChunker(config)
@@ -495,7 +496,6 @@ class TestSlidingWindowEdgeCases:
 
     def test_small_step_fills_gaps(self):
         """window_step < chunk_size creates overlapping windows."""
-        from codex.rag.ingestion.chunker import SlidingWindowChunker
 
         config = ChunkingConfig(chunk_size=20, window_step=10, min_chunk_size=5)
         chunker = SlidingWindowChunker(config)
@@ -505,7 +505,6 @@ class TestSlidingWindowEdgeCases:
 
     def test_window_step_larger_than_text(self):
         """window_step ≥ text length → single chunk."""
-        from codex.rag.ingestion.chunker import SlidingWindowChunker
 
         config = ChunkingConfig(chunk_size=100, window_step=200, min_chunk_size=1)
         chunker = SlidingWindowChunker(config)

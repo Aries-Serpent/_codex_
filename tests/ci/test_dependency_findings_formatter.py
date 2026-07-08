@@ -11,21 +11,20 @@ Test Coverage:
 - Performance benchmarks
 - Edge case handling
 """
-
 import json
-
-# Import formatter functions
 import sys
 import tempfile
 import time
 from pathlib import Path
 from typing import Any, Dict, List
+from dependency_findings_formatter import (
 
-import pytest
+
+# Import formatter functions
+
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "ci"))
 
-from dependency_findings_formatter import (
     calculate_upgrade_path,
     extract_cve_id,
     extract_package_name,

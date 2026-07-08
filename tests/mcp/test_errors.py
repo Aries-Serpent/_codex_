@@ -1,10 +1,12 @@
 """Tests for MCP error helpers and rate limiter."""
-
 from __future__ import annotations
+import pytest
+    from mcp import errors
+    from mcp.rate_limit import MCPRateLimiter
+
 
 
 def test_error_hierarchy_to_dict() -> None:
-    from mcp import errors
 
     err = errors.ValidationError("bad", details={"field": "id"})
     payload = err.to_dict()
@@ -26,7 +28,6 @@ class _Clock:
 
 
 def test_rate_limiter_allows_and_refills() -> None:
-    from mcp.rate_limit import MCPRateLimiter
 
     clock = _Clock()
     limiter = MCPRateLimiter(rate=1.0, capacity=2, time_func=clock)

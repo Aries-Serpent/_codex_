@@ -3,15 +3,14 @@ Test Train Cli
 
 Test module for train cli.
 """
-
-import pathlib
-
-import pytest
-
 pytest.importorskip("typer")
+import pathlib
 from typer.testing import CliRunner
-
 import codex_ml.cli.main as cli_main_module
+
+
+
+
 
 
 @pytest.mark.usefixtures("tmp_path")

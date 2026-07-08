@@ -5,17 +5,17 @@ error handling, and integration scenarios.
 
 Target: Boost memory module coverage to 95%+
 """
-
 from __future__ import annotations
-
 import tempfile
 from pathlib import Path
-
-import pytest
-
 from src.codex.agents.memory.backends import JSONLMemoryBackend
 from src.codex.agents.memory.manager import MemoryManager
 from src.codex.agents.memory.protocol import MemoryEntry, MemoryQuery
+        import uuid
+
+
+
+
 
 
 class TestMemoryManagerBasics:
@@ -180,7 +180,6 @@ class TestMemoryProtocol:
 
     def test_memory_entry_from_dict(self):
         """Test creating MemoryEntry from dictionary."""
-        import uuid
 
         test_uuid = str(uuid.uuid4())
         data = {

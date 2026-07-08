@@ -1,16 +1,16 @@
 """
 Tests for Vector Store Factory and Registry
 """
-
+np = pytest.importorskip("numpy")
 import tempfile
 import types
 from unittest.mock import Mock
-
-import pytest
-
-np = pytest.importorskip("numpy")
-
 from src.codex.retrieval.stores.factory import (
+    import faiss
+
+
+
+
     VectorStoreFactory,
     VectorStoreRegistry,
     VectorStoreType,
@@ -21,7 +21,6 @@ from src.codex.retrieval.stores.factory import (
 
 # Check if FAISS is available
 try:
-    import faiss
 
     FAISS_AVAILABLE = True
 except ImportError:

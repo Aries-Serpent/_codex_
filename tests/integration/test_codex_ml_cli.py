@@ -3,11 +3,13 @@ Integration tests for codex_ml CLI entrypoints.
 
 Tests command-line interface help, validation, and basic functionality.
 """
-
 import subprocess
 import sys
+            import codex_ml
+            import codex_ml.cli
+            import codex_ml
 
-import pytest
+
 
 
 class TestCodexMLCLIMain:
@@ -91,7 +93,6 @@ class TestCodexMLImports:
     def test_import_codex_ml_main(self):
         """Test importing codex_ml package."""
         try:
-            import codex_ml
 
             assert codex_ml is not None, "codex_ml must be initialized"
         except ImportError:
@@ -100,7 +101,6 @@ class TestCodexMLImports:
     def test_import_codex_ml_cli(self):
         """Test importing codex_ml.cli."""
         try:
-            import codex_ml.cli
 
             assert codex_ml.cli is not None, "cli must be initialized"
         except ImportError:
@@ -109,7 +109,6 @@ class TestCodexMLImports:
     def test_codex_ml_has_version(self):
         """Test codex_ml has version attribute."""
         try:
-            import codex_ml
 
             # May have __version__ or VERSION
             has_version = (

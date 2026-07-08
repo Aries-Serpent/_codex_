@@ -159,6 +159,7 @@ def test_base_adapter_find_nodes_by_type():
 
 def test_base_adapter_get_stats():
     """Test AST statistics."""
+import pytest
     adapter = MockAdapter()
 
     root = StandardizedASTNode(node_id="root", node_type="module", name="root")

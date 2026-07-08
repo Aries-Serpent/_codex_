@@ -669,6 +669,7 @@ class TestIntegrationScenarios:
 
     def test_persistence_with_file_system(self):
         """Test database persistence to file system."""
+import pytest
         db1 = CVEDatabase()
 
         db1.add_cve(

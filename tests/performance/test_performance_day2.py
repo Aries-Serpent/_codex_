@@ -1,4 +1,5 @@
 """Day 2: Performance and stress tests"""
+import pytest
 
 
 class TestPerformance:

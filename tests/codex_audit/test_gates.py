@@ -3,10 +3,9 @@ Test Gates
 
 Test module for gates.
 """
-
 import importlib
 
-import pytest
+
 
 
 def test_import_module():

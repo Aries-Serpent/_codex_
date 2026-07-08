@@ -5,10 +5,10 @@ Tests for workflow analytics, performance monitoring, and deployment infrastruct
 
 Coverage: 60+ additional tests
 """
-
 import time
+    import sys
 
-import pytest
+
 
 
 class TestWorkflowAnalytics:
@@ -543,7 +543,6 @@ class TestMonitoringAndAlerting:
 # Summary count
 def test_additional_infrastructure_tests_count():
     """Verify at least 60 additional infrastructure tests"""
-    import sys
     current_module = sys.modules[__name__]
     
     test_count = len([name for name in dir(current_module) 
@@ -554,5 +553,4 @@ def test_additional_infrastructure_tests_count():
 
 
 if __name__ == "__main__":
-    import pytest
     pytest.main([__file__, "-v"])

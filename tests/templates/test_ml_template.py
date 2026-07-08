@@ -10,15 +10,20 @@ Created: 2026-01-18 (Phase 14.0)
 Note: Many tests in this template require PyTorch and other ML dependencies.
 Use @pytest.mark.requires_torch for tests that need PyTorch.
 """
-
 from __future__ import annotations
-
 import tempfile
 from pathlib import Path
 from typing import Any
 from unittest.mock import MagicMock
+        import torch
+        import json
+        import json
+        import gc
+        import time
+        import time
 
-import pytest
+
+
 
 
 # Conditional imports for optional dependencies
@@ -35,7 +40,6 @@ def _check_torch_available() -> bool:
         bool: True if PyTorch is fully functional, False otherwise.
     """
     try:
-        import torch
 
         # Verify core tensor functionality exists
         required_attrs = ("tensor", "zeros", "ones", "empty", "Tensor")
@@ -236,7 +240,6 @@ class TestCheckpointing:
     @requires_torch
     def test_loads_checkpoint(self, mock_model, temp_checkpoint_dir) -> None:
         """Test loading a checkpoint."""
-        import json
 
         ckpt_path = temp_checkpoint_dir / "ckpt.json"
         ckpt_path.write_text(json.dumps({"epoch": 1, "loss": 0.5}))
@@ -249,7 +252,6 @@ class TestCheckpointing:
         self, mock_model, mock_optimizer, temp_checkpoint_dir
     ) -> None:
         """Test checkpoint contains optimizer state."""
-        import json
 
         ckpt = {"model": "state", "optimizer": {"lr": 1e-4}}
         ckpt_path = temp_checkpoint_dir / "full_ckpt.json"
@@ -375,7 +377,6 @@ class TestMemory:
     @pytest.mark.slow
     def test_training_does_not_leak_memory(self, sample_training_config, sample_dataset) -> None:
         """Test that training does not leak memory."""
-        import gc
 
         gc.collect()
         trainer = MagicMock()
@@ -407,7 +408,6 @@ class TestPerformance:
     @pytest.mark.perf
     def test_training_throughput(self, sample_training_config, sample_dataset) -> None:
         """Test training throughput."""
-        import time
 
         trainer = MagicMock()
         start = time.time()
@@ -420,7 +420,6 @@ class TestPerformance:
     @pytest.mark.perf
     def test_inference_latency(self, mock_model) -> None:
         """Test inference latency."""
-        import time
 
         times = []
         for _ in range(10):

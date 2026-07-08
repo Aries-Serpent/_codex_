@@ -3,12 +3,13 @@ Test Codex Security Tools
 
 Test module for codex security tools.
 """
-
+import pytest
 import json
 from pathlib import Path
-
 import tools.codex_dep_pin_check as depcheck
 import tools.codex_secret_scan as secret_scan
+
+
 
 
 def test_secret_scan_reports_hits_for_simple_pattern(tmp_path: Path):

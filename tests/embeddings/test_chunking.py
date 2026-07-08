@@ -3,8 +3,9 @@ Test Chunking
 
 Test module for chunking.
 """
-
+import pytest
 from mcp.embeddings.chunking import (
+
     chunk_text,
     chunk_texts,
     estimate_tokens_from_chars,

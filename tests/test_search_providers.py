@@ -3,14 +3,14 @@ Test Search Providers
 
 Test module for search providers.
 """
-
 import shutil
 from pathlib import Path
-
-import pytest
-
 from codex.search import SearchRegistry
 from codex.search.providers import ExternalWebSearch
+    from tools.security import net
+
+
+
 
 
 def test_internal_search_finds_known_string():
@@ -27,7 +27,6 @@ def test_external_provider_disabled_by_default():
 
 
 def test_external_search_handles_network_error(monkeypatch):
-    from tools.security import net
 
     def fail(*_args, **_kwargs):
         raise OSError("boom")

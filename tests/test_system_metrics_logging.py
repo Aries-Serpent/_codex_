@@ -1,19 +1,18 @@
 """
-pytest.importorskip("tensorboard")
 Test System Metrics Logging
 
 Test module for system metrics logging.
 """
-
 from __future__ import annotations
-
+pytest.importorskip("tensorboard")
 import json
 from typing import Any
-
-import pytest
-
 from codex_ml.monitoring import system_metrics
 from codex_ml.monitoring.codex_logging import CodexLoggers, init_telemetry
+
+
+
+
 
 
 def test_init_telemetry_min_profile_defaults() -> None:

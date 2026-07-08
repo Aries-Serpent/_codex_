@@ -3,9 +3,21 @@ Phase 26: Utilities Edge Case Tests - Batch 6
 Target: 15+ edge case tests for utility functions
 Coverage Target: src/codex/utils/, src/codex_ml/utils/
 """
-
+import pytest
 import tempfile
 from pathlib import Path
+        import os
+        from pathlib import Path
+        from pathlib import Path
+        from pathlib import Path
+        import hashlib
+        import hashlib
+        from cryptography.fernet import Fernet
+        import secrets
+        from datetime import datetime
+        from datetime import datetime, timedelta, timezone
+        from datetime import datetime
+
 
 
 class TestPathUtilsEdgeCases:
@@ -13,8 +25,6 @@ class TestPathUtilsEdgeCases:
 
     def test_path_traversal_prevention(self):
         """Test path utils prevent directory traversal"""
-        import os
-        from pathlib import Path
 
         dangerous_paths = [
             "../../../etc/passwd",
@@ -44,7 +54,6 @@ class TestPathUtilsEdgeCases:
 
     def test_path_unicode_characters(self):
         """Test path utils with Unicode in paths"""
-        from pathlib import Path
 
         unicode_paths = ["文件.txt", "файл.txt", "αρχείο.txt"]
 
@@ -64,7 +73,6 @@ class TestPathUtilsEdgeCases:
 
     def test_path_null_bytes(self):
         """Test path utils with null bytes"""
-        from pathlib import Path
 
         path_with_null = "file\x00name.txt"
         # Verify null byte is present
@@ -149,7 +157,6 @@ class TestCryptoUtilsEdgeCases:
 
     def test_hash_empty_input(self):
         """Test hashing empty input"""
-        import hashlib
 
         empty_hash = hashlib.sha256(b"").hexdigest()
         # Should produce valid hash
@@ -157,7 +164,6 @@ class TestCryptoUtilsEdgeCases:
 
     def test_hash_collision_resistance(self):
         """Test hash collision resistance"""
-        import hashlib
 
         hash1 = hashlib.sha256(b"input1").hexdigest()
         hash2 = hashlib.sha256(b"input2").hexdigest()
@@ -166,7 +172,6 @@ class TestCryptoUtilsEdgeCases:
 
     def test_encrypt_decrypt_roundtrip(self):
         """Test encryption/decryption roundtrip"""
-        from cryptography.fernet import Fernet
 
         # Generate key and cipher
         key = Fernet.generate_key()
@@ -186,7 +191,6 @@ class TestCryptoUtilsEdgeCases:
 
     def test_random_generation_uniqueness(self):
         """Test random generation produces unique values"""
-        import secrets
 
         randoms = [secrets.token_hex(16) for _ in range(1000)]
         # Should be unique
@@ -198,7 +202,6 @@ class TestDateTimeUtilsEdgeCases:
 
     def test_datetime_leap_second(self):
         """Test datetime handling of leap seconds"""
-        from datetime import datetime
 
         # Note: Python datetime doesn't directly support leap seconds
         # But we can test edge second values
@@ -215,7 +218,6 @@ class TestDateTimeUtilsEdgeCases:
 
     def test_datetime_timezone_conversion(self):
         """Test timezone conversion edge cases"""
-        from datetime import datetime, timedelta, timezone
 
         # Create timezone-aware datetimes
         utc_time = datetime(2024, 3, 10, 2, 30, tzinfo=timezone.utc)
@@ -232,7 +234,6 @@ class TestDateTimeUtilsEdgeCases:
 
     def test_datetime_year_boundaries(self):
         """Test datetime at year boundaries"""
-        from datetime import datetime
 
         boundary_dates = [
             datetime(1970, 1, 1),  # Unix epoch

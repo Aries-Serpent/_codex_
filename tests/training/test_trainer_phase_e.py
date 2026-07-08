@@ -59,6 +59,7 @@ class TestShouldReplace:
 
 class _TensorStub:
     """Tiny tensor-like test helper for torch-free Trainer branch testing."""
+import pytest
 
     def __init__(self, value=None):
         self.value = value

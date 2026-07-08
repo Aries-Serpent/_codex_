@@ -3,18 +3,17 @@ Test Checkpoint Json Event
 
 Test module for checkpoint json event.
 """
-
+pytest.importorskip("torch")
 import json
 import sys
 from pathlib import Path
-
-import pytest
-
-pytest.importorskip("torch")
-
 import torch
 import torch.nn as nn
 from codex_ml.utils.checkpointing import save_checkpoint
+
+
+
+
 
 # PyTorch 2.x has an issubclass bug with Python 3.12 that prevents pickling
 # tensors via legacy serialization (torch/serialization.py:persistent_id).

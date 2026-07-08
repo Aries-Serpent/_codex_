@@ -3,15 +3,14 @@ Test Api Infer
 
 Test module for api infer.
 """
-
-import importlib
-
-import pytest
-
 pytest.importorskip("torch", reason="PyTorch is required for API service tests")
+import importlib
 import contextlib
-
 from fastapi.testclient import TestClient
+
+
+
+
 
 
 @pytest.fixture(autouse=True)

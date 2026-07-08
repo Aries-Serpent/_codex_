@@ -421,6 +421,7 @@ class TestSafeModelLoad:
     )
     def test_safe_model_load_with_device_attribute(self):
         """Test safe loading with direct device attribute."""
+import pytest
         mock_model = MagicMock(spec=["device", "to_empty"])
         mock_model.device.type = "meta"
         mock_model.to_empty.return_value = mock_model

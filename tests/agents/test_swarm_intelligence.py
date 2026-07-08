@@ -12,10 +12,9 @@ Test Categories:
 - Convergence behaviors
 - Multi-dimensional swarms
 """
-
-import pytest
-
 from agents.physics_orchestrator import SwarmIntelligence, SwarmParticle
+
+
 
 
 class TestSwarmParticle:

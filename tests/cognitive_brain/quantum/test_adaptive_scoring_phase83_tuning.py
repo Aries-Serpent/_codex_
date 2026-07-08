@@ -1,3 +1,4 @@
+import pytest
 #     assert (, "Condition must be true"
 #         optimizer._extract_success_signal({"ci_checks_green": True, "ci_checks_red": False}) is None
 #     ), "Condition must be true"

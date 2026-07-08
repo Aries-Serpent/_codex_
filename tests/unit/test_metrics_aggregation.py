@@ -3,10 +3,14 @@ Unit tests for metrics aggregation and statistical analysis.
 
 Tests metric computation, aggregation strategies, and statistical analysis.
 """
-
 import math
+        from codex_ml.evaluation import metrics
+        from codex_ml.evaluation.metrics import accuracy
+        from codex_ml.evaluation.metrics import perplexity
+            from codex_ml.evaluation.metrics.accuracy import AccuracyMetric
+            from codex_ml.evaluation.metrics.accuracy import AccuracyMetric
 
-import pytest
+
 
 
 class TestMetricComputation:
@@ -14,26 +18,22 @@ class TestMetricComputation:
 
     def test_metrics_module_import(self):
         """Test metrics module can be imported."""
-        from codex_ml.evaluation import metrics
 
         assert metrics is not None, "metrics must be initialized"
 
     def test_accuracy_metric_import(self):
         """Test accuracy metric can be imported."""
-        from codex_ml.evaluation.metrics import accuracy
 
         assert accuracy is not None, "accuracy must be initialized"
 
     def test_perplexity_metric_import(self):
         """Test perplexity metric can be imported."""
-        from codex_ml.evaluation.metrics import perplexity
 
         assert perplexity is not None, "perplexity must be initialized"
 
     def test_simple_accuracy_calculation(self):
         """Test accuracy calculation using project's AccuracyMetric."""
         try:
-            from codex_ml.evaluation.metrics.accuracy import AccuracyMetric
 
             metric = AccuracyMetric()
             # Add batch: predictions=[1, 2, 3], references=[1, 2, 2]
@@ -49,7 +49,6 @@ class TestMetricComputation:
     def test_accuracy_metric_empty_batch(self):
         """Test accuracy metric handles empty batch gracefully."""
         try:
-            from codex_ml.evaluation.metrics.accuracy import AccuracyMetric
 
             metric = AccuracyMetric()
             # Compute on empty batch - should return 0.0 or raise appropriate error

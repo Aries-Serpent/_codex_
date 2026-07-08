@@ -3,22 +3,21 @@ Test Cli Smoke
 
 Test module for cli smoke.
 """
-
+pytest.importorskip("omegaconf")
 import os
 import subprocess
 import sys
 from pathlib import Path
+    import hydra
 
-import pytest
+
 
 os.environ.setdefault("CODEX_ALLOW_MISSING_HYDRA_EXTRA", "1")
 
 try:
-    import hydra
 except ModuleNotFoundError:
     pytest.skip("Hydra core not installed and no stub available", allow_module_level=True)
 
-pytest.importorskip("omegaconf")
 
 if hasattr(hydra, "_CONFIG_STACK"):
     pytest.skip("Hydra extra stub active; CLI requires hydra-core", allow_module_level=True)

@@ -2,10 +2,9 @@
 Unit tests for security utilities module.
 Tests all redaction and sanitization functions.
 """
-
-import pytest
-
 from codex.security_utils import (
+
+
     redact_dict_with_secret_keys,
     redact_secret_name,
     redact_sensitive_value,

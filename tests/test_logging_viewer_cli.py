@@ -3,18 +3,17 @@ Test Logging Viewer Cli
 
 Test module for logging viewer cli.
 """
-
-# -*- coding: utf-8 -*-
 import json
 import os
 import sqlite3
 import subprocess
 import sys
 from pathlib import Path
-
-import pytest
-
 from codex.logging import viewer
+
+# -*- coding: utf-8 -*-
+
+
 
 
 def _make_db(tmp: Path) -> Path:

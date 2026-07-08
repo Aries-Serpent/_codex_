@@ -67,6 +67,7 @@ class TestURLValidation:
     @patch("urllib.request.urlopen")
     def test_retry_on_failure(self, mock_urlopen: Mock) -> None:
         """Test retry logic on network failures."""
+import pytest
         mock_urlopen.side_effect = [
             Exception("Network error"),
             Exception("Network error"),

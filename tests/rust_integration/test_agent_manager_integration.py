@@ -1,17 +1,21 @@
 """
 Python integration tests for AgentManager
 """
-
 import concurrent.futures
 import time
+        from codex_engine import AgentManager
+        from codex_engine import AgentManager
+        from codex_engine import AgentManager
+        from codex_engine import AgentManager
+        from codex_engine import AgentManager
+        from codex_engine import AgentManager
 
-import pytest
+
 
 
 def test_agent_manager_creation():
     """Test creating an AgentManager instance."""
     try:
-        from codex_engine import AgentManager
 
         manager = AgentManager(max_agents=10)
         assert manager.get_max_agents() == 10, "Condition must be true"
@@ -23,7 +27,6 @@ def test_agent_manager_creation():
 def test_agent_manager_properties():
     """Test AgentManager properties."""
     try:
-        from codex_engine import AgentManager
 
         manager = AgentManager(max_agents=25)
         assert manager.get_max_agents() == 25, "Condition must be true"
@@ -36,7 +39,6 @@ def test_agent_manager_properties():
 def test_agent_spawning_capacity():
     """Test that manager respects max_agents limit."""
     try:
-        from codex_engine import AgentManager
 
         manager = AgentManager(max_agents=5)
 
@@ -57,7 +59,6 @@ def test_agent_spawning_capacity():
 def test_agent_termination():
     """Test terminating agents."""
     try:
-        from codex_engine import AgentManager
 
         manager = AgentManager(max_agents=10)
 
@@ -73,7 +74,6 @@ def test_agent_termination():
 def test_list_active_agents():
     """Test listing active agents."""
     try:
-        from codex_engine import AgentManager
 
         manager = AgentManager(max_agents=10)
 
@@ -91,7 +91,6 @@ def test_list_active_agents():
 def test_agent_manager_concurrent_access():
     """Test concurrent agent manager access from multiple threads."""
     try:
-        from codex_engine import AgentManager
 
         manager = AgentManager(max_agents=50)
 

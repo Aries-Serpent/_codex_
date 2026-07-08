@@ -2,16 +2,17 @@
 
 All network calls are mocked — no live GitHub API traffic.
 """
-
 from __future__ import annotations
-
 import os
 from datetime import UTC, datetime, timedelta
 from unittest.mock import MagicMock, patch
-
-import pytest
-
 from security.providers.base import (
+from security.providers.github_provider import (
+        import logging
+
+
+
+
     ProviderConfig,
     ProviderType,
     RotationResult,
@@ -19,7 +20,6 @@ from security.providers.base import (
     SecretType,
     ValidationError,
 )
-from security.providers.github_provider import (
     _GITHUB_TOKEN_RE,
     _KNOWN_INSTALLATION_PERMISSIONS,
     GitHubTokenProvider,
@@ -141,7 +141,6 @@ class TestGitHubTokenProviderConstruction:
     def test_no_token_logs_warning(self, monkeypatch: pytest.MonkeyPatch, caplog) -> None:
         monkeypatch.delenv("GITHUB_TOKEN", raising=False)
         config = ProviderConfig(ProviderType.GITHUB)
-        import logging
 
         with caplog.at_level(logging.WARNING, logger="security.providers.github_provider"):
             GitHubTokenProvider(config)

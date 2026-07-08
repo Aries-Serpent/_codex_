@@ -3,8 +3,9 @@ Test Rollback Scenario
 
 Test module for rollback scenario.
 """
-
+import pytest
 import subprocess
+
 
 
 def test_orchestrate_dry_run_outputs_command() -> None:

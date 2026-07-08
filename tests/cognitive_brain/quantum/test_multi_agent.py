@@ -7,15 +7,15 @@ correlation measurement, and performance validation.
 <!-- PDA_LOOP: Test Coverage -->
 <!-- AFTERMATH: Validation Framework -->
 """
-
 from datetime import UTC, datetime
-
-import pytest
-
 from cognitive_brain.quantum.ghz_states import (
+from cognitive_brain.quantum.multi_agent_coordinator import (
+    from cognitive_brain.quantum.topology_manager import (
+
+
+
     GHZStateManager,
 )
-from cognitive_brain.quantum.multi_agent_coordinator import (
     AgentDecision,
     MultiAgentCoordinator,
     VotingStrategy,
@@ -23,7 +23,6 @@ from cognitive_brain.quantum.multi_agent_coordinator import (
 
 # Import TopologyManager only if available (optional component)
 try:
-    from cognitive_brain.quantum.topology_manager import (
         NetworkTopology,
         TopologyManager,
     )

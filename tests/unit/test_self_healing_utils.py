@@ -35,15 +35,16 @@ Covers:
 - auto_remediate — raises RuntimeError when loop ends without exception
 - __all__ exports exactly the four declared names
 """
-
 from __future__ import annotations
-
 import logging
 from unittest.mock import MagicMock
-
-import pytest
-
 from codex_ml.utils.self_healing import (
+    import codex_ml.utils.self_healing as mod
+    from codex_ml.utils.self_healing import (  # noqa: F401
+
+
+
+
     FailureType,
     OOMHandler,
     SelfHealingContext,
@@ -442,11 +443,9 @@ class TestAutoRemediate:
 
 
 def test_all_exports():
-    import codex_ml.utils.self_healing as mod
 
     assert set(mod.__all__) == {"FailureType", "OOMHandler", "SelfHealingContext", "auto_remediate"}
     # Verify each symbol is actually importable at the module level
-    from codex_ml.utils.self_healing import (  # noqa: F401
         FailureType,
         OOMHandler,
         SelfHealingContext,

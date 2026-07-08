@@ -38,7 +38,6 @@ def test_data_pipeline_split_behavior(tmp_path):
 @pytest.mark.integration
 def test_data_pipeline_validation_path(tmp_path):
     """Test data pipeline with explicit validation path."""
-    torch = pytest.importorskip("torch")
 
     train_file = tmp_path / "train.tsv"
     val_file = tmp_path / "val.tsv"
@@ -58,7 +57,6 @@ def test_data_pipeline_validation_path(tmp_path):
 @pytest.mark.integration
 def test_data_pipeline_single_row_edge_case(tmp_path):
     """Test data pipeline handles single-row dataset."""
-    torch = pytest.importorskip("torch")
 
     data_file = tmp_path / "single.tsv"
     data_file.write_text("only\t1\n")
@@ -75,7 +73,6 @@ def test_data_pipeline_single_row_edge_case(tmp_path):
 @pytest.mark.integration
 def test_data_pipeline_tokenizer_output(tmp_path):
     """Test data pipeline validates tokenizer output."""
-    torch = pytest.importorskip("torch")
 
     data_file = tmp_path / "data.tsv"
     data_file.write_text("text\t1\n")
@@ -97,7 +94,6 @@ def test_data_pipeline_tokenizer_output(tmp_path):
 @pytest.mark.integration
 def test_data_pipeline_deterministic_seed(tmp_path):
     """Test data pipeline produces deterministic splits."""
-    torch = pytest.importorskip("torch")
 
     data_file = tmp_path / "data.tsv"
     data_file.write_text("\n".join([f"text{i}\t{i%2}" for i in range(100)]))
@@ -123,7 +119,7 @@ def test_data_pipeline_deterministic_seed(tmp_path):
 @pytest.mark.integration
 def test_data_pipeline_fixture_parsing(tmp_path):
     """Test data pipeline parses fixture file."""
-    torch = pytest.importorskip("torch")
+import pytest
 
     fixture_file = tmp_path / "fixture.tsv"
     fixture_file.write_text("sample1\t1\nsample2\t0\nsample3\t1\n")

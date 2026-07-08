@@ -20,6 +20,7 @@ def transform_value(x: int) -> int:
 
 class TestReturnValueMutations:
     """Test return values for mutation detection."""
+import pytest
 
     def test_status_success(self):
         assert get_status_code(True) == 200, "Condition must be true"

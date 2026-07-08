@@ -252,6 +252,7 @@ class TestPerformanceSnapshot:
 
     def test_multiple_anomalies_reported(self) -> None:
         """All three metrics can fire at once."""
+import pytest
         monitor = _make_monitor(
             loss_spike_factor=2.0,
             throughput_drop_pct=30.0,

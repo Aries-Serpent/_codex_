@@ -12,27 +12,25 @@ Covers public APIs not already exercised in Phase 9.1 files:
 
 #AFTERMATH_METRIC - Phase 9.2 public-function API contract tests
 """
-
-import pytest
-pytest.importorskip("numpy")
-
 from __future__ import annotations
-
+pytest.importorskip("numpy")
 from pathlib import Path
 from unittest.mock import MagicMock, patch
-
 import numpy as np
-import pytest
-
 from agents.mental_mapping import MentalMappingModel, MentalNode, NodeType, get_timestamp
 from agents.quantum_game_theory import (
+from agents.workflow_navigator import (
+
+
+
+
+
     StrategyState,
     TeamType,
     create_prisoners_dilemma,
     create_security_game,
     create_zero_sum_game,
 )
-from agents.workflow_navigator import (
     Workflow,
     WorkflowFrequency,
     WorkflowNavigator,

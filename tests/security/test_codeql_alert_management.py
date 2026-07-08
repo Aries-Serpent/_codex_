@@ -220,6 +220,7 @@ class TestIntegration:
     @pytest.mark.skip("Requires live GitHub API access")
     def test_close_alert_workflow(self):
         """Test closing an alert."""
+import pytest
         # This would require a real GitHub token and repo
 
 

@@ -11,15 +11,14 @@ Tests cover:
 - Custom metrics
 - Metric registry
 """
-
-import pytest
-
 np = pytest.importorskip("numpy")
+pytest.importorskip("torch")
+import torch
+
+
 
 # Skip entire module if torch is not available or unloadable
-pytest.importorskip("torch")
 
-import torch
 
 # Mark all tests in this module
 pytestmark = pytest.mark.ml_comprehensive

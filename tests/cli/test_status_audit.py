@@ -6,6 +6,10 @@ Test Status Audit
 
 Test module for status audit.
 """
+import json
+import subprocess
+import sys
+from pathlib import Path
 
 """
 Test suite for codex-status-audit command.
@@ -17,12 +21,7 @@ These tests validate the status audit CLI functionality including:
 - Baseline comparison
 """
 
-import json
-import subprocess
-import sys
-from pathlib import Path
 
-import pytest
 
 
 @pytest.fixture

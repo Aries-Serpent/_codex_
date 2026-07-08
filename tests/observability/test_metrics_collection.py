@@ -2,11 +2,12 @@
 
 Tests for observability metrics collection infrastructure.
 """
-
 import time
 from unittest.mock import MagicMock
+        import json
+        import gzip
 
-import pytest
+
 
 
 class TestCounterMetrics:
@@ -293,7 +294,6 @@ class TestMetricExport:
 
     def test_json_format(self):
         """Test JSON format export."""
-        import json
 
         metric = {"name": "http_requests", "value": 100}
         exported = json.dumps(metric)
@@ -331,7 +331,6 @@ class TestMetricExport:
 
     def test_compressed_export(self):
         """Test compressed metric export."""
-        import gzip
 
         data = b"metric data"
         compressed = gzip.compress(data)

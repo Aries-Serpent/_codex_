@@ -3,24 +3,23 @@ Test Custom Loop Overfit
 
 Test module for custom loop overfit.
 """
-
-import pytest
-
 pytest.importorskip("numpy", reason="numpy required")
-
-
 from codex.training import TrainCfg, run_custom_trainer
 from codex_ml.models import MiniLM, MiniLMConfig
 from training.data_utils import TextDataset, split_texts
+        import torch.profiler as profiler_module
+        import torch
+
+
+
+
 
 
 @pytest.fixture(autouse=True)
 def disable_torch_profiler_and_meta(monkeypatch):
     """Disable PyTorch profiler and force CPU device to avoid meta tensor issues."""
     try:
-        import torch.profiler as profiler_module
 
-        import torch
 
         # Disable profiler record function to prevent Protocol isinstance errors
         if hasattr(profiler_module, "_record_function_enter"):

@@ -6,11 +6,12 @@ Test Best Promotion
 
 Test module for best promotion.
 """
-
+import pytest
 import json
 import os
-
 from src.training.checkpoint_manager import CheckpointManager
+
+
 
 
 def test_best_promotion(tmp_path):

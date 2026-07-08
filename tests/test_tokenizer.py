@@ -70,7 +70,6 @@ def test_encode_decode_round_trip():
 def test_tokenizer_basic(tmp_path):
     """Train a tiny tokenizer and ensure it can encode text."""
 
-    transformers = pytest.importorskip("transformers", reason="transformers not installed")
     if getattr(transformers, "IS_CODEX_STUB", False):
         pytest.skip("transformers not installed")
     pytest.importorskip("sentencepiece", reason="sentencepiece not installed")
@@ -90,6 +89,7 @@ def test_tokenizer_basic(tmp_path):
 
 def test_whitespace_tokenizer_deterministic():
     """Whitespace tokenizer should produce stable ids across invocations."""
+import pytest
 
     tokenizer = WhitespaceTokenizer()
     text = "deterministic hashing is important"

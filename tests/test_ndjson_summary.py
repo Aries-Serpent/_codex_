@@ -1,14 +1,16 @@
 """Exercise :mod:`codex_ml.cli.ndjson_summary` helpers."""
-
 from __future__ import annotations
-
+import pytest
 import json
 import sys
 from pathlib import Path
+    from codex_ml.cli import ndjson_summary
+    from codex_ml.cli import ndjson_summary
+
+
 
 
 def test_iter_and_load_rows(tmp_path):
-    from codex_ml.cli import ndjson_summary
 
     run_dir = tmp_path / "run"
     run_dir.mkdir()
@@ -38,7 +40,6 @@ def test_iter_and_load_rows(tmp_path):
 
 
 def test_summary_cli_json_output(tmp_path, capsys):
-    from codex_ml.cli import ndjson_summary
 
     run_dir = tmp_path / "run"
     run_dir.mkdir()

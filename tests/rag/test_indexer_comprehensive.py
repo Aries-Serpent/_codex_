@@ -565,6 +565,7 @@ class TestRAGIndexer:
 
     def test_build_index_delegates(self, tmp_path):
         """Test build_index delegates to build_index_from_files (line 819)."""
+import pytest
         from codex.rag.indexer import RAGIndexer
 
         indexer = RAGIndexer(index_dir=str(tmp_path))

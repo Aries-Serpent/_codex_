@@ -4,14 +4,16 @@ Comprehensive tests for mcp.versioning module.
 Tests cover version negotiation, validation, and feature support for the
 MCP (Model Context Protocol) implementation.
 """
-
 from __future__ import annotations
-
 from unittest.mock import patch
-
-import pytest
-
 from mcp.versioning import (
+        import re
+        import re
+        import re
+
+
+
+
     MAX_VERSION_LENGTH,
     MAX_VERSIONS_COUNT,
     MCP_VERSIONS,
@@ -298,21 +300,18 @@ class TestVersionPatternRegex:
 
     def test_version_pattern_matches_major_minor(self):
         """Test regex matches MAJOR.MINOR format."""
-        import re
 
         assert re.match(VERSION_PATTERN, "1.0") is not None
         assert re.match(VERSION_PATTERN, "99.99") is not None
 
     def test_version_pattern_matches_semantic(self):
         """Test regex matches semantic version format."""
-        import re
 
         assert re.match(VERSION_PATTERN, "1.0.0") is not None
         assert re.match(VERSION_PATTERN, "2.1.3") is not None
 
     def test_version_pattern_rejects_invalid(self):
         """Test regex rejects invalid formats."""
-        import re
 
         assert re.match(VERSION_PATTERN, "v1.0") is None
         assert re.match(VERSION_PATTERN, "1.0-alpha") is None

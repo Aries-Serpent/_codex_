@@ -3,18 +3,23 @@ Integration tests for cross-platform filename compatibility.
 
 Ensures no Windows-incompatible filenames are generated during operations.
 """
-
 import tempfile
 from pathlib import Path
+    from codex.utils.path_utils import windows_safe_timestamp
+    from datetime import datetime, timezone
+    from codex.utils.path_utils import windows_safe_timestamp
+    from codex.utils.path_utils import sanitize_filename
+    import re
+    from datetime import datetime, timezone
+    from codex.utils.path_utils import windows_safe_timestamp
 
-import pytest
+
 
 WINDOWS_ILLEGAL_CHARS = '<>:"/\\|?*'
 
 
 def test_timestamp_functions_produce_safe_filenames():
     """All timestamp utility functions should produce safe filenames."""
-    from codex.utils.path_utils import windows_safe_timestamp
 
     # Test all formats
     for fmt in ["iso", "compact", "readable"]:
@@ -48,9 +53,7 @@ def test_existing_reports_directory_compliance():
 
 def test_all_timestamp_generation_patterns():
     """Verify common timestamp patterns don't generate colons."""
-    from datetime import datetime, timezone
 
-    from codex.utils.path_utils import windows_safe_timestamp
 
     dt = datetime(2026, 1, 21, 14, 30, 45, tzinfo=timezone.utc)
 
@@ -75,7 +78,6 @@ def test_all_timestamp_generation_patterns():
 
 def test_sanitize_filename_comprehensive():
     """Test sanitization of various problematic filenames."""
-    from codex.utils.path_utils import sanitize_filename
 
     test_cases = [
         # (input, expected_output)
@@ -102,10 +104,7 @@ def test_sanitize_filename_comprehensive():
 
 def test_windows_safe_timestamp_formats_match_patterns():
     """Verify timestamp formats match expected patterns."""
-    import re
-    from datetime import datetime, timezone
 
-    from codex.utils.path_utils import windows_safe_timestamp
 
     dt = datetime(2026, 1, 21, 14, 30, 45, tzinfo=timezone.utc)
 

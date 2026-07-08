@@ -9,20 +9,24 @@ Covers:
 - EmailChannel.send() with mocked smtplib.SMTP
 - Graceful degradation — alerting failures never propagate
 """
-
-# pragma: allowlist secret
 from __future__ import annotations
-
 import os
 import smtplib
 from typing import Any
 from unittest.mock import MagicMock, patch
-
-import pytest
-
 from codex.alerting import AlertChannel, AlertEvent, AlertSeverity, TrainingAlertManager
 from codex.alerting.email import EmailChannel
 from codex.alerting.slack import SlackChannel
+        import json as _json
+        import urllib.error
+        import base64 as _b64
+        import email as _email_lib
+        import urllib.error
+
+# pragma: allowlist secret
+
+
+
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -281,7 +285,6 @@ class TestSlackChannel:
         assert result is True, "Result must not be empty"
         mock_open.assert_called_once()
         req = mock_open.call_args[0][0]
-        import json as _json
 
         payload = _json.loads(req.data.decode())
         assert "Training failed" in payload["text"], "Condition must be true"
@@ -292,7 +295,6 @@ class TestSlackChannel:
         assert "lr" in field_titles, "Condition must be true"
 
     def test_send_returns_false_on_url_error(self) -> None:
-        import urllib.error
 
         with patch(
             "urllib.request.urlopen",
@@ -409,8 +411,6 @@ class TestEmailChannel:
         assert "[INFO]" in raw_msg, "Condition must be true"
         assert "Training complete" in raw_msg, "Condition must be true"
         # Body may be base64-encoded — decode and inspect
-        import base64 as _b64
-        import email as _email_lib
 
         parsed = _email_lib.message_from_string(raw_msg)
         payload = parsed.get_payload()
@@ -510,7 +510,6 @@ class TestGracefulDegradation:
         assert results["raising"] is False, "Result must not be empty"
 
     def test_slack_channel_does_not_raise_on_url_error(self) -> None:
-        import urllib.error
 
         with patch(
             "urllib.request.urlopen",

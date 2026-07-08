@@ -1,8 +1,9 @@
 """
 Tests for scripts/validate_code_fences.py
 """
-
+import pytest
 from validate_code_fences import check_code_fences, fix_code_fences
+
 
 
 class TestCheckCodeFences:

@@ -33,6 +33,9 @@ def hello(name: str) -> str:
     def test_parse_class(self):
         """Test parsing a class definition."""
         code = '''
+import pytest
+import os
+from pathlib import Path
 class MyClass:
     """A sample class."""
 
@@ -68,8 +71,6 @@ async def fetch_data():
     def test_parse_imports(self):
         """Test parsing import statements."""
         code = """
-import os
-from pathlib import Path
 """
         parser = UniversalParser(use_libcst=False)  # Use ast for import parsing
         result = parser.parse_string(code)

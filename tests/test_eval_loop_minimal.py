@@ -3,16 +3,15 @@ Test Eval Loop Minimal
 
 Test module for eval loop minimal.
 """
-
 from __future__ import annotations
-
+torch = pytest.importorskip("torch")
 import types
-
-import pytest
-
 from codex_ml.training.eval import evaluate
 
-torch = pytest.importorskip("torch")
+
+
+
+
 
 
 class DummyModel(torch.nn.Module):

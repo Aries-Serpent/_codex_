@@ -16,15 +16,14 @@ Targets previously uncovered code paths:
   ``compare_strategies``, ``run_simulation`` (both modes).
 - Scenario factories: prisoner's dilemma, zero-sum, security.
 """
-
-pytest.importorskip("numpy")
-
 from __future__ import annotations
-
+pytest.importorskip("numpy")
 import numpy as np
-import pytest
-
 from agents.quantum_game_theory import (
+
+
+
+
     BlueRedTeamSimulator,
     ClassicalGameEngine,
     PayoffOperator,

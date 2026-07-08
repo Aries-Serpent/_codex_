@@ -2,16 +2,15 @@
 Tests for Phase 5 — Audit / Observability Plane
 (src/codex/autonomy/audit.py)
 """
-
 from __future__ import annotations
-
 import json
 from pathlib import Path
-
-import pytest
-
 from codex.autonomy.audit import AuditLogger, AuditRecord, MetricsSnapshot
 from codex.autonomy.registry import AutonomyMode, AutonomyRegistry
+
+
+
+
 
 
 def _logger(tmp_path: Path) -> AuditLogger:

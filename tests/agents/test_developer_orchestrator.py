@@ -4,8 +4,34 @@ Tests for agents.developer_orchestrator module.
 This module contains tests for the PhysicsGuidedDeveloperOrchestrator class
 and related classes for physics-inspired software development guidance.
 """
-
+import pytest
 from unittest.mock import patch
+        from agents.developer_orchestrator import RequirementVariable
+        from agents.developer_orchestrator import RequirementVariable
+        from agents.developer_orchestrator import RequirementVariable
+        from agents.developer_orchestrator import RequirementVariable
+        from agents.developer_orchestrator import RequirementVariable
+        from agents.developer_orchestrator import CodeComponent
+        from agents.developer_orchestrator import CodeComponent
+        from agents.developer_orchestrator import AppType
+        from agents.developer_orchestrator import AppType
+        from agents.developer_orchestrator import DevelopmentPhase
+        from agents.developer_orchestrator import (
+        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
+        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
+        from agents.developer_orchestrator import (
+        from agents.developer_orchestrator import (
+        from agents.developer_orchestrator import (
+        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
+        from agents.developer_orchestrator import (
+        from agents.developer_orchestrator import (
+        from agents.developer_orchestrator import (
+        from agents.developer_orchestrator import (
+        from agents.developer_orchestrator import (
+        from agents import developer_orchestrator
+        from agents import developer_orchestrator
+        from agents import developer_orchestrator
+
 
 
 class TestRequirementVariable:
@@ -13,7 +39,6 @@ class TestRequirementVariable:
 
     def test_is_satisfied_with_value(self):
         """Test is_satisfied returns True when current_value is set."""
-        from agents.developer_orchestrator import RequirementVariable
 
         var = RequirementVariable(
             name="test_var",
@@ -26,7 +51,6 @@ class TestRequirementVariable:
 
     def test_is_satisfied_without_value_required(self):
         """Test is_satisfied returns False when required and no value."""
-        from agents.developer_orchestrator import RequirementVariable
 
         var = RequirementVariable(
             name="test_var",
@@ -39,7 +63,6 @@ class TestRequirementVariable:
 
     def test_is_satisfied_without_value_optional(self):
         """Test is_satisfied returns True when optional and no value."""
-        from agents.developer_orchestrator import RequirementVariable
 
         var = RequirementVariable(
             name="test_var",
@@ -52,7 +75,6 @@ class TestRequirementVariable:
 
     def test_suggest_from_chaos_no_physics(self):
         """Test suggest_from_chaos returns suggested_values when no physics."""
-        from agents.developer_orchestrator import RequirementVariable
 
         var = RequirementVariable(
             name="test_var",
@@ -65,7 +87,6 @@ class TestRequirementVariable:
 
     def test_default_values(self):
         """Test RequirementVariable default values."""
-        from agents.developer_orchestrator import RequirementVariable
 
         var = RequirementVariable(name="test", description="Test", variable_type="str")
         assert var.required is True, "required is not valid"
@@ -79,7 +100,6 @@ class TestCodeComponent:
 
     def test_to_dict(self):
         """Test CodeComponent serialization to dict."""
-        from agents.developer_orchestrator import CodeComponent
 
         component = CodeComponent(
             component_id="comp_1",
@@ -107,7 +127,6 @@ class TestCodeComponent:
 
     def test_default_values(self):
         """Test CodeComponent default values."""
-        from agents.developer_orchestrator import CodeComponent
 
         component = CodeComponent(
             component_id="comp_1",
@@ -128,7 +147,6 @@ class TestAppType:
 
     def test_app_type_values(self):
         """Test AppType enum values."""
-        from agents.developer_orchestrator import AppType
 
         assert AppType.PYTHON_CONSOLE.value == "python_console", "Value must be initialized"
         assert AppType.PYTHON_CLI.value == "python_cli", "Value must be initialized"
@@ -139,7 +157,6 @@ class TestAppType:
 
     def test_app_type_from_string(self):
         """Test creating AppType from string."""
-        from agents.developer_orchestrator import AppType
 
         assert AppType("python_cli") == AppType.PYTHON_CLI, "Condition must be true"
 
@@ -149,7 +166,6 @@ class TestDevelopmentPhase:
 
     def test_phase_values(self):
         """Test DevelopmentPhase enum values."""
-        from agents.developer_orchestrator import DevelopmentPhase
 
         assert DevelopmentPhase.REQUIREMENTS.value == "requirements", "Value must be initialized"
         assert DevelopmentPhase.DESIGN.value == "design", "Value must be initialized"
@@ -167,7 +183,6 @@ class TestPhysicsGuidedDeveloperOrchestrator:
     @patch("agents.developer_orchestrator.ADVANCED_PHYSICS", False)
     def test_init_defaults(self):
         """Test orchestrator initialization with defaults."""
-        from agents.developer_orchestrator import (
             DevelopmentPhase,
             PhysicsGuidedDeveloperOrchestrator,
         )
@@ -185,7 +200,6 @@ class TestPhysicsGuidedDeveloperOrchestrator:
     @patch("agents.developer_orchestrator.ADVANCED_PHYSICS", False)
     def test_init_with_session_id(self):
         """Test orchestrator initialization with custom session_id."""
-        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
 
         orchestrator = PhysicsGuidedDeveloperOrchestrator(session_id="custom_session")
 
@@ -195,7 +209,6 @@ class TestPhysicsGuidedDeveloperOrchestrator:
     @patch("agents.developer_orchestrator.log_message")
     def test_log_method(self, mock_log):
         """Test _log method calls log_message."""
-        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
 
         orchestrator = PhysicsGuidedDeveloperOrchestrator(session_id="test_session")
         orchestrator._log("system", "Test message")
@@ -206,7 +219,6 @@ class TestPhysicsGuidedDeveloperOrchestrator:
     @patch("agents.developer_orchestrator.log_message")
     def test_analyze_user_requirements_basic(self, mock_log):
         """Test analyzing basic user requirements."""
-        from agents.developer_orchestrator import (
             AppType,
             PhysicsGuidedDeveloperOrchestrator,
         )
@@ -229,7 +241,6 @@ class TestPhysicsGuidedDeveloperOrchestrator:
     @patch("agents.developer_orchestrator.log_message")
     def test_analyze_user_requirements_default_app_type(self, mock_log):
         """Test default app type when not provided."""
-        from agents.developer_orchestrator import (
             AppType,
             PhysicsGuidedDeveloperOrchestrator,
         )
@@ -246,7 +257,6 @@ class TestPhysicsGuidedDeveloperOrchestrator:
     @patch("agents.developer_orchestrator.log_message")
     def test_analyze_user_requirements_invalid_app_type(self, mock_log):
         """Test handling of invalid app type falls back to console."""
-        from agents.developer_orchestrator import (
             AppType,
             PhysicsGuidedDeveloperOrchestrator,
         )
@@ -262,7 +272,6 @@ class TestPhysicsGuidedDeveloperOrchestrator:
     @patch("agents.developer_orchestrator.log_message")
     def test_analyze_user_requirements_completeness(self, mock_log):
         """Test completeness calculation in analysis."""
-        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
 
         orchestrator = PhysicsGuidedDeveloperOrchestrator()
 
@@ -283,7 +292,6 @@ class TestPhysicsGuidedDeveloperOrchestrator:
     @patch("agents.developer_orchestrator.ADVANCED_PHYSICS", False)
     def test_define_required_variables_console(self):
         """Test required variables for console app."""
-        from agents.developer_orchestrator import (
             AppType,
             PhysicsGuidedDeveloperOrchestrator,
         )
@@ -299,7 +307,6 @@ class TestPhysicsGuidedDeveloperOrchestrator:
     @patch("agents.developer_orchestrator.ADVANCED_PHYSICS", False)
     def test_define_required_variables_cli(self):
         """Test required variables for CLI app."""
-        from agents.developer_orchestrator import (
             AppType,
             PhysicsGuidedDeveloperOrchestrator,
         )
@@ -320,7 +327,6 @@ class TestPhysicsGuidedDeveloperOrchestrator:
     @patch("agents.developer_orchestrator.ADVANCED_PHYSICS", False)
     def test_define_required_variables_api(self):
         """Test required variables for API app."""
-        from agents.developer_orchestrator import (
             AppType,
             PhysicsGuidedDeveloperOrchestrator,
         )
@@ -340,7 +346,6 @@ class TestPhysicsGuidedDeveloperOrchestrator:
     @patch("agents.developer_orchestrator.ADVANCED_PHYSICS", False)
     def test_define_required_variables_web(self):
         """Test required variables for web app."""
-        from agents.developer_orchestrator import (
             AppType,
             PhysicsGuidedDeveloperOrchestrator,
         )
@@ -355,7 +360,6 @@ class TestPhysicsGuidedDeveloperOrchestrator:
     @patch("agents.developer_orchestrator.ADVANCED_PHYSICS", False)
     def test_define_required_variables_library(self):
         """Test required variables for library."""
-        from agents.developer_orchestrator import (
             AppType,
             PhysicsGuidedDeveloperOrchestrator,
         )
@@ -373,21 +377,18 @@ class TestModuleImports:
 
     def test_numpy_availability_flag_exists(self):
         """Test NUMPY_AVAILABLE flag exists."""
-        from agents import developer_orchestrator
 
         assert hasattr(developer_orchestrator, "NUMPY_AVAILABLE")
         assert isinstance(developer_orchestrator.NUMPY_AVAILABLE, bool)
 
     def test_advanced_physics_flag_exists(self):
         """Test ADVANCED_PHYSICS flag exists."""
-        from agents import developer_orchestrator
 
         assert hasattr(developer_orchestrator, "ADVANCED_PHYSICS")
         assert isinstance(developer_orchestrator.ADVANCED_PHYSICS, bool)
 
     def test_logging_available_flag_exists(self):
         """Test LOGGING_AVAILABLE flag exists."""
-        from agents import developer_orchestrator
 
         assert hasattr(developer_orchestrator, "LOGGING_AVAILABLE")
         assert isinstance(developer_orchestrator.LOGGING_AVAILABLE, bool)

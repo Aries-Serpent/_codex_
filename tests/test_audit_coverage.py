@@ -4,19 +4,18 @@ Comprehensive tests for codex.autonomy.audit module.
 Tests cover AuditRecord, MetricsSnapshot, and AuditLogger classes with
 complete coverage of all public methods and edge cases.
 """
-
 from __future__ import annotations
-
 import json
 import tempfile
 import time
 from pathlib import Path
 from unittest.mock import MagicMock, patch
-
-import pytest
-
 from codex.autonomy.audit import AuditLogger, AuditRecord, MetricsSnapshot
 from codex.autonomy.registry import AutonomyMode
+
+
+
+
 
 
 class TestAuditRecord:

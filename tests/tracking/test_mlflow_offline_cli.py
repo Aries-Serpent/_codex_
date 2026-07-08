@@ -3,13 +3,12 @@ Test Mlflow Offline Cli
 
 Test module for mlflow offline cli.
 """
-
 import importlib
 import json
 import sys
 import types
 
-import pytest
+
 
 
 def _install_stub_mlflow(monkeypatch: pytest.MonkeyPatch) -> types.ModuleType:

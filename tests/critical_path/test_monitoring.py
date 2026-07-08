@@ -10,9 +10,10 @@ Comprehensive test suite for monitoring and health critical paths including:
 
 All tests are deterministic and isolated.
 """
-
 import json
 import time
+        import traceback
+
 
 
 def interpolated_percentile(sorted_data, percentile):
@@ -31,7 +32,6 @@ def interpolated_percentile(sorted_data, percentile):
 
 def test_interpolated_percentile_bounds():
     """Test interpolated_percentile raises ValueError for out-of-bounds percentile values."""
-    import pytest
 
     data = [1, 2, 3, 4, 5]
     with pytest.raises(ValueError, match="percentile must be between"):
@@ -577,7 +577,6 @@ class TestErrorTracking:
 
     def test_error_stack_trace_capture(self):
         """Test capturing stack trace."""
-        import traceback
 
         stack_trace = ""
         try:

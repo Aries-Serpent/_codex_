@@ -3,12 +3,11 @@
 This module contains 200+ tests for REST API endpoints, request/response handling,
 and basic endpoint functionality.
 """
-
 from typing import Optional
-
-import pytest
 from fastapi import FastAPI
 from pydantic import BaseModel, ValidationError
+
+
 
 
 class MockRequest(BaseModel):

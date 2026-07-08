@@ -14,17 +14,16 @@ Tests for:
 - Batch injection
 - Performance overhead (<100ms)
 """
-
-# Import the context scorer
 import sys
 import time
 from datetime import datetime, timedelta
 from pathlib import Path
+from scripts.ci.phase_10_3_context_scorer import (
 
-import pytest
+# Import the context scorer
+
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
-from scripts.ci.phase_10_3_context_scorer import (
     ContextScorer,
     TFIDFScorer,
 )

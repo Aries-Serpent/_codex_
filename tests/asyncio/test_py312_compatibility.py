@@ -4,14 +4,16 @@ Test asyncio compatibility with Python 3.12.
 Ensures no deprecated asyncio patterns are used and that
 async code works correctly with Python 3.12's stricter requirements.
 """
-
 from __future__ import annotations
-
 import asyncio
 import sys
 import warnings
+            from codex_ml.serving.optimizations import RequestBatcher
+            from codex_ml.serving.optimizations import BatchConfig, RequestBatcher
+            from codex_ml.data import loaders
 
-import pytest
+
+
 
 
 @pytest.mark.skipif(sys.version_info < (3, 12), reason="Python 3.12+ only")
@@ -122,7 +124,6 @@ class TestRequestBatcherAsyncContext:
     async def test_request_batcher_import(self):
         """Test that RequestBatcher can be imported."""
         try:
-            from codex_ml.serving.optimizations import RequestBatcher
 
             assert RequestBatcher is not None, "RequestBatcher must be initialized"
         except ImportError:
@@ -142,7 +143,6 @@ class TestRequestBatcherAsyncContext:
     async def test_request_batcher_async_context(self):
         """Test RequestBatcher works in Python 3.12 async context."""
         try:
-            from codex_ml.serving.optimizations import BatchConfig, RequestBatcher
         except ImportError:
             pytest.skip("RequestBatcher not available")
         else:
@@ -173,7 +173,6 @@ class TestAsyncDataLoaders:
     async def test_async_data_loader_import(self):
         """Test that async data loaders can be imported."""
         try:
-            from codex_ml.data import loaders
 
             assert loaders is not None, "loaders must be initialized"
         except ImportError:

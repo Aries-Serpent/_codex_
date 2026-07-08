@@ -196,6 +196,13 @@ if x > 0:
 
     def test_security_score_calculation(self):
         """Test security score calculation."""
+import pytest
+        from auto_remediation.verifier import PostFixSnapshot, PreFixSnapshot
+        from auto_remediation.verifier import PostFixSnapshot, PreFixSnapshot
+        from auto_remediation.verifier import PostFixSnapshot, PreFixSnapshot
+        from auto_remediation.verifier import (
+        from auto_remediation.verifier import (
+        from auto_remediation.verifier import (
         safe_code = "x = 1 + 2"
         risky_code = 'subprocess.run("ls", shell=True)\neval(user_input)'
 
@@ -218,7 +225,6 @@ if x > 0:
 
     def test_improvements_detection(self):
         """Test detection of improvements."""
-        from auto_remediation.verifier import PostFixSnapshot, PreFixSnapshot
 
         pre = PreFixSnapshot(
             file_hash="hash1",
@@ -244,7 +250,6 @@ if x > 0:
 
     def test_regression_detection(self):
         """Test detection of regressions."""
-        from auto_remediation.verifier import PostFixSnapshot, PreFixSnapshot
 
         pre = PreFixSnapshot(
             file_hash="hash1",
@@ -270,7 +275,6 @@ if x > 0:
 
     def test_confidence_calculation(self):
         """Test confidence score calculation."""
-        from auto_remediation.verifier import PostFixSnapshot, PreFixSnapshot
 
         # Good fix scenario
         pre_good = PreFixSnapshot(
@@ -306,7 +310,6 @@ if x > 0:
 
     def test_success_rate_tracking(self):
         """Test success rate calculation."""
-        from auto_remediation.verifier import (
             PostFixSnapshot,
             PreFixSnapshot,
             VerificationResult,
@@ -459,7 +462,6 @@ class TestIntegration:
         verifier = FixVerifier(test_command="echo test")
 
         # Simulate multiple remediation attempts
-        from auto_remediation.verifier import (
             PostFixSnapshot,
             PreFixSnapshot,
             VerificationResult,
@@ -482,7 +484,6 @@ class TestIntegration:
         verifier = FixVerifier(test_command="echo test")
 
         # Track multiple attempts
-        from auto_remediation.verifier import (
             PostFixSnapshot,
             PreFixSnapshot,
             VerificationResult,

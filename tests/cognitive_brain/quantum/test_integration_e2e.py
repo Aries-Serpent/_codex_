@@ -4,22 +4,21 @@ Phase 8.1 Integration Tests - End-to-end workflows.
 Tests complete workflows from pattern storage through consolidation, retrieval,
 compression, and memory-guided decisions.
 """
-
+pytest.importorskip("numpy")
 import time
 from datetime import datetime, timezone
 from unittest.mock import MagicMock
-
-import pytest
-
-pytest.importorskip("numpy")
-
 from cognitive_brain.experiments.complex_scenarios import generate_complex_scenarios
 from cognitive_brain.integrations.memory_integration import (
-    MemoryAugmentedComplianceAssessor,
-)
 from cognitive_brain.quantum.compression import PatternCompressor
 from cognitive_brain.quantum.config import QuantumConfig
 from cognitive_brain.quantum.memory import MemoryPattern, QuantumMemoryManager
+
+
+
+
+    MemoryAugmentedComplianceAssessor,
+)
 
 
 # Create a default config for testing

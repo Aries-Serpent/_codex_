@@ -3,6 +3,19 @@ Tests for codex.ast.graph module.
 
 This module contains tests for dependency graph and cycle detection.
 """
+import pytest
+        from codex.ast.graph import DependencyGraph
+        from codex.ast.graph import DependencyGraph
+        from codex.ast.graph import DependencyGraph
+        from codex.ast.graph import DependencyGraph
+        from codex.ast.graph import DependencyGraph
+        from codex.ast.graph import DependencyGraph
+        from codex.ast.graph import DependencyGraph
+        from codex.ast.graph import DependencyGraph
+        from codex.ast.graph import DependencyGraph
+        from codex.ast.graph import DependencyGraph
+        from codex.ast.graph import DependencyGraph
+        from codex.ast.graph import DependencyGraph
 
 
 class TestDependencyGraph:
@@ -10,7 +23,6 @@ class TestDependencyGraph:
 
     def test_init_empty(self):
         """Test DependencyGraph initialization."""
-        from codex.ast.graph import DependencyGraph
 
         graph = DependencyGraph()
 
@@ -19,7 +31,6 @@ class TestDependencyGraph:
 
     def test_add_node(self):
         """Test adding a node."""
-        from codex.ast.graph import DependencyGraph
 
         graph = DependencyGraph()
         graph.add_node("A")
@@ -28,7 +39,6 @@ class TestDependencyGraph:
 
     def test_add_multiple_nodes(self):
         """Test adding multiple nodes."""
-        from codex.ast.graph import DependencyGraph
 
         graph = DependencyGraph()
         graph.add_node("A")
@@ -39,7 +49,6 @@ class TestDependencyGraph:
 
     def test_add_edge(self):
         """Test adding an edge."""
-        from codex.ast.graph import DependencyGraph
 
         graph = DependencyGraph()
         graph.add_edge("A", "B")
@@ -50,7 +59,6 @@ class TestDependencyGraph:
 
     def test_add_edge_creates_nodes(self):
         """Test adding edge creates nodes automatically."""
-        from codex.ast.graph import DependencyGraph
 
         graph = DependencyGraph()
         graph.add_edge("X", "Y")
@@ -60,7 +68,6 @@ class TestDependencyGraph:
 
     def test_detect_cycles_no_cycles(self):
         """Test cycle detection with no cycles."""
-        from codex.ast.graph import DependencyGraph
 
         graph = DependencyGraph()
         graph.add_edge("A", "B")
@@ -73,7 +80,6 @@ class TestDependencyGraph:
 
     def test_detect_cycles_simple_cycle(self):
         """Test detecting a simple cycle."""
-        from codex.ast.graph import DependencyGraph
 
         graph = DependencyGraph()
         graph.add_edge("A", "B")
@@ -87,7 +93,6 @@ class TestDependencyGraph:
 
     def test_detect_cycles_self_loop(self):
         """Test detecting a self-loop cycle."""
-        from codex.ast.graph import DependencyGraph
 
         graph = DependencyGraph()
         graph.add_edge("A", "A")  # Self-loop
@@ -99,7 +104,6 @@ class TestDependencyGraph:
 
     def test_detect_cycles_multiple_cycles(self):
         """Test detecting multiple independent cycles."""
-        from codex.ast.graph import DependencyGraph
 
         graph = DependencyGraph()
         # First cycle: A -> B -> A
@@ -115,7 +119,6 @@ class TestDependencyGraph:
 
     def test_detect_cycles_empty_graph(self):
         """Test cycle detection on empty graph."""
-        from codex.ast.graph import DependencyGraph
 
         graph = DependencyGraph()
 
@@ -125,7 +128,6 @@ class TestDependencyGraph:
 
     def test_detect_cycles_single_node(self):
         """Test cycle detection with single node no edges."""
-        from codex.ast.graph import DependencyGraph
 
         graph = DependencyGraph()
         graph.add_node("A")
@@ -136,7 +138,6 @@ class TestDependencyGraph:
 
     def test_complex_graph(self):
         """Test with more complex graph structure."""
-        from codex.ast.graph import DependencyGraph
 
         graph = DependencyGraph()
         # Linear chain with branch

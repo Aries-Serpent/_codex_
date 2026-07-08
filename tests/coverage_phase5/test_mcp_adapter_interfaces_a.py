@@ -69,6 +69,7 @@ def test_adapter_execute():
 @pytest.mark.timeout(30)
 async def test_adapter_context_manager():
     """Test adapter as context manager."""
+import pytest
     adapter = MockAdapter("test")
 
     assert not adapter.initialized, "Condition must be true"

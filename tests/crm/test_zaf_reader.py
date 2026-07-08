@@ -3,8 +3,9 @@ Test Zaf Reader
 
 Test module for zaf reader.
 """
-
+import pytest
 from codex_crm.zaf_legacy.reader import _normalise_manifest
+
 
 
 def test_manifest_placeholder() -> None:

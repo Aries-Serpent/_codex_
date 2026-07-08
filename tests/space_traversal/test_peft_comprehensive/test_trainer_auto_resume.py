@@ -3,17 +3,17 @@ Test Trainer Auto Resume
 
 Test module for trainer auto resume.
 """
-
-import pytest
-
 pytest.importorskip("numpy", reason="numpy required")
-
-
 from training.checkpointing import save_checkpoint
 from training.trainer import CheckpointConfig, Trainer, TrainerConfig
+    import torch  # type: ignore
+        import torch.profiler as profiler_module
+
+
+
+
 
 try:  # pragma: no cover - optional dependency
-    import torch  # type: ignore
 except ImportError:  # pragma: no cover - torch missing
     torch = None  # type: ignore
 
@@ -33,7 +33,6 @@ def disable_torch_profiler(monkeypatch):
     if not HAS_TORCH_RUNTIME:
         return
     try:
-        import torch.profiler as profiler_module
 
         # Disable profiler record function to prevent Protocol isinstance errors
         if hasattr(profiler_module, "_record_function_enter"):

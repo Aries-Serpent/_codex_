@@ -4,8 +4,31 @@ Final sprint to 30% - Last 3.05% coverage needed.
 Strategy: Maximum efficiency tests - simple assertions, quick wins.
 Physics Ref: All 3 tables - Time constraints, Import monitoring, Multi-orchestrator.
 """
+        from agents.physics_orchestrator import (
+        from agents.physics_orchestrator import (
+        from agents.physics_orchestrator import (
+        from agents.quantum_game_theory import StrategyState, TeamType
+        from agents.quantum_game_theory import TeamType
+        from agents.workflow_navigator import WorkflowFrequency
+        from agents.workflow_navigator import WorkflowStep
+        from agents.advanced_physics_calculators import FluidChannel, FluidFlowScheduler
+        from agents.advanced_physics_calculators import ChaoticAttractor
+        from agents.mental_mapping import MentalMappingModel
+        from agents.mental_mapping import NodeType
+        from agents.self_healing import IssueSeverity
+        from agents.self_healing import IssueType
+        from agents.developer_orchestrator import CodeComponent
+        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
+        from agents.physics_integration import HybridPhysicsOrchestrator
+        from agents.exceptions import AgentConfigError
+        from agents.exceptions import AgentValidationError
+        from agents.exceptions import BoundCheckError
+            from agents.codex_client.codex_client import bridge
+            from agents.codex_client.codex_client import models
+        from agents.physics_integration import HybridPhysicsOrchestrator
+        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
+        from agents.quantum_game_theory import StrategyState, TeamType
 
-import pytest
 
 
 class TestPhysicsOrchestratorFinalMethods:
@@ -13,7 +36,6 @@ class TestPhysicsOrchestratorFinalMethods:
 
     def test_orchestrate_with_empty_paths(self):
         """Test orchestrate with empty path list."""
-        from agents.physics_orchestrator import (
             DecisionState,
             PhysicsInspiredOrchestrator,
         )
@@ -27,7 +49,6 @@ class TestPhysicsOrchestratorFinalMethods:
 
     def test_orchestrate_with_single_path(self):
         """Test orchestrate with single path."""
-        from agents.physics_orchestrator import (
             ActionPath,
             ActionType,
             DecisionState,
@@ -52,7 +73,6 @@ class TestPhysicsOrchestratorFinalMethods:
 
     def test_assess_situation_detailed(self):
         """Test assess_situation with detailed state."""
-        from agents.physics_orchestrator import (
             DecisionState,
             PhysicsInspiredOrchestrator,
         )
@@ -75,7 +95,6 @@ class TestQuantumGameTheoryEngineExpanded:
 
     def test_strategy_state_team_attribute(self):
         """Test strategy state team attribute."""
-        from agents.quantum_game_theory import StrategyState, TeamType
 
         state = StrategyState(team=TeamType.RED, strategies=["attack", "probe"])
 
@@ -84,7 +103,6 @@ class TestQuantumGameTheoryEngineExpanded:
 
     def test_team_type_neutral(self):
         """Test neutral team type."""
-        from agents.quantum_game_theory import TeamType
 
         assert TeamType.NEUTRAL.value == "neutral", "Value must be initialized"
 
@@ -94,7 +112,6 @@ class TestWorkflowNavigatorExpanded:
 
     def test_workflow_frequency_values(self):
         """Test WorkflowFrequency enum values."""
-        from agents.workflow_navigator import WorkflowFrequency
 
         # Test all frequency values
         assert WorkflowFrequency.LOW.value == "low", "Value must be initialized"
@@ -103,7 +120,6 @@ class TestWorkflowNavigatorExpanded:
 
     def test_workflow_step_creation(self):
         """Test WorkflowStep creation."""
-        from agents.workflow_navigator import WorkflowStep
 
         step = WorkflowStep(id="step1", action="Run tests", optional=True)
 
@@ -117,7 +133,6 @@ class TestAdvancedPhysicsExpanded:
 
     def test_fluid_scheduler_add_multiple_channels(self):
         """Test adding multiple channels."""
-        from agents.advanced_physics_calculators import FluidChannel, FluidFlowScheduler
 
         scheduler = FluidFlowScheduler()
 
@@ -133,7 +148,6 @@ class TestAdvancedPhysicsExpanded:
 
     def test_chaotic_attractor_state_evolution(self):
         """Test chaotic attractor state changes."""
-        from agents.advanced_physics_calculators import ChaoticAttractor
 
         attractor = ChaoticAttractor(attractor_type="lorenz")
 
@@ -151,7 +165,6 @@ class TestMentalMappingExpanded:
 
     def test_model_empty_initialization(self):
         """Test model starts empty."""
-        from agents.mental_mapping import MentalMappingModel
 
         model = MentalMappingModel()
 
@@ -160,7 +173,6 @@ class TestMentalMappingExpanded:
 
     def test_node_type_hypothesis(self):
         """Test hypothesis node type."""
-        from agents.mental_mapping import NodeType
 
         # Check if HYPOTHESIS exists
         if hasattr(NodeType, "HYPOTHESIS"):
@@ -174,7 +186,6 @@ class TestSelfHealingExpanded:
 
     def test_issue_severity_ordering(self):
         """Test issue severity levels."""
-        from agents.self_healing import IssueSeverity
 
         # All severity levels should exist
         assert IssueSeverity.LOW is not None, "LOW must be initialized"
@@ -184,7 +195,6 @@ class TestSelfHealingExpanded:
 
     def test_issue_type_comprehensive(self):
         """Test all issue types."""
-        from agents.self_healing import IssueType
 
         # Common issue types
         assert IssueType.BUILD_FAILURE is not None, "BUILD_FAILURE must be initialized"
@@ -197,7 +207,6 @@ class TestDeveloperOrchestratorExpanded:
 
     def test_component_initialization(self):
         """Test component structure."""
-        from agents.developer_orchestrator import CodeComponent
 
         try:
             comp = CodeComponent(
@@ -213,7 +222,6 @@ class TestDeveloperOrchestratorExpanded:
 
     def test_orchestrator_app_type_none_initially(self):
         """Test app_type is None initially."""
-        from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
 
         orch = PhysicsGuidedDeveloperOrchestrator()
 
@@ -226,7 +234,6 @@ class TestPhysicsIntegrationExpanded:
 
     def test_capabilities_structure(self):
         """Test capabilities return structure."""
-        from agents.physics_integration import HybridPhysicsOrchestrator
 
         orch = HybridPhysicsOrchestrator()
         caps = orch.get_capabilities()
@@ -243,7 +250,6 @@ class TestExceptionsExpanded:
 
     def test_agent_config_error(self):
         """Test AgentConfigError."""
-        from agents.exceptions import AgentConfigError
 
         error = AgentConfigError("Invalid config")
 
@@ -252,7 +258,6 @@ class TestExceptionsExpanded:
 
     def test_agent_validation_error(self):
         """Test AgentValidationError."""
-        from agents.exceptions import AgentValidationError
 
         error = AgentValidationError("Validation failed")
 
@@ -261,7 +266,6 @@ class TestExceptionsExpanded:
 
     def test_bound_check_error(self):
         """Test BoundCheckError."""
-        from agents.exceptions import BoundCheckError
 
         error = BoundCheckError("Bound violated")
 
@@ -274,7 +278,6 @@ class TestCodexClientExpanded:
     def test_bridge_module_attributes(self):
         """Test bridge module has attributes."""
         try:
-            from agents.codex_client.codex_client import bridge
 
             # Should be a valid module with __name__
             assert hasattr(bridge, "__name__")
@@ -285,7 +288,6 @@ class TestCodexClientExpanded:
     def test_models_module_attributes(self):
         """Test models module structure."""
         try:
-            from agents.codex_client.codex_client import models
 
             assert hasattr(models, "__name__")
             assert "models" in models.__name__, "Condition must be true"
@@ -298,8 +300,6 @@ class TestMultiOrchestratorPatterns:
 
     def test_cross_module_invariant_check(self):
         """Test invariant checking across modules (Table 3, Eq #56)."""
-        from agents.physics_integration import HybridPhysicsOrchestrator
-        from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         # Both orchestrators should initialize
         orch1 = PhysicsInspiredOrchestrator()
@@ -310,7 +310,6 @@ class TestMultiOrchestratorPatterns:
 
     def test_coherence_consistency_pattern(self):
         """Test coherence patterns (Table 3, Eq #15)."""
-        from agents.quantum_game_theory import StrategyState, TeamType
 
         # Multiple states should maintain coherence
         state1 = StrategyState(team=TeamType.BLUE, strategies=["s1"])

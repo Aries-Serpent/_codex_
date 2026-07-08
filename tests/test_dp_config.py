@@ -1,15 +1,15 @@
 """Tests for :mod:`codex_ml.training.dp_config`."""
-
 from __future__ import annotations
-
 import sys
 from pathlib import Path
+    from codex_ml.training.dp_config import (
+    from codex_ml.training.dp_config import DifferentialPrivacyConfig
 
-import pytest
+
+
 
 
 def test_dp_config_as_dict_disabled():
-    from codex_ml.training.dp_config import (
         DifferentialPrivacyConfig,
         make_private_model,
     )
@@ -27,7 +27,6 @@ def test_dp_config_as_dict_disabled():
 
 
 def test_dp_config_requires_opacus(monkeypatch):
-    from codex_ml.training.dp_config import DifferentialPrivacyConfig
 
     monkeypatch.delenv("OPACUS_INSTALLED", raising=False)
     sys.modules.pop("opacus", None)

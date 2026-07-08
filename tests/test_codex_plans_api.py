@@ -3,17 +3,18 @@
 This module provides advanced test coverage for the public API contract,
 including type safety, documentation, and usage patterns.
 """
-
 from __future__ import annotations
-
 import inspect
 import tempfile
 from pathlib import Path
 from typing import get_type_hints
-
-import pytest
-
 from codex_plans import list_plan_documents
+        import itertools
+        import threading
+
+
+
+
 
 
 class TestListPlanDocumentsAPIContract:
@@ -232,7 +233,6 @@ class TestListPlanDocumentsIntegrationWithPathlib:
 
     def test_returned_paths_iterable(self):
         """Test that returned paths work with itertools."""
-        import itertools
 
         with tempfile.TemporaryDirectory() as tmpdir:
             base_path = Path(tmpdir)
@@ -360,7 +360,6 @@ class TestListPlanDocumentsComplexScenarios:
 
     def test_multi_user_concurrent_scenario(self):
         """Simulate multi-user concurrent access."""
-        import threading
 
         with tempfile.TemporaryDirectory() as tmpdir:
             base_path = Path(tmpdir)

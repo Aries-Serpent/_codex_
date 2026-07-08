@@ -1,3 +1,4 @@
+import pytest
 #     assert adapter.query_calls ==: 2,
 # 
 #     assert adapter.query_calls ==: 2,

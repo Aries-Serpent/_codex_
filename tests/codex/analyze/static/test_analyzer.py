@@ -3,6 +3,16 @@ Tests for codex.analyze.static.analyzer module.
 
 This module contains tests for the static analyzer.
 """
+import pytest
+        from codex.analyze.static.analyzer import LintIssue
+        from codex.analyze.static.analyzer import SecurityIssue
+        from codex.analyze.static.analyzer import ComplexityMetrics
+        from codex.analyze.static.analyzer import ComplexityMetrics
+        from codex.analyze.static.analyzer import ComplexityMetrics, FileAnalysis
+        from codex.analyze.static.analyzer import MAX_FILE_SIZE_KB
+        from codex.analyze.static.analyzer import MAX_FILES_TO_ANALYZE
+        from codex.analyze.static.analyzer import DEFAULT_TRUSTED_DIRS
+        from codex.analyze.static.analyzer import logger
 
 
 class TestLintIssue:
@@ -10,7 +20,6 @@ class TestLintIssue:
 
     def test_basic_creation(self):
         """Test LintIssue basic creation."""
-        from codex.analyze.static.analyzer import LintIssue
 
         issue = LintIssue(
             rule="E501",
@@ -34,7 +43,6 @@ class TestSecurityIssue:
 
     def test_basic_creation(self):
         """Test SecurityIssue basic creation."""
-        from codex.analyze.static.analyzer import SecurityIssue
 
         issue = SecurityIssue(
             tool="bandit",
@@ -56,7 +64,6 @@ class TestComplexityMetrics:
 
     def test_basic_creation(self):
         """Test ComplexityMetrics basic creation."""
-        from codex.analyze.static.analyzer import ComplexityMetrics
 
         metrics = ComplexityMetrics(cyclomatic=5.0, cognitive=3.0)
 
@@ -66,7 +73,6 @@ class TestComplexityMetrics:
 
     def test_with_halstead(self):
         """Test ComplexityMetrics with Halstead difficulty."""
-        from codex.analyze.static.analyzer import ComplexityMetrics
 
         metrics = ComplexityMetrics(cyclomatic=10.0, cognitive=8.0, halstead_difficulty=15.5)
 
@@ -78,7 +84,6 @@ class TestFileAnalysis:
 
     def test_basic_creation(self):
         """Test FileAnalysis basic creation."""
-        from codex.analyze.static.analyzer import ComplexityMetrics, FileAnalysis
 
         complexity = ComplexityMetrics(cyclomatic=3.0, cognitive=2.0)
 
@@ -104,28 +109,24 @@ class TestModuleConstants:
 
     def test_max_file_size(self):
         """Test MAX_FILE_SIZE_KB constant."""
-        from codex.analyze.static.analyzer import MAX_FILE_SIZE_KB
 
         assert MAX_FILE_SIZE_KB > 0, "MAX_FILE_SIZE_KB must be greater than zero"
         assert MAX_FILE_SIZE_KB == 1024, "MAX_FILE_SIZE_KB is not valid"
 
     def test_max_files(self):
         """Test MAX_FILES_TO_ANALYZE constant."""
-        from codex.analyze.static.analyzer import MAX_FILES_TO_ANALYZE
 
         assert MAX_FILES_TO_ANALYZE > 0, "MAX_FILES_TO_ANALYZE must be greater than zero"
         assert MAX_FILES_TO_ANALYZE == 1000, "MAX_FILES_TO_ANALYZE is not valid"
 
     def test_trusted_dirs(self):
         """Test TRUSTED_TOOL_DIRS constant."""
-        from codex.analyze.static.analyzer import DEFAULT_TRUSTED_DIRS
 
         assert isinstance(DEFAULT_TRUSTED_DIRS, list)
         assert "/usr/bin" in DEFAULT_TRUSTED_DIRS, "Condition must be true"
 
     def test_logger_exists(self):
         """Test logger is configured."""
-        from codex.analyze.static.analyzer import logger
 
         assert logger is not None, "logger must be initialized"
         assert logger.name == "codex.analyze.static.analyzer", "name is not valid"

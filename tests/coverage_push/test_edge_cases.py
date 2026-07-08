@@ -564,6 +564,7 @@ class TestTypeCheckingEdgeCases:
 
     def test_none_type_checking(self) -> None:
         """Test None type checking."""
+import pytest
         value = None
 
         assert value is None, "Value must be initialized"

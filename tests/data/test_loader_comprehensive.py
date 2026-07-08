@@ -7,18 +7,17 @@ Tests cover:
 - Error handling
 - Deterministic shuffling
 """
-
 from __future__ import annotations
-
 import csv
 import json
 from pathlib import Path
+    from codex_ml.data import loader
 
-import pytest
+
+
 
 # Import module under test
 try:
-    from codex_ml.data import loader
 except ImportError:
     pytest.skip("loader module not available", allow_module_level=True)
 

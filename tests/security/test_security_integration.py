@@ -1,11 +1,41 @@
 """
 Integration tests for security modules.
 """
-
 import os
 import tempfile
+        from codex.security import mask_token
+        from codex.security import mask_email
+        from codex.security import mask_email
+        from codex.security import sanitize_url
+        from codex.security import sanitize_url
+        from codex.security import sanitize_url
+        from codex.security import sanitize_url
+        from codex.security import sanitize_url
+        from codex.security import sanitize_url
+        from codex.security import sanitize_url
+        from codex.security import sanitize_url
+        from codex.security import sanitize_url
+        from codex.security import mask_password
+        from codex.security import mask_sensitive
+        from codex.security import sanitize_log
+        from codex.security import sanitize_log
+        from codex.security import sanitize_log
+        from codex.security import sanitize_log
+        from codex.security import hash_secure
+        from codex.security import hash_secure
+        from codex.security import hash_secure
+            from codex.security.storage import generate_key
+        from codex.security.storage import SecureStorage
+        import stat
+        from codex.security.storage import SecureStorage
+        from codex.security.storage import SecureStorage
+        from codex.security.storage import SecureStorage
+        import logging
+        from io import StringIO
+        from codex.security import mask_token, sanitize_log
+        from codex.security import hash_secure
 
-import pytest
+
 
 
 class TestSecurityMasking:
@@ -13,7 +43,6 @@ class TestSecurityMasking:
 
     def test_mask_token_standard(self):
         """Test standard token masking."""
-        from codex.security import mask_token
 
         token = "sk_live_abc123xyz789"
         masked = mask_token(token)
@@ -25,7 +54,6 @@ class TestSecurityMasking:
 
     def test_mask_email(self):
         """Test email masking."""
-        from codex.security import mask_email
 
         email = "user@example.com"
         masked = mask_email(email)
@@ -38,7 +66,6 @@ class TestSecurityMasking:
 
     def test_mask_email_preserves_domain(self):
         """Test that email masking correctly preserves the full domain."""
-        from codex.security import mask_email
 
         # These should all preserve the domain correctly
         assert mask_email("admin@example.com").endswith("@example.com"), "Condition must be true"
@@ -51,7 +78,6 @@ class TestURLSanitization:
 
     def test_sanitize_url_allows_exact_domain(self):
         """Test that exact domain matches are allowed."""
-        from codex.security import sanitize_url
 
         assert sanitize_url("http://example.com", ["example.com"]) is True
         assert sanitize_url("https://example.com/path", ["example.com"]) is True
@@ -59,7 +85,6 @@ class TestURLSanitization:
 
     def test_sanitize_url_allows_subdomains(self):
         """Test that valid subdomains are allowed."""
-        from codex.security import sanitize_url
 
         assert sanitize_url("http://api.example.com", ["example.com"]) is True
         assert sanitize_url("https://www.example.com", ["example.com"]) is True
@@ -67,7 +92,6 @@ class TestURLSanitization:
 
     def test_sanitize_url_blocks_path_injection(self):
         """Test that domain in path is blocked (HIGH SEVERITY)."""
-        from codex.security import sanitize_url
 
         # These should all be blocked - domain appears in path, not netloc
         assert sanitize_url("http://evil.com/example.com", ["example.com"]) is False
@@ -76,7 +100,6 @@ class TestURLSanitization:
 
     def test_sanitize_url_blocks_domain_prefix_attack(self):
         """Test that domains with allowed domain as suffix are blocked."""
-        from codex.security import sanitize_url
 
         # These should be blocked - not a subdomain, just has the string as suffix
         assert sanitize_url("http://evilexample.com", ["example.com"]) is False
@@ -85,7 +108,6 @@ class TestURLSanitization:
 
     def test_sanitize_url_blocks_domain_suffix_attack(self):
         """Test that domains with allowed domain followed by other chars are blocked."""
-        from codex.security import sanitize_url
 
         # These should be blocked - domain followed by malicious suffix
         assert sanitize_url("http://example.com.evil.com", ["example.com"]) is False
@@ -94,7 +116,6 @@ class TestURLSanitization:
 
     def test_sanitize_url_handles_empty_input(self):
         """Test handling of empty or invalid URLs."""
-        from codex.security import sanitize_url
 
         assert sanitize_url("", ["example.com"]) is False
         assert sanitize_url("not-a-url", ["example.com"]) is False
@@ -102,7 +123,6 @@ class TestURLSanitization:
 
     def test_sanitize_url_case_insensitive(self):
         """Test that domain matching is case-insensitive."""
-        from codex.security import sanitize_url
 
         assert sanitize_url("http://EXAMPLE.COM", ["example.com"]) is True
         assert sanitize_url("http://Example.Com/path", ["example.com"]) is True
@@ -110,7 +130,6 @@ class TestURLSanitization:
 
     def test_sanitize_url_multiple_allowed_domains(self):
         """Test validation with multiple allowed domains."""
-        from codex.security import sanitize_url
 
         allowed = ["example.com", "trusted.org", "api.service.net"]
 
@@ -121,7 +140,6 @@ class TestURLSanitization:
 
     def test_sanitize_url_no_allowed_domains(self):
         """Test that without allowed domains, any valid URL passes."""
-        from codex.security import sanitize_url
 
         # When allowed_domains is None, just check for valid URL structure
         assert sanitize_url("http://example.com", None) is True
@@ -130,7 +148,6 @@ class TestURLSanitization:
 
     def test_mask_password_always_hidden(self):
         """Test password is always fully masked."""
-        from codex.security import mask_password
 
         assert mask_password("mypassword123") == "***", "mask_passw is not valid"
         assert mask_password("") == "(empty)", "mask_passw is not valid"
@@ -138,7 +155,6 @@ class TestURLSanitization:
 
     def test_mask_sensitive_bidirectional(self):
         """Test mask_sensitive shows both ends."""
-        from codex.security import mask_sensitive
 
         value = "secret_key_12345"
         masked = mask_sensitive(value, show_chars=4)
@@ -153,7 +169,6 @@ class TestLogSanitization:
 
     def test_sanitize_removes_newlines(self):
         """Test newline removal prevents log injection."""
-        from codex.security import sanitize_log
 
         malicious = "normal\nFAKE LOG: Admin access granted"
         sanitized = sanitize_log(malicious)
@@ -164,7 +179,6 @@ class TestLogSanitization:
 
     def test_sanitize_removes_tabs(self):
         """Test tab character removal."""
-        from codex.security import sanitize_log
 
         data = "column1\tcolumn2\tcolumn3"
         sanitized = sanitize_log(data)
@@ -173,13 +187,11 @@ class TestLogSanitization:
 
     def test_sanitize_handles_none(self):
         """Test handling of None values."""
-        from codex.security import sanitize_log
 
         assert sanitize_log(None) == "None", "Condition must be true"
 
     def test_sanitize_truncates_long_input(self):
         """Test truncation of excessively long input."""
-        from codex.security import sanitize_log
 
         long_data = "a" * 1000
         sanitized = sanitize_log(long_data, max_length=100)
@@ -193,7 +205,6 @@ class TestSecureHashing:
 
     def test_hash_secure_sha256(self):
         """Test SHA-256 hashing."""
-        from codex.security import hash_secure
 
         token = "my_secret_token"
         hash1 = hash_secure(token)
@@ -208,7 +219,6 @@ class TestSecureHashing:
 
     def test_hash_secure_sha512(self):
         """Test SHA-512 hashing."""
-        from codex.security import hash_secure
 
         token = "my_secret_token"
         hash_val = hash_secure(token, algorithm="sha512")
@@ -218,7 +228,6 @@ class TestSecureHashing:
 
     def test_hash_secure_invalid_algorithm(self):
         """Test error on invalid algorithm."""
-        from codex.security import hash_secure
 
         with pytest.raises(ValueError, match="Unsupported algorithm"):
             hash_secure("data", algorithm="md5")
@@ -237,7 +246,6 @@ class TestEncryptedStorage:
     def encryption_key(self, monkeypatch):
         """Set up encryption key for tests."""
         try:
-            from codex.security.storage import generate_key
 
             key = generate_key()
         except ImportError:
@@ -247,7 +255,6 @@ class TestEncryptedStorage:
 
     def test_store_and_load_secret(self, temp_dir, encryption_key):
         """Test basic encryption and decryption."""
-        from codex.security.storage import SecureStorage
 
         storage = SecureStorage()
         secret = "my_api_key_12345"  # pragma: allowlist secret
@@ -268,9 +275,7 @@ class TestEncryptedStorage:
 
     def test_secure_file_permissions(self, temp_dir, encryption_key):
         """Test file permissions are set securely."""
-        import stat
 
-        from codex.security.storage import SecureStorage
 
         storage = SecureStorage()
         filepath = os.path.join(temp_dir, "secret.enc")
@@ -289,7 +294,6 @@ class TestEncryptedStorage:
 
     def test_load_nonexistent_file(self, encryption_key):
         """Test error handling for missing files."""
-        from codex.security.storage import SecureStorage
 
         storage = SecureStorage()
 
@@ -298,7 +302,6 @@ class TestEncryptedStorage:
 
     def test_secret_exists_check(self, temp_dir, encryption_key):
         """Test checking if secret file exists."""
-        from codex.security.storage import SecureStorage
 
         storage = SecureStorage()
         filepath = os.path.join(temp_dir, "secret.enc")
@@ -315,10 +318,7 @@ class TestIntegrationScenarios:
 
     def test_logging_pipeline(self):
         """Test complete logging pipeline with security."""
-        import logging
-        from io import StringIO
 
-        from codex.security import mask_token, sanitize_log
 
         # Keep this test isolated even if prior tests globally disabled logging.
         previous_disable_level = logging.root.manager.disable
@@ -354,7 +354,6 @@ class TestIntegrationScenarios:
 
     def test_token_comparison_workflow(self):
         """Test secure token comparison workflow."""
-        from codex.security import hash_secure
 
         # Simulate storing hashed token
         original_token = "user_api_token_12345"

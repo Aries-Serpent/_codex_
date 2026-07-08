@@ -8,14 +8,15 @@ Created: 2026-01-19
 Phase: 4.3 Part 2 - Integration & Cross-Module Tests
 Target: 30-40 tests for integration scenarios
 """
-
+import pytest
 import importlib.util
 import os
 import sys
 from pathlib import Path
 from unittest.mock import patch
-
 from tests.branch_coverage import (
+
+
     branch_input,  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 )
 

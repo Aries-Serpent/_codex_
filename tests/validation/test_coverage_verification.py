@@ -1,3 +1,4 @@
+import pytest
 #         assert (, "Condition must be true"
 # Phase 18.0: Coverage Verification Tests
 #         """Test that coverage upload is configured (optional)."""

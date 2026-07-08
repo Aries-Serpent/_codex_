@@ -3,11 +3,12 @@ Test Sarif Aggregate
 
 Test module for sarif aggregate.
 """
-
+import pytest
 import json
 import subprocess
 import sys
 from pathlib import Path
+
 
 
 def write_sarif(p: Path, rule_id: str):

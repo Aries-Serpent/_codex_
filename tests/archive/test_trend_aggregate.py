@@ -3,13 +3,14 @@ Trend Aggregation Test (P5)
 - Creates synthetic historical scored files
 - Validates delta & sparkline inclusion
 """
-
+import pytest
 import json
 import os
 import shutil
 import subprocess
 import sys
 from pathlib import Path
+
 
 ART = Path("audit_artifacts")
 

@@ -4,6 +4,19 @@ Tests for agents.interpretability.sparse_probes module.
 This module contains comprehensive tests for sparse linear probes used for
 interpretability of agent state vectors.
 """
+import pytest
+        from agents.interpretability.sparse_probes import SparseLinearProbe
+        from agents.interpretability.sparse_probes import SparseLinearProbe
+        from agents.interpretability.sparse_probes import SparseLinearProbe
+        from agents.interpretability.sparse_probes import SparseLinearProbe
+        from agents.interpretability.sparse_probes import SparseLinearProbe
+        from agents.interpretability.sparse_probes import SparseLinearProbe
+        from agents.interpretability.sparse_probes import SparseLinearProbe
+        from agents.interpretability import sparse_probes
+        from agents.interpretability.sparse_probes import logger
+        from agents.interpretability.sparse_probes import SparseLinearProbe
+        from agents.interpretability.sparse_probes import SparseLinearProbe
+        from agents.interpretability.sparse_probes import SparseLinearProbe
 
 
 class TestSparseLinearProbe:
@@ -11,7 +24,6 @@ class TestSparseLinearProbe:
 
     def test_default_values(self):
         """Test SparseLinearProbe default values."""
-        from agents.interpretability.sparse_probes import SparseLinearProbe
 
         probe = SparseLinearProbe()
 
@@ -22,7 +34,6 @@ class TestSparseLinearProbe:
 
     def test_from_dimensions_basic(self):
         """Test creating probe from dimensions."""
-        from agents.interpretability.sparse_probes import SparseLinearProbe
 
         probe = SparseLinearProbe.from_dimensions(
             num_concepts=5, input_dim=10, sparsity_threshold=0.2, seed=42
@@ -36,7 +47,6 @@ class TestSparseLinearProbe:
 
     def test_from_dimensions_determinism(self):
         """Test probe initialization is deterministic with same seed."""
-        from agents.interpretability.sparse_probes import SparseLinearProbe
 
         probe1 = SparseLinearProbe.from_dimensions(num_concepts=3, input_dim=4, seed=123)
 
@@ -47,7 +57,6 @@ class TestSparseLinearProbe:
 
     def test_from_dimensions_different_seeds(self):
         """Test different seeds produce different weights."""
-        from agents.interpretability.sparse_probes import SparseLinearProbe
 
         probe1 = SparseLinearProbe.from_dimensions(num_concepts=3, input_dim=4, seed=1)
 
@@ -57,7 +66,6 @@ class TestSparseLinearProbe:
 
     def test_concept_names_generated(self):
         """Test concept names are auto-generated."""
-        from agents.interpretability.sparse_probes import SparseLinearProbe
 
         probe = SparseLinearProbe.from_dimensions(num_concepts=3, input_dim=4)
 
@@ -65,7 +73,6 @@ class TestSparseLinearProbe:
 
     def test_weights_are_small_initialization(self):
         """Test weights are initialized with small values."""
-        from agents.interpretability.sparse_probes import SparseLinearProbe
 
         probe = SparseLinearProbe.from_dimensions(num_concepts=5, input_dim=10, seed=42)
 
@@ -77,7 +84,6 @@ class TestSparseLinearProbe:
 
     def test_bias_are_small_initialization(self):
         """Test biases are initialized with small values."""
-        from agents.interpretability.sparse_probes import SparseLinearProbe
 
         probe = SparseLinearProbe.from_dimensions(num_concepts=5, input_dim=10, seed=42)
 
@@ -91,14 +97,12 @@ class TestModuleLevelFlags:
 
     def test_numpy_available_flag(self):
         """Test NUMPY_AVAILABLE flag exists."""
-        from agents.interpretability import sparse_probes
 
         assert hasattr(sparse_probes, "NUMPY_AVAILABLE")
         assert isinstance(sparse_probes.NUMPY_AVAILABLE, bool)
 
     def test_logger_exists(self):
         """Test logger is configured."""
-        from agents.interpretability.sparse_probes import logger
 
         assert logger is not None, "logger must be initialized"
         assert logger.name == "agents.interpretability.sparse_probes", "name is not valid"
@@ -109,7 +113,6 @@ class TestEdgeCases:
 
     def test_single_concept_single_input(self):
         """Test probe with single concept and single input dimension."""
-        from agents.interpretability.sparse_probes import SparseLinearProbe
 
         probe = SparseLinearProbe.from_dimensions(num_concepts=1, input_dim=1, seed=42)
 
@@ -119,7 +122,6 @@ class TestEdgeCases:
 
     def test_large_dimensions(self):
         """Test probe with larger dimensions."""
-        from agents.interpretability.sparse_probes import SparseLinearProbe
 
         probe = SparseLinearProbe.from_dimensions(num_concepts=100, input_dim=50, seed=42)
 
@@ -129,7 +131,6 @@ class TestEdgeCases:
 
     def test_custom_sparsity_threshold(self):
         """Test probe with custom sparsity threshold."""
-        from agents.interpretability.sparse_probes import SparseLinearProbe
 
         probe = SparseLinearProbe.from_dimensions(
             num_concepts=3, input_dim=4, sparsity_threshold=0.5, seed=42

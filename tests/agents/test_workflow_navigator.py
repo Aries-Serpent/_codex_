@@ -4,8 +4,24 @@ Tests for agents.workflow_navigator module.
 This module contains tests for the Workflow Navigator that provides
 tokenized logical workflows for deterministic navigation and execution.
 """
-
+import pytest
 import tempfile
+        from agents.workflow_navigator import WorkflowFrequency
+        from agents.workflow_navigator import WorkflowFrequency
+        from agents.workflow_navigator import StepStatus
+        from agents.workflow_navigator import StepStatus, WorkflowStep
+        from agents.workflow_navigator import WorkflowStep
+        from agents.workflow_navigator import WorkflowStep
+        from agents.workflow_navigator import StepStatus, WorkflowStep
+        from agents.workflow_navigator import StepStatus, WorkflowStep
+        from agents.workflow_navigator import StepStatus, WorkflowStep
+        from agents.workflow_navigator import StepStatus, WorkflowStep
+        from agents.workflow_navigator import StepStatus, WorkflowStep
+        from agents.workflow_navigator import Workflow, WorkflowFrequency
+        from agents.workflow_navigator import Workflow, WorkflowFrequency, WorkflowStep
+        from agents.workflow_navigator import Workflow, WorkflowFrequency
+        from agents.workflow_navigator import logger
+
 
 
 class TestWorkflowFrequency:
@@ -13,7 +29,6 @@ class TestWorkflowFrequency:
 
     def test_frequency_values(self):
         """Test WorkflowFrequency enum values."""
-        from agents.workflow_navigator import WorkflowFrequency
 
         assert WorkflowFrequency.HIGH.value == "high", "Value must be initialized"
         assert WorkflowFrequency.MEDIUM.value == "medium", "Value must be initialized"
@@ -21,7 +36,6 @@ class TestWorkflowFrequency:
 
     def test_frequency_from_string(self):
         """Test creating WorkflowFrequency from string."""
-        from agents.workflow_navigator import WorkflowFrequency
 
         assert WorkflowFrequency("high") == WorkflowFrequency.HIGH, "W is not valid"
         assert WorkflowFrequency("medium") == WorkflowFrequency.MEDIUM, "W is not valid"
@@ -33,7 +47,6 @@ class TestStepStatus:
 
     def test_status_values(self):
         """Test StepStatus enum values."""
-        from agents.workflow_navigator import StepStatus
 
         assert StepStatus.PENDING.value == "pending", "Value must be initialized"
         assert StepStatus.RUNNING.value == "running", "Value must be initialized"
@@ -50,7 +63,6 @@ class TestWorkflowStep:
 
     def test_default_values(self):
         """Test WorkflowStep default values."""
-        from agents.workflow_navigator import StepStatus, WorkflowStep
 
         step = WorkflowStep(id="step_1", action="test action")
 
@@ -64,7 +76,6 @@ class TestWorkflowStep:
 
     def test_step_with_command(self):
         """Test WorkflowStep with command."""
-        from agents.workflow_navigator import WorkflowStep
 
         step = WorkflowStep(id="step_1", action="run echo", command="echo hello")
 
@@ -72,7 +83,6 @@ class TestWorkflowStep:
 
     def test_step_with_outputs(self):
         """Test WorkflowStep with outputs."""
-        from agents.workflow_navigator import WorkflowStep
 
         step = WorkflowStep(
             id="step_1", action="generate files", outputs=["file1.txt", "file2.txt"]
@@ -82,7 +92,6 @@ class TestWorkflowStep:
 
     def test_execute_simple_command(self):
         """Test executing a simple echo command."""
-        from agents.workflow_navigator import StepStatus, WorkflowStep
 
         step = WorkflowStep(id="step_1", action="echo test", command="echo hello")
 
@@ -96,7 +105,6 @@ class TestWorkflowStep:
 
     def test_execute_no_action(self):
         """Test executing step with no command or uses."""
-        from agents.workflow_navigator import StepStatus, WorkflowStep
 
         step = WorkflowStep(id="step_1", action="no-op")
 
@@ -107,7 +115,6 @@ class TestWorkflowStep:
 
     def test_execute_uses_workflow(self):
         """Test executing step that uses another workflow."""
-        from agents.workflow_navigator import StepStatus, WorkflowStep
 
         step = WorkflowStep(id="step_1", action="call workflow", uses="other.workflow.function")
 
@@ -118,7 +125,6 @@ class TestWorkflowStep:
 
     def test_execute_failed_command(self):
         """Test handling failed command execution."""
-        from agents.workflow_navigator import StepStatus, WorkflowStep
 
         step = WorkflowStep(id="step_1", action="fail command", command="exit 1", optional=False)
 
@@ -129,7 +135,6 @@ class TestWorkflowStep:
 
     def test_execute_optional_failed_command(self):
         """Test optional step with failed command."""
-        from agents.workflow_navigator import StepStatus, WorkflowStep
 
         step = WorkflowStep(id="step_1", action="optional fail", command="exit 1", optional=True)
 
@@ -145,7 +150,6 @@ class TestWorkflow:
 
     def test_workflow_creation(self):
         """Test creating a Workflow."""
-        from agents.workflow_navigator import Workflow, WorkflowFrequency
 
         workflow = Workflow(
             workflow_id="wf_1",
@@ -164,7 +168,6 @@ class TestWorkflow:
 
     def test_workflow_with_steps(self):
         """Test Workflow with steps."""
-        from agents.workflow_navigator import Workflow, WorkflowFrequency, WorkflowStep
 
         steps = [
             WorkflowStep(id="step_1", action="action 1"),
@@ -183,7 +186,6 @@ class TestWorkflow:
 
     def test_workflow_with_aliases(self):
         """Test Workflow with aliases."""
-        from agents.workflow_navigator import Workflow, WorkflowFrequency
 
         workflow = Workflow(
             workflow_id="wf_1",
@@ -201,7 +203,6 @@ class TestModuleLevel:
 
     def test_logger_exists(self):
         """Test logger is properly configured."""
-        from agents.workflow_navigator import logger
 
         assert logger is not None, "logger must be initialized"
         assert logger.name == "agents.workflow_navigator", "name is not valid"

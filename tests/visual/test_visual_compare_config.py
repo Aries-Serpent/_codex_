@@ -3,13 +3,13 @@ Test Visual Compare Config
 
 Test module for visual compare config.
 """
-
 import json
 import subprocess
 import sys
 from pathlib import Path
+    from PIL import Image  # type: ignore
 
-import pytest
+
 
 pytestmark = pytest.mark.skipif(
     subprocess.call(
@@ -23,7 +23,6 @@ pytestmark = pytest.mark.skipif(
 
 
 def write_img(p: Path, gray: int):
-    from PIL import Image  # type: ignore
 
     img = Image.new("L", (100, 60), color=gray)
     img.save(p)
