@@ -84256,7 +84256,16 @@
       "extension": ".json",
       "path": "docs-data/generated/candidate-inventory.json",
       "requires_ingestion": false,
-      "size_bytes": 2659994
+      "size_bytes": 1886173
+    },
+    {
+      "classification": "generated_machine_readable_artifact",
+      "confidence": 1.0,
+      "exception": false,
+      "extension": ".json",
+      "path": "docs-data/generated/changed-candidates.json",
+      "requires_ingestion": false,
+      "size_bytes": 154
     },
     {
       "classification": "generated_machine_readable_artifact",
@@ -84265,7 +84274,7 @@
       "extension": ".json",
       "path": "docs-data/generated/codebase-discovery-report.json",
       "requires_ingestion": false,
-      "size_bytes": 558048
+      "size_bytes": 525350
     },
     {
       "classification": "generated_machine_readable_artifact",
@@ -84319,7 +84328,7 @@
       "extension": ".json",
       "path": "docs-data/generated/machine-readable-coverage-report.json",
       "requires_ingestion": false,
-      "size_bytes": 546241
+      "size_bytes": 578634
     },
     {
       "classification": "generated_machine_readable_artifact",
@@ -84337,7 +84346,7 @@
       "extension": ".json",
       "path": "docs-data/generated/markdown-inventory.json",
       "requires_ingestion": false,
-      "size_bytes": 2204933
+      "size_bytes": 2205109
     },
     {
       "classification": "generated_machine_readable_artifact",
@@ -84400,7 +84409,7 @@
       "extension": ".json",
       "path": "docs-data/generated/unmanaged-candidates-report.json",
       "requires_ingestion": false,
-      "size_bytes": 111
+      "size_bytes": 10223
     },
     {
       "classification": "generated_machine_readable_artifact",
@@ -91333,5 +91342,5 @@
       "size_bytes": 6029
     }
   ],
-  "generated_at": "2026-07-08T19:17:36Z"
+  "generated_at": "2026-07-08T19:18:19Z"
 }

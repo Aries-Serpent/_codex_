@@ -6,7 +6,7 @@
     "configuration": 987,
     "developer_guide": 15,
     "exception_candidate": 8511,
-    "generated_machine_readable_artifact": 19,
+    "generated_machine_readable_artifact": 20,
     "legacy_human_documentation": 158,
     "planning_document": 27,
     "repository_readme": 10,
@@ -162,7 +162,7 @@
     "detectors": 1,
     "docker": 3,
     "docs": 1955,
-    "docs-data": 64,
+    "docs-data": 65,
     "dvc.yaml": 1,
     "examples": 6,
     "experiments": 1,
@@ -9463,8 +9463,8 @@
     "artifacts/emb/models--sentence-transformers--all-MiniLM-L6-v2/blobs/952a9b81c0bfd99800fabf352f69c7ccd46c5e43",
     "artifacts/emb/models--sentence-transformers--all-MiniLM-L6-v2/blobs/fd1b291129c607e5d49799f87cb219b27f98acdf"
   ],
-  "generated_at": "2026-07-08T19:17:36Z",
-  "total_candidate_files": 10148,
+  "generated_at": "2026-07-08T19:18:19Z",
+  "total_candidate_files": 10149,
   "unresolved_risks": [
     "Large unmanaged legacy document volume may require staged migration.",
     "Strict enforcement mode will fail until ingestion or exemptions are completed.",
