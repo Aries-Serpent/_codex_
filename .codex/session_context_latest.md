@@ -1,29 +1,29 @@
-# Session Context — 2026-07-08T14:41:14Z
+# Session Context — 2026-07-08T14:57:58Z
 **Branch:** `copilot/activate-phase-12-post-merge-execution`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4990` (✅)
-- GraphQL remaining: `4997` (✅)
+- REST remaining: `4976` (✅)
+- GraphQL remaining: `4995` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **.github/workflows/automated-rollback-generation.yml** — `failure` on `copilot/activate-phase-12-post-merge-execution` (2026-07-08)
-- **.github/workflows/ci-checkpoint-validation.yml** — `failure` on `copilot/activate-phase-12-post-merge-execution` (2026-07-08)
-- **.github/workflows/auth-tests.yml** — `failure` on `copilot/activate-phase-12-post-merge-execution` (2026-07-08)
+- **.github/workflows/automated-post-deployment-verification.yml** — `failure` on `copilot/activate-phase-12-post-merge-execution` (2026-07-08)
 - **.github/workflows/autonomy-phase-ci-matrix.yml** — `failure` on `copilot/activate-phase-12-post-merge-execution` (2026-07-08)
-- **.github/workflows/admin-action-t03.yml** — `failure` on `copilot/activate-phase-12-post-merge-execution` (2026-07-08)
+- **.github/workflows/actionlint-audit.yml** — `failure` on `copilot/activate-phase-12-post-merge-execution` (2026-07-08)
+- **.github/workflows/agent_infrastructure_manager.yml** — `failure` on `copilot/activate-phase-12-post-merge-execution` (2026-07-08)
+- **.github/workflows/audit-qa-suite.yml** — `failure` on `copilot/activate-phase-12-post-merge-execution` (2026-07-08)
 
 ## 📝 Recent Commits
+- `472a6b4d` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-07-08)
+- `269aa376` Apply remaining changes — copilot-swe-agent[bot] (2026-07-08)
 - `48df9baf` Phase 12 WS3 Continuation: Create coordination documents and execution roadmap — copilot-swe-agent[bot] (2026-07-08)
 - `277777bd` Phase 12 WS3 Continuation: Implement campaign execution plan - Priority 1 initia — copilot-swe-agent[bot] (2026-07-08)
 - `c956d186` Apply remaining changes — copilot-swe-agent[bot] (2026-07-08)
 - `14f6425f` Phase 12 WS3: Session CONTINUING per user directive DO NOT CONCLUDE. Monitoring  — copilot-swe-agent[bot] (2026-07-08)
 - `750828b6` Phase 12 WS3 Campaign: DO NOT CONCLUDE - Continued monitoring active. Tier 1 73% — copilot-swe-agent[bot] (2026-07-08)
 - `b27f23bc` Phase 12 WS3 Continuation: Update accountability report and CHANGELOG per REQ-4/ — copilot-swe-agent[bot] (2026-07-08)
-- `c280e7a7` Phase 12 WS3 Session Handoff: Tier 1 73% complete, Tier 2 100% merged, Documenta — copilot-swe-agent[bot] (2026-07-08)
-- `0f3dee5e` Phase 12 WS3 Campaign: Tier 2 Complete (100%), Documentation 69% (11/16 agents). — copilot-swe-agent[bot] (2026-07-08)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
