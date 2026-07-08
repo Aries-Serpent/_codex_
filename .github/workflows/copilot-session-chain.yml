@@ -67,12 +67,12 @@ jobs:
           \ merged PR explicitly opts in via the\n// follow-up checkbox.  Leave it\
           \ unchecked to suppress auto-chaining.\nconst body = pr.body || '';\nconst\
           \ OPT_IN_MARKER = '- [x] **\U0001F517 Needs follow-up session**';\nif (!body.includes(OPT_IN_MARKER))\
-          \ {\n  core.setOutput('should_chain', 'false');\n  core.info(\n    `PR #${pr.number}\
+          \ {\n  core.setOutput('should_chain', 'false');\n  core.info(\n    `PR  #${pr.number}\
           \ merged into ${base} but opt-in marker not checked \u2014 ` +\n    `skipping\
           \ auto-chain. To enable, check \"\U0001F517 Needs follow-up session\" `\
           \ +\n    `in the PR body before merging.`\n  );\n  return;\n}\n\ncore.setOutput('should_chain',\
           \ 'true');\ncore.setOutput('integration_branch', base);\ncore.info(\n  `Sub-PR\
-          \ #${pr.number} merged into ${base} with follow-up opt-in \u2014 ` +\n \
+          \  #${pr.number} merged into ${base} with follow-up opt-in \u2014 ` +\n \
           \ `opening next session chain.`\n);\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
@@ -103,7 +103,7 @@ jobs:
         )) | \"\\(.number):\\(.headRefName)\"' \\\n  2>/dev/null | head -1 || true)\n\
         \nif [ -n \"${OPEN_SESSION_PR}\" ]; then\n  PR_NUM=\"${OPEN_SESSION_PR%%:*}\"\
         \n  BRANCH_NAME=\"${OPEN_SESSION_PR##*:}\"\n  echo \"\u23ED\uFE0F Skipping\
-        \ \u2014 open session PR #${PR_NUM} already exists for branch '${BRANCH_NAME}'\
+        \ \u2014 open session PR  #${PR_NUM} already exists for branch '${BRANCH_NAME}'\
         \ targeting '${INTEGRATION_BRANCH}'\"\n  echo \"skip=true\" >> \"$GITHUB_OUTPUT\"\
         \n  echo \"existing_pr=${PR_NUM}\" >> \"$GITHUB_OUTPUT\"\nelse\n  echo \"\u2705\
         \ No open session PR found \u2014 proceeding to create new session\"\n  echo\
@@ -121,13 +121,13 @@ jobs:
         \n  --repo Aries-Serpent/_codex_ \\\n  --json headRefName --jq '.headRefName'\
         \ 2>/dev/null || true)\n\nif [ -z \"${EXISTING_BRANCH}\" ]; then\n  echo \"\
         retrigger_posted=false\" >> \"$GITHUB_OUTPUT\"\n  echo \"::warning::Could\
-        \ not resolve head branch for PR #${EXISTING_PR} \u2014 skipping re-trigger;\
+        \ not resolve head branch for PR  #${EXISTING_PR} \u2014 skipping re-trigger;\
         \ agent must be started manually\"\n  echo \"\u26A0\uFE0F Re-trigger skipped:\
-        \ could not resolve head branch for PR #${EXISTING_PR}\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \ could not resolve head branch for PR  #${EXISTING_PR}\" >> \"$GITHUB_STEP_SUMMARY\"\
         \n  exit 0\nfi\n\nTRIGGER_FILE=\"${RUNNER_TEMP}/retrigger_body_${EXISTING_PR}.txt\"\
         \n\nif [ -n \"${CONTINUATION_PROMPT}\" ]; then\n  TRIGGER_COMMENT=\"${CONTINUATION_PROMPT}\"\
         \nelif [ -n \"${MERGED_PR}\" ]; then\n  cat > \"${TRIGGER_FILE}\" <<RETRIGGER_EOF\n\
-        @copilot+claude-haiku-4.5 /plan\n\nPrevious sub-PR #${MERGED_PR} has been\
+        @copilot+claude-haiku-4.5 /plan\n\nPrevious sub-PR  #${MERGED_PR} has been\
         \ merged into \\`${INTEGRATION_BRANCH}\\`.\nYou are now working on branch\
         \ \\`${EXISTING_BRANCH}\\` \u2014 an open sub-PR already targeting\nthe staging\
         \ integration branch \\`${INTEGRATION_BRANCH}\\`.\n\n> **\U0001F4A1 Parallel\
@@ -136,7 +136,7 @@ jobs:
         **Architecture reminder:**\n\\`\\`\\`\n${EXISTING_BRANCH}  \u2500\u2500\u25BA\
         \  ${INTEGRATION_BRANCH}  \u2500\u2500\u25BA  main\n(this PR)           (staging\
         \ gate)          (promotion PR)\n\\`\\`\\`\n\nDo NOT work directly on \\`${INTEGRATION_BRANCH}\\\
-        `.\nContinue from where PR #${MERGED_PR} left off, addressing any remaining\
+        `.\nContinue from where PR  #${MERGED_PR} left off, addressing any remaining\
         \ items\nfrom the priority list. Review all CI checks and address any failures.\n\
         \n> **\u26A0\uFE0F IMPORTANT \u2014 no new branch or PR needed:** This PR\
         \ (#${EXISTING_PR}) is already\n> open on branch \\`${EXISTING_BRANCH}\\`.\
@@ -165,10 +165,10 @@ jobs:
         echo \"_[\U0001F517 Workflow run](https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID})_\"\
         \ >> \"${TRIGGER_FILE}\"\nif gh pr comment \"${EXISTING_PR}\" --body-file\
         \ \"${TRIGGER_FILE}\"; then\n  echo \"retrigger_posted=true\" >> \"$GITHUB_OUTPUT\"\
-        \n  echo \"\u2705 Posted re-trigger comment on existing PR #${EXISTING_PR}\
+        \n  echo \"\u2705 Posted re-trigger comment on existing PR  #${EXISTING_PR}\
         \ (branch: ${EXISTING_BRANCH})\"\nelse\n  echo \"retrigger_posted=false\"\
         \ >> \"$GITHUB_OUTPUT\"\n  echo \"::warning::Failed to post re-trigger comment\
-        \ on PR #${EXISTING_PR} \u2014 agent must be started manually\"\nfi\n"
+        \ on PR  #${EXISTING_PR} \u2014 agent must be started manually\"\nfi\n"
     - name: Create session branch and open PR
       id: create_pr
       if: steps.dedup_check.outputs.skip != 'true'
@@ -187,7 +187,7 @@ jobs:
         \nmkdir -p .codex/sessions\ncat > \"${MARKER_FILE}\" << EOF\n# \U0001F517\
         \ Session Chain Marker \u2014 ${TIMESTAMP}\n\n**Branch:** \\`${NEW_BRANCH}\\\
         `\n**Integration branch:** \\`${INTEGRATION}\\`\n**Opened by:** copilot-session-chain.yml\
-        \ (run #${RUN_ID})\n**Timestamp:** ${TIMESTAMP}\n\n> This file was created\
+        \ (run  #${RUN_ID})\n**Timestamp:** ${TIMESTAMP}\n\n> This file was created\
         \ automatically to initialise the session branch.\n> The Copilot Coding Agent\
         \ will replace this with real work.\nEOF\n\ngit add \"${MARKER_FILE}\"\ngit\
         \ commit -m \"chore(session): initialise agent session branch ${TIMESTAMP}\
@@ -226,7 +226,7 @@ jobs:
         \ \\\n  --head \"${NEW_BRANCH}\" \\\n  --draft)\n\nPR_NUMBER=$(echo \"${PR_URL}\"\
         \ | grep -oP '\\d+$')\necho \"pr_number=${PR_NUMBER}\" >> \"$GITHUB_OUTPUT\"\
         \necho \"pr_url=${PR_URL}\"       >> \"$GITHUB_OUTPUT\"\necho \"\u2705 Opened\
-        \ PR #${PR_NUMBER}: ${PR_URL}\"\n"
+        \ PR  #${PR_NUMBER}: ${PR_URL}\"\n"
     - name: Post Copilot trigger comment
       if: steps.dedup_check.outputs.skip != 'true' && inputs.auto_start != 'false'
       env:
@@ -238,7 +238,7 @@ jobs:
       run: "set -euo pipefail\n\n# Build the trigger comment\nif [ -n \"${CONTINUATION_PROMPT}\"\
         \ ]; then\n  TRIGGER_COMMENT=\"${CONTINUATION_PROMPT}\"\nelif [ -n \"${MERGED_PR}\"\
         \ ]; then\n  TRIGGER_COMMENT=$(printf '%s\\n' \\\n    '@copilot+claude-haiku-4.5\
-        \ /plan' \\\n    '' \\\n    \"Previous sub-PR #${MERGED_PR} has been merged\
+        \ /plan' \\\n    '' \\\n    \"Previous sub-PR  #${MERGED_PR} has been merged\
         \ into \\`${INTEGRATION_BRANCH}\\`.\" \\\n    \"You are now working on branch\
         \ \\`${NEW_BRANCH}\\` \u2014 a new sub-PR targeting the\" \\\n    \"staging\
         \ integration branch \\`${INTEGRATION_BRANCH}\\`.\" \\\n    '' \\\n    '>\
@@ -249,7 +249,7 @@ jobs:
         \  \u2500\u2500\u25BA  main\" \\\n    '(this PR)           (staging gate)\
         \          (promotion PR)' \\\n    '```' \\\n    '' \\\n    \"Do NOT work\
         \ directly on \\`${INTEGRATION_BRANCH}\\`.\" \\\n    \"Continue from where\
-        \ PR #${MERGED_PR} left off, addressing any remaining items\" \\\n    'from\
+        \ PR  #${MERGED_PR} left off, addressing any remaining items\" \\\n    'from\
         \ the priority list. Review all CI checks and address any failures.' \\\n\
         \    '' \\\n    '> **Note (GitHub Copilot no-auto-PR policy):** Sessions no\
         \ longer create PRs by' \\\n    \"> default. This PR (#${PR_NUMBER}) is pre-created\
@@ -272,7 +272,7 @@ jobs:
         ` and push to this PR. Do NOT create a new branch or PR.\")\nfi\n\nTRIGGER_COMMENT=\"\
         ${TRIGGER_COMMENT}\\n\\n---\\n_[\U0001F517 Workflow run](https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID})_\"\
         \ngh pr comment \"${PR_NUMBER}\" --body \"${TRIGGER_COMMENT}\"\necho \"\u2705\
-        \ Posted trigger comment on PR #${PR_NUMBER}\"\n"
+        \ Posted trigger comment on PR  #${PR_NUMBER}\"\n"
     - name: Post summary
       if: always()
       env:
@@ -285,11 +285,11 @@ jobs:
           '' }}
       run: "{\n  echo \"## \U0001F517 Session Chain Result\"\n  echo \"\"\n  if [\
         \ \"${SKIP}\" = \"true\" ]; then\n    echo \"\u23ED\uFE0F **Skipped** \u2014\
-        \ open session PR #${EXISTING_PR} already exists targeting \\`${INTEGRATION_BRANCH}\\\
+        \ open session PR  #${EXISTING_PR} already exists targeting \\`${INTEGRATION_BRANCH}\\\
         `.\"\n    echo \"\"\n    if [ \"${RETRIGGER_POSTED}\" = \"true\" ]; then\n\
         \      echo \"\u2705 A \\`@copilot continue\\` trigger was posted on the existing\
-        \ session PR #${EXISTING_PR}.\"\n    else\n      echo \"\u26A0\uFE0F Could\
-        \ not post a re-trigger comment on PR #${EXISTING_PR} \u2014 start the agent\
+        \ session PR  #${EXISTING_PR}.\"\n    else\n      echo \"\u26A0\uFE0F Could\
+        \ not post a re-trigger comment on PR  #${EXISTING_PR} \u2014 start the agent\
         \ manually.\"\n    fi\n  else\n    echo \"| Field | Value |\"\n    echo \"\
         |-------|-------|\"\n    echo \"| New branch | \\`${NEW_BRANCH}\\` |\"\n \
         \   echo \"| Integration branch | \\`${INTEGRATION_BRANCH}\\` |\"\n    echo\

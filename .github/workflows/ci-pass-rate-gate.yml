@@ -54,7 +54,7 @@ jobs:
       run: "python3 -c \"\nimport sys, os\nrate = float(os.environ.get('RATE', '0'))\n\
         print(f'Pass rate: {rate}%  threshold: 95.0%')\nif rate < 95.0:\n    print('::error::7-day\
         \ CI pass rate below 95% — D6 exit criteria not yet met')\n    sys.exit(1)\n\
-        else:\n    print('::notice::✅ D6 exit criteria #1 met: 7-day pass rate >=\
+        else:\n    print('::notice::✅ D6 exit criteria  #1 met: 7-day pass rate >=\
         \ 95%')\n\"\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token

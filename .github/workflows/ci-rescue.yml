@@ -201,7 +201,7 @@ jobs:
         \ < 100:\n        break\n    page += 1\n\nif existing_id:\n    append_section\
         \ = (\n        f\"\\n\\n---\\n\\n### \U0001F504 Additional Failure — {now}\\\
         n\\n\"\n        f\"**Run:** [{run_id}]({run_url})\\n\\n\"\n        f\"@copilot\
-        \ \\`{workflow}\\` also failed in the same run. \"\n        f\"See [run #{run_id}]({run_url})\
+        \ \\`{workflow}\\` also failed in the same run. \"\n        f\"See [run  #{run_id}]({run_url})\
         \ for details.\"\n    )\n    updated = (existing_body.rstrip() + append_section)[:65536]\n\
         \    status, _ = gh(\"PATCH\", f\"/repos/{repo}/issues/comments/{existing_id}\"\
         , {\"body\": updated})\n    print(f\"{'✅' if status in (200,201) else '❌'}\

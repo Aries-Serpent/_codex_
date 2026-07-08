@@ -1,4 +1,4 @@
-name: "\U0001F4CA Post Phase 4-5 Summary to Discussion #4872"
+name: "\U0001F4CA Post Phase 4-5 Summary to Discussion  #4872"
 on:
   workflow_dispatch:
     inputs:
@@ -16,7 +16,7 @@ permissions:
   pull-requests: read
 jobs:
   post-to-discussion:
-    name: "\U0001F4CA Post to Discussion #4872"
+    name: "\U0001F4CA Post to Discussion  #4872"
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -89,7 +89,7 @@ jobs:
         \u26A0\uFE0F Using github.token \u2014 discussion write may fail without discussions:write\"\
         \n  fi\nfi\necho \"::add-mask::${RESOLVED_TOKEN}\"\necho \"resolved_token=${RESOLVED_TOKEN}\"\
         \ >> \"$GITHUB_OUTPUT\"\n"
-    - name: 'Post to GitHub Discussion #4872'
+    - name: 'Post to GitHub Discussion  #4872'
       if: steps.extract.outputs.should_post == 'true'
       uses: actions/github-script@v8
       env:
@@ -113,8 +113,8 @@ jobs:
           \ $name) {\n        discussion(number: $number) { id }\n      }\n    }\n\
           \  `, {\n    owner: context.repo.owner,\n    name: context.repo.repo,\n\
           \    number: discussionNumber,\n  });\n  discussionId = discussion.repository.discussion.id;\n\
-          } catch (e) {\n  core.error(`Could not fetch discussion #${discussionNumber}:\
-          \ ${e.message}`);\n  throw new Error(`Failed to fetch discussion #${discussionNumber}`);\n\
+          } catch (e) {\n  core.error(`Could not fetch discussion  #${discussionNumber}:\
+          \ ${e.message}`);\n  throw new Error(`Failed to fetch discussion  #${discussionNumber}`);\n\
           }\n\nlet existingComment = null;\nlet cursor = null;\nwhile (discussionId)\
           \ {\n  const page = await github.graphql(`\n    query($id: ID!, $cursor:\
           \ String) {\n      node(id: $id) {\n        ... on Discussion {\n      \
@@ -131,19 +131,19 @@ jobs:
           \ { commentId: $commentId, body: $body }) {\n          comment { id url\
           \ }\n        }\n      }\n    `, {\n      commentId: existingComment.id,\n\
           \      body,\n    });\n    core.info(\n      `\u2705 Updated Phase 4-5 summary\
-          \ in discussion #${discussionNumber}: ` +\n      `${result.updateDiscussionComment.comment.url}`\n\
+          \ in discussion  #${discussionNumber}: ` +\n      `${result.updateDiscussionComment.comment.url}`\n\
           \    );\n    return;\n  }\n\n  const result = await github.graphql(`\n \
           \   mutation($discussionId: ID!, $body: String!) {\n      addDiscussionComment(input:\
           \ { discussionId: $discussionId, body: $body }) {\n        comment { id\
           \ url }\n      }\n    }\n  `, {\n    discussionId,\n    body,\n  });\n \
-          \ core.info(\n    `\u2705 Posted Phase 4-5 summary to discussion #${discussionNumber}:\
+          \ core.info(\n    `\u2705 Posted Phase 4-5 summary to discussion  #${discussionNumber}:\
           \ ` +\n    `${result.addDiscussionComment.comment.url}`\n  );\n} catch (e)\
           \ {\n  core.error(`Failed to post discussion comment: ${e.message}`);\n\
           \  core.info('Body preview (first 200 chars): ' + body.slice(0, 200));\n\
           \  throw e;\n}\n"
     - name: Log success
       if: success()
-      run: "echo \"\u2705 Phase 4-5 summary posted to discussion #4872\"\necho \"\U0001F4CA\
+      run: "echo \"\u2705 Phase 4-5 summary posted to discussion  #4872\"\necho \"\U0001F4CA\
         \ Status: Phase 1-3 complete, Phase 4-5 executing\"\necho \"\U0001F517 Discussion:\
         \ https://github.com/Aries-Serpent/_codex_/discussions/4872\"\n"
     env:

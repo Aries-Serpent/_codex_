@@ -26,13 +26,13 @@ jobs:
         MASTER_KEY_EXPIRY: ${{ vars.CODEX_MASTER_KEY_EXPIRY_DATE }}
         BACKUP_KEY_EXPIRY: ${{ vars.CODEX_BACKUP_KEY_EXPIRY_DATE }}
         DRY_RUN: ${{ inputs.dry_run || 'false' }}
-      run: "python3 - << 'PYEOF'\nimport datetime, os, sys\n\nWARN_DAYS  = 14   #\
+      run: "python3 - << 'PYEOF'\nimport datetime, os, sys\n\nWARN_DAYS  = 14  #\
         \ warn this many days before expiry\nURGENT_DAYS = 7  # fail/create issue\
         \ if within this many days\n\ntoday = datetime.date.today()\ndry_run = os.environ.get(\"\
         DRY_RUN\", \"false\").lower() == \"true\"\n\ntokens = {\n    \"CODEX_MASTER_KEY\"\
         : os.environ.get(\"MASTER_KEY_EXPIRY\", \"\"),\n    \"CODEX_BACKUP_KEY\":\
-        \ os.environ.get(\"BACKUP_KEY_EXPIRY\", \"\"),\n}\n\nissues = []   # list\
-        \ of (name, expiry_date, days_left)\nwarnings = [] # list of (name, expiry_date,\
+        \ os.environ.get(\"BACKUP_KEY_EXPIRY\", \"\"),\n}\n\nissues = []  # list\
+        \ of (name, expiry_date, days_left)\nwarnings = []  # list of (name, expiry_date,\
         \ days_left)\n\nfor name, expiry_str in tokens.items():\n    if not expiry_str\
         \ or expiry_str in (\"\", \"never\", \"unknown\"):\n        print(f\"\u26A0\
         \uFE0F  {name}: EXPIRY DATE NOT SET \u2014 add {name.replace('MASTER','MASTER_KEY').replace('BACKUP','BACKUP_KEY')}_EXPIRY_DATE\
@@ -67,7 +67,7 @@ jobs:
         \ in warnings:\n            f.write(f\"- \u26A0\uFE0F  **{name}** \u2014 expires\
         \ in {days_left} days ({expiry_str})\\n\")\n        f.write(\"\\n**Rotation\
         \ guide:** `docs/reference/ELEVATED_PRIVILEGES_TOKEN_REVIEW.md` \xA79\\n\"\
-        )\n\nif issues and not dry_run:\n    sys.exit(2)   # signal to create issue\n\
+        )\n\nif issues and not dry_run:\n    sys.exit(2)  # signal to create issue\n\
         elif issues:\n    print(\"DRY RUN \u2014 would create issue but skipping\"\
         )\n    sys.exit(0)\nsys.exit(0)\nPYEOF\nEXIT=$?\nif [ \"$EXIT\" -eq 2 ]; then\n\
         \  echo \"CREATE_ISSUE=true\" >> \"$GITHUB_ENV\"\n  exit 0  # don't fail here\
@@ -83,7 +83,7 @@ jobs:
         \n\nEXISTING=$(gh issue list \\\n  --repo \"$REPO\" \\\n  --state open \\\n\
         \  --label \"security,token-rotation\" \\\n  --json number \\\n  --jq '.[0].number'\
         \ 2>/dev/null || echo \"\")\n\nif [ -n \"$EXISTING\" ]; then\n  echo \"\u2139\
-        \uFE0F  Updating existing issue #${EXISTING}\"\n  gh issue comment \"$EXISTING\"\
+        \uFE0F  Updating existing issue  #${EXISTING}\"\n  gh issue comment \"$EXISTING\"\
         \ --repo \"$REPO\" --body-file ${RUNNER_TEMP}/expiry_issue_body.txt\nelse\n\
         \  echo \"\U0001F195 Creating new expiry-warning issue\"\n  gh issue create\
         \ \\\n    --repo \"$REPO\" \\\n    --title \"$TITLE\" \\\n    --body-file\

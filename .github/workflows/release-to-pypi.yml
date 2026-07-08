@@ -63,13 +63,13 @@ jobs:
             echo "❌ P0.1.1 gate failed: Profile drift audit missing"
             exit 1
           fi
-          
+
           # Check for .codex/PROFILE_DEPENDENCY_MANIFEST.md (P0.1.3)
           if [ ! -f ".codex/PROFILE_DEPENDENCY_MANIFEST.md" ]; then
             echo "❌ P0.1.3 gate failed: Profile dependency manifest missing"
             exit 1
           fi
-          
+
           echo "✅ P0 gates verified"
 
       - name: Verify P1 gates complete
@@ -80,7 +80,7 @@ jobs:
             echo "❌ P1.3.2 gate failed: SBOM not found"
             exit 1
           fi
-          
+
           echo "✅ P1 gates verified"
 
       - name: Verify changelog updated
@@ -89,7 +89,7 @@ jobs:
           # Check that CHANGELOG.md has entry for this version
           VERSION="${{ steps.version.outputs.version }}"
           CLEAN_VERSION="${VERSION#v}"
-          
+
           if ! grep -q "$CLEAN_VERSION" CHANGELOG.md; then
             echo "⚠️  Warning: CHANGELOG.md not updated for $CLEAN_VERSION"
             # This is a warning, not a blocker for now
@@ -102,12 +102,12 @@ jobs:
         run: |
           VERSION="${{ steps.version.outputs.version }}"
           CLEAN_VERSION="${VERSION#v}"
-          
+
           if ! grep -q "version = \"${CLEAN_VERSION}\"" pyproject.toml; then
             echo "❌ Version mismatch: pyproject.toml not updated to $CLEAN_VERSION"
             exit 1
           fi
-          
+
           echo "✅ Version verified in pyproject.toml"
 
   # Build wheels for all three profiles
@@ -324,11 +324,11 @@ jobs:
           pip install --upgrade pip
           # Give PyPI a moment to index
           sleep 10
-          
+
           # Try to install from PyPI
           VERSION=${{ needs.pre-release-checks.outputs.version }}
           CLEAN_VERSION="${VERSION#v}"
-          
+
           pip install "codex-ml==${CLEAN_VERSION}"
 
   # Create GitHub release with artifacts
@@ -375,7 +375,7 @@ jobs:
         run: |
           CLEAN_VERSION="${{ steps.version.outputs.version }}"
           CLEAN_VERSION="${CLEAN_VERSION#v}"
-          
+
           {
             echo "## Release Notes - v${CLEAN_VERSION}"
             echo ""
@@ -387,9 +387,9 @@ jobs:
             echo "pip install codex-ml==${CLEAN_VERSION}"
             echo ""
             echo "# Or with specific profile:"
-            echo "pip install 'codex-ml[core]==${CLEAN_VERSION}'       # Lightweight"
-            echo "pip install 'codex-ml[runtime]==${CLEAN_VERSION}'   # ML inference"
-            echo "pip install 'codex-ml[full]==${CLEAN_VERSION}'      # Full development"
+            echo "pip install 'codex-ml[core]==${CLEAN_VERSION}'  # Lightweight"
+            echo "pip install 'codex-ml[runtime]==${CLEAN_VERSION}'  # ML inference"
+            echo "pip install 'codex-ml[full]==${CLEAN_VERSION}'  # Full development"
             echo "\`\`\`"
             echo ""
             echo "### 📋 What's Included"
@@ -452,7 +452,7 @@ jobs:
           script: |
             const version = process.env.GITHUB_REF.replace('refs/tags/', '');
             const cleanVersion = version.replace(/^v/, '');
-            
+
             const body = [
               "## 🚀 Release Deployment Summary",
               "",
@@ -479,7 +479,7 @@ jobs:
               "",
               "**Deployed at**: " + new Date().toISOString()
             ].join("\n");
-            
+
             github.rest.git.createRef({
               owner: context.repo.owner,
               repo: context.repo.repo,

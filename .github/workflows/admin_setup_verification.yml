@@ -44,10 +44,10 @@ jobs:
     timeout-minutes: 30
 
     steps:
-      - uses: actions/checkout@v5 # v6.0.3
+      - uses: actions/checkout@v5  # v6.0.3
 
       - name: Set up Python
-        uses: actions/setup-python@v6 # v6
+        uses: actions/setup-python@v6  # v6
         with:
           python-version: "3.12.13"
           cache: pip
@@ -245,7 +245,7 @@ jobs:
 
       - name: "Update cognitive brain repo variables (S109)"
         if: github.event_name == 'workflow_dispatch'
-        uses: actions/github-script@v8 # v9
+        uses: actions/github-script@v8  # v9
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
           script: |
@@ -393,7 +393,7 @@ jobs:
             echo "| §3 Create \`CODEX_MASTER_KEY\` secret (if missing above) | [repo/settings/secrets](https://github.com/${{ github.repository }}/settings/secrets/actions) | 3 min |"
             echo "| §4 Enable Discussions (if missing above) | [repo/settings](https://github.com/${{ github.repository }}/settings) → Features | 1 min |"
             echo "| §5 Webhook (optional) | [repo/settings/hooks](https://github.com/${{ github.repository }}/settings/hooks) | 5 min |"
-            echo "| §7 Post \`@copilot\` S109 comment | [PR #3401](https://github.com/${{ github.repository }}/pull/3401) | 1 min |"
+            echo "| §7 Post \`@copilot\` S109 comment | [PR  #3401](https://github.com/${{ github.repository }}/pull/3401) | 1 min |"
             echo ""
             echo "> Full click-by-click guide: \`.codex/docs/ADMIN_MANUAL_SETUP_GUIDE.md\`"
           } >> "$GITHUB_STEP_SUMMARY"
@@ -464,7 +464,7 @@ jobs:
                       try:
                           ts = datetime.datetime.strptime(c["created_at"], "%Y-%m-%dT%H:%M:%SZ")
                           if ts > cutoff:
-                              print(f"info: @copilot continue already posted within 2h on PR #{pr} — skipping (idempotent)")
+                              print(f"info: @copilot continue already posted within 2h on PR  #{pr} — skipping (idempotent)")
                               sys.exit(0)
                       except Exception:
                           pass
@@ -492,7 +492,7 @@ jobs:
               "@copilot continue",
               "",
               f"> **CI Auto-Diagnosis** — {date}",
-              f"> Branch: `{branch}` | PR: #{pr}",
+              f"> Branch: `{branch}` | PR:  #{pr}",
               ">",
           ]
           if failure_lines:
@@ -522,10 +522,10 @@ jobs:
           try:
               with urllib.request.urlopen(req) as resp:
                   result = json.load(resp)
-                  print(f"Posted @copilot continue to PR #{pr}: {result.get('html_url','?')}")
+                  print(f"Posted @copilot continue to PR  #{pr}: {result.get('html_url','?')}")
           except urllib.error.HTTPError as e:
               msg = e.read().decode(errors="replace")
-              print(f"::warning::Failed to post to PR #{pr} — HTTP {e.code}: {msg}", file=sys.stderr)
+              print(f"::warning::Failed to post to PR  #{pr} — HTTP {e.code}: {msg}", file=sys.stderr)
               sys.exit(1)
           PYEOF
 

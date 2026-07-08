@@ -110,23 +110,23 @@ jobs:
         \ -q\n  else\n    python -m pytest tests/ -v -m \"not slow and not integration\"\
         \ \\\n      --import-mode=importlib \\\n      --timeout=55 --tb=short --maxfail=20\
         \ \\\n      --cov=src --cov-report=xml --cov-report=json -q\n  fi\n  exit\
-        \ 0\nfi\n\ncase \"${{ matrix.test-group }}\" in\n  quick)\n    # Quick tests:\
-        \ 60s timeout, SEQUENTIAL execution (PR #3248 Attempt 15 - xdist worker isolation\
-        \ fix)\n    # Removed -n 4 flag to avoid xdist worker subprocess plugin discovery\
+        \ 0\nfi\n\ncase \"${{ matrix.test-group }}\" in\n  quick)\n  # Quick tests:\
+        \ 60s timeout, SEQUENTIAL execution (PR  #3248 Attempt 15 - xdist worker isolation\
+        \ fix)\n  # Removed -n 4 flag to avoid xdist worker subprocess plugin discovery\
         \ issues\n    python -m pytest tests/ -v -m \"not slow and not integration\"\
         \ \\\n      --import-mode=importlib --timeout=60 --tb=short --maxfail=20 \\\
         \n      --cov=src --cov-report=xml --cov-report=json -q\n    ;;\n  documentation)\n\
         \    npx markdown-link-check docs/**/*.md --retry --timeout 5000 || true\n\
         \    python scripts/validate_docs.py --fix || echo \"Doc validation warnings\
-        \ (non-blocking)\"\n    ;;\n  skills)\n    # Skills registry tests: isolated\
+        \ (non-blocking)\"\n    ;;\n  skills)\n  # Skills registry tests: isolated\
         \ nox session with coverage\n    pip install nox --quiet\n    nox -s skills\
         \ --no-venv 2>/dev/null || \\\n      python -m pytest tests/skills/ -v --timeout=60\
         \ --tb=short --maxfail=10 \\\n        --cov=src/codex/skills --cov-report=xml\
-        \ --cov-report=json -q\n    ;;\n  integration)\n    # Integration tests: 300s\
-        \ timeout, SEQUENTIAL execution (PR #3248 Attempt 15)\n    # Removed -n 2\
+        \ --cov-report=json -q\n    ;;\n  integration)\n  # Integration tests: 300s\
+        \ timeout, SEQUENTIAL execution (PR  #3248 Attempt 15)\n    # Removed -n 2\
         \ flag to avoid xdist worker subprocess plugin discovery issues\n    python\
         \ -m pytest tests/ -v -m \"integration and not slow\" \\\n      --import-mode=importlib\
-        \ --timeout=300 --tb=short --maxfail=10\n    ;;\n  slow)\n    # Slow tests:\
+        \ --timeout=300 --tb=short --maxfail=10\n    ;;\n  slow)\n  # Slow tests:\
         \ 600s timeout, sequential execution, fail after 5 failures\n    python -m\
         \ pytest tests/ -v -m \"slow\" \\\n      --import-mode=importlib --timeout=600\
         \ --maxfail=5 --tb=short\n    ;;\nesac\n"

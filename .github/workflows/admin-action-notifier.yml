@@ -191,7 +191,7 @@ jobs:
             if (existing) {
               await github.rest.issues.update({ owner, repo, issue_number: existing.number, body });
               issueNum = existing.number;
-              core.info(`↩️  Updated existing issue #${issueNum} for ${process.env.GAP_ID}`);
+              core.info(`↩️  Updated existing issue  #${issueNum} for ${process.env.GAP_ID}`);
             } else {
               const created = await github.rest.issues.create({
                 owner, repo, title, body,
@@ -199,8 +199,8 @@ jobs:
                 assignees: [process.env.ASSIGNEE],
               });
               issueNum = created.data.number;
-              core.info(`✅ Created issue #${issueNum}: ${created.data.html_url}`);
-              core.notice(`Admin action required (${process.env.GAP_ID}) — see issue #${issueNum}`);
+              core.info(`✅ Created issue  #${issueNum}: ${created.data.html_url}`);
+              core.notice(`Admin action required (${process.env.GAP_ID}) — see issue  #${issueNum}`);
             }
             core.setOutput('issue_number', String(issueNum));
 
@@ -235,7 +235,7 @@ jobs:
                 owner, repo, issue_number: existing.number,
                 state: 'closed', state_reason: 'completed',
               });
-              core.info(`✅ Auto-closed issue #${existing.number} for ${process.env.GAP_ID}`);
+              core.info(`✅ Auto-closed issue  #${existing.number} for ${process.env.GAP_ID}`);
             } else {
               core.info(`ℹ️  No open ${process.env.GAP_ID} issue found — nothing to close`);
             }
@@ -260,14 +260,14 @@ jobs:
             echo "| Probe HTTP status | \`${HTTP_STATUS}\` |"
             echo "| Expected status | \`${EXPECTED_OK}\` |"
             echo "| Gap status | \`${SCOPE_OK}\` |"
-            [ -n "${ISSUE_NUM}" ] && echo "| Issue | #${ISSUE_NUM} |"
+            [ -n "${ISSUE_NUM}" ] && echo "| Issue |  #${ISSUE_NUM} |"
             echo ""
             case "${SCOPE_OK}" in
               true)    echo "### ✅ Gap CLOSED — probe returned expected status (HTTP ${EXPECTED_OK})" ;;
               false)   echo "### ⚠️ Gap OPEN — admin action required (HTTP ${HTTP_STATUS} instead of ${EXPECTED_OK})"
                        echo ""
                        echo "**Error Details:** \`${RESPONSE_MSG}\`"
-                       [ -n "${ISSUE_NUM}" ] && echo "**Fix Steps:** See issue #${ISSUE_NUM} for click-by-click instructions"
+                       [ -n "${ISSUE_NUM}" ] && echo "**Fix Steps:** See issue  #${ISSUE_NUM} for click-by-click instructions"
                        ;;
               unknown) echo "### ℹ️ Inconclusive probe — unexpected HTTP ${HTTP_STATUS}"
                        echo ""

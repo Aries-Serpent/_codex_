@@ -43,7 +43,7 @@ env:
   REPO: ${{ github.repository }}
 jobs:
   post-ci-status:
-    name: "\U0001F9E0 Post CI Status to Discussion #${{ github.event.inputs.discussion_number\
+    name: "\U0001F9E0 Post CI Status to Discussion  #${{ github.event.inputs.discussion_number\
       \ || '3673' }}"
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -92,7 +92,7 @@ jobs:
         \ \\\n  --sha \"${{ github.sha }}\" \\\n  --session-id \"${{ github.run_id\
         \ }}\" \\\n  --post-to-discussion \\\n  --repo \"$REPO\" \\\n  --discussion-number\
         \ \"$DISCUSSION_NUMBER\" \\\n  $UPSERT_FLAG \\\n&& echo \"\u2705 Continuation\
-        \ chain posted to discussion #$DISCUSSION_NUMBER\" \\\n|| echo \"\u26A0\uFE0F\
+        \ chain posted to discussion  #$DISCUSSION_NUMBER\" \\\n|| echo \"\u26A0\uFE0F\
         \ Continuation chain post failed (token permissions?)\"\n"
     - name: Build CI pattern summary
       id: build_summary
@@ -136,7 +136,7 @@ jobs:
       run: "python -m codex.github.mcp_poster post-ci-pattern-summary \\\n  --repo\
         \ \"$REPO\" \\\n  --number \"$DISCUSSION_NUMBER\" \\\n  --body-file /tmp/pattern_summary.md\
         \ \\\n  --session-id \"run-${{ github.run_id }}\" \\\n&& echo \"\u2705 Pattern\
-        \ summary posted to discussion #$DISCUSSION_NUMBER\" \\\n|| echo \"\u26A0\uFE0F\
+        \ summary posted to discussion  #$DISCUSSION_NUMBER\" \\\n|| echo \"\u26A0\uFE0F\
         \ Pattern summary post failed (token permissions?)\"\n"
     - name: Write job summary
       if: always()

@@ -304,7 +304,7 @@ jobs:
           \ = issues.find(i => i.body && i.body.includes(MARKER));\nif (existing)\
           \ {\n  await github.rest.issues.update({\n    owner: context.repo.owner,\n\
           \    repo: context.repo.repo,\n    issue_number: existing.number,\n    body,\n\
-          \  });\n  core.info(`Updated tracking issue #${existing.number}`);\n} else\
+          \  });\n  core.info(`Updated tracking issue  #${existing.number}`);\n} else\
           \ {\n  await github.rest.issues.create({\n    owner: context.repo.owner,\n\
           \    repo: context.repo.repo,\n    title: `\U0001F9F9 Codebase Health: ${process.env.MANUAL}\
           \ manual-review issues (${date})`,\n    body,\n    labels: ['ci-health',\

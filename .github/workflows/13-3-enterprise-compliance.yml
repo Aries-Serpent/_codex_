@@ -36,18 +36,18 @@ jobs:
     name: Bandit Security Scan
     steps:
       - uses: actions/checkout@v5
-      
+
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
           cache: 'pip'
-      
+
       - name: Install Bandit
         run: pip install bandit
-      
+
       - name: Run Bandit scan
         run: bandit -r src -f json -c .bandit.yaml -o bandit-report.json || true
-       
+
       - name: Upload Bandit results (JSON)
         if: always()
         uses: actions/upload-artifact@v5
@@ -60,14 +60,14 @@ jobs:
     name: Semgrep Custom Rules
     steps:
       - uses: actions/checkout@v5
-      
+
       - name: Install Semgrep
         run: pip install semgrep
-      
+
       - name: Run Semgrep
         run: |
           semgrep --config .semgrep/semgrep.yml src --sarif > semgrep-report.json || true
-      
+
       - name: Upload Semgrep results
         if: always()
         uses: github/codeql-action/upload-sarif@v3
@@ -81,7 +81,7 @@ jobs:
     if: always()
     steps:
       - uses: actions/checkout@v5
-      
+
       - name: Create compliance dashboard
         run: |
           echo "# 🛡️ Compliance Audit Report"

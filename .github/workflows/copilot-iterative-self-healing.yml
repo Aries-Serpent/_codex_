@@ -117,7 +117,7 @@ jobs:
         \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
         \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
         \u2500\u2500\nif [ \"${{ github.event_name }}\" = \"schedule\" ]; then\n \
-        \ # Nightly sweep \u2014 always run\n  CAT=\"nightly_health_sweep\"\n  echo\
+        \  # Nightly sweep \u2014 always run\n  CAT=\"nightly_health_sweep\"\n  echo\
         \ \"escalate=true\" >> \"$GITHUB_OUTPUT\"\n  echo \"category=${CAT}\" >> \"\
         $GITHUB_OUTPUT\"\nelif [ \"${{ github.event_name }}\" = \"workflow_dispatch\"\
         \ ]; then\n  echo \"escalate=true\" >> \"$GITHUB_OUTPUT\"\n  CAT=\"${INPUT_CATEGORY:-general}\"\
@@ -329,13 +329,13 @@ jobs:
         \ surface error if PATCH fails so CI shows failure.\n  gh api --method PATCH\
         \ \\\n    \"/repos/${GITHUB_REPOSITORY}/issues/comments/${EXISTING_ID}\" \\\
         \n    --field \"body=@${BODY_FILE}\" \\\n    || { echo \"\u274C Failed to\
-        \ update comment #${EXISTING_ID}\"; exit 1; }\n  echo \"\u2705 Updated existing\
-        \ @copilot prompt (comment #${EXISTING_ID}) on PR #${PR_NUMBER}\"\n  echo\
-        \ \"### \u2705 @copilot prompt updated on PR #${PR_NUMBER} (comment #${EXISTING_ID})\"\
+        \ update comment  #${EXISTING_ID}\"; exit 1; }\n  echo \"\u2705 Updated existing\
+        \ @copilot prompt (comment  #${EXISTING_ID}) on PR #${PR_NUMBER}\"\n  echo\
+        \ \"### \u2705 @copilot prompt updated on PR  #${PR_NUMBER} (comment #${EXISTING_ID})\"\
         \ >> \"$GITHUB_STEP_SUMMARY\"\nelse\n  gh pr comment \"${PR_NUMBER}\" \\\n\
         \    --repo \"${{ github.repository }}\" \\\n    --body-file \"${BODY_FILE}\"\
-        \n  echo \"\u2705 Posted @copilot self-healing prompt on PR #${PR_NUMBER}\"\
-        \n  echo \"### \u2705 @copilot prompt posted on PR #${PR_NUMBER}\" >> \"$GITHUB_STEP_SUMMARY\"\
+        \n  echo \"\u2705 Posted @copilot self-healing prompt on PR  #${PR_NUMBER}\"\
+        \n  echo \"### \u2705 @copilot prompt posted on PR  #${PR_NUMBER}\" >> \"$GITHUB_STEP_SUMMARY\"\
         \nfi\n"
     - name: Create escalation Issue when no PR exists
       if: needs.should-escalate.outputs.pr_number == ''

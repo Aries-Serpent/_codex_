@@ -174,7 +174,7 @@ jobs:
           \nfor (const [wfName, runs] of Object.entries(byWorkflow)) {\n  const latestRun\
           \ = runs.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0];\n\
           \  body += `### \U0001F534 ${wfName}\\n\\n`;\n  body += `> **Most recent\
-          \ failure:** [Run #${latestRun.run_number}](${latestRun.run_url}) on branch\
+          \ failure:** [Run  #${latestRun.run_number}](${latestRun.run_url}) on branch\
           \ \\`${latestRun.head_branch}\\` (commit \\`${latestRun.head_sha}\\`)\\\
           n\\n`;\n\n  if (latestRun.failed_jobs.length > 0) {\n    body += `**Failed\
           \ Jobs:**\\n`;\n    for (const job of latestRun.failed_jobs) {\n      body\
@@ -183,7 +183,7 @@ jobs:
           n`;\n    for (const step of latestRun.failing_steps.slice(0, 10)) {\n  \
           \    body += `- \\`${step}\\`\\n`;\n    }\n    body += `\\n`;\n  }\n\n \
           \ body += `**Copilot Resolution Prompt:**\\n`;\n  body += `\\`\\`\\`\\n`;\n\
-          \  body += `@copilot Fix the failing CI workflow \"${wfName}\" (run #${latestRun.run_number}).\\\
+          \  body += `@copilot Fix the failing CI workflow \"${wfName}\" (run  #${latestRun.run_number}).\\\
           n\\n`;\n  body += `**Workflow Context:**\\n`;\n  body += `- Workflow file:\
           \ .github/workflows/${latestRun.workflow_file}\\n`;\n  body += `- Branch:\
           \ ${latestRun.head_branch}\\n`;\n  body += `- Commit: ${latestRun.head_sha}\\\
@@ -195,7 +195,7 @@ jobs:
           \ 5).join('; ')}\\n`;\n  }\n  body += `\\n**Analysis Instructions:**\\n`;\n\
           \  body += `1. Examine the workflow file and job logs\\n`;\n  body += `2.\
           \ Identify root cause (dependency, environment, configuration)\\n`;\n  body\
-          \ += `3. Check if this pattern matches known CI failure patterns (see #5041)\\\
+          \ += `3. Check if this pattern matches known CI failure patterns (see  #5041)\\\
           n`;\n  body += `4. Apply fix and validate with local test if possible\\\
           n`;\n  body += `5. If auto-fixable: commit with [skip ci] and reference\
           \ this issue\\n`;\n  body += `6. If manual: create actionable remediation\
@@ -203,7 +203,7 @@ jobs:
           \ pattern. Check the CI Failure Triage Report (#5041) for similar issues.\\\
           n`;\n  body += `\\`\\`\\`\\n\\n`;\n\n  if (runs.length > 1) {\n    body\
           \ += `<details><summary>Previous failures (${runs.length - 1} more)</summary>\\\
-          n\\n`;\n    for (const run of runs.slice(1)) {\n      body += `- [Run #${run.run_number}](${run.run_url})\
+          n\\n`;\n    for (const run of runs.slice(1)) {\n      body += `- [Run  #${run.run_number}](${run.run_url})\
           \ \u2014 ${run.created_at} \u2014 branch \\`${run.head_branch}\\`\\n`;\n\
           \    }\n    body += `\\n</details>\\n\\n`;\n  }\n\n  body += `---\\n\\n`;\n\
           }\n\nbody += `\\n*Triage run: ${runUrl} \u2014 Refresh by re-running [this\
@@ -267,13 +267,13 @@ jobs:
           \    repo: context.repo.repo,\n    issue_number: triageIssue.number,\n \
           \   title: title,\n    body: body,\n    labels: hasFailures\n      ? [TRIAGE_LABEL,\
           \ 'automated', 'batch-analysis']\n      : [TRIAGE_LABEL, 'automated'],\n\
-          \  });\n  console.log(`Updated existing triage issue #${triageIssue.number}`);\n\
+          \  });\n  console.log(`Updated existing triage issue  #${triageIssue.number}`);\n\
           \  core.setOutput('issue_number', triageIssue.number);\n} else {\n  // No\
           \ existing issue \u2014 create one\n  const issue = await github.rest.issues.create({\n\
           \    owner: context.repo.owner,\n    repo: context.repo.repo,\n    title:\
           \ title,\n    body: body,\n    labels: hasFailures\n      ? [TRIAGE_LABEL,\
           \ 'automated', 'batch-analysis']\n      : [TRIAGE_LABEL, 'automated'],\n\
-          \  });\n  console.log(`Created new triage issue #${issue.data.number}`);\n\
+          \  });\n  console.log(`Created new triage issue  #${issue.data.number}`);\n\
           \  core.setOutput('issue_number', issue.data.number);\n}\n"
     - name: Save report artifact
       if: always()
@@ -304,5 +304,5 @@ jobs:
         \ workflow run(s) detected** \u2014 issue updated/created.\" >> $GITHUB_STEP_SUMMARY\n\
         else\n  echo \"\u2705 **No failures detected** \u2014 triage issue updated\
         \ with clean status.\" >> $GITHUB_STEP_SUMMARY\nfi\necho \"\" >> $GITHUB_STEP_SUMMARY\n\
-        echo \"Issue: #\\`${{ steps.upsert-issue.outputs.issue_number || 'N/A' }}\\\
+        echo \"Issue:  #\\`${{ steps.upsert-issue.outputs.issue_number || 'N/A' }}\\\
         `\" >> $GITHUB_STEP_SUMMARY\n"

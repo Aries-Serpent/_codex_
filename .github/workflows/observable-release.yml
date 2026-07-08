@@ -77,7 +77,7 @@ jobs:
           echo ""
           echo "Key dependencies:"
           grep -E '^name = "(numpy|torch|fastapi|pydantic)"' uv.lock | head -10
-          
+
           # Count package additions/removals compared to main
           if git show main:uv.lock &>/dev/null; then
             ADDED=$(diff -u <(git show main:uv.lock | grep '^name = ' | sort) <(cat uv.lock | grep '^name = ' | sort) | grep -c '^+')
@@ -98,7 +98,7 @@ jobs:
             echo "Installing uv..."
             pip install uv
           fi
-          
+
           # Check for floating versions (none should exist)
           FLOATING=$(grep -cE 'version = "[^=].*\*' uv.lock)
           echo "Floating version specs: ${FLOATING}"
@@ -119,15 +119,15 @@ jobs:
         run: |
           echo "=== Building wheels ==="
           START_TIME=$(date +%s)
-          
+
           python -m build
-          
+
           END_TIME=$(date +%s)
           DURATION=$((END_TIME - START_TIME))
-          
+
           echo "build_duration=${DURATION}" >> $GITHUB_OUTPUT
           echo "Build completed in ${DURATION}s"
-          
+
           echo ""
           echo "=== Generated artifacts ==="
           ls -lh dist/
@@ -149,7 +149,7 @@ jobs:
           sha256sum ./* > SHA256SUMS
           cat SHA256SUMS
           cd ..
-          
+
           # Calculate sizes
           SIZES=$(ls -lh dist/*.whl | awk '{print $9, $5}' | paste -sd ' ' -)
           echo "artifact_hashes=$(wc -l < dist/SHA256SUMS)" >> $GITHUB_OUTPUT
@@ -163,15 +163,15 @@ jobs:
         run: |
           echo "=== SBOM Generation ==="
           START_TIME=$(date +%s%N)
-          
+
           python scripts/build/generate_sbom.py --profiles core runtime full
-          
+
           END_TIME=$(date +%s%N)
           DURATION_MS=$(( (END_TIME - START_TIME) / 1000000 ))
-          
+
           echo "sbom_duration_ms=${DURATION_MS}" >> $GITHUB_OUTPUT
           echo "SBOM generation completed in ${DURATION_MS}ms"
-          
+
           echo ""
           echo "=== Generated SBOMs ==="
           ls -lh .codex/sbom/cognitive_brain-0.1.0-*.xml
@@ -193,7 +193,7 @@ jobs:
         run: |
           echo "=== License Compliance ==="
           echo "Policy: $(cat .codex/LICENSE_COMPLIANCE_POLICY.md | head -5)"
-          
+
           # Quick check: verify no GPL packages
           GPL_COUNT=$(python scripts/build/generate_sbom.py --profiles full 2>&1 | grep -ic "gpl")
           if [ "${GPL_COUNT}" -gt 0 ]; then
@@ -211,14 +211,14 @@ jobs:
         id: metrics
         run: |
           echo "=== Release Metrics ==="
-          
+
           # Count artifacts
           ARTIFACT_COUNT=$(ls dist/*.whl 2>/dev/null | wc -l)
-          
+
           python src/codex/telemetry/metrics.py collect-release \
             --tag "v${{ steps.release.outputs.version }}" \
             --artifacts "${ARTIFACT_COUNT}"
-          
+
           echo "Released artifacts: ${ARTIFACT_COUNT}"
           echo "artifacts_count=${ARTIFACT_COUNT}" >> $GITHUB_OUTPUT
 
@@ -226,62 +226,62 @@ jobs:
         id: notes
         run: |
           echo "=== Release Notes Generation ==="
-          
+
           RELEASE_NOTES_FILE="release-notes-${{ steps.release.outputs.tag }}.md"
-          
+
           cat > "${RELEASE_NOTES_FILE}" << 'EOF'
           # Release ${{ steps.release.outputs.tag }}
-          
+
           **Release Date**: $(date -u +'%Y-%m-%d %H:%M:%S UTC')
-          
+
           ## Build Information
           - **Python Version**: 3.12
           - **Build Duration**: ${{ steps.build.outputs.build_duration }}s
           - **Artifacts**: ${{ steps.metrics.outputs.artifacts_count }}
-          
+
           ## Package Information
           - **Dependencies Added**: ${{ steps.deps.outputs.packages_added || 0 }}
           - **Dependencies Removed**: ${{ steps.deps.outputs.packages_removed || 0 }}
-          
+
           ## Security
           - ✅ SBOM Generated: 3 profiles (core, runtime, full)
           - ✅ SBOM Signed: HMAC-SHA256
           - ✅ License Compliant: 100% (349 packages)
           - ✅ No GPL/AGPL licenses detected
-          
+
           ## Artifact Verification
           - **Build Artifacts**: SHA256SUMS available in dist/
           - **SBOM Location**: .codex/sbom/
           - **Signatures**: Each SBOM has corresponding .sig file
-          
+
           ## Installation
-          
+
           ### Core Profile (Minimal)
           ```bash
           pip install -e . --no-deps
           ```
-          
+
           ### Runtime Profile
           ```bash
           pip install .[runtime]
           ```
-          
+
           ### Full Profile (Development)
           ```bash
           pip install .[full]
           ```
-          
+
           ## Offline Installation
           Create a wheelhouse from the release assets, then:
           ```bash
           pip install --no-index --find-links wheelhouse .
           ```
-          
+
           ## Metrics
           See `.codex/metrics/release-*.json` for detailed build metrics.
-          
+
           EOF
-          
+
           cat "${RELEASE_NOTES_FILE}"
           echo "notes_file=${RELEASE_NOTES_FILE}" >> $GITHUB_OUTPUT
 

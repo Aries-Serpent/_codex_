@@ -107,11 +107,11 @@ jobs:
         ::warning::Could not parse AGENT_REGISTRY.yaml for demotion check: {e}\")\n\
         \    sys.exit(0)\nagents = data.get(\"agents\", []) if isinstance(data, dict)\
         \ else []\ndemotions = []\nfor a in agents:\n    tier = a.get(\"enforcement_tier\"\
-        , \"SOFT\")\n    model = a.get(\"autonomy_model\", \"E\")\n    # D_CAPABLE\
+        , \"SOFT\")\n    model = a.get(\"autonomy_model\", \"E\")\n  # D_CAPABLE\
         \ agents that lack structured handoff are demotion candidates\n    if model\
         \ == \"D_CAPABLE\" and a.get(\"handoff_protocol\") != \"structured\":\n  \
         \      demotions.append(f\"{a.get('id','?')}: D_CAPABLE without structured\
-        \ handoff\")\n    # GROUNDED agents without accepts_handoff_from are incomplete\n\
+        \ handoff\")\n  # GROUNDED agents without accepts_handoff_from are incomplete\n\
         \    if tier == \"GROUNDED\" and not a.get(\"accepts_handoff_from\"):\n  \
         \      demotions.append(f\"{a.get('id','?')}: GROUNDED but no accepts_handoff_from\"\
         )\nif demotions:\n    print(f\"::warning::Demotion candidates ({len(demotions)}):\"\

@@ -26,7 +26,7 @@ on:
       - cognitive_app/public/har-cache/api-demo.har
       - scripts/ci/generate_har_dataset.py
   schedule:
-    - cron: '0 3 * * 1'   # Monday 03:00 UTC
+    - cron: '0 3 * * 1'  # Monday 03:00 UTC
   workflow_dispatch:
     inputs:
       target-url:
@@ -58,14 +58,14 @@ jobs:
     timeout-minutes: 15
 
     permissions:
-      contents: write    # to commit HAR back
+      contents: write  # to commit HAR back
       actions: read
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v5 # v6.0.3
+        uses: actions/checkout@v5  # v6.0.3
         with:
-          lfs: false       # LFS disabled — object may not exist on server
+          lfs: false  # LFS disabled — object may not exist on server
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
 
       - name: "🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)"
@@ -155,7 +155,7 @@ jobs:
       # ── Collect Playwright report ─────────────────────────────────────────
       - name: Upload Playwright report
         if: always()
-        uses: actions/upload-artifact@v5 # v7.0.1
+        uses: actions/upload-artifact@v5  # v7.0.1
         with:
           name: playwright-har-capture-report-${{ github.run_id }}
           path: |

@@ -139,9 +139,9 @@ jobs:
         \ \\\n    --jq '\"\\(.name // \"unknown\") (head_sha: \\(.head_sha[:12]))\"\
         ' \\\n    2>/dev/null || echo \"error: failed to fetch run info\")\n  if gh\
         \ api --method POST \"repos/${REPO}/actions/runs/${RUN_ID}/approve\" \\\n\
-        \    --silent 2>/dev/null; then\n    echo \"  \u2705 Approved run #${RUN_ID}\
+        \    --silent 2>/dev/null; then\n    echo \"  \u2705 Approved run  #${RUN_ID}\
         \ \u2014 ${RUN_INFO}\"\n    APPROVED=$((APPROVED + 1))\n  else\n    echo \"\
-        \  \u26A0\uFE0F  Could not approve run #${RUN_ID} \u2014 ${RUN_INFO} (may\
+        \  \u26A0\uFE0F  Could not approve run  #${RUN_ID} \u2014 ${RUN_INFO} (may\
         \ already be approved)\"\n  fi\ndone <<< \"$PENDING_RUNS\"\n\necho \"\u2705\
         \ post-CodeQL auto-approve: approved ${APPROVED} pending run(s) (PR SHA ${HEAD_SHA:0:12}\
         \ + workflow_run fallback).\"\n"

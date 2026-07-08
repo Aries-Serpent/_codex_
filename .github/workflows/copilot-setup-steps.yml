@@ -501,9 +501,9 @@ jobs:
       run: "echo \"\u2500\u2500 \xA70.4: Inspecting PR for merge conflicts \u2500\u2500\
         \"\nBASE=\"${BASE_REF}\"\n\nif [ -n \"$PR_NUMBER\" ]; then\n  MERGEABLE=$(gh\
         \ pr view \"$PR_NUMBER\" --json mergeable -q .mergeable 2>/dev/null || echo\
-        \ \"UNKNOWN\")\n  echo \"PR #${PR_NUMBER} mergeable status: ${MERGEABLE}\"\
+        \ \"UNKNOWN\")\n  echo \"PR  #${PR_NUMBER} mergeable status: ${MERGEABLE}\"\
         \n  if [ \"$MERGEABLE\" = \"CONFLICTING\" ]; then\n    echo \"::warning::\xA7\
-        0.4 MERGE CONFLICT DETECTED \u2014 PR #${PR_NUMBER}\"\n    echo \"  has merge\
+        0.4 MERGE CONFLICT DETECTED \u2014 PR  #${PR_NUMBER}\"\n    echo \"  has merge\
         \ conflicts with base branch '${BASE}'.\"\n    echo \"  Agent MUST resolve\
         \ these before any other work.\"\n    echo \"COPILOT_MERGE_CONFLICT=true\"\
         \ >> \"$GITHUB_ENV\"\n  elif [ \"$MERGEABLE\" = \"MERGEABLE\" ]; then\n  \

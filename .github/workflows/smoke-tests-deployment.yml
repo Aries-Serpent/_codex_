@@ -89,12 +89,12 @@ jobs:
         run: |
           set -e
           source test-venv/bin/activate
-          
+
           VERSION="${{ steps.version.outputs.version }}"
           PROFILE="${{ matrix.profile }}"
-          
+
           echo "📦 Installing codex-ml[${PROFILE}]==${VERSION}..."
-          
+
           if [ "${{ matrix.ml-extras }}" == "with-ml" ]; then
             pip install "codex-ml[${PROFILE}]==${VERSION}"
           else
@@ -104,7 +104,7 @@ jobs:
               "codex-ml[${PROFILE}]==${VERSION}" \
               2>&1 || echo "Note: Some dependencies may fail to install without ML extras"
           fi
-          
+
           echo "✅ Installation completed"
 
       - name: Verify package is importable
@@ -112,11 +112,11 @@ jobs:
         run: |
           set -e
           source test-venv/bin/activate
-          
+
           echo "🔍 Verifying package imports..."
           python << 'PYTHON_TEST'
           import sys
-          
+
           # Test 10 core APIs
           apis = [
               'cognitive_brain',
@@ -126,7 +126,7 @@ jobs:
               'cognitive_brain.cli',
               'cognitive_brain.utils',
           ]
-          
+
           print("Importing core APIs:")
           for api in apis:
               try:
@@ -135,7 +135,7 @@ jobs:
               except ImportError as e:
                   print(f"  ⚠️  {api}: {str(e)}")
                   # Don't fail on optional imports
-          
+
           print("\n✅ Core APIs imported successfully")
           PYTHON_TEST
 
@@ -143,25 +143,25 @@ jobs:
         id: ooda-test
         run: |
           source test-venv/bin/activate
-          
+
           echo "🔄 Running OODA loop test..."
           python << 'PYTHON_TEST'
           import sys
           import json
-          
+
           try:
               from cognitive_brain.ooda import OODALoop
-              
+
               # Initialize OODA loop
               ooda = OODALoop()
-              
+
               # Execute basic OODA cycle
               observation = {"test": "data"}
               result = ooda.observe(observation)
-              
+
               print("✅ OODA loop test passed")
               print(f"  Observation result: {result is not None}")
-              
+
           except Exception as e:
               print(f"⚠️  OODA loop test failed: {str(e)}")
               # This is non-blocking for now
@@ -172,20 +172,20 @@ jobs:
         if: matrix.profile == 'core'
         run: |
           source test-venv/bin/activate
-          
+
           echo "🌐 Verifying network policy for core profile..."
           python << 'PYTHON_TEST'
           import sys
           import os
-          
+
           # Check for network-related environment flags
           network_disabled = os.environ.get('DISABLE_NETWORK_CALLS', '').lower() == 'true'
-          
+
           if network_disabled:
               print("✅ Network calls disabled for core profile")
           else:
               print("⚠️  Network policy check: not enforced at import time")
-          
+
           # Try to detect network calls using import inspection
           try:
               from cognitive_brain.core import AllowNetworkCalls
@@ -199,21 +199,21 @@ jobs:
         if: matrix.profile == 'core'
         run: |
           source test-venv/bin/activate
-          
+
           echo "🔒 Checking for blocking network calls..."
           python << 'PYTHON_TEST'
           import sys
           import socket
           from unittest import mock
-          
+
           # Block network calls and see if import still works
           original_socket = socket.socket
-          
+
           def blocking_socket(*args, **kwargs):
               raise RuntimeError("Network call attempted during import!")
-          
+
           blocked_calls = []
-          
+
           try:
               with mock.patch('socket.socket', side_effect=blocking_socket):
                   # Try to import core APIs
@@ -223,7 +223,7 @@ jobs:
                   except RuntimeError as e:
                       blocked_calls.append(str(e))
                       print(f"⚠️  Network call detected: {e}")
-          
+
           except Exception as e:
               print(f"⚠️  Network test inconclusive: {str(e)}")
           PYTHON_TEST
@@ -232,10 +232,10 @@ jobs:
         id: profile-features
         run: |
           source test-venv/bin/activate
-          
+
           PROFILE="${{ matrix.profile }}"
           echo "🧪 Testing profile-specific features for ${PROFILE}..."
-          
+
           case "${PROFILE}" in
             core)
               python << 'PYTHON_TEST'
@@ -271,20 +271,20 @@ jobs:
         id: metrics
         run: |
           source test-venv/bin/activate
-          
+
           echo "📊 Recording installation metrics..."
-          
+
           # Get pip freeze output
           pip freeze > installed-packages-${{ matrix.python-version }}-${{ matrix.profile }}.txt
-          
+
           # Count packages
           PACKAGE_COUNT=$(wc -l < installed-packages-${{ matrix.python-version }}-${{ matrix.profile }}.txt)
           echo "Installed packages: ${PACKAGE_COUNT}"
-          
+
           # Get virtual environment size
           ENV_SIZE=$(du -sh test-venv | cut -f1)
           echo "Virtual environment size: ${ENV_SIZE}"
-          
+
           # Record timing
           {
             echo "{"
@@ -317,7 +317,7 @@ jobs:
       - name: Check smoke test results
         run: |
           FAILED_TESTS="${{ needs.smoke-test.result }}"
-          
+
           if [[ "$FAILED_TESTS" == *"failure"* ]]; then
             echo "❌ Some smoke tests failed"
             exit 1
@@ -333,28 +333,28 @@ jobs:
             const fs = require('fs');
             const summary = `
             ## 🧪 Smoke Test Results
-            
+
             ### Test Configuration
             - **Python Versions**: 3.12, 3.13
             - **Profiles**: core, runtime, full
             - **ML Extras**: with/without
             - **Total Combinations**: 3 × 2 × 2 = 12 test runs
-            
+
             ### Status
             - **All combinations tested**: ✅
             - **Core APIs importable**: ✅
             - **OODA loop functional**: ✅
             - **Network policy (core)**: ✅
             - **Profile-specific features**: ✅
-            
+
             ### Next Steps
             - Release published to PyPI
             - Monitoring production performance
             - Tracking download statistics
-            
+
             **Generated at**: ${new Date().toISOString()}
             `;
-            
+
             core.notice(summary);
 
   # Trigger rollback if tests fail
@@ -374,25 +374,25 @@ jobs:
               title: '🚨 Release Rollback Required - Smoke Tests Failed',
               body: `
               ## Critical Alert: Smoke Tests Failed
-              
+
               **Deployment**: ${context.workflow}
               **Commit**: ${context.sha}
               **Timestamp**: ${new Date().toISOString()}
-              
+
               ### Action Required
               Please run the rollback procedure immediately:
-              
+
               \`\`\`bash
               python scripts/deploy/rollback_release.py --version ${context.ref}
               \`\`\`
-              
+
               See [Rollback Checklist](docs/deployment/ROLLBACK_CHECKLIST.md) for detailed steps.
-              
+
               ### Investigation
               Review smoke test logs in [GitHub Actions](${context.server_url}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})
               `,
               labels: ['critical', 'deployment', 'rollback'],
               assignees: ['@mbaetiong']  # Configure as needed
             });
-            
-            console.log(`Created rollback issue #${issue.data.number}`);
+
+            console.log(`Created rollback issue  #${issue.data.number}`);

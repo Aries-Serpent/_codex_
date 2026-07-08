@@ -83,7 +83,7 @@ jobs:
         \ script with --fix-all\n  # This covers ALL missing components in one call:\n\
         \  #   REQ-4  \u2014 AGENT_ACCOUNTABILITY_REPORT.md\n  #   REQ-5  \u2014 CHANGELOG.md\n\
         \  #   REQ-6  \u2014 .secrets.baseline \u2194 CODEX_MANIFEST.json sync\n \
-        \ #   WEC    \u2014 PR body Workflow Execution Checklist block\n  python3\
+        \  #   WEC    \u2014 PR body Workflow Execution Checklist block\n  python3\
         \ scripts/ci/session_wrapup_autofix.py \\\n    --pr-number \"${PR_NUMBER}\"\
         \ \\\n    --sha \"${GIT_SHA:0:8}\" \\\n    --run-url \"${RUN_URL}\" \\\n \
         \   --fix-all\nfi\n\n# SCP-RESCUE-5: sync_tracked_files is the authoritative\
@@ -157,7 +157,7 @@ jobs:
           try {\n  const { data } = await github.rest.pulls.get({ owner, repo, pull_number:\
           \ pr });\n  prData = data;\n} catch (e) {\n  console.log(`Could not fetch\
           \ PR ${pr}: ${e.message}`);\n  return;\n}\nif (prData.state !== 'open')\
-          \ {\n  console.log(`PR #${pr} is ${prData.state} \u2014 skipping.`);\n \
+          \ {\n  console.log(`PR  #${pr} is ${prData.state} \u2014 skipping.`);\n \
           \ return;\n}\n\n// \u2500\u2500 STEP 1: Fetch the last 20 PR comments to\
           \ check for unaddressed rescue \u2500\u2500\n// Uses GraphQL because REST\
           \ listComments returns pages in ascending order\n// (per_page:5 gives OLDEST\
@@ -229,7 +229,7 @@ jobs:
           \    );\n  } else {\n    await github.rest.issues.createComment({\n    \
           \  owner, repo, issue_number: pr, body: retriggerBody,\n    });\n    console.log(\n\
           \      `Re-triggered rescue comment ${pendingRescueComment.databaseId} on\
-          \ PR #${pr}.`\n    );\n    return;  // don't also post review\n  }\n}\n\n\
+          \ PR  #${pr}.`\n    );\n    return;  // don't also post review\n  }\n}\n\n\
           // \u2500\u2500 PATH B: No pending rescue \u2014 post \"@copilot review\"\
           \ as usual \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n// Guard 1:\
           \ do not post if the most recent comment is already a review trigger\nconst\
@@ -257,7 +257,7 @@ jobs:
           \ || '').includes('<!-- session-done-loop-break -->');\n  });\n  if (!alreadyBroke)\
           \ {\n    await github.rest.issues.createComment({\n      owner, repo, issue_number:\
           \ pr, body: loopBreaker,\n    });\n    console.log(`Loop-break comment posted\
-          \ to PR #${pr} (${recentTriggerCount} review triggers detected).`);\n  }\
+          \ to PR  #${pr} (${recentTriggerCount} review triggers detected).`);\n  }\
           \ else {\n    console.log(`Loop-break already posted \u2014 skipping to\
           \ avoid double-loop.`);\n  }\n  return;\n}\n\nconst alreadyPosted = allNodes.slice(-5).some(c\
           \ => {\n  const body = (c.body || '').trim();\n  // Only treat agent-posted\
@@ -286,7 +286,7 @@ jobs:
           \ /plan\\n\\nreview\\n\\n${SESSION_DONE_MARKER}`\n  : '@copilot+claude-haiku-4.5\
           \ /plan';\n\nawait github.rest.issues.createComment({\n  owner, repo, issue_number:\
           \ pr,\n  body: reviewBody,\n});\nconsole.log(`@copilot review posted to\
-          \ PR #${pr}${sessionDoneSha ? ` (SHA ${sessionDoneSha})` : ''}.`);\n"
+          \ PR  #${pr}${sessionDoneSha ? ` (SHA ${sessionDoneSha})` : ''}.`);\n"
   auto-approve-pending-runs:
     name: "\u26A1 Auto-Approve pending workflow runs"
     runs-on: ubuntu-latest
@@ -335,17 +335,17 @@ jobs:
         \"\n\nwhile IFS= read -r RUN_ID; do\n  [ -z \"$RUN_ID\" ] && continue\n  RUN_NAME=$(gh\
         \ api \"repos/${REPO}/actions/runs/${RUN_ID}\" --jq '.name // \"unknown\"\
         ' 2>/dev/null || echo \"unknown\")\n  if gh api --method POST \"repos/${REPO}/actions/runs/${RUN_ID}/approve\"\
-        \ 2>/dev/null; then\n    echo \"  \u2705 Approved run #${RUN_ID} (${RUN_NAME})\"\
+        \ 2>/dev/null; then\n    echo \"  \u2705 Approved run  #${RUN_ID} (${RUN_NAME})\"\
         \n    APPROVED=$((APPROVED + 1))\n    SUMMARY_LINES=\"${SUMMARY_LINES}\\n-\
         \ \u2705 Run [#${RUN_ID}](https://github.com/${REPO}/actions/runs/${RUN_ID})\
         \ \u2014 ${RUN_NAME}\"\n  else\n    echo \"  \u26A0\uFE0F  Failed to approve\
-        \ run #${RUN_ID} (${RUN_NAME}) \u2014 may require owner approval\"\n    FAILED=$((FAILED\
+        \ run  #${RUN_ID} (${RUN_NAME}) \u2014 may require owner approval\"\n    FAILED=$((FAILED\
         \ + 1))\n    SUMMARY_LINES=\"${SUMMARY_LINES}\\n- \u26A0\uFE0F Run [#${RUN_ID}](https://github.com/${REPO}/actions/runs/${RUN_ID})\
         \ \u2014 ${RUN_NAME} (approval failed)\"\n  fi\ndone <<< \"$PENDING_RUNS\"\
         \n\nprintf '### \u26A1 Auto-Approve Results\\n\\n**Approved:** %d | **Failed:**\
         \ %d\\n%b\\n' \\\n  \"$APPROVED\" \"$FAILED\" \"$SUMMARY_LINES\" >> \"$GITHUB_STEP_SUMMARY\"\
         \n\nif [ \"$APPROVED\" -gt 0 ]; then\n  echo \"\u2705 Auto-approved ${APPROVED}\
-        \ pending workflow run(s) for PR #${PR_NUMBER}.\"\nfi\nif [ \"$FAILED\" -gt\
+        \ pending workflow run(s) for PR  #${PR_NUMBER}.\"\nfi\nif [ \"$FAILED\" -gt\
         \ 0 ]; then\n  echo \"\u26A0\uFE0F  ${FAILED} run(s) could not be approved\
         \ \u2014 owner approval may be required.\"\nfi\n"
     env:
@@ -380,7 +380,7 @@ jobs:
           \ || '').slice(0, 12);\n\n// Gate: only run when copilot-agent-session-done.yml\
           \ WEC checkbox is checked\nlet wecChecked = false;\ntry {\n  const { data:\
           \ prInfo } = await github.rest.pulls.get({ owner, repo, pull_number: prNumber\
-          \ });\n  if (prInfo.state !== 'open') { console.log(`PR #${prNumber} is\
+          \ });\n  if (prInfo.state !== 'open') { console.log(`PR  #${prNumber} is\
           \ closed \u2014 skipping.`); return; }\n  wecChecked = /[-*]\\s*\\[x\\]\\\
           s*copilot-agent-session-done\\.yml/i.test(prInfo.body || '');\n  const prHeadSha\
           \ = (prInfo.head && prInfo.head.sha) ? prInfo.head.sha : '';\n  headSha\
@@ -434,7 +434,7 @@ jobs:
           \ ${c.created_at?.slice(0,10)})`, body: excerpt });\n    }\n  }\n} catch\
           \ (e) {\n  console.log(`Could not fetch issue comments (non-fatal): ${e.message}`);\n\
           }\n\nif (findings.length === 0) {\n  console.log(`No bot findings detected\
-          \ for PR #${prNumber} \u2014 skipping compile-bot-feedback.`);\n  return;\n\
+          \ for PR  #${prNumber} \u2014 skipping compile-bot-feedback.`);\n  return;\n\
           }\n\n// \u2500\u2500 Build compiled continuation comment \u2500\u2500\u2500\
           \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
           \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
@@ -473,7 +473,7 @@ jobs:
           \ < 100) break;\n  }\n} catch (e) {\n  console.log(`Upsert lookup failed\
           \ (non-fatal): ${e.message}`);\n}\n\nif (existingCommentId) {\n  if (existingCommentBody.includes(RUN_MARKER))\
           \ {\n    console.log(`compile-bot-feedback already appended run ${context.runId}\
-          \ for SHA ${headSha} on PR #${prNumber} \u2014 skipping duplicate.`);\n\
+          \ for SHA ${headSha} on PR  #${prNumber} \u2014 skipping duplicate.`);\n\
           \    return;\n  }\n  let normalizedExistingBody = existingCommentBody.trimEnd();\n\
           \  if (!normalizedExistingBody.includes(PR_MARKER)) {\n    normalizedExistingBody\
           \ = `${PR_MARKER}\\n${normalizedExistingBody}`;\n  }\n  if (!normalizedExistingBody.includes(HEAD_MARKER))\
@@ -487,11 +487,11 @@ jobs:
           n');\n  await github.rest.issues.updateComment({\n    owner, repo, comment_id:\
           \ existingCommentId, body: appendBody.slice(0, MAX_COMMENT_LENGTH),\n  });\n\
           \  console.log(`Appended ${findings.length} bot finding(s) to existing @copilot\
-          \ continue comment #${existingCommentId} for PR #${prNumber}.`);\n  return;\n\
+          \ continue comment  #${existingCommentId} for PR #${prNumber}.`);\n  return;\n\
           }\n\nawait github.rest.issues.createComment({\n  owner, repo, issue_number:\
           \ prNumber, body: `${compiledBody}\\n${RUN_MARKER}`,\n});\nconsole.log(`Compiled\
           \ ${findings.length} bot finding(s) into @copilot continue comment on PR\
-          \ #${prNumber}.`);\n"
+          \  #${prNumber}.`);\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   append-code-quality-to-rescue:

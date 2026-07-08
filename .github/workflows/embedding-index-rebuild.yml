@@ -46,12 +46,12 @@ jobs:
       id: freshness
       run: "python3 - <<'PYEOF'\nimport json, os, sys\nfrom datetime import datetime,\
         \ timezone\nfrom pathlib import Path\n\nMETA = Path(\".codex/embeddings/codex_index_meta.json\"\
-        )\nSTALE_WARN_HOURS  = 25   # emit warning if older than 25 h\nSTALE_ERROR_HOURS\
-        \ = 72   # emit error if older than 72 h\n\nif not META.exists():\n    print(\"\
+        )\nSTALE_WARN_HOURS  = 25  # emit warning if older than 25 h\nSTALE_ERROR_HOURS\
+        \ = 72  # emit error if older than 72 h\n\nif not META.exists():\n    print(\"\
         ::warning::codex_index_meta.json not found — full rebuild required\")\n  \
         \  with open(os.environ[\"GITHUB_OUTPUT\"], \"a\") as f:\n        f.write(\"\
         freshness_status=missing\\n\")\n    sys.exit(0)\n\nmeta = json.loads(META.read_text())\n\
-        generated_at_str = meta.get(\"generated_at\", \"\")\ntry:\n    # Handle both\
+        generated_at_str = meta.get(\"generated_at\", \"\")\ntry:\n  # Handle both\
         \ offset-aware and Z-suffix ISO strings\n    ts = datetime.fromisoformat(generated_at_str.replace(\"\
         Z\", \"+00:00\"))\nexcept ValueError:\n    print(f\"::warning::Cannot parse\
         \ generated_at={generated_at_str!r}\")\n    with open(os.environ[\"GITHUB_OUTPUT\"\

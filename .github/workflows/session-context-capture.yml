@@ -108,7 +108,7 @@ jobs:
           \ file found');\n  return;\n}\n\nconst context = JSON.parse(fs.readFileSync(path.join('context',\
           \ contextFile), 'utf8'));\nconst marker = '<!-- session-context-capture\
           \ -->';\n\nconst body = [\n  marker,\n  '## \U0001F4CB Session Context Captured',\n\
-          \  '',\n  `**Time:** ${context.timestamp}`,\n  `**PR:** #${context.pr_number}`,\n\
+          \  '',\n  `**Time:** ${context.timestamp}`,\n  `**PR:**  #${context.pr_number}`,\n\
           \  `**SHA:** ${context.sha}`,\n  '',\n  '### \U0001F4DD PR State',\n  `-\
           \ **Title:** ${context.sections.pr_state.title || 'N/A'}`,\n  `- **State:**\
           \ ${context.sections.pr_state.state} (Draft: ${context.sections.pr_state.draft})`,\n\

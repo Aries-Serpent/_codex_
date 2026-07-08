@@ -73,9 +73,9 @@ jobs:
           \    ].join('\\n');\n\n    await github.rest.issues.createComment({\n  \
           \    owner:        context.repo.owner,\n      repo:         context.repo.repo,\n\
           \      issue_number: pr.number,\n      body,\n    });\n\n    core.info(`\u2705\
-          \ Posted incremental summary reminder on PR #${pr.number} (${elapsedMin}min\
+          \ Posted incremental summary reminder on PR  #${pr.number} (${elapsedMin}min\
           \ silence)`);\n    remindedCount++;\n\n  } catch (prError) {\n    core.warning(`PR\
-          \ #${pr.number}: ${prError.message}`);\n  }\n}\n\nif (remindedCount ===\
+          \  #${pr.number}: ${prError.message}`);\n  }\n}\n\nif (remindedCount ===\
           \ 0) {\n  core.info('No active exploration sessions require reminders at\
           \ this time.');\n} else {\n  core.info(`Posted ${remindedCount} incremental\
           \ summary reminder(s).`);\n}\n"

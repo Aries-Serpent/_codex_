@@ -117,8 +117,8 @@ jobs:
         \  echo \"\u2705 No pending runs requiring approval.\"\n  exit 0\nfi\n\nAPPROVED=0\n\
         while IFS= read -r RUN_ID; do\n  [ -z \"$RUN_ID\" ] && continue\n  if gh api\
         \ --method POST \"repos/${REPO}/actions/runs/${RUN_ID}/approve\" \\\n    --silent\
-        \ 2>/dev/null; then\n    echo \"  \u2705 Approved run #${RUN_ID}\"\n    APPROVED=$((APPROVED\
-        \ + 1))\n  else\n    echo \"  \u26A0\uFE0F  Could not approve run #${RUN_ID}\
+        \ 2>/dev/null; then\n    echo \"  \u2705 Approved run  #${RUN_ID}\"\n    APPROVED=$((APPROVED\
+        \ + 1))\n  else\n    echo \"  \u26A0\uFE0F  Could not approve run  #${RUN_ID}\
         \ (may already be approved)\"\n  fi\ndone <<< \"$PENDING_RUNS\"\n\necho \"\
         \u2705 Approved ${APPROVED} pending run(s).\"\n"
     env:

@@ -157,9 +157,9 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         TARGET_AGENT: ${{ inputs.handoff_target }}
       run: "if [ -f \"scripts/agents/agent_handoff.py\" ]; then\n  if [ -f \".codex/agents/chain_plan.json\"\
-        \ ]; then\n    # Execute based on chain plan\n    python scripts/agents/agent_handoff.py\
+        \ ]; then\n  # Execute based on chain plan\n    python scripts/agents/agent_handoff.py\
         \ \\\n      --chain-plan \".codex/agents/chain_plan.json\"\n  elif [ -n \"\
-        $TARGET_AGENT\" ]; then\n    # Direct handoff to target\n    python scripts/agents/agent_handoff.py\
+        $TARGET_AGENT\" ]; then\n  # Direct handoff to target\n    python scripts/agents/agent_handoff.py\
         \ \\\n      --target \"$TARGET_AGENT\"\n  else\n    echo \"No chain plan or\
         \ target agent specified\"\n  fi\nelse\n  echo \"Agent handoff script not\
         \ found\"\nfi\n"

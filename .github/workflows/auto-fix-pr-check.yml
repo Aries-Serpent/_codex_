@@ -128,7 +128,7 @@ jobs:
           ---\n\n${criticalIssues}\n\n${manualIssues}\n\n---\n\n## \U0001F3AF Quick\
           \ Fix Options\n\n### Option A: One-Command Copilot Fix (Recommended)\nCopy\
           \ and paste into Copilot Chat:\n\n\\`\\`\\`\n@workspace Fix all auto-fixable\
-          \ CI issues in PR #${prNumber}:\n1. Run: python scripts/ci/auto_fix_common_issues.py\n\
+          \ CI issues in PR  #${prNumber}:\n1. Run: python scripts/ci/auto_fix_common_issues.py\n\
           2. Verify fixes: python scripts/ci/auto_fix_common_issues.py --check-only\n\
           3. Run tests: nox -s tests\n4. Commit: \"fix(ci): resolve auto-fixable issues\
           \ [Copilot]\"\n5. Push changes\n\\`\\`\\`\n\n### Option B: Local Fix\n\\\

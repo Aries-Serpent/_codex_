@@ -96,11 +96,11 @@ jobs:
         \ \u2192 {change['new']!r}\")\n\nneeds_write = bool(drift) or force_sync or\
         \ not output_path.exists()\n\nif dry_run:\n    print(\"\\n\U0001F50D DRY RUN\
         \ \u2014 no file written.\")\n    print(\"GITHUB_OUTPUT: drift_count=\" +\
-        \ str(len(drift)))\n    # Write output for summary step even in dry-run\n\
+        \ str(len(drift)))\n  # Write output for summary step even in dry-run\n\
         \    with open(os.environ.get(\"GITHUB_OUTPUT\", \"/dev/null\"), \"a\") as\
         \ f:\n        f.write(f\"drift_count={len(drift)}\\n\")\n        f.write(\"\
         written=false\\n\")\n        f.write(f\"var_count={len(current)}\\n\")\nelif\
-        \ needs_write:\n    # Write updated file with metadata\n    context = dict(current)\n\
+        \ needs_write:\n  # Write updated file with metadata\n    context = dict(current)\n\
         \    context[\"_meta\"] = {\n        \"generated_at\":   datetime.datetime.now(datetime.timezone.utc).isoformat(),\n\
         \        \"workflow\":       \"repo-var-sync-schedule\",\n        \"sha\"\
         :            os.environ.get(\"GITHUB_SHA\", \"\")[:8],\n        \"ref\": \
@@ -145,7 +145,7 @@ jobs:
         \ |\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"| File updated     | ${WRITTEN:-false}\
         \ |\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"| Dry run          | ${{ inputs.dry_run\
         \ || 'false' }} |\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"\" >> \"$GITHUB_STEP_SUMMARY\"\
-        \necho \"**Scheduled by:** copilot-swe-agent[bot] (PR #3496, 2026-03-05)\"\
+        \necho \"**Scheduled by:** copilot-swe-agent[bot] (PR  #3496, 2026-03-05)\"\
         \ >> \"$GITHUB_STEP_SUMMARY\"\necho \"\" >> \"$GITHUB_STEP_SUMMARY\"\necho\
         \ \"**Tracked prefixes:** \\`COPILOT_*\\` \xB7 \\`CODEX_*\\` \xB7 \\`COGNITIVE_BRAIN_*\\\
         ` \xB7 \\`AGENT_*\\` \xB7 \\`EMBEDDING_*\\` \xB7 \\`AUTO_*\\`\" >> \"$GITHUB_STEP_SUMMARY\"\

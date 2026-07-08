@@ -160,8 +160,8 @@ jobs:
         : archive_payload.get(\"message\")},\n            \"patch\": {\"status\":\
         \ patch_status, \"message\": patch_payload.get(\"message\")},\n        },\n\
         \    }\n\nprocessed_ids: set[str] = set()\nfor task in candidates:\n    tid\
-        \ = str(task.get(\"id\", \"\"))\n    # Prevent duplicate cleanup attempts\
-        \ when the same task is present in\n    # list results and separately inserted\
+        \ = str(task.get(\"id\", \"\"))\n  # Prevent duplicate cleanup attempts\
+        \ when the same task is present in\n  # list results and separately inserted\
         \ from explicit task_id lookup.\n    if not tid or tid in processed_ids:\n\
         \        continue\n    processed_ids.add(tid)\n    if execute:\n        action_results.append(attempt_cleanup(tid))\n\
         \    else:\n        action_results.append(\n            {\n              \

@@ -141,14 +141,14 @@ jobs:
         \ -c \"import json,sys; items=json.loads(sys.argv[1]); print('true' if sys.argv[2]\
         \ in items else 'false')\" \"${NEWLY_UNCHECKED}\" \"${FLAG}\" 2>/dev/null\
         \ || echo \"false\")\n\n  if [ \"${WAS_RESET}\" != \"true\" ]; then\n    continue\n\
-        \  fi\n\n  if [ \"${IS_BOT}\" = \"true\" ]; then\n    # Bot accidentally reset\
+        \  fi\n\n  if [ \"${IS_BOT}\" = \"true\" ]; then\n  # Bot accidentally reset\
         \ a protected flag \u2014 restore [x] in PR body.\n    echo \"\U0001F6E1\uFE0F\
         \  Bot (${SENDER_LOGIN}) reset protected flag '${FLAG}' \u2014 restoring...\"\
         \n    BODY=$(gh pr view \"${PR_NUMBER}\" --repo \"${REPO}\" --json body -q\
         \ '.body // \"\"' 2>/dev/null || echo \"\")\n    if [ -z \"${BODY}\" ]; then\n\
         \      echo \"::warning::Could not fetch PR body; cannot restore '${FLAG}'.\"\
         \n      continue\n    fi\n    printf '%s' \"${BODY}\" > \"${RUNNER_TEMP}/_wec_restore_body.txt\"\
-        \n    # Replace '- [ ] <flag>' with '- [x] <flag>' (single-line Python, no\
+        \n  # Replace '- [ ] <flag>' with '- [x] <flag>' (single-line Python, no\
         \ YAML indent issue)\n    python3 -c \"import re,sys,os; rt=os.environ.get('RUNNER_TEMP','/tmp');\
         \ f=sys.argv[1]; b=open(rt+'/_wec_restore_body.txt').read(); b=re.sub(r'(?m)(^[\
         \ \\t]*-[ \\t]*\\[) \\]([ \\t]+'+re.escape(f)+r')',r'\\1x]\\2',b); open(rt+'/_wec_restored_body.txt','w').write(b)\"\
@@ -156,7 +156,7 @@ jobs:
         \   --body \"$(cat \"${RUNNER_TEMP}/_wec_restored_body.txt\")\" \\\n     \
         \ && echo \"\u2705 Restored [x] ${FLAG} in PR body (bot reset blocked).\"\
         \ \\\n      || echo \"::warning::PR body restore failed \u2014 please manually\
-        \ re-check [x] ${FLAG}.\"\n  else\n    # Human owner intentionally unchecked\
+        \ re-check [x] ${FLAG}.\"\n  else\n  # Human owner intentionally unchecked\
         \ \u2014 remove the persistent label too.\n    echo \"\u2139\uFE0F  Owner\
         \ (${SENDER_LOGIN}) unchecked '${FLAG}' \u2014 removing persistent label if\
         \ present.\"\n    gh api --method DELETE \\\n      \"repos/${REPO}/issues/${PR_NUMBER}/labels/wec:auto-approve\"\
@@ -239,7 +239,7 @@ jobs:
         \  2>/dev/null || true\n\n# Add label to this PR (idempotent \u2014 safe to\
         \ call even if already present)\ngh api --method POST \"repos/${REPO}/issues/${PR_NUMBER}/labels\"\
         \ \\\n  -f 'labels[]=wec:auto-approve' \\\n  2>/dev/null \\\n  && echo \"\u2705\
-        \ Label 'wec:auto-approve' added to PR #${PR_NUMBER}.\" \\\n  || echo \"\u2139\
+        \ Label 'wec:auto-approve' added to PR  #${PR_NUMBER}.\" \\\n  || echo \"\u2139\
         \uFE0F  Label already present or could not be added (non-fatal).\"\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
@@ -327,7 +327,7 @@ jobs:
         \ Checklist/ { found=1 }\n  found && /^## / && !/^## \U0001F504 Workflow Execution\
         \ Checklist/ { found=0 }\n  found { print }\n')\n\nif [ -z \"$SECTION\" ];\
         \ then\n  echo \"::notice::No Workflow Execution Checklist section found in\
-        \ PR #${PR} body\"\n  echo \"has_checklist=false\" >> \"$GITHUB_OUTPUT\"\n\
+        \ PR  #${PR} body\"\n  echo \"has_checklist=false\" >> \"$GITHUB_OUTPUT\"\n\
         \  echo \"workflows_to_run=\" >> \"$GITHUB_OUTPUT\"\n  echo \"workflows_to_skip=\"\
         \ >> \"$GITHUB_OUTPUT\"\n  exit 0\nfi\n\necho \"has_checklist=true\" >> \"\
         $GITHUB_OUTPUT\"\n\n# Parse checked items: lines matching \"- [x] filename.yml\"\
@@ -440,7 +440,7 @@ jobs:
         \ \\\n    -X PATCH --field body=\"$BODY\"\n  echo \"\u2705 Updated existing\
         \ gate comment (ID: ${EXISTING_ID})\"\nelse\n  gh pr comment \"$PR\" --repo\
         \ \"${GH_REPO}\" --body \"$BODY\"\n  echo \"\u2705 Created new gate comment\
-        \ on PR #${PR}\"\nfi\n"
+        \ on PR  #${PR}\"\nfi\n"
   fast-forward:
     name: "\u26A1 Fast-Forward Safe Files (mode=${{ needs.parse-checklist.outputs.ff_merge_mode\
       \ }})"

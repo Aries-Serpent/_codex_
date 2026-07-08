@@ -288,7 +288,7 @@ jobs:
         \ || {\n    echo \"\u26A0\uFE0F Benchmark validation failed or no baseline\
         \ exists\"\n    echo \"This is expected for first run or when benchmarks change\"\
         \n    echo \"Storing current results as baseline for future comparison\"\n\
-        \n    # Create a simple report indicating baseline establishment\n    {\n\
+        \n  # Create a simple report indicating baseline establishment\n    {\n\
         \      echo \"Benchmark Validation Report\"\n      echo \"=================================\"\
         \n      echo \"\"\n      echo \"Status:  Baseline Establishment\"\n      echo\
         \ \"This is the first run or baseline files are missing.\"\n      echo \"\

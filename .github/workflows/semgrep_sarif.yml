@@ -97,7 +97,7 @@ jobs:
         \ stats\n  if command -v jq &> /dev/null; then\n    echo \"### SARIF Content\
         \ Analysis\" >> $GITHUB_STEP_SUMMARY\n    RESULT_COUNT=$(jq '.runs[0].results\
         \ | length' semgrep.sarif 2>/dev/null || echo \"0\")\n    echo \"- Results\
-        \ found: ${RESULT_COUNT}\" >> $GITHUB_STEP_SUMMARY\n     \n    # Show severity\
+        \ found: ${RESULT_COUNT}\" >> $GITHUB_STEP_SUMMARY\n     \n  # Show severity\
         \ breakdown if results exist\n    if [ \"$RESULT_COUNT\" -gt 0 ]; then\n \
         \     ERROR_COUNT=$(jq '[.runs[0].results[] | select(.level == \"error\")]\
         \ | length' semgrep.sarif 2>/dev/null || echo \"0\")\n      WARNING_COUNT=$(jq\
@@ -128,9 +128,9 @@ jobs:
         \  ls -lh semgrep.sarif\n  echo \"\"\n  echo \"File validity check:\"\n  \
         \ \n  # Check if file is empty\n  if [ ! -s \"semgrep.sarif\" ]; then\n  \
         \  echo \"⚠️ Warning: SARIF file is empty (0 bytes)\"\n    echo \"This is\
-        \ unusual but acceptable - fallback will be created\"\n  else\n    # Check\
+        \ unusual but acceptable - fallback will be created\"\n  else\n  # Check\
         \ if valid JSON\n    if jq empty semgrep.sarif 2>/dev/null; then\n      echo\
-        \ \"✅ SARIF file is valid JSON\"\n       \n      # Show basic structure\n\
+        \ \"✅ SARIF file is valid JSON\"\n       \n  # Show basic structure\n\
         \      if jq '.runs | length' semgrep.sarif >/dev/null 2>&1; then\n      \
         \  RUN_COUNT=$(jq '.runs | length' semgrep.sarif)\n        RESULT_COUNT=$(jq\
         \ '.runs[0].results | length' semgrep.sarif 2>/dev/null || echo \"0\")\n \
@@ -192,9 +192,9 @@ jobs:
         \ }}\"\n \n# Initialize defaults\nCRITICAL_COUNT=0\nHIGH_COUNT=0\nINFO_COUNT=0\n\
         PARSE_STATUS=\"success\"\n \n# Extract results from SARIF if file exists and\
         \ is valid\nif [ -f \"semgrep.sarif\" ]; then\n  if jq empty semgrep.sarif\
-        \ 2>/dev/null; then\n    # Verify the SARIF has the expected structure\n \
+        \ 2>/dev/null; then\n  # Verify the SARIF has the expected structure\n \
         \   if jq '.runs[0].results' semgrep.sarif >/dev/null 2>&1; then\n      echo\
-        \ \"ℹ️ SARIF file is valid, extracting results...\"\n       \n      # Count\
+        \ \"ℹ️ SARIF file is valid, extracting results...\"\n       \n  # Count\
         \ findings by severity level (with error handling)\n      CRITICAL_COUNT=$(jq\
         \ '[.runs[0].results[] | select(.level == \"error\")] | length' semgrep.sarif\
         \ 2>/dev/null || echo \"0\")\n      HIGH_COUNT=$(jq '[.runs[0].results[] |\

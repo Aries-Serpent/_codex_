@@ -105,7 +105,7 @@ jobs:
         \ \"${TARGET_BRANCH}\" --depth=1\ngit checkout -B _dep_absorb_ origin/\"${TARGET_BRANCH}\"\
         \n# Ensure the source commit is reachable after the branch switch.\ngit fetch\
         \ origin \"${HEAD_SHA}\" 2>/dev/null || true\n\necho \"Cherry-picking ${HEAD_SHA}\
-        \ (${CHANGED_FILE}) from PR #${PR_NUMBER} into ${TARGET_BRANCH}\u2026\"\n\n\
+        \ (${CHANGED_FILE}) from PR  #${PR_NUMBER} into ${TARGET_BRANCH}\u2026\"\n\n\
         if [ \"${DRY_RUN}\" = \"true\" ]; then\n  echo \"\U0001F50D DRY RUN \u2014\
         \ would cherry-pick ${HEAD_SHA}\"\n  git cherry-pick --no-commit \"${HEAD_SHA}\"\
         \ || true\n  echo \"Diff preview:\"\n  git diff --cached --stat || true\n\
@@ -115,7 +115,7 @@ jobs:
         \ Cherry-pick succeeded: ${CHANGED_FILE}\"\n  # Push the cherry-picked commit\
         \ back to the target branch.\n  git push origin \"HEAD:refs/heads/${TARGET_BRANCH}\"\
         \nelse\n  echo \"\u26A0\uFE0F  Cherry-pick conflict \u2014 aborting auto-absorb\
-        \ for PR #${PR_NUMBER}\"\n  git cherry-pick --abort\n  exit 0  # Non-fatal:\
+        \ for PR  #${PR_NUMBER}\"\n  git cherry-pick --abort\n  exit 0  # Non-fatal:\
         \ let the human merge manually.\nfi\n"
     - name: "\U0001F4DD Annotate job summary"
       if: always()
@@ -126,9 +126,9 @@ jobs:
         PR_TITLE: ${{ steps.check.outputs.pr_title }}
       run: "{\n  echo \"## \U0001F4E6 Dependabot Auto-Absorb\"\n  echo \"\"\n  if\
         \ [ \"${IS_SINGLE}\" = \"true\" ]; then\n    echo \"\u2705 **Absorbed:** \\\
-        `${CHANGED_FILE}\\` from [PR #${PR_NUMBER}](https://github.com/${{ github.repository\
+        `${CHANGED_FILE}\\` from [PR  #${PR_NUMBER}](https://github.com/${{ github.repository\
         \ }}/pull/${PR_NUMBER})\"\n    echo \"\"\n    echo \"> ${PR_TITLE}\"\n  else\n\
-        \    echo \"\u2139\uFE0F  **Skipped:** PR #${PR_NUMBER} has ${{ steps.check.outputs.file_count\
+        \    echo \"\u2139\uFE0F  **Skipped:** PR  #${PR_NUMBER} has ${{ steps.check.outputs.file_count\
         \ }} changed files (not a single-file bump).\"\n  fi\n} >> \"${GITHUB_STEP_SUMMARY}\"\
         \n"
     env:

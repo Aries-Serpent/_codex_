@@ -229,7 +229,7 @@ jobs:
           \    owner: context.repo.owner,\n    repo: context.repo.repo,\n    issue_number:\
           \ prNumber,\n    per_page: 100,\n  });\n  const approvalComment = comments.find(c\
           \ => hasApproval(c.body));\n  if (approvalComment) {\n    console.log(`\u2705\
-          \ Stakeholder approval detected in PR comment #${approvalComment.id} on\
+          \ Stakeholder approval detected in PR comment  #${approvalComment.id} on\
           \ attempt ${attempt}`);\n    core.setOutput('approved', 'true');\n    return;\n\
           \  }\n\n  if (attempt < maxAttempts) {\n    console.log(`\u23F3 Attempt\
           \ ${attempt}/${maxAttempts}: waiting ${pollInterval}s for stakeholder to\

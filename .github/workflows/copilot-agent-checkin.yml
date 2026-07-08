@@ -1,4 +1,4 @@
-name: "\U0001F916 Agent Check-In \u2014 Q&A Bridge (Discussion #3756)"
+name: "\U0001F916 Agent Check-In \u2014 Q&A Bridge (Discussion  #3756)"
 on:
   push:
     branches:
@@ -72,19 +72,19 @@ jobs:
         \ runs on ${HEAD_SHA:0:12}...\"\nRUN_IDS=$(gh api \"repos/${REPO}/actions/runs?head_sha=${HEAD_SHA}&status=action_required&per_page=100\"\
         \             --jq '.workflow_runs[].id' 2>/dev/null || echo \"\")\n\nif [\
         \ -z \"${RUN_IDS}\" ]; then\n  echo \"\u2705 No action_required runs found.\"\
-        \nelse\n  for RUN_ID in ${RUN_IDS}; do\n    # Try approve first (works for\
+        \nelse\n  for RUN_ID in ${RUN_IDS}; do\n  # Try approve first (works for\
         \ fork PRs)\n    if gh api \"repos/${REPO}/actions/runs/${RUN_ID}/approve\"\
-        \ --method POST 2>/dev/null; then\n      echo \"\u2705 Approved run #${RUN_ID}\"\
-        \n    else\n      # For same-repo PRs: re-run to clear action_required state\n\
+        \ --method POST 2>/dev/null; then\n      echo \"\u2705 Approved run  #${RUN_ID}\"\
+        \n    else\n  # For same-repo PRs: re-run to clear action_required state\n\
         \      gh run rerun \"${RUN_ID}\" --repo \"${REPO}\" 2>/dev/null         \
-        \          && echo \"\U0001F504 Re-triggered run #${RUN_ID}\"            \
-        \       || echo \"\u23ED  Run #${RUN_ID}: already processing\"\n    fi\n \
+        \          && echo \"\U0001F504 Re-triggered run  #${RUN_ID}\"            \
+        \       || echo \"\u23ED  Run  #${RUN_ID}: already processing\"\n    fi\n \
         \ done\nfi\n\n# \u2500\u2500 2. Arm WEC for the PR associated with this push\
         \ \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
         \u2500\u2500\u2500\nPR_NUM=$(gh pr list --repo \"${REPO}\" --head \"${{ github.ref_name\
         \ }}\"             --json number --jq '.[0].number // \"\"' 2>/dev/null ||\
         \ echo \"\")\n\nif [ -n \"${PR_NUM}\" ]; then\n  echo \"\U0001F527 Arming\
-        \ WEC for PR #${PR_NUM}...\"\n  python3 scripts/ci/session_wrapup_autofix.py\
+        \ WEC for PR  #${PR_NUM}...\"\n  python3 scripts/ci/session_wrapup_autofix.py\
         \               --activate-workflows               --pr-number \"${PR_NUM}\"\
         \               || echo \"\u26A0  WEC arm exited non-zero (non-fatal)\"\n\n\
         \  # Explicitly dispatch the WEC gate so checked workflows are triggered\n\
@@ -92,14 +92,14 @@ jobs:
         \ chain.\n  gh workflow run workflow-execution-gate.yml               --repo\
         \ \"${REPO}\"               --ref \"${{ github.ref_name }}\"             \
         \  -f pr_number=\"${PR_NUM}\"               -f triggered_by=\"copilot-always-approve-and-arm\"\
-        \               2>/dev/null && echo \"\u2705 WEC gate dispatched for PR #${PR_NUM}\"\
+        \               2>/dev/null && echo \"\u2705 WEC gate dispatched for PR  #${PR_NUM}\"\
         \               || echo \"\u26A0  WEC gate dispatch failed (non-fatal \u2014\
         \ edited event will fire)\"\nelse\n  echo \"\u2139  No open PR found for ${{\
         \ github.ref_name }} \u2014 skipping WEC arm\"\nfi\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   checkin-post-on-push:
-    name: 'Post research + Q&A to Discussion #3756'
+    name: 'Post research + Q&A to Discussion  #3756'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     if: '(github.event_name == ''push'' || github.event_name == ''workflow_dispatch'')
@@ -176,7 +176,7 @@ jobs:
         \ fix for this pattern?\"\n        )\n        ef.write(f\"DYNAMIC_Q{i}={q}\\\
         n\")\nprint(f\"Generated Q1\u2013{min(3, len(solutions))} from PDA pattern\
         \ library ({len(solutions)} patterns).\")\nPYEOF\n"
-    - name: 'Post research topics and open check-in to Discussion #3756'
+    - name: 'Post research topics and open check-in to Discussion  #3756'
       uses: actions/github-script@v8
       env:
         SHA: ${{ github.sha }}
@@ -220,8 +220,8 @@ jobs:
           \ $number) { id title }\n      }\n    }`, {\n    owner: context.repo.owner,\n\
           \    name:  context.repo.repo,\n    number: DISCUSSION_NUMBER,\n  });\n\
           \  discussionId = res.repository.discussion.id;\n  core.info(`Resolved Discussion\
-          \ #${DISCUSSION_NUMBER}: ${res.repository.discussion.title}`);\n} catch(e)\
-          \ {\n  core.warning(`Could not resolve Discussion #${DISCUSSION_NUMBER}:\
+          \  #${DISCUSSION_NUMBER}: ${res.repository.discussion.title}`);\n} catch(e)\
+          \ {\n  core.warning(`Could not resolve Discussion  #${DISCUSSION_NUMBER}:\
           \ ${e.message}`);\n  return;\n}\n\n// \u2500\u2500 Helper: upsert (create-or-update)\
           \ a discussion comment \u2500\u2500\u2500\u2500\u2500\nasync function upsertComment(marker,\
           \ body) {\n  if (dryRun) {\n    core.info(`[DRY RUN] Would upsert comment\
@@ -351,9 +351,9 @@ jobs:
           \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\
           \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\ntry {\n  await upsertComment(researchMarker,\
           \ researchBody);\n  core.info('\u2705 Research topics posted to Discussion\
-          \ #3756');\n} catch(e) {\n  core.warning(`Failed to post research topics:\
+          \  #3756');\n} catch(e) {\n  core.warning(`Failed to post research topics:\
           \ ${e.message}`);\n}\n\ntry {\n  await upsertComment(openMarker, openBody);\n\
-          \  core.info('\u2705 Open check-in posted to Discussion #3756');\n} catch(e)\
+          \  core.info('\u2705 Open check-in posted to Discussion  #3756');\n} catch(e)\
           \ {\n  core.warning(`Failed to post open check-in: ${e.message}`);\n}\n\n\
           if (dryRun) {\n  core.info('[DRY RUN] dry_run=true \u2014 would have posted\
           \ the above bodies. No GraphQL mutations executed.');\n}\n"
@@ -664,10 +664,10 @@ jobs:
           \ \xB7 \xA7ARLOOP Step 5 (S242)*',\n  '',\n  '---',\n  `_[\U0001F517 Workflow\
           \ run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,\n\
           ].join('\\n');\n\nif (dryRun) {\n  core.info(`[DRY RUN] Would post incomplete-session\
-          \ retrigger for PR #${prNumber}`);\n  return;\n}\ntry {\n  await github.rest.issues.createComment({\n\
+          \ retrigger for PR  #${prNumber}`);\n  return;\n}\ntry {\n  await github.rest.issues.createComment({\n\
           \    owner: context.repo.owner, repo: context.repo.repo,\n    issue_number:\
           \ prNumber, body: incompleteBody,\n  });\n  core.info(`\u2705 Incomplete-session\
-          \ guard: re-trigger posted for PR #${prNumber}`);\n} catch(e) {\n  core.warning(`Incomplete-session\
+          \ guard: re-trigger posted for PR  #${prNumber}`);\n} catch(e) {\n  core.warning(`Incomplete-session\
           \ guard: failed to post retrigger: ${e.message}`);\n}\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
@@ -689,7 +689,7 @@ jobs:
       uses: actions/checkout@v5
       with:
         fetch-depth: 1
-    - name: "Open check-in \u2014 post Q&A and research topics to Discussion #3756"
+    - name: "Open check-in \u2014 post Q&A and research topics to Discussion  #3756"
       env:
         CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
@@ -755,7 +755,7 @@ jobs:
           \ = process.env.DISCUSSION_ID;\nconst dryRun = process.env.DRY_RUN === 'true';\n\
           \nconst body = [\n  '<!-- agent-response:S220-qa -->',\n  '## \U0001F916\
           \ Agent Response \u2014 Detailed Analysis & Pre-Selected Recommendations',\n\
-          \  '',\n  '> **Session:** S220 | **Branch:** `0D_base_` | **PR:** #3748\
+          \  '',\n  '> **Session:** S220 | **Branch:** `0D_base_` | **PR:**  #3748\
           \  ',\n  '> React \U0001F44D on this reply to accept all three pre-selected\
           \ options \u2014 I will implement each accepted choice immediately.',\n\
           \  '',\n  '---',\n  '',\n  '### Q1 \u2014 detect-secrets false-positive\

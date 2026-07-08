@@ -30,7 +30,7 @@ jobs:
     timeout-minutes: 60
 
     steps:
-      - uses: actions/checkout@v5 # v6.0.3
+      - uses: actions/checkout@v5  # v6.0.3
         with:
           ref: ${{ github.event.pull_request.head.ref || github.ref }}
           fetch-depth: 0
@@ -79,7 +79,7 @@ jobs:
             exit 0
           fi
 
-          echo "🚀 No real content found — generating follow-up prompt for PR #${PR_NUMBER}"
+          echo "🚀 No real content found — generating follow-up prompt for PR  #${PR_NUMBER}"
 
           python scripts/generate_pr_followup.py \
             "${PR_NUMBER}" \
@@ -99,7 +99,7 @@ jobs:
           git add .github/copilot-prompts/active/
 
           if ! git diff --cached --quiet; then
-            git commit -m "chore: Generate follow-up prompt for PR #${{ steps.pr_number.outputs.pr_number }} [skip ci]"
+            git commit -m "chore: Generate follow-up prompt for PR  #${{ steps.pr_number.outputs.pr_number }} [skip ci]"
             # Bounded retry: up to 3 pull-rebase+push attempts before failing.
             # This handles non-fast-forward errors (e.g. another workflow pushing
             # concurrently) without silently suppressing the error.
@@ -126,7 +126,7 @@ jobs:
 
       - name: Comment on PR
         if: github.event_name == 'pull_request' && steps.push_prompt.outputs.pushed == 'true'
-        uses: actions/github-script@v8 # v9
+        uses: actions/github-script@v8  # v9
         with:
           script: |
             const prNumber = ${{ steps.pr_number.outputs.pr_number }};
@@ -190,7 +190,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5 # v6.0.3
+        uses: actions/checkout@v5  # v6.0.3
         with:
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
           fetch-depth: 1

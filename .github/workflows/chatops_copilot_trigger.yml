@@ -142,7 +142,7 @@ jobs:
         \  \"https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments\" \\\
         \n  -d \"{\\\"body\\\":\\\"@copilot continue \\`${PROMPT}\\`\\n\\n> Dispatched\
         \ via chat-ops by @${ACTOR}\\\"}\" \\\n  > /dev/null\necho \"\u2705 Posted\
-        \ @copilot continue for ${PROMPT} on PR #${PR_NUMBER}\"\n"
+        \ @copilot continue for ${PROMPT} on PR  #${PR_NUMBER}\"\n"
     - name: Execute /copilot status
       if: steps.parse.outputs.AUTHORIZED == 'true' && steps.parse.outputs.SUBCMD ==
         'status'
@@ -220,7 +220,7 @@ jobs:
         PY\n\ncurl -s -X POST \\\n  -H \"Authorization: Bearer ${TOKEN}\" \\\n  -H\
         \ \"Accept: application/vnd.github+json\" \\\n  \"https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments\"\
         \ \\\n  -d @/tmp/tier_body.json \\\n  > /dev/null\necho \"\u2705 Posted tier\
-        \ report on PR #${PR_NUMBER}\"\n"
+        \ report on PR  #${PR_NUMBER}\"\n"
     - name: Execute /copilot help
       if: steps.parse.outputs.AUTHORIZED == 'true' && steps.parse.outputs.SUBCMD ==
         'help'
@@ -258,15 +258,15 @@ jobs:
         ARGS: ${{ steps.parse.outputs.ARGS }}
         ACTOR: ${{ steps.parse.outputs.ACTOR }}
       run: "TOKEN=\"${CODEX_MASTER_KEY:-$CODEX_BACKUP_KEY}\"\nISSUE_REF=\"${ARGS:-<issue-number>}\"\
-        \nprintf '@copilot Fix issue #%s -- analyse the issue description, identify\
+        \nprintf '@copilot Fix issue  #%s -- analyse the issue description, identify\
         \ the root cause in the codebase, and open a PR with a targeted fix. Follow\
         \ CODEBASE_AGENCY_POLICY.md.\\n\\n> Dispatched via chat-ops `/copilot fix`\
         \ by @%s' \\\n  \"${ISSUE_REF}\" \"${ACTOR}\" \\\n  | python3 -c 'import json,sys;\
         \ print(json.dumps({\"body\": sys.stdin.read()}))' \\\n  | curl -s -X POST\
         \ \\\n    -H \"Authorization: Bearer ${TOKEN}\" \\\n    -H \"Accept: application/vnd.github+json\"\
         \ \\\n    \"https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments\"\
-        \ \\\n    -d @- > /dev/null\necho \"\u2705 Posted /copilot fix for issue #${ISSUE_REF}\
-        \ on PR #${PR_NUMBER}\"\n"
+        \ \\\n    -d @- > /dev/null\necho \"\u2705 Posted /copilot fix for issue  #${ISSUE_REF}\
+        \ on PR  #${PR_NUMBER}\"\n"
     - name: Execute /copilot review
       if: steps.parse.outputs.AUTHORIZED == 'true' && steps.parse.outputs.SUBCMD ==
         'review'
@@ -285,7 +285,7 @@ jobs:
         \n  | python3 -c 'import json,sys; print(json.dumps({\"body\": sys.stdin.read()}))'\
         \ \\\n  | curl -s -X POST \\\n    -H \"Authorization: Bearer ${TOKEN}\" \\\
         \n    -H \"Accept: application/vnd.github+json\" \\\n    \"https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments\"\
-        \ \\\n    -d @- > /dev/null\necho \"\u2705 Posted /copilot review on PR #${PR_NUMBER}\"\
+        \ \\\n    -d @- > /dev/null\necho \"\u2705 Posted /copilot review on PR  #${PR_NUMBER}\"\
         \n"
     - name: Execute /copilot coverage
       if: steps.parse.outputs.AUTHORIZED == 'true' && steps.parse.outputs.SUBCMD ==
@@ -307,7 +307,7 @@ jobs:
         \ Bearer ${TOKEN}\" \\\n    -H \"Accept: application/vnd.github+json\" \\\n\
         \    \"https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments\"\
         \ \\\n    -d @- > /dev/null\necho \"\u2705 Posted /copilot coverage for ${MODULE}\
-        \ on PR #${PR_NUMBER}\"\n"
+        \ on PR  #${PR_NUMBER}\"\n"
     - name: Execute /copilot security
       if: steps.parse.outputs.AUTHORIZED == 'true' && steps.parse.outputs.SUBCMD ==
         'security'
@@ -328,7 +328,7 @@ jobs:
         \ \\\n    -H \"Authorization: Bearer ${TOKEN}\" \\\n    -H \"Accept: application/vnd.github+json\"\
         \ \\\n    \"https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments\"\
         \ \\\n    -d @- > /dev/null\necho \"\u2705 Posted /copilot security on PR\
-        \ #${PR_NUMBER}\"\n"
+        \  #${PR_NUMBER}\"\n"
     - name: Increment COGNITIVE_BRAIN_SESSION_NUMBER
       if: steps.parse.outputs.AUTHORIZED == 'true'
       env:

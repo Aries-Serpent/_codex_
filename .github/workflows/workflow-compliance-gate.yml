@@ -71,13 +71,13 @@ jobs:
         \    except yaml.YAMLError as e:\n        violations.append(f\"{wf_file.name}:\
         \ YAML parse error — {e}\")\n        continue\n\n    if not isinstance(data,\
         \ dict):\n        continue\n\n    stub = is_stub(data)\n    name = wf_file.name\n\
-        \n    # Rule 1: permissions block required\n    if \"permissions\" not in\
+        \n  # Rule 1: permissions block required\n    if \"permissions\" not in\
         \ data:\n        violations.append(f\"{name}: missing top-level `permissions:`\
-        \ block\")\n\n    # Rule 2: concurrency required (skip stubs)\n    if not\
+        \ block\")\n\n  # Rule 2: concurrency required (skip stubs)\n    if not\
         \ stub and \"concurrency\" not in data:\n        violations.append(f\"{name}:\
-        \ missing `concurrency:` block\")\n\n    # Rule 3: all non-stub jobs must\
-        \ have timeout-minutes\n    # Exception: reusable-workflow caller jobs (uses:)\
-        \ do not support\n    # timeout-minutes at the caller level — skip them.\n\
+        \ missing `concurrency:` block\")\n\n  # Rule 3: all non-stub jobs must\
+        \ have timeout-minutes\n  # Exception: reusable-workflow caller jobs (uses:)\
+        \ do not support\n  # timeout-minutes at the caller level — skip them.\n\
         \    jobs = data.get(\"jobs\", {}) or {}\n    for job_id, job in jobs.items():\n\
         \        if not isinstance(job, dict):\n            continue\n        if job_id\
         \ == \"noop\":\n            continue\n        if \"uses\" in job:\n      \

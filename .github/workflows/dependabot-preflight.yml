@@ -52,7 +52,7 @@ jobs:
         \ following requirements files contain invalid pip specifiers:\"\n  echo -e\
         \ \"$FAILURES\"\n  echo \"\"\n  echo \"Common causes:\"\n  echo \"  • Triple-quoted\
         \ Python docstrings (\\\"\\\"\\\"...\\\"\\\"\\\") at the top of the file\"\
-        \n  echo \"  • Fix: replace docstrings with # comment lines\"\n  exit 1\n\
+        \n  echo \"  • Fix: replace docstrings with  # comment lines\"\n  exit 1\n\
         fi\n\necho \"✅ All $CHECKED requirements file(s) under .github/ are pip-parseable.\"\
         \n"
     - name: 📋 Write job summary

@@ -83,7 +83,7 @@ jobs:
           \ touched\n  low: docs or tests only\n  medium: session_hook, mcp_session_bridge\n\
           \  high: structural_policy_manager, agent_brain_api, planset_orchestrator\n\
           \nReturn ONLY valid JSON. No markdown fences.\n"
-        prompt: "Analyze this pull request for the _codex_ repository:\n\nPR #${{\
+        prompt: "Analyze this pull request for the _codex_ repository:\n\nPR  #${{\
           \ github.event.pull_request.number }}: ${{ github.event.pull_request.title\
           \ }}\nAuthor: ${{ github.event.pull_request.user.login }}\nBase: ${{ github.base_ref\
           \ }} \u2190 Head: ${{ github.head_ref }}\nChanged files (${{ steps.meta.outputs.brain_touched\
@@ -134,7 +134,7 @@ jobs:
           \ Cognitive Brain Integration \xB7 \\`.github/workflows/copilot-pr-session-injector.yml\\\
           `</sub>`,\n];\nconst body = bodyLines.join('\\n');\n\n// Store for dashboard\
           \ posting\ncore.setOutput('body', body);\ncore.info(`\u2705 Cognitive brain\
-          \ briefing prepared for PR #${context.payload.pull_request.number}`);\n"
+          \ briefing prepared for PR  #${context.payload.pull_request.number}`);\n"
     - name: Post to PR Status Dashboard
       if: always() && github.event_name == 'pull_request'
       uses: ./.github/actions/post-pr-summary

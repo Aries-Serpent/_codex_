@@ -115,7 +115,7 @@ jobs:
           \ =>\n  i.title.toLowerCase().includes(wfSlug.replace(/-/g, ' ')) ||\n \
           \ i.title.toLowerCase().includes(wfSlug) ||\n  (i.body || '').includes(`<!--\
           \ CI_FAILURE_TRACKER:${wfSlug.substring(0,60)} -->`)\n);\nif (existingIssue)\
-          \ {\n  core.info(`L1: issue #${existingIssue.number} already tracks \"${wfSlug}\"\
+          \ {\n  core.info(`L1: issue  #${existingIssue.number} already tracks \"${wfSlug}\"\
           \ \u2014 skip`);\n  core.setOutput('action',         'skip');\n  core.setOutput('existing_issue',\
           \ existingIssue.number.toString());\n  return;\n}\n\n// L2 \u2014 scan ALL\
           \ branches for ANY active fix branch.\n// Because this job holds the global\
@@ -196,7 +196,7 @@ jobs:
           \ \xB7 ${ts}_`,\n].join('\\n');\n\nconst { data: issue } = await github.rest.issues.create({\n\
           \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  title: `\U0001F6A8\
           \ CI Failure on main: ${wfName} [${shortSha}]`,\n  body,\n  labels,\n});\n\
-          core.info(`Created issue #${issue.number}: ${issue.html_url}`);\ncore.setOutput('issue_number',\
+          core.info(`Created issue  #${issue.number}: ${issue.html_url}`);\ncore.setOutput('issue_number',\
           \ issue.number.toString());\ncore.setOutput('issue_url',    issue.html_url);\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
@@ -233,7 +233,7 @@ jobs:
         \ << STUB\n# CI Fix Tracking: ${{ github.event.workflow_run.name }}\n\n**Status**:\
         \ \U0001F504 In Progress\n**Opened**: $(date -u +\"%Y-%m-%dT%H:%M:%SZ\")\n\
         **Workflow**: ${{ github.event.workflow_run.name }}\n**Run**: ${{ github.event.workflow_run.html_url\
-        \ }}\n**Issue**: #${{ needs.create-issue.outputs.issue_number }}\n\nThis stub\
+        \ }}\n**Issue**:  #${{ needs.create-issue.outputs.issue_number }}\n\nThis stub\
         \ was created by the CI Failure Issue Creator.\n@copilot will implement the\
         \ fix in this branch.\nSTUB\n\ngit add \".codex/ci-fixes/${SHORT_SLUG}.md\"\
         \ngit commit -m \"fix(ci): tracking stub for ${{ github.event.workflow_run.name\
@@ -284,7 +284,7 @@ jobs:
           \ parseInt(issueNum, 10),\n  body: `\U0001F527 **Automated fix PR opened**:\
           \ ${pr.html_url}\\n\\n@copilot has been instructed to diagnose and fix the\
           \ root cause.\\n\\n---\\n_[\U0001F517 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,\n\
-          });\n\ncore.info(`Fix PR #${pr.number}: ${pr.html_url}`);\ncore.setOutput('pr_url',\
+          });\n\ncore.info(`Fix PR  #${pr.number}: ${pr.html_url}`);\ncore.setOutput('pr_url',\
           \    pr.html_url);\ncore.setOutput('pr_number', pr.number.toString());\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
@@ -429,5 +429,5 @@ jobs:
           \ by this issue has been resolved.\\n\\n---\\n_[\U0001F517 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,\n\
           \  });\n  await github.rest.issues.update({\n    owner, repo, issue_number:\
           \ issue.number,\n    state: 'closed', state_reason: 'completed',\n  });\n\
-          \  core.info(`Closed issue #${issue.number}`);\n}\nif (!matching.length)\
+          \  core.info(`Closed issue  #${issue.number}`);\n}\nif (!matching.length)\
           \ core.info(`No open issues found for \"${wfName}\"`);\n"

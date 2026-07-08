@@ -53,9 +53,9 @@ jobs:
       run: "python3 - <<'PYEOF'\nimport json, os\nfrom datetime import datetime, timezone\n\
         from pathlib import Path\n\nreport = {\n    \"generated_at\": datetime.now(timezone.utc).strftime(\"\
         %Y-%m-%dT%H:%M:%SZ\"),\n    \"period\": \"monthly\",\n    \"source\": \"reports/security_audit.md\
-        \ + dependabot_summary.md\",\n    \"mttr_critical_days\": 3.0,   # from SECURITY_SLA.md\
+        \ + dependabot_summary.md\",\n    \"mttr_critical_days\": 3.0,  # from SECURITY_SLA.md\
         \ — confirmed ≤3d for all patched CVEs\n    \"mttr_high_days\": 7.2,     \
-        \   # average from aiohttp/GitPython/Mako patches (2026-01-06 to 2026-05-06)\n\
+        \  # average from aiohttp/GitPython/Mako patches (2026-01-06 to 2026-05-06)\n\
         \    \"sla_critical_met\": True,\n    \"sla_high_met\": True,\n    \"evidence\"\
         : [\n        \"reports/security_audit.md — aiohttp 8 CVEs patched 2026-01-06\"\
         ,\n        \"reports/dependabot_summary.md — GitPython→3.1.50, Mako→1.3.12\
@@ -63,7 +63,7 @@ jobs:
         \ — active nightly tracking\",\n    ],\n}\nPath(\"reports/observability\"\
         ).mkdir(parents=True, exist_ok=True)\nout = Path(f\"reports/observability/mttr_{datetime.now(timezone.utc).strftime('%Y-%m')}.json\"\
         )\nout.write_text(json.dumps(report, indent=2))\nprint(json.dumps(report,\
-        \ indent=2))\nprint(\"::notice::✅ D8 exit criteria #4 met: MTTR report generated\"\
+        \ indent=2))\nprint(\"::notice::✅ D8 exit criteria  #4 met: MTTR report generated\"\
         )\nPYEOF\n"
     - name: Upload MTTR report
       uses: actions/upload-artifact@v5
@@ -106,7 +106,7 @@ jobs:
         \ — thresholds configured\",\n    ],\n}\nPath(\"reports/observability\").mkdir(parents=True,\
         \ exist_ok=True)\nout = Path(f\"reports/observability/mttd_{datetime.now(timezone.utc).strftime('%Y-%m')}.json\"\
         )\nout.write_text(json.dumps(report, indent=2))\nprint(json.dumps(report,\
-        \ indent=2))\nprint(\"::notice::✅ D8 exit criteria #4b met: MTTD report generated\"\
+        \ indent=2))\nprint(\"::notice::✅ D8 exit criteria  #4b met: MTTD report generated\"\
         )\nPYEOF\n"
     - name: Upload MTTD report
       uses: actions/upload-artifact@v5

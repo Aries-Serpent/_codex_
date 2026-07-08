@@ -141,28 +141,28 @@ jobs:
       run: |
         # Install specific bandit version for consistency
         pip install bandit>=1.7.5
-        
+
         # Verify bandit installation
         python -c "import bandit; print(f'✓ bandit {bandit.__version__}')"
-        
+
         # Run bandit with explicit error handling and verbose output
         # Use set -o pipefail to catch errors in piped commands
         set -o pipefail
-        
+
         # Create output directory if needed
         mkdir -p security-reports
-        
+
         # Run bandit with full error reporting
         bandit -r src/codex/auth/ -ll -f json -o auth-security-report.json -v 2>&1 | tee bandit-output.log
         BANDIT_EXIT_CODE=$?
-        
+
         if [ $BANDIT_EXIT_CODE -ne 0 ]; then
           echo "ERROR: bandit exited with code $BANDIT_EXIT_CODE" >&2
           echo "Bandit output:" >&2
           cat bandit-output.log >&2
           exit $BANDIT_EXIT_CODE
         fi
-        
+
         # Verify report was generated
         if [ ! -f auth-security-report.json ]; then
           echo "ERROR: bandit failed to generate auth-security-report.json" >&2
@@ -170,7 +170,7 @@ jobs:
           cat bandit-output.log >&2
           exit 1
         fi
-        
+
         # Verify JSON is valid and contains expected fields
         python -c "
         import json
@@ -185,7 +185,7 @@ jobs:
           echo "ERROR: Generated report is not valid JSON or missing required fields" >&2
           exit 1
         }
-        
+
         echo "✓ Security scan completed successfully"
         echo "Report location: auth-security-report.json"
     - name: Verify security report exists before upload

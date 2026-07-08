@@ -76,11 +76,11 @@ jobs:
         \ own PR \u2192 BLOCKED (because this gate is\n# failing) \u2192 exit 1 \u2192\
         \ gate stays failed forever.\nISSUE_NUMBERS=\"\"\nfor n in ${RAW_NUMBERS};\
         \ do\n  if [[ \"$n\" != \"${PR_NUMBER}\" ]]; then\n    ISSUE_NUMBERS=\"${ISSUE_NUMBERS}\
-        \ ${n}\"\n  else\n    echo \"\u2139\uFE0F  Excluding self-reference #${n}\
+        \ ${n}\"\n  else\n    echo \"\u2139\uFE0F  Excluding self-reference  #${n}\
         \ (this PR)\"\n  fi\ndone\nISSUE_NUMBERS=$(echo \"${ISSUE_NUMBERS}\" | xargs\
         \ || true)\n\necho \"issues=${ISSUE_NUMBERS}\" >> \"$GITHUB_OUTPUT\"\necho\
         \ \"source=pr-body\" >> \"$GITHUB_OUTPUT\"\nif [[ -n \"${ISSUE_NUMBERS}\"\
-        \ ]]; then\n  echo \"\u2139\uFE0F  Found issue references in PR #${PR_NUMBER}:\
+        \ ]]; then\n  echo \"\u2139\uFE0F  Found issue references in PR  #${PR_NUMBER}:\
         \ ${ISSUE_NUMBERS}\"\nelse\n  echo \"\u2139\uFE0F  No issue references found\
         \ in PR body\"\nfi\n"
     - name: Run issue resolution verifier
@@ -109,7 +109,7 @@ jobs:
         \  # shellcheck disable=SC2086\n  python scripts/ci/verify_issue_resolution.py\
         \ \\\n    --issues ${ISSUES} \\\n    --repo \"${{ github.repository }}\" \\\
         \n    --output-json /tmp/issue-resolution-reports/report.json \\\n    --allow-in-progress\
-        \ || true   # don't fail artifact generation\nelse\n  echo '[]' > /tmp/issue-resolution-reports/report.json\n\
+        \ || true  # don't fail artifact generation\nelse\n  echo '[]' > /tmp/issue-resolution-reports/report.json\n\
         fi\n"
     - name: Upload resolution report
       if: always()
