@@ -34,7 +34,7 @@ jobs:
     - name: Submit via component-detection (attempt 1, with retry)
       id: submit_component
       continue-on-error: true
-      uses: github/dependency-submission-action@v3
+      uses: advanced-security/component-detection-dependency-submission-action@v0.1.4
       with:
         scanDirectory: .
       env:

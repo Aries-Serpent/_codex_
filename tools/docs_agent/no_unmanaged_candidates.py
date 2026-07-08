@@ -15,15 +15,30 @@ def main() -> int:
     args = parser.parse_args()
     repo_root = Path(args.repo_root)
     result = run_coverage(repo_root, strict=False)
+
+    # Load policy to check fail_on_unmanaged_candidates setting
+    from .utils import load_policy
+    policy = load_policy(repo_root)
+    should_fail_on_unmanaged = policy.get("enforcement", {}).get(
+        "fail_on_unmanaged_candidates", True
+    )
+
     report = {
-        "ok": len(result["report"]["unmanaged_files"]) == 0,
+        "ok": (len(result["report"]["unmanaged_files"]) == 0 or not should_fail_on_unmanaged),
         "unmanaged_count": len(result["report"]["unmanaged_files"]),
         "unmanaged_files": result["report"]["unmanaged_files"],
         "message": (
             "No unmanaged candidate files"
             if len(result["report"]["unmanaged_files"]) == 0
-            else "Unmanaged candidate files detected"
+            else (
+                "Unmanaged candidate files detected (but policy allows them)"
+                if not should_fail_on_unmanaged
+                else "Unmanaged candidate files detected"
+            )
         ),
+        "policy_enforcement": {
+            "fail_on_unmanaged_candidates": should_fail_on_unmanaged,
+        },
     }
     out = repo_root / "docs-data" / "generated" / "unmanaged-candidates-report.json"
     write_json(out, report)
