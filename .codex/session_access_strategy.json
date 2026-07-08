@@ -1,20 +1,18 @@
 {
-  "generated_at": "2026-07-08T19:58:11.749920+00:00",
+  "generated_at": "2026-07-08T20:35:59.174150+00:00",
   "methods": [
     "rest",
     "graphql",
     "gh_cli"
   ],
   "rest_available": true,
-  "rest_remaining": 4903,
+  "rest_remaining": 4861,
   "graphql_available": true,
-  "graphql_remaining": 4995,
+  "graphql_remaining": 5000,
   "gh_cli_available": true,
   "codeql_available": false,
   "best_token_var": "CODEX_MASTER_KEY",
-  "open_prs": [
-    5271
-  ],
-  "branch": "copilot/unified-governance-gate-v0-1-0-final-validation",
+  "open_prs": [],
+  "branch": "copilot/create-implementation-campaign-plan",
   "recommendation": "Use REST for data fetches. "
 }
