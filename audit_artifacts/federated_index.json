@@ -1,0 +1,14 @@
+{
+  "repositories": [
+    {
+      "path": "/tmp/tmp97mpu7gz",
+      "capabilities": [
+        "checkpoint",
+        "training"
+      ],
+      "evidence_count": 2
+    }
+  ],
+  "total_scanned": 1,
+  "total_capabilities": 2
+}
