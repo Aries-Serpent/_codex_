@@ -3,12 +3,12 @@ Test Ingestion Auto Encoding
 
 Test module for ingestion auto encoding.
 """
+import pytest
+
 pytest.importorskip("charset_normalizer")
 
 import sys
 from pathlib import Path
-
-import pytest
 
 ROOT = Path(__file__).resolve().parents[1] / "src"
 if str(ROOT) not in sys.path:
