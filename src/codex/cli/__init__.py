@@ -60,46 +60,63 @@ def _load_click_cli() -> Any:
 
 cli = _load_click_cli()
 
-# Also expose CLI groups and helpers for testing
-logs = None
-tokenizer_group = None
-repro_group = None
-auth_group = None
-chronicle = None
-_fix_pool = None
-init_db_cmd = None
-export_env_cmd = None
-clean_logs_cmd = None
-session_logger_cmd = None
-query_logs_cmd = None
-validate_env_cmd = None
-list_sessions_cmd = None
-viewer_cmd = None
-ALLOWED_TASKS = None
-_emit_group_help = None
-_missing_command = None
 
-if cli is not None:
-    # Import the groups from the loaded module
-    _cli_module = sys.modules.get("codex._cli_click")
-    if _cli_module:
-        logs = getattr(_cli_module, "logs", None)
-        tokenizer_group = getattr(_cli_module, "tokenizer_group", None)
-        repro_group = getattr(_cli_module, "repro_group", None)
-        auth_group = getattr(_cli_module, "auth_group", None)
-        chronicle = getattr(_cli_module, "chronicle", None)
-        _fix_pool = getattr(_cli_module, "_fix_pool", None)
-        init_db_cmd = getattr(_cli_module, "init_db_cmd", None)
-        export_env_cmd = getattr(_cli_module, "export_env_cmd", None)
-        clean_logs_cmd = getattr(_cli_module, "clean_logs_cmd", None)
-        session_logger_cmd = getattr(_cli_module, "session_logger_cmd", None)
-        query_logs_cmd = getattr(_cli_module, "query_logs_cmd", None)
-        validate_env_cmd = getattr(_cli_module, "validate_env_cmd", None)
-        list_sessions_cmd = getattr(_cli_module, "list_sessions_cmd", None)
-        viewer_cmd = getattr(_cli_module, "viewer_cmd", None)
-        ALLOWED_TASKS = getattr(_cli_module, "ALLOWED_TASKS", None)
-        _emit_group_help = getattr(_cli_module, "_emit_group_help", None)
-        _missing_command = getattr(_cli_module, "_missing_command", None)
+def _initialize_cli_groups() -> dict[str, Any]:
+    """Initialize CLI groups and helpers from loaded Click module.
+    
+    Returns a dictionary with all CLI group exports properly typed.
+    This pattern avoids uninitialized variable anti-pattern while
+    maintaining backward compatibility for test imports.
+    """
+    groups: dict[str, Any] = {
+        "logs": None,
+        "tokenizer_group": None,
+        "repro_group": None,
+        "auth_group": None,
+        "chronicle": None,
+        "_fix_pool": None,
+        "init_db_cmd": None,
+        "export_env_cmd": None,
+        "clean_logs_cmd": None,
+        "session_logger_cmd": None,
+        "query_logs_cmd": None,
+        "validate_env_cmd": None,
+        "list_sessions_cmd": None,
+        "viewer_cmd": None,
+        "ALLOWED_TASKS": None,
+        "_emit_group_help": None,
+        "_missing_command": None,
+    }
+
+    if cli is not None:
+        # Import the groups from the loaded module
+        _cli_module = sys.modules.get("codex._cli_click")
+        if _cli_module:
+            for key in groups:
+                groups[key] = getattr(_cli_module, key, None)
+
+    return groups
+
+
+# Initialize CLI groups once and expose as module attributes
+_cli_groups = _initialize_cli_groups()
+logs: Any = _cli_groups["logs"]
+tokenizer_group: Any = _cli_groups["tokenizer_group"]
+repro_group: Any = _cli_groups["repro_group"]
+auth_group: Any = _cli_groups["auth_group"]
+chronicle: Any = _cli_groups["chronicle"]
+_fix_pool: Any = _cli_groups["_fix_pool"]
+init_db_cmd: Any = _cli_groups["init_db_cmd"]
+export_env_cmd: Any = _cli_groups["export_env_cmd"]
+clean_logs_cmd: Any = _cli_groups["clean_logs_cmd"]
+session_logger_cmd: Any = _cli_groups["session_logger_cmd"]
+query_logs_cmd: Any = _cli_groups["query_logs_cmd"]
+validate_env_cmd: Any = _cli_groups["validate_env_cmd"]
+list_sessions_cmd: Any = _cli_groups["list_sessions_cmd"]
+viewer_cmd: Any = _cli_groups["viewer_cmd"]
+ALLOWED_TASKS: Any = _cli_groups["ALLOWED_TASKS"]
+_emit_group_help: Any = _cli_groups["_emit_group_help"]
+_missing_command: Any = _cli_groups["_missing_command"]
 
 __all__ = [
     "_emit_group_help",

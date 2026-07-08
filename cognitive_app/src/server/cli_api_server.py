@@ -46,6 +46,14 @@ try:
 except ImportError:  # pragma: no cover — fallback when package not installed
     _safe_json_loads = json.loads  # type: ignore[assignment]
 
+# Safe logging sanitizer to prevent log injection attacks
+try:
+    from codex.logging_safe import sanitize_for_log
+except ImportError:  # pragma: no cover — fallback when package not installed
+    def sanitize_for_log(value):  # type: ignore[no-untyped-def]
+        """Fallback: simple string conversion."""
+        return str(value) if value is not None else "None"
+
 # ── SAR-G05: OpenTelemetry distributed tracing stub ─────────────────────────
 # Full OTel SDK is optional; the stub is a no-op when the SDK is absent so the
 # server starts in environments that don't have the OTel packages installed.
@@ -457,11 +465,11 @@ try:
         })
     log.info("Loaded %d history entries from SQLite (%s)", len(_rows), _DB_PATH)
 except sqlite3.OperationalError as _e:
-    log.warning("SQLite schema error pre-loading history (DB corrupt or schema mismatch?): %s", type(_e).__name__)
+    log.warning("SQLite schema error pre-loading history (DB corrupt or schema mismatch?): %s", sanitize_for_log(type(_e).__name__))
 except sqlite3.DatabaseError as _e:
-    log.warning("SQLite database error pre-loading history (connection failure?): %s", type(_e).__name__)
+    log.warning("SQLite database error pre-loading history (connection failure?): %s", sanitize_for_log(type(_e).__name__))
 except Exception as _e:
-    log.warning("Unexpected error pre-loading history from SQLite: %s", type(_e).__name__)
+    log.warning("Unexpected error pre-loading history from SQLite: %s", sanitize_for_log(type(_e).__name__))
 
 # Repo root (4 levels up from this file: server/ → src/ → cognitive_app/ → repo/)
 REPO_ROOT = str(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(
@@ -558,7 +566,7 @@ async def ooda_process(req: dict[str, Any]):
         }
     except Exception as exc:
         # CodeQL py/stack-trace-exposure: log full details server-side only.
-        log.warning("OODA process error (returning graceful fallback): %s", type(exc).__name__)
+        log.warning("OODA process error (returning graceful fallback): %s", sanitize_for_log(type(exc).__name__))
         return {
             "success": False,
             "output": None,
@@ -647,7 +655,7 @@ async def memory_state(_auth: None = Depends(_require_memory_auth)):
             "timestamp": datetime.now(timezone.utc).isoformat(),
         }
     except Exception as exc:
-        log.warning("memory_state error: %s", type(exc).__name__)
+        log.warning("memory_state error: %s", sanitize_for_log(type(exc).__name__))
         return {
             "stm_count": 0,
             "ltm_count": 0,
@@ -679,7 +687,7 @@ async def memory_search(q: str = "", limit: int = 20, _auth: None = Depends(_req
             ).fetchall()
         return {"items": [dict(r) for r in rows], "total": len(rows)}
     except Exception as exc:
-        log.warning("memory_search error: %s", type(exc).__name__)
+        log.warning("memory_search error: %s", sanitize_for_log(type(exc).__name__))
         return {"items": [], "total": 0, "error": "Internal error searching memory"}
 
 
@@ -759,7 +767,7 @@ async def memory_consolidate(_auth: None = Depends(_require_memory_auth)):
             "timestamp": now.isoformat(),
         }
     except Exception as exc:
-        log.warning("memory_consolidate error: %s", type(exc).__name__)
+        log.warning("memory_consolidate error: %s", sanitize_for_log(type(exc).__name__))
         return {
             "consolidated": 0,
             "pruned": 0,
@@ -784,7 +792,7 @@ async def ooda_metrics():
         return {"metrics": metrics, "timestamp": datetime.now(timezone.utc).isoformat()}
     except Exception as exc:
         # CodeQL py/stack-trace-exposure: log details server-side, return generic message.
-        log.warning("OODA metrics error: %s", type(exc).__name__)
+        log.warning("OODA metrics error: %s", sanitize_for_log(type(exc).__name__))
         return {"metrics": {}, "timestamp": datetime.now(timezone.utc).isoformat(),
                 "error": "OODA metrics unavailable (see server logs for details)"}
 
@@ -989,7 +997,7 @@ async def cli_run(req: CliRunRequest):
             )
             _db.commit()
     except Exception as _e:
-        log.debug("SQLite history write failed (non-blocking): %s", type(_e).__name__)
+        log.debug("SQLite history write failed (non-blocking): %s", sanitize_for_log(type(_e).__name__))
 
     # Normalize before logging to avoid propagating request-influenced taint
     # into log sinks (defense-in-depth against log injection style findings).
@@ -1023,7 +1031,7 @@ async def cli_clear_history():
             _db.execute("DELETE FROM cli_history")
             _db.commit()
     except Exception as _e:
-        log.debug("SQLite history clear failed (non-blocking): %s", type(_e).__name__)
+        log.debug("SQLite history clear failed (non-blocking): %s", sanitize_for_log(type(_e).__name__))
     return {"cleared": True}
 
 
@@ -1080,7 +1088,7 @@ async def webhook_github(request: Request):
             )
             _db.commit()
     except Exception as _e:
-        log.warning("webhook_events SQLite write failed (non-blocking): %s", type(_e).__name__)
+        log.warning("webhook_events SQLite write failed (non-blocking): %s", sanitize_for_log(type(_e).__name__))
 
     log.info(
         "webhook_github event=%r delivery=%r",
@@ -1116,7 +1124,7 @@ async def webhooks_recent(limit: int = 50):
             })
         return {"events": events, "total": len(events)}
     except Exception as exc:
-        log.warning("webhooks_recent error: %s", type(exc).__name__)
+        log.warning("webhooks_recent error: %s", sanitize_for_log(type(exc).__name__))
         return {"events": [], "total": 0, "error": "Internal error retrieving webhook events"}
 
 
@@ -1184,7 +1192,7 @@ async def patterns_recent(
             "total": len(rows),
         }
     except Exception as exc:
-        log.warning("patterns_recent error: %s", type(exc).__name__)
+        log.warning("patterns_recent error: %s", sanitize_for_log(type(exc).__name__))
         return {"patterns": [], "total": 0, "error": "Internal error"}
 
 
@@ -1235,7 +1243,7 @@ async def patterns_summary():
             )
         return {"summary": summary}
     except Exception as exc:
-        log.warning("patterns_summary error: %s", type(exc).__name__)
+        log.warning("patterns_summary error: %s", sanitize_for_log(type(exc).__name__))
         return {"summary": [], "error": "Internal error"}
 
 
@@ -1275,7 +1283,7 @@ async def patterns_record(
             _db.commit()
         return {"id": cur.lastrowid, "timestamp": ts}
     except Exception as exc:
-        log.warning("patterns_record error: %s", type(exc).__name__)
+        log.warning("patterns_record error: %s", sanitize_for_log(type(exc).__name__))
         raise HTTPException(status_code=500, detail="Failed to record pattern") from exc
 
 
@@ -1346,7 +1354,7 @@ async def github_token(_auth: None = Depends(_require_memory_auth)):
         except Exception as exc:
             log.warning(
                 "GitHub auth: app installation exchange failed (%s), falling back",
-                type(exc).__name__,
+                sanitize_for_log(type(exc).__name__),
             )
 
     # ── Fall back to PAT ──────────────────────────────────────────────────────
@@ -1451,7 +1459,7 @@ async def api_proxy(req: ApiProxyRequest):
             "api_proxy %s host=%s failed (%s)",
             _sanitize_log_value(method),
             _sanitize_log_value(safe_host),
-            type(exc).__name__,
+            sanitize_for_log(type(exc).__name__),
         )
         raise HTTPException(status_code=500, detail="Upstream request failed (see server logs for details)")
 
@@ -1545,14 +1553,14 @@ async def ws_cli(ws: WebSocket):
                             })
                     except OSError as exc:
                         # Best-effort drain: PTY may already be closed; ignore and exit.
-                        log.debug("Ignoring OSError while draining PTY output: %s", type(exc).__name__)
+                        log.debug("Ignoring OSError while draining PTY output: %s", sanitize_for_log(type(exc).__name__))
                     await ws.send_json({"type": "exit", "code": proc.returncode or 0})
                     break
         except WebSocketDisconnect:
             # Client disconnected — normal control flow; stop reading silently.
             _ = None  # suppressed: no action needed
         except RuntimeError as exc:
-            log.debug("Unexpected RuntimeError in read_pty: %s", type(exc).__name__)
+            log.debug("Unexpected RuntimeError in read_pty: %s", sanitize_for_log(type(exc).__name__))
 
     async def write_pty() -> None:
         """Forward WebSocket keystrokes to the PTY."""
@@ -1572,7 +1580,7 @@ async def ws_cli(ws: WebSocket):
             # Client disconnected — normal control flow; stop writing silently.
             _ = None  # suppressed: no action needed
         except RuntimeError as exc:
-            log.debug("Unexpected RuntimeError in write_pty: %s", type(exc).__name__)
+            log.debug("Unexpected RuntimeError in write_pty: %s", sanitize_for_log(type(exc).__name__))
 
     try:
         await asyncio.gather(read_pty(), write_pty())
@@ -1587,7 +1595,7 @@ async def ws_cli(ws: WebSocket):
             os.close(master_fd)
         except OSError as exc:
             # Best-effort cleanup: master_fd may already be closed or invalid.
-            log.debug("Error while closing PTY master_fd: %s", type(exc).__name__)
+            log.debug("Error while closing PTY master_fd: %s", sanitize_for_log(type(exc).__name__))
         log.info("WS PTY session closed (pid=%s rc=%s)", proc.pid, proc.returncode)
 
 
@@ -1641,7 +1649,7 @@ async def ws_metrics(ws: WebSocket):
             except WebSocketDisconnect:
                 break
             except Exception as exc:
-                log.debug("Metrics broadcast error: %s", type(exc).__name__)
+                log.debug("Metrics broadcast error: %s", sanitize_for_log(type(exc).__name__))
                 try:
                     await asyncio.sleep(0.5)
                 except asyncio.CancelledError:
@@ -1665,11 +1673,11 @@ async def ws_metrics(ws: WebSocket):
         except WebSocketDisconnect:
             pass
         except Exception as exc:
-            log.debug("Client command error: %s", type(exc).__name__)
+            log.debug("Client command error: %s", sanitize_for_log(type(exc).__name__))
 
     try:
         await asyncio.gather(broadcast_metrics(), handle_client_commands())
     except Exception as exc:
-        log.debug("Metrics stream error: %s", type(exc).__name__)
+        log.debug("Metrics stream error: %s", sanitize_for_log(type(exc).__name__))
     finally:
         log.info("WS metrics stream closed")

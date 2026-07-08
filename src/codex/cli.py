@@ -2398,11 +2398,17 @@ def auth_group(ctx: click.Context) -> None:
 # for persistent multi-process workflows.
 # ---------------------------------------------------------------------------
 
-_cli_user_store = None
-_cli_auth = None
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from codex.auth.authenticator import Authenticator
+    from codex.auth.user_store import UserStore
+
+_cli_user_store: "UserStore | None" = None
+_cli_auth: "Authenticator | None" = None
 
 
-def _get_auth():
+def _get_auth() -> "Authenticator":
     """Return a (lazily initialised) singleton Authenticator for CLI use."""
     global _cli_user_store, _cli_auth
     if _cli_auth is None:
