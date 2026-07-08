@@ -108,13 +108,22 @@ class RedisCache(CacheBackend):
             return pickle.dumps(value)
 
     def _deserialize(self, data: bytes) -> Any:
-        """Deserialize bytes to value."""
+        """Deserialize bytes to value (CWE-502 remediation: JSON only, no unsafe pickle).
+        
+        For backward compatibility with pickle-cached objects:
+        Use migration scripts in scripts/cache/migrate_pickle_to_json.py
+        """
         try:
             return json.loads(data.decode("utf-8"))
         except (json.JSONDecodeError, UnicodeDecodeError):
-            # Fallback to pickle for backward compatibility with cached objects
-            # nosemgrep: semgrep.unsafe-pickle-loads - Deserializing data previously serialized by this app (trusted boundary)  # noqa: E501
-            return pickle.loads(data)  # noqa: E501
+            # Pickle is unsafe (CWE-502). Old cached data should be migrated using:
+            # python scripts/cache/migrate_pickle_to_json.py
+            # For now, log warning and return None to force cache miss
+            logger.warning(
+                "Encountered non-JSON cached data. This is likely pickle-serialized data from an older version. "
+                "Please run: python scripts/cache/migrate_pickle_to_json.py to migrate to secure JSON format."
+            )
+            return None
 
     def get(self, key: str) -> Optional[Any]:
         """Get value from cache."""

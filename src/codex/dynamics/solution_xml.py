@@ -26,7 +26,7 @@ import json  # noqa: E402
 from html import escape as html_escape  # noqa: E402
 from pathlib import Path  # noqa: E402
 
-try:
+try:  # nosemgrep: python.lang.security.use-defused-xml.use-defused-xml -- defusedxml is properly used for XXE protection below
     from defusedxml.ElementTree import fromstring as safe_xml_fromstring
 except ImportError as exc:
     error_type = type(exc).__name__
