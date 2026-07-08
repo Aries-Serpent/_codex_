@@ -11,7 +11,7 @@ Tests cover:
 
 import pytest
 import numpy as np
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import MagicMock
 
 from src.codex.interpretability.attention_scorer import (
     AttentionScorer,

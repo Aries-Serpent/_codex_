@@ -15,7 +15,6 @@ Test Coverage:
 import json
 import tempfile
 from pathlib import Path
-from typing import Any
 
 import pytest
 

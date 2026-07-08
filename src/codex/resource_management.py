@@ -60,7 +60,7 @@ def safe_int_conversion(
         # Handle None explicitly
         if value is None:
             if strict:
-                raise TypeConversionError(f"Cannot convert None to int")
+                raise TypeConversionError("Cannot convert None to int")
             return default
 
         # Try direct conversion
@@ -104,18 +104,18 @@ def safe_float_conversion(
     try:
         if value is None:
             if strict:
-                raise TypeConversionError(f"Cannot convert None to float")
+                raise TypeConversionError("Cannot convert None to float")
             return default
 
         result = float(value)
 
         # Check for special float values
         if result != result:  # NaN check
-            logger.warning(f"Conversion resulted in NaN")
+            logger.warning("Conversion resulted in NaN")
         elif result == float("inf"):
-            logger.warning(f"Conversion resulted in positive infinity")
+            logger.warning("Conversion resulted in positive infinity")
         elif result == float("-inf"):
-            logger.warning(f"Conversion resulted in negative infinity")
+            logger.warning("Conversion resulted in negative infinity")
 
         return result
     except (ValueError, TypeError) as e:

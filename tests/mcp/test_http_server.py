@@ -4,7 +4,6 @@ Test Http Server
 Test module for http server.
 """
 
-import os
 
 import pytest
 

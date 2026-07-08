@@ -1,0 +1,11 @@
+{"component": "connectors.remote", "details": {"cache_root": "/tmp/pytest-of-runner/pytest-27/test_stream_paths_mixed_source0/remote", "endpoint": "offline://remote", "readonly": false}, "event": "initialised", "timestamp": "2026-07-08T18:28:04.215581+00:00"}
+{"component": "connectors.remote", "details": {"file_count": 1, "path": "datasets/remote.jsonl", "size": 39}, "event": "write", "timestamp": "2026-07-08T18:28:04.218605+00:00"}
+{"component": "connectors.remote", "details": {"cache_root": "/tmp/pytest-of-runner/pytest-27/test_stream_paths_mixed_source0/remote", "endpoint": "offline://remote", "readonly": false}, "event": "initialised", "timestamp": "2026-07-08T18:28:04.221855+00:00"}
+{"component": "connectors.remote", "details": {"count": 1, "path": "datasets/remote.jsonl"}, "event": "listed", "timestamp": "2026-07-08T18:28:04.223283+00:00"}
+{"component": "connectors.remote", "details": {"path": "datasets/remote.jsonl", "size": 39}, "event": "read", "timestamp": "2026-07-08T18:28:04.227361+00:00"}
+{"component": "connectors.remote", "details": {"cache_root": "/tmp/pytest-of-runner/pytest-27/test_stream_paths_connector_ur0/remote", "endpoint": "offline://remote", "readonly": false}, "event": "initialised", "timestamp": "2026-07-08T18:28:04.496299+00:00"}
+{"component": "connectors.remote", "details": {"file_count": 1, "path": "datasets/sample.jsonl", "size": 36}, "event": "write", "timestamp": "2026-07-08T18:28:04.498056+00:00"}
+{"component": "connectors.remote", "details": {"cache_root": "/tmp/pytest-of-runner/pytest-27/test_stream_paths_connector_ur0/remote", "endpoint": "offline://remote", "readonly": false}, "event": "initialised", "timestamp": "2026-07-08T18:28:04.499718+00:00"}
+{"component": "connectors.remote", "details": {"count": 1, "path": "datasets/sample.jsonl"}, "event": "listed", "timestamp": "2026-07-08T18:28:04.501514+00:00"}
+{"component": "connectors.remote", "details": {"path": "datasets/sample.jsonl", "size": 36}, "event": "read", "timestamp": "2026-07-08T18:28:04.503341+00:00"}
+{"component": "connectors.remote", "details": {"cache_root": "/home/runner/.codex/remote_cache", "endpoint": "offline://remote", "readonly": false}, "event": "initialised", "timestamp": "2026-07-08T18:28:05.051876+00:00"}

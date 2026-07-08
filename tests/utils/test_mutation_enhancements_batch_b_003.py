@@ -13,7 +13,6 @@ This module contains 10+ mutation-killer tests targeting:
 """
 
 import pytest
-import math
 
 
 class TestArithmeticOperatorMutations:

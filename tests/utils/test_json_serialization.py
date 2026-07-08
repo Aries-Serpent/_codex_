@@ -11,20 +11,16 @@ Tests cover:
 
 import json
 import math
-import sys
 from dataclasses import dataclass
-from datetime import UTC, date, datetime, time, timedelta, timezone
+from datetime import UTC, date, datetime, time, timedelta
 from decimal import Decimal
 from enum import Enum
 from pathlib import Path
-from typing import Optional
 from uuid import UUID, uuid4
 
 import pytest
 
 from codex_ml.utils.json_serialization import (
-    CustomJSONDecoder,
-    CustomJSONEncoder,
     _validate_serializable,
     safe_json_dump,
     safe_json_dumps,

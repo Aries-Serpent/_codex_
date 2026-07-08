@@ -13,7 +13,6 @@ Authority: D-tier autonomous
 """
 
 import pytest
-from unittest.mock import Mock, patch, MagicMock
 from datetime import datetime, timedelta, timezone
 import hmac
 import hashlib

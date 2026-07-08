@@ -13,7 +13,7 @@ Tests cover:
 import logging
 import pytest
 from io import StringIO
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 from codex.logging_safe import (
     create_safe_logger,

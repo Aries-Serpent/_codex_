@@ -17,13 +17,10 @@ Success Criteria:
 """
 
 import json
-import tempfile
 import threading
 import time
 from datetime import datetime, timedelta
-from pathlib import Path
-from typing import Any, Dict, Generator, List, Optional
-from unittest.mock import MagicMock, Mock, patch
+from typing import Dict
 
 import pytest
 

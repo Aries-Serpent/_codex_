@@ -1,0 +1,36 @@
+{
+  "validation": "test_coverage_determinism",
+  "runs": [
+    {
+      "run_number": 1,
+      "exit_code": 4,
+      "total_coverage": 0,
+      "stdout": "",
+      "stderr": "\u2713 NumPy determinism enabled (seed=0)\n\u2713 PyTorch determinism enabled (seed=0)\n\u2713 Determinism bootstrap complete\nERROR: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: unrecognized arguments: --cov=src --cov-report=json --cov-report=term-missing\n  inifile: /home/runner/work/_codex_/_codex_/pytest.ini\n  rootdir: /home/runner/work/_codex_/_codex_\n\n",
+      "test_count": 0
+    },
+    {
+      "run_number": 2,
+      "exit_code": 4,
+      "total_coverage": 0,
+      "stdout": "",
+      "stderr": "\u2713 NumPy determinism enabled (seed=0)\n\u2713 PyTorch determinism enabled (seed=0)\n\u2713 Determinism bootstrap complete\nERROR: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: unrecognized arguments: --cov=src --cov-report=json --cov-report=term-missing\n  inifile: /home/runner/work/_codex_/_codex_/pytest.ini\n  rootdir: /home/runner/work/_codex_/_codex_\n\n",
+      "test_count": 0
+    },
+    {
+      "run_number": 3,
+      "exit_code": 4,
+      "total_coverage": 0,
+      "stdout": "",
+      "stderr": "\u2713 NumPy determinism enabled (seed=0)\n\u2713 PyTorch determinism enabled (seed=0)\n\u2713 Determinism bootstrap complete\nERROR: usage: __main__.py [options] [file_or_dir] [file_or_dir] [...]\n__main__.py: error: unrecognized arguments: --cov=src --cov-report=json --cov-report=term-missing\n  inifile: /home/runner/work/_codex_/_codex_/pytest.ini\n  rootdir: /home/runner/work/_codex_/_codex_\n\n",
+      "test_count": 0
+    }
+  ],
+  "summary": {
+    "all_passed": false,
+    "coverage_variance": 0,
+    "coverage_variance_acceptable": true,
+    "test_count_consistent": true,
+    "determinism_validated": false
+  }
+}
