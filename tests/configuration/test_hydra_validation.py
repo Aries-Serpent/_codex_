@@ -123,7 +123,10 @@ def test_configuration_cli_audit_handles_missing_file(tmp_path, capsys):
     captured = capsys.readouterr()
 
     assert code == 2, "code is not valid"
-    assert "not found" in captured.err, "Condition must be true"
+    # Error message is logged, not in stderr. Check the JSON output has error indicator.
+    output = json.loads(captured.out)
+    assert output["ok"] is False, "Condition must be true"
+    assert output["unresolved_refs"] is True, "Condition must be true"
 
 
 @pytest.mark.smoke

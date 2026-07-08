@@ -44,8 +44,11 @@ class TestTokenScopeVerifier:
             verifier = TokenScopeVerifier()
             assert verifier.token == "primary_token", "token is not valid"
 
-    def test_initialization_without_token(self):
+    @patch("scripts.security.verify_token_scope.get_token")
+    def test_initialization_without_token(self, mock_get_token):
         """Test verifier handles missing token gracefully."""
+        # Mock get_token to return None when no token is available
+        mock_get_token.return_value = (None,)
         with patch.dict(os.environ, {}, clear=True):
             verifier = TokenScopeVerifier()
             assert verifier.token is None, "token is not valid"
@@ -128,10 +131,13 @@ class TestTokenScopeVerifier:
         assert results["status"] == "invalid", "Result must not be empty"
         assert results["http_status"] == 401, "Result must not be empty"
 
+    @patch("scripts.security.verify_token_scope.get_token")
     @patch.dict(os.environ, {}, clear=True)
     @patch("scripts.security.verify_token_scope.os.getenv", return_value=None)
-    def test_verify_scopes_without_token(self, _mock_getenv):
+    def test_verify_scopes_without_token(self, _mock_getenv, mock_get_token):
         """Test verification fails gracefully without token."""
+        # Mock get_token to return None when no token is available
+        mock_get_token.return_value = (None,)
         verifier = TokenScopeVerifier(token=None)
         assert verifier.token is None, "Token should be None when no token or env var is available"
         results = verifier.verify_scopes()
