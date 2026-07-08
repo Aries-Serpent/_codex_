@@ -197,15 +197,19 @@ class SessionEmbeddings:
             # For testing without Faiss: reconstruct embeddings from disk
             self._embeddings = []  # type: ignore[assignment]
             if self.embeddings_path.exists():
-                # Try to load pickled embeddings as fallback
-                import pickle
+                # Try to load embeddings as JSON for safe deserialization (CWE-502 remediation)
+                import json
 
                 try:
-                    with open(self.embeddings_path, "rb") as f:
-                        self._embeddings = pickle.load(
-                            f
-                        )  # nosec B301 - trusted data only  # nosemgrep: semgrep.unsafe-pickle-load
-                except (IOError, OSError):
+                    with open(self.embeddings_path, "r") as f:
+                        data = json.load(f)
+                        # Convert JSON to numpy array format if needed
+                        if isinstance(data, list):
+                            import numpy as np
+                            self._embeddings = np.array(data, dtype=np.float32)
+                        else:
+                            self._embeddings = data
+                except (IOError, OSError, json.JSONDecodeError):
                     self._embeddings = []  # type: ignore[assignment]
 
     def save_index(self) -> None:
@@ -224,11 +228,17 @@ class SessionEmbeddings:
                 if HAS_FAISS:
                     faiss.write_index(self._embeddings, str(self.embeddings_path))
                 else:
-                    # Save embeddings as pickle for fallback
-                    import pickle
-
-                    with open(self.embeddings_path, "wb") as f:
-                        pickle.dump(self._embeddings, f)
+                    # Save embeddings as JSON for safe serialization (CWE-502 remediation)
+                    import json
+                    import numpy as np
+                    
+                    if isinstance(self._embeddings, np.ndarray):
+                        embeddings_data = self._embeddings.tolist()
+                    else:
+                        embeddings_data = self._embeddings
+                    
+                    with open(self.embeddings_path, "w") as f:
+                        json.dump(embeddings_data, f)
 
             # Save metadata
             metadata_dict = {

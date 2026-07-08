@@ -18,18 +18,48 @@ Author: Codex Team
 from __future__ import annotations
 
 import os
+import logging
 
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 from starlette.responses import Response
 
-# Simple in-memory mapping for dev usage. Production should consult a secret manager.
-DEV_KEYS: dict[str, dict] = {
-    os.environ.get("DEV_API_KEY", "dev-key-1"): {
-        "tenant": "dev-tenant",
-        "scopes": ["read", "write"],
-    },
-}
+logger = logging.getLogger(__name__)
+
+
+def _load_dev_keys() -> dict[str, dict]:
+    """Load development API keys from environment variables.
+
+    All API keys must be provided via environment variables.
+    The DEV_API_KEY environment variable should contain a comma-separated list
+    of valid keys for development. If not set, no keys will be authorized.
+
+    Returns:
+        Dictionary mapping API keys to their metadata (tenant, scopes).
+    """
+    dev_api_key = os.environ.get("DEV_API_KEY", "").strip()
+
+    if not dev_api_key:
+        logger.warning(
+            "No DEV_API_KEY environment variable set. "
+            "Development API authentication will be disabled. "
+            "Set DEV_API_KEY to enable development authentication."
+        )
+        return {}
+
+    # Support comma-separated keys for flexibility in testing/development
+    keys = [key.strip() for key in dev_api_key.split(",") if key.strip()]
+    return {
+        key: {
+            "tenant": "dev-tenant",
+            "scopes": ["read", "write"],
+        }
+        for key in keys
+    }
+
+
+# Load development keys from environment (secure approach)
+DEV_KEYS: dict[str, dict] = _load_dev_keys()
 
 
 class APIKeyAuthMiddleware(BaseHTTPMiddleware):

@@ -19,9 +19,16 @@ from pydantic import BaseModel, Field, field_validator
 
 logger = logging.getLogger(__name__)
 
-DEFAULT_API_KEY = "dev-key"  # pragma: allowlist secret
+# API key is REQUIRED to be provided via MCP_API_KEY environment variable.
+# No hardcoded defaults — this ensures secrets are never exposed in source code.
 DEFAULT_TOP_K = 5
 MAX_TOP_K = 50
+
+
+class MissingAPIKeyError(RuntimeError):
+    """Raised when MCP_API_KEY environment variable is not set."""
+
+    pass
 
 
 class ContextItem(BaseModel):
@@ -131,13 +138,32 @@ class InMemoryVectorStore:
         return len(self._items)
 
 
-def _get_expected_api_key() -> Optional[str]:
+def _get_expected_api_key() -> str:
+    """Retrieve the API key from environment variables.
+
+    The API key MUST be provided via the MCP_API_KEY environment variable.
+    In offline mode, authentication is skipped entirely.
+
+    Returns:
+        The API key string if online mode, or None if offline.
+
+    Raises:
+        MissingAPIKeyError: If MCP_API_KEY is not set in online mode.
+    """
     offline = os.environ.get("MCP_OFFLINE", "false").lower() == "true"
     if offline:
+        logger.info("MCP server running in OFFLINE mode — no authentication required")
         return None
-    key = os.environ.get("MCP_API_KEY", DEFAULT_API_KEY)
-    if key == DEFAULT_API_KEY:
-        logger.warning("MCP server using default dev API key — set MCP_API_KEY for production")
+
+    # Online mode: API key is REQUIRED
+    key = os.environ.get("MCP_API_KEY")
+    if not key:
+        raise MissingAPIKeyError(
+            "MCP_API_KEY environment variable is required in online mode. "
+            "Set MCP_API_KEY or run with MCP_OFFLINE=true for development."
+        )
+
+    logger.debug("MCP server initialized with API key from MCP_API_KEY environment variable")
     return key
 
 
