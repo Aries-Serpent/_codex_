@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import pytest
 
 pytest.importorskip("parso")
@@ -6,8 +8,6 @@ Test External Search
 
 Test module for external search.
 """
-
-from __future__ import annotations
 
 import json
 from pathlib import Path

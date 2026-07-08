@@ -1,17 +1,13 @@
+from __future__ import annotations
+
+import pytest
+
 pytest.importorskip("parso")
 """
 Test External Web Search
 
 Test module for external web search.
 """
-
-from __future__ import annotations
-
-import json
-from pathlib import Path
-from typing import Any
-
-import pytest
 
 from codex_ml.analysis.providers import ExternalWebSearch
 
