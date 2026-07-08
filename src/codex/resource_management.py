@@ -255,9 +255,7 @@ def resource_aware_map(
             )
 
         if max_items is not None and count > max_items:
-            raise ResourceLimitError(
-                f"Iteration exceeded max_items limit: {count} > {max_items}"
-            )
+            raise ResourceLimitError(f"Iteration exceeded max_items limit: {count} > {max_items}")
 
         try:
             yield func(item)

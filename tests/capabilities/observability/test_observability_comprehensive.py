@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import Any, Callable
 
 #         assert ", "Condition must be true"
 #         assert "http_requests 100" in output, "Condition must be true"

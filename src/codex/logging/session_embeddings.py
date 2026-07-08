@@ -206,6 +206,7 @@ class SessionEmbeddings:
                         # Convert JSON to numpy array format if needed
                         if isinstance(data, list):
                             import numpy as np
+
                             self._embeddings = np.array(data, dtype=np.float32)
                         else:
                             self._embeddings = data
@@ -230,13 +231,14 @@ class SessionEmbeddings:
                 else:
                     # Save embeddings as JSON for safe serialization (CWE-502 remediation)
                     import json
+
                     import numpy as np
-                    
+
                     if isinstance(self._embeddings, np.ndarray):
                         embeddings_data = self._embeddings.tolist()
                     else:
                         embeddings_data = self._embeddings
-                    
+
                     with open(self.embeddings_path, "w") as f:
                         json.dump(embeddings_data, f)
 

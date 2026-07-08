@@ -21,7 +21,6 @@ from __future__ import annotations
 import json
 import logging
 import os
-import pickle
 from typing import Any, Optional
 
 from .base import CacheBackend
@@ -101,7 +100,7 @@ class RedisCache(CacheBackend):
 
     def _serialize(self, value: Any) -> bytes:
         """Serialize value to bytes.
-        
+
         Raises:
             TypeError: If value is not JSON-serializable.
                        Use JSONEncoder subclass or convert to serializable type.
@@ -118,7 +117,7 @@ class RedisCache(CacheBackend):
 
     def _deserialize(self, data: bytes) -> Any:
         """Deserialize bytes to value (CWE-502 remediation: JSON only, no unsafe pickle).
-        
+
         For backward compatibility with pickle-cached objects:
         Use migration scripts in scripts/cache/migrate_pickle_to_json.py
         """

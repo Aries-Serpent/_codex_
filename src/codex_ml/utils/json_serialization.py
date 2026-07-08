@@ -10,11 +10,11 @@ Provides:
 
 USAGE:
     from codex_ml.utils.json_serialization import CustomJSONEncoder, safe_json_dumps
-    
+
     # Serialize complex types
     data = {'tensor': torch.randn(3, 3), 'timestamp': datetime.now()}
     json_str = safe_json_dumps(data)
-    
+
     # File-based with safety guarantees
     safe_json_dump(data, Path('metadata.json'))
 """
@@ -25,17 +25,14 @@ import json
 import logging
 import math
 import os
-import sys
 import tempfile
-import warnings
-from collections import OrderedDict
 from contextlib import suppress
 from dataclasses import asdict, is_dataclass
-from datetime import UTC, date, datetime, time, timedelta, timezone
+from datetime import UTC, date, datetime, time, timedelta
 from decimal import Decimal
 from enum import Enum
 from pathlib import Path
-from typing import Any, Callable, Dict, Optional, Union
+from typing import Any, Optional, Union
 from uuid import UUID
 
 logger = logging.getLogger(__name__)
@@ -620,7 +617,9 @@ def safe_json_load(
         text = target_path.read_text(encoding="utf-8")
         return safe_json_loads(text, source=str(target_path), strict=strict, **kwargs)
     except json.JSONDecodeError as e:
-        logger.error("JSON decode error in %s at line %d col %d: %s", target_path, e.lineno, e.colno, e.msg)
+        logger.error(
+            "JSON decode error in %s at line %d col %d: %s", target_path, e.lineno, e.colno, e.msg
+        )
         raise
     except (IOError, OSError) as e:
         logger.error("Failed to read JSON file %s: %s", target_path, e)
