@@ -9,6 +9,10 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import pytest
+
+pytest.importorskip("psutil")  # Skip test if psutil not available
+
 from codex_ml.utils.provenance import snapshot_hydra_config
 
 
