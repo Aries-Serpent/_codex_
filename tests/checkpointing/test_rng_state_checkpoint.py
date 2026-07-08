@@ -1,4 +1,3 @@
-pytest.importorskip("tensorboard")
 """
 Test Rng State Checkpoint
 
@@ -7,12 +6,13 @@ Test module for rng state checkpoint.
 
 from __future__ import annotations
 
-import json
-import random
-
 import pytest
 
+pytest.importorskip("tensorboard")
 pytest.importorskip("torch")
+
+import json
+import random
 
 import torch
 from codex_ml.utils.checkpointing import build_payload_bytes, load_payload

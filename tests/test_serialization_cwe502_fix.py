@@ -335,34 +335,44 @@ class TestSecurityImprovements:
     def test_json_cannot_execute_code(self):
         """Verify that JSON deserialization cannot execute arbitrary code.
 
-        SECURITY VALIDATION:
+        SECURITY VALIDATION (CWE-502 REMEDIATION):
         This test demonstrates that JSON deserialization is inherently safe
         against arbitrary code execution attacks, unlike pickle.
 
-        In pickle, a specially crafted payload could use __reduce__ or other
-        magic methods to execute arbitrary Python code with full system access
-        (equivalent to 'rm -rf /' or any other shell command).
+        PICKLE VULNERABILITY (Why it was dangerous):
+        pickle.loads() was vulnerable because:
+        1. Pickle protocol includes __reduce__ magic method exploitation
+        2. Can instantiate arbitrary classes during deserialization
+        3. Object reconstruction can invoke malicious code
+        4. Allows shell commands and system calls (e.g., 'rm -rf /')
 
-        In JSON, there is no code execution mechanism whatsoever. Even a payload
-        that looks like it's trying to call dangerous functions is just parsed
-        as literal dictionaries and strings. No classes are instantiated, no
-        methods are called, no code is executed.
+        References:
+        - CWE-502: https://cwe.mitre.org/data/definitions/502.html
+        - OWASP Deserialization: https://cheatsheetseries.owasp.org/cheatsheets/Deserialization_Cheat_Sheet.html
+        - Python pickle: https://docs.python.org/3/library/pickle.html#what-can-pickle-do
 
-        This test validates that the JSON-based deserialization correctly
-        prevents the entire class of pickle-based RCE vulnerabilities.
+        JSON SAFETY PROPERTIES:
+        - No __reduce__ protocol or magic method support
+        - Only primitive type support (no arbitrary object instantiation)
+        - No method invocation during deserialization
+        - Safe by design per IETF RFC 8259
+
+        This test validates the vulnerability is completely eliminated.
         """
         deserializer = DataDeserializer()
 
-        # This payload attempts to trigger a dangerous operation.
+        # This payload attempts to trigger dangerous operations via magic methods.
         # With pickle: Would cause code execution (DANGEROUS!)
-        # With JSON: Simply deserializes as a literal dict (SAFE)
+        # With JSON: Simply deserializes as literal dict keys (SAFE)
         malicious_json = json.dumps(
-            {"__class__": "os.system", "args": ["rm -rf /"]}
+            {"__reduce__": "__import__('os').system('rm -rf /')", "__class__": "os.system"}
         ).encode("utf-8")
 
         # This should safely deserialize without any code execution
         result = deserializer.deserialize_data(malicious_json)
         assert isinstance(result, dict)
+        # The __reduce__ key is just a string key in the dict, not a magic method
+        assert "__reduce__" in result
         assert "__class__" in result
 
     def test_json_no_object_instantiation(self):

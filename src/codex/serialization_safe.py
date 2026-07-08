@@ -47,7 +47,11 @@ class DataDeserializer:
             logger.error("Failed to decode bytes as UTF-8: %s", e)
             raise ValueError(f"Invalid UTF-8 encoding: {e}") from e
 
-    # Backward compatibility alias
+    # Backward compatibility alias (DEPRECATED - Use deserialize_data() instead)
+    # NOTE: Despite the misleading name "load_from_pickle", this method now uses
+    # safe JSON deserialization to prevent CWE-502 (Insecure Deserialization).
+    # The old pickle-based implementation was a critical vulnerability (RCE risk).
+    # New code should use deserialize_data() directly.
     load_from_pickle = deserialize_data
 
     def load_cached_object(self, cache_file: str) -> Any:
@@ -145,5 +149,9 @@ class ConfigLoader:
             logger.error("Failed to deserialize JSON from config file %s: %s", config_path, e)
             raise ValueError(f"Invalid JSON in config file {config_path}: {e}") from e
 
-    # Backward compatibility alias
+    # Backward compatibility alias (DEPRECATED - Use load_json_config() instead)
+    # NOTE: Despite the misleading name "load_pickle_config", this method now uses
+    # safe JSON deserialization to prevent CWE-502 (Insecure Deserialization).
+    # The old pickle-based implementation was a critical vulnerability (RCE risk).
+    # New code should use load_json_config() directly.
     load_pickle_config = load_json_config

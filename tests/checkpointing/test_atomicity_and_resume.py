@@ -1,13 +1,14 @@
-pytest.importorskip("tensorboard")
 """
 Test Atomicity And Resume
 
 Test module for atomicity and resume.
 """
 
-import os
-
 import pytest
+
+pytest.importorskip("tensorboard")
+
+import os
 
 from src.training.checkpoint_manager import CheckpointManager
 
