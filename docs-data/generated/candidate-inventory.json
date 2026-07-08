@@ -1495,6 +1495,15 @@
       "size_bytes": 2531
     },
     {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/CHRONICLE_COMPREHENSIVE_SESSION_INDEX.md",
+      "requires_ingestion": true,
+      "size_bytes": 10353
+    },
+    {
       "classification": "exception_candidate",
       "confidence": 1.0,
       "exception": true,
@@ -1520,6 +1529,15 @@
       "path": ".codex/CHRONICLE_SEARCH.md",
       "requires_ingestion": false,
       "size_bytes": 9423
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".txt",
+      "path": ".codex/CHRONICLE_SEARCH_RESULTS.txt",
+      "requires_ingestion": true,
+      "size_bytes": 9680
     },
     {
       "classification": "exception_candidate",
@@ -8500,6 +8518,24 @@
       "classification": "planning_document",
       "confidence": 0.8,
       "exception": false,
+      "extension": ".json",
+      "path": ".codex/PHASE_3_DEEP_VALIDATION_REPORT.json",
+      "requires_ingestion": true,
+      "size_bytes": 3392
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".json",
+      "path": ".codex/PHASE_3_EXECUTION_SUMMARY.json",
+      "requires_ingestion": true,
+      "size_bytes": 1750
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
       "extension": ".md",
       "path": ".codex/PHASE_8A_CODEQL_FORMATTER_SUMMARY.md",
       "requires_ingestion": true,
@@ -15463,6 +15499,15 @@
       "size_bytes": 15039
     },
     {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/WORKFLOW_CI_FIXER_SESSION_REPORT.md",
+      "requires_ingestion": true,
+      "size_bytes": 11803
+    },
+    {
       "classification": "exception_candidate",
       "confidence": 1.0,
       "exception": true,
@@ -15544,6 +15589,15 @@
       "size_bytes": 7693
     },
     {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/WORKFLOW_MONITORING_DASHBOARD.md",
+      "requires_ingestion": true,
+      "size_bytes": 10295
+    },
+    {
       "classification": "exception_candidate",
       "confidence": 1.0,
       "exception": true,
@@ -15569,6 +15623,15 @@
       "path": ".codex/WORKFLOW_MONITORING_REPORT_2026_02_05.md",
       "requires_ingestion": false,
       "size_bytes": 10770
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/WORKFLOW_MONITORING_SESSION_2026_07_08_FINAL_REPORT.md",
+      "requires_ingestion": true,
+      "size_bytes": 17794
     },
     {
       "classification": "exception_candidate",
@@ -16396,7 +16459,7 @@
       "extension": ".jsonl",
       "path": ".codex/approvals.jsonl",
       "requires_ingestion": false,
-      "size_bytes": 4460
+      "size_bytes": 4683
     },
     {
       "classification": "exception_candidate",
@@ -18205,7 +18268,7 @@
       "extension": ".md",
       "path": ".codex/archive/phase-reports/phase-1-10/PHASE_13_TRACK_13.3_SECRETS_DESIGN.md",
       "requires_ingestion": true,
-      "size_bytes": 25529
+      "size_bytes": 25664
     },
     {
       "classification": "planning_document",
@@ -30817,6 +30880,15 @@
       "size_bytes": 11084
     },
     {
+      "classification": "configuration",
+      "confidence": 0.75,
+      "exception": false,
+      "extension": ".json",
+      "path": ".codex/auto-fix-diagnostic.json",
+      "requires_ingestion": false,
+      "size_bytes": 703
+    },
+    {
       "classification": "exception_candidate",
       "confidence": 1.0,
       "exception": true,
@@ -30967,7 +31039,7 @@
       "extension": ".json",
       "path": ".codex/cascade_detector_state.json",
       "requires_ingestion": false,
-      "size_bytes": 3915
+      "size_bytes": 3994
     },
     {
       "classification": "exception_candidate",
@@ -30995,6 +31067,15 @@
       "path": ".codex/checkpoints/checkpoint_S163.yaml",
       "requires_ingestion": false,
       "size_bytes": 798
+    },
+    {
+      "classification": "configuration",
+      "confidence": 0.75,
+      "exception": false,
+      "extension": ".json",
+      "path": ".codex/chronicle_search_index.json",
+      "requires_ingestion": false,
+      "size_bytes": 9237
     },
     {
       "classification": "exception_candidate",
@@ -35584,7 +35665,7 @@
       "extension": ".jsonl",
       "path": ".codex/metrics/hourly.jsonl",
       "requires_ingestion": false,
-      "size_bytes": 4589
+      "size_bytes": 4718
     },
     {
       "classification": "configuration",
@@ -35890,7 +35971,7 @@
       "extension": ".jsonl",
       "path": ".codex/phase_10_3_ab_test_log.jsonl",
       "requires_ingestion": true,
-      "size_bytes": 31913
+      "size_bytes": 35929
     },
     {
       "classification": "planning_document",
@@ -41002,7 +41083,7 @@
       "extension": ".json",
       "path": ".codex/session_access_manifest.json",
       "requires_ingestion": false,
-      "size_bytes": 8276
+      "size_bytes": 8282
     },
     {
       "classification": "exception_candidate",
@@ -41011,7 +41092,7 @@
       "extension": ".json",
       "path": ".codex/session_access_strategy.json",
       "requires_ingestion": false,
-      "size_bytes": 448
+      "size_bytes": 443
     },
     {
       "classification": "exception_candidate",
@@ -41020,7 +41101,7 @@
       "extension": ".md",
       "path": ".codex/session_context_latest.md",
       "requires_ingestion": false,
-      "size_bytes": 3194
+      "size_bytes": 3144
     },
     {
       "classification": "exception_candidate",
@@ -42848,6 +42929,186 @@
       "path": ".codex/workflow-fixes-summary.md",
       "requires_ingestion": false,
       "size_bytes": 9138
+    },
+    {
+      "classification": "configuration",
+      "confidence": 0.75,
+      "exception": false,
+      "extension": ".json",
+      "path": ".codex/workflow-health-snapshot.json",
+      "requires_ingestion": false,
+      "size_bytes": 4449
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/workflow-monitoring/INITIAL_STATUS_REPORT.md",
+      "requires_ingestion": true,
+      "size_bytes": 6323
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/workflow-monitoring/MONITORING_SESSION.md",
+      "requires_ingestion": true,
+      "size_bytes": 5804
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/workflow-monitoring/ORCHESTRATOR_HANDOFF.md",
+      "requires_ingestion": true,
+      "size_bytes": 5049
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/workflow-monitoring/PHASE2_EMERGENCY_ESCALATION.md",
+      "requires_ingestion": true,
+      "size_bytes": 5739
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/workflow-monitoring/PHASE2_MONITORING_CHECKPOINT.md",
+      "requires_ingestion": true,
+      "size_bytes": 4432
+    },
+    {
+      "classification": "repository_readme",
+      "confidence": 0.95,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/workflow-monitoring/README.md",
+      "requires_ingestion": true,
+      "size_bytes": 10773
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/workflow-monitoring/REMEDIATION_REPORT.md",
+      "requires_ingestion": true,
+      "size_bytes": 10322
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/workflow-monitoring/REMEDIATION_STATUS_00-05.md",
+      "requires_ingestion": true,
+      "size_bytes": 4334
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/workflow-monitoring/STATUS_UPDATE_00-01.md",
+      "requires_ingestion": true,
+      "size_bytes": 1640
+    },
+    {
+      "classification": "configuration",
+      "confidence": 0.75,
+      "exception": false,
+      "extension": ".json",
+      "path": ".codex/workflow-monitoring/auto-fix-results.json",
+      "requires_ingestion": false,
+      "size_bytes": 1594
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/workflow-monitoring/failure-analysis-full.md",
+      "requires_ingestion": true,
+      "size_bytes": 9944
+    },
+    {
+      "classification": "configuration",
+      "confidence": 0.75,
+      "exception": false,
+      "extension": ".jsonl",
+      "path": ".codex/workflow-monitoring/fallback-analysis.jsonl",
+      "requires_ingestion": false,
+      "size_bytes": 4555
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/workflow-monitoring/final-validation-report.md",
+      "requires_ingestion": true,
+      "size_bytes": 5096
+    },
+    {
+      "classification": "configuration",
+      "confidence": 0.75,
+      "exception": false,
+      "extension": ".jsonl",
+      "path": ".codex/workflow-monitoring/log-analysis.jsonl",
+      "requires_ingestion": false,
+      "size_bytes": 4346
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".txt",
+      "path": ".codex/workflow-monitoring/modified-files-detailed.txt",
+      "requires_ingestion": true,
+      "size_bytes": 5818
+    },
+    {
+      "classification": "configuration",
+      "confidence": 0.75,
+      "exception": false,
+      "extension": ".jsonl",
+      "path": ".codex/workflow-monitoring/remediation-audit.jsonl",
+      "requires_ingestion": false,
+      "size_bytes": 1831
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".txt",
+      "path": ".codex/workflow-monitoring/status-report-001.txt",
+      "requires_ingestion": true,
+      "size_bytes": 14888
+    },
+    {
+      "classification": "configuration",
+      "confidence": 0.75,
+      "exception": false,
+      "extension": ".json",
+      "path": ".codex/workflow-monitoring/workflow-fixes.json",
+      "requires_ingestion": false,
+      "size_bytes": 1793
+    },
+    {
+      "classification": "configuration",
+      "confidence": 0.75,
+      "exception": false,
+      "extension": ".json",
+      "path": ".codex/workflow-monitoring/workflow_status_tracker.json",
+      "requires_ingestion": false,
+      "size_bytes": 2660
     },
     {
       "classification": "legacy_human_documentation",
@@ -45835,7 +46096,7 @@
       "extension": ".yaml",
       "path": ".github/agents/dependency-conflict-resolver/agent.yaml",
       "requires_ingestion": false,
-      "size_bytes": 6774
+      "size_bytes": 6660
     },
     {
       "classification": "configuration",
@@ -47158,7 +47419,7 @@
       "extension": ".yaml",
       "path": ".github/agents/security-vulnerability-patcher/agent.yaml",
       "requires_ingestion": false,
-      "size_bytes": 6764
+      "size_bytes": 6650
     },
     {
       "classification": "configuration",
@@ -47239,7 +47500,7 @@
       "extension": ".yaml",
       "path": ".github/agents/service-integration-tester/agent.yaml",
       "requires_ingestion": false,
-      "size_bytes": 6675
+      "size_bytes": 6561
     },
     {
       "classification": "configuration",
@@ -55609,7 +55870,7 @@
       "extension": ".yml",
       "path": ".github/workflow-archive/disabled/semgrep_sarif.yml",
       "requires_ingestion": false,
-      "size_bytes": 7519
+      "size_bytes": 7405
     },
     {
       "classification": "configuration",
@@ -55627,7 +55888,7 @@
       "extension": ".yml",
       "path": ".github/workflow-archive/disabled/test-analytics-failure-sim.yml",
       "requires_ingestion": false,
-      "size_bytes": 2107
+      "size_bytes": 2069
     },
     {
       "classification": "configuration",
@@ -55879,7 +56140,7 @@
       "extension": ".yml",
       "path": ".github/workflows/13-3-cve-scanning.yml",
       "requires_ingestion": false,
-      "size_bytes": 1766
+      "size_bytes": 1690
     },
     {
       "classification": "workflow_file",
@@ -55888,7 +56149,7 @@
       "extension": ".yml",
       "path": ".github/workflows/13-3-enterprise-compliance.yml",
       "requires_ingestion": false,
-      "size_bytes": 2932
+      "size_bytes": 2503
     },
     {
       "classification": "workflow_file",
@@ -55897,7 +56158,7 @@
       "extension": ".yml",
       "path": ".github/workflows/13-3-secrets-detection.yml",
       "requires_ingestion": false,
-      "size_bytes": 2122
+      "size_bytes": 2008
     },
     {
       "classification": "workflow_file",
@@ -56104,7 +56365,7 @@
       "extension": ".yml",
       "path": ".github/workflows/adaptive-agent-delegation.yml",
       "requires_ingestion": false,
-      "size_bytes": 10329
+      "size_bytes": 10325
     },
     {
       "classification": "workflow_file",
@@ -56113,7 +56374,7 @@
       "extension": ".yml",
       "path": ".github/workflows/admin-action-notifier.yml",
       "requires_ingestion": false,
-      "size_bytes": 13574
+      "size_bytes": 13580
     },
     {
       "classification": "workflow_file",
@@ -56122,7 +56383,7 @@
       "extension": ".yml",
       "path": ".github/workflows/admin-action-t03.yml",
       "requires_ingestion": false,
-      "size_bytes": 3524
+      "size_bytes": 3525
     },
     {
       "classification": "workflow_file",
@@ -56131,7 +56392,7 @@
       "extension": ".yml",
       "path": ".github/workflows/admin_setup_verification.yml",
       "requires_ingestion": false,
-      "size_bytes": 27368
+      "size_bytes": 27372
     },
     {
       "classification": "workflow_file",
@@ -56149,7 +56410,7 @@
       "extension": ".yml",
       "path": ".github/workflows/agent-auth-delegation.yml",
       "requires_ingestion": false,
-      "size_bytes": 112018
+      "size_bytes": 112005
     },
     {
       "classification": "workflow_file",
@@ -56158,7 +56419,7 @@
       "extension": ".yml",
       "path": ".github/workflows/agent-handoff-gate.yml",
       "requires_ingestion": false,
-      "size_bytes": 10808
+      "size_bytes": 10800
     },
     {
       "classification": "workflow_file",
@@ -56167,7 +56428,7 @@
       "extension": ".yml",
       "path": ".github/workflows/agent-health-check.yml",
       "requires_ingestion": false,
-      "size_bytes": 4749
+      "size_bytes": 4743
     },
     {
       "classification": "workflow_file",
@@ -56176,7 +56437,7 @@
       "extension": ".yml",
       "path": ".github/workflows/agent-orchestration-unified.yml",
       "requires_ingestion": false,
-      "size_bytes": 7886
+      "size_bytes": 7882
     },
     {
       "classification": "workflow_file",
@@ -56203,7 +56464,7 @@
       "extension": ".yml",
       "path": ".github/workflows/agent-task-janitor.yml",
       "requires_ingestion": false,
-      "size_bytes": 16313
+      "size_bytes": 16309
     },
     {
       "classification": "workflow_file",
@@ -56230,7 +56491,7 @@
       "extension": ".yml",
       "path": ".github/workflows/agentic-diff-guard.yml",
       "requires_ingestion": false,
-      "size_bytes": 763
+      "size_bytes": 760
     },
     {
       "classification": "workflow_file",
@@ -56275,7 +56536,7 @@
       "extension": ".yml",
       "path": ".github/workflows/app-package-download.yml",
       "requires_ingestion": false,
-      "size_bytes": 20459
+      "size_bytes": 20447
     },
     {
       "classification": "workflow_file",
@@ -56302,7 +56563,7 @@
       "extension": ".yml",
       "path": ".github/workflows/audit-qa-suite.yml",
       "requires_ingestion": false,
-      "size_bytes": 14991
+      "size_bytes": 15054
     },
     {
       "classification": "workflow_file",
@@ -56365,7 +56626,7 @@
       "extension": ".yml",
       "path": ".github/workflows/auth-tests.yml",
       "requires_ingestion": false,
-      "size_bytes": 12899
+      "size_bytes": 12797
     },
     {
       "classification": "workflow_file",
@@ -56383,7 +56644,7 @@
       "extension": ".yml",
       "path": ".github/workflows/auto-approve-workflows.yml",
       "requires_ingestion": false,
-      "size_bytes": 50679
+      "size_bytes": 50657
     },
     {
       "classification": "workflow_file",
@@ -56401,7 +56662,7 @@
       "extension": ".yml",
       "path": ".github/workflows/auto-fix-pr-check.yml",
       "requires_ingestion": false,
-      "size_bytes": 12653
+      "size_bytes": 12692
     },
     {
       "classification": "workflow_file",
@@ -56419,7 +56680,7 @@
       "extension": ".yml",
       "path": ".github/workflows/automated-monitoring-setup.yml",
       "requires_ingestion": false,
-      "size_bytes": 10673
+      "size_bytes": 10669
     },
     {
       "classification": "workflow_file",
@@ -56428,7 +56689,7 @@
       "extension": ".yml",
       "path": ".github/workflows/automated-post-deployment-verification.yml",
       "requires_ingestion": false,
-      "size_bytes": 13931
+      "size_bytes": 13925
     },
     {
       "classification": "workflow_file",
@@ -56437,7 +56698,7 @@
       "extension": ".yml",
       "path": ".github/workflows/automated-release-creation.yml",
       "requires_ingestion": false,
-      "size_bytes": 10260
+      "size_bytes": 10256
     },
     {
       "classification": "workflow_file",
@@ -56446,7 +56707,7 @@
       "extension": ".yml",
       "path": ".github/workflows/automated-rollback-generation.yml",
       "requires_ingestion": false,
-      "size_bytes": 11420
+      "size_bytes": 11408
     },
     {
       "classification": "workflow_file",
@@ -56482,7 +56743,7 @@
       "extension": ".yml",
       "path": ".github/workflows/batch-ci-triage.yml",
       "requires_ingestion": false,
-      "size_bytes": 19887
+      "size_bytes": 19894
     },
     {
       "classification": "workflow_file",
@@ -56509,7 +56770,7 @@
       "extension": ".yml",
       "path": ".github/workflows/branch-cleanup.yml",
       "requires_ingestion": false,
-      "size_bytes": 5889
+      "size_bytes": 5885
     },
     {
       "classification": "workflow_file",
@@ -56518,7 +56779,7 @@
       "extension": ".yml",
       "path": ".github/workflows/branch-divergence-monitor.yml",
       "requires_ingestion": false,
-      "size_bytes": 33671
+      "size_bytes": 33663
     },
     {
       "classification": "workflow_file",
@@ -56527,7 +56788,7 @@
       "extension": ".yml",
       "path": ".github/workflows/branch-rebase-gate.yml",
       "requires_ingestion": false,
-      "size_bytes": 4108
+      "size_bytes": 4104
     },
     {
       "classification": "workflow_file",
@@ -56554,7 +56815,7 @@
       "extension": ".yml",
       "path": ".github/workflows/build-preview-image.yml",
       "requires_ingestion": false,
-      "size_bytes": 8871
+      "size_bytes": 8681
     },
     {
       "classification": "workflow_file",
@@ -56617,7 +56878,7 @@
       "extension": ".yml",
       "path": ".github/workflows/chatops_copilot_trigger.yml",
       "requires_ingestion": false,
-      "size_bytes": 23266
+      "size_bytes": 23274
     },
     {
       "classification": "workflow_file",
@@ -56644,7 +56905,7 @@
       "extension": ".yml",
       "path": ".github/workflows/ci-failure-issue-creator.yml",
       "requires_ingestion": false,
-      "size_bytes": 27382
+      "size_bytes": 27383
     },
     {
       "classification": "workflow_file",
@@ -56662,7 +56923,7 @@
       "extension": ".yml",
       "path": ".github/workflows/ci-health-monitor.yml",
       "requires_ingestion": false,
-      "size_bytes": 21703
+      "size_bytes": 21707
     },
     {
       "classification": "workflow_file",
@@ -56671,7 +56932,7 @@
       "extension": ".yml",
       "path": ".github/workflows/ci-pass-rate-gate.yml",
       "requires_ingestion": false,
-      "size_bytes": 3232
+      "size_bytes": 3229
     },
     {
       "classification": "workflow_file",
@@ -56680,7 +56941,7 @@
       "extension": ".yml",
       "path": ".github/workflows/ci-pattern-healer.yml",
       "requires_ingestion": false,
-      "size_bytes": 6343
+      "size_bytes": 6335
     },
     {
       "classification": "workflow_file",
@@ -56689,7 +56950,7 @@
       "extension": ".yml",
       "path": ".github/workflows/ci-pattern-prevention-gate.yml",
       "requires_ingestion": false,
-      "size_bytes": 11188
+      "size_bytes": 11176
     },
     {
       "classification": "workflow_file",
@@ -56698,7 +56959,7 @@
       "extension": ".yml",
       "path": ".github/workflows/ci-rescue.yml",
       "requires_ingestion": false,
-      "size_bytes": 15508
+      "size_bytes": 15505
     },
     {
       "classification": "workflow_file",
@@ -56716,7 +56977,7 @@
       "extension": ".yml",
       "path": ".github/workflows/cleanup-stale-branches.yml",
       "requires_ingestion": false,
-      "size_bytes": 1717
+      "size_bytes": 1713
     },
     {
       "classification": "workflow_file",
@@ -56725,7 +56986,7 @@
       "extension": ".yml",
       "path": ".github/workflows/cleanup-stale-pr-comments.yml",
       "requires_ingestion": false,
-      "size_bytes": 5538
+      "size_bytes": 5534
     },
     {
       "classification": "workflow_file",
@@ -56734,7 +56995,7 @@
       "extension": ".yml",
       "path": ".github/workflows/code-quality-coverage-suite.yml",
       "requires_ingestion": false,
-      "size_bytes": 14408
+      "size_bytes": 14410
     },
     {
       "classification": "workflow_file",
@@ -56752,7 +57013,7 @@
       "extension": ".yml",
       "path": ".github/workflows/codebase-health-sweep.yml",
       "requires_ingestion": false,
-      "size_bytes": 19137
+      "size_bytes": 19138
     },
     {
       "classification": "workflow_file",
@@ -56770,7 +57031,7 @@
       "extension": ".yml",
       "path": ".github/workflows/codeql-alert-fetcher.yml",
       "requires_ingestion": false,
-      "size_bytes": 36206
+      "size_bytes": 36187
     },
     {
       "classification": "workflow_file",
@@ -56788,7 +57049,7 @@
       "extension": ".yml",
       "path": ".github/workflows/codeql-analysis.yml",
       "requires_ingestion": false,
-      "size_bytes": 8341
+      "size_bytes": 8343
     },
     {
       "classification": "workflow_file",
@@ -56797,7 +57058,7 @@
       "extension": ".yml",
       "path": ".github/workflows/codeql-fix-verification.yml",
       "requires_ingestion": false,
-      "size_bytes": 2804
+      "size_bytes": 2805
     },
     {
       "classification": "workflow_file",
@@ -56806,7 +57067,7 @@
       "extension": ".yml",
       "path": ".github/workflows/codeql.yml",
       "requires_ingestion": false,
-      "size_bytes": 6830
+      "size_bytes": 6756
     },
     {
       "classification": "workflow_file",
@@ -56815,7 +57076,7 @@
       "extension": ".yml",
       "path": ".github/workflows/codex-manifest-refresh.yml",
       "requires_ingestion": false,
-      "size_bytes": 9278
+      "size_bytes": 9260
     },
     {
       "classification": "workflow_file",
@@ -56824,7 +57085,7 @@
       "extension": ".yml",
       "path": ".github/workflows/codex-master-key-validation.yml",
       "requires_ingestion": false,
-      "size_bytes": 2224
+      "size_bytes": 2220
     },
     {
       "classification": "workflow_file",
@@ -56878,7 +57139,7 @@
       "extension": ".yml",
       "path": ".github/workflows/cognitive-k8s-provisioning.yml",
       "requires_ingestion": false,
-      "size_bytes": 8939
+      "size_bytes": 8891
     },
     {
       "classification": "workflow_file",
@@ -56896,7 +57157,7 @@
       "extension": ".yml",
       "path": ".github/workflows/cognitive-perception.yml",
       "requires_ingestion": false,
-      "size_bytes": 1120
+      "size_bytes": 1121
     },
     {
       "classification": "workflow_file",
@@ -56905,7 +57166,7 @@
       "extension": ".yml",
       "path": ".github/workflows/cognitive-registry-validation.yml",
       "requires_ingestion": false,
-      "size_bytes": 11324
+      "size_bytes": 11312
     },
     {
       "classification": "workflow_file",
@@ -56914,7 +57175,7 @@
       "extension": ".yml",
       "path": ".github/workflows/cognitive_brain_ci_feedback.yml",
       "requires_ingestion": false,
-      "size_bytes": 12855
+      "size_bytes": 12799
     },
     {
       "classification": "workflow_file",
@@ -56923,7 +57184,7 @@
       "extension": ".yml",
       "path": ".github/workflows/coherence-snapshot.yml",
       "requires_ingestion": false,
-      "size_bytes": 7859
+      "size_bytes": 7855
     },
     {
       "classification": "workflow_file",
@@ -56932,7 +57193,7 @@
       "extension": ".yml",
       "path": ".github/workflows/comment-review-gate.yml",
       "requires_ingestion": false,
-      "size_bytes": 8633
+      "size_bytes": 8629
     },
     {
       "classification": "workflow_file",
@@ -56941,7 +57202,7 @@
       "extension": ".yml",
       "path": ".github/workflows/consistency-checks.yml",
       "requires_ingestion": false,
-      "size_bytes": 8117
+      "size_bytes": 8089
     },
     {
       "classification": "workflow_file",
@@ -56950,7 +57211,7 @@
       "extension": ".yml",
       "path": ".github/workflows/consolidated-pr-status.yml",
       "requires_ingestion": false,
-      "size_bytes": 2987
+      "size_bytes": 2983
     },
     {
       "classification": "workflow_file",
@@ -56959,7 +57220,7 @@
       "extension": ".yml",
       "path": ".github/workflows/container-scan.yml",
       "requires_ingestion": false,
-      "size_bytes": 1860
+      "size_bytes": 1746
     },
     {
       "classification": "workflow_file",
@@ -56968,7 +57229,7 @@
       "extension": ".yml",
       "path": ".github/workflows/copilot-agent-checkin.yml",
       "requires_ingestion": false,
-      "size_bytes": 61474
+      "size_bytes": 61518
     },
     {
       "classification": "workflow_file",
@@ -56977,7 +57238,7 @@
       "extension": ".yml",
       "path": ".github/workflows/copilot-agent-session-done.yml",
       "requires_ingestion": false,
-      "size_bytes": 46613
+      "size_bytes": 46626
     },
     {
       "classification": "workflow_file",
@@ -57013,7 +57274,7 @@
       "extension": ".yml",
       "path": ".github/workflows/copilot-evolution-suite.yml",
       "requires_ingestion": false,
-      "size_bytes": 10892
+      "size_bytes": 10857
     },
     {
       "classification": "workflow_file",
@@ -57022,7 +57283,7 @@
       "extension": ".yml",
       "path": ".github/workflows/copilot-issue-triage.yml",
       "requires_ingestion": false,
-      "size_bytes": 6927
+      "size_bytes": 6891
     },
     {
       "classification": "workflow_file",
@@ -57031,7 +57292,7 @@
       "extension": ".yml",
       "path": ".github/workflows/copilot-iterative-self-healing.yml",
       "requires_ingestion": false,
-      "size_bytes": 24254
+      "size_bytes": 24256
     },
     {
       "classification": "workflow_file",
@@ -57040,7 +57301,7 @@
       "extension": ".yml",
       "path": ".github/workflows/copilot-pr-session-injector.yml",
       "requires_ingestion": false,
-      "size_bytes": 10121
+      "size_bytes": 10085
     },
     {
       "classification": "workflow_file",
@@ -57067,7 +57328,7 @@
       "extension": ".yml",
       "path": ".github/workflows/copilot-session-chain.yml",
       "requires_ingestion": false,
-      "size_bytes": 21817
+      "size_bytes": 21834
     },
     {
       "classification": "workflow_file",
@@ -57076,7 +57337,7 @@
       "extension": ".yml",
       "path": ".github/workflows/copilot-setup-steps.yml",
       "requires_ingestion": false,
-      "size_bytes": 44228
+      "size_bytes": 44116
     },
     {
       "classification": "workflow_file",
@@ -57085,7 +57346,7 @@
       "extension": ".yml",
       "path": ".github/workflows/copilot-setup-validation.yml",
       "requires_ingestion": false,
-      "size_bytes": 11959
+      "size_bytes": 11955
     },
     {
       "classification": "workflow_file",
@@ -57094,7 +57355,7 @@
       "extension": ".yml",
       "path": ".github/workflows/cost-gate.yml",
       "requires_ingestion": false,
-      "size_bytes": 16465
+      "size_bytes": 16462
     },
     {
       "classification": "workflow_file",
@@ -57103,7 +57364,7 @@
       "extension": ".yml",
       "path": ".github/workflows/coverage-ratchet.yml",
       "requires_ingestion": false,
-      "size_bytes": 6865
+      "size_bytes": 6861
     },
     {
       "classification": "workflow_file",
@@ -57112,7 +57373,7 @@
       "extension": ".yml",
       "path": ".github/workflows/coverage-with-timeout.yml",
       "requires_ingestion": false,
-      "size_bytes": 9263
+      "size_bytes": 9265
     },
     {
       "classification": "workflow_file",
@@ -57130,7 +57391,7 @@
       "extension": ".yml",
       "path": ".github/workflows/create-sub-pr-to-0D_base_.yml",
       "requires_ingestion": false,
-      "size_bytes": 7724
+      "size_bytes": 7721
     },
     {
       "classification": "workflow_file",
@@ -57139,7 +57400,7 @@
       "extension": ".yml",
       "path": ".github/workflows/d-capable-promotion-gate.yml",
       "requires_ingestion": false,
-      "size_bytes": 4522
+      "size_bytes": 4518
     },
     {
       "classification": "workflow_file",
@@ -57148,7 +57409,7 @@
       "extension": ".yml",
       "path": ".github/workflows/data-quality-suite.yml",
       "requires_ingestion": false,
-      "size_bytes": 16586
+      "size_bytes": 16588
     },
     {
       "classification": "workflow_file",
@@ -57175,7 +57436,7 @@
       "extension": ".yml",
       "path": ".github/workflows/deferral-language-gate.yml",
       "requires_ingestion": false,
-      "size_bytes": 7634
+      "size_bytes": 7631
     },
     {
       "classification": "workflow_file",
@@ -57184,7 +57445,7 @@
       "extension": ".yml",
       "path": ".github/workflows/dependabot-auto-absorb.yml",
       "requires_ingestion": false,
-      "size_bytes": 9020
+      "size_bytes": 9024
     },
     {
       "classification": "workflow_file",
@@ -57193,7 +57454,7 @@
       "extension": ".yml",
       "path": ".github/workflows/dependabot-preflight.yml",
       "requires_ingestion": false,
-      "size_bytes": 3787
+      "size_bytes": 3784
     },
     {
       "classification": "workflow_file",
@@ -57220,7 +57481,7 @@
       "extension": ".yml",
       "path": ".github/workflows/dependency-scan.yml",
       "requires_ingestion": false,
-      "size_bytes": 834
+      "size_bytes": 835
     },
     {
       "classification": "workflow_file",
@@ -57229,7 +57490,7 @@
       "extension": ".yml",
       "path": ".github/workflows/dependency-submission.yml",
       "requires_ingestion": false,
-      "size_bytes": 3850
+      "size_bytes": 3808
     },
     {
       "classification": "workflow_file",
@@ -57274,7 +57535,7 @@
       "extension": ".yml",
       "path": ".github/workflows/discussion-cleanup.yml",
       "requires_ingestion": false,
-      "size_bytes": 14528
+      "size_bytes": 14525
     },
     {
       "classification": "workflow_file",
@@ -57283,7 +57544,7 @@
       "extension": ".yml",
       "path": ".github/workflows/discussion-response-bridge.yml",
       "requires_ingestion": false,
-      "size_bytes": 6863
+      "size_bytes": 6873
     },
     {
       "classification": "workflow_file",
@@ -57292,7 +57553,7 @@
       "extension": ".yml",
       "path": ".github/workflows/doc-freshness-check.yml",
       "requires_ingestion": false,
-      "size_bytes": 2657
+      "size_bytes": 2533
     },
     {
       "classification": "workflow_file",
@@ -57301,7 +57562,7 @@
       "extension": ".yml",
       "path": ".github/workflows/doc-refresh-gate.yml",
       "requires_ingestion": false,
-      "size_bytes": 3423
+      "size_bytes": 3419
     },
     {
       "classification": "workflow_file",
@@ -57328,7 +57589,7 @@
       "extension": ".yml",
       "path": ".github/workflows/docs-code-alignment.yml",
       "requires_ingestion": false,
-      "size_bytes": 4180
+      "size_bytes": 4172
     },
     {
       "classification": "workflow_file",
@@ -57337,7 +57598,7 @@
       "extension": ".yml",
       "path": ".github/workflows/docs-health.yml",
       "requires_ingestion": false,
-      "size_bytes": 2298
+      "size_bytes": 2296
     },
     {
       "classification": "workflow_file",
@@ -57355,7 +57616,7 @@
       "extension": ".yml",
       "path": ".github/workflows/documentation-link-checker.yml",
       "requires_ingestion": false,
-      "size_bytes": 12991
+      "size_bytes": 12839
     },
     {
       "classification": "workflow_file",
@@ -57382,7 +57643,7 @@
       "extension": ".yml",
       "path": ".github/workflows/e-to-d-transition-gate.yml",
       "requires_ingestion": false,
-      "size_bytes": 14816
+      "size_bytes": 14808
     },
     {
       "classification": "workflow_file",
@@ -57391,7 +57652,7 @@
       "extension": ".yml",
       "path": ".github/workflows/embedding-index-rebuild.yml",
       "requires_ingestion": false,
-      "size_bytes": 7919
+      "size_bytes": 7911
     },
     {
       "classification": "workflow_file",
@@ -57409,7 +57670,7 @@
       "extension": ".yml",
       "path": ".github/workflows/examples/copilot-with-mcp.yml",
       "requires_ingestion": false,
-      "size_bytes": 6958
+      "size_bytes": 7058
     },
     {
       "classification": "workflow_file",
@@ -57418,7 +57679,7 @@
       "extension": ".yml",
       "path": ".github/workflows/examples/mcp-cache-warm.yml",
       "requires_ingestion": false,
-      "size_bytes": 5810
+      "size_bytes": 5809
     },
     {
       "classification": "workflow_file",
@@ -57427,7 +57688,7 @@
       "extension": ".yml",
       "path": ".github/workflows/fast-forward-safe-files.yml",
       "requires_ingestion": false,
-      "size_bytes": 8773
+      "size_bytes": 8767
     },
     {
       "classification": "workflow_file",
@@ -57445,7 +57706,7 @@
       "extension": ".yml",
       "path": ".github/workflows/flush-queued-runs.yml",
       "requires_ingestion": false,
-      "size_bytes": 6742
+      "size_bytes": 6743
     },
     {
       "classification": "workflow_file",
@@ -57490,7 +57751,7 @@
       "extension": ".yml",
       "path": ".github/workflows/github-guru.yml",
       "requires_ingestion": false,
-      "size_bytes": 4820
+      "size_bytes": 4823
     },
     {
       "classification": "workflow_file",
@@ -57499,7 +57760,7 @@
       "extension": ".yml",
       "path": ".github/workflows/har-capture.yml",
       "requires_ingestion": false,
-      "size_bytes": 11384
+      "size_bytes": 11340
     },
     {
       "classification": "workflow_file",
@@ -57535,7 +57796,7 @@
       "extension": ".yml",
       "path": ".github/workflows/import-linter.yml",
       "requires_ingestion": false,
-      "size_bytes": 976
+      "size_bytes": 972
     },
     {
       "classification": "workflow_file",
@@ -57553,7 +57814,7 @@
       "extension": ".yml",
       "path": ".github/workflows/issue-resolution-gate.yml",
       "requires_ingestion": false,
-      "size_bytes": 6212
+      "size_bytes": 6209
     },
     {
       "classification": "workflow_file",
@@ -57562,7 +57823,7 @@
       "extension": ".yml",
       "path": ".github/workflows/iterative-self-healing-ci.yml",
       "requires_ingestion": false,
-      "size_bytes": 62248
+      "size_bytes": 62297
     },
     {
       "classification": "workflow_file",
@@ -57580,7 +57841,7 @@
       "extension": ".yml",
       "path": ".github/workflows/labeler.yml",
       "requires_ingestion": false,
-      "size_bytes": 2179
+      "size_bytes": 2141
     },
     {
       "classification": "workflow_file",
@@ -57589,7 +57850,7 @@
       "extension": ".yml",
       "path": ".github/workflows/machine-readable-governance.yml",
       "requires_ingestion": false,
-      "size_bytes": 2770
+      "size_bytes": 2656
     },
     {
       "classification": "workflow_file",
@@ -57598,7 +57859,7 @@
       "extension": ".yml",
       "path": ".github/workflows/machine-readable-maintenance-pr.yml",
       "requires_ingestion": false,
-      "size_bytes": 1034
+      "size_bytes": 958
     },
     {
       "classification": "workflow_file",
@@ -57625,7 +57886,7 @@
       "extension": ".yml",
       "path": ".github/workflows/mcp-health.yml",
       "requires_ingestion": false,
-      "size_bytes": 7761
+      "size_bytes": 7757
     },
     {
       "classification": "workflow_file",
@@ -57634,7 +57895,7 @@
       "extension": ".yml",
       "path": ".github/workflows/ml-lifecycle-gate.yml",
       "requires_ingestion": false,
-      "size_bytes": 4124
+      "size_bytes": 4108
     },
     {
       "classification": "workflow_file",
@@ -57643,7 +57904,7 @@
       "extension": ".yml",
       "path": ".github/workflows/ml-tests.yml",
       "requires_ingestion": false,
-      "size_bytes": 3679
+      "size_bytes": 3639
     },
     {
       "classification": "workflow_file",
@@ -57652,7 +57913,7 @@
       "extension": ".yml",
       "path": ".github/workflows/model-drift-retrain.yml",
       "requires_ingestion": false,
-      "size_bytes": 12957
+      "size_bytes": 12959
     },
     {
       "classification": "workflow_file",
@@ -57670,7 +57931,7 @@
       "extension": ".yml",
       "path": ".github/workflows/mutation-testing.yml",
       "requires_ingestion": false,
-      "size_bytes": 3845
+      "size_bytes": 3837
     },
     {
       "classification": "workflow_file",
@@ -57679,7 +57940,7 @@
       "extension": ".yml",
       "path": ".github/workflows/mypy-baseline.yml",
       "requires_ingestion": false,
-      "size_bytes": 4858
+      "size_bytes": 4854
     },
     {
       "classification": "workflow_file",
@@ -57688,7 +57949,7 @@
       "extension": ".yml",
       "path": ".github/workflows/nightly-codeql-alert-triage.yml",
       "requires_ingestion": false,
-      "size_bytes": 4319
+      "size_bytes": 4321
     },
     {
       "classification": "workflow_file",
@@ -57724,7 +57985,7 @@
       "extension": ".yml",
       "path": ".github/workflows/observable-release.yml",
       "requires_ingestion": false,
-      "size_bytes": 12978
+      "size_bytes": 12640
     },
     {
       "classification": "workflow_file",
@@ -57751,7 +58012,7 @@
       "extension": ".yml",
       "path": ".github/workflows/optimized-ci.yml",
       "requires_ingestion": false,
-      "size_bytes": 1109
+      "size_bytes": 1110
     },
     {
       "classification": "workflow_file",
@@ -57778,7 +58039,7 @@
       "extension": ".yml",
       "path": ".github/workflows/pages-mkdocs.yml",
       "requires_ingestion": false,
-      "size_bytes": 9207
+      "size_bytes": 9131
     },
     {
       "classification": "workflow_file",
@@ -57796,7 +58057,7 @@
       "extension": ".yml",
       "path": ".github/workflows/pages-scheduled-validation.yml",
       "requires_ingestion": false,
-      "size_bytes": 13835
+      "size_bytes": 13833
     },
     {
       "classification": "workflow_file",
@@ -57805,7 +58066,7 @@
       "extension": ".yml",
       "path": ".github/workflows/performance-gate.yml",
       "requires_ingestion": false,
-      "size_bytes": 2318
+      "size_bytes": 2310
     },
     {
       "classification": "workflow_file",
@@ -57814,7 +58075,7 @@
       "extension": ".yml",
       "path": ".github/workflows/phase-12-2-compliance-check.yml",
       "requires_ingestion": false,
-      "size_bytes": 5831
+      "size_bytes": 5827
     },
     {
       "classification": "workflow_file",
@@ -57832,7 +58093,7 @@
       "extension": ".yml",
       "path": ".github/workflows/phase-8-1-health-monitor.yml",
       "requires_ingestion": false,
-      "size_bytes": 7038
+      "size_bytes": 7022
     },
     {
       "classification": "workflow_file",
@@ -57841,7 +58102,7 @@
       "extension": ".yml",
       "path": ".github/workflows/phase-8-2-issue-triage.yml",
       "requires_ingestion": false,
-      "size_bytes": 4669
+      "size_bytes": 4662
     },
     {
       "classification": "workflow_file",
@@ -57850,7 +58111,7 @@
       "extension": ".yml",
       "path": ".github/workflows/phase-8-3-perf-monitor.yml",
       "requires_ingestion": false,
-      "size_bytes": 8212
+      "size_bytes": 8221
     },
     {
       "classification": "workflow_file",
@@ -57868,7 +58129,7 @@
       "extension": ".yml",
       "path": ".github/workflows/phase-9-3-router.yml",
       "requires_ingestion": false,
-      "size_bytes": 16011
+      "size_bytes": 15991
     },
     {
       "classification": "workflow_file",
@@ -57886,7 +58147,7 @@
       "extension": ".yml",
       "path": ".github/workflows/post-accountability-to-discussion.yml",
       "requires_ingestion": false,
-      "size_bytes": 14206
+      "size_bytes": 14209
     },
     {
       "classification": "workflow_file",
@@ -57895,7 +58156,7 @@
       "extension": ".yml",
       "path": ".github/workflows/post-ci-status-to-discussion.yml",
       "requires_ingestion": false,
-      "size_bytes": 8605
+      "size_bytes": 8604
     },
     {
       "classification": "workflow_file",
@@ -57913,7 +58174,7 @@
       "extension": ".yml",
       "path": ".github/workflows/post-merge-validation-optimized.yml",
       "requires_ingestion": false,
-      "size_bytes": 919
+      "size_bytes": 920
     },
     {
       "classification": "workflow_file",
@@ -57922,7 +58183,7 @@
       "extension": ".yml",
       "path": ".github/workflows/post-phase-4-5-to-discussion.yml",
       "requires_ingestion": false,
-      "size_bytes": 10174
+      "size_bytes": 10178
     },
     {
       "classification": "workflow_file",
@@ -57931,7 +58192,7 @@
       "extension": ".yml",
       "path": ".github/workflows/post-phase-update-to-discussion.yml",
       "requires_ingestion": false,
-      "size_bytes": 4209
+      "size_bytes": 4211
     },
     {
       "classification": "workflow_file",
@@ -57958,7 +58219,7 @@
       "extension": ".yml",
       "path": ".github/workflows/pr-cost-check.yml",
       "requires_ingestion": false,
-      "size_bytes": 11370
+      "size_bytes": 11365
     },
     {
       "classification": "workflow_file",
@@ -57976,7 +58237,7 @@
       "extension": ".yml",
       "path": ".github/workflows/pr-followup-generator.yml",
       "requires_ingestion": false,
-      "size_bytes": 8301
+      "size_bytes": 8306
     },
     {
       "classification": "workflow_file",
@@ -58021,7 +58282,7 @@
       "extension": ".yml",
       "path": ".github/workflows/pre-release-validation.yml",
       "requires_ingestion": false,
-      "size_bytes": 14946
+      "size_bytes": 14803
     },
     {
       "classification": "workflow_file",
@@ -58039,7 +58300,7 @@
       "extension": ".yml",
       "path": ".github/workflows/proactive-ci-monitor.yml",
       "requires_ingestion": false,
-      "size_bytes": 5452
+      "size_bytes": 5449
     },
     {
       "classification": "workflow_file",
@@ -58048,7 +58309,7 @@
       "extension": ".yml",
       "path": ".github/workflows/process-variable-intents.yml",
       "requires_ingestion": false,
-      "size_bytes": 6716
+      "size_bytes": 6678
     },
     {
       "classification": "workflow_file",
@@ -58057,7 +58318,7 @@
       "extension": ".yml",
       "path": ".github/workflows/profile-validation.yml",
       "requires_ingestion": false,
-      "size_bytes": 5345
+      "size_bytes": 5285
     },
     {
       "classification": "workflow_file",
@@ -58066,7 +58327,7 @@
       "extension": ".yml",
       "path": ".github/workflows/progressive-validation.yml",
       "requires_ingestion": false,
-      "size_bytes": 13786
+      "size_bytes": 13788
     },
     {
       "classification": "workflow_file",
@@ -58075,7 +58336,7 @@
       "extension": ".yml",
       "path": ".github/workflows/promote-integration-branch.yml",
       "requires_ingestion": false,
-      "size_bytes": 12454
+      "size_bytes": 12451
     },
     {
       "classification": "workflow_file",
@@ -58084,7 +58345,7 @@
       "extension": ".yml",
       "path": ".github/workflows/promotion-readiness-gate.yml",
       "requires_ingestion": false,
-      "size_bytes": 2115
+      "size_bytes": 2111
     },
     {
       "classification": "workflow_file",
@@ -58111,7 +58372,7 @@
       "extension": ".yml",
       "path": ".github/workflows/pypi-publish.yml",
       "requires_ingestion": false,
-      "size_bytes": 4249
+      "size_bytes": 4173
     },
     {
       "classification": "workflow_file",
@@ -58120,7 +58381,7 @@
       "extension": ".yml",
       "path": ".github/workflows/qa-walkthrough.yml",
       "requires_ingestion": false,
-      "size_bytes": 9943
+      "size_bytes": 9933
     },
     {
       "classification": "workflow_file",
@@ -58129,7 +58390,7 @@
       "extension": ".yml",
       "path": ".github/workflows/rag-freshness-scheduler.yml",
       "requires_ingestion": false,
-      "size_bytes": 4479
+      "size_bytes": 4474
     },
     {
       "classification": "workflow_file",
@@ -58138,7 +58399,7 @@
       "extension": ".yml",
       "path": ".github/workflows/rag-quality-nightly.yml",
       "requires_ingestion": false,
-      "size_bytes": 3195
+      "size_bytes": 3179
     },
     {
       "classification": "workflow_file",
@@ -58165,7 +58426,7 @@
       "extension": ".yml",
       "path": ".github/workflows/reference-integrity.yml",
       "requires_ingestion": false,
-      "size_bytes": 8170
+      "size_bytes": 8162
     },
     {
       "classification": "workflow_file",
@@ -58174,7 +58435,7 @@
       "extension": ".yml",
       "path": ".github/workflows/release-to-pypi.yml",
       "requires_ingestion": false,
-      "size_bytes": 16112
+      "size_bytes": 15950
     },
     {
       "classification": "workflow_file",
@@ -58183,7 +58444,7 @@
       "extension": ".yml",
       "path": ".github/workflows/release.yml",
       "requires_ingestion": false,
-      "size_bytes": 2893
+      "size_bytes": 2899
     },
     {
       "classification": "workflow_file",
@@ -58210,7 +58471,7 @@
       "extension": ".yml",
       "path": ".github/workflows/repo-var-sync-schedule.yml",
       "requires_ingestion": false,
-      "size_bytes": 10544
+      "size_bytes": 10541
     },
     {
       "classification": "workflow_file",
@@ -58219,7 +58480,7 @@
       "extension": ".yml",
       "path": ".github/workflows/repository-health-monitoring.yml",
       "requires_ingestion": false,
-      "size_bytes": 5763
+      "size_bytes": 5725
     },
     {
       "classification": "workflow_file",
@@ -58228,7 +58489,7 @@
       "extension": ".yml",
       "path": ".github/workflows/required-actions-enforcer.yml",
       "requires_ingestion": false,
-      "size_bytes": 4672
+      "size_bytes": 4668
     },
     {
       "classification": "workflow_file",
@@ -58237,7 +58498,7 @@
       "extension": ".yml",
       "path": ".github/workflows/resilient_validation.yml",
       "requires_ingestion": false,
-      "size_bytes": 12394
+      "size_bytes": 12348
     },
     {
       "classification": "workflow_file",
@@ -58246,7 +58507,7 @@
       "extension": ".yml",
       "path": ".github/workflows/restore-pipeline-ci.yml",
       "requires_ingestion": false,
-      "size_bytes": 2313
+      "size_bytes": 2311
     },
     {
       "classification": "workflow_file",
@@ -58255,7 +58516,7 @@
       "extension": ".yml",
       "path": ".github/workflows/root-org-validation.yml",
       "requires_ingestion": false,
-      "size_bytes": 16576
+      "size_bytes": 16578
     },
     {
       "classification": "workflow_file",
@@ -58282,7 +58543,7 @@
       "extension": ".yml",
       "path": ".github/workflows/rust-error-validator-observation.yml",
       "requires_ingestion": false,
-      "size_bytes": 9260
+      "size_bytes": 9251
     },
     {
       "classification": "workflow_file",
@@ -58291,7 +58552,7 @@
       "extension": ".yml",
       "path": ".github/workflows/rust-ffi.yml",
       "requires_ingestion": false,
-      "size_bytes": 1614
+      "size_bytes": 1572
     },
     {
       "classification": "workflow_file",
@@ -58300,7 +58561,7 @@
       "extension": ".yml",
       "path": ".github/workflows/rust_swarm_ci.yml",
       "requires_ingestion": false,
-      "size_bytes": 19570
+      "size_bytes": 19222
     },
     {
       "classification": "workflow_file",
@@ -58372,7 +58633,7 @@
       "extension": ".yml",
       "path": ".github/workflows/scheduled-dependency-audit.yml",
       "requires_ingestion": false,
-      "size_bytes": 15368
+      "size_bytes": 15018
     },
     {
       "classification": "workflow_file",
@@ -58381,7 +58642,7 @@
       "extension": ".yml",
       "path": ".github/workflows/secrets-baseline-enforcer.yml",
       "requires_ingestion": false,
-      "size_bytes": 14511
+      "size_bytes": 14400
     },
     {
       "classification": "workflow_file",
@@ -58390,7 +58651,7 @@
       "extension": ".yml",
       "path": ".github/workflows/secrets-false-positive-healer.yml",
       "requires_ingestion": false,
-      "size_bytes": 7868
+      "size_bytes": 7864
     },
     {
       "classification": "workflow_file",
@@ -58408,7 +58669,7 @@
       "extension": ".yml",
       "path": ".github/workflows/security-alert-notification.yml",
       "requires_ingestion": false,
-      "size_bytes": 9523
+      "size_bytes": 9524
     },
     {
       "classification": "workflow_file",
@@ -58417,7 +58678,7 @@
       "extension": ".yml",
       "path": ".github/workflows/security-copilot-commands.yml",
       "requires_ingestion": false,
-      "size_bytes": 5082
+      "size_bytes": 4928
     },
     {
       "classification": "workflow_file",
@@ -58426,7 +58687,7 @@
       "extension": ".yml",
       "path": ".github/workflows/security-findings-api.yml",
       "requires_ingestion": false,
-      "size_bytes": 1253
+      "size_bytes": 1249
     },
     {
       "classification": "workflow_file",
@@ -58435,7 +58696,7 @@
       "extension": ".yml",
       "path": ".github/workflows/security-findings-copilot-handoff.yml",
       "requires_ingestion": false,
-      "size_bytes": 8144
+      "size_bytes": 7866
     },
     {
       "classification": "workflow_file",
@@ -58444,7 +58705,7 @@
       "extension": ".yml",
       "path": ".github/workflows/security-pr-enhancement.yml",
       "requires_ingestion": false,
-      "size_bytes": 7333
+      "size_bytes": 7129
     },
     {
       "classification": "workflow_file",
@@ -58462,7 +58723,7 @@
       "extension": ".yml",
       "path": ".github/workflows/security-scanning-suite.yml",
       "requires_ingestion": false,
-      "size_bytes": 35797
+      "size_bytes": 35703
     },
     {
       "classification": "workflow_file",
@@ -58498,7 +58759,7 @@
       "extension": ".yml",
       "path": ".github/workflows/self-approve-pending-runs.yml",
       "requires_ingestion": false,
-      "size_bytes": 7551
+      "size_bytes": 7513
     },
     {
       "classification": "workflow_file",
@@ -58534,7 +58795,7 @@
       "extension": ".yml",
       "path": ".github/workflows/self-healing.yml",
       "requires_ingestion": false,
-      "size_bytes": 8907
+      "size_bytes": 8903
     },
     {
       "classification": "workflow_file",
@@ -58552,7 +58813,7 @@
       "extension": ".yml",
       "path": ".github/workflows/semgrep_sarif.yml",
       "requires_ingestion": false,
-      "size_bytes": 16822
+      "size_bytes": 16766
     },
     {
       "classification": "workflow_file",
@@ -58561,7 +58822,7 @@
       "extension": ".yml",
       "path": ".github/workflows/session-context-capture.yml",
       "requires_ingestion": false,
-      "size_bytes": 6114
+      "size_bytes": 6111
     },
     {
       "classification": "workflow_file",
@@ -58570,7 +58831,7 @@
       "extension": ".yml",
       "path": ".github/workflows/session-incremental-summary-reminder.yml",
       "requires_ingestion": false,
-      "size_bytes": 5983
+      "size_bytes": 5985
     },
     {
       "classification": "workflow_file",
@@ -58579,7 +58840,7 @@
       "extension": ".yml",
       "path": ".github/workflows/session-recovery-continuous-monitoring.yml",
       "requires_ingestion": false,
-      "size_bytes": 6484
+      "size_bytes": 6480
     },
     {
       "classification": "workflow_file",
@@ -58606,7 +58867,7 @@
       "extension": ".yml",
       "path": ".github/workflows/sigstore-verify.yml",
       "requires_ingestion": false,
-      "size_bytes": 3775
+      "size_bytes": 3767
     },
     {
       "classification": "workflow_file",
@@ -58615,7 +58876,7 @@
       "extension": ".yml",
       "path": ".github/workflows/slo-canary-check.yml",
       "requires_ingestion": false,
-      "size_bytes": 5584
+      "size_bytes": 5560
     },
     {
       "classification": "workflow_file",
@@ -58624,7 +58885,7 @@
       "extension": ".yml",
       "path": ".github/workflows/smoke-tests-deployment.yml",
       "requires_ingestion": false,
-      "size_bytes": 13642
+      "size_bytes": 13165
     },
     {
       "classification": "workflow_file",
@@ -58669,7 +58930,7 @@
       "extension": ".yml",
       "path": ".github/workflows/telemetry-collection.yml",
       "requires_ingestion": false,
-      "size_bytes": 8102
+      "size_bytes": 8105
     },
     {
       "classification": "workflow_file",
@@ -58696,7 +58957,7 @@
       "extension": ".yml",
       "path": ".github/workflows/test-pyramid-report.yml",
       "requires_ingestion": false,
-      "size_bytes": 1796
+      "size_bytes": 1789
     },
     {
       "classification": "workflow_file",
@@ -58714,7 +58975,7 @@
       "extension": ".yml",
       "path": ".github/workflows/test-rag.yml",
       "requires_ingestion": false,
-      "size_bytes": 31553
+      "size_bytes": 31437
     },
     {
       "classification": "workflow_file",
@@ -58723,7 +58984,7 @@
       "extension": ".yml",
       "path": ".github/workflows/test-variables-api.yml",
       "requires_ingestion": false,
-      "size_bytes": 8102
+      "size_bytes": 8094
     },
     {
       "classification": "workflow_file",
@@ -58732,7 +58993,7 @@
       "extension": ".yml",
       "path": ".github/workflows/tiered-approval-gate.yml",
       "requires_ingestion": false,
-      "size_bytes": 915
+      "size_bytes": 839
     },
     {
       "classification": "workflow_file",
@@ -58741,7 +59002,7 @@
       "extension": ".yml",
       "path": ".github/workflows/token-expiry-monitor.yml",
       "requires_ingestion": false,
-      "size_bytes": 6580
+      "size_bytes": 6579
     },
     {
       "classification": "workflow_file",
@@ -58777,7 +59038,7 @@
       "extension": ".yml",
       "path": ".github/workflows/unified-deployment.yml",
       "requires_ingestion": false,
-      "size_bytes": 6851
+      "size_bytes": 6815
     },
     {
       "classification": "workflow_file",
@@ -58786,7 +59047,7 @@
       "extension": ".yml",
       "path": ".github/workflows/unified-governance-check.yml",
       "requires_ingestion": false,
-      "size_bytes": 6987
+      "size_bytes": 6912
     },
     {
       "classification": "workflow_file",
@@ -58795,7 +59056,7 @@
       "extension": ".yml",
       "path": ".github/workflows/validate-api-null-handling.yml",
       "requires_ingestion": false,
-      "size_bytes": 6193
+      "size_bytes": 6189
     },
     {
       "classification": "workflow_file",
@@ -58804,7 +59065,7 @@
       "extension": ".yml",
       "path": ".github/workflows/validate-code-examples.yml",
       "requires_ingestion": false,
-      "size_bytes": 7405
+      "size_bytes": 7395
     },
     {
       "classification": "workflow_file",
@@ -58813,7 +59074,7 @@
       "extension": ".yml",
       "path": ".github/workflows/validate-token-health.yml",
       "requires_ingestion": false,
-      "size_bytes": 9892
+      "size_bytes": 9888
     },
     {
       "classification": "workflow_file",
@@ -58822,7 +59083,7 @@
       "extension": ".yml",
       "path": ".github/workflows/validate.yml",
       "requires_ingestion": false,
-      "size_bytes": 11432
+      "size_bytes": 10938
     },
     {
       "classification": "workflow_file",
@@ -58831,7 +59092,7 @@
       "extension": ".yml",
       "path": ".github/workflows/vars-guide-sync.yml",
       "requires_ingestion": false,
-      "size_bytes": 9052
+      "size_bytes": 9053
     },
     {
       "classification": "workflow_file",
@@ -58849,7 +59110,7 @@
       "extension": ".yml",
       "path": ".github/workflows/workflow-analytics-unified.yml",
       "requires_ingestion": false,
-      "size_bytes": 9880
+      "size_bytes": 9886
     },
     {
       "classification": "workflow_file",
@@ -58858,7 +59119,7 @@
       "extension": ".yml",
       "path": ".github/workflows/workflow-compliance-gate.yml",
       "requires_ingestion": false,
-      "size_bytes": 7206
+      "size_bytes": 7120
     },
     {
       "classification": "workflow_file",
@@ -58867,7 +59128,7 @@
       "extension": ".yml",
       "path": ".github/workflows/workflow-execution-gate.yml",
       "requires_ingestion": false,
-      "size_bytes": 32692
+      "size_bytes": 32669
     },
     {
       "classification": "workflow_file",
@@ -58894,7 +59155,7 @@
       "extension": ".yml",
       "path": ".github/workflows/workflow-link-validation.yml",
       "requires_ingestion": false,
-      "size_bytes": 5418
+      "size_bytes": 5414
     },
     {
       "classification": "workflow_file",
@@ -58912,7 +59173,7 @@
       "extension": ".yml",
       "path": ".github/workflows/workflow-restore.yml",
       "requires_ingestion": false,
-      "size_bytes": 8629
+      "size_bytes": 8627
     },
     {
       "classification": "workflow_file",
@@ -59554,195 +59815,6 @@
       "size_bytes": 115
     },
     {
-      "classification": "schema",
-      "confidence": 0.95,
-      "exception": false,
-      "extension": ".json",
-      "path": ".nox/lint-3-12/lib/python3.12/site-packages/black/resources/black.schema.json",
-      "requires_ingestion": false,
-      "size_bytes": 7499
-    },
-    {
-      "classification": "legacy_human_documentation",
-      "confidence": 0.7,
-      "exception": false,
-      "extension": ".txt",
-      "path": ".nox/lint-3-12/lib/python3.12/site-packages/black-26.5.1.dist-info/entry_points.txt",
-      "requires_ingestion": true,
-      "size_bytes": 144
-    },
-    {
-      "classification": "legacy_human_documentation",
-      "confidence": 0.7,
-      "exception": false,
-      "extension": ".txt",
-      "path": ".nox/lint-3-12/lib/python3.12/site-packages/blib2to3/Grammar.txt",
-      "requires_ingestion": true,
-      "size_bytes": 12084
-    },
-    {
-      "classification": "legacy_human_documentation",
-      "confidence": 0.7,
-      "exception": false,
-      "extension": ".txt",
-      "path": ".nox/lint-3-12/lib/python3.12/site-packages/blib2to3/PatternGrammar.txt",
-      "requires_ingestion": true,
-      "size_bytes": 807
-    },
-    {
-      "classification": "legacy_human_documentation",
-      "confidence": 0.7,
-      "exception": false,
-      "extension": ".txt",
-      "path": ".nox/lint-3-12/lib/python3.12/site-packages/click-8.4.2.dist-info/licenses/LICENSE.txt",
-      "requires_ingestion": true,
-      "size_bytes": 1475
-    },
-    {
-      "classification": "legacy_human_documentation",
-      "confidence": 0.7,
-      "exception": false,
-      "extension": ".txt",
-      "path": ".nox/lint-3-12/lib/python3.12/site-packages/isort-8.0.1.dist-info/entry_points.txt",
-      "requires_ingestion": true,
-      "size_bytes": 100
-    },
-    {
-      "classification": "legacy_human_documentation",
-      "confidence": 0.7,
-      "exception": false,
-      "extension": ".rst",
-      "path": ".nox/lint-3-12/lib/python3.12/site-packages/pip/_vendor/README.rst",
-      "requires_ingestion": true,
-      "size_bytes": 9222
-    },
-    {
-      "classification": "legacy_human_documentation",
-      "confidence": 0.7,
-      "exception": false,
-      "extension": ".txt",
-      "path": ".nox/lint-3-12/lib/python3.12/site-packages/pip/_vendor/cachecontrol/LICENSE.txt",
-      "requires_ingestion": true,
-      "size_bytes": 558
-    },
-    {
-      "classification": "legacy_human_documentation",
-      "confidence": 0.7,
-      "exception": false,
-      "extension": ".txt",
-      "path": ".nox/lint-3-12/lib/python3.12/site-packages/pip/_vendor/distlib/LICENSE.txt",
-      "requires_ingestion": true,
-      "size_bytes": 14531
-    },
-    {
-      "classification": "legacy_human_documentation",
-      "confidence": 0.7,
-      "exception": false,
-      "extension": ".md",
-      "path": ".nox/lint-3-12/lib/python3.12/site-packages/pip/_vendor/idna/LICENSE.md",
-      "requires_ingestion": true,
-      "size_bytes": 1541
-    },
-    {
-      "classification": "legacy_human_documentation",
-      "confidence": 0.7,
-      "exception": false,
-      "extension": ".txt",
-      "path": ".nox/lint-3-12/lib/python3.12/site-packages/pip/_vendor/urllib3/LICENSE.txt",
-      "requires_ingestion": true,
-      "size_bytes": 1093
-    },
-    {
-      "classification": "legacy_human_documentation",
-      "confidence": 0.7,
-      "exception": false,
-      "extension": ".txt",
-      "path": ".nox/lint-3-12/lib/python3.12/site-packages/pip/_vendor/vendor.txt",
-      "requires_ingestion": true,
-      "size_bytes": 316
-    },
-    {
-      "classification": "legacy_human_documentation",
-      "confidence": 0.7,
-      "exception": false,
-      "extension": ".txt",
-      "path": ".nox/lint-3-12/lib/python3.12/site-packages/pip-26.1.2.dist-info/entry_points.txt",
-      "requires_ingestion": true,
-      "size_bytes": 84
-    },
-    {
-      "classification": "legacy_human_documentation",
-      "confidence": 0.7,
-      "exception": false,
-      "extension": ".txt",
-      "path": ".nox/lint-3-12/lib/python3.12/site-packages/pip-26.1.2.dist-info/licenses/AUTHORS.txt",
-      "requires_ingestion": true,
-      "size_bytes": 11869
-    },
-    {
-      "classification": "legacy_human_documentation",
-      "confidence": 0.7,
-      "exception": false,
-      "extension": ".txt",
-      "path": ".nox/lint-3-12/lib/python3.12/site-packages/pip-26.1.2.dist-info/licenses/LICENSE.txt",
-      "requires_ingestion": true,
-      "size_bytes": 1093
-    },
-    {
-      "classification": "legacy_human_documentation",
-      "confidence": 0.7,
-      "exception": false,
-      "extension": ".txt",
-      "path": ".nox/lint-3-12/lib/python3.12/site-packages/pip-26.1.2.dist-info/licenses/src/pip/_vendor/cachecontrol/LICENSE.txt",
-      "requires_ingestion": true,
-      "size_bytes": 558
-    },
-    {
-      "classification": "legacy_human_documentation",
-      "confidence": 0.7,
-      "exception": false,
-      "extension": ".txt",
-      "path": ".nox/lint-3-12/lib/python3.12/site-packages/pip-26.1.2.dist-info/licenses/src/pip/_vendor/distlib/LICENSE.txt",
-      "requires_ingestion": true,
-      "size_bytes": 14531
-    },
-    {
-      "classification": "legacy_human_documentation",
-      "confidence": 0.7,
-      "exception": false,
-      "extension": ".md",
-      "path": ".nox/lint-3-12/lib/python3.12/site-packages/pip-26.1.2.dist-info/licenses/src/pip/_vendor/idna/LICENSE.md",
-      "requires_ingestion": true,
-      "size_bytes": 1541
-    },
-    {
-      "classification": "legacy_human_documentation",
-      "confidence": 0.7,
-      "exception": false,
-      "extension": ".txt",
-      "path": ".nox/lint-3-12/lib/python3.12/site-packages/pip-26.1.2.dist-info/licenses/src/pip/_vendor/urllib3/LICENSE.txt",
-      "requires_ingestion": true,
-      "size_bytes": 1093
-    },
-    {
-      "classification": "legacy_human_documentation",
-      "confidence": 0.7,
-      "exception": false,
-      "extension": ".txt",
-      "path": ".nox/lint-3-12/lib/python3.12/site-packages/pytokens-0.4.1.dist-info/top_level.txt",
-      "requires_ingestion": true,
-      "size_bytes": 37
-    },
-    {
-      "classification": "configuration",
-      "confidence": 0.75,
-      "exception": false,
-      "extension": ".json",
-      "path": ".nox/lint-3-12/lib/python3.12/site-packages/ruff-0.15.20.dist-info/sboms/ruff.cyclonedx.json",
-      "requires_ingestion": false,
-      "size_bytes": 387391
-    },
-    {
       "classification": "configuration",
       "confidence": 0.95,
       "exception": false,
@@ -59911,7 +59983,7 @@
       "extension": ".md",
       "path": "CHANGELOG.md",
       "requires_ingestion": false,
-      "size_bytes": 1325726
+      "size_bytes": 1330875
     },
     {
       "classification": "exception_candidate",
@@ -59938,7 +60010,7 @@
       "extension": ".json",
       "path": "CODEX_MANIFEST.json",
       "requires_ingestion": false,
-      "size_bytes": 60094
+      "size_bytes": 60684
     },
     {
       "classification": "exception_candidate",
@@ -66472,7 +66544,7 @@
       "extension": ".md",
       "path": "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md",
       "requires_ingestion": false,
-      "size_bytes": 768056
+      "size_bytes": 780567
     },
     {
       "classification": "exception_candidate",
@@ -72898,7 +72970,7 @@
       "extension": ".md",
       "path": "docs/guides/production_deployment.md",
       "requires_ingestion": false,
-      "size_bytes": 14529
+      "size_bytes": 21280
     },
     {
       "classification": "exception_candidate",
@@ -81484,7 +81556,7 @@
       "extension": ".json",
       "path": "docs-data/generated/candidate-inventory.json",
       "requires_ingestion": false,
-      "size_bytes": 2552833
+      "size_bytes": 2560488
     },
     {
       "classification": "generated_machine_readable_artifact",
@@ -81502,7 +81574,7 @@
       "extension": ".json",
       "path": "docs-data/generated/codebase-discovery-report.json",
       "requires_ingestion": false,
-      "size_bytes": 728649
+      "size_bytes": 732536
     },
     {
       "classification": "generated_machine_readable_artifact",
@@ -81673,7 +81745,7 @@
       "extension": ".json",
       "path": "docs-data/generated/machine-readable-coverage-report.json",
       "requires_ingestion": false,
-      "size_bytes": 480798
+      "size_bytes": 662300
     },
     {
       "classification": "generated_machine_readable_artifact",
@@ -81691,7 +81763,7 @@
       "extension": ".json",
       "path": "docs-data/generated/markdown-inventory.json",
       "requires_ingestion": false,
-      "size_bytes": 2112594
+      "size_bytes": 2117438
     },
     {
       "classification": "generated_machine_readable_artifact",
@@ -81889,7 +81961,7 @@
       "extension": ".json",
       "path": "docs-data/generated/unmanaged-candidates-report.json",
       "requires_ingestion": false,
-      "size_bytes": 111
+      "size_bytes": 113891
     },
     {
       "classification": "generated_machine_readable_artifact",
@@ -87841,5 +87913,5 @@
       "size_bytes": 6029
     }
   ],
-  "generated_at": "2026-07-07T20:36:59Z"
+  "generated_at": "2026-07-08T00:18:18Z"
 }

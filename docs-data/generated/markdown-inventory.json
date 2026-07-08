@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-07T20:36:59Z",
+  "generated_at": "2026-07-08T00:18:18Z",
   "markdown_candidates": [
     {
       "classification": "legacy_human_documentation",
@@ -1433,6 +1433,15 @@
       "size_bytes": 2531
     },
     {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/CHRONICLE_COMPREHENSIVE_SESSION_INDEX.md",
+      "requires_ingestion": true,
+      "size_bytes": 10353
+    },
+    {
       "classification": "exception_candidate",
       "confidence": 1.0,
       "exception": true,
@@ -1458,6 +1467,15 @@
       "path": ".codex/CHRONICLE_SEARCH.md",
       "requires_ingestion": false,
       "size_bytes": 9423
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".txt",
+      "path": ".codex/CHRONICLE_SEARCH_RESULTS.txt",
+      "requires_ingestion": true,
+      "size_bytes": 9680
     },
     {
       "classification": "exception_candidate",
@@ -14924,6 +14942,15 @@
       "size_bytes": 15039
     },
     {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/WORKFLOW_CI_FIXER_SESSION_REPORT.md",
+      "requires_ingestion": true,
+      "size_bytes": 11803
+    },
+    {
       "classification": "exception_candidate",
       "confidence": 1.0,
       "exception": true,
@@ -15005,6 +15032,15 @@
       "size_bytes": 7693
     },
     {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/WORKFLOW_MONITORING_DASHBOARD.md",
+      "requires_ingestion": true,
+      "size_bytes": 10295
+    },
+    {
       "classification": "exception_candidate",
       "confidence": 1.0,
       "exception": true,
@@ -15030,6 +15066,15 @@
       "path": ".codex/WORKFLOW_MONITORING_REPORT_2026_02_05.md",
       "requires_ingestion": false,
       "size_bytes": 10770
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/WORKFLOW_MONITORING_SESSION_2026_07_08_FINAL_REPORT.md",
+      "requires_ingestion": true,
+      "size_bytes": 17794
     },
     {
       "classification": "exception_candidate",
@@ -17351,7 +17396,7 @@
       "extension": ".md",
       "path": ".codex/archive/phase-reports/phase-1-10/PHASE_13_TRACK_13.3_SECRETS_DESIGN.md",
       "requires_ingestion": true,
-      "size_bytes": 25529
+      "size_bytes": 25664
     },
     {
       "classification": "planning_document",
@@ -38276,7 +38321,7 @@
       "extension": ".md",
       "path": ".codex/session_context_latest.md",
       "requires_ingestion": false,
-      "size_bytes": 3194
+      "size_bytes": 3144
     },
     {
       "classification": "exception_candidate",
@@ -39186,6 +39231,123 @@
       "path": ".codex/workflow-fixes-summary.md",
       "requires_ingestion": false,
       "size_bytes": 9138
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/workflow-monitoring/INITIAL_STATUS_REPORT.md",
+      "requires_ingestion": true,
+      "size_bytes": 6323
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/workflow-monitoring/MONITORING_SESSION.md",
+      "requires_ingestion": true,
+      "size_bytes": 5804
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/workflow-monitoring/ORCHESTRATOR_HANDOFF.md",
+      "requires_ingestion": true,
+      "size_bytes": 5049
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/workflow-monitoring/PHASE2_EMERGENCY_ESCALATION.md",
+      "requires_ingestion": true,
+      "size_bytes": 5739
+    },
+    {
+      "classification": "planning_document",
+      "confidence": 0.8,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/workflow-monitoring/PHASE2_MONITORING_CHECKPOINT.md",
+      "requires_ingestion": true,
+      "size_bytes": 4432
+    },
+    {
+      "classification": "repository_readme",
+      "confidence": 0.95,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/workflow-monitoring/README.md",
+      "requires_ingestion": true,
+      "size_bytes": 10773
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/workflow-monitoring/REMEDIATION_REPORT.md",
+      "requires_ingestion": true,
+      "size_bytes": 10322
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/workflow-monitoring/REMEDIATION_STATUS_00-05.md",
+      "requires_ingestion": true,
+      "size_bytes": 4334
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/workflow-monitoring/STATUS_UPDATE_00-01.md",
+      "requires_ingestion": true,
+      "size_bytes": 1640
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/workflow-monitoring/failure-analysis-full.md",
+      "requires_ingestion": true,
+      "size_bytes": 9944
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".md",
+      "path": ".codex/workflow-monitoring/final-validation-report.md",
+      "requires_ingestion": true,
+      "size_bytes": 5096
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".txt",
+      "path": ".codex/workflow-monitoring/modified-files-detailed.txt",
+      "requires_ingestion": true,
+      "size_bytes": 5818
+    },
+    {
+      "classification": "legacy_human_documentation",
+      "confidence": 0.7,
+      "exception": false,
+      "extension": ".txt",
+      "path": ".codex/workflow-monitoring/status-report-001.txt",
+      "requires_ingestion": true,
+      "size_bytes": 14888
     },
     {
       "classification": "legacy_human_documentation",
@@ -50132,177 +50294,6 @@
       "size_bytes": 115
     },
     {
-      "classification": "legacy_human_documentation",
-      "confidence": 0.7,
-      "exception": false,
-      "extension": ".txt",
-      "path": ".nox/lint-3-12/lib/python3.12/site-packages/black-26.5.1.dist-info/entry_points.txt",
-      "requires_ingestion": true,
-      "size_bytes": 144
-    },
-    {
-      "classification": "legacy_human_documentation",
-      "confidence": 0.7,
-      "exception": false,
-      "extension": ".txt",
-      "path": ".nox/lint-3-12/lib/python3.12/site-packages/blib2to3/Grammar.txt",
-      "requires_ingestion": true,
-      "size_bytes": 12084
-    },
-    {
-      "classification": "legacy_human_documentation",
-      "confidence": 0.7,
-      "exception": false,
-      "extension": ".txt",
-      "path": ".nox/lint-3-12/lib/python3.12/site-packages/blib2to3/PatternGrammar.txt",
-      "requires_ingestion": true,
-      "size_bytes": 807
-    },
-    {
-      "classification": "legacy_human_documentation",
-      "confidence": 0.7,
-      "exception": false,
-      "extension": ".txt",
-      "path": ".nox/lint-3-12/lib/python3.12/site-packages/click-8.4.2.dist-info/licenses/LICENSE.txt",
-      "requires_ingestion": true,
-      "size_bytes": 1475
-    },
-    {
-      "classification": "legacy_human_documentation",
-      "confidence": 0.7,
-      "exception": false,
-      "extension": ".txt",
-      "path": ".nox/lint-3-12/lib/python3.12/site-packages/isort-8.0.1.dist-info/entry_points.txt",
-      "requires_ingestion": true,
-      "size_bytes": 100
-    },
-    {
-      "classification": "legacy_human_documentation",
-      "confidence": 0.7,
-      "exception": false,
-      "extension": ".rst",
-      "path": ".nox/lint-3-12/lib/python3.12/site-packages/pip/_vendor/README.rst",
-      "requires_ingestion": true,
-      "size_bytes": 9222
-    },
-    {
-      "classification": "legacy_human_documentation",
-      "confidence": 0.7,
-      "exception": false,
-      "extension": ".txt",
-      "path": ".nox/lint-3-12/lib/python3.12/site-packages/pip/_vendor/cachecontrol/LICENSE.txt",
-      "requires_ingestion": true,
-      "size_bytes": 558
-    },
-    {
-      "classification": "legacy_human_documentation",
-      "confidence": 0.7,
-      "exception": false,
-      "extension": ".txt",
-      "path": ".nox/lint-3-12/lib/python3.12/site-packages/pip/_vendor/distlib/LICENSE.txt",
-      "requires_ingestion": true,
-      "size_bytes": 14531
-    },
-    {
-      "classification": "legacy_human_documentation",
-      "confidence": 0.7,
-      "exception": false,
-      "extension": ".md",
-      "path": ".nox/lint-3-12/lib/python3.12/site-packages/pip/_vendor/idna/LICENSE.md",
-      "requires_ingestion": true,
-      "size_bytes": 1541
-    },
-    {
-      "classification": "legacy_human_documentation",
-      "confidence": 0.7,
-      "exception": false,
-      "extension": ".txt",
-      "path": ".nox/lint-3-12/lib/python3.12/site-packages/pip/_vendor/urllib3/LICENSE.txt",
-      "requires_ingestion": true,
-      "size_bytes": 1093
-    },
-    {
-      "classification": "legacy_human_documentation",
-      "confidence": 0.7,
-      "exception": false,
-      "extension": ".txt",
-      "path": ".nox/lint-3-12/lib/python3.12/site-packages/pip/_vendor/vendor.txt",
-      "requires_ingestion": true,
-      "size_bytes": 316
-    },
-    {
-      "classification": "legacy_human_documentation",
-      "confidence": 0.7,
-      "exception": false,
-      "extension": ".txt",
-      "path": ".nox/lint-3-12/lib/python3.12/site-packages/pip-26.1.2.dist-info/entry_points.txt",
-      "requires_ingestion": true,
-      "size_bytes": 84
-    },
-    {
-      "classification": "legacy_human_documentation",
-      "confidence": 0.7,
-      "exception": false,
-      "extension": ".txt",
-      "path": ".nox/lint-3-12/lib/python3.12/site-packages/pip-26.1.2.dist-info/licenses/AUTHORS.txt",
-      "requires_ingestion": true,
-      "size_bytes": 11869
-    },
-    {
-      "classification": "legacy_human_documentation",
-      "confidence": 0.7,
-      "exception": false,
-      "extension": ".txt",
-      "path": ".nox/lint-3-12/lib/python3.12/site-packages/pip-26.1.2.dist-info/licenses/LICENSE.txt",
-      "requires_ingestion": true,
-      "size_bytes": 1093
-    },
-    {
-      "classification": "legacy_human_documentation",
-      "confidence": 0.7,
-      "exception": false,
-      "extension": ".txt",
-      "path": ".nox/lint-3-12/lib/python3.12/site-packages/pip-26.1.2.dist-info/licenses/src/pip/_vendor/cachecontrol/LICENSE.txt",
-      "requires_ingestion": true,
-      "size_bytes": 558
-    },
-    {
-      "classification": "legacy_human_documentation",
-      "confidence": 0.7,
-      "exception": false,
-      "extension": ".txt",
-      "path": ".nox/lint-3-12/lib/python3.12/site-packages/pip-26.1.2.dist-info/licenses/src/pip/_vendor/distlib/LICENSE.txt",
-      "requires_ingestion": true,
-      "size_bytes": 14531
-    },
-    {
-      "classification": "legacy_human_documentation",
-      "confidence": 0.7,
-      "exception": false,
-      "extension": ".md",
-      "path": ".nox/lint-3-12/lib/python3.12/site-packages/pip-26.1.2.dist-info/licenses/src/pip/_vendor/idna/LICENSE.md",
-      "requires_ingestion": true,
-      "size_bytes": 1541
-    },
-    {
-      "classification": "legacy_human_documentation",
-      "confidence": 0.7,
-      "exception": false,
-      "extension": ".txt",
-      "path": ".nox/lint-3-12/lib/python3.12/site-packages/pip-26.1.2.dist-info/licenses/src/pip/_vendor/urllib3/LICENSE.txt",
-      "requires_ingestion": true,
-      "size_bytes": 1093
-    },
-    {
-      "classification": "legacy_human_documentation",
-      "confidence": 0.7,
-      "exception": false,
-      "extension": ".txt",
-      "path": ".nox/lint-3-12/lib/python3.12/site-packages/pytokens-0.4.1.dist-info/top_level.txt",
-      "requires_ingestion": true,
-      "size_bytes": 37
-    },
-    {
       "classification": "exception_candidate",
       "confidence": 1.0,
       "exception": true,
@@ -50363,7 +50354,7 @@
       "extension": ".md",
       "path": "CHANGELOG.md",
       "requires_ingestion": false,
-      "size_bytes": 1325726
+      "size_bytes": 1330875
     },
     {
       "classification": "exception_candidate",
@@ -54242,7 +54233,7 @@
       "extension": ".md",
       "path": "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md",
       "requires_ingestion": false,
-      "size_bytes": 768056
+      "size_bytes": 780567
     },
     {
       "classification": "exception_candidate",
@@ -60650,7 +60641,7 @@
       "extension": ".md",
       "path": "docs/guides/production_deployment.md",
       "requires_ingestion": false,
-      "size_bytes": 14529
+      "size_bytes": 21280
     },
     {
       "classification": "exception_candidate",

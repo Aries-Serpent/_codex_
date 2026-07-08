@@ -24,7 +24,7 @@
     "ingest_candidate_file",
     "rebuild_indexes"
   ],
-  "generated_at": "2026-07-02T19:12:10Z",
+  "generated_at": "2026-07-08T00:18:31Z",
   "generated_files": [
     "docs.sqlite",
     "manifest.json",
@@ -30481,6 +30481,534 @@
     {
       "path": "workbench/wave_execution_control.md",
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
+    },
+    {
+      "path": ".codex/ARTIFACT_LIFECYCLE_AUTOMATION.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/AUTO_GO_COMPLETION_SUMMARY.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/AUTO_GO_POST_MERGE_PROMPT.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/BASELINE_STABILITY_VERIFICATION.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/CAMPAIGN_EXECUTION_DASHBOARD_LIVE.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/CAMPAIGN_PROGRESS_REPORT.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/CI_INTEGRATION_CHECKLIST.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/CI_WORKFLOW_FIXES_SUMMARY.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/COVERAGE_AUTOMATION_COMPLETION.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/COVERAGE_BASELINE_MONITORING_COMPLETE.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/COVERAGE_MONITORING_ROLLBACK.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/COVERAGE_VALIDATION_CRITERIA.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/CRISIS_AGENT_QUEUE.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/CRISIS_FINAL_STATUS.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/CRISIS_RESOLUTION_FINAL_REPORT.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/CRISIS_UPDATE_001.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/CRISIS_UPDATE_002.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/CRISIS_UPDATE_003.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/DEPLOYMENT_FINAL_SUMMARY.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/DEPLOYMENT_READINESS_CHECKLIST.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/EXECUTION_ROADMAP_GATES_1_4.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/EXECUTION_ROADMAP_PHASE_STATUS.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/GATE_1_ARTIFACT_INVENTORY.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/GATE_1_ARTIFACT_LIFECYCLE_PLAN.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/GATE_1_COMPLETION_SUMMARY.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/GATE_1_CONSOLIDATION_IMPACT_ANALYSIS.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/GATE_1_FINAL_COMPLETION_REPORT.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/GATE_1_OPTIMIZATION_OPPORTUNITIES.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/GATE_1_STORAGE_SAVINGS_ANALYSIS.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/GATE_1_WORKFLOW_AUDIT_COMPLETE.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/GATE_1_WORKFLOW_PERFORMANCE_BASELINE.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/GATE_2_AGENT_BRIEFS.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/GATE_2_EXECUTION_ROADMAP.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/GATE_2_LOGGING_ARCHITECTURE_GUIDE.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/GATE_2_MIGRATION_WAVE1_COMPLETION.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/GATE_2_MIGRATION_WAVE2_COMPLETION.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/GATE_2_MIGRATION_WAVE2_SUBWAVE_1_PROGRESS.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/GATE_2_MIGRATION_WAVE2_SUBWAVE_2_PROGRESS.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/GATE_2_MIGRATION_WAVE2_SUBWAVE_3_PROGRESS.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/GATE_2_MONOLITHIC_FILES_AUDIT.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/GATE_2_PATTERNS_CONSOLIDATION_FINAL.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/GATE_2_PATTERN_INVENTORY.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/GATE_2_PHASE1B_EXECUTION_STRATEGY.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/GATE_2_PHASE1B_EXECUTION_SUMMARY.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/GATE_2_PHASE1B_MASTER_ROADMAP.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/GATE_2_PHASE1_DAY2_EXECUTION_PLAN.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/GATE_2_PHASE_3B_COMPLETION.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/GATE_2_PHASE_3C_DAY1_PROGRESS.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/GATE_2_PHASE_3C_EXECUTION_PLAN.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/GATE_2_PHASE_3C_SUMMARY.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/GATE_2_PRINT_STATEMENTS_AUDIT.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/GATE_2_QUICK_REFERENCE.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/GATE_2_TEST_HARNESS_ARCHITECTURE.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/GATE_2_TEST_HARNESS_VALIDATION.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/GATE_2_WAVE2_FINAL_SUMMARY.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/GATE_2_WAVE2_WAVE3_TRANSITION.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/GATE_3_AGENT_BRIEFS.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/GATE_4_AGENT_BRIEFS.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/GOVERNANCE_PATTERNS_REFERENCE.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/GOVERNANCE_PATTERN_EXAMPLES.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/MODULE_TIER_PROGRESSION.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/MYPY_REGRESSION_FIXES.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/MYPY_REGRESSION_RESOLUTION_FINAL.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PHASE_10_1_SUMMARY.txt",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PHASE_10_2_DAY_1_COMPLETION.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PHASE_10_2_LTM_PATTERNS.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PHASE_10_3_CONTEXT_STRATEGIES.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PHASE_10_3_DAY_1_CHECKPOINT.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PHASE_10_ACTIVATION_NOTICE_2026_07_02.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PHASE_10_DEPLOYMENT_CONSOLIDATION_REPORT.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PHASE_10_FINAL_COMPLETION_REPORT.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PHASE_12_BRIEFS_FINAL.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PHASE_12_PREPARATION_DASHBOARD.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PHASE_12_PREPARATION_MASTER_CHECKLIST.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PHASE_12_PREPARATION_RISK_REGISTER.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PHASE_1_IMPLEMENTATION_PLAN.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PHASE_1_KICKOFF_BRIEF.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PHASE_3_CAMPAIGN.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PHASE_3_CRISIS_EXECUTIVE_SUMMARY.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PHASE_3_CRISIS_REALTIME_DASHBOARD.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PHASE_3_CRISIS_RESPONSE.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PHASE_3_CURRENT_STATUS.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PHASE_3_FAILURE_LOG.json",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PHASE_3_IMPLEMENTATION_GUIDE.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PHASE_3_ORCHESTRATOR_PROTOCOL.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PHASE_3_VERIFICATION_CAMPAIGN.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PHASE_5_COMPLETION_SUMMARY.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PHASE_8_1_COMPREHENSIVE_COMPLETION_REPORT.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PHASE_8_1_FINAL_STATUS.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PHASE_8_1_HEALTH_DASHBOARD_COMPREHENSIVE.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PHASE_8_1_INCIDENT_RESPONSE_RUNBOOKS.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PHASE_8_1_QUICK_START.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PHASE_8_9_CAMPAIGN_LAUNCH.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PHASE_9_2_IMPLEMENTATION_GUIDE.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PHASE_9_3_CAPABILITY_INDEX.json",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PHASE_B_COMPLETE_FINAL_REPORT.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PHASE_B_FINAL_STATUS_UPDATE.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PHASE_B_INTERIM_REPORT.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PHASE_B_MONITORING_STATUS.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PHASE_B_TO_C_TRANSITION_SUMMARY.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PHASE_C_COMPLETION_FINAL_REPORT.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PHASE_C_COVERAGE_OUTPUT.txt",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PHASE_C_COVERAGE_VALIDATION_OUTPUT.txt",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PHASE_C_EXECUTION_REPORT.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PHASE_C_GO_DECISION.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PHASE_C_VALIDATION_PLAN.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PHASE_VALIDATION_GATES.yaml",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PHASE_VALIDATION_REPORT_TEMPLATE.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/POST_MERGE_VALIDATION_REPORT_PR5190.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PR5190_EXECUTIVE_SUMMARY.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PR5190_REMEDIATION_PHASE_B_EXECUTION.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PR_5194_CI_REMEDIATION_MATRIX.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PR_5194_REMEDIATION_SESSION_REPORT.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PR_VALIDATION_FLOW.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/RAG_TEST_SKELETONS_CREATED.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/RETENTION_POLICY.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/STABILITY_VERIFICATION_ACTIVATION.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/STANDBY_AGENTS_READY.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/TRACK_2_CAMPAIGN_FINAL_REPORT.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/WAVE2_EXECUTION_REPORT.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/ZERO_COVERAGE_REMEDIATION.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/agent_briefs/UNIFIED_COVERAGE_AGENT_BRIEF.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": "GATE_2_PHASE_3C_COMPLETION_SUMMARY.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": "GATE_2_WAVE2_COMPLETION_SUMMARY.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": "PHASE_10_1_FINAL_REPORT.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": "PHASE_D_TIER2_TASK_COMPLETION.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": "docs/GOVERNANCE_PATTERNS_CONTRIBUTOR_GUIDE.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": "docs/RETENTION_POLICY_OPERATIONS_GUIDE.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": "scripts/ci/COVERAGE_SCRIPTS_README.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": "tests/validation/README.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PHASE_3_CAMPAIGN_COMPLETION_SUMMARY.md",
+      "reason": "Phase 10-12 governance artifact"
+    },
+    {
+      "path": ".codex/PHASE_3_CRISIS_RESOLUTION_FINAL.md",
+      "reason": "Phase 10-12 governance artifact"
     }
   ],
   "open_action_count": 1230,
@@ -30591,7 +31119,7 @@
   "validation_status": {
     "broken_relationships": [],
     "errors": [],
-    "generated_at": "2026-07-02T19:12:09Z",
+    "generated_at": "2026-07-08T00:18:29Z",
     "orphaned_records": [],
     "stale_generated_files": [],
     "stats": {
