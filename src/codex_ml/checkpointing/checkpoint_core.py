@@ -24,6 +24,12 @@ try:
 except (ImportError, AttributeError):  # pragma: no cover
     torch = None  # type: ignore[assignment]
 
+# Import custom JSON encoder for ML types
+try:
+    from codex_ml.utils.json_serialization import CustomJSONEncoder
+except (ImportError, ModuleNotFoundError):
+    CustomJSONEncoder = None  # type: ignore[assignment]
+
 SCHEMA_VERSION = "2.0"  # Checkpoint schema version for compatibility tracking
 
 
@@ -65,16 +71,40 @@ def save_checkpoint(
 
     # Include schema version in metadata for validation
     with open(metadata, "w", encoding="utf-8") as f:
-        json.dump(
-            {
-                **meta,
-                "_schema_version": SCHEMA_VERSION,
-                "_created_at": datetime.now(UTC).isoformat(),
-            },
-            f,
-            indent=2,
-            sort_keys=True,
-        )
+        kwargs: dict[str, Any] = {
+            "indent": 2,
+            "sort_keys": True,
+        }
+        # Use custom encoder if available for ML types
+        if CustomJSONEncoder is not None:
+            kwargs["cls"] = CustomJSONEncoder
+        
+        try:
+            json.dump(
+                {
+                    **meta,
+                    "_schema_version": SCHEMA_VERSION,
+                    "_created_at": datetime.now(UTC).isoformat(),
+                },
+                f,
+                **kwargs,
+            )
+        except TypeError as e:
+            logger.warning("Metadata JSON encoding failed with custom encoder: %s", e)
+            # Fallback: try without custom encoder
+            if CustomJSONEncoder is not None:
+                kwargs.pop("cls", None)
+                json.dump(
+                    {
+                        **meta,
+                        "_schema_version": SCHEMA_VERSION,
+                        "_created_at": datetime.now(UTC).isoformat(),
+                    },
+                    f,
+                    **kwargs,
+                )
+            else:
+                raise
     # Retention (best-effort): keep only the last K sibling epoch dirs
     with suppress(Exception):
         parent = os.path.dirname(out_dir)

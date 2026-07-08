@@ -1,0 +1,72 @@
+[
+  {
+    "benchmark": "training_throughput",
+    "description": "SGD training loop \u2014 steps/sec (higher is better)",
+    "results": {
+      "throughput_steps_per_sec": [
+        3837.28,
+        3871.02,
+        3696.22,
+        3848.01,
+        3840.53,
+        3768.8,
+        3664.19,
+        3860.91,
+        3856.1,
+        3754.92,
+        3805.21,
+        3661.6,
+        3860.22,
+        3708.23,
+        3692.25
+      ],
+      "mean_steps_per_sec": 3781.7,
+      "stdev_steps_per_sec": 78.96,
+      "median_steps_per_sec": 3805.21
+    },
+    "status": "pass"
+  },
+  {
+    "benchmark": "inference_latency",
+    "description": "Two-layer MLP forward pass \u2014 ms/sample (lower is better)",
+    "results": {
+      "batch_1": {
+        "n_samples_per_call": 1,
+        "mean_ms_per_sample": 0.2833,
+        "stdev_ms": 0.0115,
+        "p99_ms": 0.3038
+      },
+      "batch_8": {
+        "n_samples_per_call": 8,
+        "mean_ms_per_sample": 0.2827,
+        "stdev_ms": 0.0119,
+        "p99_ms": 0.304
+      },
+      "batch_32": {
+        "n_samples_per_call": 32,
+        "mean_ms_per_sample": 0.2838,
+        "stdev_ms": 0.0066,
+        "p99_ms": 0.295
+      }
+    },
+    "status": "pass"
+  },
+  {
+    "benchmark": "memory_usage",
+    "description": "Peak heap allocation (lower is better)",
+    "results": {
+      "peak_mib_measurements": [
+        7.935,
+        7.935,
+        7.935,
+        7.935,
+        7.935
+      ],
+      "mean_peak_mib": 7.935,
+      "stdev_peak_mib": 0.0,
+      "max_peak_mib": 7.935,
+      "min_peak_mib": 7.935
+    },
+    "status": "pass"
+  }
+]

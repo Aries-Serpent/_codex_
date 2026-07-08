@@ -1,0 +1,50 @@
+{
+  "version": "1.0",
+  "description": "Performance baseline metrics for regression detection",
+  "timestamp": "2026-07-08T05:22:38Z",
+  "benchmarks": {
+    "training_throughput": {
+      "mean_steps_per_sec": 3781.7,
+      "stdev_steps_per_sec": 78.96,
+      "regression_threshold_percentage": 10,
+      "regression_threshold_value": 4159.87,
+      "unit": "steps/sec"
+    },
+    "inference_latency_batch_1": {
+      "mean_ms_per_sample": 0.2833,
+      "stdev_ms": 0.0115,
+      "regression_threshold_percentage": 10,
+      "regression_threshold_value": 0.3116,
+      "unit": "ms/sample"
+    },
+    "inference_latency_batch_8": {
+      "mean_ms_per_sample": 0.2827,
+      "stdev_ms": 0.0119,
+      "regression_threshold_percentage": 10,
+      "regression_threshold_value": 0.3110,
+      "unit": "ms/sample"
+    },
+    "inference_latency_batch_32": {
+      "mean_ms_per_sample": 0.2838,
+      "stdev_ms": 0.0066,
+      "regression_threshold_percentage": 10,
+      "regression_threshold_value": 0.3122,
+      "unit": "ms/sample"
+    },
+    "memory_usage_peak": {
+      "mean_peak_mib": 7.935,
+      "stdev_peak_mib": 0.0,
+      "regression_threshold_percentage": 10,
+      "regression_threshold_value": 8.7285,
+      "unit": "MiB"
+    }
+  },
+  "notes": [
+    "Baseline established on 2026-07-08 with 5 measurement runs per benchmark",
+    "Training throughput measured in steps/sec - higher is better",
+    "Inference latency measured in ms/sample - lower is better",
+    "Memory usage measured in peak MiB - lower is better",
+    "Regression threshold set at 10% above baseline values",
+    "All benchmarks show good stability (low stdev)"
+  ]
+}
