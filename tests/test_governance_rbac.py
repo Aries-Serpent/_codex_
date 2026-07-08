@@ -15,7 +15,7 @@ import time
 from unittest.mock import Mock, patch, MagicMock
 
 from src.codex.governance.rbac import (
-    CodexRole,
+    CodexRole,  # pragma: allowlist secret
     ResourceType,
     Action,
     RBACEnforcer,

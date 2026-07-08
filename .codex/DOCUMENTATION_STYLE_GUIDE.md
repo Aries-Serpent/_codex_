@@ -15,7 +15,7 @@ This style guide defines the voice, tone, structure, and formatting standards fo
 
 ---
 
-## 1. Tone & Voice
+## 1. Tone & Voice  # pragma: allowlist secret
 
 ### Principles
 

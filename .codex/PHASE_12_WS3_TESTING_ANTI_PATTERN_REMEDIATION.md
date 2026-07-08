@@ -15,7 +15,7 @@ Successfully completed **Phase 1 of comprehensive test anti-pattern remediation*
 
 | Metric | Count | Status |
 |--------|-------|--------|
-| **Files Scanned** | 2,749 | ✅ Complete |
+| **Files Scanned** | 2,749 | ✅ Complete |  # pragma: allowlist secret
 | **Files Modified** | 128+ | ✅ Complete |
 | **Anti-patterns Fixed** | 580+ | ✅ Complete |
 | **Deprecated Assertions Fixed** | 152 | ✅ Complete |

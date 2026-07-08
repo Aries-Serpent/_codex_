@@ -15,7 +15,7 @@ from pathlib import Path
 from unittest.mock import Mock, patch
 
 from src.codex.refactoring.deterritorialization_engine import (
-    RigidityType,
+    RigidityType,  # pragma: allowlist secret
     DeterritorializationEngine,
 )
 

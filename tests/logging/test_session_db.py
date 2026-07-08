@@ -15,7 +15,7 @@ import tempfile
 import threading  # pragma: allowlist secret # pragma: allowlist secret
 import time
 from datetime import datetime, timedelta
-from pathlib import (
+from pathlib import (  # pragma: allowlist secret
     Path,  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 )
 
