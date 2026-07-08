@@ -42,7 +42,6 @@ class TestBudgetCap:
 
         assert fast() == "done", "Condition must be true"
 
-    @pytest.mark.flaky(reruns=1, reason="P2-timing: budget_cap timeout precision - improved with deterministic validation")
     @pytest.mark.timeout(90)
     def test_budget_cap_raises_on_timeout(self):
         mod = _import_scheduler()
@@ -102,7 +101,6 @@ class TestKillSwitch:
 class TestDecisionLoop:
     """Tests for the main decision loop in dry-run mode."""
 
-    @pytest.mark.flaky(reruns=2, reason="P3-subprocess: sense_test_health subprocess timeout")
     @pytest.mark.timeout(240)  # STABILIZATION V2: Increased from 120s to 240s for slow CI runners
     def test_run_loop_dry_run_no_side_effects(self, tmp_path):
         """Dry-run mode should not write to memory/ directory."""

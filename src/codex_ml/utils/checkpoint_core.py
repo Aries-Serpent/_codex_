@@ -37,6 +37,9 @@ logger = logging.getLogger(__name__)
 
 try:
     import torch
+    # Check if this is the shadow stub module (real torch not installed)
+    if getattr(torch, "IS_CODEX_STUB", False):
+        torch = None  # type: ignore[assignment]
 except (ImportError, AttributeError):  # pragma: no cover
     torch = None  # type: ignore[assignment]
 

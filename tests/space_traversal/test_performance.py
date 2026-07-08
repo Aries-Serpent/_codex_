@@ -38,7 +38,6 @@ def test_file_cache_basic(tmp_path: Path):
     assert result is None, "Result must not be empty"
 
 
-@pytest.mark.flaky(reruns=1, reason="P2-timing: budget_cap timeout precision - improved with polling validation")
 @pytest.mark.timeout(90)
 def test_file_cache_expiry(tmp_path: Path):
     """Test cache TTL expiry."""
@@ -135,7 +134,6 @@ def test_file_cache_clear(tmp_path: Path):
         assert result is None, f"Key {key} must be cleared"
 
 
-@pytest.mark.flaky(reruns=1, reason="P2-timing: TTL precision - improved with deterministic validation")
 @pytest.mark.timeout(90)
 def test_file_cache_cleanup_expired(tmp_path: Path):
     """Test cleanup of expired entries."""
@@ -256,7 +254,6 @@ def test_performance_metrics_to_json(tmp_path: Path):
     assert len(data["metrics"]) == 2, "Collection must not be empty"
 
 
-@pytest.mark.flaky(reruns=2, reason="P2-timing: context manager measurement precision")
 @pytest.mark.timeout(90)
 def test_profile_stage_context_manager():
     """Test profile_stage context manager."""

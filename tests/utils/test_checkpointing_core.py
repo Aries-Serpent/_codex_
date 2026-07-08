@@ -21,7 +21,10 @@ from codex_ml.utils.checkpointing import (
 
 def _has_torch():
     try:
-        importlib.import_module("torch")
+        import torch
+        # Check if this is the shadow stub module (real torch not installed)
+        if getattr(torch, "IS_CODEX_STUB", False):
+            return False
         return True
     except (ImportError, AttributeError):
         return False
