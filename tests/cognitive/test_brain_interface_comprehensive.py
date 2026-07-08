@@ -427,7 +427,7 @@ class TestCognitiveBrainPredictFunction:
                     if time.time() - start > 2.0:
                         break
                     time.sleep(0.1)
-            except:
+            except (KeyboardInterrupt, SystemExit, TimeoutError):
                 cancelled.append(True)
             return {"result": "done"}
 
@@ -474,7 +474,7 @@ class TestCognitiveBrainPredictFunction:
                     brain.predict(input_data={"query": f"test_{i}"})
                 except (FileNotFoundError, ValueError, RuntimeError):
                     pass
-        except:
+        except (OSError, TypeError, AttributeError):
             pass
 
         # Memory should be managed appropriately
@@ -589,7 +589,7 @@ class TestCognitiveBrainPredictFunction:
         if hasattr(brain1, "_save_checkpoint"):
             try:
                 brain1._save_checkpoint()
-            except:
+            except (IOError, OSError, RuntimeError, AttributeError):
                 pass
 
         # Create new instance
@@ -632,7 +632,7 @@ class TestBrainInterfaceIntegration:
         if hasattr(brain1, "_save_checkpoint"):
             try:
                 brain1._save_checkpoint()
-            except:
+            except (IOError, OSError, RuntimeError, AttributeError):
                 pass
 
         # Create new instance and load
