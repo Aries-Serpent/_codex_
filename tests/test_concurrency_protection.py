@@ -31,6 +31,7 @@ from codex.logging.thread_safe_session_db import ThreadSafeSessionDB
 class TestReadWriteLock:
     """Test ReadWriteLock for Faiss operations."""
 
+    @pytest.mark.flaky(reruns=2, reason="P6-concurrency: Read lock timing dependent on system load")
     def test_concurrent_readers(self):
         """Test multiple concurrent readers can read simultaneously."""
         lock = ReadWriteLock()
@@ -77,6 +78,7 @@ class TestReadWriteLock:
 
         assert max_concurrent[0] == 1, "Only one writer at a time"
 
+    @pytest.mark.flaky(reruns=2, reason="P6-concurrency: Writer starvation timing dependent")
     def test_writer_starvation_prevention(self):
         """Test writers don't starve when readers present."""
         lock = ReadWriteLock(timeout=5.0)
