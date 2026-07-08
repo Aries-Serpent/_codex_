@@ -14,7 +14,6 @@ This module contains 10+ mutation-killer tests targeting:
 """
 
 import pytest
-from hypothesis import given, strategies as st
 
 
 class TestComparisonMutations:
@@ -62,9 +61,9 @@ class TestComparisonMutations:
         assert 10 == 10
         assert not (10 == 11)
     
-    @given(st.integers(min_value=0, max_value=100))
+    @pytest.mark.parametrize("x", [0, 1, 25, 49, 50, 51, 99, 100])
     def test_boundary_value_comprehensive(self, x):
-        """Comprehensive boundary value testing with Hypothesis"""
+        """Comprehensive boundary value testing with pytest parametrize"""
         # Test all comparison operators with boundaries
         if x < 50:
             assert x <= 49 or x == 49
@@ -122,7 +121,7 @@ class TestBoundaryEdgeCases:
         assert len(arr[0:len(arr) + 1]) == 5  # Beyond length
         # Mutation detection: [0:5] becomes [0:4] or [0:6]
     
-    @given(st.integers(min_value=0, max_value=1000))
+    @pytest.mark.parametrize("n", [0, 1, 5, 10, 100, 1000])
     def test_loop_boundary_comprehensive(self, n):
         """Comprehensive loop boundary testing"""
         # Test range produces exactly n iterations

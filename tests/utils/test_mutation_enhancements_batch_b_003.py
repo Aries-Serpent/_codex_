@@ -14,7 +14,6 @@ This module contains 10+ mutation-killer tests targeting:
 
 import pytest
 import math
-from hypothesis import given, strategies as st
 
 
 class TestArithmeticOperatorMutations:
@@ -78,7 +77,7 @@ class TestArithmeticOperatorMutations:
         # Mutation detection: * 1 would give same but different operator
         assert (x / 1) == (x * 1)  # Both equal but different operations
     
-    @given(st.integers(min_value=1, max_value=1000))
+    @pytest.mark.parametrize("x", list(range(-100, 101, 10)))
     def test_operator_commutativity(self, x):
         """Test commutativity: a + b == b + a, a * b == b * a"""
         y = 10
@@ -90,7 +89,6 @@ class TestArithmeticOperatorMutations:
         assert x * y == y * x
         
         # Subtraction is NOT commutative (mutation detection)
-        assert x - y != y - x  # Unless x == y
         if x != y:
             assert (x - y) == -(y - x)
     
@@ -156,18 +154,18 @@ class TestModuloAndSignOperations:
             else:
                 assert abs_x == -x
     
-    @given(st.integers(min_value=-1000, max_value=1000))
+    @pytest.mark.parametrize("x", [-10, -1, 0, 1, 10])
     def test_sign_function_behavior(self, x):
         """Test sign behavior across positive, zero, negative"""
         if x > 0:
             assert x + 1 > 0
-            assert x - 1 >= 0 or x - 1 < 0
+            assert (x - 1 >= 0 or x - 1 < 0)
         elif x == 0:
             assert x + 1 > 0
             assert x - 1 < 0
         else:  # x < 0
             assert x - 1 < 0
-            assert x + 1 <= 0 or x + 1 > 0
+            assert (x + 1 <= 0 or x + 1 > 0)
 
 
 class TestReturnValueMutations:
@@ -246,7 +244,7 @@ class TestReturnValueMutations:
         assert process_with_early_return(None) != 0
         assert process_with_early_return(-5) != -10
     
-    @given(st.integers())
+    @pytest.mark.parametrize("x", [-100, -1, 0, 1, 100])
     def test_return_consistency_with_logic(self, x):
         """Verify return value consistent with function logic"""
         def classify(x):

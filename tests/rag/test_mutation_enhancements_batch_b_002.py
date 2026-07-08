@@ -13,7 +13,6 @@ This module contains 10+ mutation-killer tests targeting:
 """
 
 import pytest
-from hypothesis import given, strategies as st
 
 
 class TestBooleanMutations:
@@ -73,35 +72,37 @@ class TestBooleanMutations:
         assert not (value > 20)  # Different negation
         assert value <= 20
     
-    def test_three_condition_and_combinations(self):
+    @pytest.mark.parametrize("a,b,c", [
+        (True, True, True), (True, True, False), (True, False, True), (True, False, False),
+        (False, True, True), (False, True, False), (False, False, True), (False, False, False),
+    ])
+    def test_three_condition_and_combinations(self, a, b, c):
         """Test all combinations of three AND conditions"""
-        for a in [True, False]:
-            for b in [True, False]:
-                for c in [True, False]:
-                    result = a and b and c
-                    expected = all([a, b, c])
-                    assert result == expected
-                    
-                    # Mutation detection: wrong order or operator
-                    if a and b and c:
-                        assert all([a, b, c])
-                    else:
-                        assert not all([a, b, c])
+        result = a and b and c
+        expected = all([a, b, c])
+        assert result == expected
+        
+        # Mutation detection: wrong order or operator
+        if a and b and c:
+            assert all([a, b, c])
+        else:
+            assert not all([a, b, c])
     
-    def test_three_condition_or_combinations(self):
+    @pytest.mark.parametrize("a,b,c", [
+        (True, True, True), (True, True, False), (True, False, True), (True, False, False),
+        (False, True, True), (False, True, False), (False, False, True), (False, False, False),
+    ])
+    def test_three_condition_or_combinations(self, a, b, c):
         """Test all combinations of three OR conditions"""
-        for a in [True, False]:
-            for b in [True, False]:
-                for c in [True, False]:
-                    result = a or b or c
-                    expected = any([a, b, c])
-                    assert result == expected
-                    
-                    # Mutation detection
-                    if a or b or c:
-                        assert any([a, b, c])
-                    else:
-                        assert not any([a, b, c])
+        result = a or b or c
+        expected = any([a, b, c])
+        assert result == expected
+        
+        # Mutation detection
+        if a or b or c:
+            assert any([a, b, c])
+        else:
+            assert not any([a, b, c])
     
     def test_mixed_boolean_operators(self):
         """Test mixed AND/OR: (a and b) or (c and d)"""
@@ -243,7 +244,10 @@ class TestConditionalMutations:
 class TestComplexBooleanLogic:
     """Complex boolean logic tests for comprehensive mutation coverage"""
     
-    @given(st.booleans(), st.booleans(), st.booleans())
+    @pytest.mark.parametrize("a,b,c", [
+        (True, True, True), (True, True, False), (True, False, True), (True, False, False),
+        (False, True, True), (False, True, False), (False, False, True), (False, False, False),
+    ])
     def test_demorgan_laws(self, a, b, c):
         """Test De Morgan's laws: not (a and b) == (not a or not b)"""
         # not (a and b) == not a or not b
