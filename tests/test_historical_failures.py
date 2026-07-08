@@ -265,15 +265,12 @@ def test_pattern_coverage(failure_type, expected_pattern):
     """Test that all expected patterns are defined"""
     agent = CIDiagnosticAgent()
 
-    # Check pattern exists
-    patterns = {p["id"]: p for p in agent.patterns}
-    assert failure_type in patterns, "Assertion must pass"
+    # Check pattern exists - patterns is now a dict of name -> compiled regex
+    assert failure_type in agent.patterns, "Assertion must pass"
 
     # Verify pattern can match expected strings
-    import re
-
-    pattern = patterns[failure_type]["pattern"]
-    assert re.search(pattern, expected_pattern, re.IGNORECASE) is not None
+    pattern = agent.patterns[failure_type]
+    assert pattern.search(expected_pattern) is not None, f"Pattern should match {expected_pattern}"
 
 
 def test_accuracy_benchmark():
