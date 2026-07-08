@@ -77,6 +77,11 @@ class PickleToJsonMigrator:
             for key in self.redis.scan_iter(match="*"):
                 all_keys.append(key)
             
+            # Note: We collect all keys into memory for:
+            # 1. Progress reporting (stats['total_keys'])
+            # 2. Atomic operation semantics (consistent view of keyspace at migration start)
+            # For very large datasets (>100M keys), consider streaming migration with
+            # per-batch stats collection instead.
             self.stats["total_keys"] = len(all_keys)
             logger.info(f"Starting migration of {len(all_keys)} keys...")
 
