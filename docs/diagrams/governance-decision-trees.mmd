@@ -1,0 +1,354 @@
+---
+config:
+    graph:
+        useMaxWidth: true
+    mermaid:
+        flowchart:
+            htmlLabels: true
+            curve: monotoneX
+---
+
+# Governance Decision Trees (Mermaid Diagrams)
+
+## 1. Agent Deployment Decision Tree
+
+```mermaid
+graph TD
+    A["🚀 Agent Deployment Request"] --> B{"Target<br/>Environment?"}
+    
+    B -->|Development| C["✅ Auto-Approve<br/>agent_operator"]
+    B -->|Staging| D{"Change<br/>Type?"}
+    B -->|Production| E{"Risk<br/>Level?"}
+    
+    D -->|Security| F["Require<br/>security_reviewer"]
+    D -->|Non-Security| G["Require<br/>agent_operator"]
+    
+    E -->|Low| H["Level 1: agent_operator<br/>+ 1 reviewer"]
+    E -->|Medium| I["Level 1: agent_operator<br/>+ security_reviewer"]
+    E -->|High| J["Multi-Level: agent_op<br/>+ security + ci_op"]
+    
+    C --> K["🟢 Deploy<br/>Immediately"]
+    F --> L["⏳ Start Approval<br/>Workflow"]
+    G --> L
+    H --> L
+    I --> L
+    J --> L
+    
+    L --> M{"Decision:<br/>All Approve?"}
+    M -->|Yes| K
+    M -->|No| N["❌ Deployment<br/>Blocked"]
+    
+    style K fill:#90EE90
+    style N fill:#FFB6C6
+    style L fill:#FFE4B5
+```
+
+## 2. Secret Rotation Decision Tree
+
+```mermaid
+graph TD
+    A["🔐 Secret Rotation Request"] --> B{"Emergency<br/>Situation?"}
+    
+    B -->|Yes| C["🚨 Incident Mode<br/>30-min SLA"]
+    B -->|No| D["📋 Standard Mode<br/>2-hour SLA"]
+    
+    C --> E["Require<br/>system_admin<br/>approval"]
+    D --> F["Require<br/>security_reviewer +<br/>system_admin"]
+    
+    E --> G["⏳ Start Approval<br/>with Escalation"]
+    F --> G
+    
+    G --> H{"Approved<br/>within SLA?"}
+    H -->|Yes| I["🟢 Rotate<br/>Secret"]
+    H -->|No| J{"Escalate?"}
+    
+    J -->|Yes| K["📈 Escalate to<br/>Senior Authority"]
+    J -->|No| L["❌ Rotation<br/>Rejected"]
+    
+    K --> M{"Senior<br/>Approve?"}
+    M -->|Yes| I
+    M -->|No| L
+    
+    I --> N["Update All<br/>Services"]
+    N --> O["✅ Complete"]
+    
+    style I fill:#90EE90
+    style L fill:#FFB6C6
+    style O fill:#90EE90
+```
+
+## 3. Approval Escalation Flow
+
+```mermaid
+graph TD
+    A["📋 Approval Request<br/>Submitted"] --> B["⏱️ L1 SLA: 4 hours"]
+    
+    B --> C{"L1 Approver<br/>Responds?"}
+    
+    C -->|Approved| D["✅ Approved<br/>Proceed"]
+    C -->|Rejected| E["❌ Rejected<br/>Block"]
+    C -->|No Response| F["⏳ L1 SLA Expired"]
+    
+    F --> G["Escalate to L2"]
+    G --> H["⏱️ L2 SLA: 4 hours<br/>Secondary Reviewer"]
+    
+    H --> I{"L2 Approver<br/>Responds?"}
+    I -->|Approved| D
+    I -->|Rejected| E
+    I -->|No Response| J["⏳ L2 SLA Expired"]
+    
+    J --> K["Escalate to L3"]
+    K --> L["⏱️ L3 SLA: 4 hours<br/>Senior Authority"]
+    
+    L --> M{"L3 Approver<br/>Responds?"}
+    M -->|Approved| D
+    M -->|Rejected| E
+    M -->|No Response| N["🤖 Auto-Approve<br/>Quorum Unavailable"]
+    
+    N --> O["✅ Approved<br/>Proceed"]
+    D --> P["🎯 Action<br/>Proceeds"]
+    E --> Q["🛑 Action<br/>Blocked"]
+    O --> P
+    
+    style P fill:#90EE90
+    style Q fill:#FFB6C6
+```
+
+## 4. RBAC Permission Check
+
+```mermaid
+graph TD
+    A["🔍 Permission Check<br/>user_id, action, resource"] --> B{"User has<br/>required role?"}
+    
+    B -->|No| C["❌ Permission<br/>Denied"]
+    B -->|Yes| D{"Role has<br/>action for<br/>resource?"}
+    
+    D -->|No| C
+    D -->|Yes| E{"Action<br/>is dangerous?<br/>DELETE, APPROVE"}
+    
+    E -->|Yes| F["🔒 Require explicit<br/>approval"]
+    E -->|No| G["✅ Permission<br/>Allowed"]
+    
+    F --> H{"Approval<br/>granted?"}
+    H -->|Yes| G
+    H -->|No| C
+    
+    C --> I["Log security event"]
+    G --> J["Log audit trail"]
+    I --> K["Return 403"]
+    J --> L["Return 200"]
+    
+    style G fill:#90EE90
+    style C fill:#FFB6C6
+```
+
+## 5. Token Validation & Refresh
+
+```mermaid
+graph TD
+    A["🎫 API Request with<br/>Access Token"] --> B{"Token<br/>Valid?"}
+    
+    B -->|No| C["❌ 401 Unauthorized"]
+    B -->|Yes| D{"Token<br/>Expired?"}
+    
+    D -->|No| E["✅ Request<br/>Processed"]
+    D -->|Yes| F{"Refresh Token<br/>Available?"}
+    
+    F -->|No| G["❌ 401 Unauthorized<br/>Re-authenticate"]
+    F -->|Yes| H["Refresh<br/>Access Token"]
+    
+    H --> I{"Refresh<br/>Successful?"}
+    I -->|No| G
+    I -->|Yes| J["✅ Request<br/>Processed"]
+    
+    C --> K["Return Error"]
+    G --> K
+    E --> L["Continue"]
+    J --> L
+    
+    style E fill:#90EE90
+    style J fill:#90EE90
+    style G fill:#FFB6C6
+    style C fill:#FFB6C6
+```
+
+## 6. Auto-Approval Decision
+
+```mermaid
+graph TD
+    A["📋 Check Auto-Approval<br/>Conditions"] --> B{"Requester has<br/>all required<br/>roles?"}
+    
+    B -->|No| C["❌ No Auto-Approval<br/>Need approvers"]
+    B -->|Yes| D{"Policy allows<br/>auto-approval?"}
+    
+    D -->|No| C
+    D -->|Yes| E{"Operation is<br/>dangerous?<br/>DELETE, APPEND"}
+    
+    E -->|Yes| F["❌ No Auto-Approval<br/>Too risky"]
+    E -->|No| G["✅ Auto-Approve<br/>Fast-track"]
+    
+    C --> H["Start approval<br/>workflow"]
+    F --> H
+    G --> I["Proceed<br/>immediately"]
+    
+    style G fill:#90EE90
+    style C fill:#FFE4B5
+    style F fill:#FFE4B5
+    style H fill:#FFE4B5
+```
+
+## 7. Scope Assignment Flow
+
+```mermaid
+graph TD
+    A["👤 User Login<br/>with Roles"] --> B["system_admin?"]
+    
+    B -->|Yes| C["Assign Scopes:<br/>api:*, governance:*,<br/>admin:*"]
+    B -->|No| D["agent_operator?"]
+    
+    D -->|Yes| E["Assign Scopes:<br/>api:agents:*<br/>api:workflows:exec<br/>governance:audit"]
+    D -->|No| F["ci_operator?"]
+    
+    F -->|Yes| G["Assign Scopes:<br/>api:workflows:*<br/>governance:audit"]
+    F -->|No| H["security_reviewer?"]
+    
+    H -->|Yes| I["Assign Scopes:<br/>api:workflows:approve<br/>api:secrets:read<br/>governance:approve"]
+    H -->|No| J["doc_maintainer?"]
+    
+    J -->|Yes| K["Assign Scopes:<br/>api:docs:*"]
+    J -->|No| L["agent_reader?"]
+    
+    L -->|Yes| M["Assign Scopes:<br/>api:agents:read<br/>api:workflows:read<br/>governance:audit"]
+    L -->|No| N["guest?"]
+    
+    N -->|Yes| O["Assign Scopes:<br/>api:public:read"]
+    
+    C --> P["Issue Token<br/>with Scopes"]
+    E --> P
+    G --> P
+    I --> P
+    K --> P
+    M --> P
+    O --> P
+    
+    P --> Q["✅ Token Ready<br/>for API Calls"]
+```
+
+## 8. Multi-Role Authorization Check
+
+```mermaid
+graph TD
+    A["Check Multi-Role<br/>Permission"] --> B{"User has<br/>AGENT_OPERATOR?"}
+    
+    B -->|No| C["❌ Denied<br/>Missing deploy role"]
+    B -->|Yes| D{"User has<br/>CI_OPERATOR OR<br/>SECURITY_REVIEWER?"}
+    
+    D -->|No| E["❌ Denied<br/>Missing approval role"]
+    D -->|Yes| F["✅ Approved<br/>Has both roles"]
+    
+    C --> G["Log denial"]
+    E --> G
+    F --> H["Proceed with<br/>operation"]
+    
+    style F fill:#90EE90
+    style C fill:#FFB6C6
+    style E fill:#FFB6C6
+```
+
+## 9. Incident Mode Escalation
+
+```mermaid
+graph TD
+    A["🚨 Incident Mode<br/>Activated"] --> B["Request Approval"]
+    
+    B --> C["⏱️ Expedited: 30-min SLA"]
+    
+    C --> D["Level 1<br/>Primary Authority<br/>30 minutes"]
+    
+    D --> E{"L1 Approves<br/>within 30 min?"}
+    
+    E -->|Yes| F["✅ Approved<br/>Execute"]
+    E -->|No| G["Skip L2<br/>Go to L3"]
+    
+    G --> H["Level 3<br/>Senior Authority<br/>30 minutes"]
+    
+    H --> I{"L3 Response<br/>within 30 min?"}
+    
+    I -->|Approved| F
+    I -->|Rejected| J["❌ Rejected"]
+    I -->|No Response| K["🤖 Auto-Approve<br/>Incident Override"]
+    
+    K --> L["✅ Approved<br/>Execute"]
+    
+    F --> M["🎯 Execute Action<br/>Immediately"]
+    J --> N["🛑 Block Action"]
+    L --> M
+    
+    style F fill:#90EE90
+    style L fill:#90EE90
+    style J fill:#FFB6C6
+```
+
+## 10. Compliance & Audit Trail
+
+```mermaid
+graph TD
+    A["⚙️ Action with<br/>RBAC Check"] --> B["✍️ Log Decision"]
+    
+    B --> C["📋 Audit Event<br/>timestamp, user_id,<br/>role, action,<br/>resource, result"]
+    
+    C --> D{"Action<br/>Allowed?"}
+    
+    D -->|Yes| E["✅ Proceed"]
+    D -->|No| F["❌ Block"]
+    
+    E --> G["Execute<br/>Action"]
+    F --> H["Return Error"]
+    
+    G --> I["✍️ Log Result"]
+    H --> I
+    
+    I --> J["Store in<br/>Audit Log<br/>90-day retention"]
+    
+    J --> K["Available for<br/>Compliance<br/>Review & Audit"]
+    
+    style E fill:#90EE90
+    style F fill:#FFB6C6
+    style K fill:#87CEEB
+```
+
+---
+
+## Legend
+
+| Symbol | Meaning |
+|--------|---------|
+| 🚀 | Start/Deployment |
+| 🔐 | Security-related |
+| 🔍 | Check/Validation |
+| ⏳ | Waiting/In Progress |
+| 📋 | Request/Record |
+| ✅ | Success/Approved |
+| ❌ | Failure/Denied |
+| 🛑 | Blocked |
+| 📈 | Escalation |
+| 🤖 | Automatic |
+| 🎯 | Action/Execution |
+
+## Color Scheme
+
+- **Green (#90EE90):** Success/Approved states
+- **Pink (#FFB6C6):** Failed/Denied states
+- **Orange (#FFE4B5):** Pending/Waiting states
+- **Blue (#87CEEB):** Information/Audit states
+
+---
+
+**Generated:** 2026-07-08  
+**Version:** 1.0.0  
+**Status:** Production Ready
+
+These diagrams are used in:
+- [Governance API Reference](../api/governance-api-reference.md)
+- [RBAC Design](../arch/RBAC-design-detailed.md)
+- [Approval Policies](../arch/approval-policies-detailed.md)

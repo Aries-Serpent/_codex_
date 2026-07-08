@@ -1,0 +1,231 @@
+{
+  "campaign": "Phase 12 WS3 - API Documentation Expansion",
+  "timestamp": "2026-07-08T16:33:19.166671",
+  "current_coverage": "4.3%",
+  "target_coverage": "30%+",
+  "priority_modules": {
+    "tier_1_core": [
+      {
+        "id": 1,
+        "name": "brain",
+        "path": "src/codex/brain",
+        "focus": "Session management, checkpoints, OODA orchestration",
+        "api_items": 95
+      },
+      {
+        "id": 2,
+        "name": "governance",
+        "path": "src/codex/governance",
+        "focus": "RBAC, approval gates, SLA policies",
+        "api_items": 16
+      },
+      {
+        "id": 3,
+        "name": "skills",
+        "path": "src/codex/skills",
+        "focus": "Skill registry, execution, lifecycle",
+        "api_items": 26
+      },
+      {
+        "id": 4,
+        "name": "agents",
+        "path": "src/codex/agents",
+        "focus": "Agent framework, capabilities, assemblage",
+        "api_items": 7
+      },
+      {
+        "id": 5,
+        "name": "observability",
+        "path": "src/codex/observability",
+        "focus": "Metrics, logging, telemetry",
+        "api_items": 3
+      }
+    ],
+    "tier_2_security": [
+      {
+        "id": 6,
+        "name": "auth",
+        "path": "src/codex/auth",
+        "focus": "Authentication, tokens, credentials",
+        "api_items": 0
+      },
+      {
+        "id": 7,
+        "name": "security",
+        "path": "src/codex/security",
+        "focus": "Security policies, compliance",
+        "api_items": 0
+      },
+      {
+        "id": 8,
+        "name": "authz",
+        "path": "src/codex/authz",
+        "focus": "Authorization, access control",
+        "api_items": 0
+      }
+    ],
+    "tier_3_infrastructure": [
+      {
+        "id": 9,
+        "name": "cache",
+        "path": "src/codex/cache",
+        "focus": "Multi-layer cache management",
+        "api_items": 0
+      },
+      {
+        "id": 10,
+        "name": "session",
+        "path": "src/codex/session",
+        "focus": "Session context and state",
+        "api_items": 0
+      },
+      {
+        "id": 11,
+        "name": "telemetry",
+        "path": "src/codex/telemetry",
+        "focus": "Telemetry collection and schema",
+        "api_items": 0
+      },
+      {
+        "id": 12,
+        "name": "monitoring",
+        "path": "src/codex/monitoring",
+        "focus": "Performance monitoring",
+        "api_items": 0
+      }
+    ],
+    "tier_4_extended": [
+      {
+        "id": 13,
+        "name": "cognitive",
+        "path": "src/codex/cognitive",
+        "focus": "Cognitive brain advanced features",
+        "api_items": 0
+      },
+      {
+        "id": 14,
+        "name": "ci",
+        "path": "src/codex/ci",
+        "focus": "CI/CD workflow execution",
+        "api_items": 0
+      },
+      {
+        "id": 15,
+        "name": "database",
+        "path": "src/codex/db",
+        "focus": "Data persistence layer",
+        "api_items": 0
+      },
+      {
+        "id": 16,
+        "name": "rag",
+        "path": "src/codex/rag",
+        "focus": "RAG pipeline and retrieval",
+        "api_items": 0
+      },
+      {
+        "id": 17,
+        "name": "search",
+        "path": "src/codex/search",
+        "focus": "Semantic search and indexing",
+        "api_items": 0
+      },
+      {
+        "id": 18,
+        "name": "deployment",
+        "path": "src/codex/release",
+        "focus": "Deployment and release automation",
+        "api_items": 0
+      },
+      {
+        "id": 19,
+        "name": "quality",
+        "path": "src/codex/quality",
+        "focus": "Quality assurance and validation",
+        "api_items": 0
+      },
+      {
+        "id": 20,
+        "name": "utils",
+        "path": "src/codex/utils",
+        "focus": "Utilities and helpers",
+        "api_items": 0
+      }
+    ]
+  },
+  "deliverables": {
+    "phase_1": {
+      "name": "Module Discovery & Audit",
+      "status": "IN_PROGRESS",
+      "items": [
+        "Complete module structure analysis",
+        "Extract all public API signatures",
+        "Identify documentation gaps",
+        "Create module inventory"
+      ]
+    },
+    "phase_2": {
+      "name": "Priority Module Documentation (Top 10)",
+      "status": "PENDING",
+      "modules": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "items": [
+        "Create individual API reference files",
+        "Document function/class signatures",
+        "Add real-world usage examples",
+        "Include best practice guidelines"
+      ]
+    },
+    "phase_3": {
+      "name": "Extended Modules & Master Guide (11-20)",
+      "status": "PENDING",
+      "modules": [
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20
+      ],
+      "items": [
+        "Complete remaining 10 module docs",
+        "Create comprehensive API reference guide",
+        "Compile function/class signature catalog",
+        "Add cross-module integration examples"
+      ]
+    },
+    "phase_4": {
+      "name": "Validation & Publication",
+      "status": "PENDING",
+      "items": [
+        "Validate all modules documented",
+        "Verify link integrity",
+        "Quality assurance check",
+        "Publish to docs/api/ directory",
+        "Update master documentation index"
+      ]
+    }
+  },
+  "success_criteria": [
+    "All 20 priority modules documented (100%)",
+    "API coverage expanded 4.3% \u2192 30%+ (target achieved)",
+    "200+ API signatures extracted and documented",
+    "Real-world usage examples for each module",
+    "Zero broken links in documentation",
+    "API documentation quality score \u226590/100"
+  ]
+}
