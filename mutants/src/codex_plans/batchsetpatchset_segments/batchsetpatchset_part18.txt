@@ -1,0 +1,349 @@
+  - `python tools/codex_cli.py repro-manifest build`
+
+Confirm that:
+
+- The CLI runs and gracefully reports missing modules if any are not yet implemented.
+- `scripts/codex_quick_audit.sh` works from the repo root and returns a sensible exit code.
+- The docs paths exist and render correctly in your documentation tooling.
+
+All changes remain local/offline and do not involve any GitHub Actions or external CI.
+```
+
+------
+
+Here’s the next **end-to-end Codex batch** (call this **Batch 27**) you can paste directly into your Codex implementation GPT.
+
+This batch closes a major capability gap from the audit around **Evaluation & Metrics + NDJSON/CSV logs**:
+
+* A small **metrics core** (accuracy, MSE, etc.) with a registry.
+* A **metrics eval tool** that reads NDJSON / JSONL / CSV prediction logs and emits a JSON summary.
+* Tests for both the library and the tool.
+* Docs + a `codex_task_sequence.yaml` hook.
+
+All logic is local/offline and doesn’t touch GitHub Actions.
+
+---
+
+### Codex Batch 27 – Evaluation & Metrics + NDJSON/CSV Log Tool
+
+````text
+You are ChatGPT @codex, operating on the repository Aries-Serpent/_codex_
+on a feature branch (e.g. feature/metrics-eval-ndjson-csv).
+
+Global constraints:
+- DO NOT add or enable any cost-incurring GitHub Actions or external CI workflows.
+- All code MUST be runnable locally and offline.
+- Prefer small, reviewable diffs even when touching several files.
+- Overwrite existing files at the same paths if they exist; otherwise create them.
+- External deps limited to: stdlib + PyYAML + pytest (already used).
+
+Objective of this batch:
+1. Implement a minimal, extensible metrics core:
+   - src/codex_ml/metrics/core.py
+2. Implement a metrics evaluation tool for NDJSON/JSONL/CSV logs:
+   - tools/codex_metrics_eval.py
+3. Add tests:
+   - tests/codex_ml/test_metrics_core_and_eval_tool.py
+4. Add docs:
+   - docs/metrics/codex_metrics_and_eval.md
+5. Add a step into codex_task_sequence.yaml to run the metrics tool.
+
+The metrics tool should:
+- Read one or more NDJSON/JSONL/CSV files containing predictions + targets.
+- Compute basic metrics (accuracy for classification; mean squared error for regression).
+- Emit codex_metrics_summary.json (and optionally codex_metrics_summary.csv).
+- Be robust to missing/extra fields and log line errors (best-effort, with counts).
+
+Apply the following file operations EXACTLY.
+
+===============================================================================
+1) Metrics core – src/codex_ml/metrics/core.py
+===============================================================================
+
+Create/overwrite: src/codex_ml/metrics/core.py
+
+```python
+"""Minimal metrics core for `_codex_`.
+
+This module provides a small set of reusable metrics and a registry
+for plugging them into tools.
+
+Goals
+-----
+
+- Keep the implementation dependency-light (stdlib only).
+- Provide a simple callable interface for metrics:
+  - `metric_fn(y_true, y_pred) -> float`
+- Register metrics under stable names:
+  - "accuracy"
+  - "mse" (mean squared error)
+- Provide utilities to:
+  - compute a dict of metrics at once
+  - guard against empty inputs
+
+The intent is to be *framework-agnostic*; callers handle tensors vs
+lists, etc., and pass in plain Python lists or sequences.
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass
+from typing import Callable, Dict, Iterable, List, Mapping, Sequence, Tuple
+
+
+MetricFn = Callable[[Sequence[float], Sequence[float]], float]
+
+
+@dataclass
+class Metric:
+    name: str
+    fn: MetricFn
+    description: str
+
+
+class MetricRegistry:
+    """Simple in-memory registry for metrics."""
+
+    def __init__(self) -> None:
+        self._metrics: Dict[str, Metric] = {}
+
+    def register(self, name: str, fn: MetricFn, description: str) -> None:
+        if name in self._metrics:
+            raise ValueError(f"Metric {name!r} is already registered")
+        self._metrics[name] = Metric(name=name, fn=fn, description=description)
+
+    def get(self, name: str) -> Metric:
+        try:
+            return self._metrics[name]
+        except KeyError as exc:
+            raise KeyError(f"Unknown metric {name!r}") from exc
+
+    def list_names(self) -> List[str]:
+        return sorted(self._metrics.keys())
+
+    def as_dict(self) -> Dict[str, Metric]:
+        return dict(self._metrics)
+
+
+_global_registry: MetricRegistry | None = None
+
+
+def _init_default_registry() -> MetricRegistry:
+    reg = MetricRegistry()
+
+    def accuracy(y_true: Sequence[float], y_pred: Sequence[float]) -> float:
+        """Simple classification accuracy.
+
+        Treats both y_true and y_pred as sequences of labels; equality
+        is used directly. When lengths mismatch or inputs are empty,
+        returns 0.0.
+        """
+        n = min(len(y_true), len(y_pred))
+        if n == 0:
+            return 0.0
+        correct = 0
+        for i in range(n):
+            if y_true[i] == y_pred[i]:
+                correct += 1
+        return correct / float(n)
+
+    def mse(y_true: Sequence[float], y_pred: Sequence[float]) -> float:
+        """Mean squared error (MSE).
+
+        Coerces values to float; if lengths mismatch or inputs are
+        empty, returns 0.0.
+        """
+        n = min(len(y_true), len(y_pred))
+        if n == 0:
+            return 0.0
+        sse = 0.0
+        for i in range(n):
+            try:
+                yt = float(y_true[i])
+                yp = float(y_pred[i])
+            except Exception:
+                # If a value cannot be cast, skip it.
+                continue
+            diff = yt - yp
+            sse += diff * diff
+        # Avoid division by zero if everything was skipped.
+        if sse == 0.0 and n == 0:
+            return 0.0
+        return sse / float(n)
+
+    reg.register(
+        name="accuracy",
+        fn=accuracy,
+        description="Simple classification accuracy (y_true == y_pred).",
+    )
+    reg.register(
+        name="mse",
+        fn=mse,
+        description="Mean squared error between y_true and y_pred.",
+    )
+    return reg
+
+
+def get_registry() -> MetricRegistry:
+    global _global_registry
+    if _global_registry is None:
+        _global_registry = _init_default_registry()
+    return _global_registry
+
+
+def list_metrics() -> List[str]:
+    """Return the list of registered metric names."""
+    return get_registry().list_names()
+
+
+def compute_metrics(
+    y_true: Sequence[float],
+    y_pred: Sequence[float],
+    metric_names: Iterable[str],
+) -> Dict[str, float]:
+    """Compute multiple metrics at once.
+
+    Parameters
+    ----------
+    y_true, y_pred:
+        Sequences of labels or numeric values.
+    metric_names:
+        Iterable of metric names to compute.
+
+    Returns
+    -------
+    dict:
+        Mapping from metric name -> value.
+    """
+    reg = get_registry()
+    out: Dict[str, float] = {}
+    for name in metric_names:
+        m = reg.get(name)
+        out[name] = m.fn(y_true, y_pred)
+    return out
+````
+
+===============================================================================
+2) Metrics eval tool – tools/codex_metrics_eval.py
+==================================================
+
+Create/overwrite: tools/codex_metrics_eval.py
+
+```python
+#!/usr/bin/env python
+"""Metrics evaluation tool for `_codex_`.
+
+This tool reads prediction logs in either:
+
+- NDJSON / JSONL / JSON Lines format (one JSON object per line), or
+- CSV format
+
+and computes simple metrics such as accuracy and mean squared error
+(MSE) using the metrics core in `codex_ml.metrics.core`.
+
+The intent is to support the audit requirement for:
+
+- Evaluation & Metrics (validation loops, metrics API, NDJSON/CSV logging)
+
+Inputs
+------
+
+- One or more input files (NDJSON/JSONL or CSV).
+- Column/field names for:
+  - prediction
+  - target
+- Optional metric list; if not provided, defaults to ["accuracy"].
+
+Outputs
+-------
+
+- A JSON summary written to:
+  - codex_metrics_summary.json (by default)
+
+Optional behavior:
+
+- If `--csv-out` is provided, also output a single-row CSV with the
+  same metrics for easy grepping or spreadsheet import.
+
+The tool is best-effort:
+
+- Lines that fail to parse are counted but skipped.
+- Missing fields are counted but skipped.
+"""
+
+from __future__ import annotations
+
+import argparse
+import csv
+import json
+from dataclasses import dataclass, asdict
+from pathlib import Path
+from typing import Dict, Iterable, List, Optional, Sequence, Tuple
+
+from codex_ml.metrics.core import compute_metrics, list_metrics
+
+
+@dataclass
+class EvalConfig:
+    inputs: List[Path]
+    pred_field: str
+    target_field: str
+    metrics: List[str]
+
+
+@dataclass
+class EvalStats:
+    total_records: int
+    parsed_records: int
+    missing_field_records: int
+    parse_errors: int
+
+
+def _is_ndjson_like(path: Path) -> bool:
+    ext = path.suffix.lower()
+    return ext in {".ndjson", ".jsonl", ".jsonlines"} or ext.endswith(".ndjson")
+
+
+def _is_csv_like(path: Path) -> bool:
+    ext = path.suffix.lower()
+    return ext in {".csv"}
+
+
+def _load_ndjson(
+    path: Path,
+    pred_field: str,
+    target_field: str,
+) -> Tuple[List[object], List[object], EvalStats]:
+    y_true: List[object] = []
+    y_pred: List[object] = []
+    stats = EvalStats(
+        total_records=0,
+        parsed_records=0,
+        missing_field_records=0,
+        parse_errors=0,
+    )
+
+    with path.open("r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            stats.total_records += 1
+            try:
+                obj = json.loads(line)
+            except Exception:
+                stats.parse_errors += 1
+                continue
+            if pred_field not in obj or target_field not in obj:
+                stats.missing_field_records += 1
+                continue
+            y_pred.append(obj[pred_field])
+            y_true.append(obj[target_field])
+            stats.parsed_records += 1
+    return y_true, y_pred, stats
+
+
+def _load_csv(
+    path: Path,
+    pred_field: str,
+    target_field: str,

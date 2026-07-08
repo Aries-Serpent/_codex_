@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CIMonitorProactive Input",
+  "type": "object",
+  "required": ["repo", "token"],
+  "properties": {
+    "repo": {"type": "string", "description": "owner/repo string"},
+    "token": {"type": "string", "description": "GitHub PAT with repo+workflow+pull-requests scopes"},
+    "dry_run": {"type": "boolean", "default": true, "description": "Analyse only, do not post comments"},
+    "max_age_h": {"type": "integer", "default": 2, "description": "Only consider failures younger than N hours"},
+    "target_pr": {"type": "integer", "default": 0, "description": "Scan only this PR number (0 = all open PRs)"},
+    "min_confidence": {"type": "number", "default": 0.5, "description": "Minimum classification confidence to escalate"}
+  },
+  "additionalProperties": false
+}

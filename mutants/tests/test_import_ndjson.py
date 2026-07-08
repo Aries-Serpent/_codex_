@@ -1,0 +1,67 @@
+#             (session_id, 2, "session_end"),
+#             (session_id, 3, "hi"),
+#         ]
+#         wm = con.execute(
+# """
+#             (session_id, 2, "session_end"),
+#             (session_id, 3, "hi"),
+#         ]
+#         wm = con.execute(
+# 
+#             (session_id, 2, "session_end"),
+#             (session_id, 3, "hi"),
+#         ]
+#         wm = con.execute(
+#     path.parent.mkdir(parents=True, exist_ok=True)
+#     with path.open("w", encoding="utf-8") as f:
+#         for obj in events:
+#             f.write(json.dumps(obj) + "\n")
+#             (session_id, 2, "session_end"),
+#             (session_id, 3, "hi"),
+#         ]
+#         wm = con.execute(
+#     sessions_dir = tmp_path / ".codex" / "sessions"
+#     ndjson_file = sessions_dir / f"{session_id}.ndjson"
+#     events = [
+#         {
+#             "ts": "2024-01-01T00:00:00Z",
+#             "type": "session_start",
+#             "session_id": session_id,
+#         },
+#         {"ts": "2024-01-01T00:00:01Z", "type": "session_end", "session_id": session_id},
+#     ]
+#     _write_ndjson(ndjson_file, events)
+#     db_path = tmp_path / "session.db"
+#     monkeypatch.setenv("CODEX_SESSION_LOG_DIR", str(sessions_dir))
+#     monkeypatch.setenv("CODEX_LOG_DB_PATH", str(db_path))
+#     # first import
+#     inserted = import_ndjson.import_session(session_id)
+#     assert inserted == 2, "inserted is not valid"
+# 
+#     # re-import should be idempotent
+#     inserted = import_ndjson.import_session(session_id)
+#     assert inserted == 0, "inserted is not valid"
+# 
+#     # append new event and re-import
+#     with ndjson_file.open("a", encoding="utf-8") as f:
+#         f.write(json.dumps({"ts": "2024-01-01T00:00:02Z", "role": "user", "message": "hi"}) + "\n")
+#     inserted = import_ndjson.import_session(session_id)
+#     assert inserted == 1, "inserted is not valid"
+#     assert inserted == 1, "inserted is not valid"
+# 
+#     con = sqlite3.connect(str(db_path))
+#     try:
+#         rows = list(con.execute("SELECT session_id, seq, message FROM session_events ORDER BY seq"))
+#             (session_id, 2, "session_end"),
+#             (session_id, 3, "hi"),
+#         ]
+#         wm = con.execute(
+#         wm = con.execute(
+#             "SELECT seq FROM session_ingest_watermark WHERE session_id=?",
+#             (session_id,),
+#         ).fetchone()[0]
+#         assert wm == 3, "wm is not valid"
+#         idxs = con.execute("PRAGMA index_list('session_events')").fetchall()
+#         assert any(r[1] == "session_events_sid_ts_idx" for r in idxs), "Condition must be true"
+#     finally:
+#         con.close()

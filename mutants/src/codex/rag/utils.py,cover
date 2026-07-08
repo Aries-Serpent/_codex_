@@ -1,0 +1,418 @@
+> """RAG utility functions for model loading and device management.
+  
+> This module provides utilities for safely loading and moving PyTorch models
+> between devices, with special handling for meta tensors.
+  
+> Meta Tensor Background:
+> ----------------------
+> Meta tensors are placeholder tensors without actual data, created when models
+> are initialized on the 'meta' device. They are useful for:
+> - Model architecture inspection without memory allocation
+> - Efficient model initialization in distributed training
+> - Model quantization and pruning workflows
+  
+> However, meta tensors cannot be directly moved using the standard `.to()` method.
+> The NotImplementedError "Cannot copy out of meta tensor; no data!" occurs when
+> attempting to use `.to()` on models with meta tensors.
+  
+> Solution:
+> --------
+> Use `.to_empty(device)` instead of `.to(device)` for models with meta tensors,
+> followed by parameter reinitialization via `reset_parameters()` to ensure all
+> parameters have actual data.
+  
+> See:
+> - PyTorch Issue: https://github.com/pytorch/pytorch/issues/95372
+> - PyTorch Docs: torch.nn.Module.to_empty()
+> """
+  
+> import logging
+> from dataclasses import dataclass
+> from datetime import datetime
+> from pathlib import Path
+> from typing import Any, Optional
+  
+> logger = logging.getLogger(__name__)
+  
+  
+> def has_meta_tensors(model: Any) -> Optional[bool]:
+>     """
+>     Check if model contains any meta tensors.
+  
+>     Meta tensors are placeholder tensors without actual data, created when
+>     models are initialized on the 'meta' device. They must be handled specially
+>     during device transfers.
+  
+>     Args:
+>         model: PyTorch model to inspect
+  
+>     Returns:
+>         True if any parameter/buffer is on meta device, False otherwise,
+>         None if model doesn't support parameter inspection
+>     """
+>     try:
+          # Check if model has parameters method
+>         if hasattr(model, "parameters"):
+>             for param in model.parameters():
+                  # Use is_meta attribute for direct meta tensor detection (PyTorch 1.10+)
+>                 if hasattr(param, "is_meta") and param.is_meta:
+!                     logger.debug(f"Found meta tensor parameter: {param.shape}")
+!                     return True
+                  # Fallback: Check device.type for older versions or mock objects
+>                 if hasattr(param, "device") and hasattr(param.device, "type"):
+>                     if param.device.type == "meta":
+>                         logger.debug("Found meta device parameter via device.type")
+>                         return True
+  
+          # Also check buffers if available
+>         if hasattr(model, "buffers"):
+>             for buffer in model.buffers():
+>                 if hasattr(buffer, "is_meta") and buffer.is_meta:
+!                     logger.debug(f"Found meta tensor buffer: {buffer.shape}")
+!                     return True
+                  # Fallback: Check device.type
+>                 if hasattr(buffer, "device") and hasattr(buffer.device, "type"):
+>                     if buffer.device.type == "meta":
+>                         logger.debug("Found meta device buffer via device.type")
+>                         return True
+  
+>         try:
+>             import torch as _torch
+  
+>             _is_nn_module = isinstance(model, _torch.nn.Module)
+!         except (IOError, OSError):
+!             _is_nn_module = False
+  
+>         if not _is_nn_module:
+              # For non-nn.Module objects, model.parameters() may not recurse into
+              # submodules, so we also walk named_modules() to find meta tensors.
+              # (For real torch.nn.Module, parameters() already recurses through all
+              # submodules, so this check is only needed for custom wrappers / test fakes.)
+>             if hasattr(model, "named_modules"):
+>                 for _, submodule in model.named_modules():
+>                     if submodule is model:
+                          # Skip the root module – already checked via parameters/buffers above
+!                         continue
+>                     if hasattr(submodule, "named_parameters"):
+                          # Use recurse=False to check only directly-owned parameters and
+                          # avoid N² iteration across deeply nested submodule trees.
+>                         try:
+>                             param_iter = submodule.named_parameters(recurse=False)
+>                         except TypeError:
+>                             param_iter = submodule.named_parameters()
+>                         for _, param in param_iter:
+>                             if hasattr(param, "is_meta") and param.is_meta:
+!                                 logger.debug("Found meta tensor in submodule parameter")
+!                                 return True
+>                             if hasattr(param, "device") and hasattr(param.device, "type"):
+>                                 if param.device.type == "meta":
+>                                     logger.debug("Found meta device in submodule parameter")
+>                                     return True
+>                     if hasattr(submodule, "named_buffers"):
+                          # Also check directly-owned buffers on this submodule.
+                          # For wrapper objects, buffers() may not recurse, so
+                          # recurse=False avoids double-counting across the walk.
+!                         try:
+!                             buf_iter = submodule.named_buffers(recurse=False)
+!                         except TypeError:
+                              # recurse= kwarg unsupported in older PyTorch or
+                              # custom module implementations – fall back to default.
+!                             buf_iter = submodule.named_buffers()
+!                         for _, buf in buf_iter:
+!                             if hasattr(buf, "is_meta") and buf.is_meta:
+!                                 logger.debug("Found meta tensor in submodule buffer")
+!                                 return True
+!                             if hasattr(buf, "device") and hasattr(buf.device, "type"):
+!                                 if buf.device.type == "meta":
+!                                     logger.debug("Found meta device in submodule buffer")
+!                                     return True
+  
+              # Also check the model's own device attribute (e.g., SentenceTransformer
+              # wrappers that expose their device without standard parameters/buffers).
+>             if hasattr(model, "device") and hasattr(model.device, "type"):
+>                 if model.device.type == "meta":
+>                     logger.debug("Found meta device on model itself")
+>                     return True
+  
+>         return False
+!     except (ValueError, TypeError, RuntimeError) as e:
+!         type(e).__name__
+!         logger.warning("Error checking for meta tensors: <ERROR_TYPE>")
+!         return None
+  
+  
+> def safe_model_to_device(
+>     model: Any,
+>     device: str = "cpu",
+>     dtype: Optional[Any] = None,
+>     non_blocking: bool = False,
+> ) -> Any:
+>     """
+>     Safely move a model to the specified device, handling meta tensors.
+  
+>     Meta tensors are placeholder tensors without actual data. When models
+>     are initialized with meta tensors, they must use .to_empty() instead
+>     of .to() for device transfers, followed by parameter reinitialization.
+  
+>     Args:
+>         model: PyTorch model or SentenceTransformer model
+>         device: Target device ('cpu', 'cuda', 'mps', etc.)
+>         dtype: Optional dtype to convert model parameters
+>         non_blocking: If True, enable non-blocking device transfer
+  
+>     Returns:
+>         Model on the target device
+  
+>     Raises:
+>         TypeError: If model is not a valid model type
+>         AttributeError: If model with meta tensors doesn't support to_empty()
+>         RuntimeError: If model cannot be moved to device
+>     """
+>     import time
+  
+>     start_time = time.time()
+  
+>     try:
+>         import torch
+  
+          # Check for meta tensors BEFORE type-validation so that models with meta
+          # tensors (which legitimately lack .to()) reach the to_empty() path.
+>         meta_status = has_meta_tensors(model)
+>         if meta_status is None:
+              # Model doesn't support parameter inspection
+!             logger.debug("Model doesn't support parameter inspection, returning as-is")
+!             return model
+  
+>         if meta_status:
+              # Model has meta tensors - must use to_empty()
+>             logger.warning(
+>                 f"Meta tensor detected in model. Using to_empty() for device transfer to {device}."
+>             )
+  
+>             if not hasattr(model, "to_empty"):
+>                 logger.error(
+>                     "PyTorch version does not support to_empty(). Upgrade to PyTorch >= 2.0"
+>                 )
+>                 raise AttributeError("Model does not support to_empty()")
+  
+>             logger.info(f"Moving model with meta tensors to {device} using to_empty()")
+  
+              # First, move to the target device with to_empty()
+>             model = model.to_empty(device=device)
+  
+              # Then reinitialize parameters (if needed)
+              # This ensures all parameters have actual data
+              # Skip if model doesn't support modules() (e.g., mock objects in tests)
+>             if hasattr(model, "modules"):
+!                 for module in model.modules():
+!                     if hasattr(module, "reset_parameters"):
+!                         try:
+!                             module.reset_parameters()
+!                             logger.debug(f"Reset parameters for {module.__class__.__name__}")
+!                         except (ImportError, AttributeError) as e:
+!                             type(e).__name__
+!                             logger.debug(f"Could not reset parameters for {module}: <ERROR_TYPE>")
+>             else:
+>                 logger.debug("Model doesn't support modules(), skipping parameter reset")
+  
+              # Apply dtype conversion if specified
+>             if dtype is not None:
+!                 model = model.to(dtype=dtype)
+!                 logger.debug(f"Converted model to dtype: {dtype}")
+  
+              # Log completion time for production monitoring
+>             duration = time.time() - start_time
+>             logger.info(
+>                 f"Meta tensor device transfer completed in {duration:.3f}s. Device: {device}"
+>             )
+  
+              # Optional: Add metrics if you have a metrics system
+              # Example integration points:
+              # metrics.increment('rag.meta_tensor_detected', tags={'device': device})
+              # metrics.timing('rag.to_empty_duration', duration, tags={'device': device})
+  
+>             return model
+  
+          # Standard device transfer for normal tensors
+>         logger.debug(f"Moving model to {device} using standard .to()")
+>         nn_mod = getattr(torch, "nn", None)
+>         torch_module_type = getattr(nn_mod, "Module", None) if nn_mod is not None else None
+          # Validate model type only for the standard (non-meta) path
+>         if torch_module_type is not None and not isinstance(model, torch_module_type):
+!             if not hasattr(model, "to") or not callable(getattr(model, "to", None)):
+!                 raise TypeError(
+!                     f"Expected torch.nn.Module or model with .to() method, "
+!                     f"got {type(model).__name__}"
+!                 )
+>         if isinstance(torch_module_type, type) and isinstance(model, torch_module_type):
+              # Build .to() kwargs
+>             to_kwargs = {"device": device, "non_blocking": non_blocking}
+>             if dtype is not None:
+!                 to_kwargs["dtype"] = dtype
+  
+>             result = model.to(**to_kwargs)  # type: ignore[attr-defined]  # safe-device-placement: internal implementation
+  
+              # Log standard transfer timing
+>             duration = time.time() - start_time
+>             if duration > 1.0:  # Only log if takes more than 1 second
+!                 logger.info(f"Model device transfer completed in {duration:.3f}s. Device: {device}")
+  
+>             return result
+  
+          # For SentenceTransformer or other models with .to() method
+!         return _try_model_to(model, device, dtype=dtype, non_blocking=non_blocking)
+  
+>     except ImportError:
+          # PyTorch not available - try fallback .to() method if model has it
+>         logger.warning("PyTorch not available, attempting fallback .to() method")
+>         return _try_model_to(model, device, dtype=dtype, non_blocking=non_blocking)
+>     except AttributeError as e:
+          # Re-raise if this is about missing to_empty() (critical error)
+>         if "to_empty" in str(e):
+>             raise
+          # Otherwise, model doesn't support .to() method - return as-is
+!         logger.warning("Model does not support device transfer: <ERROR_TYPE>")
+!         return model
+!     except (ValueError, TypeError, RuntimeError) as e:
+!         type(e).__name__
+!         logger.error(f"Error moving model to device {device}: <ERROR_TYPE>")
+!         raise RuntimeError(f"Failed to move model to {device}: {e}") from e
+  
+  
+> def _try_model_to(
+>     model: Any, device: str, dtype: Optional[Any] = None, non_blocking: bool = False
+> ) -> Any:
+>     """
+>     Helper function to attempt model.to() if available.
+  
+>     Args:
+>         model: Model to move
+>         device: Target device
+>         dtype: Optional dtype to convert to
+>         non_blocking: If True, enable non-blocking transfer
+  
+>     Returns:
+>         Model after attempting device transfer, or original model if not supported
+>     """
+>     if hasattr(model, "to") and callable(getattr(model, "to", None)):
+          # Build .to() kwargs
+>         to_kwargs = {"device": device, "non_blocking": non_blocking}
+>         if dtype is not None:
+!             to_kwargs["dtype"] = dtype
+  
+>         try:
+>             return model.to(**to_kwargs)  # safe-device-placement: internal implementation
+>         except TypeError:
+              # Fallback: some models may not support all parameters
+>             try:
+>                 return model.to(device)  # safe-device-placement: internal implementation
+!             except (ValueError, TypeError, RuntimeError):
+!                 logger.debug("Suppressed exception in handler", exc_info=True)
+      # Model doesn't have .to() method
+!     logger.warning("No device transfer method available, returning model as-is")
+!     return model
+  
+  
+  # Backward compatibility aliases
+> check_for_meta_tensors = has_meta_tensors  # Old name -> new name
+> safe_model_load_v2 = safe_model_to_device  # Old name -> new name
+  
+  
+> def safe_model_load(model: Any, device: str = "cpu") -> Any:
+>     """
+>     Deprecated: Use safe_model_to_device() instead.
+  
+>     This function is provided for backward compatibility only.
+  
+>     Args:
+>         model: Model to move
+>         device: Target device ("cpu" or "cuda")
+  
+>     Returns:
+>         Model on target device
+>     """
+!     import warnings
+  
+!     warnings.warn(
+!         "safe_model_load() is deprecated. Use safe_model_to_device() instead.",
+!         DeprecationWarning,
+!         stacklevel=2,
+!     )
+!     return safe_model_to_device(model, device)
+  
+  
+> @dataclass
+> class ProvenanceMetadata:
+>     """
+>     Comprehensive provenance tracking for RAG chunks and retrievals.
+  
+>     Tracks the origin, processing, and retrieval context of text chunks
+>     to support expanded context workflows (64k-512k tokens) with full
+>     auditability and traceability.
+  
+>     Attributes:
+>         source_file: Original source file path
+>         line_range: Tuple of (start_line, end_line) in source
+>         chunk_id: Unique identifier for this chunk
+>         indexed_at: Timestamp when chunk was indexed
+>         embedding_model: Model used to generate embeddings
+>         retrieval_score: Similarity score from retrieval (if applicable)
+>         char_range: Optional character position range in source
+>         metadata: Additional custom metadata
+  
+>     Example:
+>         >>> prov = ProvenanceMetadata(
+>         ...     source_file=Path("docs/guide.md"),
+>         ...     line_range=(10, 25),
+>         ...     chunk_id="chunk_abc123",
+>         ...     indexed_at=datetime.now(timezone.utc),
+>         ...     embedding_model="all-MiniLM-L6-v2",
+>         ...     retrieval_score=0.85
+>         ... )
+>     """
+  
+>     source_file: Path
+>     line_range: tuple[int, int]
+>     chunk_id: str
+>     indexed_at: datetime
+>     embedding_model: str
+>     retrieval_score: float
+>     char_range: Optional[tuple[int, int]] = None
+>     metadata: Optional[dict[str, Any]] = None
+  
+>     def to_dict(self) -> dict[str, Any]:
+>         """Convert to dictionary for serialization."""
+!         return {
+!             "source_file": str(self.source_file),
+!             "line_range": self.line_range,
+!             "chunk_id": self.chunk_id,
+!             "indexed_at": self.indexed_at.isoformat(),
+!             "embedding_model": self.embedding_model,
+!             "retrieval_score": self.retrieval_score,
+!             "char_range": self.char_range,
+!             "metadata": self.metadata or {},
+!         }
+  
+>     @classmethod
+>     def from_dict(cls, data: dict[str, Any]) -> "ProvenanceMetadata":
+>         """Create from dictionary."""
+!         return cls(
+!             source_file=Path(data["source_file"]),
+!             line_range=tuple(data["line_range"]),
+!             chunk_id=data["chunk_id"],
+!             indexed_at=datetime.fromisoformat(data["indexed_at"]),
+!             embedding_model=data["embedding_model"],
+!             retrieval_score=data["retrieval_score"],
+!             char_range=tuple(data["char_range"]) if data.get("char_range") else None,
+!             metadata=data.get("metadata"),
+!         )
+  
+  
+> __all__ = [
+>     "ProvenanceMetadata",
+>     "check_for_meta_tensors",
+>     "has_meta_tensors",
+>     "safe_model_load",
+>     "safe_model_load_v2",
+>     "safe_model_to_device",
+> ]

@@ -1,0 +1,56 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "mypy.manager input",
+  "type": "object",
+  "required": ["action"],
+  "properties": {
+    "action": {
+      "type": "string",
+      "enum": ["check", "classify", "fix", "baseline", "report"],
+      "description": "check=run mypy; classify=parse raw output; fix=apply automated fixes; baseline=update .mypy_baseline; report=summary by file/pattern"
+    },
+    "mypy_output": {
+      "type": "string",
+      "description": "Raw mypy stdout (for 'classify' action — skips running mypy)"
+    },
+    "src_dir": {
+      "type": "string",
+      "default": "src",
+      "description": "Path to source directory (relative to repo root)"
+    },
+    "baseline_file": {
+      "type": "string",
+      "default": ".mypy_baseline",
+      "description": "Path to baseline file (relative to repo root)"
+    },
+    "fix_patterns": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "optional-import-fallback",
+          "redundant-cast",
+          "unused-ignore",
+          "missing-constructor-arg",
+          "cipher-union"
+        ]
+      },
+      "description": "Which fix patterns to apply (for 'fix' action). Empty = apply all safe patterns."
+    },
+    "dry_run": {
+      "type": "boolean",
+      "default": false,
+      "description": "If true, show what would be fixed without writing files"
+    },
+    "pda_log": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether to append patterns to PDA Loop .jsonl store"
+    },
+    "session": {
+      "type": "string",
+      "description": "Session ID for PDA Loop entries (e.g. 'S285')"
+    }
+  },
+  "additionalProperties": false
+}

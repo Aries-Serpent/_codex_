@@ -1,0 +1,38 @@
+id: agent.aais.batch
+version: 1.0.0
+name: AAIS Batch Scorer
+description: >
+  Score a batch of agent docs or texts with the AAIS rubric and return
+  per-item results (total score, pass/fail, optional dimension breakdown)
+  plus an aggregated summary.  Uses pure heuristics — no model calls.
+capability_tags:
+  - aais
+  - scoring
+  - batch
+  - cognitive-brain
+entrypoint: codex.skills.aais_batch.handler:run
+io:
+  input_schema: schema/input.json
+  output_schema: schema/output.json
+policy:
+  allowlist:
+    - "*"
+  risk_tier: low
+  budgets:
+    calls: 5000
+    tokens: 500000
+    wallclock_ms: 30000
+telemetry:
+  emit_jsonl: true
+  emit_otel: false
+compression:
+  method: 7z
+  level: max
+  size_before: null
+  size_after: null
+doc:
+  doc_id: skills_aais_batch_v1
+  hash: "<sha256>"
+  aais_score: 0.89
+  token_count: 3000
+  embed_index_ref: indexes/skills_v1

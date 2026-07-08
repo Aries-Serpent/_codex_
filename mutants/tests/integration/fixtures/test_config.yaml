@@ -1,0 +1,24 @@
+# Test Configuration for Integration Tests
+
+test_mode: true
+environment: testing
+log_level: DEBUG
+
+# Agent configuration
+agent:
+  autonomous_actions_enabled: false
+  dry_run: true
+  max_retries: 3
+  timeout_seconds: 30
+
+# Workflow configuration
+workflow:
+  validate_only: true
+  skip_external_calls: true
+  use_mock_data: true
+
+# Testing flags
+testing:
+  use_mock_secrets: true
+  skip_slow_tests: true
+  verbose_logging: true

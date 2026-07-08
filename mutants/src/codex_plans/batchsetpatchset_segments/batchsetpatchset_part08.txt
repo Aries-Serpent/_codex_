@@ -1,0 +1,298 @@
+           variables) into codex_env_snapshot.json for reproducibility
+           reporting. This is a local-only operation.
+         actions:
+           - "python tools/codex_env_snapshot.py --out codex_env_snapshot.json || python tools/codex_env_snapshot.py --out codex_env_snapshot.json"
+         on_error:
+           strategy: record_and_continue
+
+       - id: "<PHASE_ID>.E2"
+         description: >
+           Generate a minimal dependency report for the active Python
+           environment into codex_dependency_report.json. This is
+           local-only and may be re-run at any time.
+         actions:
+           - "python tools/codex_dependency_report.py --out codex_dependency_report.json || python tools/codex_dependency_report.py --out codex_dependency_report.json"
+         on_error:
+           strategy: record_and_continue
+````
+
+Replace `<PHASE_ID>` with the integer id of the Preparation phase
+(e.g., `"1.E1"` / `"1.E2"` if the phase id is 1). Keep indentation
+consistent with neighboring steps.
+
+2. (Optional) In the phase that handles **Local Tests & Gates** or
+   **Internal CI**, you may add a note-only comment (if the YAML
+   style permits comments) that `codex_mltest_runner.py` and
+   `codex_ml_test_map.yaml` are available for future, more granular
+   test gating. Do **not** add any new actions here unless you want a
+   category-specific ML test run; if you choose to add one, use
+   `record_and_continue`.
+
+===============================================================================
+8) After applying this batch
+============================
+
+After you apply all changes from this batch, run locally (not by me):
+
+* `pytest tests/tools/test_codex_env_and_deps_tools.py -q`
+* `pytest tests/tools -q`
+* `python tools/codex_env_snapshot.py --out codex_env_snapshot.json`
+* `python tools/codex_dependency_report.py --out codex_dependency_report.json`
+* `python tools/codex_mltest_runner.py --all --json-out codex_mltest_results.json`  (from repo root with real map)
+* `python tools/codex_task_sequence_runner.py --yaml codex_task_sequence.yaml --repo-root . --change-log codex_change_log.md --errors codex_error_questions.md`
+
+Confirm that:
+
+* `codex_env_snapshot.json` and `codex_dependency_report.json` are created and parseable.
+* The new tests pass.
+* `codex_ml_test_map.yaml` + `tools/codex_mltest_runner.py` run successfully and emit `codex_mltest_results.json`.
+* The updated task sequence runs the new Preparation steps with `record_and_continue` and does not break other phases.
+
+All changes remain local-only and do not involve any GitHub Actions or external CI.
+
+
+------
+
+Here’s the next **end-to-end Codex batch** (call this **Batch 23**) you can paste directly into your Codex implementation GPT.
+
+This batch focuses on a **Security & Safety Baseline (local-only)**:
+
+* Local **secret scanner** for obvious credential leaks.
+* Local **dependency pinning checker** for Python deps.
+* Tests for both tools.
+* A **security baseline doc**.
+* A small extension to `codex_task_sequence.yaml` to run these checks with `record_and_continue`.
+
+Everything stays **offline**, pure stdlib + PyYAML + pytest. No CI, no GitHub Actions.
+
+---
+
+### Codex Batch 23 – Security & Safety Baseline (Secrets + Dep Pins)
+
+````text
+You are ChatGPT @codex, operating on the repository Aries-Serpent/_codex_
+on a feature branch (e.g. feature/security-safety-baseline).
+
+Global constraints:
+- DO NOT add or enable any cost-incurring GitHub Actions or external CI workflows.
+- All code MUST be runnable locally and offline.
+- Prefer small, reviewable diffs even when touching several files.
+- Overwrite existing files at the same paths if they exist; otherwise create them.
+- External deps limited to: stdlib + PyYAML + pytest (already used).
+
+Objective of this batch:
+1. Implement a **local secret scanner**:
+   - `tools/codex_secret_scan.py` → `codex_secret_scan_report.json/.md`
+2. Implement a **dependency pinning checker**:
+   - `tools/codex_dep_pin_check.py` → `codex_dep_pin_report.json/.md`
+3. Add tests:
+   - `tests/tools/test_codex_security_tools.py`
+4. Add documentation:
+   - `docs/security/security_baseline_local_only.md`
+5. Extend `codex_task_sequence.yaml` with a Security & Safety step/phase.
+
+Apply the following file operations EXACTLY.
+
+===============================================================================
+1) Secret scanner – tools/codex_secret_scan.py
+===============================================================================
+
+Create/overwrite: tools/codex_secret_scan.py
+
+```python
+#!/usr/bin/env python
+"""Local-only secret scanner for `_codex_`.
+
+Goal:
+- Provide a *lightweight* heuristic scan for obviously sensitive
+  tokens in the working tree, suitable for local runs.
+- Output a JSON + Markdown summary.
+
+Scope:
+- Default root: repo root (.)
+- Include only text-like files by simple heuristics (extension + decode).
+- Ignore some common directories: .git, .venv, venv, .mypy_cache, .pytest_cache
+
+This does NOT guarantee absence of secrets; it is a best-effort helper.
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import re
+from dataclasses import dataclass, asdict
+from pathlib import Path
+from typing import Dict, List, Optional, Iterable
+
+
+# Heuristic patterns; intentionally small and conservative.
+_PATTERNS: Dict[str, str] = {
+    "aws_access_key_id": r"AKIA[0-9A-Z]{16}",
+    "generic_api_key": r"(?i)(api[_-]?key)\s*[:=]\s*['\"][0-9A-Za-z_\-]{16,}['\"]",
+    "private_key_block": r"-----BEGIN (?:RSA|DSA|EC)? ?PRIVATE KEY-----",
+    "bearer_token": r"(?i)bearer\s+[0-9A-Za-z\.\-_]{20,}",
+    "slack_token": r"xox[abpr]-[0-9A-Za-z\-]{10,}",
+}
+
+
+_TEXT_EXTS = {
+    ".py",
+    ".md",
+    ".txt",
+    ".json",
+    ".yaml",
+    ".yml",
+    ".toml",
+    ".cfg",
+    ".ini",
+    ".sh",
+    ".bash",
+    ".ps1",
+    ".psm1",
+    ".html",
+    ".js",
+    ".ts",
+}
+
+
+_IGNORE_DIRS = {
+    ".git",
+    ".hg",
+    ".svn",
+    ".mypy_cache",
+    ".pytest_cache",
+    ".venv",
+    "venv",
+    "__pycache__",
+    ".idea",
+    ".vscode",
+}
+
+
+@dataclass
+class SecretHit:
+    pattern_name: str
+    file: str
+    line_no: int
+    snippet: str
+
+
+def _iter_files(root: Path) -> Iterable[Path]:
+    for path in root.rglob("*"):
+        if not path.is_file():
+            continue
+        rel_parts = path.relative_to(root).parts
+        if any(part in _IGNORE_DIRS for part in rel_parts):
+            continue
+        if path.suffix.lower() not in _TEXT_EXTS:
+            # attempt to treat as text only for known extensions
+            continue
+        yield path
+
+
+def _scan_file(path: Path) -> List[SecretHit]:
+    hits: List[SecretHit] = []
+    try:
+        text = path.read_text(encoding="utf-8")
+    except Exception:
+        return hits
+
+    lines = text.splitlines()
+    compiled = {k: re.compile(v) for k, v in _PATTERNS.items()}
+    for i, line in enumerate(lines, start=1):
+        for name, rx in compiled.items():
+            if rx.search(line):
+                snippet = line.strip()
+                if len(snippet) > 160:
+                    snippet = snippet[:160] + "..."
+                hits.append(
+                    SecretHit(
+                        pattern_name=name,
+                        file=str(path),
+                        line_no=i,
+                        snippet=snippet,
+                    )
+                )
+    return hits
+
+
+def run_scan(root: Path) -> Dict[str, object]:
+    root = root.expanduser().resolve()
+    hits: List[SecretHit] = []
+    for p in _iter_files(root):
+        hits.extend(_scan_file(p))
+
+    grouped: Dict[str, List[Dict[str, object]]] = {}
+    for h in hits:
+        grouped.setdefault(h.pattern_name, []).append(asdict(h))
+
+    return {
+        "root": str(root),
+        "total_hits": len(hits),
+        "hits_by_pattern": grouped,
+    }
+
+
+def _write_json(path: Path, report: Dict[str, object]) -> None:
+    path.write_text(json.dumps(report, indent=2, sort_keys=True), encoding="utf-8")
+
+
+def _write_markdown(path: Path, report: Dict[str, object]) -> None:
+    lines: List[str] = []
+    lines.append("# `_codex_` Local Secret Scan Report\n")
+    lines.append(f"- Root        : `{report.get('root', '.')}`")
+    lines.append(f"- Total hits  : **{report.get('total_hits', 0)}**\n")
+
+    hits_by_pattern = report.get("hits_by_pattern") or {}
+    if not hits_by_pattern:
+        lines.append("No heuristic secret hits were found.\n")
+        path.write_text("\n".join(lines), encoding="utf-8")
+        return
+
+    for pattern, hits in sorted(hits_by_pattern.items(), key=lambda kv: kv[0]):
+        lines.append(f"## Pattern: `{pattern}`\n")
+        lines.append("| File | Line | Snippet |")
+        lines.append("| ---- | ---- | ------- |")
+        for h in hits:
+            lines.append(
+                "| `{file}` | {line} | `{snippet}` |".format(
+                    file=h.get("file"),
+                    line=h.get("line_no"),
+                    snippet=str(h.get("snippet", "")).replace("|", "\\|")[:160],
+                )
+            )
+        lines.append("")
+
+    path.write_text("\n".join(lines), encoding="utf-8")
+
+
+def main(argv: Optional[List[str]] = None) -> int:
+    parser = argparse.ArgumentParser(
+        description="Run a local heuristic secret scan over the repo."
+    )
+    parser.add_argument(
+        "--root",
+        type=str,
+        default=".",
+        help="Root directory to scan (default: .).",
+    )
+    parser.add_argument(
+        "--json-out",
+        type=str,
+        default="codex_secret_scan_report.json",
+        help="JSON report output (default: codex_secret_scan_report.json).",
+    )
+    parser.add_argument(
+        "--md-out",
+        type=str,
+        default="codex_secret_scan_report.md",
+        help="Markdown report output (default: codex_secret_scan_report.md).",
+    )
+    args = parser.parse_args(argv)
+
+    root = Path(args.root).expanduser().resolve()
+    report = run_scan(root)
+
+    json_out = Path(args.json_out).expanduser().resolve()
+    md_out = Path(args.md_out).expanduser().resolve()

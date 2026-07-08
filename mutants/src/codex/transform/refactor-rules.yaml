@@ -1,0 +1,137 @@
+# Refactor Rules & Tier Definitions v1.0
+# Defines transformations for the Codex pipeline
+
+version: "1.0"
+
+tiers:
+  A:
+    name: "Safe Auto-Apply"
+    description: "Non-invasive changes that preserve behavior by definition"
+    auto_apply: true
+    requires_tests: false
+    requires_review: false
+
+  B:
+    name: "Apply with Tests"
+    description: "Conservative changes that require test validation"
+    auto_apply: true
+    requires_tests: true
+    requires_review: false
+
+  C:
+    name: "Suggest Only"
+    description: "High-impact changes requiring human review"
+    auto_apply: false
+    requires_tests: true
+    requires_review: true
+
+rules:
+  # === Tier A: Safe Auto-Apply ===
+  - id: format-black
+    tier: A
+    tool: black
+    description: "Apply Black code formatting"
+    command: "black --check --diff {file}"
+
+  - id: sort-imports
+    tier: A
+    tool: isort
+    description: "Sort imports with isort"
+    command: "isort --check-only --diff {file}"
+
+  - id: pathlib-migration
+    tier: A
+    tool: libcst
+    description: "Replace os.path with pathlib equivalents"
+    patterns:
+      - match: "os.path.join(a, b)"
+        replace: "Path(a) / b"
+      - match: "os.path.exists(p)"
+        replace: "Path(p).exists()"
+      - match: "os.path.dirname(p)"
+        replace: "Path(p).parent"
+      - match: "os.path.basename(p)"
+        replace: "Path(p).name"
+
+  - id: f-string-conversion
+    tier: A
+    tool: libcst
+    description: "Convert .format() to f-strings"
+    conditions:
+      - "no complex expressions in format args"
+
+  - id: remove-trailing-whitespace
+    tier: A
+    tool: sed
+    description: "Remove trailing whitespace"
+    command: "sed -i 's/[[:space:]]*$//' {file}"
+
+  # === Tier B: Apply with Tests ===
+  - id: add-type-hints
+    tier: B
+    tool: libcst
+    description: "Add type annotations from inferred types"
+    validation:
+      - "mypy --strict {file}"
+      - "pytest tests/"
+
+  - id: extract-function
+    tier: B
+    tool: rope
+    description: "Extract repeated code blocks into functions"
+    config:
+      min_duplication: 3
+      min_lines: 5
+    validation:
+      - "behavior comparison passes"
+
+  - id: dependency-injection
+    tier: B
+    tool: libcst
+    description: "Inject dependencies for testability"
+    targets:
+      - "global state access"
+      - "direct filesystem operations"
+      - "network calls without abstraction"
+    validation:
+      - "new unit tests for injected deps"
+
+  - id: replace-deprecated
+    tier: B
+    tool: libcst
+    description: "Replace deprecated stdlib APIs"
+    patterns:
+      - match: "asyncio.get_event_loop()"
+        replace: "asyncio.get_running_loop()"
+        min_python: "3.10"
+
+  # === Tier C: Suggest Only ===
+  - id: async-conversion
+    tier: C
+    tool: manual
+    description: "Convert synchronous code to async/await"
+    warning: "Major API change; requires full rewrite of callers"
+    checklist:
+      - "All callers identified and updated"
+      - "Event loop management reviewed"
+      - "Error handling preserved"
+
+  - id: algorithm-optimization
+    tier: C
+    tool: manual
+    description: "Replace algorithm with more efficient implementation"
+    warning: "Semantic equivalence must be proven"
+    checklist:
+      - "Big-O analysis documented"
+      - "Edge cases tested"
+      - "Benchmark comparison provided"
+
+  - id: api-redesign
+    tier: C
+    tool: manual
+    description: "Restructure public API"
+    warning: "Breaking change; requires migration guide"
+    checklist:
+      - "Migration guide written"
+      - "Deprecation warnings added"
+      - "Version bump planned"

@@ -1,0 +1,316 @@
+* `python tools/codex_task_sequence_runner.py --yaml codex_task_sequence.yaml --repo-root . --change-log codex_change_log.md --errors codex_error_questions.md`
+
+Confirm that:
+
+* The repro manifest JSON and Markdown are created.
+* The JSON contains a `summary` section with the expected subsections.
+* The Markdown renders a readable overview of environment, dependencies, gaps, experiments, and local gate.
+* The task sequence runs the new manifest step with `record_and_continue` and does not break other phases.
+
+All changes remain local/offline and avoid any GitHub Actions or external CI.
+
+
+------
+
+Here’s the next **end-to-end Codex batch** (call this **Batch 22**) you can paste directly into your Codex implementation GPT.
+
+This batch focuses on **Environment & Dependency Snapshot + ML Test Map stub alignment** so that all the artifacts referenced by the repro manifest and docs are actually present and runnable:
+
+* `tools/codex_env_snapshot.py` → produces `codex_env_snapshot.json`
+* `tools/codex_dependency_report.py` → produces `codex_dependency_report.json`
+* Minimal **ML Test Map + runner stubs** so existing docs referring to them are not dangling:
+
+  * `tools/codex_mltest_runner.py`
+  * `codex_ml_test_map.yaml` (local-only, no CI)
+* Tests and docs
+* A small extension to `codex_task_sequence.yaml` to wire these tools into the **Preparation** phase with `record_and_continue`
+
+All patchsets are explicit, offline, and do **not** touch GitHub Actions.
+
+---
+
+### Codex Batch 22 – Env & Dependency Snapshot + ML Test Map Stubs
+
+````text
+You are ChatGPT @codex, operating on the repository Aries-Serpent/_codex_ on a feature
+branch (e.g. feature/env-deps-and-mltest-stubs).
+
+Global constraints:
+- DO NOT add or enable any cost-incurring GitHub Actions or external CI workflows.
+- All code MUST be runnable locally and offline.
+- Prefer small, reviewable diffs even when touching several files.
+- Overwrite existing files at the same paths if they exist; otherwise create them.
+- External deps limited to: stdlib + PyYAML + pytest.
+
+Objective of this batch:
+1. Implement **environment snapshot** tool:
+   - `tools/codex_env_snapshot.py` → `codex_env_snapshot.json`
+2. Implement **dependency report** tool:
+   - `tools/codex_dependency_report.py` → `codex_dependency_report.json`
+3. Provide minimal **ML Test Map + runner stubs** that the docs can reference:
+   - `codex_ml_test_map.yaml`
+   - `tools/codex_mltest_runner.py`
+4. Add tests:
+   - `tests/tools/test_codex_env_and_deps_tools.py`
+5. Add docs:
+   - `docs/reproducibility/env_and_dependency_snapshot.md`
+6. Wire env + deps tools into `codex_task_sequence.yaml` Preparation phase with `record_and_continue`.
+
+Apply the following file operations EXACTLY.
+
+===============================================================================
+1) Environment snapshot tool – tools/codex_env_snapshot.py
+===============================================================================
+
+Create/overwrite: tools/codex_env_snapshot.py
+
+```python
+#!/usr/bin/env python
+"""Environment snapshot tool for `_codex_`.
+
+Produces a JSON file with a *minimal* but structured view of the
+current Python + OS + environment variables.
+
+Output:
+
+- codex_env_snapshot.json  (by default)
+
+Structure (consumed by codex_repro_manifest.py):
+
+{
+  "generated_at": "...",
+  "python": {
+    "version": "3.11.7",
+    "executable": "/usr/bin/python",
+  },
+  "os": {
+    "platform": "Linux",
+    "release": "6.9.0",
+    "version": "#1 SMP etc",
+  },
+  "env": {
+    "CODEX_MODE": "dev",
+    ...
+  }
+}
+
+NOTE: This is intended to run locally. It may capture environment
+variables that contain sensitive information; operators should review
+before sharing.
+"""
+
+from __future__ import annotations
+
+import argparse
+import datetime as _dt
+import json
+import os
+import platform
+import sys
+from pathlib import Path
+from typing import Dict, Any
+
+
+def build_snapshot() -> Dict[str, Any]:
+    now = _dt.datetime.utcnow().isoformat() + "Z"
+    py = {
+        "version": platform.python_version(),
+        "executable": sys.executable,
+        "implementation": platform.python_implementation(),
+    }
+    os_info = {
+        "platform": platform.system(),
+        "release": platform.release(),
+        "version": platform.version(),
+        "machine": platform.machine(),
+    }
+    # Capture env as-is; downstream summarizers are responsible for
+    # selecting / filtering. This file stays local unless explicitly shared.
+    env = dict(os.environ)
+
+    return {
+        "generated_at": now,
+        "python": py,
+        "os": os_info,
+        "env": env,
+    }
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(
+        description="Generate a minimal environment snapshot for `_codex_`."
+    )
+    parser.add_argument(
+        "--out",
+        type=str,
+        default="codex_env_snapshot.json",
+        help="Output JSON path (default: codex_env_snapshot.json).",
+    )
+    args = parser.parse_args(argv)
+
+    snapshot = build_snapshot()
+    out_path = Path(args.out).expanduser().resolve()
+    out_path.write_text(
+        json.dumps(snapshot, indent=2, sort_keys=True),
+        encoding="utf-8",
+    )
+    print(f"[codex_env_snapshot] Wrote snapshot to {out_path}")
+    return 0
+
+
+if __name__ == "__main__":  # pragma: no cover
+    raise SystemExit(main())
+````
+
+===============================================================================
+2) Dependency report tool – tools/codex_dependency_report.py
+============================================================
+
+Create/overwrite: tools/codex_dependency_report.py
+
+```python
+#!/usr/bin/env python
+"""Dependency report tool for `_codex_`.
+
+Generates a lightweight view of installed Python packages using
+`importlib.metadata` so that codex_repro_manifest.py can summarize:
+
+- total package count
+- optional count of "direct" deps (if `kind == "direct"` is present)
+
+Output:
+
+- codex_dependency_report.json
+
+NOTE: This is environment-scoped; it reports whatever is installed in
+the active interpreter environment. It does not enforce a lockfile.
+"""
+
+from __future__ import annotations
+
+import argparse
+import datetime as _dt
+import json
+from importlib import metadata as _md
+from pathlib import Path
+from typing import Dict, Any, List
+
+
+def _collect_packages() -> List[Dict[str, Any]]:
+    packages: List[Dict[str, Any]] = []
+    for dist in _md.distributions():
+        name = dist.metadata.get("Name") or dist.metadata.get("Summary") or dist.metadata.get("name")
+        version = dist.version
+        # We intentionally *do not* guess "kind" here; codex_repro_manifest.py
+        # tolerates missing kind and will simply report 0 direct deps.
+        packages.append(
+            {
+                "name": name or dist.metadata.get("Name", ""),
+                "version": version,
+            }
+        )
+    packages.sort(key=lambda p: (p["name"] or "").lower())
+    return packages
+
+
+def build_report() -> Dict[str, Any]:
+    return {
+        "generated_at": _dt.datetime.utcnow().isoformat() + "Z",
+        "packages": _collect_packages(),
+    }
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(
+        description="Generate a minimal dependency report for `_codex_`."
+    )
+    parser.add_argument(
+        "--out",
+        type=str,
+        default="codex_dependency_report.json",
+        help="Output JSON path (default: codex_dependency_report.json).",
+    )
+    args = parser.parse_args(argv)
+
+    report = build_report()
+    out_path = Path(args.out).expanduser().resolve()
+    out_path.write_text(
+        json.dumps(report, indent=2, sort_keys=True),
+        encoding="utf-8",
+    )
+    print(f"[codex_dependency_report] Wrote report to {out_path}")
+    print(f"[codex_dependency_report] total_packages={len(report['packages'])}")
+    return 0
+
+
+if __name__ == "__main__":  # pragma: no cover
+    raise SystemExit(main())
+```
+
+===============================================================================
+3) ML Test Map stub YAML – codex_ml_test_map.yaml
+=================================================
+
+Create/overwrite: codex_ml_test_map.yaml
+
+This is a **local-only mapping** from ML Test Score categories to
+pytest target expressions. It is deliberately small and safe; it does
+not trigger CI.
+
+```yaml
+# Local ML Test Score mapping for `_codex_` (scaffolding)
+#
+# This file is consumed by tools/codex_mltest_runner.py to run
+# category-scoped test subsets *locally*.
+#
+# Categories loosely follow the ML Test Score paper (data, model,
+# infrastructure, regression, performance, etc.).
+
+ml_test_categories:
+  - id: data
+    description: "Data integrity, schema, and preprocessing tests."
+    pytest_targets:
+      - "tests/data"
+  - id: model
+    description: "Core model behavior and training loop tests."
+    pytest_targets:
+      - "tests/codex_ml"
+  - id: infra
+    description: "Tooling and infrastructure tests (gap registry, gates)."
+    pytest_targets:
+      - "tests/tools"
+  - id: regression
+    description: "High-value regression / smoke tests."
+    pytest_targets:
+      - "tests"
+  - id: performance
+    description: "Optional performance / scalability tests (stub)."
+    pytest_targets:
+      - "tests/performance"
+```
+
+===============================================================================
+4) ML Test Runner stub – tools/codex_mltest_runner.py
+=====================================================
+
+Create/overwrite: tools/codex_mltest_runner.py
+
+```python
+#!/usr/bin/env python
+"""Category-scoped ML test runner for `_codex_`.
+
+This is a *local-only* helper that uses `codex_ml_test_map.yaml` to map
+ML Test Score-style categories (data, model, infra, regression,
+performance) to pytest target expressions.
+
+Examples:
+
+- Run all categories:
+    python tools/codex_mltest_runner.py --all
+
+- Run a specific category:
+    python tools/codex_mltest_runner.py --category model
+
+This tool is intentionally simple:
+
+- Reads `codex_ml_test_map.yaml` at repo root.
