@@ -33,17 +33,17 @@ class TestRestorePipelineImport:
 class TestRestorePipelineBasics:
     """Test basic restore_pipeline functionality."""
 
-    def test_pipeline_module_has_pipeline_class(self) -> None:
-        """Verify Pipeline class exists in pipeline module."""
-        from restore_pipeline.pipeline import Pipeline
+    def test_pipeline_module_has_pipeline_functions(self) -> None:
+        """Verify process function exists in pipeline module."""
+        from restore_pipeline.pipeline import process
 
-        assert Pipeline is not None
+        assert callable(process)
 
-    def test_config_module_has_config_class(self) -> None:
-        """Verify Config class exists in config module."""
-        from restore_pipeline.config import Config
+    def test_config_module_has_pipeline_config_class(self) -> None:
+        """Verify PipelineConfig class exists in config module."""
+        from restore_pipeline.config import PipelineConfig
 
-        assert Config is not None
+        assert PipelineConfig is not None
 
     @pytest.mark.skipif(
         True,
