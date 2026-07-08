@@ -550,7 +550,7 @@ class SemanticDiffer:
             # scikit-learn is not available; fall back to SequenceMatcher
             matcher = difflib.SequenceMatcher(None, text1, text2)
             return matcher.ratio()
-        except Exception as e:
+        except Exception:
             # Any unexpected failure in TF-IDF computation: log and fall back
             logger.error("TF-IDF similarity computation failed: <ERROR_TYPE>")
             matcher = difflib.SequenceMatcher(None, text1, text2)

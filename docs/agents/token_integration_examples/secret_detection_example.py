@@ -12,9 +12,8 @@ Key Concepts:
 """
 
 import logging
-import json
 import requests
-from typing import Dict, Optional
+from typing import Dict
 from dataclasses import dataclass
 
 

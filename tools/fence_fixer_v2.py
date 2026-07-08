@@ -273,7 +273,7 @@ class FenceFixer:
         """Fix fences in a single file."""
         try:
             text = path.read_text(encoding="utf-8")
-        except (UnicodeDecodeError, IOError) as e:
+        except (UnicodeDecodeError, IOError):
             if self.verbose:
                 print(f"Warning: Could not read {path}: <ERROR_TYPE>", file=sys.stderr)
             return (False, 0)

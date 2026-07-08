@@ -98,7 +98,7 @@ def _pda_summary_from_index() -> str:
 
         return "\n".join(out) if out else "(no sessions)"
 
-    except (ImportError, Exception) as e:
+    except (ImportError, Exception):
         # Graceful fallback to file scan if API unavailable
         return _pda_summary_from_file()
 

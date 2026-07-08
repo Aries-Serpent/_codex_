@@ -10,7 +10,6 @@ This script validates that:
 Exits with 0 (success) or 1 (drift detected).
 """
 
-import json
 import re
 import sys
 from pathlib import Path

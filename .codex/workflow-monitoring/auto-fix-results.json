@@ -1,0 +1,59 @@
+{
+  "timestamp": "2026-07-08T00:03:00Z",
+  "execution_status": "completed",
+  "patterns_applied": [1, 4, 8],
+  "patterns_applied_names": [
+    "Unused Imports (F401)",
+    "Coverage Thresholds",
+    "CodeQL Alerts (F401, F841)"
+  ],
+  "total_patterns_scanned": 38,
+  "auto_fixable_patterns_found": 1,
+  "auto_fixable_patterns_applied": 1,
+  "patterns_requiring_manual_review": 0,
+  "files_modified": 56,
+  "summary": {
+    "pattern_1_f401": {
+      "name": "Unused Imports",
+      "status": "applied",
+      "issues_fixed": 67,
+      "files_affected": 47
+    },
+    "pattern_4_coverage": {
+      "name": "Coverage Thresholds",
+      "status": "no_issues",
+      "issues_fixed": 0,
+      "files_affected": 0
+    },
+    "pattern_8_codeql": {
+      "name": "CodeQL Alerts",
+      "status": "applied",
+      "issues_fixed": 11,
+      "files_affected": 5
+    }
+  },
+  "aggregate_statistics": {
+    "total_issues_fixed": 78,
+    "total_lines_removed": 175,
+    "total_lines_added": 135,
+    "net_change": -40
+  },
+  "validation": {
+    "ruff_check": "executed",
+    "action_versions": "all_approved",
+    "comprehensive_check": "passed"
+  },
+  "next_steps": [
+    "Commit fixes with message: 'auto-fix: patterns 1,4,8 - unused imports, coverage thresholds, CodeQL alerts'",
+    "Monitor CI pipeline for validation",
+    "Files with circuit breaker breaks: manual review recommended"
+  ],
+  "circuit_breaker_status": {
+    "pattern_25": "broken",
+    "pattern_30": "broken",
+    "pattern_36": "broken",
+    "pattern_37": "broken",
+    "pattern_38": "broken"
+  },
+  "execution_duration_seconds": 120
+}

@@ -10,7 +10,7 @@ from __future__ import annotations
 import contextvars
 import functools
 import logging
-from typing import Any, Callable, Optional, TypeVar
+from typing import Any, Callable, Optional
 
 from fastapi import Request
 

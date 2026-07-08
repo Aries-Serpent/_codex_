@@ -104,10 +104,10 @@ def filter_modules(modules: list[str]) -> tuple[list[str], list[str]]:
             else:
                 missing_modules.append(module)
                 logger.warning(f"Skipping {module}: module not found")
-        except (ImportError, ModuleNotFoundError, ValueError) as e:
+        except (ImportError, ModuleNotFoundError, ValueError):
             missing_modules.append(module)
             logger.warning(f"Skipping {module}: <ERROR_TYPE>")
-        except Exception as e:
+        except Exception:
             # Catch other exceptions (e.g., AttributeError during spec lookup)
             missing_modules.append(module)
             logger.warning(f"Skipping {module} due to error: <ERROR_TYPE>")

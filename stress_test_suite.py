@@ -15,18 +15,16 @@ Version: 1.0.0-baseline
 from __future__ import annotations
 
 import asyncio
-import dataclasses
 import json
 import logging
 import time
 import uuid
 from abc import ABC, abstractmethod
-from collections import defaultdict
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Any, Callable, Optional
+from typing import Any, Optional
 
 import pytest
 

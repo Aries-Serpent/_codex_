@@ -1,8 +1,7 @@
 """Phase 10 System Integration - Session, Memory, OODA integration with machine-readable layer."""
 
-import json
 from tools.docs_agent.copilot_tools_new import CopilotToolsInterface
-from typing import Dict, Any, Optional
+from typing import Dict, Any
 
 
 class Phase10SystemIntegration:

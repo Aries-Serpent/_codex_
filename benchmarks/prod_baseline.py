@@ -198,7 +198,7 @@ class MockAPIService:
                     )
                     elapsed_ms = (time.perf_counter() - start) * 1000
                     results.append((elapsed_ms, status))
-                except Exception as e:
+                except Exception:
                     elapsed_ms = (time.perf_counter() - start) * 1000
                     results.append((elapsed_ms, 500))
 

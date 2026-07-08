@@ -19,10 +19,10 @@ import logging
 import os
 import psutil
 import time
-from dataclasses import dataclass, field, asdict
+from dataclasses import dataclass, asdict
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Callable, Optional
+from typing import Any, Optional
 
 # ============================================================================
 # Metrics Data Classes

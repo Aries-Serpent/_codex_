@@ -17,7 +17,6 @@ import argparse
 import hashlib
 import json
 import logging
-import os
 import socket
 import subprocess
 import sys

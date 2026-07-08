@@ -12,11 +12,9 @@ from __future__ import annotations
 
 import io
 import json
-import os
 import shutil
 import sys
 import tarfile # pragma: allowlist secret # pragma: allowlist secret
-import tempfile
 from pathlib import Path
 
 import pytest

@@ -6,7 +6,6 @@ Evaluates each agent's fix attempt on standardized criteria
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import List, Tuple
 
 class GradingCriterion(Enum):
     """Grading criteria with point allocations"""

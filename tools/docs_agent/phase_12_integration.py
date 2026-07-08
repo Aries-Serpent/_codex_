@@ -1,6 +1,5 @@
 """Phase 12 System Integration - RBAC, Governance, Observability integration with machine-readable layer."""
 
-import json
 from tools.docs_agent.copilot_tools_new import CopilotToolsInterface
 from typing import Dict, Any
 

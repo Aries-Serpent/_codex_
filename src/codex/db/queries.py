@@ -1,7 +1,7 @@
 """Database query module with SQL injection protection - SECURE VERSION."""
 
 import sqlite3
-from typing import List, Dict, Any, Union
+from typing import List, Dict, Any
 
 
 class UserQueryExecutor:

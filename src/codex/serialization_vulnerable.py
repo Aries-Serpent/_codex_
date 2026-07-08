@@ -1,7 +1,6 @@
 """Serialization module with insecure deserialization."""
 
 import pickle
-import json
 from typing import Any
 
 

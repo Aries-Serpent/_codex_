@@ -4,8 +4,6 @@ Phase 3 Campaign Orchestrator — Agent Dispatcher & Failure Router
 Routes Tier 1 failures to appropriate specialist agents based on pattern matching
 """
 
-import json
-import sys
 from enum import Enum
 from dataclasses import dataclass
 from typing import Optional

@@ -1,32 +1,29 @@
-# Session Context — 2026-07-07T23:47:55Z
-**Branch:** `copilot/resolve-all-failed-checks`  **PR:** #5264  **Access:** `rest, graphql, gh_cli`
+# Session Context — 2026-07-07T23:59:57Z
+**Branch:** `copilot/monitoring-healing-campaign`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `5000` (✅)
-- GraphQL remaining: `5000` (✅)
+- REST remaining: `4990` (✅)
+- GraphQL remaining: `4998` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #5264 — fix(ci): Validate and consolidate 1,017 GitHub Actions fixes across 231 workflows
-State: `open`  Draft: `False`  Branch: `copilot/resolve-all-failed-checks` → `main`
-
 ## 🚨 Recent CI Failures (last 5 runs)
+- **pip in /.github, /misc/repo-owner-review/temp-outputs/bridge_codex_copilot_bridge/services/ita, /requirements for PyJWT, black, black, cryptography, diskcache, nltk, nltk, nltk, pyarrow, pyjwt, pyjwt, pyjwt, pyjwt, sqlitedict, sqlitedict, torch, torch, torch, torch, torch, torch, torch, torch, torch - Update #1451730069** — `failure` on `main` (2026-07-07)
+- **Resilient Dependency Submission** — `failure` on `main` (2026-07-07)
+- **Workflow Compliance Audit (actionlint)** — `failure` on `main` (2026-07-07)
+- **restore-pipeline CI** — `failure` on `main` (2026-07-07)
 - **Self-Healing CI Loop** — `failure` on `main` (2026-07-07)
-- **Self-Healing CI Loop** — `failure` on `main` (2026-07-07)
-- **Self-Healing CI Loop** — `failure` on `main` (2026-07-07)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-07-07)
-- **⚡ Auto-Approve Pending Workflow Runs** — `failure` on `main` (2026-07-07)
 
 ## 📝 Recent Commits
+- `19a053f2` Merge pull request #5264 from Aries-Serpent/copilot/resolve-all-failed-checks — Statix (2026-07-07)
+- `d5280004` chore: Update compliance docs for CI fix campaign [REQ-4][REQ-5] — copilot-swe-agent[bot] (2026-07-07)
+- `7eeafe6e` chore: Update compliance docs for CI fix campaign [REQ-4][REQ-5] — copilot-swe-agent[bot] (2026-07-07)
 - `75cac893` Apply remaining changes — copilot-swe-agent[bot] (2026-07-07)
 - `d1e87b28` fix(ci): Replace invalid GitHub Actions commit SHAs with approved versions in se — copilot-swe-agent[bot] (2026-07-07)
 - `23b6e04f` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-07-07)
 - `83107973` Apply remaining changes — copilot-swe-agent[bot] (2026-07-07)
 - `3f44bcf7` chronicle: Comprehensive session search and reindex - full session details, comm — copilot-swe-agent[bot] (2026-07-07)
-- `460561ff` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-07-07)
-- `5ecb870d` Apply remaining changes — copilot-swe-agent[bot] (2026-07-07)
-- `195e07c7` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-07-07)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`

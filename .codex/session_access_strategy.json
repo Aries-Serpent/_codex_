@@ -1,20 +1,18 @@
 {
-  "generated_at": "2026-07-07T23:47:55.752933+00:00",
+  "generated_at": "2026-07-07T23:59:57.211859+00:00",
   "methods": [
     "rest",
     "graphql",
     "gh_cli"
   ],
   "rest_available": true,
-  "rest_remaining": 5000,
+  "rest_remaining": 4990,
   "graphql_available": true,
-  "graphql_remaining": 5000,
+  "graphql_remaining": 4998,
   "gh_cli_available": true,
   "codeql_available": false,
   "best_token_var": "CODEX_MASTER_KEY",
-  "open_prs": [
-    5264
-  ],
-  "branch": "copilot/resolve-all-failed-checks",
+  "open_prs": [],
+  "branch": "copilot/monitoring-healing-campaign",
   "recommendation": "Use REST for data fetches. "
 }

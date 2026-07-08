@@ -48,7 +48,7 @@ import sys
 import tarfile
 import tempfile
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Tuple
 
 logger = logging.getLogger(__name__)
 

@@ -7,9 +7,8 @@ Can be run locally or in CI/CD pipeline.
 
 import re
 import sys
-import json
 from pathlib import Path
-from typing import List, Tuple, Dict
+from typing import List, Tuple
 
 # Tier 1 documentation paths to validate
 TIER1_DOCS = [

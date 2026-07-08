@@ -64,7 +64,7 @@ class DuplicateScanner:
             # SHIM inventory not found - continue without it
             self.cross_reference = None
             logger.debug("SHIM inventory not found, continuing without cross-reference")
-        except Exception as e:
+        except Exception:
             # Log error but continue
             logger.warning("Failed to load SHIM inventory: <ERROR_TYPE>")
             self.cross_reference = None

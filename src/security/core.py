@@ -12,7 +12,7 @@ import re
 import time
 from collections import defaultdict, deque
 from collections.abc import Callable, Iterable, MutableMapping
-from pathlib import Path, PurePosixPath, PureWindowsPath
+from pathlib import Path
 from typing import Any, Literal
 
 from ._types import SecurityError, sanitize_text  # noqa: F401 – re-exported for callers

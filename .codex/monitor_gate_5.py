@@ -44,7 +44,7 @@ def get_release_runs() -> List[Dict]:
         if line:
             try:
                 runs.append(json.loads(line))
-            except json.JSONDecodeError as e:
+            except json.JSONDecodeError:
                 print(f"Warning: skipping malformed JSON line: {line[:80]}", file=sys.stderr)
     return runs
 

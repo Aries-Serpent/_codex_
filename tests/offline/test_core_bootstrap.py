@@ -23,11 +23,9 @@ Authority: D-tier autonomous execution (@mbaetiong)
 """
 
 import logging
-import os
 import platform
 import sys
-from typing import Any, Dict
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 
