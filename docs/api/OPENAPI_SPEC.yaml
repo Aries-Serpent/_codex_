@@ -1,0 +1,1035 @@
+openapi: 3.0.0
+info:
+  title: Codex API
+  description: |
+    Comprehensive API reference for the Codex platform, including text generation,
+    retrieval-augmented generation (RAG), and authentication services.
+    
+    **API Servers:**
+    - Main API: http://localhost:8000
+    - RAG API: http://localhost:8001
+    
+    **Authentication:** ****** (JWT)
+    **Rate Limiting:** Per-endpoint limits documented below
+    **Response Format:** JSON
+  version: 1.0.0
+  contact:
+    name: Codex Team
+    url: https://github.com/Aries-Serpent/_codex_
+  license:
+    name: Apache 2.0
+    url: https://opensource.org/licenses/Apache-2.0
+
+servers:
+  - url: http://localhost:8000
+    description: Main API Server (Development)
+  - url: https://api.codex.example.com
+    description: Main API Server (Production)
+  - url: http://localhost:8001
+    description: RAG API Server (Development)
+  - url: https://rag-api.codex.example.com
+    description: RAG API Server (Production)
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token obtained from /api/auth/login
+
+  schemas:
+    # ==================== Core Schemas ====================
+    
+    HealthResponse:
+      type: object
+      description: API health status response
+      properties:
+        status:
+          type: string
+          enum: [ok, healthy]
+          example: ok
+        cognitive_brain:
+          type: object
+          description: Cognitive brain subsystem status
+          properties:
+            available:
+              type: boolean
+              example: true
+            note:
+              type: string
+              example: import failed
+        pattern_compressor:
+          type: object
+          description: Pattern compressor subsystem status
+          properties:
+            available:
+              type: boolean
+              example: true
+            n_components:
+              type: integer
+              example: 128
+
+    # ==================== Text Generation Schemas ====================
+    
+    PredictRequest:
+      type: object
+      required:
+        - prompt
+      description: Text generation request
+      properties:
+        prompt:
+          type: string
+          minLength: 1
+          maxLength: 2048
+          description: Input text prompt for generation
+          example: "What is artificial intelligence?"
+      example:
+        prompt: "Explain machine learning in simple terms"
+
+    PredictResponse:
+      type: object
+      required:
+        - output
+      description: Text generation response
+      properties:
+        output:
+          type: string
+          description: Generated text output
+          example: "Machine learning is a subset of artificial intelligence..."
+      example:
+        output: "Machine learning is a subset of artificial intelligence that focuses on developing algorithms..."
+
+    # ==================== Authentication Schemas ====================
+    
+    RegisterRequest:
+      type: object
+      required:
+        - email
+        - password
+        - name
+      description: User registration request
+      properties:
+        email:
+          type: string
+          format: email
+          description: User email address
+          example: user@example.com
+        password:
+          type: string
+          format: password
+          minLength: 12
+          description: User password (minimum 12 characters)
+          example: "SecurePass123!"
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+          description: User full name
+          example: "John Doe"
+
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      description: User login request
+      properties:
+        email:
+          type: string
+          format: email
+          description: User email address
+          example: user@example.com
+        password:
+          type: string
+          format: password
+          description: User password
+          example: "SecurePass123!"
+
+    LoginResponse:
+      type: object
+      required:
+        - access_token
+        - token_type
+        - expires_in
+      description: Login response with JWT token
+      properties:
+        access_token:
+          type: string
+          description: JWT access token
+          example: "******"
+        token_type:
+          type: string
+          enum: [bearer]
+          example: bearer
+        expires_in:
+          type: integer
+          description: Token expiration time in seconds
+          example: 3600
+        user:
+          type: object
+          description: Authenticated user info
+          properties:
+            id:
+              type: string
+              example: "usr_123abc"
+            email:
+              type: string
+              example: "user@example.com"
+            name:
+              type: string
+              example: "John Doe"
+
+    # ==================== RAG Schemas ====================
+    
+    BuildIndexRequest:
+      type: object
+      required:
+        - index_name
+        - documents
+      description: Request to build a RAG index
+      properties:
+        index_name:
+          type: string
+          pattern: ^[A-Za-z0-9._-]{1,128}$
+          description: Name for the new index
+          example: my_documents
+        documents:
+          type: array
+          minItems: 1
+          items:
+            type: object
+            required:
+              - id
+              - content
+            properties:
+              id:
+                type: string
+                description: Unique document identifier
+                example: "doc_001"
+              content:
+                type: string
+                description: Document text content
+                example: "This is document content..."
+              metadata:
+                type: object
+                description: Optional document metadata
+                additionalProperties:
+                  type: string
+                example:
+                  source: "file.txt"
+                  category: "technical"
+
+    BuildIndexResponse:
+      type: object
+      required:
+        - index_name
+        - document_count
+        - size_bytes
+        - created_at
+      description: Response after building index
+      properties:
+        index_name:
+          type: string
+          example: my_documents
+        document_count:
+          type: integer
+          example: 150
+        size_bytes:
+          type: integer
+          example: 524288
+        created_at:
+          type: string
+          format: date-time
+          example: "2026-07-08T05:53:48Z"
+
+    QueryRequest:
+      type: object
+      required:
+        - index_name
+        - query
+      description: Query a RAG index
+      properties:
+        index_name:
+          type: string
+          description: Name of the index to query
+          example: my_documents
+        query:
+          type: string
+          minLength: 1
+          maxLength: 1024
+          description: Query text
+          example: "What is machine learning?"
+        top_k:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 5
+          description: Number of results to return
+          example: 10
+        threshold:
+          type: number
+          minimum: 0
+          maximum: 1
+          default: 0.0
+          description: Relevance score threshold
+          example: 0.5
+
+    QueryResult:
+      type: object
+      required:
+        - document_id
+        - content
+        - score
+      description: Single query result
+      properties:
+        document_id:
+          type: string
+          example: "doc_001"
+        content:
+          type: string
+          example: "Relevant document content..."
+        score:
+          type: number
+          minimum: 0
+          maximum: 1
+          example: 0.92
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+          example:
+            source: "file.txt"
+
+    QueryResponse:
+      type: object
+      required:
+        - query
+        - results
+        - total_results
+        - query_time_ms
+      description: Query results from RAG index
+      properties:
+        query:
+          type: string
+          example: "What is machine learning?"
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/QueryResult'
+        total_results:
+          type: integer
+          example: 10
+        query_time_ms:
+          type: number
+          example: 125.5
+
+    IndexInfo:
+      type: object
+      required:
+        - name
+        - document_count
+        - size_bytes
+        - created_at
+      description: Information about a RAG index
+      properties:
+        name:
+          type: string
+          example: my_documents
+        document_count:
+          type: integer
+          example: 150
+        size_bytes:
+          type: integer
+          example: 524288
+        created_at:
+          type: string
+          format: date-time
+          example: "2026-07-08T05:53:48Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2026-07-08T06:00:00Z"
+
+    ListIndicesResponse:
+      type: object
+      required:
+        - indices
+        - total_count
+      description: List of available RAG indices
+      properties:
+        indices:
+          type: array
+          items:
+            $ref: '#/components/schemas/IndexInfo'
+        total_count:
+          type: integer
+          example: 5
+
+    DeleteIndexResponse:
+      type: object
+      required:
+        - index_name
+        - deleted_at
+        - document_count_deleted
+      description: Response after deleting an index
+      properties:
+        index_name:
+          type: string
+          example: my_documents
+        deleted_at:
+          type: string
+          format: date-time
+          example: "2026-07-08T06:30:00Z"
+        document_count_deleted:
+          type: integer
+          example: 150
+
+    MergeIndicesRequest:
+      type: object
+      required:
+        - source_indices
+        - target_index
+      description: Request to merge multiple indices
+      properties:
+        source_indices:
+          type: array
+          minItems: 2
+          items:
+            type: string
+          description: Names of indices to merge
+          example: ["index1", "index2", "index3"]
+        target_index:
+          type: string
+          description: Name for the merged index
+          example: combined_index
+
+    MergeIndicesResponse:
+      type: object
+      required:
+        - target_index
+        - source_indices_merged
+        - total_documents
+        - merged_at
+      description: Response after merging indices
+      properties:
+        target_index:
+          type: string
+          example: combined_index
+        source_indices_merged:
+          type: array
+          items:
+            type: string
+          example: ["index1", "index2", "index3"]
+        total_documents:
+          type: integer
+          example: 450
+        merged_at:
+          type: string
+          format: date-time
+          example: "2026-07-08T07:00:00Z"
+
+    StatsResponse:
+      type: object
+      required:
+        - index_name
+        - document_count
+        - average_doc_length
+        - vocabulary_size
+      description: Statistics for a RAG index
+      properties:
+        index_name:
+          type: string
+          example: my_documents
+        document_count:
+          type: integer
+          example: 150
+        average_doc_length:
+          type: integer
+          example: 350
+        vocabulary_size:
+          type: integer
+          example: 12500
+        size_bytes:
+          type: integer
+          example: 524288
+        created_at:
+          type: string
+          format: date-time
+          example: "2026-07-08T05:53:48Z"
+
+    MetricsResponse:
+      type: object
+      required:
+        - total_indices
+        - total_documents
+        - total_queries
+        - average_query_time_ms
+      description: System-wide metrics for RAG API
+      properties:
+        total_indices:
+          type: integer
+          example: 10
+        total_documents:
+          type: integer
+          example: 2500
+        total_queries:
+          type: integer
+          example: 5000
+        average_query_time_ms:
+          type: number
+          example: 145.3
+        uptime_seconds:
+          type: integer
+          example: 86400
+
+    # ==================== Error Schemas ====================
+    
+    ErrorResponse:
+      type: object
+      required:
+        - detail
+      description: Error response
+      properties:
+        detail:
+          type: string
+          description: Error message
+          example: "Invalid request parameters"
+        status_code:
+          type: integer
+          example: 400
+        timestamp:
+          type: string
+          format: date-time
+          example: "2026-07-08T05:53:48Z"
+
+paths:
+  # ==================== MAIN API ENDPOINTS ====================
+  
+  /health:
+    get:
+      tags: [Health]
+      summary: Health Check
+      description: |
+        Check the health status of the API server.
+        
+        Returns overall status plus optional cognitive brain and pattern compressor diagnostics.
+      operationId: getHealth
+      responses:
+        '200':
+          description: Server is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+              examples:
+                healthy:
+                  value:
+                    status: ok
+                    cognitive_brain:
+                      available: true
+                    pattern_compressor:
+                      available: true
+
+  /:
+    get:
+      tags: [API Info]
+      summary: API Information
+      description: Get basic information about the API
+      operationId: getRoot
+      responses:
+        '200':
+          description: API information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    example: codex
+                  status:
+                    type: string
+                    example: ok
+
+  /predict:
+    post:
+      tags: [Text Generation]
+      summary: Generate Text Prediction
+      description: |
+        Generate text using the loaded language model.
+        
+        **Features:**
+        - Input denylist enforcement
+        - Content moderation (pre and post)
+        - Tokenization and padding
+        - Safety checks
+        
+        **Rate Limit:** 60 requests per minute
+      operationId: predict
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PredictRequest'
+            examples:
+              simple:
+                summary: Simple prediction
+                value:
+                  prompt: "What is machine learning?"
+              complex:
+                summary: Complex prompt
+                value:
+                  prompt: "Explain the following concept in detail: neural networks"
+      responses:
+        '200':
+          description: Prediction generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PredictResponse'
+              examples:
+                success:
+                  value:
+                    output: "Machine learning is a subset of artificial intelligence..."
+        '400':
+          description: Invalid request (denylist violation or content policy rejection)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # ==================== AUTHENTICATION ENDPOINTS ====================
+  
+  /api/auth/register:
+    post:
+      tags: [Authentication]
+      summary: Register New User
+      description: |
+        Create a new user account in the Codex platform.
+        
+        **Requirements:**
+        - Email must be valid and unique
+        - Password must be at least 12 characters
+        - Name must not be empty
+        
+        **Rate Limit:** 5 requests per minute
+      operationId: register
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user_id:
+                    type: string
+                    example: usr_123abc
+                  email:
+                    type: string
+                    example: user@example.com
+                  created_at:
+                    type: string
+                    format: date-time
+        '400':
+          description: Invalid request or user already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/auth/login:
+    post:
+      tags: [Authentication]
+      summary: User Login
+      description: |
+        Authenticate a user and obtain a JWT access token.
+        
+        **Returns:**
+        - JWT access token (valid for 1 hour)
+        - User information
+        - Token type and expiration
+        
+        **Rate Limit:** 10 requests per minute
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/auth/logout:
+    post:
+      tags: [Authentication]
+      summary: User Logout
+      description: |
+        Logout the current user and invalidate their session.
+        
+        **Rate Limit:** 30 requests per minute
+      operationId: logout
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Logout successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Logged out successfully"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/auth/refresh:
+    post:
+      tags: [Authentication]
+      summary: Refresh Access Token
+      description: |
+        Obtain a new access token using a valid token.
+        
+        **Rate Limit:** 20 requests per minute
+      operationId: refresh
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Token refreshed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          description: Unauthorized or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # ==================== RAG API ENDPOINTS ====================
+  
+  /rag/health:
+    get:
+      tags: [RAG - Health]
+      summary: RAG API Health Check
+      description: Check the health status of the RAG API
+      operationId: ragHealth
+      responses:
+        '200':
+          description: RAG API is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+
+  /rag/build:
+    post:
+      tags: [RAG - Index Management]
+      summary: Build RAG Index
+      description: |
+        Build a new retrieval-augmented generation index from documents.
+        
+        **Features:**
+        - TF-IDF vectorization
+        - Document preprocessing
+        - Index persistence
+        
+        **Rate Limit:** 10 requests per minute
+        **Response Time:** 2-30 seconds depending on document count
+      operationId: buildIndex
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BuildIndexRequest'
+      responses:
+        '200':
+          description: Index built successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildIndexResponse'
+        '400':
+          description: Invalid request or index already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /rag/query:
+    post:
+      tags: [RAG - Retrieval]
+      summary: Query RAG Index
+      description: |
+        Search a RAG index and retrieve relevant documents.
+        
+        **Features:**
+        - TF-IDF similarity scoring
+        - Configurable result count (top-k)
+        - Relevance threshold filtering
+        - Metadata preservation
+        
+        **Rate Limit:** 60 requests per minute
+        **Response Time:** 50-500ms
+      operationId: queryIndex
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QueryRequest'
+      responses:
+        '200':
+          description: Query executed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QueryResponse'
+        '400':
+          description: Index not found or invalid query
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /rag/indices:
+    get:
+      tags: [RAG - Index Management]
+      summary: List RAG Indices
+      description: |
+        Get a list of all available RAG indices with their metadata.
+        
+        **Rate Limit:** 30 requests per minute
+      operationId: listIndices
+      responses:
+        '200':
+          description: Indices listed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListIndicesResponse'
+
+  /rag/indices/{index_name}:
+    delete:
+      tags: [RAG - Index Management]
+      summary: Delete RAG Index
+      description: |
+        Delete a RAG index and all its documents.
+        
+        **WARNING:** This action is permanent and cannot be undone.
+        
+        **Rate Limit:** 10 requests per minute
+      operationId: deleteIndex
+      parameters:
+        - name: index_name
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: ^[A-Za-z0-9._-]{1,128}$
+          description: Name of the index to delete
+      responses:
+        '200':
+          description: Index deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteIndexResponse'
+        '404':
+          description: Index not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Invalid index name
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /rag/merge:
+    post:
+      tags: [RAG - Index Management]
+      summary: Merge RAG Indices
+      description: |
+        Merge multiple RAG indices into a single combined index.
+        
+        **Features:**
+        - Consolidates documents from multiple indices
+        - Deduplicates if needed
+        - Creates new unified search space
+        
+        **Rate Limit:** 5 requests per minute
+        **Response Time:** 5-60 seconds
+      operationId: mergeIndices
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - source_indices
+                - target_index
+              properties:
+                source_indices:
+                  type: array
+                  minItems: 2
+                  items:
+                    type: string
+                  example: ["index1", "index2"]
+                target_index:
+                  type: string
+                  example: combined_index
+      responses:
+        '200':
+          description: Indices merged successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MergeIndicesResponse'
+        '400':
+          description: Invalid indices or merge failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /rag/stats/{index_name}:
+    get:
+      tags: [RAG - Monitoring]
+      summary: Get Index Statistics
+      description: |
+        Get detailed statistics about a RAG index.
+        
+        **Includes:**
+        - Document count
+        - Average document length
+        - Vocabulary size
+        - Index size on disk
+        - Creation timestamp
+        
+        **Rate Limit:** 30 requests per minute
+      operationId: getStats
+      parameters:
+        - name: index_name
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: ^[A-Za-z0-9._-]{1,128}$
+          description: Name of the index
+      responses:
+        '200':
+          description: Statistics retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatsResponse'
+        '404':
+          description: Index not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /rag/metrics:
+    get:
+      tags: [RAG - Monitoring]
+      summary: Get RAG System Metrics
+      description: |
+        Get system-wide metrics and statistics for the RAG API.
+        
+        **Includes:**
+        - Total indices and documents
+        - Query statistics
+        - Average query time
+        - System uptime
+        
+        **Rate Limit:** 30 requests per minute
+      operationId: getMetrics
+      responses:
+        '200':
+          description: Metrics retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetricsResponse'
+
+tags:
+  - name: API Info
+    description: Basic API information and status
+  - name: Health
+    description: Health check endpoints
+  - name: Text Generation
+    description: Text generation and prediction endpoints
+  - name: Authentication
+    description: User registration, login, and token management
+  - name: RAG - Index Management
+    description: Build, delete, merge, and list RAG indices
+  - name: RAG - Retrieval
+    description: Query RAG indices
+  - name: RAG - Health
+    description: RAG API health monitoring
+  - name: RAG - Monitoring
+    description: Statistics and metrics for RAG system
