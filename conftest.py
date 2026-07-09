@@ -2,7 +2,99 @@
 
 from __future__ import annotations
 
-import asyncio
+# ============================================================================
+# IMPORT HOOK (Phase 3 Blocker Fix - S228)
+# ============================================================================
+# Install custom import hook IMMEDIATELY to resolve codex.* imports
+
+import sys
+import importlib.abc
+import importlib.util
+from pathlib import Path as _ImportHookPath
+
+
+class _CodexNamespaceFinder(importlib.abc.MetaPathFinder):
+    """Import hook that resolves codex.* imports to modules in src/."""
+    
+    def __init__(self, src_root):
+        self.src_root = _ImportHookPath(src_root)
+        self.cache = {}
+        # Alternative search locations
+        self.search_roots = [
+            self.src_root / "codex",  # Direct codex/ package
+            self.src_root / "aries_serpent_core",  # Aries Serpent modules
+            self.src_root / "codex_ml",  # CodexML modules  
+        ]
+    
+    def find_spec(self, fullname, path, target=None):
+        if not fullname.startswith("codex"):
+            return None
+        
+        if fullname in self.cache:
+            return self.cache[fullname]
+        
+        try:
+            parts = fullname.split(".")
+            
+            # Handle codex itself
+            if fullname == "codex":
+                init_file = self.src_root / "codex" / "__init__.py"
+                if init_file.exists():
+                    spec = importlib.util.spec_from_file_location(
+                        fullname,
+                        init_file,
+                        submodule_search_locations=[str(self.src_root / "codex")],
+                    )
+                    self.cache[fullname] = spec
+                    return spec
+            
+            # For codex.X.Y.Z imports, strip 'codex.' and search for X.Y.Z in alternative locations
+            target_module_parts = parts[1:]  # Remove 'codex' prefix
+            target_name = ".".join(target_module_parts)
+            
+            # Search in each alternative location
+            for search_root in self.search_roots:
+                # Build the path to the target module
+                module_path = search_root
+                for part in target_module_parts[:-1]:
+                    module_path = module_path / part
+                
+                last_part = target_module_parts[-1]
+                
+                # Try as package
+                package_dir = module_path / last_part
+                init_file = package_dir / "__init__.py"
+                if init_file.exists():
+                    spec = importlib.util.spec_from_file_location(
+                        fullname,
+                        init_file,
+                        submodule_search_locations=[str(package_dir)],
+                    )
+                    self.cache[fullname] = spec
+                    return spec
+                
+                # Try as module file
+                module_file = module_path / f"{last_part}.py"
+                if module_file.exists():
+                    spec = importlib.util.spec_from_file_location(fullname, module_file)
+                    self.cache[fullname] = spec
+                    return spec
+        
+        except Exception:
+            pass
+        
+        self.cache[fullname] = None
+        return None
+
+
+# Install the import hook
+try:
+    _hook_src_root = _ImportHookPath(__file__).parent / "src"
+    if _hook_src_root.exists():
+        sys.meta_path.insert(0, _CodexNamespaceFinder(_hook_src_root))
+except Exception:
+    pass
+
 import importlib.util
 import os as _os
 import pathlib
@@ -452,3 +544,65 @@ def pytest_terminal_summary(terminalreporter: object, exitstatus: int, config: p
             f"HF model skips: {_hf_skip_count} (see hf_skips.log) — "
             "these inflate CI coverage vs local; see .codex/permanent_facts.md",
         )
+
+
+# ============================================================================
+# CODEX NAMESPACE SETUP (Phase 3 Blocker Fix - S228)
+# ============================================================================
+# Map codex.* imports to src/* modules to resolve 455 collection errors
+
+import sys as _sys
+import importlib as _imp
+from pathlib import Path as _Path
+
+_src = _Path(__file__).parent / "src"
+
+# Pre-register sys.modules entries for codex.* packages
+# This handles top-level modules in src/
+# Note: We only register modules that don't have complex dependencies
+_safe_modules = [
+    "utils", "common", "config", "aries_serpent_core",
+]
+
+for _mod in _safe_modules:
+    _alias = f"codex.{_mod}"
+    if _alias not in _sys.modules:
+        _path = _src / _mod
+        if _path.is_dir():
+            try:
+                _actual = _imp.import_module(_mod)
+                _sys.modules[_alias] = _actual
+            except Exception:
+                pass  # Skip modules with import errors
+
+
+# VERIFICATION: Check if src is in sys.path after initial setup
+_verify_src = _Path(__file__).parent / "src"
+_src_in_path = str(_verify_src) in _sys.path
+if not _src_in_path:
+    # This should never happen if conftest is loaded early enough
+    # but if it does, force it now
+    _sys.path.insert(0, str(_verify_src))
+
+
+# ============================================================================
+# EARLY HOOK: pytest_configure
+# ============================================================================
+# This hook runs very early, even before conftest top-level code
+
+def pytest_configure(config):
+    """Configure pytest and ensure sys.path is set up correctly."""
+    import sys
+    from pathlib import Path
+    
+    # Get the repository root (where pytest.ini is)
+    repo_root = Path(config.rootdir)
+    src_dir = repo_root / "src"
+    
+    # Add src to sys.path if not already there
+    src_str = str(src_dir)
+    if src_str not in sys.path:
+        sys.path.insert(0, src_str)
+    
+    # Also ensure conftest's changes are applied
+    return None
