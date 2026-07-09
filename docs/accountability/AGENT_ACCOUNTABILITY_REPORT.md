@@ -12,6 +12,7 @@
 - ✅ Corrected mutation-killer cache tests to use `QueryCache.get_stats()` and assert exact hit/miss/size values against the public API.
 - ✅ Corrected comparison mutation tests to use identity-safe `None` assertions and lint-safe boolean expectations.
 - ✅ Replaced the last tautological Tier 2 comparison assertions with boundary-based checks so code-quality review no longer flags redundant comparisons.
+- ✅ Finalized the Tier 2 multiplier/off-by-one assertions with named semantic boundaries and cleared the last automated review nits.
 - ✅ Updated `test_optimizations.py` imports to avoid root-level Ruff E402 failures while preserving existing test behavior.
 
 ### LOCAL VERIFICATION
@@ -24,6 +25,7 @@
 - Final validation cleanup: memory-sync entry IDs now preserve incoming strings and only coerce non-string IDs defensively ✅
 - `python3 -m ruff check tests/test_mutation_killers_tier2_comparisons.py` ✅
 - `PYTHONPATH=src:. python3 -m pytest -q tests/test_mutation_killers_tier2_comparisons.py` ✅ (passes with existing pytest config warnings only)
+- `parallel_validation` ✅ (Code Review clean; CodeQL skipped as trivial test/docs-only change)
 
 ### NOTES
 

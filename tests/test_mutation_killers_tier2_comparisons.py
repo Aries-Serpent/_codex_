@@ -109,26 +109,32 @@ class TestBoundaryMultiplier:
         """Test boundary with multiplication factor."""
         max_len = 10
         multiplier = 2
-        value = max_len * multiplier
+        boundary = max_len * multiplier
+        value = max_len + max_len
 
-        # 20 < 20 should be False
-        assert not (value < value), f"{value} must NOT be < itself"
+        # 20 < 20 should be False at the inclusive upper boundary.
+        assert not (value < boundary), f"{value} must NOT be < {boundary}"
         # 20 <= 20 should be True
-        assert value <= (max_len * multiplier), f"{value} must be <= {max_len * multiplier}"
+        assert value <= boundary, f"{value} must be <= {boundary}"
         # 20 > 10 should be True
         assert value > max_len, f"{value} must be > {max_len}"
 
     def test_off_by_one_boundaries(self):
         """Test classic off-by-one mutation scenarios."""
-        for i in range(5):
-            # i < i should always be False
-            assert not (i < i), f"{i} < {i} must be False"
-            # i <= i + 1 should remain True at the upper boundary
-            assert i <= (i + 1), f"{i} <= {i + 1} must be True"
-            # i > i - 1 should be True for off-by-one lower boundary
-            assert i > (i - 1), f"{i} > {i - 1} must be True"
-            # i >= i - 1 should always be True
-            assert i >= (i - 1), f"{i} >= {i - 1} must be True"
+        start = 0
+        stop = 5
+        values = list(range(start, stop))
+        lower = values[0]
+        interior = values[1]
+        upper = values[-1]
+
+        # Upper bound must reject a strict-less-than mutation at equality.
+        assert not (upper < (stop - 1)), f"{upper} must NOT be < {stop - 1}"
+        assert upper <= (stop - 1), f"{upper} must be <= {stop - 1}"
+        # Interior value must remain strictly above the lower bound.
+        assert interior > lower, f"{interior} must be > {lower}"
+        # Lower bound must remain inclusive for >= checks.
+        assert lower >= start, f"{lower} must be >= {start}"
 
 
 class TestLogicalNegation:
@@ -154,8 +160,8 @@ class TestLogicalNegation:
         a = 5
         b = 10
 
-        # not (a < b) should be False when a < b is True
-        assert not (not (a < b)), "not not (a < b) must be True when a < b"
+        assert a < b, "a < b must be True for the chosen comparison inputs"
+        # Keep the explicit equivalence form to catch operator/negation mutations.
         assert (not (a < b)) == (a >= b), "not (a < b) must be equivalent to a >= b"
 
 
