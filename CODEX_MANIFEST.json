@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-07-08T17:26:06Z",
+  "generated_at": "2026-07-09T15:30:41Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -973,6 +973,18 @@
       "role": "specialist",
       "enforcement_tier": "ARCHIVED",
       "autonomy_model": "E"
+    },
+    {
+      "name": "pattern-discovery-skill",
+      "role": "specialist",
+      "enforcement_tier": "STANDARD",
+      "autonomy_model": "D"
+    },
+    {
+      "name": "memory-sync-consolidation-skill",
+      "role": "specialist",
+      "enforcement_tier": "STANDARD",
+      "autonomy_model": "D"
     }
   ],
   "workflows": [
@@ -1059,7 +1071,7 @@
     {
       "name": "agentic-diff-guard",
       "enforcement_tier": "SOFT",
-      "has_concurrency": false
+      "has_concurrency": true
     },
     {
       "name": "api-documentation",
@@ -1104,7 +1116,7 @@
     {
       "name": "automated-compliance-check",
       "enforcement_tier": "SOFT",
-      "has_concurrency": false
+      "has_concurrency": true
     },
     {
       "name": "automated-monitoring-setup",
@@ -1259,7 +1271,7 @@
     {
       "name": "codeql-fix-verification",
       "enforcement_tier": "GROUNDED",
-      "has_concurrency": false
+      "has_concurrency": true
     },
     {
       "name": "codeql",
@@ -1599,7 +1611,7 @@
     {
       "name": "ml-tests",
       "enforcement_tier": "SOFT",
-      "has_concurrency": false
+      "has_concurrency": true
     },
     {
       "name": "model-drift-retrain",
@@ -1779,7 +1791,7 @@
     {
       "name": "profile-validation",
       "enforcement_tier": "GROUNDED",
-      "has_concurrency": false
+      "has_concurrency": true
     },
     {
       "name": "progressive-validation",
@@ -2109,7 +2121,7 @@
     {
       "name": "wec-enforcement-gate",
       "enforcement_tier": "SOFT",
-      "has_concurrency": false
+      "has_concurrency": true
     },
     {
       "name": "workflow-analytics-unified",
@@ -2521,5 +2533,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "11fc15207eb2a4e205745aa68e10b0e588e86f6082069ac2a62e96062d193d56"
+  "integrity_sha256": "1b2dbf00f5365930f63f450f3fa9748c4bde349e95fed15a481d269ad4381e40"
 }
