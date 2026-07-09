@@ -308,9 +308,9 @@ gh discussion create \
 
 | Step | Credential | Status |
 |------|-----------|--------|
-| PyPI Upload | `PYPI_TOKEN` | ⚠️ Not configured |
+| PyPI Upload | `PYPI_TOKEN` | ⚠️ Not configured | <!-- pragma: allowlist secret -->
 | Docker Push | Docker Hub credentials | ⚠️ Not configured |
-| GitHub Release | Admin token | ⚠️ Limited in this session |
+| GitHub Release | Admin token | ⚠️ Limited in this session | <!-- pragma: allowlist secret -->
 | GitHub Discussion | Write permissions | ⚠️ Need to verify |
 
 ---

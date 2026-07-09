@@ -55,7 +55,9 @@
     "35:.codex/PHASE_4B_5AB_CHECKPOINT_REPORT.md": 1,
     "35:.codex/PHASE_6_7_8_IMPLEMENTATION_GUIDES.md": 3,
     "24:.github/workflows/ml-tests.yml": 2,
-    "35:.codex/CHRONICLE_COMPREHENSIVE_SESSION_INDEX.md": 3
+    "35:.codex/CHRONICLE_COMPREHENSIVE_SESSION_INDEX.md": 3,
+    "35:.codex/PHASE_4_LANE_D_EXECUTION_SUMMARY.md": 2,
+    "35:.codex/security/SECRETS_MANAGEMENT.md": 1
   },
   "circuit_state": {
     "6": "BROKEN",
