@@ -392,10 +392,11 @@ class TestNoneAndOptionalBoundaries:
 
     def test_none_equality(self):
         """Test None equality."""
-        assert None is None
-        assert None != 0
-        assert None is not False
-        assert None != ""
+        none_val = None
+        assert none_val is None
+        assert 0 != none_val
+        assert False is not none_val
+        assert "" != none_val
 
     def test_optional_type_handling(self):
         """Test handling of optional types."""
