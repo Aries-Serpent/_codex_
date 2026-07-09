@@ -15543,3 +15543,7 @@ Completed TIER 1 semantic routing quality validation for multi-agent orchestrati
 
 ### Fixed (2026-07-09T19:36Z — REQ-4/REQ-5 PR #5278 Final CI Rescue Commit)
 - Compliance: **REQ-4 & REQ-5 Final Update** — Post-merge commit to ensure AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md appear in the final commit for PR #5278 CI rescue.
+
+### Fixed (2026-07-09T21:57Z — PR #5280 CI Rescue: pyproject.toml Version Fix)
+- CI Fix: Reverted `pyproject.toml` `version` from invalid `"0.1.0-prod"` to PEP 440 valid `"0.1.0"`. The non-standard "-prod" suffix caused failures in `pre-flight-validation`, `Validate Python Examples`, `compliance-check`, and `Final Pre-Merge Checks`.
+- Compliance: **REQ-4 & REQ-5 Recovery** — Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` and `CHANGELOG.md` to restore REQ-4/REQ-5 compliance.
