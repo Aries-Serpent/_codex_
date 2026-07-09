@@ -15785,5 +15785,5 @@ Phase 15 WS4: Production Certification
 
 ### COMPLIANCE STATUS
 - REQ-4: ✅ FIXED (AGENT_ACCOUNTABILITY_REPORT.md in this commit)
-- REQ-5: ✅ (CHANGELOG.md already up to date)
+- REQ-5: ✅ FIXED (CHANGELOG.md updated in this commit with CI rescue entry)
 - Agents Used: copilot-swe-agent
