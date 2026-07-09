@@ -27,7 +27,7 @@ def display_user_info(user_input: str) -> str:
 
     Example:
         >>> display_user_info("<script>alert('xss')</script>")
-        "&lt;script&gt;alert(&#x27;xss&#x27;)&lt;/script&gt;"
+        "User said: &lt;script&gt;alert(&#x27;xss&#x27;)&lt;/script&gt;"
     """
     # SECURE: html.escape() converts HTML special characters
     # < becomes &lt;, > becomes &gt;, & becomes &amp;, etc.

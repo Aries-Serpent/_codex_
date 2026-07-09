@@ -26,12 +26,13 @@ class Config:
         # SECURE: Database credentials come from environment, not hardcoded
         self.db_host = os.environ.get("DB_HOST", "localhost")
         self.db_port = os.environ.get("DB_PORT", "5432")
-        self.db_user = os.environ.get("DB_USER", "")  # Empty default, must be provided
-        self.db_password = os.environ.get("DB_PASSWORD", "")  # NEVER hardcode!
-
+        # IMPORTANT: Required credentials must be provided via environment variables
+        self.db_user = os.environ.get("DB_USER")  # No default; validation enforces requirement
+        self.db_password = os.environ.get("DB_PASSWORD")  # No default; validation enforces requirement
+ 
         # SECURE: API keys come from environment
-        self.api_key = os.environ.get("API_KEY", "")
-        self.secret_key = os.environ.get("SECRET_KEY", "")
+        self.api_key = os.environ.get("API_KEY")  # No default; validation enforces requirement
+        self.secret_key = os.environ.get("SECRET_KEY")  # No default; validation enforces requirement
 
         # SECURE: Non-sensitive configuration can have defaults
         self.debug = os.environ.get("DEBUG", "false").lower() == "true"
