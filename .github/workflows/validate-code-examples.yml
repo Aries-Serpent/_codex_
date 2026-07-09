@@ -1,5 +1,5 @@
 name: Code Example Validation
-on:
+"on":
   pull_request:
     paths:
     - docs/**
@@ -26,20 +26,66 @@ jobs:
     timeout-minutes: 10
     steps:
     - uses: actions/checkout@v5
+      with:
+        fetch-depth: 0
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
         python-version: '3.12'
         cache: 'pip'
     - name: Extract Python code blocks
-      run: "python3 << 'EOF'\nimport re\nfrom pathlib import Path\n\ndocs_dir = Path('docs')\n\
-        pattern = re.compile(r'```python\\n(.*?)\\n```', re.DOTALL)\n\nextracted =\
-        \ []\nfor md_file in docs_dir.rglob('*.md'):\n    with open(md_file) as f:\n\
-        \        for i, match in enumerate(pattern.finditer(f.read())):\n        \
-        \    code = match.group(1).strip()\n            extracted.append((str(md_file),\
-        \ i, code))\n\nprint(f\"Extracted {len(extracted)} Python code blocks\")\n\
-        \n# Save to file for validation\nimport json\nwith open('python_blocks.json',\
-        \ 'w') as f:\n    json.dump(extracted, f)\nEOF\n"
+      run: |
+        python3 <<'EOF'
+        import json
+        import os
+        import re
+        import subprocess
+        from pathlib import Path
+
+        pattern = re.compile(r"```python\n(.*?)\n```", re.DOTALL)
+
+
+        def iter_target_files() -> list[Path]:
+            event_name = os.environ.get("GITHUB_EVENT_NAME", "")
+            base_sha = ""
+            head_sha = os.environ.get("GITHUB_SHA", "")
+
+            if event_name == "pull_request":
+                base_sha = os.environ.get("GITHUB_BASE_SHA", "")
+            elif event_name == "push":
+                base_sha = os.environ.get("GITHUB_BEFORE", "")
+
+            if base_sha and head_sha and not set(base_sha) == {"0"}:
+                changed = subprocess.check_output(
+                    ["git", "diff", "--name-only", base_sha, head_sha],
+                    text=True,
+                ).splitlines()
+                files = [
+                    Path(path)
+                    for path in changed
+                    if path.endswith(".md")
+                ]
+                if files:
+                    return files
+
+            return sorted(Path("docs").rglob("*.md"))
+
+
+        extracted = []
+        for md_file in iter_target_files():
+            with open(md_file) as f:
+                for i, match in enumerate(pattern.finditer(f.read())):
+                    code = match.group(1).strip()
+                    extracted.append((str(md_file), i, code))
+
+        print(f"Extracted {len(extracted)} Python code blocks")
+
+        with open("python_blocks.json", "w") as f:
+            json.dump(extracted, f)
+        EOF
+      env:
+        GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha || '' }}
+        GITHUB_BEFORE: ${{ github.event.before || '' }}
     - name: Validate Python syntax
       run: "python3 << 'EOF'\nimport json\nimport tempfile\nimport os\n\nwith open('python_blocks.json')\
         \ as f:\n    blocks = json.load(f)\n\nerrors = []\nfor file_path, idx, code\
@@ -73,15 +119,61 @@ jobs:
     timeout-minutes: 10
     steps:
     - uses: actions/checkout@v5
+      with:
+        fetch-depth: 0
     - name: Extract Bash code blocks
-      run: "python3 << 'EOF'\nimport re\nfrom pathlib import Path\n\ndocs_dir = Path('docs')\n\
-        pattern = re.compile(r'```bash\\n(.*?)\\n```', re.DOTALL)\n\nextracted = []\n\
-        for md_file in docs_dir.rglob('*.md'):\n    with open(md_file) as f:\n   \
-        \     for i, match in enumerate(pattern.finditer(f.read())):\n           \
-        \ code = match.group(1).strip()\n            extracted.append((str(md_file),\
-        \ i, code))\n\nprint(f\"Extracted {len(extracted)} Bash code blocks\")\n\n\
-        # Save to file for validation\nimport json\nwith open('bash_blocks.json',\
-        \ 'w') as f:\n    json.dump(extracted, f)\nEOF\n"
+      run: |
+        python3 <<'EOF'
+        import json
+        import os
+        import re
+        import subprocess
+        from pathlib import Path
+
+        pattern = re.compile(r"```bash\n(.*?)\n```", re.DOTALL)
+
+
+        def iter_target_files() -> list[Path]:
+            event_name = os.environ.get("GITHUB_EVENT_NAME", "")
+            base_sha = ""
+            head_sha = os.environ.get("GITHUB_SHA", "")
+
+            if event_name == "pull_request":
+                base_sha = os.environ.get("GITHUB_BASE_SHA", "")
+            elif event_name == "push":
+                base_sha = os.environ.get("GITHUB_BEFORE", "")
+
+            if base_sha and head_sha and not set(base_sha) == {"0"}:
+                changed = subprocess.check_output(
+                    ["git", "diff", "--name-only", base_sha, head_sha],
+                    text=True,
+                ).splitlines()
+                files = [
+                    Path(path)
+                    for path in changed
+                    if path.endswith(".md")
+                ]
+                if files:
+                    return files
+
+            return sorted(Path("docs").rglob("*.md"))
+
+
+        extracted = []
+        for md_file in iter_target_files():
+            with open(md_file) as f:
+                for i, match in enumerate(pattern.finditer(f.read())):
+                    code = match.group(1).strip()
+                    extracted.append((str(md_file), i, code))
+
+        print(f"Extracted {len(extracted)} Bash code blocks")
+
+        with open("bash_blocks.json", "w") as f:
+            json.dump(extracted, f)
+        EOF
+      env:
+        GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha || '' }}
+        GITHUB_BEFORE: ${{ github.event.before || '' }}
     - name: Validate Bash syntax
       continue-on-error: true
       run: "python3 << 'EOF'\nimport json\nimport tempfile\nimport subprocess\nimport\
@@ -104,6 +196,8 @@ jobs:
     timeout-minutes: 10
     steps:
     - uses: actions/checkout@v5
+      with:
+        fetch-depth: 0
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
@@ -111,17 +205,70 @@ jobs:
         cache: 'pip'
     - name: Extract and validate YAML
       continue-on-error: true
-      run: "pip install pyyaml\n\npython3 << 'EOF'\nimport re\nimport yaml\nfrom pathlib\
-        \ import Path\n\ndocs_dir = Path('docs')\npattern = re.compile(r'```ya?ml\\\
-        n(.*?)\\n```', re.DOTALL)\n\nerrors = []\ntotal = 0\n\nfor md_file in docs_dir.rglob('*.md'):\n\
-        \    with open(md_file) as f:\n        for i, match in enumerate(pattern.finditer(f.read())):\n\
-        \            total += 1\n            code = match.group(1).strip()\n     \
-        \       try:\n                yaml.safe_load(code)\n            except yaml.YAMLError\
-        \ as e:\n                errors.append(f\"{md_file}:{i}: {e}\")\n\nif errors:\n\
-        \    print(f\"⚠️ YAML errors found in {len(errors)} blocks:\")\n    for err\
-        \ in errors[:10]:\n        print(f\"  {err}\")\n    print(\"Validation is\
-        \ advisory for YAML examples\")\nelse:\n    print(f\"✅ All {total} YAML code\
-        \ blocks are valid\")\nEOF\n"
+      run: |
+        pip install pyyaml
+
+        python3 <<'EOF'
+        import os
+        import re
+        import subprocess
+        from pathlib import Path
+
+        import yaml
+
+        pattern = re.compile(r"```ya?ml\n(.*?)\n```", re.DOTALL)
+
+
+        def iter_target_files() -> list[Path]:
+            event_name = os.environ.get("GITHUB_EVENT_NAME", "")
+            base_sha = ""
+            head_sha = os.environ.get("GITHUB_SHA", "")
+
+            if event_name == "pull_request":
+                base_sha = os.environ.get("GITHUB_BASE_SHA", "")
+            elif event_name == "push":
+                base_sha = os.environ.get("GITHUB_BEFORE", "")
+
+            if base_sha and head_sha and not set(base_sha) == {"0"}:
+                changed = subprocess.check_output(
+                    ["git", "diff", "--name-only", base_sha, head_sha],
+                    text=True,
+                ).splitlines()
+                files = [
+                    Path(path)
+                    for path in changed
+                    if path.endswith(".md")
+                ]
+                if files:
+                    return files
+
+            return sorted(Path("docs").rglob("*.md"))
+
+
+        errors = []
+        total = 0
+
+        for md_file in iter_target_files():
+            with open(md_file) as f:
+                for i, match in enumerate(pattern.finditer(f.read())):
+                    total += 1
+                    code = match.group(1).strip()
+                    try:
+                        yaml.safe_load(code)
+                    except yaml.YAMLError as e:
+                        errors.append(f"{md_file}:{i}: {e}")
+
+        if errors:
+            print(f"⚠️ YAML errors found in {len(errors)} blocks:")
+            for err in errors[:10]:
+                print(f"  {err}")
+            print("Validation is advisory for YAML examples")
+        else:
+            print(f"✅ All {total} YAML code blocks are valid")
+        EOF
+      env:
+        GITHUB_BASE_SHA: ${{ github.event.pull_request.base.sha || '' }}
+        GITHUB_BEFORE: ${{ github.event.before || '' }}
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}

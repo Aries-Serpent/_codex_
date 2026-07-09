@@ -62,7 +62,7 @@ version = "0.1.0"
 # ==============================================================================
 # THREE-PROFILE PACKAGING STRATEGY (as of v0.1.0)
 # ==============================================================================
-# 
+#
 # Core Profile (8-15 MB): Essential OODA loop APIs, offline-first, stdlib only
 #   - Use: pip install codex-ml[core]
 #   - For: lightweight deployment, offline environments, edge devices
@@ -399,6 +399,7 @@ exclude = [
     "*.pycache",
     "*.__pycache__.*",
     "__pycache__",
+    "codex.db*",
 ]
 namespaces = true
 
