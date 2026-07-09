@@ -1,5 +1,11 @@
 ## [Unreleased]
 
+### Fixed (2026-07-09T19:55:00Z — PR #5279 nltk bump + CI/CD maturity improvements)
+- **Session:** pr-5279-nltk-bump-and-ci-maturity — Bumped nltk from 3.9.4 to 3.10.0 (dependabot); added pip cache to `doc-freshness-check.yml` and `observable-release.yml` for CI/CD Maturity (P1); verified P2 (self-healing.yml exists), P3 (no deprecated Node.js refs)
+- **CI/CD Maturity (P1):** Added `cache: pip` to `actions/setup-python@v6` in `.github/workflows/doc-freshness-check.yml` and `.github/workflows/observable-release.yml`
+- **Compliance:** Updated REQ-4 (AGENT_ACCOUNTABILITY_REPORT.md) and REQ-5 (CHANGELOG.md) in this commit
+- **Authority:** D-tier autonomous via standing approval + wec:auto-approve enabled
+
 ### Fixed (2026-07-09T19:02:00Z — PR #5278 Security findings + pre-flight CI fix)
 - **Session:** pr-5278-security-and-preflight — Resolved 5 Semgrep mutable action tag findings and pre-flight regex false positive
 - **Security:** Pinned `actions/cache@v5` to full SHA `caa296126883cff596d87d8935842f9db880ef25` in 3 workflow files to prevent supply-chain attacks
