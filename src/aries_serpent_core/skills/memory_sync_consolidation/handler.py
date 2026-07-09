@@ -94,6 +94,8 @@ def run(
                 consolidation_report["promoted_patterns"].append(promoted)
 
                 if not dry_run:
+                    # Persistence is intentionally deferred until this skill is
+                    # wired to the real LTM retention backend again.
                     promoted["persistence_status"] = "deferred"
                     promoted["resolved_policy"] = policy.name.lower()
 

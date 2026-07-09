@@ -136,6 +136,8 @@ class TestQueryCacheBasicOperations:
         # Initial state
         assert stats.hits == 0, f"Initial hits must be 0, got {stats.hits}"
         assert stats.misses == 0, f"Initial misses must be 0, got {stats.misses}"
+        assert stats.size == 0, f"Initial size must be 0, got {stats.size}"
+        assert stats.max_size == 100, f"Initial max_size must be 100, got {stats.max_size}"
 
         # A put followed by a get for the same key is a hit.
         cache.put("key1", {"value": 1})

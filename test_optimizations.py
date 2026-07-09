@@ -10,6 +10,8 @@ import time
 
 sys.path.insert(0, '.codex')
 
+# Import after extending sys.path so this file stays executable both as a
+# standalone script and as a pytest target without triggering E402.
 _performance_optimizations = importlib.import_module("performance_optimizations")
 _regression_detector = importlib.import_module("regression_detector")
 
