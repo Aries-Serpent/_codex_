@@ -1,0 +1,219 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aries-serpent-api
+  namespace: aries-serpent
+  labels:
+    app: api
+    version: 0.1.0
+    component: api-server
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: api
+      version: 0.1.0
+  template:
+    metadata:
+      labels:
+        app: api
+        version: 0.1.0
+    spec:
+      serviceAccountName: aries-serpent
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        fsReadOnlyRootFilesystem: true
+      containers:
+      - name: api
+        image: aries-serpent-api:0.1.0-final
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: 8000
+          protocol: TCP
+        - name: https
+          containerPort: 8443
+          protocol: TCP
+        env:
+        - name: LOG_LEVEL
+          valueFrom:
+            configMapKeyRef:
+              name: aries-serpent-config
+              key: LOG_LEVEL
+        - name: API_TIMEOUT
+          valueFrom:
+            configMapKeyRef:
+              name: aries-serpent-config
+              key: API_TIMEOUT
+        - name: CACHE_SIZE
+          valueFrom:
+            configMapKeyRef:
+              name: aries-serpent-config
+              key: CACHE_SIZE
+        - name: API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: aries-serpent-secrets
+              key: API_KEY
+        resources:
+          requests:
+            cpu: 500m
+            memory: 1Gi
+          limits:
+            cpu: 1000m
+            memory: 2Gi
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+            scheme: HTTP
+          initialDelaySeconds: 15
+          periodSeconds: 20
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 3
+        volumeMounts:
+        - name: logs
+          mountPath: /app/logs
+        - name: tmp
+          mountPath: /tmp
+      volumes:
+      - name: logs
+        emptyDir: {}
+      - name: tmp
+        emptyDir: {}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - api
+              topologyKey: kubernetes.io/hostname
+      terminationGracePeriodSeconds: 30
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aries-serpent-inference
+  namespace: aries-serpent
+  labels:
+    app: inference
+    version: 0.1.0
+    component: inference-service
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: inference
+      version: 0.1.0
+  template:
+    metadata:
+      labels:
+        app: inference
+        version: 0.1.0
+    spec:
+      serviceAccountName: aries-serpent
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        fsReadOnlyRootFilesystem: true
+      containers:
+      - name: inference
+        image: aries-serpent-inference:0.1.0-final
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: grpc
+          containerPort: 8001
+          protocol: TCP
+        - name: metrics
+          containerPort: 8002
+          protocol: TCP
+        env:
+        - name: LOG_LEVEL
+          valueFrom:
+            configMapKeyRef:
+              name: aries-serpent-config
+              key: LOG_LEVEL
+        - name: INFERENCE_BATCH_SIZE
+          valueFrom:
+            configMapKeyRef:
+              name: aries-serpent-config
+              key: INFERENCE_BATCH_SIZE
+        - name: INFERENCE_TIMEOUT
+          valueFrom:
+            configMapKeyRef:
+              name: aries-serpent-config
+              key: INFERENCE_TIMEOUT
+        resources:
+          requests:
+            cpu: 1000m
+            memory: 2Gi
+          limits:
+            cpu: 2000m
+            memory: 4Gi
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8002
+            scheme: HTTP
+          initialDelaySeconds: 20
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8002
+            scheme: HTTP
+          initialDelaySeconds: 15
+          periodSeconds: 15
+          timeoutSeconds: 3
+          failureThreshold: 3
+        volumeMounts:
+        - name: logs
+          mountPath: /app/logs
+        - name: tmp
+          mountPath: /tmp
+      volumes:
+      - name: logs
+        emptyDir: {}
+      - name: tmp
+        emptyDir: {}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - inference
+              topologyKey: kubernetes.io/hostname
+      terminationGracePeriodSeconds: 45

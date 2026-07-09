@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: aries-serpent-api-service
+  namespace: aries-serpent
+  labels:
+    app: api
+    version: 0.1.0
+spec:
+  type: LoadBalancer
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 3600
+  selector:
+    app: api
+    version: 0.1.0
+  ports:
+  - name: http
+    port: 8000
+    targetPort: 8000
+    protocol: TCP
+  - name: https
+    port: 8443
+    targetPort: 8443
+    protocol: TCP
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: aries-serpent-inference-service
+  namespace: aries-serpent
+  labels:
+    app: inference
+    version: 0.1.0
+spec:
+  type: ClusterIP
+  selector:
+    app: inference
+    version: 0.1.0
+  ports:
+  - name: grpc
+    port: 8001
+    targetPort: 8001
+    protocol: TCP
+  - name: metrics
+    port: 8002
+    targetPort: 8002
+    protocol: TCP
