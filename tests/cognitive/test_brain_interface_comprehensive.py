@@ -26,7 +26,6 @@ from typing import Generator
 from unittest.mock import MagicMock, patch
 
 import pytest
-
 from codex.cognitive.brain_interface import BrainInterface
 
 

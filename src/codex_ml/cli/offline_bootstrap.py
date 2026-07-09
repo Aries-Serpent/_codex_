@@ -22,7 +22,6 @@ from pathlib import Path
 from typing import Any, Optional
 
 
-
 def _mlflow_env(root: Path) -> dict[str, str]:
     mlruns = root.joinpath("mlruns")
     mlruns.mkdir(parents=True, exist_ok=True)

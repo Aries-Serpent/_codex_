@@ -16,7 +16,6 @@ import time
 from pathlib import Path
 
 import pytest
-
 from codex.cache import (
     L1CacheDecorator,
     L1RequestCache,

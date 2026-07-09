@@ -13,7 +13,6 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-
 from codex.cognitive.ml import (
     ClassificationResult,
     CosineSimilarity,

@@ -84,7 +84,6 @@ class TestParseMetadata:
         """Test that missing equals raises BadParameter."""
         try:
             import click
-
             from src.codex.archive.cli import _parse_metadata
 
             with pytest.raises(click.BadParameter):

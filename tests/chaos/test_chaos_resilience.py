@@ -10,7 +10,6 @@ import random
 import time
 
 import pytest
-
 from codex.resilience.circuit_breaker import CircuitBreaker, CircuitOpenError, CircuitState
 from codex.resilience.degradation import DegradationError, GracefulDegradation
 from codex.resilience.retry import RetryExhausted, retry_with_backoff

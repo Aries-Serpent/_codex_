@@ -10,7 +10,6 @@ import re
 import sqlite3
 
 import pytest
-
 from codex.security.sanitization import sanitize_html, sanitize_integer
 
 # SQL Injection Prevention Tests

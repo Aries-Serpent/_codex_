@@ -13,7 +13,6 @@ import threading
 import time
 
 import pytest
-
 from codex.auth.authenticator import Authenticator
 from codex.auth.exceptions import (  # pragma: allowlist secret
     InvalidCredentialsError,  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret

@@ -37,19 +37,19 @@ from __future__ import annotations
 from .ml_protocols import (
     CheckpointerProtocol,
     DatasetProtocol,
+    DatasetType,
     EvaluatorProtocol,
-    LossProtocol,
     LoggerProtocol,
+    LoggerType,
+    LossProtocol,
     MetricsProtocol,
+    MetricsType,
     ModelProtocol,
+    ModelType,
     OptimizerProtocol,
     SchedulerProtocol,
     TrainerProtocol,
     TrainerType,
-    DatasetType,
-    ModelType,
-    MetricsType,
-    LoggerType,
 )
 
 __all__ = [

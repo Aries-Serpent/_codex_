@@ -12,7 +12,6 @@ Validates that:
 from __future__ import annotations
 
 import pytest
-
 from codex.cognitive.mcp_session_bridge import register_mcp_session_hook, validate_actor
 
 # ---------------------------------------------------------------------------

@@ -15,7 +15,6 @@ from datetime import (
 from uuid import uuid4
 
 import pytest  # pragma: allowlist secret
-
 from codex.auth.in_memory_user_repository import (
     InMemoryUserRepository,
     UserNotFoundError,

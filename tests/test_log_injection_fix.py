@@ -11,16 +11,16 @@ Tests cover:
 """
 
 import logging
-import pytest
 from io import StringIO
 from unittest.mock import patch
 
+import pytest
 from codex.logging_safe import (
-    create_safe_logger,
-    sanitize_for_log,
-    create_safe_json_log,
     SafeLogger,
     _sanitize_value,
+    create_safe_json_log,
+    create_safe_logger,
+    sanitize_for_log,
 )
 
 

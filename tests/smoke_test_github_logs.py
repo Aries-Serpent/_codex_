@@ -56,7 +56,6 @@ def test_cli_help():
 
     try:
         from click.testing import CliRunner
-
         from codex.cli import cli as main_cli
 
         runner = CliRunner()

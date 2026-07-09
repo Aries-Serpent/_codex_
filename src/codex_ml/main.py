@@ -8,9 +8,9 @@ remaining optional so environments without Typer can still query metadata.
 
 from __future__ import annotations
 
-from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
-
 import logging
+
+from codex.logging.adapter import get_default_logger
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +18,6 @@ import argparse  # noqa: E402
 import importlib  # noqa: E402
 import sys  # noqa: E402
 from collections.abc import Sequence  # noqa: E402
-
 
 _HELP_EPILOG = "Run `python -m codex_ml.cli --help` for full subcommands."
 

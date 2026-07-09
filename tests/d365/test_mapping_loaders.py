@@ -10,7 +10,6 @@ import json
 from pathlib import Path
 
 import pytest
-
 from codex.mapping.load import load_all_mappings, load_sla
 
 

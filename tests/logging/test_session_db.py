@@ -20,7 +20,6 @@ from pathlib import (  # pragma: allowlist secret
 )
 
 import pytest
-
 from codex.logging.session_db import CacheEntry, SessionDB
 
 

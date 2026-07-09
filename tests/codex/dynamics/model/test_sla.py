@@ -3,7 +3,6 @@
 from datetime import UTC, datetime, timedelta
 
 import pytest
-
 from codex.dynamics.model.sla import (
     SLAMetric,
     SLAPauseCondition,

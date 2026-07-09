@@ -10,7 +10,6 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import pytest
-
 from codex.cognitive.objective_analyzer import (
     AlertSeverity,
     AnomalyDetector,

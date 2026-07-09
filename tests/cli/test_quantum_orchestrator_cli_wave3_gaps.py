@@ -13,10 +13,10 @@ Addresses uncovered branches and error paths:
 - Resource constraint validation
 """
 
-import tempfile
-import os
-from unittest.mock import Mock, MagicMock, patch
 import json
+import os
+import tempfile
+from unittest.mock import patch
 
 import pytest
 from click.testing import CliRunner

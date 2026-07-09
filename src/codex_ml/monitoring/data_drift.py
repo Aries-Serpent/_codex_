@@ -56,7 +56,6 @@ from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from typing import Any, Sequence
 
-
 logger = logging.getLogger(__name__)
 
 __all__ = [

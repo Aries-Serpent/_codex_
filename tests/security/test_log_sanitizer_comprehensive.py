@@ -10,7 +10,6 @@ Tests cover:
 """
 
 import pytest  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
-
 from codex.security.log_sanitizer import (
     mask_secrets,
     mask_sensitive,

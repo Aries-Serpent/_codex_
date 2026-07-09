@@ -199,20 +199,20 @@ class TestCoreAPIImports:
     def test_import_all_core_apis(self):
         """All 10 core APIs should import without error."""
         from cognitive_brain.base import (
+            ActionResult,
+            Decision,
+            MemoryInterface,
             ObservationData,
             OrientationResult,
-            Decision,
-            ActionResult,
             Planner,
-            MemoryInterface,
-        )
-        from cognitive_brain.quantum.memory import (
-            MemoryPattern,
-            QuantumMemoryManager,
         )
         from cognitive_brain.models.learning_outcome import (
             Pattern,
             PatternSet,
+        )
+        from cognitive_brain.quantum.memory import (
+            MemoryPattern,
+            QuantumMemoryManager,
         )
 
         # Verify all imported successfully
@@ -243,6 +243,7 @@ class TestZeroNetworkCalls:
         """Base module should not attempt any network calls."""
         # Force reimport to catch any network calls at import time
         import importlib
+
         import cognitive_brain.base
 
         importlib.reload(cognitive_brain.base)
@@ -255,6 +256,7 @@ class TestZeroNetworkCalls:
         """Quantum memory module should not attempt any network calls."""
         try:
             import importlib
+
             import cognitive_brain.quantum.memory
 
             importlib.reload(cognitive_brain.quantum.memory)
@@ -270,6 +272,7 @@ class TestZeroNetworkCalls:
     def test_learning_outcome_no_network_calls(self, mock_network_calls):
         """Learning outcome module should not attempt any network calls."""
         import importlib
+
         import cognitive_brain.models.learning_outcome
 
         importlib.reload(cognitive_brain.models.learning_outcome)
@@ -281,6 +284,7 @@ class TestZeroNetworkCalls:
     def test_core_modules_no_network_calls(self, mock_network_calls):
         """All core cognitive_brain modules should not attempt any network calls."""
         import importlib
+
         import cognitive_brain
 
         # Reload main package
@@ -301,6 +305,7 @@ class TestOODALoopExecution:
     def test_observation_data_creation(self):
         """ObservationData should be creatable with valid data."""
         from datetime import datetime, timezone
+
         from cognitive_brain.base import ObservationData
 
         obs = ObservationData(
@@ -316,6 +321,7 @@ class TestOODALoopExecution:
     def test_decision_creation(self):
         """Decision should be creatable with valid data."""
         from datetime import datetime, timezone
+
         from cognitive_brain.base import Decision
 
         decision = Decision(
@@ -402,12 +408,12 @@ class TestConfigurationMatrix:
 
         # Test imports
         from cognitive_brain.base import (
+            ActionResult,
+            Decision,
+            MemoryInterface,
             ObservationData,
             OrientationResult,
-            Decision,
-            ActionResult,
             Planner,
-            MemoryInterface,
         )
 
         assert ObservationData is not None
@@ -445,7 +451,7 @@ class TestSafetyProfileCompliance:
 
     def test_imports_without_safety_profile(self):
         """Core APIs should import without explicit SafetyProfile."""
-        from cognitive_brain.base import Planner, MemoryInterface
+        from cognitive_brain.base import MemoryInterface, Planner
         from cognitive_brain.quantum.memory import QuantumMemoryManager
 
         assert Planner is not None
@@ -455,8 +461,8 @@ class TestSafetyProfileCompliance:
     def test_core_modules_use_stdlib_only(self):
         """Core modules should use only stdlib + numpy (no network libs)."""
         import cognitive_brain.base
-        import cognitive_brain.quantum.memory
         import cognitive_brain.models.learning_outcome
+        import cognitive_brain.quantum.memory
 
         # Verify modules loaded successfully
         assert cognitive_brain.base is not None
@@ -493,8 +499,8 @@ class TestOfflineBootstrapIntegration:
 
         # Step 4: Verify key classes
         from cognitive_brain.base import Planner
-        from cognitive_brain.quantum.memory import QuantumMemoryManager
         from cognitive_brain.models.learning_outcome import Pattern
+        from cognitive_brain.quantum.memory import QuantumMemoryManager
 
         assert Planner is not None
         assert QuantumMemoryManager is not None
@@ -503,20 +509,20 @@ class TestOfflineBootstrapIntegration:
     def test_comprehensive_api_verification(self):
         """Comprehensive verification of all 10 core APIs."""
         from cognitive_brain.base import (
+            ActionResult,
+            Decision,
+            MemoryInterface,
             ObservationData,
             OrientationResult,
-            Decision,
-            ActionResult,
             Planner,
-            MemoryInterface,
-        )
-        from cognitive_brain.quantum.memory import (
-            MemoryPattern,
-            QuantumMemoryManager,
         )
         from cognitive_brain.models.learning_outcome import (
             Pattern,
             PatternSet,
+        )
+        from cognitive_brain.quantum.memory import (
+            MemoryPattern,
+            QuantumMemoryManager,
         )
 
         # Count and verify

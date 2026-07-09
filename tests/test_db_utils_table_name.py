@@ -3,7 +3,6 @@
 import sqlite3
 
 import pytest
-
 from codex.logging.db_utils import get_columns, infer_probable_table
 
 

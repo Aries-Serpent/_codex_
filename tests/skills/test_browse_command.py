@@ -8,9 +8,8 @@ pytest.importorskip("typer", reason="typer required for browse command tests")
 
 from unittest.mock import MagicMock, patch
 
-from typer.testing import CliRunner
-
 from codex.skills.cli import app
+from typer.testing import CliRunner
 
 runner = CliRunner()
 

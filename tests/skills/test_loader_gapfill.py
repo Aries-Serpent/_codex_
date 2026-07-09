@@ -4,7 +4,6 @@ import tempfile
 from pathlib import Path
 
 import pytest
-
 from codex.skills.loader import SkillDocLoader, _split_frontmatter
 
 

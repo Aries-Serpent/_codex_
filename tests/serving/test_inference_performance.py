@@ -10,9 +10,8 @@ import time
 import pytest
 
 pytest.importorskip("fastapi")
-from fastapi.testclient import TestClient
-
 from codex.logging.structured_logger import logger
+from fastapi.testclient import TestClient
 
 
 @pytest.fixture

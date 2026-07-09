@@ -7,7 +7,6 @@ import os
 from unittest.mock import patch
 
 import pytest
-
 from codex.skills.models import BudgetUsed, ExecutionMetrics
 from codex.skills.telemetry import (
     emit_event,

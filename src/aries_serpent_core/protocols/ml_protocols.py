@@ -11,7 +11,7 @@ Zero import dependencies: Only uses typing and abc modules.
 from __future__ import annotations
 
 from abc import abstractmethod
-from typing import TYPE_CHECKING, Any, Protocol, Sequence, TypeVar
+from typing import TYPE_CHECKING, Any, Protocol, TypeVar
 
 if TYPE_CHECKING:
     from pathlib import Path

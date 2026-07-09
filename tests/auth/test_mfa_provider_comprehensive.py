@@ -14,7 +14,6 @@ import time
 from unittest.mock import patch
 
 import pytest
-
 from codex.auth.mfa_provider import (  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
     MFAProvider,
     MFASecret,

@@ -7,7 +7,6 @@ Test module for codex cli.
 from __future__ import annotations
 
 from click.testing import CliRunner
-
 from codex.cli import cli
 
 

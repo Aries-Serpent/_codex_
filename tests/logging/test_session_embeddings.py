@@ -20,7 +20,6 @@ from pathlib import Path
 
 import numpy as np
 import pytest
-
 from codex.logging.session_embeddings import SessionEmbeddings
 
 

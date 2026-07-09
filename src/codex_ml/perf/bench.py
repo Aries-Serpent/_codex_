@@ -34,7 +34,6 @@ from dataclasses import dataclass  # noqa: E402
 from typing import Any  # noqa: E402
 
 
-
 def _maybe_cuda_sync() -> None:
     try:
         import torch

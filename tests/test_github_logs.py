@@ -150,8 +150,8 @@ class TestGitHubLogsCLI:
     def test_fetch_check_run_logs_command(self, mock_get_client):
         """Test check-run CLI command."""
         from click.testing import CliRunner
-
         from src.codex.cli_github_logs import cli
+
         from src.services.github.types import (
             CheckRun,
             CheckRunConclusion,
@@ -184,8 +184,8 @@ class TestGitHubLogsCLI:
     def test_list_check_runs_command(self, mock_get_client):
         """Test list-check-runs CLI command."""
         from click.testing import CliRunner
-
         from src.codex.cli_github_logs import cli
+
         from src.services.github.types import (
             CheckRun,
             CheckRunConclusion,
@@ -235,10 +235,10 @@ class TestGitHubLogsAPI:
 
     def test_get_check_run_logs_endpoint(self, mock_github_client):
         """Test GET /github/check-runs/{id}/logs endpoint."""
+        from codex.api.github_logs import router
         from fastapi import FastAPI
         from fastapi.testclient import TestClient
 
-        from codex.api.github_logs import router
         from src.services.github.types import (
             CheckRun,
             CheckRunConclusion,
@@ -275,10 +275,10 @@ class TestGitHubLogsAPI:
 
     def test_list_check_runs_endpoint(self, mock_github_client):
         """Test GET /github/check-runs endpoint."""
+        from codex.api.github_logs import router
         from fastapi import FastAPI
         from fastapi.testclient import TestClient
 
-        from codex.api.github_logs import router
         from src.services.github.types import (
             CheckRun,
             CheckRunConclusion,

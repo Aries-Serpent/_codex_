@@ -9,7 +9,6 @@ Tests cover:
 """
 
 import pytest
-
 from codex.auth.mfa_provider import MFAProvider, MFASecret
 
 # ============================================================================

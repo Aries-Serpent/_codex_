@@ -10,7 +10,6 @@ import json
 from pathlib import Path
 
 import pytest
-
 from codex.archive import batch
 from codex.archive.config import BatchConfig, PerformanceConfig, RetrySettings
 

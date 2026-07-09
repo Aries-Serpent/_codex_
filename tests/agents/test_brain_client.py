@@ -21,7 +21,6 @@ from typing import Any
 from unittest.mock import MagicMock, patch
 
 import pytest
-
 from codex.agents.brain_client import _DEFAULT_URL, BrainClient, BrainClientError
 
 # All env vars consulted by BrainClient._auth_header() — must be excluded

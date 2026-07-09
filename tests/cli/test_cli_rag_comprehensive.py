@@ -22,9 +22,8 @@ import pytest
 pytest.importorskip("typer")
 
 
-from typer.testing import CliRunner
-
 from codex.cli_rag import _format_bytes, _validate_files, app
+from typer.testing import CliRunner
 
 
 @pytest.fixture

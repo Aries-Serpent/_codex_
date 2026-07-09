@@ -28,7 +28,6 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional, Protocol, runtime_checkable
 
-
 logger = logging.getLogger(__name__)
 
 __all__ = [

@@ -16,10 +16,8 @@ Addresses uncovered branches and error paths:
 import os
 import tempfile
 from concurrent.futures import ThreadPoolExecutor, as_completed  # pragma: allowlist secret
-from unittest.mock import Mock, patch
 
 import pytest
-
 from codex.auth.in_memory_user_repository import InMemoryUserRepository
 from codex.auth.sqlite_user_repository import SQLiteUserRepository
 from codex.auth.user_model import PasswordHasher, User

@@ -8,7 +8,6 @@ Test module for standardization.
 """Tests for standardization layer."""
 
 import pytest
-
 from codex.archive.evidence_schema import EvidenceSchemaValidator
 from codex.archive.standardization import (
     SLSA_LEVEL,

@@ -7,9 +7,9 @@ import argparse
 import json
 from pathlib import Path
 
+from codex.logging.adapter import get_default_logger
 
 from .loaders import collect_stats, stream_paths
-from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
 
 
 def main(argv=None) -> None:

@@ -9,7 +9,6 @@ import json
 from pathlib import Path
 
 import pytest
-
 from codex.autonomy.audit import AuditLogger, AuditRecord, MetricsSnapshot
 from codex.autonomy.registry import AutonomyMode, AutonomyRegistry
 

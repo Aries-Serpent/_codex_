@@ -21,7 +21,6 @@ import os
 from typing import Any, Optional
 
 
-
 def _enable_mlflow(uri: Optional[str]) -> dict[str, Any]:
     result: dict[str, Any] = {"enabled": False, "tracking_uri": uri or "mlruns"}
     try:

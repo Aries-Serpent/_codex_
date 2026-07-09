@@ -10,11 +10,8 @@ This test validates that:
 
 from __future__ import annotations
 
-import importlib
-import sys
 import subprocess
-from pathlib import Path
-from typing import Any
+import sys
 
 
 def test_independent_import_training() -> bool:

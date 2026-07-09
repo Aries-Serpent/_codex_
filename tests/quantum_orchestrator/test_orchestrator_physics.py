@@ -13,7 +13,6 @@ Tests target quantum evolution and physics constraints.
 
 import numpy as np
 import pytest
-
 from codex.quantum_orchestrator.orchestrator import (
     DiracMatrices,
     DiracOperator,

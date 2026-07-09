@@ -10,7 +10,6 @@ import urllib.error
 from unittest.mock import Mock, patch
 
 import pytest
-
 from codex.github.http_client import (
     GitHubHTTPClient,
     redact_url_for_log,

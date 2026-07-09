@@ -2,12 +2,11 @@
 
 from __future__ import annotations
 
-from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
-
 import argparse
 import json
 import logging
 
+from codex.logging.adapter import get_default_logger
 
 logger = logging.getLogger(__name__)
 import platform

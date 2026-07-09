@@ -7,7 +7,6 @@ from pathlib import Path
 
 import pytest
 import yaml
-
 from codex.skills.compression import CompressionResult, compress_skill, install_skill
 
 

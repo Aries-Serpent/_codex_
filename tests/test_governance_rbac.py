@@ -11,12 +11,11 @@ Tests cover:
 """
 
 import pytest
-
 from src.codex.governance.rbac import (
-    CodexRole,  # pragma: allowlist secret
-    ResourceType,
     Action,  # pragma: allowlist secret
+    CodexRole,  # pragma: allowlist secret
     RBACEnforcer,
+    ResourceType,
 )
 
 

@@ -9,8 +9,7 @@ import os
 from unittest.mock import patch
 
 import pytest
-
-from src.codex.config.env_vars import EnvVarConfig, EnvironmentManager
+from src.codex.config.env_vars import EnvironmentManager, EnvVarConfig
 
 
 @pytest.fixture

@@ -63,7 +63,10 @@ from typing import Any, Optional
 
 from aries_serpent_core.cognitive.brain_interface import AgentBrainInterface, LearningFeedback
 from aries_serpent_core.cognitive.planset_orchestrator import PlansetOrchestrator, PromptSet
-from aries_serpent_core.cognitive.quantum_planset_engine import ImprovementArea, QuantumPlansetEngine
+from aries_serpent_core.cognitive.quantum_planset_engine import (
+    ImprovementArea,
+    QuantumPlansetEngine,
+)
 from aries_serpent_core.logging.structured_logger import logger
 
 # ---------------------------------------------------------------------------

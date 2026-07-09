@@ -10,7 +10,6 @@ import json
 import unittest.mock as mock  # pragma: allowlist secret
 
 import pytest
-
 from codex.github.mcp_poster import GitHubMCPPoster
 
 

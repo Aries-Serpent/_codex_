@@ -16,11 +16,10 @@ Functions:
 
 Author: Codex Team
 """
-from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
-
 # src/codex_ml/cli/audit_pipeline.py
-
 import logging
+
+from codex.logging.adapter import get_default_logger
 
 logger = logging.getLogger(__name__)
 

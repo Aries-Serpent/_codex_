@@ -15,7 +15,6 @@ import sqlite3
 import time
 
 import pytest
-
 from codex.logging.db_manager import DBManager
 
 

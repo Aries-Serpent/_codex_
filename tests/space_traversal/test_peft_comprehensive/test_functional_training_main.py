@@ -9,9 +9,9 @@ import types
 from pathlib import Path
 from typing import Any
 
+import codex.training as ft
 import pytest
 
-import codex.training as ft
 from omegaconf import OmegaConf
 
 pytestmark = pytest.mark.requires_torch

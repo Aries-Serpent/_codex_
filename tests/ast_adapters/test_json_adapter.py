@@ -5,7 +5,6 @@ Tests for JSON AST Adapter.
 from pathlib import Path
 
 import pytest
-
 from codex.ast_adapters.json_adapter import JSONASTAdapter
 
 

@@ -9,7 +9,6 @@ from __future__ import annotations
 from datetime import UTC, datetime
 
 import pytest
-
 from codex.alerting.base import AlertChannel, AlertEvent, AlertSeverity
 
 

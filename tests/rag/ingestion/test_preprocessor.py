@@ -3,7 +3,6 @@ Tests for Document Preprocessor Module.
 """
 
 import pytest
-
 from codex.rag.ingestion.preprocessor import (
     DocumentPreprocessor,
     NormalizationLevel,

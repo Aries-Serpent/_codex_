@@ -13,9 +13,10 @@ Addresses uncovered branches and error paths:
 - Bypass/skip conditions
 """
 
-from unittest.mock import Mock, MagicMock, patch
 from datetime import datetime, timedelta
-  # pragma: allowlist secret
+from unittest.mock import Mock
+
+# pragma: allowlist secret
 import pytest
 
 

@@ -14,7 +14,7 @@ import io
 import json
 import shutil
 import sys
-import tarfile # pragma: allowlist secret # pragma: allowlist secret
+import tarfile  # pragma: allowlist secret # pragma: allowlist secret
 from pathlib import Path
 
 import pytest

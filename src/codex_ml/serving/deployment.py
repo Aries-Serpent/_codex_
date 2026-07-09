@@ -17,7 +17,6 @@ from enum import Enum  # noqa: E402
 from typing import Any, Optional  # noqa: E402
 
 
-
 class DeploymentStrategy(Enum):
     """Deployment strategy types."""
 

@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import pytest
-
 from codex.monitoring import Histogram, metrics
 from codex.monitoring.otel_metrics import (
     compute_coherence,

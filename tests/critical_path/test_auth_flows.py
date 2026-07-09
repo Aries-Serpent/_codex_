@@ -14,7 +14,6 @@ All tests are deterministic and isolated.
 import time
 
 import pytest
-
 from codex.auth.middleware import (
     RateLimiter,
 )

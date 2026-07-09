@@ -3,10 +3,10 @@ Registry for AST analyzers.
 
 Provides registration and execution of multiple analyzers on AST trees.
 """
-from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
-
 import logging
 from typing import Any, Optional
+
+from codex.logging.adapter import get_default_logger
 
 from codex_ml.ast.analysis.base_analyzer import (
     ASTAnalyzer,

@@ -12,7 +12,6 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import pytest
-
 from codex.cognitive.workflow_optimizer import (
     CacheOptimizer,
     CheckpointManager,  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret

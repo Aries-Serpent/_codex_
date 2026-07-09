@@ -3,7 +3,6 @@
 from pathlib import Path
 
 import pytest
-
 from codex.ast.node import NodeType
 from codex.ast.parser import ParseError, UniversalParser, parse_python
 

@@ -1,4 +1,5 @@
-from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
+from codex.logging.adapter import get_default_logger
+
 #!/usr/bin/env python3
 """
 AST Analysis CLI - Command Line Interface for Codebase Analysis.

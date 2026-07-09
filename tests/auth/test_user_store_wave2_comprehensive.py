@@ -10,7 +10,6 @@ Tests cover:
 """
 
 import pytest  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
-
 from codex.auth.exceptions import InvalidCredentialsError
 from codex.auth.user_model import PasswordHasher
 from codex.auth.user_store import User, UserStore

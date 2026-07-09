@@ -17,10 +17,9 @@ import pytest
 
 pytest.importorskip("fastapi")
 pytest.importorskip("slowapi")
+from codex.api.rag_api import MergeIndicesRequest, _ensure_subpath, _validate_path_segment
 from fastapi import HTTPException
 from pydantic import ValidationError
-
-from codex.api.rag_api import MergeIndicesRequest, _ensure_subpath, _validate_path_segment
 
 # ---------------------------------------------------------------------------
 # MergeIndicesRequest.source_indices — min_length=2 (Pydantic v2)

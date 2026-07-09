@@ -31,7 +31,6 @@ import sys
 from importlib import import_module
 from typing import Any, NoReturn, Optional
 
-
 try:  # pragma: no cover - structured logging is optional offline
     from codex_ml.codex_structured_logging import (
         ArgparseJSONParser,

@@ -409,7 +409,7 @@ class TestRegressionPrevention:
 
     def test_cli_backward_compatibility(self):
         """Verify CLI changes maintain backward compatibility."""
-        from codex.cli import app, main, cli
+        from codex.cli import app, cli, main
 
         # All primary entry points should be available
         assert app is not None, "Typer app should be available"

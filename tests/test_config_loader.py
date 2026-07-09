@@ -6,7 +6,6 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-
 from codex.utils.config_loader import (
     ConfigLoader,
     ErrorConfig,

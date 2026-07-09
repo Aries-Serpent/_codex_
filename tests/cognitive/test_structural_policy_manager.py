@@ -12,7 +12,6 @@ import json
 import time
 
 import pytest
-
 from codex.cognitive.structural_policy_manager import (
     ACTION_TIER_MAP,
     PermissionTier,

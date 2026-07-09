@@ -12,7 +12,6 @@ from __future__ import annotations
 
 # pragma: allowlist secret # pragma: allowlist secret
 import pytest
-
 from codex.auth.token_manager import (  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
     TokenManager,
     TokenType,

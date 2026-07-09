@@ -9,13 +9,13 @@ import json
 import logging
 import sys
 import warnings
-from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
+
+from codex.logging.adapter import get_default_logger
 
 logger = logging.getLogger(__name__)
 
 from collections.abc import Iterable, Sequence
 from typing import Any, Optional
-
 
 _JSON_EPILOG = (
     "JSON schema:\n"

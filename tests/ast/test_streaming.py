@@ -1,7 +1,6 @@
 """Tests for streaming parser."""
 
 import pytest
-
 from codex.ast.streaming import StreamingParser
 
 

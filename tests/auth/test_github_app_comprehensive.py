@@ -14,7 +14,6 @@ import json
 from unittest.mock import Mock, patch
 
 import pytest
-
 from codex.auth.github_app import (  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
     GitHubApp,
     GitHubInstallation,
