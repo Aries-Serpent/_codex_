@@ -127,8 +127,7 @@ class UserQueryExecutor:
             raise ValueError(f"user_id must be an integer, got {type(user_id)}")
  
         # Validate field names to prevent SQL injection through field names
-        # SCHEMA SYNC: This whitelist must be kept in sync with UserQueryExecutor class
-        # and the actual database schema definition. When schema changes, update this whitelist.
+        # SCHEMA SYNC: Keep this whitelist synchronized with the database schema definition
         allowed_fields = {"name", "email", "phone", "bio"}
         for field in kwargs.keys():
             if field not in allowed_fields:

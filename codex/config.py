@@ -23,8 +23,19 @@ class Config:
     
     IMPORTANT: Constructor loads configuration from environment variables but does NOT
     automatically validate them. Call validate() explicitly to enforce that all required
-    credentials are present. In production environments, call validate() immediately after
-    construction (see get_config() for example usage pattern).
+    credentials are present. 
+    
+    Usage example:
+        # SAFE: Validates credentials are present
+        config = get_config()  # Calls validate() automatically
+        db_conn = config.get_db_connection_string()
+        
+        # UNSAFE: No validation (credentials may be None)
+        config = Config()  # Does NOT call validate()
+        # May cause runtime errors when accessing credentials later
+        
+    In production environments, always use get_config() singleton which validates
+    credentials automatically on first access.
     """
 
     def __init__(self):

@@ -12,7 +12,7 @@ Security Model:
 
 import json
 import logging
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, Union
 
 logger = logging.getLogger(__name__)
 
@@ -134,7 +134,7 @@ def load_user_config(json_str: str) -> Dict[str, Any]:
 
 
 def deserialize_and_validate(
-    json_str: str, schema_validator: Optional[callable] = None
+    json_str: str, schema_validator: Optional[Callable[[Dict[str, Any]], None]] = None
 ) -> Dict[str, Any]:
     """Deserialize JSON with optional schema validation.
 
