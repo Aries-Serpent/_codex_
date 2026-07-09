@@ -1,6 +1,6 @@
 # Phase 8.2: Issue Triage Dashboard
 
-**Last Updated:** 2026-07-09 16:06 UTC
+**Last Updated:** 2026-07-09 18:55 UTC
 **Repository:** Aries-Serpent/_codex_
 **Dashboard:** Live SLA Tracking & Triage Metrics
 
@@ -140,11 +140,11 @@ Sun: 0 issues
 
 | Component | Status | Last Run | Next Run |
 |-----------|--------|----------|----------|
-| Issue Classification | ✅ Active | 15:51 UTC | 16:51 UTC |
-| Label Automation | ✅ Active | 15:56 UTC | 16:56 UTC |
-| Slack Notifications | ✅ Active | 16:01 UTC | 17:01 UTC |
-| Dashboard Generation | ✅ Active | 16:06 UTC | 17:06 UTC |
-| SLA Tracking | ✅ Active | 16:04 UTC | 17:04 UTC |
+| Issue Classification | ✅ Active | 18:40 UTC | 19:40 UTC |
+| Label Automation | ✅ Active | 18:45 UTC | 19:45 UTC |
+| Slack Notifications | ✅ Active | 18:50 UTC | 19:50 UTC |
+| Dashboard Generation | ✅ Active | 18:55 UTC | 19:55 UTC |
+| SLA Tracking | ✅ Active | 18:53 UTC | 19:53 UTC |
 
 ---
 
