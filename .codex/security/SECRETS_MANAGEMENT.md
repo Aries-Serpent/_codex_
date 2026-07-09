@@ -60,7 +60,7 @@ The `.gitignore` file already excludes secrets:
 .env
 .env.local
 .env.*.local
-secrets.txt
+secrets.txt  # pragma: allowlist secret
 *.key
 *.pem
 ```

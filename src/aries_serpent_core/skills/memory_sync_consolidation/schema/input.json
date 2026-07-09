@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Memory Sync Consolidation Input",
+  "type": "object",
+  "properties": {
+    "stm_entries": {
+      "type": "array",
+      "description": "List of short-term memory entries to consolidate",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      }
+    },
+    "retention_policy": {
+      "type": "string",
+      "description": "Retention policy for promoted patterns",
+      "enum": ["evergreen", "standard", "decay", "archived"],
+      "default": "standard"
+    },
+    "dedup_threshold": {
+      "type": "number",
+      "description": "Fuzzy match threshold for duplicate detection (0-1)",
+      "default": 0.85,
+      "minimum": 0,
+      "maximum": 1
+    },
+    "min_pattern_score": {
+      "type": "number",
+      "description": "Minimum score for pattern promotion (0-1)",
+      "default": 0.7,
+      "minimum": 0,
+      "maximum": 1
+    },
+    "dry_run": {
+      "type": "boolean",
+      "description": "If true, simulate consolidation without persisting",
+      "default": false
+    }
+  },
+  "required": ["stm_entries"],
+  "additionalProperties": false
+}

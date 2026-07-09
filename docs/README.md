@@ -2,7 +2,7 @@
 
 **Last Updated:** 2026-07-08  
 **Audience:** Developers, DevOps, Admins  
-**Related:** [Master Index](MASTER_INDEX.md), [Style Guide](.../.codex/DOCUMENTATION_STYLE_GUIDE.md)
+**Related:** [Master Index](MASTER_INDEX.md), [Style Guide](../.codex/DOCUMENTATION_STYLE_GUIDE.md)
 
 ---
 

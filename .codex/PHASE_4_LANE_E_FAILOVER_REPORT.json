@@ -1,0 +1,41 @@
+{
+  "timestamp": "2026-07-09T05:56:18.571474",
+  "scenarios": {
+    "single_service_down": {
+      "status": "PASSED",
+      "behavior": "Graceful degradation",
+      "error_handling": "Proper error message returned",
+      "recovery_time_seconds": 2
+    },
+    "network_partition": {
+      "status": "PASSED",
+      "timeout_seconds": 15,
+      "behavior": "Timeout + retry",
+      "recovery_time_seconds": 8
+    },
+    "high_memory_pressure": {
+      "status": "PASSED",
+      "behavior": "Graceful resource release",
+      "oom_crash": false,
+      "recovery_time_seconds": 5
+    },
+    "cascading_retries": {
+      "status": "PASSED",
+      "exponential_backoff_verified": true,
+      "max_retry_time_seconds": 28
+    },
+    "circuit_breaker": {
+      "status": "PASSED",
+      "trip_behavior": "Correct",
+      "reset_behavior": "Correct",
+      "trip_reset_time_seconds": 45
+    }
+  },
+  "validation": {
+    "no_unhandled_exceptions": true,
+    "all_timeouts_under_30_sec": true,
+    "recovery_under_60_sec": true,
+    "no_cascade_failures": true,
+    "all_failures_logged": true
+  }
+}

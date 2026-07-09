@@ -1122,11 +1122,11 @@ path:docs/ "mermaid" in:file
 - **Contributing**: See [CONTRIBUTING.md](CONTRIBUTING.md)
 - **Architecture**: Read [docs/Architecture](docs/human-facing/architecture.md)
 - **Security**: Report vulnerabilities via [SECURITY.md](SECURITY.md)
-- **Search Help**: Full guide in [PROMPTS/CHATGPT_SEARCH_RECIPES.md](PROMPTS/CHATGPT_SEARCH_RECIPES.md)
+- **Search Help**: Full guide in [prompts/CHATGPT_SEARCH_RECIPES.md](prompts/CHATGPT_SEARCH_RECIPES.md)
 
 ---
 
-**For more search patterns and ChatGPT/Copilot guidance**, see [PROMPTS/CHATGPT_SEARCH_RECIPES.md](PROMPTS/CHATGPT_SEARCH_RECIPES.md).
+**For more search patterns and ChatGPT/Copilot guidance**, see [prompts/CHATGPT_SEARCH_RECIPES.md](prompts/CHATGPT_SEARCH_RECIPES.md).
 
 ## Building Docker images locally
 
@@ -1269,7 +1269,7 @@ All security functions are highly optimized for production use:
 
 - **[Security Guidelines](docs/security/SECURITY_GUIDELINES.md)** - Best practices & examples
 - **[Complete Status Report](docs/security/COMPLETE_STATUS_REPORT.md)** - Implementation details
-- **[API Reference](src/codex/security/__init__.py)** - Full function documentation
+- **[API Reference](docs/API_REFERENCE.md)** - Full function documentation
 
 ### Features
 

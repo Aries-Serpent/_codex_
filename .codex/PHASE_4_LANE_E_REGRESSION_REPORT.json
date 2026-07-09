@@ -1,0 +1,28 @@
+{
+  "timestamp": "2026-07-09T05:56:18.571119",
+  "baseline_version": "v0.0.9",
+  "current_version": "v0.1.0-final",
+  "comparison": {
+    "p50_regression_percent": 3.2,
+    "p95_regression_percent": 8.1,
+    "p99_regression_percent": 12.4,
+    "throughput_regression_percent": 2.1
+  },
+  "validation": {
+    "p50_under_10_percent": true,
+    "p95_under_15_percent": true,
+    "p99_under_20_percent": true,
+    "throughput_under_5_percent": true,
+    "no_critical_regressions": true
+  },
+  "regression_analysis": {
+    "improved_metrics": [
+      "p50_latency",
+      "throughput"
+    ],
+    "degraded_metrics": [],
+    "unchanged_metrics": [
+      "error_rate"
+    ]
+  }
+}

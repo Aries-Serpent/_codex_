@@ -661,7 +661,7 @@ Fix: gh variable set COGNITIVE_BRAIN_SESSION_NUMBER --body "120" --repo Aries-Se
 | [`docs/security/secret_handling.md`](../security/secret_handling.md) | Secret handling best practices, never-log rules | Security policy | <!-- pragma: allowlist secret -->
 | [`.codex/agent_context.json`](../../.codex/agent_context.json) | Live snapshot of repo variables (synced daily) | Machine-readable state |
 | [`scripts/tools/variable_manager.py`](../../scripts/tools/variable_manager.py) | Python API for reading/writing repo variables | Code reference |
-| [`src/codex/auth/github_app.py`](../../src/codex/auth/github_app.py) | `_resolve_github_token()` — token fallback chain implementation | Code reference | <!-- pragma: allowlist secret -->
+| [`src/aries_serpent_core/auth/github_app.py`](../../src/aries_serpent_core/auth/github_app.py) | `_resolve_github_token()` — token fallback chain implementation | Code reference | <!-- pragma: allowlist secret -->
 
 ---
 

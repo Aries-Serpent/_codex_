@@ -1,0 +1,111 @@
+{
+  "operations": [
+    {
+      "name": "Import src.cli",
+      "elapsed_ms": 480.942395999989,
+      "memory_delta_mb": 26.37109375,
+      "cpu_user_s": 0.29000000000000004,
+      "cpu_sys_s": 0.04,
+      "status": "failed"
+    },
+    {
+      "name": "Import src.codex_utils",
+      "elapsed_ms": 37.167019999998274,
+      "memory_delta_mb": 0.03515625,
+      "cpu_user_s": 0.02999999999999997,
+      "cpu_sys_s": 0.0,
+      "status": "failed"
+    },
+    {
+      "name": "Concat strings (slow) - 10k items",
+      "elapsed_ms": 1.5111770000260094,
+      "memory_delta_mb": 0.0,
+      "cpu_user_s": 0.0,
+      "cpu_sys_s": 0.0,
+      "status": "success"
+    },
+    {
+      "name": "Concat strings (fast) - 10k items",
+      "elapsed_ms": 1.4358269999945605,
+      "memory_delta_mb": 0.44921875,
+      "cpu_user_s": 0.0,
+      "cpu_sys_s": 0.0,
+      "status": "success"
+    },
+    {
+      "name": "List append - 10k items",
+      "elapsed_ms": 0.19979199998942931,
+      "memory_delta_mb": 0.0,
+      "cpu_user_s": 0.0,
+      "cpu_sys_s": 0.0,
+      "status": "success"
+    },
+    {
+      "name": "List comprehension - 10k items",
+      "elapsed_ms": 0.15258400000561778,
+      "memory_delta_mb": 0.0,
+      "cpu_user_s": 0.0,
+      "cpu_sys_s": 0.0,
+      "status": "success"
+    },
+    {
+      "name": "Write 100KB file",
+      "elapsed_ms": 0.1054669999973612,
+      "memory_delta_mb": 0.0,
+      "cpu_user_s": 0.0,
+      "cpu_sys_s": 0.0,
+      "status": "failed"
+    },
+    {
+      "name": "Read 100KB file",
+      "elapsed_ms": 0.051444999996874685,
+      "memory_delta_mb": 0.0,
+      "cpu_user_s": 0.0,
+      "cpu_sys_s": 0.0,
+      "status": "success"
+    }
+  ],
+  "bottlenecks": [
+    {
+      "name": "Import src.cli",
+      "elapsed_ms": 480.942395999989,
+      "memory_delta_mb": 26.37109375,
+      "cpu_user_s": 0.29000000000000004,
+      "cpu_sys_s": 0.04,
+      "status": "failed"
+    },
+    {
+      "name": "Import src.codex_utils",
+      "elapsed_ms": 37.167019999998274,
+      "memory_delta_mb": 0.03515625,
+      "cpu_user_s": 0.02999999999999997,
+      "cpu_sys_s": 0.0,
+      "status": "failed"
+    },
+    {
+      "name": "Concat strings (slow) - 10k items",
+      "elapsed_ms": 1.5111770000260094,
+      "memory_delta_mb": 0.0,
+      "cpu_user_s": 0.0,
+      "cpu_sys_s": 0.0,
+      "status": "success"
+    },
+    {
+      "name": "Concat strings (fast) - 10k items",
+      "elapsed_ms": 1.4358269999945605,
+      "memory_delta_mb": 0.44921875,
+      "cpu_user_s": 0.0,
+      "cpu_sys_s": 0.0,
+      "status": "success"
+    },
+    {
+      "name": "List append - 10k items",
+      "elapsed_ms": 0.19979199998942931,
+      "memory_delta_mb": 0.0,
+      "cpu_user_s": 0.0,
+      "cpu_sys_s": 0.0,
+      "status": "success"
+    }
+  ],
+  "summary": {}
+}

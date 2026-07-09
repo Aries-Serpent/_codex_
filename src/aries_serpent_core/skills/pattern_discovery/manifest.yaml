@@ -1,0 +1,41 @@
+id: pattern.discovery.brain
+version: 1.0.0
+name: Pattern Discovery Skill
+description: >
+  Discover, classify, and score recurring patterns in memory for promotion
+  to long-term storage. Identifies decision, error, performance, success, and
+  risk patterns with improvement area tagging. Returns scored pattern records
+  with promotion recommendations based on frequency, impact, and confidence.
+  Enables cross-session pattern learning and grounded solution recommendations.
+
+capability_tags:
+  - pattern_discovery
+  - memory_management
+  - cognitive_brain
+  - ml_pattern_feeding
+  - improvement_tracking
+
+entrypoint: aries_serpent_core.skills.pattern_discovery.handler:run
+
+io:
+  input_schema: schema/input.json
+  output_schema: schema/output.json
+
+policy:
+  allowlist:
+    - "*"
+  budget:
+    tokens: 5000
+    calls: 10
+    timeout_ms: 15000
+
+metadata:
+  author: skills-master-agent
+  created: '2026-07-09T04:41:30Z'
+  maturity: production
+  safety_level: low
+  requires_gpu: false
+  supports_batch: true
+  batch_max_size: 100
+  aais_score: 0.85
+  domain: cognitive_brain

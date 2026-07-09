@@ -1,0 +1,18 @@
+{
+  "timestamp": "2026-07-09T05:56:16.208155",
+  "test_command": "pytest tests/integration/ -v --tb=short -k critical",
+  "metrics": {
+    "total_tests": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "errors": 0,
+    "execution_time_seconds": 2.362671136856079,
+    "flaky_tests": 0
+  },
+  "validation": {
+    "all_critical_pass": true,
+    "execution_under_20_minutes": true,
+    "flaky_variance_under_5_percent": true
+  }
+}

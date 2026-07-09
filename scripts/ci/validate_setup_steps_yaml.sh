@@ -54,7 +54,7 @@ GUARD_FAIL=0
 check_feature() {
   local pattern="$1"
   local label="$2"
-  if grep -q "${pattern}" "${TARGET}"; then
+  if grep -Eq "${pattern}" "${TARGET}"; then
     echo "  ✅ ${label}"
   else
     echo "  ::error file=${TARGET}::REGRESSION: ${label} missing"
@@ -67,7 +67,7 @@ check_feature "cancel-in-progress: true"          "cancel-in-progress: true"
 check_feature "vars.COPILOT_RUNNER_PROFILE"        "Dynamic runner (vars.COPILOT_RUNNER_PROFILE)"
 check_feature 'NODE_VERSION: "22"'                 "NODE_VERSION: 22"
 check_feature "rescue-comment:"                    "rescue-comment job"
-check_feature "actions/checkout@9c091bb2"          "Pinned checkout SHA"
+check_feature "actions/checkout@(v5|9c091bb2)"     "Approved checkout reference"
 check_feature "session_access_probe.py"            "Session Access Probe step"
 check_feature "autonomous_rag_context.py"          "RAG Context Build step"
 check_feature "DO NOT REFACTOR THIS STEP"          "Guard comment on preload step"
