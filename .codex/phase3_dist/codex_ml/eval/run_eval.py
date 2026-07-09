@@ -1,0 +1,104 @@
+"""Evaluation run orchestration and execution.
+from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
+
+Provides high-level functions for running model evaluation across datasets,
+managing evaluation loops, and collecting metrics in a unified format.
+"""
+
+from __future__ import annotations
+
+import argparse
+import csv
+import json
+import logging
+import sys
+from collections.abc import Iterable
+from pathlib import Path
+
+from codex_ml.utils.hf_pinning import HFModelUnavailableError
+
+from .evaluator import run_evaluator
+
+logger = logging.getLogger(__name__)
+
+
+def _load_texts(path: str) -> list[str]:
+    """Load text records from ``path``.
+
+    Supports plain text files (one example per line), NDJSON/JSONL with a
+    ``text`` field and CSV files with a ``text`` column.
+    """
+    p = Path(path)
+    if p.suffix in {".txt"}:
+        return [line for line in p.read_text(encoding="utf-8").splitlines() if line]
+    if p.suffix in {".ndjson", ".jsonl"}:
+        return [
+            json.loads(line)["text"] for line in p.read_text(encoding="utf-8").splitlines() if line
+        ]
+    if p.suffix == ".csv":
+        with p.open(newline="", encoding="utf-8") as fh:
+            reader = csv.DictReader(fh)
+            column = "text" if "text" in reader.fieldnames else reader.fieldnames[0]  # type: ignore[operator,index]
+            return [row[column] for row in reader]
+    raise ValueError(f"Unsupported data format: {p.suffix}")
+
+
+def _summarise_log(path: str) -> None:
+    """Read a metrics log and print per-epoch averages."""
+    p = Path(path)
+    if p.suffix in {".ndjson", ".jsonl"}:
+        records = [json.loads(line) for line in p.read_text(encoding="utf-8").splitlines() if line]
+    elif p.suffix == ".csv":
+        with p.open(newline="", encoding="utf-8") as fh:
+            reader = csv.DictReader(fh)
+            records = list(reader)
+    else:
+        raise ValueError(f"Unsupported log format: {p.suffix}")
+    summary: dict[int, list[float]] = {}
+    for rec in records:
+        epoch = int(rec.get("epoch", 0))
+        # Pick first numeric metric value in record
+        val = None
+        for _, value in rec.items():
+            try:
+                val = float(value)
+                break
+            except (TypeError, ValueError):
+                get_default_logger().debug("Exception caught, continuing", exc_info=True)
+                continue
+        if val is None:
+            continue
+        summary.setdefault(epoch, []).append(val)
+    for epoch, vals in sorted(summary.items()):
+        avg = sum(vals) / len(vals)
+        get_default_logger().info(json.dumps({"epoch": epoch, "metric": avg}))
+
+
+def main(argv: Iterable[str] | None = None) -> None:
+    ap = argparse.ArgumentParser(description="Evaluate a model on a text dataset")
+    ap.add_argument("--model", required=True, help="Model name or path")
+    ap.add_argument("--data", required=True, help="Path to dataset (txt, ndjson, csv)")
+    ap.add_argument("--metrics-log", dest="metrics_log", help="Optional metrics log to summarise")
+    ap.add_argument("--safety", action="store_true", help="Enable prompt sanitisation")
+    args = ap.parse_args(argv)
+
+    texts = _load_texts(args.data)
+    if args.safety:
+        from codex_ml.safety import SafetyConfig, sanitize_prompt
+
+        cfg = SafetyConfig()
+        texts = [sanitize_prompt(t, cfg)["text"] for t in texts]
+    try:
+        metrics = run_evaluator(args.model, texts)
+    except HFModelUnavailableError:
+        # Model not in cache and network unavailable — exit 2 so callers
+        # (e.g. tests) can distinguish "model unavailable" from real errors.
+        get_default_logger().error("SKIP: <ERROR_TYPE>")
+        sys.exit(2)
+    get_default_logger().info(json.dumps(metrics))
+    if args.metrics_log:
+        _summarise_log(args.metrics_log)
+
+
+if __name__ == "__main__":  # pragma: no cover - CLI entry
+    main()

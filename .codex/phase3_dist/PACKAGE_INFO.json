@@ -1,0 +1,8 @@
+{
+  "package": "aries-serpent-ml",
+  "version": "0.1.0-beta3",
+  "timestamp": "2026-07-09T02:16:23.552114Z",
+  "modules": 25,
+  "protocols": 10,
+  "tests": 107
+}
