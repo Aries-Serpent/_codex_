@@ -1,5 +1,13 @@
 ## [Unreleased]
 
+### Fixed (2026-07-09T23:05:00Z — PR #5281 review/CI remediation)
+- Added `.codex/POST_MERGE_RELEASE_COMPLETION_v0.1.0-final.md` so the branch now contains the release-completion artifact claimed by PR #5281.
+- Updated `validate-code-examples.yml` to validate only markdown files changed in the current PR/push diff, preventing unrelated legacy documentation examples from blocking this branch.
+- Followed validation review feedback by clarifying the changed-file helper name, simplifying the zero-SHA guard, and restoring valid JSONL in `.codex/phase_10_3_ab_test_log.jsonl`.
+- Excluded accidental `codex.db*` namespace discovery from `pyproject.toml`, which restores editable installs by preventing setuptools from resolving a nonexistent `src/codex/db` package.
+- Merged the latest `main` changes into the PR branch and resolved the Phase 10.3 JSONL conflict without reintroducing invalid inline pragma comments.
+- Normalized `.codex/phase_10_3_performance_metrics.json` to use an explicit `+00:00` timezone offset for consistent timestamp parsing.
+
 ### Fixed (2026-07-09T22:04:00Z — PR #5280 v0.1.0-prod Comment Review Gate + REQ-5 Compliance)
 - **Session:** pr-5280-comment-review-gate — Addressing 22 blocking comments via PR Comment Review Gate (comment_id: 4929903841)
 - **Compliance:** Updated REQ-5 (CHANGELOG.md) in this commit to satisfy session_wrapup_autofix --check requirement

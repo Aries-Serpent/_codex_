@@ -11,6 +11,7 @@ paths = [
   '''^.git/''',
   '''^.pytest_cache/''',
   '''^mlruns/''',
+  '''^.codex/''',  # Documentation with security vulnerability examples
 ]
 
 # Add custom allow rules here if needed, e.g., test keys or fixtures with known values.

@@ -33,8 +33,7 @@ paths-ignore:
 
   # Documentation (no security analysis needed)
   - "docs/"
-  - ".codex/archive/**"
-  - ".codex/reports/**"
+  - ".codex/**"  # Documentation with security vulnerability examples
   - ".github/workflows/archive/**"
   - ".github/workflow-archive/**"
   - ".github/misc/**"

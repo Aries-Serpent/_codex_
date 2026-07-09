@@ -34,3 +34,6 @@ node_modules/
 .vscode/
 .idea/
 .DS_Store
+
+# Documentation directory with security vulnerability examples and remediation reports
+.codex/
