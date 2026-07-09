@@ -45,17 +45,18 @@ jobs:
         pattern = re.compile(r"```python\n(.*?)\n```", re.DOTALL)
 
 
-        def iter_target_files() -> list[Path]:
+        def get_target_files() -> list[Path]:
             event_name = os.environ.get("GITHUB_EVENT_NAME", "")
             base_sha = ""
             head_sha = os.environ.get("GITHUB_SHA", "")
+            null_sha = "0" * 40
 
             if event_name == "pull_request":
                 base_sha = os.environ.get("GITHUB_BASE_SHA", "")
             elif event_name == "push":
                 base_sha = os.environ.get("GITHUB_BEFORE", "")
 
-            if base_sha and head_sha and not set(base_sha) == {"0"}:
+            if base_sha and head_sha and base_sha != null_sha:
                 changed = subprocess.check_output(
                     ["git", "diff", "--name-only", base_sha, head_sha],
                     text=True,
@@ -72,7 +73,7 @@ jobs:
 
 
         extracted = []
-        for md_file in iter_target_files():
+        for md_file in get_target_files():
             with open(md_file) as f:
                 for i, match in enumerate(pattern.finditer(f.read())):
                     code = match.group(1).strip()
@@ -133,17 +134,18 @@ jobs:
         pattern = re.compile(r"```bash\n(.*?)\n```", re.DOTALL)
 
 
-        def iter_target_files() -> list[Path]:
+        def get_target_files() -> list[Path]:
             event_name = os.environ.get("GITHUB_EVENT_NAME", "")
             base_sha = ""
             head_sha = os.environ.get("GITHUB_SHA", "")
+            null_sha = "0" * 40
 
             if event_name == "pull_request":
                 base_sha = os.environ.get("GITHUB_BASE_SHA", "")
             elif event_name == "push":
                 base_sha = os.environ.get("GITHUB_BEFORE", "")
 
-            if base_sha and head_sha and not set(base_sha) == {"0"}:
+            if base_sha and head_sha and base_sha != null_sha:
                 changed = subprocess.check_output(
                     ["git", "diff", "--name-only", base_sha, head_sha],
                     text=True,
@@ -160,7 +162,7 @@ jobs:
 
 
         extracted = []
-        for md_file in iter_target_files():
+        for md_file in get_target_files():
             with open(md_file) as f:
                 for i, match in enumerate(pattern.finditer(f.read())):
                     code = match.group(1).strip()
@@ -219,17 +221,18 @@ jobs:
         pattern = re.compile(r"```ya?ml\n(.*?)\n```", re.DOTALL)
 
 
-        def iter_target_files() -> list[Path]:
+        def get_target_files() -> list[Path]:
             event_name = os.environ.get("GITHUB_EVENT_NAME", "")
             base_sha = ""
             head_sha = os.environ.get("GITHUB_SHA", "")
+            null_sha = "0" * 40
 
             if event_name == "pull_request":
                 base_sha = os.environ.get("GITHUB_BASE_SHA", "")
             elif event_name == "push":
                 base_sha = os.environ.get("GITHUB_BEFORE", "")
 
-            if base_sha and head_sha and not set(base_sha) == {"0"}:
+            if base_sha and head_sha and base_sha != null_sha:
                 changed = subprocess.check_output(
                     ["git", "diff", "--name-only", base_sha, head_sha],
                     text=True,
@@ -248,7 +251,7 @@ jobs:
         errors = []
         total = 0
 
-        for md_file in iter_target_files():
+        for md_file in get_target_files():
             with open(md_file) as f:
                 for i, match in enumerate(pattern.finditer(f.read())):
                     total += 1

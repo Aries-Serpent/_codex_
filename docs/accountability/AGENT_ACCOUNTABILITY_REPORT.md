@@ -6,6 +6,7 @@
 
 - ✅ Added `.codex/POST_MERGE_RELEASE_COMPLETION_v0.1.0-final.md` to match the PR description and provide the promised 5-step post-merge validation framework.
 - ✅ Updated `.github/workflows/validate-code-examples.yml` so Python/Bash/YAML example validation inspects only markdown files changed in the active PR/push diff.
+- ✅ Incorporated validation follow-up feedback by renaming the changed-file helper for clarity, simplifying the all-zero SHA guard, and removing the inline pragma comment that made `.codex/phase_10_3_ab_test_log.jsonl` invalid JSONL.
 - ✅ Fixed editable-install packaging failure by excluding accidental `codex.db*` namespace discovery from `pyproject.toml`; local `pip install -e '.[dev]'` now succeeds.
 - ✅ Normalized `.codex/phase_10_3_performance_metrics.json` to include an explicit `+00:00` timezone offset.
 - ✅ Re-validated workflow YAML syntax and changed-markdown Python example extraction locally.
