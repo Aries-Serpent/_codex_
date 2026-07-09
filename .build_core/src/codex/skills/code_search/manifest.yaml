@@ -1,0 +1,34 @@
+id: code.search.extract
+version: 1.0.0
+name: Code Search Extract
+description: Search codebase and return matched snippets with paths and line numbers.
+capability_tags:
+  - code
+  - search
+  - extract
+entrypoint: codex.skills.code_search.handler:run
+io:
+  input_schema: schema/input.json
+  output_schema: schema/output.json
+policy:
+  allowlist:
+    - "*"
+  risk_tier: medium
+  budgets:
+    calls: 500
+    tokens: 150000
+    wallclock_ms: 300000
+telemetry:
+  emit_jsonl: true
+  emit_otel: true
+compression:
+  method: 7z
+  level: max
+  size_before: null
+  size_after: null
+doc:
+  doc_id: docs_code_search_v1
+  hash: "<sha256>"
+  aais_score: 0.88
+  token_count: 8000
+  embed_index_ref: indexes/code_search_v1

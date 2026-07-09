@@ -1,0 +1,38 @@
+id: test.failure.matcher
+version: 1.0.0
+name: Test Failure Matcher
+description: >
+  Parse pytest / CI log output and return structured failure records classified
+  by known pattern IDs (RP-009, RP-019, RP-RUFF, RP-TRANSIENT, etc.).
+  Pure text heuristics — fully deterministic, no model inference.
+capability_tags:
+  - testing
+  - ci
+  - diagnosis
+  - cognitive-brain
+entrypoint: codex.skills.test_failure_matcher.handler:run
+io:
+  input_schema: schema/input.json
+  output_schema: schema/output.json
+policy:
+  allowlist:
+    - "*"
+  risk_tier: low
+  budgets:
+    calls: 2000
+    tokens: 100000
+    wallclock_ms: 10000
+telemetry:
+  emit_jsonl: true
+  emit_otel: false
+compression:
+  method: 7z
+  level: max
+  size_before: null
+  size_after: null
+doc:
+  doc_id: skills_test_failure_matcher_v1
+  hash: "<sha256>"
+  aais_score: 0.90
+  token_count: 4000
+  embed_index_ref: indexes/skills_v1

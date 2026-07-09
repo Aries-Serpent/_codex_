@@ -82,7 +82,36 @@ else:  # pragma: no cover - runtime fallback
     OptimizerType: TypeAlias = Any
     DataLoaderType: TypeAlias = Any
 
-from codex_ml.utils.repro import set_seed as _set_seed  # noqa: E402
+
+# Lazy import to break circular dependency with codex_ml.utils.repro
+def _set_seed(seed: int) -> None:
+    """Set random seed. Tries codex_ml implementation, falls back to basic torch/numpy."""
+    try:
+        from codex_ml.utils.repro import set_seed as _codex_set_seed
+
+        _codex_set_seed(seed)
+    except (ImportError, AttributeError):
+        # Fallback if codex_ml not available
+        try:
+            import random
+
+            random.seed(seed)
+        except Exception:
+            pass
+        try:
+            import numpy as np
+
+            np.random.seed(seed)
+        except Exception:
+            pass
+        try:
+            if _HAS_REAL_TORCH:
+                torch.manual_seed(seed)
+                torch.cuda.manual_seed_all(seed)
+        except Exception:
+            pass
+
+
 from logging_utils import (  # noqa: E402
     LoggingConfig,
     LoggingSession,

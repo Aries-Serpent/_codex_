@@ -1,0 +1,52 @@
+"""
+Legacy SentencePiece adapter shim.
+
+Prefer codex_ml.tokenization.sentencepiece_adapter for new code.
+"""
+
+from __future__ import annotations
+
+import warnings as _warnings
+from pathlib import Path
+
+_warnings.warn(
+    "src.tokenization.sentencepiece_adapter is legacy; use "
+    "codex_ml.tokenization.sentencepiece_adapter instead.",
+    DeprecationWarning,
+    stacklevel=2,
+)
+
+try:  # pragma: no cover
+    from codex_ml.tokenization.adapter import SentencePieceTokenizer
+    from codex_ml.tokenization.sentencepiece_adapter import (
+        SentencePieceAdapter as _CanonicalSentencePieceAdapter,
+    )
+except (ImportError, AttributeError):  # pragma: no cover - defensive placeholders
+
+    def load_sentencepiece_model(*_args, **_kwargs):
+        raise RuntimeError("SentencePiece not available")
+
+    class SentencePieceTokenizer:  # type: ignore
+        def __init__(self, *args, **kwargs):
+            raise RuntimeError("SentencePiece not available")
+
+    class SentencePieceAdapter:
+        def __init__(self, *args, **kwargs):
+            raise RuntimeError("SentencePiece not available")
+
+else:
+    SentencePieceAdapter = _CanonicalSentencePieceAdapter  # type: ignore[misc]
+    SentencePieceAdapter.__doc__ = getattr(_CanonicalSentencePieceAdapter, "__doc__", None)
+
+    def load_sentencepiece_model(  # type: ignore[misc]
+        model_path: str | Path,
+    ) -> _CanonicalSentencePieceAdapter:
+        adapter = _CanonicalSentencePieceAdapter(Path(model_path))
+        return adapter.load()
+
+
+__all__ = [
+    "SentencePieceAdapter",
+    "SentencePieceTokenizer",
+    "load_sentencepiece_model",
+]

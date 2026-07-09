@@ -1,0 +1,70 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "mypy.manager output",
+  "type": "object",
+  "required": ["status", "action"],
+  "properties": {
+    "status": {
+      "type": "string",
+      "enum": ["pass", "fail", "fixed", "dry-run", "error"]
+    },
+    "action": {
+      "type": "string"
+    },
+    "error_count": {
+      "type": "integer",
+      "description": "Total mypy errors found"
+    },
+    "baseline": {
+      "type": "integer",
+      "description": "Stored baseline count"
+    },
+    "regression": {
+      "type": "boolean",
+      "description": "True if error_count > baseline"
+    },
+    "errors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "file": {"type": "string"},
+          "line": {"type": "integer"},
+          "code": {"type": "string"},
+          "message": {"type": "string"},
+          "pattern": {"type": "string"},
+          "fix_available": {"type": "boolean"},
+          "fix_description": {"type": "string"}
+        }
+      }
+    },
+    "fixes_applied": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "file": {"type": "string"},
+          "line": {"type": "integer"},
+          "pattern": {"type": "string"},
+          "description": {"type": "string"}
+        }
+      }
+    },
+    "by_pattern": {
+      "type": "object",
+      "description": "Error counts grouped by fix-pattern ID",
+      "additionalProperties": {"type": "integer"}
+    },
+    "by_file": {
+      "type": "object",
+      "description": "Error counts grouped by file path",
+      "additionalProperties": {"type": "integer"}
+    },
+    "pda_logged": {
+      "type": "boolean"
+    },
+    "message": {
+      "type": "string"
+    }
+  }
+}

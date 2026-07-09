@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["query"],
+  "properties": {
+    "query": {
+      "type": "string",
+      "description": "Search pattern or regex"
+    },
+    "top_k": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100,
+      "default": 10
+    },
+    "glob": {
+      "type": "string",
+      "default": "**/*.py"
+    },
+    "root": {
+      "type": "string",
+      "description": "Search root directory"
+    },
+    "case_sensitive": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,52 @@
+id: mypy.manager
+version: 1.0.0
+name: mypy Manager
+description: >
+  Parse mypy error output and classify each error by fix-pattern
+  (optional-import-fallback, redundant-cast, union-attr, structural, unused-ignore,
+  import-untyped).  Provides automated fix suggestions, tracks .mypy_baseline
+  regressions, and logs all patterns to the PDA Loop + AfterMath store for
+  cross-session grounding.  Designed to work alongside the ci.health.analyzer
+  and test.failure.matcher skills as part of the CI self-healing cascade.
+  Implements the Skills Master Agent agent-training protocol: each invocation
+  updates the grounded-solution library with any new fix patterns observed.
+capability_tags:
+  - mypy
+  - type-checking
+  - ci
+  - self-healing
+  - cognitive-brain
+  - pda-loop
+  - skills-master
+entrypoint: codex.skills.mypy_manager.handler:run
+io:
+  input_schema: schema/input.json
+  output_schema: schema/output.json
+policy:
+  allowlist:
+    - "*"
+  risk_tier: low
+  budgets:
+    calls: 5000
+    tokens: 500000
+    wallclock_ms: 60000
+telemetry:
+  emit_jsonl: true
+  emit_otel: false
+compression:
+  method: 7z
+  level: max
+  size_before: null
+  size_after: null
+doc:
+  doc_id: skills_mypy_manager_v1
+  hash: "<sha256>"
+  aais_score: 0.93
+  token_count: 8000
+  embed_index_ref: indexes/skills_v1
+pda_loop:
+  enabled: true
+  plan: "Run mypy, classify errors, identify fixable patterns"
+  do: "Apply automated fixes (type: ignore comments, cast removal, narrowing)"
+  assess: "Re-run mypy, verify baseline holds, log patterns to PDA store"
+  aftermath_store: ".codex/aftermath/pda_iterations.jsonl"
