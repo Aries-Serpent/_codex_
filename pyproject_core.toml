@@ -79,14 +79,9 @@ include = [
     "codex.logging*",
     "codex.session*",
     "codex.utils*",
-    "codex.auth*",
     "codex.observability*",
     "codex.db*",
-    "codex.cache*",
     "codex.metrics*",
-    "codex.cli*",
-    "codex.clients*",
-    "codex.api*",
 ]
 exclude = [
     "codex.cognitive*",
@@ -94,6 +89,11 @@ exclude = [
     "codex.skills*",
     "codex.mcp*",
     "codex.training*",
+    "codex.auth*",
+    "codex.cache*",
+    "codex.api*",
+    "codex.clients*",
+    "codex.cli*",
     "tests*",
 ]
 
@@ -105,14 +105,9 @@ exclude = [
 "codex.logging" = ["py.typed"]
 "codex.session" = ["py.typed"]
 "codex.utils" = ["py.typed"]
-"codex.auth" = ["py.typed"]
 "codex.observability" = ["py.typed"]
 "codex.db" = ["py.typed"]
-"codex.cache" = ["py.typed"]
 "codex.metrics" = ["py.typed"]
-"codex.cli" = ["py.typed"]
-"codex.clients" = ["py.typed"]
-"codex.api" = ["py.typed"]
 
 [tool.black]
 line-length = 100

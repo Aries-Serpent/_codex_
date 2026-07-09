@@ -4,9 +4,42 @@ from __future__ import annotations
 
 from typing import Optional
 
-from codex_ml.utils.repro import set_seed as _set_seed
-
 _DEFAULT_SEED = 42
+
+
+def _set_seed(seed: int, *, deterministic: bool = True) -> None:
+    """Set random seed. Tries codex_ml implementation, falls back to basic torch/numpy.
+    
+    This function uses lazy import to break circular dependencies with codex_ml.
+    """
+    try:
+        from codex_ml.utils.repro import set_seed as _codex_set_seed
+
+        _codex_set_seed(seed, deterministic=deterministic)
+    except (ImportError, AttributeError, TypeError):
+        # Fallback if codex_ml not available or has different signature
+        try:
+            import random
+
+            random.seed(seed)
+        except Exception:
+            pass
+        try:
+            import numpy as np
+
+            np.random.seed(seed)
+        except Exception:
+            pass
+        try:
+            import torch
+
+            torch.manual_seed(seed)
+            torch.cuda.manual_seed_all(seed)
+            if deterministic:
+                torch.backends.cudnn.deterministic = True
+                torch.backends.cudnn.benchmark = False
+        except Exception:
+            pass
 
 
 def ensure_global_seed(seed: Optional[int] = None, *, deterministic: bool = True) -> int:
@@ -19,8 +52,7 @@ def ensure_global_seed(seed: Optional[int] = None, *, deterministic: bool = True
         call sites can simply invoke :func:`ensure_global_seed()` to obtain a
         reproducible configuration.
     deterministic:
-        Forwarded to :func:`codex_ml.utils.repro.set_seed` to toggle deterministic
-        backend behaviour.
+        When True, configures backends for deterministic behavior.
 
     Returns
     -------

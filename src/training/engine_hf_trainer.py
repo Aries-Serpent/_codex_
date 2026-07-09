@@ -257,28 +257,158 @@ except (ImportError, AttributeError):  # pragma: no cover - torch missing or stu
             init_process_group=_noop,
         ),
     )
-from codex_ml.data_utils import split_dataset
-from codex_ml.monitoring.async_writer import AsyncLogFile
-from codex_ml.monitoring.codex_logging import (
-    CodexLoggers,
-    _codex_log_all,
-    _codex_logging_bootstrap,
-    _codex_patch_argparse,
-    _codex_sample_system,
-)
-from codex_ml.monitoring.schema import LogRecord
-from codex_ml.peft.peft_adapter import apply_lora
-from codex_ml.utils.checkpointing import (  # type: ignore[attr-defined]
-    build_payload_bytes,
-    load_payload,
-    set_seed,
-)
-from codex_ml.utils.error_log import log_error
-from codex_ml.utils.hf_pinning import ensure_pinned_kwargs, load_from_pretrained
-from codex_ml.utils.provenance import snapshot_hydra_config
-from codex_ml.utils.repro import set_reproducible
-from codex_ml.utils.yaml_support import MissingPyYAMLError, YAMLError, safe_load
-from codex_utils.repro import log_env_info
+
+# Lazy imports to break circular dependencies with codex_ml
+# These are deferred to avoid circular import at module load time
+split_dataset = None  # type: ignore[assignment]
+AsyncLogFile = None  # type: ignore[assignment]
+CodexLoggers = None  # type: ignore[assignment]
+_codex_log_all = None  # type: ignore[assignment]
+_codex_logging_bootstrap = None  # type: ignore[assignment]
+_codex_patch_argparse = None  # type: ignore[assignment]
+_codex_sample_system = None  # type: ignore[assignment]
+LogRecord = None  # type: ignore[assignment]
+apply_lora = None  # type: ignore[assignment]
+build_payload_bytes = None  # type: ignore[assignment]
+load_payload = None  # type: ignore[assignment]
+set_seed = None  # type: ignore[assignment]
+log_error = None  # type: ignore[assignment]
+ensure_pinned_kwargs = None  # type: ignore[assignment]
+load_from_pretrained = None  # type: ignore[assignment]
+snapshot_hydra_config = None  # type: ignore[assignment]
+set_reproducible = None  # type: ignore[assignment]
+safe_load = None  # type: ignore[assignment]
+log_env_info = None  # type: ignore[assignment]
+
+
+def _ensure_hf_trainer_imports() -> None:
+    """Lazy load imports needed for HF trainer, breaking circular dependencies."""
+    global split_dataset
+    global AsyncLogFile
+    global CodexLoggers
+    global _codex_log_all
+    global _codex_logging_bootstrap
+    global _codex_patch_argparse
+    global _codex_sample_system
+    global LogRecord
+    global apply_lora
+    global build_payload_bytes
+    global load_payload
+    global set_seed
+    global log_error
+    global ensure_pinned_kwargs
+    global load_from_pretrained
+    global snapshot_hydra_config
+    global set_reproducible
+    global safe_load
+    global log_env_info
+    
+    if split_dataset is not None:
+        return  # Already loaded
+    
+    try:
+        from codex_ml.data_utils import split_dataset as _split_dataset
+        split_dataset = _split_dataset
+    except (ImportError, AttributeError):
+        pass
+    
+    try:
+        from codex_ml.monitoring.async_writer import AsyncLogFile as _AsyncLogFile
+        AsyncLogFile = _AsyncLogFile
+    except (ImportError, AttributeError):
+        pass
+    
+    try:
+        from codex_ml.monitoring.codex_logging import (
+            CodexLoggers as _CodexLoggers,
+            _codex_log_all as _CODEX_LOG_ALL,
+            _codex_logging_bootstrap as _CODEX_BOOTSTRAP,
+            _codex_patch_argparse as _CODEX_PATCH,
+            _codex_sample_system as _CODEX_SAMPLE,
+        )
+        CodexLoggers = _CodexLoggers
+        _codex_log_all = _CODEX_LOG_ALL
+        _codex_logging_bootstrap = _CODEX_BOOTSTRAP
+        _codex_patch_argparse = _CODEX_PATCH
+        _codex_sample_system = _CODEX_SAMPLE
+    except (ImportError, AttributeError):
+        CodexLoggers = None
+        def _codex_log_all(*args, **kwargs):  # type: ignore
+            pass
+        def _codex_logging_bootstrap(*args, **kwargs):  # type: ignore
+            return {}
+        def _codex_patch_argparse(*args, **kwargs):  # type: ignore
+            pass
+        def _codex_sample_system(*args, **kwargs):  # type: ignore
+            return {}
+    
+    try:
+        from codex_ml.monitoring.schema import LogRecord as _LogRecord
+        LogRecord = _LogRecord
+    except (ImportError, AttributeError):
+        pass
+    
+    try:
+        from codex_ml.peft.peft_adapter import apply_lora as _apply_lora
+        apply_lora = _apply_lora
+    except (ImportError, AttributeError):
+        pass
+    
+    try:
+        from codex_ml.utils.checkpointing import (
+            build_payload_bytes as _build_payload_bytes,
+            load_payload as _load_payload,
+            set_seed as _set_seed,
+        )
+        build_payload_bytes = _build_payload_bytes
+        load_payload = _load_payload
+        set_seed = _set_seed
+    except (ImportError, AttributeError):
+        pass
+    
+    try:
+        from codex_ml.utils.error_log import log_error as _log_error
+        log_error = _log_error
+    except (ImportError, AttributeError):
+        def log_error(*args, **kwargs):  # type: ignore
+            pass
+    
+    try:
+        from codex_ml.utils.hf_pinning import (
+            ensure_pinned_kwargs as _ensure_pinned_kwargs,
+            load_from_pretrained as _load_from_pretrained,
+        )
+        ensure_pinned_kwargs = _ensure_pinned_kwargs
+        load_from_pretrained = _load_from_pretrained
+    except (ImportError, AttributeError):
+        pass
+    
+    try:
+        from codex_ml.utils.provenance import snapshot_hydra_config as _snapshot_hydra_config
+        snapshot_hydra_config = _snapshot_hydra_config
+    except (ImportError, AttributeError):
+        pass
+    
+    try:
+        from codex_ml.utils.repro import set_reproducible as _set_reproducible
+        set_reproducible = _set_reproducible
+    except (ImportError, AttributeError):
+        pass
+    
+    try:
+        from codex_ml.utils.yaml_support import safe_load as _safe_load
+        safe_load = _safe_load
+    except (ImportError, AttributeError):
+        pass
+    
+    try:
+        from codex_utils.repro import log_env_info as _log_env_info
+        log_env_info = _log_env_info
+    except (ImportError, AttributeError):
+        def log_env_info(*args, **kwargs):  # type: ignore
+            pass
+
+
 from omegaconf import OmegaConf
 
 # Optional dependencies with graceful fallbacks
@@ -286,7 +416,9 @@ try:  # optional checkpoint callback
     from training.checkpoint_manager import CheckpointManager
 except (IOError, OSError) as exc:  # pragma: no cover - missing in some envs
     CheckpointManager = None  # type: ignore[misc,assignment]
-    log_error("checkpoint_import", str(exc), "src.training.checkpoint_manager")
+    if log_error is not None:
+        log_error("checkpoint_import", str(exc), "src.training.checkpoint_manager")
+
 
 try:  # Optional TensorBoard integration
     from tools.monitoring_integrate import SummaryWriter
@@ -1017,6 +1149,9 @@ def run_hf_trainer(
     sys_metrics: bool = False,
 ) -> dict[str, float]:
     """Train a causal LM using HuggingFace ``Trainer``."""
+    # Ensure lazy imports are loaded before use
+    _ensure_hf_trainer_imports()
+    
     resolved_det = True if deterministic is None else bool(deterministic)
 
     # set deterministic seeds
