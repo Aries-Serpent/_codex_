@@ -52,8 +52,7 @@ def _jsonschema_validate(schema: dict, obj: dict) -> bool:
         jsonschema.validate(obj, schema)  # raises on error
         return True
     except Exception as e:
-        error_type = type(e).__name__
-        print("[jsonschema] <ERROR_TYPE>", file=sys.stderr)
+        print(f"[jsonschema] {type(e).__name__}", file=sys.stderr)
         return False
 
 

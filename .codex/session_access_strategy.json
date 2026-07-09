@@ -1,14 +1,14 @@
 {
-  "generated_at": "2026-07-09T09:06:38.797605+00:00",
+  "generated_at": "2026-07-09T08:45:28.134393+00:00",
   "methods": [
     "rest",
     "graphql",
     "gh_cli"
   ],
   "rest_available": true,
-  "rest_remaining": 4693,
+  "rest_remaining": 4845,
   "graphql_available": true,
-  "graphql_remaining": 4985,
+  "graphql_remaining": 4991,
   "gh_cli_available": true,
   "codeql_available": false,
   "best_token_var": "GITHUB_TOKEN",

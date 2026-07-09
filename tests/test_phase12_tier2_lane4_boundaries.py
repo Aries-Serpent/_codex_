@@ -11,9 +11,10 @@ Tests for boundary conditions in:
 Target: 50+ additional test cases focusing on critical boundary conditions
 """
 
-import pytest
 import sys
 from typing import Optional
+
+import pytest
 
 
 class TestNumericBoundaries:
@@ -33,7 +34,7 @@ class TestNumericBoundaries:
         # Python supports arbitrary precision, but test practical limits
         small_int = -(2**31 - 1)
         large_int = 2**31 - 1
-        
+
         assert small_int < 0
         assert large_int > 0
         assert large_int + 1 > large_int
@@ -57,7 +58,7 @@ class TestNumericBoundaries:
         # Test precision loss near limits
         large = 1e15
         assert large + 1 != large  # At small scales
-        
+
         very_large = 1e100
         assert very_large + 1 == very_large  # Precision loss
 
@@ -148,11 +149,11 @@ class TestStringBoundaries:
         # Single byte characters
         s1 = "a"
         assert len(s1.encode('utf-8')) == 1
-        
+
         # Multi-byte Unicode
         s2 = "é"
         assert len(s2.encode('utf-8')) == 2
-        
+
         s3 = "中"
         assert len(s3.encode('utf-8')) == 3
 
@@ -162,7 +163,7 @@ class TestStringBoundaries:
         assert "a".upper() == "A"
         assert "Z".lower() == "z"
         assert "0".upper() == "0"  # Non-letters unchanged
-        
+
         # Unicode
         assert "ñ".upper() == "Ñ"
         assert "Ñ".lower() == "ñ"
@@ -194,10 +195,10 @@ class TestCollectionBoundaries:
         assert lst[0] == 1
         assert lst[-1] == 5
         assert lst[-5] == 1
-        
+
         with pytest.raises(IndexError):
             _ = lst[5]
-        
+
         with pytest.raises(IndexError):
             _ = lst[-6]
 
@@ -264,7 +265,7 @@ class TestCollectionBoundaries:
         for _ in []:
             count += 1
         assert count == 0
-        
+
         # Single element iteration
         items = []
         for item in [42]:
@@ -297,18 +298,18 @@ class TestBooleanBoundaries:
 
     def test_boolean_operators(self):
         """Test boolean operator behavior."""
-        assert True and True is True
-        assert True and False is False
-        assert False and True is False
-        assert False and False is False
-        
-        assert True or True is True
-        assert True or False is True
-        assert False or True is True
-        assert False or False is False
-        
-        assert not True is False
-        assert not False is True
+        assert (True and True) is True
+        assert (True and False) is False
+        assert (False and True) is False
+        assert (False and False) is False
+
+        assert (True or True) is True
+        assert (True or False) is True
+        assert (False or True) is True
+        assert (False or False) is False
+
+        assert (not True) is False
+        assert (not False) is True
 
 
 class TestTimeBoundaries:
@@ -317,11 +318,11 @@ class TestTimeBoundaries:
     def test_year_boundaries(self):
         """Test year boundary values."""
         from datetime import datetime
-        
+
         # Minimum year (1)
         dt_min = datetime(1, 1, 1)
         assert dt_min.year == 1
-        
+
         # Maximum year (9999)
         dt_max = datetime(9999, 12, 31)
         assert dt_max.year == 9999
@@ -329,23 +330,23 @@ class TestTimeBoundaries:
     def test_month_boundaries(self):
         """Test month boundary values."""
         from datetime import datetime
-        
+
         assert datetime(2024, 1, 1).month == 1
         assert datetime(2024, 12, 1).month == 12
 
     def test_day_boundaries_for_months(self):
         """Test day boundaries for different months."""
         from datetime import datetime
-        
+
         # January: 31 days
         assert datetime(2024, 1, 31).day == 31
-        
+
         # February non-leap: 28 days
         assert datetime(2023, 2, 28).day == 28
-        
+
         # February leap: 29 days
         assert datetime(2024, 2, 29).day == 29
-        
+
         # April: 30 days (not 31)
         with pytest.raises(ValueError):
             datetime(2024, 4, 31)
@@ -353,11 +354,11 @@ class TestTimeBoundaries:
     def test_time_of_day_boundaries(self):
         """Test time of day boundary values."""
         from datetime import datetime
-        
+
         # Midnight
         dt_midnight = datetime(2024, 1, 1, 0, 0, 0)
         assert dt_midnight.hour == 0 and dt_midnight.minute == 0
-        
+
         # Just before midnight
         dt_before = datetime(2024, 1, 1, 23, 59, 59)
         assert dt_before.hour == 23
@@ -365,15 +366,15 @@ class TestTimeBoundaries:
     def test_leap_year_boundaries(self):
         """Test leap year boundary conditions."""
         from datetime import datetime
-        
+
         # Leap years
         assert datetime(2000, 2, 29).day == 29  # Divisible by 400
         assert datetime(2024, 2, 29).day == 29  # Divisible by 4, not 100
-        
+
         # Non-leap years
         with pytest.raises(ValueError):
             datetime(1900, 2, 29)  # Divisible by 100 but not 400
-        
+
         with pytest.raises(ValueError):
             datetime(2023, 2, 29)  # Not divisible by 4
 
@@ -391,10 +392,10 @@ class TestNoneAndOptionalBoundaries:
 
     def test_none_equality(self):
         """Test None equality."""
-        assert None == None
-        assert None is not 0
+        assert None is None
+        assert None != 0
         assert None is not False
-        assert None is not ""
+        assert None != ""
 
     def test_optional_type_handling(self):
         """Test handling of optional types."""
@@ -402,7 +403,7 @@ class TestNoneAndOptionalBoundaries:
             if val is None:
                 return "None"
             return str(val)
-        
+
         assert process_optional(None) == "None"
         assert process_optional(42) == "42"
 
@@ -411,7 +412,7 @@ class TestNoneAndOptionalBoundaries:
         lst = [1, None, 3]
         assert len(lst) == 3
         assert lst[1] is None
-        
+
         d = {"a": 1, "b": None}
         assert d["b"] is None
 
@@ -426,7 +427,7 @@ class TestDefaultValueBoundaries:
                 lst = []
             lst.append(item)
             return lst
-        
+
         # Safe implementation - creates new list
         result1 = append_to_list(1)
         result2 = append_to_list(2)
@@ -437,7 +438,7 @@ class TestDefaultValueBoundaries:
         """Test when default values are evaluated."""
         def get_value(val=None):
             return val or "default"
-        
+
         assert get_value() == "default"
         assert get_value(None) == "default"
         assert get_value(0) == "default"  # Falsy values
@@ -454,7 +455,7 @@ class TestTypeConversionBoundaries:
         assert int(1.5) == 1  # Truncates
         assert int(-1.5) == -1
         assert int("123") == 123
-        
+
         with pytest.raises(ValueError):
             int("not a number")
 
@@ -464,7 +465,7 @@ class TestTypeConversionBoundaries:
         assert float(1) == 1.0
         assert float("1.5") == 1.5
         assert float("inf") == float('inf')
-        
+
         with pytest.raises(ValueError):
             float("not a number")
 
@@ -485,7 +486,7 @@ class TestTypeConversionBoundaries:
         assert bool([]) is False
         assert bool({}) is False
         assert bool(None) is False
-        
+
         # Truthy values
         assert bool(1) is True
         assert bool(-1) is True
@@ -500,15 +501,15 @@ class TestRecursionBoundaries:
     def test_recursion_limit(self):
         """Test that recursion limit is enforced."""
         current_limit = sys.getrecursionlimit()
-        
+
         def recurse(n):
             if n == 0:
                 return 0
             return recurse(n - 1)
-        
+
         # Should work within limit
         recurse(100)
-        
+
         # Should fail beyond limit
         with pytest.raises(RecursionError):
             recurse(current_limit + 100)
@@ -519,12 +520,12 @@ class TestRecursionBoundaries:
             if n == 0:
                 return True
             return is_odd(n - 1)
-        
+
         def is_odd(n):
             if n == 0:
                 return False
             return is_even(n - 1)
-        
+
         assert is_even(0) is True
         assert is_odd(0) is False
         assert is_even(4) is True

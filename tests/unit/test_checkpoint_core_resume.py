@@ -14,6 +14,14 @@ from pathlib import Path
 import pytest
 
 
+def _require_checkpoint_torch() -> None:
+    """Skip when the local torch shim lacks checkpoint I/O helpers."""
+    import torch
+
+    if not all(hasattr(torch, attr) for attr in ("save", "load")):
+        pytest.skip("PyTorch save/load is unavailable in this environment")
+
+
 class TestCheckpointCoreBasics:
     """Test basic checkpoint save and load operations."""
 
@@ -30,6 +38,7 @@ class TestCheckpointCoreBasics:
     def test_checkpoint_directory_created(self):
         """Verify checkpoint directory is created on save."""
         # Arrange
+        _require_checkpoint_torch()
         from src.codex_ml.checkpointing.checkpoint_core import save_checkpoint
 
         test_state = {"model": {"weights": [1.0, 2.0]}}
@@ -50,6 +59,7 @@ class TestCheckpointCoreBasics:
     def test_checkpoint_metadata_written_correctly(self):
         """Verify metadata JSON contains schema version and timestamp."""
         # Arrange
+        _require_checkpoint_torch()
         from src.codex_ml.checkpointing.checkpoint_core import save_checkpoint
 
         test_state = {"model": {"layer": [0.5]}}
@@ -75,6 +85,7 @@ class TestCheckpointCoreBasics:
     def test_checkpoint_load_missing_file_raises_error(self):
         """Verify FileNotFoundError raised for missing checkpoint."""
         # Arrange
+        _require_checkpoint_torch()
         from src.codex_ml.checkpointing.checkpoint_core import load_checkpoint
 
         nonexistent_path = self.tmpdir / "missing" / "checkpoint.pt"
@@ -83,12 +94,14 @@ class TestCheckpointCoreBasics:
         with pytest.raises(FileNotFoundError) as exc_info:
             load_checkpoint(str(nonexistent_path))
 
-        assert ("weights not found" in str(exc_info.value).lower(), "Value must be initialized"
-        ), "Error message should indicate missing weights file"
+        assert "weights not found" in str(exc_info.value).lower(), (
+            "Error message should indicate missing weights file"
+        )
 
     def test_checkpoint_round_trip_preserves_state(self):
         """Verify state is preserved through save and load cycle."""
         # Arrange
+        _require_checkpoint_torch()
         from src.codex_ml.checkpointing.checkpoint_core import (
             load_checkpoint,
             save_checkpoint,
@@ -117,6 +130,7 @@ class TestCheckpointCoreBasics:
     def test_checkpoint_load_handles_missing_metadata(self):
         """Verify load succeeds even if metadata.json is missing."""
         # Arrange
+        _require_checkpoint_torch()
         from src.codex_ml.checkpointing.checkpoint_core import (
             load_checkpoint,
             save_checkpoint,
@@ -146,6 +160,7 @@ class TestCheckpointCoreBasics:
     def test_checkpoint_schema_version_validation(self):
         """Verify schema version is checked during load."""
         # Arrange
+        _require_checkpoint_torch()
         from src.codex_ml.checkpointing.checkpoint_core import load_checkpoint
 
         test_state = {"model": {"w": 0.5}}
@@ -194,6 +209,7 @@ class TestCheckpointAtomicIO:
     def test_checkpoint_save_creates_atomic_write(self):
         """Verify checkpoint files are written atomically."""
         # Arrange
+        _require_checkpoint_torch()
         from src.codex_ml.checkpointing.checkpoint_core import save_checkpoint
 
         checkpoint_dir = self.tmpdir / "ckpt_atomic"
@@ -218,6 +234,7 @@ class TestCheckpointAtomicIO:
     def test_checkpoint_keep_last_k_cleanup(self):
         """Verify keep_last_k parameter limits retained checkpoints."""
         # Arrange
+        _require_checkpoint_torch()
         from src.codex_ml.checkpointing.checkpoint_core import save_checkpoint
 
         parent_dir = self.tmpdir / "training"
@@ -258,12 +275,14 @@ class TestCheckpointErrorHandling:
         with pytest.raises(RuntimeError) as exc_info:
             _require_torch_attr("nonexistent_torch_function")
 
-        assert ("missing required attribute" in str(exc_info.value).lower(), "Value must be initialized"
-        ), "Error should indicate missing torch attribute"
+        assert "missing required attribute" in str(exc_info.value).lower(), (
+            "Error should indicate missing torch attribute"
+        )
 
     def test_checkpoint_save_to_nonexistent_parent(self):
         """Verify save creates parent directories as needed."""
         # Arrange
+        _require_checkpoint_torch()
         from src.codex_ml.checkpointing.checkpoint_core import save_checkpoint
 
         nested_dir = self.tmpdir / "level1" / "level2" / "checkpoint"
