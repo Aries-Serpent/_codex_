@@ -1,0 +1,17 @@
+{
+  "version": "0.1.0",
+  "package_name": "codex-ml",
+  "build_date": "2026-07-09T02:35:00Z",
+  "artifacts": {
+    "wheel": "codex_ml-0.1.0-py3-none-any.whl",
+    "wheel_size": "4.5 MB",
+    "sdist": "codex_ml-0.1.0.tar.gz",
+    "sdist_size": "7.4 MB",
+    "checksums_file": "checksums.sha256"
+  },
+  "wheel_sha256": "4195f701ea3f9ecc505df13365a49f6f50cc40fa16d0f0108622248fc6198660",
+  "sdist_sha256": "4d781fc92f2fd940825acebd053f94e9db37308c350a6c4bd68bcec410a506fd",
+  "pypi_command": "twine upload dist/codex_ml-0.1.0-py3-none-any.whl dist/codex_ml-0.1.0.tar.gz",
+  "test_install": "pip install codex-ml==0.1.0",
+  "status": "Ready for PyPI publication"
+}
