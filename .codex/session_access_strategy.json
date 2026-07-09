@@ -1,18 +1,20 @@
 {
-  "generated_at": "2026-07-09T22:29:59.901471+00:00",
+  "generated_at": "2026-07-09T22:39:25.075988+00:00",
   "methods": [
     "rest",
     "graphql",
     "gh_cli"
   ],
   "rest_available": true,
-  "rest_remaining": 4809,
+  "rest_remaining": 4706,
   "graphql_available": true,
-  "graphql_remaining": 4996,
+  "graphql_remaining": 4994,
   "gh_cli_available": true,
   "codeql_available": false,
   "best_token_var": "GITHUB_TOKEN",
-  "open_prs": [],
+  "open_prs": [
+    5281
+  ],
   "branch": "copilot/post-merge-release-automation",
   "recommendation": "Use REST for data fetches. "
 }
