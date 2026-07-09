@@ -15,7 +15,7 @@ import shlex
 import subprocess
 from pathlib import Path
 from typing import Optional
-
+  # pragma: allowlist secret
 
 def _run(cmd: str, cwd: Path) -> int:
     proc = subprocess.run(shlex.split(cmd), cwd=str(cwd), check=False)

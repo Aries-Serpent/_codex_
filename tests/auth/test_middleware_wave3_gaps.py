@@ -15,7 +15,7 @@ Addresses uncovered branches and error paths:
 
 from unittest.mock import Mock, MagicMock, patch
 from datetime import datetime, timedelta
-
+  # pragma: allowlist secret
 import pytest
 
 
