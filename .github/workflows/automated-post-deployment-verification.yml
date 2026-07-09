@@ -101,17 +101,16 @@ jobs:
         \ >> $GITHUB_OUTPUT\n  echo \"✓ Health checks completed: $OVERALL\"\nelse\n\
         \  echo \"health_status=unknown\" >> $GITHUB_OUTPUT\n  echo \"⚠ Health check\
         \ results not available\"\nfi\n"
-    
-      - name: Cache test results (Layer 3)
-        uses: actions/cache@v5
-        if: always()
-        with:
-          path: .pytest_cache/
-          key: ${{ runner.os }}-pytest-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-pytest-
+    - name: Cache test results (Layer 3)
+      uses: actions/cache@v5
+      if: always()
+      with:
+        path: .pytest_cache/
+        key: ${{ runner.os }}-pytest-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-pytest-
 
-      - name: Upload Health Report
+    - name: Upload Health Report
       uses: actions/upload-artifact@v5
       with:
         name: health-check-report

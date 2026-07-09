@@ -89,16 +89,14 @@ jobs:
 
       '
     steps:
-    
-      - name: Cache Python dependencies (Layer 1)
-        uses: actions/cache@v5
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-
-      - uses: actions/checkout@v5
+    - name: Cache Python dependencies (Layer 1)
+      uses: actions/cache@v5
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    - uses: actions/checkout@v5
     - name: Cache pip downloads
       uses: actions/cache@v5
       with:
@@ -147,23 +145,23 @@ jobs:
       '
     steps:
     - uses: actions/checkout@v5
-    
-      - name: Cache test results (Layer 3)
-        uses: actions/cache@v5
-        if: always()
-        with:
-          path: .pytest_cache/
-          key: ${{ runner.os }}-pytest-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-pytest-
-
-      - name: Configure webhooks
+    - name: Cache test results (Layer 3)
+      uses: actions/cache@v5
+      if: always()
+      with:
+        path: .pytest_cache/
+        key: ${{ runner.os }}-pytest-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-pytest-
+    - name: Configure webhooks
+      id: webhook_config
       env:
         CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         WEBHOOK_SECRET: ${{ secrets.WEBHOOK_SECRET }}
         GITHUB_REPOSITORY: ${{ github.repository }}
         WEBHOOK_RECEIVER_URL: ${{ vars.WEBHOOK_RECEIVER_URL }}
         EXTRA_ARGS: ${{ needs.auth-check.outputs.extra_args }}
+      id: webhook_config
       run: "if [ -f \".codex/webhook_config.json\" ]; then\n  python scripts/ci/webhook_configurator.py\
         \ --apply .codex/webhook_config.json $EXTRA_ARGS\nelse\n  echo \"No webhook_config.json\
         \ found\"\nfi\n"
