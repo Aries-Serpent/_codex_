@@ -161,7 +161,6 @@ jobs:
         GITHUB_REPOSITORY: ${{ github.repository }}
         WEBHOOK_RECEIVER_URL: ${{ vars.WEBHOOK_RECEIVER_URL }}
         EXTRA_ARGS: ${{ needs.auth-check.outputs.extra_args }}
-      id: webhook_config
       run: "if [ -f \".codex/webhook_config.json\" ]; then\n  python scripts/ci/webhook_configurator.py\
         \ --apply .codex/webhook_config.json $EXTRA_ARGS\nelse\n  echo \"No webhook_config.json\
         \ found\"\nfi\n"

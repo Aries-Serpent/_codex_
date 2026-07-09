@@ -189,7 +189,7 @@ v0.1.0-final: Production Release
 - Zero critical security vulnerabilities
 
 📥 Installation
-pip install codex-ml==0.1.0-final
+pip install codex-ml==0.1.0
 
 🔗 Links
 [Installation Guide] [API Docs] [Architecture]

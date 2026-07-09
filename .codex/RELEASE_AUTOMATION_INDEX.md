@@ -83,21 +83,21 @@ Located in: `dist/`
 ### Step 1: TAG CREATION (2 minutes)
 ```bash
 git fetch origin main && git checkout main && git pull
-git tag -a v0.1.0-final -F /tmp/tag_annotation.txt
-git push origin v0.1.0-final
-git tag -l -n 10 v0.1.0-final  # Verify
+git tag -a v0.1.0 -F /tmp/tag_annotation.txt
+git push origin v0.1.0
+git tag -l -n 10 v0.1.0  # Verify
 ```
 **Resources:** POST_MERGE_AUTOMATION_WORKFLOW.md (Section 1)
 
 ### Step 2: GITHUB RELEASE (5 minutes)
 ```bash
-gh release create v0.1.0-final \
-  --title "v0.1.0-final: Production Release" \
+gh release create v0.1.0 \
+  --title "v0.1.0: Production Release" \
   --notes-file /tmp/release_notes.txt \
   --draft=false \
   dist/codex_ml-0.1.0-py3-none-any.whl \
   dist/codex_ml-0.1.0.tar.gz
-gh release view v0.1.0-final  # Verify
+gh release view v0.1.0  # Verify
 ```
 **Resources:** POST_MERGE_AUTOMATION_WORKFLOW.md (Section 2)
 
@@ -105,7 +105,7 @@ gh release view v0.1.0-final  # Verify
 ```bash
 python -m twine check dist/*
 python -m twine upload --username __token__ --password "$PYPI_TOKEN" dist/*
-pip install codex-ml==0.1.0-final --dry-run  # Verify
+pip install codex-ml==0.1.0 --dry-run  # Verify
 ```
 **Resources:** POST_MERGE_AUTOMATION_WORKFLOW.md (Section 3)
 

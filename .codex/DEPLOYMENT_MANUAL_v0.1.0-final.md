@@ -159,7 +159,7 @@ GH_TOKEN="$CODEX_MASTER_KEY" gh release create v0.1.0-final \
 ```bash
 # Check PyPI package page
 curl -s https://pypi.org/pypi/codex-ml/json | \
-  jq '.releases."0.1.0-final" | length'
+  jq '.releases."0.1.0" | length'
 
 # Expected output: 2 (wheel + tarball)
 # If 0: Publication failed, check workflow logs
@@ -169,7 +169,7 @@ curl -s https://pypi.org/pypi/codex-ml/json | \
 **Manual Verification:**
 1. Visit: https://pypi.org/project/codex-ml/
 2. Look for: **Release history** section
-3. Find: Version `0.1.0-final`
+3. Find: Version `0.1.0`
 4. Verify: Both `codex_ml-0.1.0.tar.gz` and `codex_ml-0.1.0-py3-none-any.whl` are present
 5. Click: Each file to confirm download links work
 
@@ -180,10 +180,10 @@ curl -s https://pypi.org/pypi/codex-ml/json | \
 ```bash
 # Test PyPI installation in clean environment
 python -m pip install --index-url https://test.pypi.org/simple/ \
-  codex-ml==0.1.0-final 2>&1 | tail -10
+  codex-ml==0.1.0 2>&1 | tail -10
 
 # Production installation (after release is live)
-python -m pip install codex-ml==0.1.0-final --upgrade
+python -m pip install codex-ml==0.1.0 --upgrade
 ```
 
 ---
