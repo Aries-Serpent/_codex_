@@ -1,6 +1,4 @@
-"""
-from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
-Writers Module
+"""Writers Module.
 
 This module provides functionality for writers.
 
