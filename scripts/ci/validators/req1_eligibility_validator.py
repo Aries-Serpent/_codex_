@@ -36,6 +36,7 @@ logger = logging.getLogger(__name__)
 VALID_BRANCH_PREFIXES = {
     "feat", "fix", "docs", "test", "chore",
     "refactor", "perf", "ci", "build", "revert", "copilot",
+    "dependabot",
 }
 
 # Minimum requirements
