@@ -6,4 +6,4 @@ pandas>=3.0.3,<4  # Must match pyproject.toml and other requirement files
 lm-eval==0.4.12
 rouge-score==0.1.2
 sacrebleu==2.6.0
-nltk==3.9.4
+nltk==3.10.0
