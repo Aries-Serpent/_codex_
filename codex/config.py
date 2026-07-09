@@ -27,12 +27,14 @@ class Config:
         self.db_host = os.environ.get("DB_HOST", "localhost")
         self.db_port = os.environ.get("DB_PORT", "5432")
         # IMPORTANT: Required credentials must be provided via environment variables
-        self.db_user = os.environ.get("DB_USER")  # No default; validation enforces requirement
-        self.db_password = os.environ.get("DB_PASSWORD")  # No default; validation enforces requirement
+        # NOTE: Constructor allows None values; call validate() to enforce requirements
+        self.db_user = os.environ.get("DB_USER")  # None if not provided
+        self.db_password = os.environ.get("DB_PASSWORD")  # None if not provided
  
         # SECURE: API keys come from environment
-        self.api_key = os.environ.get("API_KEY")  # No default; validation enforces requirement
-        self.secret_key = os.environ.get("SECRET_KEY")  # No default; validation enforces requirement
+        # NOTE: Constructor allows None values; call validate() to enforce requirements
+        self.api_key = os.environ.get("API_KEY")  # None if not provided
+        self.secret_key = os.environ.get("SECRET_KEY")  # None if not provided
 
         # SECURE: Non-sensitive configuration can have defaults
         self.debug = os.environ.get("DEBUG", "false").lower() == "true"
