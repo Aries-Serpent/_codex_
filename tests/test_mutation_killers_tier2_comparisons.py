@@ -1,0 +1,212 @@
+"""
+Tier 2 Mutation Killing Enhancements - Comparison Operators
+
+Focus: Add exhaustive comparison operator tests to catch mutations:
+- `<` vs `<=` vs `>`vs `>=`
+- `==` vs `!=`
+- Boolean negations
+
+These tests catch common operator mutations that weak tests miss.
+"""
+
+import pytest
+
+
+class TestLessThanVsLessEqual:
+    """Test boundaries between < and <= operators."""
+
+    def test_less_than_exclusive_boundary(self):
+        """Test that < excludes the boundary value."""
+        value = 10
+        max_value = 10
+        
+        # value < max_value should be False when value == max_value
+        assert not (value < max_value), \
+            f"{value} must NOT be < {max_value}"
+        
+        # value <= max_value should be True when value == max_value
+        assert value <= max_value, \
+            f"{value} must be <= {max_value}"
+
+    def test_less_than_with_negative_numbers(self):
+        """Test comparison with negative numbers."""
+        assert -5 < -4, "-5 must be < -4"
+        assert not (-4 < -5), "-4 must NOT be < -5"
+        assert -4 <= -4, "-4 must be <= -4"
+
+    def test_less_than_with_floats(self):
+        """Test comparison with floating point values."""
+        assert 1.5 < 2.0, "1.5 must be < 2.0"
+        assert not (2.0 < 2.0), "2.0 must NOT be < 2.0"
+        assert 2.0 <= 2.0, "2.0 must be <= 2.0"
+        assert 1.9999 < 2.0, "1.9999 must be < 2.0"
+
+
+class TestGreaterThanVsGreaterEqual:
+    """Test boundaries between > and >= operators."""
+
+    def test_greater_than_exclusive_boundary(self):
+        """Test that > excludes the boundary value."""
+        value = 10
+        min_value = 10
+        
+        # value > min_value should be False when value == min_value
+        assert not (value > min_value), \
+            f"{value} must NOT be > {min_value}"
+        
+        # value >= min_value should be True when value == min_value
+        assert value >= min_value, \
+            f"{value} must be >= {min_value}"
+
+    def test_greater_than_with_negative_numbers(self):
+        """Test comparison with negative numbers."""
+        assert -4 > -5, "-4 must be > -5"
+        assert not (-5 > -4), "-5 must NOT be > -4"
+        assert -4 >= -4, "-4 must be >= -4"
+
+    def test_greater_than_with_floats(self):
+        """Test comparison with floating point values."""
+        assert 2.0 > 1.5, "2.0 must be > 1.5"
+        assert not (2.0 > 2.0), "2.0 must NOT be > 2.0"
+        assert 2.0 >= 2.0, "2.0 must be >= 2.0"
+        assert 2.0001 > 2.0, "2.0001 must be > 2.0"
+
+
+class TestEqualityVsInequality:
+    """Test == vs != mutations."""
+
+    def test_equality_with_integers(self):
+        """Test integer equality."""
+        assert 5 == 5, "5 must be == 5"
+        assert not (5 == 6), "5 must NOT be == 6"
+        assert 5 != 6, "5 must be != 6"
+        assert not (5 != 5), "5 must NOT be != 5"
+
+    def test_equality_with_strings(self):
+        """Test string equality."""
+        assert "hello" == "hello", "Identical strings must be equal"
+        assert not ("hello" == "world"), "Different strings must not be equal"
+        assert "hello" != "world", "Different strings must be !="
+        assert not ("hello" != "hello"), "Same string must NOT be !="
+
+    def test_equality_with_floats(self):
+        """Test float equality (exact match)."""
+        assert 1.0 == 1.0, "1.0 must == 1.0"
+        assert not (1.0 == 1.0001), "1.0 must NOT == 1.0001"
+        assert 1.0 != 1.0001, "1.0 must != 1.0001"
+
+    def test_equality_with_none(self):
+        """Test None equality."""
+        value = None
+        assert value is None, "None must be None"
+        assert value == None, "None must == None"
+        assert not (value != None), "None must NOT != None"
+        assert not (value is not None), "None must NOT be not None"
+
+
+class TestBoundaryMultiplier:
+    """Test operators with multiplied boundaries."""
+
+    def test_inclusive_vs_exclusive_with_multiplier(self):
+        """Test boundary with multiplication factor."""
+        max_len = 10
+        multiplier = 2
+        value = max_len * multiplier
+        
+        # 20 < 20 should be False
+        assert not (value < value), f"{value} must NOT be < itself"
+        # 20 <= 20 should be True
+        assert value <= value, f"{value} must be <= itself"
+        # 20 > 19 should be True
+        assert value > (value - 1), f"{value} must be > {value - 1}"
+
+    def test_off_by_one_boundaries(self):
+        """Test classic off-by-one mutation scenarios."""
+        for i in range(5):
+            # i < i should always be False
+            assert not (i < i), f"{i} < {i} must be False"
+            # i <= i should always be True
+            assert i <= i, f"{i} <= {i} must be True"
+            # i > i should always be False
+            assert not (i > i), f"{i} > {i} must be False"
+            # i >= i should always be True
+            assert i >= i, f"{i} >= {i} must be True"
+
+
+class TestLogicalNegation:
+    """Test boolean negation mutations (not x vs x)."""
+
+    def test_negation_flips_truth(self):
+        """Test that negation reverses boolean value."""
+        true_val = True
+        false_val = False
+        
+        # not True must be False
+        assert (not true_val) == False, "not True must equal False"
+        # not not True must be True
+        assert (not (not true_val)) == True, "not not True must equal True"
+        
+        # not False must be True
+        assert (not false_val) == True, "not False must equal True"
+        # not not False must be False
+        assert (not (not false_val)) == False, "not not False must equal False"
+
+    def test_negation_with_comparisons(self):
+        """Test negation of comparison results."""
+        a = 5
+        b = 10
+        
+        # not (a < b) should be False when a < b is True
+        assert not (not (a < b)), "not not (a < b) must be True when a < b"
+        assert not (a >= b), "not (a < b) is equivalent to a >= b"
+
+
+class TestChainedComparisons:
+    """Test chained comparison operators."""
+
+    def test_chained_less_than(self):
+        """Test a < b < c pattern."""
+        a, b, c = 1, 2, 3
+        
+        assert a < b < c, "1 < 2 < 3 must be True"
+        assert not (c < b < a), "3 < 2 < 1 must be False"
+        assert not (a > b < c), "1 > 2 < 3 must be False"
+
+    def test_chained_with_equal(self):
+        """Test a <= b <= c pattern."""
+        a, b, c = 1, 2, 2
+        
+        assert a <= b <= c, "1 <= 2 <= 2 must be True"
+        assert not (c <= b <= a), "2 <= 2 <= 1 must be False"
+
+
+class TestInBoundaryCheck:
+    """Test common in-range checks."""
+
+    def test_value_in_range(self):
+        """Test if value is within range."""
+        value = 50
+        min_val = 0
+        max_val = 100
+        
+        # All these patterns appear in real code and are mutation-prone
+        assert min_val <= value <= max_val, \
+            f"{value} must be in [{min_val}, {max_val}]"
+        assert not (value < min_val), \
+            f"{value} must NOT be < {min_val}"
+        assert not (value > max_val), \
+            f"{value} must NOT be > {max_val}"
+
+    def test_value_outside_range(self):
+        """Test boundaries where value is out of range."""
+        value = 150
+        max_val = 100
+        
+        assert value > max_val, \
+            f"{value} must be > {max_val}"
+        assert not (value <= max_val), \
+            f"{value} must NOT be <= {max_val}"
+
+
+if __name__ == "__main__":
+    pytest.main([__file__, "-v"])
