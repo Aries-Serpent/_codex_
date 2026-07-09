@@ -72,42 +72,42 @@ Issues = "https://github.com/Aries-Serpent/_codex_/issues"
 [tool.setuptools.packages.find]
 where = ["src"]
 include = [
-    "codex.config*",
-    "codex.security*",
-    "codex.secrets*",
-    "codex.resilience*",
-    "codex.logging*",
-    "codex.session*",
-    "codex.utils*",
-    "codex.observability*",
-    "codex.db*",
-    "codex.metrics*",
+    "aries_serpent_core.config*",
+    "aries_serpent_core.security*",
+    "aries_serpent_core.secrets*",
+    "aries_serpent_core.resilience*",
+    "aries_serpent_core.logging*",
+    "aries_serpent_core.session*",
+    "aries_serpent_core.utils*",
+    "aries_serpent_core.observability*",
+    "aries_serpent_core.db*",
+    "aries_serpent_core.metrics*",
 ]
 exclude = [
-    "codex.cognitive*",
-    "codex.rag*",
-    "codex.skills*",
-    "codex.mcp*",
-    "codex.training*",
-    "codex.auth*",
-    "codex.cache*",
-    "codex.api*",
-    "codex.clients*",
-    "codex.cli*",
+    "aries_serpent_core.cognitive*",
+    "aries_serpent_core.rag*",
+    "aries_serpent_core.skills*",
+    "aries_serpent_core.mcp*",
+    "aries_serpent_core.training*",
+    "aries_serpent_core.auth*",
+    "aries_serpent_core.cache*",
+    "aries_serpent_core.api*",
+    "aries_serpent_core.clients*",
+    "aries_serpent_core.cli*",
     "tests*",
 ]
 
 [tool.setuptools.package-data]
-"codex.config" = ["py.typed"]
-"codex.security" = ["py.typed"]
-"codex.secrets" = ["py.typed"]
-"codex.resilience" = ["py.typed"]
-"codex.logging" = ["py.typed"]
-"codex.session" = ["py.typed"]
-"codex.utils" = ["py.typed"]
-"codex.observability" = ["py.typed"]
-"codex.db" = ["py.typed"]
-"codex.metrics" = ["py.typed"]
+"aries_serpent_core.config" = ["py.typed"]
+"aries_serpent_core.security" = ["py.typed"]
+"aries_serpent_core.secrets" = ["py.typed"]
+"aries_serpent_core.resilience" = ["py.typed"]
+"aries_serpent_core.logging" = ["py.typed"]
+"aries_serpent_core.session" = ["py.typed"]
+"aries_serpent_core.utils" = ["py.typed"]
+"aries_serpent_core.observability" = ["py.typed"]
+"aries_serpent_core.db" = ["py.typed"]
+"aries_serpent_core.metrics" = ["py.typed"]
 
 [tool.black]
 line-length = 100
@@ -122,7 +122,7 @@ select = ["E", "F", "I"]
 
 [tool.coverage.run]
 branch = true
-source = ["src/codex"]
+source = ["src/aries_serpent_core"]
 
 [tool.coverage.report]
 show_missing = true
