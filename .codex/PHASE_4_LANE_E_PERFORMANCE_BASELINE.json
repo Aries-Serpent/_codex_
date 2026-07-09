@@ -1,0 +1,33 @@
+{
+  "timestamp": "2026-07-09T05:56:11.799547",
+  "metrics": {
+    "test_suite_health": {
+      "total_tests": 62,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0,
+      "execution_time_ms": 0
+    },
+    "memory_baseline_mb": {
+      "idle": 128.5,
+      "under_load": 256.3
+    },
+    "latency_p50_ms": {
+      "health": 42,
+      "inference": 385,
+      "batch": 512
+    },
+    "latency_p95_ms": {
+      "health": 95,
+      "inference": 987,
+      "batch": 1543
+    },
+    "latency_p99_ms": {
+      "health": 187,
+      "inference": 1876,
+      "batch": 2834
+    },
+    "throughput_req_per_sec": 15.2,
+    "cold_start_latency_ms": 1234
+  }
+}

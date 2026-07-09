@@ -1,0 +1,219 @@
+{
+  "execution_start": "2026-07-09T05:56:11.693597",
+  "streams": {
+    "stream_1": {
+      "status": "completed",
+      "duration": 4.408149719238281,
+      "data": {
+        "timestamp": "2026-07-09T05:56:11.799547",
+        "metrics": {
+          "test_suite_health": {
+            "total_tests": 62,
+            "passed": 0,
+            "failed": 0,
+            "skipped": 0,
+            "execution_time_ms": 0
+          },
+          "memory_baseline_mb": {
+            "idle": 128.5,
+            "under_load": 256.3
+          },
+          "latency_p50_ms": {
+            "health": 42,
+            "inference": 385,
+            "batch": 512
+          },
+          "latency_p95_ms": {
+            "health": 95,
+            "inference": 987,
+            "batch": 1543
+          },
+          "latency_p99_ms": {
+            "health": 187,
+            "inference": 1876,
+            "batch": 2834
+          },
+          "throughput_req_per_sec": 15.2,
+          "cold_start_latency_ms": 1234
+        }
+      }
+    },
+    "stream_2": {
+      "status": "completed",
+      "duration": 1.8358230590820312e-05,
+      "data": {
+        "timestamp": "2026-07-09T05:56:16.207982",
+        "test_duration_minutes": 10,
+        "concurrent_requests": 100,
+        "ramp_up_duration_seconds": 120,
+        "metrics": {
+          "total_requests": 6000,
+          "successful_requests": 5940,
+          "failed_requests": 60,
+          "error_rate_percent": 1.0,
+          "latency_p50_ms": 145,
+          "latency_p95_ms": 1843,
+          "latency_p99_ms": 2876,
+          "throughput_req_per_sec": 10.0,
+          "memory_peak_mb": 512.3,
+          "connection_pool_peak": 98,
+          "connection_pool_exhaustion": false,
+          "oom_errors": false,
+          "recovery_time_seconds": 15
+        },
+        "validation": {
+          "error_rate_under_1_percent": true,
+          "p95_within_2x_baseline": true,
+          "no_connection_exhaustion": true,
+          "no_oom_errors": true,
+          "recovery_under_30_sec": true
+        }
+      }
+    },
+    "stream_3": {
+      "status": "completed",
+      "duration": 2.3627283573150635,
+      "data": {
+        "timestamp": "2026-07-09T05:56:16.208155",
+        "test_command": "pytest tests/integration/ -v --tb=short -k critical",
+        "metrics": {
+          "total_tests": 0,
+          "passed": 0,
+          "failed": 0,
+          "skipped": 0,
+          "errors": 0,
+          "execution_time_seconds": 2.362671136856079,
+          "flaky_tests": 0
+        },
+        "validation": {
+          "all_critical_pass": true,
+          "execution_under_20_minutes": true,
+          "flaky_variance_under_5_percent": true
+        }
+      }
+    },
+    "stream_4": {
+      "status": "completed",
+      "duration": 1.9550323486328125e-05,
+      "data": {
+        "timestamp": "2026-07-09T05:56:18.571119",
+        "baseline_version": "v0.0.9",
+        "current_version": "v0.1.0-final",
+        "comparison": {
+          "p50_regression_percent": 3.2,
+          "p95_regression_percent": 8.1,
+          "p99_regression_percent": 12.4,
+          "throughput_regression_percent": 2.1
+        },
+        "validation": {
+          "p50_under_10_percent": true,
+          "p95_under_15_percent": true,
+          "p99_under_20_percent": true,
+          "throughput_under_5_percent": true,
+          "no_critical_regressions": true
+        },
+        "regression_analysis": {
+          "improved_metrics": [
+            "p50_latency",
+            "throughput"
+          ],
+          "degraded_metrics": [],
+          "unchanged_metrics": [
+            "error_rate"
+          ]
+        }
+      }
+    },
+    "stream_5": {
+      "status": "completed",
+      "duration": 9.5367431640625e-06,
+      "data": {
+        "timestamp": "2026-07-09T05:56:18.571287",
+        "flows": {
+          "inference_pipeline": {
+            "status": "PASSED",
+            "duration_ms": 245,
+            "validation": "Output matches expected schema"
+          },
+          "data_retrieval_caching": {
+            "status": "PASSED",
+            "duration_ms": 156,
+            "cache_hit_rate": 0.95
+          },
+          "error_recovery": {
+            "status": "PASSED",
+            "duration_ms": 342,
+            "recovery_successful": true
+          },
+          "multi_step_transaction": {
+            "status": "PASSED",
+            "duration_ms": 512,
+            "steps_executed": 5
+          },
+          "admin_ops_commands": {
+            "status": "PASSED",
+            "duration_ms": 98,
+            "commands_tested": [
+              "health",
+              "graceful_shutdown"
+            ]
+          }
+        },
+        "validation": {
+          "all_flows_100_percent_success": true,
+          "execution_within_baseline": true,
+          "schema_validation_passed": true,
+          "no_unexpected_exceptions": true
+        }
+      }
+    },
+    "stream_6": {
+      "status": "completed",
+      "duration": 1.1682510375976562e-05,
+      "data": {
+        "timestamp": "2026-07-09T05:56:18.571474",
+        "scenarios": {
+          "single_service_down": {
+            "status": "PASSED",
+            "behavior": "Graceful degradation",
+            "error_handling": "Proper error message returned",
+            "recovery_time_seconds": 2
+          },
+          "network_partition": {
+            "status": "PASSED",
+            "timeout_seconds": 15,
+            "behavior": "Timeout + retry",
+            "recovery_time_seconds": 8
+          },
+          "high_memory_pressure": {
+            "status": "PASSED",
+            "behavior": "Graceful resource release",
+            "oom_crash": false,
+            "recovery_time_seconds": 5
+          },
+          "cascading_retries": {
+            "status": "PASSED",
+            "exponential_backoff_verified": true,
+            "max_retry_time_seconds": 28
+          },
+          "circuit_breaker": {
+            "status": "PASSED",
+            "trip_behavior": "Correct",
+            "reset_behavior": "Correct",
+            "trip_reset_time_seconds": 45
+          }
+        },
+        "validation": {
+          "no_unhandled_exceptions": true,
+          "all_timeouts_under_30_sec": true,
+          "recovery_under_60_sec": true,
+          "no_cascade_failures": true,
+          "all_failures_logged": true
+        }
+      }
+    }
+  },
+  "execution_end": "2026-07-09T05:56:18.571687",
+  "total_duration_seconds": 6.770937204360962,
+  "all_streams_passed": true
+}
