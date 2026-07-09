@@ -97,6 +97,7 @@ except Exception:
 
 import importlib.util
 import os as _os
+import asyncio
 import pathlib
 import re as _re
 import sys as _sys
