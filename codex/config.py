@@ -19,20 +19,24 @@ logger = logging.getLogger(__name__)
 
 # SECURE: Load credentials from environment, not hardcoded
 class Config:
-    """Application configuration with secure credential handling."""
+    """Application configuration with secure credential handling.
+    
+    IMPORTANT: Constructor loads configuration from environment variables but does NOT
+    automatically validate them. Call validate() explicitly to enforce that all required
+    credentials are present. In production environments, call validate() immediately after
+    construction (see get_config() for example usage pattern).
+    """
 
     def __init__(self):
         """Initialize configuration from environment variables."""
         # SECURE: Database credentials come from environment, not hardcoded
         self.db_host = os.environ.get("DB_HOST", "localhost")
         self.db_port = os.environ.get("DB_PORT", "5432")
-        # IMPORTANT: Required credentials must be provided via environment variables
-        # NOTE: Constructor allows None values; call validate() to enforce requirements
+        # Required credentials are loaded as None if not in environment
         self.db_user = os.environ.get("DB_USER")  # None if not provided
         self.db_password = os.environ.get("DB_PASSWORD")  # None if not provided
- 
+  
         # SECURE: API keys come from environment
-        # NOTE: Constructor allows None values; call validate() to enforce requirements
         self.api_key = os.environ.get("API_KEY")  # None if not provided
         self.secret_key = os.environ.get("SECRET_KEY")  # None if not provided
 
