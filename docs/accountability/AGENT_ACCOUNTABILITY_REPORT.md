@@ -19,6 +19,7 @@
 - `PYTHONPATH=src ~/.local/bin/pytest -q tests/rag/cache/test_mutation_killers_tier1.py tests/test_mutation_killers_tier2_comparisons.py` ✅
 - `PYTHONPATH=src:. ~/.local/bin/pytest -q test_optimizations.py` ✅ (passes with pre-existing `PytestReturnNotNoneWarning` warnings only)
 - `parallel_validation` rerun feedback addressed with follow-up assertions/comments; final targeted Ruff + pytest re-run passed ✅
+- Final follow-up tweaks: cache size assertion added, deferred-persistence contract clarified, boolean assertion wording normalized ✅
 
 ### NOTES
 

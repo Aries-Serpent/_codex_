@@ -95,7 +95,9 @@ def run(
 
                 if not dry_run:
                     # Persistence is intentionally deferred until this skill is
-                    # wired to the real LTM retention backend again.
+                    # wired to the real LTM retention backend again. Consumers
+                    # should treat `persistence_status="deferred"` as a signal
+                    # to queue or retry LTM promotion in a downstream worker.
                     promoted["persistence_status"] = "deferred"
                     promoted["resolved_policy"] = policy.name.lower()
 

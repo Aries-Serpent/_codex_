@@ -140,7 +140,7 @@ class TestLogicalNegation:
         false_val = False
 
         # not True must be False
-        assert (not true_val) is False, "not True must evaluate to False"
+        assert (not true_val) is False, "not True must be False"
         # not not True must be True
         assert (not (not true_val)) is True, "not not True must evaluate to True"
 

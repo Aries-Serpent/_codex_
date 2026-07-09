@@ -148,6 +148,7 @@ class TestQueryCacheBasicOperations:
         assert result is not None, "Get should return non-None for existing key"
         assert stats.hits == 1, f"Expected exactly 1 hit, got {stats.hits}"
         assert stats.misses == 0, f"Expected exactly 0 misses, got {stats.misses}"
+        assert stats.size == 1, f"Expected cache size 1 after put/get, got {stats.size}"
 
     def test_cache_hit_rate_progression(self):
         """Test hit rate changes exactly as operations proceed."""

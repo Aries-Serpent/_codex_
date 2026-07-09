@@ -8,6 +8,7 @@
 - Rewrote `None`/boolean comparison assertions in `tests/test_mutation_killers_tier2_comparisons.py` to satisfy lint while preserving mutation coverage intent.
 - Switched `test_optimizations.py` to import `.codex` helpers through `importlib` after `sys.path` setup, avoiding root-level E402 failures.
 - Addressed final validation follow-up comments by documenting deferred memory persistence and strengthening initial cache stats assertions.
+- Added an explicit post-insert cache size assertion and finalized the last comparison/assertion wording cleanup from validation review.
 
 ### Added (2026-07-09T02:05:00Z — PACKAGING CAMPAIGN: Phase 1 PUBLISHED + P0 BLOCKER COMPLETE + Phase 2/P1 AGENTS EXECUTING)
 - **Mission:** Execute Phase 1 Cognitive Brain release (GitHub Release + Discussion), complete P0 blocker refactoring, and deploy Phase 2 core package + P1 blocker agents in parallel autonomous execution
