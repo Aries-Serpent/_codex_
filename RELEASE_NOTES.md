@@ -67,4 +67,4 @@ This is **Phase 1** of the v0.1.0 distribution campaign. Subsequent phases will 
 ---
 **Release Type**: Beta Release (v0.1.0-beta1)  
 **Campaign**: Packaging Campaign Phase 1  
-**Authority**: v0.1.0-final production deployment authorized (2026-07-08)
+**Authority**: v0.1.0-prod production deployment authorized (2026-07-08)

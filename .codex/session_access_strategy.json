@@ -1,20 +1,21 @@
 {
-  "generated_at": "2026-07-09T19:28:34.471833+00:00",
+  "generated_at": "2026-07-09T22:25:10.266536+00:00",
   "methods": [
     "rest",
     "graphql",
     "gh_cli"
   ],
   "rest_available": true,
-  "rest_remaining": 4843,
+  "rest_remaining": 4947,
   "graphql_available": true,
-  "graphql_remaining": 4968,
+  "graphql_remaining": 4998,
   "gh_cli_available": true,
   "codeql_available": false,
-  "best_token_var": "CODEX_MASTER_KEY",
+  "best_token_var": "GITHUB_TOKEN",
   "open_prs": [
-    5278
+    5280,
+    5279
   ],
-  "branch": "copilot/continue-deployment-arise-serpent-v010-final",
+  "branch": "copilot/continue-v0-1-0-release-execution",
   "recommendation": "Use REST for data fetches. "
 }
