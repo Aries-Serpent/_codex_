@@ -1,20 +1,18 @@
 {
-  "generated_at": "2026-07-09T19:28:34.471833+00:00",
+  "generated_at": "2026-07-09T19:54:46.753787+00:00",
   "methods": [
     "rest",
     "graphql",
     "gh_cli"
   ],
   "rest_available": true,
-  "rest_remaining": 4843,
+  "rest_remaining": 4364,
   "graphql_available": true,
-  "graphql_remaining": 4968,
+  "graphql_remaining": 4989,
   "gh_cli_available": true,
   "codeql_available": false,
-  "best_token_var": "CODEX_MASTER_KEY",
-  "open_prs": [
-    5278
-  ],
-  "branch": "copilot/continue-deployment-arise-serpent-v010-final",
+  "best_token_var": "GITHUB_TOKEN",
+  "open_prs": [],
+  "branch": "dependabot/pip/nltk-3.10.0",
   "recommendation": "Use REST for data fetches. "
 }
