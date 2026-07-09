@@ -1,4 +1,5 @@
 """
+from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
 Features Module
 
 This module provides functionality for features.
@@ -26,7 +27,6 @@ import typer
 from rich.console import Console
 from rich.table import Table
 
-from codex.logging.structured_logger import logger
 from codex_ml.features.feature_store import FeatureStore
 from codex_ml.features.monitoring import FeatureHealthMonitor
 
@@ -44,17 +44,17 @@ def list_features(
         features = store.list_features()
 
         if not features:
-            console.logger.info("[yellow]No features registered yet[/yellow]")
+            console.get_default_logger().info("[yellow]No features registered yet[/yellow]")
             return
 
-        console.logger.info(f"\n[bold]Registered Features ({len(features)}):[/bold]")
+        console.get_default_logger().info(f"\n[bold]Registered Features ({len(features)}):[/bold]")
         for name in sorted(features):
-            console.logger.info(f"  • {name}")
+            console.get_default_logger().info(f"  • {name}")
         console.print()
     except (ValueError, TypeError, RuntimeError) as e:
         type(e).__name__
-        logger.debug("Exception: <ERROR_TYPE>")
-        console.logger.info("[red]Error: <ERROR_TYPE>[/red]")
+        get_default_logger().debug("Exception: <ERROR_TYPE>")
+        console.get_default_logger().info("[red]Error: <ERROR_TYPE>[/red]")
         raise typer.Exit(1) from e
 
 
@@ -70,7 +70,7 @@ def check_health(
 
         features = store.list_features()
         if not features:
-            console.logger.info("[yellow]No features to check[/yellow]")
+            console.get_default_logger().info("[yellow]No features to check[/yellow]")
             return
 
         health_status = monitor.check_all_features(features)
@@ -111,11 +111,11 @@ def check_health(
                 warnings_str,
             )
 
-        console.logger.info(table)
+        console.get_default_logger().info(table)
     except (ValueError, TypeError, RuntimeError) as e:
         type(e).__name__
-        logger.debug("Exception: <ERROR_TYPE>")
-        console.logger.info("[red]Error: <ERROR_TYPE>[/red]")
+        get_default_logger().debug("Exception: <ERROR_TYPE>")
+        console.get_default_logger().info("[red]Error: <ERROR_TYPE>[/red]")
         raise typer.Exit(1) from e
 
 
@@ -137,11 +137,11 @@ def export_metadata(
         with open(output, "w") as f:
             json.dump(metadata, f, indent=2)
 
-        console.logger.info(f"✅ Exported metadata for {len(metadata)} features to {output}")
+        console.get_default_logger().info(f"✅ Exported metadata for {len(metadata)} features to {output}")
     except (IOError, OSError) as e:
         type(e).__name__
-        logger.debug("Exception: <ERROR_TYPE>")
-        console.logger.info("[red]Error: <ERROR_TYPE>[/red]")
+        get_default_logger().debug("Exception: <ERROR_TYPE>")
+        console.get_default_logger().info("[red]Error: <ERROR_TYPE>[/red]")
         raise typer.Exit(1) from e
 
 
@@ -153,11 +153,11 @@ def clear_cache(
     try:
         store = FeatureStore(store_path)
         store.clear_cache()
-        console.logger.info("✅ Feature cache cleared")
+        console.get_default_logger().info("✅ Feature cache cleared")
     except (IOError, OSError) as e:
         type(e).__name__
-        logger.debug("Exception: <ERROR_TYPE>")
-        console.logger.info("[red]Error: <ERROR_TYPE>[/red]")
+        get_default_logger().debug("Exception: <ERROR_TYPE>")
+        console.get_default_logger().info("[red]Error: <ERROR_TYPE>[/red]")
         raise typer.Exit(1) from e
 
 

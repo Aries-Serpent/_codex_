@@ -8,10 +8,10 @@ import sys
 from collections.abc import Sequence
 from pathlib import Path
 from typing import Any, Optional
+from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
 
 logger = logging.getLogger(__name__)
 
-from codex.logging.structured_logger import logger
 from codex_ml.codex_structured_logging import (
     ArgparseJSONParser,
     capture_exceptions,
@@ -41,7 +41,7 @@ if _HAS_HYDRA:  # pragma: no cover - optional dependency
     try:
         from hydra.utils import to_absolute_path as _hydra_to_absolute_path
     except ImportError:
-        logger.warning(
+        get_default_logger().warning(
             "Failed to import hydra.utils.to_absolute_path; "
             "falling back to config_legacy.utils.to_absolute_path",
             exc_info=True,
@@ -143,7 +143,7 @@ def _sanitize_eval_config(cfg_map: dict[str, Any]) -> int:
     if not isinstance(sanitize_flag, bool):
         sanitize_flag = True
     if not sanitize_flag:
-        logger.debug("Prompt sanitisation disabled for evaluation config")
+        get_default_logger().debug("Prompt sanitisation disabled for evaluation config")
         return 0
 
     total = 0
@@ -158,7 +158,7 @@ def _sanitize_eval_config(cfg_map: dict[str, Any]) -> int:
         ("prompts", "inputs", "texts"),
     )
     if total:
-        logger.info("Sanitised %d prompt field(s) in evaluation configuration", total)
+        get_default_logger().info("Sanitised %d prompt field(s) in evaluation configuration", total)
     return total
 
 
@@ -241,7 +241,7 @@ def _load_latest_checkpoint_dir(
                     if parent.exists():
                         return parent
         except json.JSONDecodeError as e:
-            logger.debug("JSON decode error when parsing checkpoint path: %s", e)
+            get_default_logger().debug("JSON decode error when parsing checkpoint path: %s", e)
 
     epoch_dirs = sorted(
         (item for item in root.iterdir() if item.is_dir() and item.name.startswith("epoch-")),
@@ -337,7 +337,7 @@ def _run_dataset_evaluation(
             records = records[: int(limit)]
         except (TypeError, ValueError):
             # Invalid limit value; proceed without truncating records
-            logger.debug("Ignoring invalid limit value %r; using all records", limit)
+            get_default_logger().debug("Ignoring invalid limit value %r; using all records", limit)
 
     # Load vocabulary if tiny-vocab tokenizer
     vocab: Optional[dict[str, Any]] = None
@@ -437,7 +437,7 @@ if _HAS_HYDRA:
                     checkpoint_dir=checkpoint_dir, model_name=model_name, device=device
                 )
 
-            logger.info(json.dumps(result, indent=2))
+            get_default_logger().info(json.dumps(result, indent=2))
             status = result.get("status", "error") if isinstance(result, dict) else "error"
             log_event(
                 logger,
@@ -507,7 +507,7 @@ else:
         with capture_exceptions(logger):
             log_event(logger, "cli.start", prog=sys.argv[0], args=arg_list)
             result = _run_non_hydra_main(arg_list)
-            logger.info(json.dumps(result, indent=2))
+            get_default_logger().info(json.dumps(result, indent=2))
             status = result.get("status", "error") if isinstance(result, dict) else "error"
             log_event(
                 logger,

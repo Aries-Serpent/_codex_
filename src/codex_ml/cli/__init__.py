@@ -1,4 +1,5 @@
 """
+from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
   Init   Module
 
 This module provides functionality for   init  .
@@ -22,7 +23,6 @@ import os
 import sys
 from typing import Any, Optional, Union
 
-from codex.logging.structured_logger import logger
 from codex_ml.utils.error_log import log_error
 from codex_ml.utils.optional import optional_import
 
@@ -149,7 +149,7 @@ def _cmd_ndjson_summary(args: argparse.Namespace) -> int:
             slot["count"] += 1
             slot["min"] = val if slot["min"] is None else min(slot["min"], val)
             slot["max"] = val if slot["max"] is None else max(slot["max"], val)
-        logger.info(_json.dumps({"rows": len(rows), "metrics": metrics_agg}))
+        get_default_logger().info(_json.dumps({"rows": len(rows), "metrics": metrics_agg}))
         return 0
 
     ndjson_summary.summarize(run_dir, fmt, dest)

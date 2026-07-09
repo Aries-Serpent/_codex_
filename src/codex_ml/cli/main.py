@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +18,6 @@ from pathlib import Path
 from types import ModuleType
 from typing import Annotated, Any, Optional
 
-from codex.logging.structured_logger import logger
 
 yaml: ModuleType | None
 try:  # Optional dependency used for loading curriculum presets
@@ -62,8 +62,8 @@ if typer is not None:
             app.add_typer(tokenizer_cli.app, name="tokenizer")
         except (ImportError, AttributeError) as e:
             error_type = type(e).__name__
-            logger.debug("Exception: <ERROR_TYPE>")
-            logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
+            get_default_logger().debug("Exception: <ERROR_TYPE>")
+            get_default_logger().warning("Exception: <ERROR_TYPE>", exc_info=True)
 
     from codex_ml.cli import _load_training_config  # type: ignore[attr-defined]
 
@@ -182,8 +182,8 @@ if typer is not None:
                         root = cli_path.parents[depth]
                     except IndexError as e:
                         type(e).__name__
-                        logger.debug("IndexError: <ERROR_TYPE>")
-                        logger.warning("IndexError: <ERROR_TYPE>", exc_info=True)
+                        get_default_logger().debug("IndexError: <ERROR_TYPE>")
+                        get_default_logger().warning("IndexError: <ERROR_TYPE>", exc_info=True)
                         continue
                     search_roots.append(root / "configs" / "training" / "continual")
 
@@ -212,7 +212,7 @@ if typer is not None:
             try:
                 return None if value is None else int(value)
             except (TypeError, ValueError):
-                logger.debug("Exception caught, returning", exc_info=True)
+                get_default_logger().debug("Exception caught, returning", exc_info=True)
                 return None
 
         actual_epochs = _int_value(
@@ -412,7 +412,7 @@ if typer is not None:
                 raise ValueError("metadata must decode to a JSON object")
         except (IOError, OSError) as exc:
             type(exc).__name__
-            logger.debug("Exception: <ERROR_TYPE>")
+            get_default_logger().debug("Exception: <ERROR_TYPE>")
             raise typer.BadParameter(str(exc)) from exc
 
         result = build_service_package(
@@ -474,7 +474,7 @@ if typer is not None:
         if "--version" in argv or "-V" in argv:
             from codex import __version__ as codex_version
 
-            logger.info(f"codex-ml-cli {codex_version}")
+            get_default_logger().info(f"codex-ml-cli {codex_version}")
             return 0
 
         # Let Typer handle the rest
@@ -540,7 +540,7 @@ else:
             try:
                 from codex.training import main as _functional_training
             except (ImportError, AttributeError):
-                logger.debug("codex.training.main unavailable; functional training disabled")
+                get_default_logger().debug("codex.training.main unavailable; functional training disabled")
                 _functional_training_main = None
             else:
                 _functional_training_main = _functional_training
@@ -597,7 +597,7 @@ else:
             with capture_exceptions(logger):
                 log_event(logger, "cli.start", prog=sys.argv[0], args=arg_list)
                 text = OmegaConf.to_yaml(cfg)
-                logger.info(text)
+                get_default_logger().info(text)
                 out_dir = Path(".codex/hydra_last")
                 out_dir.mkdir(parents=True, exist_ok=True)
                 (out_dir / "config.yaml").write_text(text)
@@ -638,7 +638,7 @@ else:
                             log_summary=pipeline_block.get("log_summary"),
                         )
                         if pipeline_block.get("print_summary", True):
-                            logger.info(json.dumps(summary, indent=2))
+                            get_default_logger().info(json.dumps(summary, indent=2))
                 log_event(logger, "cli.finish", prog=sys.argv[0], status="ok")
                 sys.exit(0)
 
@@ -659,12 +659,12 @@ else:
             if "--version" in args or "-V" in args:
                 from codex import __version__ as codex_version
 
-                logger.info(f"codex-ml-cli {codex_version}")
+                get_default_logger().info(f"codex-ml-cli {codex_version}")
                 log_event(logger, "cli.finish", prog=sys.argv[0], status="ok")
                 return 0
             if "--help" in args or "-h" in args:
-                logger.info("codex_ml.cli.main — Hydra-managed pipeline entrypoint")
-                logger.info("Powered by Hydra (install hydra-core)")
+                get_default_logger().info("codex_ml.cli.main — Hydra-managed pipeline entrypoint")
+                get_default_logger().info("Powered by Hydra (install hydra-core)")
                 if not _HAS_HYDRA:
                     guidance = (
                         "Codex ML CLI is powered by Hydra but hydra-core is not installed.\n"
@@ -672,7 +672,7 @@ else:
                         "Install it with `pip install hydra-core` to access the managed pipeline."
                     )
                     print("Powered by Hydra (install hydra-core)", file=sys.stderr)
-                    logger.error(guidance)
+                    get_default_logger().error(guidance)
                 log_event(logger, "cli.finish", prog=sys.argv[0], status="ok")
                 sys.exit(0)
             if not _HAS_HYDRA:
@@ -681,8 +681,8 @@ else:
                     "codex-ml-cli requires hydra-core for configuration loading.\n"
                     "Install it with `pip install hydra-core` to access the managed pipeline."
                 )
-                logger.info("Powered by Hydra (install hydra-core)")
-                logger.error(guidance)
+                get_default_logger().info("Powered by Hydra (install hydra-core)")
+                get_default_logger().error(guidance)
                 log_event(
                     logger,
                     "cli.finish",

@@ -1,4 +1,5 @@
 """Multi-node distributed training setup with PyTorch DDP.
+from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
 
 Provides utilities for distributed training across multiple nodes,
 including environment setup, process group initialization, and
@@ -14,7 +15,6 @@ from typing import Optional
 import torch.distributed as dist
 
 import torch
-from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 
@@ -59,7 +59,7 @@ def setup_distributed(
     """
     # Check if already initialized
     if dist.is_initialized():
-        logger.info("Distributed already initialized")
+        get_default_logger().info("Distributed already initialized")
         return True
 
     # Check if distributed environment variables are set
@@ -68,7 +68,7 @@ def setup_distributed(
     world_size = int(os.environ.get("WORLD_SIZE", -1))
 
     if rank == -1 or world_size == -1:
-        logger.info("Not running in distributed mode")
+        get_default_logger().info("Not running in distributed mode")
         return False
 
     # Set device for this process
@@ -78,7 +78,7 @@ def setup_distributed(
     else:
         device = "cpu"
 
-    logger.info(
+    get_default_logger().info(
         f"Initializing distributed: rank={rank}, "
         f"local_rank={local_rank}, world_size={world_size}, "
         f"backend={backend}, device={device}"
@@ -94,20 +94,20 @@ def setup_distributed(
             timeout=torch.distributed.timedelta(minutes=timeout_minutes),
         )
 
-        logger.info(f"Distributed initialization successful (rank {rank}/{world_size})")
+        get_default_logger().info(f"Distributed initialization successful (rank {rank}/{world_size})")
         return True
 
     except (ValueError, TypeError, RuntimeError) as e:
         type(e).__name__
-        logger.debug("Exception: <ERROR_TYPE>")
-        logger.error("Failed to initialize distributed: <ERROR_TYPE>")
+        get_default_logger().debug("Exception: <ERROR_TYPE>")
+        get_default_logger().error("Failed to initialize distributed: <ERROR_TYPE>")
         return False
 
 
 def cleanup_distributed():
     """Clean up distributed training environment."""
     if dist.is_initialized():
-        logger.info("Cleaning up distributed process group")
+        get_default_logger().info("Cleaning up distributed process group")
         dist.destroy_process_group()
 
 
@@ -181,7 +181,7 @@ def setup_ddp_model(
     if device_ids is None and torch.cuda.is_available():
         device_ids = [local_rank]
 
-    logger.info(f"Wrapping model with DDP (device_ids={device_ids})")
+    get_default_logger().info(f"Wrapping model with DDP (device_ids={device_ids})")
 
     return torch.nn.parallel.DistributedDataParallel(
         model,
@@ -264,7 +264,7 @@ def gather_tensor(tensor: torch.Tensor, dst: int = 0):
         >>> predictions = torch.tensor([1, 2, 3])
         >>> all_preds = gather_tensor(predictions, dst=0)
         >>> if is_main_process():
-        ...     logger.info(all_preds)  # List of tensors from all ranks
+        ...     get_default_logger().info(all_preds)  # List of tensors from all ranks
     """
     if not is_distributed():
         return [tensor]
@@ -287,7 +287,7 @@ def print_once(message: str, rank: int = 0):
         rank: Rank to print on (default: 0)
     """
     if get_rank() == rank:
-        logger.info(message)
+        get_default_logger().info(message)
 
 
 def log_once(message: str, level: str = "info", rank: int = 0):

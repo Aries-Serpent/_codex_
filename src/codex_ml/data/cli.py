@@ -7,9 +7,9 @@ import argparse
 import json
 from pathlib import Path
 
-from codex.logging.structured_logger import logger
 
 from .loaders import collect_stats, stream_paths
+from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
 
 
 def main(argv=None) -> None:
@@ -50,7 +50,7 @@ def main(argv=None) -> None:
     if args.subcmd == "validate":
         p = Path(args.path)
         ok = p.exists() and p.stat().st_size > 0
-        logger.info(json.dumps({"ok": ok, "path": str(p)}))
+        get_default_logger().info(json.dumps({"ok": ok, "path": str(p)}))
         return
 
     if args.subcmd == "metadata":
@@ -92,7 +92,7 @@ def main(argv=None) -> None:
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(stats, indent=2), encoding="utf-8")
-    logger.info(json.dumps({"ok": True, "out": str(out), "stats": stats}, indent=2))
+    get_default_logger().info(json.dumps({"ok": True, "out": str(out), "stats": stats}, indent=2))
 
 
 if __name__ == "__main__":

@@ -16,11 +16,11 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, Optional
 from urllib.parse import urlparse
 
-from codex.logging.structured_logger import logger
 from codex_ml.monitoring._logger_types import CodexLoggers, TelemetryComponentStatus
 from codex_ml.monitoring.prometheus import fallback_status as prometheus_fallback_status
 from codex_ml.monitoring.system_metrics import sampler_status
 from codex_ml.tracking.mlflow_guard import bootstrap_offline_tracking
+from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
 
 logger = logging.getLogger(__name__)
 
@@ -80,7 +80,7 @@ try:  # pragma: no cover - optional
 
 
 except (IOError, OSError):  # pragma: no cover - tensorboard not installed
-    logger.debug("Suppressed exception in handler", exc_info=True)
+    get_default_logger().debug("Suppressed exception in handler", exc_info=True)
 _ensure_local_mlflow_tracking_uri_default()
 
 
@@ -109,7 +109,7 @@ def _maybe_init_mlflow_offline(tracking_uri: str | None = None) -> None:
     try:  # pragma: no cover - optional dependency
         mlflow.set_tracking_uri(uri)
     except (IOError, OSError):
-        logger.warning("Exception occurred", exc_info=True)
+        get_default_logger().warning("Exception occurred", exc_info=True)
         # Non-fatal: fall back to MLflow defaults while keeping tracking disabled.
 
 
@@ -242,7 +242,7 @@ def _try_git_commit() -> str | None:
             text=True,
         ).strip()
     except (IOError, OSError) as exc:  # pragma: no cover - diagnostic only
-        logger.debug("git commit detection failed", exc_info=exc)
+        get_default_logger().debug("git commit detection failed", exc_info=exc)
         return None
 
 
@@ -292,7 +292,7 @@ def _emit_degradation_banner(loggers: CodexLoggers) -> CodexLoggers:
         issues.append("no telemetry sinks enabled")
 
     if issues and _TELEMETRY_BANNER_WARN_KEY not in _LOGGER_WARNING_CONTEXTS:
-        logger.error(f"[telemetry] degraded: {'; '.join(issues)}")
+        get_default_logger().error(f"[telemetry] degraded: {'; '.join(issues)}")
         _LOGGER_WARNING_CONTEXTS.add(_TELEMETRY_BANNER_WARN_KEY)
     return loggers
 
@@ -342,7 +342,7 @@ def _maybe_rotate_log(path: Path) -> None:
         os.replace(path, rotated)
     except OSError:  # pragma: no cover - rotation best-effort
         return
-    logger.info("Log file rotated: %s -> %s", path, rotated)
+    get_default_logger().info("Log file rotated: %s -> %s", path, rotated)
 
 
 def _redact_sensitive_fields(record: dict[str, Any]) -> None:
@@ -429,7 +429,7 @@ def init_telemetry(profile: str = "min") -> CodexLoggers:
             # If init succeeds, immediately shutdown to avoid leaking handles; we sample later.
             _nv.nvmlShutdown()
         except (IOError, OSError):
-            logger.warning("Exception occurred", exc_info=True)
+            get_default_logger().warning("Exception occurred", exc_info=True)
             gpu = False
 
     components: list[TelemetryComponentStatus] = []
@@ -571,8 +571,8 @@ def _codex_logging_bootstrap(args: argparse.Namespace) -> CodexLoggers:
                     mlflow.set_tracking_uri(tracking_uri)
                 except (ValueError, TypeError, RuntimeError) as e:
                     type(e).__name__
-                    logger.debug("Exception: <ERROR_TYPE>")
-                    logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
+                    get_default_logger().debug("Exception: <ERROR_TYPE>")
+                    get_default_logger().warning("Exception: <ERROR_TYPE>", exc_info=True)
             mlflow_active, mlflow_detail = _start_mlflow_offline(
                 cfg["mlflow"].get("tracking_uri"),
                 cfg["mlflow"].get("experiment"),
@@ -582,8 +582,8 @@ def _codex_logging_bootstrap(args: argparse.Namespace) -> CodexLoggers:
                     mlflow.set_tracking_uri(tracking_uri)
                 except (ValueError, TypeError, RuntimeError) as e:
                     type(e).__name__
-                    logger.debug("Exception: <ERROR_TYPE>")
-                    logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
+                    get_default_logger().debug("Exception: <ERROR_TYPE>")
+                    get_default_logger().warning("Exception: <ERROR_TYPE>", exc_info=True)
         component_statuses.append(TelemetryComponentStatus("mlflow", mlflow_active, mlflow_detail))
 
         loggers = CodexLoggers(
@@ -649,8 +649,8 @@ def _codex_logging_bootstrap(args: argparse.Namespace) -> CodexLoggers:
                 mlflow.set_tracking_uri(tracking_uri)
             except (ValueError, TypeError, RuntimeError) as e:
                 type(e).__name__
-                logger.debug("Exception: <ERROR_TYPE>")
-                logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
+                get_default_logger().debug("Exception: <ERROR_TYPE>")
+                get_default_logger().warning("Exception: <ERROR_TYPE>", exc_info=True)
         mlflow_active, mlflow_detail = _start_mlflow_offline(
             getattr(args, "mlflow_tracking_uri", ""),
             getattr(args, "mlflow_experiment", "codex"),
@@ -660,8 +660,8 @@ def _codex_logging_bootstrap(args: argparse.Namespace) -> CodexLoggers:
                 mlflow.set_tracking_uri(getattr(args, "mlflow_tracking_uri", ""))
             except (ValueError, TypeError, RuntimeError) as e:
                 type(e).__name__
-                logger.debug("Exception: <ERROR_TYPE>")
-                logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
+                get_default_logger().debug("Exception: <ERROR_TYPE>")
+                get_default_logger().warning("Exception: <ERROR_TYPE>", exc_info=True)
         component_statuses.append(TelemetryComponentStatus("mlflow", mlflow_active, mlflow_detail))
 
     loggers = CodexLoggers(
@@ -709,10 +709,10 @@ def _codex_sample_system() -> dict[str, Any]:
             metrics["ram_percent"] = float(psutil.virtual_memory().percent)
         except (ValueError, TypeError, RuntimeError) as exc:
             type(exc).__name__
-            logger.debug("Exception: <ERROR_TYPE>")
-            logger.debug("psutil metrics unavailable", exc_info=exc)
+            get_default_logger().debug("Exception: <ERROR_TYPE>")
+            get_default_logger().debug("psutil metrics unavailable", exc_info=exc)
     elif _PSUTIL_WARN_KEY not in _LOGGER_WARNING_CONTEXTS:
-        logger.warning("psutil not installed; system metrics will be unavailable")
+        get_default_logger().warning("psutil not installed; system metrics will be unavailable")
         _LOGGER_WARNING_CONTEXTS.add(_PSUTIL_WARN_KEY)
 
     # Prefer NVML for GPU stats with per-device enumeration
@@ -746,8 +746,8 @@ def _codex_sample_system() -> dict[str, Any]:
             gpu_done = True
         except (ValueError, TypeError, RuntimeError) as exc:
             type(exc).__name__
-            logger.debug("Exception: <ERROR_TYPE>")
-            logger.debug("NVML sampling failed", exc_info=exc)
+            get_default_logger().debug("Exception: <ERROR_TYPE>")
+            get_default_logger().debug("NVML sampling failed", exc_info=exc)
             gpu_done = False
 
     if not gpu_done and torch is not None and hasattr(torch, "cuda") and torch.cuda.is_available():
@@ -764,8 +764,8 @@ def _codex_sample_system() -> dict[str, Any]:
                         util = float(torch.cuda.utilization(i))
                     except (ValueError, TypeError, RuntimeError) as exc:
                         type(exc).__name__
-                        logger.debug("Exception: <ERROR_TYPE>")
-                        logger.debug("torch CUDA utilization unavailable", exc_info=exc)
+                        get_default_logger().debug("Exception: <ERROR_TYPE>")
+                        get_default_logger().debug("torch CUDA utilization unavailable", exc_info=exc)
                         util = None
                 if util:
                     util_sum += util
@@ -782,8 +782,8 @@ def _codex_sample_system() -> dict[str, Any]:
                 metrics["gpu_util_mean"] = util_sum / max(1, len(gpus))
         except (ValueError, TypeError, RuntimeError) as exc:
             type(exc).__name__
-            logger.debug("Exception: <ERROR_TYPE>")
-            logger.debug("torch CUDA sampling failed", exc_info=exc)
+            get_default_logger().debug("Exception: <ERROR_TYPE>")
+            get_default_logger().debug("torch CUDA sampling failed", exc_info=exc)
 
     return metrics
 
@@ -798,7 +798,7 @@ def _filter_scalars(values: dict[str, Any]) -> dict[str, float]:
         try:
             out[k] = float(v)
         except (ValueError, TypeError, RuntimeError):
-            logger.warning("Exception occurred", exc_info=True)
+            get_default_logger().warning("Exception occurred", exc_info=True)
             continue
     return out
 
@@ -814,24 +814,24 @@ def _codex_log_all(step: int, scalars: dict[str, Any], loggers: CodexLoggers) ->
                 loggers.tb.add_scalar(k, v, step)
         except (ValueError, TypeError, RuntimeError) as exc:
             type(exc).__name__
-            logger.debug("Exception: <ERROR_TYPE>")
-            logger.debug("tensorboard add_scalar failed", exc_info=exc)
+            get_default_logger().debug("Exception: <ERROR_TYPE>")
+            get_default_logger().debug("tensorboard add_scalar failed", exc_info=exc)
 
     if loggers.wb is not None:
         try:  # pragma: no cover - wandb optional
             loggers.wb.log({**values, "step": step})
         except (ValueError, TypeError, RuntimeError) as exc:
             type(exc).__name__
-            logger.debug("Exception: <ERROR_TYPE>")
-            logger.debug("wandb log failed", exc_info=exc)
+            get_default_logger().debug("Exception: <ERROR_TYPE>")
+            get_default_logger().debug("wandb log failed", exc_info=exc)
 
     if loggers.mlflow_active and mlflow is not None:
         try:  # pragma: no cover - mlflow optional
             mlflow.log_metrics(values, step=step)
         except (IOError, OSError) as exc:
             type(exc).__name__
-            logger.debug("Exception: <ERROR_TYPE>")
-            logger.debug("mlflow log_metrics failed", exc_info=exc)
+            get_default_logger().debug("Exception: <ERROR_TYPE>")
+            get_default_logger().debug("mlflow log_metrics failed", exc_info=exc)
 
 
 def write_ndjson(path: str | os.PathLike[str], record: dict[str, Any]) -> None:

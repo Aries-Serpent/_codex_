@@ -1,4 +1,5 @@
 """
+from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
 Model Registry CLI
 
 Command-line interface for MLflow Model Registry operations.
@@ -11,7 +12,6 @@ import json
 import sys
 from typing import Optional
 
-from codex.logging.structured_logger import logger
 from codex_ml.registry.mlflow_registry import (
     _HAS_MLFLOW,
     DeploymentStage,
@@ -26,16 +26,16 @@ def list_models_command(args: argparse.Namespace) -> int:
         models = registry.list_models()
 
         if args.json:
-            logger.info(json.dumps({"models": models}, indent=2))
+            get_default_logger().info(json.dumps({"models": models}, indent=2))
         else:
-            logger.info(f"Registered Models ({len(models)}):")
+            get_default_logger().info(f"Registered Models ({len(models)}):")
             for model in models:
-                logger.info(f"  - {model}")
+                get_default_logger().info(f"  - {model}")
 
         return 0
     except (IOError, OSError) as e:
         type(e).__name__
-        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        get_default_logger().debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         print(
             "Error: <ERROR_TYPE>", file=sys.stderr
         )  # codeql[py/clear-text-logging-sensitive-data]
@@ -51,20 +51,20 @@ def list_versions_command(args: argparse.Namespace) -> int:
         versions = registry.list_model_versions(args.name, stage=stage)
 
         if args.json:
-            logger.info(json.dumps({"versions": [v.to_dict() for v in versions]}, indent=2))
+            get_default_logger().info(json.dumps({"versions": [v.to_dict() for v in versions]}, indent=2))
         else:
-            logger.info(f"Model: {args.name}")
-            logger.info(f"Versions ({len(versions)}):")
+            get_default_logger().info(f"Model: {args.name}")
+            get_default_logger().info(f"Versions ({len(versions)}):")
             for version in versions:
-                logger.info(f"  Version {version.version}:")
-                logger.info(f"    Stage: {version.stage.value}")
-                logger.info(f"    Description: {version.description}")
-                logger.info(f"    Created: {version.created_at}")
+                get_default_logger().info(f"  Version {version.version}:")
+                get_default_logger().info(f"    Stage: {version.stage.value}")
+                get_default_logger().info(f"    Description: {version.description}")
+                get_default_logger().info(f"    Created: {version.created_at}")
 
         return 0
     except (IOError, OSError) as e:
         type(e).__name__
-        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        get_default_logger().debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         print(
             "Error: <ERROR_TYPE>", file=sys.stderr
         )  # codeql[py/clear-text-logging-sensitive-data]
@@ -96,7 +96,7 @@ def promote_model_command(args: argparse.Namespace) -> int:
         return 0
     except (IOError, OSError) as e:
         type(e).__name__
-        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        get_default_logger().debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         print(
             "Error: <ERROR_TYPE>", file=sys.stderr
         )  # codeql[py/clear-text-logging-sensitive-data]
@@ -117,16 +117,16 @@ def compare_models_command(args: argparse.Namespace) -> int:
                 json.dumps(comparison, indent=2, default=str)
             )  # codeql[py/clear-text-logging-sensitive-data]
         else:
-            logger.info(f"Model: {args.name}")
-            logger.info(f"\nVersion {args.version1}:")
+            get_default_logger().info(f"Model: {args.name}")
+            get_default_logger().info(f"\nVersion {args.version1}:")
             v1 = comparison["version_1"]
-            logger.info(f"  Stage: {v1['stage']}")
-            logger.info(f"  Created: {v1['created_at']}")
+            get_default_logger().info(f"  Stage: {v1['stage']}")
+            get_default_logger().info(f"  Created: {v1['created_at']}")
 
-            logger.info(f"\nVersion {args.version2}:")
+            get_default_logger().info(f"\nVersion {args.version2}:")
             v2 = comparison["version_2"]
-            logger.info(f"  Stage: {v2['stage']}")
-            logger.info(f"  Created: {v2['created_at']}")
+            get_default_logger().info(f"  Stage: {v2['stage']}")
+            get_default_logger().info(f"  Created: {v2['created_at']}")
 
             if comparison["created_diff_days"]:
                 print(
@@ -136,7 +136,7 @@ def compare_models_command(args: argparse.Namespace) -> int:
         return 0
     except (IOError, OSError) as e:
         type(e).__name__
-        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        get_default_logger().debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         print(
             "Error: <ERROR_TYPE>", file=sys.stderr
         )  # codeql[py/clear-text-logging-sensitive-data]
@@ -158,7 +158,7 @@ def export_model_command(args: argparse.Namespace) -> int:
         return 0
     except (IOError, OSError) as e:
         type(e).__name__
-        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        get_default_logger().debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         print(
             "Error: <ERROR_TYPE>", file=sys.stderr
         )  # codeql[py/clear-text-logging-sensitive-data]
@@ -182,12 +182,12 @@ def get_lineage_command(args: argparse.Namespace) -> int:
             )  # codeql[py/clear-text-logging-sensitive-data]
             if lineage["lineage"]:
                 lin = lineage["lineage"]
-                logger.info("\nLineage:")
-                logger.info(f"  Run ID: {lin['run_id']}")
+                get_default_logger().info("\nLineage:")
+                get_default_logger().info(f"  Run ID: {lin['run_id']}")
                 print(
                     f"  Experiment ID: {lin['experiment_id']}"
                 )  # codeql[py/clear-text-logging-sensitive-data]
-                logger.info(f"  Status: {lin['status']}")
+                get_default_logger().info(f"  Status: {lin['status']}")
                 print(
                     f"  Start Time: {lin['start_time']}"
                 )  # codeql[py/clear-text-logging-sensitive-data]
@@ -207,7 +207,7 @@ def get_lineage_command(args: argparse.Namespace) -> int:
         return 0
     except (IOError, OSError) as e:
         type(e).__name__
-        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        get_default_logger().debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         print(
             "Error: <ERROR_TYPE>", file=sys.stderr
         )  # codeql[py/clear-text-logging-sensitive-data]

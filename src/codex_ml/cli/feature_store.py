@@ -1,4 +1,5 @@
 """CLI for feature store management.
+from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
 
 Provides commands for:
 - Registering feature groups
@@ -22,8 +23,8 @@ try:
     from rich.table import Table
 except ImportError as e:
     error_type = type(e).__name__
-    logger.debug("ImportError: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
-    logger.warning(
+    get_default_logger().debug("ImportError: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+    get_default_logger().warning(
         "ImportError: <ERROR_TYPE>", exc_info=True
     )  # codeql[py/clear-text-logging-sensitive-data]
     # Raise ImportError instead of sys.exit(1) to allow pytest collection
@@ -33,7 +34,6 @@ except ImportError as e:
 
 import builtins
 
-from codex.logging.structured_logger import logger
 from codex_ml.features.feature_store import FeatureGroup, FeatureStore
 from codex_ml.features.monitoring import FeatureHealthMonitor
 
@@ -80,7 +80,7 @@ def register(
 
     except (ValueError, TypeError, RuntimeError) as e:
         type(e).__name__
-        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        get_default_logger().debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         console.print(
             "[red]✗[/red] Error registering feature group: <ERROR_TYPE>"
         )  # codeql[py/clear-text-logging-sensitive-data]
@@ -143,14 +143,14 @@ def list(
 
             table.add_row(*row)
 
-        console.logger.info(table)
+        console.get_default_logger().info(table)
         console.print(
             f"\n[dim]Total features: {len(features)}[/dim]"
         )  # codeql[py/clear-text-logging-sensitive-data]
 
     except (ValueError, TypeError, RuntimeError) as e:
         type(e).__name__
-        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        get_default_logger().debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         console.print(
             "[red]✗[/red] Error listing features: <ERROR_TYPE>"
         )  # codeql[py/clear-text-logging-sensitive-data]
@@ -218,7 +218,7 @@ def health(
                 f"[green]✓[/green] Health report written to: {output_file}"
             )  # codeql[py/clear-text-logging-sensitive-data]
         else:
-            console.logger.info(report)
+            console.get_default_logger().info(report)
 
         # Show summary
         healthy_count = sum(1 for s in health_statuses.values() if s.is_healthy)
@@ -230,7 +230,7 @@ def health(
 
     except (ValueError, TypeError, RuntimeError) as e:
         type(e).__name__
-        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        get_default_logger().debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         console.print(
             "[red]✗[/red] Error generating health report: <ERROR_TYPE>"
         )  # codeql[py/clear-text-logging-sensitive-data]
@@ -269,10 +269,10 @@ def materialize(
         console.print(
             f"Features to materialize: {', '.join(feature_names)}"
         )  # codeql[py/clear-text-logging-sensitive-data]
-        console.logger.info(f"Output path: {output_path}")
+        console.get_default_logger().info(f"Output path: {output_path}")
 
         if version:
-            console.logger.info(f"Version: {version}")
+            console.get_default_logger().info(f"Version: {version}")
 
         console.print(
             "\n[dim]Use Python API for full materialization functionality[/dim]"
@@ -280,7 +280,7 @@ def materialize(
 
     except (ValueError, TypeError, RuntimeError) as e:
         type(e).__name__
-        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        get_default_logger().debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         console.print(
             "[red]✗[/red] Error materializing features: <ERROR_TYPE>"
         )  # codeql[py/clear-text-logging-sensitive-data]
@@ -320,14 +320,14 @@ def versions(
             # In real implementation, would fetch timestamp from metadata
             table.add_row(version, "N/A")
 
-        console.logger.info(table)
+        console.get_default_logger().info(table)
         console.print(
             f"\n[dim]Total versions: {len(versions)}[/dim]"
         )  # codeql[py/clear-text-logging-sensitive-data]
 
     except (ValueError, TypeError, RuntimeError) as e:
         type(e).__name__
-        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        get_default_logger().debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         console.print(
             "[red]✗[/red] Error listing versions: <ERROR_TYPE>"
         )  # codeql[py/clear-text-logging-sensitive-data]
@@ -378,7 +378,7 @@ def info(
         )  # codeql[py/clear-text-logging-sensitive-data]
 
         if metadata:
-            console.logger.info("[cyan]Metadata:[/cyan]")
+            console.get_default_logger().info("[cyan]Metadata:[/cyan]")
             console.print(
                 f"  Version: {metadata.version}"
             )  # codeql[py/clear-text-logging-sensitive-data]
@@ -423,11 +423,11 @@ def info(
                 "\n[yellow]Warnings:[/yellow]"
             )  # codeql[py/clear-text-logging-sensitive-data]
             for warning in health.warnings:
-                console.logger.info(f"  • {warning}")
+                console.get_default_logger().info(f"  • {warning}")
 
     except (ValueError, TypeError, RuntimeError) as e:
         type(e).__name__
-        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        get_default_logger().debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         console.print(
             "[red]✗[/red] Error getting feature info: <ERROR_TYPE>"
         )  # codeql[py/clear-text-logging-sensitive-data]

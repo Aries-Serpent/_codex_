@@ -1,4 +1,5 @@
 """
+from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
 Bench Module
 
 This module provides functionality for bench.
@@ -32,7 +33,6 @@ from collections.abc import Callable  # noqa: E402
 from dataclasses import dataclass  # noqa: E402
 from typing import Any  # noqa: E402
 
-from codex.logging.structured_logger import logger
 
 
 def _maybe_cuda_sync() -> None:
@@ -43,8 +43,8 @@ def _maybe_cuda_sync() -> None:
             torch.cuda.synchronize()
     except (ImportError, AttributeError) as e:
         type(e).__name__
-        logger.debug("Exception: <ERROR_TYPE>")
-        logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
+        get_default_logger().debug("Exception: <ERROR_TYPE>")
+        get_default_logger().warning("Exception: <ERROR_TYPE>", exc_info=True)
 
 
 def _target_numpy_matmul(n: int = 2048) -> None:
@@ -154,9 +154,9 @@ def main(argv: list[str] | None = None) -> int:
     res = run_bench(fn, warmup=args.warmup, iters=args.iters, cuda_sync=not args.no_cuda_sync)
 
     if args.json:
-        logger.info(json.dumps(res.as_dict(), indent=2))
+        get_default_logger().info(json.dumps(res.as_dict(), indent=2))
     else:
-        logger.info(
+        get_default_logger().info(
             f"n={len(res.samples_ms)}  median={res.median_ms:.2f} ms  p95={res.p95_ms:.2f} ms"
         )
 
@@ -185,8 +185,8 @@ def main(argv: list[str] | None = None) -> int:
                 )
         except (ValueError, TypeError, RuntimeError) as e:
             type(e).__name__
-            logger.debug("Exception: <ERROR_TYPE>")
-            logger.info("[mlflow] skipped: <ERROR_TYPE>")
+            get_default_logger().debug("Exception: <ERROR_TYPE>")
+            get_default_logger().info("[mlflow] skipped: <ERROR_TYPE>")
     return 0
 
 

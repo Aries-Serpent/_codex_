@@ -1,5 +1,6 @@
 """
 from __future__ import annotations
+from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
 
 Ndjson Summary Module
 
@@ -30,7 +31,6 @@ from collections.abc import Mapping as MappingABC
 from pathlib import Path
 from typing import Any, Optional
 
-from codex.logging.structured_logger import logger
 
 FIELDNAMES: Sequence[str] = (
     "run_id",
@@ -88,14 +88,14 @@ def _load_rows(run_dir: Path, *, pattern: Optional[str] = None) -> list[dict[str
                     try:
                         payload = json.loads(line)
                     except json.JSONDecodeError:
-                        logger.debug("Exception caught, continuing", exc_info=True)
+                        get_default_logger().debug("Exception caught, continuing", exc_info=True)
                         continue
                     if isinstance(payload, dict):
                         rows.append(payload)
         except FileNotFoundError as e:
             type(e).__name__
-            logger.debug("FileNotFoundError: <ERROR_TYPE>")
-            logger.warning("FileNotFoundError: <ERROR_TYPE>", exc_info=True)
+            get_default_logger().debug("FileNotFoundError: <ERROR_TYPE>")
+            get_default_logger().warning("FileNotFoundError: <ERROR_TYPE>", exc_info=True)
             continue
     return rows
 
@@ -355,7 +355,7 @@ def _handle_summarize_cli(args: argparse.Namespace) -> int:
         rows = _load_rows(inp, pattern=pattern if inp.is_dir() else None)
     except FileNotFoundError as exc:
         type(exc).__name__
-        logger.debug("FileNotFoundError: <ERROR_TYPE>")
+        get_default_logger().debug("FileNotFoundError: <ERROR_TYPE>")
         raise SystemExit(str(exc)) from exc
     summary_rows = _summarise_rows(rows)
     total_rows = len(rows)
@@ -367,7 +367,7 @@ def _handle_summarize_cli(args: argparse.Namespace) -> int:
             base_dir = inp if inp.is_dir() else inp.parent
             dest = base_dir / "metrics_summary.csv"
         _write_csv(dest, summary_rows)
-        logger.info(str(dest))
+        get_default_logger().info(str(dest))
         return 0
 
     metrics: dict[str, dict[str, Any]] = {}
@@ -385,7 +385,7 @@ def _handle_summarize_cli(args: argparse.Namespace) -> int:
             slot["max"] = (
                 row["max_value"] if current_max is None else max(current_max, row["max_value"])
             )
-    logger.info(json.dumps({"rows": total_rows, "metrics": metrics}, ensure_ascii=False))
+    get_default_logger().info(json.dumps({"rows": total_rows, "metrics": metrics}, ensure_ascii=False))
     return 0
 
 

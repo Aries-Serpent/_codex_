@@ -1,4 +1,5 @@
 """Advanced performance optimization utilities.
+from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
 
 Provides tools for:
 - Profiling with PyTorch Profiler
@@ -17,7 +18,6 @@ from typing import Optional
 
 import torch
 import torch.nn as nn
-from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 
@@ -100,7 +100,7 @@ class TorchProfiler:
         """
         Path(path).parent.mkdir(parents=True, exist_ok=True)
         self.profiler.export_chrome_trace(path)
-        logger.info(f"Chrome trace exported to: {path}")
+        get_default_logger().info(f"Chrome trace exported to: {path}")
 
     def export_stacks(self, path: str):
         """Export stack traces.
@@ -110,7 +110,7 @@ class TorchProfiler:
         """
         Path(path).parent.mkdir(parents=True, exist_ok=True)
         self.profiler.export_stacks(path, "self_cuda_time_total")
-        logger.info(f"Stack traces exported to: {path}")
+        get_default_logger().info(f"Stack traces exported to: {path}")
 
 
 class MemoryOptimizer:
@@ -134,23 +134,23 @@ class MemoryOptimizer:
         for module in model.modules():
             if hasattr(module, "gradient_checkpointing_enable"):
                 module.gradient_checkpointing_enable()
-                logger.info(f"Enabled gradient checkpointing for {type(module).__name__}")
+                get_default_logger().info(f"Enabled gradient checkpointing for {type(module).__name__}")
 
         # Set model to channels_last memory format (if compatible)
         if aggressive and torch.cuda.is_available():
             try:
                 model = model.to(memory_format=torch.channels_last)
-                logger.info("Converted model to channels_last memory format")
+                get_default_logger().info("Converted model to channels_last memory format")
             except (ValueError, TypeError, RuntimeError) as e:
                 type(e).__name__
-                logger.debug("Exception: <ERROR_TYPE>")
-                logger.debug("Could not convert to channels_last: <ERROR_TYPE>")
+                get_default_logger().debug("Exception: <ERROR_TYPE>")
+                get_default_logger().debug("Could not convert to channels_last: <ERROR_TYPE>")
 
         # Enable TF32 for faster matmul on Ampere GPUs
         if torch.cuda.is_available():
             torch.backends.cuda.matmul.allow_tf32 = True
             torch.backends.cudnn.allow_tf32 = True
-            logger.info("Enabled TF32 for faster computation")
+            get_default_logger().info("Enabled TF32 for faster computation")
 
         return model
 
@@ -158,14 +158,14 @@ class MemoryOptimizer:
     def print_memory_summary():
         """Print CUDA memory summary."""
         if torch.cuda.is_available():
-            logger.info(torch.cuda.memory_summary())
+            get_default_logger().info(torch.cuda.memory_summary())
 
     @staticmethod
     def clear_cache():
         """Clear CUDA cache."""
         if torch.cuda.is_available():
             torch.cuda.empty_cache()
-            logger.info("Cleared CUDA cache")
+            get_default_logger().info("Cleared CUDA cache")
 
     @staticmethod
     def set_memory_fraction(fraction: float, device: int = 0):
@@ -177,7 +177,7 @@ class MemoryOptimizer:
         """
         if torch.cuda.is_available():
             torch.cuda.set_per_process_memory_fraction(fraction, device)
-            logger.info(f"Set memory fraction to {fraction} for device {device}")
+            get_default_logger().info(f"Set memory fraction to {fraction} for device {device}")
 
 
 def enable_gradient_checkpointing(model: nn.Module) -> nn.Module:
@@ -199,7 +199,7 @@ def enable_gradient_checkpointing(model: nn.Module) -> nn.Module:
         if hasattr(module, "gradient_checkpointing_enable"):
             module.gradient_checkpointing_enable()
 
-    logger.info("Gradient checkpointing enabled")
+    get_default_logger().info("Gradient checkpointing enabled")
     return model
 
 
@@ -232,28 +232,28 @@ def optimize_model(
     if channels_last and torch.cuda.is_available():
         try:
             model = model.to(memory_format=torch.channels_last)
-            logger.info("Converted to channels_last memory format")
+            get_default_logger().info("Converted to channels_last memory format")
         except (ValueError, TypeError, RuntimeError) as e:
             type(e).__name__
-            logger.debug("Exception: <ERROR_TYPE>")
-            logger.debug("Could not convert to channels_last: <ERROR_TYPE>")
+            get_default_logger().debug("Exception: <ERROR_TYPE>")
+            get_default_logger().debug("Could not convert to channels_last: <ERROR_TYPE>")
 
     # Compile with torch.compile (PyTorch 2.0+)
     if compile and hasattr(torch, "compile"):
         try:
             model = torch.compile(model)
-            logger.info("Model compiled with torch.compile")
+            get_default_logger().info("Model compiled with torch.compile")
         except (ValueError, TypeError, RuntimeError) as e:
             type(e).__name__
-            logger.debug("Exception: <ERROR_TYPE>")
-            logger.warning("Could not compile model: <ERROR_TYPE>")
+            get_default_logger().debug("Exception: <ERROR_TYPE>")
+            get_default_logger().warning("Could not compile model: <ERROR_TYPE>")
 
     # Enable performance optimizations
     if torch.cuda.is_available():
         torch.backends.cuda.matmul.allow_tf32 = True
         torch.backends.cudnn.allow_tf32 = True
         torch.backends.cudnn.benchmark = True
-        logger.info("Enabled CUDA performance optimizations")
+        get_default_logger().info("Enabled CUDA performance optimizations")
 
     return model
 

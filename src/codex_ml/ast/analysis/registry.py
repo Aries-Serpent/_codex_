@@ -3,11 +3,11 @@ Registry for AST analyzers.
 
 Provides registration and execution of multiple analyzers on AST trees.
 """
+from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
 
 import logging
 from typing import Any, Optional
 
-from codex.logging.structured_logger import logger
 from codex_ml.ast.analysis.base_analyzer import (
     ASTAnalyzer,
     ComplexityAnalyzer,
@@ -33,7 +33,7 @@ class AnalyzerRegistry:
         findings = registry.analyze_all(tree)
 
         for finding in findings:
-            logger.info(f"{finding.severity}: {finding.message}")
+            get_default_logger().info(f"{finding.severity}: {finding.message}")
     """
 
     def __init__(self, register_defaults: bool = True):
@@ -183,7 +183,7 @@ class AnalyzerRegistry:
                         node_findings = analyzer.analyze(node)
                         findings.extend(node_findings)
                     except (ValueError, TypeError, RuntimeError):
-                        logger.debug("Suppressed exception in handler", exc_info=True)
+                        get_default_logger().debug("Suppressed exception in handler", exc_info=True)
         # Filter by severity
         if min_severity:
             findings = [

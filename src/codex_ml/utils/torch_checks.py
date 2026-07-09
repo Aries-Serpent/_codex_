@@ -1,4 +1,5 @@
 """Utilities for validating local PyTorch installations.
+from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
 
 These helpers guard against partial "stub" wheels that lack
 ``torch.utils.data.Dataset`` while still allowing ``import torch`` to succeed.
@@ -17,7 +18,6 @@ from dataclasses import dataclass
 from types import ModuleType
 from typing import Final, Optional
 
-from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 
@@ -95,8 +95,8 @@ def inspect_torch(module: Optional[ModuleType] = None) -> TorchStatus:
         data_module = importlib.import_module("torch.utils.data")
     except (ImportError, AttributeError) as exc:
         type(exc).__name__
-        logger.debug("Exception: <ERROR_TYPE>")
-        logger.debug("Exception caught, returning", exc_info=True)
+        get_default_logger().debug("Exception: <ERROR_TYPE>")
+        get_default_logger().debug("Exception caught, returning", exc_info=True)
         return TorchStatus(
             ok=False,
             detail=f"torch.utils.data import failed: {exc!r}",
@@ -135,6 +135,6 @@ def diagnostic_report(status: Optional[TorchStatus] = None) -> str:
 
 if __name__ == "__main__":  # pragma: no cover - manual diagnostic entry point
     report = diagnostic_report()
-    logger.info(report)
+    get_default_logger().info(report)
     if not inspect_torch().ok:
         sys.exit(1)

@@ -1,4 +1,5 @@
 """Evaluation gate that validates a newly trained model before promotion.
+from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
 
 The ``EvalGate`` checks that a new model's evaluation metrics meet or exceed
 a configurable quality bar before it is allowed to replace the current
@@ -13,9 +14,9 @@ Usage example::
     metrics = {"accuracy": 0.85, "loss": 0.42, "baseline_accuracy": 0.83}
     passed, reasons = gate.evaluate(metrics)
     if passed:
-        logger.info("Model passed eval gate — safe to promote.")
+        get_default_logger().info("Model passed eval gate — safe to promote.")
     else:
-        logger.info("Eval gate FAILED:", reasons)
+        get_default_logger().info("Eval gate FAILED:", reasons)
 """
 
 from __future__ import annotations
@@ -24,7 +25,6 @@ import logging
 from dataclasses import dataclass, field
 from typing import Any
 
-from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 
@@ -147,9 +147,9 @@ class EvalGate:
 
         passed = len(failures) == 0
         if passed:
-            logger.info("EvalGate: PASSED — all thresholds met")
+            get_default_logger().info("EvalGate: PASSED — all thresholds met")
         else:
-            logger.warning("EvalGate: FAILED — %d check(s) failed: %s", len(failures), failures)
+            get_default_logger().warning("EvalGate: FAILED — %d check(s) failed: %s", len(failures), failures)
 
         return EvalGateResult(passed=passed, reasons=failures, metrics=dict(metrics))
 

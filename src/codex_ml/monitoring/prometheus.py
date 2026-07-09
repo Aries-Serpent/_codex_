@@ -1,4 +1,5 @@
 """
+from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
 Prometheus Module
 
 This module provides functionality for prometheus.
@@ -24,7 +25,6 @@ from datetime import datetime, timezone  # noqa: E402
 from pathlib import Path  # noqa: E402
 from typing import Any, Optional  # noqa: E402
 
-from codex.logging.structured_logger import logger
 
 _FALLBACK_ACTIVE: bool = False
 _FALLBACK_PATH: Optional[Path] = None
@@ -104,7 +104,7 @@ def maybe_export_metrics(app=None, port: int = 9000, *, fallback_dir: Path | str
         _FALLBACK_ACTIVE = True
         _FALLBACK_PATH = sink.path
         _FALLBACK_REASON = repr(exc)
-        logger.info(
+        get_default_logger().info(
             f"[prometheus] falling back to NDJSON sink at {_FALLBACK_PATH} ({_FALLBACK_REASON})",
             file=sys.stderr,
         )

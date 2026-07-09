@@ -1,4 +1,5 @@
 """Stub cleanup utilities for identifying and resolving NotImplementedError and TODO items.
+from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
 
 This module helps track and resolve stubs, TODOs, and FIXMEs in the codebase.
 Enhanced with AST-based abstract method detection to avoid false positives.
@@ -12,7 +13,6 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
 
-from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 
@@ -157,8 +157,8 @@ class StubAnalyzer:
 
         except (IOError, OSError, SyntaxError) as e:
             type(e).__name__
-            logger.debug("Exception: <ERROR_TYPE>")
-            logger.debug(f"Failed to parse {file_path} for abstract method detection: <ERROR_TYPE>")
+            get_default_logger().debug("Exception: <ERROR_TYPE>")
+            get_default_logger().debug(f"Failed to parse {file_path} for abstract method detection: <ERROR_TYPE>")
 
         return False
 
@@ -186,7 +186,7 @@ class StubAnalyzer:
 
                         if is_abstract:
                             # Skip abstract methods - they're intentional design patterns
-                            logger.debug(f"Skipping abstract method at {file_path}:{i}")
+                            get_default_logger().debug(f"Skipping abstract method at {file_path}:{i}")
                             continue
 
                         priority = "P0"  # Actual raise statements are P0
@@ -243,8 +243,8 @@ class StubAnalyzer:
 
         except (IOError, OSError) as e:
             type(e).__name__
-            logger.debug("Exception: <ERROR_TYPE>")
-            logger.warning(f"Failed to analyze {file_path}: <ERROR_TYPE>")
+            get_default_logger().debug("Exception: <ERROR_TYPE>")
+            get_default_logger().warning(f"Failed to analyze {file_path}: <ERROR_TYPE>")
 
     def _determine_priority(self, line: str) -> str:
         """Determine priority from line content.
@@ -384,10 +384,10 @@ def generate_stub_report(output_path: Path | str, source_dirs: Optional[list[Pat
                     f.write(f"- Context: `{stub.context}`\n")
                 f.write("\n")
 
-    logger.info(f"Stub report generated: {output_path}")
-    logger.info("\n✓ Stub analysis complete:")
-    logger.info(f"  Total stubs: {summary['total']}")
-    logger.info(f"  P0: {summary['by_priority']['P0']}")
-    logger.info(f"  P1: {summary['by_priority']['P1']}")
-    logger.info(f"  P2: {summary['by_priority']['P2']}")
-    logger.info(f"  Report: {output_path}")
+    get_default_logger().info(f"Stub report generated: {output_path}")
+    get_default_logger().info("\n✓ Stub analysis complete:")
+    get_default_logger().info(f"  Total stubs: {summary['total']}")
+    get_default_logger().info(f"  P0: {summary['by_priority']['P0']}")
+    get_default_logger().info(f"  P1: {summary['by_priority']['P1']}")
+    get_default_logger().info(f"  P2: {summary['by_priority']['P2']}")
+    get_default_logger().info(f"  Report: {output_path}")

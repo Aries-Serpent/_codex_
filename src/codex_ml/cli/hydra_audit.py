@@ -1,4 +1,5 @@
 """Hydra defaults audit CLI.
+from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
 
 Scans a config root for YAML configs, inspects ``defaults`` lists and reports:
 
@@ -38,7 +39,6 @@ from pathlib import Path
 from types import ModuleType
 from typing import Any, Optional
 
-from codex.logging.structured_logger import logger
 
 yaml: ModuleType | None
 try:  # pragma: no cover - handled in tests via importorskip
@@ -109,13 +109,13 @@ def _load_yaml(path: Path) -> dict[str, Any]:
         text = path.read_text(encoding="utf-8")
     except OSError as e:
         type(e).__name__
-        logger.debug("OSError: <ERROR_TYPE>")
-        logger.warning("OSError: <ERROR_TYPE>", exc_info=True)
+        get_default_logger().debug("OSError: <ERROR_TYPE>")
+        get_default_logger().warning("OSError: <ERROR_TYPE>", exc_info=True)
         return {}
     try:
         data = yaml.safe_load(text)
     except (ValueError, TypeError, RuntimeError):
-        logger.warning("Exception occurred", exc_info=True)
+        get_default_logger().warning("Exception occurred", exc_info=True)
         return {}
     return data or {}
 
@@ -331,8 +331,8 @@ def _audit_file(path: Path, root: Path) -> FileAudit:
         rel_file = str(path.relative_to(root))
     except ValueError as e:
         type(e).__name__
-        logger.debug("ValueError: <ERROR_TYPE>")
-        logger.warning("ValueError: <ERROR_TYPE>", exc_info=True)
+        get_default_logger().debug("ValueError: <ERROR_TYPE>")
+        get_default_logger().warning("ValueError: <ERROR_TYPE>", exc_info=True)
         rel_file = str(path)
 
     return FileAudit(
@@ -377,12 +377,12 @@ def _write_markdown(out_path: Path, audits: Sequence[FileAudit]) -> None:
 
 def cmd_defaults_audit(args: argparse.Namespace) -> int:
     if yaml is None:
-        logger.error("[hydra-audit] PyYAML is required")
+        get_default_logger().error("[hydra-audit] PyYAML is required")
         return 4
 
     root = Path(args.config_root).expanduser().resolve()
     if not root.exists():
-        logger.error(f"[hydra-audit] config root not found: {root}")
+        get_default_logger().error(f"[hydra-audit] config root not found: {root}")
         return 2
 
     files = _scan_yaml_files(root)
@@ -405,7 +405,7 @@ def cmd_defaults_audit(args: argparse.Namespace) -> int:
     if out_md:
         _write_markdown(out_md, audits)
 
-    logger.info(json.dumps(payload))
+    get_default_logger().info(json.dumps(payload))
     return 0 if payload["issues"] == 0 else 3
 
 

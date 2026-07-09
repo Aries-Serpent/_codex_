@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +18,6 @@ from collections.abc import Iterable
 from pathlib import Path
 from typing import Any, Optional
 
-from codex.logging.structured_logger import logger
 
 Row = dict[str, Any]
 
@@ -93,7 +93,7 @@ def _coerce_epoch(value: Any) -> Any:
         try:
             return converter(value)
         except (TypeError, ValueError):
-            logger.debug("Exception caught, continuing", exc_info=True)
+            get_default_logger().debug("Exception caught, continuing", exc_info=True)
             continue
     return value
 
@@ -118,7 +118,7 @@ def _try_write_parquet(in_csv: Path, out_parquet: Path) -> bool:
         df.to_parquet(out_parquet)
         return True
     except (IOError, OSError):
-        logger.warning("Exception occurred", exc_info=True)
+        get_default_logger().warning("Exception occurred", exc_info=True)
         return False
 
 
@@ -252,21 +252,21 @@ def _csv_to_duckdb(
 def cmd_ingest(args: argparse.Namespace) -> int:
     input_path = Path(args.input).expanduser().resolve()
     if not input_path.exists():
-        logger.error(f"[metrics-cli] input not found: {input_path}")
+        get_default_logger().error(f"[metrics-cli] input not found: {input_path}")
         return 2
 
     run_id = args.run_id or input_path.stem
     schema_path = Path(args.schema).expanduser().resolve() if args.schema else None
     if schema_path is not None:
         if not schema_path.exists():
-            logger.error(f"[metrics-cli] schema not found: {schema_path}")
+            get_default_logger().error(f"[metrics-cli] schema not found: {schema_path}")
             return 2
         try:
             _validate_with_jsonschema(input_path, schema_path)
         except ValueError as exc:
             type(exc).__name__
-            logger.debug("ValueError: <ERROR_TYPE>")
-            logger.error("[metrics-cli] <ERROR_TYPE>")
+            get_default_logger().debug("ValueError: <ERROR_TYPE>")
+            get_default_logger().error("[metrics-cli] <ERROR_TYPE>")
             return 3
 
     rows = _flatten_records(_iter_ndjson(input_path), run_id=run_id)
@@ -335,8 +335,8 @@ def _summarize(path: Path) -> dict[str, Any]:
                 epochs.add(int(record["epoch"]))
             except (IOError, OSError) as e:
                 type(e).__name__
-                logger.debug("Exception: <ERROR_TYPE>")
-                logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
+                get_default_logger().debug("Exception: <ERROR_TYPE>")
+                get_default_logger().warning("Exception: <ERROR_TYPE>", exc_info=True)
         for key, value in record.items():
             if key == "epoch":
                 continue
@@ -356,11 +356,11 @@ def _summarize(path: Path) -> dict[str, Any]:
 def cmd_summary(args: argparse.Namespace) -> int:
     input_path = Path(args.input).expanduser().resolve()
     if not input_path.exists():
-        logger.error(f"[metrics-cli] input not found: {input_path}")
+        get_default_logger().error(f"[metrics-cli] input not found: {input_path}")
         return 2
 
     summary = _summarize(input_path)
-    logger.info(json.dumps(summary, indent=2, sort_keys=True))
+    get_default_logger().info(json.dumps(summary, indent=2, sort_keys=True))
     return 0
 
 
@@ -377,10 +377,10 @@ def cmd_validate(args: argparse.Namespace) -> int:
     schema_path = Path(args.schema).expanduser().resolve()
     data_path = Path(args.input).expanduser().resolve()
     if not data_path.exists():
-        logger.error(f"[metrics-cli] input not found: {data_path}")
+        get_default_logger().error(f"[metrics-cli] input not found: {data_path}")
         return 2
     if not schema_path.exists():
-        logger.error(f"[metrics-cli] schema not found: {schema_path}")
+        get_default_logger().error(f"[metrics-cli] schema not found: {schema_path}")
         return 2
 
     schema = json.loads(schema_path.read_text(encoding="utf-8"))
@@ -400,24 +400,24 @@ def cmd_validate(args: argparse.Namespace) -> int:
                 errors.append(f"record {idx}: {err.message}")
 
     if errors:
-        logger.info(json.dumps({"ok": False, "errors": errors[:50], "total_errors": len(errors)}))
+        get_default_logger().info(json.dumps({"ok": False, "errors": errors[:50], "total_errors": len(errors)}))
         return 3
 
-    logger.info(json.dumps({"ok": True}))
+    get_default_logger().info(json.dumps({"ok": True}))
     return 0
 
 
 def cmd_tail(args: argparse.Namespace) -> int:
     data_path = Path(args.input).expanduser().resolve()
     if not data_path.exists():
-        logger.error(f"[metrics-cli] input not found: {data_path}")
+        get_default_logger().error(f"[metrics-cli] input not found: {data_path}")
         return 2
 
     lines = data_path.read_text(encoding="utf-8").splitlines()
     tail_count = args.n if args.n is not None else 0
     selected = lines[-tail_count:] if tail_count > 0 else lines
     for line in selected:
-        logger.info(line)
+        get_default_logger().info(line)
 
     if not args.follow:
         return 0
@@ -429,7 +429,7 @@ def cmd_tail(args: argparse.Namespace) -> int:
             latest = data_path.read_text(encoding="utf-8").splitlines()
             if len(latest) > seen:
                 for line in latest[seen:]:
-                    logger.info(line)
+                    get_default_logger().info(line)
                 seen = len(latest)
     except KeyboardInterrupt:  # pragma: no cover - manual interruption
         return 0
@@ -440,7 +440,7 @@ def cmd_badge(args: argparse.Namespace) -> int:
     readme_path = Path(args.readme).expanduser().resolve()
 
     if not ndjson_path.exists():
-        logger.error(f"[metrics-cli] input not found: {ndjson_path}")
+        get_default_logger().error(f"[metrics-cli] input not found: {ndjson_path}")
         return 2
 
     metric_key = args.metric
@@ -451,7 +451,7 @@ def cmd_badge(args: argparse.Namespace) -> int:
             last_value = record[metric_key]
 
     if last_value is None:
-        logger.info(json.dumps({"ok": False, "error": f"metric '{metric_key}' not found"}))
+        get_default_logger().info(json.dumps({"ok": False, "error": f"metric '{metric_key}' not found"}))
         return 3
 
     if isinstance(last_value, float):
@@ -482,7 +482,7 @@ def cmd_badge(args: argparse.Namespace) -> int:
 
     readme_path.parent.mkdir(parents=True, exist_ok=True)
     readme_path.write_text(updated, encoding="utf-8")
-    logger.info(json.dumps({"ok": True, "badge": badge, "readme": readme_path.as_posix()}))
+    get_default_logger().info(json.dumps({"ok": True, "badge": badge, "readme": readme_path.as_posix()}))
     return 0
 
 

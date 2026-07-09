@@ -1,4 +1,5 @@
 """
+from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
 Reasoning Evaluation Metrics
 
 Implements specialized metrics for evaluating reasoning capabilities including:
@@ -15,7 +16,6 @@ import re
 from dataclasses import dataclass, field
 from typing import Any, Optional
 
-from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 
@@ -69,7 +69,7 @@ def calculate_win_rate(
         return 0.0
 
     if len(predictions) != len(references):
-        logger.warning(
+        get_default_logger().warning(
             f"Length mismatch: {len(predictions)} predictions vs {len(references)} references"
         )
         return 0.0
@@ -211,8 +211,8 @@ def calculate_latency_delta(
         return float(p_latency)
     except ImportError as e:
         type(e).__name__
-        logger.debug("ImportError: <ERROR_TYPE>")
-        logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
+        get_default_logger().debug("ImportError: <ERROR_TYPE>")
+        get_default_logger().warning("ImportError: <ERROR_TYPE>", exc_info=True)
         # Fallback without numpy
         sorted_latencies = sorted(latencies)
         idx = int(len(sorted_latencies) * percentile / 100.0)
@@ -270,8 +270,8 @@ def calculate_judge_disagreement(
         return float(np.mean(disagreements)) if disagreements else 0.0
     except ImportError as e:
         type(e).__name__
-        logger.debug("ImportError: <ERROR_TYPE>")
-        logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
+        get_default_logger().debug("ImportError: <ERROR_TYPE>")
+        get_default_logger().warning("ImportError: <ERROR_TYPE>", exc_info=True)
         # Fallback without numpy
         disagreements = []
 
@@ -309,7 +309,7 @@ def calculate_trace_coverage(
         return 0.0
 
     if required_steps and len(required_steps) != len(responses):
-        logger.warning("Mismatch between responses and required steps")
+        get_default_logger().warning("Mismatch between responses and required steps")
         return 0.0
 
     total_coverage = 0.0
@@ -508,4 +508,4 @@ if __name__ == "__main__":
     ]
 
     metrics = evaluate_reasoning(predictions, references)
-    logger.info(f"Reasoning Metrics: {metrics.to_dict()}")
+    get_default_logger().info(f"Reasoning Metrics: {metrics.to_dict()}")

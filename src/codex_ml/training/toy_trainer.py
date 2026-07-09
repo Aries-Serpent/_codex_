@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
 """
 Toy trainer loop for `_codex_`.
 
@@ -17,7 +18,6 @@ import random
 import time
 from pathlib import Path
 
-from codex.logging.structured_logger import logger
 
 
 def train(epochs: int, batch_size: int, log_path: Path) -> None:
@@ -54,7 +54,7 @@ def main(argv=None) -> int:
     args = ap.parse_args(argv)
 
     train(args.epochs, args.batch_size, Path(args.log))
-    logger.info(f"[OK] Wrote training log to {args.log}")
+    get_default_logger().info(f"[OK] Wrote training log to {args.log}")
     return 0
 
 

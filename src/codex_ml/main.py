@@ -8,6 +8,8 @@ remaining optional so environments without Typer can still query metadata.
 
 from __future__ import annotations
 
+from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -17,7 +19,6 @@ import importlib  # noqa: E402
 import sys  # noqa: E402
 from collections.abc import Sequence  # noqa: E402
 
-from codex.logging.structured_logger import logger
 
 _HELP_EPILOG = "Run `python -m codex_ml.cli --help` for full subcommands."
 
@@ -26,7 +27,7 @@ def _resolve_version() -> str:
     try:
         mod = importlib.import_module("codex_ml")
     except (ValueError, TypeError):
-        logger.warning("Exception occurred", exc_info=True)
+        get_default_logger().warning("Exception occurred", exc_info=True)
         return "unknown"
     return str(getattr(mod, "__version__", "unknown"))
 
@@ -70,8 +71,8 @@ def _forward_to_cli(argv: Sequence[str]) -> int:
             cli_entry.main(args=forwarded, prog_name="codex-ml", standalone_mode=False)
         except SystemExit as exc:
             type(exc).__name__
-            logger.debug("SystemExit: <ERROR_TYPE>")
-            logger.debug("Exception caught, returning", exc_info=True)
+            get_default_logger().debug("SystemExit: <ERROR_TYPE>")
+            get_default_logger().debug("Exception caught, returning", exc_info=True)
             return int(exc.code or 0)
         return 0
 
@@ -91,7 +92,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     exit_code = 0
     if args.version:
-        logger.info(_resolve_version())
+        get_default_logger().info(_resolve_version())
     if args.forward is not None:
         exit_code = _forward_to_cli(args.forward)
     if not args.version and args.forward is None:

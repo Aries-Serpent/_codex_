@@ -1,4 +1,5 @@
 """CVE Database Monitor for Dependency Management.
+from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
 
 Keeps track of known vulnerabilities and checks dependencies.
 """
@@ -11,7 +12,6 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Any
 
-from codex.logging.structured_logger import logger
 
 
 @dataclass
@@ -210,4 +210,4 @@ if __name__ == "__main__":
     }
 
     results = monitor.scan(deps)
-    logger.info(monitor.generate_report(results))
+    get_default_logger().info(monitor.generate_report(results))

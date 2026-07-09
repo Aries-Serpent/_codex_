@@ -2,11 +2,12 @@
 
 from __future__ import annotations
 
+from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
+
 import argparse
 import json
 import logging
 
-from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 import platform
@@ -69,7 +70,7 @@ try:  # pragma: no cover - hydra optional at runtime
         import hydra
     except ImportError as e:
         error_type = type(e).__name__
-        logger.debug("hydra not available: <ERROR_TYPE>")
+        get_default_logger().debug("hydra not available: <ERROR_TYPE>")
         import config_legacy as hydra  # type: ignore[no-redef]
 
     from omegaconf import DictConfig, OmegaConf
@@ -128,7 +129,7 @@ def _load_yaml_defaults() -> Mapping[str, Any]:
         if isinstance(container, Mapping):
             return container
     except (IOError, OSError):
-        logger.debug("Failed to load YAML defaults from %s", default_yaml, exc_info=True)
+        get_default_logger().debug("Failed to load YAML defaults from %s", default_yaml, exc_info=True)
     return {}
 
 
@@ -155,7 +156,7 @@ def _load_conf_defaults(overrides: Sequence[str]) -> Mapping[str, Any]:
     try:
         cfg = yaml.safe_load(config_path.read_text(encoding="utf-8")) or {}
     except (IOError, OSError):
-        logger.debug("Failed to load YAML config from %s", config_path, exc_info=True)
+        get_default_logger().debug("Failed to load YAML config from %s", config_path, exc_info=True)
         return {}
 
     if overrides:
@@ -249,7 +250,7 @@ if hydra is not None:  # pragma: no cover - executed when hydra available
                     merged_cfg = OmegaConf.merge(defaults_cfg, resolved_cfg)
                     resolved = OmegaConf.to_container(merged_cfg, resolve=True)
                 except (ValueError, TypeError, RuntimeError):
-                    logger.debug("Hydra defaults merge failed", exc_info=True)
+                    get_default_logger().debug("Hydra defaults merge failed", exc_info=True)
                     combined = dict(defaults)
                     combined.update(dict(resolved))
                     resolved = combined
@@ -293,7 +294,7 @@ def _hydra_missing_main(args: Sequence[str], prog: str) -> int:
             mode="minimal",
             result=result,
         )
-        logger.info(json.dumps({"ok": True, "mode": "minimal", "result": result}))
+        get_default_logger().info(json.dumps({"ok": True, "mode": "minimal", "result": result}))
         return 0
 
 
@@ -309,7 +310,7 @@ def main(argv: Optional[Sequence[str]] = None) -> Any:
         logger = init_json_logging()
         with capture_exceptions(logger):
             log_event(logger, "cli.start", prog="codex-train", args=list(argv or []))
-            logger.info(json.dumps(_probe_payload()))
+            get_default_logger().info(json.dumps(_probe_payload()))
             log_event(
                 logger,
                 "cli.finish",
@@ -382,7 +383,7 @@ def main(argv: Optional[Sequence[str]] = None) -> Any:
         logger = init_json_logging()
         with capture_exceptions(logger):
             log_event(logger, "cli.start", prog=parser.prog, args=arg_list)
-            logger.info(json.dumps(_probe_payload()))
+            get_default_logger().info(json.dumps(_probe_payload()))
             log_event(
                 logger,
                 "cli.finish",

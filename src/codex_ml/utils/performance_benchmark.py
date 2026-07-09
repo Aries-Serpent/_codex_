@@ -1,4 +1,5 @@
 """Performance benchmarking suite for ML training.
+from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
 
 Provides comprehensive performance profiling and benchmarking tools
 for training pipelines, model inference, and data loading.
@@ -13,7 +14,6 @@ from pathlib import Path
 from typing import Any, Optional
 
 import torch
-from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 
@@ -80,7 +80,7 @@ class PerformanceBenchmark:
         >>> with benchmark:
         ...     # Training code here
         ...     pass
-        >>> logger.info(benchmark.result)
+        >>> get_default_logger().info(benchmark.result)
     """
 
     def __init__(self, name: str, warmup_iters: int = 0):
@@ -125,7 +125,7 @@ class PerformanceBenchmark:
             gpu_memory_mb=gpu_memory_mb,
         )
 
-        logger.info(f"Benchmark '{self.name}': {duration_ms:.2f}ms")
+        get_default_logger().info(f"Benchmark '{self.name}': {duration_ms:.2f}ms")
 
         return False
 
@@ -333,20 +333,20 @@ class BenchmarkSuite:
             result: BenchmarkResult to add
         """
         self.results.append(result)
-        logger.info(f"Added benchmark: {result.name}")
+        get_default_logger().info(f"Added benchmark: {result.name}")
 
     def print_summary(self):
         """Print summary of all benchmarks."""
-        logger.info(f"\n{'=' * 60}")
-        logger.info(f"Benchmark Suite: {self.name}")
-        logger.info(f"{'=' * 60}")
+        get_default_logger().info(f"\n{'=' * 60}")
+        get_default_logger().info(f"Benchmark Suite: {self.name}")
+        get_default_logger().info(f"{'=' * 60}")
 
         for result in self.results:
-            logger.info(f"\n{result}")
+            get_default_logger().info(f"\n{result}")
 
-        logger.info(f"\n{'=' * 60}")
-        logger.info(f"Total benchmarks: {len(self.results)}")
-        logger.info(f"{'=' * 60}\n")
+        get_default_logger().info(f"\n{'=' * 60}")
+        get_default_logger().info(f"Total benchmarks: {len(self.results)}")
+        get_default_logger().info(f"{'=' * 60}\n")
 
     def save_results(self, path: str):
         """Save results to JSON file.
@@ -365,4 +365,4 @@ class BenchmarkSuite:
         with open(path, "w") as f:
             json.dump(output, f, indent=2)
 
-        logger.info(f"Saved benchmark results to: {path}")
+        get_default_logger().info(f"Saved benchmark results to: {path}")

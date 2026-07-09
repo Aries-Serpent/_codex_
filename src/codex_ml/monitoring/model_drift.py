@@ -1,4 +1,5 @@
 """Model Drift Detection Module (Gap 18).
+from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
 
 Implements concept-drift detection for ML models using:
 - Jensen-Shannon divergence for output distribution shift
@@ -15,7 +16,7 @@ Usage
 >>> detector.update_baseline(reference_probs)       # call once on baseline epoch
 >>> result = detector.check(current_probs)          # call every post-epoch
 >>> if result.drift_detected:
-...     logger.info(result.summary())
+...     get_default_logger().info(result.summary())
 
 Classes
 -------
@@ -31,7 +32,6 @@ import math
 from dataclasses import dataclass, field
 from typing import Any, Optional
 
-from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 
@@ -326,7 +326,7 @@ class ModelDriftDetector:
         if not confidence_scores:
             raise ValueError("confidence_scores must be non-empty")
         self._baseline_dist = self._to_histogram(confidence_scores)
-        logger.info(
+        get_default_logger().info(
             "ModelDriftDetector: baseline updated from %d samples",
             len(confidence_scores),
         )
@@ -411,9 +411,9 @@ class ModelDriftDetector:
         self._history.append(result)
 
         if drift_detected:
-            logger.warning("ModelDriftDetector: %s", result.summary())
+            get_default_logger().warning("ModelDriftDetector: %s", result.summary())
         else:
-            logger.debug("ModelDriftDetector: %s", result.summary())
+            get_default_logger().debug("ModelDriftDetector: %s", result.summary())
 
         return result
 

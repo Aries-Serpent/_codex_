@@ -1,4 +1,5 @@
 """Evaluation run orchestration and execution.
+from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
 
 Provides high-level functions for running model evaluation across datasets,
 managing evaluation loops, and collecting metrics in a unified format.
@@ -14,7 +15,6 @@ import sys
 from collections.abc import Iterable
 from pathlib import Path
 
-from codex.logging.structured_logger import logger
 from codex_ml.utils.hf_pinning import HFModelUnavailableError
 
 from .evaluator import run_evaluator
@@ -64,14 +64,14 @@ def _summarise_log(path: str) -> None:
                 val = float(value)
                 break
             except (TypeError, ValueError):
-                logger.debug("Exception caught, continuing", exc_info=True)
+                get_default_logger().debug("Exception caught, continuing", exc_info=True)
                 continue
         if val is None:
             continue
         summary.setdefault(epoch, []).append(val)
     for epoch, vals in sorted(summary.items()):
         avg = sum(vals) / len(vals)
-        logger.info(json.dumps({"epoch": epoch, "metric": avg}))
+        get_default_logger().info(json.dumps({"epoch": epoch, "metric": avg}))
 
 
 def main(argv: Iterable[str] | None = None) -> None:
@@ -93,9 +93,9 @@ def main(argv: Iterable[str] | None = None) -> None:
     except HFModelUnavailableError:
         # Model not in cache and network unavailable — exit 2 so callers
         # (e.g. tests) can distinguish "model unavailable" from real errors.
-        logger.error("SKIP: <ERROR_TYPE>")
+        get_default_logger().error("SKIP: <ERROR_TYPE>")
         sys.exit(2)
-    logger.info(json.dumps(metrics))
+    get_default_logger().info(json.dumps(metrics))
     if args.metrics_log:
         _summarise_log(args.metrics_log)
 

@@ -1,4 +1,5 @@
 """Offline tracking bootstrap CLI.
+from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
 
 Initialises a local tracking workspace and emits environment exports for
 MLflow and Weights & Biases so runs can remain fully offline.
@@ -20,7 +21,6 @@ from collections.abc import Mapping, Sequence
 from pathlib import Path
 from typing import Any, Optional
 
-from codex.logging.structured_logger import logger
 
 
 def _mlflow_env(root: Path) -> dict[str, str]:
@@ -53,7 +53,7 @@ def _write_env_file(path: Path, env: Mapping[str, str]) -> None:
 
 def _print_exports(env: Mapping[str, str]) -> None:
     for key, value in env.items():
-        logger.info(f'export {key}="{value}"')
+        get_default_logger().info(f'export {key}="{value}"')
 
 
 def cmd_bootstrap(args: argparse.Namespace) -> int:
@@ -61,10 +61,10 @@ def cmd_bootstrap(args: argparse.Namespace) -> int:
     root.mkdir(parents=True, exist_ok=True)
 
     if args.backend not in {"mlflow", "wandb", "both"}:
-        logger.info(f"[track-bootstrap] invalid backend: {args.backend}")
+        get_default_logger().info(f"[track-bootstrap] invalid backend: {args.backend}")
         return 2
     if args.mode not in {"offline", "disabled"}:
-        logger.info(f"[track-bootstrap] invalid mode: {args.mode}")
+        get_default_logger().info(f"[track-bootstrap] invalid mode: {args.mode}")
         return 2
 
     payload: dict[str, Any] = {
@@ -107,7 +107,7 @@ def cmd_bootstrap(args: argparse.Namespace) -> int:
     if args.print_exports:
         _print_exports(exports)
 
-    logger.info(json.dumps(payload))
+    get_default_logger().info(json.dumps(payload))
     return 0
 
 

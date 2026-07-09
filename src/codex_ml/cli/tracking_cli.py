@@ -1,4 +1,5 @@
 """Tracking bootstrap CLI (offline-friendly).
+from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
 
 Initializes local MLflow and/or W&B in offline/disabled modes without network I/O.
 All optional deps are import-guarded.
@@ -19,7 +20,6 @@ import json
 import os
 from typing import Any, Optional
 
-from codex.logging.structured_logger import logger
 
 
 def _enable_mlflow(uri: Optional[str]) -> dict[str, Any]:
@@ -33,8 +33,8 @@ def _enable_mlflow(uri: Optional[str]) -> dict[str, Any]:
                 mlflow.set_tracking_uri(uri)
             except (ValueError, TypeError, RuntimeError) as e:
                 type(e).__name__
-                logger.debug("Exception: <ERROR_TYPE>")
-                logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
+                get_default_logger().debug("Exception: <ERROR_TYPE>")
+                get_default_logger().warning("Exception: <ERROR_TYPE>", exc_info=True)
         result["enabled"] = True
         result["tracking_uri"] = os.environ.get("MLFLOW_TRACKING_URI") or result["tracking_uri"]
     except (
@@ -108,7 +108,7 @@ def _cmd_bootstrap(args: argparse.Namespace) -> int:
         payload["mlflow"] = _enable_mlflow(args.mlflow_uri)
     if args.wandb:
         payload["wandb"] = _enable_wandb(args.project, args.mode)
-    logger.info(json.dumps(payload, indent=2, sort_keys=True))
+    get_default_logger().info(json.dumps(payload, indent=2, sort_keys=True))
     return 0
 
 

@@ -1,4 +1,5 @@
 """Data drift monitoring using PSI and KL-divergence detectors.
+from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
 
 This module provides ``DataDriftDetector``, a lightweight, dependency-free
 drift detector that can be used to compare reference and current feature
@@ -16,9 +17,9 @@ Usage example::
     kl_result  = detector.detect_kl(reference, current)
 
     if psi_result.drifted:
-        logger.info(f"PSI drift detected: score={psi_result.score:.4f}")
+        get_default_logger().info(f"PSI drift detected: score={psi_result.score:.4f}")
     if kl_result.drifted:
-        logger.info(f"KL  drift detected: score={kl_result.score:.4f}")
+        get_default_logger().info(f"KL  drift detected: score={kl_result.score:.4f}")
 
 Implementation notes
 --------------------
@@ -55,7 +56,6 @@ from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from typing import Any, Sequence
 
-from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 
@@ -190,7 +190,7 @@ class DataDriftDetector:
         drifted = psi_score > self.psi_threshold
 
         if drifted:
-            logger.warning(
+            get_default_logger().warning(
                 "PSI drift detected for '%s': score=%.4f (threshold=%.4f, severity=%s)",
                 feature_name,
                 psi_score,
@@ -198,7 +198,7 @@ class DataDriftDetector:
                 severity,
             )
         else:
-            logger.debug(
+            get_default_logger().debug(
                 "PSI check for '%s': score=%.4f (no drift)",
                 feature_name,
                 psi_score,
@@ -264,7 +264,7 @@ class DataDriftDetector:
         drifted = kl_score > self.kl_threshold
 
         if drifted:
-            logger.warning(
+            get_default_logger().warning(
                 "KL drift detected for '%s': score=%.4f (threshold=%.4f, severity=%s)",
                 feature_name,
                 kl_score,
@@ -272,7 +272,7 @@ class DataDriftDetector:
                 severity,
             )
         else:
-            logger.debug(
+            get_default_logger().debug(
                 "KL check for '%s': score=%.4f (no drift)",
                 feature_name,
                 kl_score,
@@ -321,13 +321,13 @@ class DataDriftDetector:
         dict[str, DriftResult]
             Mapping with keys ``"psi"`` and ``"kl"``.
         """
-        logger.debug("Running data drift checks for epoch %d / feature '%s'", epoch, feature_name)
+        get_default_logger().debug("Running data drift checks for epoch %d / feature '%s'", epoch, feature_name)
         psi_result = self.detect_psi(reference, current, feature_name=feature_name)
         kl_result = self.detect_kl(reference, current, feature_name=feature_name)
 
         any_drift = psi_result.drifted or kl_result.drifted
         if any_drift:
-            logger.warning(
+            get_default_logger().warning(
                 "Data drift detected at epoch %d (psi=%.4f, kl=%.4f)",
                 epoch,
                 psi_result.score,

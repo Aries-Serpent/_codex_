@@ -1,6 +1,5 @@
 """
 from __future__ import annotations
-from codex.logging.structured_logger import logger
 
 Audit Pipeline Module
 
@@ -17,6 +16,7 @@ Functions:
 
 Author: Codex Team
 """
+from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
 
 # src/codex_ml/cli/audit_pipeline.py
 
@@ -58,7 +58,7 @@ def _to_serializable(obj: Any) -> Any:
         json.dumps(obj)
         return obj
     except (IOError, OSError):
-        logger.warning("Exception occurred", exc_info=True)
+        get_default_logger().warning("Exception occurred", exc_info=True)
         return str(obj)
 
 
@@ -166,7 +166,7 @@ def audit_repo(
                 outcome = prov.search(q)
             except (ValueError, TypeError, RuntimeError) as exc:
                 type(exc).__name__
-                logger.debug("Exception: <ERROR_TYPE>")
+                get_default_logger().debug("Exception: <ERROR_TYPE>")
                 evidence.append(
                     {
                         "provider": prov.__class__.__name__.lower(),
@@ -250,7 +250,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         )
         report["files"] = sorted(report["files"], key=lambda x: x.get("file", ""))
         Path(args.out).write_text(json.dumps(report, indent=2), encoding="utf-8")
-        logger.info(
+        get_default_logger().info(
             json.dumps(
                 {
                     "summary": {

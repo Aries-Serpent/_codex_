@@ -1,4 +1,5 @@
 """
+from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
 Curriculum Orchestrator for Multi-Phase Training
 
 Manages curriculum-based training with phase transitions, metrics-based
@@ -14,7 +15,6 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Optional
 
-from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 
@@ -162,7 +162,7 @@ class CurriculumScheduler:
         self.checkpoint_dir.mkdir(parents=True, exist_ok=True)
         self.state = self._load_or_create_state()
 
-        logger.info(f"Initialized CurriculumScheduler: {curriculum_name} with {len(phases)} phases")
+        get_default_logger().info(f"Initialized CurriculumScheduler: {curriculum_name} with {len(phases)} phases")
 
     def _load_or_create_state(self) -> CurriculumState:
         """Load existing state or create new"""
@@ -170,12 +170,12 @@ class CurriculumScheduler:
             try:
                 with open(self.state_file) as f:
                     data = json.load(f)
-                logger.info(f"Loaded curriculum state from {self.state_file}")
+                get_default_logger().info(f"Loaded curriculum state from {self.state_file}")
                 return CurriculumState.from_dict(data)
             except (IOError, OSError) as e:
                 type(e).__name__
-                logger.debug("Exception: <ERROR_TYPE>")
-                logger.warning("Failed to load state, creating new: <ERROR_TYPE>")
+                get_default_logger().debug("Exception: <ERROR_TYPE>")
+                get_default_logger().warning("Failed to load state, creating new: <ERROR_TYPE>")
 
         return CurriculumState(curriculum_name=self.curriculum_name)
 
@@ -184,11 +184,11 @@ class CurriculumScheduler:
         try:
             with open(self.state_file, "w") as f:
                 json.dump(self.state.to_dict(), f, indent=2)
-            logger.info(f"Saved curriculum state to {self.state_file}")
+            get_default_logger().info(f"Saved curriculum state to {self.state_file}")
         except (IOError, OSError) as e:
             type(e).__name__
-            logger.debug("Exception: <ERROR_TYPE>")
-            logger.error("Failed to save state: <ERROR_TYPE>")
+            get_default_logger().debug("Exception: <ERROR_TYPE>")
+            get_default_logger().error("Failed to save state: <ERROR_TYPE>")
             raise
 
     def get_current_phase(self) -> Optional[TrainingPhase]:
@@ -277,7 +277,7 @@ class CurriculumScheduler:
         self.state.phase_results.append(result)
         self.save_state()
 
-        logger.info(f"Started phase: {phase_id}")
+        get_default_logger().info(f"Started phase: {phase_id}")
         return result
 
     def complete_phase(
@@ -313,11 +313,11 @@ class CurriculumScheduler:
         # Check if curriculum is complete
         if self.state.current_phase_index >= len(self.phases):
             self.state.is_complete = True
-            logger.info(f"Curriculum {self.curriculum_name} completed!")
+            get_default_logger().info(f"Curriculum {self.curriculum_name} completed!")
 
         self.save_state()
 
-        logger.info(f"Completed phase: {phase_id}")
+        get_default_logger().info(f"Completed phase: {phase_id}")
         return result
 
     def update_phase_progress(
@@ -364,7 +364,7 @@ class CurriculumScheduler:
 
         self.save_state()
 
-        logger.error(f"Phase {phase_id} failed: {error_message}")
+        get_default_logger().error(f"Phase {phase_id} failed: {error_message}")
         return result
 
     def get_phase_checkpoint_path(self, phase_id: str) -> Path:
@@ -403,7 +403,7 @@ class CurriculumScheduler:
         """Reset curriculum to initial state"""
         self.state = CurriculumState(curriculum_name=self.curriculum_name)
         self.save_state()
-        logger.info(f"Reset curriculum: {self.curriculum_name}")
+        get_default_logger().info(f"Reset curriculum: {self.curriculum_name}")
 
 
 def load_curriculum_from_config(config_path: str) -> list[TrainingPhase]:
@@ -419,8 +419,8 @@ def load_curriculum_from_config(config_path: str) -> list[TrainingPhase]:
         import yaml
     except ImportError as e:
         type(e).__name__
-        logger.debug("ImportError: <ERROR_TYPE>")
-        logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
+        get_default_logger().debug("ImportError: <ERROR_TYPE>")
+        get_default_logger().warning("ImportError: <ERROR_TYPE>", exc_info=True)
         raise RuntimeError("PyYAML not installed. Install with: pip install pyyaml") from e
 
     with open(config_path) as f:
@@ -467,4 +467,4 @@ if __name__ == "__main__":
         curriculum_name="example_curriculum",
     )
 
-    logger.info(f"Summary: {scheduler.get_summary()}")
+    get_default_logger().info(f"Summary: {scheduler.get_summary()}")

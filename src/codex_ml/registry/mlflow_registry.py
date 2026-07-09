@@ -1,4 +1,5 @@
 """
+from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
 MLflow Model Registry Integration
 
 Provides centralized model versioning, lineage tracking, and deployment
@@ -14,7 +15,6 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Optional
 
-from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 
@@ -27,8 +27,8 @@ try:
     _HAS_MLFLOW = True
 except ImportError as e:
     error_type = type(e).__name__
-    logger.debug("ImportError: <ERROR_TYPE>")
-    logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
+    get_default_logger().debug("ImportError: <ERROR_TYPE>")
+    get_default_logger().warning("ImportError: <ERROR_TYPE>", exc_info=True)
     _HAS_MLFLOW = False
     mlflow = None
     MlflowClient = None
@@ -94,7 +94,7 @@ class ModelRegistry:
             mlflow.set_tracking_uri(tracking_uri)
 
         self.client = MlflowClient()
-        logger.info(f"Initialized ModelRegistry with URI: {mlflow.get_tracking_uri()}")
+        get_default_logger().info(f"Initialized ModelRegistry with URI: {mlflow.get_tracking_uri()}")
 
     def register_model(
         self,
@@ -131,14 +131,14 @@ class ModelRegistry:
                         name=name, version=result.version, key=key, value=value
                     )
 
-            logger.info(f"Registered model {name} version {result.version}")
+            get_default_logger().info(f"Registered model {name} version {result.version}")
 
             return self.get_model_version(name, result.version)
 
         except (ValueError, TypeError, RuntimeError) as e:
             type(e).__name__
-            logger.debug("Exception: <ERROR_TYPE>")
-            logger.error(f"Failed to register model {name}: <ERROR_TYPE>")
+            get_default_logger().debug("Exception: <ERROR_TYPE>")
+            get_default_logger().error(f"Failed to register model {name}: <ERROR_TYPE>")
             raise
 
     def get_model_version(self, name: str, version: str) -> ModelVersion:
@@ -168,8 +168,8 @@ class ModelRegistry:
             )
         except (ValueError, TypeError, RuntimeError) as e:
             type(e).__name__
-            logger.debug("Exception: <ERROR_TYPE>")
-            logger.error(f"Failed to get model version {name}/{version}: <ERROR_TYPE>")
+            get_default_logger().debug("Exception: <ERROR_TYPE>")
+            get_default_logger().error(f"Failed to get model version {name}/{version}: <ERROR_TYPE>")
             raise
 
     def list_model_versions(
@@ -208,8 +208,8 @@ class ModelRegistry:
             ]
         except (ValueError, TypeError, RuntimeError) as e:
             type(e).__name__
-            logger.debug("Exception: <ERROR_TYPE>")
-            logger.error(f"Failed to list model versions for {name}: <ERROR_TYPE>")
+            get_default_logger().debug("Exception: <ERROR_TYPE>")
+            get_default_logger().error(f"Failed to list model versions for {name}: <ERROR_TYPE>")
             raise
 
     def promote_model(
@@ -238,13 +238,13 @@ class ModelRegistry:
                 archive_existing_versions=archive_existing,
             )
 
-            logger.info(f"Promoted model {name} version {version} to {stage.value}")
+            get_default_logger().info(f"Promoted model {name} version {version} to {stage.value}")
 
             return self.get_model_version(name, version)
         except (ValueError, TypeError, RuntimeError) as e:
             type(e).__name__
-            logger.debug("Exception: <ERROR_TYPE>")
-            logger.error(f"Failed to promote model {name}/{version} to {stage.value}: <ERROR_TYPE>")
+            get_default_logger().debug("Exception: <ERROR_TYPE>")
+            get_default_logger().error(f"Failed to promote model {name}/{version} to {stage.value}: <ERROR_TYPE>")
             raise
 
     def archive_model(self, name: str, version: str) -> ModelVersion:
@@ -268,11 +268,11 @@ class ModelRegistry:
         """
         try:
             self.client.delete_model_version(name=name, version=version)
-            logger.info(f"Deleted model {name} version {version}")
+            get_default_logger().info(f"Deleted model {name} version {version}")
         except (ValueError, TypeError, RuntimeError) as e:
             type(e).__name__
-            logger.debug("Exception: <ERROR_TYPE>")
-            logger.error(f"Failed to delete model {name}/{version}: <ERROR_TYPE>")
+            get_default_logger().debug("Exception: <ERROR_TYPE>")
+            get_default_logger().error(f"Failed to delete model {name}/{version}: <ERROR_TYPE>")
             raise
 
     def get_latest_version(
@@ -323,8 +323,8 @@ class ModelRegistry:
             }
         except (ValueError, TypeError, RuntimeError) as e:
             type(e).__name__
-            logger.debug("Exception: <ERROR_TYPE>")
-            logger.error(f"Failed to compare models {name}/{version1} vs {version2}: <ERROR_TYPE>")
+            get_default_logger().debug("Exception: <ERROR_TYPE>")
+            get_default_logger().error(f"Failed to compare models {name}/{version1} vs {version2}: <ERROR_TYPE>")
             raise
 
     def get_model_lineage(self, name: str, version: str) -> dict[str, Any]:
@@ -362,8 +362,8 @@ class ModelRegistry:
             return {"model": mv.to_dict(), "lineage": lineage}
         except (ValueError, TypeError, RuntimeError) as e:
             type(e).__name__
-            logger.debug("Exception: <ERROR_TYPE>")
-            logger.error(f"Failed to get model lineage for {name}/{version}: <ERROR_TYPE>")
+            get_default_logger().debug("Exception: <ERROR_TYPE>")
+            get_default_logger().error(f"Failed to get model lineage for {name}/{version}: <ERROR_TYPE>")
             raise
 
     def list_models(self) -> list[str]:
@@ -377,8 +377,8 @@ class ModelRegistry:
             return [model.name for model in models]
         except (IOError, OSError) as e:
             type(e).__name__
-            logger.debug("Exception: <ERROR_TYPE>")
-            logger.error("Failed to list models: <ERROR_TYPE>")
+            get_default_logger().debug("Exception: <ERROR_TYPE>")
+            get_default_logger().error("Failed to list models: <ERROR_TYPE>")
             raise
 
     def export_model(self, name: str, version: str, output_dir: str) -> Path:
@@ -405,12 +405,12 @@ class ModelRegistry:
             model_uri = f"models:/{name}/{version}"
             mlflow.pyfunc.load_model(model_uri)
 
-            logger.info(f"Exported model {name}/{version} to {output_path}")
+            get_default_logger().info(f"Exported model {name}/{version} to {output_path}")
             return output_path
         except (IOError, OSError) as e:
             type(e).__name__
-            logger.debug("Exception: <ERROR_TYPE>")
-            logger.error(f"Failed to export model {name}/{version}: <ERROR_TYPE>")
+            get_default_logger().debug("Exception: <ERROR_TYPE>")
+            get_default_logger().error(f"Failed to export model {name}/{version}: <ERROR_TYPE>")
             raise
 
 
@@ -433,7 +433,7 @@ if __name__ == "__main__":
 
         # list models
         models = registry.list_models()
-        logger.info(f"Registered models: {models}")
+        get_default_logger().info(f"Registered models: {models}")
 
         # Example: Register a model (requires existing run)
         # model_version = registry.register_model(
@@ -443,4 +443,4 @@ if __name__ == "__main__":
         #     tags={"env": "dev"}
         # )
     else:
-        logger.info("MLflow not installed. Install with: pip install mlflow")
+        get_default_logger().info("MLflow not installed. Install with: pip install mlflow")

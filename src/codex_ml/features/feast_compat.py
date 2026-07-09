@@ -1,4 +1,5 @@
 """SAR-G02: Feast-compatible Feature Store — production backend.
+from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
 
 This module provides a Feast-inspired interface with a pluggable backend system.
 It does NOT require the ``feast`` package — it implements the same conceptual API
@@ -27,7 +28,6 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional, Protocol, runtime_checkable
 
-from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 
@@ -125,7 +125,7 @@ class FeastCompatibleStore:
             features=["user_profile:age", "user_profile:plan_tier"],
             entity_rows=[{"user_id": "u-001"}],
         )
-        logger.info(result.feature_values)
+        get_default_logger().info(result.feature_values)
 
     Migration path to real Feast:
       1. ``pip install feast``
@@ -140,7 +140,7 @@ class FeastCompatibleStore:
         self._native: _NativeStore = _NativeStore(store_path=self._repo_path / "store")
         self._views: dict[str, FeatureView] = {}
         self._entities: dict[str, Entity] = {}
-        logger.info("FeastCompatibleStore initialized at %s", self._repo_path)
+        get_default_logger().info("FeastCompatibleStore initialized at %s", self._repo_path)
 
     # ── Registry management ───────────────────────────────────────────────────
 
@@ -149,12 +149,12 @@ class FeastCompatibleStore:
         for obj in objects:
             if isinstance(obj, FeatureView):
                 self._views[obj.name] = obj
-                logger.info("Registered FeatureView: %s (%d features)", obj.name, len(obj.features))
+                get_default_logger().info("Registered FeatureView: %s (%d features)", obj.name, len(obj.features))
             elif isinstance(obj, Entity):
                 self._entities[obj.name] = obj
-                logger.info("Registered Entity: %s (join_key=%s)", obj.name, obj.join_key)
+                get_default_logger().info("Registered Entity: %s (join_key=%s)", obj.name, obj.join_key)
             else:
-                logger.warning("apply: unknown object type %s — skipped", type(obj))
+                get_default_logger().warning("apply: unknown object type %s — skipped", type(obj))
 
     def list_feature_views(self) -> list[FeatureView]:
         """Return all registered FeatureViews."""
@@ -212,7 +212,7 @@ class FeastCompatibleStore:
                     for fname in fnames:
                         retrieved[f"{vname}__{fname}"] = None
             except (ValueError, TypeError, RuntimeError) as exc:
-                logger.debug("get_online_features: native store miss for %s: %s", vname, exc)
+                get_default_logger().debug("get_online_features: native store miss for %s: %s", vname, exc)
                 for fname in fnames:
                     retrieved[f"{vname}__{fname}"] = None
 
@@ -254,7 +254,7 @@ class FeastCompatibleStore:
 
         for vname in targets:
             if vname not in self._views:
-                logger.warning("materialize: FeatureView '%s' not registered — skipped", vname)
+                get_default_logger().warning("materialize: FeatureView '%s' not registered — skipped", vname)
                 continue
             view = self._views[vname]
 
@@ -271,9 +271,9 @@ class FeastCompatibleStore:
                     timestamp=end_date,
                 )
                 written[vname] = path
-                logger.info("Materialized %s → %s", vname, path)
+                get_default_logger().info("Materialized %s → %s", vname, path)
             except (IOError, OSError) as exc:
-                logger.warning("materialize: failed for %s: %s", vname, exc)
+                get_default_logger().warning("materialize: failed for %s: %s", vname, exc)
 
         return written
 
@@ -386,7 +386,7 @@ class SQLiteBackend:
         with self._lock:
             self._conn.execute(self._CREATE_TABLE)
             self._conn.commit()
-        logger.info("SQLiteBackend initialized at %s", self._db_path)
+        get_default_logger().info("SQLiteBackend initialized at %s", self._db_path)
 
     def write(self, view_name: str, entity_key: str, features: dict[str, Any]) -> None:
         written_at = datetime.now(timezone.utc).isoformat()
@@ -482,7 +482,7 @@ class RedisBackend:
             pool_kwargs["socket_connect_timeout"] = socket_connect_timeout
         self._redis = _redis.from_url(url, **pool_kwargs)
         self._ttl = ttl
-        logger.info("RedisBackend initialized at %s (ttl=%s)", url, ttl)
+        get_default_logger().info("RedisBackend initialized at %s (ttl=%s)", url, ttl)
 
     @staticmethod
     def _key(view_name: str, entity_key: str) -> str:
@@ -682,7 +682,7 @@ class DuckDBBackend:
                 f"COPY (SELECT * FROM {tbl}) TO ? (FORMAT PARQUET)",  # nosec B608 — tbl validated by _table()
                 [str(output_path)],
             )
-        logger.info("Materialized view '%s' → %s", view_name, output_path)
+        get_default_logger().info("Materialized view '%s' → %s", view_name, output_path)
         return output_path
 
     def materialize_to_arrow_ipc(
@@ -727,7 +727,7 @@ class DuckDBBackend:
             )
         with pa_ipc.new_file(str(output_path), arrow_table.schema) as writer:
             writer.write_table(arrow_table)
-        logger.info("Materialized view '%s' → %s (Arrow IPC)", view_name, output_path)
+        get_default_logger().info("Materialized view '%s' → %s (Arrow IPC)", view_name, output_path)
         return output_path
 
     def row_count(self, view_name: str) -> int:

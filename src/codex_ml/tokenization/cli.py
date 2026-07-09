@@ -1,4 +1,5 @@
 """
+from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
 Cli Module
 
 This module provides functionality for cli.
@@ -24,7 +25,6 @@ from collections.abc import Sequence
 from datetime import datetime, timezone
 from pathlib import Path
 
-from codex.logging.structured_logger import logger
 from codex_ml.tokenization import sentencepiece_adapter
 
 SentencePieceAdapter = sentencepiece_adapter.SentencePieceAdapter
@@ -52,19 +52,19 @@ def _train(args: argparse.Namespace) -> None:
 def _encode(args: argparse.Namespace) -> None:
     adapter = SentencePieceAdapter(Path(args.model)).load()
     ids = adapter.encode(args.text)
-    logger.info(" ".join(str(i) for i in ids))
+    get_default_logger().info(" ".join(str(i) for i in ids))
 
 
 def _decode(args: argparse.Namespace) -> None:
     adapter = SentencePieceAdapter(Path(args.model)).load()
     ids = [int(i) for i in args.ids.split(",") if i]
-    logger.info(adapter.decode(ids))
+    get_default_logger().info(adapter.decode(ids))
 
 
 def _stats(args: argparse.Namespace) -> None:
     adapter = SentencePieceAdapter(Path(args.model)).load()
     size = getattr(adapter.sp, "vocab_size", lambda: 0)()
-    logger.info(size)
+    get_default_logger().info(size)
 
 
 def _refresh(args: argparse.Namespace) -> None:

@@ -1,4 +1,5 @@
 """Tokenizer-related Typer commands.
+from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
 
 The CLI is feature-flagged via ``CODEX_ENABLE_TOKENIZER_CLI`` so that
 installations can opt out by clearing the environment variable.  When the flag
@@ -15,7 +16,6 @@ import shutil
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Optional
 
-from codex.logging.structured_logger import logger
 from codex_ml.utils.optional import optional_import
 
 typer, _HAS_TYPER = optional_import("typer")
@@ -50,7 +50,7 @@ def _echo(message: str) -> None:
     if typer is not None:
         typer.echo(message)
     else:  # pragma: no cover - Typer missing
-        logger.info(message)
+        get_default_logger().info(message)
 
 
 def _load_mapping(path: Path) -> dict[str, Any]:

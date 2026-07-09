@@ -1,4 +1,5 @@
 # [Integration]: LoRA adapter integration with graceful fallbacks
+from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
 # Generated: 2025-08-31 08:51:51 | Author: mbaetiong
 """LoRA integration for Codex models.
 
@@ -32,7 +33,6 @@ logger = logging.getLogger(__name__)
 import inspect  # noqa: E402
 from typing import Any, Optional  # noqa: E402
 
-from codex.logging.structured_logger import logger
 
 # Optional dependency: peft
 try:  # pragma: no cover - optional dependency
@@ -99,7 +99,7 @@ def apply_lora(model: Any, cfg: Optional[dict[str, Any]] = None, /, **overrides:
     >>> adapted = apply_lora(model, lora_dropout=0.1, bias="lora_only")
 
     >>> # Check applied configuration
-    >>> logger.info(adapted.peft_config)
+    >>> get_default_logger().info(adapted.peft_config)
     """
     # Merge defaults + provided config + explicit overrides
     merged: dict[str, Any] = dict(DEFAULT_CFG)
@@ -116,7 +116,7 @@ def apply_lora(model: Any, cfg: Optional[dict[str, Any]] = None, /, **overrides:
         try:
             model.peft_config = dict(merged)
         except (ImportError, AttributeError):
-            logger.warning("Exception occurred", exc_info=True)
+            get_default_logger().warning("Exception occurred", exc_info=True)
             # Silently ignore attribute setting failures
         return model
 
@@ -135,14 +135,14 @@ def apply_lora(model: Any, cfg: Optional[dict[str, Any]] = None, /, **overrides:
                 valid_keys = set(sig.parameters)
                 config_kwargs = {k: v for k, v in config_kwargs.items() if k in valid_keys}
         except (TypeError, ValueError):  # pragma: no cover - signature unavailable
-            logger.debug("Suppressed exception in handler", exc_info=True)
+            get_default_logger().debug("Suppressed exception in handler", exc_info=True)
     try:
         config = LoraConfig(task_type=task_type, **config_kwargs)
         adapted = get_peft_model(model, config)
         try:
             adapted.peft_config = dict(merged)
         except (ImportError, AttributeError):
-            logger.warning("Exception occurred", exc_info=True)
+            get_default_logger().warning("Exception occurred", exc_info=True)
             # Ignore attribute setting failures but continue with adapted model
         return adapted
     except (ImportError, AttributeError):  # pragma: no cover - defensive fallback
@@ -150,6 +150,6 @@ def apply_lora(model: Any, cfg: Optional[dict[str, Any]] = None, /, **overrides:
         try:
             model.peft_config = dict(merged)
         except (ImportError, AttributeError):
-            logger.warning("Exception occurred", exc_info=True)
+            get_default_logger().warning("Exception occurred", exc_info=True)
             # Ignore attribute setting failures in fallback case
         return model

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
 
 logger = logging.getLogger(__name__)
 
@@ -13,7 +14,6 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Optional
 
-from codex.logging.structured_logger import logger
 
 
 @dataclass
@@ -135,7 +135,7 @@ def register_configs() -> None:
             from hydra.core.config_store import ConfigStore
         except ImportError as e:
             type(e).__name__
-            logger.debug("hydra not available: <ERROR_TYPE>")
+            get_default_logger().debug("hydra not available: <ERROR_TYPE>")
             from config_legacy.core.config_store import ConfigStore  # type: ignore[no-redef]
 
         from codex_ml.utils.hydra_cs import safe_exists
@@ -207,7 +207,7 @@ def _load_defaults_from_yaml(text: str) -> Optional[list[str]]:
     try:
         data = yaml.safe_load(text) or {}
     except (ValueError, TypeError, RuntimeError):
-        logger.debug("yaml.safe_load failed; skipping defaults", exc_info=True)
+        get_default_logger().debug("yaml.safe_load failed; skipping defaults", exc_info=True)
         return None
 
     if not isinstance(data, dict):
@@ -269,7 +269,7 @@ def _audit_defaults(text: str, mode: str) -> tuple[int, dict[str, Any]]:
 def cmd_audit(args: argparse.Namespace) -> int:
     cfg_path = Path(args.path or _DEFAULT_CONFIG_PATH).expanduser().resolve()
     if not cfg_path.exists():
-        logger.error("[config] configs/base/hydra.yaml not found")
+        get_default_logger().error("[config] configs/base/hydra.yaml not found")
         print(
             json.dumps(
                 {
@@ -284,7 +284,7 @@ def cmd_audit(args: argparse.Namespace) -> int:
 
     text = cfg_path.read_text(encoding="utf-8")
     code, payload = _audit_defaults(text, args.audit)
-    logger.info(json.dumps(payload))
+    get_default_logger().info(json.dumps(payload))
     return code
 
 

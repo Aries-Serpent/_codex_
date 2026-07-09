@@ -1,4 +1,5 @@
 """
+from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
 Hydra Entry Module
 
 This module provides functionality for hydra entry.
@@ -33,7 +34,6 @@ from typing import TYPE_CHECKING, Any
 if TYPE_CHECKING:
     from codex_ml.training.unified_training import UnifiedTrainingConfig
 
-from codex.logging.structured_logger import logger
 from codex_ml.data.reasoning_manifest import list_reasoning_corpora
 
 _CURRICULUM_PRESETS = {
@@ -51,7 +51,7 @@ def _print_missing(pkg: str) -> int:
         "reason": f"'{pkg}' is not installed; install to use Hydra-driven training.",
         "hint": "pip install hydra-core omegaconf",
     }
-    logger.info(json.dumps(msg))
+    get_default_logger().info(json.dumps(msg))
     return 0
 
 
@@ -126,13 +126,13 @@ def main(argv=None) -> int:
             import hydra
         except ImportError as e:
             type(e).__name__
-            logger.debug("ImportError: <ERROR_TYPE>")
-            logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
+            get_default_logger().debug("ImportError: <ERROR_TYPE>")
+            get_default_logger().warning("ImportError: <ERROR_TYPE>", exc_info=True)
             import config_legacy as hydra  # type: ignore[no-redef]
 
         from omegaconf import DictConfig, OmegaConf
     except (IOError, OSError):
-        logger.warning("Exception occurred", exc_info=True)
+        get_default_logger().warning("Exception occurred", exc_info=True)
         return _print_missing("hydra-core")
 
     from codex_ml.training.unified_training import run_unified_training
@@ -145,7 +145,7 @@ def main(argv=None) -> int:
     def _entry(cfg: DictConfig) -> int:
         show_cfg = os.environ.get("CODEX_SHOW_CFG", "0")
         if show_cfg.lower() in {"1", "true", "yes"}:
-            logger.info(OmegaConf.to_yaml(cfg, resolve=True))
+            get_default_logger().info(OmegaConf.to_yaml(cfg, resolve=True))
             return 0
 
         cfg_dict = OmegaConf.to_container(cfg, resolve=True)
@@ -158,7 +158,7 @@ def main(argv=None) -> int:
             callbacks=None,
             ndjson_log_path=str(ndjson_path),
         )
-        logger.info(json.dumps({"ok": True, "train_result": result, "config": asdict(utc)}))
+        get_default_logger().info(json.dumps({"ok": True, "train_result": result, "config": asdict(utc)}))
         return 0
 
     overrides = _inject_curriculum_flags(list(argv or sys.argv[1:]))

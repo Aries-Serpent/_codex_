@@ -1,4 +1,5 @@
 """Minimal training + evaluation CLI for _codex_ scaffolding.
+from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
 
 This module ties together:
 - config loading
@@ -17,7 +18,6 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Optional
 
-from codex.logging.structured_logger import logger
 from codex_ml.config import load as cfg_load
 from codex_ml.data.simple_dataset import Sample, SimpleDataset
 from codex_ml.eval import evaluator
@@ -73,9 +73,9 @@ def run_minimal(experiment_name: Optional[str] = None) -> MinimalRunResult:
 
 def main() -> None:
     result = run_minimal(experiment_name=None)
-    logger.info("loss_before:", result.loss_before)
-    logger.info("loss_after:", result.loss_after)
-    logger.info("score:", result.score)
+    get_default_logger().info("loss_before:", result.loss_before)
+    get_default_logger().info("loss_after:", result.loss_after)
+    get_default_logger().info("score:", result.score)
 
 
 if __name__ == "__main__":  # pragma: no cover

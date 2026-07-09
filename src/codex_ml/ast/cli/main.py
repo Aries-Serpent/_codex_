@@ -1,3 +1,4 @@
+from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
 #!/usr/bin/env python3
 """
 AST Analysis CLI - Command Line Interface for Codebase Analysis.
@@ -18,7 +19,6 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Optional
 
-from codex.logging.structured_logger import logger
 from codex_ml.ast.analysis.registry import AnalyzerRegistry
 from codex_ml.ast.core.config import ASTConfig
 from codex_ml.ast.storage.sqlite_storage import ASTStorage
@@ -49,25 +49,25 @@ def cmd_analyze(args: argparse.Namespace) -> int:
     target_path = Path(args.path)
 
     if not target_path.exists():
-        logger.info(f"Error: Path does not exist: {target_path}")
+        get_default_logger().info(f"Error: Path does not exist: {target_path}")
         return 1
 
     # Initialize registry with config
     ASTConfig()
     registry = AnalyzerRegistry()
 
-    logger.info(f"Analyzing: {target_path}")
-    logger.info(f"Analyzers: {', '.join(registry.list_analyzers())}")
+    get_default_logger().info(f"Analyzing: {target_path}")
+    get_default_logger().info(f"Analyzers: {', '.join(registry.list_analyzers())}")
 
     # For now, show a placeholder since we don't have a parser yet
     # In a full implementation, this would parse files and run analysis
-    logger.info("Note: Full parsing requires libcst/tree-sitter integration.")
-    logger.info(f"Registry initialized with {len(registry)} analyzers:")
+    get_default_logger().info("Note: Full parsing requires libcst/tree-sitter integration.")
+    get_default_logger().info(f"Registry initialized with {len(registry)} analyzers:")
 
     for analyzer_type in registry.list_analyzers():
         analyzer = registry.get(analyzer_type)
         if analyzer:
-            logger.info(f"  - {analyzer.get_description()}")
+            get_default_logger().info(f"  - {analyzer.get_description()}")
 
     if args.format == "json":
         output = {
@@ -77,7 +77,7 @@ def cmd_analyze(args: argparse.Namespace) -> int:
             "findings": [],
             "status": "pending_parser_integration",
         }
-        logger.info(json.dumps(output, indent=2))
+        get_default_logger().info(json.dumps(output, indent=2))
 
     return 0
 
@@ -94,19 +94,19 @@ def cmd_audit(args: argparse.Namespace) -> int:
     target_path = Path(args.path)
 
     if not target_path.exists():
-        logger.error(f"Path does not exist: {target_path}")
+        get_default_logger().error(f"Path does not exist: {target_path}")
         return 1
 
-    logger.info(f"Auditing: {target_path}")
-    logger.info(f"Baseline: {args.baseline or 'None'}")
+    get_default_logger().info(f"Auditing: {target_path}")
+    get_default_logger().info(f"Baseline: {args.baseline or 'None'}")
 
     # Placeholder for audit functionality
-    logger.info("Audit functionality requires full parser integration.")
-    logger.info("This will:")
-    logger.info("  1. Parse all Python files in the path")
-    logger.info("  2. Run all registered analyzers")
-    logger.info("  3. Compare against baseline if provided")
-    logger.info("  4. Generate comprehensive report")
+    get_default_logger().info("Audit functionality requires full parser integration.")
+    get_default_logger().info("This will:")
+    get_default_logger().info("  1. Parse all Python files in the path")
+    get_default_logger().info("  2. Run all registered analyzers")
+    get_default_logger().info("  3. Compare against baseline if provided")
+    get_default_logger().info("  4. Generate comprehensive report")
 
     return 0
 
@@ -124,33 +124,33 @@ def cmd_stats(args: argparse.Namespace) -> int:
         storage = get_storage(args.db)
         stats = storage.get_statistics()
 
-        logger.info("=" * 60)
-        logger.info("AST ANALYSIS STATISTICS")
-        logger.info("=" * 60)
+        get_default_logger().info("=" * 60)
+        get_default_logger().info("AST ANALYSIS STATISTICS")
+        get_default_logger().info("=" * 60)
 
-        logger.info(f"Total Analyses: {stats.get('total_analyses', 0)}")
-        logger.info(f"Total Findings: {stats.get('total_findings', 0)}")
+        get_default_logger().info(f"Total Analyses: {stats.get('total_analyses', 0)}")
+        get_default_logger().info(f"Total Findings: {stats.get('total_findings', 0)}")
 
         if stats.get("findings_by_severity"):
-            logger.info("Findings by Severity:")
+            get_default_logger().info("Findings by Severity:")
             for severity, count in sorted(stats["findings_by_severity"].items()):
-                logger.info(f"  {severity}: {count}")
+                get_default_logger().info(f"  {severity}: {count}")
 
         if stats.get("top_finding_types"):
-            logger.info("Top Finding Types:")
+            get_default_logger().info("Top Finding Types:")
             for finding_type, count in stats["top_finding_types"].items():
-                logger.info(f"  {finding_type}: {count}")
+                get_default_logger().info(f"  {finding_type}: {count}")
 
         if stats.get("recent_activity"):
-            logger.info("Recent Activity (last 7 days):")
+            get_default_logger().info("Recent Activity (last 7 days):")
             for date, count in stats["recent_activity"].items():
-                logger.info(f"  {date}: {count} analyses")
+                get_default_logger().info(f"  {date}: {count} analyses")
 
         return 0
 
     except (IOError, OSError) as e:
         type(e).__name__
-        logger.error("Error getting statistics: <ERROR_TYPE>")
+        get_default_logger().error("Error getting statistics: <ERROR_TYPE>")
         return 1
 
 
@@ -212,20 +212,20 @@ def cmd_export(args: argparse.Namespace) -> int:
             output = string_buffer.getvalue()
 
         else:
-            logger.error(f"Error: Unknown format '{args.format}'")
+            get_default_logger().error(f"Error: Unknown format '{args.format}'")
             return 1
 
         if args.output:
             Path(args.output).write_text(output)
-            logger.info(f"Exported {len(findings)} findings to {args.output}")
+            get_default_logger().info(f"Exported {len(findings)} findings to {args.output}")
         else:
-            logger.info(output)
+            get_default_logger().info(output)
 
         return 0
 
     except (IOError, OSError) as e:
         type(e).__name__
-        logger.error("Error exporting: <ERROR_TYPE>")
+        get_default_logger().error("Error exporting: <ERROR_TYPE>")
         return 1
 
 
@@ -243,13 +243,13 @@ def cmd_list(args: argparse.Namespace) -> int:
         analyses = storage.list_analyses(limit=args.limit)
 
         if not analyses:
-            logger.info("No analyses found.")
+            get_default_logger().info("No analyses found.")
             return 0
 
-        logger.info(f"{'ID':<20} {'File':<40} {'Findings':<10} {'Date'}")
+        get_default_logger().info(f"{'ID':<20} {'File':<40} {'Findings':<10} {'Date'}")
 
         for analysis in analyses:
-            logger.info(
+            get_default_logger().info(
                 f"{analysis['analysis_id'][:18]:<20} "
                 f"{analysis['file_path'][:38]:<40} "
                 f"{analysis['finding_count']:<10} "
@@ -260,7 +260,7 @@ def cmd_list(args: argparse.Namespace) -> int:
 
     except (IOError, OSError) as e:
         type(e).__name__
-        logger.error("Error listing analyses: <ERROR_TYPE>")
+        get_default_logger().error("Error listing analyses: <ERROR_TYPE>")
         return 1
 
 

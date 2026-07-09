@@ -9,13 +9,13 @@ import json
 import logging
 import sys
 import warnings
+from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
 
 logger = logging.getLogger(__name__)
 
 from collections.abc import Iterable, Sequence
 from typing import Any, Optional
 
-from codex.logging.structured_logger import logger
 
 _JSON_EPILOG = (
     "JSON schema:\n"
@@ -41,12 +41,12 @@ def _list_models_safe() -> list[str]:
     try:
         from codex_ml.registry import list_models
     except (ImportError, AttributeError):
-        logger.warning("Exception occurred", exc_info=True)
+        get_default_logger().warning("Exception occurred", exc_info=True)
         return []
     try:
         return sorted({str(model) for model in list_models()})
     except (ImportError, AttributeError):
-        logger.warning("Exception occurred", exc_info=True)
+        get_default_logger().warning("Exception occurred", exc_info=True)
         return []
 
 
@@ -54,12 +54,12 @@ def _list_tokenizers_safe() -> list[str]:
     try:
         from codex_ml.registry import list_tokenizers
     except (ImportError, AttributeError):
-        logger.warning("Exception occurred", exc_info=True)
+        get_default_logger().warning("Exception occurred", exc_info=True)
         return []
     try:
         return sorted({str(tokenizer) for tokenizer in list_tokenizers()})
     except (ImportError, AttributeError):
-        logger.warning("Exception occurred", exc_info=True)
+        get_default_logger().warning("Exception occurred", exc_info=True)
         return []
 
 
@@ -67,12 +67,12 @@ def _list_datasets_safe() -> list[str]:
     try:
         from codex_ml.data.registry import list_datasets
     except (ImportError, AttributeError):
-        logger.warning("Exception occurred", exc_info=True)
+        get_default_logger().warning("Exception occurred", exc_info=True)
         return []
     try:
         return sorted({str(dataset) for dataset in list_datasets()})
     except (ValueError, TypeError, RuntimeError):
-        logger.warning("Exception occurred", exc_info=True)
+        get_default_logger().warning("Exception occurred", exc_info=True)
         return []
 
 
@@ -81,13 +81,13 @@ def _programmatic_registry_snapshot(*, discover: bool = True) -> dict[str, Any]:
     try:
         from codex_ml.plugins import programmatic
     except (ImportError, AttributeError):
-        logger.warning("Exception occurred", exc_info=True)
+        get_default_logger().warning("Exception occurred", exc_info=True)
         return snapshot
 
     try:
         registry = programmatic.registry()
     except (ValueError, TypeError, RuntimeError):
-        logger.warning("Exception occurred", exc_info=True)
+        get_default_logger().warning("Exception occurred", exc_info=True)
         return snapshot
 
     discovered_items: list[str] = []
@@ -95,7 +95,7 @@ def _programmatic_registry_snapshot(*, discover: bool = True) -> dict[str, Any]:
         try:
             discovered = registry.discover()
         except (ValueError, TypeError, RuntimeError):
-            logger.warning("Exception occurred", exc_info=True)
+            get_default_logger().warning("Exception occurred", exc_info=True)
             discovered_items = []
         else:
             if isinstance(discovered, dict):
@@ -112,7 +112,7 @@ def _programmatic_registry_snapshot(*, discover: bool = True) -> dict[str, Any]:
         else:
             iterable = [plugin.name() for plugin in registry.all()]
     except (ValueError, TypeError, RuntimeError):
-        logger.warning("Exception occurred", exc_info=True)
+        get_default_logger().warning("Exception occurred", exc_info=True)
         iterable = []
     snapshot["names"] = sorted({str(item) for item in iterable if item})
     return snapshot
@@ -132,13 +132,13 @@ def _unique(iterables: Iterable[Iterable[str]]) -> list[str]:
 
 def _print_lines(title: str, items: Iterable[str]) -> None:
     header = f"{title}:"
-    logger.info(header)
+    get_default_logger().info(header)
     printed = False
     for item in items:
-        logger.info(f"  - {item}")
+        get_default_logger().info(f"  - {item}")
         printed = True
     if not printed:
-        logger.info("  (none)")
+        get_default_logger().info("  (none)")
 
 
 def _print_programmatic(snapshot: dict[str, Any]) -> None:
@@ -146,9 +146,9 @@ def _print_programmatic(snapshot: dict[str, Any]) -> None:
     discovered = snapshot.get("discovered", []) or []
     _print_lines("Programmatic", names)
     if discovered:
-        logger.info("  discovered:")
+        get_default_logger().info("  discovered:")
         for item in discovered:
-            logger.info(f"    - {item}")
+            get_default_logger().info(f"    - {item}")
 
 
 def _build_parser():
@@ -258,7 +258,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
                     "format": "json",
                 },
             }
-            logger.info(json.dumps(payload, indent=2))
+            get_default_logger().info(json.dumps(payload, indent=2))
             if emit_logs:
                 log_event(logger, "cli.finish", prog=parser.prog, status="ok", summary=summary)
             return 0
@@ -275,7 +275,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
                 sections.append(datasets)
             names = _unique(sections)
             for name in names:
-                logger.info(name)
+                get_default_logger().info(name)
             if emit_logs:
                 log_event(logger, "cli.finish", prog=parser.prog, status="ok", summary=summary)
             return 0

@@ -1,4 +1,5 @@
 """Plugin ecosystem foundation and registry.
+from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
 
 Provides infrastructure for extending the system with custom plugins:
 - Plugin discovery and registration
@@ -17,7 +18,6 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Optional
 
-from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 
@@ -64,7 +64,7 @@ class Plugin(ABC):
     Example:
         >>> class MyPlugin(Plugin):
         ...     def initialize(self):
-        ...         logger.info("Plugin initialized")
+        ...         get_default_logger().info("Plugin initialized")
         ...
         ...     def execute(self, *args, **kwargs):
         ...         return "result"
@@ -136,11 +136,11 @@ class PluginRegistry:
         metadata = plugin_class.get_metadata()
 
         if metadata.name in self._plugins and not override:
-            logger.warning(f"Plugin '{metadata.name}' already registered")
+            get_default_logger().warning(f"Plugin '{metadata.name}' already registered")
             return
 
         self._plugins[metadata.name] = plugin_class
-        logger.info(f"Registered plugin: {metadata.name} v{metadata.version}")
+        get_default_logger().info(f"Registered plugin: {metadata.name} v{metadata.version}")
 
     def unregister(self, name: str):
         """Unregister a plugin.
@@ -155,7 +155,7 @@ class PluginRegistry:
                 self._instances[name].cleanup()
                 del self._instances[name]
 
-            logger.info(f"Unregistered plugin: {name}")
+            get_default_logger().info(f"Unregistered plugin: {name}")
 
     def get(self, name: str, create_instance: bool = True) -> Optional[Plugin]:
         """Get a plugin by name.
@@ -168,7 +168,7 @@ class PluginRegistry:
             Plugin instance or None
         """
         if name not in self._plugins:
-            logger.warning(f"Plugin not found: {name}")
+            get_default_logger().warning(f"Plugin not found: {name}")
             return None
 
         if create_instance and name not in self._instances:
@@ -196,7 +196,7 @@ class PluginRegistry:
         plugin_dir = Path(directory)
 
         if not plugin_dir.exists():
-            logger.warning(f"Plugin directory not found: {directory}")
+            get_default_logger().warning(f"Plugin directory not found: {directory}")
             return
 
         # Add to Python path
@@ -211,11 +211,11 @@ class PluginRegistry:
             try:
                 module_name = f"{plugin_dir.name}.{plugin_file.stem}"
                 importlib.import_module(module_name)
-                logger.info(f"Loaded plugin module: {module_name}")
+                get_default_logger().info(f"Loaded plugin module: {module_name}")
             except (IOError, OSError) as e:
                 type(e).__name__
-                logger.debug("Exception: <ERROR_TYPE>")
-                logger.error(f"Failed to load plugin {plugin_file}: <ERROR_TYPE>")
+                get_default_logger().debug("Exception: <ERROR_TYPE>")
+                get_default_logger().error(f"Failed to load plugin {plugin_file}: <ERROR_TYPE>")
 
     def reload_plugin(self, name: str):
         """Reload a plugin (for hot-reloading).
@@ -224,7 +224,7 @@ class PluginRegistry:
             name: Plugin name
         """
         if name not in self._plugins:
-            logger.warning(f"Plugin not found: {name}")
+            get_default_logger().warning(f"Plugin not found: {name}")
             return
 
         # Cleanup old instance
@@ -237,7 +237,7 @@ class PluginRegistry:
         module = sys.modules[plugin_class.__module__]
         importlib.reload(module)
 
-        logger.info(f"Reloaded plugin: {name}")
+        get_default_logger().info(f"Reloaded plugin: {name}")
 
 
 # Global plugin registry instance
@@ -274,7 +274,7 @@ class DataAugmentationPlugin(Plugin):
 
     def initialize(self) -> None:
         """Initialize augmentation pipeline."""
-        logger.info("DataAugmentationPlugin initialized")
+        get_default_logger().info("DataAugmentationPlugin initialized")
 
     def execute(self, data: Any, _augmentation_type: str = "default") -> Any:
         """Apply data augmentation.
@@ -306,7 +306,7 @@ class CustomMetricsPlugin(Plugin):
     def initialize(self) -> None:
         """Initialize metrics."""
         self.metrics: dict[str, float] = {}
-        logger.info("CustomMetricsPlugin initialized")
+        get_default_logger().info("CustomMetricsPlugin initialized")
 
     def execute(self, predictions: Any, labels: Any) -> dict[str, float]:
         """Compute custom metrics.
@@ -337,7 +337,7 @@ class ModelPostProcessingPlugin(Plugin):
 
     def initialize(self) -> None:
         """Initialize post-processor."""
-        logger.info("ModelPostProcessingPlugin initialized")
+        get_default_logger().info("ModelPostProcessingPlugin initialized")
 
     def execute(self, model_output: Any) -> Any:
         """Post-process model output.

@@ -1,4 +1,5 @@
 """
+from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
 WP-G: Reproducibility Hardening
 
 Comprehensive reproducibility utilities combining deterministic training,
@@ -18,7 +19,6 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional
 
-from codex.logging.structured_logger import logger
 
 logger = logging.getLogger(__name__)
 
@@ -50,10 +50,10 @@ def enable_deterministic_training(seed: int = 42, *, strict: bool = False) -> di
 
     Example:
         >>> status = enable_deterministic_training(seed=42, strict=True)
-        >>> logger.info(status['python_random'])
+        >>> get_default_logger().info(status['python_random'])
         True
     """
-    logger.info(
+    get_default_logger().info(
         f"Enabling deterministic training with seed={seed}, strict={strict}"
     )  # codeql[py/clear-text-logging-sensitive-data]
 
@@ -61,12 +61,12 @@ def enable_deterministic_training(seed: int = 42, *, strict: bool = False) -> di
     try:
         random.seed(seed)
         status["python_random"] = True
-        logger.debug("✓ Python random seeded")  # codeql[py/clear-text-logging-sensitive-data]
+        get_default_logger().debug("✓ Python random seeded")  # codeql[py/clear-text-logging-sensitive-data]
     except (ValueError, TypeError, RuntimeError) as e:
         type(e).__name__
-        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        get_default_logger().debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         status["python_random"] = False
-        logger.warning(
+        get_default_logger().warning(
             "Failed to seed Python random: <ERROR_TYPE>"
         )  # codeql[py/clear-text-logging-sensitive-data]
 
@@ -74,12 +74,12 @@ def enable_deterministic_training(seed: int = 42, *, strict: bool = False) -> di
     try:
         os.environ["PYTHONHASHSEED"] = str(seed)
         status["python_hash_seed"] = True
-        logger.debug("✓ PYTHONHASHSEED set")  # codeql[py/clear-text-logging-sensitive-data]
+        get_default_logger().debug("✓ PYTHONHASHSEED set")  # codeql[py/clear-text-logging-sensitive-data]
     except (ImportError, AttributeError) as e:
         type(e).__name__
-        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        get_default_logger().debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         status["python_hash_seed"] = False
-        logger.warning(
+        get_default_logger().warning(
             "Failed to set PYTHONHASHSEED: <ERROR_TYPE>"
         )  # codeql[py/clear-text-logging-sensitive-data]
 
@@ -89,19 +89,19 @@ def enable_deterministic_training(seed: int = 42, *, strict: bool = False) -> di
 
         np.random.seed(seed)
         status["numpy"] = True
-        logger.debug("✓ NumPy seeded")  # codeql[py/clear-text-logging-sensitive-data]
+        get_default_logger().debug("✓ NumPy seeded")  # codeql[py/clear-text-logging-sensitive-data]
     except ImportError as e:
         type(e).__name__
-        logger.debug("ImportError: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        get_default_logger().debug("ImportError: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         status["numpy"] = None  # Not installed
-        logger.debug(
+        get_default_logger().debug(
             "NumPy not available (skipped)"
         )  # codeql[py/clear-text-logging-sensitive-data]
     except AttributeError as e:
         type(e).__name__
-        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        get_default_logger().debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         status["numpy"] = False
-        logger.warning(
+        get_default_logger().warning(
             "Failed to seed NumPy: <ERROR_TYPE>"
         )  # codeql[py/clear-text-logging-sensitive-data]
 
@@ -111,27 +111,27 @@ def enable_deterministic_training(seed: int = 42, *, strict: bool = False) -> di
 
         torch.manual_seed(seed)
         status["torch"] = True
-        logger.debug("✓ PyTorch seeded")  # codeql[py/clear-text-logging-sensitive-data]
+        get_default_logger().debug("✓ PyTorch seeded")  # codeql[py/clear-text-logging-sensitive-data]
 
         # CUDA seeding
         if torch.cuda.is_available():
             torch.cuda.manual_seed(seed)
             torch.cuda.manual_seed_all(seed)
             status["torch_cuda"] = True
-            logger.debug("✓ PyTorch CUDA seeded")  # codeql[py/clear-text-logging-sensitive-data]
+            get_default_logger().debug("✓ PyTorch CUDA seeded")  # codeql[py/clear-text-logging-sensitive-data]
 
             # CuDNN determinism
             torch.backends.cudnn.deterministic = True
             torch.backends.cudnn.benchmark = False
             status["cudnn_deterministic"] = True
-            logger.debug(
+            get_default_logger().debug(
                 "✓ CuDNN deterministic mode enabled"
             )  # codeql[py/clear-text-logging-sensitive-data]
 
             # CUDA workspace config for deterministic algorithms
             os.environ["CUBLAS_WORKSPACE_CONFIG"] = ":4096:8"
             status["cublas_workspace"] = True
-            logger.debug(
+            get_default_logger().debug(
                 "✓ CUBLAS workspace configured"
             )  # codeql[py/clear-text-logging-sensitive-data]
         else:
@@ -144,16 +144,16 @@ def enable_deterministic_training(seed: int = 42, *, strict: bool = False) -> di
             try:
                 torch.use_deterministic_algorithms(True)
                 status["torch_deterministic_algorithms"] = True
-                logger.debug(
+                get_default_logger().debug(
                     "✓ PyTorch deterministic algorithms enabled (strict mode)"
                 )  # codeql[py/clear-text-logging-sensitive-data]
             except (ValueError, TypeError, RuntimeError) as e:
                 type(e).__name__
-                logger.debug(
+                get_default_logger().debug(
                     "Exception: <ERROR_TYPE>"
                 )  # codeql[py/clear-text-logging-sensitive-data]
                 status["torch_deterministic_algorithms"] = False
-                logger.warning(
+                get_default_logger().warning(
                     "Failed to enable deterministic algorithms: <ERROR_TYPE>"
                 )  # codeql[py/clear-text-logging-sensitive-data]
         else:
@@ -161,20 +161,20 @@ def enable_deterministic_training(seed: int = 42, *, strict: bool = False) -> di
 
     except ImportError as e:
         type(e).__name__
-        logger.debug("ImportError: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        get_default_logger().debug("ImportError: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         status["torch"] = None  # Not installed
         status["torch_cuda"] = None
         status["cudnn_deterministic"] = None
         status["cublas_workspace"] = None
         status["torch_deterministic_algorithms"] = None
-        logger.debug(
+        get_default_logger().debug(
             "PyTorch not available (skipped)"
         )  # codeql[py/clear-text-logging-sensitive-data]
     except AttributeError as e:
         type(e).__name__
-        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        get_default_logger().debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         status["torch"] = False
-        logger.warning(
+        get_default_logger().warning(
             "Failed to seed PyTorch: <ERROR_TYPE>"
         )  # codeql[py/clear-text-logging-sensitive-data]
 
@@ -185,13 +185,13 @@ def enable_deterministic_training(seed: int = 42, *, strict: bool = False) -> di
         # Set seed
         tf.random.set_seed(seed)
         status["tensorflow"] = True
-        logger.debug("✓ TensorFlow seeded")  # codeql[py/clear-text-logging-sensitive-data]
+        get_default_logger().debug("✓ TensorFlow seeded")  # codeql[py/clear-text-logging-sensitive-data]
 
         # Enable deterministic ops in TF 2.x
         if hasattr(tf.config.experimental, "enable_op_determinism"):
             tf.config.experimental.enable_op_determinism()
             status["tensorflow_deterministic"] = True
-            logger.debug(
+            get_default_logger().debug(
                 "✓ TensorFlow deterministic ops enabled"
             )  # codeql[py/clear-text-logging-sensitive-data]
         else:
@@ -199,17 +199,17 @@ def enable_deterministic_training(seed: int = 42, *, strict: bool = False) -> di
 
     except ImportError as e:
         type(e).__name__
-        logger.debug("ImportError: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        get_default_logger().debug("ImportError: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         status["tensorflow"] = None  # Not installed
         status["tensorflow_deterministic"] = None
-        logger.debug(
+        get_default_logger().debug(
             "TensorFlow not available (skipped)"
         )  # codeql[py/clear-text-logging-sensitive-data]
     except (ValueError, TypeError, RuntimeError) as e:
         type(e).__name__
-        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        get_default_logger().debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         status["tensorflow"] = False
-        logger.warning(
+        get_default_logger().warning(
             "Failed to seed TensorFlow: <ERROR_TYPE>"
         )  # codeql[py/clear-text-logging-sensitive-data]
 
@@ -217,7 +217,7 @@ def enable_deterministic_training(seed: int = 42, *, strict: bool = False) -> di
     enabled_count = sum(1 for v in status.values() if v is True)
     total_applicable = sum(1 for v in status.values() if v is not None)
 
-    logger.info(
+    get_default_logger().info(
         f"✓ Deterministic training enabled: {enabled_count}/{total_applicable} components seeded"
     )
 
@@ -245,9 +245,9 @@ def save_env_snapshot(output_path: Path | str, include_pip_freeze: bool = True) 
 
     Example:
         >>> snapshot = save_env_snapshot("artifacts/env_snapshot.txt")
-        >>> logger.info(f"Python: {snapshot['python_version']}")
+        >>> get_default_logger().info(f"Python: {snapshot['python_version']}")
     """  # noqa: E501
-    logger.info(
+    get_default_logger().info(
         f"Capturing environment snapshot to {output_path}"
     )  # codeql[py/clear-text-logging-sensitive-data]
 
@@ -295,10 +295,10 @@ def save_env_snapshot(output_path: Path | str, include_pip_freeze: bool = True) 
 
     except (ValueError, TypeError, RuntimeError) as e:
         type(e).__name__
-        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        get_default_logger().debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         snapshot["git_commit"] = None
         snapshot["git_dirty"] = None
-        logger.debug(
+        get_default_logger().debug(
             "Git information not available: <ERROR_TYPE>"
         )  # codeql[py/clear-text-logging-sensitive-data]
 
@@ -311,9 +311,9 @@ def save_env_snapshot(output_path: Path | str, include_pip_freeze: bool = True) 
             snapshot["pip_freeze"] = pip_freeze.strip().split("\n")
         except (ValueError, TypeError, RuntimeError) as e:
             type(e).__name__
-            logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+            get_default_logger().debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
             snapshot["pip_freeze"] = []
-            logger.warning(
+            get_default_logger().warning(
                 "Failed to capture pip freeze: <ERROR_TYPE>"
             )  # codeql[py/clear-text-logging-sensitive-data]
     else:
@@ -345,7 +345,7 @@ def save_env_snapshot(output_path: Path | str, include_pip_freeze: bool = True) 
 
     except ImportError as e:
         type(e).__name__
-        logger.debug("ImportError: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        get_default_logger().debug("ImportError: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         snapshot["cuda_available"] = None
         snapshot["cuda_version"] = None
         snapshot["cudnn_version"] = None
@@ -353,8 +353,8 @@ def save_env_snapshot(output_path: Path | str, include_pip_freeze: bool = True) 
         snapshot["gpu_devices"] = None
     except (ValueError, TypeError, RuntimeError) as e:
         type(e).__name__
-        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
-        logger.warning(
+        get_default_logger().debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        get_default_logger().warning(
             "Failed to capture GPU information: <ERROR_TYPE>"
         )  # codeql[py/clear-text-logging-sensitive-data]
 
@@ -418,7 +418,7 @@ def save_env_snapshot(output_path: Path | str, include_pip_freeze: bool = True) 
     with open(json_path, "w") as f:
         json.dump(snapshot, f, indent=2, default=str)
 
-    logger.info(
+    get_default_logger().info(
         f"✓ Environment snapshot saved to {output_path} and {json_path}"
     )  # codeql[py/clear-text-logging-sensitive-data]
 
@@ -457,7 +457,7 @@ def create_reproducibility_manifest(
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    logger.info(
+    get_default_logger().info(
         f"Creating reproducibility manifest in {output_dir}"
     )  # codeql[py/clear-text-logging-sensitive-data]
 
@@ -499,10 +499,10 @@ def create_reproducibility_manifest(
     with open(manifest_path, "w") as f:
         json.dump(manifest, f, indent=2, default=str)
 
-    logger.info(
+    get_default_logger().info(
         f"✓ Reproducibility manifest created: {manifest_path}"
     )  # codeql[py/clear-text-logging-sensitive-data]
-    logger.info(f"  Manifest hash: {manifest_hash}")  # codeql[py/clear-text-logging-sensitive-data]
+    get_default_logger().info(f"  Manifest hash: {manifest_hash}")  # codeql[py/clear-text-logging-sensitive-data]
 
     return manifest
 
@@ -543,7 +543,7 @@ class ReproducibilityManager:
         Returns:
             Seeding status dict
         """
-        logger.info(
+        get_default_logger().info(
             f"Setting up reproducibility (seed={self.seed}, strict={strict})"
         )  # codeql[py/clear-text-logging-sensitive-data]
         return enable_deterministic_training(seed=self.seed, strict=strict)

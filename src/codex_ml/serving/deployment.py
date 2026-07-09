@@ -1,4 +1,5 @@
 """
+from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
 Blue-green deployment and traffic management for inference serving.
 
 This module provides zero-downtime deployment strategies with gradual rollout,
@@ -15,7 +16,6 @@ from dataclasses import dataclass  # noqa: E402
 from enum import Enum  # noqa: E402
 from typing import Any, Optional  # noqa: E402
 
-from codex.logging.structured_logger import logger
 
 
 class DeploymentStrategy(Enum):
@@ -182,7 +182,7 @@ class BlueGreenDeployment:
         self.rollback_triggered = False
         self.splitter.reset_stats()
 
-        logger.info(f"Starting rollout: {self.current_blue_version} → {new_model_version}")
+        get_default_logger().info(f"Starting rollout: {self.current_blue_version} → {new_model_version}")
 
     def update_rollout(self) -> dict[str, Any]:
         """
@@ -257,7 +257,7 @@ class BlueGreenDeployment:
         Args:
             reason: Reason for rollback
         """
-        logger.info(f"Rollback triggered: {reason}")
+        get_default_logger().info(f"Rollback triggered: {reason}")
         self.splitter.set_weights(blue=100, green=0)
         self.rollout_active = False
         self.rollback_triggered = True
@@ -265,7 +265,7 @@ class BlueGreenDeployment:
 
     def complete_rollout(self) -> None:
         """Complete rollout and promote green to blue."""
-        logger.info(f"Rollout complete: {self.current_green_version} promoted to blue")
+        get_default_logger().info(f"Rollout complete: {self.current_green_version} promoted to blue")
         self.current_blue_version = self.current_green_version
         self.current_green_version = None
         self.rollout_active = False
@@ -277,7 +277,7 @@ class BlueGreenDeployment:
             try:
                 return self.health_check_fn(deployment)
             except (ValueError, TypeError, RuntimeError):
-                logger.warning("Exception occurred", exc_info=True)
+                get_default_logger().warning("Exception occurred", exc_info=True)
                 return False
         return True
 

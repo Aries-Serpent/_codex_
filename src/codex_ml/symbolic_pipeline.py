@@ -23,6 +23,8 @@ orchestration function run_codex_symbolic_pipeline for running the full flow.
 
 from __future__ import annotations
 
+from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
+
 import json
 import math
 import random
@@ -30,7 +32,6 @@ import re
 from dataclasses import dataclass, field
 from typing import Any, Optional
 
-from codex.logging.structured_logger import logger
 from codex_ml.tokenization import TokenizerAdapter
 
 __all__ = [
@@ -498,7 +499,7 @@ def run_codex_symbolic_pipeline(
 if __name__ == "__main__":
     toy_corpus = ["def add(a,b): return a+b", "SELECT * FROM users;", "# docs..."]
     toy_demos = [
-        {"prompt": "Write a CLI that echoes input", "completion": "logger.info(input())"},
+        {"prompt": "Write a CLI that echoes input", "completion": "get_default_logger().info(input())"},
         {
             "prompt": "Create a Bash script to gzip a folder",
             "completion": "tar -czf folder.tar.gz folder",
@@ -518,4 +519,4 @@ if __name__ == "__main__":
         rm_cfg=RewardModelCfg(seed=0, lr=0.1, epochs=3),
         rlhf_cfg=RLHFCfg(seed=0, epochs=1, lr=1e-2, ppo_clip=0.2, kl_penalty=0.1),
     )
-    logger.info(json.dumps(summary, indent=2))
+    get_default_logger().info(json.dumps(summary, indent=2))

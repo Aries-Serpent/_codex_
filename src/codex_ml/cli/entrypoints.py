@@ -1,4 +1,5 @@
 """
+from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
 Entrypoints Module
 
 This module provides functionality for entrypoints.
@@ -30,7 +31,6 @@ import sys
 from importlib import import_module
 from typing import Any, NoReturn, Optional
 
-from codex.logging.structured_logger import logger
 
 try:  # pragma: no cover - structured logging is optional offline
     from codex_ml.codex_structured_logging import (
@@ -111,7 +111,7 @@ def _load_main(module_path: str, failures: list[str]) -> Optional[int]:
         raise
     except (IOError, OSError) as exc:
         type(exc).__name__
-        logger.debug("Exception: <ERROR_TYPE>")
+        get_default_logger().debug("Exception: <ERROR_TYPE>")
         failures.append(f"{module_path}.main() raised {exc!r}")
         return None
 
@@ -119,7 +119,7 @@ def _load_main(module_path: str, failures: list[str]) -> Optional[int]:
         return int(result)
     except (IOError, OSError) as exc:
         type(exc).__name__
-        logger.debug("Exception: <ERROR_TYPE>")
+        get_default_logger().debug("Exception: <ERROR_TYPE>")
         failures.append(f"{module_path}.main() returned non-int value ({exc})")
         return None
 
@@ -134,7 +134,7 @@ def _run_module(module_path: str, failures: list[str]) -> bool:
         raise
     except (IOError, OSError) as exc:
         type(exc).__name__
-        logger.debug("Exception: <ERROR_TYPE>")
+        get_default_logger().debug("Exception: <ERROR_TYPE>")
         failures.append(f"{module_path}: execution failed ({exc})")
         return False
 
@@ -235,7 +235,7 @@ def eval_main() -> int:
             )
             return 0
         if namespace.probe_json:
-            logger.info(json.dumps(_probe_payload()))
+            get_default_logger().info(json.dumps(_probe_payload()))
             log_event(
                 logger,
                 "cli.finish",
@@ -273,7 +273,7 @@ def eval_main() -> int:
                 return rc
             except (IOError, OSError) as exc:
                 type(exc).__name__
-                logger.debug("Exception: <ERROR_TYPE>")
+                get_default_logger().debug("Exception: <ERROR_TYPE>")
                 sys.stderr.write(f"[codex-eval] env override failed ({override}): {exc}\n")
                 override_failed = True
                 override_error = str(exc)
@@ -281,7 +281,7 @@ def eval_main() -> int:
             rc = _eval_dispatch(namespace)
         except SystemExit as exc:
             type(exc).__name__
-            logger.debug("SystemExit: <ERROR_TYPE>")
+            get_default_logger().debug("SystemExit: <ERROR_TYPE>")
             rc = int(getattr(exc, "code", 0) or 0)
             payload = {
                 "prog": parser.prog,
