@@ -66,9 +66,11 @@ class PreFlightValidator:
             # Use a precise regex so bash conditionals like `[ -n "${VAR}" ]` and
             # shell commands like `tail -n 5` are NOT matched.
             # Only match pytest's own `-n` flag: `pytest ... -n <num|auto>` or `--numprocesses`.
+            # Note: only `\` line continuations are handled for multi-line cases; other
+            # shell continuation formats (pipes, YAML folded blocks) are not matched.
             uses_xdist = bool(
                 re.search(
-                    r"pytest\b[^\n]*\s-n\s+\S"
+                    r"pytest\b[^\n]*\s-n\s+(?:auto|\d+)"
                     r"|pytest\b[^\n]*\\\n[^\n]*\s-n\s+(?:auto|\d+)"
                     r"|--numprocesses",
                     content,
