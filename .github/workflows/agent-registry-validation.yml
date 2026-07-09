@@ -26,19 +26,19 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-    - name: Checkout repository
+      - name: Checkout repository
       uses: actions/checkout@v5
       with:
         fetch-depth: 1
-    - name: Set up Python
+      - name: Set up Python
       uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
         cache-tier: common
         cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
-    - name: Install dependencies
+      - name: Install dependencies
       run: pip install jsonschema pyyaml --quiet
-    - name: Refresh CODEX_MANIFEST.json
+      - name: Refresh CODEX_MANIFEST.json
       run: '# Regenerate the manifest on every validation run so generated_at is always
         fresh.
 
@@ -49,7 +49,7 @@ jobs:
         echo "✅ CODEX_MANIFEST.json refreshed"
 
         '
-    - name: Validate AGENT_REGISTRY.yaml schema
+      - name: Validate AGENT_REGISTRY.yaml schema
       id: registry_validation
       run: "python3 - << 'PYEOF'\nimport json\nimport os\nimport sys\nimport yaml\n\
         \ntry:\n    import jsonschema\nexcept ImportError:\n    print(\"::warning::jsonschema\
@@ -78,7 +78,7 @@ jobs:
         \ agents, all schema-compliant\")\n    with open(output_file, \"a\") as f:\n\
         \        f.write(\"registry_valid=true\\n\")\n        f.write(\"error_count=0\\\
         n\")\nPYEOF\n"
-    - name: Validate capability_tags quality
+      - name: Validate capability_tags quality
       id: tags_quality
       run: "python3 - << 'PYEOF'\n# Enforce capability_tags quality rules on every\
         \ PR that touches AGENT_REGISTRY.yaml.\n# Rules (Tier-1 GROUNDED — hard gate):\n\
@@ -109,7 +109,7 @@ jobs:
         \ print(f\"✅ capability_tags quality: all {len(agents)} agents have valid\
         \ tags\")\n    with open(gf, \"a\") as f:\n        f.write(\"tags_valid=true\\\
         n\")\n        f.write(\"tag_violations=0\\n\")\nPYEOF\n"
-    - name: Validate CODEX_MANIFEST.json integrity
+      - name: Validate CODEX_MANIFEST.json integrity
       id: manifest_validation
       run: "python3 - << 'PYEOF'\nimport hashlib\nimport json\nimport os\nimport sys\n\
         \ntry:\n    import jsonschema\nexcept ImportError:\n    jsonschema = None\n\
@@ -136,7 +136,7 @@ jobs:
         ✅ CODEX_MANIFEST.json integrity valid (sha256={stored[:8]}...)\")\nwith open(os.environ.get(\"\
         GITHUB_OUTPUT\", \"/dev/null\"), \"a\") as f:\n    f.write(\"manifest_valid=true\\\
         n\")\nPYEOF\n"
-    - name: Post validation summary
+      - name: Post validation summary
       if: github.event_name == 'pull_request'
       uses: actions/github-script@v8
       env:
@@ -169,8 +169,8 @@ jobs:
         uses: actions/cache@v5
         if: always()
         with:
-          path: .pytest_cache/
-          key: ${{ runner.os }}-pytest-${{ github.sha }}
+        path: .pytest_cache/
+        key: ${{ runner.os }}-pytest-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-pytest-
 
@@ -202,12 +202,12 @@ jobs:
       issues: write
     timeout-minutes: 5
     steps:
-    - name: Checkout repository
+      - name: Checkout repository
       uses: actions/checkout@v5
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1
-    - name: Post or update rescue comment
+      - name: Post or update rescue comment
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}

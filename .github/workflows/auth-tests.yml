@@ -39,14 +39,14 @@ jobs:
         uses: actions/cache@v5
         if: always()
         with:
-          path: .pytest_cache/
-          key: ${{ runner.os }}-pytest-${{ github.sha }}
+        path: .pytest_cache/
+        key: ${{ runner.os }}-pytest-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-pytest-
 
       - name: Checkout code
       uses: actions/checkout@v5
-    - name: Initialize with repository variables
+      - name: Initialize with repository variables
       env:
         CODEX_CACHE_VERSION: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
         CODEX_TEST_TIMEOUT_MINUTES: ${{ vars.CODEX_TEST_TIMEOUT_MINUTES || '60' }}
@@ -60,13 +60,13 @@ jobs:
         echo "  CODEX_LOG_LEVEL=$CODEX_LOG_LEVEL"
 
         '
-    - name: Set up Python ${{ matrix.python-version }} with tiered cache
+      - name: Set up Python ${{ matrix.python-version }} with tiered cache
       uses: ./.github/actions/setup-python-cached
       with:
         python-version: ${{ matrix.python-version }}
         cache-tier: common
         cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
-    - name: Install dependencies
+      - name: Install dependencies
       run: "python -m pip install --upgrade pip\n# Install pytest plugins with security\
         \ updates (CVE-2025-71176)\n# Use versions from requirements-test.txt for\
         \ full compatibility\necho \"Installing pytest plugins with Python 3.12.13...\"\
@@ -83,8 +83,8 @@ jobs:
       - name: Cache coverage reports (Layer 4)
         uses: actions/cache@v5
         with:
-          path: coverage/
-          key: ${{ runner.os }}-coverage-${{ github.sha }}
+        path: coverage/
+        key: ${{ runner.os }}-coverage-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-coverage-
 
@@ -94,7 +94,7 @@ jobs:
         \ --tb=short\nTEST_EXIT_CODE=$?\n\nif [ $TEST_EXIT_CODE -ne 0 ]; then\n  echo\
         \ \"ERROR: Authentication tests failed with exit code $TEST_EXIT_CODE\" >&2\n\
         \  exit $TEST_EXIT_CODE\nfi\n\necho \"✓ Authentication tests passed\"\n"
-    - name: Upload coverage reports
+      - name: Upload coverage reports
       uses: codecov/codecov-action@v4
       if: always()
       with:
@@ -103,14 +103,14 @@ jobs:
         flags: authentication
         name: auth-coverage
         fail_ci_if_error: false
-    - name: Validate CODEX_MASTER_KEY Scopes
+      - name: Validate CODEX_MASTER_KEY Scopes
       run: |
         python scripts/ci/test_codex_master_key_scopes.py --report-json .codex/scope_report.json
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
       continue-on-error: true
 
-    - name: Run comprehensive CODEX_MASTER_KEY tests
+      - name: Run comprehensive CODEX_MASTER_KEY tests
       run: |
         pytest tests/github/test_repo_variables_comprehensive.py -v --cov=scripts/ci --cov-report=term -k "codex_master" || true
         pytest tests/github/test_secrets_management.py -v --cov=scripts/ci --cov-append --cov-report=term -k "codex_master" || true
@@ -121,14 +121,14 @@ jobs:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
       continue-on-error: true
 
-    - name: Generate CODEX_MASTER_KEY coverage report
+      - name: Generate CODEX_MASTER_KEY coverage report
       run: |
         pytest tests/github/ -k "codex_master" --cov=scripts/ci --cov-report=json:coverage.json --cov-report=term || true
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
       continue-on-error: true
 
-    - name: Upload scope report
+      - name: Upload scope report
       uses: actions/upload-artifact@v5
       if: always()
       with:
@@ -137,7 +137,7 @@ jobs:
         retention-days: 30
         if-no-files-found: warn
 
-    - name: Upload coverage report
+      - name: Upload coverage report
       uses: actions/upload-artifact@v5
       if: always()
       with:
@@ -146,7 +146,7 @@ jobs:
         retention-days: 30
         if-no-files-found: warn
 
-    - name: Test examples
+      - name: Test examples
       run: '# Test that examples run without errors (in demo mode)
 
         python examples/authentication/02_mfa_setup.py || true
@@ -156,7 +156,7 @@ jobs:
         python examples/authentication/04_complete_flow.py
 
         '
-    - name: Security scan
+      - name: Security scan
       run: |
         # Install specific bandit version for consistency
         pip install bandit>=1.7.5
@@ -207,13 +207,13 @@ jobs:
 
         echo "✓ Security scan completed successfully"
         echo "Report location: auth-security-report.json"
-    - name: Verify security report exists before upload
+      - name: Verify security report exists before upload
       if: always()
       run: "if [ ! -f auth-security-report.json ]; then\n  echo \"ERROR: auth-security-report.json\
         \ not found before artifact upload\" >&2\n  ls -la auth-security-report.json\
         \ 2>&1 || true\n  exit 1\nfi\necho \"✓ Security report verified and ready\
         \ for upload\"\nls -lh auth-security-report.json\n"
-    - name: Upload security report
+      - name: Upload security report
       uses: actions/upload-artifact@v5
       if: always()
       with:
@@ -232,14 +232,14 @@ jobs:
     timeout-minutes: 60
     needs: test-authentication
     steps:
-    - name: Checkout code
+      - name: Checkout code
       uses: actions/checkout@v5
-    - name: Set up Python (cached)
+      - name: Set up Python (cached)
       uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
         cache-tier: common
-    - name: Install dependencies
+      - name: Install dependencies
       run: "pip install --upgrade pip\n# Pin pytest plugins with security updates\
         \ (CVE-2025-71176)\n# Use versions from requirements-test.txt for full compatibility\n\
         pip install pytest==9.0.3 pytest-xdist==3.8.0 pytest-timeout==2.4.0 pytest-cov==5.0.0\
@@ -248,13 +248,13 @@ jobs:
         \ pytest-xdist {xdist.__version__}')\"\npython -c \"import pytest_asyncio;\
         \ print(f'✓ pytest-asyncio {pytest_asyncio.__version__}')\"\n \npip install\
         \ -e \".[dev]\"\npip install httpx  # Additional dependency for auth tests\n"
-    - name: Run integration tests
+      - name: Run integration tests
       run: "# Run integration tests with verbose output\npytest tests/auth/ -v -m\
         \ \"not slow\" --tb=short -x\nINTEGRATION_EXIT_CODE=$?\n\nif [ $INTEGRATION_EXIT_CODE\
         \ -ne 0 ]; then\n  echo \"ERROR: Integration tests failed with exit code $INTEGRATION_EXIT_CODE\"\
         \ >&2\n  exit $INTEGRATION_EXIT_CODE\nfi\n\necho \"✓ Integration tests passed\"\
         \n"
-    - name: Test OAuth flow components
+      - name: Test OAuth flow components
       run: 'python -c "
 
         from src.codex.auth import OAuthManager, MFAProvider, TokenManager
@@ -274,7 +274,7 @@ jobs:
         "
 
         '
-    - name: Test MFA functionality
+      - name: Test MFA functionality
       run: 'python -c "
 
         from src.codex.auth.mfa_provider import MFAProvider
@@ -296,7 +296,7 @@ jobs:
         "
 
         '
-    - name: Test token management
+      - name: Test token management
       run: 'python -c "
 
         from src.codex.auth.token_manager import TokenManager, TokenType
@@ -316,7 +316,7 @@ jobs:
         "
 
         '
-    - name: Cache health report
+      - name: Cache health report
       if: always()
       continue-on-error: true
       run: 'python scripts/ci/generate_cache_keys.py --type pip --workflow auth-tests
@@ -342,12 +342,12 @@ jobs:
       issues: write
     timeout-minutes: 5
     steps:
-    - name: Checkout repository
+      - name: Checkout repository
       uses: actions/checkout@v5
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1
-    - name: Post or update rescue comment
+      - name: Post or update rescue comment
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}

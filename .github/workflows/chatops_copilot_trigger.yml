@@ -21,25 +21,25 @@ jobs:
       - name: Cache Python dependencies (Layer 1)
         uses: actions/cache@v5
         with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml') }}
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml') }}
           restore-keys: |
             ${{ runner.os }}-pip-
 
       - uses: actions/checkout@v5
-    - name: Cache pip downloads
+      - name: Cache pip downloads
       uses: actions/cache@v5
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip-chatops-${{ hashFiles('pyproject.toml') }}
         restore-keys: ${{ runner.os }}-pip-chatops-
-    - name: Autonomy Registry gate check
+      - name: Autonomy Registry gate check
       continue-on-error: true
       env:
         ACTOR: ${{ github.event.comment.user.login }}
       run: "python scripts/ci/autonomy_gate_check.py \\\n  --surface AUT-007 \\\n\
         \  --class ADVISORY_WRITE \\\n  --actor \"${ACTOR}\" || true\n"
-    - name: Parse command and actor
+      - name: Parse command and actor
       id: parse
       env:
         COMMENT_BODY: ${{ github.event.comment.body }}
@@ -59,7 +59,7 @@ jobs:
         \ = \"$ACTOR\" ]; then\n    AUTHORIZED=\"true\"\n    break\n  fi\ndone\necho\
         \ \"AUTHORIZED=${AUTHORIZED}\" >> $GITHUB_OUTPUT\necho \"ACTOR=${ACTOR}\"\
         \ >> $GITHUB_OUTPUT\n"
-    - name: Reject unauthorized actor
+      - name: Reject unauthorized actor
       if: steps.parse.outputs.AUTHORIZED != 'true'
       env:
         CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
@@ -73,7 +73,7 @@ jobs:
         \ \\\n  -d \"{\\\"body\\\":\\\"\u26D4 **Chat-Ops:** Actor \\`${ACTOR}\\` is\
         \ not in \\`COGNITIVE_BRAIN_ALLOWED_ACTORS\\`. Command ignored.\\\"}\" \\\n\
         \  > /dev/null\necho \"Rejected unauthorized actor: ${ACTOR}\"\nexit 0\n"
-    - name: Session summary gate
+      - name: Session summary gate
       id: summary_gate
       if: 'steps.parse.outputs.AUTHORIZED == ''true'' &&
 
@@ -111,7 +111,7 @@ jobs:
           \    ].join('\\n'),\n  });\n}\n"
       env:
         PR_NUMBER: ${{ steps.parse.outputs.PR_NUMBER }}
-    - name: Execute /copilot continue
+      - name: Execute /copilot continue
       if: 'steps.parse.outputs.AUTHORIZED == ''true'' &&
 
         (steps.parse.outputs.SUBCMD == ''continue'' || steps.parse.outputs.SUBCMD
@@ -152,7 +152,7 @@ jobs:
         \n  -d \"{\\\"body\\\":\\\"@copilot continue \\`${PROMPT}\\`\\n\\n> Dispatched\
         \ via chat-ops by @${ACTOR}\\\"}\" \\\n  > /dev/null\necho \"\u2705 Posted\
         \ @copilot continue for ${PROMPT} on PR  #${PR_NUMBER}\"\n"
-    - name: Execute /copilot status
+      - name: Execute /copilot status
       if: steps.parse.outputs.AUTHORIZED == 'true' && steps.parse.outputs.SUBCMD ==
         'status'
       env:
@@ -180,7 +180,7 @@ jobs:
         Authorization: Bearer ${TOKEN}\" \\\n  -H \"Accept: application/vnd.github+json\"\
         \ \\\n  \"https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments\"\
         \ \\\n  -d @/tmp/status_body.json \\\n  > /dev/null\n"
-    - name: Execute /copilot verify
+      - name: Execute /copilot verify
       if: steps.parse.outputs.AUTHORIZED == 'true' && steps.parse.outputs.SUBCMD ==
         'verify'
       env:
@@ -200,7 +200,7 @@ jobs:
         \ -X POST \\\n  -H \"Authorization: Bearer ${CODEX_MASTER_KEY}\" \\\n  -H\
         \ \"Accept: application/vnd.github+json\" \\\n  \"https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments\"\
         \ \\\n  -d \"{\\\"body\\\":\\\"${MSG}\\\"}\" > /dev/null\n"
-    - name: Execute /copilot tier-check or tier-promote
+      - name: Execute /copilot tier-check or tier-promote
       if: 'steps.parse.outputs.AUTHORIZED == ''true'' &&
 
         (steps.parse.outputs.SUBCMD == ''tier-check'' || steps.parse.outputs.SUBCMD
@@ -235,8 +235,8 @@ jobs:
         uses: actions/cache@v5
         if: always()
         with:
-          path: .pytest_cache/
-          key: ${{ runner.os }}-pytest-${{ github.sha }}
+        path: .pytest_cache/
+        key: ${{ runner.os }}-pytest-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-pytest-
 
@@ -244,8 +244,8 @@ jobs:
       - name: Cache coverage reports (Layer 4)
         uses: actions/cache@v5
         with:
-          path: coverage/
-          key: ${{ runner.os }}-coverage-${{ github.sha }}
+        path: coverage/
+        key: ${{ runner.os }}-coverage-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-coverage-
 
@@ -275,7 +275,7 @@ jobs:
         \ this message |\\n\\nOnly actors in `COGNITIVE_BRAIN_ALLOWED_ACTORS` may\
         \ use these commands.\\n\\n_Powered by `.github/workflows/chatops_copilot_trigger.yml`_\"\
         }' \\\n  > /dev/null\n"
-    - name: Execute /copilot fix
+      - name: Execute /copilot fix
       if: steps.parse.outputs.AUTHORIZED == 'true' && steps.parse.outputs.SUBCMD ==
         'fix'
       env:
@@ -295,7 +295,7 @@ jobs:
         \ \\\n    \"https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments\"\
         \ \\\n    -d @- > /dev/null\necho \"\u2705 Posted /copilot fix for issue  #${ISSUE_REF}\
         \ on PR  #${PR_NUMBER}\"\n"
-    - name: Execute /copilot review
+      - name: Execute /copilot review
       if: steps.parse.outputs.AUTHORIZED == 'true' && steps.parse.outputs.SUBCMD ==
         'review'
       env:
@@ -315,7 +315,7 @@ jobs:
         \n    -H \"Accept: application/vnd.github+json\" \\\n    \"https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments\"\
         \ \\\n    -d @- > /dev/null\necho \"\u2705 Posted /copilot review on PR  #${PR_NUMBER}\"\
         \n"
-    - name: Execute /copilot coverage
+      - name: Execute /copilot coverage
       if: steps.parse.outputs.AUTHORIZED == 'true' && steps.parse.outputs.SUBCMD ==
         'coverage'
       env:
@@ -336,7 +336,7 @@ jobs:
         \    \"https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments\"\
         \ \\\n    -d @- > /dev/null\necho \"\u2705 Posted /copilot coverage for ${MODULE}\
         \ on PR  #${PR_NUMBER}\"\n"
-    - name: Execute /copilot security
+      - name: Execute /copilot security
       if: steps.parse.outputs.AUTHORIZED == 'true' && steps.parse.outputs.SUBCMD ==
         'security'
       env:
@@ -357,7 +357,7 @@ jobs:
         \ \\\n    \"https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments\"\
         \ \\\n    -d @- > /dev/null\necho \"\u2705 Posted /copilot security on PR\
         \  #${PR_NUMBER}\"\n"
-    - name: Increment COGNITIVE_BRAIN_SESSION_NUMBER
+      - name: Increment COGNITIVE_BRAIN_SESSION_NUMBER
       if: steps.parse.outputs.AUTHORIZED == 'true'
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}

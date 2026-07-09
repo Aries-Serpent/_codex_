@@ -30,8 +30,8 @@ jobs:
       - name: Cache Python dependencies (Layer 1)
         uses: actions/cache@v5
         with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml') }}
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml') }}
           restore-keys: |
             ${{ runner.os }}-pip-
 
@@ -41,12 +41,12 @@ jobs:
 
           '
         sparse-checkout-cone-mode: false
-    - name: Setup Python
+      - name: Setup Python
       uses: actions/setup-python@v6
       with:
         python-version: 3.12.13
         cache: 'pip'
-    - name: Run cleanup
+      - name: Run cleanup
       env:
         GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         GITHUB_REPOSITORY: ${{ github.repository }}

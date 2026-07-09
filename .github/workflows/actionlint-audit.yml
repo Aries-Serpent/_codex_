@@ -25,8 +25,8 @@ jobs:
         uses: actions/cache@v5
         if: always()
         with:
-          path: .pytest_cache/
-          key: ${{ runner.os }}-pytest-${{ github.sha }}
+        path: .pytest_cache/
+        key: ${{ runner.os }}-pytest-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-pytest-
 
@@ -34,7 +34,7 @@ jobs:
       uses: actions/checkout@v5
       with:
         fetch-depth: 1
-    - name: Install actionlint
+      - name: Install actionlint
       run: "# Pinned version with fallback to latest on API failure\nPINNED=\"v1.7.7\"\
         \nLATEST=$(curl -fsSL --max-time 10 https://api.github.com/repos/rhysd/actionlint/releases/latest\
         \ \\\n  | python3 -c \"import sys,json; print(json.load(sys.stdin)['tag_name'])\"\
@@ -42,7 +42,7 @@ jobs:
         \nVERSION=\"${TARGET#v}\"\ncurl -fsSL \\\n  \"https://github.com/rhysd/actionlint/releases/download/${TARGET}/actionlint_${VERSION}_linux_amd64.tar.gz\"\
         \ \\\n  | tar xz actionlint\nsudo mv actionlint /usr/local/bin/\nactionlint\
         \ --version\n"
-    - name: Run actionlint on all workflows
+      - name: Run actionlint on all workflows
       id: actionlint
       run: "# Run and capture output; save to file for summary\n# shellcheck disable=SC2016\
         \  # Go template syntax, not shell variables\nmapfile -t WORKFLOW_FILES <\
@@ -55,7 +55,7 @@ jobs:
         \ workflow compliance issue(s) — see annotations above\"\n  exit 1\nfi\necho\
         \ \"✅ actionlint: 0 errors across $(find .github/workflows -maxdepth 1 -name\
         \ '*.yml' | wc -l) workflow files\"\n"
-    - name: Post summary
+      - name: Post summary
       if: always()
       run: "{\n  echo \"## Workflow Compliance Audit (actionlint)\"\n  echo \"\"\n\
         \  if [ -f /tmp/actionlint_results.txt ] && [ -s /tmp/actionlint_results.txt\
@@ -82,12 +82,12 @@ jobs:
       issues: write
     timeout-minutes: 5
     steps:
-    - name: Checkout repository
+      - name: Checkout repository
       uses: actions/checkout@v5
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1
-    - name: Post or update rescue comment
+      - name: Post or update rescue comment
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}

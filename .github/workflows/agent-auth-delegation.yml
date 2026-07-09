@@ -33,16 +33,16 @@ jobs:
       pull-requests: write
       contents: read
     steps:
-    - name: Checkout (needed for session_wrapup_autofix.py)
+      - name: Checkout (needed for session_wrapup_autofix.py)
       uses: actions/checkout@v5
       with:
         fetch-depth: 1
-    - name: Set up Python
+      - name: Set up Python
       uses: actions/setup-python@v6
       with:
         cache: pip
         python-version: 3.12.13
-    - name: "Hardened WEC preservation \u2014 re-apply all maintainer selections"
+      - name: "Hardened WEC preservation \u2014 re-apply all maintainer selections"
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
@@ -50,7 +50,7 @@ jobs:
       run: "python3 scripts/ci/session_wrapup_autofix.py \\\n  --fix-pr-body \\\n\
         \  --pr-number \"${PR_NUM}\" \\\n  || echo \"\u26A0\uFE0F  WEC preservation\
         \ script exited non-zero (non-fatal \u2014 workflow continues)\"\n"
-    - name: "Mandatory scorecard refresh \u2014 merge-readiness + follow-up prompt"
+      - name: "Mandatory scorecard refresh \u2014 merge-readiness + follow-up prompt"
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
@@ -63,7 +63,7 @@ jobs:
   detect-checkbox:
     name: Detect COPILOT_AGENT_AUTH_ENABLED checkbox
     needs:
-    - pr-body-checkpoint-guardian
+      - pr-body-checkpoint-guardian
     if: always() && github.event.action != 'closed'
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -72,7 +72,7 @@ jobs:
       multi_session: ${{ steps.check.outputs.multi_session }}
       pr_number: ${{ steps.check.outputs.pr_number }}
     steps:
-    - name: Parse PR body for delegation checkbox
+      - name: Parse PR body for delegation checkbox
       id: check
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
@@ -119,7 +119,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-    - name: Auto-approved
+      - name: Auto-approved
       run: "echo \"\u2705 Agent token delegation auto-approved for PR  #${{ needs.detect-checkbox.outputs.pr_number\
         \ }}\"\necho \"Copilot is permanently pre-authorized \u2014 no human approval\
         \ required.\"\n"
@@ -136,8 +136,8 @@ jobs:
         uses: actions/cache@v5
         if: always()
         with:
-          path: .pytest_cache/
-          key: ${{ runner.os }}-pytest-${{ github.sha }}
+        path: .pytest_cache/
+        key: ${{ runner.os }}-pytest-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-pytest-
 
@@ -157,11 +157,11 @@ jobs:
     timeout-minutes: 10
     if: github.event.action != 'closed'
     steps:
-    - name: Checkout repository
+      - name: Checkout repository
       uses: actions/checkout@v5
       with:
         fetch-depth: 50
-    - name: Download pending session requirements (if any)
+      - name: Download pending session requirements (if any)
       id: session_reqs
       continue-on-error: true
       env:
@@ -179,7 +179,7 @@ jobs:
         \ will inject into preflight checklist\"\nelse\n  echo \"has_requirements=false\"\
         \ >> \"$GITHUB_OUTPUT\"\n  echo \"\u2139\uFE0F No pending session requirements\
         \ found\"\nfi\n"
-    - name: 'REQ-11: Integration-branch direct-session guard'
+      - name: 'REQ-11: Integration-branch direct-session guard'
       if: 'github.event_name == ''pull_request'' || github.event_name == ''pull_request_review''
 
         '
@@ -250,7 +250,7 @@ jobs:
           \ targeting '${head}' instead. ` +\n  `See the REQ-11 comment on this PR\
           \ for step-by-step instructions, ` +\n  `or run: gh workflow run copilot-session-chain.yml\
           \ -f source_branch=${head}`\n);\n"
-    - name: Post Mandatory Agent Checklist to PR
+      - name: Post Mandatory Agent Checklist to PR
       uses: actions/github-script@v8
       if: 'github.event_name == ''pull_request'' || github.event_name == ''pull_request_review''
 
@@ -351,7 +351,7 @@ jobs:
           \    repo: context.repo.repo,\n    issue_number: context.issue.number,\n\
           \    body,\n  });\n  console.log(`\u2705 Checklist posted for SHA ${sha}`);\n\
           }\n"
-    - name: Surface Session-Type Directives to Checklist
+      - name: Surface Session-Type Directives to Checklist
       uses: actions/github-script@v8
       if: 'github.event_name == ''pull_request'' || github.event_name == ''pull_request_review''
 
@@ -409,7 +409,7 @@ jobs:
           \   repo: context.repo.repo,\n    issue_number: context.issue.number,\n\
           \    body: directiveBody,\n  });\n}\nconsole.log('Session-type directives\
           \ surfaced in preflight comment.');\n"
-    - name: "Parse CI Failure Patterns \u2192 Job Summary"
+      - name: "Parse CI Failure Patterns \u2192 Job Summary"
       run: "# shellcheck disable=SC2129\nPATTERN_FILE=\".codex/patterns/ci_failure_patterns.yaml\"\
         \n\necho \"## \U0001F9E0 Active CI Failure Patterns\" >> \"$GITHUB_STEP_SUMMARY\"\
         \necho \"\" >> \"$GITHUB_STEP_SUMMARY\"\n\nif [ ! -f \"$PATTERN_FILE\" ];\
@@ -445,7 +445,7 @@ jobs:
         \     out.write(f\"\u26A0\uFE0F **{len(p1)} Priority-1 (blocking) pattern(s)\
         \ active \u2014 review before coding.**\\n\\n\")\n    else:\n        out.write(\"\
         No parseable patterns found in pattern file.\\n\\n\")\nPYEOF\n"
-    - name: Verify .gitignore allows .codex/agent_auth_session.json
+      - name: Verify .gitignore allows .codex/agent_auth_session.json
       id: gitignore_check
       run: "TARGET=\".codex/agent_auth_session.json\"\nGITIGNORE=\".gitignore\"\n\n\
         echo \"### \U0001F50D .gitignore Check: \\`${TARGET}\\`\" >> \"$GITHUB_STEP_SUMMARY\"\
@@ -464,7 +464,7 @@ jobs:
         \    echo '```' >> \"$GITHUB_STEP_SUMMARY\"\n    exit 1\n  fi\nelse\n  echo\
         \ \"\u2705 **PASS** \u2014 \\`${TARGET}\\` is NOT ignored by .gitignore.\"\
         \ >> \"$GITHUB_STEP_SUMMARY\"\nfi\n"
-    - name: Detect empty commits in PR
+      - name: Detect empty commits in PR
       id: empty_commit_check
       continue-on-error: true
       env:
@@ -519,7 +519,7 @@ jobs:
           echo "**before** pushing to remote (after push, force-push is required to remove)." >> "$GITHUB_STEP_SUMMARY"
           echo "::warning::${COUNT} empty commit(s) found in PR — will be AGENT-COMMIT in divergence monitor (auto-absorbed)"
         fi
-    - name: Verify Accountability Report updated in last commit
+      - name: Verify Accountability Report updated in last commit
       id: accountability_check
       env:
         GITHUB_ACTOR: ${{ github.actor }}
@@ -594,7 +594,7 @@ jobs:
           echo "**Fix:** Update the accountability report in your next commit before session activation." >> "$GITHUB_STEP_SUMMARY"
           exit 1
         fi
-    - name: Verify CHANGELOG.md updated in last commit
+      - name: Verify CHANGELOG.md updated in last commit
       id: changelog_check
       env:
         GITHUB_ACTOR: ${{ github.actor }}
@@ -661,7 +661,7 @@ jobs:
           echo "**Fix:** Add a \`## [Unreleased]\` entry to \`CHANGELOG.md\` in your next commit." >> "$GITHUB_STEP_SUMMARY"
           exit 1
         fi
-    - name: 'Auto-fix: self-heal accountability report and CHANGELOG (REQ-4/5)'
+      - name: 'Auto-fix: self-heal accountability report and CHANGELOG (REQ-4/5)'
       id: autofix_docs
       if: "always() && (steps.accountability_check.outcome == 'failure' ||\n steps.changelog_check.outcome\
         \ == 'failure')\n"
@@ -706,7 +706,7 @@ jobs:
         \ \"$GITHUB_STEP_SUMMARY\"\n  echo \"- Next cognitive-preflight run will pass\
         \ REQ-4/REQ-5.\" >> \"$GITHUB_STEP_SUMMARY\"\nfi\necho \"\" >> \"$GITHUB_STEP_SUMMARY\"\
         \n"
-    - name: Ensure Workflow Execution Checklist in PR body
+      - name: Ensure Workflow Execution Checklist in PR body
       id: inject-wec
       if: 'github.event_name == ''pull_request'' || github.event_name == ''pull_request_review''
 
@@ -781,7 +781,7 @@ jobs:
         \  #${PR_NUMBER}\"\nprintf '### \u2705 Workflow Execution Checklist\\n\\nCanonical\
         \ format injected \u2014 approval gates are now armed.\\n' >> \"$GITHUB_STEP_SUMMARY\"\
         \n"
-    - name: Verify SESSION_TIMEBOX_EXPIRED acknowledged
+      - name: Verify SESSION_TIMEBOX_EXPIRED acknowledged
       id: timebox_ack_check
       if: 'github.event_name == ''pull_request'' || github.event_name == ''pull_request_review''
 
@@ -819,7 +819,7 @@ jobs:
           \ the Session Summary is posted._\\n`\n  );\n  await core.summary.write();\n\
           \  core.setFailed('SESSION_TIMEBOX_EXPIRED requires a \"## \U0001F9E0 Session\
           \ Summary\" comment before reactivation.');\n}\n"
-    - name: "Warn on single-commit PR (REQ-7 \u2014 NEVER stop after one commit)"
+      - name: "Warn on single-commit PR (REQ-7 \u2014 NEVER stop after one commit)"
       if: 'github.event_name == ''pull_request'' || github.event_name == ''pull_request_review''
 
         '
@@ -845,7 +845,7 @@ jobs:
         \nelse\n  echo \"\u2705 **PASS** \u2014 ${COMMIT_COUNT} commits detected;\
         \ single-commit stop rule does not apply.\" >> \"$GITHUB_STEP_SUMMARY\"\n\
         fi\n"
-    - name: 'REQ-8: Memory system health check'
+      - name: 'REQ-8: Memory system health check'
       id: req8
       if: always()
       continue-on-error: true
@@ -867,7 +867,7 @@ jobs:
         \ /api/memory/state returned unexpected data.\" >> \"$GITHUB_STEP_SUMMARY\"\
         \n  echo \"::warning::REQ-8: /api/memory/state returned unexpected data \u2014\
         \ verify SQLite schema migration\"\nfi\n"
-    - name: 'REQ-9: Iterative self-review (5 passes)'
+      - name: 'REQ-9: Iterative self-review (5 passes)'
       if: always()
       run: "echo \"### REQ-9: 5-Pass Self-Review\" >> \"$GITHUB_STEP_SUMMARY\"  # pragma: allowlist secret\nPASS_FAILURES=0\n\
         # Pass 1: Python AST check on changed server file\nif python3 -c \"import\
@@ -904,7 +904,7 @@ jobs:
         \nelse\n  echo \"**$PASS_FAILURES/5 passes FAILED \u2014 fix before merge**\"\
         \ >> \"$GITHUB_STEP_SUMMARY\"\n  echo \"::error::REQ-9: $PASS_FAILURES self-review\
         \ passes failed\"\nfi\n"
-    - name: 'REQ-10: Branch rebase check (hard block if behind/diverged)'
+      - name: 'REQ-10: Branch rebase check (hard block if behind/diverged)'
       id: req10
       if: 'github.event_name == ''pull_request'' || github.event_name == ''pull_request_review''
 
@@ -1003,7 +1003,7 @@ jobs:
           \ Agent MUST rebase the branch before starting work. ' +\n    'See the BRANCH_REBASE_REQUIRED\
           \ comment on this PR for instructions.'\n  );\n} else {\n  core.info('REQ-10\
           \ PASS: Branch is up-to-date \u2014 rebase gate cleared.');\n}\n"
-    - name: Cognitive Pre-flight Final Status
+      - name: Cognitive Pre-flight Final Status
       if: always()
       run: "echo \"\" >> \"$GITHUB_STEP_SUMMARY\"\necho \"---\" >> \"$GITHUB_STEP_SUMMARY\"\
         \nif [ \"${{ job.status }}\" == \"success\" ]; then\n  echo \"## \U0001F7E2\
@@ -1020,9 +1020,9 @@ jobs:
   activate-delegation:
     name: Activate token delegation
     needs:
-    - detect-checkbox
-    - await-approval
-    - cognitive-preflight
+      - detect-checkbox
+      - await-approval
+      - cognitive-preflight
     runs-on: ubuntu-latest
     timeout-minutes: 30
     if: 'always() &&
@@ -1049,8 +1049,8 @@ jobs:
       - name: Cache Python dependencies (Layer 1)
         uses: actions/cache@v5
         with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml') }}
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml') }}
           restore-keys: |
             ${{ runner.os }}-pip-
 
@@ -1061,7 +1061,7 @@ jobs:
           }}
         ref: ${{ github.event.pull_request.head.ref || github.head_ref || github.ref_name
           }}
-    - name: Validate/Refresh Session ID (CAPI Readiness Check)
+      - name: Validate/Refresh Session ID (CAPI Readiness Check)
       id: session_validation
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
@@ -1078,7 +1078,7 @@ jobs:
         \ >> \"$GITHUB_OUTPUT\"\n  fi\nelse\n  echo \"\u2139\uFE0F No session in environment.\
         \ Will be created fresh.\"\n  echo \"session_status=fresh\" >> \"$GITHUB_OUTPUT\"\
         \nfi\n"
-    - name: Set repo variables via CODEX_MASTER_KEY (maintainer auth)
+      - name: Set repo variables via CODEX_MASTER_KEY (maintainer auth)
       id: set_vars
       continue-on-error: true
       uses: actions/github-script@v8
@@ -1111,7 +1111,7 @@ jobs:
           \nawait upsertVar('COGNITIVE_BRAIN_ALLOWED_ACTORS', updatedActors);\ncore.info(`\u2705\
           \ COGNITIVE_BRAIN_ALLOWED_ACTORS: ${updatedActors}`);\n\ncore.setOutput('updated_actors',\
           \ updatedActors);\n"
-    - name: Dispatch hub for token delegation approval (agent-auth-delegation)
+      - name: Dispatch hub for token delegation approval (agent-auth-delegation)
       uses: actions/github-script@v8
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
@@ -1129,7 +1129,7 @@ jobs:
           } catch (err) {\n  core.warning(`Hub dispatch failed: ${err.message}`);\n\
           }\n"
       continue-on-error: true
-    - name: Write provenance session token (.codex/agent_auth_session.json)
+      - name: Write provenance session token (.codex/agent_auth_session.json)
       run: "mkdir -p .codex\nEXPIRY=$(( $(date +%s) + 43200 ))\ncat > .codex/agent_auth_session.json\
         \ <<EOF\n{\n  \"issued_at\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\n  \"expires_at\"\
         : ${EXPIRY},\n  \"issued_by\": \"agent-auth-delegation\",\n  \"run_id\": \"\
@@ -1140,7 +1140,7 @@ jobs:
         \ by re-triggering agent-auth-delegation.\"\n}\nEOF\necho \"\u2705 Session\
         \ token written (expires in 12h at epoch ${EXPIRY})\"\ncat .codex/agent_auth_session.json\n"
       shell: bash
-    - name: Commit session token to branch
+      - name: Commit session token to branch
       env:
         TARGET_BRANCH: ${{ github.event.pull_request.head.ref || github.head_ref ||
           '' }}
@@ -1165,7 +1165,7 @@ jobs:
         \ provenance session token [skip ci]\"\n  git pull --rebase --autostash origin\
         \ \"${TARGET_BRANCH}\" || true\n  git push origin HEAD:refs/heads/${TARGET_BRANCH}\n\
         fi\n"
-    - name: Dispatch GitHub Guru (maintainer verification)
+      - name: Dispatch GitHub Guru (maintainer verification)
       uses: actions/github-script@v8
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
@@ -1176,7 +1176,7 @@ jobs:
           \ GitHub Guru dispatched for maintainer variable verification');\n} catch\
           \ (e) {\n  core.warning(`GitHub Guru dispatch skipped: ${e.message}`);\n\
           }\n"
-    - name: D-00 Session Bootstrap (write context digest)
+      - name: D-00 Session Bootstrap (write context digest)
       id: session_bootstrap
       continue-on-error: true
       env:
@@ -1219,7 +1219,7 @@ jobs:
         \n  else\n    echo \"\u26A0\uFE0F Context digest staged but commit failed\
         \ (possibly nothing to commit).\" | tee -a \"$GITHUB_STEP_SUMMARY\"\n  fi\n\
         fi\n"
-    - name: Retrieve CB patterns for session context
+      - name: Retrieve CB patterns for session context
       id: cb_patterns
       continue-on-error: true
       env:
@@ -1228,7 +1228,7 @@ jobs:
         \ 8 2>/dev/null || true)\n# Escape for multiline GitHub output\n{\n  echo\
         \ 'cb_markdown<<CB_EOF'\n  echo \"$CB_BLOCK\"\n  echo 'CB_EOF'\n} >> \"$GITHUB_OUTPUT\"\
         \n"
-    - name: Session Concurrency Gate
+      - name: Session Concurrency Gate
       id: session_gate
       uses: actions/github-script@v8
       with:
@@ -1354,7 +1354,7 @@ jobs:
           \ lockValue);\n  core.setOutput('acquired', 'true');\n  core.setOutput('queued',\
           \ 'false');\n  core.info(`\U0001F512 Session lock acquired: ${lockValue}`);\n\
           }\n"
-    - name: Post @copilot continue
+      - name: Post @copilot continue
       id: post_copilot_comment
       if: steps.session_gate.outputs.acquired == 'true'
       uses: actions/github-script@v8
@@ -1394,7 +1394,7 @@ jobs:
           \    owner:        context.repo.owner,\n    repo:         context.repo.repo,\n\
           \    issue_number: prNumber,\n    body,\n  });\n}\ncore.info(`\u2705 Posted\
           \ @copilot continue on PR  #${prNumber}`);\n"
-    - name: Increment COGNITIVE_BRAIN_SESSION_NUMBER
+      - name: Increment COGNITIVE_BRAIN_SESSION_NUMBER
       if: steps.session_gate.outputs.acquired == 'true'
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
@@ -1408,7 +1408,7 @@ jobs:
         \ ${CURRENT} \u2192 ${NEXT}\"\nelse\n  echo \"\u26A0\uFE0F Failed to increment\
         \ COGNITIVE_BRAIN_SESSION_NUMBER (${CURRENT} \u2192 ${NEXT}). Check CODEX_MASTER_KEY\
         \ has variables:write scope.\"\nfi\n"
-    - name: Report completion to AgentBrainAPI (ACE L6)
+      - name: Report completion to AgentBrainAPI (ACE L6)
       if: success() && steps.session_gate.outputs.acquired == 'true'
       env:
         PR_NUMBER: ${{ github.event.pull_request.number || github.event.issue.number
@@ -1432,7 +1432,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     needs:
-    - activate-delegation
+      - activate-delegation
     if: 'always() &&
 
       github.event.action != ''closed'' &&
@@ -1448,7 +1448,7 @@ jobs:
       pull-requests: read
       contents: read
     steps:
-    - name: Checkout (for approve_pending_runs.py)
+      - name: Checkout (for approve_pending_runs.py)
       uses: actions/checkout@v5
       with:
         fetch-depth: 1
@@ -1456,19 +1456,19 @@ jobs:
           }}
         ref: ${{ github.event.pull_request.head.ref || github.head_ref || github.ref_name
           }}
-    - name: Generate Cognitive Brain App token
+      - name: Generate Cognitive Brain App token
       id: app-token
       uses: actions/create-github-app-token@v1
       continue-on-error: true
       with:
         app-id: ${{ secrets._GITHUB_APP_ID }}
         private-key: ${{ secrets._GITHUB_APP_PRIVATE_KEY }}
-    - name: Set up Python
+      - name: Set up Python
       uses: actions/setup-python@v6
       with:
         cache: pip
         python-version: 3.12.13
-    - name: Approve all action_required runs for this PR
+      - name: Approve all action_required runs for this PR
       continue-on-error: true
       env:
         GH_TOKEN: ${{ steps.app-token.outputs.token || secrets.CODEX_MASTER_KEY ||
@@ -1491,12 +1491,12 @@ jobs:
     timeout-minutes: 10
     if: github.event.action == 'closed'
     steps:
-    - name: Checkout repository for shared helpers
+      - name: Checkout repository for shared helpers
       uses: actions/checkout@v5
       with:
         fetch-depth: 1
         persist-credentials: false
-    - name: Release COPILOT_ACTIVE_SESSION and trigger next queued PR
+      - name: Release COPILOT_ACTIVE_SESSION and trigger next queued PR
       uses: actions/github-script@v8
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
@@ -1599,13 +1599,13 @@ jobs:
       issues: write
     timeout-minutes: 5
     steps:
-    - name: Checkout repository
+      - name: Checkout repository
       uses: actions/checkout@v5
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
         fetch-depth: 1
-    - name: Post or update rescue comment
+      - name: Post or update rescue comment
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}

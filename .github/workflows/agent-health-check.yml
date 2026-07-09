@@ -20,13 +20,13 @@ jobs:
       - name: Cache Python dependencies (Layer 1)
         uses: actions/cache@v5
         with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml') }}
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml') }}
           restore-keys: |
             ${{ runner.os }}-pip-
 
       - uses: actions/checkout@v5
-    - name: Compute rolling success rate from compliance log
+      - name: Compute rolling success rate from compliance log
       id: metrics
       run: "python3 - <<'PYEOF'\nimport json, os, re, sys\nfrom datetime import datetime,\
         \ timedelta, timezone\nfrom pathlib import Path\n\nlog_path = Path(\"reports/orchestration/orchestration_compliance.log.md\"\
@@ -53,8 +53,8 @@ jobs:
         uses: actions/cache@v5
         if: always()
         with:
-          path: .pytest_cache/
-          key: ${{ runner.os }}-pytest-${{ github.sha }}
+        path: .pytest_cache/
+        key: ${{ runner.os }}-pytest-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-pytest-
 
@@ -63,7 +63,7 @@ jobs:
       with:
         name: agent-health-${{ github.run_id }}
         path: reports/orchestration/health_latest.json
-    - name: Evaluate 95% threshold
+      - name: Evaluate 95% threshold
       env:
         RATE: ${{ steps.metrics.outputs.rate }}
       run: "python3 -c \"\nimport os\nrate = float(os.environ.get('RATE', '100'))\n\
@@ -78,13 +78,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-    - uses: actions/checkout@v5
-    - uses: actions/setup-python@v6
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
       with:
         python-version: 3.12.13
         cache: pip
-    - run: pip install -q -r requirements-dev.txt
-    - name: Validate OODA loop components present
+      - run: pip install -q -r requirements-dev.txt
+      - name: Validate OODA loop components present
       run: "python3 - <<'PYEOF'\nimport sys\nfrom pathlib import Path\n\n# Verify\
         \ OODA loop core components are importable and present.\n# required: must\
         \ exist or job fails.\n# optional: generated at runtime; absence is a warning,\

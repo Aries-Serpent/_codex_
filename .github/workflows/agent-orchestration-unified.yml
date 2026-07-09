@@ -64,25 +64,25 @@ jobs:
       chain_generated: ${{ steps.init.outputs.chain_generated }}
       agent_count: ${{ steps.init.outputs.agent_count }}
     steps:
-    - name: Checkout repository
+      - name: Checkout repository
       uses: actions/checkout@v5
-    - name: CacheManager health check
+      - name: CacheManager health check
       continue-on-error: true
       run: 'python scripts/ci/generate_cache_keys.py --health --workflow agent-orchestration-unified
         2>/dev/null || echo "Cache health: check skipped"
 
         '
-    - name: Set up Python 3.12
+      - name: Set up Python 3.12
       uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
         cache-tier: common
         cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
-    - name: Install dependencies
+      - name: Install dependencies
       run: 'pip install pyyaml numpy scipy
 
         '
-    - name: Initialize quantum agent network
+      - name: Initialize quantum agent network
       id: init
       run: "if [ -f \"scripts/agents/quantum_agent_orchestrator.py\" ]; then\n  python\
         \ scripts/agents/quantum_agent_orchestrator.py \\\n    --primary-agent \"\
@@ -100,8 +100,8 @@ jobs:
         uses: actions/cache@v5
         if: always()
         with:
-          path: .pytest_cache/
-          key: ${{ runner.os }}-pytest-${{ github.sha }}
+        path: .pytest_cache/
+        key: ${{ runner.os }}-pytest-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-pytest-
 
@@ -112,7 +112,7 @@ jobs:
         name: agent-chain-plan-${{ github.run_number }}
         path: .codex/agents/chain_plan.json
         retention-days: 30
-    - name: Generate orchestration summary
+      - name: Generate orchestration summary
       run: 'echo "## 🔗 Agent Chain Orchestration" >> $GITHUB_STEP_SUMMARY
 
         echo "" >> $GITHUB_STEP_SUMMARY
@@ -136,7 +136,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     needs:
-    - orchestrate_agent_chain
+      - orchestrate_agent_chain
     if: 'always() &&
 
       (github.event_name == ''workflow_dispatch'' && (inputs.mode == ''handoff-execution''
@@ -144,25 +144,25 @@ jobs:
 
       '
     steps:
-    - name: Checkout repository
+      - name: Checkout repository
       uses: actions/checkout@v5
-    - name: Set up Python 3.12
+      - name: Set up Python 3.12
       uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
         cache-tier: common
         cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
-    - name: Download chain plan (if available)
+      - name: Download chain plan (if available)
       if: needs.orchestrate_agent_chain.outputs.chain_generated == 'true'
       uses: actions/download-artifact@v5
       with:
         name: agent-chain-plan-${{ github.run_number }}
         path: .codex/agents/
-    - name: Install handoff dependencies
+      - name: Install handoff dependencies
       run: 'pip install pyyaml requests
 
         '
-    - name: Execute handoff sequence
+      - name: Execute handoff sequence
       env:
         GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         TARGET_AGENT: ${{ inputs.handoff_target }}
@@ -173,7 +173,7 @@ jobs:
         \ \\\n      --target \"$TARGET_AGENT\"\n  else\n    echo \"No chain plan or\
         \ target agent specified\"\n  fi\nelse\n  echo \"Agent handoff script not\
         \ found\"\nfi\n"
-    - name: Upload handoff results
+      - name: Upload handoff results
       if: always()
       uses: actions/upload-artifact@v5
       with:
@@ -193,11 +193,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     needs:
-    - orchestrate_agent_chain
-    - execute_agent_handoff
+      - orchestrate_agent_chain
+      - execute_agent_handoff
     if: always()
     steps:
-    - name: Generate comprehensive summary
+      - name: Generate comprehensive summary
       run: "echo \"## \U0001F916 Agent Orchestration Summary\" >> $GITHUB_STEP_SUMMARY\n\
         echo \"\" >> $GITHUB_STEP_SUMMARY\necho \"**Mode:** ${{ inputs.mode || 'workflow_run'\
         \ }}\" >> $GITHUB_STEP_SUMMARY\necho \"\" >> $GITHUB_STEP_SUMMARY\necho \"\

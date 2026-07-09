@@ -71,24 +71,24 @@ jobs:
         uses: actions/cache@v5
         if: always()
         with:
-          path: .pytest_cache/
-          key: ${{ runner.os }}-pytest-${{ github.sha }}
+        path: .pytest_cache/
+        key: ${{ runner.os }}-pytest-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-pytest-
 
       - name: Checkout
       uses: actions/checkout@v5
-    - name: Setup Python
+      - name: Setup Python
       uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
         cache-tier: common
         cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
-    - name: Install dependencies
+      - name: Install dependencies
       run: "set -o pipefail\nif ! pip install -e \".[dev,test]\" --quiet 2>&1; then\n\
         \  echo \"Editable install failed; falling back to minimal pytest dependencies.\"\
         \n  pip install pytest pytest-mock --quiet\nfi\n"
-    - name: Run Phase ${{ matrix.phase }} smoke test (${{ matrix.script }})
+      - name: Run Phase ${{ matrix.phase }} smoke test (${{ matrix.script }})
       env:
         AGENT_KILL_SWITCH: '0'
         AUTONOMY_DRY_RUN: '1'
@@ -107,7 +107,7 @@ jobs:
         \ \\\n  python scripts/${{ matrix.script }} --budget-seconds 5 --once 2>/dev/null\
         \ || \\\n  echo \"Script smoke-test complete (exit may be non-zero for CI-safe\
         \ scripts)\"\nfi\n"
-    - name: Run Phase ${{ matrix.phase }} unit tests
+      - name: Run Phase ${{ matrix.phase }} unit tests
       if: ${{ matrix.test_module != '' }}
       env:
         AGENT_KILL_SWITCH: '0'
@@ -132,7 +132,7 @@ jobs:
     timeout-minutes: 5
     permissions: {}
     steps:
-    - name: Check all phase jobs succeeded
+      - name: Check all phase jobs succeeded
       run: "if [ \"${{ needs.autonomy-matrix.result }}\" = \"success\" ]; then\n \
         \ echo \"\u2705 All 7 autonomy phase tests passed.\"\nelif [ \"${{ needs.autonomy-matrix.result\
         \ }}\" = \"skipped\" ]; then\n  echo \"\u23ED\uFE0F Autonomy matrix was skipped\
@@ -154,12 +154,12 @@ jobs:
       issues: write
     timeout-minutes: 5
     steps:
-    - name: Checkout repository
+      - name: Checkout repository
       uses: actions/checkout@v5
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         fetch-depth: 1
-    - name: Post or update rescue comment
+      - name: Post or update rescue comment
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}

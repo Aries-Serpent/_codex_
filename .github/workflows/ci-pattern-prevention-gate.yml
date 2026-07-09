@@ -67,17 +67,17 @@ jobs:
       - name: Cache Python dependencies (Layer 1)
         uses: actions/cache@v5
         with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml') }}
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml') }}
           restore-keys: |
             ${{ runner.os }}-pip-
 
       - uses: actions/checkout@v5
-    - uses: actions/setup-python@v6
+      - uses: actions/setup-python@v6
       with:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
-    - name: Run RP-001 validation
+      - name: Run RP-001 validation
       id: rp001
       run: "echo \"Starting RP-001 API Null-Handling validation...\"\n\n# Pattern:\
         \ Check for unsafe API field handling\nunsafe_patterns=$(rg '\\.get\\([\"\\\
@@ -100,16 +100,16 @@ jobs:
       ]'),\n  github.event.inputs.patterns || 'all')\n"
     continue-on-error: ${{ github.event_name == 'pull_request' }}
     steps:
-    - uses: actions/checkout@v5
-    - uses: actions/setup-python@v6
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
       with:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
-    - name: Install dependencies
+      - name: Install dependencies
       run: 'pip install --quiet mypy tomli 2>/dev/null || true
 
         '
-    - name: Run RP-002 validation
+      - name: Run RP-002 validation
       id: rp002
       continue-on-error: true
       run: "echo \"Starting RP-002 mypy Baseline validation...\"\n\nif [ ! -f \".mypy_baseline\"\
@@ -126,7 +126,7 @@ jobs:
         \ ($error_count) exceed baseline ($baseline)\" >> $GITHUB_OUTPUT\n  echo \"\
         $mypy_output\" | tail -20\n  echo \"⚠️ RP-002 WARNING (non-blocking for PR)\"\
         \nfi\n"
-    - name: Show last 10 mypy errors (if any)
+      - name: Show last 10 mypy errors (if any)
       if: always()
       continue-on-error: true
       run: 'python -m mypy --config-file=mypy.ini src/ 2>&1 | tail -10 || true
@@ -143,12 +143,12 @@ jobs:
       \ || 'all')\n"
     continue-on-error: ${{ github.event_name == 'pull_request' }}
     steps:
-    - uses: actions/checkout@v5
-    - uses: actions/setup-python@v6
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
       with:
         python-version: ${{ env.PYTHON_VERSION }}
         cache: pip
-    - name: Run RP-003 validation
+      - name: Run RP-003 validation
       id: rp003
       continue-on-error: true
       run: "echo \"Starting RP-003 Documentation Link validation...\"\n\nif ! command\
@@ -173,12 +173,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     needs:
-    - validate-api-null-handling
-    - validate-mypy-baseline
-    - validate-documentation-links
+      - validate-api-null-handling
+      - validate-mypy-baseline
+      - validate-documentation-links
     if: always()
     steps:
-    - name: Determine overall status
+      - name: Determine overall status
       id: summary
       run: "set +e\n\nrp001_result=\"${{ needs.validate-api-null-handling.result }}\"\
         \nrp002_result=\"${{ needs.validate-mypy-baseline.result }}\"\nrp003_result=\"\
@@ -193,7 +193,7 @@ jobs:
         \ \"${{ github.ref }}\" = \"refs/heads/main\" ]; then\n  # Strict mode on\
         \ main\n  if [ $exit_code -ne 0 ]; then\n    echo \"❌ CI Prevention Gate FAILED\
         \ (strict mode on main)\"\n    exit 1\n  fi\nfi\n"
-    - name: Print summary
+      - name: Print summary
       run: 'echo ""
 
         echo "════════════════════════════════════════════════════════════════"
@@ -237,13 +237,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     needs:
-    - pattern-validation-summary
-    - validate-api-null-handling
-    - validate-mypy-baseline
-    - validate-documentation-links
+      - pattern-validation-summary
+      - validate-api-null-handling
+      - validate-mypy-baseline
+      - validate-documentation-links
     if: always() && github.event_name == 'pull_request'
     steps:
-    - name: Comment on PR with results
+      - name: Comment on PR with results
       uses: actions/github-script@v8
       with:
         script: "const rp001 = '${{ needs.validate-api-null-handling.result }}';\n\
