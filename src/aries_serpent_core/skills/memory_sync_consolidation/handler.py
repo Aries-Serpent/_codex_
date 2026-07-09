@@ -65,7 +65,8 @@ def run(
             if not entry or "id" not in entry:
                 continue
 
-            entry_id = str(entry["id"])
+            raw_entry_id = entry["id"]
+            entry_id = raw_entry_id if isinstance(raw_entry_id, str) else str(raw_entry_id)
             if entry_id in processed_ids:
                 consolidation_report["duplicates_detected"] += 1
                 consolidation_report["merged_duplicates"].append(entry_id)

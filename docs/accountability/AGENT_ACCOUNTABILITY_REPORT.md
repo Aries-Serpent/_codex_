@@ -20,6 +20,7 @@
 - `PYTHONPATH=src:. ~/.local/bin/pytest -q test_optimizations.py` ✅ (passes with pre-existing `PytestReturnNotNoneWarning` warnings only)
 - `parallel_validation` rerun feedback addressed with follow-up assertions/comments; final targeted Ruff + pytest re-run passed ✅
 - Final follow-up tweaks: cache size assertion added, deferred-persistence contract clarified, boolean assertion wording normalized ✅
+- Final validation cleanup: memory-sync entry IDs now preserve incoming strings and only coerce non-string IDs defensively ✅
 
 ### NOTES
 
