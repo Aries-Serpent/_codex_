@@ -15,7 +15,7 @@ Addresses uncovered branches and error paths:
 
 import os
 import tempfile
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import ThreadPoolExecutor, as_completed  # pragma: allowlist secret
 from unittest.mock import Mock, patch
 
 import pytest

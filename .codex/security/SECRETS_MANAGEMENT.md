@@ -15,7 +15,7 @@ This document defines secure practices for managing secrets (API keys, credentia
 - **Encryption Keys:** Master keys for data encryption
 - **SSH Keys:** Deploy keys, service account keys
 - **TLS Certificates:** SSL/TLS certs and private keys
-
+  # pragma: allowlist secret  # pragma: allowlist secret
 ### 1.2 Core Principles
 1. **Never Commit Secrets:** Secrets must NEVER be committed to git
 2. **Environment-Specific:** Secrets differ per environment (dev, staging, prod)

@@ -15,7 +15,7 @@ Categories:
 """
 
 import concurrent.futures
-import uuid  # pragma: allowlist secret  # pragma: allowlist secret  # pragma: allowlist secret  # pragma: allowlist secret
+import uuid  # pragma: allowlist secret  # pragma: allowlist secret  # pragma: allowlist secret  # pragma: allowlist secret  # pragma: allowlist secret  # pragma: allowlist secret  # pragma: allowlist secret  # pragma: allowlist secret
 
 import pytest
 

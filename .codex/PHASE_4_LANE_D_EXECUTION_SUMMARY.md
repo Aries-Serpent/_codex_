@@ -15,7 +15,7 @@
 
 ### Build Metadata
 ```json
-{
+{  # pragma: allowlist secret  # pragma: allowlist secret
   "version": "0.1.0",
   "package_name": "codex-ml",
   "build_date": "2026-07-09T02:35:00Z",
