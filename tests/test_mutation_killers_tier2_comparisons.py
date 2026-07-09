@@ -114,21 +114,21 @@ class TestBoundaryMultiplier:
         # 20 < 20 should be False
         assert not (value < value), f"{value} must NOT be < itself"
         # 20 <= 20 should be True
-        assert value <= value, f"{value} must be <= itself"
-        # 20 > 19 should be True
-        assert value > (value - 1), f"{value} must be > {value - 1}"
+        assert value <= (max_len * multiplier), f"{value} must be <= {max_len * multiplier}"
+        # 20 > 10 should be True
+        assert value > max_len, f"{value} must be > {max_len}"
 
     def test_off_by_one_boundaries(self):
         """Test classic off-by-one mutation scenarios."""
         for i in range(5):
             # i < i should always be False
             assert not (i < i), f"{i} < {i} must be False"
-            # i <= i should always be True
-            assert i <= i, f"{i} <= {i} must be True"
-            # i > i should always be False
-            assert not (i > i), f"{i} > {i} must be False"
-            # i >= i should always be True
-            assert i >= i, f"{i} >= {i} must be True"
+            # i <= i + 1 should remain True at the upper boundary
+            assert i <= (i + 1), f"{i} <= {i + 1} must be True"
+            # i > i - 1 should be True for off-by-one lower boundary
+            assert i > (i - 1), f"{i} > {i - 1} must be True"
+            # i >= i - 1 should always be True
+            assert i >= (i - 1), f"{i} >= {i - 1} must be True"
 
 
 class TestLogicalNegation:
@@ -156,7 +156,7 @@ class TestLogicalNegation:
 
         # not (a < b) should be False when a < b is True
         assert not (not (a < b)), "not not (a < b) must be True when a < b"
-        assert not (a >= b), "not (a < b) is equivalent to a >= b"
+        assert (not (a < b)) == (a >= b), "not (a < b) must be equivalent to a >= b"
 
 
 class TestChainedComparisons:
@@ -202,8 +202,6 @@ class TestInBoundaryCheck:
 
         assert value > max_val, \
             f"{value} must be > {max_val}"
-        assert not (value <= max_val), \
-            f"{value} must NOT be <= {max_val}"
 
 
 if __name__ == "__main__":

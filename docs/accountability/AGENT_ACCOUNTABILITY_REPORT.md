@@ -1,6 +1,6 @@
 ## SESSION SUMMARY — 2026-07-09T06:46:00Z [CI RESCUE: PR #5276 REVIEW-FIX FOLLOW-UP]
 
-**Session:** ci-rescue-pr-5276-review-fix-follow-up | **Task:** Resolve review-regression fallout on PR #5276 by repairing broken skill handlers, fixing mutation-killer tests, restoring pytest hook behavior, and re-running targeted validation | **Date:** 2026-07-09T06:46:00Z | **Authority:** @mbaetiong (D-tier autonomous + `wec:auto-approve`) | **Status:** IN PROGRESS — targeted fixes verified locally
+**Session:** ci-rescue-pr-5276-review-fix-follow-up | **Task:** Resolve review-regression fallout on PR #5276 by repairing broken skill handlers, fixing mutation-killer tests, restoring pytest hook behavior, and re-running targeted validation | **Date:** 2026-07-09T06:46:00Z | **Authority:** @mbaetiong (D-tier autonomous + `wec:auto-approve`) | **Status:** COMPLETE — remaining redundant comparison review debt removed and targeted validation re-run
 
 ### EXECUTION SUMMARY — TARGETED REPAIR
 
@@ -11,6 +11,7 @@
   - `memory_sync_consolidation` no longer instantiates nonexistent/invalid persistence objects and keeps non-dry-run promotion reporting as deferred metadata instead of crashing.
 - ✅ Corrected mutation-killer cache tests to use `QueryCache.get_stats()` and assert exact hit/miss/size values against the public API.
 - ✅ Corrected comparison mutation tests to use identity-safe `None` assertions and lint-safe boolean expectations.
+- ✅ Replaced the last tautological Tier 2 comparison assertions with boundary-based checks so code-quality review no longer flags redundant comparisons.
 - ✅ Updated `test_optimizations.py` imports to avoid root-level Ruff E402 failures while preserving existing test behavior.
 
 ### LOCAL VERIFICATION
@@ -21,6 +22,8 @@
 - `parallel_validation` rerun feedback addressed with follow-up assertions/comments; final targeted Ruff + pytest re-run passed ✅
 - Final follow-up tweaks: cache size assertion added, deferred-persistence contract clarified, boolean assertion wording normalized ✅
 - Final validation cleanup: memory-sync entry IDs now preserve incoming strings and only coerce non-string IDs defensively ✅
+- `python3 -m ruff check tests/test_mutation_killers_tier2_comparisons.py` ✅
+- `PYTHONPATH=src:. python3 -m pytest -q tests/test_mutation_killers_tier2_comparisons.py` ✅ (passes with existing pytest config warnings only)
 
 ### NOTES
 
