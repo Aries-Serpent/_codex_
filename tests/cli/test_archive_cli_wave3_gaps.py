@@ -385,8 +385,8 @@ class TestArchiveCliInputValidation:
                     
                     # Should handle permission error
                 finally:
-                    # Restore permissions for cleanup
-                    os.chmod(restricted_dir, 0o755)
+                    # Restore permissions for cleanup (owner-only access)
+                    os.chmod(restricted_dir, 0o700)
             except OSError:
                 pytest.skip("Cannot change directory permissions on this system")
 
