@@ -9,7 +9,7 @@ across the RAG subsystem (indexer, retriever, embeddings). It handles:
 4. Consistent error handling and logging
 
 Usage:
-    from codex.rag._model_utils import safe_load_sentence_transformer
+    from aries_serpent_core.rag._model_utils import safe_load_sentence_transformer
     model = safe_load_sentence_transformer("all-MiniLM-L6-v2", cache_dir=os.path.join(tempfile.gettempdir(), "models"))
 """
 
@@ -47,7 +47,7 @@ def safe_load_sentence_transformer(  # nosec B107
     """
     from sentence_transformers import SentenceTransformer
 
-    from codex.rag.utils import safe_model_to_device
+    from aries_serpent_core.rag.utils import safe_model_to_device
 
     use_auth_token = os.environ.get(use_auth_token_env_key, False)
     token_value = use_auth_token if use_auth_token else None

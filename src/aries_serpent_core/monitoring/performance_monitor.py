@@ -1,6 +1,6 @@
 """Performance degradation monitor with configurable thresholds and alerting.
 
-from codex.logging.structured_logger import logger
+from aries_serpent_core.logging.structured_logger import logger
 Monitors training metrics (loss, throughput, latency) and fires alerts
 via TrainingAlertManager when anomalies exceed configured thresholds.
 """
@@ -13,7 +13,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Any
 
-from codex.alerting import AlertEvent, AlertSeverity, TrainingAlertManager
+from aries_serpent_core.alerting import AlertEvent, AlertSeverity, TrainingAlertManager
 
 
 @dataclass

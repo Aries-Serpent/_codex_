@@ -16,7 +16,7 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Optional
 
-from codex.logging.structured_logger import logger
+from aries_serpent_core.logging.structured_logger import logger
 
 
 class QueryRewriteStrategy(Enum):

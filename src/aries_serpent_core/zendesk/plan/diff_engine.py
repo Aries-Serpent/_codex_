@@ -7,7 +7,7 @@ from typing import Any, TypeVar, Union
 
 from pydantic import BaseModel
 
-from codex.zendesk.model import (
+from aries_serpent_core.zendesk.model import (
     App,
     Group,
     GuideThemeRef,

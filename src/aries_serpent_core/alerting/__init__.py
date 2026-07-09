@@ -18,7 +18,7 @@ Bundled channels:
 
 Example::
 
-    from codex.alerting import TrainingAlertManager
+    from aries_serpent_core.alerting import TrainingAlertManager
 
     manager = TrainingAlertManager.from_env()
     try:
@@ -29,8 +29,8 @@ Example::
         raise
 """
 
-from codex.alerting.base import AlertChannel, AlertEvent, AlertSeverity
-from codex.alerting.manager import TrainingAlertManager
+from aries_serpent_core.alerting.base import AlertChannel, AlertEvent, AlertSeverity
+from aries_serpent_core.alerting.manager import TrainingAlertManager
 
 __all__ = [
     "AlertChannel",

@@ -9,17 +9,17 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from codex.logging.adapter import LoggerAdapter
+from aries_serpent_core.logging.adapter import LoggerAdapter
 
 if TYPE_CHECKING:
-    from codex.logging.structured_logger import StandardLogger
+    from aries_serpent_core.logging.structured_logger import StandardLogger
 
 
 class ConcreteLoggerAdapter(LoggerAdapter):
     """Production adapter wrapping actual codex.logging.
 
     This adapter bridges the abstract LoggerAdapter interface with the
-    concrete StandardLogger implementation from codex.logging, enabling
+    concrete StandardLogger implementation from aries_serpent_core.logging, enabling
     full structured logging functionality while supporting dependency injection.
 
     Args:
@@ -30,7 +30,7 @@ class ConcreteLoggerAdapter(LoggerAdapter):
         """Initialize the concrete adapter.
 
         Args:
-            logger: A StandardLogger instance from codex.logging
+            logger: A StandardLogger instance from aries_serpent_core.logging
         """
         self._logger = logger
 
@@ -89,7 +89,7 @@ def create_logger_adapter(name: str) -> ConcreteLoggerAdapter:
     """Create a concrete logger adapter for the given name.
 
     This factory function creates a ConcreteLoggerAdapter wrapping a
-    StandardLogger from codex.logging.
+    StandardLogger from aries_serpent_core.logging.
 
     Args:
         name: Logger name (typically __name__ or a module name)
@@ -101,7 +101,7 @@ def create_logger_adapter(name: str) -> ConcreteLoggerAdapter:
         >>> logger = create_logger_adapter(__name__)
         >>> logger.info("Application started")
     """
-    from codex.logging.structured_logger import StandardLogger
+    from aries_serpent_core.logging.structured_logger import StandardLogger
 
     return ConcreteLoggerAdapter(StandardLogger(name))
 

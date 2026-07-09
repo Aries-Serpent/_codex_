@@ -21,7 +21,7 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_remote_address
 
-from codex.logging.structured_logger import logger
+from aries_serpent_core.logging.structured_logger import logger
 
 # Initialize rate limiter
 limiter = Limiter(key_func=get_remote_address)
@@ -301,7 +301,7 @@ async def health_check(request: Request) -> HealthResponse:
 async def build_index(request: Request, build_request: BuildIndexRequest) -> BuildIndexResponse:
     """Build a new RAG index."""
     try:
-        from codex.rag import build_index_from_files
+        from aries_serpent_core.rag import build_index_from_files
 
         # Validate every supplied path stays within _RAG_FILES_BASE to prevent
         # path-traversal attacks (e.g. a client passing "/etc/passwd").
@@ -349,7 +349,7 @@ async def query_index(request: Request, query_request: QueryRequest) -> QueryRes
     start_time = time.time()
 
     try:
-        from codex.rag import Retriever
+        from aries_serpent_core.rag import Retriever
 
         # Create retriever
         retriever = Retriever(
@@ -466,7 +466,7 @@ async def delete_index(
 ) -> DeleteIndexResponse:
     """Delete an index."""
     try:
-        from codex.rag import IndexOperation, manage_tenant_indices
+        from aries_serpent_core.rag import IndexOperation, manage_tenant_indices
 
         safe_tenant_id = _validate_path_segment(tenant_id, "tenant_id")
         safe_index_name = _validate_path_segment(index_name, "index_name")
@@ -501,7 +501,7 @@ async def delete_index(
 async def merge_indices(request: Request, merge_request: MergeIndicesRequest):
     """Merge multiple indices."""
     try:
-        from codex.rag import IndexOperation, manage_tenant_indices
+        from aries_serpent_core.rag import IndexOperation, manage_tenant_indices
 
         result = manage_tenant_indices(
             operation=IndexOperation.MERGE,
@@ -531,7 +531,7 @@ async def merge_indices(request: Request, merge_request: MergeIndicesRequest):
 async def get_stats(request: Request, index_name: str, tenant_id: str = "default"):
     """Get statistics for an index."""
     try:
-        from codex.rag import IndexOperation, load_index, manage_tenant_indices
+        from aries_serpent_core.rag import IndexOperation, load_index, manage_tenant_indices
 
         safe_tenant_id = _validate_path_segment(tenant_id, "tenant_id")
         safe_index_name = _validate_path_segment(index_name, "index_name")
@@ -579,7 +579,7 @@ async def get_stats(request: Request, index_name: str, tenant_id: str = "default
 async def get_metrics(request: Request):
     """Get RAG system metrics."""
     try:
-        from codex.rag import get_metrics
+        from aries_serpent_core.rag import get_metrics
 
         metrics = get_metrics()
 

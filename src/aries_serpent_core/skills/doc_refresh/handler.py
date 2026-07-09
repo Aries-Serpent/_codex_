@@ -10,7 +10,7 @@ import logging
 from pathlib import Path
 from typing import Any
 
-from codex.skills.aais import AAISScorer
+from aries_serpent_core.skills.aais import AAISScorer
 
 logger = logging.getLogger(__name__)
 

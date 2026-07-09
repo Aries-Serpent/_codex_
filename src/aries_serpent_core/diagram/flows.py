@@ -1,6 +1,6 @@
 """
 Canonical diagram helpers.
-Use: from codex.diagram.flows import flow_to_mermaid
+Use: from aries_serpent_core.diagram.flows import flow_to_mermaid
 """
 
 from __future__ import annotations

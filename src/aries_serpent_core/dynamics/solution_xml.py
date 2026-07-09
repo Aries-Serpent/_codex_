@@ -38,7 +38,7 @@ except ImportError as exc:
 
 from pydantic import AliasChoices, BaseModel, Field  # noqa: E402
 
-from codex.evidence import utc_now  # noqa: E402
+from aries_serpent_core.evidence import utc_now  # noqa: E402
 
 __all__ = [
     "LocalizedName",

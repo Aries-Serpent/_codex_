@@ -17,8 +17,8 @@ Author: Codex Team
 
 from __future__ import annotations
 
-from codex.dynamics.model.role import DynamicsRole
-from codex.zendesk.model.role import Role as ZendeskRole
+from aries_serpent_core.dynamics.model.role import DynamicsRole
+from aries_serpent_core.zendesk.model.role import Role as ZendeskRole
 
 
 def build_role_matrix(

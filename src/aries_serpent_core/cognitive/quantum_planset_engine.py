@@ -1,5 +1,5 @@
 """
-from codex.logging.structured_logger import logger
+from aries_serpent_core.logging.structured_logger import logger
 Quantum-Inspired Planset Engine for Codebase Improvement.
 
 This module provides ``QuantumPlansetEngine``: a physics-inspired planner that
@@ -43,7 +43,7 @@ Agent integration
 -----------------
 ::
 
-    from codex.cognitive import QuantumPlansetEngine
+    from aries_serpent_core.cognitive import QuantumPlansetEngine
 
     engine = QuantumPlansetEngine()
     planset = engine.generate("SECURITY_REMEDIATION", context={"open_alerts": 42})

@@ -327,7 +327,7 @@ class SandboxManager:
             wrapper = f"""
 import sys
 import trace
-from codex.logging.structured_logger import logger
+from aries_serpent_core.logging.structured_logger import logger
 
 tracer = trace.Trace(
     count=False,

@@ -12,7 +12,7 @@ Supports two export channels:
 
 Usage (programmatic)::
 
-    from codex.skills.telemetry import emit_event
+    from aries_serpent_core.skills.telemetry import emit_event
     emit_event(skill_id="doc.retriever.core", version="1.0.0",
                status="ok", metrics=result.metrics, trace_id="abc")
 

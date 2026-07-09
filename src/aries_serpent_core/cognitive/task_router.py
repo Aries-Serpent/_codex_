@@ -9,7 +9,7 @@ Usage
 -----
 ::
 
-    from codex.cognitive.task_router import TaskRouter, RoutingRequest
+    from aries_serpent_core.cognitive.task_router import TaskRouter, RoutingRequest
 
     router = TaskRouter()
     result = router.route(RoutingRequest(
@@ -29,7 +29,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-from codex.logging.structured_logger import logger
+from aries_serpent_core.logging.structured_logger import logger
 
 _REGISTRY_PATH = Path(".github/agents/AGENT_REGISTRY.yaml")
 _PATTERN_STORE = Path(".codex/cognitive_brain/pattern_learning_store.json")

@@ -9,27 +9,27 @@ including:
 - Objective tracking
 """
 
-from codex.cognitive.agent_brain_api import (
+from aries_serpent_core.cognitive.agent_brain_api import (
     AGENT_CAPABILITIES,
     AgentBrainAPI,
     AgentSessionContext,
     CognitiveBrain,
     CompletionReport,
 )
-from codex.cognitive.brain_interface import (
+from aries_serpent_core.cognitive.brain_interface import (
     AgentBrainInterface,
     AgentContext,
     BrainResponse,
     LearningFeedback,
     PatternMatch,
 )
-from codex.cognitive.planset_orchestrator import (
+from aries_serpent_core.cognitive.planset_orchestrator import (
     OrchestrationState,
     PlansetOrchestrator,
     PlansetRecord,
     PromptSet,
 )
-from codex.cognitive.quantum_planset_engine import (
+from aries_serpent_core.cognitive.quantum_planset_engine import (
     ImprovementArea,
     PhysicsParams,
     PlanStep,
@@ -41,7 +41,7 @@ from codex.cognitive.quantum_planset_engine import (
 # ---------------------------------------------------------------------------
 # Module-level singleton — the single intuitive entry-point for all AI agents.
 #
-#   from codex.cognitive import brain
+#   from aries_serpent_core.cognitive import brain
 #
 #   ctx  = brain.session("my-agent-id")
 #   next = brain.next()

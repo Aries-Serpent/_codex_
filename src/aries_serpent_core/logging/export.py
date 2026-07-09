@@ -30,10 +30,10 @@ import sys
 from collections.abc import Iterable
 from typing import Any, Optional
 
-from codex.logging.structured_logger import logger
+from aries_serpent_core.logging.structured_logger import logger
 
 try:
-    from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
+    from aries_serpent_core.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
 
     _codex_sqlite_auto()
 except (IOError, OSError) as e:

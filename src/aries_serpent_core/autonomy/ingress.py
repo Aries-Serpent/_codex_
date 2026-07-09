@@ -16,7 +16,7 @@ execution surface.  The gateway:
 
 Usage::
 
-    from codex.autonomy.ingress import IngressEvent, IngressGateway
+    from aries_serpent_core.autonomy.ingress import IngressEvent, IngressGateway
 
     gw  = IngressGateway.default()
     evt = IngressEvent(

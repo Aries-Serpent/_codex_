@@ -10,7 +10,7 @@ capabilities declared in Markdown.
 
 Usage::
 
-    from codex.skills.doc_loader import load_agent_docs_as_skills
+    from aries_serpent_core.skills.doc_loader import load_agent_docs_as_skills
 
     skills = load_agent_docs_as_skills()
     for s in skills:
@@ -24,7 +24,7 @@ from pathlib import Path
 from types import ModuleType
 from typing import Any, Literal
 
-from codex.logging.structured_logger import logger
+from aries_serpent_core.logging.structured_logger import logger
 
 from .models import BudgetConfig, DocMeta, PolicyConfig, RegisteredSkill, SkillManifest
 

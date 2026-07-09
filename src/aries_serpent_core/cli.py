@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from codex.logging.structured_logger import logger
+from aries_serpent_core.logging.structured_logger import logger
 
 # Monkey-patch stdlib XML to use defusedxml globally (XXE prevention)
 try:
@@ -26,7 +26,7 @@ from uuid import uuid4  # noqa: E402
 
 import click  # noqa: E402
 
-from codex.copilot_campaign import build_agent_chain, recommend_task_route  # noqa: E402
+from aries_serpent_core.copilot_campaign import build_agent_chain, recommend_task_route  # noqa: E402
 
 try:  # pragma: no cover - optional dependency
     import typer as _typer
@@ -36,8 +36,8 @@ except (ImportError, AttributeError):  # pragma: no cover - degrade gracefully w
     )  # codeql[py/clear-text-logging-sensitive-data]
 else:  # pragma: no cover - exercised in Typer-enabled environments
     try:
-        from codex.cli_knowledge import app as knowledge_typer_app
-        from codex.cli_release import app as release_typer_app
+        from aries_serpent_core.cli_knowledge import app as knowledge_typer_app
+        from aries_serpent_core.cli_release import app as release_typer_app
     except (ImportError, AttributeError):  # pragma: no cover - Typer sub-app import guard
         logger.debug(
             "Suppressed exception in handler", exc_info=True
@@ -543,8 +543,8 @@ def chronicle(ctx: click.Context) -> None:
 def chronicle_tips(format: str, output: str | None) -> None:
     """Get personalized tips based on your session history."""
     try:
-        from codex.logging.chronicle_analytics import ChronicleAnalytics
-        from codex.logging.session_database import SessionDatabase
+        from aries_serpent_core.logging.chronicle_analytics import ChronicleAnalytics
+        from aries_serpent_core.logging.session_database import SessionDatabase
 
         # Initialize database and analytics
         db_path = ".codex/codex.sqlite"
@@ -585,8 +585,8 @@ def chronicle_tips(format: str, output: str | None) -> None:
 def chronicle_analyze(pattern: str | None, output: str | None) -> None:
     """Analyze session patterns in detail."""
     try:
-        from codex.logging.chronicle_analytics import ChronicleAnalytics
-        from codex.logging.session_database import SessionDatabase
+        from aries_serpent_core.logging.chronicle_analytics import ChronicleAnalytics
+        from aries_serpent_core.logging.session_database import SessionDatabase
 
         # Initialize database and analytics
         db_path = ".codex/codex.sqlite"
@@ -998,7 +998,7 @@ def train_cmd(engine: str, engine_args: tuple[str, ...]) -> None:
             raise
     else:
         try:
-            from codex.training import main as run_custom_train
+            from aries_serpent_core.training import main as run_custom_train
         except (IOError, OSError) as exc:  # pragma: no cover - fallback path
             click.echo(f"[warn] custom engine unavailable, falling back to hf_trainer: {exc}")
             from training.engine_hf_trainer import run_hf_trainer
@@ -1507,8 +1507,8 @@ def session_logger_cmd(session_id: str | None, role: str, message: str) -> None:
         codex session-logger --session-id=abc --role=assistant --message="Done"
     """
     try:
-        from codex.logging.error_handler import error_handler
-        from codex.logging.session_logger import SessionLogger, get_session_id
+        from aries_serpent_core.logging.error_handler import error_handler
+        from aries_serpent_core.logging.session_logger import SessionLogger, get_session_id
 
         @error_handler.log_errors
         def _log() -> None:
@@ -1544,8 +1544,8 @@ def viewer_cmd(session_id: str | None, output_format: str) -> None:
         codex viewer --format=json
     """
     try:
-        from codex.logging.error_handler import error_handler
-        from codex.logging.viewer import LogViewer
+        from aries_serpent_core.logging.error_handler import error_handler
+        from aries_serpent_core.logging.viewer import LogViewer
 
         @error_handler.log_errors
         def _view() -> None:
@@ -1571,8 +1571,8 @@ def query_logs_cmd(search: str, role: str | None) -> None:
         codex query-logs --search="test" --role=tool
     """
     try:
-        from codex.logging.error_handler import error_handler
-        from codex.logging.query_logs import LogQueryEngine
+        from aries_serpent_core.logging.error_handler import error_handler
+        from aries_serpent_core.logging.query_logs import LogQueryEngine
 
         @error_handler.log_errors
         def _query() -> None:
@@ -1607,8 +1607,8 @@ def validate_env_cmd() -> None:
         codex validate-env
     """
     try:
-        from codex.config.env_vars import env_manager
-        from codex.logging.error_handler import error_handler
+        from aries_serpent_core.config.env_vars import env_manager
+        from aries_serpent_core.logging.error_handler import error_handler
 
         @error_handler.log_errors
         def _validate() -> None:
@@ -1646,8 +1646,8 @@ def init_db_cmd(db_path: str | None) -> None:
     try:
         from pathlib import Path
 
-        from codex.logging.db_manager import DBManager
-        from codex.logging.error_handler import error_handler
+        from aries_serpent_core.logging.db_manager import DBManager
+        from aries_serpent_core.logging.error_handler import error_handler
 
         @error_handler.log_errors
         def _init() -> None:
@@ -1693,8 +1693,8 @@ def export_env_cmd(output_format: str, output: str | None) -> None:
     try:
         import json as json_lib
 
-        from codex.config.env_vars import env_manager
-        from codex.logging.error_handler import error_handler
+        from aries_serpent_core.config.env_vars import env_manager
+        from aries_serpent_core.logging.error_handler import error_handler
 
         @error_handler.log_errors
         def _export() -> None:
@@ -1754,8 +1754,8 @@ def list_sessions_cmd(limit: int, output_format: str) -> None:
     try:
         import json as json_lib
 
-        from codex.logging.db_manager import db_manager
-        from codex.logging.error_handler import error_handler
+        from aries_serpent_core.logging.db_manager import db_manager
+        from aries_serpent_core.logging.error_handler import error_handler
 
         @error_handler.log_errors
         def _list() -> None:
@@ -1838,7 +1838,7 @@ def clean_logs_cmd(older_than: int, dry_run: bool, yes: bool) -> None:
         import time
         from pathlib import Path
 
-        from codex.logging.error_handler import error_handler
+        from aries_serpent_core.logging.error_handler import error_handler
 
         @error_handler.log_errors
         def _clean() -> None:
@@ -1935,7 +1935,7 @@ def duplication_check(path: str, min_lines: int, threshold: float, output: str |
     try:
         from pathlib import Path as PathLib
 
-        from codex.metrics.duplication import (
+        from aries_serpent_core.metrics.duplication import (
             calculate_duplication_ratio,
             detect_duplicates,
         )
@@ -2045,11 +2045,11 @@ def duplication_report(path: str, min_lines: int, format: str, output: str, save
     try:
         from pathlib import Path as PathLib
 
-        from codex.metrics.duplication import (
+        from aries_serpent_core.metrics.duplication import (
             calculate_duplication_ratio,
             detect_duplicates,
         )
-        from codex.metrics.storage import MetricStorage
+        from aries_serpent_core.metrics.storage import MetricStorage
 
         path_obj = PathLib(path).resolve()
         click.echo(f"🔍 Generating duplication report for {path_obj}...")
@@ -2279,7 +2279,7 @@ def duplication_baseline(report: str, output: str, tag: str | None) -> None:
 # ============================================================================
 
 try:
-    from codex.quantum_orchestrator.cli import cli as quantum_cli
+    from aries_serpent_core.quantum_orchestrator.cli import cli as quantum_cli
 
     # Add quantum orchestrator as a subcommand group
     cli.add_command(quantum_cli, name="quantum")
@@ -2401,8 +2401,8 @@ def auth_group(ctx: click.Context) -> None:
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from codex.auth.authenticator import Authenticator
-    from codex.auth.user_store import UserStore
+    from aries_serpent_core.auth.authenticator import Authenticator
+    from aries_serpent_core.auth.user_store import UserStore
 
 _cli_user_store: "UserStore | None" = None
 _cli_auth: "Authenticator | None" = None
@@ -2412,9 +2412,9 @@ def _get_auth() -> "Authenticator":
     """Return a (lazily initialised) singleton Authenticator for CLI use."""
     global _cli_user_store, _cli_auth
     if _cli_auth is None:
-        from codex.auth.authenticator import Authenticator
-        from codex.auth.token_manager import TokenManager
-        from codex.auth.user_store import UserStore
+        from aries_serpent_core.auth.authenticator import Authenticator
+        from aries_serpent_core.auth.token_manager import TokenManager
+        from aries_serpent_core.auth.user_store import UserStore
 
         _cli_user_store = UserStore()
         _secret = os.getenv("CODEX_AUTH_SECRET", "")
@@ -2471,7 +2471,7 @@ def auth_register(username: str, email: str, password: str, role: tuple[str, ...
 @click.option("--save/--no-save", default=False, help="Cache credentials via keyring")
 def auth_login(username: str, password: str, totp: str | None, save: bool) -> None:
     """Authenticate and display session tokens."""
-    from codex.auth.exceptions import AuthError
+    from aries_serpent_core.auth.exceptions import AuthError
 
     auth = _get_auth()
 

@@ -1,6 +1,6 @@
 """Codex Agent Observability & Telemetry package.
 
-from codex.logging.structured_logger import logger
+from aries_serpent_core.logging.structured_logger import logger
 Phase 12.3 — Agent Observability & Telemetry
 
 This package provides structured logging and metrics collection for the Codex
@@ -9,7 +9,7 @@ agent ecosystem.  It builds on the existing ``codex.monitoring`` and
 
 Quick start::
 
-    from codex.observability import ObservabilityLogger, MetricsCollector
+    from aries_serpent_core.observability import ObservabilityLogger, MetricsCollector
 
     logger = ObservabilityLogger(session_id="my-session")
     collector = MetricsCollector()
@@ -23,8 +23,8 @@ Quick start::
 
 from __future__ import annotations
 
-from codex.observability.logging import ObservabilityLogger
-from codex.observability.metrics import AgentMetrics, MetricsCollector
+from aries_serpent_core.observability.logging import ObservabilityLogger
+from aries_serpent_core.observability.metrics import AgentMetrics, MetricsCollector
 
 __all__ = [
     "AgentMetrics",

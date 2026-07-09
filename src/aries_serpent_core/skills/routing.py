@@ -18,8 +18,8 @@ Default weights: match=0.40, fresh=0.15, aais=0.25, cost=0.10, risk=0.10.
 
 Usage::
 
-    from codex.skills.routing import StratifiedRouter
-    from codex.skills.registry import get_registry
+    from aries_serpent_core.skills.routing import StratifiedRouter
+    from aries_serpent_core.skills.registry import get_registry
 
     router = StratifiedRouter(get_registry())
     decision = router.route(
@@ -34,7 +34,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from codex.logging.structured_logger import logger
+from aries_serpent_core.logging.structured_logger import logger
 
 from .models import RegisteredSkill, RoutingDecision, RoutingScore
 from .registry import SkillRegistry

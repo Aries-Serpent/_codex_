@@ -8,8 +8,8 @@ from pathlib import Path
 
 import typer
 
-from codex.dynamics.apply_logging import apply_routing_stub, apply_slas_stub
-from codex.dynamics.solution_xml import emit_solution_xml, load_solution_manifest
+from aries_serpent_core.dynamics.apply_logging import apply_routing_stub, apply_slas_stub
+from aries_serpent_core.dynamics.solution_xml import emit_solution_xml, load_solution_manifest
 
 SNAPSHOT_OUTPUT_ARGUMENT = typer.Argument(..., help="Output path for snapshot JSON")
 PLAN_FILE_ARGUMENT = typer.Argument(..., help="Plan JSON file")

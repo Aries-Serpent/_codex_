@@ -20,7 +20,7 @@ import logging
 import os
 from typing import TYPE_CHECKING, Any
 
-from codex.alerting.base import AlertChannel, AlertEvent, AlertSeverity
+from aries_serpent_core.alerting.base import AlertChannel, AlertEvent, AlertSeverity
 
 if TYPE_CHECKING:
     pass
@@ -65,7 +65,7 @@ class TrainingAlertManager:
         # Slack
         slack_url = os.environ.get("CODEX_SLACK_WEBHOOK_URL", "")
         if slack_url:
-            from codex.alerting.slack import SlackChannel
+            from aries_serpent_core.alerting.slack import SlackChannel
 
             channels.append(SlackChannel(webhook_url=slack_url))
             logger.debug("TrainingAlertManager: Slack channel enabled")
@@ -74,7 +74,7 @@ class TrainingAlertManager:
         smtp_host = os.environ.get("CODEX_ALERT_SMTP_HOST", "")
         alert_to = os.environ.get("CODEX_ALERT_TO", "")
         if smtp_host and alert_to:
-            from codex.alerting.email import EmailChannel
+            from aries_serpent_core.alerting.email import EmailChannel
 
             channels.append(EmailChannel.from_env())
             logger.debug("TrainingAlertManager: Email channel enabled")

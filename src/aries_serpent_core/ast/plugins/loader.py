@@ -47,7 +47,7 @@ class PluginLoader:
         )
 
     def _load_builtin_plugins(self) -> None:
-        """Load built-in plugins from codex.ast.plugins package."""
+        """Load built-in plugins from aries_serpent_core.ast.plugins package."""
         builtin_dir = Path(__file__).parent
 
         for plugin_file in builtin_dir.glob("*_plugin.py"):

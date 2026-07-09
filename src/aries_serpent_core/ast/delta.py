@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from codex.ast.baseline import BaselineManager
+    from aries_serpent_core.ast.baseline import BaselineManager
 
 logger = logging.getLogger(__name__)
 

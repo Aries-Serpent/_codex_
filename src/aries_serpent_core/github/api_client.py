@@ -13,7 +13,7 @@ import urllib.error
 import urllib.request
 from typing import Any
 
-from codex.logging.structured_logger import logger
+from aries_serpent_core.logging.structured_logger import logger
 from scripts.ci._token_resolver import get_token
 
 from . import url_utils

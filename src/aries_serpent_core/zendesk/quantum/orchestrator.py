@@ -38,7 +38,7 @@ import uuid
 from collections.abc import Iterable
 from typing import Any, Optional
 
-from codex.zendesk.model.trigger import _ZendeskBaseModel
+from aries_serpent_core.zendesk.model.trigger import _ZendeskBaseModel
 from quantum.orchestrator import ThermodynamicOrchestrator, ThermodynamicTask
 
 # Import scope validation infrastructure

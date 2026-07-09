@@ -7,7 +7,7 @@ with a risk class, owner, consuming surfaces, and approved autonomy modes.
 
 Usage::
 
-    from codex.autonomy.prompt_registry import PromptRegistry
+    from aries_serpent_core.autonomy.prompt_registry import PromptRegistry
 
     reg = PromptRegistry.load()
     meta = reg.get("system-copilot-agent")
@@ -29,7 +29,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Optional
 
-from codex.logging.structured_logger import logger
+from aries_serpent_core.logging.structured_logger import logger
 
 from .registry import AutonomyMode, ControlClass
 

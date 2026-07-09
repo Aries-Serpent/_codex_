@@ -20,8 +20,8 @@ Recovery Workflow:
 5. **Resume** — Continue from last task
 
 Usage:
-    from codex.brain.session_resume import SessionResume
-    from codex.brain.checkpoint_manager import CheckpointManager
+    from aries_serpent_core.brain.session_resume import SessionResume
+    from aries_serpent_core.brain.checkpoint_manager import CheckpointManager
 
     checkpoint_mgr = CheckpointManager()
     resume_mgr = SessionResume(checkpoint_mgr)
@@ -38,9 +38,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Optional
 
-from codex.brain.checkpoint_manager import CheckpointManager
-from codex.brain.session_serializer import SessionSerializer
-from codex.logging.structured_logger import logger
+from aries_serpent_core.brain.checkpoint_manager import CheckpointManager
+from aries_serpent_core.brain.session_serializer import SessionSerializer
+from aries_serpent_core.logging.structured_logger import logger
 
 
 @dataclass

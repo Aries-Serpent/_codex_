@@ -66,9 +66,9 @@ def _run_complete_pipeline(corpus_size: int, query_count: int) -> dict[str, Any]
     Returns:
         Pipeline execution results
     """
-    from codex.rag.embeddings import create_embedding_provider
-    from codex.rag.indexer import chunk_text, persist_index
-    from codex.rag.retriever import Retriever
+    from aries_serpent_core.rag.embeddings import create_embedding_provider
+    from aries_serpent_core.rag.indexer import chunk_text, persist_index
+    from aries_serpent_core.rag.retriever import Retriever
 
     with tempfile.TemporaryDirectory() as tmpdir:
         # Step 1: Generate corpus
@@ -173,8 +173,8 @@ def benchmark_multi_query_types(index_size: int = 1000, runs: int = 5) -> dict[s
 
 def _build_e2e_index(size: int, tmpdir: str) -> None:
     """Build test index for e2e benchmarks."""
-    from codex.rag.embeddings import create_embedding_provider
-    from codex.rag.indexer import chunk_text, persist_index
+    from aries_serpent_core.rag.embeddings import create_embedding_provider
+    from aries_serpent_core.rag.indexer import chunk_text, persist_index
 
     provider = create_embedding_provider("tfidf")
 
@@ -203,7 +203,7 @@ def _build_e2e_index(size: int, tmpdir: str) -> None:
 
 def _execute_query(query: str, index_name: str, tmpdir: str) -> list[Any]:
     """Execute a single query."""
-    from codex.rag.retriever import Retriever
+    from aries_serpent_core.rag.retriever import Retriever
 
     retriever = Retriever(index_name=index_name, tenant_id="benchmark", index_dir=tmpdir)
 

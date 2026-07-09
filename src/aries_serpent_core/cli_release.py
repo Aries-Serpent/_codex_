@@ -4,7 +4,7 @@ Cli Release Module
 This module provides functionality for cli release.
 
 Usage:
-    from codex.cli_release import ...
+    from aries_serpent_core.cli_release import ...
 
 Classes:
     [To be documented]
@@ -22,7 +22,7 @@ from pathlib import Path
 
 import typer
 
-from codex.release.api import pack_release, unpack_bundle, verify_bundle
+from aries_serpent_core.release.api import pack_release, unpack_bundle, verify_bundle
 
 DEFAULT_MANIFEST = Path("release.manifest.json")
 DEFAULT_STAGING = Path("work/release_staging")

@@ -17,7 +17,7 @@ Key Exports:
     - LoggerProtocol: Interface for logging operations
 
 Usage:
-    from codex.protocols.ml_protocols import (
+    from aries_serpent_core.protocols.ml_protocols import (
         DatasetProtocol,
         ModelProtocol,
         TrainerProtocol,

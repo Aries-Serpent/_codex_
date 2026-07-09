@@ -7,7 +7,7 @@ from pathlib import Path
 
 import typer
 
-from codex.mapping.load import load_all_mappings
+from aries_serpent_core.mapping.load import load_all_mappings
 
 DEFAULT_MAPPINGS_DIR = Path("configs/deployment/mapping")
 MAPPINGS_DIR_ARGUMENT = typer.Argument(DEFAULT_MAPPINGS_DIR)

@@ -4,7 +4,7 @@ Cli Qa Module
 This module provides functionality for cli qa.
 
 Usage:
-    from codex.cli_qa import ...
+    from aries_serpent_core.cli_qa import ...
 
 Classes:
     [To be documented]
@@ -29,7 +29,7 @@ from typing import TYPE_CHECKING, Annotated  # noqa: E402
 import typer  # noqa: E402
 
 if TYPE_CHECKING:  # pragma: no cover - import guards
-    from codex.qa.rubric import QARubric
+    from aries_serpent_core.qa.rubric import QARubric
 
 app = typer.Typer(help="Offline QA utilities.")
 
@@ -88,7 +88,7 @@ def score(
         codex quality evaluate - Evaluate system quality
     """
     try:
-        from codex.qa import rubric as rubric_module
+        from aries_serpent_core.qa import rubric as rubric_module
     except ImportError as exc:  # pragma: no cover - optional dependency guard
         typer.echo(
             "QA rubric tooling requires optional dependencies (install 'pydantic').",

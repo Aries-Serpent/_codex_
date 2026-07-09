@@ -11,7 +11,7 @@ The system uses a pluggable backend design with file-based storage by default.
 Examples:
     Basic usage with default SQLite backend:
 
-    >>> from codex.agents.memory import MemoryManager
+    >>> from aries_serpent_core.agents.memory import MemoryManager
     >>>
     >>> manager = MemoryManager(agent_id="assistant-1", session_id="session-123")
     >>> manager.store("User prefers Python over JavaScript", metadata={"importance": "high"})
@@ -20,7 +20,7 @@ Examples:
 
     Using JSONL backend for simple file-based storage:
 
-    >>> from codex.agents.memory import JSONLMemoryBackend, MemoryManager
+    >>> from aries_serpent_core.agents.memory import JSONLMemoryBackend, MemoryManager
     >>> from pathlib import Path
     >>>
     >>> backend = JSONLMemoryBackend(Path(".codex/memories.jsonl"))

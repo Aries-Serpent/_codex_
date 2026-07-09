@@ -77,7 +77,7 @@ class LocalSentenceTransformerProvider:
     def _load_model(self) -> None:
         """Load the embedding model."""
         try:
-            from codex.rag._model_utils import safe_load_sentence_transformer
+            from aries_serpent_core.rag._model_utils import safe_load_sentence_transformer
 
             logger.info(
                 f"Loading local embedding model: {self.model_name}"

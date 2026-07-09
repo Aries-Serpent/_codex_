@@ -41,7 +41,7 @@ CLI (from CI workflow)::
 
 Python API::
 
-    from codex.github.mcp_poster import GitHubMCPPoster
+    from aries_serpent_core.github.mcp_poster import GitHubMCPPoster
 
     poster = GitHubMCPPoster()
     poster.post_pr_comment(repo="Aries-Serpent/_codex_", pr_number=3401, body="@copilot ...")
@@ -66,11 +66,11 @@ import urllib.request
 from pathlib import Path
 from typing import Any
 
-from codex.github.api_client import APIClient
-from codex.github.cognitive_brain_integration import CognitiveBrainIntegration
-from codex.github.discussion_manager import DiscussionManager
-from codex.github.git_operations import GitOperations
-from codex.github.pull_request_manager import PullRequestManager
+from aries_serpent_core.github.api_client import APIClient
+from aries_serpent_core.github.cognitive_brain_integration import CognitiveBrainIntegration
+from aries_serpent_core.github.discussion_manager import DiscussionManager
+from aries_serpent_core.github.git_operations import GitOperations
+from aries_serpent_core.github.pull_request_manager import PullRequestManager
 
 logger = logging.getLogger(__name__)
 

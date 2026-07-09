@@ -6,7 +6,7 @@ safe fallback value instead of propagating the exception.
 
 Usage as a decorator::
 
-    from codex.resilience import GracefulDegradation
+    from aries_serpent_core.resilience import GracefulDegradation
 
     @GracefulDegradation(fallback=0)
     def risky_metric() -> int:
@@ -14,7 +14,7 @@ Usage as a decorator::
 
 Usage as a context manager::
 
-    from codex.resilience import GracefulDegradation, DegradationError
+    from aries_serpent_core.resilience import GracefulDegradation, DegradationError
 
     with GracefulDegradation(fallback="default") as dg:
         dg.result = compute_value()
@@ -32,7 +32,7 @@ from __future__ import annotations
 import logging
 from typing import Any, Callable
 
-from codex.logging.structured_logger import logger
+from aries_serpent_core.logging.structured_logger import logger
 
 _SENTINEL = object()  # marks "no fallback provided"
 

@@ -8,7 +8,7 @@ Adapters provide category-specific functionality while maintaining
 the standard interface contract.
 """
 
-from codex.cognitive.brain_interface import (
+from aries_serpent_core.cognitive.brain_interface import (
     AgentBrainInterface,
     AgentCategory,
     AgentContext,

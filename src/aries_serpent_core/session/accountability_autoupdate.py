@@ -47,7 +47,7 @@ import tempfile
 from collections import Counter
 from typing import Any, Optional
 
-from codex.logging.structured_logger import logger
+from aries_serpent_core.logging.structured_logger import logger
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parents[3]
 REPORT_PATH = REPO_ROOT / "docs" / "accountability" / "AGENT_ACCOUNTABILITY_REPORT.md"

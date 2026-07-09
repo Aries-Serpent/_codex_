@@ -9,7 +9,7 @@ This module provides comprehensive cache management capabilities across the repo
 - Dependency tracking and consistency
 
 Usage:
-    from codex.ci.cache_manager import CacheManager, CacheType
+    from aries_serpent_core.ci.cache_manager import CacheManager, CacheType
 
     # In GitHub Actions
     manager = CacheManager()
@@ -38,8 +38,8 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Optional
 
-from codex.logging.structured_logger import logger
-from codex.utils.path_utils import windows_safe_timestamp
+from aries_serpent_core.logging.structured_logger import logger
+from aries_serpent_core.utils.path_utils import windows_safe_timestamp
 
 
 class CacheType(Enum):

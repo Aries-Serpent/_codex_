@@ -11,8 +11,8 @@ Minimum audit record fields (blueprint Phase 5):
 
 Usage::
 
-    from codex.autonomy.audit import AuditLogger, AuditRecord
-    from codex.autonomy.registry import AutonomyMode
+    from aries_serpent_core.autonomy.audit import AuditLogger, AuditRecord
+    from aries_serpent_core.autonomy.registry import AutonomyMode
 
     logger = AuditLogger.default()
     logger.record(AuditRecord(

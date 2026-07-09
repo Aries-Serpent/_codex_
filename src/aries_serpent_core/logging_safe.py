@@ -12,7 +12,7 @@ Security Model:
 - Structured logging with JSON-safe formats
 
 Usage:
-    from codex.logging_safe import create_safe_logger
+    from aries_serpent_core.logging_safe import create_safe_logger
 
     logger = create_safe_logger(__name__)
     logger.info("User login", {"username": user_input, "status": "success"})

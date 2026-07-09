@@ -1,6 +1,6 @@
 """Cognitive Brain Skills — Public API.
 
-from codex.logging.structured_logger import logger
+from aries_serpent_core.logging.structured_logger import logger
 This package provides:
 
 - :class:`~codex.skills.models.SkillManifest` — manifest schema
@@ -14,7 +14,7 @@ This package provides:
 
 Quick start::
 
-    from codex.skills import get_registry, ExecutionEnvelope
+    from aries_serpent_core.skills import get_registry, ExecutionEnvelope
 
     registry = get_registry()
     registry.discover()

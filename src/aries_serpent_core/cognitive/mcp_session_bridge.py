@@ -25,9 +25,9 @@ import logging
 import os
 from typing import Any
 
-from codex.cognitive.agent_brain_api import AgentBrainAPI
-from codex.cognitive.session_hook import SessionContextInjector
-from codex.cognitive.structural_policy_manager import default_policy_manager
+from aries_serpent_core.cognitive.agent_brain_api import AgentBrainAPI
+from aries_serpent_core.cognitive.session_hook import SessionContextInjector
+from aries_serpent_core.cognitive.structural_policy_manager import default_policy_manager
 
 logger = logging.getLogger(__name__)
 

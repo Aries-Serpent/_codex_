@@ -33,10 +33,10 @@ from collections.abc import Iterable  # noqa: E402
 from pathlib import Path  # noqa: E402
 from typing import Any, Optional  # noqa: E402
 
-from codex.logging.structured_logger import logger
+from aries_serpent_core.logging.structured_logger import logger
 
 try:
-    from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
+    from aries_serpent_core.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
 
     _codex_sqlite_auto()
 except (ImportError, AttributeError) as exc:  # pragma: no cover - defensive

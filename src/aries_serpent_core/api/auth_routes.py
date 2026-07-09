@@ -12,7 +12,7 @@ Environment variables:
 Usage::
 
     from fastapi import FastAPI
-    from codex.api.auth_routes import create_auth_router
+    from aries_serpent_core.api.auth_routes import create_auth_router
 
     app = FastAPI()
     router = create_auth_router()
@@ -30,11 +30,11 @@ from typing import Optional
 from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel, Field, field_validator
 
-from codex.auth.authenticator import Authenticator, LoginResult
-from codex.auth.exceptions import InvalidCredentialsError
-from codex.auth.token_manager import TokenManager
-from codex.auth.user_store import UserStore
-from codex.security_utils import sanitize_log_message
+from aries_serpent_core.auth.authenticator import Authenticator, LoginResult
+from aries_serpent_core.auth.exceptions import InvalidCredentialsError
+from aries_serpent_core.auth.token_manager import TokenManager
+from aries_serpent_core.auth.user_store import UserStore
+from aries_serpent_core.security_utils import sanitize_log_message
 
 logger = logging.getLogger(__name__)
 

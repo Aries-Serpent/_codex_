@@ -14,7 +14,7 @@ Production Features:
 
 Usage:
     import os
-    from codex.auth import TokenManager, AuthMiddleware, require_auth
+    from aries_serpent_core.auth import TokenManager, AuthMiddleware, require_auth
 
     # Initialize token manager with secret from environment
     secret_key = os.getenv("AUTH_SECRET_KEY") or os.getenv("CODEX_AUTH_SECRET_KEY")

@@ -30,7 +30,7 @@ import numpy as np  # noqa: E402
 
 # Import orchestrator components
 try:
-    from codex.quantum_orchestrator import (
+    from aries_serpent_core.quantum_orchestrator import (
         DiracSpinor,
         OrchestratorState,
         TaskState,
@@ -40,7 +40,7 @@ try:
 
     # QFT extensions
     try:
-        from codex.quantum_orchestrator.qft import (
+        from aries_serpent_core.quantum_orchestrator.qft import (
             BellState,
             EntanglementManager,
             PathIntegralOptimizer,

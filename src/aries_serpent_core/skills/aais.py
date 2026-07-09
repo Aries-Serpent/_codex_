@@ -1,6 +1,6 @@
 """AAIS (Agent-Aligned Information Score) rubric and scorer.
 
-from codex.logging.structured_logger import logger
+from aries_serpent_core.logging.structured_logger import logger
 Evaluates the quality of documentation or skill content on a 0–1 scale
 across five weighted dimensions:
 
@@ -18,7 +18,7 @@ Formula: ``score = 0.25*C + 0.20*A + 0.20*S + 0.20*Cl + 0.15*L``
 
 Usage::
 
-    from codex.skills.aais import AAISScorer
+    from aries_serpent_core.skills.aais import AAISScorer
 
     scorer = AAISScorer()
     result = scorer.score(text)

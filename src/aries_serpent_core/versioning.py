@@ -4,7 +4,7 @@ Versioning Module
 This module provides functionality for versioning.
 
 Usage:
-    from codex.versioning import ...
+    from aries_serpent_core.versioning import ...
 
 Classes:
     [To be documented]

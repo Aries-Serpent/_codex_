@@ -22,7 +22,7 @@ import platform
 from pathlib import Path
 from typing import Any
 
-from codex.archive.util import json_dumps_sorted, utcnow_iso
+from aries_serpent_core.archive.util import json_dumps_sorted, utcnow_iso
 
 REQUIRED_FIELDS = ("action", "actor", "tool", "repo", "context")
 

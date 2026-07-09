@@ -19,9 +19,9 @@ from typing import Any  # noqa: E402
 import typer  # noqa: E402
 from pydantic import BaseModel, ValidationError  # noqa: E402
 
-from codex.versioning import update_artifact_version  # noqa: E402
-from codex.zendesk import apply as apply_module  # noqa: E402
-from codex.zendesk.model import (  # noqa: E402
+from aries_serpent_core.versioning import update_artifact_version  # noqa: E402
+from aries_serpent_core.zendesk import apply as apply_module  # noqa: E402
+from aries_serpent_core.zendesk.model import (  # noqa: E402
     App,
     Group,
     GuideThemeRef,
@@ -35,8 +35,8 @@ from codex.zendesk.model import (  # noqa: E402
     View,
     Webhook,
 )
-from codex.zendesk.monitoring import register_zendesk_metrics  # noqa: E402
-from codex.zendesk.plan.diff_engine import (  # noqa: E402
+from aries_serpent_core.zendesk.monitoring import register_zendesk_metrics  # noqa: E402
+from aries_serpent_core.zendesk.plan.diff_engine import (  # noqa: E402
     diff_apps,
     diff_fields,
     diff_forms,
@@ -49,7 +49,7 @@ from codex.zendesk.plan.diff_engine import (  # noqa: E402
     diff_views,
     diff_webhooks,
 )
-from codex.zendesk.plan.validators import validate_plan  # noqa: E402
+from aries_serpent_core.zendesk.plan.validators import validate_plan  # noqa: E402
 
 app = typer.Typer(help="Manage Zendesk admin resources with Codex.")
 

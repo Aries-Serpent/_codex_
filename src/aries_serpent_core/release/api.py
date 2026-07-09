@@ -31,10 +31,10 @@ import tarfile  # noqa: E402
 from pathlib import Path  # noqa: E402
 from typing import Any
 
-from codex.archive.api import restore  # noqa: E402
-from codex.archive.dal import ArchiveDAL  # noqa: E402
-from codex.evidence.core import evidence_append  # noqa: E402
-from codex.release.manifest import dump_manifest_locked, load_manifest  # noqa: E402
+from aries_serpent_core.archive.api import restore  # noqa: E402
+from aries_serpent_core.archive.dal import ArchiveDAL  # noqa: E402
+from aries_serpent_core.evidence.core import evidence_append  # noqa: E402
+from aries_serpent_core.release.manifest import dump_manifest_locked, load_manifest  # noqa: E402
 
 
 def _set_mode(path: Path, mode_str: str) -> None:

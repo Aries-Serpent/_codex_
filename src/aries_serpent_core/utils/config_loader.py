@@ -12,7 +12,7 @@ Key features:
 - Configuration override support
 
 Usage:
-    from codex.utils.config_loader import load_config, load_error_config
+    from aries_serpent_core.utils.config_loader import load_config, load_error_config
 
     # Load error configuration
     errors = load_error_config()

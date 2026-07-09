@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections.abc import Mapping
 from typing import Any
 
-from codex.evidence import append_evidence, utc_now
+from aries_serpent_core.evidence import append_evidence, utc_now
 
 __all__ = ["apply_routing_stub", "apply_slas_stub"]
 

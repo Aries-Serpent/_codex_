@@ -4,8 +4,8 @@ Reference Python plugin implementation.
 
 from pathlib import Path
 
-from codex.ast import parse_python
-from codex.ast.node import StandardizedASTNode
+from aries_serpent_core.ast import parse_python
+from aries_serpent_core.ast.node import StandardizedASTNode
 
 from . import ASTPlugin, PluginMetadata
 

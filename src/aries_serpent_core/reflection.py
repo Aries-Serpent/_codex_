@@ -6,7 +6,7 @@ Agents can call reflect() to generate a structured introspection report
 about a target module, function, or session state.
 
 Usage (programmatic):
-    from codex.reflection import reflect, RecursionGuard
+    from aries_serpent_core.reflection import reflect, RecursionGuard
 
     report = reflect("src/codex/cli.py", depth=2)
     logger.info(report.summary)

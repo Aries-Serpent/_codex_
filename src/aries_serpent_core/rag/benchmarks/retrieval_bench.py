@@ -77,8 +77,8 @@ def benchmark_retrieval(
 
 def _build_test_index(size: int, index_name: str, tmpdir: str) -> None:
     """Build a test index with specified size."""
-    from codex.rag.embeddings import create_embedding_provider
-    from codex.rag.indexer import chunk_text, persist_index
+    from aries_serpent_core.rag.embeddings import create_embedding_provider
+    from aries_serpent_core.rag.indexer import chunk_text, persist_index
 
     provider = create_embedding_provider("tfidf")
 
@@ -110,7 +110,7 @@ def _build_test_index(size: int, index_name: str, tmpdir: str) -> None:
 
 def _query_index(query: str, index_name: str, top_k: int, tmpdir: str) -> list[dict[str, Any]]:
     """Query the index and return results."""
-    from codex.rag.retriever import Retriever
+    from aries_serpent_core.rag.retriever import Retriever
 
     retriever = Retriever(index_name=index_name, tenant_id="benchmark", index_dir=tmpdir)
 

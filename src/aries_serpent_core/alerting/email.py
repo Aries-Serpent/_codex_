@@ -26,7 +26,7 @@ import smtplib
 from email.mime.text import MIMEText
 from typing import Any
 
-from codex.alerting.base import AlertChannel, AlertEvent
+from aries_serpent_core.alerting.base import AlertChannel, AlertEvent
 
 logger = logging.getLogger(__name__)
 

@@ -8,7 +8,7 @@ Security: Addresses CodeQL py/clear-text-logging-sensitive-data and
 py/clear-text-storage-sensitive-data findings.
 
 Usage:
-    from codex.security.logging_utils import redact_sensitive_data, safe_log
+    from aries_serpent_core.security.logging_utils import redact_sensitive_data, safe_log
 
     # Redact a message
     safe_msg = redact_sensitive_data("Authorization: ******")

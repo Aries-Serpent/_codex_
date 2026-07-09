@@ -7,7 +7,7 @@ Classes:
     ChatSession: Context manager for managing a logged chat conversation.
 
 Examples:
-    >>> from codex.chat import ChatSession
+    >>> from aries_serpent_core.chat import ChatSession
     >>> with ChatSession("my-session-id") as session:
     ...     session.log_user("Hello, world!")
     ...     session.log_assistant("Hello! How can I help?")
@@ -21,7 +21,7 @@ import uuid
 from pathlib import Path
 from typing import Optional
 
-from codex.logging.session_logger import log_event
+from aries_serpent_core.logging.session_logger import log_event
 
 logger = logging.getLogger(__name__)
 

@@ -7,7 +7,7 @@
 from __future__ import annotations
 
 
-from codex.logging.structured_logger import logger
+from aries_serpent_core.logging.structured_logger import logger
 
 import argparse  # noqa: E402
 import hashlib  # noqa: E402

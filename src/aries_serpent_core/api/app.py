@@ -47,7 +47,7 @@ from transformers import (  # noqa: E402
 app = FastAPI(title="codex", version="0.2.0")
 
 try:
-    from codex.api.auth_routes import create_auth_router
+    from aries_serpent_core.api.auth_routes import create_auth_router
 
     # Pass prefix="" to override the router's own default "/auth" prefix —
     # the include_router prefix="/api/auth" supplies the full mount point.
@@ -63,7 +63,7 @@ except AttributeError as _auth_exc:  # pragma: no cover – unexpected init erro
 
 # Include legacy endpoints with RFC 8594 deprecation headers
 try:
-    from codex.api.legacy_endpoints import router as legacy_router
+    from aries_serpent_core.api.legacy_endpoints import router as legacy_router
 
     app.include_router(legacy_router, tags=["legacy"])
 except ImportError:  # pragma: no cover – legacy module not installed
@@ -196,7 +196,7 @@ def health() -> dict[str, Any]:
 
     # -- BrainClient health (CB-004) ----------------------------------------
     try:
-        from codex.agents.brain_client import BrainClient
+        from aries_serpent_core.agents.brain_client import BrainClient
 
         client = BrainClient()
         result["cognitive_brain"] = {

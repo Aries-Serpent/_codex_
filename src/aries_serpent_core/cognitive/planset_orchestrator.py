@@ -40,7 +40,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional
 
-from codex.cognitive.quantum_planset_engine import (
+from aries_serpent_core.cognitive.quantum_planset_engine import (
     ImprovementArea,
     PlanStep,
     QuantumPlansetEngine,

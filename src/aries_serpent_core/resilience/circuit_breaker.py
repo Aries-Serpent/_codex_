@@ -10,7 +10,7 @@ Implements the classic three-state circuit-breaker pattern:
 
 Usage::
 
-    from codex.resilience import CircuitBreaker, CircuitOpenError
+    from aries_serpent_core.resilience import CircuitBreaker, CircuitOpenError
 
     cb = CircuitBreaker(failure_threshold=3, recovery_timeout=30)
 

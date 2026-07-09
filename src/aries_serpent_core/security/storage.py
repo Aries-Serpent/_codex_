@@ -15,7 +15,7 @@ Security Features:
 - Multiple encryption algorithms for different use cases
 
 Usage:
-    from codex.security.storage import SecureStorage
+    from aries_serpent_core.security.storage import SecureStorage
 
     # Default: Fernet encryption
     storage = SecureStorage()
@@ -72,7 +72,7 @@ class SecureStorage:
 
     Example:
         >>> import os
-        >>> from codex.security.storage import generate_key
+        >>> from aries_serpent_core.security.storage import generate_key
         >>> os.environ['ENCRYPTION_KEY'] = generate_key()
         >>>
         >>> # Default Fernet encryption
@@ -288,7 +288,7 @@ def generate_key() -> str:
         Base64-encoded encryption key
 
     Example:
-        >>> from codex.security.storage import generate_key
+        >>> from aries_serpent_core.security.storage import generate_key
         >>> key = generate_key()
         >>> # Store this key securely (e.g., in environment variable)
         >>> # DO NOT commit to version control

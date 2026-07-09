@@ -13,7 +13,7 @@ Features:
 
 Usage::
 
-    from codex.logging.structured_logger import logger
+    from aries_serpent_core.logging.structured_logger import logger
 
     logger.info("Processing file: %s", filename)
     logger.error("Failed to process: %s", error)

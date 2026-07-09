@@ -10,8 +10,8 @@ Wraps skill invocations with:
 
 Usage::
 
-    from codex.skills.envelope import ExecutionEnvelope
-    from codex.skills.registry import get_registry
+    from aries_serpent_core.skills.envelope import ExecutionEnvelope
+    from aries_serpent_core.skills.registry import get_registry
 
     registry = get_registry()
     registry.discover()
@@ -34,7 +34,7 @@ import traceback
 import uuid
 from typing import Any
 
-from codex.logging.structured_logger import logger
+from aries_serpent_core.logging.structured_logger import logger
 
 from .models import (
     BudgetUsed,

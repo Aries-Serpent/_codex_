@@ -136,7 +136,7 @@ class session:
     """Context manager capturing start and end of a CLI session.
 
     Example:
-        from codex.logging.session_logger import session
+        from aries_serpent_core.logging.session_logger import session
         with session():
             main()
 

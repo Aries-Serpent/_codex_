@@ -6,7 +6,7 @@ import logging
 from collections.abc import Iterable
 from dataclasses import dataclass
 
-from codex.zendesk.quantum import ZendeskTicket
+from aries_serpent_core.zendesk.quantum import ZendeskTicket
 from rag.pipelines.chunking import Chunk, ChunkingPipeline
 from rag.pipelines.quantum_retrieval import QuantumEnhancedRetrieval
 

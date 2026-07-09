@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 
 # Re-export RAGIndexer so tests can patch codex.cli_rag.RAGIndexer
 try:
-    from codex.rag.indexer import RAGIndexer
+    from aries_serpent_core.rag.indexer import RAGIndexer
 except ImportError:  # pragma: no cover - optional dependency
 
     class RAGIndexer:  # type: ignore[no-redef]
@@ -39,7 +39,7 @@ except ImportError:  # pragma: no cover - optional dependency
 # Re-export RAGRetriever (alias for Retriever) so tests can patch
 # codex.cli_rag.RAGRetriever and query() picks up the patched class.
 try:
-    from codex.rag.retriever import Retriever as RAGRetriever
+    from aries_serpent_core.rag.retriever import Retriever as RAGRetriever
 except ImportError:  # pragma: no cover - optional dependency
 
     class RAGRetriever:  # type: ignore[no-redef]
@@ -165,7 +165,7 @@ def build(
         codex rag build --files "docs/**/*.md" --tenant-id customer_a --index-name docs
     """
     try:
-        from codex.rag import build_index_from_files
+        from aries_serpent_core.rag import build_index_from_files
 
         # Validate inputs
         if overlap >= chunk_size:
@@ -585,7 +585,7 @@ def merge(
         codex rag merge --source idx1 --source idx2 --target combined --tenant-id customer_a
     """
     try:
-        from codex.rag import IndexOperation, manage_tenant_indices
+        from aries_serpent_core.rag import IndexOperation, manage_tenant_indices
 
         if not source_indices or len(source_indices) < 2:
             console.print(
@@ -765,7 +765,7 @@ def metrics(
         codex rag metrics --format json --output metrics.json
     """
     try:
-        from codex.rag import get_metrics
+        from aries_serpent_core.rag import get_metrics
 
         metrics_obj = get_metrics()
 
@@ -837,7 +837,7 @@ def benchmark(
     - all: Run all benchmarks
     """
     try:
-        from codex.rag.benchmarks import (
+        from aries_serpent_core.rag.benchmarks import (
             benchmark_e2e_pipeline,
             benchmark_embedding_providers,
             benchmark_indexing,
@@ -919,7 +919,7 @@ def benchmark(
 
         # Check for regressions
         if baseline:
-            from codex.rag.benchmarks.runner import BenchmarkRunner
+            from aries_serpent_core.rag.benchmarks.runner import BenchmarkRunner
 
             runner = BenchmarkRunner()
             runner.results = [type("obj", (), r) for r in results]

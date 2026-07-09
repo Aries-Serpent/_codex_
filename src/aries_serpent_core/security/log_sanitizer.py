@@ -11,7 +11,7 @@ Security Features:
 - Pattern-based detection and masking
 
 Usage:
-    from codex.security.log_sanitizer import sanitize_log, mask_sensitive
+    from aries_serpent_core.security.log_sanitizer import sanitize_log, mask_sensitive
 
     # Sanitize user input
     logger.info(f"User {sanitize_log(username)} logged in")

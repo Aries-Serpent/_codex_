@@ -51,7 +51,7 @@ except (IOError, OSError):  # pragma: no cover - windows fallback
 from .config import DEFAULT_LOG_DB  # noqa: E402
 
 try:
-    from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
+    from aries_serpent_core.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
 
     _codex_sqlite_auto()
 except (IOError, OSError):  # pragma: no cover

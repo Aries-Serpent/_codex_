@@ -12,7 +12,7 @@ The AgentBrainInterface provides:
 4. Learning feedback submission - Report outcomes for continuous learning
 
 Usage:
-    from codex.cognitive.brain_interface import AgentBrainInterface
+    from aries_serpent_core.cognitive.brain_interface import AgentBrainInterface
 
     # Initialize with agent ID
     brain = AgentBrainInterface(agent_id="ci-testing-agent")
@@ -244,7 +244,7 @@ class AgentBrainInterface:
            └─────────┘           └───────────┘          └─────────┘
 
     Example:
-        >>> from codex.cognitive.brain_interface import AgentBrainInterface
+        >>> from aries_serpent_core.cognitive.brain_interface import AgentBrainInterface
         >>>
         >>> # Initialize interface for an agent
         >>> brain = AgentBrainInterface(agent_id="ci-testing-agent")

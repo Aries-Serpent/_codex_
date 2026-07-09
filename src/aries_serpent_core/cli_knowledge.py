@@ -4,7 +4,7 @@ Cli Knowledge Module
 This module provides functionality for cli knowledge.
 
 Usage:
-    from codex.cli_knowledge import ...
+    from aries_serpent_core.cli_knowledge import ...
 
 Classes:
     [To be documented]
@@ -24,10 +24,10 @@ from typing import Any
 
 import typer
 
-from codex.archive.util import compression_codec, json_dumps_sorted, sha256_file, zstd_compress
-from codex.knowledge.build import archive_and_manifest, build_kb
-from codex.knowledge.chunk import approx_tokens, chunk_by_headings
-from codex.release.api import pack_release, verify_bundle
+from aries_serpent_core.archive.util import compression_codec, json_dumps_sorted, sha256_file, zstd_compress
+from aries_serpent_core.knowledge.build import archive_and_manifest, build_kb
+from aries_serpent_core.knowledge.chunk import approx_tokens, chunk_by_headings
+from aries_serpent_core.release.api import pack_release, verify_bundle
 
 DEFAULT_ROOT = Path("docs")
 DEFAULT_KB_OUT = Path("artifacts/kb.ndjsonl")

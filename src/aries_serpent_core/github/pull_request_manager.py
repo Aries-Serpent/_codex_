@@ -9,7 +9,7 @@ import logging
 from pathlib import Path
 from typing import Any
 
-from codex.github.api_client import _GITHUB_API, APIClient
+from aries_serpent_core.github.api_client import _GITHUB_API, APIClient
 
 logger = logging.getLogger(__name__)
 

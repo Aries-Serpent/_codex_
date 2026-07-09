@@ -15,9 +15,9 @@ Phase 10.3: OODA Orchestration (optional).
 
 from __future__ import annotations
 
-from codex.brain.checkpoint_manager import CheckpointManager
-from codex.brain.session_resume import ResumeResult, SessionResume
-from codex.brain.session_serializer import (
+from aries_serpent_core.brain.checkpoint_manager import CheckpointManager
+from aries_serpent_core.brain.session_resume import ResumeResult, SessionResume
+from aries_serpent_core.brain.session_serializer import (
     AgentStateSnapshot,
     ContextSnapshot,
     DecisionSnapshot,
@@ -35,7 +35,7 @@ from codex.brain.session_serializer import (
 
 # Phase 10.2: Memory Synchronization
 try:
-    from codex.brain.memory_sync import (
+    from aries_serpent_core.brain.memory_sync import (
         ConsolidationMetrics,  # noqa: F401
         DuplicateMatch,  # noqa: F401
         ImprovementArea,  # noqa: F401
@@ -51,16 +51,16 @@ except ImportError:
 
 # Phase 10.3: OODA Orchestration
 try:
-    from codex.brain.ooda_actor import (
+    from aries_serpent_core.brain.ooda_actor import (
         ExecutionReport,  # noqa: F401
         OODAactor,  # noqa: F401
     )
-    from codex.brain.ooda_decider import (
+    from aries_serpent_core.brain.ooda_decider import (
         DecisionDirective,  # noqa: F401
         DecisionType,  # noqa: F401
         OODADecider,  # noqa: F401
     )
-    from codex.brain.ooda_observer import (
+    from aries_serpent_core.brain.ooda_observer import (
         AgentEcosystemState,  # noqa: F401
         EnvironmentMetrics,  # noqa: F401
         Observable,  # noqa: F401
@@ -68,13 +68,13 @@ try:
         RepositoryState,  # noqa: F401
         TaskQueueState,  # noqa: F401
     )
-    from codex.brain.ooda_orchestrator import (
+    from aries_serpent_core.brain.ooda_orchestrator import (
         CycleRecord,  # noqa: F401
         OODAMetrics,  # noqa: F401
         OODAOrchestrator,  # noqa: F401
         ParallelOODAOrchestrator,  # noqa: F401
     )
-    from codex.brain.ooda_orienter import (
+    from aries_serpent_core.brain.ooda_orienter import (
         OODAOrienter,  # noqa: F401
         Orientation,  # noqa: F401
         Pattern,  # noqa: F401

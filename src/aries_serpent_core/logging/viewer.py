@@ -31,10 +31,10 @@ import os  # noqa: E402
 import re  # noqa: E402
 import sqlite3  # noqa: E402
 
-from codex.logging.structured_logger import logger
+from aries_serpent_core.logging.structured_logger import logger
 
 try:
-    from codex.db.sqlite_patch import auto_enable_from_env
+    from aries_serpent_core.db.sqlite_patch import auto_enable_from_env
 except ImportError as e:
     error_type = type(e).__name__
     logger.debug("ImportError: <ERROR_TYPE>")
@@ -72,7 +72,7 @@ class LogViewer:
             session_id: Session ID to view (latest if None)
             output_format: Output format (text or json)
         """
-        from codex.logging.db_manager import db_manager
+        from aries_serpent_core.logging.db_manager import db_manager
 
         # Ensure database is initialized
         db_manager.init_schema()

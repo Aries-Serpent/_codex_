@@ -16,8 +16,8 @@ the requested mutation class. Phase 2.1 adds production-grade features:
 
 Usage::
 
-    from codex.autonomy.token_broker import TokenBroker, TokenHealthChecker
-    from codex.autonomy.registry import AutonomyRegistry, ControlClass
+    from aries_serpent_core.autonomy.token_broker import TokenBroker, TokenHealthChecker
+    from aries_serpent_core.autonomy.registry import AutonomyRegistry, ControlClass
 
     reg  = AutonomyRegistry.load()
     broker = TokenBroker(registry=reg)

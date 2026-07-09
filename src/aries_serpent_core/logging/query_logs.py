@@ -33,10 +33,10 @@ import json  # noqa: E402
 import os  # noqa: E402
 import sqlite3  # noqa: E402
 
-from codex.logging.structured_logger import logger
+from aries_serpent_core.logging.structured_logger import logger
 
 try:
-    from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
+    from aries_serpent_core.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
 
     _codex_sqlite_auto()
 except (IOError, OSError) as e:
@@ -77,7 +77,7 @@ class LogQueryEngine:
         Returns:
             List of matching log entries as dicts
         """
-        from codex.logging.db_manager import db_manager
+        from aries_serpent_core.logging.db_manager import db_manager
 
         # Ensure database is initialized
         db_manager.init_schema()

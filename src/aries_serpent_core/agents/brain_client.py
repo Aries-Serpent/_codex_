@@ -1,5 +1,5 @@
 """
-from codex.logging.structured_logger import logger
+from aries_serpent_core.logging.structured_logger import logger
 Cognitive Brain CLI API Client — Copilot Agent API Request Tool
 ===============================================================
 
@@ -20,7 +20,7 @@ Cognitive Brain CLI API Client — Copilot Agent API Request Tool
 
 Quick start (every session)
 ----------------------------
-    from codex.agents.brain_client import BrainClient
+    from aries_serpent_core.agents.brain_client import BrainClient
 from scripts.ci._token_resolver import get_token
 
 

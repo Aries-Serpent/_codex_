@@ -161,7 +161,7 @@ def migrate_from_ignore(path: Path, **kwargs) -> str:
         txt = path.read_text(encoding="utf-8", errors="ignore")
 
         # NEW:
-        from codex.file_utils import read_text_safe
+        from aries_serpent_core.file_utils import read_text_safe
         txt = read_text_safe(path)
     """
     logger.warning(

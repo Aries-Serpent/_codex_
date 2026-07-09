@@ -24,7 +24,7 @@ except ImportError:
     pd = None
     pq = None
 
-from codex.logging.structured_logger import logger
+from aries_serpent_core.logging.structured_logger import logger
 
 
 class SessionDB:

@@ -4,7 +4,7 @@ Evidence Module
 This module provides functionality for evidence.
 
 Usage:
-    from codex.evidence import ...
+    from aries_serpent_core.evidence import ...
 
 Classes:
     [To be documented]

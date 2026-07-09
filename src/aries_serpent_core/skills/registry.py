@@ -7,7 +7,7 @@ and also loads Python entry-points declared under the ``codex.skills`` group.
 
 Usage::
 
-    from codex.skills.registry import get_registry
+    from aries_serpent_core.skills.registry import get_registry
 
     reg = get_registry()
     reg.discover()
@@ -39,7 +39,7 @@ except (ImportError, AttributeError):  # pragma: no cover - optional but present
 
 from typing import Any
 
-from codex.logging.structured_logger import logger
+from aries_serpent_core.logging.structured_logger import logger
 
 from .models import RegisteredSkill, SkillManifest
 

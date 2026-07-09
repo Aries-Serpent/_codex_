@@ -22,13 +22,13 @@ import json
 from pathlib import Path
 from typing import Any, Generator
 
-from codex.archive.api import store
-from codex.archive.util import json_dumps_sorted, utcnow_iso
-from codex.knowledge.chunk import approx_tokens, chunk_by_headings
-from codex.knowledge.dedup import dedup_records
-from codex.knowledge.normalize import normalize_file
-from codex.knowledge.pii import scrub
-from codex.knowledge.schema import validate_kb
+from aries_serpent_core.archive.api import store
+from aries_serpent_core.archive.util import json_dumps_sorted, utcnow_iso
+from aries_serpent_core.knowledge.chunk import approx_tokens, chunk_by_headings
+from aries_serpent_core.knowledge.dedup import dedup_records
+from aries_serpent_core.knowledge.normalize import normalize_file
+from aries_serpent_core.knowledge.pii import scrub
+from aries_serpent_core.knowledge.schema import validate_kb
 
 DOMAINS = ("zendesk", "d365", "relocation", "sla", "ops")
 INTENTS = ("admin", "consultant", "runtime", "devops")

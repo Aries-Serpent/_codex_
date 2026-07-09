@@ -19,7 +19,7 @@ in-place and written back to the manifest file.
 
 Usage::
 
-    from codex.skills.compression import compress_skill, install_skill
+    from aries_serpent_core.skills.compression import compress_skill, install_skill
 
     metrics = compress_skill("doc.retriever.core", out_dir=Path("dist"))
     install_skill(Path("dist/doc.retriever.core-1.0.0.7z"))

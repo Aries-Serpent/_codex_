@@ -601,7 +601,7 @@ Usage Examples:
 
 HNSW Index:
 -----------
->>> from codex.retrieval.stores.advanced_indexing import HNSWIndex, HNSWConfig
+>>> from aries_serpent_core.retrieval.stores.advanced_indexing import HNSWIndex, HNSWConfig
 >>> import numpy as np
 >>>
 >>> # Create index with custom config
@@ -622,7 +622,7 @@ HNSW Index:
 
 IVF-PQ Index:
 ------------
->>> from codex.retrieval.stores.advanced_indexing import IVFPQIndex, IVFPQConfig
+>>> from aries_serpent_core.retrieval.stores.advanced_indexing import IVFPQIndex, IVFPQConfig
 >>> import numpy as np
 >>>
 >>> # Create index
@@ -643,7 +643,7 @@ IVF-PQ Index:
 
 Parameter Optimization:
 ----------------------
->>> from codex.retrieval.stores.advanced_indexing import optimize_index_parameters, IndexType
+>>> from aries_serpent_core.retrieval.stores.advanced_indexing import optimize_index_parameters, IndexType
 >>>
 >>> # Get recommendations for 1M vectors
 >>> params = optimize_index_parameters(

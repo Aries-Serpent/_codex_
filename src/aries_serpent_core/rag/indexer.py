@@ -126,7 +126,7 @@ def embed_chunks(
         f"Loading embedding model: {model_name}"
     )  # codeql[py/clear-text-logging-sensitive-data]
     try:
-        from codex.rag._model_utils import safe_load_sentence_transformer
+        from aries_serpent_core.rag._model_utils import safe_load_sentence_transformer
 
         model = safe_load_sentence_transformer(model_name, cache_dir)
 
@@ -926,8 +926,8 @@ class RAGIndexer:
         Callers that require a loaded model should check ``self.model is not None``.
         """
         try:
-            from codex.rag._model_utils import safe_load_sentence_transformer
-            from codex.rag.utils import safe_model_to_device
+            from aries_serpent_core.rag._model_utils import safe_load_sentence_transformer
+            from aries_serpent_core.rag.utils import safe_model_to_device
 
             self.model = safe_load_sentence_transformer(
                 "sentence-transformers/all-MiniLM-L6-v2",
@@ -943,6 +943,6 @@ class RAGIndexer:
         """Move the loaded embedding model to *device* and update ``self.device``."""
         self.device = device
         if self.model is not None:
-            from codex.rag.utils import safe_model_to_device
+            from aries_serpent_core.rag.utils import safe_model_to_device
 
             self.model = safe_model_to_device(self.model, device)

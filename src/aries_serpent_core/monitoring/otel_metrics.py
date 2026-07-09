@@ -4,7 +4,7 @@ This module pre-registers the standard workflow timing histogram used across
 all GitHub Actions jobs so that any code that imports this module can record
 durations with a single call:
 
-    from codex.monitoring.otel_metrics import workflow_duration
+    from aries_serpent_core.monitoring.otel_metrics import workflow_duration
 
     workflow_duration.observe(elapsed_seconds)
 
@@ -26,7 +26,7 @@ steps completed exactly as policy dictates; 0.0 means complete divergence.
 
 Usage (coherence)::
 
-    from codex.monitoring.otel_metrics import workflow_coherence_score
+    from aries_serpent_core.monitoring.otel_metrics import workflow_coherence_score
 
     # Compute per-run coherence and observe once per workflow run
     score = compute_run_coherence(actual_steps, expected_steps)
@@ -35,7 +35,7 @@ Usage (coherence)::
 
 from __future__ import annotations
 
-from codex.monitoring import Histogram, metrics
+from aries_serpent_core.monitoring import Histogram, metrics
 
 # ── Pre-registered instruments ────────────────────────────────────────────────
 

@@ -20,7 +20,7 @@ import sqlite3  # noqa: E402
 from pathlib import Path  # noqa: E402
 
 try:
-    from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
+    from aries_serpent_core.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
 
     _codex_sqlite_auto()
 except (IOError, OSError) as e:

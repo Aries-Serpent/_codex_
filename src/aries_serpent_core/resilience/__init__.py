@@ -28,9 +28,9 @@ Provides building blocks for fault-tolerant external-service integration:
 
 Quick start::
 
-    from codex.resilience import CircuitBreaker, CircuitOpenError
-    from codex.resilience import GracefulDegradation, DegradationError
-    from codex.resilience import retry_with_backoff, RetryExhausted
+    from aries_serpent_core.resilience import CircuitBreaker, CircuitOpenError
+    from aries_serpent_core.resilience import GracefulDegradation, DegradationError
+    from aries_serpent_core.resilience import retry_with_backoff, RetryExhausted
 
     # --- Circuit breaker ---
     cb = CircuitBreaker(failure_threshold=3, recovery_timeout=30)
@@ -61,16 +61,16 @@ Quick start::
         logger.error("All retries failed: %s", exc.__cause__)
 """
 
-from codex.resilience.circuit_breaker import (
+from aries_serpent_core.resilience.circuit_breaker import (
     CircuitBreaker,
     CircuitOpenError,
     CircuitState,
 )
-from codex.resilience.degradation import (
+from aries_serpent_core.resilience.degradation import (
     DegradationError,
     GracefulDegradation,
 )
-from codex.resilience.retry import (
+from aries_serpent_core.resilience.retry import (
     RetryExhausted,
     retry_with_backoff,
 )

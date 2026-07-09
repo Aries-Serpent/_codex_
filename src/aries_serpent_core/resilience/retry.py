@@ -12,7 +12,7 @@ Public API
 
 Quick start::
 
-    from codex.resilience.retry import retry_with_backoff, RetryExhausted
+    from aries_serpent_core.resilience.retry import retry_with_backoff, RetryExhausted
 
     # --- Decorator usage ---
     @retry_with_backoff(max_retries=4, base_delay=0.5)
@@ -39,7 +39,7 @@ from typing import Any, TypeVar
 
 __all__ = ["RetryExhausted", "retry_with_backoff"]
 
-from codex.logging.structured_logger import logger
+from aries_serpent_core.logging.structured_logger import logger
 
 F = TypeVar("F", bound=Callable[..., Any])
 

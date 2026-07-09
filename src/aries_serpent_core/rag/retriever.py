@@ -62,7 +62,7 @@ class Retriever:
 
     def _load_index(self) -> None:
         """Load FAISS index and metadata from disk."""
-        from codex.rag.indexer import load_index
+        from aries_serpent_core.rag.indexer import load_index
 
         try:
             self.faiss_index, self.chunks_metadata, self.index_metadata = load_index(
@@ -91,7 +91,7 @@ class Retriever:
             raise ImportError("sentence-transformers not installed")
 
         try:
-            from codex.rag._model_utils import safe_load_sentence_transformer
+            from aries_serpent_core.rag._model_utils import safe_load_sentence_transformer
 
             logger.info(f"Loading query embedding model: {self.model_name}")
 

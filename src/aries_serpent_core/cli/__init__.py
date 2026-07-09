@@ -2,9 +2,9 @@
 Codex CLI Module — Unified Command-Line Interface
 
 AI_AGENT_HINTS:
-- Canonical import (Click legacy/test): `from codex.cli import cli`
-- Canonical import (Typer modern): `from codex.cli import app`
-- Entry point: `from codex.cli import main`
+- Canonical import (Click legacy/test): `from aries_serpent_core.cli import cli`
+- Canonical import (Typer modern): `from aries_serpent_core.cli import app`
+- Entry point: `from aries_serpent_core.cli import main`
 - Implementation locations:
   - Click:  src/codex/cli.py  (exports click.Group named `cli`)
   - Typer:  src/codex/cli/main.py (exports Typer `app` and `main`)
@@ -18,7 +18,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from codex.logging.structured_logger import logger
+from aries_serpent_core.logging.structured_logger import logger
 
 from .main import app, main
 

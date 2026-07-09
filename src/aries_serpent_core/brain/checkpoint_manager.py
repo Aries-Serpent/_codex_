@@ -12,7 +12,7 @@ Responsibilities:
 - Verify checkpoint integrity via SHA256
 
 Usage:
-    from codex.brain.checkpoint_manager import CheckpointManager
+    from aries_serpent_core.brain.checkpoint_manager import CheckpointManager
 
     manager = CheckpointManager()
 

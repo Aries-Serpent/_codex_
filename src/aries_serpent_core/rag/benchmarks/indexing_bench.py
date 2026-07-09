@@ -82,8 +82,8 @@ def _generate_test_corpus(size: int) -> list[str]:
 
 def _build_index(documents: list[str], index_name: str, chunk_size: int, tmpdir: str) -> None:
     """Build RAG index from documents."""
-    from codex.rag.embeddings import create_embedding_provider
-    from codex.rag.indexer import chunk_text, persist_index
+    from aries_serpent_core.rag.embeddings import create_embedding_provider
+    from aries_serpent_core.rag.indexer import chunk_text, persist_index
 
     # Use TF-IDF for fast benchmarking
     provider = create_embedding_provider("tfidf")

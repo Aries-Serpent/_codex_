@@ -1,5 +1,5 @@
 """
-from codex.logging.structured_logger import logger
+from aries_serpent_core.logging.structured_logger import logger
 MCP tool integration and persistence management.
 
 Classes:

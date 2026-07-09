@@ -400,7 +400,7 @@ import pytest
 from pathlib import Path
 import subprocess
 import os
-from codex.logging.structured_logger import logger
+from aries_serpent_core.logging.structured_logger import logger
 
 class TestBehaviorSnapshots:
     @pytest.fixture

@@ -11,7 +11,7 @@ Key Features:
 - Input sanitization
 
 Usage:
-    from codex.security import mask_token, sanitize_log, hash_secure
+    from aries_serpent_core.security import mask_token, sanitize_log, hash_secure
 
     # Mask sensitive data before logging
     logger.info(f"Token: {mask_token(api_key)}")

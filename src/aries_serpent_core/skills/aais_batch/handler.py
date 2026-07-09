@@ -16,7 +16,7 @@ import asyncio
 import warnings
 from typing import Any
 
-from codex.skills.aais import AAISScorer
+from aries_serpent_core.skills.aais import AAISScorer
 
 _DEFAULT_THRESHOLD = 0.75
 _scorer = AAISScorer()

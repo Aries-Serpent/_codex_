@@ -24,8 +24,8 @@ import urllib.parse
 import urllib.request
 from typing import Any
 
-from codex.alerting.base import AlertChannel, AlertEvent, AlertSeverity
-from codex.resilience.retry import RetryExhausted, retry_with_backoff
+from aries_serpent_core.alerting.base import AlertChannel, AlertEvent, AlertSeverity
+from aries_serpent_core.resilience.retry import RetryExhausted, retry_with_backoff
 
 logger = logging.getLogger(__name__)
 

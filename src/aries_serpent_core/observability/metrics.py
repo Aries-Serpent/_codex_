@@ -1,6 +1,6 @@
 """Metrics collection system for the Codex agent ecosystem.
 
-from codex.logging.structured_logger import logger
+from aries_serpent_core.logging.structured_logger import logger
 Phase 12.3 — Agent Observability & Telemetry
 
 ``MetricsCollector`` tracks per-agent and ecosystem-wide metrics using an
@@ -26,7 +26,7 @@ Ecosystem-wide:
 
 Usage::
 
-    from codex.observability.metrics import MetricsCollector
+    from aries_serpent_core.observability.metrics import MetricsCollector
 
     collector = MetricsCollector(window_size=500)
     collector.record_agent_execution("orchestrator", duration_ms=1250.0, success=True)
@@ -50,8 +50,8 @@ from typing import Any
 
 # Build on the existing Histogram infrastructure
 try:
-    from codex.monitoring import Histogram
-    from codex.monitoring import metrics as _global_registry
+    from aries_serpent_core.monitoring import Histogram
+    from aries_serpent_core.monitoring import metrics as _global_registry
 
     _MONITORING_AVAILABLE = True
 except Exception:  # pragma: no cover – graceful degradation

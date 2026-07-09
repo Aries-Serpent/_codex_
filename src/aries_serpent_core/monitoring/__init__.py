@@ -86,7 +86,7 @@ class _MetricRegistry:
 
 metrics = _MetricRegistry()
 
-from codex.monitoring.performance_monitor import (  # noqa: E402
+from aries_serpent_core.monitoring.performance_monitor import (  # noqa: E402
     PerformanceMonitor,
     PerformanceSnapshot,
     PerformanceThresholds,

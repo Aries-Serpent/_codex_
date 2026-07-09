@@ -8,7 +8,7 @@ that covers the full login / logout / password-change lifecycle.
 Typical usage::
 
     import os
-    from codex.auth import Authenticator, UserStore, TokenManager
+    from aries_serpent_core.auth import Authenticator, UserStore, TokenManager
 
     store = UserStore()
     # Get secret key from environment (required in production)

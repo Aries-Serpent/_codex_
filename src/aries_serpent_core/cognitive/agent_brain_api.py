@@ -22,7 +22,7 @@ Usage
 -----
 ::
 
-    from codex.cognitive import AgentBrainAPI, ImprovementArea
+    from aries_serpent_core.cognitive import AgentBrainAPI, ImprovementArea
 
     api = AgentBrainAPI(agent_id="codeql-alert-resolution-agent")
 
@@ -61,10 +61,10 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional
 
-from codex.cognitive.brain_interface import AgentBrainInterface, LearningFeedback
-from codex.cognitive.planset_orchestrator import PlansetOrchestrator, PromptSet
-from codex.cognitive.quantum_planset_engine import ImprovementArea, QuantumPlansetEngine
-from codex.logging.structured_logger import logger
+from aries_serpent_core.cognitive.brain_interface import AgentBrainInterface, LearningFeedback
+from aries_serpent_core.cognitive.planset_orchestrator import PlansetOrchestrator, PromptSet
+from aries_serpent_core.cognitive.quantum_planset_engine import ImprovementArea, QuantumPlansetEngine
+from aries_serpent_core.logging.structured_logger import logger
 
 # ---------------------------------------------------------------------------
 # Agent → ImprovementArea capability map
@@ -565,7 +565,7 @@ class CognitiveBrain:
     ---------------------
     ::
 
-        from codex.cognitive import brain
+        from aries_serpent_core.cognitive import brain
 
         ctx  = brain.session("my-agent-id")   # → AgentSessionContext
         next = brain.next()                    # → highest-priority PromptSet
@@ -583,7 +583,7 @@ class CognitiveBrain:
     ----------------------
     ::
 
-        from codex.cognitive import brain → CognitiveBrain (singleton)
+        from aries_serpent_core.cognitive import brain → CognitiveBrain (singleton)
                │
                ├── brain.for_agent(id)   → AgentBrainAPI
                │       ├── get_session_context()
@@ -771,7 +771,7 @@ class CognitiveBrain:
 
 QUICK START (3 lines)
 ─────────────────────
-  from codex.cognitive import brain
+  from aries_serpent_core.cognitive import brain
 
   ctx  = brain.session("my-agent-id")   # full session context
   next = brain.next()                    # highest-priority action
@@ -851,7 +851,7 @@ CODEBASE AGENCY POLICY
             ),
             "cli": "python scripts/cognitive/orchestrate.py",
             "quickstart": (
-                "from codex.cognitive import brain\n"
+                "from aries_serpent_core.cognitive import brain\n"
                 "ctx = brain.session('my-agent-id')\n"
                 "brain.advance('SECURITY_REMEDIATION', 'SEC-01')"
             ),

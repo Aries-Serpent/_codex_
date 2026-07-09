@@ -8,7 +8,7 @@ Every actuation surface MUST query this registry before taking action.
 
 Usage::
 
-    from codex.autonomy.registry import AutonomyRegistry
+    from aries_serpent_core.autonomy.registry import AutonomyRegistry
 
     reg = AutonomyRegistry.load()          # reads .codex/autonomy_registry.yaml
     reg.assert_permitted("AUT-007", "REPO_STATE_WRITE")  # raises if denied

@@ -19,7 +19,7 @@ Behaviour on ``JSONDecodeError``:
 
 Usage::
 
-    from codex.utils.json_safe import safe_json_loads
+    from aries_serpent_core.utils.json_safe import safe_json_loads
 
     data = safe_json_loads(raw, source="POST /webhook/github")
 """

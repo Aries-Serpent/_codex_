@@ -23,7 +23,7 @@ Modules:
   - async_utils: Async context managers (MRC-005)
 """
 
-from codex.consolidation.async_utils import (
+from aries_serpent_core.consolidation.async_utils import (
     AsyncContextBase,
     AsyncPoolManager,
     AsyncResourceManager,
@@ -33,19 +33,19 @@ from codex.consolidation.async_utils import (
     async_pool_connection,
     async_timeout_context,
 )
-from codex.consolidation.config import (
+from aries_serpent_core.consolidation.config import (
     BaseConfig,
     ConfigParser,
     ConfigValidator,
     DefaultConfig,
 )
-from codex.consolidation.decorators import (
+from aries_serpent_core.consolidation.decorators import (
     handle_async_errors,
     handle_errors,
     require_auth,
     validate,
 )
-from codex.consolidation.errors import (
+from aries_serpent_core.consolidation.errors import (
     AsyncErrorHandler,
     AuthenticationError,
     ErrorHandler,
@@ -55,14 +55,14 @@ from codex.consolidation.errors import (
     wrap_async_with_error_handling,
     wrap_with_error_handling,
 )
-from codex.consolidation.logging_bootstrap import (
+from aries_serpent_core.consolidation.logging_bootstrap import (
     ContextLogger,
     LogFormats,
     LoggerBootstrap,
     LoggingConfig,
     LogLevel,
 )
-from codex.consolidation.mocks import (
+from aries_serpent_core.consolidation.mocks import (
     AsyncFakeServiceFactory,
     AsyncMockClientFactory,
     FakeModel,
@@ -75,7 +75,7 @@ from codex.consolidation.mocks import (
 
 # Test fixtures are intentionally NOT imported here to avoid making pytest
 # a runtime dependency of the core package. Import from:
-#   from codex.consolidation.test_fixtures import FixtureFactory  # in test code only
+#   from aries_serpent_core.consolidation.test_fixtures import FixtureFactory  # in test code only
 # Note: This requires pytest to be installed separately (e.g., via `pip install codex-ml[full]`)
 # or directly: `pip install pytest`
 
@@ -124,5 +124,5 @@ __all__ = [
     "async_pool_connection",
     "async_timeout_context",
     # NOTE: Test fixtures (MRC-001) intentionally excluded to avoid pytest dependency
-    # Import from test code: from codex.consolidation.test_fixtures import FixtureFactory
+    # Import from test code: from aries_serpent_core.consolidation.test_fixtures import FixtureFactory
 ]

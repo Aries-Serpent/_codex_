@@ -43,7 +43,7 @@ except ImportError as e:
     TYPER_AVAILABLE = False
     import argparse
 
-from codex.logging.structured_logger import logger
+from aries_serpent_core.logging.structured_logger import logger
 
 if TYPER_AVAILABLE:
     app = typer.Typer(
@@ -63,7 +63,7 @@ if TYPER_AVAILABLE:
         ] = None,
     ):
         """Ingest a Python file or repository."""
-        from codex.ingest import ingest as do_ingest
+        from aries_serpent_core.ingest import ingest as do_ingest
 
         try:
             snapshot = do_ingest(source, manifest_path=manifest, snapshot_id=snapshot_id)
@@ -87,7 +87,7 @@ if TYPER_AVAILABLE:
         ] = False,
     ):
         """Run analysis on a snapshot."""
-        from codex.analyze.static import analyze as static_analyze
+        from aries_serpent_core.analyze.static import analyze as static_analyze
 
         artifacts_dir = Path("artifacts") / snapshot_id
         if not artifacts_dir.exists():
@@ -120,8 +120,8 @@ if TYPER_AVAILABLE:
         dry_run: Annotated[bool, typer.Option("--dry-run", help="Don't modify files")] = True,
     ):
         """Apply transformations to a snapshot."""
-        from codex.transform.transformer import Tier
-        from codex.transform.transformer import transform as do_transform
+        from aries_serpent_core.transform.transformer import Tier
+        from aries_serpent_core.transform.transformer import transform as do_transform
 
         artifacts_dir = Path("artifacts") / snapshot_id
         if not artifacts_dir.exists():
@@ -160,7 +160,7 @@ if TYPER_AVAILABLE:
         ] = "strict",
     ):
         """Verify behavior preservation."""
-        from codex.verify.comparator import ComparisonMode, compare
+        from aries_serpent_core.verify.comparator import ComparisonMode, compare
 
         artifacts_dir = Path("artifacts") / snapshot_id
         if not artifacts_dir.exists():
@@ -243,9 +243,9 @@ if TYPER_AVAILABLE:
         ] = False,
     ) -> None:
         """Generate HTML AST visualization report."""
-        from codex.ast.graph import ASTGraph
-        from codex.ast.parser import UniversalParser
-        from codex.ast.visualize import HTMLVisualizer
+        from aries_serpent_core.ast.graph import ASTGraph
+        from aries_serpent_core.ast.parser import UniversalParser
+        from aries_serpent_core.ast.visualize import HTMLVisualizer
 
         source_path = Path(source)
         if not source_path.exists():

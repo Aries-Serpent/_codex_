@@ -5,7 +5,7 @@ Provides FastAPI/Starlette middleware for authentication and authorization.
 Supports JWT, API key, and OAuth authentication methods.
 
 Usage:
-    from codex.auth.middleware import AuthMiddleware, require_auth
+    from aries_serpent_core.auth.middleware import AuthMiddleware, require_auth
 
     app = FastAPI()
     app.add_middleware(AuthMiddleware, token_manager=token_manager)
@@ -292,8 +292,8 @@ class AuthMiddleware:
 
     Example:
         import os
-        from codex.auth.middleware import AuthMiddleware
-        from codex.auth.token_manager import TokenManager
+        from aries_serpent_core.auth.middleware import AuthMiddleware
+        from aries_serpent_core.auth.token_manager import TokenManager
 
         app = FastAPI()
         secret_key = os.getenv("AUTH_SECRET_KEY") or os.getenv("CODEX_AUTH_SECRET_KEY")

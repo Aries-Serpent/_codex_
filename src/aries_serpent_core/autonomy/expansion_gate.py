@@ -12,7 +12,7 @@ conditions are satisfied:
 
 Usage::
 
-    from codex.autonomy.expansion_gate import ExpansionGate
+    from aries_serpent_core.autonomy.expansion_gate import ExpansionGate
 
     gate = ExpansionGate(
         governance_integrity=0.85,
@@ -34,7 +34,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from codex.logging.structured_logger import logger
+from aries_serpent_core.logging.structured_logger import logger
 
 # ── Thresholds from the blueprint expansion gate equation ─────────────────────
 _GI_THRESHOLD = 0.80

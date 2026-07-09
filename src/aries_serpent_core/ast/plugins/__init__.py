@@ -9,7 +9,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Any
 
-from codex.ast.node import StandardizedASTNode
+from aries_serpent_core.ast.node import StandardizedASTNode
 
 
 @dataclass

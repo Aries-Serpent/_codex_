@@ -5,7 +5,7 @@ This module provides utilities for integrating agents with the cognitive brain,
 including pattern querying, learning feedback, and session state management.
 
 Example:
-    >>> from codex.cognitive.agent_integration import integrate_agent
+    >>> from aries_serpent_core.cognitive.agent_integration import integrate_agent
     >>> brain = integrate_agent("ci-testing-agent")
     >>> patterns = brain.query_patterns("pytest collection error")
     >>> brain.submit_learning("TFR-001", "success", {"fix": "added import"})
@@ -409,7 +409,7 @@ This agent is integrated with the Cognitive Brain and can:
 ### Usage in Agent Workflow
 
 ```python
-from codex.cognitive.brain_interface import AgentBrainInterface
+from aries_serpent_core.cognitive.brain_interface import AgentBrainInterface
 
 # Initialize brain interface for this agent
 brain = AgentBrainInterface(agent_id="{agent_id}")

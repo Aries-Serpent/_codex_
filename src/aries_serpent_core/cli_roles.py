@@ -7,9 +7,9 @@ from pathlib import Path
 
 import typer
 
-from codex.dynamics.model.role import DynamicsRole
-from codex.dynamics.role_matrix import build_role_matrix
-from codex.zendesk.model.role import Role as ZendeskRole
+from aries_serpent_core.dynamics.model.role import DynamicsRole
+from aries_serpent_core.dynamics.role_matrix import build_role_matrix
+from aries_serpent_core.zendesk.model.role import Role as ZendeskRole
 
 app = typer.Typer(help="Role matrix and permission harmonization.")
 

@@ -1,0 +1,116 @@
+# Kubernetes RBAC for Aries-Serpent
+# ServiceAccount, Role, and RoleBinding with least-privilege principles
+
+---
+# ServiceAccount for Aries-Serpent pods
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: aries-serpent
+  namespace: default
+  labels:
+    app: aries-serpent
+    version: 0.1.0-final
+  annotations:
+    description: "Service account for Aries-Serpent application pods"
+    owner: "DevOps Team"
+
+---
+# Role with minimal required permissions
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: aries-serpent-role
+  namespace: default
+  labels:
+    app: aries-serpent
+    version: 0.1.0-final
+  annotations:
+    description: "Role for Aries-Serpent pod permissions (least privilege)"
+    owner: "DevOps Team"
+rules:
+# Read ConfigMap (configuration)
+- apiGroups: [""]
+  resources: ["configmaps"]
+  resourceNames: ["aries-serpent-config"]
+  verbs: ["get"]
+
+# Read Secrets (sensitive credentials)
+- apiGroups: [""]
+  resources: ["secrets"]
+  resourceNames: ["aries-serpent-secrets"]
+  verbs: ["get"]
+
+# Read Pod information (for self-discovery)
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "list", "watch"]
+
+# Optional: Event creation for health reporting
+- apiGroups: [""]
+  resources: ["events"]
+  verbs: ["create", "patch"]
+
+---
+# RoleBinding linking ServiceAccount to Role
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: aries-serpent-binding
+  namespace: default
+  labels:
+    app: aries-serpent
+    version: 0.1.0-final
+  annotations:
+    description: "Binding ServiceAccount to Role"
+    owner: "DevOps Team"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: aries-serpent-role
+subjects:
+- kind: ServiceAccount
+  name: aries-serpent
+  namespace: default
+
+---
+# Optional: PodSecurityPolicy (deprecated in K8s 1.25+, use Pod Security Standards)
+apiVersion: v1
+kind: SecurityContextConstraints
+metadata:
+  name: aries-serpent-scc
+  namespace: default
+  labels:
+    app: aries-serpent
+    version: 0.1.0-final
+allowHostDirVolumePlugin: false
+allowHostIPC: false
+allowHostNetwork: false
+allowHostPID: false
+allowHostPorts: false
+allowPrivilegedContainer: false
+allowedCapabilities: []
+defaultAddCapabilities: []
+fsGroup:
+  type: MustRunAs
+  ranges:
+    - min: 1001
+      max: 1001
+readOnlyRootFilesystem: true
+requiredDropCapabilities:
+  - ALL
+runAsUser:
+  type: MustRunAsNonRoot
+  uid: 1001
+seLinuxContext:
+  type: MustRunAs
+supplementalGroups:
+  type: MustRunAs
+  ranges:
+    - min: 1001
+      max: 1001
+volumes:
+  - configMap
+  - secret
+  - emptyDir
+  - downwardAPI

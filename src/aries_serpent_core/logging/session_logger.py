@@ -35,7 +35,7 @@ from typing import Any, Literal, Optional
 logger = logging.getLogger(__name__)
 
 try:
-    from codex.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
+    from aries_serpent_core.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
 
     _codex_sqlite_auto()
 except (ImportError, AttributeError) as exc:  # pragma: no cover - defensive
@@ -61,7 +61,7 @@ except (ImportError, AttributeError):
     _shared_DB_LOCK = None  # type: ignore[assignment]
     _shared_init_db = None  # type: ignore[assignment]
     try:  # Fallback: rely on monkeypatch adapters
-        from codex.monkeypatch.log_adapters import (  # type: ignore[no-redef]  # noqa: I001
+        from aries_serpent_core.monkeypatch.log_adapters import (  # type: ignore[no-redef]  # noqa: I001
             log_event as _shared_log_event,
         )
     except (IOError, OSError):  # pragma: no cover - nothing available
@@ -318,7 +318,7 @@ def log_message(
             DEFAULT_LOG_DB.
 
     Usage:
-        >>> from codex.logging.session_logger import log_message
+        >>> from aries_serpent_core.logging.session_logger import log_message
         >>> log_message("S1", "user", "hi there")
     """
     if role not in _ALLOWED_ROLES:
@@ -335,7 +335,7 @@ class SessionLogger:
     """Context manager for session-scoped logging.
 
     Example:
-        >>> from codex.logging.session_logger import SessionLogger
+        >>> from aries_serpent_core.logging.session_logger import SessionLogger
         >>> with SessionLogger(session_id="dev-session") as sl:
         ...     sl.log("user", "hi")
         ...     sl.log("assistant", "hello")

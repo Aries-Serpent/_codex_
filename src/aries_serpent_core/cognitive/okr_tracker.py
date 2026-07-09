@@ -12,7 +12,7 @@ Usage
 -----
 ::
 
-    from codex.cognitive.okr_tracker import OKRTracker, ObjectiveStatus
+    from aries_serpent_core.cognitive.okr_tracker import OKRTracker, ObjectiveStatus
 
     tracker = OKRTracker()
     summary = tracker.get_summary()
@@ -34,7 +34,7 @@ from enum import Enum
 from pathlib import Path
 from typing import Any
 
-from codex.logging.structured_logger import logger
+from aries_serpent_core.logging.structured_logger import logger
 
 _CONTEXT_PATH = Path(".codex/agent_context.json")
 _PROGRESS_PATH = Path(".codex/okr/progress.json")

@@ -21,7 +21,7 @@ Structured log schema::
 
 Usage::
 
-    from codex.observability.logging import ObservabilityLogger
+    from aries_serpent_core.observability.logging import ObservabilityLogger
 
     obs = ObservabilityLogger(session_id="run-001", agent_id="orchestrator")
     obs.log_agent_action("orchestrator", "execute_task", "success", latency_ms=750.0)
@@ -44,8 +44,8 @@ from typing import Any
 
 # Integration with existing session_logger (best-effort; degrades gracefully)
 try:
-    from codex.logging.session_logger import get_session_id as _get_session_id
-    from codex.logging.session_logger import log_event as _session_log_event
+    from aries_serpent_core.logging.session_logger import get_session_id as _get_session_id
+    from aries_serpent_core.logging.session_logger import log_event as _session_log_event
 
     _SESSION_LOGGER_AVAILABLE = True
 except Exception:  # pragma: no cover – optional integration

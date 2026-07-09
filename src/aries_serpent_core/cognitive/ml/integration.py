@@ -16,14 +16,14 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from codex.cognitive.brain_interface import AgentBrainInterface
-from codex.cognitive.ml.data_pipeline import (
+from aries_serpent_core.cognitive.brain_interface import AgentBrainInterface
+from aries_serpent_core.cognitive.ml.data_pipeline import (
     DataPipeline,
     FeatureExtractor,
     PatternSample,
 )
-from codex.cognitive.ml.recommender import ResolutionRecommender, SuccessPredictor
-from codex.cognitive.ml.symptom_classifier import SymptomClassifier
+from aries_serpent_core.cognitive.ml.recommender import ResolutionRecommender, SuccessPredictor
+from aries_serpent_core.cognitive.ml.symptom_classifier import SymptomClassifier
 
 logger = logging.getLogger(__name__)
 

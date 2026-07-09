@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from codex.monitoring import Counter, Histogram, metrics
-from codex.zendesk.monitoring.zendesk_metrics import register_zendesk_metrics
+from aries_serpent_core.monitoring import Counter, Histogram, metrics
+from aries_serpent_core.zendesk.monitoring.zendesk_metrics import register_zendesk_metrics
 from mcp.metrics.mcp_metrics import MetricCollector
 
 

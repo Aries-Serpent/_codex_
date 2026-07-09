@@ -13,7 +13,7 @@ Responsibilities:
 - Apply compression
 
 Usage:
-    from codex.brain.session_serializer import SessionSerializer
+    from aries_serpent_core.brain.session_serializer import SessionSerializer
 
     serializer = SessionSerializer()
 

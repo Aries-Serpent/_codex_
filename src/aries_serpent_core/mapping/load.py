@@ -29,7 +29,7 @@ from typing import Generic, TypeVar  # noqa: E402
 
 from pydantic import BaseModel, ValidationError  # noqa: E402
 
-from codex.evidence import append_evidence, utc_now  # noqa: E402
+from aries_serpent_core.evidence import append_evidence, utc_now  # noqa: E402
 
 from .models import RoutingPattern, SlaParity  # noqa: E402
 
