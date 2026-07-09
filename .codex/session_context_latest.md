@@ -1,10 +1,10 @@
-# Session Context — 2026-07-09T19:01:56Z
+# Session Context — 2026-07-09T19:21:45Z
 **Branch:** `copilot/continue-deployment-arise-serpent-v010-final`  **PR:** #5278  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4922` (✅)
-- GraphQL remaining: `4980` (✅)
+- REST remaining: `4912` (✅)
+- GraphQL remaining: `4978` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
@@ -12,21 +12,21 @@
 State: `open`  Draft: `False`  Branch: `copilot/continue-deployment-arise-serpent-v010-final` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **.github/workflows/13-3-enterprise-compliance.yml** — `failure` on `copilot/continue-deployment-arise-serpent-v010-final` (2026-07-09)
 - **.github/workflows/ci-failure-issue-creator.yml** — `failure` on `copilot/continue-deployment-arise-serpent-v010-final` (2026-07-09)
-- **.github/workflows/branch-rebase-gate.yml** — `failure` on `copilot/continue-deployment-arise-serpent-v010-final` (2026-07-09)
-- **.github/workflows/autonomy-phase-ci-matrix.yml** — `failure` on `copilot/continue-deployment-arise-serpent-v010-final` (2026-07-09)
+- **.github/workflows/agent-orchestration-unified.yml** — `failure` on `copilot/continue-deployment-arise-serpent-v010-final` (2026-07-09)
 - **.github/workflows/agent-auth-delegation.yml** — `failure` on `copilot/continue-deployment-arise-serpent-v010-final` (2026-07-09)
+- **.github/workflows/cleanup-stale-branches.yml** — `failure` on `copilot/continue-deployment-arise-serpent-v010-final` (2026-07-09)
+- **.github/workflows/branch-rebase-gate.yml** — `failure` on `copilot/continue-deployment-arise-serpent-v010-final` (2026-07-09)
 
 ## 📝 Recent Commits
+- `a8e1131d` fix(ci): tighten pre-flight regex - restrict -n match to auto/digits only — copilot-swe-agent[bot] (2026-07-09)
+- `d85b37dd` fix(security+ci): pin actions/cache to SHA, fix pre-flight regex false positive, — copilot-swe-agent[bot] (2026-07-09)
+- `faa1a453` chore: establish plan for resolving Semgrep security findings and CI failures — copilot-swe-agent[bot] (2026-07-09)
 - `e45f26a4` fix(compliance): REQ-4/REQ-5 compliance update + ruff auto-fixes for PR #5278 — copilot-swe-agent[bot] (2026-07-09)
 - `2b1c761b` fix(review): resolve all 10 copilot review concerns - version mismatch and YAML  — copilot-swe-agent[bot] (2026-07-09)
 - `714d740f` fix(recovery): emergency session recovery - fix version mismatch across all docs — copilot-swe-agent[bot] (2026-07-09)
 - `53f11008` Apply remaining changes — copilot-swe-agent[bot] (2026-07-09)
 - `22a1a144` Apply remaining changes — copilot-swe-agent[bot] (2026-07-09)
-- `2ceac736` prep: prepare v0.1.0 release PR with workflow configuration — copilot-swe-agent[bot] (2026-07-09)
-- `26eec488` docs: v0.1.0 release deployment completion status - blocker resolved — github-actions[bot] (2026-07-09)
-- `d555db1f` fix: bump version to v0.1.0-final in pyproject.toml for release — copilot-swe-agent[bot] (2026-07-09)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
