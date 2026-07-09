@@ -102,7 +102,7 @@ jobs:
         \  echo \"health_status=unknown\" >> $GITHUB_OUTPUT\n  echo \"⚠ Health check\
         \ results not available\"\nfi\n"
     - name: Cache test results (Layer 3)
-      uses: actions/cache@v5
+      uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25  # v5
       if: always()
       with:
         path: .pytest_cache/
