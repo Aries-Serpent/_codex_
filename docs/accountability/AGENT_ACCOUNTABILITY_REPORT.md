@@ -8,6 +8,7 @@
 - ✅ Updated `.github/workflows/validate-code-examples.yml` so Python/Bash/YAML example validation inspects only markdown files changed in the active PR/push diff.
 - ✅ Incorporated validation follow-up feedback by renaming the changed-file helper for clarity, simplifying the all-zero SHA guard, and removing the inline pragma comment that made `.codex/phase_10_3_ab_test_log.jsonl` invalid JSONL.
 - ✅ Fixed editable-install packaging failure by excluding accidental `codex.db*` namespace discovery from `pyproject.toml`; local `pip install -e '.[dev]'` now succeeds.
+- ✅ Merged the latest `main` branch updates into the PR branch and resolved the only file-level conflict in `.codex/phase_10_3_ab_test_log.jsonl` while preserving valid JSONL.
 - ✅ Normalized `.codex/phase_10_3_performance_metrics.json` to include an explicit `+00:00` timezone offset.
 - ✅ Re-validated workflow YAML syntax and changed-markdown Python example extraction locally.
 

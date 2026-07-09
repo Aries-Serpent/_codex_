@@ -15,7 +15,7 @@ All 4 CRITICAL CodeQL security vulnerabilities identified in PR #5280 have been 
 **Timeline:** ~15 minutes from initial analysis to complete remediation
 **Commits:** 3 security fix commits
 **Files Modified:** 4 core security modules
-**Tests Added:** 20+ comprehensive security test cases
+**Tests Added:** 20+ comprehensive security test cases  # pragma: allowlist secret  # pragma: allowlist secret
 
 ---
 
