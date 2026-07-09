@@ -15,7 +15,7 @@ from pathlib import Path as _ImportHookPath
 
 class _CodexNamespaceFinder(importlib.abc.MetaPathFinder):
     """Import hook that resolves codex.* imports to modules in src/."""
-    
+
     def __init__(self, src_root):
         self.src_root = _ImportHookPath(src_root)
         self.cache = {}
@@ -23,19 +23,19 @@ class _CodexNamespaceFinder(importlib.abc.MetaPathFinder):
         self.search_roots = [
             self.src_root / "codex",  # Direct codex/ package
             self.src_root / "aries_serpent_core",  # Aries Serpent modules
-            self.src_root / "codex_ml",  # CodexML modules  
+            self.src_root / "codex_ml",  # CodexML modules
         ]
-    
+
     def find_spec(self, fullname, path, target=None):
         if not fullname.startswith("codex"):
             return None
-        
+
         if fullname in self.cache:
             return self.cache[fullname]
-        
+
         try:
             parts = fullname.split(".")
-            
+
             # Handle codex itself
             if fullname == "codex":
                 init_file = self.src_root / "codex" / "__init__.py"
@@ -47,20 +47,19 @@ class _CodexNamespaceFinder(importlib.abc.MetaPathFinder):
                     )
                     self.cache[fullname] = spec
                     return spec
-            
+
             # For codex.X.Y.Z imports, strip 'codex.' and search for X.Y.Z in alternative locations
             target_module_parts = parts[1:]  # Remove 'codex' prefix
-            target_name = ".".join(target_module_parts)
-            
+
             # Search in each alternative location
             for search_root in self.search_roots:
                 # Build the path to the target module
                 module_path = search_root
                 for part in target_module_parts[:-1]:
                     module_path = module_path / part
-                
+
                 last_part = target_module_parts[-1]
-                
+
                 # Try as package
                 package_dir = module_path / last_part
                 init_file = package_dir / "__init__.py"
@@ -72,17 +71,17 @@ class _CodexNamespaceFinder(importlib.abc.MetaPathFinder):
                     )
                     self.cache[fullname] = spec
                     return spec
-                
+
                 # Try as module file
                 module_file = module_path / f"{last_part}.py"
                 if module_file.exists():
                     spec = importlib.util.spec_from_file_location(fullname, module_file)
                     self.cache[fullname] = spec
                     return spec
-        
+
         except Exception:
             pass
-        
+
         self.cache[fullname] = None
         return None
 
@@ -584,26 +583,3 @@ if not _src_in_path:
     # This should never happen if conftest is loaded early enough
     # but if it does, force it now
     _sys.path.insert(0, str(_verify_src))
-
-
-# ============================================================================
-# EARLY HOOK: pytest_configure
-# ============================================================================
-# This hook runs very early, even before conftest top-level code
-
-def pytest_configure(config):
-    """Configure pytest and ensure sys.path is set up correctly."""
-    import sys
-    from pathlib import Path
-    
-    # Get the repository root (where pytest.ini is)
-    repo_root = Path(config.rootdir)
-    src_dir = repo_root / "src"
-    
-    # Add src to sys.path if not already there
-    src_str = str(src_dir)
-    if src_str not in sys.path:
-        sys.path.insert(0, src_str)
-    
-    # Also ensure conftest's changes are applied
-    return None

@@ -1,5 +1,13 @@
 ## [Unreleased]
 
+### Fixed (2026-07-09T06:46:00Z — CI rescue follow-up for PR #5276)
+- Removed a duplicate late `pytest_configure` definition from `conftest.py` so pytest keeps the intended earlier configuration hook.
+- Fixed import ordering in `src/codex/__init__.py` for Ruff compliance.
+- Cleaned `pattern_discovery` skill handler imports and stopped `memory_sync_consolidation` from constructing invalid/missing persistence objects.
+- Updated mutation-killer cache tests to use `QueryCache.get_stats()` and assert exact public stats values.
+- Rewrote `None`/boolean comparison assertions in `tests/test_mutation_killers_tier2_comparisons.py` to satisfy lint while preserving mutation coverage intent.
+- Switched `test_optimizations.py` to import `.codex` helpers through `importlib` after `sys.path` setup, avoiding root-level E402 failures.
+
 ### Added (2026-07-09T02:05:00Z — PACKAGING CAMPAIGN: Phase 1 PUBLISHED + P0 BLOCKER COMPLETE + Phase 2/P1 AGENTS EXECUTING)
 - **Mission:** Execute Phase 1 Cognitive Brain release (GitHub Release + Discussion), complete P0 blocker refactoring, and deploy Phase 2 core package + P1 blocker agents in parallel autonomous execution
 - **Deliverables:**
@@ -133,22 +141,22 @@
      - **Fix:** Removed unsafe pickle fallback from `_serialize()` method
      - **Impact:** Forces application to handle non-JSON-serializable objects explicitly
      - **Status:** CRITICAL vulnerability eliminated, all tests pass (87/87 ✅)
-  
+
   2. ✅ **Production Redis Safety** - `scripts/cache/migrate_pickle_to_json.py` (Lines 71-75)
-     - **Fix:** Replaced unsafe `redis.keys("*")` with `redis.scan_iter()` 
+     - **Fix:** Replaced unsafe `redis.keys("*")` with `redis.scan_iter()`
      - **Impact:** Prevents Redis blocking on large datasets in production
      - **Status:** Safe migration pattern implemented, no performance regression
-  
+
   3. ✅ **Workflow Unicode Handling** - `.github/workflows/wec-enforcement-gate.yml` (Lines 26-29)
      - **Fix:** Replaced unicode escape `\u2713` with direct UTF-8 character
      - **Impact:** Proper shell handling of unicode characters
      - **Status:** YAML validation passed ✅
-  
+
   4. ✅ **Workflow Concurrency Safety** - `.github/workflows/admin-action-notifier.yml` (Lines 95-97)
      - **Fix:** Removed self-cancelling concurrency block as documented (WF design)
      - **Impact:** Prevents unintended job cancellation in workflow_call context
      - **Status:** Aligns with documented design pattern, YAML validation passed ✅
-  
+
   5. ✅ **Documentation Audit** - `.docs/SECURE_API_KEY_CONFIGURATION.md` (Line 153)
      - **Finding:** Verified no actual hardcoded credentials; line 153 is proper security guidance
      - **Status:** COMPLIANT - All example keys are placeholders, proper env var patterns documented
@@ -439,7 +447,7 @@
   - Score: 100/100 merge-ready across all 10 dimensions
   - WEC checklist properly formatted with maintained human grants
   - All accountability documentation updated (REQ-4, REQ-5 compliance)
-  
+
 #### Fixed
 - Security baseline: Synchronized .secrets.baseline with pragma annotations for test false-positives
 - PR compliance: Updated CHANGELOG.md for REQ-5 compliance gate
@@ -497,7 +505,7 @@
 - **Phase 13 Deployment Briefs:** Comprehensive activation documentation for Advanced Agent Autonomy phase
   - `.codex/PHASE_13_ACTIVATION_BRIEF.md` — Full Phase 13 deployment plan with 4 parallel execution tracks
   - `.codex/PHASE_13_REALTIME_DASHBOARD.md` — Real-time monitoring and execution progress dashboard
-- **Agent Deployment:** 
+- **Agent Deployment:**
   - Track 13.1: autonomous-test-healer-agent (test automation & healing) — advisory mode
   - Track 13.2: rag-meta-tensor-validator (RAG meta-tensor safety) — advisory mode
   - Track 13.3 & 13.4 pre-staged pending Track 12.3 re-validation clearance
@@ -15470,7 +15478,7 @@ Completed TIER 1 semantic routing quality validation for multi-agent orchestrati
 
 ### [PATCH] Release Workflow GitHub Actions Version Fix - 2026-07-06
 
-**Fixed:** 
+**Fixed:**
 - Updated `actions/checkout@v7` to `actions/checkout@v5` in `.github/workflows/release.yml` (validate and release jobs)
 - **Impact:** Resolves 0% release workflow success rate (CRITICAL regression detected in Phase 12 Wave 1)
 - **Root Cause:** GitHub Actions version enforcement policy requires v5, not v7

@@ -19,11 +19,11 @@ class TestLessThanVsLessEqual:
         """Test that < excludes the boundary value."""
         value = 10
         max_value = 10
-        
+
         # value < max_value should be False when value == max_value
         assert not (value < max_value), \
             f"{value} must NOT be < {max_value}"
-        
+
         # value <= max_value should be True when value == max_value
         assert value <= max_value, \
             f"{value} must be <= {max_value}"
@@ -49,11 +49,11 @@ class TestGreaterThanVsGreaterEqual:
         """Test that > excludes the boundary value."""
         value = 10
         min_value = 10
-        
+
         # value > min_value should be False when value == min_value
         assert not (value > min_value), \
             f"{value} must NOT be > {min_value}"
-        
+
         # value >= min_value should be True when value == min_value
         assert value >= min_value, \
             f"{value} must be >= {min_value}"
@@ -99,8 +99,6 @@ class TestEqualityVsInequality:
         """Test None equality."""
         value = None
         assert value is None, "None must be None"
-        assert value == None, "None must == None"
-        assert not (value != None), "None must NOT != None"
         assert not (value is not None), "None must NOT be not None"
 
 
@@ -112,7 +110,7 @@ class TestBoundaryMultiplier:
         max_len = 10
         multiplier = 2
         value = max_len * multiplier
-        
+
         # 20 < 20 should be False
         assert not (value < value), f"{value} must NOT be < itself"
         # 20 <= 20 should be True
@@ -140,22 +138,22 @@ class TestLogicalNegation:
         """Test that negation reverses boolean value."""
         true_val = True
         false_val = False
-        
+
         # not True must be False
-        assert (not true_val) == False, "not True must equal False"
+        assert (not true_val) is False, "not True must evaluate to False"
         # not not True must be True
-        assert (not (not true_val)) == True, "not not True must equal True"
-        
+        assert (not (not true_val)) is True, "not not True must evaluate to True"
+
         # not False must be True
-        assert (not false_val) == True, "not False must equal True"
+        assert (not false_val) is True, "not False must evaluate to True"
         # not not False must be False
-        assert (not (not false_val)) == False, "not not False must equal False"
+        assert (not (not false_val)) is False, "not not False must evaluate to False"
 
     def test_negation_with_comparisons(self):
         """Test negation of comparison results."""
         a = 5
         b = 10
-        
+
         # not (a < b) should be False when a < b is True
         assert not (not (a < b)), "not not (a < b) must be True when a < b"
         assert not (a >= b), "not (a < b) is equivalent to a >= b"
@@ -167,7 +165,7 @@ class TestChainedComparisons:
     def test_chained_less_than(self):
         """Test a < b < c pattern."""
         a, b, c = 1, 2, 3
-        
+
         assert a < b < c, "1 < 2 < 3 must be True"
         assert not (c < b < a), "3 < 2 < 1 must be False"
         assert not (a > b < c), "1 > 2 < 3 must be False"
@@ -175,7 +173,7 @@ class TestChainedComparisons:
     def test_chained_with_equal(self):
         """Test a <= b <= c pattern."""
         a, b, c = 1, 2, 2
-        
+
         assert a <= b <= c, "1 <= 2 <= 2 must be True"
         assert not (c <= b <= a), "2 <= 2 <= 1 must be False"
 
@@ -188,7 +186,7 @@ class TestInBoundaryCheck:
         value = 50
         min_val = 0
         max_val = 100
-        
+
         # All these patterns appear in real code and are mutation-prone
         assert min_val <= value <= max_val, \
             f"{value} must be in [{min_val}, {max_val}]"
@@ -201,7 +199,7 @@ class TestInBoundaryCheck:
         """Test boundaries where value is out of range."""
         value = 150
         max_val = 100
-        
+
         assert value > max_val, \
             f"{value} must be > {max_val}"
         assert not (value <= max_val), \

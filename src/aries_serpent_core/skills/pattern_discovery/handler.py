@@ -7,16 +7,10 @@ risk patterns with improvement area tagging.
 
 from __future__ import annotations
 
-import json
 import logging
-from dataclasses import asdict
-from typing import Any, Optional
+from typing import Any
 
-from aries_serpent_core.brain.pattern_discovery import (
-    PatternDiscovery,
-    PatternType,
-    ImprovementArea,
-)
+from aries_serpent_core.brain.pattern_discovery import PatternDiscovery
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +20,7 @@ def run(
     memory_data: dict[str, Any],
     min_frequency: int = 2,
     min_confidence: float = 0.7,
-    improvement_areas: Optional[list[str]] = None,
+    improvement_areas: list[str] | None = None,
     limit: int = 50,
     **kwargs: Any,
 ) -> dict[str, Any]:

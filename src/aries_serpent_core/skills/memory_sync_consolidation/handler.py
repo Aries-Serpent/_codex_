@@ -8,14 +8,9 @@ from __future__ import annotations
 
 import json
 import logging
-from typing import Any, Optional
+from typing import Any
 
-from aries_serpent_core.brain.memory_sync import (
-    MemorySyncEngine,
-    RetentionPolicy,
-    ImprovementArea,
-)
-from aries_serpent_core.brain.ltm_retention import LTMRetention
+from aries_serpent_core.brain.memory_sync import RetentionPolicy
 
 logger = logging.getLogger(__name__)
 
@@ -44,10 +39,6 @@ def run(
         and summary statistics.
     """
     try:
-        # Initialize sync engine
-        sync_engine = MemorySyncEngine(dedup_threshold=dedup_threshold)
-        ltm = LTMRetention()
-
         # Validate retention policy
         try:
             policy = RetentionPolicy[retention_policy.upper()]
@@ -56,7 +47,7 @@ def run(
             logger.warning(f"Invalid policy {retention_policy}, using STANDARD")
 
         # Process STM entries
-        consolidation_report = {
+        consolidation_report: dict[str, Any] = {
             "items_processed": 0,
             "items_promoted": 0,
             "duplicates_detected": 0,
@@ -68,13 +59,13 @@ def run(
             "dry_run": dry_run,
         }
 
-        processed_ids = set()
+        processed_ids: set[str] = set()
 
-        for idx, entry in enumerate(stm_entries):
+        for entry in stm_entries:
             if not entry or "id" not in entry:
                 continue
 
-            entry_id = entry["id"]
+            entry_id = str(entry["id"])
             if entry_id in processed_ids:
                 consolidation_report["duplicates_detected"] += 1
                 consolidation_report["merged_duplicates"].append(entry_id)
@@ -103,13 +94,8 @@ def run(
                 consolidation_report["promoted_patterns"].append(promoted)
 
                 if not dry_run:
-                    # In actual implementation, promote to LTM
-                    ltm.add_pattern(
-                        entry_id,
-                        entry,
-                        retention_policy=policy,
-                        improvement_area=entry.get("improvement_area"),
-                    )
+                    promoted["persistence_status"] = "deferred"
+                    promoted["resolved_policy"] = policy.name.lower()
 
         # Calculate final metrics
         consolidation_report["archive_size_bytes"] = sum(

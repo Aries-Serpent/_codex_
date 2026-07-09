@@ -9,8 +9,9 @@ Focus: Harden error handling assertions by:
 5. Verifying expiration boundaries with strict comparisons
 """
 
-import time
 import threading
+import time
+
 import pytest
 
 pytest.importorskip("numpy")
@@ -72,12 +73,12 @@ class TestCacheEntryBoundaries:
     def test_entry_expires_exactly_at_boundary(self):
         """Test entry status changes exactly at expiration time."""
         now = time.time()
-        
+
         # Entry that expires in the future
         entry_future = CacheEntry(key="future", value="data", expires_at=now + 10)
         assert not entry_future.is_expired, \
             "Entry expiring in future must not be expired"
-        
+
         # Entry that expired in the past
         entry_past = CacheEntry(key="past", value="data", expires_at=now - 10)
         assert entry_past.is_expired, \
@@ -86,7 +87,7 @@ class TestCacheEntryBoundaries:
     def test_entry_expiration_at_boundary_time(self):
         """Test expiration behavior at exact boundary."""
         now = time.time()
-        
+
         # Just barely expired (1ms ago)
         entry = CacheEntry(
             key="boundary",
@@ -95,7 +96,7 @@ class TestCacheEntryBoundaries:
         )
         assert entry.is_expired, \
             "Entry expired even slightly in past must be expired"
-        
+
         # Not yet expired (expires in far future)
         entry2 = CacheEntry(
             key="not_yet",
@@ -108,15 +109,15 @@ class TestCacheEntryBoundaries:
     def test_entry_touch_increments_access_count(self):
         """Test access_count increases exactly by 1 on each touch."""
         entry = CacheEntry(key="touch_test", value="data")
-        
+
         initial = entry.access_count
         assert initial == 0, f"Initial access count must be 0, got {initial}"
-        
+
         entry.touch()
         after_first = entry.access_count
         assert after_first == initial + 1, \
             f"After touch, count must be {initial + 1}, got {after_first}"
-        
+
         entry.touch()
         after_second = entry.access_count
         assert after_second == initial + 2, \
@@ -130,51 +131,54 @@ class TestQueryCacheBasicOperations:
         """Test hit/miss counts are tracked exactly."""
         config = QueryCacheConfig(max_size=100)
         cache = QueryCache(config)
-        
+        stats = cache.get_stats()
+
         # Initial state
-        assert cache.stats.hits == 0, \
-            f"Initial hits must be 0, got {cache.stats.hits}"
-        assert cache.stats.misses == 0, \
-            f"Initial misses must be 0, got {cache.stats.misses}"
-        
-        # After puts (should miss on first get)
+        assert stats.hits == 0, f"Initial hits must be 0, got {stats.hits}"
+        assert stats.misses == 0, f"Initial misses must be 0, got {stats.misses}"
+
+        # A put followed by a get for the same key is a hit.
         cache.put("key1", {"value": 1})
         result = cache.get("key1")
-        
+        stats = cache.get_stats()
+
         # Verify exact counts after operations
         assert result is not None, "Get should return non-None for existing key"
+        assert stats.hits == 1, f"Expected exactly 1 hit, got {stats.hits}"
+        assert stats.misses == 0, f"Expected exactly 0 misses, got {stats.misses}"
 
     def test_cache_hit_rate_progression(self):
         """Test hit rate changes exactly as operations proceed."""
         config = QueryCacheConfig(max_size=100)
         cache = QueryCache(config)
-        
+
         # Put and get same key multiple times
         cache.put("key1", {"data": "value"})
-        
+
         # First get
         cache.get("key1")
-        # After 1 hit
-        assert cache.stats.hits >= 1, "Should have at least 1 hit"
-        
+        stats = cache.get_stats()
+        assert stats.hits == 1, f"Expected exactly 1 hit, got {stats.hits}"
+        assert stats.misses == 0, f"Expected exactly 0 misses, got {stats.misses}"
+
         # Get again
         cache.get("key1")
-        # After 2 hits
-        assert cache.stats.hits >= 2, \
-            f"Should have at least 2 hits, got {cache.stats.hits}"
+        stats = cache.get_stats()
+        assert stats.hits == 2, f"Expected exactly 2 hits, got {stats.hits}"
+        assert stats.misses == 0, f"Expected exactly 0 misses, got {stats.misses}"
 
     def test_cache_respects_size_limit(self):
         """Test cache respects max_size with strong assertion."""
         max_size = 5
         config = QueryCacheConfig(max_size=max_size)
         cache = QueryCache(config)
-        
+
         # Add more than max_size items
         for i in range(max_size + 5):
             cache.put(f"key_{i}", {"value": i})
-        
+
         # Cache size should not exceed max_size
-        current_size = len(cache.cache) if hasattr(cache, 'cache') else 0
+        current_size = cache.get_stats().size
         assert current_size <= max_size, \
             f"Cache size {current_size} must not exceed {max_size}"
         assert current_size > 0, \
@@ -188,7 +192,7 @@ class TestCacheErrorHandling:
         """Test put operation rejects invalid key types if applicable."""
         config = QueryCacheConfig(max_size=100)
         cache = QueryCache(config)
-        
+
         # Most implementations accept string keys
         try:
             cache.put("valid_key", {"value": 1})
@@ -204,7 +208,7 @@ class TestCacheErrorHandling:
         """Test cache behavior with None values."""
         config = QueryCacheConfig(max_size=100)
         cache = QueryCache(config)
-        
+
         # Behavior may vary - some caches allow None, some don't
         try:
             cache.put("none_key", None)
@@ -218,26 +222,26 @@ class TestCacheErrorHandling:
         """Test cache behavior under concurrent access."""
         config = QueryCacheConfig(max_size=100)
         cache = QueryCache(config)
-        
+
         errors: list = []
-        
+
         def add_items(start, count):
             try:
                 for i in range(start, start + count):
                     cache.put(f"key_{i}", {"thread": start, "item": i})
             except Exception as e:
                 errors.append(e)
-        
+
         threads = [
             threading.Thread(target=add_items, args=(i * 10, 10))
             for i in range(3)
         ]
-        
+
         for t in threads:
             t.start()
         for t in threads:
             t.join()
-        
+
         # Should complete without errors
         assert len(errors) == 0, \
             f"Concurrent operations should not error: {errors}"
