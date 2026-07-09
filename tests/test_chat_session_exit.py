@@ -7,7 +7,6 @@ Test module for chat session exit.
 import os
 
 import pytest
-
 from codex.chat import ChatSession
 
 

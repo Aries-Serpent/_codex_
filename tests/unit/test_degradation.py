@@ -16,7 +16,6 @@ Covers:
 from __future__ import annotations
 
 import pytest
-
 from codex.resilience import DegradationError, GracefulDegradation
 
 # ---------------------------------------------------------------------------

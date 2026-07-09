@@ -7,7 +7,6 @@ from pathlib import Path
 
 import pytest
 from click.testing import CliRunner
-
 from codex.archive.backend import ArchiveConfig
 from codex.archive.cli import cli
 from codex.archive.service import ArchiveService

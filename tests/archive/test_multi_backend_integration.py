@@ -7,7 +7,6 @@ Test module for multi backend integration.
 from __future__ import annotations
 
 import pytest
-
 from codex.archive import config as archive_config
 
 

@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import pytest
-
 from codex.skills.aais import AAISScorer, score_text
 from codex.skills.models import AAISScore
 

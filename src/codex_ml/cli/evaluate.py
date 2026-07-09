@@ -8,7 +8,8 @@ import sys
 from collections.abc import Sequence
 from pathlib import Path
 from typing import Any, Optional
-from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
+
+from codex.logging.adapter import get_default_logger
 
 logger = logging.getLogger(__name__)
 

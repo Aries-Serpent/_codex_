@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 import logging
-from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
+
+from codex.logging.adapter import get_default_logger
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +18,6 @@ import time
 from collections.abc import Iterable
 from pathlib import Path
 from typing import Any, Optional
-
 
 Row = dict[str, Any]
 

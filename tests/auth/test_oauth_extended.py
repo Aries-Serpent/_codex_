@@ -10,7 +10,6 @@ Tests cover:
 """
 
 import pytest
-
 from codex.auth.oauth_manager import OAuthManager
 from codex.auth.token_manager import TokenManager
 

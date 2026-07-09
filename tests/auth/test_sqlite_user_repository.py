@@ -9,7 +9,6 @@ import time
 from pathlib import Path
 
 import pytest
-
 from codex.auth.sqlite_user_repository import SQLiteUserRepository
 from codex.auth.user_store import User
 

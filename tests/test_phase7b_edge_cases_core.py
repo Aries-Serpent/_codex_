@@ -509,7 +509,6 @@ class TestMultiModuleIntegration:
         """Test flow from CLI through adapter"""
         try:
             from codex.agent.adapters.base_adapter import BaseAdapter
-
             from codex.cli import CLI
 
             cli = CLI()
@@ -523,7 +522,6 @@ class TestMultiModuleIntegration:
         """Test config loading and orchestrator initialization"""
         try:
             from codex.agents.orchestrator import Orchestrator
-
             from codex.config.env_vars import load_env_config
 
             load_env_config()

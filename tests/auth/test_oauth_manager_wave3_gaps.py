@@ -14,8 +14,7 @@ Addresses uncovered branches and error paths:
 """
 
 from datetime import datetime, timedelta
-from unittest.mock import Mock, MagicMock, patch
-import json  # pragma: allowlist secret  # pragma: allowlist secret
+from unittest.mock import Mock, patch
 
 import pytest
 
@@ -177,9 +176,8 @@ class TestOAuthPKCEFlow:
 
     def test_generate_pkce_code_challenge(self):
         """Test PKCE code challenge generation from verifier."""
+
         from codex.auth.oauth_manager import OAuthManager
-        import hashlib
-        import base64
         
         manager = OAuthManager(
             client_id="test_client",
@@ -341,8 +339,8 @@ class TestOAuthStateParameterValidation:
 
     def test_state_parameter_timing(self):
         """Test state parameter expiration (CSRF protection)."""
+
         from codex.auth.oauth_manager import OAuthManager
-        import time
         
         manager = OAuthManager(
             client_id="test_client",

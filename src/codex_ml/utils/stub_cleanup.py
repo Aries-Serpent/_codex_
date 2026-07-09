@@ -13,7 +13,6 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
 
-
 logger = logging.getLogger(__name__)
 
 __all__ = ["StubAnalyzer", "StubInfo", "find_stubs", "prioritize_stubs"]

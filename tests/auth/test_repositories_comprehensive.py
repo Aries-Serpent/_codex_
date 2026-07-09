@@ -14,7 +14,6 @@ import os
 import tempfile
 
 import pytest
-
 from codex.auth.in_memory_user_repository import InMemoryUserRepository
 from codex.auth.sqlite_user_repository import SQLiteUserRepository
 from codex.auth.user_model import PasswordHasher, User

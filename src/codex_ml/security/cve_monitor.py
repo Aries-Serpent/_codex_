@@ -13,7 +13,6 @@ from datetime import datetime, timezone
 from typing import Any
 
 
-
 @dataclass
 class CVEEntry:
     """CVE vulnerability entry."""

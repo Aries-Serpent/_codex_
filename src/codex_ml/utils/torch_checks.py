@@ -18,7 +18,6 @@ from dataclasses import dataclass
 from types import ModuleType
 from typing import Final, Optional
 
-
 logger = logging.getLogger(__name__)
 
 __all__ = [

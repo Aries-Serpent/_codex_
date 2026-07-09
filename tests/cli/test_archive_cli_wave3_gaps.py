@@ -13,10 +13,9 @@ Addresses uncovered branches and error paths:
 - Progress reporting
 """
 
-import tempfile
 import os
-from unittest.mock import Mock, MagicMock, patch
-from pathlib import Path
+import tempfile
+from unittest.mock import Mock, patch
 
 import pytest
 from click.testing import CliRunner

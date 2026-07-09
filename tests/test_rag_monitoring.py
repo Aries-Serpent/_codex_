@@ -11,7 +11,6 @@ import time
 from collections import deque
 
 import pytest
-
 from codex.rag.monitoring import (
     MetricDataPoint,
     MetricsConfig,

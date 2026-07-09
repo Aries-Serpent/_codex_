@@ -25,7 +25,6 @@ from datetime import datetime, timezone  # noqa: E402
 from pathlib import Path  # noqa: E402
 from typing import Any, Optional  # noqa: E402
 
-
 _FALLBACK_ACTIVE: bool = False
 _FALLBACK_PATH: Optional[Path] = None
 _FALLBACK_REASON: Optional[str] = None

@@ -5,8 +5,9 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from codex import _version
 from codex.versioning import SemanticVersion, determine_bump, update_artifact_version
+
+from codex import _version
 
 
 def test_semantic_version_and_bump():

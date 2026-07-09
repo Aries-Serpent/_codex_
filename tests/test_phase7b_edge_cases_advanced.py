@@ -249,10 +249,9 @@ class TestDeepModuleIntegration:
     def test_ingest_transform_store_pipeline(self):
         """Test full ingest → transform → store pipeline"""
         try:
-            from codex.ingestion.file_ingestor import FileIngestor
-
             from codex.archive.dal import ArchiveDAL
             from codex.archive.standardization import Standardizer
+            from codex.ingestion.file_ingestor import FileIngestor
 
             ingestor = FileIngestor()
             standardizer = Standardizer()

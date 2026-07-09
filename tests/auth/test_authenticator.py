@@ -3,7 +3,6 @@ Tests for the high-level Authenticator service.
 """
 
 import pytest
-
 from src.codex.auth.authenticator import Authenticator, LoginResult
 from src.codex.auth.exceptions import (
     InvalidCredentialsError,

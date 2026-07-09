@@ -1,5 +1,4 @@
 import pytest
-
 from codex.logging.structured_logger import logger
 
 #         assert result.exit_code == 0 or "inspect" not in str(, "Result must not be empty"

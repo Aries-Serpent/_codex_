@@ -9,9 +9,9 @@ Tests cover:
 - Error handling
 """
 
-import pytest
 from unittest.mock import patch
 
+import pytest
 from src.codex.reporting.cli import (
     ReportingCLI,
 )

@@ -31,7 +31,6 @@ from collections.abc import Mapping as MappingABC
 from pathlib import Path
 from typing import Any, Optional
 
-
 FIELDNAMES: Sequence[str] = (
     "run_id",
     "split",

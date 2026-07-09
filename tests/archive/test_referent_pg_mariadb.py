@@ -10,7 +10,6 @@ import os
 from pathlib import Path
 
 import pytest
-
 from codex.archive.api import refer_dup_to_canonical, store
 from codex.archive.dal import ArchiveDAL
 

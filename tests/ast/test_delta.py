@@ -3,7 +3,6 @@
 import tempfile
 
 import pytest
-
 from codex.ast.baseline import BaselineManager
 from codex.ast.delta import DeltaAnalyzer, DeltaResult
 

@@ -9,13 +9,13 @@ Tests cover:
 - Edge cases and error handling
 """
 
-import pytest
-import numpy as np
 from unittest.mock import MagicMock
 
+import numpy as np
+import pytest
 from src.codex.interpretability.attention_scorer import (
-    AttentionScorer,
     AttentionAnalysis,
+    AttentionScorer,
 )
 
 

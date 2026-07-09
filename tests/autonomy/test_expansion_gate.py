@@ -10,7 +10,6 @@ import subprocess
 import sys
 
 import pytest
-
 from codex.autonomy.expansion_gate import (
     _AUDIT_COVERAGE_THRESHOLD,
     _GI_THRESHOLD,

@@ -19,7 +19,6 @@ from typing import Any
 from unittest.mock import MagicMock, patch
 
 import pytest
-
 from codex.alerting import AlertChannel, AlertEvent, AlertSeverity, TrainingAlertManager
 from codex.alerting.email import EmailChannel
 from codex.alerting.slack import SlackChannel

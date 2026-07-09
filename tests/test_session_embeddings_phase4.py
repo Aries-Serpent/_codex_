@@ -13,7 +13,6 @@ import json
 import time
 
 import pytest
-
 from codex.logging.session_embeddings import SessionEmbeddings
 
 

@@ -213,7 +213,7 @@ class TestTypeConversionAndValidation:
         
         value = 0
         assert value is not None
-        assert not (value is None)
+        assert value is not None
 
 
 class TestDataTransformationEdgeCases:

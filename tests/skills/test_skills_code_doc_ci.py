@@ -12,7 +12,6 @@ from pathlib import Path
 from unittest import mock
 
 import pytest
-
 from codex.skills.ci_monitor_proactive.handler import run as ci_monitor_run
 from codex.skills.code_search.handler import (
     _safe_relative as code_safe_relative,

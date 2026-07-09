@@ -13,7 +13,6 @@ Tests cover:
 import time
 
 import pytest
-
 from codex.auth.token_manager import TokenClaims, TokenManager, TokenType
 
  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret

@@ -10,7 +10,6 @@ from io import StringIO
 from unittest.mock import patch
 
 import pytest
-
 from codex.logging.structured_logger import logger
 
 # Import CLI modules

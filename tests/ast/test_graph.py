@@ -1,7 +1,6 @@
 """Tests for dependency graph module."""
 
 import pytest
-
 from codex.ast.graph import DependencyGraph
 
 

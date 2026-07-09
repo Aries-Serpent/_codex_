@@ -17,10 +17,9 @@ import pytest
 
 pytest.importorskip("fastapi")
 
+from codex.auth.token_manager import TokenManager
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
-
-from codex.auth.token_manager import TokenManager
 
 # ---------------------------------------------------------------------------
 # Helpers

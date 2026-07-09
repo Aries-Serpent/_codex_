@@ -8,7 +8,6 @@ pytest.importorskip("numpy")
 from unittest.mock import MagicMock, Mock
 
 import numpy as np
-
 from codex.retrieval.optimizations import (
     OptimizedVectorStore,
     RetrievalMetrics,

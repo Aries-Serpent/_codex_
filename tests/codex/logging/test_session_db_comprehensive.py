@@ -20,7 +20,6 @@ from pathlib import Path
 from typing import Generator
 
 import pytest
-
 from codex.logging.session_db import CacheEntry, SessionDB
 
 

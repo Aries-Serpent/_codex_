@@ -18,7 +18,6 @@ import threading
 import time
 
 import pytest
-
 from codex.logging.concurrency import (
     DeadlockRecovery,
     ReadWriteLock,

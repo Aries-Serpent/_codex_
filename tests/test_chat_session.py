@@ -12,7 +12,6 @@ import sqlite3
 import uuid
 
 import pytest
-
 from codex.chat import ChatSession
 
 

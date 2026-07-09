@@ -14,7 +14,6 @@ from io import BytesIO
 from urllib.parse import urlparse
 
 import pytest
-
 from codex.github.mcp_poster import GitHubMCPPoster, main
 
 # ---------------------------------------------------------------------------

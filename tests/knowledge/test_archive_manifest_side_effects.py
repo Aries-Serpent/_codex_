@@ -10,7 +10,6 @@ import json
 from pathlib import Path
 
 import pytest
-
 from codex.knowledge.build import archive_and_manifest, build_kb
 
 

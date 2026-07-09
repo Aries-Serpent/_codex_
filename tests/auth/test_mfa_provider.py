@@ -7,7 +7,6 @@ Comprehensive test suite for TOTP-based Multi-Factor Authentication.
 import time
 
 import pytest
-
 from codex.auth.mfa_provider import (
     BackupCode,
     MFAProvider,

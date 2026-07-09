@@ -23,13 +23,13 @@ from __future__ import annotations
 import json
 import logging
 import time
-from dataclasses import dataclass, field, asdict
+from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Set
-import pytest
 
+import pytest
 
 logger = logging.getLogger(__name__)
 
@@ -308,18 +308,18 @@ class ValidationGateRegistry:
         print("\n" + "=" * 70)
         print("VALIDATION GATE FRAMEWORK SUMMARY")
         print("=" * 70)
-        print(f"\nGate Coverage:")
+        print("\nGate Coverage:")
         print(f"  Total Gates: {metrics['total_gates']}")
         print(f"  Passed: {metrics['passed_gates']}")
         print(f"  Failed: {metrics['failed_gates']}")
         print(f"  Skipped: {metrics['skipped_gates']}")
         print(f"  Coverage: {metrics['gate_coverage_pct']:.1f}%")
         
-        print(f"\nCritical Gates:")
+        print("\nCritical Gates:")
         print(f"  Total: {metrics['critical_gates']}")
         print(f"  Coverage: {metrics['critical_coverage_pct']:.1f}%")
         
-        print(f"\nCritical Paths:")
+        print("\nCritical Paths:")
         print(f"  Total: {metrics['total_paths']}")
         print(f"  Complete: {metrics['paths_complete']}")
         print(f"  Coverage: {metrics['path_coverage_pct']:.1f}%")
@@ -391,6 +391,7 @@ def critical_path_gates(
 def gate_session_create():
     """Validate that sessions can be created."""
     import tempfile
+
     from codex.logging.session_db import SessionDB
     
     with tempfile.TemporaryDirectory() as tmpdir:
@@ -409,6 +410,7 @@ def gate_session_create():
 def gate_session_resume():
     """Validate that sessions can be resumed."""
     import tempfile
+
     from codex.logging.session_db import SessionDB
     
     with tempfile.TemporaryDirectory() as tmpdir:
@@ -439,8 +441,9 @@ def gate_agent_isolation():
 def gate_config_loading():
     """Validate configuration loading."""
     try:
-        from hydra import compose, initialize_config_dir
         import os
+
+        from hydra import compose, initialize_config_dir
         
         config_dir = os.path.join(os.path.dirname(__file__), "..", "..", "conf")
         if os.path.exists(config_dir):

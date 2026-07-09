@@ -10,17 +10,17 @@ Tests cover:
 - Error handling and edge cases
 """
 
-import pytest
-import time
 import logging
+import time
 
+import pytest
 from src.codex.governance.approval_service import (
-    ApprovalService,
-    ApprovalRequest,
     ApprovalDecision,
-    SLAPolicy,
+    ApprovalRequest,
+    ApprovalService,
     ApprovalState,
     AuditCode,
+    SLAPolicy,
 )
 
 

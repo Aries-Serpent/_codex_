@@ -20,7 +20,6 @@ from pathlib import Path
 from unittest.mock import Mock
 
 import pytest
-
 from codex.logging.structured_logger import logger
 
 

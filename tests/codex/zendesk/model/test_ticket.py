@@ -1,7 +1,6 @@
 """Unit tests for Zendesk Ticket model."""
 
 import pytest
-
 from codex.zendesk.model.ticket import (
     Ticket,
     TicketComment,

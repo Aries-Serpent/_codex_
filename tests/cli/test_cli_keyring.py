@@ -18,7 +18,6 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 from click.testing import CliRunner
-
 from codex.cli import cli
 
 

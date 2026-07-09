@@ -13,7 +13,6 @@ from unittest.mock import MagicMock, Mock, patch
 
 import click
 import pytest
-
 from codex.archive.cli import (
     _batch_progress_logger,  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
     _load_config,

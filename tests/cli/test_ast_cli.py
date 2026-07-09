@@ -8,7 +8,6 @@ Tests cover all commands (parse, stats, query) across all supported languages
 import json
 
 import pytest
-
 from codex.cli.ast_cli import get_adapter, main
 
 

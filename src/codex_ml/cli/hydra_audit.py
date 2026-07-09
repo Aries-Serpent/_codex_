@@ -39,7 +39,6 @@ from pathlib import Path
 from types import ModuleType
 from typing import Any, Optional
 
-
 yaml: ModuleType | None
 try:  # pragma: no cover - handled in tests via importorskip
     import yaml as _yaml_module

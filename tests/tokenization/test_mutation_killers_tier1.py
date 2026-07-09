@@ -9,10 +9,10 @@ Focus: Strengthen assertions in tokenization tests to kill mutations by:
 5. Validating padding/truncation with precise assertions
 """
 
-import pytest
-import importlib
 import os
 import pathlib
+
+import pytest
 
 
 def _maybe_get_tokenizer():
@@ -79,7 +79,7 @@ class TestTokenLengthBoundaries:
         # Should be shorter than max_len when pad=False
         assert len(ids) < max_len, \
             f"Without padding, length {len(ids)} should be < {max_len}"
-        assert len(ids) > 0, f"Input should produce at least 1 token"
+        assert len(ids) > 0, "Input should produce at least 1 token"
 
     def test_truncation_respects_max_boundary(self):
         """Verify truncation never exceeds max_len."""
@@ -100,7 +100,7 @@ class TestTokenLengthBoundaries:
         # Strong assertions for truncation boundary
         assert len(ids) <= max_len, \
             f"Truncated length {len(ids)} must be <= {max_len}"
-        assert len(ids) > 0, f"Truncation must still produce tokens"
+        assert len(ids) > 0, "Truncation must still produce tokens"
 
 
 class TestPaddingTruncationCombinations:
@@ -188,9 +188,9 @@ class TestDecodingRoundtrip:
         assert isinstance(decoded, str), \
             f"Decoded must be str, got {type(decoded)}"
         assert len(decoded) > 0, \
-            f"Decoded string must not be empty"
+            "Decoded string must not be empty"
         assert isinstance(decoded.strip(), str), \
-            f"Decoded.strip() must be str"
+            "Decoded.strip() must be str"
 
     def test_decode_with_various_token_counts(self):
         """Verify decode works with different token counts."""

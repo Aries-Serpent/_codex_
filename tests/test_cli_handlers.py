@@ -21,7 +21,6 @@ from pathlib import Path
 from unittest.mock import Mock, patch
 
 import pytest
-
 from codex.cli_handlers import (
     CLICommandHandler,
     CommandRegistry,

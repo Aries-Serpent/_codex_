@@ -15,10 +15,10 @@ import time
 from pathlib import Path
 
 import pytest
+from codex.logging.structured_logger import logger
 
 from agents.agent_memory import AgentMemory, MemoryEntry
 from agents.physics_integration import HybridPhysicsOrchestrator
-from codex.logging.structured_logger import logger
 
 
 class TestConcurrentMemoryAccess:

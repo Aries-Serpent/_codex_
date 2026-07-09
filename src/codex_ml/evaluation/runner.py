@@ -42,7 +42,6 @@ from dataclasses import dataclass  # noqa: E402
 from pathlib import Path  # noqa: E402
 from typing import Any, Optional  # noqa: E402
 
-
 try:
     import torch
 

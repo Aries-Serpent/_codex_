@@ -3,7 +3,6 @@ Tests for YAML AST Adapter.
 """
 
 import pytest
-
 from codex.ast_adapters.yaml_adapter import YAMLASTAdapter
 
 

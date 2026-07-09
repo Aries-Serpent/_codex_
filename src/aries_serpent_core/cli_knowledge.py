@@ -24,7 +24,12 @@ from typing import Any
 
 import typer
 
-from aries_serpent_core.archive.util import compression_codec, json_dumps_sorted, sha256_file, zstd_compress
+from aries_serpent_core.archive.util import (
+    compression_codec,
+    json_dumps_sorted,
+    sha256_file,
+    zstd_compress,
+)
 from aries_serpent_core.knowledge.build import archive_and_manifest, build_kb
 from aries_serpent_core.knowledge.chunk import approx_tokens, chunk_by_headings
 from aries_serpent_core.release.api import pack_release, verify_bundle

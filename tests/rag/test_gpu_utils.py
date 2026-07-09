@@ -445,7 +445,6 @@ class TestGetOptimalBatchSizeValidation:
     def test_invalid_embedding_dim_zero(self):
         """Test that embedding_dim=0 raises ValueError (line 88)."""
         import pytest
-
         from codex.rag.gpu_utils import get_optimal_batch_size
 
         with pytest.raises(ValueError, match="embedding_dim must be positive"):
@@ -454,7 +453,6 @@ class TestGetOptimalBatchSizeValidation:
     def test_invalid_embedding_dim_negative(self):
         """Test that negative embedding_dim raises ValueError."""
         import pytest
-
         from codex.rag.gpu_utils import get_optimal_batch_size
 
         with pytest.raises(ValueError, match="embedding_dim must be positive"):

@@ -3,7 +3,6 @@
 from pathlib import Path
 
 import pytest
-
 from codex.ast.graph import DependencyGraph
 from codex.ast.metrics import CodeMetrics
 from codex.ast.node import NodeType, SourceLocation, StandardizedASTNode

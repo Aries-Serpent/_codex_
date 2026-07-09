@@ -5,7 +5,6 @@ from __future__ import annotations
 import json
 
 import pytest
-
 from codex.utils.json_safe import (
     _sanitize_control_chars,
     safe_json_loads,

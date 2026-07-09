@@ -9,7 +9,6 @@ import textwrap
 from pathlib import Path
 
 import pytest
-
 from codex.autonomy.registry import (
     AutonomyMode,
     AutonomyPolicyError,

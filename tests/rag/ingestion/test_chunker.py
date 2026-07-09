@@ -3,7 +3,6 @@ Tests for Document Chunker Module.
 """
 
 import pytest
-
 from codex.rag.ingestion.chunker import (
     Chunk,
     Chunker,

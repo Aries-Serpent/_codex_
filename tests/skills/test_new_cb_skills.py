@@ -11,7 +11,6 @@ Verifies:
 from __future__ import annotations
 
 import pytest
-
 from codex.skills.ci_monitor_proactive.handler import run as monitor_run
 from codex.skills.models import PDALoopConfig, SkillManifest
 from codex.skills.pda_loop_logger.handler import run as pda_run

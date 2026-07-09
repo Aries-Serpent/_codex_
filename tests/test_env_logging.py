@@ -8,8 +8,8 @@ Test module for env logging.
 import json
 
 import pytest
-
 from codex.training import run_functional_training
+
 from codex_utils.repro import log_env_info
 
 pytest.importorskip("omegaconf")

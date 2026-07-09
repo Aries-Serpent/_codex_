@@ -13,9 +13,9 @@ Addresses uncovered branches and error paths:
 - App credentials handling
 """
 
-from datetime import datetime, timedelta
-from unittest.mock import Mock, MagicMock, patch
-  # pragma: allowlist secret  # pragma: allowlist secret  # pragma: allowlist secret
+from unittest.mock import Mock, patch
+
+# pragma: allowlist secret  # pragma: allowlist secret  # pragma: allowlist secret
 import pytest
 
 
@@ -83,7 +83,6 @@ class TestGitHubAppTokenExchange:
     def test_generate_jwt_token(self):
         """Test JWT token generation."""
         from codex.auth.github_app import GitHubApp
-        import jwt
         
         private_key = """-----BEGIN RSA PRIVATE KEY-----
 MIIEpAIBAAKCAQEA0Z8hNNl9G5S7Np2J0VZ2V+mQ0gQ+fQM0xZj8E7nP0J0l
@@ -152,9 +151,10 @@ class TestGitHubAppWebhookValidation:
 
     def test_verify_webhook_signature_valid(self):
         """Test webhook signature verification with valid signature."""
-        from codex.auth.github_app import GitHubApp
-        import hmac
         import hashlib
+        import hmac
+
+        from codex.auth.github_app import GitHubApp
         
         secret = "test_secret"
         payload = b'{"action":"opened"}'

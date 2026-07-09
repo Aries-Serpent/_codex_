@@ -10,7 +10,6 @@ import json
 from pathlib import Path
 
 import pytest
-
 from codex.dynamics.apply_logging import apply_routing_stub, apply_slas_stub
 
 

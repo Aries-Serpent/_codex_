@@ -9,7 +9,6 @@ from __future__ import annotations
 from datetime import datetime, timezone
 
 import pytest
-
 from codex.cognitive.knowledge_distiller import (
     DecisionExtractor,
     KnowledgeDistiller,

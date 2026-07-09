@@ -9,7 +9,6 @@ from __future__ import annotations
 from datetime import datetime, timedelta, timezone
 
 import pytest
-
 from codex.cognitive.objective_adjuster import Adjustment, AdjustmentType
 from codex.cognitive.safety_guards import (
     AuditEvent,

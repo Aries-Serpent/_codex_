@@ -105,7 +105,7 @@ class TestEqualityVsInequality:
         """Test None equality."""
         value = None
         assert value is None, "None must be None"
-        assert not (value is None) or value is None, "None identity check must be consistent"
+        assert value is not None or value is None, "None identity check must be consistent"
 
 
 class TestBoundaryMultiplier:

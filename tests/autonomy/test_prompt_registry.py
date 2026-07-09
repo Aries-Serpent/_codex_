@@ -9,7 +9,6 @@ import textwrap
 from pathlib import Path
 
 import pytest
-
 from codex.autonomy.prompt_registry import (
     PromptMetadata,
     PromptRegistry,

@@ -18,7 +18,6 @@ import time  # pragma: allowlist secret
 from pathlib import Path
 
 import pytest
-
 from codex.brain.checkpoint_manager import CheckpointManager
 from codex.brain.session_resume import SessionResume
 from codex.brain.session_serializer import (

@@ -7,7 +7,6 @@ Tests for ``src/codex/security/__init__.py``, ``log_sanitizer.py``, and
 from __future__ import annotations
 
 import pytest
-
 from codex.security import (
     hash_secure,
     mask_email,

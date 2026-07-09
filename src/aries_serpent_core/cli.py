@@ -26,7 +26,10 @@ from uuid import uuid4  # noqa: E402
 
 import click  # noqa: E402
 
-from aries_serpent_core.copilot_campaign import build_agent_chain, recommend_task_route  # noqa: E402
+from aries_serpent_core.copilot_campaign import (  # noqa: E402
+    build_agent_chain,
+    recommend_task_route,
+)
 
 try:  # pragma: no cover - optional dependency
     import typer as _typer

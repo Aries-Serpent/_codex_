@@ -11,7 +11,6 @@ Tests cover:
 """
 
 import pytest
-
 from codex.auth.authenticator import Authenticator, LoginResult
 from codex.auth.exceptions import (
     InvalidCredentialsError,

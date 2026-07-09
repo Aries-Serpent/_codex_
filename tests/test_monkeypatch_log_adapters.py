@@ -11,18 +11,18 @@ Tests cover:
 - Connection pooling
 """
 
-import pytest
-import sqlite3
 import os
+import sqlite3
 import tempfile
 from pathlib import Path
 from unittest.mock import patch
 
+import pytest
 from src.codex.monkeypatch.log_adapters import (
+    _ensure_table,
+    _resolve_path,
     log_event,
     log_message,
-    _resolve_path,
-    _ensure_table,
 )
 
 

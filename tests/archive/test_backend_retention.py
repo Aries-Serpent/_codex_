@@ -9,7 +9,6 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-
 from codex.archive.backend import ArchiveConfig
 from codex.archive.backend import ArchiveDAL as ArchiveBackend
 

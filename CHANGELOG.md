@@ -1,5 +1,21 @@
 ## [Unreleased]
 
+### Fixed (2026-07-09T19:02:00Z — PR #5278 Security findings + pre-flight CI fix)
+- **Session:** pr-5278-security-and-preflight — Resolved 5 Semgrep mutable action tag findings and pre-flight regex false positive
+- **Security:** Pinned `actions/cache@v5` to full SHA `caa296126883cff596d87d8935842f9db880ef25` in 3 workflow files to prevent supply-chain attacks
+  - `.github/workflows/adaptive-agent-delegation.yml:121`
+  - `.github/workflows/agent_infrastructure_manager.yml:93` (alerts 18888 + 19092)
+  - `.github/workflows/agent_infrastructure_manager.yml:149` (alert 19094)
+  - `.github/workflows/automated-post-deployment-verification.yml:105` (alert 19095)
+- **CI Fix:** Fixed `scripts/ci/pre_flight_check.py` regex false positive — `tail -n 5` shell command was incorrectly matched as pytest xdist `-n` flag, causing spurious pre-flight-validation failures
+- **Compliance:** Updated REQ-4 (AGENT_ACCOUNTABILITY_REPORT.md) and REQ-5 (CHANGELOG.md) in this commit
+- **Authority:** D-tier autonomous via standing approval + wec:auto-approve enabled
+
+- **Session:** pr-5278-compliance-fix — Addressed CI rescue comment on PR #5278 v0.1.0 Production Release
+- **Compliance:** Updated REQ-4 (AGENT_ACCOUNTABILITY_REPORT.md) and REQ-5 (CHANGELOG.md) in this commit
+- **Lint:** Applied 404 ruff auto-fixes across Python source files (unused imports, blank lines, formatting)
+- **Authority:** D-tier autonomous via standing approval + wec:auto-approve enabled
+
 ### In Progress (2026-07-09T14:44:35Z — PR #5276 review continuation)
 - **Session:** pr-5276-review-continuation — Continuing with priority 1-4 tasks per @mbaetiong direction
 - **Compliance:** Updated REQ-4 (AGENT_ACCOUNTABILITY_REPORT.md) and REQ-5 (CHANGELOG.md) in this commit
@@ -15521,3 +15537,9 @@ Completed TIER 1 semantic routing quality validation for multi-agent orchestrati
 
 ### Fixed (2026-07-07T10:25Z — REQ-4/REQ-5 Compliance PR #5253)
 - Compliance: **REQ-4 & REQ-5 Recovery** — Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` and `CHANGELOG.md` to restore compliance after internal `.codex/` file updates. All 9 Dependabot PRs consolidated and ready for merge.
+
+### Fixed (2026-07-09T19:32Z — REQ-4/REQ-5 Compliance PR #5278 CI Rescue)
+- Compliance: **REQ-4 & REQ-5 Recovery** — Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` and `CHANGELOG.md` to restore compliance after CI rescue fixes. Added WEC section to PR body. Addressed blocking comment #4928776484 on PR #5278.
+
+### Fixed (2026-07-09T19:36Z — REQ-4/REQ-5 PR #5278 Final CI Rescue Commit)
+- Compliance: **REQ-4 & REQ-5 Final Update** — Post-merge commit to ensure AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md appear in the final commit for PR #5278 CI rescue.
