@@ -1,0 +1,20 @@
+include README.md
+include LICENSE
+include CHANGELOG.md
+recursive-include src/codex/config *
+recursive-include src/codex/security *
+recursive-include src/codex/secrets *
+recursive-include src/codex/resilience *
+recursive-include src/codex/logging *
+recursive-include src/codex/session *
+recursive-include src/codex/utils *
+recursive-include src/codex/auth *
+recursive-include src/codex/observability *
+recursive-include src/codex/db *
+recursive-include src/codex/cache *
+recursive-include src/codex/metrics *
+recursive-include src/codex/cli *
+recursive-include src/codex/clients *
+recursive-include src/codex/api *
+global-exclude *.pyc
+global-exclude __pycache__

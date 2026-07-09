@@ -1,0 +1,41 @@
+# Kubernetes ConfigMap for Aries-Serpent configuration
+# Non-sensitive environment configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: aries-serpent-config
+  namespace: default
+  labels:
+    app: aries-serpent
+    version: 0.1.0-final
+  annotations:
+    description: "Aries-Serpent non-sensitive configuration"
+    owner: "DevOps Team"
+data:
+  # API configuration
+  log_level: "INFO"
+  cors_origins: "*"
+  api_timeout: "30"
+  workers: "4"
+  
+  # Model configuration
+  model_cache_dir: "/app/cache"
+  inference_batch_size: "32"
+  inference_timeout: "60"
+  
+  # Monitoring and metrics
+  metrics_enabled: "true"
+  health_check_interval: "30"
+  
+  # Rate limiting
+  rate_limit_enabled: "true"
+  rate_limit_requests: "1000"
+  rate_limit_period: "60"
+  
+  # Service discovery
+  service_name: "aries-serpent-api"
+  service_port: "8000"
+  
+  # Environment flags
+  development_mode: "false"
+  debug_mode: "false"

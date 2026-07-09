@@ -1,0 +1,65 @@
+# Dockerfile for aries-serpent-dev:0.1.0-final
+# Full development environment with all testing, linting, and documentation tools
+
+FROM python:3.12
+
+WORKDIR /workspace
+
+# Install system dependencies for development
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    git \
+    curl \
+    vim \
+    nano \
+    bash \
+    ca-certificates \
+    graphviz \
+    libcurl4-openssl-dev \
+    libssl-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create development user
+RUN useradd -m -u 1001 -s /bin/bash codex && \
+    mkdir -p /workspace/logs && \
+    chown -R codex:codex /workspace
+
+# Copy all requirements files
+COPY requirements.txt .
+COPY requirements-dev.txt .
+COPY requirements-test.txt .
+COPY requirements-optional.txt .
+COPY requirements-notebook.txt . 2>/dev/null || true
+
+# Install all dependencies (development-focused)
+RUN pip install --upgrade pip setuptools wheel && \
+    pip install -r requirements.txt && \
+    pip install -r requirements-dev.txt && \
+    pip install -r requirements-test.txt && \
+    pip install -r requirements-optional.txt && \
+    pip install jupyter jupyterlab notebook ipython
+
+# Copy all source code
+COPY src/codex /workspace/codex
+COPY tests /workspace/tests 2>/dev/null || true
+COPY docs /workspace/docs 2>/dev/null || true
+COPY . /workspace/
+
+# Set up non-root ownership
+RUN chown -R codex:codex /workspace
+
+# Switch to development user
+USER codex
+
+# Environment configuration for development
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    LOG_LEVEL=DEBUG \
+    DEVELOPMENT_MODE=true \
+    JUPYTER_ENABLE_LAB=yes
+
+# Expose Jupyter port (8888)
+EXPOSE 8888
+
+# Default command: interactive bash for development
+CMD ["/bin/bash"]

@@ -325,6 +325,12 @@
 
 
 # Performance benchmarks
+
+import time
+
+from codex.caching.unified_cache import UnifiedCache
+
+
 class TestCachePerformanceBenchmarks:
     """Benchmark cache performance under various conditions."""
 

@@ -1,0 +1,23 @@
+{
+  "phase": "14_ws2_zero_flakey",
+  "timestamp": "2026-07-09T02:59:09Z",
+  "baseline_status": "established",
+  "total_tests_phase14": 2467,
+  "passing_tests": 2467,
+  "flaky_tests": [],
+  "stability_score": 100.0,
+  "constraints": {
+    "do_not_modify_phase14": true,
+    "only_stabilize_new_tests": true,
+    "reference_patterns": "tests/ml/conftest.py",
+    "min_runs_per_test": 5,
+    "target_pass_rate": 100.0,
+    "zero_regression_guarantee": true
+  },
+  "success_criteria": {
+    "all_new_tests_5plus_runs": "100% passing",
+    "no_increased_flakiness": true,
+    "zero_regressions_from_phase14": true,
+    "patterns_documented": true
+  }
+}

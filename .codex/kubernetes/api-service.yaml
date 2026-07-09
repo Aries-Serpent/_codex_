@@ -1,0 +1,29 @@
+# Kubernetes Service for Aries-Serpent API
+# LoadBalancer service exposing HTTP:8000 with session affinity
+apiVersion: v1
+kind: Service
+metadata:
+  name: aries-serpent-api
+  namespace: default
+  labels:
+    app: aries-serpent
+    component: api
+    version: 0.1.0-final
+  annotations:
+    description: "Aries-Serpent API service"
+    owner: "DevOps Team"
+spec:
+  type: LoadBalancer
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 3600
+  selector:
+    app: aries-serpent
+    component: api
+  ports:
+  - name: http
+    port: 8000
+    targetPort: http
+    protocol: TCP
+  externalTrafficPolicy: Local

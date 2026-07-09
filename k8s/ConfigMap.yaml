@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: aries-serpent-config
+  namespace: aries-serpent
+  labels:
+    app: aries-serpent
+    version: 0.1.0
+data:
+  # Logging configuration
+  LOG_LEVEL: "INFO"
+  
+  # API server configuration
+  API_TIMEOUT: "30"
+  CACHE_SIZE: "1024"
+  
+  # Inference service configuration
+  INFERENCE_BATCH_SIZE: "32"
+  INFERENCE_TIMEOUT: "60"
+  
+  # Metrics and monitoring
+  METRICS_ENABLED: "true"
+  METRICS_PORT: "8002"
+  
+  # Cache configuration
+  CACHE_TTL: "3600"
+  CACHE_MAX_ENTRIES: "10000"
+  
+  # Database/connection pool configuration
+  CONNECTION_POOL_SIZE: "20"
+  CONNECTION_POOL_TIMEOUT: "10"
+  
+  # Model inference configuration
+  MODEL_CACHE_SIZE: "5"
+  BATCH_TIMEOUT: "30"
+  
+  # Security headers
+  ENABLE_CORS: "true"
+  CORS_ORIGINS: "*"
+  
+  # Request/response logging
+  LOG_REQUEST_BODY: "false"
+  LOG_RESPONSE_BODY: "false"

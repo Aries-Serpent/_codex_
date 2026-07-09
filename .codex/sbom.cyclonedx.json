@@ -1,0 +1,366 @@
+{
+  "bom-version": 1,
+  "spec-version": "1.3",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2026-07-09T03:34:13Z",
+    "component": {
+      "bom-ref": "aries-serpent-codex",
+      "type": "application",
+      "name": "Aries-Serpent/_codex_",
+      "version": "0.1.0-final"
+    }
+  },
+  "components": [
+    {
+      "bom-ref": "pkg:python/absl-py@2.5.0",
+      "type": "library",
+      "name": "absl-py",
+      "version": "2.5.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:python/aiohappyeyeballs@2.7.1",
+      "type": "library",
+      "name": "aiohappyeyeballs",
+      "version": "2.7.1",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:python/annotated-doc@0.0.4",
+      "type": "library",
+      "name": "annotated-doc",
+      "version": "0.0.4",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:python/annotated-types@0.7.0",
+      "type": "library",
+      "name": "annotated-types",
+      "version": "0.7.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:python/antlr4-python3-runtime@4.9.3",
+      "type": "library",
+      "name": "antlr4-python3-runtime",
+      "version": "4.9.3",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:python/anyio@4.14.1",
+      "type": "library",
+      "name": "anyio",
+      "version": "4.14.1",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:python/appdirs@1.4.4",
+      "type": "library",
+      "name": "appdirs",
+      "version": "1.4.4",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:python/argcomplete@3.6.3",
+      "type": "library",
+      "name": "argcomplete",
+      "version": "3.6.3",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:python/ast_serialize@0.6.0",
+      "type": "library",
+      "name": "ast_serialize",
+      "version": "0.6.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:python/atpublic@7.0.0",
+      "type": "library",
+      "name": "atpublic",
+      "version": "7.0.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:python/attrs@26.1.0",
+      "type": "library",
+      "name": "attrs",
+      "version": "26.1.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:python/Authlib@1.7.2",
+      "type": "library",
+      "name": "Authlib",
+      "version": "1.7.2",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:python/Automat@22.10.0",
+      "type": "library",
+      "name": "Automat",
+      "version": "22.10.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:python/Babel@2.10.3",
+      "type": "library",
+      "name": "Babel",
+      "version": "2.10.3",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:python/bandit@1.9.4",
+      "type": "library",
+      "name": "bandit",
+      "version": "1.9.4",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:python/bcc@0.29.1",
+      "type": "library",
+      "name": "bcc",
+      "version": "0.29.1",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:python/bcrypt@5.0.0",
+      "type": "library",
+      "name": "bcrypt",
+      "version": "5.0.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:python/billiard@4.2.4",
+      "type": "library",
+      "name": "billiard",
+      "version": "4.2.4",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:python/blinker@1.9.0",
+      "type": "library",
+      "name": "blinker",
+      "version": "1.9.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:python/boltons@21.0.0",
+      "type": "library",
+      "name": "boltons",
+      "version": "21.0.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:python/boolean.py@5.0",
+      "type": "library",
+      "name": "boolean.py",
+      "version": "5.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:python/boto3@1.34.46",
+      "type": "library",
+      "name": "boto3",
+      "version": "1.34.46",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:python/botocore@1.34.46",
+      "type": "library",
+      "name": "botocore",
+      "version": "1.34.46",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:python/bracex@3.0",
+      "type": "library",
+      "name": "bracex",
+      "version": "3.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:python/CacheControl@0.14.4",
+      "type": "library",
+      "name": "CacheControl",
+      "version": "0.14.4",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:python/cachetools@6.2.6",
+      "type": "library",
+      "name": "cachetools",
+      "version": "6.2.6",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:python/certifi@2026.6.17",
+      "type": "library",
+      "name": "certifi",
+      "version": "2026.6.17",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:python/cffi@2.1.0",
+      "type": "library",
+      "name": "cffi",
+      "version": "2.1.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:python/cfgv@3.5.0",
+      "type": "library",
+      "name": "cfgv",
+      "version": "3.5.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:python/chardet@5.2.0",
+      "type": "library",
+      "name": "chardet",
+      "version": "5.2.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:python/charset-normalizer@3.4.9",
+      "type": "library",
+      "name": "charset-normalizer",
+      "version": "3.4.9",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:python/click@8.1.8",
+      "type": "library",
+      "name": "click",
+      "version": "8.1.8",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:python/click-option-group@0.5.9",
+      "type": "library",
+      "name": "click-option-group",
+      "version": "0.5.9",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:python/cloud-init@26.1",
+      "type": "library",
+      "name": "cloud-init",
+      "version": "26.1",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:python/cloudpickle@3.1.2",
+      "type": "library",
+      "name": "cloudpickle",
+      "version": "3.1.2",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:python/codex-ml@0.1.0",
+      "type": "library",
+      "name": "codex-ml",
+      "version": "0.1.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:python/colorama@0.4.6",
+      "type": "library",
+      "name": "colorama",
+      "version": "0.4.6",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:python/colorful@0.5.8",
+      "type": "library",
+      "name": "colorful",
+      "version": "0.5.8",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:python/colorlog@6.10.1",
+      "type": "library",
+      "name": "colorlog",
+      "version": "6.10.1",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:python/command-not-found@0.3",
+      "type": "library",
+      "name": "command-not-found",
+      "version": "0.3",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:python/configobj@5.0.9",
+      "type": "library",
+      "name": "configobj",
+      "version": "5.0.9",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:python/constantly@23.10.4",
+      "type": "library",
+      "name": "constantly",
+      "version": "23.10.4",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:python/coverage@7.15.0",
+      "type": "library",
+      "name": "coverage",
+      "version": "7.15.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:python/cryptography@49.0.0",
+      "type": "library",
+      "name": "cryptography",
+      "version": "49.0.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:python/cuda-pathfinder@1.5.6",
+      "type": "library",
+      "name": "cuda-pathfinder",
+      "version": "1.5.6",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:python/cuda-toolkit@13.0.3.0",
+      "type": "library",
+      "name": "cuda-toolkit",
+      "version": "13.0.3.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:python/cycler@0.12.1",
+      "type": "library",
+      "name": "cycler",
+      "version": "0.12.1",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:python/cyclonedx-python-lib@11.11.0",
+      "type": "library",
+      "name": "cyclonedx-python-lib",
+      "version": "11.11.0",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:python/dbus-python@1.3.2",
+      "type": "library",
+      "name": "dbus-python",
+      "version": "1.3.2",
+      "scope": "required"
+    },
+    {
+      "bom-ref": "pkg:python/defusedxml@0.7.1",
+      "type": "library",
+      "name": "defusedxml",
+      "version": "0.7.1",
+      "scope": "required"
+    }
+  ]
+}

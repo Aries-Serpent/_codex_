@@ -1,0 +1,778 @@
+"""
+RAG Embeddings Module
+Provides embedding provider abstraction with caching layer for expanded context workflows.
+"""
+
+import json
+import logging
+import os
+from datetime import UTC, datetime
+from pathlib import Path
+from typing import Any, Optional, Protocol
+
+try:
+    import numpy as np
+except ImportError:  # pragma: no cover - exercised in import-only test environments
+
+    class _NumpyFallback:
+        ndarray = object
+
+        @staticmethod
+        def array(*_args, **_kwargs) -> None:
+            raise ImportError("numpy is required for codex.rag.embeddings operations")
+
+        @staticmethod
+        def load(*_args, **_kwargs) -> None:
+            raise ImportError("numpy is required for codex.rag.embeddings cache loading")
+
+        @staticmethod
+        def savez_compressed(*_args, **_kwargs) -> None:
+            raise ImportError("numpy is required for codex.rag.embeddings cache writing")
+
+    np = _NumpyFallback()
+
+logger = logging.getLogger(__name__)
+
+try:
+    from openai import OpenAI
+except ImportError:  # pragma: no cover - optional dependency
+    OpenAI = None
+
+
+class EmbeddingProvider(Protocol):
+    """Protocol for embedding providers."""
+
+    def encode(self, texts: list[str], **kwargs) -> np.ndarray:
+        """Encode texts to embeddings."""
+
+    def get_dimension(self) -> int:
+        """Get embedding dimension."""
+
+
+class LocalSentenceTransformerProvider:
+    """
+    Local sentence-transformer embedding provider.
+
+    Uses sentence-transformers library for local embedding generation.
+    Fallback to all-MiniLM-L6-v2 model.
+    """
+
+    def __init__(
+        self,
+        model_name: str = "sentence-transformers/all-MiniLM-L6-v2",
+        cache_dir: Optional[str] = None,
+    ):
+        """
+        Initialize local embedding provider.
+
+        Args:
+            model_name: HuggingFace model name
+            cache_dir: Optional cache directory for model weights
+        """
+        self.model_name = model_name
+        self.cache_dir = cache_dir
+        self.model = None
+        self._load_model()
+
+    def _load_model(self) -> None:
+        """Load the embedding model."""
+        try:
+            from aries_serpent_core.rag._model_utils import safe_load_sentence_transformer
+
+            logger.info(
+                f"Loading local embedding model: {self.model_name}"
+            )  # codeql[py/clear-text-logging-sensitive-data]
+
+            self.model = safe_load_sentence_transformer(self.model_name, self.cache_dir)
+
+            logger.info(
+                "Local embedding model loaded successfully on CPU"
+            )  # codeql[py/clear-text-logging-sensitive-data]
+
+        except ImportError:
+            logger.error(
+                "sentence-transformers not installed. "
+                "Install with: pip install sentence-transformers"
+            )
+            raise
+        except (ValueError, TypeError) as e:
+            type(e).__name__
+            logger.error(
+                "Error loading local embedding model: <ERROR_TYPE>"
+            )  # codeql[py/clear-text-logging-sensitive-data]
+            raise
+
+    def encode(
+        self, texts: list[str], batch_size: int = 32, show_progress: bool = False
+    ) -> np.ndarray:
+        """
+        Encode texts to embeddings.
+
+        Args:
+            texts: List of text strings
+            batch_size: Batch size for encoding
+            show_progress: Show progress bar
+
+        Returns:
+            numpy array of embeddings
+        """
+        if not self.model:
+            raise RuntimeError("Model not loaded")
+
+        return self.model.encode(
+            texts,
+            batch_size=batch_size,
+            show_progress_bar=show_progress,
+            convert_to_numpy=True,
+            device="cpu",  # Explicit device specification
+        )
+
+    def get_dimension(self) -> int:
+        """Get embedding dimension."""
+        if not self.model:
+            raise RuntimeError("Model not loaded")
+        return self.model.get_sentence_embedding_dimension()
+
+
+class OpenAIEmbeddingProvider:
+    """
+    OpenAI embedding provider.
+
+    Uses OpenAI API for embedding generation (requires OPENAI_API_KEY).
+    """
+
+    def __init__(
+        self,
+        model_name: str = "text-embedding-3-small",
+        api_key: Optional[str] = None,
+    ):
+        """
+        Initialize OpenAI embedding provider.
+
+        Args:
+            model_name: OpenAI model name
+            api_key: Optional API key (defaults to OPENAI_API_KEY env var)
+
+        Security Note:
+            API keys are resolved at initialization time and passed directly
+            to the OpenAI client. They are not stored on the provider
+            instance to avoid long-lived in-memory copies.
+        """
+        self.model_name = model_name
+        resolved_api_key = api_key or os.environ.get("OPENAI_API_KEY")
+
+        if not resolved_api_key:
+            raise ValueError(
+                "OpenAI API key not provided. "
+                "Set OPENAI_API_KEY environment variable or pass api_key parameter."
+            )
+
+        self.client = None
+        self._initialize_client(resolved_api_key)
+
+    def _initialize_client(self, api_key: str) -> None:
+        """Initialize OpenAI client."""
+        if OpenAI is None:
+            logger.error(
+                "openai package not installed. Install with: pip install openai"
+            )  # codeql[py/clear-text-logging-sensitive-data]
+            raise ImportError("openai package not installed")
+
+        self.client = OpenAI(api_key=api_key)
+        logger.info(
+            f"Initialized OpenAI client with model: {self.model_name}"
+        )  # codeql[py/clear-text-logging-sensitive-data]
+
+    def encode(self, texts: list[str], batch_size: int = 100, **kwargs) -> np.ndarray:
+        """
+        Encode texts to embeddings using OpenAI API.
+
+        Args:
+            texts: List of text strings
+            batch_size: Batch size (OpenAI supports up to 2048)
+
+        Returns:
+            numpy array of embeddings
+        """
+        if not self.client:
+            raise RuntimeError("OpenAI client not initialized")
+
+        embeddings = []
+
+        # Process in batches
+        for i in range(0, len(texts), batch_size):
+            batch = texts[i : i + batch_size]
+
+            try:
+                response = self.client.embeddings.create(model=self.model_name, input=batch)
+
+                batch_embeddings = [item.embedding for item in response.data]
+                embeddings.extend(batch_embeddings)
+
+            except (ValueError, TypeError, RuntimeError) as e:
+                type(e).__name__
+                logger.error(
+                    f"Error encoding batch {i}-{i + len(batch)}: <ERROR_TYPE>"
+                )  # codeql[py/clear-text-logging-sensitive-data]
+                raise
+
+        return np.array(embeddings)
+
+    def get_dimension(self) -> int:
+        """Get embedding dimension."""
+        # Model-specific dimensions
+        dimensions = {
+            "text-embedding-3-small": 1536,
+            "text-embedding-3-large": 3072,
+            "text-embedding-ada-002": 1536,
+        }
+        return dimensions.get(self.model_name, 1536)
+
+
+class CachedEmbeddingProvider:
+    """
+    Caching layer for embedding providers.
+
+    Caches embeddings per file/chunk with mtime checks for invalidation.
+    Stores cache in .codex/embeddings_cache/ with metadata.
+    """
+
+    def __init__(
+        self,
+        provider: EmbeddingProvider,
+        cache_dir: str = ".codex/embeddings_cache",
+    ):
+        """
+        Initialize cached embedding provider.
+
+        Args:
+            provider: Underlying embedding provider
+            cache_dir: Directory for embedding cache
+        """
+        self.provider = provider
+        self.cache_dir = Path(cache_dir)
+        self.cache_dir.mkdir(parents=True, exist_ok=True)
+
+        # Stats
+        self.cache_hits = 0
+        self.cache_misses = 0
+
+        logger.info(
+            f"Initialized embedding cache at {self.cache_dir}"
+        )  # codeql[py/clear-text-logging-sensitive-data]
+
+    def encode(
+        self,
+        texts: list[str],
+        cache_key: Optional[str] = None,
+        metadata: Optional[dict[str, Any]] = None,
+        **kwargs,
+    ) -> np.ndarray:
+        """
+        Encode texts with caching.
+
+        Args:
+            texts: List of text strings
+            cache_key: Optional cache key (e.g., file path)
+            metadata: Optional metadata for cache validation
+            **kwargs: Additional arguments for provider
+
+        Returns:
+            numpy array of embeddings
+        """
+        if cache_key is None:
+            logger.debug(
+                "No cache key provided; bypassing cache"
+            )  # codeql[py/clear-text-logging-sensitive-data]
+            return self.provider.encode(texts, **kwargs)
+
+        cache_file = self.cache_dir / f"{cache_key}.npz"
+        metadata_file = self.cache_dir / f"{cache_key}.meta.json"
+
+        # Check cache
+        if cache_file.exists() and metadata_file.exists():
+            if self._is_cache_valid(metadata_file, metadata):
+                try:
+                    # Load from cache without allow_pickle
+                    data = np.load(cache_file, allow_pickle=False)
+                    embeddings = data["embeddings"]
+                    self.cache_hits += 1
+                    logger.debug(
+                        f"Cache hit for key: {cache_key}"
+                    )  # codeql[py/clear-text-logging-sensitive-data]
+                    return embeddings
+                except (IOError, OSError, ValueError) as e:
+                    error_type = type(e).__name__
+                    logger.warning(
+                        f"Error loading cache: {error_type}"
+                    )  # codeql[py/clear-text-logging-sensitive-data]
+                    # Continue to regenerate cache
+
+        # Cache miss - generate embeddings
+        self.cache_misses += 1
+        logger.debug(
+            f"Cache miss for key: {cache_key}"
+        )  # codeql[py/clear-text-logging-sensitive-data]
+        embeddings = self.provider.encode(texts, **kwargs)
+
+        # Save to cache
+        try:
+            np.savez_compressed(cache_file, embeddings=embeddings)
+
+            cache_metadata = {
+                "cache_key": cache_key,
+                "num_texts": len(texts),
+                "embedding_dim": embeddings.shape[1] if len(embeddings) > 0 else 0,
+                "created_at": datetime.now(UTC).isoformat(),
+                "provider": self.provider.__class__.__name__,
+                **(metadata or {}),
+            }
+
+            with open(metadata_file, "w") as f:
+                json.dump(cache_metadata, f, indent=2)
+
+            logger.debug(
+                f"Saved embeddings to cache: {cache_key}"
+            )  # codeql[py/clear-text-logging-sensitive-data]
+
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.warning(
+                "Error saving to cache: <ERROR_TYPE>"
+            )  # codeql[py/clear-text-logging-sensitive-data]
+
+        return embeddings
+
+    def _is_cache_valid(
+        self, metadata_file: Path, provided_metadata: Optional[dict[str, Any]]
+    ) -> bool:
+        """
+        Check if cached embeddings are still valid.
+
+        Args:
+            metadata_file: Path to cache metadata file
+            provided_metadata: Metadata from current request
+
+        Returns:
+            True if cache is valid, False otherwise
+        """
+        try:
+            with open(metadata_file) as f:
+                cache_metadata = json.load(f)
+
+            # If file mtime is provided, check if it matches
+            if provided_metadata and "file_mtime" in provided_metadata:
+                cached_mtime = cache_metadata.get("file_mtime")
+                if cached_mtime != provided_metadata["file_mtime"]:
+                    logger.debug(
+                        "Cache invalid: file mtime changed"
+                    )  # codeql[py/clear-text-logging-sensitive-data]
+                    return False
+
+            # Add more validation rules as needed
+            return True
+
+        except (ValueError, TypeError, RuntimeError) as e:
+            type(e).__name__
+            logger.warning(
+                "Error validating cache: <ERROR_TYPE>"
+            )  # codeql[py/clear-text-logging-sensitive-data]
+            return False
+
+    def get_dimension(self) -> int:
+        """Get embedding dimension from provider."""
+        return self.provider.get_dimension()
+
+    def get_stats(self) -> dict[str, Any]:
+        """Get cache statistics."""
+        total = self.cache_hits + self.cache_misses
+        hit_rate = self.cache_hits / total if total > 0 else 0.0
+
+        return {
+            "cache_hits": self.cache_hits,
+            "cache_misses": self.cache_misses,
+            "total_requests": total,
+            "hit_rate": hit_rate,
+            "cache_dir": str(self.cache_dir),
+        }
+
+    def clear_cache(self) -> None:
+        """Clear all cached embeddings."""
+        import shutil
+
+        if self.cache_dir.exists():
+            shutil.rmtree(self.cache_dir)
+            self.cache_dir.mkdir(parents=True, exist_ok=True)
+            logger.info("Cleared embedding cache")  # codeql[py/clear-text-logging-sensitive-data]
+
+        self.cache_hits = 0
+        self.cache_misses = 0
+
+
+def create_embedding_provider(
+    provider_type: str = "auto",
+    model_name: Optional[str] = None,
+    use_cache: bool = True,
+    cache_dir: str = ".codex/embeddings_cache",
+    **kwargs,
+) -> EmbeddingProvider:
+    """
+    Factory function to create embedding providers with intelligent auto-fallback.
+
+    Args:
+        provider_type: Type of provider ('auto', 'local', 'ollama', 'llamacpp',
+                      'gpt4all', 'tfidf', or 'openai')
+                      'auto' tries best available provider
+        model_name: Model name (uses defaults if not provided)
+        use_cache: Whether to wrap provider with caching layer
+        cache_dir: Cache directory
+        **kwargs: Additional provider-specific arguments
+
+    Returns:
+        Embedding provider (optionally wrapped with caching)
+
+    Provider Types:
+        - 'auto': Intelligent selection (sentence-transformers → Ollama → llama.cpp → GPT4All → TF-IDF)
+        - 'local': sentence-transformers (requires model download)
+        - 'ollama': Ollama server (requires running Ollama)
+        - 'llamacpp': llama.cpp (requires GGUF model file)
+        - 'gpt4all': GPT4All (requires gpt4all package)
+        - 'tfidf': TF-IDF (offline-capable, no setup)
+        - 'openai': OpenAI API (requires API key)
+    """  # noqa: E501
+    # Auto-fallback logic with intelligent provider selection
+    if provider_type == "auto":
+        logger.info(
+            "Auto-selecting embedding provider..."
+        )  # codeql[py/clear-text-logging-sensitive-data]
+
+        # Priority 1: Try sentence-transformers (best quality, requires internet for first download)
+        try:
+            logger.info(
+                "Attempting sentence-transformers provider"
+            )  # codeql[py/clear-text-logging-sensitive-data]
+            model_name_st = model_name or "sentence-transformers/all-MiniLM-L6-v2"
+            provider: EmbeddingProvider = LocalSentenceTransformerProvider(  # type: ignore[assignment]
+                model_name=model_name_st, **kwargs
+            )
+            logger.info(
+                "✓ Using sentence-transformers provider"
+            )  # codeql[py/clear-text-logging-sensitive-data]
+            if use_cache:
+                return CachedEmbeddingProvider(provider, cache_dir)
+            return provider
+        except (ImportError, AttributeError, RuntimeError) as e:
+            error_type = type(e).__name__
+            logger.debug(
+                f"sentence-transformers unavailable: {error_type}"
+            )  # codeql[py/clear-text-logging-sensitive-data]
+
+        # Priority 2: Try Ollama (good quality, local server)
+        try:
+            from .providers.ollama_provider import OllamaEmbeddingProvider
+
+            logger.info(
+                "Attempting Ollama provider"
+            )  # codeql[py/clear-text-logging-sensitive-data]
+            model_name_ollama = model_name or "nomic-embed-text"
+            provider = OllamaEmbeddingProvider(model_name=model_name_ollama, **kwargs)  # type: ignore[assignment]
+            if provider._check_health():  # type: ignore[attr-defined]
+                logger.info(
+                    "✓ Using Ollama provider"
+                )  # codeql[py/clear-text-logging-sensitive-data]
+                if use_cache:
+                    return CachedEmbeddingProvider(provider, cache_dir)
+                return provider
+            logger.debug(
+                "Ollama server not running"
+            )  # codeql[py/clear-text-logging-sensitive-data]
+        except (IOError, OSError) as e:
+            error_type = type(e).__name__
+            logger.debug(
+                "Ollama unavailable: <ERROR_TYPE>"
+            )  # codeql[py/clear-text-logging-sensitive-data]
+
+        # Priority 3: Try llama.cpp (excellent performance, requires model file)
+        if "model_path" in kwargs:
+            try:
+                from .providers.llamacpp_provider import LlamaCppEmbeddingProvider
+
+                logger.info(
+                    "Attempting llama.cpp provider"
+                )  # codeql[py/clear-text-logging-sensitive-data]
+                provider = LlamaCppEmbeddingProvider(**kwargs)  # type: ignore[assignment]
+                logger.info(
+                    "✓ Using llama.cpp provider"
+                )  # codeql[py/clear-text-logging-sensitive-data]
+                if use_cache:
+                    return CachedEmbeddingProvider(provider, cache_dir)
+                return provider
+            except (ImportError, AttributeError) as e:
+                error_type = type(e).__name__
+                logger.debug(
+                    "llama.cpp unavailable: <ERROR_TYPE>"
+                )  # codeql[py/clear-text-logging-sensitive-data]
+
+        # Priority 4: Try GPT4All (easy setup, good quality)
+        try:
+            from .providers.gpt4all_provider import GPT4AllEmbeddingProvider
+
+            logger.info(
+                "Attempting GPT4All provider"
+            )  # codeql[py/clear-text-logging-sensitive-data]
+            model_name_gpt4all = model_name or "nomic-embed-text-v1.5"
+            provider = GPT4AllEmbeddingProvider(model_name=model_name_gpt4all, **kwargs)  # type: ignore[assignment]
+            logger.info("✓ Using GPT4All provider")  # codeql[py/clear-text-logging-sensitive-data]
+            if use_cache:
+                return CachedEmbeddingProvider(provider, cache_dir)
+            return provider
+        except (ValueError, TypeError, RuntimeError) as e:
+            error_type = type(e).__name__
+            logger.debug(
+                "GPT4All unavailable: <ERROR_TYPE>"
+            )  # codeql[py/clear-text-logging-sensitive-data]
+
+        # Priority 5: Fall back to TF-IDF (always works, offline)
+        logger.info(
+            "Falling back to TF-IDF provider (offline-capable)"
+        )  # codeql[py/clear-text-logging-sensitive-data]
+        max_features = kwargs.get("max_features", 384)
+        provider = TfidfEmbeddingProvider(max_features=max_features)
+        logger.info("✓ Using TF-IDF provider")  # codeql[py/clear-text-logging-sensitive-data]
+
+    # Explicit provider selection
+    elif provider_type == "local":
+        model_name = model_name or "sentence-transformers/all-MiniLM-L6-v2"
+        provider = LocalSentenceTransformerProvider(model_name=model_name, **kwargs)  # type: ignore[assignment]
+
+    elif provider_type == "ollama":
+        from .providers.ollama_provider import OllamaEmbeddingProvider
+
+        model_name = model_name or "nomic-embed-text"
+        provider = OllamaEmbeddingProvider(model_name=model_name, **kwargs)  # type: ignore[assignment]
+
+    elif provider_type == "llamacpp":
+        from .providers.llamacpp_provider import LlamaCppEmbeddingProvider
+
+        if "model_path" not in kwargs:
+            raise ValueError("llama.cpp provider requires 'model_path' parameter")
+        provider = LlamaCppEmbeddingProvider(**kwargs)  # type: ignore[assignment]
+
+    elif provider_type == "gpt4all":
+        from .providers.gpt4all_provider import GPT4AllEmbeddingProvider
+
+        model_name = model_name or "nomic-embed-text-v1.5"
+        provider = GPT4AllEmbeddingProvider(model_name=model_name, **kwargs)  # type: ignore[assignment]
+
+    elif provider_type == "tfidf":
+        max_features = kwargs.get("max_features", 384)
+        provider = TfidfEmbeddingProvider(max_features=max_features)
+
+    elif provider_type == "openai":
+        # Check if API key is available
+        api_key = (
+            kwargs.get("api_key")
+            or os.environ.get("RAG_OPENAI_KEY")
+            or os.environ.get("OPENAI_API_KEY")
+        )
+        if not api_key:
+            logger.error(
+                "OpenAI provider requested but no API key found. "
+                "Set RAG_OPENAI_KEY or OPENAI_API_KEY environment variable, "
+                "or pass api_key parameter. "
+                "Use provider_type='auto' for offline alternatives."
+            )
+            raise ValueError(
+                "OpenAI API key required for provider_type='openai'. "
+                "Use provider_type='auto' or set API key."
+            )
+        model_name = model_name or "text-embedding-3-small"
+        provider = OpenAIEmbeddingProvider(model_name=model_name, api_key=api_key)
+
+    else:
+        raise ValueError(
+            f"Unknown provider type: {provider_type}. "
+            f"Choose from: auto, local, ollama, llamacpp, gpt4all, tfidf, openai"
+        )
+
+    # Wrap with caching if requested
+    if use_cache:
+        provider = CachedEmbeddingProvider(provider, cache_dir=cache_dir)
+
+    logger.info(
+        f"Created embedding provider: {provider.__class__.__name__}"
+    )  # codeql[py/clear-text-logging-sensitive-data]
+    return provider
+
+
+class TfidfEmbeddingProvider:
+    """
+    TF-IDF based embedding provider (offline-capable).
+
+    Uses scikit-learn's TfidfVectorizer for embeddings.
+    Lower quality than transformers but works offline with zero setup.
+    Ideal for development, testing, and offline scenarios.
+
+    **Advantages:**
+    - Zero external dependencies (uses scikit-learn)
+    - Always works offline
+    - Fast initialization
+    - Deterministic results
+
+    **Limitations:**
+    - Lower semantic quality than transformers
+    - Requires fitting on corpus
+    - No cross-lingual capabilities
+
+    **Use Cases:**
+    - Development and testing
+    - Offline/air-gapped environments
+    - CI/CD pipelines
+    - Quick prototyping
+    """
+
+    def __init__(self, max_features: int = 384):
+        """
+        Initialize TF-IDF provider.
+
+        Args:
+            max_features: Maximum number of features (embedding dimension)
+                         Default 384 matches all-MiniLM-L6-v2 dimension
+        """
+        try:
+            from sklearn.feature_extraction.text import TfidfVectorizer
+        except ImportError:
+            logger.error(
+                "scikit-learn not installed. Install with: pip install scikit-learn"
+            )  # codeql[py/clear-text-logging-sensitive-data]
+            raise
+
+        self.max_features = max_features
+        self.vectorizer = TfidfVectorizer(
+            max_features=max_features,
+            stop_words="english",
+            ngram_range=(1, 2),  # Unigrams and bigrams for better context
+            min_df=1,  # Minimum document frequency
+            max_df=0.95,  # Maximum document frequency (filter common words)
+        )
+        self.is_fitted = False
+        logger.info(
+            f"Initialized TF-IDF provider (dimension={max_features}, offline-capable=True)"
+        )  # codeql[py/clear-text-logging-sensitive-data]
+
+    def encode(self, texts: list[str], **kwargs) -> np.ndarray:
+        """
+        Encode texts using TF-IDF.
+
+        Args:
+            texts: List of texts to encode
+            **kwargs: Ignored (for compatibility with other providers)
+
+        Returns:
+            numpy array of embeddings (shape: [num_texts, max_features])
+
+        Note:
+            First call fits the vectorizer on the input texts.
+            Subsequent calls use the same vocabulary.
+        """
+        if not texts:
+            return np.array([])
+
+        # Fit on first call
+        if not self.is_fitted:
+            n_docs = len(texts)
+            logger.info(
+                f"Fitting TF-IDF vectorizer on {n_docs} texts"
+            )  # codeql[py/clear-text-logging-sensitive-data]
+            try:
+                # Guard against small corpora:
+                # When the corpus is small relative to max_df, pruning can eliminate all terms.
+                # Adjust max_df to be proportional to corpus size to prevent "After pruning,
+                # no terms remain" error.
+                if isinstance(self.vectorizer.max_df, float):
+                    # If corpus is small or max_df would filter too aggressively, adjust it
+                    # For n_docs < 50, use a more lenient max_df
+                    if n_docs < 10:
+                        # Very small corpus: allow all terms
+                        self.vectorizer.set_params(min_df=1, max_df=1.0)
+                        logger.debug(
+                            f"Very small corpus detected ({n_docs} docs); adjusted min_df=1, max_df=1.0"  # noqa: E501
+                        )
+                    elif n_docs < 50:
+                        # Small corpus: use more lenient max_df to avoid over-pruning
+                        # Set max_df to not filter out most common terms
+                        adjusted_max_df = max(1.0, min(0.95, (n_docs - 1) / n_docs))
+                        self.vectorizer.set_params(min_df=1, max_df=adjusted_max_df)
+                        logger.debug(
+                            f"Small corpus detected ({n_docs} docs); adjusted max_df={adjusted_max_df}"  # noqa: E501
+                        )
+
+                self.vectorizer.fit(texts)
+                self.is_fitted = True
+                logger.info(
+                    f"TF-IDF vectorizer fitted. Vocabulary size: {len(self.vectorizer.vocabulary_)}"
+                )
+            except (ValueError, TypeError) as e:
+                type(e).__name__
+                logger.error(
+                    "Error fitting TF-IDF vectorizer: <ERROR_TYPE>"
+                )  # codeql[py/clear-text-logging-sensitive-data]
+                raise
+
+        # Transform texts to embeddings
+        try:
+            embeddings = self.vectorizer.transform(texts).toarray()
+            logger.debug(
+                f"Encoded {len(texts)} texts to shape {embeddings.shape} (TF-IDF)"
+            )  # codeql[py/clear-text-logging-sensitive-data]
+            return embeddings
+        except (ValueError, TypeError) as e:
+            type(e).__name__
+            logger.error(
+                "Error transforming texts with TF-IDF: <ERROR_TYPE>"
+            )  # codeql[py/clear-text-logging-sensitive-data]
+            raise
+
+    def get_dimension(self) -> int:
+        """Get embedding dimension."""
+        return self.max_features
+
+
+class EmbeddingModel:
+    """Lightweight device-aware embedding model facade.
+
+    Provides the ``EmbeddingModel`` name expected by device-placement tests and
+    external callers.  The underlying :class:`LocalSentenceTransformerProvider`
+    is loaded lazily on first :meth:`encode` / :meth:`get_dimension` call so that
+    instantiation succeeds in environments where the HuggingFace model is not
+    cached.
+    """
+
+    def __init__(
+        self,
+        model_name: str = "sentence-transformers/all-MiniLM-L6-v2",
+        device: str = "cpu",
+        cache_dir: Optional[str] = None,
+    ) -> None:
+        self.model_name = model_name
+        self.device = device
+        self.cache_dir = cache_dir
+        self._provider: Optional[LocalSentenceTransformerProvider] = None
+
+    def _ensure_loaded(self) -> LocalSentenceTransformerProvider:
+        if self._provider is None:
+            self._provider = LocalSentenceTransformerProvider(
+                model_name=self.model_name,
+                cache_dir=self.cache_dir,
+            )
+        return self._provider
+
+    def encode(
+        self, texts: list[str], batch_size: int = 32, show_progress: bool = False
+    ) -> "np.ndarray":
+        return self._ensure_loaded().encode(
+            texts, batch_size=batch_size, show_progress=show_progress
+        )
+
+    def get_dimension(self) -> int:
+        return self._ensure_loaded().get_dimension()

@@ -1,0 +1,92 @@
+[build-system]
+requires = [
+    "setuptools>=78.1.1,<82",
+    "wheel",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aries-serpent-cognitive-brain"
+version = "0.1.0"
+description = "Cognitive Brain Agent Coordination Framework - 21 APIs for agentic AI orchestration, pattern learning, and autonomous execution with zero external dependencies (stdlib only)"
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+authors = [
+    { name = "Aries Serpent" },
+]
+keywords = [
+    "cognitive",
+    "brain",
+    "agentic",
+    "AI",
+    "agent-coordination",
+    "pattern-learning",
+    "orchestration",
+    "autonomous-execution",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Stubs Only",
+]
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=9.0.3,<10.0.0",
+    "pytest-cov>=4.1.0,<6.0.0",
+    "pytest-xdist>=3.5.0,<4.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/Aries-Serpent/_codex_"
+Documentation = "https://aries-serpent.github.io/_codex_/"
+Repository = "https://github.com/Aries-Serpent/_codex_.git"
+Issues = "https://github.com/Aries-Serpent/_codex_/issues"
+
+[tool.setuptools]
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["codex.cognitive*"]
+
+[tool.setuptools.package-data]
+"codex.cognitive" = [
+    "py.typed",
+]
+
+[tool.black]
+line-length = 100
+target-version = ["py312"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+
+[tool.coverage.run]
+branch = true
+source = ["src/codex/cognitive"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = false
+precision = 2
+fail_under = 70

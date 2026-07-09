@@ -1,0 +1,98 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: aries-serpent
+  labels:
+    app: aries-serpent
+    version: 0.1.0
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: aries-serpent
+  namespace: aries-serpent
+  labels:
+    app: aries-serpent
+    version: 0.1.0
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: aries-serpent-role
+  namespace: aries-serpent
+  labels:
+    app: aries-serpent
+    version: 0.1.0
+rules:
+# Minimal permissions for pod self-discovery and metrics
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: [""]
+  resources: ["configmaps"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get", "list"]
+- apiGroups: [""]
+  resources: ["services"]
+  verbs: ["get", "list"]
+# Metrics and logging (read-only)
+- apiGroups: [""]
+  resources: ["events"]
+  verbs: ["get", "list"]
+- apiGroups: [""]
+  resources: ["endpoints"]
+  verbs: ["get", "list", "watch"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: aries-serpent-binding
+  namespace: aries-serpent
+  labels:
+    app: aries-serpent
+    version: 0.1.0
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: aries-serpent-role
+subjects:
+- kind: ServiceAccount
+  name: aries-serpent
+  namespace: aries-serpent
+
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: aries-serpent-api-pdb
+  namespace: aries-serpent
+  labels:
+    app: api
+    version: 0.1.0
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app: api
+      version: 0.1.0
+
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: aries-serpent-inference-pdb
+  namespace: aries-serpent
+  labels:
+    app: inference
+    version: 0.1.0
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: inference
+      version: 0.1.0

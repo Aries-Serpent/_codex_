@@ -1,0 +1,71 @@
+# Multi-stage Dockerfile for aries-serpent-api:0.1.0-final
+# Production-grade FastAPI server with inference endpoints
+
+# Stage 1: Builder
+FROM python:3.12-slim as builder
+
+WORKDIR /build
+
+# Install build dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy project files
+COPY requirements.txt .
+COPY pyproject.toml .
+COPY setup.py . 2>/dev/null || true
+COPY setup.cfg . 2>/dev/null || true
+
+# Build wheels
+RUN pip install --upgrade pip setuptools wheel && \
+    pip wheel --no-cache-dir --wheel-dir /build/wheels -r requirements.txt
+
+# Stage 2: Runtime
+FROM python:3.12-slim
+
+WORKDIR /app
+
+# Install runtime dependencies only (security: minimal attack surface)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create non-root user (security best practice)
+RUN useradd -m -u 1001 -s /bin/bash codex && \
+    mkdir -p /app/logs && \
+    chown -R codex:codex /app
+
+# Copy wheels from builder
+COPY --from=builder /build/wheels /wheels
+
+# Install Python dependencies from wheels
+RUN pip install --no-cache /wheels/*.whl && \
+    rm -rf /wheels
+
+# Copy application code
+COPY --chown=codex:codex src/codex /app/codex
+COPY --chown=codex:codex . /app/
+
+# Switch to non-root user
+USER codex
+
+# Environment configuration
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    LOG_LEVEL=INFO \
+    API_TIMEOUT=30 \
+    CACHE_SIZE=1024 \
+    PORT=8000
+
+# Expose ports: HTTP (8000) + HTTPS (8443)
+EXPOSE 8000 8443
+
+# Health check (critical for orchestration)
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+# Default command: run FastAPI with uvicorn
+CMD ["python", "-m", "uvicorn", "codex.api.app:app", "--host", "0.0.0.0", "--port", "8000"]
