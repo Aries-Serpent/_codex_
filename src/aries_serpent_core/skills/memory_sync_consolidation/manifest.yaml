@@ -1,0 +1,45 @@
+id: memory.sync.consolidation
+version: 1.0.0
+name: Memory Sync Consolidation Skill
+description: >
+  Consolidate short-term memory (STM) to long-term memory (LTM) with pattern
+  discovery, duplicate detection, and fuzzy matching. Analyzes STM contents
+  for actionable patterns, merges similar entries, applies retention policies
+  (evergreen, standard, decay, archived), and promotes high-value patterns
+  to LTM. Integrates with pattern.discovery.brain for cross-session learning.
+  Returns consolidation summary with metrics: items_promoted, duplicates_merged,
+  retention_policy_applied, archive_size_bytes.
+
+capability_tags:
+  - memory_consolidation
+  - stm_ltm_sync
+  - cognitive_brain
+  - pattern_deduplication
+  - data_management
+
+entrypoint: aries_serpent_core.skills.memory_sync_consolidation.handler:run
+
+io:
+  input_schema: schema/input.json
+  output_schema: schema/output.json
+
+policy:
+  allowlist:
+    - "*"
+  budget:
+    tokens: 10000
+    calls: 5
+    timeout_ms: 30000
+
+metadata:
+  author: skills-master-agent
+  created: '2026-07-09T04:41:30Z'
+  maturity: production
+  safety_level: low
+  requires_gpu: false
+  supports_batch: false
+  aais_score: 0.87
+  domain: cognitive_brain
+  integration_points:
+    - pattern_discovery.brain
+    - ltm_retention

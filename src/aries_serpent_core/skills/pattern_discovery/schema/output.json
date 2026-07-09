@@ -1,0 +1,64 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Pattern Discovery Output",
+  "type": "object",
+  "properties": {
+    "status": {
+      "type": "string",
+      "enum": ["ok", "error"]
+    },
+    "data": {
+      "type": "object",
+      "properties": {
+        "patterns_discovered": {
+          "type": "integer",
+          "description": "Number of patterns discovered"
+        },
+        "patterns_promoted": {
+          "type": "integer",
+          "description": "Number of patterns with promotion_score >= 0.8"
+        },
+        "patterns_pending_review": {
+          "type": "integer",
+          "description": "Number of patterns with 0.5 <= promotion_score < 0.8"
+        },
+        "total_memory_entries_analyzed": {
+          "type": "integer"
+        },
+        "patterns": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "name": { "type": "string" },
+              "type": {
+                "type": "string",
+                "enum": ["decision", "error", "performance", "success", "risk"]
+              },
+              "frequency": { "type": "integer" },
+              "confidence": { "type": "number" },
+              "improvement_area": { "type": "string" },
+              "promotion_score": { "type": "number" }
+            }
+          }
+        },
+        "metrics": {
+          "type": "object",
+          "properties": {
+            "avg_confidence": { "type": "number" },
+            "avg_frequency": { "type": "number" },
+            "coverage_pct": { "type": "number" }
+          }
+        }
+      }
+    },
+    "error": {
+      "type": "object",
+      "properties": {
+        "type": { "type": "string" },
+        "message": { "type": "string" }
+      }
+    }
+  }
+}

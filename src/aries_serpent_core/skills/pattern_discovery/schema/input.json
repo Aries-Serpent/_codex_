@@ -1,0 +1,50 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Pattern Discovery Input",
+  "type": "object",
+  "properties": {
+    "memory_data": {
+      "type": "object",
+      "description": "Dictionary of memory entries (entries keyed by id)",
+      "additionalProperties": true
+    },
+    "min_frequency": {
+      "type": "integer",
+      "description": "Minimum frequency threshold for pattern promotion",
+      "default": 2,
+      "minimum": 1
+    },
+    "min_confidence": {
+      "type": "number",
+      "description": "Minimum confidence score (0-1) for pattern inclusion",
+      "default": 0.7,
+      "minimum": 0,
+      "maximum": 1
+    },
+    "improvement_areas": {
+      "type": "array",
+      "description": "Filter patterns by improvement area (optional)",
+      "items": {
+        "type": "string",
+        "enum": [
+          "ML_PATTERN_FEEDING",
+          "CI_SELF_HEALING",
+          "AGENT_CHAINING",
+          "COVERAGE_IMPROVEMENT",
+          "PERFORMANCE_OPTIMIZATION",
+          "SECURITY_HARDENING",
+          "ERROR_RESILIENCE"
+        ]
+      }
+    },
+    "limit": {
+      "type": "integer",
+      "description": "Maximum number of patterns to return",
+      "default": 50,
+      "minimum": 1,
+      "maximum": 1000
+    }
+  },
+  "required": ["memory_data"],
+  "additionalProperties": false
+}
