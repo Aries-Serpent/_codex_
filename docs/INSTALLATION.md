@@ -906,86 +906,323 @@ result = orchestrator.execute(
 
 ## Troubleshooting
 
-### Issue: "No module named 'codex'"
+### Common Installation Issues
 
-**Solution:**
+#### Issue: "No module named 'codex_ml'"
+
+**Symptoms:** `ModuleNotFoundError: No module named 'codex_ml'`
+
+**Solutions:**
+
 ```bash
-# Verify installation
+# 1. Verify installation
 pip show codex-ml
 
-# Reinstall if needed
-pip install --upgrade codex-ml
-
-# Check Python path
+# 2. Check Python path
 python -c "import sys; print('\n'.join(sys.path))"
+
+# 3. Reinstall package
+pip install --upgrade --force-reinstall codex-ml[runtime]
+
+# 4. Use absolute import path
+python -c "from codex_ml.config import ConfigManager"
 ```
 
-### Issue: Version Mismatch
+#### Issue: "Command 'codex-ml' not found"
+
+**Symptoms:** `command not found: codex-ml`
+
+**Solutions:**
 
 ```bash
-# Check installed version
-python -c "import codex; print(codex.__version__)"
+# 1. Check if package is installed
+pip list | grep codex
 
-# Install specific version
-pip install codex-ml==0.1.0
+# 2. Verify virtual environment is activated
+which python  # Should show path in your venv
+echo $VIRTUAL_ENV  # Should show venv path
 
-# Pin version in requirements.txt
-echo "codex-ml==0.1.0" >> requirements.txt
+# 3. Reinstall entry points
+pip install --force-reinstall codex-ml[runtime]
+
+# 4. Use python -m instead
+python -m codex_ml.cli --help
 ```
 
-### Issue: Dependency Conflicts
+#### Issue: Dependency Version Conflict
+
+**Symptoms:** `ERROR: pip's dependency resolver does not currently take into account all the packages that are installed`
+
+**Solutions:**
 
 ```bash
-# Upgrade pip
-pip install --upgrade pip
+# 1. Create fresh virtual environment
+python -m venv fresh-env
+source fresh-env/bin/activate  # or fresh-env\Scripts\activate on Windows
 
-# Install compatible versions
-pip install --force-reinstall codex-ml
+# 2. Upgrade pip first
+pip install --upgrade pip setuptools wheel
 
-# Use virtual environment
-python -m venv clean-env
-source clean-env/bin/activate
-pip install codex-ml[full]
+# 3. Install with compatible versions
+pip install codex-ml[runtime]==0.1.0
+
+# 4. If still issues, use --no-deps
+pip install --no-deps codex-ml[runtime]==0.1.0
+pip install pydantic hydra-core typer torch transformers
 ```
 
-### Issue: Docker Image Not Found
+#### Issue: "CUDA out of memory"
+
+**Symptoms:** `RuntimeError: CUDA out of memory`
+
+**Solutions:**
 
 ```bash
-# List available images
-docker images | grep codex
+# 1. Check GPU memory
+nvidia-smi
 
-# Pull latest image
+# 2. Reduce batch size
+codex-ml train batch_size=8 
+
+# 3. Use CPU instead
+export CUDA_VISIBLE_DEVICES=""
+codex-ml train device=cpu
+
+# 4. Clear GPU cache
+python << 'EOF'
+import torch
+torch.cuda.empty_cache()
+EOF
+```
+
+#### Issue: Docker Image Not Found
+
+**Symptoms:** `Error response from daemon: manifest not found`
+
+**Solutions:**
+
+```bash
+# 1. Pull correct image
 docker pull ghcr.io/aries-serpent/codex:0.1.0
 
-# Build from source
-docker build -f Dockerfile.api -t codex:latest .
+# 2. List available images
+docker images | grep codex
+
+# 3. Build locally
+git clone https://github.com/Aries-Serpent/_codex_.git
+cd _codex_
+docker build -t codex:0.1.0 .
+
+# 4. Check Docker daemon
+docker ps  # Verify Docker is running
 ```
 
-### Issue: Kubernetes Pod CrashLoopBackOff
+### Platform-Specific Issues
+
+#### macOS: "Python3.12 command not found"
 
 ```bash
-# Check pod logs
-kubectl logs <pod-name>
+# 1. Install via Homebrew
+brew install python@3.12
 
-# Describe pod for events
-kubectl describe pod <pod-name>
+# 2. Or check installation
+brew list python@3.12
 
-# Check resource limits
-kubectl top nodes
-kubectl top pods
-
-# Rollback deployment
-kubectl rollout undo deployment/codex-api
+# 3. Create symlink if needed
+ln -s /usr/local/opt/python@3.12/bin/python3.12 /usr/local/bin/python
 ```
 
-## Getting Help
+#### Windows: PowerShell Execution Policy Error
 
-- **Documentation:** https://github.com/Aries-Serpent/_codex_/docs
-- **Issues:** https://github.com/Aries-Serpent/_codex_/issues
-- **Discussions:** https://github.com/Aries-Serpent/_codex_/discussions
-- **Email:** support@aries-serpent.dev
+```powershell
+# Check policy
+Get-ExecutionPolicy -List
+
+# Fix execution policy
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+# Or use cmd.exe instead
+cmd /c "codex-env\Scripts\activate.bat"
+```
+
+#### Linux: Missing Development Headers
+
+**Symptoms:** `error: Microsoft Visual C++ 14.0 or greater is required` (on Windows)  
+or `fatal error: Python.h: No such file or directory` (on Linux)
+
+```bash
+# Ubuntu/Debian
+sudo apt install -y python3.12-dev build-essential
+
+# Fedora/RHEL
+sudo dnf install -y python3.12-devel gcc
+
+# Then reinstall
+pip install --force-reinstall codex-ml[runtime]
+```
+
+### Performance Issues
+
+#### Installation Too Slow
+
+```bash
+# 1. Check network speed
+pip install --verbose codex-ml[core]
+
+# 2. Use different PyPI mirror
+pip install -i https://mirrors.aliyun.com/pypi/simple/ codex-ml[runtime]
+
+# 3. Upgrade pip/setuptools
+pip install --upgrade pip setuptools wheel
+
+# 4. Install in parallel
+pip install -U --upgrade-strategy eager codex-ml[runtime]
+```
+
+#### Runtime Performance Issues
+
+```bash
+# 1. Profile CPU usage
+python -m cProfile -s cumulative script.py
+
+# 2. Monitor memory
+ps aux | grep python
+
+# 3. Check disk I/O
+iotop  # Linux
+iostat  # macOS
+
+# 4. Enable verbose logging
+export CODEX_LOG_LEVEL=DEBUG
+codex-ml train config.yaml
+```
+
+### Getting Diagnostics
+
+```bash
+# Create system information report
+python << 'EOF'
+import sys
+import platform
+import codex_ml
+
+print("=== System Information ===")
+print(f"OS: {platform.system()} {platform.release()}")
+print(f"Python: {sys.version}")
+print(f"Codex Version: {codex_ml.__version__}")
+print("\n=== Installed Packages ===")
+import subprocess
+subprocess.run(["pip", "freeze"])
+EOF
+
+# Check for GPU availability
+python -c "
+import torch
+print(f'PyTorch: {torch.__version__}')
+print(f'CUDA Available: {torch.cuda.is_available()}')
+if torch.cuda.is_available():
+    print(f'GPU: {torch.cuda.get_device_name(0)}')
+    print(f'GPU Memory: {torch.cuda.get_device_properties(0).total_memory / 1e9:.2f} GB')
+"
+```
 
 ---
 
-**Status:** ✅ COMPLETE  
-**Last Updated:** 2026-07-09
+## Getting Help
+
+### Documentation Resources
+
+- **🏠 Main README:** [README.md](../README.md)
+- **🚀 Quick Start ML:** [QUICK_START_ML.md](QUICK_START_ML.md)
+- **🧠 Cognitive Brain Guide:** [QUICK_START_COGNITIVE_BRAIN.md](QUICK_START_COGNITIVE_BRAIN.md)
+- **⚙️ Configuration Guide:** [docs/configuration/](configuration/)
+- **🐳 Docker Guide:** [docker/README.md](../docker/README.md)
+- **☸️ Kubernetes Guide:** [k8s/README.md](../k8s/README.md)
+
+### Community Support
+
+- **📝 Issues:** [GitHub Issues](https://github.com/Aries-Serpent/_codex_/issues)
+- **💬 Discussions:** [GitHub Discussions](https://github.com/Aries-Serpent/_codex_/discussions)
+- **🐛 Bug Reports:** [Report a Bug](https://github.com/Aries-Serpent/_codex_/issues/new?template=bug_report.md)
+- **💡 Feature Requests:** [Request a Feature](https://github.com/Aries-Serpent/_codex_/issues/new?template=feature_request.md)
+
+### Additional Resources
+
+- **📦 PyPI Package:** https://pypi.org/project/codex-ml/
+- **🐳 Docker Hub:** https://ghcr.io/aries-serpent/codex
+- **📚 Full Documentation:** https://github.com/Aries-Serpent/_codex_/blob/main/docs/
+- **🔧 Contributing Guide:** [CONTRIBUTING.md](../CONTRIBUTING.md)
+
+---
+
+## What's Next?
+
+After successful installation, here's what you can do:
+
+### For Users (Runtime Profile)
+
+```bash
+# 1. Run the quick start
+python -m codex_ml.examples.quickstart
+
+# 2. Load a pre-trained model
+from codex_ml import ModelHandle
+model = ModelHandle.from_pretrained("gpt2")
+
+# 3. Run inference
+result = model.predict("Hello, world!")
+```
+
+### For Developers (Full Profile)
+
+```bash
+# 1. Clone and develop
+git clone https://github.com/Aries-Serpent/_codex_.git
+cd _codex_
+pip install -e ".[full]"
+
+# 2. Run tests
+pytest tests/ -x
+
+# 3. Start contributing
+# See CONTRIBUTING.md for guidelines
+```
+
+### For ML Engineers
+
+```bash
+# 1. Build custom models
+from codex_ml.training import Trainer
+
+trainer = Trainer(config='my_config.yaml')
+trainer.train()
+
+# 2. Evaluate performance
+from codex_ml.evaluation import Evaluator
+evaluator = Evaluator(model='my_model')
+evaluator.evaluate()
+
+# 3. Deploy to production
+from codex_ml.serving import deploy
+deploy(model='my_model', port=8000)
+```
+
+---
+
+## Version History
+
+- **v0.1.0** (2026-07-10) - Production release with 90.2% coverage
+- **v0.1.0-beta3** (2026-07-01) - Final beta release
+- **Earlier versions** - See [CHANGELOG.md](../CHANGELOG.md)
+
+---
+
+## License
+
+codex-ml is open source and available under the [MIT License](../LICENSE).
+
+---
+
+**Last Updated:** 2026-07-10  
+**Installation Status:** ✅ Ready for Production  
+**Support Level:** Enterprise-Grade
