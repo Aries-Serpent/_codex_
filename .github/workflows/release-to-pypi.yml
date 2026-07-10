@@ -62,8 +62,14 @@ jobs:
             VERSION="${VERSION}-${COMMIT_SHORT}"
           fi
 
-          echo "version=${VERSION}" >> $GITHUB_OUTPUT
-          echo "Release version: ${VERSION}"
+          # Remove -final suffix if present (for output to subsequent jobs)
+          # We keep the full version with -final for tagging, but remove it for PyPI
+          OUTPUT_VERSION="${VERSION%-final*}"
+
+          echo "version=${OUTPUT_VERSION}" >> $GITHUB_OUTPUT
+          echo "full_version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "Release version: ${OUTPUT_VERSION}"
+          echo "Full version: ${VERSION}"
 
       - name: Verify P0 gates complete
         id: p0-gate
@@ -414,6 +420,10 @@ jobs:
           # Try to install from PyPI
           VERSION=${{ needs.pre-release-checks.outputs.version }}
           CLEAN_VERSION="${VERSION#v}"
+          # Strip -final suffix if present (must be PEP 440 compliant for pip)
+          CLEAN_VERSION="${CLEAN_VERSION%-final}"
+          # Strip -COMMIT_SHA suffix if present
+          CLEAN_VERSION="${CLEAN_VERSION%%-*}"
 
           pip install "codex-ml==${CLEAN_VERSION}"
 
@@ -592,7 +602,9 @@ jobs:
           COMMIT_SHA: ${{ github.sha }}
         run: |
           mkdir -p .codex/metrics
-          cat > ".codex/metrics/release-${REF_NAME}.json" << 'EOF'
+          # Convert ref name to filename-safe format (replace slashes with dashes)
+          SAFE_REF_NAME=$(echo "$REF_NAME" | sed 's/\//-/g')
+          cat > ".codex/metrics/release-${SAFE_REF_NAME}.json" << 'EOF'
           {
             "version": "$REF_NAME",
             "deployed_at": "$(date -Iseconds)",
