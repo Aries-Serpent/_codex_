@@ -1,9 +1,9 @@
-# Session Context — 2026-07-10T18:35:24Z
+# Session Context — 2026-07-10T19:49:47Z
 **Branch:** `copilot/continue-v010-release`  **PR:** #5287  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `5000` (✅)
+- REST remaining: `4991` (✅)
 - GraphQL remaining: `5000` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
@@ -12,13 +12,14 @@
 State: `open`  Draft: `False`  Branch: `dependabot/pip/wandb/offline-run-20260710_084103-t2brzbto/files/pip-d5b1a78e57` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **.github/workflows/cleanup-stale-branches.yml** — `failure` on `copilot/continue-v010-release` (2026-07-10)
-- **.github/workflows/admin-action-t03.yml** — `failure` on `copilot/continue-v010-release` (2026-07-10)
-- **.github/workflows/build-preview-image.yml** — `failure` on `copilot/continue-v010-release` (2026-07-10)
-- **.github/workflows/ci-checkpoint-validation.yml** — `failure` on `copilot/continue-v010-release` (2026-07-10)
-- **.github/workflows/agent-registry-validation.yml** — `failure` on `copilot/continue-v010-release` (2026-07-10)
+- **Batch CI Failure Triage** — `failure` on `main` (2026-07-10)
+- **🔍 Proactive CI Monitor** — `failure` on `main` (2026-07-10)
+- **.github/workflows/autonomous-agent.yml** — `failure` on `dependabot/pip/wandb/offline-run-20260710_084103-t2brzbto/files/pip-d5b1a78e57` (2026-07-10)
+- **.github/workflows/automated-release-creation.yml** — `failure` on `dependabot/pip/wandb/offline-run-20260710_084103-t2brzbto/files/pip-d5b1a78e57` (2026-07-10)
+- **.github/workflows/agent-health-check.yml** — `failure` on `dependabot/pip/wandb/offline-run-20260710_084103-t2brzbto/files/pip-d5b1a78e57` (2026-07-10)
 
 ## 📝 Recent Commits
+- `bfb3b00e` plan: Phase 2 runtime profile validation - comprehensive installation and functi — copilot-swe-agent[bot] (2026-07-10)
 - `133a1860` fix(install): Address remaining code review feedback - enhance entry point test, — copilot-swe-agent[bot] (2026-07-10)
 - `e03ff76a` fix(install): Address code review feedback - add namespace docs, simplify pyproj — copilot-swe-agent[bot] (2026-07-10)
 - `2b39aef1` fix(tests): Update smoke tests to use correct module paths for core profile — copilot-swe-agent[bot] (2026-07-10)
@@ -26,7 +27,6 @@ State: `open`  Draft: `False`  Branch: `dependabot/pip/wandb/offline-run-2026071
 - `d0a7951a` Plan: Resolve 6 installation gaps for codex-ml v0.1.0 - Phase 1 core profile — copilot-swe-agent[bot] (2026-07-10)
 - `6acd0580` Apply remaining changes — copilot-swe-agent[bot] (2026-07-10)
 - `94b5cc40` Apply remaining changes — copilot-swe-agent[bot] (2026-07-10)
-- `0d8ad811` doc(release): Document v0.1.0-final successful PyPI publication (Run #329) — copilot-swe-agent[bot] (2026-07-10)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
