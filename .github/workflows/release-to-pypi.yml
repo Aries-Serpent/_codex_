@@ -183,10 +183,10 @@ jobs:
       - name: Generate manifest
         id: manifest
         run: |
-          python scripts/ci/generate_manifest.py \
-            --dist-dir dist/ \
-            --output-dir .codex/manifests/ \
-            --version ${{ needs.pre-release-checks.outputs.version }}
+          mkdir -p .codex/manifests/
+          python scripts/ci/generate_wheel_manifest.py \
+            --wheelhouse dist/ \
+            --output .codex/manifests/release-manifest-${{ needs.pre-release-checks.outputs.version }}.json
 
       - name: Upload manifest artifact
         uses: actions/upload-artifact@v5
