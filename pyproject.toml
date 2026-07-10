@@ -236,14 +236,12 @@ train = ["codex-ml[full]"]
 test-core = ["codex-ml[core]"]
 
 [project.scripts]
-# Core entry points (work with [core] profile)
+# Core entry points (bundled in all profiles)
 codex-ml = "codex_ml.cli.main:cli"
 codex-ml-cli = "codex_ml.cli.main:cli"
 codex-cli = "codex_ml.cli.simple_cli:main"
 codex-smoke = "codex_cli.app:app"
-# NOTE: This entry point references aries_serpent_core (from aries-serpent shared utilities)
-# The import_ndjson module must exist in the aries-serpent-core package for this entry point to function
-codex-import-ndjson = "aries_serpent_core.logging.import_ndjson:main"
+# Removed: codex-import-ndjson (aries_serpent_core not in setuptools include list - external dependency)
 
 # Extended entry points (require additional dependencies, marked for future profiles)
 # NOTE: The following entry points are commented out because they require dependencies
@@ -270,8 +268,8 @@ exact_match = "codex_ml.metrics.registry:exact_match"
 f1 = "codex_ml.metrics.registry:f1"
 
 [project.entry-points."codex_ml.plugins"]
-hello = "examples.plugins.hello_plugin:HelloPlugin"
-token_accuracy_plugin = "examples.plugins.metrics_token_accuracy_plugin:TokenAccuracyPlugin"
+# Removed: hello (examples module excluded from bundling via setuptools)
+# Removed: token_accuracy_plugin (examples module excluded from bundling via setuptools)
 
 [project.entry-points."codex_ml.data_loaders"]
 lines = "codex_ml.data.registry:load_line_dataset"
@@ -294,6 +292,7 @@ functional = "codex_ml.registry.trainers:load_functional_trainer"
 [tool.setuptools.package-dir]
 "" = "src"
 # Root-level packages with explicit mappings
+codex = "src/codex"
 codex_utils = "codex_utils"
 training = "training"
 services = "services"
