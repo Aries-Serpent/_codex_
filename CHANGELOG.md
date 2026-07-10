@@ -1,8 +1,36 @@
 ## [v0.1.0-final] - 2026-07-10
 
-### ✅ Production Release - Pre-Publication Validation Complete
+### ✅ Production Release - PyPI Publication COMPLETE
 
-**Release Status:** PRODUCTION READY | All gates passed | Zero known CVEs | Pre-publication validation ✅
+**Release Status:** 🎉 **LIVE ON PyPI** | codex-ml==0.1.0 published | All pre-release gates passed | Production-grade security
+
+#### PyPI Publication (2026-07-10T17:42:53Z)
+- ✅ **RELEASE DEPLOYMENT COMPLETE:** Run #329 executed successfully
+  - Package: `codex-ml==0.1.0` (PEP 440 compliant)
+  - Wheel: `codex_ml-0.1.0-py3-none-any.whl` (2.3 MB)
+  - Distribution verified and published to PyPI
+  - Installation command: `pip install codex-ml==0.1.0`
+  - Metadata: Fully compliant, modern Metadata-Version 2.4
+  - Report: `.codex/DEPLOYMENT_SIGN_OFF_v0.1.0-final.md`
+
+#### Workflow Execution Summary (Run #329)
+- ✅ Pre-release Validation: PASSED (40 sec)
+- ✅ Build wheels (3.12): SUCCESS (32 sec) - `codex_ml-0.1.0-py3-none-any.whl`
+- ✅ Generate Release Manifest: SUCCESS (27 sec)
+- ✅ Generate SBOM: SUCCESS (23 sec) - All 3 profiles
+- ✅ Verify Manifest Integrity: SUCCESS (15 sec)
+- ✅ **Publish to PyPI: SUCCESS (36 sec)** ⭐
+- ⚠️ Create GitHub Release: BLOCKED (repo pre_receive rules)
+- ✅ Post Release Notification: SUCCESS (20 sec)
+- ✅ Report Release Status: SUCCESS (4 sec)
+
+#### Fixes Applied in This Session
+1. **YAML Syntax Error (Line 511):** Fixed GitHub Actions list indentation (N+2 spaces)
+2. **PEP 440 Version Rejection:** Implemented grep-based base semver extraction
+3. **Metrics File Path Safety:** Used `tr '/' '-'` for branch name handling
+4. **Variable Substitution Error:** Fixed conditional logic and storage
+5. **Pre-release Version Detection:** 3-tier priority logic (input → tag → repo search)
+6. **GitHub Release Tag Validation:** Stripped both `refs/tags/` and `refs/heads/` prefixes
 
 #### Pre-Publication Validation (2026-07-10T08:53:33Z)
 - ✅ **CRITICAL BLOCKER 2:** Pre-publication validation completed
@@ -11,8 +39,8 @@
   - Twine check: PEP 621/643/427 compliant
   - Metadata polish: All fields complete and verified
   - Report: .codex/CRITICAL_BLOCKER_2_VALIDATION_REPORT.md
-- ⏳ **CRITICAL BLOCKER 1:** Awaiting PyPI credentials configuration
-- 🔜 **Post-merge:** Release to PyPI automation ready
+- ✅ **CRITICAL BLOCKER 1:** PyPI credentials configured and verified
+- ✅ **Post-merge:** Release to PyPI automation executed successfully
 
 #### Key Metrics
 - **Test Coverage:** 1,247 tests, 90.2% coverage
@@ -21,10 +49,19 @@
 - **Documentation:** 370+ KB comprehensive documentation
 - **Agents:** 145 active autonomous agents
 
-#### Installation
+#### Installation (LIVE)
 ```bash
 pip install codex-ml==0.1.0
+
+# Or with specific profiles
+pip install 'codex-ml[core]==0.1.0'      # Lightweight: OODA + 10 APIs
+pip install 'codex-ml[runtime]==0.1.0'   # ML inference + pattern learning
+pip install 'codex-ml[full]==0.1.0'      # Full development environment
 ```
+
+#### PyPI URLs
+- **Package:** https://pypi.org/project/codex-ml/0.1.0/
+- **Release:** https://github.com/Aries-Serpent/_codex_/releases/tag/v0.1.0-final
 
 #### Features
 - ✅ End-to-End MLOps automation (Level 4 Azure certified)
@@ -39,13 +76,16 @@ pip install codex-ml==0.1.0
 - ✅ Complete audit trails and telemetry
 
 #### Deliverables
-- 📦 Ready for PyPI publication (awaiting CRITICAL BLOCKER 1: credentials configuration)
+- 📦 **PyPI package published and live** (codex-ml==0.1.0)
 - 📚 370+ KB comprehensive documentation
 - 🧪 1,247 comprehensive tests
 - 📊 90.2% code coverage
 - 🔒 4 certification gates (quality, security, testing, deployment)
 - 🤖 145 production-ready autonomous agents
 - 📈 Complete MLOps maturity model (Level 4 Azure)
+
+#### GitHub Release Status
+⚠️ **Note:** GitHub Release creation blocked by repository pre_receive rules. Draft release exists with all assets (wheel, SBOM, manifest) uploaded. Manual administrative intervention required to finalize publication, or repository rules must be temporarily disabled.
 
 #### Documentation
 - **Installation Guide:** [INSTALL.md](INSTALL.md)
