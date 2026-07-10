@@ -213,7 +213,7 @@ jobs:
 
       - name: Install SBOM generation tools
         run: |
-          pip install cyclonedx-python
+          pip install cyclonedx-bom
 
       - name: Generate SBOM for core profile
         run: |
