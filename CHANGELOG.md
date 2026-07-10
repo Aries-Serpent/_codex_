@@ -65,6 +65,14 @@ None - Clean production release.
 
 ## [Unreleased]
 
+### Changed (dependency security updates — PR #5316)
+- **build(deps):** Bumped pip group across wandb offline-run directories — 12 security/maintenance updates:
+  - `mlflow` 3.2.0 → 3.11.1, `pyarrow` 21.0.0 → 23.0.1, `pyopenssl` 23.2.0 → 26.0.0
+  - `cryptography` 41.0.7 → 48.0.1 (security), `certifi` 2023.11.17 → 2024.7.4 (security)
+  - `requests` 2.31.0 → 2.33.0, `idna` 3.6 → 3.15, `setuptools` 68.1.2 → 78.1.1
+  - `pyasn1` 0.4.8 → 0.6.3, `wheel` 0.42.0 → 0.46.2, `pip` 24.0 → 26.1.2, `twisted` 24.3.0 → 26.4.0rc2
+- **security review:** Investigated 4 CRITICAL + 4 HIGH automated scanner findings — confirmed as false positives (referenced file paths do not exist in codebase; actual security modules are already patched)
+
 ### Phase 3A: Post-Merge CI/CD Verification (2026-07-10T08:00:51Z)
 - **Campaign:** 4-lane parallel post-merge verification completed
 - **Authority:** @mbaetiong (D-tier autonomous, GO CONTINUE approved)
