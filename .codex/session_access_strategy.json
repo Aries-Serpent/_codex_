@@ -1,20 +1,18 @@
 {
-  "generated_at": "2026-07-10T05:35:09.676829+00:00",
+  "generated_at": "2026-07-10T06:43:55.762875+00:00",
   "methods": [
     "rest",
     "graphql",
     "gh_cli"
   ],
   "rest_available": true,
-  "rest_remaining": 4890,
+  "rest_remaining": 5000,
   "graphql_available": true,
-  "graphql_remaining": 4999,
+  "graphql_remaining": 5000,
   "gh_cli_available": true,
   "codeql_available": false,
-  "best_token_var": "GITHUB_TOKEN",
-  "open_prs": [
-    5282
-  ],
-  "branch": "copilot/go-continue-analysis-and-planning",
+  "best_token_var": "CODEX_MASTER_KEY",
+  "open_prs": [],
+  "branch": "copilot/create-implementation-campaign-plan",
   "recommendation": "Use REST for data fetches. "
 }
