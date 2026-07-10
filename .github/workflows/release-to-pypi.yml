@@ -171,13 +171,20 @@ jobs:
           echo "✓ Built universal wheel on Ubuntu for deterministic hashes"
 
       - name: Verify wheel artifacts
+        env:
+         RELEASE_VERSION: ${{ needs.pre-release-checks.outputs.version }}
         run: |
-          ls -lah dist/
-          if [ ! -f "dist/codex_ml-0.1.0-py3-none-any.whl" ]; then
-            echo "❌ Expected universal wheel not found"
-            exit 1
-          fi
-          echo "✓ Universal wheel verified"
+         ls -lah dist/
+         # Extract base version without 'v' prefix for filename
+         BASE_VERSION="${RELEASE_VERSION#v}"
+         EXPECTED_WHEEL="dist/codex_ml-${BASE_VERSION}-py3-none-any.whl"
+         if [ ! -f "$EXPECTED_WHEEL" ]; then
+           echo "❌ Expected universal wheel not found: $EXPECTED_WHEEL"
+           echo "Available files in dist/:"
+           ls -lah dist/
+           exit 1
+         fi
+         echo "✓ Universal wheel verified: $EXPECTED_WHEEL"
 
       - name: Upload wheel artifacts
         uses: actions/upload-artifact@v5
@@ -209,6 +216,8 @@ jobs:
           path: dist/
 
       - name: Verify wheels exist and are consistent
+        env:
+          RELEASE_VERSION: ${{ needs.pre-release-checks.outputs.version }}
         run: |
           ls -lah dist/
           if [ $(ls -1 dist/*.whl 2>/dev/null | wc -l) -eq 0 ]; then
@@ -217,8 +226,10 @@ jobs:
           fi
 
           # Verify we have the expected universal wheel
-          if [ ! -f "dist/codex_ml-0.1.0-py3-none-any.whl" ]; then
-            echo "❌ Expected universal wheel not found"
+          BASE_VERSION="${RELEASE_VERSION#v}"
+          EXPECTED_WHEEL="dist/codex_ml-${BASE_VERSION}-py3-none-any.whl"
+          if [ ! -f "$EXPECTED_WHEEL" ]; then
+            echo "❌ Expected universal wheel not found: $EXPECTED_WHEEL"
             echo "❌ This may indicate wheels were built on multiple platforms"
             echo "❌ Verify build-wheels job is configured for single platform (Ubuntu only)"
             exit 1
