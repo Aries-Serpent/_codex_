@@ -52,11 +52,11 @@ The final critical blocker before PyPI publication is the PyPI credentials confi
 
 ### Option A: GitHub Web UI (Recommended)
 ```
-1. Go to repository Settings → Secrets and variables → Actions
-2. Click "New repository secret"
-3. Name: PYPI_API_TOKEN
-4. Value: <paste PyPI API token>
-5. Click "Add secret"
+1. Go to repository Settings → Secrets and variables → Actions  # pragma: allowlist secret
+2. Click "New repository secret"  # pragma: allowlist secret
+3. Name: PYPI_API_TOKEN  # pragma: allowlist secret
+4. Value: <paste PyPI API token>  # pragma: allowlist secret
+5. Click "Add secret"  # pragma: allowlist secret
 ```
 
 ### Option B: GitHub CLI

@@ -61,7 +61,8 @@
     "19:src/aries_serpent_core/zendesk/agent.py": 1,
     "19:src/cognitive_brain/utils/__init__.py": 1,
     "21:.github/workflows/optimized-test-execution.yml": 1,
-    "21:.github/workflows/parallel-quality-checks.yml": 1
+    "21:.github/workflows/parallel-quality-checks.yml": 1,
+    "35:.codex/POST_MERGE_FOLLOW_UP_CHECKPOINT_v0.1.0.md": 5
   },
   "circuit_state": {
     "6": "BROKEN",
