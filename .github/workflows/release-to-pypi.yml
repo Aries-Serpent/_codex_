@@ -274,9 +274,16 @@ jobs:
 
       - name: Verify manifest integrity
         run: |
+          # Find the manifest file (generated in generate-manifest job)
+          MANIFEST_FILE=$(ls -t .codex/manifests/*.json 2>/dev/null | head -1)
+          if [ -z "$MANIFEST_FILE" ]; then
+            echo "❌ No manifest file found in .codex/manifests/"
+            exit 1
+          fi
+           
           python scripts/deploy/verify_manifest.py \
-            --manifest-dir .codex/manifests/ \
-            --wheel-dir dist/ \
+            --manifest "$MANIFEST_FILE" \
+            --wheelhouse dist/ \
             --strict
 
   # Publish to PyPI
