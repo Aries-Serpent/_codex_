@@ -1,0 +1,119 @@
+{
+  "generated_at": "2026-07-10T23:40:33.997540Z",
+  "phase": "Phase 4 - Validation & Risk Assessment",
+  "status": "Pre-Move Validation Checklist",
+  "checklist": {
+    "link_health_pre_scan": {
+      "description": "Run link validation tool to establish baseline",
+      "command": "python scripts/ci/validate-links.py --scan-root",
+      "status": "PENDING",
+      "result_file": ".codex/link_validation_baseline.json"
+    },
+    "reference_integrity_check": {
+      "description": "Audit all references for target files",
+      "command": "python scripts/root_org/audit_root_files.py --output-dir .codex",
+      "status": "COMPLETE \u2705",
+      "result_file": ".codex/ROOT_FOLDER_ORGANIZATION_DEPENDENCY_MAP.json"
+    },
+    "workflow_syntax_validation": {
+      "description": "Check existing YAML syntax issues",
+      "command": "yamllint .github/workflows/*.yml 2>&1 | tee .codex/workflow_syntax_baseline.log",
+      "status": "PENDING",
+      "result_file": ".codex/workflow_syntax_baseline.log"
+    },
+    "script_execution_dry_run": {
+      "description": "Test utility scripts with --dry-run flag",
+      "scripts": [
+        "scripts/root_org/organize_root_incremental.py --dry-run --validate-only",
+        "scripts/organize_repository.py --dry-run"
+      ],
+      "status": "PENDING"
+    },
+    "test_suite_pre_baseline": {
+      "description": "Capture baseline test results before any moves",
+      "command": "pytest tests/ -v --tb=short 2>&1 | tee .codex/tests_baseline_preMove.log",
+      "status": "PENDING",
+      "result_file": ".codex/tests_baseline_preMove.log"
+    }
+  },
+  "risk_matrix": {
+    "CRITICAL": {
+      "definition": "Files with >5 active workflow/script references that actively block CI/CD",
+      "examples": [
+        "coverage.json",
+        "performance_baseline.json",
+        "decision_history.json"
+      ],
+      "action": "Comprehensive link updates + full test suite",
+      "batch": 4
+    },
+    "HIGH": {
+      "definition": "Files with 2-5 references or moderate CI dependencies",
+      "examples": [
+        "release packages",
+        "workflow-related configs"
+      ],
+      "action": "Link updates + workflow validation",
+      "batch": 3
+    },
+    "MEDIUM": {
+      "definition": "Files with 1-2 references or documentation links",
+      "examples": [
+        "phase reports with occasional references"
+      ],
+      "action": "Optional link updates + standard validation",
+      "batch": 2
+    },
+    "LOW": {
+      "definition": "Files with 0 references or only documentation/conditional checks",
+      "examples": [
+        "audit reports",
+        "phase summaries",
+        "mutation configs"
+      ],
+      "action": "Standard validation only",
+      "batch": 1
+    }
+  },
+  "file_categories_by_risk": {
+    "CRITICAL": [
+      "coverage.json",
+      "performance_baseline.json",
+      "decision_history.json"
+    ],
+    "HIGH": [
+      "coverage_cache.json",
+      "coverage_post_ws1.json",
+      "aries-serpent-*.zip",
+      "requirements-*.txt"
+    ],
+    "MEDIUM": [
+      "aries-serpent-*.tar.gz",
+      "release SHA256 files"
+    ],
+    "LOW": [
+      "PHASE_*_SUMMARY.txt",
+      "PHASE_*_COMPLETION_*.txt",
+      "*_AUDIT.json",
+      "*_REPORT.json",
+      ".mutmut-*.ini"
+    ]
+  },
+  "success_criteria": {
+    "batch_success": [
+      "Link validation report shows 0 broken links post-move",
+      "All affected test suites pass (>95% pass rate required)",
+      "All affected workflows execute successfully",
+      "No new secrets detected in moved files",
+      "Commit CI checks all green",
+      "No rollback requests in first 48 hours post-merge"
+    ],
+    "overall_success": [
+      "Root folder contains only approved files (governance validation)",
+      ".codex/archive/ fully organized with indices",
+      "All moved files preserved in git history with traceability",
+      "Automated governance prevents re-accumulation of sprawl",
+      "User documentation created for archive retrieval"
+    ]
+  }
+}
