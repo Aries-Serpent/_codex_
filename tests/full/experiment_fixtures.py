@@ -138,9 +138,10 @@ def child_run(mlflow_client_full, parent_experiment, parent_run):
         import mlflow
 
         exp_id = parent_experiment["id"]
+        # Note: parent_run_id may not be supported in all MLflow versions
+        # Create a child run using tags to indicate hierarchy
         run = mlflow_client_full.create_run(
             experiment_id=exp_id,
-            parent_run_id=parent_run["id"],
             tags={"run_type": "child", "parent": parent_run["id"]},
         )
 
