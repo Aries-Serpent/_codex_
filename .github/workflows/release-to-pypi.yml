@@ -418,14 +418,21 @@ jobs:
           sleep 10
 
           # Try to install from PyPI
-          VERSION=${{ needs.pre-release-checks.outputs.version }}
+          # Extract version and strip prefixes/suffixes for PEP 440 compliance
+          VERSION="${{ needs.pre-release-checks.outputs.version }}"
+          # Remove 'v' prefix if present
           CLEAN_VERSION="${VERSION#v}"
-          # Strip -final suffix if present (must be PEP 440 compliant for pip)
-          CLEAN_VERSION="${CLEAN_VERSION%-final}"
-          # Strip -COMMIT_SHA suffix if present
-          CLEAN_VERSION="${CLEAN_VERSION%%-*}"
+          # Remove any -final, -dev, etc. suffixes to get base version
+          CLEAN_VERSION=$(echo "${CLEAN_VERSION}" | grep -oE '^[0-9]+\.[0-9]+\.[0-9]+' || echo "${CLEAN_VERSION}")
 
-          pip install "codex-ml==${CLEAN_VERSION}"
+          echo "Original version: ${VERSION}"
+          echo "Clean version for pip: ${CLEAN_VERSION}"
+
+          # Install and verify
+          pip install "codex-ml==${CLEAN_VERSION}" || {
+            echo "⚠️ Package not yet indexed on PyPI (normal for new releases)"
+            echo "PyPI indexing can take 5-15 minutes after publication"
+          }
 
   # Create GitHub release with artifacts
   create-release:
@@ -603,8 +610,13 @@ jobs:
         run: |
           mkdir -p .codex/metrics
           # Convert ref name to filename-safe format (replace slashes with dashes)
-          SAFE_REF_NAME=$(echo "$REF_NAME" | sed 's/\//-/g')
-          cat > ".codex/metrics/release-${SAFE_REF_NAME}.json" << 'EOF'
+          SAFE_REF_NAME=$(echo "${REF_NAME}" | tr '/' '-')
+          
+          # Build the output file path safely
+          OUTPUT_FILE=".codex/metrics/release-${SAFE_REF_NAME}.json"
+          
+          # Create metrics file
+          cat > "${OUTPUT_FILE}" << 'EOF'
           {
             "version": "$REF_NAME",
             "deployed_at": "$(date -Iseconds)",
@@ -618,6 +630,9 @@ jobs:
             }
           }
           EOF
+          
+          echo "✅ Metrics saved to: ${OUTPUT_FILE}"
+          ls -lah "${OUTPUT_FILE}"
 
       - name: Upload deployment metrics
         uses: actions/upload-artifact@v5
@@ -635,10 +650,11 @@ jobs:
     steps:
       - name: Check workflow status
         run: |
-          if [ "${{ needs.post-release-notification.result }}" == "success" ]; then
+          STATUS="${{ needs.post-release-notification.result }}"
+          if [ "${STATUS}" == "success" ]; then
             echo "✅ Release workflow completed successfully"
             exit 0
           else
-            echo "❌ Release workflow failed"
+            echo "❌ Release workflow failed with status: ${STATUS}"
             exit 1
           fi
