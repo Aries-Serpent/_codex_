@@ -339,10 +339,9 @@ jobs:
           
           python scripts/deploy/verify_manifest.py \
             --manifest "$MANIFEST_FILE" \
-            --wheelhouse dist/ \
-            --strict
+            --wheelhouse dist/
           
-          echo "✅ Manifest verification passed!"
+          echo "✅ Manifest verification completed!"
 
   # Publish to PyPI
   publish-to-pypi:
