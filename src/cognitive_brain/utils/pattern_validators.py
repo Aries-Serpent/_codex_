@@ -19,7 +19,7 @@ Author: Codex Team
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Optional
+from typing import Optional
 
 
 @dataclass
@@ -69,7 +69,11 @@ def check_pattern_c(audit: AuditResult) -> Optional[float]:
     Returns:
         0.01 (strong penalty) if Pattern C is detected, None otherwise
     """
-    if not (0.55 <= audit.score <= 0.75 and audit.risk_level == "medium" and audit.remediation_cost > 3000):
+    if not (
+        0.55 <= audit.score <= 0.75
+        and audit.risk_level == "medium"
+        and audit.remediation_cost > 3000
+    ):
         return None
 
     is_monitor_case = audit.score > 0.65 and audit.business_impact > 0.6
@@ -213,9 +217,7 @@ def check_pattern_f_multi_violation(audit: AuditResult) -> Optional[float]:
         return None
 
     severity = (
-        (1.0 - audit.score)
-        * audit.violation_count
-        * (1.0 if audit.risk_level == "high" else 0.5)
+        (1.0 - audit.score) * audit.violation_count * (1.0 if audit.risk_level == "high" else 0.5)
     )
 
     if severity <= 2.5 and audit.business_impact <= 0.7:

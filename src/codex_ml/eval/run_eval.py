@@ -5,7 +5,6 @@ Provides high-level functions for running model evaluation across datasets,
 managing evaluation loops, and collecting metrics in a unified format.
 """
 
-from aries_serpent_core.logging.adapter import get_default_logger
 from __future__ import annotations
 
 import argparse
@@ -16,6 +15,7 @@ import sys
 from collections.abc import Iterable
 from pathlib import Path
 
+from aries_serpent_core.logging.adapter import get_default_logger
 from codex_ml.utils.hf_pinning import HFModelUnavailableError
 
 from .evaluator import run_evaluator

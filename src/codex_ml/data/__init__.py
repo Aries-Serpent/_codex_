@@ -60,17 +60,4 @@ def __getattr__(name: str) -> Any:
 
 
 if TYPE_CHECKING:  # pragma: no cover - import for type checkers only
-    from .datamodule import StreamingDataModule, default_example_validator
-    from .loaders import (
-        Sample,
-        collect_stats,
-        compute_file_checksum,
-        iter_jsonl,
-        iter_txt,
-        load_csv,
-        load_dataset,
-        load_jsonl,
-        split_indices,
-        stream_paths,
-    )
-    from .streaming import iter_jsonl_chunks
+    pass

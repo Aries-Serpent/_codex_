@@ -34,7 +34,9 @@ def list_models_command(args: argparse.Namespace) -> int:
         return 0
     except (IOError, OSError) as e:
         type(e).__name__
-        get_default_logger().debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        get_default_logger().debug(
+            "Exception: <ERROR_TYPE>"
+        )  # codeql[py/clear-text-logging-sensitive-data]
         print(
             "Error: <ERROR_TYPE>", file=sys.stderr
         )  # codeql[py/clear-text-logging-sensitive-data]
@@ -50,7 +52,9 @@ def list_versions_command(args: argparse.Namespace) -> int:
         versions = registry.list_model_versions(args.name, stage=stage)
 
         if args.json:
-            get_default_logger().info(json.dumps({"versions": [v.to_dict() for v in versions]}, indent=2))
+            get_default_logger().info(
+                json.dumps({"versions": [v.to_dict() for v in versions]}, indent=2)
+            )
         else:
             get_default_logger().info(f"Model: {args.name}")
             get_default_logger().info(f"Versions ({len(versions)}):")
@@ -63,7 +67,9 @@ def list_versions_command(args: argparse.Namespace) -> int:
         return 0
     except (IOError, OSError) as e:
         type(e).__name__
-        get_default_logger().debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        get_default_logger().debug(
+            "Exception: <ERROR_TYPE>"
+        )  # codeql[py/clear-text-logging-sensitive-data]
         print(
             "Error: <ERROR_TYPE>", file=sys.stderr
         )  # codeql[py/clear-text-logging-sensitive-data]
@@ -95,7 +101,9 @@ def promote_model_command(args: argparse.Namespace) -> int:
         return 0
     except (IOError, OSError) as e:
         type(e).__name__
-        get_default_logger().debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        get_default_logger().debug(
+            "Exception: <ERROR_TYPE>"
+        )  # codeql[py/clear-text-logging-sensitive-data]
         print(
             "Error: <ERROR_TYPE>", file=sys.stderr
         )  # codeql[py/clear-text-logging-sensitive-data]
@@ -135,7 +143,9 @@ def compare_models_command(args: argparse.Namespace) -> int:
         return 0
     except (IOError, OSError) as e:
         type(e).__name__
-        get_default_logger().debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        get_default_logger().debug(
+            "Exception: <ERROR_TYPE>"
+        )  # codeql[py/clear-text-logging-sensitive-data]
         print(
             "Error: <ERROR_TYPE>", file=sys.stderr
         )  # codeql[py/clear-text-logging-sensitive-data]
@@ -157,7 +167,9 @@ def export_model_command(args: argparse.Namespace) -> int:
         return 0
     except (IOError, OSError) as e:
         type(e).__name__
-        get_default_logger().debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        get_default_logger().debug(
+            "Exception: <ERROR_TYPE>"
+        )  # codeql[py/clear-text-logging-sensitive-data]
         print(
             "Error: <ERROR_TYPE>", file=sys.stderr
         )  # codeql[py/clear-text-logging-sensitive-data]
@@ -206,7 +218,9 @@ def get_lineage_command(args: argparse.Namespace) -> int:
         return 0
     except (IOError, OSError) as e:
         type(e).__name__
-        get_default_logger().debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        get_default_logger().debug(
+            "Exception: <ERROR_TYPE>"
+        )  # codeql[py/clear-text-logging-sensitive-data]
         print(
             "Error: <ERROR_TYPE>", file=sys.stderr
         )  # codeql[py/clear-text-logging-sensitive-data]

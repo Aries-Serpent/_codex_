@@ -19,7 +19,7 @@ from __future__ import annotations
 
 import functools
 import os
-from typing import TYPE_CHECKING, Optional, Type
+from typing import TYPE_CHECKING, Optional
 
 from codex_ml.plugins.registries import load_model_entry_points
 from codex_ml.plugins.registries import models as _models_registry

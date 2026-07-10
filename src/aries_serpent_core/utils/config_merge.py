@@ -8,7 +8,7 @@ Example:
     config = merge_dicts(base, overrides, deep=True)
 """
 
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 
 __all__ = [
     "merge_dicts",

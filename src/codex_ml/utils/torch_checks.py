@@ -8,7 +8,6 @@ CPU-only wheels, which instructs using the dedicated PyTorch index when
 reinstalling offline builds.
 """
 
-from aries_serpent_core.logging.adapter import get_default_logger
 from __future__ import annotations
 
 import importlib
@@ -18,6 +17,8 @@ import sys
 from dataclasses import dataclass
 from types import ModuleType
 from typing import Final, Optional
+
+from aries_serpent_core.logging.adapter import get_default_logger
 
 logger = logging.getLogger(__name__)
 

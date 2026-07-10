@@ -8,7 +8,6 @@ Provides infrastructure for extending the system with custom plugins:
 - Hot-reloading support
 """
 
-from aries_serpent_core.logging.adapter import get_default_logger
 from __future__ import annotations
 
 import importlib
@@ -18,6 +17,8 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Optional
+
+from aries_serpent_core.logging.adapter import get_default_logger
 
 logger = logging.getLogger(__name__)
 

@@ -28,10 +28,11 @@ Usage:
     # Results: {'accuracy': 0.85, 'rouge1': 0.72, 'rougeL': 0.68, ...}
 """
 
-from aries_serpent_core.logging.adapter import get_default_logger
 from __future__ import annotations
 
 import logging
+
+from aries_serpent_core.logging.adapter import get_default_logger
 
 logger = logging.getLogger(__name__)
 
@@ -302,7 +303,9 @@ class EvaluationRunner:
         if self.tracking_writer:
             self._log_to_tracking()
 
-        get_default_logger().info(f"Evaluation complete: {total_samples} samples in {elapsed_time:.2f}s")
+        get_default_logger().info(
+            f"Evaluation complete: {total_samples} samples in {elapsed_time:.2f}s"
+        )
         get_default_logger().info(f"Results: {metric_results}")
 
         return self.results

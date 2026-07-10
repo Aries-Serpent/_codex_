@@ -25,32 +25,26 @@ class CacheBackend(ABC):
     @abstractmethod
     def get(self, key: str) -> Optional[Any]:
         """Get value from cache by key."""
-        pass
 
     @abstractmethod
     def set(self, key: str, value: Any, ttl: Optional[int] = None) -> None:
         """Set value in cache with optional TTL."""
-        pass
 
     @abstractmethod
     def delete(self, key: str) -> bool:
         """Delete key from cache. Returns True if key existed."""
-        pass
 
     @abstractmethod
     def exists(self, key: str) -> bool:
         """Check if key exists in cache."""
-        pass
 
     @abstractmethod
     def clear(self) -> None:
         """Clear all entries from cache."""
-        pass
 
     @abstractmethod
     def get_stats(self) -> dict[str, Any]:
         """Get cache statistics (hits, misses, size, etc)."""
-        pass
 
 
 def make_cache_key(namespace: str, *parts: str) -> str:

@@ -48,7 +48,6 @@ KL-divergence interpretation
 | > 0.5      | Strong divergence            |
 """
 
-from aries_serpent_core.logging.adapter import get_default_logger
 from __future__ import annotations
 
 import logging
@@ -56,6 +55,8 @@ import math
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from typing import Any, Sequence
+
+from aries_serpent_core.logging.adapter import get_default_logger
 
 logger = logging.getLogger(__name__)
 
@@ -321,7 +322,9 @@ class DataDriftDetector:
         dict[str, DriftResult]
             Mapping with keys ``"psi"`` and ``"kl"``.
         """
-        get_default_logger().debug("Running data drift checks for epoch %d / feature '%s'", epoch, feature_name)
+        get_default_logger().debug(
+            "Running data drift checks for epoch %d / feature '%s'", epoch, feature_name
+        )
         psi_result = self.detect_psi(reference, current, feature_name=feature_name)
         kl_result = self.detect_kl(reference, current, feature_name=feature_name)
 

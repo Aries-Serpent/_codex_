@@ -14,7 +14,6 @@ Functions:
 Author: Codex Team
 """
 
-from aries_serpent_core.logging.adapter import get_default_logger
 from __future__ import annotations
 
 import contextlib
@@ -34,6 +33,7 @@ from typing import Any, Optional
 from urllib.parse import urlparse
 from uuid import uuid4
 
+from aries_serpent_core.logging.adapter import get_default_logger
 from codex_ml.logging.ndjson_logger import (
     DEFAULT_BACKUP_COUNT,
     DEFAULT_MAX_AGE_S,
@@ -1065,7 +1065,9 @@ class MLflowArtifactWriter:
                 except ImportError as e:
                     type(e).__name__
                     get_default_logger().debug("ImportError: <ERROR_TYPE>")
-                    get_default_logger().warning("mlflow.pytorch is not available; cannot log PyTorch model.")
+                    get_default_logger().warning(
+                        "mlflow.pytorch is not available; cannot log PyTorch model."
+                    )
                     return False
             else:
                 # Try robust sklearn detection using isinstance
@@ -1097,7 +1099,9 @@ class MLflowArtifactWriter:
                         )
                         return False
                 else:
-                    get_default_logger().warning(f"Unsupported model type for MLflow logging: {type(model)}")
+                    get_default_logger().warning(
+                        f"Unsupported model type for MLflow logging: {type(model)}"
+                    )
                     return False
             return True
         except (ValueError, TypeError, RuntimeError) as e:

@@ -49,7 +49,7 @@ class MarkdownParser:
         for idx, match in enumerate(heading_matches):
             level = len(match.group(1))
             title = match.group(2).strip()
-            start_pos = match.start()
+            match.start()
             end_pos = (
                 heading_matches[idx + 1].start() if idx + 1 < len(heading_matches) else len(content)
             )

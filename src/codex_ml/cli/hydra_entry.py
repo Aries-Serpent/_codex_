@@ -16,10 +16,11 @@ Functions:
 Author: Codex Team
 """
 
-from aries_serpent_core.logging.adapter import get_default_logger
 from __future__ import annotations
 
 import logging
+
+from aries_serpent_core.logging.adapter import get_default_logger
 
 logger = logging.getLogger(__name__)
 
@@ -129,7 +130,7 @@ def main(argv=None) -> int:
             type(e).__name__
             get_default_logger().debug("ImportError: <ERROR_TYPE>")
             get_default_logger().warning("ImportError: <ERROR_TYPE>", exc_info=True)
-            import config_legacy as hydra 
+            import config_legacy as hydra
 
         from omegaconf import DictConfig, OmegaConf
     except (IOError, OSError):
@@ -159,7 +160,9 @@ def main(argv=None) -> int:
             callbacks=None,
             ndjson_log_path=str(ndjson_path),
         )
-        get_default_logger().info(json.dumps({"ok": True, "train_result": result, "config": asdict(utc)}))
+        get_default_logger().info(
+            json.dumps({"ok": True, "train_result": result, "config": asdict(utc)})
+        )
         return 0
 
     overrides = _inject_curriculum_flags(list(argv or sys.argv[1:]))

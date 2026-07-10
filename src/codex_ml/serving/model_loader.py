@@ -266,8 +266,6 @@ class ModelLoader:
             from transformers import (
                 AutoConfig,
             )
-            from transformers import AutoModel as AutoModel
-            from transformers import AutoTokenizer as AutoTokenizer
         except ImportError as e:
             type(e).__name__
             logger.debug("ImportError: <ERROR_TYPE>")

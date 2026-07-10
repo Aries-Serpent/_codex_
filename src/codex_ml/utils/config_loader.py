@@ -51,8 +51,8 @@ try:  # pragma: no cover - optional dependency
     _HYDRA_AVAILABLE = True
 except (ImportError, AttributeError):  # pragma: no cover - import guard
     try:
-        from hydra_core import compose, initialize_config_dir 
-        from hydra_core.errors import MissingConfigException 
+        from hydra_core import compose, initialize_config_dir
+        from hydra_core.errors import MissingConfigException
 
         _HYDRA_AVAILABLE = True
     except (IOError, OSError):  # pragma: no cover - import guard

@@ -16,7 +16,6 @@ Functions:
 Author: Codex Team
 """
 
-from aries_serpent_core.logging.adapter import get_default_logger
 from __future__ import annotations
 
 import argparse
@@ -26,6 +25,7 @@ from collections.abc import Sequence
 from datetime import datetime, timezone
 from pathlib import Path
 
+from aries_serpent_core.logging.adapter import get_default_logger
 from codex_ml.tokenization import sentencepiece_adapter
 
 SentencePieceAdapter = sentencepiece_adapter.SentencePieceAdapter

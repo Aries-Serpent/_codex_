@@ -6,9 +6,10 @@ This module provides zero-downtime deployment strategies with gradual rollout,
 automatic failover, and rollback capabilities.
 """
 
-from aries_serpent_core.logging.adapter import get_default_logger
 import logging
 import time
+
+from aries_serpent_core.logging.adapter import get_default_logger
 
 logger = logging.getLogger(__name__)
 import random  # noqa: E402
@@ -182,7 +183,9 @@ class BlueGreenDeployment:
         self.rollback_triggered = False
         self.splitter.reset_stats()
 
-        get_default_logger().info(f"Starting rollout: {self.current_blue_version} → {new_model_version}")
+        get_default_logger().info(
+            f"Starting rollout: {self.current_blue_version} → {new_model_version}"
+        )
 
     def update_rollout(self) -> dict[str, Any]:
         """
@@ -265,7 +268,9 @@ class BlueGreenDeployment:
 
     def complete_rollout(self) -> None:
         """Complete rollout and promote green to blue."""
-        get_default_logger().info(f"Rollout complete: {self.current_green_version} promoted to blue")
+        get_default_logger().info(
+            f"Rollout complete: {self.current_green_version} promoted to blue"
+        )
         self.current_blue_version = self.current_green_version
         self.current_green_version = None
         self.rollout_active = False

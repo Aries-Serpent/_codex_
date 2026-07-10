@@ -18,15 +18,7 @@ from . import quantum
 
 # Export base classes for agent inheritance
 try:
-    from .base import (
-        ActionResult,
-        Decision,
-        MemoryInterface,
-        ObservationData,
-        OrientationResult,
-        PhysicsOfThought,
-        Planner,
-    )
+    pass
 
     _base_available = True
 except ImportError:

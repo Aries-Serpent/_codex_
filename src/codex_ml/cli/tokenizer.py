@@ -8,7 +8,6 @@ normalises a handful of convenience overrides and delegates to the existing
 ``codex_ml.tokenization.train_tokenizer`` helpers.
 """
 
-from aries_serpent_core.logging.adapter import get_default_logger
 from __future__ import annotations
 
 import json
@@ -17,6 +16,7 @@ import shutil
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Optional
 
+from aries_serpent_core.logging.adapter import get_default_logger
 from codex_ml.utils.optional import optional_import
 
 typer, _HAS_TYPER = optional_import("typer")

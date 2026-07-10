@@ -146,15 +146,15 @@ def retry_with_backoff(
         Result of func or None if all retries fail
     """
     delay = initial_delay
-    last_error = None
 
     for attempt in range(max_retries):
         try:
             return func(*args, **kwargs)
         except Exception as e:
-            last_error = e
             if attempt < max_retries - 1:
-                logger.debug(f"Attempt {attempt + 1}/{max_retries} failed: {e}. Retrying in {delay}s...")
+                logger.debug(
+                    f"Attempt {attempt + 1}/{max_retries} failed: {e}. Retrying in {delay}s..."
+                )
                 time.sleep(delay)
                 delay *= backoff_factor
             else:

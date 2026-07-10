@@ -17,7 +17,6 @@ Level 4 MLOps gap closure:
   Remaining for 100/100: deploy live Redis instance and set REDIS_URL env variable.
 """
 
-from aries_serpent_core.logging.adapter import get_default_logger
 from __future__ import annotations
 
 import json
@@ -28,6 +27,8 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional, Protocol, runtime_checkable
+
+from aries_serpent_core.logging.adapter import get_default_logger
 
 logger = logging.getLogger(__name__)
 
@@ -149,10 +150,14 @@ class FeastCompatibleStore:
         for obj in objects:
             if isinstance(obj, FeatureView):
                 self._views[obj.name] = obj
-                get_default_logger().info("Registered FeatureView: %s (%d features)", obj.name, len(obj.features))
+                get_default_logger().info(
+                    "Registered FeatureView: %s (%d features)", obj.name, len(obj.features)
+                )
             elif isinstance(obj, Entity):
                 self._entities[obj.name] = obj
-                get_default_logger().info("Registered Entity: %s (join_key=%s)", obj.name, obj.join_key)
+                get_default_logger().info(
+                    "Registered Entity: %s (join_key=%s)", obj.name, obj.join_key
+                )
             else:
                 get_default_logger().warning("apply: unknown object type %s — skipped", type(obj))
 
@@ -212,7 +217,9 @@ class FeastCompatibleStore:
                     for fname in fnames:
                         retrieved[f"{vname}__{fname}"] = None
             except (ValueError, TypeError, RuntimeError) as exc:
-                get_default_logger().debug("get_online_features: native store miss for %s: %s", vname, exc)
+                get_default_logger().debug(
+                    "get_online_features: native store miss for %s: %s", vname, exc
+                )
                 for fname in fnames:
                     retrieved[f"{vname}__{fname}"] = None
 
@@ -253,7 +260,9 @@ class FeastCompatibleStore:
 
         for vname in targets:
             if vname not in self._views:
-                get_default_logger().warning("materialize: FeatureView '%s' not registered — skipped", vname)
+                get_default_logger().warning(
+                    "materialize: FeatureView '%s' not registered — skipped", vname
+                )
                 continue
             view = self._views[vname]
 

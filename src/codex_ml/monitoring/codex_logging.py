@@ -766,7 +766,9 @@ def _codex_sample_system() -> dict[str, Any]:
                     except (ValueError, TypeError, RuntimeError) as exc:
                         type(exc).__name__
                         get_default_logger().debug("Exception: <ERROR_TYPE>")
-                        get_default_logger().debug("torch CUDA utilization unavailable", exc_info=exc)
+                        get_default_logger().debug(
+                            "torch CUDA utilization unavailable", exc_info=exc
+                        )
                         util = None
                 if util:
                     util_sum += util

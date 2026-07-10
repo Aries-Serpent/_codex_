@@ -22,7 +22,7 @@ __all__: list[str] = [
 
 # Conditionally import GitHub client (requires httpx)
 try:
-    from .github import GitHubClient
+    pass
 
     __all__.append("GitHubClient")
 except ImportError as e:

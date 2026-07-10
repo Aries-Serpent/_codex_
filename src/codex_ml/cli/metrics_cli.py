@@ -400,7 +400,9 @@ def cmd_validate(args: argparse.Namespace) -> int:
                 errors.append(f"record {idx}: {err.message}")
 
     if errors:
-        get_default_logger().info(json.dumps({"ok": False, "errors": errors[:50], "total_errors": len(errors)}))
+        get_default_logger().info(
+            json.dumps({"ok": False, "errors": errors[:50], "total_errors": len(errors)})
+        )
         return 3
 
     get_default_logger().info(json.dumps({"ok": True}))
@@ -451,7 +453,9 @@ def cmd_badge(args: argparse.Namespace) -> int:
             last_value = record[metric_key]
 
     if last_value is None:
-        get_default_logger().info(json.dumps({"ok": False, "error": f"metric '{metric_key}' not found"}))
+        get_default_logger().info(
+            json.dumps({"ok": False, "error": f"metric '{metric_key}' not found"})
+        )
         return 3
 
     if isinstance(last_value, float):
@@ -482,7 +486,9 @@ def cmd_badge(args: argparse.Namespace) -> int:
 
     readme_path.parent.mkdir(parents=True, exist_ok=True)
     readme_path.write_text(updated, encoding="utf-8")
-    get_default_logger().info(json.dumps({"ok": True, "badge": badge, "readme": readme_path.as_posix()}))
+    get_default_logger().info(
+        json.dumps({"ok": True, "badge": badge, "readme": readme_path.as_posix()})
+    )
     return 0
 
 

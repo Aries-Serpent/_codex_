@@ -19,12 +19,13 @@ Usage example::
         get_default_logger().info("Eval gate FAILED:", reasons)
 """
 
-from aries_serpent_core.logging.adapter import get_default_logger
 from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field
 from typing import Any
+
+from aries_serpent_core.logging.adapter import get_default_logger
 
 logger = logging.getLogger(__name__)
 
@@ -149,7 +150,9 @@ class EvalGate:
         if passed:
             get_default_logger().info("EvalGate: PASSED — all thresholds met")
         else:
-            get_default_logger().warning("EvalGate: FAILED — %d check(s) failed: %s", len(failures), failures)
+            get_default_logger().warning(
+                "EvalGate: FAILED — %d check(s) failed: %s", len(failures), failures
+            )
 
         return EvalGateResult(passed=passed, reasons=failures, metrics=dict(metrics))
 

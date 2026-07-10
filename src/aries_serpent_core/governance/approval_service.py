@@ -615,7 +615,6 @@ class ApprovalService:
                 return req
 
             req.sla_extensions_used += 1
-            old_deadline = req.sla_deadline
             req.sla_deadline = time.time() + (extension_hours * 3600)
 
             self._audit_event(

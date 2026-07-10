@@ -17,7 +17,6 @@ Author: Codex Team
 """
 
 # BEGIN: CODEX_PROMETHEUS
-from aries_serpent_core.logging.adapter import get_default_logger
 from __future__ import annotations
 
 import json  # noqa: E402
@@ -25,6 +24,8 @@ import sys  # noqa: E402
 from datetime import datetime, timezone  # noqa: E402
 from pathlib import Path  # noqa: E402
 from typing import Any, Optional  # noqa: E402
+
+from aries_serpent_core.logging.adapter import get_default_logger
 
 _FALLBACK_ACTIVE: bool = False
 _FALLBACK_PATH: Optional[Path] = None
