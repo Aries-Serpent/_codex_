@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-07-09T15:30:41Z",
+  "generated_at": "2026-07-10T14:04:04Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1654,6 +1654,11 @@
       "has_concurrency": true
     },
     {
+      "name": "optimized-test-execution",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
+    {
       "name": "pages-health-guard",
       "enforcement_tier": "SOFT",
       "has_concurrency": true
@@ -1670,6 +1675,11 @@
     },
     {
       "name": "pages-scheduled-validation",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": true
+    },
+    {
+      "name": "parallel-quality-checks",
       "enforcement_tier": "GROUNDED",
       "has_concurrency": true
     },
@@ -2533,5 +2543,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "1b2dbf00f5365930f63f450f3fa9748c4bde349e95fed15a481d269ad4381e40"
+  "integrity_sha256": "521589bf56c789d0366e274543f3388cf6a130d218ee343f2a48cd1648e4b406"
 }
