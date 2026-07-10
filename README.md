@@ -3,7 +3,7 @@
 
 **Production Ready**: We are releasing v0.1.0-final as a fully production-certified MLOps platform. All core systems are stable and battle-tested. This release represents 100% production readiness with continuous autonomous maintenance and zero known security vulnerabilities.
 
-**📦 Latest Release**: [v0.1.0-final](https://github.com/Aries-Serpent/_codex_/releases/tag/v0.1.0-final) | **📥 Download**: [ZIP Archive](https://github.com/Aries-Serpent/_codex_/releases/download/v0.1.0-final/_codex_.v0.1.0-final.zip)
+**📦 Latest Release**: [v0.1.0-prod](https://github.com/Aries-Serpent/_codex_/releases/tag/v0.1.0-prod) | **📥 Download**: [ZIP Archive](https://github.com/Aries-Serpent/_codex_/releases/download/v0.1.0-prod/_codex_.v0.1.0-prod.zip)
 
 ![Version](https://img.shields.io/badge/version-0.1.0--final-brightgreen)
 ![Tests](https://img.shields.io/badge/tests-1247-brightgreen)
@@ -133,9 +133,9 @@ Codex ML uses a **3-profile packaging strategy** for flexible deployment:
 
 | Profile | Size | Use Case | Install Command |
 |---------|------|----------|-----------------|
-| **core** | 8-15 MB | Lightweight, offline-first, edge devices | `pip install aries-serpent-ml[core]` |
-| **runtime** | 20-35 MB | Production inference, API services | `pip install aries-serpent-ml[runtime]` |
-| **full** | 100+ MB | Development, testing, all features | `pip install aries-serpent-ml[full]` |
+| **core** | 8-15 MB | Lightweight, offline-first, edge devices | `pip install codex-ml[core]` |
+| **runtime** | 20-35 MB | Production inference, API services | `pip install codex-ml[runtime]` |
+| **full** | 100+ MB | Development, testing, all features | `pip install codex-ml[full]` |
 
 ### Quick Start
 
@@ -163,7 +163,7 @@ For air-gapped environments, use the bootstrap script:
 ```bash
 bash OFFLINE_BOOTSTRAP.sh \
   --wheelhouse ./wheelhouse \
-  --artifact ./dist/aries_serpent_ml-0.1.0-py3-none-any.whl
+  --artifact ./dist/codex_ml-0.1.0-py3-none-any.whl
 ```
 
 **Getting Started Guides:**

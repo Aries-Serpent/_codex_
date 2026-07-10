@@ -4,7 +4,7 @@
   "sessions": [
     {
       "session_id": "workflow-test",
-      "archive_location": "/tmp/tmpdhukndmw/archive/sessions/2026/04/workflow-test.parquet",
+      "archive_location": ".codex/archive/sessions/2026/04/workflow-test.parquet",
       "file_size_bytes": 8468,
       "timestamp": "2026-07-10T08:16:11.036236Z",
       "created_at": "1783671371.0362356"

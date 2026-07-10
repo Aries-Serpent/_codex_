@@ -2,9 +2,9 @@
 
 ## Prerequisites
 
-- Python 3.10+
+- Python 3.12+
 - `pip` (latest)
-- Release artifact: `aries_serpent_ml-0.1.0-py3-none-any.whl`
+- Release artifact: `codex_ml-0.1.0-py3-none-any.whl`
 
 ## Installation Profiles
 
@@ -12,9 +12,9 @@ Aries-Serpent ML uses a **3-profile packaging strategy**:
 
 | Profile | Size | Use Case | Install Command |
 |---------|------|----------|-----------------|
-| **core** | 8-15 MB | Lightweight, offline-first, edge devices | `pip install aries-serpent-ml[core]==0.1.0` |
-| **runtime** | 20-35 MB | Production inference + services | `pip install aries-serpent-ml[runtime]==0.1.0` |
-| **full** | 100+ MB | Development + all features | `pip install aries-serpent-ml[full]==0.1.0` |
+| **core** | 8-15 MB | Lightweight, offline-first, edge devices | `pip install codex-ml[core]==0.1.0` |
+| **runtime** | 20-35 MB | Production inference + services | `pip install codex-ml[runtime]==0.1.0` |
+| **full** | 100+ MB | Development + all features | `pip install codex-ml[full]==0.1.0` |
 
 ## Standard Install (PyPI)
 
@@ -25,13 +25,13 @@ python3 -m venv .venv
 source .venv/bin/activate  # or .venv\Scripts\activate on Windows
 python -m pip install --upgrade pip
 
-# Install from PyPI (v0.1.0-final production release)
-python -m pip install aries-serpent-ml==0.1.0
+# Install from PyPI (v0.1.0)
+python -m pip install codex-ml==0.1.0
 
 # Or install with specific profile
-python -m pip install 'aries-serpent-ml[core]==0.1.0'      # Lightweight
-python -m pip install 'aries-serpent-ml[runtime]==0.1.0'   # Production
-python -m pip install 'aries-serpent-ml[full]==0.1.0'      # Development
+python -m pip install 'codex-ml[core]==0.1.0'      # Lightweight
+python -m pip install 'codex-ml[runtime]==0.1.0'   # Production
+python -m pip install 'codex-ml[full]==0.1.0'      # Development
 
 # Verify installation
 python -c "import codex; print(codex.__version__)"
@@ -45,7 +45,7 @@ source .venv/bin/activate
 python -m pip install --upgrade pip
 
 # Install from wheel file
-python -m pip install aries_serpent_ml-0.1.0-py3-none-any.whl
+python -m pip install codex_ml-0.1.0-py3-none-any.whl
 
 # Verify installation
 codex --help
@@ -59,7 +59,7 @@ The bootstrap flow uses the offline bootstrap module directly.
 ```bash
 ./OFFLINE_BOOTSTRAP.sh \
   --wheelhouse ./wheelhouse \
-  --artifact ./dist/aries_serpent_ml-0.1.0-py3-none-any.whl
+  --artifact ./dist/codex_ml-0.1.0-py3-none-any.whl
 ```
 
 ## Verify Isolated Networking
@@ -73,7 +73,7 @@ Only localhost is allowlisted until explicitly expanded.
 **Use Case:** Edge devices, lightweight deployments, offline-first environments
 
 ```bash
-pip install aries-serpent-ml[core]==0.1.0
+pip install codex-ml[core]==0.1.0
 ```
 
 **Includes:**
@@ -92,7 +92,7 @@ pip install aries-serpent-ml[core]==0.1.0
 **Use Case:** Production inference, API services, model serving
 
 ```bash
-pip install aries-serpent-ml[runtime]==0.1.0
+pip install codex-ml[runtime]==0.1.0
 ```
 
 **Includes:**

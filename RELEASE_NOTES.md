@@ -7,7 +7,7 @@ This is the official v0.1.0-final production release of the Aries-Serpent ML pla
 ### Installation
 
 ```bash
-pip install aries-serpent-ml==0.1.0
+pip install codex-ml==0.1.0
 ```
 
 ### Quality Metrics
@@ -62,9 +62,9 @@ pip install aries-serpent-ml==0.1.0
 
 ### Downloads
 
-- **PyPI:** `pip install aries-serpent-ml==0.1.0`
-- **GitHub Release:** [v0.1.0-final](https://github.com/Aries-Serpent/_codex_/releases/tag/v0.1.0-final)
-- **Archive:** [ZIP](https://github.com/Aries-Serpent/_codex_/releases/download/v0.1.0-final/_codex_.v0.1.0-final.zip)
+- **PyPI:** `pip install codex-ml==0.1.0`
+- **GitHub Release:** [v0.1.0-prod](https://github.com/Aries-Serpent/_codex_/releases/tag/v0.1.0-prod)
+- **Archive:** [ZIP](https://github.com/Aries-Serpent/_codex_/releases/download/v0.1.0-prod/_codex_.v0.1.0-prod.zip)
 
 ### Sign-Off
 

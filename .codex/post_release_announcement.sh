@@ -24,6 +24,13 @@ if ! command -v gh &> /dev/null; then
     exit 1
 fi
 
+# Check if jq is installed
+if ! command -v jq &> /dev/null; then
+    echo "❌ ERROR: jq is not installed (required for JSON parsing)"
+    echo "Install it with: apt-get install jq (Ubuntu/Debian) or brew install jq (macOS)"
+    exit 1
+fi
+
 # Check authentication
 if ! gh auth status &> /dev/null; then
     echo "❌ ERROR: Not authenticated with GitHub CLI"
@@ -85,16 +92,16 @@ We're thrilled to announce **v0.1.0-final**, the production-ready release of **A
 
 ### Install via pip (Recommended)
 
-\`\`\`bash
+```bash
 # Core package
-pip install aries-serpent-ml==0.1.0
+pip install codex-ml==0.1.0
 
 # With optional dependencies
-pip install aries-serpent-ml[cognitive,agents]==0.1.0
+pip install codex-ml[runtime]==0.1.0
 
 # Full suite
-pip install aries-serpent-ml[full]==0.1.0
-\`\`\`
+pip install codex-ml[full]==0.1.0
+```
 
 ### Profile-Based Installation
 
@@ -102,27 +109,27 @@ Choose the deployment profile that matches your use case:
 
 #### 🎯 **Core Profile** (Lightweight)
 Minimal footprint for ML inference and utility functions.
-\`\`\`bash
-pip install aries-serpent-ml[core]==0.1.0
-\`\`\`
+```bash
+pip install codex-ml[core]==0.1.0
+```
 **Includes:** Core utilities, tokenization, basic ML inference  
 **Size:** ~45 MB  
 **Use Case:** Embedded systems, edge devices, microservices
 
 #### ⚙️ **Runtime Profile** (Production)
 Full ML pipeline with agents and CI/CD orchestration.
-\`\`\`bash
-pip install aries-serpent-ml[runtime]==0.1.0
-\`\`\`
+```bash
+pip install codex-ml[runtime]==0.1.0
+```
 **Includes:** ML pipelines, agent framework, GitHub Actions integration  
 **Size:** ~180 MB  
 **Use Case:** Production deployments, enterprise systems
 
 #### 🧠 **Full Profile** (Research & Development)
 Complete suite including cognitive brain, all agents, and experimental features.
-\`\`\`bash
-pip install aries-serpent-ml[full]==0.1.0
-\`\`\`
+```bash
+pip install codex-ml[full]==0.1.0
+```
 **Includes:** Everything (cognitive brain, 100+ agents, notebooks, research tools)  
 **Size:** ~520 MB  
 **Use Case:** R&D, advanced customization, full ecosystem access
