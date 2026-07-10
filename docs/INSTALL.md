@@ -2,6 +2,15 @@
 
 Welcome to codex-ml v0.1.0! This guide covers installation across three distinct deployment profiles.
 
+## Package Architecture Note
+
+**Important:** The codex-ml package uses multiple namespaces:
+- **Primary namespace:** `codex_ml` (main package)
+- **Core utilities:** `aries_serpent_core` (shared utilities, including logging)
+- **CLI namespace:** `codex_cli` (command-line interface layer)
+
+This multi-namespace design allows codex-ml to leverage shared infrastructure from aries-serpent-core without creating circular dependencies. Entry points may reference any of these namespaces. For example, the `codex-import-ndjson` command uses `aries_serpent_core.logging.import_ndjson` for log import functionality.
+
 ## Quick Start
 
 ### Core Profile (Lightweight, Offline-First)
@@ -123,6 +132,8 @@ The core profile installs 5 essential CLI tools:
 | `codex-cli` | `codex_ml.cli.simple_cli` | Simplified CLI |
 | `codex-smoke` | `codex_cli.app` | Smoke test runner |
 | `codex-import-ndjson` | `aries_serpent_core.logging.import_ndjson` | NDJSON import utility |
+
+**Note on Namespaces:** The `codex-import-ndjson` command references the `aries_serpent_core` namespace. This is intentional: the logging module is part of aries-serpent-core shared infrastructure, not part of the main codex_ml package. This design avoids circular dependencies and allows code reuse.
 
 ### Example Usage
 

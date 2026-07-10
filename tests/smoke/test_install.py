@@ -133,6 +133,10 @@ class TestInstallation:
         assert hasattr(logging_mod, "import_ndjson"), (
             "aries_serpent_core.logging missing import_ndjson"
         )
+        # Verify import_ndjson is callable (not just an attribute)
+        assert callable(logging_mod.import_ndjson), (
+            "aries_serpent_core.logging.import_ndjson is not callable"
+        )
 
 
 class TestEntryPointsAvailability:
@@ -201,16 +205,22 @@ class TestProfileSpecificFeatures:
 
     @pytest.mark.smoke
     def test_core_dependencies_available(self):
-        """Verify core-only dependencies are installed."""
-        core_only_deps = [
-            "click",
+        """Verify core-only and extended core dependencies are installed.
+        
+        NOTE: These dependencies are present in the base + [core] profiles.
+        Some (like libcst, parso) are already in base, listed here for completeness.
+        This test validates they're all available without runtime/ML dependencies.
+        """
+        # All should be available in [core] profile
+        core_profile_deps = [
+            "click",  # Added specifically to core
             "typer",
             "libcst",
             "parso",
-            "tree_sitter",
+            "tree_sitter",  # Added in [core]
         ]
 
-        for dep in core_only_deps:
+        for dep in core_profile_deps:
             try:
                 importlib.import_module(dep)
             except ImportError as e:
