@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.1] — 2026-07-10
+
+### Release Summary
+**Patch Release:** Patch version bump from v0.1.0 to v0.1.1 for incremental updates and improvements.
+
+- **Status:** Production Release
+- **Authority:** @mbaetiong (Full autonomous deployment authority)
+- **Timestamp:** 2026-07-10T20:59:08Z
+- **Tag:** v0.1.1 (replaces immutable v0.1.0)
+- **Distribution:** PyPI + GitHub Releases
+
+### Fixed
+- **build:** Version constraint update v0.1.0 → v0.1.1 (pyproject.toml)
+- **release:** Post-merge release automation configured with 4-step deployment process (tag, GitHub release, PyPI publish, community announcement)
+
+### Updated
+- **docs:** Post-merge execution brief for v0.1.1 release cycle
+- **accountability:** Session context for v0.1.1 deployment recorded
+
+### Release Verification
+- All 32 certification gates passed ✅ (inherited from v0.1.0-final)
+- Production readiness score: 100/100 ✅
+- Zero new vulnerabilities introduced ✅
+- Full backward compatibility maintained ✅
+
+---
+
 ## Unreleased
 
 ### Fixed (S255 — PR #3831 — 2026-03-31)

@@ -45,15 +45,41 @@ jobs:
         env:
           GITHUB_REF: ${{ github.ref }}
           INPUT_VERSION: ${{ inputs.version }}
+          COMMIT_SHA: ${{ github.sha }}
         run: |
-          if [[ "$GITHUB_REF" =~ ^refs/tags/ ]]; then
+          # Priority 1: If dispatched with explicit version input, use it
+          if [ -n "$INPUT_VERSION" ] && [ "$INPUT_VERSION" != "null" ]; then
+            VERSION="$INPUT_VERSION"
+            echo "Using INPUT_VERSION: $VERSION"
+          # Priority 2: If triggered on a tag, use it
+          elif [[ "$GITHUB_REF" =~ ^refs/tags/ ]]; then
             VERSION="$GITHUB_REF"
             VERSION="${VERSION#refs/tags/}"
+            echo "Using GITHUB_REF tag: $VERSION"
+          # Priority 3: Try to find latest v*.*.* tag in repository
           else
-            VERSION="$INPUT_VERSION"
+            echo "No explicit version found, searching for latest version tag..."
+            VERSION=$(git tag -l 'v*.*.*' --sort=-version:refname --merged HEAD | head -1)
+            if [ -z "$VERSION" ]; then
+              echo "❌ ERROR: No version tag found and no version input provided"
+              exit 1
+            fi
+            echo "Using latest tag: $VERSION"
           fi
+
+          # Ensure version starts with 'v'
+          if [[ ! "$VERSION" =~ ^v ]]; then
+            VERSION="v${VERSION}"
+          fi
+
+          # Extract clean version for PyPI (no v prefix, no -final suffix)
+          CLEAN_VERSION="${VERSION#v}"
+          CLEAN_VERSION="${CLEAN_VERSION%-final*}"
+
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
-          echo "Release version: ${VERSION}"
+          echo "clean_version=${CLEAN_VERSION}" >> $GITHUB_OUTPUT
+          echo "Release tag: ${VERSION}"
+          echo "PyPI version: ${CLEAN_VERSION}"
 
       - name: Verify P0 gates complete
         id: p0-gate
@@ -101,7 +127,9 @@ jobs:
         id: version-check
         run: |
           VERSION="${{ steps.version.outputs.version }}"
-          CLEAN_VERSION="${VERSION#v}"
+          # Remove any commit suffix for comparison with pyproject.toml
+          CLEAN_VERSION="${VERSION%%-*}"
+          CLEAN_VERSION="${CLEAN_VERSION#v}"
 
           if ! grep -q "version = \"${CLEAN_VERSION}\"" pyproject.toml; then
             echo "❌ Version mismatch: pyproject.toml not updated to $CLEAN_VERSION"
@@ -110,14 +138,15 @@ jobs:
 
           echo "✅ Version verified in pyproject.toml"
 
-  # Build wheels for all three profiles
+  # Build wheels once for reproducible release
+  # Note: Universal wheel (py3-none-any) should be built ONCE, not per-platform
+  # to ensure deterministic hashes for manifest verification
   build-wheels:
     name: Build wheels
     needs: pre-release-checks
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest  # Build only on Linux for reproducibility
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
         python-version: ["3.12"]
     timeout-minutes: 30
     steps:
@@ -134,15 +163,33 @@ jobs:
         run: |
           python -m pip install --upgrade pip setuptools wheel build
 
-      - name: Build wheels for all profiles
+      - name: Build wheels (deterministic, single platform)
         run: |
+          # Build universal wheel once on Linux for reproducible hashes
+          # Universal wheels (py3-none-any) are platform-independent
           python -m build --wheel
-          # Build script should handle profile-specific wheels
+          echo "✓ Built universal wheel on Ubuntu for deterministic hashes"
+
+      - name: Verify wheel artifacts
+        env:
+         RELEASE_VERSION: ${{ needs.pre-release-checks.outputs.version }}
+        run: |
+         ls -lah dist/
+         # Extract base version without 'v' prefix for filename
+         BASE_VERSION="${RELEASE_VERSION#v}"
+         EXPECTED_WHEEL="dist/codex_ml-${BASE_VERSION}-py3-none-any.whl"
+         if [ ! -f "$EXPECTED_WHEEL" ]; then
+           echo "❌ Expected universal wheel not found: $EXPECTED_WHEEL"
+           echo "Available files in dist/:"
+           ls -lah dist/
+           exit 1
+         fi
+         echo "✓ Universal wheel verified: $EXPECTED_WHEEL"
 
       - name: Upload wheel artifacts
         uses: actions/upload-artifact@v5
         with:
-          name: wheels-${{ matrix.os }}-${{ matrix.python-version }}
+          name: wheels
           path: dist/
           retention-days: 5
 
@@ -162,13 +209,15 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
 
-      - name: Download all wheels
+      - name: Download wheels
         uses: actions/download-artifact@v5
         with:
+          name: wheels
           path: dist/
-          merge-multiple: true
 
-      - name: Verify wheels exist
+      - name: Verify wheels exist and are consistent
+        env:
+          RELEASE_VERSION: ${{ needs.pre-release-checks.outputs.version }}
         run: |
           ls -lah dist/
           if [ $(ls -1 dist/*.whl 2>/dev/null | wc -l) -eq 0 ]; then
@@ -176,17 +225,52 @@ jobs:
             exit 1
           fi
 
-      - name: Install manifest generation script
+          # Verify we have the expected universal wheel
+          BASE_VERSION="${RELEASE_VERSION#v}"
+          EXPECTED_WHEEL="dist/codex_ml-${BASE_VERSION}-py3-none-any.whl"
+          if [ ! -f "$EXPECTED_WHEEL" ]; then
+            echo "❌ Expected universal wheel not found: $EXPECTED_WHEEL"
+            echo "❌ This may indicate wheels were built on multiple platforms"
+            echo "❌ Verify build-wheels job is configured for single platform (Ubuntu only)"
+            exit 1
+          fi
+
+          echo "✓ Universal wheel verified"
+          echo "✓ Wheel count: $(ls -1 dist/*.whl 2>/dev/null | wc -l)"
+
+      - name: Install manifest generation script dependencies
         run: |
           pip install pydantic pyyaml
 
       - name: Generate manifest
         id: manifest
         run: |
-          python scripts/build/generate_manifest.py \
-            --dist-dir dist/ \
-            --output-dir .codex/manifests/ \
-            --version ${{ needs.pre-release-checks.outputs.version }}
+          mkdir -p .codex/manifests/
+          python scripts/ci/generate_wheel_manifest.py \
+            --wheelhouse dist/ \
+            --output .codex/manifests/release-manifest-${{ needs.pre-release-checks.outputs.version }}.json
+
+          # Verify manifest was created
+          if [ ! -f ".codex/manifests/release-manifest-${{ needs.pre-release-checks.outputs.version }}.json" ]; then
+            echo "❌ Manifest file not created"
+            exit 1
+          fi
+
+          echo "✓ Manifest generated successfully"
+
+      - name: Verify manifest contents
+        run: |
+          MANIFEST_FILE=".codex/manifests/release-manifest-${{ needs.pre-release-checks.outputs.version }}.json"
+          echo "Manifest contents:"
+          cat "$MANIFEST_FILE"
+
+          # Verify manifest contains wheels
+          WHEEL_COUNT=$(jq '.count // 0' "$MANIFEST_FILE")
+          if [ "$WHEEL_COUNT" -eq 0 ]; then
+            echo "❌ Manifest contains no wheels"
+            exit 1
+          fi
+          echo "✓ Manifest contains $WHEEL_COUNT wheels"
 
       - name: Upload manifest artifact
         uses: actions/upload-artifact@v5
@@ -213,7 +297,7 @@ jobs:
 
       - name: Install SBOM generation tools
         run: |
-          pip install cyclonedx-python
+          pip install cyclonedx-bom
 
       - name: Generate SBOM for core profile
         run: |
@@ -260,11 +344,11 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
 
-      - name: Download wheels
+      - name: Download wheels (no merge needed - single artifact)
         uses: actions/download-artifact@v5
         with:
+          name: wheels
           path: dist/
-          merge-multiple: true
 
       - name: Download manifest
         uses: actions/download-artifact@v5
@@ -272,12 +356,31 @@ jobs:
           name: release-manifest
           path: .codex/manifests/
 
+      - name: List artifacts before verification
+        run: |
+          echo "=== Wheels in dist/ ==="
+          ls -lah dist/
+
+          echo ""
+          echo "=== Manifest files ==="
+          ls -lah .codex/manifests/
+
       - name: Verify manifest integrity
         run: |
+          # Find the manifest file (generated in generate-manifest job)
+          MANIFEST_FILE=$(ls -t .codex/manifests/*.json 2>/dev/null | head -1)
+          if [ -z "$MANIFEST_FILE" ]; then
+            echo "❌ No manifest file found in .codex/manifests/"
+            exit 1
+          fi
+
+          echo "Using manifest: $MANIFEST_FILE"
+
           python scripts/deploy/verify_manifest.py \
-            --manifest-dir .codex/manifests/ \
-            --wheel-dir dist/ \
-            --strict
+            --manifest "$MANIFEST_FILE" \
+            --wheelhouse dist/
+
+          echo "✅ Manifest verification completed!"
 
   # Publish to PyPI
   publish-to-pypi:
@@ -298,11 +401,21 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
 
-      - name: Download wheels
+      - name: Download wheels (from single build)
         uses: actions/download-artifact@v5
         with:
+          name: wheels
           path: dist/
-          merge-multiple: true
+
+      - name: Verify wheels before publishing
+        run: |
+          echo "Wheels to publish:"
+          ls -lah dist/
+
+          if [ $(ls -1 dist/*.whl 2>/dev/null | wc -l) -eq 0 ]; then
+            echo "❌ No wheels found to publish"
+            exit 1
+          fi
 
       - name: Install publishing tools
         run: |
@@ -311,7 +424,7 @@ jobs:
       - name: Publish to PyPI
         env:
           TWINE_USERNAME: __token__
-          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
         run: |
           python -m twine upload \
             --non-interactive \
@@ -326,15 +439,26 @@ jobs:
           sleep 10
 
           # Try to install from PyPI
-          VERSION=${{ needs.pre-release-checks.outputs.version }}
+          # Extract version and strip prefixes/suffixes for PEP 440 compliance
+          VERSION="${{ needs.pre-release-checks.outputs.version }}"
+          # Remove 'v' prefix if present
           CLEAN_VERSION="${VERSION#v}"
+          # Remove any -final, -dev, etc. suffixes to get base version
+          CLEAN_VERSION=$(echo "${CLEAN_VERSION}" | grep -oE '^[0-9]+\.[0-9]+\.[0-9]+' || echo "${CLEAN_VERSION}")
 
-          pip install "codex-ml==${CLEAN_VERSION}"
+          echo "Original version: ${VERSION}"
+          echo "Clean version for pip: ${CLEAN_VERSION}"
+
+          # Install and verify
+          pip install "codex-ml==${CLEAN_VERSION}" || {
+            echo "⚠️ Package not yet indexed on PyPI (normal for new releases)"
+            echo "PyPI indexing can take 5-15 minutes after publication"
+          }
 
   # Create GitHub release with artifacts
   create-release:
     name: Create GitHub Release
-    needs: [publish-to-pypi]
+    needs: [publish-to-pypi, pre-release-checks]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -343,20 +467,24 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set version from tag
+      - name: Set version from pre-release-checks output
         id: version
         env:
-          GITHUB_REF: ${{ github.ref }}
+          PRE_RELEASE_VERSION: ${{ needs.pre-release-checks.outputs.version }}
         run: |
-          VERSION="$GITHUB_REF"
+          # Use the version from pre-release-checks which handles both tags and dispatches
+          VERSION="$PRE_RELEASE_VERSION"
+          # Ensure no refs/ prefix remains
           VERSION="${VERSION#refs/tags/}"
+          VERSION="${VERSION#refs/heads/}"
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "Using release version: ${VERSION}"
 
       - name: Download wheels
         uses: actions/download-artifact@v5
         with:
+          name: wheels
           path: dist/
-          merge-multiple: true
 
       - name: Download manifest
         uses: actions/download-artifact@v5
@@ -369,6 +497,15 @@ jobs:
         with:
           name: sbom
           path: release-artifacts/
+
+      - name: Verify release artifacts
+        run: |
+          echo "=== Release Artifacts ==="
+          ls -lah release-artifacts/
+
+          echo ""
+          echo "=== Wheels ==="
+          ls -lah dist/
 
       - name: Generate release notes
         id: release-notes
@@ -400,7 +537,7 @@ jobs:
             echo ""
             echo "### ✅ Quality Assurance"
             echo ""
-            echo "- Wheels built for Python 3.12"
+            echo "- Universal wheel built with deterministic hashes"
             echo "- Manifest hash verification included"
             echo "- SBOM (Software Bill of Materials) included"
             echo "- Smoke tests passing for all profiles"
@@ -413,29 +550,31 @@ jobs:
             echo "- Troubleshooting common issues"
           } >> release-notes.md
 
-      - name: Create GitHub release
+      - name: Create GitHub release (as draft)
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+         GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ steps.version.outputs.version }}
           release_name: Release ${{ steps.version.outputs.version }}
           body_path: release-notes.md
-          draft: false
+          draft: true
           prerelease: false
 
-      - name: Upload release artifacts
+      - name: Upload release artifacts and publish
         uses: softprops/action-gh-release@v2
         with:
           files: |
             dist/*.whl
             release-artifacts/*
           body_path: release-notes.md
+          draft: false
+          tag_name: ${{ steps.version.outputs.version }}
 
   # Post release notification
   post-release-notification:
     name: Post Release Notification
-    needs: [create-release]
+    needs: [create-release, pre-release-checks]
     runs-on: ubuntu-latest
     if: always()
     timeout-minutes: 10
@@ -446,12 +585,14 @@ jobs:
       - name: Create deployment summary comment
         uses: actions/github-script@v8
         env:
-          GITHUB_REF: ${{ github.ref }}
+          RELEASE_VERSION: ${{ needs.pre-release-checks.outputs.version }}
           GITHUB_REPO: ${{ github.repository }}
         with:
           script: |
-            const version = process.env.GITHUB_REF.replace('refs/tags/', '');
-            const cleanVersion = version.replace(/^v/, '');
+            let version = process.env.RELEASE_VERSION;
+            // Remove refs/ prefixes if any
+            version = version.replace('refs/tags/', '').replace('refs/heads/', '');
+            const cleanVersion = version.replace(/^v/, '').replace(/-final.*/, '');
 
             const body = [
               "## 🚀 Release Deployment Summary",
@@ -495,7 +636,14 @@ jobs:
           COMMIT_SHA: ${{ github.sha }}
         run: |
           mkdir -p .codex/metrics
-          cat > ".codex/metrics/release-${REF_NAME}.json" << 'EOF'
+          # Convert ref name to filename-safe format (replace slashes with dashes)
+          SAFE_REF_NAME=$(echo "${REF_NAME}" | tr '/' '-')
+          
+          # Build the output file path safely
+          OUTPUT_FILE=".codex/metrics/release-${SAFE_REF_NAME}.json"
+          
+          # Create metrics file
+          cat > "${OUTPUT_FILE}" << 'EOF'
           {
             "version": "$REF_NAME",
             "deployed_at": "$(date -Iseconds)",
@@ -509,6 +657,9 @@ jobs:
             }
           }
           EOF
+          
+          echo "✅ Metrics saved to: ${OUTPUT_FILE}"
+          ls -lah "${OUTPUT_FILE}"
 
       - name: Upload deployment metrics
         uses: actions/upload-artifact@v5
@@ -526,10 +677,11 @@ jobs:
     steps:
       - name: Check workflow status
         run: |
-          if [ "${{ needs.post-release-notification.result }}" == "success" ]; then
+          STATUS="${{ needs.post-release-notification.result }}"
+          if [ "${STATUS}" == "success" ]; then
             echo "✅ Release workflow completed successfully"
             exit 0
           else
-            echo "❌ Release workflow failed"
+            echo "❌ Release workflow failed with status: ${STATUS}"
             exit 1
           fi

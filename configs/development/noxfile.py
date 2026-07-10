@@ -104,9 +104,9 @@ def _check_hydra_plugin(session: nox.Session) -> bool:
         return True
 
     session.warn("[hydra-check] Plugin missing: hydra.extra will not load")
-    _install(session, "hydra-core[hydra_plugins]>=1.3")
+    _install(session, "hydra-core>=1.3")
     if _try_import():
-        session.log("[hydra-check] Installed hydra-core[hydra_plugins]>=1.3")
+        session.log("[hydra-check] Installed hydra-core>=1.3")
         return True
 
     session.error("Hydra plugin installation failed")
@@ -282,7 +282,7 @@ def _run_pytest_coverage(session: nox.Session, *, extra_args: Sequence[str] | No
     _install(session, "--no-deps", "-e", ".")
     _install(
         session,
-        "hydra-core[hydra_plugins]>=1.3",
+        "hydra-core>=1.3",
         "omegaconf>=2.3",
         "PyYAML>=6.0",
         "pydantic>=2.4",
@@ -329,7 +329,7 @@ def tests(session: nox.Session) -> None:
     _install(session, "--no-deps", "-e", ".")
     _install(
         session,
-        "hydra-core[hydra_plugins]>=1.3",
+        "hydra-core>=1.3",
         "omegaconf>=2.3",
         "PyYAML>=6.0",
         "pydantic>=2.4",
@@ -354,7 +354,7 @@ def offline_check(session: nox.Session) -> None:
     _install(session, "--no-deps", "-e", ".")
     _install(
         session,
-        "hydra-core[hydra_plugins]>=1.3",
+        "hydra-core>=1.3",
         "omegaconf>=2.3",
         "PyYAML>=6.0",
         "pydantic>=2.4",
@@ -904,6 +904,6 @@ def repro_smoke(session: nox.Session) -> None:
 def config_index(session: nox.Session) -> None:
     """List Hydra config groups and options (offline discovery)."""
     _ensure_pip_cache(session)
-    _install(session, "hydra-core[hydra_plugins]>=1.3", "omegaconf>=2.3")
+    _install(session, "hydra-core>=1.3", "omegaconf>=2.3")
     _export_env(session)
     session.run("python", "tools/configs/list_groups.py")
