@@ -248,17 +248,7 @@ codex-import-ndjson = "aries_serpent_core.logging.import_ndjson:main"
 # Extended entry points (require additional dependencies, marked for future profiles)
 # NOTE: The following entry points are commented out because they require dependencies
 # not in the [core] profile. They will be activated in [runtime] and [full] profiles.
-# For details on why each entry point is disabled and its activation plan, see:
-# docs/ENTRY_POINTS_REMOVED.md
-#
-# RUNTIME PROFILE (5 entry points, training/evaluation):
-# codex-train, codex-eval, codex-infer, codex-validate-config, codex-perf
-#
-# FULL PROFILE (17 entry points, analysis/utilities):
-# codex-list-plugins, codex-ndjson, codex-offline-bootstrap, codex-tokenizer,
-# codex-setup, codex-patch-runner, codex-update-runner, codex-script,
-# codex-workflow, codex-task-sequence, codex-ast-upgrade, codex-audit-runner,
-# + 5 additional analysis tools (not implemented)
+# See docs/ENTRY_POINTS_REMOVED.md for detailed rationale and activation timeline.
 # docs-mcp-server = "tools.docs_agent.mcp_server:main"
 
 [project.entry-points."codex_ml.tokenizers"]
@@ -305,19 +295,21 @@ functional = "codex_ml.registry.trainers:load_functional_trainer"
 "" = "src"
 
 # Root-level packages (non-src)
-# These require explicit mapping if they should be included
-# For [core] profile, we only include src-based packages
-# agents = "agents"  # Optional: include if needed for runtime/full profiles
-# codex_addons = "codex_addons"  # Optional: include if needed for runtime/full profiles
-# codex_digest = "codex_digest"  # Optional: include if needed for runtime/full profiles
-# codex_regression = "codex_regression"  # Optional: include if needed for runtime/full profiles
-# interfaces = "interfaces"  # Optional: include if needed for runtime/full profiles
-# examples = "examples"  # Optional: documentation examples
-# tools = "tools"  # Optional: development tools
-# services = "services"  # Optional: service modules
-# cli = "cli"  # Optional: command-line interface modules
-# config = "config"  # Optional: configuration modules
-# configs = "configs"  # Optional: legacy config location
+# These require explicit mapping if they should be included.
+# The [core] profile uses only src-based packages ("")="src" above.
+# Root packages below are candidates for [runtime] and [full] profiles.
+# Their activation is tracked in docs/ENTRY_POINTS_REMOVED.md
+# agents = "agents"  # For runtime/full profiles if needed
+# codex_addons = "codex_addons"  # For runtime/full profiles if needed
+# codex_digest = "codex_digest"  # For runtime/full profiles if needed
+# codex_regression = "codex_regression"  # For runtime/full profiles if needed
+# interfaces = "interfaces"  # For runtime/full profiles if needed
+# examples = "examples"  # For runtime/full profiles if needed
+# tools = "tools"  # For runtime/full profiles if needed
+# services = "services"  # For runtime/full profiles if needed
+# cli = "cli"  # For runtime/full profiles if needed
+# config = "config"  # For runtime/full profiles if needed
+# configs = "configs"  # For runtime/full profiles if needed
 
 [tool.setuptools.packages.find]
 where = [

@@ -128,14 +128,23 @@ class TestInstallation:
         cli = importlib.import_module("codex_ml.cli")
         assert hasattr(cli, "main"), "codex_ml.cli missing main module"
 
-        # Verify logging module (from correct package)
+        # Verify logging module and import_ndjson submodule
         logging_mod = importlib.import_module("aries_serpent_core.logging")
         assert hasattr(logging_mod, "import_ndjson"), (
             "aries_serpent_core.logging missing import_ndjson"
         )
-        # Verify import_ndjson is callable (not just an attribute)
-        assert callable(logging_mod.import_ndjson), (
-            "aries_serpent_core.logging.import_ndjson is not callable"
+        
+        # Verify import_ndjson is a module (not just an attribute)
+        import_ndjson_mod = importlib.import_module(
+            "aries_serpent_core.logging.import_ndjson"
+        )
+        assert hasattr(import_ndjson_mod, "main"), (
+            "aries_serpent_core.logging.import_ndjson missing main function (entry point requirement)"
+        )
+        
+        # Verify main is callable (entry point must be callable)
+        assert callable(import_ndjson_mod.main), (
+            "aries_serpent_core.logging.import_ndjson.main is not callable"
         )
 
 
