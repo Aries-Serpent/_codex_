@@ -1,21 +1,22 @@
-# Session Context — 2026-07-10T22:51:49Z
+# Session Context — 2026-07-10T23:11:34Z
 **Branch:** `copilot/cleanup-root-folder-structure`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4993` (✅)
-- GraphQL remaining: `4995` (✅)
+- REST remaining: `4991` (✅)
+- GraphQL remaining: `5000` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **.github/workflows/ci-pattern-prevention-gate.yml** — `failure` on `dependabot/pip/wandb/offline-run-20260710_081452-ygm1cfph/files/pip-a82cabe1a4` (2026-07-10)
-- **.github/workflows/admin-action-t03.yml** — `failure` on `dependabot/pip/wandb/offline-run-20260710_081452-ygm1cfph/files/pip-a82cabe1a4` (2026-07-10)
-- **.github/workflows/branch-rebase-gate.yml** — `failure` on `dependabot/pip/wandb/offline-run-20260710_081452-ygm1cfph/files/pip-a82cabe1a4` (2026-07-10)
-- **.github/workflows/automated-release-creation.yml** — `failure` on `dependabot/pip/wandb/offline-run-20260710_081452-ygm1cfph/files/pip-a82cabe1a4` (2026-07-10)
-- **.github/workflows/autonomous-agent.yml** — `failure` on `dependabot/pip/wandb/offline-run-20260710_081452-ygm1cfph/files/pip-a82cabe1a4` (2026-07-10)
+- **Batch CI Failure Triage** — `failure` on `main` (2026-07-10)
+- **.github/workflows/automated-rollback-generation.yml** — `failure` on `copilot/cleanup-root-folder-structure` (2026-07-10)
+- **.github/workflows/build-preview-image.yml** — `failure` on `copilot/cleanup-root-folder-structure` (2026-07-10)
+- **.github/workflows/auth-tests.yml** — `failure` on `copilot/cleanup-root-folder-structure` (2026-07-10)
+- **.github/workflows/agent-registry-validation.yml** — `failure` on `copilot/cleanup-root-folder-structure` (2026-07-10)
 
 ## 📝 Recent Commits
+- `812b82b6` Apply remaining changes — copilot-swe-agent[bot] (2026-07-10)
 - `f1902318` build(release): v0.1.1 patch release with dynamic workflow verification (#5288) — Copilot (2026-07-10)
 - `c65fe038` docs: update Phase 8.2 triage dashboard [skip ci] — github-actions[bot] (2026-07-10)
 - `c2ea8612` docs: update Phase 8.2 triage dashboard [skip ci] — github-actions[bot] (2026-07-10)
@@ -23,7 +24,6 @@
 - `15482dcd` docs: update Phase 8.2 triage dashboard [skip ci] — github-actions[bot] (2026-07-10)
 - `8c5a0bee` feat(release): v0.1.0 - Pre-publication validation and PyPI metadata certificati — Copilot (2026-07-10)
 - `d91b3d4d` docs: update Phase 8.2 triage dashboard [skip ci] — github-actions[bot] (2026-07-10)
-- `1ca88ae2` docs: update Phase 8.2 triage dashboard [skip ci] — github-actions[bot] (2026-07-10)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
