@@ -110,14 +110,15 @@ jobs:
 
           echo "✅ Version verified in pyproject.toml"
 
-  # Build wheels for all three profiles
+  # Build wheels once for reproducible release
+  # Note: Universal wheel (py3-none-any) should be built ONCE, not per-platform
+  # to ensure deterministic hashes for manifest verification
   build-wheels:
     name: Build wheels
     needs: pre-release-checks
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest  # Build only on Linux for reproducibility
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
         python-version: ["3.12"]
     timeout-minutes: 30
     steps:
@@ -134,15 +135,26 @@ jobs:
         run: |
           python -m pip install --upgrade pip setuptools wheel build
 
-      - name: Build wheels for all profiles
+      - name: Build wheels (deterministic, single platform)
         run: |
+          # Build universal wheel once on Linux for reproducible hashes
+          # Universal wheels (py3-none-any) are platform-independent
           python -m build --wheel
-          # Build script should handle profile-specific wheels
+          echo "✓ Built universal wheel on Ubuntu for deterministic hashes"
+
+      - name: Verify wheel artifacts
+        run: |
+          ls -lah dist/
+          if [ ! -f "dist/codex_ml-0.1.0-py3-none-any.whl" ]; then
+            echo "❌ Expected universal wheel not found"
+            exit 1
+          fi
+          echo "✓ Universal wheel verified"
 
       - name: Upload wheel artifacts
         uses: actions/upload-artifact@v5
         with:
-          name: wheels-${{ matrix.os }}-${{ matrix.python-version }}
+          name: wheels
           path: dist/
           retention-days: 5
 
@@ -162,21 +174,32 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
 
-      - name: Download all wheels
+      - name: Download wheels
         uses: actions/download-artifact@v5
         with:
+          name: wheels
           path: dist/
-          merge-multiple: true
 
-      - name: Verify wheels exist
+      - name: Verify wheels exist and are consistent
         run: |
           ls -lah dist/
           if [ $(ls -1 dist/*.whl 2>/dev/null | wc -l) -eq 0 ]; then
             echo "❌ No wheel files found"
             exit 1
           fi
+          
+          # Verify we have the expected universal wheel
+          if [ ! -f "dist/codex_ml-0.1.0-py3-none-any.whl" ]; then
+            echo "❌ Expected universal wheel not found"
+            echo "❌ This may indicate wheels were built on multiple platforms"
+            echo "❌ Verify build-wheels job is configured for single platform (Ubuntu only)"
+            exit 1
+          fi
+          
+          echo "✓ Universal wheel verified"
+          echo "✓ Wheel count: $(ls -1 dist/*.whl 2>/dev/null | wc -l)"
 
-      - name: Install manifest generation script
+      - name: Install manifest generation script dependencies
         run: |
           pip install pydantic pyyaml
 
@@ -187,6 +210,28 @@ jobs:
           python scripts/ci/generate_wheel_manifest.py \
             --wheelhouse dist/ \
             --output .codex/manifests/release-manifest-${{ needs.pre-release-checks.outputs.version }}.json
+          
+          # Verify manifest was created
+          if [ ! -f ".codex/manifests/release-manifest-${{ needs.pre-release-checks.outputs.version }}.json" ]; then
+            echo "❌ Manifest file not created"
+            exit 1
+          fi
+          
+          echo "✓ Manifest generated successfully"
+
+      - name: Verify manifest contents
+        run: |
+          MANIFEST_FILE=".codex/manifests/release-manifest-${{ needs.pre-release-checks.outputs.version }}.json"
+          echo "Manifest contents:"
+          cat "$MANIFEST_FILE"
+          
+          # Verify manifest contains wheels
+          WHEEL_COUNT=$(jq '.count // 0' "$MANIFEST_FILE")
+          if [ "$WHEEL_COUNT" -eq 0 ]; then
+            echo "❌ Manifest contains no wheels"
+            exit 1
+          fi
+          echo "✓ Manifest contains $WHEEL_COUNT wheels"
 
       - name: Upload manifest artifact
         uses: actions/upload-artifact@v5
@@ -260,17 +305,26 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
 
-      - name: Download wheels
+      - name: Download wheels (no merge needed - single artifact)
         uses: actions/download-artifact@v5
         with:
+          name: wheels
           path: dist/
-          merge-multiple: true
 
       - name: Download manifest
         uses: actions/download-artifact@v5
         with:
           name: release-manifest
           path: .codex/manifests/
+
+      - name: List artifacts before verification
+        run: |
+          echo "=== Wheels in dist/ ==="
+          ls -lah dist/
+          
+          echo ""
+          echo "=== Manifest files ==="
+          ls -lah .codex/manifests/
 
       - name: Verify manifest integrity
         run: |
@@ -280,11 +334,15 @@ jobs:
             echo "❌ No manifest file found in .codex/manifests/"
             exit 1
           fi
-           
+          
+          echo "Using manifest: $MANIFEST_FILE"
+          
           python scripts/deploy/verify_manifest.py \
             --manifest "$MANIFEST_FILE" \
             --wheelhouse dist/ \
             --strict
+          
+          echo "✅ Manifest verification passed!"
 
   # Publish to PyPI
   publish-to-pypi:
@@ -305,11 +363,21 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
 
-      - name: Download wheels
+      - name: Download wheels (from single build)
         uses: actions/download-artifact@v5
         with:
+          name: wheels
           path: dist/
-          merge-multiple: true
+
+      - name: Verify wheels before publishing
+        run: |
+          echo "Wheels to publish:"
+          ls -lah dist/
+          
+          if [ $(ls -1 dist/*.whl 2>/dev/null | wc -l) -eq 0 ]; then
+            echo "❌ No wheels found to publish"
+            exit 1
+          fi
 
       - name: Install publishing tools
         run: |
@@ -362,8 +430,8 @@ jobs:
       - name: Download wheels
         uses: actions/download-artifact@v5
         with:
+          name: wheels
           path: dist/
-          merge-multiple: true
 
       - name: Download manifest
         uses: actions/download-artifact@v5
@@ -376,6 +444,15 @@ jobs:
         with:
           name: sbom
           path: release-artifacts/
+
+      - name: Verify release artifacts
+        run: |
+          echo "=== Release Artifacts ==="
+          ls -lah release-artifacts/
+          
+          echo ""
+          echo "=== Wheels ==="
+          ls -lah dist/
 
       - name: Generate release notes
         id: release-notes
@@ -407,7 +484,7 @@ jobs:
             echo ""
             echo "### ✅ Quality Assurance"
             echo ""
-            echo "- Wheels built for Python 3.12"
+            echo "- Universal wheel built with deterministic hashes"
             echo "- Manifest hash verification included"
             echo "- SBOM (Software Bill of Materials) included"
             echo "- Smoke tests passing for all profiles"
