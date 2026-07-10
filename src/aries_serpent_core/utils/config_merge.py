@@ -28,7 +28,6 @@ class MergeError(ValueError):
 def merge_dicts(
     *dicts: Dict[str, Any],
     deep: bool = False,
-    on_conflict: Optional[str] = None,
 ) -> Dict[str, Any]:
     """
     Merge multiple dictionaries.
@@ -36,7 +35,6 @@ def merge_dicts(
     Args:
         *dicts: Dictionaries to merge
         deep: If True, recursively merge nested dicts
-        on_conflict: 'first', 'last', or 'error' on key conflicts
 
     Returns:
         Merged dictionary

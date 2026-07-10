@@ -19,7 +19,6 @@ def run(
     *,
     stm_entries: list[dict[str, Any]],
     retention_policy: str = "standard",
-    dedup_threshold: float = 0.85,
     min_pattern_score: float = 0.7,
     dry_run: bool = False,
     **kwargs: Any,

@@ -697,7 +697,7 @@ class ApprovalService:
             # ----------------------------------------------------------------
             return req.audit_log.copy()
 
-    def _build_escalation_chain(self, approver_count: int) -> List[int]:
+    def _build_escalation_chain(self) -> List[int]:
         return [1, 2, 3]
 
     def get_service_stats(self) -> Dict[str, Any]:

@@ -54,13 +54,12 @@ SENSITIVE_PATTERNS = [
 ]
 
 
-def redact_sensitive_data(text: Any, max_preview: int = 8) -> str:
+def redact_sensitive_data(text: Any) -> str:
     """
     Redact common secret patterns before logging.
 
     Args:
         text: The text to redact (will be converted to string if not already)
-        max_preview: Maximum characters to show for partial redaction
 
     Returns:
         String with sensitive patterns replaced with redaction markers

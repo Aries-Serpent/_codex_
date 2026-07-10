@@ -741,7 +741,6 @@ class AgentBrainInterface:
         self,
         objective: str,
         completed: bool = False,
-        progress_note: Optional[str] = None,
     ) -> bool:
         """
         Update progress on an objective.
@@ -749,7 +748,6 @@ class AgentBrainInterface:
         Args:
             objective: The objective to update
             completed: Whether the objective is complete
-            progress_note: Optional note about progress
 
         Returns:
             True if update was successful

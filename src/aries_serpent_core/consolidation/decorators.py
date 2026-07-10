@@ -74,7 +74,6 @@ def validate(
 
 def require_auth(
     required_scopes: Optional[list[str]] = None,
-    allow_service_account: bool = False,
 ) -> Callable[[F], F]:
     """
     Decorator to enforce authentication and scope requirements.

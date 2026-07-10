@@ -230,7 +230,6 @@ class FeastCompatibleStore:
 
     def materialize(
         self,
-        start_date: datetime,
         end_date: datetime,
         feature_views: Optional[list[str]] = None,
     ) -> dict[str, Path]:

@@ -1,5 +1,4 @@
 """CLI for feature store management.
-from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
 
 Provides commands for:
 - Registering feature groups
@@ -10,10 +9,8 @@ Provides commands for:
 
 from __future__ import annotations
 
+import builtins
 import logging
-
-logger = logging.getLogger(__name__)
-
 from pathlib import Path
 from typing import Optional
 
@@ -23,6 +20,7 @@ try:
     from rich.table import Table
 except ImportError as e:
     error_type = type(e).__name__
+    from aries_serpent_core.logging.adapter import get_default_logger
     get_default_logger().debug("ImportError: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
     get_default_logger().warning(
         "ImportError: <ERROR_TYPE>", exc_info=True
@@ -32,10 +30,11 @@ except ImportError as e:
         "typer and rich are required for CLI. Install with: pip install typer rich"
     ) from e
 
-import builtins
-
+from aries_serpent_core.logging.adapter import get_default_logger
 from codex_ml.features.feature_store import FeatureGroup, FeatureStore
 from codex_ml.features.monitoring import FeatureHealthMonitor
+
+logger = logging.getLogger(__name__)
 
 app = typer.Typer(
     name="feature-store",
@@ -143,7 +142,7 @@ def list(
 
             table.add_row(*row)
 
-        console.get_default_logger().info(table)
+        get_default_logger().info(table)
         console.print(
             f"\n[dim]Total features: {len(features)}[/dim]"
         )  # codeql[py/clear-text-logging-sensitive-data]
@@ -218,7 +217,7 @@ def health(
                 f"[green]✓[/green] Health report written to: {output_file}"
             )  # codeql[py/clear-text-logging-sensitive-data]
         else:
-            console.get_default_logger().info(report)
+            get_default_logger().info(report)
 
         # Show summary
         healthy_count = sum(1 for s in health_statuses.values() if s.is_healthy)
@@ -269,10 +268,10 @@ def materialize(
         console.print(
             f"Features to materialize: {', '.join(feature_names)}"
         )  # codeql[py/clear-text-logging-sensitive-data]
-        console.get_default_logger().info(f"Output path: {output_path}")
+        get_default_logger().info(f"Output path: {output_path}")
 
         if version:
-            console.get_default_logger().info(f"Version: {version}")
+            get_default_logger().info(f"Version: {version}")
 
         console.print(
             "\n[dim]Use Python API for full materialization functionality[/dim]"
@@ -320,7 +319,7 @@ def versions(
             # In real implementation, would fetch timestamp from metadata
             table.add_row(version, "N/A")
 
-        console.get_default_logger().info(table)
+        get_default_logger().info(table)
         console.print(
             f"\n[dim]Total versions: {len(versions)}[/dim]"
         )  # codeql[py/clear-text-logging-sensitive-data]
@@ -378,7 +377,7 @@ def info(
         )  # codeql[py/clear-text-logging-sensitive-data]
 
         if metadata:
-            console.get_default_logger().info("[cyan]Metadata:[/cyan]")
+            get_default_logger().info("[cyan]Metadata:[/cyan]")
             console.print(
                 f"  Version: {metadata.version}"
             )  # codeql[py/clear-text-logging-sensitive-data]
@@ -423,7 +422,7 @@ def info(
                 "\n[yellow]Warnings:[/yellow]"
             )  # codeql[py/clear-text-logging-sensitive-data]
             for warning in health.warnings:
-                console.get_default_logger().info(f"  • {warning}")
+                get_default_logger().info(f"  • {warning}")
 
     except (ValueError, TypeError, RuntimeError) as e:
         type(e).__name__
