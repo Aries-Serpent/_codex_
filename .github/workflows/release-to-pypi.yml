@@ -183,7 +183,7 @@ jobs:
       - name: Generate manifest
         id: manifest
         run: |
-          python scripts/build/generate_manifest.py \
+          python scripts/ci/generate_manifest.py \
             --dist-dir dist/ \
             --output-dir .codex/manifests/ \
             --version ${{ needs.pre-release-checks.outputs.version }}
