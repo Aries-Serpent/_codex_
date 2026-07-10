@@ -23,10 +23,10 @@ class TestInstallation:
     @pytest.mark.smoke
     def test_package_imports(self):
         """Verify core modules import successfully."""
+        # Core modules that must work with [core] profile (no extra deps)
         core_modules = [
             "codex_ml",
             "codex_ml.cli",
-            "codex_ml.logging",
             "aries_serpent_core.logging",
         ]
         for module_name in core_modules:
@@ -128,9 +128,11 @@ class TestInstallation:
         cli = importlib.import_module("codex_ml.cli")
         assert hasattr(cli, "main"), "codex_ml.cli missing main module"
 
-        # Verify logging module
-        logging_mod = importlib.import_module("codex_ml.logging")
-        assert hasattr(logging_mod, "run_logger"), "codex_ml.logging missing run_logger"
+        # Verify logging module (from correct package)
+        logging_mod = importlib.import_module("aries_serpent_core.logging")
+        assert hasattr(logging_mod, "import_ndjson"), (
+            "aries_serpent_core.logging missing import_ndjson"
+        )
 
 
 class TestEntryPointsAvailability:
@@ -217,7 +219,7 @@ class TestProfileSpecificFeatures:
     @pytest.mark.smoke
     def test_no_ml_dependencies_bleeding(self):
         """Verify that ML dependencies aren't loaded (for core profile)."""
-        # This test is informational - it documents which modules should NOT be
+        # This test documents which modules should NOT be
         # available in the core profile, but won't fail if they are.
         ml_heavy_modules = [
             "torch",
@@ -237,6 +239,8 @@ class TestProfileSpecificFeatures:
             # Note: This is expected in runtime/full profiles
             # Only log for awareness in core profile
             print(f"Note: ML dependencies found: {ml_deps_found}")
+            # This is informational only - not a failure for core profile
+            # (may have been installed with runtime profile)
 
 
 class TestPackageMetadata:
