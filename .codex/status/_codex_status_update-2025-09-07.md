@@ -15,7 +15,7 @@
 This repository is intended to help developers customize environments in Codex by providing a similar image that can be pulled and run locally. This is not an identical environment but should help for debugging and development.
 
 > **Policy:** No GitHub-hosted Actions. Run `make codex-gates` locally or on a self-hosted runner (ephemeral runners recommended).
-
+  # pragma: allowlist secret
 For more details on environment setup, see OpenAI Codex.
 
 For environment variables, logging roles, testing expectations, and tool usage, see [docs/guides/.codex/archive/deprecated/AGENTS.md](../../.github/.codex/archive/deprecated/AGENTS.md).

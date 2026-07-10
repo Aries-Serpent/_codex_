@@ -15,7 +15,7 @@
 - ✅ **Lane 2** (Secrets Baseline): **COMPLETE** — 2 false positives resolved
 - �� **Lane 3** (Link Validation): **RUNNING** — reference mapping in progress
 - 🔄 **Lane 4** (Workflow Audit): **RUNNING** — workflow analysis in progress
-- 🔄 **Lane 5** (Documentation Prep): **RUNNING** — docs updates in progress # pragma: allowlist secret # pragma: allowlist secret
+- 🔄 **Lane 5** (Documentation Prep): **RUNNING** — docs updates in progress # pragma: allowlist secret # pragma: allowlist secret  # pragma: allowlist secret  # pragma: allowlist secret
 - 🔄 **Lane 6** (Cleanup Validation): **NEWLY ACTIVATED** — test suite creation starting
 
 **Campaign Progress: 2/6 complete, 4/6 active → ~50% complete by end of this phase**

@@ -15,7 +15,7 @@ Phase 4 Lane B (Docker & Kubernetes delivery) is **COMPLETE** with all deliverab
 
 ---
 
-## Step 3: Docker Image Build — ✅ COMPLETE
+## Step 3: Docker Image Build — ✅ COMPLETE  # pragma: allowlist secret  # pragma: allowlist secret  # pragma: allowlist secret  # pragma: allowlist secret
 
 ### Image 1: API Server (`aries-serpent-api:0.1.0-final`)
 

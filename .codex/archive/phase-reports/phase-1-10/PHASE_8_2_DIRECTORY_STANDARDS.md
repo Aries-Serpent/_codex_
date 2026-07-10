@@ -15,7 +15,7 @@ This document defines the **canonical directory structure** for the Aries-Serpen
 1. **Normative spec** for directory placement (where does code/config/docs belong?)
 2. **Validation checklist** for cleanup batches (did we follow the standard?)
 3. **Navigation guide** for developers (how do I find what I need?)
-4. **Archival taxonomy** (what goes into `.codex/archive/`?)
+4. **Archival taxonomy** (what goes into `.codex/archive/`?)  # pragma: allowlist secret
 
 ---
 

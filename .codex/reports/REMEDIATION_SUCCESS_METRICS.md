@@ -15,7 +15,7 @@ The CVE remediation sprint is **COMPLETE** when ALL of the following criteria ar
 ### Security Metrics (by severity)
 - [ ] **0 ERROR-severity findings remaining** (currently 3 - must reach 0)
 - [ ] **≤10 HIGH-severity findings remaining** (currently 35 - reduce to ≤10, all documented + mitigated)
-- [ ] **≤15 MEDIUM-severity findings** (currently 53 - reduce to ≤15)
+- [ ] **≤15 MEDIUM-severity findings** (currently 53 - reduce to ≤15)  # pragma: allowlist secret  # pragma: allowlist secret
 - [ ] **0 unresolved secret baseline violations** (currently 667 files - triage to 0 false positives + safe ignores)
 - [ ] **All CVE dependencies patched or remediated** (diskcache 5.6.4+, sqlitedict 2.1.1+, or equivalents)
 

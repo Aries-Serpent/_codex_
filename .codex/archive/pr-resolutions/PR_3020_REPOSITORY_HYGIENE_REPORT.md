@@ -15,7 +15,7 @@
 - **Critical (P0):** 0 ✅ *All resolved in previous session*
 - **High (P1):** 104 🔴
 - **Medium (P2):** 2,507 🟡
-- **Low (P3):** 507 🟢
+- **Low (P3):** 507 🟢  # pragma: allowlist secret
 
 ### Key Achievements from PR #3020
 ✅ All 7 P0 critical issues resolved  

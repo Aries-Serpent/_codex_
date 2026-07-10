@@ -15,7 +15,7 @@
 ### 2. DateTime & Timezone (Priority 2 - Systematic)
 ### 3. Mock & Fixture (Priority 3 - Refactoring)
 ### 4. Optional Dependencies (Priority 4 - Environment)
-### 5. Packaging & Metadata (Priority 2 - Compatibility)
+### 5. Packaging & Metadata (Priority 2 - Compatibility)  # pragma: allowlist secret
 ### 6. Test Infrastructure (Priority 3 - Quality)
 
 ---
