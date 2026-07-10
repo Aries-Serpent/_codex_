@@ -1,32 +1,32 @@
-# Session Context — 2026-07-10T20:58:00Z
-**Branch:** `copilot/continue-v010-release`  **PR:** #5287  **Access:** `rest, graphql, gh_cli`
+# Session Context — 2026-07-10T22:23:20Z
+**Branch:** `dependabot/pip/wandb/offline-run-20260710_081452-ygm1cfph/files/pip-a82cabe1a4`  **PR:** #5290  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4938` (✅)
-- GraphQL remaining: `4995` (✅)
+- REST remaining: `4731` (✅)
+- GraphQL remaining: `4974` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #5287 — build(deps): bump the pip group across 2 directories with 12 updates
-State: `open`  Draft: `False`  Branch: `dependabot/pip/wandb/offline-run-20260710_084103-t2brzbto/files/pip-d5b1a78e57` → `main`
+## 📋 PR #5290 — build(deps): bump the pip group across 4 directories with 12 updates
+State: `open`  Draft: `False`  Branch: `dependabot/pip/wandb/offline-run-20260710_081452-ygm1cfph/files/pip-a82cabe1a4` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **.github/workflows/auth-tests.yml** — `failure` on `copilot/continue-v010-release` (2026-07-10)
-- **.github/workflows/13-3-cve-scanning.yml** — `failure` on `copilot/continue-v010-release` (2026-07-10)
-- **.github/workflows/automated-rollback-generation.yml** — `failure` on `copilot/continue-v010-release` (2026-07-10)
-- **.github/workflows/ci-checkpoint-validation.yml** — `failure` on `copilot/continue-v010-release` (2026-07-10)
-- **.github/workflows/automated-release-creation.yml** — `failure` on `copilot/continue-v010-release` (2026-07-10)
+- **Workflow Execution Gate** — `failure` on `dependabot/pip/wandb/offline-run-20260710_081452-ygm1cfph/files/pip-a82cabe1a4` (2026-07-10)
+- **.github/workflows/chatops_copilot_trigger.yml** — `failure` on `dependabot/pip/wandb/offline-run-20260710_081452-ygm1cfph/files/pip-a82cabe1a4` (2026-07-10)
+- **.github/workflows/agent-registry-validation.yml** — `failure` on `dependabot/pip/wandb/offline-run-20260710_081452-ygm1cfph/files/pip-a82cabe1a4` (2026-07-10)
+- **.github/workflows/auth-tests.yml** — `failure` on `dependabot/pip/wandb/offline-run-20260710_081452-ygm1cfph/files/pip-a82cabe1a4` (2026-07-10)
+- **.github/workflows/agent-orchestration-unified.yml** — `failure` on `dependabot/pip/wandb/offline-run-20260710_081452-ygm1cfph/files/pip-a82cabe1a4` (2026-07-10)
 
 ## 📝 Recent Commits
-- `324da9be` Apply remaining changes — copilot-swe-agent[bot] (2026-07-10)
-- `593db2ed` Campaign complete: Phase 1-3 consolidation + final report (167 tests, 94.3% pass — copilot-swe-agent[bot] (2026-07-10)
-- `6fa37f54` Phase 3 Lane 3.4: Documentation and code quality validation — copilot-swe-agent[bot] (2026-07-10)
-- `2ee42153` Phase 3 Lane 3.3: End-to-end training pipeline validation — copilot-swe-agent[bot] (2026-07-10)
-- `d34127a7` Phase 3 Lane 3.1: Development tools validation — copilot-swe-agent[bot] (2026-07-10)
-- `09a9a93e` Phase 3 Lane 3.2: Full experiment tracking validation — copilot-swe-agent[bot] (2026-07-10)
-- `64969fe7` Phase 2 complete - 66 tests across 3 lanes (100% pass). Phase 3 all 4 lanes disp — copilot-swe-agent[bot] (2026-07-10)
-- `eb108c60` Phase 2 Lane 2.1: ML dependencies validation - Complete test suite and report — copilot-swe-agent[bot] (2026-07-10)
+- `e10dc21b` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-07-10)
+- `b2905909` build(deps): bump the pip group across 4 directories with 12 updates — dependabot[bot] (2026-07-10)
+- `f1902318` build(release): v0.1.1 patch release with dynamic workflow verification (#5288) — Copilot (2026-07-10)
+- `c65fe038` docs: update Phase 8.2 triage dashboard [skip ci] — github-actions[bot] (2026-07-10)
+- `c2ea8612` docs: update Phase 8.2 triage dashboard [skip ci] — github-actions[bot] (2026-07-10)
+- `ca9a8650` docs: update Phase 8.2 triage dashboard [skip ci] — github-actions[bot] (2026-07-10)
+- `15482dcd` docs: update Phase 8.2 triage dashboard [skip ci] — github-actions[bot] (2026-07-10)
+- `8c5a0bee` feat(release): v0.1.0 - Pre-publication validation and PyPI metadata certificati — Copilot (2026-07-10)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
