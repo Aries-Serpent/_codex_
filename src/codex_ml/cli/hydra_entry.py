@@ -128,7 +128,7 @@ def main(argv=None) -> int:
             type(e).__name__
             get_default_logger().debug("ImportError: <ERROR_TYPE>")
             get_default_logger().warning("ImportError: <ERROR_TYPE>", exc_info=True)
-            import config_legacy as hydra  # type: ignore[no-redef]
+            import config_legacy as hydra 
 
         from omegaconf import DictConfig, OmegaConf
     except (IOError, OSError):

@@ -866,7 +866,7 @@ class QuantumComplianceAssessor:
         Refactored version delegates to pattern validators for better maintainability
         and reduced cyclomatic complexity (64 → 12).
         """
-        from src.cognitive_brain.utils.pattern_validators import (
+        from cognitive_brain.utils.pattern_validators import (
             check_pattern_c,
             check_pattern_h_very_high_scores,
             check_pattern_d_high_risk_boundary,

@@ -92,7 +92,7 @@ def generate_scores(input_path: Path, rubric: QARubric, output_path: Path) -> No
             for criterion in rubric.criteria:
                 raw_value = row.get(criterion.id)
                 try:
-                    value = float(raw_value) if raw_value not in (None, "") else None  # type: ignore[arg-type]
+                    value = float(raw_value) if raw_value not in (None, "") else None 
                 except ValueError as e:
                     type(e).__name__
                     logger.debug("ValueError: <ERROR_TYPE>")
