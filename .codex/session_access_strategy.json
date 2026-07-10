@@ -11,10 +11,10 @@
   "graphql_remaining": 5000,
   "gh_cli_available": true,
   "codeql_available": false,
-  "best_token_var": "CODEX_MASTER_KEY",
+  "best_token_var": "${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}",
   "open_prs": [
     5284
   ],
   "branch": "copilot/create-implementation-campaign-plan",
-  "recommendation": "Use REST for data fetches. "
+  "recommendation": "Use REST for data fetches. Token chain recommendation: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }} for elevated scopes (variables/secrets APIs), fallback to github.token for basic operations."
 }

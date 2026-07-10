@@ -6,8 +6,7 @@ Tests all three profiles: core, runtime, and full.
 
 import sys
 import subprocess
-from pathlib import Path
-from typing import List, Tuple, Dict
+from typing import Dict
 
 class ProfileValidator:
     """Validates each installation profile."""
@@ -43,15 +42,19 @@ class ProfileValidator:
                 self.details.setdefault("core", []).append(f"❌ {test_name}: {e}")
                 all_passed = False
         
-        # Test offline capability
-        print("\n📋 Offline Capability Test:")
-        try:
-            self._test_no_network_io()
-            print("✅ No network I/O detected at import")
-            self.details["core"].append("✅ No network I/O at import")
-        except RuntimeError as e:
-            print(f"⚠️  Network I/O possible (may be normal): {e}")
-            # Don't fail for this as it's environment-dependent
+        # Test offline capability only if core imports passed
+        if all_passed:
+            print("\n📋 Offline Capability Test:")
+            try:
+                self._test_no_network_io()
+                print("✅ No network I/O detected at import")
+                self.details["core"].append("✅ No network I/O at import")
+            except RuntimeError as e:
+                print(f"⚠️  Network I/O possible (may be normal): {e}")
+                # Don't fail for this as it's environment-dependent
+        else:
+            print("\n📋 Offline Capability Test: SKIPPED (core imports failed)")
+            self.details["core"].append("⏭️  Offline test skipped (core imports failed)")
         
         self.results["core"] = all_passed
         return all_passed
@@ -129,23 +132,37 @@ class ProfileValidator:
     
     @staticmethod
     def _test_no_network_io() -> None:
-        """Test that core imports don't make network calls."""
-        import socket
-        from unittest.mock import patch
-        
-        calls = []
-        original_socket = socket.socket
-        
-        def mock_socket_init(self, *args, **kwargs):
-            calls.append(f"socket.socket({args}, {kwargs})")
-        
-        with patch.object(socket.socket, '__init__', mock_socket_init):
-            # These should not trigger network calls
-            import omegaconf
-            import hydra
-        
-        if calls:
-            raise RuntimeError(f"Network calls detected: {calls}")
+        """Test that core imports don't make network calls in a fresh subprocess."""
+        code = """
+import socket
+from unittest.mock import patch
+
+calls = []
+
+def mock_connect(self, address):
+    calls.append(f"socket.connect({address})")
+
+def mock_create_connection(address, *args, **kwargs):
+    calls.append(f"socket.create_connection({address})")
+
+with patch.object(socket.socket, 'connect', mock_connect):
+    with patch('socket.create_connection', mock_create_connection):
+        # These should not trigger network calls
+        import omegaconf
+        import hydra
+
+if calls:
+    import sys
+    print(f"ERROR: Network calls detected: {calls}", file=sys.stderr)
+    sys.exit(1)
+"""
+        result = subprocess.run(
+            [sys.executable, "-c", code],
+            capture_output=True,
+            text=True
+        )
+        if result.returncode != 0:
+            raise RuntimeError(f"Network calls detected in subprocess: {result.stderr}")
     
     def print_summary(self) -> int:
         """Print validation summary."""

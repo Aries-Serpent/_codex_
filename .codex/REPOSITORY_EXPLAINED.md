@@ -222,7 +222,7 @@ The Cognitive Brain is an autonomous decision-making system that powers the 145-
 # Simplified OODA flow:
 
 1. OBSERVE: Collect sensor data
-   - GitH Hub API events
+   - GitHub API events
    - Repository state
    - Test results, metrics
    - External triggers
