@@ -28,6 +28,7 @@ Usage:
     # Results: {'accuracy': 0.85, 'rouge1': 0.72, 'rougeL': 0.68, ...}
 """
 
+from aries_serpent_core.logging.adapter import get_default_logger
 from __future__ import annotations
 
 import logging

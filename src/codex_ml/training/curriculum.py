@@ -6,6 +6,7 @@ Manages curriculum-based training with phase transitions, metrics-based
 progression, and checkpoint-per-phase persistence.
 """
 
+from aries_serpent_core.logging.adapter import get_default_logger
 from __future__ import annotations
 
 import json

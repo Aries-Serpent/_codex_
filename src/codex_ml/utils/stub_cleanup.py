@@ -5,6 +5,7 @@ This module helps track and resolve stubs, TODOs, and FIXMEs in the codebase.
 Enhanced with AST-based abstract method detection to avoid false positives.
 """
 
+from aries_serpent_core.logging.adapter import get_default_logger
 from __future__ import annotations
 
 import ast

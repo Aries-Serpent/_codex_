@@ -8,16 +8,15 @@ remaining optional so environments without Typer can still query metadata.
 
 from __future__ import annotations
 
-import logging
-
-from codex.logging.adapter import get_default_logger
-
-logger = logging.getLogger(__name__)
-
 import argparse  # noqa: E402
 import importlib  # noqa: E402
+import logging
 import sys  # noqa: E402
 from collections.abc import Sequence  # noqa: E402
+
+from aries_serpent_core.logging.adapter import get_default_logger
+
+logger = logging.getLogger(__name__)
 
 _HELP_EPILOG = "Run `python -m codex_ml.cli --help` for full subcommands."
 

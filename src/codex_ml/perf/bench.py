@@ -17,6 +17,7 @@ Author: Codex Team
 """
 
 # SPDX-License-Identifier: Apache-2.0
+from aries_serpent_core.logging.adapter import get_default_logger
 from __future__ import annotations
 
 import logging

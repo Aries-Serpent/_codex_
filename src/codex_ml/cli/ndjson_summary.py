@@ -18,6 +18,7 @@ Functions:
 Author: Codex Team
 """
 
+from aries_serpent_core.logging.adapter import get_default_logger
 import logging
 
 logger = logging.getLogger(__name__)

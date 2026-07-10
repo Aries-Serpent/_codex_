@@ -30,8 +30,7 @@ import re
 from dataclasses import dataclass, field
 from typing import Any, Optional
 
-from codex.logging.adapter import get_default_logger
-
+from aries_serpent_core.logging.adapter import get_default_logger
 from codex_ml.tokenization import TokenizerAdapter
 
 __all__ = [

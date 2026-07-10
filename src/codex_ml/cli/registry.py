@@ -1,6 +1,4 @@
-"""
-from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
-Model Registry CLI
+"""Model Registry CLI
 
 Command-line interface for MLflow Model Registry operations.
 """
@@ -12,6 +10,7 @@ import json
 import sys
 from typing import Optional
 
+from aries_serpent_core.logging.adapter import get_default_logger
 from codex_ml.registry.mlflow_registry import (
     _HAS_MLFLOW,
     DeploymentStage,

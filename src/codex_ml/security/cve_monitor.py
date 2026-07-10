@@ -4,6 +4,7 @@ from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
 Keeps track of known vulnerabilities and checks dependencies.
 """
 
+from aries_serpent_core.logging.adapter import get_default_logger
 from __future__ import annotations
 
 import hashlib

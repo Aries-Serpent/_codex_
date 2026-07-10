@@ -19,6 +19,7 @@ Usage example::
         get_default_logger().info("Eval gate FAILED:", reasons)
 """
 
+from aries_serpent_core.logging.adapter import get_default_logger
 from __future__ import annotations
 
 import logging

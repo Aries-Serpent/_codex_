@@ -17,6 +17,7 @@ Level 4 MLOps gap closure:
   Remaining for 100/100: deploy live Redis instance and set REDIS_URL env variable.
 """
 
+from aries_serpent_core.logging.adapter import get_default_logger
 from __future__ import annotations
 
 import json

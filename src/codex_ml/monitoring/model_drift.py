@@ -25,6 +25,7 @@ Classes
 - ``ModelDriftDetector``   — main detector class (Gap 18 entry point)
 """
 
+from aries_serpent_core.logging.adapter import get_default_logger
 from __future__ import annotations
 
 import logging

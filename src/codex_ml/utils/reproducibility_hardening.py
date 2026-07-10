@@ -6,6 +6,7 @@ Comprehensive reproducibility utilities combining deterministic training,
 environment capture, and seed management for full reproducibility.
 """
 
+from aries_serpent_core.logging.adapter import get_default_logger
 from __future__ import annotations
 
 import hashlib

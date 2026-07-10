@@ -8,6 +8,7 @@ normalises a handful of convenience overrides and delegates to the existing
 ``codex_ml.tokenization.train_tokenizer`` helpers.
 """
 
+from aries_serpent_core.logging.adapter import get_default_logger
 from __future__ import annotations
 
 import json

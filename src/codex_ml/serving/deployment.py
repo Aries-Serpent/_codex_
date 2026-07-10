@@ -6,6 +6,7 @@ This module provides zero-downtime deployment strategies with gradual rollout,
 automatic failover, and rollback capabilities.
 """
 
+from aries_serpent_core.logging.adapter import get_default_logger
 import logging
 import time
 

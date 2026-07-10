@@ -5,6 +5,7 @@ Provides comprehensive performance profiling and benchmarking tools
 for training pipelines, model inference, and data loading.
 """
 
+from aries_serpent_core.logging.adapter import get_default_logger
 from __future__ import annotations
 
 import logging

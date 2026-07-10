@@ -24,6 +24,7 @@ Exit codes
     Required dependency (``PyYAML``) missing.
 """
 
+from aries_serpent_core.logging.adapter import get_default_logger
 from __future__ import annotations
 
 import logging
