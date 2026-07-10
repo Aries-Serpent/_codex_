@@ -53,15 +53,15 @@ jobs:
           else
             VERSION="$INPUT_VERSION"
           fi
-          
+
           # Extract commit short SHA (first 7 chars)
           COMMIT_SHORT="${COMMIT_SHA:0:7}"
-          
+
           # If version doesn't already contain commit info, append it
           if [[ ! "$VERSION" =~ - ]]; then
             VERSION="${VERSION}-${COMMIT_SHORT}"
           fi
-          
+
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
           echo "Release version: ${VERSION}"
 
@@ -199,7 +199,7 @@ jobs:
             echo "❌ No wheel files found"
             exit 1
           fi
-          
+
           # Verify we have the expected universal wheel
           if [ ! -f "dist/codex_ml-0.1.0-py3-none-any.whl" ]; then
             echo "❌ Expected universal wheel not found"
@@ -207,7 +207,7 @@ jobs:
             echo "❌ Verify build-wheels job is configured for single platform (Ubuntu only)"
             exit 1
           fi
-          
+
           echo "✓ Universal wheel verified"
           echo "✓ Wheel count: $(ls -1 dist/*.whl 2>/dev/null | wc -l)"
 
@@ -222,13 +222,13 @@ jobs:
           python scripts/ci/generate_wheel_manifest.py \
             --wheelhouse dist/ \
             --output .codex/manifests/release-manifest-${{ needs.pre-release-checks.outputs.version }}.json
-          
+
           # Verify manifest was created
           if [ ! -f ".codex/manifests/release-manifest-${{ needs.pre-release-checks.outputs.version }}.json" ]; then
             echo "❌ Manifest file not created"
             exit 1
           fi
-          
+
           echo "✓ Manifest generated successfully"
 
       - name: Verify manifest contents
@@ -236,7 +236,7 @@ jobs:
           MANIFEST_FILE=".codex/manifests/release-manifest-${{ needs.pre-release-checks.outputs.version }}.json"
           echo "Manifest contents:"
           cat "$MANIFEST_FILE"
-          
+
           # Verify manifest contains wheels
           WHEEL_COUNT=$(jq '.count // 0' "$MANIFEST_FILE")
           if [ "$WHEEL_COUNT" -eq 0 ]; then
@@ -333,7 +333,7 @@ jobs:
         run: |
           echo "=== Wheels in dist/ ==="
           ls -lah dist/
-          
+
           echo ""
           echo "=== Manifest files ==="
           ls -lah .codex/manifests/
@@ -346,13 +346,13 @@ jobs:
             echo "❌ No manifest file found in .codex/manifests/"
             exit 1
           fi
-          
+
           echo "Using manifest: $MANIFEST_FILE"
-          
+
           python scripts/deploy/verify_manifest.py \
             --manifest "$MANIFEST_FILE" \
             --wheelhouse dist/
-          
+
           echo "✅ Manifest verification completed!"
 
   # Publish to PyPI
@@ -384,7 +384,7 @@ jobs:
         run: |
           echo "Wheels to publish:"
           ls -lah dist/
-          
+
           if [ $(ls -1 dist/*.whl 2>/dev/null | wc -l) -eq 0 ]; then
             echo "❌ No wheels found to publish"
             exit 1
@@ -460,7 +460,7 @@ jobs:
         run: |
           echo "=== Release Artifacts ==="
           ls -lah release-artifacts/
-          
+
           echo ""
           echo "=== Wheels ==="
           ls -lah dist/
@@ -508,10 +508,10 @@ jobs:
             echo "- Troubleshooting common issues"
           } >> release-notes.md
 
-       - name: Create GitHub release (as draft)
+      - name: Create GitHub release (as draft)
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+         GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ steps.version.outputs.version }}
           release_name: Release ${{ steps.version.outputs.version }}
