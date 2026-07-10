@@ -1,10 +1,10 @@
-# Session Context — 2026-07-10T17:05:30Z
+# Session Context — 2026-07-10T17:16:06Z
 **Branch:** `copilot/continue-v010-release`  **PR:** #5287  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
 - REST remaining: `5000` (✅)
-- GraphQL remaining: `4992` (✅)
+- GraphQL remaining: `4990` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
@@ -12,21 +12,21 @@
 State: `open`  Draft: `False`  Branch: `dependabot/pip/wandb/offline-run-20260710_084103-t2brzbto/files/pip-d5b1a78e57` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **Batch CI Failure Triage** — `failure` on `main` (2026-07-10)
-- **Documentation Link Checker** — `failure` on `copilot/continue-v010-release` (2026-07-10)
-- **.github/workflows/chatops_copilot_trigger.yml** — `failure` on `copilot/continue-v010-release` (2026-07-10)
-- **.github/workflows/13-3-cve-scanning.yml** — `failure` on `copilot/continue-v010-release` (2026-07-10)
-- **.github/workflows/ci-checkpoint-validation.yml** — `failure` on `copilot/continue-v010-release` (2026-07-10)
+- **.github/workflows/automated-rollback-generation.yml** — `failure` on `copilot/continue-v010-release` (2026-07-10)
+- **.github/workflows/admin-action-t03.yml** — `failure` on `copilot/continue-v010-release` (2026-07-10)
+- **.github/workflows/release-to-pypi.yml** — `failure` on `copilot/continue-v010-release` (2026-07-10)
+- **.github/workflows/branch-rebase-gate.yml** — `failure` on `copilot/continue-v010-release` (2026-07-10)
+- **.github/workflows/ci-failure-issue-creator.yml** — `failure` on `copilot/continue-v010-release` (2026-07-10)
 
 ## 📝 Recent Commits
+- `1bd9c3b6` fix(release): Use commit_id format for tags and fix asset upload issue — copilot-swe-agent[bot] (2026-07-10)
+- `d7cad5bc` WIP: Modify release workflow to use commit_id format and fix asset upload issue — copilot-swe-agent[bot] (2026-07-10)
 - `f0eaef69` docs: Add comprehensive v0.1.0 release completion status — copilot-swe-agent[bot] (2026-07-10)
 - `5386be6a` fix(release): Create GitHub release as draft before uploading assets — copilot-swe-agent[bot] (2026-07-10)
 - `15f513e3` docs: Add comprehensive PyPI_TOKEN troubleshooting guide with click-by-click ste — copilot-swe-agent[bot] (2026-07-10)
 - `ce55a7a3` fix(release): Use correct PYPI_TOKEN secret reference (not PYPI_API_TOKEN) — copilot-swe-agent[bot] (2026-07-10)
 - `b5342d86` fix(release): remove stale manifest template with placeholder hashes — copilot-swe-agent[bot] (2026-07-10)
 - `e76102dc` fix(release): Remove strict flag from manifest verification — copilot-swe-agent[bot] (2026-07-10)
-- `50d4d82f` fix(release): Resolve wheel hash mismatch by building universal wheel once — copilot-swe-agent[bot] (2026-07-10)
-- `bbfd40ab` fix(release): Update version to 0.1.0 (PEP 440 compliant) — copilot-swe-agent[bot] (2026-07-10)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
