@@ -146,7 +146,6 @@ class intuitive_aptitude:
         self._source: str = ""
         self.ast_tree: Optional[ast.AST] = None
         self.last_error: Optional[str] = None
-        self._naming_cache: dict[str, str] = {}
 
     # ------------------------------------------------------------------
     # Public API
@@ -160,187 +159,16 @@ class intuitive_aptitude:
         try:
             self.metrics["loc"] = float(len(self._source.splitlines()))
             self.ast_tree = ast.parse(self._source)
-            # OPTIMIZATION: Use single-pass extraction instead of 7 separate walks
-            self._extract_all_optimized()
+            self._extract_imports()
+            self._extract_globals()
+            self._extract_functions()
+            self._extract_classes()
+            self._analyze_patterns()
             self._compute_metrics()
             return True
         except Exception as exc:  # pragma: no cover - defensive guard
             self.last_error = f"{type(exc).__name__}: {exc}"
             return False
-
-    def _extract_all_optimized(self) -> None:
-        """OPTIMIZATION: Single-pass extraction replacing 7 separate ast.walk() calls.
-        
-        Consolidates:
-        - _extract_imports (1 walk)
-        - _extract_globals (direct body iteration)
-        - _extract_functions (1 walk)
-        - _extract_classes (1 walk)
-        - _analyze_patterns (1 walk)
-        - Naming classification (embedded)
-        
-        Result: O(n) instead of O(7n) where n = AST nodes
-        """
-        assert self.ast_tree is not None
-        
-        # Clear all collections
-        self.imports.clear()
-        self.variables.clear()
-        self.functions.clear()
-        self.classes.clear()
-        self.patterns = {k: [] for k in self.patterns.keys()}
-        
-        # Naming classification cache (used by _analyze_naming_conventions)
-        self._naming_cache = {}
-        
-        def cache_name(name: str) -> str:
-            """Classify and cache a name."""
-            if name in self._naming_cache:
-                return self._naming_cache[name]
-            if re.fullmatch(r"[a-z_][a-z0-9_]*", name):
-                classification = "snake"
-            elif re.fullmatch(r"[a-z]+(?:[A-Z][a-z0-9]*)+", name):
-                classification = "camel"
-            elif re.fullmatch(r"[A-Z][A-Za-z0-9]*", name):
-                classification = "pascal"
-            else:
-                classification = "other"
-            self._naming_cache[name] = classification
-            return classification
-        
-        # Single pass through AST to extract all information
-        for node in ast.walk(self.ast_tree):
-            # Imports
-            if isinstance(node, ast.Import):
-                for alias in node.names:
-                    self.imports.append(ImportInfo(
-                        module=None,
-                        name=alias.name,
-                        alias=alias.asname,
-                        level=0,
-                    ))
-                    cache_name(alias.name)
-            elif isinstance(node, ast.ImportFrom):
-                for alias in node.names:
-                    self.imports.append(ImportInfo(
-                        module=node.module,
-                        name=alias.name,
-                        alias=alias.asname,
-                        level=getattr(node, "level", 0) or 0,
-                    ))
-                    cache_name(alias.name)
-            
-            # Classes and methods
-            elif isinstance(node, ast.ClassDef):
-                cache_name(node.name)
-                bases = [b for b in (self._expr_to_str(b) for b in node.bases) if b]
-                decorators = [d for d in (self._expr_to_str(d) for d in node.decorator_list) if d]
-                doc = ast.get_docstring(node)
-                methods: dict[str, FunctionInfo] = {}
-                
-                for body_node in node.body:
-                    if isinstance(body_node, ast.FunctionDef):
-                        cache_name(body_node.name)
-                        args = [a.arg for a in body_node.args.args]
-                        kwonly = [a.arg for a in body_node.args.kwonlyargs]
-                        decorators_m = [d for d in (self._expr_to_str(d) for d in body_node.decorator_list) if d]
-                        returns = self._expr_to_str(body_node.returns)
-                        doc_m = ast.get_docstring(body_node)
-                        calls = self._find_calls(body_node)
-                        complexity = self._cyclomatic_complexity(body_node)
-                        methods[body_node.name] = FunctionInfo(
-                            name=body_node.name,
-                            args=args,
-                            defaults=len(body_node.args.defaults or []),
-                            kwonlyargs=kwonly,
-                            decorators=decorators_m,
-                            returns=returns,
-                            docstring=doc_m,
-                            lineno=getattr(body_node, "lineno", 0),
-                            end_lineno=getattr(body_node, "end_lineno", None),
-                            complexity=complexity,
-                            calls=calls,
-                        )
-                
-                self.classes[node.name] = ClassInfo(
-                    name=node.name,
-                    bases=bases,
-                    decorators=decorators,
-                    docstring=doc,
-                    methods=methods,
-                    lineno=getattr(node, "lineno", 0),
-                    end_lineno=getattr(node, "end_lineno", None),
-                )
-            
-            # Patterns
-            if isinstance(node, ast.Try):
-                self.patterns["error_handling"].append({
-                    "lineno": getattr(node, "lineno", 0),
-                    "handlers": [self._expr_to_str(h.type) for h in node.handlers if h.type],
-                    "has_finally": bool(node.finalbody),
-                    "has_else": bool(node.orelse),
-                })
-            elif isinstance(node, (ast.For, ast.AsyncFor, ast.While)):
-                kind = "for" if isinstance(node, (ast.For, ast.AsyncFor)) else "while"
-                self.patterns["iteration"].append({
-                    "lineno": getattr(node, "lineno", 0),
-                    "kind": kind,
-                    "target": self._expr_to_str(getattr(node, "target", None)),
-                    "iter": self._expr_to_str(getattr(node, "iter", None)),
-                    "has_else": bool(node.orelse),
-                })
-            elif isinstance(node, ast.If):
-                self.patterns["conditional"].append({
-                    "lineno": getattr(node, "lineno", 0),
-                    "test": self._expr_to_str(node.test),
-                    "branches": 1 + self._count_elifs(node),
-                    "has_else": bool(node.orelse),
-                })
-            elif isinstance(node, ast.Call):
-                self.patterns["function_calls"].append({
-                    "lineno": getattr(node, "lineno", 0),
-                    "call": self._expr_to_str(node.func),
-                    "args": len(getattr(node, "args", []) or []),
-                    "keywords": [kw.arg for kw in getattr(node, "keywords", []) if kw.arg],
-                })
-        
-        # Module-level functions and variables (NOT inside classes)
-        # These are only in the module body, not nested deeper
-        for node in getattr(self.ast_tree, "body", []):
-            # Variables
-            if isinstance(node, ast.Assign):
-                for tgt in node.targets:
-                    if isinstance(tgt, ast.Name):
-                        self.variables[tgt.id] = "assigned"
-                        cache_name(tgt.id)
-            elif isinstance(node, ast.AnnAssign):
-                if isinstance(node.target, ast.Name):
-                    self.variables[node.target.id] = "annotated"
-                    cache_name(node.target.id)
-            
-            # Top-level functions
-            elif isinstance(node, ast.FunctionDef):
-                cache_name(node.name)
-                args = [a.arg for a in node.args.args]
-                kwonly = [a.arg for a in node.args.kwonlyargs]
-                decorators = [d for d in (self._expr_to_str(d) for d in node.decorator_list) if d]
-                returns = self._expr_to_str(node.returns)
-                doc = ast.get_docstring(node)
-                calls = self._find_calls(node)
-                complexity = self._cyclomatic_complexity(node)
-                self.functions[node.name] = FunctionInfo(
-                    name=node.name,
-                    args=args,
-                    defaults=len(node.args.defaults or []),
-                    kwonlyargs=kwonly,
-                    decorators=decorators,
-                    returns=returns,
-                    docstring=doc,
-                    lineno=getattr(node, "lineno", 0),
-                    end_lineno=getattr(node, "end_lineno", None),
-                    complexity=complexity,
-                    calls=calls,
-                )
 
     def get_summary(self) -> dict[str, Any]:
         """Return a high level summary of discovered artefacts."""
@@ -571,48 +399,34 @@ class intuitive_aptitude:
     # ------------------------------------------------------------------
 
     def _analyze_naming_conventions(self) -> dict[str, Any]:
-        """OPTIMIZATION: Use pre-computed naming cache from single-pass extraction."""
         snake = camel = pascal = other = 0
-        
-        # Use cached classifications if available (from optimized extraction)
-        if self._naming_cache:
-            for classification in self._naming_cache.values():
-                if classification == "snake":
-                    snake += 1
-                elif classification == "camel":
-                    camel += 1
-                elif classification == "pascal":
-                    pascal += 1
-                else:
-                    other += 1
-        else:
-            # Fallback for backward compatibility
-            def classify(name: str) -> str:
-                if re.fullmatch(r"[a-z_][a-z0-9_]*", name):
-                    return "snake"
-                if re.fullmatch(r"[a-z]+(?:[A-Z][a-z0-9]*)+", name):
-                    return "camel"
-                if re.fullmatch(r"[A-Z][A-Za-z0-9]*", name):
-                    return "pascal"
-                return "other"
 
-            names: list[str] = []
-            names.extend(self.functions.keys())
-            names.extend(self.classes.keys())
-            names.extend(self.variables.keys())
-            for cls in self.classes.values():
-                names.extend(cls.methods.keys())
+        def classify(name: str) -> str:
+            if re.fullmatch(r"[a-z_][a-z0-9_]*", name):
+                return "snake"
+            if re.fullmatch(r"[a-z]+(?:[A-Z][a-z0-9]*)+", name):
+                return "camel"
+            if re.fullmatch(r"[A-Z][A-Za-z0-9]*", name):
+                return "pascal"
+            return "other"
 
-            for name in names:
-                kind = classify(name)
-                if kind == "snake":
-                    snake += 1
-                elif kind == "camel":
-                    camel += 1
-                elif kind == "pascal":
-                    pascal += 1
-                else:
-                    other += 1
+        names: list[str] = []
+        names.extend(self.functions.keys())
+        names.extend(self.classes.keys())
+        names.extend(self.variables.keys())
+        for cls in self.classes.values():
+            names.extend(cls.methods.keys())
+
+        for name in names:
+            kind = classify(name)
+            if kind == "snake":
+                snake += 1
+            elif kind == "camel":
+                camel += 1
+            elif kind == "pascal":
+                pascal += 1
+            else:
+                other += 1
 
         return {
             "snake_case": snake,
@@ -781,7 +595,6 @@ class intuitive_aptitude:
         self._source = ""
         self.ast_tree = None
         self.last_error = None
-        self._naming_cache.clear()
 
     # ------------------------------------------------------------------
     # Code generation helpers

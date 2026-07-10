@@ -21,7 +21,7 @@ jobs:
   pr-test:
     name: PR Tests
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 40
     steps:
     - uses: actions/checkout@v5
       with:
@@ -56,8 +56,15 @@ jobs:
         uv pip install --system -e .[dev]
 
         '
-    - name: Run tests
-      run: python -m pytest tests/ -x --tb=short --timeout=300
+    - name: Run tests with parallelization
+      run: |
+        python -m pytest tests/ \
+          -n auto \
+          --timeout=300 \
+          --tb=short \
+          -x \
+          --dist=loadscope \
+          -v
     - name: Cache health report
       if: always()
       continue-on-error: true

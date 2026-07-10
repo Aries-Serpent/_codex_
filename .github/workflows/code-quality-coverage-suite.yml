@@ -78,7 +78,7 @@ jobs:
     needs:
     - change_filter
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 30
     if: '(github.event_name == ''pull_request'' && needs.change_filter.outputs.run_coverage
       == ''true'') ||
 
@@ -122,20 +122,13 @@ jobs:
 
         '
     - name: Run tests with coverage
-      run: '# Run tests with coverage, allow test failures but ensure coverage data
-        is collected
-
-        # Timeout: 60s per test, fail fast after 50 failures, run in parallel with
-        4 workers
-
-        coverage run -m pytest -q -m "not slow" --timeout=60 --maxfail=50 -n 4 ||
-        true
-
+      run: |
+        # Run tests with coverage, allow test failures but ensure coverage data is collected
+        # Timeout: 7s per test (pytest-timeout), fail fast after 50 failures, run in parallel with 6 workers
+        coverage run -m pytest -q -m "not slow" --timeout=7 --maxfail=50 -n auto --dist=loadscope || true
+        
         # Ensure coverage data file exists even if no tests ran
-
-        coverage json -o .coverage.json || echo ''{}'' > .coverage.json
-
-        '
+        coverage json -o .coverage.json || echo '{}' > .coverage.json
     - name: Generate coverage HTML report
       run: "# Generate HTML report only if coverage data exists\nif [ -f .coverage.json\
         \ ] && [ -s .coverage.json ]; then\n  coverage html -d htmlcov || mkdir -p\
@@ -172,7 +165,7 @@ jobs:
     needs:
     - change_filter
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 25
     if: '(github.event_name == ''pull_request'' && needs.change_filter.outputs.run_quality
       == ''true'') ||
 
@@ -290,7 +283,7 @@ jobs:
   unified_summary:
     name: Generate Unified Summary
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 15
     needs:
     - change_filter
     - coverage_analysis
