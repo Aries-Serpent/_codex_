@@ -1,0 +1,12 @@
+{
+  "timestamp": 1783671504.067654,
+  "component": "archive_operations",
+  "archive_lock": {
+    "lock_wait_times_ms": [],
+    "lock_contention_count": 0,
+    "deadlock_retries": 0,
+    "lock_held_count": 0,
+    "max_wait_time_ms": 0.0,
+    "avg_wait_time_ms": 0.0
+  }
+}

@@ -45,6 +45,17 @@
       ],
       "total_bytes_freed": 8501,
       "timestamp": "2026-06-23T03:00:01.610085"
+    },
+    {
+      "deleted_sessions": [
+        {
+          "session_id": "very-old-session",
+          "archive_location": "/tmp/tmps_b26o1n/archive/sessions/2023/10/very-old-session.parquet",
+          "file_size_bytes": 8483
+        }
+      ],
+      "total_bytes_freed": 8483,
+      "timestamp": "2026-07-10T08:16:09.815289"
     }
   ]
 }

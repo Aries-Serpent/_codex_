@@ -1,20 +1,20 @@
 {
-  "generated_at": "2026-07-10T07:47:30.392027+00:00",
+  "generated_at": "2026-07-10T09:17:21.415947+00:00",
   "methods": [
     "rest",
     "graphql",
     "gh_cli"
   ],
   "rest_available": true,
-  "rest_remaining": 5000,
+  "rest_remaining": 4902,
   "graphql_available": true,
-  "graphql_remaining": 5000,
+  "graphql_remaining": 4985,
   "gh_cli_available": true,
   "codeql_available": false,
-  "best_token_var": "${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}",
+  "best_token_var": "CODEX_MASTER_KEY",
   "open_prs": [
-    5284
+    5285
   ],
-  "branch": "copilot/create-implementation-campaign-plan",
-  "recommendation": "Use REST for data fetches. Token chain recommendation: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }} for elevated scopes (variables/secrets APIs), fallback to github.token for basic operations."
+  "branch": "copilot/post-merge-ci-cd-verification",
+  "recommendation": "Use REST for data fetches. "
 }

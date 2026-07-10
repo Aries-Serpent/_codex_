@@ -1,0 +1,7 @@
+{
+  "snapshot_id": "custom_snap",
+  "source": "/tmp/pytest-of-runner/pytest-22/test_ingest_with_custom_snapsh0/test_repo",
+  "content_hash": "c82f1cc7248b9b230ff2682076b82b7ca0d84a612595b7595be1bcdded3d885d",
+  "created_at": "2026-07-10T08:27:30.873673+00:00",
+  "file_count": 1
+}

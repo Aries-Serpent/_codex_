@@ -15,7 +15,7 @@ import os
 from typing import Optional
 
 logger = logging.getLogger(__name__)
-
+  # pragma: allowlist secret  # pragma: allowlist secret
 
 # SECURE: Load credentials from environment, not hardcoded
 class Config:

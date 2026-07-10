@@ -1,0 +1,22 @@
+{
+  "release_id": "codex-knowledge-3829feff9b4a",
+  "version": "v2026-07-10",
+  "created_at": "2026-07-10T08:10:09Z",
+  "actor": "tester",
+  "target": {
+    "corpus": "knowledge"
+  },
+  "components": [
+    {
+      "tombstone": "f96d17aa-298b-49ff-9165-b969b35cfc54",
+      "dest_path": "knowledge/kb.ndjsonl",
+      "mode": "0644",
+      "type": "file"
+    }
+  ],
+  "symlinks": [],
+  "post_unpack_commands": [],
+  "checks": {
+    "sha256_manifest": "<filled at pack time>"
+  }
+}
