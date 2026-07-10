@@ -21,13 +21,9 @@ U = TypeVar("U")
 class ResourceLimitError(Exception):
     """Raised when resource consumption exceeds configured limits."""
 
-    pass
-
 
 class TypeConversionError(Exception):
     """Raised when type conversion fails."""
-
-    pass
 
 
 def safe_int_conversion(

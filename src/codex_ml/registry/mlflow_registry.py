@@ -15,6 +15,8 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Optional
 
+from aries_serpent_core.logging.adapter import get_default_logger
+
 logger = logging.getLogger(__name__)
 
 # Optional MLflow dependency
@@ -93,7 +95,9 @@ class ModelRegistry:
             mlflow.set_tracking_uri(tracking_uri)
 
         self.client = MlflowClient()
-        get_default_logger().info(f"Initialized ModelRegistry with URI: {mlflow.get_tracking_uri()}")
+        get_default_logger().info(
+            f"Initialized ModelRegistry with URI: {mlflow.get_tracking_uri()}"
+        )
 
     def register_model(
         self,
@@ -168,7 +172,9 @@ class ModelRegistry:
         except (ValueError, TypeError, RuntimeError) as e:
             type(e).__name__
             get_default_logger().debug("Exception: <ERROR_TYPE>")
-            get_default_logger().error(f"Failed to get model version {name}/{version}: <ERROR_TYPE>")
+            get_default_logger().error(
+                f"Failed to get model version {name}/{version}: <ERROR_TYPE>"
+            )
             raise
 
     def list_model_versions(
@@ -243,7 +249,9 @@ class ModelRegistry:
         except (ValueError, TypeError, RuntimeError) as e:
             type(e).__name__
             get_default_logger().debug("Exception: <ERROR_TYPE>")
-            get_default_logger().error(f"Failed to promote model {name}/{version} to {stage.value}: <ERROR_TYPE>")
+            get_default_logger().error(
+                f"Failed to promote model {name}/{version} to {stage.value}: <ERROR_TYPE>"
+            )
             raise
 
     def archive_model(self, name: str, version: str) -> ModelVersion:
@@ -323,7 +331,9 @@ class ModelRegistry:
         except (ValueError, TypeError, RuntimeError) as e:
             type(e).__name__
             get_default_logger().debug("Exception: <ERROR_TYPE>")
-            get_default_logger().error(f"Failed to compare models {name}/{version1} vs {version2}: <ERROR_TYPE>")
+            get_default_logger().error(
+                f"Failed to compare models {name}/{version1} vs {version2}: <ERROR_TYPE>"
+            )
             raise
 
     def get_model_lineage(self, name: str, version: str) -> dict[str, Any]:
@@ -362,7 +372,9 @@ class ModelRegistry:
         except (ValueError, TypeError, RuntimeError) as e:
             type(e).__name__
             get_default_logger().debug("Exception: <ERROR_TYPE>")
-            get_default_logger().error(f"Failed to get model lineage for {name}/{version}: <ERROR_TYPE>")
+            get_default_logger().error(
+                f"Failed to get model lineage for {name}/{version}: <ERROR_TYPE>"
+            )
             raise
 
     def list_models(self) -> list[str]:

@@ -236,7 +236,7 @@ except (ImportError, AttributeError):  # pragma: no cover - torch missing or stu
         def manual_seed(self, *_args: Any, **_kwargs: Any) -> None:  # pragma: no cover
             return None
 
-    torch = types.SimpleNamespace(  # type: ignore
+    torch = types.SimpleNamespace(
         manual_seed=_noop,
         use_deterministic_algorithms=_noop,
         float16="float16",
@@ -260,25 +260,25 @@ except (ImportError, AttributeError):  # pragma: no cover - torch missing or stu
 
 # Lazy imports to break circular dependencies with codex_ml
 # These are deferred to avoid circular import at module load time
-split_dataset = None  # type: ignore[assignment]
-AsyncLogFile = None  # type: ignore[assignment]
-CodexLoggers = None  # type: ignore[assignment]
-_codex_log_all = None  # type: ignore[assignment]
-_codex_logging_bootstrap = None  # type: ignore[assignment]
-_codex_patch_argparse = None  # type: ignore[assignment]
-_codex_sample_system = None  # type: ignore[assignment]
-LogRecord = None  # type: ignore[assignment]
-apply_lora = None  # type: ignore[assignment]
-build_payload_bytes = None  # type: ignore[assignment]
-load_payload = None  # type: ignore[assignment]
-set_seed = None  # type: ignore[assignment]
-log_error = None  # type: ignore[assignment]
-ensure_pinned_kwargs = None  # type: ignore[assignment]
-load_from_pretrained = None  # type: ignore[assignment]
-snapshot_hydra_config = None  # type: ignore[assignment]
-set_reproducible = None  # type: ignore[assignment]
-safe_load = None  # type: ignore[assignment]
-log_env_info = None  # type: ignore[assignment]
+split_dataset: Any = None
+AsyncLogFile: Any = None
+CodexLoggers: Any = None
+_codex_log_all: Any = None
+_codex_logging_bootstrap: Any = None
+_codex_patch_argparse: Any = None
+_codex_sample_system: Any = None
+LogRecord: Any = None
+apply_lora: Any = None
+build_payload_bytes: Any = None
+load_payload: Any = None
+set_seed: Any = None
+log_error: Any = None
+ensure_pinned_kwargs: Any = None
+load_from_pretrained: Any = None
+snapshot_hydra_config: Any = None
+set_reproducible: Any = None
+safe_load: Any = None
+log_env_info: Any = None
 
 
 def _ensure_hf_trainer_imports() -> None:
@@ -333,13 +333,13 @@ def _ensure_hf_trainer_imports() -> None:
         _codex_sample_system = _CODEX_SAMPLE
     except (ImportError, AttributeError):
         CodexLoggers = None
-        def _codex_log_all(*args, **kwargs):  # type: ignore
+        def _codex_log_all(*args, **kwargs):
             pass
-        def _codex_logging_bootstrap(*args, **kwargs):  # type: ignore
+        def _codex_logging_bootstrap(*args, **kwargs):
             return {}
-        def _codex_patch_argparse(*args, **kwargs):  # type: ignore
+        def _codex_patch_argparse(*args, **kwargs):
             pass
-        def _codex_sample_system(*args, **kwargs):  # type: ignore
+        def _codex_sample_system(*args, **kwargs):
             return {}
     
     try:
@@ -370,7 +370,7 @@ def _ensure_hf_trainer_imports() -> None:
         from codex_ml.utils.error_log import log_error as _log_error
         log_error = _log_error
     except (ImportError, AttributeError):
-        def log_error(*args, **kwargs):  # type: ignore
+        def log_error(*args, **kwargs):
             pass
     
     try:
@@ -405,7 +405,7 @@ def _ensure_hf_trainer_imports() -> None:
         from codex_utils.repro import log_env_info as _log_env_info
         log_env_info = _log_env_info
     except (ImportError, AttributeError):
-        def log_env_info(*args, **kwargs):  # type: ignore
+        def log_env_info(*args, **kwargs):
             pass
 
 
@@ -1501,7 +1501,7 @@ def run_hf_trainer(
         if writer_choice == "csv":
             writer_obj = CSVMetricsWriter(str(path))
         else:
-            writer_obj = NDJSONMetricsWriter(str(path))  # type: ignore
+            writer_obj = NDJSONMetricsWriter(str(path))
         writer_obj.write(record)
         if hasattr(writer_obj, "close"):
             writer_obj.close()

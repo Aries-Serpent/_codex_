@@ -1,6 +1,4 @@
-"""
-from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
-Entrypoints Module
+"""Entrypoints Module
 
 This module provides functionality for entrypoints.
 
@@ -18,18 +16,19 @@ Author: Codex Team
 
 from __future__ import annotations
 
-import logging
-
-logger = logging.getLogger(__name__)
-
 import argparse
 import json
+import logging
 import os
 import platform
 import runpy
 import sys
 from importlib import import_module
 from typing import Any, NoReturn, Optional
+
+from aries_serpent_core.logging.adapter import get_default_logger
+
+logger = logging.getLogger(__name__)
 
 try:  # pragma: no cover - structured logging is optional offline
     from codex_ml.codex_structured_logging import (

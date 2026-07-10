@@ -426,7 +426,6 @@ def inject_early_stopping(
 
 
 def auto_inject_early_stopping_for_trainer(
-    trainer_class,
     eval_dataset,
     callbacks: Optional[list] = None,
     config: Optional[EarlyStoppingConfig] = None,

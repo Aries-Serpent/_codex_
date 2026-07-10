@@ -12,6 +12,8 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Any
 
+from aries_serpent_core.logging.adapter import get_default_logger
+
 
 @dataclass
 class CVEEntry:

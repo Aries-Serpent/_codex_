@@ -21,6 +21,8 @@ from collections.abc import Mapping, Sequence
 from pathlib import Path
 from typing import Any, Optional
 
+from aries_serpent_core.logging.adapter import get_default_logger
+
 
 def _mlflow_env(root: Path) -> dict[str, str]:
     mlruns = root.joinpath("mlruns")

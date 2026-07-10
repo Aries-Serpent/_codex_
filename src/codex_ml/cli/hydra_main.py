@@ -70,7 +70,7 @@ try:  # pragma: no cover - hydra optional at runtime
     except ImportError as e:
         error_type = type(e).__name__
         get_default_logger().debug("hydra not available: <ERROR_TYPE>")
-        import config_legacy as hydra  # type: ignore[no-redef]
+        import config_legacy as hydra
 
     from omegaconf import DictConfig, OmegaConf
 except (ImportError, AttributeError):  # pragma: no cover - degrade gracefully when hydra missing
@@ -128,7 +128,9 @@ def _load_yaml_defaults() -> Mapping[str, Any]:
         if isinstance(container, Mapping):
             return container
     except (IOError, OSError):
-        get_default_logger().debug("Failed to load YAML defaults from %s", default_yaml, exc_info=True)
+        get_default_logger().debug(
+            "Failed to load YAML defaults from %s", default_yaml, exc_info=True
+        )
     return {}
 
 

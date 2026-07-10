@@ -55,4 +55,3 @@ class TestRestorePipelineBasics:
         This test is skipped in CPU-only CI environments where GPU-specific
         libraries are not available.
         """
-        pass

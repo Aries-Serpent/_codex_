@@ -540,7 +540,9 @@ else:
             try:
                 from codex.training import main as _functional_training
             except (ImportError, AttributeError):
-                get_default_logger().debug("codex.training.main unavailable; functional training disabled")
+                get_default_logger().debug(
+                    "codex.training.main unavailable; functional training disabled"
+                )
                 _functional_training_main = None
             else:
                 _functional_training_main = _functional_training

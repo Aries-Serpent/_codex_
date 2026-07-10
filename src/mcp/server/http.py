@@ -28,7 +28,6 @@ MAX_TOP_K = 50
 class MissingAPIKeyError(RuntimeError):
     """Raised when MCP_API_KEY environment variable is not set."""
 
-    pass
 
 
 class ContextItem(BaseModel):

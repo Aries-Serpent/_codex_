@@ -18,6 +18,8 @@ from dataclasses import dataclass
 from types import ModuleType
 from typing import Final, Optional
 
+from aries_serpent_core.logging.adapter import get_default_logger
+
 logger = logging.getLogger(__name__)
 
 __all__ = [

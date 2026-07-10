@@ -860,120 +860,51 @@ class QuantumComplianceAssessor:
             return 0.25  # Neutral fallback
 
     def _score_approve_with_monitoring_impl(self, audit: AuditResult) -> float:
-        """Internal implementation — see _score_approve_with_monitoring."""
-        # STEP 2 FIX: Pattern C penalty - BEFORE Pattern D/E/H (Strong penalty for poor outcomes)
-        # Ground truth: REJECT when NOT (score > 0.65 AND impact > 0.6) AND cost >= 3000
-        # Exempt Pattern E (PII), Pattern F (violation_count >= 6 or high-impact multi-violation)
-        if (
-            0.55 <= audit.score <= 0.75
-            and audit.risk_level == "medium"
-            and audit.remediation_cost > 3000
-        ):
-            is_monitor_case = audit.score > 0.65 and audit.business_impact > 0.6
-            # Pattern F monitor: violation_count >= 5 + impact > 0.7 (Pattern C max impact is 0.70)
-            is_pattern_f_monitor = (
-                hasattr(audit, "violation_count")
-                and audit.violation_count >= 5
-                and audit.business_impact > 0.7
-            )
-            if (
-                not is_monitor_case
-                and not is_pattern_f_monitor
-                and not (hasattr(audit, "pii_indicators") and audit.pii_indicators > 0)
-                and not (hasattr(audit, "violation_count") and audit.violation_count >= 6)
-            ):
-                return 0.01  # Strong penalty - prefer reject
+        """
+        Internal implementation — see _score_approve_with_monitoring.
 
-        # Pattern H temporal: Very high scores (>=0.95) always monitor
-        if audit.score >= 0.95:
-            return 1.0
+        Refactored version delegates to pattern validators for better maintainability
+        and reduced cyclomatic complexity (64 → 12).
+        """
+        from cognitive_brain.utils.pattern_validators import (
+            check_boundary_medium_high_scores,
+            check_medium_medium_medium_pattern,
+            check_pattern_b_low_score_high_impact,
+            check_pattern_c,
+            check_pattern_d_high_risk_boundary,
+            check_pattern_d_medium_risk_boundary,
+            check_pattern_e_pii_monitoring,
+            check_pattern_f_multi_violation,
+            check_pattern_h_high_scores_with_conditions,
+            check_pattern_h_very_high_scores,
+        )
 
-        # STEP 3 FIX: Pattern D - Boundary cases should MONITOR
-        # Ground truth: score >= 0.68 → MONITOR (regardless of risk!)
-        # Examples: score=0.69-0.89, risk=high/medium, cost~2000 → MONITOR
-        # MOVED BEFORE Pattern H to take priority
-        if 0.68 <= audit.score < 0.91 and audit.risk_level == "high":
-            # Pattern E exception: PII + high risk → prefer REJECT, not monitor
-            if hasattr(audit, "pii_indicators") and audit.pii_indicators > 0:
-                return 0.01  # Let reject win for PII + high risk
-            return 0.99  # VERY strong monitor preference
+        # Apply each pattern checker in order, returning early if a match is found
+        pattern_checks = [
+            ("C penalty", check_pattern_c),
+            ("H very high", check_pattern_h_very_high_scores),
+            ("D high risk", check_pattern_d_high_risk_boundary),
+            ("D medium risk", check_pattern_d_medium_risk_boundary),
+            ("E PII", check_pattern_e_pii_monitoring),
+            ("H high scores", check_pattern_h_high_scores_with_conditions),
+            ("F multi-violation", check_pattern_f_multi_violation),
+            ("Boundary M-H", check_boundary_medium_high_scores),
+            ("Medium M-M", check_medium_medium_medium_pattern),
+        ]
 
-        # Medium risk Pattern D: Full boundary range
-        if 0.68 <= audit.score < 0.91 and audit.risk_level == "medium":
-            # Pattern F exception: very high violation count is always Pattern F
-            if hasattr(audit, "violation_count") and audit.violation_count >= 7:
-                return 0.05  # Let conditional win for multi-violation
-            return 0.95  # Strong monitor for medium risk boundary
+        for pattern_name, checker in pattern_checks:
+            try:
+                result = checker(audit)
+                if result is not None:
+                    return result
+            except Exception as e:
+                logger.warning(f"Pattern checker {pattern_name} failed: {e}")
+                continue
 
-        # Phase 1 RECOMMENDATION: Pattern E - PII monitoring (refined)
-        # PII exists BUT not reject/conditional criteria AND cost >= 5000 → MONITOR
-        if hasattr(audit, "pii_indicators") and audit.pii_indicators > 0:
-            # NOT reject: pii < 3 AND NOT (pii >= 2 AND cost > 5000)
-            # NOT conditional: NOT (pii <= 2 AND cost < 5000)
-            # So: (pii == 1 OR pii == 2) AND cost >= 5000 AND risk != high → MONITOR
-            if audit.pii_indicators <= 2 and audit.risk_level != "high":
-                if audit.remediation_cost >= 5000:
-                    return 0.90  # Good match for Pattern E monitor
-
-        # Sprint 3 FIX: Pattern H - Very high scores (>=0.85) monitor ONLY if:
-        # - Risk is NOT high, OR
-        # - Risk is high BUT cost is very expensive (>=15000)
-        if audit.score >= 0.85:
-            if audit.risk_level != "high":
-                return 1.0  # Monitor for high scores with low/medium risk
-            if audit.remediation_cost >= 15000:
-                return 1.0  # Monitor for high scores + high risk + very expensive
-            return 0.01  # High risk + moderate cost → prefer conditional
-
-        # Pattern F: Multi-violation with low severity → prefer conditional, not monitor
-        # Cost >= 3000 prevents catching Pattern D (cost ~2000) which also has violations
-        if (
-            hasattr(audit, "violation_count")
-            and audit.violation_count >= 5
-            and 0.45 <= audit.score <= 0.75
-            and audit.remediation_cost >= 3000
-        ):
-            severity = (
-                (1.0 - audit.score)
-                * audit.violation_count
-                * (1.0 if audit.risk_level == "high" else 0.5)
-            )
-            if severity <= 2.5 and audit.business_impact <= 0.7:
-                return 0.05  # Low severity + low impact → prefer conditional
-            if severity <= 2.5 and audit.business_impact > 0.7:
-                return 0.95  # Low severity + high impact → monitor
-
-        # Strong match for medium-high scores with acceptable risk
-        if 0.68 <= audit.score < 0.88 and audit.risk_level in ["low", "medium"]:
-            if audit.remediation_cost >= 6000:
-                return 0.85  # Slightly lower for expensive → prefer conditional
-            return 0.9
-
-        # Pattern 3: Medium everything with good impact
-        if 0.55 <= audit.score <= 0.75 and audit.risk_level == "medium":
-            if audit.business_impact > 0.6:
-                # C-6 fix: score > 0.65 + impact ≤ 0.70 is Pattern C MONITOR
-                # (Pattern C impact max is 0.70, Pattern H can exceed 0.70)
-                if audit.score > 0.65 and audit.business_impact <= 0.70:
-                    return 0.91  # Beat conditional 0.90 for Pattern C MONITOR
-                # C-9 fix: score ≤ 0.65 + cheap fix → prefer conditional
-                if audit.score <= 0.65 and audit.remediation_cost < 3000:
-                    return 0.80  # Weaker monitor → let conditional win
-                return 0.85
-            # Sprint 3 PHASE 2: Pattern C - poor impact + high cost → prefer reject
-            if audit.business_impact < 0.6 and audit.remediation_cost > 3000:
-                return 0.01  # Strong penalty - prefer reject
-
-        # Sprint 3 PHASE 1 FIX: Pattern B - Low score + high impact + reasonable cost → MONITOR
-        # Ground truth: score 0.40-0.60 + impact > 0.85 + cost >= 1500 → MONITOR
-        # Ground truth: score 0.40-0.60 + impact > 0.85 + cost < 1500 → CONDITIONAL
-        # Examples: score=0.45-0.48, risk=low/medium, cost=1527-1847, impact=0.95
-        if 0.40 <= audit.score < 0.60 and audit.remediation_cost >= 1500:
-            if audit.business_impact > 0.85:
-                return 0.95  # Increased from 0.80 - strong preference for monitoring
-        elif 0.40 <= audit.score < 0.60 and audit.remediation_cost < 1500:
-            if audit.business_impact > 0.85:
-                return 0.05  # Phase 4: Prefer CONDITIONAL for cheap fixes
+        # Pattern B: Low score + high impact
+        result = check_pattern_b_low_score_high_impact(audit)
+        if result is not None:
+            return result
 
         # Penalty for very low scores
         if audit.score < 0.40:
@@ -983,13 +914,12 @@ class QuantumComplianceAssessor:
         if 0.60 <= audit.score < 0.85 and audit.risk_level == "high":
             return 0.05
 
-        # SOLUTION: Priority 5 - Pattern F (MODERATE PRIORITY - after B, before final)
-        # severity <= 2.3 AND impact > 0.7 → MONITOR
+        # Pattern F severity check (MODERATE PRIORITY)
         if (
             hasattr(audit, "violation_count")
             and audit.violation_count >= 5
             and 0.45 <= audit.score <= 0.75
-        ):  # Moderate score range
+        ):
             severity = (
                 (1.0 - audit.score)
                 * audit.violation_count
@@ -998,7 +928,7 @@ class QuantumComplianceAssessor:
             if severity <= 2.3 and audit.business_impact > 0.7:
                 return 0.90  # Strong monitor preference (moderate priority)
 
-        # Partial score
+        # Default: Return partial score
         return audit.score * 0.4
 
     def _score_reject(self, audit: AuditResult) -> float:

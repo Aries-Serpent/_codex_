@@ -34,20 +34,20 @@ import torch.nn.functional as F
 
 # Lazy imports to break circular dependencies with codex_ml
 # These are deferred to avoid circular import at module load time
-FileLogger = None  # type: ignore[assignment]
-log_run_metadata = None  # type: ignore[assignment]
-EXAMPLES_PROCESSED = None  # type: ignore[assignment]
-TRAIN_STEP_DURATION = None  # type: ignore[assignment]
-track_time = None  # type: ignore[assignment]
-dump_rng_state = None  # type: ignore[assignment]
-load_rng_state = None  # type: ignore[assignment]
-load_training_checkpoint = None  # type: ignore[assignment]
-save_checkpoint = None  # type: ignore[assignment]
-set_seed = None  # type: ignore[assignment]
-_as_flat_params = None  # type: ignore[assignment]
-maybe_mlflow = None  # type: ignore[assignment]
-ensure_pinned_kwargs = None  # type: ignore[assignment]
-load_from_pretrained = None  # type: ignore[assignment]
+FileLogger: Any = None
+log_run_metadata: Any = None
+EXAMPLES_PROCESSED: Any = None
+TRAIN_STEP_DURATION: Any = None
+track_time: Any = None
+dump_rng_state: Any = None
+load_rng_state: Any = None
+load_training_checkpoint: Any = None
+save_checkpoint: Any = None
+set_seed: Any = None
+_as_flat_params: Any = None
+maybe_mlflow: Any = None
+ensure_pinned_kwargs: Any = None
+load_from_pretrained: Any = None
 
 
 def _ensure_codex_ml_imports() -> None:
@@ -79,7 +79,7 @@ def _ensure_codex_ml_imports() -> None:
         from codex_ml.logging.run_metadata import log_run_metadata as _log_run_metadata
         log_run_metadata = _log_run_metadata
     except (ImportError, AttributeError):
-        def log_run_metadata(*args: Any, **kwargs: Any) -> None:  # type: ignore
+        def log_run_metadata(*args: Any, **kwargs: Any) -> None:
             pass
     
     try:
@@ -100,7 +100,7 @@ def _ensure_codex_ml_imports() -> None:
     except (ImportError, AttributeError):
         from contextlib import contextmanager
         @contextmanager
-        def track_time(*args: Any, **kwargs: Any) -> Any:  # type: ignore
+        def track_time(*args: Any, **kwargs: Any) -> Any:
             yield
     
     try:
@@ -179,7 +179,7 @@ except (IOError, OSError):  # pragma: no cover - metrics optional
 try:  # pragma: no cover - optional manifest helper
     from codex_ml.data.checksums import manifest_for_paths
 except (IOError, OSError):  # pragma: no cover - optional dependency missing
-    manifest_for_paths = None  # type: ignore[assignment]
+    manifest_for_paths = None
 
 
 try:  # pragma: no cover - optional model registry
@@ -230,13 +230,13 @@ try:  # pragma: no cover - optional HF trainer helpers
     )
 except (ImportError, AttributeError):  # pragma: no cover - hf trainer not available
 
-    def run_hf_trainer(*args: Any, **kwargs: Any) -> None:  # type: ignore
+    def run_hf_trainer(*args: Any, **kwargs: Any) -> None:
         raise RuntimeError("HuggingFace trainer is unavailable")
 
-    def _compute_metrics(*args: Any, **kwargs: Any) -> dict[str, float]:  # type: ignore
+    def _compute_metrics(*args: Any, **kwargs: Any) -> dict[str, float]:
         return {}
 
-    def get_hf_revision(identifier: os.PathLike[str] | str) -> str:  # type: ignore
+    def get_hf_revision(identifier: os.PathLike[str] | str) -> str:
         norm = os.fspath(identifier) if isinstance(identifier, os.PathLike) else str(identifier)
         overrides: dict[str, Any] = {}
         env_revision = os.environ.get("HF_REVISION")

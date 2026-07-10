@@ -53,7 +53,7 @@ def process(docs_dir: str, output: str, prefix: str, verbose: bool):
 
     processor = DocumentProcessor()
     try:
-        count = processor.process_directory(Path(docs_dir), prefix=prefix)
+        processor.process_directory(Path(docs_dir), prefix=prefix)
         processor.write_jsonl(Path(output))
 
         stats = processor.get_statistics()

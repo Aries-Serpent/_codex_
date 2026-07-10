@@ -28,7 +28,7 @@ except (ImportError, AttributeError):  # pragma: no cover
 try:
     from codex_ml.utils.json_serialization import CustomJSONEncoder
 except (ImportError, ModuleNotFoundError):
-    CustomJSONEncoder = None  # type: ignore[assignment]
+    CustomJSONEncoder = None 
 
 SCHEMA_VERSION = "2.0"  # Checkpoint schema version for compatibility tracking
 

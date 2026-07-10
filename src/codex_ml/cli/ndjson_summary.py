@@ -20,6 +20,8 @@ Author: Codex Team
 
 import logging
 
+from aries_serpent_core.logging.adapter import get_default_logger
+
 logger = logging.getLogger(__name__)
 
 
@@ -384,7 +386,9 @@ def _handle_summarize_cli(args: argparse.Namespace) -> int:
             slot["max"] = (
                 row["max_value"] if current_max is None else max(current_max, row["max_value"])
             )
-    get_default_logger().info(json.dumps({"rows": total_rows, "metrics": metrics}, ensure_ascii=False))
+    get_default_logger().info(
+        json.dumps({"rows": total_rows, "metrics": metrics}, ensure_ascii=False)
+    )
     return 0
 
 

@@ -16,6 +16,7 @@ import shutil
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Optional
 
+from aries_serpent_core.logging.adapter import get_default_logger
 from codex_ml.utils.optional import optional_import
 
 typer, _HAS_TYPER = optional_import("typer")

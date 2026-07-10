@@ -15,6 +15,7 @@ from typing import Optional
 import torch.distributed as dist
 
 import torch
+from aries_serpent_core.logging.adapter import get_default_logger
 
 logger = logging.getLogger(__name__)
 
@@ -94,7 +95,9 @@ def setup_distributed(
             timeout=torch.distributed.timedelta(minutes=timeout_minutes),
         )
 
-        get_default_logger().info(f"Distributed initialization successful (rank {rank}/{world_size})")
+        get_default_logger().info(
+            f"Distributed initialization successful (rank {rank}/{world_size})"
+        )
         return True
 
     except (ValueError, TypeError, RuntimeError) as e:

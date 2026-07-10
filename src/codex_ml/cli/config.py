@@ -136,7 +136,7 @@ def register_configs() -> None:
         except ImportError as e:
             type(e).__name__
             get_default_logger().debug("hydra not available: <ERROR_TYPE>")
-            from config_legacy.core.config_store import ConfigStore  # type: ignore[no-redef]
+            from config_legacy.core.config_store import ConfigStore
 
         from codex_ml.utils.hydra_cs import safe_exists
     except (ImportError, AttributeError):  # pragma: no cover - hydra optional dependency

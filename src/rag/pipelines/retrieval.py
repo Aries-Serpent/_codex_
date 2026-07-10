@@ -402,12 +402,12 @@ def main() -> None:
     # Query
     response = pipeline.retrieve("What is Python?", top_k=3)
 
-    print(f"\nQuery: '{response.query}'")
-    print(f"Found: {response.total_found} documents")
-    print(f"Time: {response.search_time_ms:.1f}ms")
-    print("\nResults:")
+    logger.info(f"\nQuery: '{response.query}'")
+    logger.info(f"Found: {response.total_found} documents")
+    logger.info(f"Time: {response.search_time_ms:.1f}ms")
+    logger.info("\nResults:")
     for r in response.results:
-        print(f"  [{r.score:.3f}] {r.content[:50]}...")
+       logger.info(f"  [{r.score:.3f}] {r.content[:50]}...")
 
 
 if __name__ == "__main__":

@@ -18,6 +18,7 @@ from typing import Optional
 
 import torch
 import torch.nn as nn
+from aries_serpent_core.logging.adapter import get_default_logger
 
 logger = logging.getLogger(__name__)
 
@@ -134,7 +135,9 @@ class MemoryOptimizer:
         for module in model.modules():
             if hasattr(module, "gradient_checkpointing_enable"):
                 module.gradient_checkpointing_enable()
-                get_default_logger().info(f"Enabled gradient checkpointing for {type(module).__name__}")
+                get_default_logger().info(
+                    f"Enabled gradient checkpointing for {type(module).__name__}"
+                )
 
         # Set model to channels_last memory format (if compatible)
         if aggressive and torch.cuda.is_available():

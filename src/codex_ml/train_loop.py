@@ -461,7 +461,7 @@ def _render_evaluation_report(output_dir: Path | None, state: Mapping[str, Any])
 def _set_seed(seed: Optional[int]) -> int:
     if seed in (None, 0):
         seed = _DEFAULT_SEED
-    resolved_seed = int(seed)  # type: ignore[arg-type]
+    resolved_seed = int(seed) 
     random.seed(resolved_seed)
     try:
         import numpy as np

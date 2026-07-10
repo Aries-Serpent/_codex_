@@ -1,6 +1,4 @@
-"""
-from aries_serpent_core.logging.structured_logger import logger
-Improved Hash Table Design with Production-Grade Hash Functions
+"""Improved Hash Table Design with Production-Grade Hash Functions
 
 Implements high-performance hash tables with multiple collision resolution
 strategies optimized for different use cases.
@@ -15,6 +13,8 @@ AAIS Contribution: +3.0 points (Runtime Introspection)
 """
 
 from typing import Any, Generic, Optional, TypeVar
+
+from aries_serpent_core.logging.structured_logger import logger
 
 K = TypeVar("K")
 V = TypeVar("V")

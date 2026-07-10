@@ -15,6 +15,8 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Optional
 
+from aries_serpent_core.logging.adapter import get_default_logger
+
 logger = logging.getLogger(__name__)
 
 
@@ -161,7 +163,9 @@ class CurriculumScheduler:
         self.checkpoint_dir.mkdir(parents=True, exist_ok=True)
         self.state = self._load_or_create_state()
 
-        get_default_logger().info(f"Initialized CurriculumScheduler: {curriculum_name} with {len(phases)} phases")
+        get_default_logger().info(
+            f"Initialized CurriculumScheduler: {curriculum_name} with {len(phases)} phases"
+        )
 
     def _load_or_create_state(self) -> CurriculumState:
         """Load existing state or create new"""

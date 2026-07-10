@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 from collections.abc import Iterator
 from pathlib import Path
-from typing import Optional, Union
+from typing import Optional
 
 # Local utility imports (optional modules handled gracefully)
 try:

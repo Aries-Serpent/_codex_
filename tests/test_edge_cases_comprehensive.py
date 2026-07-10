@@ -2,8 +2,25 @@ from __future__ import annotations
 
 import math
 import sys
+from pathlib import Path
 
 import pytest
+
+# Import semantic assertions
+sys.path.insert(0, str(Path(__file__).parent))
+from conftest_semantic_assertions import (
+    assert_zero_boundary,
+    assert_numeric_in_range,
+    assert_positive,
+    assert_non_negative,
+    assert_floats_approximately_equal,
+    assert_instance_of,
+    assert_nan_detection,
+    assert_infinity_detection,
+    assert_collection_not_empty,
+    assert_collection_length,
+    assert_string_not_empty,
+)
 
 # ============================================================================
 # PATTERN 1: NUMERIC BOUNDARY CONDITIONS (50 tests)
@@ -28,7 +45,8 @@ class TestNumericBoundaryConditions:
     )
     def test_zero_boundary(self, value, expected_zero):
         """Test zero vs non-zero boundary conditions."""
-        assert (value == 0) == expected_zero, "Value must be initialized"
+        assert_zero_boundary(value, expected_is_zero=expected_zero,
+                            context=f"zero_boundary_test_value_{value}")
 
     @pytest.mark.parametrize(
         "value",
@@ -43,8 +61,9 @@ class TestNumericBoundaryConditions:
     )
     def test_integer_extremes(self, value):
         """Test maximum and minimum integer values."""
-        assert isinstance(value, int)
-        assert value == value + 0, "Value must be initialized"
+        assert_instance_of(value, int, context="integer_extreme_value")
+        # Identity operation: value should equal itself
+        assert value == value + 0, f"Integer {value} should equal itself plus zero"
 
     @pytest.mark.parametrize(
         "op,a,b,expected",
@@ -60,7 +79,10 @@ class TestNumericBoundaryConditions:
     def test_integer_arithmetic_boundaries(self, op, a, b, expected):
         """Test arithmetic operations near integer boundaries."""
         result = op(a, b)
-        assert result == expected, "Result must not be empty"
+        assert result == expected, (
+            f"Arithmetic boundary test failed: {a} op {b} should equal {expected}, "
+            f"got {result}"
+        )
 
     @pytest.mark.parametrize(
         "value,is_positive",

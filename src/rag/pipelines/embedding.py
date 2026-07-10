@@ -241,15 +241,15 @@ def main() -> None:
 
     # Test single embedding
     result = pipeline.embed_text("Hello world")
-    print(f"Single embedding: dim={result.dimension}, model={result.model}")
-    print(f"  First 5 values: {result.embedding[:5]}")
+    logger.info(f"Single embedding: dim={result.dimension}, model={result.model}")
+    logger.info(f"  First 5 values: {result.embedding[:5]}")
 
     # Test batch embedding
     texts = ["First text", "Second text", "Third text"]
     results = pipeline.embed_texts(texts)
-    print(f"\nBatch embedding: {len(results)} results")
+    logger.info(f"\nBatch embedding: {len(results)} results")
     for r in results:
-        print(f"  - {r.text}: dim={r.dimension}")
+       logger.info(f"  - {r.text}: dim={r.dimension}")
 
 
 if __name__ == "__main__":

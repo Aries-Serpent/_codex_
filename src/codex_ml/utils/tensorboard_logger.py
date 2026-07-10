@@ -61,7 +61,7 @@ def get_tb_writer(
             logger.debug("ImportError: <ERROR_TYPE>")
             logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
             # Fallback to standalone tensorboard
-            from tensorboardX import SummaryWriter  # type: ignore[no-redef]
+            from tensorboardX import SummaryWriter
 
         # Create log directory
         log_dir.mkdir(parents=True, exist_ok=True)
@@ -105,14 +105,13 @@ def is_tensorboard_available() -> bool:
     """
     try:
         try:
-            from torch.utils.tensorboard import SummaryWriter as SummaryWriter
+            import tensorboard
 
             return True
         except ImportError as e:
             type(e).__name__
             logger.debug("ImportError: <ERROR_TYPE>")
             logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
-            from tensorboardX import SummaryWriter as SummaryWriter  # type: ignore[no-redef]
 
             return True
     except ImportError as e:

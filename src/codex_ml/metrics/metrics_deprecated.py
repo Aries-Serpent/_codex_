@@ -116,11 +116,9 @@ def accuracy(predictions: Iterable[int], targets: Iterable[int]) -> float:
 def bleu(
     predictions: Sequence[str],
     references: Sequence[str] | Sequence[Sequence[str]],
-    use_sacrebleu: bool = True,
 ) -> float:
     """DEPRECATED: Use metrics.compute_bleu() instead."""
     _deprecation_warning("bleu", "compute_bleu")
-    # Note: use_sacrebleu parameter ignored; unified_api uses best-of-breed implementation
     return _compute_bleu(predictions, references)
 
 

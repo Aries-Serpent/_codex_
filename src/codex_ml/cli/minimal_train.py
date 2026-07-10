@@ -1,5 +1,4 @@
 """Minimal training + evaluation CLI for _codex_ scaffolding.
-from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
 
 This module ties together:
 - config loading
@@ -18,6 +17,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Optional
 
+from aries_serpent_core.logging.adapter import get_default_logger
 from codex_ml.config import load as cfg_load
 from codex_ml.data.simple_dataset import Sample, SimpleDataset
 from codex_ml.eval import evaluator

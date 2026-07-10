@@ -30,8 +30,7 @@ import re
 from dataclasses import dataclass, field
 from typing import Any, Optional
 
-from codex.logging.adapter import get_default_logger
-
+from aries_serpent_core.logging.adapter import get_default_logger
 from codex_ml.tokenization import TokenizerAdapter
 
 __all__ = [
@@ -499,7 +498,10 @@ def run_codex_symbolic_pipeline(
 if __name__ == "__main__":
     toy_corpus = ["def add(a,b): return a+b", "SELECT * FROM users;", "# docs..."]
     toy_demos = [
-        {"prompt": "Write a CLI that echoes input", "completion": "get_default_logger().info(input())"},
+        {
+            "prompt": "Write a CLI that echoes input",
+            "completion": "get_default_logger().info(input())",
+        },
         {
             "prompt": "Create a Bash script to gzip a folder",
             "completion": "tar -czf folder.tar.gz folder",

@@ -1,17 +1,15 @@
-"""
-from codex.logging.adapter import LoggerAdapter, NullLogger, get_default_logger
-  Init   Module
+"""Init Module
 
-This module provides functionality for   init  .
+This module provides functionality for init.
 
 Usage:
-    from codex_ml.cli import ...
+   from codex_ml.cli import ...
 
 Classes:
-    [To be documented]
+   [To be documented]
 
 Functions:
-    [To be documented]
+   [To be documented]
 
 Author: Codex Team
 """
@@ -23,6 +21,7 @@ import os
 import sys
 from typing import Any, Optional, Union
 
+from aries_serpent_core.logging.adapter import get_default_logger
 from codex_ml.utils.error_log import log_error
 from codex_ml.utils.optional import optional_import
 

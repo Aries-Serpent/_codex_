@@ -28,6 +28,8 @@ from __future__ import annotations
 
 import logging
 
+from aries_serpent_core.logging.adapter import get_default_logger
+
 logger = logging.getLogger(__name__)
 
 import argparse

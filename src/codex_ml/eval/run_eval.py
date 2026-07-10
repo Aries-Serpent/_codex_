@@ -15,6 +15,7 @@ import sys
 from collections.abc import Iterable
 from pathlib import Path
 
+from aries_serpent_core.logging.adapter import get_default_logger
 from codex_ml.utils.hf_pinning import HFModelUnavailableError
 
 from .evaluator import run_evaluator

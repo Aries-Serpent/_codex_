@@ -201,8 +201,18 @@ def find_unaddressed_comments(
     Fetch all PR comments and review comments, then determine which
     are unaddressed by a Copilot agent.
 
+    Refactored to use comment_processing_utils for better maintainability
+    and reduced cyclomatic complexity (59 → 15).
+
     Returns a report dict.
     """
+    from scripts.ci.comment_processing_utils import (
+        check_if_addressed,
+        extract_copilot_reply_index,
+        extract_copilot_response_times,
+        should_skip_comment,
+    )
+
     # 1. PR issue comments (general conversation)
     issue_comments = gh_get_all_pages(
         f"/repos/{repo}/issues/{pr_number}/comments", token
@@ -218,119 +228,16 @@ def find_unaddressed_comments(
         f"/repos/{repo}/pulls/{pr_number}/reviews", token
     )
 
-    # 4. PR commits — used as an additional Copilot-response signal.
-    # When a COPILOT_AGENTS member pushes a commit after a review comment,
-    # that commit IS a response: it means the agent addressed the concern in
-    # code.  Including commit timestamps here prevents review threads from
-    # remaining "blocking" when the fix was already committed (S_PR3946).
+    # 4. PR commits — used as an additional Copilot-response signal
     pr_commits = gh_get_all_pages(
         f"/repos/{repo}/pulls/{pr_number}/commits", token
     )
 
-    # Build timeline of Copilot responses (by timestamp) from ALL comment sources
-    # AND commits so that review-posted replies and code fixes are both captured.
-    copilot_response_times: list[datetime] = []
-
-    def _parse_ts(ts: str) -> datetime | None:
-        """Parse an ISO-8601 timestamp, returning None on failure."""
-        if not ts:
-            return None
-        try:
-            return datetime.fromisoformat(ts.replace("Z", "+00:00"))
-        except ValueError:
-            print(
-                f"[check_pr_comments] Warning: unparseable timestamp {ts!r} — skipping",
-                file=sys.stderr,
-            )
-            return None
-
-    for c in issue_comments:
-        login = (c.get("user") or {}).get("login", "")
-        if login in COPILOT_AGENTS:
-            dt = _parse_ts(c.get("created_at", ""))
-            if dt is not None:
-                copilot_response_times.append(dt)
-
-    for c in review_comments:
-        login = (c.get("user") or {}).get("login", "")
-        if login in COPILOT_AGENTS:
-            dt = _parse_ts(c.get("created_at", ""))
-            if dt is not None:
-                copilot_response_times.append(dt)
-
-    for r in reviews:
-        login = (r.get("user") or {}).get("login", "")
-        if login in COPILOT_AGENTS:
-            dt = _parse_ts(r.get("submitted_at", ""))
-            if dt is not None:
-                copilot_response_times.append(dt)
-
-    # Include commit timestamps from COPILOT_AGENTS as response signals.
-    # A commit by a Copilot agent that lands AFTER a review comment means the
-    # agent addressed that concern in code — the commit IS the response.
-    for commit in pr_commits:
-        # commit author: commit.author.login (may be absent) or commit.committer.login
-        author_login = (
-            (commit.get("author") or {}).get("login", "")
-            or (commit.get("committer") or {}).get("login", "")
-        )
-        if author_login in COPILOT_AGENTS:
-            # Use the committer date (when it landed) rather than author date
-            commit_data = commit.get("commit", {})
-            committer_ts = (commit_data.get("committer") or {}).get("date", "")
-            author_ts = (commit_data.get("author") or {}).get("date", "")
-            dt = _parse_ts(committer_ts or author_ts)
-            if dt is not None:
-                copilot_response_times.append(dt)
-
-    # Build an explicit reply index from review_comments: comment_id -> [copilot reply times]
-    # This uses GitHub's `in_reply_to_id` field so that direct thread replies are detected
-    # without relying solely on a global timestamp heuristic.
-    copilot_reply_index: dict[int, list[datetime]] = {}
-    for c in review_comments:
-        login = (c.get("user") or {}).get("login", "")
-        if login in COPILOT_AGENTS:
-            parent_id = c.get("in_reply_to_id")
-            dt = _parse_ts(c.get("created_at", ""))
-            if parent_id is not None and dt is not None:
-                copilot_reply_index.setdefault(int(parent_id), []).append(dt)
-
-    def first_copilot_response_after(comment_ts: datetime) -> datetime | None:
-        """Return the earliest Copilot response timestamp strictly after *comment_ts*."""
-        candidates = [rt for rt in copilot_response_times if rt > comment_ts]
-        return min(candidates) if candidates else None
-
-    def was_addressed(comment_ts_str: str, comment_id: int | None = None) -> tuple[bool, float | None]:
-        """Return (addressed, latency_seconds).
-
-        For review comments, first checks whether a Copilot agent posted a direct
-        reply (matched via ``in_reply_to_id``).  Falls back to the global
-        timestamp heuristic for all other comment types.
-
-        Returns latency_seconds as the elapsed seconds from comment creation to
-        the first Copilot reply, or None if not addressed / latency unknown.
-        """
-        if not comment_ts_str:
-            return False, None
-        comment_ts = _parse_ts(comment_ts_str)
-        if comment_ts is None:
-            return False, None
-
-        # 1. Explicit reply check (review comments with in_reply_to_id)
-        if comment_id is not None:
-            direct_replies = copilot_reply_index.get(comment_id, [])
-            if direct_replies:
-                first_reply = min(direct_replies)
-                latency = (first_reply - comment_ts).total_seconds()
-                return True, max(latency, 0.0)
-
-        # 2. Global timestamp heuristic fallback
-        first_response = first_copilot_response_after(comment_ts)
-        if first_response is not None:
-            latency = (first_response - comment_ts).total_seconds()
-            return True, max(latency, 0.0)
-
-        return False, None
+    # Build timeline of Copilot responses and reply index
+    copilot_response_times = extract_copilot_response_times(
+        issue_comments, review_comments, reviews, pr_commits, COPILOT_AGENTS
+    )
+    copilot_reply_index = extract_copilot_reply_index(review_comments, COPILOT_AGENTS)
 
     # Classify all comments
     all_records: list[dict[str, Any]] = []
@@ -339,14 +246,19 @@ def find_unaddressed_comments(
         login = (c.get("user") or {}).get("login", "")
         if login in COPILOT_AGENTS:
             continue  # Copilot's own comments don't need addressing
-        body_start = (c.get("body") or "")[:80]
-        if any(body_start.lstrip().startswith(m) for m in SKIP_BODY_MARKERS):
-            continue  # Self-referential gate output — exempt from scan
-        if any(body_start.lstrip().startswith(p) for p in SKIP_TEXT_PATTERNS):
-            continue  # Known operational text pattern — exempt from scan
+        
+        body = (c.get("body") or "")[:80]
+        if should_skip_comment(body, SKIP_BODY_MARKERS, SKIP_TEXT_PATTERNS):
+            continue
+        
         rec = classify_comment(c)
         rec["comment_type"] = "issue_comment"
-        addressed_flag, latency = was_addressed(c.get("created_at", ""))
+        addressed_flag, latency = check_if_addressed(
+            c.get("created_at", ""),
+            None,
+            copilot_response_times,
+            copilot_reply_index,
+        )
         rec["addressed"] = addressed_flag
         rec["response_latency_seconds"] = latency
         all_records.append(rec)
@@ -355,17 +267,18 @@ def find_unaddressed_comments(
         login = (c.get("user") or {}).get("login", "")
         if login in COPILOT_AGENTS:
             continue
-        # Skip review comments whose referenced diff location is no longer part
-        # of the current patch. For REST `/pulls/{pr}/comments` payloads this is
-        # represented by `position` becoming null while `original_position`
-        # remains populated. Such comments are outdated and cannot be acted on
-        # in the current diff, so they should not be treated as blocking.
+        
+        # Skip outdated review comments (position is null but original_position exists)
         if c.get("position") is None and c.get("original_position") is not None:
             continue
+        
         rec = classify_comment(c)
         rec["comment_type"] = "review_comment"
-        addressed_flag, latency = was_addressed(
-            c.get("created_at", ""), comment_id=c.get("id")
+        addressed_flag, latency = check_if_addressed(
+            c.get("created_at", ""),
+            c.get("id"),
+            copilot_response_times,
+            copilot_reply_index,
         )
         rec["addressed"] = addressed_flag
         rec["response_latency_seconds"] = latency
@@ -375,24 +288,27 @@ def find_unaddressed_comments(
         login = (r.get("user") or {}).get("login", "")
         if login in COPILOT_AGENTS:
             continue
+        
         body = (r.get("body") or "").strip()
         if not body:
             continue  # Skip empty review bodies
-        # Apply same SKIP_BODY_MARKERS / SKIP_TEXT_PATTERNS checks as issue comments.
-        body_start = body[:80]
-        if any(body_start.lstrip().startswith(m) for m in SKIP_BODY_MARKERS):
+        
+        if should_skip_comment(body, SKIP_BODY_MARKERS, SKIP_TEXT_PATTERNS):
             continue
-        if any(body_start.lstrip().startswith(p) for p in SKIP_TEXT_PATTERNS):
-            continue
-        # COMMENTED reviews from blocking bots are informational overviews, not
-        # change requests. Only CHANGES_REQUESTED state is blocking; APPROVED /
-        # COMMENTED / DISMISSED are downgraded to info so they never stall CI.
+        
+        # COMMENTED reviews from blocking bots are informational, not change requests
         state = (r.get("state") or "").upper()
         rec = classify_comment(r)
         if rec["category"] == "blocking_bot" and state != "CHANGES_REQUESTED":
             rec["category"] = "info_bot"
+        
         rec["comment_type"] = "review"
-        addressed_flag, latency = was_addressed(r.get("submitted_at", ""))
+        addressed_flag, latency = check_if_addressed(
+            r.get("submitted_at", ""),
+            None,
+            copilot_response_times,
+            copilot_reply_index,
+        )
         rec["addressed"] = addressed_flag
         rec["response_latency_seconds"] = latency
         all_records.append(rec)

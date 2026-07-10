@@ -615,7 +615,6 @@ class ApprovalService:
                 return req
 
             req.sla_extensions_used += 1
-            old_deadline = req.sla_deadline
             req.sla_deadline = time.time() + (extension_hours * 3600)
 
             self._audit_event(
@@ -697,7 +696,7 @@ class ApprovalService:
             # ----------------------------------------------------------------
             return req.audit_log.copy()
 
-    def _build_escalation_chain(self, approver_count: int) -> List[int]:
+    def _build_escalation_chain(self) -> List[int]:
         return [1, 2, 3]
 
     def get_service_stats(self) -> Dict[str, Any]:

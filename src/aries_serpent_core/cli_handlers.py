@@ -95,7 +95,6 @@ class CLICommandHandler(ABC):
         Subclasses override this method to provide command functionality.
         Exception handling is delegated to execute().
         """
-        pass
 
     def log_result(self, result: CommandResult) -> None:
         """Log command result appropriately.

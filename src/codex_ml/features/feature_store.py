@@ -330,7 +330,6 @@ class FeatureStore:
         self,
         feature_names: list[str],
         timestamp: str | datetime,
-        lookback_days: int = 30,
     ) -> dict[str, Any]:
         """Get point-in-time features.
 

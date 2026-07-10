@@ -43,7 +43,7 @@ try:
 
     NUMPY_AVAILABLE = True
 except (ImportError, AttributeError):
-    np = None  # type: ignore[assignment]
+    np = None 
     NUMPY_AVAILABLE = False
 
 try:

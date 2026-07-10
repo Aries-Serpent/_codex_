@@ -185,7 +185,6 @@ class MarkdownParser:
         """
         blocks = []
         current_block = None
-        block_start = 0
         block_order = 0
 
         for line_idx, line in enumerate(content_lines):
@@ -199,7 +198,6 @@ class MarkdownParser:
                         "lines": [],
                         "start": start_line + line_idx,
                     }
-                    block_start = line_idx
                 else:
                     # End code block
                     content_text = "\n".join(current_block["lines"])

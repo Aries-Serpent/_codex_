@@ -40,7 +40,7 @@ try:
 except ImportError as e:
     logger.debug("ImportError: %s", e)
     logger.warning("ImportError: %s", e, exc_info=True)
-    import config_legacy as hydra  # type: ignore[no-redef]
+    import config_legacy as hydra
 
 
 from common.ndjson_tools import append_event_ndjson, make_run_metrics_path  # noqa: E402

@@ -7,6 +7,13 @@ Part of Phase 13.4 4-layer cache hierarchy. Optimized for:
 - Distributed cache across multiple instances
 - Automatic fallback to local cache if Redis unavailable
 
+PHASE 5 TRACK 5 OPTIMIZATIONS:
+- Weighted LRU eviction for local fallback (based on access patterns)
+- Batch operations (get_many, set_many) for improved throughput
+- Adaptive TTL extension on hotkey access
+- Better local cache memory efficiency with size-aware eviction
+- Connection pool optimization (socket keepalive, reduced timeouts)
+
 TTL: 3600 seconds (1 hour)
 Backend: Redis with local LRU fallback
 """

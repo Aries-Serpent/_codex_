@@ -1,6 +1,4 @@
-"""
-from aries_serpent_core.logging.structured_logger import logger
-MCP tool integration and persistence management.
+"""MCP tool integration and persistence management.
 
 Classes:
   - MCPToolBridge: Wire to 12 MCP tool mocks
@@ -9,9 +7,12 @@ Classes:
 """
 
 import json
+import logging
 import time
 from collections import OrderedDict
 from typing import Any, Callable, Dict, List, Optional
+
+logger = logging.getLogger(__name__)
 
 
 class MCPToolBridge:

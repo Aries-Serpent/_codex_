@@ -32,6 +32,8 @@ import math
 from dataclasses import dataclass, field
 from typing import Any, Optional
 
+from aries_serpent_core.logging.adapter import get_default_logger
+
 logger = logging.getLogger(__name__)
 
 __all__ = [

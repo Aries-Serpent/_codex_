@@ -13,6 +13,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
 
+from aries_serpent_core.logging.adapter import get_default_logger
+
 logger = logging.getLogger(__name__)
 
 __all__ = ["StubAnalyzer", "StubInfo", "find_stubs", "prioritize_stubs"]
@@ -157,7 +159,9 @@ class StubAnalyzer:
         except (IOError, OSError, SyntaxError) as e:
             type(e).__name__
             get_default_logger().debug("Exception: <ERROR_TYPE>")
-            get_default_logger().debug(f"Failed to parse {file_path} for abstract method detection: <ERROR_TYPE>")
+            get_default_logger().debug(
+                f"Failed to parse {file_path} for abstract method detection: <ERROR_TYPE>"
+            )
 
         return False
 
@@ -185,7 +189,9 @@ class StubAnalyzer:
 
                         if is_abstract:
                             # Skip abstract methods - they're intentional design patterns
-                            get_default_logger().debug(f"Skipping abstract method at {file_path}:{i}")
+                            get_default_logger().debug(
+                                f"Skipping abstract method at {file_path}:{i}"
+                            )
                             continue
 
                         priority = "P0"  # Actual raise statements are P0
