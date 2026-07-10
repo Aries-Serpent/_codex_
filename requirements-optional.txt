@@ -32,5 +32,5 @@ wandb>=0.15.0
 opentelemetry-sdk>=1.24
 
 # Security: IP-005 dependency updates
-twisted>=24.7.0  # Security: Fixes CVE-2024-41810, CVE-2024-41671 (XSS in redirectTo, HTTP pipelining)
+twisted>=26.4.0  # Security: Phase 5 Track 2 - Updated to fix PYSEC-2026-160 (DNS name decompression DoS in twisted <26.4.0)
 configobj>=5.0.9  # Security: Fixes CVE-2023-26112 (ReDoS)
