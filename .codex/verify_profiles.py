@@ -6,7 +6,7 @@ Tests all three profiles: core, runtime, and full.
 
 import sys
 import subprocess
-from typing import Dict
+from typing import List, Dict
 
 class ProfileValidator:
     """Validates each installation profile."""
