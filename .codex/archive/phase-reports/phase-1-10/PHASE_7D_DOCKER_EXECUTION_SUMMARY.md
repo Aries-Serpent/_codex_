@@ -388,7 +388,7 @@ FINAL DECISION: ✅ GO ✅
 
 ### ✅ REQ-4: Agent Accountability
 - **Status:** FULLY COMPLIANT
-- **Evidence:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- **Evidence:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - **Details:** All Phase 7D tracks documented with timestamps and commit SHAs
 
 ### ✅ REQ-5: CHANGELOG Documentation

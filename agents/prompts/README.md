@@ -43,7 +43,7 @@ agents/prompts/
 - Generate wiki pages
 - Create documentation hubs
 - Build API references
-- Update AGENTS.md
+- Update .codex/archive/deprecated/AGENTS.md
 
 #### 4. Deployment (`deployment/`)
 - Prepare pre-release packages
@@ -63,9 +63,9 @@ agents/prompts/
 - Self-correct issues
 - Iterative improvements
 
-## Integration with AGENTS.md
+## Integration with .codex/archive/deprecated/AGENTS.md
 
-All prompts are referenced in [AGENTS.md](../../.github/AGENTS.md) for easy discovery.
+All prompts are referenced in [.codex/archive/deprecated/AGENTS.md](../../.github/.codex/archive/deprecated/AGENTS.md) for easy discovery.
 
 ## Adding New Prompts
 
@@ -74,7 +74,7 @@ When adding new prompts:
 1. Create a new `.md` file in the appropriate category
 2. Use the template format (see any existing prompt)
 3. Include: Purpose, Prerequisites, Commands, Validation, Expected Output
-4. Add reference to AGENTS.md
+4. Add reference to .codex/archive/deprecated/AGENTS.md
 5. Test the prompt with an AI Agent
 
 ## Prompt Template Format

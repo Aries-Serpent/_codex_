@@ -158,7 +158,7 @@ This PR (#2460) has successfully implemented comprehensive AI Agent orchestratio
 
 ### 1.3 Documentation Updates
 - [x] **Core Documentation**
-  - AGENTS.md - Updated with workflow navigation
+  - .codex/archive/deprecated/AGENTS.md - Updated with workflow navigation
   - README.md - Tokenized workflow quick start
   - TOKENIZED_WORKFLOWS.md - Complete workflow catalog
   - PR_SUMMARY_FINAL.md - Comprehensive change documentation
@@ -596,7 +596,7 @@ class CapabilityDetector:
 
 ### 8.1 Training Materials
 - **Quick Start Guide:** README.md (✅ Complete)
-- **Detailed User Guide:** AGENTS.md (✅ Complete)
+- **Detailed User Guide:** .codex/archive/deprecated/AGENTS.md (✅ Complete)
 - **Developer Guide:** agents/prompts/ARCHITECTURE.md (✅ Complete)
 - **API Reference:** agents/prompts/API_MODEL.md (✅ Complete)
 - **Troubleshooting Guide:** (🔄 To be created)
@@ -741,7 +741,7 @@ print(f"Optimal path: {result.best_path.description}")
 3. `scripts/space_traversal/viz_cli_builder.py` - Template fix
 4. `scripts/space_traversal/viz_api_collection.py` - Template fix
 5. `scripts/organize_repository.py` - Enhanced with CLI args
-6. `AGENTS.md` - Added workflow navigation section
+6. `.codex/archive/deprecated/AGENTS.md` - Added workflow navigation section
 7. `README.md` - Added tokenized workflow quick start
 8. `REPOSITORY_ORGANIZATION_SUMMARY.md` - Archival summary
 9. (13 other files with minor updates)

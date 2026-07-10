@@ -210,7 +210,7 @@ task(agent_type="session-analysis-agent", name="phase7b-accountability-report-tr
   - All metrics consolidated
   - v0.1.0-final documentation ready
   - CHANGELOG.md current (REQ-5)
-  - AGENT_ACCOUNTABILITY_REPORT.md current (REQ-4)
+  - .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md current (REQ-4)
   - Discussion #4872 resolution documented
 - [ ] **AWAIT @mbaetiong FINAL APPROVAL FOR v0.1.0-final RELEASE**
 - [ ] Tag v0.1.0-final release

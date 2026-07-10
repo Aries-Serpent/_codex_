@@ -1003,7 +1003,7 @@ cat agents/prompts/debugging/test-failure-debugging.md
 | `COMPREHENSIVE_GAP_ANALYSIS.md` | Gap analysis with priority matrix | 2025-12-11 |
 | `PR_FINAL_SUMMARY.md` | PR summary with metrics | 2025-12-11 |
 | `docs/CONTRIBUTOR_ONBOARDING.md` | Onboarding guide | 2025-12-11 |
-| `AGENTS.md` | Agent operations playbook | 2025-12-10 |
+| `.codex/archive/deprecated/AGENTS.md` | Agent operations playbook | 2025-12-10 |
 | `codex_gap_registry.yaml` | Known gaps tracking | 2025-12-11 |
 | `pyproject.toml` | Package configuration | Current |
 | `uv.lock` | Dependency lockfile | Current |
@@ -1164,7 +1164,7 @@ This blueprint provides a comprehensive technical reference for the `_codex_` re
 **For Developers**:
 1. Read `docs/CONTRIBUTOR_ONBOARDING.md`
 2. Run `.codex/scripts/setup.sh`
-3. Explore `AGENTS.md` for workflows
+3. Explore `.codex/archive/deprecated/AGENTS.md` for workflows
 4. Contribute using Copilot-assisted development
 
 **For AI Agents**:

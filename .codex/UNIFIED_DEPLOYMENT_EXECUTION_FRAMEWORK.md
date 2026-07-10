@@ -76,7 +76,7 @@
 - **Actions Completed:**
   - ✅ All 32 production gates verified
   - ✅ Final 100/100 certification issued
-  - ✅ AGENT_ACCOUNTABILITY_REPORT.md updated (REQ-4)
+  - ✅ .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated (REQ-4)
   - ✅ CHANGELOG.md updated (REQ-5)
   - ✅ Full deployment authorization issued
 - **Impact:** GO FOR DEPLOYMENT
@@ -366,7 +366,7 @@
 **Copilot-Executable:**
 - [x] ✅ Phase 7D Track 4: Consolidation Complete (already done)
 - [x] ✅ Generate 100/100 production readiness certification (already done)
-- [x] ✅ Update AGENT_ACCOUNTABILITY_REPORT.md (already done)
+- [x] ✅ Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (already done)
 - [x] ✅ Update CHANGELOG.md (already done)
 
 **Maintainer-Required:**
@@ -466,7 +466,7 @@
 - ✅ Zero functional regressions
 
 **Accountability & Compliance:**
-- ✅ AGENT_ACCOUNTABILITY_REPORT.md updated (REQ-4)
+- ✅ .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated (REQ-4)
 - ✅ CHANGELOG.md updated (REQ-5)
 - ✅ All artifacts version-controlled (not /tmp)
 - ✅ Session wrapup compliance verified

@@ -134,7 +134,7 @@ All items must be completed before proceeding to Phase 12 activation.
   - [ ] No orphaned temporary files
   - [ ] Archive structure intact
 
-- [ ] **M3.3** Check AGENT_ACCOUNTABILITY_REPORT.md
+- [ ] **M3.3** Check .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
   - [ ] Latest entry captures Phase 10 completion
   - [ ] Timestamp matches merge time ✅ / ❌
   - [ ] All required fields present ✅ / ❌

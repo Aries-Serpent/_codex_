@@ -325,7 +325,7 @@ All contingency protocols and checkpoint reports stored in `.codex/`:
 - `.codex/DAY_2_AGENT_DELEGATION_BRIEFING.md`
 - `.codex/PHASE_7A_LANE_31_CHECKPOINT_DAY_2.md` (created during execution)
 - `.codex/PHASE_7A_LANE_32_CHECKPOINT_DAY_2.md` (created during execution)
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (updated after standups)
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (updated after standups)
 
 ---
 

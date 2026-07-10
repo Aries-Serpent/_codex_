@@ -1062,7 +1062,7 @@ from the gate comment body and auto-generate a structured reply template.  See �
 <!-- anchor: fixed-sn -->
 - <description>
 
-# Update docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+# Update docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 # then commit both files together with every session-ending push
 ```
 
@@ -1289,7 +1289,7 @@ python scripts/ci/discussion_context_store.py \
 # Also load these before starting any code changes:
 # 1. docs/ci/PR_LIFECYCLE.md          — this document (full workflow model)
 # 2. .codex/CODEBASE_AGENCY_POLICY.md  — §0 fix ALL issues found
-# 3. docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md — recent WHY analysis
+# 3. docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md — recent WHY analysis
 # 4. python scripts/ci/pda_failure_logger.py summarize   — grounded solutions
 ```
 
@@ -1313,7 +1313,7 @@ pre-commit run detect-secrets --all-files          # secrets baseline
   `grep -A3 "## \[Unreleased\]" CHANGELOG.md | grep "###"`  
   Must show a `### Fixed (SN)` entry for the current session number.
 - [ ] **Accountability Report updated** — verify:  
-  `grep -c "$(date +%Y-%m-%d)" docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`  
+  `grep -c "$(date +%Y-%m-%d)" docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`  
   Must return ≥ 1 (today's date present).
 - [ ] **0 auto-fixable issues**:  
   `python scripts/ci/auto_fix_common_issues.py --check-only`
@@ -2186,7 +2186,7 @@ Before touching any code, load these documents in order:
 ```
 1. docs/ci/PR_LIFECYCLE.md              ← this document
 2. .codex/CODEBASE_AGENCY_POLICY.md     ← §0: fix ALL issues, no deferral
-3. docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md  ← recent WHY analysis
+3. docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md  ← recent WHY analysis
 4. python scripts/ci/pda_failure_logger.py summarize   ← proven fix templates
 ```
 

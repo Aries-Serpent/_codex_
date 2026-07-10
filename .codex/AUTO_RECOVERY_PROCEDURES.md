@@ -368,7 +368,7 @@ step_4_apply_pins:
     3. Run key tests to validate compatibility
 
 step_5_document_decision:
-  action: "Record rationale in DEPENDENCY_CONSTRAINTS.md"
+  action: "Record rationale in .codex/archive/misc/DEPENDENCY_CONSTRAINTS.md"
 
 recovery_time_expected_ms: 4500
 success_rate_expected: 0.85

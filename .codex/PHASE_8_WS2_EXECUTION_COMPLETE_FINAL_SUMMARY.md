@@ -30,7 +30,7 @@ All 3 phases of the Phase 8 WS2 session consolidation handoff implementation pla
   - EOD Report: PHASE_8_WS2_EOD_COMPLETION_REPORT.md
 
 ### Accountability Updates (REQ-4 & REQ-5)
-- ✅ Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- ✅ Updated `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
   - Session: phase-8-ws2-consolidation-execution-plan
   - Task: Execute Phase 8 WS2 session consolidation + auto-approve gap remediation
   - Authority: @mbaetiong (D-tier autonomous)
@@ -336,7 +336,7 @@ All files created in `.codex/` and committed to repository:
 ### Updated Files
 
 **Accountability & Compliance:**
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (REQ-4 updated)
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (REQ-4 updated)
 - `CHANGELOG.md` (REQ-5 updated)
 
 **Workflow Fixes (Auto-Approve Gaps):**

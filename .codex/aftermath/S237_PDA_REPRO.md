@@ -30,7 +30,7 @@
 ```
 1. Load mandatory context
    ├── cat .codex/CODEBASE_AGENCY_POLICY.md        (§0: pre-session review)
-   ├── tail -200 docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+   ├── tail -200 docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
    └── Recall all stored session memories
 
 2. Inspect PR dashboard
@@ -209,7 +209,7 @@ Iteration 3 — Side Effects
   ✓ workflow-execution-gate BODY= fix: BODY variable still holds same content
 
 Iteration 4 — Documentation
-  ✓ AGENT_ACCOUNTABILITY_REPORT.md S237 entry written
+  ✓ .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md S237 entry written
   ✓ Codebase-wide coverage plan created (.codex/plans/codebase_wide_coverage_plan.md)
   ✓ CI failure patterns YAML updated (COV_001, COV_002)
   ✓ AfterMath YAML created (.codex/lessons_learned/session_20260330_181000_S237.yaml)
@@ -233,7 +233,7 @@ Iteration 5 — Policy Compliance
 | Coverage plan | `.codex/plans/codebase_wide_coverage_plan.md` | 5-phase architecture |
 | AfterMath YAML | `.codex/lessons_learned/session_20260330_181000_S237.yaml` | Structured session record |
 | CI patterns | `.codex/patterns/ci_failure_patterns.yaml` | COV_001 + COV_002 added |
-| Accountability entry | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | S237 section |
+| Accountability entry | `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` | S237 section |
 
 ---
 

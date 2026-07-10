@@ -243,7 +243,7 @@ This integrated campaign achieves **dual objectives**:
 2. ✅ **Version Control All Artifacts** - Every output in `.codex/`, tracked in PR, not `/tmp/`
 3. ✅ **Explicit Progress Tracking** - engine-tools-report_progress after each phase block
 4. ✅ **Checkpoint Documentation** - Daily standups in `.codex/CHECKPOINT_*.md` files
-5. ✅ **Accountability Compliance** - REQ-4 (AGENT_ACCOUNTABILITY_REPORT.md) + REQ-5 (CHANGELOG.md) updated per track
+5. ✅ **Accountability Compliance** - REQ-4 (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md) + REQ-5 (CHANGELOG.md) updated per track
 6. ✅ **Session Hardening Protocol** - Custom agent delegation mandate; direct work only for coordination
 7. ✅ **Production Readiness Gates** - 32/32 governance gates must PASS before v0.1.0-final deployment
 
@@ -278,7 +278,7 @@ This integrated campaign achieves **dual objectives**:
 - `.codex/PHASE_E_DEPLOYMENT_CHECKPOINT.md` + `PRODUCTION_READINESS_FINAL_CERTIFICATION_v2.md`
 
 ### Accountability Documents
-- `AGENT_ACCOUNTABILITY_REPORT.md` (REQ-4 entry for Phase X + Phases A-E)
+- `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (REQ-4 entry for Phase X + Phases A-E)
 - `CHANGELOG.md` (REQ-5 entries per track with commit SHAs)
 
 ---

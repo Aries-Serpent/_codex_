@@ -88,7 +88,7 @@ Conclusion: success           — 2 runs  (2.0%)   [✅ Healthy]
 
 **Pattern 25: Last-Commit Accountability**
 - **Severity**: ERROR (blocks CI)
-- **File**: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- **File**: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - **Issue**: Not updated in last commit (last touched: 16 minutes ago)
 - **Root Cause**: agent-auth-delegation.yml REQ-4 gate requires accountability file in committed changes
 - **Status**: ✅ FIXED
@@ -101,7 +101,7 @@ Conclusion: success           — 2 runs  (2.0%)   [✅ Healthy]
 
 ### Fix #1: Accountability Report Sync
 **Pattern**: 25 (Last-Commit Accountability)  
-**File**: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`  
+**File**: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`  
 **Action**: Appended [auto-generated] entry for current session  
 **Status**: ✅ APPLIED  
 **Verification**: File staged for next commit  
@@ -203,7 +203,7 @@ From git history (2026-06-10 onwards):
 
 ### ✅ Completed
 1. **Pattern 25 Auto-Fix Applied** (16:17:00 UTC)
-   - Fixed: docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+   - Fixed: docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
    - Impact: Unblocks agent-auth-delegation.yml gate
 
 ### ⏳ In Progress
@@ -301,7 +301,7 @@ From git history (2026-06-10 onwards):
 **Generated Files**:
 - ✅ `.codex/ci-diagnostic.json` — Full diagnostic report (35 patterns)
 - ✅ `.codex/WORKFLOW_HEALTH_MONITORING_REPORT.md` — This report
-- ✅ `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — Updated with auto-fix entry
+- ✅ `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — Updated with auto-fix entry
 
 **Access**:
 ```bash

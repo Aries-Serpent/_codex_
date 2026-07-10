@@ -229,9 +229,9 @@ c36c47f fix(docs): Phase 1 - 60 empty TOC and invalid anchors
 ### Key Files Fixed
 - ✅ docs/PHYSICS_INSPIRED_WORKFLOWS.md (primary)
 - ✅ README.md (repo root - 3 refs)
-- ✅ AGENTS.md (22 refs)
+- ✅ .codex/archive/deprecated/AGENTS.md (22 refs)
 - ✅ docs/MASTER_INDEX.md (15 refs)
-- ✅ .github/agents/docs/AGENTS.md (20 refs)
+- ✅ .github/agents/docs/.codex/archive/deprecated/AGENTS.md (20 refs)
 - ✅ ROADMAP.md (43 refs)
 - ✅ CODEBASE_DASHBOARD.md (18 refs)
 - ✅ Plus 99 more files

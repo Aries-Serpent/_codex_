@@ -52,7 +52,7 @@
 
 | Requirement | Status | Evidence | Sign-Off |
 |---|---|---|---|
-| **REQ-4** | ✅ PASS | AGENT_ACCOUNTABILITY_REPORT.md updated | Verified 2026-06-24T01:42:18Z |
+| **REQ-4** | ✅ PASS | .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated | Verified 2026-06-24T01:42:18Z |
 | **REQ-5** | ✅ PASS | CHANGELOG.md updated | Verified 2026-06-24T01:42:18Z |
 | **REQ-14** | ✅ PASS | Agents Used entry present | Verified 2026-06-24T01:42:18Z |
 | **Security Policy** | ✅ PASS | CODEBASE_AGENCY_POLICY.md compliant | Verified Phase 9 |

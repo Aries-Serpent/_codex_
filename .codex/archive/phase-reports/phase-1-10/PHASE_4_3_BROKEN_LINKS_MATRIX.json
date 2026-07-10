@@ -34,7 +34,7 @@
       "total_broken_links": 2,
       "resolution": "Create DEPRECATION notice files for google-home-script-agent and energy-conversion-agent",
       "impact": "MEDIUM - Agent documentation incomplete",
-      "recommendation": "\n1. Create GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md in repo root\n2. Create ENERGY_CONVERSION_AGENT_DEPRECATION.md in repo root\n3. Include agent name, deprecation date, reason, and migration path\n        ",
+      "recommendation": "\n1. Create .codex/archive/deprecated/GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md in repo root\n2. Create .codex/archive/deprecated/ENERGY_CONVERSION_AGENT_DEPRECATION.md in repo root\n3. Include agent name, deprecation date, reason, and migration path\n        ",
       "example_files": [
         ".github/agents/google-home-script-agent.md",
         ".github/agents/energy-conversion-agent.md"
@@ -86,13 +86,13 @@
   "all_broken_links": [
     {
       "file": ".github/agents/google-home-script-agent.md",
-      "link": "../../GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md",
-      "message": "File not found: ../../GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md"
+      "link": "../../.codex/archive/deprecated/GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md",
+      "message": "File not found: ../../.codex/archive/deprecated/GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md"
     },
     {
       "file": ".github/agents/energy-conversion-agent.md",
-      "link": "../../ENERGY_CONVERSION_AGENT_DEPRECATION.md",
-      "message": "File not found: ../../ENERGY_CONVERSION_AGENT_DEPRECATION.md"
+      "link": "../../.codex/archive/deprecated/ENERGY_CONVERSION_AGENT_DEPRECATION.md",
+      "message": "File not found: ../../.codex/archive/deprecated/ENERGY_CONVERSION_AGENT_DEPRECATION.md"
     },
     {
       "file": "docs/RETENTION_POLICY_OPERATIONS_GUIDE.md",

@@ -58,7 +58,7 @@
 
 | Agent ID | Status | Notes |
 |----------|--------|-------|
-| `unified-coverage-agent` | ✅ Active (canonical) | Unified entry point per AGENTS.md |
+| `unified-coverage-agent` | ✅ Active (canonical) | Unified entry point per .codex/archive/deprecated/AGENTS.md |
 | `tokenization-coverage-agent` | ✅ Active (specialist) | Domain-specific — keep |
 | `test-coverage-enforcer` | ✅ Active (enforcement) | Enforcement gate — keep |
 | `coverage-gapfill-agent` | ⚠️ Archived | Superseded by unified-coverage-agent |

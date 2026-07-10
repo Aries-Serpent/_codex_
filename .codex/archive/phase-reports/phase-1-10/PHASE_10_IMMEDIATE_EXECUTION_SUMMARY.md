@@ -247,7 +247,7 @@ Phase 12: 🟢 PREP STARTED
 
 ## ✅ COMPLIANCE STATUS
 
-**REQ-4 (AGENT_ACCOUNTABILITY_REPORT.md):**
+**REQ-4 (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md):**
 - [x] Updated with Phase 10 immediate execution session summary
 - [x] Deliverables documented
 - [x] Actions tracked

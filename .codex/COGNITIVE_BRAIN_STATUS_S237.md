@@ -36,7 +36,7 @@ Phase 6b ⏳  Coverage Intelligence nightly workflow + agent query CLI
 | `.codex/plans/codebase_wide_coverage_plan.md` | ✅ CREATED | 5-phase architecture for coverage intelligence |
 | `.codex/aftermath/S237_PDA_REPRO.md` | ✅ CREATED | Full PDA Loop + AfterMath reproducible guide |
 | `.codex/lessons_learned/session_20260330_181000_S237.yaml` | ✅ CREATED | Structured YAML AfterMath for parse_session.py |
-| AGENT_ACCOUNTABILITY_REPORT.md | ✅ UPDATED | S237 entry (10 changes documented) |
+| .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md | ✅ UPDATED | S237 entry (10 changes documented) |
 | `lessons_learned_cumulative.md` | ✅ UPDATED | S237 lessons appended |
 | PR Dashboard | ✅ 100/100 | Test/quality gate (10%) fixed by RAG coverage scope |
 | Code review (7 comments) | ✅ APPLIED | SHA fallback, pagination cap, truncation, UTF-8 decode log |

@@ -13,7 +13,7 @@
 | File | Purpose | Dependencies | Updates |
 |------|---------|--------------|---------|
 | `README.md` | Repository overview | None | Monthly |
-| `AGENTS.md` | Agent operations guide | README | Per release |
+| `.codex/archive/deprecated/AGENTS.md` | Agent operations guide | README | Per release |
 | `Traversal_Workflow.md` | Audit pipeline spec | None | Per version |
 | `status_update_YYYY-MM-DD.md` | Iteration report | Audit artifacts | Per iteration |
 
@@ -124,7 +124,7 @@ docs/
 - Dependency updates via dependabot
 
 ### Per Release
-- `AGENTS.md` - Version bump + new features
+- `.codex/archive/deprecated/AGENTS.md` - Version bump + new features
 - `Traversal_Workflow.md` - Specification updates
 - `CHANGELOG.md` - Release notes
 - Documentation in `docs/`
@@ -333,7 +333,7 @@ scripts/space_traversal/audit_runner.py
 | Trigger | Files to Update |
 |---------|-----------------|
 | New feature | Source code, tests, docs, CHANGELOG.md |
-| Version bump | pyproject.toml, AGENTS.md, Traversal_Workflow.md |
+| Version bump | pyproject.toml, .codex/archive/deprecated/AGENTS.md, Traversal_Workflow.md |
 | Config change | configs/*.yaml, tools/validate_configs.py |
 | Dependency update | pyproject.toml, requirements*.txt |
 | Audit run | audit_artifacts/, reports/, audit_run_manifest.json |

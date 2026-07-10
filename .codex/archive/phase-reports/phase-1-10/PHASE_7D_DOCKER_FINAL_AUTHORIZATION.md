@@ -187,7 +187,7 @@ FINAL PRODUCTION SCORE  99/100   ✅ APPROVED
 **Status:** FULLY COMPLIANT
 
 Evidence:
-- ✅ `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated
+- ✅ `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` updated
 - ✅ Phase 7D all 5 tracks documented with timestamps
 - ✅ All commit SHAs referenced
 - ✅ Authority verification: @mbaetiong

@@ -247,7 +247,7 @@ python .github/scripts/validate-links.py --fail-on-errors --report-file link-rep
 
 - [Phase 1: Link Validation Report](../docs/quality/LINK_VALIDATION_REPORT.md)
 - [Known Broken Links Tracking](./KNOWN_BROKEN_LINKS_TRACKING.md)
-- [Link Validator Agent](../AGENTS.md#link-validator-agent)
+- [Link Validator Agent](../.codex/archive/deprecated/AGENTS.md#link-validator-agent)
 
 ---
 

@@ -124,7 +124,7 @@ nav:
 
 ### 5. Documentation Updated
 
-**File**: `AGENTS.md` (modified)
+**File**: `.codex/archive/deprecated/AGENTS.md` (modified)
 
 - Updated agent count: 53 → 54 agents
 - Added GitHub Pages Manager Agent to Documentation section
@@ -141,7 +141,7 @@ nav:
 
 ### Modified Files (2)
 1. `mkdocs.yml` - Theme configuration enhanced
-2. `AGENTS.md` - Agent registry updated
+2. `.codex/archive/deprecated/AGENTS.md` - Agent registry updated
 
 ---
 
@@ -478,7 +478,7 @@ These can be addressed in future iterations:
 
 ### Agent Documentation
 - **Agent Spec**: `.github/agents/github-pages-manager.md`
-- **Agent Registry**: `AGENTS.md` (line 518-526)
+- **Agent Registry**: `.codex/archive/deprecated/AGENTS.md` (line 518-526)
 
 ### Configuration Files
 - **Theme Config**: `mkdocs.yml` (lines 1349-1397)

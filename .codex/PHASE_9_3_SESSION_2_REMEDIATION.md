@@ -105,7 +105,7 @@
 
 ### Required Updates (REQ-4/5)
 
-#### 1. docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+#### 1. docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 - [ ] Add session entry: `2026-07-03T19:43Z — Phase 9.3 CI Remediation`
 - [ ] Document CodeQL diagnostic & fix approach
 - [ ] Document Semgrep alert analysis & baseline strategy

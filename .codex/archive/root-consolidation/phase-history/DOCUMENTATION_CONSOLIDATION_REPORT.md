@@ -51,7 +51,7 @@ Comprehensive documentation consolidation and link validation completed successf
 ```
 📁 Root Level
   ├── README.md, CHANGELOG.md, CONTRIBUTING.md
-  └── CLAUDE.md, GEMINI.md (DUPLICATE - see consolidation)
+  └── .codex/archive/deprecated/CLAUDE.md, .codex/archive/deprecated/GEMINI.md (DUPLICATE - see consolidation)
 
 📁 docs/
   ├── configuration/          (Hydra, OmegaConf)
@@ -98,7 +98,7 @@ Comprehensive documentation consolidation and link validation completed successf
 
 #### Group 1: AI Agent Instructions 🔴 MEDIUM
 **Status:** Ready for consolidation  
-**Files:** `CLAUDE.md`, `GEMINI.md`  
+**Files:** `.codex/archive/deprecated/CLAUDE.md`, `.codex/archive/deprecated/GEMINI.md`  
 **Impact:** Confusion between provider-specific instructions  
 **Recommendation:** **CONSOLIDATE** into unified structure
 
@@ -113,7 +113,7 @@ With sections:
   - [Claude-Specific]
   - [Gemini-Specific]
 
-Deprecate: CLAUDE.md, GEMINI.md (→ /archive/removed/)
+Deprecate: .codex/archive/deprecated/CLAUDE.md, .codex/archive/deprecated/GEMINI.md (→ /archive/removed/)
 Update: mkdocs.yml navigation
 ```
 
@@ -272,7 +272,7 @@ Benefits:
    - Ready for implementation
 
 ### ⏳ Pending
-1. Merge `CLAUDE.md` + `GEMINI.md` (15 min)
+1. Merge `.codex/archive/deprecated/CLAUDE.md` + `.codex/archive/deprecated/GEMINI.md` (15 min)
 2. Create `archive/INDEX.md` (30 min)
 3. Update mkdocs.yml navigation (10 min)
 4. Implement navigation improvements (20+ hours, phased)
@@ -284,7 +284,7 @@ Benefits:
 ### Immediate Actions (Next 1 hour)
 ```
 [ ] 1. Execute consolidation merge (provider instructions)
-    └─ Merge CLAUDE.md + GEMINI.md → docs/agent/PROVIDER_INSTRUCTIONS.md
+    └─ Merge .codex/archive/deprecated/CLAUDE.md + .codex/archive/deprecated/GEMINI.md → docs/agent/PROVIDER_INSTRUCTIONS.md
 
 [ ] 2. Archive index creation
     └─ Create archive/INDEX.md with consolidated listing

@@ -118,7 +118,7 @@ python3 -m pytest --collect-only tests/ 2>&1 | grep -E "ERROR|error" | wc -l
 
 ### All 6 Gates PASS ✅
 **→ Proceed to Phase 3 (Campaign Execution)**
-- Document results in AGENT_ACCOUNTABILITY_REPORT.md
+- Document results in .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 - Update validation status in `.codex/session_context_latest.md`
 - Begin Phase 3 tasks
 
@@ -141,7 +141,7 @@ python3 -m pytest --collect-only tests/ 2>&1 | grep -E "ERROR|error" | wc -l
 **→ INVESTIGATE REGRESSIONS**
 - Collect full error list: `python3 -m pytest --collect-only tests/ 2>&1 | tee test-errors.log`
 - Compare against baseline: `.codex/PRE_MERGE_TEST_COLLECTION_STATUS.json`
-- NEW regressions (>25 baseline): Run recovery diagnostics in `.codex/POST_MERGE_MISSING_DEPS_INSTALL.md`
+- NEW regressions (>25 baseline): Run recovery diagnostics in `.codex/POST_MERGE_MISSING_DEPS_.codex/archive/misc/INSTALL.md`
 - If regressions confirmed after diagnostics: Escalate with error manifest
 
 ### Mixed Results (Some Pass, Some Fail)
@@ -169,14 +169,14 @@ pip install zstandard sqlalchemy
 ```
 - **Required?** Only if you want test collection errors to drop from 20 → 0
 - **Optional?** If focusing on core campaign only, can skip
-- **Reference**: `.codex/POST_MERGE_MISSING_DEPS_INSTALL.md` for detailed playbook
+- **Reference**: `.codex/POST_MERGE_MISSING_DEPS_.codex/archive/misc/INSTALL.md` for detailed playbook
 
 ### Task 3: Campaign Groundwork Continuation (20–40 min)
 Review the 8 campaign documentation files:
 1. `.codex/POST_MERGE_ENVIRONMENT_BASELINE.md` — Environment separation
 2. `.codex/POST_MERGE_COPILOT_SETUP_VALIDATION.md` — Validation gates (already executed)
 3. `.codex/POST_MERGE_REVERSION_PROTOCOL.md` — When/how to revert (reference only)
-4. `.codex/POST_MERGE_MISSING_DEPS_INSTALL.md` — Dependency diagnostics
+4. `.codex/POST_MERGE_MISSING_DEPS_.codex/archive/misc/INSTALL.md` — Dependency diagnostics
 5. `.codex/POST_MERGE_SESSION_CONTINUATION_BRIEF_V2.md` — Next steps overview
 6. `.codex/POST_MERGE_COPILOT_EXECUTION_PROMPT.md` — Detailed execution instructions
 7. `.codex/CAMPAIGN_ARTIFACT_INDEX.md` — Navigation reference
@@ -185,7 +185,7 @@ Review the 8 campaign documentation files:
 **Decision**: Proceed with Phase 4 (ongoing work) or escalate with findings?
 
 ### Task 4: Documentation & Sign-Off (5 min)
-Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` with:
+Update `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` with:
 ```markdown
 ## Post-Merge Session Results (PR #5084 + 1)
 **Timestamp**: [Now]
@@ -208,14 +208,14 @@ Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` with:
 | 3 (Env Vars) | CCA config not available or incorrect values | `.codex/agent_context.json` + reload environment |
 | 4 (Git LFS) | Large file handling broken post-merge | `pip install gitpython-lfs` or escalate |
 | 5 (Python) | Wrong Python version or codex module missing | `python3 --version` must be 3.12+; reinstall codex |
-| 6 (Test Collection) | New test collection errors beyond baseline | `.codex/POST_MERGE_MISSING_DEPS_INSTALL.md` for recovery |
+| 6 (Test Collection) | New test collection errors beyond baseline | `.codex/POST_MERGE_MISSING_DEPS_.codex/archive/misc/INSTALL.md` for recovery |
 
 ### Q: I see 20 test collection errors — is that bad?
 
 **No.** This is **EXPECTED and DOCUMENTED**.
 - Pre-existing baseline: 20 errors (zstandard import missing)
 - See: `.codex/POST_MERGE_ENVIRONMENT_BASELINE.md` (Lines 45–80)
-- To reduce to 0: Install zstandard via `.codex/POST_MERGE_MISSING_DEPS_INSTALL.md`
+- To reduce to 0: Install zstandard via `.codex/POST_MERGE_MISSING_DEPS_.codex/archive/misc/INSTALL.md`
 - **Don't treat as regression**; treat as known baseline
 
 ### Q: Should I revert?
@@ -270,7 +270,7 @@ Use this checklist to confirm readiness for merge and post-merge execution:
 
 **Post-Merge Validation** (After merge, in next session):
 - [ ] Executed all 6 validation gates
-- [ ] Recorded results in AGENT_ACCOUNTABILITY_REPORT.md
+- [ ] Recorded results in .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 - [ ] Determined: Proceed | Escalate | Revert
 - [ ] Established environment baseline
 - [ ] Documented any regressions vs. pre-existing baseline
@@ -326,7 +326,7 @@ Use this checklist to confirm readiness for merge and post-merge execution:
 1. Read this entire document
 2. Execute Phase 1 (validation gates)
 3. Follow decision tree result
-4. Update AGENT_ACCOUNTABILITY_REPORT.md
+4. Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 5. Proceed or escalate
 
 ---

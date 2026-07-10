@@ -12,7 +12,7 @@ except Exception:  # pragma: no cover - optional dependency
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 LINK_MAP = {
-    "AGENTS.md": "docs/guides/AGENTS.md",
+    ".codex/archive/deprecated/AGENTS.md": "docs/guides/.codex/archive/deprecated/AGENTS.md",
     "RUNBOOK.md": "docs/ops/RUNBOOK.md",
 }
 

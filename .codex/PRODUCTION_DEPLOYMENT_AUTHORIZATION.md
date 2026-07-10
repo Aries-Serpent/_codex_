@@ -63,4 +63,4 @@ Upon completion of Track 2 (Docker builds), Track 3 agent shall:
 
 **Record Keeper:** Copilot Agent Session (2026-06-20T07:55:32Z)  
 **Authorization Status:** 🟢 ACTIVE  
-**Compliance:** REQ-4 (AGENT_ACCOUNTABILITY_REPORT.md) — Authorization logged in this session
+**Compliance:** REQ-4 (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md) — Authorization logged in this session

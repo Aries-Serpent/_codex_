@@ -261,7 +261,7 @@ STATUS: 🔄 SCHEDULED FOR 2026-07-15
 **Escalation:** @mbaetiong (policy decisions only)  
 
 **Compliance Tracking:**
-- [ ] All REQ-4 requirements met (AGENT_ACCOUNTABILITY_REPORT.md updated)
+- [ ] All REQ-4 requirements met (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated)
 - [ ] All REQ-5 requirements met (CHANGELOG.md updated)
 - [ ] All agent deliverables tracked in .codex/PHASE_9_3_*.md files
 - [ ] Zero critical security findings introduced

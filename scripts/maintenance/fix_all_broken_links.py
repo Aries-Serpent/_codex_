@@ -172,7 +172,7 @@ class ComprehensiveLinkFixer:
             'tests/mcp/',
             '.*/.*\\.md',
             '\\..*\\.md',
-            'docs/guides/AGENTS.md',
+            'docs/guides/.codex/archive/deprecated/AGENTS.md',
             '.github/workflows/ci.yml',
             '.codex/guardrails.md',
             'docs/agent/OPERATIONAL_GUIDELINES.md',

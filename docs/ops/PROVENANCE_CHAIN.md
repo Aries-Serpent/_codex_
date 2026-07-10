@@ -183,4 +183,4 @@ via `workflow_dispatch` using `CODEX_MASTER_KEY` (if `_CODEX_ACTION_RUNNER` has
 | `.codex/evidence/owner_approval.jsonl` | Guard decision audit log |
 | `src/codex/github/mcp_poster.py` | Autonomous PR comment posting |
 | `docs/accountability/AGENT_ACCESS_EXPERIENCE_REPORT.md` | Access friction analysis |
-| `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | Violation history + commitments |
+| `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` | Violation history + commitments |

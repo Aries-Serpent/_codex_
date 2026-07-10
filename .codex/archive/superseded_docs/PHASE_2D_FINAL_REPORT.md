@@ -52,14 +52,14 @@ Phase 2D successfully completed the final task of Phase 2 by implementing intell
    - Corrected agent README links
    - Updated roadmap references
 
-2. **`.github/agents/docs/AGENTS.md`** - 14 fixes
+2. **`.github/agents/docs/.codex/archive/deprecated/AGENTS.md`** - 14 fixes
    - Fixed AI Codebase Agency Policy links
    - Updated operational guidelines references
    - Corrected agent architecture links
 
 3. **`.codex/docs/README.md`** - 12 fixes
    - Fixed cognitive architecture references
-   - Updated AGENTS.md links
+   - Updated .codex/archive/deprecated/AGENTS.md links
    - Corrected documentation cross-references
 
 4. **docs/workflows/AGENT_CONTINUATION_PROTOCOL.md** - 9 fixes
@@ -202,7 +202,7 @@ Phase 2D intelligently **skipped 117 template placeholders** to avoid breaking d
 
 ### GitHub Infrastructure (`.github/`) - 14 files
 
-- **agents/docs/AGENTS.md** - Agent documentation (14 fixes)
+- **agents/docs/.codex/archive/deprecated/AGENTS.md** - Agent documentation (14 fixes)
 - **CONTINUATION_PROMPT_PHASE8.md** - Continuation prompt (8 fixes)
 - **agents/reference-updater-agent.md** - Reference updater (8 fixes)
 - **POST_TO_PR_2671.md** - PR posting template (5 fixes)
@@ -211,7 +211,7 @@ Phase 2D intelligently **skipped 117 template placeholders** to avoid breaking d
 ### Codex Environment (`.codex/`) - 9 files
 
 - **docs/README.md** - Codex docs overview (12 fixes)
-- **docs/AGENTS.md.original.cf4e8c9.md** - Original agents doc (8 fixes)
+- **docs/.codex/archive/deprecated/AGENTS.md.original.cf4e8c9.md** - Original agents doc (8 fixes)
 - **cognitive_brain/status/COGNITIVE_BRAIN_STATUS_SEARCH_RESULTS.md** - Status doc (8 fixes)
 - Plus 6 more configuration files
 
@@ -308,7 +308,7 @@ def _calculate_path_distance(source_dir, target_dir):
 | `ROADMAP.md` | `docs/ROADMAP.md` | 18 |
 | `GENESIS_SETUP_GUIDE.md` | `docs/admin/GENESIS_SETUP_GUIDE.md` | 9 |
 | `OPERATIONAL_GUIDELINES.md` | `docs/agent/OPERATIONAL_GUIDELINES.md` | 8 |
-| `AGENTS.md` | `.github/AGENTS.md` | 22 |
+| `.codex/archive/deprecated/AGENTS.md` | `.github/.codex/archive/deprecated/AGENTS.md` | 22 |
 | `ARCHITECTURE.md` | `docs/ARCHITECTURE.md` | 15 |
 
 **Total References Fixed:** 114 relocated file references

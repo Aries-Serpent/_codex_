@@ -41,7 +41,7 @@ Aries-Serpent/_codex_/ (ROOT)
 ├── 📄 Phase Reports & Campaign Docs (ARCHIVE)
 │   ├── PHASE_1_AGENTS_AUDIT.md
 │   ├── PHASE_3_SECURITY_COMPLETION.md
-│   ├── CAMPAIGN_EXECUTION_COMPLETE.md
+│   ├── .codex/archive/misc/CAMPAIGN_EXECUTION_COMPLETE.md
 │   └── ... (40+ more)
 ├── 📄 Test/Temp Files (DELETE)
 │   ├── a.py
@@ -280,7 +280,7 @@ done
 ├── PHASE_D_*.md
 ├── PHASE_D_*.json
 ├── WAVE_4_*.md
-├── CAMPAIGN_EXECUTION_COMPLETE.md
+├── .codex/archive/misc/CAMPAIGN_EXECUTION_COMPLETE.md
 ├── STREAM_B_REMEDIATION_SESSION_SUMMARY.txt
 ├── PHASE_2_TRACK_*.md
 ├── PHASE_2_TRACK_*.txt
@@ -296,7 +296,7 @@ done
 
 **Updates Required**:
 - Update `.codex/README.md` with new path
-- Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` with archive references
+- Update `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` with archive references
 - Create index file: `.codex/archive/phases/INDEX.md`
 
 ---
@@ -490,13 +490,13 @@ git mv PHASE_3_*.* .codex/archive/phases/phase_3/
 git mv WAVE_4_*.* .codex/archive/phases/wave_4/
 
 # Move campaign artifacts
-git mv CAMPAIGN_EXECUTION_COMPLETE.md .codex/archive/phases/
+git mv .codex/archive/misc/CAMPAIGN_EXECUTION_COMPLETE.md .codex/archive/phases/
 git mv STREAM_B_REMEDIATION_SESSION_SUMMARY.txt .codex/archive/phases/
 ```
 
 **Updates Required**:
 1. Create `.codex/archive/phases/INDEX.md` with links to all reports
-2. Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` with new paths
+2. Update `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` with new paths
 3. Search workflows for references to `PHASE_*.md` → update if any found
 4. Update `README.md` with link to archive
 
@@ -552,7 +552,7 @@ EOF
 3. **`CHANGELOG.md`** (add cleanup campaign entry)
    - Action: Add entry documenting root folder cleanup
 
-4. **`AGENT_ACCOUNTABILITY_REPORT.md`**
+4. **`.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`**
    - Action: Update with cleanup campaign results
 
 5. **All Mermaid diagrams in `docs/`**
@@ -616,7 +616,7 @@ EOF
 - [ ] Update `README.md` with organization guide
 - [ ] Update `CONTRIBUTING.md` with file location reference
 - [ ] Create `.codex/archive/phases/INDEX.md` with all report links
-- [ ] Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` with archive references
+- [ ] Update `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` with archive references
 
 ---
 
@@ -666,7 +666,7 @@ EOF
 - **Main Campaign**: `.codex/CI_FAILURE_CAMPAIGN_2026_06_29.md`
 - **Root Folder Structure**: This file (ROOT_FOLDER_CLEANUP_PLAN.md)
 - **Next Session**: Root Folder Cleanup Execution
-- **Accountability**: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- **Accountability**: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 ---
 

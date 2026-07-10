@@ -11,7 +11,7 @@ description: "Offline-first ML repository with reproducible training and schema-
 # ─────────────────────────────────────────────────────────────────────────────
 # TIERED NAVIGATION CONTRACT (for AI agents)
 # ─────────────────────────────────────────────────────────────────────────────
-# Tier 0 → Read entry points first (README, AGENTS.md, this file, CODEX_MANIFEST.json)
+# Tier 0 → Read entry points first (README, .codex/archive/deprecated/AGENTS.md, this file, CODEX_MANIFEST.json)
 # Tier 1 → Use domain Mermaid maps for architecture orientation
 # Tier 2 → Use package/module maps only after Tier 1 context established
 # Tier 3 → Read specific files only when Tier 2 confirms relevance
@@ -23,7 +23,7 @@ navigation:
     - path: "README.md"
       role: "Quick index and AI agent orientation"
       read_depth: "header-only"
-    - path: "AGENTS.md"
+    - path: ".codex/archive/deprecated/AGENTS.md"
       role: "Navigation rules, conventions, prohibited actions"
       read_depth: "full"
     - path: ".codex/codex_index.yaml"
@@ -86,11 +86,11 @@ navigation:
 
 # Primary files - high priority, read first
 primary:
-  - path: "AGENTS.md"
+  - path: ".codex/archive/deprecated/AGENTS.md"
     priority: "critical"
     read_depth: "full"
 
-  - path: "docs/guides/AGENTS.md"
+  - path: "docs/guides/.codex/archive/deprecated/AGENTS.md"
     priority: "critical"
     read_depth: "full"
 
@@ -120,8 +120,8 @@ primary:
 
 # Summaries - one-line descriptions for quick reference
 summaries:
-  "AGENTS.md": "Super-agent entrypoint with quick-start guide and wavepoints"
-  "docs/guides/AGENTS.md": "Canonical agent guidelines for contributors and Codex automation"
+  ".codex/archive/deprecated/AGENTS.md": "Super-agent entrypoint with quick-start guide and wavepoints"
+  "docs/guides/.codex/archive/deprecated/AGENTS.md": "Canonical agent guidelines for contributors and Codex automation"
   "AGENT_CONTINUATION_PROMPT.md": "Continuation protocol for S-14, S-15, S-02 implementation tasks"
   "CHATGPT_CONTINUATION.md": "Pagination and resume contract for handling long responses"
   "_codex_repo_map.json": "Complete repository file mapping with sizes and categories (253KB)"
@@ -392,7 +392,7 @@ symbolic_notation:
     τ_optimal = (10 × 1.0 × 0.5) + (10 × 1.0 × 0.5) + (7 × 1.0 × 0.5) + (7 × 0.3 × 1.0) + ... / √40
     τ_optimal ≈ 3.2 time units (vs ~8.5 for random traversal)
 
-  optimization_strategy: "Follow wavepoint order in AGENTS.md to achieve near-optimal τ"
+  optimization_strategy: "Follow wavepoint order in .codex/archive/deprecated/AGENTS.md to achieve near-optimal τ"
 
 # End of codex_index.yaml
-# For updates or questions, see docs/guides/AGENTS.md
+# For updates or questions, see docs/guides/.codex/archive/deprecated/AGENTS.md

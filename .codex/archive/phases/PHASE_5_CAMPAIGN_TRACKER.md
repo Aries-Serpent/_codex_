@@ -115,7 +115,7 @@
 - ✅ No critical blockers
 - ✅ All metrics on target or exceeded
 - ✅ All deliverables created in `.codex/`
-- ✅ REQ-4/REQ-5 compliance maintained (AGENT_ACCOUNTABILITY_REPORT.md, CHANGELOG.md)
+- ✅ REQ-4/REQ-5 compliance maintained (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md, CHANGELOG.md)
 - ✅ Ready for Phase 6 transition
 
 ### Specific Targets
@@ -137,7 +137,7 @@
 2. **Weekly Consolidation (Mondays):**
    - Review checkpoint reports from all 3 agents
    - Consolidate metrics and progress
-   - Update AGENT_ACCOUNTABILITY_REPORT.md
+   - Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
    - Track cumulative progress against targets
 
 3. **Blocker Escalation:**

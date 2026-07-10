@@ -208,7 +208,7 @@ All Patterns: Compatible with pandas 3.0.3 ✓
 
 ### Created Files (4)
 
-1. **DEPENDENCY_CONSTRAINTS.md** (10,050 bytes)
+1. **.codex/archive/misc/DEPENDENCY_CONSTRAINTS.md** (10,050 bytes)
    - Central source of truth for version rationale
    - Cross-file consistency rules
    - Known issues and workarounds
@@ -245,7 +245,7 @@ All Patterns: Compatible with pandas 3.0.3 ✓
 | ✅ All requirement files specify pandas >= 3.0.3 | PASS | 8/8 files aligned |
 | ✅ pyproject.toml and all requirements consistent | PASS | Automated validator: 0 issues |
 | ✅ Evaluation test suite requirements aligned | PASS | requirements-eval.txt updated |
-| ✅ DEPENDENCY_CONSTRAINTS.md created | PASS | 10K+ comprehensive guide |
+| ✅ .codex/archive/misc/DEPENDENCY_CONSTRAINTS.md created | PASS | 10K+ comprehensive guide |
 | ✅ No regressions in ML pipelines | PASS | 99% compatibility verified |
 | ✅ Full test suite passes | ⏳ Testing | Agent running (final validation) |
 | ✅ Security audit complete | PASS | 11 CVEs fixed, approved |

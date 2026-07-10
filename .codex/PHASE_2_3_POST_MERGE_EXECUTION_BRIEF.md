@@ -335,7 +335,7 @@ cat .codex/PHASE_14_LIVE_MONITORING_DASHBOARD_2026_07_09_*.md
 **Accountability Report (Updated After Each Agent Completes):**
 ```bash
 # Session summary
-tail -100 docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+tail -100 docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 ```
 
 ### Failure Logs & Debugging
@@ -369,7 +369,7 @@ tail -200 .codex/phase2_lane1_docker_validation.log | grep -A 20 "ERROR\|FAILED"
 **Daily Updates:**
 1. Update `.codex/PHASE_14_LIVE_MONITORING_DASHBOARD_*.md` every 10 min
 2. Post standup comment on active PR every 30 min during execution
-3. Log session summary in AGENT_ACCOUNTABILITY_REPORT.md
+3. Log session summary in .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 
 **Escalation:**
 - **Critical (P0):** Agent system failure, data loss risk → @mbaetiong
@@ -410,7 +410,7 @@ tail -200 .codex/phase2_lane1_docker_validation.log | grep -A 20 "ERROR\|FAILED"
 | Phase 3 integration tests | `tests/integration/test_api_e2e.py` etc. | E2E testing |
 | Phase 3 results | `.codex/phase3_lane_*_*.json` | Integration results (JSON) |
 | Monitoring dashboard | `.codex/PHASE_14_LIVE_MONITORING_DASHBOARD_*.md` | Real-time status |
-| Accountability report | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | Session summaries |
+| Accountability report | `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` | Session summaries |
 
 ### Launch Agent Delegation
 

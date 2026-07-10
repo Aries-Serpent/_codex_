@@ -25,7 +25,7 @@ Additionally, CI Failure Triage Issue #3565 (75 failures across 29 workflows) wa
 | `TestSessionArchive` test class (5 tests) | `tests/autonomy/test_session_tracker.py` | ✅ Complete |
 | Tombstone record for stale session | `memory/sessions/session_f50f76f3-….json` | ✅ Complete |
 | CHANGELOG session 16 entry | `CHANGELOG.md` | ✅ Complete |
-| Accountability report session 16 | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | ✅ Complete |
+| Accountability report session 16 | `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` | ✅ Complete |
 | Session Analysis Agent v1.1.0 | `.github/agents/session-analysis-agent.md` | ✅ Complete |
 | Cognitive brain status (this file) | `.codex/cognitive_brain/status/` | ✅ Complete |
 

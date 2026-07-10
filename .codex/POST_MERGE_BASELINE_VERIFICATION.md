@@ -44,7 +44,7 @@
 **Verdict:** Repository is clean and ready for Phase 3-6 execution.
 
 ### 5. Documentation Consistency Spot-Checks
-- ✅ INSTALL.md present on main (profile documentation)
+- ✅ .codex/archive/misc/INSTALL.md present on main (profile documentation)
 - ✅ OFFLINE_BOOTSTRAP.sh present on main (codex_ml references)
 - ✅ .codex/AGENTIC_REPO_STATE.md present (authority baseline)
 - ✅ .codex/agent_context.json present (runtime configuration)

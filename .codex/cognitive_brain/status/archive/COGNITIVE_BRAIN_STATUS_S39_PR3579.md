@@ -165,7 +165,7 @@ Auto-apply schedule: weekly Sunday 03:00 UTC
 
 - [x] All copilot-pull-request-reviewer threads reviewed
 - [x] All code-fixable issues fixed (ruff 0, pre_flight 6/6, docs_lint 0)
-- [x] `AGENT_ACCOUNTABILITY_REPORT.md` updated (mandatory CI gate)
+- [x] `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` updated (mandatory CI gate)
 - [x] CI failure patterns addressed
 - [x] Codebase left better than found
 

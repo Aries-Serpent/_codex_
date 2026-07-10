@@ -47,7 +47,7 @@
       "critical": true,
       "description": "Version history; updated per release"
     },
-    "AGENTS.md": {
+    ".codex/archive/deprecated/AGENTS.md": {
       "owner": "@skills-master-agent",
       "category": "Agent Registry",
       "last_reviewed": "2026-07-07",

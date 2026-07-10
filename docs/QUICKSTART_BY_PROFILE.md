@@ -209,7 +209,7 @@ python -m codex.cli serve
 | **Container** | See `docs/DOCKER_SETUP.md` |
 | **Kubernetes** | See `docs/KUBERNETES_DEPLOYMENT.md` |
 | **CI/CD** | See `.github/workflows/` examples |
-| **Enterprise** | See `docs/OFFLINE_DEPLOYMENT.md` |
+| **Enterprise** | See `docs/docs/release/OFFLINE_DEPLOYMENT.md` |
 
 ---
 

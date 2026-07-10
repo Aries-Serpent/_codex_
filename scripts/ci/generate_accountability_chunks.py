@@ -314,7 +314,7 @@ class AccountabilityChunksGenerator:
         # Build markdown
         markdown = f"""# Agent Accountability Report — Session Index
 
-> **Note:** The monolithic AGENT_ACCOUNTABILITY_REPORT.md has been split into session
+> **Note:** The monolithic .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md has been split into session
 > groups for GitHub rendering compatibility. All {len(self.sessions)} sessions are preserved in {total_chunks} chunks.
 
 ## Quick Navigation

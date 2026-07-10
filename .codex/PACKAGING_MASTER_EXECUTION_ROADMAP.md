@@ -90,7 +90,7 @@ PHASE 4: Full Distribution           🔄 EXECUTING         (2-3 weeks)  ETA 202
 ### Deliverables
 1. PyPI package: `aries-serpent-cognitive-brain-0.1.0`
 2. Distribution archive: `aries-serpent-cognitive-brain-0.1.0.zip` (1-2 MB)
-3. Quick-start guide: `QUICK_START_COGNITIVE_BRAIN.md`
+3. Quick-start guide: `docs/quickstart/QUICK_START_COGNITIVE_BRAIN.md`
 4. GitHub Release: `v0.1.0-beta1`
 5. Community announcement: Discussion post + release notes
 
@@ -420,11 +420,11 @@ EFFORT: 2-3 weeks (protocol design + refactor + validation)
 - Review progress against roadmap
 - Adjust timelines if needed
 - Make checkpoint decision (GO / STOP / PIVOT)
-- Document decisions in AGENT_ACCOUNTABILITY_REPORT.md
+- Document decisions in .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 
 **Final Handoff**:
 - Update CHANGELOG.md with all phases
-- Update AGENT_ACCOUNTABILITY_REPORT.md (completion summary)
+- Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (completion summary)
 - Create campaign retrospective in `.codex/`
 
 ---
@@ -497,7 +497,7 @@ EFFORT: 2-3 weeks (protocol design + refactor + validation)
 - `.codex/PACKAGING_PREP_LANE1_ARCHITECTURE_ANALYSIS.md` - Architecture blocker analysis
 
 **Accountability**:
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` - Campaign tracking
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` - Campaign tracking
 - `CHANGELOG.md` - Release notes
 
 ---

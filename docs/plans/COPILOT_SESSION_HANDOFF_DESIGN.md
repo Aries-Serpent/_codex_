@@ -166,7 +166,7 @@ stateDiagram-v2
     Commit --> CommitLoop : More work pending
     Commit --> WrapUp : All tasks complete
 
-    WrapUp --> AccountabilityUpdate : AGENT_ACCOUNTABILITY_REPORT.md
+    WrapUp --> AccountabilityUpdate : .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
     AccountabilityUpdate --> ChangelogUpdate : CHANGELOG.md
     ChangelogUpdate --> WECWrite : WEC block written to PR body
     WECWrite --> ValidationRun : parallel_validation called
@@ -431,7 +431,7 @@ These invariants are verified at module load by `session_wrapup_autofix.py`:
 ```
 □ 1. Read .codex/AGENTIC_REPO_STATE.md           → confirms auth is active
 □ 2. Read .codex/CODEBASE_AGENCY_POLICY.md       → mandatory rules
-□ 3. Read docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md → last session state
+□ 3. Read docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md → last session state
 □ 4. Read .codex/session_handoff.json            → open tasks + WEC + rate limits
 □ 5. Read .codex/session_context_latest.md       → RAG-built PR context
 □ 6. Check COPILOT_MERGE_CONFLICT env var         → resolve conflicts first if true

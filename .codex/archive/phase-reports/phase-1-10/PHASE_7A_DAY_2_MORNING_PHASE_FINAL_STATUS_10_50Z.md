@@ -177,7 +177,7 @@
    - Checkpoint synchronization schedule
    - Projected outcome modeling
 
-3. ✅ **docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md** (Updated)
+3. ✅ **docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md** (Updated)
    - Day 2 Lane 3.2 results recorded
    - Campaign progress tracking
    - Success criteria status

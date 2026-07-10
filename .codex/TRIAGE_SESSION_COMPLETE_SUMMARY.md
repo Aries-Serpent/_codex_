@@ -157,7 +157,7 @@ Successfully implemented a **6-phase parallel CI failure remediation strategy** 
 - src/codex/governance/rbac.py
 - tests/conftest.py
 - CHANGELOG.md
-- docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+- docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 
 **Phase 4 (4):**
 - .codex/PHASE_7C_GITHUB_RELEASE_STRATEGY.md

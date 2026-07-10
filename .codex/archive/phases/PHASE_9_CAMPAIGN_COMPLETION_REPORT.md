@@ -38,7 +38,7 @@ The Phase 9 Multi-Agent Validation Campaign executed across 4 parallel lanes ove
    └─ session-analysis: Phase completion status verification
    ↓
 2026-06-26T03:30:00Z - Lane C: Consistency & Governance Check (30 min)
-   ├─ documentation-consolidator: AGENTS.md consistency
+   ├─ documentation-consolidator: .codex/archive/deprecated/AGENTS.md consistency
    ├─ unified-doc: CHANGELOG.md review
    ├─ terminology-consistency: Emoji/timestamp standardization
    └─ post-merge-alignment: GitHub Pages & accountability sync
@@ -65,7 +65,7 @@ The Phase 9 Multi-Agent Validation Campaign executed across 4 parallel lanes ove
 | **Files Analyzed** | 99 |
 | **Issues Found** | 5 |
 | **Issues Fixed** | 5 (100%) |
-| **Key Findings** | Missing Phase 9 reference in AGENTS.md; stale timestamps |
+| **Key Findings** | Missing Phase 9 reference in .codex/archive/deprecated/AGENTS.md; stale timestamps |
 | **Agents Deployed** | semantic-search, recon-scout, claim-verification |
 | **Execution Time** | 25 minutes |
 
@@ -126,9 +126,9 @@ The Phase 9 Multi-Agent Validation Campaign executed across 4 parallel lanes ove
 
 | Issue | Status | File(s) Modified |
 |-------|--------|------------------|
-| **T4.3.1a:** Update AGENTS.md for Phase 9 campaign | ✅ FIXED | `AGENTS.md` |
+| **T4.3.1a:** Update .codex/archive/deprecated/AGENTS.md for Phase 9 campaign | ✅ FIXED | `.codex/archive/deprecated/AGENTS.md` |
 | **T4.3.1b:** Add Phase 9 campaign entry to CHANGELOG | ✅ FIXED | `CHANGELOG.md` |
-| **T4.3.1c:** Record campaign in AGENT_ACCOUNTABILITY_REPORT | ✅ FIXED | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` |
+| **T4.3.1c:** Record campaign in AGENT_ACCOUNTABILITY_REPORT | ✅ FIXED | `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` |
 
 ### Priority 3 (Validation) — 3 Issues Fixed
 
@@ -148,9 +148,9 @@ The Phase 9 Multi-Agent Validation Campaign executed across 4 parallel lanes ove
 | `docs/phase-9/PHASE_8_12_MASTER_EXECUTION_PLAN.md` | +4 lines, -2 lines (link fix, timestamps) | Commits 1-2 |
 | `.codex/PHASE_8_12_MASTER_EXECUTION_PLAN.md` | +19 lines, -17 lines (status, timestamps, emojis) | Commits 1-2 |
 | `.codex/PHASE_9_COORDINATION_DASHBOARD.md` | +2 lines, -1 line (timestamp update) | Commit 2 |
-| `AGENTS.md` | +6 lines (Phase 9 reference, agent count) | Commit 3 |
+| `.codex/archive/deprecated/AGENTS.md` | +6 lines (Phase 9 reference, agent count) | Commit 3 |
 | `CHANGELOG.md` | +41 lines (Phase 9 campaign entry) | Commit 3 |
-| `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | +48 lines (campaign session) | Commit 3 |
+| `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` | +48 lines (campaign session) | Commit 3 |
 | `.codex/PHASE_9_CAMPAIGN_AUDIT_SUMMARY.md` | +202 lines (new audit summary) | Commit 4 |
 
 **Total Impact:**
@@ -173,7 +173,7 @@ The Phase 9 Multi-Agent Validation Campaign executed across 4 parallel lanes ove
 
 ### Governance Compliance
 ```
-✅ REQ-4 Compliance: AGENT_ACCOUNTABILITY_REPORT.md in HEAD
+✅ REQ-4 Compliance: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md in HEAD
    - Phase 9 campaign session entry added ✅
    - All 4 lanes documented ✅
    - 12 corrections referenced ✅
@@ -262,7 +262,7 @@ All 4 commits:
 
 - ✅ AGENT_REGISTRY.yaml: 147 active agents registered, 10 D_CAPABLE
 - ✅ GitHub Pages: phase-9 directory live, 4/4 required docs accessible
-- ✅ AGENT_ACCOUNTABILITY_REPORT.md: Campaign session recorded
+- ✅ .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md: Campaign session recorded
 - ✅ CHANGELOG.md: Phase 9 campaign documented
 - ✅ Pre-commit hooks: All validation passing
 
@@ -282,9 +282,9 @@ All 4 commits:
 | Phase 9 Campaign Audit Summary | ✅ Complete | `.codex/PHASE_9_CAMPAIGN_AUDIT_SUMMARY.md` |
 | Phase 9 Readiness Report | ✅ Complete | `.codex/PHASE_9_READINESS_REPORT.md` |
 | Phase 9 Campaign Completion Report | ✅ Complete | `.codex/PHASE_9_CAMPAIGN_COMPLETION_REPORT.md` |
-| Updated AGENT_ACCOUNTABILITY_REPORT | ✅ Complete | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` |
+| Updated AGENT_ACCOUNTABILITY_REPORT | ✅ Complete | `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` |
 | Updated CHANGELOG | ✅ Complete | `CHANGELOG.md` |
-| Updated AGENTS.md | ✅ Complete | `AGENTS.md` |
+| Updated .codex/archive/deprecated/AGENTS.md | ✅ Complete | `.codex/archive/deprecated/AGENTS.md` |
 | Updated AGENT_REGISTRY | ✅ Complete | `.github/agents/AGENT_REGISTRY.yaml` |
 | 4 Clean Commits | ✅ Complete | HEAD branch (all pushed) |
 

@@ -211,9 +211,9 @@ The **Pre-Merge Readiness System** uses 10 weighted validation gates to determin
 **Purpose:** Maintain audit trail of changes and session responsibility.
 
 **Validation Steps:**
-1. Check `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated in last commit
+1. Check `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` updated in last commit
    ```bash
-   git diff --name-only HEAD~1 HEAD | grep -q "AGENT_ACCOUNTABILITY_REPORT.md"
+   git diff --name-only HEAD~1 HEAD | grep -q ".codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md"
    ```
 
 2. Check `CHANGELOG.md` updated in last commit
@@ -234,7 +234,7 @@ The **Pre-Merge Readiness System** uses 10 weighted validation gates to determin
 **Failure Criterion:** Either file missing after auto-fix attempt → manual update required OR auto-fix succeeds (no blocking failure)
 
 **PR Body Impact:**
-- Record: "✅ Accountability (8/8): AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md updated in commit abc1234"
+- Record: "✅ Accountability (8/8): .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md updated in commit abc1234"
 - Or: "⚠️ Accountability (8/8): Auto-fixed — entries generated in commit xyz5678"
 
 **Weight:** 8 points
@@ -430,7 +430,7 @@ Use this checklist when reviewing PRs against the 10-gate model:
 - [ ] **Gate 4:** WEC section present with 9 items, all always-required `[x]`?
 - [ ] **Gate 5:** No deferral language detected? (Check Comments)
 - [ ] **Gate 6:** All blocking comments resolved or replied to with commit SHA?
-- [ ] **Gate 7:** AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md in last commit?
+- [ ] **Gate 7:** .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md in last commit?
 - [ ] **Gate 8:** All GitHub Actions use approved versions? (Check workflow files)
 - [ ] **Gate 9:** No actionlint/yamllint errors? (Run locally)
 - [ ] **Gate 10:** Branch clean, up-to-date, no conflicts?

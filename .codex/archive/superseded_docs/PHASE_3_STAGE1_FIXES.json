@@ -92,7 +92,7 @@
       "reason": "Uncertain - comment for manual review"
     },
     {
-      "file": ".github/agents/docs/AGENTS.md",
+      "file": ".github/agents/docs/.codex/archive/deprecated/AGENTS.md",
       "link": "../../../.codex/docs/COGNITIVE_BRAIN_COMPLETE_DOCS.md",
       "action": "comment",
       "reason": "Uncertain - comment for manual review"

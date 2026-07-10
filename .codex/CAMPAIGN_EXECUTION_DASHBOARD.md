@@ -144,7 +144,7 @@ TOTAL  ████████████░░░░░░░░ 🟡 ~40% �
 ### Phase 1-2 Deliverables (Complete)
 - ✅ `.codex/PHASE_1_CONSOLIDATED_FINDINGS.md` (13.1 KB)
 - ✅ `.codex/PHASE_2_CONSOLIDATED_FINDINGS.md` (15+ KB)
-- ✅ `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (updated)
+- ✅ `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (updated)
 - ✅ `CHANGELOG.md` (updated)
 
 ### Phase 3 Deliverables (In Progress)
@@ -167,7 +167,7 @@ TOTAL  ████████████░░░░░░░░ 🟡 ~40% �
 
 ### Campaign Completion Deliverables (Pending)
 - ⏳ `.codex/CAMPAIGN_FINAL_REPORT.md` (all phases consolidated)
-- ⏳ `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (final update)
+- ⏳ `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (final update)
 - ⏳ `CHANGELOG.md` (final update)
 
 ---

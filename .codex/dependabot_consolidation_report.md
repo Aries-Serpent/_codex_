@@ -55,7 +55,7 @@ All GitHub Actions workflows in `.github/workflows/` have been updated with depe
 - `CODEX_MANIFEST.json` - Refreshed with latest versions
 - `.secrets.baseline` - Updated security baseline
 - `pyproject.toml` - Updated with dependency constraints
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` - Updated status
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` - Updated status
 - `docs/checks.md` - Updated validation checks
 
 #### Documentation & Metadata (10 files)

@@ -383,7 +383,7 @@ gh workflow run workflow-execution-gate.yml \
 - [ ] Workflow Execution Checklist updated in PR body
 - [ ] `workflow-execution-gate.yml` triggered with PR number
 - [ ] Gate summary comment verified on PR
-- [ ] `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated
+- [ ] `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` updated
 - [ ] `report_progress` committed and pushed
 ```
 

@@ -61,7 +61,7 @@ The `copilot/create-implementation-plan` branch is ready for continued work. No 
 ## References
 
 - **Workflow Run:** https://github.com/Aries-Serpent/_codex_/actions/runs/28059623643
-- **Accountability Report:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- **Accountability Report:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - **Session Logs:** `.codex/sessions/`
 - **Recovery Workflow:** `.github/workflows/session-recovery-handler.yml`
 

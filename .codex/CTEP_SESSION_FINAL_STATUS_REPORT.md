@@ -161,7 +161,7 @@ All 7 tasks remain pending (full test suite, pre-commit, mypy, docs, etc.)
 9. **Task 3.3:** Run mypy (10 min)
 10. **Task 3.4:** Update failure analysis docs (10 min)
 11. **Task 3.5:** Create fix manifest (15 min)
-12. **Task 3.6:** Update AGENTS.md (10 min)
+12. **Task 3.6:** Update .codex/archive/deprecated/AGENTS.md (10 min)
 13. **Task 3.7:** Verify constraints (5 min)
 
 ### Critical - Final Requirements (1 meta-task)

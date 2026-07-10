@@ -203,7 +203,7 @@ All phases must be complete before Phase 4 deployment:
 - Performance metrics (latency, throughput, memory)
 - Security audit results (vulnerabilities, SBOMs)
 - Deployment success stories (3+ examples)
-- Update AGENT_ACCOUNTABILITY_REPORT.md with Phase 4 session
+- Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with Phase 4 session
 - Update PACKAGING_MASTER_EXECUTION_ROADMAP.md (FINAL)
 - Create Phase 4 executive summary
 
@@ -326,7 +326,7 @@ By Phase 4 completion, deliver:
 - [ ] Security audit results (SBOM, vulnerability scans)
 - [ ] Production checklist (security, monitoring, scaling)
 - [ ] Phase 4 Completion Report
-- [ ] AGENT_ACCOUNTABILITY_REPORT.md updated
+- [ ] .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated
 - [ ] PACKAGING_MASTER_EXECUTION_ROADMAP.md finalized
 - [ ] Campaign retrospective document
 

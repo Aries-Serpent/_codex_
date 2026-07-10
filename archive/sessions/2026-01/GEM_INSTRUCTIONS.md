@@ -366,11 +366,11 @@ A: List from AGENT_REGISTRY.yaml: bridge-security-monitor,
 **For New Contributors:**
 1. Start: `docs/guides/QUICKSTART.md`
 2. Architecture: `docs/guides/REPOSITORY_ARCHITECTURE_DIAGRAMS.md`
-3. Agents: `AGENTS.md`, `docs/agent/OPERATIONAL_GUIDELINES.md`
+3. Agents: `.codex/archive/deprecated/AGENTS.md`, `docs/agent/OPERATIONAL_GUIDELINES.md`
 4. Testing: `docs/guides/TESTING_GUIDE.md`
 
 **For AI Agents:**
-1. Core: `AGENTS.md`
+1. Core: `.codex/archive/deprecated/AGENTS.md`
 2. Operational: `docs/agent/OPERATIONAL_GUIDELINES.md`
 3. Prompts: `.codex/prompts/`, `agents/prompts/`
 4. Registry: `.github/agents/AGENT_REGISTRY.yaml`

@@ -207,7 +207,7 @@ All 8 Phase B production readiness tracks have been successfully completed and v
 ### Before Gate 2 Dispatch (Next Session)
 1. ✅ Verify all 8 track reports in `.codex/campaign-artifacts/`
 2. ✅ Confirm no blockers remain (all are resolved)
-3. ✅ Update AGENT_ACCOUNTABILITY_REPORT.md with Gate 1 completion
+3. ✅ Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with Gate 1 completion
 4. ✅ Prepare Gate 2 prompt for next session
 
 ### Gate 2 Execution (Day 14)

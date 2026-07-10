@@ -94,9 +94,9 @@ This document consolidates all 32 governance gates from Phase 7D production camp
 ### ✅ PILLAR 3: PHASE 7D COMPLIANCE GATES (4/4)
 
 #### Gate 3.1: REQ-4 Agent Accountability
-- **Requirement:** All agent actions documented in AGENT_ACCOUNTABILITY_REPORT.md
+- **Requirement:** All agent actions documented in .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 - **Achieved:** ✅ **Complete** (5 track entries + all commit SHAs)
-- **Evidence:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- **Evidence:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - **Verification:** Track 1-4 entries with timestamps and commit references
 - **Status:** ✅ **PASS**
 

@@ -152,7 +152,7 @@ The chunker tests (99.20% coverage) align with PR #5190's fix (added whitespace-
 - 🔴 **BLOCKED** pending coverage remediation
 
 ### Accountability
-- **AGENT_ACCOUNTABILITY_REPORT.md**: Will be updated post-remediation
+- **.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md**: Will be updated post-remediation
 - **CHANGELOG.md**: Will document coverage discrepancy and remediation
 
 ---

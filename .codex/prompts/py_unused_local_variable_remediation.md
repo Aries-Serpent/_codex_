@@ -20,7 +20,7 @@
 
 **Protocol:**
 1. **LOAD** `.codex/CODEBASE_AGENCY_POLICY.md` (complete, not summary) — §0, §2, §3a, §ARLOOP
-2. **LOAD** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (check for blocking mandates)
+2. **LOAD** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (check for blocking mandates)
 3. **REVIEW** this entire prompt for scope, strategy, and acceptance criteria
 4. **IMPLEMENT** each affected file sequentially with validation after each
 5. **VALIDATE** against acceptance criteria after implementation step

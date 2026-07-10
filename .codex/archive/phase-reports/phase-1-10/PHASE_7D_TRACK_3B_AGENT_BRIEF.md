@@ -169,7 +169,7 @@ Complete functionality across 3 domains (CLI 95%→100%, Cross-platform 96%→10
    - Task completion summary (3.1-3.3)
    - Resolving commit SHA
    - Migration guide link
-3. **Accountability:** Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` with:
+3. **Accountability:** Update `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` with:
    - Track 3B completion entry
    - Commit SHA for functionality work
    - ETA met/missed status

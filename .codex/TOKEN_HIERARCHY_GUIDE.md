@@ -504,7 +504,7 @@ raise Exception(f"API failed with token {token}: {response.text}")
 
 ## 🔗 Related Documentation
 
-- **SCRIPT_TOKEN_INTEGRATION.md** - How to implement token resolution in scripts
+- **SCRIPT_TOKEN_docs/api/reference/INTEGRATION.md** - How to implement token resolution in scripts
 - **WORKFLOW_TOKEN_PATTERNS_UPDATE.md** - Token patterns for GitHub Actions workflows
 - **API_VARIABLE_OPERATIONS.md** - Complete API guide for variable operations
 - **CI_CD_TOKEN_TROUBLESHOOTING.md** - Troubleshooting guide for token issues
@@ -541,7 +541,7 @@ Use this checklist when choosing a token:
 
 **For implementation questions**:
 1. See code examples in "Common Use Cases" section
-2. Check SCRIPT_TOKEN_INTEGRATION.md for patterns
+2. Check SCRIPT_TOKEN_docs/api/reference/INTEGRATION.md for patterns
 3. Check WORKFLOW_TOKEN_PATTERNS_UPDATE.md for workflows
 
 ---

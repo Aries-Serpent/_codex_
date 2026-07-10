@@ -186,7 +186,7 @@ This document provides the complete capability matrix for Model Context Protocol
 ### 9. Specialized Agent Tools
 **Purpose**: Custom agents for specific tasks
 
-**Available Agents**: 54 total (see AGENTS.md for full list)
+**Available Agents**: 54 total (see .codex/archive/deprecated/AGENTS.md for full list)
 
 **Categories**:
 - CI/CD & Build (18 agents)
@@ -227,7 +227,7 @@ This document provides the complete capability matrix for Model Context Protocol
 | **Playwright Browser** | ✅ Yes | Playwright 1.57+, Browsers | Target URLs (localhost OK) | None (unless target needs auth) | E2E testing, UI validation, screenshots |
 | **File System** | ✅ Yes | Local file access | None | None | Code editing, file management, search |
 | **Shell Execution** | ✅ Yes | Bash, CLI tools | Varies by command | Env vars as needed | Tests, builds, automation scripts |
-| **Specialized Agents** | ✅ Yes | Agent-specific | Agent-specific | Agent-specific | Task-specific automation (see AGENTS.md) |
+| **Specialized Agents** | ✅ Yes | Agent-specific | Agent-specific | Agent-specific | Task-specific automation (see .codex/archive/deprecated/AGENTS.md) |
 | **Web & Search** | ✅ Yes | HTTP client | Internet | API keys (optional) | Documentation lookup, research, external data |
 | **`agentAssignment` (GraphQL)** | ⚠️ Limited | GitHub Copilot Workspace | GitHub GraphQL API | `GITHUB_TOKEN` + Copilot access | Create Copilot Agent tasks (Workspace UI only) |
 | **`create_pull_request_with_copilot` (REST)** | ⚠️ Limited | GitHub Copilot API | GitHub REST API | `GITHUB_TOKEN` + Copilot access | Automated PR creation with agent instructions |
@@ -691,7 +691,7 @@ jobs:
 **_codex_ Specific**:
 - [MCP Setup Guide](../../docs/MCP_SETUP_GUIDE.md)
 - [GitHub MCP Capabilities](../../docs/reference/GITHUB_MCP_CAPABILITIES_DOCUMENTATION.md)
-- [AGENTS.md](../../AGENTS.md)
+- [.codex/archive/deprecated/AGENTS.md](../../.codex/archive/deprecated/AGENTS.md)
 - [CODEBASE_AGENCY_POLICY.md](../CODEBASE_AGENCY_POLICY.md)
 
 ---

@@ -128,7 +128,7 @@ The `handoff_protocol` remains `structured` — no other existing fields change.
 
 ### Negative
 - GROUNDED agent count increases from 8 to 9.
-- Additional D_CAPABLE tracking required in AGENT_ACCOUNTABILITY_REPORT.md.
+- Additional D_CAPABLE tracking required in .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md.
 
 ### Risks & Mitigations
 - **Risk**: `workflow-ci-fixer` agent file is marked deprecated (superseded by `codebase-health-guardian`).

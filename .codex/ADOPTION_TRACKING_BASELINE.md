@@ -211,7 +211,7 @@ gh repo view --json stargazerCount,forkCount,diskUsageBytes
 - **Status**: [Pending - requires authentication]
 
 ### Supporting Materials
-- **Quick-Start Guide**: [QUICK_START_COGNITIVE_BRAIN.md](https://github.com/aries-serpent/_codex_/blob/main/QUICK_START_COGNITIVE_BRAIN.md)
+- **Quick-Start Guide**: [docs/quickstart/QUICK_START_COGNITIVE_BRAIN.md](https://github.com/aries-serpent/_codex_/blob/main/docs/quickstart/QUICK_START_COGNITIVE_BRAIN.md)
 - **Release Notes**: [v0.1.0-beta1 Release](https://github.com/aries-serpent/_codex_/releases/tag/v0.1.0-beta1)
 - **Archive Download**: `aries-serpent-cognitive-brain-0.1.0.zip` (155 KB)
 - **SHA256**: `7239811c6d1203b6888afccdc613d3879684c41dd9fea6593132ce993ac7dc28`

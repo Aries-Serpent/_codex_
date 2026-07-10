@@ -273,7 +273,7 @@ READY FOR EXECUTION:  🟢 YES
 
 **Planning Documents:** `.codex/MULTI_AGENT_CAMPAIGN_PLAN_*`, `ENV_VARS_*`, `CAMPAIGN_*`  
 **Agent Registry:** `.github/agents/AGENT_REGISTRY.yaml`  
-**Accountability:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`  
+**Accountability:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`  
 **Variables Context:** `.codex/agent_context.json`
 
 ---

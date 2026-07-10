@@ -43,7 +43,7 @@ This report analyzes the last 15 Copilot Coding Agent sessions to:
 | `.github/agents/AGENT_CHAINING_GUIDE.md` | create | ✅ Committed | ✅ |
 | `.github/agents/session-log-retrieval-agent.md` | create | ✅ Committed | ✅ |
 | `.github/agents/workflows/COMMIT_VERIFICATION_WORKFLOW.md` | create | ✅ Committed | ✅ |
-| `AGENTS.md` | edit | ✅ Committed | ✅ |
+| `.codex/archive/deprecated/AGENTS.md` | edit | ✅ Committed | ✅ |
 
 **Commit Analysis:**
 - **Additions:** 2,404 lines

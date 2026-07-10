@@ -179,7 +179,7 @@ Conduct comprehensive mutation testing refinement to eliminate weak test asserti
 - `.codex/PHASE_7B_TRACK_B_BRIEF.md` — Coverage acceleration (test input source)
 - `.codex/PHASE_7B_TRACK_D_BRIEF.md` — CI stabilization (validation gate)
 - `.codex/PHASE_7B_COORDINATION_DASHBOARD.md` — Status hub
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — Campaign tracking
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — Campaign tracking
 
 ---
 

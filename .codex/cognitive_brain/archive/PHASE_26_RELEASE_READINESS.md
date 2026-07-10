@@ -50,7 +50,7 @@ Phase 26 planning is **COMPLETE** with comprehensive release infrastructure esta
 
 ### 2. GitLab CI/CD Integration ✅
 
-**File**: `.codex/release/GITLAB_CI_CD_INTEGRATION.md`
+**File**: `.codex/release/GITLAB_CI_CD_docs/api/reference/INTEGRATION.md`
 **Size**: 11,205 characters
 **Sections**: Complete pipeline guide
 
@@ -67,7 +67,7 @@ Phase 26 planning is **COMPLETE** with comprehensive release infrastructure esta
 
 ### 3. ActiveState OIDC Integration ✅
 
-**File**: `.codex/release/ACTIVESTATE_OIDC_INTEGRATION.md`
+**File**: `.codex/release/ACTIVESTATE_OIDC_docs/api/reference/INTEGRATION.md`
 **Size**: 10,542 characters
 **Purpose**: ActiveState Platform integration guide
 
@@ -180,8 +180,8 @@ Phase 26 planning is **COMPLETE** with comprehensive release infrastructure esta
 | Capability | Status | Documentation |
 |------------|--------|---------------|
 | **PyPI publishing workflow** | ✅ | .github/workflows/pypi-publish.yml |
-| **GitLab CI/CD integration** | ✅ | .codex/release/GITLAB_CI_CD_INTEGRATION.md |
-| **ActiveState OIDC** | ✅ | .codex/release/ACTIVESTATE_OIDC_INTEGRATION.md |
+| **GitLab CI/CD integration** | ✅ | .codex/release/GITLAB_CI_CD_docs/api/reference/INTEGRATION.md |
+| **ActiveState OIDC** | ✅ | .codex/release/ACTIVESTATE_OIDC_docs/api/reference/INTEGRATION.md |
 | **Quality gates** | ✅ | .github/agents/release-gate-agent/README.md |
 | **Cognitive tracking** | ✅ | This document |
 
@@ -340,8 +340,8 @@ Phase 30: ⏳ FUTURE (Final gap filling)
 1. **Review release documentation**:
    ```bash
    # Read each integration guide
-   cat .codex/release/GITLAB_CI_CD_INTEGRATION.md
-   cat .codex/release/ACTIVESTATE_OIDC_INTEGRATION.md
+   cat .codex/release/GITLAB_CI_CD_docs/api/reference/INTEGRATION.md
+   cat .codex/release/ACTIVESTATE_OIDC_docs/api/reference/INTEGRATION.md
    cat .github/workflows/pypi-publish.yml
    ```
 

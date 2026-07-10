@@ -79,7 +79,7 @@
 | Document | Size | Purpose |
 |----------|------|---------|
 | **docs/WORKFLOW_AUDIT_SUMMARY.md** | 14 KB | Summary of 207 workflows analyzed |
-| **WORKFLOW_CLEANUP_IMPLEMENTATION_CHECKLIST.md** | 4 KB | Implementation checklist |
+| **.codex/archive/implementations/WORKFLOW_CLEANUP_IMPLEMENTATION_CHECKLIST.md** | 4 KB | Implementation checklist |
 | **docs/WORKFLOW_REMEDIATION_GUIDE.md** | 4 KB | How to fix CRITICAL workflows |
 | **docs/WORKFLOW_QUICK_REFERENCE.md** | 4 KB | Quick reference for findings |
 | **workflow-audit-report.json** | 1.7 MB | Machine-readable workflow data (207 workflows) |
@@ -188,7 +188,7 @@
 ```
 docs/
 ├── WORKFLOW_AUDIT_SUMMARY.md (14 KB)
-├── WORKFLOW_CLEANUP_IMPLEMENTATION_CHECKLIST.md (4 KB)
+├── .codex/archive/implementations/WORKFLOW_CLEANUP_IMPLEMENTATION_CHECKLIST.md (4 KB)
 ├── WORKFLOW_REMEDIATION_GUIDE.md (4 KB)
 ├── WORKFLOW_QUICK_REFERENCE.md (4 KB)
 ├── cleanup_validation_guide.md (13 KB)

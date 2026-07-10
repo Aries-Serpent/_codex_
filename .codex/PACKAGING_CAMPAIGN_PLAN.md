@@ -286,8 +286,8 @@ Transform the Aries-Serpent/_codex_ repository into a packaged, downloadable, lo
 4. **`lockfile.lock`** — Locked dependency manifest with hashes
 5. **`OFFLINE_BOOTSTRAP.sh`** — Bootstrap script for air-gap installs
 6. **`network-allowlist.yaml`** — Whitelist policy
-7. **`RELEASE_NOTES.md`** — Release notes with breaking changes
-8. **`INSTALL.md`** — Installation guide (online and offline)
+7. **`docs/release/RELEASE_NOTES.md`** — Release notes with breaking changes
+8. **`.codex/archive/misc/INSTALL.md`** — Installation guide (online and offline)
 9. **`ARCHITECTURE.md`** — High-level architecture for integrators
 10. **`TROUBLESHOOTING.md`** — Common issues and resolutions
 

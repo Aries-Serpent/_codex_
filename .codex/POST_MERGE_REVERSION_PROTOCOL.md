@@ -241,5 +241,5 @@ After reversion is documented and escalated:
 If reversion is NOT triggered and post-merge validates successfully:
 - Continue with standard post-merge work
 - Document any pre-existing issues encountered
-- Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` with baseline vs. post-merge diff
+- Update `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` with baseline vs. post-merge diff
 - Proceed to remaining Phase work

@@ -606,10 +606,10 @@ pip install codex-ml
 
 ## 📚 Related Documentation
 
-- **INTELLIGENCE_CAMPAIGN_BASELINE.md** (§DECIDE Phase Decision 3)
+- **.codex/archive/misc/INTELLIGENCE_CAMPAIGN_BASELINE.md** (§DECIDE Phase Decision 3)
 - **OFFLINE_BOOTSTRAP.sh** (Emergency offline bootstrap)
 - **SECURITY.md** (Offline security policies)
-- **INSTALL.md** (Online installation reference)
+- **.codex/archive/misc/INSTALL.md** (Online installation reference)
 
 ---
 

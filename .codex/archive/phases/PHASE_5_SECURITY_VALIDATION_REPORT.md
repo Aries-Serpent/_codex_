@@ -211,7 +211,7 @@ COMPOSITE SCORE               ░░░░░░░░░░ 8.2/10
 - **Critical Secrets Found:** 0 ✅
 - **False Positives (Non-Critical):** 15 (all in test/doc files)
   - Test fixtures: validate_security_utils.py
-  - Documentation: AGENTS.md, registry.yaml
+  - Documentation: .codex/archive/deprecated/AGENTS.md, registry.yaml
   - Archived plans: Task_PR_2459.md
 - **Git History:** 100 recent commits audited — 0 active leaks detected
 

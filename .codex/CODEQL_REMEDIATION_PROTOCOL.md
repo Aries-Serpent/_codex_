@@ -270,7 +270,7 @@ Maintain accountability and traceability for all remediation work.
 
 ### Required Documentation (REQ-4/REQ-5)
 
-**AGENT_ACCOUNTABILITY_REPORT.md**
+**.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md**
 - Session timestamp: `2026-06-25T01:23Z`
 - Objective statement
 - Authority (agent + approval)
@@ -400,13 +400,13 @@ git log -p --all -S "codeql[" -- "*.py" | head -200
 │ - Differential analysis (baseline vs post)                   │
 │ - Root cause mapping (which commit caused it?)              │
 │ - Revert strategy (hard revert if HIGH severity)            │
-│ Output: regression report in AGENT_ACCOUNTABILITY_REPORT.md │
+│ Output: regression report in .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md │
 └──────────────────┬──────────────────────────────────────────┘
                    │
                    ▼
 ┌─────────────────────────────────────────────────────────────┐
 │ PHASE 4: GOVERNANCE & DOCUMENTATION                        │
-│ - Update AGENT_ACCOUNTABILITY_REPORT.md (session summary)  │
+│ - Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (session summary)  │
 │ - Update CHANGELOG.md (REQ-5 compliance)                    │
 │ - Document fixes with commit SHAs                           │
 │ - Verify REQ-4/REQ-5 compliance                             │
@@ -487,7 +487,7 @@ logger.info("Secret fingerprint: %s", _var_fp)
 
 **Before Starting Remediation:**
 - [ ] Read this protocol (CODEQL_REMEDIATION_PROTOCOL.md)
-- [ ] Review latest AGENT_ACCOUNTABILITY_REPORT.md
+- [ ] Review latest .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 - [ ] Check baseline alert count from previous session
 - [ ] Identify which streams to activate (A/B/C)
 
@@ -498,7 +498,7 @@ logger.info("Secret fingerprint: %s", _var_fp)
 - [ ] Track which files/lines were modified per stream
 
 **After Remediation:**
-- [ ] Update AGENT_ACCOUNTABILITY_REPORT.md with session summary
+- [ ] Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with session summary
 - [ ] Update CHANGELOG.md with detailed changes (REQ-5)
 - [ ] Run pre-commit validation (compile, secrets, format checks)
 - [ ] Verify CodeQL suppression format is correct

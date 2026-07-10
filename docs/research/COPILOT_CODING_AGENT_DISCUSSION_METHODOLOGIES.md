@@ -172,7 +172,7 @@ Project-wide instructions file read at every agent session:
 - Use conventional commit format in PR titles
 - Add `# reason:` inline comments for non-obvious logic
 - Tag all accountability entries with W-NNN identifiers
-- Always update CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md
+- Always update CHANGELOG.md and .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 ```
 
 ### 4.2 `.github/copilot-setup-steps.yml`
@@ -213,7 +213,7 @@ and comments:
 | **Ephemeral sandbox** | All agent work runs in isolated GitHub Actions container |
 | **No privilege escalation** | Agent uses delegated `CODEX_MASTER_KEY` with explicit scope |
 | **Untrusted inputs via env** | `github.head_ref`, `pr.title` etc. passed via `env:` not inline `${{ }}` (fixed in W-089g/h) |
-| **Audit trail** | Every comment/action logged to `AGENT_ACCOUNTABILITY_REPORT.md` (REQ-4) |
+| **Audit trail** | Every comment/action logged to `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (REQ-4) |
 | **Session token TTL** | Provenance tokens expire in 4h (`.codex/agent_auth_session.json`) |
 
 ---

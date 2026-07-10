@@ -11,7 +11,7 @@
 ### Key Findings from Preflight
 - **275 root items** analyzed: 30 essential, 156 relocatable, 89 needs review
 - **345 reference updates** would be required for full reorganization  
-- **AGENTS.md has 293 references** - critical hub, high-risk to move
+- **.codex/archive/deprecated/AGENTS.md has 293 references** - critical hub, high-risk to move
 - **Decision:** DEFER full reorganization; build foundation first (Physics Model Balance⚖️)
 
 ### Comprehensive Documentation Generated
@@ -56,7 +56,7 @@
 #### Documentation 📚
 - [ ] `docs/cognitive_brain/INDEX.md` - Unified navigation hub
 - [ ] Move COGNITIVE_BRAIN_* files to docs/cognitive_brain/
-- [ ] Update references in AGENTS.md
+- [ ] Update references in .codex/archive/deprecated/AGENTS.md
 - [ ] Update MkDocs navigation
 
 #### Reports & Status 📊

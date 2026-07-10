@@ -372,7 +372,7 @@ Day 6-7 (07-03+): Lane 2 finalization + Phase 4 refinement 🔄
 | **WAVE_5_RESOURCE_ALLOCATION_PLAN.md** | Agent assignments, quality gates, cost model | `.codex/` |
 | **WAVE_4_ECOSYSTEM_HEALTH_DASHBOARD.json** | Baseline metrics (0.85/1.00 score) | `.codex/` |
 | **PHASE_B_WAVE_5_REPORT.md** | Campaign context (5/8 tracks complete) | Root directory |
-| **Agent Registry (AGENTS.md)** | 159 agents, 100% compliance | Root directory |
+| **Agent Registry (.codex/archive/deprecated/AGENTS.md)** | 159 agents, 100% compliance | Root directory |
 
 ---
 

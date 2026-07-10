@@ -25,7 +25,7 @@
    - Status: 100% PASSED
 
 3. **Compliance Requirements** ✅
-   - REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated
+   - REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated
    - REQ-5: CHANGELOG.md updated
    - Commit: a1aeb27e (feat(release): CRITICAL BLOCKER 2...)
 
@@ -218,7 +218,7 @@ When you receive the post-merge continuation prompt:
 - [ ] Confirm package appears on PyPI (pypi.org/project/aries-serpent-ml)
 - [ ] Test installation: `pip install aries-serpent-ml==0.1.0`
 - [ ] Create GitHub release page with notes
-- [ ] Document completion in AGENT_ACCOUNTABILITY_REPORT.md
+- [ ] Document completion in .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 
 ---
 

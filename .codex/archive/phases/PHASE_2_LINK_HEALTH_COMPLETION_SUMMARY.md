@@ -345,7 +345,7 @@ pre-commit run --all-files  # First test run
 - [Link Health Dashboard](./link-health-dashboard.md)
 - [Link Validation Report](../docs/quality/LINK_VALIDATION_REPORT.md)
 - [Known Broken Links](./KNOWN_BROKEN_LINKS_TRACKING.md)
-- [Link Validator Agent](../AGENTS.md)
+- [Link Validator Agent](../.codex/archive/deprecated/AGENTS.md)
 
 ---
 

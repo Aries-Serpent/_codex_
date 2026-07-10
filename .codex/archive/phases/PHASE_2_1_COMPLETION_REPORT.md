@@ -109,7 +109,7 @@
 - ✅ `scripts/ci/validators/req1_eligibility_validator.py` (branch naming, PR quality)
 - ✅ `scripts/ci/validators/req2_compliance_validator.py` (docs/tests/security patterns)
 - ✅ `scripts/ci/validators/req3_merge_validator.py` (draft status, conflicts, approval)
-- ✅ `scripts/ci/validators/req4_accountability_validator.py` (AGENT_ACCOUNTABILITY_REPORT.md)
+- ✅ `scripts/ci/validators/req4_accountability_validator.py` (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md)
 - ✅ `scripts/ci/validators/req5_changelog_validator.py` (CHANGELOG.md [Unreleased])
 - ✅ `scripts/ci/validators/req6_postmerge_validator.py` (workflow health)
 

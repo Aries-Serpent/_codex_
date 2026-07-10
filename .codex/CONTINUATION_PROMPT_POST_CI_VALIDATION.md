@@ -85,7 +85,7 @@ touch .github/agents/<agent-name>/prompts/main.md
 - E2E tests for full workflow
 
 #### Step 5: Documentation
-- Update AGENTS.md
+- Update .codex/archive/deprecated/AGENTS.md
 - Add usage examples
 - Document configuration options
 

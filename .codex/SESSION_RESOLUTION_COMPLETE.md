@@ -9,7 +9,7 @@
 ## 🔧 MERGE CONFLICT RESOLUTION
 
 ### Conflict Resolved
-- **File:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- **File:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - **Conflict Type:** Content merge (HEAD vs remote)
 - **Solution:** Kept both sections (Phase 10/12 summary + WEC grants)
 - **Commit:** `3ecee51c` — "✅ Merge conflict resolved: Phase 10 completion + WEC grants preserved"

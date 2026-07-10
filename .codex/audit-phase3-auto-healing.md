@@ -26,7 +26,7 @@ This Phase 3.4 audit validates the CI Auto-Healer Agent's ability to:
 
 | Pattern ID | Name | Root Cause | Auto-Fixable | Blocking | Severity |
 |-----------|------|-----------|--------------|----------|----------|
-| **WF-001** | REQ-4 Violation | AGENT_ACCOUNTABILITY_REPORT.md missing | ✅ YES | ✅ YES | 🔴 CRITICAL |
+| **WF-001** | REQ-4 Violation | .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md missing | ✅ YES | ✅ YES | 🔴 CRITICAL |
 | **WF-002** | REQ-5 Violation | CHANGELOG.md not updated | ✅ YES | ✅ YES | 🔴 CRITICAL |
 | **WF-003** | WEC State Loss | Workflow Execution Checklist stripped | ⚠️ PARTIAL | ✅ YES | 🔴 CRITICAL |
 | **WF-004** | WEC Format Invalid | Invalid checkbox syntax in WEC | ✅ YES | ✅ YES | 🔴 CRITICAL |
@@ -257,7 +257,7 @@ Pipeline Throughput:          200 patterns/sec ✅
 python scripts/ci/session_wrapup_autofix.py --auto-update --pr-number N
 
 # Step 2: Stage and commit
-git add docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+git add docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 git commit --amend --no-edit
 
 # Step 3: Push

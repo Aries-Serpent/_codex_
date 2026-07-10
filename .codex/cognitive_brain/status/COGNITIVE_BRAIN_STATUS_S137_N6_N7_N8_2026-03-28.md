@@ -136,7 +136,7 @@ This correctly handles:
 
 ## 🔗 Cross-References
 
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — S137 session summary
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — S137 session summary
 - `.codex/cognitive_brain/objectives_tracker.md` — v1.4.0, S137 sweep log row
 - `.github/agents/codebase-health-guardian.md` — v2.3, P19=292, S137 row
 - `scripts/ci/auto_fix_common_issues.py` — Pattern 19/20/21 checkers (unchanged)

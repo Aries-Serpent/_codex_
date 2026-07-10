@@ -117,7 +117,7 @@ PR #5234 has been merged successfully. The AUTO_GO_CONTINUE_POST_MERGE_PROMPT.md
 ### Communication Protocol
 - Post daily standup comments to active PR
 - Update PHASE_13_REALTIME_DASHBOARD.md daily
-- Update AGENT_ACCOUNTABILITY_REPORT.md with session entries
+- Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with session entries
 - Escalate only P0 blockers to @mbaetiong
 
 ### Failure Recovery
@@ -143,7 +143,7 @@ When next session begins:
 - [ ] Activate appropriate agent tracks via task tool
 - [ ] Post standup comment with progress snapshot
 - [ ] End-of-session validation:
-  - [ ] AGENT_ACCOUNTABILITY_REPORT.md updated
+  - [ ] .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated
   - [ ] CHANGELOG.md updated (if significant changes)
   - [ ] Zero deferral language in commits
   - [ ] All auto-fixable issues resolved
@@ -164,7 +164,7 @@ When next session begins:
 - `.codex/PHASE_13_TRACK_13.4_ADVISORY_STATUS.md` - Performance optimization details
 
 **Accountability:**
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` - Session tracking
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` - Session tracking
 - `CHANGELOG.md` - Change log entries
 
 ---

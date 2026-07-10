@@ -202,8 +202,8 @@ pip install dist/codex_ml-0.1.0.tar.gz
 
 ## 📚 Documentation
 
-- [Installation Guide](https://github.com/Aries-Serpent/_codex_/blob/main/INSTALL.md)
-- [Quick Start](https://github.com/Aries-Serpent/_codex_/blob/main/QUICK_START_COGNITIVE_BRAIN.md)
+- [Installation Guide](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/archive/misc/INSTALL.md)
+- [Quick Start](https://github.com/Aries-Serpent/_codex_/blob/main/docs/quickstart/QUICK_START_COGNITIVE_BRAIN.md)
 - [API Documentation](https://github.com/Aries-Serpent/_codex_/tree/main/docs)
 - [Architecture Guide](https://github.com/Aries-Serpent/_codex_/blob/main/docs/ARCHITECTURE.md)
 
@@ -431,8 +431,8 @@ pip install "codex-ml[full]==0.1.0-final"     # Full development environment
 
 ### Documentation
 
-- [Installation Guide](https://github.com/Aries-Serpent/_codex_/blob/main/INSTALL.md)
-- [Quick Start](https://github.com/Aries-Serpent/_codex_/blob/main/QUICK_START_COGNITIVE_BRAIN.md)
+- [Installation Guide](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/archive/misc/INSTALL.md)
+- [Quick Start](https://github.com/Aries-Serpent/_codex_/blob/main/docs/quickstart/QUICK_START_COGNITIVE_BRAIN.md)
 - [API Documentation](https://github.com/Aries-Serpent/_codex_/tree/main/docs)
 - [Architecture](https://github.com/Aries-Serpent/_codex_/blob/main/docs/ARCHITECTURE.md)
 

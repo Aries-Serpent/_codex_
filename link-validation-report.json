@@ -1180,50 +1180,50 @@
       {
         "type": "Documentation",
         "pattern": "File name reference",
-        "file": "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md",
+        "file": "docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md",
         "risk": "LOW",
         "message": "Documentation mentions root config file by name",
-        "line": "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md:- `pre-commit` / `nox` / `pytest` were unavailabl..."
+        "line": "docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md:- `pre-commit` / `nox` / `pytest` were unavailabl..."
       },
       {
         "type": "Documentation",
         "pattern": "File name reference",
-        "file": "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md",
+        "file": "docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md",
         "risk": "LOW",
         "message": "Documentation mentions root config file by name",
-        "line": "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md:- `mypy-manager-agent` (Wave 4 type annotation fi..."
+        "line": "docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md:- `mypy-manager-agent` (Wave 4 type annotation fi..."
       },
       {
         "type": "Documentation",
         "pattern": "File name reference",
-        "file": "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md",
+        "file": "docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md",
         "risk": "LOW",
         "message": "Documentation mentions root config file by name",
-        "line": "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md:Addressed the currently failing PR #5103 checks b..."
+        "line": "docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md:Addressed the currently failing PR #5103 checks b..."
       },
       {
         "type": "Documentation",
         "pattern": "File name reference",
-        "file": "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md",
+        "file": "docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md",
         "risk": "LOW",
         "message": "Documentation mentions root config file by name",
-        "line": "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md:- \u2705 **Phase 12.2 Compliance** \u2014 Passed `GH_TOKEN`..."
+        "line": "docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md:- \u2705 **Phase 12.2 Compliance** \u2014 Passed `GH_TOKEN`..."
       },
       {
         "type": "Documentation",
         "pattern": "File name reference",
-        "file": "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md",
+        "file": "docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md",
         "risk": "LOW",
         "message": "Documentation mentions root config file by name",
-        "line": "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md:- \u2705 **RAG Test Collection** \u2014 Repaired malformed ..."
+        "line": "docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md:- \u2705 **RAG Test Collection** \u2014 Repaired malformed ..."
       },
       {
         "type": "Documentation",
         "pattern": "File name reference",
-        "file": "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md",
+        "file": "docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md",
         "risk": "LOW",
         "message": "Documentation mentions root config file by name",
-        "line": "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md:- \u2705 **Validation** \u2014 targeted `pytest`, targeted ..."
+        "line": "docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md:- \u2705 **Validation** \u2014 targeted `pytest`, targeted ..."
       },
       {
         "type": "Documentation",
@@ -3276,10 +3276,10 @@
       {
         "type": "Documentation",
         "pattern": "File name reference",
-        "file": "docs/SOFT_TO_GROUNDED_RELEASE_NOTES.md",
+        "file": "docs/SOFT_TO_GROUNDED_docs/release/RELEASE_NOTES.md",
         "risk": "LOW",
         "message": "Documentation mentions root config file by name",
-        "line": "docs/SOFT_TO_GROUNDED_RELEASE_NOTES.md:4. **No dependency changes** \u2014 No new Python packages added t..."
+        "line": "docs/SOFT_TO_GROUNDED_docs/release/RELEASE_NOTES.md:4. **No dependency changes** \u2014 No new Python packages added t..."
       },
       {
         "type": "Documentation",
@@ -3836,10 +3836,10 @@
       {
         "type": "Documentation",
         "pattern": "File name reference",
-        "file": "docs/DEPENDENCY_CONSTRAINTS.md",
+        "file": "docs/.codex/archive/misc/DEPENDENCY_CONSTRAINTS.md",
         "risk": "LOW",
         "message": "Documentation mentions root config file by name",
-        "line": "docs/DEPENDENCY_CONSTRAINTS.md:For dependency-related issues or upgrade planning, refer to the packa..."
+        "line": "docs/.codex/archive/misc/DEPENDENCY_CONSTRAINTS.md:For dependency-related issues or upgrade planning, refer to the packa..."
       },
       {
         "type": "Documentation",

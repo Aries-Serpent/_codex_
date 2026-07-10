@@ -114,7 +114,7 @@ docker push ghcr.io/aries-serpent/codex-ml:0.1.0-api
 2. `dist/codex_ml-0.1.0.tar.gz`
 3. `dist/checksums.sha256`
 4. `sbom.json` (SBOM if available)
-5. `RELEASE_NOTES.md`
+5. `docs/release/RELEASE_NOTES.md`
 
 **Release Notes Template**: See below
 
@@ -129,7 +129,7 @@ docker push ghcr.io/aries-serpent/codex-ml:0.1.0-api
 # Create release from template
 gh release create v0.1.0-production \
   --title "🎉 Codex-ML v0.1.0-production — Final Production Release" \
-  --notes-file RELEASE_NOTES.md \
+  --notes-file docs/release/RELEASE_NOTES.md \
   dist/codex_ml-0.1.0-py3-none-any.whl \
   dist/codex_ml-0.1.0.tar.gz \
   dist/checksums.sha256 \
@@ -251,7 +251,7 @@ helm install codex-ml codex/codex-ml --version 0.1.0
 \`\`\`
 
 ## 📚 Documentation
-- [Installation Guide](QUICKSTART_BY_PROFILE.md)
+- [Installation Guide](docs/quickstart/QUICKSTART_BY_PROFILE.md)
 - [API Reference](docs/api/)
 - [Deployment Guide](docs/deployment/)
 - [Configuration](docs/configuration/)

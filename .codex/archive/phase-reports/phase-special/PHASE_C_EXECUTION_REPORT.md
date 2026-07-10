@@ -64,7 +64,7 @@ gh workflow list --limit 10
 
 **Files to Update**:
 1. **CHANGELOG.md** → Add Track 2 completion summary
-2. **AGENT_ACCOUNTABILITY_REPORT.md** → Add Phase B agent delegation results
+2. **.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md** → Add Phase B agent delegation results
 
 **CHANGELOG Entry**:
 ```markdown

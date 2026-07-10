@@ -259,7 +259,7 @@ Create performance baseline:
 - Exception lifecycle management
 
 **Copilot Review Exclusions** ✅ CREATED
-- .copilot-review-exclusions.md
+- .codex/archive/misc/.copilot-review-exclusions.md
 - Prevents re-review of resolved items
 - Documents intentional as-is decisions
 - Clear exclusion patterns for automated reviews

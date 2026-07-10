@@ -27,7 +27,7 @@ You are resuming mid-session with the following **staged but uncommitted** files
 | File | Change |
 |------|--------|
 | `cognitive_app/src/server/cli_api_server.py` | Fixed 3 empty `except` blocks → `log.debug(...)` (thread review comments) |
-| `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | Updated branch + date for PR #3421 |
+| `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` | Updated branch + date for PR #3421 |
 | `.codex/docs/COGNITIVE_BRAIN_STATUS_PR3421.md` | NEW — cognitive brain status + next-phase plan |
 | `.github/agents/cognitive-brain-cli-agent.md` | NEW — production agent definition with architecture diagram |
 | `.github/agents/workflow-compliance-guardian.md` | NEW — workflow enforcement agent with self-healing algorithm |
@@ -191,7 +191,7 @@ ImprovementArea.CI_HEALTH         # ← does NOT exist
 3. **Leave codebase better than found** — fix pre-existing issues encountered en route
 4. **NEVER stop after one commit** — iterate until checklist is 100% ✅
 5. **Post follow-up `@copilot` comment** if session ends with incomplete work
-6. **Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`** in every commit
+6. **Update `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`** in every commit
 7. **Run `codeql_checker` before finalising** — fix all findings or document as false positives
 
 ---
@@ -225,4 +225,4 @@ All CODEX_MASTER_KEY permissions confirmed. Full autonomous operation authorised
 - [ ] `git ls-files --others --ignored --exclude-standard | grep -v "node_modules\|__pycache__\|target/\|\.egg-info"` — must be empty or expected artifacts
 - [ ] Thread review comments on PR — must all be addressed
 - [ ] Pre-flight checklist comment on PR — must all be ✅
-- [ ] `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — must be updated
+- [ ] `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — must be updated

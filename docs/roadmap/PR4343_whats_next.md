@@ -7,7 +7,7 @@
 
 - Apply all actionable review-thread changes from `copilot-pull-request-reviewer`, `github-advanced-security`, and `github-code-quality`.
 - Resolve code-fixable CI failures referenced in maintainer comment and CI triage issue #4342.
-- Keep living status docs, `CHANGELOG.md`, and `AGENT_ACCOUNTABILITY_REPORT.md` synchronized each push.
+- Keep living status docs, `CHANGELOG.md`, and `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` synchronized each push.
 
 ## Session 39 Monitoring Snapshot
 

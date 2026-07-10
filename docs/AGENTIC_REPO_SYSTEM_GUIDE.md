@@ -308,7 +308,7 @@ Per Domain 8 findings (CVE-2025-55319, CVE-2025-61260):
 
 ## 11. Accountability & Audit Trail
 
-**Report**: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+**Report**: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 Each agent session is recorded as a W-NNN row. Auto-append via:
 

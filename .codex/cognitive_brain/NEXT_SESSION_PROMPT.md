@@ -104,7 +104,7 @@ Create/update with:
 
 ### 4. Continue P4 Integration 🚀 P1
 
-**Reference:** `.codex/cognitive_brain/FOLLOWUP_P4_INTEGRATION.md`
+**Reference:** `.codex/cognitive_brain/FOLLOWUP_P4_docs/api/reference/INTEGRATION.md`
 
 #### A. Implement Scatter-Gather in PGVector Store
 **File:** `src/codex/retrieval/stores/pgvector_store.py`
@@ -217,7 +217,7 @@ async def bulk_insert(self, documents):
 
 **Primary:**
 - `.codex/cognitive_brain/SECURITY_REMEDIATION_2026_01_09.md` - Complete security remediation and agent specs
-- `.codex/cognitive_brain/FOLLOWUP_P4_INTEGRATION.md` - P4 integration tasks and strategy
+- `.codex/cognitive_brain/FOLLOWUP_P4_docs/api/reference/INTEGRATION.md` - P4 integration tasks and strategy
 - `.codex/cognitive_brain/DEPENDABOT_WERKZEUG_ANALYSIS.md` - Werkzeug vulnerability analysis
 
 **Supporting:**

@@ -150,7 +150,7 @@
 - [x] Document Week 1 action items for CI fixes
 
 ### Before Session End
-- [x] Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (Phase 4-5 session)
+- [x] Update `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (Phase 4-5 session)
 - [x] Update `CHANGELOG.md` with Phase 4-5 findings summary
 - [x] Verify compliance: deferral language, secrets scanning
 - [x] Final campaign completion summary

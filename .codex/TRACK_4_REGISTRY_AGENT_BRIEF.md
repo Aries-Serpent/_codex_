@@ -191,7 +191,7 @@ Automate registry configuration validation and credential injection using Cognit
 
 **Actions:**
 1. Create webhook integration:
-   - `.codex/WEBHOOK_REGISTRY_INTEGRATION.md`
+   - `.codex/WEBHOOK_REGISTRY_docs/api/reference/INTEGRATION.md`
    - Document webhook payload structure
    - Include HMAC-SHA256 verification
    - Define webhook security requirements
@@ -215,9 +215,9 @@ Automate registry configuration validation and credential injection using Cognit
 
 **Deliverables:**
 - `scripts/webhook/notify_brain.py` (functional)
-- `.codex/WEBHOOK_REGISTRY_INTEGRATION.md` (documentation)
+- `.codex/WEBHOOK_REGISTRY_docs/api/reference/INTEGRATION.md` (documentation)
 - `.codex/WEBHOOK_VALIDATION_REPORT.md` (validation results)
-- `.codex/TRACK_4_TASK_5_WEBHOOK_INTEGRATION.md` (execution report)
+- `.codex/TRACK_4_TASK_5_WEBHOOK_docs/api/reference/INTEGRATION.md` (execution report)
 
 **Success Criteria:**
 - [ ] Webhook script functional

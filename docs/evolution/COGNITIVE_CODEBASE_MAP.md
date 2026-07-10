@@ -169,7 +169,7 @@ Mean: 92.4/100  |  Median: 93/100  |  Std Dev: 2.5
 | Fix CI failures | `scripts/ci/auto_fix_common_issues.py` → `scripts/validate_*.py` | L5 |
 | Understand architecture | `docs/architecture/` → `docs/ARCHITECTURE_BLUEPRINT.md` | L2 |
 | Work with RAG | `src/codex/rag/` (device='cpu' initialization, no safe_model_to_device needed) | L3 |
-| Manage agents | `.github/agents/` → `AGENTS.md` | L4 |
+| Manage agents | `.github/agents/` → `.codex/archive/deprecated/AGENTS.md` | L4 |
 | Update documentation | `docs/` → `mkdocs.yml` → `scripts/validate_docs_links.py` | L2 |
 | Check security | `SECURITY.md` → `.codex/guardrails.md` | L1 |
 | Track evolution | `docs/evolution/EVOLUTION_TIMELINE.md` | L2 |

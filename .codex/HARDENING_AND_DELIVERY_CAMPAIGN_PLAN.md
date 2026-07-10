@@ -17,7 +17,7 @@ This comprehensive multi-phase plan delivers lock/profile alignment, hash-verifi
 - **Rollout & Maintenance**: Production deployment, monitoring, exception handling, release hygiene
 
 **Key Evidence Base**: 
-- INTELLIGENCE_CAMPAIGN_BASELINE.md (OODA analysis with 4 strategic decisions)
+- .codex/archive/misc/INTELLIGENCE_CAMPAIGN_BASELINE.md (OODA analysis with 4 strategic decisions)
 - CAMPAIGN_COMPLETION_REPORT.md (P0 closure requirements)
 - OFFLINE_DEPENDENCY_RESOLUTION.md (lock alignment strategy)
 - META_TENSOR_VALIDATION_REPORT.md (safety findings)
@@ -236,7 +236,7 @@ This comprehensive multi-phase plan delivers lock/profile alignment, hash-verifi
 
 ### Workstream P1.2: Network Policy Enforcement
 
-**Background**: INTELLIGENCE_CAMPAIGN_BASELINE.md Decision 2 specifies deny-by-default with allowlist.
+**Background**: .codex/archive/misc/INTELLIGENCE_CAMPAIGN_BASELINE.md Decision 2 specifies deny-by-default with allowlist.
 
 **Concrete Tasks:**
 
@@ -448,7 +448,7 @@ Synchronization Points:
 
 ## REFERENCE DOCUMENTS
 
-- [INTELLIGENCE_CAMPAIGN_BASELINE.md](.codex/INTELLIGENCE_CAMPAIGN_BASELINE.md) - OODA analysis
+- [.codex/archive/misc/INTELLIGENCE_CAMPAIGN_BASELINE.md](.codex/.codex/archive/misc/INTELLIGENCE_CAMPAIGN_BASELINE.md) - OODA analysis
 - [CAMPAIGN_COMPLETION_REPORT.md](.codex/CAMPAIGN_COMPLETION_REPORT.md) - P0 requirements
 - [OFFLINE_DEPENDENCY_RESOLUTION.md](.codex/OFFLINE_DEPENDENCY_RESOLUTION.md) - Lock alignment strategy
 - [META_TENSOR_VALIDATION_REPORT.md](.codex/META_TENSOR_VALIDATION_REPORT.md) - Safety findings

@@ -222,7 +222,7 @@ The new pages integrate with:
 - `/docs/system/CODEBASE_DASHBOARD.md` - Metrics source
 - `/docs/mcp/` - MCP documentation (20 files)
 - `/docs/ADVANCED_PHYSICS_GUIDE.md` - Physics integration details
-- `/AGENTS.md` - Agent system documentation
+- `/.codex/archive/deprecated/AGENTS.md` - Agent system documentation
 - `/examples/` - Code examples directory
 
 ### With GitHub Pages
@@ -304,7 +304,7 @@ Tested on:
 ### Primary Sources
 
 1. **README.md** - Repository overview, feature list
-2. **AGENTS.md** - Agent system documentation
+2. **.codex/archive/deprecated/AGENTS.md** - Agent system documentation
 3. **docs/system/CODEBASE_COGNITIVE_MAP.md** - Architecture details
 4. **docs/mcp/PACKAGEABLE_CAPABILITIES.md** - MCP capabilities
 5. **src/cognitive_brain/** - Quantum system implementations

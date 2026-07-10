@@ -421,7 +421,7 @@ python scripts/ci/rvs_preflight.py --group quick --workers 6
    - Include: Comprehensive pre-validation gate results
 
 5. **Execute Task 6.3: Apply Compliance Updates**
-   - Update AGENT_ACCOUNTABILITY_REPORT.md (REQ-4)
+   - Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (REQ-4)
    - Update CHANGELOG.md [Unreleased] (REQ-5)
    - Use: COMPLIANCE_UPDATE_GUIDE_WAVE_1.md
 

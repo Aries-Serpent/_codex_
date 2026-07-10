@@ -57,13 +57,13 @@ Fixed broken links in:
 ## 📁 Files Modified (Top 10)
 
 1. **docs/MASTER_INDEX.md** - 15 fixes (central documentation index)
-2. **.github/agents/docs/AGENTS.md** - 14 fixes (agent documentation)
+2. **.github/agents/docs/.codex/archive/deprecated/AGENTS.md** - 14 fixes (agent documentation)
 3. **.codex/docs/README.md** - 12 fixes (codex docs overview)
 4. **docs/workflows/AGENT_CONTINUATION_PROTOCOL.md** - 9 fixes
 5. **.github/agents/reference-updater-agent.md** - 8 fixes
 6. **.codex/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_SEARCH_RESULTS.md** - 8 fixes
 7. **.github/CONTINUATION_PROMPT_PHASE8.md** - 8 fixes
-8. **.codex/docs/AGENTS.md.original.cf4e8c9.md** - 8 fixes
+8. **.codex/docs/.codex/archive/deprecated/AGENTS.md.original.cf4e8c9.md** - 8 fixes
 9. **docs/ROADMAP.md** - 4 fixes
 10. **docs/system/CODEBASE_DASHBOARD.md** - 5 fixes
 
@@ -101,7 +101,7 @@ Fixed broken links in:
 | **ROADMAP.md** | `docs/` | 18 |
 | **GENESIS_SETUP_GUIDE.md** | `docs/admin/` | 9 |
 | **OPERATIONAL_GUIDELINES.md** | `docs/agent/` | 8 |
-| **AGENTS.md** | `.github/` | 22 |
+| **.codex/archive/deprecated/AGENTS.md** | `.github/` | 22 |
 | **ARCHITECTURE.md** | `docs/` | 15 |
 
 ---
@@ -156,9 +156,9 @@ Fixed broken links in:
 ✅ https://.../agents/README.md → ../agents/README.md
 ```
 
-### Sample Verification (.github/agents/docs/AGENTS.md)
+### Sample Verification (.github/agents/docs/.codex/archive/deprecated/AGENTS.md)
 ```diff
-✅ .codex/docs/AGENTS.md.original → ../../AGENTS.md
+✅ .codex/docs/.codex/archive/deprecated/AGENTS.md.original → ../../.codex/archive/deprecated/AGENTS.md
 ✅ README.md → ../../../agents/README.md
 ✅ scripts/AUTONOMOUS_AGENT_README.md → ../../../agents/README.md
 ```

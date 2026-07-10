@@ -9,7 +9,7 @@
 
 ### 1. Root Documentation
 - [x] **README.md** - Added security utilities section with examples (line 634)
-- [x] **AGENTS.md** - Added comprehensive security section (line 541-600)
+- [x] **.codex/archive/deprecated/AGENTS.md** - Added comprehensive security section (line 541-600)
 
 ### 2. Security Documentation
 - [x] **docs/security/README.md** - Complete rewrite with navigation and examples
@@ -36,12 +36,12 @@
 
 ## 🔧 REMAINING UPDATES (To Complete)
 
-### Priority 1: AGENTS.md Files in Subdirectories
-- [ ] **scripts/AGENTS.md** - Add security utilities reference
-- [ ] **prompts/AGENTS.md** - Add security patterns
-- [ ] **src/mcp/AGENTS.md** - Add security integration notes
-- [ ] **docs/guides/AGENTS.md** - Add security guide link
-- [ ] **_codex_/AGENTS.md** - Sync with main AGENTS.md
+### Priority 1: .codex/archive/deprecated/AGENTS.md Files in Subdirectories
+- [ ] **scripts/.codex/archive/deprecated/AGENTS.md** - Add security utilities reference
+- [ ] **prompts/.codex/archive/deprecated/AGENTS.md** - Add security patterns
+- [ ] **src/mcp/.codex/archive/deprecated/AGENTS.md** - Add security integration notes
+- [ ] **docs/guides/.codex/archive/deprecated/AGENTS.md** - Add security guide link
+- [ ] **_codex_/.codex/archive/deprecated/AGENTS.md** - Sync with main .codex/archive/deprecated/AGENTS.md
 
 ### Priority 2: Module-Specific READMEs
 - [ ] **src/codex/README.md** - Add security module to index
@@ -85,7 +85,7 @@ git diff --name-only HEAD~5 | grep "\.py$" | xargs dirname | sort -u
 ### Step 2: Find Related Documentation
 ```bash
 for module in $(changed_modules); do
-    find . -name "README.md" -o -name "AGENTS.md" | xargs grep -l "$module"
+    find . -name "README.md" -o -name ".codex/archive/deprecated/AGENTS.md" | xargs grep -l "$module"
 done
 ```
 
@@ -118,7 +118,7 @@ python scripts/test_documentation_examples.py
 | Root Docs | 2/2 | ✅ Complete |
 | Security Docs | 6/6 | ✅ Complete |
 | Admin Docs | 1/1 | ✅ Complete |
-| AGENTS.md Files | 2/6 | ⚠️  In Progress |
+| .codex/archive/deprecated/AGENTS.md Files | 2/6 | ⚠️  In Progress |
 | Module READMEs | 0/3 | ❌ Pending |
 | Examples | 0/2 | ❌ Pending |
 
@@ -137,7 +137,7 @@ python scripts/test_documentation_examples.py
 Documentation update is considered complete when:
 
 1. ✅ All priority 1 items completed
-2. ✅ Main AGENTS.md fully updated
+2. ✅ Main .codex/archive/deprecated/AGENTS.md fully updated
 3. ✅ Security module fully documented
 4. ✅ Admin guide provided
 5. ✅ All examples tested
@@ -153,14 +153,14 @@ Documentation update is considered complete when:
 
 ### 2025-12-23 17:45 UTC
 - Created documentation update manifest
-- Completed root documentation (README.md, AGENTS.md)
+- Completed root documentation (README.md, .codex/archive/deprecated/AGENTS.md)
 - Completed security documentation (6 files)
 - Completed admin guide
 - Identified 26 documentation issues via automated checker
 - Prioritized remaining work
 
 ### Next Steps
-1. Update subdirectory AGENTS.md files (Priority 1)
+1. Update subdirectory .codex/archive/deprecated/AGENTS.md files (Priority 1)
 2. Create module-specific READMEs (Priority 2)
 3. Clean up TODO markers (Priority 3)
 4. Add examples and tutorials (Priority 4)

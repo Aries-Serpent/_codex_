@@ -548,7 +548,7 @@ Based on Phase 1 achievements and current trajectory:
 ### Documentation Updates Required
 - ✅ Execution Log: `.codex/PHASE_7D_TRACK_3A_EXECUTION_LOG.md` (ready to update)
 - ✅ Completion Report: `.codex/PHASE_7D_TRACK_3A_DOC_COMPLETION_REPORT.md` (ready to update)
-- ✅ Accountability Report: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (ready to update)
+- ✅ Accountability Report: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (ready to update)
 - ✅ Changelog: `CHANGELOG.md` (ready to update)
 
 ### Reporting Status

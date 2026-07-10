@@ -145,13 +145,13 @@
 
 ### 2.7 REQ-4 (Accountability) Compliance
 - **Status:** ✅ PASSING
-- **Verification:** AGENT_ACCOUNTABILITY_REPORT.md updated with Phase 3 entry
+- **Verification:** .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated with Phase 3 entry
 - **Details:**
   - Phase 3 campaign entry added: ✅
   - All phase results documented: ✅
   - Agent roles documented: ✅
   - Commit SHAs tracked: ✅
-- **Evidence:** Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- **Evidence:** Updated `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - **Gate:** ✅ PASSED
 
 ### 2.8 REQ-5 (Release) Compliance

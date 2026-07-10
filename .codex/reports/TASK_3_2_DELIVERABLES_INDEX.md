@@ -214,7 +214,7 @@ This task integrates with:
 - **Phase 4:** Post-Sprint Analysis & Reporting (uses checkpoint data)
 
 ### Related Documents
-- `.codex/reports/MASTER_REMEDIATION_PLAN.md` — Detailed fix roadmap
+- `.codex/reports/.codex/archive/misc/MASTER_REMEDIATION_PLAN.md` — Detailed fix roadmap
 - `.codex/reports/ORCHESTRATOR_SECURITY_ASSESSMENT.md` — Security baseline
 - `.codex/reports/CI_STABILITY_ASSESSMENT_SUMMARY.md` — CI metrics baseline
 - `.codex/reports/COVERAGE_READINESS_ASSESSMENT.json` — Coverage gaps

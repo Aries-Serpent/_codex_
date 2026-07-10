@@ -126,7 +126,7 @@ This implementation plan outlines the remaining work to complete Phase 10-12 Cam
    - [ ] All 18 Phase 12 success criteria met (documented in dashboards)
    - [ ] Phase 12 metrics baseline captured in `.codex/metrics/hourly.jsonl`
    - [ ] Phase 12 artifacts preserved (no deletions or overwrites)
-   - [ ] AGENT_ACCOUNTABILITY_REPORT.md updated with Phase 12 completion
+   - [ ] .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated with Phase 12 completion
 
 2. **Phase 13 Initialization Requirements:**
    - [ ] Session context initialized for Phase 13 (COGNITIVE_BRAIN_SESSION_NUMBER increment)
@@ -548,7 +548,7 @@ This implementation plan outlines the remaining work to complete Phase 10-12 Cam
 **Escalation Procedure:**
 1. **Critical Issue:** Immediate escalation to @mbaetiong
 2. **High Priority:** Daily status updates to orchestrator-agent
-3. **Medium Priority:** Weekly checkpoint reports via AGENT_ACCOUNTABILITY_REPORT.md
+3. **Medium Priority:** Weekly checkpoint reports via .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 4. **Low Priority:** Standard tracking in campaign dashboard
 
 ---
@@ -568,7 +568,7 @@ This implementation plan outlines the remaining work to complete Phase 10-12 Cam
 ### Metrics Logging
 - All events logged to `.codex/metrics/hourly.jsonl`
 - Session logs to `.codex/sessions/{SESSION_ID}.ndjson`
-- Audit trail in AGENT_ACCOUNTABILITY_REPORT.md
+- Audit trail in .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 
 ---
 

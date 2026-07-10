@@ -497,7 +497,7 @@ CODEX_LOCAL_LOOPBACK = "false"
 - [x] All tests passing (fallback + override modes)
 - [x] Documentation updated
 - [x] Backward compatibility verified
-- [x] AGENT_ACCOUNTABILITY_REPORT.md updated
+- [x] .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated
 - [x] CHANGELOG.md updated
 - [x] Pre-commit hooks passing
 
@@ -551,7 +551,7 @@ for detailed specifications of all 8 variables.
   - [ ] All imports organized per codebase conventions
 
 - [ ] **Compliance**
-  - [ ] AGENT_ACCOUNTABILITY_REPORT.md updated (REQ-4)
+  - [ ] .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated (REQ-4)
   - [ ] CHANGELOG.md updated (REQ-5)
   - [ ] Both files in same commit as final code changes
   - [ ] `session_wrapup_autofix.py --check --pr-number <PR>` passing

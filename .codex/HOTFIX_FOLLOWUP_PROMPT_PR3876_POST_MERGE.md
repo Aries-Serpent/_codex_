@@ -131,7 +131,7 @@ grep "test_variables_api.py" docs/CODEBASE_MERMAID_MAPS.md
 ```bash
 # Append post-merge session entry for REQ-4 compliance
 # Entry: S-3876-post-merge · 2026-04-05 · Live test dispatched on main
-# File:  docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+# File:  docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 ```
 
 Add a session block at the end of the report:

@@ -25,7 +25,7 @@
 - **[WORKFLOW_HEALTH_FINAL_REPORT.md](WORKFLOW_HEALTH_FINAL_REPORT.md)** — Track 5B: Workflow stabilization (<5% failure rate)
 
 ### 📖 Updated Documentation
-- **[../docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md](../docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md)** — Updated with Phase 5 campaign summary and agent sign-offs
+- **[../docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md](../docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md)** — Updated with Phase 5 campaign summary and agent sign-offs
 
 ---
 
@@ -209,7 +209,7 @@
 - All track-specific artifact documents (6 total)
 
 **Policy & Governance Documents**
-- ../docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+- ../docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 
 ### By Track (Details)
 | Track | Artifact Document |

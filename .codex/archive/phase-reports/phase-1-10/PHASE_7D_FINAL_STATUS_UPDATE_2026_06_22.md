@@ -166,7 +166,7 @@ ETA: 2026-06-22T18:15Z UTC (~3.5 hours)
 - ✅ PHASE_7D_FINAL_STATUS_UPDATE_2026_06_22.md (this file)
 
 ### Accountability & Compliance
-- ✅ `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (REQ-4 ✅)
+- ✅ `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (REQ-4 ✅)
 - ✅ `CHANGELOG.md` (REQ-5 ✅)
 - ✅ All commits with SHAs tracked
 

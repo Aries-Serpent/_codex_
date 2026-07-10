@@ -409,4 +409,4 @@ This repository represents a mature, production-ready AI-powered development pla
 *For detailed implementation guidance, see:*
 - `PHASE_10_MASTER_INTEGRATION_PLANSET.md`
 - `COGNITIVE_BRAIN_STATUS_V3.md`
-- `AGENTS.md`
+- `.codex/archive/deprecated/AGENTS.md`

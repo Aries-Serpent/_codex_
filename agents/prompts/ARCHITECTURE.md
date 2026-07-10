@@ -645,7 +645,7 @@ graph TB
 
 For AI Agents starting with Codex:
 
-1. **Read AGENTS.md**: Comprehensive guide at [AGENTS.md](../../.github/AGENTS.md)
+1. **Read .codex/archive/deprecated/AGENTS.md**: Comprehensive guide at [.codex/archive/deprecated/AGENTS.md](../../.github/.codex/archive/deprecated/AGENTS.md)
 2. **Explore Prompts**: Start with [agents/prompts/](.)
 3. **Run First Audit**: Follow [run-full-audit.md](audit/run-full-audit.md)
 4. **Generate Dashboard**: Use [generate-wiki.md](documentation/generate-wiki.md)

@@ -54,14 +54,14 @@
 
 ### PR #3901 — Post-Merge Hotfix Sweep (Session S304)
 - ✅ `docs/ROADMAP.md` "Last Updated" bumped to 2026-04-06
-- ✅ `AGENT_ACCOUNTABILITY_REPORT.md` updated with S304 session summary
+- ✅ `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` updated with S304 session summary
 - ✅ `CHANGELOG.md` updated with S304 entry
 - ✅ `.github/copilot-prompts/active/PR-3901-followup.md` — duplicate PR ref fixed; "Files Modified" corrected
 - ✅ `cognitive_app/package.json` — vite bumped `^7.2.6` → `^7.3.2` (closes PR #3902)
 - ✅ `cognitive_app/package-lock.json` — esbuild `0.25.12` → `0.27.7` + vite `7.2.6` → `7.3.2` (27 packages)
 - ✅ `.github/workflows/auto-approve-workflows.yml` — `[colons]` yamllint error-level violations fixed
 - ✅ `CODEX_MANIFEST.json` + `.secrets.baseline` CODEX_MANIFEST entry re-synced (P22 drift)
-- ✅ `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` impact score corrected to 7 files
+- ✅ `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` impact score corrected to 7 files
 
 ### PR #3897 — Merged 2026-04-06 (Session S302/S303)
 - ✅ `auto-approve-workflows.yml` — schedule `*/20 * * * *` sweep + `wec:auto-approve-once` one-session label

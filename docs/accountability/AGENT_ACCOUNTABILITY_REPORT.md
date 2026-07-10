@@ -5,7 +5,7 @@
 ### EXECUTION SUMMARY — v0.1.1 DEPLOYMENT RUN #1
 
 **Deployment Phases:**
-- ✅ **Phase 1: Version Update & Release Preparation** (20:59:08Z): pyproject.toml → 0.1.1, CHANGELOG.md → v0.1.1 entry, AGENT_ACCOUNTABILITY_REPORT.md → session context
+- ✅ **Phase 1: Version Update & Release Preparation** (20:59:08Z): pyproject.toml → 0.1.1, CHANGELOG.md → v0.1.1 entry, .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md → session context
 - ⏳ **Phase 2: Tag & GitHub Release** (PENDING): Create annotated tag v0.1.1, push to origin, create GitHub Release
 - ⏳ **Phase 3: PyPI Publication** (PENDING): Trigger release-to-pypi workflow, verify distributions
 - ⏳ **Phase 4: Post-Release Community & Verification** (PENDING): Post announcement, delegate to specialized agents
@@ -14,7 +14,7 @@
 **Production Readiness:**
 - Version alignment verified: pyproject.toml = "0.1.1" ✅
 - CHANGELOG.md updated with v0.1.1 entry ✅
-- AGENT_ACCOUNTABILITY_REPORT.md updated with session context ✅
+- .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated with session context ✅
 - Ready for tag and release workflow execution ✅
 
 ### IMMUTABLE TAG RESOLUTION
@@ -183,12 +183,12 @@ Option 3: **Alternative Tag** - Use different tag name (`v0.1.0`, `v0.1.0-releas
 
 ### PHASE 3B STATUS (In Progress)
 - ✅ POST_MERGE_VERIFICATION_REPORT.md created (8.5 KB)
-- 🔄 AGENT_ACCOUNTABILITY_REPORT.md updating (this entry)
+- 🔄 .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updating (this entry)
 - 🔄 CHANGELOG.md updating (next)
 - ⏳ session_wrapup_autofix --check validation (pending after doc updates)
 
 ### COMPLIANCE STATUS
-- 🔄 REQ-4: AGENT_ACCOUNTABILITY_REPORT.md (updating now)
+- 🔄 REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (updating now)
 - 🔄 REQ-5: CHANGELOG.md (updating now)
 - ⏳ Compliance validation (pending after commits)
 
@@ -216,7 +216,7 @@ Option 3: **Alternative Tag** - Use different tag name (`v0.1.0`, `v0.1.0-releas
 
 ### COMPLIANCE STATUS
 
-- REQ-4: ✅ `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated in this commit
+- REQ-4: ✅ `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` updated in this commit
 - REQ-5: ✅ `CHANGELOG.md` updated in this commit
 
 ## SESSION SUMMARY — 2026-07-09T22:40:24Z [v0.1.0 PRODUCTION RELEASE DEPLOYMENT — AUTONOMOUS EXECUTION COMPLETE]
@@ -264,7 +264,7 @@ Option 3: **Alternative Tag** - Use different tag name (`v0.1.0`, `v0.1.0-releas
 | **Governance Gates** | 32/32 | ✅ All passed |
 
 ### COMPLIANCE STATUS
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated (this entry)
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated (this entry)
 - ✅ REQ-5: CHANGELOG.md updated separately
 - ✅ All 32 Phase 4 governance gates passed
 - ✅ Autonomous deployment authority confirmed
@@ -304,7 +304,7 @@ All phases of the autonomous deployment have been successfully executed with ful
 - 🔄 **In Progress**: Compliance documentation updates (REQ-4/REQ-5)
 
 ### COMPLIANCE STATUS
-- REQ-4: 🔄 IN PROGRESS (updating AGENT_ACCOUNTABILITY_REPORT.md)
+- REQ-4: 🔄 IN PROGRESS (updating .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md)
 - REQ-5: 🔄 IN PROGRESS (updating CHANGELOG.md)
 - Comment Response: 0/22 comments addressed (awaiting agent completion for resolving commit SHAs)
 
@@ -320,7 +320,7 @@ All phases of the autonomous deployment have been successfully executed with ful
 
 ### EXECUTION SUMMARY
 
-- ✅ REQ-4: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated in this commit
+- ✅ REQ-4: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` updated in this commit
 - ✅ REQ-5: `CHANGELOG.md` updated in this commit (both files in same commit per compliance requirement)
 - ✅ Security remediation: All 4 CRITICAL CodeQL vulnerabilities resolved via secure module implementations:
   - CWE-798 (Hardcoded Credentials): `codex/config.py` uses environment variables, no hardcoded secrets
@@ -333,7 +333,7 @@ All phases of the autonomous deployment have been successfully executed with ful
 - ✅ Governance: REQ-4 ✅, REQ-5 ✅ (fixed with this commit), WEC block present
 
 ### COMPLIANCE STATUS
-- REQ-4: ✅ FIXED (AGENT_ACCOUNTABILITY_REPORT.md in this commit)
+- REQ-4: ✅ FIXED (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md in this commit)
 - REQ-5: ✅ FIXED (CHANGELOG.md in this commit)
 - Agents Used: copilot-swe-agent
 
@@ -345,13 +345,13 @@ All phases of the autonomous deployment have been successfully executed with ful
 
 ### EXECUTION SUMMARY
 
-- ✅ REQ-4: Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` in this commit
+- ✅ REQ-4: Updated `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` in this commit
 - ✅ REQ-5: Updated `CHANGELOG.md` in this commit
 - ✅ Ruff auto-fix: Applied 404 automated linting fixes across Python source files
 - ✅ Replied to blocking CI rescue comment #4928524305 with resolution details
 
 ### COMPLIANCE STATUS
-- REQ-4: ✅ FIXED (AGENT_ACCOUNTABILITY_REPORT.md in this commit)
+- REQ-4: ✅ FIXED (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md in this commit)
 - REQ-5: ✅ FIXED (CHANGELOG.md in this commit)
 - Agents Used: copilot-swe-agent
 
@@ -374,7 +374,7 @@ All phases of the autonomous deployment have been successfully executed with ful
 - ⏳ Awaiting agent completion: pr-5276-security-scan, pr-5276-code-quality, pr-5276-coverage
 
 ### COMPLIANCE STATUS
-- REQ-4: ✅ FIXED (updated AGENT_ACCOUNTABILITY_REPORT.md in this commit)
+- REQ-4: ✅ FIXED (updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md in this commit)
 - REQ-5: ✅ FIXED (updated CHANGELOG.md in this commit)
 - Session compliance: Pending final `session_wrapup_autofix.py --check` verification
 
@@ -785,7 +785,7 @@ All phases of the autonomous deployment have been successfully executed with ful
   - All 10 security findings reference non-existent template files (codex/config.py, codex/db/queries.py, etc.)
   - Actual codebase uses src/ directory structure, not codex/ root
   - No actual vulnerabilities in PR changes ✅
-- ✅ **REQ-4/REQ-5 Compliance:** Updated AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md (this commit)
+- ✅ **REQ-4/REQ-5 Compliance:** Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md (this commit)
 
 **Agents Used:** @copilot (claude-sonnet-4.6)
 
@@ -860,7 +860,7 @@ All phases of the autonomous deployment have been successfully executed with ful
 
 ### Deliverables
 - Created: `.codex/PHASE_14_WS2_GOVERNANCE_VALIDATION_REPORT.md` (9-pillar validation)
-- Updated: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (REQ-4)
+- Updated: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (REQ-4)
 
 ### Authority & Status
 - **Authority Level:** D-tier autonomous
@@ -934,7 +934,7 @@ All phases of the autonomous deployment have been successfully executed with ful
   - Validation: Secret scanning passed (no secrets detected), Python syntax verified
 
 - ✅ **Compliance Gates**: REQ-4 and REQ-5 updated
-  - REQ-4: Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` with security fix session entry
+  - REQ-4: Updated `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` with security fix session entry
   - REQ-5: Updated `CHANGELOG.md` with security vulnerability fixes entry
   - Commit: This session (both files committed together per compliance requirements)
 
@@ -986,7 +986,7 @@ All phases of the autonomous deployment have been successfully executed with ful
 
 ### EXECUTION SUMMARY — COMPLIANCE FINALIZATION ✅
 
-- ✅ **REQ-4 Compliance**: Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` with current session entry
+- ✅ **REQ-4 Compliance**: Updated `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` with current session entry
   - Session entry added: 2026-07-07T23:49Z CI Fix Campaign Compliance Finalization
   - Work summary: Compliance file updates, validation verification, PR merge preparation
   - Commits referenced: d1e87b28 (action version fixes), 23b6e04f (secrets baseline)
@@ -996,7 +996,7 @@ All phases of the autonomous deployment have been successfully executed with ful
   - Documented: Compliance finalization, action version enforcement completion, validation results
 
 - ✅ **Compliance Verification**: Ran `python scripts/ci/session_wrapup_autofix.py --check`
-  - REQ-4: ✅ PASS (docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md in last commit)
+  - REQ-4: ✅ PASS (docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md in last commit)
   - REQ-5: ✅ PASS (CHANGELOG.md in last commit)
   - Result: PR ready for merge to main
 
@@ -1029,8 +1029,8 @@ All phases of the autonomous deployment have been successfully executed with ful
   - All violations fixed by enforce_actions_versions.py run
   - Commit: (pending, to be generated with accountability report update)
 
-- ✅ **REQ-4/REQ-5 Compliance**: Updating both AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md now
-  - REQ-4: docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md (in progress)
+- ✅ **REQ-4/REQ-5 Compliance**: Updating both .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md now
+  - REQ-4: docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (in progress)
   - REQ-5: CHANGELOG.md (in progress)
 
 ### AGENTS INVOKED
@@ -1055,7 +1055,7 @@ All phases of the autonomous deployment have been successfully executed with ful
   - Commit: (current session, awaiting further CI fixes)
 
 - ⏳ **REQ-4/REQ-5 Compliance**: Updating both files now
-  - REQ-4: docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md (in progress)
+  - REQ-4: docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (in progress)
   - REQ-5: CHANGELOG.md (in progress)
 
 ### AGENTS INVOKED
@@ -1101,7 +1101,7 @@ All phases of the autonomous deployment have been successfully executed with ful
   - Status: ✅ READY FOR PHASE 9 TRANSITION
 
 - ✅ PR Compliance Fixes (REQ-4/REQ-5)
-  - Updated: docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md (REQ-4) ✅
+  - Updated: docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (REQ-4) ✅
   - Updated: CHANGELOG.md (REQ-5) ✅
   - Status: Ready for session_wrapup_autofix compliance check
 
@@ -1279,7 +1279,7 @@ All phases of the autonomous deployment have been successfully executed with ful
   - Track 8.3: 4 docs (COMPATIBILITY_MATRIX, REMEDIATION_PRIORITY, WORKSTREAM_2_COMPLETION_REPORT, INDEX) ✅
   - Track 8.4: 2 docs (DEPENDENCY_STRATEGY + lock files) ✅
   - EOD Report: PHASE_8_WS2_EOD_COMPLETION_REPORT.md ✅
-- ⏳ Phase 1 (Accountability Update): Updating AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md (REQ-4/REQ-5)
+- ⏳ Phase 1 (Accountability Update): Updating .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md (REQ-4/REQ-5)
 - ⏳ Phase 2 (WS3 Execution Design): Delegated to custom agents in parallel
 - ⏳ Append Task (Auto-Approve Gap Remediation): Delegated to workflow specialist agents in parallel
   - Gap G1 (CRITICAL): pre-merge-validation.yml → auto-approve dispatch
@@ -1363,7 +1363,7 @@ All phases of the autonomous deployment have been successfully executed with ful
   - Track 8.3: 4 docs (COMPATIBILITY_MATRIX, REMEDIATION_PRIORITY, WORKSTREAM_2_COMPLETION_REPORT, INDEX)
   - Track 8.4: 2 docs (DEPENDENCY_STRATEGY + lock files)
   - EOD Report: PHASE_8_WS2_EOD_COMPLETION_REPORT.md ✅
-- ✅ Updated AGENT_ACCOUNTABILITY_REPORT.md with WS2 completion entry
+- ✅ Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with WS2 completion entry
 - ✅ Updated CHANGELOG.md (REQ-5 compliance)
 - ✅ Archived superseded planning documents
   - Deleted: PHASE_8_WS2_ACTIVATION.md (superseded by accelerated scope)
@@ -1441,7 +1441,7 @@ All phases of the autonomous deployment have been successfully executed with ful
 
 - ✅ Delegated and executed multiple custom-agent lanes in parallel (semantic, recon, documentation, packaging, dependency security, meta-tensor, secret detection, network audit, ML validation, test enhancement, repository hygiene, link validation, standup, chronicle improve/cost tracks).
 - ✅ Generated and updated campaign artifacts in `.codex/` including dashboard, completion report, lane reports, and day-1 standup.
-- ✅ Added external-facing onboarding docs: `docs/OFFLINE_QUICKSTART.md` and `docs/ISOLATED_DEPLOYMENT.md`.
+- ✅ Added external-facing onboarding docs: `docs/OFFLINE_QUICKSTART.md` and `docs/docs/release/ISOLATED_DEPLOYMENT.md`.
 - ✅ Resolved iterative code-review feedback from parallel validation and revalidated with CodeQL-trivial docs-only scope.
 
 ### DELIVERABLES
@@ -1464,7 +1464,7 @@ All phases of the autonomous deployment have been successfully executed with ful
 - `.codex/STANDUP_DAY_1.md`
 - `.codex/CAMPAIGN_COMPLETION_REPORT.md`
 - `docs/OFFLINE_QUICKSTART.md`
-- `docs/ISOLATED_DEPLOYMENT.md`
+- `docs/docs/release/ISOLATED_DEPLOYMENT.md`
 
 ---
 
@@ -1486,7 +1486,7 @@ All phases of the autonomous deployment have been successfully executed with ful
 
 **Compliance Updates:** 🟢 PDA & ACCOUNTABILITY
 - ✅ Added PDA entry to `.codex/aftermath/pda_iterations.jsonl` for 2026-07-07 with security fix summary
-- ✅ Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` with session context and completion status (REQ-4)
+- ✅ Updated `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` with session context and completion status (REQ-4)
 - ✅ Updated `CHANGELOG.md` with session details and fixes (REQ-5)
 
 ### DELIVERABLES
@@ -1496,7 +1496,7 @@ All phases of the autonomous deployment have been successfully executed with ful
 | **Code Injection Fix** | ✅ COMPLETE | workflow refactored, github-script isolation applied |
 | **CodeQL Pragmas** | ✅ COMPLETE | 4 files updated with security context comments |
 | **PDA Entry** | ✅ COMPLETE | Added `.codex/aftermath/pda_iterations.jsonl` entry |
-| **Accountability** | ✅ IN PROGRESS | AGENT_ACCOUNTABILITY_REPORT.md updated |
+| **Accountability** | ✅ IN PROGRESS | .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated |
 
 ### COMMITS
 - `security-hardening-fix` — Code injection fix + CodeQL pragmas (4 files)
@@ -1654,7 +1654,7 @@ All phases of the autonomous deployment have been successfully executed with ful
 
 **Phase 13 Dashboard & Documentation Updates:**
 - ✅ PHASE_13_REALTIME_DASHBOARD.md: Updated with agent status and Track 12.3 fix details
-- ✅ AGENT_ACCOUNTABILITY_REPORT.md: Session entry recorded (this entry)
+- ✅ .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md: Session entry recorded (this entry)
 - ✅ Track 12.3 Diagnostic: Comprehensive report in .codex/TRACK_12_3_RELEASE_WORKFLOW_FIX.md
 
 **Merge Readiness:** 95%+ COMPLETE
@@ -1785,7 +1785,7 @@ All phases of the autonomous deployment have been successfully executed with ful
 **Phase 13 Comment Resolution & Remediation:** 🟢 IN PROGRESS
 - Reviewed 4 blocking comments from governance compliance and pattern gates
 - Addressed REQ-5 compliance: Updated CHANGELOG.md with Phase 13 Ready Phase session entry
-- Updated REQ-4 compliance: AGENT_ACCOUNTABILITY_REPORT.md entry for current session
+- Updated REQ-4 compliance: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md entry for current session
 - Prepared WEC block update for PR body (generated via session_wrapup_autofix CLI)
 - Initiated code review feedback resolution (11 inline comment SHAs to be provided)
 - Activated CTEP Mode (Copilot Task Execution Protocol) as requested by @mbaetiong
@@ -1793,7 +1793,7 @@ All phases of the autonomous deployment have been successfully executed with ful
 
 **Blocking Issues Addressed:**
 1. ✅ REQ-5 (CHANGELOG.md): Fixed via commit 5af98add
-2. ✅ REQ-4 (AGENT_ACCOUNTABILITY_REPORT.md): Updated in current session
+2. ✅ REQ-4 (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md): Updated in current session
 3. 🔄 WEC Block: Prepared for PR body update
 4. 🔄 Code Review Comments: 11 inline comments being resolved with commit SHAs
 5. 🔄 Governance Compliance: Compliance check being addressed
@@ -1834,7 +1834,7 @@ All phases of the autonomous deployment have been successfully executed with ful
 - Verified current branch state: `copilot/codebase-exploration-implementation-plan` (2 commits ahead of main)
 - Confirmed Phase 13 track deployment readiness (Tracks 13.1-13.4)
 - Staged all pending session deltas and state updates
-- Updated AGENT_ACCOUNTABILITY_REPORT.md with session context (2026-07-06T07:08Z entry)
+- Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with session context (2026-07-06T07:08Z entry)
 - Prepared for PR creation with verified WEC template
 - Planned branch/main alignment at 0 commits via fast-forward merge protocol
 
@@ -1887,12 +1887,12 @@ All phases of the autonomous deployment have been successfully executed with ful
 - Verified WEC template readiness (9 canonical items)
 - Confirmed Track 12.3 critical path monitoring established
 - Updated CHANGELOG.md with Phase 13 AUTO-GO CONTINUE session entry
-- Updated AGENT_ACCOUNTABILITY_REPORT.md with current session context
+- Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with current session context
 - Prepared PR with WEC template for merge readiness validation
 - Established auto-approval workflow prerequisites
 
 **Merge Readiness Status:** ✅ VERIFIED AT 100%
-- ✅ REQ-4/REQ-5 compliance: CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated in final commit
+- ✅ REQ-4/REQ-5 compliance: CHANGELOG.md + .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated in final commit
 - ✅ WEC template validation: All 9 canonical items present and correctly formatted
 - ✅ No deferral language detected (policy compliance verified)
 - ✅ Code quality checks: clean state maintained
@@ -1927,7 +1927,7 @@ All phases of the autonomous deployment have been successfully executed with ful
 - Created `.codex/PHASE_13_REALTIME_DASHBOARD.md` (11.4 KB, real-time monitoring)
 - Deployed Track 13.1 agent: autonomous-test-healer-agent (advisory mode)
 - Deployed Track 13.2 agent: rag-meta-tensor-validator (advisory mode)
-- Updated AGENT_ACCOUNTABILITY_REPORT.md (session entry)
+- Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (session entry)
 - Updated CHANGELOG.md (Phase 13 activation)
 - Committed all Phase 13 setup documentation
 
@@ -2031,7 +2031,7 @@ All phases of the autonomous deployment have been successfully executed with ful
 - Generated artifact: `.codex/PHASE_4_SECURITY_REPORT.md` + JSON
 
 **Phase 5 (Documentation Updates):** ✅ Complete (executed via unified-doc-agent)
-- Created 2 new comprehensive guides: QUICKSTART_BY_PROFILE.md (340 lines), OFFLINE_DEPLOYMENT.md (432 lines)
+- Created 2 new comprehensive guides: docs/quickstart/QUICKSTART_BY_PROFILE.md (340 lines), docs/release/OFFLINE_DEPLOYMENT.md (432 lines)
 - Updated CONTRIBUTING.md with profile-aware development guidelines
 - Documented 10 stable public APIs from cognitive_brain module with version guarantees
 - Verified all documentation links valid, no broken references
@@ -2126,7 +2126,7 @@ All phases of the autonomous deployment have been successfully executed with ful
   - `pyproject.toml` (`marshmallow` constraint alignment in `full` profile)
 - Test/documentation updates:
   - `tests/test_phase_6_2_b_env_vars.py`
-  - `docs/QUICKSTART_BY_PROFILE.md`
+  - `docs/docs/quickstart/QUICKSTART_BY_PROFILE.md`
 
 ### VALIDATION EXECUTED
 - `python scripts/ci/pre_flight_check.py` ✅
@@ -2206,9 +2206,9 @@ All phases of the autonomous deployment have been successfully executed with ful
 - `.codex/PHASE_6_SESSION_HANDOFF.md` - Next-session action plan
 - `docs/ENVIRONMENT_VARIABLES_FAQ.md` - User FAQ
 - `docs/LOCAL_DEV_ENV_SETUP.md` - Development setup guide
-- `docs/OFFLINE_DEPLOYMENT.md` - Air-gap deployment guide
+- `docs/docs/release/OFFLINE_DEPLOYMENT.md` - Air-gap deployment guide
 - `docs/ONBOARDING_METRICS_DASHBOARD.md` - User adoption metrics
-- `docs/QUICKSTART_BY_PROFILE.md` - User profile quick-starts
+- `docs/docs/quickstart/QUICKSTART_BY_PROFILE.md` - User profile quick-starts
 
 ### DELIVERABLES
 
@@ -2234,7 +2234,7 @@ All phases of the autonomous deployment have been successfully executed with ful
 **Immediate (This Session):**
 1. Create PR with title and body from documentation-quality-agent output
 2. Add WEC (Workflow Execution Checklist) section to PR body
-3. Finalize AGENT_ACCOUNTABILITY_REPORT.md (REQ-4)
+3. Finalize .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (REQ-4)
 4. Finalize CHANGELOG.md (REQ-5)
 5. Create final commit with both compliance files
 6. Submit PR to main branch
@@ -2252,7 +2252,7 @@ All phases of the autonomous deployment have been successfully executed with ful
 
 ### SECURITY & COMPLIANCE
 
-✅ **REQ-4 (AGENT_ACCOUNTABILITY_REPORT.md):** Updated with Phase 6.2 session details  
+✅ **REQ-4 (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md):** Updated with Phase 6.2 session details  
 ✅ **REQ-5 (CHANGELOG.md):** Updated with Phase 6.2 environment variable deployment  
 ✅ **Security:** 0 secrets committed, all 8 variables are configuration, CODEX_LOCAL_LOOPBACK gates production mode  
 ✅ **Quality:** All tests passing, linting passing, 100% backward compatibility  
@@ -2315,7 +2315,7 @@ All phases of the autonomous deployment have been successfully executed with ful
 - `src/codex/consolidation/__init__.py`: Removed test fixtures from public API, enhanced import documentation
 
 **Documentation:**
-- `INSTALL.md`: Fixed wheel naming, added profile documentation
+- `.codex/archive/misc/INSTALL.md`: Fixed wheel naming, added profile documentation
 - `OFFLINE_BOOTSTRAP.sh`: Updated usage examples
 
 **Artifacts (8 reports):**
@@ -2365,7 +2365,7 @@ All phases of the autonomous deployment have been successfully executed with ful
 - Implemented network allowlist enforcement module: `src/safety/network_policy.py` with `PolicyViolationError` + `enforce_network_policy()` fail-closed behavior.
 - Added default policy artifact: `.codex/network-policy.yaml` (localhost-only allowlist by default).
 - Added offline bootstrap artifact: `OFFLINE_BOOTSTRAP.sh` for wheelhouse-based air-gapped installation.
-- Added external-consumer docs: `INSTALL.md`, `ISOLATED_DEPLOYMENT.md`, `INTEGRATION.md`.
+- Added external-consumer docs: `.codex/archive/misc/INSTALL.md`, `docs/release/ISOLATED_DEPLOYMENT.md`, `docs/api/reference/INTEGRATION.md`.
 - Added campaign ADR + dashboard updates: `.codex/PACKAGING_ARCHITECTURE_DECISIONS.md`, `.codex/CAMPAIGN_TRACKING_DASHBOARD.md`.
 - Added safety tests: `tests/safety/test_network_policy.py` (allow/block/wildcard coverage).
 - Cleared CI quality gates surfaced during validation by fixing stale doc metrics, broken documentation link targets, unsafe XML fallback import, and weak MD5 cache hashing findings.
@@ -2419,12 +2419,12 @@ All phases of the autonomous deployment have been successfully executed with ful
 ### DOCUMENTATION PREPARED
 
 - ✅ `.codex/PHASE_9_3_SESSION_2_REMEDIATION.md` — Full diagnostic analysis + remediation roadmap
-- ⏳ `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — THIS ENTRY (REQ-4)
+- ⏳ `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — THIS ENTRY (REQ-4)
 - ⏳ `CHANGELOG.md` — Session entry with CI fix details (REQ-5)
 
 ### COMPLIANCE STATUS
 
-- ⏳ REQ-4 (AGENT_ACCOUNTABILITY_REPORT.md): In-progress session entry (this section)
+- ⏳ REQ-4 (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md): In-progress session entry (this section)
 - ⏳ REQ-5 (CHANGELOG.md): Pending agent completion (will commit atomically)
 - ✅ REQ-13 (PR comment replies): User expectation documented; will post commit SHAs per agent completions
 - ✅ D-tier autonomous authority confirmed (wec:auto-approve label active on PR #5214)
@@ -2465,12 +2465,12 @@ CI remediation agents execute in parallel (deadline 2026-07-03T23:00Z). On compl
 | **0b** | Fix ALL failing CI checks | ✅ COMPLETE |
 | **0c** | Check branch rebase status | ✅ CLEARED (already resolved) |
 | **REQ-6** | Fix secret false positive in github_app.py:36 | ✅ FIXED | <!-- pragma: allowlist secret -->
-| **REQ-4** | Update AGENT_ACCOUNTABILITY_REPORT.md | ✅ THIS ENTRY |
+| **REQ-4** | Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md | ✅ THIS ENTRY |
 | **Authorization** | Track 2-4 campaign activations (2026-07-05 UTC onwards) | ✅ CONFIRMED |
 
 ### COMPLIANCE STATUS
 
-- ✅ REQ-4 (AGENT_ACCOUNTABILITY_REPORT.md): This entry
+- ✅ REQ-4 (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md): This entry
 - ✅ REQ-5 (CHANGELOG.md): Campaign continuation entry
 - ✅ REQ-6 (No Secrets): False positive fixed with pragma allowlist
 - ✅ Pre-flight checklist items 0a-0c completed
@@ -2516,7 +2516,7 @@ Campaign execution continues per multi-agent implementation plan:
 
 ### COMPLIANCE STATUS
 
-- ✅ REQ-4 (AGENT_ACCOUNTABILITY_REPORT.md): This entry
+- ✅ REQ-4 (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md): This entry
 - ✅ REQ-5 (CHANGELOG.md): Session entry added
 - ✅ D-tier autonomous authority confirmed (COPILOT_AGENT_MAX_AUTONOMY_LEVEL=D)
 
@@ -2598,7 +2598,7 @@ T+46-59 min: Phase 4 (Documentation) ✅ IN PROGRESS
 
 ### COMPLIANCE STATUS
 
-- ✅ REQ-4 (AGENT_ACCOUNTABILITY_REPORT.md): Session entry added
+- ✅ REQ-4 (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md): Session entry added
 - ✅ REQ-5 (CHANGELOG.md): All changes documented
 
 ---
@@ -2616,7 +2616,7 @@ T+46-59 min: Phase 4 (Documentation) ✅ IN PROGRESS
 
 | Item | Category | Status |
 |------|----------|--------|
-| AGENT_ACCOUNTABILITY_REPORT.md | REQ-4 Compliance | ✅ COMPLETE |
+| .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md | REQ-4 Compliance | ✅ COMPLETE |
 | CHANGELOG.md | REQ-5 Compliance | ✅ COMPLETE |
 | Pending Comments (5 items) | Comment Review Gate | ✅ ASSESSED |
 
@@ -2625,7 +2625,7 @@ T+46-59 min: Phase 4 (Documentation) ✅ IN PROGRESS
 - Verified workflow action versions: ✅ All 224 workflows compliant (enforce_actions_versions.py --summary)
 - Verified workflow permissions blocks: ✅ All required workflows have explicit permissions
 - Pinned mutable GitHub Actions to commit SHAs across 10+ critical workflows for supply-chain security compliance (Semgrep remediation)
-- Updated AGENT_ACCOUNTABILITY_REPORT.md with session completion entry (REQ-4 ✅)
+- Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with session completion entry (REQ-4 ✅)
 - Updated CHANGELOG.md with session completion entry (REQ-5 ✅)
 - Verified compliance with session_wrapup_autofix.py --check: REQ-4 ✅, REQ-5 ✅
 
@@ -2819,7 +2819,7 @@ T+46-59 min: Phase 4 (Documentation) ✅ IN PROGRESS
 
 - [ ] Wait for remaining 2 agents to complete (~10-15 min)
 - [ ] Merge all audit findings into PHASE_9_2_CONSOLIDATED_AUDIT_REPORT.md
-- [ ] Update AGENT_ACCOUNTABILITY_REPORT.md (this file)
+- [ ] Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (this file)
 - [ ] Update CHANGELOG.md with Phase 9.2/9.3 completion entry
 - [ ] Run compliance verification: session_wrapup_autofix.py --check
 - [ ] Commit phase 3 artifacts and accountability updates
@@ -2919,7 +2919,7 @@ T+46-59 min: Phase 4 (Documentation) ✅ IN PROGRESS
 **Actions Taken:**
 1. ✅ Added CHANGELOG.md entry for 2026-07-03 verification session
 2. ✅ Added PDA entry to `.codex/aftermath/pda_iterations.jsonl` for 2026-07-03
-3. ✅ Updated docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md with this session
+3. ✅ Updated docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with this session
 
 **Fixes Applied:**
 - REQ-5 (CHANGELOG.md): Now includes entry for e0b1ea05 "Final comprehensive verification"
@@ -3027,7 +3027,7 @@ The campaign plan required immediate user-facing execution rather than another p
   - `COPILOT_CLI_ENHANCEMENTS.md`
   - `TASK_AGENT_ROUTING.md`
   - `SECURITY_AGENT_CHAIN.md`
-  - `CI_AUTOFIX_DEEP_INTEGRATION.md`
+  - `CI_AUTOFIX_DEEP_docs/api/reference/INTEGRATION.md`
   - `PHASE_11_IMPLEMENTATION_PLAN.md`
 - Added focused regression coverage in `/home/runner/work/_codex_/_codex_/tests/test_chronicle_campaign_cli.py`.
 
@@ -3062,7 +3062,7 @@ Commit `89b6ee52` triggered Phase 12.2 Compliance BLOCK (41.67% score) preventin
 
 - **Emergency agent (ci-emergency-response-agent)**: Identified and applied governance exception registration (132 Phase 10-12 artifacts) — commit `0d4ecbef`
 - **Root cause analysis**: Discovered accountability files must be present in LATEST commit per unified compliance check requirements
-- **Remediation**: Updating both `AGENT_ACCOUNTABILITY_REPORT.md` and `CHANGELOG.md` in this commit to satisfy REQ-4/REQ-5
+- **Remediation**: Updating both `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` and `CHANGELOG.md` in this commit to satisfy REQ-4/REQ-5
 - **Compliance restoration path**: Fresh governance compliance run after this commit should resolve to APPROVE (95%+ score)
 
 ### VALIDATION
@@ -3098,7 +3098,7 @@ Per @mbaetiong's critical instruction to verify all workflows are passing before
   - `tools/docs_agent/copilot_tools_new.py`: 32 whitespace instances on blank lines
   - `tools/docs_agent/validate.py`: 6 whitespace instances on blank lines
 - **Updated compliance trail**:
-  - Added session entry to `AGENT_ACCOUNTABILITY_REPORT.md`
+  - Added session entry to `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
   - Added session entry to `CHANGELOG.md`
 - **Verified fixes**: Confirmed no additional linting violations with ruff
 
@@ -3132,7 +3132,7 @@ The PR body still showed the stale **73/100** scorecard even after the workflow 
 - Hardened `scripts/ci/auto_fix_common_issues.py` to catch `TokenResolutionError` and fall back cleanly to non-elevated / standard local token paths for the read-only GAS alert scan.
 - Refined the fallback logic into a small sequential loop after final validation feedback so the readiness-fix remains readable without reintroducing the local-token crash.
 - Restored the accidentally committed session artifact churn (`.codex/session_*`, `.codex/rag/session_delta.json`, `.pyc`, and other run-generated files) back to their pre-session state so the final commit remains surgical.
-- Added fresh REQ-4 / REQ-5 entries to `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` and `CHANGELOG.md` for the final commit.
+- Added fresh REQ-4 / REQ-5 entries to `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` and `CHANGELOG.md` for the final commit.
 
 ### VALIDATION
 
@@ -3233,7 +3233,7 @@ The PR body still showed the stale **73/100** scorecard even after the workflow 
 
 **Issues Addressed**:
 1. CodeQL security findings: Shell injection, mutable action tags, missing permissions blocks
-2. REQ-4: AGENT_ACCOUNTABILITY_REPORT.md not in last commit
+2. REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md not in last commit
 3. REQ-5: CHANGELOG.md not in last commit
 4. Branch rebase needed: 4 commits behind main
 
@@ -3260,11 +3260,11 @@ The PR body still showed the stale **73/100** scorecard even after the workflow 
 ### PHASE B: COMPLIANCE UPDATES ✅
 
 **Files Updated**:
-1. ✅ docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md - Added this session entry
+1. ✅ docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md - Added this session entry
 2. ✅ CHANGELOG.md - Updated with CI rescue summary
 
 **Validation**:
-- REQ-4 compliance: AGENT_ACCOUNTABILITY_REPORT.md included in commit
+- REQ-4 compliance: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md included in commit
 - REQ-5 compliance: CHANGELOG.md included in commit
 - Both files tracked and committed together
 
@@ -3439,7 +3439,7 @@ This session initiated Phase B (parallel agent delegation) of PR #5190 post-merg
 2. **Phase C Execution** (upon Phase B completion):
    - C.1: Coverage re-validation using Phase B gap analysis
    - C.2: CI validation (all fixes hold)
-   - C.3: Documentation update (CHANGELOG.md, AGENT_ACCOUNTABILITY_REPORT.md)
+   - C.3: Documentation update (CHANGELOG.md, .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md)
    - C.4: Tier 2 documentation work unblocked (unified-doc-agent, documentation-quality-agent)
 
 3. **Phase D: Tier 2 Documentation**:
@@ -3477,7 +3477,7 @@ This session delivered a complete fix for PR #5190's dual CI failures. The prima
   - Batch 1 (16 files): `.codex/` root planning files (AGENT_ECOSYSTEM_SEMANTIC_INDEX.md, ARCHITECTURE_DIAGRAMS.md, AUTO_APPROVE_PREREQUISITE_GUIDE.md, etc.)
   - Batch 2-4 (78 files): `.codex/` phase campaign tracking files (PHASE_10_COORDINATION.md through TIER_3_COORDINATION.md, 77 phase files)
   - Batch 5 (18 files): `.codex/archive/sessions/` historical session reports
-  - Batch 6 (13 files): Root deprecation notices and completion reports (ENERGY_CONVERSION_AGENT_DEPRECATION.md, P22_EXECUTIVE_SUMMARY.md, etc.)
+  - Batch 6 (13 files): Root deprecation notices and completion reports (.codex/archive/deprecated/ENERGY_CONVERSION_AGENT_DEPRECATION.md, P22_EXECUTIVE_SUMMARY.md, etc.)
   - Batch 7 (19 files): `docs/` architecture/cli/diagrams files + `audit_artifacts/raw/` placeholders
   - Batch 8 (7 files): `.venv_ci/` dependency licenses/README files (LICENSE.txt, robots.txt, etc.)
 - **Result**:
@@ -3545,13 +3545,13 @@ Implemented the smallest targeted test-only follow-up on top of the existing RAG
 
 **Session:** rag-ci-emergency-fix-5188 | **Task:** Emergency fix — resolve 6 failing CI checks blocking merge on PR #5188 | **Date:** 2026-07-01T23:50:00Z | **Authority:** @mbaetiong
 
-Resolved all 6 failing CI checks blocking merge: secrets false-positive, governance compliance (REQ-4/REQ-5), comment review gate, WEC template integrity, unified governance. Root causes: (1) git SHA in AGENT_ACCOUNTABILITY_REPORT.md flagged by detect-secrets (added `<!-- pragma: allowlist secret -->`), (2) unused `import pytest` removed by CI bot at f813f536f, (3) CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md not in latest commit — updated in this commit, (4) WEC section missing from PR body — added via prDescription in engine-tools-report_progress.
+Resolved all 6 failing CI checks blocking merge: secrets false-positive, governance compliance (REQ-4/REQ-5), comment review gate, WEC template integrity, unified governance. Root causes: (1) git SHA in .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md flagged by detect-secrets (added `<!-- pragma: allowlist secret -->`), (2) unused `import pytest` removed by CI bot at f813f536f, (3) CHANGELOG.md and .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md not in latest commit — updated in this commit, (4) WEC section missing from PR body — added via prDescription in engine-tools-report_progress.
 
 ### ACTIONS TAKEN
 
-1. **Secrets False-Positive (RP-007)**: Added `<!-- pragma: allowlist secret -->` to git commit SHA at line 112 of AGENT_ACCOUNTABILITY_REPORT.md flagged by detect-secrets as "Hex High Entropy String".
+1. **Secrets False-Positive (RP-007)**: Added `<!-- pragma: allowlist secret -->` to git commit SHA at line 112 of .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md flagged by detect-secrets as "Hex High Entropy String".
 2. **Unused `import pytest`**: Already removed by CI bot commit f813f536f. Also fixed extra blank line in imports.
-3. **REQ-4 (AGENT_ACCOUNTABILITY_REPORT.md)**: Updated in this commit to satisfy governance compliance gate.
+3. **REQ-4 (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md)**: Updated in this commit to satisfy governance compliance gate.
 4. **REQ-5 (CHANGELOG.md)**: Updated in this commit with current session changes.
 5. **Comment review gate**: Replied to `@github-code-quality[bot]` review comment (r3509627515) noting fix was already applied.
 6. **WEC Template Integrity**: Added `## 🔄 Workflow Execution Checklist` section to PR body via engine-tools-report_progress prDescription.
@@ -3566,12 +3566,12 @@ Resolved all 6 failing CI checks blocking merge: secrets false-positive, governa
 
 **Session:** rag-coverage-fix-5188-followup | **Task:** Address @mbaetiong CI Rescue comment (4860710236) — REQ-4/REQ-5 compliance, ruff/mypy/auto-fix pre-commit checks, WEC and Fast Validation gate review | **Date:** 2026-07-01T23:31:00Z | **Authority:** @mbaetiong
 
-Updated CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md in final commit to satisfy REQ-4/REQ-5 gates. Confirmed: ruff passes (not installed in local env but passes in CI), machine-readable-governance passes (0 unmanaged files), auto_fix_common_issues passes. All substantive RAG fixes were delivered in commits 905e028a and aa75bcd6.
+Updated CHANGELOG.md and .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md in final commit to satisfy REQ-4/REQ-5 gates. Confirmed: ruff passes (not installed in local env but passes in CI), machine-readable-governance passes (0 unmanaged files), auto_fix_common_issues passes. All substantive RAG fixes were delivered in commits 905e028a and aa75bcd6.
 
 ### ACTIONS TAKEN
 
 1. **REQ-5 (CHANGELOG.md)**: Added `### Fixed (auto-update — PR #5188)` section under `## [Unreleased]` summarizing the RAG coverage fix and production bugs resolved.
-2. **REQ-4 (AGENT_ACCOUNTABILITY_REPORT.md)**: Added this session summary entry with correct timestamp.
+2. **REQ-4 (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md)**: Added this session summary entry with correct timestamp.
 3. **Pre-commit validation**: Confirmed machine-readable-governance check passes locally (0 unmanaged files). Ruff/mypy baseline tooling unavailable in local env but CI passes on prior commits.
 4. **Comment addressed**: Replied to @mbaetiong CI Rescue comment (4860710236) with resolving commit SHA.
 
@@ -3646,7 +3646,7 @@ Added `Retrieval = RetrievalPipeline` at end of `src/rag/pipelines/retrieval.py`
 - `tests/rag/ingestion/test_chunker.py` — 1 new test
 - `tests/rag/test_utils_meta_mocked.py` — new file, 4 tests
 - `CHANGELOG.md` — updated
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updated
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — updated
 
 ---
 
@@ -3716,7 +3716,7 @@ Failed with "Unmanaged candidate files detected" - 126 unmanaged files in .codex
 - ✅ Updated `.secrets.baseline` (Git SHA allowlist)
 - ✅ Delegated doc link fixes to unified-doc-agent
 - ✅ Updated `CHANGELOG.md` (2026-07-01T22:30Z entry)
-- ✅ Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (this entry)
+- ✅ Updated `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (this entry)
 
 ### IMPACT & VERIFICATION
 
@@ -3732,7 +3732,7 @@ Failed with "Unmanaged candidate files detected" - 126 unmanaged files in .codex
 
 ### COMPLIANCE
 
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated in this commit
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated in this commit
 - ✅ REQ-5: CHANGELOG.md updated in this commit
 - ⏳ Awaiting unified-doc-agent completion for documentation link fixes
 - ✅ Replied to all blocking PR comments
@@ -3797,7 +3797,7 @@ Updated `.github/workflows/test-rag.yml` lines 176-178 to align with pyproject.t
 - ✅ Fixed `.github/workflows/test-rag.yml` (workflow dependency alignment)
 - ✅ Updated `.codex/ci-fixes/rag-module-tests.md` (fix tracking documentation)
 - ✅ Updated `CHANGELOG.md` (2026-07-01T21:44Z entry)
-- ✅ Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (this entry)
+- ✅ Updated `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (this entry)
 
 ### IMPACT & VERIFICATION
 
@@ -3809,7 +3809,7 @@ Updated `.github/workflows/test-rag.yml` lines 176-178 to align with pyproject.t
 
 ### COMPLIANCE
 
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated in this commit
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated in this commit
 - ✅ REQ-5: CHANGELOG.md updated in this commit
 - ✅ All blocking PR comments replied to (comment #4860253989)
 - ✅ Fix tracking stub updated with root cause analysis
@@ -3931,7 +3931,7 @@ Successfully implemented comprehensive workflow auto-approval infrastructure wit
 ### COMPLIANCE VERIFICATION
 
 - ✅ PR #5176: Merge-readiness score 85/100
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md — this entry documents the session
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md — this entry documents the session
 - ✅ REQ-5: CHANGELOG.md — pending update in final commit
 - ✅ CODEX_MASTER_KEY: Explicitly integrated across all 3 scripts  <!-- pragma: allowlist secret -->
 - ✅ Workflow Approval: All pending workflows processed automatically
@@ -3964,7 +3964,7 @@ Diagnosed and resolved 8 concurrent CI failures across validation, governance, c
 - Validated all Python code blocks in markdown files (DATA_FLOW_ARCHITECTURE.md, etc.)
 - All blocks syntactically correct — no code changes needed
 
-**Accountability Tracking** (docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md)
+**Accountability Tracking** (docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md)
 - Added this session entry documenting the 8-check remediation campaign
 
 **Changelog Update** (CHANGELOG.md)
@@ -3972,7 +3972,7 @@ Diagnosed and resolved 8 concurrent CI failures across validation, governance, c
 
 ### COMPLIANCE VERIFICATION
 
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md — updated in this commit
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md — updated in this commit
 - ✅ REQ-5: CHANGELOG.md — updated in this commit
 - ✅ Secrets Baseline: Session manifest false positive resolved
 - ✅ Agent Registry Schema: All required fields present and validated
@@ -3993,7 +3993,7 @@ Diagnosed and resolved the failing `actionlint — Workflow Compliance` CI job (
   `release.yml`, `rust_swarm_ci.yml`, `scheduled-archival.yml`
 - Added `CODEX_MASTER_KEY` and `CODEX_BACKUP_KEY` to `on.workflow_call.secrets:` in `consolidated-pr-status.yml`  <!-- pragma: allowlist secret -->
 
-**Accountability Tracking** (docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md)
+**Accountability Tracking** (docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md)
 - Added this session entry documenting PR #5167 actionlint fix
 
 **Changelog Update** (CHANGELOG.md)
@@ -4012,7 +4012,7 @@ Diagnosed and resolved the failing `🔀 REQ-10: Branch Rebase Check` CI job in 
 **Workflow Fix** (`.github/workflows/branch-rebase-gate.yml`)
 - Updated sparse-checkout from single-file `scripts/ci/branch_rebase_check.py` to multi-file block including `scripts/__init__.py`, `scripts/ci/__init__.py`, `scripts/ci/branch_rebase_check.py`, and `scripts/ci/_token_resolver.py`
 
-**Accountability Tracking** (docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md)
+**Accountability Tracking** (docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md)
 - Added this session entry documenting PR #5167 REQ-10 fix
 
 **Changelog Update** (CHANGELOG.md)
@@ -4020,7 +4020,7 @@ Diagnosed and resolved the failing `🔀 REQ-10: Branch Rebase Check` CI job in 
 
 ### COMPLIANCE VERIFICATION
 
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md — updated in this commit
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md — updated in this commit
 - ✅ REQ-5: CHANGELOG.md — updated in this commit
 
 ---
@@ -4037,7 +4037,7 @@ Diagnosed and resolved the failing `test-rag (3.12.13)` CI job in run `284969616
 - Changed `print(f'  ✓ {pkg}')` → `print('  ✓ $pkg')` in Step 8 package verification
 - Root cause: Python f-string `{pkg}` → undefined Python variable; bash expansion `$pkg` fixes it
 
-**Accountability Tracking** (docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md)
+**Accountability Tracking** (docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md)
 - Added this session entry documenting PR #5166 RAG CI fix
 
 **Changelog Update** (CHANGELOG.md)
@@ -4047,17 +4047,17 @@ Diagnosed and resolved the failing `test-rag (3.12.13)` CI job in run `284969616
 
 ## SESSION SUMMARY — 2026-07-01T05:49Z [PR #5165 CI COMPLIANCE: REQ-4 & REQ-5 ACCOUNTABILITY FILES]
 
-**Session:** copilot/explore-codebase-failing-checks (PR #5165) | **Task:** Fix CI compliance failures (REQ-4 AGENT_ACCOUNTABILITY_REPORT.md, REQ-5 CHANGELOG.md) blocking merge-readiness | **Date:** 2026-07-01T05:49:00Z | **Authority:** @mbaetiong (D-mode autonomy)
+**Session:** copilot/explore-codebase-failing-checks (PR #5165) | **Task:** Fix CI compliance failures (REQ-4 .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md, REQ-5 CHANGELOG.md) blocking merge-readiness | **Date:** 2026-07-01T05:49:00Z | **Authority:** @mbaetiong (D-mode autonomy)
 
 ## SESSION SUMMARY — 2026-07-01T05:49Z [PR #5165 CI COMPLIANCE: REQ-4 & REQ-5 ACCOUNTABILITY FILES]
 
-**Session:** copilot/explore-codebase-failing-checks (PR #5165) | **Task:** Fix CI compliance failures (REQ-4 AGENT_ACCOUNTABILITY_REPORT.md, REQ-5 CHANGELOG.md) blocking merge-readiness | **Date:** 2026-07-01T05:49:00Z | **Authority:** @mbaetiong (D-mode autonomy)
+**Session:** copilot/explore-codebase-failing-checks (PR #5165) | **Task:** Fix CI compliance failures (REQ-4 .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md, REQ-5 CHANGELOG.md) blocking merge-readiness | **Date:** 2026-07-01T05:49:00Z | **Authority:** @mbaetiong (D-mode autonomy)
 
-Resolved CI merge-readiness blocking issues by ensuring accountability files are in the latest commit. Ran diagnostic checks on branch rebase gate (action_required) and actionlint workflow (action_required). Both workflows awaiting approval via workflow execution gate. Updated AGENT_ACCOUNTABILITY_REPORT.md, CHANGELOG.md, and PDA tracking to satisfy REQ-4/REQ-5 compliance gates, enabling PR merge when workflows approve.
+Resolved CI merge-readiness blocking issues by ensuring accountability files are in the latest commit. Ran diagnostic checks on branch rebase gate (action_required) and actionlint workflow (action_required). Both workflows awaiting approval via workflow execution gate. Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md, CHANGELOG.md, and PDA tracking to satisfy REQ-4/REQ-5 compliance gates, enabling PR merge when workflows approve.
 
 ### DELIVERABLES IMPLEMENTED
 
-**Accountability Tracking** (docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md)
+**Accountability Tracking** (docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md)
 - Added new session entry documenting PR #5165 CI compliance work
 - Confirmed all previous sessions intact and properly tracked
 - Session entry timestamp: 2026-07-01T05:49:00Z
@@ -4074,7 +4074,7 @@ Resolved CI merge-readiness blocking issues by ensuring accountability files are
 
 ### COMPLIANCE VERIFICATION
 
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md — updated in this commit
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md — updated in this commit
 - ✅ REQ-5: CHANGELOG.md — updated in this commit
 - ✅ PDA entry: Added for 2026-07-01 iteration tracking
 - ✅ mypy check: 0 errors (↓383 vs baseline)
@@ -4151,7 +4151,7 @@ Systematically resolved all 7 required clarifications for the Multi-Agent Implem
 **Immediate (Same-Session Track 0)**:
 - Fix PR #5165 Comment Review Gate (workflow + code quality)
 - Update CHANGELOG.md with session entry ✅
-- Update AGENT_ACCOUNTABILITY_REPORT.md (this file) ✅
+- Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (this file) ✅
 - Target merge-readiness ≥90/100
 - Reply to comment #4850550832 with resolving commit SHA
 
@@ -4295,7 +4295,7 @@ Implemented core autonomy foundations addressing execution blocking at 25% and c
 ### DOCUMENTATION UPDATES
 
 - ✅ `CHANGELOG.md` — Added core autonomy foundations entry
-- ✅ `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — Updated session summary
+- ✅ `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — Updated session summary
 
 ### STATUS
 
@@ -4331,7 +4331,7 @@ Resolved PR #5160 merge conflict blocking issue by addressing unaddressed commen
 
 **Documentation**:
 - Updated CHANGELOG.md with fix session entry
-- Updated AGENT_ACCOUNTABILITY_REPORT.md with session tracking
+- Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with session tracking
 
 ### VALIDATION COMPLETED
 
@@ -4339,7 +4339,7 @@ Resolved PR #5160 merge conflict blocking issue by addressing unaddressed commen
 - ✅ ExecutionReport preserved (verified in __all__ export list)
 - ✅ Code quality checks pass (ruff, mypy)
 - ✅ CHANGELOG.md updated with fix session
-- ✅ AGENT_ACCOUNTABILITY_REPORT.md updated
+- ✅ .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated
 - ✅ Comment Review Gate should now proceed
 
 ### STATUS
@@ -4610,7 +4610,7 @@ Fixed all 15 security vulnerabilities identified by GitHub Advanced Security, Se
 
 1. ⏳ **CI Re-validation:** Wait for workflows to re-run and verify all security checks pass
 2. ⏳ **Machine-Readable System Integration:** Continue with main task from comment #4847445023
-3. ✅ **AGENT_ACCOUNTABILITY_REPORT.md:** Updated (this entry)
+3. ✅ **.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md:** Updated (this entry)
 4. ⏳ **CHANGELOG.md:** To be updated
 5. ⏳ **Commit & Push:** Commit all security fixes
 
@@ -4718,7 +4718,7 @@ Completed comprehensive campaign exploration and created detailed implementation
 
 ### Compliance Status
 
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated (this entry, commit `f5a8a4d4`)
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated (this entry, commit `f5a8a4d4`)
 - ✅ Planning documents stored in repository (`.codex/` tracked)
 - ✅ Validation procedures documented
 - ✅ Rollback strategies defined
@@ -4744,13 +4744,13 @@ Fixed 2 CodeQL security alerts in tests/test_link_validation.py by replacing ins
   - **Fix:** Replaced with `url.startswith("https://github.com/")` or `url.startswith("http://github.com/")` for proper URL prefix validation
   - **Impact:** Ensures only valid GitHub URLs are processed
 
-- ✅ **REQ-4: AGENT_ACCOUNTABILITY_REPORT.md** — Updated with current session entry (this document)
+- ✅ **REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md** — Updated with current session entry (this document)
 
 - ✅ **REQ-13 Compliance:** Replied to @mbaetiong blocking comment (ID 4845625012) with security fix summary
 
 ### Compliance Status
 
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated (this entry, latest commit `29f9ffcc`)
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated (this entry, latest commit `29f9ffcc`)
 - ✅ REQ-13: Blocking comment reply posted with fix confirmation
 - ✅ All 3 CodeQL security alerts from Phase 3 Wave 5 are now resolved
 
@@ -4760,7 +4760,7 @@ Fixed 2 CodeQL security alerts in tests/test_link_validation.py by replacing ins
 
 **Session:** copilot-phase-3-wave-5-compliance | **Campaign:** Address CodeQL security alert and mandatory pre-flight checklist items | **Date:** 2026-06-30T15:58:49Z
 
-Fixed CodeQL security alert in tests/test_security_auth.py line 29 by replacing insecure SHA256-direct password hashing with PBKDF2-SHA256 (100,000 iterations). This aligns with OWASP password storage guidelines. Updated AGENT_ACCOUNTABILITY_REPORT.md per REQ-4 compliance gate and addressed all mandatory pre-flight checklist items (0a-7) per COGNITIVE_PRE_FLIGHT_CHECKLIST.
+Fixed CodeQL security alert in tests/test_security_auth.py line 29 by replacing insecure SHA256-direct password hashing with PBKDF2-SHA256 (100,000 iterations). This aligns with OWASP password storage guidelines. Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md per REQ-4 compliance gate and addressed all mandatory pre-flight checklist items (0a-7) per COGNITIVE_PRE_FLIGHT_CHECKLIST.
 
 ### Actions Completed
 
@@ -4770,7 +4770,7 @@ Fixed CodeQL security alert in tests/test_security_auth.py line 29 by replacing 
   - **Fix:** Replaced with PBKDF2-HMAC-SHA256 with 100,000 iterations and random salt generation
   - **Impact:** Complies with OWASP password storage recommendations
 
-- ✅ **REQ-4: AGENT_ACCOUNTABILITY_REPORT.md** — Updated with current session entry (this document)
+- ✅ **REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md** — Updated with current session entry (this document)
 
 - ✅ **Pre-flight Checklist Items 0a-0c:**
   - 0a: Reviewed ALL bot-posted comments (CodeQL security alert resolved)
@@ -4779,7 +4779,7 @@ Fixed CodeQL security alert in tests/test_security_auth.py line 29 by replacing 
 
 ### Compliance Status
 
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated (this entry, latest commit)
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated (this entry, latest commit)
 - ✅ Pre-flight Item 0a: Bot comments reviewed and actioned
 - ✅ Security fix: CodeQL alert addressed with PBKDF2 migration
 - ⏳ REQ-13: Blocking comment replies pending in next commit
@@ -4821,7 +4821,7 @@ Successfully systematically diagnosed and resolved 28+ failing CI checks on PR #
 
 ### Compliance Status
 
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated (this entry)
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated (this entry)
 - ✅ REQ-5: CHANGELOG.md updated with comprehensive fix details
 - ✅ All 28+ CI check failures resolved
 - ✅ Zero regressions in pre-existing tests
@@ -4854,7 +4854,7 @@ CodeQL identified that substring-based URL validation (`"ghcr.io" in url`) creat
 ### Compliance Status
 
 - ✅ REQ-14: Agent identifier documented
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated (this entry)
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated (this entry)
 - ✅ REQ-5: CHANGELOG.md updated with comprehensive fix details
 - ✅ All 2 high-severity CodeQL alerts resolved
 - ✅ Zero regressions in test suite
@@ -4895,7 +4895,7 @@ Full auth test suite was failing with 142+ tests across 10+ test files. Root cau
 
 ### Compliance
 - ✅ CHANGELOG.md updated (REQ-5)
-- ✅ AGENT_ACCOUNTABILITY_REPORT.md updated (REQ-4)
+- ✅ .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated (REQ-4)
 
 ---
 
@@ -4953,7 +4953,7 @@ Investigation of CI logs revealed that 16 additional tests in test_mfa_provider_
 ### Compliance Status
 
 - ✅ REQ-14: Agent identifier documented
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated (this entry)
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated (this entry)
 - ✅ REQ-5: CHANGELOG.md updated with comprehensive fix details
 - ✅ All 16 remaining MFA provider test failures verified and fixed
 - ✅ Zero regressions in test suite
@@ -5021,7 +5021,7 @@ User required immediate execution of PATH A: Delegate 3 agents in parallel to fi
 ### Compliance Status
 
 - ✅ REQ-14: Valid agent identifiers documented
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated (this entry)
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated (this entry)
 - ⏳ REQ-5: CHANGELOG.md being updated
 - ✅ All 20 auth test fixes verified and committed
 - ✅ Zero regressions introduced
@@ -5095,7 +5095,7 @@ All 6 review comments from PR #5141 review thread have been addressed:
 ### Compliance Status
 
 - ✅ REQ-14: Valid agent identifiers documented
-- ⏳ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md being updated (this entry)
+- ⏳ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md being updated (this entry)
 - ⏳ REQ-5: CHANGELOG.md being updated (in progress)
 - ✅ All shell scripts pass syntax validation
 - ✅ No breaking changes introduced
@@ -5131,7 +5131,7 @@ User added new requirement to address 7 failing CI checks on PR #5122 commit `c8
 - ✅ Delegated mypy baseline investigation to ci-auto-healer-agent (background task)
 - ✅ Identified REQ-4/REQ-5 compliance failure as root cause of governance BLOCK status
 - ✅ Updated CHANGELOG.md with session 2026-06-29T02:36Z entry documenting 7-check remediation
-- ✅ Updated AGENT_ACCOUNTABILITY_REPORT.md with this session entry
+- ✅ Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with this session entry
 
 ### Failure Analysis
 
@@ -5150,7 +5150,7 @@ User added new requirement to address 7 failing CI checks on PR #5122 commit `c8
 
 - ⏳ Ruff violations: Auto-fix in progress (background agent)
 - ⏳ mypy baseline: Investigation in progress (background agent)
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated in this commit
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated in this commit
 - ✅ REQ-5: CHANGELOG.md updated in this commit
 - ⏳ Governance compliance: Will pass after REQ-4/REQ-5 commit
 - ⚠️ Main branch failures: Escalated per §3 Codebase Agency Policy (not blocking this PR merge)
@@ -5182,7 +5182,7 @@ Continuation session addressing blocking CI rescue comment #4828447707 and REQ-5
 
 - ✅ Updated CHANGELOG.md with entry for commit `c8e5ef5b` fixes (test syntax, REQ-14 compliance)
 - ✅ Verified mypy Anti-Regression Gate passing locally (0 errors vs baseline 0)
-- ✅ Updated AGENT_ACCOUNTABILITY_REPORT.md with this session entry (REQ-4)
+- ✅ Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with this session entry (REQ-4)
 - ✅ Satisfied REQ-5 compliance requirement (CHANGELOG.md in latest commit)
 
 ### Blocking Comment Analysis
@@ -5200,7 +5200,7 @@ Continuation session addressing blocking CI rescue comment #4828447707 and REQ-5
 ### Merge Readiness Status
 
 - ✅ mypy baseline: passing (0 errors)
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated in this commit
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated in this commit
 - ✅ REQ-5: CHANGELOG.md updated in this commit
 - ✅ Test syntax fixes: resolved in commit `c8e5ef5b`
 - ✅ REQ-14 compliance: valid agent identifiers in place
@@ -5239,7 +5239,7 @@ Emergency session continuation after previous session terminated with 402 quota_
 - ✅ Validated that auth-tests and test-rag failures are pre-existing on main branch, not introduced by this PR
 - ✅ Confirmed that mypy baseline failures (78 errors) are on main branch, not introduced by this PR
 - ✅ Updated CHANGELOG.md with emergency session tracking (REQ-5)
-- ✅ Updated AGENT_ACCOUNTABILITY_REPORT.md with this session entry (REQ-4)
+- ✅ Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with this session entry (REQ-4)
 
 ### Failure Analysis
 
@@ -5265,7 +5265,7 @@ Emergency session continuation after previous session terminated with 402 quota_
 
 - ✅ actionlint violations: **RESOLVED** (SC2126, SC2181 fixed)
 - ✅ PR changes validated: No new failures introduced
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated in this commit
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated in this commit
 - ✅ REQ-5: CHANGELOG.md updated in this commit
 - ⚠️ Main branch failures: Pre-existing issues on `49538fb` (auth-tests, test-rag, mypy); separate remediation required
 
@@ -5289,18 +5289,18 @@ Emergency session continuation after previous session terminated with 402 quota_
 
 **Session:** copilot-pr5120-final-compliance | **Campaign:** Complete final REQ-5 compliance requirement by updating CHANGELOG.md | **Date:** 2026-06-28T23:34Z
 
-Final compliance resolution session addressing REQ-5 requirement for PR #5120. Previous auto-fix session (2026-06-28T23:33Z) updated AGENT_ACCOUNTABILITY_REPORT.md (REQ-4). This session completes the cycle by updating CHANGELOG.md to satisfy REQ-5 gate.
+Final compliance resolution session addressing REQ-5 requirement for PR #5120. Previous auto-fix session (2026-06-28T23:33Z) updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (REQ-4). This session completes the cycle by updating CHANGELOG.md to satisfy REQ-5 gate.
 
 ### Actions Completed
 
 - ✅ Updated CHANGELOG.md with session tracking (REQ-5)
-- ✅ Updated AGENT_ACCOUNTABILITY_REPORT.md with this session entry (REQ-4)
+- ✅ Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with this session entry (REQ-4)
 - ✅ Verified compliance check: all requirements now passing
 - ✅ Confirmed merge-readiness gates satisfied
 
 ### Merge Readiness Status
 
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated in final commit
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated in final commit
 - ✅ REQ-5: CHANGELOG.md updated in final commit
 - ✅ All PR comments addressed via prior sessions
 - ✅ Ready for merge
@@ -5320,7 +5320,7 @@ Pre-flight compliance session addressing cognitive-preflight gate requirements o
 ### Actions Completed
 
 - ✅ Reviewed pre-flight checklist items 0a (bot comments) and 0b (CI check status)
-- ✅ Updated AGENT_ACCOUNTABILITY_REPORT.md with current session entry (REQ-4)
+- ✅ Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with current session entry (REQ-4)
 - ✅ Updated CHANGELOG.md with compliance tracking for PR #5118 (REQ-5)
 - ✅ Verified agent token delegation activation status
 - ✅ Confirmed Phase 12.2 Compliance (100% passed per bot comment)
@@ -5330,7 +5330,7 @@ Pre-flight compliance session addressing cognitive-preflight gate requirements o
 - ✅ Phase 12.2 Compliance: APPROVED (100%)
 - ✅ CI Pattern Prevention Gate: PASSED
 - ✅ Agent Token Delegation: ACTIVATED (COPILOT_AGENT_AUTH_ENABLED=true)
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated in current session
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated in current session
 - ✅ REQ-5: CHANGELOG.md updated in current session
 
 ### Agents Used
@@ -5381,11 +5381,11 @@ Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to 
 
 **Session:** copilot-pr5116-ci-rescue-compliance | **Campaign:** Address CI rescue failures and update compliance documentation (REQ-4, REQ-5) on PR #5116 (`0D_base_`) | **Date:** 2026-06-28T14:29Z
 
-Addressed failing CI checks on PR #5116 with focus on compliance requirements. Root cause: AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md were not updated in the latest commit, triggering REQ-4 and REQ-5 compliance failures. The Comment Review Gate check was failing due to missing accountability tracking.
+Addressed failing CI checks on PR #5116 with focus on compliance requirements. Root cause: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md were not updated in the latest commit, triggering REQ-4 and REQ-5 compliance failures. The Comment Review Gate check was failing due to missing accountability tracking.
 
 ### Actions Completed
 
-- ✅ Updated AGENT_ACCOUNTABILITY_REPORT.md with this session entry (REQ-4)
+- ✅ Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with this session entry (REQ-4)
 - ✅ Updated CHANGELOG.md with CI rescue and compliance documentation (REQ-5)
 - ✅ Fixed failing Comment Review Gate check by ensuring compliance files in latest commit
 - ✅ Prepared reply to blocking comment ID 4826379193 from @mbaetiong
@@ -5397,7 +5397,7 @@ Addressed failing CI checks on PR #5116 with focus on compliance requirements. R
 
 ### Validation Status
 
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated in current session
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated in current session
 - ✅ REQ-5: CHANGELOG.md updated in current session
 - ✅ Comment Review Gate unblocked via compliance file updates
 
@@ -5443,7 +5443,7 @@ Addressed blocking comments on commits `1ca75d18`, `081151c71`, and `063000220e2
 - ✅ **Comment #4824567412 Reply**: Addressed with commit `64108d3e` (mypy Baseline Gate, 11 failing checks resolved)
 - ✅ **Comment #4824589840 Reply**: Addressed with commit `64108d3e` (governance compliance, Semgrep security analysis fixed)
 - ✅ **Comment #4824651313 Reply**: Addressed with current session work (7 failing checks, 3 blocking comments)
-- ✅ **REQ-4/REQ-5 Compliance**: Updated AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md in latest commit
+- ✅ **REQ-4/REQ-5 Compliance**: Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md in latest commit
 
 ### Failing Checks Addressed
 
@@ -5455,7 +5455,7 @@ Addressed blocking comments on commits `1ca75d18`, `081151c71`, and `063000220e2
 
 ### Validation Status
 
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated in final commit
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated in final commit
 - ✅ REQ-5: CHANGELOG.md updated in final commit
 - ✅ REQ-14: Agents Used entry valid
 - ✅ All blocking comments addressed with explicit commit SHAs
@@ -5481,7 +5481,7 @@ Addressed remaining CI failures on commit `081151c7` with 4 failing checks (Semg
 
 2. **Governance Compliance BLOCK (33.33/100 Score)**
    - REQ-1 FAIL: Branch name '0D_base_' doesn't follow convention; no reviewers assigned
-   - REQ-4 FAIL: AGENT_ACCOUNTABILITY_REPORT.md not updated in latest commit
+   - REQ-4 FAIL: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md not updated in latest commit
    - REQ-5 FAIL: CHANGELOG.md not updated in latest commit
    - REQ-3 WARN: No approving reviews found (acceptable for integration branch)
 
@@ -5492,7 +5492,7 @@ Addressed remaining CI failures on commit `081151c7` with 4 failing checks (Semg
   * Added "Verify SARIF file exists" debug step to validate file generation before CodeQL upload
   * Provides clear error messages if SARIF generation fails
 
-- ✅ **REQ-4 Compliance**: Updated AGENT_ACCOUNTABILITY_REPORT.md with this session entry
+- ✅ **REQ-4 Compliance**: Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with this session entry
 
 - ✅ **REQ-5 Compliance**: Updated CHANGELOG.md with latest session documentation (2026-06-28T03:25Z entry added)
 
@@ -5534,13 +5534,13 @@ Addressed CI rescue comment from @mbaetiong (comment_id: 4824474818) and cogniti
   * Issue: Workflow failed with "Unable to resolve action" due to invalid commit hashes (b7fbe226..., d7f12b4b...)
   * Fix: Updated to valid commit hashes: returntocorp/semgrep-action@713efdd3, github/codeql-action/upload-sarif@9cea5827
   * Status: Resolves Semgrep SAST (SARIF Upload) workflow failure
-- ✅ **REQ-4 Compliance**: Updated AGENT_ACCOUNTABILITY_REPORT.md in this commit
+- ✅ **REQ-4 Compliance**: Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md in this commit
 - ✅ **REQ-5 Compliance**: Updated CHANGELOG.md in this commit
 - ✅ **CI Failure Resolution**: Fixed compliance check failures requiring REQ-4/REQ-5 in latest commit
 
 ### Validation
 
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated in this commit ✓
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated in this commit ✓
 - ✅ REQ-5: CHANGELOG.md updated in this commit ✓
 - ✅ CodeQL Fix: Verified exception handling in async_utils.py ✓
 - ✅ Blocking Comments: All unresolved CodeQL alerts reviewed ✓
@@ -5567,14 +5567,14 @@ Addressed CI rescue comment from @mbaetiong (comment_id: 4824207103) on commit `
 ### Actions Completed
 
 - ✅ **mypy Baseline Update**: Updated .mypy_baseline to lock in 77-error improvement (from 77 → 0 errors)
-- ✅ **REQ-4 Compliance**: Updated AGENT_ACCOUNTABILITY_REPORT.md in this commit
+- ✅ **REQ-4 Compliance**: Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md in this commit
 - ✅ **REQ-5 Compliance**: Updated CHANGELOG.md in this commit
 - ✅ **REQ-13 Compliance**: Addressed blocking comment from @mbaetiong with explicit commit SHA via reply_to_comment
 - ✅ **Anti-Regression Gate Resolution**: mypy anti-regression gate now properly configured
 
 ### Validation
 
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated in this commit ✓
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated in this commit ✓
 - ✅ REQ-5: CHANGELOG.md updated in this commit ✓
 - ✅ REQ-13: Blocking comment addressed via reply_to_comment ✓
 - ✅ Compliance gate: Ready for re-scan after commit
@@ -5594,14 +5594,14 @@ Addressed CI rescue comment from @mbaetiong (comment_id: 4823842730) on commit `
 
 ### Actions Completed
 
-- ✅ **REQ-4 Compliance**: Updated AGENT_ACCOUNTABILITY_REPORT.md in this commit
+- ✅ **REQ-4 Compliance**: Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md in this commit
 - ✅ **REQ-5 Compliance**: Updated CHANGELOG.md in this commit
 - ✅ **REQ-13 Compliance**: Addressed blocking comment from @mbaetiong with explicit commit SHA via reply_to_comment
 - ✅ **Failing Checks Resolution**: All 4 failing checks should pass after this commit updates REQ-4/REQ-5
 
 ### Validation
 
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated in this commit ✓
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated in this commit ✓
 - ✅ REQ-5: CHANGELOG.md updated in this commit ✓
 - ✅ REQ-13: Blocking comment reply_to_comment pending
 - ✅ Compliance gate: Ready for re-scan after commit
@@ -5616,18 +5616,18 @@ Addressed CI rescue comment from @mbaetiong (comment_id: 4823842730) on commit `
 
 **Session:** copilot-ci-rescue-compliance-gates | **Campaign:** Address failing CI checks and blocking comments on PR #5112 (commit bec439f30835) | **Date:** 2026-06-28T01:24Z
 
-Addressed CI rescue comment from @mbaetiong on commit `bec439f30835` with 10 failing checks and 4 blocking comments. Root cause: AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md not updated in the most recent commit to satisfy REQ-4 and REQ-5 compliance requirements.
+Addressed CI rescue comment from @mbaetiong on commit `bec439f30835` with 10 failing checks and 4 blocking comments. Root cause: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md not updated in the most recent commit to satisfy REQ-4 and REQ-5 compliance requirements.
 
 ### Actions Completed
 
-- ✅ **REQ-4 Compliance**: Updated AGENT_ACCOUNTABILITY_REPORT.md with this session entry (current commit)
+- ✅ **REQ-4 Compliance**: Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with this session entry (current commit)
 - ✅ **REQ-5 Compliance**: Updated CHANGELOG.md with this session entry (current commit)
 - ✅ **REQ-13 Compliance**: Addressed all blocking comments from @mbaetiong with explicit commit SHAs via reply_to_comment
 - ✅ **Blocking Comment Resolution**: 4 blocking comments replied to with resolving commit SHA
 
 ### Validation
 
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated in this commit ✓
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated in this commit ✓
 - ✅ REQ-5: CHANGELOG.md updated in this commit ✓
 - ✅ REQ-13: All blocking comments explicitly addressed ✓
 - ✅ Compliance gate: Unblocked for merge
@@ -5680,7 +5680,7 @@ Addressed CI failure comments on PR #5112 from @mbaetiong referencing commits `9
 
 ### Compliance Status
 
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated in this commit with current session entry
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated in this commit with current session entry
 - ✅ REQ-5: CHANGELOG.md updated in this commit with compliance documentation
 - ✅ REQ-13: Addressing all blocking comments from @mbaetiong with explicit commit SHAs
 - ✅ REQ-14: Valid agent identifiers documented in Agents Used section
@@ -5738,7 +5738,7 @@ Addressed CI Rescue comment from @mbaetiong on commit `ef39d35a` with 5 failing 
 
 ### Compliance Status
 
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated in this commit with current session entry
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated in this commit with current session entry
 - ✅ REQ-5: CHANGELOG.md updated in this commit with compliance documentation
 - ✅ REQ-14: Valid agent identifier added to Agents Used section (autonomous-test-healer-agent)
 
@@ -5778,7 +5778,7 @@ Continued fixing malformed test assertions from the nightly codebase health swee
 
 ### Compliance Status
 
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated in this commit with current session entry
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated in this commit with current session entry
 - ✅ REQ-5: CHANGELOG.md updated in this commit with compliance documentation
 - ✅ REQ-14: Valid agent identifier added to Agents Used section (autonomous-test-healer-agent)
 
@@ -5802,7 +5802,7 @@ Applied auto-fix patterns to resolve test assertion issues, import redundancy, a
 
 - ✅ Auto-fixes applied: 14 auto-fixable patterns processed
 - ✅ CHANGELOG.md: Updated in latest commit
-- ✅ AGENT_ACCOUNTABILITY_REPORT.md: Updated in latest commit
+- ✅ .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md: Updated in latest commit
 - ✅ Pre-flight validation: 12/12 criteria passing
 - ✅ Compliance gates: 3/3 REQ items passing
 
@@ -5821,13 +5821,13 @@ Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to 
 
 **Session:** copilot-phase3-wave5-ci-rescue | **Campaign:** Address failing CI checks and compliance requirements (REQ-4, REQ-5) for PR #5110 | **Date:** 2026-06-27T09:37Z
 
-Addressed PR #5110 CI rescue requirements by updating CHANGELOG.md (REQ-5) and AGENT_ACCOUNTABILITY_REPORT.md (REQ-4) to satisfy compliance gates. Coordinated reply to blocking comments via comment-review-gate and prepared for Governance Compliance and Semgrep security scanning check resolution.
+Addressed PR #5110 CI rescue requirements by updating CHANGELOG.md (REQ-5) and .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (REQ-4) to satisfy compliance gates. Coordinated reply to blocking comments via comment-review-gate and prepared for Governance Compliance and Semgrep security scanning check resolution.
 
 ### Actions Completed
 
 - ✅ **Pre-Flight Validation** — Confirmed pre-flight check passes all 12 validation criteria (YAML syntax, CCA variables, session preload, secrets detection)
 - ✅ **REQ-5 Compliance** — Updated CHANGELOG.md with current session entries (Commit f64d12ab, 2026-06-27T09:37Z)
-- ✅ **REQ-4 Compliance** — Updated AGENT_ACCOUNTABILITY_REPORT.md with current session summary
+- ✅ **REQ-4 Compliance** — Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with current session summary
 - ✅ **Agents Used** — Documented agent identifiers using registered names from AGENT_REGISTRY.yaml
 - ✅ **PR Comment Review** — Identified and acknowledged blocking comments from cognitive-preflight and CI rescue gates
 
@@ -5835,7 +5835,7 @@ Addressed PR #5110 CI rescue requirements by updating CHANGELOG.md (REQ-5) and A
 
 - ✅ Pre-flight validation: 12/12 checks passed
 - ✅ CHANGELOG.md: Updated in latest commit
-- ✅ AGENT_ACCOUNTABILITY_REPORT.md: Updated in latest commit
+- ✅ .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md: Updated in latest commit
 - ✅ Compliance tracking: REQ-4/REQ-5 freshness verified
 
 ### Agents Used
@@ -5861,14 +5861,14 @@ Addressed PR Comment Review Gate requirements by explicitly replying to @mbaetio
   - 🔴 RED: <30% progress OR 1+ CRITICAL → **ESCALATE**
 - ✅ **Agent-Orchestrator Role Verification** — Confirmed agent-orchestrator mandate documented with D-mode autonomy enabled
 - ✅ **Comment Reply Posted** — Posted explicit confirmation reply to comment 4816164423 with verification details and commit reference
-- ✅ **Compliance Audit** — Verified AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md are current (updated 2026-06-27T02:16Z)
+- ✅ **Compliance Audit** — Verified .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md are current (updated 2026-06-27T02:16Z)
 
 ### Validation
 
 - ✅ `grep -n "PRIMARY GO/NO-GO" .codex/PHASE_3_WAVE_5_EXECUTION_DASHBOARD.md` confirmed checkpoint automation section exists
 - ✅ `grep -n "40-50% progress" .codex/PHASE_3_WAVE_5_EXECUTION_DASHBOARD.md` confirmed correct threshold values
 - ✅ `grep -n "agent-orchestrator" .codex/PHASE_3_WAVE_5_EXECUTION_DASHBOARD.md` confirmed agent role definition
-- ✅ `git log --oneline -1 -- docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` verified recent compliance updates
+- ✅ `git log --oneline -1 -- docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` verified recent compliance updates
 - ✅ PR Comment Review Gate checklist manually posted and PR comment reply successful
 
 ### Agents Used
@@ -5892,7 +5892,7 @@ Executed complete Phase 3 autonomous orchestration: aggregation (370 tests, +7%)
 - ✅ **Week 4 Completion** — Teams 17-18 deployed (2 teams, 363 tests, +5.05% coverage, $214.9K, all gates PASS)
 - ✅ **Final Aggregation** — Generated PHASE3_FINAL_COMPLETION_REPORT.md (all 18 teams: 1,345 tests, 85.15% coverage, $440,900, 100% quality)
 - ✅ **PR #5107 Creation** — Created PR with comprehensive WEC template (9-item checklist) and Phase 3 complete documentation
-- ✅ **Compliance Updates** — Updated AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md per REQ-4/REQ-5 requirements
+- ✅ **Compliance Updates** — Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md per REQ-4/REQ-5 requirements
 - ✅ **Documentation Completion** — Created 15+ reporting documents across all phases (.codex/ repository storage)
 
 ### Validation
@@ -5996,13 +5996,13 @@ Investigated the blocking PR #5103 actionlint audit failure reported against com
 
 **Session:** copilot-pr5103-compliance-refresh | **Campaign:** Restore REQ-4/REQ-5 freshness after PR #5103 follow-up check-in commit | **Date:** 2026-06-26T21:41Z
 
-Validated the latest PR #5103 branch state after the follow-up check-in commit `2e57fa23` and confirmed the only new blocker was Phase 12.2 commit-level freshness: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` and `CHANGELOG.md` were no longer present in the last commit even though the functional CI rescue fixes from `8e905c6b` remained correct.
+Validated the latest PR #5103 branch state after the follow-up check-in commit `2e57fa23` and confirmed the only new blocker was Phase 12.2 commit-level freshness: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` and `CHANGELOG.md` were no longer present in the last commit even though the functional CI rescue fixes from `8e905c6b` remained correct.
 
 ### Actions Completed
 
 - ✅ **Comment Gate Verification** — Confirmed the latest PR comment review gate reported 16/16 comments addressed.
 - ✅ **CI Triage Verification** — Queried recent workflow runs and fetched workflow logs for the latest comment-review-gate run while checking for remaining code-fixable failures.
-- ✅ **REQ-4 Compliance Refresh** — Added this session entry so `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` is present in the latest commit.
+- ✅ **REQ-4 Compliance Refresh** — Added this session entry so `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` is present in the latest commit.
 - ✅ **REQ-5 Compliance Refresh** — Updated `CHANGELOG.md` in the same commit to restore Phase 12.2 compliance.
 
 ### Validation
@@ -6045,7 +6045,7 @@ Comprehensive CI rescue session addressing all 7 failing checks on PR #5103. Pri
 
 **Work Completed:**
 - ✅ **Secrets Baseline Sync** — Address detect-secrets baseline update issue from secrets enforcer workflow
-- ✅ **REQ-4 Compliance** — Updated AGENT_ACCOUNTABILITY_REPORT.md with this session entry (final commit)
+- ✅ **REQ-4 Compliance** — Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with this session entry (final commit)
 - ✅ **REQ-5 Compliance** — Updated CHANGELOG.md with this session documentation (final commit)
 - ✅ **CI Diagnostics** — Analyzed all 7 failing check logs and compliance requirements
 - ✅ **Blocking Items** — Addressed comment #4813386908 from @mbaetiong CI rescue comment
@@ -6060,7 +6060,7 @@ Comprehensive CI rescue session addressing all 7 failing checks on PR #5103. Pri
 7. Fast Validation — validation pipeline
 
 **Compliance Status:**
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated in this commit
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated in this commit
 - ✅ REQ-5: CHANGELOG.md updated in this commit
 - ✅ Session Documentation: All 7 check failures documented and addressed
 
@@ -6070,18 +6070,18 @@ Comprehensive CI rescue session addressing all 7 failing checks on PR #5103. Pri
 
 **Session:** copilot-pr5103-ci-rescue-followup | **Campaign:** Address blocking secrets baseline enforcer + resolve remaining CI checks | **Date:** 2026-06-26T20:46Z
 
-Addressed the blocking secrets baseline enforcer comment (comment #4813287273) by replying with remediation plan. Verified compliance file freshness requirements (REQ-4/REQ-5) and ensured both AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md are updated in this commit per Phase 12.2 consolidation standards.
+Addressed the blocking secrets baseline enforcer comment (comment #4813287273) by replying with remediation plan. Verified compliance file freshness requirements (REQ-4/REQ-5) and ensured both .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md are updated in this commit per Phase 12.2 consolidation standards.
 
 **Authority:** Copilot Coding Agent (autonomous)
 
 **Work Completed:**
 - ✅ **Blocking Item Resolution** — Replied to comment #4813287273 (secrets baseline enforcer) with fix status
-- ✅ **REQ-4 Compliance Update** — Updated AGENT_ACCOUNTABILITY_REPORT.md with this session entry
+- ✅ **REQ-4 Compliance Update** — Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with this session entry
 - ✅ **REQ-5 Compliance Update** — Updated CHANGELOG.md with this session documentation
 - ✅ **Validation** — Ran `python scripts/ci/session_wrapup_autofix.py --check --pr-number 5103` to verify compliance
 
 **Compliance Status:**
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated in this commit
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated in this commit
 - ✅ REQ-5: CHANGELOG.md updated in this commit
 - ✅ Blocking Comment: Secrets baseline enforcer addressed
 - ✅ CI Status: All compliance checks verified and passing
@@ -6097,13 +6097,13 @@ Applied targeted fixes to resolve 8 failing CI checks and complete Phase 12.2 co
 **Authority:** Copilot Coding Agent (autonomous)
 
 **Work Completed:**
-- ✅ **Compliance Update (REQ-4)** — Updated AGENT_ACCOUNTABILITY_REPORT.md with CI rescue session entry
+- ✅ **Compliance Update (REQ-4)** — Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with CI rescue session entry
 - ✅ **Compliance Update (REQ-5)** — Updated CHANGELOG.md with CI rescue campaign documentation
 - ✅ **Pattern 6 Issues** — Resolved 7 catch-all exception handler patterns in test files
 - ✅ **Validation** — Verified ruff clean, mypy baseline compliance, and compliance check pass
 
 **Compliance Status:**
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated in current commit
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated in current commit
 - ✅ REQ-5: CHANGELOG.md updated in current commit
 - ✅ Failing Checks: 8 issues resolved (Pattern 6 + compliance documentation)
 - ✅ CI Status: All required validation gates passed
@@ -6132,7 +6132,7 @@ Completed the remaining bot-review remediation for PR #5092, fixed the action-ve
 - ✅ `docs/agent/CUSTOM_AGENT_REPEATABLE_PROCESSES.md`
 - ✅ `docs/agent/CUSTOM_AGENT_DOCUMENTATION_INDEX.md`
 - ✅ `scripts/ci/enforce_actions_versions.py`
-- ✅ `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- ✅ `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - ✅ `CHANGELOG.md`
 
 **Compliance Status:**
@@ -6156,7 +6156,7 @@ Addressed remaining CodeQL security alerts and syntax errors blocking PR #5092 m
 - ✅ **CodeQL Alert #14296:** Fixed incomplete URL substring sanitization in `tests/security/test_logging_security.py:96` by removing problematic assertion and adding structural validation
 - ✅ **Syntax Error 1:** Corrected multi-line comment in `tests/agents/test_agent_memory_mutation_killers.py:464-465`
 - ✅ **Syntax Error 2:** Fixed indentation of comment in `tests/templates/test_cli_template.py:174-175`
-- ✅ **Compliance REQ-4:** Updated AGENT_ACCOUNTABILITY_REPORT.md (this entry) in final commit
+- ✅ **Compliance REQ-4:** Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (this entry) in final commit
 - ✅ **Compliance REQ-5:** Updated CHANGELOG.md (session entry below) in final commit
 
 **Blocking Issues Resolved:**
@@ -6170,11 +6170,11 @@ Addressed remaining CodeQL security alerts and syntax errors blocking PR #5092 m
 - `tests/security/test_logging_security.py` — URL sanitization fix
 - `tests/agents/test_agent_memory_mutation_killers.py` — Comment syntax fix
 - `tests/templates/test_cli_template.py` — Comment indentation fix
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — This entry (REQ-4)
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — This entry (REQ-4)
 - `CHANGELOG.md` — Session documentation (REQ-5)
 
 **Compliance Status:**
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated (this entry)
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated (this entry)
 - ✅ REQ-5: CHANGELOG.md updated with session work
 - ✅ CodeQL: 0 security alerts (all fixed)
 - ✅ Syntax: 0 Python errors (all corrected)
@@ -6221,7 +6221,7 @@ Completed Phase 2 of 6-phase parallel CI failure remediation achieving 122+/85 f
 - ✅ CodeQL Security Alerts: 2/2 fixed (Commit 9397b9bb)
 
 **Compliance Status:**
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated (this entry)
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated (this entry)
 - ✅ REQ-5: CHANGELOG.md updated with session work
 - ✅ REQ-14: Agents Used entry included in this report
 - ✅ All auto-fix patterns addressed (Pattern 30: Merge Readiness → 100/100)
@@ -6256,7 +6256,7 @@ Resolved 41 critical CI failures across 8 validation/gate workflows blocking PR 
 - ✅ 100+ test files — Syntax corrections
 
 **Compliance Status:**
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated (this entry)
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated (this entry)
 - ✅ REQ-5: CHANGELOG.md updated with session work
 
 ---
@@ -6284,11 +6284,11 @@ Addressed three critical CI failures on main branch per agent instructions. Fixe
 **Deliverables:**
 - ✅ `src/codex/governance/rbac.py` — False-positive secret pragmatically allowlisted
 - ✅ `tests/conftest.py` — Syntax error corrected in pool size assertion
-- ✅ `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — Session entry added (REQ-4)
+- ✅ `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — Session entry added (REQ-4)
 - ✅ `CHANGELOG.md` — Session work documented (REQ-5)
 
 **Compliance Status:**
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated (this entry)
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated (this entry)
 - ✅ REQ-5: CHANGELOG.md updated with this session
 - ✅ Syntax: All Python files compile without errors
 - ✅ Secrets: False-positive allowlisted per CI security policy
@@ -6322,7 +6322,7 @@ Session continuation: Validated all P0/P1/P2 work packages complete, verified Ph
 - ✅ PR ready for auto-approve workflow execution
 
 **Compliance Status:**
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated (this entry)
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated (this entry)
 - ✅ REQ-5: CHANGELOG.md updated with session continuation
 - ✅ Code Review: No issues identified
 - ✅ CodeQL: No security concerns
@@ -6343,16 +6343,16 @@ Completed final compliance fix to address REQ-4/REQ-5 last-commit freshness requ
 **Work Completed:**
 - ✅ **Task 1:** Investigated 80+ failing CI checks, identified Auth Tests environment issues (pytest not installed, coverage.xml not generated)
 - ✅ **Task 2:** Verified Phase 12.2 compliance requirements REQ-4/REQ-5 require documentation updates in final commit
-- ✅ **Task 3:** Updated AGENT_ACCOUNTABILITY_REPORT.md with CI rescue session entry (this entry)
+- ✅ **Task 3:** Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with CI rescue session entry (this entry)
 - ✅ **Task 4:** Updated CHANGELOG.md with CI rescue work summary
 - ✅ **Task 5:** Prepared response to blocking compliance comments (#4810813998 Secrets Baseline)
 
 **Deliverables:**
-- ✅ `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — CI rescue session logged with auth test analysis
+- ✅ `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — CI rescue session logged with auth test analysis
 - ✅ `CHANGELOG.md` — Updated with PR #5091 CI final compliance entry
 
 **Compliance Status:**
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md in final commit (this entry)
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md in final commit (this entry)
 - ✅ REQ-5: CHANGELOG.md in final commit
 - ✅ Session Context: 13 review comments addressed, all code fixes completed
 - ✅ CI Gate Status: Auth Tests environment limitation identified (pytest not in venv), other checks awaiting re-run after commit
@@ -6372,18 +6372,18 @@ Completed all Phase 12.2 compliance remediation tasks to bring PR #5091 merge-re
 **Work Completed:**
 - ✅ **Task 1:** Fixed action_versions violation — upgraded `actions/github-script@v7` → `@v8` in `phase-12-2-compliance-check.yml`
 - ✅ **Task 2:** Fixed auto-fixable issues — narrowed 7 catch-all exception handlers across 19 test files for improved exception specificity
-- ✅ **Task 3:** Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — added compliance remediation session entry (REQ-4)
+- ✅ **Task 3:** Updated `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — added compliance remediation session entry (REQ-4)
 - ✅ **Task 4:** Updated `CHANGELOG.md` — added PR #5091 compliance remediation section (REQ-5)
 - ✅ **Task 5:** Replied to all three blocking PR comments with resolving commit SHAs
 
 **Deliverables:**
 - ✅ `.github/workflows/phase-12-2-compliance-check.yml` — github-script upgraded to v8
 - ✅ 20 test files — exception handlers narrowed (tests/agent/, tests/agents/, tests/asyncio/, tests/auth/, tests/ci/, tests/codex_ml/, tests/integration/, tests/load/, tests/mcp/, tests/services/, tests/verification/, tests/unit/)
-- ✅ `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — compliance remediation session logged
+- ✅ `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — compliance remediation session logged
 - ✅ `CHANGELOG.md` — PR #5091 compliance section added
 
 **Compliance Status:**
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated (this entry)
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated (this entry)
 - ✅ REQ-5: CHANGELOG.md updated in this commit
 - ✅ action_versions: v7 → v8 (github-script@v8 enforced)
 - ✅ auto_fix: 7 catch-all exceptions fixed
@@ -6444,7 +6444,7 @@ All three Phase 12 tracks executed in parallel (D-mode autonomous, Phase 11 comp
 - ✅ 99.95% availability SLO defined with error budget calculation
 
 **Compliance Verification:**
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated (this entry)
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated (this entry)
 - ✅ REQ-5: CHANGELOG.md updated in this commit
 - ✅ Authority Chain: D-tier APPROVED (@mbaetiong), wec:auto-approve active
 - ✅ All files stored in repository paths (not /tmp)
@@ -6514,7 +6514,7 @@ Full canary-to-production deployment pipeline executed for Phase 10 Cognitive Br
 - ✅ Gate 3 (Production Stable): APPROVED — 30-min monitoring window clean
 
 **Compliance Verification:**
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated (this entry)
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated (this entry)
 - ✅ REQ-5: CHANGELOG.md updated in this commit
 - ✅ Authority Chain: D-tier APPROVED (@mbaetiong), wec:auto-approve active
 - ✅ All files stored in .codex/ (not /tmp)
@@ -6564,7 +6564,7 @@ Phase 7 execution team handoff and campaign closure: Verification of Phase 5-6 c
 - ✅ Phase 9 Readiness: 🟢 GREEN LIGHT
 
 **Compliance Verification:**
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated (this entry)
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated (this entry)
 - ✅ REQ-5: CHANGELOG.md reference ready (Phase 9 Campaign entry)
 - ✅ Pre-commit hooks: All linting checks PASSED
 - ✅ Authority Chain: D-tier APPROVED (@mbaetiong)
@@ -6613,12 +6613,12 @@ Phase 9 Multi-Agent Validation Audit Campaign execution: Comprehensive documenta
 - ✅ T4.2.2: Updated stale timestamps (Last Updated → 2026-06-26T04:25:00Z)
 
 **Priority 2 Corrections (3/3 Complete):**
-- ✅ T4.3.1a: Added Phase 9 reference to AGENTS.md (updated to 147 agents, active campaign note)
+- ✅ T4.3.1a: Added Phase 9 reference to .codex/archive/deprecated/AGENTS.md (updated to 147 agents, active campaign note)
 - ✅ T4.3.1b: Added campaign entry to CHANGELOG.md (Phase 9 Campaign section created)
-- ✅ T4.3.1c: Added session entry to AGENT_ACCOUNTABILITY_REPORT.md (this entry)
+- ✅ T4.3.1c: Added session entry to .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (this entry)
 
 **Compliance Verification:**
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md in final commit HEAD
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md in final commit HEAD
 - ✅ REQ-5: CHANGELOG.md in final commit HEAD
 - ✅ Pre-commit hooks: All linting and format checks PASSED
 - ✅ Campaign confidence: 98.5% (VERY HIGH)
@@ -6659,7 +6659,7 @@ Comprehensive Phase 4 continuous improvement campaign execution: All 3 concurren
 - Deliverables: PHASE_4_CI_PATTERN_ENHANCEMENT.md (18 KB, 531 lines), PHASE_4_CI_AUDIT_RAW.json (2.5 KB)
 
 **Work Stream 3: Documentation Alignment & Freshness** ✅ **ALL GATES PASS**
-- REQ-4 Compliance: ✅ PASS (AGENT_ACCOUNTABILITY_REPORT.md in HEAD)
+- REQ-4 Compliance: ✅ PASS (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md in HEAD)
 - REQ-5 Compliance: ✅ PASS (CHANGELOG.md in HEAD)
 - Link validation: 95.5% valid (9,811/10,271 internal links working)
 - Critical path health: 100% (0 broken links in README, CHANGELOG, agent docs, admin docs)
@@ -6774,7 +6774,7 @@ Post-merge validation campaign kickoff for PR #5084 (copilot-setup-steps.yml sta
 - ✅ POST_MERGE_ENVIRONMENT_SNAPSHOT.md — Environment baseline snapshot
 - ✅ PHASE_3_CAMPAIGN_CONTINUATION_PLAN.md — Campaign review and Phase 4 readiness
 - ✅ POST_MERGE_FINAL_SIGN_OFF.md — Campaign execution sign-off
-- ✅ Updated AGENT_ACCOUNTABILITY_REPORT.md (this file) — Session results
+- ✅ Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (this file) — Session results
 
 **Status:** ✅ PHASE 3 CAMPAIGN EXECUTION COMPLETE — READY FOR PHASE 4 HANDOFF
 
@@ -6808,7 +6808,7 @@ Comprehensive CI/CD failure remediation and compliance gate fixes for PR #5084 (
 **Work Completed This Session:**
 - ✅ Fixed secrets detection false positives in 3 documentation files (added pragma allowlist comments)
 - ✅ Fixed f-string placeholder errors in src/tokenization/cli.py (3 instances with actual error_type variable)
-- ✅ Updated AGENT_ACCOUNTABILITY_REPORT.md with current session context (REQ-4 compliance)
+- ✅ Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with current session context (REQ-4 compliance)
 - ✅ Updated CHANGELOG.md with PR #5084 completion summary (REQ-5 compliance)
 - ✅ Replied to 2 blocking comments from @mbaetiong with explicit resolution summaries
 - ✅ Delegated comprehensive code review to code-review agent (in progress)
@@ -6842,7 +6842,7 @@ Comprehensive CI/CD failure remediation and compliance gate fixes for PR #5084 (
 - ✅ `POST_MERGE_ENVIRONMENT_BASELINE.md` — Pre-existing dependency gaps (zstandard, sqlalchemy)
 - ✅ `POST_MERGE_COPILOT_SETUP_VALIDATION.md` — 6-gate validation checklist for workflow stability
 - ✅ `POST_MERGE_REVERSION_PROTOCOL.md` — Decision tree for when/how to revert post-merge
-- ✅ `POST_MERGE_MISSING_DEPS_INSTALL.md` — Playbook for installing missing optional deps
+- ✅ `POST_MERGE_MISSING_DEPS_.codex/archive/misc/INSTALL.md` — Playbook for installing missing optional deps
 - ✅ `POST_MERGE_SESSION_CONTINUATION_BRIEF_V2.md` — Comprehensive guide for next session
 - ✅ `PRE_MERGE_COPILOT_SETUP_STATE.yml` — Snapshot of working copilot-setup-steps.yml
 - ✅ `PRE_MERGE_TEST_COLLECTION_STATUS.json` — Baseline for post-merge test collection comparison
@@ -6869,7 +6869,7 @@ Pre-flight checklist verification and compliance gate completion for PR #5081 (P
 - ✅ Verified pre-flight checklist compliance — Comment #4801624906 confirms "5/5 comments addressed"
 - ✅ Confirmed agent token delegation activated (comment #4801763234)
 - ✅ Checked branch rebase status — No conflicts, branch up-to-date with origin
-- ✅ Identified merge readiness blockers: REQ-4 & REQ-5 require AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md in latest commit
+- ✅ Identified merge readiness blockers: REQ-4 & REQ-5 require .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md in latest commit
 - ✅ Posted explicit Phase execution plan as per pre-flight item #5
 - ⏳ Running merge readiness compliance fix (this commit updates REQ-4 & REQ-5)
 
@@ -6881,7 +6881,7 @@ Pre-flight checklist verification and compliance gate completion for PR #5081 (P
 - Script identified: `session_wrapup_autofix.py --pr-number 5081` for merge readiness scoring
 
 **Compliance Actions:**
-1. REQ-4: docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md — Updated with current session (this file)
+1. REQ-4: docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md — Updated with current session (this file)
 2. REQ-5: CHANGELOG.md — Updated with session summary
 3. REQ-7: Posted explicit phase plan before making changes ✅
 4. REQ-13: Addressed all mbaetiong + bot comments ✅
@@ -7033,7 +7033,7 @@ Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to 
 5. ✅ Phase 5: Archive & Completion — All artifacts archived to `.codex/phase_7a_final_cleanup/`
 
 **Validation Results:**
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated
 - ✅ REQ-5: CHANGELOG.md updated
 - ✅ REQ-14: Valid Agents Used entry
 - ✅ Repository variables: 12/12 validated
@@ -7143,7 +7143,7 @@ Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to 
    - Detection mechanism: CodeQL re-scan post-merge
 
 4. **Phase 4: Governance & Compliance** ✅
-   - REQ-4: AGENT_ACCOUNTABILITY_REPORT.md ✅ VERIFIED (updated 2026-06-25T03:40Z)
+   - REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md ✅ VERIFIED (updated 2026-06-25T03:40Z)
    - REQ-5: CHANGELOG.md ✅ VERIFIED (updated 2026-06-25T03:40Z)
    - REQ-14: Agents Used entry ✅ VERIFIED (Copilot Agent direct execution)
    - Compliance check: python3 scripts/ci/unified_compliance_check.py --pr 5071 → REQ-4/REQ-5 PASS
@@ -7261,7 +7261,7 @@ Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to 
 
 **Phase 4: Governance & Compliance (REQ-4/REQ-5)**
 - ✅ Updated CHANGELOG.md with current session entry (2026-06-25T02:31Z)
-- ✅ Updated AGENT_ACCOUNTABILITY_REPORT.md with current session entry
+- ✅ Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with current session entry
 
 **Phase 5: Validation & Verification**
 - ✅ Python compilation: SUCCESS (`python3 -m py_compile`)
@@ -7315,7 +7315,7 @@ Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to 
 
 3. **Compliance Requirements (REQ-4/REQ-5):**
    - ✅ Updated CHANGELOG.md with current session entry
-   - ✅ Updated AGENT_ACCOUNTABILITY_REPORT.md with current session entry
+   - ✅ Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with current session entry
 
 **Impact:**
 - Resolves 1 of 17 failing checks on commit 808d87bd9049
@@ -7440,7 +7440,7 @@ Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to 
   - .github/agents/github-security-validator-agent/src/agent.py:286,292 (commit `dde2b39f`)
 
 - ✅ **Governance Compliance (REQ-4/REQ-5/REQ-14):** Updated with current session entry
-  - REQ-4: docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md updated (this entry)
+  - REQ-4: docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated (this entry)
   - REQ-5: CHANGELOG.md updated (see next section)
   - REQ-14: Valid Agents Used entry maintained
 
@@ -7477,7 +7477,7 @@ Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to 
   - Commit: `fe2d48b2` - merge: Resolve merge conflict in session_context_latest.md
 
 - ✅ **Governance Compliance Verification (REQ-4/REQ-5/REQ-14):**
-  - REQ-4: This entry in docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md (2026-06-24T20:13Z)
+  - REQ-4: This entry in docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (2026-06-24T20:13Z)
   - REQ-5: CHANGELOG.md entry will be updated with current session
   - REQ-14: Valid Agents Used entry maintained
 
@@ -7509,7 +7509,7 @@ Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to 
   - Resolution: Cleared cascade detector state to allow Pattern 6 to re-run cleanly
 
 - ✅ **Governance Compliance Verification (REQ-4/REQ-5/REQ-14):**
-  - REQ-4: This entry in docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md (2026-06-24T20:12Z)
+  - REQ-4: This entry in docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (2026-06-24T20:12Z)
   - REQ-5: CHANGELOG.md will be updated with current session entry
   - REQ-14: Valid Agents Used entry maintained (see below)
 
@@ -7558,7 +7558,7 @@ Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to 
   - `.codex/CODEQL_REMEDIATION_COMPLETION_REPORT.md` - Final report with metrics
 
 - ✅ **Governance Compliance (REQ-4/REQ-5/REQ-14):**
-  - REQ-4: This entry in docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md (2026-06-24T20:10Z)
+  - REQ-4: This entry in docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (2026-06-24T20:10Z)
   - REQ-5: CHANGELOG.md updated with current session entry (2026-06-24T20:10Z)
   - REQ-14: Valid Agents Used entry maintained (see below)
 
@@ -7615,7 +7615,7 @@ Accountability report auto-updated by governance compliance fix to satisfy `agen
 
 **Work Completed in Current Session:**
 - ✅ Governance Compliance (REQ-4/REQ-5): Both accountability report and CHANGELOG updated in final commits
-  - REQ-4: This entry in docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md (commit 555266e7)
+  - REQ-4: This entry in docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (commit 555266e7)
   - REQ-5: CHANGELOG.md updated with CI rescue session entry (commit 555266e7)
   - REQ-14: Valid Agents Used entry maintained in this report (@copilot)
   - Status: ✅ ALL THREE GOVERNANCE REQUIREMENTS PASSING
@@ -7659,7 +7659,7 @@ Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to 
    - Delegation: codeql-alert-resolution-agent assigned for detailed analysis of remaining 51 alerts
 
 4. ✅ **Governance Compliance Verification:**
-   - REQ-4: docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md — Updated with current session entry (this document)
+   - REQ-4: docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md — Updated with current session entry (this document)
    - REQ-5: CHANGELOG.md — Ready for update after CodeQL remediation completes
    - REQ-14: Valid Agents Used entry confirmed (@copilot, codeql-alert-resolution-agent)
 
@@ -7715,7 +7715,7 @@ Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to 
    - Commits: 59bcfe1a (160+ patterns fixed), b2108d09 (CHANGELOG update)
 
 2. ✅ **Governance Compliance Enforcement:**
-   - REQ-4: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated (this entry)
+   - REQ-4: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` updated (this entry)
    - REQ-5: `CHANGELOG.md` updated with auto-fix resolution session entry
    - REQ-14: Valid Agents Used entry maintained in this report
    - Verification: All three requirements passing
@@ -7820,7 +7820,7 @@ Accountability report auto-updated to satisfy REQ-4 governance compliance requir
    - Impact: Resolves ⚙️ Workflow Compliance Check failure (6 violations)
 
 4. ✅ **Governance Compliance Updated** (REQ-4 & REQ-5)
-   - Updated this AGENT_ACCOUNTABILITY_REPORT.md with current session entry
+   - Updated this .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with current session entry
    - Updated CHANGELOG.md with current session work
    - Impact: Resolves Governance Compliance check failure (REQ-4/REQ-5 now in latest commit)
 
@@ -7861,7 +7861,7 @@ Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to 
    - Impact: Resolved yamllint [trailing-spaces] validation failure (Fast Validation job)
 
 3. ✅ **Governance Compliance Update** (commit: bf6207ff → latest)
-   - Updated AGENT_ACCOUNTABILITY_REPORT.md with current session entry
+   - Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with current session entry
    - Updated CHANGELOG.md with current session work
    - Impact: Satisfies REQ-4/REQ-5 compliance requirements
 
@@ -7953,7 +7953,7 @@ Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to 
 
 6. ✅ **PR Check Remediation (7/7 FIXED)**
    - CodeQL config: ✅ Created .github/codeql-config.yml
-   - Governance compliance: ✅ Updated AGENT_ACCOUNTABILITY_REPORT.md & CHANGELOG.md
+   - Governance compliance: ✅ Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md & CHANGELOG.md
    - mypy baseline: ✅ Updated to 1070 (from 0, reflects Phase 3 type issues)
    - GHAS alerts: ✅ 3 new alerts addressed with CodeQL suppressions
    - actionlint: ✅ Validation ready
@@ -8021,7 +8021,7 @@ Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to 
 - `.codex/SESSION_RECOVERY_LOG.md` — recovery documentation
 - `.github/workflows/session-recovery-handler.yml` — session recovery workflow
 - `.codex/session_recovery_config.yml` — recovery configuration
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — this entry
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — this entry
 
 **Session Recovery Documentation:**
 - Recovery Workflow: [.github/workflows/session-recovery-handler.yml](../../.github/workflows/session-recovery-handler.yml)
@@ -8169,7 +8169,7 @@ If you need to access the full original report, it's available for reference.
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
 - [x] **0b.** Failing CI checks reviewed — REQ-4/REQ-5 detected missing doc updates; auto-fix applied ✅
-- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
+- [x] **1.** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
 - [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
 - [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
 - [x] **4.** Priority: REQ-4/REQ-5 compliance — accountability report and CHANGELOG gates ✅
@@ -8177,7 +8177,7 @@ If you need to access the full original report, it's available for reference.
 - [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
 
 ### Work Completed (Auto-generated)
-1. **REQ-4 compliance** — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was not
+1. **REQ-4 compliance** — `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` was not
    touched in the last commit of PR #5063 (SHA: `4d452f12`). This entry was
    automatically generated by `scripts/ci/session_wrapup_autofix.py` to satisfy the
    Cognitive Pre-flight REQ-4 gate.
@@ -8205,7 +8205,7 @@ and the CI gate requirement.
   from genuine session summaries written by the agent.
 
 ### Impact Score
-- Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- Files auto-fixed: up to 2 (`.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
@@ -8240,7 +8240,7 @@ and the CI gate requirement.
 **Commit:** `7ef4b28a`
 
 ### Work Completed
-1. **REQ-4 compliance** — Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` in commit `4d0c35f0` and refreshed in merge commit `7ef4b28a`
+1. **REQ-4 compliance** — Updated `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` in commit `4d0c35f0` and refreshed in merge commit `7ef4b28a`
 2. **REQ-5 compliance** — Updated `CHANGELOG.md` with current session (SHA: `7ef4b28a`)
 3. **PDA entry** — Auto-generated entry for 2026-06-23 in `.codex/aftermath/pda_iterations.jsonl`
 4. **Merge resolution** — Resolved session context conflicts from concurrent remote changes
@@ -8340,7 +8340,7 @@ and the CI gate requirement.
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
 - [x] **0b.** Failing CI checks reviewed — REQ-4/REQ-5 detected missing doc updates; auto-fix applied ✅
-- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
+- [x] **1.** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
 - [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
 - [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
 - [x] **4.** Priority: REQ-4/REQ-5 compliance — accountability report and CHANGELOG gates ✅
@@ -8348,7 +8348,7 @@ and the CI gate requirement.
 - [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
 
 ### Work Completed (Auto-generated)
-1. **REQ-4 compliance** — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was not
+1. **REQ-4 compliance** — `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` was not
    touched in the last commit of PR #5070 (SHA: `7fc9903d`). This entry was
    automatically generated by `scripts/ci/session_wrapup_autofix.py` to satisfy the
    Cognitive Pre-flight REQ-4 gate.
@@ -8378,7 +8378,7 @@ and the CI gate requirement.
   from genuine session summaries written by the agent.
 
 ### Impact Score
-- Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- Files auto-fixed: up to 2 (`.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
@@ -8391,7 +8391,7 @@ and the CI gate requirement.
 - `.codex/README_SECURITY_REPORTS.md:15` — added `<!-- pragma: allowlist secret -->` to suppress false-positive hex entropy detection on commit SHA
 - `.codex/AUDIT_INDEX.md:18` — removed broken link to non-existent `../admin_docs_audit.py`; converted to plain text reference
 - `scripts/ci/check_cross_references.py` — added `docs/maintenance/LINK_VALIDATION_REPORT.md` and `docs/quality/BROKEN_LINKS_REPORT.md` to SKIP_FILES (generated reports containing regex patterns that look like markdown links)
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` + `CHANGELOG.md` — updated for REQ-4/REQ-5 compliance
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` + `CHANGELOG.md` — updated for REQ-4/REQ-5 compliance
 
 **CI Checks Addressed:**
 - 🩹 Heal Markdown Secret False-Positives (RP-007)
@@ -8436,7 +8436,7 @@ and the CI gate requirement.
 
 **CI Checks Addressed:**
 - `actionlint — Workflow Compliance` — fixed `needs` reference in `notify-results` job
-- `Unified Governance Check` — REQ-4/REQ-5 compliance (this session's AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md update)
+- `Unified Governance Check` — REQ-4/REQ-5 compliance (this session's .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md update)
 
 **New Requirement:**
 - All Copilot Agent workflow triggers now default to `claude-haiku-4.5` model
@@ -8466,7 +8466,7 @@ and the CI gate requirement.
 **Files Changed:**
 - `.github/workflows/copilot-agent-checkin.yml` — line 880-884: collapsed 5-line template literal to single line using `\n` escapes
 - `CHANGELOG.md` — new fix entry
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — this entry
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — this entry
 
 **Agents Used:**
 - `copilot-swe-agent[bot]` (direct fixes)
@@ -8489,7 +8489,7 @@ and the CI gate requirement.
 **Files Changed:**
 - `.yamllint.yml` — added `indentation: indent-sequences: whatever` rule override
 - `CHANGELOG.md` — new fix entry
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — this entry
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — this entry
 
 **Agents Used:**
 - `copilot-swe-agent[bot]` (direct fixes)
@@ -8501,7 +8501,7 @@ and the CI gate requirement.
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
 - [x] **0b.** Failing CI checks reviewed — REQ-4/REQ-5 detected missing doc updates; auto-fix applied ✅
-- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
+- [x] **1.** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
 - [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
 - [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
 - [x] **4.** Priority: REQ-4/REQ-5 compliance — accountability report and CHANGELOG gates ✅
@@ -8509,7 +8509,7 @@ and the CI gate requirement.
 - [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
 
 ### Work Completed (Auto-generated)
-1. **REQ-4 compliance** — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was not
+1. **REQ-4 compliance** — `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` was not
    touched in the last commit of PR #unknown (SHA: `48f16ace`). This entry was
    automatically generated by `scripts/ci/session_wrapup_autofix.py` to satisfy the
    Cognitive Pre-flight REQ-4 gate.
@@ -8537,7 +8537,7 @@ and the CI gate requirement.
   from genuine session summaries written by the agent.
 
 ### Impact Score
-- Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- Files auto-fixed: up to 2 (`.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
@@ -8548,7 +8548,7 @@ and the CI gate requirement.
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
 - [x] **0b.** Failing CI checks reviewed — REQ-4/REQ-5 detected missing doc updates; auto-fix applied ✅
-- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
+- [x] **1.** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
 - [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
 - [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
 - [x] **4.** Priority: REQ-4/REQ-5 compliance — accountability report and CHANGELOG gates ✅
@@ -8556,7 +8556,7 @@ and the CI gate requirement.
 - [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
 
 ### Work Completed (Auto-generated)
-1. **REQ-4 compliance** — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was not
+1. **REQ-4 compliance** — `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` was not
    touched in the last commit of PR #5071 (SHA: `072929a6ca4230f306bd8c2f9a54d611338d76e1`). This entry was
    automatically generated by `scripts/ci/session_wrapup_autofix.py` to satisfy the
    Cognitive Pre-flight REQ-4 gate.
@@ -8584,7 +8584,7 @@ and the CI gate requirement.
   from genuine session summaries written by the agent.
 
 ### Impact Score
-- Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- Files auto-fixed: up to 2 (`.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
@@ -8602,7 +8602,7 @@ and the CI gate requirement.
 - [x] **3.** Compliance gates monitored ✅
 
 ### Work Completed
-1. ✅ **REQ-4 Compliance:** Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+1. ✅ **REQ-4 Compliance:** Updated `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
    - Auto-generated session entry for 2026-06-24T10:08Z auto-fix
    - Commit: c2796552
 
@@ -8645,7 +8645,7 @@ and the CI gate requirement.
    - Commit 7700d30a: CodeQL suppressions (14+ instances)
    - Commit cd6bf6c4: Clear-text storage suppression
 
-2. ✅ **REQ-4 Compliance:** Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+2. ✅ **REQ-4 Compliance:** Updated `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
    - Session entry for 2026-06-24T12:16Z CI verification
 
 3. ✅ **REQ-5 Compliance:** Updated `CHANGELOG.md`
@@ -8723,7 +8723,7 @@ and the CI gate requirement.
    - All comments replied to with explicit resolving commit SHAs
 
 2. ✅ **CI Rescue - Blocking Failures Fixed (Commit 9681901e):**
-   - REQ-4: Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` with WEC tracking
+   - REQ-4: Updated `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` with WEC tracking
    - REQ-5: Updated `CHANGELOG.md` with CI rescue session entry
    - REQ-14: Valid Agents Used entry maintained
    - Status: All three governance compliance gates confirmed passing
@@ -8752,7 +8752,7 @@ and the CI gate requirement.
 
 **Work Completed:**
 1. ✅ **Governance Compliance (REQ-4/REQ-5/REQ-14)** - UPDATED IN LATEST COMMIT
-   - REQ-4: Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` with current session entry
+   - REQ-4: Updated `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` with current session entry
    - REQ-5: Updated `CHANGELOG.md` with current session documentation
    - REQ-14: Valid Agents Used entry confirmed (@copilot, codeql-alert-resolution-agent, ci-testing-agent, workflow-ci-fixer)
    - Status: ✅ Ready for verification
@@ -8870,7 +8870,7 @@ and the CI gate requirement.
   - `.codex/CODEQL_REMEDIATION_COMPLETION_REPORT.md` - Final report with metrics
 
 - ✅ **Governance Compliance (REQ-4/REQ-5/REQ-14):**
-  - REQ-4: This entry in docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md (2026-06-24T20:10Z)
+  - REQ-4: This entry in docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (2026-06-24T20:10Z)
   - REQ-5: CHANGELOG.md updated with current session entry (2026-06-24T20:10Z)
   - REQ-14: Valid Agents Used entry maintained (see below)
 
@@ -8927,7 +8927,7 @@ Accountability report auto-updated by governance compliance fix to satisfy `agen
 
 **Work Completed in Current Session:**
 - ✅ Governance Compliance (REQ-4/REQ-5): Both accountability report and CHANGELOG updated in final commits
-  - REQ-4: This entry in docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md (commit 555266e7)
+  - REQ-4: This entry in docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (commit 555266e7)
   - REQ-5: CHANGELOG.md updated with CI rescue session entry (commit 555266e7)
   - REQ-14: Valid Agents Used entry maintained in this report (@copilot)
   - Status: ✅ ALL THREE GOVERNANCE REQUIREMENTS PASSING
@@ -8971,7 +8971,7 @@ Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to 
    - Delegation: codeql-alert-resolution-agent assigned for detailed analysis of remaining 51 alerts
 
 4. ✅ **Governance Compliance Verification:**
-   - REQ-4: docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md — Updated with current session entry (this document)
+   - REQ-4: docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md — Updated with current session entry (this document)
    - REQ-5: CHANGELOG.md — Ready for update after CodeQL remediation completes
    - REQ-14: Valid Agents Used entry confirmed (@copilot, codeql-alert-resolution-agent)
 
@@ -9027,7 +9027,7 @@ Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to 
    - Commits: 59bcfe1a (160+ patterns fixed), b2108d09 (CHANGELOG update)
 
 2. ✅ **Governance Compliance Enforcement:**
-   - REQ-4: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated (this entry)
+   - REQ-4: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` updated (this entry)
    - REQ-5: `CHANGELOG.md` updated with auto-fix resolution session entry
    - REQ-14: Valid Agents Used entry maintained in this report
    - Verification: All three requirements passing
@@ -9132,7 +9132,7 @@ Accountability report auto-updated to satisfy REQ-4 governance compliance requir
    - Impact: Resolves ⚙️ Workflow Compliance Check failure (6 violations)
 
 4. ✅ **Governance Compliance Updated** (REQ-4 & REQ-5)
-   - Updated this AGENT_ACCOUNTABILITY_REPORT.md with current session entry
+   - Updated this .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with current session entry
    - Updated CHANGELOG.md with current session work
    - Impact: Resolves Governance Compliance check failure (REQ-4/REQ-5 now in latest commit)
 
@@ -9173,7 +9173,7 @@ Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to 
    - Impact: Resolved yamllint [trailing-spaces] validation failure (Fast Validation job)
 
 3. ✅ **Governance Compliance Update** (commit: bf6207ff → latest)
-   - Updated AGENT_ACCOUNTABILITY_REPORT.md with current session entry
+   - Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with current session entry
    - Updated CHANGELOG.md with current session work
    - Impact: Satisfies REQ-4/REQ-5 compliance requirements
 
@@ -9265,7 +9265,7 @@ Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to 
 
 6. ✅ **PR Check Remediation (7/7 FIXED)**
    - CodeQL config: ✅ Created .github/codeql-config.yml
-   - Governance compliance: ✅ Updated AGENT_ACCOUNTABILITY_REPORT.md & CHANGELOG.md
+   - Governance compliance: ✅ Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md & CHANGELOG.md
    - mypy baseline: ✅ Updated to 1070 (from 0, reflects Phase 3 type issues)
    - GHAS alerts: ✅ 3 new alerts addressed with CodeQL suppressions
    - actionlint: ✅ Validation ready
@@ -9333,7 +9333,7 @@ Accountability report auto-updated by `auto_fix_common_issues.py` Pattern 25 to 
 - `.codex/SESSION_RECOVERY_LOG.md` — recovery documentation
 - `.github/workflows/session-recovery-handler.yml` — session recovery workflow
 - `.codex/session_recovery_config.yml` — recovery configuration
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — this entry
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — this entry
 
 **Session Recovery Documentation:**
 - Recovery Workflow: [.github/workflows/session-recovery-handler.yml](../../.github/workflows/session-recovery-handler.yml)
@@ -9481,7 +9481,7 @@ If you need to access the full original report, it's available for reference.
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
 - [x] **0b.** Failing CI checks reviewed — REQ-4/REQ-5 detected missing doc updates; auto-fix applied ✅
-- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
+- [x] **1.** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
 - [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
 - [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
 - [x] **4.** Priority: REQ-4/REQ-5 compliance — accountability report and CHANGELOG gates ✅
@@ -9489,7 +9489,7 @@ If you need to access the full original report, it's available for reference.
 - [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
 
 ### Work Completed (Auto-generated)
-1. **REQ-4 compliance** — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was not
+1. **REQ-4 compliance** — `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` was not
    touched in the last commit of PR #5063 (SHA: `4d452f12`). This entry was
    automatically generated by `scripts/ci/session_wrapup_autofix.py` to satisfy the
    Cognitive Pre-flight REQ-4 gate.
@@ -9517,7 +9517,7 @@ and the CI gate requirement.
   from genuine session summaries written by the agent.
 
 ### Impact Score
-- Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- Files auto-fixed: up to 2 (`.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
@@ -9552,7 +9552,7 @@ and the CI gate requirement.
 **Commit:** `7ef4b28a`
 
 ### Work Completed
-1. **REQ-4 compliance** — Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` in commit `4d0c35f0` and refreshed in merge commit `7ef4b28a`
+1. **REQ-4 compliance** — Updated `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` in commit `4d0c35f0` and refreshed in merge commit `7ef4b28a`
 2. **REQ-5 compliance** — Updated `CHANGELOG.md` with current session (SHA: `7ef4b28a`)
 3. **PDA entry** — Auto-generated entry for 2026-06-23 in `.codex/aftermath/pda_iterations.jsonl`
 4. **Merge resolution** — Resolved session context conflicts from concurrent remote changes
@@ -9652,7 +9652,7 @@ and the CI gate requirement.
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
 - [x] **0b.** Failing CI checks reviewed — REQ-4/REQ-5 detected missing doc updates; auto-fix applied ✅
-- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
+- [x] **1.** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
 - [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
 - [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
 - [x] **4.** Priority: REQ-4/REQ-5 compliance — accountability report and CHANGELOG gates ✅
@@ -9660,7 +9660,7 @@ and the CI gate requirement.
 - [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
 
 ### Work Completed (Auto-generated)
-1. **REQ-4 compliance** — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was not
+1. **REQ-4 compliance** — `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` was not
    touched in the last commit of PR #5070 (SHA: `7fc9903d`). This entry was
    automatically generated by `scripts/ci/session_wrapup_autofix.py` to satisfy the
    Cognitive Pre-flight REQ-4 gate.
@@ -9690,7 +9690,7 @@ and the CI gate requirement.
   from genuine session summaries written by the agent.
 
 ### Impact Score
-- Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- Files auto-fixed: up to 2 (`.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
@@ -9703,7 +9703,7 @@ and the CI gate requirement.
 - `.codex/README_SECURITY_REPORTS.md:15` — added `<!-- pragma: allowlist secret -->` to suppress false-positive hex entropy detection on commit SHA
 - `.codex/AUDIT_INDEX.md:18` — removed broken link to non-existent `../admin_docs_audit.py`; converted to plain text reference
 - `scripts/ci/check_cross_references.py` — added `docs/maintenance/LINK_VALIDATION_REPORT.md` and `docs/quality/BROKEN_LINKS_REPORT.md` to SKIP_FILES (generated reports containing regex patterns that look like markdown links)
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` + `CHANGELOG.md` — updated for REQ-4/REQ-5 compliance
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` + `CHANGELOG.md` — updated for REQ-4/REQ-5 compliance
 
 **CI Checks Addressed:**
 - 🩹 Heal Markdown Secret False-Positives (RP-007)
@@ -9748,7 +9748,7 @@ and the CI gate requirement.
 
 **CI Checks Addressed:**
 - `actionlint — Workflow Compliance` — fixed `needs` reference in `notify-results` job
-- `Unified Governance Check` — REQ-4/REQ-5 compliance (this session's AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md update)
+- `Unified Governance Check` — REQ-4/REQ-5 compliance (this session's .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md update)
 
 **New Requirement:**
 - All Copilot Agent workflow triggers now default to `claude-haiku-4.5` model
@@ -9778,7 +9778,7 @@ and the CI gate requirement.
 **Files Changed:**
 - `.github/workflows/copilot-agent-checkin.yml` — line 880-884: collapsed 5-line template literal to single line using `\n` escapes
 - `CHANGELOG.md` — new fix entry
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — this entry
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — this entry
 
 **Agents Used:**
 - `copilot-swe-agent[bot]` (direct fixes)
@@ -9801,7 +9801,7 @@ and the CI gate requirement.
 **Files Changed:**
 - `.yamllint.yml` — added `indentation: indent-sequences: whatever` rule override
 - `CHANGELOG.md` — new fix entry
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — this entry
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — this entry
 
 **Agents Used:**
 - `copilot-swe-agent[bot]` (direct fixes)
@@ -9813,7 +9813,7 @@ and the CI gate requirement.
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
 - [x] **0b.** Failing CI checks reviewed — REQ-4/REQ-5 detected missing doc updates; auto-fix applied ✅
-- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
+- [x] **1.** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
 - [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
 - [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
 - [x] **4.** Priority: REQ-4/REQ-5 compliance — accountability report and CHANGELOG gates ✅
@@ -9821,7 +9821,7 @@ and the CI gate requirement.
 - [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
 
 ### Work Completed (Auto-generated)
-1. **REQ-4 compliance** — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was not
+1. **REQ-4 compliance** — `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` was not
    touched in the last commit of PR #unknown (SHA: `48f16ace`). This entry was
    automatically generated by `scripts/ci/session_wrapup_autofix.py` to satisfy the
    Cognitive Pre-flight REQ-4 gate.
@@ -9849,7 +9849,7 @@ and the CI gate requirement.
   from genuine session summaries written by the agent.
 
 ### Impact Score
-- Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- Files auto-fixed: up to 2 (`.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
@@ -9860,7 +9860,7 @@ and the CI gate requirement.
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
 - [x] **0b.** Failing CI checks reviewed — REQ-4/REQ-5 detected missing doc updates; auto-fix applied ✅
-- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
+- [x] **1.** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
 - [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
 - [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
 - [x] **4.** Priority: REQ-4/REQ-5 compliance — accountability report and CHANGELOG gates ✅
@@ -9868,7 +9868,7 @@ and the CI gate requirement.
 - [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
 
 ### Work Completed (Auto-generated)
-1. **REQ-4 compliance** — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was not
+1. **REQ-4 compliance** — `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` was not
    touched in the last commit of PR #5071 (SHA: `072929a6ca4230f306bd8c2f9a54d611338d76e1`). This entry was
    automatically generated by `scripts/ci/session_wrapup_autofix.py` to satisfy the
    Cognitive Pre-flight REQ-4 gate.
@@ -9896,7 +9896,7 @@ and the CI gate requirement.
   from genuine session summaries written by the agent.
 
 ### Impact Score
-- Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- Files auto-fixed: up to 2 (`.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
@@ -9914,7 +9914,7 @@ and the CI gate requirement.
 - [x] **3.** Compliance gates monitored ✅
 
 ### Work Completed
-1. ✅ **REQ-4 Compliance:** Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+1. ✅ **REQ-4 Compliance:** Updated `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
    - Auto-generated session entry for 2026-06-24T10:08Z auto-fix
    - Commit: c2796552
 
@@ -9957,7 +9957,7 @@ and the CI gate requirement.
    - Commit 7700d30a: CodeQL suppressions (14+ instances)
    - Commit cd6bf6c4: Clear-text storage suppression
 
-2. ✅ **REQ-4 Compliance:** Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+2. ✅ **REQ-4 Compliance:** Updated `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
    - Session entry for 2026-06-24T12:16Z CI verification
 
 3. ✅ **REQ-5 Compliance:** Updated `CHANGELOG.md`
@@ -10035,7 +10035,7 @@ and the CI gate requirement.
    - All comments replied to with explicit resolving commit SHAs
 
 2. ✅ **CI Rescue - Blocking Failures Fixed (Commit 9681901e):**
-   - REQ-4: Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` with WEC tracking
+   - REQ-4: Updated `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` with WEC tracking
    - REQ-5: Updated `CHANGELOG.md` with CI rescue session entry
    - REQ-14: Valid Agents Used entry maintained
    - Status: All three governance compliance gates confirmed passing
@@ -10064,7 +10064,7 @@ and the CI gate requirement.
 
 **Work Completed:**
 1. ✅ **Governance Compliance (REQ-4/REQ-5/REQ-14)** - UPDATED IN LATEST COMMIT
-   - REQ-4: Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` with current session entry
+   - REQ-4: Updated `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` with current session entry
    - REQ-5: Updated `CHANGELOG.md` with current session documentation
    - REQ-14: Valid Agents Used entry confirmed (@copilot, codeql-alert-resolution-agent, ci-testing-agent, workflow-ci-fixer)
    - Status: ✅ Ready for verification
@@ -10390,7 +10390,7 @@ Debug print statement unnecessarily exposed the `secret_ref` variable (API key r
 - Timeline established and acknowledged
 
 #### Phase 4: Governance & Compliance (REQ-4/REQ-5) ✅
-- ✅ AGENT_ACCOUNTABILITY_REPORT.md updated with all sessions
+- ✅ .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated with all sessions
 - ✅ CHANGELOG.md updated with fix documentation
 - ✅ Session SHAs documented for comment resolution
 - Authority: @copilot with pre-approval from @mbaetiong
@@ -10426,7 +10426,7 @@ CodeQL re-scan should show:
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
 - [x] **0b.** Failing CI checks reviewed — REQ-4/REQ-5 detected missing doc updates; auto-fix applied ✅
-- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
+- [x] **1.** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
 - [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
 - [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
 - [x] **4.** Priority: REQ-4/REQ-5 compliance — accountability report and CHANGELOG gates ✅
@@ -10434,7 +10434,7 @@ CodeQL re-scan should show:
 - [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
 
 ### Work Completed (Auto-generated)
-1. **REQ-4 compliance** — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was not
+1. **REQ-4 compliance** — `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` was not
    touched in the last commit of PR #5077 (SHA: `e928d514`). This entry was
    automatically generated by `scripts/ci/session_wrapup_autofix.py` to satisfy the
    Cognitive Pre-flight REQ-4 gate.
@@ -10462,7 +10462,7 @@ and the CI gate requirement.
   from genuine session summaries written by the agent.
 
 ### Impact Score
-- Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- Files auto-fixed: up to 2 (`.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
@@ -10474,7 +10474,7 @@ and the CI gate requirement.
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
 - [x] **0b.** Failing CI checks reviewed — REQ-4/REQ-5 detected missing doc updates; auto-fix applied ✅
-- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
+- [x] **1.** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
 - [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
 - [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
 - [x] **4.** Priority: REQ-4/REQ-5 compliance — accountability report and CHANGELOG gates ✅
@@ -10482,7 +10482,7 @@ and the CI gate requirement.
 - [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
 
 ### Work Completed (Auto-generated)
-1. **REQ-4 compliance** — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was not
+1. **REQ-4 compliance** — `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` was not
    touched in the last commit of PR #5081 (SHA: `16928593`). This entry was
    touched in the last commit of PR #5081 (SHA: `627d4ca3`). This entry was
    automatically generated by `scripts/ci/session_wrapup_autofix.py` to satisfy the
@@ -10513,7 +10513,7 @@ and the CI gate requirement.
   from genuine session summaries written by the agent.
 
 ### Impact Score
-- Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- Files auto-fixed: up to 2 (`.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
@@ -10536,7 +10536,7 @@ and the CI gate requirement.
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
 - [x] **0b.** Failing CI checks reviewed — REQ-4/REQ-5 detected missing doc updates; auto-fix applied ✅
-- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
+- [x] **1.** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
 - [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
 - [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
 - [x] **4.** Priority: REQ-4/REQ-5 compliance — accountability report and CHANGELOG gates ✅
@@ -10544,7 +10544,7 @@ and the CI gate requirement.
 - [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
 
 ### Work Completed (Auto-generated)
-1. **REQ-4 compliance** — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was not
+1. **REQ-4 compliance** — `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` was not
    touched in the last commit of PR #5083 (SHA: `a66508cb`). This entry was
    automatically generated by `scripts/ci/session_wrapup_autofix.py` to satisfy the
    Cognitive Pre-flight REQ-4 gate.
@@ -10572,7 +10572,7 @@ and the CI gate requirement.
   from genuine session summaries written by the agent.
 
 ### Impact Score
-- Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- Files auto-fixed: up to 2 (`.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
@@ -10583,7 +10583,7 @@ and the CI gate requirement.
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
 - [x] **0b.** Failing CI checks reviewed — REQ-4/REQ-5 detected missing doc updates; auto-fix applied ✅
-- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
+- [x] **1.** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
 - [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
 - [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
 - [x] **4.** Priority: REQ-4/REQ-5 compliance — accountability report and CHANGELOG gates ✅
@@ -10591,7 +10591,7 @@ and the CI gate requirement.
 - [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
 
 ### Work Completed (Auto-generated)
-1. **REQ-4 compliance** — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was not
+1. **REQ-4 compliance** — `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` was not
    touched in the last commit of PR #5084 (SHA: `e61e4178`). This entry was
    automatically generated by `scripts/ci/session_wrapup_autofix.py` to satisfy the
    Cognitive Pre-flight REQ-4 gate.
@@ -10619,7 +10619,7 @@ and the CI gate requirement.
   from genuine session summaries written by the agent.
 
 ### Impact Score
-- Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- Files auto-fixed: up to 2 (`.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
@@ -10835,7 +10835,7 @@ Phase 11 planning documents existed but **3 code deliverables were missing**:
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
 - [x] **0b.** Failing CI checks reviewed — REQ-4/REQ-5 detected missing doc updates; auto-fix applied ✅
-- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
+- [x] **1.** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
 - [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
 - [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
 - [x] **4.** Priority: REQ-4/REQ-5 compliance — accountability report and CHANGELOG gates ✅
@@ -10843,7 +10843,7 @@ Phase 11 planning documents existed but **3 code deliverables were missing**:
 - [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
 
 ### Work Completed (Auto-generated)
-1. **REQ-4 compliance** — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was not
+1. **REQ-4 compliance** — `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` was not
    touched in the last commit of PR #5091 (SHA: `cc759f1d`). This entry was
    touched in the last commit of PR #5091 (SHA: `1b61eac1`). This entry was
    automatically generated by `scripts/ci/session_wrapup_autofix.py` to satisfy the
@@ -10872,7 +10872,7 @@ and the CI gate requirement.
   from genuine session summaries written by the agent.
 
 ### Impact Score
-- Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- Files auto-fixed: up to 2 (`.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
@@ -10884,7 +10884,7 @@ and the CI gate requirement.
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
 - [x] **0b.** Failing CI checks reviewed — REQ-4/REQ-5 detected missing doc updates; auto-fix applied ✅
-- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
+- [x] **1.** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
 - [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
 - [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
 - [x] **4.** Priority: REQ-4/REQ-5 compliance — accountability report and CHANGELOG gates ✅
@@ -10892,7 +10892,7 @@ and the CI gate requirement.
 - [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
 
 ### Work Completed (Auto-generated)
-1. **REQ-4 compliance** — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was not
+1. **REQ-4 compliance** — `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` was not
    touched in the last commit of PR #5092 (SHA: `e907a938`). This entry was
    touched in the last commit of PR #5093 (SHA: `8fa56191`). This entry was
    automatically generated by `scripts/ci/session_wrapup_autofix.py` to satisfy the
@@ -10922,7 +10922,7 @@ and the CI gate requirement.
   from genuine session summaries written by the agent.
 
 ### Impact Score
-- Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- Files auto-fixed: up to 2 (`.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
@@ -10933,7 +10933,7 @@ and the CI gate requirement.
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
 - [x] **0b.** Failing CI checks reviewed — REQ-4/REQ-5 detected missing doc updates; auto-fix applied ✅
-- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
+- [x] **1.** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
 - [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
 - [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
 - [x] **4.** Priority: REQ-4/REQ-5 compliance — accountability report and CHANGELOG gates ✅
@@ -10941,7 +10941,7 @@ and the CI gate requirement.
 - [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
 
 ### Work Completed (Auto-generated)
-1. **REQ-4 compliance** — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was not
+1. **REQ-4 compliance** — `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` was not
    touched in the last commit of PR #5103 (SHA: `f31f7719`). This entry was
    automatically generated by `scripts/ci/session_wrapup_autofix.py` to satisfy the
    Cognitive Pre-flight REQ-4 gate.
@@ -10969,7 +10969,7 @@ and the CI gate requirement.
   from genuine session summaries written by the agent.
 
 ### Impact Score
-- Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- Files auto-fixed: up to 2 (`.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
@@ -10997,7 +10997,7 @@ and the CI gate requirement.
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
 - [x] **0b.** Failing CI checks reviewed — REQ-4/REQ-5 detected missing doc updates; auto-fix applied ✅
-- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
+- [x] **1.** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
 - [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
 - [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
 - [x] **4.** Priority: REQ-4/REQ-5 compliance — accountability report and CHANGELOG gates ✅
@@ -11005,7 +11005,7 @@ and the CI gate requirement.
 - [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
 
 ### Work Completed (Auto-generated)
-1. **REQ-4 compliance** — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was not
+1. **REQ-4 compliance** — `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` was not
    touched in the last commit of PR #5106 (SHA: `cfded764`). This entry was
    automatically generated by `scripts/ci/session_wrapup_autofix.py` to satisfy the
    Cognitive Pre-flight REQ-4 gate.
@@ -11034,7 +11034,7 @@ and the CI gate requirement.
   from genuine session summaries written by the agent.
 
 ### Impact Score
-- Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- Files auto-fixed: up to 2 (`.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
@@ -11147,7 +11147,7 @@ and the CI gate requirement.
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
 - [x] **0b.** Failing CI checks reviewed — REQ-4/REQ-5 detected missing doc updates; auto-fix applied ✅
-- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
+- [x] **1.** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
 - [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
 - [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
 - [x] **4.** Priority: REQ-4/REQ-5 compliance — accountability report and CHANGELOG gates ✅
@@ -11155,7 +11155,7 @@ and the CI gate requirement.
 - [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
 
 ### Work Completed (Auto-generated)
-1. **REQ-4 compliance** — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was not
+1. **REQ-4 compliance** — `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` was not
    touched in the last commit of PR #5110 (SHA: `9c306efe`). This entry was
    automatically generated by `scripts/ci/session_wrapup_autofix.py` to satisfy the
    Cognitive Pre-flight REQ-4 gate.
@@ -11183,7 +11183,7 @@ and the CI gate requirement.
   from genuine session summaries written by the agent.
 
 ### Impact Score
-- Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- Files auto-fixed: up to 2 (`.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
@@ -11209,19 +11209,19 @@ and the CI gate requirement.
    - All 2765 Python code blocks now syntactically valid
 
 2. **Compliance** ✅
-   - Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+   - Updated `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
    - Updated `CHANGELOG.md`
 
 ### Files Modified
 - `docs/LEARNING_PATHS.md` — Removed code block indentation
 - `docs/testing/FRAGILE_TEST_PATTERNS.md` — Fixed decorator syntax
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — Added session entry
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — Added session entry
 - `CHANGELOG.md` — Added session entry
 
 ### CI Status
 - ✅ Validate Python Examples: FIXED
 - 🔄 Governance Compliance, Semgrep: Pending additional investigation
-- ✅ REQ-4 AGENT_ACCOUNTABILITY_REPORT.md: Updated
+- ✅ REQ-4 .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md: Updated
 - ✅ REQ-5 CHANGELOG.md: Updated
 
 ### Next Steps
@@ -11245,7 +11245,7 @@ and the CI gate requirement.
    - Status: Identified and catalogued, requiring systematic remediation
 
 **Compliance Updates**:
-- Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` ✅
+- Updated `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` ✅
 - Updated `CHANGELOG.md` ✅
 
 **Files Modified**:
@@ -11279,7 +11279,7 @@ and the CI gate requirement.
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
 - [x] **0b.** Failing CI checks reviewed — REQ-4/REQ-5 detected missing doc updates; auto-fix applied ✅
-- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
+- [x] **1.** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
 - [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
 - [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
 - [x] **4.** Priority: REQ-4/REQ-5 compliance — accountability report and CHANGELOG gates ✅
@@ -11287,7 +11287,7 @@ and the CI gate requirement.
 - [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
 
 ### Work Completed (Auto-generated)
-1. **REQ-4 compliance** — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was not
+1. **REQ-4 compliance** — `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` was not
    touched in the last commit of PR #5112 (SHA: `b9e944d5`). This entry was
    automatically generated by `scripts/ci/session_wrapup_autofix.py` to satisfy the
    Cognitive Pre-flight REQ-4 gate.
@@ -11315,7 +11315,7 @@ and the CI gate requirement.
   from genuine session summaries written by the agent.
 
 ### Impact Score
-- Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- Files auto-fixed: up to 2 (`.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
@@ -11328,7 +11328,7 @@ and the CI gate requirement.
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** Bot-posted comments reviewed: 1 compliance comment (Phase 12.2 APPROVED) — no action needed ✅
 - [x] **0b.** Failing CI checks reviewed: REQ-5 CHANGELOG.md compliance detected and fixed ✅
-- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updating in this session ✅
+- [x] **1.** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — updating in this session ✅
 - [x] **2.** CI failure patterns reviewed: No active failures post-compliance fix ✅
 - [x] **3.** `.gitignore` — `.codex/agent_auth_session.json` confirmed allowed ✅
 - [x] **4.** Priority directive: "@copilot continue" — execute Wave 2-5 orchestration briefs ✅
@@ -11402,7 +11402,7 @@ and the CI gate requirement.
 
 ### Compliance Notes
 
-- REQ-4: `AGENT_ACCOUNTABILITY_REPORT.md` — being updated in this session entry ✅
+- REQ-4: `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — being updated in this session entry ✅
 - REQ-5: `CHANGELOG.md` — updated in commit 1abc0d1e, maintained in this commit ✅
 - REQ-13: All bot-posted comments reviewed (1 compliance comment: APPROVED, no action needed) ✅
 - Deferral Language: 0 violations (all work items executed, no deferrals) ✅
@@ -11447,7 +11447,7 @@ and the CI gate requirement.
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
 - [x] **0b.** Failing CI checks reviewed — REQ-4/REQ-5 detected missing doc updates; auto-fix applied ✅
-- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
+- [x] **1.** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
 - [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
 - [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
 - [x] **4.** Priority: REQ-4/REQ-5 compliance — accountability report and CHANGELOG gates ✅
@@ -11455,7 +11455,7 @@ and the CI gate requirement.
 - [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
 
 ### Work Completed (Auto-generated)
-1. **REQ-4 compliance** — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was not
+1. **REQ-4 compliance** — `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` was not
    touched in the last commit of PR #5113 (SHA: `e036d078`). This entry was
    automatically generated by `scripts/ci/session_wrapup_autofix.py` to satisfy the
    Cognitive Pre-flight REQ-4 gate.
@@ -11483,7 +11483,7 @@ and the CI gate requirement.
   from genuine session summaries written by the agent.
 
 ### Impact Score
-- Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- Files auto-fixed: up to 2 (`.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
@@ -11494,7 +11494,7 @@ and the CI gate requirement.
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
 - [x] **0b.** Failing CI checks reviewed — REQ-4/REQ-5 detected missing doc updates; auto-fix applied ✅
-- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
+- [x] **1.** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
 - [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
 - [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
 - [x] **4.** Priority: REQ-4/REQ-5 compliance — accountability report and CHANGELOG gates ✅
@@ -11502,7 +11502,7 @@ and the CI gate requirement.
 - [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
 
 ### Work Completed (Auto-generated)
-1. **REQ-4 compliance** — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was not
+1. **REQ-4 compliance** — `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` was not
    touched in the last commit of PR #5115 (SHA: `b8ff45dd`). This entry was
    automatically generated by `scripts/ci/session_wrapup_autofix.py` to satisfy the
    Cognitive Pre-flight REQ-4 gate.
@@ -11530,7 +11530,7 @@ and the CI gate requirement.
   from genuine session summaries written by the agent.
 
 ### Impact Score
-- Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- Files auto-fixed: up to 2 (`.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
@@ -11541,7 +11541,7 @@ and the CI gate requirement.
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
 - [x] **0b.** Failing CI checks reviewed — REQ-4/REQ-5 detected missing doc updates; auto-fix applied ✅
-- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
+- [x] **1.** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
 - [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
 - [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
 - [x] **4.** Priority: REQ-4/REQ-5 compliance — accountability report and CHANGELOG gates ✅
@@ -11549,7 +11549,7 @@ and the CI gate requirement.
 - [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
 
 ### Work Completed (Auto-generated)
-1. **REQ-4 compliance** — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was not
+1. **REQ-4 compliance** — `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` was not
    touched in the last commit of PR #5118 (SHA: `c8507935`). This entry was
    automatically generated by `scripts/ci/session_wrapup_autofix.py` to satisfy the
    Cognitive Pre-flight REQ-4 gate.
@@ -11577,7 +11577,7 @@ and the CI gate requirement.
   from genuine session summaries written by the agent.
 
 ### Impact Score
-- Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- Files auto-fixed: up to 2 (`.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
@@ -11612,7 +11612,7 @@ and the CI gate requirement.
 2. **🚨 Blocked Issues Pending Fix**
    - **mypy Anti-Regression Gate:** 78 errors (baseline: 64), +14 new
    - **PR Comment Review Gate:** 1 unaddressed blocking comment from @mbaetiong
-   - **Accountability Gate:** AGENT_ACCOUNTABILITY_REPORT.md not touched in HEAD commit
+   - **Accountability Gate:** .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md not touched in HEAD commit
 
 ### Next Steps
 
@@ -11645,7 +11645,7 @@ All changes staged and committed. Fresh CI runs initiated.
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
 - [x] **0b.** Failing CI checks reviewed — REQ-4/REQ-5 detected missing doc updates; auto-fix applied ✅
-- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
+- [x] **1.** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
 - [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
 - [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
 - [x] **4.** Priority: REQ-4/REQ-5 compliance — accountability report and CHANGELOG gates ✅
@@ -11653,7 +11653,7 @@ All changes staged and committed. Fresh CI runs initiated.
 - [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
 
 ### Work Completed (Auto-generated)
-1. **REQ-4 compliance** — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was not
+1. **REQ-4 compliance** — `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` was not
    touched in the last commit of PR #5120 (SHA: `1d090b59`). This entry was
    automatically generated by `scripts/ci/session_wrapup_autofix.py` to satisfy the
    Cognitive Pre-flight REQ-4 gate.
@@ -11682,7 +11682,7 @@ and the CI gate requirement.
   from genuine session summaries written by the agent.
 
 ### Impact Score
-- Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- Files auto-fixed: up to 2 (`.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
@@ -11693,25 +11693,25 @@ and the CI gate requirement.
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** Bot-posted comments reviewed (comment #4828188131 — CI Rescue @copilot mention) ✅
 - [x] **0b.** Failing CI checks reviewed — Comment Review Gate failing; REQ-4/REQ-5 missing ✅
-- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updated with today's session entry ✅
+- [x] **1.** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — updated with today's session entry ✅
 - [x] **2.** `CHANGELOG.md` — updated with `### Fixed (SN)` entry ✅
 - [x] **3.** §0 CODEBASE_AGENCY_POLICY.md followed ✅
 
 ### Work Completed
 1. **REQ-5 compliance** — Added `### Fixed (CI rescue and compliance — PR #5122, Session 2026-06-29T01:23Z)` entry to `CHANGELOG.md` under `## [Unreleased]`.
-2. **REQ-4 compliance** — Added this session entry to `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`.
+2. **REQ-4 compliance** — Added this session entry to `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`.
 3. **Comment Review Gate** — Addressed CI Rescue comment #4828188131 from @mbaetiong that explicitly mentioned @copilot. Replied with commit SHA after changes.
 4. **PR context** — PR #5122 updates repository health monitoring outputs (offload candidates scan, manifest refresh).
 
 ### Root-Cause Note
-The Comment Review Gate was failing because no reply was made to the CI Rescue comment (#4828188131) that flagged missing REQ-4/REQ-5 updates. The fix is to update both tracked files (CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md) and reply to the comment with the resolving commit SHA.
+The Comment Review Gate was failing because no reply was made to the CI Rescue comment (#4828188131) that flagged missing REQ-4/REQ-5 updates. The fix is to update both tracked files (CHANGELOG.md and .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md) and reply to the comment with the resolving commit SHA.
 ## SESSION SUMMARY — 2026-06-29T01:22Z SESSION AUTO [auto-generated] (CI Auto-Fix — PR #5122)
 ## SESSION SUMMARY — 2026-06-29T01:28Z SESSION AUTO [auto-generated] (CI Auto-Fix — PR #5122)
 
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
 - [x] **0b.** Failing CI checks reviewed — REQ-4/REQ-5 detected missing doc updates; auto-fix applied ✅
-- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
+- [x] **1.** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
 - [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
 - [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
 - [x] **4.** Priority: REQ-4/REQ-5 compliance — accountability report and CHANGELOG gates ✅
@@ -11719,7 +11719,7 @@ The Comment Review Gate was failing because no reply was made to the CI Rescue c
 - [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
 
 ### Work Completed (Auto-generated)
-1. **REQ-4 compliance** — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was not
+1. **REQ-4 compliance** — `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` was not
    touched in the last commit of PR #5122 (SHA: `727d9bbd`). This entry was
    touched in the last commit of PR #5122 (SHA: `e9303bad`). This entry was
    automatically generated by `scripts/ci/session_wrapup_autofix.py` to satisfy the
@@ -11749,7 +11749,7 @@ and the CI gate requirement.
   from genuine session summaries written by the agent.
 
 ### Impact Score
-- Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- Files auto-fixed: up to 2 (`.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
@@ -11842,7 +11842,7 @@ Successfully executed Phase 3 Root Cleanup Campaign using coordinated 3-wave mul
 - ✅ `reference-updater-agent` — Reference updates
 
 ### Compliance Status
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated (this entry)
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated (this entry)
 - ✅ REQ-5: CHANGELOG.md updated
 - ✅ All campaign gates PASS
 - ✅ Zero breaking changes confirmed
@@ -11855,7 +11855,7 @@ Successfully executed Phase 3 Root Cleanup Campaign using coordinated 3-wave mul
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
 - [x] **0b.** Failing CI checks reviewed — REQ-4/REQ-5 detected missing doc updates; auto-fix applied ✅
-- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
+- [x] **1.** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
 - [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
 - [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
 - [x] **4.** Priority: REQ-4/REQ-5 compliance — accountability report and CHANGELOG gates ✅
@@ -11863,7 +11863,7 @@ Successfully executed Phase 3 Root Cleanup Campaign using coordinated 3-wave mul
 - [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
 
 ### Work Completed (Auto-generated)
-1. **REQ-4 compliance** — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was not
+1. **REQ-4 compliance** — `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` was not
    touched in the last commit of PR #5149 (SHA: `51d6db62`). This entry was
    automatically generated by `scripts/ci/session_wrapup_autofix.py` to satisfy the
    Cognitive Pre-flight REQ-4 gate.
@@ -11891,7 +11891,7 @@ and the CI gate requirement.
   from genuine session summaries written by the agent.
 
 ### Impact Score
-- Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- Files auto-fixed: up to 2 (`.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
@@ -11970,7 +11970,7 @@ Successfully executed all phases of the root folder reorganization plan end-to-e
 
 ### Compliance Status
 
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated (this entry)
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated (this entry)
 - ✅ Phase 1-4 execution complete with zero regressions
 - ✅ Workflow integration validated and updated
 - ✅ Git history preserved (all moves tracked)
@@ -12118,7 +12118,7 @@ Successfully executed all phases of the root folder reorganization plan end-to-e
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
 - [x] **0b.** Failing CI checks reviewed — REQ-4/REQ-5 detected missing doc updates; auto-fix applied ✅
-- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
+- [x] **1.** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
 - [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
 - [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
 - [x] **4.** Priority: REQ-4/REQ-5 compliance — accountability report and CHANGELOG gates ✅
@@ -12126,7 +12126,7 @@ Successfully executed all phases of the root folder reorganization plan end-to-e
 - [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
 
 ### Work Completed (Auto-generated)
-1. **REQ-4 compliance** — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was not
+1. **REQ-4 compliance** — `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` was not
    touched in the last commit of PR #5155 (SHA: `7ba1a7d3`). This entry was
    automatically generated by `scripts/ci/session_wrapup_autofix.py` to satisfy the
    Cognitive Pre-flight REQ-4 gate.
@@ -12154,7 +12154,7 @@ and the CI gate requirement.
   from genuine session summaries written by the agent.
 
 ### Impact Score
-- Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- Files auto-fixed: up to 2 (`.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
@@ -12198,7 +12198,7 @@ and the CI gate requirement.
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
 - [x] **0b.** Failing CI checks reviewed — REQ-4/REQ-5 detected missing doc updates; auto-fix applied ✅
-- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
+- [x] **1.** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
 - [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
 - [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
 - [x] **4.** Priority: REQ-4/REQ-5 compliance — accountability report and CHANGELOG gates ✅
@@ -12206,7 +12206,7 @@ and the CI gate requirement.
 - [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
 
 ### Work Completed (Auto-generated)
-1. **REQ-4 compliance** — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was not
+1. **REQ-4 compliance** — `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` was not
    touched in the last commit of PR #5158 (SHA: `6f4c08d3`). This entry was
    automatically generated by `scripts/ci/session_wrapup_autofix.py` to satisfy the
    Cognitive Pre-flight REQ-4 gate.
@@ -12234,7 +12234,7 @@ and the CI gate requirement.
   from genuine session summaries written by the agent.
 
 ### Impact Score
-- Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- Files auto-fixed: up to 2 (`.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
@@ -12317,7 +12317,7 @@ Lane 4 - Integration & AAIS Bridging (STANDBY)
 
 ### COMPLIANCE VERIFICATION
 
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md — this entry documents campaign kickoff
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md — this entry documents campaign kickoff
 - ✅ REQ-5: CHANGELOG.md — campaign status appended
 - ✅ Branch: copilot/explore-codebase-and-create-implementation-plan (0 conflicts)
 - ✅ WEC: auto-approve-workflows + agent-auth-delegation checked
@@ -12502,7 +12502,7 @@ Successfully created comprehensive Phase 10 Readiness Plan with complete validat
 
 ### ACCOUNTABILITY TRACKING
 
-**REQ-4 (AGENT_ACCOUNTABILITY_REPORT.md):** ✅ Updated in this commit
+**REQ-4 (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md):** ✅ Updated in this commit
 **REQ-5 (CHANGELOG.md):** ✅ To be updated with commit
 **Branch Status:** Clean (no conflicts expected)
 **Compliance:** ✅ 100% (REQ-4/REQ-5 compliant)
@@ -12619,7 +12619,7 @@ Successfully created comprehensive Phase 10 Readiness Plan with complete validat
 
 ### COMPLIANCE STATUS
 
-**REQ-4 (AGENT_ACCOUNTABILITY_REPORT.md):** ✅ UPDATED (this session entry)
+**REQ-4 (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md):** ✅ UPDATED (this session entry)
 **REQ-5 (CHANGELOG.md):** ⏳ PENDING UPDATE
 
 ### NEXT IMMEDIATE STEPS
@@ -12682,7 +12682,7 @@ Successfully created comprehensive Phase 10 Readiness Plan with complete validat
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
 - [x] **0b.** Failing CI checks reviewed — REQ-4/REQ-5 detected missing doc updates; auto-fix applied ✅
-- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
+- [x] **1.** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
 - [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
 - [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
 - [x] **4.** Priority: REQ-4/REQ-5 compliance — accountability report and CHANGELOG gates ✅
@@ -12690,7 +12690,7 @@ Successfully created comprehensive Phase 10 Readiness Plan with complete validat
 - [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
 
 ### Work Completed (Auto-generated)
-1. **REQ-4 compliance** — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was not
+1. **REQ-4 compliance** — `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` was not
    touched in the last commit of PR #5181 (SHA: `3839c401`). This entry was
    automatically generated by `scripts/ci/session_wrapup_autofix.py` to satisfy the
    Cognitive Pre-flight REQ-4 gate.
@@ -12718,7 +12718,7 @@ and the CI gate requirement.
   from genuine session summaries written by the agent.
 
 ### Impact Score
-- Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- Files auto-fixed: up to 2 (`.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
@@ -12735,7 +12735,7 @@ Addressed 5 failing CI checks in PR #5181 (Phase 11-13 multi-agent implementatio
 - **Secrets False-Positive Healer**: Added `pragma: allowlist secret` annotations to 3 flagged markdown files (AUTO_RECOVERY_PROCEDURES.md:949, PAGES_DEPLOYMENT_RCA_20260701.md:403, JSONL_SCHEMAS.md:262) and to test stub line 16
 - **Machine Readable Governance**: Changed `fail_on_unmanaged_candidates` to `false` in docs-data/machine-readable-policy.json
 - **Unified Governance Check / REQ-1**: Added copilot/bot PR exemption from hard reviewer-assignment failure (returns "warn" instead of "fail")
-- **Governance Compliance**: REQ-4/REQ-5 now pass as AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md are updated in this non-merge commit
+- **Governance Compliance**: REQ-4/REQ-5 now pass as .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md are updated in this non-merge commit
 - **Comment Review Gate**: Replied to 3 blocking comments
 
 ### Files Changed
@@ -12745,7 +12745,7 @@ Addressed 5 failing CI checks in PR #5181 (Phase 11-13 multi-agent implementatio
 - `tests/tools/test_codex_secret_scan_stub.py` — pragma on secret stub line
 - `docs-data/machine-readable-policy.json` — disable fail_on_unmanaged_candidates
 - `scripts/ci/validators/req1_eligibility_validator.py` — copilot/bot PR exemption
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — this entry (REQ-4)
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — this entry (REQ-4)
 - `CHANGELOG.md` — session entry (REQ-5)
 
 <!-- Session close timestamp: 2026-07-01T21:00Z -->
@@ -12757,7 +12757,7 @@ Addressed 5 failing CI checks in PR #5181 (Phase 11-13 multi-agent implementatio
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
 - [x] **0b.** Failing CI checks reviewed — REQ-4/REQ-5 detected missing doc updates; auto-fix applied ✅
-- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
+- [x] **1.** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
 - [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
 - [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
 - [x] **4.** Priority: REQ-4/REQ-5 compliance — accountability report and CHANGELOG gates ✅
@@ -12765,7 +12765,7 @@ Addressed 5 failing CI checks in PR #5181 (Phase 11-13 multi-agent implementatio
 - [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
 
 ### Work Completed (Auto-generated)
-1. **REQ-4 compliance** — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was not
+1. **REQ-4 compliance** — `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` was not
    touched in the last commit of PR #5184 (SHA: `a5010c66`). This entry was
    automatically generated by `scripts/ci/session_wrapup_autofix.py` to satisfy the
    Cognitive Pre-flight REQ-4 gate.
@@ -12793,7 +12793,7 @@ and the CI gate requirement.
   from genuine session summaries written by the agent.
 
 ### Impact Score
-- Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- Files auto-fixed: up to 2 (`.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
@@ -12804,7 +12804,7 @@ and the CI gate requirement.
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
 - [x] **0b.** Failing CI checks reviewed — REQ-4/REQ-5 detected missing doc updates; auto-fix applied ✅
-- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
+- [x] **1.** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
 - [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
 - [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
 - [x] **4.** Priority: REQ-4/REQ-5 compliance — accountability report and CHANGELOG gates ✅
@@ -12812,7 +12812,7 @@ and the CI gate requirement.
 - [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
 
 ### Work Completed (Auto-generated)
-1. **REQ-4 compliance** — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was not
+1. **REQ-4 compliance** — `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` was not
    touched in the last commit of PR #5186 (SHA: `d65dd5b5`). This entry was
    automatically generated by `scripts/ci/session_wrapup_autofix.py` to satisfy the
    Cognitive Pre-flight REQ-4 gate.
@@ -12840,7 +12840,7 @@ and the CI gate requirement.
   from genuine session summaries written by the agent.
 
 ### Impact Score
-- Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- Files auto-fixed: up to 2 (`.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
@@ -12851,7 +12851,7 @@ and the CI gate requirement.
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
 - [x] **0b.** Failing CI checks reviewed — REQ-4/REQ-5 detected missing doc updates; auto-fix applied ✅
-- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
+- [x] **1.** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
 - [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
 - [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
 - [x] **4.** Priority: REQ-4/REQ-5 compliance — accountability report and CHANGELOG gates ✅
@@ -12859,7 +12859,7 @@ and the CI gate requirement.
 - [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
 
 ### Work Completed (Auto-generated)
-1. **REQ-4 compliance** — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was not
+1. **REQ-4 compliance** — `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` was not
    touched in the last commit of PR #5188 (SHA: `f4d2f97d`). This entry was
    automatically generated by `scripts/ci/session_wrapup_autofix.py` to satisfy the
    Cognitive Pre-flight REQ-4 gate.
@@ -12887,7 +12887,7 @@ and the CI gate requirement.
   from genuine session summaries written by the agent.
 
 ### Impact Score
-- Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- Files auto-fixed: up to 2 (`.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
@@ -12898,7 +12898,7 @@ and the CI gate requirement.
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
 - [x] **0b.** Failing CI checks reviewed — REQ-4/REQ-5 detected missing doc updates; auto-fix applied ✅
-- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
+- [x] **1.** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
 - [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
 - [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
 - [x] **4.** Priority: REQ-4/REQ-5 compliance — accountability report and CHANGELOG gates ✅
@@ -12906,7 +12906,7 @@ and the CI gate requirement.
 - [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
 
 ### Work Completed (Auto-generated)
-1. **REQ-4 compliance** — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was not
+1. **REQ-4 compliance** — `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` was not
    touched in the last commit of PR #5192 (SHA: `70a1aef1`). This entry was
    automatically generated by `scripts/ci/session_wrapup_autofix.py` to satisfy the
    Cognitive Pre-flight REQ-4 gate.
@@ -12934,7 +12934,7 @@ and the CI gate requirement.
   from genuine session summaries written by the agent.
 
 ### Impact Score
-- Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- Files auto-fixed: up to 2 (`.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
@@ -13038,7 +13038,7 @@ and the CI gate requirement.
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
 - [x] **0b.** Failing CI checks reviewed — REQ-4/REQ-5 detected missing doc updates; auto-fix applied ✅
-- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
+- [x] **1.** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
 - [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
 - [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
 - [x] **4.** Priority: REQ-4/REQ-5 compliance — accountability report and CHANGELOG gates ✅
@@ -13046,7 +13046,7 @@ and the CI gate requirement.
 - [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
 
 ### Work Completed (Auto-generated)
-1. **REQ-4 compliance** — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was not
+1. **REQ-4 compliance** — `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` was not
    touched in the last commit of PR #5194 (SHA: `1ed89f41`). This entry was
    automatically generated by `scripts/ci/session_wrapup_autofix.py` to satisfy the
    Cognitive Pre-flight REQ-4 gate.
@@ -13074,7 +13074,7 @@ and the CI gate requirement.
   from genuine session summaries written by the agent.
 
 ### Impact Score
-- Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- Files auto-fixed: up to 2 (`.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
@@ -13090,7 +13090,7 @@ Resolve the last three blockers on PR #5194 before merge:
 ### Actions Taken
 - Added `# pragma: allowlist secret` to line 17 of `tests/tools/test_codex_secret_scan_stub.py` — the flagged string `api_key = 'AWS_SECRET' '_ACCESS_KEY=abc123'` is a commented-out test fixture, not a real credential.
 - Updated `CHANGELOG.md` `[Unreleased]` section with this session's changes.
-- Updated this file (`AGENT_ACCOUNTABILITY_REPORT.md`) to satisfy REQ-4.
+- Updated this file (`.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`) to satisfy REQ-4.
 - All three files committed together so REQ-4, REQ-5, and REQ-6 pass in a single commit.
 
 ### Authority
@@ -13101,7 +13101,7 @@ Resolve the last three blockers on PR #5194 before merge:
 - `general-purpose` (this session)
 
 ### Impact Score
-- Files changed: 3 (`tests/tools/test_codex_secret_scan_stub.py`, `CHANGELOG.md`, `AGENT_ACCOUNTABILITY_REPORT.md`)
+- Files changed: 3 (`tests/tools/test_codex_secret_scan_stub.py`, `CHANGELOG.md`, `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`)
 - CI gates unblocked: REQ-4, REQ-5, REQ-6
 - Deferral Language Gate: 0 violations
 
@@ -13411,7 +13411,7 @@ All findings consolidated with specific remediation steps. No "pre-existing issu
 - `.codex/audit-phase2-*.md` (14 agent reports)
 
 **Compliance Status:**
-- REQ-4: ✅ AGENT_ACCOUNTABILITY_REPORT.md updated (this entry)
+- REQ-4: ✅ .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated (this entry)
 - REQ-5: ⏳ CHANGELOG.md update pending (Phase 3 completion)
 - WEC: ✅ Auto-approval enabled per D-mode
 - Secrets: ✅ No new secrets committed
@@ -13969,7 +13969,7 @@ Current progress: 85%+ complete (final SAST scan and pre-production audit in pro
 
 ### COMPLIANCE STATUS
 
-- ✅ REQ-4 (AGENT_ACCOUNTABILITY_REPORT.md): This entry (Session 2 execution)
+- ✅ REQ-4 (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md): This entry (Session 2 execution)
 - ⏳ REQ-5 (CHANGELOG.md): Will update upon session completion
 - ✅ D-tier autonomous authority confirmed (COPILOT_AGENT_MAX_AUTONOMY_LEVEL=D)
 - ✅ All agent decisions pre-approved
@@ -14094,7 +14094,7 @@ Current progress: 85%+ complete (final SAST scan and pre-production audit in pro
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
 - [x] **0b.** Failing CI checks reviewed — REQ-4/REQ-5 detected missing doc updates; auto-fix applied ✅
-- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
+- [x] **1.** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
 - [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
 - [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
 - [x] **4.** Priority: REQ-4/REQ-5 compliance — accountability report and CHANGELOG gates ✅
@@ -14102,7 +14102,7 @@ Current progress: 85%+ complete (final SAST scan and pre-production audit in pro
 - [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
 
 ### Work Completed (Auto-generated)
-1. **REQ-4 compliance** — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was not
+1. **REQ-4 compliance** — `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` was not
    touched in the last commit of PR #5224 (SHA: `b86b1663`). This entry was
    automatically generated by `scripts/ci/session_wrapup_autofix.py` to satisfy the
    Cognitive Pre-flight REQ-4 gate.
@@ -14130,7 +14130,7 @@ and the CI gate requirement.
   from genuine session summaries written by the agent.
 
 ### Impact Score
-- Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- Files auto-fixed: up to 2 (`.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
@@ -14141,7 +14141,7 @@ and the CI gate requirement.
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
 - [x] **0b.** Failing CI checks reviewed — REQ-4/REQ-5 detected missing doc updates; auto-fix applied ✅
-- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
+- [x] **1.** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
 - [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
 - [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
 - [x] **4.** Priority: REQ-4/REQ-5 compliance — accountability report and CHANGELOG gates ✅
@@ -14149,7 +14149,7 @@ and the CI gate requirement.
 - [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
 
 ### Work Completed (Auto-generated)
-1. **REQ-4 compliance** — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was not
+1. **REQ-4 compliance** — `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` was not
    touched in the last commit of PR #5231 (SHA: `7a42fff478f5cbff86ae6672e5ce3ce9011885fa`). This entry was
    automatically generated by `scripts/ci/session_wrapup_autofix.py` to satisfy the
    Cognitive Pre-flight REQ-4 gate.
@@ -14177,7 +14177,7 @@ and the CI gate requirement.
   from genuine session summaries written by the agent.
 
 ### Impact Score
-- Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- Files auto-fixed: up to 2 (`.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
@@ -14610,7 +14610,7 @@ Addressed 13 code-review comments (github-advanced-security + github-code-qualit
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
 - [x] **0b.** Failing CI checks reviewed — REQ-4/REQ-5 detected missing doc updates; auto-fix applied ✅
-- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
+- [x] **1.** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
 - [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
 - [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
 - [x] **4.** Priority: REQ-4/REQ-5 compliance — accountability report and CHANGELOG gates ✅
@@ -14618,7 +14618,7 @@ Addressed 13 code-review comments (github-advanced-security + github-code-qualit
 - [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
 
 ### Work Completed (Auto-generated)
-1. **REQ-4 compliance** — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was not
+1. **REQ-4 compliance** — `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` was not
    touched in the last commit of PR #5247 (SHA: `c5bb58c8`). This entry was
    automatically generated by `scripts/ci/session_wrapup_autofix.py` to satisfy the
    Cognitive Pre-flight REQ-4 gate.
@@ -14646,7 +14646,7 @@ and the CI gate requirement.
   from genuine session summaries written by the agent.
 
 ### Impact Score
-- Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- Files auto-fixed: up to 2 (`.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
@@ -14658,7 +14658,7 @@ and the CI gate requirement.
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
 - [x] **0b.** Failing CI checks reviewed — REQ-4/REQ-5 detected missing doc updates; auto-fix applied ✅
-- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
+- [x] **1.** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
 - [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
 - [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
 - [x] **4.** Priority: REQ-4/REQ-5 compliance — accountability report and CHANGELOG gates ✅
@@ -14666,7 +14666,7 @@ and the CI gate requirement.
 - [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
 
 ### Work Completed (Auto-generated)
-1. **REQ-4 compliance** — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was not
+1. **REQ-4 compliance** — `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` was not
    touched in the last commit of PR #5250 (SHA: `d9d7d5e3`). This entry was
    automatically generated by `scripts/ci/session_wrapup_autofix.py` to satisfy the
    Cognitive Pre-flight REQ-4 gate.
@@ -14695,7 +14695,7 @@ and the CI gate requirement.
   from genuine session summaries written by the agent.
 
 ### Impact Score
-- Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- Files auto-fixed: up to 2 (`.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
@@ -15257,7 +15257,7 @@ PR Enhancement    @copilot Commands CodeQL Formatter
 Fixed REQ-4 and REQ-5 compliance gaps caused by internal `.codex/` file updates that did not touch accountability or changelog files. This session updates both files to reflect the current state of the PR.
 
 #### Validation
-- ✅ REQ-4: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated
+- ✅ REQ-4: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` updated
 - ✅ REQ-5: `CHANGELOG.md` updated
 - ✅ REQ-14: Valid Agents Used entry
 
@@ -15290,7 +15290,7 @@ Fixed REQ-4 and REQ-5 compliance gaps caused by internal `.codex/` file updates 
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
 - [x] **0b.** Failing CI checks reviewed — REQ-4/REQ-5 detected missing doc updates; auto-fix applied ✅
-- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
+- [x] **1.** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
 - [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
 - [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
 - [x] **4.** Priority: REQ-4/REQ-5 compliance — accountability report and CHANGELOG gates ✅
@@ -15298,7 +15298,7 @@ Fixed REQ-4 and REQ-5 compliance gaps caused by internal `.codex/` file updates 
 - [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
 
 ### Work Completed (Auto-generated)
-1. **REQ-4 compliance** — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was not
+1. **REQ-4 compliance** — `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` was not
    touched in the last commit of PR #5262 (SHA: `59baf504`). This entry was
    automatically generated by `scripts/ci/session_wrapup_autofix.py` to satisfy the
    Cognitive Pre-flight REQ-4 gate.
@@ -15326,7 +15326,7 @@ and the CI gate requirement.
   from genuine session summaries written by the agent.
 
 ### Impact Score
-- Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- Files auto-fixed: up to 2 (`.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
@@ -15347,7 +15347,7 @@ and the CI gate requirement.
 - ✅ Resolved divergent merge conflicts with remote (bot-generated `cognitive-preflight` commit)
 
 **REQ-4/REQ-5 Compliance:** 🟢 RESTORED
-- ✅ Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (REQ-4)
+- ✅ Updated `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (REQ-4)
 - ✅ Updated `CHANGELOG.md` (REQ-5)
 
 **Security Findings Review:** 🟡 INVESTIGATED, PATHS NOT FOUND
@@ -15361,7 +15361,7 @@ and the CI gate requirement.
 
 | Item | Status | Details |
 |------|--------|---------|
-| **REQ-4 Accountability** | ✅ COMPLETE | AGENT_ACCOUNTABILITY_REPORT.md updated |
+| **REQ-4 Accountability** | ✅ COMPLETE | .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated |
 | **REQ-5 Changelog** | ✅ COMPLETE | CHANGELOG.md updated |
 | **Merge Conflict Resolution** | ✅ COMPLETE | 7 `.codex/` file conflicts resolved, merge commit created |
 | **Comment Review** | ✅ COMPLETE | All 4 blocking comments addressed |
@@ -15411,7 +15411,7 @@ and the CI gate requirement.
 - ⏳ Fix 9 failing checks (javascript, CodeQL, Admin Setup, health-check, dependency snapshot)
 - ⏳ Run ruff check and mypy baseline validation
 - ⏳ Update CHANGELOG.md with fixes entry
-- ⏳ Update AGENT_ACCOUNTABILITY_REPORT.md (this entry)
+- ⏳ Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (this entry)
 
 **Phase 4: Deployment Documentation** 🔄 PENDING
 - New requirement: Document deployment environment variable setup
@@ -15448,7 +15448,7 @@ and the CI gate requirement.
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
 - [x] **0b.** Failing CI checks reviewed — REQ-4/REQ-5 detected missing doc updates; auto-fix applied ✅
-- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
+- [x] **1.** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
 - [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
 - [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
 - [x] **4.** Priority: REQ-4/REQ-5 compliance — accountability report and CHANGELOG gates ✅
@@ -15456,7 +15456,7 @@ and the CI gate requirement.
 - [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
 
 ### Work Completed (Auto-generated)
-1. **REQ-4 compliance** — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was not
+1. **REQ-4 compliance** — `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` was not
    touched in the last commit of PR #5264 (SHA: `cfcf79e4`). This entry was
    automatically generated by `scripts/ci/session_wrapup_autofix.py` to satisfy the
    Cognitive Pre-flight REQ-4 gate.
@@ -15485,7 +15485,7 @@ and the CI gate requirement.
   from genuine session summaries written by the agent.
 
 ### Impact Score
-- Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- Files auto-fixed: up to 2 (`.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 
@@ -15499,7 +15499,7 @@ and the CI gate requirement.
 - [x] **0a.** Repository state verified: clean working directory ✅
 - [x] **0b.** COPILOT_AGENT_AUTH_ENABLED=true (permanent) ✅
 - [x] **0c.** D-tier autonomy: GO CONTINUE active ✅
-- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — updated by this session ✅
+- [x] **1.** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — updated by this session ✅
 - [x] **2.** Authority check — @mbaetiong standing approval confirmed ✅
 - [x] **3.** Campaign context — Phase 12 WS3 continuation session ✅
 
@@ -15640,7 +15640,7 @@ WS3 Lanes:
 - [x] 2 of 2 follow-up briefs created (Documentation + WS4)
 - [x] Campaign documentation committed (25.5 KB)
 - [x] No blockers or escalations needed
-- [x] CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md updated
+- [x] CHANGELOG.md and .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated
 
 **Status:** ✅ **SESSION SUCCESSFUL - ALL OBJECTIVES MET**
 
@@ -16094,13 +16094,13 @@ Phase 15 WS4: Production Certification
 
 ### EXECUTION SUMMARY
 
-- ✅ REQ-4: Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` in this commit
+- ✅ REQ-4: Updated `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` in this commit
 - ✅ REQ-5: Updated `CHANGELOG.md` in this commit
 - ✅ WEC section: Added to PR body via engine-tools-report_progress prDescription parameter
 - ✅ Replied to blocking CI rescue comment #4928776484
 
 ### COMPLIANCE STATUS
-- REQ-4: ✅ FIXED (AGENT_ACCOUNTABILITY_REPORT.md in this commit)
+- REQ-4: ✅ FIXED (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md in this commit)
 - REQ-5: ✅ FIXED (CHANGELOG.md in this commit)
 - Agents Used: copilot-swe-agent
 
@@ -16108,7 +16108,7 @@ Phase 15 WS4: Production Certification
 
 **Session:** pr-5278-final | **Task:** Address CI rescue comment #4928776484 — REQ-4/REQ-5 final update | **Date:** 2026-07-09T19:36:00Z | **Authority:** @mbaetiong (D-tier autonomous) | **Status:** ✅ COMPLETE
 
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated in this commit
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated in this commit
 - ✅ REQ-5: CHANGELOG.md updated in this commit
 - Agents Used: copilot-swe-agent
 
@@ -16120,12 +16120,12 @@ Phase 15 WS4: Production Certification
 
 1. **pyproject.toml invalid PEP 440 version**: Changed `version = "0.1.0-prod"` → `version = "0.1.0"`. The "-prod" suffix is not valid PEP 440 and broke `pre-flight-validation`, `Validate Python Examples`, `compliance-check`, and `Final Pre-Merge Checks`.
 
-2. **REQ-4**: Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` in this commit
+2. **REQ-4**: Updated `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` in this commit
 
 3. **WEC block**: Preserved correct WEC block with all required items checked
 
 ### COMPLIANCE STATUS
-- REQ-4: ✅ FIXED (AGENT_ACCOUNTABILITY_REPORT.md in this commit)
+- REQ-4: ✅ FIXED (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md in this commit)
 - REQ-5: ✅ FIXED (CHANGELOG.md updated in this commit with CI rescue entry)
 - Agents Used: copilot-swe-agent
 
@@ -16136,7 +16136,7 @@ Phase 15 WS4: Production Certification
 ### Pre-flight Checklist (§0 CODEBASE_AGENCY_POLICY.md)
 - [x] **0a.** Bot-posted comments reviewed (REQ per §0) — auto-fix session; no open threads at trigger time ✅
 - [x] **0b.** Failing CI checks reviewed — REQ-4/REQ-5 detected missing doc updates; auto-fix applied ✅
-- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
+- [x] **1.** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — auto-updated by `session_wrapup_autofix.py` ✅
 - [x] **2.** CI failure patterns reviewed via cognitive-preflight gate ✅
 - [x] **3.** `.gitignore` — `!.codex/agent_auth_session.json` confirmed allowed ✅
 - [x] **4.** Priority: REQ-4/REQ-5 compliance — accountability report and CHANGELOG gates ✅
@@ -16144,7 +16144,7 @@ Phase 15 WS4: Production Certification
 - [x] **6.** `.codex/CODEBASE_AGENCY_POLICY.md` followed ✅
 
 ### Work Completed (Auto-generated)
-1. **REQ-4 compliance** — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was not
+1. **REQ-4 compliance** — `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` was not
    touched in the last commit of PR #5282 (SHA: `9fccf0a1`). This entry was
    automatically generated by `scripts/ci/session_wrapup_autofix.py` to satisfy the
    Cognitive Pre-flight REQ-4 gate.
@@ -16172,7 +16172,7 @@ and the CI gate requirement.
   from genuine session summaries written by the agent.
 
 ### Impact Score
-- Files auto-fixed: up to 2 (`AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
+- Files auto-fixed: up to 2 (`.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`)
 - CI gates unblocked: REQ-4, REQ-5
 - Deferral Language Gate: 0 violations (auto-entry uses no deferral language)
 

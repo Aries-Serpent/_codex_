@@ -265,7 +265,7 @@ AWAITING_DECISION → [DECIDE] → APPROVED (human) / REJECTED
 | **Session Duration Used** | ~43 minutes of 59 available |
 | **Time Remaining** | 16 minutes |
 | **Files Created** | 6 consolidation documents |
-| **Files Updated** | 3 core schemas + AGENT_ACCOUNTABILITY_REPORT.md |
+| **Files Updated** | 3 core schemas + .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md |
 | **Total LOC Added** | 2,500+ lines (code + docs) |
 | **Agents Deployed** | 5 (3 peer review + 2 gap remediation) |
 | **Agents Completed** | 5/5 (100%) |

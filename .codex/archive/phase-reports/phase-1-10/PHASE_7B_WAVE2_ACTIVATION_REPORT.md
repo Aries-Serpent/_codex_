@@ -98,12 +98,12 @@
 - Consolidate Phase 7B metrics from Tracks A-D
 - Finalize release notes for v0.1.0-final
 - Create operations playbook
-- Update AGENT_ACCOUNTABILITY_REPORT.md (REQ-4/REQ-5 compliance)
+- Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (REQ-4/REQ-5 compliance)
 - Archive all Phase 7 checkpoints
 
 **Inputs (Non-blocking):**
 - All Track A-D deliverables (consolidation hub model)
-- AGENT_ACCOUNTABILITY_REPORT.md current
+- .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md current
 - CHANGELOG.md (REQ-5 updates)
 
 **Expected Deliverables:**

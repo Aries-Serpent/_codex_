@@ -2182,7 +2182,7 @@
       "type": "enforcement"
     },
     {
-      "path": ".codex/docs/AGENTS.md.original.cf4e8c9.md",
+      "path": ".codex/docs/.codex/archive/deprecated/AGENTS.md.original.cf4e8c9.md",
       "type": "enforcement"
     },
     {
@@ -2238,7 +2238,7 @@
       "type": "enforcement"
     },
     {
-      "path": ".codex/docs/COGNITIVE_APP_AGENT_INTEGRATION.md",
+      "path": ".codex/docs/COGNITIVE_APP_AGENT_docs/api/reference/INTEGRATION.md",
       "type": "enforcement"
     },
     {
@@ -2442,7 +2442,7 @@
       "type": "enforcement"
     },
     {
-      "path": ".codex/docs/POLICY_PARAMETERS_INTEGRATION.md",
+      "path": ".codex/docs/POLICY_PARAMETERS_docs/api/reference/INTEGRATION.md",
       "type": "enforcement"
     },
     {

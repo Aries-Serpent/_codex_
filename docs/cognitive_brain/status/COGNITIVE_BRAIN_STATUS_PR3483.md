@@ -18,7 +18,7 @@
 |------|-------------|--------|
 | W-084 | `actionlint-audit.yml` SC2016 fix (shellcheck disable directive) | ✅ Done |
 | W-084 | `actionlint-audit.yml` SC2012 ×2 fix (`ls` → `find`) | ✅ Done |
-| W-084 | `AGENT_ACCOUNTABILITY_REPORT.md` W-084 entry (REQ-4) | ✅ Done |
+| W-084 | `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` W-084 entry (REQ-4) | ✅ Done |
 | W-084 | `CHANGELOG.md` PR #3483 section (REQ-5) | ✅ Done |
 | Docs | `docs/admin/REPO_VARIABLES_IMPLEMENTATION_GUIDE.md` created | ✅ Done |
 | Docs | `docs/admin/HUMAN_ADMIN_REPO_VARIABLES_SETUP.md` created | ✅ Done |
@@ -117,7 +117,7 @@ flowchart LR
 
 | Gate | Status |
 |------|--------|
-| REQ-4 `AGENT_ACCOUNTABILITY_REPORT.md` updated | ✅ W-084 entry present |
+| REQ-4 `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` updated | ✅ W-084 entry present |
 | REQ-5 `CHANGELOG.md` updated | ✅ PR #3483 section present |
 | P2 SC2012 pattern scan | ✅ No other violations found |
 | Tier-1 `actionlint-audit` gate | ✅ SC2016 + SC2012 fixed |

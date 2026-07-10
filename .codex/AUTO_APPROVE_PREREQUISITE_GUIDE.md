@@ -394,7 +394,7 @@ def auto_approve_with_wec(pr_number, token):  # pragma: allowlist secret
 3. **Log Approval Decisions:**
    - Document which workflows were auto-approved
    - Note any manual approvals needed
-   - Record in AGENT_ACCOUNTABILITY_REPORT.md
+   - Record in .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 
 ---
 

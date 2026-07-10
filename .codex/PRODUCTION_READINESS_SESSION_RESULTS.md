@@ -118,7 +118,7 @@
 
 ### Compliance Validation
 - [ ] `session_wrapup_autofix.py --check` returns clean
-- [ ] REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated
+- [ ] REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated
 - [ ] REQ-5: CHANGELOG.md updated
 - [ ] All suppressions and pragmas properly formatted
 

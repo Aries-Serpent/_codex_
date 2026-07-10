@@ -73,7 +73,7 @@ python3 scripts/ci/session_wrapup_autofix.py --check --pr-number <PR>
 ```
 
 **Required Updates:**
-- ✅ docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md (update with session entry)
+- ✅ docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (update with session entry)
 - ✅ CHANGELOG.md (update with execution milestones)
 
 **Expected Output:**

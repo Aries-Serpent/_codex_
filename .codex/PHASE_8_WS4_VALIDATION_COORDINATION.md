@@ -84,7 +84,7 @@
 - [ ] **Integration Check**
   - [ ] No conflicts between 4 track deliverables
   - [ ] All changes tracked in CHANGELOG.md
-  - [ ] AGENT_ACCOUNTABILITY_REPORT.md updated
+  - [ ] .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated
   
 - [ ] **Pre-Merge Validation**
   - [ ] All WEC checkboxes verified

@@ -253,7 +253,7 @@ PHASE 4 (2026-06-22 12:08 → ~14:08): Release Preparation
 - **CI Failure Report:** Issue #5035
 - **Plan Document:** `.codex/docs/COMPREHENSIVE_CAMPAIGN_PLAN.md`
 - **Agent Registry:** `.github/agents/AGENT_REGISTRY.yaml` (145 active agents)
-- **Accountability:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- **Accountability:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 ---
 

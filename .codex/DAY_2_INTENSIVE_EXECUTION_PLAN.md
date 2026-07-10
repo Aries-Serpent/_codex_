@@ -513,7 +513,7 @@ Report: .codex/DAY_3_QA_VALIDATION_PLAN.md
 - **Baseline:** 92% (Checkpoint 3)
 - **Day 2 Target:** 95%+ (+3pp minimum)
 - **Accountability:** `.codex/DAY_2_EXECUTION_PROGRESS_TRACKING.md`
-- **Final Report:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- **Final Report:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 ### Metrics Collection
 - **Coverage:** Daily report + final aggregate
@@ -560,7 +560,7 @@ Report: .codex/DAY_3_QA_VALIDATION_PLAN.md
 - `.codex/PHASE_7A_LANE_32_CHECKPOINT_*.md` - Mutation context
 
 **Accountability:**
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` - Master tracking
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` - Master tracking
 
 ---
 

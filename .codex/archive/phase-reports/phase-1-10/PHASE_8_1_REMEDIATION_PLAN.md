@@ -187,7 +187,7 @@ python scripts/doc_link_validator.py \
 - `SECURITY.md`
 - `CHANGELOG.md`
 - `CODE_OF_CONDUCT.md`
-- `AGENTS.md`
+- `.codex/archive/deprecated/AGENTS.md`
 - `LICENSE`
 
 **To relocate (~80 files):**

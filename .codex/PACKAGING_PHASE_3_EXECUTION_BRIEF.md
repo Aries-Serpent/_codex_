@@ -40,7 +40,7 @@
 **2. ML Distribution Assets**
    - Distribution archive: aries-serpent-ml-0.1.0.tar.gz
    - Checksum verification: CHECKSUM.txt (SHA256)
-   - Quick-start guide: QUICK_START_ML.md
+   - Quick-start guide: docs/quickstart/QUICK_START_ML.md
    - Inference examples (BERT, GPT-2 fine-tuning)
    - Performance benchmarks
 
@@ -90,7 +90,7 @@
 **Step 5: Archive & Asset Generation** (2 hours)
 - Create aries-serpent-ml-0.1.0.tar.gz
 - Generate SHA256 checksum
-- Create QUICK_START_ML.md with examples
+- Create docs/quickstart/QUICK_START_ML.md with examples
 - Prepare inference benchmark results
 
 **Step 6: Release Publication** (1 hour)
@@ -163,7 +163,7 @@ task \
 
 # 2. Update campaign status
 - Update PACKAGING_MASTER_EXECUTION_ROADMAP.md (Phase 3 progress)
-- Update AGENT_ACCOUNTABILITY_REPORT.md with deployment info
+- Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with deployment info
 - Commit: "phase 3 launched: ml package build phase"
 
 # 3. Monitor execution

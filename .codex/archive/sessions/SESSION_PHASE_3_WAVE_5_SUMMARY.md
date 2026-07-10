@@ -24,7 +24,7 @@
 ### 1. Mandatory Pre-Load (Session Start)
 - [x] Read `.codex/AGENTIC_REPO_STATE.md` — Auth confirmed PERMANENT
 - [x] Read `.codex/CODEBASE_AGENCY_POLICY.md` — Policy constraints reviewed
-- [x] Read `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — Phase 3 Wave 5 identified
+- [x] Read `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — Phase 3 Wave 5 identified
 - [x] Read `.codex/agent_context.json` — Repo variables validated
 - [x] Read `.codex/aftermath/pda_iterations.jsonl` — Session history confirmed
 
@@ -287,7 +287,7 @@
 **Key Files to Monitor**:
 - `.codex/PHASE_3_WAVE_5_LANE_*_CHECKPOINT_DAY_*.md` (daily reports)
 - `.codex/PHASE_3_WAVE_5_CAMPAIGN_COORDINATION_INDEX.md` (navigation hub)
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (session history)
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (session history)
 
 **Actions NOT Needed**:
 - ✅ No need to create PR (campaign is autonomous)

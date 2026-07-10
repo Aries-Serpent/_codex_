@@ -454,7 +454,7 @@ flowchart TD
     subgraph "Protected Operations"
         MANIFEST[CODEX_MANIFEST.json updates]
         BASELINE[.secrets.baseline updates]
-        REPORT[AGENT_ACCOUNTABILITY_REPORT.md]
+        REPORT[.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md]
     end
 
     subgraph "Variables & Secrets Knowledge Layer"

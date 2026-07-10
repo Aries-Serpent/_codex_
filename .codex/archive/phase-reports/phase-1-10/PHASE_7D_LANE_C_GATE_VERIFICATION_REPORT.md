@@ -91,7 +91,7 @@ This report documents comprehensive QA verification across all **32 production g
 **Evidence:**
 - Pull request workflow enforces minimum reviewers (2)
 - Recent PR merge history shows 100% reviewed changes
-- AGENT_ACCOUNTABILITY_REPORT.md documents review process
+- .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md documents review process
 - Code review checklist automated in CI/CD
 
 **Finding:** 100% of changes reviewed. Exceeds 95% target.
@@ -103,7 +103,7 @@ This report documents comprehensive QA verification across all **32 production g
 **Evidence:**
 - CODE_OF_CONDUCT.md establishes security expectations
 - CONTRIBUTING.md includes security guidelines
-- Recent contributor onboarding (CLAUDE.md, GEMINI.md) includes security
+- Recent contributor onboarding (.codex/archive/deprecated/CLAUDE.md, .codex/archive/deprecated/GEMINI.md) includes security
 - Team maintains security audit logs
 
 **Finding:** All contributors briefed on security requirements. Security documentation current and accessible.
@@ -406,7 +406,7 @@ This report documents comprehensive QA verification across all **32 production g
 - CODE_OF_CONDUCT.md establishes project policies
 - CONTRIBUTING.md documents contribution requirements
 - PR review process enforces policy compliance
-- Agent accountability tracked (AGENT_ACCOUNTABILITY_REPORT.md)
+- Agent accountability tracked (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md)
 
 **Finding:** 100% compliance with governance policy. All processes aligned.
 
@@ -415,7 +415,7 @@ This report documents comprehensive QA verification across all **32 production g
 ### Gate 6.2: Audit Trail — Complete Session History & Decision Logs
 **Status:** ✅ **PASS**  
 **Evidence:**
-- AGENT_ACCOUNTABILITY_REPORT.md logs all agent sessions
+- .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md logs all agent sessions
 - CHANGELOG.md records all significant decisions
 - Git commit history provides complete audit trail
 - Decision logs stored in `.codex/` namespace
@@ -424,11 +424,11 @@ This report documents comprehensive QA verification across all **32 production g
 
 ---
 
-### Gate 6.3: Change Log — CHANGELOG.md & AGENT_ACCOUNTABILITY_REPORT.md Current
+### Gate 6.3: Change Log — CHANGELOG.md & .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md Current
 **Status:** ✅ **PASS**  
 **Evidence:**
 - CHANGELOG.md updated with recent changes (last update 2026-06-15)
-- AGENT_ACCOUNTABILITY_REPORT.md current and comprehensive
+- .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md current and comprehensive
 - Phase 7D campaign tracked (all 5 tracks documented)
 - Version history maintained
 

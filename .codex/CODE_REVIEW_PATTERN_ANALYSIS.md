@@ -233,7 +233,7 @@ Check-in reviews at logical milestones:
 ### Week 1: Establish Cadence
 - [ ] Schedule 2-3 Code Review sessions per day (5-10 min each)
 - [ ] Anchor them to architecture decisions, API design, major refactors
-- [ ] Log them in AGENT_ACCOUNTABILITY_REPORT.md
+- [ ] Log them in .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 
 ### Week 2: Integrate into Workflow
 - [ ] Add "Code Review before implementation" step to your task process
@@ -336,4 +336,4 @@ Clear to submit / Found issues?
 
 **Document Status:** Analysis Complete - Ready for Implementation  
 **Next Action:** Start integrating Code Review into workflow (Week 1)  
-**Accountability:** Track in AGENT_ACCOUNTABILITY_REPORT.md
+**Accountability:** Track in .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md

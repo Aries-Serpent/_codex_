@@ -122,7 +122,7 @@
 10. ✅ `CONTINUATION_PLAN_EXECUTED_20260619.md` — Plan execution summary
 
 ### Tracking & Coordination
-11. ✅ `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — Updated with session status
+11. ✅ `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — Updated with session status
 12. ✅ `CAMPAIGN_EXECUTION_MILESTONE_REPORT.md` — Milestone tracking
 13. ✅ `SESSION_HARDENING_PROTOCOL.md` — 5 hardening protocols
 14. ✅ `PHASE_7A_CODE_VALIDATION_LANE.md` — Code validation delegation
@@ -346,7 +346,7 @@ cat .codex/DAY_2_INTENSIVE_EXECUTION_PLAN_20260620.md
 cat .codex/PHASE_7A_SESSION_RESUMPTION_DASHBOARD.md
 
 # Accountability
-cat docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+cat docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 
 # Checkpoints
 ls -lah .codex/PHASE_7A_LANE_*_CHECKPOINT_DAY_*.md

@@ -172,7 +172,7 @@ Standby/Planned:        3/9 (Phase 12)
 ### Daily Reporting
 - Each agent posts daily checkpoint (`.codex/PHASE_10_X_DAY_N_CHECKPOINT.md`)
 - Campaign dashboard updated (`.codex/MULTI_AGENT_CAMPAIGN_DASHBOARD.md`)
-- Accountability tracking (`.codex/AGENT_ACCOUNTABILITY_REPORT.md`)
+- Accountability tracking (`.codex/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`)
 
 ### Blocker Escalation
 - **Critical blockers:** Direct @mbaetiong mention (target: <2h response)

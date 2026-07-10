@@ -219,7 +219,7 @@ Includes CORE + RUNTIME + :
 5. Integration testing
 
 ### Phase 5: Documentation & Release
-1. Update INSTALL.md
+1. Update .codex/archive/misc/INSTALL.md
 2. Create migration guide
 3. API documentation review
 4. Release notes preparation

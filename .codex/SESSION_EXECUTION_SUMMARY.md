@@ -229,7 +229,7 @@ Timeline: 37+ days (2026-06-30 → 2026-08-04)
 ## 🔐 COMPLIANCE & GOVERNANCE
 
 ### Branch Compliance
-- ✅ **REQ-4:** AGENT_ACCOUNTABILITY_REPORT.md (updated in last commit)
+- ✅ **REQ-4:** .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (updated in last commit)
 - ✅ **REQ-5:** CHANGELOG.md (updated in last commit)
 - ✅ **REQ-14:** Agents Used entry (valid)
 - ✅ **Secrets:** 0 detected (secret scanning passed)

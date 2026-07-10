@@ -144,7 +144,7 @@ Successfully resolved **multiple critical CI/CD failures** in PR #2968 through s
 - [ ] Monitor workflow execution
 
 ### Phase 5: Documentation & Retrospective
-- [ ] Update AGENTS.md, CONTRIBUTING.md
+- [ ] Update .codex/archive/deprecated/AGENTS.md, CONTRIBUTING.md
 - [ ] Create Python 3.12 migration guide
 - [ ] Document lessons learned
 - [ ] Update API documentation

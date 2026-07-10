@@ -129,7 +129,7 @@ Next:    Phase 7B → 40%+ (need +1.89pp)
 | README.md | 146 | 146 (100%) | ✅ |
 | CHANGELOG.md | 16 | 15 (93.8%) | ✅ |
 | docs/index.md | 38 | 38 (100%) | ✅ |
-| AGENT_ACCOUNTABILITY_REPORT.md | 82 | 82 (100%) | ✅ |
+| .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md | 82 | 82 (100%) | ✅ |
 | **Total Internal Links** | **10,271** | **9,811 (95.5%)** | ✅ |
 | **Phase 7A Improvement** | - | **+0.7% → 96.2%** | ✅ |
 

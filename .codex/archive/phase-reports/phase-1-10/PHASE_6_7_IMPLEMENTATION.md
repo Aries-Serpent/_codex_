@@ -33,7 +33,7 @@ Phase 6 implements real-time health monitoring of WEC compliance across active P
 **Key Metrics**:
 - **WEC Compliance Rate**: Percentage of open PRs with satisfied WEC requirements
 - **Workflow Pass Rate**: Average success rate across all workflows
-- **REQ Compliance**: AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md update frequency
+- **REQ Compliance**: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md update frequency
 - **Merge Speed**: Average time from PR creation to merge-readiness
 - **Health Score**: Weighted aggregate (30% WEC + 25% workflows + 25% REQ + 20% merge speed)
 
@@ -427,7 +427,7 @@ Store health reports in `.codex/` for version control:
 - **Success Validator Reports**: JSON format with criterion-by-criterion evaluation, weighted scores, and recommendations
 - **Both support**: Human-readable text output for dashboard display
 
-### Integration with AGENT_ACCOUNTABILITY_REPORT.md
+### Integration with .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 
 Update accountability report with Phase 6-7 completion:
 

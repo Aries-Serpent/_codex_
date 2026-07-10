@@ -167,8 +167,8 @@
       "fixes_applied": 2,
       "fixes": [
         {
-          "old": "[AGENTS.md](../AGENTS.md)",
-          "new": "[AGENTS.md](../.github/AGENTS.md)"
+          "old": "[.codex/archive/deprecated/AGENTS.md](../.codex/archive/deprecated/AGENTS.md)",
+          "new": "[.codex/archive/deprecated/AGENTS.md](../.github/.codex/archive/deprecated/AGENTS.md)"
         },
         {
           "old": "[Operational Guidelines](agent/OPERATIONAL_GUIDELINES.md)",
@@ -401,8 +401,8 @@
       "fixes_applied": 1,
       "fixes": [
         {
-          "old": "[docs/guides/AGENTS.md](../guides/AGENTS.md)",
-          "new": "[docs/guides/AGENTS.md](../../.github/AGENTS.md)"
+          "old": "[docs/guides/.codex/archive/deprecated/AGENTS.md](../guides/.codex/archive/deprecated/AGENTS.md)",
+          "new": "[docs/guides/.codex/archive/deprecated/AGENTS.md](../../.github/.codex/archive/deprecated/AGENTS.md)"
         }
       ]
     },
@@ -501,8 +501,8 @@
       "fixes_applied": 1,
       "fixes": [
         {
-          "old": "[AGENTS.md - Cross-Platform Guidelines](https://github.com/Aries-Serpent/_codex_/blob/main/AGENTS.md#cross-platform-filename-requirements)",
-          "new": "[AGENTS.md - Cross-Platform Guidelines](../../.github/AGENTS.md#cross-platform-filename-requirements)"
+          "old": "[.codex/archive/deprecated/AGENTS.md - Cross-Platform Guidelines](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/archive/deprecated/AGENTS.md#cross-platform-filename-requirements)",
+          "new": "[.codex/archive/deprecated/AGENTS.md - Cross-Platform Guidelines](../../.github/.codex/archive/deprecated/AGENTS.md#cross-platform-filename-requirements)"
         }
       ]
     },
@@ -535,8 +535,8 @@
           "new": "[Genesis Setup Guide](../docs/admin/GENESIS_SETUP_GUIDE.md)"
         },
         {
-          "old": "[../AGENTS.md](../AGENTS.md)",
-          "new": "[../AGENTS.md](./AGENTS.md)"
+          "old": "[../.codex/archive/deprecated/AGENTS.md](../.codex/archive/deprecated/AGENTS.md)",
+          "new": "[../.codex/archive/deprecated/AGENTS.md](./.codex/archive/deprecated/AGENTS.md)"
         }
       ]
     },
@@ -653,12 +653,12 @@
       "fixes_applied": 2,
       "fixes": [
         {
-          "old": "[AGENTS.md](../AGENTS.md)",
-          "new": "[AGENTS.md](./AGENTS.md)"
+          "old": "[.codex/archive/deprecated/AGENTS.md](../.codex/archive/deprecated/AGENTS.md)",
+          "new": "[.codex/archive/deprecated/AGENTS.md](./.codex/archive/deprecated/AGENTS.md)"
         },
         {
-          "old": "[_codex_/AGENTS.md](_codex_/AGENTS.md)",
-          "new": "[_codex_/AGENTS.md](./AGENTS.md)"
+          "old": "[_codex_/.codex/archive/deprecated/AGENTS.md](_codex_/.codex/archive/deprecated/AGENTS.md)",
+          "new": "[_codex_/.codex/archive/deprecated/AGENTS.md](./.codex/archive/deprecated/AGENTS.md)"
         }
       ]
     },
@@ -767,8 +767,8 @@
       "fixes_applied": 1,
       "fixes": [
         {
-          "old": "[AGENTS.md](AGENTS.md)",
-          "new": "[AGENTS.md](../AGENTS.md)"
+          "old": "[.codex/archive/deprecated/AGENTS.md](.codex/archive/deprecated/AGENTS.md)",
+          "new": "[.codex/archive/deprecated/AGENTS.md](../.codex/archive/deprecated/AGENTS.md)"
         }
       ]
     },
@@ -797,8 +797,8 @@
       "fixes_applied": 1,
       "fixes": [
         {
-          "old": "[AGENTS.md](../../AGENTS.md)",
-          "new": "[AGENTS.md](../AGENTS.md)"
+          "old": "[.codex/archive/deprecated/AGENTS.md](../../.codex/archive/deprecated/AGENTS.md)",
+          "new": "[.codex/archive/deprecated/AGENTS.md](../.codex/archive/deprecated/AGENTS.md)"
         }
       ]
     },
@@ -811,8 +811,8 @@
           "new": "[AI Codebase Agency Policy](../../.codex/CODEBASE_AGENCY_POLICY.md)"
         },
         {
-          "old": "[AGENTS.md](../../AGENTS.md)",
-          "new": "[AGENTS.md](../AGENTS.md)"
+          "old": "[.codex/archive/deprecated/AGENTS.md](../../.codex/archive/deprecated/AGENTS.md)",
+          "new": "[.codex/archive/deprecated/AGENTS.md](../.codex/archive/deprecated/AGENTS.md)"
         },
         {
           "old": "[Timeline Terminology](../../.codex/CODEBASE_AGENCY_POLICY.md#timeline-terminology-convention)",
@@ -825,16 +825,16 @@
       "fixes_applied": 8,
       "fixes": [
         {
-          "old": "[Agent Guide](../AGENTS.md)",
-          "new": "[Agent Guide](../AGENTS.md)"
+          "old": "[Agent Guide](../.codex/archive/deprecated/AGENTS.md)",
+          "new": "[Agent Guide](../.codex/archive/deprecated/AGENTS.md)"
         },
         {
-          "old": "[Agent Guide](../AGENTS.md)",
-          "new": "[Agent Guide](../AGENTS.md)"
+          "old": "[Agent Guide](../.codex/archive/deprecated/AGENTS.md)",
+          "new": "[Agent Guide](../.codex/archive/deprecated/AGENTS.md)"
         },
         {
-          "old": "[Agent Guide](../.github/agents/AGENTS.md)",
-          "new": "[Agent Guide](../AGENTS.md)"
+          "old": "[Agent Guide](../.github/agents/.codex/archive/deprecated/AGENTS.md)",
+          "new": "[Agent Guide](../.codex/archive/deprecated/AGENTS.md)"
         },
         {
           "old": "[text](../../agents/README.md)",
@@ -891,8 +891,8 @@
           "new": "[AI Codebase Agency Policy](../../.codex/CODEBASE_AGENCY_POLICY.md)"
         },
         {
-          "old": "[AGENTS.md](../../AGENTS.md)",
-          "new": "[AGENTS.md](../AGENTS.md)"
+          "old": "[.codex/archive/deprecated/AGENTS.md](../../.codex/archive/deprecated/AGENTS.md)",
+          "new": "[.codex/archive/deprecated/AGENTS.md](../.codex/archive/deprecated/AGENTS.md)"
         }
       ]
     },
@@ -951,12 +951,12 @@
       ]
     },
     {
-      "file": ".github/agents/docs/AGENTS.md",
+      "file": ".github/agents/docs/.codex/archive/deprecated/AGENTS.md",
       "fixes_applied": 14,
       "fixes": [
         {
-          "old": "[.codex/docs/AGENTS.md.original.cf4e8c9.md](.codex/docs/AGENTS.md.original.cf4e8c9.md)",
-          "new": "[.codex/docs/AGENTS.md.original.cf4e8c9.md](../../AGENTS.md)"
+          "old": "[.codex/docs/.codex/archive/deprecated/AGENTS.md.original.cf4e8c9.md](.codex/docs/.codex/archive/deprecated/AGENTS.md.original.cf4e8c9.md)",
+          "new": "[.codex/docs/.codex/archive/deprecated/AGENTS.md.original.cf4e8c9.md](../../.codex/archive/deprecated/AGENTS.md)"
         },
         {
           "old": "[AI Codebase Agency Policy](../../../.codex/CODEBASE_AGENCY_POLICY.md)",
@@ -1035,12 +1035,12 @@
       "fixes_applied": 3,
       "fixes": [
         {
-          "old": "[AGENTS.md](AGENTS.md)",
-          "new": "[AGENTS.md](../../AGENTS.md)"
+          "old": "[.codex/archive/deprecated/AGENTS.md](.codex/archive/deprecated/AGENTS.md)",
+          "new": "[.codex/archive/deprecated/AGENTS.md](../../.codex/archive/deprecated/AGENTS.md)"
         },
         {
-          "old": "[AGENTS.md.original](archive/AGENTS.md.original)",
-          "new": "[AGENTS.md.original](../../AGENTS.md)"
+          "old": "[.codex/archive/deprecated/AGENTS.md.original](archive/.codex/archive/deprecated/AGENTS.md.original)",
+          "new": "[.codex/archive/deprecated/AGENTS.md.original](../../.codex/archive/deprecated/AGENTS.md)"
         },
         {
           "old": "[Main Repository Documentation](../../../agents/README.md)",
@@ -1087,8 +1087,8 @@
           "new": "[.codex/CODEBASE_AGENCY_POLICY.md](./CODEBASE_AGENCY_POLICY.md)"
         },
         {
-          "old": "[../AGENTS.md](../AGENTS.md)",
-          "new": "[../AGENTS.md](../.github/AGENTS.md)"
+          "old": "[../.codex/archive/deprecated/AGENTS.md](../.codex/archive/deprecated/AGENTS.md)",
+          "new": "[../.codex/archive/deprecated/AGENTS.md](../.github/.codex/archive/deprecated/AGENTS.md)"
         }
       ]
     },
@@ -1131,8 +1131,8 @@
           "new": "[COGNITIVE_ARCHITECTURE.md](../../docs/ARCHITECTURE.md)"
         },
         {
-          "old": "[AGENTS.md.original.cf4e8c9.md](./AGENTS.md.original.cf4e8c9.md)",
-          "new": "[AGENTS.md.original.cf4e8c9.md](../../.github/AGENTS.md)"
+          "old": "[.codex/archive/deprecated/AGENTS.md.original.cf4e8c9.md](./.codex/archive/deprecated/AGENTS.md.original.cf4e8c9.md)",
+          "new": "[.codex/archive/deprecated/AGENTS.md.original.cf4e8c9.md](../../.github/.codex/archive/deprecated/AGENTS.md)"
         },
         {
           "old": "[COGNITIVE_ARCHITECTURE.md](./COGNITIVE_ARCHITECTURE.md)",
@@ -1147,8 +1147,8 @@
           "new": "[COGNITIVE_ARCHITECTURE.md](../../docs/ARCHITECTURE.md)"
         },
         {
-          "old": "[AGENTS.md](../../AGENTS.md)",
-          "new": "[AGENTS.md](../../.github/AGENTS.md)"
+          "old": "[.codex/archive/deprecated/AGENTS.md](../../.codex/archive/deprecated/AGENTS.md)",
+          "new": "[.codex/archive/deprecated/AGENTS.md](../../.github/.codex/archive/deprecated/AGENTS.md)"
         },
         {
           "old": "[.codex/CODEBASE_AGENCY_POLICY.md](../CODEBASE_AGENCY_POLICY.md)",
@@ -1167,8 +1167,8 @@
           "new": "[docs/system/CODEBASE_COGNITIVE_MAP.md](../../docs/system/CODEBASE_COGNITIVE_MAP.md)"
         },
         {
-          "old": "[../../AGENTS.md](../../AGENTS.md)",
-          "new": "[../../AGENTS.md](../../.github/AGENTS.md)"
+          "old": "[../../.codex/archive/deprecated/AGENTS.md](../../.codex/archive/deprecated/AGENTS.md)",
+          "new": "[../../.codex/archive/deprecated/AGENTS.md](../../.github/.codex/archive/deprecated/AGENTS.md)"
         },
         {
           "old": "[../CODEBASE_AGENCY_POLICY.md](../CODEBASE_AGENCY_POLICY.md)",
@@ -1177,7 +1177,7 @@
       ]
     },
     {
-      "file": ".codex/docs/AGENTS.md.original.cf4e8c9.md",
+      "file": ".codex/docs/.codex/archive/deprecated/AGENTS.md.original.cf4e8c9.md",
       "fixes_applied": 8,
       "fixes": [
         {
@@ -1237,12 +1237,12 @@
       "fixes_applied": 2,
       "fixes": [
         {
-          "old": "[AGENTS.md](https://github.com/Aries-Serpent/_codex_/blob/main/AGENTS.md)",
-          "new": "[AGENTS.md](../../.github/AGENTS.md)"
+          "old": "[.codex/archive/deprecated/AGENTS.md](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/archive/deprecated/AGENTS.md)",
+          "new": "[.codex/archive/deprecated/AGENTS.md](../../.github/.codex/archive/deprecated/AGENTS.md)"
         },
         {
-          "old": "[AGENTS.md](https://github.com/Aries-Serpent/_codex_/blob/main/AGENTS.md)",
-          "new": "[AGENTS.md](../../.github/AGENTS.md)"
+          "old": "[.codex/archive/deprecated/AGENTS.md](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/archive/deprecated/AGENTS.md)",
+          "new": "[.codex/archive/deprecated/AGENTS.md](../../.github/.codex/archive/deprecated/AGENTS.md)"
         }
       ]
     },
@@ -1251,8 +1251,8 @@
       "fixes_applied": 2,
       "fixes": [
         {
-          "old": "[AGENTS.md](../../AGENTS.md)",
-          "new": "[AGENTS.md](../../.github/AGENTS.md)"
+          "old": "[.codex/archive/deprecated/AGENTS.md](../../.codex/archive/deprecated/AGENTS.md)",
+          "new": "[.codex/archive/deprecated/AGENTS.md](../../.github/.codex/archive/deprecated/AGENTS.md)"
         },
         {
           "old": "[Admin Setup Guide](../../docs/admin/GENESIS_SETUP_GUIDE.md)",
@@ -1265,8 +1265,8 @@
       "fixes_applied": 1,
       "fixes": [
         {
-          "old": "[AGENTS.md](https://github.com/Aries-Serpent/_codex_/blob/main/AGENTS.md)",
-          "new": "[AGENTS.md](../../.github/AGENTS.md)"
+          "old": "[.codex/archive/deprecated/AGENTS.md](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/archive/deprecated/AGENTS.md)",
+          "new": "[.codex/archive/deprecated/AGENTS.md](../../.github/.codex/archive/deprecated/AGENTS.md)"
         }
       ]
     },
@@ -1299,8 +1299,8 @@
       "fixes_applied": 1,
       "fixes": [
         {
-          "old": "[docs/guides/AGENTS.md](docs/guides/AGENTS.md)",
-          "new": "[docs/guides/AGENTS.md](../../.github/AGENTS.md)"
+          "old": "[docs/guides/.codex/archive/deprecated/AGENTS.md](docs/guides/.codex/archive/deprecated/AGENTS.md)",
+          "new": "[docs/guides/.codex/archive/deprecated/AGENTS.md](../../.github/.codex/archive/deprecated/AGENTS.md)"
         }
       ]
     },
@@ -1447,8 +1447,8 @@
       "fixes_applied": 1,
       "fixes": [
         {
-          "old": "[AGENTS.md](../../AGENTS.md)",
-          "new": "[AGENTS.md](../../.github/AGENTS.md)"
+          "old": "[.codex/archive/deprecated/AGENTS.md](../../.codex/archive/deprecated/AGENTS.md)",
+          "new": "[.codex/archive/deprecated/AGENTS.md](../../.github/.codex/archive/deprecated/AGENTS.md)"
         }
       ]
     },
@@ -1457,8 +1457,8 @@
       "fixes_applied": 1,
       "fixes": [
         {
-          "old": "[AGENTS.md](../../AGENTS.md)",
-          "new": "[AGENTS.md](../../.github/AGENTS.md)"
+          "old": "[.codex/archive/deprecated/AGENTS.md](../../.codex/archive/deprecated/AGENTS.md)",
+          "new": "[.codex/archive/deprecated/AGENTS.md](../../.github/.codex/archive/deprecated/AGENTS.md)"
         }
       ]
     },
@@ -1467,8 +1467,8 @@
       "fixes_applied": 1,
       "fixes": [
         {
-          "old": "[Codex testing conventions](../../../AGENTS.md#testing)",
-          "new": "[Codex testing conventions](../../../.github/AGENTS.md#testing)"
+          "old": "[Codex testing conventions](../../../.codex/archive/deprecated/AGENTS.md#testing)",
+          "new": "[Codex testing conventions](../../../.github/.codex/archive/deprecated/AGENTS.md#testing)"
         }
       ]
     }

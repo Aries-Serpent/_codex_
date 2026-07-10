@@ -76,7 +76,7 @@ Confirm all 6 gates PASSED:
 
 ### Phase 6: Accountability Report Update (21:25Z-21:30Z)
 
-Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`:
+Update `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`:
 - Day 3 final campaign achievement
 - All 6 gate status confirmations
 - Day 4 production readiness decision

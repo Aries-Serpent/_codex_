@@ -356,7 +356,7 @@ PASS CRITERIA (ALL GATES MUST PASS):
 ### In Progress ⏳
 - [ ] Open Phase 9.2 continuation PR (with WEC checklist)
 - [ ] Post Day 0 standup in `.codex/PHASE_9_2_STANDUP_DAY_0.md`
-- [ ] Update AGENT_ACCOUNTABILITY_REPORT.md (REQ-4 compliance)
+- [ ] Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (REQ-4 compliance)
 
 ### Pending 🟡
 - [ ] Monitor Lane 1-2 progress (Days 1-2)
@@ -422,7 +422,7 @@ All campaign documentation stored in `.codex/` (repository-tracked, never /tmp/)
 - `.codex/PHASE_9_2_SECURITY_AUDIT.md` (Lane 2 deliverable)
 - `.codex/PHASE_9_2_DOCS_INFRASTRUCTURE.md` (Lane 3 deliverable)
 - `.codex/PHASE_9_3_READINESS_GATE.md` (Lane 4 deliverable)
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (session tracking)
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (session tracking)
 
 ---
 

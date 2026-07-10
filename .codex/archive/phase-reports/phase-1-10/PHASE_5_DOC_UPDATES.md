@@ -31,7 +31,7 @@
 
 ---
 
-### 2. **INSTALL.md** (Verified ✅)
+### 2. **.codex/archive/misc/INSTALL.md** (Verified ✅)
 **Status:** Already correct with 3-profile documentation
 
 **Verified Sections:**
@@ -222,7 +222,7 @@ All modules/classes prefixed with `_` are internal:
 | Criterion | Status | Evidence |
 |-----------|--------|----------|
 | README.md updated with profiles | ✅ Complete | Installation Profiles section added |
-| INSTALL.md verified | ✅ Complete | Already had correct 3-profile docs |
+| .codex/archive/misc/INSTALL.md verified | ✅ Complete | Already had correct 3-profile docs |
 | INTEGRATION.md updated | ✅ Complete | Profile-specific examples added |
 | CONTRIBUTING.md updated | ✅ Complete | 10 stable APIs documented + contribution guidelines |
 | API docs updated | ✅ Complete | 10 stable public APIs clearly marked |
@@ -237,7 +237,7 @@ All modules/classes prefixed with `_` are internal:
 For someone starting with codex-ml v0.1.0:
 
 1. **Start at README.md** → Choose profile
-2. **Follow INSTALL.md** → Install with `pip install codex-ml[<profile>]`
+2. **Follow .codex/archive/misc/INSTALL.md** → Install with `pip install codex-ml[<profile>]`
 3. **Check INTEGRATION.md** → See profile-specific examples
 4. **Reference docs/API_REFERENCE.md** → Use 10 stable public APIs
 5. **For production safety** → Read `.codex/network-policy.yaml`
@@ -272,7 +272,7 @@ All documentation has been validated against:
 ## 📝 Files with No Changes Required
 
 - ✅ `OFFLINE_BOOTSTRAP.sh` — Already correct
-- ✅ `INSTALL.md` — Already had proper 3-profile docs
+- ✅ `.codex/archive/misc/INSTALL.md` — Already had proper 3-profile docs
 - ✅ `.codex/network-policy.yaml` — Unchanged
 - ✅ `pyproject.toml` — Unchanged (profiles already implemented)
 
@@ -316,7 +316,7 @@ All documentation has been validated against:
 
 ---
 
-### 8. **OFFLINE_DEPLOYMENT.md** (NEW)
+### 8. **docs/release/OFFLINE_DEPLOYMENT.md** (NEW)
 
 **Status:** ✅ **CREATED**
 
@@ -359,8 +359,8 @@ pip install --no-index --find-links ./wheelhouse codex-ml[runtime]
 | Metric | Value |
 |--------|-------|
 | Files Updated | 4 (README.md, INTEGRATION.md, CONTRIBUTING.md + new stable APIs table) |
-| Files Created | 2 (QUICKSTART_BY_PROFILE.md, OFFLINE_DEPLOYMENT.md) |
-| Files Verified | 3 (INSTALL.md, OFFLINE_BOOTSTRAP.sh, pyproject.toml) |
+| Files Created | 2 (QUICKSTART_BY_PROFILE.md, docs/release/OFFLINE_DEPLOYMENT.md) |
+| Files Verified | 3 (.codex/archive/misc/INSTALL.md, OFFLINE_BOOTSTRAP.sh, pyproject.toml) |
 | New Sections Added | 6+ |
 | Stable APIs Documented | 10 |
 | Code Examples | 30+ |
@@ -378,10 +378,10 @@ pip install --no-index --find-links ./wheelhouse codex-ml[runtime]
 
 ### Created Files
 - ✅ QUICKSTART_BY_PROFILE.md — Profile selection & getting started guide
-- ✅ OFFLINE_DEPLOYMENT.md — Comprehensive offline installation guide
+- ✅ docs/release/OFFLINE_DEPLOYMENT.md — Comprehensive offline installation guide
 
 ### Verified Files (No Changes Needed)
-- ✅ INSTALL.md — Already reflects 3-profile strategy
+- ✅ .codex/archive/misc/INSTALL.md — Already reflects 3-profile strategy
 - ✅ OFFLINE_BOOTSTRAP.sh — Correct wheel naming & procedure
 - ✅ pyproject.toml — Profile definitions match documentation
 

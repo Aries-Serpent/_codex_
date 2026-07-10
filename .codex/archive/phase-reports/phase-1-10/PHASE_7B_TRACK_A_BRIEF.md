@@ -179,7 +179,7 @@ result = db.query(f"SELECT * FROM users WHERE id={user_id}")
 
 - `.codex/PHASE_7B_EXECUTION_BRIEF.md` — Master plan
 - `.codex/PHASE_7B_COORDINATION_DASHBOARD.md` — Status hub + daily standup schedule
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — Campaign tracking
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — Campaign tracking
 
 ---
 

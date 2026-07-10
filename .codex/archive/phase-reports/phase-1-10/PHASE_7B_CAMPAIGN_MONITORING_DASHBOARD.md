@@ -222,7 +222,7 @@
 - Final accountability report
 - Discussion #4872 resolution document
 - CHANGELOG v0.1.0-final
-- AGENT_ACCOUNTABILITY_REPORT.md updates
+- .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updates
 - FINAL GATE SIGN-OFF (awaits @mbaetiong approval)
 - Checkpoint: `.codex/PHASE_7B_TRACK_E_FINAL_GATE_REPORT.md`
 
@@ -256,7 +256,7 @@ task(agent_type="test-pattern-guardian",
      prompt="[Mission brief from Track C.2 ready-to-deploy above]")
 ```
 
-5. Update `.codex/PHASE_7B_ACTIVE_AGENTS.md`
+5. Update `.codex/PHASE_7B_ACTIVE_.codex/archive/deprecated/AGENTS.md`
 6. Collect Wave 2 checkpoint reports as they complete
 
 ### When Track B Completes (2026-06-21 09:00Z)
@@ -282,7 +282,7 @@ task(agent_type="workflow-compliance-guardian",
      prompt="[Mission brief from Track D.2 ready-to-deploy above]")
 ```
 
-6. Update `.codex/PHASE_7B_ACTIVE_AGENTS.md`
+6. Update `.codex/PHASE_7B_ACTIVE_.codex/archive/deprecated/AGENTS.md`
 7. Collect Wave 3 checkpoint reports as they complete
 
 ### When Track C Completes (2026-06-21 15:00Z)
@@ -307,7 +307,7 @@ task(agent_type="session-analysis-agent",
      prompt="[Mission brief from Track E.2 ready-to-deploy above]")
 ```
 
-5. Update `.codex/PHASE_7B_ACTIVE_AGENTS.md`
+5. Update `.codex/PHASE_7B_ACTIVE_.codex/archive/deprecated/AGENTS.md`
 6. Monitor final gate validation as it completes
 
 ### FINAL GATE VALIDATION (2026-06-21 21:00Z)
@@ -364,7 +364,7 @@ task(agent_type="session-analysis-agent",
 - [ ] Release notes prepared (v0.1.0-final)
 - [ ] Discussion #4872 resolution documented
 - [ ] CHANGELOG.md updated (REQ-5 compliance)
-- [ ] AGENT_ACCOUNTABILITY_REPORT.md updated (REQ-4 compliance)
+- [ ] .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated (REQ-4 compliance)
 - [ ] GitHub Pages deployment ready
 - [ ] @mbaetiong final approval obtained
 - [ ] Release tag created

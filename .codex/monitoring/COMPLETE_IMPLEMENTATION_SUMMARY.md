@@ -69,7 +69,7 @@ Successfully implemented a **production-ready autonomous CI/CD health monitoring
 **Deliverables**:
 - `artifact_monitor_cli.py` (500+ lines) - Interactive CLI with 4 commands
 - Agent registry updates
-- AGENTS.md documentation
+- .codex/archive/deprecated/AGENTS.md documentation
 - Rich terminal output with ANSI colors
 
 **Status**: 100% complete
@@ -528,7 +528,7 @@ scripts/cognitive/actions/monitoring_actions.py             4.5 KB
 scripts/cognitive/self_healing_validation.py                3.5 KB
 tests/monitoring/__init__.py                                 0.1 KB
 tests/monitoring/test_monitoring_integration.py             4.5 KB
-AGENTS.md                                                   ~2.0 KB (updated)
+.codex/archive/deprecated/AGENTS.md                                                   ~2.0 KB (updated)
 README.md                                                 Updated
 
 TOTAL: ~165 KB across 25 files

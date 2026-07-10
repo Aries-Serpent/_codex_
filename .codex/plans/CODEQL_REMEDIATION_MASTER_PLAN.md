@@ -216,7 +216,7 @@ python scripts/ci/check_codeql_alerts.py --batch <N>
 
 # 3. Commit with Pattern 25 compliance
 # - Update CHANGELOG.md
-# - Update AGENT_ACCOUNTABILITY_REPORT.md
+# - Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 # - Commit both files together
 
 # 4. Run validation
@@ -358,7 +358,7 @@ if not API_KEY:
 
 ### Per-Session Documentation
 1. **CHANGELOG.md**: Document functional changes only
-2. **AGENT_ACCOUNTABILITY_REPORT.md**: Session summary with metrics
+2. **.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md**: Session summary with metrics
 3. **This Master Plan**: Update progress and alert counts
 4. **PR-4425-followup.md**: Update next session priorities
 
@@ -375,7 +375,7 @@ if not API_KEY:
 ### Pattern 25 Compliance
 **EVERY commit MUST include**:
 - ✅ CHANGELOG.md update
-- ✅ AGENT_ACCOUNTABILITY_REPORT.md update
+- ✅ .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md update
 - ✅ Both files in same commit
 
 ### Validation Gates
@@ -427,7 +427,7 @@ python scripts/ci/auto_fix_common_issues.py --check-only
 
 ### Documentation
 - `.codex/CODEBASE_AGENCY_POLICY.md` — Fix ALL issues policy
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — Session tracking
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — Session tracking
 - `.github/copilot-prompts/active/PR-4425-followup.md` — Follow-up tasks
 
 ### Workflows

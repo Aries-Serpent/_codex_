@@ -181,7 +181,7 @@ Status: 🔄 STANDBY READY
 
 ## 🔐 COMPLIANCE TRACKING
 
-### REQ-4: AGENT_ACCOUNTABILITY_REPORT.md
+### REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 - [ ] TIER 1 contributions documented
 - [ ] TIER 2 contributions documented (pending activation)
 - [ ] TIER 3 contributions documented (pending activation)

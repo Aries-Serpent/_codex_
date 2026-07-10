@@ -1,11 +1,11 @@
 # Repository File Inventory
 > Generated: 2026-06-22  
-> Purpose: Comprehensive catalog of files scanned for AGENTS.md creation
+> Purpose: Comprehensive catalog of files scanned for .codex/archive/deprecated/AGENTS.md creation
 
 | Path | Type | Size (KB) | 1-Line Summary | Priority | Read Depth |
 |------|------|-----------|----------------|----------|------------|
 | README.md | doc | 13.2 | Offline-first ML repo with reproducible training, schema-validated configs | high | header-only |
-| docs/guides/AGENTS.md | doc | 10.0 | Guidelines for contributors and Codex automation | high | full |
+| docs/guides/.codex/archive/deprecated/AGENTS.md | doc | 10.0 | Guidelines for contributors and Codex automation | high | full |
 | AGENT_CONTINUATION_PROMPT.md | prompt | 10.3 | Agent continuation protocol for S-14, S-15, S-02 implementation | high | full |
 | CHATGPT_CONTINUATION.md | prompt | 7.9 | Pagination and resume contract for long responses | high | full |
 | _codex_repo_map.json | manifest | 253.0 | Repository file mapping with sizes and categories | high | header-only |
@@ -42,7 +42,7 @@
 | tests/ | code | (dir) | Test suites | high | (navigate as needed) |
 | docs/ | doc | (dir) | Documentation root | high | (navigate as needed) |
 | .codex/ | internal | (dir) | Internal codex artifacts and logs | medium | (selective) |
-| _codex_/docs/guides/AGENTS.md | doc | 10.0 | Canonical AGENTS guide (same as docs/guides/AGENTS.md) | high | full |
+| _codex_/docs/guides/.codex/archive/deprecated/AGENTS.md | doc | 10.0 | Canonical AGENTS guide (same as docs/guides/.codex/archive/deprecated/AGENTS.md) | high | full |
 | _codex_/docs/templates/README.md | doc | est. 1 | Template README | low | header-only |
 
 ## File Categories Summary
@@ -112,7 +112,7 @@
 ## Priority Wavepoints
 
 1. **Entry** → README.md (quick orientation)
-2. **Agent Guide** → docs/guides/AGENTS.md (canonical agent instructions)
+2. **Agent Guide** → docs/guides/.codex/archive/deprecated/AGENTS.md (canonical agent instructions)
 3. **Continuation** → AGENT_CONTINUATION_PROMPT.md (resume protocol)
 4. **Orchestration** → codex_ready_task_sequence.yaml (task pipeline)
 5. **Executor** → codex_task_executor.py (execution engine)

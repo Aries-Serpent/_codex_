@@ -377,7 +377,7 @@ codex-cli --help
 
 ### Documentation
 - **README:** Main project overview (README.md)
-- **QUICKSTART_BY_PROFILE.md:** Profile-specific quick start guides
+- **docs/quickstart/QUICKSTART_BY_PROFILE.md:** Profile-specific quick start guides
 - **Source Code:** In `src/codex_ml/`
 - **Tests:** Examples in `tests/`
 

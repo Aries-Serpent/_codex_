@@ -81,7 +81,7 @@ When cherry-picking encounters merge conflicts, the resolution strategy is:
 
 1. **CODEX_MANIFEST.json**: Accept incoming version (from cherry-picked commit)
 2. **CHANGELOG.md**: Accept local version (from current branch)
-3. **AGENT_ACCOUNTABILITY_REPORT.md**: Accept local version (from current branch)
+3. **.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md**: Accept local version (from current branch)
 4. **Workflow YAML files**: Manual merge to preserve both sets of changes
 5. **pyproject.toml**: Accept incoming version (dependency updates take precedence)
 6. **Other files**: Prefer incoming version unless file-specific logic applies

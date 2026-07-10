@@ -6,14 +6,14 @@ that use game theory, quantum mechanics, and physical principles to make
 optimal decisions.
 
 🧭 NAVIGATION HINT: New to agents? Start with:
-   1. AGENTS.md - Comprehensive usage guide with capabilities and examples
+   1. .codex/archive/deprecated/AGENTS.md - Comprehensive usage guide with capabilities and examples
    2. agents/workflow_navigator.py - Simple workflow management
    3. agents/developer_orchestrator.py - Task planning and orchestration
-   4. CHANGELOG_AGENTS.md - API changes and version history
+   4. CHANGELOG_.codex/archive/deprecated/AGENTS.md - API changes and version history
    5. .codex/ai_agent_manifest.json - Complete agent catalog (if available)
 
 Version: 0.0.0
-Changelog: See CHANGELOG_AGENTS.md for API changes and version history.
+Changelog: See CHANGELOG_.codex/archive/deprecated/AGENTS.md for API changes and version history.
 
 Modules:
     physics_orchestrator: Physics-inspired decision making with ASSESS → DELIBERATE → OPTIMIZE → ACT workflow

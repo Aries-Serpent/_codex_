@@ -53,7 +53,7 @@
 
 ### Accountability & Compliance
 - [x] Accountability Report Updated ✅
-  - `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (Session 2026-07-03) ✅
+  - `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (Session 2026-07-03) ✅
   - Phase 9.2 status summary documented ✅
   - Phase 9.3 activation plans documented ✅
   - Checkpoint schedule documented ✅

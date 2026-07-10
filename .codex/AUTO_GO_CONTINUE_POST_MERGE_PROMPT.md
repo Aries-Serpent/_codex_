@@ -99,7 +99,7 @@ All 4 tracks (13.1, 13.2, 13.3, 13.4) execute simultaneously:
 Each agent session must:
 1. Check all 4 track dashboards for daily milestones
 2. Log progress in `.codex/PHASE_13_REALTIME_DASHBOARD.md` (daily update)
-3. Update AGENT_ACCOUNTABILITY_REPORT.md with session summary
+3. Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with session summary
 4. Post standup comment on active PR with progress snapshot
 
 ### Gate 6: Phase 13 Completion (2026-07-20)
@@ -157,7 +157,7 @@ Track 12.3 re-validation did not reach ≥95% success criteria. Tracks 13.3 & 13
 
 ### Communication Protocol
 - Daily standup updates to `.codex/PHASE_13_REALTIME_DASHBOARD.md`
-- Session summaries in AGENT_ACCOUNTABILITY_REPORT.md
+- Session summaries in .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 - Track-specific deliverable PRs (one PR per track recommended)
 - Cross-track integration testing & dependency management
 
@@ -169,7 +169,7 @@ Track 12.3 re-validation did not reach ≥95% success criteria. Tracks 13.3 & 13
 
 ### End-of-Session Checklist
 - [ ] Updated `.codex/PHASE_13_REALTIME_DASHBOARD.md` with progress
-- [ ] Updated AGENT_ACCOUNTABILITY_REPORT.md with session entry
+- [ ] Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with session entry
 - [ ] Updated CHANGELOG.md if significant changes made
 - [ ] Verified no deferral language in commits (policy compliance)
 - [ ] Confirmed all auto-fixable issues resolved

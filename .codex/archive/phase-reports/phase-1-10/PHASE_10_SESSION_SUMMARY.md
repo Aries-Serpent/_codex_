@@ -67,7 +67,7 @@ Current multi-agent campaign is actively executing Phase 8-9 with Phase 10 fully
   - Campaign continuation timeline
 
 ### 2. ACCOUNTABILITY DOCUMENTATION (1.6 KB additions)
-**Files:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`, `.codex/change_log.md`
+**Files:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`, `.codex/change_log.md`
 
 **Contents:**
 - Session summary with deliverables tracking
@@ -371,7 +371,7 @@ OVERALL READINESS: 🟢 100% READY FOR ACTIVATION
 
 ### Accountability Updates (Commit 7f07b8eb)
 
-- ✅ **AGENT_ACCOUNTABILITY_REPORT.md** — Phase 10 session summary added (1.2K lines)
+- ✅ **.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md** — Phase 10 session summary added (1.2K lines)
 - ✅ **CHANGELOG.md** — Phase 10 readiness entry added (400 lines)
 - ✅ **REQ-4 & REQ-5** — Both compliance requirements met in this commit
 
@@ -381,7 +381,7 @@ OVERALL READINESS: 🟢 100% READY FOR ACTIVATION
 - `.codex/PHASE_10_READINESS_PLAN.md` (512 lines, main deliverable)
 
 **Modified:**
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (session summary)
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (session summary)
 - `.codex/change_log.md` (Phase 10 entry)
 
 **Compliance Status:** ✅ 100% COMPLETE

@@ -337,7 +337,7 @@ def living_doc_sync(db_path: Path, repo_root: Path, dry_run: bool = False) -> in
     delta blocks to each living-doc target.
 
     Living-doc targets:
-      - docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+      - docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
       - CHANGELOG.md  (prepends to [Unreleased] block)
       - .codex/aftermath/pda_iterations.jsonl  (appends JSONL record)
     """
@@ -360,9 +360,9 @@ def living_doc_sync(db_path: Path, repo_root: Path, dry_run: bool = False) -> in
     pr_number = meta.get('pr_number')
 
     # ------------------------------------------------------------------
-    # 1. AGENT_ACCOUNTABILITY_REPORT.md — append session summary block
+    # 1. .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md — append session summary block
     # ------------------------------------------------------------------
-    accountability_path = repo_root / 'docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md'
+    accountability_path = repo_root / 'docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md'
     completed_lines = '\n'.join(f'- {t}' for t in completed) if completed else '- (none recorded)'
     pending_lines = '\n'.join(f'- {t}' for t in pending) if pending else '- (none)'
     compliance_lines = '\n'.join(

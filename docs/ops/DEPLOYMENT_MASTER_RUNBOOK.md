@@ -6,8 +6,8 @@
 > **Status**: ✅ Active Master Document
 
 **Consolidated from** 10 source files:
-- docs/ISOLATED_DEPLOYMENT.md
-- docs/OFFLINE_DEPLOYMENT.md
+- docs/docs/release/ISOLATED_DEPLOYMENT.md
+- docs/docs/release/OFFLINE_DEPLOYMENT.md
 - docs/ops/DEPLOYMENT_RUNBOOK.md
 - docs/ops/DEPLOYMENT_READINESS_S92.md
 - docs/architecture/DEPLOYMENT_ARCHITECTURE.md

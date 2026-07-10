@@ -128,7 +128,7 @@ Confirm that Release workflow now meets or exceeds ≥95% success rate post-fix.
 - `.github/workflows/release.yml` — Fixed Release workflow
 
 **Session Context:**
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — Session accountability entry
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — Session accountability entry
 - `CHANGELOG.md` — Release notes entry for fix
 
 ---

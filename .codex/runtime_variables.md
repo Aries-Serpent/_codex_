@@ -60,21 +60,21 @@ jobs:
 
 | Variable | Default | Purpose | Reference |
 |----------|---------|---------|-----------|
-| `CODEX_SESSION_ID` | auto-generated | Identifier for a logical session; groups log events | AGENTS.md |
-| `CODEX_SESSION_LOG_DIR` | `.codex/sessions` | Directory for session log files | AGENTS.md |
-| `CODEX_LOG_DB_PATH` | `.codex/session_logs.db` | Path to SQLite database for logging | AGENTS.md |
-| `CODEX_DB_PATH` | `data/codex.db` | Alternative path to SQLite database | AGENTS.md |
-| `CODEX_SQLITE_POOL` | `0` | Set to `1` to enable per-session SQLite connection pooling | AGENTS.md |
+| `CODEX_SESSION_ID` | auto-generated | Identifier for a logical session; groups log events | .codex/archive/deprecated/AGENTS.md |
+| `CODEX_SESSION_LOG_DIR` | `.codex/sessions` | Directory for session log files | .codex/archive/deprecated/AGENTS.md |
+| `CODEX_LOG_DB_PATH` | `.codex/session_logs.db` | Path to SQLite database for logging | .codex/archive/deprecated/AGENTS.md |
+| `CODEX_DB_PATH` | `data/codex.db` | Alternative path to SQLite database | .codex/archive/deprecated/AGENTS.md |
+| `CODEX_SQLITE_POOL` | `0` | Set to `1` to enable per-session SQLite connection pooling | .codex/archive/deprecated/AGENTS.md |
 
 ### Language Version Selection
 
 | Variable | Default | Purpose | Reference |
 |----------|---------|---------|-----------|
-| `CODEX_ENV_PYTHON_VERSION` | `3.11` | Select Python version during environment setup | AGENTS.md |
-| `CODEX_ENV_NODE_VERSION` | (none) | Select Node.js version during environment setup | AGENTS.md |
-| `CODEX_ENV_RUST_VERSION` | (none) | Select Rust version during environment setup | AGENTS.md |
-| `CODEX_ENV_GO_VERSION` | (none) | Select Go version during environment setup | AGENTS.md |
-| `CODEX_ENV_SWIFT_VERSION` | (none) | Select Swift version during environment setup | AGENTS.md |
+| `CODEX_ENV_PYTHON_VERSION` | `3.11` | Select Python version during environment setup | .codex/archive/deprecated/AGENTS.md |
+| `CODEX_ENV_NODE_VERSION` | (none) | Select Node.js version during environment setup | .codex/archive/deprecated/AGENTS.md |
+| `CODEX_ENV_RUST_VERSION` | (none) | Select Rust version during environment setup | .codex/archive/deprecated/AGENTS.md |
+| `CODEX_ENV_GO_VERSION` | (none) | Select Go version during environment setup | .codex/archive/deprecated/AGENTS.md |
+| `CODEX_ENV_SWIFT_VERSION` | (none) | Select Swift version during environment setup | .codex/archive/deprecated/AGENTS.md |
 
 ### API and Security
 
@@ -445,7 +445,7 @@ git config credential.helper
 ## Related Documentation
 
 - **Configuration Management:** `configs/README.md`
-- **Agent Guidelines:** `AGENTS.md`
+- **Agent Guidelines:** `.codex/archive/deprecated/AGENTS.md`
 - **Guardrails:** `.codex/guardrails.md`
 - **CI/CD Workflows:** `.github/workflows/README.md`
 - **Environment Setup:** `docs/getting-started.md`

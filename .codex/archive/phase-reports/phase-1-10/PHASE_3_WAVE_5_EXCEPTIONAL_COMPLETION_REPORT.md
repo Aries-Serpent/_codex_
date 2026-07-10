@@ -245,7 +245,7 @@ TOTAL:                809 tests ████████████████
 
 ## 🔄 COMPLIANCE STATUS
 
-- [x] **REQ-4**: AGENT_ACCOUNTABILITY_REPORT.md updated with all sessions
+- [x] **REQ-4**: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated with all sessions
 - [x] **REQ-5**: CHANGELOG.md updated with comprehensive fixes and test additions
 - [x] **PDA Loop**: Session logged (auto-pda-2026-06-30)
 - [x] **No Regressions**: 0 pre-existing tests broken

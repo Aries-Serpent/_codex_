@@ -175,7 +175,7 @@ mv extracted-file drop-for-restore/
 | `.codex/README.md.bak` | `README.md_.codex_36462ee8.bak` | 36462ee8 | 22KB | Backup file from codebase audit |
 | `uv.lock.bak` | `uv.lock_._36462ee8.bak` | 36462ee8 | 118KB | Lock file backup |
 | `.github/copilot_agent_task_prompt.next.md.backup` | `copilot_agent_task_prompt.next.md_.github_36462ee8.backup` | 36462ee8 | 11KB | Agent prompt backup |
-| `AGENTS.md.backup_20251114_035816` | `AGENTS.md_._36462ee8.backup_20251114_035816` | 36462ee8 | 11KB | Timestamped backup |
+| `.codex/archive/deprecated/AGENTS.md.backup_20251114_035816` | `.codex/archive/deprecated/AGENTS.md_._36462ee8.backup_20251114_035816` | 36462ee8 | 11KB | Timestamped backup |
 | `tests/tracking/test_mlflow_utils_py.old` | `test_mlflow_utils_py_tests_tracking_36462ee8.old` | 36462ee8 | 5.9KB | Old test file version |
 
 ### Duplicate Files Removed (2025-12-12 Audit)

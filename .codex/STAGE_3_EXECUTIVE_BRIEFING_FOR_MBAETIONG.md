@@ -29,7 +29,7 @@
 ### 5 Checkpoints — All Executed ✅
 
 1. **Compliance Validation (REQ-4/REQ-5)** ✅
-   - AGENT_ACCOUNTABILITY_REPORT.md updated
+   - .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated
    - CHANGELOG.md updated
    - Both files in latest commit (SHA: 2f3187e)
    - Status: COMPLIANT
@@ -106,7 +106,7 @@
 - ✅ Monitoring active
 
 ### Accountability Updates
-- ✅ AGENT_ACCOUNTABILITY_REPORT.md (Stage 3 session entry)
+- ✅ .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (Stage 3 session entry)
 - ✅ CHANGELOG.md (production finalization record)
 
 ---
@@ -124,7 +124,7 @@ Your pre-approval granted on:
 
 ### Compliance Status
 
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated
 - ✅ REQ-5: CHANGELOG.md updated
 - ✅ REQ-14: Agents Used entry present
 - ✅ All 3 production gates: PASS

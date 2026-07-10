@@ -609,10 +609,10 @@ mutation-testing-agent → completes in 45 min (instead of 60)
 - `.codex/PHASE_7D_TRACK_EXECUTION_COORDINATION_DASHBOARD.md` — Live dashboard
 
 ### Codebase References
-- `AGENTS.md` — Agent ecosystem overview
+- `.codex/archive/deprecated/AGENTS.md` — Agent ecosystem overview
 - `.github/agents/AGENT_REGISTRY.yaml` — Complete agent registry (145 agents)
 - `.github/agents/COPILOT_HARDENED_PLANNING_PROTOCOL.md` — Planning protocol (CHPP)
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — Session tracking
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — Session tracking
 
 ### Governance Policies
 - `.codex/CODEBASE_AGENCY_POLICY.md` — Core agency policy

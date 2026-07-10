@@ -36,7 +36,7 @@ Task 4.5 successfully created webhook integration infrastructure and repository 
 ✅ Ready for delivery
 ```
 
-### 2. ✅ Webhook Integration Documentation (`.codex/WEBHOOK_REGISTRY_INTEGRATION.md`)
+### 2. ✅ Webhook Integration Documentation (`.codex/WEBHOOK_REGISTRY_docs/api/reference/INTEGRATION.md`)
 - **Status:** Complete and comprehensive
 - **Lines:** 380
 - **Content:**
@@ -283,7 +283,7 @@ Verification: ✅ Valid
 | File Path | Type | Size | Status |
 |-----------|------|------|--------|
 | scripts/webhook/notify_brain.py | Python | 162 lines | ✅ Complete |
-| .codex/WEBHOOK_REGISTRY_INTEGRATION.md | Markdown | 380 lines | ✅ Complete |
+| .codex/WEBHOOK_REGISTRY_docs/api/reference/INTEGRATION.md | Markdown | 380 lines | ✅ Complete |
 | webhook_validation_report.json | JSON Data | ~2 KB | ✅ Complete |
 
 ---

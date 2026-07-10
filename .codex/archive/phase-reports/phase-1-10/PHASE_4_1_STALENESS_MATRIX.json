@@ -154,7 +154,7 @@
   },
   "monolithic_documents": [
     {
-      "path": "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md",
+      "path": "docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md",
       "lines": 10864,
       "quality_score": 0.58,
       "action": "SPLIT_INTO_5_DOCS",

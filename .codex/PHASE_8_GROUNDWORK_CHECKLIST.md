@@ -77,7 +77,7 @@ jsonschema, tomli, python-json-logger, rich, attrs, filelock
 ```
 
 #### 4. Offline Deployment Documentation
-- **File**: `docs/OFFLINE_DEPLOYMENT.md`
+- **File**: `docs/docs/release/OFFLINE_DEPLOYMENT.md`
 - **Size**: ~17.8 KB
 - **Features**:
   - Comprehensive air-gap deployment guide
@@ -112,7 +112,7 @@ jsonschema, tomli, python-json-logger, rich, attrs, filelock
 | prepare_offline_env.sh | unified-security-scanner | 2026-07-06 | ✅ COMPLETE | 5/5 | ✅ YES |
 | validate_offline_install.sh | unified-security-scanner | 2026-07-06 | ✅ COMPLETE | 8/8 | ✅ YES |
 | requirements-offline.txt | unified-security-scanner | 2026-07-06 | ✅ COMPLETE | 2/2 | ✅ YES |
-| OFFLINE_DEPLOYMENT.md | unified-security-scanner | 2026-07-06 | ✅ COMPLETE | 6/6 | ✅ YES |
+| docs/release/OFFLINE_DEPLOYMENT.md | unified-security-scanner | 2026-07-06 | ✅ COMPLETE | 6/6 | ✅ YES |
 | **Phase 8 Checklist** | unified-security-scanner | 2026-07-06 | 🔄 IN_PROGRESS | — | 🔄 SOON |
 
 ---
@@ -127,7 +127,7 @@ jsonschema, tomli, python-json-logger, rich, attrs, filelock
 # 1. Verify groundwork deliverables present
 ls -lh scripts/{prepare_offline_env.sh,validate_offline_install.sh}
 ls -lh requirements-offline.txt
-ls -lh docs/OFFLINE_DEPLOYMENT.md
+ls -lh docs/docs/release/OFFLINE_DEPLOYMENT.md
 
 # 2. Verify scripts are executable
 file scripts/prepare_offline_env.sh | grep executable
@@ -363,7 +363,7 @@ REPORT
 git add scripts/prepare_offline_env.sh \
         scripts/validate_offline_install.sh \
         requirements-offline.txt \
-        docs/OFFLINE_DEPLOYMENT.md \
+        docs/docs/release/OFFLINE_DEPLOYMENT.md \
         .codex/phase8-completion-report.md
 
 git commit -m "Phase 8 Groundwork: Offline-first consumption patterns
@@ -397,7 +397,7 @@ tar -czf .codex/phase8-groundwork-$(date +%Y%m%d).tar.gz \
     scripts/prepare_offline_env.sh \
     scripts/validate_offline_install.sh \
     requirements-offline.txt \
-    docs/OFFLINE_DEPLOYMENT.md \
+    docs/docs/release/OFFLINE_DEPLOYMENT.md \
     .codex/phase8-*
 
 # Verify archive
@@ -497,7 +497,7 @@ tar -czf "$DEPLOYMENT_PKG" \
     --exclude='*.pyc' \
     wheelhouse/ \
     requirements-offline.txt \
-    docs/OFFLINE_DEPLOYMENT.md \
+    docs/docs/release/OFFLINE_DEPLOYMENT.md \
     scripts/prepare_offline_env.sh \
     scripts/validate_offline_install.sh
 
@@ -518,7 +518,7 @@ Archive: $DEPLOYMENT_PKG
 Contents:
   - wheelhouse/ (all dependencies)
   - requirements-offline.txt
-  - docs/OFFLINE_DEPLOYMENT.md
+  - docs/docs/release/OFFLINE_DEPLOYMENT.md
   - scripts/prepare_offline_env.sh
   - scripts/validate_offline_install.sh
 
@@ -530,7 +530,7 @@ Transfer Instructions:
   2. Transfer package to target machine
   3. Verify SHA256 checksum on target
   4. Extract: tar -xzf $DEPLOYMENT_PKG
-  5. Follow: docs/OFFLINE_DEPLOYMENT.md
+  5. Follow: docs/docs/release/OFFLINE_DEPLOYMENT.md
 MANIFEST
 
 echo "✓ Manifest created: ${DEPLOYMENT_PKG}.manifest"
@@ -551,7 +551,7 @@ echo "✓ Manifest created: ${DEPLOYMENT_PKG}.manifest"
    - ✅ All paths are absolute or relative-safe
 
 2. **Documentation**
-   - ✅ OFFLINE_DEPLOYMENT.md complete (17.8 KB)
+   - ✅ docs/release/OFFLINE_DEPLOYMENT.md complete (17.8 KB)
    - ✅ All procedures documented with examples
    - ✅ Troubleshooting matrix included
    - ✅ Air-gap validation explained (5 methods)
@@ -624,10 +624,10 @@ Success = All of these verified:
 
 ## 📚 References
 
-- **INTELLIGENCE_CAMPAIGN_BASELINE.md** (Phase 8 planning)
+- **.codex/archive/misc/INTELLIGENCE_CAMPAIGN_BASELINE.md** (Phase 8 planning)
 - **OFFLINE_BOOTSTRAP.sh** (Emergency bootstrap)
 - **SECURITY.md** (Security policies)
-- **INSTALL.md** (Standard installation)
+- **.codex/archive/misc/INSTALL.md** (Standard installation)
 - **CONTRIBUTING.md** (Development guidelines)
 
 ---

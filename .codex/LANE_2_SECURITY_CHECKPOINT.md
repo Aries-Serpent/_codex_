@@ -320,7 +320,7 @@ pip install --upgrade 'idna>=3.15' 'twisted>=24.7.0rc1' 'pyopenssl>=26.0.0'
 
 ### Documentation Updates
 - [ ] SECURITY.md updated with new versions
-- [ ] DEPENDENCY_CONSTRAINTS.md updated
+- [ ] .codex/archive/misc/DEPENDENCY_CONSTRAINTS.md updated
 - [ ] CHANGELOG.md entry created
 - [ ] Release notes prepared
 

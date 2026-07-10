@@ -173,7 +173,7 @@
 - ✅ **pyproject.toml** - Version: 0.0.0 → 0.1.0
 - ✅ **README.md** - Verified current (v0.1.0)
 - ✅ **SECURITY.md** - Date: 2026-02-10
-- ✅ **AGENTS.md** - Coverage: 90%
+- ✅ **.codex/archive/deprecated/AGENTS.md** - Coverage: 90%
 - ⚠️ **CHANGELOG.md** - Excluded (historical)
 
 ### Documentation (50+ files)

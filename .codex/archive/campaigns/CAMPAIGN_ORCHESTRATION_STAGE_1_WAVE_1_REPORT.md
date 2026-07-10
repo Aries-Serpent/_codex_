@@ -400,7 +400,7 @@ After all Wave 1 agents complete:
 1. **Collect All Outputs:** Gather `.md` reports from `.codex/`
 2. **Generate Wave 1 Summary:** `.codex/WAVE1_COMPLETION_SUMMARY.md`
 3. **Merge Readiness:** Verify all PRs pass CI before merge
-4. **Accountability Update:** Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+4. **Accountability Update:** Update `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 5. **Wave 2 Gate:** Check Wave 1 success criteria before launching Wave 2
 
 ### Wave 2 Launch Conditions

@@ -29,7 +29,7 @@ This script automatically fixes the 38 most common patterns that cause workflow 
 22. Tracked file sync — detects .secrets.baseline / CODEX_MANIFEST drift
 23. Secrets baseline plugins — detects missing detect-secrets plugins
 24. Codecov token missing — detect codecov-action without token: or continue-on-error
-25. Last-commit accountability — AGENT_ACCOUNTABILITY_REPORT.md not in last commit (auto-fixable)
+25. Last-commit accountability — .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md not in last commit (auto-fixable)
 26. Auto-post rebase race — git pull --rebase without --autostash (auto-fixable)
 27. Secrets false-positive scan — auto-merge false-positive detections into .secrets.baseline
 
@@ -431,7 +431,7 @@ class CommonIssueFixer:
             # (known recurring pattern from S193).  Fix: use printf → temp file pattern.
             "YAML Multiline Strings",   # Pattern 20 - manual: use printf pipeline
             # Pattern 22: Tracked file sync — CODEX_MANIFEST.json integrity_sha256,
-            # .secrets.baseline, CHANGELOG.md, and AGENT_ACCOUNTABILITY_REPORT.md
+            # .secrets.baseline, CHANGELOG.md, and .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
             # consistency checks. Run sync_tracked_files.py --fix to repair.
             # Pattern 23: detect-secrets baseline contains plugins not available in the installed
             # detect-secrets version (e.g. GitLabTokenDetector added in newer versions).
@@ -2261,7 +2261,7 @@ class CommonIssueFixer:
         - ``CODEX_MANIFEST.json`` — ``integrity_sha256`` must match computed hash
         - ``.secrets.baseline`` — CODEX_MANIFEST entry must match current hash/line
         - ``CHANGELOG.md`` — must have non-empty ``## [Unreleased]`` section
-        - ``AGENT_ACCOUNTABILITY_REPORT.md`` — must have a session entry ≤7 days old
+        - ``.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`` — must have a session entry ≤7 days old
 
         Auto-fix: ✅ — run ``python scripts/ci/sync_tracked_files.py --fix``
         """
@@ -2551,14 +2551,14 @@ class CommonIssueFixer:
     # ------------------------------------------------------------------
     def fix_last_commit_accountability(self) -> list[str]:
         """Pattern 25: Detect and auto-fix when the most recent *agent* git commit
-        omits ``docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md``.
+        omits ``docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md``.
 
         Root cause (CI Triage #3911 — Agent Token Delegation: 17 failures):
         ``agent-auth-delegation.yml`` REQ-4 executes::
 
             git diff --name-only HEAD~1 HEAD | grep -qF "$REPORT"
 
-        and exits with code 1 when ``AGENT_ACCOUNTABILITY_REPORT.md`` is absent
+        and exits with code 1 when ``.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`` is absent
         from the last commit's changed-file list.  This is a hard CI block on
         every Copilot PR push where the accountability report was skipped.
 
@@ -2570,12 +2570,12 @@ class CommonIssueFixer:
         and after Copilot's own ``Generate follow-up prompt`` commits.
 
         **Auto-fix:** ✅ — appends a minimal ``[auto-generated]`` session entry to
-        ``AGENT_ACCOUNTABILITY_REPORT.md`` and refreshes CODEX_MANIFEST hashes via
+        ``.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`` and refreshes CODEX_MANIFEST hashes via
         ``sync_tracked_files.py --fix``.  The file is updated on disk; the caller
         is responsible for staging and committing it.
         """
         issues: list[str] = []
-        report_path = "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md"
+        report_path = "docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md"
 
         # Skip when not inside a git repository (e.g. in a bare export).
         if not (self.repo_root / ".git").exists():
@@ -2663,7 +2663,7 @@ class CommonIssueFixer:
         return issues
 
     def _append_minimal_accountability_entry(self) -> bool:
-        """Append a ``[auto-generated]`` session entry to AGENT_ACCOUNTABILITY_REPORT.md.
+        """Append a ``[auto-generated]`` session entry to .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md.
 
         Returns ``True`` if the file was successfully updated, ``False`` otherwise.
         This helper is used by Pattern 25 and Pattern 30.
@@ -2671,7 +2671,7 @@ class CommonIssueFixer:
         import datetime as _dt
         import os as _os
 
-        abs_report = self.repo_root / "docs" / "accountability" / "AGENT_ACCOUNTABILITY_REPORT.md"
+        abs_report = self.repo_root / "docs" / "accountability" / ".codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md"
         if not abs_report.exists():
             return False
 

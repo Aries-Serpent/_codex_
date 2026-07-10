@@ -126,7 +126,7 @@
 
 ### Modified Files (1 updated)
 
-1. ✅ `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (campaign entry added)
+1. ✅ `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (campaign entry added)
 
 ### Archived Artifacts
 

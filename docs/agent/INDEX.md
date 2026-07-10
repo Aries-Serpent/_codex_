@@ -62,7 +62,7 @@ The _codex_ agent ecosystem provides production-ready AI agents with specialized
   - Brain API integration
 
 ### Workflows & Integration
-- **[AI_AGENT_WORKFLOW_INTEGRATION](AI_AGENT_WORKFLOW_INTEGRATION.md)** — Workflow orchestration
+- **[AI_AGENT_WORKFLOW_INTEGRATION](AI_AGENT_WORKFLOW_docs/api/reference/INTEGRATION.md)** — Workflow orchestration
   - Multi-agent coordination
   - Task distribution and scheduling
   - Result aggregation

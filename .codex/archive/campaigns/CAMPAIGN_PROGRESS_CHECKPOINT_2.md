@@ -196,7 +196,7 @@ detect-secrets-hook --baseline .secrets.baseline
    - Full document links
    - Searchable index
 
-5. **Updated AGENT_ACCOUNTABILITY_REPORT.md**
+5. **Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md**
    - Add archive location refs
    - Document cleanup campaign
    - Update file references

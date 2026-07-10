@@ -18,7 +18,7 @@
 ### File Organization (100% Success)
 - ✅ **README_PR_3133_ANALYSIS.md moved** to `docs/analysis/PR_3133_ANALYSIS.md`
 - ✅ **47 references updated** automatically across all documentation
-- ✅ **AGENTS.md refined** with ChatGPT Codex Agent entry point comment
+- ✅ **.codex/archive/deprecated/AGENTS.md refined** with ChatGPT Codex Agent entry point comment
 - ✅ **Zero broken links** (100% reference integrity maintained)
 - ✅ **Root count reduced** from 62 → 61 files (-1.6% additional)
 
@@ -31,7 +31,7 @@
 - ✅ **Code coverage** maintained at 93% (59,688/64,269 lines)
 
 ### Documentation Updates
-- ✅ **AGENTS.md** marked as ChatGPT Codex Agent entry point
+- ✅ **.codex/archive/deprecated/AGENTS.md** marked as ChatGPT Codex Agent entry point
 - ✅ **Status updated** to Phase 2 In Progress → Complete
 - ✅ **All references** updated in cognitive brain files
 - ✅ **QA walkthrough** files identified and ready for update
@@ -79,9 +79,9 @@
         "pre_existing_failures": 11
       },
       "documentation_refinement": {
-        "entry_points_identified": ["AGENTS.md"],
-        "chatgpt_agent_entry_point": "AGENTS.md",
-        "status_updates": ["AGENTS.md", "objectives_tracker.md"]
+        "entry_points_identified": [".codex/archive/deprecated/AGENTS.md"],
+        "chatgpt_agent_entry_point": ".codex/archive/deprecated/AGENTS.md",
+        "status_updates": [".codex/archive/deprecated/AGENTS.md", "objectives_tracker.md"]
       }
     }
   }
@@ -186,7 +186,7 @@
 
 ### Completed Objectives (Phase 2)
 - [x] Move README_PR_3133_ANALYSIS.md to docs/analysis/
-- [x] Refine AGENTS.md as ChatGPT entry point
+- [x] Refine .codex/archive/deprecated/AGENTS.md as ChatGPT entry point
 - [x] Update 47 references across documentation
 - [x] Run comprehensive tests (688 tests, 98.4% success)
 - [x] Verify zero broken links
@@ -368,7 +368,7 @@
 - 47 references automatically updated
 - Zero broken links or failures
 - 688 tests executed (677 passed, 98.4% success)
-- AGENTS.md refined as ChatGPT Codex Agent entry point
+- .codex/archive/deprecated/AGENTS.md refined as ChatGPT Codex Agent entry point
 - QA walkthrough integration prepared
 - Phase 3-4 quantum plansets in development
 

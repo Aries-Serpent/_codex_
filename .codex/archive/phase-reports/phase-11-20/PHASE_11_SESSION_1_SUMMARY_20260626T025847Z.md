@@ -154,7 +154,7 @@ Each track requires substantial work (FAISS indexing, routing engine, health sys
 
 ### Compliance
 - ✅ Phase 10 summary committed (PHASE_10_COMPLETION_SUMMARY_20260626T024503Z.md)
-- ✅ AGENT_ACCOUNTABILITY_REPORT.md updated
+- ✅ .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated
 - ✅ CHANGELOG.md updated
 - ✅ Session 1 Plan documented (this file)
 

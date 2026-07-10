@@ -179,7 +179,7 @@
 - Confirm CodeQL scan passes
 
 ### Step 4: Governance Compliance (Est. 5-10 min)
-- Update AGENT_ACCOUNTABILITY_REPORT.md
+- Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 - Update CHANGELOG.md
 - Verify REQ-4/5/14 compliance
 
@@ -211,7 +211,7 @@
 2. **Consistency**: Follow existing suppression patterns and format conventions
 3. **Documentation**: Update relevant documentation with remediation details
 4. **Testing**: Verify no new security vulnerabilities introduced
-5. **Governance**: Ensure compliance with REQ-4/5/14 (AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md updates)
+5. **Governance**: Ensure compliance with REQ-4/5/14 (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md updates)
 
 ---
 

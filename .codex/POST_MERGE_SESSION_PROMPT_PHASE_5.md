@@ -49,13 +49,13 @@ Immediate Tasks (Execute in Order):
    ```
 
 3. **GOVERNANCE VALIDATION** — Confirm REQ-4/REQ-5 compliance
-   ✅ REQ-4: docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md updated (17 agents logged)
+   ✅ REQ-4: docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated (17 agents logged)
    ✅ REQ-5: CHANGELOG.md updated (5 track entries with metrics)
    
    Verify with:
    ```bash
    # Check accountability report on main
-   git show main:docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md | tail -50
+   git show main:docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md | tail -50
    
    # Check CHANGELOG entries on main
    git show main:CHANGELOG.md | head -100
@@ -252,7 +252,7 @@ The following have been completed:
   - All files syntax verified
 
 ✅ **Compliance Requirements Ready**
-  - docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md prepared
+  - docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md prepared
   - CHANGELOG.md prepared
   - Session wrapup autofix verification tool ready
 

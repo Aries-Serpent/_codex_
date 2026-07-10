@@ -10,7 +10,7 @@
     "patterns": {
       "WF-001": {
         "name": "REQ-4 Violation",
-        "root_cause": "AGENT_ACCOUNTABILITY_REPORT.md missing",
+        "root_cause": ".codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md missing",
         "auto_fixable": true,
         "blocking": true,
         "severity": "CRITICAL",

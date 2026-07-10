@@ -281,7 +281,7 @@ See `.github/workflows/integration-tests.yml` for:
 - **Toolkit:** `.codex/ai_agent_toolkit.py` - Reusable test utilities
 - **Lessons Learned:** `.codex/lessons_learned.md` - Known issues and solutions
 - **Roadmap:** `docs/admin/CONTINUATION_ROADMAP.md` - Phase 2 integration test plan
-- **Agent Docs:** `AGENTS.md` - Agent operational guidelines
+- **Agent Docs:** `.codex/archive/deprecated/AGENTS.md` - Agent operational guidelines
 
 ---
 

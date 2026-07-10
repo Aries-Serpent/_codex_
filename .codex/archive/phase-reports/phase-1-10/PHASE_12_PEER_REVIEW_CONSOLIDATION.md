@@ -280,7 +280,7 @@ All 3 Wave 1 deliverables (D1.1, D2.1, D3.1) have completed cross-track peer rev
 
 ### Short-term (2026-07-04):
 1. ✅ Merge Wave 1 to main branch
-2. ✅ Update AGENT_ACCOUNTABILITY_REPORT.md
+2. ✅ Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 3. ✅ Create Wave 2 activation checkpoint
 4. ✅ Trigger Wave 2 implementation agents (3 parallel)
 

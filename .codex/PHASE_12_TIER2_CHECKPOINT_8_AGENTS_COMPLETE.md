@@ -94,7 +94,7 @@
 
 **Agent Deliverables**:
 1. ✅ WORKFLOW_ANALYSIS_BATCH_C.md (466 lines)
-2. ✅ MUTATION_ANALYSIS_BATCH_B.md (483 lines)
+2. ✅ .codex/archive/misc/MUTATION_ANALYSIS_BATCH_B.md (483 lines)
 3. ✅ BATCH_A_AGENT_2_SUMMARY.json
 4. ✅ conftest_validation_gates.py (19.5 KB)
 5. ✅ test_e2e_validation_gates.py (18.9 KB)
@@ -105,8 +105,8 @@
 10. ✅ TIER2_BATCH_C_DEPENDENCY_AUDIT_REPORT.md
 11. ✅ TIER2_BATCH_C_ACTION_ITEMS.md
 12. ✅ PHASE_12_TIER2_BATCH_C_BUILD_VALIDATION_REPORT.md (12KB)
-13. ✅ TIER2_TESTING_LANE_BATCH_D_FAILURE_PATTERN_LIBRARY.md (24KB, 120+ patterns) **NEW**
-14. ✅ TIER2_TESTING_LANE_BATCH_D_COMPLETION_REPORT.md (12KB, completion details) **NEW**
+13. ✅ .codex/archive/misc/TIER2_TESTING_LANE_BATCH_D_FAILURE_PATTERN_LIBRARY.md (24KB, 120+ patterns) **NEW**
+14. ✅ .codex/archive/reports/TIER2_TESTING_LANE_BATCH_D_COMPLETION_REPORT.md (12KB, completion details) **NEW**
 15. ✅ Updated requirements.txt (security fixes)
 16. ✅ Updated requirements-ml-cpu.txt (security fixes)
 

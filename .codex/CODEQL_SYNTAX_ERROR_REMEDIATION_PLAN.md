@@ -227,16 +227,16 @@ print(f'✓ Checked {checked} Python files - all valid')
 ✅ **Status:** COMPLETE
 
 **Files Updated:**
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — Session report added
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — Session report added
 - `CHANGELOG.md` — Remediation summary added
 
 **Compliance Verified:**
 ```bash
 $ python3 scripts/ci/session_wrapup_autofix.py --pr-number 5077 --check
 
-✅ REQ-4: docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md OK
+✅ REQ-4: docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md OK
 ✅ REQ-5: CHANGELOG.md OK
-✅ REQ-14: docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md has valid Agents Used entry
+✅ REQ-14: docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md has valid Agents Used entry
 ```
 
 ---

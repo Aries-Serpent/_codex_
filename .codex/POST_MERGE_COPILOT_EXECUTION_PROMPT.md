@@ -169,7 +169,7 @@ Environment variables correct. Proceeding to post-merge work."
 ```
 
 ### Step 4B: Update Accountability
-Edit `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`:
+Edit `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`:
 
 ```markdown
 ## Session: Post-Merge Validation (2026-06-XX)

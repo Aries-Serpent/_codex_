@@ -6,7 +6,7 @@
 > **Status**: ✅ Active Master Document
 
 **Consolidated from** 18 source files:
-- AGENTS.md (3 copies in root, scripts/, .github/)
+- .codex/archive/deprecated/AGENTS.md (3 copies in root, scripts/, .github/)
 - AGENT_CONSOLIDATION_MATRIX.md
 - Agent deprecation docs (Google Home, Energy Conversion)
 - Agent implementation mappings & designs
@@ -179,7 +179,7 @@ task agent_type="agent-name" prompt="[instructions]"
 | energy-conversion-agent | Out-of-scope domain (energy systems) | ✅ Archived | 2026-07-01 |
 | google-home-script-agent | Out-of-scope domain (smart-home) | ✅ Archived | 2026-07-01 |
 
-**Archive Reference**: See `ENERGY_CONVERSION_AGENT_DEPRECATION.md`, `GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md`
+**Archive Reference**: See `.codex/archive/deprecated/ENERGY_CONVERSION_AGENT_DEPRECATION.md`, `.codex/archive/deprecated/GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md`
 
 ---
 

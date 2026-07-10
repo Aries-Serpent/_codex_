@@ -100,7 +100,7 @@
 
 | Requirement | Status | Details |
 |-------------|--------|---------|
-| **REQ-4** | ✅ PASS | AGENT_ACCOUNTABILITY_REPORT.md updated in latest commit |
+| **REQ-4** | ✅ PASS | .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated in latest commit |
 | **REQ-5** | ✅ PASS | CHANGELOG.md updated with comprehensive session work |
 | **REQ-14** | ✅ PASS | Agents Used entry documented (Copilot + codeql-alert-resolution-agent + ci-failure-resolution-agent) |
 | **Code Review** | ✅ READY | All PR #5078 comments addressed with explicit SHAs |
@@ -180,7 +180,7 @@
 - `.codex/health_report.json` — Health diagnostic snapshot
 
 ### Updated Files
-- `AGENT_ACCOUNTABILITY_REPORT.md` — Session work tracked per REQ-4
+- `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — Session work tracked per REQ-4
 - `CHANGELOG.md` — Comprehensive entry per REQ-5
 - `tests/auth/test_middleware_advanced.py` — Fixed unused imports
 - `src/codex/rag/indexer.py` — Fixed error message placeholder
@@ -236,7 +236,7 @@
 
 **Validation Checklist:**
 - [x] All PR #5078 review comments addressed
-- [x] REQ-4 compliance verified (AGENT_ACCOUNTABILITY_REPORT.md)
+- [x] REQ-4 compliance verified (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md)
 - [x] REQ-5 compliance verified (CHANGELOG.md)
 - [x] REQ-14 compliance verified (Agents Used documented)
 - [x] Code linting passes (Ruff E/F/I rules)

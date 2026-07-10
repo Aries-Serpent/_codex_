@@ -155,7 +155,7 @@ $ detect-secrets-hook --baseline .secrets.baseline
 2. Update `README.md`
 3. Update `CONTRIBUTING.md`
 4. Create `.codex/archive/phases/INDEX.md`
-5. Update `AGENT_ACCOUNTABILITY_REPORT.md`
+5. Update `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 6. Update Mermaid diagrams (if needed)
 7. Prepare CHANGELOG entry
 

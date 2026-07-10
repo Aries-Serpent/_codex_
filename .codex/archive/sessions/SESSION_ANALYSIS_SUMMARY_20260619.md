@@ -116,7 +116,7 @@
 
 ### Discovery 5: Compliance Gate Issue
 **Finding:** Session wrapup (REQ-4/REQ-5) blocking some PRs  
-**Evidence:** Pre-merge validation failing for AGENT_ACCOUNTABILITY_REPORT.md updates  
+**Evidence:** Pre-merge validation failing for .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updates  
 **Impact:** Secondary blocker affecting PR workflow; fixable per PR  
 **Status:** 🟡 Requires attention but non-critical
 

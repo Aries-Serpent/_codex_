@@ -244,7 +244,7 @@ flowchart TD
     OVERLAP_1 --> |"Merge into"| CONSOLIDATE_1
 
     subgraph OVERLAP_2["🔴 OVERLAP 2: REQ-4/5 detection duplicated"]
-        WF1["cognitive-preflight.yml\nChecks AGENT_ACCOUNTABILITY_REPORT.md\nPosts preflight checklist comment"]
+        WF1["cognitive-preflight.yml\nChecks .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md\nPosts preflight checklist comment"]
         WF2["agent-auth-delegation.yml\nChecks same files for REQ-4/5\nPosts delegation comment"]
         WF3["session_wrapup_autofix.py\n--check mode checks same files\nUsed by copilot-agent-session-done.yml"]
         WF4["sync-tracked-files pre-commit hook\nChecks CODEX_MANIFEST.json sync\nSame as REQ-6"]
@@ -374,7 +374,7 @@ flowchart TD
     end
 
     subgraph FIXES["auto_fix_all_missing() — 4 sub-fixes"]
-        F1["REQ-4: fix_accountability_report()\ndocs/accountability/AGENT_ACCOUNTABILITY_REPORT.md\nAuto-appends session summary with PDA chain"]
+        F1["REQ-4: fix_accountability_report()\ndocs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md\nAuto-appends session summary with PDA chain"]
         F2["REQ-5: fix_changelog()\nCHANGELOG.md\nEnsures [Unreleased] section exists + entry added"]
         F3["REQ-6: fix_manifest_baseline()\n.secrets.baseline ↔ CODEX_MANIFEST.json\nUpdates hashed_secret to match current SHA-1"]
         F4["WEC: fix_pr_body_checkboxes()\nRestores canonical ## 🔄 Workflow Execution Checklist\nPreserves all maintainer-checked items"]
@@ -406,7 +406,7 @@ due to time constraints. This prompt resumes work in the next session.
 
 ### Pre-flight (mandatory before any changes)
 1. Load `.codex/CODEBASE_AGENCY_POLICY.md` (§0)
-2. Load `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (last 3 sessions)
+2. Load `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (last 3 sessions)
 3. Load `docs/workflows/PR_COMMENT_LIFECYCLE.md` (THIS document — S259 analysis)
 4. Run: `git log --oneline -8` to confirm S259 commits are present
 

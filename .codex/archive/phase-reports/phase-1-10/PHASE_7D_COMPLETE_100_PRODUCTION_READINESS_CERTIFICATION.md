@@ -50,7 +50,7 @@
 - Commit: `a46f0a4`
 
 **Compliance:**
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md entry
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md entry
 - ✅ REQ-5: CHANGELOG.md documented
 
 ---
@@ -83,7 +83,7 @@
 - All code examples validated
 
 **Compliance:**
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md entry
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md entry
 - ✅ REQ-5: CHANGELOG.md documented
 
 ---
@@ -119,7 +119,7 @@
 - Commit: `06c92c9`
 
 **Compliance:**
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md entry
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md entry
 - ✅ REQ-5: CHANGELOG.md documented
 
 ---
@@ -152,7 +152,7 @@
 - Commit: `7b79d43`, `98d41ba`
 
 **Compliance:**
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md entry
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md entry
 - ✅ REQ-5: CHANGELOG.md documented
 
 ---
@@ -182,7 +182,7 @@
 - `PHASE_7D_COMPLETE_100_PRODUCTION_READINESS_CERTIFICATION.md` (THIS FILE)
 - `.codex/PHASE_7D_FINAL_CONSOLIDATION_REPORT.md`
 - `.codex/PHASE_7D_CAMPAIGN_ARTIFACT_INDEX.md`
-- Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- Updated `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - Updated `CHANGELOG.md`
 
 **Compliance:**
@@ -384,7 +384,7 @@
 ## ACCOUNTABILITY & COMPLIANCE
 
 ### REQ-4: Agent Accountability (COMPLETE)
-**Document:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+**Document:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 - ✅ Track 1 entry: Phase 7D Coverage Gap Closure (2026-06-20T04:05Z)
 - ✅ Track 3A entry: Phase 7D Documentation Polish (2026-06-22T10:30Z)

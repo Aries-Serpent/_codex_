@@ -221,7 +221,7 @@
 2. ✅ `tests/data/test_migration.py` — 9 new test cases
 
 ### Documentation Updates
-- ✅ `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — Track 3B completion entry
+- ✅ `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — Track 3B completion entry
 - ✅ All reports in `.codex/` directory as required
 
 ---

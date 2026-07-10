@@ -12,9 +12,9 @@
 
 | # | Branch | Package | Version Change | Files Modified |
 |---|--------|---------|-----------------|-----------------|
-| **#5013** | `dependabot/pip/aiohttp-3.14.1` | aiohttp | 3.14.0 → 3.14.1 | • `requirements/lock.txt`<br>• `CHANGELOG.md`<br>• `CODEX_MANIFEST.json`<br>• `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` |
-| **#5014** | `dependabot/pip/jupyterlab-4.5.9` | jupyterlab | 4.5.7 → 4.5.9 | • `requirements-notebook.txt`<br>• `CHANGELOG.md`<br>• `CODEX_MANIFEST.json`<br>• `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` |
-| **#5015** | `dependabot/pip/ujson-5.13.0` | ujson | 5.12.1 → 5.13.0 | • `requirements/lock.txt`<br>• `CHANGELOG.md`<br>• `CODEX_MANIFEST.json`<br>• `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` |
+| **#5013** | `dependabot/pip/aiohttp-3.14.1` | aiohttp | 3.14.0 → 3.14.1 | • `requirements/lock.txt`<br>• `CHANGELOG.md`<br>• `CODEX_MANIFEST.json`<br>• `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` |
+| **#5014** | `dependabot/pip/jupyterlab-4.5.9` | jupyterlab | 4.5.7 → 4.5.9 | • `requirements-notebook.txt`<br>• `CHANGELOG.md`<br>• `CODEX_MANIFEST.json`<br>• `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` |
+| **#5015** | `dependabot/pip/ujson-5.13.0` | ujson | 5.12.1 → 5.13.0 | • `requirements/lock.txt`<br>• `CHANGELOG.md`<br>• `CODEX_MANIFEST.json`<br>• `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` |
 
 ---
 
@@ -67,7 +67,7 @@ requirements-notebook.txt:
 **Updated by:** Auto-fix system (all three PRs generate this)
 - ✅ Manifest refreshed with latest versions
 
-#### 5. `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+#### 5. `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 **Updates Applied:**
 - ✅ Added comprehensive consolidation session entry
 - ✅ Fixed `### Agents Used` sections for validation
@@ -92,12 +92,12 @@ requirements-notebook.txt:
 ### Phase 3: Metadata Updates ✅
 - [x] Updated CHANGELOG.md
 - [x] Updated CODEX_MANIFEST.json
-- [x] Updated docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+- [x] Updated docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 - [x] Fixed `### Agents Used` validation (REQ-14)
 
 ### Phase 4: Validation ✅
 - [x] `python3 scripts/ci/session_wrapup_autofix.py --pr-number 5017 --check`
-- [x] REQ-4: AGENT_ACCOUNTABILITY_REPORT.md ✅
+- [x] REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md ✅
 - [x] REQ-5: CHANGELOG.md ✅
 - [x] REQ-14: Agents Used section ✅
 
@@ -199,7 +199,7 @@ git log --oneline -3
 
 - **This Report:** `.codex/DEPENDABOT_CONSOLIDATION_FINAL_REPORT.md`
 - **Analysis:** `.codex/DEPENDABOT_CONSOLIDATION_ANALYSIS.md`
-- **Session Entry:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (latest)
+- **Session Entry:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (latest)
 
 ---
 

@@ -60,7 +60,7 @@ class DocumentationChecker:
 
         for pattern, key in [
             ('**/README.md', 'README'),
-            ('**/AGENTS.md', 'AGENTS'),
+            ('**/.codex/archive/deprecated/AGENTS.md', 'AGENTS'),
             ('**/CHANGELOG.md', 'CHANGELOG'),
             ('docs/**/*.md', 'docs'),
         ]:
@@ -113,7 +113,7 @@ class DocumentationChecker:
         return issues
 
     def check_agents_md_coverage(self, agents_path: Path) -> list[str]:
-        """Check if AGENTS.md covers all important modules."""
+        """Check if .codex/archive/deprecated/AGENTS.md covers all important modules."""
         issues = []
 
         try:
@@ -237,7 +237,7 @@ class DocumentationChecker:
         summary.append("2. Add recent date markers (2025-12-23) to changed docs")
         summary.append("3. Document new modules with usage examples")
         summary.append("4. Remove TODO/FIXME markers or address them")
-        summary.append("5. Update AGENTS.md with new capabilities")
+        summary.append("5. Update .codex/archive/deprecated/AGENTS.md with new capabilities")
         summary.append("")
 
         return "\n".join(summary)
@@ -260,8 +260,8 @@ class DocumentationChecker:
             issues = self.check_readme_freshness(readme)
             self.issues.extend(issues)
 
-        # Check AGENTS.md files
-        print("Checking AGENTS.md files...")
+        # Check .codex/archive/deprecated/AGENTS.md files
+        print("Checking .codex/archive/deprecated/AGENTS.md files...")
         for agents in docs['AGENTS']:
             issues = self.check_agents_md_coverage(agents)
             self.issues.extend(issues)

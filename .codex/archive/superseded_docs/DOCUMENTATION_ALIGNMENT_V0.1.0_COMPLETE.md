@@ -79,7 +79,7 @@ All documentation now reflects reality:
 - ✅ `README.md` - Already at v0.1.0, verified
 - ✅ `pyproject.toml` - Version updated to 0.1.0
 - ✅ `SECURITY.md` - Date updated to 2026-02-10
-- ✅ `AGENTS.md` - Coverage updated to 90%
+- ✅ `.codex/archive/deprecated/AGENTS.md` - Coverage updated to 90%
 - ⚠️ `CONTRIBUTING.md` - Preserved (no changes needed)
 - ⚠️ `CHANGELOG.md` - Excluded (historical record)
 

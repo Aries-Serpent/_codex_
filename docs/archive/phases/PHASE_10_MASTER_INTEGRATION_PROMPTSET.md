@@ -404,7 +404,7 @@ Ensure Phase 10 components integrate seamlessly:
 Create/update the following documentation:
 
 **User-Facing**:
-- [ ] `docs/NOTEBOOKLM_INTEGRATION.md` - End-user guide
+- [ ] `docs/NOTEBOOKLM_docs/api/reference/INTEGRATION.md` - End-user guide
 - [ ] `docs/AI_ARCHITECT_USAGE.md` - How to use AI Architect
 - [ ] `README.md` - Add Phase 10 to feature list
 
@@ -533,7 +533,7 @@ Create test scripts in `tests/integration/test_phase10_e2e.py` and document test
 ### Prompt: Documentation Completion
 
 @copilot Complete all Phase 10 documentation. Create:
-1. `docs/NOTEBOOKLM_INTEGRATION.md` - User guide for NotebookLM sync
+1. `docs/NOTEBOOKLM_docs/api/reference/INTEGRATION.md` - User guide for NotebookLM sync
 2. `docs/AI_ARCHITECT_USAGE.md` - Guide for using AI Architect
 3. `docs/TROUBLESHOOTING_PHASE10.md` - Common issues and solutions
 4. Update `README.md` with Phase 10 features

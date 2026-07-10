@@ -86,7 +86,7 @@ except (ValueError, TypeError, RuntimeError, IOError, OSError) as e:
 3. **Codebase Health (Issue #5072)**
    - Ran `auto_fix_common_issues.py` script
    - Fixed 6 auto-fixable issues:
-     - Updated `AGENT_ACCOUNTABILITY_REPORT.md`
+     - Updated `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
      - Added PDA (Problem-Decision-Action) entry
      - Fixed unused imports and other patterns
 

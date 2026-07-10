@@ -71,13 +71,13 @@ The v0.1.0-final production release is **fully prepared and ready for immediate 
    - Security improvements documented
    - Test additions noted
 
-2. **RELEASE_NOTES.md** (Supplementary)
+2. **docs/release/RELEASE_NOTES.md** (Supplementary)
    - v0.1.0-final highlights
    - Feature summary
    - Installation instructions
    - Campaign context
 
-3. **v0.1.0-FINAL_RELEASE_NOTES.md** (.codex directory)
+3. **v0.1.0-FINAL_docs/release/RELEASE_NOTES.md** (.codex directory)
    - Phase 7B completion notes
    - Security hardening summary
    - Production readiness confirmation
@@ -574,7 +574,7 @@ After successful deployment:
 
 - **Automation Workflow:** `.codex/POST_MERGE_AUTOMATION_WORKFLOW.md` (19 KB)
 - **Existing Brief:** `.codex/POST_MERGE_EXECUTION_BRIEF_v0.1.0-final.md` (existing reference)
-- **Release Notes:** `.codex/v0.1.0-FINAL_RELEASE_NOTES.md` (existing reference)
+- **Release Notes:** `.codex/v0.1.0-FINAL_docs/release/RELEASE_NOTES.md` (existing reference)
 - **CHANGELOG:** `CHANGELOG.md` (source)
 - **Distribution Artifacts:** `dist/` directory (built & ready)
 

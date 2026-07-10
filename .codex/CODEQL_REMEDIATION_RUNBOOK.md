@@ -130,7 +130,7 @@ Create PR with:
 1. `.codex/codeql_alert_inventory.json` — Detailed alert catalog
 2. `.codex/CODEQL_REMEDIATION_SUMMARY.md` — Executive summary by category
 3. `CHANGELOG.md` update — Record security fixes with PR reference
-4. `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — Session completion entry
+4. `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — Session completion entry
 
 ### Knowledge Capture:
 - Document any custom suppression patterns for future reference
@@ -163,7 +163,7 @@ CHECKLIST:
 - [ ] Dismiss false positives in GitHub UI with justification
 - [ ] Create follow-up PR with all changes
 - [ ] Verify CodeQL check passes ✔️
-- [ ] Update AGENT_ACCOUNTABILITY_REPORT.md
+- [ ] Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 ```
 
 ---

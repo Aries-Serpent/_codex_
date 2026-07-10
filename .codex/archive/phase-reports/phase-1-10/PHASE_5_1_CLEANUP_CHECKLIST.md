@@ -357,7 +357,7 @@ build(cleanup): Archive 8 large log files to archive/logs/
 **Current State:**
 ```
 Root .md files: 28 files
-AGENTS.md, CODE_OF_CONDUCT.md, CONTRIBUTING.md, SECURITY.md, etc.
+.codex/archive/deprecated/AGENTS.md, CODE_OF_CONDUCT.md, CONTRIBUTING.md, SECURITY.md, etc.
 ```
 
 **Target State:**
@@ -375,7 +375,7 @@ Step 1: Categorize root .md files
 - Essential (keep in root): README.md, SECURITY.md, CODE_OF_CONDUCT.md, LICENSE
 - Implementation guides: CONTRIBUTING.md → /docs/guides/
 - Process docs: CLEANUP_VALIDATION_INFRASTRUCTURE.md → /docs/processes/
-- Internal docs: AGENTS.md → /docs/internal/
+- Internal docs: .codex/archive/deprecated/AGENTS.md → /docs/internal/
 - Phase docs: Already handled (archived)
 
 Step 2: Create /docs directory structure (if needed)

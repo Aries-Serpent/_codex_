@@ -347,7 +347,7 @@ Total Execution Time:          ~60-90 seconds
 - ✅ `.codex/PHASE_3_COMPLETE_CONSOLIDATION_REPORT.md` (this file)
 
 ### Compliance Updates (To Follow)
-- 📋 `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (REQ-4 update)
+- 📋 `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (REQ-4 update)
 - 📋 `CHANGELOG.md` (REQ-5 update)
 
 ### Test Files (1,000+ Tests)
@@ -416,7 +416,7 @@ Total Execution Time:          ~60-90 seconds
 1. ✅ Consolidate all phase reports (this document)
 2. ⏳ Monitor Phase 3B completion and update report
 3. ⏳ Verify all 32+ governance gates
-4. ⏳ Update REQ-4: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+4. ⏳ Update REQ-4: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 5. ⏳ Update REQ-5: `CHANGELOG.md`
 6. ⏳ Generate final consolidation certification
 

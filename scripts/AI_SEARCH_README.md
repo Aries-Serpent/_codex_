@@ -443,7 +443,7 @@ class SearchResult:
 ## 🔗 Related Documentation
 
 - [AUTO_CONFIG_README.md](AUTO_CONFIG_README.md) - Automated configuration system
-- [AGENTS.md](../AGENTS.md) - Agent development guidelines
+- [.codex/archive/deprecated/AGENTS.md](../.codex/archive/deprecated/AGENTS.md) - Agent development guidelines
 - Repository map: `_codex_repo_map.json`
 
 ## 📝 Changelog

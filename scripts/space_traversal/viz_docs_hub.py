@@ -321,10 +321,10 @@ flowchart TB
                             <div class="desc">Main repository overview and quick start</div>
                         </div>
                     </div>
-                    <div class="doc-item" onclick="openDoc('AGENTS.md')">
+                    <div class="doc-item" onclick="openDoc('.codex/archive/deprecated/AGENTS.md')">
                         <span class="icon">🤖</span>
                         <div class="info">
-                            <div class="title">AGENTS.md</div>
+                            <div class="title">.codex/archive/deprecated/AGENTS.md</div>
                             <div class="desc">Comprehensive guide for AI agents and contributors</div>
                         </div>
                         <span class="badge badge-updated">Updated</span>

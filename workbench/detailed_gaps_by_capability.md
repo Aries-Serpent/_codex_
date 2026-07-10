@@ -67,7 +67,7 @@ This document provides detailed gap analysis for each capability domain, includi
 
 - ✅ `README.md`
 - ✅ `docs/`
-- ✅ `AGENTS.md`
+- ✅ `.codex/archive/deprecated/AGENTS.md`
 - ✅ `mkdocs.yml`
 
 ### Statistics

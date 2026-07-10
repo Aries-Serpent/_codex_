@@ -267,7 +267,7 @@ PHASE 7 TARGET SCORE: 100/100
 - **Current State Analysis:** [.codex/PRODUCTION_READINESS_CURRENT_STATE_ANALYSIS.md](.codex/PRODUCTION_READINESS_CURRENT_STATE_ANALYSIS.md)
 - **Phase 6 Final Report:** [.codex/PHASE_6_FINAL_REPORT.md](.codex/PHASE_6_FINAL_REPORT.md)
 - **Discussion #4872:** [github.com/Aries-Serpent/_codex_/discussions/4872](https://github.com/Aries-Serpent/_codex_/discussions/4872)
-- **Accountability Report:** [docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md](docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md)
+- **Accountability Report:** [docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md](docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md)
 
 ---
 

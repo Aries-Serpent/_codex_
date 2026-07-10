@@ -73,7 +73,7 @@ Once Stage 1 completes:
 - `.codex/PHASE_6_WAVE_1_INDEX.md` — Navigation guide
 - `.codex/PHASE_6_WAVE_1_CHECKPOINT.md` — Current state
 - `.codex/PHASE_6_WAVE_1_VALIDATION_REPORT.md` — Coverage gate requirements
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — Compliance tracking
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — Compliance tracking
 
 ---
 

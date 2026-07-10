@@ -12,7 +12,7 @@
 The **Workflow Execution Checklist (WEC)** is the authoritative specification for which workflows a Copilot Agent session intends to execute on a given PR. This document defines the invariant contract that MUST be maintained throughout the entire session to ensure:
 
 1. **WEC State Preservation** — The WEC checklist state is never lost or corrupted during `report_progress` calls
-2. **Governance Compliance** — AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md are always updated in the final commit
+2. **Governance Compliance** — .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md are always updated in the final commit
 3. **Workflow Intent Clarity** — Every checked workflow is intentionally approved for that session
 4. **Merge Readiness** — All REQUIRED workflows for the target branch are present and properly checked
 
@@ -118,7 +118,7 @@ If a maintainer manually edits the WEC during the session:
    python scripts/ci/session_wrapup_autofix.py --check --pr-number N
    ```
 2. **Validate REQ-4 & REQ-5:**
-   - ✅ AGENT_ACCOUNTABILITY_REPORT.md was updated in this session
+   - ✅ .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md was updated in this session
    - ✅ CHANGELOG.md was updated in this session
    - ✅ Both files will be in the final commit
 3. **Validate WEC Presence:**
@@ -155,7 +155,7 @@ If a maintainer manually edits the WEC during the session:
    - ⏭️ copilot-agent-session-done.yml (unchecked per auto-complete rules)
    
    ### Governance Compliance
-   - ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated
+   - ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated
    - ✅ REQ-5: CHANGELOG.md updated
    - ✅ WEC: Preserved across all commits
    
@@ -166,7 +166,7 @@ If a maintainer manually edits the WEC during the session:
    ```
 3. **Post Session Summary to PR:**
    - Post final session comment with WEC state, governance compliance, and workflow execution log
-   - Include link to AGENT_ACCOUNTABILITY_REPORT.md entry
+   - Include link to .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md entry
 
 ---
 
@@ -266,7 +266,7 @@ log_wec_state_to_actions_output
 
 ```bash
 # Checks that:
-# 1. REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated in last commit
+# 1. REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated in last commit
 # 2. REQ-5: CHANGELOG.md updated in last commit
 # Fails if either file is missing
 ```
@@ -298,7 +298,7 @@ python scripts/ci/phase_12_2_compliance_dashboard.py --check
 ### If REQ-4/REQ-5 Compliance Check Fails
 
 **Root Causes:**
-- AGENT_ACCOUNTABILITY_REPORT.md not in latest commit
+- .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md not in latest commit
 - CHANGELOG.md not in latest commit
 - Files were updated earlier but not in the final commit
 
@@ -308,7 +308,7 @@ python scripts/ci/phase_12_2_compliance_dashboard.py --check
 python scripts/ci/session_wrapup_autofix.py --auto-update --pr-number N
 
 # 2. Amend the last commit to include updated files
-git add CHANGELOG.md docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+git add CHANGELOG.md docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 git commit --amend --no-edit
 
 # 3. Force push (if branch allows)
@@ -359,7 +359,7 @@ gh pr view N --json body | jq -r '.body' | grep -A 20 "## 🔄 Workflow"
 
 # Verify compliance files were updated
 git show HEAD -- CHANGELOG.md | head -20
-git show HEAD -- docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md | head -30
+git show HEAD -- docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md | head -30
 
 # Verify all required workflows are checked
 gh pr view N --json body | jq -r '.body' | \

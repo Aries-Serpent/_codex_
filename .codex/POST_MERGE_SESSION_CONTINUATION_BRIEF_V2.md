@@ -129,7 +129,7 @@ These areas have been validated to work post-merge:
   - [ ] If new errors (< 5) → investigate, document
   - [ ] If new errors (5-10) → investigate root cause
   - [ ] If new errors (> 10) → REVERT (See POST_MERGE_REVERSION_PROTOCOL.md)
-- [ ] Update AGENT_ACCOUNTABILITY_REPORT.md with validation results
+- [ ] Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with validation results
 - [ ] Create .codex/POST_MERGE_VALIDATION_SUMMARY.md documenting findings
 
 ### Phase 3: Decision
@@ -218,7 +218,7 @@ Use this to decide when to escalate vs. when to proceed:
 | `POST_MERGE_ENVIRONMENT_BASELINE.md` | Pre-existing known issues |
 | `POST_MERGE_COPILOT_SETUP_VALIDATION.md` | Validation gates checklist |
 | `POST_MERGE_REVERSION_PROTOCOL.md` | If reversion needed |
-| `POST_MERGE_MISSING_DEPS_INSTALL.md` | If test deps missing |
+| `POST_MERGE_MISSING_DEPS_.codex/archive/misc/INSTALL.md` | If test deps missing |
 | `PRE_MERGE_COPILOT_SETUP_STATE.yml` | Snapshot of working workflow |
 | `PRE_MERGE_TEST_COLLECTION_STATUS.json` | Baseline collection errors |
 | `POST_MERGE_VALIDATION_RESULTS.md` | Your validation results (to create) |
@@ -273,5 +273,5 @@ Then: STOP, review POST_MERGE_REVERSION_PROTOCOL.md, escalate to @mbaetiong
 If next session has questions:
 1. Check documents listed above
 2. Search `.codex/` for related docs
-3. Review AGENT_ACCOUNTABILITY_REPORT.md for context
+3. Review .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md for context
 4. If still unclear: escalate to @mbaetiong with specific question

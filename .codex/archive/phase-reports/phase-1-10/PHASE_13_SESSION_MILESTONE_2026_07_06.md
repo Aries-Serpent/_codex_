@@ -220,7 +220,7 @@ All advisory tracks (13.1 & 13.2) have completed ahead of schedule with all deli
 - `.codex/PHASE_13_REALTIME_DASHBOARD.md` (updated 2026-07-06T08:30Z)
 
 **Accountability:**
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (comprehensive session entry)
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (comprehensive session entry)
 
 ---
 

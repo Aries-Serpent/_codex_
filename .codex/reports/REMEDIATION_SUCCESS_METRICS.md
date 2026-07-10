@@ -548,7 +548,7 @@ The CVE remediation sprint is **SUCCESSFUL** when ALL three parts are satisfied:
 
 ## 📝 Reference Documents & Scripts
 
-- Remediation Plan: `MASTER_REMEDIATION_PLAN.md`
+- Remediation Plan: `.codex/archive/misc/MASTER_REMEDIATION_PLAN.md`
 - Security Assessment: `.codex/reports/ORCHESTRATOR_SECURITY_ASSESSMENT.md`
 - CI Stability Report: `.codex/reports/CI_STABILITY_ASSESSMENT_SUMMARY.md`
 - Coverage Analysis: `.codex/reports/COVERAGE_READINESS_ASSESSMENT.json`

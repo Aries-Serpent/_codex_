@@ -217,7 +217,7 @@
 
 ## 📋 COMPLIANCE & AUTHORITY FINAL CHECK
 
-- ✅ **REQ-4:** AGENT_ACCOUNTABILITY_REPORT.md updated (all agents)
+- ✅ **REQ-4:** .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated (all agents)
 - ✅ **REQ-5:** CHANGELOG.md updated (campaign summary)
 - ✅ **Authority:** @mbaetiong D-tier autonomy confirmed
 - ✅ **Artifact Storage:** All deliverables in .codex/ (NOT /tmp/)

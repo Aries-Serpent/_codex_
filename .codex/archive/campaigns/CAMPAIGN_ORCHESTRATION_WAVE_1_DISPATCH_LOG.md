@@ -216,7 +216,7 @@ Estimated Completion: 2026-06-24T02:15:00Z (+90 minutes)
 ### Pre-Campaign Validation
 - ✅ `.codex/CAMPAIGN_ORCHESTRATION_STAGE_0.md` — Campaign plan validated
 - ✅ `.codex/AGENTIC_REPO_STATE.md` — Auth status confirmed
-- ✅ `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — Session history ready
+- ✅ `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — Session history ready
 - ✅ Phase 9 deliverables staged
 - ✅ All 145 active agents registered
 - ✅ D_CAPABLE agents list verified (9 agents)

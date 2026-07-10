@@ -126,7 +126,7 @@
 
 **Expected Deliverables:**
 - [ ] REQ-4/5 enforcement verification (100% compliant)
-- [ ] AGENT_ACCOUNTABILITY_REPORT.md Phase 6 summary
+- [ ] .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md Phase 6 summary
 - [ ] CHANGELOG.md Phase 6 entries
 - [ ] PDA loop consolidation (286 iterations → archive)
 - [ ] Pre-merge-validation session wrapup check (GREEN)

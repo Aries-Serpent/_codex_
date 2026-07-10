@@ -52,9 +52,9 @@ class TestDocumentationStructure:
         assert len(content) > 1000, "README.md should have substantial content"
 
     def test_agents_md_exists(self):
-        """Verify AGENTS.md exists for AI agent guidance."""
-        agents_path = REPO_ROOT / "AGENTS.md"
-        assert agents_path.exists(), "AGENTS.md should exist for AI agents"
+        """Verify .codex/archive/deprecated/AGENTS.md exists for AI agent guidance."""
+        agents_path = REPO_ROOT / ".codex/archive/deprecated/AGENTS.md"
+        assert agents_path.exists(), ".codex/archive/deprecated/AGENTS.md should exist for AI agents"
 
     def test_changelog_exists(self):
         """Verify CHANGELOG documentation exists."""

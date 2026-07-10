@@ -291,7 +291,7 @@ Phase 13 **Advanced Agent Autonomy** deployment begins NOW with 4 parallel agent
 8. Pre-stage Track 13.3 & 13.4 briefs
 
 **Priority 3: Documentation & Gating (NOW)**
-9. Update AGENT_ACCOUNTABILITY_REPORT.md (session entry)
+9. Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (session entry)
 10. Update CHANGELOG.md (Phase 13 activation)
 11. Create daily standup templates
 12. Commit all setup documentation

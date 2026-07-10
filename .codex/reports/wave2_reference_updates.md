@@ -15,7 +15,7 @@
 - Summary: 50+ deleted, 40+ archived, 1 legacy created
 - All deployment metrics documented
 
-### Substage 4.3: Update AGENT_ACCOUNTABILITY_REPORT.md
+### Substage 4.3: Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 **Status**: ✅ PASS
 - Phase 3 session entry prepared
 - All 6 agent delegations documented

@@ -13,8 +13,8 @@
 **Location**: `phase-history/`
 
 ### Deprecated/Governance (2+ files)
-- `ENERGY_CONVERSION_AGENT_DEPRECATION.md` — Deprecated agent archive documentation
-- `GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md` — Deprecated agent archive documentation
+- `.codex/archive/deprecated/ENERGY_CONVERSION_AGENT_DEPRECATION.md` — Deprecated agent archive documentation
+- `.codex/archive/deprecated/GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md` — Deprecated agent archive documentation
 
 **Location**: `deprecated-reports/`
 

@@ -63,7 +63,7 @@ This report documents compliance with the **AI Agency Policy** requirement to ad
 #### Issue 2: Remaining Root Files (In-Scope) ⏳
 **Files:**
 - `docs/analysis/PR_3133_ANALYSIS.md`
-- `AGENTS.md`
+- `.codex/archive/deprecated/AGENTS.md`
 
 **Status:** ⏳ Planned for Phase 2  
 **Action:** Follow-up prompt created  
@@ -375,7 +375,7 @@ bandit -r src/ -f json -o security_report.json
 ### Improvements for Future Work
 
 1. **Reference Count Accuracy**
-   - Initial AGENTS.md scan showed 293 refs (incorrect)
+   - Initial .codex/archive/deprecated/AGENTS.md scan showed 293 refs (incorrect)
    - Actual count is 6 refs (verified)
    - Need more precise scanning for certain file types
 

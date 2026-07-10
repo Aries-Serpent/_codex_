@@ -58,7 +58,7 @@ docs/
 
 | File | Lines | Action | Est. Savings |
 |------|-------|--------|--------------|
-| `accountability/AGENT_ACCOUNTABILITY_REPORT.md` | 10,864 | SPLIT → 5 smaller docs | 50-60% |
+| `accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` | 10,864 | SPLIT → 5 smaller docs | 50-60% |
 | `plans/copilot-directives-to-implementation-plan.md` | 3,689 | SPLIT → 3 docs | 40-50% |
 | `plans/Agentic_AI_System/soft_to_GROUNDED.md` | 3,472 | SPLIT → 3 docs | 40-50% |
 | `status_updates/survey-0D_base_-and-1926-2025-10-30.md` | 2,987 | ARCHIVE | 0% |
@@ -318,7 +318,7 @@ Would be tracked if found. Recommend SLA: Critical docs ≤ 90 days old
 
 | File | Lines | Freshness | Priority | Action |
 |------|-------|-----------|----------|--------|
-| `accountability/AGENT_ACCOUNTABILITY_REPORT.md` | 10,864 | Fresh | P0 | SPLIT |
+| `accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` | 10,864 | Fresh | P0 | SPLIT |
 | `plans/copilot-directives-to-implementation-plan.md` | 3,689 | Fresh | P0 | SPLIT |
 | `plans/Agentic_AI_System/soft_to_GROUNDED.md` | 3,472 | Fresh | P0 | SPLIT |
 | `ci/PR_LIFECYCLE.md` | 2,874 | Fresh | P2 | REVIEW |
@@ -429,7 +429,7 @@ Would be tracked if found. Recommend SLA: Critical docs ≤ 90 days old
    - Establish indexing schema
    - Owner: doc-refactor-test-agent
 
-9. **FIX-007: Split AGENT_ACCOUNTABILITY_REPORT.md** (15-20h)
+9. **FIX-007: Split .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md** (15-20h)
    - Break into: per-agent reports, metrics summary, trends
    - Establish report schema
    - Create monthly snapshots

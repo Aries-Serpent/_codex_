@@ -20,6 +20,6 @@ Source: chronicle-standup (artifact-monitor-agent), consolidated by campaign lea
 
 ## Next Actions (24h)
 
-1. Finalize lane-5 docs (`docs/OFFLINE_QUICKSTART.md`, `docs/ISOLATED_DEPLOYMENT.md`).
+1. Finalize lane-5 docs (`docs/OFFLINE_QUICKSTART.md`, `docs/docs/release/ISOLATED_DEPLOYMENT.md`).
 2. Publish campaign completion report with phased readiness and go/no-go criteria.
 3. Validate changed files and run parallel validation.

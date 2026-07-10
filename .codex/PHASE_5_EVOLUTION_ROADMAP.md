@@ -61,10 +61,10 @@
 - **NEW:** `.codex/PHASE_5_EVOLUTION_ROADMAP.md` (This document)
 - **NEW:** `.codex/PHASE_5_TRACK_1_ENHANCEMENTS.md` (Performance improvements)
 - **NEW:** `.codex/PHASE_5_TRACK_2_EXPANSION.md` (Feature expansion)
-- **NEW:** `.codex/PHASE_5_TRACK_3_INTEGRATION.md` (Third-party integrations)
+- **NEW:** `.codex/PHASE_5_TRACK_3_docs/api/reference/INTEGRATION.md` (Third-party integrations)
 
 #### 📊 ACTIVE - Accountability & Governance
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` → **KEEP & UPDATE** (Living record)
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` → **KEEP & UPDATE** (Living record)
 - `CHANGELOG.md` → **KEEP & UPDATE** (Version history)
 - `.codex/PRODUCTION_READINESS_ANALYSIS_2026_07_10.md` → **KEEP** (Baseline reference)
 
@@ -270,10 +270,10 @@ For **all tasks in Phase 5** that fit these categories:
   - `.codex/PHASE_5_TRACK_1_ENHANCEMENTS.md` (Distribution)
   - `.codex/PHASE_5_TRACK_2_OPTIMIZATION.md` (Performance)
   - `.codex/PHASE_5_TRACK_3_EXPANSION.md` (Features)
-  - `.codex/PHASE_5_TRACK_4_INTEGRATION.md` (Partnerships)
+  - `.codex/PHASE_5_TRACK_4_docs/api/reference/INTEGRATION.md` (Partnerships)
 
 - [ ] **Update Accountability**
-  - Add Phase 5 initialization entry to `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+  - Add Phase 5 initialization entry to `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
   - Update CHANGELOG.md with Phase 5 planning entry
   - Create session checkpoint: `.codex/PHASE_5_SESSION_CHECKPOINT_DAY_1.md`
 
@@ -305,7 +305,7 @@ For **all tasks in Phase 5** that fit these categories:
 
 ```yaml
 Phase 5 Requirements:
-  - REQ-4: Update AGENT_ACCOUNTABILITY_REPORT.md for each checkpoint
+  - REQ-4: Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md for each checkpoint
   - REQ-5: Update CHANGELOG.md for each checkpoint
   - WEC: Maintain current workflow execution checklist state
   - Documentation: Update docs/ for all public-facing changes

@@ -7,7 +7,7 @@
 
 ---
 
-## REQUIREMENT 4: AGENT_ACCOUNTABILITY_REPORT.md CURRENCY
+## REQUIREMENT 4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md CURRENCY
 
 ### Compliance Item: Phase 1-2 Completion Documentation
 
@@ -406,7 +406,7 @@ Timeline Alignment Check:
 
 ### Requirements Verification (10/10)
 
-- [x] **REQ-4:** AGENT_ACCOUNTABILITY_REPORT.md reflects Phase 1-2 → **PASS** (99.5%)
+- [x] **REQ-4:** .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md reflects Phase 1-2 → **PASS** (99.5%)
 - [x] **REQ-5:** CHANGELOG.md documents Phase 1-2 CVE reductions → **PASS** (99.3%)
 - [x] **REQ-6:** Phase 1-2 artifacts verified (52+ files) → **PASS** (99.8%)
 - [x] **REQ-7:** Git commit history aligns with Wave 2B → **PASS** (99.2%)

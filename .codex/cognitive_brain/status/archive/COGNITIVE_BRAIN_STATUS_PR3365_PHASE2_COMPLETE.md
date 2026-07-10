@@ -52,7 +52,7 @@ paths (`.github/agents/X.md`) from inside `.github/agents/` subdirectories:
 | File | Reason |
 |------|--------|
 | `.codex/DEVOPS_TERMINOLOGY_POLICY.md` | Referenced from ci-resilience agent |
-| `.codex/docs/COGNITIVE_BRAIN_COMPLETE_DOCS.md` | Referenced from agents/docs/AGENTS.md |
+| `.codex/docs/COGNITIVE_BRAIN_COMPLETE_DOCS.md` | Referenced from agents/docs/.codex/archive/deprecated/AGENTS.md |
 | `docs/QUANTUM_DETERMINISTIC_PLANNING.md` | Referenced from COGNITIVE_BRAIN_V10_ROADMAP |
 | `docs/QUANTUM_AGENT_IMPROVEMENT_PLAN.md` | Referenced from COGNITIVE_BRAIN_V10_ROADMAP |
 | `docs/AI_AGENT_INTUITIVENESS_SCORE_V2.md` | Referenced from COGNITIVE_BRAIN_V10_ROADMAP |

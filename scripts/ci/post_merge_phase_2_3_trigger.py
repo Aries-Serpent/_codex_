@@ -150,7 +150,7 @@ class PostMergeContinuationTrigger:
     
     def update_accountability_report(self) -> None:
         """Add entry to accountability report"""
-        report_file = self.repo_root / "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md"
+        report_file = self.repo_root / "docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md"
         
         entry = f"""
 ## POST-MERGE PHASE 2-3 EXECUTION BRIEF GENERATION — {self.timestamp}
@@ -221,7 +221,7 @@ class PostMergeContinuationTrigger:
             print("   - .codex/PHASE_2_3_POST_MERGE_EXECUTION_BRIEF.md (15,474 bytes)")
             print("   - .codex/POST_MERGE_PHASE_2_3_TRIGGER.md")
             print("   - .codex/phase_2_3_execution_manifest.json")
-            print("   - docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md (updated)")
+            print("   - docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (updated)")
             print()
             return True
             

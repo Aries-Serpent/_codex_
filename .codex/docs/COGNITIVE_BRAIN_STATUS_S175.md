@@ -86,7 +86,7 @@ gantt
 │  ┌───────────────▼──────────────────────────────────────┐              │
 │  │         ACCOUNTABILITY PIPELINE (S175)                │              │
 │  │                                                       │              │
-│  │  AGENT_ACCOUNTABILITY_REPORT.md  ──►  Discussion #3673│              │
+│  │  .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md  ──►  Discussion #3673│              │
 │  │  (markdown audit trail)               (live thread)   │              │
 │  │                                                       │              │
 │  │  Trigger: push to copilot/** or 0D_base_              │              │

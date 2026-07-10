@@ -249,7 +249,7 @@ function useMSVMetrics(
    - Files changed, testing, validation
    - Path to 97.0 progress tracking
 
-2. **CACHE_MANAGER_WORKFLOW_INTEGRATION.md** (5.9KB)
+2. **CACHE_MANAGER_WORKFLOW_docs/api/reference/INTEGRATION.md** (5.9KB)
    - 5 workflows documented for Phase 2
    - Integration patterns with before/after examples
    - Cache health monitoring approach
@@ -326,7 +326,7 @@ function useMSVMetrics(
 4. pages-mkdocs.yml - MkDocs build cache
 5. rust_swarm_ci.yml - Cargo cache standardization
 
-**Integration Pattern** (from CACHE_MANAGER_WORKFLOW_INTEGRATION.md):
+**Integration Pattern** (from CACHE_MANAGER_WORKFLOW_docs/api/reference/INTEGRATION.md):
 ```yaml
 - name: Generate cache configuration
   id: cache-config
@@ -548,7 +548,7 @@ function useMSVMetrics(
 
 - **Implementation Summary**: `.codex/PS14_IMPLEMENTATION_SUMMARY.md`
 - **Self-Review Report**: `.codex/PS14_SELF_REVIEW_REPORT.md`
-- **CacheManager Plan**: `.codex/CACHE_MANAGER_WORKFLOW_INTEGRATION.md`
+- **CacheManager Plan**: `.codex/CACHE_MANAGER_WORKFLOW_docs/api/reference/INTEGRATION.md`
 - **AAIS V3.0**: `docs/evolution/AI_AGENCY_INTUITIVENESS_SCORE_V3.md`
 - **Planset Registry**: `docs/evolution/PLANSET_REGISTRY.md`
 - **Live Dashboard**: https://aries-serpent.github.io/_codex_/cognitive_app/ (post-deployment)

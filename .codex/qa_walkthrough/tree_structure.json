@@ -1248,7 +1248,7 @@
           "type": "directory",
           "children": [
             {
-              "name": "AGENTS.md",
+              "name": ".codex/archive/deprecated/AGENTS.md",
               "type": "file"
             },
             {
@@ -1848,7 +1848,7 @@
           "type": "file"
         },
         {
-          "name": "CONTINUATION_PROMPT_COGNITIVE_BRAIN_INTEGRATION.md",
+          "name": "CONTINUATION_PROMPT_COGNITIVE_BRAIN_docs/api/reference/INTEGRATION.md",
           "type": "file"
         },
         {
@@ -2441,7 +2441,7 @@
               "type": "file"
             },
             {
-              "name": "FOLLOWUP_P4_INTEGRATION.md",
+              "name": "FOLLOWUP_P4_docs/api/reference/INTEGRATION.md",
               "type": "file"
             },
             {
@@ -2683,7 +2683,7 @@
           "type": "directory",
           "children": [
             {
-              "name": "AGENTS.md.original.cf4e8c9.md",
+              "name": ".codex/archive/deprecated/AGENTS.md.original.cf4e8c9.md",
               "type": "file"
             }
           ]
@@ -3835,7 +3835,7 @@
           "type": "file"
         },
         {
-          "name": "COGNITIVE_BRAIN_QUANTUM_INTEGRATION.md",
+          "name": "COGNITIVE_BRAIN_QUANTUM_docs/api/reference/INTEGRATION.md",
           "type": "file"
         },
         {

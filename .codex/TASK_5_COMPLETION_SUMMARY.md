@@ -241,7 +241,7 @@ gh discussion list
 ### Documentation References
 | Document | Type | Status |
 |----------|------|--------|
-| `QUICK_START_COGNITIVE_BRAIN.md` | Quick Start | ✅ Existing |
+| `docs/quickstart/QUICK_START_COGNITIVE_BRAIN.md` | Quick Start | ✅ Existing |
 | `CONTRIBUTING.md` | Contributing Guide | ✅ Existing |
 | GitHub Release Page | Release Notes | ⏳ Awaiting Creation |
 | GitHub Discussions | Announcement | ⏳ Awaiting Post |

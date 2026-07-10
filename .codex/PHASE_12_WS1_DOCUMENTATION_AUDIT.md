@@ -40,7 +40,7 @@ Total Markdown Files: 1,801
 | Document | Path | Status | Size | Last Update |
 |----------|------|--------|------|-------------|
 | README.md | / | ✅ Present | 60KB | 2026-07-08 |
-| AGENTS.md | / | ✅ Present | 33KB | 2026-07-08 |
+| .codex/archive/deprecated/AGENTS.md | / | ✅ Present | 33KB | 2026-07-08 |
 | CONTRIBUTING.md | / | ✅ Present | 22KB | 2026-07-08 |
 | docs/index.md | /docs/ | ✅ Present | 15KB | 2026-07-08 |
 | .codex/README.md | /.codex/ | ✅ Present | 60KB | 2026-07-08 |
@@ -183,7 +183,7 @@ Documentation Currency (Sample of 500 files):
 
 **Top Example-Rich Files:**
 1. DUPLICATION_METRICS_GUIDE.md (38 code blocks)
-2. COGNITIVE_BRAIN_QUANTUM_INTEGRATION.md (30 code blocks)
+2. COGNITIVE_BRAIN_QUANTUM_docs/api/reference/INTEGRATION.md (30 code blocks)
 3. RETENTION_POLICY_OPERATIONS_GUIDE.md (30 code blocks)
 
 **Example Accuracy Assessment:** ⚠️ **Needs Review**
@@ -203,7 +203,7 @@ Documentation Currency (Sample of 500 files):
 - Phase references: 15 occurrences
 - Wave references: 0 occurrences ❌
 
-**Current Usage in AGENTS.md:**
+**Current Usage in .codex/archive/deprecated/AGENTS.md:**
 - Phase references: 28 occurrences
 - Wave references: 8 occurrences (partial adoption)
 
@@ -303,7 +303,7 @@ Documentation Currency (Sample of 500 files):
 ### 5.3 Documentation Readability
 
 **Sampled Files for Readability:**
-- COGNITIVE_BRAIN_QUANTUM_INTEGRATION.md: Complex, good structure
+- COGNITIVE_BRAIN_QUANTUM_docs/api/reference/INTEGRATION.md: Complex, good structure
 - HYDRA_GUIDE.md: Clear progression, excellent
 - API_REFERENCE.md: Index only, needs expansion
 
@@ -497,7 +497,7 @@ doc-style-guide-agent → all agents (reference)
 - docs/getting-started.md ✅ (structure present)
 - docs/agent/ (all agent docs) ✅ (updated 2026-07-08)
 - CONTRIBUTING.md ✅ (updated 2026-07-08)
-- AGENTS.md ✅ (updated 2026-07-08)
+- .codex/archive/deprecated/AGENTS.md ✅ (updated 2026-07-08)
 
 **Status:** ✅ **ALL CRITICAL DOCS IN COMPLIANCE**
 

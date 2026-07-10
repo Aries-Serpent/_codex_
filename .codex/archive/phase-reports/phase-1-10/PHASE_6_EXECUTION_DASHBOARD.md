@@ -74,7 +74,7 @@
 - [x] Trusted hosts validation in place
 
 ### Compliance
-- [ ] AGENT_ACCOUNTABILITY_REPORT.md updated (REQ-4)
+- [ ] .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated (REQ-4)
 - [ ] CHANGELOG.md updated (REQ-5)
 - [ ] Both in same final commit
 - [ ] PR description ready
@@ -209,7 +209,7 @@ def test_redis_host_override():
 **Step 1: Finalize PR (30 min)**
 ```bash
 # Retrieve PR template from documentation-quality-agent
-# Update AGENT_ACCOUNTABILITY_REPORT.md (REQ-4)
+# Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (REQ-4)
 # Update CHANGELOG.md (REQ-5)
 # Create final commit with both files
 # Verify with: python scripts/ci/session_wrapup_autofix.py --check --pr-number <PR>

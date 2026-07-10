@@ -23,7 +23,7 @@
 | **Phase 12.1** | Governance gate | ⏳ GATED | ~06:30:00Z | ~07:00:00Z | ~30 min | `.codex/PHASE_12_1_GOVERNANCE_REPORT.md` |
 | **Phase 12.2** | Owner approval | ⏳ GATED | ~06:30:00Z | ~07:00:00Z | ~30 min | `.codex/PHASE_12_2_APPROVAL_REPORT.md` |
 | **Phase 12.3** | Health monitor | ⏳ GATED | ~06:30:00Z | ~07:00:00Z | ~30 min | `.codex/PHASE_12_3_HEALTH_REPORT.md` |
-| **Compliance** | Accountability docs | ⏳ GATED | ~07:00:00Z | ~07:30:00Z | ~30 min | AGENT_ACCOUNTABILITY_REPORT.md |
+| **Compliance** | Accountability docs | ⏳ GATED | ~07:00:00Z | ~07:30:00Z | ~30 min | .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md |
 
 ### Estimated Campaign Duration
 - **Start:** 2026-07-06T04:55:00Z
@@ -151,7 +151,7 @@
 
 ## COMPLIANCE READINESS
 
-### AGENT_ACCOUNTABILITY_REPORT.md
+### .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 - Session entry: Ready to add (awaiting completion)
 - Timeline: All phases documented
 - Blockers: Pre-documented for addition

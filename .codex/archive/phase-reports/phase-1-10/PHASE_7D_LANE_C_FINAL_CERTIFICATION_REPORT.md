@@ -140,7 +140,7 @@ This report provides **binding final certification** that Aries-Serpent/_codex_ 
 - **Update frequency:** Automatic via Dependabot
 
 **Verification Reference:** `remediation_plan_sbom.md`  
-**Dependency Constraints:** `DEPENDENCY_CONSTRAINTS.md`
+**Dependency Constraints:** `.codex/archive/misc/DEPENDENCY_CONSTRAINTS.md`
 
 **Verdict: ✅ NO HIGH-SEVERITY VULNERABILITIES**
 
@@ -262,7 +262,7 @@ OVERALL                   │ ✅ CERTIFIED │ 99.8%      │ MINIMAL
 | Document | Status | Entries |
 |----------|--------|---------|
 | pda_iterations.jsonl | ✅ Complete | 500+ |
-| AGENT_ACCOUNTABILITY_REPORT.md | ✅ Current | 100% |
+| .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md | ✅ Current | 100% |
 | Decision History | ✅ Tracked | 200+ |
 | Commit Log | ✅ Complete | 2700+ commits |
 
@@ -286,7 +286,7 @@ OVERALL                   │ ✅ CERTIFIED │ 99.8%      │ MINIMAL
 | Document | Status | Accuracy | Currency |
 |----------|--------|----------|----------|
 | CHANGELOG.md | ✅ Active | 100% | Current |
-| AGENT_ACCOUNTABILITY_REPORT.md | ✅ Active | 100% | Current |
+| .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md | ✅ Active | 100% | Current |
 | README.md | ✅ Active | 99%+ | Current |
 | CONTRIBUTING.md | ✅ Active | 100% | Current |
 | SECURITY.md | ✅ Active | 100% | Current |
@@ -554,7 +554,7 @@ This certification is **BINDING** and authorizes immediate production deployment
 
 ### Operational Readiness
 - `.codex/PHASE_7A_TASK3_FINAL_SUMMARY.txt` — Coverage verification
-- `DEPENDENCY_CONSTRAINTS.md` — Dependency audit
+- `.codex/archive/misc/DEPENDENCY_CONSTRAINTS.md` — Dependency audit
 - `SECURITY.md` — Security policy
 - `.github/workflows/` — CI/CD pipeline definitions
 

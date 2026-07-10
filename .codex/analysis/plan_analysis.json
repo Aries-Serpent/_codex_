@@ -2131,8 +2131,8 @@
       "is_documented": true
     },
     {
-      "path": ".codex/cognitive_brain/FOLLOWUP_P4_INTEGRATION.md",
-      "name": "FOLLOWUP_P4_INTEGRATION.md",
+      "path": ".codex/cognitive_brain/FOLLOWUP_P4_docs/api/reference/INTEGRATION.md",
+      "name": "FOLLOWUP_P4_docs/api/reference/INTEGRATION.md",
       "status": "not_started",
       "completed": 0,
       "total": 6,
@@ -3043,8 +3043,8 @@
       "is_documented": false
     },
     {
-      "path": ".codex/cognitive_brain/PHASE_38_PLANNING_COGNITIVE_BRAIN_AND_AGENTS.md",
-      "name": "PHASE_38_PLANNING_COGNITIVE_BRAIN_AND_AGENTS.md",
+      "path": ".codex/cognitive_brain/PHASE_38_PLANNING_COGNITIVE_BRAIN_AND_.codex/archive/deprecated/AGENTS.md",
+      "name": "PHASE_38_PLANNING_COGNITIVE_BRAIN_AND_.codex/archive/deprecated/AGENTS.md",
       "status": "completed",
       "completed": 2,
       "total": 11,

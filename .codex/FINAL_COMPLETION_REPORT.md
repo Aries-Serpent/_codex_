@@ -136,7 +136,7 @@ Successfully completed comprehensive 5-phase remediation of unintended pandas do
 
 ### Created Files (4)
 
-1. **DEPENDENCY_CONSTRAINTS.md** (10,050 bytes)
+1. **.codex/archive/misc/DEPENDENCY_CONSTRAINTS.md** (10,050 bytes)
    - Single source of truth for all versions
    - Cross-file consistency rules
    - Known issues & workarounds
@@ -170,7 +170,7 @@ Successfully completed comprehensive 5-phase remediation of unintended pandas do
 | ✅ All requirement files pandas >= 3.0.3 | PASS | 8/8 files aligned |
 | ✅ pyproject.toml consistent with all files | PASS | Validator: 0 issues |
 | ✅ Evaluation suite aligned | PASS | requirements-eval.txt updated |
-| ✅ DEPENDENCY_CONSTRAINTS.md created | PASS | 10K+ guide deployed |
+| ✅ .codex/archive/misc/DEPENDENCY_CONSTRAINTS.md created | PASS | 10K+ guide deployed |
 | ✅ No regressions in ML pipelines | PASS | 123/123 tests pass |
 | ✅ Full test suite passes | PASS | 100% success rate |
 | ✅ Security audit complete | PASS | 11 CVEs fixed, approved |
@@ -192,7 +192,7 @@ Successfully completed comprehensive 5-phase remediation of unintended pandas do
 - Strict enforcement mode
 
 ### Documentation (Complete)
-- DEPENDENCY_CONSTRAINTS.md with full procedures
+- .codex/archive/misc/DEPENDENCY_CONSTRAINTS.md with full procedures
 - Known issues & workarounds
 - Cross-file consistency rules
 - Version update workflow
@@ -244,7 +244,7 @@ Successfully completed comprehensive 5-phase remediation of unintended pandas do
 
 ### Root Cause Analysis
 - **Issue**: Commit 4af8565 downgraded pandas without cross-checking evaluation requirements
-- **Prevention**: DEPENDENCY_CONSTRAINTS.md + pre-commit validator now in place
+- **Prevention**: .codex/archive/misc/DEPENDENCY_CONSTRAINTS.md + pre-commit validator now in place
 - **Impact**: Prevented silent incompatibilities between version 2.x and 3.x
 
 ### Pandas 3.0.3 Compatibility

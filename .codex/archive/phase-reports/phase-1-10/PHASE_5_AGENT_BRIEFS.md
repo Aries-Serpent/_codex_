@@ -284,7 +284,7 @@ Audit repository structure, organization patterns, and architecture to identify 
 
 ### Immediately After Phase 5
 1. ✅ Create CAMPAIGN_FINAL_REPORT.md (all phases consolidated)
-2. ✅ Update AGENT_ACCOUNTABILITY_REPORT.md (Phase 1-5 complete)
+2. ✅ Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (Phase 1-5 complete)
 3. ✅ Update CHANGELOG.md (REQ-5 compliance)
 4. ✅ Commit and push all campaign deliverables
 

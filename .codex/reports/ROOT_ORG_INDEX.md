@@ -104,7 +104,7 @@ This index provides navigation to all root organization documentation, plans, an
 
 ### Phase 2 (Planned ⏳)
 - Move `docs/analysis/PR_3133_ANALYSIS.md` → `docs/analysis/`
-- Move `AGENTS.md` → `docs/agents/` or `.github/agents/docs/`
+- Move `.codex/archive/deprecated/AGENTS.md` → `docs/agents/` or `.github/agents/docs/`
 - Investigate directory duplications (`_codex` vs `_codex_`)
 - Consolidate config directories
 
@@ -175,7 +175,7 @@ This index provides navigation to all root organization documentation, plans, an
 ### Week 2 (Planned ⏳)
 - ⏳ Directory consolidation investigation
 - ⏳ Move remaining documentation files
-- ⏳ Plan AGENTS.md migration
+- ⏳ Plan .codex/archive/deprecated/AGENTS.md migration
 - ⏳ Configuration standardization
 
 ---
@@ -214,7 +214,7 @@ See [Execution Summary](.codex/reports/ROOT_ORG_PHASE1_EXECUTION_SUMMARY.md#appe
 
 **Remaining:**
 - ⏳ MEDIUM: `docs/analysis/PR_3133_ANALYSIS.md` (1-3 refs expected)
-- ⏳ MEDIUM: `AGENTS.md` (6 refs - manageable, not 293)
+- ⏳ MEDIUM: `.codex/archive/deprecated/AGENTS.md` (6 refs - manageable, not 293)
 - ⏳ MEDIUM: Directory consolidation (requires investigation)
 
 ---

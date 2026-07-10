@@ -56,8 +56,8 @@
         ".codex/SESSION_7PHASE_CLARIFICATION_RESOLUTION_20260701T053700Z.md",
         ".codex/SESSION_7PHASE_EXECUTION_PLAN_20260701T053700Z.md",
         ".codex/link-fix-completion-report.md",
-        "ENERGY_CONVERSION_AGENT_DEPRECATION.md",
-        "GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md"
+        ".codex/archive/deprecated/ENERGY_CONVERSION_AGENT_DEPRECATION.md",
+        ".codex/archive/deprecated/GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md"
       ]
     },
     "recently_added": {
@@ -71,7 +71,7 @@
         ".codex/security_vulnerability_scan_latest.md",
         "P1.4_FINAL_EXECUTION_REPORT.md",
         "P22_PHASE6_VALIDATION_REPORT.md",
-        "QUANTUM_COMPLIANCE_TUNING_AGENT_INTEGRATION_GUIDE.md",
+        "docs/api/reference/QUANTUM_COMPLIANCE_TUNING_AGENT_INTEGRATION_GUIDE.md",
         "docs/ARCHITECTURE_DIAGRAMS_INDEX.md",
         "docs/ARCHITECTURE_DIAGRAMS_PROGRESS_PHASE1.md",
         "docs/REFACTORING_UTILITIES.md",

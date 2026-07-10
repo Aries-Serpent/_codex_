@@ -37,7 +37,7 @@ from codex.security.storage import SecureStorage
 
 ---
 
-**See**: [Main AGENTS.md](../agents.md) | [Security Module Docs](https://github.com/Aries-Serpent/_codex_/blob/main/src/codex/security)
+**See**: [Main .codex/archive/deprecated/AGENTS.md](../agents.md) | [Security Module Docs](https://github.com/Aries-Serpent/_codex_/blob/main/src/codex/security)
 
 ---
 

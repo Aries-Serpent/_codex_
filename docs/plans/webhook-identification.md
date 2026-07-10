@@ -273,7 +273,7 @@ flowchart TD
 [ ] Validate existing @agent-infra apply-webhooks idempotency (follow-up — after server deployed)
 [ ] Update docs/ops/WEBHOOK_REGISTRY.md with live hook IDs after first apply
 [x] CHANGELOG.md updated
-[x] AGENT_ACCOUNTABILITY_REPORT.md updated
+[x] .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated
 ```
 
 ---

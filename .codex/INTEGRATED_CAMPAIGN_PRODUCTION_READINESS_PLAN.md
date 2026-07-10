@@ -294,7 +294,7 @@ IDLE
       ├─ Aggregate results
       ├─ Update pattern_learning_store.json
       ├─ Commit campaign_artifacts/
-      ├─ Update AGENT_ACCOUNTABILITY_REPORT.md
+      ├─ Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
       └─ Log to campaign_executions.jsonl
 
   ESCALATE
@@ -471,7 +471,7 @@ class CampaignOrchestrator:
 
         # Update pattern_learning_store.json
         # Commit campaign_artifacts/
-        # Update AGENT_ACCOUNTABILITY_REPORT.md
+        # Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
         # Log to campaign_executions.jsonl
 ```
 
@@ -556,7 +556,7 @@ class CampaignOrchestrator:
    - Verify all REQ-1 to REQ-13 gates passing
    - Execute merge to `0D_base_` / `main`
    - Post final certification to discussion #4872
-   - Update AGENT_ACCOUNTABILITY_REPORT.md
+   - Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 
 **Expected Metrics:**
 ```

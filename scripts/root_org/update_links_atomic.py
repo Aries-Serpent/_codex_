@@ -8,7 +8,7 @@ Transaction-like behavior with rollback on failure.
 Usage:
     python update_links_atomic.py --old <old_path> --new <new_path> [--dry-run]
     python update_links_atomic.py --old README.md --new docs/README.md --dry-run
-    python update_links_atomic.py --old AGENTS.md --new .github/agents/AGENTS.md
+    python update_links_atomic.py --old .codex/archive/deprecated/AGENTS.md --new .github/agents/.codex/archive/deprecated/AGENTS.md
 
 Physics Model: Redundancy🔀 - Provide rollback capability
 """
@@ -201,7 +201,7 @@ def main():
         epilog="""
 Examples:
   python update_links_atomic.py --old README.md --new docs/README.md --dry-run
-  python update_links_atomic.py --old AGENTS.md --new .github/agents/AGENTS.md
+  python update_links_atomic.py --old .codex/archive/deprecated/AGENTS.md --new .github/agents/.codex/archive/deprecated/AGENTS.md
         """
     )
     parser.add_argument('--old', required=True, help='Old file path')

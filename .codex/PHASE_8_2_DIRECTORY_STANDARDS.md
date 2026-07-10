@@ -40,12 +40,12 @@ _codex_/                                     # Root
 ├── CODE_OF_CONDUCT.md                       # Community standards (KEEP)
 ├── CONTRIBUTING.md                          # Contribution guide (KEEP)
 ├── SECURITY.md                              # Security policy (KEEP)
-├── INSTALL.md                               # Installation (KEEP)
-├── INTEGRATION.md                           # Integration guide (KEEP)
+├── .codex/archive/misc/INSTALL.md                               # Installation (KEEP)
+├── docs/api/reference/INTEGRATION.md                           # Integration guide (KEEP)
 ├── CITATION.cff                             # Citation metadata (KEEP)
-├── GEMINI.md                                # Gemini-specific guide (KEEP)
-├── CLAUDE.md                                # Claude-specific guide (KEEP)
-├── QUICKSTART_BY_PROFILE.md                 # Quick start variants (KEEP)
+├── .codex/archive/deprecated/GEMINI.md                                # Gemini-specific guide (KEEP)
+├── .codex/archive/deprecated/CLAUDE.md                                # Claude-specific guide (KEEP)
+├── docs/quickstart/QUICKSTART_BY_PROFILE.md                 # Quick start variants (KEEP)
 
 ## 🔬 PRIMARY SOURCE CODE & TESTS
 ├── src/                                     # Main source code (src-layout)
@@ -194,12 +194,12 @@ LICENSE                      # Licensing
 CODE_OF_CONDUCT.md          # Community standards
 CONTRIBUTING.md              # Contribution guide
 SECURITY.md                  # Security policy
-INSTALL.md                   # Installation guide
-INTEGRATION.md              # Integration guidance
+.codex/archive/misc/INSTALL.md                   # Installation guide
+docs/api/reference/INTEGRATION.md              # Integration guidance
 CITATION.cff                # Citation metadata
-GEMINI.md                   # Gemini-specific docs
-CLAUDE.md                   # Claude-specific docs
-QUICKSTART_BY_PROFILE.md    # Quick start variants
+.codex/archive/deprecated/GEMINI.md                   # Gemini-specific docs
+.codex/archive/deprecated/CLAUDE.md                   # Claude-specific docs
+docs/quickstart/QUICKSTART_BY_PROFILE.md    # Quick start variants
 ```
 
 **Rationale:** These are discoverable, referenced in GitHub default files, and stable across phases.

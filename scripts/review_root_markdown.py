@@ -81,7 +81,7 @@ class MarkdownAnalyzer:
     # Files that should never be archived
     PROTECTED_FILES = {
         "README.md",
-        "AGENTS.md",
+        ".codex/archive/deprecated/AGENTS.md",
         "CONTRIBUTING.md",
         "CHANGELOG.md",
         "LICENSE.md",

@@ -47,7 +47,7 @@
 
 | Item | Status | Details |
 |------|--------|---------|
-| REQ-4 (AGENT_ACCOUNTABILITY_REPORT.md) | ✅ PASSED | 2 new session entries (Session 1, 2) |
+| REQ-4 (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md) | ✅ PASSED | 2 new session entries (Session 1, 2) |
 | REQ-5 (CHANGELOG.md) | ✅ PASSED | 2 new campaign entries |
 | WEC (Workflow Execution Checklist) | ✅ PASSED | Added to PR body (de23b4bd) |
 | Code Quality (10 test renames) | ✅ PASSED | All duplicates resolved |
@@ -112,12 +112,12 @@ git status
 **Goal:** Update accountability and change tracking per REQ-4/5
 
 **Files to Update:**
-1. `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+1. `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 2. `CHANGELOG.md`
 
 **Required Entries:**
 
-For **AGENT_ACCOUNTABILITY_REPORT.md**, add (if not already present):
+For **.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md**, add (if not already present):
 ```markdown
 ### Session 2 (2026-07-03T19:00:00Z → 2026-07-03T19:31:00Z)
 **Agent:** Copilot Code Task Agent  
@@ -156,7 +156,7 @@ For **CHANGELOG.md**, add (if not already present):
 
 **Expected Output:**
 - ✅ All commits in history
-- ✅ REQ-4 PASSED (AGENT_ACCOUNTABILITY_REPORT.md updated in last commit)
+- ✅ REQ-4 PASSED (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated in last commit)
 - ✅ REQ-5 PASSED (CHANGELOG.md updated in last commit)
 - ✅ WEC valid (Workflow Execution Checklist in PR body)
 
@@ -242,7 +242,7 @@ For **CHANGELOG.md**, add (if not already present):
 
 ### Documentation Updates (8 min)
 
-- [ ] Check if AGENT_ACCOUNTABILITY_REPORT.md needs Session 2 entry
+- [ ] Check if .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md needs Session 2 entry
   - If already present: skip (already updated in Session 1)
   - If missing: add entry with Session 2 timestamp and results
   

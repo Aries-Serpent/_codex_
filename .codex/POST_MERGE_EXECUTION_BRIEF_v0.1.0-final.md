@@ -322,7 +322,7 @@ After all 4 release steps complete successfully:
    All steps executed successfully." > .codex/POST_MERGE_RELEASE_COMPLETION_v0.1.0-final.md
    ```
 
-2. **Update AGENT_ACCOUNTABILITY_REPORT.md**
+2. **Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md**
    - Add session entry: "Phase 4 Post-Merge Release: v0.1.0-final tagged, released, and published"
    - Note: "All 4 release steps completed successfully"
    - Timestamp: Release date/time

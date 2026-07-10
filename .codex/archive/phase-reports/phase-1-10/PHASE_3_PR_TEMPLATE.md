@@ -116,7 +116,7 @@ Phase 3 campaign successfully advanced test coverage from 19.78% (Phase 7D basel
 - ✅ Compliance gates: 3/3 ✅
 - ✅ Production readiness gates: 5/5 ✅
 - ✅ Accountability gates: 4/4 ✅
-- ✅ REQ-4 (AGENT_ACCOUNTABILITY_REPORT.md): Updated with all phase entries + commit SHAs
+- ✅ REQ-4 (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md): Updated with all phase entries + commit SHAs
 - ✅ REQ-5 (CHANGELOG.md): Updated with Phase 3 section
 - ✅ Phase 3 Completion Certificate: Issued
 
@@ -211,7 +211,7 @@ Phase 5 (Long-term Goal):         85% (final target, ~5-7 days)
 **Test Files Added:** 400+ new comprehensive tests across 8 test files  
 **Coverage Reports:** 4 phase completion reports + 1 consolidation report  
 **Documentation Updates:**
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (REQ-4): Phase 3 entry with all 5 track IDs + commit SHAs
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (REQ-4): Phase 3 entry with all 5 track IDs + commit SHAs
 - `CHANGELOG.md` (REQ-5): Phase 3 section with coverage progression, test count, timeline
 
 **No Production Code Changes:** All changes are test-focused (100% test additions)

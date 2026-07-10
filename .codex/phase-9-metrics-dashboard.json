@@ -95,7 +95,7 @@
   },
   "documentation_references": {
     "metrics_dashboard": "docs/ONBOARDING_METRICS_DASHBOARD.md",
-    "quickstart_guides": "docs/QUICKSTART_BY_PROFILE.md",
+    "quickstart_guides": "docs/docs/quickstart/QUICKSTART_BY_PROFILE.md",
     "comprehensive_faq": "docs/ENVIRONMENT_VARIABLES_FAQ.md",
     "metrics_collector": "scripts/phase-9-metrics-collector.py"
   }

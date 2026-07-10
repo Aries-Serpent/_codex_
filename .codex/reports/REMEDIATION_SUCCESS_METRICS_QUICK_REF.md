@@ -142,7 +142,7 @@ NOTES: [Free-form notes]
 | `REMEDIATION_SUCCESS_METRICS.md` | This document (full spec) |
 | `CHECKPOINT_TEMPLATE.md` | Daily checkpoint log template |
 | `pre_merge_validation.py` | Automated validation script |
-| `MASTER_REMEDIATION_PLAN.md` | Detailed fix roadmap |
+| `.codex/archive/misc/MASTER_REMEDIATION_PLAN.md` | Detailed fix roadmap |
 | `ORCHESTRATOR_SECURITY_ASSESSMENT.md` | Security baseline |
 | `CI_STABILITY_ASSESSMENT_SUMMARY.md` | CI metrics |
 | `COVERAGE_READINESS_ASSESSMENT.json` | Coverage baseline |

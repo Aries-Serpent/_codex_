@@ -289,7 +289,7 @@ def verify_password(password: str, hash_value: bytes) -> bool:
 
 | Practice | Status | Evidence |
 |----------|--------|----------|
-| **Code Review** | ✅ Implemented | `.copilot-review-exclusions.md` present |
+| **Code Review** | ✅ Implemented | `.codex/archive/misc/.copilot-review-exclusions.md` present |
 | **Pre-commit Hooks** | ✅ Active | Security checks enforced |
 | **Dependency Audit** | ✅ Active | Regular scanning enabled |
 | **Secret Scanning** | ✅ Active | Gitleaks configured |

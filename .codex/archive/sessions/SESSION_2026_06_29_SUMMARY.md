@@ -179,7 +179,7 @@ cat > .config.legacy/README.md
 - `.secrets.baseline` → verify in workflows
 - `.mypy-baseline.txt` → verify in workflows
 - `CHANGELOG.md` → add cleanup entry
-- `AGENT_ACCOUNTABILITY_REPORT.md` → document changes
+- `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` → document changes
 - Mermaid diagrams → update file paths
 - `README.md` → add organization section
 

@@ -263,7 +263,7 @@
 ## ACCOUNTABILITY & COMPLIANCE RECORDS
 
 ### REQ-4: Agent Accountability Report
-**Primary File:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+**Primary File:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 **Phase 7D Entries:**
 1. Track 1 (Coverage): 2026-06-20T04:05Z — 19.78% achieved
@@ -410,7 +410,7 @@
 ## COMPLIANCE SUMMARY
 
 ### REQ-4: Agent Accountability ✅ COMPLETE
-- All track entries documented in AGENT_ACCOUNTABILITY_REPORT.md
+- All track entries documented in .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 - Authority: @mbaetiong verified on all entries
 - Session types: Documented for all tracks
 - Actions completed: Fully listed

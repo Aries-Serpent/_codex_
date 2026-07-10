@@ -429,7 +429,7 @@ Before beginning any phase:
 - [ ] Clone repository locally
 - [ ] Verify test suite runs: `nox -s tests`
 - [ ] Verify lint runs: `pre-commit run --all-files`
-- [ ] Read repository conventions (AGENTS.md)
+- [ ] Read repository conventions (.codex/archive/deprecated/AGENTS.md)
 - [ ] Understand your phase deliverables
 - [ ] Know your escalation path
 
@@ -451,7 +451,7 @@ Before beginning any phase:
 
 ### Repository Documentation
 
-- **AGENTS.md**: AI agent operations and conventions
+- **.codex/archive/deprecated/AGENTS.md**: AI agent operations and conventions
 - **.codex/CODEBASE_AGENCY_POLICY.md**: Mandatory rules
 - **docs/agent/OPERATIONAL_GUIDELINES.md**: Full guidelines
 

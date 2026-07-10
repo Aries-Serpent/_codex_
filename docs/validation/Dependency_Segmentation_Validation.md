@@ -15,7 +15,7 @@ This validation confirms that the opened workbench files and new support utiliti
 | requirements-notebook.txt | Present | Notebook surface | Optional; not in baseline CI |
 | docs/analysis/dependency_space_triage.md | Present | Rationale & triage | Space savings table and governance |
 | noxfile.py | Present | Session orchestration | tests/ml_tests/eval_tests + helpers |
-| AGENTS.md | Present | Maintainer/agent guide | Evidence schema, toggles, sessions |
+| .codex/archive/deprecated/AGENTS.md | Present | Maintainer/agent guide | Evidence schema, toggles, sessions |
 | docs/arch/ADR-2025-11-12-dependency-segmentation.md | Present | Decision record | Accepted; compliance-aligned |
 | .codex/evidence/dependency_ops.jsonl | Present | Evidence stream | Append-only; sample lines provided |
 | .github/workflows/ci.yml | Added | CI matrix and env posture | Matrix: baseline/ml/eval/hygiene |

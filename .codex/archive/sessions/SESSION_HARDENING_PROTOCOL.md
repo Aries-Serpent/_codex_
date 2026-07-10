@@ -68,7 +68,7 @@ No blocking dependencies between agents
 5. Deliverables (files/reports)
 6. Status (pending/running/complete)
 
-**Tracking Location:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+**Tracking Location:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 **Example Entry:**
 ```markdown
@@ -132,7 +132,7 @@ Phase 7A Wave 3 → Continues without waiting for Lane 3.3 completion
 - ✅ Status updates in real-time
 - ✅ Completion tracking enabled
 
-**Document:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`  
+**Document:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`  
 **Status:** 🟢 **FULLY TRACKED**
 
 ### Hardening Checkpoint 3: Non-Blocking Execution
@@ -166,7 +166,7 @@ Status: 🟢 **NO BLOCKING DEPENDENCIES**
    - Phase 6 CVE inventory and remediation planning
 4. ✅ `.codex/PHASE_7A_CODE_VALIDATION_LANE.md` (8.2 KB)
    - Lane 3.3 specification and validation scope
-5. ✅ `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (updated)
+5. ✅ `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (updated)
    - Real-time accountability tracking for all phases
 
 **Status:** 🟢 **COMPREHENSIVE DOCUMENTATION**
@@ -220,7 +220,7 @@ This campaign fully adheres to the Copilot Agent session hardening protocol from
 ## 📋 REFERENCE DOCUMENTS
 
 - **Campaign Master:** `.codex/CAMPAIGN_AGENT_DELEGATION_PLAN.md`
-- **Accountability Report:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- **Accountability Report:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - **Code Validation Lane:** `.codex/PHASE_7A_CODE_VALIDATION_LANE.md`
 - **Agent Registry Audit:** `.codex/PHASE_4_AGENT_REGISTRY_VERIFICATION_REPORT.md`
 - **CVE Remediation Plan:** `.codex/PHASE_6_CVE_REMEDIATION_REPORT.md`

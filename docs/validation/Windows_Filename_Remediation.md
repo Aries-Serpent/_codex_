@@ -148,14 +148,14 @@ If issues arise, temporarily disable pre-commit hook:
 - `.github/workflows/rust_swarm_ci.yml` - Fixed invalid action version
 
 ### Documentation
-- `AGENTS.md` - Added cross-platform guidelines
+- `.codex/archive/deprecated/AGENTS.md` - Added cross-platform guidelines
 - `docs/validation/Windows_Filename_Remediation.md` - This document
 
 ## References
 
 - [Failing CI Job](https://github.com/Aries-Serpent/_codex_/actions/runs/21196037604 <!-- Note: Logs expire after 90 days -->/job/60974199331)
 - [Windows Filename Restrictions (Microsoft Docs)](https://learn.microsoft.com/en-us/windows/win32/fileio/naming-a-file)
-- [AGENTS.md - Cross-Platform Guidelines](../../AGENTS.md#-cross-platform-filename-requirements)
+- [.codex/archive/deprecated/AGENTS.md - Cross-Platform Guidelines](../../.codex/archive/deprecated/AGENTS.md#-cross-platform-filename-requirements)
 
 ## Support
 

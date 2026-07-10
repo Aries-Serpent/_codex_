@@ -201,7 +201,7 @@ Delegation 5 (QA Planning)  ← [all other delegations] → Day 3 execution
 **Delegation Authority:** Copilot Advanced Task Agent  
 **Campaign Authority:** @mbaetiong (COPILOT_AGENT_AUTH_ENABLED=true)  
 **Execution Model:** Session Hardening Pattern (5-agent parallel)  
-**Accountability:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`  
+**Accountability:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`  
 **Progress:** `.codex/DAY_2_*` reports + standup summaries
 
 ---
@@ -245,7 +245,7 @@ Delegation 5 (QA Planning)  ← [all other delegations] → Day 3 execution
 - QA delegation: Queued for activation
 
 **Accountability:**
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` - Master tracking
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` - Master tracking
 
 ---
 

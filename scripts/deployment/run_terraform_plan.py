@@ -167,7 +167,7 @@ def main():
 
     # Create a sample plan summary
     summary = executor.generate_plan_summary("")
-    with open("terraform_plan_summary.md", 'w') as f:
+    with open(".codex/archive/misc/terraform_plan_summary.md", 'w') as f:
         f.write("# Terraform Plan Summary\n\n")
         f.write(f"**Provider:** {summary['provider']}\n")
         f.write(f"**Environment:** {summary['environment']}\n")
@@ -179,7 +179,7 @@ def main():
         f.write(f"\n**Estimated Timeline:** {summary['estimated_timeline']}\n")
         f.write(f"**Approval Required:** {summary['approval_required']}\n")
 
-    print("\n✅ Plan summary created - terraform_plan_summary.md")
+    print("\n✅ Plan summary created - .codex/archive/misc/terraform_plan_summary.md")
 
 
 if __name__ == "__main__":

@@ -385,7 +385,7 @@ PHASE 6 focuses on remediation of CVEs across all 45 dependencies in the Aries-S
 
 #### Agent 3: workflow-compliance-guardian
 - **Role:** Merge readiness certification
-- **Responsibility:** Verify REQ compliance, AGENT_ACCOUNTABILITY_REPORT.md current, CHANGELOG.md updated
+- **Responsibility:** Verify REQ compliance, .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md current, CHANGELOG.md updated
 - **Success Criteria:** 100% REQ compliance, merge gates clear
 - **Gate:** MERGE_READY PASS/FAIL
 
@@ -396,7 +396,7 @@ PHASE 6 focuses on remediation of CVEs across all 45 dependencies in the Aries-S
 | **Security** | 0 critical/high post-Wave2B | 🔵 PENDING |
 | **Coverage** | ≥12% + 88+ tests passing | 🔵 PENDING |
 | **CI Compliance** | REQ-1 to REQ-13: 100% | 🔵 PENDING |
-| **Documentation** | AGENT_ACCOUNTABILITY_REPORT.md current | 🔵 PENDING |
+| **Documentation** | .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md current | 🔵 PENDING |
 | **FINAL DECISION** | ALL gates PASS | 🔵 PENDING |
 
 **Result:** PRODUCTION_READINESS_MERGE_CERTIFICATION.md generated + SHA recorded

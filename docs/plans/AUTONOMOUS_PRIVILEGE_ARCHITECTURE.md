@@ -112,7 +112,7 @@ The PR template (`.github/PULL_REQUEST_TEMPLATE.md`) is the **single source of t
 graph LR
     subgraph TEMPLATE["📋 PR Template (v3.0.0)"]
         META["🤖 Agent Context Table\n(AUTO-filled by session_wrapup_autofix.py)\n• PR Number • Branch • Head SHA\n• Session ID • AAIS Score\n• Merge Readiness • Rate-Limit Status\n• Token Chain declaration"]
-        PRE["🧠 Agent Pre-Load Checklist\n• AGENTIC_REPO_STATE.md\n• CODEBASE_AGENCY_POLICY.md\n• AGENT_ACCOUNTABILITY_REPORT.md\n• pda_iterations.jsonl\n• agent_context.json\n• store_memory (session memories)"]
+        PRE["🧠 Agent Pre-Load Checklist\n• AGENTIC_REPO_STATE.md\n• CODEBASE_AGENCY_POLICY.md\n• .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md\n• pda_iterations.jsonl\n• agent_context.json\n• store_memory (session memories)"]
         P045["⚡ P-045 Wrap-Up Gate\n• ruff check --fix\n• mypy baseline\n• sync_tracked_files\n• auto_fix_common_issues\n• actionlint *.yml\n• git diff --diff-filter=U (must be EMPTY)"]
         CHANGE["📋 Change Summary\n• Type · Scope · Linked Issue\n• Breaking change flag\n• Key files modified"]
         SAFETY["⚠️ Safety Confirmations\n• Security review checkbox\n• Network safety ACK\n• Offline mode confirm\n• Test validation\n• Deferral-language gate"]
@@ -245,7 +245,7 @@ sequenceDiagram
     participant PR as Pull Request Thread
 
     Agent->>WF: Push to copilot/** branch
-    WF->>WF: Extract latest session entry\nfrom AGENT_ACCOUNTABILITY_REPORT.md
+    WF->>WF: Extract latest session entry\nfrom .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
     WF->>WF: Mint GitHub App token\n(_GITHUB_APP_PRIVATE_KEY → JWT)
     WF->>D3673: POST GraphQL mutation addDiscussionComment\nas App identity (trusted author)
     D3673-->>WF: comment_id

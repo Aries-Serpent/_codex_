@@ -241,7 +241,7 @@ STATUS: ✅ ALL TARGETS ACHIEVED
 
 ## ✅ ACCOUNTABILITY RECORD UPDATE
 
-**AGENT_ACCOUNTABILITY_REPORT.md — Day 3 Final Entry:**
+**.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md — Day 3 Final Entry:**
 
 ```
 ### Day 3 Intensive Execution (09:30Z - 21:00Z)

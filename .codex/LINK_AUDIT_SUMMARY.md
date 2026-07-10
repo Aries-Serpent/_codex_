@@ -132,8 +132,8 @@ These are links that reference sections in other files:
   **Link:** `../../../src/codex_ml/training/unified_training.py#L43`
   **Target:** `src/codex_ml/training/unified_training.py` section `#L43`
 - **Source:** `docs/validation/Windows_Filename_Remediation.md` (line 158)
-  **Link:** `../../AGENTS.md#-cross-platform-filename-requirements`
-  **Target:** `AGENTS.md` section `#-cross-platform-filename-requirements`
+  **Link:** `../../.codex/archive/deprecated/AGENTS.md#-cross-platform-filename-requirements`
+  **Target:** `.codex/archive/deprecated/AGENTS.md` section `#-cross-platform-filename-requirements`
 
 
 **Fix:** Either add the missing section to the target file or update the link.

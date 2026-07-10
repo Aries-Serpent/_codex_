@@ -27,7 +27,7 @@ This campaign implementation executed parallel delegated lanes for architecture,
 - `.codex/CAMPAIGN_EXECUTION_DASHBOARD.md` (updated)
 - `.codex/STANDUP_DAY_1.md`
 - `docs/OFFLINE_QUICKSTART.md`
-- `docs/ISOLATED_DEPLOYMENT.md`
+- `docs/docs/release/ISOLATED_DEPLOYMENT.md`
 
 ## Readiness Verdict
 

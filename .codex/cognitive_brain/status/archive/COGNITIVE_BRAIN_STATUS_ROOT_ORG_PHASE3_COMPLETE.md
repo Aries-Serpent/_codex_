@@ -36,7 +36,7 @@ _codex/ → .codex/
 _codex_/ → .codex/
 ├─ codex_index.yaml → .codex/codex_index.yaml
 ├─ docs/templates/README.md → .codex/docs/templates/README.md
-└─ AGENTS.md → REMOVED (redundant internal documentation)
+└─ .codex/archive/deprecated/AGENTS.md → REMOVED (redundant internal documentation)
 ```
 
 ### Comprehensive Test Validation
@@ -71,7 +71,7 @@ _codex_/ → .codex/
 - **Confusing Names:** `_codex` vs `_codex_` caused navigation friction
 - **Canonical Structure:** `.codex/` as single source of truth
 - **Archive Hierarchy:** Status files belong in `.codex/archive/status/`
-- **Internal Docs:** Redundant internal AGENTS.md removed (main one in root)
+- **Internal Docs:** Redundant internal .codex/archive/deprecated/AGENTS.md removed (main one in root)
 
 #### 3. Testing Validation Patterns
 - **Large Test Suite:** 19,181 tests provide comprehensive coverage

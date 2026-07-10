@@ -173,7 +173,7 @@
 
 ## 📋 ACCOUNTABILITY ENTRIES UPDATED
 
-**File**: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+**File**: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 **Latest Entry** (2026-07-03T06:36Z):
 - Campaign Status: ✅ SESSIONS 2–4 CAMPAIGN COMPLETE
@@ -220,7 +220,7 @@ Requires 3–6 hour security remediation:
 | **Session 3** | ✅ COMPLETE | 5 commits, 5 categories validated, 0 breaking changes |
 | **Session 4** | ✅ COMPLETE | 3 commits, 4-phase validation, conditional approval |
 | **Artifacts** | ✅ COMPLETE | 45+ files in `.codex/` |
-| **Accountability** | ✅ COMPLETE | 209+ entries in AGENT_ACCOUNTABILITY_REPORT.md |
+| **Accountability** | ✅ COMPLETE | 209+ entries in .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md |
 | **Git History** | ✅ CLEAN | 12 commits, all pushed, PR #5204 created |
 | **Authority** | ✅ CONFIRMED | @mbaetiong D-tier autonomy (full) |
 | **Correctness** | ✅ VERIFIED | 0 breaking changes, 100% backwards compatible |

@@ -58,7 +58,7 @@ This document describes the pytest CI implementation added to the `_codex_` repo
 
 All major documentation files updated to explicitly reference pytest as the primary test runner:
 
-#### a. `AGENTS.md`
+#### a. `.codex/archive/deprecated/AGENTS.md`
 - Rewrote "Tooling, Testing & Checks" section
 - Added detailed pytest instructions with markers
 - Documented CI/CD testing workflow
@@ -267,7 +267,7 @@ Before merging this implementation:
 
 ### Modified Files
 - `requirements.txt` - Pinned pytest and pytest-cov versions
-- `AGENTS.md` - Updated testing documentation
+- `.codex/archive/deprecated/AGENTS.md` - Updated testing documentation
 - `CONTRIBUTING.md` - Added testing requirements
 - `README.md` - Added testing section
 - `docs/guides/TESTING_GUIDE.md` - Complete pytest guide

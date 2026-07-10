@@ -58,7 +58,7 @@ Lane 5 (Documentation Consolidation) has **completed Phase 1 (Audit & Mapping)**
 ```
 C1: Quickstart (Days 51-52)
    Merge: 4 root quickstarts → docs/quickstart/README.md
-   Files affected: QUICKSTART_BY_PROFILE.md, PHASE_13_3_QUICK_START.md, etc.
+   Files affected: docs/quickstart/QUICKSTART_BY_PROFILE.md, PHASE_13_3_QUICK_START.md, etc.
    
 C2: Offline Deployment (Days 52-53)
    Consolidate: 32 files → docs/deployment/offline/README.md

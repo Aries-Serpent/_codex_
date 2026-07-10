@@ -34,7 +34,7 @@ Maintain **zero critical/high security issues** through comprehensive audit:
 - [ ] Audit all transitive dependencies
 - [ ] Check for known CVEs
 - [ ] Validate pip-audit results
-- [ ] Review DEPENDENCY_CONSTRAINTS.md
+- [ ] Review .codex/archive/misc/DEPENDENCY_CONSTRAINTS.md
 
 ### Secrets Detection
 - [ ] Run detect-secrets full baseline

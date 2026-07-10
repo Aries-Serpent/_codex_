@@ -40,7 +40,7 @@ Converted relative links pointing outside `docs/` to GitHub URLs:
 - `docs/cognitive_brain/INDEX.md` - 1 link (README.md)
 - `docs/dev/plugins.md` - 1 link (examples/plugins/)
 - `docs/GITHUB_SPARK_INTEGRATION_GUIDE.md` - 1 link (LICENSE)
-- `docs/guides/AGENTS.md` - 1 link (src/codex/security/)
+- `docs/guides/.codex/archive/deprecated/AGENTS.md` - 1 link (src/codex/security/)
 - `docs/guides/INDEX.md` - 2 links (README.md, CONTRIBUTING.md)
 - `docs/INTERACTIVE_NAVIGATOR_README.md` - 1 link (LICENSE)
 - `docs/maintenance/LINK_VALIDATION_REPORT.md` - 1 link (cognitive_app/)
@@ -239,7 +239,7 @@ docs/changelogs/INDEX.md
 docs/cognitive_app.md
 docs/cognitive_brain/INDEX.md
 docs/dev/plugins.md
-docs/guides/AGENTS.md
+docs/guides/.codex/archive/deprecated/AGENTS.md
 docs/guides/INDEX.md
 docs/maintenance/LINK_VALIDATION_REPORT.md
 docs/mkdocs_warnings_analysis.md

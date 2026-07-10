@@ -35,7 +35,7 @@ Auth Status:              PERMANENTLY ACTIVE (COPILOT_AGENT_AUTH_ENABLED=true)
 ### Pre-Campaign Validation Checklist
 - [x] AGENTIC_REPO_STATE.md — Auth verified ✅
 - [x] CODEBASE_AGENCY_POLICY.md — Policy compliance ✅
-- [x] AGENT_ACCOUNTABILITY_REPORT.md — Session history ready ✅
+- [x] .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md — Session history ready ✅
 - [x] Phase 9 deliverables staged ✅
 - [x] @mbaetiong approval in memory (Auto-Approved) ✅
 - [x] D_CAPABLE agents list verified (9 agents) ✅
@@ -116,7 +116,7 @@ Wave 4 Progress:  █░░░░ 10% (agents validating)
 1. **Phase 9 → Phase 10 Handoff** (if Phase 10 is defined)
 2. **Coverage Roadmap Continuation** (10% → 12%)
 3. **Production Deployment Checklist** (if v0.1.0-final)
-4. **Session Accountability** (Update AGENT_ACCOUNTABILITY_REPORT.md)
+4. **Session Accountability** (Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md)
 5. **Campaign Completion Report** (Summarize all wave outcomes)
 
 ### Deployment Gate Validation
@@ -175,7 +175,7 @@ Stage 0 Init → Stage 1 Wave 1 (orchestrator-agent leads)
 - **Campaign Dashboard:** `.codex/CAMPAIGN_ORCHESTRATION_STAGE_*.md` (this series)
 - **Wave Outputs:** `.codex/CAMPAIGN_ORCHESTRATION_WAVE_*_OUTPUTS.md`
 - **Agent Logs:** `.codex/sessions/` (per-session checkpoints)
-- **Accountability:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (auto-updated)
+- **Accountability:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (auto-updated)
 - **Completion Report:** `.codex/CAMPAIGN_COMPLETION_FINAL_*.md`
 
 ---

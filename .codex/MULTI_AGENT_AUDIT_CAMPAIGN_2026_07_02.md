@@ -241,7 +241,7 @@ This multi-agent audit campaign is in progress.
 - **Parallel Execution:** All agents within a phase run simultaneously. Wait for all to complete before proceeding to consolidation.
 - **Output Format:** All reports stored in `.codex/` (repository-tracked, not /tmp)
 - **Auto-Remediation:** Some agents will auto-fix issues; document all fixes for audit trail
-- **Next Session:** Include campaign status in AGENT_ACCOUNTABILITY_REPORT.md
+- **Next Session:** Include campaign status in .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 - **Success Definition:** All findings categorized, remediation plan documented, high-priority items actioned
 
 ---

@@ -139,7 +139,7 @@
 - [ ] Address Phase 1 Critical remediation (if time)
 - [ ] Restore disabled security workflows (if time)
 - [ ] Deploy Phase 2 agents (when ready)
-- [ ] Update AGENT_ACCOUNTABILITY_REPORT.md with progress
+- [ ] Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with progress
 - [ ] Document next session continuation (if needed)
 
 ### Campaign Progress
@@ -185,7 +185,7 @@ cat .codex/audit-phase1-cve-report.json | jq '.critical_vulnerabilities'
 ## 🎯 ACCOUNTABILITY UPDATES
 
 When you complete work in this session, update:
-1. `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+1. `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
    - Session date and duration
    - Phase 1 remediation progress (if attempted)
    - Phase 2 execution status

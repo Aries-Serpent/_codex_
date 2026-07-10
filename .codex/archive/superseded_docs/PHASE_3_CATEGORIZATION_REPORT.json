@@ -2219,25 +2219,25 @@
           "reason": "relative_broken:.codex/AI_AGENT_UTILITIES_REGISTRY.md"
         },
         {
-          "file": ".codex/docs/AGENTS.md.original.cf4e8c9.md",
+          "file": ".codex/docs/.codex/archive/deprecated/AGENTS.md.original.cf4e8c9.md",
           "url": ".codex/guardrails.md",
           "text": ".codex/guardrails.md",
           "reason": "relative_broken:.codex/guardrails.md"
         },
         {
-          "file": ".codex/docs/AGENTS.md.original.cf4e8c9.md",
+          "file": ".codex/docs/.codex/archive/deprecated/AGENTS.md.original.cf4e8c9.md",
           "url": ".codex/guardrails.md",
           "text": ".codex/guardrails.md",
           "reason": "relative_broken:.codex/guardrails.md"
         },
         {
-          "file": ".codex/docs/AGENTS.md.original.cf4e8c9.md",
+          "file": ".codex/docs/.codex/archive/deprecated/AGENTS.md.original.cf4e8c9.md",
           "url": "scripts/AUTONOMOUS_AGENT_README.md",
           "text": "scripts/AUTONOMOUS_AGENT_README.md",
           "reason": "relative_broken:scripts/AUTONOMOUS_AGENT_README.md"
         },
         {
-          "file": ".codex/docs/AGENTS.md.original.cf4e8c9.md",
+          "file": ".codex/docs/.codex/archive/deprecated/AGENTS.md.original.cf4e8c9.md",
           "url": ".codex/change_log.md",
           "text": ".codex/change_log.md",
           "reason": "relative_broken:.codex/change_log.md"
@@ -2315,19 +2315,19 @@
           "reason": "relative_broken:.codex/PR_3020_PHASE_41_FOLLOWUP_PROMPT.md"
         },
         {
-          "file": ".github/AGENTS.md",
+          "file": ".github/.codex/archive/deprecated/AGENTS.md",
           "url": "./copilot_task_execution_protocol.md",
           "text": "Copilot Task Execution Protocol",
           "reason": "relative_broken:./copilot_task_execution_protocol.md"
         },
         {
-          "file": ".github/AGENTS.md",
+          "file": ".github/.codex/archive/deprecated/AGENTS.md",
           "url": "./ctep_usage_examples.md",
           "text": "CTEP Usage Examples",
           "reason": "relative_broken:./ctep_usage_examples.md"
         },
         {
-          "file": ".github/AGENTS.md",
+          "file": ".github/.codex/archive/deprecated/AGENTS.md",
           "url": "./ctep_quick_reference.md",
           "text": "CTEP Quick Reference",
           "reason": "relative_broken:./ctep_quick_reference.md"
@@ -2423,19 +2423,19 @@
           "reason": "relative_broken:.github/agents/AGENT_REGISTRY.md"
         },
         {
-          "file": ".github/agents/docs/AGENTS.md",
+          "file": ".github/agents/docs/.codex/archive/deprecated/AGENTS.md",
           "url": "../../../.codex/docs/COGNITIVE_BRAIN_COMPLETE_DOCS.md",
           "text": ".codex/docs/COGNITIVE_BRAIN_COMPLETE_DOCS.md",
           "reason": "relative_broken:../../../.codex/docs/COGNITIVE_BRAIN_COMPLETE_DOCS.md"
         },
         {
-          "file": ".github/agents/docs/AGENTS.md",
+          "file": ".github/agents/docs/.codex/archive/deprecated/AGENTS.md",
           "url": ".github/workflow-archive/PARITY_CHECKLIST.md",
           "text": ".github/workflow-archive/PARITY_CHECKLIST.md",
           "reason": "relative_broken:.github/workflow-archive/PARITY_CHECKLIST.md"
         },
         {
-          "file": ".github/agents/docs/AGENTS.md",
+          "file": ".github/agents/docs/.codex/archive/deprecated/AGENTS.md",
           "url": ".github/workflow-archive/ARTIFACT_CATALOG.md",
           "text": ".github/workflow-archive/ARTIFACT_CATALOG.md",
           "reason": "relative_broken:.github/workflow-archive/ARTIFACT_CATALOG.md"
@@ -3640,7 +3640,7 @@
           "deleted_file": 4
         }
       },
-      ".codex/docs/AGENTS.md.original.cf4e8c9.md": {
+      ".codex/docs/.codex/archive/deprecated/AGENTS.md.original.cf4e8c9.md": {
         "priority": "high",
         "broken_count": 4,
         "categories": {
@@ -3675,7 +3675,7 @@
           "malformed_url": 3
         }
       },
-      ".github/AGENTS.md": {
+      ".github/.codex/archive/deprecated/AGENTS.md": {
         "priority": "medium",
         "broken_count": 3,
         "categories": {
@@ -3724,7 +3724,7 @@
           "deleted_file": 3
         }
       },
-      ".github/agents/docs/AGENTS.md": {
+      ".github/agents/docs/.codex/archive/deprecated/AGENTS.md": {
         "priority": "high",
         "broken_count": 3,
         "categories": {

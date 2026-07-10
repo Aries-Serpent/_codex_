@@ -53,7 +53,7 @@ Phase 9 transforms the environment variable implementation (from Phases 6.2, 7, 
 
 ---
 
-### Document 2: QUICKSTART_BY_PROFILE.md
+### Document 2: docs/quickstart/QUICKSTART_BY_PROFILE.md
 **Purpose:** User-specific setup guides for 5 primary profiles
 
 **User Profiles:**
@@ -70,7 +70,7 @@ Phase 9 transforms the environment variable implementation (from Phases 6.2, 7, 
 - Common issues and solutions
 - Validation commands
 
-**File:** `docs/QUICKSTART_BY_PROFILE.md`
+**File:** `docs/docs/quickstart/QUICKSTART_BY_PROFILE.md`
 **Size:** ~7.6 KB
 **Status:** ✅ Created
 
@@ -281,7 +281,7 @@ Phase 9 transforms the environment variable implementation (from Phases 6.2, 7, 
 
 ### Documentation
 - `docs/ONBOARDING_METRICS_DASHBOARD.md` - Metrics tracking
-- `docs/QUICKSTART_BY_PROFILE.md` - User guides
+- `docs/docs/quickstart/QUICKSTART_BY_PROFILE.md` - User guides
 - `docs/ENVIRONMENT_VARIABLES_FAQ.md` - FAQ
 - `scripts/phase-9-metrics-collector.py` - Collection script
 - `.codex/phase-9-metrics-dashboard.json` - Metrics template
@@ -308,7 +308,7 @@ Phase 9 transforms the environment variable implementation (from Phases 6.2, 7, 
 
 ✅ **3 Comprehensive Documentation Files Created**
 - `docs/ONBOARDING_METRICS_DASHBOARD.md` (metrics framework)
-- `docs/QUICKSTART_BY_PROFILE.md` (user guides)
+- `docs/docs/quickstart/QUICKSTART_BY_PROFILE.md` (user guides)
 - `docs/ENVIRONMENT_VARIABLES_FAQ.md` (FAQ)
 
 ✅ **Metrics Collection Infrastructure**

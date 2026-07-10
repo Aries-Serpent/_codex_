@@ -294,7 +294,7 @@ flowchart TD
 ### 📋 Pre-load context (MANDATORY — do these first)
   view docs/roadmap/PR4317_whats_next.md    # §2 security backlog (S313 status), §6 scorecard
   view docs/sessions/PR4317_session_diagram.md  # §Wave 8 S313, §9 CodeQL map, §10 merge table
-  view docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md  # last entry: S313
+  view docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md  # last entry: S313
   view CHANGELOG.md                              # [Unreleased] section
 
 ### ✅ S313 Completed (no action needed)
@@ -340,7 +340,7 @@ flowchart TD
 ### 📝 Living docs to update each session
   docs/roadmap/PR4317_whats_next.md         # update §2 security backlog status column
   docs/sessions/PR4317_session_diagram.md   # add Wave N for each session
-  docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+  docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
   CHANGELOG.md
 
 ### 🎯 Success criteria for next session

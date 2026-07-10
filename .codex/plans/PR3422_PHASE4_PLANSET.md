@@ -447,7 +447,7 @@ Task 9.3: AGENT_REGISTRY.yaml v1.7.0 (126→128)
 
 ```
 Task 10.1: CHANGELOG.md [Unreleased] entry (WF-001 compliance)
-Task 10.2: AGENT_ACCOUNTABILITY_REPORT.md W-061–W-068
+Task 10.2: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md W-061–W-068
 Task 10.3: SESSION_RESTORE_PR3422.md chain prompt
 Task 10.4: COGNITIVE_BRAIN_STATUS_PR3422.md (this doc, updated)
 ```
@@ -519,7 +519,7 @@ python3 -c "import ast; ast.parse(open('cognitive_app/src/server/cli_api_server.
 grep "Unreleased" CHANGELOG.md | head -1
 
 # 4. Accountability report updated
-grep "Last updated" docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+grep "Last updated" docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 
 # 5. No /tmp artifacts
 ls /tmp/*.py /tmp/*.yml /tmp/*.json 2>/dev/null || echo "clean"
@@ -548,7 +548,7 @@ IMMEDIATE TASKS (in order):
 5. P4.3: Auth header forwarding in api_proxy() for api.github.com URLs
 6. P4.6: Create memory-sync-agent.md + telemetry-classifier-agent.md
 7. P4.7: AGENT_REGISTRY.yaml v1.7.0 (126→128)
-8. Governance: CHANGELOG.md + W-061+ in AGENT_ACCOUNTABILITY_REPORT.md
+8. Governance: CHANGELOG.md + W-061+ in .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 
 CRITICAL RULES:
 - CHANGELOG.md MUST have [Unreleased] entry BEFORE first commit (WF-001 gate)

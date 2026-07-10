@@ -223,7 +223,7 @@ The Phase 9.3 campaign represents the final critical phase of autonomous operati
 - ✅ All work REQ-4/REQ-5 compliant
 - ✅ No secrets in deliverables
 - ✅ All files in .codex/ (artifact storage)
-- ✅ AGENT_ACCOUNTABILITY_REPORT.md updated
+- ✅ .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated
 - ✅ CHANGELOG.md updated
 
 ---

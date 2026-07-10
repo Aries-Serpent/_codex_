@@ -149,7 +149,7 @@ All documentation reflects reality:
 - ✅ pyproject.toml - Version updated
 - ✅ README.md - Verified current (v0.1.0)
 - ✅ SECURITY.md - Date updated
-- ✅ AGENTS.md - Coverage updated
+- ✅ .codex/archive/deprecated/AGENTS.md - Coverage updated
 - ⚠️ CHANGELOG.md - Excluded (historical)
 - ⚠️ CONTRIBUTING.md - Preserved (current)
 

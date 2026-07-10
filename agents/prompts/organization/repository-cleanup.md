@@ -83,7 +83,7 @@ done
 ## Validation
 
 1. **Check Archive Created**: `ls -la archive/`
-2. **Verify Key Docs Preserved**: Ensure README.md, AGENTS.md, etc. still exist
+2. **Verify Key Docs Preserved**: Ensure README.md, .codex/archive/deprecated/AGENTS.md, etc. still exist
 3. **Review Organization Report**: `cat REPOSITORY_ORGANIZATION.md`
 4. **Check Git Status**: `git status` - should show moved files
 
@@ -93,7 +93,7 @@ done
 ```
 /home/runner/work/_codex_/_codex_/
 ├── README.md              # Preserved
-├── AGENTS.md              # Preserved
+├── .codex/archive/deprecated/AGENTS.md              # Preserved
 ├── CONTRIBUTING.md        # Preserved
 ├── SECURITY.md            # Preserved
 ├── src/                   # Source code
@@ -132,7 +132,7 @@ Total: 1,208 files
 - **Temporary Docs**: `PHASE*.md`, `WAVE*.md`
 
 ### Files to Preserve
-- **Core Documentation**: `README.md`, `AGENTS.md`, `CONTRIBUTING.md`
+- **Core Documentation**: `README.md`, `.codex/archive/deprecated/AGENTS.md`, `CONTRIBUTING.md`
 - **Security**: `SECURITY.md`, `CODE_OF_CONDUCT.md`
 - **Governance**: `GOVERNANCE.md`, `LICENSE`
 - **Current Status**: Most recent status update files

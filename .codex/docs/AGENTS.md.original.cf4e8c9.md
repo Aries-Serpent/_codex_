@@ -1,4 +1,4 @@
-# AGENTS.md - AI Agent Documentation
+# .codex/archive/deprecated/AGENTS.md - AI Agent Documentation
 
 > **Status:** ✅ UP-TO-DATE (2025-12-26)
 > **Repository:** Aries-Serpent/_codex_ (ID: 1040037790)

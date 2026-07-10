@@ -200,7 +200,7 @@ jobs:
   - [ ] Generate new PAT
   - [ ] Update repository secrets
   - [ ] Verify with token-probe
-  - [ ] Update AGENT_ACCOUNTABILITY_REPORT.md
+  - [ ] Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 
 - [ ] Matrix strategy consistency check
   - [ ] Ensure all matrix jobs have proper strategy

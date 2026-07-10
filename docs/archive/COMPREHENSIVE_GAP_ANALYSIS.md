@@ -349,7 +349,7 @@ Updated `codex_gap_registry.yaml` to reflect:
 
 ### Current State
 - 693 markdown files
-- Comprehensive AGENTS.md
+- Comprehensive .codex/archive/deprecated/AGENTS.md
 - Architecture diagrams present
 
 ### Gaps
@@ -514,7 +514,7 @@ AI Agent Infrastructure:
 - agents/workflow_navigator.py # Workflow automation
 
 Documentation:
-- AGENTS.md                   # Main agent guide
+- .codex/archive/deprecated/AGENTS.md                   # Main agent guide
 - docs/                       # Comprehensive documentation
 - agents/prompts/ARCHITECTURE.md # System diagrams
 
@@ -530,7 +530,7 @@ Organization:
 
 ### C. Related Documents
 
-- [AGENTS.md](../agents.md) - Agent operations playbook
+- [.codex/archive/deprecated/AGENTS.md](../agents.md) - Agent operations playbook
 - [MATURITY_REMAINING_WORK.md](MATURITY_REMAINING_WORK.md) - Maturity improvement plan
 - [REMAINING_WORK.md](REMAINING_WORK.md) - General remaining work
 - [agents/prompts/ARCHITECTURE.md](../architecture/INDEX.md) - System architecture

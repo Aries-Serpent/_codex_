@@ -47,7 +47,7 @@ Based on my comprehensive analysis of the _codex_ repository's documentation, I'
 **Remaining Issues (Examples):**
 - `docs/agents/AGENT_CONSOLIDATION_MATRIX.md` - "Agent type detection" (line 45)
 - `.codex/cognitive_brain/PHASE_35_INFRASTRUCTURE_STABILIZATION_STATUS.md` - "Agent State Management" (mid-text capitalization)
-- `docs/AGENTS.md` - 3 instances of "Agent accountability" vs "agent accountability" inconsistency
+- `docs/.codex/archive/deprecated/AGENTS.md` - 3 instances of "Agent accountability" vs "agent accountability" inconsistency
 
 ---
 
@@ -130,10 +130,10 @@ Based on my comprehensive analysis of the _codex_ repository's documentation, I'
 
 | File | Issue | Line # | Severity |
 |------|-------|--------|----------|
-| `AGENTS.md` | "The Agent registry" (mid-sentence) | 145 | 🟠 Medium |
+| `.codex/archive/deprecated/AGENTS.md` | "The Agent registry" (mid-sentence) | 145 | 🟠 Medium |
 | `.codex/DEVOPS_TERMINOLOGY_POLICY.md` | "The Session Store is..." (mid-sentence) | 201 | 🟠 Medium |
 | `docs/CI_FAILURE_RESOLUTION_PR_2858.md` | "The Workflow runs" (duplicate capitalization) | 78 | 🟡 Low |
-| `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | 3 instances of "Agent Status" (should be lowercase in prose) | 234, 456, 789 | 🟠 Medium |
+| `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` | 3 instances of "Agent Status" (should be lowercase in prose) | 234, 456, 789 | 🟠 Medium |
 
 **Recommended Fix:**
 ```markdown
@@ -151,7 +151,7 @@ Based on my comprehensive analysis of the _codex_ repository's documentation, I'
 | Pattern | Should Be | Current Examples | Count |
 |---------|-----------|------------------|-------|
 | `pull-request` in prose | `PR` or `pull request` | CONTRIBUTING.md, PR_TEMPLATE_COMPREHENSIVE.md | 8 |
-| `agent-name` in prose | `agent name` | AGENTS.md (line 56) | 3 |
+| `agent-name` in prose | `agent name` | .codex/archive/deprecated/AGENTS.md (line 56) | 3 |
 
 ---
 
@@ -161,7 +161,7 @@ Based on my comprehensive analysis of the _codex_ repository's documentation, I'
 
 | Issue | Current | Should Be | File |
 |-------|---------|-----------|------|
-| Terminology not backtick-formatted | "agent registry" | `` `agent registry` `` | docs/AGENTS.md (line 89) |
+| Terminology not backtick-formatted | "agent registry" | `` `agent registry` `` | docs/.codex/archive/deprecated/AGENTS.md (line 89) |
 | Inconsistent backticking | Some terms wrapped, some not | All key terms in backticks | Multiple (5 files) |
 
 ---
@@ -260,7 +260,7 @@ Based on my comprehensive analysis of the _codex_ repository's documentation, I'
 | `.codex/DEVOPS_TERMINOLOGY_POLICY.md` | "A logical unit of agent work, tracked in session store" | Operational |
 | `docs/SECRETS_AND_ENVIRONMENT_VARIABLES.md` | "A discrete unit of work in a conversation" | Technical |
 | `TERMINOLOGY_GLOSSARY.md` | "A discrete logical unit of agent work, tracked in session store with context" | Reference |
-| `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | "An interaction session between user and agent" | Reporting |
+| `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` | "An interaction session between user and agent" | Reporting |
 
 **Issues:** Inconsistent scope (single PR? Multiple turns? Time-based?)
 
@@ -273,7 +273,7 @@ Based on my comprehensive analysis of the _codex_ repository's documentation, I'
 | Location | Definition | Scope |
 |----------|-----------|-------|
 | `TERMINOLOGY_GLOSSARY.md` | STM = session-local, LTM = cross-session | System design |
-| `docs/COGNITIVE_BRAIN_QUANTUM_INTEGRATION.md` | Memory = "context maintained across interactions" | Behavioral |
+| `docs/COGNITIVE_BRAIN_QUANTUM_docs/api/reference/INTEGRATION.md` | Memory = "context maintained across interactions" | Behavioral |
 | README.md (brief mention) | Memory = "cache layer component" | Infrastructure |
 
 **Issues:** Conflation of memory as concept, storage, and performance optimization
@@ -303,7 +303,7 @@ Based on my comprehensive analysis of the _codex_ repository's documentation, I'
 > "Functions: observe, orient, decide, act"
 > ❌ Lists steps, no explanation of decision cycle
 
-**Definition 2** (COGNITIVE_BRAIN_QUANTUM_INTEGRATION.md):
+**Definition 2** (COGNITIVE_BRAIN_QUANTUM_docs/api/reference/INTEGRATION.md):
 > "Core to agentic execution"
 > ❌ Vague, no explanation
 

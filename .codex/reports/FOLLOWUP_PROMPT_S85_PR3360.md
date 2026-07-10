@@ -85,7 +85,7 @@ If any failures: activate CI Auto-Healer Agent per `.github/agents/ci-auto-heale
   ```
 - **For each unregistered agent**: Add entry to AGENT_REGISTRY.yaml with fields matching existing entries
 - **Target**: total_agents ≥ 70
-- **Update**: `AGENTS.md` specialized agents table
+- **Update**: `.codex/archive/deprecated/AGENTS.md` specialized agents table
 
 ### P4 — run_hf_trainer Extended Integration Tests
 

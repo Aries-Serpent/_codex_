@@ -60,10 +60,10 @@
 
 ### Documentation (Ready)
 
-1. **QUICK_START_COGNITIVE_BRAIN.md** (4.7 KB)
+1. **docs/quickstart/QUICK_START_COGNITIVE_BRAIN.md** (4.7 KB)
    - Comprehensive 5-minute quick start guide
    - Sections: Installation, first program, 21 APIs, patterns, troubleshooting
-   - Location: `./QUICK_START_COGNITIVE_BRAIN.md`
+   - Location: `./docs/quickstart/QUICK_START_COGNITIVE_BRAIN.md`
    - Status: ✅ Existing & Linked
 
 ### Release Notes (Ready)
@@ -118,7 +118,7 @@ Contributing Guide:
 Repository Root:
 ├── aries-serpent-cognitive-brain-0.1.0.zip         ← Package archive
 ├── aries-serpent-cognitive-brain-0.1.0.sha256      ← Checksum
-├── QUICK_START_COGNITIVE_BRAIN.md                  ← Quick start guide
+├── docs/quickstart/QUICK_START_COGNITIVE_BRAIN.md                  ← Quick start guide
 └── (Other repository files)
 ```
 
@@ -271,7 +271,7 @@ Repository Root:
 - `.codex/ADOPTION_TRACKING_BASELINE.md` — Adoption tracking
 - `.codex/DISCUSSION_ANNOUNCEMENT_DRAFT.md` — Discussion content
 - `.codex/TASK_5_COMPLETION_SUMMARY.md` — Detailed instructions
-- `QUICK_START_COGNITIVE_BRAIN.md` — User guide
+- `docs/quickstart/QUICK_START_COGNITIVE_BRAIN.md` — User guide
 - `CONTRIBUTING.md` — Contribution guidelines
 
 ### External References

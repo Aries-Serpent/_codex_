@@ -779,7 +779,7 @@ Add to ALL new files:
 1. **Phase 8.2 Implementation:** `src/cognitive_brain/quantum/`
 2. **Status Assessment:** `.codex/plans/COGNITIVE_BRAIN_PHASE_8_STATUS_ASSESSMENT.md`
 3. **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-4. **Guidelines:** `AGENTS.md`
+4. **Guidelines:** `.codex/archive/deprecated/AGENTS.md`
 
 ---
 

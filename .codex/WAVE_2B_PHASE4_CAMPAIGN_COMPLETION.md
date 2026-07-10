@@ -250,7 +250,7 @@ Set up continuous CVE monitoring and establish automated alerts for new vulnerab
 2. Tag all Phase 1-3 reports with campaign ID
 3. Archive this document in .codex/WAVE_2B_FINAL_CAMPAIGN_ARCHIVE/
 4. Create CHANGELOG.md entry with deployment date
-5. Update AGENT_ACCOUNTABILITY_REPORT.md with completion status
+5. Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with completion status
 
 ### Post-Deployment Verification (24 hours)
 - [ ] Monitor error logs for new failures

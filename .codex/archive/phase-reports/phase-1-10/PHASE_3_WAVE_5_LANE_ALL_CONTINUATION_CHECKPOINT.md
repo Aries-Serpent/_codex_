@@ -15,7 +15,7 @@
 | Check | Status | Evidence |
 |-------|--------|----------|
 | **Mandatory Pre-Load** | ✅ VERIFIED | AGENTIC_REPO_STATE.md, CODEBASE_AGENCY_POLICY.md confirmed |
-| **REQ-4 (Accountability)** | ✅ VERIFIED | AGENT_ACCOUNTABILITY_REPORT.md current as of 2026-06-30T15:25Z |
+| **REQ-4 (Accountability)** | ✅ VERIFIED | .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md current as of 2026-06-30T15:25Z |
 | **REQ-5 (Changelog)** | ✅ VERIFIED | CHANGELOG.md updated with all recent fixes |
 | **Auth Status** | ✅ ACTIVE | COPILOT_AGENT_AUTH_ENABLED=true, MAX_AUTONOMY_LEVEL=D |
 | **User Authorization** | ✅ CONFIRMED | @mbaetiong approved all phase steps + autonomous GO |
@@ -240,7 +240,7 @@ Per @mbaetiong authorization:
 - PDA Entry: 2026-06-30T15:25Z (auto-pda-2026-06-30)
 
 **Accountability Tracking**:
-- ✅ AGENT_ACCOUNTABILITY_REPORT.md — Updated with session summary
+- ✅ .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md — Updated with session summary
 - ✅ CHANGELOG.md — Updated with all fixes and improvements
 - ✅ .codex/aftermath/pda_iterations.jsonl — Session logged
 

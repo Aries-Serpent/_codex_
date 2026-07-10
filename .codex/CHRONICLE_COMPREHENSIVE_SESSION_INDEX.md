@@ -112,7 +112,7 @@ Branch: copilot/explore-codebase-analyze
 Changes:
   - Security remediation: CodeQL + Semgrep OSS fixes
   - Workflow pinning: GitHub Actions to commit SHAs
-  - Compliance: REQ-4 & REQ-5 updates (AGENT_ACCOUNTABILITY_REPORT.md, CHANGELOG.md)
+  - Compliance: REQ-4 & REQ-5 updates (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md, CHANGELOG.md)
 Impact: High - 200+ files modified, major security/compliance work
 Merging User: mbaetiong (Statix)
 ```
@@ -264,7 +264,7 @@ Merging User: mbaetiong (Statix)
 
 ## 🔗 Related Documentation
 
-- **Session Accountability:** `/docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- **Session Accountability:** `/docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - **Phase 8 Status:** `.codex/PHASE_8_WS2_*` files
 - **PR #5263 Details:** https://github.com/Aries-Serpent/_codex_/pull/5263
 - **PR #5264 Details:** https://github.com/Aries-Serpent/_codex_/pull/5264

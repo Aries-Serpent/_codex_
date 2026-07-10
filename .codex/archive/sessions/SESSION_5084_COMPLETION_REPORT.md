@@ -59,7 +59,7 @@
 |----------|-----------|-------------|--------|
 | Fast Validation | 3 secrets false positives | Pragma allowlist comments | ✅ FIXED |
 | Pre-Merge Validation | F-string placeholders + f-string refs | `<ERROR_TYPE>` → `{error_type}` | ✅ FIXED |
-| Governance Compliance | REQ-4 not in latest commit | Updated AGENT_ACCOUNTABILITY_REPORT.md | ✅ FIXED |
+| Governance Compliance | REQ-4 not in latest commit | Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md | ✅ FIXED |
 | Unified Governance | REQ-5 not in latest commit | Updated CHANGELOG.md | ✅ FIXED |
 | Comment Review Gate | 2 unaddressed blocking comments | Posted resolution replies | ✅ FIXED |
 | Quick Validation (Skills) | Pre-existing test collection errors | Documented 20-error baseline | ✅ DOCUMENTED |
@@ -144,7 +144,7 @@ Risk: None (verified methods are unused)
 ├── POST_MERGE_ENVIRONMENT_BASELINE.md          [NEW]
 ├── POST_MERGE_COPILOT_SETUP_VALIDATION.md      [NEW - FIX: relative paths]
 ├── POST_MERGE_REVERSION_PROTOCOL.md            [NEW - FIX: pragma allowlist]
-├── POST_MERGE_MISSING_DEPS_INSTALL.md          [NEW - FIX: /tmp/ → .codex/]
+├── POST_MERGE_MISSING_DEPS_.codex/archive/misc/INSTALL.md          [NEW - FIX: /tmp/ → .codex/]
 ├── POST_MERGE_SESSION_CONTINUATION_BRIEF.md    [NEW - FIX: relative paths]
 ├── POST_MERGE_SESSION_CONTINUATION_BRIEF_V2.md [NEW]
 ├── POST_MERGE_COPILOT_EXECUTION_PROMPT.md      [NEW - FIX: pragma allowlist]
@@ -166,7 +166,7 @@ src/codex/auth/
 
 ### Compliance & Metadata (3 files)
 ```
-├── docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md  [MODIFIED - FIX: update]
+├── docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md  [MODIFIED - FIX: update]
 ├── CHANGELOG.md                                        [MODIFIED - FIX: update]
 ├── src/tokenization/cli.py                            [MODIFIED - FIX: f-strings]
 └── .codex/session_context_latest.md                   [AUTO - refresh]
@@ -245,7 +245,7 @@ python3 -m pytest --collect-only tests/ 2>&1 | grep -c "ERROR"
 
 **All Gates PASS?** → Continue to Phase 3  
 **Gates 1 or 2 FAIL?** → ESCALATE & REVERT (read POST_MERGE_REVERSION_PROTOCOL.md)  
-**Gates 3-5 FAIL?** → Attempt recovery (see POST_MERGE_MISSING_DEPS_INSTALL.md)  
+**Gates 3-5 FAIL?** → Attempt recovery (see POST_MERGE_MISSING_DEPS_.codex/archive/misc/INSTALL.md)  
 **Gate 6 >25 errors?** → Investigate regressions (run diagnostics)
 
 ### 🚀 PHASE 3: CAMPAIGN EXECUTION (30-60 minutes)
@@ -268,7 +268,7 @@ python3 -m pytest --collect-only tests/ 2>&1 | grep -c "ERROR"
    - Document results
 
 4. **Documentation** (5 min)
-   - Update AGENT_ACCOUNTABILITY_REPORT.md
+   - Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
    - Record session completion status
 
 **Total Time**: 60-90 minutes

@@ -177,7 +177,7 @@
 
 ### Documentation & Reporting (15 min)
 1. [ ] Generate final campaign report: `.codex/PHASE_6_FINAL_REPORT.md`
-2. [ ] Update accountability report: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+2. [ ] Update accountability report: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 3. [ ] Run session wrapup: `scripts/ci/session_wrapup_autofix.py`
 4. [ ] Commit all Phase 6 artifacts
 

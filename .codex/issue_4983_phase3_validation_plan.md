@@ -63,7 +63,7 @@ Once cascade state is reset:
 # Circuit breaker should now allow Pattern 25 execution
 python scripts/ci/auto_fix_common_issues.py --pattern 25
 
-# This will update AGENT_ACCOUNTABILITY_REPORT.md
+# This will update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 # and call sync_tracked_files.py
 ```
 

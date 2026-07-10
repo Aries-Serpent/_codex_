@@ -13,7 +13,7 @@
 ### Key Findings
 - **275 root items** analyzed (30 essential, 156 relocatable, 89 needs review)
 - **345 reference updates** would be required for full reorganization
-- **AGENTS.md has 293 references** - critical hub, high-risk to move
+- **.codex/archive/deprecated/AGENTS.md has 293 references** - critical hub, high-risk to move
 - **Physics Model Balance⚖️** directive applied: Zero-break guarantee prioritized
 
 ### Deliverables from Preflight
@@ -137,7 +137,7 @@ Jobs:
 - [ ] Audit all COGNITIVE_BRAIN_* files in root (20+ files)
 - [ ] Move to `docs/cognitive_brain/` with semantic organization
 - [ ] Update all references atomically
-- [ ] Add navigation section to AGENTS.md
+- [ ] Add navigation section to .codex/archive/deprecated/AGENTS.md
 - [ ] Validate MkDocs builds successfully
 
 **Structure:**
@@ -183,7 +183,7 @@ docs/cognitive_brain/
 3. Create `.github/agents/documentation-consolidator.md`
 4. Test each agent with simple examples
 5. Update `.codex/cognitive_brain/CUSTOM_AGENTS_CATALOG.md`
-6. Add agents to AGENTS.md navigation
+6. Add agents to .codex/archive/deprecated/AGENTS.md navigation
 
 ### Week 1: Day 5 (CI/CD Workflow)
 1. Create `.github/workflows/root-org-validation.yml`
@@ -289,7 +289,7 @@ def can_move_automatically(risk_level):
 ### Documentation 📚
 - [ ] `docs/cognitive_brain/INDEX.md`
 - [ ] Moved COGNITIVE_BRAIN_* files to docs/cognitive_brain/
-- [ ] Updated references in AGENTS.md
+- [ ] Updated references in .codex/archive/deprecated/AGENTS.md
 - [ ] Updated MkDocs navigation
 
 ### Reports & Status 📊

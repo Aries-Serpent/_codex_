@@ -416,7 +416,7 @@ Failure causes:
 **Commit 3 - Updated Accountability & README**
 **Message**: `docs(track6): update accountability report and consolidate documentation index`  
 **Files Modified**:
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - `.codex/README.md`
 
 ### Consolidation Evidence
@@ -518,7 +518,7 @@ Signed: ci-resilience-emergency-response-agent (2026-03-25)
 - `.codex/PHASE1_REMEDIATION_VERIFICATION.md`
 - `.codex/WORKFLOW_HEALTH_MONITORING_REPORT.md`
 - `.codex/WORKFLOW_HEALTH_FINAL_REPORT.md`
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (updated)
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (updated)
 - `.codex/README.md` (updated)
 
 ### Total Impact Summary

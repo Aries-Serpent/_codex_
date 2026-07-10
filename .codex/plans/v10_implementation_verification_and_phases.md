@@ -183,7 +183,7 @@
 | v10_agents_capabilities_deep_research_findings.md | Research | 23KB | Deep analysis | ✅ |
 | pr_2685_status_report.md | Status | 17KB | PR status | ✅ |
 | v10_agents_capabilities_and_research_roadmap.md | Roadmap | 23KB | Research plan | ✅ |
-| AGENTS.md | Guide | 15KB | Repository guide | ✅ |
+| .codex/archive/deprecated/AGENTS.md | Guide | 15KB | Repository guide | ✅ |
 
 **Total Documentation**: 241KB across 10+ files
 **Coverage**: 100% of requirements documented

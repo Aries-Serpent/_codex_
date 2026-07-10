@@ -26,7 +26,7 @@ The governance model is built on three pillars:
 | Pillar | Scope | Enforcement |
 |--------|-------|-------------|
 | **Session Accountability** | REQ-1 to REQ-6 | `session_wrapup_autofix.py`, compliance dashboard |
-| **Operational Safety** | Network, secrets, agentic autonomy | `AGENTS.md`, `CODEBASE_AGENCY_POLICY.md` |
+| **Operational Safety** | Network, secrets, agentic autonomy | `.codex/archive/deprecated/AGENTS.md`, `CODEBASE_AGENCY_POLICY.md` |
 | **CI/CD Quality Gate** | Tests, lint, type-check, SBOM | Workflow matrix in `.github/workflows/` |
 
 ---
@@ -86,12 +86,12 @@ evidence.
 
 ### REQ-4 — Agent Accountability Report Updated
 
-**Definition:** The file `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` must
+**Definition:** The file `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` must
 be updated in the last commit. At minimum one new entry must describe what the agent
 did, why, and the outcome.
 
 **Enforcement:** The compliance dashboard calls `git log -1 --name-only` and checks
-for `AGENT_ACCOUNTABILITY_REPORT.md` in the diff. If absent,
+for `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` in the diff. If absent,
 `session_wrapup_autofix.py` may be invoked to auto-fix.
 
 **Remediation:** Run `python scripts/ci/session_wrapup_autofix.py --fix-accountability`
@@ -328,12 +328,12 @@ retained for 30 days. The JSON schema is:
 
 | Document | Purpose |
 |---|---|
-| `AGENTS.md` | Agent operational constraints (network, offline mode) |
+| `.codex/archive/deprecated/AGENTS.md` | Agent operational constraints (network, offline mode) |
 | `.codex/CODEBASE_AGENCY_POLICY.md` | AI agency policy |
 | `SECURITY.md` | Secret management procedures |
 | `scripts/ci/session_wrapup_autofix.py` | Auto-remediation for REQ-4/5 |
 | `scripts/ci/phase_12_2_compliance_dashboard.py` | Compliance dashboard |
-| `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | Accountability log |
+| `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` | Accountability log |
 
 ---
 

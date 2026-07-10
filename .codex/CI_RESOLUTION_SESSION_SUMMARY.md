@@ -24,7 +24,7 @@
 
 ### 1. Immediate Fixes (Direct Issue Resolution)
 
-#### File 1: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+#### File 1: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - **Issue**: Line 15 contained `API_KEY = "hardcoded_key_here"` flagged as secret
 - **Fix**: Added pragma comment `<!-- pragma: allowlist secret -->`
 - **Impact**: Eliminates false positive in detect-secrets scanning
@@ -253,7 +253,7 @@ python .github/scripts/ci-autofix-orchestrator.py --dry-run
 3. `.codex/CI_HARDENED_AUTOMATION.md` (11KB guide)
 
 ### Files Modified
-1. `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (pragma added)
+1. `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (pragma added)
 2. `.github/workflows/workflow-link-validation.yml` (PyYAML step added)
 3. `.github/workflows/secrets-baseline-enforcer.yml` (regex expanded)
 4. `.github/workflows/batch-ci-triage.yml` (prompts + JSON output)

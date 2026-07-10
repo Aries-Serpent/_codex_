@@ -278,7 +278,7 @@ Day 4 (2026-06-22):   100% 🏁 FINAL SIGN-OFF (target)
 - `.codex/DAY_3_EVENING_STANDUP.md` (21:00Z)
 
 ### Accountability
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (updated with Day 3)
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (updated with Day 3)
 
 ---
 

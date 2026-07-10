@@ -90,7 +90,7 @@ Add completion summary:
 **Next Phase**: C.4 Tier 2 documentation work unblock
 ```
 
-#### 2. AGENT_ACCOUNTABILITY_REPORT.md
+#### 2. .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 Add Phase B completion entry:
 ```markdown
 ### Phase B Completion (2026-07-02T01:45Z)

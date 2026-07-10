@@ -105,7 +105,7 @@ S70+S71 left open, and fully resolved DRQ-S70-004 (44 remaining TZ-naive `dateti
 1. **CI green verification**: Confirm all 3 failing CI jobs now pass
 2. **DRQ-S70-004 archive**: Move to RESOLVED section in `questions_for_research.md`
 3. **Integration test**: `tests/space_traversal/test_run_hf_trainer.py` (run_hf_trainer smoke test)
-4. **`_codex_` memory patterns**: Store S72 patterns in AGENTS.md
+4. **`_codex_` memory patterns**: Store S72 patterns in .codex/archive/deprecated/AGENTS.md
 
 ---
 

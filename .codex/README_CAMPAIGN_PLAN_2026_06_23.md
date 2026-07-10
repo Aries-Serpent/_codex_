@@ -209,7 +209,7 @@ This campaign planning consists of 4 comprehensive documents. Choose the right o
 **Daily Checkpoint:** `.codex/PHASE_2_CHECKPOINT_DAY_X.md`  
 **Weekly Reports:** `.codex/PHASE_2_TRACK_[A|B|C|D]_DAY_X.md`  
 **Phase Completion:** `.codex/PHASE_2_COMPLETION_REPORT.md`  
-**Accountability:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`  
+**Accountability:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`  
 
 **Branch:** `copilot/phase-2-coverage-expansion`  
 **Commit Format:** `fix(phase-2): <task> - tests: +N | coverage: +X% | agent: <name>`

@@ -16,7 +16,7 @@ Enable external users to install, configure, and integrate the packaged system b
 
 ### Phase 3 (Days 17-19)
 
-1. **INSTALL.md** — Online Installation Guide
+1. **.codex/archive/misc/INSTALL.md** — Online Installation Guide
    - Prerequisites: Python 3.12, pip, wheel
    - Install from wheel: `pip install codex-core-0.1.0.whl`
    - Install from sdist: `tar -xzf codex-core-0.1.0.tar.gz && pip install codex-core/`
@@ -24,7 +24,7 @@ Enable external users to install, configure, and integrate the packaged system b
    - Troubleshooting: Common errors + solutions
    - Time estimate: <15 minutes from start to "codex --version" working
 
-2. **OFFLINE_INSTALL.md** — Air-Gap Installation Guide
+2. **OFFLINE_.codex/archive/misc/INSTALL.md** — Air-Gap Installation Guide
    - Prerequisites: Download wheels beforehand (wheelhouse/)
    - Setup: Python 3.12, pip, bash
    - Step-by-step: Run OFFLINE_BOOTSTRAP.sh, verify
@@ -32,7 +32,7 @@ Enable external users to install, configure, and integrate the packaged system b
    - Common issues: Hash verification failures, missing wheels
    - Time estimate: <20 minutes from start to fully installed
 
-3. **ISOLATED_DEPLOYMENT.md** — Whitelist-Only Networking
+3. **docs/release/ISOLATED_DEPLOYMENT.md** — Whitelist-Only Networking
    - Enable offline mode: `export CODEX_NETWORK_MODE=isolated`
    - Verify isolation: `codex-cognitive health` confirms no network calls
    - Configure allowlist: Edit `.codex/network-policy.yaml`
@@ -40,7 +40,7 @@ Enable external users to install, configure, and integrate the packaged system b
    - Security review: Audit log inspection, policy validation
    - Troubleshooting: "Network request blocked" errors, solutions
 
-4. **INTEGRATION.md** — Embedding Guide
+4. **docs/api/reference/INTEGRATION.md** — Embedding Guide
    - Use case: Embed cognitive engine in external Python application
    - Example code:
      ```python
@@ -67,7 +67,7 @@ Enable external users to install, configure, and integrate the packaged system b
      - Answer: Yes, with separate session IDs and database paths
    - ... [20+ more common issues]
 
-6. **RELEASE_NOTES.md** — v0.1.0-external Release
+6. **docs/release/RELEASE_NOTES.md** — v0.1.0-external Release
    - Version: 0.1.0-external (or agreed version)
    - Features: 3 package profiles, offline support, whitelisted networking
    - Breaking changes: None (new release)
@@ -83,38 +83,38 @@ Enable external users to install, configure, and integrate the packaged system b
 
 ### Days 17-18: Documentation Writing
 
-**Task 5.1: INSTALL.md**
+**Task 5.1: .codex/archive/misc/INSTALL.md**
 - Based on Lane 1 package profiles (core, runtime, full)
 - Walkthrough: Download → pip install → verify
 - Screenshots: Example terminal output
 - Troubleshooting: Top 5 common errors
 - Review by: packaging-validation-agent (Lane 1)
-- Output: Final INSTALL.md
+- Output: Final .codex/archive/misc/INSTALL.md
 
-**Task 5.2: OFFLINE_INSTALL.md**
+**Task 5.2: OFFLINE_.codex/archive/misc/INSTALL.md**
 - Based on Lane 2 OFFLINE_BOOTSTRAP.sh
 - Walkthrough: Download wheels → run bootstrap → verify
 - Detailed: Hash verification, network-free validation
 - Platforms: Ubuntu, macOS, Windows (with platform-specific notes)
 - Review by: packaging-validation-agent (Lane 2)
-- Output: Final OFFLINE_INSTALL.md
+- Output: Final OFFLINE_.codex/archive/misc/INSTALL.md
 
-**Task 5.3: ISOLATED_DEPLOYMENT.md**
+**Task 5.3: docs/release/ISOLATED_DEPLOYMENT.md**
 - Based on Lane 4 network policy
 - Setup: Enable offline mode, configure allowlist
 - Examples: Add github.com, custom API hosts
 - Verification: Audit log inspection, policy validation
 - Review by: security-audit-agent (Lane 4)
-- Output: Final ISOLATED_DEPLOYMENT.md
+- Output: Final docs/release/ISOLATED_DEPLOYMENT.md
 
-**Task 5.4: INTEGRATION.md**
+**Task 5.4: docs/api/reference/INTEGRATION.md**
 - Based on Lane 3 cognitive engine APIs
 - Use case motivation: Why embed cognitive engine?
 - Code examples: OODA loop, session management, memory
 - Configuration: Environment variables, config files
 - Advanced topics: Custom phases, pattern recognition
 - Review by: cognitive-brain-cli-agent (Lane 3)
-- Output: Final INTEGRATION.md
+- Output: Final docs/api/reference/INTEGRATION.md
 
 **Task 5.5: TROUBLESHOOTING.md**
 - Collect issues from all lane teams
@@ -124,27 +124,27 @@ Enable external users to install, configure, and integrate the packaged system b
 - Escalation path: When to contact maintainers
 - Output: Final TROUBLESHOOTING.md
 
-**Task 5.6: RELEASE_NOTES.md**
+**Task 5.6: docs/release/RELEASE_NOTES.md**
 - Lane 1: Package profiles, version
 - Lane 2: Offline support, bootstrap mechanism
 - Lane 3: Cognitive engine features, APIs
 - Lane 4: Network policy, security posture
 - Lane 6: Test coverage, validation results
-- Output: Final RELEASE_NOTES.md
+- Output: Final docs/release/RELEASE_NOTES.md
 
 ### Days 18-19: Review & Finalization
 
 **Task 5.7: Cross-Lane Review**
-- Lane 1 reviews: INSTALL.md, INTEGRATION.md (mentions package profiles)
-- Lane 2 reviews: OFFLINE_INSTALL.md (bootstrap, wheelhouse)
-- Lane 3 reviews: INTEGRATION.md (cognitive APIs, CLI)
-- Lane 4 reviews: ISOLATED_DEPLOYMENT.md (network policy)
+- Lane 1 reviews: .codex/archive/misc/INSTALL.md, docs/api/reference/INTEGRATION.md (mentions package profiles)
+- Lane 2 reviews: OFFLINE_.codex/archive/misc/INSTALL.md (bootstrap, wheelhouse)
+- Lane 3 reviews: docs/api/reference/INTEGRATION.md (cognitive APIs, CLI)
+- Lane 4 reviews: docs/release/ISOLATED_DEPLOYMENT.md (network policy)
 - Lane 6 reviews: All docs (ensure they reflect actual implementation)
 - Collect feedback, iterate
 
 **Task 5.8: Compliance Checks**
 - All guides tested by actual user walkthrough (time-box each to stated time estimate)
-- Example: INSTALL.md should work in <15 minutes
+- Example: .codex/archive/misc/INSTALL.md should work in <15 minutes
 - Links: All internal doc links correct (no broken references)
 - Code examples: All syntax correct (can run as-is)
 - Screenshots: All current, reflect actual output
@@ -163,28 +163,28 @@ Enable external users to install, configure, and integrate the packaged system b
 ### Lane 5 ← Lane 1 (Documentation ← Packaging)
 
 **Dependency:** Lane 1 finalizes package profiles + entrypoints
-- Lane 5 writes INSTALL.md using Lane 1 profiles
+- Lane 5 writes .codex/archive/misc/INSTALL.md using Lane 1 profiles
 - Lane 5 needs final wheel filenames, profile names, sizes
 - **Sync Point:** Lane 1 delivers finalized pyproject.toml by Day 9
 
 ### Lane 5 ← Lane 2 (Documentation ← Offline Bootstrap)
 
 **Dependency:** Lane 2 finalizes OFFLINE_BOOTSTRAP.sh
-- Lane 5 writes OFFLINE_INSTALL.md based on bootstrap script
+- Lane 5 writes OFFLINE_.codex/archive/misc/INSTALL.md based on bootstrap script
 - Lane 5 needs script usage, error messages, troubleshooting
 - **Sync Point:** Lane 2 delivers final bootstrap by Phase 2 Day 14
 
 ### Lane 5 ← Lane 3 (Documentation ← Cognitive Runtime)
 
 **Dependency:** Lane 3 finalizes cognitive engine APIs + CLI
-- Lane 5 writes INTEGRATION.md + TROUBLESHOOTING.md with examples
+- Lane 5 writes docs/api/reference/INTEGRATION.md + TROUBLESHOOTING.md with examples
 - Lane 5 needs API documentation, CLI command syntax
 - **Sync Point:** Lane 3 delivers API docs by Phase 1 Day 9
 
 ### Lane 5 ← Lane 4 (Documentation ← Network Policy)
 
 **Dependency:** Lane 4 finalizes network policy YAML + enforcement
-- Lane 5 writes ISOLATED_DEPLOYMENT.md explaining policy
+- Lane 5 writes docs/release/ISOLATED_DEPLOYMENT.md explaining policy
 - Lane 5 needs policy examples, approved hosts, customization process
 - **Sync Point:** Lane 4 delivers final policy by Phase 2 Day 16
 
@@ -201,12 +201,12 @@ Enable external users to install, configure, and integrate the packaged system b
 
 | Criterion | Validation | Owner |
 |-----------|-----------|-------|
-| INSTALL.md complete & tested | User walkthrough in <15 min | unified-doc-agent |
-| OFFLINE_INSTALL.md complete & tested | Air-gap installation succeeds | unified-doc-agent |
-| ISOLATED_DEPLOYMENT.md complete | Policy configuration examples work | unified-doc-agent |
-| INTEGRATION.md code examples valid | All code runs as-is | unified-doc-agent |
+| .codex/archive/misc/INSTALL.md complete & tested | User walkthrough in <15 min | unified-doc-agent |
+| OFFLINE_.codex/archive/misc/INSTALL.md complete & tested | Air-gap installation succeeds | unified-doc-agent |
+| docs/release/ISOLATED_DEPLOYMENT.md complete | Policy configuration examples work | unified-doc-agent |
+| docs/api/reference/INTEGRATION.md code examples valid | All code runs as-is | unified-doc-agent |
 | TROUBLESHOOTING.md comprehensive | Covers top 20 issues | unified-doc-agent |
-| RELEASE_NOTES.md complete | All features, changes, checksums listed | unified-doc-agent |
+| docs/release/RELEASE_NOTES.md complete | All features, changes, checksums listed | unified-doc-agent |
 | Cross-lane review passed | All lane leads approve docs | orchestrator-agent |
 | Links verified | No broken internal references | unified-doc-agent |
 | Phase 3 gate (Day 19) | All docs final, reviewed, ready for release | orchestrator-agent |
@@ -230,10 +230,10 @@ Enable external users to install, configure, and integrate the packaged system b
 
 ```bash
 # Markdown linting
-markdownlint INSTALL.md OFFLINE_INSTALL.md ISOLATED_DEPLOYMENT.md
+markdownlint .codex/archive/misc/INSTALL.md OFFLINE_.codex/archive/misc/INSTALL.md docs/release/ISOLATED_DEPLOYMENT.md
 
 # Link validation
-markdown-link-check INSTALL.md
+markdown-link-check .codex/archive/misc/INSTALL.md
 
 # Code example syntax check
 python -m py_compile examples/*.py
@@ -254,5 +254,5 @@ sphinx-build -b html docs/ docs/_build/
 - Suggested fix (if you have one)
 
 **Example:**
-> Issue: INTEGRATION.md example uses `OODA.execute()`, but actual method is `OODA.run()`. Severity: User-blocking. Fix: Update example code + Lane 3 API docs.
+> Issue: docs/api/reference/INTEGRATION.md example uses `OODA.execute()`, but actual method is `OODA.run()`. Severity: User-blocking. Fix: Update example code + Lane 3 API docs.
 

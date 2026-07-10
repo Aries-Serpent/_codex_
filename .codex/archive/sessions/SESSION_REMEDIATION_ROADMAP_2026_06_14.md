@@ -618,7 +618,7 @@ Status: Final synthesis. Gate: Must achieve ≥90% readiness for production depl
 
 ### Post-Execution
 - [ ] All results documented in session summary
-- [ ] AGENT_ACCOUNTABILITY_REPORT.md updated
+- [ ] .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated
 - [ ] CHANGELOG.md updated with fixes
 - [ ] Follow-up prompt created for Phase 6
 - [ ] PR ready for review & merge

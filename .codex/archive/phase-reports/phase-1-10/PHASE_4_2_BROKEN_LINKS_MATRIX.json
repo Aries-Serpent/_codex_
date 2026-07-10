@@ -410,7 +410,7 @@
   "docs/accountability/README.md": [
     {
       "link_text": "\ud83d\udcc4 Group 11-21 (Sessions 101-210)",
-      "target": "./AGENT_ACCOUNTABILITY_REPORT.md#all-groups-1-32",
+      "target": "./.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md#all-groups-1-32",
       "type": "missing_file"
     }
   ],
@@ -423,8 +423,8 @@
   ],
   "docs/validation/Windows_Filename_Remediation.md": [
     {
-      "link_text": "AGENTS.md - Cross-Platform Guidelines",
-      "target": "../../AGENTS.md#-cross-platform-filename-requirements",
+      "link_text": ".codex/archive/deprecated/AGENTS.md - Cross-Platform Guidelines",
+      "target": "../../.codex/archive/deprecated/AGENTS.md#-cross-platform-filename-requirements",
       "type": "missing_file"
     }
   ],

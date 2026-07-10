@@ -79,7 +79,7 @@ _RULES: list[dict[str, Any]] = [
         ),
         "fix_commands": [
             "Add '### Fixed (SN)' entry under '## [Unreleased]' in CHANGELOG.md",
-            "Update docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md",
+            "Update docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md",
         ],
         "triage_note": "agent-auth pre-flight gate; Copilot agent must update CHANGELOG + accountability before pushing.",  # noqa: E501
     },

@@ -70,17 +70,17 @@ Reduction:  ~5% size reduction achieved
 
 - **Total Candidates**: 1 file
 - **Total Size**: 1.14MB
-- **Largest File**: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (1.14MB)
+- **Largest File**: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (1.14MB)
 
 ### Candidate Details
 
 | File | Category | Size | Age | Recommendation |
 |------|----------|------|-----|----------------|
-| `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | unknown | 1.14MB | 0d | review_manually |
+| `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` | unknown | 1.14MB | 0d | review_manually |
 
 ### Recommendations
 
-1. **📄 Large Documentation File**: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+1. **📄 Large Documentation File**: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
    - **Action**: Review whether this large documentation file can be compressed, split, or offloaded to external storage
    - **Impact**: Could reduce repo size by 1.14MB
    - **Priority**: P2 (Medium - documentation file)

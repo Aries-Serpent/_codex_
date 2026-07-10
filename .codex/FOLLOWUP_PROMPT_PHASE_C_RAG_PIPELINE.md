@@ -21,7 +21,7 @@
    - Migration guide: `docs/migration/LEGACY_CODE_MIGRATION_GUIDE.md`
 
 3. ✅ **Documentation Updated**
-   - AGENTS.md - Status and security info
+   - .codex/archive/deprecated/AGENTS.md - Status and security info
    - README.md - Security badge
    - COGNITIVE_BRAIN_STATUS_UPDATE_2026_01_16.md - Session summary
 

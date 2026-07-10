@@ -238,7 +238,7 @@ E(θ) = λ_hall·𝔼[L_hall] + λ_fmt·𝔼[L_fmt] + λ_src·𝔼[L_src] + λ_c
    - Usage examples
    - Integration guide
 
-3. **`docs/COGNITIVE_BRAIN_QUANTUM_INTEGRATION.md`** (14KB)
+3. **`docs/COGNITIVE_BRAIN_QUANTUM_docs/api/reference/INTEGRATION.md`** (14KB)
    - Layer integration details
    - Architecture diagrams
    - Migration guide
@@ -334,7 +334,7 @@ E(θ) = λ_hall·𝔼[L_hall] + λ_fmt·𝔼[L_fmt] + λ_src·𝔼[L_src] + λ_c
 - PHASE2_COMPLETE_100PERCENT.md (16KB)
 - FINAL_STATUS_PHASE1_93PERCENT.md (30KB)
 - QUANTUM_AGENT_FRAMEWORK.md (7.5KB in docs/)
-- COGNITIVE_BRAIN_QUANTUM_INTEGRATION.md (14KB in docs/)
+- COGNITIVE_BRAIN_QUANTUM_docs/api/reference/INTEGRATION.md (14KB in docs/)
 
 **Historical/Archive:**
 - PHASE1_PHASE2_CONTINUATION_ACTIVE.md
@@ -574,7 +574,7 @@ E(θ) = λ_hall·𝔼[L_hall] + λ_fmt·𝔼[L_fmt] + λ_src·𝔼[L_src] + λ_c
 **Related:**
 - Roadmap: `.codex/plans/COGNITIVE_BRAIN_ROADMAP.md` (TO BE CREATED)
 - API Docs: `docs/QUANTUM_AGENT_FRAMEWORK.md`
-- Integration: `docs/COGNITIVE_BRAIN_QUANTUM_INTEGRATION.md`
+- Integration: `docs/COGNITIVE_BRAIN_QUANTUM_docs/api/reference/INTEGRATION.md`
 
 ### Repository Links
 

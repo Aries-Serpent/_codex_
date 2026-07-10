@@ -341,7 +341,7 @@ TOTAL:   ✅ 100% COMPLETE (36/36 agents, 5/5 phases)
 - ✅ All changes tested and validated
 
 ### Accountability
-- ✅ AGENT_ACCOUNTABILITY_REPORT.md updated
+- ✅ .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated
 - ✅ CHANGELOG.md updated with findings
 - ✅ Session context and decisions documented
 

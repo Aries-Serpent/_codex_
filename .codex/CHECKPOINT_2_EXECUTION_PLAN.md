@@ -209,7 +209,7 @@ Lane 3.2 (Mutation)
 2. ⏳ `.codex/PHASE_7A_LANE_32_CHECKPOINT_2_14Z.md` (Lane 3.2 agent — IN PROGRESS)
 3. ⏳ `.codex/PHASE_7A_LANE_31_CHECKPOINT_2_14Z.md` (Lane 3.1 agent — IN PROGRESS)
 4. ⏳ `.codex/PHASE_5_FINAL_REPORT_14Z.md` (Phase 5 agent — IN PROGRESS)
-5. ⏳ `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (Update with Checkpoint 2 results)
+5. ⏳ `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (Update with Checkpoint 2 results)
 6. ⏳ `.codex/CHECKPOINT_2_CROSSLANE_ANALYSIS.md` (THIS SESSION — POST-EXECUTION)
 
 ---

@@ -251,7 +251,7 @@ python3 -m pytest tests/ -v --tb=short  # Validate
 - Plan phased rollout for remaining patches
 
 **TASK 4: Accountability Update** (10-15 minutes)
-- Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- Update `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - Mark Wave 2B as ✅ COMPLETE
 - Mark Wave 3 as 📋 READY
 - Update Phase 6 completion: 50% → 85%
@@ -407,4 +407,4 @@ All conflicts documented in `.codex/wave1_dependency_conflict_matrix.json`
 **Report Generated:** 2026-06-19T14:45:00Z  
 **Report Author:** CVE Remediation Campaign Coordinator  
 **Next Review:** 2026-06-19 (Post-Wave 2B Installation)  
-**Accountability:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+**Accountability:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`

@@ -134,7 +134,7 @@ Provide to all three agents:
 - [ ] Readiness assessment completed
 
 ### Compliance Gate (Post-Wave)
-- [ ] AGENT_ACCOUNTABILITY_REPORT.md updated (REQ-4)
+- [ ] .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated (REQ-4)
 - [ ] CHANGELOG.md updated (REQ-5)
 - [ ] All files committed together
 - [ ] session_wrapup_autofix.py --check passes
@@ -165,7 +165,7 @@ Provide to all three agents:
    - Update master campaign tracker
 
 2. **Update Compliance** (REQ-4/REQ-5)
-   - Add Wave 1 completion to AGENT_ACCOUNTABILITY_REPORT.md
+   - Add Wave 1 completion to .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
    - Add Wave 1 results summary to CHANGELOG.md
    - Commit both files together
 

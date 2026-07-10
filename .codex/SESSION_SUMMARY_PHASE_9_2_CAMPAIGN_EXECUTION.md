@@ -214,7 +214,7 @@ Lane 4: agent-orchestrator
 - ✅ **Lane 1:** `.codex/PHASE_9_2_COVERAGE_REPORT.md`, `.codex/PHASE_9_2_LANE_1_COMPLETION_REPORT.md`
 - ⏳ **Lane 2:** `.codex/PHASE_9_2_SECURITY_AUDIT.md` (pending), CodeQL/bandit reports
 - ✅ **Lane 3:** `.codex/PHASE_9_2_JSONL_SCHEMA.md`, `.codex/PHASE_9_2_DOCS_AGENT_IMPLEMENTATION.md`, `.codex/PHASE_9_2_MCP_MOCKS.md`, `.codex/PHASE_9_2_DOCS_INFRASTRUCTURE.md`
-- ⏳ **Lane 4:** `.codex/PHASE_9_2_9_3_INTEGRATION.md` (pending), `.codex/PHASE_9_2_SESSION_CONTEXT.md` (pending), `.codex/PHASE_9_3_READINESS_GATE.md` (pending)
+- ⏳ **Lane 4:** `.codex/PHASE_9_2_9_3_docs/api/reference/INTEGRATION.md` (pending), `.codex/PHASE_9_2_SESSION_CONTEXT.md` (pending), `.codex/PHASE_9_3_READINESS_GATE.md` (pending)
 
 ---
 

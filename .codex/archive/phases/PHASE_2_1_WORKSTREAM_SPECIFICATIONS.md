@@ -77,7 +77,7 @@
    - `req1_eligibility_validator.py` - PR eligibility checks
    - `req2_compliance_validator.py` - Docs/tests/security compliance
    - `req3_merge_validator.py` - Authorization rules
-   - `req4_accountability_validator.py` - AGENT_ACCOUNTABILITY_REPORT.md
+   - `req4_accountability_validator.py` - .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
    - `req5_changelog_validator.py` - CHANGELOG.md
    - `req6_postmerge_validator.py` - Post-merge health checks
 
@@ -118,7 +118,7 @@
 
 ### All → Session Accountability
 - All components log to .codex/compliance/ audit trail
-- AGENT_ACCOUNTABILITY_REPORT.md tracks all phase 2.1 changes
+- .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md tracks all phase 2.1 changes
 - Session wrapup verifies compliance at PR merge
 
 ---

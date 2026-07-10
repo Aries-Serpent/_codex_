@@ -145,7 +145,7 @@ Execute final security, coverage, and compliance gates before merge-to-main cert
 #### Agent 5.3: `workflow-compliance-guardian` (CI/Merge Readiness)
 **Responsibilities:**
 - Verify REQ-1 through REQ-13 gates (all 13 must PASS)
-- Validate latest commit has REQ-4/5 updates (AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md)
+- Validate latest commit has REQ-4/5 updates (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md)
 - Run linting (ruff), type checks (mypy baseline)
 - Verify all security scans passing
 - Confirm workflow files valid (YAML + schema)

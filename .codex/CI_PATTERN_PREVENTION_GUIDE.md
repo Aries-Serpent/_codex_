@@ -306,7 +306,7 @@ jobs:
 
 All patterns stored in:
 - `.codex/aftermath/pda_iterations.jsonl` — PDA loop history
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — Session tracking
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — Session tracking
 - GitHub Discussions — Team knowledge sharing
 
 ### Quarterly Review

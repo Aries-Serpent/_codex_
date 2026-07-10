@@ -273,7 +273,7 @@ EOF
 
 ### 5.2 Accountability Update
 
-**Required Update to:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+**Required Update to:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 ```markdown
 ## PHASE 6 — CVE Remediation Campaign
@@ -360,7 +360,7 @@ EOF
 Upon completion of Wave 3:
 - [ ] `.codex/PHASE_6_WAVE3_EXECUTION_REPORT.md` — Full execution details
 - [ ] `.codex/PHASE_6_FINAL_CVE_INVENTORY.json` — Final CVE state
-- [ ] `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — Updated with Phase 6 completion
+- [ ] `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — Updated with Phase 6 completion
 - [ ] Git commit: "Phase 6 Wave 3: Complete CVE remediation (46→<10)"
 
 ### Reference Documentation

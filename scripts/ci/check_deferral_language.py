@@ -10,7 +10,7 @@ TRIGGER RULE (mandatory for ALL agents):
   agent session log is a policy violation.  The gate FAILS and the agent
   MUST:
     1. Load `.codex/CODEBASE_AGENCY_POLICY.md`
-    2. Load the latest `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+    2. Load the latest `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
     3. Fix the issue immediately — no exceptions for branch/PR/agent origin
     4. Note CAD-bypass: Custom Agent Delegation (CAD-Mandate) bypass is a
        violation. Manual work where a Custom Agent exists is prohibited.
@@ -561,7 +561,7 @@ def _print_policy_reminder() -> None:
         "  MANDATORY IMMEDIATE ACTIONS (no exceptions):\n"
         "\n"
         "  1. 🔃 LOAD: .codex/CODEBASE_AGENCY_POLICY.md\n"
-        "  2. 🔃 LOAD: docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md\n"
+        "  2. 🔃 LOAD: docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md\n"
         "  3. 🔃 LOAD: All stored memories from previous sessions\n"
         "  4. FIX the deferred issue NOW — branch/PR/agent origin is irrelevant\n"
         "\n"

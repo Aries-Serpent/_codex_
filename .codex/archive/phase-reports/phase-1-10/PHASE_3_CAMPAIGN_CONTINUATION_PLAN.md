@@ -53,7 +53,7 @@
 - **Status**: No reversion needed (all gates pass)
 
 ### File 4: Dependency Installation Guide (AVAILABLE ✅)
-- **Path**: `.codex/POST_MERGE_MISSING_DEPS_INSTALL.md`
+- **Path**: `.codex/POST_MERGE_MISSING_DEPS_.codex/archive/misc/INSTALL.md`
 - **Purpose**: Recovery procedures for missing optional deps
 - **Decision**: 0 baseline errors; installation optional
 - **When to Use**: If running comprehensive test suite

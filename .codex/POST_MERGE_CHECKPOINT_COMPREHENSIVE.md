@@ -52,7 +52,7 @@
 - **Status:** COMPLETE (2026-07-06T02:15Z)
 - **Finding:** 5 false claims in documentation
 - **CRITICAL CLM-003:** Wrong wheel filename (codex-core vs codex_ml)
-  - **Fix Applied:** Updated INSTALL.md, OFFLINE_BOOTSTRAP.sh to use correct name
+  - **Fix Applied:** Updated .codex/archive/misc/INSTALL.md, OFFLINE_BOOTSTRAP.sh to use correct name
   - **Commit:** d8a109fd
 - **CRITICAL CLM-007:** 3-profile strategy not implemented
   - **Fix Applied:** Implemented core/runtime/full profiles in pyproject.toml
@@ -164,9 +164,9 @@ All critical checks passed:
 
 **Focus Areas:**
 1. README.md — Update profile installation instructions
-2. INSTALL.md — Already updated (verify still correct)
-3. OFFLINE_DEPLOYMENT.md — Update for new package name
-4. INTEGRATION.md — Update integration examples
+2. .codex/archive/misc/INSTALL.md — Already updated (verify still correct)
+3. docs/release/OFFLINE_DEPLOYMENT.md — Update for new package name
+4. docs/api/reference/INTEGRATION.md — Update integration examples
 5. CONTRIBUTING.md — Document internal vs public APIs
 6. API documentation — Mark 10 stable public APIs
 
@@ -251,7 +251,7 @@ All critical checks passed:
 - [x] 3-profile strategy implemented (core/runtime/full)
 - [x] Wheel naming corrected (codex_ml-0.1.0-py3-none-any.whl)
 - [x] Security: No new CVEs (still verifying in Phase 4)
-- [x] Documentation: Profiles documented (INSTALL.md updated)
+- [x] Documentation: Profiles documented (.codex/archive/misc/INSTALL.md updated)
 
 ### 🔄 In Progress
 - [ ] CI testing (Phase 3)
@@ -293,7 +293,7 @@ All critical checks passed:
 
 **Phase 6:**
 - Consolidate all findings into final report
-- Update AGENT_ACCOUNTABILITY_REPORT.md
+- Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 - Verify all blockers resolved or explicitly requiring external approval
 - Final readiness assessment
 
@@ -349,7 +349,7 @@ Upon completion of Phases 3-5, verify:
 - [ ] Code quality issues fixed (4 CRITICAL items)
 - [ ] Secret scanning found no credentials in modified files
 - [ ] parallel_validation passed (Code Review + CodeQL)
-- [ ] AGENT_ACCOUNTABILITY_REPORT.md updated with session context
+- [ ] .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated with session context
 - [ ] All generated reports archived in .codex/
 
 ---

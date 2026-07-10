@@ -75,7 +75,7 @@ PHASE 13+: 📋 ROADMAP PLANNING
 | Create Phase 10 implementation plan | ✅ | 2026-06-30 | **COMPLETE** |
 | Create Phase 12 implementation plan | ✅ | 2026-06-30 | **COMPLETE** |
 | Create Phase 13+ roadmap | ✅ | 2026-06-30 | **COMPLETE** |
-| Update AGENT_ACCOUNTABILITY_REPORT.md | ✅ | 2026-06-30 | **COMPLETE** (commit f7a1a3b6c) |
+| Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md | ✅ | 2026-06-30 | **COMPLETE** (commit f7a1a3b6c) |
 | Update CHANGELOG.md | ✅ | 2026-06-30 | **COMPLETE** (commit f7a1a3b6c) |
 | Validate branch synchronization | ✅ | 2026-06-30 | **COMPLETE** (merged with main) |
 | Run compliance checks (REQ-4/REQ-5) | ✅ | 2026-07-01 | **COMPLETE** (files updated) |
@@ -206,7 +206,7 @@ File Categories:
 
 ## ✅ COMPLIANCE CHECKLIST
 
-- [x] **REQ-4:** AGENT_ACCOUNTABILITY_REPORT.md updated in last commit (f7a1a3b6c)
+- [x] **REQ-4:** .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated in last commit (f7a1a3b6c)
 - [x] **REQ-5:** CHANGELOG.md updated in last commit (f7a1a3b6c)
 - [x] **Branch Sync:** 0 conflicts with main branch (merged with origin/main)
 - [x] **Test Coverage:** 99%+ coverage validated (Phase 12 criteria met)

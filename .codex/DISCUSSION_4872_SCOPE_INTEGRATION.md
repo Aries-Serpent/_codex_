@@ -90,7 +90,7 @@
 
 | Artifact | Content | Location |
 |----------|---------|----------|
-| **Accountability Report** | Session history, decisions, patterns | AGENT_ACCOUNTABILITY_REPORT.md |
+| **Accountability Report** | Session history, decisions, patterns | .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md |
 | **Changelog** | All modifications timestamped | .codex/change_log.md |
 | **Session Logs** | NDJSON session events | .codex/sessions/ (per-session) |
 | **PDA Iterations** | Pattern discovery + implementation history | .codex/aftermath/pda_iterations.jsonl |
@@ -112,7 +112,7 @@
 4. **For Future Campaigns:** Your parallel pre-staging strategy saved 8-10 hours—apply to all future large-scale work
 5. **For Agent Selection:** When 4/4 slots full, queue Phase D-type supplemental tasks to fill freed slots
 
-**Location:** PHASE_X_CAMPAIGN_STATUS_06_20_1515.md §7 + AGENT_ACCOUNTABILITY_REPORT.md
+**Location:** PHASE_X_CAMPAIGN_STATUS_06_20_1515.md §7 + .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 
 ---
 

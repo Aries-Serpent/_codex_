@@ -18,7 +18,7 @@ Branch: finding-autofix-faa8614c   PR: #4346   Start commit: (latest HEAD)
 ### Mandatory Pre-load (do these first, in order)
 1. READ .codex/AGENTIC_REPO_STATE.md
 2. READ .codex/CODEBASE_AGENCY_POLICY.md
-3. READ docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md (last session = S860-FINAL)
+3. READ docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (last session = S860-FINAL)
 4. READ docs/sessions/PR4346_followup_merge_readiness_100.md (this file)
 5. READ docs/roadmap/PR4346_whats_next.md (Phase A status)
 6. LOAD all stored session memories

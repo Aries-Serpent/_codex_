@@ -162,7 +162,7 @@ engine_tools_report_progress(
 
 ### 5. Agent Integration Guide
 
-**File:** `docs/agent/AGENT_MERGE_READINESS_INTEGRATION.md` (14.3 KB)
+**File:** `docs/agent/AGENT_MERGE_READINESS_docs/api/reference/INTEGRATION.md` (14.3 KB)
 
 **Purpose:** Comprehensive guide for Copilot agents implementing the framework
 
@@ -358,7 +358,7 @@ Framework completeness verification:
 | `.codex/wec_state.json` | JSON Template | 1.4 KB | State tracking |
 | `docs/templates/PR_BODY_TEMPLATE_MERGE_READINESS.md` | Markdown | 9.4 KB | PR structure |
 | `docs/ci/MERGE_READINESS_10_GATES.md` | Markdown | 15.1 KB | Gate definitions |
-| `docs/agent/AGENT_MERGE_READINESS_INTEGRATION.md` | Markdown | 14.3 KB | Agent guide |
+| `docs/agent/AGENT_MERGE_READINESS_docs/api/reference/INTEGRATION.md` | Markdown | 14.3 KB | Agent guide |
 | `docs/checklists/MERGE_READINESS_VALIDATION_CHECKLIST.md` | Markdown | 11.8 KB | Validation |
 
 **Total:** 6 files, 65.8 KB, 2,900+ lines
@@ -368,7 +368,7 @@ Framework completeness verification:
 ## 🎓 Next Steps
 
 ### For Copilot Agents
-1. Read `docs/agent/AGENT_MERGE_READINESS_INTEGRATION.md` (complete guide)
+1. Read `docs/agent/AGENT_MERGE_READINESS_docs/api/reference/INTEGRATION.md` (complete guide)
 2. Import `pr_description_helper` module
 3. Use `build_pr_description_with_wec()` on every `report_progress`
 4. Track merge readiness score through session

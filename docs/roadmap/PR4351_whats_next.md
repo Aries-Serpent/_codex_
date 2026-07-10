@@ -42,7 +42,7 @@
 
 #### Documentation
 - [x] Update CHANGELOG.md (S866)
-- [x] Update AGENT_ACCOUNTABILITY_REPORT.md (S866)
+- [x] Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (S866)
 - [x] Create PR4351_whats_next.md (this file)
 - [ ] Create PR4351_session_diagram.md
 
@@ -95,7 +95,7 @@
 - **PR Link:** https://github.com/Aries-Serpent/_codex_/pull/4351
 - **Original Issue:** CodeQL "Wrong number of arguments" alerts
 - **Session Diagram:** [PR4351_session_diagram.md](../sessions/PR4351_session_diagram.md)
-- **Accountability:** [AGENT_ACCOUNTABILITY_REPORT.md](../accountability/AGENT_ACCOUNTABILITY_REPORT.md)
+- **Accountability:** [.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md](../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md)
 
 ---
 

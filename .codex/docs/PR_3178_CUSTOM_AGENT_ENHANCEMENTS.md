@@ -385,7 +385,7 @@ graph TB
 4. **FINAL_TEST_STATUS.md** - Test execution status
 
 ### Documentation to Update
-1. **.codex/docs/AGENTS.md** - Add new agents
+1. **.codex/docs/.codex/archive/deprecated/AGENTS.md** - Add new agents
 2. **.github/agents/README.md** - Update agent catalog
 3. **.codex/CUSTOM_AGENT_CONSOLIDATION_REPORT.md** - Update counts
 

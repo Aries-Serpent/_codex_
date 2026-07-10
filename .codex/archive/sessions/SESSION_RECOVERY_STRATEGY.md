@@ -142,7 +142,7 @@ Status: ✅ ELIGIBLE FOR AUTO-RECOVERY
 ### Step 4: Recovery Artifacts ✅
 ```
 Registered in:
-- docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md (REQ-4)
+- docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (REQ-4)
 - CHANGELOG.md (REQ-5)
 - .codex/session_recovery_log.jsonl
 - .codex/SESSION_RECOVERY_28063318555.md
@@ -414,7 +414,7 @@ echo "@mbaetiong Recovery failure detected" | gh issue comment -F - <ISSUE_NUMBE
 ## Compliance & Accountability
 
 **REQ-4 Compliance:** ✅ PASSED
-- Recovery events registered in AGENT_ACCOUNTABILITY_REPORT.md
+- Recovery events registered in .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 - Two recovery events documented with full context
 - Audit trail maintained in JSONL format
 
@@ -495,4 +495,4 @@ echo "@mbaetiong Recovery failure detected" | gh issue comment -F - <ISSUE_NUMBE
 **Status:** ✅ PRODUCTION READY  
 **Maintenance:** Reviewed weekly, updated as needed
 
-For questions or updates, see [AGENT_ACCOUNTABILITY_REPORT.md](../../docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md)
+For questions or updates, see [.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md](../../docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md)

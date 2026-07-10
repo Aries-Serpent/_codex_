@@ -509,7 +509,7 @@ password = pypi-AgEIcHlwaS5vcmc...  # Your token
 - `.codex/POST_MERGE_EXECUTION_BRIEF_v0.1.0-final.md` — Original execution plan
 - `.codex/release-artifacts/v0.1.0-prod/QUICK_START_v0.1.0.md` — Quick start guide
 - `CHANGELOG.md` — Release notes and history
-- `RELEASE_NOTES.md` — Detailed release information
+- `docs/release/RELEASE_NOTES.md` — Detailed release information
 - `README.md` — Project overview and installation
 - `pyproject.toml` — Project configuration
 - `SECURITY.md` — Security policy and contact

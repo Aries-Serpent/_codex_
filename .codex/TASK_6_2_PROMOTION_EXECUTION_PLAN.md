@@ -189,7 +189,7 @@ gh pr merge <PROMOTION_PR_NUMBER> \
 
 Upon successful promotion:
 
-1. [ ] **Update AGENT_ACCOUNTABILITY_REPORT.md**
+1. [ ] **Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md**
    - Add Phase 6 Wave 1 summary section
    - Document: Promotion completion, validation gates passed
    - Record: Agents involved, timeline
@@ -220,7 +220,7 @@ Upon successful promotion:
 
 3. [ ] **Verify Compliance Gates**
    - Run: `python3 scripts/ci/session_wrapup_autofix.py --check --pr-number <PR_NUMBER>`
-   - Verify: REQ-4 (AGENT_ACCOUNTABILITY_REPORT.md updated in last commit)
+   - Verify: REQ-4 (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated in last commit)
    - Verify: REQ-5 (CHANGELOG.md updated in last commit)
 
 ---
@@ -234,7 +234,7 @@ If post-merge validation reveals critical blockers:
 2. [ ] Notify @mbaetiong immediately
 3. [ ] Revert merge commit: `git revert -m 1 <MERGE_COMMIT_SHA>`
 4. [ ] Push revert commit to main
-5. [ ] Update AGENT_ACCOUNTABILITY_REPORT.md with rollback note
+5. [ ] Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with rollback note
 6. [ ] Investigate root cause and remediate
 
 **Note:** Rollback is last resort; comprehensive pre-validation is designed to prevent this.
@@ -250,7 +250,7 @@ If post-merge validation reveals critical blockers:
 4. Coverage gates: ✅ APPROVED (≥70%)
 5. Compliance gates: ✅ APPROVED (REQ-4/REQ-5)
 6. No operational incidents
-7. AGENT_ACCOUNTABILITY_REPORT.md updated
+7. .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated
 8. CHANGELOG.md updated with promotion entry
 9. Production stability gates: ✅ PASS
 

@@ -188,7 +188,7 @@
 
 - date: 2026-02-06
   objective: documentation_quality
-  change: "Refined AGENTS.md as ChatGPT Codex Agent entry point"
+  change: "Refined .codex/archive/deprecated/AGENTS.md as ChatGPT Codex Agent entry point"
   impact: "Improved agent navigation and onboarding experience"
 
 - date: 2026-02-05

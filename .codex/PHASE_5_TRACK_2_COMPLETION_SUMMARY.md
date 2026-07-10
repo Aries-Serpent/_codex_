@@ -74,7 +74,7 @@ Result: **79% vulnerability reduction** with security improvements across all ar
 
 ## Compliance
 
-### REQ-4: AGENT_ACCOUNTABILITY_REPORT.md
+### REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 ✅ Status: Updated with Phase 5 Track 2 completion
 
 ### REQ-5: CHANGELOG.md

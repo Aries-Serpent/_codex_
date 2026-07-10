@@ -82,7 +82,7 @@ Test Coverage:           Maintained (no regression) ✅
 ### Phase 3: Validation & Documentation
 - `.codex/issue_4983_phase3_validation_plan.md` — Validation strategy
 - `.codex/issue_4983_final_resolution_report.md` — Comprehensive report
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — Session entries (updated)
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — Session entries (updated)
 
 ---
 

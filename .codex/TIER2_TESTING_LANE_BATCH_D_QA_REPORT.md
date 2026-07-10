@@ -96,7 +96,7 @@
 | README.md | ✅ Present (60KB+) |
 | CONTRIBUTING.md | ✅ Present |
 | SECURITY.md | ✅ Present |
-| INSTALL.md | ✅ Present |
+| .codex/archive/misc/INSTALL.md | ✅ Present |
 | API Docs | ✅ 14 files |
 | Guides | ✅ 83 files |
 | Architecture Docs | ✅ Present |

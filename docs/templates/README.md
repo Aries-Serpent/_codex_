@@ -50,7 +50,7 @@ See [`status/README.md`](./status/README.md) for complete documentation.
 
 | Template | Key References |
 | --- | --- |
-| Iteration Plan | [`docs/TERMINOLOGY_MIGRATION.md`](../TERMINOLOGY_MIGRATION.md), [`docs/plans/`](../plans/), [`AGENTS.md`](../agents.md) |
+| Iteration Plan | [`docs/TERMINOLOGY_MIGRATION.md`](../TERMINOLOGY_MIGRATION.md), [`docs/plans/`](../plans/), [`.codex/archive/deprecated/AGENTS.md`](../agents.md) |
 | Python File Relocation | `sitecustomize.py`, [`conftest.py`](https://github.com/Aries-Serpent/_codex_/blob/main/conftest.py), [`tests/`](https://github.com/Aries-Serpent/_codex_/blob/main/tests) |
 | CLI Hardening | [`src/cli/`](https://github.com/Aries-Serpent/_codex_/blob/main/src/cli), [`tests/cli/`](https://github.com/Aries-Serpent/_codex_/blob/main/tests/cli), [`pyproject.toml`](https://github.com/Aries-Serpent/_codex_/blob/main/pyproject.toml) |
 | Intent Validation | [`docs/validation/`](../validation/), [`docs/templates/README.md`](./README.md), [`tests/conftest.py`](https://github.com/Aries-Serpent/_codex_/blob/main/tests/conftest.py) |

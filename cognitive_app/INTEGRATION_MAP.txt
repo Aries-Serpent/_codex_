@@ -148,7 +148,7 @@ SOURCE: cognitive_codex_app.zip (266KB) → DESTINATION: cognitive_app/
 ┌─────────────────────────────────────────────────────────────────────┐
 │ NEW DOCUMENTATION & SCRIPTS                                          │
 ├─────────────────────────────────────────────────────────────────────┤
-│ ✅ README_INTEGRATION.md          → Integration guide (6KB)         │
+│ ✅ README_docs/api/reference/INTEGRATION.md          → Integration guide (6KB)         │
 │ ✅ POST_INTEGRATION_CHECKLIST.md  → Deployment checklist (6KB)      │
 │ ✅ INTEGRATION_SUMMARY.md         → Complete summary (11KB)         │
 │ ✅ verify_integration.sh          → Verification script             │

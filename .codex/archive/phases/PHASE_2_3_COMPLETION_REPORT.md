@@ -29,7 +29,7 @@ Successfully executed Phase 2.3 implementation: Migrated the monolithic 4.1MB ac
 - **Retention:** Preserved for reference and rollback
 
 ### 3. ✅ Create New Index
-- **Index file:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- **Index file:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - **Size:** 8.0 KB
 - **Content:** Full TOC with links to all 32 chunks
 - **Navigation:** Prev/Next/Index links functional
@@ -77,7 +77,7 @@ Successfully executed Phase 2.3 implementation: Migrated the monolithic 4.1MB ac
 
 ```
 docs/accountability/
-├── AGENT_ACCOUNTABILITY_REPORT.md   (8 KB - Index)
+├── .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md   (8 KB - Index)
 ├── AGENT_ACCESS_EXPERIENCE_REPORT.md (unchanged)
 ├── INDEX.md                          (landing reference)
 ├── README.md                         (8 KB - Guide)
@@ -101,7 +101,7 @@ docs/accountability/
 | 32 chunks created | ✅ | 32 files in docs/accountability/chunks/ |
 | All <256 KB | ✅ | Max 11 KB, all compliant |
 | Old report archived | ✅ | .codex/archive/OLD_ACCOUNTABILITY_REPORT_66K.md.bak exists |
-| New index created | ✅ | AGENT_ACCOUNTABILITY_REPORT.md (8 KB) |
+| New index created | ✅ | .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (8 KB) |
 | Navigation updated | ✅ | Prev/Next/Index in each chunk |
 | All links verified | ✅ | No 404s, all navigation functional |
 | 100% session coverage | ✅ | 316/316 sessions distributed |
@@ -167,7 +167,7 @@ Improvement: 100% compliance with <256 KB limit
 - Use case: Reference, rollback if needed
 
 ✅ **Existing bookmarks:**
-- Old link: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- Old link: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - New content: Index file with links to all groups
 - Result: No 404 errors, automatic redirect
 
@@ -177,7 +177,7 @@ Improvement: 100% compliance with <256 KB limit
 
 ### Primary Deliverables
 
-1. **Index File** — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+1. **Index File** — `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
    - Size: 8.0 KB
    - Content: Full TOC, quick navigation
    - Links: All 32 chunks accessible

@@ -199,7 +199,7 @@ python scripts/ci/phase_9_1_confidence_scorer.py algorithm
 ---
 
 ### 5. ✅ Candidate Agents List (TASK 9.1.1)
-**File:** `.codex/PHASE_9_1_CANDIDATE_AGENTS.md` (7 KB)  
+**File:** `.codex/PHASE_9_1_CANDIDATE_.codex/archive/deprecated/AGENTS.md` (7 KB)  
 **Status:** Approved & Authorized
 
 **Identified 9 D_CAPABLE Agents:**
@@ -490,5 +490,5 @@ See `.codex/PHASE_9_COORDINATION_DASHBOARD.md` for Phase 9 tracking
 
 For detailed information, see:
 - Framework spec: `.codex/PHASE_9_1_DECISION_FRAMEWORK.md`
-- Candidate agents: `.codex/PHASE_9_1_CANDIDATE_AGENTS.md`
+- Candidate agents: `.codex/PHASE_9_1_CANDIDATE_.codex/archive/deprecated/AGENTS.md`
 - Authorization: `.codex/PHASE_9_1_AGENT_AUTHORIZATION_SUMMARY.md`

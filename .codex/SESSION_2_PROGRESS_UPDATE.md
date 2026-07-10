@@ -146,7 +146,7 @@
 ## 📞 AUTHORITY & COMPLIANCE
 
 - ✅ **Authority:** @mbaetiong D-tier autonomous (GO CONTINUE)
-- ✅ **REQ-4:** AGENT_ACCOUNTABILITY_REPORT.md updated with phase completions
+- ✅ **REQ-4:** .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated with phase completions
 - ⏳ **REQ-5:** CHANGELOG.md (will update upon session completion)
 - ✅ **All agent decisions pre-approved** — No further human approval needed
 

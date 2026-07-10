@@ -9,7 +9,7 @@ The Cognitive Codex App is a quantum-enhanced code generation platform with real
 ## Quick Links
 
 - **Source Code:** [`/cognitive_app`](https://github.com/Aries-Serpent/_codex_/tree/main/cognitive_app)
-- **Integration Guide:** [cognitive_app/README_INTEGRATION.md](https://github.com/Aries-Serpent/_codex_/blob/main/cognitive_app/README_INTEGRATION.md)
+- **Integration Guide:** [cognitive_app/README_docs/api/reference/INTEGRATION.md](https://github.com/Aries-Serpent/_codex_/blob/main/cognitive_app/README_docs/api/reference/INTEGRATION.md)
 - **Master Plan:** [cognitive_app/CODEX_INTEGRATION_MASTER_PLAN.md](https://github.com/Aries-Serpent/_codex_/blob/main/cognitive_app/CODEX_INTEGRATION_MASTER_PLAN.md)
 - **Implementation Status:** [cognitive_app/IMPLEMENTATION_STATUS.md](https://github.com/Aries-Serpent/_codex_/blob/main/cognitive_app/IMPLEMENTATION_STATUS.md)
 
@@ -214,7 +214,7 @@ VITE_CODEX_KEY=demo-key               # API key
 
 ## Documentation
 
-- **Integration Guide:** [README_INTEGRATION.md](https://github.com/Aries-Serpent/_codex_/blob/main/cognitive_app/README_INTEGRATION.md)
+- **Integration Guide:** [README_docs/api/reference/INTEGRATION.md](https://github.com/Aries-Serpent/_codex_/blob/main/cognitive_app/README_docs/api/reference/INTEGRATION.md)
 - **Master Plan:** [CODEX_INTEGRATION_MASTER_PLAN.md](https://github.com/Aries-Serpent/_codex_/blob/main/cognitive_app/CODEX_INTEGRATION_MASTER_PLAN.md) - Complete backend API specification
 - **Implementation Status:** [IMPLEMENTATION_STATUS.md](https://github.com/Aries-Serpent/_codex_/blob/main/cognitive_app/IMPLEMENTATION_STATUS.md) - Detailed progress tracking
 - **Product Requirements:** [PRD.md](https://github.com/Aries-Serpent/_codex_/blob/main/cognitive_app/PRD.md)

@@ -128,7 +128,7 @@
 
 ## 📋 COMPLIANCE VERIFICATION (100% SATISFIED)
 
-### REQ-4: AGENT_ACCOUNTABILITY_REPORT.md
+### REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 ✅ All 5 agents documented  
 ✅ All deliverables listed  
 ✅ Compliance status verified  

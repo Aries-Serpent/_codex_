@@ -223,7 +223,7 @@
 - ✅ `.codex/PHASE_14_WS2_FINAL_REPORT.md` (this document)
 
 **Updated in WS2:**
-- ✅ `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (REQ-4)
+- ✅ `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (REQ-4)
 - ✅ `CHANGELOG.md` (REQ-5)
 
 **From WS1 (Referenced):**

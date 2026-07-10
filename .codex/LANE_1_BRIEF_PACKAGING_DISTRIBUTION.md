@@ -66,7 +66,7 @@ Transform `pyproject.toml` from monolithic ML-focused package to modular, profil
 - Output: Dependency mapping spreadsheet
 
 **Task 1.2: Module-to-Profile Mapping**
-- Cross-reference INTELLIGENCE_CAMPAIGN_BASELINE.md module list
+- Cross-reference .codex/archive/misc/INTELLIGENCE_CAMPAIGN_BASELINE.md module list
 - Assign each module to core/runtime/full
 - Identify circular dependencies (resolve before refactoring)
 - Output: Module → Profile matrix
@@ -159,7 +159,7 @@ Transform `pyproject.toml` from monolithic ML-focused package to modular, profil
 ## 📌 Key Decisions from Phase 0
 
 **Strategic Decision #1: 3-Tier Package Profiles**
-- ✅ APPROVED in INTELLIGENCE_CAMPAIGN_BASELINE.md
+- ✅ APPROVED in .codex/archive/misc/INTELLIGENCE_CAMPAIGN_BASELINE.md
 - core: Minimal cognitive engine + CLI
 - runtime: core + local server framework + offline bootstrap
 - full: runtime + ML training + RAG + integrations

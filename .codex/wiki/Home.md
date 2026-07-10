@@ -35,7 +35,7 @@
    ```bash
    # View documentation
    cat README.md
-   cat AGENTS.md
+   cat .codex/archive/deprecated/AGENTS.md
 
    # Check configuration
    ls configs/
@@ -45,7 +45,7 @@
 
 **New AI Agent Orientation:**
 
-1. 📚 **Must Read First:** [AGENTS.md](../../.github/AGENTS.md)
+1. 📚 **Must Read First:** [.codex/archive/deprecated/AGENTS.md](../../.github/.codex/archive/deprecated/AGENTS.md)
 2. 🛡️ **Understand Constraints:** [Guardrails](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/guardrails.md)
 3. 🤖 **Operational Guide:** [Agent Operations](Agent-Operations.md)
 4. 🎯 **Genesis Protocol:** [Genesis Protocol Guide](Genesis-Protocol.md)
@@ -60,7 +60,7 @@
 |----------|---------|----------|
 | [Home](Home.md) | Repository overview and quick start | Everyone |
 | [README.md](https://github.com/Aries-Serpent/_codex_/blob/main/README.md) | Project introduction | Developers |
-| [AGENTS.md](../../.github/AGENTS.md) | AI agent documentation | AI Agents |
+| [.codex/archive/deprecated/AGENTS.md](../../.github/.codex/archive/deprecated/AGENTS.md) | AI agent documentation | AI Agents |
 | [CONTRIBUTING.md](https://github.com/Aries-Serpent/_codex_/blob/main/CONTRIBUTING.md) | Contribution guidelines | Contributors |
 
 ### Specialized Topics

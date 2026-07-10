@@ -34,7 +34,7 @@
 - SECURITY.md
 
 **Agent System:**
-- AGENTS.md
+- .codex/archive/deprecated/AGENTS.md
 - 35+ agent documentation files
 
 **Cognitive Brain:**

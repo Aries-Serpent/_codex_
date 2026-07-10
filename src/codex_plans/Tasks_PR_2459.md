@@ -393,7 +393,7 @@ grep -rh "os\. getenv\|os\.environ" src/ --include="*.py" | \
   sed -n 's/.*["\x27]\([A-Z_][A-Z0-9_]*\)["\x27]. */\1/p' | \
   sort -u > . codex/env_vars_found.txt
 
-# Compare with documented vars in AGENTS.md
+# Compare with documented vars in .codex/archive/deprecated/AGENTS.md
 ```
 
 ### Check 2: Package Dependencies Sync
@@ -1511,7 +1511,7 @@ jobs:
 
 ### 4. Documentation 📚
 - [ ] README.md complete and up-to-date
-- [ ] AGENTS.md reflects current conventions
+- [ ] .codex/archive/deprecated/AGENTS.md reflects current conventions
 - [ ] All public APIs have docstrings
 - [ ] Architecture diagrams current
 - [ ] Runbooks for common operations
@@ -1713,7 +1713,7 @@ class ProductionReadinessValidator:
 
         required_docs = [
             'README.md',
-            'AGENTS.md',
+            '.codex/archive/deprecated/AGENTS.md',
             'LICENSE',
             '. github/workflows/ci.yml',
         ]
@@ -2243,7 +2243,7 @@ python tools/analyze_import_paths.py
 **Success Criteria**:
 - [ ] All public APIs documented
 - [ ] README.md current and comprehensive
-- [ ] All env vars documented in AGENTS.md
+- [ ] All env vars documented in .codex/archive/deprecated/AGENTS.md
 - [ ] Runbooks for common operations
 
 **Validation Command**:

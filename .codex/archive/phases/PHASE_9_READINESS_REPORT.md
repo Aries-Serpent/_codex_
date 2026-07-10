@@ -38,9 +38,9 @@ The Phase 9 Multi-Agent Validation Campaign (Lanes A-D) has completed all audit 
 - ✅ Timestamps updated in 3 master plan files (2026-06-22 → 2026-06-26T04:25:00Z)
 
 **Priority 2 (Medium) — 3/3 Complete**
-- ✅ `AGENTS.md`: Agent count updated (145 → 147), Phase 9 reference added
+- ✅ `.codex/archive/deprecated/AGENTS.md`: Agent count updated (145 → 147), Phase 9 reference added
 - ✅ `CHANGELOG.md`: Phase 9 campaign entry added with full metrics
-- ✅ `AGENT_ACCOUNTABILITY_REPORT.md`: Campaign session recorded with lane details
+- ✅ `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`: Campaign session recorded with lane details
 
 **Priority 3 (Validation) — 3/3 Complete**
 - ✅ GitHub Pages: phase-9 directory verified, 4/4 required docs in nav
@@ -121,7 +121,7 @@ The Phase 9 Multi-Agent Validation Campaign (Lanes A-D) has completed all audit 
 ✅ Deferral Language: No deferral statements detected
 ```
 
-**REQ-4 Compliance (AGENT_ACCOUNTABILITY_REPORT.md in HEAD):**
+**REQ-4 Compliance (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md in HEAD):**
 - ✅ File present in HEAD commit
 - ✅ Phase 9 campaign session recorded
 - ✅ All 4 lanes documented
@@ -143,7 +143,7 @@ The Phase 9 Multi-Agent Validation Campaign (Lanes A-D) has completed all audit 
 
 ### Task 5.6: Accountability Updated ✅
 
-**AGENT_ACCOUNTABILITY_REPORT.md Entry Added:**
+**.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md Entry Added:**
 ```markdown
 ### Session: Phase 9 Multi-Agent Validation Campaign (2026-06-26)
 - **Duration:** 145 minutes (2026-06-26T02:10:00Z → 2026-06-26T04:35:00Z)

@@ -358,7 +358,7 @@ SESSION_EVENT_SCHEMA = {
 
 | Living Doc | Section Updated | Source Event | Update Frequency |
 |------------|----------------|--------------|-----------------|
-| `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | Session summary block | `session_end` | Every session |
+| `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` | Session summary block | `session_end` | Every session |
 | `CHANGELOG.md` | `[Unreleased]` entry | `session_end` | Every session with edits |
 | `docs/roadmap/PR<id>_whats_next.md` | Status table + completed/pending | `session_end` | Per PR |
 | `docs/roadmap/PR<id>_session_diagram.mmd` | Metadata annotation | `artifact_touch` | Per PR / flow change |

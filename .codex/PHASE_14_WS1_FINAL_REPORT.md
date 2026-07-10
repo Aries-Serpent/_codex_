@@ -123,7 +123,7 @@
 
 ## 📋 COMPLIANCE STATUS
 
-### REQ-4: AGENT_ACCOUNTABILITY_REPORT.md
+### REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 - ✅ Updated with Phase 14 WS1 initiation (2026-07-08T17:22:23Z)
 - ✅ Will update with WS1 completion details (final commit below)
 

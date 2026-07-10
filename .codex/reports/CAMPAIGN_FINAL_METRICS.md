@@ -149,7 +149,7 @@
 ### Ready For
 1. ✅ PR review and merge
 2. ✅ CHANGELOG.md update (Phase 3 entry)
-3. ✅ AGENT_ACCOUNTABILITY_REPORT.md update
+3. ✅ .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md update
 4. ✅ PDA loop pattern storage
 
 ---

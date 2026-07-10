@@ -94,7 +94,7 @@ Pattern Coverage: 30/30 active
 #### Issue 2: Last-Commit Accountability (P-025)
 **Frequency:** 1 occurrence  
 **Auto-Fix:** ✅ Yes  
-**Issue:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` not updated in last commit
+**Issue:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` not updated in last commit
 
 **Fix Strategy:** Append minimal entry and run `sync_tracked_files.py --fix`
 
@@ -330,7 +330,7 @@ Target Phase 5 End:  40%+  (✅ Target Achieved!)
 #### P-025 Mapping: Last-Commit Accountability
 ```python
 # ISSUE SIGNATURE:
-# "AGENT_ACCOUNTABILITY_REPORT.md not in last commit"
+# ".codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md not in last commit"
 
 # FIX TEMPLATE:
 # 1. Append minimal [auto-generated] entry
@@ -407,7 +407,7 @@ python scripts/ci/auto_fix_common_issues.py --pattern 6
 
 ### 7.2 Issue P-025: Last-Commit Accountability (1 file)
 
-**File:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+**File:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 **Fix Command:**
 ```bash

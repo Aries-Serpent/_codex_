@@ -156,7 +156,7 @@
                 "prompts_directory": {
                   "description": "lowercase canonical directory (desired)",
                   "contents": [
-                    "AGENTS.md",
+                    ".codex/archive/deprecated/AGENTS.md",
                     "ITERATION_5_LOAD_TESTING.md",
                     "ITERATION_6_MULTI_REGION.md",
                     "ITERATION_7_MONITORING_DASHBOARDS.md",

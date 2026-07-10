@@ -481,7 +481,7 @@ Rotate `CODEX_BACKUP_KEY` when:
    ✅ CODEX_BACKUP_KEY healthy (HTTP 200)
    ```
 
-5. **Update AGENT_ACCOUNTABILITY_REPORT.md** with rotation date and W-number.
+5. **Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md** with rotation date and W-number.
 
 ### Enforcement
 - `ci-health-monitor.yml` checks backup key health on every run (every 6 hours)

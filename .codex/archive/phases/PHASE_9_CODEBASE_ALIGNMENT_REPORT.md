@@ -218,7 +218,7 @@ Phase 9 Kickoff (2026-06-30)
 **Authority Source Documents:**
 - PHASE_8_1_FINAL_VERIFICATION_REPORT.txt (confirms D-mode)
 - DAY_3_QA_VALIDATION_READY.txt (confirms full execution authority)
-- docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md (confirms autonomy)
+- docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (confirms autonomy)
 
 ### WEC Auto-Approval Label Status
 

@@ -7,7 +7,7 @@ commit) exits with status 1 if any file is stale or missing.
 
 Living files:
   1. CHANGELOG.md
-  2. docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+  2. docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
   3. docs/plans/PR{N}_whats_next.md
   4. docs/sessions/PR{N}_session_diagram.md
   5. .github/copilot-prompts/active/PR-{N}-followup.md
@@ -57,7 +57,7 @@ def _resolve_pr_number(cli_pr_number: int | None) -> int:
 def _living_files(pr_number: int) -> list[str]:
     return [
         "CHANGELOG.md",
-        "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md",
+        "docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md",
         f"docs/plans/PR{pr_number}_whats_next.md",
         f"docs/sessions/PR{pr_number}_session_diagram.md",
         f".github/copilot-prompts/active/PR-{pr_number}-followup.md",

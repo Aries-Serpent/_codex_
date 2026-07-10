@@ -141,7 +141,7 @@ Tracking: .codex/issues/P19_SHADOW_IMPORTS_TRACKING.md
 | iterative-self-healing-ci.yml:165 | `coverage-timeout` handler cites P19 |
 | docs/ci/PR_LIFECYCLE.md:188 | P19 pattern table |
 | docs/ci/PR_LIFECYCLE.md:379-382 | P19-BATCH-001 / WATCH-001 / SHADOW-EXPANDED-001 / SHADOW-REVERT-001 |
-| docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md:S145 | P19 shadow-safe backfill session |
+| docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md:S145 | P19 shadow-safe backfill session |
 
 ---
 

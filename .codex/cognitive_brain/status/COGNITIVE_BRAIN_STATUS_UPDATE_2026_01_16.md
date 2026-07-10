@@ -13,7 +13,7 @@ This session implemented Phase A of the Autonomous Continuation Plan, achieving:
 
 1. ✅ **IP-005 Security Updates Complete** - All 26 known vulnerabilities addressed
 2. ✅ **Legacy Code Analysis Complete** - Migration guide created, shims documented
-3. ✅ **Documentation Updated** - AGENTS.md, README.md, SECURITY.md, CHANGELOG.md
+3. ✅ **Documentation Updated** - .codex/archive/deprecated/AGENTS.md, README.md, SECURITY.md, CHANGELOG.md
 
 ---
 
@@ -84,7 +84,7 @@ Planset ready: `.codex/plans/PRODUCTION_RAG_PIPELINE_PLANSET.md`
 
 | Document | Status | Changes |
 |----------|--------|---------|
-| AGENTS.md | ✅ Updated | Security status, date |
+| .codex/archive/deprecated/AGENTS.md | ✅ Updated | Security status, date |
 | README.md | ✅ Updated | Security badge |
 | SECURITY.md | ✅ Updated | IP-005 section added |
 | CHANGELOG.md | ✅ Updated | Security fixes documented |

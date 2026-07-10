@@ -279,12 +279,12 @@ result = instance.<!-- TODO: Add section or remove TOC entry - [method]() -->
 ```
 ```
 
-### PROMPT-021: Update AGENTS.md
+### PROMPT-021: Update .codex/archive/deprecated/AGENTS.md
 
 ```
-Task: Update AGENTS.md with new capability information
+Task: Update .codex/archive/deprecated/AGENTS.md with new capability information
 
-Location: AGENTS.md
+Location: .codex/archive/deprecated/AGENTS.md
 Section to Update: [specify section]
 
 Changes Required:

@@ -196,7 +196,7 @@ STATUS: ✅ PASS (zero blockers, clear path to Phase 9.3)
 ## 📦 LANE 4 DELIVERABLES
 
 ### Task 4.1: Phase 9.2 ↔ Phase 9.3 Integration (4 files)
-- ✅ `.codex/PHASE_9_2_9_3_INTEGRATION.md` (21 KB)
+- ✅ `.codex/PHASE_9_2_9_3_docs/api/reference/INTEGRATION.md` (21 KB)
 - ✅ `src/codex/phase_9_2_adapter.py` (26 KB, 800+ LOC)
 - ✅ `tests/integration/test_phase_9_2_9_3_interop.py` (55 tests)
 - ✅ `docs/phase_9_2/INTEGRATION_PERFORMANCE_REPORT.md` (15 KB)

@@ -157,7 +157,7 @@ Re-run mutation testing suite with Lane 3.1 edge case tests applied to Lane 3.2 
    - Cumulative progress summary
 
 ### Progress Update (This Session)
-- Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` with Checkpoint 2 results
+- Update `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` with Checkpoint 2 results
 - Log all three agent performance metrics
 - Calculate projected EOD completion (%): Expected 24-36% improvement
 

@@ -399,7 +399,7 @@ AFTER:
 
 ---
 
-### FIX-007: Split AGENT_ACCOUNTABILITY_REPORT.md (10,864 lines) (50-60% SAVINGS)
+### FIX-007: Split .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (10,864 lines) (50-60% SAVINGS)
 
 **Priority:** P0 (Monolith)  
 **Effort:** 15-20 hours  
@@ -417,7 +417,7 @@ AFTER:
 
 ```
 BEFORE (1 file):
-├── docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md [10,864 lines]
+├── docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md [10,864 lines]
     ├── Section 1: Per-Agent Reports
     ├── Section 2: Metrics Summary
     ├── Section 3: Trends Analysis

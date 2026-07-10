@@ -147,7 +147,7 @@ Once Phase B completes, Phase C will execute immediately:
 
 ### C.3 - Documentation Updates (30 min)
 - Update CHANGELOG.md with remediation summary
-- Update AGENT_ACCOUNTABILITY_REPORT.md with Phase B outcomes
+- Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with Phase B outcomes
 - Document all agent contributions and findings
 - Prepare Phase D brief
 
@@ -173,7 +173,7 @@ Once Phase B completes, Phase C will execute immediately:
 ### Phase C (2026-07-02 ~02:15Z)
 - [ ] Re-validate coverage with test skeletons
 - [ ] Confirm CI fixes hold
-- [ ] Update CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md
+- [ ] Update CHANGELOG.md + .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 - [ ] Unblock Tier 2 documentation work
 
 ---

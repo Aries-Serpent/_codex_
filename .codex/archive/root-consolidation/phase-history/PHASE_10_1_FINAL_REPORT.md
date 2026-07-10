@@ -321,7 +321,7 @@ graph TD
 - [ ] Code linting (black/ruff/mypy)
 - [ ] Final integration test validation
 - [ ] Update CHANGELOG.md
-- [ ] Update AGENT_ACCOUNTABILITY_REPORT.md
+- [ ] Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 
 ### Future Work
 - **Phase 10.2:** Production deployment & monitoring

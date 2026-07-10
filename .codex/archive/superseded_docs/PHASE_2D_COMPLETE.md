@@ -77,7 +77,7 @@ distance = steps_up_from_source + steps_down_to_target
 
 **Key Files Modified:**
 1. `docs/MASTER_INDEX.md` - 15 fixes
-2. `.github/agents/docs/AGENTS.md` - 20 fixes (14 automated + 6 manual)
+2. `.github/agents/docs/.codex/archive/deprecated/AGENTS.md` - 20 fixes (14 automated + 6 manual)
 3. `.codex/docs/README.md` - 12 fixes
 4. `docs/system/CODEBASE_DASHBOARD.md` - 6 fixes
 5. `docs/ROADMAP.md` - 4 fixes
@@ -103,7 +103,7 @@ distance = steps_up_from_source + steps_down_to_target
 | **ROADMAP.md** | Root | `docs/` | 18 |
 | **GENESIS_SETUP_GUIDE.md** | `docs/` | `docs/admin/` | 9 |
 | **OPERATIONAL_GUIDELINES.md** | `docs/` | `docs/agent/` | 8 |
-| **AGENTS.md** | Root | `.github/` | 22 |
+| **.codex/archive/deprecated/AGENTS.md** | Root | `.github/` | 22 |
 | **ARCHITECTURE.md** | Multiple | `docs/` | 15 |
 | | | **TOTAL** | **114** |
 
@@ -229,7 +229,7 @@ File: .github/agents/reference-updater-agent.md
 ✅ **docs/system/CODEBASE_DASHBOARD.md** - 100% valid
 ✅ **docs/system/CODEBASE_COGNITIVE_MAP.md** - 100% valid
 ✅ **.codex/docs/README.md** - 100% valid
-✅ **.github/agents/docs/AGENTS.md** - 100% valid (after manual fixes)
+✅ **.github/agents/docs/.codex/archive/deprecated/AGENTS.md** - 100% valid (after manual fixes)
 
 ---
 

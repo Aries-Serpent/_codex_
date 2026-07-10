@@ -41,7 +41,7 @@
 - **Status**: ⏳ PENDING
 
 ### Task 4: Documentation & Sign-Off
-- [x] Updated AGENT_ACCOUNTABILITY_REPORT.md
+- [x] Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 - [ ] Complete final sign-off
 - **Status**: 🔄 IN PROGRESS
 
@@ -83,7 +83,7 @@
 
 ## 📋 COMPLIANCE STATUS
 
-- **REQ-4**: AGENT_ACCOUNTABILITY_REPORT.md updated ✅
+- **REQ-4**: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated ✅
 - **REQ-5**: CHANGELOG.md (from previous session) ✅
 - **REQ-7**: Phase execution plan documented ✅
 - **Pre-Load**: All 4 mandatory files read ✅

@@ -262,7 +262,7 @@ Add `.github/.codeql/python-queries.yml`:
 ### Medium-term
 1. ⬜ Add mypy strict checking for production code
 2. ⬜ Enhance pre-commit hooks
-3. ⬜ Update AGENTS.md with security patterns
+3. ⬜ Update .codex/archive/deprecated/AGENTS.md with security patterns
 
 ---
 

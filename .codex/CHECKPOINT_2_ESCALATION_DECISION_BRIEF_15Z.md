@@ -250,7 +250,7 @@ API evolved faster than test generation captured. **NOT a logic error** — just
 - `.codex/PHASE_7A_LANE_32_CHECKPOINT_2_14Z.md` — Lane 3.2 full report
 - `.codex/PHASE_7A_LANE_31_CHECKPOINT_2_14Z.md` — Lane 3.1 full report
 - `.codex/PHASE_5_FINAL_REPORT_14Z.md` — Phase 5 full report
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — Campaign tracking
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — Campaign tracking
 
 ---
 

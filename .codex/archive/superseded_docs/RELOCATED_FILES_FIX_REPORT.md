@@ -40,7 +40,7 @@
   - CODEBASE_DASHBOARD.md → docs/system/CODEBASE_DASHBOARD.md
   - CODEBASE_COGNITIVE_MAP.md → docs/system/CODEBASE_COGNITIVE_MAP.md
   - ROADMAP.md → docs/ROADMAP.md
-- `.codex/docs/AGENTS.md.original.cf4e8c9.md` - 8 updates
+- `.codex/docs/.codex/archive/deprecated/AGENTS.md.original.cf4e8c9.md` - 8 updates
   - ROADMAP.md → docs/ROADMAP.md
   - GENESIS_SETUP_GUIDE.md → docs/admin/GENESIS_SETUP_GUIDE.md
   - OPERATIONAL_GUIDELINES.md → docs/agent/OPERATIONAL_GUIDELINES.md
@@ -83,7 +83,7 @@
   - CODEBASE_AGENCY_POLICY.md → .codex/CODEBASE_AGENCY_POLICY.md
 - `.github/agents/coverage-roadmap-agent.md` - 1 updates
   - ROADMAP.md → docs/ROADMAP.md
-- `.github/agents/docs/AGENTS.md` - 10 updates
+- `.github/agents/docs/.codex/archive/deprecated/AGENTS.md` - 10 updates
   - CODEBASE_AGENCY_POLICY.md → .codex/CODEBASE_AGENCY_POLICY.md
   - ROADMAP.md → docs/ROADMAP.md
   - GENESIS_SETUP_GUIDE.md → docs/admin/GENESIS_SETUP_GUIDE.md
@@ -92,7 +92,7 @@
   - ROADMAP.md → docs/ROADMAP.md
 - `.github/workflows/CONSOLIDATION_GUIDE.md` - 1 updates
   - OPERATIONAL_GUIDELINES.md → docs/agent/OPERATIONAL_GUIDELINES.md
-- `AGENTS.md` - 2 updates
+- `.codex/archive/deprecated/AGENTS.md` - 2 updates
   - ROADMAP.md → docs/ROADMAP.md
 - `LINK_VALIDATION_ACTION_ITEMS.md` - 8 updates
   - CODEBASE_DASHBOARD.md → docs/system/CODEBASE_DASHBOARD.md

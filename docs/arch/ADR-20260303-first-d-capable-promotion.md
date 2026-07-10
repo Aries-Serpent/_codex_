@@ -98,7 +98,7 @@ The `enforcement_tier` remains `GROUNDED` and `handoff_protocol` remains
 ### Negative
 - `d_capable_agents` count in CODEX_MANIFEST.json increases from 0 to 1.
 - `transition_active` flag becomes `true` — system enters D_CAPABLE operating mode.
-- Any regression in D_CAPABLE behaviour requires tracking in AGENT_ACCOUNTABILITY_REPORT.md.
+- Any regression in D_CAPABLE behaviour requires tracking in .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md.
 
 ### Risks & Mitigations
 - **Risk**: D_CAPABLE status allows autonomous execution that bypasses advisory review.

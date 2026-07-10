@@ -356,7 +356,7 @@ All artifacts stored in `.codex/campaign-artifacts/` (repository path, never `/t
 
 #### Documentation Gates
 - [ ] CHANGELOG.md updated (Track 1-8 summaries)
-- [ ] AGENT_ACCOUNTABILITY_REPORT.md updated (agent execution logs)
+- [ ] .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated (agent execution logs)
 - [ ] CAMPAIGN_FINAL_REPORT.md completed (comprehensive summary)
 - [ ] Discussion #4872 updated (results + recommendations)
 
@@ -394,7 +394,7 @@ All artifacts stored in `.codex/campaign-artifacts/` (repository path, never `/t
 - ✅ FIX ALL issues discovered (pre-existing or current)
 - ✅ Zero deferral language ("pre-existing", "future PR", "out of scope" prohibited)
 - ✅ Leave codebase better than found (Track 1-8 improvements mandatory)
-- ✅ Document ALL fixes (CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md within 2 hours)
+- ✅ Document ALL fixes (CHANGELOG.md + .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md within 2 hours)
 
 ### Custom Agent Delegation Best Practices
 - **Your Pattern:** Aggressively delegate to multiple agents in parallel
@@ -460,7 +460,7 @@ Full campaign details: `.codex/CAMPAIGN_EXECUTION_PLAN_2026.md` + `.codex/campai
 1. `.codex/AGENTIC_REPO_STATE.md` — Auth & autonomy status (**MANDATORY**)
 2. `.codex/CODEBASE_AGENCY_POLICY.md` — Governance rules
 3. `docs/admin/GENESIS_SETUP_GUIDE.md` — Deployment procedures
-4. `AGENTS.md` — 145 agent inventory & consolidation map
+4. `.codex/archive/deprecated/AGENTS.md` — 145 agent inventory & consolidation map
 5. `.github/agents/AGENT_REGISTRY.yaml` — Source of truth
 
 ### Existing Artifacts to Reference

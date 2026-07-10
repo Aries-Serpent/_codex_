@@ -51,7 +51,7 @@
 2. `REGISTRY_VALIDATION_GUIDE.md` - Scoring system and thresholds
 3. `REGISTRY_CONNECTIVITY_GUIDE.md` - Testing procedures and diagnostics
 4. `REGISTRY_WORKFLOW_GUIDE.md` - GitHub Actions integration guide
-5. `REGISTRY_WEBHOOK_INTEGRATION.md` - Webhook security and callbacks
+5. `REGISTRY_WEBHOOK_docs/api/reference/INTEGRATION.md` - Webhook security and callbacks
 6. Task 4.1-4.5 individual reports (5 files)
 
 **GitHub Actions Workflow (1 file, 279 lines):**

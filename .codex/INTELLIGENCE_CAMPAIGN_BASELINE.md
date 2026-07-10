@@ -1,4 +1,4 @@
-# INTELLIGENCE_CAMPAIGN_BASELINE.md
+# .codex/archive/misc/INTELLIGENCE_CAMPAIGN_BASELINE.md
 
 **Phase 0: Cognitive Brain Packaging Campaign**
 **Authority:** @mbaetiong D-tier approval

@@ -124,7 +124,7 @@ A critical blocker would be:
 - ✅ **CI monitoring:** pre-merge-validation workflow active
 - ✅ **Error tracking:** CodeQL + security scanning active
 - ✅ **Logging:** Session logging + accountability tracking active
-- ✅ **Audit trails:** AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md current
+- ✅ **Audit trails:** .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md current
 
 ---
 
@@ -155,7 +155,7 @@ A critical blocker would be:
 If critical issues arise post-merge:
 1. GitHub automatically creates rollback PR
 2. Revert to previous main commit
-3. Post-mortem analysis in AGENT_ACCOUNTABILITY_REPORT.md
+3. Post-mortem analysis in .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 4. Fix root cause in `0D_base_` branch
 5. Re-open PR for re-validation
 

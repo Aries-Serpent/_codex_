@@ -150,7 +150,7 @@ Total Allocation         ██████████████████�
 - Fixed YAML syntax in baseline sweep workflow
 
 ### **Accountability Updates**
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (Session entry added)
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (Session entry added)
 - `CHANGELOG.md` (Campaign summary added)
 
 ---

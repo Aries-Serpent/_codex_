@@ -69,7 +69,7 @@
    - Added: Phase B results summary
    - Content: Decision rationale, agent delegations, timeline projections
 
-2. ✅ **AGENT_ACCOUNTABILITY_REPORT.md**
+2. ✅ **.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md**
    - Added: Phase C session summary (2026-07-02T01:52Z)
    - Content: Phase C task status, success criteria, authority confirmation
    - Deliverables: Phase B/C output listing

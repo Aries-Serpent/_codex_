@@ -160,7 +160,7 @@ Track E Output: Consolidated metrics → FINAL GATE VALIDATION
 | Security posture | Zero CVEs, all deps validated | Track A |
 | Documentation | Release notes final | Track E |
 | Workflows | 100% compliance, zero violations | Track D |
-| Accountability | AGENT_ACCOUNTABILITY_REPORT.md current | Track E |
+| Accountability | .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md current | Track E |
 | SBOM | CycloneDX + SPDX formats updated | Track A |
 | Release artifacts | v0.1.0-final tagged, downloadable | Track E |
 
@@ -182,7 +182,7 @@ Track E Output: Consolidated metrics → FINAL GATE VALIDATION
 
 ### Accountability Updates
 
-- ⏳ Update AGENT_ACCOUNTABILITY_REPORT.md with Phase 7B campaign launch
+- ⏳ Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with Phase 7B campaign launch
 - ⏳ Update CHANGELOG.md with Phase 7B charter
 - ⏳ Create session entry in `.codex/aftermath/pda_iterations.jsonl`
 

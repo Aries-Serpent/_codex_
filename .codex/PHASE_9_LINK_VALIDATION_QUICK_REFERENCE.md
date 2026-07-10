@@ -60,15 +60,15 @@ Status: HIGH PRIORITY
 
 **3. Missing Deprecation Files (2 links)**
 - `.github/agents/google-home-script-agent.md`
-  - Missing: `GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md`
+  - Missing: `.codex/archive/deprecated/GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md`
   
 - `.github/agents/energy-conversion-agent.md`
-  - Missing: `ENERGY_CONVERSION_AGENT_DEPRECATION.md`
+  - Missing: `.codex/archive/deprecated/ENERGY_CONVERSION_AGENT_DEPRECATION.md`
 
 **Options:**
 - A) Create formal deprecation files in repository root
 - B) Create in `.codex/deprecations/` with updated references
-- C) Link to archived deprecation notices in AGENTS.md
+- C) Link to archived deprecation notices in .codex/archive/deprecated/AGENTS.md
 
 **4. Missing CI Documentation (2 links)**
 - `docs/LEARNING_PATHS.md` → `./CI.md`

@@ -484,7 +484,7 @@
   - Generates standardized cache keys, restore-keys, and paths via CLI
   - Supports `--github-output` flag for direct workflow step output injection
   - Supports `--health` flag for cache health reporting
-- **Added**: `.codex/CACHE_MANAGER_WORKFLOW_INTEGRATION.md` — Integration guide with architecture diagram,
+- **Added**: `.codex/CACHE_MANAGER_WORKFLOW_docs/api/reference/INTEGRATION.md` — Integration guide with architecture diagram,
   migration path, and 5 target workflows documented
 - **Pattern**: CacheManager complements (not replaces) existing `setup-python-cached` action
 
@@ -1276,7 +1276,7 @@ All Phase 11.x objectives have been completed, building on the successful QA wal
 - Added Phase 23 phase 3 gap-filling tests for utils sanitization/logging modules (38 tests).
 - Raised coverage fail_under threshold to 70 in pyproject.toml per Phase 25 target.
 - Added Phase 23 phase 3 completion planset documenting gapfill tests and threshold raise.
-- Added Coverage Gapfill Agent definition and registered in AGENTS.md.
+- Added Coverage Gapfill Agent definition and registered in .codex/archive/deprecated/AGENTS.md.
 - Added Phase 24 CLI workflow integration tests (5 tests).
 - Added Phase 24 workflow E2E tests for data pipeline flows (4 tests).
 - Added Phase 24 training/evaluation workflow integration tests (5 tests).
@@ -1373,7 +1373,7 @@ Executed comprehensive QA walkthrough to update all `.codex/qa_walkthrough/` fil
 ### 2026-01-30T00:00:45Z - Semgrep URL regex hardening + CI log retrieval prep
 - Replaced URL substring checks with regex-based URL literal detection in semgrep suppression tests.
 - Added semgrep URL regex coverage plans (baseline + updated plan) using pre-commit terminology.
-- Added CI Log Retrieval Agent documentation and registered it in AGENTS.md.
+- Added CI Log Retrieval Agent documentation and registered it in .codex/archive/deprecated/AGENTS.md.
 - Updated PR #3020 verification reports with API log retrieval/alert access status.
 
 ### 2026-01-30T00:00:45Z - PR #3020 validation updates
@@ -2189,7 +2189,7 @@ Resolve 3100 QA walkthrough ruff E501 issues to 0, reduce Pattern 6 to ≤ 80, a
 |------|---------|------|
 | Lint | `tests/cognitive/test_spm_org_rollout.py` | F841 unused MockAPI removed |
 | Lint | (auto-fixed) | F401, I001 auto-fixed via ruff --fix |
-| Accountability | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | NEW: violation log, work queue, commitments |
+| Accountability | `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` | NEW: violation log, work queue, commitments |
 | Memory | 8 store_memory calls | Engraved: never end early, full auth stack, violations checklist |
 
 ### Violations Acknowledged
@@ -2335,7 +2335,7 @@ CodeQL's next scan should properly recognize and suppress all 66 alerts with the
   - Authority & decision framework
 
 **Accountability:**
-- Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` with Phase 10 session summary
+- Updated `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` with Phase 10 session summary
 - Documented 10-gate validation system with owners and decisions
 - Recorded 18 tracked success criteria
 - Registered 8 identified risks with mitigation strategies

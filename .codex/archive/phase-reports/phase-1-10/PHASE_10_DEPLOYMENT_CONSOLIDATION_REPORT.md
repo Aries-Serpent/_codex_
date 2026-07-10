@@ -293,7 +293,7 @@
 - `.codex/MULTI_AGENT_CAMPAIGN_DASHBOARD.md` (hourly)
 
 **Accountability:**
-- `.codex/AGENT_ACCOUNTABILITY_REPORT.md`
+- `.codex/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 **Phase Lead Contacts:**
 - Phase 10.1: `cognitive-brain-session-injector` ✅ COMPLETE

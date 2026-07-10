@@ -171,7 +171,7 @@
 - [ ] **Check** artifact generation (.codex/PHASE_*.md files created)
 - [ ] **Review** any warnings or findings
 - [ ] **Create** final campaign completion summary
-- [ ] **Update** docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+- [ ] **Update** docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 - [ ] **Commit** all final artifacts
 - [ ] **Create PR** with Sessions 2–4 campaign work
 

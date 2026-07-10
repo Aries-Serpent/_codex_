@@ -226,7 +226,7 @@ Final Score = (
 
 - **Full Audit Report**: `.codex/EXPLORATION_PHASE_3_AGENT_AUDIT.md`
 - **Agent Registry**: `.github/agents/AGENT_REGISTRY.yaml`
-- **Agent Documentation**: `AGENTS.md` (repository root)
+- **Agent Documentation**: `.codex/archive/deprecated/AGENTS.md` (repository root)
 - **MCP Reference**: `.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md`
 
 ---

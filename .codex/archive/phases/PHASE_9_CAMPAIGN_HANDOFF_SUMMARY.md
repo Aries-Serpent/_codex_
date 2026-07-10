@@ -204,7 +204,7 @@ Lane A/B/C Issue (Severity: Any)
   - Status: Ready for daily use (06:00:00Z UTC)
 
 - ✅ Task 6.5: Phase 9 documentation links verified
-  - AGENTS.md: References to Phase 9 lanes prepared
+  - .codex/archive/deprecated/AGENTS.md: References to Phase 9 lanes prepared
   - README.md: Phase 9 entry point ready
   - CHANGELOG.md: Phase 9 campaign entry confirmed
   - GitHub Pages: Phase 9 documentation structure ready
@@ -357,7 +357,7 @@ All Phase 6 initialization tasks have been completed. Phase 9 execution lanes ar
 - `.github/agents/AGENT_REGISTRY.yaml` — Lead agent registry (145 agents)
 - `.codex/CODEBASE_AGENCY_POLICY.md` — Agency policy framework
 - `.codex/AGENTIC_REPO_STATE.md` — Agentic authorization state
-- `AGENTS.md` — Full agent documentation (in repo root)
+- `.codex/archive/deprecated/AGENTS.md` — Full agent documentation (in repo root)
 - `README.md` — Repository overview
 
 ---

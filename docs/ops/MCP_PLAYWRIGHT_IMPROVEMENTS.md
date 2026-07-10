@@ -579,4 +579,4 @@ def test_create_ref_and_pr_roundtrip(respx_mock):
 - `.copilot-space/mcp.example.json` — MCP server configuration example
 - `tools/actions_server.py` — CustomGPT Actions HTTP server (read-only currently)
 - `.codex/docs/INTEGRATION_BRANCH_MODEL.md` — 0D_base_ promotion flow
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — S174 session entry
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — S174 session entry

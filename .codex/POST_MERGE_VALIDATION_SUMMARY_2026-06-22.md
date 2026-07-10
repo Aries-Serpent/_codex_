@@ -218,7 +218,7 @@ Phase 9 implementation has **18% overall test coverage** vs. **70% required** by
 
 ### **Priority 3: ESCALATION & COMMUNICATION**
 - [ ] Notify @mbaetiong of critical issues + remediation timelines
-- [ ] Update AGENT_ACCOUNTABILITY_REPORT.md with validation findings
+- [ ] Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with validation findings
 - [ ] Post escalation issue to GitHub with [POST-MERGE-CRITICAL] tag
 
 ### **Priority 4: PHASE 9.2 & 9.3 VALIDATION (In Progress)**

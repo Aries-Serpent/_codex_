@@ -243,7 +243,7 @@ Most Used Actions:
 ```
 Primary:     .codex/WAVE_2_WORKFLOW_*.md (4 files)
 Backup:      archive/wave_2_2_workflow_reports/ (if enabled)
-Reference:   AGENTS.md (Agent documentation)
+Reference:   .codex/archive/deprecated/AGENTS.md (Agent documentation)
 Timeline:    git log --grep="Wave 2-2" --grep="Workflow"
 ```
 

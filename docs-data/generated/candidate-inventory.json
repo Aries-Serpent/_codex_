@@ -1634,7 +1634,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": ".codex/CI_AUTOFIX_DEEP_INTEGRATION.md",
+      "path": ".codex/CI_AUTOFIX_DEEP_docs/api/reference/INTEGRATION.md",
       "requires_ingestion": false,
       "size_bytes": 860
     },
@@ -2894,7 +2894,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": ".codex/CONTINUATION_PROMPT_COGNITIVE_BRAIN_INTEGRATION.md",
+      "path": ".codex/CONTINUATION_PROMPT_COGNITIVE_BRAIN_docs/api/reference/INTEGRATION.md",
       "requires_ingestion": false,
       "size_bytes": 20302
     },
@@ -4217,7 +4217,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": ".codex/DISCUSSION_4872_SCOPE_INTEGRATION.md",
+      "path": ".codex/DISCUSSION_4872_SCOPE_docs/api/reference/INTEGRATION.md",
       "requires_ingestion": false,
       "size_bytes": 22379
     },
@@ -6134,7 +6134,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": ".codex/INTELLIGENCE_CAMPAIGN_BASELINE.md",
+      "path": ".codex/.codex/archive/misc/INTELLIGENCE_CAMPAIGN_BASELINE.md",
       "requires_ingestion": false,
       "size_bytes": 15758
     },
@@ -8375,7 +8375,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": ".codex/PHASE8_COGNITIVE_BRAIN_INTEGRATION.md",
+      "path": ".codex/PHASE8_COGNITIVE_BRAIN_docs/api/reference/INTEGRATION.md",
       "requires_ingestion": false,
       "size_bytes": 10751
     },
@@ -10247,7 +10247,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": ".codex/PHASE_9_1_D_CAPABLE_AGENTS.md",
+      "path": ".codex/PHASE_9_1_D_CAPABLE_.codex/archive/deprecated/AGENTS.md",
       "requires_ingestion": false,
       "size_bytes": 6029
     },
@@ -11003,7 +11003,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": ".codex/POST_MERGE_MISSING_DEPS_INSTALL.md",
+      "path": ".codex/POST_MERGE_MISSING_DEPS_.codex/archive/misc/INSTALL.md",
       "requires_ingestion": false,
       "size_bytes": 10308
     },
@@ -12839,7 +12839,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": ".codex/SCRIPT_TOKEN_INTEGRATION.md",
+      "path": ".codex/SCRIPT_TOKEN_docs/api/reference/INTEGRATION.md",
       "requires_ingestion": false,
       "size_bytes": 22328
     },
@@ -13064,7 +13064,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": ".codex/SELF_REVIEW_BATCH_TRIAGE_INTEGRATION.md",
+      "path": ".codex/SELF_REVIEW_BATCH_TRIAGE_docs/api/reference/INTEGRATION.md",
       "requires_ingestion": false,
       "size_bytes": 14913
     },
@@ -14540,7 +14540,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": ".codex/TRACK_4_TASK_5_WEBHOOK_INTEGRATION.md",
+      "path": ".codex/TRACK_4_TASK_5_WEBHOOK_docs/api/reference/INTEGRATION.md",
       "requires_ingestion": false,
       "size_bytes": 8119
     },
@@ -14945,7 +14945,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": ".codex/WAVE_1_COGNITIVE_BRAIN_INTEGRATION.md",
+      "path": ".codex/WAVE_1_COGNITIVE_BRAIN_docs/api/reference/INTEGRATION.md",
       "requires_ingestion": false,
       "size_bytes": 12933
     },
@@ -16511,7 +16511,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": ".codex/WEBHOOK_REGISTRY_INTEGRATION.md",
+      "path": ".codex/WEBHOOK_REGISTRY_docs/api/reference/INTEGRATION.md",
       "requires_ingestion": false,
       "size_bytes": 9827
     },
@@ -18221,7 +18221,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": ".codex/archive/historical/CONTINUATION_PROMPT_COGNITIVE_INTEGRATION.md",
+      "path": ".codex/archive/historical/CONTINUATION_PROMPT_COGNITIVE_docs/api/reference/INTEGRATION.md",
       "requires_ingestion": false,
       "size_bytes": 6012
     },
@@ -26159,7 +26159,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": ".codex/archive/phase-reports/phase-1-10/PHASE_9_2_9_3_INTEGRATION.md",
+      "path": ".codex/archive/phase-reports/phase-1-10/PHASE_9_2_9_3_docs/api/reference/INTEGRATION.md",
       "requires_ingestion": false,
       "size_bytes": 21228
     },
@@ -29210,7 +29210,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": ".codex/archive/phases/PHASE_9_1_CANDIDATE_AGENTS.md",
+      "path": ".codex/archive/phases/PHASE_9_1_CANDIDATE_.codex/archive/deprecated/AGENTS.md",
       "requires_ingestion": false,
       "size_bytes": 6768
     },
@@ -30002,7 +30002,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": ".codex/archive/root-consolidation/deprecated-reports/ENERGY_CONVERSION_AGENT_DEPRECATION.md",
+      "path": ".codex/archive/root-consolidation/deprecated-reports/.codex/archive/deprecated/ENERGY_CONVERSION_AGENT_DEPRECATION.md",
       "requires_ingestion": false,
       "size_bytes": 2255
     },
@@ -30011,7 +30011,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": ".codex/archive/root-consolidation/deprecated-reports/GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md",
+      "path": ".codex/archive/root-consolidation/deprecated-reports/.codex/archive/deprecated/GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md",
       "requires_ingestion": false,
       "size_bytes": 1614
     },
@@ -30020,7 +30020,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": ".codex/archive/root-consolidation/phase-history/AGENT_ACCOUNTABILITY_REPORT.md",
+      "path": ".codex/archive/root-consolidation/phase-history/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md",
       "requires_ingestion": false,
       "size_bytes": 32718
     },
@@ -32531,7 +32531,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": ".codex/cognitive_brain/FOLLOWUP_P4_INTEGRATION.md",
+      "path": ".codex/cognitive_brain/FOLLOWUP_P4_docs/api/reference/INTEGRATION.md",
       "requires_ingestion": false,
       "size_bytes": 17106
     },
@@ -32819,7 +32819,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": ".codex/cognitive_brain/PHASE_38_PLANNING_COGNITIVE_BRAIN_AND_AGENTS.md",
+      "path": ".codex/cognitive_brain/PHASE_38_PLANNING_COGNITIVE_BRAIN_AND_.codex/archive/deprecated/AGENTS.md",
       "requires_ingestion": false,
       "size_bytes": 16938
     },
@@ -35249,7 +35249,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": ".codex/docs/AGENTS.md.original.cf4e8c9.md",
+      "path": ".codex/docs/.codex/archive/deprecated/AGENTS.md.original.cf4e8c9.md",
       "requires_ingestion": false,
       "size_bytes": 6720
     },
@@ -35375,7 +35375,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": ".codex/docs/COGNITIVE_APP_AGENT_INTEGRATION.md",
+      "path": ".codex/docs/COGNITIVE_APP_AGENT_docs/api/reference/INTEGRATION.md",
       "requires_ingestion": false,
       "size_bytes": 16800
     },
@@ -35834,7 +35834,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": ".codex/docs/POLICY_PARAMETERS_INTEGRATION.md",
+      "path": ".codex/docs/POLICY_PARAMETERS_docs/api/reference/INTEGRATION.md",
       "requires_ingestion": false,
       "size_bytes": 34973
     },
@@ -39218,7 +39218,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": ".codex/release/ACTIVESTATE_OIDC_INTEGRATION.md",
+      "path": ".codex/release/ACTIVESTATE_OIDC_docs/api/reference/INTEGRATION.md",
       "requires_ingestion": false,
       "size_bytes": 10552
     },
@@ -39245,7 +39245,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": ".codex/release/GITLAB_CI_CD_INTEGRATION.md",
+      "path": ".codex/release/GITLAB_CI_CD_docs/api/reference/INTEGRATION.md",
       "requires_ingestion": false,
       "size_bytes": 11265
     },
@@ -40037,7 +40037,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": ".codex/reports/PHASE_C_CUSTOM_COPILOT_AGENTS.md",
+      "path": ".codex/reports/PHASE_C_CUSTOM_COPILOT_.codex/archive/deprecated/AGENTS.md",
       "requires_ingestion": false,
       "size_bytes": 14254
     },
@@ -43772,7 +43772,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": ".codex/v0.1.0-FINAL_RELEASE_NOTES.md",
+      "path": ".codex/v0.1.0-FINAL_docs/release/RELEASE_NOTES.md",
       "requires_ingestion": false,
       "size_bytes": 19843
     },
@@ -44438,7 +44438,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": ".copilot-review-exclusions.md",
+      "path": ".codex/archive/misc/.copilot-review-exclusions.md",
       "requires_ingestion": false,
       "size_bytes": 6035
     },
@@ -44564,7 +44564,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": ".github/AGENTS.md",
+      "path": ".github/.codex/archive/deprecated/AGENTS.md",
       "requires_ingestion": false,
       "size_bytes": 15178
     },
@@ -46112,7 +46112,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": ".github/agents/TOKEN_USAGE_FOR_AGENTS.md",
+      "path": ".github/agents/TOKEN_USAGE_FOR_.codex/archive/deprecated/AGENTS.md",
       "requires_ingestion": false,
       "size_bytes": 17116
     },
@@ -46130,7 +46130,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": ".github/agents/WORKFLOW_ANALYTICS_SCRIBE_INTEGRATION.md",
+      "path": ".github/agents/WORKFLOW_ANALYTICS_SCRIBE_docs/api/reference/INTEGRATION.md",
       "requires_ingestion": false,
       "size_bytes": 22939
     },
@@ -47507,7 +47507,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": ".github/agents/docs/AGENTS.md",
+      "path": ".github/agents/docs/.codex/archive/deprecated/AGENTS.md",
       "requires_ingestion": false,
       "size_bytes": 19855
     },
@@ -49766,7 +49766,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": ".github/copilot-evolution/AGENTS.md",
+      "path": ".github/copilot-evolution/.codex/archive/deprecated/AGENTS.md",
       "requires_ingestion": false,
       "size_bytes": 15889
     },
@@ -61286,7 +61286,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": "AGENTS.md",
+      "path": ".codex/archive/deprecated/AGENTS.md",
       "requires_ingestion": false,
       "size_bytes": 33406
     },
@@ -61313,7 +61313,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": "CAMPAIGN_EXECUTION_COMPLETE.md",
+      "path": ".codex/archive/misc/CAMPAIGN_EXECUTION_COMPLETE.md",
       "requires_ingestion": false,
       "size_bytes": 10383
     },
@@ -61331,7 +61331,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": "CLAUDE.md",
+      "path": ".codex/archive/deprecated/CLAUDE.md",
       "requires_ingestion": false,
       "size_bytes": 160
     },
@@ -61376,7 +61376,7 @@
       "confidence": 0.7,
       "exception": false,
       "extension": ".md",
-      "path": "COVERAGE_GAP_FILL_REPORT.md",
+      "path": ".codex/archive/reports/COVERAGE_GAP_FILL_REPORT.md",
       "requires_ingestion": true,
       "size_bytes": 8848
     },
@@ -61394,7 +61394,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": "CROSS_PLATFORM_FILENAME_ASSESSMENT_REPORT.md",
+      "path": ".codex/archive/reports/CROSS_PLATFORM_FILENAME_ASSESSMENT_REPORT.md",
       "requires_ingestion": false,
       "size_bytes": 2585
     },
@@ -61412,7 +61412,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": "DEPENDENCY_CONSTRAINTS.md",
+      "path": ".codex/archive/misc/DEPENDENCY_CONSTRAINTS.md",
       "requires_ingestion": false,
       "size_bytes": 10982
     },
@@ -61421,7 +61421,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": "DEPENDENCY_COUPLING_MATRIX.md",
+      "path": ".codex/archive/misc/DEPENDENCY_COUPLING_MATRIX.md",
       "requires_ingestion": false,
       "size_bytes": 9455
     },
@@ -61439,7 +61439,7 @@
       "confidence": 0.7,
       "exception": false,
       "extension": ".md",
-      "path": "ENERGY_CONVERSION_AGENT_DEPRECATION.md",
+      "path": ".codex/archive/deprecated/ENERGY_CONVERSION_AGENT_DEPRECATION.md",
       "requires_ingestion": true,
       "size_bytes": 166
     },
@@ -61448,7 +61448,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": "GEMINI.md",
+      "path": ".codex/archive/deprecated/GEMINI.md",
       "requires_ingestion": false,
       "size_bytes": 160
     },
@@ -61457,7 +61457,7 @@
       "confidence": 0.7,
       "exception": false,
       "extension": ".md",
-      "path": "GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md",
+      "path": ".codex/archive/deprecated/GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md",
       "requires_ingestion": true,
       "size_bytes": 168
     },
@@ -61466,7 +61466,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": "INSTALL.md",
+      "path": ".codex/archive/misc/INSTALL.md",
       "requires_ingestion": false,
       "size_bytes": 1534
     },
@@ -61475,7 +61475,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": "INTEGRATION.md",
+      "path": "docs/api/reference/INTEGRATION.md",
       "requires_ingestion": false,
       "size_bytes": 2347
     },
@@ -61484,7 +61484,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": "INTELLIGENCE_CAMPAIGN_BASELINE.md",
+      "path": ".codex/archive/misc/INTELLIGENCE_CAMPAIGN_BASELINE.md",
       "requires_ingestion": false,
       "size_bytes": 25273
     },
@@ -61493,7 +61493,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": "ISOLATED_DEPLOYMENT.md",
+      "path": "docs/release/ISOLATED_DEPLOYMENT.md",
       "requires_ingestion": false,
       "size_bytes": 808
     },
@@ -61520,7 +61520,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": "MASTER_REMEDIATION_PLAN.md",
+      "path": ".codex/archive/misc/MASTER_REMEDIATION_PLAN.md",
       "requires_ingestion": false,
       "size_bytes": 1993
     },
@@ -61529,7 +61529,7 @@
       "confidence": 0.7,
       "exception": false,
       "extension": ".md",
-      "path": "MUTATION_ANALYSIS_BATCH_B.md",
+      "path": ".codex/archive/misc/MUTATION_ANALYSIS_BATCH_B.md",
       "requires_ingestion": true,
       "size_bytes": 14825
     },
@@ -61538,7 +61538,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": "OFFLINE_DEPLOYMENT.md",
+      "path": "docs/release/OFFLINE_DEPLOYMENT.md",
       "requires_ingestion": false,
       "size_bytes": 10033
     },
@@ -61547,7 +61547,7 @@
       "confidence": 0.8,
       "exception": false,
       "extension": ".md",
-      "path": "PHASE12_WS3_AGENT9_JSON_SERIALIZATION_REPORT.md",
+      "path": ".codex/archive/reports/PHASE12_WS3_AGENT9_JSON_SERIALIZATION_REPORT.md",
       "requires_ingestion": true,
       "size_bytes": 21840
     },
@@ -61907,7 +61907,7 @@
       "confidence": 0.85,
       "exception": false,
       "extension": ".md",
-      "path": "QUANTUM_COMPLIANCE_TUNING_AGENT_INTEGRATION_GUIDE.md",
+      "path": "docs/api/reference/QUANTUM_COMPLIANCE_TUNING_AGENT_INTEGRATION_GUIDE.md",
       "requires_ingestion": true,
       "size_bytes": 13927
     },
@@ -61916,7 +61916,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": "QUICKSTART_BY_PROFILE.md",
+      "path": "docs/quickstart/QUICKSTART_BY_PROFILE.md",
       "requires_ingestion": false,
       "size_bytes": 7606
     },
@@ -61943,7 +61943,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": "SEMGREP_PARSE_ERROR_RESOLUTION.md",
+      "path": ".codex/archive/misc/SEMGREP_PARSE_ERROR_RESOLUTION.md",
       "requires_ingestion": false,
       "size_bytes": 8931
     },
@@ -61961,7 +61961,7 @@
       "confidence": 0.7,
       "exception": false,
       "extension": ".md",
-      "path": "TIER2_TESTING_LANE_BATCH_D_COMPLETION_REPORT.md",
+      "path": ".codex/archive/reports/TIER2_TESTING_LANE_BATCH_D_COMPLETION_REPORT.md",
       "requires_ingestion": true,
       "size_bytes": 12052
     },
@@ -61970,7 +61970,7 @@
       "confidence": 0.7,
       "exception": false,
       "extension": ".md",
-      "path": "TIER2_TESTING_LANE_BATCH_D_FAILURE_PATTERN_LIBRARY.md",
+      "path": ".codex/archive/misc/TIER2_TESTING_LANE_BATCH_D_FAILURE_PATTERN_LIBRARY.md",
       "requires_ingestion": true,
       "size_bytes": 24564
     },
@@ -61997,7 +61997,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": "WORKFLOW_CLEANUP_IMPLEMENTATION_CHECKLIST.md",
+      "path": ".codex/archive/implementations/WORKFLOW_CLEANUP_IMPLEMENTATION_CHECKLIST.md",
       "requires_ingestion": false,
       "size_bytes": 3758
     },
@@ -62780,7 +62780,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": "archive/reports/CHANGELOG_AGENTS.md",
+      "path": "archive/reports/CHANGELOG_.codex/archive/deprecated/AGENTS.md",
       "requires_ingestion": false,
       "size_bytes": 5991
     },
@@ -64076,7 +64076,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": "cognitive_app/README_INTEGRATION.md",
+      "path": "cognitive_app/README_docs/api/reference/INTEGRATION.md",
       "requires_ingestion": false,
       "size_bytes": 6552
     },
@@ -66830,7 +66830,7 @@
       "confidence": 0.7,
       "exception": false,
       "extension": ".md",
-      "path": "docs/CODE_EXAMPLES_CI_CD_INTEGRATION.md",
+      "path": "docs/CODE_EXAMPLES_CI_CD_docs/api/reference/INTEGRATION.md",
       "requires_ingestion": true,
       "size_bytes": 10928
     },
@@ -66866,7 +66866,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": "docs/COGNITIVE_BRAIN_QUANTUM_INTEGRATION.md",
+      "path": "docs/COGNITIVE_BRAIN_QUANTUM_docs/api/reference/INTEGRATION.md",
       "requires_ingestion": false,
       "size_bytes": 14243
     },
@@ -67046,7 +67046,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": "docs/DEPENDENCY_CONSTRAINTS.md",
+      "path": "docs/.codex/archive/misc/DEPENDENCY_CONSTRAINTS.md",
       "requires_ingestion": false,
       "size_bytes": 2546
     },
@@ -67424,7 +67424,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": "docs/ISOLATED_DEPLOYMENT.md",
+      "path": "docs/docs/release/ISOLATED_DEPLOYMENT.md",
       "requires_ingestion": false,
       "size_bytes": 1382
     },
@@ -67559,7 +67559,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": "docs/OFFLINE_DEPLOYMENT.md",
+      "path": "docs/docs/release/OFFLINE_DEPLOYMENT.md",
       "requires_ingestion": false,
       "size_bytes": 17825
     },
@@ -67973,7 +67973,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": "docs/QUICKSTART_BY_PROFILE.md",
+      "path": "docs/docs/quickstart/QUICKSTART_BY_PROFILE.md",
       "requires_ingestion": false,
       "size_bytes": 7649
     },
@@ -68225,7 +68225,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": "docs/SOFT_TO_GROUNDED_RELEASE_NOTES.md",
+      "path": "docs/SOFT_TO_GROUNDED_docs/release/RELEASE_NOTES.md",
       "requires_ingestion": false,
       "size_bytes": 10741
     },
@@ -68423,7 +68423,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md",
+      "path": "docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md",
       "requires_ingestion": false,
       "size_bytes": 804843
     },
@@ -69152,7 +69152,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": "docs/agent/AGENT_MERGE_READINESS_INTEGRATION.md",
+      "path": "docs/agent/AGENT_MERGE_READINESS_docs/api/reference/INTEGRATION.md",
       "requires_ingestion": false,
       "size_bytes": 14600
     },
@@ -69161,7 +69161,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": "docs/agent/AI_AGENT_WORKFLOW_INTEGRATION.md",
+      "path": "docs/agent/AI_AGENT_WORKFLOW_docs/api/reference/INTEGRATION.md",
       "requires_ingestion": false,
       "size_bytes": 11554
     },
@@ -69404,7 +69404,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": "docs/ai-facing/QUANTUM_RAG_INTEGRATION.md",
+      "path": "docs/ai-facing/QUANTUM_RAG_docs/api/reference/INTEGRATION.md",
       "requires_ingestion": false,
       "size_bytes": 16318
     },
@@ -69620,7 +69620,7 @@
       "confidence": 0.7,
       "exception": false,
       "extension": ".md",
-      "path": "docs/api/JAVASCRIPT_INTEGRATION.md",
+      "path": "docs/api/JAVASCRIPT_docs/api/reference/INTEGRATION.md",
       "requires_ingestion": true,
       "size_bytes": 15636
     },
@@ -69647,7 +69647,7 @@
       "confidence": 0.7,
       "exception": false,
       "extension": ".md",
-      "path": "docs/api/PYTHON_INTEGRATION.md",
+      "path": "docs/api/PYTHON_docs/api/reference/INTEGRATION.md",
       "requires_ingestion": true,
       "size_bytes": 17212
     },
@@ -74894,7 +74894,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": "docs/guides/AGENTS.md",
+      "path": "docs/guides/.codex/archive/deprecated/AGENTS.md",
       "requires_ingestion": false,
       "size_bytes": 1251
     },
@@ -86684,7 +86684,7 @@
       "confidence": 0.95,
       "exception": false,
       "extension": ".md",
-      "path": "mutants/src/mcp/AGENTS.md",
+      "path": "mutants/src/mcp/.codex/archive/deprecated/AGENTS.md",
       "requires_ingestion": true,
       "size_bytes": 1548
     },
@@ -86972,7 +86972,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": "phase_12_2_report.md",
+      "path": ".codex/archive/misc/phase_12_2_report.md",
       "requires_ingestion": false,
       "size_bytes": 5988
     },
@@ -87008,7 +87008,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": "prompts/AGENTS.md",
+      "path": "prompts/.codex/archive/deprecated/AGENTS.md",
       "requires_ingestion": false,
       "size_bytes": 1152
     },
@@ -87449,7 +87449,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": "reports/PHASE_C_CUSTOM_COPILOT_AGENTS.md",
+      "path": "reports/PHASE_C_CUSTOM_COPILOT_.codex/archive/deprecated/AGENTS.md",
       "requires_ingestion": false,
       "size_bytes": 14254
     },
@@ -88835,7 +88835,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": "scripts/AGENTS.md",
+      "path": "scripts/.codex/archive/deprecated/AGENTS.md",
       "requires_ingestion": false,
       "size_bytes": 1432
     },
@@ -90077,7 +90077,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": "src/mcp/AGENTS.md",
+      "path": "src/mcp/.codex/archive/deprecated/AGENTS.md",
       "requires_ingestion": false,
       "size_bytes": 1548
     },
@@ -90149,7 +90149,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": "terraform_plan_summary.md",
+      "path": ".codex/archive/misc/terraform_plan_summary.md",
       "requires_ingestion": false,
       "size_bytes": 266
     },
@@ -90563,7 +90563,7 @@
       "confidence": 1.0,
       "exception": true,
       "extension": ".md",
-      "path": "workbench/PHASE_4_FULL_INTEGRATION.md",
+      "path": "workbench/PHASE_4_FULL_docs/api/reference/INTEGRATION.md",
       "requires_ingestion": false,
       "size_bytes": 2836
     },

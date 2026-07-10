@@ -182,7 +182,7 @@ git rerere
 **Repository-Specific Notes:**
 
 For Codex repository:
-- Check AGENTS.md for code style conventions
+- Check .codex/archive/deprecated/AGENTS.md for code style conventions
 - Verify tests pass after resolution
 - Update documentation if API changed
 - Run audit pipeline if capabilities affected

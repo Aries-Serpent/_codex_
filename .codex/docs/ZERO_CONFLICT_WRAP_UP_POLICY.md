@@ -49,7 +49,7 @@ Run **in this exact order** before every `report_progress`:
 3. **[ ] `python -m ruff check src/ tests/`** — must exit 0
 4. **[ ] `python3 scripts/ci/sync_tracked_files.py --fix`** — must exit 0 with all ✅
 5. **[ ] `CHANGELOG.md` updated** — `## [Unreleased]` section has today's entry
-6. **[ ] `AGENT_ACCOUNTABILITY_REPORT.md` updated** — most-recent session entry is today (Pattern 25)
+6. **[ ] `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` updated** — most-recent session entry is today (Pattern 25)
 7. **[ ] `report_progress`** — only after ALL above pass
 
 ## What To Do If Conflicts Are Found
@@ -63,7 +63,7 @@ Run **in this exact order** before every `report_progress`:
 
 ## Automated Enforcement
 
-This policy is recorded in `.codex/permanent_facts.md` (P-045) and will be loaded at every session start via the mandatory pre-load protocol in `AGENTS.md §0`.
+This policy is recorded in `.codex/permanent_facts.md` (P-045) and will be loaded at every session start via the mandatory pre-load protocol in `.codex/archive/deprecated/AGENTS.md §0`.
 
 > **Every agent session ends with zero merge conflicts. No exceptions.**
 
@@ -112,7 +112,7 @@ Run **in this exact order** before every `report_progress`:
 4. **[ ] `python -m ruff check src/ tests/`** — must exit 0
 5. **[ ] `python3 scripts/ci/sync_tracked_files.py --fix`** — must exit 0 with all ✅
 6. **[ ] `CHANGELOG.md` updated** — `## [Unreleased]` section has today's entry
-7. **[ ] `AGENT_ACCOUNTABILITY_REPORT.md` updated** — most-recent session entry is today (Pattern 25)
+7. **[ ] `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` updated** — most-recent session entry is today (Pattern 25)
 8. **[ ] `report_progress`** — only after ALL above pass
 
 ## What To Do If Conflicts Are Found
@@ -126,6 +126,6 @@ Run **in this exact order** before every `report_progress`:
 
 ## Automated Enforcement
 
-This policy is recorded in `.codex/permanent_facts.md` and will be loaded at every session start via the mandatory pre-load protocol in `AGENTS.md §0`.
+This policy is recorded in `.codex/permanent_facts.md` and will be loaded at every session start via the mandatory pre-load protocol in `.codex/archive/deprecated/AGENTS.md §0`.
 
 > **Every agent session ends with zero merge conflicts. No exceptions.**

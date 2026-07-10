@@ -185,7 +185,7 @@
 
 **In Main Repository:**
 - `.codex/AGENTIC_REPO_STATE.md` - Current repository state
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` - Agent accountability tracking
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` - Agent accountability tracking
 - `CHANGELOG.md` - Change history
 
 **In GitHub:**

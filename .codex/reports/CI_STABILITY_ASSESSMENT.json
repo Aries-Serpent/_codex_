@@ -273,7 +273,7 @@
   },
   "session_wrapup_compliance": {
     "req_4_status": "PARTIAL",
-    "req_4_description": "AGENT_ACCOUNTABILITY_REPORT.md in latest commits",
+    "req_4_description": ".codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md in latest commits",
     "req_4_compliance": {
       "report_found": true,
       "location": ".codex/reports/ACCOUNTABILITY_REPORT_DRAFT.md",

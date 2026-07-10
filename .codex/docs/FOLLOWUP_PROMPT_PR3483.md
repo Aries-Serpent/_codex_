@@ -101,7 +101,7 @@ Review `scripts/ci/auto_promote_tier.py` logic end-to-end before enabling.
 - [ ] P1.1 actionlint-audit gate is green
 - [ ] P1.2 all 13 variables confirmed present in repo
 - [ ] Any wiring PR(s) created passes all CI gates
-- [ ] REQ-4: `AGENT_ACCOUNTABILITY_REPORT.md` updated in every commit
+- [ ] REQ-4: `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` updated in every commit
 - [ ] REQ-5: `CHANGELOG.md` updated in every commit
 - [ ] No new SC2012 / SC2016 patterns introduced
 - [ ] Mermaid diagrams in changed files are accurate

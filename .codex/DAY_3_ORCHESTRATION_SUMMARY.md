@@ -116,7 +116,7 @@
 - Campaign achievement calculated
 - All 6 gates validated
 - Production readiness decision made
-- Updated: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- Updated: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 ---
 
@@ -180,7 +180,7 @@
 5. ✅ **D5 Complete:** 27-30/30 deployment checks passing
 6. ✅ **Campaign:** 97-98% achievement (all gates pass)
 7. ✅ **Reports:** All 5 agent reports submitted by 21:00Z
-8. ✅ **Accountability:** Updated in `AGENT_ACCOUNTABILITY_REPORT.md`
+8. ✅ **Accountability:** Updated in `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 ### Expected Outcome (21:00Z)
 
@@ -241,7 +241,7 @@ Confidence Level: 93%+ for 100% by Day 4 end
 - `.codex/DAY_3_EVENING_STANDUP_2100Z.md` (21:00Z, consolidated)
 
 **Accountability Update:**
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (final update 21:00Z)
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (final update 21:00Z)
 
 ---
 

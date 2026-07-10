@@ -1,6 +1,6 @@
 # Phase 9.1: D_CAPABLE Agent Registry
 
-**Document**: `.codex/PHASE_9_1_D_CAPABLE_AGENTS.md`  
+**Document**: `.codex/PHASE_9_1_D_CAPABLE_.codex/archive/deprecated/AGENTS.md`  
 **Generated**: 2026-07-07T18:20:47.507485  
 **Authority**: @mbaetiong (D-tier autonomous, GO CONTINUE)  
 **Track**: Phase 9 Track 9.1 Task 9.1.1  

@@ -45,7 +45,7 @@ OVERALL RESULT:                       🚀 APPROVED FOR MERGE
 - REQ-1: Must-pass CI gates → ✅ PASS
 - REQ-2: Code quality gates → ✅ PASS (advisory issues only)
 - REQ-3: Type checking → ✅ PASS (advisory errors, design debt)
-- REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated → ✅ PASS (freshness locked)
+- REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated → ✅ PASS (freshness locked)
 - REQ-5: CHANGELOG.md updated → ✅ PASS (freshness locked)
 - REQ-6: Secrets baseline validator → ✅ PASS (no credentials)
 - REQ-7: Permission checks → ✅ PASS (policy enforced)
@@ -69,7 +69,7 @@ OVERALL RESULT:                       🚀 APPROVED FOR MERGE
 | REQ-1 | Must-pass CI gates | ✅ PASS | pre-merge-validation.yml configured |
 | REQ-2 | Code quality gates | ✅ PASS | ruff checks pass (10 advisory) |
 | REQ-3 | Type checking | ✅ PASS | mypy configured (144 advisory errors) |
-| REQ-4 | Accountability report | ✅ PASS | docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md current |
+| REQ-4 | Accountability report | ✅ PASS | docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md current |
 | REQ-5 | CHANGELOG.md | ✅ PASS | CHANGELOG.md updated today |
 | REQ-6 | Secrets baseline | ✅ PASS | .secrets.baseline: zero credentials | <!-- pragma: allowlist secret -->
 | REQ-7 | Permissions policy | ✅ PASS | CODEBASE_AGENCY_POLICY.md enforced |
@@ -161,9 +161,9 @@ Result: PASS (no blocking issues)
 
 **Status:** ✅ **COMPLETE**
 
-#### AGENT_ACCOUNTABILITY_REPORT.md (REQ-4)
+#### .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (REQ-4)
 
-- **File:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- **File:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - **Status:** ✅ PRESENT & CURRENT
 - **Last update:** 2026-06-13T00:31Z (production-readiness-phase1-3-orchestration session)
 - **Verification:** Session entry exists in file
@@ -171,7 +171,7 @@ Result: PASS (no blocking issues)
 
 **Details:**
 ```
-✅ File exists: docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+✅ File exists: docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 ✅ Contains production-readiness session entry
 ✅ Session ID: production-readiness-phase1-3-orchestration
 ✅ Date: 2026-06-13T00:31Z

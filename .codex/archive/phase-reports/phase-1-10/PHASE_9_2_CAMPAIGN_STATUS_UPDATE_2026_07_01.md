@@ -198,7 +198,7 @@ Phase 9.2 campaign is **EXECUTING NORMALLY** with significant early wins:
 
 | Requirement | Status | Evidence |
 |-------------|--------|----------|
-| **REQ-4: AGENT_ACCOUNTABILITY_REPORT.md** | ✅ UPDATED | Campaign kickoff entry + Day 1 findings |
+| **REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md** | ✅ UPDATED | Campaign kickoff entry + Day 1 findings |
 | **REQ-5: CHANGELOG.md** | ✅ UPDATED | Campaign activation + Lane 2 GATE PASSED |
 | **WEC: Workflow Execution Checklist** | ✅ VERIFIED | auto-approve-workflows + agent-auth-delegation checked |
 | **Branch Synchronization** | ✅ CLEAN | 0 conflicts, upstream synced |

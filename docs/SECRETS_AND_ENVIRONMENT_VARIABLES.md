@@ -510,7 +510,7 @@ Full per-agent variable expectations: [`agents/VARIABLE_EXPECTATIONS.md`](../age
 
 - **Audit Log**: Settings → Security → Audit log → Filter by "secret"
 - **CI Failure Rate**: `CODEX_CI_FAILURE_RATE` (auto-updated by CI agent, thresholds via `CODEX_CI_FAILURE_THRESHOLD`)
-- **Secret Access Patterns**: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- **Secret Access Patterns**: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - **Usage Matrix**: `.codex/security/secrets_usage_matrix.json`
 
 ---

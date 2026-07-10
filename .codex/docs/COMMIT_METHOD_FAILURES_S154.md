@@ -34,7 +34,7 @@ CONFLICT (add/add): Merge conflict in .github/workflows/branch-rebase-gate.yml
 CONFLICT (add/add): Merge conflict in .github/workflows/deferral-language-gate.yml
 CONFLICT (add/add): Merge conflict in CHANGELOG.md
 CONFLICT (add/add): Merge conflict in CODEX_MANIFEST.json
-CONFLICT (add/add): Merge conflict in docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+CONFLICT (add/add): Merge conflict in docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 CONFLICT (add/add): Merge conflict in scripts/ci/session_wrapup_autofix.py
 ```
 

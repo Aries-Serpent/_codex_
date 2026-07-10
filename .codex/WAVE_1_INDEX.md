@@ -23,7 +23,7 @@
    - Success rates by pattern
    - Cognitive brain integration details
 
-3. **[WAVE_1_COGNITIVE_BRAIN_INTEGRATION.md](./WAVE_1_COGNITIVE_BRAIN_INTEGRATION.md)**
+3. **[WAVE_1_COGNITIVE_BRAIN_docs/api/reference/INTEGRATION.md](./WAVE_1_COGNITIVE_BRAIN_docs/api/reference/INTEGRATION.md)**
    - LTM persistence architecture
    - Detection pipeline integration
    - Auto-fix execution configuration
@@ -178,7 +178,7 @@ Timestamp:              2026-06-24T01:10:11Z
 .codex/
 ├── WAVE_1_DEPLOYMENT_COMPLETE.md          (10.2 KB)
 ├── WAVE_1_PATTERN_DEPLOYMENT_REPORT.md    (11.3 KB)
-├── WAVE_1_COGNITIVE_BRAIN_INTEGRATION.md  (12.7 KB)
+├── WAVE_1_COGNITIVE_BRAIN_docs/api/reference/INTEGRATION.md  (12.7 KB)
 ├── WAVE_1_VALIDATION_REPORT.md            (9.0 KB)
 ├── PHASE_10_PATTERN_ROADMAP.md            (12.1 KB)
 └── patterns/
@@ -197,7 +197,7 @@ Total: 8 files, 74.6 KB, 12,460 lines
 
 **For Engineers**: WAVE_1_PATTERN_DEPLOYMENT_REPORT.md → patterns/ → WAVE_1_VALIDATION_REPORT.md
 
-**For Operations**: WAVE_1_COGNITIVE_BRAIN_INTEGRATION.md → patterns/ (implementation details)
+**For Operations**: WAVE_1_COGNITIVE_BRAIN_docs/api/reference/INTEGRATION.md → patterns/ (implementation details)
 
 **For QA**: WAVE_1_VALIDATION_REPORT.md → individual patterns
 

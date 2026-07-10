@@ -228,7 +228,7 @@ Actions:
   [ ] Consolidate all 3 phase reports
   [ ] Verify 7 automation items implemented (60-90% each)
   [ ] Calculate total ROI (8.5-12h per deployment)
-  [ ] Update AGENT_ACCOUNTABILITY_REPORT.md
+  [ ] Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
   [ ] Update CHANGELOG.md with Phase 8 entry
   [ ] Generate final session summary
   [ ] Post to Discussion #4872 with certification

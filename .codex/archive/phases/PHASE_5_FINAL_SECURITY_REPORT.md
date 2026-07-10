@@ -20,7 +20,7 @@ Phase 5 Security Audit & Validation has been **successfully accelerated from 80%
 | **Dependency Security Updates** | ✅ COMPLETE | 8 critical packages verified at secure versions |
 | **Coverage Validation** | ✅ CONFIRMED | 17.57% baseline verified; 29/29 logging security tests passing |
 | **Phase 5 Gate Closure** | ✅ COMPLETE | All metrics below target thresholds; production readiness confirmed |
-| **Accountability Tracking** | ✅ IN PROGRESS | Updating `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` |
+| **Accountability Tracking** | ✅ IN PROGRESS | Updating `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` |
 
 ---
 
@@ -237,7 +237,7 @@ Performance Impact:         MINIMAL
 
 ### Updated Accountability Report Location
 
-**File:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`  
+**File:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`  
 **Update:** Phase 5 completion milestone (80% → 95%)  
 **Timestamp:** 2026-06-19T08:30:00Z
 
@@ -347,7 +347,7 @@ Phase 5 Security Audit & Validation has been **successfully completed at 100% ma
 - Phase 5 Semgrep Plan: `remediation_plan_semgrep.md` (210 lines)
 - Coverage Results: `COVERAGE_PHASE5_RESULTS.md`
 - Campaign Plan: `.codex/CAMPAIGN_AGENT_DELEGATION_PLAN.md`
-- Accountability Report: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- Accountability Report: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 ---
 

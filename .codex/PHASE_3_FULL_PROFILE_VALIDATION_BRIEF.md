@@ -421,14 +421,14 @@ Retry: 2x on failure
 
 ### Documentation (Required)
 - ✅ `docs/QUICKSTART_FULL_PROFILE.md` (Lane 4)
-- ✅ `docs/ECOSYSTEM_INTEGRATION.md` (Lane 4)
+- ✅ `docs/ECOSYSTEM_docs/api/reference/INTEGRATION.md` (Lane 4)
 - ✅ Built Sphinx documentation (Lane 4)
 
 ---
 
 ## Accountability & Compliance
 
-**REQ-4 (Accountability):** Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` with Phase 3 entry  
+**REQ-4 (Accountability):** Update `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` with Phase 3 entry  
 **REQ-5 (Changelog):** Update `CHANGELOG.md` with Phase 3 completion + all lane results  
 **WEC Checklist:** Update PR WEC with Phase 3 completion status
 

@@ -138,7 +138,7 @@
 ## 📋 COMPLIANCE VERIFICATION
 
 ### REQ-4 & REQ-5 Status
-- ✅ **AGENT_ACCOUNTABILITY_REPORT.md:** Updated with all 4 completed agents + ci-auto-healer brief
+- ✅ **.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md:** Updated with all 4 completed agents + ci-auto-healer brief
 - ✅ **CHANGELOG.md:** Updated with comprehensive Phase 9.3 campaign summary
 - ✅ **Artifact Storage:** All deliverables in .codex/ (NOT /tmp/)
 - ✅ **Security:** Zero secrets in any deliverable

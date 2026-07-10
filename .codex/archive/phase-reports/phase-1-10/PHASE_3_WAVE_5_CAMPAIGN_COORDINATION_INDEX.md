@@ -247,7 +247,7 @@ Execute Phase 3 Wave 5 comprehensive testing & validation across security, ML/co
 ## 🔗 Related Campaign Documents
 
 ### Phase 3 Context
-- **docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md** — Session history & phase tracking
+- **docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md** — Session history & phase tracking
 - **.codex/CODEBASE_AGENCY_POLICY.md** — Operational mandates & constraints
 - **.codex/AGENTIC_REPO_STATE.md** — Repository auth status & variables
 

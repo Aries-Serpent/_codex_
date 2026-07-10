@@ -35,7 +35,7 @@ All five phases of the hot-fix follow-up session completed successfully. PR #507
 - **Result:** PASS
 
 ### ✅ Phase 3: Full CI Validation Suite (15-20 min)
-- ✅ REQ-4: docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md OK
+- ✅ REQ-4: docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md OK
 - ✅ REQ-5: CHANGELOG.md OK  
 - ✅ REQ-14: Valid Agents Used entry
 - ✅ Repository variables: 12/12 validated
@@ -73,7 +73,7 @@ All REQ compliance checks PASS:
 
 | Requirement | Status | Details |
 |---|---|---|
-| **REQ-4** | ✅ PASS | AGENT_ACCOUNTABILITY_REPORT.md updated |
+| **REQ-4** | ✅ PASS | .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated |
 | **REQ-5** | ✅ PASS | CHANGELOG.md updated |
 | **REQ-14** | ✅ PASS | Valid Agents Used entry present |
 

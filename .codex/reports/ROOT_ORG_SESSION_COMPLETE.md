@@ -143,7 +143,7 @@ Root: 62 files (-30 files, -33%)
 
 ### Files for Phase 2
 - ⏳ `docs/analysis/PR_3133_ANALYSIS.md` → Move to `docs/analysis/`
-- ⏳ `AGENTS.md` → Move to `docs/agents/` or `.github/agents/docs/`
+- ⏳ `.codex/archive/deprecated/AGENTS.md` → Move to `docs/agents/` or `.github/agents/docs/`
   - Only 6 references (not 293 as originally thought)
   - Manageable with existing tools
 
@@ -168,7 +168,7 @@ All scripts from `scripts/root_org/`:
 
 ### Immediate (Next Session)
 1. ⏳ Move `docs/analysis/PR_3133_ANALYSIS.md` to `docs/analysis/`
-2. ⏳ Plan AGENTS.md migration (6 references to update)
+2. ⏳ Plan .codex/archive/deprecated/AGENTS.md migration (6 references to update)
 3. ⏳ Investigate directory duplications
 4. ⏳ Consolidate config directories
 

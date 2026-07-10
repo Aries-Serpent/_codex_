@@ -267,7 +267,7 @@ Expected validations:
 
 ### Infrastructure Created
 
-1. **DEPENDENCY_CONSTRAINTS.md** (10K+ doc)
+1. **.codex/archive/misc/DEPENDENCY_CONSTRAINTS.md** (10K+ doc)
    - Single source of truth for all version rationale
    - Cross-file consistency rules
    - Known issues and workarounds
@@ -290,7 +290,7 @@ Expected validations:
 |-----------|--------|-------|
 | CI Pre-Check | ✅ Ready | Run validation in CI before merge |
 | Pre-Commit Hook | ✅ Ready | Hook script prepared; activate in config |
-| Documentation | ✅ Complete | DEPENDENCY_CONSTRAINTS.md comprehensive |
+| Documentation | ✅ Complete | .codex/archive/misc/DEPENDENCY_CONSTRAINTS.md comprehensive |
 | Automation Script | ✅ Complete | validate_dependency_consistency.py functional |
 
 ---
@@ -301,7 +301,7 @@ Expected validations:
 
 | File | Purpose | Status |
 |------|---------|--------|
-| DEPENDENCY_CONSTRAINTS.md | Central documentation of all version pins and rationale | ✅ Created |
+| .codex/archive/misc/DEPENDENCY_CONSTRAINTS.md | Central documentation of all version pins and rationale | ✅ Created |
 | scripts/ci/validate_dependency_consistency.py | Automated validation tool | ✅ Created |
 | .codex/dependency_validation_report.json | Machine-readable audit output | ✅ Generated |
 | CHANGELOG.md | Record of changes (to be updated) | ⏳ Pending |
@@ -314,7 +314,7 @@ Expected validations:
 | ✅ All requirement files specify pandas >= 3.0.3 | PASS |
 | ✅ pyproject.toml and all requirements files consistent | PASS |
 | ✅ Evaluation test suite requirements aligned | PASS |
-| ✅ DEPENDENCY_CONSTRAINTS.md created and documented | PASS |
+| ✅ .codex/archive/misc/DEPENDENCY_CONSTRAINTS.md created and documented | PASS |
 | ✅ Automated validation tool created | PASS |
 | ⏳ Full test suite passes with pandas 3.0.3 | IN PROGRESS |
 | ⏳ No regressions in ML pipelines | IN PROGRESS |
@@ -340,7 +340,7 @@ The infrastructure now in place prevents:
 ✅ Future downgrades via automated pre-commit validation  
 ✅ Cross-file misalignment via CI gate  
 ✅ Silent incompatibilities via explicit version documentation  
-✅ Repeat incidents via clear change procedures in DEPENDENCY_CONSTRAINTS.md  
+✅ Repeat incidents via clear change procedures in .codex/archive/misc/DEPENDENCY_CONSTRAINTS.md  
 
 ---
 

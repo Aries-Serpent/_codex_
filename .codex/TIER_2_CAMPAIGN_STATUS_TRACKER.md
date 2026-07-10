@@ -275,7 +275,7 @@ PHASE 9 PROGRESSION TIMELINE:
 - [ ] TIER_2_DAILY_STANDUP_TEMPLATE.md (PENDING)
 
 ### Accountability & Changelog
-- [ ] Agent delegations recorded in AGENT_ACCOUNTABILITY_REPORT.md (REQ-4)
+- [ ] Agent delegations recorded in .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (REQ-4)
 - [ ] Campaign activities in CHANGELOG.md (REQ-5)
 - [ ] WEC (Workflow Execution Checklist) maintained in PR body
 
@@ -301,7 +301,7 @@ PHASE 9 PROGRESSION TIMELINE:
 
 **Governance & Authority:**
 - Campaign Authority: @mbaetiong (D-tier, AUTO-GO CONTINUE)
-- Accountability: AGENT_ACCOUNTABILITY_REPORT.md (REQ-4)
+- Accountability: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (REQ-4)
 - Changelog: CHANGELOG.md (REQ-5)
 
 ---

@@ -322,7 +322,7 @@ Lane 3.1 Remediation
    - Issue counts by severity
    - Perfect for dashboards
 
-5. **Accountability Report Update:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+5. **Accountability Report Update:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
    - Lane 3.3 completion entry
    - Session hardening compliance
    - Agent delegation tracking

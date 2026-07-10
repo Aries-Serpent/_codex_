@@ -77,7 +77,7 @@ Target: Increase test coverage from ~30% to 70%
 - `.codex/plans/COGNITIVE_BRAIN_STATUS_V2.md`
 - `.codex/plans/COGNITIVE_BRAIN_PRODUCTION_ROADMAP.md`
 - `.codex/plans/PHASE_18_MASTER_PLANSET.md`
-- `AGENTS.md`
+- `.codex/archive/deprecated/AGENTS.md`
 
 ---
 

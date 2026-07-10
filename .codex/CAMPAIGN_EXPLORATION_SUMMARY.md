@@ -214,7 +214,7 @@ Post-Merge (2 days later):
 2. Schedule Phase 8 session (2026-07-09T10:00Z)
 3. Schedule Phase 9 session (2026-07-10T10:00Z)
 4. Assign lead agents for Phases 7-9
-5. Update AGENT_ACCOUNTABILITY_REPORT.md
+5. Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 
 ---
 
@@ -228,7 +228,7 @@ Post-Merge (2 days later):
 **Related Repository Resources:**
 - `.codex/agent_context.json` — Live repo variable snapshot
 - `.github/agents/AGENT_REGISTRY.yaml` — Custom agent catalog
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — Session tracking
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — Session tracking
 
 ---
 

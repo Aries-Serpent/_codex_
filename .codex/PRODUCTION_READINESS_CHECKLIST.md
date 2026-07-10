@@ -179,7 +179,7 @@
   - Status: Complete
 
 - [x] **Agent accountability updated** (verified by Track 6)
-  - Report: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+  - Report: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
   - Phase 5 section: Added with 7 agents listed
   - Timestamps: All completion dates recorded
   - Evidence: Updated accountability report

@@ -176,7 +176,7 @@
 ⏳ **Final Finalization:**
 - `.codex/CAMPAIGN_ORCHESTRATION_STAGE_3_FINALIZATION.md` — Final checklist
 - `.codex/CAMPAIGN_COMPLETION_FINAL_*.md` — Completion summary
-- Updated: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (REQ-4)
+- Updated: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (REQ-4)
 - Updated: `CHANGELOG.md` (REQ-5)
 
 ---

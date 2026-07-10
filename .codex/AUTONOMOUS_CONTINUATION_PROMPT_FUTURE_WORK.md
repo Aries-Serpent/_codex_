@@ -559,7 +559,7 @@ All three major work items completed:
 
 ### Policy and Guidelines
 - `.codex/CODEBASE_AGENCY_POLICY.md` - Mandatory compliance
-- `AGENTS.md` - Agent documentation and operational guidelines
+- `.codex/archive/deprecated/AGENTS.md` - Agent documentation and operational guidelines
 
 ### Current Status
 - `COPILOT_CONTINUATION_PROMPT.md` - All IPs complete status

@@ -58,7 +58,7 @@ Repository bridges:
 
 - `docs/ADVANCED_PHYSICS_GUIDE.md:130-153` — electromagnetic field routing with potential, gradient, and force.
 - `docs/PHYSICS_TECHNICAL_REFERENCE.md:101-116` — Poisson potential and field-gradient implementation notes.
-- `docs/COGNITIVE_BRAIN_QUANTUM_INTEGRATION.md:481-492` — adaptive energy weights learned from feedback.
+- `docs/COGNITIVE_BRAIN_QUANTUM_docs/api/reference/INTEGRATION.md:481-492` — adaptive energy weights learned from feedback.
 
 Current-data source anchors captured during web search:
 

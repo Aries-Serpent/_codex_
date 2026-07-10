@@ -282,7 +282,7 @@ Create issues/PRs for:
 For questions or clarifications:
 - Review the detailed [BRANCH_VERIFICATION_REPORT.md](./BRANCH_VERIFICATION_REPORT.md)
 - Contact repository maintainers
-- Refer to [AGENTS.md](../agents.md) for repository guidelines
+- Refer to [.codex/archive/deprecated/AGENTS.md](../agents.md) for repository guidelines
 
 ---
 

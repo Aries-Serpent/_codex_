@@ -98,7 +98,7 @@ configs/       202 files (Primary canonical configuration hub)
 
 **Phase 2: Documentation Refinement** (1 file, 2 minutes)
 - README_PR_3133_ANALYSIS.md → docs/analysis/
-- AGENTS.md refined (ChatGPT Codex Agent entry point)
+- .codex/archive/deprecated/AGENTS.md refined (ChatGPT Codex Agent entry point)
 - Phase 3-4 quantum plansets created (27KB)
 - Result: 1.6% additional reduction (62→61 items)
 

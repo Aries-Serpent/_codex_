@@ -1439,7 +1439,7 @@
     "code_blocks": 0,
     "last_modified": "2026-07-02 22:52:12 -0500"
   },
-  "docs/SOFT_TO_GROUNDED_RELEASE_NOTES.md": {
+  "docs/SOFT_TO_GROUNDED_docs/release/RELEASE_NOTES.md": {
     "days_old": 1,
     "freshness": "FRESH",
     "file_size_kb": 10.42,
@@ -1695,7 +1695,7 @@
     "code_blocks": 0,
     "last_modified": "2026-07-02 22:52:12 -0500"
   },
-  "docs/DEPENDENCY_CONSTRAINTS.md": {
+  "docs/.codex/archive/misc/DEPENDENCY_CONSTRAINTS.md": {
     "days_old": 1,
     "freshness": "FRESH",
     "file_size_kb": 2.48,
@@ -3647,7 +3647,7 @@
     "code_blocks": 0,
     "last_modified": "2026-07-02 22:52:12 -0500"
   },
-  "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md": {
+  "docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md": {
     "days_old": 1,
     "freshness": "FRESH",
     "file_size_kb": 563.4,
@@ -6711,7 +6711,7 @@
     "code_blocks": 0,
     "last_modified": "2026-07-02 22:52:12 -0500"
   },
-  "docs/guides/AGENTS.md": {
+  "docs/guides/.codex/archive/deprecated/AGENTS.md": {
     "days_old": 1,
     "freshness": "FRESH",
     "file_size_kb": 1.21,

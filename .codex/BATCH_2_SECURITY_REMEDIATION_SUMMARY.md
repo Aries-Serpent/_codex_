@@ -26,7 +26,7 @@ Phase 6 Batch 2 completes comprehensive security remediation and hardening for p
 
 ### 1.1 Consolidated Audit Results
 
-From MASTER_REMEDIATION_PLAN.md (Run #26992144518):
+From .codex/archive/misc/MASTER_REMEDIATION_PLAN.md (Run #26992144518):
 
 | Tool | Total Findings | HIGH Priority | MEDIUM Priority | Status |
 |------|---|---:|---:|---|
@@ -605,7 +605,7 @@ monitoring per Section 5 Validation Results.
 - **RBAC Specification**: `docs/production/RBAC_SPECIFICATION.md`
 - **Incident Response Playbooks**: `docs/operations/INCIDENT_RESPONSE_PLAYBOOKS.md`
 - **Security Audit Results**: `.codex/aftermath/batch2_security_audit.json`
-- **Original Audit**: `MASTER_REMEDIATION_PLAN.md`
+- **Original Audit**: `.codex/archive/misc/MASTER_REMEDIATION_PLAN.md`
 - **Security Policy**: `SECURITY.md`
 - **Production Readiness**: `docs/production/PRODUCTION_READINESS_CHECKLIST.md`
 

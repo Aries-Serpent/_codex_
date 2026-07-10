@@ -182,7 +182,7 @@ Conduct comprehensive CI/CD health audit to identify + fix remaining failure pat
 - `.codex/PHASE_7B_TRACK_C_BRIEF.md` — Mutation metrics (validation input)
 - `.codex/PHASE_7B_TRACK_E_BRIEF.md` — Documentation & final gate
 - `.codex/PHASE_7B_COORDINATION_DASHBOARD.md` — Status hub
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — Campaign tracking
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — Campaign tracking
 
 ---
 

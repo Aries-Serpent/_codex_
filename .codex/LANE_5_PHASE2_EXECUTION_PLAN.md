@@ -36,8 +36,8 @@
 
 **Current State** (4 root-level quickstarts):
 ```
-1. ./QUICKSTART_BY_PROFILE.md          (Primary)
-2. ./docs/QUICKSTART_BY_PROFILE.md     (Exact duplicate)
+1. ./docs/quickstart/QUICKSTART_BY_PROFILE.md          (Primary)
+2. ./docs/docs/quickstart/QUICKSTART_BY_PROFILE.md     (Exact duplicate)
 3. ./PHASE_13_3_QUICK_START.md         (Outdated)
 4. ./docs/onboarding/QUICK_START.md    (Alternative)
 + ./docs/quickstart_local_training.md  (Training variant)
@@ -47,8 +47,8 @@
 
 **Execution Steps**:
 1. [ ] Day 51 (AM): Audit content of all 4 quickstarts
-   - Read QUICKSTART_BY_PROFILE.md
-   - Read docs/QUICKSTART_BY_PROFILE.md  
+   - Read docs/quickstart/QUICKSTART_BY_PROFILE.md
+   - Read docs/docs/quickstart/QUICKSTART_BY_PROFILE.md  
    - Read PHASE_13_3_QUICK_START.md
    - Read docs/onboarding/QUICK_START.md
    - Identify unique content, conflicts, out-of-date info
@@ -71,8 +71,8 @@
    - Create `docs/quickstart/common/verify-installation.md`
 
 4. [ ] Day 52 (PM): Create redirects & clean up
-   - Update root `QUICKSTART_BY_PROFILE.md` with redirect note
-   - Update `docs/QUICKSTART_BY_PROFILE.md` with redirect
+   - Update root `docs/quickstart/QUICKSTART_BY_PROFILE.md` with redirect note
+   - Update `docs/docs/quickstart/QUICKSTART_BY_PROFILE.md` with redirect
    - Add comment to `PHASE_13_3_QUICK_START.md` marking as deprecated
    - Update `docs/onboarding/` to link to new location
    - Verify all internal references update automatically
@@ -92,13 +92,13 @@
 **Current State** (32 files across 5 "official" sources):
 ```
 Root level:
-- ./OFFLINE_DEPLOYMENT.md (primary)
-- ./ISOLATED_DEPLOYMENT.md (overlapping)
+- ./docs/release/OFFLINE_DEPLOYMENT.md (primary)
+- ./docs/release/ISOLATED_DEPLOYMENT.md (overlapping)
 
 Docs level:
 - ./docs/offline_quickstart.md
 - ./docs/OFFLINE_QUICKSTART.md (duplicate)
-- ./docs/ISOLATED_DEPLOYMENT.md (duplicate)
+- ./docs/docs/release/ISOLATED_DEPLOYMENT.md (duplicate)
 
 Related:
 - ./docs/tracking_offline.md
@@ -110,8 +110,8 @@ Related:
 
 **Execution Steps**:
 1. [ ] Day 52: Analyze all offline deployment docs
-   - Read root OFFLINE_DEPLOYMENT.md (primary reference)
-   - Read ISOLATED_DEPLOYMENT.md (identify overlaps)
+   - Read root docs/release/OFFLINE_DEPLOYMENT.md (primary reference)
+   - Read docs/release/ISOLATED_DEPLOYMENT.md (identify overlaps)
    - Identify conflicts: different prerequisites? different steps?
    - Note any tracking/status concerns
 
@@ -132,8 +132,8 @@ Related:
      - Integration with existing infrastructure
 
 3. [ ] Day 53: Update references & redirects
-   - Root OFFLINE_DEPLOYMENT.md → redirect to docs/deployment/offline/
-   - Root ISOLATED_DEPLOYMENT.md → redirect to docs/deployment/offline/isolated-environment.md
+   - Root docs/release/OFFLINE_DEPLOYMENT.md → redirect to docs/deployment/offline/
+   - Root docs/release/ISOLATED_DEPLOYMENT.md → redirect to docs/deployment/offline/isolated-environment.md
    - All tracking/status docs → link to canonical offline guide
    - Update all related files to reference new location
 
@@ -153,7 +153,7 @@ Related:
 **Current State** (126 files across multiple methods):
 ```
 Root:
-- ./INSTALL.md (minimal)
+- ./.codex/archive/misc/INSTALL.md (minimal)
 
 Docs categories:
 - ./docs/DEPLOYMENT_GUIDE.md
@@ -171,7 +171,7 @@ Docker:
 
 **Execution Steps**:
 1. [ ] Day 53: Analyze all online deployment docs
-   - Read INSTALL.md (current minimal guide)
+   - Read .codex/archive/misc/INSTALL.md (current minimal guide)
    - Read DEPLOYMENT_GUIDE.md (main guide)
    - Review docs/deployment/ structure
    - Check docker/*.md files
@@ -212,7 +212,7 @@ Docker:
      - Support contacts
 
 4. [ ] Day 54: Update references & redirects
-   - Root INSTALL.md → redirect to docs/deployment/README.md
+   - Root .codex/archive/misc/INSTALL.md → redirect to docs/deployment/README.md
    - docs/DEPLOYMENT_GUIDE.md → redirect to docs/deployment/README.md
    - Organize docs/deploy/ → redirect to docs/deployment/
    - Update scripts/ references
@@ -222,7 +222,7 @@ Docker:
 - [ ] Single deployment index at `docs/deployment/README.md`
 - [ ] Three clear paths: pip, Docker, Docker Compose
 - [ ] Each path has prerequisites, steps, verification
-- [ ] Root INSTALL.md contains redirect
+- [ ] Root .codex/archive/misc/INSTALL.md contains redirect
 - [ ] All 126 related docs either consolidated or archived
 - [ ] Zero broken deployment references
 - [ ] Each method < 10 minutes to complete

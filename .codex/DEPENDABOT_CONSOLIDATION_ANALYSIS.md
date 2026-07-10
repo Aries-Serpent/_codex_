@@ -10,9 +10,9 @@
 
 | PR # | Branch | Package | Version Change | Files | Status |
 |------|--------|---------|-----------------|-------|--------|
-| #5013 | `dependabot/pip/aiohttp-3.14.1` | aiohttp | 3.14.0 → 3.14.1 | requirements/lock.txt, CHANGELOG.md, CODEX_MANIFEST.json, docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md | ✅ APPLIED |
-| #5014 | `dependabot/pip/jupyterlab-4.5.9` | jupyterlab | 4.5.7 → 4.5.9 | requirements-notebook.txt, CHANGELOG.md, CODEX_MANIFEST.json, docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md | ✅ APPLIED |
-| #5015 | `dependabot/pip/ujson-5.13.0` | ujson | 5.12.1 → 5.13.0 | requirements/lock.txt, CHANGELOG.md, CODEX_MANIFEST.json, docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md | ✅ APPLIED |
+| #5013 | `dependabot/pip/aiohttp-3.14.1` | aiohttp | 3.14.0 → 3.14.1 | requirements/lock.txt, CHANGELOG.md, CODEX_MANIFEST.json, docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md | ✅ APPLIED |
+| #5014 | `dependabot/pip/jupyterlab-4.5.9` | jupyterlab | 4.5.7 → 4.5.9 | requirements-notebook.txt, CHANGELOG.md, CODEX_MANIFEST.json, docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md | ✅ APPLIED |
+| #5015 | `dependabot/pip/ujson-5.13.0` | ujson | 5.12.1 → 5.13.0 | requirements/lock.txt, CHANGELOG.md, CODEX_MANIFEST.json, docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md | ✅ APPLIED |
 
 ---
 
@@ -28,7 +28,7 @@
 ### Metadata Files (auto-updated)
 - `CHANGELOG.md` — All three PRs update this
 - `CODEX_MANIFEST.json` — All three PRs update this
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — All three PRs update this
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — All three PRs update this
 
 ---
 
@@ -48,7 +48,7 @@
 1. ✅ Apply aiohttp 3.14.0 → 3.14.1 from PR #5013
 2. ✅ Apply ujson 5.12.1 → 5.13.0 from PR #5015
 3. ✅ Apply jupyterlab 4.5.7 → 4.5.9 from PR #5014
-4. ✅ Run auto-fix to update CHANGELOG.md, CODEX_MANIFEST.json, AGENT_ACCOUNTABILITY_REPORT.md
+4. ✅ Run auto-fix to update CHANGELOG.md, CODEX_MANIFEST.json, .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 5. ✅ Commit consolidated changes
 6. ✅ Verify all three PRs (#5013, #5014, #5015) have applied changes
 7. ✅ Close the three individual Dependabot PRs (consolidation complete)

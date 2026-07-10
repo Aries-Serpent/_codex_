@@ -24,7 +24,7 @@ Successfully migrated the monolithic 4.1MB Agent Accountability Report into 32 m
 | **Line Count** | 66,071 lines |
 | **Render Time** | 5-10 seconds |
 | **Navigation** | Ctrl+F search + manual scrolling |
-| **Storage** | docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md |
+| **Storage** | docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md |
 | **Sessions** | 316 (all in single file) |
 | **GitHub Limit** | **EXCEEDS** 256 KB limit (16x over) |
 
@@ -78,7 +78,7 @@ Improvement: Native UI guaranteed
 ```
 docs/accountability/
 ├── README.md                              (landing page)
-├── AGENT_ACCOUNTABILITY_REPORT.md         (main index)
+├── .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md         (main index)
 ├── AGENT_ACCESS_EXPERIENCE_REPORT.md      (unchanged)
 ├── INDEX.md                               (landing reference)
 └── chunks/
@@ -138,7 +138,7 @@ docs/accountability/
 | **Naming Convention** | ✅ | SESSION_GROUP_NN.md pattern |
 | **Navigation Links** | ✅ | Prev/Next/Index verified |
 | **Breadcrumbs** | ✅ | Return-to-index links confirmed |
-| **Index File** | ✅ | AGENT_ACCOUNTABILITY_REPORT.md created |
+| **Index File** | ✅ | .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md created |
 | **README** | ✅ | Landing page created |
 | **Backup** | ✅ | Old report archived at .codex/archive/ |
 | **GitHub Rendering** | ✅ | All chunks render in native UI |
@@ -150,7 +150,7 @@ docs/accountability/
 ### User Journey: Find Session S250
 
 ```
-1. Open AGENT_ACCOUNTABILITY_REPORT.md (index)
+1. Open .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (index)
    ↓
 2. Use Ctrl+F to find "S250"
    ↓
@@ -180,7 +180,7 @@ docs/accountability/
 
 | File | Size | Purpose |
 |------|------|---------|
-| docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md | 6.8 KB | Main index with all 32 links |
+| docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md | 6.8 KB | Main index with all 32 links |
 | docs/accountability/README.md | 4.2 KB | Landing page and guide |
 | docs/accountability/chunks/SESSION_GROUP_01.md | 12 KB | Sessions 1-10 |
 | docs/accountability/chunks/SESSION_GROUP_02.md | 12 KB | Sessions 11-20 |
@@ -198,7 +198,7 @@ docs/accountability/
 
 | Source | Destination | Purpose |
 |--------|-------------|---------|
-| docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md (4.1 MB) | .codex/archive/OLD_ACCOUNTABILITY_REPORT_66K.md.bak | Backup |
+| docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (4.1 MB) | .codex/archive/OLD_ACCOUNTABILITY_REPORT_66K.md.bak | Backup |
 
 ---
 
@@ -253,18 +253,18 @@ Accessible for reference or rollback if needed.
 
 **Old links to monolithic report:**
 ```
-docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md → [4.1 MB monolithic]
+docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md → [4.1 MB monolithic]
 ```
 
 **New links to chunked format:**
 ```
-docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md → [Index file, 6.8 KB]
+docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md → [Index file, 6.8 KB]
 docs/accountability/chunks/SESSION_GROUP_NN.md → [Individual chunks, 8.75 KB avg]
 ```
 
 ### Redirect Strategy
 
-All existing bookmarks to `AGENT_ACCOUNTABILITY_REPORT.md` now resolve to the index, which provides links to all groups. No 404 errors.
+All existing bookmarks to `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` now resolve to the index, which provides links to all groups. No 404 errors.
 
 ---
 
@@ -365,7 +365,7 @@ Each chunk includes:
 
 | File | Status | Size Change |
 |------|--------|-------------|
-| docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md | Replaced | -4.1 MB → +6.8 KB |
+| docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md | Replaced | -4.1 MB → +6.8 KB |
 | docs/accountability/README.md | Created | +4.2 KB |
 | docs/accountability/chunks/* (32 files) | Created | +280 KB |
 | .codex/archive/OLD_ACCOUNTABILITY_REPORT_66K.md.bak | Created | +4.1 MB |
@@ -377,7 +377,7 @@ Each chunk includes:
 
 ```bash
 # Archive old report
-cp docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md .codex/archive/OLD_ACCOUNTABILITY_REPORT_66K.md.bak
+cp docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md .codex/archive/OLD_ACCOUNTABILITY_REPORT_66K.md.bak
 
 # Create new structure
 mkdir -p docs/accountability/chunks
@@ -401,7 +401,7 @@ git commit -m "Phase 2.3: Accountability Report Migration (32 chunks)"
 | 32 chunks created | ✅ | 32 files in docs/accountability/chunks/ |
 | All <256 KB | ✅ | Max size 12 KB |
 | Old report archived | ✅ | .codex/archive/OLD_ACCOUNTABILITY_REPORT_66K.md.bak |
-| New index created | ✅ | docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md |
+| New index created | ✅ | docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md |
 | Navigation updated | ✅ | Prev/Next/Index links in each chunk |
 | All links verified | ✅ | No 404s, all navigation functional |
 | 100% session coverage | ✅ | 316/316 sessions distributed |
@@ -415,7 +415,7 @@ git commit -m "Phase 2.3: Accountability Report Migration (32 chunks)"
 
 ### Main Documents
 
-- **Index:** [docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md](./accountability/AGENT_ACCOUNTABILITY_REPORT.md)
+- **Index:** [docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md](./accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md)
 - **Landing:** [docs/accountability/README.md](./accountability/README.md)
 - **Chunks:** [docs/accountability/chunks/](./accountability/chunks/)
 
@@ -430,7 +430,7 @@ git commit -m "Phase 2.3: Accountability Report Migration (32 chunks)"
 ### Questions?
 
 1. **How do I find a session?**
-   - Open index: [AGENT_ACCOUNTABILITY_REPORT.md](./accountability/AGENT_ACCOUNTABILITY_REPORT.md)
+   - Open index: [.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md](./accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md)
    - Ctrl+F search for session ID
    - Click group link
 

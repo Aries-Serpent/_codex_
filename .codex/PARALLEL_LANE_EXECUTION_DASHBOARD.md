@@ -268,7 +268,7 @@ Lane 3 OR Lane 4 completes → 1 slot freed
 - [ ] Update `README.md` with org section
 - [ ] Update `CONTRIBUTING.md` with file refs
 - [ ] Create `.codex/archive/phases/INDEX.md`
-- [ ] Update `AGENT_ACCOUNTABILITY_REPORT.md`
+- [ ] Update `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - [ ] Scan and update all Mermaid diagrams
 - [ ] Prepare CHANGELOG entry
 - [ ] Generate documentation checklist

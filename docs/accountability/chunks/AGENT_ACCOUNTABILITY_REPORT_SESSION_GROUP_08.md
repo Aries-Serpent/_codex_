@@ -29,7 +29,7 @@
 | 6. S183n | 4152 | success | 2026-05-01T06:34:00Z | ['CI infrastructure workflow failures (Approve action_required, Token delegation, Cancel/Dispatch) are not code quality issues — they are authorization workflows. When HEAD is clean and branch is current, these failures do not require code changes.'] |
 | 7. S294-cont3 | 4160 | success | 2026-05-01T22:47:00Z | ['CI rescue comments on 7e9c85a were stale — all failures (Auto-Fix, Pattern 30, Validation Pipeline) were caused by SHA drift (merge preview) or pre-existing infra issues. No code fix needed.', 'Pattern 30 dimension sync_tracked_files passes locally when branch HEAD is up-to-date.'] |
 | 8. S177-copilot | 4171 | success | 2026-05-02T01:23:00Z | ['build_comment_context is imported inside main() in post_rescue_comment.py, so patch the module not the attribute', 'Pattern 30 sync_tracked_files stale failures on old commits are cleared by verifying local HEAD is clean and pushing a new commit'] |
-| 9. S183-PR4193-cifix | 4193 | success | 2026-05-03T00:15:00Z | ['When scorecard shows accountability report today stale + no PDA entry today, the fix is adding today-dated entries in AGENT_ACCOUNTABILITY_REPORT.md and pda_iterations.jsonl in the same commit.', 'CI failures on merge-preview SHA vs branch HEAD (SHA drift / Pattern 17) are not code issues when local checks are clean.'] |
+| 9. S183-PR4193-cifix | 4193 | success | 2026-05-03T00:15:00Z | ['When scorecard shows accountability report today stale + no PDA entry today, the fix is adding today-dated entries in .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md and pda_iterations.jsonl in the same commit.', 'CI failures on merge-preview SHA vs branch HEAD (SHA drift / Pattern 17) are not code issues when local checks are clean.'] |
 | 10. S183-PR4193-cifix-s2 | 4193 | success | 2026-05-03T00:43:00Z | ['35 failing infrastructure checks (token delegation, post rescue comment, auto-approve) fire on every push and recover automatically — not caused by code changes.', 'SHA drift Pattern 17 always fires on merge preview commits; local HEAD clean is the true measure.'] |
 
 ---
@@ -222,7 +222,7 @@
 
 **Summary:**
 ```
-['When scorecard shows accountability report today stale + no PDA entry today, the fix is adding today-dated entries in AGENT_ACCOUNTABILITY_REPORT.md and pda_iterations.jsonl in the same commit.', 'CI failures on merge-preview SHA vs branch HEAD (SHA drift / Pattern 17) are not code issues when local checks are clean.']
+['When scorecard shows accountability report today stale + no PDA entry today, the fix is adding today-dated entries in .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md and pda_iterations.jsonl in the same commit.', 'CI failures on merge-preview SHA vs branch HEAD (SHA drift / Pattern 17) are not code issues when local checks are clean.']
 ```
 
 **Tags:** None  

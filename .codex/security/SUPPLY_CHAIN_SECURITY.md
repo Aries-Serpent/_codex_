@@ -101,7 +101,7 @@ aries-serpent-0.1.0-final.tar.gz
 ├── aries-serpent-0.1.0-final.tar.gz.sig
 ├── aries-serpent-sbom.json        # ✅ SBOM (JSON)
 ├── aries-serpent-sbom.xml         # ✅ SBOM (XML)
-└── RELEASE_NOTES.md
+└── docs/release/RELEASE_NOTES.md
 
 # Wheel distribution
 aries-serpent-0.1.0-py3-none-any.whl

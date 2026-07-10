@@ -58,7 +58,7 @@
 6. **Track E2: session-analysis-agent**
    - Status: ⏳ QUEUED (system max 4 concurrent agents)
    - Will activate when slot opens (~02:00Z 2026-06-21)
-   - Target: Update AGENT_ACCOUNTABILITY_REPORT.md (REQ-4), CHANGELOG.md (REQ-5), archive sessions
+   - Target: Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (REQ-4), CHANGELOG.md (REQ-5), archive sessions
 
 ---
 

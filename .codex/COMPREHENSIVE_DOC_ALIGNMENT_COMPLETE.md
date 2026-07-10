@@ -32,7 +32,7 @@ Completed comprehensive codebase-wide documentation alignment for v0.1.0 pre-rel
 ### Critical Root Files
 - pyproject.toml
 - SECURITY.md
-- AGENTS.md
+- .codex/archive/deprecated/AGENTS.md
 
 ### Documentation Categories
 - **Cognitive Brain**: 12 files (status, diagrams, unified docs)

@@ -60,7 +60,7 @@ Monitor in-progress CI workflows and validate merge readiness for PR #5165.
 
 | Check | Status | Details |
 |-------|--------|---------|
-| REQ-4: AGENT_ACCOUNTABILITY_REPORT.md | ✅ PASS | Updated 2026-07-01 |
+| REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md | ✅ PASS | Updated 2026-07-01 |
 | REQ-5: CHANGELOG.md | ✅ PASS | Updated 2026-07-01 |
 | Agents Used Entry | ✅ PASS | Valid documentation |
 | WEC Execution Checklist | ✅ PRESENT | Complete block in PR |

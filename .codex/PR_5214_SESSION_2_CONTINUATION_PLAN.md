@@ -80,7 +80,7 @@ Three agents spawned for parallel remediation:
 - [ ] Confirm merge is unblocked (except infrastructure issue noted)
 
 ### **Phase 8: Document Session 2 Results** (Est. 5 min)
-- Update `AGENT_ACCOUNTABILITY_REPORT.md` with Session 2 summary
+- Update `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` with Session 2 summary
 - Update `CHANGELOG.md` with Session 2 completion details
 - Create session wrap-up commit
 

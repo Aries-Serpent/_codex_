@@ -161,7 +161,7 @@ Regressions: 0 (Zero breaking changes)
 - ✅ .codex/PHASE_3_WAVE_5_LANE_4_COMPLETION_REPORT.md
 
 ### Compliance Artifacts
-- ✅ AGENT_ACCOUNTABILITY_REPORT.md (REQ-4)
+- ✅ .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (REQ-4)
 - ✅ CHANGELOG.md updated (REQ-5)
 
 ### Git Commits
@@ -229,7 +229,7 @@ Regressions: 0 (Zero breaking changes)
 - Regressions: 0 (no breaking changes)
 
 ### Compliance: FULL COMPLIANCE
-- REQ-4: ✅ AGENT_ACCOUNTABILITY_REPORT.md created
+- REQ-4: ✅ .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md created
 - REQ-5: ✅ CHANGELOG.md updated
 - Commits: ✅ All metadata included
 - Documentation: ✅ All artifacts tracked

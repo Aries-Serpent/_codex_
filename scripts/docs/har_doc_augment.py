@@ -62,8 +62,8 @@ def _url_to_repo_path(url: str) -> str | None:
     Convert a raw.githubusercontent URL to a repo-relative path.
 
     e.g.:
-      https://raw.githubusercontent.com/Aries-Serpent/_codex_/0D_base_/AGENTS.md
-      → "AGENTS.md"
+      https://raw.githubusercontent.com/Aries-Serpent/_codex_/0D_base_/.codex/archive/deprecated/AGENTS.md
+      → ".codex/archive/deprecated/AGENTS.md"
     """
     if not url.startswith(RAW_URL_PREFIX):
         return None

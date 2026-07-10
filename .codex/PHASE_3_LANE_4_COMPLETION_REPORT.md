@@ -351,7 +351,7 @@ Missing Public APIs:        0 (target: 0)          ✅ PASS
 
 - **Phase 3 Briefing**: See opening authorization
 - **Architecture Overview**: `.codex/ARCHITECTURE_PATTERNS.md`
-- **Dependency Management**: See `DEPENDENCY_COUPLING_MATRIX.md`
+- **Dependency Management**: See `.codex/archive/misc/DEPENDENCY_COUPLING_MATRIX.md`
 - **Test Configuration**: See `pytest.ini` for detailed test setup
 
 ---

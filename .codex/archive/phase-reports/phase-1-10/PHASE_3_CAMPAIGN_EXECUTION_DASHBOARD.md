@@ -124,14 +124,14 @@ Tasks:
 ├─ Consolidate all 4 phase reports
 ├─ Verify 32+ governance gates (100% pass required)
 ├─ Generate Phase 3 completion certification
-├─ Update REQ-4 (AGENT_ACCOUNTABILITY_REPORT.md) with all phase entries + SHAs
+├─ Update REQ-4 (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md) with all phase entries + SHAs
 ├─ Update REQ-5 (CHANGELOG.md) with Phase 3 section
 └─ Generate PR merge checklist
 
 Deliverables:
 ├─ .codex/PHASE_3_COMPLETE_CONSOLIDATION_REPORT.md
 ├─ .codex/PHASE_3_PR_MERGE_CHECKLIST.md
-├─ Updated docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md (REQ-4)
+├─ Updated docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (REQ-4)
 └─ Updated CHANGELOG.md (REQ-5)
 
 Expected Outcome: 32+ gates verified PASS, Phase 3 certification issued
@@ -284,7 +284,7 @@ When agents complete phases:
 └── PHASE_3_PR_MERGE_CHECKLIST.md (pending Track 4)
 
 docs/accountability/
-├── AGENT_ACCOUNTABILITY_REPORT.md (REQ-4: to be updated with phases)
+├── .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (REQ-4: to be updated with phases)
 
 Repository Root:
 ├── CHANGELOG.md (REQ-5: to be updated with Phase 3 section)

@@ -212,7 +212,7 @@ Parallel Chains: All agents can begin simultaneously; synchronization points at 
 
 ## 📋 COMPLIANCE & ACCOUNTABILITY
 
-**REQ-4 (AGENT_ACCOUNTABILITY_REPORT.md):**
+**REQ-4 (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md):**
 - All deliverables and contributions tracked in .codex/PHASE_9_3_*.md files
 - Daily progress updates to dashboard
 

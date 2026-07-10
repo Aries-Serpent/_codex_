@@ -176,7 +176,7 @@
 - Validate all gates
 - Decision: Day 3 complete or escalate
 - Publish: `DAY_3_EVENING_STANDUP_2100Z.md`
-- Update: `AGENT_ACCOUNTABILITY_REPORT.md`
+- Update: `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 ---
 
@@ -208,7 +208,7 @@
 - `.codex/DAY_3_EVENING_STANDUP_2100Z.md` (final results + accountability)
 
 ### 4. Accountability
-**Update:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`  
+**Update:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`  
 **Add Section:** "## DAY 3 FINAL EXECUTION — [date/timestamp]"  
 **Content:** Campaign achievement %, all gate statuses, agent contributions, Day 4 readiness
 

@@ -997,7 +997,7 @@ users:
 ## 🎯 REFERENCE DOCUMENTS
 
 - `PHASE_7B_FINAL_METRICS_DASHBOARD.md` — Metrics consolidation
-- `v0.1.0-FINAL_RELEASE_NOTES.md` — Release documentation
+- `v0.1.0-FINAL_docs/release/RELEASE_NOTES.md` — Release documentation
 - `PHASE_7B_PRODUCTION_READINESS_SUMMARY.md` — Approval checklist
 
 ---

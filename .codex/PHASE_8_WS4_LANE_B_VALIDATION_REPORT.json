@@ -163,7 +163,7 @@
     "recommendations": [
       "Monitor doc-freshness-check.yml results monthly to catch stale docs",
       "Review link-check failures promptly to prevent broken docs in main",
-      "Integrate with AGENTS.md updates to keep ownership registry in sync"
+      "Integrate with .codex/archive/deprecated/AGENTS.md updates to keep ownership registry in sync"
     ]
   },
   "deliverables_summary": {
@@ -203,7 +203,7 @@
       "\u2705 LINK HEALTH: Link validation shows 100% health score (2,284 links checked, 0 broken links)",
       "\u2705 CI/CD GATES: All three CI/CD workflows (freshness, link-validator, post-merge) are active and properly configured",
       "\u2705 CONFIGURATION: Both .markdown-link-check.json and DOC_OWNERSHIP_REGISTRY.json deployed and validated",
-      "\u2705 CRITICAL DOCS: All root-level critical documentation files (README.md, CONTRIBUTING.md, SECURITY.md, CHANGELOG.md, AGENTS.md, CODE_OF_CONDUCT.md) have assigned owners"
+      "\u2705 CRITICAL DOCS: All root-level critical documentation files (README.md, CONTRIBUTING.md, SECURITY.md, CHANGELOG.md, .codex/archive/deprecated/AGENTS.md, CODE_OF_CONDUCT.md) have assigned owners"
     ],
     "blockers": [],
     "action_items": [
@@ -228,7 +228,7 @@
     ],
     "recommendations": [
       "Monitor doc-freshness-check.yml monthly to proactively identify stale documentation",
-      "Keep .codex/DOC_OWNERSHIP_REGISTRY.json synchronized with AGENTS.md agent updates",
+      "Keep .codex/DOC_OWNERSHIP_REGISTRY.json synchronized with .codex/archive/deprecated/AGENTS.md agent updates",
       "Run quarterly ownership reviews to ensure all docs have current owners",
       "Integrate documentation health checks into release process"
     ],

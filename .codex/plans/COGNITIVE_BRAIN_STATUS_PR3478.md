@@ -30,7 +30,7 @@ Operating Model:            E (advisory) — D_CAPABLE once human activates
 | W-080 | EOF newline added to `CODEX_MANIFEST.json` | `520cc4d` |
 | W-080 | `.secrets.baseline` updated: `integrity_sha256` false positive registered | `520cc4d` |
 | W-080 | `CHANGELOG.md` updated (REQ-5) | `520cc4d` |
-| W-080 | `AGENT_ACCOUNTABILITY_REPORT.md` W-079/W-080 added (REQ-4) | `520cc4d` |
+| W-080 | `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` W-079/W-080 added (REQ-4) | `520cc4d` |
 | — | `docs/AGENTIC_REPO_SYSTEM_GUIDE.md` v1.1.0: metrics corrected to 100/100, 5/5, v1.9.0 KPIs | `520cc4d` |
 
 ---

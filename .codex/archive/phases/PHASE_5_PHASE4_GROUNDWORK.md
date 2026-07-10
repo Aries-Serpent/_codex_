@@ -14,13 +14,13 @@
 1. **Campaign Completion** — Finalize all Phase 5 work, consolidate all metrics
 2. **Phase 6 Readiness** — Prepare transition documentation, agency authority updates
 3. **Executive Summary** — Generate comprehensive campaign closure report
-4. **Accountability** — Update AGENT_ACCOUNTABILITY_REPORT.md, commit final state
+4. **Accountability** — Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md, commit final state
 
 **Success Criteria:**
 - ✅ All 3 work streams at final metrics (coverage 24.5%+, CI 40%+, docs 97.5%+)
 - ✅ Phase 5 completion report created (15-20 KB)
 - ✅ Phase 6 readiness assessment complete
-- ✅ AGENT_ACCOUNTABILITY_REPORT.md updated
+- ✅ .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated
 - ✅ Zero open blockers
 
 ---
@@ -240,7 +240,7 @@ Target Metrics:
 ```
 10:00 - Final documentation review
 12:00 - Phase 6 readiness assessment
-14:00 - AGENT_ACCOUNTABILITY_REPORT.md update
+14:00 - .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md update
 16:00 - Handoff documentation preparation
 ```
 
@@ -380,7 +380,7 @@ Three comprehensive agent briefs will be generated on 2026-07-16 for immediate e
 
 ## 🚀 ACCOUNTABILITY & REPORTING
 
-### AGENT_ACCOUNTABILITY_REPORT.md Updates
+### .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md Updates
 **To be updated on 2026-07-23:**
 
 ```yaml
@@ -423,7 +423,7 @@ PHASE_5_COMPLETION:
 - [ ] Launch 3 Phase 4 agents on 2026-07-17
 - [ ] Daily checkpoint tracking (Week 4)
 - [ ] Phase 4 completion report on 2026-07-23
-- [ ] Update AGENT_ACCOUNTABILITY_REPORT.md
+- [ ] Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 
 ---
 

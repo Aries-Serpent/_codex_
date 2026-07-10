@@ -577,7 +577,7 @@ Before ending any session the agent MUST verify:
 □ 0c. No deferral language in any commit message, PR body, or comment
 □ 0d. WEC block appended to PR body via report_progress — all [x] preserved
 □ 0e. CHANGELOG.md updated with ### Fixed entry for this session
-□ 0f. AGENT_ACCOUNTABILITY_REPORT.md updated with session summary
+□ 0f. .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated with session summary
 □ 0g. .secrets.baseline regenerated if CODEX_MANIFEST.json or agent_context.json changed
 □ 0h. All tests pass locally (pytest -q)
 □ 0i. Cognitive Brain AfterMath closed (POST /api/v1/session/complete)

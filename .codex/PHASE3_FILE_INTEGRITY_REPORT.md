@@ -24,7 +24,7 @@
 | `.codex/PHASE2_COMPLETION_REPORT.md` | Added | Markdown | 8,537 bytes | ✅ Valid |
 | `.codex/aftermath/pda_iterations.jsonl` | Modified | JSONL | 191,121 bytes | ✅ Valid |
 | `CODEX_MANIFEST.json` | Modified | JSON | 54,327 bytes | ✅ Valid JSON |
-| `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | Modified | Markdown | 3,294,294 bytes | ✅ Valid |
+| `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` | Modified | Markdown | 3,294,294 bytes | ✅ Valid |
 | `requirements/lock.txt` | Modified | Text | 17,866 bytes | ✅ Valid Python deps |
 
 ---
@@ -58,7 +58,7 @@ Breakdown:
   - ✅ Valid JSON structure maintained
   - ✅ All expected keys present
 
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (~147 new lines)
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (~147 new lines)
   - Updated accountability tracking
   - ✅ Markdown syntax valid
   - ✅ No broken references
@@ -88,7 +88,7 @@ Breakdown:
 | `.codex/PHASE2_COMPLETION_REPORT.md` | UTF-8 | ✅ | ❌ | Standard text file |
 | `.codex/aftermath/pda_iterations.jsonl` | UTF-8 | ✅ | ❌ | JSON lines format |
 | `CODEX_MANIFEST.json` | UTF-8 | ✅ | ❌ | Standard JSON |
-| `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | UTF-8 | ✅ | ❌ | Standard Markdown |
+| `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` | UTF-8 | ✅ | ❌ | Standard Markdown |
 | `requirements/lock.txt` | UTF-8 | ✅ | ❌ | Standard requirements file |
 
 ---
@@ -110,7 +110,7 @@ Breakdown:
 
 ### Markdown Files
 - ✅ **PHASE2_COMPLETION_REPORT.md**: Valid Markdown
-- ✅ **AGENT_ACCOUNTABILITY_REPORT.md**: Valid Markdown
+- ✅ **.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md**: Valid Markdown
 
 ### Requirements Files
 - ✅ **lock.txt**: Valid pip lock file format
@@ -126,7 +126,7 @@ Breakdown:
 |------|------|--------|
 | CODEX_MANIFEST.json | 54,327 bytes | ✅ Complete |
 | requirements/lock.txt | 17,866 bytes | ✅ Complete |
-| docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md | 3,294,294 bytes | ✅ Complete |
+| docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md | 3,294,294 bytes | ✅ Complete |
 | .codex/aftermath/pda_iterations.jsonl | 191,121 bytes | ✅ Complete |
 | .codex/PHASE2_COMPLETION_REPORT.md | 8,537 bytes | ✅ Complete |
 

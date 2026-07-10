@@ -5,7 +5,7 @@
 Use these iterative prompts to generate and self-verify each missing artifact until all files exist and meet production criteria. Execute prompts batch-by-batch; after each file is produced, re-run quick checks and update evidence links.
 
 ## Global instructions
-- Obey repository AGENTS.md guidance, least-privilege tooling, and UNKNOWN/VERIFIED rules.
+- Obey repository .codex/archive/deprecated/AGENTS.md guidance, least-privilege tooling, and UNKNOWN/VERIFIED rules.
 - Prefer dependency-light implementations; gate optional integrations behind feature flags and env vars.
 - For every file, include inline TODOs only if absolutely necessary and tracked; otherwise ship complete content.
 - Run targeted tests after each patch; if unavailable, run `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -q tests -k <area>` and document results.

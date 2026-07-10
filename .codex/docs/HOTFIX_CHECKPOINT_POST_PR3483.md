@@ -16,9 +16,9 @@
 | P2.2 defensive int() | `scripts/ci/prune_corpus.py` | ✅ `float()→int()` fallback + updated module docstring |
 | P2.4 AGENT_HANDOFF_TIMEOUT_SECONDS consumed | `agent-handoff-gate.yml` | ✅ `signal.alarm(HANDOFF_TIMEOUT)` applied as hard deadline on Python validator |
 | CHANGELOG.md corrected | `CHANGELOG.md` | ✅ Duplicate `### Fixed` heading removed; W-086f entry corrected |
-| Accountability report corrected | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | ✅ W-086 item (6) corrected to reflect actual wiring |
+| Accountability report corrected | `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` | ✅ W-086 item (6) corrected to reflect actual wiring |
 | PR Template CI checkboxes | `.github/PULL_REQUEST_TEMPLATE.md` | ✅ 18-row CI failure triage table with auto-fill Copilot prompts |
-| Art_Validation pre-commit fix | `CHANGELOG.md`, `AGENT_ACCOUNTABILITY_REPORT.md` | ✅ Trailing whitespace stripped from both files |
+| Art_Validation pre-commit fix | `CHANGELOG.md`, `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` | ✅ Trailing whitespace stripped from both files |
 | validation-junit.xml gitignored | `.gitignore` | ✅ Added to prevent future accidental commits |
 
 ## 🔴 Pre-existing Issues (NOT Introduced by This PR)

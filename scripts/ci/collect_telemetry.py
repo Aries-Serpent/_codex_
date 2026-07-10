@@ -196,7 +196,7 @@ class TelemetryCollector:
             "codecov", "codecov-action", "token required", "protected branch",
             "upload queued", "coverage upload", "codecov upload",
         ],
-        # ACCOUNTABILITY_001: AGENT_ACCOUNTABILITY_REPORT.md not updated in last commit
+        # ACCOUNTABILITY_001: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md not updated in last commit
         "accountability-report": [
             "accountability report", "agent_accountability", "req-4", "req4",
             "accountability", "report updated in last commit",

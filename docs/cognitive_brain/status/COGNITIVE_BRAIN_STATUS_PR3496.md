@@ -21,7 +21,7 @@
 | W-110b | **`AGENT_REGISTRY.yaml`** v1.9.4 — `workflow-health-monitor` + `owner-approval-guard` fields populated; observation window started for designated candidate | ✅ Done |
 | W-111a | **`ADR-20260305-fourth-d-capable-evaluation.md`** updated — C8 gap RESOLVED ✅; @mbaetiong sign-off (2026-03-05) recorded; status: PENDING C4 only | ✅ Done |
 | W-111b | **`AGENT_REGISTRY.yaml`** v1.9.5 — `c8_rank_threshold_approved_by: mbaetiong`, `c8_rank_threshold_approved_date: '2026-03-05'` added | ✅ Done |
-| REQ-4 | `AGENT_ACCOUNTABILITY_REPORT.md` updated (W-109 + W-110 + W-111 entries) | ✅ Done |
+| REQ-4 | `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` updated (W-109 + W-110 + W-111 entries) | ✅ Done |
 | REQ-5 | `CHANGELOG.md` updated (W-109 + W-110 + W-111 sections) | ✅ Done |
 
 ---
@@ -117,7 +117,7 @@ repo-var-sync-schedule.yml will keep agent_context.json current from now on.
 | `docs/arch/ADR-20260305-fourth-d-capable-evaluation.md` | Created + C8 gap resolved (W-111) |
 | `docs/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_PR3496.md` | This file |
 | `.codex/docs/FOLLOWUP_PROMPT_PR3496.md` | Updated (v1.2.0) |
-| `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | REQ-4 W-109 + W-110 + W-111 + W-112 entries added |
+| `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` | REQ-4 W-109 + W-110 + W-111 + W-112 entries added |
 | `CHANGELOG.md` | REQ-5 W-109 + W-110 + W-111 + W-112 sections added |
 | `.github/workflows/agent-auth-delegation.yml` | W-112b — `Increment COGNITIVE_BRAIN_SESSION_NUMBER` step added to `activate-delegation` job |
 | `.secrets.baseline` | W-112a — line numbers 559→561, 590→592 refreshed + `generated_at` updated |

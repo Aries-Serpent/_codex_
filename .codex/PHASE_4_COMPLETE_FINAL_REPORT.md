@@ -191,7 +191,7 @@ docker push ariesserpent/codex-ml:0.1.0-dev
 # Step 9: Create GitHub release
 gh release create v0.1.0-production \
   --title "🎉 Codex-ML v0.1.0-production" \
-  --notes-file RELEASE_NOTES.md \
+  --notes-file docs/release/RELEASE_NOTES.md \
   dist/codex_ml-0.1.0-py3-none-any.whl \
   dist/codex_ml-0.1.0.tar.gz \
   dist/checksums.sha256

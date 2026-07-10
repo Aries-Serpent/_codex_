@@ -157,7 +157,7 @@ TOTAL SESSION
 5. ✅ `.codex/SESSION_2_FINAL_SUMMARY.md` — This document
 
 ### Accountability & Compliance
-1. ✅ `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — REQ-4 entries (updated)
+1. ✅ `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — REQ-4 entries (updated)
 2. ⏳ `CHANGELOG.md` — REQ-5 entry (pending final update)
 
 ---
@@ -260,7 +260,7 @@ TOTAL SESSION
 - ✅ **CODEX_MASTER_KEY** — Elevated operations authorized
 
 ### Compliance Checklist
-- ✅ **REQ-4 (AGENT_ACCOUNTABILITY_REPORT.md):** Session 2 entry + Phase 2 & 3 completions
+- ✅ **REQ-4 (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md):** Session 2 entry + Phase 2 & 3 completions
 - ✅ **REQ-5 (CHANGELOG.md):** Final entry pending (will update upon official completion)
 - ✅ **Branch:** copilot/multi-agent-campaign-plan
 - ✅ **Git History:** 8 commits pushed with full traceability

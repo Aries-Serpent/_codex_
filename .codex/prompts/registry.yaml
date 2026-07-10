@@ -179,7 +179,7 @@ prompts:
     approved_for_modes:
       - ASSISTED
       - SAFE_AUTO
-    description: "Append session accountability entry to AGENT_ACCOUNTABILITY_REPORT.md"
+    description: "Append session accountability entry to .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md"
 
   - prompt_id: task-autonomy-gate-check
     path: scripts/ci/autonomy_gate_check.py

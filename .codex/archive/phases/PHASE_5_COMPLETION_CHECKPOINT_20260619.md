@@ -86,7 +86,7 @@ PRODUCTION READY: YES ✅
 **Quality:** 358 lines, comprehensive, actionable
 
 ### 2. Accountability Report Update ✅
-**File:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+**File:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 **Added:**
 - Phase 5 completion milestone (80% → 95% → **100%**)

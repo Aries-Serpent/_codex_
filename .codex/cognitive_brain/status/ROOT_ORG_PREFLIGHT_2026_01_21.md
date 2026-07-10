@@ -6,7 +6,7 @@
 ## Summary
 - **Root inventory:** 275 items catalogued (30 essential, 156 relocatable, 89 review)
 - **References identified:** 345 updates would be required
-- **Risk assessment:** HIGH - AGENTS.md has 293 references
+- **Risk assessment:** HIGH - .codex/archive/deprecated/AGENTS.md has 293 references
 - **Decision:** DEFER full reorganization; proceed with phased approach
 - **Self-review:** 5/5 iterations complete, all concerns addressed
 

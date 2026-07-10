@@ -200,7 +200,7 @@ Before concluding, ensure:
 - `.codex/FOLLOWUP_PROMPT_FOR_NEXT_COPILOT_SESSION.md` - Detailed Phase 2 plan
 - `.codex/guardrails.md` - Operational constraints
 - `.codex/lessons_learned.md` - Knowledge base
-- `AGENTS.md` - AI agent orientation
+- `.codex/archive/deprecated/AGENTS.md` - AI agent orientation
 
 ---
 

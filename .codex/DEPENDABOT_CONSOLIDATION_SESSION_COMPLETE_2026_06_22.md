@@ -104,7 +104,7 @@ MLflow integration and tests updated:
 Accountability and changelog consolidated:
 
 - `CHANGELOG.md` ✅ MERGED
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` ✅ MERGED
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` ✅ MERGED
 
 ---
 
@@ -176,7 +176,7 @@ All files from the `copilot/consolidate-dependabot-prs` branch have been success
 3. **Dependency Updates** - All requirements files merged with consolidated versions
 4. **Workflow Updates** - 3 workflow files with consolidated configurations
 5. **Integration Code** - MLflow and test updates merged
-6. **Accountability** - CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md updated
+6. **Accountability** - CHANGELOG.md and .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated
 
 ### File Storage Compliance
 - ✅ All files maintained in repository structure

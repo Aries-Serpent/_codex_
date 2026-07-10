@@ -82,7 +82,7 @@ Phase 6 Wave 1 orchestrates controlled promotion of `0D_base_` (172 commits ahea
 - [ ] Production stability gates
 
 ### Task 6.3: Post-Promotion Sync ⏳ PENDING
-- [ ] Update AGENT_ACCOUNTABILITY_REPORT.md
+- [ ] Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 - [ ] Update CHANGELOG.md ([Unreleased] section)
 - [ ] Validate compliance gates (REQ-4/REQ-5)
 
@@ -101,7 +101,7 @@ Phase 6 Wave 1 orchestrates controlled promotion of `0D_base_` (172 commits ahea
 2. All 142 workflows passing on merged main
 3. CodeQL security gate: HIGH findings ≤1
 4. Coverage thresholds: ≥70% across all modules
-5. AGENT_ACCOUNTABILITY_REPORT.md updated with Wave 1 summary
+5. .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated with Wave 1 summary
 6. CHANGELOG.md has [Unreleased] section with promotion entry
 7. Compliance gates REQ-4/REQ-5 passing
 8. Production stability gates: ✅ PASS

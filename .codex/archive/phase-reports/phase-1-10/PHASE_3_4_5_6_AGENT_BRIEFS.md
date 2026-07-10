@@ -82,7 +82,7 @@ Produce: .codex/PHASE_4_POLICY_COMPLIANCE.md
 Update documentation for packaging and deployment.
 
 ```
-Task: Update INSTALL.md, profiles, offline usage, local usage docs
+Task: Update .codex/archive/misc/INSTALL.md, profiles, offline usage, local usage docs
 Focus: Ensure docs match packaged/public experience
 Produce: .codex/PHASE_5_DOC_UPDATES.md (summary of changes)
 ```

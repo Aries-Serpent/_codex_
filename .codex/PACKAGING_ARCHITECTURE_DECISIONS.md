@@ -31,9 +31,9 @@
 ## ADR-004 — External Consumption Documentation Set
 
 **Decision:** Publish root-level docs for external adopters:
-- `INSTALL.md`
-- `ISOLATED_DEPLOYMENT.md`
-- `INTEGRATION.md`
+- `.codex/archive/misc/INSTALL.md`
+- `docs/release/ISOLATED_DEPLOYMENT.md`
+- `docs/api/reference/INTEGRATION.md`
 
 **Rationale:** Reduce onboarding friction and make offline/isolated setup explicit and reproducible.
 

@@ -6,13 +6,13 @@
   "errors": [
     {
       "file": ".github/agents/google-home-script-agent.md",
-      "link": "../../GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md",
-      "message": "File not found: ../../GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md"
+      "link": "../../.codex/archive/deprecated/GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md",
+      "message": "File not found: ../../.codex/archive/deprecated/GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md"
     },
     {
       "file": ".github/agents/energy-conversion-agent.md",
-      "link": "../../ENERGY_CONVERSION_AGENT_DEPRECATION.md",
-      "message": "File not found: ../../ENERGY_CONVERSION_AGENT_DEPRECATION.md"
+      "link": "../../.codex/archive/deprecated/ENERGY_CONVERSION_AGENT_DEPRECATION.md",
+      "message": "File not found: ../../.codex/archive/deprecated/ENERGY_CONVERSION_AGENT_DEPRECATION.md"
     },
     {
       "file": ".github/agents/security-vulnerability-patcher/README.md",

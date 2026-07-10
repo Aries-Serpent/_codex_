@@ -62,7 +62,7 @@ Pre-commit Baseline:        ✅ detect-secrets baseline covers codex_index_meta.
 | `docs/AGENTIC_REPO_SYSTEM_GUIDE.md` | Section 9 CI workflows table missing `embedding-index-rebuild.yml` as Tier-1 (promoted from Tier-2 in PR #3448) | Medium | next agent session |
 | `docs/audits/WORKFLOW_COMPLIANCE_MATRIX.md` | Generated at Phase 0 against 91 workflows; updated to 96 at Phase 7 | Low | complete |
 | `docs/arch/ADR-*.md` | 5 ADRs written but not linked from system guide Section 12 | Medium | next agent session |
-| `docs/SOFT_TO_GROUNDED_RELEASE_NOTES.md` | Does not reference PR #3477/#3478 final polish items (handoff protocol fix, R-12 hardening) | Low | next agent session |
+| `docs/SOFT_TO_GROUNDED_docs/release/RELEASE_NOTES.md` | Does not reference PR #3477/#3478 final polish items (handoff protocol fix, R-12 hardening) | Low | next agent session |
 | `.github/copilot-prompts/active/` | PR-3474/3477/3478 followup prompts have placeholder validation commands | Low | resolved in PR #3474 (reviewer comment) |
 | `CODEX_MANIFEST.json` | Must be regenerated before any PR that introduces >24h gap from last generation | High | pre-merge checklist |
 
@@ -101,7 +101,7 @@ Pre-commit Baseline:        ✅ detect-secrets baseline covers codex_index_meta.
 | 🟡 Medium | Link 5 ADRs from `docs/AGENTIC_REPO_SYSTEM_GUIDE.md` Section 12 | 20min | ⏳ Pending · **Plan: P5-G** |
 | 🟡 Medium | Complete Sprint 2: identify top-3 unknown CI patterns; add to `collect_telemetry.py` | 1h | ⏳ Pending · **Plan: P5-H** |
 | 🟢 Low | Refresh `docs/audits/WORKFLOW_COMPLIANCE_MATRIX.md` against current workflow count | 30min | ⏳ Pending |
-| 🟢 Low | Update `docs/SOFT_TO_GROUNDED_RELEASE_NOTES.md` with PR #3477/#3478 polish items | 30min | ⏳ Pending |
+| 🟢 Low | Update `docs/SOFT_TO_GROUNDED_docs/release/RELEASE_NOTES.md` with PR #3477/#3478 polish items | 30min | ⏳ Pending |
 
 > **📋 Full implementation detail for all P5-A–H items:**  
 > `.codex/plans/pr_lifecycle_improvements.md` §Priority 5 — complete specification with
@@ -133,7 +133,7 @@ Pre-commit Baseline:        ✅ detect-secrets baseline covers codex_index_meta.
 
 ---
 
-## 📋 Work Item Log (abbreviated — full log in `AGENT_ACCOUNTABILITY_REPORT.md`)
+## 📋 Work Item Log (abbreviated — full log in `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`)
 
 | W-ID | PR | Summary | Status |
 |------|----|---------|:------:|
@@ -146,7 +146,7 @@ Pre-commit Baseline:        ✅ detect-secrets baseline covers codex_index_meta.
 | W-090–W-094 | PR #3854 (S293) | S221 guard `ci-rescue-sha` regex fix (P1-A), test-rag SHA-scoped marker (P1-B), actionlint-audit github-token (P1-C), SC2269 removal (P1-D), PR lifecycle improvement plan created with CB cross-reference (25 items, P1–P5) | ✅ |
 | W-095–W-099 | PR #3854 (S294) | Unified rescue-comment upsert system: `scripts/ci/post_rescue_comment.py` canonical script; `migrate_rescue_comments.py` batch migrator; all 66 PR-triggered + 5 push-triggered workflows standardised to single SHA-scoped marker `<!-- ci-rescue-sha:{pr}:{sha} -->`; RAG coverage boost (chunker + pipeline tests: 28→44 test methods each); accountability + CB status updated | ✅ |
 
-*For W-001–W-070 see `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`.*
+*For W-001–W-070 see `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`.*
 
 ---
 

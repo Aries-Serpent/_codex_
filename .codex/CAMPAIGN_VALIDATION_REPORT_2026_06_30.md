@@ -116,7 +116,7 @@ All Phase 3 preparation requirements have been **successfully completed and veri
 | Stage 4: Update references | ✅ VERIFIED | Procedures included for all updates |
 | **.secrets.baseline update** | ✅ VERIFIED | Reference update tracked in plan |
 | **CHANGELOG.md Phase 3 entry** | ✅ VERIFIED | Reference update tracked in plan |
-| **AGENT_ACCOUNTABILITY_REPORT.md update** | ✅ VERIFIED | Reference update tracked in plan |
+| **.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md update** | ✅ VERIFIED | Reference update tracked in plan |
 | **Mermaid diagram references** | ✅ VERIFIED | Reference update tracked in plan |
 | **Documentation file references** | ✅ VERIFIED | Reference update tracked in plan |
 | **Auth workflow documentation** | ✅ VERIFIED | Reference update tracked in plan |

@@ -25,7 +25,7 @@ Phase 2 of Root Organization has been **successfully completed** with maximum en
 - Zero broken links verified through comprehensive scanning
 - **Result:** 1.6% additional root reduction (62 → 61 files)
 
-#### ✅ Task 2: AGENTS.md Refinement
+#### ✅ Task 2: .codex/archive/deprecated/AGENTS.md Refinement
 - Added ChatGPT Codex Agent entry point comment (HTML comment block)
 - Updated status to Phase 2 Complete
 - Confirmed intentional placement in root for agent accessibility
@@ -268,7 +268,7 @@ TOTAL:                688 tests (677 passed, 11 pre-existing) - 98.4%
 7. **AI Agency Policy:** Ensured comprehensive, quality work
 
 ### Improvements Made
-1. Enhanced AGENTS.md as ChatGPT Codex Agent entry point
+1. Enhanced .codex/archive/deprecated/AGENTS.md as ChatGPT Codex Agent entry point
 2. Integrated QA walkthrough with root organization
 3. Created quantum-inspired autonomous plansets
 4. Documented all pre-existing issues clearly
@@ -307,7 +307,7 @@ TOTAL:                688 tests (677 passed, 11 pre-existing) - 98.4%
 
 **Context:**
 - Phase 1 complete: 30 files moved (100% success)
-- Phase 2 complete: 1 file moved, AGENTS.md refined (100% success)
+- Phase 2 complete: 1 file moved, .codex/archive/deprecated/AGENTS.md refined (100% success)
 - Total root reduction: 33.6% (92 → 61 files)
 - Zero broken links maintained across both phases
 - 688 tests validated (98.4% success rate)

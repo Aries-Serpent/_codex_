@@ -138,7 +138,7 @@ The repository already uses physics-inspired control metaphors:
 |---|---|---|
 | `docs/ADVANCED_PHYSICS_GUIDE.md:130-153` | Electromagnetic fields route agents along field lines using potential, gradient, and force equations. | Maps attention/influence routing to EM-field routing. |
 | `docs/PHYSICS_TECHNICAL_REFERENCE.md:101-116` | Poisson potential and electric-field gradient are documented for `EMFieldRouter`. | Supports field-potential notation for adaptive energy routing. |
-| `docs/COGNITIVE_BRAIN_QUANTUM_INTEGRATION.md:481-492` | Adaptive energy weights are learned from feedback. | Supports meta-learning of energy weights across domains. |
+| `docs/COGNITIVE_BRAIN_QUANTUM_docs/api/reference/INTEGRATION.md:481-492` | Adaptive energy weights are learned from feedback. | Supports meta-learning of energy weights across domains. |
 | `docs/deep_research/2026_04_27/06_condensed_understanding.md` | Security/access is framed as adaptive energy-management. | This note extends that final takeaway across physical energy spectra. |
 
 ---

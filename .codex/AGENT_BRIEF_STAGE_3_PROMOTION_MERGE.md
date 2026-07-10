@@ -26,7 +26,7 @@ Execute controlled promotion of 0D_base_ (172 commits of Phase 3-5 campaign work
 ```bash
 cd /home/runner/work/_codex_/_codex_
 git checkout 0D_base_
-git show 0D_base_:docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md | head -20
+git show 0D_base_:docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md | head -20
 git show 0D_base_:CHANGELOG.md | head -20
 # Verify: Both files exist and have Phase 3-5 entries
 ```
@@ -34,11 +34,11 @@ git show 0D_base_:CHANGELOG.md | head -20
 **2. Check REQ-4/REQ-5 Compliance:**
 ```bash
 python3 scripts/ci/session_wrapup_autofix.py --check --pr-number promotion-prep
-# Verify: Both AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md in last commit
+# Verify: Both .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md in last commit
 ```
 
 **3. Prepare Post-Merge Update Skeleton:**
-- Draft updated AGENT_ACCOUNTABILITY_REPORT.md section (Phase 6 Wave 1 promotion)
+- Draft updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md section (Phase 6 Wave 1 promotion)
 - Draft updated CHANGELOG.md entry with promotion summary
 - Save to temporary files: `.codex/PROMOTION_ACCOUNTABILITY_DRAFT.md`, `.codex/PROMOTION_CHANGELOG_DRAFT.md`
 
@@ -130,7 +130,7 @@ pytest tests/ --cov=src --cov-report=term-missing | grep "TOTAL"
 
 ## Task 3D: Post-Merge Sync (~20 min)
 
-**1. Update AGENT_ACCOUNTABILITY_REPORT.md:**
+**1. Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md:**
 ```markdown
 ## SESSION SUMMARY — 2026-06-27T23:50Z [PHASE 6 WAVE 1: PROMOTION & TIER-1 TESTS]
 
@@ -174,7 +174,7 @@ python3 scripts/ci/session_wrapup_autofix.py --check --pr-number 0
 
 **4. Commit & Push Compliance Updates:**
 ```bash
-git add docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md CHANGELOG.md
+git add docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md CHANGELOG.md
 git commit -m "Phase 6 Wave 1: Update accountability for promotion (172 commits → main)"
 git push origin main
 ```
@@ -186,7 +186,7 @@ git push origin main
 - ✅ Promotion PR created and merged
 - ✅ All 142 workflows passing on merged main
 - ✅ Coverage ≥70% maintained post-merge
-- ✅ AGENT_ACCOUNTABILITY_REPORT.md updated with promotion details
+- ✅ .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated with promotion details
 - ✅ CHANGELOG.md updated with Phase 3-5 campaign summary
 - ✅ No new security alerts post-merge
 - ✅ Compliance gates REQ-4/REQ-5 passing
@@ -208,7 +208,7 @@ If post-merge validation fails:
 **Committed to Repository:**
 - Promotion PR merged to main
 - `.codex/PHASE_6_WAVE_1_EXECUTION_TRACKING.md` (update status)
-- Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- Updated `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - Updated `CHANGELOG.md`
 - Merge commit SHA documented
 

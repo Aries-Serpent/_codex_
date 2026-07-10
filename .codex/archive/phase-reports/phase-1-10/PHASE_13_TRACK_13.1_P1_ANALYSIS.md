@@ -622,5 +622,5 @@ def test_shuffle_order():
 - `.codex/PHASE_13_REALTIME_DASHBOARD.md` — Real-time execution dashboard
 - `.codex/PHASE_13_TRACK_13.1_METRICS.md` — Success metrics tracking (to be created)
 - `CHANGELOG.md` — Phase 13 activation entry
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — Session accountability
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — Session accountability
 

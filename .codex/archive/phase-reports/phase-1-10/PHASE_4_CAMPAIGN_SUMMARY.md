@@ -83,7 +83,7 @@ All three Phase 4 work streams have completed successfully with **ALL SUCCESS CR
 **Duration:** 295 seconds | **Status:** ALL GATES PASS
 
 #### Results:
-- **REQ-4 Compliance:** ✅ **PASS** (AGENT_ACCOUNTABILITY_REPORT.md updated in HEAD)
+- **REQ-4 Compliance:** ✅ **PASS** (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated in HEAD)
 - **REQ-5 Compliance:** ✅ **PASS** (CHANGELOG.md updated in HEAD)
 - **Link Validation:** 95.5% valid (9,811 working / 10,271 total internal links)
 - **Critical Link Health:** 100% (0 broken links in critical paths)
@@ -112,7 +112,7 @@ All three Phase 4 work streams have completed successfully with **ALL SUCCESS CR
 #### Deliverables:
 - ✅ `.codex/PHASE_4_LINK_VALIDATION_REPORT.md` (7.5 KB)
 - ✅ `.codex/PHASE_4_DOC_MAINTENANCE_ROADMAP.md` (12.2 KB)
-- ✅ Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (Phase 4 results added)
+- ✅ Updated `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (Phase 4 results added)
 - ✅ Updated `CHANGELOG.md` (Phase 4 documentation audit section)
 
 ---
@@ -221,7 +221,7 @@ All artifacts stored in `.codex/` (verified repository-tracked, NOT /tmp/):
 | PHASE_4_EXECUTION_STATUS.md | 3.3 KB | Status | Work stream status tracker |
 | PHASE_4_COMPREHENSIVE_PLAN.md | 10.1 KB | Plan | Full Phase 4 campaign plan |
 | PHASE_4_AGENT_RESULTS_CONSOLIDATION.md | 5.2 KB | Template | Results consolidation template |
-| docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md | Updated | Compliance | Phase 4 session summary added |
+| docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md | Updated | Compliance | Phase 4 session summary added |
 | CHANGELOG.md | Updated | Compliance | Phase 4 documentation audit section |
 
 ---
@@ -232,7 +232,7 @@ All artifacts stored in `.codex/` (verified repository-tracked, NOT /tmp/):
 - ✅ **REQ-1:** Branch name follows convention (copilot/post-merge-validation-setup)
 - ✅ **REQ-2:** Code paired with documentation
 - ✅ **REQ-3:** (Not applicable for analysis phase)
-- ✅ **REQ-4:** AGENT_ACCOUNTABILITY_REPORT.md in latest commit
+- ✅ **REQ-4:** .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md in latest commit
 - ✅ **REQ-5:** CHANGELOG.md in latest commit
 
 ### CI/CD Gates

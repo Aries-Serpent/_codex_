@@ -115,7 +115,7 @@
 - [x] No merge conflicts
 
 ### Accountability
-- [x] AGENT_ACCOUNTABILITY_REPORT.md updated
+- [x] .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated
 - [x] CHANGELOG.md entry for this work
 - [x] Session metadata recorded
 ```
@@ -239,7 +239,7 @@ This PR introduces a comprehensive PR merge readiness framework with WEC (Workfl
 - [x] Branch up-to-date with main
 
 ### Accountability
-- [x] AGENT_ACCOUNTABILITY_REPORT.md updated
+- [x] .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated
 - [x] CHANGELOG.md entry added
 
 ## 📊 Baseline Metrics

@@ -85,13 +85,13 @@
 
 ```markdown
 ## Week 1 Requirements
-- [ ] AGENT_ACCOUNTABILITY_REPORT.md updated (W1 results)
+- [ ] .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated (W1 results)
 - [ ] CHANGELOG.md updated (W1 work)
 - [ ] All 3 agents executed autonomously
 - [ ] All deliverables in `.codex/`
 
 ## Week 2 Requirements
-- [ ] AGENT_ACCOUNTABILITY_REPORT.md updated (W2 results)
+- [ ] .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated (W2 results)
 - [ ] CHANGELOG.md updated (W2 work)
 - [ ] All 3 agents completed Phase 2
 - [ ] All 15 Week 2 deliverables in `.codex/`
@@ -104,7 +104,7 @@
 ```
 
 **Validation Steps:**
-1. Check AGENT_ACCOUNTABILITY_REPORT.md:
+1. Check .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md:
    - ✅ W1 session logged
    - ✅ W2 session logged
    - ✅ W3 session starting (audit trail)

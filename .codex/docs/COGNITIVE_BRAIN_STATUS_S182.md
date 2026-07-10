@@ -42,7 +42,7 @@ Phase 5: 📋 PROPOSED — Autonomous self-healing with Copilot escalation (this
 | Link validation: fix `check_docs_index.py` path bug | 1 script + 94 INDEX.md | Fixes 542 broken links |
 | Link validation: fix agent archive relative paths | 8 agent docs | Fixes 19 broken links |
 | mypy baseline: update from 328→337 | 1 | Unblocks mypy anti-regression gate |
-| PR review thread: fix AGENTS.md link paths | 3 files | Correct relative path resolution |
+| PR review thread: fix .codex/archive/deprecated/AGENTS.md link paths | 3 files | Correct relative path resolution |
 
 ### New Artifacts
 
@@ -178,7 +178,7 @@ Layer 4: Human         → Issue creation + @mbaetiong tag
 - [x] **0a.** Bot-posted comments reviewed ✅
 - [x] **0b.** Failing CI checks reviewed and fixed ✅
 - [x] **1.** `.codex/CODEBASE_AGENCY_POLICY.md` loaded and followed ✅
-- [x] **2.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` loaded ✅
+- [x] **2.** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` loaded ✅
 - [x] **3.** All stored session memories loaded ✅
 - [x] **4.** PR review threads addressed (3 link corrections) ✅
 - [x] **5.** CI failures analyzed and fixed ✅

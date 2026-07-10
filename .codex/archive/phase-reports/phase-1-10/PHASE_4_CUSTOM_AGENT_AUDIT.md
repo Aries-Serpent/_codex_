@@ -108,7 +108,7 @@
 
 **Policy Documents Loaded:**
 - ✅ `.codex/CODEBASE_AGENCY_POLICY.md` (v1.1.0)
-- ✅ `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (existed and was consulted)
+- ✅ `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (existed and was consulted)
 - ✅ `.codex/aftermath/pda_iterations.jsonl` (PDA loop tracking)
 
 **Agent Context Validation:**
@@ -499,7 +499,7 @@ AGENT_BYPASS_TRIGGERS = [
 
 ### 4.2 Accountability Report Integration
 
-**Location:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+**Location:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 **Phase 1-3 Summary:**
 
@@ -596,7 +596,7 @@ git log --oneline --grep="via.*agent" --invert-grep | wc -l
 **Script:** `scripts/ci/session_wrapup_autofix.py` (REQ-14)
 
 **Validation Checks:**
-1. ✅ `AGENT_ACCOUNTABILITY_REPORT.md` has valid registered agent identifiers
+1. ✅ `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` has valid registered agent identifiers
 2. ✅ PR body includes "Agents Used" section
 3. ✅ No placeholder values (`unknown-agent`) in accountability
 

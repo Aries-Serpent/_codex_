@@ -197,7 +197,7 @@ git push origin feature/move-files
 ```bash
 # Via GitHub CLI
 gh workflow run root-org-validation.yml \
-  -f file_to_validate=AGENTS.md \
+  -f file_to_validate=.codex/archive/deprecated/AGENTS.md \
   -f dry_run=false
 
 # Check run status

@@ -19,13 +19,13 @@ This matrix catalogs the most common workflow failure patterns observed in the A
 
 ---
 
-## Pattern 1: REQ-4 Violation (AGENT_ACCOUNTABILITY_REPORT.md Not Updated)
+## Pattern 1: REQ-4 Violation (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md Not Updated)
 
 ### Pattern ID
 `WF-001-REQ4-MISSING`
 
 ### Root Cause
-The file `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was not included in the latest commit, violating governance requirement REQ-4.
+The file `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` was not included in the latest commit, violating governance requirement REQ-4.
 
 **Common Reasons:**
 1. Copilot Agent session completed without updating accountability file
@@ -40,17 +40,17 @@ The file `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was not included i
 # Workflow: phase-12-2-compliance-check.yml
 python scripts/ci/phase_12_2_compliance_dashboard.py --check --report
 
-# Output: ✗ REQ-4: docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md was NOT updated in the last commit
+# Output: ✗ REQ-4: docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md was NOT updated in the last commit
 ```
 
 **Manual Check:**
 ```bash
 # Check if file is in latest commit
-git show HEAD:docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md >/dev/null 2>&1 && \
+git show HEAD:docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md >/dev/null 2>&1 && \
   echo "✅ File present" || echo "❌ File missing"
 
 # Check if file was modified
-git diff HEAD~1 HEAD -- docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+git diff HEAD~1 HEAD -- docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 ```
 
 ### Failure Mode
@@ -67,7 +67,7 @@ git diff HEAD~1 HEAD -- docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
 python scripts/ci/session_wrapup_autofix.py --auto-update --pr-number N
 
 # 2. Stage and commit
-git add docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+git add docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 git commit --amend --no-edit
 
 # 3. Push
@@ -75,7 +75,7 @@ git push --force-with-lease
 ```
 
 **Manual Remediation:**
-1. Manually edit `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+1. Manually edit `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 2. Add session entry with: PR number, branch, commit SHA, objective, changes made
 3. Stage and commit: `git add ... && git commit -m "..."`
 4. Push: `git push`

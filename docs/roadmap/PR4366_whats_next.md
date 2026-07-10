@@ -17,7 +17,7 @@
   - `25572904017` ✅
   - `25572897686` ✅
 - [x] Updated living docs (`whats_next` + `session_diagram`) with current status snapshot
-- [x] Updated `CHANGELOG.md` and `AGENT_ACCOUNTABILITY_REPORT.md` for latest session
+- [x] Updated `CHANGELOG.md` and `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` for latest session
 
 ### ✅ Phase 12: Cognitive-Brain Objective Alignment + Wrap-Up Prep (COMPLETE)
 - [x] Monitored post-approval workflow state on latest head `80fdd6d`
@@ -78,7 +78,7 @@
 - [x] Update `docs/roadmap/PR4366_whats_next.md`
 - [x] Update `docs/sessions/PR4366_session_diagram.md`
 - [x] Update `CHANGELOG.md` with S875 entry
-- [x] Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` with S875 session summary
+- [x] Update `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` with S875 session summary
 - [x] Verify `codeql-alert-fetcher.yml` checked in WEC section
 - [x] Enhanced mermaid diagrams with detailed visualizations
 
@@ -260,7 +260,7 @@ graph LR
 
 ### Documentation
 - ✅ Updated `CHANGELOG.md` with S875 entry
-- ✅ Updated `AGENT_ACCOUNTABILITY_REPORT.md` with S875 session summary (3 updates)
+- ✅ Updated `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` with S875 session summary (3 updates)
 - ✅ Created living docs: `PR4366_whats_next.md` and `PR4366_session_diagram.md`
 - ✅ Verified `codeql-alert-fetcher.yml` checked in WEC section
 - ✅ Enhanced mermaid diagrams with comprehensive visualizations

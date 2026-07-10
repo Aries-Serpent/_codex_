@@ -63,7 +63,7 @@
 - **Last Updated**: 2026-06-26T01:11:30Z
 - **Age**: 0.07 hours (0.0 days)
 
-### docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+### docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 - **Description**: Accountability tracking
 - **Status**: ✅ FRESH
 - **Last Updated**: 2026-06-26T01:11:30Z
@@ -100,7 +100,7 @@ All critical docs: ▶▶ (< 1 hour old)
 - **CODE_OF_CONDUCT.md**: <1 hour (Refresh) ✅
 - **SECURITY.md**: <1 hour (Refresh) ✅
 - **docs/index.md**: <1 hour (Post-merge sync) ✅
-- **docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md**: <1 hour (Post-merge sync) ✅
+- **docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md**: <1 hour (Post-merge sync) ✅
 
 ### Admin Documentation
 - **docs/admin/** directory: All files recent ✅

@@ -164,16 +164,16 @@
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/maintenance/.*/.*\.md
 - Line 73: `.*\`
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/maintenance/\..*\.md
-- Line 77: `docs/guides/AGENTS.md`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/maintenance/docs/guides/AGENTS.md
+- Line 77: `docs/guides/.codex/archive/deprecated/AGENTS.md`
+  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/maintenance/docs/guides/.codex/archive/deprecated/AGENTS.md
 - Line 78: ``.github/workflows/ci.yml``
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/maintenance/.github/workflows/ci.yml
-- Line 79: `docs/guides/AGENTS.md`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/maintenance/docs/guides/AGENTS.md
+- Line 79: `docs/guides/.codex/archive/deprecated/AGENTS.md`
+  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/maintenance/docs/guides/.codex/archive/deprecated/AGENTS.md
 - Line 80: ``.github/workflows/ci.yml``
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/maintenance/.github/workflows/ci.yml
-- Line 81: `docs/guides/AGENTS.md`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/maintenance/docs/guides/AGENTS.md
+- Line 81: `docs/guides/.codex/archive/deprecated/AGENTS.md`
+  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/maintenance/docs/guides/.codex/archive/deprecated/AGENTS.md
 - Line 86: `.codex/guardrails.md`
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/maintenance/.codex/guardrails.md
 - Line 87: `docs/agent/OPERATIONAL_GUIDELINES.md`
@@ -186,8 +186,8 @@
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/maintenance/docs/admin/GENESIS_SETUP_GUIDE.md
 - Line 95: ``.codex/deferred_items.md``
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/maintenance/.codex/deferred_items.md
-- Line 99: `docs/guides/AGENTS.md`
-  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/maintenance/docs/guides/AGENTS.md
+- Line 99: `docs/guides/.codex/archive/deprecated/AGENTS.md`
+  - Status: not_found: /home/runner/work/_codex_/_codex_/docs/maintenance/docs/guides/.codex/archive/deprecated/AGENTS.md
 - Line 103: `Updated Follow-Up Prompt`
   - Status: not_found: /home/runner/work/_codex_/_codex_/docs/maintenance/. github/copilot-prompts/active/PR-{pr_number}-followup.md
 - Line 104: ``.github/copilot-prompts/active/PR-{pr_number}-followup.md``

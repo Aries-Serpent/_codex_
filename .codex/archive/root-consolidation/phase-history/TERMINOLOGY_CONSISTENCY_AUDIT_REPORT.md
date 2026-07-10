@@ -76,7 +76,7 @@ This audit identified **8 major terminology inconsistencies** affecting 356+ doc
 
 ### 2.2 Custom Agent vs Custom Agent Type Distinction
 
-**Affected Files:** docs/AGENTIC_REPO_SYSTEM_GUIDE.md, docs/agent/OPERATIONAL_GUIDELINES.md, AGENTS.md
+**Affected Files:** docs/AGENTIC_REPO_SYSTEM_GUIDE.md, docs/agent/OPERATIONAL_GUIDELINES.md, .codex/archive/deprecated/AGENTS.md
 
 | Issue | Count | Files | Example |
 |-------|-------|-------|---------|
@@ -99,7 +99,7 @@ Agents (Generic)
 
 ### 2.3 Skills vs Capabilities vs Features
 
-**Affected Files:** docs/discussions/SKILLS_TELEMETRY_DASHBOARD.md, docs/agent/*, AGENTS.md
+**Affected Files:** docs/discussions/SKILLS_TELEMETRY_DASHBOARD.md, docs/agent/*, .codex/archive/deprecated/AGENTS.md
 
 | Term | Used For | Synonym Usage | Count | Recommendation |
 |------|----------|---|-------|-----------------|
@@ -120,14 +120,14 @@ Agents (Generic)
 
 ### 2.4 OODA Loop Explanation Inconsistency
 
-**Affected Files:** docs/architecture/PHASES_3_4_5_IMPLEMENTATION.md, docs/agent/GITHUB_APP_CLI_MAPPING.md, docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+**Affected Files:** docs/architecture/PHASES_3_4_5_IMPLEMENTATION.md, docs/agent/GITHUB_APP_CLI_MAPPING.md, docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 
 | Location | Definition Provided | Quality |
 |----------|-------------------|---------|
 | docs/architecture/PHASES_3_4_5_IMPLEMENTATION.md | "Functions: observe, orient, decide, act" | ⚠️ Lists steps, no explanation |
 | docs/COGNITIVE_BRAIN_QUANTUM_INTEGRATION.md | No explicit definition, assumed knowledge | ❌ Undefined |
 | docs/agent/GITHUB_APP_CLI_MAPPING.md | "forward verified payloads into the OODA loop" | ❌ Used without defining |
-| docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md | "OODA execution protocol" | ⚠️ Vague reference |
+| docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md | "OODA execution protocol" | ⚠️ Vague reference |
 
 **Problem:** New readers encounter OODA without understanding it's a decision cycle where:
 - **Observe**: Agent perceives environment state
@@ -240,7 +240,7 @@ related: [TERMINOLOGY_GLOSSARY.md](../TERMINOLOGY_GLOSSARY.md)
 3. Add glossary link to doc templates (e.g., `.github/templates/doc-template.md`)
 
 **Phase 2 (2 weeks):**
-1. Audit and correct top 10 most-referenced files (SECRETS_AND_ENVIRONMENT_VARIABLES.md, AGENTS.md, OPERATIONAL_GUIDELINES.md, etc.)
+1. Audit and correct top 10 most-referenced files (SECRETS_AND_ENVIRONMENT_VARIABLES.md, .codex/archive/deprecated/AGENTS.md, OPERATIONAL_GUIDELINES.md, etc.)
 2. Fix all capitalization to use recommended standard
 3. Add acronym expansion to first use in each document
 
@@ -443,7 +443,7 @@ Used in `memory-sync-agent` and overall cognitive brain optimization.
 | docs/AGENTIC_REPO_SYSTEM_GUIDE.md | 5 | MEDIUM | Define E vs D mode, clarify custom agent types |
 | docs/discussions/SKILLS_TELEMETRY_DASHBOARD.md | 4 | MEDIUM | Separate "skill" vs "capability", expand AAIS |
 | docs/COGNITIVE_BRAIN_QUANTUM_INTEGRATION.md | 4 | MEDIUM | Explain OODA, clarify Memory layers |
-| AGENTS.md | 3 | MEDIUM | Standardize agent capitalization |
+| .codex/archive/deprecated/AGENTS.md | 3 | MEDIUM | Standardize agent capitalization |
 | docs/REPOSITORY_ARCHITECTURE_DIAGRAMS.md | 3 | LOW | Consistent terminology in captions |
 | docs/api/rag_pipelines.md | 2 | LOW | Ensure RAG terminology is consistent |
 | docs/evidence/consolidated-security-residual-backlog.md | 2 | LOW | Expand CodeQL, GHAS acronyms |
@@ -456,7 +456,7 @@ Used in `memory-sync-agent` and overall cognitive brain optimization.
 ### Documents Mentioning Core Terms
 
 **Agent terminology:**
-- Defined in: docs/agent/OPERATIONAL_GUIDELINES.md, AGENTS.md
+- Defined in: docs/agent/OPERATIONAL_GUIDELINES.md, .codex/archive/deprecated/AGENTS.md
 - Referenced in: 356+ files
 
 **RAG terminology:**
@@ -465,7 +465,7 @@ Used in `memory-sync-agent` and overall cognitive brain optimization.
 
 **OODA loop:**
 - Defined in: docs/architecture/PHASES_3_4_5_IMPLEMENTATION.md
-- Referenced in: docs/agent/GITHUB_APP_CLI_MAPPING.md, docs/COGNITIVE_BRAIN_QUANTUM_INTEGRATION.md, docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+- Referenced in: docs/agent/GITHUB_APP_CLI_MAPPING.md, docs/COGNITIVE_BRAIN_QUANTUM_INTEGRATION.md, docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 - **Gap**: Definition not obvious in most references
 
 **Session/Memory:**
@@ -475,7 +475,7 @@ Used in `memory-sync-agent` and overall cognitive brain optimization.
 
 **Skills/Capabilities:**
 - Defined in: docs/discussions/SKILLS_TELEMETRY_DASHBOARD.md
-- Referenced in: docs/agent/*, AGENTS.md
+- Referenced in: docs/agent/*, .codex/archive/deprecated/AGENTS.md
 - **Gap**: "Skill" vs "capability" distinction unclear
 
 ---

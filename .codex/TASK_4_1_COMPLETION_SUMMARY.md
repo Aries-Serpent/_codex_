@@ -10,7 +10,7 @@
 
 ## Deliverables Summary
 
-### ✅ 1. Integration Specification (`.codex/PHASE_9_2_9_3_INTEGRATION.md`)
+### ✅ 1. Integration Specification (`.codex/PHASE_9_2_9_3_docs/api/reference/INTEGRATION.md`)
 
 **Status:** COMPLETE  
 **Size:** 18.6 KB  
@@ -309,7 +309,7 @@ Mypy Type Checking: PASS ✅ (100% coverage)
 
 | File | Size | Purpose |
 |------|------|---------|
-| `.codex/PHASE_9_2_9_3_INTEGRATION.md` | 18.6 KB | Integration specification |
+| `.codex/PHASE_9_2_9_3_docs/api/reference/INTEGRATION.md` | 18.6 KB | Integration specification |
 | `src/orchestration/adapters/cascade_to_router_adapter.py` | 26.3 KB | Adapter implementation |
 | `tests/integration/test_cascade_router_integration.py` | 30.5 KB | Integration test suite |
 | `.codex/PHASE_9_2_9_3_INTEGRATION_PERF_REPORT.md` | 14.1 KB | Performance validation report |

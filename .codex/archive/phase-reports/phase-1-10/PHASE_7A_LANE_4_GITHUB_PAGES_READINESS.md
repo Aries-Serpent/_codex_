@@ -52,7 +52,7 @@
 - ✅ `docs/getting-started.md`: Getting started guide present
 - ✅ `docs/architecture.md`: Architecture documentation present
 - ✅ `docs/CHANGELOG.md`: Changelog present and current
-- ✅ `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`: Accountability docs present
+- ✅ `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`: Accountability docs present
 - ✅ Navigation sections: All major sections structured properly
 
 ### Link Validation

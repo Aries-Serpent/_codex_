@@ -18,7 +18,7 @@ This repository is intended to help developers customize environments in Codex b
 
 For more details on environment setup, see OpenAI Codex.
 
-For environment variables, logging roles, testing expectations, and tool usage, see [docs/guides/AGENTS.md](../../.github/AGENTS.md).
+For environment variables, logging roles, testing expectations, and tool usage, see [docs/guides/.codex/archive/deprecated/AGENTS.md](../../.github/.codex/archive/deprecated/AGENTS.md).
 
 ## Local CI (no GitHub-hosted Actions)
 
@@ -221,7 +221,7 @@ We support fast developer loops while keeping a hermetic fallback:
     "sha256": "674d35837b81dc71e05bd13418e275f5ad091b25b62c13823abc27136f64d2bf" <!-- pragma: allowlist secret -->
   },
   {
-    "path": "docs/guides/AGENTS.md",
+    "path": "docs/guides/.codex/archive/deprecated/AGENTS.md",
     "size": 10350,
     "sha256": "dda825d9a7d93e46e67cf6ae5dd8245e56ff0117589915f97afac54231f391f4" <!-- pragma: allowlist secret -->
   },

@@ -98,9 +98,9 @@ Each group is ranked by:
 
 | Collision Set | Canonical Choice | Rationale | Link Count |
 |---------------|------------------|-----------|-----------|
-| `docs/QUICKSTART.md`<br/>`docs/quickstart.md` | **`docs/quickstart.md`** | Consistency with lowercase convention. Also check for `QUICKSTART_BY_PROFILE.md` at repo root (may be canonical source). | TBD |
+| `docs/QUICKSTART.md`<br/>`docs/quickstart.md` | **`docs/quickstart.md`** | Consistency with lowercase convention. Also check for `docs/quickstart/QUICKSTART_BY_PROFILE.md` at repo root (may be canonical source). | TBD |
 
-**Merge strategy:** Consolidate. Note: Repo root `QUICKSTART_BY_PROFILE.md` (uppercase) may be the primary quickstart — verify it doesn't need downcase rename too.
+**Merge strategy:** Consolidate. Note: Repo root `docs/quickstart/QUICKSTART_BY_PROFILE.md` (uppercase) may be the primary quickstart — verify it doesn't need downcase rename too.
 
 **Blast radius:** **MEDIUM** (quickstart is entry point for developers).
 

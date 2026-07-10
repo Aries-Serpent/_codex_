@@ -212,7 +212,7 @@ Applying Lane 3.1 tests to Lane 3.2 mutations should yield:
 5. ✅ `.codex/PHASE_7A_DAY_2_CHECKPOINT_2_CROSSLANE_ANALYSIS_12_30Z.md` (12 KB)
    - Checkpoint 2 cross-lane analysis (THIS DOCUMENT)
 
-6. ✅ `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (Updated)
+6. ✅ `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (Updated)
    - Campaign progress tracking
 
 ### Code Delivered (2 Test Suites)

@@ -475,7 +475,7 @@ Phase 10 must deliver:
 - ✅ 45+ test scenarios passing
 - ✅ 99%+ code coverage
 - ✅ Zero unresolved critical issues
-- ✅ AGENT_ACCOUNTABILITY_REPORT.md updated
+- ✅ .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated
 - ✅ CHANGELOG.md updated
 - ✅ All Phase 8-9 integration tests passing
 - ✅ Phase 12 agent briefs acknowledged

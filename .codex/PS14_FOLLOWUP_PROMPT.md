@@ -100,7 +100,7 @@ open https://aries-serpent.github.io/_codex_/cognitive_app/
 **Target Workflows**:
 1. **pr-checks.yml** (Priority: High)
    - Cache Types: UV, PIP
-   - Integration Pattern: `.codex/CACHE_MANAGER_WORKFLOW_INTEGRATION.md` lines 45-85
+   - Integration Pattern: `.codex/CACHE_MANAGER_WORKFLOW_docs/api/reference/INTEGRATION.md` lines 45-85
    - Estimated Time: 2 hours
 
 2. **test-rag.yml** (Priority: High)
@@ -134,7 +134,7 @@ view .github/workflows/pr-checks.yml
 grep -A 10 "actions/cache" .github/workflows/pr-checks.yml
 
 # Step 3: Generate CacheManager integration code
-# Follow pattern from .codex/CACHE_MANAGER_WORKFLOW_INTEGRATION.md
+# Follow pattern from .codex/CACHE_MANAGER_WORKFLOW_docs/api/reference/INTEGRATION.md
 
 # Step 4: Update workflow file
 edit .github/workflows/pr-checks.yml
@@ -414,7 +414,7 @@ gh run list --workflow=pr-checks.yml --json conclusion,createdAt
 
 **To Execute Manually**:
 1. Review `.codex/PS14_IMPLEMENTATION_SUMMARY.md` for complete reference
-2. Follow CacheManager integration pattern in `.codex/CACHE_MANAGER_WORKFLOW_INTEGRATION.md`
+2. Follow CacheManager integration pattern in `.codex/CACHE_MANAGER_WORKFLOW_docs/api/reference/INTEGRATION.md`
 3. Validate against AAIS V3.0 targets in `docs/evolution/AI_AGENCY_INTUITIVENESS_SCORE_V3.md`
 4. Use new agents:
    - `@copilot Use the MSV Dashboard Monitoring Agent ...`
@@ -427,7 +427,7 @@ gh run list --workflow=pr-checks.yml --json conclusion,createdAt
 
 ### During Phase 2
 
-1. **CACHE_MANAGER_WORKFLOW_INTEGRATION.md**
+1. **CACHE_MANAGER_WORKFLOW_docs/api/reference/INTEGRATION.md**
    - Update Phase 1 status: Documentation → Phase 2 status: Implementation
    - Add actual implementation results
    - Document cache hit rate improvements
@@ -458,7 +458,7 @@ gh run list --workflow=pr-checks.yml --json conclusion,createdAt
 - **Implementation Summary**: `.codex/PS14_IMPLEMENTATION_SUMMARY.md`
 - **Self-Review Report**: `.codex/PS14_SELF_REVIEW_REPORT.md`
 - **Cognitive Brain Status**: `.codex/cognitive_brain/status/COGNITIVE_BRAIN_STATUS_PS14_MSV_DASHBOARD.md`
-- **CacheManager Plan**: `.codex/CACHE_MANAGER_WORKFLOW_INTEGRATION.md`
+- **CacheManager Plan**: `.codex/CACHE_MANAGER_WORKFLOW_docs/api/reference/INTEGRATION.md`
 - **AAIS V3.0**: `docs/evolution/AI_AGENCY_INTUITIVENESS_SCORE_V3.md`
 - **Planset Registry**: `docs/evolution/PLANSET_REGISTRY.md`
 

@@ -54,7 +54,7 @@ To avoid overwhelming remediation with immutable historical reports, we partitio
 - `README.md` (root only; 1 canonical)
 - `docs/` subdirectory (all; esp. `guides/`, `reference/`, `admin/`, `index.md`)
 - `.github/agents/` — agent specifications & copilot prompts
-- `CONTRIBUTING.md`, `SECURITY.md`, `CHANGELOG.md`, `AGENTS.md` (root canonical set)
+- `CONTRIBUTING.md`, `SECURITY.md`, `CHANGELOG.md`, `.codex/archive/deprecated/AGENTS.md` (root canonical set)
 
 **SLA:**
 - ✅ 0 broken links
@@ -240,7 +240,7 @@ To avoid overwhelming remediation with immutable historical reports, we partitio
   - `SECURITY.md`
   - `CHANGELOG.md`
   - `CODE_OF_CONDUCT.md`
-  - `AGENTS.md`
+  - `.codex/archive/deprecated/AGENTS.md`
 - **Move remaining 114 files** to `.codex/archive/` or `reports/`:
   - `PHASE_*` → `.codex/archive/phase-reports/`
   - `SECURITY_*` → `.codex/archive/security-reports/` (or `docs/security/`)

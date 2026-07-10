@@ -285,7 +285,7 @@ full   profile:  100+ MB   (~300-600 sec install)
    - CLI commands: Run sample commands from each profile
 
 ### Documentation Updates
-1. Update INSTALL.md with profile selection guide
+1. Update .codex/archive/misc/INSTALL.md with profile selection guide
 2. Create migration guide from old aliases (all/dev/ml/train)
 3. Add profile decision tree (which profile for my use case?)
 4. Document size estimates and install times
@@ -367,7 +367,7 @@ Comprehensive validation reports and findings documented
 **Purpose**: Update documentation and prepare for release
 
 **Activities**:
-1. INSTALL.md update
+1. .codex/archive/misc/INSTALL.md update
 2. Migration guide creation
 3. API documentation review
 4. Release notes preparation

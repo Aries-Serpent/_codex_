@@ -221,7 +221,7 @@
 **Blocker Level:** MEDIUM
 
 **Actions:**
-- [ ] Verify REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated
+- [ ] Verify REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated
 - [ ] Verify REQ-5: CHANGELOG.md updated
 - [ ] Run `session_wrapup_autofix --check` one final time
 - [ ] Confirm all gates pass

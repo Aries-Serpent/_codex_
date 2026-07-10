@@ -90,9 +90,9 @@ class UnifiedDataAggregator:
         return result
 
     def _aggregate_accountability_reports(self) -> Dict[str, Any]:
-        """Parse AGENT_ACCOUNTABILITY_REPORT.md for recent activity."""
+        """Parse .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md for recent activity."""
         result = {"status": "pending", "report_file": None, "last_agents": []}
-        report_file = self.docs_dir / "accountability" / "AGENT_ACCOUNTABILITY_REPORT.md"
+        report_file = self.docs_dir / "accountability" / ".codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md"
 
         if not report_file.exists():
             return result

@@ -32,7 +32,7 @@
 1. LOAD SESSION CONTEXT
    □ Fetch current branch and commit SHA
    □ Load task backlog from PR/issue
-   □ Check prior session state (.codex/AGENT_ACCOUNTABILITY_REPORT.md)
+   □ Check prior session state (.codex/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md)
    □ Verify repository state (no uncommitted changes)
 
 2. IDENTIFY AVAILABLE LANES
@@ -638,7 +638,7 @@ Abort early if:
    □ Efficiency score
 
 5. UPDATE DOCUMENTATION
-   □ Commit changes to AGENT_ACCOUNTABILITY_REPORT.md
+   □ Commit changes to .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
    □ Update CHANGELOG.md with summary
    □ Archive session context
 
@@ -762,7 +762,7 @@ Status: Ready for merge
 - [ ] Final results merged
 - [ ] Artifacts archived in .codex/
 - [ ] Session report generated
-- [ ] AGENT_ACCOUNTABILITY_REPORT.md updated
+- [ ] .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated
 - [ ] CHANGELOG.md updated
 - [ ] All commits pushed to branch
 - [ ] PR body updated with summary

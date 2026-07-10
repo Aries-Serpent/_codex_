@@ -41,8 +41,8 @@ Fix all broken links that point to files that have been relocated to new directo
 
 **High-Impact Files Updated:**
 - ✅ `README.md` - Main repository landing page
-- ✅ `AGENTS.md` - Root agent documentation
-- ✅ `.github/agents/docs/AGENTS.md` - Primary agent guide (10 fixes)
+- ✅ `.codex/archive/deprecated/AGENTS.md` - Root agent documentation
+- ✅ `.github/agents/docs/.codex/archive/deprecated/AGENTS.md` - Primary agent guide (10 fixes)
 - ✅ `LINK_VALIDATION_ACTION_ITEMS.md` - Action tracking
 - ✅ `docs/MASTER_INDEX.md` - Documentation hub
 - ✅ 4 continuation prompt files (24 fixes total)
@@ -198,7 +198,7 @@ Fix all broken links that point to files that have been relocated to new directo
 
 ### Manual Spot Checks
 - ✅ README.md - ROADMAP link working
-- ✅ AGENTS.md - Policy links working
+- ✅ .codex/archive/deprecated/AGENTS.md - Policy links working
 - ✅ Continuation prompts - Dashboard links working
 - ✅ Master indexes - Updated references working
 
@@ -251,7 +251,7 @@ Fixes:
 - CODEBASE_COGNITIVE_MAP.md refs (8 fixes)
 - Guide files (6 fixes)
 
-Impact: Main README, AGENTS.md, continuation prompts, master indexes
+Impact: Main README, .codex/archive/deprecated/AGENTS.md, continuation prompts, master indexes
 
 Files: 43 changed, 99 insertions(+), 99 deletions(-)
 ```
@@ -303,7 +303,7 @@ Files: 43 changed, 99 insertions(+), 99 deletions(-)
 | **Automation** | Scripts created | 2 scripts | ✅ |
 | **Documentation** | Reports generated | 5 reports | ✅ |
 | **Error-Free** | 0 errors | 0 errors | ✅ |
-| **Impact** | Critical docs fixed | README, AGENTS.md, etc. | ✅ |
+| **Impact** | Critical docs fixed | README, .codex/archive/deprecated/AGENTS.md, etc. | ✅ |
 
 ---
 
@@ -327,7 +327,7 @@ Successfully executed Phase 2 with exceptional quality:
 - ✅ Production-ready
 
 ### Impact
-Significantly improved documentation navigation and accessibility across the repository, with special focus on critical entry points like README.md, AGENTS.md, and continuation prompts. The foundation is set for completing the remaining Phase 2 work efficiently.
+Significantly improved documentation navigation and accessibility across the repository, with special focus on critical entry points like README.md, .codex/archive/deprecated/AGENTS.md, and continuation prompts. The foundation is set for completing the remaining Phase 2 work efficiently.
 
 ---
 

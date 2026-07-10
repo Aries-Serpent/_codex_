@@ -96,7 +96,7 @@ result = orchestrator.execute(workflow=my_workflow)
 
 ## 📚 Documentation
 
-- **[Quick Start Guide](https://github.com/aries-serpent/_codex_/blob/main/QUICK_START_COGNITIVE_BRAIN.md)** — 5-minute walkthrough with examples
+- **[Quick Start Guide](https://github.com/aries-serpent/_codex_/blob/main/docs/quickstart/QUICK_START_COGNITIVE_BRAIN.md)** — 5-minute walkthrough with examples
 - **[Full API Reference](https://github.com/aries-serpent/_codex_/tree/main/src/codex/cognitive)** — All 21 APIs documented
 - **[Architecture Guide](https://aries-serpent.github.io/_codex_/architecture/)** — How Cognitive Brain works under the hood
 - **[Release Notes](https://github.com/aries-serpent/_codex_/releases/tag/v0.1.0-beta1)** — Full release details and roadmap
@@ -180,7 +180,7 @@ See our [Adoption Tracking Baseline](.codex/ADOPTION_TRACKING_BASELINE.md) for w
 ## Next Steps
 
 1. **Install**: `pip install aries-serpent-cognitive-brain`
-2. **Learn**: Read [QUICK_START_COGNITIVE_BRAIN.md](https://github.com/aries-serpent/_codex_/blob/main/QUICK_START_COGNITIVE_BRAIN.md)
+2. **Learn**: Read [docs/quickstart/QUICK_START_COGNITIVE_BRAIN.md](https://github.com/aries-serpent/_codex_/blob/main/docs/quickstart/QUICK_START_COGNITIVE_BRAIN.md)
 3. **Build**: Start with examples or the full API reference
 4. **Contribute**: Share feedback, report issues, contribute code
 5. **Stay Tuned**: Phase 2 (aries-serpent-core) launches 2026-07-26

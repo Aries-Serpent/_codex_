@@ -401,7 +401,7 @@ delegates:
 
 ### Immediate Actions (Week 1)
 
-1. ✅ **Update AGENTS.md** - Add all 53 agents to main documentation
+1. ✅ **Update .codex/archive/deprecated/AGENTS.md** - Add all 53 agents to main documentation
 2. ✅ **Create Agent Registry** - Comprehensive list with dropdown support
 3. ⚠️ **Document Agent Chaining** - Add orchestration guide
 4. ⚠️ **Standardize Naming** - Migrate to `.agent.md` convention
@@ -440,7 +440,7 @@ delegates:
 1. ✅ **File Location:** `.github/agents/<name>.agent.md` or `.github/agents/<name>-agent/agent.yml`
 2. ✅ **Naming Convention:** Must end in `-agent` or `.agent`
 3. ✅ **Metadata:** Must include purpose, capabilities
-4. ⚠️ **Registration:** Should be in AGENTS.md and AGENT_REGISTRY.yaml
+4. ⚠️ **Registration:** Should be in .codex/archive/deprecated/AGENTS.md and AGENT_REGISTRY.yaml
 
 ### Current Status
 
@@ -451,7 +451,7 @@ delegates:
 ### Verification Steps
 
 1. Check `.github/agents/AGENT_REGISTRY.yaml` - Update with all 53 agents
-2. Verify AGENTS.md section "Available Agents" - Add missing entries
+2. Verify .codex/archive/deprecated/AGENTS.md section "Available Agents" - Add missing entries
 3. Test dropdown menu in GitHub Copilot Chat
 4. Document activation commands for each agent
 
@@ -472,7 +472,7 @@ delegates:
 - Naming standardization needed (3 patterns → 1)
 
 ### 📋 Next Steps
-1. Update AGENTS.md with complete list (53 agents)
+1. Update .codex/archive/deprecated/AGENTS.md with complete list (53 agents)
 2. Update AGENT_REGISTRY.yaml with metadata
 3. Implement Phase 1 consolidations (4 merges)
 4. Add chaining to 10 priority agents

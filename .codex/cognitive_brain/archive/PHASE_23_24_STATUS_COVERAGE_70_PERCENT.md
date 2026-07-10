@@ -16,7 +16,7 @@ Successfully implemented comprehensive Phase 23-24 patchset delivering path to 7
 2. **pytest.ini**: Added `--cov-fail-under=70`, removed xdist/reruns options for local testing
 3. **sitecustomize.py**: Added 28 optional dependency stubs (hydra, mlflow, workflow modules)
 4. **.codex/smoke/import_check.py**: Enhanced to load repo root and sitecustomize stubs
-5. **AGENTS.md**: Registered Coverage Gapfill Agent
+5. **.codex/archive/deprecated/AGENTS.md**: Registered Coverage Gapfill Agent
 
 ### ✅ Source Code Fixes (5 files)
 1. **src/modeling.py**: Exposed `import_module` alias for test monkeypatching

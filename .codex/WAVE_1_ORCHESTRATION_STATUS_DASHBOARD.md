@@ -238,7 +238,7 @@ At Agent Completion:
 ### Tracking & Accountability
 - `.codex/WAVE1_FAILURE_LOG.md` — Any failures/retries/escalations
 - `.codex/WAVE1_COMPLETION_SUMMARY.md` — Final Wave 1 summary (post-execution)
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — Session history (auto-updated)
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — Session history (auto-updated)
 
 ---
 
@@ -269,7 +269,7 @@ Wave 2 launches when:
 - **Campaign Charter:** `.codex/CAMPAIGN_ORCHESTRATION_STAGE_0.md`
 - **Auth Status:** `.codex/AGENTIC_REPO_STATE.md`
 - **Phase 9 Completion:** Multiple `.codex/PHASE_*.md` files
-- **Session History:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- **Session History:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - **Autonomy Model:** `.codex/CODEBASE_AGENCY_POLICY.md`
 
 ---

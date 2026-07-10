@@ -18,7 +18,7 @@
 | `mypy_baseline` updated 130 → 124 | ✅ locked in (commit `29df6bd`) |
 | `ruff I001` import-order fix | ✅ fixed |
 | Living docs sync (PR4395 archived, PR4416 created) | ✅ done |
-| CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md Pattern 25 | ✅ done |
+| CHANGELOG.md + .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md Pattern 25 | ✅ done |
 | Parallel validation (Code Review) | ✅ 0 review comments |
 
 ---

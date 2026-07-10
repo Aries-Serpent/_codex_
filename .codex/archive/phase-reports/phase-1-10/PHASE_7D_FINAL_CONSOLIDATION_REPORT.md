@@ -431,7 +431,7 @@ Issue Final 100/100 Certification → Ready for deployment
 - ✅ Track 3A: Session artifacts in `.codex/`
 - ✅ Track 3B: 06c92c9 commit documented
 - ✅ Track 4: This consolidation (in progress)
-- **Status:** Updated to AGENT_ACCOUNTABILITY_REPORT.md
+- **Status:** Updated to .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 
 ### REQ-5: CHANGELOG Documentation
 - ✅ Track 1: Coverage baseline entry

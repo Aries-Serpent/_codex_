@@ -357,7 +357,7 @@ All 9 foundational principles from Chronicle repository applied:
    - Phase 4A code (validate it's present)
 
 2. **During Implementation**:
-   - Follow repository conventions (AGENTS.md)
+   - Follow repository conventions (.codex/archive/deprecated/AGENTS.md)
    - Validate with existing tests
    - Document as you go
    - Commit frequently
@@ -444,7 +444,7 @@ All 9 foundational principles from Chronicle repository applied:
 
 ### Repository Documentation
 
-- **Agent Operations**: `AGENTS.md`
+- **Agent Operations**: `.codex/archive/deprecated/AGENTS.md`
 - **Codebase Agency Policy**: `.codex/CODEBASE_AGENCY_POLICY.md`
 - **Operational Guidelines**: `docs/agent/OPERATIONAL_GUIDELINES.md`
 

@@ -39,7 +39,7 @@ read_agent agent_id=phase-9-onboarding-metrics
 
 **CRITICAL: REQ-4 and REQ-5 must be in SAME final commit**
 
-**Update AGENT_ACCOUNTABILITY_REPORT.md:**
+**Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md:**
 
 ```markdown
 ## Session Report: 2026-07-06 - Phase 6.2 Execution & Parallel Groundwork
@@ -262,7 +262,7 @@ Database:
 - Verified all environment variables are configuration (not secrets)
 
 ### Compliance
-- REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated
+- REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated
 - REQ-5: CHANGELOG.md updated (this entry)
 - Phase 6.2.B: 5 sequential commits with clear messages
 - 100% backward compatibility preserved
@@ -270,10 +270,10 @@ Database:
 
 **Create Final Commit:**
 ```bash
-git add docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md CHANGELOG.md
+git add docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md CHANGELOG.md
 git commit -m "docs(req4/req5): Phase 6.2 accountability and changelog updates
 
-REQ-4: Updated AGENT_ACCOUNTABILITY_REPORT.md with Phase 6.2 session details
+REQ-4: Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with Phase 6.2 session details
 REQ-5: Updated CHANGELOG.md with Phase 6.2 deployment and feature additions
 
 Phase 6.2.B execution complete:
@@ -317,7 +317,7 @@ Phase 7-9 groundwork delegated to specialized agents:
 - [x] Linting and type checks passing
 - [x] No breaking changes (100% backward compatible)
 - [x] Security validation (CODEX_LOCAL_LOOPBACK feature gate)
-- [x] REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated
+- [x] REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated
 - [x] REQ-5: CHANGELOG.md updated
 - [x] PR body complete with deployment runbook
 - [ ] Merge to main branch (awaiting approval)
@@ -403,7 +403,7 @@ session_wrapup_autofix.py --check --pr-number <PR>
 - Commits: 32896a14, 32455289, 49737b02, 37f6ac29, 39eb05ba (Batches 1-5)
 
 ### Compliance & Tracking
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` - Session accountability
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` - Session accountability
 - `CHANGELOG.md` - Feature additions and changes
 - `phase_6_9_execution` SQL table - Task tracking database
 
@@ -426,7 +426,7 @@ session_wrapup_autofix.py --check --pr-number <PR>
 - [x] 0 breaking changes
 - [x] No secrets committed
 - [x] Linting and type checks passing
-- [x] AGENT_ACCOUNTABILITY_REPORT.md updated (REQ-4)
+- [x] .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated (REQ-4)
 - [x] CHANGELOG.md updated (REQ-5)
 - [ ] PR created and approved
 - [ ] Merged to main branch
@@ -465,7 +465,7 @@ session_wrapup_autofix.py --check --pr-number <PR>
    ```
 
 2. **Update Compliance Docs (10 min)**
-   - Edit AGENT_ACCOUNTABILITY_REPORT.md (REQ-4)
+   - Edit .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (REQ-4)
    - Edit CHANGELOG.md (REQ-5)
    - Commit both together
 

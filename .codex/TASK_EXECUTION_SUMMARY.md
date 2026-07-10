@@ -128,7 +128,7 @@ Successfully executed a comprehensive 5-phase remediation plan to address an uni
 **Planned**: Create infrastructure to prevent future downgrades  
 **Executed**:
 
-#### 1. **DEPENDENCY_CONSTRAINTS.md** (10,050 bytes)
+#### 1. **.codex/archive/misc/DEPENDENCY_CONSTRAINTS.md** (10,050 bytes)
 Comprehensive reference document including:
 - Version rationale for all critical packages
 - PR #5004 baseline establishment
@@ -160,7 +160,7 @@ Automated validator script featuring:
 **Executed**:
 
 #### Files Created
-1. **DEPENDENCY_CONSTRAINTS.md** — Central source of truth for versions
+1. **.codex/archive/misc/DEPENDENCY_CONSTRAINTS.md** — Central source of truth for versions
 2. **scripts/ci/validate_dependency_consistency.py** — Automated validator
 3. **.codex/DEPENDENCY_ALIGNMENT_REPORT.md** — Comprehensive audit report
 
@@ -187,7 +187,7 @@ Automated validator script featuring:
 
 ✅ **Automated Pre-Commit Hook** — Prevents commits violating constraints  
 ✅ **CI Gate Ready** — Runs on all pyproject.toml/requirements*.txt changes  
-✅ **Documented Procedures** — DEPENDENCY_CONSTRAINTS.md outlines update workflow  
+✅ **Documented Procedures** — .codex/archive/misc/DEPENDENCY_CONSTRAINTS.md outlines update workflow  
 ✅ **Validation Tool** — Can be integrated into CI/CD pipeline  
 
 **Expected Impact**: Future downgrades will be caught immediately before merge
@@ -272,7 +272,7 @@ Coverage: Full test suite with pandas 3.0.3
 ## Deliverables
 
 ### Documentation
-- ✅ DEPENDENCY_CONSTRAINTS.md (10K+ guide)
+- ✅ .codex/archive/misc/DEPENDENCY_CONSTRAINTS.md (10K+ guide)
 - ✅ .codex/DEPENDENCY_ALIGNMENT_REPORT.md (11K audit report)
 - ✅ Updated CHANGELOG.md
 - ✅ This execution summary

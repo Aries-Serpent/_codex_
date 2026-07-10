@@ -113,7 +113,7 @@ Phase 4 Trigger (July 2): ██████████░░░░░░░░
 
 ### REQ-4 & REQ-5 Status
 
-- [x] **REQ-4**: AGENT_ACCOUNTABILITY_REPORT.md updated ✅
+- [x] **REQ-4**: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated ✅
 - [x] **REQ-5**: CHANGELOG.md updated ✅
 - [x] **PDA Loop**: Session auto-pda-2026-06-30 logged ✅
 - [x] **Artifacts**: All in `.codex/` (never /tmp/) ✅

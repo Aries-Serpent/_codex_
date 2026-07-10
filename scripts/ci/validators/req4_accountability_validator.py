@@ -2,7 +2,7 @@
 """
 REQ-4: Accountability Validator
 
-Validates that the AGENT_ACCOUNTABILITY_REPORT.md was updated in the latest commit.
+Validates that the .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md was updated in the latest commit.
 
 This enforces the compliance requirement from session_wrapup_autofix.py.
 """
@@ -17,7 +17,7 @@ from base import ComplianceResult, RequirementValidator
 
 logger = logging.getLogger(__name__)
 
-ACCOUNTABILITY_REPORT_PATH = "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md"
+ACCOUNTABILITY_REPORT_PATH = "docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md"
 
 
 class REQ4AccountabilityValidator(RequirementValidator):
@@ -97,9 +97,9 @@ class REQ4AccountabilityValidator(RequirementValidator):
             score=0.0,
             reason=f"Accountability report not updated in latest commit ({commit_sha[:12]})",
             remediation=[
-                "Update docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md",
+                "Update docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md",
                 "Add entry describing session summary, results, and governance notes",
-                "Commit the changes: `git add docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`",
+                "Commit the changes: `git add docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`",
                 "Or run: `python scripts/ci/session_wrapup_autofix.py --pr <pr-number> --fix-accountability`",
             ],
             metadata=metadata,

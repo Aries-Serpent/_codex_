@@ -49,7 +49,7 @@
 <summary>Complete List of Modified Files</summary>
 
 1. `.codex/plans/cognitive_brain_phase_implementation.md` (8 fixes)
-2. `.github/AGENTS.md` (2 fixes)
+2. `.github/.codex/archive/deprecated/AGENTS.md` (2 fixes)
 3. `.github/agents/link-validator-agent.md` (1 fix)
 4. `agents/README.md` (2 fixes)
 5. `docs/CONTRIBUTOR_ONBOARDING.md` (1 fix)

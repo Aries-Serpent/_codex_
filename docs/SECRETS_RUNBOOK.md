@@ -46,7 +46,7 @@ The following org secrets are 5+ months old and past their recommended rotation 
 2. Navigate to **GitHub → Organization Settings → Secrets and variables → Secrets**
 3. Update `CODEX_MASTER_KEY` (and separately `CODEX_BACKUP_KEY`, `CODEX_ADMIN_KEY`)
 4. Verify the next CI run succeeds (any workflow using write ops)
-5. Record rotation in `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+5. Record rotation in `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 **Rotation frequency**: Every 90 days  
 **Emergency rotation**: Immediately if compromised — use `AGENT_KILL_SWITCH=1` to halt all agents first
@@ -108,7 +108,7 @@ To immediately halt all autonomous agent activity:
 - **GitHub Audit Log**: Settings → Security → Audit log → filter by "secret"
 - **CI Failure Rate**: Monitor `CODEX_CI_FAILURE_RATE` variable (threshold: `CODEX_CI_FAILURE_THRESHOLD = 10.0`)
 - **Last Green SHA**: `CODEX_CI_LAST_GREEN_SHA` — updated automatically by CI agent
-- **Accountability**: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- **Accountability**: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - **Usage Matrix**: `.codex/security/secrets_usage_matrix.json`
 
 ---

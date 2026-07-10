@@ -61,7 +61,7 @@ All agents running with non-blocking execution model:
 **Status:** Ready for activation when slot available
 
 ### 5. ✅ ACCOUNTABILITY UPDATED
-**File:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`  
+**File:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`  
 **Update:** Added Day 2 delegation framework section with all 5 agent details
 
 ### 6. ✅ COMMITS PUSHED
@@ -227,7 +227,7 @@ Day 2 Result:            92% → 96%  🎯 EXCEEDS 95% target!
 - `.codex/DAY_2_EVENING_STANDUP_20260620.md` (due 21:30Z)
 
 ### Reference Documentation
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (updated)
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (updated)
 - `.codex/SESSION_RESUMPTION_CHECKPOINT_20260619.md` (context)
 - `.codex/PHASE_7A_MASTER_CAMPAIGN_DASHBOARD.md` (campaign metrics)
 

@@ -8,7 +8,7 @@ a comprehensive report. Used to ensure zero-break guarantee before moving files.
 Usage:
     python validate_references.py <file_path> [--dry-run] [--json]
     python validate_references.py README.md --dry-run
-    python validate_references.py AGENTS.md --json > agents_refs.json
+    python validate_references.py .codex/archive/deprecated/AGENTS.md --json > agents_refs.json
 
 Physics Model: Fields🔄 - Track all references with metadata
 """
@@ -280,7 +280,7 @@ def main():
         epilog="""
 Examples:
   python validate_references.py README.md
-  python validate_references.py AGENTS.md --dry-run
+  python validate_references.py .codex/archive/deprecated/AGENTS.md --dry-run
   python validate_references.py QUICKSTART.md --json > refs.json
         """
     )

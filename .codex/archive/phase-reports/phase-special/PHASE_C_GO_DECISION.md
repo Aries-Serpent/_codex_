@@ -111,7 +111,7 @@ mypy src/codex/rag --baseline .mypy_baseline.json 2>&1 | tee -a .codex/PHASE_C_C
 
 ### C.3: Documentation Updates (Immediate)
 - Update CHANGELOG.md with Phase B results
-- Update AGENT_ACCOUNTABILITY_REPORT.md with agent outputs
+- Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with agent outputs
 - Document coverage improvement delta
 
 ### C.4: Tier 2 Unblock (Immediate)

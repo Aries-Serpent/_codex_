@@ -12,7 +12,7 @@
 
 ### 1.1 Approach
 
-Split the monolithic 66K-line `AGENT_ACCOUNTABILITY_REPORT.md` into:
+Split the monolithic 66K-line `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` into:
 
 - **32 chunks** (groups of 10 sessions per file)
 - **Sequential numbering:** 01-32 (left-padded for sorting)
@@ -73,7 +73,7 @@ Before migration:
 
 docs/
 ├── accountability/
-│   └── AGENT_ACCOUNTABILITY_REPORT.md  # Redirect stub to index
+│   └── .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md  # Redirect stub to index
 └── ...
 ```
 
@@ -84,7 +84,7 @@ After chunks are generated:
 1. Backup original to archive
 2. Move chunk files to `.codex/accountability_chunks/`
 3. Create index file at `.codex/AGENT_ACCOUNTABILITY_REPORT_INDEX.md`
-4. Replace `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` with redirect stub
+4. Replace `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` with redirect stub
 5. Update all internal cross-references to point to index
 
 ---
@@ -123,7 +123,7 @@ Where:
 ```markdown
 # Agent Accountability Report — Session Index
 
-> **Note:** The monolithic AGENT_ACCOUNTABILITY_REPORT.md has been split into session
+> **Note:** The monolithic .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md has been split into session
 > groups for GitHub rendering compatibility. All 316 sessions are preserved in 32 chunks.
 
 ## Quick Navigation
@@ -249,7 +249,7 @@ Each chunk ends with navigation:
 
 ### 6.1 Redirect Stub
 
-Original location: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+Original location: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 Content:
 
@@ -288,7 +288,7 @@ python scripts/ci/session_query.py --status complete
 Update these files to point to new index:
 
 - `.github/docs/accountability/README.md` — If exists
-- Links in `AGENTS.md` — Accountability section
+- Links in `.codex/archive/deprecated/AGENTS.md` — Accountability section
 - Links in `CONTRIBUTING.md` — Contribution tracking
 - Links in `.codex/change_log.md` — Audit trail
 
@@ -372,7 +372,7 @@ If issues occur during Phase 2.2:
 
 1. Stop all chunk operations
 2. Verify backup exists: `.codex/archive/AGENT_ACCOUNTABILITY_REPORT_BACKUP_20260623.md`
-3. Restore original: `cp .codex/archive/...BACKUP_*.md docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+3. Restore original: `cp .codex/archive/...BACKUP_*.md docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 4. Delete partial chunks: `rm -rf .codex/accountability_chunks/*`
 5. Investigate failure in validation script
 6. Re-run Phase 2.2 after fix

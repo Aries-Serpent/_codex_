@@ -80,7 +80,7 @@
 
 **C.3: Accountability Documentation** ✅ UPDATED
 - CHANGELOG.md: Phase C entry with timeline
-- AGENT_ACCOUNTABILITY_REPORT.md: Phase C session entry (2026-07-02T01:52Z)
+- .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md: Phase C session entry (2026-07-02T01:52Z)
 - REQ-4/REQ-5 compliance maintained
 
 **C.4: Tier 2 Agents Queued** ✅ EXECUTING
@@ -133,7 +133,7 @@
 ### Phase C Output (Validation & Unblock)
 4. **PHASE_C_COMPLETION_FINAL_REPORT.md** — Full validation summary
 5. **CHANGELOG.md** (updated) — Phase C entry
-6. **AGENT_ACCOUNTABILITY_REPORT.md** (updated) — Phase C session
+6. **.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md** (updated) — Phase C session
 
 ### Phase D Tier 2.1 Output (Retention Policy)
 7. **RETENTION_POLICY.md** (14.2 KB) — Comprehensive policy
@@ -228,7 +228,7 @@
 
 ## ✅ Compliance Status
 
-- ✅ **REQ-4**: AGENT_ACCOUNTABILITY_REPORT.md updated (Phase B, C, D entries)
+- ✅ **REQ-4**: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated (Phase B, C, D entries)
 - ✅ **REQ-5**: CHANGELOG.md updated (all phases documented)
 - ✅ **Zero Secrets**: All deliverables scanned, no credentials or tokens embedded
 - ✅ **Repository Tracked**: All artifacts in `.codex/` and `docs/` (tracked, not /tmp/)

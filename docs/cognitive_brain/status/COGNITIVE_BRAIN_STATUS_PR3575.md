@@ -65,7 +65,7 @@ the single-bt pattern to greedily consume outer separator backticks, leaving inn
 ### Pattern: Cognitive Pre-flight REQ-4 (`accountability_report_not_updated`)
 
 **Frequency:** 5 consecutive failures before Session 22
-**Root cause:** Every commit pushed to the branch must touch `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`.
+**Root cause:** Every commit pushed to the branch must touch `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`.
 
 **Fix applied:**
 1. `scripts/ci/session_wrapup_autofix.py` — idempotent auto-fix script
@@ -119,7 +119,7 @@ flowchart TD
 ### Pattern #24 (PREFLIGHT_001 — Updated)
 ```yaml
 - id: accountability_report_not_updated
-  description: "REQ-4: docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md not in last commit"
+  description: "REQ-4: docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md not in last commit"
   auto_fixable: true
   fix_script: "scripts/ci/session_wrapup_autofix.py --fix-accountability"
   workflow_step: "agent-auth-delegation.yml:autofix_docs"
@@ -196,7 +196,7 @@ _Cognitive Brain Status | PR #3575 | 2026-03-14T04:45Z | Sessions 22–24 | WF-0
 
 **Frequency:** 5 consecutive failures before this session
 **Root cause:** Every commit pushed to the branch (including automated merge-from-main commits)
-must touch `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`.  Commits that don't
+must touch `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`.  Commits that don't
 (e.g. workflow-only fixes, cognitive brain metadata updates from main) fail REQ-4.
 
 **Fix applied:**
@@ -250,7 +250,7 @@ Agent Token Delegation enabled  # pragma: allowlist secret
 ### New Pattern Added (Pattern #20)
 ```yaml
 - id: accountability_report_not_updated
-  description: "REQ-4: docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md not in last commit"
+  description: "REQ-4: docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md not in last commit"
   trigger: "Cognitive Pre-flight REQ-4 failure"
   auto_fixable: true
   fix_script: "scripts/ci/session_wrapup_autofix.py --fix-accountability"

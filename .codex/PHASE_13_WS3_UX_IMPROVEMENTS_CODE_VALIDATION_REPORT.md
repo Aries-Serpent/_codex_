@@ -353,7 +353,7 @@ hashlib.md5(code.encode(), usedforsecurity=False).hexdigest()
 
 #### Good (1,815 examples - 14.2%)
 ```bash
-# Example from docs/INSTALL.md:45
+# Example from docs/.codex/archive/misc/INSTALL.md:45
 $ python -m pip install package
 $ python -m package --version
 ```

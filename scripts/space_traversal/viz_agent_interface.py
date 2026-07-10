@@ -1093,7 +1093,7 @@ COPY THIS COMMAND AND RUN IN TERMINAL
 
 LOCAL FILES:
 - README.md                         - Repository overview
-- AGENTS.md                         - Agent instructions
+- .codex/archive/deprecated/AGENTS.md                         - Agent instructions
 - docs/audit/v1.5.x_CHANGELOG.md    - v1.5.x changelog
 
 GENERATED DOCS (run commands to generate):

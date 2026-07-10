@@ -230,7 +230,7 @@
 ```
 
 ### Update Requirements
-- ✅ Daily update to `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- ✅ Daily update to `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - ✅ Update `CHANGELOG.md` at major milestones
 - ✅ Keep `.codex/PHASE_10_EXECUTION_DASHBOARD.md` current
 - ✅ Verify REQ-4/REQ-5 compliance on each commit

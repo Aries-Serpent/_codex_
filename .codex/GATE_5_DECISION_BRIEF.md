@@ -240,7 +240,7 @@ At N=30 runs:
 
 ### Accountability Recording
 - Decision documented in `.codex/GATE_5_DECISION_BRIEF.md` (this file)
-- Entry logged in `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- Entry logged in `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - Phase 13 status updated in `.codex/PHASE_13_REALTIME_DASHBOARD.md`
 
 ---
@@ -286,7 +286,7 @@ At N=30 runs:
 
 - **Baseline Data:** `.codex/TRACK_12.3_REVALIDATION_BASELINE.md`
 - **Phase 13 Plan:** `.codex/PHASE_13_ACTIVATION_BRIEF.md`
-- **Accountability:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- **Accountability:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - **Dashboard:** `.codex/PHASE_13_REALTIME_DASHBOARD.md`
 
 ---

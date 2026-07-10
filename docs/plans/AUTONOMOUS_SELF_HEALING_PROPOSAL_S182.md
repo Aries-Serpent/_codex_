@@ -456,7 +456,7 @@ When auto-fix exhausts all iterations, the self-healing workflow posts a structu
 2. Analyze the failure logs at {run_url}
 3. Apply the minimal fix required
 4. Run self-review (5-pass) before committing
-5. Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+5. Update `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 ```
 
 ### Self-Healing Decision Tree
@@ -522,7 +522,7 @@ flowchart TD
    that the cognitive-preflight check reads, causing the session to self-terminate early.
 
 2. **Cross-PR merge conflicts** — Multiple sessions modifying shared files
-   (e.g., `CHANGELOG.md`, `AGENT_ACCOUNTABILITY_REPORT.md`) will conflict.
+   (e.g., `CHANGELOG.md`, `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`) will conflict.
    Workaround: sequential session model (default) prevents this. See
    **Section 7b: Merge Conflict Handling Strategy** for full details.
 
@@ -689,7 +689,7 @@ The **Session Concurrency Gate** (Section 4) prevents the most common conflict s
 — two Copilot sessions editing the same "sentinel" files simultaneously:
 
 **Sentinel files** (files touched by every session):
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (REQ-4)
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (REQ-4)
 - `CHANGELOG.md` (REQ-5)
 - `.codex/agent_auth_session.json` (provenance token)
 - `CODEX_MANIFEST.json` (auto-regenerated)
@@ -835,7 +835,7 @@ conflicts can be auto-resolved by accepting both sides:
 
 ```bash
 # Auto-resolve sentinel files (append-only pattern)
-for f in docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md CHANGELOG.md; do
+for f in docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md CHANGELOG.md; do
   if git diff --name-only --diff-filter=U | grep -q "$f"; then
     # Accept both: keep all content from both sides
     git checkout --theirs "$f"  # Take remote version

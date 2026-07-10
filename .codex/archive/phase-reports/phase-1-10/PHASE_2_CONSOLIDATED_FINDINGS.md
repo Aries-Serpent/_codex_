@@ -431,7 +431,7 @@ Phase 2 deployed **8 specialized agents** across Code Quality, Architecture, Typ
 1. Fix 3 CRITICAL security vulnerabilities (XXE, command injection) — **2-8 hours**
 2. Update README test count & production readiness claims — **1-2 hours**
 3. Create PHASE_2_CONSOLIDATED_FINDINGS.md — **1-2 hours**
-4. Update AGENT_ACCOUNTABILITY_REPORT.md — **1 hour**
+4. Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md — **1 hour**
 
 #### WEEK 1 (Critical: 24+ hours)
 1. Rename critical filename (`_codex_status_update-(date).md`) — **15 min**

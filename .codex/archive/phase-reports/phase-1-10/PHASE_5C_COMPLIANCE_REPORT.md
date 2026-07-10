@@ -13,7 +13,7 @@
 
 | Requirement | Status | Details |
 |-------------|--------|---------|
-| **REQ-4** | ❌ FAILED | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` NOT in last commit |
+| **REQ-4** | ❌ FAILED | `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` NOT in last commit |
 | **REQ-5** | ❌ FAILED | `CHANGELOG.md` NOT in last commit |
 | **Workflow Concurrency** | ✅ PASS | 184/185 workflows (99.5%) compliant |
 | **Workflow Timeouts** | ⚠️ WARN | 176/185 workflows (95.1%) have `timeout-minutes` |
@@ -25,16 +25,16 @@
 
 ## Detailed Audit Results
 
-### 1. REQ-4: AGENT_ACCOUNTABILITY_REPORT.md Updates
+### 1. REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md Updates
 
 **Status:** ❌ **FAILED**
 
 ```
-❌ REQ-4: docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md NOT in last commit
+❌ REQ-4: docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md NOT in last commit
 ```
 
 **Details:**
-- File exists: ✅ YES (`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`)
+- File exists: ✅ YES (`docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`)
 - File size: 3.2 MB
 - Last modified: 2026-06-15 21:46 UTC
 - **In last commit:** ❌ NO
@@ -46,8 +46,8 @@
 
 **Remediation Required:**
 ```bash
-# Add AGENT_ACCOUNTABILITY_REPORT.md to this commit:
-git add docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+# Add .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md to this commit:
+git add docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 git commit --amend --no-edit
 ```
 
@@ -249,7 +249,7 @@ All workflows passed `yaml.safe_load()` validation. No YAML syntax errors found.
 
 | Priority | Issue | Action | Effort |
 |----------|-------|--------|--------|
-| **P0** | REQ-4: AGENT_ACCOUNTABILITY_REPORT.md not in commit | Add file to commit + amend | 2 min |
+| **P0** | REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md not in commit | Add file to commit + amend | 2 min |
 | **P0** | REQ-5: CHANGELOG.md not in commit | Add file to commit + amend | 2 min |
 
 ### 🟡 RECOMMENDED FIXES (Self-Healing Eligible)
@@ -269,7 +269,7 @@ All workflows passed `yaml.safe_load()` validation. No YAML syntax errors found.
 ┌─────────────────────────────────────────────────────────┐
 │ PRODUCTION MERGE BLOCKED                                │
 ├─────────────────────────────────────────────────────────┤
-│ REQ-4 FAIL: AGENT_ACCOUNTABILITY_REPORT.md update       │
+│ REQ-4 FAIL: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md update       │
 │ REQ-5 FAIL: CHANGELOG.md update                         │
 │                                                         │
 │ Action: Amend commit to include required files          │
@@ -281,7 +281,7 @@ All workflows passed `yaml.safe_load()` validation. No YAML syntax errors found.
 
 1. **Commit Amendment** (2 min)
    ```bash
-   git add docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md CHANGELOG.md
+   git add docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md CHANGELOG.md
    git commit --amend --no-edit
    git push --force-with-lease
    ```
@@ -300,7 +300,7 @@ All workflows passed `yaml.safe_load()` validation. No YAML syntax errors found.
 ### Expected State After Remediation
 
 ```
-✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated
+✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated
 ✅ REQ-5: CHANGELOG.md updated
 ✅ 185/185 workflows with concurrency (100%)
 ✅ 185/185 workflows with timeout-minutes (100%)
@@ -410,7 +410,7 @@ All workflows except those listed below pass concurrency, timeout, and action ve
 ```bash
 # Step 1: Amend commit with required files
 cd /home/runner/work/_codex_/_codex_
-git add docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md CHANGELOG.md
+git add docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md CHANGELOG.md
 git commit --amend --no-edit
 
 # Step 2: Verify compliance

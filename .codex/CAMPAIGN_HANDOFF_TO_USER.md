@@ -221,7 +221,7 @@ Infrastructure:     85/100 ✅
 **CRITICAL (Read these first):**
 1. `.codex/PHASE_9_CAMPAIGN_COMPLETION_SUMMARY.md` - Campaign results
 2. `.codex/NEXT_SESSION_PROMPT_PHASE_10.md` - Phase 10 launch guide
-3. `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` - Session entry added
+3. `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` - Session entry added
 
 **REFERENCE (For Phase 10 execution):**
 4. `.codex/PHASE_10_IMPLEMENTATION_PLAN.md` - Technical details

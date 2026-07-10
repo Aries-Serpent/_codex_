@@ -48,14 +48,14 @@ This report verifies all claims made in packaging documentation, code comments, 
 Level 4 MLOps Certified ML platform with 36500+ tests, 70%+ coverage, 26 CVEs fixed, and 145 active autonomous agents.
 ```
 
-**Claim in AGENTS.md (Header):**
+**Claim in .codex/archive/deprecated/AGENTS.md (Header):**
 ```markdown
 Agents: 147 active (source of truth: `.github/agents/AGENT_REGISTRY.yaml`)
 ```
 
 **Verification Results:**
 - **README claims**: 145 active agents
-- **AGENTS.md header claims**: 147 active agents (with source of truth reference)
+- **.codex/archive/deprecated/AGENTS.md header claims**: 147 active agents (with source of truth reference)
 - **AGENT_REGISTRY.yaml actual data**: 
   - `active_agents: 147`
   - `archived_agents: 15`
@@ -71,11 +71,11 @@ Agents: 147 active (source of truth: `.github/agents/AGENT_REGISTRY.yaml`)
 
 ---
 
-## 2. INSTALL.md Claims Verification
+## 2. .codex/archive/misc/INSTALL.md Claims Verification
 
 ### 2.1 Wheel File Naming Claim
 
-**Claim in INSTALL.md (Line 7, 15, 26-27):**
+**Claim in .codex/archive/misc/INSTALL.md (Line 7, 15, 26-27):**
 ```bash
 Release artifact: `codex-core-0.1.0.whl`
 python -m pip install codex-core-0.1.0.whl
@@ -89,7 +89,7 @@ python -m pip install codex-core-0.1.0.whl
 - **Actual Package Description** (pyproject.toml): "Codex ML training, evaluation, and plugin framework"
 
 **Status**: ❌ **CRITICAL CLAIM FALSE - WRONG WHEEL NAME**
-- **Assessment**: End-users following INSTALL.md would fail because wheel file doesn't exist with claimed name
+- **Assessment**: End-users following .codex/archive/misc/INSTALL.md would fail because wheel file doesn't exist with claimed name
 - **Severity**: CRITICAL - prevents successful installation
 - **Impact**: Users cannot install the package as documented
 
@@ -99,7 +99,7 @@ python -m pip install codex-core-0.1.0.whl
 
 ### 2.2 NetworkPolicy Enforcement Claim
 
-**Claim in INSTALL.md (Line 37-43):**
+**Claim in .codex/archive/misc/INSTALL.md (Line 37-43):**
 ```python
 from safety import PolicyViolationError, enforce_network_policy
 
@@ -134,18 +134,18 @@ def enforce_network_policy(
 ```
 
 **Status**: ✅ **CLAIM VERIFIED - IMPLEMENTATION CORRECT**
-- **Assessment**: The code example in INSTALL.md is accurate and functional
+- **Assessment**: The code example in .codex/archive/misc/INSTALL.md is accurate and functional
 - **Severity**: N/A (no issue)
 
 **Finding ID**: CLM-004
 
 ---
 
-## 3. ISOLATED_DEPLOYMENT.md Claims Verification
+## 3. docs/release/ISOLATED_DEPLOYMENT.md Claims Verification
 
 ### 3.1 Network Policy Configuration Claim
 
-**Claim in ISOLATED_DEPLOYMENT.md (Line 11-20):**
+**Claim in docs/release/ISOLATED_DEPLOYMENT.md (Line 11-20):**
 ```yaml
 Policy file: `.codex/network-policy.yaml`
 
@@ -174,7 +174,7 @@ allowed_hosts:
 
 ### 3.2 Offline Bootstrap Claim
 
-**Claim in ISOLATED_DEPLOYMENT.md (Line 31-33):**
+**Claim in docs/release/ISOLATED_DEPLOYMENT.md (Line 31-33):**
 ```bash
 python - <<'PY'
 from safety.network_policy import enforce_network_policy
@@ -274,12 +274,12 @@ all = [...]
 
 ### 5.1 Safety Module API Claims
 
-**Claim in INSTALL.md (Line 37):**
+**Claim in .codex/archive/misc/INSTALL.md (Line 37):**
 ```python
 from safety import PolicyViolationError, enforce_network_policy
 ```
 
-**Claim in ISOLATED_DEPLOYMENT.md (Line 29):**
+**Claim in docs/release/ISOLATED_DEPLOYMENT.md (Line 29):**
 ```python
 from safety.network_policy import enforce_network_policy
 ```
@@ -325,7 +325,7 @@ __all__ = [
 #   OFFLINE_BOOTSTRAP.sh --wheelhouse ./wheelhouse --artifact ./dist/codex_core-0.1.0-py3-none-any.whl
 ```
 
-**Claim in INSTALL.md (Line 25-27):**
+**Claim in .codex/archive/misc/INSTALL.md (Line 25-27):**
 ```bash
 ./OFFLINE_BOOTSTRAP.sh \
   --wheelhouse ./wheelhouse \
@@ -337,7 +337,7 @@ __all__ = [
 - ✅ **Script is functional**: Contains valid bash with error handling
 - ✅ **Arguments are correct**: `--wheelhouse` and `--artifact` parameters implemented
 - ❌ **Example artifact name is WRONG**: Script shows `codex_core-0.1.0-py3-none-any.whl` (with underscores, py3 tags)
-- ❌ **INSTALL.md example is WRONG**: Refers to `codex-core-0.1.0.whl` (with hyphens, no py3 tags)
+- ❌ **.codex/archive/misc/INSTALL.md example is WRONG**: Refers to `codex-core-0.1.0.whl` (with hyphens, no py3 tags)
 - ✅ **Offline bootstrap module exists**: `src/codex_ml/cli/offline_bootstrap.py` confirmed
 
 **Status**: ⚠️ **PARTIAL - SCRIPT EXISTS BUT ARTIFACT NAMING UNCLEAR**
@@ -355,9 +355,9 @@ __all__ = [
 |---|---|---|---|---|---|
 | CLM-001 | "36500+ tests" badge | README.md:2,9 | Badge outdated | MEDIUM | Misleads external consumers (actual: 39,256) |
 | CLM-002 | "145 active agents" | README.md:2 | Outdated | MEDIUM | Should be 147 (per AGENT_REGISTRY.yaml) |
-| CLM-003 | Wheel file: `codex-core-0.1.0.whl` | INSTALL.md:7,15,26 | FALSE | **CRITICAL** | Installation fails - wrong filename |
+| CLM-003 | Wheel file: `codex-core-0.1.0.whl` | .codex/archive/misc/INSTALL.md:7,15,26 | FALSE | **CRITICAL** | Installation fails - wrong filename |
 | CLM-007 | "3 profiles: core, runtime, full" | Documentation | FALSE | **CRITICAL** | Profiles don't exist - `pip install .[core]` fails |
-| CLM-009 | Artifact naming inconsistency | INSTALL.md + OFFLINE_BOOTSTRAP.sh | Unclear | HIGH | Prevents offline installation |
+| CLM-009 | Artifact naming inconsistency | .codex/archive/misc/INSTALL.md + OFFLINE_BOOTSTRAP.sh | Unclear | HIGH | Prevents offline installation |
 
 ---
 
@@ -365,9 +365,9 @@ __all__ = [
 
 | ID | Claim | Location 1 | Location 2 | Issue |
 |---|---|---|---|---|
-| INC-001 | Agent Count | README: 145 | AGENTS.md: 147 | AGENT_REGISTRY.yaml shows 147 is correct |
-| INC-002 | Wheel Filename | INSTALL.md: `codex-core-0.1.0.whl` | OFFLINE_BOOTSTRAP.sh: `codex_core-0.1.0-py3-none-any.whl` | Different naming conventions |
-| INC-003 | Import Path | INSTALL.md: `from safety import ...` | ISOLATED_DEPLOYMENT.md: `from safety.network_policy import ...` | Both work but inconsistent documentation |
+| INC-001 | Agent Count | README: 145 | .codex/archive/deprecated/AGENTS.md: 147 | AGENT_REGISTRY.yaml shows 147 is correct |
+| INC-002 | Wheel Filename | .codex/archive/misc/INSTALL.md: `codex-core-0.1.0.whl` | OFFLINE_BOOTSTRAP.sh: `codex_core-0.1.0-py3-none-any.whl` | Different naming conventions |
+| INC-003 | Import Path | .codex/archive/misc/INSTALL.md: `from safety import ...` | docs/release/ISOLATED_DEPLOYMENT.md: `from safety.network_policy import ...` | Both work but inconsistent documentation |
 
 ---
 
@@ -375,11 +375,11 @@ __all__ = [
 
 | ID | Claim | Source | Status | Details |
 |---|---|---|---|---|
-| VER-001 | PolicyViolationError exists and is exported | INSTALL.md + ISOLATED_DEPLOYMENT.md | ✅ VERIFIED | Located in `src/safety/network_policy.py:20`, exported via `src/safety/__init__.py` |
-| VER-002 | Network policy enforcement is active | ISOLATED_DEPLOYMENT.md | ✅ VERIFIED | Fail-closed mode default in code, `.codex/network-policy.yaml` exists with correct config |
-| VER-003 | Offline bootstrap infrastructure exists | INSTALL.md | ✅ VERIFIED | `OFFLINE_BOOTSTRAP.sh` and `src/codex_ml/cli/offline_bootstrap.py` both present |
-| VER-004 | Network policy configuration matches docs | ISOLATED_DEPLOYMENT.md | ✅ VERIFIED | YAML structure and defaults match implementation |
-| VER-005 | Public API is stable (no deprecation markers) | INSTALL.md + ISOLATED_DEPLOYMENT.md | ✅ VERIFIED | No `_internal`, `@deprecated`, or `DEPRECATED` markers in safety module |
+| VER-001 | PolicyViolationError exists and is exported | .codex/archive/misc/INSTALL.md + docs/release/ISOLATED_DEPLOYMENT.md | ✅ VERIFIED | Located in `src/safety/network_policy.py:20`, exported via `src/safety/__init__.py` |
+| VER-002 | Network policy enforcement is active | docs/release/ISOLATED_DEPLOYMENT.md | ✅ VERIFIED | Fail-closed mode default in code, `.codex/network-policy.yaml` exists with correct config |
+| VER-003 | Offline bootstrap infrastructure exists | .codex/archive/misc/INSTALL.md | ✅ VERIFIED | `OFFLINE_BOOTSTRAP.sh` and `src/codex_ml/cli/offline_bootstrap.py` both present |
+| VER-004 | Network policy configuration matches docs | docs/release/ISOLATED_DEPLOYMENT.md | ✅ VERIFIED | YAML structure and defaults match implementation |
+| VER-005 | Public API is stable (no deprecation markers) | .codex/archive/misc/INSTALL.md + docs/release/ISOLATED_DEPLOYMENT.md | ✅ VERIFIED | No `_internal`, `@deprecated`, or `DEPRECATED` markers in safety module |
 
 ---
 
@@ -388,8 +388,8 @@ __all__ = [
 ### Critical Priority (Blocking External Consumption)
 
 **CLM-003: Fix Wheel Filename in Documentation**
-- **Action**: Update INSTALL.md to use correct wheel name
-- **File**: `INSTALL.md` lines 7, 15, 26
+- **Action**: Update .codex/archive/misc/INSTALL.md to use correct wheel name
+- **File**: `.codex/archive/misc/INSTALL.md` lines 7, 15, 26
 - **Change**: `codex-core-0.1.0.whl` → `codex_ml-0.1.0-py3-none-any.whl`
 - **Estimate**: 5 minutes
 
@@ -413,7 +413,7 @@ __all__ = [
 
 **CLM-009: Standardize Artifact Naming**
 - **Action**: Clarify expected wheel filename across all documentation
-- **Files**: INSTALL.md, OFFLINE_BOOTSTRAP.sh, packaging docs
+- **Files**: .codex/archive/misc/INSTALL.md, OFFLINE_BOOTSTRAP.sh, packaging docs
 - **Standard**: Use `codex_ml-0.1.0-py3-none-any.whl` consistently
 - **Estimate**: 30 minutes
 
@@ -464,8 +464,8 @@ __all__ = [
 
 **Scope**:
 - README.md (claims about features, counts, stability)
-- INSTALL.md (installation instructions and API claims)
-- ISOLATED_DEPLOYMENT.md (network policy and offline deployment)
+- .codex/archive/misc/INSTALL.md (installation instructions and API claims)
+- docs/release/ISOLATED_DEPLOYMENT.md (network policy and offline deployment)
 - pyproject.toml (actual package definition)
 - src/safety/ (actual API implementation)
 - .codex/network-policy.yaml (actual policy file)

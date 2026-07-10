@@ -137,7 +137,7 @@ flowchart LR
 | P1 | `test_endpoints_have_type_hints` threshold | GitHub issue pending | Open separate PR |
 | P2 | Grafana/Prometheus scrape target for `check_pr_comments.py` | PR #3790 deferred item | Infrastructure work |
 | P2 | Workflow Execution Gate — add opt-in skip check to `security-scanning-suite.yml`, `docs-build.yml`, `nox-gates.yml`, `cost-gate.yml` | `docs/workflows/plans/WORKFLOW_CHECKLIST_WIRING_PLAN.md` M3-M6 | Follow-up PR |
-| P3 | S221 missed-trigger false positive pattern | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | Monitor |
+| P3 | S221 missed-trigger false positive pattern | `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` | Monitor |
 
 ---
 

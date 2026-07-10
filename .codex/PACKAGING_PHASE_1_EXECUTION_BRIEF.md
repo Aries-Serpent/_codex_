@@ -52,7 +52,7 @@ Launch `aries-serpent-cognitive-brain v0.1.0` as first independent distribution 
 **Acceptance Criteria**:
 - [ ] ZIP archive created: `aries-serpent-cognitive-brain-0.1.0.zip`
 - [ ] Contents: src/codex/cognitive/ (27 files)
-- [ ] Includes: README.md, INSTALL.md, LICENSE, requirements.txt
+- [ ] Includes: README.md, .codex/archive/misc/INSTALL.md, LICENSE, requirements.txt
 - [ ] Size: ~1-2 MB
 - [ ] SHA256 checksum generated and verified
 - [ ] Archive tested: extractable on Linux/macOS/Windows
@@ -77,7 +77,7 @@ sha256sum aries-serpent-cognitive-brain-0.1.0.zip > CHECKSUM.txt
 **Owner**: [Assign to documentation specialist]  
 **Effort**: 45-60 minutes  
 **Acceptance Criteria**:
-- [ ] File created: `QUICK_START_COGNITIVE_BRAIN.md`
+- [ ] File created: `docs/quickstart/QUICK_START_COGNITIVE_BRAIN.md`
 - [ ] 5-10 step installation guide (copy-paste ready)
 - [ ] Basic usage examples: Import OODA loop, run decision
 - [ ] Troubleshooting section (common import errors)
@@ -92,7 +92,7 @@ sha256sum aries-serpent-cognitive-brain-0.1.0.zip > CHECKSUM.txt
 5. Troubleshooting (ImportError, network access)
 6. Contributing / feedback
 
-**Location**: `.codex/QUICK_START_COGNITIVE_BRAIN.md`
+**Location**: `.codex/docs/quickstart/QUICK_START_COGNITIVE_BRAIN.md`
 
 **Quality Gates**:
 - Tested on fresh Python environment
@@ -115,7 +115,7 @@ sha256sum aries-serpent-cognitive-brain-0.1.0.zip > CHECKSUM.txt
   - PyPI link
   - aries-serpent-cognitive-brain-0.1.0.zip
   - SHA256 checksum
-  - QUICK_START_COGNITIVE_BRAIN.md
+  - docs/quickstart/QUICK_START_COGNITIVE_BRAIN.md
 - [ ] Release set as "Pre-release" (not final)
 
 **Release Notes Template**:
@@ -149,7 +149,7 @@ pip install aries-serpent-cognitive-brain
 - Kubernetes manifests coming in Phase 4
 
 ## Next Steps
-See QUICK_START_COGNITIVE_BRAIN.md for installation.
+See docs/quickstart/QUICK_START_COGNITIVE_BRAIN.md for installation.
 ```
 
 **Quality Gates**:

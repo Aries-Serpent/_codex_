@@ -124,7 +124,7 @@ python scripts/ci/copilot_agent_auto_fix.py
 
 ### Part 6: Documentation Updates
 
-#### AGENTS.md Enhancements
+#### .codex/archive/deprecated/AGENTS.md Enhancements
 - ✅ Expanded CI/CD Automation Tools section
 - ✅ Added Auto-Fix Script with JSON Output documentation
 - ✅ Added Copilot Agent Helper documentation
@@ -133,7 +133,7 @@ python scripts/ci/copilot_agent_auto_fix.py
 - ✅ Added JSON diagnostic report format example
 - ✅ Documented integration points
 
-**Location:** `AGENTS.md` lines 289-382
+**Location:** `.codex/archive/deprecated/AGENTS.md` lines 289-382
 
 #### CODEBASE_AGENCY_POLICY.md Updates
 - ✅ Added new "CI/CD Auto-Fix Workflows" section
@@ -144,7 +144,7 @@ python scripts/ci/copilot_agent_auto_fix.py
 
 **Location:** `.codex/CODEBASE_AGENCY_POLICY.md` (new section after Code Quality Standards)
 
-**Commit:** `docs: update AGENTS.md and CODEBASE_AGENCY_POLICY.md with CI auto-fix system documentation` (b95ef09)
+**Commit:** `docs: update .codex/archive/deprecated/AGENTS.md and CODEBASE_AGENCY_POLICY.md with CI auto-fix system documentation` (b95ef09)
 
 ---
 
@@ -185,7 +185,7 @@ The requested meta tensor handling is already implemented in:
   - `tests/retrieval/test_factory.py`
   - `scripts/audit_file_handles.py`
   - `scripts/lint/check_device_placement.py`
-  - `AGENTS.md`
+  - `.codex/archive/deprecated/AGENTS.md`
   - `.codex/CODEBASE_AGENCY_POLICY.md`
 - **Created:** 4 files
   - `scripts/ci/copilot_agent_auto_fix.py`
@@ -200,7 +200,7 @@ The requested meta tensor handling is already implemented in:
 3. `fix: address PR review comments - unused imports and empty except blocks`
 4. `feat(ci): add JSON output mode to auto-fix script`
 5. `feat(ci): add PR auto-fix check, pre-merge validation workflows, and helper script`
-6. `docs: update AGENTS.md and CODEBASE_AGENCY_POLICY.md with CI auto-fix system documentation`
+6. `docs: update .codex/archive/deprecated/AGENTS.md and CODEBASE_AGENCY_POLICY.md with CI auto-fix system documentation`
 
 ### Lines Changed
 - **Added:** ~700+ lines
@@ -245,7 +245,7 @@ The requested meta tensor handling is already implemented in:
 - [x] Blocks merge if critical checks fail
 
 #### ✅ Documentation
-- [x] `AGENTS.md` updated with CI Auto-Fix section
+- [x] `.codex/archive/deprecated/AGENTS.md` updated with CI Auto-Fix section
 - [x] `.codex/CODEBASE_AGENCY_POLICY.md` updated
 - [x] Workflow documentation complete
 
@@ -293,7 +293,7 @@ The requested meta tensor handling is already implemented in:
 - **Original Request:** `.codex/PR3178_COMMENT_3873375083.txt`
 - **Review Comments:** `.codex/PR3178_REVIEW_3774690601_SUMMARY.md`
 - **Auto-Fix Docs:** `.codex/docs/CI_AUTO_FIX_SYSTEM.md` (referenced, may need creation)
-- **Agent Docs:** `AGENTS.md` (lines 289-382)
+- **Agent Docs:** `.codex/archive/deprecated/AGENTS.md` (lines 289-382)
 - **Policy Docs:** `.codex/CODEBASE_AGENCY_POLICY.md` (new CI/CD section)
 
 ---

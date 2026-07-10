@@ -158,7 +158,7 @@ All workflows have safe fallback defaults and are ready for deployment.
 
 ### For Tracking Progress
 - **Phase 1 Tracking**: `.codex/PHASE_1_ROADMAP_TRACKING.md`
-- **Accountability**: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- **Accountability**: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 ---
 

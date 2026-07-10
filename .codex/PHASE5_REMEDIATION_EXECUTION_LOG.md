@@ -240,7 +240,7 @@
 
 ### Deliverables
 ✅ Comprehensive execution log created (this document)  
-✅ AGENT_ACCOUNTABILITY_REPORT.md updated with Phase 5 section  
+✅ .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated with Phase 5 section  
 ✅ PRODUCTION_READINESS_CHECKLIST.md created (all boxes pre-filled)  
 ✅ PHASE5_EXECUTIVE_SUMMARY.md created  
 ✅ PHASE5_AUDIT_TRAIL.md created  
@@ -349,7 +349,7 @@
 - `.codex/PRODUCTION_READINESS_CHECKLIST.md`
 - `.codex/PHASE5_EXECUTIVE_SUMMARY.md`
 - `.codex/PHASE5_AUDIT_TRAIL.md`
-- Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- Updated `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - Updated `.codex/README.md`
 
 ---

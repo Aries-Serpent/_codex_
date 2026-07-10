@@ -52,7 +52,7 @@ store_memory() calls  (persist facts for next session)
 From [DEV Community — Optimizing Your Codebase for AI Coding Agents](https://dev.to/aarongustafson/optimizing-your-codebase-for-ai-coding-agents-4ndm):
 
 ### ✅ Already implemented in _codex_
-- `AGENTS.md` / `.github/copilot-instructions.md` — global coding rules
+- `.codex/archive/deprecated/AGENTS.md` / `.github/copilot-instructions.md` — global coding rules
 - `docs/agent/OPERATIONAL_GUIDELINES.md` — agent capabilities + constraints
 - `.codex/CODEBASE_AGENCY_POLICY.md` — mandatory fix-all-CI policy
 - `scripts/ci/auto_fix_common_issues.py` — fast validation without full build
@@ -144,7 +144,7 @@ From [GitHub Copilot SDK guide](https://techcommunity.microsoft.com/blog/azurede
 | A-MEM: Agentic Memory for LLMs | https://arxiv.org/abs/2502.12110 |
 | Agent Memory Architecture | https://getathenic.com/blog/agent-memory-architecture-persistent-context-systems |
 | Event-Driven Agents in Action | https://www.docker.com/blog/beyond-the-chatbot-event-driven-agents-in-action/ |
-| Why Every Repo Needs AGENTS.md | https://build5nines.com/unlock-github-copilots-full-potential-why-every-repo-needs-an-agents-md-file/ |
+| Why Every Repo Needs .codex/archive/deprecated/AGENTS.md | https://build5nines.com/unlock-github-copilots-full-potential-why-every-repo-needs-an-agents-md-file/ |
 | Azure DevOps + GitHub Agentic AI | https://devblogs.microsoft.com/devops/azure-devops-and-github-repositories-next-steps-in-the-path-to-agentic-ai/ |
 
 ---

@@ -65,7 +65,7 @@
 - [Triggered: on push to main (via generate_manifest.py)](#triggered-on-push-to-main-via-generate_manifestpy)
 - [Pattern validated by: Continue CLI doc-writing agent approach](#pattern-validated-by-continue-cli-doc-writing-agent-approach)
 - [Self-Healing Enforcement Gap Loop (Phase 5 Full Architecture)](#self-healing-enforcement-gap-loop-phase-5-full-architecture)
-  - [AGENT_ACCOUNTABILITY_REPORT.md Auto-Append (Phase 5)](#agent_accountability_reportmd-auto-append-phase-5)
+  - [.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md Auto-Append (Phase 5)](#agent_accountability_reportmd-auto-append-phase-5)
 - [📋 DOMAIN 7 — Monorepo Governance & Compliance Audit Tooling](#-domain-7--monorepo-governance--compliance-audit-tooling)
   - [(Phase 0 + Phase 6 Validation)](#phase-0--phase-6-validation)
   - [Key Finding: actionlint + Semgrep + CODEOWNERS is the 2025 Governance Stack](#key-finding-actionlint--semgrep--codeowners-is-the-2025-governance-stack)
@@ -1160,7 +1160,7 @@ ci-health-monitor.yml (every 6h)
               (manual PR, gate verified)
 ```
 
-### AGENT_ACCOUNTABILITY_REPORT.md Auto-Append (Phase 5)
+### .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md Auto-Append (Phase 5)
 
 Research from Scalex
 [[12]](https://scalextech.com/self-healing-codebases-implementing-agentic-ai-with-ci-cd-for-autonomous-bug-resolution/)
@@ -1169,14 +1169,14 @@ capability. The session-close auto-append pattern:
 
 ```python name=auto_append_accountability.py
 """
-Phase 5: Auto-append W-NNN entry to AGENT_ACCOUNTABILITY_REPORT.md
+Phase 5: Auto-append W-NNN entry to .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 Called by: chatops_copilot_trigger.yml on session close
 Source data: SQLite agent_sessions table
 """
 import pathlib, sqlite3, re, datetime
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parents[2]
-REPORT    = REPO_ROOT / "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md"
+REPORT    = REPO_ROOT / "docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md"
 DB_PATH   = REPO_ROOT / ".codex/codex_corpus.db"
 
 def get_next_w_number(report_text: str) -> int:
@@ -2231,7 +2231,7 @@ Cross-referenced to all 3 chunks and all 8 research domains.
 | **Self-healing CI** | Automated detection + LLM-backed remediation of CI failures | 2 | D6 |
 | **AutoDevOps pattern** | Multi-agent CI/CD self-healing loop: detect → diagnose → fix proposal → PR | 2 | D6 |
 | **auto_promote_tier.py** | Dry-run script generating REQ-N YAML stub from violation pattern | 2,3 | D6 |
-| **W-NNN entry** | Work item entry format in `AGENT_ACCOUNTABILITY_REPORT.md` | 2,3 | D6 |
+| **W-NNN entry** | Work item entry format in `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` | 2,3 | D6 |
 | **Conftest + OPA/Rego** | Policy-as-code engine for YAML/JSON validation — Phase 5 upgrade from jsonschema | 1,2 | D2 |
 
 ### Security Terms (Domain 8 — New)
@@ -2269,7 +2269,7 @@ command to execute.
 
 ## Pre-Flight (MANDATORY — verify before any file changes)
 - [ ] P0.1 Read `.codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md` — note current Tier-1/2/3 counts
-- [ ] P0.2 Read `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — note last W-NNN number
+- [ ] P0.2 Read `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — note last W-NNN number
 - [ ] P0.3 Confirm `cognitive-preflight` REQ-1–REQ-8 all pass on current HEAD
 - [ ] P0.4 Confirm `.codex/codex_corpus.db` schema (or note if absent — Phase 3 creates it)
 - [ ] P0.5 Read `AGENT_REGISTRY.yaml` if it exists — note current agent count
@@ -2297,7 +2297,7 @@ command to execute.
 
 ## Task 2 — Agent Activation Frequency Analysis
 - [ ] 2.1 Create `scripts/ci/agent_frequency_audit.py`:
-        - Scan `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+        - Scan `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
           for agent name mentions (W-NNN rows)
         - Scan `.github/workflows/` YAML for agent name references
         - Scan `.codex/` session files for agent mentions
@@ -2369,7 +2369,7 @@ command to execute.
 ---
 
 ## Task 6 — Accountability Report + CHANGELOG Update (MANDATORY)
-- [ ] 6.1 Add W-NNN entries to `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- [ ] 6.1 Add W-NNN entries to `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
         for all Phase 0 work items:
         - W-NNN | workflow_compliance_scan.py created — Phase 0 Task 1
         - W-NNN | agent_frequency_audit.py created — Phase 0 Task 2
@@ -2378,7 +2378,7 @@ command to execute.
         - W-NNN | KPI baselines recorded — Phase 0 Task 5
 - [ ] 6.2 Add `[Unreleased] — Phase 0` entry to `CHANGELOG.md`
         with all files created/modified
-- [ ] 6.3 Commit: `AGENT_ACCOUNTABILITY_REPORT.md` + `CHANGELOG.md`
+- [ ] 6.3 Commit: `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` + `CHANGELOG.md`
         Message: `docs(phase-0): accountability report + changelog [Phase 0 complete]`
 
 ---
@@ -2391,7 +2391,7 @@ All of the following must be true before Phase 1 begins:
 - [ ] `docs/architecture/E_TO_D_TRANSITION_MAP.md` exists with Mermaid diagram
 - [ ] Top-20 agent list recorded (confirmed by activation frequency data, not guessed)
 - [ ] All KPI baselines filled with real numbers (not placeholders)
-- [ ] `AGENT_ACCOUNTABILITY_REPORT.md` has W-NNN entries for all Phase 0 tasks
+- [ ] `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` has W-NNN entries for all Phase 0 tasks
 - [ ] `CHANGELOG.md` has Phase 0 entry
 - [ ] `cognitive-preflight` REQ-1–REQ-8 still passing (zero regressions)
 - [ ] mbaetiong approval received before Phase 1 begins
@@ -2667,7 +2667,7 @@ All of the following must be true before Phase 1 begins:
 
 ## Task 8 — Accountability Report + CHANGELOG Update (MANDATORY)
 
-- [ ] 8.1  Add W-NNN entries to `AGENT_ACCOUNTABILITY_REPORT.md`:
+- [ ] 8.1  Add W-NNN entries to `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`:
            - W-NNN | `.codex/schemas/` — AgentRegistrySchema + CodexManifestSchema
            - W-NNN | `scripts/ci/generate_manifest.py` — central manifest script
            - W-NNN | `AGENT_REGISTRY.yaml` — all 193 agents registered
@@ -2676,7 +2676,7 @@ All of the following must be true before Phase 1 begins:
            - W-NNN | `copilot-agent-vars-bootstrap.yml` — safe manifest injection
            - W-NNN | `.github/CODEOWNERS` — Phase 1 security entries
 - [ ] 8.2  Add `[Unreleased] — Phase 1` entry to `CHANGELOG.md`
-- [ ] 8.3  Commit: `AGENT_ACCOUNTABILITY_REPORT.md` + `CHANGELOG.md`
+- [ ] 8.3  Commit: `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` + `CHANGELOG.md`
            Message: `docs(phase-1): accountability report + changelog [Phase 1 complete]`
 
 ---
@@ -2694,7 +2694,7 @@ All of the following must be true before Phase 2 begins:
 - [ ] `agent_context.json` contains `codex_manifest` safe fields after bootstrap
 - [ ] `CODEOWNERS` has Phase 1 security entries
 - [ ] REQ-1–REQ-8 still passing (zero regressions)
-- [ ] `AGENT_ACCOUNTABILITY_REPORT.md` W-NNN entries present for all Phase 1 tasks
+- [ ] `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` W-NNN entries present for all Phase 1 tasks
 - [ ] `CHANGELOG.md` Phase 1 entry present
 - [ ] mbaetiong approval received before Phase 2 begins
 
@@ -2932,7 +2932,7 @@ def query(query_text: str, top_k: int = 5) -> list[dict]:
 
 ## Task 7 — Accountability Report + CHANGELOG Update (MANDATORY)
 
-- [ ] 7.1  Add W-NNN entries to `AGENT_ACCOUNTABILITY_REPORT.md`:
+- [ ] 7.1  Add W-NNN entries to `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`:
            - W-NNN | AgentHandoffManifest v1.1 schema created
            - W-NNN | `validate_handoff_manifest.py` + fixtures
            - W-NNN | `handoff_context_population.py` (Phase 2+3 bridge)
@@ -2944,7 +2944,7 @@ def query(query_text: str, top_k: int = 5) -> list[dict]:
            - W-NNN | ≥2 consolidation aliases documented in registry
            - W-NNN | End-to-end integration test results documented
 - [ ] 7.2  Add `[Unreleased] — Phase 2` entry to `CHANGELOG.md`
-- [ ] 7.3  Commit: `AGENT_ACCOUNTABILITY_REPORT.md` + `CHANGELOG.md`
+- [ ] 7.3  Commit: `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` + `CHANGELOG.md`
            Message: `docs(phase-2): accountability report + changelog [Phase 2 complete]`
 
 ---
@@ -2962,7 +2962,7 @@ All of the following must be true before Phase 4 begins
 - [ ] End-to-end integration test PASSED (valid + invalid scenarios)
 - [ ] `CODEX_MANIFEST.json` re-generated and integrity-verified after Phase 2 changes
 - [ ] REQ-1–REQ-9 still passing (zero regressions)
-- [ ] `AGENT_ACCOUNTABILITY_REPORT.md` W-NNN entries present
+- [ ] `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` W-NNN entries present
 - [ ] `CHANGELOG.md` Phase 2 entry present
 - [ ] mbaetiong approval received before Phase 4 begins
 

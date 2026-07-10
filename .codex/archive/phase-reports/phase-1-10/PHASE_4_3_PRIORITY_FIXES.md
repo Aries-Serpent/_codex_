@@ -43,11 +43,11 @@ Recommended: Option A - Create unified QUICKSTART.md in docs/
 ### 2. [P1_002] Create google-home-script-agent-DEPRECATION.md — 1 file
 
 **Affected File:**
-- `.github/agents/google-home-script-agent.md` → `../../GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md`
+- `.github/agents/google-home-script-agent.md` → `../../.codex/archive/deprecated/GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md`
 
 **Resolution Steps:**
 ```
-1. Create GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md in repository root
+1. Create .codex/archive/deprecated/GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md in repository root
 
 Content template:
 ---
@@ -79,11 +79,11 @@ If you're using this agent, consider these alternatives:
 ### 3. [P1_003] Create energy-conversion-agent-DEPRECATION.md — 1 file
 
 **Affected File:**
-- `.github/agents/energy-conversion-agent.md` → `../../ENERGY_CONVERSION_AGENT_DEPRECATION.md`
+- `.github/agents/energy-conversion-agent.md` → `../../.codex/archive/deprecated/ENERGY_CONVERSION_AGENT_DEPRECATION.md`
 
 **Resolution Steps:**
 ```
-1. Create ENERGY_CONVERSION_AGENT_DEPRECATION.md in repository root
+1. Create .codex/archive/deprecated/ENERGY_CONVERSION_AGENT_DEPRECATION.md in repository root
 
 Content template:
 ---
@@ -102,7 +102,7 @@ Content template:
 See: archive/deprecated-agents/energy-conversion-agent/
 
 ## Related
-See: ENERGY_CONVERSION_AGENT_DEPRECATION.md for full details
+See: .codex/archive/deprecated/ENERGY_CONVERSION_AGENT_DEPRECATION.md for full details
 ---
 ```
 

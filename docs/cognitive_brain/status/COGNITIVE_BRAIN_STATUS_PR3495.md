@@ -21,7 +21,7 @@
 | W-107e | **`.gitignore`** — allowlisted `!.codex/agent_context.json` | ✅ Done |
 | W-107f | **`copilot-setup-steps.yml`** — export `CODEX_CLI_API_URL`, add `httpx`, retry loop | ✅ Done |
 | W-107g | **`ADR-20260304-copilot-agent-cli-api-gaps.md`** — full gap analysis + capability matrix | ✅ Done |
-| REQ-4 | `AGENT_ACCOUNTABILITY_REPORT.md` updated (W-107 entry) | ✅ Done |
+| REQ-4 | `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` updated (W-107 entry) | ✅ Done |
 | REQ-5 | `CHANGELOG.md` updated (W-107 section) | ✅ Done |
 
 ---

@@ -311,7 +311,7 @@ Weekly validation gates (6 major checkpoints) ensured quality throughout campaig
 - `.codex/CODEBASE_AGENCY_POLICY.md` - Governance policy
 
 **Accountability & Reporting:**
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` - Session accountability
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` - Session accountability
 - `.codex/AGENT_CONTEXT.json` - Repository variable snapshot
 
 ---

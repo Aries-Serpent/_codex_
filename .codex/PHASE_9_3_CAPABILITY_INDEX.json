@@ -2468,7 +2468,7 @@
       "version": "1.0.0",
       "status": "active",
       "category": "ci_cd",
-      "description": "Automated workflow that posts session accountability entries to GitHub Discussion #3673 ([Ongoing] Copilot Coding Agent Accountability Report). Triggered when AGENT_ACCOUNTABILITY_REPORT.md is updated. Uses GraphQL to add a dedup-safe comment on the discussion thread. Priority 0 hardened process replacing direct file logging.\n",
+      "description": "Automated workflow that posts session accountability entries to GitHub Discussion #3673 ([Ongoing] Copilot Coding Agent Accountability Report). Triggered when .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md is updated. Uses GraphQL to add a dedup-safe comment on the discussion thread. Priority 0 hardened process replacing direct file logging.\n",
       "capabilities": [],
       "capability_tags": [
         "accountability_reporting",

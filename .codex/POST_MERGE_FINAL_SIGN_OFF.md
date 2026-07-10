@@ -93,14 +93,14 @@ All files created in `.codex/` (repository-tracked, never /tmp/):
 | POST_MERGE_SESSION_STATUS.md | Session context and status tracking | ✅ Created |
 | POST_MERGE_ENVIRONMENT_SNAPSHOT.md | Environment baseline snapshot | ✅ Created |
 | PHASE_3_CAMPAIGN_CONTINUATION_PLAN.md | Campaign review and Phase 4 readiness | ✅ Created |
-| AGENT_ACCOUNTABILITY_REPORT.md | Updated with session results | ✅ Updated |
+| .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md | Updated with session results | ✅ Updated |
 | POST_MERGE_SESSION_ENTRY_POINT.md | Campaign entry point (existing) | ✅ In Use |
 
 ### Campaign Documentation Files (Pre-Existing)
 - ✅ POST_MERGE_ENVIRONMENT_BASELINE.md
 - ✅ POST_MERGE_COPILOT_SETUP_VALIDATION.md
 - ✅ POST_MERGE_REVERSION_PROTOCOL.md
-- ✅ POST_MERGE_MISSING_DEPS_INSTALL.md
+- ✅ POST_MERGE_MISSING_DEPS_.codex/archive/misc/INSTALL.md
 - ✅ POST_MERGE_SESSION_CONTINUATION_BRIEF_V2.md
 - ✅ POST_MERGE_COPILOT_EXECUTION_PROMPT.md
 

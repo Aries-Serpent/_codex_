@@ -36,7 +36,7 @@
 
 ## COMPLIANCE VERIFICATION MATRIX
 
-### ✅ Requirement 4: AGENT_ACCOUNTABILITY_REPORT.md Currency
+### ✅ Requirement 4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md Currency
 
 **Status:** ✅ **PASS**
 

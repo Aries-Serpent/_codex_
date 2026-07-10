@@ -416,7 +416,7 @@ Comment 4 (Final):      Phase 4-5 gates passed + deployment certified
 - [x] Temporary files not committed (respects policy)
 
 ### REQ-4/REQ-5 Compliance
-- [x] `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated
+- [x] `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` updated
 - [x] `CHANGELOG.md` updated
 - [x] Both files in same commit (ae8fc8e)
 - [x] Compliance verified with session_wrapup_autofix.py

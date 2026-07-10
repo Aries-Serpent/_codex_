@@ -32,7 +32,7 @@
 | File | Purpose | Status |
 |------|---------|--------|
 | `WAVE_1_PATTERN_DEPLOYMENT_REPORT.md` | Deployment overview + metrics | ✅ |
-| `WAVE_1_COGNITIVE_BRAIN_INTEGRATION.md` | LTM integration + schema | ✅ |
+| `WAVE_1_COGNITIVE_BRAIN_docs/api/reference/INTEGRATION.md` | LTM integration + schema | ✅ |
 | `WAVE_1_VALIDATION_REPORT.md` | Test results + sign-off | ✅ |
 | `PHASE_10_PATTERN_ROADMAP.md` | Future patterns (RP-004 to RP-008) | ✅ |
 
@@ -328,7 +328,7 @@ patterns = [
 ## 📎 Related Documents
 
 - `.codex/WAVE_1_PATTERN_DEPLOYMENT_REPORT.md` — Main deployment report
-- `.codex/WAVE_1_COGNITIVE_BRAIN_INTEGRATION.md` — LTM integration details
+- `.codex/WAVE_1_COGNITIVE_BRAIN_docs/api/reference/INTEGRATION.md` — LTM integration details
 - `.codex/WAVE_1_VALIDATION_REPORT.md` — Test results + QA sign-off
 - `.codex/PHASE_10_PATTERN_ROADMAP.md` — Future patterns (RP-004 to RP-008)
 - `.codex/patterns/RP-001_API_NULL_HANDLING.md` — Pattern documentation

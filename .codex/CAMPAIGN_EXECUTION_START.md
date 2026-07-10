@@ -101,7 +101,7 @@ Assign to agents or manual fixes
 **Step 5: Update Accountability**
 ```
 Estimated time: 15 minutes
-Log to AGENT_ACCOUNTABILITY_REPORT.md
+Log to .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 Reference output files
 Note progress toward goals
 ```
@@ -151,7 +151,7 @@ If Phase 1 is NOT completed in this session, use this prompt for the next sessio
 
 4. Create remediation roadmap `.codex/PHASE_1_REMEDIATION_ROADMAP.md`
 
-5. Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` with:
+5. Update `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` with:
    - Phase 1 delegation status
    - Major findings (P0, High, Medium, Low)
    - Next phase trigger
@@ -267,7 +267,7 @@ Total Campaign Timeline: 4-5 sessions, 12-15 hours execution
 - `.codex/PHASE_1_REMEDIATION_ROADMAP.md` ← Prioritized
 
 **Accountability:**
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` ← Session log
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` ← Session log
 
 ---
 
@@ -278,7 +278,7 @@ Total Campaign Timeline: 4-5 sessions, 12-15 hours execution
 2. **Read campaign plan** (.codex/MULTI_AGENT_AUDIT_CAMPAIGN_2026_07_02.md)
 3. **Start Phase 1 execution** (delegate 6 security agents)
 4. **Consolidate findings** (create remediation roadmap)
-5. **Update accountability** (AGENT_ACCOUNTABILITY_REPORT.md)
+5. **Update accountability** (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md)
 6. **Decide:** Continue to Phase 2 or defer to next session?
 
 ### If Continuing to Phase 2 (Same Session)
@@ -317,7 +317,7 @@ Total Campaign Timeline: 4-5 sessions, 12-15 hours execution
    - Skip to next phase when current phase completes
    - Override decision points with GO CONTINUE
 
-4. **Accountability:** Log session activities to AGENT_ACCOUNTABILITY_REPORT.md at each phase completion.
+4. **Accountability:** Log session activities to .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md at each phase completion.
 
 5. **Session Continuation:** If you hit time limits mid-campaign, the continuation prompt is ready for next session.
 

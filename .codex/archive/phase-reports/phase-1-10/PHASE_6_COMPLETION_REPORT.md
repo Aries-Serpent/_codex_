@@ -187,7 +187,7 @@ Phase 6 is complete with:
    - Verify no CodeQL violations
 
 2. **Update Compliance Documentation** (Upon validation pass)
-   - AGENT_ACCOUNTABILITY_REPORT.md: Add session entry
+   - .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md: Add session entry
    - CHANGELOG.md: Document Phase 6 completion
    - Create PHASE_6_FINAL_REPORT.md
 

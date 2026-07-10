@@ -1,4 +1,4 @@
-"""Tests for AGENTS.md infrastructure.
+"""Tests for .codex/archive/deprecated/AGENTS.md infrastructure.
 
 Tests:
 - Environment variable management

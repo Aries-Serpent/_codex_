@@ -244,7 +244,7 @@ STATUS: ✅ ALL AGENTS EXECUTING
 **Decision Mode:** GO CONTINUE — autonomous execution, no gatekeeping  
 
 **Compliance:**
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md entry (Session 2 execution)
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md entry (Session 2 execution)
 - ⏳ REQ-5: CHANGELOG.md entry (upon session completion)
 - ✅ Branch: copilot/multi-agent-campaign-plan (or similar)
 - ✅ Monitoring: Real-time dashboards active

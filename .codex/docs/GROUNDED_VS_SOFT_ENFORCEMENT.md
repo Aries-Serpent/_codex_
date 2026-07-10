@@ -60,7 +60,7 @@ flowchart LR
     subgraph IDEAL ["✅ IDEAL — Grounded Methods\n(bypass impossible without conscious override)"]
         direction TB
 
-        G1["🚧 CI Hard Stop\n──────────────────\nMethod: exit 1 in cognitive-preflight\nTriggered: every PR push\nEffect: activate-delegation CANNOT run\nExamples:\n• git check-ignore .codex/agent_auth_session.json\n• git diff HEAD~1 HEAD on AGENT_ACCOUNTABILITY_REPORT.md\nBypass cost: must fix the actual problem or skip the job\n(skipping requires conscious manual override)"]
+        G1["🚧 CI Hard Stop\n──────────────────\nMethod: exit 1 in cognitive-preflight\nTriggered: every PR push\nEffect: activate-delegation CANNOT run\nExamples:\n• git check-ignore .codex/agent_auth_session.json\n• git diff HEAD~1 HEAD on .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md\nBypass cost: must fix the actual problem or skip the job\n(skipping requires conscious manual override)"]
 
         G2["📌 needs: dependency chain\n──────────────────\nMethod: activate-delegation needs\n[detect-checkbox, await-approval, cognitive-preflight]\nTriggered: every PR push\nEffect: downstream job is structurally blocked\nBypass cost: must edit YAML — intentional, auditable"]
 
@@ -84,7 +84,7 @@ flowchart LR
 
         S4["⚠️ README_FIRST_MANDATORY.md\n──────────────────\nMethod: file named to suggest reading order\nEffect: agent should read it — no enforcement\nFailure mode: V-012: agent never read it despite\nmemory entry saying it's mandatory\nBypass cost: zero — naming convention is not a gate"]
 
-        S5["📊 Accountability report text\n──────────────────\nMethod: AGENT_ACCOUNTABILITY_REPORT.md updated each session\nEffect: records violations after they happen\nFailure mode: reactive, not preventive\nViolations V-001 to V-014 all documented AFTER the fact\nBypass cost: zero — violations still occurred"]
+        S5["📊 Accountability report text\n──────────────────\nMethod: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated each session\nEffect: records violations after they happen\nFailure mode: reactive, not preventive\nViolations V-001 to V-014 all documented AFTER the fact\nBypass cost: zero — violations still occurred"]
 
         S6["🔔 Session end checklist\n──────────────────\nMethod: store_memory fact listing 5 mandatory steps\nEffect: agent should follow them — no gate\nFailure mode: premature session end still happens\ndespite memory entry specifically saying not to\nBypass cost: zero — agent stops anyway"]
     end

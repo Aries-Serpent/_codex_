@@ -20,7 +20,7 @@ Context:
 
 Phase 2 Objectives:
 1. Move docs/analysis/PR_3133_ANALYSIS.md → docs/analysis/PR_3133_ANALYSIS.md
-2. Plan and execute AGENTS.md migration (6 references confirmed)
+2. Plan and execute .codex/archive/deprecated/AGENTS.md migration (6 references confirmed)
 3. Validate all documentation links
 4. Update Cognitive Brain status
 
@@ -68,13 +68,13 @@ Safety Requirements:
 - Possibly in `docs/` index files
 - May be in PR-related files
 
-#### File 2: AGENTS.md
-**Source:** `/AGENTS.md`  
+#### File 2: .codex/archive/deprecated/AGENTS.md
+**Source:** `/.codex/archive/deprecated/AGENTS.md`  
 **Target:** TBD (requires analysis)  
 **Options:**
-1. `docs/agents/AGENTS.md` (if documentation focus)
-2. `.github/agents/docs/AGENTS.md` (if agent-specific)
-3. `.codex/docs/AGENTS.md` (if internal reference)
+1. `docs/agents/.codex/archive/deprecated/AGENTS.md` (if documentation focus)
+2. `.github/agents/docs/.codex/archive/deprecated/AGENTS.md` (if agent-specific)
+3. `.codex/docs/.codex/archive/deprecated/AGENTS.md` (if internal reference)
 
 **Risk Level:** MEDIUM (6 references confirmed, not 293)  
 **Priority:** HIGH (important documentation)
@@ -86,7 +86,7 @@ Safety Requirements:
 4. Create target directory if needed
 5. Execute move with reference updates
 6. Update Cognitive Brain agent documentation
-7. Commit with message: `docs: Move AGENTS.md to appropriate location`
+7. Commit with message: `docs: Move .codex/archive/deprecated/AGENTS.md to appropriate location`
 
 **Expected References:**
 - Agent documentation files
@@ -126,11 +126,11 @@ Expected output:
 }
 ```
 
-### For AGENTS.md
+### For .codex/archive/deprecated/AGENTS.md
 
 Run this command:
 ```bash
-python scripts/root_org/validate_references.py AGENTS.md
+python scripts/root_org/validate_references.py .codex/archive/deprecated/AGENTS.md
 ```
 
 **Note:** Previous analysis indicated 293 references, but actual count is likely 6. Verify before proceeding.
@@ -146,8 +146,8 @@ cd /home/runner/work/_codex_/_codex_
 # Check docs/analysis/PR_3133_ANALYSIS.md
 python scripts/root_org/validate_references.py docs/analysis/PR_3133_ANALYSIS.md > /tmp/refs_pr3133.json
 
-# Check AGENTS.md (re-verify count)
-python scripts/root_org/validate_references.py AGENTS.md > /tmp/refs_agents.json
+# Check .codex/archive/deprecated/AGENTS.md (re-verify count)
+python scripts/root_org/validate_references.py .codex/archive/deprecated/AGENTS.md > /tmp/refs_agents.json
 
 # Review outputs
 cat /tmp/refs_pr3133.json
@@ -171,22 +171,22 @@ ls -la docs/analysis/PR_3133_ANALYSIS.md
 git status
 ```
 
-### Step 3: Move AGENTS.md
+### Step 3: Move .codex/archive/deprecated/AGENTS.md
 ```bash
 # Determine target based on analysis
 # Option 1: docs/agents/
 mkdir -p docs/agents
 python scripts/root_org/organize_root_incremental.py \
-  --file AGENTS.md \
-  --target docs/agents/AGENTS.md \
+  --file .codex/archive/deprecated/AGENTS.md \
+  --target docs/agents/.codex/archive/deprecated/AGENTS.md \
   --update-refs \
   --validate
 
 # OR Option 2: .github/agents/docs/
 mkdir -p .github/agents/docs
 python scripts/root_org/organize_root_incremental.py \
-  --file AGENTS.md \
-  --target .github/agents/docs/AGENTS.md \
+  --file .codex/archive/deprecated/AGENTS.md \
+  --target .github/agents/docs/.codex/archive/deprecated/AGENTS.md \
   --update-refs \
   --validate
 
@@ -213,7 +213,7 @@ git status
 
 ### Required Outcomes
 - [ ] docs/analysis/PR_3133_ANALYSIS.md moved successfully
-- [ ] AGENTS.md moved successfully
+- [ ] .codex/archive/deprecated/AGENTS.md moved successfully
 - [ ] All references updated (100%)
 - [ ] Zero broken links
 - [ ] Tests passing
@@ -245,7 +245,7 @@ git reset --hard HEAD^
 
 # Or reset specific files
 git checkout HEAD -- docs/analysis/PR_3133_ANALYSIS.md
-git checkout HEAD -- AGENTS.md
+git checkout HEAD -- .codex/archive/deprecated/AGENTS.md
 ```
 
 ---
@@ -285,8 +285,8 @@ File: `.codex/plans/ROOT_ORG_COMPREHENSIVE_CLEANUP_PLAN.md`
 ## 🧠 Cognitive Brain Integration
 
 ### Knowledge to Capture
-1. AGENTS.md reference count (actual: 6, not 293)
-2. Best location for AGENTS.md (based on analysis)
+1. .codex/archive/deprecated/AGENTS.md reference count (actual: 6, not 293)
+2. Best location for .codex/archive/deprecated/AGENTS.md (based on analysis)
 3. Documentation organization patterns
 4. Reference update patterns for doc files
 
@@ -300,7 +300,7 @@ File: `.codex/plans/ROOT_ORG_COMPREHENSIVE_CLEANUP_PLAN.md`
 
 ## ⚠️ Known Issues to Address
 
-### Issue 1: AGENTS.md Reference Discrepancy
+### Issue 1: .codex/archive/deprecated/AGENTS.md Reference Discrepancy
 - **Problem:** Initial scan showed 293 refs, but actual is 6
 - **Root Cause:** Likely counting agent name mentions, not file references
 - **Solution:** Use more precise reference scanning
@@ -372,12 +372,12 @@ Before starting Phase 2:
 
 **Stage 1: Analysis** (10 min)
 - Validate references for both files
-- Determine best location for AGENTS.md
+- Determine best location for .codex/archive/deprecated/AGENTS.md
 - Review dependencies
 
 **Stage 2: Execution** (10 min)
 - Move docs/analysis/PR_3133_ANALYSIS.md
-- Move AGENTS.md
+- Move .codex/archive/deprecated/AGENTS.md
 - Update references
 
 **Stage 3: Validation** (10 min)
@@ -412,7 +412,7 @@ Before starting Phase 2:
 
 From Phase 2, we should learn:
 - How to handle documentation file moves
-- Best practices for AGENTS.md location
+- Best practices for .codex/archive/deprecated/AGENTS.md location
 - Reference count validation techniques
 - Documentation link update patterns
 - Integration with existing doc structure

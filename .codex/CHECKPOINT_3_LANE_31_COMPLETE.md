@@ -248,7 +248,7 @@ TOTAL: 126 tests, 1,459 lines
 
 **Phase Report:** `.codex/PHASE_7A_LANE_31_CHECKPOINT_3_TESTS.md`  
 **Campaign Master:** `.codex/PRODUCTION_READINESS_DELEGATION_FRAMEWORK.md`  
-**Accountability:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`  
+**Accountability:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`  
 
 ---
 

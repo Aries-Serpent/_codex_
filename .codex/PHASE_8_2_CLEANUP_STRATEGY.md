@@ -162,9 +162,9 @@ Create `.codex/archive/phase-reports/ARCHIVE_README.md`:
 - `CONTRIBUTING.md` — contribution guide
 - `CODE_OF_CONDUCT.md` — community standards
 - `SECURITY.md` — security policy
-- `INSTALL.md` — installation guide
-- `INTEGRATION.md` — integration guide
-- `GEMINI.md`, `CLAUDE.md` — model-specific guides (keep)
+- `.codex/archive/misc/INSTALL.md` — installation guide
+- `docs/api/reference/INTEGRATION.md` — integration guide
+- `.codex/archive/deprecated/GEMINI.md`, `.codex/archive/deprecated/CLAUDE.md` — model-specific guides (keep)
 - `CITATION.cff` — citation metadata
 
 **MOVE to `.codex/reports/` (status/phase reports):**

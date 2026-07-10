@@ -30,7 +30,7 @@ Successfully addressed the 3 critical main-branch CI failures per agent instruct
 
 3. **Phase 12.2 Compliance** ✅
    - Issue: REQ-3/REQ-4/REQ-5 failures
-   - Files: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`
+   - Files: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`, `CHANGELOG.md`
    - Fix: Added session documentation and changelog entry
    - Validation: Compliance requirements satisfied
 
@@ -71,7 +71,7 @@ Successfully addressed the 3 critical main-branch CI failures per agent instruct
 - ✅ `tests/conftest.py` (lines 1112-1116) — Assert statement corrected
 
 ### Documentation Updates
-- ✅ `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — Session entry added
+- ✅ `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — Session entry added
 - ✅ `CHANGELOG.md` — Work documentation added
 - ✅ `.codex/CI_TRIAGE_REMEDIATION_STRATEGY.md` — Comprehensive strategy document
 
@@ -86,7 +86,7 @@ Successfully addressed the 3 critical main-branch CI failures per agent instruct
 ```
 
 ### Compliance Requirements ✅
-- ✓ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated in last commit
+- ✓ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated in last commit
 - ✓ REQ-5: CHANGELOG.md updated in last commit
 - ✓ REQ-3: Syntax fixes enable pytest to pass
 

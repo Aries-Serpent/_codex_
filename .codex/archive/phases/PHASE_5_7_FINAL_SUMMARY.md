@@ -197,7 +197,7 @@ This session executed the comprehensive Phase 5-7 Production Deployment Readines
    - Check detect-secrets baseline
 
 2. **Update compliance files** (REQ-4/REQ-5)
-   - AGENT_ACCOUNTABILITY_REPORT.md (session entry)
+   - .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (session entry)
    - CHANGELOG.md (Phase 5-7 results)
 
 3. **Generate comprehensive reports**

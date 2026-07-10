@@ -66,7 +66,7 @@
   - Backlog items (future sprints)
   - Assign to appropriate agents or manual fix
 
-- [ ] **Task 1.9:** Update AGENT_ACCOUNTABILITY_REPORT.md
+- [ ] **Task 1.9:** Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
   - Log campaign start, Phase 1 delegation, findings
   - Reference output files
   - Note progress toward bash reduction goal
@@ -201,7 +201,7 @@
 - Remediation roadmap: `.codex/PHASE_1_REMEDIATION_ROADMAP.md`
 
 **Accountability:**
-- Session log: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- Session log: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - Campaign author: @mbaetiong
 - Authorization: D-mode autonomous (GO CONTINUE)
 

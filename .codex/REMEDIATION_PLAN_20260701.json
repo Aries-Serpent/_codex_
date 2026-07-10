@@ -91,8 +91,8 @@
         ".codex/SESSION_7PHASE_CLARIFICATION_RESOLUTION_20260701T053700Z.md",
         ".codex/SESSION_7PHASE_EXECUTION_PLAN_20260701T053700Z.md",
         ".codex/link-fix-completion-report.md",
-        "ENERGY_CONVERSION_AGENT_DEPRECATION.md",
-        "GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md"
+        ".codex/archive/deprecated/ENERGY_CONVERSION_AGENT_DEPRECATION.md",
+        ".codex/archive/deprecated/GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md"
       ]
     },
     {
@@ -102,7 +102,7 @@
       "timeline": "2-3 weeks",
       "documents": [
         {
-          "path": "QUANTUM_COMPLIANCE_TUNING_AGENT_INTEGRATION_GUIDE.md",
+          "path": "docs/api/reference/QUANTUM_COMPLIANCE_TUNING_AGENT_INTEGRATION_GUIDE.md",
           "action": "REGISTER",
           "rationale": "Active integration guide for quantum compliance agent"
         },

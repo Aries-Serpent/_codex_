@@ -483,7 +483,7 @@ OPTIONAL WEEKS 9-12 (2026-08-25 → 2026-09-22)
 
 ### Pre-Phase 9 Verification
 - [ ] All Phase 8 documents committed and reviewed
-- [ ] AGENT_ACCOUNTABILITY_REPORT.md updated
+- [ ] .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated
 - [ ] CHANGELOG.md updated with Phase 8 summary
 - [ ] WEC gates all passing (32/32)
 - [ ] No blocking issues or technical debt
