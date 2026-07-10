@@ -47,29 +47,39 @@ jobs:
           INPUT_VERSION: ${{ inputs.version }}
           COMMIT_SHA: ${{ github.sha }}
         run: |
-          if [[ "$GITHUB_REF" =~ ^refs/tags/ ]]; then
+          # Priority 1: If dispatched with explicit version input, use it
+          if [ -n "$INPUT_VERSION" ] && [ "$INPUT_VERSION" != "null" ]; then
+            VERSION="$INPUT_VERSION"
+            echo "Using INPUT_VERSION: $VERSION"
+          # Priority 2: If triggered on a tag, use it
+          elif [[ "$GITHUB_REF" =~ ^refs/tags/ ]]; then
             VERSION="$GITHUB_REF"
             VERSION="${VERSION#refs/tags/}"
+            echo "Using GITHUB_REF tag: $VERSION"
+          # Priority 3: Try to find latest v*.*.* tag in repository
           else
-            VERSION="$INPUT_VERSION"
+            echo "No explicit version found, searching for latest version tag..."
+            VERSION=$(git tag -l 'v*.*.*' --sort=-version:refname --merged HEAD | head -1)
+            if [ -z "$VERSION" ]; then
+              echo "❌ ERROR: No version tag found and no version input provided"
+              exit 1
+            fi
+            echo "Using latest tag: $VERSION"
           fi
 
-          # Extract commit short SHA (first 7 chars)
-          COMMIT_SHORT="${COMMIT_SHA:0:7}"
-
-          # If version doesn't already contain commit info, append it
-          if [[ ! "$VERSION" =~ - ]]; then
-            VERSION="${VERSION}-${COMMIT_SHORT}"
+          # Ensure version starts with 'v'
+          if [[ ! "$VERSION" =~ ^v ]]; then
+            VERSION="v${VERSION}"
           fi
 
-          # Remove -final suffix if present (for output to subsequent jobs)
-          # We keep the full version with -final for tagging, but remove it for PyPI
-          OUTPUT_VERSION="${VERSION%-final*}"
+          # Extract clean version for PyPI (no v prefix, no -final suffix)
+          CLEAN_VERSION="${VERSION#v}"
+          CLEAN_VERSION="${CLEAN_VERSION%-final*}"
 
-          echo "version=${OUTPUT_VERSION}" >> $GITHUB_OUTPUT
-          echo "full_version=${VERSION}" >> $GITHUB_OUTPUT
-          echo "Release version: ${OUTPUT_VERSION}"
-          echo "Full version: ${VERSION}"
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "clean_version=${CLEAN_VERSION}" >> $GITHUB_OUTPUT
+          echo "Release tag: ${VERSION}"
+          echo "PyPI version: ${CLEAN_VERSION}"
 
       - name: Verify P0 gates complete
         id: p0-gate
