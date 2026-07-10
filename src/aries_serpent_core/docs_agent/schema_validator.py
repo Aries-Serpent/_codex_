@@ -15,7 +15,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 try:
     import jsonschema
-    from jsonschema import Draft202012Validator, ValidationError, validate
+    from jsonschema import Draft202012Validator, ValidationError
 except ImportError:
     raise ImportError("jsonschema module required. Install with: pip install jsonschema")
 

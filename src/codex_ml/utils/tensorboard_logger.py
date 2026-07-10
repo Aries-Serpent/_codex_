@@ -105,7 +105,7 @@ def is_tensorboard_available() -> bool:
     """
     try:
         try:
-            pass
+            import tensorboard
 
             return True
         except ImportError as e:
