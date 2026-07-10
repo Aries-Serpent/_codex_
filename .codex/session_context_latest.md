@@ -1,38 +1,32 @@
-# Session Context — 2026-07-10T16:00:42Z
+# Session Context — 2026-07-10T16:16:43Z
 **Branch:** `copilot/continue-v010-release`  **PR:** #5287  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4998` (✅)
-- GraphQL remaining: `4975` (✅)
+- REST remaining: `4981` (✅)
+- GraphQL remaining: `5000` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
 ## 📋 PR #5287 — build(deps): bump the pip group across 2 directories with 12 updates
 State: `open`  Draft: `False`  Branch: `dependabot/pip/wandb/offline-run-20260710_084103-t2brzbto/files/pip-d5b1a78e57` → `main`
 
-### ❌ 4 Failing CI Check(s)
-- `Governance Compliance` (failure)
-- `Validate WEC Template Integrity` (failure)
-- `⚡ Auto-Approve if Compliance Passed` (failure)
-- `🚦 Comment review gate` (failure)
-
 ## 🚨 Recent CI Failures (last 5 runs)
-- **Workflow Execution Gate** — `failure` on `dependabot/pip/wandb/offline-run-20260710_084103-t2brzbto/files/pip-d5b1a78e57` (2026-07-10)
 - **Smoke Tests - Deployment Verification** — `failure` on `main` (2026-07-10)
-- **.github/workflows/agent-health-check.yml** — `failure` on `dependabot/pip/wandb/offline-run-20260710_084103-t2brzbto/files/pip-d5b1a78e57` (2026-07-10)
-- **.github/workflows/13-3-enterprise-compliance.yml** — `failure` on `dependabot/pip/wandb/offline-run-20260710_084103-t2brzbto/files/pip-d5b1a78e57` (2026-07-10)
+- **.github/workflows/agent-orchestration-unified.yml** — `failure` on `dependabot/pip/wandb/offline-run-20260710_084103-t2brzbto/files/pip-d5b1a78e57` (2026-07-10)
 - **.github/workflows/agent-registry-validation.yml** — `failure` on `dependabot/pip/wandb/offline-run-20260710_084103-t2brzbto/files/pip-d5b1a78e57` (2026-07-10)
+- **.github/workflows/cleanup-stale-branches.yml** — `failure` on `dependabot/pip/wandb/offline-run-20260710_084103-t2brzbto/files/pip-d5b1a78e57` (2026-07-10)
+- **.github/workflows/agent-health-check.yml** — `failure` on `dependabot/pip/wandb/offline-run-20260710_084103-t2brzbto/files/pip-d5b1a78e57` (2026-07-10)
 
 ## 📝 Recent Commits
+- `da6c70cc` fix: update generate_manifest step to use correct generate_wheel_manifest.py scr — copilot-swe-agent[bot] (2026-07-10)
+- `f529038d` fix: use correct generate_wheel_manifest.py script with proper arguments — copilot-swe-agent[bot] (2026-07-10)
 - `e625d912` fix: correct script paths in release-to-pypi.yml workflow - update manifest path — Copilot (2026-07-10)
 - `d5fd27ca` fix: correct script paths in release-to-pypi.yml workflow — copilot-swe-agent[bot] (2026-07-10)
 - `14d7d2c6` fix(release): unblock PyPI workflow - fix SBOM package name and manifest generat — copilot-swe-agent[bot] (2026-07-10)
 - `11ac786a` fix(release): resolve workflow failures for v0.1.0 PyPI release — copilot-swe-agent[bot] (2026-07-10)
 - `290d7b5f` Apply remaining changes — copilot-swe-agent[bot] (2026-07-10)
 - `202442dc` docs(session): comprehensive summary - tag creation testing, golden path analysi — Copilot (2026-07-10)
-- `d73754d0` docs(release): golden path analysis - v0.1.0 execution vs. documented ideal, iss — Copilot (2026-07-10)
-- `92ccadc6` docs(release): comprehensive tag creation session summary - testing methodology, — Copilot (2026-07-10)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
