@@ -307,58 +307,58 @@ where = [
     ".",
     "src",
 ]
+# Bundled packages (production code and AI subsystems)
 include = [
-    "agents*",
-    "codex_ml*",
-    "codex*",
-    "common*",
-    "cognitive_brain*",
-    "services*",
-    "tokenization*",
-    "training*",
-    "codex_utils*",
-    "interfaces*",
-    "hhg_logistics*",
-    "hydra_extra*",
-    "examples*",
-    "security",
-    "security.*",
-    "tools*",
-    "tools.*",
-    "quantum*",
-    "cognitive_brain*",
-    "zendesk*",
-    "config",
-    "codex_bridge",
+    "agents*",              # AI agents subsystem
+    "codex_ml*",            # ML training, evaluation, and utilities
+    "codex*",               # Core utilities (codex, codex_bridge, etc.)
+    "common*",              # Common utilities
+    "cognitive_brain*",     # Cognitive Brain AI system
+    "services*",            # Service integrations
+    "tokenization*",        # Tokenization infrastructure
+    "training*",            # Training pipeline
+    "codex_utils*",         # Codex utilities
+    "interfaces*",          # Public interfaces
+    "hhg_logistics*",       # HHG logistics subsystem
+    "hydra_extra*",         # Hydra configuration extensions
+    "security",             # Security infrastructure (core package)
+    "security.*",           # Security submodules
+    "tools*",               # Tools and utilities
+    "tools.*",              # Tool submodules
+    "quantum*",             # Quantum orchestrator
+    "zendesk*",             # Zendesk integration
+    "config",               # Configuration (core package)
+    "codex_bridge",         # Bridge infrastructure
 ]
+# Excluded packages (development-only, test, or temporary code)
 exclude = [
-    "tests*",
-    "torch_stub*",
-    ".stubs*",
-    "*__pycache__*",
-    "security-suite-artifacts*",
-    "configs*",
-    "config_legacy*",
-    "cli",
-    "cli.*",
-    "codex_addons*",
-    "codex_digest*",
-    "codex_regression*",
-    "examples",
-    "examples.*",
-    "interfaces",
-    "interfaces.*",
-    "build*",
-    "dist*",
-    "*.tests",
-    "*.tests.*",
-    "tests.*",
-    "tests",
-    "*.__pycache__",
-    "*.pycache",
-    "*.__pycache__.*",
-    "__pycache__",
-    "codex.db*",
+    "tests*",                       # Test suites (development only)
+    "torch_stub*",                  # Stub implementations
+    ".stubs*",                      # Type stub files
+    "*__pycache__*",                # Python cache (all variants)
+    "security-suite-artifacts*",    # Artifact storage
+    "configs*",                     # Configuration files (not Python packages)
+    "config_legacy*",               # Legacy configuration (deprecated)
+    "cli",                          # CLI module (development only)
+    "cli.*",                        # CLI submodules
+    "codex_addons*",                # Add-on packages (not bundled)
+    "codex_digest*",                # Digest utilities (not bundled)
+    "codex_regression*",            # Regression testing (not bundled)
+    "examples",                     # Examples/demos (development only)
+    "examples.*",                   # Example submodules (development only)
+    "interfaces",                   # Excluded to prevent duplication (see include)
+    "interfaces.*",                 # Interface submodules (excluded due to specificity)
+    "build*",                       # Build artifacts
+    "dist*",                        # Distribution artifacts
+    "*.tests",                      # Test modules (any package)
+    "*.tests.*",                    # Test submodules
+    "tests.*",                      # Test packages
+    "tests",                        # Root tests directory
+    "*.__pycache__",                # Cache variant
+    "*.pycache",                    # Cache variant
+    "*.__pycache__.*",              # Cache variant
+    "__pycache__",                  # Python cache directory
+    "codex.db*",                    # Database files
 ]
 namespaces = true
 
