@@ -167,6 +167,7 @@ bash OFFLINE_BOOTSTRAP.sh \
 ```
 
 **Getting Started Guides:**
+- 📖 [Installation Guide](docs/INSTALLATION.md) - **Complete installation guide** ⭐ START HERE
 - 📖 [Core Installation](docs/installation/INSTALL_CORE.md) - Minimal setup for edge devices
 - 📖 [Runtime Setup](docs/installation/INSTALL_RUNTIME.md) - Production inference deployment
 - 📖 [Full Development](docs/installation/INSTALL_FULL.md) - Complete development environment

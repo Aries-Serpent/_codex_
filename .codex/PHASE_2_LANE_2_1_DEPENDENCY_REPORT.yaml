@@ -1,0 +1,77 @@
+phase: 2
+lane: '2.1'
+campaign: codex-ml v0.1.0 Installation Fix Campaign
+objective: ML Dependencies Validation
+status: success
+timestamp: '2026-07-10T20:32:10Z'
+runtime_profile:
+  size_mb: 20-35
+  install_status: success
+  install_command: pip install -e ".[runtime]"
+  install_time_seconds: 180
+dependencies:
+  critical:
+    torch: 2.13.0+cu130
+    transformers: 5.13.0
+    scikit-learn: 1.9.0
+    numpy: 2.5.1
+    pandas: 2.3.3
+  optional:
+    datasets: 5.0.0
+    sentence-transformers: 5.6.0
+    accelerate: 1.14.0
+    peft: 0.19.1
+    ray: 2.56.0
+    fastapi: 0.139.0
+gpu_info:
+  cuda_available: false
+  cuda_version: null
+  device_count: 0
+  compute_capability: null
+system_info:
+  available_memory_gb: 15
+  python_version: 3.12.3
+  platform: linux
+test_results:
+  total: 24
+  passed: 24
+  failed: 0
+  skipped: 0
+  errors: 0
+  pass_rate: 100%
+  execution_time_seconds: 10.25
+  tests_run:
+  - TestRuntimeProfileInstallation (1 test)
+  - TestPyTorchImportAndVersion (3 tests)
+  - TestPyTorchCUDADetection (3 tests)
+  - TestTransformersImportAndVersion (3 tests)
+  - TestScikitLearnImportAndFunctionality (4 tests)
+  - TestMemoryRequirements (2 tests)
+  - TestDependencyConflictDetection (3 tests)
+  - TestOptionalDependencies (3 tests)
+  - TestDependencyVersions (2 tests, 1 informational)
+critical_dependency_checks:
+  torch_import: true
+  torch_version: '2.13.0+cu130 (expected: >=2.6, <3.0)'
+  torch_cuda_detection: true
+  torch_tensor_creation: true
+  transformers_import: true
+  transformers_version: '5.13.0 (expected: >=5.12, <6.0)'
+  sklearn_import: true
+  sklearn_version: '1.9.0 (expected: >=1.9, <2.0)'
+  sklearn_pipeline: true
+  numpy_compatibility: true
+  pandas_compatibility: true
+  sklearn_numpy_compatibility: true
+issues: []
+recommendations:
+- All critical dependencies installed successfully
+- Running in CPU-only mode (acceptable for CI)
+- Memory requirements met (15GB available)
+- All 24 core tests passing (100% pass rate)
+- Ready for Phase 3 (Production Deployment Validation)
+next_phase:
+  phase: 3
+  lane: '3.1'
+  objective: Production Deployment Validation
+  expected_duration_minutes: 15-20
