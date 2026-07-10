@@ -45,6 +45,7 @@ jobs:
         env:
           GITHUB_REF: ${{ github.ref }}
           INPUT_VERSION: ${{ inputs.version }}
+          COMMIT_SHA: ${{ github.sha }}
         run: |
           if [[ "$GITHUB_REF" =~ ^refs/tags/ ]]; then
             VERSION="$GITHUB_REF"
@@ -52,6 +53,15 @@ jobs:
           else
             VERSION="$INPUT_VERSION"
           fi
+          
+          # Extract commit short SHA (first 7 chars)
+          COMMIT_SHORT="${COMMIT_SHA:0:7}"
+          
+          # If version doesn't already contain commit info, append it
+          if [[ ! "$VERSION" =~ - ]]; then
+            VERSION="${VERSION}-${COMMIT_SHORT}"
+          fi
+          
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
           echo "Release version: ${VERSION}"
 
@@ -101,7 +111,9 @@ jobs:
         id: version-check
         run: |
           VERSION="${{ steps.version.outputs.version }}"
-          CLEAN_VERSION="${VERSION#v}"
+          # Remove any commit suffix for comparison with pyproject.toml
+          CLEAN_VERSION="${VERSION%%-*}"
+          CLEAN_VERSION="${CLEAN_VERSION#v}"
 
           if ! grep -q "version = \"${CLEAN_VERSION}\"" pyproject.toml; then
             echo "❌ Version mismatch: pyproject.toml not updated to $CLEAN_VERSION"
@@ -496,7 +508,7 @@ jobs:
             echo "- Troubleshooting common issues"
           } >> release-notes.md
 
-      - name: Create GitHub release (as draft)
+       - name: Create GitHub release (as draft)
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
@@ -507,7 +519,7 @@ jobs:
           draft: true
           prerelease: false
 
-      - name: Upload release artifacts (and publish)
+      - name: Upload release artifacts and publish
         uses: softprops/action-gh-release@v2
         with:
           files: |
@@ -515,6 +527,7 @@ jobs:
             release-artifacts/*
           body_path: release-notes.md
           draft: false
+          tag_name: ${{ steps.version.outputs.version }}
 
   # Post release notification
   post-release-notification:
