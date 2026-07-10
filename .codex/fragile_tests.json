@@ -337,6 +337,9 @@
   "tests/rag/test_rag_functionality_comprehensive.py": [
     "numpy"
   ],
+  "tests/repro/test_seed_consistency.py": [
+    "torch"
+  ],
   "tests/restore_pipeline/test_restore_pipeline.py": [
     "numpy"
   ],
@@ -443,6 +446,9 @@
   "tests/test_engine_hf_trainer_lora.py": [
     "torch"
   ],
+  "tests/test_interpretability_attention_scorer.py": [
+    "numpy"
+  ],
   "tests/test_model_registry.py": [
     "typer.testing"
   ],
@@ -501,6 +507,9 @@
   ],
   "tests/training/test_training_edge_cases_phase26.py": [
     "numpy",
+    "torch"
+  ],
+  "tests/unit/test_checkpoint_core_resume.py": [
     "torch"
   ],
   "tests/unit/test_modeling_coverage_gap.py": [

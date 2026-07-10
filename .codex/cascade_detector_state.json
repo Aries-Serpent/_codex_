@@ -57,7 +57,11 @@
     "24:.github/workflows/ml-tests.yml": 2,
     "35:.codex/CHRONICLE_COMPREHENSIVE_SESSION_INDEX.md": 3,
     "35:.codex/PHASE_4_LANE_D_EXECUTION_SUMMARY.md": 2,
-    "35:.codex/security/SECRETS_MANAGEMENT.md": 1
+    "35:.codex/security/SECRETS_MANAGEMENT.md": 1,
+    "19:src/aries_serpent_core/zendesk/agent.py": 1,
+    "19:src/cognitive_brain/utils/__init__.py": 1,
+    "21:.github/workflows/optimized-test-execution.yml": 1,
+    "21:.github/workflows/parallel-quality-checks.yml": 1
   },
   "circuit_state": {
     "6": "BROKEN",
