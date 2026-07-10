@@ -437,7 +437,7 @@ jobs:
   # Create GitHub release with artifacts
   create-release:
     name: Create GitHub Release
-    needs: [publish-to-pypi]
+    needs: [publish-to-pypi, pre-release-checks]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -446,14 +446,18 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set version from tag
+      - name: Set version from pre-release-checks output
         id: version
         env:
-          GITHUB_REF: ${{ github.ref }}
+          PRE_RELEASE_VERSION: ${{ needs.pre-release-checks.outputs.version }}
         run: |
-          VERSION="$GITHUB_REF"
+          # Use the version from pre-release-checks which handles both tags and dispatches
+          VERSION="$PRE_RELEASE_VERSION"
+          # Ensure no refs/ prefix remains
           VERSION="${VERSION#refs/tags/}"
+          VERSION="${VERSION#refs/heads/}"
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "Using release version: ${VERSION}"
 
       - name: Download wheels
         uses: actions/download-artifact@v5
@@ -549,7 +553,7 @@ jobs:
   # Post release notification
   post-release-notification:
     name: Post Release Notification
-    needs: [create-release]
+    needs: [create-release, pre-release-checks]
     runs-on: ubuntu-latest
     if: always()
     timeout-minutes: 10
@@ -560,12 +564,14 @@ jobs:
       - name: Create deployment summary comment
         uses: actions/github-script@v8
         env:
-          GITHUB_REF: ${{ github.ref }}
+          RELEASE_VERSION: ${{ needs.pre-release-checks.outputs.version }}
           GITHUB_REPO: ${{ github.repository }}
         with:
           script: |
-            const version = process.env.GITHUB_REF.replace('refs/tags/', '');
-            const cleanVersion = version.replace(/^v/, '');
+            let version = process.env.RELEASE_VERSION;
+            // Remove refs/ prefixes if any
+            version = version.replace('refs/tags/', '').replace('refs/heads/', '');
+            const cleanVersion = version.replace(/^v/, '').replace(/-final.*/, '');
 
             const body = [
               "## 🚀 Release Deployment Summary",
