@@ -1,24 +1,31 @@
-# Session Context — 2026-07-10T22:26:01Z
+# Session Context — 2026-07-10T22:40:26Z
 **Branch:** `dependabot/pip/wandb/offline-run-20260710_081452-ygm1cfph/files/pip-a82cabe1a4`  **PR:** #5290  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4725` (✅)
-- GraphQL remaining: `4968` (✅)
+- REST remaining: `5000` (✅)
+- GraphQL remaining: `5000` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
 ## 📋 PR #5290 — build(deps): bump the pip group across 4 directories with 12 updates
 State: `open`  Draft: `False`  Branch: `dependabot/pip/wandb/offline-run-20260710_081452-ygm1cfph/files/pip-a82cabe1a4` → `main`
 
+### ❌ 4 Failing CI Check(s)
+- `Governance Compliance` (failure)
+- `Validate WEC Template Integrity` (failure)
+- `⚡ Auto-Approve if Compliance Passed` (failure)
+- `🚦 Comment review gate` (failure)
+
 ## 🚨 Recent CI Failures (last 5 runs)
-- **.github/workflows/automated-rollback-generation.yml** — `failure` on `dependabot/pip/wandb/offline-run-20260710_081452-ygm1cfph/files/pip-a82cabe1a4` (2026-07-10)
-- **.github/workflows/13-3-enterprise-compliance.yml** — `failure` on `dependabot/pip/wandb/offline-run-20260710_081452-ygm1cfph/files/pip-a82cabe1a4` (2026-07-10)
+- **Workflow Execution Gate** — `failure` on `dependabot/pip/wandb/offline-run-20260710_081452-ygm1cfph/files/pip-a82cabe1a4` (2026-07-10)
+- **.github/workflows/agent-registry-validation.yml** — `failure` on `dependabot/pip/wandb/offline-run-20260710_081452-ygm1cfph/files/pip-a82cabe1a4` (2026-07-10)
+- **.github/workflows/agent-auth-delegation.yml** — `failure` on `dependabot/pip/wandb/offline-run-20260710_081452-ygm1cfph/files/pip-a82cabe1a4` (2026-07-10)
+- **.github/workflows/13-3-secrets-detection.yml** — `failure` on `dependabot/pip/wandb/offline-run-20260710_081452-ygm1cfph/files/pip-a82cabe1a4` (2026-07-10)
 - **.github/workflows/agent-health-check.yml** — `failure` on `dependabot/pip/wandb/offline-run-20260710_081452-ygm1cfph/files/pip-a82cabe1a4` (2026-07-10)
-- **.github/workflows/admin-action-t03.yml** — `failure` on `dependabot/pip/wandb/offline-run-20260710_081452-ygm1cfph/files/pip-a82cabe1a4` (2026-07-10)
-- **.github/workflows/ci-pass-rate-gate.yml** — `failure` on `dependabot/pip/wandb/offline-run-20260710_081452-ygm1cfph/files/pip-a82cabe1a4` (2026-07-10)
 
 ## 📝 Recent Commits
+- `2abc9124` Apply remaining changes — copilot-swe-agent[bot] (2026-07-10)
 - `8541b220` Apply remaining changes — copilot-swe-agent[bot] (2026-07-10)
 - `e10dc21b` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-07-10)
 - `b2905909` build(deps): bump the pip group across 4 directories with 12 updates — dependabot[bot] (2026-07-10)
@@ -26,7 +33,6 @@ State: `open`  Draft: `False`  Branch: `dependabot/pip/wandb/offline-run-2026071
 - `c65fe038` docs: update Phase 8.2 triage dashboard [skip ci] — github-actions[bot] (2026-07-10)
 - `c2ea8612` docs: update Phase 8.2 triage dashboard [skip ci] — github-actions[bot] (2026-07-10)
 - `ca9a8650` docs: update Phase 8.2 triage dashboard [skip ci] — github-actions[bot] (2026-07-10)
-- `15482dcd` docs: update Phase 8.2 triage dashboard [skip ci] — github-actions[bot] (2026-07-10)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
