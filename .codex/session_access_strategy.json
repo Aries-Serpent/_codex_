@@ -1,20 +1,18 @@
 {
-  "generated_at": "2026-07-10T20:58:00.023494+00:00",
+  "generated_at": "2026-07-10T22:51:49.758681+00:00",
   "methods": [
     "rest",
     "graphql",
     "gh_cli"
   ],
   "rest_available": true,
-  "rest_remaining": 4938,
+  "rest_remaining": 4993,
   "graphql_available": true,
   "graphql_remaining": 4995,
   "gh_cli_available": true,
   "codeql_available": false,
-  "best_token_var": "GITHUB_TOKEN",
-  "open_prs": [
-    5287
-  ],
-  "branch": "copilot/continue-v010-release",
+  "best_token_var": "CODEX_MASTER_KEY",
+  "open_prs": [],
+  "branch": "copilot/cleanup-root-folder-structure",
   "recommendation": "Use REST for data fetches. "
 }
