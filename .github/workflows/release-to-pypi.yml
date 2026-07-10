@@ -496,7 +496,7 @@ jobs:
             echo "- Troubleshooting common issues"
           } >> release-notes.md
 
-      - name: Create GitHub release
+      - name: Create GitHub release (as draft)
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
@@ -504,16 +504,17 @@ jobs:
           tag_name: ${{ steps.version.outputs.version }}
           release_name: Release ${{ steps.version.outputs.version }}
           body_path: release-notes.md
-          draft: false
+          draft: true
           prerelease: false
 
-      - name: Upload release artifacts
+      - name: Upload release artifacts (and publish)
         uses: softprops/action-gh-release@v2
         with:
           files: |
             dist/*.whl
             release-artifacts/*
           body_path: release-notes.md
+          draft: false
 
   # Post release notification
   post-release-notification:
