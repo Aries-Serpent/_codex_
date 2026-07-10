@@ -97,13 +97,13 @@
 - [⏳] Create Phase 5 preview (if applicable)
 
 ### Step 5: Compliance Verification
-- [⏳] Verify REQ-4 compliance (AGENT_ACCOUNTABILITY_REPORT.md updated)
+- [⏳] Verify REQ-4 compliance (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated)
 - [⏳] Verify REQ-5 compliance (CHANGELOG.md updated)
 - [⏳] Confirm merge gates will pass
 
 ### Step 6: Sign-Off
 - [⏳] Create Phase 4 Campaign Summary
-- [⏳] Update AGENT_ACCOUNTABILITY_REPORT.md
+- [⏳] Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 - [⏳] Decide on Phase 5 readiness
 
 ---
@@ -143,7 +143,7 @@
 - [ ] PHASE_4_CI_PATTERN_ENHANCEMENT.md created
 
 ### Docs Stream
-- [ ] REQ-4 compliance verified (AGENT_ACCOUNTABILITY_REPORT.md updated)
+- [ ] REQ-4 compliance verified (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated)
 - [ ] REQ-5 compliance verified (CHANGELOG.md updated)
 - [ ] Link validation complete (all critical links working)
 - [ ] GitHub Pages sync status documented

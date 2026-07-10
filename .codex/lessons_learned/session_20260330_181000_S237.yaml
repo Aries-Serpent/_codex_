@@ -18,7 +18,7 @@ pda_loop:
   plan:
     context_loaded:
       - ".codex/CODEBASE_AGENCY_POLICY.md — §0 mandatory pre-session review"
-      - "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md — sessions S234-S236"
+      - "docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md — sessions S234-S236"
       - "All stored session memories (S228-S234 relevant facts)"
     issues_inventoried:
       - id: "#3816"
@@ -49,7 +49,7 @@ pda_loop:
       - ".secrets.baseline version=1.4.0 (matches pre-commit pin)"
       - "CI failure patterns COV_001 + COV_002 added"
       - "Codebase-wide coverage plan + generate_coverage_map.py created"
-      - "AGENT_ACCOUNTABILITY_REPORT.md S237 entry written"
+      - ".codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md S237 entry written"
       - "sync_tracked_files --check: 5/5 pass"
       - "ruff: clean on all new Python"
 
@@ -87,7 +87,7 @@ pda_loop:
       - path: ".codex/patterns/ci_failure_patterns.yaml"
         change: "Added patterns COV_001 (RAG coverage scope) and COV_002 (baseline version)"
         pattern_fixed: "Institutional memory for recurrence prevention"
-      - path: "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md"
+      - path: "docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md"
         change: "S237 session entry appended"
         pattern_fixed: "Agency Policy §0 documentation requirement"
 

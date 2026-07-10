@@ -27,7 +27,7 @@ Phase 6 ⏳  Cognitive Brain API server deployment + webhook receivers
 | `tests/ci/test_session_bootstrap.py` | ✅ NEW | Unit tests for URL extraction, offline mode, JSON output |
 | `cognitive-brain-session-injector.md` | ✅ v1.4.0 | Key Files table updated; architecture diagram shows D-00 wired into agent-auth-delegation |
 | `CHANGELOG.md` | ✅ | S146 entries added (REQ-5) |
-| `AGENT_ACCOUNTABILITY_REPORT.md` | ✅ | S146 session entry (REQ-4) |
+| `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` | ✅ | S146 session entry (REQ-4) |
 
 ---
 

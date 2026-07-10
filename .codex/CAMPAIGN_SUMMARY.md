@@ -9,7 +9,7 @@
 ## What's Been Created
 
 ### 1. Installation Test Report ✅
-**File:** `INSTALL_TEST_REPORT_0.1.0.md` (441 lines)
+**File:** `.codex/archive/reports/INSTALL_TEST_REPORT_0.1.0.md` (441 lines)
 - Comprehensive testing of `pip install codex-ml==0.1.0`
 - Identified 6 gaps (3 critical, 2 medium, 1 low)
 - Documented all dependencies, profiles, and entry points
@@ -98,7 +98,7 @@ tests/ (new):
   + tests/smoke/test_install.py (new file)
 
 docs/ (new):
-  + INSTALL.md (new comprehensive guide)
+  + .codex/archive/misc/INSTALL.md (new comprehensive guide)
 ```
 
 ### Documentation
@@ -109,7 +109,7 @@ docs/ (new):
   + CAMPAIGN_SUMMARY.md (this file)
 
 README.md:
-  + link to INSTALL.md
+  + link to .codex/archive/misc/INSTALL.md
 ```
 
 ---
@@ -221,7 +221,7 @@ task \
 Review these files before execution:
 - `.codex/CAMPAIGN_INSTALL_FIX_v0.1.0.md` - Full implementation plan
 - `.codex/CAMPAIGN_INSTALL_FIX_v0.1.0_EXECUTION_TRACKER.md` - Execution tracker
-- `INSTALL_TEST_REPORT_0.1.0.md` - Test report with details
+- `.codex/archive/reports/INSTALL_TEST_REPORT_0.1.0.md` - Test report with details
 
 ### Option C: Request Changes to Plan
 - Modify lanes/tasks/timeline
@@ -235,7 +235,7 @@ Review these files before execution:
 
 | File | Purpose | Status |
 |------|---------|--------|
-| `INSTALL_TEST_REPORT_0.1.0.md` | Test results & gap identification | ✅ Complete |
+| `.codex/archive/reports/INSTALL_TEST_REPORT_0.1.0.md` | Test results & gap identification | ✅ Complete |
 | `.codex/CAMPAIGN_INSTALL_FIX_v0.1.0.md` | Full implementation plan | ✅ Complete |
 | `.codex/CAMPAIGN_INSTALL_FIX_v0.1.0_EXECUTION_TRACKER.md` | Real-time execution tracker | ✅ Complete |
 | `.codex/CAMPAIGN_SUMMARY.md` | This file | ✅ Complete |
@@ -286,9 +286,9 @@ A: Phase 1 focuses on base + [core] only. Phases 2-3 handle runtime/full separat
 
 ## Related Documents
 
-- `.codex/INTELLIGENCE_CAMPAIGN_BASELINE.md` - Three-profile packaging strategy (precedent)
+- `.codex/.codex/archive/misc/INTELLIGENCE_CAMPAIGN_BASELINE.md` - Three-profile packaging strategy (precedent)
 - `.codex/PHASE_14_MASTER_ORCHESTRATION_BRIEF.md` - Multi-agent execution model (reference)
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` - Session tracking
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` - Session tracking
 
 ---
 

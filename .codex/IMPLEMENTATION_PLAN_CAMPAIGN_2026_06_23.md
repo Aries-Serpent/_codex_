@@ -182,7 +182,7 @@ This document synthesizes the production deployment readiness plan from Discussi
 - **Success Criteria:** Zero workflow parse failures
 
 #### 3.2 Session Wrapup Compliance Gate
-- **Task:** Enforce REQ-4/REQ-5 gates (AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md)
+- **Task:** Enforce REQ-4/REQ-5 gates (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md)
 - **Agent:** Custom gate (new: `session-wrapup-compliance-gate`)
 - **Validation:** Last-commit freshness checks
 - **Command:** `python3 scripts/ci/session_wrapup_autofix.py --check --pr-number <PR>`
@@ -439,7 +439,7 @@ Phase 5 (Week 5):     [            |] FINAL VALIDATION
 - **Primary Location:** `.codex/` (repository-tracked)
 - **Daily Reports:** `.codex/PHASE_2_IMPLEMENTATION_DAILY_CHECKPOINT_*.md`
 - **Phase Completion:** `.codex/PHASE_*_COMPLETION_REPORT.md`
-- **Accountability:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- **Accountability:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 ### Commit Strategy
 - **Branch:** Per-phase branches from `main`

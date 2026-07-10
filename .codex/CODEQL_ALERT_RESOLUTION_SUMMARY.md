@@ -239,7 +239,7 @@ This resolution satisfies REQ-13 of the CODEBASE_AGENCY_POLICY.md by providing:
 - **Policy Reference**: `.codex/CODEBASE_AGENCY_POLICY.md` (REQ-13)
 - **CodeQL Configuration**: `.github/codeql-config.yml`
 - **Security Remediation**: `remediation_plan_codeql_python.md`
-- **Agent Accountability**: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- **Agent Accountability**: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 ---
 

@@ -294,7 +294,7 @@
         "safety_notes": "Moves only, no deletions. Requires link verification.",
         "required_verification": true,
         "sample_files": [
-          "AGENTS.md",
+          ".codex/archive/deprecated/AGENTS.md",
           "CLEANUP_VALIDATION_INFRASTRUCTURE.md",
           "DOCUMENTATION_AUDIT_FINDINGS.md",
           "SECURITY_MONITORING_PLAN.md",

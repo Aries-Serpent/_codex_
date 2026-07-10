@@ -144,11 +144,11 @@ Status: ✅ ALL GATES PASSING - PRODUCTION READY
 
 ### ✅ SUBTASK T4.4: Update REQ-4 (Accountability)
 
-**Task:** Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` with Phase 3 campaign entry
+**Task:** Update `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` with Phase 3 campaign entry
 
 **Status:** ✅ **COMPLETE**
 
-**File Updated:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+**File Updated:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 **Entry Added:**
 - Campaign title: "Phase 3: Coverage Optimization Campaign — 2026-06-21T04:58:00Z → 2026-06-21T05:19:51Z"
@@ -225,7 +225,7 @@ Status: ✅ ALL GATES PASSING - PRODUCTION READY
    - Summary of all deliverables
    - Final certification and recommendations
 
-4. **Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`**
+4. **Updated `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`**
    - Phase 3 campaign entry added (REQ-4 compliance)
 
 5. **Updated `CHANGELOG.md`**
@@ -365,7 +365,7 @@ All requirements met:
 - [x] `.codex/PHASE_3_TRACK_4_COMPLETION_SUMMARY.md` (this file)
 
 ### Compliance Updates
-- [x] `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (REQ-4)
+- [x] `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (REQ-4)
 - [x] `CHANGELOG.md` (REQ-5)
 
 ### Verification Complete

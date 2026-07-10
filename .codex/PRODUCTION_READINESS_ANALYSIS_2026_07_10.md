@@ -357,7 +357,7 @@ None identified. All known limitations documented in v0.1.0 release notes.
 - **Release Report:** `.codex/v0.1.0-PRODUCTION_RELEASE_REPORT.md`
 - **Deployment Sign-Off:** `.codex/DEPLOYMENT_SIGN_OFF_v0.1.0-final.md`
 - **Next Steps:** `.codex/v0.1.0-NEXT-STEPS.md`
-- **Accountability:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- **Accountability:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 ### Campaign Documentation
 - **Phase 4 Brief:** `.codex/PHASE_4_MASTER_ORCHESTRATION_BRIEF.md`

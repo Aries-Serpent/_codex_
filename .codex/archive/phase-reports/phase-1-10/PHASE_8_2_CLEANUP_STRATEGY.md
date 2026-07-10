@@ -222,7 +222,7 @@ git commit -m "Rollback Batch N: <reason>"
 - `CHANGELOG.md`, `CITATION.cff`
 - `pyproject.toml`, `setup.py`, `Makefile`, `Cargo.toml` (build configs)
 - `mkdocs.yml`, `pytest.ini`, `.gitignore` (project configs)
-- Core docs: `CLAUDE.md`, `GEMINI.md` (model specifications)
+- Core docs: `.codex/archive/deprecated/CLAUDE.md`, `.codex/archive/deprecated/GEMINI.md` (model specifications)
 
 **Archived from root (via git mv → archive):**
 - **PHASE_* cluster (44):** `.codex/archive/root-consolidation/PHASE_CLUSTER.md`

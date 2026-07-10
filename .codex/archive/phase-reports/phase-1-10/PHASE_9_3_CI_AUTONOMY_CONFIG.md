@@ -480,7 +480,7 @@ unified_governance:
       
   coordination:
     policy_enforcement:
-      - Enforce REQ-4 accountability (AGENT_ACCOUNTABILITY_REPORT.md)
+      - Enforce REQ-4 accountability (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md)
       - Enforce REQ-5 changelog updates (CHANGELOG.md)
       - Verify no secrets leaked in fixes
       - Verify no breaking changes

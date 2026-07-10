@@ -102,7 +102,7 @@ All 9 agents have completed autonomous execution with **100% success rate** and 
 4. ✅ BATCH_A_AGENT_2_SUMMARY.json
 
 **Batch B: Mutation Testing**
-5. ✅ MUTATION_ANALYSIS_BATCH_B.md (483 lines)
+5. ✅ .codex/archive/misc/MUTATION_ANALYSIS_BATCH_B.md (483 lines)
 6. ✅ PHASE_12_TIER2_BATCH_B_MUTATION_TEST_EFFECTIVENESS_REPORT.md
 7. ✅ PHASE_12_TIER2_BATCH_B_ENHANCEMENT_PLAN.json
 8. ✅ 5 test enhancement modules (1,565 LOC, 178 mutation-killer tests)
@@ -114,8 +114,8 @@ All 9 agents have completed autonomous execution with **100% success rate** and 
 12. ✅ PHASE_12_TIER2_BATCH_C_BUILD_VALIDATION_REPORT.md (12KB)
 
 **Batch D: Analysis & QA**
-13. ✅ TIER2_TESTING_LANE_BATCH_D_FAILURE_PATTERN_LIBRARY.md (24KB, 120+ patterns)
-14. ✅ TIER2_TESTING_LANE_BATCH_D_COMPLETION_REPORT.md (12KB)
+13. ✅ .codex/archive/misc/TIER2_TESTING_LANE_BATCH_D_FAILURE_PATTERN_LIBRARY.md (24KB, 120+ patterns)
+14. ✅ .codex/archive/reports/TIER2_TESTING_LANE_BATCH_D_COMPLETION_REPORT.md (12KB)
 15. ✅ TIER2_TESTING_LANE_BATCH_D_QA_REPORT.md (13KB, 88.6/100 quality)
 16. ✅ TIER2_BATCH_D_AGENT2_EXECUTION_SUMMARY.md (7.6KB)
 

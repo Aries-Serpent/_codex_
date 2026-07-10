@@ -195,7 +195,7 @@ This package contains the complete campaign planning, execution, and assessment 
 - `.codex/AGENTIC_REPO_STATE.md` - Repository state
 
 ### Operational
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` - Accountability
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` - Accountability
 - `.github/workflows/copilot-setup-steps.yml` - Setup procedure
 - `scripts/ci/session_wrapup_autofix.py` - Compliance verification
 

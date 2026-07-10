@@ -85,7 +85,7 @@ This document consolidates all governance, compliance, and approval mechanisms r
 
 3. ✅ Load required documents
    - `.codex/CODEBASE_AGENCY_POLICY.md` (full)
-   - `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+   - `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
    - All stored session memories
 
 4. ✅ Inspect PR for merge conflicts
@@ -149,7 +149,7 @@ python scripts/ci/policy_compliance_audit.py \
 # Generate accountability report
 python scripts/ci/generate_accountability_report.py \
   --session-id $SESSION_ID \
-  --output docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+  --output docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 ```
 
 ---

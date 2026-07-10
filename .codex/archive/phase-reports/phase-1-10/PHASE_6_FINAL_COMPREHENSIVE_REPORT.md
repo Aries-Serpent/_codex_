@@ -50,7 +50,7 @@ Phase 6 has been **successfully completed** with all three tracks executed in pa
 - Workflow corrections: **241 changes**
 - PR/repository/component/task corrections: **293 changes**
 - Capitalization fixes: **398 changes**
-- Largest file: AGENT_ACCOUNTABILITY_REPORT.md (2,156 changes)
+- Largest file: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (2,156 changes)
 
 ### Terminology Standards Defined
 

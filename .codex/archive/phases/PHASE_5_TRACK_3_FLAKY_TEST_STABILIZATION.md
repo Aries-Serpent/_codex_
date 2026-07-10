@@ -386,7 +386,7 @@ def assert_deterministic(func: Callable, runs: int = 5) -> Any:
   - Best practices for writing deterministic tests
   - Patterns to avoid
   
-- [ ] Update AGENT_ACCOUNTABILITY_REPORT.md
+- [ ] Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 - [ ] Update CHANGELOG.md
 
 ---
@@ -526,7 +526,7 @@ else:
 
 - [ ] REQ-1: Zero remaining flaky tests
 - [ ] REQ-2: 100% determinism across 10+ runs
-- [ ] REQ-3: Update AGENT_ACCOUNTABILITY_REPORT.md
+- [ ] REQ-3: Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 - [ ] REQ-4: Create comprehensive CHANGELOG.md entry
 - [ ] REQ-5: Document best practices for test authors
 - [ ] REQ-6: Validate performance impact <5%

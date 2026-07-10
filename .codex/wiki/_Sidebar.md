@@ -13,7 +13,7 @@
 - [Contributing](https://github.com/Aries-Serpent/_codex_/blob/main/CONTRIBUTING.md)
 
 ## For AI Agents
-- [AGENTS.md](../../.github/AGENTS.md)
+- [.codex/archive/deprecated/AGENTS.md](../../.github/.codex/archive/deprecated/AGENTS.md)
 - [Agent Operations](Agent-Operations.md)
 - [Genesis Protocol](Genesis-Protocol.md)
 - [Guardrails](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/guardrails.md)

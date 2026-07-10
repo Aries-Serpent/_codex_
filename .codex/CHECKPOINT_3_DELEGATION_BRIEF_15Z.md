@@ -176,7 +176,7 @@
    - Content: Integration results, cumulative metrics, next phase recommendations
 
 **Accountability Update:**
-- Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- Update `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - Add Checkpoint 3 results (all three lanes)
 - Calculate cumulative campaign progress: 92% → 95%+ estimated
 
@@ -281,7 +281,7 @@
 - `.codex/CHECKPOINT_3_CROSSLANE_ANALYSIS.md` — Integration analysis
 
 **Accountability:**
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — Updated with Checkpoint 3
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — Updated with Checkpoint 3
 
 ---
 

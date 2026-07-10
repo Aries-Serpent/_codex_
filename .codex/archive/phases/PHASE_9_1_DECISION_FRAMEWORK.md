@@ -494,7 +494,7 @@ Every D_CAPABLE decision generates an immutable log entry:
 
 ## References
 
-- `.codex/PHASE_9_1_CANDIDATE_AGENTS.md` — Authorized agents list
+- `.codex/PHASE_9_1_CANDIDATE_.codex/archive/deprecated/AGENTS.md` — Authorized agents list
 - `scripts/ci/phase_9_1_decision_logger.py` — Logging implementation
 - `scripts/ci/phase_9_1_confidence_scorer.py` — Scoring implementation
 - `tests/unit/test_phase_9_1_decisions.py` — Test suite (100+ scenarios)

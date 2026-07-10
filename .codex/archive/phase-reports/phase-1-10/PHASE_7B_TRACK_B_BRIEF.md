@@ -176,7 +176,7 @@ Generate and integrate 200-300 edge case tests targeting weak modules, achieving
 - `.codex/PHASE_7B_EXECUTION_BRIEF.md` — Master plan
 - `.codex/PHASE_7B_TRACK_C_BRIEF.md` — Mutation baseline (uses B's tests)
 - `.codex/PHASE_7B_COORDINATION_DASHBOARD.md` — Status hub
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — Campaign tracking
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — Campaign tracking
 
 ---
 

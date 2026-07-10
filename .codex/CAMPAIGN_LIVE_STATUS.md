@@ -137,7 +137,7 @@
 **Final Status**: `.codex/SESSIONS_2_4_FINAL_STATUS_REPORT.md`  
 **Session 3 Brief**: `.codex/SESSION_3_ACTIVATION_BRIEF.md`  
 **Explicit Specs**: `.codex/BATCH_4_EXPLICIT_CONSOLIDATION_SPEC.md`  
-**Accountability**: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (updated)
+**Accountability**: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (updated)
 
 ---
 

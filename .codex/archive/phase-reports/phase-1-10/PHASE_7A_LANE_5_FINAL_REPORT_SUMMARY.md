@@ -76,7 +76,7 @@
 **Pattern RP-025: Last-Commit Accountability**
 - Issues Detected: 1
 - Issues Healed: 1 (100%)
-- Files Modified: 1 (AGENT_ACCOUNTABILITY_REPORT.md)
+- Files Modified: 1 (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md)
 - Impact: Documentation governance maintained
 - Regressions: 0 (ZERO)
 

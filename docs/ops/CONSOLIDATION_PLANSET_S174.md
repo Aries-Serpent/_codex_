@@ -283,10 +283,10 @@ P2 — Final polish:
 Post-consolidation:
 - [ ] Run: gh workflow list --limit 200 | sort > /tmp/workflow_inventory_after.txt
 - [ ] Verify count reduction: wc -l /tmp/workflow_inventory_*.txt
-- [ ] Update AGENTS.md workflow count (target: ≤ 80)
+- [ ] Update .codex/archive/deprecated/AGENTS.md workflow count (target: ≤ 80)
 - [ ] Update .github/workflow-archive/PARITY_CHECKLIST.md
 - [ ] Update CHANGELOG.md with consolidation summary
-- [ ] Update docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+- [ ] Update docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 ```
 
 ---
@@ -309,7 +309,7 @@ Post-consolidation:
 - `.github/workflow-archive/PARITY_CHECKLIST.md` — existing parity record
 - `.github/workflow-archive/ARTIFACT_CATALOG.md` — artifact catalog
 - `.github/agents/AGENT_REGISTRY.yaml` — agent registry (source of truth)
-- `AGENTS.md` — top-level agent documentation
+- `.codex/archive/deprecated/AGENTS.md` — top-level agent documentation
 - `.codex/CODEBASE_AGENCY_POLICY.md` — agency policy (§2: leave better than found)
 
 ---

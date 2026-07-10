@@ -33,7 +33,7 @@ Scans the codebase for all references to a file before moving it.
 python validate_references.py README.md
 
 # Dry run (no logging)
-python validate_references.py AGENTS.md --dry-run
+python validate_references.py .codex/archive/deprecated/AGENTS.md --dry-run
 
 # JSON output
 python validate_references.py QUICKSTART.md --json > refs.json
@@ -59,7 +59,7 @@ Atomically updates all references when a file is moved. Transaction-like behavio
 python update_links_atomic.py --old README.md --new docs/README.md --dry-run
 
 # Execute update
-python update_links_atomic.py --old AGENTS.md --new .github/agents/AGENTS.md
+python update_links_atomic.py --old .codex/archive/deprecated/AGENTS.md --new .github/agents/.codex/archive/deprecated/AGENTS.md
 ```
 
 **Features:**
@@ -195,7 +195,7 @@ All scripts support `--dry-run` mode for safe testing:
 
 ```bash
 # Test validation
-python validate_references.py AGENTS.md --dry-run
+python validate_references.py .codex/archive/deprecated/AGENTS.md --dry-run
 
 # Test reference update
 python update_links_atomic.py --old test.md --new docs/test.md --dry-run

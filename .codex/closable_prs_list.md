@@ -94,7 +94,7 @@ All files modified by the 11 PRs are included in the consolidation:
 ### PR #4999 Files ✅
 - CHANGELOG.md
 - CODEX_MANIFEST.json
-- docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+- docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 - requirements/lock.txt
 
 ### PR #4998 Files ✅

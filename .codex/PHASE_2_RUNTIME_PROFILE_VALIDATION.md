@@ -191,7 +191,7 @@ assert len(results) > 0
 ## 📚 TASK 5: Documentation Updates
 
 ### Files to Update
-1. **docs/INSTALL.md** - Add runtime profile installation section
+1. **docs/.codex/archive/misc/INSTALL.md** - Add runtime profile installation section
 2. **docs/QUICKSTART.md** - Create runtime profile quickstart
 3. **docs/PROFILES.md** - Document all 3 profiles in detail
 4. **docs/TROUBLESHOOTING.md** - Add runtime profile troubleshooting
@@ -264,9 +264,9 @@ By end of Phase 2:
 ## 🔗 RELATED DOCUMENTS
 
 - **Phase 1 Report:** `.codex/PHASE_1_CORE_PROFILE_VALIDATION.md` (or similar)
-- **Packaging Strategy:** `.codex/INTELLIGENCE_CAMPAIGN_BASELINE.md`
+- **Packaging Strategy:** `.codex/.codex/archive/misc/INTELLIGENCE_CAMPAIGN_BASELINE.md`
 - **pyproject.toml:** Root pyproject.toml
-- **Installation Guide:** `docs/INSTALL.md`
+- **Installation Guide:** `docs/.codex/archive/misc/INSTALL.md`
 
 ---
 

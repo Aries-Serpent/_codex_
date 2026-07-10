@@ -165,7 +165,7 @@ The system is designed to be self-maintaining. However, periodically:
 
 ## Related Documentation
 
-- [AGENTS.md](../AGENTS.md) - General agent guidelines
+- [.codex/archive/deprecated/AGENTS.md](../.codex/archive/deprecated/AGENTS.md) - General agent guidelines
 - [pytest.ini](../pytest.ini) - Pytest configuration
 - [.pre-commit-config.yaml](../.pre-commit-config.yaml) - Pre-commit hooks
 

@@ -233,7 +233,7 @@ Successfully completed Phase 13 WS2 content integration and cross-reference vali
 | docs/PHASE_12_WS4_CONTENT_ACCURACY_VALIDATION.md | 8.2 KB | ✅ Current | 2 refs |
 | docs/PHASE_12_WS4_FRESHNESS_AUDIT_REPORT.md | 19.4 KB | ✅ Current | 11 refs |
 | docs/PHASE_12_WS4_MAINTENANCE_PROCEDURES.md | 7.6 KB | ✅ Current | 1 ref |
-| docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md | 24.5 KB | ✅ Current | 3 refs |
+| docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md | 24.5 KB | ✅ Current | 3 refs |
 
 **Total Quality & Governance**: 102.4 KB | **35 internal cross-references**
 

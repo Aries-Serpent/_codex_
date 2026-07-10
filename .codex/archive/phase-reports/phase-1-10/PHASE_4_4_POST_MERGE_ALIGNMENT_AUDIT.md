@@ -130,7 +130,7 @@ However, if a **promotion PR** (e.g., `0D_base_` → `main`) is merged afterward
 | **P2** | `README.md` | Update version claims | Reflect new feature set post-merge |
 | **P2** | `docs/ci/INDEX.md` | Add new CI subsection | Link CI Rescue, FTP, proactive monitor |
 | **P3** | `CHANGELOG.md` | Add [Unreleased] entry | Document post-merge capabilities |
-| **P3** | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | Add session refs | Document S244–S280 post-merge work |
+| **P3** | `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` | Add session refs | Document S244–S280 post-merge work |
 
 ---
 
@@ -231,7 +231,7 @@ Execute during first post-merge sprint:
    - [ ] Update version badges if applicable
 
 2. **Accountability & Session Refs**
-   - [ ] Update docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md with post-merge session refs
+   - [ ] Update docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with post-merge session refs
    - [ ] Document which agents/sessions contributed to merge work
    - [ ] Link to new features and corresponding PRs
 
@@ -299,7 +299,7 @@ Low-priority cleanup for Phase 4.5:
 - [ ] Update docs/index.md last-updated timestamp
 - [ ] Update README.md version claims if applicable
 - [ ] Add CHANGELOG.md entry for merge
-- [ ] Update AGENT_ACCOUNTABILITY_REPORT.md
+- [ ] Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 - [ ] Run comprehensive link validation
 
 ### Post-Merge (Week 1)

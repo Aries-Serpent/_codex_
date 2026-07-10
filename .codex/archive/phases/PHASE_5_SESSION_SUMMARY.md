@@ -322,7 +322,7 @@ Week 4 (Jul 17-Jul 23) 📋 GROUNDWORK COMPLETE, READY TO LAUNCH
 
 ### Jul 23 (CAMPAIGN COMPLETION)
 - Generate comprehensive completion report
-- Update AGENT_ACCOUNTABILITY_REPORT.md
+- Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 - Create Phase 6 transition documentation
 
 ---

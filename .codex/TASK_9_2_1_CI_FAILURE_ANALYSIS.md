@@ -72,7 +72,7 @@ except Exception:  # Too broad — should catch specific exceptions
 
 **Issue:**
 ```
-docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md — not updated in last commit (63 min old)
+docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md — not updated in last commit (63 min old)
 ```
 
 **Fix Strategy:**
@@ -94,7 +94,7 @@ docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md — not updated in last commi
 
 **Issue:**
 ```
-AGENT_ACCOUNTABILITY_REPORT.md not updated in last commit
+.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md not updated in last commit
 ```
 
 **Fix Strategy:**

@@ -309,10 +309,10 @@ gh api graphql -f query='
 | Resource | Purpose | Link |
 |----------|---------|------|
 | **GitHub Release** | Official release page | https://github.com/Aries-Serpent/_codex_/releases/tag/v0.1.0-prod |
-| **Installation Guide** | Detailed install instructions | INSTALL.md |
+| **Installation Guide** | Detailed install instructions | .codex/archive/misc/INSTALL.md |
 | **API Docs** | Complete API reference | docs/api/ |
-| **Quick Start** | Profile-based quick start | QUICKSTART_BY_PROFILE.md |
-| **Release Notes** | Detailed changelog | RELEASE_NOTES.md |
+| **Quick Start** | Profile-based quick start | docs/quickstart/QUICKSTART_BY_PROFILE.md |
+| **Release Notes** | Detailed changelog | docs/release/RELEASE_NOTES.md |
 | **Agent Registry** | List of 100+ agents | .github/agents/AGENT_REGISTRY.md |
 
 ---
@@ -361,7 +361,7 @@ gh api graphql -f query='
 ### Handling Questions
 
 **Pattern 1: Installation Help**
-→ Link to INSTALL.md and QUICKSTART_BY_PROFILE.md
+→ Link to .codex/archive/misc/INSTALL.md and docs/quickstart/QUICKSTART_BY_PROFILE.md
 
 **Pattern 2: Agent Selection**
 → Link to AGENT_REGISTRY.md and suggest trying multiple agents

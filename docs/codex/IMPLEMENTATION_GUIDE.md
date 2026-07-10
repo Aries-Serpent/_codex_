@@ -89,7 +89,7 @@
 - [x] `.pre-commit-config.yaml` - Updated with timeout settings
 
 ### Phase 4: Integration (1 hour)
-- [x] `docs/guides/AGENTS.md` - Updated with best practices
+- [x] `docs/guides/.codex/archive/deprecated/AGENTS.md` - Updated with best practices
 - [x] `docs/codex/IMPLEMENTATION_GUIDE.md` - This file
 
 ## Testing & Validation
@@ -176,7 +176,7 @@ All recommendations backed by industry standards and research:
 - Software engineering best practices: NASA Coding Standards, SEI CMM
 
 ### Internal Documentation
-- `docs/guides/AGENTS.md` - Updated best practices
+- `docs/guides/.codex/archive/deprecated/AGENTS.md` - Updated best practices
 - `docs/guides/CODEX_TOOL_SELECTION.md` - Tool decision guide
 - `docs/guides/BASH_HEREDOC_REFERENCE.md` - Bash formatting
 - `docs/codex/PRE_FLIGHT_CHECKLIST.md` - Planning template
@@ -195,7 +195,7 @@ All recommendations backed by industry standards and research:
 
 For issues or questions about any optimization:
 
-1. Check `docs/guides/AGENTS.md` for guidelines
+1. Check `docs/guides/.codex/archive/deprecated/AGENTS.md` for guidelines
 2. Consult specific solution guide (see "Quick Reference" above)
 3. Review research references
 4. Run relevant unit tests

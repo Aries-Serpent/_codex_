@@ -127,7 +127,7 @@ Executed comprehensive security validation covering SAST, SCA (Software Composit
 
 ## 5. Compliance & Remediation
 
-### REQ-4: AGENT_ACCOUNTABILITY_REPORT.md
+### REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 **Status**: To be updated with security hardening completion
 
 ### REQ-5: CHANGELOG.md Entry

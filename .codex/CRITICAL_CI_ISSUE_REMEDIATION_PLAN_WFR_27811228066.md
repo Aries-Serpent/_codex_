@@ -175,7 +175,7 @@ ls -la ~/.venv/            # Verify venv cache
 
 ### Issue Description
 Pre-Merge Validation failure (Run #7590) indicates REQ-4/REQ-5 compliance check failure:
-- AGENT_ACCOUNTABILITY_REPORT.md OR CHANGELOG.md not in last commit
+- .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md OR CHANGELOG.md not in last commit
 - Session wrapup check requires BOTH files in same commit
 
 ### Quick Fix (5 minutes per PR)
@@ -185,7 +185,7 @@ git fetch origin <PR_BRANCH>
 git checkout <PR_BRANCH>
 scripts/ci/session_wrapup_autofix.py --check --pr-number <PR_NUMBER>
 # If fails, add docs commit with both files
-git add docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md CHANGELOG.md
+git add docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md CHANGELOG.md
 git commit -m "docs: update accountability & changelog (REQ-4/REQ-5)"
 git push
 ```

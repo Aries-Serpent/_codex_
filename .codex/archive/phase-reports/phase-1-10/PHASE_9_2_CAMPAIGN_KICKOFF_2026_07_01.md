@@ -268,7 +268,7 @@ GATE 4 (EOD Day 8) — Lane 4 Complete & Phase 9.2 READY
 
 ## ✅ COMPLIANCE & GOVERNANCE
 
-**REQ-4:** AGENT_ACCOUNTABILITY_REPORT.md updated with campaign status  
+**REQ-4:** .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated with campaign status  
 **REQ-5:** CHANGELOG.md updated with phase continuation  
 **WEC:** Auto-approve-workflows + agent-auth-delegation always checked  
 **Branch:** copilot/explore-codebase-and-create-implementation-plan (0 conflicts expected)

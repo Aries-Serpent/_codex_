@@ -255,7 +255,7 @@ Criterion 4: Consolidation plan approved .......... ✅ READY
 - GATE 4 Briefs: `.codex/GATE_4_AGENT_BRIEFS.md` (standby)
 
 ### Accountability
-- Progress Tracking: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- Progress Tracking: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 ---
 

@@ -10,7 +10,7 @@
 ## Session Summary — PR #4974 Security Remediation
 
 ### Completed (2026-06-17T16:54Z)
-- ✅ REQ-4: docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md auto-updated
+- ✅ REQ-4: docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md auto-updated
 - ✅ REQ-5: CHANGELOG.md auto-updated
 - ✅ Blocked comment 4733032481 replied to with resolve commit
 - ✅ Session wrapup script executed for compliance verification

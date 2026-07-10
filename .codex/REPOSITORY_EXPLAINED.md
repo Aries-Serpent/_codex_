@@ -500,21 +500,21 @@ decision = brain.decide(observation)  # OODA loop
 
 ### Getting Started
 1. **Quick Start:** README.md
-2. **Installation:** docs/INSTALL.md
+2. **Installation:** docs/.codex/archive/misc/INSTALL.md
 3. **CLI Reference:** docs/CLI_REFERENCE.md
 4. **Configuration:** docs/HYDRA_CONFIG.md
 
 ### Deep Dives
 1. **Architecture:** docs/ARCHITECTURE.md
 2. **Cognitive Brain:** docs/COGNITIVE_BRAIN_GUIDE.md
-3. **Agent System:** AGENTS.md
+3. **Agent System:** .codex/archive/deprecated/AGENTS.md
 4. **Security:** docs/SECURITY.md
 
 ### Advanced Topics
 1. **Distributed Training:** docs/DISTRIBUTED_TRAINING.md
 2. **Model Serving:** docs/MODEL_SERVING.md
 3. **Python Ingestion:** docs/PYTHON_INGESTION.md
-4. **Custom Agents:** docs/CUSTOM_AGENTS.md
+4. **Custom Agents:** docs/CUSTOM_.codex/archive/deprecated/AGENTS.md
 
 ---
 

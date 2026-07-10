@@ -13,7 +13,7 @@
 ### Root Level Documentation (144 files)
 ✅ README.md (410 lines) - Complete  
 ✅ CONTRIBUTING.md (41 lines) - Complete  
-✅ AGENTS.md (v4.0.0) - Comprehensive  
+✅ .codex/archive/deprecated/AGENTS.md (v4.0.0) - Comprehensive  
 ✅ SECURITY.md - Complete  
 ✅ CHANGELOG.md - Current  
 

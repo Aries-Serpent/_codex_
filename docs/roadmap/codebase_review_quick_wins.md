@@ -33,7 +33,7 @@ including the critical CI Pattern 25/30 script (`scripts/ci/auto_fix_common_issu
 
 ### Quick Win 2 ✅ — Fix Pattern 25 Accountability Drift
 
-**Problem:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was not included in the
+**Problem:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` was not included in the
 most recent commit, causing the `PR Auto-Fix Check` CI workflow to fail with
 Pattern 25 — an accountability freshness violation. This is a recurrent failure that has
 blocked multiple PR merges (PRs #4498, #4501).

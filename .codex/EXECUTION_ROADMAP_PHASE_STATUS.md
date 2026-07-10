@@ -322,7 +322,7 @@ TODAY (Jul 2)                                    (Jul 26)
 - `.codex/MULTI_AGENT_IMPLEMENTATION_CAMPAIGN_PLAN.md`
 
 **Accountability:**
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 ---
 

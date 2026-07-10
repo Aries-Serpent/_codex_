@@ -14,7 +14,7 @@
   - `#4061756996` — PR Status Dashboard
   - `#4062009160` — @mbaetiong `@copilot continue` with next phase tasks
 - [x] **0b.** Fixed ALL failing CI checks — auto-fix gate 0 issues ✅
-- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated
+- [x] **1.** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` updated
 - [x] **2.** CI failure patterns reviewed — auto-fix script 13/13 patterns clean
 - [x] **3.** `.gitignore` allows `!.codex/agent_auth_session.json` ✅
 - [x] **4.** Priority: Implement mock/stub tests + resolve auto-fix gate failures

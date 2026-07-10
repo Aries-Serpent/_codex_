@@ -22,7 +22,7 @@
 The **diagnostics analysis** reveals that most failures fall into **3 root cause categories**:
 
 1. **Accountability Metadata Drift** (Pattern 25) — 1 auto-fixable issue
-   - `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` not updated in last commit
+   - `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` not updated in last commit
    - Causes cascading failures across 5+ "commit validation" workflows
    - **Impact:** Blocks all validation workflows
 
@@ -56,7 +56,7 @@ Timestamp: 2026-06-18T23:57:22Z
 
 **Pattern 25: Last-Commit Accountability**
 - **Severity:** ERROR
-- **File:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- **File:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - **Issue:** Not updated in last commit (last touched 39 minutes ago)
 - **Root Cause:** `agent-auth-delegation.yml` workflow executed but accountability report not updated
 - **Impact:** REQ-4/REQ-5 compliance check blocks CI
@@ -251,7 +251,7 @@ python scripts/ci/auto_fix_common_issues.py --pattern 25
 ```
 
 **What it does:**
-- Appends minimal `[auto-generated]` entry to `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- Appends minimal `[auto-generated]` entry to `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - Runs `sync_tracked_files.py --fix` to update `.secrets.baseline` and `CODEX_MANIFEST.json`
 - Ensures file is included in next commit
 
@@ -342,7 +342,7 @@ python scripts/ci/auto_fix_common_issues.py --pattern 25
 python scripts/ci/auto_fix_common_issues.py --pattern 25
 
 # Verify fix
-git status docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+git status docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 ```
 
 **Expected result:** 40-45 failures resolved
@@ -388,7 +388,7 @@ gh workflow view <workflow-id> --json status
 1. **`.codex/issue_4983_triage_analysis.md`** (this file)
    - Status: ✅ Created
 
-2. **`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`**
+2. **`docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`**
    - Status: ⏳ Will be updated by Pattern 25 fix
    - Entry: `agent-accountability-fix: Fixed 88 CI failures (issue #4983) — Patterns 25 + delegated to specialized agents`
 
@@ -401,7 +401,7 @@ gh workflow view <workflow-id> --json status
 - [ ] All 88 failures → 0 remaining
 - [ ] All affected workflows report GREEN
 - [ ] All PRs unblocked
-- [ ] `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated
+- [ ] `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` updated
 - [ ] `CHANGELOG.md` updated with summary
 - [ ] Triage report closed
 

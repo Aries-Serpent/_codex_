@@ -138,7 +138,7 @@ wrong module. Keep `from src.X` for conflicting names.
 
 ## 🔗 Cross-References
 
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — S141 session summary
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — S141 session summary
 - `.codex/cognitive_brain/objectives_tracker.md` — v1.6.0, S141 sweep row
 - `.github/agents/codebase-health-guardian.md` — v2.5, S141 row
 - `docs/ci/PR_LIFECYCLE.md` — NEW: full PR lifecycle documentation

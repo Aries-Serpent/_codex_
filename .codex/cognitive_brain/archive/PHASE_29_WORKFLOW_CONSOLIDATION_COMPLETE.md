@@ -68,7 +68,7 @@ All 5 consolidated workflows support:
 - ✅ Programmatic invocation
 - ✅ Documented integration patterns
 
-**Created:** `docs/agent/AI_AGENT_WORKFLOW_INTEGRATION.md` (11KB guide)
+**Created:** `docs/agent/AI_AGENT_WORKFLOW_docs/api/reference/INTEGRATION.md` (11KB guide)
 
 ### 5. Validation & Monitoring (Complete)
 
@@ -121,7 +121,7 @@ All 5 consolidated workflows support:
    - Performance analysis
    - Migration guides
 
-4. **AI_AGENT_WORKFLOW_INTEGRATION.md** (333 lines)
+4. **AI_AGENT_WORKFLOW_docs/api/reference/INTEGRATION.md** (333 lines)
    - Complete integration guide
    - Usage patterns
    - Advanced techniques

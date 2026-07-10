@@ -136,7 +136,7 @@ All documents created and committed:
    - `.codex/AGENT_BRIEF_PHASE_5_CHECKPOINT_3.md` ✅
 
 3. **Accountability Tracking**
-   - `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (updated) ✅
+   - `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (updated) ✅
 
 ---
 

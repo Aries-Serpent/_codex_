@@ -71,7 +71,7 @@ Genesis Protocol embodies this philosophy through:
 - ✅ `.codex/change_log.md` - Audit trail initialization
 
 **Documentation:**
-- ✅ `AGENTS.md` - AI agent orientation guide
+- ✅ `.codex/archive/deprecated/AGENTS.md` - AI agent orientation guide
 - ✅ `scripts/AUTONOMOUS_AGENT_README.md` - Setup instructions
 - ✅ `docs/admin/GENESIS_SETUP_GUIDE.md` - Comprehensive admin guide
 - ✅ `docs/agent/OPERATIONAL_GUIDELINES.md` - Agent operational framework
@@ -110,7 +110,7 @@ grep "if: false" .github/workflows/genesis-bootstrap.yml
 grep "SAFE_MODE = True" scripts/autonomous_agent.py
 
 # Review documentation
-cat AGENTS.md | head -50
+cat .codex/archive/deprecated/AGENTS.md | head -50
 cat docs/admin/GENESIS_SETUP_GUIDE.md | head -50
 ```
 
@@ -598,7 +598,7 @@ git push origin rollback/remove-genesis
 **Key Documents:**
 - [Guardrails](../guardrails.md) - Operational constraints
 - [Agent Operations](Agent-Operations.md) - Decision framework
-- [AGENTS.md](../../.github/AGENTS.md) - AI agent orientation
+- [.codex/archive/deprecated/AGENTS.md](../../.github/.codex/archive/deprecated/AGENTS.md) - AI agent orientation
 - [Admin Setup Guide](../../docs/admin/GENESIS_SETUP_GUIDE.md) - Detailed instructions
 
 **External Resources:**

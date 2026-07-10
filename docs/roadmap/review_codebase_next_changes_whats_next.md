@@ -102,7 +102,7 @@
   - docs/roadmap/review_codebase_next_changes_whats_next.md
   - docs/roadmap/review_codebase_next_changes_session_diagram.mmd
   - CHANGELOG.md
-  - docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+  - docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 - Preserve final 5-minute wrap-up reserve in the next pass.
 ```
 
@@ -186,7 +186,7 @@ UPDATE LIVING DOCS after each phase:
   - docs/roadmap/review_codebase_next_changes_whats_next.md
   - docs/roadmap/review_codebase_next_changes_session_diagram.mmd
   - CHANGELOG.md
-  - docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+  - docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 
 ARTIFACT STORAGE: All tracked results must go to repo paths — NEVER /tmp
 ```
@@ -262,7 +262,7 @@ STATE: Phase C/D/E delegated to background agents (phase-c-security-coverage, ph
 | Approved-workflow monitoring (`a1fb880`) | ✅ Previously `action_required` workflows are now approved and transitioned |
 | Latest head outcome snapshot | ✅ `7` completed-success runs (`CodeQL`, `Security Scanning Suite`, `Secrets Baseline Enforcer`, docs/dependency gates) and `1` in-progress (`Running Copilot cloud agent`) |
 | Code-fixable failure triage | ✅ No completed failed jobs on latest head; no additional remediation required in this pass |
-| Living docs / tracking updates | 🔄 Updating `whats_next`, `session_diagram`, `CHANGELOG.md`, and `AGENT_ACCOUNTABILITY_REPORT.md` in this pass |
+| Living docs / tracking updates | 🔄 Updating `whats_next`, `session_diagram`, `CHANGELOG.md`, and `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` in this pass |
 | Final 5-minute reserve | ⏳ Preserve for wrap-up + continuation prompt |
 
 ### Continuation Prompt (Next Session)
@@ -291,7 +291,7 @@ UPDATE LIVING DOCS after each phase:
   - docs/roadmap/review_codebase_next_changes_whats_next.md
   - docs/reporting/next_expected_codebase_change_48h.md
   - CHANGELOG.md
-  - docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+  - docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 ```
 
 ## Session Status (Current — PR #4528 CI rescue + artifact review · 2026-05-21T15:55Z)
@@ -299,12 +299,12 @@ UPDATE LIVING DOCS after each phase:
 | Item | Status |
 |---|---|
 | Session budget tracking | 🔄 Maintainer note acknowledged: ~14/60 minutes used; reserve final 5 minutes for wrap-up |
-| CI rescue root cause (`4048c786`) | ✅ Confirmed from run `26235874552` failed job logs: Pattern 25 (`AGENT_ACCOUNTABILITY_REPORT.md` not updated in last commit) |
+| CI rescue root cause (`4048c786`) | ✅ Confirmed from run `26235874552` failed job logs: Pattern 25 (`.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` not updated in last commit) |
 | Required artifact fetch | ✅ Downloaded and reviewed artifacts `7125084971` and `7125082754` from run `26199091939` |
 | Artifact concern handling | ✅ Dependency-scan findings reviewed explicitly; SBOM files reviewed; no new PR-scoped code regressions introduced by this session |
 | CI auto-fix execution | ✅ Ran `auto_fix_common_issues.py`; Pattern 25 auto-fix applied to accountability tracking |
 | Required validation chain | ✅ `ruff check src/ tests/ --fix` and `auto_fix_common_issues.py --check-only` executed; `mypy_baseline --require-baseline` currently reports pre-existing baseline regression (+6) |
-| Living docs / tracking updates | 🔄 Updating `whats_next`, `session_diagram`, `CHANGELOG.md`, and `AGENT_ACCOUNTABILITY_REPORT.md` in this pass |
+| Living docs / tracking updates | 🔄 Updating `whats_next`, `session_diagram`, `CHANGELOG.md`, and `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` in this pass |
 | Final 5-minute reserve | ⏳ Preserve for wrap-up + continuation prompt |
 
 ### Follow-up prompt (continuation)
@@ -350,7 +350,7 @@ UPDATE LIVING DOCS after each phase:
 | Manual verification | ✅ `_gui_input_func()` verified with a stubbed root and `speaker_name_timeout_seconds=0.01`, returning the expected empty-string timeout fallback |
 | Approved-workflow monitor (`f0185d1e`) | 🔄 Active fan-out confirmed via MCP: validation/security/QA workflows are in progress; control workflows (`Agent Token Delegation`, `Workflow Execution Gate`, `PR Cost Check`, `Generate PR Follow-Up Prompt`) are currently `action_required` |
 | Startup-level fail-like runs | ✅ `Rust-Python Hybrid Swarm CI/CD` (`26129073147`), `Progressive Validation Suite` (`26129073150`), and `Data Quality & Determinism Suite` (`26129073148`) each currently expose `0` jobs via MCP in this snapshot |
-| Living docs / accountability parity | 🔄 Updating `whats_next`, `session_diagram`, `CHANGELOG.md`, and `AGENT_ACCOUNTABILITY_REPORT.md` in this pass |
+| Living docs / accountability parity | 🔄 Updating `whats_next`, `session_diagram`, `CHANGELOG.md`, and `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` in this pass |
 | Final 5-minute reserve | ⏳ Preserve for final validation + wrap-up |
 
 ## Session Status (Current — add-transcription-application standalone packaging pass · 2026-05-19T17:23Z)
@@ -400,7 +400,7 @@ UPDATE LIVING DOCS after each phase:
 | Review-thread remediation (`pullrequestreview-4314989322`) | ✅ Resolved by removing out-of-scope PR artifacts and narrowing scope to requested docs/test updates only |
 | CI auto-fix failure (`PR Auto-Fix Check` run `26069350387`) | ✅ Root cause captured from job logs (`Pattern 25/30`: accountability + PDA freshness + tracked sync drift) |
 | Living docs updates requested by maintainer | ✅ `whats_next` + `session_diagram` updated in this pass |
-| Tracking updates requested by maintainer | ✅ `CHANGELOG.md` + `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated in this pass |
+| Tracking updates requested by maintainer | ✅ `CHANGELOG.md` + `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` updated in this pass |
 | Final wrap-up reserve | ⏳ Preserve final ~5 minutes for concise handoff |
 
 ## Session Status (Current — S1068 approved-workflow monitoring continuation · 2026-05-18T23:21Z)
@@ -723,5 +723,5 @@ Priority: monitor approved workflow queue outcomes, keep tracked/accountability 
 > Collection is clean (S1044), and prior runtime evidence captured `F=47`, `E=5`, `node down=1` with progress reaching 98% under xdist (with a later rerun reaching ~99% but still missing terminal summary in-session).
 > Re-run full runtime in the current session environment to reach terminal pytest summary, then group failures by module/error type and fix the top non-heavy-dependency runtime bucket.
 > Validate `promote-integration-branch.yml` dispatch via Actions (`target_branch=main`, `source_sha=<current branch tip>`), keep WEC checklist wired in PR body, and monitor outcomes through `docs/reporting/copilot_workflow_report_console.html`.
-> Update `CHANGELOG.md` and `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`, then leave final 5-minute wrap-up notes with the next continuation prompt.
+> Update `CHANGELOG.md` and `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`, then leave final 5-minute wrap-up notes with the next continuation prompt.
 > Ensure review-thread tasks are appended and tracked in `.github/copilot-prompts/active/PR-4478-followup.md`.

@@ -188,7 +188,7 @@ These are NOT in scope for post-merge session:
 ## Documentation to Update (After Validation)
 
 ### Update 1: Accountability Report
-**File**: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+**File**: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 Add section:
 ```markdown

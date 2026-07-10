@@ -66,11 +66,11 @@ python -m pytest tests/unit/test_peft_utils.py -v
 ---
 
 ### Task 3: Pattern 25 Compliance
-**Files**: `CHANGELOG.md`, `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+**Files**: `CHANGELOG.md`, `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 **Steps**:
 1. Update CHANGELOG.md with S968 entry
-2. Update AGENT_ACCOUNTABILITY_REPORT.md with session summary
+2. Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with session summary
 3. Commit both files together with code changes
 
 ---
@@ -114,7 +114,7 @@ python scripts/ci/auto_fix_common_issues.py --check-only
 
 4. **Update documentation** (5 min)
    - CHANGELOG.md entry
-   - AGENT_ACCOUNTABILITY_REPORT.md entry
+   - .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md entry
 
 5. **Validation & commit** (10 min)
    - Run all validation checks
@@ -148,7 +148,7 @@ python scripts/ci/auto_fix_common_issues.py --check-only
 - `src/codex/retrieval/__init__.py` — Fix undefined exports
 - `tests/unit/test_peft_utils.py` — Fix uninitialized variable
 - `CHANGELOG.md` — Session entry
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — Session summary
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — Session summary
 
 ### Test Impact
 - Expected: All existing tests continue to pass

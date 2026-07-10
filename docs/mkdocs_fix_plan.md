@@ -26,7 +26,7 @@
 | Nav: templates/verification.md → templates/README.md | mkdocs.yml | 1 |
 | Link: ../SECURITY.md → ./SECURITY.md | Multiple | ~15 |
 | Link: ../CONTRIBUTING.md → ./CONTRIBUTING.md | Multiple | ~10 |
-| Link: ../AGENTS.md → ./agents.md | Multiple | ~8 |
+| Link: ../.codex/archive/deprecated/AGENTS.md → ./agents.md | Multiple | ~8 |
 | Link: ../LEVEL_4_MLOPS_ASSESSMENT.md | Multiple | ~4 |
 
 **Warnings Reduced**: ~40  

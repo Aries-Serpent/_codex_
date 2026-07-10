@@ -150,7 +150,7 @@ run: |
 - ✅ **User memory honored:** "NEVER STORE WORKING FILES WITHIN THE tmp/ FOLDER"
 
 ### REQ-4/REQ-5 Compliance
-- [x] AGENT_ACCOUNTABILITY_REPORT.md updated (this entry)
+- [x] .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated (this entry)
 - [x] CHANGELOG.md updated (documenting YAML fix)
 - [x] Both files in same commit
 - ⏳ Pending: `session_wrapup_autofix.py --check` validation
@@ -181,7 +181,7 @@ run: |
 - Full persistence guaranteed
 
 ✅ **REQ-4/REQ-5 Compliance**
-- Session documentation in AGENT_ACCOUNTABILITY_REPORT.md
+- Session documentation in .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 - CHANGELOG.md updated with YAML fix
 - Ready for pre-merge validation gate
 

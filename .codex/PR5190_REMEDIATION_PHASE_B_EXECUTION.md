@@ -143,11 +143,11 @@ Once Phase B completes:
 
 ### Next Updates Required
 - **After Phase B completes**: Call `engine-tools-report_progress` with Phase B results
-- **Before Phase C starts**: Update `AGENT_ACCOUNTABILITY_REPORT.md` with agent outcomes
+- **Before Phase C starts**: Update `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` with agent outcomes
 - **After all phases complete**: Update `CHANGELOG.md` with full remediation summary
 
 ### REQ-4/REQ-5 Compliance
-- AGENT_ACCOUNTABILITY_REPORT.md will be updated in Phase C completion commit
+- .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md will be updated in Phase C completion commit
 - CHANGELOG.md will be updated in Phase C completion commit
 - Both will satisfy `session_wrapup_autofix.py --check` requirements
 

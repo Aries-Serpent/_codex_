@@ -165,7 +165,7 @@ All five phases (A through E) of the RAG Production Readiness roadmap have been 
 
 #### 3. Architecture Documentation
 
-**Report**: `reports/PHASE_C_CUSTOM_COPILOT_AGENTS.md` (14,454 characters)
+**Report**: `reports/PHASE_C_CUSTOM_COPILOT_.codex/archive/deprecated/AGENTS.md` (14,454 characters)
 
 **Contents**:
 - 5 Mermaid architecture diagrams
@@ -296,7 +296,7 @@ cw_output = metrics.export_cloudwatch()
 - ✅ `docs/FOLLOWUP_RAG_PRODUCTION_READINESS.md` (199 lines) - Phase 0
 - ✅ `reports/PHASE_A_PRODUCTION_TESTING_RESULTS.md` (301 lines) - Phase A
 - ✅ `reports/PHASE_B_RAG_INTEGRATION_ENHANCEMENT.md` (13KB) - Phase B
-- ✅ `reports/PHASE_C_CUSTOM_COPILOT_AGENTS.md` (14KB) - Phase C
+- ✅ `reports/PHASE_C_CUSTOM_COPILOT_.codex/archive/deprecated/AGENTS.md` (14KB) - Phase C
 - ✅ `docs/RAG_QUICKSTART.md` (8.6KB) - Phase E
 - ✅ `examples/rag_workflow.py` (8.9KB) - Phase E
 

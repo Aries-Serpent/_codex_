@@ -102,7 +102,7 @@
    - Verify governance compliance:
      - Policy adherence: 100% (per .codex/CODEBASE_AGENCY_POLICY.md)
      - Audit trail: Complete (per .codex/aftermath/pda_iterations.jsonl)
-     - Change log: Up-to-date (per docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md)
+     - Change log: Up-to-date (per docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md)
      - Accountability: Session tracking complete
    - Generate attestation statement
    - Document stakeholder sign-offs

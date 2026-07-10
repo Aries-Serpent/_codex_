@@ -54,7 +54,7 @@
 - ✅ Performance Regression Detection: 18s
 
 ### Issues Found & Fixed
-1. ✅ **Workflow Documentation Link Validation** - Fixed broken link `../.codex/AGENTS.md` → `../AGENTS.md`
+1. ✅ **Workflow Documentation Link Validation** - Fixed broken link `../.codex/.codex/archive/deprecated/AGENTS.md` → `../.codex/archive/deprecated/AGENTS.md`
 2. ⚠️ **Testing Suite** - Real test failure (Tier 3 fix verified present, investigation required)
 3. ⏳ **Code Coverage** - Still running (normal for coverage generation)
 

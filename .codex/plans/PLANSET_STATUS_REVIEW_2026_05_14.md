@@ -56,7 +56,7 @@
 | File | Title | Status | Next Action |
 |------|-------|--------|-------------|
 | `CB-LT-2026-02-05` / `cognitive_brain_long_term_planset.md` | Cognitive Brain long-term (15 sessions): 100% agent integration, ML pattern recognition, cross-session learning | Plan 1 complete, Plan 2 Phase 2.3 complete — **ongoing** | Continue Plan 2 Phase 2.4+ in next dedicated CB session |
-| `COVERAGE_THRESHOLD_ROADMAP.md` | Coverage 0% → 70% → 100% | Threshold at 70% (Pattern 4 auto-fix). Actual ~90% per AGENTS.md | Raise `fail_under` progressively; `unified-coverage-agent` owns |
+| `COVERAGE_THRESHOLD_ROADMAP.md` | Coverage 0% → 70% → 100% | Threshold at 70% (Pattern 4 auto-fix). Actual ~90% per .codex/archive/deprecated/AGENTS.md | Raise `fail_under` progressively; `unified-coverage-agent` owns |
 | `CODEQL_CHUNKING_PLAN.md` | Systematic alert chunking/batching | Sessions S969–S975 partially planned | Superseded by S1003 bulk approach; review remaining ~54 alerts and re-chunk |
 | `PS-19` | Next Evolution Phase (AAIS V4.0, Multi-repo, ML tracking, Auto-docs) | ⏳ Planned | Start after merge gate cleared |
 | `BRANCH_DIVERGENCE_PLAN_SET.md` | Branch divergence `0D_base_` ↔ `main` prevention | RC-1 through RC-4 fixed in S237 (PR #3770) — monitor for recurrence | Run `branch-divergence-monitor.yml` weekly; `branch-divergence-resolution-agent` handles any new recurrence |

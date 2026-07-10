@@ -168,7 +168,7 @@ I have successfully activated **ALL 5 TIER 1 agents** in parallel execution mode
 - ✅ All deliverables in .codex/ (NOT /tmp/)
 - ✅ Zero secrets or credentials in any files
 - ✅ All files valid (JSON, YAML, Markdown)
-- ✅ AGENT_ACCOUNTABILITY_REPORT.md updated
+- ✅ .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated
 - ✅ CHANGELOG.md updated
 - ✅ D-tier autonomy: all agents have full decision authority
 - ✅ Authority verified: @mbaetiong AUTO-GO CONTINUE mode

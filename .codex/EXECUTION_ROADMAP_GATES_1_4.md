@@ -308,7 +308,7 @@ FULL PHASE 10 AUTONOMY (Jul 26+) ← All gates GO
 - All gate decisions assumed **GO CONTINUE** unless explicitly blocked
 - Proceed autonomously at each branch
 - Escalate only critical blockers (P0 security/data loss)
-- Document all decisions in AGENT_ACCOUNTABILITY_REPORT.md
+- Document all decisions in .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 
 ---
 
@@ -337,7 +337,7 @@ FULL PHASE 10 AUTONOMY (Jul 26+) ← All gates GO
 - **Phase 8-12 Campaign:** `.codex/MULTI_AGENT_IMPLEMENTATION_CAMPAIGN_PLAN.md`
 - **Current Status:** `.codex/CAMPAIGN_EXECUTION_STATUS.md`
 - **Agent Briefs:** `.codex/PHASE_9_AGENT_BRIEFS.md`, `.codex/PHASE_10_AGENT_BRIEFS.md`
-- **Accountability:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- **Accountability:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 ---
 

@@ -93,8 +93,8 @@ sparse-checkout: |
 
 **Verification:** ✅ REQ-5 compliance check passed
 
-#### 3. AGENT_ACCOUNTABILITY_REPORT.md Update
-**File:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (updated section header)
+#### 3. .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md Update
+**File:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (updated section header)
 **Change:** Added new session summary at top of report
 
 **Entry Content:**
@@ -163,7 +163,7 @@ sparse-checkout: |
 
 | Check | Status | Evidence |
 |-------|--------|----------|
-| **REQ-4:** AGENT_ACCOUNTABILITY_REPORT.md in latest commit | ✅ | Commit `2a8a3d17` includes update |
+| **REQ-4:** .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md in latest commit | ✅ | Commit `2a8a3d17` includes update |
 | **REQ-5:** CHANGELOG.md in latest commit | ✅ | Commit `2a8a3d17` includes entry |
 | **mypy type checking:** 0 errors | ✅ | Output: `0 errors (↓383 vs baseline 383)` |
 | **Code quality:** No blocking issues | ✅ | ruff/pre-commit compliant |

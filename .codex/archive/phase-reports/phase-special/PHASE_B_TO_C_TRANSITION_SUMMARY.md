@@ -153,7 +153,7 @@ mypy src/codex/rag --baseline .mypy_baseline.json
 
 **Updates**:
 - CHANGELOG.md: Add Phase B completion summary
-- AGENT_ACCOUNTABILITY_REPORT.md: Add agent delegation results
+- .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md: Add agent delegation results
 
 ### C.4: Tier 2 Unblock (5 min)
 **Objective**: Queue Tier 2 documentation agents

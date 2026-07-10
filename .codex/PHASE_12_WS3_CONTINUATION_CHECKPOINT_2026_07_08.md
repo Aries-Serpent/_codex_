@@ -171,7 +171,7 @@
 **Deliverable:** `.codex/PHASE_12_WS3_DOCUMENTATION_EXECUTION_LOG_2026_07_13.md`
 
 ### Priority 5: UPDATE ACCOUNTABILITY (REQ-4)
-**Objective:** Document Tier 1 completion in AGENT_ACCOUNTABILITY_REPORT.md  
+**Objective:** Document Tier 1 completion in .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md  
 **Actions:**
 1. Add session entry for Tier 1 completion
 2. Document work summary
@@ -179,7 +179,7 @@
 4. Record final metrics
 
 **Timeline:** 2026-07-13 08:00Z  
-**File:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+**File:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 ### Priority 6: UPDATE CHANGELOG (REQ-5)
 **Objective:** Document campaign progress in CHANGELOG.md  

@@ -177,7 +177,7 @@ From git log analysis:
 
 #### Phase 3.2: Session Wrapup Compliance Gate
 **Actions:**
-1. Verify REQ-4/REQ-5: AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md in last commit
+1. Verify REQ-4/REQ-5: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md in last commit
 2. Run: `python3 scripts/ci/session_wrapup_autofix.py --check --pr-number <PR>`
 3. Document all session outcomes
 
@@ -520,7 +520,7 @@ gh run list --repo Aries-Serpent/_codex_ --limit 50 | grep -c "failure"
 - **Agent Registry:** `.github/agents/AGENT_REGISTRY.yaml`
 - **Policy Anchor:** `.codex/CODEBASE_AGENCY_POLICY.md`
 - **Planning Protocol:** `.codex/docs/COPILOT_HARDENED_PLANNING_PROTOCOL.md`
-- **Accountability:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- **Accountability:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 ---
 

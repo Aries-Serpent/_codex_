@@ -86,7 +86,7 @@ DEFAULT_REPO = "Aries-Serpent/_codex_"
 DEFAULT_DISCUSSION = 3756
 COGNITIVE_BRAIN_URL = "https://aries-serpent.github.io/_codex_/"
 COGNITIVE_APP_URL = "https://aries-serpent.github.io/_codex_/cognitive_app/"
-AGENT_ACCOUNTABILITY_PATH = _REPO_ROOT / "docs" / "accountability" / "AGENT_ACCOUNTABILITY_REPORT.md"
+AGENT_ACCOUNTABILITY_PATH = _REPO_ROOT / "docs" / "accountability" / ".codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md"
 
 
 # ---------------------------------------------------------------------------

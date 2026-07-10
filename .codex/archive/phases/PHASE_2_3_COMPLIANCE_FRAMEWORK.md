@@ -180,7 +180,7 @@ python scripts/ci/validators/req3_merge_validator.py --pr 3575
 ### REQ-4: Accountability Validator
 
 **Validates:**
-- AGENT_ACCOUNTABILITY_REPORT.md updated in latest commit
+- .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated in latest commit
 - Entry includes required sections
 - Timestamp recorded
 

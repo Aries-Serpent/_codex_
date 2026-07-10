@@ -41,8 +41,8 @@ Fixed broken references to these relocated files:
 
 ### High-Impact Documentation
 - ✅ **README.md** - Main repository entry point
-- ✅ **AGENTS.md** - Root agent documentation
-- ✅ **.github/agents/docs/AGENTS.md** - Primary agent guide (10 fixes)
+- ✅ **.codex/archive/deprecated/AGENTS.md** - Root agent documentation
+- ✅ **.github/agents/docs/.codex/archive/deprecated/AGENTS.md** - Primary agent guide (10 fixes)
 - ✅ **LINK_VALIDATION_ACTION_ITEMS.md** - Action tracking (8 fixes)
 
 ### Continuation Prompts (24 fixes across 4 files)
@@ -67,7 +67,7 @@ Fixed broken references to these relocated files:
 
 ### Manual Spot Check ✅
 - README.md: ROADMAP link ✅
-- AGENTS.md: Policy and operational links ✅
+- .codex/archive/deprecated/AGENTS.md: Policy and operational links ✅
 - Continuation prompts: Dashboard links ✅
 
 ### Post-Fix Link Check

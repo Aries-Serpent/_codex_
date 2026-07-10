@@ -157,7 +157,7 @@ task(agent_type="session-analysis-agent", name="phase7b-accountability-report", 
 - 2026-06-21 21:00Z: `.codex/PHASE_7B_FINAL_GATE_REPORT_2100Z.md` **(RELEASE DECISION)**
 
 ### Accountability Tracking
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (updated through Phase 7B)
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (updated through Phase 7B)
 - `CHANGELOG.md` (REQ-4 compliance: Phase 7B session recorded)
 - `.codex/aftermath/pda_iterations.jsonl` (PDA loop entry)
 

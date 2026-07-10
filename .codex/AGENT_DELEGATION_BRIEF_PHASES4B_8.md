@@ -699,7 +699,7 @@ RUNTIME (GitHub Actions, SQLite, JSON files)
    - Validate Phase 4A code is present
 
 2. **During Implementation**:
-   - Follow repository conventions (see AGENTS.md)
+   - Follow repository conventions (see .codex/archive/deprecated/AGENTS.md)
    - Validate changes with existing tests
    - Document as you go (docstrings, comments)
    - Commit frequently with clear messages

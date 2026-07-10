@@ -64,7 +64,7 @@ Located in: `dist/`
    - Authority: @mbaetiong
    - Status: Existing reference
 
-4. **v0.1.0-FINAL_RELEASE_NOTES.md** (Existing in .codex/)
+4. **v0.1.0-FINAL_docs/release/RELEASE_NOTES.md** (Existing in .codex/)
    - Phase 7B completion notes
    - Security improvements
    - Production readiness confirmation
@@ -214,7 +214,7 @@ If any step fails, refer to POST_MERGE_AUTOMATION_WORKFLOW.md:
 ├── POST_MERGE_RELEASE_SUMMARY.txt        [Summary]
 ├── RELEASE_AUTOMATION_INDEX.md           [This file]
 ├── POST_MERGE_EXECUTION_BRIEF_v0.1.0-final.md [Reference]
-└── v0.1.0-FINAL_RELEASE_NOTES.md         [Reference]
+└── v0.1.0-FINAL_docs/release/RELEASE_NOTES.md         [Reference]
 
 dist/
 ├── codex_ml-0.1.0-py3-none-any.whl       [2.3 MB]

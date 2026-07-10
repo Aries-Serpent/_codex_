@@ -215,7 +215,7 @@ flowchart LR
 3. ✅ Replaced mocked `CircuitBreaker` class with real integration test
 4. ✅ Validated all 21 tests passing
 5. ✅ Updated `CHANGELOG.md` with S875 entry
-6. ✅ Updated `AGENT_ACCOUNTABILITY_REPORT.md` with S875 session summary
+6. ✅ Updated `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` with S875 session summary
 7. ✅ Satisfied Pattern 25 (Last-Commit Accountability) requirement
 8. ✅ Replied to CI escalation comment #4407595143
 9. ✅ Created living docs (this file + whats_next)
@@ -224,7 +224,7 @@ flowchart LR
 **Files Modified:**
 - `tests/serving/test_inference_enhanced.py` - Import path fix + real integration test
 - `CHANGELOG.md` - S875 entry added
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` - S875 session summary
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` - S875 session summary
 - `docs/roadmap/PR4366_whats_next.md` - Created
 - `docs/sessions/PR4366_session_diagram.md` - Created (this file)
 
@@ -437,7 +437,7 @@ readiness gate score._
 ## 🔍 Key Learnings
 
 ### Pattern 25 Requirement
-- Both `CHANGELOG.md` and `AGENT_ACCOUNTABILITY_REPORT.md` must be updated in the **last commit**
+- Both `CHANGELOG.md` and `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` must be updated in the **last commit**
 - Enforced by `agent-auth-delegation.yml` REQ-4
 - Critical for CI gate passage
 

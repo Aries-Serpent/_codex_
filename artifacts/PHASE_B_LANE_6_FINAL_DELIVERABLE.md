@@ -423,7 +423,7 @@ Target completion: Today's session (remaining 30 min tasks)
 1. Receive health metrics from Lane 6
 2. Coordinate with other lanes for Phase B completion
 3. Trigger final build and deployment validation
-4. Update phase status in MASTER_REMEDIATION_PLAN.md
+4. Update phase status in .codex/archive/misc/MASTER_REMEDIATION_PLAN.md
 5. Feed results to deployment gate
 
 ---

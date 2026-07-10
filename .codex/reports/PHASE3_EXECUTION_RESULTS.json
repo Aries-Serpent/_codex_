@@ -1,0 +1,254 @@
+[
+  {
+    "index": 1,
+    "source": ".copilot-review-exclusions.md",
+    "target": ".codex/archive/misc/.copilot-review-exclusions.md",
+    "status": "success",
+    "timestamp": "2026-07-10T23:20:08.677748",
+    "references": 15,
+    "updated_files": 14
+  },
+  {
+    "index": 2,
+    "source": "AGENTS.md",
+    "target": ".codex/archive/deprecated/AGENTS.md",
+    "status": "success",
+    "timestamp": "2026-07-10T23:20:09.306093",
+    "references": 889,
+    "updated_files": 375
+  },
+  {
+    "index": 3,
+    "source": "AGENT_ACCOUNTABILITY_REPORT.md",
+    "target": ".codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md",
+    "status": "success",
+    "timestamp": "2026-07-10T23:20:10.011379",
+    "references": 2157,
+    "updated_files": 740
+  },
+  {
+    "index": 4,
+    "source": "CAMPAIGN_EXECUTION_COMPLETE.md",
+    "target": ".codex/archive/misc/CAMPAIGN_EXECUTION_COMPLETE.md",
+    "status": "success",
+    "timestamp": "2026-07-10T23:20:10.727482",
+    "references": 16,
+    "updated_files": 13
+  },
+  {
+    "index": 5,
+    "source": "CLAUDE.md",
+    "target": ".codex/archive/deprecated/CLAUDE.md",
+    "status": "success",
+    "timestamp": "2026-07-10T23:20:11.281733",
+    "references": 38,
+    "updated_files": 22
+  },
+  {
+    "index": 6,
+    "source": "COVERAGE_GAP_FILL_REPORT.md",
+    "target": ".codex/archive/reports/COVERAGE_GAP_FILL_REPORT.md",
+    "status": "success",
+    "timestamp": "2026-07-10T23:20:11.877472",
+    "references": 12,
+    "updated_files": 8
+  },
+  {
+    "index": 7,
+    "source": "CROSS_PLATFORM_FILENAME_ASSESSMENT_REPORT.md",
+    "target": ".codex/archive/reports/CROSS_PLATFORM_FILENAME_ASSESSMENT_REPORT.md",
+    "status": "success",
+    "timestamp": "2026-07-10T23:20:12.443198",
+    "references": 10,
+    "updated_files": 9
+  },
+  {
+    "index": 8,
+    "source": "DEPENDENCY_CONSTRAINTS.md",
+    "target": ".codex/archive/misc/DEPENDENCY_CONSTRAINTS.md",
+    "status": "success",
+    "timestamp": "2026-07-10T23:20:12.976294",
+    "references": 50,
+    "updated_files": 28
+  },
+  {
+    "index": 9,
+    "source": "DEPENDENCY_COUPLING_MATRIX.md",
+    "target": ".codex/archive/misc/DEPENDENCY_COUPLING_MATRIX.md",
+    "status": "success",
+    "timestamp": "2026-07-10T23:20:13.572751",
+    "references": 16,
+    "updated_files": 11
+  },
+  {
+    "index": 10,
+    "source": "ENERGY_CONVERSION_AGENT_DEPRECATION.md",
+    "target": ".codex/archive/deprecated/ENERGY_CONVERSION_AGENT_DEPRECATION.md",
+    "status": "success",
+    "timestamp": "2026-07-10T23:20:14.134064",
+    "references": 44,
+    "updated_files": 25
+  },
+  {
+    "index": 11,
+    "source": "GEMINI.md",
+    "target": ".codex/archive/deprecated/GEMINI.md",
+    "status": "success",
+    "timestamp": "2026-07-10T23:20:14.691992",
+    "references": 33,
+    "updated_files": 20
+  },
+  {
+    "index": 12,
+    "source": "GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md",
+    "target": ".codex/archive/deprecated/GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md",
+    "status": "success",
+    "timestamp": "2026-07-10T23:20:15.284684",
+    "references": 41,
+    "updated_files": 23
+  },
+  {
+    "index": 13,
+    "source": "INSTALL.md",
+    "target": ".codex/archive/misc/INSTALL.md",
+    "status": "success",
+    "timestamp": "2026-07-10T23:20:15.833664",
+    "references": 175,
+    "updated_files": 72
+  },
+  {
+    "index": 14,
+    "source": "INSTALL_TEST_REPORT_0.1.0.md",
+    "target": ".codex/archive/reports/INSTALL_TEST_REPORT_0.1.0.md",
+    "status": "success",
+    "timestamp": "2026-07-10T23:20:16.447829",
+    "references": 11,
+    "updated_files": 4
+  },
+  {
+    "index": 15,
+    "source": "INTELLIGENCE_CAMPAIGN_BASELINE.md",
+    "target": ".codex/archive/misc/INTELLIGENCE_CAMPAIGN_BASELINE.md",
+    "status": "success",
+    "timestamp": "2026-07-10T23:20:17.022751",
+    "references": 44,
+    "updated_files": 23
+  },
+  {
+    "index": 16,
+    "source": "ISOLATED_DEPLOYMENT.md",
+    "target": "docs/release/ISOLATED_DEPLOYMENT.md",
+    "status": "success",
+    "timestamp": "2026-07-10T23:20:17.579881",
+    "references": 70,
+    "updated_files": 27
+  },
+  {
+    "index": 17,
+    "source": "MASTER_REMEDIATION_PLAN.md",
+    "target": ".codex/archive/misc/MASTER_REMEDIATION_PLAN.md",
+    "status": "success",
+    "timestamp": "2026-07-10T23:20:18.199554",
+    "references": 20,
+    "updated_files": 17
+  },
+  {
+    "index": 18,
+    "source": "MUTATION_ANALYSIS_BATCH_B.md",
+    "target": ".codex/archive/misc/MUTATION_ANALYSIS_BATCH_B.md",
+    "status": "success",
+    "timestamp": "2026-07-10T23:20:18.770230",
+    "references": 16,
+    "updated_files": 12
+  },
+  {
+    "index": 19,
+    "source": "OFFLINE_DEPLOYMENT.md",
+    "target": "docs/release/OFFLINE_DEPLOYMENT.md",
+    "status": "success",
+    "timestamp": "2026-07-10T23:20:19.333423",
+    "references": 80,
+    "updated_files": 29
+  },
+  {
+    "index": 20,
+    "source": "PHASE12_WS3_AGENT9_JSON_SERIALIZATION_REPORT.md",
+    "target": ".codex/archive/reports/PHASE12_WS3_AGENT9_JSON_SERIALIZATION_REPORT.md",
+    "status": "success",
+    "timestamp": "2026-07-10T23:20:19.953214",
+    "references": 12,
+    "updated_files": 8
+  },
+  {
+    "index": 21,
+    "source": "RELEASE_NOTES.md",
+    "target": "docs/release/RELEASE_NOTES.md",
+    "status": "success",
+    "timestamp": "2026-07-10T23:20:20.492494",
+    "references": 65,
+    "updated_files": 35
+  },
+  {
+    "index": 22,
+    "source": "SEMGREP_PARSE_ERROR_RESOLUTION.md",
+    "target": ".codex/archive/misc/SEMGREP_PARSE_ERROR_RESOLUTION.md",
+    "status": "success",
+    "timestamp": "2026-07-10T23:20:21.114222",
+    "references": 10,
+    "updated_files": 9
+  },
+  {
+    "index": 23,
+    "source": "TIER2_TESTING_LANE_BATCH_D_COMPLETION_REPORT.md",
+    "target": ".codex/archive/reports/TIER2_TESTING_LANE_BATCH_D_COMPLETION_REPORT.md",
+    "status": "success",
+    "timestamp": "2026-07-10T23:20:21.689428",
+    "references": 14,
+    "updated_files": 10
+  },
+  {
+    "index": 24,
+    "source": "TIER2_TESTING_LANE_BATCH_D_FAILURE_PATTERN_LIBRARY.md",
+    "target": ".codex/archive/misc/TIER2_TESTING_LANE_BATCH_D_FAILURE_PATTERN_LIBRARY.md",
+    "status": "success",
+    "timestamp": "2026-07-10T23:20:22.218795",
+    "references": 17,
+    "updated_files": 11
+  },
+  {
+    "index": 25,
+    "source": "WORKFLOW_CLEANUP_IMPLEMENTATION_CHECKLIST.md",
+    "target": ".codex/archive/implementations/WORKFLOW_CLEANUP_IMPLEMENTATION_CHECKLIST.md",
+    "status": "success",
+    "timestamp": "2026-07-10T23:20:22.743319",
+    "references": 19,
+    "updated_files": 15
+  },
+  {
+    "index": 26,
+    "source": "WS3_INTEGRATION_TEST_REPORT.md",
+    "target": ".codex/archive/reports/WS3_INTEGRATION_TEST_REPORT.md",
+    "status": "success",
+    "timestamp": "2026-07-10T23:20:23.282602",
+    "references": 3,
+    "updated_files": 3
+  },
+  {
+    "index": 27,
+    "source": "phase_12_2_report.md",
+    "target": ".codex/archive/misc/phase_12_2_report.md",
+    "status": "success",
+    "timestamp": "2026-07-10T23:20:23.833530",
+    "references": 10,
+    "updated_files": 9
+  },
+  {
+    "index": 28,
+    "source": "terraform_plan_summary.md",
+    "target": ".codex/archive/misc/terraform_plan_summary.md",
+    "status": "success",
+    "timestamp": "2026-07-10T23:20:24.494223",
+    "references": 18,
+    "updated_files": 14
+  }
+]

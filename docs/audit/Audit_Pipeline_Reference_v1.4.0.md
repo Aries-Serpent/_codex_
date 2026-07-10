@@ -320,7 +320,7 @@ def detect(file_index: dict) -> dict:
 ### Core Docs
 - `Traversal_Workflow.md` - Technical workflow details
 - `Usage_Guide.md` - Operational commands and examples
-- `AGENTS.md` - Repository conventions
+- `.codex/archive/deprecated/AGENTS.md` - Repository conventions
 
 ### v1.4.0 Feature Guides
 - `docs/audit/Configuration_v1.4.0.md` - Configuration options and examples

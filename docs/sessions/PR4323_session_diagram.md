@@ -51,13 +51,13 @@ S2 (Wave 10 + CodeQL): 2026-05-06T22:40Z → 23:00Z
    ├─ CodeQL py/unexpected-raise-in-special-method (1/2):
    │      src/codex_ml/__init__.py:191 — ImportError → AttributeError (PEP 562)
    ├─ CHANGELOG.md updated (Wave 10 + CodeQL entries)
-   ├─ AGENT_ACCOUNTABILITY_REPORT.md updated (Session 2 entry)
+   ├─ .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated (Session 2 entry)
    └─ Living docs: PR4323_whats_next.md + PR4323_session_diagram.md created
 
 S3 (CI Rescue RP-004 + wrap-up): 2026-05-06T23:22Z → 23:40Z
    ├─ RP-004 (Pattern 22): sync_tracked_files --fix re-run; all files consistent ✅
    ├─ Pattern 9 (unsorted imports): tools/ confirmed clean — ruff --select I passes
-   ├─ Pattern 25: AGENT_ACCOUNTABILITY_REPORT.md updated with S3 entry
+   ├─ Pattern 25: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated with S3 entry
    ├─ Pattern 30: sync_tracked_files dimension confirmed ✅ green
    └─ CHANGELOG + AGENT_ACCOUNTABILITY_REPORT updated (S3)
 
@@ -136,13 +136,13 @@ S12 (living docs + accountability refresh): 2026-05-07T02:29Z → 02:40Z
    ├─ PR4323_whats_next.md: S12 header + session block ✅
    ├─ PR4323_session_diagram.md: S12 block added ✅
    ├─ CHANGELOG.md: S12 entry ✅
-   ├─ AGENT_ACCOUNTABILITY_REPORT.md: S12 session entry (Pattern 25) ✅
+   ├─ .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md: S12 session entry (Pattern 25) ✅
    ├─ parallel_validation: Code Review ✅ · CodeQL trivial skip ✅
    └─ CI rescue comments #4393656363 + #4393679429 + #4393705673 replied to
 
 S14 (CI rescue + accountability gap + living docs): 2026-05-07T03:01Z → 03:30Z
    ├─ Pre-Merge Validation (run 25473249480): SHA drift (merge-preview) — local sync ✅
-   ├─ AGENT_ACCOUNTABILITY_REPORT.md: S9–S13 entries added (gap fix)
+   ├─ .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md: S9–S13 entries added (gap fix)
    ├─ PR4323_whats_next.md + PR4323_session_diagram.md: S14 blocks added
    ├─ CHANGELOG.md: S14 entry added
    ├─ Blocking comment #4393846751 replied to
@@ -172,13 +172,13 @@ S20 (Fast Validation broken cross-references): 2026-05-07T07:14Z → 07:30Z
 S21 (Detect CI Issues fixes): 2026-05-07T11:34Z → 11:45Z
    ├─ Detect and Fix Common Issues + Detect CI Issues failing on commit bbb6526137c7
    ├─ Root cause: Pattern 25 violation — baseline sweep commit aeb6da1c
-   │      did not update AGENT_ACCOUNTABILITY_REPORT.md
+   │      did not update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
    └─ Fix: Added S21 entry; ruff ✅; sync ✅
 
 S22 (RP-004 tracked-file sync drift): 2026-05-07T11:51Z → 12:05Z
    ├─ CI run 25493322004 on commit 92e99bf0a78c: RP-004 sync drift
    ├─ Root cause: Commit 92e99bf0 (ci: begin S21 investigation) did not
-   │      update AGENT_ACCOUNTABILITY_REPORT.md
+   │      update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
    ├─ Fix: sync_tracked_files.py --fix; CHANGELOG + accountability updated
    └─ Pattern 25 satisfied
 

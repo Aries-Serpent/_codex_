@@ -20,7 +20,7 @@ All target files successfully migrated with backups created in `.codex/backups/2
 5. ✓ requirements-notebook.txt (171 bytes)
 6. ✓ docs/analysis/dependency_space_triage.md (16012 bytes)
 7. ✓ noxfile.py (13744 bytes)
-8. ✓ AGENTS.md (11104 bytes)
+8. ✓ .codex/archive/deprecated/AGENTS.md (11104 bytes)
 9. ✓ docs/arch/ADR-2025-11-12-dependency-segmentation.md (7101 bytes)
 10. ✓ .codex/evidence/dependency_ops.jsonl (6476 bytes)
 11. ✓ .github/workflows/ci.yml (3823 bytes)
@@ -78,7 +78,7 @@ All overwritten files backed up to: `.codex/backups/20251112-183813/`
 
 Backed up files:
 - noxfile.py
-- AGENTS.md
+- .codex/archive/deprecated/AGENTS.md
 - .github/workflows/ci.yml
 - configs/development/pytest.ini
 

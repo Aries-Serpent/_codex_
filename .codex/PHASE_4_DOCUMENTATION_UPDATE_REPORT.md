@@ -72,7 +72,7 @@ After:  badge/production-100%25%20Ready-green
   - `docs/installation/INSTALL_CORE.md` - Minimal setup
   - `docs/installation/INSTALL_RUNTIME.md` - Production inference
   - `docs/installation/INSTALL_FULL.md` - Development environment
-  - `OFFLINE_DEPLOYMENT.md` - Air-gapped setup
+  - `docs/release/OFFLINE_DEPLOYMENT.md` - Air-gapped setup
 
 **Impact:** Users can now immediately install the production release with clear profile guidance.
 
@@ -115,7 +115,7 @@ After:  badge/production-100%25%20Ready-green
 
 ---
 
-### 3. ✅ INSTALL.md (Comprehensive)
+### 3. ✅ .codex/archive/misc/INSTALL.md (Comprehensive)
 
 **Status:** COMPLETELY REWRITTEN
 
@@ -167,7 +167,7 @@ After:  badge/production-100%25%20Ready-green
 
 ---
 
-### 4. ✅ RELEASE_NOTES.md
+### 4. ✅ docs/release/RELEASE_NOTES.md
 
 **Status:** UPDATED WITH NEW PRODUCTION SECTION
 
@@ -198,11 +198,11 @@ After:  badge/production-100%25%20Ready-green
 ## Links & References Validated
 
 ### Internal Links (All Valid ✅)
-- ✅ INSTALL.md - Installation guide
-- ✅ QUICK_START_ML.md - ML quick start (verified exists)
+- ✅ .codex/archive/misc/INSTALL.md - Installation guide
+- ✅ docs/quickstart/QUICK_START_ML.md - ML quick start (verified exists)
 - ✅ docs/getting-started.md - Getting started guide (verified exists)
 - ✅ docs/system/CODEBASE_COGNITIVE_MAP.md - Architecture (verified exists)
-- ✅ OFFLINE_DEPLOYMENT.md - Offline deployment (verified exists)
+- ✅ docs/release/OFFLINE_DEPLOYMENT.md - Offline deployment (verified exists)
 - ✅ docs/installation/INSTALL_CORE.md - Core profile (project structure)
 - ✅ docs/installation/INSTALL_RUNTIME.md - Runtime profile (project structure)
 - ✅ docs/installation/INSTALL_FULL.md - Full profile (project structure)
@@ -222,9 +222,9 @@ After:  badge/production-100%25%20Ready-green
 - ✅ README.md: Installation profiles linked with `==0.1.0` pinning
 - ✅ README.md: Key capabilities updated with production metrics
 - ✅ CHANGELOG.md: v0.1.0-final entry added with full details
-- ✅ INSTALL.md: Comprehensive multi-profile guide created
-- ✅ INSTALL.md: PyPI installation as primary method
-- ✅ RELEASE_NOTES.md: Production release section added
+- ✅ .codex/archive/misc/INSTALL.md: Comprehensive multi-profile guide created
+- ✅ .codex/archive/misc/INSTALL.md: PyPI installation as primary method
+- ✅ docs/release/RELEASE_NOTES.md: Production release section added
 
 ### Quality Metrics
 - ✅ Coverage: 90.2% (1,247 tests)
@@ -252,8 +252,8 @@ After:  badge/production-100%25%20Ready-green
 |----------|--------|-------|--------|
 | README.md | v0.1.0 Pre-Release | v0.1.0 Production Release | ✅ |
 | CHANGELOG.md | [Unreleased] | [v0.1.0-final] 2026-07-10 | ✅ |
-| INSTALL.md | codex_ml-0.1.0 | aries_serpent_ml-0.1.0 | ✅ |
-| RELEASE_NOTES.md | (no entry) | v0.1.0-final added | ✅ |
+| .codex/archive/misc/INSTALL.md | codex_ml-0.1.0 | aries_serpent_ml-0.1.0 | ✅ |
+| docs/release/RELEASE_NOTES.md | (no entry) | v0.1.0-final added | ✅ |
 
 ### Quality Metrics Updates
 | Metric | Before | After | Impact |
@@ -275,8 +275,8 @@ After:  badge/production-100%25%20Ready-green
 |----------|---------|--------|
 | README.md | 5 sections updated, 2 new links added | ✅ |
 | CHANGELOG.md | New v0.1.0-final section (5 subsections) | ✅ |
-| INSTALL.md | Complete rewrite (9 sections total) | ✅ |
-| RELEASE_NOTES.md | New production section added at top | ✅ |
+| .codex/archive/misc/INSTALL.md | Complete rewrite (9 sections total) | ✅ |
+| docs/release/RELEASE_NOTES.md | New production section added at top | ✅ |
 
 ---
 
@@ -330,8 +330,8 @@ python -c "import codex; print(codex.__version__)"
 ### Documentation Files Updated: 4
 1. README.md - Primary project overview
 2. CHANGELOG.md - Release history
-3. INSTALL.md - Installation guide
-4. RELEASE_NOTES.md - Release information
+3. .codex/archive/misc/INSTALL.md - Installation guide
+4. docs/release/RELEASE_NOTES.md - Release information
 
 ### Documentation Sections Created: 8
 1. v0.1.0-final header in README.md
@@ -340,8 +340,8 @@ python -c "import codex; print(codex.__version__)"
 4. Updated capabilities section
 5. Enhanced installation profiles
 6. v0.1.0-final CHANGELOG entry
-7. Comprehensive INSTALL.md rewrite
-8. New production release section in RELEASE_NOTES.md
+7. Comprehensive .codex/archive/misc/INSTALL.md rewrite
+8. New production release section in docs/release/RELEASE_NOTES.md
 
 ### Quality Improvements
 - Zero broken links
@@ -358,7 +358,7 @@ python -c "import codex; print(codex.__version__)"
 | Requirement | Status | Evidence |
 |-------------|--------|----------|
 | v0.1.0-final visible in README | ✅ | Header badge, achievement status |
-| Installation instructions updated | ✅ | INSTALL.md completely rewritten |
+| Installation instructions updated | ✅ | .codex/archive/misc/INSTALL.md completely rewritten |
 | PyPI link current | ✅ | `pip install aries-serpent-ml==0.1.0` |
 | CHANGELOG entry complete | ✅ | New [v0.1.0-final] section with full details |
 | All internal links valid | ✅ | Links verified, no 404s |
@@ -411,8 +411,8 @@ python -c "import codex; print(codex.__version__)"
 ### Files Updated
 1. ✅ README.md (primary project file)
 2. ✅ CHANGELOG.md (release entry)
-3. ✅ INSTALL.md (installation guide)
-4. ✅ RELEASE_NOTES.md (release information)
+3. ✅ .codex/archive/misc/INSTALL.md (installation guide)
+4. ✅ docs/release/RELEASE_NOTES.md (release information)
 
 ### Quality Metrics
 - ✅ 90.2% coverage (1,247 tests)

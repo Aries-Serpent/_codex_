@@ -37,7 +37,7 @@ gh workflow run post-merge-doc-alignment.yml \
   --repo Aries-Serpent/_codex_ \
   --ref main
 
-# 2. Verify docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md is current
+# 2. Verify docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md is current
 # (Will be auto-updated by workflow)
 
 # 3. Check GitHub Pages deployment
@@ -165,7 +165,7 @@ Task 6: @copilot-task autonomous-test-healer-agent
 - [ ] `pre-commit run --all-files` passes
 - [ ] `nox -s tests` passes with ≥70% coverage
 - [ ] GitHub Pages auto-updated (check Actions workflow)
-- [ ] `AGENT_ACCOUNTABILITY_REPORT.md` is current
+- [ ] `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` is current
 - [ ] Phase 9 coordination dashboard is synchronized
 
 ---

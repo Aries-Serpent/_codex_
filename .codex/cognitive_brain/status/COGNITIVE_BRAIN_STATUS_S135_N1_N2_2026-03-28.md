@@ -103,7 +103,7 @@ VAR=$(printf '%s\n' \
 ---
 
 ## 🔗 Cross-References
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — S135 session summary
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — S135 session summary
 - `.codex/cognitive_brain/objectives_tracker.md` — v1.2.0, sweep log updated
 - `scripts/ci/auto_fix_common_issues.py` — Pattern 21 two-tier regex (S135)
 - `.github/workflows/copilot-session-chain.yml` — printf PR_BODY pattern (S135)

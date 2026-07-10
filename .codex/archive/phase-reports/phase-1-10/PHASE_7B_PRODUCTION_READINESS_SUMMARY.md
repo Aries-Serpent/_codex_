@@ -202,12 +202,12 @@
 | Document | Status | Lines | Sections |
 |----------|--------|-------|----------|
 | PHASE_7B_FINAL_METRICS_DASHBOARD.md | ✅ COMPLETE | 580 | 12 |
-| v0.1.0-FINAL_RELEASE_NOTES.md | ✅ COMPLETE | 650 | 15 |
+| v0.1.0-FINAL_docs/release/RELEASE_NOTES.md | ✅ COMPLETE | 650 | 15 |
 | PHASE_7B_OPERATIONS_PLAYBOOK.md | ✅ COMPLETE | 720 | 8 |
 | PHASE_7B_PRODUCTION_READINESS_SUMMARY.md | ✅ THIS DOC | 450+ | 7+ |
 
 **Accountability Activities:**
-- ⏳ Update AGENT_ACCOUNTABILITY_REPORT.md (in progress)
+- ⏳ Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (in progress)
 - ⏳ Archive Phase 7 checkpoints (in progress)
 - ⏳ Record 10 agent delegations (in progress)
 - ⏳ Verify REQ-4/REQ-5 compliance (in progress)
@@ -466,7 +466,7 @@ IF ISSUES FOUND:
 
 ### Core Deliverables
 - ✅ PHASE_7B_FINAL_METRICS_DASHBOARD.md (metrics consolidation)
-- ✅ v0.1.0-FINAL_RELEASE_NOTES.md (comprehensive release docs)
+- ✅ v0.1.0-FINAL_docs/release/RELEASE_NOTES.md (comprehensive release docs)
 - ✅ PHASE_7B_OPERATIONS_PLAYBOOK.md (production procedures)
 - ✅ PHASE_7B_PRODUCTION_READINESS_SUMMARY.md (THIS DOCUMENT)
 
@@ -474,7 +474,7 @@ IF ISSUES FOUND:
 - `.codex/PHASE_7B_TRACK_E_BRIEF.md` (Track E charter)
 - `.codex/PHASE_7B_WAVE1_COMPLETION_REPORT.md` (Wave 1 status)
 - `.codex/PHASE_7B_COORDINATION_DASHBOARD.md` (campaign hub)
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (accountability tracking)
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (accountability tracking)
 
 ---
 

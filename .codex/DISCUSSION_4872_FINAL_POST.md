@@ -115,7 +115,7 @@ This production readiness campaign executed 5 sequential/concurrent phases acros
 **Agent:** workflow-compliance-guardian  
 **Results:**
 - ✅ 185 active workflows audited
-- ✅ REQ-4 (AGENT_ACCOUNTABILITY_REPORT.md): SATISFIED
+- ✅ REQ-4 (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md): SATISFIED
 - ✅ REQ-5 (CHANGELOG.md): SATISFIED
 - ✅ Node.js 22+ baseline: 100% compliant
 - ✅ GitHub Actions deprecation: Zero violations
@@ -183,7 +183,7 @@ All reports committed to `.codex/` directory and available for review:
 5. ✅ `.codex/PHASE_5C_COMPLIANCE_REPORT.md` (430 lines) — Workflow audit
 6. ✅ `.codex/PHASE_5D_CI_HEALING_REPORT.md` (297 lines) — CI improvements
 7. ✅ `.codex/UNIFIED_FINAL_REPORT.md` (11.8 KB) — **Consolidated final report**
-8. ✅ `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — Phase 5 entry added
+8. ✅ `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — Phase 5 entry added
 9. ✅ `CHANGELOG.md` — Phase 5 summary documented
 
 ---

@@ -10,18 +10,18 @@
 
 | Requirement | File | Status | SHA | Updated |
 |---|---|---|---|---|
-| **REQ-4** | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | ✅ PASS | 2f3187e | 2026-06-24T01:42:18Z |
+| **REQ-4** | `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` | ✅ PASS | 2f3187e | 2026-06-24T01:42:18Z |
 | **REQ-5** | `CHANGELOG.md` | ✅ PASS | 2f3187e | 2026-06-24T01:42:18Z |
-| **REQ-14** | `AGENT_ACCOUNTABILITY_REPORT.md` (Agents Used) | ✅ PASS | 2f3187e | 2026-06-24T01:42:18Z |
+| **REQ-14** | `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (Agents Used) | ✅ PASS | 2f3187e | 2026-06-24T01:42:18Z |
 
 ---
 
 ## VALIDATION RESULTS
 
 ```
-✅ REQ-4: docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md OK
+✅ REQ-4: docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md OK
 ✅ REQ-5: CHANGELOG.md OK
-✅ REQ-14: docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md has valid Agents Used entry
+✅ REQ-14: docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md has valid Agents Used entry
 ```
 
 **Timestamp:** 2026-06-24T01:42:18Z  
@@ -33,7 +33,7 @@
 ## SESSION ENTRY VERIFICATION
 
 **Added Entry:** Stage 3 Production Finalization session  
-**Location:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (lines 5-28)  
+**Location:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (lines 5-28)  
 **Content:**
 - ✅ Session type documented
 - ✅ Objective stated
@@ -57,7 +57,7 @@
 
 | Gate | Status | Notes |
 |---|---|---|
-| **REQ-4 Pass** | ✅ PASS | AGENT_ACCOUNTABILITY_REPORT.md updated in latest commit |
+| **REQ-4 Pass** | ✅ PASS | .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated in latest commit |
 | **REQ-5 Pass** | ✅ PASS | CHANGELOG.md updated in latest commit |
 | **Both in Latest Commit** | ✅ PASS | Commit SHA: 2f3187e |
 | **Freshness Check** | ✅ PASS | Timestamp: 2026-06-24T01:42:18Z |

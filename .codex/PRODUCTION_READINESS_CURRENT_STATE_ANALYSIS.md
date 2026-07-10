@@ -258,7 +258,7 @@ Summary of changes:
 │   └── src/cli/train_codex.py (+8 changes)
 └── Maintenance (3 files)
     ├── .secrets.baseline (-9 lines)  # pragma: allowlist secret
-    ├── AGENT_ACCOUNTABILITY_REPORT.md (+2 updates)
+    ├── .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (+2 updates)
     └── test_codex_cli_enhancements.py (+15 changes)
 ```
 
@@ -353,7 +353,7 @@ Located in `.codex/PHASE_6*.md`:
 - `.codex/PRODUCTION_READINESS_CURRENT_STATE_ANALYSIS.md` — This document
 
 ### Accountability Records
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — Full session history
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — Full session history
 - `CHANGELOG.md` — Change tracking
 
 ---

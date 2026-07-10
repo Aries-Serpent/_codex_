@@ -800,19 +800,19 @@
       "reason": "List item with broken link"
     },
     {
-      "file": ".github/AGENTS.md",
+      "file": ".github/.codex/archive/deprecated/AGENTS.md",
       "link": "./copilot_task_execution_protocol.md",
       "action": "remove_item",
       "reason": "List item with broken link"
     },
     {
-      "file": ".github/AGENTS.md",
+      "file": ".github/.codex/archive/deprecated/AGENTS.md",
       "link": "./ctep_usage_examples.md",
       "action": "remove_item",
       "reason": "List item with broken link"
     },
     {
-      "file": ".github/AGENTS.md",
+      "file": ".github/.codex/archive/deprecated/AGENTS.md",
       "link": "./ctep_quick_reference.md",
       "action": "remove_item",
       "reason": "List item with broken link"

@@ -31,7 +31,7 @@ This matrix defines **clear ownership, responsibility, and review cadence** for 
 | `CONTRIBUTING.md` | @policy-coach-agent | Quarterly | 2026-07-07 | ≤90 days | Contributor onboarding; code-style alignment |
 | `SECURITY.md` | @security-audit-agent | Quarterly | 2026-07-07 | ≤90 days | Security policy; must stay current |
 | `CHANGELOG.md` | @pypi-publishing-operations-agent | Quarterly (post-release) | 2026-07-07 | ≤90 days | Version history; updated per release |
-| `AGENTS.md` | @skills-master-agent | Quarterly | 2026-07-07 | ≤90 days | Agent registry; sync w/ `.github/agents/` |
+| `.codex/archive/deprecated/AGENTS.md` | @skills-master-agent | Quarterly | 2026-07-07 | ≤90 days | Agent registry; sync w/ `.github/agents/` |
 | `CODE_OF_CONDUCT.md` | @policy-coach-agent | Annually | 2026-07-07 | ≤180 days | Code of conduct; low-change doc |
 
 ### 2.2 Documentation Root: `docs/` Directory (1,800 files)
@@ -170,7 +170,7 @@ This matrix defines **clear ownership, responsibility, and review cadence** for 
 
 **Owner:** @skills-master-agent  
 **Review Cadence:** Per-agent-update or quarterly (whichever is sooner)  
-**SLA:** ≤30 days stale (agents are active code); 100% linked to AGENTS.md  
+**SLA:** ≤30 days stale (agents are active code); 100% linked to .codex/archive/deprecated/AGENTS.md  
 
 | Document Type | Count | SLA | Notes |
 |----------------|-------|-----|-------|
@@ -181,7 +181,7 @@ This matrix defines **clear ownership, responsibility, and review cadence** for 
 - `skills-master-agent` maintains agent registry in real time
 - Per PR that modifies agent: Update spec doc + metadata
 - Quarterly: Audit all agent specs for stale descriptions vs. actual capability
-- Maintain `AGENTS.md` as single source of truth; `.github/agents/` as detailed specs
+- Maintain `.codex/archive/deprecated/AGENTS.md` as single source of truth; `.github/agents/` as detailed specs
 
 ---
 
@@ -302,7 +302,7 @@ Stale? → Escalate to @mbaetiong (D-tier authority)
 | **Terminology** | @terminology-consistency-agent | @unified-doc-agent | `docs/TERMINOLOGY_GLOSSARY.md` |
 | **Agent Specs** | @skills-master-agent | @agent-iq-scoring-gate | `.github/agents/` |
 | **Guides & How-To** | @doc-refactor-test-agent | @integration-test-runner | `docs/guides/` |
-| **Root Canonical** | @unified-doc-agent | @policy-coach-agent | `README.md`, `AGENTS.md`, etc. |
+| **Root Canonical** | @unified-doc-agent | @policy-coach-agent | `README.md`, `.codex/archive/deprecated/AGENTS.md`, etc. |
 
 ### 6.2 Escalation (if primary owner unavailable)
 
@@ -394,7 +394,7 @@ Document Path                          → Owner                          → SL
 README.md                              → @unified-doc-agent            → ≤30 days
 CONTRIBUTING.md                        → @policy-coach-agent           → ≤90 days
 SECURITY.md                            → @security-audit-agent         → ≤60 days
-AGENTS.md                              → @skills-master-agent          → ≤90 days
+.codex/archive/deprecated/AGENTS.md                              → @skills-master-agent          → ≤90 days
 docs/index.md                          → @unified-doc-agent            → ≤90 days
 docs/reference/*                       → @code-analysis-agent          → ≤90 days
 docs/arch/*                            → @python-architect-agent       → ≤90 days

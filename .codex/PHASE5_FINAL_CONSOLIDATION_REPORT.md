@@ -78,7 +78,7 @@ This session successfully consolidated **all 15 open Dependabot PR branches** in
 |-----------|-----------|---------|
 | CODEX_MANIFEST.json | Accept incoming (Dependabot) | ✅ 14 instances |
 | CHANGELOG.md | Accept local (current branch) | ✅ 15 instances |
-| AGENT_ACCOUNTABILITY_REPORT.md | Accept local | ✅ 10 instances |
+| .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md | Accept local | ✅ 10 instances |
 | Workflow YAML files | Accept local | ✅ 7 instances |
 | Requirements files | Accept incoming | ✅ 12 instances |
 | Other files | Accept incoming | ✅ Variable |
@@ -134,7 +134,7 @@ a54557c fix(ci): auto-fix CI issues on PR [skip ci] (RP-007/RP-009)
 **Key Findings:**
 - **Commit Authors:** github-actions[bot] (15), copilot-swe-agent[bot] (5)
 - **Commit Patterns:** Manifest refresh (13), Session digest (2), CI fixes (2), Documentation (3)
-- **Most Modified Files:** CODEX_MANIFEST.json (18), AGENT_ACCOUNTABILITY_REPORT.md (15)
+- **Most Modified Files:** CODEX_MANIFEST.json (18), .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (15)
 - **Repository Health:** Clean (0 corruption detected)
 
 #### PHASE 3B: File & Dependency Validation ✅ PASSED

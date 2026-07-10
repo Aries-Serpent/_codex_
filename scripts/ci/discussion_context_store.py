@@ -481,7 +481,7 @@ def build_discussion_body(
         "",
         "- [ ] Replied to all `<comment_new>` blocking comments with `Fixed at <SHA>`",
         "- [ ] `CHANGELOG.md` — `### Fixed (SN)` entry added under `## [Unreleased]`",
-        "- [ ] `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated",
+        "- [ ] `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` updated",
         "- [ ] `python scripts/ci/auto_fix_common_issues.py --check-only` → 0 issues",
         "- [ ] `python scripts/ci/mypy_baseline.py --require-baseline` → passes",
         "",

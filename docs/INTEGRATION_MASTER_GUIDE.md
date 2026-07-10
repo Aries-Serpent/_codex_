@@ -8,10 +8,10 @@
 **Consolidated from** 10 source files:
 - docs/COGNITIVE_BRAIN_GITHUB_LOGS_UPDATE.md
 - docs/BUNDLE_BUILDER_INTEGRATION_PLAN.md
-- docs/agent/AGENT_MERGE_READINESS_INTEGRATION.md
-- docs/agent/AI_AGENT_WORKFLOW_INTEGRATION.md
-- docs/api/JAVASCRIPT_INTEGRATION.md
-- docs/api/PYTHON_INTEGRATION.md
+- docs/agent/AGENT_MERGE_READINESS_docs/api/reference/INTEGRATION.md
+- docs/agent/AI_AGENT_WORKFLOW_docs/api/reference/INTEGRATION.md
+- docs/api/JAVASCRIPT_docs/api/reference/INTEGRATION.md
+- docs/api/PYTHON_docs/api/reference/INTEGRATION.md
 - docs/changelogs/CHANGELOG_GITHUB_LOGS.md
 - docs/crm/CRM_INTEGRATION_FOR_REPO_MANAGEMENT.md
 - docs/GITHUB_LOGS_IMPLEMENTATION_SUMMARY.md

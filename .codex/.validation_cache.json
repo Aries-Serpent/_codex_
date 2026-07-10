@@ -47,7 +47,7 @@
     "links_validated": 3,
     "false_positives_skipped": 0
   },
-  "docs/COGNITIVE_BRAIN_QUANTUM_INTEGRATION.md": {
+  "docs/COGNITIVE_BRAIN_QUANTUM_docs/api/reference/INTEGRATION.md": {
     "mtime": 1782913992.5232794,
     "errors": [],
     "links_validated": 0,
@@ -1079,7 +1079,7 @@
     "links_validated": 0,
     "false_positives_skipped": 0
   },
-  "docs/SOFT_TO_GROUNDED_RELEASE_NOTES.md": {
+  "docs/SOFT_TO_GROUNDED_docs/release/RELEASE_NOTES.md": {
     "mtime": 1782913992.5341403,
     "errors": [],
     "links_validated": 0,
@@ -1283,7 +1283,7 @@
     "links_validated": 0,
     "false_positives_skipped": 0
   },
-  "docs/DEPENDENCY_CONSTRAINTS.md": {
+  "docs/.codex/archive/misc/DEPENDENCY_CONSTRAINTS.md": {
     "mtime": 1782913992.5251403,
     "errors": [],
     "links_validated": 0,
@@ -2249,7 +2249,7 @@
     "links_validated": 0,
     "false_positives_skipped": 0
   },
-  "docs/agent/AGENT_MERGE_READINESS_INTEGRATION.md": {
+  "docs/agent/AGENT_MERGE_READINESS_docs/api/reference/INTEGRATION.md": {
     "mtime": 1782913992.5441315,
     "errors": [],
     "links_validated": 5,
@@ -2327,7 +2327,7 @@
     "links_validated": 4,
     "false_positives_skipped": 0
   },
-  "docs/agent/AI_AGENT_WORKFLOW_INTEGRATION.md": {
+  "docs/agent/AI_AGENT_WORKFLOW_docs/api/reference/INTEGRATION.md": {
     "mtime": 1782913992.5447123,
     "errors": [],
     "links_validated": 6,
@@ -2711,7 +2711,7 @@
     "links_validated": 3,
     "false_positives_skipped": 0
   },
-  "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md": {
+  "docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md": {
     "mtime": 1782914931.5472863,
     "errors": [],
     "links_validated": 80,
@@ -5015,7 +5015,7 @@
     "links_validated": 0,
     "false_positives_skipped": 0
   },
-  "docs/guides/AGENTS.md": {
+  "docs/guides/.codex/archive/deprecated/AGENTS.md": {
     "mtime": 1782913992.5849855,
     "errors": [],
     "links_validated": 5,
@@ -7535,7 +7535,7 @@
     "links_validated": 9,
     "false_positives_skipped": 0
   },
-  "docs/ai-facing/QUANTUM_RAG_INTEGRATION.md": {
+  "docs/ai-facing/QUANTUM_RAG_docs/api/reference/INTEGRATION.md": {
     "mtime": 1782913992.5472555,
     "errors": [],
     "links_validated": 12,

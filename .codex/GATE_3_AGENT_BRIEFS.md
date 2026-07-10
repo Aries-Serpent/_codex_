@@ -412,7 +412,7 @@ Create `.codex/GATE_3_COVERAGE_VALIDATION.md`:
 - **GATE 1 Results:** `.codex/EXECUTION_ROADMAP_GATES_1_4.md`
 - **GATE 2 Briefs:** `.codex/GATE_2_AGENT_BRIEFS.md`
 - **GATE 3 Execution:** This document
-- **Accountability:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- **Accountability:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 ---
 

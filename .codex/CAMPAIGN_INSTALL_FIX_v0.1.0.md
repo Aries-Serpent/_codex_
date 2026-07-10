@@ -414,7 +414,7 @@ pytest tests/smoke/test_install.py -v
 **Lane 3.2: Create Installation Guide** (Agent: documentation-quality-agent)
 - **Time:** 30 minutes
 - **Tasks:**
-  - [ ] Create/update `INSTALL.md`
+  - [ ] Create/update `.codex/archive/misc/INSTALL.md`
   - [ ] Document [core], [runtime], [full] profiles
   - [ ] Add profile comparison table
   - [ ] Add troubleshooting section
@@ -595,7 +595,7 @@ git revert <commit_sha> --no-edit
 ## Documentation Artifacts
 
 To be created:
-- **INSTALL.md** - Comprehensive installation guide
+- **.codex/archive/misc/INSTALL.md** - Comprehensive installation guide
 - **tests/smoke/test_install.py** - Smoke test suite
 - **CAMPAIGN_INSTALL_FIX_v0.1.0_PROGRESS.md** - Real-time progress tracker
 - **CAMPAIGN_INSTALL_FIX_v0.1.0_RESULTS.md** - Final results & metrics

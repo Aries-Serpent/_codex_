@@ -60,7 +60,7 @@
    - 15 lines + comprehensive documentation
    - Status: ✅ REQ-5 compliance PASS
 
-3. **`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`** (session summary)
+3. **`docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`** (session summary)
    - Added 2026-07-01T05:37Z session entry
    - 7 clarifications documented with evidence
    - Status: ✅ REQ-4 compliance PASS
@@ -90,7 +90,7 @@
 |---|---|---|
 | **mypy type checking** | ✅ 0 errors | `0 errors (↓383 vs baseline 383)` |
 | **ruff linting** | ✅ PASS | Code review clean |
-| **REQ-4 (Accountability)** | ✅ PASS | AGENT_ACCOUNTABILITY_REPORT.md updated |
+| **REQ-4 (Accountability)** | ✅ PASS | .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated |
 | **REQ-5 (Changelog)** | ✅ PASS | CHANGELOG.md entry added |
 | **REQ-14 (Agents Used)** | ✅ PASS | Valid entry in accountability report |
 | **Git diff** | ✅ CLEAN | Only intended files modified |
@@ -122,7 +122,7 @@
 | Step | Status | Evidence |
 |---|---|---|
 | **Code fixes applied** | ✅ | comment-review-gate.yml sparse-checkout fix |
-| **Accountability updated** | ✅ | CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md |
+| **Accountability updated** | ✅ | CHANGELOG.md + .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md |
 | **Compliance verified** | ✅ | REQ-4/5/14 all PASS |
 | **Code quality gates** | ✅ | mypy 0 errors, ruff clean |
 | **Workflows approved** | ✅ | All pending workflows approved |
@@ -240,7 +240,7 @@
 
 All fixes have been applied, verified, and committed:
 - Comment Review Gate workflow fixed (sparse-checkout addition)
-- Accountability documentation updated (CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md)
+- Accountability documentation updated (CHANGELOG.md + .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md)
 - Code quality gates passing (mypy 0 errors, compliance checks PASS)
 - PDA iteration entry logged for campaign clarification work
 - All workflows approved by maintainer (@mbaetiong)

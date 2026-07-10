@@ -48,7 +48,7 @@
 
 #### 4. **Documentation Standards** ✅
 - **Result:** PASS
-- **Details:** CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md fully updated; REQ-4/REQ-5 compliance verified; both files in same commit
+- **Details:** CHANGELOG.md + .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md fully updated; REQ-4/REQ-5 compliance verified; both files in same commit
 - **Status:** PASS
 
 #### 5. **Security Pattern Audit** ✅
@@ -105,7 +105,7 @@ GOVERNANCE GATE DECISION:   ✅ APPROVED
 - ✅ Code files modified: 6 (.py files for security fixes)
 - ✅ Workflow files modified: 8 (governance & compliance fixes)
 - ✅ Configuration files modified: 2 (pyproject.toml, requirements.txt)
-- ✅ Documentation files modified: 2 (CHANGELOG.md, AGENT_ACCOUNTABILITY_REPORT.md)
+- ✅ Documentation files modified: 2 (CHANGELOG.md, .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md)
 - ✅ Total files: 18 (all tracked in .codex/PHASE_14_* documents)
 
 **Regression Analysis:**
@@ -146,7 +146,7 @@ GOVERNANCE GATE DECISION:   ✅ APPROVED
 - **Code Modification:** Full (6 .py files modified for security)
 - **Workflow Modification:** Full (8 workflows healed)
 - **Configuration Modification:** Full (pyproject.toml, requirements.txt)
-- **Documentation:** Full (CHANGELOG.md, AGENT_ACCOUNTABILITY_REPORT.md)
+- **Documentation:** Full (CHANGELOG.md, .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md)
 - **Governance Authority:** Full (governance gate approved all 9 pillars)
 
 ### Zero-Escalation Record

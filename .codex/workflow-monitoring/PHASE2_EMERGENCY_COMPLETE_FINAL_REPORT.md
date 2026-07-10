@@ -148,7 +148,7 @@ Change:  +1,568 files (100% coverage)
 Governance Checks:
 ✅ Inventory: 9,708 candidates processed
 ✅ Coverage: 0 unmanaged files
-✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md (781 KB)
+✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (781 KB)
 ✅ REQ-5: CHANGELOG.md (1.33 MB)
 ✅ Schema: All JSON files valid
 ```

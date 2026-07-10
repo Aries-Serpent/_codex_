@@ -422,7 +422,7 @@ redis_host = os.getenv('CODEX_REDIS_CONNECTION_HOST') or os.getenv('CODEX_REDIS_
 
 ## Where to Get Help
 
-- **Configuration Issues:** See `docs/QUICKSTART_BY_PROFILE.md`
+- **Configuration Issues:** See `docs/docs/quickstart/QUICKSTART_BY_PROFILE.md`
 - **Deployment Questions:** See `docs/KUBERNETES_DEPLOYMENT.md` or `docs/DOCKER_SETUP.md`
 - **Metrics/Adoption:** See `docs/ONBOARDING_METRICS_DASHBOARD.md`
 - **Community:** GitHub Discussions → `Environment Configuration`

@@ -315,7 +315,7 @@ All agents authorized to use:
 2. ✅ `.codex/FAILURE_ANALYSIS_F002_BASELINE_SWEEP.md` (if F-002 investigated)
 3. ✅ `.codex/REMEDIATION_EXECUTION_LOG.md` (complete execution trace)
 4. ✅ `.codex/NEXT_SESSION_FAILURE_REMEDIATION_PROMPT.md` (continuation instructions)
-5. ✅ Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (REQ-4)
+5. ✅ Updated `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (REQ-4)
 6. ✅ Updated `CHANGELOG.md` (REQ-5)
 
 ### Commit Messages

@@ -313,7 +313,7 @@ src/aries_serpent_core/cli/
 ### Files Generated
 - ✅ PHASE_5_TRACK_5_PERFORMANCE_PROFILING_REPORT.md (this file)
 - ✅ performance_baseline.json (baseline metrics)
-- ✅ AGENT_ACCOUNTABILITY_REPORT.md (updated)
+- ✅ .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (updated)
 - ✅ CHANGELOG.md (entry added)
 
 ---

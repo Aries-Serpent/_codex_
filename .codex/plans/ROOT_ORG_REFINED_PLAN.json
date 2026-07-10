@@ -10,7 +10,7 @@
     "CODE_OF_CONDUCT.md",
     "SECURITY.md",
     "CHANGELOG.md",
-    "AGENTS.md",
+    ".codex/archive/deprecated/AGENTS.md",
     "requirements*.txt",
     "noxfile.py",
     "dvc.yaml"

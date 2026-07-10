@@ -81,7 +81,7 @@
 ### Pattern 25: Last-Commit Accountability
 **Status**: ✅ PARTIALLY FIXED (Circuit breaker active)  
 **Impact**: Ensures accountability tracking file is current  
-**Issue**: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` not updated in last commit  
+**Issue**: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` not updated in last commit  
 **Fix**: Auto-generated minimal entry appended to accountability file
 
 ### Pattern 30: Merge Readiness Dimensions
@@ -110,7 +110,7 @@
 
 **Impact**: Resolves Node.js 20 deprecation warnings and ensures compatibility with GitHub's Node.js 22+ runner requirements.
 
-### File 2: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+### File 2: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 **Status**: Auto-updated with accountability entry  
 **Impact**: Ensures tracking compliance for Phase 5d CI healing work

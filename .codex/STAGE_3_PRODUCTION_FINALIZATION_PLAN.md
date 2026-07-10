@@ -14,7 +14,7 @@
 **Owner:** orchestrator-agent
 
 **Activities:**
-1. ✅ Verify AGENT_ACCOUNTABILITY_REPORT.md updated with final session state
+1. ✅ Verify .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated with final session state
 2. ✅ Verify CHANGELOG.md updated with all phase completions
 3. ✅ Verify REQ-4 (last commit has both files) ← Session wrapup requirement
 4. ✅ Verify REQ-5 (commit freshness) ← Session wrapup requirement

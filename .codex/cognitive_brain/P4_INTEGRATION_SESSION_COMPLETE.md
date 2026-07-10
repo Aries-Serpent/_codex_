@@ -219,7 +219,7 @@ enforce_scopes: bool = True  # Runtime flag
 
 ### Updated Files
 
-#### `.codex/cognitive_brain/FOLLOWUP_P4_INTEGRATION.md`
+#### `.codex/cognitive_brain/FOLLOWUP_P4_docs/api/reference/INTEGRATION.md`
 **Changes:** +235 lines, -42 lines
 
 **New Sections Added:**
@@ -416,7 +416,7 @@ enforce_scopes: bool = True  # Runtime flag
 
 ### Documentation
 
-- `.codex/cognitive_brain/FOLLOWUP_P4_INTEGRATION.md`
+- `.codex/cognitive_brain/FOLLOWUP_P4_docs/api/reference/INTEGRATION.md`
 - `.codex/cognitive_brain/diagrams/*.md`
 - `.codex/cognitive_brain/enhancement_implementation_status.md`
 

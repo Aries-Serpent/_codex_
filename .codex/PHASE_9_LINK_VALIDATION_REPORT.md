@@ -76,20 +76,20 @@ Agent documentation references deprecated agent deprecation notices that don't e
 
 #### Impact Files:
 1. **.github/agents/google-home-script-agent.md**
-   - Broken Link: `../../GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md`
+   - Broken Link: `../../.codex/archive/deprecated/GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md`
    - Expected Location: Root directory
    - Context: Deprecated smart-home automation agent
    - Fix Options:
-     a. Create deprecation file: `GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md`
+     a. Create deprecation file: `.codex/archive/deprecated/GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md`
      b. Link to archived deprecation notice in `.codex/` directory
      c. Remove reference if deprecation is informal
 
 2. **.github/agents/energy-conversion-agent.md**
-   - Broken Link: `../../ENERGY_CONVERSION_AGENT_DEPRECATION.md`
+   - Broken Link: `../../.codex/archive/deprecated/ENERGY_CONVERSION_AGENT_DEPRECATION.md`
    - Expected Location: Root directory
    - Context: Deprecated energy systems agent
    - Fix Options:
-     a. Create deprecation file: `ENERGY_CONVERSION_AGENT_DEPRECATION.md`
+     a. Create deprecation file: `.codex/archive/deprecated/ENERGY_CONVERSION_AGENT_DEPRECATION.md`
      b. Archive in `.codex/` with updated reference
      c. Remove if deprecation is informal
 
@@ -295,8 +295,8 @@ See the [full documentation](../index.md) for more details.
 ### Step 4: Create Deprecation Notices
 
 **Files:**
-- `GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md` (OR move to `.codex/deprecations/GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md`)
-- `ENERGY_CONVERSION_AGENT_DEPRECATION.md` (OR move to `.codex/deprecations/ENERGY_CONVERSION_AGENT_DEPRECATION.md`)
+- `.codex/archive/deprecated/GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md` (OR move to `.codex/deprecations/.codex/archive/deprecated/GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md`)
+- `.codex/archive/deprecated/ENERGY_CONVERSION_AGENT_DEPRECATION.md` (OR move to `.codex/deprecations/.codex/archive/deprecated/ENERGY_CONVERSION_AGENT_DEPRECATION.md`)
 
 ---
 

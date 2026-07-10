@@ -155,7 +155,7 @@ Enable reproducible, offline-first installation by delivering a hash-locked depe
 ### Days 9+: Documentation Handoff (to Lane 5)
 
 **Task 2.8: Bootstrap Guide (for Lane 5)**
-- Write user-facing guide: `OFFLINE_INSTALL.md`
+- Write user-facing guide: `OFFLINE_.codex/archive/misc/INSTALL.md`
 - Include:
   - Prerequisites (Python 3.12, pip, bash/batch)
   - Download procedure (where to get wheels)
@@ -215,7 +215,7 @@ Enable reproducible, offline-first installation by delivering a hash-locked depe
 ## 📌 Key Decisions from Phase 0
 
 **Strategic Decision #3: Lockfile-based offline strategy**
-- ✅ APPROVED in INTELLIGENCE_CAMPAIGN_BASELINE.md
+- ✅ APPROVED in .codex/archive/misc/INTELLIGENCE_CAMPAIGN_BASELINE.md
 - Mechanism: pip-tools compatible lockfile with SHA256 hashes
 - Offline bootstrap: Wheelhouse + verification script
 - Validation: Air-gap install on representative platforms

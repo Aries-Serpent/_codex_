@@ -29,7 +29,7 @@ This plan synthesizes **session history**, **recently committed changes**, and *
 
 2. **Governance Compliance BLOCK** 🔴 PERSISTS
    - Root cause: REQ-3 (7 reviews requesting changes) + stale accountability files
-   - Attempted fixes: Updated AGENT_ACCOUNTABILITY_REPORT.md, CHANGELOG.md, registered Phase 10-12 exceptions
+   - Attempted fixes: Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md, CHANGELOG.md, registered Phase 10-12 exceptions
    - Status: Accountability files in place; **human approval gate still blocks**
 
 3. **Workflow Cascade Enablement** ✅ IN PROGRESS
@@ -65,7 +65,7 @@ This plan synthesizes **session history**, **recently committed changes**, and *
 **Pattern**: Compliance check REQ-4/REQ-5 validates files are present in the PR head commit.  
 **Recommendation**:
 - After every code change, run: `python3 scripts/ci/session_wrapup_autofix.py --auto-update --pr-number <N>`
-- This ensures AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md are in the LATEST commit
+- This ensures .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md are in the LATEST commit
 - Prevents "REQ-4/REQ-5 missing from latest commit" errors that waste 15+ min per cycle
 
 **Current State**: Files ARE present and up-to-date — pattern was correctly applied.
@@ -214,7 +214,7 @@ Once REQ-3 is cleared (governance score reaches 95%+):
 - **Impact**: Real-time visibility prevents blind spots
 
 ### 🎓 Prevention Strategy 4: Accountability File Synchronization
-- **Problem**: AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md drift from latest commits
+- **Problem**: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md drift from latest commits
 - **Prevention**: Add pre-commit hook:
   ```bash
   # In .git/hooks/pre-commit

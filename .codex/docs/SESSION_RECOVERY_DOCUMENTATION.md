@@ -419,7 +419,7 @@ If automatic recovery fails or is not sufficient:
 - **Recovery Configuration:** `.codex/session_recovery_config.yml`
 - **Recovery Utility:** `scripts/ci/session_recovery.py`
 - **Session Recovery Log:** `.codex/SESSION_RECOVERY_LOG.md`
-- **Accountability Report:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- **Accountability Report:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 ---
 

@@ -9,7 +9,7 @@
 
 ## 📋 Deliverables Overview
 
-### Document 1: INTELLIGENCE_CAMPAIGN_BASELINE.md (25 KB)
+### Document 1: .codex/archive/misc/INTELLIGENCE_CAMPAIGN_BASELINE.md (25 KB)
 
 **Contents:**
 - 1.1: Module Inventory (47 modules categorized)
@@ -39,7 +39,7 @@
 
 ---
 
-### Document 2: DEPENDENCY_COUPLING_MATRIX.md (9.3 KB)
+### Document 2: .codex/archive/misc/DEPENDENCY_COUPLING_MATRIX.md (9.3 KB)
 
 **Contents:**
 - 1.0: Core Module Dependencies (top 10 dependency chains)
@@ -248,8 +248,8 @@
 All Phase 0 documents are committed to the repository root:
 
 ```
-/INTELLIGENCE_CAMPAIGN_BASELINE.md      (25 KB)  → Module inventory & profiles
-/DEPENDENCY_COUPLING_MATRIX.md          (9.3 KB) → Coupling analysis & risks
+/.codex/archive/misc/INTELLIGENCE_CAMPAIGN_BASELINE.md      (25 KB)  → Module inventory & profiles
+/.codex/archive/misc/DEPENDENCY_COUPLING_MATRIX.md          (9.3 KB) → Coupling analysis & risks
 /PHASE_0_EXTRACTION_ROADMAP.md          (16 KB)  → Task-level timeline
 /PHASE_0_SUMMARY.txt                    (9.8 KB) → Executive summary
 /PHASE_0_INDEX.md                       (this)   → Navigation guide
@@ -266,28 +266,28 @@ All Phase 0 documents are committed to the repository root:
 4. Monitor **Risk Summary** weekly
 
 ### For Architects
-1. Read **INTELLIGENCE_CAMPAIGN_BASELINE.md** sections 1-4 (modules + dependencies)
-2. Study **DEPENDENCY_COUPLING_MATRIX.md** section 3 (inter-profile deps)
+1. Read **.codex/archive/misc/INTELLIGENCE_CAMPAIGN_BASELINE.md** sections 1-4 (modules + dependencies)
+2. Study **.codex/archive/misc/DEPENDENCY_COUPLING_MATRIX.md** section 3 (inter-profile deps)
 3. Reference **PHASE_0_EXTRACTION_ROADMAP.md** for decoupling strategy
 4. Use **section 7** of baseline for visualization
 
 ### For Engineers (Phase 1)
 1. Read **PHASE_0_EXTRACTION_ROADMAP.md** Phase 1 section
-2. Review **INTELLIGENCE_CAMPAIGN_BASELINE.md** section 4.1 (LITE profile)
-3. Check **DEPENDENCY_COUPLING_MATRIX.md** section 2 (cycles are mitigated)
+2. Review **.codex/archive/misc/INTELLIGENCE_CAMPAIGN_BASELINE.md** section 4.1 (LITE profile)
+3. Check **.codex/archive/misc/DEPENDENCY_COUPLING_MATRIX.md** section 2 (cycles are mitigated)
 4. Create tasks from roadmap checklist
 
 ### For Engineers (Phase 2)
 1. Study **PHASE_0_EXTRACTION_ROADMAP.md** Phase 2 section (critical tasks!)
 2. Focus on **Task 2.1** (session storage abstraction)
 3. Focus on **Task 2.2** (quantum planset optional)
-4. Reference **DEPENDENCY_COUPLING_MATRIX.md** sections 1-4
+4. Reference **.codex/archive/misc/DEPENDENCY_COUPLING_MATRIX.md** sections 1-4
 
 ### For QA Engineers
 1. Extract test checklist from each phase in roadmap
 2. Use **Success Criteria by Phase** section above
 3. Review **verification gates** in roadmap
-4. Cross-reference with **INTELLIGENCE_CAMPAIGN_BASELINE.md** section 9
+4. Cross-reference with **.codex/archive/misc/INTELLIGENCE_CAMPAIGN_BASELINE.md** section 9
 
 ---
 

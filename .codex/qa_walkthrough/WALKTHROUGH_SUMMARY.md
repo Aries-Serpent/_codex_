@@ -474,7 +474,7 @@ The offload structure supports QA walkthrough analysis:
 ### Architecture Documents
 
 - `REPOSITORY_ARCHITECTURE_DIAGRAMS.md`
-- `AGENTS.md`
+- `.codex/archive/deprecated/AGENTS.md`
 - `GOVERNANCE.md`
 
 ---

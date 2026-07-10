@@ -216,7 +216,7 @@ Or use absolute references from root:
 | Directory | Purpose | Examples |
 |-----------|---------|----------|
 | `docs/` | Public documentation | API refs, user guides, developer docs |
-| `docs/accountability/` | Agent accountability reports | AGENT_ACCOUNTABILITY_REPORT.md |
+| `docs/accountability/` | Agent accountability reports | .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md |
 | `docs/archive/` | Superseded/historical docs | Old versions, deprecated guidance |
 | `docs/phase-9/` | Phase 9 coordination docs | Standups, dashboards, action plans |
 | `docs/cognitive_brain/` | Cognitive brain system | System design, prompts, status |

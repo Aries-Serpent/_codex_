@@ -54,6 +54,6 @@
 
 - §0 Pre-session review: ✅ All bot comments + failing CI reviewed first
 - Deferral language: ✅ 0 violations
-- AGENT_ACCOUNTABILITY_REPORT.md: ✅ Updated in this commit
+- .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md: ✅ Updated in this commit
 - CHANGELOG.md: ✅ Updated in this commit
 - Codebase left better: ✅ (61 mypy errors, 9 skip stubs, 3 regressions fixed)

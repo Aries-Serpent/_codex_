@@ -344,20 +344,20 @@ export RAY_memory=8000000000
 codex-ml-v0.1.0-core.zip (8-15 MB)
 ├── wheels/ (21 packages with platform-specific binaries)
 ├── requirements/core.txt
-├── INSTALL.md
+├── .codex/archive/misc/INSTALL.md
 └── verify.sha256
 
 codex-ml-v0.1.0-runtime.zip (20-35 MB)
 ├── wheels/ (43 packages including torch, transformers)
 ├── models.tar.gz (separate download, ~1 GB)
 ├── requirements/runtime.txt
-├── INSTALL.md
+├── .codex/archive/misc/INSTALL.md
 └── verify.sha256
 
 codex-ml-v0.1.0-full.zip (100+ MB)
 ├── wheels/ (82 packages all dev/test/doc tools)
 ├── requirements/full.txt
-├── INSTALL.md
+├── .codex/archive/misc/INSTALL.md
 └── verify.sha256
 ```
 

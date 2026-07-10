@@ -113,7 +113,7 @@ Phase 4 executes three concurrent work streams focused on continuous improvement
 **Tasks:**
 1. **Compliance Audit (REQ-4 + REQ-5)**
    - Run: `python scripts/ci/session_wrapup_autofix.py --check --pr-number 5084`
-   - Verify: AGENT_ACCOUNTABILITY_REPORT.md in last commit
+   - Verify: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md in last commit
    - Verify: CHANGELOG.md in last commit
    - Document pass/fail for each requirement
 
@@ -139,7 +139,7 @@ Phase 4 executes three concurrent work streams focused on continuous improvement
 5. **Deliverables:**
    - `.codex/PHASE_4_LINK_VALIDATION_REPORT.md` (new)
    - `.codex/PHASE_4_DOC_MAINTENANCE_ROADMAP.md` (new)
-   - AGENT_ACCOUNTABILITY_REPORT.md (Phase 4 status update)
+   - .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (Phase 4 status update)
    - CHANGELOG.md (Phase 4 entry with compliance note)
 
 **Success Criteria:**
@@ -189,7 +189,7 @@ Phase 4 executes three concurrent work streams focused on continuous improvement
 
 ### Phase 4D: Documentation & Sign-Off (60-90 min)
 - [⏳] Create Phase 4 Campaign Summary
-- [⏳] Update AGENT_ACCOUNTABILITY_REPORT.md with Phase 4 completion
+- [⏳] Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with Phase 4 completion
 - [⏳] Verify compliance gates (REQ-4/REQ-5)
 - [⏳] Decide: Phase 5 Ready? Escalate? Continue Phase 4?
 - [🕐] Estimated: 10-15 min
@@ -255,7 +255,7 @@ Phase 4 executes three concurrent work streams focused on continuous improvement
 - `.codex/archive/pr-resolutions/PR_3095_RESOLUTION_PATTERNS.md` — Pattern library
 
 **Documentation:**
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — Compliance tracking
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — Compliance tracking
 - `CHANGELOG.md` — Change log (to update)
 - `GitHub Pages`: https://aries-serpent.github.io/_codex_/
 
@@ -265,7 +265,7 @@ Phase 4 executes three concurrent work streams focused on continuous improvement
 
 **Authority:** CAD-Mandate Phase 4  
 **Autonomy Level:** D (Full Autonomy)  
-**Compliance Gates:** REQ-1 through REQ-5 (tracking via AGENT_ACCOUNTABILITY_REPORT.md)  
+**Compliance Gates:** REQ-1 through REQ-5 (tracking via .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md)  
 **Escalation:** Issues requiring human decision → @mbaetiong  
 
 ---

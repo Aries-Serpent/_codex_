@@ -286,7 +286,7 @@ All profiles support offline installation. Use `OFFLINE_BOOTSTRAP.sh`:
   --artifact ./dist/codex_ml-0.1.0-py3-none-any.whl
 ```
 
-See [OFFLINE_DEPLOYMENT.md](OFFLINE_DEPLOYMENT.md) for details.
+See [docs/release/OFFLINE_DEPLOYMENT.md](docs/release/OFFLINE_DEPLOYMENT.md) for details.
 
 ---
 
@@ -326,8 +326,8 @@ python -c "from cognitive_brain import Planner; print('OK')"
 
 ## Next Steps
 
-- **Core users:** See [INSTALL.md](INSTALL.md) for offline deployment
-- **Runtime users:** Check [INTEGRATION.md](INTEGRATION.md) for API integration
+- **Core users:** See [.codex/archive/misc/INSTALL.md](.codex/archive/misc/INSTALL.md) for offline deployment
+- **Runtime users:** Check [docs/api/reference/INTEGRATION.md](docs/api/reference/INTEGRATION.md) for API integration
 - **Full profile:** See [docs/](docs/) for development guides and API reference
 - **All users:** Review [README.md](README.md) for overview
 

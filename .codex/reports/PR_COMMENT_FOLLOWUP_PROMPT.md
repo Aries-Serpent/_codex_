@@ -57,7 +57,7 @@ Per the **AI Agency Policy**, all issues must be addressed regardless of scope:
 **Status:** ⏳ To be fixed
 
 #### 2. Remaining Root Files (In-Scope)
-**Files:** `docs/analysis/PR_3133_ANALYSIS.md`, `AGENTS.md`  
+**Files:** `docs/analysis/PR_3133_ANALYSIS.md`, `.codex/archive/deprecated/AGENTS.md`  
 **Status:** ⏳ Planned for Phase 2
 
 #### 3. Directory Duplication (Discovered)
@@ -101,7 +101,7 @@ Context:
 
 Phase 2 Objectives:
 1. Move docs/analysis/PR_3133_ANALYSIS.md → docs/analysis/
-2. Move AGENTS.md → appropriate location (6 refs confirmed)
+2. Move .codex/archive/deprecated/AGENTS.md → appropriate location (6 refs confirmed)
 3. Validate all documentation links
 4. Update Cognitive Brain status
 
@@ -208,7 +208,7 @@ Follow complete instructions at:
 
 Objectives:
 1. Move docs/analysis/PR_3133_ANALYSIS.md → docs/analysis/
-2. Move AGENTS.md → appropriate location
+2. Move .codex/archive/deprecated/AGENTS.md → appropriate location
 3. Validate all documentation links
 4. Update Cognitive Brain status
 

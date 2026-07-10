@@ -159,7 +159,7 @@ Final Checkpoint: 2026-06-21T12:00Z (all verifications complete)
 - **Action:** Complete before 12:00Z transition
 
 **☑ 4. Update Accountability & Changelog**
-- [ ] Add entry to `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- [ ] Add entry to `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
   - Session: End-to-end implementation planning
   - Output: 3 strategic documents created
   - Status: PLANNING COMPLETE, EXECUTION STAGED
@@ -302,7 +302,7 @@ Final Checkpoint: 2026-06-21T12:00Z (all verifications complete)
 - Format: Status update with progress indicator
 
 ### Accountability Tracking
-**Location:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+**Location:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - REQ-4 Compliance: Updated with session activities
 - Format: Markdown checklist with timestamps
 - Frequency: End of session

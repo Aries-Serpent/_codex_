@@ -247,7 +247,7 @@ gh release view v0.1.0 --repo Aries-Serpent/_codex_
 ```
 
 ### Accountability
-- Update AGENT_ACCOUNTABILITY_REPORT.md
+- Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 - Mark v0.1.0 as PRODUCTION RELEASED
 - Document method and findings
 

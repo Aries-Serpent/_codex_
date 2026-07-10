@@ -22,7 +22,7 @@
 | W-093b | `cognitive-brain-session-injector.md` v1.1 — COGNITIVE_BRAIN_ALLOWED_ACTORS now active | ✅ Done |
 | W-093c | This status file — cognitive brain continuity | ✅ Done |
 | W-093d | `FOLLOWUP_PROMPT_PR3492.md` — chain prompt for next session | ✅ Done |
-| REQ-4 | `AGENT_ACCOUNTABILITY_REPORT.md` updated (W-091, W-092, W-093) | ✅ Done |
+| REQ-4 | `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` updated (W-091, W-092, W-093) | ✅ Done |
 | REQ-5 | `CHANGELOG.md` updated (W-091, W-092, W-093) | ✅ Done |
 
 ---

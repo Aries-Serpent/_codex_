@@ -43,7 +43,7 @@ Notes:
 | PR-A2 | 0C_base_ | CI session split + markers | noxfile.py (tests/ml_tests/eval_tests); pytest markers in configs |
 | PR-A3 | 0C_base_ | Vendor guard step | CI job pre-test step invoking vendor scan (fail-fast) |
 | PR-B1 | 0D_base_ | Evidence-enabled scripts | scripts/setup.sh, scripts/maintenance.sh (rc5) with dependency_ops.jsonl logging |
-| PR-B2 | 0D_base_ | Agents & docs updates | AGENTS.md, docs/analysis/dependency_space_triage.md, CHANGELOG.md |
+| PR-B2 | 0D_base_ | Agents & docs updates | .codex/archive/deprecated/AGENTS.md, docs/analysis/dependency_space_triage.md, CHANGELOG.md |
 | PR-B3 | 0D_base_ | ADRs for large families | docs/arch/ADR-2025-11-XX-dependency-segmentation.md |
 | PR-C1 | main | Enable minimal augmentation by default in CPU posture | Default CODEX_CPU_MINIMAL=1 for CI; keep developer opt-in documented |
 
@@ -159,13 +159,13 @@ Impact:
 | Hidden transitive pulls | Disk bloat returns | Lock scan + vendor audit; set ABORT_ON_GPU_PULL=1 in CI |
 | Test drift due to missing ML deps | False failures | Use markers/importorskip; install segmented sets in target sessions |
 | Lock prune aggression | Build inconsistency | Default to dry-run; capture diff; apply only when validated |
-| Developer friction | Onboarding overhead | Update AGENTS.md with clear session usage & toggles |
+| Developer friction | Onboarding overhead | Update .codex/archive/deprecated/AGENTS.md with clear session usage & toggles |
 
 ---
 
 ## 11) Documentation & Agents Update
 
-- Update AGENTS.md with:
+- Update .codex/archive/deprecated/AGENTS.md with:
   - Dependency Retention & Segmentation table
   - Evidence stream: .codex/evidence/dependency_ops.jsonl
   - Session usage examples (nox -s ...)
@@ -214,7 +214,7 @@ Impact:
 | scripts/setup.sh | Platform | rc5 adds evidence logging; lock prune evidence; minimal augment evidence |
 | scripts/maintenance.sh | Platform | rc5 maintenance parity; preflight FIRST_SYNC_DONE=1 |
 | noxfile.py | Platform/QA | Session split + markers |
-| AGENTS.md | Docs/Platform | New sections per plan |
+| .codex/archive/deprecated/AGENTS.md | Docs/Platform | New sections per plan |
 | requirements-*.txt | Platform | Segmented install surfaces |
 | docs/analysis/dependency_space_triage.md | Platform | Triaged tables (Ref: f40ff2…) |
 | docs/arch/ADR-2025-11-XX-*.md | Architecture | Dependency segmentation ADR |

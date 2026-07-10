@@ -487,7 +487,7 @@ external_links:
   base_url: https://github.com/Aries-Serpent/_codex_/blob/main/
 
   patterns:
-    - ../AGENTS.md -> ${base_url}AGENTS.md
+    - ../.codex/archive/deprecated/AGENTS.md -> ${base_url}.codex/archive/deprecated/AGENTS.md
     - ../pyproject.toml -> ${base_url}pyproject.toml
 
   auto_convert: true

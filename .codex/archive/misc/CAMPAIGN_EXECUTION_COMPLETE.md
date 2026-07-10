@@ -189,7 +189,7 @@ Coverage by Component:
 - ✅ `.codex/campaign-artifacts/track-1-coverage/TRACK_1_DAILY_REPORT_20260616.md`
 - ✅ `.codex/campaign-artifacts/track-1-coverage/TRACK_1_COMPREHENSIVE_REPORT.md`
 - ✅ `PHASE_B_TRACK_1_COMPLETION.txt`
-- ✅ `CAMPAIGN_EXECUTION_COMPLETE.md` (this file)
+- ✅ `.codex/archive/misc/CAMPAIGN_EXECUTION_COMPLETE.md` (this file)
 
 ---
 

@@ -29,7 +29,7 @@ class TargetedLinkFixer:
             'ROADMAP.md': 'docs/ROADMAP.md',
             'GENESIS_SETUP_GUIDE.md': 'docs/admin/GENESIS_SETUP_GUIDE.md',
             'OPERATIONAL_GUIDELINES.md': 'docs/agent/OPERATIONAL_GUIDELINES.md',
-            'AGENTS.md': '.github/AGENTS.md',
+            '.codex/archive/deprecated/AGENTS.md': '.github/.codex/archive/deprecated/AGENTS.md',
             'ARCHITECTURE.md': 'docs/ARCHITECTURE.md',
             'COGNITIVE_ARCHITECTURE.md': '.github/agents/ARCHITECTURE.md',
 

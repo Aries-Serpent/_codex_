@@ -262,7 +262,7 @@ into deleted `htmlcov/`/coverage artifacts.
 | `main.md` | 12 |
 | `examples.md` | 10 |
 | `advanced.md` | 8 |
-| `AGENTS.md` | 8 |
+| `.codex/archive/deprecated/AGENTS.md` | 8 |
 | `IMPLEMENTATION_SUMMARY.md` | 5 |
 | `ARCHITECTURE.md` / `architecture.md` | 5 / 5 |
 | `CONTRIBUTING.md` | 5 |
@@ -297,7 +297,7 @@ The repository root holds **120 top-level `.md`/`.txt` files** (83 `.md`), inclu
 one-off reports (`PHASE_*`, `SECURITY_*`, `SEMGREP_*`, `TERMINOLOGY_*`, `AUDIT_*`,
 `REMEDIATION_*`). These should be relocated to `.codex/archive/` or `reports/`, leaving only
 canonical entrypoints (`README.md`, `CONTRIBUTING.md`, `SECURITY.md`, `CHANGELOG.md`,
-`CODE_OF_CONDUCT.md`, `AGENTS.md`) at root.
+`CODE_OF_CONDUCT.md`, `.codex/archive/deprecated/AGENTS.md`) at root.
 
 ### 5.4 Consistency Issues
 

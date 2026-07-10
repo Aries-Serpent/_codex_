@@ -218,7 +218,7 @@
     "wec_gates_failed": 0,
     "req_4_compliance": {
       "status": "compliant",
-      "requirement": "AGENT_ACCOUNTABILITY_REPORT.md updated",
+      "requirement": ".codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated",
       "agents_documented": 36,
       "findings_captured": 13228
     },

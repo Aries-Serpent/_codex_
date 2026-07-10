@@ -75,7 +75,7 @@ The Aries-Serpent/_codex_ repository has successfully completed **all production
 **Report:** `.codex/PHASE_5C_COMPLIANCE_REPORT.md`
 
 **Compliance Results:**
-- ✅ **REQ-4: AGENT_ACCOUNTABILITY_REPORT.md** — SATISFIED
+- ✅ **REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md** — SATISFIED
 - ✅ **REQ-5: CHANGELOG.md** — SATISFIED
 - ✅ **185 Active Workflows** — Audited & validated
 - ✅ **Concurrency Config:** 99.5% (184/185)
@@ -163,7 +163,7 @@ The Aries-Serpent/_codex_ repository has successfully completed **all production
 
 **Campaign Tracking:**
 - ✅ `.codex/PHASE_4_5_CAMPAIGN_TRACKER.md` (execution timeline)
-- ✅ `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (updated with Phase 5)
+- ✅ `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (updated with Phase 5)
 - ✅ `CHANGELOG.md` (updated with Phase 5 summary)
 
 **Total Artifacts:** 12 major reports + 5 new test files + agent-generated commits

@@ -35,12 +35,12 @@
 | `README.md` | ✅ Valid | Today | Repository entry point |
 | `docs/index.md` | ✅ Valid | Today | Documentation homepage |
 | `CHANGELOG.md` | ✅ Valid | Today | Change log (REQ-5 compliant) |
-| `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | ✅ Valid | Today | Accountability tracking (REQ-4 compliant) |
+| `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` | ✅ Valid | Today | Accountability tracking (REQ-4 compliant) |
 | `docs/agent/` (15 files) | ✅ All Valid | Today | Copilot agent documentation |
 | `docs/admin/` (8 files) | ✅ All Valid | Today | Admin documentation |
 
 **Compliance Status**:
-- ✅ **REQ-4**: AGENT_ACCOUNTABILITY_REPORT.md exists and is valid
+- ✅ **REQ-4**: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md exists and is valid
 - ✅ **REQ-5**: CHANGELOG.md exists and is valid
 - ✅ **Navigation**: All critical paths accessible from index
 
@@ -195,7 +195,7 @@ Validation checklist:
 
 | Requirement | Status | Evidence |
 |-------------|--------|----------|
-| **REQ-4**: AGENT_ACCOUNTABILITY_REPORT.md in latest commit | ✅ PASS | File exists, validated |
+| **REQ-4**: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md in latest commit | ✅ PASS | File exists, validated |
 | **REQ-5**: CHANGELOG.md in latest commit | ✅ PASS | File exists, validated |
 | **Link Validation**: 0 broken links in critical docs | ✅ PASS | All critical paths working |
 | **Freshness**: All docs < 30 days old | ✅ PASS | All docs < 1 day old |

@@ -44,7 +44,7 @@
 - Created day 1 execution checkpoint
 - Committed all test files and artifacts
 - Updated CHANGELOG.md (REQ-5)
-- Created AGENT_ACCOUNTABILITY_REPORT.md (REQ-4)
+- Created .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (REQ-4)
 - **Duration**: 15 minutes
 
 ### Autonomous Decisions Made
@@ -88,7 +88,7 @@
 
 #### Requirements Met
 
-- ✅ **REQ-4**: AGENT_ACCOUNTABILITY_REPORT.md created with session summary
+- ✅ **REQ-4**: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md created with session summary
 - ✅ **REQ-5**: CHANGELOG.md updated with all test additions and metrics
 - ✅ **Zero Secrets**: No credentials, tokens, or sensitive data in test files
 - ✅ **Repository Tracked**: All artifacts in .codex/ and tests/ directories
@@ -131,7 +131,7 @@ tests/test_cli_integration.py             32 tests  | 520 lines
 .codex/PHASE_3_WAVE_5_LANE_4_INITIALIZATION.md      (checkpoint)
 .codex/PHASE_3_WAVE_5_LANE_4_CHECKPOINT_DAY_1_EXECUTION.md (checkpoint)
 CHANGELOG.md (updated)                             (compliance)
-AGENT_ACCOUNTABILITY_REPORT.md                     (compliance)
+.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md                     (compliance)
 ────────────────────────────────────────────────────────────
 TOTAL: 170 tests | 2,310 lines | 2 checkpoints | 2 compliance
 ```
@@ -379,7 +379,7 @@ Route to primary or fallback agent
 
 #### Requirements Met
 
-- ✅ **REQ-4**: AGENT_ACCOUNTABILITY_REPORT.md created with full session summary
+- ✅ **REQ-4**: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md created with full session summary
 - ✅ **REQ-5**: CHANGELOG.md updated with TIER 1 lead coordination entry
 - ✅ **Zero Secrets**: No credentials, tokens, API keys in any deliverables
 - ✅ **Repository Tracked**: All artifacts in .codex/ directory
@@ -520,7 +520,7 @@ This session continues the Track 2 (FIX TRACK) remediation campaign for PR #5190
 - **Task**: Document Phase B/C outcomes in governance records
 - **Status**: EXECUTING
   - ✅ CHANGELOG.md: Phase C entry added with execution status and timeline
-  - ⏳ AGENT_ACCOUNTABILITY_REPORT.md: Phase C session entry being added
+  - ⏳ .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md: Phase C session entry being added
 - **Expected Outcome**: Full governance audit trail for Track 2 campaign
 
 #### C.4: Tier 2 Unblock (Ready to Queue) ⏳ QUEUING
@@ -582,7 +582,7 @@ This session continues the Track 2 (FIX TRACK) remediation campaign for PR #5190
 
 **Phase C (In Progress)**:
 - ✅ CHANGELOG.md (updated with Phase C entry)
-- ⏳ AGENT_ACCOUNTABILITY_REPORT.md (Phase C session entry)
+- ⏳ .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (Phase C session entry)
 - ⏳ PHASE_C_EXECUTION_REPORT.md (final validation summary)
 
 **Phase D (Queued)**:

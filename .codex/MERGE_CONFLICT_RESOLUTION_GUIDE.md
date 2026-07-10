@@ -156,7 +156,7 @@ git rebase --continue
 - Agent documentation
 
 #### Source Documentation (src/)
-- MCP AGENTS.md
+- MCP .codex/archive/deprecated/AGENTS.md
 - Planning documents
 
 #### Test Documentation (tests/)

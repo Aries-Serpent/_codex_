@@ -57,4 +57,4 @@ From `python3 -m pytest tests/unit/test_continuous_learning.py tests/unit/test_d
 - `fail_under` in `pyproject.toml` raised to **20** (session 3: 313 tests added across 8+ modules).
 - 97 untested modules identified in `src/codex_ml` alone.
 - Wave 3/4 contributions added 15+ new source modules; all starting at 0% coverage.
-- Each coverage commit must include `CHANGELOG.md` + `AGENT_ACCOUNTABILITY_REPORT.md` (REQ-4/REQ-5).
+- Each coverage commit must include `CHANGELOG.md` + `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (REQ-4/REQ-5).

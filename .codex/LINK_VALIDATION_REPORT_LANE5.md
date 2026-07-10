@@ -51,7 +51,7 @@
 ✅ ./docs/architecture/README.md → ./docs/architecture/OODA_LOOP.md
 ✅ ./docs/deployment/README.md → ./docs/deployment/offline/README.md
 ✅ README.md → ./CONTRIBUTING.md
-✅ AGENTS.md → ./docs/agent/ (cross-reference)
+✅ .codex/archive/deprecated/AGENTS.md → ./docs/agent/ (cross-reference)
 ```
 
 **Acceptance**: ✅ **PASS** - Internal links are solid. Ready for consolidation work.
@@ -111,9 +111,9 @@
 |----------|---|---|---|
 | README.md | 12 | 3 | ✅ OK |
 | CONTRIBUTING.md | 8 | 2 | ✅ OK |
-| AGENTS.md | 15 | 5 | ✅ OK |
+| .codex/archive/deprecated/AGENTS.md | 15 | 5 | ✅ OK |
 | SECURITY.md | 6 | 1 | ✅ OK |
-| INSTALL.md | 4 | 2 | ✅ OK |
+| .codex/archive/misc/INSTALL.md | 4 | 2 | ✅ OK |
 
 ### Documentation Directories
 | Directory | Files Checked | Internal Links | Status |
@@ -151,8 +151,8 @@ These are documentation conflicts identified during link validation:
 #### Conflict 1: Multiple Quickstart Entry Points
 ```
 Found:
-- ./QUICKSTART_BY_PROFILE.md (root)
-- ./docs/QUICKSTART_BY_PROFILE.md (docs mirror)
+- ./docs/quickstart/QUICKSTART_BY_PROFILE.md (root)
+- ./docs/docs/quickstart/QUICKSTART_BY_PROFILE.md (docs mirror)
 - ./docs/onboarding/QUICK_START.md (alternative)
 - ./PHASE_13_3_QUICK_START.md (outdated)
 
@@ -163,11 +163,11 @@ Action: Consolidate to single canonical location
 #### Conflict 2: Offline Deployment Guides
 ```
 Found:
-- ./OFFLINE_DEPLOYMENT.md (root)
-- ./ISOLATED_DEPLOYMENT.md (root - overlapping)
+- ./docs/release/OFFLINE_DEPLOYMENT.md (root)
+- ./docs/release/ISOLATED_DEPLOYMENT.md (root - overlapping)
 - ./docs/offline_quickstart.md (docs)
 - ./docs/OFFLINE_QUICKSTART.md (docs mirror)
-- ./docs/ISOLATED_DEPLOYMENT.md (docs duplicate)
+- ./docs/docs/release/ISOLATED_DEPLOYMENT.md (docs duplicate)
 
 Issue: 5+ sources for same task, potential conflicts
 Action: Consolidate and establish single truth source
@@ -240,7 +240,7 @@ Action: Consolidate into single docs/api/ structure
 
 ### Redirect Example
 ```markdown
-# QUICKSTART_BY_PROFILE.md (OLD - Root)
+# docs/quickstart/QUICKSTART_BY_PROFILE.md (OLD - Root)
 
 > **Note**: This document has been consolidated. 
 > **See instead**: [Unified Quickstart](docs/quickstart/README.md)

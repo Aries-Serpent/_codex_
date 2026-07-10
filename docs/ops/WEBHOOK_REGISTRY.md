@@ -318,7 +318,7 @@ For interactive Codespace sessions, the webhook receiver URL is **automatically 
 [ ] Run list to confirm hook IDs written to .codex/webhook_registry.json:
       @agent-infra list-webhooks
 [ ] Update this registry file with live hook IDs and creation timestamps
-[ ] Update docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+[ ] Update docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 [ ] Update CHANGELOG.md
 ```
 

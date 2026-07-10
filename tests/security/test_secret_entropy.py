@@ -1,6 +1,6 @@
 """Tests for secret entropy validation.
 
-Ensures credentials meet minimum security standards per AGENTS.md
+Ensures credentials meet minimum security standards per .codex/archive/deprecated/AGENTS.md
 security policy.
 """
 

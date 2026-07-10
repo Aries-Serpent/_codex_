@@ -27,7 +27,7 @@ Many links reference files that don't exist:
 - `docs/modules/model_registry.md` (referenced from MODEL_REGISTRY.md)
 - `docs/CODE_STYLE.md` (referenced from PR_TEMPLATE_COMPREHENSIVE.md)
 - `docs/TESTING.md` (referenced from PR_TEMPLATE_COMPREHENSIVE.md)
-- `AGENTS.md` (referenced from PR_TEMPLATE_COMPREHENSIVE.md)
+- `.codex/archive/deprecated/AGENTS.md` (referenced from PR_TEMPLATE_COMPREHENSIVE.md)
 - `../ACCEPTANCE_CRITERIA_VERIFICATION.md` (multiple references)
 
 ### Category: Moved/Renamed Files

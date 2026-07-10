@@ -201,7 +201,7 @@ There are zero factors pointing toward no-go:
 - **Campaign Authority:** ✅ ACTIVE & EXERCISED
 
 ### Compliance Verification
-- ✅ **REQ-4:** AGENT_ACCOUNTABILITY_REPORT.md updated
+- ✅ **REQ-4:** .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated
 - ✅ **REQ-5:** CHANGELOG.md updated
 - ✅ **Governance:** All policies satisfied
 - ✅ **Audit Trail:** Full provenance logged

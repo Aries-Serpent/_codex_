@@ -130,7 +130,7 @@ EXECUTION (Phases 4-7A)                   ████████████�
 4. Blockers: Any blocking issues requiring escalation
 5. Coordination: Cross-lane dependencies
 
-**Reports Location:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+**Reports Location:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 ---
 
@@ -172,7 +172,7 @@ EXECUTION (Phases 4-7A)                   ████████████�
 - Lane 3.2: `.codex/PHASE_7A_LANE_32_CHECKPOINT_DAY_*.md` (14 daily reports)
 
 **Accountability:**
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — Session tracking (updated daily)
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — Session tracking (updated daily)
 
 ---
 

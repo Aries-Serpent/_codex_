@@ -463,7 +463,7 @@ Target: 25+ new tests
 
 ## 📋 Compliance Checklist
 
-### REQ-4: AGENT_ACCOUNTABILITY_REPORT.md Update
+### REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md Update
 - [x] Document semantic assertion framework
 - [x] List all enhanced modules
 - [x] Provide metrics and statistics

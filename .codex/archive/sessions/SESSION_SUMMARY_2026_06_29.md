@@ -147,7 +147,7 @@ Created comprehensive **6-lane parallel campaign** addressing both CI failures:
 
 **Deliverables:**
 - `docs/WORKFLOW_AUDIT_SUMMARY.md` (14 KB)
-- `WORKFLOW_CLEANUP_IMPLEMENTATION_CHECKLIST.md` (4 KB)
+- `.codex/archive/implementations/WORKFLOW_CLEANUP_IMPLEMENTATION_CHECKLIST.md` (4 KB)
 - `docs/WORKFLOW_REMEDIATION_GUIDE.md` (4 KB)
 - `workflow-audit-report.json` (1.7 MB)
 - `workflow-impact-matrix.csv` (9 KB)
@@ -227,7 +227,7 @@ Created comprehensive **6-lane parallel campaign** addressing both CI failures:
 
 ### Analysis & Audit Reports
 - ✅ docs/WORKFLOW_AUDIT_SUMMARY.md (14 KB)
-- ✅ WORKFLOW_CLEANUP_IMPLEMENTATION_CHECKLIST.md (4 KB)
+- ✅ .codex/archive/implementations/WORKFLOW_CLEANUP_IMPLEMENTATION_CHECKLIST.md (4 KB)
 - ✅ docs/WORKFLOW_REMEDIATION_GUIDE.md (4 KB)
 - ✅ docs/WORKFLOW_QUICK_REFERENCE.md (4 KB)
 - ✅ workflow-audit-report.json (1.7 MB)

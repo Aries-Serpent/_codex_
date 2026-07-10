@@ -453,7 +453,7 @@ def main() -> None:
         f"1. Load `.codex/CODEBASE_AGENCY_POLICY.md` (§0 — fix ALL issues found)\n"
         f"2. Check each failing workflow run linked below\n"
         f"3. Apply the minimal fix and push\n"
-        f"4. Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`\n"
+        f"4. Update `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`\n"
         f"5. Verify all CI checks are green before concluding\n\n"
         f"</details>\n\n"
         f"{ctx_section}"

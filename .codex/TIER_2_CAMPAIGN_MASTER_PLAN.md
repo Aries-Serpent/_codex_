@@ -369,7 +369,7 @@ OVERALL PHASE 9 TRAJECTORY:
 
 ### Documentation Requirements
 - ✅ All deliverables in `.codex/` directory (artifact retention policy)
-- ✅ All agent delegations in AGENT_ACCOUNTABILITY_REPORT.md (REQ-4)
+- ✅ All agent delegations in .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (REQ-4)
 - ✅ Campaign activities in CHANGELOG.md (REQ-5)
 - ✅ Decision logs maintained (decision logger & confidence scorer)
 - ✅ WEC (Workflow Execution Checklist) in PR body
@@ -403,7 +403,7 @@ OVERALL PHASE 9 TRAJECTORY:
 - `.codex/GATE_VALIDATION_PROCEDURES.md` — Gate success criteria & validation
 
 **Implementation:**
-- Deliverable tracking in AGENT_ACCOUNTABILITY_REPORT.md
+- Deliverable tracking in .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 - Campaign metrics in CHANGELOG.md
 - Agent briefs in individual TIER execution documents
 

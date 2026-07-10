@@ -76,15 +76,15 @@ Option C: Update all references
 
 **Description:**
 Agent documentation references missing deprecation notice files:
-- `.github/agents/google-home-script-agent.md` → `../../GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md`
-- `.github/agents/energy-conversion-agent.md` → `../../ENERGY_CONVERSION_AGENT_DEPRECATION.md`
+- `.github/agents/google-home-script-agent.md` → `../../.codex/archive/deprecated/GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md`
+- `.github/agents/energy-conversion-agent.md` → `../../.codex/archive/deprecated/ENERGY_CONVERSION_AGENT_DEPRECATION.md`
 
 **Root Cause:** Agent deprecation notices not created during agent lifecycle management.
 
 **Recommended Resolution:**
 ```
-1. Create GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md in repo root
-2. Create ENERGY_CONVERSION_AGENT_DEPRECATION.md in repo root
+1. Create .codex/archive/deprecated/GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md in repo root
+2. Create .codex/archive/deprecated/ENERGY_CONVERSION_AGENT_DEPRECATION.md in repo root
 
 Content template:
 ---
@@ -208,12 +208,12 @@ The reference graph identifies files serving as critical hubs in the documentati
    Effort: 1-2 hours
    Impact: 8 files affected
    
-2. P1_002: Create GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md
+2. P1_002: Create .codex/archive/deprecated/GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md
    Status: NOT STARTED
    Effort: 30 minutes
    Impact: 1 file affected
    
-3. P1_003: Create ENERGY_CONVERSION_AGENT_DEPRECATION.md
+3. P1_003: Create .codex/archive/deprecated/ENERGY_CONVERSION_AGENT_DEPRECATION.md
    Status: NOT STARTED
    Effort: 30 minutes
    Impact: 1 file affected

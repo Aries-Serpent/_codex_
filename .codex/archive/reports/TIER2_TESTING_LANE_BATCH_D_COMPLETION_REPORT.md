@@ -43,7 +43,7 @@
 
 ## Key Deliverable: Failure Pattern Library
 
-**File**: TIER2_TESTING_LANE_BATCH_D_FAILURE_PATTERN_LIBRARY.md
+**File**: .codex/archive/misc/TIER2_TESTING_LANE_BATCH_D_FAILURE_PATTERN_LIBRARY.md
 **Size**: 24 KB
 **Structure**: 8 categories with 120+ documented patterns
 **Commit**: [284c06d5] feat: Tier 2 Testing Lane Batch D...
@@ -299,7 +299,7 @@ for priority_tier in [QUICK_WINS, MEDIUM, COMPLEX]:
 ## Knowledge Transfer
 
 ### For Future Sessions
-1. **Pattern Library Location**: TIER2_TESTING_LANE_BATCH_D_FAILURE_PATTERN_LIBRARY.md
+1. **Pattern Library Location**: .codex/archive/misc/TIER2_TESTING_LANE_BATCH_D_FAILURE_PATTERN_LIBRARY.md
 2. **Source Analysis**: tests/conftest.py (2,063 lines, lines 348-950+ contain patterns)
 3. **Infrastructure**: scripts/ci/rvs_preflight.py (batch scan runner)
 4. **Quick Reference**: Priority matrix with effort estimates (Section: "Remediation Priority Matrix")
@@ -315,7 +315,7 @@ for priority_tier in [QUICK_WINS, MEDIUM, COMPLEX]:
 
 | Deliverable | Status | Location | Format |
 |------------|--------|----------|--------|
-| Failure Pattern Library | ✅ COMPLETE | TIER2_TESTING_LANE_BATCH_D_FAILURE_PATTERN_LIBRARY.md | Markdown |
+| Failure Pattern Library | ✅ COMPLETE | .codex/archive/misc/TIER2_TESTING_LANE_BATCH_D_FAILURE_PATTERN_LIBRARY.md | Markdown |
 | Root Cause Analysis | ✅ COMPLETE | Section: PATTERN CATEGORY 1-8 | Documented |
 | Remediation Templates | ✅ COMPLETE | Fix Strategy subsections | Code snippets |
 | Priority Matrix | ✅ COMPLETE | Section: REMEDIATION STRATEGY | Table + effort |

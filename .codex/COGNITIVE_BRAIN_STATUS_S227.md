@@ -151,5 +151,5 @@ All 34 delegated-comment workflows now use:
 - [x] §0a — All `mbaetiong` comments reviewed and explicitly addressed (see comments below)
 - [x] §0b — All bot-posted comments reviewed: 5 code-quality findings fixed,
              2 gemini findings fixed (trailing newline, future-date noted as intentional)
-- [x] REQ-4 — `AGENT_ACCOUNTABILITY_REPORT.md` updated
+- [x] REQ-4 — `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` updated
 - [x] REQ-13 — PR comment review gate active and passing

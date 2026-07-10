@@ -119,7 +119,7 @@ STAGE 3: ⏳ PENDING (Convergence & Finalization)
 ⏳ Consolidated execution dashboard  
 ⏳ Final gate validation checklist  
 ⏳ Campaign completion report  
-⏳ Updated AGENT_ACCOUNTABILITY_REPORT.md (REQ-4)  
+⏳ Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (REQ-4)  
 ⏳ Updated CHANGELOG.md (REQ-5)  
 
 ---

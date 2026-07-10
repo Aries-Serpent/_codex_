@@ -36,7 +36,7 @@
 - [ ] Task 3.3: Mypy validation
 - [ ] Task 3.4: Update failure analysis
 - [ ] Task 3.5: Create fix manifest
-- [ ] Task 3.6: Update AGENTS.md
+- [ ] Task 3.6: Update .codex/archive/deprecated/AGENTS.md
 - [ ] Task 3.7: Verify no new workflows
 
 ---

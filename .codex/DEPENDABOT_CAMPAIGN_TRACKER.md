@@ -141,7 +141,7 @@ Expected Efficiency Gain: ~66% time savings vs. sequential
   - `.codex/AGENT_CI_VALIDATION_REPORT.md`
   - `.codex/AGENT_SECURITY_REPORT.md`
   - `.codex/AGENT_CONFLICT_REPORT.md`
-- Session Accountability: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- Session Accountability: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 ---
 

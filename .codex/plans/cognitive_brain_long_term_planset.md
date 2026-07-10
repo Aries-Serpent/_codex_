@@ -852,7 +852,7 @@ schema_targets:
     - drift_severity, main_commits_ahead, mitigation_applied
 
 auto_population_targets:
-  - docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md (session block)
+  - docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (session block)
   - CHANGELOG.md ([Unreleased] entry)
   - docs/roadmap/PR<id>_whats_next.md (status table)
   - .codex/aftermath/pda_iterations.jsonl (PDA loop feed)

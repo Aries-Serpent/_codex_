@@ -516,7 +516,7 @@ def api_call_with_retry(url, token, max_retries=3):
 ## 🔗 Related Documentation
 
 - **TOKEN_HIERARCHY_GUIDE.md** - Token selection
-- **SCRIPT_TOKEN_INTEGRATION.md** - Integration patterns
+- **SCRIPT_TOKEN_docs/api/reference/INTEGRATION.md** - Integration patterns
 - **WORKFLOW_TOKEN_PATTERNS_UPDATE.md** - Workflow patterns
 - **CI_CD_TOKEN_TROUBLESHOOTING.md** - Error debugging
 

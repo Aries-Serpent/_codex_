@@ -151,7 +151,7 @@ Successfully executed Phase 1 of root folder cleanup, moving **30 files** from r
 - `docs/analysis/PR_3133_ANALYSIS.md` → `docs/analysis/PR_3133_ANALYSIS.md`
 
 **High-Risk Deferred (1):**
-- `AGENTS.md` (6 references - manageable, not 293 as originally thought)
+- `.codex/archive/deprecated/AGENTS.md` (6 references - manageable, not 293 as originally thought)
 
 **Requirements Files (9):**
 - `requirements.txt`
@@ -222,7 +222,7 @@ Reference updates in documentation and configuration:
 1. ✅ **MITIGATED:** Reference breakage → Automatic reference updates
 2. ✅ **MITIGATED:** Documentation link breaks → Validation scanner
 3. ✅ **MITIGATED:** Import statement breaks → Pattern matching updates
-4. ⏳ **DEFERRED:** AGENTS.md move (only 6 refs, manageable)
+4. ⏳ **DEFERRED:** .codex/archive/deprecated/AGENTS.md move (only 6 refs, manageable)
 
 ### Mitigation Actions Taken
 - ✅ Pre-move validation for all files
@@ -306,7 +306,7 @@ Full compliance with Physics Model directives:
 2. ⏳ Investigate directory duplication (`_codex` vs `_codex_`)
 3. ⏳ Consolidate config directories (`config` vs `configs` vs `conf`)
 
-### AGENTS.md Migration (Deferred)
+### .codex/archive/deprecated/AGENTS.md Migration (Deferred)
 - **Status:** Deferred to Phase 3
 - **Risk:** MEDIUM (not HIGH - only 6 references found, not 293)
 - **References:**
@@ -316,7 +316,7 @@ Full compliance with Physics Model directives:
   4. `.github/agents/reference-updater-agent.md`
   5. `.github/copilot-evolution/CHANGELOG.md`
   6. `.github/workflow-archive/backups/2025-12-28/api-documentation.yml`
-- **Recommendation:** Move to `docs/agents/AGENTS.md` or `.github/agents/docs/AGENTS.md`
+- **Recommendation:** Move to `docs/agents/.codex/archive/deprecated/AGENTS.md` or `.github/agents/docs/.codex/archive/deprecated/AGENTS.md`
 - **Action:** Create detailed migration plan with phased execution
 
 ### Future Enhancements

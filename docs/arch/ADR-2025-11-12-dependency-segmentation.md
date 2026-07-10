@@ -80,7 +80,7 @@ Enforce CPU-only posture by default (`CODEX_FORCE_CPU=1`) while enabling *strict
 2. Update `noxfile.py` with session matrix.
 3. Replace `setup.sh` / `maintenance.sh` (rc5) enabling evidence logging support.
 4. Introduce vendor guard script (CI pre-step).
-5. Append segmentation section to `AGENTS.md`.
+5. Append segmentation section to `.codex/archive/deprecated/AGENTS.md`.
 6. Create this ADR.
 7. Add CHANGELOG entry summarizing segmentation and savings.
 8. Post-merge: enable `CODEX_CPU_MINIMAL=1` in baseline if safe (optional optimization).

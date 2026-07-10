@@ -50,7 +50,7 @@ Find modules below threshold, add targeted tests until `fail_under = 60` holds.
 
 ### 4. Update accountability report
 
-File: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`  
+File: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`  
 Add S115 row to session ledger. Mark W-001 through W-007 as done.
 
 ### 5. Update CHANGELOG + change_log + PHASE_11_PLAN + COGNITIVE_BRAIN_STATUS_S115.md
@@ -67,7 +67,7 @@ Standard per-session updates. Do all 4 in one commit.
 | `pyproject.toml` | `fail_under = 60`, version = 0.9.0 |
 | `.github/workflows/agent-auth-delegation.yml` | 3-job: detect → await-approval (env gate) → activate + @copilot continue |
 | `src/codex/cognitive/structural_policy_manager.py` | RBAC tiers, evaluate_permission, TTL cache |
-| `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | Violation log V-001→V-007 |
+| `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` | Violation log V-001→V-007 |
 
 ---
 
@@ -86,7 +86,7 @@ Standard per-session updates. Do all 4 in one commit.
 2. **Never re-read files already in memory.** Trust stored memories.  
 3. **Never call `report_progress` with no code changes.**  
 4. **Fix ALL linting/CI errors encountered** — not just PR-scoped ones.  
-5. **Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` every session.**
+5. **Update `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` every session.**
 
 ---
 

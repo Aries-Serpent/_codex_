@@ -179,7 +179,7 @@ pip is **system-managed** via the system package manager (`apt/dpkg`), not a pro
 
 ## Compliance & Documentation
 
-### REQ-4: AGENT_ACCOUNTABILITY_REPORT.md
+### REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 - ✅ Updated with Phase 5 Track 2 security improvements
 - ✅ Documented vulnerability fixes and justifications
 - ✅ Score impact calculation included

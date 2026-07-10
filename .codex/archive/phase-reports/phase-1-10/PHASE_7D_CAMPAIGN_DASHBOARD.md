@@ -164,13 +164,13 @@ CURRENT ACHIEVEMENT: 98.5/100 (CONDITIONAL APPROVAL issued) 🟡
 ### Artifact Storage Convention ✅ ENFORCED
 - ✅ All outputs in `.codex/PHASE_7D_TRACK_*.md` (repository-tracked, NOT /tmp/)
 - ✅ All agent progress logged to Discussion #4872
-- ✅ All accountability updates to `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (REQ-4)
+- ✅ All accountability updates to `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (REQ-4)
 - ✅ All changelog updates to `CHANGELOG.md` (REQ-5)
 
 ### Campaign Coordination Hub
 - **Central Dashboard:** This file (`.codex/PHASE_7D_CAMPAIGN_DASHBOARD.md`)
 - **Discussion Thread:** https://github.com/Aries-Serpent/_codex_/discussions/4872
-- **Accountability Report:** docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+- **Accountability Report:** docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 - **Changelog:** CHANGELOG.md
 
 ---
@@ -190,7 +190,7 @@ CURRENT ACHIEVEMENT: 98.5/100 (CONDITIONAL APPROVAL issued) 🟡
 | CI/CD Stability | <5% failure rate | Workflow analytics |
 | Governance Gates | 32/32 PASS | Readiness checklist |
 | Stakeholder Approvals | ≥5 | Governance gate log |
-| Accountability | 100% | AGENT_ACCOUNTABILITY_REPORT.md updated |
+| Accountability | 100% | .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated |
 
 **🎯 Campaign Success = ALL 10 metrics ✅ PASS = 100/100 Production Readiness**
 
@@ -201,7 +201,7 @@ CURRENT ACHIEVEMENT: 98.5/100 (CONDITIONAL APPROVAL issued) 🟡
 ### For Track Progress Updates
 - Check agent progress posts to Discussion #4872
 - Refer to respective `.codex/PHASE_7D_TRACK_*.md` report files
-- Monitor `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` for real-time updates
+- Monitor `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` for real-time updates
 
 ### For Blocking Issues
 - Post to Discussion #4872 with specific track and issue details

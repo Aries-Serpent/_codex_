@@ -240,7 +240,7 @@ and defined roles. The energy system maps each role to a bounded domain:
 ```
 ┌──────────────────────────────────────────────────────────────┐
 │                   MetaController (Orchestrator)              │
-│   Routes tasks, resolves conflicts, owns CLAUDE.md context   │
+│   Routes tasks, resolves conflicts, owns .codex/archive/deprecated/CLAUDE.md context   │
 └────────┬─────────────────┬────────────────┬──────────────────┘
          │                 │                │                │
     ┌────▼────┐       ┌────▼────┐    ┌─────▼─────┐   ┌─────▼─────┐
@@ -336,14 +336,14 @@ class MetaController:
 
 ---
 
-## 4. Context Management (CLAUDE.md Equivalent)
+## 4. Context Management (.codex/archive/deprecated/CLAUDE.md Equivalent)
 
 ### Pattern: Persistent Agent Knowledge Base
 
 *Research basis: Softcery (2025) Agentic Coding Best Practices;  
 Cometapi (2025) Managing Claude Code's Context*
 
-Claude Code uses `CLAUDE.md` as a persistent context document injected into
+Claude Code uses `.codex/archive/deprecated/CLAUDE.md` as a persistent context document injected into
 every agent session. The energy system equivalent is:
 
 **File**: `src/codex/energy/AGENT_CONTEXT.md` (auto-loaded by `MetaController`)
@@ -506,7 +506,7 @@ GitHub. https://github.com/zilliztech/claude-context
 |-------------------|------------------------------|
 | ReAct agent loop | `EnergyReActLoop` — sensor → plan → setpoint → observe |
 | MCP tool registry | `ToolRegistry` — sensor drivers, SCADA adapters, actuators |
-| `CLAUDE.md` context | `src/codex/energy/AGENT_CONTEXT.md` — system config + baselines |
+| `.codex/archive/deprecated/CLAUDE.md` context | `src/codex/energy/AGENT_CONTEXT.md` — system config + baselines |
 | Subagent teams | `MetaController` + 3 specialized subagents (async) |
 | Checkpoint harness | `save_checkpoint()` / `load_latest_checkpoint()` — RPi OTA safe |
 | HITL gate | `ApprovalGate` — `req_approval=True` for fuel cutoff |

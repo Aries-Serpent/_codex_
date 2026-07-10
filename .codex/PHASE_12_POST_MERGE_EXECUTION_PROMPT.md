@@ -227,7 +227,7 @@ for rapid root-cause diagnosis and resolution.
 ### **Daily Status Tracking**
 Each WS checkpoint requires:
 - Commit daily standup to `.codex/PHASE_12_WS<N>_DAILY_<DATE>.md`
-- Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` with session summary
+- Update `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` with session summary
 - Push progress commits with `[Phase 12 WS<N>]` prefix
 
 ### **Phase Completion Report**
@@ -245,7 +245,7 @@ Contents:
 
 ### **Compliance Gates**
 All work must pass:
-- ✅ **REQ-4:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated (same commit as code)
+- ✅ **REQ-4:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` updated (same commit as code)
 - ✅ **REQ-5:** `CHANGELOG.md` updated (same commit as code)
 - ✅ **Pre-commit:** `black`, `ruff`, `isort` clean
 - ✅ **Tests:** All tests passing, 0 regressions

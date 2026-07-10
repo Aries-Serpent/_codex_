@@ -7,7 +7,7 @@
 ## Pre-Flight Checklist
 
 - [x] Loaded: AI Codebase Agency Policy (`.codex/CODEBASE_AGENCY_POLICY.md`)
-- [x] Loaded: Accountability Report (`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`)
+- [x] Loaded: Accountability Report (`docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`)
 - [x] Loaded: Cognitive brain status files (Sessions 17–20 reviewed)
 - [x] `@copilot continue` protocol: approvals verified — owner @mbaetiong approved both:
   - `COPILOT_AGENT_AUTH_ENABLED` Agent Token Delegation

@@ -366,16 +366,16 @@ All CI automation improvements ultimately serve these layers.
 | Plan ID | CB Layer | CB Objective | Source Document |
 |---------|----------|-------------|-----------------|
 | P1-A | Action | S221 guard enables rescue re-triggers → agent sessions restart | `COGNITIVE_BRAIN_LIVE_STATUS.md` §Process Transparency |
-| P1-B | Action | RAG test-rag rescue chain reliability → supports CB-002 RAG coverage | `AGENT_ACCOUNTABILITY_REPORT.md` CB-002 |
-| P1-C | Action | actionlint-audit.yml identity fix → CB-003 compliance | `AGENT_ACCOUNTABILITY_REPORT.md` CB-003 |
-| P1-D | Action | SC2269 removal → CB-003 actionlint compliance | `AGENT_ACCOUNTABILITY_REPORT.md` CB-003 |
+| P1-B | Action | RAG test-rag rescue chain reliability → supports CB-002 RAG coverage | `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` CB-002 |
+| P1-C | Action | actionlint-audit.yml identity fix → CB-003 compliance | `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` CB-003 |
+| P1-D | Action | SC2269 removal → CB-003 actionlint compliance | `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` CB-003 |
 | P2-A | AfterMath | Session-done dedup → clean AfterMath session completion detection | `cognitive_brain_phase_implementation.md` Pre-commit 13-16 |
 | P2-B | Perception | Comment-gate cascade guard → clean perception input, no self-noise | `COGNITIVE_BRAIN_LIVE_STATUS.md` §Process Transparency |
 | P2-C | Decision | Phase detection output → feeds Decision Engine with PR lifecycle state | `cognitive_brain_phase_implementation.md` Pre-commit 9-12 |
 | P2-D | Perception | Accurate Mermaid diagram → corrects perception model for agents reading docs | `COGNITIVE_BRAIN_LIVE_STATUS.md` §Documentation Gaps |
-| P3-A | Perception | Fan-out dedup → consolidated failure signal for ci.health.analyzer (CB-006) | `AGENT_ACCOUNTABILITY_REPORT.md` CB-006 |
+| P3-A | Perception | Fan-out dedup → consolidated failure signal for ci.health.analyzer (CB-006) | `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` CB-006 |
 | P3-B | AfterMath | CHANGELOG auto-fix → REQ-4/REQ-5 pre-flight (agent-auth-delegation) | `COGNITIVE_BRAIN_LIVE_STATUS.md` §Next Milestones |
-| P3-C | AfterMath | Proactive monitor cap → CB-006 proactive_ci_monitor improvement | `AGENT_ACCOUNTABILITY_REPORT.md` CB-006 |
+| P3-C | AfterMath | Proactive monitor cap → CB-006 proactive_ci_monitor improvement | `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` CB-006 |
 | P3-D | Perception | §21.9 marker table accuracy → correct perception of rescue state | `docs/ci/PR_LIFECYCLE.md` §21.9 |
 | P4-A | Decision | Phase-gated WEC → Decision Engine gates expensive workflows by phase | `cognitive_brain_phase_implementation.md` Decision Engine |
 | P4-B | Perception | Comment context extraction → structured perception of unresolved blockers | `COGNITIVE_BRAIN_LIVE_STATUS.md` §Process Transparency |

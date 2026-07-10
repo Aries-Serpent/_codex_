@@ -161,7 +161,7 @@ THEN execute 7-phase deployment sequence (37+ days)
 - [ ] Comment Review Gate: Passes on re-run
 - [ ] All WEC workflows: Green checks
 - [ ] Merge-Readiness Score: ≥90/100
-- [ ] CHANGELOG.md & AGENT_ACCOUNTABILITY_REPORT.md: Updated with session entry
+- [ ] CHANGELOG.md & .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md: Updated with session entry
 - **Evidence:** PR body + .codex/aftermath/pda_iterations.jsonl
 
 ---

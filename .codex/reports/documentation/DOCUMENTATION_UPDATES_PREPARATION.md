@@ -156,7 +156,7 @@ For finding specific phase reports, use the [Phase Archive Index](.codex/archive
 
 ---
 
-### Update 3: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+### Update 3: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 **Changes Needed:**
 1. Add section about archive location for historical reports
@@ -228,7 +228,7 @@ For references to specific phase reports, use paths like:
 **Documentation Updates**
 - README.md: Added "Project Organization" section
 - CONTRIBUTING.md: Added "File Location Reference" section
-- docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md: Updated archive references
+- docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md: Updated archive references
 - 15 documentation files with path corrections
 
 **Breaking Changes:** None
@@ -244,7 +244,7 @@ For references to specific phase reports, use paths like:
 - `.codex/archive/phases/INDEX.md` (NEW)
 - README.md (UPDATED)
 - CONTRIBUTING.md (UPDATED)
-- docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md (UPDATED)
+- docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (UPDATED)
 - 10+ other documentation files (UPDATED - links)
 
 #### Stats
@@ -275,7 +275,7 @@ Based on grep scan, these files reference phase files and need updates:
    - Multiple PHASE_* references
    - Update all to point to `.codex/archive/phases/`
 
-4. **`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`**
+4. **`docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`**
    - Multiple PHASE_* references
    - Add archive location note
 
@@ -288,7 +288,7 @@ Based on grep scan, these files reference phase files and need updates:
 - ✅ Created: `.codex/archive/phases/` directory structure
 - ⏳ TODO: Update `README.md` with Project Organization section
 - ⏳ TODO: Update `CONTRIBUTING.md` with File Location Reference
-- ⏳ TODO: Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` with archive refs
+- ⏳ TODO: Update `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` with archive refs
 - ⏳ TODO: Update remaining doc files with link corrections (4-5 files)
 - ⏳ TODO: Prepare CHANGELOG entry for v0.1.1
 - ⏳ TODO: Final review of all links and references

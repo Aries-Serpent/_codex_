@@ -157,7 +157,7 @@ Playbook:     Operations guide (in progress) 🟢
 
 ```
 Status:       Awaiting system slot availability
-Mission:      Update AGENT_ACCOUNTABILITY_REPORT.md (REQ-4)
+Mission:      Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (REQ-4)
               Update CHANGELOG.md (REQ-5)
               Archive Phase 7 sessions
 ETA:          ~02:00Z 2026-06-21 (when slot opens)
@@ -292,7 +292,7 @@ Phase 7B Architecture: 5-Track Parallel Execution with Zero Blocking Dependencie
 - ✅ Track B: Documented
 - 🟢 Track C: In progress (will be documented by E2)
 - 🟢 Track D: In progress (will be documented by E2)
-- ⏳ E2 will finalize in AGENT_ACCOUNTABILITY_REPORT.md
+- ⏳ E2 will finalize in .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 
 **REQ-5 (Change Log):**
 - ✅ Track A: Documented

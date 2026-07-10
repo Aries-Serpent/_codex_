@@ -325,7 +325,7 @@ graph TD
 - [ ] Deploy custom agents (Security Input Validator)
 - [ ] Activate PDA loop for continuous monitoring
 - [ ] Create security runbook in `.codex/runbooks/`
-- [ ] Add security section to AGENTS.md
+- [ ] Add security section to .codex/archive/deprecated/AGENTS.md
 - [ ] Schedule token rotation audit
 
 ### Medium-term (Sprint)

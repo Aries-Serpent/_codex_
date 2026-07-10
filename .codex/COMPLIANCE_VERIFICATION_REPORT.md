@@ -264,7 +264,7 @@ The CODEX_MASTER_KEY campaign has successfully completed comprehensive complianc
 | Guide | Lines | Examples | Scenarios | Status |
 |-------|-------|----------|-----------|--------|
 | TOKEN_HIERARCHY_GUIDE.md | 2,400+ | 8+ | 5+ | ✅ Complete |
-| SCRIPT_TOKEN_INTEGRATION.md | 2,600+ | 10+ | 6+ | ✅ Complete |
+| SCRIPT_TOKEN_docs/api/reference/INTEGRATION.md | 2,600+ | 10+ | 6+ | ✅ Complete |
 | WORKFLOW_TOKEN_PATTERNS.md | 2,800+ | 12+ | 7+ | ✅ Complete |
 | API_VARIABLE_OPERATIONS.md | 2,200+ | 7+ | 4+ | ✅ Complete |
 | CI_CD_TOKEN_TROUBLESHOOTING.md | 2,300+ | 6+ | 5+ | ✅ Complete |

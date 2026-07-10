@@ -411,7 +411,7 @@ Week 7-10: P2 Stabilization & Operations (3 parallel lanes)
 
 - **Plan Document**: `.codex/HARDENING_AND_DELIVERY_CAMPAIGN_PLAN.md` (full details)
 - **Evidence Base**: 
-  - INTELLIGENCE_CAMPAIGN_BASELINE.md (OODA analysis)
+  - .codex/archive/misc/INTELLIGENCE_CAMPAIGN_BASELINE.md (OODA analysis)
   - CAMPAIGN_COMPLETION_REPORT.md (P0 closure requirements)
   - META_TENSOR_VALIDATION_REPORT.md (safety findings)
   - DEPENDENCY_SECURITY_AUDIT.md (vulnerability governance)

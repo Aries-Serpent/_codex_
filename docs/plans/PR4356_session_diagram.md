@@ -241,7 +241,7 @@ stateDiagram-v2
         Pre-load checklist:
         • AGENTIC_REPO_STATE.md
         • CODEBASE_AGENCY_POLICY.md
-        • AGENT_ACCOUNTABILITY_REPORT.md
+        • .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
         • pda_iterations.jsonl (last 5)
         • agent_context.json
         • store_memory facts

@@ -162,7 +162,7 @@
    - Watch for regressions
 
 3. **Documentation**
-   - Update AGENTS.md with new agent
+   - Update .codex/archive/deprecated/AGENTS.md with new agent
    - Add to cognitive brain roadmap
    - Create lessons learned doc
 

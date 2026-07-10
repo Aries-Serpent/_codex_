@@ -8,7 +8,7 @@
 
 - [x] Loaded: AI Codebase Agency Policy (`.codex/CODEBASE_AGENCY_POLICY.md`)
 - [x] Loaded: Guardrails (`.codex/guardrails.md`)
-- [x] Loaded: Accountability Report (`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`)
+- [x] Loaded: Accountability Report (`docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`)
 - [x] Loaded: All bot-posted PR review threads (0 unresolved open threads on PR #3571)
 - [x] Loaded: Cognitive brain status files (Sessions 16–19 reviewed)
 - [x] `@copilot continue` protocol: reviewed ALL bot-posted code quality and security alerts

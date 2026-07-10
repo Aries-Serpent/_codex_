@@ -184,7 +184,7 @@ Overall: 55% → 75% progression
 
 ## 📋 COMPLIANCE STATUS
 
-### REQ-4: AGENT_ACCOUNTABILITY_REPORT.md ✅
+### REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md ✅
 - Status: UPDATED
 - Last Commit: 91675580 (session end)
 - Content: Phase 10 completion + Phase 12 deployment documented

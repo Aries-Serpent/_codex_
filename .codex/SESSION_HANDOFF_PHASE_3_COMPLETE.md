@@ -201,10 +201,10 @@ Time Allocation: 50% Phase 4 monitoring, 50% critical fixes
 - [x] Secrets scanning: PASS
 
 **To Do in Next Session:**
-- [ ] Update AGENT_ACCOUNTABILITY_REPORT.md with Phase 4 progress
+- [ ] Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with Phase 4 progress
 - [ ] Update CHANGELOG.md with Phase 4 findings
 - [ ] Commit Phase 4 consolidation
-- [ ] Update AGENT_ACCOUNTABILITY_REPORT.md with Phase 5 progress
+- [ ] Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with Phase 5 progress
 - [ ] Update CHANGELOG.md with Phase 5 findings
 - [ ] Commit Phase 5 consolidation
 

@@ -265,7 +265,7 @@ Status: ✅ ON TRACK - READY FOR FINAL INTEGRATION
 
 #### Documentation Updates
 - [ ] **T4:** Update accountability tracking
-  - [ ] Edit: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+  - [ ] Edit: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
   - [ ] Add: Wave 1 completion entry (date: 2026-07-23, status: COMPLETE)
   - [ ] Commit to `main`
 

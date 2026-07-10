@@ -175,7 +175,7 @@
 1. All 3 schemas 100% finalized
 2. Cross-track reviews completed
 3. Merge all 3 to main branch
-4. Update AGENT_ACCOUNTABILITY_REPORT.md
+4. Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 5. Authorize Wave 2 activation
 
 **Phase 3: Wave 2 Preparation (Ready)**

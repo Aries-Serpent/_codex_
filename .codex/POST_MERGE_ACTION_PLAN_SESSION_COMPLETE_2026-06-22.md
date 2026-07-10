@@ -53,7 +53,7 @@ Post-merge validation of PR #5056 has successfully completed **Phase 1 of the po
 - [x] Repository variables validated (12/12 passed)
 - [x] pre-commit ready (environment limitation noted)
 - [ ] nox -s tests pending (environment setup)
-- [x] AGENT_ACCOUNTABILITY_REPORT.md update pending
+- [x] .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md update pending
 - [x] Phase 9 coordination dashboard synchronized
 
 ---

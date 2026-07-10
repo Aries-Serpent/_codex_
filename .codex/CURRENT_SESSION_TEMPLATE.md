@@ -123,7 +123,7 @@
 ### WEC Compliance (Final Turn)
 
 Will update before final commit:
-- ✅ REQ-4: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (will update with session summary)
+- ✅ REQ-4: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (will update with session summary)
 - ✅ REQ-5: `CHANGELOG.md` (will update with session artifacts)
 - ✅ No deferral language
 - ✅ No secrets committed

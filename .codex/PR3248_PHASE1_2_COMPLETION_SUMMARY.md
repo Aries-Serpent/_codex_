@@ -44,7 +44,7 @@ Successfully completed Phases 1-2 of PR #3248 comprehensive resolution, implemen
 **Root Cause Identified:**
 ```toml
 # pyproject.toml line 323:
-# NOTE: services* intentionally excluded - see AGENTS.md...
+# NOTE: services* intentionally excluded - see .codex/archive/deprecated/AGENTS.md...
 ```
 
 The `services/` directory was intentionally excluded from package discovery, but tests require importing from it. This caused 96+ test failures.

@@ -73,7 +73,7 @@ We are in the **final stretch** with only **1 lane remaining**. All major object
 - ✅ ROOT_FOLDER_ORGANIZATION.md (9.9KB)
 - ✅ archive/phases/INDEX.md (13KB)
 - ✅ WORKFLOW_AUDIT_SUMMARY.md (14KB)
-- ✅ WORKFLOW_CLEANUP_IMPLEMENTATION_CHECKLIST.md (4KB)
+- ✅ .codex/archive/implementations/WORKFLOW_CLEANUP_IMPLEMENTATION_CHECKLIST.md (4KB)
 - Plus 8+ checkpoint and progress documents
 
 ### Analysis Reports

@@ -28,7 +28,7 @@ This document provides the authoritative authorization status, deployment readin
 
 | Component | Status | Deliverable | Completion Date |
 |-----------|--------|-------------|-----------------|
-| **Task 9.1.1** | ✅ COMPLETE | `.codex/PHASE_9_1_D_CAPABLE_AGENTS.md` | 2026-07-07 |
+| **Task 9.1.1** | ✅ COMPLETE | `.codex/PHASE_9_1_D_CAPABLE_.codex/archive/deprecated/AGENTS.md` | 2026-07-07 |
 | **Task 9.1.2** | ✅ COMPLETE | `scripts/ci/phase_9_1_decision_logger.py` | 2026-07-07 |
 | **Task 9.1.3** | ✅ COMPLETE | `scripts/ci/phase_9_1_confidence_scorer.py` | 2026-07-07 |
 | **Task 9.1.4** | ✅ COMPLETE | `scripts/ci/phase_9_1_audit_trail.py` | 2026-07-07 |

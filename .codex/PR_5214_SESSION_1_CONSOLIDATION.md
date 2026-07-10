@@ -54,7 +54,7 @@
 **Lane 3: unified-governance-gate** ✅ COMPLETE
 - Status: Verified all compliance requirements
 - Findings:
-  - ✅ REQ-4 (AGENT_ACCOUNTABILITY_REPORT.md): PASSED (2 new session entries)
+  - ✅ REQ-4 (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md): PASSED (2 new session entries)
   - ✅ REQ-5 (CHANGELOG.md): PASSED (2 new campaign entries)
   - ✅ Workflow Compliance (F-001, F-002): PASSED (concurrency & backoff fixed)
   - ✅ Code Quality: PASSED (10 test class renames, 152 assertions fixed)
@@ -228,7 +228,7 @@ GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.tok
 1. [ ] Run final validation suite (CI checks)
 2. [ ] Verify all 4 commits pushed
 3. [ ] Confirm CodeQL analysis completion
-4. [ ] Update AGENT_ACCOUNTABILITY_REPORT.md with Session 1 summary
+4. [ ] Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with Session 1 summary
 5. [ ] Update CHANGELOG.md with Session 1 completion
 6. [ ] Prepare merge-ready final summary
 

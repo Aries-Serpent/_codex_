@@ -192,7 +192,7 @@ docs/cognitive_brain/
 3. ⏳ Organize miscellaneous files (74 files) by category
 
 ### Medium-Term
-1. ⏳ Assess HIGH risk files (AGENTS.md with 293 refs)
+1. ⏳ Assess HIGH risk files (.codex/archive/deprecated/AGENTS.md with 293 refs)
 2. ⏳ Consider keeping critical hubs in root
 3. ⏳ Create comprehensive archive with search
 

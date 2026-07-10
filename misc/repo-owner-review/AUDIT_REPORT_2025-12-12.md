@@ -134,7 +134,7 @@ Option 2: Archive configs/safety/policy.yaml after verifying no external referen
 | `.codex/README.md.bak` | `README.md_.codex_36462ee8.bak` | 36462ee8 | 22KB |
 | `uv.lock.bak` | `uv.lock_._36462ee8.bak` | 36462ee8 | 118KB |
 | `.github/copilot_agent_task_prompt.next.md.backup` | `copilot_agent_task_prompt.next.md_.github_36462ee8.backup` | 36462ee8 | 11KB |
-| `AGENTS.md.backup_20251114_035816` | `AGENTS.md_._36462ee8.backup_20251114_035816` | 36462ee8 | 11KB |
+| `.codex/archive/deprecated/AGENTS.md.backup_20251114_035816` | `.codex/archive/deprecated/AGENTS.md_._36462ee8.backup_20251114_035816` | 36462ee8 | 11KB |
 | `tests/tracking/test_mlflow_utils_py.old` | `test_mlflow_utils_py_tests_tracking_36462ee8.old` | 36462ee8 | 5.9KB |
 
 **Archive Location**: `misc/repo-owner-review/archived-backups/`

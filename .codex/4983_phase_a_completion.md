@@ -52,7 +52,7 @@ Phase A successfully coordinates the validation cascade reset across all 8 affec
 **Pattern Details:**
 ```
 Pattern ID:        25 (Last-Commit Accountability)
-Trigger:           docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md not updated
+Trigger:           docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md not updated
 Error Message:     "not updated in last commit"
 Root Cause:        Accountability metadata drift vs. session timestamps
 Safety Mechanism:  Circuit breaker (max 3 cascade attempts)
@@ -82,7 +82,7 @@ python scripts/ci/auto_fix_common_issues.py --pattern 25
 **Expected Action:**
 ```
 ✅ Append minimal auto-generated entry to:
-   docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+   docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 
 ✅ Run sync_tracked_files.py --fix to update:
    .codex/tracked_files.json (index consistency)
@@ -92,7 +92,7 @@ python scripts/ci/auto_fix_common_issues.py --pattern 25
 ```
 Pattern 25: Last-Commit Accountability
 ⚠  1 issue(s) detected
-   docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md — not updated in last commit
+   docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md — not updated in last commit
    [dry-run] would append minimal [auto-generated] entry
    ⚠️  Cascade detected (attempt 3/3)
    ✗ Found 1 issues
@@ -305,7 +305,7 @@ aeaaf77 docs: Add Issue #4983 agent delegation plan and execution tracking
 
 **What is Pattern 25?**
 
-Pattern 25 is the auto-fix mechanism that ensures `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` is updated in commits that modify tracked files. This maintains a ledger of which agent made which changes, enabling accountability and audit trails.
+Pattern 25 is the auto-fix mechanism that ensures `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` is updated in commits that modify tracked files. This maintains a ledger of which agent made which changes, enabling accountability and audit trails.
 
 **Why Did It Trigger a Cascade?**
 

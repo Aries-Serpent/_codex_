@@ -327,7 +327,7 @@ Deployment Status | Ready | **AUTHORIZED** | ✅ APPROVED
 
 ### Phase Completion (Jul 23)
 1. Generate PHASE_5_COMPREHENSIVE_COMPLETION_REPORT.md
-2. Update AGENT_ACCOUNTABILITY_REPORT.md
+2. Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 3. Create Phase 6 transition documentation
 4. Campaign complete: All targets achieved
 

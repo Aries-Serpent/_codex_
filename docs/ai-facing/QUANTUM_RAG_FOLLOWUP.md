@@ -585,7 +585,7 @@ def test_quantum_retrieval_with_cove_verification():
    - Usage examples
    - Performance characteristics
 
-3. **Integration Guide**: `docs/ai-facing/QUANTUM_RAG_INTEGRATION.md`
+3. **Integration Guide**: `docs/ai-facing/QUANTUM_RAG_docs/api/reference/INTEGRATION.md`
    - How to integrate with existing systems
    - Configuration options
    - Tuning guidelines

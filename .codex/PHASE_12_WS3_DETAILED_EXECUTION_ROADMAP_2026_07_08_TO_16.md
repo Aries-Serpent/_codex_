@@ -176,13 +176,13 @@
 **Evening (14:30-18:00Z):**
 - 📊 Consolidate Day 2 Tier 2 metrics
 - 📊 Consolidate Day 1 Documentation metrics
-- ✅ Update REQ-4 (AGENT_ACCOUNTABILITY_REPORT.md)
+- ✅ Update REQ-4 (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md)
 - ✅ Update REQ-5 (CHANGELOG.md)
 - ✅ Publish Day 2 Tier 2 standup
 - ✅ Publish Day 2 Documentation standup
 
 **Deliverables:**
-- Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- Updated `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - Updated `CHANGELOG.md`
 - `.codex/PHASE_12_WS3_DAILY_STANDUP_2026-07-13.md` (new)
 - `.codex/PHASE_12_WS3_DAY6_STATUS_REPORT_2026_07_13.md`
@@ -304,7 +304,7 @@
 **Deliverables:**
 - `.codex/PHASE_12_WS4_COMPLETION_REPORT_2026_07_16.md`
 - `.codex/PHASE_12_COMPLETION_EXECUTIVE_SUMMARY_2026_07_16.md`
-- Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (final)
+- Updated `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (final)
 - Updated `CHANGELOG.md` (final)
 
 ---
@@ -364,7 +364,7 @@
 
 ## 🔒 Compliance Checkpoints
 
-### REQ-4: AGENT_ACCOUNTABILITY_REPORT.md
+### REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 - **Update 1:** 2026-07-13 (Tier 1 completion)
 - **Update 2:** 2026-07-15 (WS3 completion)
 - **Update 3:** 2026-07-16 (Phase 12 completion)

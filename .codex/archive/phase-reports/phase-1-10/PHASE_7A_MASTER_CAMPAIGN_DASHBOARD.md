@@ -329,7 +329,7 @@ Activation Gate (15:00-15:05Z)
 ## 📚 ACCOUNTABILITY & TRACKING
 
 **Primary Tracking Document:**
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 **Update Schedule:**
 - Checkpoint 2: +3 sections (Lane 3.2, Lane 3.1, Phase 5)

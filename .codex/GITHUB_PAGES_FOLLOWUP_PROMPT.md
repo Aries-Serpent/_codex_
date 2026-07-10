@@ -348,7 +348,7 @@ Before marking phase complete, verify:
 
 ### Documentation
 - [ ] README updated
-- [ ] AGENTS.md updated
+- [ ] .codex/archive/deprecated/AGENTS.md updated
 - [ ] Cognitive brain updated
 - [ ] CHANGELOG.md updated
 - [ ] Agent docs complete

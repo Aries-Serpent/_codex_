@@ -42,7 +42,7 @@ Successfully updated **116 documentation files** with **173 changes** across the
 - ⚠️ CHANGELOG.md - Excluded (historical record)
 
 ### Agent Documentation (53 agents)
-- ✅ AGENTS.md - Coverage updated to 90%
+- ✅ .codex/archive/deprecated/AGENTS.md - Coverage updated to 90%
 - ✅ .github/agents/* - Multiple agent docs updated
 - ✅ .codex/docs/AGENT_HANDOFF_PROTOCOL.md
 

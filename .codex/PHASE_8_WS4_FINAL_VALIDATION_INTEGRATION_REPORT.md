@@ -177,7 +177,7 @@ EFFICIENCY GAIN:   99.8% faster than traditional approach
 - `.codex/PHASE_8_WS4_FINAL_VALIDATION_INTEGRATION_REPORT.md` (this file)
 
 **Accountability & Compliance:**
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (updated)
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (updated)
 - `CHANGELOG.md` (updated)
 
 ---

@@ -3,12 +3,12 @@
 **Date:** 2026-06-27T22:20:36Z  
 **Purpose:** Post-promotion compliance updates for REQ-4 and REQ-5  
 **Files to Update:** 
-- docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+- docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 - CHANGELOG.md
 
 ---
 
-## AGENT_ACCOUNTABILITY_REPORT.md Update
+## .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md Update
 
 ### Section to Add (Insert at top of file, after header and before current SESSION SUMMARY)
 
@@ -53,7 +53,7 @@ PR #5110 merged 2026-06-27T21:58:14Z contains:
   - Production stability gates: ✅ APPROVED
 
 #### Task 6.3: Post-Promotion Synchronization ✅
-- Updated AGENT_ACCOUNTABILITY_REPORT.md with Wave 1 completion entry (THIS SECTION)
+- Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with Wave 1 completion entry (THIS SECTION)
 - Updated CHANGELOG.md with [Unreleased] entry documenting promotion
 - Validation: Compliance gates REQ-4/REQ-5 satisfied
 
@@ -109,7 +109,7 @@ Total 6-8 week campaign, 303-357 engineer-hours:
 
 ### Compliance Status
 
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated in promotion merge commit with Wave 1 completion entry
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated in promotion merge commit with Wave 1 completion entry
 - ✅ REQ-5: CHANGELOG.md updated in promotion merge commit with [Unreleased] section entry
 - ✅ REQ-14: Valid agent identifiers added to Agents Used section (all registered in AGENT_REGISTRY.yaml)
 
@@ -163,7 +163,7 @@ Total 6-8 week campaign, 303-357 engineer-hours:
 ### How to Apply
 
 #### Option 1: Manual Edit
-1. Open docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+1. Open docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 2. Locate line 2 (after header): `## SESSION SUMMARY — 2026-06-27T12:17Z...`
 3. Insert the new section BEFORE this existing entry (maintain reverse chronological order)
 4. Update timestamp and PR number placeholders [MERGED_PR_NUMBER] with actual values
@@ -188,7 +188,7 @@ python3 scripts/ci/session_wrapup_autofix.py \
   --pr-number [MERGED_PR_NUMBER]
 
 # Expected output:
-# REQ-4 ✅ PASS: AGENT_ACCOUNTABILITY_REPORT.md exists and updated in last commit
+# REQ-4 ✅ PASS: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md exists and updated in last commit
 # REQ-5 ✅ PASS: CHANGELOG.md [Unreleased] section updated in last commit
 ```
 

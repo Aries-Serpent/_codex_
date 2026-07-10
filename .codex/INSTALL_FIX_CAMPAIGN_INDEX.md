@@ -18,7 +18,7 @@
    - FAQs and next steps
    - **Read Time:** 10 minutes
 
-2. **[INSTALL_TEST_REPORT_0.1.0.md](INSTALL_TEST_REPORT_0.1.0.md)** 📊 REFERENCE
+2. **[.codex/archive/reports/INSTALL_TEST_REPORT_0.1.0.md](.codex/archive/reports/INSTALL_TEST_REPORT_0.1.0.md)** 📊 REFERENCE
    - Detailed test results
    - All 6 gaps documented with evidence
    - Dependency breakdown
@@ -131,7 +131,7 @@ cd /home/runner/work/_codex_/_codex_
 
 ### Option 2: Review First, Then Execute
 1. Read CAMPAIGN_SUMMARY.md (10 min)
-2. Read INSTALL_TEST_REPORT_0.1.0.md (20 min)
+2. Read .codex/archive/reports/INSTALL_TEST_REPORT_0.1.0.md (20 min)
 3. Review CAMPAIGN_INSTALL_FIX_v0.1.0.md (30 min)
 4. Execute when ready
 
@@ -189,7 +189,7 @@ Installation Status: ✅ WORKING
 | Document | Purpose | Length | Read Time |
 |----------|---------|--------|-----------|
 | CAMPAIGN_SUMMARY.md | Overview & FAQs | ~8 KB | 10 min |
-| INSTALL_TEST_REPORT_0.1.0.md | Detailed test results | ~12 KB | 20 min |
+| .codex/archive/reports/INSTALL_TEST_REPORT_0.1.0.md | Detailed test results | ~12 KB | 20 min |
 | CAMPAIGN_INSTALL_FIX_v0.1.0.md | Full implementation plan | ~20 KB | 30 min |
 | CAMPAIGN_INSTALL_FIX_v0.1.0_EXECUTION_TRACKER.md | Real-time tracker | ~10 KB | 15 min |
 | INSTALL_FIX_CAMPAIGN_INDEX.md | This file | ~3 KB | 5 min |
@@ -251,7 +251,7 @@ Before starting Phase 1 execution, ensure:
 4. Proceed to Wave 2 when Wave 1 complete
 
 ### If Reviewing First
-1. Read INSTALL_TEST_REPORT_0.1.0.md
+1. Read .codex/archive/reports/INSTALL_TEST_REPORT_0.1.0.md
 2. Review CAMPAIGN_INSTALL_FIX_v0.1.0.md
 3. Provide feedback/modifications if needed
 4. Execute when ready
@@ -269,7 +269,7 @@ Before starting Phase 1 execution, ensure:
 **For other questions:**
 - See CAMPAIGN_SUMMARY.md "FAQs" section
 - See CAMPAIGN_INSTALL_FIX_v0.1.0.md detailed explanations
-- Consult INSTALL_TEST_REPORT_0.1.0.md for technical details
+- Consult .codex/archive/reports/INSTALL_TEST_REPORT_0.1.0.md for technical details
 
 ---
 
@@ -278,7 +278,7 @@ Before starting Phase 1 execution, ensure:
 | Document | Status | Version | Updated |
 |----------|--------|---------|---------|
 | CAMPAIGN_SUMMARY.md | ✅ Complete | 1.0 | 2026-07-10T18:07Z |
-| INSTALL_TEST_REPORT_0.1.0.md | ✅ Complete | 1.0 | 2026-07-10T18:04Z |
+| .codex/archive/reports/INSTALL_TEST_REPORT_0.1.0.md | ✅ Complete | 1.0 | 2026-07-10T18:04Z |
 | CAMPAIGN_INSTALL_FIX_v0.1.0.md | ✅ Complete | 1.0 | 2026-07-10T18:06Z |
 | CAMPAIGN_INSTALL_FIX_v0.1.0_EXECUTION_TRACKER.md | ✅ Complete | 1.0 | 2026-07-10T18:07Z |
 | INSTALL_FIX_CAMPAIGN_INDEX.md | ✅ Complete | 1.0 | 2026-07-10T18:08Z |

@@ -395,7 +395,7 @@ ModuleNotFoundError: No module named 'codex.logging'
 ### Priority 3: Documentation Fixes (Nice to have)
 
 7. **Document installation profiles**
-   - Create `INSTALL.md` or update existing
+   - Create `.codex/archive/misc/INSTALL.md` or update existing
    - Explain `[core]`, `[runtime]`, `[full]` use cases
    - Document dependency sizes
    - Provide profile comparison table

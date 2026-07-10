@@ -281,7 +281,7 @@ Enable full autonomous operation mode across all CI/CD, testing, governance, wor
 
 ## 📋 COMPLIANCE & ACCOUNTABILITY
 
-**REQ-4 (AGENT_ACCOUNTABILITY_REPORT.md):**
+**REQ-4 (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md):**
 - All deliverables tracked in .codex/PHASE_9_3_*.md files
 - Daily progress updates to Tier 2 status dashboard
 

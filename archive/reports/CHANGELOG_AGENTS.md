@@ -1,4 +1,4 @@
-# Changelog — AGENTS.md Enhancement
+# Changelog — .codex/archive/deprecated/AGENTS.md Enhancement
 
 **Date**: 2025-11-14  
 **PR**: #2223  
@@ -6,23 +6,23 @@
 
 ## Overview
 
-This changelog documents the enhancement of AGENTS.md from a dependency-focused document to a comprehensive operational reference, while preserving critical dependency management information.
+This changelog documents the enhancement of .codex/archive/deprecated/AGENTS.md from a dependency-focused document to a comprehensive operational reference, while preserving critical dependency management information.
 
 ## Changes
 
-### AGENTS.md Complete Rewrite and Merge
+### .codex/archive/deprecated/AGENTS.md Complete Rewrite and Merge
 
 **Type**: Documentation Enhancement (Non-Breaking)
 
 **What Changed**:
-- AGENTS.md completely rewritten with 14 comprehensive sections
+- .codex/archive/deprecated/AGENTS.md completely rewritten with 14 comprehensive sections
 - Original dependency segmentation content merged and preserved
 - Added operational infrastructure documentation (environment variables, CLI, error handling, troubleshooting)
 - Preserved evidence logging and dependency management sections from original
 
 **Original Content**:
-- Backed up in `AGENTS.md.backup_20251114_035816` (205 lines)
-- Key sections preserved in new AGENTS.md:
+- Backed up in `.codex/archive/deprecated/AGENTS.md.backup_20251114_035816` (205 lines)
+- Key sections preserved in new .codex/archive/deprecated/AGENTS.md:
   - Logging & Evidence Surfaces
   - Dependency Retention & Segmentation
 
@@ -41,7 +41,7 @@ This changelog documents the enhancement of AGENTS.md from a dependency-focused 
 12. Contact / Maintainers
 
 **Rationale**:
-- AGENTS.md serves as primary operational reference for both human maintainers and automation agents
+- .codex/archive/deprecated/AGENTS.md serves as primary operational reference for both human maintainers and automation agents
 - Original dependency-only focus was too narrow for operational needs
 - Merged approach provides complete operational + dependency guidance in one location
 - No information was lost; dependency content was integrated, not removed
@@ -65,10 +65,10 @@ This changelog documents the enhancement of AGENTS.md from a dependency-focused 
 
 ## Migration Guide
 
-**For Users Referencing Old AGENTS.md**:
+**For Users Referencing Old .codex/archive/deprecated/AGENTS.md**:
 1. Dependency segmentation info is now in section "Dependency Retention & Segmentation"
 2. Evidence logging info is now in section "Logging & Evidence Surfaces"
-3. For complete original content, see `AGENTS.md.backup_20251114_035816`
+3. For complete original content, see `.codex/archive/deprecated/AGENTS.md.backup_20251114_035816`
 
 **For Automation Agents**:
 - All original dependency management rules remain in effect
@@ -92,8 +92,8 @@ This changelog documents the enhancement of AGENTS.md from a dependency-focused 
 
 ## Related Files
 
-- `AGENTS.md` - Enhanced documentation (593 lines)
-- `AGENTS.md.backup_20251114_035816` - Original version (205 lines)
+- `.codex/archive/deprecated/AGENTS.md` - Enhanced documentation (593 lines)
+- `.codex/archive/deprecated/AGENTS.md.backup_20251114_035816` - Original version (205 lines)
 - `AGENTS_IMPLEMENTATION_COMPLETE.md` - Implementation summary
 - `src/codex/config/` - New configuration module
 - `src/codex/logging/error_handler.py` - New error handling framework
@@ -112,7 +112,7 @@ This changelog documents the enhancement of AGENTS.md from a dependency-focused 
 
 **Type**: Documentation Update + Bug Fix
 
-### Changes to AGENTS.md
+### Changes to .codex/archive/deprecated/AGENTS.md
 
 **Added**:
 - **Optional Dependency Handling Guidelines**: New comprehensive section documenting best practices for handling optional dependencies

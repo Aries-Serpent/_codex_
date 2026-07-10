@@ -122,7 +122,7 @@ AGGREGATE:       [██████░░░░░░░░░░░░░░] 
 - ✅ All commits REQ-4/REQ-5 compliant
 - ✅ All checkpoints in `.codex/` (not /tmp)
 - ✅ PDA loop updated: auto-pda-2026-06-30
-- ✅ AGENT_ACCOUNTABILITY_REPORT.md current
+- ✅ .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md current
 - ✅ CHANGELOG.md updated
 - ✅ Zero regressions detected
 - ✅ Zero security issues (CRITICAL: 0, MEDIUM: 0)

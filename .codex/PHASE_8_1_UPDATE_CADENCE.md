@@ -121,7 +121,7 @@ on:
       - 'README.md'
       - 'CONTRIBUTING.md'
       - 'SECURITY.md'
-      - 'AGENTS.md'
+      - '.codex/archive/deprecated/AGENTS.md'
       - '.github/agents/**'
       - '.github/copilot-prompts/**'
   schedule:
@@ -536,7 +536,7 @@ All ~150 Tier 1 docs must have YAML headers. Migration strategy:
 #!/bin/bash
 # Script: Add initial YAML headers to all Tier 1 docs
 
-for doc in docs/**/*.md .github/agents/**/*.md {README,CONTRIBUTING,SECURITY}.md AGENTS.md; do
+for doc in docs/**/*.md .github/agents/**/*.md {README,CONTRIBUTING,SECURITY}.md .codex/archive/deprecated/AGENTS.md; do
     if [[ ! -f "$doc" ]]; then continue; fi
     
     # Check if doc already has YAML header

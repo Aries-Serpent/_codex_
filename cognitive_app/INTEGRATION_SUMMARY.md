@@ -40,7 +40,7 @@ _codex_/
 │   ├── vite.config.ts              # NEW - Build configuration
 │   ├── tsconfig.json               # NEW - TypeScript config
 │   ├── index.html                  # NEW - Entry HTML
-│   ├── README_INTEGRATION.md       # NEW - Integration guide
+│   ├── README_docs/api/reference/INTEGRATION.md       # NEW - Integration guide
 │   ├── CODEX_INTEGRATION_MASTER_PLAN.md  # NEW - Backend API spec
 │   ├── IMPLEMENTATION_STATUS.md    # NEW - Implementation tracking
 │   ├── POST_INTEGRATION_CHECKLIST.md     # NEW - Deployment checklist
@@ -142,7 +142,7 @@ All integration checks passed (via `verify_integration.sh`):
 
 ## Documentation Created
 
-1. **cognitive_app/README_INTEGRATION.md**
+1. **cognitive_app/README_docs/api/reference/INTEGRATION.md**
    - Comprehensive integration guide
    - Directory structure
    - Build instructions
@@ -305,7 +305,7 @@ Integration is successful if:
 
 - **Master Plan:** `cognitive_app/CODEX_INTEGRATION_MASTER_PLAN.md` (35KB)
 - **Implementation Status:** `cognitive_app/IMPLEMENTATION_STATUS.md` (15KB)
-- **Integration Guide:** `cognitive_app/README_INTEGRATION.md` (6KB)
+- **Integration Guide:** `cognitive_app/README_docs/api/reference/INTEGRATION.md` (6KB)
 - **Post-Integration:** `cognitive_app/POST_INTEGRATION_CHECKLIST.md` (6KB)
 - **User Docs:** `docs/cognitive_app.md` (8KB)
 - **Original README:** `cognitive_app/README.md` (Spark template)

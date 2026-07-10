@@ -17,7 +17,7 @@ on PR #3741 (Copilot + github-code-quality) and the Pre-Merge Validation ❌ fai
 | Signal | Root Cause | Fixed |
 |--------|-----------|-------|
 | Pre-Merge Validation ❌ (Auto-Fix Issues) | 10 unused F401 imports + 2 I001 unsorted blocks in files introduced by S186 | ✅ |
-| Agent Token Delegation ❌ | `AGENT_ACCOUNTABILITY_REPORT.md` not updated in session-init commit | ✅ (auto-fixed by CI bot, then full entry added manually) |
+| Agent Token Delegation ❌ | `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` not updated in session-init commit | ✅ (auto-fixed by CI bot, then full entry added manually) |
 | Copilot review r2983920413 | `.pyi` stub methods had docstring-only bodies (no `...`) | ✅ |
 | Copilot review r2983920446 | Temp file leaked on ruff timeout in pre-commit hook | ✅ |
 | Copilot review r2983920466 | `record_from_report()` marked ALL occurrences fixed if any fix applied | ✅ |

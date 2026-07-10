@@ -162,7 +162,7 @@ The codebase is well-structured for root folder reorganization. Only 2 critical 
 - Updated README.md
 - Updated CONTRIBUTING.md
 - archive/phases/INDEX.md
-- Updated AGENT_ACCOUNTABILITY_REPORT.md
+- Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 - Mermaid diagram updates
 - CHANGELOG entry
 

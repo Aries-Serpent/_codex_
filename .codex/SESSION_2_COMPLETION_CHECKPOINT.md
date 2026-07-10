@@ -188,7 +188,7 @@
 - [x] `.codex/SESSION_2_EXECUTION_CAMPAIGN_LAUNCH.md` (launch brief)
 
 ### Documentation Deliverables (✅ COMPLETE)
-- [x] AGENT_ACCOUNTABILITY_REPORT.md updated (REQ-4)
+- [x] .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated (REQ-4)
 - [x] Phase 2 & 3 completion entries
 - [ ] CHANGELOG.md update (pending final completion)
 
@@ -218,7 +218,7 @@
 - ✅ **CODEX_MASTER_KEY** — Elevated operations authorized
 
 ### Compliance Status
-- ✅ **REQ-4 (AGENT_ACCOUNTABILITY_REPORT.md):** Phase 2 & 3 entries added
+- ✅ **REQ-4 (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md):** Phase 2 & 3 entries added
 - ⏳ **REQ-5 (CHANGELOG.md):** Final update pending completion
 - ✅ **Branch:** copilot/multi-agent-campaign-plan
 - ✅ **All commits tracked:** 6 commits pushed

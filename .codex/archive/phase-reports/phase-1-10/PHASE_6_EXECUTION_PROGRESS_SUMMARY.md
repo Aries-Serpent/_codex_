@@ -97,7 +97,7 @@
 ---
 
 ### 4. ACCOUNTABILITY REPORT UPDATE
-**File:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+**File:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 **Update Includes:**
 - ✅ Comprehensive Phase 6 session entry
@@ -125,7 +125,7 @@
 - `.codex/PHASE_6_CVE_REMEDIATION_REPORT.md` ✅
 - `.codex/PHASE_6_CVE_TRACKING_SPREADSHEET.md` ✅
 - `.codex/PHASE_6_WAVE3_PLANNING.md` ✅
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` ✅
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` ✅
 - Plus supporting security files (PHASE_5_*, sbom/*, scripts/*, src/security/*, tests/security/*)
 
 **Commit Hash:** 23de207 (as shown in output)
@@ -198,7 +198,7 @@ pip show cryptography urllib3 jinja2 twisted requests  # Verify versions
 ### Action 4: Accountability Update (T+150)
 **Timeline:** 10-15 minutes  
 **Action:** Update accountability report with post-execution metrics
-**File:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+**File:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 ---
 
@@ -317,7 +317,7 @@ pip show cryptography urllib3 jinja2 twisted requests  # Verify versions
 - Phase 6 Report: `.codex/PHASE_6_CVE_REMEDIATION_REPORT.md`
 - CVE Tracking: `.codex/PHASE_6_CVE_TRACKING_SPREADSHEET.md`
 - Wave 3 Plan: `.codex/PHASE_6_WAVE3_PLANNING.md`
-- Accountability: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- Accountability: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 ### Installation Command
 ```bash

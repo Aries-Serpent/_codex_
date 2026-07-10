@@ -85,7 +85,7 @@
 
 **§0 Mandatory Pre-Session Review:** ✅ COMPLIANT
 - No prohibited deferral language detected in commits
-- Agent accountability properly updated (AGENT_ACCOUNTABILITY_REPORT.md)
+- Agent accountability properly updated (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md)
 - All changes documented with clear rationale
 
 **§1 Comprehensive Issue Resolution:** ✅ COMPLIANT

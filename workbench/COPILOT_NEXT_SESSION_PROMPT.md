@@ -50,7 +50,7 @@ Target the next 5 highest-line 0% modules. Suggested candidates:
 | `src/codex_ml/utils/retention.py` | 87 | MEDIUM |
 
 Dispatch prompt:
-> *"Write unit tests for `<module_path>` targeting the uncovered lines listed below. All tests must pass. Do not modify source code. Commit tests with `test(coverage): ...`. Must include CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md in the commit (REQ-4/REQ-5)."*
+> *"Write unit tests for `<module_path>` targeting the uncovered lines listed below. All tests must pass. Do not modify source code. Commit tests with `test(coverage): ...`. Must include CHANGELOG.md and .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md in the commit (REQ-4/REQ-5)."*
 
 ### Task 3 — After agents complete: re-run coverage
 ```bash
@@ -84,7 +84,7 @@ Run `parallel_validation` after all tests committed. Address any HIGH/CRITICAL f
 | `workbench/coverage/gap5_coverage_evidence.md` | Coverage gate evidence + roadmap |
 | `workbench/gap_backlog_prioritized.md` | Gap 5 status tracker |
 | `workbench/wave_execution_control.md` | Wave + session log |
-| `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | REQ-4 compliance |
+| `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` | REQ-4 compliance |
 | `CHANGELOG.md` | REQ-5 compliance |
 | `pyproject.toml` line ~535 | `fail_under` threshold (currently 20) |
 
@@ -95,7 +95,7 @@ Run `parallel_validation` after all tests committed. Address any HIGH/CRITICAL f
 - All artifacts under `workbench/evidence/` (never `/tmp`)
 - Pre-existing lint failures are NOT your responsibility unless introduced by your changes
 - Do NOT modify `.github/workflows/copilot-setup-steps.yml` lines 141–147 (hardened YAML block)
-- REQ-4/REQ-5: BOTH `CHANGELOG.md` AND `AGENT_ACCOUNTABILITY_REPORT.md` must appear in the **latest** commit
+- REQ-4/REQ-5: BOTH `CHANGELOG.md` AND `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` must appear in the **latest** commit
 
 ---
 

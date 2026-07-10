@@ -56,7 +56,7 @@ Invalid structure: 0
 
 | Check | Status | Evidence |
 |-------|--------|----------|
-| AGENT_ACCOUNTABILITY_REPORT.md exists | ✅ | `/docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (51,037 lines) |
+| .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md exists | ✅ | `/docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (51,037 lines) |
 | File updated in recent commits | ✅ | Auto-updated by `session_wrapup_autofix.py` for PR #4903, #4895 |
 | Session tracking enabled | ✅ | Report contains agent audit trails |
 | Gate activation | ✅ | Referenced in 66+ workflow locations |
@@ -266,7 +266,7 @@ These implement the self-healing protocol from `self-healing-orchestrator-agent`
 - ✅ All follow the RP-001 through RP-004+ patterns
 - ✅ All include escalation after 3 failures
 - ✅ All post updates to PDA Loop + AfterMath
-- ✅ All have audit trails in AGENT_ACCOUNTABILITY_REPORT.md
+- ✅ All have audit trails in .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 
 ---
 
@@ -339,7 +339,7 @@ CHANGELOG.md Recent Entries:
   ✅ PR #4903 auto-fixed (SHA dbbc939c at 2026-06-14T05:52Z)
   ✅ PR #4895 auto-fixed (SHA a8606649 at 2026-06-14T05:41Z)
 
-AGENT_ACCOUNTABILITY_REPORT.md:
+.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md:
   ✅ 51,037 lines of audit trail
   ✅ Recently updated
   ✅ Tracking agent accountability for Phase 3 work
@@ -383,7 +383,7 @@ Node.js Runtime:
 Enforcement:
   ✅ Blocks PRs without accountability report updates
   ✅ Auto-healed by session_wrapup_autofix.py
-  ✅ Tracked in AGENT_ACCOUNTABILITY_REPORT.md
+  ✅ Tracked in .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
   ✅ Escalates after 3 failures (RP-003 pattern)
 
 Recent Evidence:
@@ -461,7 +461,7 @@ Wiring:
 
 #### 4. **Monitor RP-003 Pattern Escalations** (Ongoing)
    - **Current:** 31 auto-heal workflows active; 0 escalations in recent PRs
-   - **Action:** Monitor AGENT_ACCOUNTABILITY_REPORT.md for escalations
+   - **Action:** Monitor .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md for escalations
    - **Timeline:** Continuous monitoring
 
 ---

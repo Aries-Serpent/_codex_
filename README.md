@@ -171,7 +171,7 @@ bash OFFLINE_BOOTSTRAP.sh \
 - 📖 [Core Installation](docs/installation/INSTALL_CORE.md) - Minimal setup for edge devices
 - 📖 [Runtime Setup](docs/installation/INSTALL_RUNTIME.md) - Production inference deployment
 - 📖 [Full Development](docs/installation/INSTALL_FULL.md) - Complete development environment
-- 📖 [Offline Deployment](OFFLINE_DEPLOYMENT.md) - Air-gapped environment setup
+- 📖 [Offline Deployment](docs/release/OFFLINE_DEPLOYMENT.md) - Air-gapped environment setup
 
 ---
 
@@ -427,7 +427,7 @@ A React/Vite-based quantum-enhanced code generation platform with real-time cogn
 - ✅ 5 Custom React hooks
 - ⚠️ Backend API integration pending (see `cognitive_app/CODEX_INTEGRATION_MASTER_PLAN.md`)
 
-**Documentation:** [`cognitive_app/README_INTEGRATION.md`](cognitive_app/README_INTEGRATION.md)
+**Documentation:** [`cognitive_app/README_docs/api/reference/INTEGRATION.md`](cognitive_app/README_docs/api/reference/INTEGRATION.md)
 
 ## 🆕 Recent Additions (2025-12-24)
 
@@ -576,13 +576,13 @@ Start here on every session:
 
 **New to this repository as an AI agent (Copilot, ChatGPT, etc.)?**
 
-**Start here:** [AGENTS.md](AGENTS.md) → Comprehensive agent guide + Level 4 MLOps features
+**Start here:** [.codex/archive/deprecated/AGENTS.md](.codex/archive/deprecated/AGENTS.md) → Comprehensive agent guide + Level 4 MLOps features
 **Tokenized Workflows:** [agents/TOKENIZED_WORKFLOWS.md](agents/TOKENIZED_WORKFLOWS.md) → Deterministic navigation paths
 **Machine index:** [.codex/codex_index.yaml](.codex/codex_index.yaml) → Primary files, priorities, orchestration map
 **Continuation:** [AGENT_CONTINUATION_PROMPT.md](docs/plans/AGENT_CONTINUATION_PROMPT.md) → Resume protocol for multi-step tasks
 **agent Interface:** Generate with `python -m scripts.space_traversal.audit_runner agent-interface`
 
-**Optimization:** Following the wavepoint order in AGENTS.md reduces repository traversal time by 62%.
+**Optimization:** Following the wavepoint order in .codex/archive/deprecated/AGENTS.md reduces repository traversal time by 62%.
 
 ### 🔄 Python Ingestion Pipeline
 
@@ -1351,7 +1351,7 @@ python3 scripts/catalog_workflows.py
 ### Documentation
 - [Final Consolidation Report](.github/workflow-archive/FINAL_CONSOLIDATION_REPORT.md)
 - [workflow Inventory](.github/workflow-archive/WORKFLOW_INVENTORY.yaml)
-- [AGENTS.md](AGENTS.md) - Detailed agent documentation
+- [.codex/archive/deprecated/AGENTS.md](.codex/archive/deprecated/AGENTS.md) - Detailed agent documentation
 
 ### Monitoring
 - **Automated**: [CI Health Monitor](.github/workflows/ci-health-monitor.yml)

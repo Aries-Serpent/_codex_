@@ -163,7 +163,7 @@ git push origin copilot/sub-pr-3020
 | Document | Location | Status |
 |----------|----------|--------|
 | Phase 37 Completion | `.codex/cognitive_brain/PHASE_37_CI_COMPREHENSIVE_RESOLUTION_COMPLETE.md` | ✅ |
-| Phase 38 Planning | `.codex/cognitive_brain/PHASE_38_PLANNING_COGNITIVE_BRAIN_AND_AGENTS.md` | ✅ |
+| Phase 38 Planning | `.codex/cognitive_brain/PHASE_38_PLANNING_COGNITIVE_BRAIN_AND_.codex/archive/deprecated/AGENTS.md` | ✅ |
 | Health Score | `.codex/cognitive_brain/PHASE_37_HEALTH_SCORE.md` | ⏳ |
 | PDA + AfterMath | `.codex/cognitive_brain/PHASE_37_PDA_AFTERMATH_COMPLETE.md` | ✅ |
 | QA Updates | `.codex/qa_walkthrough/PHASE_37_UPDATES.json` | ✅ |

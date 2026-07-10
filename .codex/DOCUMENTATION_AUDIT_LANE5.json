@@ -19,7 +19,7 @@
         "lines": 1387,
         "status": "✅ EXISTS - Primary entry point"
       },
-      "INSTALL.md": {
+      ".codex/archive/misc/INSTALL.md": {
         "size_kb": 1.5,
         "lines": 61,
         "status": "⚠️ MINIMAL - Needs expansion"
@@ -29,7 +29,7 @@
         "lines": 614,
         "status": "✅ EXISTS - Comprehensive"
       },
-      "INTEGRATION.md": {
+      "docs/api/reference/INTEGRATION.md": {
         "size_kb": 2.29,
         "lines": 92,
         "status": "⚠️ MINIMAL - Incomplete"
@@ -39,7 +39,7 @@
         "lines": 526,
         "status": "✅ EXISTS - Complete"
       },
-      "AGENTS.md": {
+      ".codex/archive/deprecated/AGENTS.md": {
         "size_kb": 32.62,
         "lines": 684,
         "status": "✅ EXISTS - Comprehensive"
@@ -137,10 +137,10 @@
       "priority": "CRITICAL",
       "topic": "Offline Deployment & Air-Gap Setup",
       "found_in": [
-        "OFFLINE_DEPLOYMENT.md",
+        "docs/release/OFFLINE_DEPLOYMENT.md",
         "docs/offline_quickstart.md",
         "docs/OFFLINE_QUICKSTART.md",
-        "docs/ISOLATED_DEPLOYMENT.md"
+        "docs/docs/release/ISOLATED_DEPLOYMENT.md"
       ],
       "count": 32,
       "estimated_duplication": "High - 5+ sources for same task",
@@ -150,7 +150,7 @@
       "priority": "CRITICAL",
       "topic": "Deployment & Installation",
       "found_in": [
-        "INSTALL.md",
+        ".codex/archive/misc/INSTALL.md",
         "docs/DEPLOYMENT_GUIDE.md",
         "docs/deploy/",
         "scripts/README_DEPLOYMENT_ORCHESTRATOR.md"
@@ -163,9 +163,9 @@
       "priority": "CRITICAL",
       "topic": "Quickstart & Getting Started",
       "found_in": [
-        "QUICKSTART_BY_PROFILE.md",
+        "docs/quickstart/QUICKSTART_BY_PROFILE.md",
         "docs/quickstart_local_training.md",
-        "docs/QUICKSTART_BY_PROFILE.md",
+        "docs/docs/quickstart/QUICKSTART_BY_PROFILE.md",
         "docs/onboarding/QUICK_START.md"
       ],
       "count": 34,
@@ -213,13 +213,13 @@
       "priority": "MEDIUM",
       "topic": "Agent Documentation",
       "found_in": [
-        "AGENTS.md",
+        ".codex/archive/deprecated/AGENTS.md",
         "docs/agent/",
         ".codex/agents/"
       ],
       "count": 30,
       "estimated_duplication": "Medium - Registry vs. detailed docs",
-      "action": "Create cross-reference system between AGENTS.md and detailed docs"
+      "action": "Create cross-reference system between .codex/archive/deprecated/AGENTS.md and detailed docs"
     }
   ],
   "outdated_documentation": {

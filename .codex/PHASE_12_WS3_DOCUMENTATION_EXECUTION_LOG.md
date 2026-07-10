@@ -288,7 +288,7 @@ while any_agent_completes():
 2. ✅ code_examples_catalog.json (12,776 examples, ~8 MB)
 3. ✅ code_examples_catalog.csv (~2 MB)
 4. ✅ CODE_EXAMPLES_BEST_PRACTICES.md (templates & workflow)
-5. ✅ CODE_EXAMPLES_CI_CD_INTEGRATION.md (GitHub Actions)
+5. ✅ CODE_EXAMPLES_CI_CD_docs/api/reference/INTEGRATION.md (GitHub Actions)
 6. ✅ PHASE_12_WS5_EXECUTION_PLAN.md (4-phase roadmap)
 7. ✅ PHASE_12_WS5_FAILURE_ANALYSIS.md (29 failures, 60-min fixes)
 8. ✅ PHASE_12_WS5_MASTER_INDEX.md (navigation)

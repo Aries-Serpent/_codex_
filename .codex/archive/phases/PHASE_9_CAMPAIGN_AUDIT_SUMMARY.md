@@ -58,7 +58,7 @@
 
 ### Priority 2 (MEDIUM) — 3/3 Complete
 
-- ✅ **T4.3.1a:** Updated AGENTS.md
+- ✅ **T4.3.1a:** Updated .codex/archive/deprecated/AGENTS.md
   - Added Phase 9 campaign reference to status header
   - Updated agent count: 145 → 147
   - Added new agents to capability list
@@ -70,7 +70,7 @@
   - All corrections documented
   - Compliance notes included
 
-- ✅ **T4.3.1c:** Updated AGENT_ACCOUNTABILITY_REPORT.md
+- ✅ **T4.3.1c:** Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
   - Added Phase 9 audit campaign session entry
   - Campaign participants listed (4 lanes, 12 agents)
   - All corrections documented
@@ -95,7 +95,7 @@
   - **Status: ✅ ALL CHECKS PASS**
 
 - ✅ **T4.4.3:** REQ-4/REQ-5 Compliance Check
-  - REQ-4: AGENT_ACCOUNTABILITY_REPORT.md in HEAD with Phase 9 entry: ✅ PASS
+  - REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md in HEAD with Phase 9 entry: ✅ PASS
   - REQ-5: CHANGELOG.md in HEAD with Phase 9 campaign entry: ✅ PASS
   - Both files updated in final commit: ✅ YES
   - **Status: ✅ FULL COMPLIANCE VERIFIED**
@@ -132,9 +132,9 @@
 - `.codex/PHASE_9_COORDINATION_DASHBOARD.md` — Updated timestamps
 
 ### Commit 3: Priority 2 Corrections
-- `AGENTS.md` — Added Phase 9 reference, updated counts
+- `.codex/archive/deprecated/AGENTS.md` — Added Phase 9 reference, updated counts
 - `CHANGELOG.md` — Added Phase 9 campaign entry
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — Added campaign session
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — Added campaign session
 
 ---
 
@@ -177,7 +177,7 @@
 - ✅ MkDocs build-ready
 
 ### Governance
-- ✅ REQ-4 compliance: AGENT_ACCOUNTABILITY_REPORT.md in HEAD
+- ✅ REQ-4 compliance: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md in HEAD
 - ✅ REQ-5 compliance: CHANGELOG.md in HEAD
 - ✅ Deferral language protocol: PASS (no deferral statements used)
 - ✅ Co-authored-by trailer: Included in all commits

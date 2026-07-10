@@ -53,7 +53,7 @@
 - ✅ `coverage_reports/phase7d_track1.html`
 - ✅ `coverage_reports/coverage.json`
 - ✅ Commit: `a46f0a4`
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md entry
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md entry
 - ✅ REQ-5: CHANGELOG.md documented
 
 ---
@@ -129,7 +129,7 @@
 - ✅ `.codex/PHASE_7D_TRACK_3A_FINAL_COMPLETION_REPORT.md`
 - ✅ Updated `docs/` directory structure
 - ✅ All code examples validated
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md entry
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md entry
 - ✅ REQ-5: CHANGELOG.md documented
 
 ---
@@ -183,7 +183,7 @@
 - ✅ `.codex/PHASE_7D_TRACK_3B_SUBTASK_3.6_DATA_MIGRATION_REPORT.md`
 - ✅ Updated source files with new functionality
 - ✅ Commit: `06c92c9`
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md entry
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md entry
 - ✅ REQ-5: CHANGELOG.md documented
 
 ---
@@ -421,7 +421,7 @@
 - ✅ Track 3B: Functionality additions (commit: 06c92c9)
 
 ### Supporting Documentation
-- ✅ `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — All agent activities logged
+- ✅ `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — All agent activities logged
 - ✅ `CHANGELOG.md` — All changes documented
 - ✅ `.codex/PHASE_7D_CAMPAIGN_DASHBOARD.md` — Campaign tracking
 - ✅ `.codex/PHASE_7D_CAMPAIGN_EXECUTION_SUMMARY.md` — Executive summary

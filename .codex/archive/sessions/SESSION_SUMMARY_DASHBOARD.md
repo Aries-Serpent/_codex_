@@ -129,7 +129,7 @@ EXECUTION (Phases 4-7A)                   ████████████�
 
 ### Accountability & Tracking
 
-10. **`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`** (updated)
+10. **`docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`** (updated)
     - Session hardening compliance section
     - Agent delegation inventory
     - Real-time phase/lane tracking

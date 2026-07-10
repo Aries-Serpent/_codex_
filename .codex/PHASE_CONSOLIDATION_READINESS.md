@@ -43,7 +43,7 @@
 - [ ] Verify all commits have resolution comments (per memory)
 
 ### Step 6.4: Final Documentation
-- [ ] Update AGENT_ACCOUNTABILITY_REPORT.md with session context
+- [ ] Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with session context
   - Session date/time
   - Phases completed
   - Blockers fixed/resolved
@@ -74,7 +74,7 @@
 From Phase 3-5 agent execution:
 - Modified files from code quality fixes
 - Updated pyproject.toml (entry point changes)
-- Updated documentation files (INSTALL.md, README.md, etc.)
+- Updated documentation files (.codex/archive/misc/INSTALL.md, README.md, etc.)
 
 Final session artifacts:
 - `.codex/PHASE_3_CI_TESTING_REPORT.md` (from agent)
@@ -107,7 +107,7 @@ Final session artifacts:
 5. Secret scanning passed (0 credentials leaked)
 6. parallel_validation passed (Code Review + CodeQL)
 7. All generated reports in .codex/ directory
-8. AGENT_ACCOUNTABILITY_REPORT.md updated
+8. .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated
 9. CHANGELOG.md updated
 10. Final readiness assessment explicit (release-ready or blocked)
 

@@ -302,7 +302,7 @@ These files are updated:
 ### Architecture
 
 - `REPOSITORY_ARCHITECTURE_DIAGRAMS.md` - System diagrams
-- `AGENTS.md` - Agent system documentation
+- `.codex/archive/deprecated/AGENTS.md` - Agent system documentation
 - `GOVERNANCE.md` - Repository governance
 
 ### Coverage Plans

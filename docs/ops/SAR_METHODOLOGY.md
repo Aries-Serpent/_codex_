@@ -798,7 +798,7 @@ flowchart TD
 - [ ] P3: Update docs/LEVEL_4_MLOPS_ASSESSMENT.md score
 
 ## Mandatory pre-commit
-- [ ] docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md updated (REQ-4)
+- [ ] docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated (REQ-4)
 - [ ] CHANGELOG.md updated (REQ-5 / PREFLIGHT_001)
 - [ ] 0 new CodeQL alerts
 - [ ] All 37 variable_audit_cli tests pass

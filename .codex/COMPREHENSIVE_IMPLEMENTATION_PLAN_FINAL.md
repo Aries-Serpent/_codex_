@@ -351,7 +351,7 @@ src/codex/
 
 ## ✅ COMPLIANCE & ACCOUNTABILITY
 
-### REQ-4: AGENT_ACCOUNTABILITY_REPORT.md
+### REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 - **Entry Prepared:** Phase X session type=Crisis Response
 - **Agents:** 15 deployed/queued (Tracks α-ε)
 - **Authority:** @mbaetiong (D-level autonomy)

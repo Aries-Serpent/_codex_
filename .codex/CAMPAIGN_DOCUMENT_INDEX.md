@@ -161,7 +161,7 @@ Total time to understand: 45 minutes
 → Use: **AUDIT_CAMPAIGN_CHECKLIST.md**  
 → Update as you complete each task  
 → Log consolidation results  
-→ Update AGENT_ACCOUNTABILITY_REPORT.md
+→ Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 
 ### Priority 4: Continue to Next Phases (Sessions 2-5)
 → Use: **CAMPAIGN_EXECUTION_START.md** continuation prompt  

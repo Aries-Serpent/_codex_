@@ -165,7 +165,7 @@ Remaining: 8pp → Day 2-4
 
 ### Accountability
 
-11. ✅ **AGENT_ACCOUNTABILITY_REPORT.md** (updated with all 3 agents)
+11. ✅ **.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md** (updated with all 3 agents)
 
 ---
 
@@ -253,7 +253,7 @@ Remaining: 8pp → Day 2-4
 
 **Campaign Master:** `.codex/PRODUCTION_READINESS_DELEGATION_FRAMEWORK.md`  
 **Checkpoint 3 Brief:** `.codex/CHECKPOINT_3_DELEGATION_BRIEF_HYBRID_MODE.md`  
-**Accountability:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`  
+**Accountability:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`  
 **Session Status:** `.codex/SESSION_20260619_DELEGATION_SUMMARY.md`  
 
 ---

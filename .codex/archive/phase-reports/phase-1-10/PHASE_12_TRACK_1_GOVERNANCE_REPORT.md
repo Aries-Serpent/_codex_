@@ -133,7 +133,7 @@ Commit: d6bf27cd (Security validation complete)
 #### Phase 5 (Documentation Updates) — ✅ COMPLIANT
 ```
 Commit: c95532a0 (Doc updates)
-✅ 2 new guides created (QUICKSTART_BY_PROFILE.md 340L, OFFLINE_DEPLOYMENT.md 432L)
+✅ 2 new guides created (QUICKSTART_BY_PROFILE.md 340L, docs/release/OFFLINE_DEPLOYMENT.md 432L)
 ✅ CONTRIBUTING.md updated with profile-aware guidelines
 ✅ 10 public APIs documented with version guarantees
 ✅ All documentation links valid, no broken references
@@ -281,7 +281,7 @@ Registry & Health Workflows (3):
 - ✅ **Workflow Execution Logs:** All 218 workflows with run history
 - ✅ **Machine-Readable Governance:** `.codex/machine-readable-governance.yml` recording policy state
 - ✅ **Session Checkpoints:** Phase 10 artifacts present and accessible
-- ✅ **Agent Accountability:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated with Phase 6
+- ✅ **Agent Accountability:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` updated with Phase 6
 
 #### Audit Event Coverage
 ```
@@ -397,7 +397,7 @@ Coverage Classification:         EXCELLENT (>95%)
 
 **Relevant Policies:**
 - ✅ CAD-Mandate (Custom Agent Delegation) enforced in CODEBASE_AGENCY_POLICY §13
-- ✅ Agent Accountability Report updated (docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md)
+- ✅ Agent Accountability Report updated (docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md)
 - ✅ Agent autonomy levels tracked (D-tier active for @mbaetiong)
 - ✅ No unauthorized agent bypass attempts detected
 
@@ -465,7 +465,7 @@ Config Drift        LOW           MEDIUM    CONFIG_VALIDATOR active      ✅ MIT
 | Documentation coverage | ✅ PASS | 97.28% (1,785/1,798 files) | 2026-07-06 |
 | Security approved | ✅ PASS | Phase 4 validation complete | 2026-07-05 |
 | Owner approval functional | ✅ PASS | APPROVAL_POLICIES.md active | 2026-07-06 |
-| Agent accountability tracked | ✅ PASS | AGENT_ACCOUNTABILITY_REPORT.md current | 2026-07-06 |
+| Agent accountability tracked | ✅ PASS | .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md current | 2026-07-06 |
 | No blocking issues | ✅ PASS | Phase 6 blockers resolved | 2026-07-06 |
 
 ### Success Criteria Met
@@ -526,7 +526,7 @@ Config Drift        LOW           MEDIUM    CONFIG_VALIDATOR active      ✅ MIT
 - `.codex/GOVERNANCE_AUDIT_20260701.json` — Latest documentation audit
 
 ### Agent Accountability
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — Phase 0-6 session summary
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — Phase 0-6 session summary
 
 ---
 

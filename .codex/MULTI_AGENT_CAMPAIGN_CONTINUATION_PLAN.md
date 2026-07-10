@@ -360,7 +360,7 @@
 **Expected Output:**
 - PHASE_3_CONSOLIDATED_FINDINGS.md (created)
 - Phase 4 agent reports (300-500 findings)
-- Updated AGENT_ACCOUNTABILITY_REPORT.md
+- Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 - Updated CHANGELOG.md
 - Critical fixes started (XXE, timeouts, artifact retention)
 
@@ -460,7 +460,7 @@
 - [x] Create PHASE_3_CONSOLIDATED_FINDINGS.md
 - [x] Create MULTI-AGENT CAMPAIGN CONTINUATION PLAN (this document)
 - [ ] Commit Phase 3 consolidation
-- [ ] Update AGENT_ACCOUNTABILITY_REPORT.md
+- [ ] Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 - [ ] Update CHANGELOG.md
 
 ### SHORT-TERM (Next 30 minutes)
@@ -517,7 +517,7 @@
 - [x] Deferral language validation (PASS)
 - [x] D-mode authorization confirmed (@mbaetiong)
 - [x] Token budget adequate (35% remaining)
-- [ ] AGENT_ACCOUNTABILITY_REPORT.md updated
+- [ ] .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated
 - [ ] CHANGELOG.md updated
 - [ ] Phase 3-5 plan documented (this document)
 
@@ -571,7 +571,7 @@
 - **Session status:** This document + CAMPAIGN_EXECUTION_DASHBOARD.md
 - **Findings:** PHASE_X_CONSOLIDATED_FINDINGS.md (per phase)
 - **Remediation:** Separate remediation tracking repo (TBD after consolidation)
-- **Health metrics:** AGENT_ACCOUNTABILITY_REPORT.md (updated per phase)
+- **Health metrics:** .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (updated per phase)
 
 ---
 

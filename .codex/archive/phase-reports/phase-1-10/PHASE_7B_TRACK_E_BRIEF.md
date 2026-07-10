@@ -58,14 +58,14 @@ Aggregate outputs from all Tracks A-D, update accountability records, prepare re
 **Approach:** Complete campaign documentation
 
 **Tasks:**
-1. Update AGENT_ACCOUNTABILITY_REPORT.md through Phase 7B completion
+1. Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md through Phase 7B completion
 2. Archive all Phase 7 checkpoints (consolidate session entries)
 3. Record all 10 agent delegations (mission IDs, completion status)
 4. Verify REQ-4/REQ-5 compliance (CHANGELOG.md + accountability updated)
 5. Generate final accountability report
 
 **Deliverables:**
-- Updated AGENT_ACCOUNTABILITY_REPORT.md (Phase 7B complete)
+- Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (Phase 7B complete)
 - Phase 7 session archive (all checkpoints + metrics)
 - Compliance verification (REQ-4/REQ-5 gates passed)
 - Final accountability summary
@@ -80,7 +80,7 @@ Aggregate outputs from all Tracks A-D, update accountability records, prepare re
 |-----------|-------------|--------------|
 | **Metrics Consolidated** | All Tracks A-D outputs aggregated | Master dashboard complete |
 | **Release Notes** | Final v0.1.0-final drafted | Approval-ready document |
-| **Accountability Updated** | Phase 7B recorded | AGENT_ACCOUNTABILITY_REPORT.md current |
+| **Accountability Updated** | Phase 7B recorded | .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md current |
 | **Compliance Verified** | REQ-4/REQ-5 gates passed | session_wrapup_autofix check green |
 | **Gate Approval** | @mbaetiong signals approval | Final validation complete |
 | **Timeline** | Complete by 2026-06-21 21:00Z | Checkpoint report filed |
@@ -236,7 +236,7 @@ D (CI)       ──┤
 - `.codex/PHASE_7B_TRACK_C_BRIEF.md` — Mutation hardening
 - `.codex/PHASE_7B_TRACK_D_BRIEF.md` — CI stabilization
 - `.codex/PHASE_7B_COORDINATION_DASHBOARD.md` — Status hub
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — Campaign tracking
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — Campaign tracking
 - `CHANGELOG.md` — Session wrapup compliance (REQ-4/REQ-5)
 
 ---

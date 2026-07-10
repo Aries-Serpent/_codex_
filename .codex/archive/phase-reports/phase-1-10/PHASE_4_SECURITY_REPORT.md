@@ -102,7 +102,7 @@ All Phase 4 security and governance objectives have been **successfully complete
 
 **Files Analyzed** (4):
 - ✅ `pyproject.toml` — No credential patterns
-- ✅ `INSTALL.md` — No password/token references
+- ✅ `.codex/archive/misc/INSTALL.md` — No password/token references
 - ✅ `scripts/prepare_offline_env.sh` — No embedded secrets
 - ✅ `scripts/validate_offline_install.sh` — No API keys
 
@@ -214,7 +214,7 @@ All Phase 4 security and governance objectives have been **successfully complete
 1. ✓ Proceed with merge to main branch
 2. ✓ Proceed with release to PyPI
 3. ✓ Proceed with external distribution
-4. ⚠️ Document PKG-004 limitation in INSTALL.md
+4. ⚠️ Document PKG-004 limitation in .codex/archive/misc/INSTALL.md
 
 ---
 
@@ -254,7 +254,7 @@ All Phase 4 security and governance objectives have been **successfully complete
 
 ### Documentation
 
-3. **UPDATE** INSTALL.md with PKG-004 note
+3. **UPDATE** .codex/archive/misc/INSTALL.md with PKG-004 note
    - Document: Private functions in entry points are exported but not recommended for direct use
    - This is a known limitation, not a security issue
 
@@ -302,7 +302,7 @@ All Phase 4 security and governance objectives have been **successfully complete
 
 Files validated from PR #5231 merge:
 - pyproject.toml (profile definitions)
-- INSTALL.md (installation docs)
+- .codex/archive/misc/INSTALL.md (installation docs)
 - scripts/prepare_offline_env.sh (wheel preparation)
 - scripts/validate_offline_install.sh (validation)
 

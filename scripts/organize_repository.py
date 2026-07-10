@@ -43,7 +43,7 @@ logger = logging.getLogger(__name__)
 # Files to preserve in root (core documentation)
 DEFAULT_PRESERVE_FILES = {
     "README.md",
-    "AGENTS.md",
+    ".codex/archive/deprecated/AGENTS.md",
     "CONTRIBUTING.md",
     "SECURITY.md",
     "CODE_OF_CONDUCT.md",

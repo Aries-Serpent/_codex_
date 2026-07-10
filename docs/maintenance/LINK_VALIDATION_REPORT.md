@@ -100,14 +100,14 @@ _... and 4 more files_
 
 ### .codex/change_log.md
 
-- `docs/guides/AGENTS.md` → Possible: ../../_codex_/_codex_/AGENTS.md
+- `docs/guides/.codex/archive/deprecated/AGENTS.md` → Possible: ../../_codex_/_codex_/.codex/archive/deprecated/AGENTS.md
 - ``.github/workflows/ci.yml`` → No suggestion
-- `docs/guides/AGENTS.md` → Possible: ../../_codex_/_codex_/AGENTS.md
+- `docs/guides/.codex/archive/deprecated/AGENTS.md` → Possible: ../../_codex_/_codex_/.codex/archive/deprecated/AGENTS.md
 - ``.github/workflows/ci.yml`` → No suggestion
-- `docs/guides/AGENTS.md` → Possible: ../../_codex_/_codex_/AGENTS.md
+- `docs/guides/.codex/archive/deprecated/AGENTS.md` → Possible: ../../_codex_/_codex_/.codex/archive/deprecated/AGENTS.md
   _... and 4 more_
 
-### .codex/docs/AGENTS.md.original.cf4e8c9.md
+### .codex/docs/.codex/archive/deprecated/AGENTS.md.original.cf4e8c9.md
 
 - `.codex/guardrails.md` → Possible: ../../_codex_/.codex/guardrails.md
 - `docs/agent/OPERATIONAL_GUIDELINES.md` → Possible: ../../_codex_/docs/agent/OPERATIONAL_GUIDELINES.md
@@ -122,7 +122,7 @@ _... and 4 more files_
 
 ### .codex/status/_codex_status_update-2025-09-07.md
 
-- `docs/guides/AGENTS.md` → Possible: ../../_codex_/_codex_/AGENTS.md
+- `docs/guides/.codex/archive/deprecated/AGENTS.md` → Possible: ../../_codex_/_codex_/.codex/archive/deprecated/AGENTS.md
 
 ### .codex/update_pr_template_for_continuation.md
 
@@ -199,7 +199,7 @@ _... and 41 more files_
 
 - `[Security Best Practices](.././SECURITY.md)` → Possible: ../../_codex_/SECURITY.md
 - `[Contributing Guidelines](.././CONTRIBUTING.md)` → Possible: dev/CONTRIBUTING.md
-- `[Agents Architecture](.././agents.md)` → Possible: ../../_codex_/_codex_/AGENTS.md
+- `[Agents Architecture](.././agents.md)` → Possible: ../../_codex_/_codex_/.codex/archive/deprecated/AGENTS.md
 - `[Security Guidelines](.././SECURITY.md)` → Possible: ../../_codex_/SECURITY.md
 - `[Contributing Guidelines](.././CONTRIBUTING.md)` → Possible: dev/CONTRIBUTING.md
   _... and 1 more_

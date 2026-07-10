@@ -155,7 +155,7 @@ OVERALL CONFIDENCE SCORE:     ✅ 96.9% (EXCELLENT)
 2. ✅ **Security Validation Report** — Lane 2 report finalized
 3. ✅ **Test Results Report** — Lane 3 reports (4 documents) finalized
 4. ✅ **Workflow Compliance Report** — Lane 4 report finalized
-5. 🔄 **AGENT_ACCOUNTABILITY_REPORT.md** — Updating now
+5. 🔄 **.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md** — Updating now
 6. 🔄 **CHANGELOG.md** — Updating now
 7. ⏳ **Compliance Check** — Pending after doc updates
 
@@ -172,7 +172,7 @@ OVERALL CONFIDENCE SCORE:     ✅ 96.9% (EXCELLENT)
 - ✅ Full autonomous execution approved
 
 **Compliance:**
-- 🔄 REQ-4: AGENT_ACCOUNTABILITY_REPORT.md (updating)
+- 🔄 REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (updating)
 - 🔄 REQ-5: CHANGELOG.md (updating)
 - ⏳ session_wrapup_autofix --check validation (pending after updates)
 
@@ -190,7 +190,7 @@ OVERALL CONFIDENCE SCORE:     ✅ 96.9% (EXCELLENT)
 - [x] Test coverage measured and planned (80.6% infrastructure)
 - [x] All workflows operational (94% compliance)
 - [x] Artifact integrity verified (100%)
-- [ ] AGENT_ACCOUNTABILITY_REPORT.md updated (in progress)
+- [ ] .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated (in progress)
 - [ ] CHANGELOG.md updated (in progress)
 - [ ] session_wrapup_autofix compliance verified (pending)
 - [x] Zero critical issues outstanding
@@ -216,7 +216,7 @@ CONFIDENCE LEVEL:                 HIGH (96.9%)
 ## 📋 NEXT STEPS
 
 1. **Phase 3B Documentation** (Current)
-   - Finalize AGENT_ACCOUNTABILITY_REPORT.md update
+   - Finalize .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md update
    - Finalize CHANGELOG.md update
    - Run compliance check with session_wrapup_autofix
    - Commit both files together

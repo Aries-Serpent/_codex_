@@ -221,7 +221,7 @@ Use these symbols to indicate the physics principle aligned with each iteration:
 ## Questions?
 
 For questions about terminology migration or template usage, refer to:
-- `AGENTS.md` - Project conventions
+- `.codex/archive/deprecated/AGENTS.md` - Project conventions
 - `docs/templates/` - Standard templates
 - Recent implementation plans in `docs/plans/` for examples
 

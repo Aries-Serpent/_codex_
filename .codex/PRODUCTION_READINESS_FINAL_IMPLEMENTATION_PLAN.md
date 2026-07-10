@@ -320,7 +320,7 @@ Phase 7C (Certification):
 ```
 Changes from 0D_base_ to main:
 ├── .secrets.baseline (9 deletions - baseline cleanup)  # pragma: allowlist secret
-├── docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md (2 line updates)
+├── docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (2 line updates)
 ├── src/cli/__init__.py (1 deletion - cleanup)
 ├── src/cli/task_sequence.py (6 changes - parameter updates)  # pragma: allowlist secret
 ├── src/cli/train_codex.py (8 changes - API alignment)

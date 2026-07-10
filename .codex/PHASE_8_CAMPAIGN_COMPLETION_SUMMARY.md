@@ -323,7 +323,7 @@
 - Security scanning: ✅ PASSED (0 secrets, 0 vulnerabilities)
 - Accountability documentation: ✅ PASSED
 
-### REQ-4 Compliance (AGENT_ACCOUNTABILITY_REPORT.md)
+### REQ-4 Compliance (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md)
 ✅ **Accountability Report Updated**
 - Campaign session entry: ✅ ADDED
 - All 36 agents documented: ✅ COMPLETE

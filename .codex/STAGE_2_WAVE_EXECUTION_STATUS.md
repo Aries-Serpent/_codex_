@@ -186,7 +186,7 @@ Overall Campaign Progress:      ██████████████░░
 
 **Wave 1 Sub-Agent 5 (self-healing-orchestrator-agent):**
 - `.codex/WAVE_1_PATTERN_DEPLOYMENT_REPORT.md`
-- `.codex/WAVE_1_COGNITIVE_BRAIN_INTEGRATION.md`
+- `.codex/WAVE_1_COGNITIVE_BRAIN_docs/api/reference/INTEGRATION.md`
 
 **Wave 3 Phase 2 Agents (2-4):**
 - QA analysis, pattern compliance, mutation testing reports

@@ -559,7 +559,7 @@ def write_digest(report: BootstrapReport, verbose: bool = False) -> Path:
         "",
         "## 🩺 Session Diagnostic Protocol Checklist",
         "",
-        "Copy into `AGENT_ACCOUNTABILITY_REPORT.md` pre-flight section:",
+        "Copy into `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` pre-flight section:",
         "",
         "```markdown",
         f"- [x] D-00 session_bootstrap.py — {len(report.fetched)} URL(s) found, "

@@ -1,4 +1,4 @@
-# AGENTS.md - AI agent Documentation
+# .codex/archive/deprecated/AGENTS.md - AI agent Documentation
 
 <!--
 🤖 CHATGPT CODEX AGENT ENTRY POINT 🤖
@@ -20,7 +20,7 @@ DO NOT MOVE this file - it is intentionally placed here as the first point of co
 > **Phase 9:** Multi-Agent Validation Campaign (2026-06-26 - Active)
 >
 > **📚 Full Documentation:** For complete operational details including audit pipelines, Python ingestion,
-> security utilities, and troubleshooting procedures, see [.codex/docs/AGENTS.md.original.cf4e8c9.md](.codex/docs/AGENTS.md.original.cf4e8c9.md)
+> security utilities, and troubleshooting procedures, see [.codex/docs/.codex/archive/deprecated/AGENTS.md.original.cf4e8c9.md](.codex/docs/.codex/archive/deprecated/AGENTS.md.original.cf4e8c9.md)
 
 ---
 

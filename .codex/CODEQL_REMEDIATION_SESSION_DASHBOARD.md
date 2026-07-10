@@ -270,7 +270,7 @@ PHASE 3: Regression Detection
 └─ Response: Hold or Revert based on severity
 
 PHASE 4: Governance Documentation
-├─ Update AGENT_ACCOUNTABILITY_REPORT.md (REQ-4)
+├─ Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (REQ-4)
 ├─ Update CHANGELOG.md (REQ-5)
 ├─ Document commit SHAs for comment resolution
 └─ Verify compliance: python3 scripts/ci/session_wrapup_autofix.py --check
@@ -289,7 +289,7 @@ PHASE 5: Validation & Verification
 
 ### REQ-4: Session Accountability (COMPLETE ✅)
 
-**File:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+**File:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 **Entries Added:**
 1. **Session 2026-06-25T01:23Z** — Primary remediation work

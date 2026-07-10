@@ -35,7 +35,7 @@
 
 ### 3. Update Accountability & Tracking
 - ✅ **COMPLETED**
-  - Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` with resumption checkpoint
+  - Updated `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` with resumption checkpoint
   - Created `.codex/SESSION_RESUMPTION_CHECKPOINT_20260619.md` (detailed resumption plan)
   - Created `.codex/PHASE_7A_SESSION_RESUMPTION_DASHBOARD.md` (metrics & agent tracking)
   - All documents stored in repository (not /tmp) per user requirements
@@ -173,7 +173,7 @@ EXECUTION (Phases 4-7A)                   ████████████�
 - Lane 3.1: `.codex/PHASE_7A_LANE_31_CHECKPOINT_DAY_X.md`
 - Lane 3.2: `.codex/PHASE_7A_LANE_32_CHECKPOINT_DAY_X.md`
 
-**Accountability Updates:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+**Accountability Updates:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 ---
 
@@ -199,7 +199,7 @@ All critical blockers → @mbaetiong via accountability report
 | Python 3.12 verification | ✅ COMPLETE | 3.12.3 active, stable |
 | Session resumption checkpoint | ✅ COMPLETE | `.codex/SESSION_RESUMPTION_CHECKPOINT_20260619.md` |
 | Phase 7A dashboard | ✅ COMPLETE | `.codex/PHASE_7A_SESSION_RESUMPTION_DASHBOARD.md` |
-| Accountability update | ✅ COMPLETE | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` |
+| Accountability update | ✅ COMPLETE | `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` |
 | Unified security scanner | ✅ DELEGATED | Agent ID: phase5-security-completion, Status: 🚀 RUNNING |
 | Lane 3.1 agent | ✅ DELEGATED | Agent ID: phase7a-lane31-edge-cases, Status: 🚀 RUNNING |
 | Lane 3.2 agent | ✅ DELEGATED | Agent ID: phase7a-lane32-mutation-testin, Status: 🚀 RUNNING |
@@ -249,7 +249,7 @@ All critical blockers → @mbaetiong via accountability report
 - mutation-testing-agent: Lane 3.2 (7+ days)
 
 **Accountability:**
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — Session tracking
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — Session tracking
 - `.codex/PHASE_5_COMPLETION_CHECKPOINT.md` — Phase 5 progress
 - `.codex/PHASE_7A_LANE_31_CHECKPOINT_DAY_*.md` — Lane 3.1 daily reports
 - `.codex/PHASE_7A_LANE_32_CHECKPOINT_DAY_*.md` — Lane 3.2 daily reports

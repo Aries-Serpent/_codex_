@@ -45,7 +45,7 @@ OODA Loop        Refactor            Hardening            Release        Rollout
 
 | Deliverable | Owner | Status | Notes |
 |-------------|-------|--------|-------|
-| INTELLIGENCE_CAMPAIGN_BASELINE.md | cognitive-brain-cli-agent | ✅ Complete | Dependency analysis, OODA decisions, strategic recommendations |
+| .codex/archive/misc/INTELLIGENCE_CAMPAIGN_BASELINE.md | cognitive-brain-cli-agent | ✅ Complete | Dependency analysis, OODA decisions, strategic recommendations |
 | CAMPAIGN_TRACKING_DASHBOARD.md | orchestrator-agent | ✅ Complete | This file — live progress tracking |
 | Phase 1 Scope Document | orchestrator-agent | ✅ Complete | Lane readiness checklist, confirmed dependencies |
 | Module Inventory & Mapping | skills-master-agent | ✅ Complete | Dependency matrix, packaging boundaries, export readiness |
@@ -77,7 +77,7 @@ Day 2 (2026-07-06T01:10:00Z):
 ✅ Phase 0 completion gate: PASSED (100% readiness)
 
 Phase 0 Completion (2026-07-06T01:10:00Z):
-✅ INTELLIGENCE_CAMPAIGN_BASELINE.md finalized
+✅ .codex/archive/misc/INTELLIGENCE_CAMPAIGN_BASELINE.md finalized
 ✅ All lane leads sign off on Phase 1 scope
 ✅ 142 KB campaign documentation committed to .codex/
 ✅ 4 strategic decisions locked + approved by @mbaetiong
@@ -111,9 +111,9 @@ Phase 0 Completion (2026-07-06T01:10:00Z):
 - ✅ `.codex/network-policy.yaml` (fail-closed localhost-only default)
 - ✅ `tests/safety/test_network_policy.py` (allow/block/wildcard coverage)
 - ✅ `OFFLINE_BOOTSTRAP.sh` (air-gap install bootstrap)
-- ✅ `INSTALL.md` (external install instructions)
-- ✅ `ISOLATED_DEPLOYMENT.md` (isolated deployment posture)
-- ✅ `INTEGRATION.md` (embedding and API integration guidance)
+- ✅ `.codex/archive/misc/INSTALL.md` (external install instructions)
+- ✅ `docs/release/ISOLATED_DEPLOYMENT.md` (isolated deployment posture)
+- ✅ `docs/api/reference/INTEGRATION.md` (embedding and API integration guidance)
 - ✅ `.codex/PACKAGING_ARCHITECTURE_DECISIONS.md` (campaign ADR record)
 
 ### Phase 1 Synchronization Points
@@ -172,7 +172,7 @@ Phase 0 Completion (2026-07-06T01:10:00Z):
 
 | Lane | Owner | Deliverables | Readiness |
 |------|-------|--------------|-----------|
-| **Lane 5: Documentation** | unified-doc-agent | INSTALL.md, ISOLATED_DEPLOYMENT.md, INTEGRATION.md, FAQ, RELEASE_NOTES.md | 🟡 Pending |
+| **Lane 5: Documentation** | unified-doc-agent | .codex/archive/misc/INSTALL.md, docs/release/ISOLATED_DEPLOYMENT.md, docs/api/reference/INTEGRATION.md, FAQ, docs/release/RELEASE_NOTES.md | 🟡 Pending |
 
 ### Phase 3 Synchronization
 
@@ -296,7 +296,7 @@ Phase 0 Completion (2026-07-06T01:10:00Z):
 
 ### Phase 0 Completion (Target: 2026-07-08)
 
-- [ ] INTELLIGENCE_CAMPAIGN_BASELINE.md delivered
+- [ ] .codex/archive/misc/INTELLIGENCE_CAMPAIGN_BASELINE.md delivered
   - [ ] Dependency analysis complete
   - [ ] Cognitive engine export scope defined
   - [ ] Module boundaries documented
@@ -329,12 +329,12 @@ Phase 0 Completion (2026-07-06T01:10:00Z):
 
 ### Phase 3 Completion (Target: 2026-07-19)
 
-- [ ] Lane 5: INSTALL.md (online installation guide)
-- [ ] Lane 5: OFFLINE_INSTALL.md (air-gap guide)
-- [ ] Lane 5: ISOLATED_DEPLOYMENT.md (whitelist + offline)
-- [ ] Lane 5: INTEGRATION.md (embedding guide + examples)
+- [ ] Lane 5: .codex/archive/misc/INSTALL.md (online installation guide)
+- [ ] Lane 5: OFFLINE_.codex/archive/misc/INSTALL.md (air-gap guide)
+- [ ] Lane 5: docs/release/ISOLATED_DEPLOYMENT.md (whitelist + offline)
+- [ ] Lane 5: docs/api/reference/INTEGRATION.md (embedding guide + examples)
 - [ ] Lane 5: TROUBLESHOOTING.md (FAQ with cognitive patterns)
-- [ ] Lane 5: RELEASE_NOTES.md (v0.1.0-external features)
+- [ ] Lane 5: docs/release/RELEASE_NOTES.md (v0.1.0-external features)
 - [ ] All lanes review and sign off on documentation
 - [ ] Phase 3 gate passed: Documentation ready for release
 

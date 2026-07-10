@@ -327,7 +327,7 @@ NEW: logger = get_logger()
 
 ### Phase 4: Documentation (1-2 hours)
 
-- [ ] Update AGENT_ACCOUNTABILITY_REPORT.md with blocker resolution
+- [ ] Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with blocker resolution
 - [ ] Document migration guide for future developers
 - [ ] Update architecture docs on decoupling pattern
 - [ ] Add migration checklist to CHANGELOG.md

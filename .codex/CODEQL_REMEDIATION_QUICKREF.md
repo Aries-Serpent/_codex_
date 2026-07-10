@@ -24,7 +24,7 @@ EOF
 # If alert count increases: PAUSE & DIAGNOSE
 
 # 5. Commit Phase 4: Governance
-git add CHANGELOG.md docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+git add CHANGELOG.md docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 git commit -m "docs(codeql): update accountability and changelog"
 
 # 6. Validate Phase 5: Pre-merge
@@ -144,7 +144,7 @@ git status  # Should be clean
 
 ## 📋 Governance Compliance
 
-**Template: AGENT_ACCOUNTABILITY_REPORT.md**
+**Template: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md**
 ```markdown
 ## SESSION SUMMARY — <date>
 
@@ -216,7 +216,7 @@ logger.info(f"API key: {api_key}")
 ## 📞 Getting Help
 
 1. **Full Details:** `.codex/CODEQL_REMEDIATION_PROTOCOL.md`
-2. **Recent Session:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+2. **Recent Session:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 3. **Key Learnings:** `.codex/CODEQL_REMEDIATION_PROTOCOL.md#key-learnings`
 4. **Troubleshooting:** `.codex/CODEQL_REMEDIATION_PROTOCOL.md#troubleshooting`
 

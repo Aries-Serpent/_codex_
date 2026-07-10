@@ -163,7 +163,7 @@
 - ETA: 2026-06-21 21:00Z UTC
 
 **E2 (session-analysis-agent) — QUEUED**
-- Will update AGENT_ACCOUNTABILITY_REPORT.md (REQ-4)
+- Will update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (REQ-4)
 - Will update CHANGELOG.md (REQ-5)
 - Will archive Phase 7 checkpoints
 - ETA: 2026-06-21 21:00Z UTC (after E1 slot available)

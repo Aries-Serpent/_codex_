@@ -177,7 +177,7 @@ DOCUMENT               | SCOPE          | PHASES      | AGENTS  | TIMELINE | ACT
 1. Document Python fix completion
 2. Update phase completion percentages
 3. Post progress to Discussion #4872
-4. Update AGENT_ACCOUNTABILITY_REPORT.md
+4. Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 5. Commit updated campaign docs
 
 **Success Criteria:** ✅ All documentation current and tracked
@@ -258,7 +258,7 @@ DOCUMENT               | SCOPE          | PHASES      | AGENTS  | TIMELINE | ACT
 ### Repository Paths
 - **Analysis Documents:** `.codex/DISCUSSION_4872_*.md` (3 files)
 - **Agent Registry:** `.github/agents/AGENT_REGISTRY.yaml` (145 agents)
-- **Campaign Tracking:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- **Campaign Tracking:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 ### Key Scripts
 - **Python Version Check:** `python --version`

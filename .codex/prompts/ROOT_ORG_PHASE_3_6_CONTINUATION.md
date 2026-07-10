@@ -35,9 +35,9 @@ Complete root folder cleanup by relocating remaining 128 files while maintaining
 **Duration:** 1-2 hours
 
 ### Phase 4: Agent Documentation (4 files) ⏳
-**Target:** AGENTS.md, CHANGELOG_AGENTS.md, etc.
+**Target:** .codex/archive/deprecated/AGENTS.md, CHANGELOG_.codex/archive/deprecated/AGENTS.md, etc.
 **Destination:** .github/agents/docs/
-**Risk:** HIGH for AGENTS.md (293 refs), LOW for others
+**Risk:** HIGH for .codex/archive/deprecated/AGENTS.md (293 refs), LOW for others
 **Duration:** 1-2 hours (with reference updates)
 
 ### Phase 5: Miscellaneous Consolidation (74 files) ⏳
@@ -245,11 +245,11 @@ python scripts/root_org/validate_references.py docs/archive/phases/ --dry-run
 ## 📊 Phase 4: Agent Documentation (DETAILED)
 
 ### Scope
-Move agent-related documentation to .github/agents/docs/ with special handling for AGENTS.md (293 references).
+Move agent-related documentation to .github/agents/docs/ with special handling for .codex/archive/deprecated/AGENTS.md (293 references).
 
 ### File Analysis
 
-#### File 1: AGENTS.md (HIGH RISK)
+#### File 1: .codex/archive/deprecated/AGENTS.md (HIGH RISK)
 **References:** 293 (confirmed)
 **Risk:** HIGH
 **Strategy:** Keep in root OR move with comprehensive reference updates
@@ -263,12 +263,12 @@ Move agent-related documentation to .github/agents/docs/ with special handling f
 
 **Recommendation:** Keep in root for now, revisit in Phase 6
 
-#### File 2: AGENTS.md.original (LOW RISK)
+#### File 2: .codex/archive/deprecated/AGENTS.md.original (LOW RISK)
 **References:** 0 (backup file)
 **Risk:** LOW
-**Target:** .github/agents/docs/archive/AGENTS.md.original
+**Target:** .github/agents/docs/archive/.codex/archive/deprecated/AGENTS.md.original
 
-#### File 3: CHANGELOG_AGENTS.md (LOW-MEDIUM RISK)
+#### File 3: CHANGELOG_.codex/archive/deprecated/AGENTS.md (LOW-MEDIUM RISK)
 **References:** 0-5 (estimate)
 **Risk:** LOW-MEDIUM
 **Target:** .github/agents/docs/CHANGELOG.md
@@ -282,15 +282,15 @@ Move agent-related documentation to .github/agents/docs/ with special handling f
 
 #### Step 1: Validate Each File
 ```bash
-python scripts/root_org/validate_references.py AGENTS.md --dry-run --json > agents_refs.json
-python scripts/root_org/validate_references.py AGENTS.md.original --dry-run
-python scripts/root_org/validate_references.py CHANGELOG_AGENTS.md --dry-run
+python scripts/root_org/validate_references.py .codex/archive/deprecated/AGENTS.md --dry-run --json > agents_refs.json
+python scripts/root_org/validate_references.py .codex/archive/deprecated/AGENTS.md.original --dry-run
+python scripts/root_org/validate_references.py CHANGELOG_.codex/archive/deprecated/AGENTS.md --dry-run
 python scripts/root_org/validate_references.py GITHUB_COPILOT_AGENTS_PRODUCTION_SPECIFICATION.md --dry-run
 ```
 
 #### Step 2: Decision Matrix
 ```yaml
-AGENTS.md:
+.codex/archive/deprecated/AGENTS.md:
   if_references > 100:
     action: keep_in_root
     reason: "Critical hub, too many dependencies"
@@ -298,11 +298,11 @@ AGENTS.md:
     action: move_with_updates
     requires: manual_approval
 
-AGENTS.md.original:
+.codex/archive/deprecated/AGENTS.md.original:
   action: move_to_archive
   risk: LOW
 
-CHANGELOG_AGENTS.md:
+CHANGELOG_.codex/archive/deprecated/AGENTS.md:
   action: move_and_rename
   new_name: CHANGELOG.md
   risk: LOW-MEDIUM
@@ -316,34 +316,34 @@ GITHUB_COPILOT_AGENTS_PRODUCTION_SPECIFICATION.md:
 #### Step 3: Execute LOW Risk Moves
 ```bash
 # Move backup file
-git mv AGENTS.md.original .github/agents/docs/archive/AGENTS.md.original
+git mv .codex/archive/deprecated/AGENTS.md.original .github/agents/docs/archive/.codex/archive/deprecated/AGENTS.md.original
 
 # Move and rename changelog
-git mv CHANGELOG_AGENTS.md .github/agents/docs/CHANGELOG.md
+git mv CHANGELOG_.codex/archive/deprecated/AGENTS.md .github/agents/docs/CHANGELOG.md
 
 # Move production spec
 git mv GITHUB_COPILOT_AGENTS_PRODUCTION_SPECIFICATION.md .github/agents/docs/PRODUCTION_SPECIFICATION.md
 
 # Update any references
 python scripts/root_org/update_links_atomic.py \
-  --old "CHANGELOG_AGENTS.md" \
+  --old "CHANGELOG_.codex/archive/deprecated/AGENTS.md" \
   --new ".github/agents/docs/CHANGELOG.md"
 ```
 
-#### Step 4: Handle AGENTS.md
+#### Step 4: Handle .codex/archive/deprecated/AGENTS.md
 ```bash
 # Option 1: Keep in root (RECOMMENDED)
-echo "AGENTS.md kept in root due to 293 references"
+echo ".codex/archive/deprecated/AGENTS.md kept in root due to 293 references"
 echo "Reason: Critical navigation hub" >> .codex/reports/root_org_decisions.md
 
 # Option 2: If moving (requires approval)
-# @copilot Use reference-updater-agent from AGENTS.md to .github/agents/AGENTS.md
+# @copilot Use reference-updater-agent from .codex/archive/deprecated/AGENTS.md to .github/agents/.codex/archive/deprecated/AGENTS.md
 # This will update all 293 references atomically
 ```
 
 ### Acceptance Criteria (Phase 4)
 - [ ] LOW risk files moved (3 files)
-- [ ] AGENTS.md decision documented
+- [ ] .codex/archive/deprecated/AGENTS.md decision documented
 - [ ] All references updated
 - [ ] Navigation in .github/agents/ updated
 - [ ] CI/CD validation passes
@@ -656,14 +656,14 @@ nav:
 ## Summary
 - Total files processed: 156
 - Successfully relocated: 153
-- Kept in root: 3 (AGENTS.md + 2 others)
+- Kept in root: 3 (.codex/archive/deprecated/AGENTS.md + 2 others)
 - Failed: 0
 
 ## By Phase
 - Phase 1: Validation infrastructure (4 scripts, 3 agents, CI/CD)
 - Phase 2: Cognitive brain (28 files)
 - Phase 3: Archive (47 files)
-- Phase 4: Agent docs (3 files, AGENTS.md kept in root)
+- Phase 4: Agent docs (3 files, .codex/archive/deprecated/AGENTS.md kept in root)
 - Phase 5: Miscellaneous (74 files)
 - Phase 6: Final validation
 
@@ -681,7 +681,7 @@ Cleanup: 83% reduction
 ## Recommendations
 1. Monitor link health with automated checks
 2. Keep documentation organization updated
-3. Consider AGENTS.md split in future
+3. Consider .codex/archive/deprecated/AGENTS.md split in future
 4. Maintain archive organization
 
 ## Lessons Learned
@@ -769,7 +769,7 @@ git checkout <sha> -- path/to/file
 
 ### Phase 4: Agent Documentation
 **Duration:** 1-2 hours
-**Complexity:** MEDIUM (AGENTS.md decision)
+**Complexity:** MEDIUM (.codex/archive/deprecated/AGENTS.md decision)
 **Risk:** MEDIUM-HIGH
 
 ### Phase 5: Miscellaneous Consolidation
@@ -825,8 +825,8 @@ git checkout <sha> -- path/to/file
 - [ ] Validate and commit
 
 ### Phase 4
-- [ ] Validate AGENTS.md references
-- [ ] Make decision on AGENTS.md
+- [ ] Validate .codex/archive/deprecated/AGENTS.md references
+- [ ] Make decision on .codex/archive/deprecated/AGENTS.md
 - [ ] Move LOW risk files
 - [ ] Update references
 - [ ] Validate and commit
@@ -859,7 +859,7 @@ git checkout <sha> -- path/to/file
 - Contact: @mbaetiong
 
 **For Approvals:**
-- AGENTS.md move decision (Phase 4)
+- .codex/archive/deprecated/AGENTS.md move decision (Phase 4)
 - Any HIGH risk file moves
 - Final report review
 

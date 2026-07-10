@@ -106,7 +106,7 @@ grep -rl "actions/setup-python@v4" .github/workflows/ | xargs sed -i 's/actions\
 ---
 
 ## 🔗 Cross-References
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — S134 session summary
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — S134 session summary
 - `.codex/cognitive_brain/objectives_tracker.md` — Tier 1 updated
 - `.github/agents/codebase-health-guardian.md` — v2.1 D5 domain added
 - `scripts/ci/auto_fix_common_issues.py` — diagnostic patterns P17–P22

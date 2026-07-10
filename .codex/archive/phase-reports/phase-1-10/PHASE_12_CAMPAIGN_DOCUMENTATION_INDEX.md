@@ -97,7 +97,7 @@
 │     └─ Wave 2 launch gate criteria
 
 └─ RELATED DOCUMENTATION
-   ├─ docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+   ├─ docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
    │  └─ Session tracking (to be updated post-Wave 1)
    ├─ CHANGELOG.md
    │  └─ Release notes (to be updated post-Phase 12)
@@ -311,7 +311,7 @@ Auto-GO            Auto-GO              Manual review        @mbaetiong approval
 
 ### Documentation Hubs
 - **Campaign Status:** `.codex/PHASE_12_DAILY_PROGRESS_YYYY_MM_DD.md` (daily)
-- **Accountability:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (session tracking)
+- **Accountability:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (session tracking)
 - **Archive:** `.codex/archive/phase-reports/phase-11-20/PHASE_12_*.md` (final reports)
 
 ---

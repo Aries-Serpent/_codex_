@@ -230,7 +230,7 @@ All success criteria from the task specification met:
 For questions about this audit:
 1. Review PHASE3_CI_AUDIT_RESULTS.md (detailed evidence)
 2. Review PHASE3_CI_GATE_DECISION.md (decision rationale)
-3. Check AGENT_ACCOUNTABILITY_REPORT.md (audit trail)
+3. Check .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (audit trail)
 
 ---
 

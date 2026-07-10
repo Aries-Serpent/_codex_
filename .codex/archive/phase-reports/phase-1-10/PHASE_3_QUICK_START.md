@@ -290,7 +290,7 @@ IF time + tokens remain:
   → Consolidate both phases
 ELSE:
   → Create PHASE_4_5_QUICK_START.md
-  → Update AGENT_ACCOUNTABILITY_REPORT.md
+  → Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
   → Commit and finalize session
 ```
 
@@ -311,7 +311,7 @@ All Phase 1-2 findings consolidated and documented in `.codex/`:
 - `.codex/agent_context.json` (auto-synced)
 
 **Files to update:**
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (add Phase 3 entry after completion)
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (add Phase 3 entry after completion)
 - `CHANGELOG.md` (add Phase 3 entry per REQ-5)
 
 ---
@@ -336,7 +336,7 @@ All Phase 1-2 findings consolidated and documented in `.codex/`:
 - [ ] Check Phase 1 remediation status (CVE fixes)
 - [ ] Verify available token budget (30-40% needed for Phase 3)
 - [ ] Deploy Phase 3 agents OR create Phase 4 quick start
-- [ ] Update AGENT_ACCOUNTABILITY_REPORT.md with completion
+- [ ] Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with completion
 - [ ] Commit changes and create final PR
 
 ---

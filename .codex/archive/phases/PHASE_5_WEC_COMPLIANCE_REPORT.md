@@ -26,7 +26,7 @@ All Workflow Execution Checklist (WEC) requirements for Phase 5 Weeks 1-3 have b
 
 | Requirement | Status | Evidence |
 |-------------|--------|----------|
-| AGENT_ACCOUNTABILITY_REPORT.md updated (W1 results) | ✅ PASS | File exists with session data |
+| .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated (W1 results) | ✅ PASS | File exists with session data |
 | CHANGELOG.md updated (W1 work) | ✅ PASS | W1 entries documented |
 | All 3 agents executed autonomously | ✅ PASS | LANE 1-3 agents launched & executed |
 | All deliverables in `.codex/` | ✅ PASS | 12+ W1 artifacts tracked |
@@ -45,7 +45,7 @@ All Workflow Execution Checklist (WEC) requirements for Phase 5 Weeks 1-3 have b
 
 | Requirement | Status | Evidence |
 |-------------|--------|----------|
-| AGENT_ACCOUNTABILITY_REPORT.md updated (W2 results) | ✅ PASS | W2 session group documented |
+| .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated (W2 results) | ✅ PASS | W2 session group documented |
 | CHANGELOG.md updated (W2 work) | ✅ PASS | W2 entries documented |
 | All 3 agents completed Phase 2 | ✅ PASS | All LANE 2 briefs generated |
 | All 15 Week 2 deliverables in `.codex/` | ✅ PASS | 7+ verified in directory |

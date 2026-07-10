@@ -258,7 +258,7 @@ Progress toward target:     ✅ ON TRACK / EXCEEDING
 - [x] Zero blockers or escalations
 - [x] Week 2 ready (Phase 2 briefs to be created)
 - [x] CHANGELOG updated (REQ-5 compliance)
-- [x] AGENT_ACCOUNTABILITY_REPORT.md ready (REQ-4 compliance)
+- [x] .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md ready (REQ-4 compliance)
 
 ---
 

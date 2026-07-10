@@ -538,7 +538,7 @@ def section_d_action_queue(
             "→ `python scripts/ci/auto_fix_common_issues.py --check-only`"
         ),
         "**⑤ Update CHANGELOG.md** with `### Fixed (SN)` entry under `## [Unreleased]`",
-        "**⑥ Update docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md** with today's session entry",
+        "**⑥ Update docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md** with today's session entry",
     ]
 
     if not queue:
@@ -641,7 +641,7 @@ def build_briefing(
         "",
         "- [ ] Replied to **all** `<comment_new>` blocking comments with `Fixed at <SHA>` / `Addressed at <SHA>` / `Resolved at <SHA>`",
         "- [ ] `CHANGELOG.md` has `### Fixed (SN)` entry under `## [Unreleased]`",
-        "- [ ] `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated (today's date)",
+        "- [ ] `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` updated (today's date)",
         "- [ ] `python scripts/ci/auto_fix_common_issues.py --check-only` → 0 auto-fixable issues",
         "- [ ] `python scripts/ci/mypy_baseline.py --require-baseline` → passes",
         "- [ ] No `${{ }}` inside `run: |` blocks in changed workflow files",

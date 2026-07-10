@@ -118,10 +118,10 @@ Total Auto-Fixable: 47 (100%)
 **Severity:** INFORMATIONAL  
 **Count:** 1 instance  
 **Category:** Documentation Governance  
-**Root Cause:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` not updated in last commit
+**Root Cause:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` not updated in last commit
 
 **Affected File:**
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (last touched: 28 minutes ago)
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (last touched: 28 minutes ago)
 
 **Fix Strategy:** Append minimal auto-generated entry + run sync_tracked_files.py --fix  
 **Auto-Heal Status:** ✅ Dry-run only (can auto-fix without side effects)  
@@ -171,7 +171,7 @@ All 47 detected issues are **100% auto-fixable**. Healing patterns applied:
 
 **Status:** ✅ Ready to commit  
 **Changes Pending:**
-1. Append minimal accountability entry to `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+1. Append minimal accountability entry to `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 2. Run `sync_tracked_files.py --fix` to update file tracking
 
 **Expected Impact:**
@@ -303,7 +303,7 @@ Impact: Zero regressions
 
 ```
 Commit: auto-healing/rp-025-accountability-sync
-Changes: Updated AGENT_ACCOUNTABILITY_REPORT.md + sync_tracked_files
+Changes: Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md + sync_tracked_files
 Status: ✅ Ready to commit
 Impact: Zero side effects
 ```

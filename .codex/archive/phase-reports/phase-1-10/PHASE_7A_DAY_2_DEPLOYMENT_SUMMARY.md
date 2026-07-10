@@ -178,7 +178,7 @@ PRODUCTION READY: ✅ YES
 - 📝 `.codex/PHASE_7A_LANE_32_CHECKPOINT_DAY_2.md` — Lane 3.2 final report (21:00Z)
 
 **Accountability:**
-- ✅ `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — Updated with Phase 5 complete
+- ✅ `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — Updated with Phase 5 complete
 
 ---
 

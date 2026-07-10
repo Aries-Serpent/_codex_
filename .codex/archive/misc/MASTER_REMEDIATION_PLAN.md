@@ -1,4 +1,4 @@
-# MASTER_REMEDIATION_PLAN.md
+# .codex/archive/misc/MASTER_REMEDIATION_PLAN.md
 
 - Generated: 2026-06-05T05:16:00Z
 - Scope: Security Scanning Suite run `26992144518`

@@ -28,7 +28,7 @@
 
 #### 0.3 Update Accountability Files
 - **CHANGELOG.md:** Add "Fixed (SN)" entry under Unreleased
-- **AGENT_ACCOUNTABILITY_REPORT.md:** Add session entry for 2026-07-01T05:37Z
+- **.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md:** Add session entry for 2026-07-01T05:37Z
 - **PDA Log:** Append entry to `.codex/aftermath/pda_iterations.jsonl`
 - **Evidence:** Commit with "docs: Update accountability for Session 7-Phase"
 
@@ -298,7 +298,7 @@ CAMPAIGN COMPLETE (2026-07-27)
 ### Campaign Reports
 - `.codex/CAMPAIGN_FINAL_VALIDATION_REPORT.md` (all phases verified)
 - `.codex/SESSION_7PHASE_COMPLETION_SUMMARY.md` (what done/deferred/next)
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (session updates)
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (session updates)
 
 ### Evidence Artifacts
 - All commits tagged with phase identifier (e.g., "Phase 8.1:", "Phase 9.2:")

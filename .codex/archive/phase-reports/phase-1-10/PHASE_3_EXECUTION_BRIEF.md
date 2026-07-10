@@ -16,7 +16,7 @@
 4. ✅ Update all references across:
    - `.secrets.baseline`
    - `CHANGELOG.md`
-   - `AGENT_ACCOUNTABILITY_REPORT.md`
+   - `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
    - Mermaid diagrams
    - Documentation files
 
@@ -265,7 +265,7 @@ cat >> CHANGELOG.md << 'PHASE3_CHANGELOG'
 ### Files Modified
 - `.secrets.baseline` (if needed)
 - CHANGELOG.md (this entry)
-- `AGENT_ACCOUNTABILITY_REPORT.md` (update status)
+- `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (update status)
 - Mermaid diagrams (if path references changed)
 
 ### Verification
@@ -279,7 +279,7 @@ See `.codex/CAMPAIGN_FINAL_COMPLETION_REPORT.md` for campaign details.
 PHASE3_CHANGELOG
 ```
 
-**Update 3: `AGENT_ACCOUNTABILITY_REPORT.md`**
+**Update 3: `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`**
 ```bash
 # Add Phase 3 status entry
 python scripts/ci/session_wrapup_autofix.py --auto-update
@@ -293,7 +293,7 @@ echo "
 - ✅ All references updated
 - ✅ Zero breaking changes verified
 - ✅ Campaign final report: .codex/CAMPAIGN_FINAL_COMPLETION_REPORT.md
-" >> docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+" >> docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 ```
 
 **Update 4: Mermaid Diagrams** (if affected by moves)
@@ -384,7 +384,7 @@ Cleanup Changes:
 Files Modified:
 - .secrets.baseline (if needed)
 - CHANGELOG.md (Phase 3 entry added)
-- AGENT_ACCOUNTABILITY_REPORT.md (status updated)
+- .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (status updated)
 - Documentation files (reference paths updated)
 
 Verification:
@@ -495,7 +495,7 @@ All of the following must be TRUE for Phase 3 to be considered COMPLETE:
 - ✅ All documentation updated
 - ✅ `.secrets.baseline` updated (if needed)
 - ✅ `CHANGELOG.md` updated with Phase 3 entry
-- ✅ `AGENT_ACCOUNTABILITY_REPORT.md` updated
+- ✅ `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` updated
 - ✅ 39 cleanup validation tests: **ALL PASSING**
 - ✅ 1,100+ auth tests: **ALL PASSING**
 - ✅ Secrets baseline: **PASSING**

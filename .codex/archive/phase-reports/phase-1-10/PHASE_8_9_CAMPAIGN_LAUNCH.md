@@ -195,7 +195,7 @@
 
 ### REQ-4: AGENT ACCOUNTABILITY
 - [ ] **Status:** READY FOR UPDATE
-- **Plan:** Update AGENT_ACCOUNTABILITY_REPORT.md with:
+- **Plan:** Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with:
   - 3 agents delegated (artifact-monitor, self-healing-orchestrator, agent-orchestrator)
   - Campaign authority (@mbaetiong D-tier autonomous)
   - Task IDs + expected deliverables

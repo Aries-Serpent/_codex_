@@ -99,7 +99,7 @@
 - [x] Codex module coverage gap-fill — 144 new tests, 5 zero-coverage modules addressed
 - [x] QA walkthrough: **9.6/10 APPROVED WITH CONDITIONS** (non-blocking)
 - [x] Wave 8 security audit: **9/10 CLEAN**
-- [x] REQ-4 compliance (AGENT_ACCOUNTABILITY_REPORT.md updated)
+- [x] REQ-4 compliance (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated)
 - [x] REQ-5 compliance (CHANGELOG.md updated)
 - [x] Code Review: **CLEAN** (0 comments)
 - [x] CodeQL: **0 alerts**

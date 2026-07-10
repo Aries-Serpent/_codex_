@@ -30,19 +30,19 @@ Total opportunities identified: **26 high-priority consolidations**
 
 **Current Files** (to consolidate):
 ```
-1. ./QUICKSTART_BY_PROFILE.md          (Primary root quickstart)
-2. ./docs/QUICKSTART_BY_PROFILE.md     (EXACT DUPLICATE in docs/)
+1. ./docs/quickstart/QUICKSTART_BY_PROFILE.md          (Primary root quickstart)
+2. ./docs/docs/quickstart/QUICKSTART_BY_PROFILE.md     (EXACT DUPLICATE in docs/)
 3. ./PHASE_13_3_QUICK_START.md         (Old phase quickstart - OUTDATED)
 4. ./docs/onboarding/QUICK_START.md    (Alternative entry point)
 5. ./docs/quickstart_local_training.md (Training-specific)
-6. ./docs/QUICKSTART_BY_PROFILE.md     (Duplicate in docs/)
+6. ./docs/docs/quickstart/QUICKSTART_BY_PROFILE.md     (Duplicate in docs/)
 ```
 
 **Merge Strategy**:
 - Keep: `docs/quickstart/README.md` (NEW - canonical location)
 - Merge from: 1, 2, 4, 5 (pull best content from each)
 - Archive: 3, 6 (PHASE_13_3 outdated, duplicate removed)
-- Create redirects: Root `QUICKSTART_BY_PROFILE.md` → `docs/quickstart/README.md`
+- Create redirects: Root `docs/quickstart/QUICKSTART_BY_PROFILE.md` → `docs/quickstart/README.md`
 
 **Conflicts Identified**:
 - Root quickstart vs. docs quickstart may have drifted
@@ -52,7 +52,7 @@ Total opportunities identified: **26 high-priority consolidations**
 **Acceptance Criteria**:
 - [ ] Single canonical: `docs/quickstart/README.md`
 - [ ] Contains all three profile variants (core, runtime, full)
-- [ ] Root `QUICKSTART_BY_PROFILE.md` contains redirect note
+- [ ] Root `docs/quickstart/QUICKSTART_BY_PROFILE.md` contains redirect note
 - [ ] No markdown files reference old locations
 - [ ] Quickstart passes manual walkthrough test (< 30 min to working setup)
 
@@ -69,13 +69,13 @@ Total opportunities identified: **26 high-priority consolidations**
 
 **Current Files** (primary sources):
 ```
-1. ./OFFLINE_DEPLOYMENT.md                 (Root: primary offline guide)
-2. ./ISOLATED_DEPLOYMENT.md                (Root: isolated environment)
+1. ./docs/release/OFFLINE_DEPLOYMENT.md                 (Root: primary offline guide)
+2. ./docs/release/ISOLATED_DEPLOYMENT.md                (Root: isolated environment)
 3. ./docs/OFFLINE_QUICKSTART.md            (Docs: offline quickstart)
 4. ./docs/offline_quickstart.md            (Duplicate - lowercase variant)
-5. ./docs/ISOLATED_DEPLOYMENT.md           (Duplicate from root)
+5. ./docs/docs/release/ISOLATED_DEPLOYMENT.md           (Duplicate from root)
 6. ./docs/deployment/offline.md            (Deployment category)
-7. ./docs/ISOLATED_DEPLOYMENT.md           (Another duplicate)
+7. ./docs/docs/release/ISOLATED_DEPLOYMENT.md           (Another duplicate)
 8. ./docs/tracking_offline.md              (Tracking in offline mode)
 9. ./docs/repro_offline_hardening_status.md (Status tracking)
 ```
@@ -87,7 +87,7 @@ Total opportunities identified: **26 high-priority consolidations**
 - Create redirects: Root files → `docs/deployment/offline/README.md`
 
 **Conflicts Identified**:
-- OFFLINE_DEPLOYMENT.md vs. ISOLATED_DEPLOYMENT.md have overlapping scope
+- docs/release/OFFLINE_DEPLOYMENT.md vs. docs/release/ISOLATED_DEPLOYMENT.md have overlapping scope
 - Different docs may specify different prerequisites
 - Tracking/status docs mixed with procedures
 - Subdirectories (tracking_offline, repro_offline) not clearly related to main procedure
@@ -113,7 +113,7 @@ Total opportunities identified: **26 high-priority consolidations**
 
 **Current Files** (primary sources):
 ```
-1. ./INSTALL.md                            (Minimal root install)
+1. ./.codex/archive/misc/INSTALL.md                            (Minimal root install)
 2. ./docs/DEPLOYMENT_GUIDE.md              (Main deployment guide)
 3. ./docs/deployment/*.md                  (Individual deployment methods)
 4. ./docs/deploy/*.md                      (Alternative category)
@@ -124,7 +124,7 @@ Total opportunities identified: **26 high-priority consolidations**
 **Merge Strategy**:
 - Keep: `docs/deployment/README.md` (NEW - canonical index)
 - Organize under: `online/pip`, `online/docker`, `online/docker-compose`
-- Archive: Root INSTALL.md, old DEPLOYMENT_GUIDE.md
+- Archive: Root .codex/archive/misc/INSTALL.md, old DEPLOYMENT_GUIDE.md
 - Create: Single entrypoint with quick-pick UI for method
 
 **Conflicts Identified**:
@@ -138,7 +138,7 @@ Total opportunities identified: **26 high-priority consolidations**
 - [ ] Three clear paths: pip, Docker, Docker Compose
 - [ ] Each path has full prerequisites, steps, verification
 - [ ] Examples for common configurations (production, development)
-- [ ] Root INSTALL.md is redirect or minimal
+- [ ] Root .codex/archive/misc/INSTALL.md is redirect or minimal
 - [ ] All 126 related docs either consolidated or archived
 
 **Estimated Effort**: 3 days | **Target Date**: Day 55
@@ -494,8 +494,8 @@ For each consolidation, conflicts are resolved using:
 4. **Archive**: Move to historical/reference section
 
 ### Example: Quickstart Conflict Resolution
-- **Root QUICKSTART_BY_PROFILE.md**: Keep as redirect (user may have bookmarks)
-- **docs/QUICKSTART_BY_PROFILE.md**: Merge content → docs/quickstart/README.md
+- **Root docs/quickstart/QUICKSTART_BY_PROFILE.md**: Keep as redirect (user may have bookmarks)
+- **docs/docs/quickstart/QUICKSTART_BY_PROFILE.md**: Merge content → docs/quickstart/README.md
 - **PHASE_13_3_QUICK_START.md**: Archive (references outdated phases)
 - **docs/onboarding/QUICK_START.md**: Redirect → docs/quickstart/README.md
 

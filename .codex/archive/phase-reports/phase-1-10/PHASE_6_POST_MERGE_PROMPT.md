@@ -53,7 +53,7 @@ python scripts/ci/unified_security_scanner.py --full-scan
 ```
 
 ### 4. Update Accountability Reports
-**File**: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+**File**: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 Add Phase 6 completion entry:
 ```markdown
@@ -193,7 +193,7 @@ python scripts/phase_coordination/create_dashboard.py \
 ## 🔗 Related Documentation
 
 - **Phase 6 Summary**: `.codex/PHASE_6_TECHNICAL_SUMMARY.md`
-- **Accountability Report**: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- **Accountability Report**: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - **Roadmap**: `docs/admin/CONTINUATION_ROADMAP.md`
 - **Codebase Agency Policy**: `.codex/CODEBASE_AGENCY_POLICY.md`
 

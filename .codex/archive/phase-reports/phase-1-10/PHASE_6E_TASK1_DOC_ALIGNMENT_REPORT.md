@@ -62,7 +62,7 @@ Documentation alignment audit completed across **5,191 total files** (1,646 docs
 | `docs/production/` | 23 | ✅ Current | Production specs from Phase 6 |
 | `docs/reference/` | 18 | ✅ Current | Variables/Secrets reference valid |
 | `.codex/` docs | 29 | ✅ Current | Phase 6 reports committed |
-| `AGENTS.md` | 1 | ✅ Current | Updated 2026-06-11 |
+| `.codex/archive/deprecated/AGENTS.md` | 1 | ✅ Current | Updated 2026-06-11 |
 | `README.md` | 1 | ✅ Current | Repository overview accurate |
 
 ### B. Code Example Freshness
@@ -88,7 +88,7 @@ Documentation alignment audit completed across **5,191 total files** (1,646 docs
 | Item | Status |
 |------|--------|
 | `AGENT_REGISTRY.yaml` entries | 159 total (145 active, 14 archived) |
-| `AGENTS.md` active agent tables | ✅ Aligned with registry |
+| `.codex/archive/deprecated/AGENTS.md` active agent tables | ✅ Aligned with registry |
 | Custom agent prompt files | ✅ All 145 active agents have prompts |
 | Archived entries | ✅ 14 archived with backward-compat links |
 

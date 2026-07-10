@@ -111,7 +111,7 @@
      - Track 8.4: 2 docs (DEPENDENCY_STRATEGY + lock files)
 
 2. **Update Accountability Report** (2 minutes)
-   - [ ] Add WS2 completion entry to `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+   - [ ] Add WS2 completion entry to `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
    - [ ] Message: "Phase 8 WS2 planning complete — 13 documents delivered, ready for WS3 execution"
    - [ ] Commit with CHANGELOG entry (REQ-4 & REQ-5)
 
@@ -175,7 +175,7 @@
 
 ### **REQ-4 & REQ-5 Compliance Workflows**
 1. **Workflow:** `session_wrapup_autofix.py --check`
-   - **Purpose:** Verify AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md updated in latest commit
+   - **Purpose:** Verify .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md updated in latest commit
    - **When:** After every code change commit (mandatory pre-finalization gate)
    - **Command:** `python3 scripts/ci/session_wrapup_autofix.py --check --pr-number <PR#>`
 

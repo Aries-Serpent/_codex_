@@ -122,7 +122,7 @@ When first agent completes:
 | CI Failure Report | Issue #5035 | Source for logs/artifacts |
 | Discussion | #4872 | Campaign tracking |
 | Agent Registry | `.github/agents/AGENT_REGISTRY.yaml` | 145 active agents |
-| Accountability | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | Session tracking |
+| Accountability | `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` | Session tracking |
 
 ---
 

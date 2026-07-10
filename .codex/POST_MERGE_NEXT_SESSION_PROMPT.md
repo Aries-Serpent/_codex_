@@ -55,7 +55,7 @@ Based on Gate Results:
 
 **✅ ALL GATES PASS** (or only pre-existing zstandard errors):
 ```
-→ Document results in AGENT_ACCOUNTABILITY_REPORT.md
+→ Document results in .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 → Update .codex/POST_MERGE_VALIDATION_CHECKLIST.md with pass status
 → PROCEED to post-merge work phase
 ```
@@ -100,7 +100,7 @@ Based on Gate Results:
 - ✅ PR #5084 merged: Campaign groundwork + auth backward compatibility
 - ✅ `.codex/` contains 8 campaign documentation files (fully tracked)
 - ✅ `src/codex/auth/` contains backward compatibility wrappers
-- ✅ AGENT_ACCOUNTABILITY_REPORT.md updated with campaign context
+- ✅ .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated with campaign context
 - ✅ CHANGELOG.md reflects all changes
 
 ---
@@ -115,7 +115,7 @@ If all gates pass:
    - Pass/fail status for each gate
    - Any warnings or pre-existing issues noted
    - Time taken to validate
-2. Update docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md:
+2. Update docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md:
    - Add "POST_MERGE_SESSION_VALIDATION" section
    - Document gate results
    - Record that copilot-setup-steps.yml stability confirmed
@@ -124,7 +124,7 @@ If all gates pass:
 ### Phase 2: Optional Dependency Resolution (1-2 hours)
 If zstandard/sqlalchemy imports are blocking critical tests:
 ```
-1. Read .codex/POST_MERGE_MISSING_DEPS_INSTALL.md (7-step playbook)
+1. Read .codex/POST_MERGE_MISSING_DEPS_.codex/archive/misc/INSTALL.md (7-step playbook)
 2. Install missing optional deps:
    pip install zstandard sqlalchemy
 3. Re-run test collection and verify improvement
@@ -164,7 +164,7 @@ After validation passes, proceed with:
 
 **If Escalation Needed**:
 ```
-1. Document findings in AGENT_ACCOUNTABILITY_REPORT.md
+1. Document findings in .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 2. Create GitHub issue with detailed investigation
 3. Assign to @mbaetiong with decision recommendation
 4. Wait for guidance before proceeding
@@ -188,7 +188,7 @@ After validation passes, proceed with:
 
 ✅ **Ready for Continuation**:
 - All documentation updated
-- AGENT_ACCOUNTABILITY_REPORT.md reflects post-merge state
+- .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md reflects post-merge state
 - Campaign objectives tracked and next steps clear
 - No blocking issues preventing forward progress
 
@@ -201,9 +201,9 @@ After validation passes, proceed with:
 | `.codex/POST_MERGE_ENVIRONMENT_BASELINE.md` | Pre-existing issues catalog | Reference during Gate 6 (test collection) |
 | `.codex/POST_MERGE_COPILOT_SETUP_VALIDATION.md` | 6-gate validation details | Execute gates step-by-step |
 | `.codex/POST_MERGE_REVERSION_PROTOCOL.md` | Reversion decision tree | If YAML fails or 10+ new test errors |
-| `.codex/POST_MERGE_MISSING_DEPS_INSTALL.md` | Dependency installation playbook | If optional deps blocking critical tests |
+| `.codex/POST_MERGE_MISSING_DEPS_.codex/archive/misc/INSTALL.md` | Dependency installation playbook | If optional deps blocking critical tests |
 | `.codex/CAMPAIGN_ARTIFACT_INDEX.md` | Quick navigation flowchart | Quick reference for all campaign docs |
-| `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | Session accountability | Update with post-merge validation results |
+| `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` | Session accountability | Update with post-merge validation results |
 
 ---
 
@@ -222,7 +222,7 @@ After validation passes, proceed with:
 
 ## ✅ Sign-Off Template (For Next Session)
 
-When validation completes, update AGENT_ACCOUNTABILITY_REPORT.md with:
+When validation completes, update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with:
 
 ```markdown
 ## SESSION SUMMARY — 2026-06-26T[TIME]Z [POST-MERGE SESSION VALIDATION]

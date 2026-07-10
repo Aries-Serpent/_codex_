@@ -247,7 +247,7 @@ For each of 2-3 agents to promote:
 
 2. **Promotion:**
    - Update AGENT_REGISTRY.yaml status (standby → active)
-   - Add to active agent tables in AGENTS.md
+   - Add to active agent tables in .codex/archive/deprecated/AGENTS.md
    - Create integration documentation
    - Announce promotion
 
@@ -285,7 +285,7 @@ Create `.codex/GATE_4_DOCUMENTATION_AUDIT.md`:
   * Does it have usage examples?
   * Does it have integration guide?
   * Does it have troubleshooting?
-  * Is it linked from AGENTS.md?
+  * Is it linked from .codex/archive/deprecated/AGENTS.md?
 - Categorize gaps:
   * Missing (0% docs)
   * Minimal (1-20% docs)
@@ -356,7 +356,7 @@ Create `.codex/GATE_4_DOCUMENTATION_COMPLETE.md`:
   * Consistent formatting
   * Examples executable/accurate
   * Cross-references correct
-- Create comprehensive index in AGENTS.md
+- Create comprehensive index in .codex/archive/deprecated/AGENTS.md
 - Update navigation in README.md
 
 **Success Indicator:** 80%+ documentation coverage, all links validated
@@ -457,7 +457,7 @@ Create `.codex/GATE_4_DOCUMENTATION_COMPLETE.md`:
 - **GATE 2 Briefs:** `.codex/GATE_2_AGENT_BRIEFS.md`
 - **GATE 3 Briefs:** `.codex/GATE_3_AGENT_BRIEFS.md`
 - **GATE 4 Execution:** This document
-- **Accountability:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- **Accountability:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - **Agent Registry:** `.github/agents/AGENT_REGISTRY.yaml`
 
 ---

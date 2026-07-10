@@ -34,7 +34,7 @@ Prepare Tracks 13.3-13.4 for immediate auto-deployment upon Track 12.3 Gate 5 PA
 
 **Verification Tests:**
 - [x] Agent listed in available task tool agents
-- [x] Agent name verified against AGENTS.md registry
+- [x] Agent name verified against .codex/archive/deprecated/AGENTS.md registry
 - [x] Agent described with security focus (secrets + CVE + SBOM + compliance)
 - [x] Documentation: Track 13.3 design files present (5 files)
   - PHASE_13_TRACK_13.3_SECRETS_DESIGN.md (25K)
@@ -65,7 +65,7 @@ Prepare Tracks 13.3-13.4 for immediate auto-deployment upon Track 12.3 Gate 5 PA
 
 **Verification Tests:**
 - [x] Agent listed in available task tool agents
-- [x] Agent name verified against AGENTS.md registry
+- [x] Agent name verified against .codex/archive/deprecated/AGENTS.md registry
 - [x] Agent described with cache/performance focus (L1/L2/L3/L4 architecture)
 - [x] Documentation: Track 13.4 design files present (3 files)
   - PHASE_13_TRACK_13.4_ADVISORY_DESIGN.md (24K)

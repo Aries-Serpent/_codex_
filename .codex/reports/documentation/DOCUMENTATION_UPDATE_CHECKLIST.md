@@ -72,7 +72,7 @@
   - [ ] `.codex/archive/phases/INDEX.md`
 - [ ] **Verification:** All links work from CONTRIBUTING.md location
 
-#### docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md Updates
+#### docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md Updates
 
 - [ ] **Location:** docs/accountability/
 - [ ] **Section to Add:** "Archive Reference" at beginning or end
@@ -211,7 +211,7 @@
   - [ ] `.codex/archive/phases/INDEX.md` (NEW)
   - [ ] `README.md` (UPDATED)
   - [ ] `CONTRIBUTING.md` (UPDATED)
-  - [ ] `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (UPDATED)
+  - [ ] `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (UPDATED)
   - [ ] `docs/runbooks/troubleshooting_faq.md` (UPDATED - links)
   - [ ] `docs/quality/COMPREHENSIVE_DOCUMENTATION_VERIFICATION_REPORT.md` (UPDATED - links)
   - [ ] 4-5 other documentation files (UPDATED - links)
@@ -257,7 +257,7 @@
 |------|------|---------|-------|
 | `README.md` | Update | 1 section | Add Project Organization |
 | `CONTRIBUTING.md` | Update | 1 section | Add File Location Reference |
-| `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | Update | 1 section | Add Archive Reference |
+| `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` | Update | 1 section | Add Archive Reference |
 | `docs/runbooks/troubleshooting_faq.md` | Update | Links | Update phase file paths |
 | `docs/quality/COMPREHENSIVE_DOCUMENTATION_VERIFICATION_REPORT.md` | Update | Links | Update phase file paths |
 | Other doc files | Update | Links | Update phase file paths |
@@ -311,7 +311,7 @@ CONTRIBUTING.md
   │  └─ Phase report location information
   └─ How to find phase reports
 
-docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
   ├─ New Section: Archive Reference
   │  ├─ .codex/archive/phases/INDEX.md
   │  ├─ .codex/ROOT_FOLDER_ORGANIZATION.md

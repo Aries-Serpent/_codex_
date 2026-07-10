@@ -624,7 +624,7 @@ When diagnosing token-related failures:
 ## 🔗 Related Documentation
 
 - **TOKEN_HIERARCHY_GUIDE.md** - Token selection and scopes
-- **SCRIPT_TOKEN_INTEGRATION.md** - Error handling in scripts
+- **SCRIPT_TOKEN_docs/api/reference/INTEGRATION.md** - Error handling in scripts
 - **WORKFLOW_TOKEN_PATTERNS_UPDATE.md** - Workflow patterns
 - **scripts/ci/validate_token_setup.py** - Token validation utility
 

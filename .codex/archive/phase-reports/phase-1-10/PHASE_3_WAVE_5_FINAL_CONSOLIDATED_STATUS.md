@@ -175,7 +175,7 @@ WITH L4 TARGET:       909 tests ████████████████
 
 ### Compliance Status
 
-- [x] REQ-4: AGENT_ACCOUNTABILITY_REPORT.md fully updated
+- [x] REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md fully updated
 - [x] REQ-5: CHANGELOG.md comprehensive summary
 - [x] PDA Loop: Session auto-pda-2026-06-30 logged
 - [x] No Regressions: 0 pre-existing tests broken
@@ -297,7 +297,7 @@ WITH L4 TARGET:       909 tests ████████████████
 
 ### Compliance & Tracking
 
-- ✅ AGENT_ACCOUNTABILITY_REPORT.md — Updated with all sessions
+- ✅ .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md — Updated with all sessions
 - ✅ CHANGELOG.md — Updated with comprehensive changes
 - ✅ pda_iterations.jsonl — auto-pda-2026-06-30 logged
 

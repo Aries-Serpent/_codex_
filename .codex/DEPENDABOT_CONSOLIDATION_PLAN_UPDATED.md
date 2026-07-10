@@ -105,7 +105,7 @@ When cherry-picking encountered merge conflicts, the following resolution strate
 
 1. **CODEX_MANIFEST.json**: Accept incoming version (from cherry-picked commit) ✅
 2. **CHANGELOG.md**: Accept local version (from current branch) ✅
-3. **AGENT_ACCOUNTABILITY_REPORT.md**: Accept local version ✅
+3. **.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md**: Accept local version ✅
 4. **Workflow YAML files**: Accept local version (preserve branch changes) ✅
 5. **Session Context Files**: Accept incoming version ✅
 6. **Requirements Files**: Accept incoming version ✅

@@ -32,7 +32,7 @@ This matrix establishes **clear ownership and escalation paths** for documentati
 | `SECURITY.md` | @security-audit-agent | @codeql-alert-resolution-agent | **7 days (ultra-critical)** | Continuous (on alert) | doc-quality, security-scanning |
 | `CHANGELOG.md` | @pypi-publishing-operations-agent | @orchestrator-agent | **14 days (critical)** | Before release; manual entry | doc-quality |
 | `CODE_OF_CONDUCT.md` | @policy-coach-agent | @owner-approval-guard | **90 days** | Quarterly | doc-quality |
-| `AGENTS.md` | @skills-master-agent | @orchestrator-agent | **14 days (critical)** | Weekly (agent ecosystem churn) | doc-quality (custom agent inventory) |
+| `.codex/archive/deprecated/AGENTS.md` | @skills-master-agent | @orchestrator-agent | **14 days (critical)** | Weekly (agent ecosystem churn) | doc-quality (custom agent inventory) |
 | `LICENSE` | @owner-approval-guard | @policy-coach-agent | **N/A (static)** | Governance-triggered only | Policy gate only |
 
 **Notes:**
@@ -204,7 +204,7 @@ Critical Docs (SLA: 30 days max stale)
 ├─ CONTRIBUTING.md                    🟡 42 days old (last: 2026-05-27) ⚠️ ALERT
 ├─ SECURITY.md                        ✅ 2 days old (reviewed 2026-07-08)
 ├─ docs/index.md                      ✅ 5 days old (reviewed 2026-07-05)
-├─ AGENTS.md                          🟡 21 days old (last: 2026-06-19)
+├─ .codex/archive/deprecated/AGENTS.md                          🟡 21 days old (last: 2026-06-19)
 └─ CHANGELOG.md                       🟡 35 days old (last: 2026-05-31) ⚠️ ALERT
 
 General Docs (SLA: 90 days max stale)

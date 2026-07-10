@@ -116,7 +116,7 @@ mindmap
         OpenAPI TBD
       Developer Docs
         CONTRIBUTING.md ✅
-        AGENTS.md ✅
+        .codex/archive/deprecated/AGENTS.md ✅
     Integrations
       External APIs TBD
         OpenAI

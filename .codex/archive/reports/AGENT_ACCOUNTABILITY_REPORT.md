@@ -88,7 +88,7 @@ FINAL STATE (375 issues):
 - Other core modules (18 files)
 
 ### Compliance Requirements
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md (this document)
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (this document)
 - ✅ REQ-5: CHANGELOG.md entry
 - ✅ D1: No YAML syntax errors
 - ✅ D2: Python quality metrics achieved
@@ -164,7 +164,7 @@ Complete security hardening to achieve perfect 100/100 score by remediating rema
 - ✅ docs/security/PHASE5_TRACK2_SECURITY_DECISIONS.md (decisions document)
 
 ### Compliance
-- ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md (this document)
+- ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (this document)
 - ✅ REQ-5: CHANGELOG.md (security improvements entry)
 
 **Score Impact:** +1.5 points (98.5/100 → 100.0/100) ⭐  
@@ -510,9 +510,9 @@ Key Improvements:
 
 ## Compliance Verification
 
-### REQ-4: Update AGENT_ACCOUNTABILITY_REPORT.md ✅
+### REQ-4: Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md ✅
 
-**This document** (AGENT_ACCOUNTABILITY_REPORT.md) created with:
+**This document** (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md) created with:
 - Session identifier: S250-doc-arch
 - Authority verification: @mbaetiong D-tier
 - Deliverable enumeration
@@ -594,7 +594,7 @@ Key Improvements:
 - [x] Monitoring and alerting guide with Prometheus/Grafana setup
 - [x] Recovery procedures for disasters
 - [x] 5+ ADRs documenting architectural decisions
-- [x] REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated (this file)
+- [x] REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated (this file)
 - [x] REQ-5: CHANGELOG.md entry prepared
 - [x] All links validated for correctness
 - [x] Documentation standards met
@@ -807,7 +807,7 @@ This accountability report certifies that Phase 5 Track 4 deliverables have been
 - ✅ Detailed recommendations with impact estimates
 - ✅ Performance baseline established
 - ✅ Profiling artifacts documented
-- ✅ AGENT_ACCOUNTABILITY_REPORT.md updated
+- ✅ .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated
 - ✅ CHANGELOG.md entry created
 - ✅ All files generated and committed
 

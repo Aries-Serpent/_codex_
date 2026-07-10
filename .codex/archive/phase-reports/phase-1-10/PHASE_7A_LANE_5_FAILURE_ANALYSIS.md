@@ -97,13 +97,13 @@ except (TimeoutError, ConnectionError):  # ← Specific
 **Status:** ✅ AUTO-FIXABLE
 
 **Root Cause Analysis:**
-- File: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- File: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - Last Update: 28 minutes ago (5e1a8c7e)
 - Issue: Not included in most recent commit payload
 
 **Details:**
 ```
-File: docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+File: docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 Last Commit: 5e1a8c7e (28 minutes ago)
 Tracked: Yes (in .tracked_files)
 Issue: Accountability entry not auto-generated for this commit
@@ -220,7 +220,7 @@ except (AssertionError, json.JSONDecodeError):
 #### Issue Details
 
 ```
-File: docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+File: docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 Last Modified: 2026-06-25 14:37Z (28 minutes ago)
 Tracked: Yes (in .tracked_files)
 Expected: Automatic entry generation on each commit
@@ -233,10 +233,10 @@ Current: Entry not auto-generated for 132cd70c commit
 
 ```bash
 # Step 1: Check if entry exists
-grep -q "132cd70c" docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+grep -q "132cd70c" docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 
 # Step 2: If not, append minimal entry
-echo "- 132cd70c: PHASE 7A all 5 lanes now executing in parallel [auto-generated]" >> docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+echo "- 132cd70c: PHASE 7A all 5 lanes now executing in parallel [auto-generated]" >> docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 
 # Step 3: Run sync
 python scripts/tracked_files/sync_tracked_files.py --fix
@@ -428,7 +428,7 @@ Weekly Average: 0.06% ✅
 
 ### A.2 RP-025 Issues (1 total)
 
-1. docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md:1 - Entry for commit 132cd70c missing
+1. docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md:1 - Entry for commit 132cd70c missing
 
 ---
 

@@ -169,7 +169,7 @@ The remaining 52 failures fall into two categories:
 5. `.codex/issue_4983_final_resolution_report.md` — This document
 
 ### Updated Files
-1. `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — Session entries
+1. `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — Session entries
 2. `CHANGELOG.md` — User-facing summary (pending)
 
 ### Commits

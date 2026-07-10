@@ -212,7 +212,7 @@ are ready to execute with no blockers.
 - [x] Repository variables validated (12/12 passed)
 - [ ] pre-commit run --all-files (environment check needed)
 - [ ] nox -s tests (execution pending)
-- [ ] AGENT_ACCOUNTABILITY_REPORT.md current (update pending)
+- [ ] .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md current (update pending)
 - [ ] GitHub Pages deployment (doc-agent validating)
 - [ ] Phase 9 coordination dashboard synchronized (this document)
 

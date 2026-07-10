@@ -99,9 +99,9 @@ All internal cross-references across the three remediation plan files resolve co
 **[PASS WITH WARNINGS]** — 2 non-blocking advisory warnings
 
 ```
-❌ REQ-4: docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md NOT in last commit
+❌ REQ-4: docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md NOT in last commit
 ❌ REQ-5: CHANGELOG.md NOT in last commit
-✅ REQ-14: docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md has valid Agents Used entry
+✅ REQ-14: docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md has valid Agents Used entry
 ```
 
 REQ-4 and REQ-5 are advisory: the accountability report and CHANGELOG were updated in prior

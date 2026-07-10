@@ -495,7 +495,7 @@ await expect(page.getByText('Welcome')).toBeVisible();
 ### Phase 4: Documentation & Registry (Week 4)
 **Target**: Update central documentation
 
-1. **AGENTS.md** - Update agent descriptions with MCP capabilities
+1. **.codex/archive/deprecated/AGENTS.md** - Update agent descriptions with MCP capabilities
 2. **AGENT_REGISTRY.md** - Add MCP integration status column
 3. **AGENT_SELECTION_GUIDE.md** - Add MCP-related selection criteria
 4. **README.md** - Reference new MCP documentation suite
@@ -512,7 +512,7 @@ await expect(page.getByText('Welcome')).toBeVisible();
 - [ ] 22 MEDIUM priority agents updated (100%)
 - [ ] 5 LOW priority agents reviewed (100%)
 - [ ] All agents reference appropriate MCP documentation
-- [ ] AGENTS.md updated with MCP capabilities
+- [ ] .codex/archive/deprecated/AGENTS.md updated with MCP capabilities
 - [ ] Agent selection guide includes MCP criteria
 
 ### Quality Metrics

@@ -145,7 +145,7 @@
 - Errors remaining: 177 (genuine missing files, need separate PR)
 
 **Error Breakdown (177 remaining)**:
-- Missing documentation files: ~120 (e.g., `docs/guides/AGENTS.md`, `docs/system/CODEBASE_DASHBOARD.md`)
+- Missing documentation files: ~120 (e.g., `docs/guides/.codex/archive/deprecated/AGENTS.md`, `docs/system/CODEBASE_DASHBOARD.md`)
 - Ambiguous relative paths: ~40 (deep docs referencing code dirs without `../../../` prefix)
 - Planned but not created: ~17 (e.g., `.codex/guardrails.md`, future features)
 

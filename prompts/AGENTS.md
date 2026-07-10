@@ -36,7 +36,7 @@ user_prompt = sanitize_log(user_input)
 
 ---
 
-**See**: [Main AGENTS.md](../AGENTS.md) | [Security Guidelines](../docs/security/SECURITY_GUIDELINES.md)
+**See**: [Main .codex/archive/deprecated/AGENTS.md](../.codex/archive/deprecated/AGENTS.md) | [Security Guidelines](../docs/security/SECURITY_GUIDELINES.md)
 
 ---
 

@@ -385,7 +385,7 @@ jobs:
 - ⏳ `.codex/PHASE_8B_TRACK_*_AUTOMATION_REPORT.md` (2 files)
 - ⏳ `.codex/PHASE_8C_TRACK_*_AUTOMATION_REPORT.md` (2 files)
 - ⏳ `.codex/PHASE_8_FINAL_SESSION_SUMMARY.md`
-- ⏳ `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (updated)
+- ⏳ `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (updated)
 - ⏳ `CHANGELOG.md` (Phase 8 entry)
 
 ### Dashboard Updates (Hourly)

@@ -214,7 +214,7 @@
   - ✅ Lane 3.3 Handoff: Ready for remediation
 
 - [x] Update accountability & tracking
-  - ✅ Session resumption note added to AGENT_ACCOUNTABILITY_REPORT.md
+  - ✅ Session resumption note added to .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
   - ✅ SESSION_SUMMARY_DASHBOARD.md created with current status
   - ✅ Quota reset and continuation plan documented
 

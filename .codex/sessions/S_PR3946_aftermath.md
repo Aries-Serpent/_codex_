@@ -121,7 +121,7 @@ with:
 2. Include `copilot_ability_improvement` field
 3. Create `.codex/sessions/S_<session_id>_aftermath.md` with the knowledge
 4. Update `pattern_learning_store.json` if the pattern is NEW
-5. Update `AGENT_ACCOUNTABILITY_REPORT.md`
+5. Update `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 ---
 

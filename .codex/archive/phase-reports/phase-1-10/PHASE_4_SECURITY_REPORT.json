@@ -26,7 +26,7 @@
     "objective_3": {
       "title": "Run detect-secrets on all modified files from PR #5231 merge",
       "status": "PASS",
-      "findings": "Manual credential pattern scanning of 4 key files (pyproject.toml, INSTALL.md, prepare_offline_env.sh, validate_offline_install.sh) found zero credentials."
+      "findings": "Manual credential pattern scanning of 4 key files (pyproject.toml, .codex/archive/misc/INSTALL.md, prepare_offline_env.sh, validate_offline_install.sh) found zero credentials."
     },
     "objective_4": {
       "title": "Validate no credentials were accidentally committed",
@@ -118,7 +118,7 @@
           "credentials_found": false
         },
         {
-          "path": "INSTALL.md",
+          "path": ".codex/archive/misc/INSTALL.md",
           "credentials_found": false
         },
         {
@@ -205,7 +205,7 @@
       "\u2713 PROCEED with external release to PyPI and alternative registries"
     ],
     "documentation": [
-      "\u26a0\ufe0f Document PKG-004 in INSTALL.md as known limitation (private functions in entry points)"
+      "\u26a0\ufe0f Document PKG-004 in .codex/archive/misc/INSTALL.md as known limitation (private functions in entry points)"
     ],
     "monitoring": [
       "Continue monitoring pip-audit feeds for new CVEs",

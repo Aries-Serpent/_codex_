@@ -70,7 +70,7 @@
 10. **`workbench/PHASE_1_RUST_UNIT_TESTS.md`** - Phase 1 execution plan
 11. **`workbench/PHASE_2_PERFORMANCE_BENCHMARKING.md`** - Phase 2 plan
 12. **`workbench/PHASE_3_MEMORY_PROFILING.md`** - Phase 3 plan
-13. **`workbench/PHASE_4_FULL_INTEGRATION.md`** - Phase 4 plan
+13. **`workbench/PHASE_4_FULL_docs/api/reference/INTEGRATION.md`** - Phase 4 plan
 14. **`workbench/PHASES_5-8_PRODUCTION_READINESS.md`** - Phases 5-8 plans
 
 ---

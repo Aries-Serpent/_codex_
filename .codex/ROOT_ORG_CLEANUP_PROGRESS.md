@@ -85,10 +85,10 @@
 
 **Files to Move (by category):**
 - **REPORT** (6 files): *_REPORT*.md, *_AUDIT*.md → `.codex/archive/reports/`
-- **ARCHIVED** (3 files): AGENTS.md, CLAUDE.md, GEMINI.md → `.codex/archive/deprecated/`
+- **ARCHIVED** (3 files): .codex/archive/deprecated/AGENTS.md, .codex/archive/deprecated/CLAUDE.md, .codex/archive/deprecated/GEMINI.md → `.codex/archive/deprecated/`
 - **DEPRECATED** (2 files): *_DEPRECATION.md → `.codex/archive/deprecated/`
 - **MISC** (11 files): Various misc files → `.codex/archive/misc/`
-- **DEPLOYMENT** (2 files): RELEASE_NOTES.md, ISOLATED_DEPLOYMENT.md → `docs/release/`
+- **DEPLOYMENT** (2 files): docs/release/RELEASE_NOTES.md, docs/release/ISOLATED_DEPLOYMENT.md → `docs/release/`
 - **API_DOC** (4 files): *_INTEGRATION*, *_GOVERNANCE*, etc. → `docs/api/reference/`
 
 **Atomic Reference Update Strategy:**
@@ -110,11 +110,11 @@
 **Expected risk:** HIGH (5+ references per file)
 
 **Files to Move:**
-1. **QUICKSTART_BY_PROFILE.md** → `docs/quickstart/` (HIGH refs expected)
-2. **QUICK_START_COGNITIVE_BRAIN.md** → `docs/quickstart/` (HIGH refs expected)
-3. **QUICK_START_ML.md** → `docs/quickstart/` (HIGH refs expected)
-4. **INTEGRATION.md** → `docs/api/reference/` (HIGH refs expected)
-5. **QUANTUM_COMPLIANCE_TUNING_AGENT_INTEGRATION_GUIDE.md** → `docs/api/reference/` (HIGH refs expected)
+1. **docs/quickstart/QUICKSTART_BY_PROFILE.md** → `docs/quickstart/` (HIGH refs expected)
+2. **docs/quickstart/QUICK_START_COGNITIVE_BRAIN.md** → `docs/quickstart/` (HIGH refs expected)
+3. **docs/quickstart/QUICK_START_ML.md** → `docs/quickstart/` (HIGH refs expected)
+4. **docs/api/reference/INTEGRATION.md** → `docs/api/reference/` (HIGH refs expected)
+5. **docs/api/reference/QUANTUM_COMPLIANCE_TUNING_AGENT_INTEGRATION_GUIDE.md** → `docs/api/reference/` (HIGH refs expected)
 
 **Manual Review Required:**
 - ⚠️ Each file requires comprehensive reference scan
@@ -170,9 +170,9 @@
 │   └── *_IMPLEMENTATION*.md     # (1-2 files)
 ├── deprecated/                   # Deprecation notices & archived configs
 │   ├── *_DEPRECATION.md         # (2 files)
-│   ├── AGENTS.md                # Archived agent reference
-│   ├── CLAUDE.md                # Archived model reference
-│   └── GEMINI.md                # Archived model reference
+│   ├── .codex/archive/deprecated/AGENTS.md                # Archived agent reference
+│   ├── .codex/archive/deprecated/CLAUDE.md                # Archived model reference
+│   └── .codex/archive/deprecated/GEMINI.md                # Archived model reference
 ├── plans/                        # Archived planning documents
 │   └── *_PLAN*.md               # Planning documents
 └── misc/                         # Temporary & miscellaneous
@@ -181,7 +181,7 @@
 docs/archive/
 ├── README.md                     # Navigation guide
 ├── quickstart/                   # Old quickstart guides
-│   ├── QUICKSTART_BY_PROFILE.md  # Archived
+│   ├── docs/quickstart/QUICKSTART_BY_PROFILE.md  # Archived
 │   └── QUICK_START_*.md          # (2-3 files)
 ├── api/                          # Previous API reference versions
 │   └── *.md                      # (4-5 files)
@@ -222,14 +222,14 @@ cat .codex/reports/ROOT_ORG_REFERENCE_AUDIT.json | jq '.files | sort_by(.risk_le
 
 ### Phase 1 Decisions:
 - ✅ Decided to keep CHANGELOG.md in root (essential for release workflow)
-- ✅ Decided to archive AGENTS.md reference (duplicate of `.github/agents/AGENTS.md`)
+- ✅ Decided to archive .codex/archive/deprecated/AGENTS.md reference (duplicate of `.github/agents/.codex/archive/deprecated/AGENTS.md`)
 - ✅ Decided to consolidate QUICKSTART files in Phase 4 (HIGH-risk, requires manual review)
 - ✅ Risk categorization based on filename patterns (PHASE_*, REPORT*, etc.)
 
 ### Outstanding Decisions (for later phases):
 - ⏳ Whether to create redirect placeholders for moved files (e.g., "See `docs/archive/...`")
 - ⏳ Which workflows need updates after file moves (TBD during Phase 2-3)
-- ⏳ Final destination for AGENT_ACCOUNTABILITY_REPORT.md (currently in docs/accountability/, consider keeping)
+- ⏳ Final destination for .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (currently in docs/accountability/, consider keeping)
 
 ---
 

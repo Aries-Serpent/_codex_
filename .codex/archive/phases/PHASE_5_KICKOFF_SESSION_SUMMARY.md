@@ -144,7 +144,7 @@
 ## 📋 Compliance & Governance
 
 ### REQ-4/REQ-5 Status
-- ✅ **REQ-4:** AGENT_ACCOUNTABILITY_REPORT.md updated (this session)
+- ✅ **REQ-4:** .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated (this session)
 - ✅ **REQ-5:** CHANGELOG.md will be updated (pending agent completion)
 - **Verification:** Run `python3 scripts/ci/session_wrapup_autofix.py --check` to verify
 
@@ -216,7 +216,7 @@
 ### Weekly Monitoring
 - Each Monday: Checkpoint review from all 3 agents
 - Consolidate metrics against targets
-- Update AGENT_ACCOUNTABILITY_REPORT.md
+- Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 - Flag any blockers for escalation
 
 ### Phase Completion (Week 4, ~2026-07-23)

@@ -20,7 +20,7 @@
 | `.codex/phase_2_3_execution_manifest.json` | **Structured execution metadata** (JSON, phases/lanes/agents/criteria) | 1.9 KB | ✅ READY |
 
 ### Accountability Tracked
-- ✅ `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — Added session entry
+- ✅ `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — Added session entry
 
 ---
 
@@ -201,7 +201,7 @@ Current Status: Phase 4 at 75% (parallel lanes A-D)
 
 ### Monitoring & Dashboards
 - **Real-Time:** `.codex/PHASE_14_LIVE_MONITORING_DASHBOARD_*.md` (updated every 5 min)
-- **Session Summary:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (updated after agents)
+- **Session Summary:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (updated after agents)
 - **Lane Results:** `.codex/phase_X_lane_Y_*.json` (structured output)
 
 ### Failure Recovery
@@ -232,7 +232,7 @@ Current Status: Phase 4 at 75% (parallel lanes A-D)
 | Phase 2 results | `cat .codex/phase2_lane_*.json \| jq .` | Lane results (JSON) |
 | Phase 3 results | `cat .codex/phase3_lane_*.json \| jq .` | Lane results (JSON) |
 | Dashboard | `cat .codex/PHASE_14_LIVE_MONITORING_DASHBOARD_*.md` | Real-time status |
-| Accountability | `tail -100 docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | Session summary |
+| Accountability | `tail -100 docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` | Session summary |
 
 ### Agent Deployment
 
@@ -263,7 +263,7 @@ Current Status: Phase 4 at 75% (parallel lanes A-D)
 
 ### During Execution
 - Monitor `.codex/PHASE_14_LIVE_MONITORING_DASHBOARD_*.md` every 10 min
-- Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` after agents complete
+- Update `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` after agents complete
 - Post standup comment on active PR every 30 min
 
 ### If Things Break
@@ -331,7 +331,7 @@ Before calling Phases 2-3 "COMPLETE", verify:
 
 ### End of Session
 - [ ] Updated `.codex/PHASE_14_LIVE_MONITORING_DASHBOARD_*.md`
-- [ ] Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- [ ] Updated `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - [ ] Confirmed all success criteria met
 - [ ] Committed all results to git
 - [ ] Logged phase completion with @mbaetiong

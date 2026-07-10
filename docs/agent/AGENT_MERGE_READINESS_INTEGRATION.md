@@ -422,7 +422,7 @@ engine_tools_report_progress(
 - All 10 gates: ✅ Pass
 - Merge readiness: **100/100**
 - WEC: All 9 items present with always-required checked
-- Accountability: AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md updated
+- Accountability: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md updated
 - Maintainer can now merge with confidence
 
 ---

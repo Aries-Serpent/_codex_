@@ -235,7 +235,7 @@ PRODUCTION-READY STATE:               95%+ coverage ✅
 
 ### CHPP Rule 2: Mandatory Session Pre-Load Validation (MSPV)
 - ✅ `.codex/CODEBASE_AGENCY_POLICY.md` reviewed
-- ✅ `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` consulted
+- ✅ `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` consulted
 - ✅ COPILOT_AGENT_CCA_VERSION_LOCK verified as `stable`
 - ✅ Session context pre-load completed
 

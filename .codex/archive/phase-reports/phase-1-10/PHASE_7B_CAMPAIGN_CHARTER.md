@@ -24,7 +24,7 @@
 - **Parallelization Model:** Zero inter-dependencies; non-blocking information flow
 - **Dynamic Lane Allocation:** Sequential wave activation as lanes free up
 - **Checkpoint Tracking:** All reports in `.codex/` (repository-tracked, never /tmp/)
-- **Accountability:** Full REQ-4/REQ-5 compliance (AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md)
+- **Accountability:** Full REQ-4/REQ-5 compliance (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md)
 
 ---
 
@@ -87,7 +87,7 @@ Timeline:
 - [ ] CI/CD: <0.5% failure rate, 100% workflow compliance
 - [ ] Normalization: 10/10 dimensions standardized
 - [ ] Documentation: v0.1.0-final ready
-- [ ] Accountability: CHANGELOG + AGENT_ACCOUNTABILITY_REPORT.md current
+- [ ] Accountability: CHANGELOG + .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md current
 - [ ] Release: @mbaetiong approval + tag v0.1.0-final
 
 ---
@@ -205,7 +205,7 @@ Track D outputs ───┤
 - `.codex/PHASE_7B_TRACK_E_FINAL_GATE_REPORT.md`
 - Release notes: `RELEASE_NOTES_v0.1.0-final.md`
 - `CHANGELOG.md` (updated)
-- `AGENT_ACCOUNTABILITY_REPORT.md` (updated)
+- `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (updated)
 - `PHASE_7B_DISCUSSION_4872_RESOLUTION.md`
 
 ### Consolidation Hub

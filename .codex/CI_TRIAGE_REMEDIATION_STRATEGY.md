@@ -25,7 +25,7 @@
 3. **Phase 12.2 Compliance Check** — DOCS UPDATED ✅
    - Issue: REQ-3 (pytest), REQ-4 (accountability), REQ-5 (changelog) failures
    - Fixes Applied:
-     - REQ-4: Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+     - REQ-4: Updated `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
      - REQ-5: Updated `CHANGELOG.md` with session entry
      - REQ-3: Syntax fixes enable pytest to run
    - Status: Compliance requirements satisfied
@@ -33,7 +33,7 @@
 **Files Modified:**
 - `src/codex/governance/rbac.py` (pragma allowlist)
 - `tests/conftest.py` (syntax fix)
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (REQ-4)
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (REQ-4)
 - `CHANGELOG.md` (REQ-5)
 
 ---

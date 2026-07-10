@@ -12,7 +12,7 @@
 | Run targeted validation (`ruff`, focused `pytest`, `auto_fix_common_issues --check-only`) | ✅ Complete |
 | Refresh PR #4544 follow-up prompt file | ✅ Complete |
 | Update living docs (`whats_next`, `session_diagram`) | ✅ Complete |
-| Update `CHANGELOG.md` + `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | ✅ Complete |
+| Update `CHANGELOG.md` + `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` | ✅ Complete |
 | Reply on PR with resolution commit so Comment Review Gate can rescan | ⏳ Next step |
 | Monitor latest-head workflow fan-out on `856b1280` | ⏳ In progress — latest push spawned many `action_required` runs |
 
@@ -36,7 +36,7 @@
 - `docs/roadmap/PR4544_whats_next.md`
 - `docs/roadmap/PR4544_session_diagram.mmd`
 - `CHANGELOG.md`
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - `src/codex_ml/models/__init__.py`
 - `src/codex_ml/interfaces/tokenizer.py`
 - `src/codex_ml/utils/logging_mlflow.py`
@@ -59,4 +59,4 @@ When resuming PR #4544, start with:
 2. Reply to the open `@copilot` rescue/comment-gate thread with the latest fix commit hash.
 3. Re-check latest workflow runs for branch `copilot/address-codeql-security-fixes`.
 4. If new failures appear, fix only issues directly coupled to the touched files above.
-5. Refresh this file, `docs/roadmap/PR4544_session_diagram.mmd`, `CHANGELOG.md`, and `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` before concluding.
+5. Refresh this file, `docs/roadmap/PR4544_session_diagram.mmd`, `CHANGELOG.md`, and `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` before concluding.

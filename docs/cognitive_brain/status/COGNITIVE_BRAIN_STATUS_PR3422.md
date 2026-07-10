@@ -30,7 +30,7 @@
 | P4.8 | REQ-8 GROUNDED gate in `agent-auth-delegation.yml` | ✅ Done |
 | P4.8 | `cognitive-ooda-loop-agent.md` v2.0 with Phase 4 wiring | ✅ Done |
 | Gov | `CHANGELOG.md` `[Unreleased]` entry | ✅ Done |
-| Gov | `AGENT_ACCOUNTABILITY_REPORT.md` W-061–W-068 | ✅ Done |
+| Gov | `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` W-061–W-068 | ✅ Done |
 | Gov | `COGNITIVE_BRAIN_STATUS_PR3422.md` (this file) | ✅ Done |
 | Sec | Bandit B603 `# nosec` annotation with justification | ✅ Done |
 | Qual | Code review: `datetime.now(timezone.utc)`, `MEMORY_CAPACITY`, auth key precedence | ✅ Done |
@@ -148,7 +148,7 @@ Agents (128 total)
 
 ### Pass 3: Documentation ✅
 - `CHANGELOG.md` `[Unreleased]` entry — WF-001 gate satisfied
-- `AGENT_ACCOUNTABILITY_REPORT.md` W-061–W-068 + Last updated
+- `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` W-061–W-068 + Last updated
 - `cognitive_app/.env.example` created with `VITE_CLI_API_URL`
 - All 3 new/updated agents have architecture diagrams
 

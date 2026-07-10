@@ -63,7 +63,7 @@
 
 ### Historical Documents
 
-#### 3. [AGENTS.md.original.cf4e8c9.md](../../.github/AGENTS.md)
+#### 3. [.codex/archive/deprecated/AGENTS.md.original.cf4e8c9.md](../../.github/.codex/archive/deprecated/AGENTS.md)
 **Historical snapshot of agent documentation** (preserved for reference)
 
 #### 4. [PYTORCH_META_TENSOR_TRACKING.md](./PYTORCH_META_TENSOR_TRACKING.md)
@@ -115,7 +115,7 @@
 
 **In Repository Root:**
 - [README.md](../../README.md) - Main repository overview
-- [AGENTS.md](../../.github/AGENTS.md) - AI agent operational guide
+- [.codex/archive/deprecated/AGENTS.md](../../.github/.codex/archive/deprecated/AGENTS.md) - AI agent operational guide
 - [.codex/CODEBASE_AGENCY_POLICY.md](../CODEBASE_AGENCY_POLICY.md) - Complete policy framework
 
 **In docs/ directory:**
@@ -269,7 +269,7 @@
 ## 📝 Quick Links
 
 - **Main README**: [../../README.md](../../README.md)
-- **Agent Guide**: [../../AGENTS.md](../../.github/AGENTS.md)
+- **Agent Guide**: [../../.codex/archive/deprecated/AGENTS.md](../../.github/.codex/archive/deprecated/AGENTS.md)
 - **Policy**: [../CODEBASE_AGENCY_POLICY.md](../CODEBASE_AGENCY_POLICY.md)
 - **Cognitive Brain Toolkit**: [../COGNITIVE_BRAIN_TOOLKIT.md](../COGNITIVE_BRAIN_TOOLKIT.md)
 - **Cognitive Brain Plans**: [../plans/cognitive_brain_phase_implementation.md](../plans/cognitive_brain_phase_implementation.md)

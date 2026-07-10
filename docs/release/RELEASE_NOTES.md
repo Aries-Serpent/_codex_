@@ -55,8 +55,8 @@ pip install codex-ml==0.1.0
 
 ### Documentation
 
-- **[Installation Guide](INSTALL.md)** - Detailed setup instructions
-- **[Quick Start ML](QUICK_START_ML.md)** - 5-minute introduction
+- **[Installation Guide](.codex/archive/misc/INSTALL.md)** - Detailed setup instructions
+- **[Quick Start ML](docs/quickstart/QUICK_START_ML.md)** - 5-minute introduction
 - **[Getting Started](docs/getting-started.md)** - Comprehensive guide
 - **[Architecture Overview](docs/system/CODEBASE_COGNITIVE_MAP.md)** - System design
 
@@ -147,7 +147,7 @@ This is **Phase 1** of the v0.1.0 distribution campaign. Subsequent phases will 
 ### Next Steps
 1. Review release notes
 2. Test installation: `pip install aries-serpent-cognitive-brain`
-3. Follow quick-start guide (see QUICK_START_COGNITIVE_BRAIN.md)
+3. Follow quick-start guide (see docs/quickstart/QUICK_START_COGNITIVE_BRAIN.md)
 4. Report any issues in GitHub Discussions
 
 ---

@@ -33,7 +33,7 @@ This document provides the continuation prompt for the next Copilot session **af
 Read: .codex/HOT_FIX_FOLLOWUP_PROMPT.md
 Execute: Phase 1 - Phase 5 (Sequential execution)
 Archive: Session artifacts to .codex/phase_7a_final_cleanup/ (repository-tracked)
-Report: Final status to AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md (REQ-4/REQ-5)
+Report: Final status to .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md (REQ-4/REQ-5)
 ```
 
 Or directly:
@@ -267,7 +267,7 @@ git commit -m "docs(archive): Phase 7A final cleanup - Hot-fix session completio
 ### Update Governance Files
 
 ```bash
-# Update AGENT_ACCOUNTABILITY_REPORT.md
+# Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 # Add entry: "Hot-Fix Follow-Up Session — 2026-06-25T(now)Z — ✅ COMPLETE"
 
 # Update CHANGELOG.md

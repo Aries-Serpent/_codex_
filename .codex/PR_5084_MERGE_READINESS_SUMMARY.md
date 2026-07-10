@@ -15,7 +15,7 @@
 |-------|------|-----|--------|
 | Secrets detection (3 files) | False positive | Added pragma allowlist comments | ✅ FIXED |
 | F-string placeholders (3 instances) | Code quality | Replaced `<ERROR_TYPE>` with actual `{error_type}` | ✅ FIXED |
-| REQ-4 compliance gate | Governance | Updated AGENT_ACCOUNTABILITY_REPORT.md in latest commit | ✅ FIXED |
+| REQ-4 compliance gate | Governance | Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md in latest commit | ✅ FIXED |
 | REQ-5 compliance gate | Governance | Updated CHANGELOG.md in latest commit | ✅ FIXED |
 | Comment review gate | Process | Replied to blocking comments with resolution approach | ✅ FIXED |
 | Test collection errors | Context | Documented as pre-existing (zstandard import baseline) | ✅ DOCUMENTED |
@@ -38,7 +38,7 @@
 - [x] `POST_MERGE_ENVIRONMENT_BASELINE.md` — Pre-existing issues documented
 - [x] `POST_MERGE_COPILOT_SETUP_VALIDATION.md` — 6-gate validation framework
 - [x] `POST_MERGE_REVERSION_PROTOCOL.md` — Terminal reversion decision tree
-- [x] `POST_MERGE_MISSING_DEPS_INSTALL.md` — Dependency installation playbook
+- [x] `POST_MERGE_MISSING_DEPS_.codex/archive/misc/INSTALL.md` — Dependency installation playbook
 - [x] `POST_MERGE_SESSION_CONTINUATION_BRIEF_V2.md` — Comprehensive next session guide
 - [x] `POST_MERGE_COPILOT_EXECUTION_PROMPT.md` — Detailed execution instructions
 - [x] `CAMPAIGN_ARTIFACT_INDEX.md` — Navigation and Q&A index
@@ -82,7 +82,7 @@
    - Continue campaign objectives
 
 4. **Documentation** (15 min):
-   - Update AGENT_ACCOUNTABILITY_REPORT.md with post-merge validation results
+   - Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with post-merge validation results
    - Document any pre-existing issues vs. new regressions
    - Record campaign completion status
 
@@ -110,7 +110,7 @@
 ├── POST_MERGE_ENVIRONMENT_BASELINE.md
 ├── POST_MERGE_COPILOT_SETUP_VALIDATION.md
 ├── POST_MERGE_REVERSION_PROTOCOL.md
-├── POST_MERGE_MISSING_DEPS_INSTALL.md
+├── POST_MERGE_MISSING_DEPS_.codex/archive/misc/INSTALL.md
 ├── POST_MERGE_SESSION_CONTINUATION_BRIEF.md
 ├── POST_MERGE_SESSION_CONTINUATION_BRIEF_V2.md
 ├── POST_MERGE_COPILOT_EXECUTION_PROMPT.md
@@ -131,7 +131,7 @@ src/codex/auth/
 
 ### Compliance & Metadata (3 files) ✅
 ```
-├── docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md (updated)
+├── docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (updated)
 ├── CHANGELOG.md (updated)
 ├── src/tokenization/cli.py (f-string fixes)
 └── .codex/session_context_latest.md (refreshed)
@@ -163,7 +163,7 @@ src/codex/auth/
 
 ### REQ-4 (Accountability Report)
 - **Status**: ✅ PASS  
-- **Details**: AGENT_ACCOUNTABILITY_REPORT.md updated with current session context in latest commit
+- **Details**: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated with current session context in latest commit
 - **Evidence**: Commit 39572d1
 
 ### REQ-5 (Changelog)

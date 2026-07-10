@@ -24,7 +24,7 @@
 | Document | Purpose | Last Updated | Status |
 |----------|---------|--------------|--------|
 | [README.md](https://github.com/Aries-Serpent/_codex_/blob/main/README.md) | Project overview | 2026-02-10 | ✅ Active |
-| [AGENTS.md](./agents.md) | Agent operations playbook | 2025-12-10 | ✅ Active |
+| [.codex/archive/deprecated/AGENTS.md](./agents.md) | Agent operations playbook | 2025-12-10 | ✅ Active |
 | [CONTRIBUTING.md](./CONTRIBUTING.md) | Contribution guidelines | 2026-02-10 | ✅ Active |
 | [SECURITY.md](./SECURITY.md) | Security policy | 2026-02-10 | ✅ Active |
 | [CODE_OF_CONDUCT.md](https://github.com/Aries-Serpent/_codex_/blob/main/CODE_OF_CONDUCT.md) | Community standards | 2026-02-10 | ✅ Active |
@@ -126,7 +126,7 @@
 
 | Guide | Purpose | Updated |
 |-------|---------|---------|
-| [AGENTS.md](./agents.md) | Comprehensive agent guide | 2025-12-10 |
+| [.codex/archive/deprecated/AGENTS.md](./agents.md) | Comprehensive agent guide | 2025-12-10 |
 | [agents/TOKENIZED_WORKFLOWS.md](https://github.com/Aries-Serpent/_codex_/blob/main/agents/TOKENIZED_WORKFLOWS.md) | Workflow tokens | 2026-02-10 |
 | [agents/prompts/README.md](https://github.com/Aries-Serpent/_codex_/blob/main/agents/prompts/README.md) | Prompts library | 2025-12-11 |
 
@@ -214,7 +214,7 @@
 
 - `agents/` - Agent infrastructure
 - `agents/prompts/` - Prompt library
-- `AGENTS.md` - Agent operations
+- `.codex/archive/deprecated/AGENTS.md` - Agent operations
 - `agents/TOKENIZED_WORKFLOWS.md` - Workflow tokens
 
 ---
@@ -258,7 +258,7 @@
 **I want to...**
 
 - **Contribute code**: Start with [CONTRIBUTOR_ONBOARDING.md](./CONTRIBUTOR_ONBOARDING.md)
-- **Use AI Agents**: See [AGENTS.md](./agents.md) and [agents/prompts/](https://github.com/Aries-Serpent/_codex_/tree/main/agents/prompts/)
+- **Use AI Agents**: See [.codex/archive/deprecated/AGENTS.md](./agents.md) and [agents/prompts/](https://github.com/Aries-Serpent/_codex_/tree/main/agents/prompts/)
 - **Understand architecture**: Read [ARCHITECTURE_BLUEPRINT.md](./ARCHITECTURE_BLUEPRINT.md)
 - **Debug issues**: Check [agents/prompts/debugging/](https://github.com/Aries-Serpent/_codex_/tree/main/agents/prompts/debugging/)
 - **Deploy the system**: See [deploy/](https://github.com/Aries-Serpent/_codex_/tree/main/deploy/) and [Dockerfile*](https://github.com/Aries-Serpent/_codex_/blob/main/Dockerfile)
@@ -271,7 +271,7 @@
 **I am a...**
 
 - **New Contributor**: [CONTRIBUTOR_ONBOARDING.md](./CONTRIBUTOR_ONBOARDING.md), [CONTRIBUTING.md](./CONTRIBUTING.md)
-- **AI Agent**: [AGENTS.md](./agents.md), [agents/prompts/](https://github.com/Aries-Serpent/_codex_/tree/main/agents/prompts/), [agents/TOKENIZED_WORKFLOWS.md](https://github.com/Aries-Serpent/_codex_/blob/main/agents/TOKENIZED_WORKFLOWS.md)
+- **AI Agent**: [.codex/archive/deprecated/AGENTS.md](./agents.md), [agents/prompts/](https://github.com/Aries-Serpent/_codex_/tree/main/agents/prompts/), [agents/TOKENIZED_WORKFLOWS.md](https://github.com/Aries-Serpent/_codex_/blob/main/agents/TOKENIZED_WORKFLOWS.md)
 - **Developer-Architect**: [ARCHITECTURE_BLUEPRINT.md](./ARCHITECTURE_BLUEPRINT.md), [COMPREHENSIVE_GAP_ANALYSIS.md](archive/COMPREHENSIVE_GAP_ANALYSIS.md)
 - **DevOps Engineer**: [deploy/](https://github.com/Aries-Serpent/_codex_/tree/main/deploy/), [.github/workflows/](https://github.com/Aries-Serpent/_codex_/tree/main/.github/workflows/), [docker-compose.yml](https://github.com/Aries-Serpent/_codex_/blob/main/docker-compose.yml)
 - **Security Researcher**: [SECURITY.md](./SECURITY.md), [agents/prompts/debugging/security-remediation.md](https://github.com/Aries-Serpent/_codex_/blob/main/agents/prompts/debugging/security-remediation.md)

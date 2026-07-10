@@ -15,8 +15,8 @@
 
 **Need automation?** See:
 - [RELEASE_WORKFLOW_PLAN.md](RELEASE_WORKFLOW_PLAN.md)
-- [GITLAB_CI_CD_INTEGRATION.md](GITLAB_CI_CD_INTEGRATION.md)
-- [ACTIVESTATE_OIDC_INTEGRATION.md](ACTIVESTATE_OIDC_INTEGRATION.md)
+- [GITLAB_CI_CD_docs/api/reference/INTEGRATION.md](GITLAB_CI_CD_docs/api/reference/INTEGRATION.md)
+- [ACTIVESTATE_OIDC_docs/api/reference/INTEGRATION.md](ACTIVESTATE_OIDC_docs/api/reference/INTEGRATION.md)
 
 ---
 
@@ -35,8 +35,8 @@
 
 | Document | Platform | Size |
 |----------|----------|------|
-| [GITLAB_CI_CD_INTEGRATION.md](GITLAB_CI_CD_INTEGRATION.md) | GitLab | 11KB |
-| [ACTIVESTATE_OIDC_INTEGRATION.md](ACTIVESTATE_OIDC_INTEGRATION.md) | ActiveState | 11KB |
+| [GITLAB_CI_CD_docs/api/reference/INTEGRATION.md](GITLAB_CI_CD_docs/api/reference/INTEGRATION.md) | GitLab | 11KB |
+| [ACTIVESTATE_OIDC_docs/api/reference/INTEGRATION.md](ACTIVESTATE_OIDC_docs/api/reference/INTEGRATION.md) | ActiveState | 11KB |
 | [../../.github/workflows/pypi-publish.yml](../../.github/workflows/pypi-publish.yml) | GitHub Actions | 3.5KB |
 
 ### Strategic Documentation
@@ -81,11 +81,11 @@
    - Configure GitHub Secrets
 
 2. **Phase 2b**: GitLab CI/CD
-   - Follow [GITLAB_CI_CD_INTEGRATION.md](GITLAB_CI_CD_INTEGRATION.md)
+   - Follow [GITLAB_CI_CD_docs/api/reference/INTEGRATION.md](GITLAB_CI_CD_docs/api/reference/INTEGRATION.md)
    - Set up `.gitlab-ci.yml`
 
 2. **Phase 2c**: ActiveState
-   - Follow [ACTIVESTATE_OIDC_INTEGRATION.md](ACTIVESTATE_OIDC_INTEGRATION.md)
+   - Follow [ACTIVESTATE_OIDC_docs/api/reference/INTEGRATION.md](ACTIVESTATE_OIDC_docs/api/reference/INTEGRATION.md)
    - Configure OIDC
 
 ### "I need to fix a critical bug"
@@ -181,7 +181,7 @@ graph TD
 ### Security
 
 - **Tokens**: [PACKAGE_PUBLISHING_GUIDE.md](PACKAGE_PUBLISHING_GUIDE.md) → Part 1.2
-- **OIDC**: [ACTIVESTATE_OIDC_INTEGRATION.md](ACTIVESTATE_OIDC_INTEGRATION.md)
+- **OIDC**: [ACTIVESTATE_OIDC_docs/api/reference/INTEGRATION.md](ACTIVESTATE_OIDC_docs/api/reference/INTEGRATION.md)
 - **Best Practices**: [PACKAGE_PUBLISHING_GUIDE.md](PACKAGE_PUBLISHING_GUIDE.md) → Part 8
 
 ---

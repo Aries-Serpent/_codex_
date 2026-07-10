@@ -255,7 +255,7 @@ Queued vars: `GH_TRICKLE_POLITE_SLEEP`, `GH_TRICKLE_MIN_REMAINING`, `GH_TRICKLE_
 | `docs/plans/COGNITIVE_BRAIN_UNIFIED_IMPLEMENTATION_TASKS.md` | Added new Phase 9 (Autonomous Agent Operations) with all S867/S868 deliverables |
 | `docs/plans/DOCS_CONSOLIDATION_MAP.md` | **NEW** — catalogue of 81 plan docs; archive candidates (28 stale PHASE0/1/2 docs); merge candidates; active living docs |
 | `CHANGELOG.md` | S868 section added |
-| `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | S868 session summary |
+| `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` | S868 session summary |
 
 ---
 
@@ -359,7 +359,7 @@ Queued vars (10): `GH_TRICKLE_POLITE_SLEEP`, `GH_TRICKLE_MIN_REMAINING`, `GH_TRI
 | `docs/plans/archive/` (31 files) | Phase 0/1/2 historical reports archived |
 | `docs/plans/archive/README.md` | New — archive policy and file catalogue |
 | `CHANGELOG.md` | S870 section |
-| `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | S870 session summary |
+| `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` | S870 session summary |
 | `docs/plans/PR4356_whats_next.md` | This section |
 
 ---

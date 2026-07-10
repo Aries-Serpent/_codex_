@@ -142,7 +142,7 @@ This session successfully executed **3 parallel production readiness phases** th
 ### Linting & Compliance
 - ✅ `ruff check --select E,F,I` passes on all modified files
 - ✅ `pre-commit run --files <modified>` passes
-- ✅ REQ-4: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated
+- ✅ REQ-4: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` updated
 - ✅ REQ-5: `CHANGELOG.md` updated
 - ✅ All code suppressions properly formatted
 

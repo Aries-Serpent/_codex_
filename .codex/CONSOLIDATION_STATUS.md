@@ -115,7 +115,7 @@ All critical and high-priority objectives achieved. The codebase is ready for pr
    - Ensure no test regressions
 
 2. **Compliance Update** (Turns 90-120)
-   - Update AGENT_ACCOUNTABILITY_REPORT.md (REQ-4)
+   - Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (REQ-4)
    - Update CHANGELOG.md (REQ-5)
    - Generate final summary documents
 

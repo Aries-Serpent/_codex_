@@ -189,13 +189,13 @@ print(f"Accuracy: {metrics.accuracy:.4f}")
 
 | Resource | Link |
 |----------|------|
-| **Installation Guide** | [INSTALL.md](https://github.com/Aries-Serpent/_codex_/blob/main/INSTALL.md) |
+| **Installation Guide** | [.codex/archive/misc/INSTALL.md](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/archive/misc/INSTALL.md) |
 | **API Documentation** | [docs/api/](https://github.com/Aries-Serpent/_codex_/tree/main/docs/api) |
-| **Getting Started** | [QUICKSTART_BY_PROFILE.md](https://github.com/Aries-Serpent/_codex_/blob/main/QUICKSTART_BY_PROFILE.md) |
+| **Getting Started** | [docs/quickstart/QUICKSTART_BY_PROFILE.md](https://github.com/Aries-Serpent/_codex_/blob/main/docs/quickstart/QUICKSTART_BY_PROFILE.md) |
 | **Agent Registry** | [.github/agents/AGENT_REGISTRY.md](https://github.com/Aries-Serpent/_codex_/blob/main/.github/agents/AGENT_REGISTRY.md) |
 | **ML Training Docs** | [docs/ml-training/](https://github.com/Aries-Serpent/_codex_/tree/main/docs/ml-training) |
-| **Cognitive Brain Guide** | [QUICK_START_COGNITIVE_BRAIN.md](https://github.com/Aries-Serpent/_codex_/blob/main/QUICK_START_COGNITIVE_BRAIN.md) |
-| **Full Release Notes** | [RELEASE_NOTES.md](https://github.com/Aries-Serpent/_codex_/blob/main/RELEASE_NOTES.md) |
+| **Cognitive Brain Guide** | [docs/quickstart/QUICK_START_COGNITIVE_BRAIN.md](https://github.com/Aries-Serpent/_codex_/blob/main/docs/quickstart/QUICK_START_COGNITIVE_BRAIN.md) |
+| **Full Release Notes** | [docs/release/RELEASE_NOTES.md](https://github.com/Aries-Serpent/_codex_/blob/main/docs/release/RELEASE_NOTES.md) |
 
 ---
 
@@ -240,7 +240,7 @@ Interested in contributing? See [CONTRIBUTING.md](https://github.com/Aries-Serpe
 ## 🎯 Next Steps
 
 1. **Install:** \`pip install aries-serpent-ml==0.1.0\`
-2. **Explore:** Check the [Quick Start Guide](https://github.com/Aries-Serpent/_codex_/blob/main/QUICKSTART_BY_PROFILE.md)
+2. **Explore:** Check the [Quick Start Guide](https://github.com/Aries-Serpent/_codex_/blob/main/docs/quickstart/QUICKSTART_BY_PROFILE.md)
 3. **Integrate:** Add agents to your workflows
 4. **Contribute:** Join the community and help us improve!
 
@@ -393,9 +393,9 @@ jobs:
 ### Related Resources
 
 - **GitHub Release:** https://github.com/Aries-Serpent/_codex_/releases/tag/v0.1.0-prod
-- **Release Notes:** [RELEASE_NOTES.md](https://github.com/Aries-Serpent/_codex_/blob/main/RELEASE_NOTES.md)
-- **Installation Guide:** [INSTALL.md](https://github.com/Aries-Serpent/_codex_/blob/main/INSTALL.md)
-- **Quick Start:** [QUICKSTART_BY_PROFILE.md](https://github.com/Aries-Serpent/_codex_/blob/main/QUICKSTART_BY_PROFILE.md)
+- **Release Notes:** [docs/release/RELEASE_NOTES.md](https://github.com/Aries-Serpent/_codex_/blob/main/docs/release/RELEASE_NOTES.md)
+- **Installation Guide:** [.codex/archive/misc/INSTALL.md](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/archive/misc/INSTALL.md)
+- **Quick Start:** [docs/quickstart/QUICKSTART_BY_PROFILE.md](https://github.com/Aries-Serpent/_codex_/blob/main/docs/quickstart/QUICKSTART_BY_PROFILE.md)
 - **API Docs:** [docs/api/](https://github.com/Aries-Serpent/_codex_/tree/main/docs/api)
 - **Agent Registry:** [.github/agents/AGENT_REGISTRY.md](https://github.com/Aries-Serpent/_codex_/blob/main/.github/agents/AGENT_REGISTRY.md)
 

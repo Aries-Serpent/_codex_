@@ -236,7 +236,7 @@ Phase 12 Wave 1 post-merge governance coordination has been executed across thre
    - Critical fix documentation
    - Release notes prepared
 
-2. **`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`**
+2. **`docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`**
    - Session entry (Phases 0-6 from prior context)
    - Wave 1 critical incident patch
    - Timeline and remediation documentation
@@ -295,7 +295,7 @@ Phase 12 Wave 1 post-merge governance coordination has been executed across thre
 ## SESSIONS ARTIFACTS & COMPLIANCE
 
 ### Compliance Requirements Met
-- ✅ **REQ-4:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated with session patch
+- ✅ **REQ-4:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` updated with session patch
 - ✅ **REQ-5:** `CHANGELOG.md` updated with all phases and fixes
 - ✅ **Session Integrity:** All commits pushed; no uncommitted changes
 

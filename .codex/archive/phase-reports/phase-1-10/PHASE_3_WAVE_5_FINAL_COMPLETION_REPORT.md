@@ -292,7 +292,7 @@ TOTAL: 170 tests (102 passed + 68 skipped by design)
 
 ### Compliance Artifacts
 
-- ✅ **REQ-4**: AGENT_ACCOUNTABILITY_REPORT.md (updated)
+- ✅ **REQ-4**: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (updated)
 - ✅ **REQ-5**: CHANGELOG.md (updated)
 - ✅ **PDA Loop**: auto-pda-2026-06-30 (session logged)
 - ✅ **Repository-Tracked**: All artifacts in `.codex/` (never /tmp/)

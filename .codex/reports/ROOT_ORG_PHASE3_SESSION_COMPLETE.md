@@ -56,7 +56,7 @@ find _codex_ -type f | wc -l  # Result: 3 files
 **From _codex_/:**
 5. `codex_index.yaml` → `.codex/codex_index.yaml`
 6. `docs/templates/README.md` → `.codex/docs/templates/README.md`
-7. `AGENTS.md` → REMOVED (redundant internal documentation)
+7. `.codex/archive/deprecated/AGENTS.md` → REMOVED (redundant internal documentation)
 
 **Result:** Both directories eliminated from root ✅
 

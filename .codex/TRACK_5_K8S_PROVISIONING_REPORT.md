@@ -240,7 +240,7 @@
    - Plan summary generation
    - Approval gate integration
 
-2. ✅ Generated plan summary: `terraform_plan_summary.md`
+2. ✅ Generated plan summary: `.codex/archive/misc/terraform_plan_summary.md`
    - Terraform plan results
    - Affected resources list
    - Estimated timeline (15-30 minutes)
@@ -365,7 +365,7 @@
 | k8s_patterns.json | ~25 KB | ✅ |
 | infrastructure_compliance_report.json | ~5 KB | ✅ |
 | cost_estimate.json | ~8 KB | ✅ |
-| terraform_plan_summary.md | ~2 KB | ✅ |
+| .codex/archive/misc/terraform_plan_summary.md | ~2 KB | ✅ |
 
 **Total Data:** ~40 KB | **Format:** JSON + Markdown | **Quality:** Production ✅
 
@@ -773,7 +773,7 @@ infrastructure/terraform/azure-aks/versions.tf
 k8s_patterns.json
 infrastructure_compliance_report.json
 cost_estimate.json
-terraform_plan_summary.md
+.codex/archive/misc/terraform_plan_summary.md
 ```
 
 **Total: 34 files, all committed to repository, zero /tmp usage** ✅

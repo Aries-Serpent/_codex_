@@ -88,7 +88,7 @@ Created production-ready agent for automated dependency conflict detection and r
 - `.codex/plans/path_100_20260120-0204_dependency_coverage_fix.md` - Remediation planset
 
 ### Integration
-Agent registered in `AGENTS.md` and ready for activation via:
+Agent registered in `.codex/archive/deprecated/AGENTS.md` and ready for activation via:
 ```markdown
 @copilot Use the Dependency Conflict Agent to analyze pip resolver errors in CI.
 ```
@@ -137,7 +137,7 @@ Agent registered in `AGENTS.md` and ready for activation via:
 1. `.codex/action_log.ndjson` - Added 5 new action entries
 2. `.codex/change_log.md` - Documented 2026-01-20 changes
 3. `.codex/results.md` - Updated status table
-4. `AGENTS.md` - Registered dependency conflict agent
+4. `.codex/archive/deprecated/AGENTS.md` - Registered dependency conflict agent
 5. `requirements-test.txt` - Standardized versions
 6. `requirements-dev.txt` - Aligned version ranges
 7. `.github/workflows/coverage_report.yml` - Updated coverage version

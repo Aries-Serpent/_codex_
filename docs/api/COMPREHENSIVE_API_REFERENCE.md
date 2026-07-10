@@ -935,11 +935,11 @@ See the [cURL Examples](CURL_EXAMPLES.md) for comprehensive command-line example
 
 ### Python Examples
 
-See the [Python Integration Guide](PYTHON_INTEGRATION.md) for complete Python examples using the `requests` library.
+See the [Python Integration Guide](PYTHON_docs/api/reference/INTEGRATION.md) for complete Python examples using the `requests` library.
 
 ### JavaScript/TypeScript Examples
 
-See the [JavaScript Integration Guide](JAVASCRIPT_INTEGRATION.md) for complete JavaScript examples using `fetch` or `axios`.
+See the [JavaScript Integration Guide](JAVASCRIPT_docs/api/reference/INTEGRATION.md) for complete JavaScript examples using `fetch` or `axios`.
 
 ### Postman Collection
 

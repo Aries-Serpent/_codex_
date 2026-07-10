@@ -66,7 +66,7 @@ Title Context → Always capitalize first letter
 - **Total**: 2,273 standardizations
 
 **Files Modified**:
-1. AGENT_ACCOUNTABILITY_REPORT.md (2,156 changes)
+1. .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (2,156 changes)
 2. README.md (87 changes)
 3. CONTRIBUTING.md (78 changes)
 4. docs/agents/overview.md (56 changes)

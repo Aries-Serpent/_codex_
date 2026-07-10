@@ -193,7 +193,7 @@ sequenceDiagram
         CP-->>AD: ❌ BLOCKED — exit 1
     end
 
-    CP->>CP: git diff HEAD~1 HEAD → check AGENT_ACCOUNTABILITY_REPORT.md
+    CP->>CP: git diff HEAD~1 HEAD → check .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
     alt report not touched
         CP-->>AD: ❌ BLOCKED — exit 1
     end
@@ -236,7 +236,7 @@ pie title Lines added by session
     "session_priority.md (new)" : 39
     "INDEX.md" : 18
     "CHANGELOG.md" : 36
-    "AGENT_ACCOUNTABILITY_REPORT.md" : 14
+    ".codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md" : 14
 ```
 
 ---

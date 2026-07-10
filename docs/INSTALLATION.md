@@ -221,7 +221,7 @@ pip install --no-index --find-links ./wheelhouse/ codex-ml[runtime]
 codex-ml --version
 ```
 
-**See also:** `OFFLINE_DEPLOYMENT.md` for detailed air-gapped setup
+**See also:** `docs/release/OFFLINE_DEPLOYMENT.md` for detailed air-gapped setup
 
 ---
 
@@ -1133,8 +1133,8 @@ if torch.cuda.is_available():
 ### Documentation Resources
 
 - **🏠 Main README:** [README.md](../README.md)
-- **🚀 Quick Start ML:** [QUICK_START_ML.md](QUICK_START_ML.md)
-- **🧠 Cognitive Brain Guide:** [QUICK_START_COGNITIVE_BRAIN.md](QUICK_START_COGNITIVE_BRAIN.md)
+- **🚀 Quick Start ML:** [docs/quickstart/QUICK_START_ML.md](docs/quickstart/QUICK_START_ML.md)
+- **🧠 Cognitive Brain Guide:** [docs/quickstart/QUICK_START_COGNITIVE_BRAIN.md](docs/quickstart/QUICK_START_COGNITIVE_BRAIN.md)
 - **⚙️ Configuration Guide:** [docs/configuration/](configuration/)
 - **🐳 Docker Guide:** [docker/README.md](../docker/README.md)
 - **☸️ Kubernetes Guide:** [k8s/README.md](../k8s/README.md)

@@ -75,7 +75,7 @@ gh run view <RUN_ID> --log | grep -A 5 "FAILED"
 
 ```bash
 cat .codex/CODEBASE_AGENCY_POLICY.md
-cat docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+cat docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 cat .codex/CRITICAL_REPOSITORY_VARIABLES.md
 cat .codex/BATCH_2_GOVERNANCE_FRAMEWORK.md
 ```
@@ -384,7 +384,7 @@ Final CI Status:
 
 **All violations logged and tracked:**
 ```
-Violation Log: docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+Violation Log: docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 
 Tracked Metrics:
   - Deferral language violations per session

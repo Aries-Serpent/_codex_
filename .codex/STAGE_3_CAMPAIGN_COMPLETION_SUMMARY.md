@@ -30,7 +30,7 @@
 **Duration:** 5 minutes
 
 **Actions Executed:**
-- ✅ Updated AGENT_ACCOUNTABILITY_REPORT.md with Stage 3 session entry
+- ✅ Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with Stage 3 session entry
 - ✅ Updated CHANGELOG.md with production finalization record
 - ✅ Committed both files in single commit (SHA: 2f3187e)
 - ✅ Verified compliance: REQ-4 PASS, REQ-5 PASS, REQ-14 PASS
@@ -247,7 +247,7 @@
 
 ### Accountability Updates (2 files)
 
-1. ✅ `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (updated)
+1. ✅ `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (updated)
 2. ✅ `CHANGELOG.md` (updated)
 
 ### Deployment Artifacts

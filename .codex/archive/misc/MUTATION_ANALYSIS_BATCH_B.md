@@ -472,7 +472,7 @@ assert validate_input([]) == True  # Catches mutant
 - Mutation results: `mutation_analysis_batch_b.json`
 - Mutation log: `mutation_run.log`
 - Configuration: `.mutmut-batch-b.ini`
-- This report: `MUTATION_ANALYSIS_BATCH_B.md`
+- This report: `.codex/archive/misc/MUTATION_ANALYSIS_BATCH_B.md`
 
 ---
 

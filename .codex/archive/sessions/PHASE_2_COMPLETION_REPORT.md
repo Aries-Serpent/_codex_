@@ -203,7 +203,7 @@ Total: 3 files, ~7,650 lines added
 ### Priority: LOW
 3. **Document governance artifact registration** (estimated 15 min)
    - Create runbook for registering new .codex/ files
-   - Add to CONTRIBUTING.md or AGENTS.md
+   - Add to CONTRIBUTING.md or .codex/archive/deprecated/AGENTS.md
 
 ---
 

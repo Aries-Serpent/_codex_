@@ -122,7 +122,7 @@ Improve documentation alignment from 96/100 → 99/100 by gap-filling 30-40 iden
    - Gap-fill summary
    - Resolving commit SHA
    - Link validation results
-3. **Accountability:** Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` with:
+3. **Accountability:** Update `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` with:
    - Track 3A completion entry
    - Commit SHA for documentation updates
    - ETA met/missed status

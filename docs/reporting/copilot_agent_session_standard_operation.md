@@ -75,7 +75,7 @@ Interpretation:
 
 | Artifact | Path Pattern | Purpose | Update Cadence |
 |---|---|---|---|
-| Accountability report | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | Session log of completed work, validation, policy compliance | Every session |
+| Accountability report | `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` | Session log of completed work, validation, policy compliance | Every session |
 | Changelog | `CHANGELOG.md` | Human-readable repository change history | Every session with file edits |
 | PR “what’s next” doc | `docs/roadmap/PR<PR_NUMBER>_whats_next.md` | Active workstream status and immediate next actions | Per PR / per major update |
 | PR session diagram | `docs/roadmap/PR<PR_NUMBER>_session_diagram.mmd` | Visual execution trace for handoff and rapid re-entry | Per PR / major flow change |
@@ -201,7 +201,7 @@ update_cognitive_brain.py living_doc_sync()
   |  queries: session_start event (context), session_end event (summary)
   |  builds: structured delta blocks per target doc
   |
-  +- docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md  <- session summary block
+  +- docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md  <- session summary block
   +- CHANGELOG.md                                         <- [Unreleased] entry
   +- docs/roadmap/PR<id>_whats_next.md                   <- status table update
   +- .codex/aftermath/pda_iterations.jsonl               <- PDA loop feed
@@ -229,7 +229,7 @@ meta = {
     "completed_tasks":     ["Plan A consolidation", "Phase 6 added"],
     "pending_tasks":       ["Plan B token contracts"],
     "pattern_compliance":  {"P25": "pass", "P30": "pass"},
-    "living_docs_updated": ["AGENT_ACCOUNTABILITY_REPORT.md", "CHANGELOG.md"],
+    "living_docs_updated": [".codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md", "CHANGELOG.md"],
 }
 ```
 

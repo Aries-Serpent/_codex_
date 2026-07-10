@@ -262,7 +262,7 @@
 - ✅ All deliverables in .codex/ (NOT /tmp/)
 - ✅ Zero secrets or credentials
 - ✅ All files valid (JSON, YAML, Markdown)
-- ✅ AGENT_ACCOUNTABILITY_REPORT.md updated
+- ✅ .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated
 - ✅ CHANGELOG.md updated
 - ✅ D-tier autonomy: agents have full decision authority
 - ✅ Authority verified: @mbaetiong AUTO-GO CONTINUE

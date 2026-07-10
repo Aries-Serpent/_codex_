@@ -241,7 +241,7 @@ Extract cognitive brain as a portable, locally-deployable runtime with stable AP
 ## 📌 Key Decisions from Phase 0
 
 **Strategic Decision #4: Cognitive engine export API**
-- ✅ APPROVED in INTELLIGENCE_CAMPAIGN_BASELINE.md
+- ✅ APPROVED in .codex/archive/misc/INTELLIGENCE_CAMPAIGN_BASELINE.md
 - Export: OODA, SessionContext, Memory systems (core logic)
 - Exclude: Internal scaffolding, GitHub integrations, webhook ingress
 - API stability: Semantic versioning, no breaking changes

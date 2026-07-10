@@ -91,7 +91,7 @@ All fixes verified:
 11. docs/admin/integration/GITHUB_MCP_INTEGRATION_GUIDE.md
 
 ### Agent System (5 files)
-12. .github/AGENTS.md
+12. .github/.codex/archive/deprecated/AGENTS.md
 13. .github/agents/link-validator-agent.md
 14. agents/README.md
 15. docs/agent/AI_AGENT_WORKFLOW_INTEGRATION.md

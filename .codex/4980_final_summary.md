@@ -56,7 +56,7 @@ Status: PASSED ✅
 
 ### Phase 3: Resolution
 - Applied manual workaround for Pattern 25 circuit breaker
-- Updated AGENT_ACCOUNTABILITY_REPORT.md with session summary
+- Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with session summary
 - Updated CHANGELOG.md with Issue #4980 resolution
 - Added PDA (Plan-Do-Analyse-Review) entry to .codex/aftermath/pda_iterations.jsonl
 
@@ -71,7 +71,7 @@ Status: PASSED ✅
 
 | Requirement | Status | Evidence |
 |-------------|--------|----------|
-| REQ-4: Accountability Report | ✅ Pass | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated |
+| REQ-4: Accountability Report | ✅ Pass | `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` updated |
 | REQ-5: Changelog | ✅ Pass | `CHANGELOG.md` updated with session summary |
 | Issue Resolution | ✅ Pass | 214 manual-review issues → 0 remaining |
 | Diagnostic Validation | ✅ Pass | All patterns passing in final diagnostic |
@@ -91,21 +91,21 @@ Status: PASSED ✅
 
 ### Modified
 - `CHANGELOG.md` (added Issue #4980 resolution entry)
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (added session summary)
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (added session summary)
 - `.codex/aftermath/pda_iterations.jsonl` (added PDA entry)
 
 ---
 
 ## Commits
 
-1. **8f5d280** - docs(accountability): update AGENT_ACCOUNTABILITY_REPORT.md for Issue #4980
+1. **8f5d280** - docs(accountability): update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md for Issue #4980
 2. **cb40ae4** - docs(pda): add entry for Issue #4980 codebase health sweep resolution
 
 ---
 
 ## Root Cause Analysis
 
-**Pattern 25 Circuit Breaker:** The nightly sweep detected that AGENT_ACCOUNTABILITY_REPORT.md hadn't been updated in the last commit, which was required by REQ-4. This triggered a circuit breaker after 3+ cascading retry attempts. Manual workaround was applied by updating the accountability report file, which broke the cascade and resolved the issue.
+**Pattern 25 Circuit Breaker:** The nightly sweep detected that .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md hadn't been updated in the last commit, which was required by REQ-4. This triggered a circuit breaker after 3+ cascading retry attempts. Manual workaround was applied by updating the accountability report file, which broke the cascade and resolved the issue.
 
 ---
 

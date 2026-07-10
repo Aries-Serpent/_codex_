@@ -177,7 +177,7 @@ If you believe the token was leaked (e.g., accidentally committed, exposed in lo
    gh api repos/Aries-Serpent/_codex_/actions/runs \
      --jq '.workflow_runs[:20] | .[] | {id, name, conclusion, created_at}'
    ```
-4. Check `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` for unexpected agent activations
+4. Check `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` for unexpected agent activations
 5. File a GitHub security advisory if repository data was accessed: `https://github.com/Aries-Serpent/_codex_/security/advisories/new`
 
 ---
@@ -224,7 +224,7 @@ gh secret list --repo Aries-Serpent/_codex_ | grep CODEX_MASTER_KEY
 - [`GENESIS_SETUP_GUIDE.md`](./GENESIS_SETUP_GUIDE.md) — Initial repository bootstrap
 - [`REPOSITORY_SECURITY_SETUP.md`](./REPOSITORY_SECURITY_SETUP.md) — Full security configuration
 - [`HUMAN_ACTION_REQUIRED.md`](./HUMAN_ACTION_REQUIRED.md) — Outstanding admin actions
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — Agent session audit trail
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — Agent session audit trail
 
 ---
 

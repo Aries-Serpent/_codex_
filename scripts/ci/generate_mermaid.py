@@ -364,7 +364,7 @@ def gen_agent_nav_tiers(repo_root: Path) -> str:
         "",
         "  subgraph T0[Tier 0 — Entry Points]",
         '    README["README.md<br/>Quick index"]',
-        '    AGENTS["AGENTS.md<br/>Navigation rules"]',
+        '    AGENTS[".codex/archive/deprecated/AGENTS.md<br/>Navigation rules"]',
         '    INDEX[".codex/codex_index.yaml<br/>Machine index"]',
         '    MANIFEST["CODEX_MANIFEST.json<br/>Integrity-signed state"]',
         "  end",
@@ -537,7 +537,7 @@ Agents MUST traverse this repository in layers:
 
 | Tier | Layer | Purpose | Read first |
 |------|-------|---------|-----------|
-| 0 | Entry points | Canonical index + conventions | `README.md`, `AGENTS.md`, `.codex/codex_index.yaml` |
+| 0 | Entry points | Canonical index + conventions | `README.md`, `.codex/archive/deprecated/AGENTS.md`, `.codex/codex_index.yaml` |
 | 1 | Domain maps | Architecture + component topology | `docs/ARCHITECTURE.md`, `docs/system/CODEBASE_COGNITIVE_MAP.md` |
 | 2 | Package maps | Live code structure derived from imports | `generate_mermaid.py --print module_map` |
 | 3 | Module detail | Specific file inspection | Only when Tier 0–2 confirm relevance |

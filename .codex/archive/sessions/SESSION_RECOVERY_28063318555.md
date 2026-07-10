@@ -61,7 +61,7 @@ python scripts/ci/session_recovery.py checkpoint --session-id c44f0d60-4469-461f
 
 #### Action 2.3: Register Session Recovery 🔄
 **Documentation:** This file (SESSION_RECOVERY_28063318555.md)
-**Accountability:** Update to AGENT_ACCOUNTABILITY_REPORT.md (REQ-4 compliance)
+**Accountability:** Update to .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (REQ-4 compliance)
 **Purpose:** Create audit trail for compliance tracking
 
 ### Phase 3: Determining Recovery Path

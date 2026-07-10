@@ -24,7 +24,7 @@
 | Task | Description | Status | Key Deliverable |
 |------|-------------|--------|-----------------|
 | 9.1.1 | Spec out decision framework | ✅ DONE | PHASE_9_1_DECISION_FRAMEWORK.md (19 KB) |
-| 9.1.2 | Audit 145-agent capability corpus | ✅ DONE | PHASE_9_1_CANDIDATE_AGENTS.md (7 KB) |
+| 9.1.2 | Audit 145-agent capability corpus | ✅ DONE | PHASE_9_1_CANDIDATE_.codex/archive/deprecated/AGENTS.md (7 KB) |
 | 9.1.3 | Apply multi-factor confidence scoring | ✅ DONE | phase_9_1_confidence_scorer.py (17 KB, 21 KB) |
 | 9.1.4 | Authorize 9 D_CAPABLE agents | ✅ DONE | PHASE_9_1_AGENT_AUTHORIZATION_SUMMARY.md (18 KB) |
 | 9.1.5 | Implement immutable decision logging | ✅ DONE | phase_9_1_decision_logger.py (21 KB) |
@@ -96,7 +96,7 @@
 ```
 .codex/
 ├── PHASE_9_1_DECISION_FRAMEWORK.md              (19 KB) ✅
-├── PHASE_9_1_CANDIDATE_AGENTS.md                (7 KB)  ✅
+├── PHASE_9_1_CANDIDATE_.codex/archive/deprecated/AGENTS.md                (7 KB)  ✅
 ├── PHASE_9_1_AGENT_AUTHORIZATION_SUMMARY.md     (18 KB) ✅
 └── PHASE_9_1_EXECUTION_REPORT.md                (15 KB) ✅
 

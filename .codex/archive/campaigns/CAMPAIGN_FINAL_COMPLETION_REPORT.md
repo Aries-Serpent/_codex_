@@ -133,7 +133,7 @@ This campaign successfully resolved **2 critical CI failures** and created compr
 
 **Deliverables Created:**
 1. `docs/WORKFLOW_AUDIT_SUMMARY.md` (14 KB)
-2. `WORKFLOW_CLEANUP_IMPLEMENTATION_CHECKLIST.md` (4 KB)
+2. `.codex/archive/implementations/WORKFLOW_CLEANUP_IMPLEMENTATION_CHECKLIST.md` (4 KB)
 3. `docs/WORKFLOW_REMEDIATION_GUIDE.md` (4 KB)
 4. `docs/WORKFLOW_QUICK_REFERENCE.md` (4 KB)
 5. `workflow-audit-report.json` (1.7 MB, machine-readable)
@@ -370,7 +370,7 @@ python -m pytest tests/ -v
 ```
 docs/
 ├── WORKFLOW_AUDIT_SUMMARY.md (14 KB)
-├── WORKFLOW_CLEANUP_IMPLEMENTATION_CHECKLIST.md (4 KB)
+├── .codex/archive/implementations/WORKFLOW_CLEANUP_IMPLEMENTATION_CHECKLIST.md (4 KB)
 ├── WORKFLOW_REMEDIATION_GUIDE.md (4 KB)
 ├── WORKFLOW_QUICK_REFERENCE.md (4 KB)
 ├── cleanup_validation_guide.md (13 KB)

@@ -204,7 +204,7 @@
    - Payload generation
    - Security validation
 
-2. `.codex/WEBHOOK_REGISTRY_INTEGRATION.md` (380 lines)
+2. `.codex/WEBHOOK_REGISTRY_docs/api/reference/INTEGRATION.md` (380 lines)
    - Webhook architecture
    - Payload specification
    - Security implementation
@@ -249,7 +249,7 @@
 | .codex/REGISTRY_VALIDATION_RULES.md | 405 | ✅ | Comprehensive |
 | .codex/REGISTRY_CONNECTIVITY_TEST_GUIDE.md | 425 | ✅ | Comprehensive |
 | .codex/COGNITIVE_REGISTRY_WORKFLOW_GUIDE.md | 505 | ✅ | Comprehensive |
-| .codex/WEBHOOK_REGISTRY_INTEGRATION.md | 380 | ✅ | Comprehensive |
+| .codex/WEBHOOK_REGISTRY_docs/api/reference/INTEGRATION.md | 380 | ✅ | Comprehensive |
 | .codex/TRACK_4_TASK_1_PATTERN_QUERY.md | 180 | ✅ | Execution Report |
 | .codex/TRACK_4_TASK_2_VALIDATION_SCRIPT.md | 190 | ✅ | Execution Report |
 | .codex/TRACK_4_TASK_3_CONNECTIVITY_TESTING.md | 210 | ✅ | Execution Report |
@@ -283,7 +283,7 @@
 | .codex/TRACK_4_TASK_2_VALIDATION_SCRIPT.md | ✅ | Complete |
 | .codex/TRACK_4_TASK_3_CONNECTIVITY_TESTING.md | ✅ | Complete |
 | .codex/TRACK_4_TASK_4_WORKFLOW_IMPLEMENTATION.md | ✅ | Complete |
-| .codex/TRACK_4_TASK_5_WEBHOOK_INTEGRATION.md | ✅ | Complete |
+| .codex/TRACK_4_TASK_5_WEBHOOK_docs/api/reference/INTEGRATION.md | ✅ | Complete |
 
 ---
 
@@ -690,12 +690,12 @@ scripts/webhook/notify_brain.py
 .codex/REGISTRY_VALIDATION_RULES.md
 .codex/REGISTRY_CONNECTIVITY_TEST_GUIDE.md
 .codex/COGNITIVE_REGISTRY_WORKFLOW_GUIDE.md
-.codex/WEBHOOK_REGISTRY_INTEGRATION.md
+.codex/WEBHOOK_REGISTRY_docs/api/reference/INTEGRATION.md
 .codex/TRACK_4_TASK_1_PATTERN_QUERY.md
 .codex/TRACK_4_TASK_2_VALIDATION_SCRIPT.md
 .codex/TRACK_4_TASK_3_CONNECTIVITY_TESTING.md
 .codex/TRACK_4_TASK_4_WORKFLOW_IMPLEMENTATION.md
-.codex/TRACK_4_TASK_5_WEBHOOK_INTEGRATION.md
+.codex/TRACK_4_TASK_5_WEBHOOK_docs/api/reference/INTEGRATION.md
 ```
 
 ### Workflow Deliverables

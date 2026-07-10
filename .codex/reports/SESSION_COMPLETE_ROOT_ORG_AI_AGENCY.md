@@ -205,7 +205,7 @@ See: .codex/prompts/ROOT_ORG_PHASE2_FOLLOWUP_PROMPT.md
 
 **Phase 2 Objectives:**
 - Move docs/analysis/PR_3133_ANALYSIS.md → docs/analysis/
-- Move AGENTS.md → appropriate location (6 refs)
+- Move .codex/archive/deprecated/AGENTS.md → appropriate location (6 refs)
 - Validate all documentation links
 - Update Cognitive Brain status
 
@@ -260,7 +260,7 @@ See: .codex/prompts/ROOT_ORG_PHASE2_FOLLOWUP_PROMPT.md
 5. **Zero-Break Priority:** Safety-first approach prevents issues
 
 ### Issues Discovered
-1. AGENTS.md has 6 refs (not 293 as initially thought)
+1. .codex/archive/deprecated/AGENTS.md has 6 refs (not 293 as initially thought)
 2. Directory duplication needs investigation
 3. Config fragmentation needs consolidation
 4. Pre-existing linting issues found and documented

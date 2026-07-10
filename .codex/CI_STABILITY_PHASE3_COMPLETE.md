@@ -67,7 +67,7 @@ Phase 3 successfully hardened all CI workflows, enforced compliance requirements
 
 **Turns**: 25-32  
 **Requirement**:
-- REQ-4: Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` in every commit
+- REQ-4: Update `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` in every commit
 - REQ-5: Update `CHANGELOG.md` in every commit
 
 ### Compliance Testing
@@ -80,7 +80,7 @@ Phase 3 successfully hardened all CI workflows, enforced compliance requirements
 ### Actions Taken
 
 1. **Updated Accountability Report**:
-   - Added Phase 3 session summary to AGENT_ACCOUNTABILITY_REPORT.md
+   - Added Phase 3 session summary to .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
    - Documented workflow YAML hardening, action upgrades, and findings
 
 2. **Updated CHANGELOG**:
@@ -230,7 +230,7 @@ Pattern N → Check cascade? → No → Execute → Record → Next pattern
 4. **Code Changes**:
    - `scripts/ci/auto_fix_common_issues.py`: CascadeDetector class + integration
    - `.github/workflows/container-scan.yml`: Upgraded codeql-action
-   - `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`: Phase 3 summary
+   - `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`: Phase 3 summary
    - `CHANGELOG.md`: Phase 3 changes documented
 
 ---

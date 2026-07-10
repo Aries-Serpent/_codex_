@@ -372,7 +372,7 @@ completed:
   - .codex/plans/cognitive_brain_short_term_planset.md Plan 5 (this) ✅
   - docs/reporting/copilot_agent_session_standard_operation.md enhanced ✅
   - scripts/aftermath/update_cognitive_brain.py enhanced ✅
-  - docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md updated ✅
+  - docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated ✅
   - CHANGELOG.md updated ✅
 ```
 

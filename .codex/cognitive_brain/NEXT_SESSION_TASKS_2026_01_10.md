@@ -278,7 +278,7 @@ For Next Session (Pending):
 - **Code Review Status:** `.codex/cognitive_brain/CODE_REVIEW_REMEDIATION_2026_01_10.md`
 - **PS-06 Status:** `.codex/cognitive_brain/ps06_enhancement_status.md`
 - **Security Analysis:** `.codex/cognitive_brain/SECURITY_REMEDIATION_2026_01_09.md`
-- **Priority 4 Roadmap:** `.codex/cognitive_brain/FOLLOWUP_P4_INTEGRATION.md`
+- **Priority 4 Roadmap:** `.codex/cognitive_brain/FOLLOWUP_P4_docs/api/reference/INTEGRATION.md`
 
 ---
 

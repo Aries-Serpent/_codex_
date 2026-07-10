@@ -28,7 +28,7 @@ deprecated filenames (`resilient-validation-suite.yml`, `nox-gates.yml`,
 | `auto-approve-workflows.yml` default state | Template has `[ ]` (opt-in); memory records it moved to Always Active `[x]`. Template file at line 110 shows `[ ]` — template is ground truth. | Keep `[ ]` in template; hardened instruction handles sticky state. |
 | Missing from WEC | `labeler.yml` (uses `pull_request_target`) is not in WEC — it auto-runs but never shows in gate | Low risk; labeler is read-only. |
 | `copilot-iterative-self-healing.yml` description | Says "needs approval" in Always Active section — accurate, but WEC hardened note doesn't call this out explicitly | Add a note to WEC hardened instruction. |
-| 6 deprecated coverage agents in AGENTS.md | `coverage-gapfill-agent`, `coverage-maintenance-agent`, `coverage-roadmap-agent`, `test-coverage-agent`, `test-coverage-monitor` still listed individually — deprecated in favour of `unified-coverage-agent` | Remove from template docs (agent files are already stub-size: 700–900 chars). |
+| 6 deprecated coverage agents in .codex/archive/deprecated/AGENTS.md | `coverage-gapfill-agent`, `coverage-maintenance-agent`, `coverage-roadmap-agent`, `test-coverage-agent`, `test-coverage-monitor` still listed individually — deprecated in favour of `unified-coverage-agent` | Remove from template docs (agent files are already stub-size: 700–900 chars). |
 
 **Template version:** `1.5.0` (generated 2026-04-01) — current and consistent.
 

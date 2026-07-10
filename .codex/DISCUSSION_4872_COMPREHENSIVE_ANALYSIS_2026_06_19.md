@@ -141,7 +141,7 @@
    - Failures resolved: 20+ YAML parsing errors
 
 2. ✅ Session Wrapup Compliance Gate
-   - REQ-4/REQ-5: AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md in last commit
+   - REQ-4/REQ-5: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md in last commit
    - Validation: `session_wrapup_autofix.py --check` verified
    - Pre-commit hook: In place for local validation
 
@@ -211,7 +211,7 @@
    - Integration tests: 99% pass rate
 
 4. ⏳ Documentation & Knowledge Consolidation
-   - Architecture docs: AGENTS.md, operational guidelines
+   - Architecture docs: .codex/archive/deprecated/AGENTS.md, operational guidelines
    - API documentation: In progress
    - Deployment runbooks: Being finalized
    - Training materials: Content under development
@@ -415,7 +415,7 @@
 - Root Cause: Python version installation issue, cache inconsistency, or environment variable problem
 
 **Pattern 2: Session Wrapup Compliance Gate (5% of failures)**
-- Issue: REQ-4/REQ-5 enforcement (AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md not in last commit)
+- Issue: REQ-4/REQ-5 enforcement (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md not in last commit)
 - Affected: Pre-merge validation, branch rebase check
 - Impact: PR merge blocking
 - Root Cause: Documentation files not updated in last commit per compliance requirements
@@ -444,7 +444,7 @@
 - **Estimated Resolution:** 1-2 hours
 
 **Action 2: Session Wrapup Compliance Verification** (HIGH — blocks PRs)
-- [ ] Audit recent PRs for AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md updates
+- [ ] Audit recent PRs for .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md updates
 - [ ] Run: `scripts/ci/session_wrapup_autofix.py --check --pr-number <PR>`
 - [ ] Document any failing PRs in compliance gate issue
 - [ ] Add pre-commit hook for local validation
@@ -496,7 +496,7 @@
 - 1,274 Python source files ✅
 - 2,550 test files ✅
 - 145 active agents ✅
-- Architecture documented in AGENTS.md ✅
+- Architecture documented in .codex/archive/deprecated/AGENTS.md ✅
 
 **Remaining:** Module-level documentation details
 

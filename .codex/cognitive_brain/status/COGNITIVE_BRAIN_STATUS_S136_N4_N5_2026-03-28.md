@@ -118,7 +118,7 @@ Added:
 
 ## 🔗 Cross-References
 
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — S136 session summary
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — S136 session summary
 - `.codex/cognitive_brain/objectives_tracker.md` — v1.3.0, P21→0 confirmed
 - `.github/agents/codebase-health-guardian.md` — v2.2, architecture diagram + sweep history
 - `scripts/ci/auto_fix_common_issues.py` — Pattern 21 three-tier regex (S136)

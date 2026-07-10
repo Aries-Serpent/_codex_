@@ -227,7 +227,7 @@ Created:
     Utility script for recovery operations
 
 Modified:
-└── docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+└── docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
     Added recovery entry for compliance
 ```
 

@@ -382,7 +382,7 @@ Timeline of PR #3790 / 0D_base_ simultaneous triggers (UTC):
            ↳ 4 workflows fire; rescue comment spam reaches maximum
 
 12:36  → agent-auth-delegation #2872 fails REQ-4 (auto-merge commit b2f3b75
-           did not touch AGENT_ACCOUNTABILITY_REPORT.md)
+           did not touch .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md)
            ↳ Self-healer commits 5913b4f with [skip ci] — no re-trigger
            ↳ agent-auth-delegation #2873 still fails on next push
 

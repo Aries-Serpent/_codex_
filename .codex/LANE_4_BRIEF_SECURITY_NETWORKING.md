@@ -245,7 +245,7 @@ Enforce strict network isolation by implementing allowlist-only networking polic
 ## 📌 Key Decisions from Phase 0
 
 **Strategic Decision #2: Deny-by-default allowlist policy**
-- ✅ APPROVED in INTELLIGENCE_CAMPAIGN_BASELINE.md
+- ✅ APPROVED in .codex/archive/misc/INTELLIGENCE_CAMPAIGN_BASELINE.md
 - Offline-first: No network by default (localhost only)
 - Explicit allowlist: Add hosts as needed
 - Fail-closed: Any error → deny access

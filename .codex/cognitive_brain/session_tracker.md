@@ -78,7 +78,7 @@ outcome: "committed eb55817 — 28 commits total in PR"
 ```yaml
 completed:
   - "Double-backtick span fix in _INLINE_CODE_SPAN (Deferral Gate run #71)"
-  - "AGENT_ACCOUNTABILITY_REPORT.md updated"
+  - ".codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated"
   - "CHANGELOG.md updated"
 outcome: "committed fa8959e — still failing (outer-single-bt not yet handled)"
 key_learnings:
@@ -243,7 +243,7 @@ key_learnings:
 
 ### Should Complete (P2)
 1. Create session continuity bridge script
-2. Update AGENTS.md with session tracking
+2. Update .codex/archive/deprecated/AGENTS.md with session tracking
 
 ### Could Complete (P3)
 1. Implement pre-commit verification hook

@@ -69,7 +69,7 @@
 1. The stacked-branch conflict set has been resolved and pushed:
    - `.codex/session_context_latest.md`
    - `CHANGELOG.md`
-   - `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+   - `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
    - `tests/agents/test_phase2_deep_coverage_batch11.py`
 2. The unresolved line-550 review feedback is now addressed by replacing the no-op acquisition with a consumed value and explicit assertions in `test_connection_pooling`.
 3. Base-branch updates required for the stacked PR are now present on this branch:

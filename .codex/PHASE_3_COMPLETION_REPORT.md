@@ -419,7 +419,7 @@ Overall: CONDITIONAL GO with critical caveats
 - ✅ Test execution logs (in `/tmp/`)
 
 ### Updated Documentation
-- ✅ `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — Session context
+- ✅ `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — Session context
 
 ---
 

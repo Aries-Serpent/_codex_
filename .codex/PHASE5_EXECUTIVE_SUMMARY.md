@@ -189,7 +189,7 @@ The Phase 5 Security Remediation Campaign executed a comprehensive, multi-track 
 - ✅ Production readiness checklist (PRODUCTION_READINESS_CHECKLIST.md)
 - ✅ Executive summary (this document)
 - ✅ Audit trail document (PHASE5_AUDIT_TRAIL.md)
-- ✅ Updated accountability report (docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md)
+- ✅ Updated accountability report (docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md)
 - ✅ Consolidated README with comprehensive table of contents (.codex/README.md)
 
 ### Sign-Off Chain

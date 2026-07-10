@@ -89,7 +89,7 @@ before making any file changes:**
 
 3. **Load all required documents:**
    - `.codex/CODEBASE_AGENCY_POLICY.md` (this file)
-   - `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+   - `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
    - All stored session memories
 
 4. **Inspect PR for merge conflicts (HARD RULE):**
@@ -225,7 +225,7 @@ The moment you produce such a phrase — in any comment, commit message, PR
 body, or agent output — you MUST IMMEDIATELY:
 
 1. 🔃 **LOAD** `.codex/CODEBASE_AGENCY_POLICY.md` (this file, in full)
-2. 🔃 **LOAD** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+2. 🔃 **LOAD** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 3. 🔃 **LOAD** all stored session memories
 4. **FIX** the issue NOW — origin (branch / agent / PR / session) is irrelevant
 
@@ -975,7 +975,7 @@ This rule is enforced at three layers:
 1. **Policy (this document):** Mandatory for all agents.
 2. **workflow (`copilot-agent-checkin.yml`):** Checks for `<!-- session-completion-attestation -->`
    in the last agent comment on every push.  Missing attestation → INCOMPLETE_SESSION retrigger.
-3. **Accountability (`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`):** Violations
+3. **Accountability (`docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`):** Violations
    recorded; trigger a mandatory correction session.  The deferral language gate
    (`.github/workflows/deferral-language-gate.yml`) also scans for bypass phrases.
 
@@ -1121,7 +1121,7 @@ These workflows enforce the AI Codebase Agency Policy by:
 
 **References:**
 - Implementation: `.codex/PR3178_COMMENT_3873375083.txt`
-- Documentation: `AGENTS.md` → CI/CD Automation Tools section
+- Documentation: `.codex/archive/deprecated/AGENTS.md` → CI/CD Automation Tools section
 - System Docs: `.codex/docs/CI_AUTO_FIX_SYSTEM.md`
 
 ---
@@ -1471,7 +1471,7 @@ The repository maintains **145 active Custom Agents** spanning eight architectur
 
 2. Load policy state
    → Re-read .codex/CODEBASE_AGENCY_POLICY.md
-   → Re-read docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+   → Re-read docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
    → Check last 5 lines of .codex/aftermath/pda_iterations.jsonl
 
 3. Resolve applicable agents
@@ -1480,7 +1480,7 @@ The repository maintains **145 active Custom Agents** spanning eight architectur
    → Prefer agents with maturity: production
 
 4. Confirm no deferral intent
-   → Scan planned response for any phrase from AGENTS.md "Deferral Language Trigger Protocol"
+   → Scan planned response for any phrase from .codex/archive/deprecated/AGENTS.md "Deferral Language Trigger Protocol"
    → If found: STOP — remove phrase — fix the issue now
 ```
 
@@ -1526,7 +1526,7 @@ All Copilot planning sessions MUST execute the Four-Phase workflow defined in `.
 ### Enforcement
 
 - **deferral-language-gate.yml**: The deferral gate CI workflow scans for deferral trigger phrases (origin/scope/future deferrals, PR comments) **and agent-bypass statements** (CAD Rule 1 violations). agent-bypass patterns (e.g., "without using an agent", "manually instead of", "no agent needed") are included in `DEFERRAL_TRIGGERS` in `scripts/ci/check_deferral_language.py`.
-- **Pre-merge validation**: `session_wrapup_autofix.py` REQ-14 check validates that `AGENT_ACCOUNTABILITY_REPORT.md` records at least one valid registered Custom agent identifier per session (placeholder values such as `unknown-agent` are rejected).
+- **Pre-merge validation**: `session_wrapup_autofix.py` REQ-14 check validates that `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` records at least one valid registered Custom agent identifier per session (placeholder values such as `unknown-agent` are rejected).
 - **PR body WEC**: All PR descriptions must include an "Agents Used" section listing every `agent_type` invoked; placeholder entries are rejected by the pre-merge validation gate.
 
 **Violations of the CAD-Mandate must be corrected immediately before any commit is pushed.**

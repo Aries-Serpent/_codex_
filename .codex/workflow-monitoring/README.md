@@ -384,7 +384,7 @@ ls -ltr .codex/workflow-monitoring/reports/status-report-*.md | tail -1
 - [GitHub Actions API Docs](https://docs.github.com/en/rest/actions)
 - [PR #5264](https://github.com/Aries-Serpent/_codex_/pull/5264)
 - [Artifact Monitor Agent](../../docs/ARTIFACT_MONITOR_AGENT.md)
-- [Specialized Agents](../../docs/AGENTS.md)
+- [Specialized Agents](../../docs/.codex/archive/deprecated/AGENTS.md)
 
 ---
 

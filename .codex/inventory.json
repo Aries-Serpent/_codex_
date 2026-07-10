@@ -30,7 +30,7 @@
       "timestamp": "2026-01-21T03:50:18.820194"
     },
     {
-      "name": "AGENTS.md",
+      "name": ".codex/archive/deprecated/AGENTS.md",
       "type": "file",
       "classification": "relocatable",
       "target_location": ".github/agents/docs/",
@@ -38,7 +38,7 @@
       "timestamp": "2026-01-21T03:50:18.825194"
     },
     {
-      "name": "AGENTS.md.original",
+      "name": ".codex/archive/deprecated/AGENTS.md.original",
       "type": "file",
       "classification": "relocatable",
       "target_location": ".github/agents/docs/",
@@ -94,7 +94,7 @@
       "timestamp": "2026-01-21T03:50:18.826194"
     },
     {
-      "name": "CHANGELOG_AGENTS.md",
+      "name": "CHANGELOG_.codex/archive/deprecated/AGENTS.md",
       "type": "file",
       "classification": "relocatable",
       "target_location": ".github/agents/docs/",

@@ -51,7 +51,7 @@
 - [ ] **Task 3.3:** Run mypy
 - [ ] **Task 3.4:** Update failure analysis docs
 - [ ] **Task 3.5:** Create fix manifest
-- [ ] **Task 3.6:** Update AGENTS.md
+- [ ] **Task 3.6:** Update .codex/archive/deprecated/AGENTS.md
 - [ ] **Task 3.7:** Verify constraints
 
 ---
@@ -293,7 +293,7 @@ Using quantum-inspired analysis:
 
 **Time:** 15 minutes
 
-### Task 3.6: Update AGENTS.md
+### Task 3.6: Update .codex/archive/deprecated/AGENTS.md
 
 **Steps:**
 1. Check if new conventions established
@@ -341,7 +341,7 @@ Using quantum-inspired analysis:
 
 **Iteration 5: Policy Compliance**
 - CODEBASE_AGENCY_POLICY.md followed
-- AGENTS.md constraints respected
+- .codex/archive/deprecated/AGENTS.md constraints respected
 - All issues addressed (pre-existing + new)
 - Codebase improved (net positive)
 

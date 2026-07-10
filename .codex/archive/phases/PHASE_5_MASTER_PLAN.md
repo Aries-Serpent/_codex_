@@ -261,7 +261,7 @@ All three work streams delegated to specialized custom agents with clear briefs 
 - ✅ All agents report clean results
 - ✅ Phase 5 completion report created
 - ✅ Ready for Phase 6 transition
-- ✅ **REQ-4/REQ-5 compliance:** AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md updated
+- ✅ **REQ-4/REQ-5 compliance:** .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md updated
 
 ---
 

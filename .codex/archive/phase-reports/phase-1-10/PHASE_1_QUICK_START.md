@@ -71,7 +71,7 @@
 - **Backlog (Future):** Nice-to-have improvements
 
 ### Step 5: Update Accountability (15 min)
-**Add to `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`:**
+**Add to `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`:**
 - Date: 2026-07-02
 - Session: Multi-Agent Audit Campaign Phase 1
 - Agents delegated: 6 security agents

@@ -216,7 +216,7 @@ The `task` tool launches one of several specialized agents defined in
 | `research` | claude-sonnet-4.6 | GitHub search + web; exhaustive research answers |
 | `code-review` | claude-sonnet-4.5 | High-signal-to-noise code review; never modifies files |
 
-Plus all **custom agents** defined in `.github/agents/` (54 in this repo — see `AGENTS.md`).
+Plus all **custom agents** defined in `.github/agents/` (54 in this repo — see `.codex/archive/deprecated/AGENTS.md`).
 
 #### Web
 

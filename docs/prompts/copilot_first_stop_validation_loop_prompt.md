@@ -23,7 +23,7 @@ Operating contract:
    - fix applied
    - current validation status
    - next immediate actions
-10. Update `CHANGELOG.md` and `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` in the same rescue cycle.
+10. Update `CHANGELOG.md` and `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` in the same rescue cycle.
 11. Re-run:
     - python3 -m pytest -x
     and continue the loop until:

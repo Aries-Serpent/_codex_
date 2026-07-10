@@ -543,7 +543,7 @@ For Phase 6.2, update each agent prompt with:
 
 - [ ] **Documentation Links**
   - [ ] TOKEN_HIERARCHY_GUIDE.md
-  - [ ] SCRIPT_TOKEN_INTEGRATION.md
+  - [ ] SCRIPT_TOKEN_docs/api/reference/INTEGRATION.md
   - [ ] CI_CD_TOKEN_TROUBLESHOOTING.md
 
 ---
@@ -551,7 +551,7 @@ For Phase 6.2, update each agent prompt with:
 ## 🔗 Related Documentation
 
 - **TOKEN_HIERARCHY_GUIDE.md** - Token selection overview
-- **SCRIPT_TOKEN_INTEGRATION.md** - Token integration patterns
+- **SCRIPT_TOKEN_docs/api/reference/INTEGRATION.md** - Token integration patterns
 - **CI_CD_TOKEN_TROUBLESHOOTING.md** - Error handling and debugging
 
 ---

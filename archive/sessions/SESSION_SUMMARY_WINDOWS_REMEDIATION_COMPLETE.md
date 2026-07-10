@@ -45,7 +45,7 @@ Successfully resolved critical Windows CI/CD failure by implementing comprehensi
 ### Configuration Updates (3 files)
 12. **`.pre-commit-config.yaml`** - Added Windows filename check hook
 13. **`.github/workflows/rust_swarm_ci.yml`** - Fixed invalid action version (`v7.0.0` → `v4`)
-14. **`AGENTS.md`** - Added cross-platform guidelines section
+14. **`.codex/archive/deprecated/AGENTS.md`** - Added cross-platform guidelines section
 
 ### Documentation (4 files)
 15. **`docs/validation/Windows_Filename_Remediation.md`** - Complete migration guide
@@ -87,7 +87,7 @@ Successfully resolved critical Windows CI/CD failure by implementing comprehensi
 - Hook tested and validated
 
 ### Phase 6: Documentation ✅
-- Updated AGENTS.md with guidelines
+- Updated .codex/archive/deprecated/AGENTS.md with guidelines
 - Created comprehensive migration guide
 - Documented all formats and patterns
 

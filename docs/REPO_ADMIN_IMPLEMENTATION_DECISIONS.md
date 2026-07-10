@@ -1174,7 +1174,7 @@ Please provide feedback in #code-quality Slack channel
 
 Multiple locations in use:
 ```python
-# Default from AGENTS.md conventions
+# Default from .codex/archive/deprecated/AGENTS.md conventions
 CODEX_LOG_DB_PATH = ".codex/session_logs.db"
 CODEX_DB_PATH = ".codex/session_logs.db"
 
@@ -2023,7 +2023,7 @@ codex-report --format html --output report.html --open
 
 ### Additional Reading
 
-- **AGENTS.md** - Repository operations playbook
+- **.codex/archive/deprecated/AGENTS.md** - Repository operations playbook
 - **docs/ADMIN_IMPLEMENTATION_GUIDE.md** - Admin setup guide
 - **docs/ADMIN_FAQ.md** - Frequently asked questions
 

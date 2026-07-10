@@ -93,7 +93,7 @@ window. After 2026-04-04:
 [ ] Run: pytest for any modified Python modules
 [ ] Wait: all in-progress CI jobs complete; read their logs
 [ ] Call: code_review + codeql_checker before final commit
-[ ] Update: docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md (REQ-4)
+[ ] Update: docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (REQ-4)
 [ ] Update: CHANGELOG.md (REQ-5)
 [ ] Create: COGNITIVE_BRAIN_STATUS_PR{PR}.md
 [ ] Create: FOLLOWUP_PROMPT_PR{PR+1}.md

@@ -26,7 +26,7 @@ I have successfully implemented a **Batch CI Failure Triage System** that addres
 
 5. **Documentation** - Complete README with examples and architecture
 
-6. **Self-Review** - Comprehensive analysis in `.codex/SELF_REVIEW_BATCH_TRIAGE_INTEGRATION.md`
+6. **Self-Review** - Comprehensive analysis in `.codex/SELF_REVIEW_BATCH_TRIAGE_docs/api/reference/INTEGRATION.md`
 
 ### 📊 Current Status
 - **Implementation:** ✅ COMPLETE
@@ -245,7 +245,7 @@ After Phase 1 is complete and validated:
 - Add performance benchmarks
 
 **Documentation Requirements:**
-- Update `.codex/SELF_REVIEW_BATCH_TRIAGE_INTEGRATION.md` with outcomes
+- Update `.codex/SELF_REVIEW_BATCH_TRIAGE_docs/api/reference/INTEGRATION.md` with outcomes
 - Create `.github/agents/batch-triage-agent/README.md`
 - Add architecture diagrams (Mermaid) to documentation
 - Update `COGNITIVE_BRAIN_ARCHITECTURE_PHASE_11.md` with new capabilities
@@ -253,7 +253,7 @@ After Phase 1 is complete and validated:
 ### Execution Guidelines
 
 1. **Start with Self-Review:**
-   - Read `.codex/SELF_REVIEW_BATCH_TRIAGE_INTEGRATION.md` thoroughly
+   - Read `.codex/SELF_REVIEW_BATCH_TRIAGE_docs/api/reference/INTEGRATION.md` thoroughly
    - Understand existing implementation in `scripts/ci/batch_triage.py`
    - Review cognitive brain architecture in `COGNITIVE_BRAIN_ARCHITECTURE_PHASE_11.md`
 
@@ -292,7 +292,7 @@ After Phase 1 is complete and validated:
 ### Resources & References
 
 **Key Files to Review:**
-- `.codex/SELF_REVIEW_BATCH_TRIAGE_INTEGRATION.md` - This session's self-review
+- `.codex/SELF_REVIEW_BATCH_TRIAGE_docs/api/reference/INTEGRATION.md` - This session's self-review
 - `scripts/ci/batch_triage.py` - Current implementation
 - `COGNITIVE_BRAIN_ARCHITECTURE_PHASE_11.md` - Architecture reference
 - `.github/agents/ci-testing-agent/` - Example agent structure
@@ -300,7 +300,7 @@ After Phase 1 is complete and validated:
 - `scripts/cognitive/cognitive_brain_core.py` - Cognitive brain core
 
 **Diagrams:**
-- See Section II of `.codex/SELF_REVIEW_BATCH_TRIAGE_INTEGRATION.md` for target architecture
+- See Section II of `.codex/SELF_REVIEW_BATCH_TRIAGE_docs/api/reference/INTEGRATION.md` for target architecture
 - `COGNITIVE_BRAIN_ARCHITECTURE_PHASE_11.md` has PDA Loop diagrams
 
 ### Deliverables
@@ -337,6 +337,6 @@ Good luck! The codebase is ready, the foundation is solid, and the path is clear
 - Status: Ready for Phase 1 implementation
 
 **Contact for Questions:**
-- Review: `.codex/SELF_REVIEW_BATCH_TRIAGE_INTEGRATION.md`
+- Review: `.codex/SELF_REVIEW_BATCH_TRIAGE_docs/api/reference/INTEGRATION.md`
 - Architecture: `COGNITIVE_BRAIN_ARCHITECTURE_PHASE_11.md`
 - Patterns: `agents/self_healing.py`

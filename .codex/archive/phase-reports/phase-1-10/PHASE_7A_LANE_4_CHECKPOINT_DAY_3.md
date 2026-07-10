@@ -168,7 +168,7 @@ All checked dependencies are actively maintained and receive security updates:
 - 🔄 Automatic Dependabot monitoring enabled
 - 🔔 Security alert notifications configured
 - 🔐 Patch application gate in CI/CD
-- 📋 Update tracking in DEPENDENCY_CONSTRAINTS.md
+- 📋 Update tracking in .codex/archive/misc/DEPENDENCY_CONSTRAINTS.md
 
 ---
 

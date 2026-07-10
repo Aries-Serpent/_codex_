@@ -396,7 +396,7 @@ store_memory(
 - **Tech Debt Registry**: `.codex/TECH_DEBT_REGISTRY.md`
 - **Cognitive Brain Status**: `.codex/cognitive_brain/status/`
 - **Production Readiness Map**: `.codex/PRODUCTION_READINESS_CONSOLIDATION_MAP.md`
-- **Agent Roster**: `AGENTS.md` (54 agents)
+- **Agent Roster**: `.codex/archive/deprecated/AGENTS.md` (54 agents)
 - **CI Auto-Fix System**: `.codex/docs/CI_AUTO_FIX_SYSTEM.md`
 - **Codebase Agency Policy**: `.codex/CODEBASE_AGENCY_POLICY.md`
 

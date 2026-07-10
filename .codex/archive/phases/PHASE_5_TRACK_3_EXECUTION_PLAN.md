@@ -363,7 +363,7 @@ time pytest tests/ -q  # Should be <5% slower than baseline
    - Key learnings and patterns
    - Recommendations for test authors
 
-2. **Update AGENT_ACCOUNTABILITY_REPORT.md**
+2. **Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md**
    - Record completion of Phase 5 Track 3
    - Add stabilization work to agent portfolio
 

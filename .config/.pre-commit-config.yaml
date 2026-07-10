@@ -444,7 +444,7 @@ repos:
         pass_filenames: false
 
       # Ensures CODEX_MANIFEST.json integrity_sha256, .secrets.baseline,
-      # CHANGELOG.md, and AGENT_ACCOUNTABILITY_REPORT.md are always consistent
+      # CHANGELOG.md, and .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md are always consistent
       # at commit time.  Auto-repairs with --fix if any inconsistency is found.
       # This eliminates the recurring "agent forgot to update .secrets.baseline"
       # failure pattern (P-B / P-E cascade in CI Failure Pattern Analysis S194).

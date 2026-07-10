@@ -282,7 +282,7 @@ All reports stored in `.codex/` (repository-tracked, NOT /tmp):
 - `.codex/PHASE_5_DAY_2_REPORT.md` (if Phase 5 continues into Day 2)
 
 **Accountability:**
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (updated after each standup)
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (updated after each standup)
 
 **Coordination:**
 - `.codex/DAY_2_COORDINATION_LOG.md` (3-hour checkpoint summary)

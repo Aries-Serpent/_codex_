@@ -483,7 +483,7 @@ This section will be populated as we progress through the deployment:
 - 📖 `.github/workflows/CONSOLIDATION_GUIDE.md` - Consolidation strategy
 - 📖 `.github/workflows/DEPRECATION_PLAN.md` - Deprecation timeline
 - 📖 `.github/workflows/OPTIMIZATION_SUMMARY.md` - Performance analysis
-- 📖 `docs/agent/AI_AGENT_WORKFLOW_INTEGRATION.md` - Agent integration
+- 📖 `docs/agent/AI_AGENT_WORKFLOW_docs/api/reference/INTEGRATION.md` - Agent integration
 
 ---
 

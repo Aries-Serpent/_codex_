@@ -52,7 +52,7 @@ The archival operation was logged in `.codex/evidence/archive_ops.jsonl`:
 
 ## Policy Reference
 
-Per repository archiving policy (docs/agents.md, docs/guides/AGENTS.md):
+Per repository archiving policy (docs/agents.md, docs/guides/.codex/archive/deprecated/AGENTS.md):
 - **Prohibited**: Creating or activating GitHub Actions workflows
 - **Required**: Automation artifacts must be confined to `.codex/` directory
 - **Archival Process**: Files must be properly archived before deletion

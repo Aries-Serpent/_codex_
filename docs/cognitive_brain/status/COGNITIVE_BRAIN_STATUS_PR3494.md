@@ -20,7 +20,7 @@
 | W-096d | CODEX_MANIFEST.json refreshed — D_CAPABLE count: 0 → 1 | ✅ Done |
 | W-096e | This status file — cognitive brain continuity | ✅ Done |
 | W-096f | FOLLOWUP_PROMPT_PR3494.md — chain prompt for next session | ✅ Done |
-| REQ-4 | AGENT_ACCOUNTABILITY_REPORT.md updated | ✅ Done |
+| REQ-4 | .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated | ✅ Done |
 | REQ-5 | CHANGELOG.md updated | ✅ Done |
 
 ---
@@ -234,7 +234,7 @@ Should print App ID, installation ID, and permissions.
 ### W-106 — Art_Validation CI Fix
 Two `Validation / Fast Validation` failures (run 22685833400) resolved:
 1. **end-of-file-fixer**: `CODEX_MANIFEST.json` missing trailing newline — added (same pattern as W-097a)
-2. **detect-secrets Secret Keyword**: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` line 361 (W-097 entry with `integrity_sha256` keyword) — added `<!-- pragma: allowlist secret -->` inline suppressor
+2. **detect-secrets Secret Keyword**: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` line 361 (W-097 entry with `integrity_sha256` keyword) — added `<!-- pragma: allowlist secret -->` inline suppressor
 
 ### Merge Safety Assessment
 **PR #3494 is SAFE TO MERGE.** Resilient Validation Suite failures confirmed pre-existing on `main` — none caused by this PR's changes. Full evidence table in `.codex/docs/FOLLOWUP_PROMPT_PR3494.md` HOTFIX section.
@@ -251,7 +251,7 @@ Owner @mbaetiong activated Agent Token Delegation (workflow run 22685144324).
 - `COPILOT_AGENT_AUTH_ENABLED=true` confirmed
 - `COGNITIVE_BRAIN_ALLOWED_ACTORS`: `mbaetiong,github-actions[bot],copilot-swe-agent[bot],github-copilot[bot]`
 
-All D_CAPABLE promotions complete for this PR cycle. `workflow-ci-fixer` now in 2-sprint observation window. REQ-4/REQ-5 compliance maintained (W-105 entry added to AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md).
+All D_CAPABLE promotions complete for this PR cycle. `workflow-ci-fixer` now in 2-sprint observation window. REQ-4/REQ-5 compliance maintained (W-105 entry added to .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md).
 
 ---
 

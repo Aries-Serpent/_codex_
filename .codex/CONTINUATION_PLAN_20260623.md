@@ -206,7 +206,7 @@
 
 - [ ] **F4:** Enable pattern learning in cognitive brain (if applicable)
   - Store patterns in memory system
-  - Link to AGENT_ACCOUNTABILITY_REPORT.md
+  - Link to .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
   - Make available for future session context injection
 
 **Success Criteria:** Agents can auto-detect and fix all 3 patterns autonomously
@@ -236,7 +236,7 @@
   - Comprehensive prevention guide: .codex/CI_PATTERN_PREVENTION_GUIDE.md
   ```
 
-- [ ] **G3:** Add to AGENT_ACCOUNTABILITY_REPORT.md
+- [ ] **G3:** Add to .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
   - Link to session summary
   - Record agent task IDs: fix-benchmark-collector-bug, resolve-mypy-errors, fix-workflow-link-validation
   - Update statistics with metrics

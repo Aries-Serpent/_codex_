@@ -294,7 +294,7 @@ This campaign integrates the **exhaustive implementation plan** from Discussion 
 2. ✅ **Version Control All Artifacts** - Every output in `.codex/` (PR-tracked, not `/tmp/`)
 3. ✅ **Explicit Progress Tracking** - engine-tools-report_progress after each phase block
 4. ✅ **Checkpoint Documentation** - Daily standups in `.codex/` checkpoint files
-5. ✅ **Accountability Compliance** - REQ-4 (AGENT_ACCOUNTABILITY_REPORT.md) + REQ-5 (CHANGELOG.md) updated per track
+5. ✅ **Accountability Compliance** - REQ-4 (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md) + REQ-5 (CHANGELOG.md) updated per track
 6. ✅ **Session Hardening Protocol** - Custom agent delegation mandate; coordination only for direct work
 7. ✅ **Production Readiness Gates** - 32/32 governance gates must PASS before v0.1.0-final deployment
 
@@ -303,7 +303,7 @@ This campaign integrates the **exhaustive implementation plan** from Discussion 
 ## AUTHORITY & COMPLIANCE
 
 - **Authority:** @mbaetiong (D-level autonomy, COPILOT_AGENT_AUTH_ENABLED=true)
-- **REQ-4 Compliance:** AGENT_ACCOUNTABILITY_REPORT.md entry prepared (Phase X session type=Crisis Response, 15 agents)
+- **REQ-4 Compliance:** .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md entry prepared (Phase X session type=Crisis Response, 15 agents)
 - **REQ-5 Compliance:** CHANGELOG.md entry prepared (Phase X launch with Track α-ε initialization)
 - **All Artifacts:** Version-controlled in `.codex/` (not `/tmp/`), tracked in PR, committed per phase
 

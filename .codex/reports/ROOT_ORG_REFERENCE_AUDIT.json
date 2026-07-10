@@ -12,31 +12,31 @@
   ],
   "files_to_relocate": [
     {
-      "filename": ".copilot-review-exclusions.md",
+      "filename": ".codex/archive/misc/.copilot-review-exclusions.md",
       "category": "MISC",
       "target": ".codex/archive/misc/",
       "risk_level": "MEDIUM"
     },
     {
-      "filename": "AGENTS.md",
+      "filename": ".codex/archive/deprecated/AGENTS.md",
       "category": "ARCHIVED",
       "target": ".codex/archive/deprecated/",
       "risk_level": "MEDIUM"
     },
     {
-      "filename": "AGENT_ACCOUNTABILITY_REPORT.md",
+      "filename": ".codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md",
       "category": "REPORT",
       "target": ".codex/archive/reports/",
       "risk_level": "MEDIUM"
     },
     {
-      "filename": "CAMPAIGN_EXECUTION_COMPLETE.md",
+      "filename": ".codex/archive/misc/CAMPAIGN_EXECUTION_COMPLETE.md",
       "category": "MISC",
       "target": ".codex/archive/misc/",
       "risk_level": "MEDIUM"
     },
     {
-      "filename": "CLAUDE.md",
+      "filename": ".codex/archive/deprecated/CLAUDE.md",
       "category": "ARCHIVED",
       "target": ".codex/archive/deprecated/",
       "risk_level": "MEDIUM"
@@ -48,7 +48,7 @@
       "risk_level": "LOW"
     },
     {
-      "filename": "COVERAGE_GAP_FILL_REPORT.md",
+      "filename": ".codex/archive/reports/COVERAGE_GAP_FILL_REPORT.md",
       "category": "REPORT",
       "target": ".codex/archive/reports/",
       "risk_level": "MEDIUM"
@@ -60,91 +60,91 @@
       "risk_level": "LOW"
     },
     {
-      "filename": "CROSS_PLATFORM_FILENAME_ASSESSMENT_REPORT.md",
+      "filename": ".codex/archive/reports/CROSS_PLATFORM_FILENAME_ASSESSMENT_REPORT.md",
       "category": "REPORT",
       "target": ".codex/archive/reports/",
       "risk_level": "MEDIUM"
     },
     {
-      "filename": "DEPENDENCY_CONSTRAINTS.md",
+      "filename": ".codex/archive/misc/DEPENDENCY_CONSTRAINTS.md",
       "category": "MISC",
       "target": ".codex/archive/misc/",
       "risk_level": "MEDIUM"
     },
     {
-      "filename": "DEPENDENCY_COUPLING_MATRIX.md",
+      "filename": ".codex/archive/misc/DEPENDENCY_COUPLING_MATRIX.md",
       "category": "MISC",
       "target": ".codex/archive/misc/",
       "risk_level": "MEDIUM"
     },
     {
-      "filename": "ENERGY_CONVERSION_AGENT_DEPRECATION.md",
+      "filename": ".codex/archive/deprecated/ENERGY_CONVERSION_AGENT_DEPRECATION.md",
       "category": "DEPRECATED",
       "target": ".codex/archive/deprecated/",
       "risk_level": "MEDIUM"
     },
     {
-      "filename": "GEMINI.md",
+      "filename": ".codex/archive/deprecated/GEMINI.md",
       "category": "ARCHIVED",
       "target": ".codex/archive/deprecated/",
       "risk_level": "MEDIUM"
     },
     {
-      "filename": "GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md",
+      "filename": ".codex/archive/deprecated/GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md",
       "category": "DEPRECATED",
       "target": ".codex/archive/deprecated/",
       "risk_level": "MEDIUM"
     },
     {
-      "filename": "INSTALL.md",
+      "filename": ".codex/archive/misc/INSTALL.md",
       "category": "MISC",
       "target": ".codex/archive/misc/",
       "risk_level": "MEDIUM"
     },
     {
-      "filename": "INSTALL_TEST_REPORT_0.1.0.md",
+      "filename": ".codex/archive/reports/INSTALL_TEST_REPORT_0.1.0.md",
       "category": "REPORT",
       "target": ".codex/archive/reports/",
       "risk_level": "MEDIUM"
     },
     {
-      "filename": "INTEGRATION.md",
+      "filename": "docs/api/reference/INTEGRATION.md",
       "category": "API_DOC",
       "target": "docs/api/reference/",
       "risk_level": "HIGH"
     },
     {
-      "filename": "INTELLIGENCE_CAMPAIGN_BASELINE.md",
+      "filename": ".codex/archive/misc/INTELLIGENCE_CAMPAIGN_BASELINE.md",
       "category": "MISC",
       "target": ".codex/archive/misc/",
       "risk_level": "MEDIUM"
     },
     {
-      "filename": "ISOLATED_DEPLOYMENT.md",
+      "filename": "docs/release/ISOLATED_DEPLOYMENT.md",
       "category": "DEPLOYMENT",
       "target": "docs/release/",
       "risk_level": "MEDIUM"
     },
     {
-      "filename": "MASTER_REMEDIATION_PLAN.md",
+      "filename": ".codex/archive/misc/MASTER_REMEDIATION_PLAN.md",
       "category": "MISC",
       "target": ".codex/archive/misc/",
       "risk_level": "MEDIUM"
     },
     {
-      "filename": "MUTATION_ANALYSIS_BATCH_B.md",
+      "filename": ".codex/archive/misc/MUTATION_ANALYSIS_BATCH_B.md",
       "category": "MISC",
       "target": ".codex/archive/misc/",
       "risk_level": "MEDIUM"
     },
     {
-      "filename": "OFFLINE_DEPLOYMENT.md",
+      "filename": "docs/release/OFFLINE_DEPLOYMENT.md",
       "category": "DEPLOYMENT",
       "target": "docs/release/",
       "risk_level": "MEDIUM"
     },
     {
-      "filename": "PHASE12_WS3_AGENT9_JSON_SERIALIZATION_REPORT.md",
+      "filename": ".codex/archive/reports/PHASE12_WS3_AGENT9_JSON_SERIALIZATION_REPORT.md",
       "category": "REPORT",
       "target": ".codex/archive/reports/",
       "risk_level": "MEDIUM"
@@ -408,49 +408,49 @@
       "risk_level": "LOW"
     },
     {
-      "filename": "QUANTUM_COMPLIANCE_TUNING_AGENT_INTEGRATION_GUIDE.md",
+      "filename": "docs/api/reference/QUANTUM_COMPLIANCE_TUNING_AGENT_INTEGRATION_GUIDE.md",
       "category": "API_DOC",
       "target": "docs/api/reference/",
       "risk_level": "HIGH"
     },
     {
-      "filename": "QUICKSTART_BY_PROFILE.md",
+      "filename": "docs/quickstart/QUICKSTART_BY_PROFILE.md",
       "category": "QUICKSTART",
       "target": "docs/quickstart/",
       "risk_level": "HIGH"
     },
     {
-      "filename": "QUICK_START_COGNITIVE_BRAIN.md",
+      "filename": "docs/quickstart/QUICK_START_COGNITIVE_BRAIN.md",
       "category": "QUICKSTART",
       "target": "docs/quickstart/",
       "risk_level": "HIGH"
     },
     {
-      "filename": "QUICK_START_ML.md",
+      "filename": "docs/quickstart/QUICK_START_ML.md",
       "category": "QUICKSTART",
       "target": "docs/quickstart/",
       "risk_level": "HIGH"
     },
     {
-      "filename": "RELEASE_NOTES.md",
+      "filename": "docs/release/RELEASE_NOTES.md",
       "category": "DEPLOYMENT",
       "target": "docs/release/",
       "risk_level": "MEDIUM"
     },
     {
-      "filename": "SEMGREP_PARSE_ERROR_RESOLUTION.md",
+      "filename": ".codex/archive/misc/SEMGREP_PARSE_ERROR_RESOLUTION.md",
       "category": "MISC",
       "target": ".codex/archive/misc/",
       "risk_level": "MEDIUM"
     },
     {
-      "filename": "TIER2_TESTING_LANE_BATCH_D_COMPLETION_REPORT.md",
+      "filename": ".codex/archive/reports/TIER2_TESTING_LANE_BATCH_D_COMPLETION_REPORT.md",
       "category": "REPORT",
       "target": ".codex/archive/reports/",
       "risk_level": "MEDIUM"
     },
     {
-      "filename": "TIER2_TESTING_LANE_BATCH_D_FAILURE_PATTERN_LIBRARY.md",
+      "filename": ".codex/archive/misc/TIER2_TESTING_LANE_BATCH_D_FAILURE_PATTERN_LIBRARY.md",
       "category": "MISC",
       "target": ".codex/archive/misc/",
       "risk_level": "MEDIUM"
@@ -468,25 +468,25 @@
       "risk_level": "LOW"
     },
     {
-      "filename": "WORKFLOW_CLEANUP_IMPLEMENTATION_CHECKLIST.md",
+      "filename": ".codex/archive/implementations/WORKFLOW_CLEANUP_IMPLEMENTATION_CHECKLIST.md",
       "category": "IMPLEMENTATION",
       "target": ".codex/archive/implementations/",
       "risk_level": "MEDIUM"
     },
     {
-      "filename": "WS3_INTEGRATION_TEST_REPORT.md",
+      "filename": ".codex/archive/reports/WS3_INTEGRATION_TEST_REPORT.md",
       "category": "REPORT",
       "target": ".codex/archive/reports/",
       "risk_level": "MEDIUM"
     },
     {
-      "filename": "phase_12_2_report.md",
+      "filename": ".codex/archive/misc/phase_12_2_report.md",
       "category": "MISC",
       "target": ".codex/archive/misc/",
       "risk_level": "MEDIUM"
     },
     {
-      "filename": "terraform_plan_summary.md",
+      "filename": ".codex/archive/misc/terraform_plan_summary.md",
       "category": "MISC",
       "target": ".codex/archive/misc/",
       "risk_level": "MEDIUM"

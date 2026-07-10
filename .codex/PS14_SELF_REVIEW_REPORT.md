@@ -178,7 +178,7 @@ npm run build  # ✓ 6.27s, dist/ created
 4. pages-mkdocs.yml - MkDocs build cache
 5. rust_swarm_ci.yml - Cargo cache standardization
 
-**Integration Pattern**: Documented in `.codex/CACHE_MANAGER_WORKFLOW_INTEGRATION.md`
+**Integration Pattern**: Documented in `.codex/CACHE_MANAGER_WORKFLOW_docs/api/reference/INTEGRATION.md`
 
 **Action Required**: Phase 2 implementation (separate PR/session recommended)
 
@@ -242,7 +242,7 @@ npm run build  # ✓ 6.27s, dist/ created
 ## 🤖 GitHub Custom Copilot Agent Updates
 
 ### Existing Agents Assessment
-**Total Agents**: 54 (documented in AGENTS.md)
+**Total Agents**: 54 (documented in .codex/archive/deprecated/AGENTS.md)
 
 **Relevant Agents for PS-14**:
 1. **MSV Dashboard Agent** (NEW - TO BE CREATED)

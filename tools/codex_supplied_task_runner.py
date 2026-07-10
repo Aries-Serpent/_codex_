@@ -33,7 +33,7 @@ TARGETS = [
     "src/codex/logging/export.py",
 ]
 README = ROOT / "README.md"
-AGENTS = ROOT / "docs" / "guides" / "AGENTS.md"
+AGENTS = ROOT / "docs" / "guides" / ".codex/archive/deprecated/AGENTS.md"
 PRE_COMMIT = ROOT / ".pre-commit-config.yaml"
 
 DOCSTRINGS = {
@@ -255,7 +255,7 @@ def patch_agents_or_readme(apply: bool, changed: list[str]) -> None:
     if not target.exists():
         record_error(
             "3.3 AGENTS/README",
-            "Neither AGENTS.md nor README.md exist",
+            "Neither .codex/archive/deprecated/AGENTS.md nor README.md exist",
             "Cannot document log layout & retention",
         )
         return

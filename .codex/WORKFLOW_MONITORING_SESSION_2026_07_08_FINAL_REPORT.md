@@ -475,7 +475,7 @@ Documentation:
 - ✅ Codebase Agency Policy §0 (MANDATORY): Address all issues ✓
 - ✅ Codebase Agency Policy §3a: No deferral language ✓
 - ✅ WEC (Workflow Execution Checklist): N/A (no PR merge required)
-- ✅ REQ-4 (AGENT_ACCOUNTABILITY_REPORT.md): Pending (this session)
+- ✅ REQ-4 (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md): Pending (this session)
 - ✅ REQ-5 (CHANGELOG.md): Pending (this session)
 
 ### Sign-Off Status

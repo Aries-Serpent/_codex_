@@ -495,7 +495,7 @@ parallel because they do not conflict with the agent run's expected output:
 | Task | Safe? | Reason |
 |------|-------|--------|
 | Add unit tests for existing functions | ✅ | New file; no conflict |
-| Update CHANGELOG.md / AGENT_ACCOUNTABILITY_REPORT.md | ✅ | Append-only; merge trivially |
+| Update CHANGELOG.md / .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md | ✅ | Append-only; merge trivially |
 | Create new docs (this file) | ✅ | New file; no conflict |
 | Wire new CI step in a workflow | ✅ | Agent run does not touch workflows |
 | Modify files the agent run is likely editing | ⚠️ | Risk of conflict on integration |
@@ -525,7 +525,7 @@ git add <file>
 ```
 
 **Policy (per CODEBASE_AGENCY_POLICY.md §3a):** Always take the richer state.
-For `CHANGELOG.md` / `AGENT_ACCOUNTABILITY_REPORT.md`, concatenate both entries.
+For `CHANGELOG.md` / `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`, concatenate both entries.
 For code files, prefer the state that passes all 7 triage checks.
 
 ---

@@ -96,7 +96,7 @@
 - ✅ All Phase 1 completion reports (14 artifacts)
 - ⏳ All Phase 2 integration/artifact reports (in progress)
 - ✅ Current .github/workflows/ configuration
-- ✅ AGENT_ACCOUNTABILITY_REPORT.md
+- ✅ .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 - ✅ CHANGELOG.md
 
 **Expected Outputs:**

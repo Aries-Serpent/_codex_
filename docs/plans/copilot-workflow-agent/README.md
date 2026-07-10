@@ -24,7 +24,7 @@ docs/plans/copilot-workflow-agent/
 ├── 01-BATCHSET.md              # Work batches for iterative implementation
 ├── 02-PATCHSET.md              # Detailed patch prompts for each component
 ├── 03-ARCHITECTURE.md          # Component architecture and data models
-├── 04-API-INTEGRATION.md       # GitHub API integration specifications
+├── 04-API-docs/api/reference/INTEGRATION.md       # GitHub API integration specifications
 ├── 05-SESSION-STATE.md         # Session state management design
 ├── 06-SELF-HEALING.md          # Self-healing engine integration
 ├── 07-SECURITY-GUARDRAILS.md   # Security and approval policies
@@ -83,4 +83,4 @@ Or use the continuation prompts:
 
 - [CTEP Protocol](https://github.com/Aries-Serpent/_codex_/blob/main/.github/docs/Copilot_Task_Execution_Protocol.md)
 - Workflow Files
-- [AGENTS.md](../../agents.md)
+- [.codex/archive/deprecated/AGENTS.md](../../agents.md)

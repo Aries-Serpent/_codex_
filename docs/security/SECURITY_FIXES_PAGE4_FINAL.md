@@ -304,7 +304,7 @@ safe_snippet = _redact_snippet(potentially_sensitive_text)
 ### Medium-term
 1. ⬜ Add mypy strict checking to CI
 2. ⬜ Enhance pre-commit hooks
-3. ⬜ Update AGENTS.md with security patterns
+3. ⬜ Update .codex/archive/deprecated/AGENTS.md with security patterns
 4. ⬜ Create security testing guidelines
 
 ---

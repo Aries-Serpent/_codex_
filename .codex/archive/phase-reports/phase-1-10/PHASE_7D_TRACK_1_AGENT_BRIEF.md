@@ -102,7 +102,7 @@ Close the 2.43pp coverage gap from 17.57% → 20%+ to unlock Track 2 (mutation h
    - Final coverage percentage
    - Resolving commit SHA
    - Recommendation to activate Track 2
-3. **Accountability:** Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` with:
+3. **Accountability:** Update `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` with:
    - Track 1 completion entry
    - Commit SHA that achieved coverage target
    - ETA met/missed status

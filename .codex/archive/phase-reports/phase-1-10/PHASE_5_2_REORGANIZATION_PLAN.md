@@ -68,10 +68,10 @@ ROOT (40 items)
 │       ├── README.md                (Docs index)
 │       ├── SECURITY.md              (Security docs)
 │       ├── CHANGELOG.md             (Version history)
-│       ├── AGENTS.md                (Agent documentation)
+│       ├── .codex/archive/deprecated/AGENTS.md                (Agent documentation)
 │       ├── models/                  (Model-specific docs)
-│       │   ├── CLAUDE.md
-│       │   └── GEMINI.md
+│       │   ├── .codex/archive/deprecated/CLAUDE.md
+│       │   └── .codex/archive/deprecated/GEMINI.md
 │       ├── guides/                  (User guides)
 │       ├── api/                     (API documentation)
 │       └── ...
@@ -187,14 +187,14 @@ mv WORKFLOW_*.md .codex/archive/phase_reports/
 **Included Files** (23 total):
 - PHASE_*.* (10 files)
 - AUDIT_*.* (5 files)
-- CAMPAIGN_EXECUTION_COMPLETE.md
-- MASTER_REMEDIATION_PLAN.md
+- .codex/archive/misc/CAMPAIGN_EXECUTION_COMPLETE.md
+- .codex/archive/misc/MASTER_REMEDIATION_PLAN.md
 - REMEDIATION_*.* (3 files)
 - STREAM_B_REMEDIATION_SESSION_SUMMARY.txt
 - WAVE_4_PHASE_1_SEMANTIC_INDEXING_COMPLETE.md
 - CLEANUP_VALIDATION_INFRASTRUCTURE.md
 - TERMINOLOGY_CONSISTENCY_IMPLEMENTATION_CHECKLIST.md
-- WORKFLOW_CLEANUP_IMPLEMENTATION_CHECKLIST.md
+- .codex/archive/implementations/WORKFLOW_CLEANUP_IMPLEMENTATION_CHECKLIST.md
 
 **Rationale**: Historical completion reports with no runtime dependencies. Archived for record-keeping.
 
@@ -338,8 +338,8 @@ mkdir -p docs/{guides,api,models,architecture,troubleshooting,archive}
 # │   └── ...
 # ├── api/                           (API documentation)
 # ├── models/                        (Model-specific)
-# │   ├── CLAUDE.md
-# │   └── GEMINI.md
+# │   ├── .codex/archive/deprecated/CLAUDE.md
+# │   └── .codex/archive/deprecated/GEMINI.md
 # ├── architecture/                  (System design)
 # ├── troubleshooting/               (Common issues)
 # └── archive/                       (Deprecated docs)
@@ -355,8 +355,8 @@ mkdir -p docs/{guides,api,models,architecture,troubleshooting,archive}
 
 # Move to docs/:
 mkdir -p docs/models/
-mv CLAUDE.md docs/models/CLAUDE.md
-mv GEMINI.md docs/models/GEMINI.md
+mv .codex/archive/deprecated/CLAUDE.md docs/models/.codex/archive/deprecated/CLAUDE.md
+mv .codex/archive/deprecated/GEMINI.md docs/models/.codex/archive/deprecated/GEMINI.md
 
 mkdir -p docs/security/
 mv SECURITY.md docs/SECURITY.md
@@ -368,8 +368,8 @@ mkdir -p docs/archive/
 mv CHANGELOG.md docs/CHANGELOG.md        # Moved (still referenced in workflows)
 mv DOCUMENTATION_AUDIT_*.md docs/archive/
 mv DOCUMENTATION_UPDATE_*.md docs/archive/
-mv DEPENDENCY_CONSTRAINTS.md docs/DEPENDENCIES.md
-mv MASTER_REMEDIATION_PLAN.md docs/archive/
+mv .codex/archive/misc/DEPENDENCY_CONSTRAINTS.md docs/DEPENDENCIES.md
+mv .codex/archive/misc/MASTER_REMEDIATION_PLAN.md docs/archive/
 mv QUANTUM_COMPLIANCE_TUNING_AGENT_INTEGRATION_GUIDE.md docs/archive/
 ```
 
@@ -391,8 +391,8 @@ docs/
 │   ├── INSTALLATION.md
 │   └── DEVELOPMENT.md
 ├── models/                      (AI model documentation)
-│   ├── CLAUDE.md
-│   └── GEMINI.md
+│   ├── .codex/archive/deprecated/CLAUDE.md
+│   └── .codex/archive/deprecated/GEMINI.md
 ├── architecture/                (System architecture)
 │   ├── OVERVIEW.md
 │   └── DESIGN_DECISIONS.md

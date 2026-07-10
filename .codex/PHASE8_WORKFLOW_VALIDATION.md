@@ -165,7 +165,7 @@ TIMEOUT_MAP = {
 | File | Status | Last Modified | Size |
 |------|--------|---------------|------|
 | `CHANGELOG.md` | ✓ Present | 2026-06-15 17:17:51 | 995 KB |
-| `.github/AGENT_ACCOUNTABILITY_REPORT.md` | ⚠ Optional | — | — |
+| `.github/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` | ⚠ Optional | — | — |
 
 **Assessment**:
 - ✓ CHANGELOG.md is current and comprehensive

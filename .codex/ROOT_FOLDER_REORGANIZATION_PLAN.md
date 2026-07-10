@@ -209,12 +209,12 @@ Aries-Serpent/_codex_/
 │   ├── archive/
 │   │   ├── CHANGELOG.md
 │   │   ├── CHANGELOG.md.pr5000
-│   │   ├── AGENTS.md
-│   │   └── CLAUDE.md (removed)
+│   │   ├── .codex/archive/deprecated/AGENTS.md
+│   │   └── .codex/archive/deprecated/CLAUDE.md (removed)
 │   ├── guides/
 │   │   └── [existing docs/ content moves here]
 │   ├── specifications/
-│   │   ├── DEPENDENCY_CONSTRAINTS.md
+│   │   ├── .codex/archive/misc/DEPENDENCY_CONSTRAINTS.md
 │   │   └── [spec docs]
 │   └── reports/
 │       ├── audit/
@@ -290,7 +290,7 @@ Aries-Serpent/_codex_/
 | `SECURITY.md` | **KEEP** | Essential | GitHub auto-detection | ❌ NONE |
 | `CODE_OF_CONDUCT.md` | **KEEP** | Essential | GitHub auto-detection | ❌ NONE |
 | `pyproject.toml` | **KEEP** | Essential | PEP 517 standard location | ❌ NONE |
-| `AGENTS.md` | `.docs/archive/AGENTS.md` | Legacy Doc | Rarely updated | ✅ LOW |
+| `.codex/archive/deprecated/AGENTS.md` | `.docs/archive/.codex/archive/deprecated/AGENTS.md` | Legacy Doc | Rarely updated | ✅ LOW |
 | `CHANGELOG.md` | `.docs/archive/CHANGELOG.md` | Essential Doc | Workflows read via `gh` | ⚠️ MEDIUM |
 | `PHASE_*_*.md` | `.codex/phase-reports/` | Report | Session-specific | ✅ LOW |
 | `conftest.py` | `.config/conftest.py` | Config | Pytest discovery | 🔴 HIGH |

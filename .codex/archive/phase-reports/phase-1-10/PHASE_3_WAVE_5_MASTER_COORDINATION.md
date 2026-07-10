@@ -258,7 +258,7 @@
 - `.codex/PHASE_3_WAVE_5_LANE_*_CHECKPOINT_DAY_*.md` (auto-gen daily)
 
 ### Accountability
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (updated daily)
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (updated daily)
 
 ---
 
@@ -308,4 +308,4 @@ No further human intervention required until Day 3 Primary GO/NO-GO gate (June 3
 - **Lane 2 Status**: `ml-validation-suite-agent` + `.codex/lane_2/`
 - **Lane 3 Status**: `cache-management-agent` + `.codex/lane_3/`
 - **Lane 4 Status**: `unified-doc-agent` + `.codex/lane_4/`
-- **Accountability**: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- **Accountability**: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`

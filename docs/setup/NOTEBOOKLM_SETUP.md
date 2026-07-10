@@ -266,7 +266,7 @@ bash -n prepare_notebooklm.sh
 ## 📚 Related Documentation
 
 - **Repository Overview:** `README.md`
-- **Agent Operations:** `AGENTS.md`
+- **Agent Operations:** `.codex/archive/deprecated/AGENTS.md`
 - **Architecture:** `ARCHITECTURE_BLUEPRINT.md`
 - **Documentation Index:** `docs/DOCUMENTATION_INDEX.md`
 - **Cognitive Brain:** `scripts/cognitive/cognitive_brain_core.py`

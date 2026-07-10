@@ -197,7 +197,7 @@ test result: ok. 26 passed; 0 failed; 0 ignored; 0 measured
 2. `workbench/PHASE_1_RUST_UNIT_TESTS.md` - Phase 1 plan (5.1k chars)
 3. `workbench/PHASE_2_PERFORMANCE_BENCHMARKING.md` - Phase 2 plan (5.2k chars)
 4. `workbench/PHASE_3_MEMORY_PROFILING.md` - Phase 3 plan (2.3k chars)
-5. `workbench/PHASE_4_FULL_INTEGRATION.md` - Phase 4 plan (2.8k chars)
+5. `workbench/PHASE_4_FULL_docs/api/reference/INTEGRATION.md` - Phase 4 plan (2.8k chars)
 6. `workbench/PHASES_5-8_PRODUCTION_READINESS.md` - Phases 5-8 plans (5.0k chars)
 7. `workbench/SESSION_SUMMARY_PHASE_0_1.md` - Session summary (7.8k chars)
 

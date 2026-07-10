@@ -262,7 +262,7 @@
 
 #### Part 4: Accountability Updates (5 min)
 - Commit checkpoint reports to .codex/
-- Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- Update `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - Record metrics in campaign tracking
 - Post evening summary
 

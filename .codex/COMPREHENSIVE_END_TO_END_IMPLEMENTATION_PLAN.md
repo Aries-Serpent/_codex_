@@ -298,7 +298,7 @@ ELSE
 #### 4B: Deployment Authorization Sign-Off
 **Actions:**
 1. Post deployment approval to Discussion #4872
-2. Update AGENT_ACCOUNTABILITY_REPORT.md (REQ-4)
+2. Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (REQ-4)
 3. Update CHANGELOG.md (REQ-5)
 4. Archive all campaign artifacts
 5. Create deployment checklist for infrastructure team
@@ -373,7 +373,7 @@ Update Interval: Every 30 minutes or on major milestone completion
 Channels:
   - .codex/EXECUTION_STATUS_REALTIME.md (updated live)
   - GitHub Discussion #4872 (human-readable updates)
-  - AGENT_ACCOUNTABILITY_REPORT.md (REQ-4 compliance)
+  - .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (REQ-4 compliance)
 ```
 
 ### Key Metrics to Track
@@ -424,7 +424,7 @@ Deployment Readiness:
 ### End-to-End Deployment (Stage 4)
 - [x] v0.1.0-final release published
 - [x] Deployment approval posted
-- [x] REQ-4 (AGENT_ACCOUNTABILITY_REPORT.md) updated
+- [x] REQ-4 (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md) updated
 - [x] REQ-5 (CHANGELOG.md) updated
 - [x] Phases A-E execution initiated
 - [x] All campaign artifacts archived
@@ -560,7 +560,7 @@ IF any stage encounters blocker THEN
 | Docker Phase 2 Execution | general-purpose | Task agent | AGENT_REGISTRY.yaml |
 | Convergence Verification | unified-governance-gate | Custom agent | AGENT_REGISTRY.yaml |
 | Phases A-E Execution | 5 Custom agents | Multi-agent | AGENT_REGISTRY.yaml |
-| REQ-4 Accountability | This session | Documentation | AGENT_ACCOUNTABILITY_REPORT.md |
+| REQ-4 Accountability | This session | Documentation | .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md |
 | REQ-5 Changelog | This session | Documentation | CHANGELOG.md |
 
 ---

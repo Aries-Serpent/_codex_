@@ -6,7 +6,7 @@ Reconciles:
   - .github/agents/AGENT_REGISTRY.yaml (128 registered agents)
   - .github/workflows/ YAML references
   - docs/ and .codex/ document mentions
-  - docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md (W-NNN rows)
+  - docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (W-NNN rows)
 Output: docs/audits/AGENTIC_BASELINE_AUDIT_v2.md (section: Top-20 by Activation Frequency)
 """
 from __future__ import annotations
@@ -24,7 +24,7 @@ REGISTRY_FILE = AGENTS_DIR / "AGENT_REGISTRY.yaml"
 WF_DIR       = REPO_ROOT / ".github" / "workflows"
 DOCS_DIR     = REPO_ROOT / "docs"
 CODEX_DIR    = REPO_ROOT / ".codex"
-ACCOUNTABILITY = REPO_ROOT / "docs" / "accountability" / "AGENT_ACCOUNTABILITY_REPORT.md"
+ACCOUNTABILITY = REPO_ROOT / "docs" / "accountability" / ".codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md"
 OUT_SECTION  = REPO_ROOT / "docs" / "audits" / "AGENTIC_BASELINE_AUDIT_v2.md"
 
 # Patterns that indicate an agent file is a *definition* (not a support doc)
@@ -42,7 +42,7 @@ _DOC_PREFIXES = {
     "POLICY_", "QA_", "READY_", "REQ_", "REVIEW_", "ROOT_", "SECURITY_",
     "SELECTION_", "SESSION_", "SPRINT_", "STATUS_", "SYSTEM_", "TECHNICAL_",
     "TEST_", "TOP_", "UNIFIED_", "WORK_", "YAML_", "FINAL_STATUS",
-    "GROUNDED_", "IMPLEMENTATION_", "CUSTOM_AGENT", "AGENTS.md",
+    "GROUNDED_", "IMPLEMENTATION_", "CUSTOM_AGENT", ".codex/archive/deprecated/AGENTS.md",
 }
 
 
@@ -95,7 +95,7 @@ def build_mention_counter(agent_names: list[str]) -> Counter:
       - .github/workflows/*.yml
       - docs/**/*.md
       - .codex/**/*.md  .codex/**/*.json
-      - docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md (W-NNN rows)
+      - docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (W-NNN rows)
     """
     counter: Counter = Counter()
 

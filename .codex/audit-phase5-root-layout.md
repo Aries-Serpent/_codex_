@@ -379,15 +379,15 @@ Result: Complete migration, clean repo, prevention measures in place
 │   ├── PHASE_2_TRACK_4_*.md
 │   ├── PHASE_3_TEAM_4_*.md
 │   ├── ... [45+ more phase files]
-│   ├── AGENT_ACCOUNTABILITY_REPORT.md
+│   ├── .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 │   ├── AUDIT_COMPLETION_SUMMARY.txt
 │   ├── DOCUMENTATION_AUDIT_*.md
 │   └── ...
 ├── [Documentation files at root - 83 md files]
 │   ├── README.md ✓ (keep)
-│   ├── AGENTS.md → move to /docs/agents/
-│   ├── CLAUDE.md → move to /docs/ai-models/
-│   ├── GEMINI.md → move to /docs/ai-models/
+│   ├── .codex/archive/deprecated/AGENTS.md → move to /docs/agents/
+│   ├── .codex/archive/deprecated/CLAUDE.md → move to /docs/ai-models/
+│   ├── .codex/archive/deprecated/GEMINI.md → move to /docs/ai-models/
 │   ├── SECURITY.md ✓ (keep)
 │   ├── SECURITY_REMEDIATION_GUIDE.md → move to /docs/security/
 │   └── [20+ more supplementary docs]
@@ -464,7 +464,7 @@ Result: Complete migration, clean repo, prevention measures in place
 ├── [Consolidated docs]
 │   └── docs/
 │       ├── index.md
-│       ├── agents/ (AGENTS.md, CLAUDE.md, GEMINI.md)
+│       ├── agents/ (.codex/archive/deprecated/AGENTS.md, .codex/archive/deprecated/CLAUDE.md, .codex/archive/deprecated/GEMINI.md)
 │       ├── security/ (SECURITY_*.md)
 │       ├── development/ (dev docs)
 │       ├── ml/ (ML-specific)

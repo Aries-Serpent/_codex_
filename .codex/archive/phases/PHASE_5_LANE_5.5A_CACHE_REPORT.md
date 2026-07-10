@@ -657,7 +657,7 @@ The cache optimization initiative is considered successful when:
 
 For questions about this report or cache optimization:
 - Cache Management Agent: @cache-management-agent
-- Infrastructure Lead: See AGENTS.md
+- Infrastructure Lead: See .codex/archive/deprecated/AGENTS.md
 - GitHub Discussions: [Cache Optimization](https://github.com/Aries-Serpent/_codex_/discussions)
 
 ---

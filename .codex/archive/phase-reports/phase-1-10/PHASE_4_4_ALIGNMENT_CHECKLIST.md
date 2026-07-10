@@ -265,7 +265,7 @@ Execute during the first week post-merge:
 
 ### 8️⃣ Update Agent Accountability Report
 
-**File:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+**File:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 ```markdown
 # Task: Add post-merge session references
@@ -281,7 +281,7 @@ Execute during the first week post-merge:
 | - | 9 Mermaid diagrams, 5-layer architecture, rules | - | - | - |
 
 # Steps:
-1. Open docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+1. Open docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 2. Find the session tracking table
 3. Add new rows for post-merge sessions
 4. Update summary statistics (total sessions, completion rate)

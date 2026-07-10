@@ -3,7 +3,7 @@
 **Date**: 2026-07-02  
 **Repository**: Aries-Serpent/_codex_  
 **Audit Status**: Complete  
-**Audit Scope**: Claims verification across README.md, AGENTS.md, and core documentation  
+**Audit Scope**: Claims verification across README.md, .codex/archive/deprecated/AGENTS.md, and core documentation  
 
 ---
 
@@ -39,7 +39,7 @@ This audit systematically verifies code claims and documentation accuracy across
 1. **Agent Count Mismatch** (Finding #2)
    - README claims: 145 active agents
    - AGENT_REGISTRY.yaml states: 147 active agents
-   - Discrepancy: 2 agents undocumented in AGENTS.md
+   - Discrepancy: 2 agents undocumented in .codex/archive/deprecated/AGENTS.md
 
 2. **Coverage Claim** (Finding #4)
    - README claims: 70%+ coverage
@@ -82,7 +82,7 @@ This audit systematically verifies code claims and documentation accuracy across
 ### Finding #2: Agent Count Mismatch
 - **Files**:
   - `README.md` line 13
-  - `AGENTS.md` line 484
+  - `.codex/archive/deprecated/AGENTS.md` line 484
   - `.github/agents/AGENT_REGISTRY.yaml` (authority)
   - `.codex/AGENTIC_REPO_STATE.md` line 111
 - **Claimed Behavior**: "145 active agents"
@@ -91,9 +91,9 @@ This audit systematically verifies code claims and documentation accuracy across
 - **Severity**: MEDIUM
 - **Remediation**: 
   - Update README.md line 13: Change "145" to "147"
-  - Update AGENTS.md line 536: Change "145 Active" to "147 Active"
+  - Update .codex/archive/deprecated/AGENTS.md line 536: Change "145 Active" to "147 Active"
   - Identify which 2 agents were added but not documented
-  - Add entry to AGENTS.md agent tables for missing agents
+  - Add entry to .codex/archive/deprecated/AGENTS.md agent tables for missing agents
 - **Evidence**:
   ```yaml
   .github/agents/AGENT_REGISTRY.yaml:
@@ -212,10 +212,10 @@ This audit systematically verifies code claims and documentation accuracy across
 
 ### Finding #7: Repository Traversal Optimization Claim
 - **File**: `README.md` line 537
-- **Claimed Behavior**: "Following the wavepoint order in AGENTS.md reduces repository traversal time by 62%"
+- **Claimed Behavior**: "Following the wavepoint order in .codex/archive/deprecated/AGENTS.md reduces repository traversal time by 62%"
 - **Actual Behavior**: 
   - No supporting data, benchmarks, or methodology provided
-  - AGENTS.md does not clearly define "wavepoint order"
+  - .codex/archive/deprecated/AGENTS.md does not clearly define "wavepoint order"
   - No test cases or performance measurements found
 - **Status**: **OUTDATED/UNVERIFIED** - Claim lacks substantiation
 - **Severity**: MEDIUM
@@ -225,7 +225,7 @@ This audit systematically verifies code claims and documentation accuracy across
     - Benchmark results with before/after timings
     - Methodology for "wavepoint order" with clear reference
     - Test cases demonstrating the optimization
-    - Link to implementation in AGENTS.md with numbered "wavepoint" ordering
+    - Link to implementation in .codex/archive/deprecated/AGENTS.md with numbered "wavepoint" ordering
   - Alternative: Move to "Potential Optimizations" section
 - **Evidence**: Claim found but no supporting data located
 
@@ -402,12 +402,12 @@ This audit systematically verifies code claims and documentation accuracy across
 - **Timeline**: 1-2 hours
 - **Steps**:
   1. Identify 2 agents added but not documented
-  2. Update README.md and AGENTS.md with "147 active agents"
-  3. Add agent entries to AGENTS.md tables
+  2. Update README.md and .codex/archive/deprecated/AGENTS.md with "147 active agents"
+  3. Add agent entries to .codex/archive/deprecated/AGENTS.md tables
   4. Update `.github/agents/AGENT_REGISTRY.yaml` last_updated timestamp
 - **Files to Update**:
   - `README.md` (line 13)
-  - `AGENTS.md` (line 536)
+  - `.codex/archive/deprecated/AGENTS.md` (line 536)
   - `.github/agents/AGENT_REGISTRY.yaml` (if needed)
 
 #### 6. **Coverage Claims** (Finding #4)
@@ -541,7 +541,7 @@ Update Coverage Claims (Medium)
 This audit employed the following verification approach:
 
 1. **Documentation Extraction**
-   - Searched major documentation files (README.md, AGENTS.md, docs/)
+   - Searched major documentation files (README.md, .codex/archive/deprecated/AGENTS.md, docs/)
    - Identified all quantitative and architectural claims
    - Recorded line numbers and exact claim text
 
@@ -565,7 +565,7 @@ This audit employed the following verification approach:
 ## Audit Completion Checklist
 
 - [x] Searched README.md for major claims (20+ claims found)
-- [x] Searched AGENTS.md for agent-related claims
+- [x] Searched .codex/archive/deprecated/AGENTS.md for agent-related claims
 - [x] Searched docs/ for API and feature documentation
 - [x] Verified 23 major claims against implementation
 - [x] Checked authoritative sources (AGENT_REGISTRY.yaml, validation reports)

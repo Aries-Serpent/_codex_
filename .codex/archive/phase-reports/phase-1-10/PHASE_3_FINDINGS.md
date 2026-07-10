@@ -178,7 +178,7 @@ pip install codex-ml[full]
    ```
 
 ### MEDIUM (Documentation)
-5. **Update INSTALL.md**
+5. **Update .codex/archive/misc/INSTALL.md**
    - Add profile selection flowchart
    - Document each profile's use case
    - Include size estimates

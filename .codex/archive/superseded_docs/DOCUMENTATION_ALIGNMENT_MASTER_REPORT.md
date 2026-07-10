@@ -128,7 +128,7 @@ Successfully completed **comprehensive codebase-wide documentation alignment** f
 - ✅ **pyproject.toml** - Version: 0.0.0 → 0.1.0
 - ✅ **README.md** - Verified current (v0.1.0)
 - ✅ **SECURITY.md** - Date updated to 2026-02-10
-- ✅ **AGENTS.md** - Coverage updated to 90%
+- ✅ **.codex/archive/deprecated/AGENTS.md** - Coverage updated to 90%
 - ⚠️ **CHANGELOG.md** - Excluded (historical record)
 
 ### Documentation (50+ files)
@@ -272,7 +272,7 @@ Repository Root
 ├── README.md                                  ✅ v0.1.0
 ├── pyproject.toml                             ✅ 0.1.0
 ├── SECURITY.md                                ✅ 2026-02-10
-├── AGENTS.md                                  ✅ 90% coverage
+├── .codex/archive/deprecated/AGENTS.md                                  ✅ 90% coverage
 ├── CONTRIBUTING.md                            ✅ Current
 ├── DOCUMENTATION_ALIGNMENT_V0.1.0_COMPLETE.md ✅ New report
 │

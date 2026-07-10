@@ -226,7 +226,7 @@ All Phase 6 campaign artifacts are stored in `.codex/` directory (permanent, rep
 ### Final Deliverables (Post-Campaign)
 - `.codex/PHASE_6_FINAL_REPORT.md` (comprehensive summary with metrics)
 - `.codex/PHASE_6_POSTMORTEM.md` (lessons learned and improvements)
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (updated with Phase 6 results)
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (updated with Phase 6 results)
 - `CHANGELOG.md` (updated with Phase 6 changes)
 - Git tag: `pre-release_v0.1.0_certified` (release certification)
 

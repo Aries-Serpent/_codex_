@@ -242,7 +242,7 @@ task(agent_type="test-pattern-guardian",
 
 ### REQ-4/REQ-5 Compliance Check
 
-**REQ-4:** AGENT_ACCOUNTABILITY_REPORT.md updated through Phase 7B  
+**REQ-4:** .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated through Phase 7B  
 - Status: ✅ IN PROGRESS (Track E2 will finalize)
 
 **REQ-5:** CHANGELOG.md updated with Phase 7B campaign details  

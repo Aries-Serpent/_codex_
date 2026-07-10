@@ -514,7 +514,7 @@ def test_trainer_works_with_protocol_models():
 - [ ] Update architecture docs on protocol-based design
 - [ ] Document backend plugin mechanism
 - [ ] Add migration guide for custom trainers
-- [ ] Update CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md
+- [ ] Update CHANGELOG.md and .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 
 ---
 

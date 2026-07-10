@@ -57,7 +57,7 @@
 
 | File | Size | Purpose |
 |------|------|---------|
-| `POST_MERGE_MISSING_DEPS_INSTALL.md` | 9.9K | 7-step diagnostic playbook for missing optional deps, decision tree, automation script |
+| `POST_MERGE_MISSING_DEPS_.codex/archive/misc/INSTALL.md` | 9.9K | 7-step diagnostic playbook for missing optional deps, decision tree, automation script |
 
 **Action**: Use if test collection reveals zstandard/sqlalchemy import errors (expected pre-existing)
 
@@ -118,7 +118,7 @@ Session Start (Post-Merge)
 │      └─→ Investigate, follow decision tree in BRIEF_V2
 │
 └─→ If All Pass:
-    ├─ Update AGENT_ACCOUNTABILITY_REPORT.md
+    ├─ Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
     ├─ Document validation results
     └─→ Proceed with post-merge work
 ```
@@ -164,7 +164,7 @@ Session Start (Post-Merge)
 - Prevents wasted cycles debugging merged code
 
 ### 5. Document Everything
-- Record validation results in AGENT_ACCOUNTABILITY_REPORT.md
+- Record validation results in .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 - Log any changes to environment setup
 - Keep audit trail of what was tested/passed
 
@@ -177,7 +177,7 @@ Session Start (Post-Merge)
 | What errors are pre-existing? | POST_MERGE_ENVIRONMENT_BASELINE.md |
 | How do I validate post-merge? | POST_MERGE_COPILOT_SETUP_VALIDATION.md |
 | What if validation fails? | POST_MERGE_REVERSION_PROTOCOL.md |
-| Missing zstandard/sqlalchemy? | POST_MERGE_MISSING_DEPS_INSTALL.md |
+| Missing zstandard/sqlalchemy? | POST_MERGE_MISSING_DEPS_.codex/archive/misc/INSTALL.md |
 | What's my first action? | POST_MERGE_SESSION_CONTINUATION_BRIEF_V2.md |
 | How do I know success? | POST_MERGE_SESSION_CONTINUATION_BRIEF_V2.md (success section) |
 

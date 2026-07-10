@@ -159,7 +159,7 @@ Duration: 30 min
 Priority: LOW
 
 Tasks:
-  [ ] Create/update INSTALL.md
+  [ ] Create/update .codex/archive/misc/INSTALL.md
   [ ] Document profiles
   [ ] Add comparison table
   [ ] Add troubleshooting
@@ -167,7 +167,7 @@ Tasks:
   [ ] Commit with message
 
 Expected Outcome:
-  ✅ INSTALL.md complete
+  ✅ .codex/archive/misc/INSTALL.md complete
   ✅ Users can understand profiles
 ```
 
@@ -282,7 +282,7 @@ Related to: codex-ml installation gap #5
 ```
 docs(install): Add comprehensive installation guide
 
-- Created INSTALL.md with installation documentation
+- Created .codex/archive/misc/INSTALL.md with installation documentation
 - Added profile comparison table
 - Added troubleshooting guide
 - Linked from README.md

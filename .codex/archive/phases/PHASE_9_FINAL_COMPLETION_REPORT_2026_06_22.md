@@ -29,7 +29,7 @@
 
 **Deliverables (7 items):**
 - ✅ PHASE_9_1_DECISION_FRAMEWORK.md (19 KB)
-- ✅ PHASE_9_1_CANDIDATE_AGENTS.md (7 KB)
+- ✅ PHASE_9_1_CANDIDATE_.codex/archive/deprecated/AGENTS.md (7 KB)
 - ✅ PHASE_9_1_AGENT_AUTHORIZATION_SUMMARY.md (18 KB)
 - ✅ PHASE_9_1_EXECUTION_REPORT.md (15 KB)
 - ✅ phase_9_1_decision_logger.py (21 KB, 21 LOC)

@@ -150,7 +150,7 @@ Status: 🟡 CONDITIONAL PASS
 
 - **Workflow Best Practices**: `.codex/WORKFLOW_BEST_PRACTICES.md`
 - **Codebase Agency Policy**: `.codex/CODEBASE_AGENCY_POLICY.md §0`
-- **Workflow Compliance Guardian**: Agent documentation in AGENTS.md
+- **Workflow Compliance Guardian**: Agent documentation in .codex/archive/deprecated/AGENTS.md
 - **Self-Healing Orchestrator**: Self-healing-orchestrator-agent v1.0
 
 ---

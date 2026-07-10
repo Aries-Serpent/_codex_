@@ -211,7 +211,7 @@ Automate Kubernetes cluster provisioning using Cognitive Brain IaC orchestration
 
 **Deliverables:**
 - `scripts/deployment/run_terraform_plan.py` (functional)
-- `terraform_plan_summary.md` (human-readable summary)
+- `.codex/archive/misc/terraform_plan_summary.md` (human-readable summary)
 - `.codex/TERRAFORM_APPROVAL_GATE_GUIDE.md` (documentation)
 - `.codex/TRACK_5_TASK_5_TERRAFORM_PLAN.md` (execution report)
 

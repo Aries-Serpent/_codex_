@@ -319,7 +319,7 @@ Score = (Frequency × Recency × Importance) / Age_Decay
 
 **Campaign Updates:**
 - Dashboard: `.codex/MULTI_AGENT_CAMPAIGN_DASHBOARD.md`
-- Accountability: `.codex/AGENT_ACCOUNTABILITY_REPORT.md`
+- Accountability: `.codex/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - Status: `.codex/PHASE_10_OPERATIONAL_METRICS_REPORT.md`
 
 **Phase Leads:**

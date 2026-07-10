@@ -69,7 +69,7 @@ Verified locally: `python3 -c "import sys; sys.path.insert(0,'scripts/ci'); from
 
 ### Cognitive Brain Integration
 - **PDA iteration log**: `.codex/aftermath/pda_iterations.jsonl` contains `S315_PR4048_WEEKLY_DEPENDABOT_FOLDIN` entry with routine contract reference.
-- **Accountability report**: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` session entry dated 2026-04-24 confirming 100/100 scorecard.
+- **Accountability report**: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` session entry dated 2026-04-24 confirming 100/100 scorecard.
 - **Pattern registry**: `WEEKLY-DEPENDABOT-FOLDIN` is a recurring pattern — see `.codex/aftermath/pda_iterations.jsonl` line N (routine_contract = weekly cadence).
 
 ---

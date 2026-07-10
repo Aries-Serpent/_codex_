@@ -13,7 +13,7 @@
 | **REQ-1** — Session Summary Exists | ✅ PASS | Found 35 session file(s) modified within 30 days |
 | **REQ-2** — CHANGELOG Updated | ✅ PASS | CHANGELOG.md [Unreleased] section has 174 entr(ies) |
 | **REQ-3** — Tests Pass | ✅ PASS | CI run in progress or inconclusive: status=in_progress, conclusion=. Assuming pass. |
-| **REQ-4** — Accountability Report Updated | ❌ FAIL | docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md was NOT updated in the last commit |
+| **REQ-4** — Accountability Report Updated | ❌ FAIL | docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md was NOT updated in the last commit |
 | **REQ-5** — CHANGELOG in Last Commit | ❌ FAIL | CHANGELOG.md was NOT updated in the last commit |
 | **REQ-6** — No Secrets Committed | ✅ PASS | No secrets detected in diff (detect-secrets not installed — used heuristic scan) | <!-- pragma: allowlist secret -->
 
@@ -27,7 +27,7 @@
 
 ## Violations
 
-- **REQ-4**: docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md was NOT updated in the last commit
+- **REQ-4**: docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md was NOT updated in the last commit
 - **REQ-5**: CHANGELOG.md was NOT updated in the last commit
 
 ---
@@ -35,7 +35,7 @@
 ## Remediation Guidance
 
 - REQ-4: Run: python scripts/ci/session_wrapup_autofix.py --fix-accountability
-Or manually append an entry to docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+Or manually append an entry to docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 - REQ-5: Run: python scripts/ci/session_wrapup_autofix.py --fix-changelog
 Or manually add an entry to CHANGELOG.md and amend/re-commit.
 

@@ -63,7 +63,7 @@ All conflicts were resolved according to the following intelligent strategy:
    - Prevents duplicate changelog entries
    - Maintains clean, linear changelog
 
-3. **AGENT_ACCOUNTABILITY_REPORT.md** → Take **local version** (current branch)
+3. **.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md** → Take **local version** (current branch)
    - Preserves session accountability and tracking
    - Prevents rewriting of historical records
 

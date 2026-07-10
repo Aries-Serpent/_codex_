@@ -351,7 +351,7 @@ After Phase 2 completion (Day 7 EOD), verify:
 | **WAVE_5_EXECUTION_ROADMAP.md** | Day-by-day milestones, checkpoints, escalation | `.codex/` | ✅ Complete |
 | **WAVE_4_ECOSYSTEM_HEALTH_DASHBOARD.json** | Baseline metrics (0.85/1.00 score) | `.codex/` | ✅ Reference |
 | **PHASE_B_WAVE_5_REPORT.md** | Campaign context (5/8 tracks complete) | Root | ✅ Reference |
-| **Agent Registry (AGENTS.md)** | 159 agents, 100% compliance | Root | ✅ Reference |
+| **Agent Registry (.codex/archive/deprecated/AGENTS.md)** | 159 agents, 100% compliance | Root | ✅ Reference |
 
 ---
 

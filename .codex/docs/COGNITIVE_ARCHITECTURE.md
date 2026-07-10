@@ -342,7 +342,7 @@ ABUNDANCE_MANIFESTATION = {
     "policy_documentation": {
         "primary": ".codex/CODEBASE_AGENCY_POLICY.md",
         "summaries": [
-            "AGENTS.md",
+            ".codex/archive/deprecated/AGENTS.md",
             ".codex/archive/sessions/2026-01/QUICK_REFERENCE.md",
             ".codex/AUDIT_INDEX.md"
         ],
@@ -510,7 +510,7 @@ FRACTAL_PATTERN = {
 | **Information Type** | **Primary Location** | **Redundant Locations** | **Purpose** |
 |---------------------|---------------------|------------------------|-------------|
 | **Phase Plans** | `.codex/plans/PHASE_X.md` | PR descriptions, session summaries | Ensure work continuity |
-| **Policy** | `CODEBASE_AGENCY_POLICY.md` | AGENTS.md, archive/sessions/2026-01/QUICK_REFERENCE.md | Multiple access points |
+| **Policy** | `CODEBASE_AGENCY_POLICY.md` | .codex/archive/deprecated/AGENTS.md, archive/sessions/2026-01/QUICK_REFERENCE.md | Multiple access points |
 | **Session History** | `.codex/sessions/` | `action_log.ndjson`, change_log.md | Event reconstruction |
 | **Test Coverage** | Coverage reports | Test files themselves, CI logs | Verifiable from multiple sources |
 

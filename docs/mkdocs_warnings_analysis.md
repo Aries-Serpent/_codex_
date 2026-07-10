@@ -61,7 +61,7 @@ Links to documentation pages that don't exist:
 The following link patterns were fixed:
 - `../SECURITY.md` → `./SECURITY.md` (exists in docs)
 - `../CONTRIBUTING.md` → `./CONTRIBUTING.md` (exists in docs)
-- `../AGENTS.md` → `./agents.md` (exists in docs as lowercase)
+- `../.codex/archive/deprecated/AGENTS.md` → `./agents.md` (exists in docs as lowercase)
 - `../LEVEL_4_MLOPS_ASSESSMENT.md` → `./LEVEL_4_MLOPS_ASSESSMENT.md`
 
 ### 4. Nav Configuration (Fixed)

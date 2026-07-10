@@ -125,7 +125,7 @@ Apply 11 identified weak-test-case improvements to harden the mutation score fro
    - All 11 fixes applied summary
    - Resolving commit SHA
    - Recommendation to activate Track 4
-3. **Accountability:** Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` with:
+3. **Accountability:** Update `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` with:
    - Track 2 completion entry
    - Commit SHA for mutation hardening
    - ETA met/missed status

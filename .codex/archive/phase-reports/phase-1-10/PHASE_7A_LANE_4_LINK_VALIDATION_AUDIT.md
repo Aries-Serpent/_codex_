@@ -42,7 +42,7 @@ Comprehensive post-merge validation confirms:
 | `README.md` | ✅ Valid | Today | 146 links validated, 100% working |
 | `CHANGELOG.md` | ✅ Valid | Today | 15 external links + internal refs, 93.8% |
 | `docs/index.md` | ✅ Valid | Today | 38 links validated, 100% working |
-| `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | ✅ Valid | Today | 82 links validated, 100% working |
+| `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` | ✅ Valid | Today | 82 links validated, 100% working |
 | `docs/admin/` | ✅ Valid | Today | Admin documentation accessible |
 | `docs/agent/` | ✅ Valid | Today | Agent documentation accessible |
 
@@ -71,7 +71,7 @@ Comprehensive post-merge validation confirms:
 - **Content**: Documentation homepage, all references valid
 - **Status**: ✅ EXCELLENT
 
-### docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+### docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 - **Total Links**: 82
 - **Valid**: 82 (100%)
 - **Broken**: 0

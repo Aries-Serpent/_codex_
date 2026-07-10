@@ -111,7 +111,7 @@ If coverage <70% or CodeQL alerts >1:
 **Committed to Repository:**
 - `.codex/PHASE_6_WAVE_1_STAGE2_VALIDATION_REPORT.md` (detailed metrics)
 - Update `.codex/PHASE_6_WAVE_1_EXECUTION_TRACKING.md` (status)
-- Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (session tracking)
+- Update `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (session tracking)
 
 ---
 

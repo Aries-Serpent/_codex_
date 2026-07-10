@@ -163,7 +163,7 @@ baselines, auth, workflows, documentation, mermaid mapping, etc
 **Validation Items - Reference Updates Planning:**
 - [x] .secrets.baseline update procedure documented
 - [x] CHANGELOG.md Phase 3 entry template created
-- [x] AGENT_ACCOUNTABILITY_REPORT.md update planned
+- [x] .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md update planned
 - [x] Mermaid diagram reference updates identified
 - [x] Documentation file reference updates listed
 - [x] All baselines and authentication files mapped

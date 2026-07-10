@@ -46,7 +46,7 @@ All critical documentation paths verified and working:
 - ✅ `README.md` — Valid, accessible
 - ✅ `docs/index.md` — Valid, accessible
 - ✅ `CHANGELOG.md` — Valid, accessible
-- ✅ `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — Valid, accessible
+- ✅ `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — Valid, accessible
 - ✅ `docs/agent/*` — All 15 files valid
 - ✅ `docs/admin/*` — All 8 files valid
 
@@ -220,7 +220,7 @@ Note: External links not validated in this audit
 ✅ README.md — 100% working
 ✅ docs/index.md — 100% working
 ✅ CHANGELOG.md — 100% working
-✅ AGENT_ACCOUNTABILITY_REPORT.md — 100% working
+✅ .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md — 100% working
 ✅ All agent docs — 100% working
 ✅ All admin docs — 100% working
 
@@ -303,7 +303,7 @@ COMPLIANCE: REQ-4/REQ-5 gates PASSED ✅
 
 | Criteria | Status | Evidence |
 |----------|--------|----------|
-| **REQ-4**: AGENT_ACCOUNTABILITY_REPORT.md in latest commit | ✅ PASS | File validated |
+| **REQ-4**: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md in latest commit | ✅ PASS | File validated |
 | **REQ-5**: CHANGELOG.md in latest commit | ✅ PASS | File validated |
 | **Link Validation**: 0 broken links in critical docs | ✅ PASS | All critical paths working |
 | **Freshness SLA**: All docs < 90 days old | ✅ PASS | All docs < 1 day old |

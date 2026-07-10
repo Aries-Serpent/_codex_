@@ -141,7 +141,7 @@ Action:
 
 ```
 Action:
-1. Update docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md (Phase 3 completion)
+1. Update docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (Phase 3 completion)
 2. Update CHANGELOG.md (Phase 3 findings summary)
 3. Commit and push consolidated findings
 4. Prepare Phase 4 deployment brief
@@ -299,7 +299,7 @@ Expected duration: 1-2 hours
 
 ### Consolidation Files (Queued)
 - [ ] `.codex/PHASE_3_CONSOLIDATED_FINDINGS.md` (TBD, awaiting Phase 3.2/3.6/3.7)
-- [ ] Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- [ ] Updated `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - [ ] Updated `CHANGELOG.md`
 
 ### Pre-Prepared Phase 4-5

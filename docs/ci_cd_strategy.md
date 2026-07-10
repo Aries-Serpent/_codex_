@@ -4,7 +4,7 @@
 
 Phase 4 confirms that the Codex delivery model relies on local quality gates
 instead of hosted CI, keeping the workflow compliant with the repository
-restrictions in `AGENTS.md`.
+restrictions in `.codex/archive/deprecated/AGENTS.md`.
 
 ## Design rationale
 

@@ -25,7 +25,7 @@
 - **Phase 3:** PR Preparation & Merge Readiness ✅ COMPLETE
   - WEC template appended with all 9 canonical items
   - All 6 REQUIRED workflows checked [x]
-  - CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated (REQ-4/REQ-5 ✅)
+  - CHANGELOG.md + .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated (REQ-4/REQ-5 ✅)
   - Compliance verified: 0 deferral language, 0 policy violations
 
 - **Phase 4:** Execution & Automation ✅ COMPLETE
@@ -51,7 +51,7 @@
 
 #### 3. Merge Readiness Verification
 **Status:** ✅ **100% COMPLETE**
-- ✅ REQ-4 (AGENT_ACCOUNTABILITY_REPORT.md): Updated in final commit
+- ✅ REQ-4 (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md): Updated in final commit
 - ✅ REQ-5 (CHANGELOG.md): Updated in final commit
 - ✅ REQ-14 (Agents Used entry): Valid and present
 - ✅ Code Quality: Clean state maintained (auto-fixable issues: 1/2 resolved)
@@ -128,7 +128,7 @@
 
 ### Merge Impact
 - ✅ CHANGELOG.md updated (Phase 13 AUTO-GO CONTINUE milestone)
-- ✅ AGENT_ACCOUNTABILITY_REPORT.md updated (session tracking)
+- ✅ .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated (session tracking)
 - ✅ AUTO_GO_CONTINUE_POST_MERGE_PROMPT.md created (operational guidance)
 - ✅ All documentation in sync (no conflicts)
 - ✅ All accountability files compliant (REQ-4/REQ-5)
@@ -143,7 +143,7 @@
 - [x] WEC template verified & correctly formatted
 - [x] All 6 REQUIRED workflows marked [x]
 - [x] Merge readiness at 100% (all gates passing)
-- [x] CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md updated (REQ-4/REQ-5)
+- [x] CHANGELOG.md + .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated (REQ-4/REQ-5)
 - [x] No deferral language detected (policy compliant)
 - [x] All auto-fixable issues resolved
 - [x] Track 12.3 monitoring framework established

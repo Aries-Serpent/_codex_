@@ -358,7 +358,7 @@ Slot 4: [AVAILABLE FOR PHASE D]
 **Accountability (REQ-4/REQ-5 Compliant):**
 - All work tracked in `.codex/PHASE_X_*.md` documents
 - Real-time status in `.codex/CAMPAIGN_EXECUTION_DASHBOARD_REALTIME.md`
-- Session chronicle in `.codex/AGENT_ACCOUNTABILITY_REPORT.md`
+- Session chronicle in `.codex/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - All changes version-controlled with commit messages
 
 **Checkpoints:**

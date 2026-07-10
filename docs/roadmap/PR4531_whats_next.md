@@ -13,7 +13,7 @@
 | Resolve rebase conflicts with remote `0D_base_` (8 commits rebased cleanly) | ✅ Complete |
 | **Reliability** — Correct stale `CODEX_CI_FAILURE_RATE` from `2.0:ok` → `0.0:ok` (actual recent run data: 0/50 failures on main) | ✅ Complete |
 | Update living docs (`whats_next`, `session_diagram`) | ✅ Complete |
-| Update `CHANGELOG.md` + `AGENT_ACCOUNTABILITY_REPORT.md` | ✅ Complete |
+| Update `CHANGELOG.md` + `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` | ✅ Complete |
 | **P3** — Node.js 20 deprecation follow-up: run --pattern 21 and keep deprecated refs at 0 | ✅ Complete |
 | **P4** — Post-merge: `sync_tracked_files --fix` on main after merge | ⏳ Post-merge |
 

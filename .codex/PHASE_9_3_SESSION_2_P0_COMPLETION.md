@@ -119,7 +119,7 @@
 
 ## 📋 Compliance & Documentation
 
-✅ **REQ-4:** AGENT_ACCOUNTABILITY_REPORT.md updated
+✅ **REQ-4:** .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated
 - Session entry: 2026-07-03T19:43Z — Phase 9.3 CI Remediation
 - Agent delegations documented
 - Fixes documented with commit SHAs

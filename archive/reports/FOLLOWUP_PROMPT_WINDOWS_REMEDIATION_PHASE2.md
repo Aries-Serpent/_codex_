@@ -20,7 +20,7 @@
 - Added comprehensive tests (16/16 passing)
 - Implemented pre-commit hook for prevention
 - Fixed workflow action version bug
-- Updated documentation (AGENTS.md + migration guide)
+- Updated documentation (.codex/archive/deprecated/AGENTS.md + migration guide)
 
 ⏳ **Remaining:**
 - Migrate 80+ additional files identified in initial audit

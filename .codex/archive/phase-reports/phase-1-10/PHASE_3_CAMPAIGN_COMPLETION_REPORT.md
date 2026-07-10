@@ -42,7 +42,7 @@
 
 ### Reference Updates
 - ✅ CHANGELOG.md updated (Phase 3 cleanup section, metrics, validation results)
-- ✅ AGENT_ACCOUNTABILITY_REPORT.md updated (Wave 1-3 status, agent delegations, zero-break confirmation)
+- ✅ .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated (Wave 1-3 status, agent delegations, zero-break confirmation)
 - ✅ Mermaid diagrams updated (60+ insertions, cleanup paths incorporated)
 - ✅ 25 breaking references resolved (0 NEW post-cleanup)
 - ✅ All documentation links verified valid
@@ -65,7 +65,7 @@ c130f652 - Wave 3: CI health validation - 1,100+ auth tests PASS
 ece2e20d - Stage 4.6: Validate reference updates
 3de7d309 - Stage 3: Create .config.legacy/
 ca562103 - Stage 4.4: Update Mermaid diagrams
-0b49f954 - Stage 4.3: Update AGENT_ACCOUNTABILITY_REPORT.md
+0b49f954 - Stage 4.3: Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 10ae655f - Stage 2: Archive 40+ phase reports
 187800e2 - Stage 4.2: Update CHANGELOG.md
 0c4c6f28 - Stage 1: Delete 17+ root temporary files

@@ -152,7 +152,7 @@ Create comprehensive final campaign report, update accountability records, and p
 
 #### **Task 2: Update Accountability Records (T+54 to T+57 min)**
 
-**REQ-4: docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md**
+**REQ-4: docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md**
 
 Add session entry:
 ```markdown
@@ -301,7 +301,7 @@ Add entry:
 
 4. **Prepared Documentation (Phase 4)**
    - Campaign execution report ready
-   - REQ-4 (AGENT_ACCOUNTABILITY_REPORT.md) entry prepared
+   - REQ-4 (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md) entry prepared
    - REQ-5 (CHANGELOG.md) entry prepared
    - Next-session prompt created
 
@@ -361,7 +361,7 @@ Add entry:
 - `.codex/PHASE_3_VALIDATION_REPORT.md` (Pending Phase 3 completion)
 
 **Accountability:**
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (REQ-4 update)
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (REQ-4 update)
 - `CHANGELOG.md` (REQ-5 update)
 
 #### 🚀 TIME ALLOCATION SUMMARY
@@ -429,7 +429,7 @@ CRITICAL GATES:
 
 **If Phase 3 Validation PASSES:**
 1. Create comprehensive campaign execution report
-2. Update AGENT_ACCOUNTABILITY_REPORT.md (REQ-4)
+2. Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (REQ-4)
 3. Update CHANGELOG.md (REQ-5)
 4. Create final session wrap-up with next-steps
 5. Commit all Phase 4 artifacts

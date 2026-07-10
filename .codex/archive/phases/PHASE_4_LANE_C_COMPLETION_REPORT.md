@@ -169,7 +169,7 @@ Release Package Contents:
 ├── aries-serpent-0.1.0-final.tar.gz.sig (GPG)
 ├── aries-serpent-sbom.json
 ├── aries-serpent-sbom.xml
-└── RELEASE_NOTES.md
+└── docs/release/RELEASE_NOTES.md
 ```
 
 ### 5.7 Security Documentation Created

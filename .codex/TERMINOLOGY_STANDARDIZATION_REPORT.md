@@ -14,7 +14,7 @@ This report documents the complete implementation of terminology standardization
 **Key Metrics:**
 - **Files Affected:** 17 of 18 core documentation files
 - **Total Changes Applied:** 2,273 terminology standardizations
-- **Highest-Impact File:** AGENT_ACCOUNTABILITY_REPORT.md (2,156 changes)
+- **Highest-Impact File:** .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (2,156 changes)
 - **Coverage:** ~95% of primary documentation
 
 ---
@@ -140,10 +140,10 @@ Consistent terminology across documentation and code reduces ambiguity...
 9. **docs/agent/OPERATIONAL_GUIDELINES.md** - 20 changes
 10. **docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md** - 11 changes
 11. **docs/ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md** - 14 changes
-12. **AGENTS.md** - 89 changes
+12. **.codex/archive/deprecated/AGENTS.md** - 89 changes
 13. **.codex/guardrails.md** - 14 changes
 14. **.codex/CODEBASE_AGENCY_POLICY.md** - 62 changes
-15. **docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md** - 2,156 changes ⭐
+15. **docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md** - 2,156 changes ⭐
 16. **docs/discussions/SKILLS_TELEMETRY_DASHBOARD.md** - 9 changes
 17. **docs/ROADMAP.md** - 14 changes
 
@@ -366,7 +366,7 @@ Files updated: 17 (94%)
 Files with no changes: 1
 Files skipped: 0
 Total changes applied: 2,273
-Biggest impact: AGENT_ACCOUNTABILITY_REPORT.md (2,156 changes)
+Biggest impact: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (2,156 changes)
 ```
 
 ### Coverage

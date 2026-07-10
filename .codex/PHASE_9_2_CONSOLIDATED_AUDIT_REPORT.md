@@ -214,7 +214,7 @@
 
 ### Phase 3 Execution (IN PROGRESS)
 - [x] Merge all audit findings into consolidated report ✅ IN PROGRESS
-- [x] Update AGENT_ACCOUNTABILITY_REPORT.md with agent delegations ✅ DONE
+- [x] Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with agent delegations ✅ DONE
 - [x] Update CHANGELOG.md with Phase 9.2/9.3 completion entry ✅ DONE
 - [ ] Run compliance check: `session_wrapup_autofix.py --check --pr-number <PR>`
 - [ ] Verify REQ-4/REQ-5 compliance
@@ -259,7 +259,7 @@ Campaign Complete: All artifacts in .codex/, docs updated, compliant
 
 ### Phase 3 Deliverables (After consolidation)
 - [ ] PHASE_9_2_CONSOLIDATED_AUDIT_REPORT.md (this file, finalized)
-- [ ] AGENT_ACCOUNTABILITY_REPORT.md (updated with session entry)
+- [ ] .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (updated with session entry)
 - [ ] CHANGELOG.md (updated with Phase 9.2/9.3 entry)
 - [ ] Compliance verification (REQ-4/REQ-5 pass)
 
@@ -273,7 +273,7 @@ Campaign Complete: All artifacts in .codex/, docs updated, compliant
 3. ⏳ Merge findings into this consolidated report
 
 ### Phase 3 (20-30 minutes after agent completion)
-1. Update AGENT_ACCOUNTABILITY_REPORT.md
+1. Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 2. Update CHANGELOG.md
 3. Run compliance verification
 4. Commit consolidated report and updates

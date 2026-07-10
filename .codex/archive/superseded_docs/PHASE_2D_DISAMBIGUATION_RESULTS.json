@@ -616,7 +616,7 @@
       "fixes": []
     },
     {
-      "file": "/home/runner/work/_codex_/_codex_/.github/agents/docs/AGENTS.md",
+      "file": "/home/runner/work/_codex_/_codex_/.github/agents/docs/.codex/archive/deprecated/AGENTS.md",
       "links_found": 3,
       "links_fixed": 3,
       "fixes": [
@@ -744,7 +744,7 @@
       "fixes": []
     },
     {
-      "file": "/home/runner/work/_codex_/_codex_/.codex/docs/AGENTS.md.original.cf4e8c9.md",
+      "file": "/home/runner/work/_codex_/_codex_/.codex/docs/.codex/archive/deprecated/AGENTS.md.original.cf4e8c9.md",
       "links_found": 2,
       "links_fixed": 0,
       "fixes": []

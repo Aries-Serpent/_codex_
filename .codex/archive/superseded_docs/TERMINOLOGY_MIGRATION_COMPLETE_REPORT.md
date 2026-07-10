@@ -63,7 +63,7 @@ Successfully replaced ALL time-based terminology with iteration-based workflow t
 
 ### ✅ Documentation Core
 - [x] `docs/ROADMAP.md` - 6 replacements
-- [x] `AGENTS.md` - 1 replacement
+- [x] `.codex/archive/deprecated/AGENTS.md` - 1 replacement
 - [x] `README.md` - (no time terminology found)
 - [x] `CONTRIBUTING.md` - (processed via governance/)
 
@@ -90,7 +90,7 @@ Successfully replaced ALL time-based terminology with iteration-based workflow t
 
 ### ✅ Root Documentation
 - [x] `SECURITY.md` - 9 replacements
-- [x] `AGENTS.md` - 1 replacement
+- [x] `.codex/archive/deprecated/AGENTS.md` - 1 replacement
 - [x] All archive documentation processed
 
 ---

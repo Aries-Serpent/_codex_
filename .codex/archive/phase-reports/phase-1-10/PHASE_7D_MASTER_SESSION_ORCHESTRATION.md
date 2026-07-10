@@ -265,7 +265,7 @@ MASTER CONSOLIDATION:
 ### Governance & Policy
 - Agency Policy: `.codex/CODEBASE_AGENCY_POLICY.md`
 - Hardening Protocol: `.codex/PRODUCTION_READINESS_DELEGATION_FRAMEWORK.md`
-- Accountability: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- Accountability: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 ---
 

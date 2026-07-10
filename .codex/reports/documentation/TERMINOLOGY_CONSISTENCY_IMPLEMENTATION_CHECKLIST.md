@@ -19,7 +19,7 @@ Files to audit and update:
 - [ ] `docs/SECRETS_AND_ENVIRONMENT_VARIABLES.md` (21 instances)
 - [ ] `docs/agent/OPERATIONAL_GUIDELINES.md` (8 instances)
 - [ ] `docs/ADMIN_FAQ.md` (6 instances)
-- [ ] `AGENTS.md` (12+ instances)
+- [ ] `.codex/archive/deprecated/AGENTS.md` (12+ instances)
 - [ ] Search & replace: `Copilot agent` → `Copilot Agent`
 - [ ] Search & replace: `copilot agent` → `Copilot Agent`
 - [ ] Verify no remaining variations in docs/
@@ -67,7 +67,7 @@ grep -r "\bAIS\b\|\bWEC\b\|\bMCP\b\|\bGHAS\b" docs/ --include="*.md" | grep -v "
 ### 1.4 Link Glossary from Documentation
 - [ ] Update `docs/README.md`: Add glossary link in header
 - [ ] Update `.github/templates/doc-template.md` (if exists): Add link reference
-- [ ] Update top 5 docs (SECRETS_AND_ENVIRONMENT_VARIABLES.md, AGENTS.md, OPERATIONAL_GUIDELINES.md, AGENTIC_REPO_SYSTEM_GUIDE.md, COGNITIVE_BRAIN_QUANTUM_INTEGRATION.md):
+- [ ] Update top 5 docs (SECRETS_AND_ENVIRONMENT_VARIABLES.md, .codex/archive/deprecated/AGENTS.md, OPERATIONAL_GUIDELINES.md, AGENTIC_REPO_SYSTEM_GUIDE.md, COGNITIVE_BRAIN_QUANTUM_docs/api/reference/INTEGRATION.md):
   - Add header: `---\nrelated: [TERMINOLOGY_GLOSSARY.md](../TERMINOLOGY_GLOSSARY.md)\n---`
 
 ---
@@ -97,7 +97,7 @@ grep -r "\bAIS\b\|\bWEC\b\|\bMCP\b\|\bGHAS\b" docs/ --include="*.md" | grep -v "
 - [ ] Separate "skill" vs "capability" usage (see section 2.2)
 - [ ] Update references to use consistent terminology
 
-**File: `docs/COGNITIVE_BRAIN_QUANTUM_INTEGRATION.md`** (4 issues)
+**File: `docs/COGNITIVE_BRAIN_QUANTUM_docs/api/reference/INTEGRATION.md`** (4 issues)
 - [ ] Explain OODA loop in introduction
 - [ ] Clarify Memory layer vs STM/LTM
 - [ ] Link to TERMINOLOGY_GLOSSARY.md

@@ -177,9 +177,9 @@ Workflows can be skipped/dispatched by updating these checkboxes:
 **Responsibility:** Agent + auto-fix (`session_wrapup_autofix.py`)
 
 **Checklist:**
-- [ ] `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated in latest commit
+- [ ] `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` updated in latest commit
   ```bash
-  git diff --name-only HEAD~1 HEAD | grep -q "AGENT_ACCOUNTABILITY_REPORT.md"
+  git diff --name-only HEAD~1 HEAD | grep -q ".codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md"
   ```
 - [ ] `CHANGELOG.md` updated in latest commit
   ```bash
@@ -326,7 +326,7 @@ Before clicking "Merge", confirm:
 - [ ] No outstanding review comments
 - [ ] Branch protection rules satisfied
 - [ ] AAIS V4.0 composite score ≥ 95/100
-- [ ] AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md updated
+- [ ] .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md updated
 
 **Merge Status:** ✅ APPROVED FOR MERGE
 ```
@@ -339,7 +339,7 @@ Before clicking "Merge", confirm:
 |-----------|---------|
 | [10 Pre-Merge Gates](../ci/MERGE_READINESS_10_GATES.md) | Detailed gate documentation |
 | [PR Body Template](../templates/PR_BODY_TEMPLATE_MERGE_READINESS.md) | Template for PR sections |
-| [Agent Integration Guide](../agent/AGENT_MERGE_READINESS_INTEGRATION.md) | Agent implementation patterns |
+| [Agent Integration Guide](../agent/AGENT_MERGE_READINESS_docs/api/reference/INTEGRATION.md) | Agent implementation patterns |
 | [WEC Conflicts Guide](../../docs/workflows/WEC_PR_BODY_CONFLICTS.md) | WEC preservation details |
 | [PR Helper Module](../../scripts/ci/pr_description_helper.py) | Utility functions source |
 

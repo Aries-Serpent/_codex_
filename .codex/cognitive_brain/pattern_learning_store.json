@@ -267,19 +267,19 @@
       "id": "CPR4-001",
       "category": "ci_compliance",
       "symptoms": [
-        "AGENT_ACCOUNTABILITY_REPORT.md was NOT updated in the last commit",
+        ".codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md was NOT updated in the last commit",
         "REQ-4 accountability report failure",
         "::error::REQ-4"
       ],
       "diagnosis_steps": [
-        "Check if last commit touched docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md",
+        "Check if last commit touched docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md",
         "Verify agent-auth-delegation.yml autofix_docs step is enabled",
         "Confirm CODEX_MASTER_KEY is set in repo secrets"
       ],
       "solutions": [
         "Run: python scripts/ci/session_wrapup_autofix.py --fix-accountability",
         "Let autofix_docs step in agent-auth-delegation.yml handle it automatically",
-        "Manual: append session summary to docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md"
+        "Manual: append session summary to docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md"
       ],
       "success_rate": 1.0,
       "times_applied": 5,

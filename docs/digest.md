@@ -242,7 +242,7 @@
 - `src/codex_plans/track_F.md`
 - `src/codex_plans/track_G.md`
 - `src/ingestion/README.md`
-- `src/mcp/AGENTS.md`
+- `src/mcp/.codex/archive/deprecated/AGENTS.md`
 - `src/mcp/server/README.md`
 - ... and 37 more docs
 

@@ -36,7 +36,7 @@ All 13 compliance gates (REQ-1 through REQ-13) are **VERIFIED and PASSING**. The
 | **1** | Code Review & Security | ✅ PASS | `pre-merge-validation.yml` configured and active | NO |
 | **2** | Code Quality & Linting | ✅ PASS | ruff check E,F,I rules executed; 3310 non-blocking style issues | NO |
 | **3** | Type Checking | ✅ PASS | mypy baseline configured; advisory errors documented | NO |
-| **4** | Accountability Report | ✅ PASS | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (3.2 MB) present & current | NO |
+| **4** | Accountability Report | ✅ PASS | `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (3.2 MB) present & current | NO |
 | **5** | CHANGELOG | ✅ PASS | `CHANGELOG.md` (973 KB) present & updated for commit | NO |
 | **6** | Secrets Detection | ✅ PASS | GitLeaks validation; no credentials detected; pragma allowlist applied | NO | <!-- pragma: allowlist secret -->
 | **7** | Permissions Policy | ✅ PASS | `.codex/CODEBASE_AGENCY_POLICY.md` enforced; agency control validated | NO |
@@ -60,8 +60,8 @@ All 13 compliance gates (REQ-1 through REQ-13) are **VERIFIED and PASSING**. The
 - **Message:** "Phase 4 Agent 4.2 (memory-sync-agent) completed successfully - 101 patterns consolidated"
 
 ### REQ-4 & REQ-5 File Status
-✅ **AGENT_ACCOUNTABILITY_REPORT.md**
-- Path: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+✅ **.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md**
+- Path: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - Size: 3.2 MB
 - Status: ✅ Present and current
 - Last Modified: 2026-06-15 04:54 UTC
@@ -222,7 +222,7 @@ Mypy advisory errors (not shown in detail; design debt):
 This merge readiness certification is issued by the **Production Readiness Validator Agent** after comprehensive verification of:
 
 1. ✅ All 13 compliance gates (REQ-1 through REQ-13)
-2. ✅ Latest commit artifact lock (AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md)
+2. ✅ Latest commit artifact lock (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md)
 3. ✅ Code quality validation (ruff clean report)
 4. ✅ Type safety verification (mypy baseline)
 5. ✅ Workflow file integrity (184/184 valid YAML)
@@ -320,7 +320,7 @@ None of these prevent merge.
 - ✅ CI monitoring: pre-merge-validation workflow active
 - ✅ Error tracking: CodeQL + security scanning active
 - ✅ Logging: Session tracking enabled
-- ✅ Audit trails: AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md current
+- ✅ Audit trails: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md current
 
 ---
 

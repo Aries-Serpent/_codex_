@@ -69,7 +69,7 @@ Environment: CI/Test (validators only, not full toolkit)
 | `src/tokenization/cli.py` | F-string placeholder fixes | ✅ PASS | <!-- pragma: allowlist secret -->
 | `.github/workflows/copilot-setup-steps.yml` | Stabilization | ✅ PASS |
 | Documentation files (8+) | Campaign groundwork | ✅ PASS |
-| `AGENT_ACCOUNTABILITY_REPORT.md` | Updated | ✅ PASS |
+| `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` | Updated | ✅ PASS |
 | `CHANGELOG.md` | Updated | ✅ PASS |
 
 ---
@@ -119,7 +119,7 @@ Regression: NONE ✅
 .codex/CAMPAIGN_ARTIFACT_INDEX.md                    ✅ Added (221 lines)
 .codex/POST_MERGE_COPILOT_SETUP_VALIDATION.md        ✅ Added (7.7 KB)
 .codex/POST_MERGE_ENVIRONMENT_BASELINE.md            ✅ Added (5.5 KB)
-.codex/POST_MERGE_MISSING_DEPS_INSTALL.md            ✅ Added (10.3 KB)
+.codex/POST_MERGE_MISSING_DEPS_.codex/archive/misc/INSTALL.md            ✅ Added (10.3 KB)
 .codex/POST_MERGE_REVERSION_PROTOCOL.md              ✅ Added (8.0 KB)
 .codex/POST_MERGE_SESSION_CONTINUATION_BRIEF_V2.md   ✅ Added (10.0 KB)
 .codex/POST_MERGE_SESSION_ENTRY_POINT.md             ✅ Added (12.7 KB)
@@ -351,7 +351,7 @@ def verify_totp(user_id: str, token: str):  # user_id now required  # pragma: al
 - [x] **REQ-3**: Secrets detection compliance
   - Evidence: 3 files allowlisted, 0 credentials leaked
 - [x] **REQ-4**: Accountability report updated
-  - Evidence: `AGENT_ACCOUNTABILITY_REPORT.md` updated
+  - Evidence: `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` updated
 - [x] **REQ-5**: Changelog entry added
   - Evidence: `CHANGELOG.md` updated
 - [x] **REQ-6**: F-string placeholder fixes
@@ -527,7 +527,7 @@ This PR #5084 merge represents a solid and well-documented foundation for Phase 
 .codex/CAMPAIGN_ARTIFACT_INDEX.md
 .codex/POST_MERGE_COPILOT_SETUP_VALIDATION.md
 .codex/POST_MERGE_ENVIRONMENT_BASELINE.md
-.codex/POST_MERGE_MISSING_DEPS_INSTALL.md
+.codex/POST_MERGE_MISSING_DEPS_.codex/archive/misc/INSTALL.md
 .codex/POST_MERGE_REVERSION_PROTOCOL.md
 .codex/POST_MERGE_SESSION_CONTINUATION_BRIEF_V2.md
 .codex/POST_MERGE_SESSION_ENTRY_POINT.md
@@ -543,7 +543,7 @@ This PR #5084 merge represents a solid and well-documented foundation for Phase 
 
 #### Updated Accountability
 ```
-AGENT_ACCOUNTABILITY_REPORT.md (updated)
+.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (updated)
 CHANGELOG.md (updated)
 ```
 

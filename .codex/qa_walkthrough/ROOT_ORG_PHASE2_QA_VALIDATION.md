@@ -235,7 +235,7 @@ Root Organization Phase 2 has been successfully completed with comprehensive QA 
 ## 🔄 Continuous Improvement Actions
 
 ### Implemented Improvements (Phase 2)
-1. ✅ Added ChatGPT Codex Agent entry point to AGENTS.md
+1. ✅ Added ChatGPT Codex Agent entry point to .codex/archive/deprecated/AGENTS.md
 2. ✅ Automated reference updates with sed
 3. ✅ Comprehensive test validation (688 tests)
 4. ✅ Enhanced QA walkthrough documentation

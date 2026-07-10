@@ -67,13 +67,13 @@ This document maintains clarity about:
 - Uncomment 5 training/evaluation entry points
 - Add runtime dependencies: `torch>=2.0`, `transformers>=4.30`, `ray[serve]>=2.5`
 - Verify all 5 entry points are functional
-- Update INSTALL.md with runtime entry points documentation
+- Update .codex/archive/misc/INSTALL.md with runtime entry points documentation
 
 ### Phase 3 (Full Profile)
 - Uncomment remaining 17 utility/analysis entry points
 - Add full profile dependencies: all development tools, testing frameworks, ML ecosystem
 - Verify all 17 entry points are functional
-- Update INSTALL.md with full entry points documentation
+- Update .codex/archive/misc/INSTALL.md with full entry points documentation
 - Note: The 7 "Not Implemented" entries may require codebase refactoring or architectural changes
 
 ## Migration Path

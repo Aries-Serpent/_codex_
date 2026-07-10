@@ -29,7 +29,7 @@ Phase 6 ⏳  Cognitive Brain API server deployment + webhook receivers
 | `.github/workflows/branch-rebase-gate.yml` | ✅ FIXED | Added `Pre-create pip cache dir` step before `setup-python@v5` |
 | `.github/agents/cognitive-brain-session-injector.md` | ✅ UPDATED | v1.4.0 → v1.5.0 with S152/S153 fix patterns, Key Files table updated |
 | `CODEX_MANIFEST.json` | ✅ REFRESHED | Fresh timestamp 2026-03-18T20:xx (E→D C2 condition) |
-| `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | ✅ UPDATED | S153 session added |
+| `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` | ✅ UPDATED | S153 session added |
 | `CHANGELOG.md` | ✅ UPDATED | S153 entries added |
 | All 7 ci_triage_repro.sh checks | ✅ ALL PASS | — |
 | Agent Token Delegation | ✅ ACTIVE | `COPILOT_AGENT_AUTH_ENABLED=true` (approved 2026-03-18) |

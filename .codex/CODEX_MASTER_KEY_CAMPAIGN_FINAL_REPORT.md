@@ -317,7 +317,7 @@ The codebase exhibited critical security vulnerabilities including:
 | Guide | Lines | Examples | Status |
 |-------|-------|----------|--------|
 | TOKEN_HIERARCHY_GUIDE.md | 2,400+ | 8+ | ✅ |
-| SCRIPT_TOKEN_INTEGRATION.md | 2,600+ | 10+ | ✅ |
+| SCRIPT_TOKEN_docs/api/reference/INTEGRATION.md | 2,600+ | 10+ | ✅ |
 | WORKFLOW_TOKEN_PATTERNS.md | 2,800+ | 12+ | ✅ |
 | API_VARIABLE_OPERATIONS.md | 2,200+ | 7+ | ✅ |
 | CI_CD_TOKEN_TROUBLESHOOTING.md | 2,300+ | 6+ | ✅ |
@@ -481,7 +481,7 @@ scripts/ci/_hidden_scripts_manager.py
 ```
 docs/guides/
 ├── TOKEN_HIERARCHY_GUIDE.md (2,400 lines)
-├── SCRIPT_TOKEN_INTEGRATION.md (2,600 lines)
+├── SCRIPT_TOKEN_docs/api/reference/INTEGRATION.md (2,600 lines)
 ├── WORKFLOW_TOKEN_PATTERNS.md (2,800 lines)
 ├── API_VARIABLE_OPERATIONS.md (2,200 lines)
 ├── CI_CD_TOKEN_TROUBLESHOOTING.md (2,300 lines)

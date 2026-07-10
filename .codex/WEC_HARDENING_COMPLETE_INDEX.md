@@ -99,7 +99,7 @@
 **Purpose:** Comprehensive diagnosis library for 8 common workflow failure patterns
 
 **Contains:**
-- WF-001: REQ-4 missing (AGENT_ACCOUNTABILITY_REPORT.md)
+- WF-001: REQ-4 missing (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md)
 - WF-002: REQ-5 missing (CHANGELOG.md)
 - WF-003: WEC state loss (stripped from PR body)
 - WF-004: WEC format corruption (invalid checkbox syntax)

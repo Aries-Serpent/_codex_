@@ -52,7 +52,7 @@
     "docs/tutorials/end_to_end_cpu.md",
     "docs/tutorials/quickstart.md",
     "docs/runbooks/offline_wheelhouse.md",
-    "docs/guides/AGENTS.md",
+    "docs/guides/.codex/archive/deprecated/AGENTS.md",
     "docs/dev/testing.md",
     "docs/model_cards/template.md"
   ],

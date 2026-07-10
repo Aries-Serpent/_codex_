@@ -255,7 +255,7 @@ Deliverable: PHASE_5_WEEK3_DAILY_CHECKPOINT_DAY1.md (live)
 Actions:
   1. Commit Phase 3 briefs + launch document
   2. Push to PR with progress update
-  3. Update AGENT_ACCOUNTABILITY_REPORT.md (Phase 2→3 transition)
+  3. Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (Phase 2→3 transition)
   4. Post final status to campaign dashboard
   
 Commit Message: "PHASE_5: Week 2 Phase 2 COMPLETE → Week 3 Phase 3 LAUNCH"
@@ -292,7 +292,7 @@ Week 4 Schedule:
 Deliverables (Daily):
   - PHASE_5_WEEK4_DAILY_CHECKPOINT_DAY*.md (7 files)
   - PHASE_5_COMPREHENSIVE_COMPLETION_REPORT.md (Final)
-  - Updated AGENT_ACCOUNTABILITY_REPORT.md
+  - Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 ```
 
 ---

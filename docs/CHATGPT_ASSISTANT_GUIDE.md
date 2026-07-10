@@ -72,7 +72,7 @@ Security: 0 vulnerabilities
 _codex_/
 ├── setup.sh                    ← Run first
 ├── maintenance.sh              ← Run routinely
-├── AGENTS.md                   ← Full agent guide
+├── .codex/archive/deprecated/AGENTS.md                   ← Full agent guide
 ├── README.md                   ← Project overview
 │
 ├── .github/
@@ -106,7 +106,7 @@ _codex_/
 | **Setup** | `setup.sh` | `README.md` |
 | **Capabilities** | `AZURE_MLOPS_CAPABILITY_ASSESSMENT.md` | `COMPARISON_RATING.md` |
 | **Implementation** | `IMPLEMENTATION_COMPLETE.md` | `COPILOT_INTEGRATION_GUIDE.md` |
-| **Operations** | `maintenance.sh`, `AGENTS.md` | `docs/ops/` |
+| **Operations** | `maintenance.sh`, `.codex/archive/deprecated/AGENTS.md` | `docs/ops/` |
 | **Kubernetes** | `manifests/k8s/base/` | `scripts/k8s_deploy.sh` |
 | **Features** | `src/codex_ml/features/` | CLI help |
 | **Events** | `src/codex_ml/events/` | `configs/events/` |
@@ -395,7 +395,7 @@ export TRANSFORMERS_OFFLINE="1"
 |----------|---------|----------|
 | Setup Script | Initial setup | `setup.sh` |
 | Maintenance Script | Routine checks | `maintenance.sh` |
-| Agent Guide | Full operations | `AGENTS.md` |
+| Agent Guide | Full operations | `.codex/archive/deprecated/AGENTS.md` |
 | Capability Assessment | 71/71 proof | `.github/prompts/followup_execution_plan/AZURE_MLOPS_CAPABILITY_ASSESSMENT.md` |
 | Implementation Details | Complete summary | `docs/IMPLEMENTATION_COMPLETE.md` |
 | Copilot Guide | How it was built | `.github/COPILOT_INTEGRATION_GUIDE.md` |

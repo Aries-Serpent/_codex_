@@ -217,7 +217,7 @@ TOTAL: 31 files, 10 active lanes
 - [x] LANE allocation complete? **YES** (LANE 1-3 + supporting)
 - [x] Campaign completion documentation? **YES** (outline provided)
 - [x] Phase 6 transition readiness? **YES** (handoff prepared)
-- [x] Accountability reporting structure? **YES** (AGENT_ACCOUNTABILITY_REPORT.md update defined)
+- [x] Accountability reporting structure? **YES** (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md update defined)
 
 **Review Result:** ✅ **PASS**
 - Phase 4 groundwork comprehensive
@@ -268,7 +268,7 @@ TOTAL: 31 files, 10 active lanes
 - [x] Phase 5 execution mandate active? **YES**
 - [x] Escalation authority clear? **YES**
 - [x] Progress tracking structure? **YES** (.codex/ repository-tracked)
-- [x] AGENT_ACCOUNTABILITY_REPORT.md integration? **YES**
+- [x] .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md integration? **YES**
 
 **Review Result:** ✅ **PASS**
 - Campaign authority clear
@@ -363,7 +363,7 @@ Deliverable: Daily checkpoint tracking structure (live updates)
 1. Retrieve Phase 4 results
 2. Consolidate final campaign metrics
 3. Generate PHASE_5_COMPREHENSIVE_COMPLETION_REPORT.md
-4. Update AGENT_ACCOUNTABILITY_REPORT.md
+4. Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 5. Create Phase 6 transition documentation
 
 ---
@@ -394,7 +394,7 @@ Deliverable: Daily checkpoint tracking structure (live updates)
 
 - [ ] Monitor Phase 2 agents (background execution until Jul 9)
 - [ ] Prepare Phase 3 brief templates (standing by)
-- [ ] Confirm AGENT_ACCOUNTABILITY_REPORT.md update schedule
+- [ ] Confirm .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md update schedule
 - [ ] Establish daily checkpoint infrastructure
 - [ ] Validate supporting lane activation procedures
 

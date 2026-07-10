@@ -151,4 +151,4 @@ Current remaining errors by category (1069 total):
 - Issue: [#3583 CI Failure Triage Report](https://github.com/Aries-Serpent/_codex_/issues/3583)
 - Previous: [COGNITIVE_BRAIN_STATUS_S44_PR3582_STUB_IMPL_MYPY.md](./COGNITIVE_BRAIN_STATUS_S44_PR3582_STUB_IMPL_MYPY.md)
 - Policy: [CODEBASE_AGENCY_POLICY.md](../../../.codex/CODEBASE_AGENCY_POLICY.md)
-- Accountability: [AGENT_ACCOUNTABILITY_REPORT.md](../../../docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md)
+- Accountability: [.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md](../../../docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md)

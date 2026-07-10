@@ -197,7 +197,7 @@ This audit employed systematic verification across:
 - `tests/test_container_smoke.py` (line 40)
 
 ### Medium Priority
-- `AGENTS.md` (line 536)
+- `.codex/archive/deprecated/AGENTS.md` (line 536)
 - `README.md` (lines 13, 37, 64, 126, 169)
 - Coverage documentation
 

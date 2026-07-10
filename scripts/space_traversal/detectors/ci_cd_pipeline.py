@@ -27,7 +27,7 @@ def detect(file_index: dict) -> dict:
     for f in files:
         path = f["path"]
 
-        # GitHub Actions (note: per AGENTS.md, not activated)
+        # GitHub Actions (note: per .codex/archive/deprecated/AGENTS.md, not activated)
         if path.startswith(".github/workflows/"):
             github_actions.append(path)
 
@@ -104,7 +104,7 @@ def detect(file_index: dict) -> dict:
             "pre_commit_hooks": len(pre_commit),
             "ci_configs": len(ci_configs),
             "validation_scripts": len(test_scripts),
-            "note": "GitHub Actions present but not activated per AGENTS.md",
+            "note": "GitHub Actions present but not activated per .codex/archive/deprecated/AGENTS.md",
             "safeguards": ["validation", "quality-gates", "automated-testing"],
             "detector_version": "1.1",
         },

@@ -106,7 +106,7 @@ Four specialized agents worked in parallel to apply corrections and validate the
 
 ### Pattern 25: Accountability Report (Freshness)
 
-**Issue:** `AGENT_ACCOUNTABILITY_REPORT.md` not updated in last commit
+**Issue:** `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` not updated in last commit
 
 **Corrections:**
 
@@ -116,7 +116,7 @@ Four specialized agents worked in parallel to apply corrections and validate the
 
 **Files Affected:**
 
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (auto-updated)
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (auto-updated)
 
 ## ✅ Validation Checkpoints
 
@@ -141,7 +141,7 @@ Four specialized agents worked in parallel to apply corrections and validate the
 | Documentation | ✅ Valid | Doc changes validated; existing docs accurate |
 | Security | ✅ Clean | No new vulnerabilities introduced |
 | Workflow Integrity | 🟡 Validating | YAML validation in progress |
-| Accountability | ✅ Updated | AGENT_ACCOUNTABILITY_REPORT.md refreshed |
+| Accountability | ✅ Updated | .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md refreshed |
 | Merge Authority | ✅ Granted | Auto-approve + agent-auth-delegation enabled |
 
 **Overall:** 🟡 **VALIDATING** (awaiting agent results)

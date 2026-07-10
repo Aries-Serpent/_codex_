@@ -55,7 +55,7 @@ STAGE 3: Convergence & Finalization
 ├─ Continue Phase 5 coverage roadmap (10% → 12%)
 ├─ Validate production deployment checklist
 ├─ Create campaign completion report
-├─ Update AGENT_ACCOUNTABILITY_REPORT.md
+├─ Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 └─ Status: ⏳ PENDING (Est. 4-6 hours)
 ```
 
@@ -170,7 +170,7 @@ TOTAL ESTIMATED TIME: 3.5-4 hours end-to-end
 - `.codex/CAMPAIGN_ORCHESTRATION_STAGE_2_MONITORING.md` — Execution dashboard
 - `.codex/CAMPAIGN_ORCHESTRATION_STAGE_3_FINALIZATION.md` — Final checklist
 - `.codex/CAMPAIGN_COMPLETION_FINAL_*.md` — Completion summary
-- Updated: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (REQ-4 compliance)
+- Updated: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (REQ-4 compliance)
 - Updated: `CHANGELOG.md` (REQ-5 compliance)
 
 ---
@@ -207,7 +207,7 @@ TOTAL ESTIMATED TIME: 3.5-4 hours end-to-end
 - **Phase 9 Status:** `.codex/PHASE_9_COMPLETION_REPORT_2026_06_22.md` (100% complete)
 - **Agentic State:** `.codex/AGENTIC_REPO_STATE.md` (auth verified)
 - **Agent Registry:** `.github/agents/AGENT_REGISTRY.yaml` (145 active agents)
-- **Accountability:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (session history)
+- **Accountability:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (session history)
 
 ---
 

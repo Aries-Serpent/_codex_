@@ -119,7 +119,7 @@ timing comparison. Need to verify it represents actual classical compliance engi
 ### 3.6 Documentation Completion (LOW, 30 min)
 
 - Add `lightweight_mode` parameter to config documentation
-- Update AGENTS.md with Phase 2 metrics
+- Update .codex/archive/deprecated/AGENTS.md with Phase 2 metrics
 - Verify all mermaid diagrams render correctly
 
 ---

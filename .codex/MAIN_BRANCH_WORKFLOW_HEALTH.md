@@ -235,7 +235,7 @@ Use this as a checklist when reviewing PRs for potential issues:
     - Preserved after commits: YES
   
   Governance:
-    - REQ-4 (AGENT_ACCOUNTABILITY_REPORT.md): UPDATED
+    - REQ-4 (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md): UPDATED
     - REQ-5 (CHANGELOG.md): UPDATED
     - Both in final commit: YES
   

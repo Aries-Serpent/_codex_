@@ -7,7 +7,7 @@ Tracks recurring CI failure patterns, root causes, and resolutions across all se
 This log is referenced by `.github/workflows/pre-flight-validation.yml` as a quick-reference
 resource when rescue-comment jobs fire. For per-session remediation history, see:
 
-- [`docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`](../docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md)
+- [`docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`](../docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md)
 - [`docs/ci/CI_FAILURE_ANALYSIS.md`](../docs/ci/CI_FAILURE_ANALYSIS.md)
 - [`.codex/CI_FAILURE_PATTERN_ANALYSIS.md`](CI_FAILURE_PATTERN_ANALYSIS.md)
 

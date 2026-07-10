@@ -231,7 +231,7 @@ Hour 10: Track 3 complete = PRODUCTION READY
 ### Phase 7D Campaign (Already Complete) ✅
 - `.codex/PHASE_7D_COMPLETE_100_PRODUCTION_READINESS_CERTIFICATION.md`
 - `.codex/PHASE_7D_CAMPAIGN_ARTIFACT_INDEX.md`
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - `CHANGELOG.md`
 
 ### Unified Framework (Already Complete) ✅

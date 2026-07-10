@@ -128,7 +128,7 @@ python3 -m json.tool < .codex/agent_context.json
 **Outputs:**
 - `.codex/PHASE_7A_LANE_3.3_VALIDATION_REPORT.md` — Comprehensive report
 - `.codex/code-validation-findings.json` — Full findings JSON
-- AGENT_ACCOUNTABILITY_REPORT.md update with Lane 3.3 status
+- .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md update with Lane 3.3 status
 
 **Success Criteria:**
 - 15 validation categories completed
@@ -228,7 +228,7 @@ Phase 7A Wave 3 (7-day campaign)
 
 - **Campaign Master:** `.codex/CAMPAIGN_AGENT_DELEGATION_PLAN.md`
 - **Phase 7A Lanes Spec:** `.codex/WAVE_3_LANE_3.*.SPECIFICATION.md` (1-3)
-- **Accountability:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- **Accountability:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - **Python Setup (Phase 1):** `.codex/CRITICAL_CI_ISSUE_REMEDIATION_PLAN_WFR_27811228066.md`
 
 ---

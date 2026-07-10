@@ -25,7 +25,7 @@
 9. `TEST_FIXES_SUMMARY.md` (9.3KB) - Summary report → `.codex/pr_fixes/`
 10. `FINAL_REPORT.md` (4.1KB) - Final report → `.codex/pr_fixes/`
 11. `FINAL_TEST_STATUS.md` (3.1KB) - Test status → `.codex/pr_fixes/`
-12. `.copilot-review-exclusions.md` (6.0KB) - Config file → `.github/copilot/`
+12. `.codex/archive/misc/.copilot-review-exclusions.md` (6.0KB) - Config file → `.github/copilot/`
 13. `.security-exceptions.md` (8.6KB) - Security config → `docs/security/`
 
 #### Configuration Files (Priority 2 - Keep in root, validate usage)
@@ -46,7 +46,7 @@
 26. `requirements-ml-cpu.txt` (278 bytes) - **KEEP**
 
 #### Agent Documentation (Priority 1 - Already in good location)
-27. `AGENTS.md` (28KB) - **KEEP** (primary agent documentation)
+27. `.codex/archive/deprecated/AGENTS.md` (28KB) - **KEEP** (primary agent documentation)
 
 ---
 
@@ -82,7 +82,7 @@ mv FINAL_REPORT.md .codex/pr_fixes/
 mv FINAL_TEST_STATUS.md .codex/pr_fixes/
 
 # Configuration files
-mv .copilot-review-exclusions.md .github/copilot/review-exclusions.md
+mv .codex/archive/misc/.copilot-review-exclusions.md .github/copilot/review-exclusions.md
 mv .security-exceptions.md docs/security/security-exceptions.md
 ```
 
@@ -145,7 +145,7 @@ pre-commit run --all-files
 - `FINAL_*.md` - Documentation only
 
 ### Files with LOW Impact (Need Reference Updates)
-- `.copilot-review-exclusions.md` - May be referenced in workflows
+- `.codex/archive/misc/.copilot-review-exclusions.md` - May be referenced in workflows
 - `.security-exceptions.md` - May be referenced in security tools
 
 ### Files to KEEP in Root (Standard/Required Locations)
@@ -154,7 +154,7 @@ pre-commit run --all-files
 - `requirements*.txt` - Standard Python dependency files (pip expects root)
 - `.mutmut-config.txt` - Mutmut expects root
 - `.mypy-baseline.txt` - Mypy expects root
-- `AGENTS.md` - Primary entry point for agent documentation
+- `.codex/archive/deprecated/AGENTS.md` - Primary entry point for agent documentation
 
 ---
 
@@ -267,7 +267,7 @@ rg "security-exceptions" --type md --type yaml
 - `DETERMINISM_CHECK_FIX.md` → `docs/testing/DETERMINISM_CHECK_FIX.md`
 - `STOPITERATION_FIX_REPORT.md` → `docs/testing/STOPITERATION_FIX_REPORT.md`
 - `TEST_FIXES_*.md` → `.codex/pr_fixes/TEST_FIXES_*.md`
-- `.copilot-review-exclusions.md` → `.github/copilot/review-exclusions.md`
+- `.codex/archive/misc/.copilot-review-exclusions.md` → `.github/copilot/review-exclusions.md`
 - `.security-exceptions.md` → `docs/security/security-exceptions.md`
 
 ---
@@ -299,7 +299,7 @@ rg "security-exceptions" --type md --type yaml
 - Moving text log files
 
 ### LOW RISK 🟡
-- Moving `.copilot-review-exclusions.md` (may need workflow updates)
+- Moving `.codex/archive/misc/.copilot-review-exclusions.md` (may need workflow updates)
 - Moving `.security-exceptions.md` (may need tool config updates)
 
 ### HIGH RISK 🔴 (OUT OF SCOPE)

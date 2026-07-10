@@ -3714,7 +3714,7 @@
     {
       "file": "docs/accountability/README.md",
       "link_text": "\ud83d\udcc4 Group 11-21 (Sessions 101-210)",
-      "link_url": "./AGENT_ACCOUNTABILITY_REPORT.md#all-groups-1-32",
+      "link_url": "./.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md#all-groups-1-32",
       "error_type": "internal_anchor_missing"
     },
     {
@@ -4565,8 +4565,8 @@
     },
     {
       "file": "docs/validation/Windows_Filename_Remediation.md",
-      "link_text": "AGENTS.md - Cross-Platform Guidelines",
-      "link_url": "../../AGENTS.md#-cross-platform-filename-requirements",
+      "link_text": ".codex/archive/deprecated/AGENTS.md - Cross-Platform Guidelines",
+      "link_url": "../../.codex/archive/deprecated/AGENTS.md#-cross-platform-filename-requirements",
       "error_type": "internal_anchor_missing"
     },
     {
@@ -16847,7 +16847,7 @@
     },
     {
       "file": "docs/plans/Agentic_AI_System/soft_to_GROUNDED.md",
-      "link_text": "AGENT_ACCOUNTABILITY_REPORT.md Auto-Append (Phase 5)",
+      "link_text": ".codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md Auto-Append (Phase 5)",
       "link_url": "#agent_accountability_reportmd-auto-append-phase-5",
       "error_type": "internal_anchor_missing"
     },
@@ -19007,14 +19007,14 @@
     },
     {
       "file": ".github/agents/google-home-script-agent.md",
-      "link_text": "`GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md`",
-      "link_url": "../../GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md",
+      "link_text": "`.codex/archive/deprecated/GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md`",
+      "link_url": "../../.codex/archive/deprecated/GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md",
       "error_type": "internal_file_missing"
     },
     {
       "file": ".github/agents/energy-conversion-agent.md",
-      "link_text": "`ENERGY_CONVERSION_AGENT_DEPRECATION.md`",
-      "link_url": "../../ENERGY_CONVERSION_AGENT_DEPRECATION.md",
+      "link_text": "`.codex/archive/deprecated/ENERGY_CONVERSION_AGENT_DEPRECATION.md`",
+      "link_url": "../../.codex/archive/deprecated/ENERGY_CONVERSION_AGENT_DEPRECATION.md",
       "error_type": "internal_file_missing"
     },
     {
@@ -19054,7 +19054,7 @@
       "error_type": "internal_file_missing"
     },
     {
-      "file": ".github/agents/docs/AGENTS.md",
+      "file": ".github/agents/docs/.codex/archive/deprecated/AGENTS.md",
       "link_text": "scripts/cognitive/",
       "link_url": "../../../scripts/cognitive/",
       "error_type": "internal_file_missing"

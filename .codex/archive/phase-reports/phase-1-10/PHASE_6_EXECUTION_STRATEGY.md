@@ -26,7 +26,7 @@
 ### ✅ Phase 5: Documentation — COMPLETE
 - **Result:** 10 stable public APIs marked, 2 new guides created
 - **Blockers:** None identified
-- **Deliverables:** QUICKSTART_BY_PROFILE.md (340 lines), OFFLINE_DEPLOYMENT.md (432 lines)
+- **Deliverables:** QUICKSTART_BY_PROFILE.md (340 lines), docs/release/OFFLINE_DEPLOYMENT.md (432 lines)
 - **Updates:** CONTRIBUTING.md enhanced with profile-aware development
 - **Artifact:** `.codex/PHASE_5_DOC_UPDATES.md`
 
@@ -296,7 +296,7 @@ detect-secrets scan --list-all-plugins src/
 
 ### Compliance Documentation
 
-- Update `AGENT_ACCOUNTABILITY_REPORT.md` with:
+- Update `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` with:
   - Session start time (2026-07-06T04:50:00Z)
   - Phase 0-6 completion details
   - All blockers identified and resolved

@@ -248,7 +248,7 @@
       "path_status": {
         "README.md": true,
         "docs/": true,
-        "AGENTS.md": true,
+        ".codex/archive/deprecated/AGENTS.md": true,
         "mkdocs.yml": true
       },
       "key_features": [

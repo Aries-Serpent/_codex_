@@ -265,7 +265,7 @@ Cross-file Sync:     ✅ PASS (cyclonedx.json ↔ spdx.json consistent)
 
 - **Reporter:** Unified Security Scanner (automated background monitoring)
 - **Authority:** @mbaetiong (Phase 7A Production Readiness Campaign)
-- **Report destination:** `/docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- **Report destination:** `/docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - **Session ID:** 1413
 - **Campaign phase:** Phase 7A Checkpoint 3
 

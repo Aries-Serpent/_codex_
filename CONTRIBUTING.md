@@ -609,7 +609,7 @@ All development sessions must comply with our strict accountability and changelo
 
 ### REQ-4 & REQ-5 Requirements
 
-*   **REQ-4 (Accountability Reporting):** Every session must log its accomplishments, files changed, and commands executed in `AGENT_ACCOUNTABILITY_REPORT.md` (or the respective phase report). This guarantees complete traceability of AI and human modifications.
+*   **REQ-4 (Accountability Reporting):** Every session must log its accomplishments, files changed, and commands executed in `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (or the respective phase report). This guarantees complete traceability of AI and human modifications.
 *   **REQ-5 (Changelog Updates):** You must add an entry to `CHANGELOG.md` detailing the semantic changes introduced in the session.
 
 ### Automated Compliance Checking
@@ -621,7 +621,7 @@ python scripts/ci/session_wrapup_autofix.py
 ```
 
 This script will:
-1. Verify that `AGENT_ACCOUNTABILITY_REPORT.md` has been updated with the current session's changes.
+1. Verify that `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` has been updated with the current session's changes.
 2. Verify that `CHANGELOG.md` has a corresponding entry.
 3. Attempt to automatically append missing entries if they are easily inferred, but **manual updates are preferred**.
 

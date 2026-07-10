@@ -31,12 +31,12 @@ This document establishes **content refresh schedules** (cadence) and **automati
 
 | Category | Documents | Reason | Refresh Trigger | Owner Check Interval |
 |----------|-----------|--------|-----------------|-----|
-| **Core entrypoints** | README.md, CONTRIBUTING.md, SECURITY.md, CHANGELOG.md, AGENTS.md | High visibility; user trust | Before release, or 30d calendar | Weekly |
+| **Core entrypoints** | README.md, CONTRIBUTING.md, SECURITY.md, CHANGELOG.md, .codex/archive/deprecated/AGENTS.md | High visibility; user trust | Before release, or 30d calendar | Weekly |
 | **API reference** | docs/reference/api*.md (15 files) | Code API surface drifts frequently | On every public API change | Weekly |
 | **CLI reference** | docs/reference/cli*.md (8 files) | CLI options/subcommands change | On CLI flag/subcommand addition | Weekly |
 | **Terminology glossary** | docs/TERMINOLOGY_GLOSSARY.md (NEW) | Used by all consistency checks | On terminology-agent audit | Weekly |
 | **Cognitive brain docs** | docs/cognitive_brain/*.md (53 files) | Active system development | On feature/OODA loop change | Bi-weekly |
-| **Agent registry + index** | AGENTS.md, docs/agent/index.md, .github/agents/AGENT_REGISTRY.yaml | Agent ecosystem churn | On agent deploy/retire | Weekly |
+| **Agent registry + index** | .codex/archive/deprecated/AGENTS.md, docs/agent/index.md, .github/agents/AGENT_REGISTRY.yaml | Agent ecosystem churn | On agent deploy/retire | Weekly |
 
 **SLA enforcement:**
 - ✅ PASS: Last reviewed ≤ 30 days ago
@@ -209,7 +209,7 @@ on:
       - 'SECURITY.md'
       - 'CONTRIBUTING.md'
       - 'CHANGELOG.md'
-      - 'AGENTS.md'
+      - '.codex/archive/deprecated/AGENTS.md'
   schedule:
     - cron: '0 2 * * 0'  # Weekly Sunday 02:00 UTC
 
@@ -379,7 +379,7 @@ ELSE:
 - SECURITY.md (2 days old)
 - CHANGELOG.md (35 days old) ⚠️ → 🔴 FAILING [ACTION: @pypi-publishing-operations-agent update]
 - docs/index.md (5 days old)
-- AGENTS.md (21 days old)
+- .codex/archive/deprecated/AGENTS.md (21 days old)
 - docs/TERMINOLOGY_GLOSSARY.md (0 days old, just created)
 - docs/reference/api*.md (7/8 compliant; 1 @ 65d) → 🟡 WARNING
 - docs/cognitive_brain/*.md (52/53 compliant)

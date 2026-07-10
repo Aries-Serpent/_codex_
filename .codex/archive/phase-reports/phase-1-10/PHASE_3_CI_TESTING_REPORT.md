@@ -469,7 +469,7 @@ Phase 6 will focus on:
 ### Immediate (Ready Now)
 - ✅ Proceed to Phase 6 — all gates passed
 - ✅ Merge Phase 3 findings into documentation
-- ✅ Update INSTALL.md with profile selection guide
+- ✅ Update .codex/archive/misc/INSTALL.md with profile selection guide
 
 ### Short-term (Next Sprint)
 - 📋 Create profile selection flow-chart for users

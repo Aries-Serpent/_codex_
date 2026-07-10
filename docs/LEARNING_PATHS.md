@@ -359,7 +359,7 @@ You've learned:
 
 **Goal:** Understand autonomous agent systems
 
-1. **Read:** [Agent Development Guide](../AGENTS.md)
+1. **Read:** [Agent Development Guide](../.codex/archive/deprecated/AGENTS.md)
 
 2. **Explore agent system:**
    ```python
@@ -679,7 +679,7 @@ Use this checklist to track your progress:
 | **Configuration** | 30 min | [Hydra Guide](./configuration/HYDRA_GUIDE.md) |
 | **Training** | 60 min | [Training Guide](./training/README.md) |
 | **Evaluation** | 45 min | [Evaluation Guide](./guides/fairness_evaluation_guide.md) |
-| **Agents** | 60 min | [Custom Agents](../AGENTS.md) |
+| **Agents** | 60 min | [Custom Agents](../.codex/archive/deprecated/AGENTS.md) |
 | **Deployment** | 90 min | [Infrastructure Guide](./infrastructure/README.md) |
 | **Contributing** | 30 min | [Contributing Guide](../CONTRIBUTING.md) |
 | **Troubleshooting** | As-needed | [Troubleshooting Guide](./TROUBLESHOOTING.md) |

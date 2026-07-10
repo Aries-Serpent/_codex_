@@ -107,7 +107,7 @@ Decision Matrix:
 ### Next Steps After Go Decision
 
 1. **Verify all Phase 4-5 reports present**
-2. **Confirm AGENT_ACCOUNTABILITY_REPORT.md updated (REQ-4)**
+2. **Confirm .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated (REQ-4)**
 3. **Confirm CHANGELOG.md updated (REQ-5)**
 4. **Execute merge:** `copilot/explain-repository-structure` → `0D_base_`
 5. **Post merge summary to discussion #4872**

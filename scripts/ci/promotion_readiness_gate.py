@@ -48,7 +48,7 @@ _REQUIRED_FILES: list[str] = [
     ".github/agents/AGENT_REGISTRY.yaml",
     ".codex/agent_context.json",
     ".codex/aftermath/pda_iterations.jsonl",
-    "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md",
+    "docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md",
     "CHANGELOG.md",
     "scripts/ci/check_deferral_language.py",
     "scripts/ci/session_wrapup_autofix.py",
@@ -227,11 +227,11 @@ def check_policy_consistency() -> list[dict[str, Any]]:
 
 
 def check_req14_agents_used() -> list[dict[str, Any]]:
-    """Validate AGENT_ACCOUNTABILITY_REPORT.md for valid agent identifiers."""
-    report_path = REPO_ROOT / "docs" / "accountability" / "AGENT_ACCOUNTABILITY_REPORT.md"
+    """Validate .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md for valid agent identifiers."""
+    report_path = REPO_ROOT / "docs" / "accountability" / ".codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md"
     if not report_path.exists():
         return [{"check": "req14_agents_used", "pass": False,
-                 "detail": "AGENT_ACCOUNTABILITY_REPORT.md not found"}]
+                 "detail": ".codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md not found"}]
     content = report_path.read_text(encoding="utf-8")
     heading_match = re.search(r"^#{1,4}\s+Agents Used", content, re.MULTILINE)
     if not heading_match:
@@ -262,14 +262,14 @@ def check_req14_agents_used() -> list[dict[str, Any]]:
 def check_deferral_scan() -> list[dict[str, Any]]:
     """Run check_deferral_language.py against the most recent accountability entry.
 
-    Scanning the full AGENT_ACCOUNTABILITY_REPORT.md would false-positive on
+    Scanning the full .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md would false-positive on
     historical entries that legitimately described pre-existing failures.
     We extract only the last real (non-auto-generated) session entry.
     """
-    report_path = REPO_ROOT / "docs" / "accountability" / "AGENT_ACCOUNTABILITY_REPORT.md"
+    report_path = REPO_ROOT / "docs" / "accountability" / ".codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md"
     if not report_path.exists():
         return [{"check": "deferral_scan", "pass": False,
-                 "detail": "AGENT_ACCOUNTABILITY_REPORT.md not found for deferral scan"}]
+                 "detail": ".codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md not found for deferral scan"}]
     script = REPO_ROOT / "scripts" / "ci" / "check_deferral_language.py"
     if not script.exists():
         return [{"check": "deferral_scan", "pass": False,
@@ -365,10 +365,10 @@ def check_accountability_schema() -> list[dict[str, Any]]:
     - Outcomes / Work Completed
     - Validation evidence (parallel_validation / CI check references)
     """
-    report_path = REPO_ROOT / "docs" / "accountability" / "AGENT_ACCOUNTABILITY_REPORT.md"
+    report_path = REPO_ROOT / "docs" / "accountability" / ".codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md"
     if not report_path.exists():
         return [{"check": "accountability_schema", "pass": False,
-                 "detail": "AGENT_ACCOUNTABILITY_REPORT.md not found"}]
+                 "detail": ".codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md not found"}]
     content = report_path.read_text(encoding="utf-8")
     # Split into sessions separated by "---" or "## SESSION"
     sessions = re.split(r"\n---\n", content)

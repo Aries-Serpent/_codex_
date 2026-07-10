@@ -284,7 +284,7 @@
 
 ### Documentation
 - [ ] Add runbook for troubleshooting artifact failures
-- [ ] Document artifact lifecycle in AGENTS.md
+- [ ] Document artifact lifecycle in .codex/archive/deprecated/AGENTS.md
 - [ ] Create artifact best practices guide
 
 ---

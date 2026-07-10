@@ -68,7 +68,7 @@ Documentation preparation for the Root Folder Cleanup campaign is **complete**. 
 - **Links:** ROOT_FOLDER_ORGANIZATION.md, archive/phases/INDEX.md
 - **Status:** Specification ready ✅
 
-#### docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md Updates
+#### docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md Updates
 - **Section:** "Archive Reference" (beginning or end)
 - **Content:** ~100-150 words with archive location and path examples
 - **Links:** archive/phases/INDEX.md, ROOT_FOLDER_ORGANIZATION.md
@@ -138,7 +138,7 @@ Documentation preparation for the Root Folder Cleanup campaign is **complete**. 
 - ✅ `docs/runbooks/troubleshooting_faq.md` - 1 PHASE_* reference found
 - ✅ `docs/TASK_3_NOTEBOOKLM_SKILL_SETUP.md` - 1 PHASE_* reference (Phase 10+)
 - ✅ `docs/quality/COMPREHENSIVE_DOCUMENTATION_VERIFICATION_REPORT.md` - Multiple references
-- ✅ `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` - Multiple references
+- ✅ `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` - Multiple references
 - ✅ `docs/PHASE_*.md` files - Internal references within archive docs
 - ✅ All README/CONTRIBUTING references - Will be added in updates
 

@@ -192,7 +192,7 @@ GROUP BY phase;
 - [ ] Update `.codex/PHASE_13_REALTIME_DASHBOARD.md`
 - [ ] Unlock Phase 13 full execution authority
 - [ ] Deploy Tracks 13.3-13.4 agents
-- [ ] Update `AGENT_ACCOUNTABILITY_REPORT.md`
+- [ ] Update `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - [ ] Begin Days 3+ full execution phase
 
 ---

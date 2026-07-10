@@ -286,7 +286,7 @@ Verify: All nav entries, Mermaid diagrams, search
 - `docs/CHANGELOG.md` — Release history
 
 **Previous Phase Documentation:**
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — Session tracking
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — Session tracking
 - `docs/ci/INDEX.md` — CI documentation index
 - `docs/ARCHITECTURE.md` — System architecture
 

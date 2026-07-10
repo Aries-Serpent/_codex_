@@ -296,7 +296,7 @@ with DeterministicTimeout(max_seconds=T) as timer:
    - Before/after statistics
    - Key learnings
 
-2. Update `AGENT_ACCOUNTABILITY_REPORT.md`
+2. Update `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
    - Record Phase 5 Track 3 completion
    - Add to agent portfolio
 
@@ -568,7 +568,7 @@ All of the following must be true:
 - [ ] All 12 flaky tests fixed
 - [ ] Validation report (10+ test runs)
 - [ ] FLAKY_TEST_STABILIZATION_REPORT.md created
-- [ ] AGENT_ACCOUNTABILITY_REPORT.md updated
+- [ ] .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated
 - [ ] CHANGELOG.md entry created
 - [ ] CONTRIBUTING.md updated with best practices
 

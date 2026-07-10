@@ -8,7 +8,7 @@ This directory contains the complete Phase 9.1 D_CAPABLE decision framework impl
 
 #### Documentation (Read-Only)
 - **PHASE_9_1_DECISION_FRAMEWORK.md** — Main framework specification (decision model, scoring, escalation)
-- **PHASE_9_1_CANDIDATE_AGENTS.md** — List of 9 authorized D_CAPABLE agents with risk profiles
+- **PHASE_9_1_CANDIDATE_.codex/archive/deprecated/AGENTS.md** — List of 9 authorized D_CAPABLE agents with risk profiles
 - **PHASE_9_1_AGENT_AUTHORIZATION_SUMMARY.md** — Final authorization & deployment details
 - **PHASE_9_1_EXECUTION_REPORT.md** — Execution summary & metrics
 
@@ -140,7 +140,7 @@ pytest tests/unit/test_phase_9_1_decisions.py -v
 ### References
 
 - [Decision Framework](PHASE_9_1_DECISION_FRAMEWORK.md) — Detailed model & algorithms
-- [Candidate Agents](PHASE_9_1_CANDIDATE_AGENTS.md) — Risk assessments & capabilities
+- [Candidate Agents](PHASE_9_1_CANDIDATE_.codex/archive/deprecated/AGENTS.md) — Risk assessments & capabilities
 - [Authorization](PHASE_9_1_AGENT_AUTHORIZATION_SUMMARY.md) — Deployment details
 - [Execution Report](PHASE_9_1_EXECUTION_REPORT.md) — Summary & metrics
 - [Test Suite](../../tests/unit/test_phase_9_1_decisions.py) — Test coverage

@@ -349,7 +349,7 @@
 ## 🚀 NEXT ACTIONS (THIS SESSION)
 
 ✅ **Consolidate all Phase 3 findings** → COMPLETE (this document)  
-⏳ **Update AGENT_ACCOUNTABILITY_REPORT.md** with Phase 3 completion  
+⏳ **Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md** with Phase 3 completion  
 ⏳ **Update CHANGELOG.md** with Phase 3 summary  
 ⏳ **Commit Phase 3 consolidation**  
 ⏳ **Deploy Phase 4 agents** (documentation audit, 4 agents)  

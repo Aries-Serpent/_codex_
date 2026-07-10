@@ -434,7 +434,7 @@ def export_project(self, output_dir: str = '.', overwrite: bool = False) -> Dict
 - NumPy documentation: https://numpy.org/doc/
 - SciPy documentation: https://docs.scipy.org/
 - Repository logging: src/codex/logging/session_logger.py
-- Repository agents guide: AGENTS.md
+- Repository agents guide: .codex/archive/deprecated/AGENTS.md
 
 ---
 

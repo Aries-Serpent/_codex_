@@ -216,7 +216,7 @@ Deploy 1-week production monitoring post-autonomous activation and synthesize Ph
 
 ## 📋 COMPLIANCE & ACCOUNTABILITY
 
-**REQ-4 (AGENT_ACCOUNTABILITY_REPORT.md):**
+**REQ-4 (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md):**
 - All Tier 3/4 deliverables tracked in .codex/PHASE_9_3_*.md files
 - Phase 9 completion entry with final metrics
 

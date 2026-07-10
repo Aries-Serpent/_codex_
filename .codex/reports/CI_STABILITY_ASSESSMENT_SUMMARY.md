@@ -189,7 +189,7 @@ The Aries-Serpent/_codex_ repository is experiencing significant CI/CD instabili
 
 ## ✅ Session Wrapup Compliance
 
-### REQ-4: AGENT_ACCOUNTABILITY_REPORT.md
+### REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 - **Status:** PARTIAL ⚠️
 - **Location:** `.codex/reports/ACCOUNTABILITY_REPORT_DRAFT.md`
 - **Finding:** Report exists but is marked DRAFT

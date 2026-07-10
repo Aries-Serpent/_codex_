@@ -8,7 +8,7 @@ Test: Archival Tombstone Required (P6 Atomic Patchset)
 This test is lightweight and uses local file system operations; it avoids modifying git history.
 
 Test artifacts are stored in `.codex/test_artifacts/archival/` and cleaned up in finally blocks.
-Per repository policy (AGENTS.md), `.codex/` directory contents follow 30-day retention.
+Per repository policy (.codex/archive/deprecated/AGENTS.md), `.codex/` directory contents follow 30-day retention.
 Tests attempt to remove empty directories after cleanup to minimize artifact accumulation.
 """
 

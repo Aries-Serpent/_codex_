@@ -1486,7 +1486,7 @@ def _register_external_cli() -> None:
 
 
 # ==============================================================================
-# AGENTS.md Infrastructure Commands
+# .codex/archive/deprecated/AGENTS.md Infrastructure Commands
 # ==============================================================================
 
 

@@ -357,7 +357,7 @@ Campaign Completion: 100% (36/36 agents, 5/5 phases)
 
 ### Immediate (Next 1-2 hours)
 - [x] Commit Phase 5 consolidated findings
-- [x] Update AGENT_ACCOUNTABILITY_REPORT.md
+- [x] Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 - [x] Update CHANGELOG.md
 - [x] Prepare campaign summary for stakeholders
 

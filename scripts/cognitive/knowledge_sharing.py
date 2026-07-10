@@ -160,7 +160,7 @@ def build_default_kb() -> KnowledgeBase:
         KnowledgeEntry(
             "KS-015", "Windows filenames", "convention", "medium",
             "Use windows_safe_timestamp() — no colons in filenames",
-            "codex.utils.path_utils", "AGENTS.md",
+            "codex.utils.path_utils", ".codex/archive/deprecated/AGENTS.md",
         ),
     ]
     for e in entries:

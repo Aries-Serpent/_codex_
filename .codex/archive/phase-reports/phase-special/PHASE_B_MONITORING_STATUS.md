@@ -38,7 +38,7 @@ Upon receipt of all Phase B agent completion notifications:
 2. **Phase C Execution** (1-2 hours):
    - **C.1**: Coverage re-validation using gap analysis
    - **C.2**: CI validation (all fixes applied)
-   - **C.3**: Documentation updates (CHANGELOG.md, AGENT_ACCOUNTABILITY_REPORT.md)
+   - **C.3**: Documentation updates (CHANGELOG.md, .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md)
    - **C.4**: Tier 2 documentation work unblocked
 
 3. **Phase D Preparation** (upon Phase C):

@@ -674,7 +674,7 @@
       "reason": "Governance and automation artifacts from PR #5160 - auto-registered by governance fix"
     },
     {
-      "path": ".codex/CI_AUTOFIX_DEEP_INTEGRATION.md",
+      "path": ".codex/CI_AUTOFIX_DEEP_docs/api/reference/INTEGRATION.md",
       "reason": "Session notes and governance artifacts from PR #5264 - auto-registered by governance fix"
     },
     {
@@ -1226,7 +1226,7 @@
       "reason": "Governance and automation artifacts from PR #5160 - auto-registered by governance fix"
     },
     {
-      "path": ".codex/CONTINUATION_PROMPT_COGNITIVE_BRAIN_INTEGRATION.md",
+      "path": ".codex/CONTINUATION_PROMPT_COGNITIVE_BRAIN_docs/api/reference/INTEGRATION.md",
       "reason": "Governance and automation artifacts from PR #5160 - auto-registered by governance fix"
     },
     {
@@ -1806,7 +1806,7 @@
       "reason": "Governance and automation artifacts from PR #5160 - auto-registered by governance fix"
     },
     {
-      "path": ".codex/DISCUSSION_4872_SCOPE_INTEGRATION.md",
+      "path": ".codex/DISCUSSION_4872_SCOPE_docs/api/reference/INTEGRATION.md",
       "reason": "Governance and automation artifacts from PR #5160 - auto-registered by governance fix"
     },
     {
@@ -2586,7 +2586,7 @@
       "reason": "Governance and automation artifacts from PR #5160 - auto-registered by governance fix"
     },
     {
-      "path": ".codex/INTELLIGENCE_CAMPAIGN_BASELINE.md",
+      "path": ".codex/.codex/archive/misc/INTELLIGENCE_CAMPAIGN_BASELINE.md",
       "reason": "Session notes and governance artifacts from PR #5264 - auto-registered by governance fix"
     },
     {
@@ -3558,7 +3558,7 @@
       "reason": "Governance and automation artifacts from PR #5160 - auto-registered by governance fix"
     },
     {
-      "path": ".codex/PHASE8_COGNITIVE_BRAIN_INTEGRATION.md",
+      "path": ".codex/PHASE8_COGNITIVE_BRAIN_docs/api/reference/INTEGRATION.md",
       "reason": "Governance and automation artifacts from PR #5160 - auto-registered by governance fix"
     },
     {
@@ -6738,7 +6738,7 @@
       "reason": "Session notes and governance artifacts from PR #5264 - auto-registered by governance fix"
     },
     {
-      "path": ".codex/PHASE_9_1_D_CAPABLE_AGENTS.md",
+      "path": ".codex/PHASE_9_1_D_CAPABLE_.codex/archive/deprecated/AGENTS.md",
       "reason": "Session notes and governance artifacts from PR #5264 - auto-registered by governance fix"
     },
     {
@@ -6766,7 +6766,7 @@
       "reason": "Session notes and governance artifacts from PR #5264 - auto-registered by governance fix"
     },
     {
-      "path": ".codex/PHASE_9_2_9_3_INTEGRATION.md",
+      "path": ".codex/PHASE_9_2_9_3_docs/api/reference/INTEGRATION.md",
       "reason": "Governance and automation artifacts from PR #5160 - auto-registered by governance fix"
     },
     {
@@ -7542,7 +7542,7 @@
       "reason": "Governance and automation artifacts from PR #5160 - auto-registered by governance fix"
     },
     {
-      "path": ".codex/POST_MERGE_MISSING_DEPS_INSTALL.md",
+      "path": ".codex/POST_MERGE_MISSING_DEPS_.codex/archive/misc/INSTALL.md",
       "reason": "Governance and automation artifacts from PR #5160 - auto-registered by governance fix"
     },
     {
@@ -8326,7 +8326,7 @@
       "reason": "Governance and automation artifacts from PR #5160 - auto-registered by governance fix"
     },
     {
-      "path": ".codex/SCRIPT_TOKEN_INTEGRATION.md",
+      "path": ".codex/SCRIPT_TOKEN_docs/api/reference/INTEGRATION.md",
       "reason": "Governance and automation artifacts from PR #5160 - auto-registered by governance fix"
     },
     {
@@ -8426,7 +8426,7 @@
       "reason": "Governance and automation artifacts from PR #5160 - auto-registered by governance fix"
     },
     {
-      "path": ".codex/SELF_REVIEW_BATCH_TRIAGE_INTEGRATION.md",
+      "path": ".codex/SELF_REVIEW_BATCH_TRIAGE_docs/api/reference/INTEGRATION.md",
       "reason": "Governance and automation artifacts from PR #5160 - auto-registered by governance fix"
     },
     {
@@ -8998,7 +8998,7 @@
       "reason": "Governance and automation artifacts from PR #5160 - auto-registered by governance fix"
     },
     {
-      "path": ".codex/TRACK_4_TASK_5_WEBHOOK_INTEGRATION.md",
+      "path": ".codex/TRACK_4_TASK_5_WEBHOOK_docs/api/reference/INTEGRATION.md",
       "reason": "Governance and automation artifacts from PR #5160 - auto-registered by governance fix"
     },
     {
@@ -9178,7 +9178,7 @@
       "reason": "Governance and automation artifacts from PR #5160 - auto-registered by governance fix"
     },
     {
-      "path": ".codex/WAVE_1_COGNITIVE_BRAIN_INTEGRATION.md",
+      "path": ".codex/WAVE_1_COGNITIVE_BRAIN_docs/api/reference/INTEGRATION.md",
       "reason": "Governance and automation artifacts from PR #5160 - auto-registered by governance fix"
     },
     {
@@ -9874,7 +9874,7 @@
       "reason": "Governance and automation artifacts from PR #5160 - auto-registered by governance fix"
     },
     {
-      "path": ".codex/WEBHOOK_REGISTRY_INTEGRATION.md",
+      "path": ".codex/WEBHOOK_REGISTRY_docs/api/reference/INTEGRATION.md",
       "reason": "Governance and automation artifacts from PR #5160 - auto-registered by governance fix"
     },
     {
@@ -10654,7 +10654,7 @@
       "reason": "Governance and automation artifacts from PR #5160 - auto-registered by governance fix"
     },
     {
-      "path": ".codex/archive/historical/CONTINUATION_PROMPT_COGNITIVE_INTEGRATION.md",
+      "path": ".codex/archive/historical/CONTINUATION_PROMPT_COGNITIVE_docs/api/reference/INTEGRATION.md",
       "reason": "Governance and automation artifacts from PR #5160 - auto-registered by governance fix"
     },
     {
@@ -14182,7 +14182,7 @@
       "reason": "Session notes and governance artifacts from PR #5264 - auto-registered by governance fix"
     },
     {
-      "path": ".codex/archive/phase-reports/phase-1-10/PHASE_9_2_9_3_INTEGRATION.md",
+      "path": ".codex/archive/phase-reports/phase-1-10/PHASE_9_2_9_3_docs/api/reference/INTEGRATION.md",
       "reason": "Session notes and governance artifacts from PR #5264 - auto-registered by governance fix"
     },
     {
@@ -15538,7 +15538,7 @@
       "reason": "Governance and automation artifacts from PR #5160 - auto-registered by governance fix"
     },
     {
-      "path": ".codex/archive/phases/PHASE_9_1_CANDIDATE_AGENTS.md",
+      "path": ".codex/archive/phases/PHASE_9_1_CANDIDATE_.codex/archive/deprecated/AGENTS.md",
       "reason": "Governance and automation artifacts from PR #5160 - auto-registered by governance fix"
     },
     {
@@ -15890,15 +15890,15 @@
       "reason": "Session notes and governance artifacts from PR #5264 - auto-registered by governance fix"
     },
     {
-      "path": ".codex/archive/root-consolidation/deprecated-reports/ENERGY_CONVERSION_AGENT_DEPRECATION.md",
+      "path": ".codex/archive/root-consolidation/deprecated-reports/.codex/archive/deprecated/ENERGY_CONVERSION_AGENT_DEPRECATION.md",
       "reason": "Session notes and governance artifacts from PR #5264 - auto-registered by governance fix"
     },
     {
-      "path": ".codex/archive/root-consolidation/deprecated-reports/GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md",
+      "path": ".codex/archive/root-consolidation/deprecated-reports/.codex/archive/deprecated/GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md",
       "reason": "Session notes and governance artifacts from PR #5264 - auto-registered by governance fix"
     },
     {
-      "path": ".codex/archive/root-consolidation/phase-history/AGENT_ACCOUNTABILITY_REPORT.md",
+      "path": ".codex/archive/root-consolidation/phase-history/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md",
       "reason": "Session notes and governance artifacts from PR #5264 - auto-registered by governance fix"
     },
     {
@@ -17034,7 +17034,7 @@
       "reason": "Governance and automation artifacts from PR #5160 - auto-registered by governance fix"
     },
     {
-      "path": ".codex/cognitive_brain/FOLLOWUP_P4_INTEGRATION.md",
+      "path": ".codex/cognitive_brain/FOLLOWUP_P4_docs/api/reference/INTEGRATION.md",
       "reason": "Governance and automation artifacts from PR #5160 - auto-registered by governance fix"
     },
     {
@@ -17162,7 +17162,7 @@
       "reason": "Governance and automation artifacts from PR #5160 - auto-registered by governance fix"
     },
     {
-      "path": ".codex/cognitive_brain/PHASE_38_PLANNING_COGNITIVE_BRAIN_AND_AGENTS.md",
+      "path": ".codex/cognitive_brain/PHASE_38_PLANNING_COGNITIVE_BRAIN_AND_.codex/archive/deprecated/AGENTS.md",
       "reason": "Governance and automation artifacts from PR #5160 - auto-registered by governance fix"
     },
     {
@@ -18278,7 +18278,7 @@
       "reason": "Governance and automation artifacts from PR #5160 - auto-registered by governance fix"
     },
     {
-      "path": ".codex/docs/AGENTS.md.original.cf4e8c9.md",
+      "path": ".codex/docs/.codex/archive/deprecated/AGENTS.md.original.cf4e8c9.md",
       "reason": "Governance and automation artifacts from PR #5160 - auto-registered by governance fix"
     },
     {
@@ -18334,7 +18334,7 @@
       "reason": "Governance and automation artifacts from PR #5160 - auto-registered by governance fix"
     },
     {
-      "path": ".codex/docs/COGNITIVE_APP_AGENT_INTEGRATION.md",
+      "path": ".codex/docs/COGNITIVE_APP_AGENT_docs/api/reference/INTEGRATION.md",
       "reason": "Governance and automation artifacts from PR #5160 - auto-registered by governance fix"
     },
     {
@@ -18538,7 +18538,7 @@
       "reason": "Governance and automation artifacts from PR #5160 - auto-registered by governance fix"
     },
     {
-      "path": ".codex/docs/POLICY_PARAMETERS_INTEGRATION.md",
+      "path": ".codex/docs/POLICY_PARAMETERS_docs/api/reference/INTEGRATION.md",
       "reason": "Governance and automation artifacts from PR #5160 - auto-registered by governance fix"
     },
     {
@@ -20102,7 +20102,7 @@
       "reason": "Governance and automation artifacts from PR #5160 - auto-registered by governance fix"
     },
     {
-      "path": ".codex/release/ACTIVESTATE_OIDC_INTEGRATION.md",
+      "path": ".codex/release/ACTIVESTATE_OIDC_docs/api/reference/INTEGRATION.md",
       "reason": "Governance and automation artifacts from PR #5160 - auto-registered by governance fix"
     },
     {
@@ -20114,7 +20114,7 @@
       "reason": "Governance and automation artifacts from PR #5160 - auto-registered by governance fix"
     },
     {
-      "path": ".codex/release/GITLAB_CI_CD_INTEGRATION.md",
+      "path": ".codex/release/GITLAB_CI_CD_docs/api/reference/INTEGRATION.md",
       "reason": "Governance and automation artifacts from PR #5160 - auto-registered by governance fix"
     },
     {
@@ -20466,7 +20466,7 @@
       "reason": "Governance and automation artifacts from PR #5160 - auto-registered by governance fix"
     },
     {
-      "path": ".codex/reports/PHASE_C_CUSTOM_COPILOT_AGENTS.md",
+      "path": ".codex/reports/PHASE_C_CUSTOM_COPILOT_.codex/archive/deprecated/AGENTS.md",
       "reason": "Governance and automation artifacts from PR #5160 - auto-registered by governance fix"
     },
     {
@@ -22318,7 +22318,7 @@
       "reason": "Governance and automation artifacts from PR #5160 - auto-registered by governance fix"
     },
     {
-      "path": ".codex/v0.1.0-FINAL_RELEASE_NOTES.md",
+      "path": ".codex/v0.1.0-FINAL_docs/release/RELEASE_NOTES.md",
       "reason": "Governance and automation artifacts from PR #5160 - auto-registered by governance fix"
     },
     {
@@ -22562,7 +22562,7 @@
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
-      "path": ".copilot-review-exclusions.md",
+      "path": ".codex/archive/misc/.copilot-review-exclusions.md",
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
@@ -22594,7 +22594,7 @@
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
-      "path": ".github/AGENTS.md",
+      "path": ".github/.codex/archive/deprecated/AGENTS.md",
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
@@ -23162,7 +23162,7 @@
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
-      "path": ".github/agents/TOKEN_USAGE_FOR_AGENTS.md",
+      "path": ".github/agents/TOKEN_USAGE_FOR_.codex/archive/deprecated/AGENTS.md",
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
@@ -23170,7 +23170,7 @@
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
-      "path": ".github/agents/WORKFLOW_ANALYTICS_SCRIBE_INTEGRATION.md",
+      "path": ".github/agents/WORKFLOW_ANALYTICS_SCRIBE_docs/api/reference/INTEGRATION.md",
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
@@ -23730,7 +23730,7 @@
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
-      "path": ".github/agents/docs/AGENTS.md",
+      "path": ".github/agents/docs/.codex/archive/deprecated/AGENTS.md",
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
@@ -24458,7 +24458,7 @@
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
-      "path": ".github/copilot-evolution/AGENTS.md",
+      "path": ".github/copilot-evolution/.codex/archive/deprecated/AGENTS.md",
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
@@ -27042,11 +27042,11 @@
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
-      "path": "AGENTS.md",
+      "path": ".codex/archive/deprecated/AGENTS.md",
       "reason": "Tool-required agent instruction bootstrap file."
     },
     {
-      "path": "AGENT_ACCOUNTABILITY_REPORT.md",
+      "path": ".codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md",
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
@@ -27058,7 +27058,7 @@
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
-      "path": "CAMPAIGN_EXECUTION_COMPLETE.md",
+      "path": ".codex/archive/misc/CAMPAIGN_EXECUTION_COMPLETE.md",
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
@@ -27066,7 +27066,7 @@
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
-      "path": "CLAUDE.md",
+      "path": ".codex/archive/deprecated/CLAUDE.md",
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
@@ -27090,7 +27090,7 @@
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
-      "path": "CROSS_PLATFORM_FILENAME_ASSESSMENT_REPORT.md",
+      "path": ".codex/archive/reports/CROSS_PLATFORM_FILENAME_ASSESSMENT_REPORT.md",
       "reason": "Documentation and deployment artifacts from PR #5264 - auto-registered by governance fix"
     },
     {
@@ -27098,11 +27098,11 @@
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
-      "path": "DEPENDENCY_CONSTRAINTS.md",
+      "path": ".codex/archive/misc/DEPENDENCY_CONSTRAINTS.md",
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
-      "path": "DEPENDENCY_COUPLING_MATRIX.md",
+      "path": ".codex/archive/misc/DEPENDENCY_COUPLING_MATRIX.md",
       "reason": "Documentation and deployment artifacts from PR #5264 - auto-registered by governance fix"
     },
     {
@@ -27142,23 +27142,23 @@
       "reason": "Phase 10-12 governance artifact"
     },
     {
-      "path": "GEMINI.md",
+      "path": ".codex/archive/deprecated/GEMINI.md",
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
-      "path": "INSTALL.md",
+      "path": ".codex/archive/misc/INSTALL.md",
       "reason": "Documentation and deployment artifacts from PR #5264 - auto-registered by governance fix"
     },
     {
-      "path": "INTEGRATION.md",
+      "path": "docs/api/reference/INTEGRATION.md",
       "reason": "Documentation and deployment artifacts from PR #5264 - auto-registered by governance fix"
     },
     {
-      "path": "INTELLIGENCE_CAMPAIGN_BASELINE.md",
+      "path": ".codex/archive/misc/INTELLIGENCE_CAMPAIGN_BASELINE.md",
       "reason": "Documentation and deployment artifacts from PR #5264 - auto-registered by governance fix"
     },
     {
-      "path": "ISOLATED_DEPLOYMENT.md",
+      "path": "docs/release/ISOLATED_DEPLOYMENT.md",
       "reason": "Documentation and deployment artifacts from PR #5264 - auto-registered by governance fix"
     },
     {
@@ -27170,7 +27170,7 @@
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
-      "path": "MASTER_REMEDIATION_PLAN.md",
+      "path": ".codex/archive/misc/MASTER_REMEDIATION_PLAN.md",
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
@@ -27178,7 +27178,7 @@
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
-      "path": "OFFLINE_DEPLOYMENT.md",
+      "path": "docs/release/OFFLINE_DEPLOYMENT.md",
       "reason": "Documentation and deployment artifacts from PR #5264 - auto-registered by governance fix"
     },
     {
@@ -27386,7 +27386,7 @@
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
-      "path": "QUICKSTART_BY_PROFILE.md",
+      "path": "docs/quickstart/QUICKSTART_BY_PROFILE.md",
       "reason": "Documentation and deployment artifacts from PR #5264 - auto-registered by governance fix"
     },
     {
@@ -27426,7 +27426,7 @@
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
-      "path": "SEMGREP_PARSE_ERROR_RESOLUTION.md",
+      "path": ".codex/archive/misc/SEMGREP_PARSE_ERROR_RESOLUTION.md",
       "reason": "Documentation and deployment artifacts from PR #5264 - auto-registered by governance fix"
     },
     {
@@ -27466,7 +27466,7 @@
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
-      "path": "WORKFLOW_CLEANUP_IMPLEMENTATION_CHECKLIST.md",
+      "path": ".codex/archive/implementations/WORKFLOW_CLEANUP_IMPLEMENTATION_CHECKLIST.md",
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
@@ -27774,7 +27774,7 @@
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
-      "path": "archive/reports/CHANGELOG_AGENTS.md",
+      "path": "archive/reports/CHANGELOG_.codex/archive/deprecated/AGENTS.md",
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
@@ -28182,7 +28182,7 @@
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
-      "path": "cognitive_app/README_INTEGRATION.md",
+      "path": "cognitive_app/README_docs/api/reference/INTEGRATION.md",
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
@@ -28398,7 +28398,7 @@
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
-      "path": "docs/COGNITIVE_BRAIN_QUANTUM_INTEGRATION.md",
+      "path": "docs/COGNITIVE_BRAIN_QUANTUM_docs/api/reference/INTEGRATION.md",
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
@@ -28470,7 +28470,7 @@
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
-      "path": "docs/DEPENDENCY_CONSTRAINTS.md",
+      "path": "docs/.codex/archive/misc/DEPENDENCY_CONSTRAINTS.md",
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
@@ -28614,7 +28614,7 @@
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
-      "path": "docs/ISOLATED_DEPLOYMENT.md",
+      "path": "docs/docs/release/ISOLATED_DEPLOYMENT.md",
       "reason": "Documentation and deployment artifacts from PR #5264 - auto-registered by governance fix"
     },
     {
@@ -28666,7 +28666,7 @@
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
-      "path": "docs/OFFLINE_DEPLOYMENT.md",
+      "path": "docs/docs/release/OFFLINE_DEPLOYMENT.md",
       "reason": "Documentation and deployment artifacts from PR #5264 - auto-registered by governance fix"
     },
     {
@@ -28834,7 +28834,7 @@
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
-      "path": "docs/QUICKSTART_BY_PROFILE.md",
+      "path": "docs/docs/quickstart/QUICKSTART_BY_PROFILE.md",
       "reason": "Documentation and deployment artifacts from PR #5264 - auto-registered by governance fix"
     },
     {
@@ -28942,7 +28942,7 @@
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
-      "path": "docs/SOFT_TO_GROUNDED_RELEASE_NOTES.md",
+      "path": "docs/SOFT_TO_GROUNDED_docs/release/RELEASE_NOTES.md",
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
@@ -29022,7 +29022,7 @@
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
-      "path": "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md",
+      "path": "docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md",
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
@@ -29334,11 +29334,11 @@
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
-      "path": "docs/agent/AGENT_MERGE_READINESS_INTEGRATION.md",
+      "path": "docs/agent/AGENT_MERGE_READINESS_docs/api/reference/INTEGRATION.md",
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
-      "path": "docs/agent/AI_AGENT_WORKFLOW_INTEGRATION.md",
+      "path": "docs/agent/AI_AGENT_WORKFLOW_docs/api/reference/INTEGRATION.md",
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
@@ -29450,7 +29450,7 @@
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
-      "path": "docs/ai-facing/QUANTUM_RAG_INTEGRATION.md",
+      "path": "docs/ai-facing/QUANTUM_RAG_docs/api/reference/INTEGRATION.md",
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
@@ -31594,7 +31594,7 @@
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
-      "path": "docs/guides/AGENTS.md",
+      "path": "docs/guides/.codex/archive/deprecated/AGENTS.md",
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
@@ -35774,11 +35774,11 @@
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
-      "path": "phase_12_2_report.md",
+      "path": ".codex/archive/misc/phase_12_2_report.md",
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
-      "path": "prompts/AGENTS.md",
+      "path": "prompts/.codex/archive/deprecated/AGENTS.md",
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
@@ -35958,7 +35958,7 @@
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
-      "path": "reports/PHASE_C_CUSTOM_COPILOT_AGENTS.md",
+      "path": "reports/PHASE_C_CUSTOM_COPILOT_.codex/archive/deprecated/AGENTS.md",
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
@@ -36482,7 +36482,7 @@
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
-      "path": "scripts/AGENTS.md",
+      "path": "scripts/.codex/archive/deprecated/AGENTS.md",
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
@@ -36790,7 +36790,7 @@
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
-      "path": "src/mcp/AGENTS.md",
+      "path": "src/mcp/.codex/archive/deprecated/AGENTS.md",
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
@@ -36818,7 +36818,7 @@
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
-      "path": "terraform_plan_summary.md",
+      "path": ".codex/archive/misc/terraform_plan_summary.md",
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
@@ -36974,7 +36974,7 @@
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {
-      "path": "workbench/PHASE_4_FULL_INTEGRATION.md",
+      "path": "workbench/PHASE_4_FULL_docs/api/reference/INTEGRATION.md",
       "reason": "Governance or automation artifact - auto-registered in PR #5160 governance fix"
     },
     {

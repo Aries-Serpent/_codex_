@@ -27,13 +27,13 @@ This structure reveals significant **fragmentation**: multiple sources of truth 
 ### Current State
 | Source | Count | Path | Status |
 |--------|-------|------|--------|
-| Root Quickstart | 1 | `QUICKSTART_BY_PROFILE.md` | ⚠️ Duplicate in docs/ |
+| Root Quickstart | 1 | `docs/quickstart/QUICKSTART_BY_PROFILE.md` | ⚠️ Duplicate in docs/ |
 | Docs Quickstart | 4 | `docs/quickstart_*.md`, `docs/onboarding/` | ⚠️ Scattered |
 | Old Phase Quickstart | 1 | `PHASE_13_3_QUICK_START.md` | ⚠️ Outdated |
 | **TOTAL** | **34** | **Various locations** | **CRITICAL: Consolidate** |
 
 ### Issues Identified
-- **Duplication**: Root `QUICKSTART_BY_PROFILE.md` and `docs/QUICKSTART_BY_PROFILE.md` are mirrors
+- **Duplication**: Root `docs/quickstart/QUICKSTART_BY_PROFILE.md` and `docs/docs/quickstart/QUICKSTART_BY_PROFILE.md` are mirrors
 - **Inconsistency**: Different quickstarts for different profiles (core, runtime, full)
 - **Scattered onboarding**: `docs/onboarding/` has separate QUICK_START.md
 - **Obsolete content**: `PHASE_13_3_QUICK_START.md` references old phase structure
@@ -53,7 +53,7 @@ docs/quickstart/
 └── next-steps.md                (Links to deeper documentation)
 
 # Archive/Redirect
-ROOT → QUICKSTART_BY_PROFILE.md: Redirect to docs/quickstart/README.md
+ROOT → docs/quickstart/QUICKSTART_BY_PROFILE.md: Redirect to docs/quickstart/README.md
 docs/onboarding/QUICK_START.md: Redirect to docs/quickstart/README.md
 PHASE_13_3_QUICK_START.md: Archive to .codex/archive/phases/
 ```
@@ -131,7 +131,7 @@ docs/configuration/*.md → Merge into docs/api/configuration.md + keep as refer
 - [ ] All examples are executable and tested
 - [ ] Central README with discovery and cross-references
 - [ ] Links from architecture docs to API reference
-- [ ] AGENTS.md references API docs where applicable
+- [ ] .codex/archive/deprecated/AGENTS.md references API docs where applicable
 
 ---
 
@@ -204,7 +204,7 @@ docs/arch/ → Merge into docs/architecture/ (redirect old links)
 ### Current State
 | Source | Count | Path | Status |
 |--------|-------|------|--------|
-| Root Install | 1 | `INSTALL.md` | ⚠️ Minimal |
+| Root Install | 1 | `.codex/archive/misc/INSTALL.md` | ⚠️ Minimal |
 | Offline Deploy | 5 | `OFFLINE_*.md`, `ISOLATED_*.md` | ⚠️ Duplicate |
 | Online Deploy | 4 | `docs/deployment/`, `docs/deploy/` | ⚠️ Scattered |
 | Docker Deploy | Multiple | Various `docker/*.md` files | ⚠️ Fragmented |
@@ -216,11 +216,11 @@ docs/arch/ → Merge into docs/architecture/ (redirect old links)
 
 ### Issues Identified
 - **OFFLINE SETUP FRAGMENTATION** (5+ sources):
-  - `OFFLINE_DEPLOYMENT.md` (root)
-  - `ISOLATED_DEPLOYMENT.md` (root)
+  - `docs/release/OFFLINE_DEPLOYMENT.md` (root)
+  - `docs/release/ISOLATED_DEPLOYMENT.md` (root)
   - `docs/offline_quickstart.md`
   - `docs/OFFLINE_QUICKSTART.md` (duplicate)
-  - `docs/ISOLATED_DEPLOYMENT.md` (duplicate)
+  - `docs/docs/release/ISOLATED_DEPLOYMENT.md` (duplicate)
   
 - **CONFLICTING INSTRUCTIONS**: Different deployment guides may have different setup steps
 - **Scattered Docker setup**: Docker deployment instructions scattered across files
@@ -263,9 +263,9 @@ docs/release/
 └── deprecation.md               (Deprecation policy)
 
 # Archive/Consolidate
-OFFLINE_DEPLOYMENT.md → Redirect to docs/deployment/offline/README.md
-ISOLATED_DEPLOYMENT.md → Redirect to docs/deployment/offline/isolated-environment.md
-INSTALL.md → Redirect to docs/deployment/README.md
+docs/release/OFFLINE_DEPLOYMENT.md → Redirect to docs/deployment/offline/README.md
+docs/release/ISOLATED_DEPLOYMENT.md → Redirect to docs/deployment/offline/isolated-environment.md
+.codex/archive/misc/INSTALL.md → Redirect to docs/deployment/README.md
 docs/deploying.md → docs/deployment/online/
 docs/releasing.md → docs/release/release-process.md
 docs/crm/admin-runbooks/ → docs/operations/integrations/crm.md

@@ -268,7 +268,7 @@ jobs:
 ### Step 3: Update Accountability
 **Status:** 📋 QUEUED  
 **Action:**
-1. Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+1. Update `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 2. Update `CHANGELOG.md`
 3. Commit final Phase 3 deliverables
 

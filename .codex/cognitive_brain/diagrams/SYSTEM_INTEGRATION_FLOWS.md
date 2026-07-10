@@ -36,7 +36,7 @@ flowchart TB
         AG_SH[Self-Healing<br/>self_healing.py]
     end
 
-    subgraph "Custom Agents (153 active — see AGENTS.md)"
+    subgraph "Custom Agents (153 active — see .codex/archive/deprecated/AGENTS.md)"
         CA_TAU[Test Alignment Fixer<br/>test-alignment-fixer]
         CA_CLV[CI Testing Agent<br/>ci-testing-agent]
         CA_SAR[CodeQL Alert Resolution<br/>codeql-alert-resolution-agent]

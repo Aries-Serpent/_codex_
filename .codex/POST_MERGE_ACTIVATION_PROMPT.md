@@ -246,7 +246,7 @@ graph TD
 
 ### Pre-Deployment Synchronization
 1. **Read** `.codex/CODEBASE_AGENCY_POLICY.md` — mandatory agency rules
-2. **Load** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — context
+2. **Load** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — context
 3. **Verify** `.codex/agent_context.json` — current repo state
 4. **Confirm** D-tier autonomous authority (@mbaetiong standing approval)
 
@@ -258,7 +258,7 @@ graph TD
 
 ### Post-Completion Handoff
 - Generate Phase 3 completion report (.codex/PHASE_3_COMPLETION_REPORT.md)
-- Update AGENT_ACCOUNTABILITY_REPORT.md with session context
+- Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with session context
 - Commit all reports and artifacts
 - Prepare Phase 4 activation brief
 
@@ -317,7 +317,7 @@ graph TD
 ### Pre-Deployment Documents
 - `.codex/CODEBASE_AGENCY_POLICY.md` — Agency rules (MANDATORY READ)
 - `.codex/agent_context.json` — Current repo state snapshot
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — Session context
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — Session context
 
 ### During Execution
 - Real-time agent logs (via `read_agent` tool)
@@ -327,7 +327,7 @@ graph TD
 ### Post-Completion
 - `.codex/PHASE_3_COMPLETION_REPORT.md` — Final summary
 - `.codex/PHASE_3_EXECUTION_METRICS.json` — Metrics & timings
-- Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — Session log
+- Updated `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — Session log
 - `CHANGELOG.md` — Version updates
 
 ---

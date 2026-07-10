@@ -138,7 +138,7 @@ The existing `select_specialist()` remains for backwards compatibility but deleg
 
 ### Phase 4 — Documentation & graduation
 - [ ] Update `docs/agent/OPERATIONAL_GUIDELINES.md` with graduation pipeline
-- [ ] Update `AGENTS.md` with skill-agent binding section
+- [ ] Update `.codex/archive/deprecated/AGENTS.md` with skill-agent binding section
 - [ ] Add `RP-SKILL-UNBOUND` pattern to `.codex/aftermath/failure_pattern_solutions.yaml`
 
 ---

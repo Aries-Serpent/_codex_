@@ -124,7 +124,7 @@ All 8 architectural layers verified:
 
 | Gate | Responsibility | Status |
 |------|-----------------|--------|
-| **REQ-14** | Validate AGENT_ACCOUNTABILITY_REPORT.md has valid registered agent identifiers (no placeholders) | ✅ ACTIVE |
+| **REQ-14** | Validate .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md has valid registered agent identifiers (no placeholders) | ✅ ACTIVE |
 | **REQ-13** | Comment-review gate enforces @mbaetiong comment responses | ✅ ACTIVE |
 | **cognitive-preflight** | Validates session pre-load checklist (§0 CODEBASE_AGENCY_POLICY.md) | ✅ ACTIVE |
 | **deferral-language-gate** | Scans for deferral + agent-bypass trigger phrases | ✅ ACTIVE |
@@ -176,7 +176,7 @@ All 8 architectural layers verified:
 
 ## 4. SESSION ACCOUNTABILITY AUDIT (LAST 5 SESSIONS)
 
-**Report Location:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (3,290,272 bytes)
+**Report Location:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (3,290,272 bytes)
 
 ### Last 5 Sessions Summary
 
@@ -319,7 +319,7 @@ All 8 architectural layers verified:
 ### 6.3 Recommendations (Optional Enhancements)
 
 1. **Auto-Archive Old PDA Iterations** — Move iterations >12 months old to `.codex/aftermath/archive/` to improve query performance
-2. **Session Accountability Partitioning** — Split AGENT_ACCOUNTABILITY_REPORT.md by month for faster lookups
+2. **Session Accountability Partitioning** — Split .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md by month for faster lookups
 3. **Quarterly Agent Registry Audit** — Schedule quarterly review of all 159 agents to refresh metadata + validate documentation
 4. **Agent Capability Gap Analysis** — Identify uncovered task categories and propose new agents
 
@@ -409,7 +409,7 @@ All 8 architectural layers verified:
 | `.github/agents/AGENT_SELECTION_GUIDE.md` | 25,039 B | ✅ Current | v1.0.0 (2026-06-11) |
 | `.github/agents/unified-governance-gate.md` | 9,866 B | ✅ Current | v1.0.0-m05 (2026-02-22) |
 | `.codex/aftermath/pda_iterations.jsonl` | 191,128 B | ✅ Current | 290 iterations |
-| `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | 3,290,272 B | ✅ Current | 1,514 sessions |
+| `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` | 3,290,272 B | ✅ Current | 1,514 sessions |
 
 ### C. Audit Timeline
 

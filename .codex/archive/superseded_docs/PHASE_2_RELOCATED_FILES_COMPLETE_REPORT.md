@@ -39,7 +39,7 @@ Successfully fixed broken links to files that have been relocated to new directo
 ### Key Files Updated in Phase 2A
 
 **High-Impact Files:**
-- `.github/agents/docs/AGENTS.md` - 10 fixes (critical agent documentation)
+- `.github/agents/docs/.codex/archive/deprecated/AGENTS.md` - 10 fixes (critical agent documentation)
 - `.github/CONTINUATION_PROMPT_PHASE8.md` - 6 fixes
 - `.github/CONTINUATION_PROMPT_PHASE9.md` - 6 fixes
 - `.github/CONTINUATION_PROMPT_PHASE9_1_SESSION2.md` - 6 fixes
@@ -92,7 +92,7 @@ All fixed references validated successfully:
 
 Sample files reviewed for correctness:
 1. `README.md` - ROADMAP.md link updated correctly
-2. `.github/agents/docs/AGENTS.md` - Multiple links updated with correct relative paths
+2. `.github/agents/docs/.codex/archive/deprecated/AGENTS.md` - Multiple links updated with correct relative paths
 3. `LINK_VALIDATION_ACTION_ITEMS.md` - Dashboard and policy links fixed
 4. `docs/quickstart.md` - Guide links updated correctly
 
@@ -137,7 +137,7 @@ Fixed the following link patterns:
 - cognitive_brain/archive/PHASE_32_COMPLETE.md
 - cognitive_brain/archive/PHASE_33_PR_3020_RESOLUTION_COMPLETE.md
 - cognitive_brain/status/COGNITIVE_BRAIN_STATUS_SEARCH_RESULTS.md
-- docs/AGENTS.md.original.cf4e8c9.md
+- docs/.codex/archive/deprecated/AGENTS.md.original.cf4e8c9.md
 - docs/PHILOSOPHICAL_FRAMEWORK.md
 - docs/README.md
 - plans/COGNITIVE_BRAIN_STATUS_POST_PR2956.md
@@ -155,12 +155,12 @@ Fixed the following link patterns:
 - agents/admin-automation-agent/docs/INTEGRATION_MANAGER_DESIGN.md
 - agents/admin-automation-agent/docs/WORKFLOW_MANAGER_DESIGN.md
 - agents/coverage-roadmap-agent.md
-- agents/docs/AGENTS.md
+- agents/docs/.codex/archive/deprecated/AGENTS.md
 - agents/documentation-consolidator.md
 - workflows/CONSOLIDATION_GUIDE.md
 
 #### Root Level (3 files)
-- AGENTS.md
+- .codex/archive/deprecated/AGENTS.md
 - LINK_VALIDATION_ACTION_ITEMS.md
 - README.md
 
@@ -202,7 +202,7 @@ Fixed the following link patterns:
 
 ### High-Impact Areas Fixed
 
-1. **Agent Documentation** (`.github/agents/docs/AGENTS.md`)
+1. **Agent Documentation** (`.github/agents/docs/.codex/archive/deprecated/AGENTS.md`)
    - Main entry point for AI agents
    - 10 critical links fixed
    - Policy, operational, and setup guide references corrected
@@ -370,7 +370,7 @@ Both scripts support:
 
 Successfully fixed 113 broken references across 64 files in the repository, addressing 45% of the 247 identified relocated file issues. The fixes improve navigation, documentation health, and user experience across critical areas including:
 
-- Main repository entry points (README, AGENTS.md)
+- Main repository entry points (README, .codex/archive/deprecated/AGENTS.md)
 - Agent operational documentation
 - Session continuation prompts
 - Master documentation index

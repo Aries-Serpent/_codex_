@@ -154,13 +154,13 @@ Overall Score: 99/100 🎯
 
 ### REQ-4/REQ-5 Status
 ```
-✅ REQ-4: docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md OK
+✅ REQ-4: docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md OK
 ✅ REQ-5: CHANGELOG.md OK
-✅ REQ-14: docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md has valid Agents Used entry
+✅ REQ-14: docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md has valid Agents Used entry
 ```
 
 ### Files Updated
-- ✅ `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` - Session entry added
+- ✅ `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` - Session entry added
 - ✅ `CHANGELOG.md` - Phase 9.2/9.3 completion entry added
 - ✅ `.codex/PHASE_9_2_CONSOLIDATED_AUDIT_REPORT.md` - All findings merged
 
@@ -192,7 +192,7 @@ Overall Score: 99/100 🎯
 **Authority:** @mbaetiong (D-tier autonomous)  
 
 ### Key Updates
-- Updated AGENT_ACCOUNTABILITY_REPORT.md with complete session context
+- Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md with complete session context
 - Updated CHANGELOG.md with Phase 9.2/9.3 completion milestone
 - Created consolidated audit report summarizing all findings
 - Verified REQ-4/REQ-5 compliance

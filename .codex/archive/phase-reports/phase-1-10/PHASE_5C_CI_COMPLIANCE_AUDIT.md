@@ -29,7 +29,7 @@ All **13 REQ gates (REQ-1 through REQ-13)** are **PASSING** ✅. The codebase is
 | REQ-1 | Must-pass CI gates (code review, security) | ✅ PASS | pre-merge-validation.yml active | Code review + security checks enforced |
 | REQ-2 | Code quality gates (linting, formatting) | ✅ PASS | ruff, pre-commit configured | 10 advisory issues (import sorting, line length) |
 | REQ-3 | Type checking (mypy, type stubs) | ✅ PASS | mypy.ini + type checking enabled | 144 errors advisory (design debt, non-blocking) |
-| REQ-4 | AGENT_ACCOUNTABILITY_REPORT.md updated | ✅ PASS | docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md | Latest session entries present, freshness locked |
+| REQ-4 | .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated | ✅ PASS | docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md | Latest session entries present, freshness locked |
 | REQ-5 | CHANGELOG.md updated | ✅ PASS | CHANGELOG.md | Latest session + PR entries present, freshness locked |
 | REQ-6 | Secrets baseline validator | ✅ PASS | .secrets.baseline present | No secrets detected in commits | <!-- pragma: allowlist secret -->
 | REQ-7 | Permission checks (CODEBASE_AGENCY_POLICY) | ✅ PASS | .codex/CODEBASE_AGENCY_POLICY.md enforced | All changes leave codebase better than found |
@@ -38,7 +38,7 @@ All **13 REQ gates (REQ-1 through REQ-13)** are **PASSING** ✅. The codebase is
 | REQ-10 | Dependency security (no vulnerabilities) | ✅ PASS | pip-audit baseline | No blocking CVEs or vulns in lock files |
 | REQ-11 | Documentation links (no dead links) | ✅ PASS | Link validation workflow | All internal and external links valid |
 | REQ-12 | Test coverage threshold maintained | ✅ PASS | Coverage gates configured | Coverage thresholds enforced in CI |
-| REQ-13 | Agent accountability | ✅ PASS | AGENT_ACCOUNTABILITY_REPORT.md | All agent sessions documented and auditable |
+| REQ-13 | Agent accountability | ✅ PASS | .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md | All agent sessions documented and auditable |
 
 ---
 
@@ -204,17 +204,17 @@ E501: Line too long (>100 chars)
 
 ## Cognitive Pre-flight Gate: Session Wrapup (REQ-4/5)
 
-### AGENT_ACCOUNTABILITY_REPORT.md (REQ-4)
+### .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (REQ-4)
 
 **Status:** ✅ **LOCKED** (Current session entries verified)
 
-**File:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`  
+**File:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`  
 **Last update:** 2026-06-13T00:31Z (production-readiness-phase1-3-orchestration)  
 **Freshness:** ✅ Session entry present in latest commit
 
 **Verification:**
 ```
-✅ File exists: docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+✅ File exists: docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 ✅ Contains latest session entry (2026-06-13)
 ✅ REQ-4 gate PASS: Accountability report up-to-date
 ```

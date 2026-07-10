@@ -148,9 +148,9 @@ These are temporary session tracking files that should be archived:
 
 #### Documentation Files - Special Cases
 
-**AGENTS.md** - 🔴 HIGH RISK (293 references)
+**.codex/archive/deprecated/AGENTS.md** - 🔴 HIGH RISK (293 references)
 - **Current:** Root
-- **Proposed:** `.github/agents/docs/AGENTS.md` OR `docs/agents/AGENTS.md`
+- **Proposed:** `.github/agents/docs/.codex/archive/deprecated/AGENTS.md` OR `docs/agents/.codex/archive/deprecated/AGENTS.md`
 - **Risk:** HIGH (293 references across codebase)
 - **Action:**
   1. Run full reference scan
@@ -171,7 +171,7 @@ These are temporary session tracking files that should be archived:
 **Dotfiles to stay in root:**
 Most of these are tool-specific configuration files that **must** remain in root:
 - `.bandit`, `.bandit.yaml`, `.bandit.yml` - Security scanning config
-- `.copilot-review-exclusions.md` - Copilot configuration
+- `.codex/archive/misc/.copilot-review-exclusions.md` - Copilot configuration
 - `.coveragerc` - Code coverage config
 - `.dockerignore` - Docker ignore patterns
 - `.dvcignore` - DVC ignore patterns
@@ -386,7 +386,7 @@ docs/
 ```
 docs/
 ├── agents/           # NEW - Agent documentation
-│   └── AGENTS.md     # Relocated from root (HIGH RISK)
+│   └── .codex/archive/deprecated/AGENTS.md     # Relocated from root (HIGH RISK)
 ├── analysis/         # NEW - Analysis documents
 │   └── PR_3133_ANALYSIS.md
 └── archive/          # Enhanced archival
@@ -395,7 +395,7 @@ docs/
     └── workflows/    # NEW - Workflow reports
 ```
 
-**Risk:** MEDIUM (AGENTS.md has 293 references)
+**Risk:** MEDIUM (.codex/archive/deprecated/AGENTS.md has 293 references)
 
 ---
 
@@ -479,9 +479,9 @@ python scripts/root_org/organize_root_incremental.py \
 
 ### Priority 3: HIGH Risk Moves (>5 references)
 
-**File:** `AGENTS.md` - ⚠️ EXTREME CAUTION
+**File:** `.codex/archive/deprecated/AGENTS.md` - ⚠️ EXTREME CAUTION
 - **Current:** Root
-- **Target:** `docs/agents/AGENTS.md` (or `.github/agents/docs/AGENTS.md`)
+- **Target:** `docs/agents/.codex/archive/deprecated/AGENTS.md` (or `.github/agents/docs/.codex/archive/deprecated/AGENTS.md`)
 - **References:** 293 (!!!)
 - **Risk:** CRITICAL
 
@@ -489,7 +489,7 @@ python scripts/root_org/organize_root_incremental.py \
 
 1. **Full Reference Audit**
    ```bash
-   python scripts/root_org/validate_references.py AGENTS.md --json > agents_refs.json
+   python scripts/root_org/validate_references.py .codex/archive/deprecated/AGENTS.md --json > agents_refs.json
    ```
 
 2. **Create Update Script**
@@ -519,17 +519,17 @@ python scripts/root_org/organize_root_incremental.py \
 **Alternative Approach: Symlink Transition**
 ```bash
 # Phase 1: Copy file to new location
-cp AGENTS.md docs/agents/AGENTS.md
+cp .codex/archive/deprecated/AGENTS.md docs/agents/.codex/archive/deprecated/AGENTS.md
 
 # Phase 2: Update references gradually over time
 # ...
 
 # Phase 3: Once all refs updated, replace source with symlink
-rm AGENTS.md
-ln -s docs/agents/AGENTS.md AGENTS.md
+rm .codex/archive/deprecated/AGENTS.md
+ln -s docs/agents/.codex/archive/deprecated/AGENTS.md .codex/archive/deprecated/AGENTS.md
 
 # Phase 4: After transition period, remove symlink
-rm AGENTS.md
+rm .codex/archive/deprecated/AGENTS.md
 ```
 
 ---
@@ -622,7 +622,7 @@ After rollback:
 - **Day 5:** Commit batch 2
 
 ### Week 3: HIGH Risk (if approved)
-- **Day 1-2:** AGENTS.md reference audit
+- **Day 1-2:** .codex/archive/deprecated/AGENTS.md reference audit
 - **Day 3:** Create update script & test
 - **Day 4:** Execute phased update
 - **Day 5:** Final validation
@@ -661,7 +661,7 @@ Track these throughout:
 ### Overall Risk: MEDIUM
 
 **Risk Factors:**
-1. ✅ HIGH: AGENTS.md has 293 references (requires special handling)
+1. ✅ HIGH: .codex/archive/deprecated/AGENTS.md has 293 references (requires special handling)
 2. ⚠️ MEDIUM: Config directory consolidation (import updates needed)
 3. ⚠️ MEDIUM: Unknown directory contents (`_codex`, `_codex_`)
 4. ✅ LOW: Most files have 0 references
@@ -674,7 +674,7 @@ Track these throughout:
 4. ✅ Dry-run mode for all operations
 5. ✅ Comprehensive logging to NDJSON
 6. ✅ Manual approval for HIGH risk moves
-7. ✅ Phased execution for AGENTS.md
+7. ✅ Phased execution for .codex/archive/deprecated/AGENTS.md
 
 **Confidence Level:** HIGH
 - Existing tools are production-ready
@@ -697,7 +697,7 @@ Track these throughout:
 1. ⏳ Execute Batch 2 and 3
 2. ⏳ Directory consolidation investigation
 3. ⏳ MEDIUM risk file moves
-4. ⏳ Prepare AGENTS.md migration plan
+4. ⏳ Prepare .codex/archive/deprecated/AGENTS.md migration plan
 
 ### Future Enhancements
 1. 💡 Automated reference update in CI
@@ -843,5 +843,5 @@ After:
 
 **Status:** 🟢 Ready for execution  
 **Next Action:** Validate 3 files, then execute Batch 1 (dry-run)  
-**Approval Required:** HIGH risk moves (AGENTS.md)  
+**Approval Required:** HIGH risk moves (.codex/archive/deprecated/AGENTS.md)  
 **Physics Model:** ⚖️ Balance - Zero-break guarantee paramount

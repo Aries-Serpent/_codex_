@@ -14,7 +14,7 @@
   - `#4062009160` — @mbaetiong `@copilot continue` with S44 tasks
   - GitHub App: Cognitive Brain (Aries-Serpent) — confirmed active
 - [x] **0b.** Fixed ALL failing CI checks — auto-fix-pr-check `upload-artifact@v7` → `@v4` (was causing workflow failures)
-- [x] **1.** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated with S44 summary
+- [x] **1.** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` updated with S44 summary
 - [x] **2.** CI failure patterns reviewed — 65+ workflow files had non-existent action versions
 - [x] **3.** `.gitignore` allows `!.codex/agent_auth_session.json` ✅
 - [x] **4.** Priority: Fix CI action versions, implement 85 stubs, mypy ratchet < 1150

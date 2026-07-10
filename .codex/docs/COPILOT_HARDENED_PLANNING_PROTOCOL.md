@@ -23,7 +23,7 @@ Rule 1: Agent-First Delegation (AFD)
 Rule 2: Mandatory Session Pre-Load Validation (MSPV)
   → Verify: COPILOT_AGENT_CCA_VERSION_LOCK=stable
   → Read: .codex/CODEBASE_AGENCY_POLICY.md
-  → Read: docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+  → Read: docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
   → Read: last 5 lines of .codex/aftermath/pda_iterations.jsonl
   → Resolve: applicable agents from AGENT_REGISTRY.yaml capability_tags
 

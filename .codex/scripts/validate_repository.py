@@ -170,7 +170,7 @@ def validate_documentation(results: ValidationResult):
     # Check key documentation files
     required_docs = [
         "README.md",
-        "AGENTS.md",
+        ".codex/archive/deprecated/AGENTS.md",
         "CONTRIBUTING.md",
         "SECURITY.md",
     ]

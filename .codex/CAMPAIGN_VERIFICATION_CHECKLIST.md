@@ -89,7 +89,7 @@
 - [x] All other campaign documentation files
 
 ### Accountability Tracking
-- [x] `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated
+- [x] `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` updated
 - [x] 207 accountability entries (verified via grep)
 - [x] Latest entry: Session 4 (Full Validation) - STANDBY status
 - [x] All session summaries documented

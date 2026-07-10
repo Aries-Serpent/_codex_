@@ -20,7 +20,7 @@
 **Verification Summary:**
 - Both custom agents exist and are available in task tool catalog
 - Agent design documents complete (5 files for Track 13.3, 3 files for Track 13.4)
-- Both agents listed in AGENTS.md registry
+- Both agents listed in .codex/archive/deprecated/AGENTS.md registry
 - Agent responsiveness confirmed
 - Task activation mechanism tested and ready
 

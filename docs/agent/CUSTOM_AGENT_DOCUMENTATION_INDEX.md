@@ -136,7 +136,7 @@ REPEATABLE_PROCESSES.md
 
 - **Agent Registry:** `.github/agents/AGENT_REGISTRY.yaml` — Authoritative agent definitions
 - **Operational Guidelines:** `./OPERATIONAL_GUIDELINES.md` — Agent operational constraints
-- **Accountability:** `../../.codex/AGENT_ACCOUNTABILITY_REPORT.md` — Session tracking
+- **Accountability:** `../../.codex/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — Session tracking
 
 ---
 

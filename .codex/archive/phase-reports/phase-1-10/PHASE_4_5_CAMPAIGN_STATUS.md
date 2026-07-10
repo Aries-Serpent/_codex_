@@ -193,7 +193,7 @@
 ### End of Session (Next 2-3 hours)
 - [ ] Phase 4-5 all complete
 - [ ] Critical Remediation track assessment
-- [ ] Update AGENT_ACCOUNTABILITY_REPORT.md
+- [ ] Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 - [ ] Update CHANGELOG.md
 - [ ] Final compliance check (deferral language, secrets)
 - [ ] Commit all changes

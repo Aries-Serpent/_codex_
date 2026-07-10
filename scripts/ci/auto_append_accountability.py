@@ -1,10 +1,10 @@
 """
 scripts/ci/auto_append_accountability.py
-Phase 5 — Auto-append W-NNN entry to AGENT_ACCOUNTABILITY_REPORT.md.
+Phase 5 — Auto-append W-NNN entry to .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md.
 
 Called on session close (chatops_copilot_trigger.yml or CI post-session hook).
 Reads session data from SQLite agent_sessions table and appends a structured
-W-NNN accountability row to docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md.
+W-NNN accountability row to docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md.
 
 Usage:
   python scripts/ci/auto_append_accountability.py --session-id <uuid>
@@ -24,7 +24,7 @@ import sqlite3
 import sys
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parents[2]
-REPORT = REPO_ROOT / "docs" / "accountability" / "AGENT_ACCOUNTABILITY_REPORT.md"
+REPORT = REPO_ROOT / "docs" / "accountability" / ".codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md"
 DB_PATH = REPO_ROOT / ".codex" / "codex_corpus.db"
 
 
@@ -192,7 +192,7 @@ def append_entry(session_data: dict, dry_run: bool = False) -> None:
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(
-        description="Auto-append W-NNN entry to AGENT_ACCOUNTABILITY_REPORT.md"
+        description="Auto-append W-NNN entry to .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md"
     )
     ap.add_argument("--session-id", type=str, default=None, help="Session UUID to record")
     ap.add_argument("--list-recent", action="store_true", help="List last 10 sessions and exit")

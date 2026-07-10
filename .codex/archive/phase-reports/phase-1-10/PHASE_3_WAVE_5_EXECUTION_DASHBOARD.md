@@ -251,7 +251,7 @@ Reports stored in `.codex/PHASE_3_WAVE_5_LANE_*_CHECKPOINT_DAY_*.md`
 - **Lane 2 Brief**: `.codex/PHASE_3_WAVE_5_LANE_2_ML_CORE_BRIEF.md` (TBD - auto-gen)
 - **Lane 3 Brief**: `.codex/PHASE_3_WAVE_5_LANE_3_INFRA_BRIEF.md` (TBD - auto-gen)
 - **Lane 4 Brief**: `.codex/PHASE_3_WAVE_5_LANE_4_CLI_BRIEF.md` (TBD - auto-gen)
-- **Agent Accountability**: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- **Agent Accountability**: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - **Campaign Dashboard**: `.codex/CAMPAIGN_EXECUTION_DASHBOARD_REALTIME.md`
 
 ---

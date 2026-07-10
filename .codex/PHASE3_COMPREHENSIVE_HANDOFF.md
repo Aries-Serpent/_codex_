@@ -207,7 +207,7 @@ read_agent --agent_id phase3-aggregation-executor --wait false
 **Documentation & Governance**:
 - [ ] All reports committed to `.codex/` ✓
 - [ ] PR #5107 includes proper WEC template ✓
-- [ ] AGENT_ACCOUNTABILITY_REPORT.md updated ✓
+- [ ] .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated ✓
 - [ ] CHANGELOG.md updated ✓
 
 ---

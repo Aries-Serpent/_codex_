@@ -429,7 +429,7 @@ This campaign executes a comprehensive 5-phase production deployment readiness c
 3. ✅ Update Discussion #4872 with completion status
 4. ✅ Create deployment certification PR
 5. ✅ Tag release: `git tag pre-release_v0.1.0_certified`
-6. ✅ Post accountability update: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+6. ✅ Post accountability update: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 7. ✅ Generate session wrapup: `scripts/ci/session_wrapup_autofix.py`
 
 **Expected Timeline:**

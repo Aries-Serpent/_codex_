@@ -413,7 +413,7 @@ def create_embedding_provider(
 1. **README.md** - Add provider comparison table
 2. **docs/RAG_QUICKSTART.md** - Update with all providers
 3. **docs/EMBEDDING_PROVIDERS.md** - New comprehensive guide
-4. **docs/OFFLINE_DEPLOYMENT.md** - Document offline strategies
+4. **docs/docs/release/OFFLINE_DEPLOYMENT.md** - Document offline strategies
 
 ---
 

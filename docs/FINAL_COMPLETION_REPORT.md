@@ -23,7 +23,7 @@ All security infrastructure implemented. All documentation issues resolved. Repo
 
 ### Documentation: 100% Coverage
 - ✅ 26 issues → 0 resolved
-- ✅ 6/6 AGENTS.md files updated
+- ✅ 6/6 .codex/archive/deprecated/AGENTS.md files updated
 - ✅ 36KB security guides created
 - ✅ 14KB admin setup guide
 - ✅ All cross-references valid

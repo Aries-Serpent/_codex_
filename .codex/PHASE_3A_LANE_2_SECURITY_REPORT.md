@@ -311,7 +311,7 @@ The codebase has passed all critical security validations:
 ### 9.1 Related Previous Reports
 
 - PHASE 5 TRACK 2: Security Hardening Report (comprehensive security campaign)
-- Dependency Constraints Documentation (DEPENDENCY_CONSTRAINTS.md)
+- Dependency Constraints Documentation (.codex/archive/misc/DEPENDENCY_CONSTRAINTS.md)
 - Security Policy (SECURITY.md)
 
 ### 9.2 Continuous Integration Status

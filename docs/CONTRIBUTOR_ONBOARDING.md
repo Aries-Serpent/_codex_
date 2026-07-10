@@ -46,7 +46,7 @@ python -m codex.cli --help
 ## For AI Agents
 
 ```
-1. Read AGENTS.md for comprehensive agent guidance
+1. Read .codex/archive/deprecated/AGENTS.md for comprehensive agent guidance
 2. Review agents/prompts/ for pre-defined workflows
 3. Use workflow navigator for common tasks
 4. Follow this onboarding guide for contribution patterns
@@ -195,7 +195,7 @@ Located in `agents/`:
 
 ```
 Key Files:
-- AGENTS.md                 # Main agent guide
+- .codex/archive/deprecated/AGENTS.md                 # Main agent guide
 - COMPREHENSIVE_GAP_ANALYSIS.md  # Current gaps and priorities
 - codex_gap_registry.yaml   # Known gaps tracking
 
@@ -428,7 +428,7 @@ Located in `agents/prompts/`:
 
 ### Agent Guidelines
 
-Read `AGENTS.md` for comprehensive guidance on:
+Read `.codex/archive/deprecated/AGENTS.md` for comprehensive guidance on:
 - Agent architecture
 - Workflow tokens
 - Physics-inspired orchestration
@@ -508,7 +508,7 @@ git commit -m "docs: Update documentation for feature"
 
 ### Resources
 
-- **AGENTS.md**: Comprehensive agent guide
+- **.codex/archive/deprecated/AGENTS.md**: Comprehensive agent guide
 - **CONTRIBUTING.md**: Contribution guidelines
 - **COMPREHENSIVE_GAP_ANALYSIS.md**: Current priorities
 - **agents/prompts/**: Pre-defined workflows
@@ -539,7 +539,7 @@ Now that you're onboarded:
 
 1. **Explore the codebase**: Browse `src/`, `scripts/`, `tests/`
 2. **Run the audit pipeline**: `python scripts/space_traversal/audit_runner.py run`
-3. **Read key documentation**: AGENTS.md, COMPREHENSIVE_GAP_ANALYSIS.md
+3. **Read key documentation**: .codex/archive/deprecated/AGENTS.md, COMPREHENSIVE_GAP_ANALYSIS.md
 4. **Find your first issue**: Check good-first-issue labels
 5. **Join the community**: Engage with other contributors
 

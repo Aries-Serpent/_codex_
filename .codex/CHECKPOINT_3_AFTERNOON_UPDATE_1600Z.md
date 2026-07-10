@@ -174,7 +174,7 @@ Re-run full mutation suite with integrated test corpus to achieve 92%+ mutation 
 
 **Master Framework:** `.codex/PRODUCTION_READINESS_DELEGATION_FRAMEWORK.md`  
 **Checkpoint 3 Brief:** `.codex/CHECKPOINT_3_DELEGATION_BRIEF_HYBRID_MODE.md`  
-**Accountability:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`  
+**Accountability:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`  
 **Campaign Status:** `.codex/CHECKPOINT_3_EXECUTION_SUMMARY.md`  
 
 ---

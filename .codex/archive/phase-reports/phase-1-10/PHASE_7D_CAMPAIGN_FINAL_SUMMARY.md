@@ -145,7 +145,7 @@ The **Phase 7D Comprehensive Campaign** has successfully achieved **100/100 prod
 **Reports Generated:**
 - `.codex/PHASE_7D_COMPLETE_100_PRODUCTION_READINESS_CERTIFICATION.md` (16 KB)
 - `.codex/PHASE_7D_CAMPAIGN_ARTIFACT_INDEX.md` (15 KB)
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (updated, REQ-4 ✅)
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (updated, REQ-4 ✅)
 - `CHANGELOG.md` (updated, REQ-5 ✅)
 
 **Impact:** Final 100/100 certification issued; full deployment authorization granted
@@ -251,7 +251,7 @@ The **Phase 7D Comprehensive Campaign** has successfully achieved **100/100 prod
 6. ✅ Campaign: `PHASE_7D_FINAL_CAMPAIGN_SUMMARY.md`
 
 ### **Updated Documentation Files (2)**
-1. ✅ `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (REQ-4, +79 lines)
+1. ✅ `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (REQ-4, +79 lines)
 2. ✅ `CHANGELOG.md` (REQ-5, +62 lines)
 
 ### **Code Changes**

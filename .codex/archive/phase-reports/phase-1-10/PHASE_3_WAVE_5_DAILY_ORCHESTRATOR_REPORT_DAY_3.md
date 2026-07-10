@@ -406,7 +406,7 @@ L4 (CLI) → Phase 4 (Optional)
 - `.codex/PHASE_3_WAVE_5_DAILY_ORCHESTRATOR_REPORT_DAY_5.md` (July 2 @ 12:00Z — Phase 4 gate)
 
 ### Accountability Integration
-- ✅ AGENT_ACCOUNTABILITY_REPORT.md (updated daily)
+- ✅ .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (updated daily)
 - ✅ CHANGELOG.md (updated with lane progress)
 
 ---
@@ -462,4 +462,4 @@ L4 (CLI) → Phase 4 (Optional)
 - **Lane 2 Status**: `.codex/PHASE_3_WAVE_5_LANE_2_ML_CORE_CHECKPOINT_DAY_2.md`
 - **Lane 3 Status**: `.codex/PHASE_3_WAVE_5_LANE_3_EXECUTION_PLAN.md`
 - **Lane 4 Status**: `.codex/PHASE_3_WAVE_5_LANE_4_CHECKPOINT_DAY_1.md`
-- **Accountability**: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- **Accountability**: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`

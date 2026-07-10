@@ -186,7 +186,7 @@ posts the completion gate checklist; the human approves before the next phase st
 | G-5 | Confirm `agent-auth-delegation.yml` structure (locate cognitive-preflight job) | ✅ Done — gates implemented as standalone workflows instead | **P0** | Done |
 | G-6 | Confirm `.github/CODEOWNERS` has correct format for new entries | ✅ Updated with GROUNDED path entries | Done | — |
 | G-7 | Confirm `CHANGELOG.md` format for new Phase entries | ✅ Exists at root | Done | — |
-| G-8 | Confirm `AGENT_ACCOUNTABILITY_REPORT.md` W-NNN format | ✅ Exists | Done | — |
+| G-8 | Confirm `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` W-NNN format | ✅ Exists | Done | — |
 | G-9 | Ensure no merge conflicts with `main` branch | ✅ PR is up-to-date | **P0** | Done |
 | G-10 | Assess `.github/agents/AGENT_REGISTRY.yaml` (v1.7.0, 128 agents) and determine extend vs. migrate strategy for Phase 1 | ✅ Done — Option A (extend in-place) chosen. Now v1.9.0 with 152 agents | **P0** | Done |
 
@@ -206,7 +206,7 @@ posts the completion gate checklist; the human approves before the next phase st
 | `.codex/schemas/` directory | ✅ Exists (2 schemas) | Phase 1 (schema home) |
 | `docs/architecture/` directory | ✅ Exists (13 files) | Phase 0 (transition map home) |
 | `.github/CODEOWNERS` | ✅ Exists (234 lines) | Phase 1 (security entries) |
-| `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | ✅ Exists | All (W-NNN tracking) |
+| `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` | ✅ Exists | All (W-NNN tracking) |
 | `CHANGELOG.md` | ✅ Exists | All (phase entries) |
 | FAISS/sentence-transformers in codebase | ✅ Used in RAG modules | Phase 3 (patterns available) |
 | `jsonschema` dependency | ✅ In pyproject.toml | Phases 1, 2 (schema validation) |
@@ -349,7 +349,7 @@ and verification criteria.
 **Inputs:**
 - `.github/agents/**/*.md` (recursive; 372 files across nested subdirectories)
 - `.github/agents/AGENT_REGISTRY.yaml` (128 formally registered agents, v1.7.0)
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - `.github/workflows/*.yml` (agent name references)
 
 **Tasks:**
@@ -382,13 +382,13 @@ and verification criteria.
 **Tasks:**
 1. Create `docs/architecture/E_TO_D_TRANSITION_MAP.md` with Mermaid FSM diagram
 2. Complete KPI baseline table in `AGENTIC_BASELINE_AUDIT_v2.md`
-3. Add W-NNN entries to `AGENT_ACCOUNTABILITY_REPORT.md`
+3. Add W-NNN entries to `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 4. Add Phase 0 entry to `CHANGELOG.md`
 
 **Outputs:**
 - `docs/architecture/E_TO_D_TRANSITION_MAP.md`
 - Updated `AGENTIC_BASELINE_AUDIT_v2.md` (KPI section)
-- Updated `AGENT_ACCOUNTABILITY_REPORT.md`
+- Updated `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - Updated `CHANGELOG.md`
 
 **Verification:**
@@ -482,13 +482,13 @@ and verification criteria.
 **Tasks:**
 1. Add manifest injection step to `copilot-agent-vars-bootstrap.yml`
 2. Verify `agent_context.json` receives safe manifest fields only
-3. Add W-NNN entries to `AGENT_ACCOUNTABILITY_REPORT.md`
+3. Add W-NNN entries to `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 4. Add Phase 1 entry to `CHANGELOG.md`
 5. Verify all Phase 1 completion gate conditions
 
 **Outputs:**
 - Updated `copilot-agent-vars-bootstrap.yml`
-- Updated `AGENT_ACCOUNTABILITY_REPORT.md`
+- Updated `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - Updated `CHANGELOG.md`
 
 **Verification:**

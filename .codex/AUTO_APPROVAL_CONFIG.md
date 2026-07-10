@@ -134,7 +134,7 @@ Session Auto-Complete: PDA loop finalize
 - ✅ **Pre-Approval:** All work reviewed and approved by @mbaetiong
 - ✅ **Scope:** All agents, all phases, this branch head
 - ✅ **No escalation required:** Full autonomous execution enabled
-- ✅ **REQ-4 Compliance:** Accountability tracked in AGENT_ACCOUNTABILITY_REPORT.md
+- ✅ **REQ-4 Compliance:** Accountability tracked in .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 
 ---
 
@@ -144,7 +144,7 @@ Session Auto-Complete: PDA loop finalize
 |----------|----------|---------|
 | AGENTIC_REPO_STATE.md | `.codex/` | Auth status, repo variables |
 | CODEBASE_AGENCY_POLICY.md | `.codex/` | Agency mandate and rules |
-| AGENT_ACCOUNTABILITY_REPORT.md | `docs/accountability/` | Session tracking and approvals |
+| .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md | `docs/accountability/` | Session tracking and approvals |
 | PDA Loop History | `.codex/aftermath/pda_iterations.jsonl` | Decision/action audit trail |
 
 ---

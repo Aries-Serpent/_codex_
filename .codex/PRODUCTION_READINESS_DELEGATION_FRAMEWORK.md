@@ -160,7 +160,7 @@
 ## ✅ ACCOUNTABILITY TRACKING
 
 **Primary Document:**
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 **Update Schedule:**
 - Checkpoint 3: Immediate (Hybrid mode status)

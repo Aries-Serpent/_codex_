@@ -152,7 +152,7 @@
 ## Session 22 Summary (2026-05-07T11:51Z)
 
 - CI rescue: RP-004 (tracked-file sync drift) on commit `92e99bf0a78c` (run 25493322004)
-- Root cause: Commit `aeb6da1c` (universal baseline sweep after merge) did not update `AGENT_ACCOUNTABILITY_REPORT.md`
+- Root cause: Commit `aeb6da1c` (universal baseline sweep after merge) did not update `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - Fix: Added S22 accountability entry; `sync_tracked_files.py --fix` run ✅
 
 ## Session 21 Summary (2026-05-07T11:34Z)
@@ -181,7 +181,7 @@
 ## Session 14 Summary (2026-05-07T03:01Z)
 
 - CI rescue: Pre-Merge Validation SHA drift (merge-preview commit) — local sync passes; fresh push clears ✅
-- AGENT_ACCOUNTABILITY_REPORT.md S9–S13 gap resolved: all 5 missing entries added ✅
+- .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md S9–S13 gap resolved: all 5 missing entries added ✅
 - Living docs (whats_next + session_diagram + CHANGELOG) updated with S14 ✅
 - Blocking comment #4393846751 replied to ✅
 - Statistics updated: 14 sessions completed

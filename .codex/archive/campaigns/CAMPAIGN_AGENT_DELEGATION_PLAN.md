@@ -115,7 +115,7 @@ Execute 4-phase remediation:
 
 3. **Report Generation**
    - Create `.codex/PHASE_4_AGENT_REGISTRY_VERIFICATION_REPORT.md`
-   - Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (Phase 4: 40% → 60%)
+   - Update `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (Phase 4: 40% → 60%)
 
 **Success Criteria:**
 - ✅ All 145 active agents verified in registry
@@ -194,7 +194,7 @@ Execute 4-phase remediation:
 4. **Report Generation**
    - Create `.codex/PHASE_6_CVE_REMEDIATION_REPORT.md`
    - Include CVE inventory, patching timeline, Wave 3 roadmap
-   - Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (Phase 6: 50% → 85%)
+   - Update `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (Phase 6: 50% → 85%)
 
 **Success Criteria:**
 - ✅ Wave 2B complete (all CRITICAL/HIGH CVEs patched)
@@ -398,7 +398,7 @@ ETA: [Expected completion time]
 ### Agent Handoff Protocol
 When agent completes phase:
 1. Generate phase completion report (in `.codex/PHASE_*.md`)
-2. Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+2. Update `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 3. Post status to Discussion #4872
 4. Notify next phase lead (if sequential dependency)
 
@@ -477,7 +477,7 @@ When agent completes phase:
 ## ACCOUNTABILITY & TRACKING
 
 ### Progress Tracking Document
-Location: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+Location: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 **Updates Per Phase Completion:**
 - Phase 4: Completion % update (40% → 60% → 95%)
@@ -514,7 +514,7 @@ Location: GitHub Discussion #4872
 - `.codex/PHASE_7A_WAVE_3_RESULTS_REPORT.md`
 
 ### Accountability Documents
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (phase completion tracking)
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (phase completion tracking)
 - `CHANGELOG.md` (commit history)
 
 ---

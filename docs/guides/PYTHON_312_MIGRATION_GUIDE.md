@@ -372,7 +372,7 @@ def process(data: str | int) -> list[dict[str, str]] | None:
 ### Project Documentation
 - **README.md** - Project overview and quick start
 - **CONTRIBUTING.md** - Development setup and guidelines
-- **AGENTS.md** - AI agent documentation and policies
+- **.codex/archive/deprecated/AGENTS.md** - AI agent documentation and policies
 
 ### Related Documents
 - `PR_2968_RESOLUTION_SUMMARY.md` - Full implementation details

@@ -98,7 +98,7 @@ pytest --collect-only path/to/test_file.py
 **Repository-Specific Debugging:**
 
 For Codex-specific issues:
-- Check `AGENTS.md` for testing conventions
+- Check `.codex/archive/deprecated/AGENTS.md` for testing conventions
 - Review `tests/conftest.py` for custom fixtures
 - Check `.pytest.ini` for test configuration
 - Look at `pyproject.toml` for test settings
@@ -179,4 +179,4 @@ navigator.execute('DEBUG_TEST')  # Future: automated test debugging
 
 - [pytest documentation](https://docs.pytest.org/)
 - [Python debugging guide](https://docs.python.org/3/library/pdb.html)
-- [Codex testing conventions](../../../.github/AGENTS.md#testing)
+- [Codex testing conventions](../../../.github/.codex/archive/deprecated/AGENTS.md#testing)

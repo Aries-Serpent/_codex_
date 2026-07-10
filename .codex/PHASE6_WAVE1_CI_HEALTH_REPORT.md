@@ -250,7 +250,7 @@ gh api /repos/Aries-Serpent/_codex_/actions/variables/CODEX_CI_FAILURE_RATE
 - **PR #4923**: https://github.com/Aries-Serpent/_codex_/pull/4923
 - **Discussion #4872**: https://github.com/Aries-Serpent/_codex_/discussions/4872
 - **CI Health Monitor**: `.github/workflows/ci-health-monitor.yml`
-- **Agent Changelog**: `AGENTS.md`
+- **Agent Changelog**: `.codex/archive/deprecated/AGENTS.md`
 
 ---
 

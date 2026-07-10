@@ -20,7 +20,7 @@
 
 ### Root Level (3 files)
 - `README.md` - 1 line (ROADMAP.md link)
-- `AGENTS.md` - 2 lines (ROADMAP.md links)
+- `.codex/archive/deprecated/AGENTS.md` - 2 lines (ROADMAP.md links)
 - `LINK_VALIDATION_ACTION_ITEMS.md` - 3 lines (dashboard, policy, roadmap)
 
 ### .github/ (13 files)
@@ -31,7 +31,7 @@
 - `CONTINUATION_PROMPT_PHASE9_2.md` - 5 lines
 
 **Agent Documentation:**
-- `agents/docs/AGENTS.md` - 10 lines (policy, operational, genesis, roadmap)
+- `agents/docs/.codex/archive/deprecated/AGENTS.md` - 10 lines (policy, operational, genesis, roadmap)
 - `agents/coverage-roadmap-agent.md` - 1 line
 - `agents/documentation-consolidator.md` - 1 line
 
@@ -52,7 +52,7 @@
 **Plans & Docs:**
 - `plans/COGNITIVE_BRAIN_STATUS_POST_PR2956.md` - 2 lines
 - `plans/PHASE_9_1_COMPLETION_SUMMARY.md` - 1 line
-- `docs/AGENTS.md.original.cf4e8c9.md` - 8 lines
+- `docs/.codex/archive/deprecated/AGENTS.md.original.cf4e8c9.md` - 8 lines
 - `docs/PHILOSOPHICAL_FRAMEWORK.md` - 1 line
 - `docs/README.md` - 1 line
 
@@ -144,8 +144,8 @@
 ### Quick Spot Checks ✅
 
 - [x] `README.md` - Check ROADMAP link
-- [x] `AGENTS.md` - Check ROADMAP links
-- [x] `.github/agents/docs/AGENTS.md` - Check policy/operational links
+- [x] `.codex/archive/deprecated/AGENTS.md` - Check ROADMAP links
+- [x] `.github/agents/docs/.codex/archive/deprecated/AGENTS.md` - Check policy/operational links
 - [x] `LINK_VALIDATION_ACTION_ITEMS.md` - Check dashboard/policy links
 - [x] Continuation prompts - Check dashboard links
 
@@ -172,7 +172,7 @@ git diff --stat
 
 # Review specific file
 git diff README.md
-git diff .github/agents/docs/AGENTS.md
+git diff .github/agents/docs/.codex/archive/deprecated/AGENTS.md
 
 # See all changes (color output)
 git diff
@@ -205,7 +205,7 @@ Fixes:
 - CODEBASE_COGNITIVE_MAP.md refs (8 fixes)
 - Guide files (6 fixes)
 
-Impact: Main README, AGENTS.md, continuation prompts, master indexes
+Impact: Main README, .codex/archive/deprecated/AGENTS.md, continuation prompts, master indexes
 
 Files: 43 changed, 99 insertions(+), 99 deletions(-)
 "

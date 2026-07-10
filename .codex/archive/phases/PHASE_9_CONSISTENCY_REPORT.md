@@ -246,20 +246,20 @@
 
 ## ✅ T3.4: Integration with Surrounding Documentation
 
-### AGENTS.md References
+### .codex/archive/deprecated/AGENTS.md References
 
 **Verification Results:**
-- Status in AGENTS.md: "✅ UP-TO-DATE (2026-06-11 - Phase 6 Consolidation)"
-- Phase 9 References: ❌ NOT FOUND in AGENTS.md
+- Status in .codex/archive/deprecated/AGENTS.md: "✅ UP-TO-DATE (2026-06-11 - Phase 6 Consolidation)"
+- Phase 9 References: ❌ NOT FOUND in .codex/archive/deprecated/AGENTS.md
 - Last Update: 2026-06-11 (predates Phase 9 planning: 2026-06-22)
 
-**Critical Finding:** Phase 9 documentation is newer (2026-06-22) than AGENTS.md (2026-06-11). AGENTS.md does not reference Phase 9 execution plans.
+**Critical Finding:** Phase 9 documentation is newer (2026-06-22) than .codex/archive/deprecated/AGENTS.md (2026-06-11). .codex/archive/deprecated/AGENTS.md does not reference Phase 9 execution plans.
 
-**Recommendation:** Update AGENTS.md to include Phase 9 orchestration references and link to Phase 9 documents.
+**Recommendation:** Update .codex/archive/deprecated/AGENTS.md to include Phase 9 orchestration references and link to Phase 9 documents.
 
 ### Accountability Report Integration
 
-**File:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+**File:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - Status: ✅ PRESENT and current
 - Session Examples Found: YES
   - "2026-06-25T23:50Z [PHASE 4: CONTINUOUS IMPROVEMENT CAMPAIGN...]"
@@ -404,9 +404,9 @@ Navigation Path:
 **Severity:** LOW  
 **Affected Component:** Documentation discoverability  
 **Location:**
-- AGENTS.md not updated for Phase 9
+- .codex/archive/deprecated/AGENTS.md not updated for Phase 9
 - CHANGELOG.md not updated for Phase 8-12 campaign
-- AGENT_ACCOUNTABILITY_REPORT.md contains Phase 4 but not Phase 9 planning
+- .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md contains Phase 4 but not Phase 9 planning
 
 **Problem:** Phase 8-12 planning documentation is not integrated into supporting documentation indices.
 
@@ -417,8 +417,8 @@ Navigation Path:
 
 **Resolution:** Update documentation indices:
 1. CHANGELOG.md: Add entries for Phase 8-12 campaign planning
-2. AGENTS.md: Update to reference Phase 9 execution plan and agent assignments
-3. AGENT_ACCOUNTABILITY_REPORT.md: Include Phase 9 planning sessions
+2. .codex/archive/deprecated/AGENTS.md: Update to reference Phase 9 execution plan and agent assignments
+3. .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md: Include Phase 9 planning sessions
 
 ---
 
@@ -441,8 +441,8 @@ Navigation Path:
 - ❌ Agent `self-healing-orchestrator-agent` not in AGENT_REGISTRY.yaml
 - ⚠️ Reference link naming mismatch in cross-references
 - ⚠️ Status emoji inconsistency (🟡 vs 🔴 for Phase 9 tracks)
-- ⚠️ Phase 8-9 planning not reflected in AGENTS.md, CHANGELOG.md
-- ⚠️ AGENT_ACCOUNTABILITY_REPORT.md doesn't track Phase 9 planning
+- ⚠️ Phase 8-9 planning not reflected in .codex/archive/deprecated/AGENTS.md, CHANGELOG.md
+- ⚠️ .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md doesn't track Phase 9 planning
 
 ### Consistency Validation Results
 
@@ -498,7 +498,7 @@ Navigation Path:
 
 4. **Documentation Index Updates (MEDIUM)**
    - Action: Update CHANGELOG.md to include Phase 8-12 campaign entries
-   - Action: Update AGENTS.md Phase 9 section with agent assignments
+   - Action: Update .codex/archive/deprecated/AGENTS.md Phase 9 section with agent assignments
    - Action: Consider adding Phase 9 planning as accountability session
 
 ---

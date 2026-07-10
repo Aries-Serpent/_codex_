@@ -283,7 +283,7 @@ Combined Score:             100%
 - ✅ `PHASE_7D_REAL_TIME_STATUS_UPDATE_2026_06_22.md` (12KB)
 
 **Accountability:**
-- ✅ `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (updated with all agent work)
+- ✅ `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (updated with all agent work)
 - ✅ `CHANGELOG.md` (Phase 7D entry prepared)
 
 ---

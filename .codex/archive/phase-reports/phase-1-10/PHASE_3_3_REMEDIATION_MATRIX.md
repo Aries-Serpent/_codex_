@@ -241,7 +241,7 @@ name: validate-${{ github.run_id }}-results
 k8s_patterns.json         ← OK, relative
 infrastructure_compliance_report.json  ← OK, relative
 cost_estimate.json        ← OK, relative
-terraform_plan_summary.md ← OK, relative
+.codex/archive/misc/terraform_plan_summary.md ← OK, relative
 ```
 
 **Verify all paths**:

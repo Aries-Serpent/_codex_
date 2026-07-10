@@ -7,7 +7,7 @@ structured JSON + Markdown compliance reports.
 
 Merge Commit Handling
 ---------------------
-REQ-4 (AGENT_ACCOUNTABILITY_REPORT.md) and REQ-5 (CHANGELOG.md) have special
+REQ-4 (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md) and REQ-5 (CHANGELOG.md) have special
 handling for merge commits:
 
   - Regular commits: Strict check — files must appear in the commit's changeset
@@ -70,7 +70,7 @@ logger = logging.getLogger("phase12.2.compliance")
 REPO_ROOT = Path(__file__).resolve().parents[2]
 SESSIONS_DIR = REPO_ROOT / ".codex" / "sessions"
 CHANGELOG = REPO_ROOT / "CHANGELOG.md"
-ACCOUNTABILITY_REPORT = REPO_ROOT / "docs" / "accountability" / "AGENT_ACCOUNTABILITY_REPORT.md"
+ACCOUNTABILITY_REPORT = REPO_ROOT / "docs" / "accountability" / ".codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md"
 SECRETS_BASELINE = REPO_ROOT / ".secrets.baseline"
 REPORT_OUTPUT = REPO_ROOT / ".codex" / "PHASE_12_2_COMPLIANCE_REPORT.md"
 
@@ -395,9 +395,9 @@ class ComplianceDashboard:
 
     def check_req4(self) -> ComplianceResult:
         """
-        REQ-4: AGENT_ACCOUNTABILITY_REPORT.md updated in last commit.
+        REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated in last commit.
 
-        Pass condition: AGENT_ACCOUNTABILITY_REPORT.md appears in the list of
+        Pass condition: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md appears in the list of
         files changed by HEAD commit.
 
         Special handling for merge commits: Merge commits automatically combine
@@ -412,7 +412,7 @@ class ComplianceDashboard:
                 remediation="Ensure the repository has at least one commit.",
             )
 
-        accountability_path = "docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md"
+        accountability_path = "docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md"
         # Parse the output line-by-line to avoid substring matching issues
         changed_files_list = [
             line.strip() for line in changed_files.splitlines() if line.strip()
@@ -459,7 +459,7 @@ class ComplianceDashboard:
             details=f"{accountability_path} was NOT updated in the last commit",
             remediation=(
                 "Run: python scripts/ci/session_wrapup_autofix.py --fix-accountability\n"
-                "Or manually append an entry to docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md"
+                "Or manually append an entry to docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md"
             ),
         )
 

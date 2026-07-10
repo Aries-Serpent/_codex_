@@ -138,7 +138,7 @@
 
 ## ACCOUNTABILITY & COMPLIANCE
 
-### REQ-4: AGENT_ACCOUNTABILITY_REPORT.md
+### REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 - ✅ Entry prepared for Phase X session (15 agents)
 - ✅ Authority: @mbaetiong (D-level autonomy)
 - ✅ Session type: Crisis Response (Emergency CI Stabilization)

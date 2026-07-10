@@ -25,7 +25,7 @@ _codex_/
 ├── README.md                      # Project overview & quick start
 ├── LICENSE                        # MIT License
 ├── CONTRIBUTING.md               # Contribution guidelines
-├── AGENTS.md                      # AI agent documentation
+├── .codex/archive/deprecated/AGENTS.md                      # AI agent documentation
 ├── pyproject.toml                # Python package definition (MAIN CONFIG)
 ├── setup.cfg                     # Legacy setuptools config
 ├── setup.py                      # Legacy build script
@@ -252,7 +252,7 @@ scripts/
 
 docs/                           # Documentation (93+ KB)
 ├── README.md
-├── INSTALL.md
+├── .codex/archive/misc/INSTALL.md
 ├── CLI_REFERENCE.md
 ├── ARCHITECTURE.md
 ├── COGNITIVE_BRAIN_GUIDE.md

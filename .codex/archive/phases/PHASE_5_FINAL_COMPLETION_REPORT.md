@@ -23,9 +23,9 @@ Phase 5 Complete Implementation has successfully achieved **100/100 perfection s
 
 ## COMPLIANCE VERIFICATION
 
-### ✅ REQ-4: AGENT_ACCOUNTABILITY_REPORT.md (UPDATED)
+### ✅ REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (UPDATED)
 
-**File:** `AGENT_ACCOUNTABILITY_REPORT.md` (830 lines)  
+**File:** `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (830 lines)  
 **Status:** ✅ Fully Updated with Phase 5 Track Completion Data
 
 **Tracked Agents (15 Total):**
@@ -361,7 +361,7 @@ Status: NO VIOLATIONS DETECTED ✅
 | All governance gates passed | ✅ | This report (Pillar 1-3) |
 | Owner approval obtained | ✅ | @mbaetiong (D-tier) |
 | Compliance verified | ✅ | REQ-4 & REQ-5 complete |
-| 15 agents logged | ✅ | AGENT_ACCOUNTABILITY_REPORT.md |
+| 15 agents logged | ✅ | .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md |
 | 99.5/100 score achieved | ✅ | Final score calculation above |
 
 ### Production Deployment Approval
@@ -393,7 +393,7 @@ Status: NO VIOLATIONS DETECTED ✅
    - Size: ~250 KB
    - Contains: Executive summary, compliance verification, score tracking, governance gates
 
-2. **AGENT_ACCOUNTABILITY_REPORT.md**
+2. **.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md**
    - Status: ✅ Updated
    - Size: 830 lines
    - Contains: 15 agents logged with contribution metrics
@@ -449,7 +449,7 @@ Phase 5 Wave 5 Governance Gate Verification:
 This Phase 5 Final Completion Report certifies that:
 
 1. ✅ **All Compliance Requirements Met**
-   - REQ-4: AGENT_ACCOUNTABILITY_REPORT.md fully updated with 15 agents
+   - REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md fully updated with 15 agents
    - REQ-5: CHANGELOG.md fully updated with all 5 tracks
 
 2. ✅ **Campaign Targets Achieved**

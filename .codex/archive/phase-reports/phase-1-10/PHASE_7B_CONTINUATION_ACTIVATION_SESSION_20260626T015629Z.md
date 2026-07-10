@@ -94,7 +94,7 @@ Based on Phase 7B documentation review:
 - All compliance gates documented
 
 ### 3. ✅ Accountability Updated
-- AGENT_ACCOUNTABILITY_REPORT.md current through Phase 7B
+- .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md current through Phase 7B
 - CHANGELOG.md updated with Phase 7B campaign details
 - All 10 agents' work documented and tracked
 

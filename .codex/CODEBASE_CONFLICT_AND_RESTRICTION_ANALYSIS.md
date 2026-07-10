@@ -303,7 +303,7 @@ Multiple documents forbid workflow changes:
 - `.codex/guardrails.md` — Genesis template (says it's outdated)
 - `/.github/AI_AGENT_POLICY_UPDATES_2026-01-06.md` — Policy updates (from session)
 - `docs/agent/OPERATIONAL_GUIDELINES.md` — Different operational guidance
-- `AGENTS.md` — Repository-level agent documentation
+- `.codex/archive/deprecated/AGENTS.md` — Repository-level agent documentation
 
 #### Conflicts Identified:
 

@@ -42,7 +42,7 @@
 ### Distribution Files
 - `aries-serpent-ml-0.1.0-beta3.tar.gz` (1.3 MB)
 - `aries-serpent-ml-0.1.0-beta3.tar.gz.sha256` (Checksums)
-- `QUICK_START_ML.md` (Quick start guide with examples)
+- `docs/quickstart/QUICK_START_ML.md` (Quick start guide with examples)
 
 ### Included Modules
 ```
@@ -146,7 +146,7 @@ model.train(dataset, weights)
 model.save("./my_gpt2")
 ```
 
-See `QUICK_START_ML.md` for more examples.
+See `docs/quickstart/QUICK_START_ML.md` for more examples.
 
 ---
 
@@ -192,7 +192,7 @@ See `QUICK_START_ML.md` for more examples.
 
 ## 📚 Documentation
 
-- **Quick Start**: `QUICK_START_ML.md`
+- **Quick Start**: `docs/quickstart/QUICK_START_ML.md`
 - **API Reference**: See GitHub repository `docs/ml/API_REFERENCE.md`
 - **Fine-tuning Guide**: See GitHub repository `docs/ml/FINE_TUNING.md`
 - **Integration Patterns**: See GitHub repository `docs/ml/INTEGRATION_PATTERNS.md`
@@ -233,7 +233,7 @@ None at this time. All tests passing.
 
 - **Issues**: https://github.com/Aries-Serpent/_codex_/issues
 - **Discussions**: https://github.com/Aries-Serpent/_codex_/discussions
-- **Quick Start**: `QUICK_START_ML.md` (in this release)
+- **Quick Start**: `docs/quickstart/QUICK_START_ML.md` (in this release)
 
 ---
 

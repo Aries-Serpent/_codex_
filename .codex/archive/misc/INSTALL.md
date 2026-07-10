@@ -157,8 +157,8 @@ pip uninstall aries-serpent-ml
 
 ## Getting Help
 
-- **Installation Issues:** [INSTALL.md](INSTALL.md)
-- **Quick Start ML:** [QUICK_START_ML.md](QUICK_START_ML.md)
+- **Installation Issues:** [.codex/archive/misc/INSTALL.md](.codex/archive/misc/INSTALL.md)
+- **Quick Start ML:** [docs/quickstart/QUICK_START_ML.md](docs/quickstart/QUICK_START_ML.md)
 - **Getting Started Guide:** [docs/getting-started.md](docs/getting-started.md)
 - **Full Documentation:** [docs/](docs/)
 

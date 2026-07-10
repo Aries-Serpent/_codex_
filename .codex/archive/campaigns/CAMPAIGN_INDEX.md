@@ -108,7 +108,7 @@
 
 ### Accountability & Operations
 
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` - Session accountability
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` - Session accountability
 - `.codex/agent_context.json` - Repository variables
 - `.github/workflows/copilot-setup-steps.yml` - Setup procedure
 - `scripts/ci/session_wrapup_autofix.py` - Compliance verification

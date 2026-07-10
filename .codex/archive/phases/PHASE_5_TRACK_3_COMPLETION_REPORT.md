@@ -312,7 +312,7 @@ Test failure diagnosis:         1 minute average
 
 ## 📋 COMPLIANCE STATUS
 
-### REQ-4: AGENT_ACCOUNTABILITY_REPORT.md
+### REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 - [x] Document semantic assertion framework
 - [x] List all enhanced modules
 - [x] Provide metrics and statistics

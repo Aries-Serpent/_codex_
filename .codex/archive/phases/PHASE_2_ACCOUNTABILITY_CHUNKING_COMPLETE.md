@@ -294,17 +294,17 @@ To finalize migration:
 
 1. **Backup original report**
    ```bash
-   cp docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md \
+   cp docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md \
       .codex/archive/AGENT_ACCOUNTABILITY_REPORT_BACKUP_20260623.md
    ```
 
-2. **Create redirect stub** in `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+2. **Create redirect stub** in `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
    - Explain the move to chunks
    - Link to new index file
    - Provide search instructions
 
 3. **Update references** in:
-   - `AGENTS.md` — Accountability section links
+   - `.codex/archive/deprecated/AGENTS.md` — Accountability section links
    - `CONTRIBUTING.md` — Session tracking references
    - `.codex/change_log.md` — Audit trail
 

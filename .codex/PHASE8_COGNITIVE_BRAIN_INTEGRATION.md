@@ -24,7 +24,7 @@
 **Status**: ✅ Deployed
 
 ### 3. Cognitive Brain Integration Summary
-**File**: `.codex/PHASE8_COGNITIVE_BRAIN_INTEGRATION.md` (this document)  
+**File**: `.codex/PHASE8_COGNITIVE_BRAIN_docs/api/reference/INTEGRATION.md` (this document)  
 **Purpose**: Executive handoff for Phase 10 team  
 **Status**: ✅ In Progress
 
@@ -274,7 +274,7 @@ score = (success_rate * 0.5) + (confidence * 0.3) + (1 / avg_fix_time * 0.2)
 | **Consolidation Report** | `.codex/PHASE8_PATTERN_CONSOLIDATION.md` | Complete pattern inventory + recommendations |
 | **DRQ Log** | `.codex/aftermath/pattern_learning.jsonl` | Queryable pattern library for Phase 10 |
 | **Healer Config** | `.codex/PHASE8_HEALER_CONFIG.json` | Phase 9 deployment config (3 runs/hour) |
-| **Integration Summary** | `.codex/PHASE8_COGNITIVE_BRAIN_INTEGRATION.md` | This document — executive handoff |
+| **Integration Summary** | `.codex/PHASE8_COGNITIVE_BRAIN_docs/api/reference/INTEGRATION.md` | This document — executive handoff |
 | **Tuning Report** | `.codex/PHASE8_HEALER_TUNING.md` | Phase 9 healer settings rationale |
 
 ---

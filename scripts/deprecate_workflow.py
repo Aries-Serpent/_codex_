@@ -95,7 +95,7 @@ class WorkflowDeprecator:
             self.repo_root / '.github' / 'workflows',
             self.repo_root / '.codex',
             self.repo_root / 'README.md',
-            self.repo_root / 'AGENTS.md'
+            self.repo_root / '.codex/archive/deprecated/AGENTS.md'
         ]
 
         for path in doc_paths:

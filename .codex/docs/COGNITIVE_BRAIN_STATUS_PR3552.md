@@ -61,7 +61,7 @@ Genesis Protocol
 | 2 | `package directory 'services' does not exist` | `[tool.setuptools.package-dir]` maps 11+ dirs not copied | `ARG STUB_DIRS` + `RUN mkdir -p ${STUB_DIRS}` |
 | 3 | `package directory 'services/mcp' does not exist` | `COPY src/` copies `src/services/` with sub-packages; setuptools `find` with `where=[".", "src"]` discovers `services.mcp` and resolves via `package-dir services = "services"` to root `services/mcp` — stub was flat | `COPY services/ ./services/` |
 | 4 | (prospective) `package directory 'codex_utils/tracking' does not exist` | Same pattern: `src/codex_utils/tracking` exists, `codex_utils*` included in `packages.find.include`, not excluded | `COPY codex_utils/ ./codex_utils/` |
-| 5 | Cognitive Pre-flight step 7: accountability report not touched | Commit didn't touch required file | Updated `AGENT_ACCOUNTABILITY_REPORT.md` |
+| 5 | Cognitive Pre-flight step 7: accountability report not touched | Commit didn't touch required file | Updated `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` |
 | 6 | Cognitive Pre-flight step 8: CHANGELOG.md not touched | Commit didn't touch required file | Updated `CHANGELOG.md` |
 | 7 | Smoke-test: `docker run ghcr.io/...` → `denied` | On PR builds `push=false` and no `load: true` → image only in buildx cache, not in local daemon or GHCR | Added `load: true` in `build-preview-image.yml` for non-main builds |
 

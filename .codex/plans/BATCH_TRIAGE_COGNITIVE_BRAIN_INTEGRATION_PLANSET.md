@@ -68,7 +68,7 @@ This planset defines the **strategic-level integration** of the Batch CI Failure
 - [ ] Implement remediation_engine for auto-fix generation
 - [ ] Implement notifier for Slack/email/GitHub
 - [ ] Write comprehensive test suite (target: 20+ tests)
-- [ ] Update AGENTS.md registry
+- [ ] Update .codex/archive/deprecated/AGENTS.md registry
 
 **Success Criteria**:
 - Agent operational and testable

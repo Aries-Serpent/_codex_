@@ -63,11 +63,11 @@ ROOT (254 items)
 │   ├── README.md                   (57.7 KB) - Main README
 │   ├── CONTRIBUTING.md             (17.9 KB)
 │   ├── CHANGELOG.md                (1.3 MB) ❌ LARGE
-│   ├── AGENTS.md                   (33 KB) - Should be in docs/
+│   ├── .codex/archive/deprecated/AGENTS.md                   (33 KB) - Should be in docs/
 │   ├── SECURITY.md
 │   ├── CODE_OF_CONDUCT.md
-│   ├── CLAUDE.md                   (160 B) - Model-specific
-│   ├── GEMINI.md                   (160 B) - Model-specific
+│   ├── .codex/archive/deprecated/CLAUDE.md                   (160 B) - Model-specific
+│   ├── .codex/archive/deprecated/GEMINI.md                   (160 B) - Model-specific
 │   ├── LICENSE
 │   ├── CITATION.cff
 │   └── [47 more documentation files]
@@ -80,7 +80,7 @@ ROOT (254 items)
 │   ├── PHASE_8_1_*
 │   ├── PHASE_B_*
 │   ├── PHASE_D_*
-│   ├── CAMPAIGN_EXECUTION_COMPLETE.md
+│   ├── .codex/archive/misc/CAMPAIGN_EXECUTION_COMPLETE.md
 │   ├── AUDIT_COMPLETION_SUMMARY.txt
 │   ├── AUDIT_SUMMARY.txt
 │   └── [13 more]
@@ -205,7 +205,7 @@ Configuration variants found:
 
 ```
 Root-level docs that should be in docs/:
-- AGENTS.md (33 KB)
+- .codex/archive/deprecated/AGENTS.md (33 KB)
 - SECURITY.md
 - SECURITY_FIXES_SUMMARY.txt
 - SECURITY_MONITORING_PLAN.md
@@ -217,9 +217,9 @@ Root-level docs that should be in docs/:
 - CITATION.cff
 
 Model-specific docs that should be consolidated:
-- CLAUDE.md (160 B)
-- GEMINI.md (160 B)
-→ Should be: docs/models/CLAUDE.md, docs/models/GEMINI.md
+- .codex/archive/deprecated/CLAUDE.md (160 B)
+- .codex/archive/deprecated/GEMINI.md (160 B)
+→ Should be: docs/models/.codex/archive/deprecated/CLAUDE.md, docs/models/.codex/archive/deprecated/GEMINI.md
 ```
 
 **Impact**:
@@ -248,8 +248,8 @@ Phase reports that should be archived:
 - PHASE_D_LANE_11_ML_VALIDATION_RESULTS.json
 - AUDIT_COMPLETION_SUMMARY.txt
 - AUDIT_SUMMARY.txt
-- CAMPAIGN_EXECUTION_COMPLETE.md
-- MASTER_REMEDIATION_PLAN.md
+- .codex/archive/misc/CAMPAIGN_EXECUTION_COMPLETE.md
+- .codex/archive/misc/MASTER_REMEDIATION_PLAN.md
 - REMEDIATION_CHECKPOINT.txt
 - REMEDIATION_PHASE_3_FINAL_RESULTS.txt
 - DOCUMENTATION_AUDIT_FINDINGS.md
@@ -261,7 +261,7 @@ Phase reports that should be archived:
 - STREAM_B_REMEDIATION_SESSION_SUMMARY.txt
 - TERMINOLOGY_CONSISTENCY_IMPLEMENTATION_CHECKLIST.md
 - WAVE_4_PHASE_1_SEMANTIC_INDEXING_COMPLETE.md
-- WORKFLOW_CLEANUP_IMPLEMENTATION_CHECKLIST.md
+- .codex/archive/implementations/WORKFLOW_CLEANUP_IMPLEMENTATION_CHECKLIST.md
 ```
 
 **Impact**:

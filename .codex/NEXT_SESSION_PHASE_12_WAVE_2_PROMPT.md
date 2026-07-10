@@ -182,7 +182,7 @@
 - [x] All Wave 1 deliverables complete and peer-reviewed
 - [x] All feedback incorporated and approved
 - [x] All 3 documents finalized
-- [x] AGENT_ACCOUNTABILITY_REPORT.md updated
+- [x] .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated
 - [x] Wave 2 agent briefs prepared and ready
 
 **Go/No-Go Decision Points:**
@@ -279,7 +279,7 @@
 - `.codex/PHASE_12_WAVE_1_COMPLETION_REPORT.md` — Comprehensive completion summary
 - `.codex/PHASE_12_CAMPAIGN_ANALYSIS.md` — Strategic analysis + velocity metrics
 - Updated `.codex/PHASE_12_EXECUTION_STATUS.md` — Wave 1 completion checkpoint
-- Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — Session summary entry
+- Updated `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — Session summary entry
 
 ### Key Reference Documents:
 - `.codex/PHASE_12_POST_MERGE_EXECUTION_CAMPAIGN.md` — Master campaign plan

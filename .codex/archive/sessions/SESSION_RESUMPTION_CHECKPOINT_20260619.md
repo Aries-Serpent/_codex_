@@ -215,7 +215,7 @@ All progress reports stored in `.codex/` (repository-tracked):
 - `.codex/PHASE_7A_LANE_3.3_COMPLETION_REPORT.md` - Lane 3.3 findings
 
 **Accountability:**
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` - Session tracking
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` - Session tracking
 - `.codex/SESSION_SUMMARY_DASHBOARD.md` - Campaign dashboard
 
 ---

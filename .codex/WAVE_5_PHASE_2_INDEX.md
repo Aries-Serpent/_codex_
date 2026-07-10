@@ -265,7 +265,7 @@ Commit c8634d1b — Wave 5 Phase 2 Planning: Resource Allocation Plan (D-tier au
 | WAVE_5_PHASE_2_COMPLETION_SUMMARY.md | Full planning summary & context | `.codex/` |
 | WAVE_4_ECOSYSTEM_HEALTH_DASHBOARD.json | Baseline metrics (0.85/1.00) | `.codex/` |
 | PHASE_B_WAVE_5_REPORT.md | Campaign context (5/8 tracks) | Root |
-| AGENTS.md | 159 agents, 100% compliance | Root |
+| .codex/archive/deprecated/AGENTS.md | 159 agents, 100% compliance | Root |
 
 ---
 

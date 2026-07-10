@@ -165,14 +165,14 @@ Possible reasons for the agent's error:
 ### Current AI Agent Configuration
 
 **Primary Agent Identity:**
-- **Name**: ai_org_repo_admin (per AGENTS.md)
+- **Name**: ai_org_repo_admin (per .codex/archive/deprecated/AGENTS.md)
 - **Type**: GitHub Copilot Agent (copilot-swe-agent[bot])
 - **Version**: 0.0.0-template
 - **Authority Level**: Pre-Genesis (Advisory Only)
 - **Operational Mode**: SAFE_MODE enabled
 
 **Agent Capabilities:**
-- 53 specialized custom agents (documented in AGENTS.md)
+- 53 specialized custom agents (documented in .codex/archive/deprecated/AGENTS.md)
 - Cognitive Brain System integration (PR #3317)
 - Autonomous action framework (disabled pre-Genesis)
 - MCP (Model Context Protocol) integration
@@ -203,7 +203,7 @@ Aries-Serpent (Organization Owner)
 
 ### Repository Identity Documents
 
-1. **AGENTS.md** (Root file)
+1. **.codex/archive/deprecated/AGENTS.md** (Root file)
    - Line 13: "Repository: Aries-Serpent/_codex_ (ID: 1040037790)"
    - No mention of "CodexSage-AI"
 

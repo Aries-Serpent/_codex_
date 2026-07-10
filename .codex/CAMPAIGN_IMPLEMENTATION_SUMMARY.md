@@ -257,7 +257,7 @@ All 7 criteria must PASS:
 
 ### Regulatory Requirements
 
-✅ **REQ-4 (AGENT_ACCOUNTABILITY_REPORT.md)**
+✅ **REQ-4 (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md)**
 - All 19 agent delegations documented with mission IDs
 - Deliverable targets & timelines recorded
 - Updated at campaign start, daily during execution, final report at completion

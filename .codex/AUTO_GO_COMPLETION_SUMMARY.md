@@ -36,7 +36,7 @@
 - ✅ Validated all remaining Phase workflows (7 files, 100% YAML valid)
 
 ### Phase C: Documentation & Accountability
-- ✅ Updated AGENT_ACCOUNTABILITY_REPORT.md (REQ-4)
+- ✅ Updated .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (REQ-4)
 - ✅ Updated CHANGELOG.md (REQ-5)
 - ✅ Created AUTO_GO_POST_MERGE_PROMPT.md (Phase 12 deployment guide)
 - ✅ Created AUTO_GO_COMPLETION_SUMMARY.md (this document)
@@ -183,5 +183,5 @@ Upon merge, Phase 12 can be activated immediately with full D-tier autonomy auth
 
 **Session**: 2026-07-02T06:03:19Z  
 **Authority**: @mbaetiong (D-tier autonomous, GO CONTINUE)  
-**Accountability**: docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md  
+**Accountability**: docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md  
 **PR**: #5194 (Ready for merge)

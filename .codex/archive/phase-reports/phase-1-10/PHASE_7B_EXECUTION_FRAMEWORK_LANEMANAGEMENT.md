@@ -106,7 +106,7 @@ THEN activate_wave_2()
 3. ✅ Activate Wave 2:
    - Spawn phase7b-mutation-hardening-trackC1
    - Spawn phase7b-quality-metrics-trackC2
-   - Update .codex/PHASE_7B_ACTIVE_AGENTS.md
+   - Update .codex/PHASE_7B_ACTIVE_.codex/archive/deprecated/AGENTS.md
 
 4. ✅ Monitor progress:
    - B continues (25h ETA → 2026-06-21 09:00Z)
@@ -283,7 +283,7 @@ task(agent_type="session-analysis-agent", name="phase7b-accountability-report-tr
 ## 📋 DYNAMIC LANE MONITORING
 
 ### Live Status Dashboard
-- **Update Location:** `.codex/PHASE_7B_ACTIVE_AGENTS.md` (updated after each activation)
+- **Update Location:** `.codex/PHASE_7B_ACTIVE_.codex/archive/deprecated/AGENTS.md` (updated after each activation)
 - **Refresh Rate:** Every track completion or 6h (whichever first)
 - **Metrics Tracked:**
   - Agent status (RUNNING/COMPLETE/FAILED)

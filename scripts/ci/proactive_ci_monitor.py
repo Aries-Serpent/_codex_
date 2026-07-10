@@ -347,7 +347,7 @@ def _post_rescue_comment(
         f"2. Check logs: {run_url}\n"
         f"3. Apply pattern fix above\n"
         f"4. Run `python scripts/ci/auto_fix_common_issues.py --check-only` to verify\n"
-        f"5. Update `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`\n"
+        f"5. Update `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`\n"
         f"6. Push fix and confirm CI is green\n\n"
         f"_Posted by: proactive-ci-monitor.yml (authoritative safety net)_\n"
         f"_[🔗 Workflow run]({run_url})_\n"

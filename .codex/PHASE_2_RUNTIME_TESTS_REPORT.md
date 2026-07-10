@@ -512,7 +512,7 @@ assert elapsed < 10.0  # 10 seconds for 100 queries on 1000 docs
 
 - **Phase 2 Validation Brief:** `.codex/PHASE_2_RUNTIME_PROFILE_VALIDATION.md`
 - **Runtime Profile Definition:** `pyproject.toml` (lines 106-139)
-- **Installation Guide:** `docs/INSTALL.md` or `INSTALL.md`
+- **Installation Guide:** `docs/.codex/archive/misc/INSTALL.md` or `.codex/archive/misc/INSTALL.md`
 - **Test Framework:** pytest v9.1.1
 - **Python Version:** 3.12.3
 

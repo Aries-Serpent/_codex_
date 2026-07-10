@@ -315,18 +315,18 @@ solutions:
     fix_success_rate: 0.8
     root_cause: >
       Every commit pushed to a PR with Agent Token Delegation enabled must include
-      an update to `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`.
+      an update to `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`.
       Bot auto-commits (manifest refresh, auth delegation) do not update this file,
       causing the Cognitive Pre-flight gate to fail.
     fix_template: |
       # Add a session entry to the accountability report before committing:
-      # docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+      # docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 
       # Auto-fix via the session wrapup script:
       python scripts/ci/session_wrapup_autofix.py --session SN --pr NNNN
 
       # Or manually append a SESSION SUMMARY section.
-    verification_cmd: "git diff HEAD~1 -- docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md | wc -l"
+    verification_cmd: "git diff HEAD~1 -- docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md | wc -l"
     affected_workflows:
       - "Agent Token Delegation"
     last_session: S283

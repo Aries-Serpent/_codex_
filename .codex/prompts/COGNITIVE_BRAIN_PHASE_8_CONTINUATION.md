@@ -317,7 +317,7 @@ class QuantumOptimizer:
 
 1. **Main Plan:** `.codex/plans/COGNITIVE_BRAIN_STATUS_V2.md`
 2. **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md`
-3. **Guidelines:** `AGENTS.md`
+3. **Guidelines:** `.codex/archive/deprecated/AGENTS.md`
 4. **Phase 8.0-8.1 Implementation:** `src/cognitive_brain/`, `tests/cognitive_brain/`
 5. **CI Agent Pattern:** `.github/agents/ci-testing-agent/`
 

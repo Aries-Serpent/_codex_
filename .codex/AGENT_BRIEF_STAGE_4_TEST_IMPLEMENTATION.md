@@ -315,7 +315,7 @@ Or, for faster execution (single day):
 - `tests/phase6_wave1/test_*.py` (all 67 test files)
 - `.codex/PHASE_6_WAVE_1_STAGE4_COMPLETION_REPORT.md` (metrics & status)
 - Updated `.codex/PHASE_6_WAVE_1_EXECUTION_TRACKING.md`
-- Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (session tracking)
+- Updated `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (session tracking)
 
 ---
 

@@ -295,7 +295,7 @@ e60957193 - fix(workflows): restore correct YAML syntax 'on:' [F-002 secondary]
 ### **Phase 4 Tasks (T+46 to T+59 min)**
 
 1. **[T+46-50 min]** Create comprehensive campaign execution report
-2. **[T+50-54 min]** Update REQ-4 (AGENT_ACCOUNTABILITY_REPORT.md) with session entry
+2. **[T+50-54 min]** Update REQ-4 (.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md) with session entry
 3. **[T+54-57 min]** Update REQ-5 (CHANGELOG.md) with all changes documented
 4. **[T+57-59 min]** Final commit, campaign closure, next-session prompt
 

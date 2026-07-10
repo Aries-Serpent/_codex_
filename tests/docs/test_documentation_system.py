@@ -298,7 +298,7 @@
 #         changelog_paths = [
 #             Path("CHANGELOG.md"),
 #             Path("CHANGES.md"),
-#             Path("CHANGELOG_AGENTS.md"),
+#             Path("CHANGELOG_.codex/archive/deprecated/AGENTS.md"),
 #         ]
 #         assert any(p.exists() for p in changelog_paths), "Condition must be true"
 #     def test_docs_directory_structure(self):

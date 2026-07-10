@@ -187,7 +187,7 @@ if in_code_block(md_file, line_num):
 - ✅ Examples provided
 - ✅ Integration documented
 
-**AGENTS.md Registry** (10/10)
+**.codex/archive/deprecated/AGENTS.md Registry** (10/10)
 - ✅ All 54 agents listed
 - ✅ Categorized by purpose
 - ✅ Status indicators
@@ -209,7 +209,7 @@ if in_code_block(md_file, line_num):
 
 **Agent Search** (7/10)
 - ⚠️ No agent search tool
-- ⚠️ Must browse AGENTS.md manually
+- ⚠️ Must browse .codex/archive/deprecated/AGENTS.md manually
 - ⚠️ No tag-based filtering
 - ✅ Categories help
 
@@ -564,7 +564,7 @@ cache_key = f"{file.stat().st_mtime}:{file.name}"
 
 **Discoverability** ⭐⭐⭐⭐ (8/10)
 - Agent specs complete
-- AGENTS.md registry
+- .codex/archive/deprecated/AGENTS.md registry
 - Good but no search tool
 - Categories help
 

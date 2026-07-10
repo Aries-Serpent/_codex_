@@ -382,7 +382,7 @@ Save to `.codex/PHASE_6_WAVE2_COORDINATION_DASHBOARD.md` with:
 - `.codex/PHASE_6_WAVE2_DISPATCH_MANIFEST.json` (dispatch coordination)
 - `.codex/PHASE_6_WAVE2_COORDINATION_DASHBOARD.md` (real-time tracking)
 - Updated `.codex/PHASE_6_WAVE_1_EXECUTION_TRACKING.md` (final status)
-- Updated `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (campaign closure)
+- Updated `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (campaign closure)
 
 ---
 

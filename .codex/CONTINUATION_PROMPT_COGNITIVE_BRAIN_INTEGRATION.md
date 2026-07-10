@@ -197,7 +197,7 @@ I've addressed all the code review comments and security issues:
 **Documentation:**
 - Cognitive brain status: `.codex/COGNITIVE_BRAIN_STATUS_UPDATE.md`
 - Patterns and learnings: Documented with architecture diagrams
-- Continuation prompt: `.codex/CONTINUATION_PROMPT_COGNITIVE_BRAIN_INTEGRATION.md`
+- Continuation prompt: `.codex/CONTINUATION_PROMPT_COGNITIVE_BRAIN_docs/api/reference/INTEGRATION.md`
 
 **Commits:**
 - 85579172 - Initial fixes (API validation, datetime)
@@ -599,8 +599,8 @@ You are authorized to:
 
 ### Documentation
 - **Cognitive Brain Status:** `.codex/COGNITIVE_BRAIN_STATUS_UPDATE.md`
-- **Agents Guide:** `.github/agents/AGENTS.md`
-- **Repository Conventions:** `AGENTS.md` (root)
+- **Agents Guide:** `.github/agents/.codex/archive/deprecated/AGENTS.md`
+- **Repository Conventions:** `.codex/archive/deprecated/AGENTS.md` (root)
 
 ### Related PRs
 - **PR #2785:** Previous completion summary
@@ -629,7 +629,7 @@ To use this as a continuation prompt, post to PR #2782:
 ```markdown
 @copilot Continue post-code-review cognitive brain integration and custom agent development for PR #2782.
 
-**Full instructions:** See `.codex/CONTINUATION_PROMPT_COGNITIVE_BRAIN_INTEGRATION.md` for complete task details, success criteria, and autonomous execution guidelines.
+**Full instructions:** See `.codex/CONTINUATION_PROMPT_COGNITIVE_BRAIN_docs/api/reference/INTEGRATION.md` for complete task details, success criteria, and autonomous execution guidelines.
 
 **Quick Summary:**
 - Phase 4: Complete cognitive brain pattern integration
@@ -646,7 +646,7 @@ Execute autonomously with self-healing until complete. No further concerns shoul
 ### As Agent Response
 If posting as a response within this session:
 
-**@copilot** Complete cognitive brain integration and custom agent infrastructure development per `.codex/CONTINUATION_PROMPT_COGNITIVE_BRAIN_INTEGRATION.md`. Execute Tasks 1-9 with autonomous self-healing. Report progress after each major milestone.
+**@copilot** Complete cognitive brain integration and custom agent infrastructure development per `.codex/CONTINUATION_PROMPT_COGNITIVE_BRAIN_docs/api/reference/INTEGRATION.md`. Execute Tasks 1-9 with autonomous self-healing. Report progress after each major milestone.
 
 ---
 
@@ -662,7 +662,7 @@ If continuing in a new session:
 ### State Preservation
 Current state files:
 - `.codex/COGNITIVE_BRAIN_STATUS_UPDATE.md` - Complete status
-- `.codex/CONTINUATION_PROMPT_COGNITIVE_BRAIN_INTEGRATION.md` - This file
+- `.codex/CONTINUATION_PROMPT_COGNITIVE_BRAIN_docs/api/reference/INTEGRATION.md` - This file
 - `.github/agents/project-architect-researcher/architect.py` - Reference implementation
 
 ### Dependencies

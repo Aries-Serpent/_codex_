@@ -46,7 +46,7 @@
 - [ ] Database Operations (transactions, consistency, migration) — 45-60 min
 - [ ] Performance Tests (load, stress, endurance, spike) — 45-60 min
 
-**Output:** `.codex/WS3_INTEGRATION_TEST_REPORT.md`
+**Output:** `.codex/.codex/archive/reports/WS3_INTEGRATION_TEST_REPORT.md`
 
 ---
 

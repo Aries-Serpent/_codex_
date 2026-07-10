@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Codex Agents Workflow: docs-only, idempotent updates for AGENTS.md & README.md
+Codex Agents Workflow: docs-only, idempotent updates for .codex/archive/deprecated/AGENTS.md & README.md
 - Best-effort construction before pruning
 - Evidence-based mapping
 - Error capture in ChatGPT-5 research-question format
@@ -35,7 +35,7 @@ ERRORS_NDJSON = CODEx_DIR / "errors.ndjson"
 RESULTS = CODEx_DIR / "results.md"
 
 README = ROOT / "README.md"
-AGENTS = ROOT / "docs" / "guides" / "AGENTS.md"
+AGENTS = ROOT / "docs" / "guides" / ".codex/archive/deprecated/AGENTS.md"
 CONTRIB = ROOT / "docs" / "governance" / "CONTRIBUTING.md"
 PRECOMMIT = ROOT / ".pre-commit-config.yaml"
 PYTEST_INI = ROOT / "configs" / "development" / "pytest.ini"
@@ -160,7 +160,7 @@ def ensure_agents_md() -> bool:
         tools = sorted(set(tools) | {"pre-commit"})
 
     required_sections = textwrap.dedent(f"""
-# AGENTS.md — Maintainers & Automation Guide
+# .codex/archive/deprecated/AGENTS.md — Maintainers & Automation Guide
 
 ## Scope & Non-Goals
 - **DO NOT ACTIVATE ANY GitHub Actions files.** This document is discoverable by automation and humans.
@@ -198,7 +198,7 @@ def ensure_agents_md() -> bool:
         return write_if_changed(
             AGENTS,
             required_sections,
-            "Create AGENTS.md with logging env vars, tools, and coding standards.",
+            "Create .codex/archive/deprecated/AGENTS.md with logging env vars, tools, and coding standards.",
         )
     cur = read(AGENTS)
     need = []
@@ -214,7 +214,7 @@ def ensure_agents_md() -> bool:
     return write_if_changed(
         AGENTS,
         merged,
-        f"Augment AGENTS.md with missing sections: {', '.join(need)}.",
+        f"Augment .codex/archive/deprecated/AGENTS.md with missing sections: {', '.join(need)}.",
     )
 
 
@@ -224,7 +224,7 @@ def ensure_readme_refs() -> bool:
         base = textwrap.dedent("""
 # codex-universal
 
-See [docs/guides/AGENTS.md](docs/guides/AGENTS.md) for environment variables, logging roles, testing expectations, and tool usage.
+See [docs/guides/.codex/archive/deprecated/AGENTS.md](docs/guides/.codex/archive/deprecated/AGENTS.md) for environment variables, logging roles, testing expectations, and tool usage.
 **DO NOT ACTIVATE ANY GitHub Actions files.**
 
 ## Continuous Integration (local parity)
@@ -244,12 +244,12 @@ See the read-only workflow reference at `.github/workflows/ci.yml` (not activate
         )
 
     changed = False
-    if "docs/guides/AGENTS.md" not in txt:
+    if "docs/guides/.codex/archive/deprecated/AGENTS.md" not in txt:
         txt = (
             txt.rstrip()
-            + "\n\nFor environment variables, logging roles, testing expectations, and tool usage, see [docs/guides/AGENTS.md](docs/guides/AGENTS.md).\n"
+            + "\n\nFor environment variables, logging roles, testing expectations, and tool usage, see [docs/guides/.codex/archive/deprecated/AGENTS.md](docs/guides/.codex/archive/deprecated/AGENTS.md).\n"
         )
-        write_if_changed(README, txt, "Add discoverability link to AGENTS.md.")
+        write_if_changed(README, txt, "Add discoverability link to .codex/archive/deprecated/AGENTS.md.")
         changed = True
 
     if "Continuous Integration (local parity)" not in txt:
@@ -318,7 +318,7 @@ def main():
     changes = []
     try:
         if ensure_agents_md():
-            changes.append("AGENTS.md updated")
+            changes.append(".codex/archive/deprecated/AGENTS.md updated")
         if ensure_readme_refs():
             changes.append("README.md updated")
         write_results(changes)

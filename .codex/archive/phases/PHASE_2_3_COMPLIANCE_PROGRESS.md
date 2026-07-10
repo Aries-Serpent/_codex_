@@ -19,7 +19,7 @@
 - [x] `req1_eligibility_validator.py` - PR eligibility (branch naming, description)
 - [x] `req2_compliance_validator.py` - Docs/tests/security compliance
 - [x] `req3_merge_validator.py` - Authorization rules
-- [x] `req4_accountability_validator.py` - AGENT_ACCOUNTABILITY_REPORT.md check
+- [x] `req4_accountability_validator.py` - .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md check
 - [x] `req5_changelog_validator.py` - CHANGELOG.md check
 - [x] `req6_postmerge_validator.py` - Post-merge health checks
 - [x] All validators return JSON with pass/fail/remediation
@@ -84,7 +84,7 @@
 
 ### REQ-4: Accountability Report Updated ✅
 **Purpose:** REQ-4 from session_wrapup_autofix.py
-- ✅ `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated in latest commit
+- ✅ `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` updated in latest commit
 - ✅ Report includes session summary, results, governance notes
 - ✅ Entry is tagged with `[auto-generated]` if auto-added
 - ✅ Remediation: Run session_wrapup_autofix.py --fix-accountability

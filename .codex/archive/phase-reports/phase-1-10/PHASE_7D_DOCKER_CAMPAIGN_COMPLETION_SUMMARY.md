@@ -205,7 +205,7 @@
 
 **Result:** ✅ **COMPLIANCE READY**
 
-**REQ-4: AGENT_ACCOUNTABILITY_REPORT.md**
+**REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md**
 - ✅ Campaign documented
 - ✅ Phase 1 completion tracked
 - ✅ Deliverables inventoried
@@ -381,7 +381,7 @@
 
 2. **Update compliance docs:**
    - CHANGELOG.md — Add Phase 1 summary
-   - AGENT_ACCOUNTABILITY_REPORT.md — Record completion
+   - .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md — Record completion
 
 3. **Queue Phase 2 execution:**
    - Trigger build environment setup

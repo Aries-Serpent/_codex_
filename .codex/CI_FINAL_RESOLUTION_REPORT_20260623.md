@@ -261,7 +261,7 @@ All three patterns will be continuously monitored:
 All patterns stored in:
 - `.codex/CI_PATTERN_PREVENTION_GUIDE.md` — Active reference
 - `.codex/aftermath/pda_iterations.jsonl` — PDA loop history
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — Session tracking
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — Session tracking
 - GitHub Discussions (planned) — Team knowledge sharing
 
 ### Continuous Improvement

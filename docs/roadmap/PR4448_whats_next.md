@@ -340,7 +340,7 @@
   .codex/CODEBASE_AGENCY_POLICY.md
   .codex/plans/security-remediation-planset.md
   .codex/plans/cognitive_brain_phase_implementation.md
-  docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+  docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
   tail -5 .codex/aftermath/pda_iterations.jsonl
 
 ### Success criteria
@@ -714,7 +714,7 @@ Reference: docs/roadmap/PR4448_whats_next.md · .codex/plans/security-remediatio
   python -m ruff check src/ tests/                        → must be ✅ 0 issues
   python scripts/ci/mypy_baseline.py --require-baseline   → must be ✅ PASS
   python scripts/ci/auto_fix_common_issues.py --check-only → must be ✅ no issues
-  Update CHANGELOG.md ### Fixed entry + AGENT_ACCOUNTABILITY_REPORT.md (Pattern 25)
+  Update CHANGELOG.md ### Fixed entry + .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (Pattern 25)
   Push → confirm all CI checks green → MERGE
 
 ### PHASE 4 — Post-merge: drive to 0 alerts

@@ -147,7 +147,7 @@ import torch
 
 ### 6. CacheManager Workflow Integration Plan
 
-**Document**: `.codex/CACHE_MANAGER_WORKFLOW_INTEGRATION.md`  
+**Document**: `.codex/CACHE_MANAGER_WORKFLOW_docs/api/reference/INTEGRATION.md`  
 **Size**: 5,937 bytes
 
 **Selected Workflows** (5/42, 12% adoption):
@@ -216,7 +216,7 @@ import torch
 ### New Files (3)
 1. `cognitive_app/src/components/quantum-viz/MSVRadarChart.tsx` (10.5KB)
 2. `cognitive_app/src/hooks/use-msv-metrics.ts` (2.8KB)
-3. `.codex/CACHE_MANAGER_WORKFLOW_INTEGRATION.md` (5.9KB)
+3. `.codex/CACHE_MANAGER_WORKFLOW_docs/api/reference/INTEGRATION.md` (5.9KB)
 
 ### Modified Files (69)
 - `cognitive_app/src/components/quantum-viz/MetricsDashboard.tsx` (MSV integration)
@@ -347,7 +347,7 @@ Implementation aligned with:
 
 - **PS-14 Registry Entry**: `docs/evolution/PLANSET_REGISTRY.md` (lines 395-500)
 - **AAIS V3.0**: `docs/evolution/AI_AGENCY_INTUITIVENESS_SCORE_V3.md` (Path to 97.0)
-- **CacheManager Plan**: `.codex/CACHE_MANAGER_WORKFLOW_INTEGRATION.md`
+- **CacheManager Plan**: `.codex/CACHE_MANAGER_WORKFLOW_docs/api/reference/INTEGRATION.md`
 - **Fragile Tests**: `.codex/fragile_tests.json` (153 files tracked)
 - **Cognitive App**: [Live Dashboard](https://aries-serpent.github.io/_codex_/cognitive_app/)
 

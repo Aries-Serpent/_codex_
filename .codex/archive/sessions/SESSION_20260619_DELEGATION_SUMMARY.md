@@ -54,7 +54,7 @@
 - ✅ Pre-Deployment QA: qa-walkthrough-agent (Day 3, validation)
 
 ### 4. Accountability & Tracking
-**Document:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+**Document:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - Production readiness campaign section added
 - Session hardening compliance documented ✅
 - Multi-agent delegation framework registered
@@ -127,7 +127,7 @@
 - `.codex/AGENT_BRIEF_PHASE_5_CHECKPOINT_3.md`
 
 **Updated:**
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (+61 lines)
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (+61 lines)
 
 **Commits:**
 - `ba554d5`: Update accountability: Production readiness campaign
@@ -183,7 +183,7 @@
 
 **Master Framework:** `.codex/PRODUCTION_READINESS_DELEGATION_FRAMEWORK.md`  
 **Checkpoint 3 Briefs:** `.codex/CHECKPOINT_3_DELEGATION_BRIEF_HYBRID_MODE.md`  
-**Accountability:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`  
+**Accountability:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`  
 **Campaign Status:** `.codex/CHECKPOINT_3_EXECUTION_SUMMARY.md`
 
 ---

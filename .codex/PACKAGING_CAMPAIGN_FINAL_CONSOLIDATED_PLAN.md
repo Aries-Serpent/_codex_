@@ -312,7 +312,7 @@ environment_variables:
 **Deliverables:**
 - [ ] `aries-serpent-cognitive-brain-0.1.0-py3-none-any.whl` (PyPI)
 - [ ] `aries-serpent-cognitive-brain-0.1.0.zip` (direct download)
-- [ ] QUICK_START_COGNITIVE_BRAIN.md
+- [ ] docs/quickstart/QUICK_START_COGNITIVE_BRAIN.md
 - [ ] GitHub Release v0.1.0-beta1 (cognitive-brain)
 - [ ] Installation verification script
 
@@ -690,11 +690,11 @@ Based on agent brief, Lane 4 should provide:
 2. [ ] Create .zip distribution archive
    - Source: `src/codex/cognitive/` (27 files, 1-2 MB)
    - Archive: `aries-serpent-cognitive-brain-0.1.0.zip`
-   - Include: README, INSTALL.md, LICENSE, requirements.txt
+   - Include: README, .codex/archive/misc/INSTALL.md, LICENSE, requirements.txt
    - Checksum: SHA256 verification included
 
 3. [ ] Generate Quick-Start Guide
-   - File: `QUICK_START_COGNITIVE_BRAIN.md`
+   - File: `docs/quickstart/QUICK_START_COGNITIVE_BRAIN.md`
    - Content: 5-10 step installation + basic usage
    - Examples: Import APIs, run OODA loop
 

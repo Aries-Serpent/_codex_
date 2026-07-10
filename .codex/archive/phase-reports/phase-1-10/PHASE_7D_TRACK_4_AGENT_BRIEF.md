@@ -165,7 +165,7 @@ Consolidate all Phase 7D track results into a unified production readiness matri
 2. **Verification:** Confirm all 32 gates PASS
 3. **Approval:** Collect 5+ stakeholder approvals
 4. **Authorization:** Post deployment sign-off to Discussion #4872
-5. **Accountability:** Final update to `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` with:
+5. **Accountability:** Final update to `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` with:
    - Campaign completion entry (all 5 tracks)
    - Final production readiness score (100/100)
    - Deployment authorization commit SHA

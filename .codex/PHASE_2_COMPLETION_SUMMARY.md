@@ -392,7 +392,7 @@ pytest tests/test_runtime_profile*.py -v
 | Runtime Tests Report | `.codex/PHASE_2_RUNTIME_TESTS_REPORT.md` | Detailed findings |
 | Runtime Dependencies | `pyproject.toml` (lines 106-139) | Authoritative source |
 | Test Files | `tests/test_*.py` | Implementation |
-| Installation Guide | `docs/INSTALL.md` or `INSTALL.md` | User guide |
+| Installation Guide | `docs/.codex/archive/misc/INSTALL.md` or `.codex/archive/misc/INSTALL.md` | User guide |
 
 ---
 

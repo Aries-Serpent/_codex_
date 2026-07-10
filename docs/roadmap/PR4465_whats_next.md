@@ -168,7 +168,7 @@
 | Fix stale doc-metrics references surfaced by `pytest -x` | ✅ Complete |
 | Fix archive logging state leakage surfaced by next `pytest -x` stop | ✅ Complete |
 | Fix quantum integration fixture discovery surfaced by next `pytest -x` stop | ✅ Complete |
-| Keep `CHANGELOG.md` + `AGENT_ACCOUNTABILITY_REPORT.md` current | ✅ In progress in this change set |
+| Keep `CHANGELOG.md` + `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` current | ✅ In progress in this change set |
 | Keep working tree scoped and remove accidental files | ✅ Complete |
 | Continue full-suite stop-on-first-failure loop | ⏳ In progress |
 

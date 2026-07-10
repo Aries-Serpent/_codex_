@@ -55,7 +55,7 @@
 | Metric | Status | Details |
 |--------|--------|---------|
 | **Deliverables** | ✅ COMPLETE | Phase 9.2 Kickoff doc published |
-| **Compliance Docs** | ✅ MAINTAINED | AGENT_ACCOUNTABILITY_REPORT.md, CHANGELOG.md updated |
+| **Compliance Docs** | ✅ MAINTAINED | .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md, CHANGELOG.md updated |
 | **Markdown Validity** | ✅ PASS | No syntax errors detected |
 | **Link Integrity** | ⚠️ PENDING | Full link validation deferred to CI |
 
@@ -141,7 +141,7 @@
 
 | Requirement | Status | Evidence |
 |-------------|--------|----------|
-| **REQ-4**: AGENT_ACCOUNTABILITY_REPORT.md | ✅ PASS | Updated in HEAD |
+| **REQ-4**: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md | ✅ PASS | Updated in HEAD |
 | **REQ-5**: CHANGELOG.md | ✅ PASS | Updated with Phase 9.2 kickoff entry |
 | **WEC**: Workflow Execution Checklist | ⚠️ PENDING | Auto-verification in CI |
 | **Branch Sync**: 0 conflicts | ✅ PASS | Clean sync verified |

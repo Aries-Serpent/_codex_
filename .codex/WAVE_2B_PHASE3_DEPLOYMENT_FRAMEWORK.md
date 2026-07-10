@@ -92,7 +92,7 @@ Should reference and integrate:
 - All Phase 1 completion reports (14 artifacts)
 - All Phase 2 integration/artifact reports (once complete)
 - Current .github/workflows/ configuration
-- AGENT_ACCOUNTABILITY_REPORT.md (last session state)
+- .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (last session state)
 - CHANGELOG.md (recent changes)
 
 ---

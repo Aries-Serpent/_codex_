@@ -169,7 +169,7 @@ T+8m:       Gate 3 decision: PASS → Phase 7 launch
 **Accountability Integration**
 - ✅ Session logged to `.codex/PHASE_6_SESSIONS.jsonl`
 - ✅ Commit history recorded with atomic commits
-- 🟡 AGENT_ACCOUNTABILITY_REPORT.md (due end of session)
+- 🟡 .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (due end of session)
 
 ---
 

@@ -234,7 +234,7 @@ Day 3: 97-98% (+5-6pp from all agents)
 ### Reports for Audit Trail
 - ✅ This report: `DAY_3_AGENT_REPORT_D3_COVERAGE_LOCKDOWN.md`
 - ✅ Campaign summary: Available in `.codex/DAY_3_*.md`
-- ✅ Accountability log: `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- ✅ Accountability log: `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 ---
 

@@ -26,8 +26,8 @@ DECISIONS = {
         "notes": "This is a regex pattern example, not a real link"
     },
 
-    # Item 2: AGENTS.md - Missing emoji in anchor
-    ".github/AGENTS.md:22": {
+    # Item 2: .codex/archive/deprecated/AGENTS.md - Missing emoji in anchor
+    ".github/.codex/archive/deprecated/AGENTS.md:22": {
         "action": "skip",
         "reason": "Already commented as broken anchor in source file (line 21)",
         "notes": "<!-- Log directory & retention --> already marks this section"

@@ -350,7 +350,7 @@ To activate this continuation plan, use the following prompt:
 ### For Questions
 - Review `.codex/cognitive_brain/PHASE_21_STATUS_CICD_HARDENING.md`
 - Check `.github/agents/dependency-conflict-agent.md`
-- Consult `AGENTS.md` for specialized agents
+- Consult `.codex/archive/deprecated/AGENTS.md` for specialized agents
 
 ### For Issues
 - Create issue with label `phase-22` or `phase-23`

@@ -292,7 +292,7 @@ The coverage map enables a **pre-existing error risk score** per module:
 | 🟠 HIGH | `0.20 ≤ line_rate < 0.50` | Write test first (TDD), then modify |
 | 🔴 CRITICAL | `line_rate < 0.20` | Escalate; do not modify without owner review |
 
-This risk score should be injected into the `AGENT_ACCOUNTABILITY_REPORT.md`
+This risk score should be injected into the `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 session header alongside the standard PDA loop metrics.
 
 ---
@@ -314,5 +314,5 @@ session header alongside the standard PDA loop metrics.
 - `.codex/CODEBASE_AGENCY_POLICY.md` — §3a: fix ALL issues found
 - `.codex/patterns/ci_failure_patterns.yaml` — pattern library
 - `.codex/plans/cognitive_brain_phase_implementation.md` — cognitive brain roadmap
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — session accountability
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` — session accountability
 - `scripts/ci/generate_coverage_map.py` — Phase 1 implementation (this session)

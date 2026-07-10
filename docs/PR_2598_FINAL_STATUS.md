@@ -37,7 +37,7 @@ All PR review comments have been addressed and fixed. The security infrastructur
 17. ✅ Import of 'Tuple' removed
 18. ✅ Import of 'Path' removed
 19. ✅ All BaseException catches converted to Exception
-20. ✅ Module path references added to all AGENTS.md files
+20. ✅ Module path references added to all .codex/archive/deprecated/AGENTS.md files
 
 ---
 
@@ -108,7 +108,7 @@ tests/security/test_security_integration.py .................       [100%]
 5. **Security Guidelines** - 7.3KB comprehensive guide
 6. **Admin Setup Guide** - 14.5KB configuration instructions
 7. **Status Reports** - Complete implementation documentation
-8. **All AGENTS.md files** - Updated with module references
+8. **All .codex/archive/deprecated/AGENTS.md files** - Updated with module references
 
 ### Tools
 9. **Documentation Checker** - Systematic validation tool

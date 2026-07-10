@@ -47,7 +47,7 @@
 - ✅ `.codex/PHASE_7D_TRACK_4_AGENT_BRIEF.md` — Governance gate detailed brief
 
 **Campaign Execution Documentation:**
-- ✅ `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (updated by each agent)
+- ✅ `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (updated by each agent)
 - ✅ `CHANGELOG.md` (final entry by Track 4)
 - ✅ Discussion #4872 (all agent progress posts)
 
@@ -100,7 +100,7 @@
 - **Posting Pattern:** Each agent posts progress + final report with commit SHAs
 
 ### Accountability & Compliance
-- **AGENT_ACCOUNTABILITY_REPORT.md:** Track all agent work (REQ-4)
+- **.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md:** Track all agent work (REQ-4)
 - **CHANGELOG.md:** Final v0.1.0-final entry (REQ-5)
 - **Commit SHAs:** All agents post explicit resolving SHAs to Discussion #4872
 
@@ -150,7 +150,7 @@
 - ✅ Track 2 queued for activation (sequential dependency on Track 1)
 - ✅ Track 4 queued for activation (sequential dependency on Tracks 1-3 + Track 2)
 - ✅ Discussion #4872 ready for agent progress posts
-- ✅ AGENT_ACCOUNTABILITY_REPORT.md ready for updates (REQ-4)
+- ✅ .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md ready for updates (REQ-4)
 - ✅ CHANGELOG.md ready for final entry (REQ-5)
 
 ---
@@ -181,7 +181,7 @@
 1. All 4 track agents post completion reports to Discussion #4872
 2. Track 4 (governance gate) issues final `PRODUCTION_DEPLOYMENT_READY_CERTIFICATION.md`
 3. Track 4 posts deployment sign-off to Discussion #4872
-4. `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` updated with final summary
+4. `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` updated with final summary
 5. `CHANGELOG.md` includes v0.1.0-final deployment entry
 
 **Expected Deployment:** 2026-06-23T13:00Z (pending all 5 track completions)

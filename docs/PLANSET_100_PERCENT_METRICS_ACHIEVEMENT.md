@@ -387,7 +387,7 @@ key: value  # [Explanation of this specific setting]
    - Data flow diagrams (Mermaid)
    - Technology stack
 
-2. docs/architecture/RUST_PYTHON_INTEGRATION.md
+2. docs/architecture/RUST_PYTHON_docs/api/reference/INTEGRATION.md
    - FFI bridge architecture
    - Memory management
    - Error handling across boundary

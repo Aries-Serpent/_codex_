@@ -380,7 +380,7 @@ Successfully implemented a production-ready **autonomous CI/CD health monitoring
    - Activation commands and usage examples
    - Integration points documented
 
-3. **AGENTS.md Update**
+3. **.codex/archive/deprecated/AGENTS.md Update**
    - Added to specialized agents table
    - Cross-referenced with artifact-monitor-agent.md
    - CLI activation instructions
@@ -457,7 +457,7 @@ scripts/
 └── agents/
     └── artifact_monitor_cli.py            # Interactive CLI (500+ lines)
 
-AGENTS.md                                   # Updated root documentation
+.codex/archive/deprecated/AGENTS.md                                   # Updated root documentation
 ```
 
 ---
@@ -756,7 +756,7 @@ scripts/monitoring/table_generator.py                  8.0 KB (320 lines)
 scripts/monitoring/pattern_analyzer.py                10.0 KB (400+ lines)
 scripts/monitoring/agent_orchestrator.py              12.0 KB (480+ lines)
 scripts/agents/artifact_monitor_cli.py                12.5 KB (500+ lines)
-AGENTS.md                                              ~2.0 KB (updated)
+.codex/archive/deprecated/AGENTS.md                                              ~2.0 KB (updated)
 .github/copilot-prompts/active/PR-validate-workflows-followup.md  ~3.0 KB
 
 TOTAL: ~136 KB across 18 files
@@ -771,7 +771,7 @@ TOTAL: ~136 KB across 18 files
 5fd70ab - Phase 3 complete: Pattern recognition and agent orchestration implemented
 627b2cf - Phase 4 complete: GitHub Actions workflow with scheduled monitoring
 a9eb1c3 - Phase 5 started: Interactive CLI wrapper with rich terminal output
-6757648 - Phase 5 complete: Documentation updates (agent registry, AGENTS.md)
+6757648 - Phase 5 complete: Documentation updates (agent registry, .codex/archive/deprecated/AGENTS.md)
 [NEXT] - Phase 1-5 completion: Add missing artifacts (this commit)
 ```
 

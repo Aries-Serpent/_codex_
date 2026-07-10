@@ -356,7 +356,7 @@ Token Budget:    65% consumed, 35% remaining (sufficient)
 - `.codex/CAMPAIGN_EXECUTION_DASHBOARD.md` (real-time metrics)
 
 **Accountability:**
-- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` (compliance tracking)
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (compliance tracking)
 - `CHANGELOG.md` (session log)
 
 ---

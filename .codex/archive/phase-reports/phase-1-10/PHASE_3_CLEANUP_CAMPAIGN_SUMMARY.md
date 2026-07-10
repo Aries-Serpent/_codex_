@@ -102,7 +102,7 @@ Successfully executed Phase 3 Root Cleanup Campaign using coordinated 3-wave mul
 1. **Commit Campaign Documentation**: Add all Wave 3 reports and this summary
 2. **Create PR**: Submit campaign completion for review
 3. **Update CHANGELOG.md**: Record Phase 3 completion
-4. **Update AGENT_ACCOUNTABILITY_REPORT.md**: Document campaign execution
+4. **Update .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md**: Document campaign execution
 5. **Archive Completion**: Store execution pattern in PDA loop
 
 ---

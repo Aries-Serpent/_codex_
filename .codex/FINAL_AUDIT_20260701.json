@@ -34,15 +34,15 @@
     "status": "CRITICAL_SUCCESS",
     "reduction_percentage": 95.83,
     "remaining_issues": [
-      "ENERGY_CONVERSION_AGENT_DEPRECATION.md - kept at root (referenced in AGENTS.md)",
-      "GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md - kept at root (referenced in AGENTS.md)"
+      ".codex/archive/deprecated/ENERGY_CONVERSION_AGENT_DEPRECATION.md - kept at root (referenced in .codex/archive/deprecated/AGENTS.md)",
+      ".codex/archive/deprecated/GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md - kept at root (referenced in .codex/archive/deprecated/AGENTS.md)"
     ]
   },
   "files_by_disposition": {
     "registered_in_governance": {
       "count": 13,
       "files": [
-        "QUANTUM_COMPLIANCE_TUNING_AGENT_INTEGRATION_GUIDE.md",
+        "docs/api/reference/QUANTUM_COMPLIANCE_TUNING_AGENT_INTEGRATION_GUIDE.md",
         "docs/ARCHITECTURE_DIAGRAMS_INDEX.md",
         "docs/architecture/5_LAYER_ARCHITECTURE.md",
         "docs/architecture/COMPONENT_DEPENDENCIES.md",
@@ -105,10 +105,10 @@
     },
     "retained_root_level": {
       "count": 2,
-      "reason": "referenced_in_AGENTS.md_deprecation_notices",
+      "reason": "referenced_in_.codex/archive/deprecated/AGENTS.md_deprecation_notices",
       "files": [
-        "ENERGY_CONVERSION_AGENT_DEPRECATION.md",
-        "GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md"
+        ".codex/archive/deprecated/ENERGY_CONVERSION_AGENT_DEPRECATION.md",
+        ".codex/archive/deprecated/GOOGLE_HOME_SCRIPT_AGENT_DEPRECATION.md"
       ]
     }
   },

@@ -3,7 +3,7 @@
 
 Problem
 -------
-Files like ``CODEX_MANIFEST.json``, ``CHANGELOG.md``, ``AGENT_ACCOUNTABILITY_REPORT.md``,
+Files like ``CODEX_MANIFEST.json``, ``CHANGELOG.md``, ``.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md``,
 and ``.secrets.baseline`` are updated by multiple agents and automated workflows in every
 session.  Manual updates are error-prone:
 
@@ -12,7 +12,7 @@ session.  Manual updates are error-prone:
   the SHA256 hash AND line number of ``integrity_sha256`` entry).
 - ``CHANGELOG.md`` must always have an ``## [Unreleased]`` section; missing entries go
   unnoticed until pre-merge validation fails.
-- ``AGENT_ACCOUNTABILITY_REPORT.md`` must be touched on every commit (REQ-4 gate).
+- ``.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`` must be touched on every commit (REQ-4 gate).
 - ``.codex/agent_context.json`` changes on every session (``CODEX_CI_LAST_GREEN_SHA``
   rotates), causing its ``hashed_secret`` entry in ``.secrets.baseline`` to go stale
   (RP-007 recurring pattern).
@@ -26,7 +26,7 @@ This script is the **single source of truth** for consistency of all five files.
 2. Re-scans ``.secrets.baseline`` via ``detect-secrets`` and patches the
    ``CODEX_MANIFEST.json`` entry in-place (no full re-scan of the repo).
 3. Validates that ``CHANGELOG.md`` has an ``## [Unreleased]`` section with ≥1 entry below it.
-4. Checks that ``AGENT_ACCOUNTABILITY_REPORT.md`` has a ``SESSION SUMMARY`` entry dated
+4. Checks that ``.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`` has a ``SESSION SUMMARY`` entry dated
    within the last 7 days, or has been modified in the last 5 git commits.
 5. Refreshes the ``.codex/agent_context.json`` entry in ``.secrets.baseline`` (RP-007
    prevention — targeted detect-secrets scan, not a full repo rescan).
@@ -91,7 +91,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 MANIFEST_PATH = REPO_ROOT / "CODEX_MANIFEST.json"
 SECRETS_BASELINE = REPO_ROOT / ".secrets.baseline"
 CHANGELOG_PATH = REPO_ROOT / "CHANGELOG.md"
-ACCOUNTABILITY_PATH = REPO_ROOT / "docs" / "accountability" / "AGENT_ACCOUNTABILITY_REPORT.md"
+ACCOUNTABILITY_PATH = REPO_ROOT / "docs" / "accountability" / ".codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md"
 # RP-007: agent_context.json rotates frequently; its baseline entry drifts every session
 AGENT_CONTEXT_PATH = REPO_ROOT / ".codex" / "agent_context.json"
 # RP-007 variant: agent_auth_session.json rotates on every agent-auth-delegation run
@@ -700,7 +700,7 @@ def check_changelog(result: SyncResult, *, fix: bool) -> None:
 
 
 # ---------------------------------------------------------------------------
-# 4. AGENT_ACCOUNTABILITY_REPORT.md freshness
+# 4. .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md freshness
 # ---------------------------------------------------------------------------
 
 _SESSION_RE = re.compile(
@@ -905,7 +905,7 @@ def preflight_rebase(*, quiet: bool = False) -> bool:
 
     This is the implementation of the two-layer conflict prevention strategy
     for files written by both agents and CI bots (CHANGELOG.md,
-    AGENT_ACCOUNTABILITY_REPORT.md, agent_auth_session.json,
+    .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md, agent_auth_session.json,
     session_context_latest.md):
 
     Layer 2 — Structural fix:
@@ -1015,7 +1015,7 @@ def _build_parser() -> argparse.ArgumentParser:
         description=(
             "Verify and auto-repair frequently-drifting repo files: "
             "CODEX_MANIFEST.json integrity, .secrets.baseline, "
-            "CHANGELOG.md, and AGENT_ACCOUNTABILITY_REPORT.md."
+            "CHANGELOG.md, and .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md."
         ),
     )
     mode = p.add_mutually_exclusive_group()
@@ -1040,7 +1040,7 @@ def _build_parser() -> argparse.ArgumentParser:
     scope.add_argument(
         "--docs-only",
         action="store_true",
-        help="Only check/fix CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md",
+        help="Only check/fix CHANGELOG.md and .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md",
     )
     p.add_argument(
         "--json-output",

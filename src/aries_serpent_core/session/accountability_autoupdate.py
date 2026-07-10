@@ -6,7 +6,7 @@ On Copilot session close, this script:
 2. Computes a normalised significance score (0–1).
 3. Tokenises the session narrative and assigns TF-based weights with boosts.
 4. Generates a structured markdown entry.
-5. Appends idempotently to ``docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md``.
+5. Appends idempotently to ``docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md``.
 6. Inserts a Keep-a-Changelog entry under ``## [Unreleased]`` in ``CHANGELOG.md``.
 7. Writes a machine-readable JSON artifact to ``.codex/sessions/<session_id>.json``.
 
@@ -50,7 +50,7 @@ from typing import Any, Optional
 from aries_serpent_core.logging.structured_logger import logger
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parents[3]
-REPORT_PATH = REPO_ROOT / "docs" / "accountability" / "AGENT_ACCOUNTABILITY_REPORT.md"
+REPORT_PATH = REPO_ROOT / "docs" / "accountability" / ".codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md"
 CHANGELOG_PATH = REPO_ROOT / "CHANGELOG.md"
 SESSIONS_DIR = REPO_ROOT / ".codex" / "sessions"
 

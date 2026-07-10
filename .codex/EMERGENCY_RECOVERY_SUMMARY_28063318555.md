@@ -46,7 +46,7 @@ Status: ✅ Ready for recovery
 ```
 
 ### ✅ 3. Recovery Registration (Compliance)
-- **REQ-4:** Documented in AGENT_ACCOUNTABILITY_REPORT.md
+- **REQ-4:** Documented in .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 - **REQ-5:** Documented in CHANGELOG.md
 - **Audit Trail:** Stored in `.codex/session_recovery_log.jsonl`
 
@@ -134,7 +134,7 @@ Continuous Monitoring (every 30 min)
 
 **✅ REQ-4: Accountability Report Updated**
 ```
-File: docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
+File: docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 Entry: SESSION RECOVERY — 2026-06-24T00:34:37Z
 - Session ID: c44f0d60-4469-461f-9344-c98cec32ffe4
 - Failed Workflow: 28063318555

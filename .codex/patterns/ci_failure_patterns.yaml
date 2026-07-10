@@ -906,12 +906,12 @@ examples:
   - run_id: 22701307692
     date: "2026-03-05"
     commit: "52afd2d"
-    error: "FAIL — AGENT_ACCOUNTABILITY_REPORT.md was NOT updated in the last commit"
+    error: "FAIL — .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md was NOT updated in the last commit"
     note: "Different gate (accountability), same pattern — every commit must touch both files"
 
 cognitive_notes: |
   Two required-in-every-commit files for the Cognitive Pre-flight gate:
-  1. docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md (REQ-4 gate)
+  1. docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (REQ-4 gate)
   2. CHANGELOG.md (REQ-5 gate)
   Missing EITHER causes the pre-flight job to exit 1. The self-healing CI reports these
   as 'Pattern: unknown' because they're not in the patterns library — now they are.
@@ -1037,7 +1037,7 @@ fix:
   manual_steps:
     - "Run: python scripts/tools/doc_metrics_sync.py --fix"
     - "Commit all files listed in the 'stale metric(s) found' output"
-    - "Ensure CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md are also updated (preflight gate)"
+    - "Ensure CHANGELOG.md and .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md are also updated (preflight gate)"
   prevention:
     - "Run doc_metrics_sync --fix immediately after any pyproject.toml fail_under change"
     - "doc_metrics_sync --check is part of pre-commit; run pre-commit locally before pushing"
@@ -1072,14 +1072,14 @@ metadata:
 
 ---
 pattern_id: PREFLIGHT_002
-name: "Cognitive Pre-flight REQ-4: AGENT_ACCOUNTABILITY_REPORT.md Not Touched in Last Commit"
+name: "Cognitive Pre-flight REQ-4: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md Not Touched in Last Commit"
 category: preflight_gate
 priority: 2
 severity: error
 
 description: |
   The `agent-auth-delegation.yml` Cognitive Pre-flight Check (REQ-4) checks whether
-  `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` appears in the last commit's diff.
+  `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` appears in the last commit's diff.
   If it does not, the job exits 1 and blocks `activate-delegation`.
 
   This is the companion gate to PREFLIGHT_001 (CHANGELOG.md). Both files must appear
@@ -1089,12 +1089,12 @@ description: |
 detection:
   workflow_path: ".github/workflows/agent-auth-delegation.yml"
   job_name: "🧠 Cognitive Pre-flight Check"
-  step_name: "Verify AGENT_ACCOUNTABILITY_REPORT.md updated in last commit"
+  step_name: "Verify .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated in last commit"
   error_signatures:
-    - "FAIL — `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` was NOT updated in the last commit"
-    - "Verify AGENT_ACCOUNTABILITY_REPORT.md updated in last commit"
+    - "FAIL — `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` was NOT updated in the last commit"
+    - "Verify .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated in last commit"
     - "Process completed with exit code 1"
-  check_command: "git diff --name-only HEAD~1 HEAD | grep -qF 'docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md'"
+  check_command: "git diff --name-only HEAD~1 HEAD | grep -qF 'docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md'"
 
 root_cause:
   technical: |
@@ -1107,12 +1107,12 @@ root_cause:
 fix:
   automated: false
   manual_steps:
-    - "Add a new ## SESSION SUMMARY section to docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md"
+    - "Add a new ## SESSION SUMMARY section to docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md"
     - "Update the 'Last updated:' timestamp in the header"
     - "Include a table of completed work items for the session"
     - "Commit the file alongside CHANGELOG.md and all other changes"
   prevention:
-    - "Both CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md must be in every commit"
+    - "Both CHANGELOG.md and .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md must be in every commit"
     - "Use the dual-file update as the final step before every report_progress call"
 
 examples:
@@ -1126,7 +1126,7 @@ examples:
 cognitive_notes: |
   The two mandatory-per-commit files are:
   1. CHANGELOG.md (PREFLIGHT_001 / REQ-5)
-  2. docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md (PREFLIGHT_002 / REQ-4)
+  2. docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md (PREFLIGHT_002 / REQ-4)
   Both must appear in git diff HEAD~1 HEAD. The most common cause of 'unknown' CI health
   pattern classification (issue #3534: 52 unknown-pattern failures) is commits that
   fix code issues but omit these mandatory documentation touches.
@@ -1257,7 +1257,7 @@ fix:
     - "If neither: check for CODEX_MANIFEST.json freshness (must be < 24h for E→D gate)"
     - "Re-run the failed workflow after committing the fix"
   prevention:
-    - "Every commit must touch CHANGELOG.md + AGENT_ACCOUNTABILITY_REPORT.md"
+    - "Every commit must touch CHANGELOG.md + .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md"
     - "Run doc_metrics_sync --fix after any fail_under or metric change in pyproject.toml"
     - "Add new patterns immediately when a new 'unknown' failure is resolved"
     - "Use hardened venv recreation pattern for any .venv_ci/bin/ binary calls in workflow steps:"
@@ -1345,13 +1345,13 @@ auto_fixable: true
 
 description: |
   The cognitive-preflight job (REQ-4) checks that
-  docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md was touched
+  docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md was touched
   in the last commit.  This fails on commits that only touch
   workflow files, cognitive brain metadata, or other non-doc files.
 
 detection:
   error_signatures:
-    - "FAIL.*AGENT_ACCOUNTABILITY_REPORT.md was NOT updated in the last commit"
+    - "FAIL.*.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md was NOT updated in the last commit"
     - "REQ-4.*accountability report"
     - "::error::REQ-4"
   workflow: "agent-auth-delegation.yml"
@@ -1369,7 +1369,7 @@ root_cause:
 fix_steps:
   - "Run: python scripts/ci/session_wrapup_autofix.py --fix-accountability --pr-number <N>"
   - "Or: let the auto-fix step in agent-auth-delegation.yml handle it automatically"
-  - "Manual: append a session summary block to docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md"
+  - "Manual: append a session summary block to docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md"
 
 auto_fix:
   script: "scripts/ci/session_wrapup_autofix.py"

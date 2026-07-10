@@ -292,7 +292,7 @@ pip install --force-reinstall \
 - **Phase 5 Security Audit**: `docs/security/phase5_audit_report.md`
 - **Vulnerability Details**: `docs/security/CVE_MANIFEST.md`
 - **Patch History**: `CHANGELOG.md` → "Security" section
-- **Agent Documentation**: `AGENTS.md` → ci-auto-healer-agent
+- **Agent Documentation**: `.codex/archive/deprecated/AGENTS.md` → ci-auto-healer-agent
 
 ---
 

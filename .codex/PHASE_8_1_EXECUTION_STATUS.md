@@ -14,7 +14,7 @@
 - **Broken Links Found:** 3,278 (33.76% of 9,711 links checked)
 - **Files with Issues:** 223 total (171 Tier 2 historical, 52 Tier 1 user-facing)
 - **Broken Links in Tier 1:** 1,613 across 134 files
-- **Critical Root-Level Docs:** 6 files (README.md, CONTRIBUTING.md, SECURITY.md, CHANGELOG.md, AGENTS.md, CODE_OF_CONDUCT.md)
+- **Critical Root-Level Docs:** 6 files (README.md, CONTRIBUTING.md, SECURITY.md, CHANGELOG.md, .codex/archive/deprecated/AGENTS.md, CODE_OF_CONDUCT.md)
 
 ### Tier Classification
 - **Tier 1 (User-Facing, SLA Enforced):** 52 files with 1,613 broken links
@@ -46,7 +46,7 @@
   - ✅ CONTRIBUTING.md: No broken links
   - ✅ SECURITY.md: No broken links
   - ✅ CHANGELOG.md: No broken links
-  - ✅ AGENTS.md: No broken links
+  - ✅ .codex/archive/deprecated/AGENTS.md: No broken links
   - ✅ CODE_OF_CONDUCT.md: No broken links
 
 ### 1.2 Documentation Ownership Registry Created
@@ -116,7 +116,7 @@ Focus on admin/reference documentation with user-facing impact:
 | CONTRIBUTING.md | @policy-coach-agent | Quarterly | ≤90 days |
 | SECURITY.md | @security-audit-agent | Quarterly | ≤90 days |
 | CHANGELOG.md | @pypi-publishing-operations-agent | Per-release | ≤90 days |
-| AGENTS.md | @skills-master-agent | Quarterly | ≤90 days |
+| .codex/archive/deprecated/AGENTS.md | @skills-master-agent | Quarterly | ≤90 days |
 | CODE_OF_CONDUCT.md | @policy-coach-agent | Annual | ≤180 days |
 
 ### Documentation Domains (Tier 1)

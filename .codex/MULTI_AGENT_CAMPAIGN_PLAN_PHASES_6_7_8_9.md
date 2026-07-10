@@ -417,7 +417,7 @@ ORG_INFERENCE_GATEWAY:
 1. Offline wheelhouse generation script
 2. Air-gapped installation test suite
 3. `.codex/OFFLINE_CONSUMPTION_VALIDATION_REPORT.md`
-4. Updated `ISOLATED_DEPLOYMENT.md` with procedures
+4. Updated `docs/release/ISOLATED_DEPLOYMENT.md` with procedures
 5. Dependency graph documentation for offline scenarios
 
 **Success Metrics:**
@@ -688,7 +688,7 @@ These are safe to leave unchanged (documentation/examples).
 2. Schedule Phase 7 session (2 days post-merge)
 3. Schedule Phase 8 session (3 days post-merge)
 4. Schedule Phase 9 session (4 days post-merge)
-5. Document final metrics in `.codex/AGENT_ACCOUNTABILITY_REPORT.md`
+5. Document final metrics in `.codex/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 
 ---
 

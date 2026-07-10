@@ -360,7 +360,7 @@ Day 4 (2026-06-22):    100% 🏁 PRODUCTION SIGN-OFF
 - **Campaign Page:** `.codex/PRODUCTION_READINESS_DELEGATION_FRAMEWORK.md`
 - **Execution Plan:** `.codex/DAY_2_INTENSIVE_EXECUTION_PLAN.md`
 - **Progress Tracking:** `.codex/DAY_2_*` reports in `.codex/` directory
-- **Accountability:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- **Accountability:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - **Authority:** @mbaetiong (COPILOT_AGENT_AUTH_ENABLED=true)
 
 ---

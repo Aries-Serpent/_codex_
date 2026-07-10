@@ -30,7 +30,7 @@ Transform Aries-Serpent/_codex_ into a packaged, downloadable, locally-installab
 - Identify cognitive brain integration points and capabilities for export
 - Define initial packaging contract and allowlist policy skeleton
 - Inject strategic decisions into lane leads' context
-- Deliver: `.codex/INTELLIGENCE_CAMPAIGN_BASELINE.md`
+- Deliver: `.codex/.codex/archive/misc/INTELLIGENCE_CAMPAIGN_BASELINE.md`
 
 ---
 
@@ -163,7 +163,7 @@ ACT: Distribute decisions to all lane leads via context injection
 ```
 
 **Deliverables:**
-- `.codex/INTELLIGENCE_CAMPAIGN_BASELINE.md` (codebase analysis summary)
+- `.codex/.codex/archive/misc/INTELLIGENCE_CAMPAIGN_BASELINE.md` (codebase analysis summary)
 - Phase 1 scope document signed by all lane leads
 - Decision log for traceability
 
@@ -253,9 +253,9 @@ ACT: Distribute decisions to all lane leads via context injection
 **Lane 5 Publishes Integrated Guides**
 
 **Installation Guides:**
-- `INSTALL.md`: Download wheel, `pip install`, smoke test (5 min)
-- `OFFLINE_INSTALL.md`: Download lockfile + wheels, install in air-gap (10 min)
-- `ISOLATED_DEPLOYMENT.md`: Enable offline mode, configure local state, verify isolation
+- `.codex/archive/misc/INSTALL.md`: Download wheel, `pip install`, smoke test (5 min)
+- `OFFLINE_.codex/archive/misc/INSTALL.md`: Download lockfile + wheels, install in air-gap (10 min)
+- `docs/release/ISOLATED_DEPLOYMENT.md`: Enable offline mode, configure local state, verify isolation
 
 **Integration Guide:**
 - Embed cognitive engine into external project: `from codex.cognitive_brain import OODA`
@@ -478,7 +478,7 @@ Session 2 (Day 6):
 ## Deliverables Checklist
 
 ### Phase 0
-- [ ] `.codex/INTELLIGENCE_CAMPAIGN_BASELINE.md` (codebase analysis)
+- [ ] `.codex/.codex/archive/misc/INTELLIGENCE_CAMPAIGN_BASELINE.md` (codebase analysis)
 - [ ] Phase 1 scope document signed by lane leads
 - [ ] Synchronization meeting notes
 
@@ -499,12 +499,12 @@ Session 2 (Day 6):
 - [ ] PR for isolation hardening (review ready)
 
 ### Phase 3
-- [ ] `INSTALL.md` (online installation)
-- [ ] `OFFLINE_INSTALL.md` (air-gap installation)
-- [ ] `ISOLATED_DEPLOYMENT.md` (whitelist + offline)
-- [ ] `INTEGRATION.md` (embedding guide + examples)
+- [ ] `.codex/archive/misc/INSTALL.md` (online installation)
+- [ ] `OFFLINE_.codex/archive/misc/INSTALL.md` (air-gap installation)
+- [ ] `docs/release/ISOLATED_DEPLOYMENT.md` (whitelist + offline)
+- [ ] `docs/api/reference/INTEGRATION.md` (embedding guide + examples)
 - [ ] `TROUBLESHOOTING.md` (FAQ with common issues)
-- [ ] `RELEASE_NOTES.md` (v0.1.0-external features)
+- [ ] `docs/release/RELEASE_NOTES.md` (v0.1.0-external features)
 - [ ] PR for documentation (review ready)
 
 ### Phase 4
@@ -577,7 +577,7 @@ Target:         →                ✅                    ✅                   
 - **Go/No-Go Gates:** Phase completion gates require >90% lane readiness
 - **Escalation Path:** Blockers → orchestrator-agent → @mbaetiong
 - **Cross-Lane Conflicts:** Cognitive OODA loop mediates; unresolved → @mbaetiong
-- **Decision Traceability:** All Phase 0 decisions logged in `.codex/INTELLIGENCE_CAMPAIGN_BASELINE.md`
+- **Decision Traceability:** All Phase 0 decisions logged in `.codex/.codex/archive/misc/INTELLIGENCE_CAMPAIGN_BASELINE.md`
 
 ---
 
@@ -618,9 +618,9 @@ Target:         →                ✅                    ✅                   
 - **Baseline Packaging Plan:** `.codex/PACKAGING_CAMPAIGN_PLAN.md` (existing foundation)
 - **Agent Registry:** `.github/agents/AGENT_REGISTRY.yaml` (145 active agents)
 - **Repository State:** `.codex/AGENTIC_REPO_STATE.md`
-- **Agent Accountability:** `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md`
+- **Agent Accountability:** `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md`
 - **Network Policy (Draft):** `.codex/network-policy.yaml` (to be created Phase 2)
-- **Intelligence Baseline (Draft):** `.codex/INTELLIGENCE_CAMPAIGN_BASELINE.md` (to be created Phase 0)
+- **Intelligence Baseline (Draft):** `.codex/.codex/archive/misc/INTELLIGENCE_CAMPAIGN_BASELINE.md` (to be created Phase 0)
 - **Campaign Tracking:** `.codex/CAMPAIGN_TRACKING_DASHBOARD.md` (to be created Phase 0)
 
 ---

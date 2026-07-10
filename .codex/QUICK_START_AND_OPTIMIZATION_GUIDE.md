@@ -475,7 +475,7 @@ grep -r "@app.command" src/codex/cli.py  # → All CLI commands
 
 ### Official Documentation
 - **Quick Start:** README.md
-- **Installation:** INSTALL.md
+- **Installation:** .codex/archive/misc/INSTALL.md
 - **CLI Reference:** docs/CLI_REFERENCE.md
 - **Architecture:** docs/ARCHITECTURE.md
 - **Cognitive Brain:** docs/COGNITIVE_BRAIN_GUIDE.md
