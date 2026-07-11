@@ -1,12 +1,14 @@
 # PEFT Hooks - Parameter-Efficient Fine-Tuning
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
-> **Navigation**: [📖 Main README](https://github.com/Aries-Serpent/_codex_/blob/main/README.md#-capabilities-documentation) | [💾 Checkpointing](checkpointing.md) | [🔄 Training Loops](train_loop.md) | [🔍 Code Quality](code_quality_tooling.md)
+> **Navigation**: [ Main README](../README.md#-capabilities-documentation) | [💾 Checkpointing](checkpointing.md) | [🔄 Training Loops](train_loop.md) | [🔍 Code Quality](code_quality_tooling.md)
 
 ## Overview
 
-**Status**: ✅ Complete - Comprehensive PEFT techniques and integration patterns documented
+**Status**:  Complete - Comprehensive PEFT techniques and integration patterns documented
 
 > **Note**: Code examples throughout this document include imports at the beginning of each snippet for clarity and standalone usage. This is intentional to make each example self-contained and easy to copy.
 

@@ -1,4 +1,6 @@
 # Environment Variables FAQ
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 ## General Questions
 
@@ -28,10 +30,10 @@ redis_host = os.getenv('CODEX_REDIS_HOST', 'localhost')
 
 **A:** No, these are configuration (not credentials). Safe to commit/version control.
 
-- ❌ Don't put passwords/tokens here
-- ✅ These are just hostnames and port numbers
-- ✅ Safe to include in git repos
-- ✅ Can be public in GitHub Settings → Variables
+-  Don't put passwords/tokens here
+-  These are just hostnames and port numbers
+-  Safe to include in git repos
+-  Can be public in GitHub Settings → Variables
 
 ### Q: How are these deployed?
 
@@ -85,12 +87,12 @@ export CODEX_REDIS_HOST=my-redis && echo $CODEX_REDIS_HOST
 ```bash
 # Development (allow localhost)
 export CODEX_LOCAL_LOOPBACK=true
-python -m codex serve  # ✅ localhost:6379 allowed
+python -m codex serve  #  localhost:6379 allowed
 
 # Production (enforce hostnames)
 export CODEX_LOCAL_LOOPBACK=false
 export CODEX_REDIS_HOST=redis.prod.internal
-python -m codex serve  # ✅ redis.prod.internal allowed, ❌ localhost blocked
+python -m codex serve  #  redis.prod.internal allowed,  localhost blocked
 ```
 
 ### Q: Can I override variables per environment?
@@ -195,13 +197,13 @@ python -m codex serve
 **A:** DNS names work great! Recommended actually:
 
 ```bash
-# ✅ Good (DNS resolves at runtime)
+#  Good (DNS resolves at runtime)
 export CODEX_REDIS_HOST=redis.internal
 
-# ✅ Also good (IP works)
+#  Also good (IP works)
 export CODEX_REDIS_HOST=192.168.1.100
 
-# ✅ Great for Kubernetes
+#  Great for Kubernetes
 export CODEX_REDIS_HOST=redis.default.svc.cluster.local
 ```
 
@@ -294,15 +296,15 @@ tail -f logs/codex.log | grep -i "redis\|ollama\|master"
 **A:** GitHub Actions requires explicit configuration:
 
 ```yaml
-# ❌ Won't work - variables not injected
+#  Won't work - variables not injected
 - name: Deploy
   run: echo $CODEX_REDIS_HOST
 
-# ✅ Works - explicit reference
+#  Works - explicit reference
 - name: Deploy
   run: echo ${{ env.CODEX_REDIS_HOST }}
 
-# ✅ Also works - variable in env
+#  Also works - variable in env
 - name: Deploy
   run: echo $CODEX_REDIS_HOST
   env:
@@ -317,10 +319,10 @@ tail -f logs/codex.log | grep -i "redis\|ollama\|master"
 
 **A:** Yes! They're configuration endpoints, not credentials.
 
-- ✅ Safe to commit to git
-- ✅ Safe to include in public repos
-- ✅ No sensitive data should be here
-- ❌ Never put passwords/tokens here
+-  Safe to commit to git
+-  Safe to include in public repos
+-  No sensitive data should be here
+-  Never put passwords/tokens here
 
 ```bash
 # Good - just hostnames
@@ -328,7 +330,7 @@ CODEX_REDIS_HOST=redis.prod.internal
 CODEX_OLLAMA_HOST=http://ollama.prod.internal:11434
 
 # Bad - never put tokens here
-CODEX_AUTH_TOKEN=sk_prod_abc123  # ❌ Don't do this!
+CODEX_AUTH_TOKEN=sk_prod_abc123  #  Don't do this!
 ```
 
 ### Q: Should CODEX_LOCAL_LOOPBACK ever be true in production?
@@ -337,10 +339,10 @@ CODEX_AUTH_TOKEN=sk_prod_abc123  # ❌ Don't do this!
 
 ```bash
 # Development OK
-export CODEX_LOCAL_LOOPBACK=true  # ✅ Development
+export CODEX_LOCAL_LOOPBACK=true  #  Development
 
 # Production REQUIRED
-export CODEX_LOCAL_LOOPBACK=false  # ✅ Production (required)
+export CODEX_LOCAL_LOOPBACK=false  #  Production (required)
 ```
 
 **Why?** Localhost bypass disables security validations that are critical in production.
@@ -430,6 +432,6 @@ redis_host = os.getenv('CODEX_REDIS_CONNECTION_HOST') or os.getenv('CODEX_REDIS_
 
 ---
 
-**Last Updated:** Phase 9 Groundwork (2026-07-08)
+**Last Updated: 2026-07-08
 **Total Variables:** 8 (all documented)
 **Success Target:** 80%+ adoption, 95%+ success rate, 4.5/5 clarity

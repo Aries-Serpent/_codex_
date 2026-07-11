@@ -1,8 +1,10 @@
 # Cognitive Brain — Phase 3 Production Hardening: Complete
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
-**Status:** ✅ COMPLETE  
+**Status:**  COMPLETE  
 **Phase:** 3 — Quantum Compliance Production Hardening  
 **Completed:** 2026-03-13  
 **PR:** [#3571](https://github.com/Aries-Serpent/_codex_/pull/3571)  
@@ -18,18 +20,18 @@ Phase 3 delivered a comprehensive production hardening cycle addressing security
 
 | Objective | Status | Details |
 |-----------|--------|---------|
-| SHA1 security flag | ✅ | `hashlib.sha1(raw, usedforsecurity=False)` — Bandit B324 resolved |
-| Pydantic v2 min_length | ✅ | `min_items` → `min_length` on `MergeIndicesRequest.source_indices` |
-| Bandit B608 nosec | ✅ | SQL f-string annotated — false positive documented |
-| Thread-safety | ✅ | `UserStore` protected by `threading.RLock` — 300 ops, 0 errors |
-| C901 complexity refactor | ✅ | `_resolve_context_limit` (15→4), `_get_model_vocab_size` (13→4) |
-| mypy type fix | ✅ | `_rate_limit_handler` wrapper for FastAPI `add_exception_handler` |
-| Deferral enforcement (5-layer) | ✅ | CI gate + scanner + policy §3a + agent instructions + pre-commit hook |
-| Runner fallback | ✅ | `ubuntu-latest-m` → `ubuntu-latest` in copilot-setup-steps.yml |
-| Integration test fix | ✅ | `TenantRegistry._db_path` attribute — all 13 tests passing |
-| Auth middleware 401 isolation | ✅ | `CODEX_AUTH_MIDDLEWARE_ENABLED=0` in non-auth test fixtures |
-| Broken doc links | ✅ | `validate-internal-links` pre-commit hook passing |
-| Bot review threads | ✅ | 0 open threads — sole F401 thread resolved+outdated |
+| SHA1 security flag |  | `hashlib.sha1(raw, usedforsecurity=False)` — Bandit B324 resolved |
+| Pydantic v2 min_length |  | `min_items` → `min_length` on `MergeIndicesRequest.source_indices` |
+| Bandit B608 nosec |  | SQL f-string annotated — false positive documented |
+| Thread-safety |  | `UserStore` protected by `threading.RLock` — 300 ops, 0 errors |
+| C901 complexity refactor |  | `_resolve_context_limit` (15→4), `_get_model_vocab_size` (13→4) |
+| mypy type fix |  | `_rate_limit_handler` wrapper for FastAPI `add_exception_handler` |
+| Deferral enforcement (5-layer) |  | CI gate + scanner + policy §3a + agent instructions + pre-commit hook |
+| Runner fallback |  | `ubuntu-latest-m` → `ubuntu-latest` in copilot-setup-steps.yml |
+| Integration test fix |  | `TenantRegistry._db_path` attribute — all 13 tests passing |
+| Auth middleware 401 isolation |  | `CODEX_AUTH_MIDDLEWARE_ENABLED=0` in non-auth test fixtures |
+| Broken doc links |  | `validate-internal-links` pre-commit hook passing |
+| Bot review threads |  | 0 open threads — sole F401 thread resolved+outdated |
 
 ## Security Posture at Phase 3 Close
 

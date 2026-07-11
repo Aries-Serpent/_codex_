@@ -1,6 +1,8 @@
 # Distributed Training Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-28  
+**Last Updated: 2026-06-28
 **Version:** 1.0
 
 > Comprehensive guide for setting up and running distributed training with Codex ML
@@ -14,7 +16,7 @@ This guide covers distributed training strategies using:
 - **Hugging Face Accelerate** — Simplified distributed training framework
 - **Parameter Server** — Distributed gradient computation
 
-## Quick Start
+## Quickstart
 
 ### Single-Node Multi-GPU Training
 

@@ -1,12 +1,14 @@
 # Architecture Quick Reference
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Last Updated**: 2026-06-22  
-**Status**: ✅ Consolidated  
+**Status**:  Consolidated  
 **Full Reference**: [Consolidated Architecture](./architecture/ARCHITECTURE_CONSOLIDATED.md)
 
 ---
 
-## 🎯 System Overview
+##  System Overview
 
 **Aries-Serpent/_codex_**: MLOps-certified ML framework with AI assistant integration
 
@@ -50,7 +52,7 @@
 
 ---
 
-## 📊 Directory Structure (Simplified)
+##  Directory Structure (Simplified)
 
 ```
 _codex_/
@@ -95,7 +97,7 @@ The system uses a plugin-driven design:
 
 ---
 
-## ⚙️ Configuration System
+##  Configuration System
 
 Uses **Hydra** for configuration management:
 
@@ -114,7 +116,7 @@ training:
 
 ---
 
-## 🚀 Deployment Architecture
+##  Deployment Architecture
 
 ### Production Deployment
 
@@ -140,7 +142,7 @@ Load Balancer
 
 ---
 
-## 🔐 Security Architecture
+##  Security Architecture
 
 ### Security Layers
 
@@ -190,7 +192,7 @@ Load Balancer
 
 ---
 
-## 📚 Learning Path
+##  Learning Path
 
 1. **Understand Architecture**: Read this quick reference
 2. **Explore System**: Review system overview and diagrams
@@ -235,7 +237,7 @@ Load Balancer
 
 ---
 
-## 🚀 Quick Start Links
+##  Quick Start Links
 
 - **Setup**: [Installation Guide](./setup/)
 - **Configuration**: [Quick Start](./configuration/hydra_quickstart.md)
@@ -244,6 +246,6 @@ Load Balancer
 
 ---
 
-**Status**: ✅ Complete  
+**Status**:  Complete  
 **Consolidated Date**: 2026-06-22  
 **For Updates**: See [Consolidated Architecture](./architecture/ARCHITECTURE_CONSOLIDATED.md)

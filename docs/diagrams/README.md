@@ -1,6 +1,8 @@
-# 📊 Mermaid Diagrams Index
+#  Mermaid Diagrams Index
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-> **Last updated:** 2026-05-28 (S1292)
+> **Last updated: 2026-07-11
 
 All `.mmd` files in this directory are authoritative Mermaid source diagrams.
 Render with the Mermaid CLI (`mmdc`), GitHub's native Mermaid rendering, or the

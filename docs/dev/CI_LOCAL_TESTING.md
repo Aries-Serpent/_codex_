@@ -1,6 +1,8 @@
 # CI/Local Testing Parity Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 > **Goal:** catch CI failures *before* pushing by running the exact same checks
 > GitHub Actions runs on every PR.
@@ -405,7 +407,7 @@ LOCK_HASH=$(sha256sum pyproject.toml requirements/lock.txt | sha256sum | cut -c1
 If `.venv_ci/.install_hash` matches, the install is skipped entirely:
 
 ```
-✅ .venv_ci is up-to-date (hash abc123def456) — skipping install
+ .venv_ci is up-to-date (hash abc123def456) — skipping install
 ```
 
 ### Check cache status
@@ -446,10 +448,10 @@ sha256sum pyproject.toml requirements/lock.txt | sha256sum | cut -c1-16
 
 ## See also
 
-- [`scripts/dev_env_setup.sh`](https://github.com/Aries-Serpent/_codex_/blob/main/scripts/dev_env_setup.sh) — environment setup
-- [`scripts/ci_local.sh`](https://github.com/Aries-Serpent/_codex_/blob/main/scripts/ci_local.sh) — CI runner
-- [`.github/workflows/validate.yml`](https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/validate.yml)
-- [`.github/workflows/resilient_validation.yml`](https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/resilient_validation.yml)
-- [`.github/workflows/pre-merge-validation.yml`](https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/pre-merge-validation.yml)
+- [`scripts/dev_env_setup.sh`](../scripts/dev_env_setup.sh) — environment setup
+- [`scripts/ci_local.sh`](../scripts/ci_local.sh) — CI runner
+- [`.github/workflows/validate.yml`](../.github/workflows/validate.yml)
+- [`.github/workflows/resilient_validation.yml`](../.github/workflows/resilient_validation.yml)
+- [`.github/workflows/pre-merge-validation.yml`](../.github/workflows/pre-merge-validation.yml)
 - [`docs/dev/testing.md`](testing.md) — general testing conventions
-- [`CONTRIBUTING.md`](https://github.com/Aries-Serpent/_codex_/blob/main/CONTRIBUTING.md)
+- [`CONTRIBUTING.md`](../CONTRIBUTING.md)

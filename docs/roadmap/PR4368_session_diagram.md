@@ -1,8 +1,10 @@
 # PR #4368 — Session Diagram
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **PR:** #4368 — Harden safe pickle imports, fix EvaluationRunner NameError and CodeQL alert, resolve merge conflicts, self-heal CI and compatibility failures, extend CB
 **Branch:** `copilot/update-safe-pickle-import`
-**Last Updated:** 2026-05-09 (S899-final)
+**Last Updated: 2026-07-11
 
 ---
 
@@ -43,9 +45,9 @@ gantt
 ## Component Architecture (Mermaid)
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing "🔒 Security & Correctness", safe_pickle.py<br/>HMAC signing · allowlist<br/>atomic key-creation'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing " Security & Correctness", safe_pickle.py<br/>HMAC signing · allowlist<br/>atomic key-creation'}}%%
 graph TD
-    subgraph Security["🔒 Security & Correctness"]
+    subgraph Security[" Security & Correctness"]
         SP[safe_pickle.py<br/>HMAC signing · allowlist<br/>atomic key-creation]
         ER[EvaluationRunner.run<br/>NameError fix · forward fix]
         CQL[CodeQL init fix<br/>torch=None before try]
@@ -67,8 +69,8 @@ graph TD
         CKA[codex_cli.app<br/>lazy import]
     end
 
-    subgraph CB["🧠 Cognitive Brain"]
-        FB[cb_fallbacks.py<br/>import_optional<br/>with_fallback<br/>rate_limited_call<br/>19 tests ✅]
+    subgraph CB[" Cognitive Brain"]
+        FB[cb_fallbacks.py<br/>import_optional<br/>with_fallback<br/>rate_limited_call<br/>19 tests ]
         PL[PerceptionLayer<br/>9 sensors<br/>cpu·mem·disk·net<br/>ci·agent·load]
         ML[MemoryLayer LTM<br/>SQLite-backed<br/>5-layer PDA cycle<br/>store·recall·recall_by_cycle]
         AE[ActionExecutor<br/>DISPATCH_TARGETS<br/>workflow_dispatch<br/>post_comment<br/>approve_run]
@@ -78,10 +80,10 @@ graph TD
     subgraph TestFixes["🧪 Test Fixes"]
         TK[Tokenizer test<br/>skip guards<br/>9 tests · 3 files]
         BT[batch8 + batch11<br/>broken tests restored]
-        TI[token verification<br/>env-isolation fix<br/>23/23 ✅]
+        TI[token verification<br/>env-isolation fix<br/>23/23 ]
     end
 
-    subgraph WorkflowFixes["⚙️ Workflow Cascade Fixes"]
+    subgraph WorkflowFixes[" Workflow Cascade Fixes"]
         WF1[pr-followup-generator<br/>+ skip ci added]
         WF2[iterative-self-healing<br/>skip ci-if-no-change → skip ci]
         WF3[auto-fix-pr-check<br/>+ skip ci added]
@@ -149,20 +151,20 @@ sequenceDiagram
     Note over RP,GH: BEFORE fix (cascade loop)
     RP->>GH: git push (new SHA)
     GH-->>FPG: pull_request: synchronize
-    FPG->>GH: git commit "chore: Generate follow-up" ❌ NO [skip ci]
+    FPG->>GH: git commit "chore: Generate follow-up"  NO [skip ci]
     GH-->>GATE: pull_request: synchronize → 4 workflows (set A)
     RP->>GH: update PR description
     GH-->>GATE: pull_request: edited → 4 workflows (set B)
     Note over GATE: 8 action_required
     APPROVE->>GATE: approve all 8
     GATE->>GH: agent-auth-delegation pushes chore(auth)+chore(d00)
-    Note over GH,GATE: [skip ci] ✅ — stops THAT chain
+    Note over GH,GATE: [skip ci]  — stops THAT chain
     Note over FPG,GATE: But FPG fires again on next push → repeats
 
     Note over RP,GH: AFTER fix (S899-cont)
     RP->>GH: git push (new SHA)
     GH-->>FPG: pull_request: synchronize
-    FPG->>GH: git commit "chore: Generate follow-up [skip ci]" ✅
+    FPG->>GH: git commit "chore: Generate follow-up [skip ci]" 
     Note over GH: [skip ci] — NO new workflow triggers
     RP->>GH: update PR description
     GH-->>GATE: pull_request: edited → 4 workflows (set B only)
@@ -175,17 +177,17 @@ sequenceDiagram
 
 | Session | Commit(s) | Key Deliverable | Tests | Pattern 25 |
 |---------|-----------|-----------------|-------|------------|
-| S889 | (early branch) | `src/codex_ml/safe_pickle.py` — restricted unpickler + HMAC signing | ✅ | ✅ |
-| S890 | (early branch) | `EvaluationRunner.run()` NameError fix + callable fallback | ✅ | ✅ |
-| S891 | (early branch) | `verify_token_scope.py` token=None fix | ✅ | ✅ |
-| S892 | (early branch) | Tokenizer streaming + stub compatibility | ✅ | ✅ |
-| S893 | (early branch) | `codex_cli` smoke patching + offline metrics | ✅ | ✅ |
-| S894 | (early branch) | OmegaConf shim + evaluate CLI + list_plugins JSON | ✅ | ✅ |
-| S895 | `e8eadb3` | Stale rescue triage + Pattern 25 refresh | ✅ | ✅ |
-| S896 | `407a129`→`4f10df0` | `.secrets.baseline` merge + CodeQL init fix + broken test restore | ✅ | ✅ |
-| S897 | `c5567a05`→`33f9fe54` | CB `cb_fallbacks.py` (19 tests) + rate-limit orchestration | 19 | ✅ |
-| S897-final | `f0b2d5c3` | Workflow monitor + startup_failure triage + living docs | ✅ | ✅ |
-| S898 | `e8057dfe`→`88a5f8d9` | CB PerceptionLayer (9 sensors) + MemoryLayer LTM + ActionExecutor | 37 | ✅ |
-| S899 | `04c718f3`→`c9517ad7` | Merge conflict (CODEX_MANIFEST) + test env-isolation (23 tests) | 23 | ✅ |
-| S899-cont | `9dd3a305` | Tokenizer skip guards (9 tests) + workflow cascade fix (4 workflows) | **729** | ✅ |
-| S899-final | `6ec1c426` | CodeQL fixes: remove `_has_real_transformers` + fix dual-import via `sys.modules` | **729** | ✅ |
+| S889 | (early branch) | `src/codex_ml/safe_pickle.py` — restricted unpickler + HMAC signing |  |  |
+| S890 | (early branch) | `EvaluationRunner.run()` NameError fix + callable fallback |  |  |
+| S891 | (early branch) | `verify_token_scope.py` token=None fix |  |  |
+| S892 | (early branch) | Tokenizer streaming + stub compatibility |  |  |
+| S893 | (early branch) | `codex_cli` smoke patching + offline metrics |  |  |
+| S894 | (early branch) | OmegaConf shim + evaluate CLI + list_plugins JSON |  |  |
+| S895 | `e8eadb3` | Stale rescue triage + Pattern 25 refresh |  |  |
+| S896 | `407a129`→`4f10df0` | `.secrets.baseline` merge + CodeQL init fix + broken test restore |  |  |
+| S897 | `c5567a05`→`33f9fe54` | CB `cb_fallbacks.py` (19 tests) + rate-limit orchestration | 19 |  |
+| S897-final | `f0b2d5c3` | Workflow monitor + startup_failure triage + living docs |  |  |
+| S898 | `e8057dfe`→`88a5f8d9` | CB PerceptionLayer (9 sensors) + MemoryLayer LTM + ActionExecutor | 37 |  |
+| S899 | `04c718f3`→`c9517ad7` | Merge conflict (CODEX_MANIFEST) + test env-isolation (23 tests) | 23 |  |
+| S899-cont | `9dd3a305` | Tokenizer skip guards (9 tests) + workflow cascade fix (4 workflows) | **729** |  |
+| S899-final | `6ec1c426` | CodeQL fixes: remove `_has_real_transformers` + fix dual-import via `sys.modules` | **729** |  |

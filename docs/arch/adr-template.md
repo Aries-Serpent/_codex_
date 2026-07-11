@@ -1,6 +1,8 @@
 # ADR: <Title — imperative, short>
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 - **Status**: Proposed | Accepted | Superseded by ADR-XXXX | Rejected
 - **Date**: YYYY-MM-DD

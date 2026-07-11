@@ -1,8 +1,9 @@
 # Installation Guide - Aries-Serpent ML v0.1.0
+**Last Updated:** 2026-07-11
 
 **Document Type:** User Guide  
 **Audience:** Developers, DevOps Engineers, System Administrators, ML Engineers  
-**Last Updated:** 2026-07-10  
+**Last Updated: 2026-07-10
 **Version:** 0.1.0
 
 ## 📋 Table of Contents
@@ -27,11 +28,11 @@
 
 **codex-ml** (Aries-Serpent ML) is a production-ready, Level 4 MLOps-certified machine learning platform featuring:
 
-- 🎯 **Three Installation Profiles**: Choose the right package size for your use case
-- 🚀 **Production-Grade**: 90.2% test coverage, 0 CVEs, enterprise-ready
-- 🧠 **Cognitive Brain Integration**: Advanced autonomous decision-making
-- 📊 **MLOps Ready**: Training, evaluation, and model serving all included
-- 🔒 **Security First**: Network policy enforcement, cryptographic security
+-  **Three Installation Profiles**: Choose the right package size for your use case
+-  **Production-Grade**: 90.2% test coverage, 0 CVEs, enterprise-ready
+-  **Cognitive Brain Integration**: Advanced autonomous decision-making
+-  **MLOps Ready**: Training, evaluation, and model serving all included
+-  **Security First**: Network policy enforcement, cryptographic security
 
 ### Why Three Profiles?
 
@@ -599,13 +600,13 @@ codex-ml uses a **3-tier installation strategy** to optimize for different use c
 pip install codex-ml[core]==0.1.0
 ```
 
-**📊 Specifications:**
+** Specifications:**
 - **Size:** ~8-15 MB
 - **Installation time:** 30-60 seconds
 - **Memory footprint:** ~50-100 MB at runtime
 - **Internet required:** Only for initial download
 
-**✅ Includes:**
+** Includes:**
 - Core runtime engine
 - CLI interface (Typer + Click)
 - Configuration management (Hydra + OmegaConf)
@@ -614,14 +615,14 @@ pip install codex-ml[core]==0.1.0
 - YAML/JSON serialization
 - Network security enforcement
 
-**❌ Does NOT include:**
+** Does NOT include:**
 - Machine Learning frameworks (PyTorch, Transformers)
 - Evaluation tools (lm-eval)
 - Model serving (Ray Serve, FastAPI)
 - Training infrastructure
 - Development tools (pytest, mypy, black)
 
-**🎯 Best for:**
+** Best for:**
 - Lightweight deployments on edge devices
 - Air-gapped or offline environments
 - Container/Kubernetes operator images
@@ -644,13 +645,13 @@ docker run -m 256m codex:core codex-ml --version
 pip install codex-ml[runtime]==0.1.0
 ```
 
-**📊 Specifications:**
+** Specifications:**
 - **Size:** ~20-35 MB (plus PyTorch ~500 MB)
 - **Installation time:** 3-5 minutes
 - **Memory footprint:** ~1-2 GB at runtime
 - **GPU support:** Optional NVIDIA/AMD/Apple Silicon
 
-**✅ Includes:**
+** Includes:**
 - Everything in Core profile
 - **ML Frameworks:** PyTorch 2.6+, Transformers 5.12+
 - **ML Utilities:** datasets, scikit-learn, pandas, numpy
@@ -663,14 +664,14 @@ pip install codex-ml[runtime]==0.1.0
 - **Monitoring:** prometheus-client, psutil, evidently
 - **Tokenization:** sentencepiece
 
-**❌ Does NOT include:**
+** Does NOT include:**
 - Training optimizers (full training pipeline)
 - Development tools (pytest, mypy)
 - Jupyter/notebook support
 - Experimental features
 - Enterprise integrations
 
-**🎯 Best for:**
+** Best for:**
 - Production inference servers
 - Running pre-trained models
 - API services and microservices
@@ -702,13 +703,13 @@ serve.run(app, port=8000)"
 pip install codex-ml[full]==0.1.0
 ```
 
-**📊 Specifications:**
+** Specifications:**
 - **Size:** ~100+ MB (plus all dependencies)
 - **Installation time:** 5-15 minutes
 - **Memory footprint:** ~3-5 GB at runtime
 - **GPU support:** Strongly recommended
 
-**✅ Includes:**
+** Includes:**
 - Everything in Core + Runtime profiles
 - **Development Tools:**
   - Testing: pytest, pytest-cov, pytest-xdist, hypothesis
@@ -732,7 +733,7 @@ pip install codex-ml[full]==0.1.0
   - Pattern matching and learning
   - Autonomous decision-making
 
-**🎯 Best for:**
+** Best for:**
 - Local development environments
 - Research and experimentation
 - Contributing to the codebase
@@ -763,14 +764,14 @@ mypy src/ --strict
 |---------|------|---------|------|
 | **Size** | 8-15 MB | 20-35 MB | 100+ MB |
 | **Installation Time** | <1 min | 3-5 min | 5-15 min |
-| **CLI Tools** | ✅ | ✅ | ✅ |
-| **Configuration** | ✅ | ✅ | ✅ |
-| **ML Inference** | ❌ | ✅ | ✅ |
-| **Model Serving** | ❌ | ✅ | ✅ |
-| **Training** | ❌ | ❌ | ✅ |
-| **Development Tools** | ❌ | ❌ | ✅ |
-| **Testing Framework** | ❌ | ❌ | ✅ |
-| **GPU Support** | ❌ | ✅* | ✅* |
+| **CLI Tools** |  |  |  |
+| **Configuration** |  |  |  |
+| **ML Inference** |  |  |  |
+| **Model Serving** |  |  |  |
+| **Training** |  |  |  |
+| **Development Tools** |  |  |  |
+| **Testing Framework** |  |  |  |
+| **GPU Support** |  | * | * |
 | **Cognitive Brain** | Basic | Yes | Full |
 
 *GPU support requires CUDA toolkit installed separately
@@ -865,10 +866,10 @@ cli(['train', '--config-name=my_config'])
 
 | Entry Point | Core | Runtime | Full | Purpose |
 |------------|------|---------|------|---------|
-| `codex-ml` | ✅ | ✅ | ✅ | Main CLI |
-| `codex-cli` | ✅ | ✅ | ✅ | Alternative CLI |
-| `codex-ml-cli` | ✅ | ✅ | ✅ | Explicit CLI |
-| `codex-smoke` | ✅ | ✅ | ✅ | Smoke test app |
+| `codex-ml` |  |  |  | Main CLI |
+| `codex-cli` |  |  |  | Alternative CLI |
+| `codex-ml-cli` |  |  |  | Explicit CLI |
+| `codex-smoke` |  |  |  | Smoke test app |
 
 ### Extending with Plugins
 
@@ -1133,9 +1134,9 @@ if torch.cuda.is_available():
 ### Documentation Resources
 
 - **🏠 Main README:** [README.md](../README.md)
-- **🚀 Quick Start ML:** [./quickstart/QUICK_START_ML.md](./quickstart/QUICK_START_ML.md)
-- **🧠 Cognitive Brain Guide:** [./quickstart/QUICK_START_COGNITIVE_BRAIN.md](./quickstart/QUICK_START_COGNITIVE_BRAIN.md)
-- **⚙️ Configuration Guide:** [docs/configuration/](configuration/)
+- ** Quick Start ML:** [./quickstart/QUICK_START_ML.md](./quickstart/QUICK_START_ML.md)
+- ** Cognitive Brain Guide:** [./quickstart/QUICK_START_COGNITIVE_BRAIN.md](./quickstart/QUICK_START_COGNITIVE_BRAIN.md)
+- ** Configuration Guide:** [docs/configuration/](configuration/)
 - **🐳 Docker Guide:** [docker/README.md](../../docker/Dockerfile.api)
 - **☸️ Kubernetes Guide:** [k8s/README.md](../../k8s/Deployment.yaml)
 
@@ -1144,13 +1145,13 @@ if torch.cuda.is_available():
 - **📝 Issues:** [GitHub Issues](https://github.com/Aries-Serpent/_codex_/issues)
 - **💬 Discussions:** [GitHub Discussions](https://github.com/Aries-Serpent/_codex_/discussions)
 - **🐛 Bug Reports:** [Report a Bug](https://github.com/Aries-Serpent/_codex_/issues/new?template=bug_report.md)
-- **💡 Feature Requests:** [Request a Feature](https://github.com/Aries-Serpent/_codex_/issues/new?template=feature_request.md)
+- ** Feature Requests:** [Request a Feature](https://github.com/Aries-Serpent/_codex_/issues/new?template=feature_request.md)
 
 ### Additional Resources
 
 - **📦 PyPI Package:** https://pypi.org/project/codex-ml/
 - **🐳 Docker Hub:** https://ghcr.io/aries-serpent/codex
-- **📚 Full Documentation:** https://github.com/Aries-Serpent/_codex_/blob/main/docs/
+- ** Full Documentation:** 
 - **🔧 Contributing Guide:** [CONTRIBUTING.md](../CONTRIBUTING.md)
 
 ---
@@ -1223,6 +1224,6 @@ codex-ml is open source and available under the [MIT License](../LICENSE).
 
 ---
 
-**Last Updated:** 2026-07-10  
-**Installation Status:** ✅ Ready for Production  
+**Last Updated: 2026-07-10
+**Installation Status:**  Ready for Production  
 **Support Level:** Enterprise-Grade

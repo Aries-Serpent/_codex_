@@ -1,6 +1,8 @@
 # Local Quality Gates
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 All gates are **offline-friendly** and run without hosted services:
 

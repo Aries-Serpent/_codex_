@@ -1,6 +1,8 @@
 # Moderation adapter
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 The moderation adapter supplements the existing safety filters with an explicit
 pre-/post-flight check before prompts are ingested or model outputs are returned.

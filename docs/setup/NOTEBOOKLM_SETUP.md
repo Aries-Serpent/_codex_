@@ -1,8 +1,10 @@
 # NotebookLM Grounding Engine Setup Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Generated:** 2026-01-23T19:00:00Z  
 **Branch:** copilot/sub-pr-3020  
-**Status:** ✅ Complete
+**Status:**  Complete
 
 ---
 
@@ -85,7 +87,7 @@ This guide provides instructions for ingesting the Aries-Serpent `_codex_` repos
 
 ---
 
-## 🚀 Ingestion Workflow
+##  Ingestion Workflow
 
 ### Step 1: Ingest Skeleton Map
 
@@ -199,7 +201,7 @@ Once ingestion is complete, you can ask NotebookLM:
 
 ---
 
-## 📊 Verification
+##  Verification
 
 ### Skeleton Map Validation
 
@@ -208,7 +210,7 @@ jq '.layers | keys' skeleton_map.json
 # Expected: ["bridge_layer", "documentation_layer", "logic_layer", "performance_layer"]
 
 jq '.traversal_summary.verified_paths | keys' skeleton_map.json
-# Expected: All paths marked with ✅
+# Expected: All paths marked with 
 ```
 
 ---
@@ -237,15 +239,15 @@ bash -n prepare_notebooklm.sh
 
 ---
 
-## 🎯 Success Criteria
+##  Success Criteria
 
-- ✅ Skeleton map provides 4-layer architectural overview
-- ✅ GEM instructions establish Four Pillars response format
-- ✅ Script generates full context with 500+ files
-- ✅ NotebookLM can answer questions with file path citations
-- ✅ Responses include evidence trails and cross-references
-- ✅ Integration points between Python and Rust are clear
-- ✅ Agent capabilities and orchestration are documented
+-  Skeleton map provides 4-layer architectural overview
+-  GEM instructions establish Four Pillars response format
+-  Script generates full context with 500+ files
+-  NotebookLM can answer questions with file path citations
+-  Responses include evidence trails and cross-references
+-  Integration points between Python and Rust are clear
+-  Agent capabilities and orchestration are documented
 
 ---
 
@@ -263,7 +265,7 @@ bash -n prepare_notebooklm.sh
 
 ---
 
-## 📚 Related Documentation
+##  Related Documentation
 
 - **Repository Overview:** `README.md`
 - **Agent Operations:** `.codex/archive/deprecated/AGENTS.md`
@@ -321,7 +323,7 @@ jq . skeleton_map.json | head -20
 
 ---
 
-## ✅ Completion Checklist
+##  Completion Checklist
 
 - [x] Artifacts created (skeleton_map.json, GEM_INSTRUCTIONS.md, prepare_notebooklm.sh)
 - [x] Code review feedback addressed
@@ -333,7 +335,7 @@ jq . skeleton_map.json | head -20
 ---
 
 **Version:** 1.0.0  
-**Last Updated:** 2026-01-23T19:00:00Z  
-**Status:** ✅ Production Ready
+**Last Updated: 2026-07-11
+**Status:**  Production Ready
 
 **Next Step:** Ingest artifacts into NotebookLM in order: skeleton_map.json → GEM_INSTRUCTIONS.md → full_context.txt

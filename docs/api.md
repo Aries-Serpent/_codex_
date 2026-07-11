@@ -1,6 +1,8 @@
 <!-- BEGIN: CODEX_DOCS_API -->
 
 # API Reference (Manual Index)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 ## HTTP (FastAPI)
 

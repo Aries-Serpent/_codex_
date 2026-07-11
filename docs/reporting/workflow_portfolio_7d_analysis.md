@@ -1,4 +1,6 @@
 # Workflow Portfolio Analysis (7-Day Window)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 ## Table of Contents
 
@@ -26,12 +28,12 @@
   - [Active Session Conflict Protocol](#active-session-conflict-protocol)
   - [Mitigation Variables — Quick Reference](#mitigation-variables--quick-reference)
   - [HIGH-Risk Workflows — Mandatory Mitigation](#high-risk-workflows--mandatory-mitigation)
-    - [🔴 `iterative-self-healing-ci.yml` — Iterative Self-Healing CI](#-iterative-self-healing-ciyml--iterative-self-healing-ci)
-    - [🔴 `copilot-evolution-suite.yml` — Copilot Evolution & Review (Unified)](#-copilot-evolution-suiteyml--copilot-evolution--review-unified)
-    - [🔴 `copilot-agent-session-done.yml` — Auto-Post @copilot Review After Agent Session](#-copilot-agent-session-doneyml--auto-post-copilot-review-after-agent-session)
-    - [🔴 `agent-var-writer.yml` — Agent Variable Writer (Provenance-Chain)](#-agent-var-writeryml--agent-variable-writer-provenance-chain)
-    - [🔴 `copilot-session-chain.yml` — Copilot Session Chain](#-copilot-session-chainyml--copilot-session-chain)
-    - [🔴 `agent-orchestration-unified.yml` — Agent Orchestration (Unified)](#-agent-orchestration-unifiedyml--agent-orchestration-unified)
+    - [ `iterative-self-healing-ci.yml` — Iterative Self-Healing CI](#-iterative-self-healing-ciyml--iterative-self-healing-ci)
+    - [ `copilot-evolution-suite.yml` — Copilot Evolution & Review (Unified)](#-copilot-evolution-suiteyml--copilot-evolution--review-unified)
+    - [ `copilot-agent-session-done.yml` — Auto-Post @copilot Review After Agent Session](#-copilot-agent-session-doneyml--auto-post-copilot-review-after-agent-session)
+    - [ `agent-var-writer.yml` — Agent Variable Writer (Provenance-Chain)](#-agent-var-writeryml--agent-variable-writer-provenance-chain)
+    - [ `copilot-session-chain.yml` — Copilot Session Chain](#-copilot-session-chainyml--copilot-session-chain)
+    - [ `agent-orchestration-unified.yml` — Agent Orchestration (Unified)](#-agent-orchestration-unifiedyml--agent-orchestration-unified)
   - [MEDIUM-Risk Workflows — Standard Mitigation](#medium-risk-workflows--standard-mitigation)
   - [Workflows That Conflict (or Could Conflict) When Main Updates During Active Branch Sessions](#workflows-that-conflict-or-could-conflict-when-main-updates-during-active-branch-sessions)
 - [Top 20 Quick-Win Workflows to Update (Copilot Session First)](#top-20-quick-win-workflows-to-update-copilot-session-first)
@@ -376,7 +378,7 @@ flowchart TD
 
 ---
 
-#### 🔴 `iterative-self-healing-ci.yml` — Iterative Self-Healing CI
+####  `iterative-self-healing-ci.yml` — Iterative Self-Healing CI
 - **Runs (7d):** 413 &nbsp;|&nbsp; **Risk:** HIGH
 - **Why it conflicts:** Write-capable + event-driven; fires on every push and can race with
   main-branch updates during active sessions, producing concurrent writes to the same files.
@@ -396,7 +398,7 @@ flowchart TD
 
 ---
 
-#### 🔴 `copilot-evolution-suite.yml` — Copilot Evolution & Review (Unified)
+####  `copilot-evolution-suite.yml` — Copilot Evolution & Review (Unified)
 - **Runs (7d):** 10 &nbsp;|&nbsp; **Risk:** HIGH
 - **Why it conflicts:** Dispatches review + write operations; if `main` moved since checkout,
   the "evolution" diff will target a stale base and can produce incorrect PR edits.
@@ -415,7 +417,7 @@ flowchart TD
 
 ---
 
-#### 🔴 `copilot-agent-session-done.yml` — Auto-Post @copilot Review After Agent Session
+####  `copilot-agent-session-done.yml` — Auto-Post @copilot Review After Agent Session
 - **Runs (7d):** 10 &nbsp;|&nbsp; **Risk:** HIGH
 - **Why it conflicts:** Fires on `workflow_run` completion; if the triggering run targeted a
   stale SHA, the auto-post will reference an outdated diff and can confuse subsequent sessions.
@@ -434,7 +436,7 @@ flowchart TD
 
 ---
 
-#### 🔴 `agent-var-writer.yml` — Agent Variable Writer (Provenance-Chain)
+####  `agent-var-writer.yml` — Agent Variable Writer (Provenance-Chain)
 - **Runs (7d):** 5 &nbsp;|&nbsp; **Risk:** HIGH
 - **Why it conflicts:** Writes directly to GitHub Repo Variables using `CODEX_MASTER_KEY`;
   concurrent writes during drift can overwrite a value set by a prior healer run.
@@ -454,7 +456,7 @@ flowchart TD
 
 ---
 
-#### 🔴 `copilot-session-chain.yml` — Copilot Session Chain
+####  `copilot-session-chain.yml` — Copilot Session Chain
 - **Runs (7d):** 0 (active, not triggered recently) &nbsp;|&nbsp; **Risk:** HIGH
 - **Why it conflicts:** Chains multiple session workflows in sequence; if `main` moves between
   chain steps, later steps will operate on a branch that is already behind, producing
@@ -474,7 +476,7 @@ flowchart TD
 
 ---
 
-#### 🔴 `agent-orchestration-unified.yml` — Agent Orchestration (Unified)
+####  `agent-orchestration-unified.yml` — Agent Orchestration (Unified)
 - **Runs (7d):** 0 (active) &nbsp;|&nbsp; **Risk:** HIGH (elevated from medium by write scope)
 - **Why it conflicts:** Orchestrates multiple write-capable sub-agents; stale-branch execution
   will propagate stale context to all sub-agents simultaneously.

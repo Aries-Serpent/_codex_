@@ -1,6 +1,8 @@
-# 💰 Cost Estimator Dashboard
+#  Cost Estimator Dashboard
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 > **Live dashboard** — Actions-minute consumption and cost-tier classification for every gated workflow in this repository.  
 > **Budget:** 3,000 Linux-equivalent minutes/month · GitHub Team + Copilot Pro Plus  
@@ -171,7 +173,7 @@
 
   /* ── Colour helpers ───────────────────────────────────────────────────── */
   const TIER_COLOR = { GREEN: '#10b981', YELLOW: '#f59e0b', RED: '#ef4444' };
-  const TIER_EMOJI = { GREEN: '✅', YELLOW: '⚠️', RED: '🔴' };
+  const TIER_EMOJI = { GREEN: '', YELLOW: '⚠️', RED: '' };
 
   function pctColor(pct) {
     if (pct < 60) return '#10b981';
@@ -255,7 +257,7 @@
     /* gated workflows table */
     const gwRows = (d.gated_workflows || []).map(w => `
 <tr>
-  <td><a href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/${w.file}" target="_blank" rel="noopener">${w.name}</a></td>
+  <td><a href="../.github/workflows/${w.file}" target="_blank" rel="noopener">${w.name}</a></td>
   <td>${badge(w.tier)}</td>
   <td style="text-align:right;font-variant-numeric:tabular-nums;">${w.effective_minutes}</td>
   <td>${w.runner}</td>
@@ -288,7 +290,7 @@
 
     /* assemble */
     const html = `
-<h2 style="margin-top:0;">📊 Monthly Budget — ${month}</h2>
+<h2 style="margin-top:0;"> Monthly Budget — ${month}</h2>
 ${bar}
 ${cards}
 
@@ -303,7 +305,7 @@ ${cards}
   </div>
 </div>
 
-<h3>🔴 Gated Workflows</h3>
+<h3> Gated Workflows</h3>
 <p style="font-size:.88rem;opacity:.7;">These workflows require stakeholder approval before running. Check the
 <a href="COST_GOVERNANCE.md">Cost Governance Policy</a> for details.</p>
 ${gwTable}
@@ -313,7 +315,7 @@ ${rrTable}
 
 <div class="dash-meta">
   Generated: ${new Date(d.generated_at).toLocaleString()} ·
-  <a href="https://github.com/Aries-Serpent/_codex_/blob/main/scripts/ci/generate_cost_dashboard_data.py"
+  <a href="../scripts/ci/generate_cost_dashboard_data.py"
      target="_blank" rel="noopener">data script</a>
 </div>`;
 
@@ -329,7 +331,7 @@ ${rrTable}
       new Chart(tierCtx, {
         type: 'doughnut',
         data: {
-          labels: ['🟢 GREEN', '🟡 YELLOW', '🔴 RED'],
+          labels: [' GREEN', '🟡 YELLOW', ' RED'],
           datasets: [{
             data: [tc.GREEN, tc.YELLOW, tc.RED],
             backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
@@ -411,7 +413,7 @@ ${rrTable}
   <p style="font-size:.85rem;">The dashboard data is generated at Pages build time.
   If you are viewing a preview build, the data file may not yet be present.</p>
   <p style="font-size:.85rem;">
-    <a href="https://github.com/Aries-Serpent/_codex_/blob/main/docs/ops/COST_GOVERNANCE.md">
+    <a href="../ops/COST_GOVERNANCE.md">
       View Cost Governance Policy
     </a>
   </p>

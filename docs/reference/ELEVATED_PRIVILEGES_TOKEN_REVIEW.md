@@ -1,4 +1,6 @@
 # Elevated Privileges Token & Process Review
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 ## Table of Contents
 
@@ -8,8 +10,8 @@
   - [1.2 Token Chain (Canonical Pattern)](#12-token-chain-canonical-pattern)
 - [ALWAYS use this exact chain — never bare github.token for write operations](#always-use-this-exact-chain--never-bare-githubtoken-for-write-operations)
 - [2. Token Health Matrix](#2-token-health-matrix)
-  - [2.1 ✅ What Works](#21--what-works)
-  - [2.2 ❌ What Fails / Returns Errors](#22--what-fails--returns-errors)
+  - [2.1  What Works](#21--what-works)
+  - [2.2  What Fails / Returns Errors](#22--what-fails--returns-errors)
   - [2.3 ⚠️ Needs Implementation / Improvement](#23--needs-implementation--improvement)
 - [3. Step-by-Step Verification Playbook](#3-step-by-step-verification-playbook)
   - [3.1 Verify CODEX_MASTER_KEY is Active](#31-verify-codex_master_key-is-active)
@@ -189,10 +191,10 @@
   - [12.6 Rate-Limit Monitoring — New Variable Recommendations](#126-rate-limit-monitoring--new-variable-recommendations)
   - [12.7 Implementation Order Diagram](#127-implementation-order-diagram)
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 > **Session:** S859 | **Date:** 2026-05-08 | **PR:** #4346
 > **Author:** copilot-swe-agent[bot]
-> **Policy anchor:** [docs/ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md](https://github.com/Aries-Serpent/_codex_/blob/main/GITHUB_API_COPILOT_AGENT_REFERENCE.md) · [docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md](./GITHUB_VARIABLES_SECRETS_REFERENCE.md)
+> **Policy anchor:** [docs/ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md](../GITHUB_API_COPILOT_AGENT_REFERENCE.md) · [docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md](./GITHUB_VARIABLES_SECRETS_REFERENCE.md)
 > **AAIS relevance:** Security gate + Reliability gate — token health directly impacts both
 
 ---
@@ -241,7 +243,7 @@ env:
 
 ## 2. Token Health Matrix
 
-### 2.1 ✅ What Works
+### 2.1  What Works
 
 | Token / Process | Evidence | Verified By <!-- pragma: allowlist secret --> |
 |-----------------|----------|-------------|
@@ -253,7 +255,7 @@ env:
 | `_GITHUB_APP_PRIVATE_KEY` → JWT mint → Installation token | `post-accountability-to-discussion.yml` L130–160 | Run 25529473383 <!-- pragma: allowlist secret --> |
 | MCP GitHub Server (read) | `list_workflow_runs`, `get_file_contents` etc. succeed | This session |
 
-### 2.2 ❌ What Fails / Returns Errors
+### 2.2  What Fails / Returns Errors
 
 | Token / Operation | Error | Root Cause | Affected Workflows <!-- pragma: allowlist secret --> |
 |-------------------|-------|------------|-------------------|
@@ -295,8 +297,8 @@ env:
 **Step 4:** Click **"Run workflow"** → select branch `main` → click **"Run workflow"** (green button).
 
 **Step 5:** Wait ~60 seconds, then click the new run. Expand **"KEY VERIFICATION"** step.
-- ✅ Pass = `CODEX_MASTER_KEY: verified (repo-write + workflow scope)`
-- ❌ Fail = key expired or wrong scopes → rotate immediately (see §3.4)
+-  Pass = `CODEX_MASTER_KEY: verified (repo-write + workflow scope)`
+-  Fail = key expired or wrong scopes → rotate immediately (see §3.4)
 
 ---
 
@@ -372,9 +374,9 @@ req = urllib.request.Request(
 try:
     with urllib.request.urlopen(req) as r:
         tok = json.load(r)
-    print(f"✅ App token minted — expires: {tok.get('expires_at','?')}")
+    print(f" App token minted — expires: {tok.get('expires_at','?')}")
 except Exception as e:
-    print(f"❌ App token mint failed: {e}")
+    print(f" App token mint failed: {e}")
 PYEOF
 ```
 
@@ -390,10 +392,10 @@ PYEOF
 **Step 3:** Click **"Regenerate"** (or **"Generate new token"** → Classic).
 
 **Step 4:** Set required scopes:
-- ✅ `repo` (full repo access)
-- ✅ `workflow` (update Actions workflows)
-- ✅ `admin:repo_hook` (if webhook management needed)
-- ✅ `read:org` (if org-level reads needed)
+-  `repo` (full repo access)
+-  `workflow` (update Actions workflows)
+-  `admin:repo_hook` (if webhook management needed)
+-  `read:org` (if org-level reads needed)
 
 > ⚠️ Do NOT enable `delete_repo` or `admin:org` unless explicitly required.
 
@@ -418,7 +420,7 @@ grep -rl "github\.token" .github/workflows/ | xargs grep -L "CODEX_MASTER_KEY" 2
 Current result: `consolidated-pr-status.yml` (reusable workflow — posts PR status comments only; `issues:write` via `github.token` is sufficient for this read-adjacent operation)
 
 **Step 2:** Open the file:
-> 🔗 [.github/workflows/workflow-link-validation.yml](https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/workflow-link-validation.yml)
+> 🔗 [.github/workflows/workflow-link-validation.yml](../.github/workflows/workflow-link-validation.yml)
 
 **Step 3:** Find lines using `${{ github.token }}` for write operations (PR comments, variable sets, approvals).
 
@@ -509,7 +511,7 @@ jobs:
             echo "::error::CODEX_MASTER_KEY returned HTTP $STATUS on variables API — token may be expired or missing scopes"
             exit 1
           fi
-          echo "✅ CODEX_MASTER_KEY: variables API returns 200"
+          echo " CODEX_MASTER_KEY: variables API returns 200"
 ```
 
 **Step 2:** Push the workflow file:
@@ -531,10 +533,10 @@ git push
 | Category | Count | Status |
 |----------|-------|--------|
 | Total workflows | 154 | — |
-| Using proper MASTER_KEY chain | 113 | ✅ 73.4% |
+| Using proper MASTER_KEY chain | 113 |  73.4% |
 | Using bare `github.token` for writes (risk) | 1 | ⚠️ Low-risk (PR comments only) <!-- pragma: allowlist secret --> |
-| Using GitHub App token minting | 8 | ✅ Pattern valid <!-- pragma: allowlist secret --> |
-| Read-only `github.token` (safe) | ~73 | ✅ Acceptable <!-- pragma: allowlist secret --> |
+| Using GitHub App token minting | 8 |  Pattern valid <!-- pragma: allowlist secret --> |
+| Read-only `github.token` (safe) | ~73 |  Acceptable <!-- pragma: allowlist secret --> |
 
 ### 4.2 Workflows With Elevated Privilege Operations
 
@@ -555,10 +557,10 @@ graph TD
     end
 
     subgraph "⚠️ github.token only — 1 write workflow"
-        H[workflow-link-validation.yml\n❌ Needs MASTER_KEY chain]
+        H[workflow-link-validation.yml\n Needs MASTER_KEY chain]
     end
 
-    subgraph "✅ github.token read-only — safe"
+    subgraph " github.token read-only — safe"
         I[pr-checks.yml\nComment posting only]
         J[documentation-link-checker.yml\nRead-only link validation]
     end
@@ -723,10 +725,10 @@ graph TD
         BK["🔑 CODEX_BACKUP_KEY\nscopes: repo + workflow\n115 workflows\nFallback for MASTER_KEY"]
     end
     subgraph "Tier 3 — App Identity"
-        APP["🤖 GitHub App\n_GITHUB_APP_PRIVATE_KEY + _APP_ID\n8 workflows\nDiscussions · Signed commits · PR as App"]
+        APP[" GitHub App\n_GITHUB_APP_PRIVATE_KEY + _APP_ID\n8 workflows\nDiscussions · Signed commits · PR as App"]
     end
     subgraph "Tier 4 — Limited Read/Comment"
-        GT["⚪ github.token\nscopes: contents:read + pr:write (limited)\n87 workflow refs\n❌ 403 on Variables API\n❌ 403 on security_events"]
+        GT["⚪ github.token\nscopes: contents:read + pr:write (limited)\n87 workflow refs\n 403 on Variables API\n 403 on security_events"]
     end
 
     MK -->|"|| fallback"| BK
@@ -742,7 +744,7 @@ graph TD
 ### 8.2 What Happens When CODEX_MASTER_KEY Expires
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Sequence Diagram showing MASTER_KEY ❌ EXPIRED, MASTER_KEY ❌'}}%%
+%%{init: {'accessibility': {'title': 'Sequence Diagram showing MASTER_KEY  EXPIRED, MASTER_KEY '}}%%
 sequenceDiagram
     participant Push as git push
     participant AutoApprove as auto-approve-workflows.yml
@@ -751,18 +753,18 @@ sequenceDiagram
     participant Healing as iterative-self-healing-ci.yml
 
     Push->>AutoApprove: trigger (push event)
-    AutoApprove->>GitHub: POST /runs/{id}/approve [MASTER_KEY ❌ EXPIRED]
+    AutoApprove->>GitHub: POST /runs/{id}/approve [MASTER_KEY  EXPIRED]
     GitHub-->>AutoApprove: 403 Forbidden
     Note over AutoApprove: All pending workflows stay in "Waiting" state
     Push->>AgentAuth: trigger (push event)
-    AgentAuth->>GitHub: dispatch sub-workflows [MASTER_KEY ❌]
+    AgentAuth->>GitHub: dispatch sub-workflows [MASTER_KEY ]
     GitHub-->>AgentAuth: 403 Forbidden
     Note over AgentAuth: No autonomous ops fire
     CI-->>Healing: workflow_run (completed: failure)
-    Healing->>GitHub: push fix commit [MASTER_KEY ❌]
+    Healing->>GitHub: push fix commit [MASTER_KEY ]
     GitHub-->>Healing: 403 Forbidden
     Note over Healing: Self-healing loop broken — failures accumulate
-    Note over CI: ❌ Full CI blockage until MASTER_KEY rotated
+    Note over CI:  Full CI blockage until MASTER_KEY rotated
 ```
 
 ### 8.3 Optimal Token Routing (Target State)
@@ -812,7 +814,7 @@ xychart-beta
 | GitHub App settings (org) | [/organizations/Aries-Serpent/settings/apps](https://github.com/organizations/Aries-Serpent/settings/apps) |
 | Personal Access Tokens (create/rotate) | [/settings/tokens](https://github.com/settings/tokens) <!-- pragma: allowlist secret --> |
 | Admin Setup Verification (run test) | [actions/workflows/admin_setup_verification.yml](https://github.com/Aries-Serpent/_codex_/actions/workflows/admin_setup_verification.yml) |
-| Token Authority Reference Doc | [docs/ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md](https://github.com/Aries-Serpent/_codex_/blob/main/GITHUB_API_COPILOT_AGENT_REFERENCE.md) <!-- pragma: allowlist secret --> |
+| Token Authority Reference Doc | [docs/ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md](../GITHUB_API_COPILOT_AGENT_REFERENCE.md) <!-- pragma: allowlist secret --> |
 | Variables & Secrets Full Reference | [docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md](./GITHUB_VARIABLES_SECRETS_REFERENCE.md) <!-- pragma: allowlist secret --> |
 | MCP Tool Reference | [.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md](../../.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md) |
 | Agentic Repo State (auth confirmed) | [.codex/AGENTIC_REPO_STATE.md](../../.codex/AGENTIC_REPO_STATE.md) |
@@ -946,13 +948,13 @@ alongside the secret rotation.
 
 | Variable Name | Contains Token? | Action on Rotation <!-- pragma: allowlist secret --> |
 |--------------|-----------------|-------------------|
-| `COPILOT_AGENT_AUTH_ENABLED` | No — boolean `true`/`false` | ✅ No change needed |
-| `COGNITIVE_BRAIN_ALLOWED_ACTORS` | No — login names | ✅ No change needed |
-| `CODEX_CI_FAILURE_RATE` | No — float string | ✅ No change needed |
-| `CODEX_SESSION_ID` | No — UUID | ✅ No change needed |
+| `COPILOT_AGENT_AUTH_ENABLED` | No — boolean `true`/`false` |  No change needed |
+| `COGNITIVE_BRAIN_ALLOWED_ACTORS` | No — login names |  No change needed |
+| `CODEX_CI_FAILURE_RATE` | No — float string |  No change needed |
+| `CODEX_SESSION_ID` | No — UUID |  No change needed |
 | `AGENT_GITHUB_TOKEN` | ⚠️ **Possibly** — check value | 🔄 Update if contains `ghp_` / `github_pat_` <!-- pragma: allowlist secret --> |
 | `COPILOT_SESSION_TOKEN` | ⚠️ **Possibly** — session token | 🔄 Regenerate via `session_bootstrap.py` <!-- pragma: allowlist secret --> |
-| `AAIS_LAST_SCORE` | No — numeric | ✅ No change needed |
+| `AAIS_LAST_SCORE` | No — numeric |  No change needed |
 | `CODEX_MASTER_KEY_LAST_VERIFIED` | No — timestamp | 🔄 Update after rotation confirmed |
 
 ---
@@ -1018,7 +1020,7 @@ STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
   -H "Authorization: Bearer $CODEX_MASTER_KEY" \
   -H "X-GitHub-Api-Version: 2022-11-28" \
   "https://api.github.com/repos/Aries-Serpent/_codex_/actions/variables")
-[ "$STATUS" = "200" ] && echo "   ✅ Variables API: OK" || echo "   ❌ Variables API: HTTP $STATUS"
+[ "$STATUS" = "200" ] && echo "    Variables API: OK" || echo "    Variables API: HTTP $STATUS"
 
 # 2. Confirm workflow approval capability
 echo "2. Testing CODEX_MASTER_KEY scopes..."
@@ -1026,8 +1028,8 @@ SCOPES=$(curl -sI \
   -H "Authorization: Bearer $CODEX_MASTER_KEY" \
   https://api.github.com/user | grep -i "x-oauth-scopes" | tr -d '\r')
 echo "   Scopes: ${SCOPES:-none detected (may be fine-grained PAT)}"
-echo "$SCOPES" | grep -q "workflow" && echo "   ✅ workflow scope: present" || echo "   ⚠️  workflow scope: missing"
-echo "$SCOPES" | grep -q "repo" && echo "   ✅ repo scope: present" || echo "   ❌ repo scope: MISSING"
+echo "$SCOPES" | grep -q "workflow" && echo "    workflow scope: present" || echo "   ⚠️  workflow scope: missing"
+echo "$SCOPES" | grep -q "repo" && echo "    repo scope: present" || echo "    repo scope: MISSING"
 
 # 3. Check for stale token values in repo variables
 echo "3. Scanning repo variables for embedded token values..."
@@ -1035,8 +1037,8 @@ VARS=$(GH_TOKEN=$CODEX_MASTER_KEY gh api \
   /repos/Aries-Serpent/_codex_/actions/variables \
   --paginate --jq '.variables[] | "\(.name)=\(.value)"' 2>/dev/null)
 echo "$VARS" | grep -E "=(ghp_|github_pat_|ghs_|gho_)" \
-  && echo "   ❌ Found variable(s) with embedded token values — UPDATE IMMEDIATELY" \
-  || echo "   ✅ No embedded token values in repo variables" <!-- pragma: allowlist secret -->
+  && echo "    Found variable(s) with embedded token values — UPDATE IMMEDIATELY" \
+  || echo "    No embedded token values in repo variables" <!-- pragma: allowlist secret -->
 
 # 4. Check agent_context.json for leaked token fields
 echo "4. Checking .codex/agent_context.json for token fields..."
@@ -1046,10 +1048,10 @@ try:
     d = json.load(open('.codex/agent_context.json'))
     tok_keys = [k for k,v in d.items() if isinstance(v,str) and any(v.startswith(p) for p in ['ghp_','github_pat_','ghs_','gho_'])]
     if tok_keys:
-        print(f'   ❌ Token-like values found in keys: {tok_keys}')
+        print(f'    Token-like values found in keys: {tok_keys}')
         sys.exit(1)
     else:
-        print('   ✅ No token values in agent_context.json')
+        print('    No token values in agent_context.json')
 except Exception as e:
     print(f'   ⚠️  Could not check: {e}')
 "
@@ -1058,14 +1060,14 @@ except Exception as e:
 echo "5. Running detect-secrets scan..."
 if command -v detect-secrets &>/dev/null; then
   detect-secrets scan --baseline .secrets.baseline 2>/dev/null \
-    && echo "   ✅ detect-secrets: no new secrets found" \
+    && echo "    detect-secrets: no new secrets found" \
     || echo "   ⚠️  detect-secrets found new strings — run: python scripts/ci/sync_tracked_files.py --fix" <!-- pragma: allowlist secret -->
 else
   echo "   ⚠️  detect-secrets not installed — run: pip install detect-secrets"
 fi
 
 echo ""
-echo "=== Verification complete. Fix any ❌ items before proceeding. ==="
+echo "=== Verification complete. Fix any  items before proceeding. ==="
 ```
 
 Save as `scripts/ci/post_rotation_verify.sh` and run:
@@ -1102,10 +1104,10 @@ stateDiagram-v2
     BaselineUpdated --> SecretsBaselineOK : pragma comment + sync_tracked_files --fix
 
     SecretsBaselineOK --> LastVerifiedUpdated : PATCH CODEX_MASTER_KEY_LAST_VERIFIED
-    LastVerifiedUpdated --> LiveTestPassed : admin_setup_verification.yml → ✅
+    LastVerifiedUpdated --> LiveTestPassed : admin_setup_verification.yml → 
 
-    LiveTestPassed --> TokenValid : Rotation complete ✅
-    LiveTestPassed --> RotationTriggered : ❌ Test fails → re-rotate
+    LiveTestPassed --> TokenValid : Rotation complete 
+    LiveTestPassed --> RotationTriggered :  Test fails → re-rotate
 
     note right of SecretUpdated
         Also update CODEX_BACKUP_KEY
@@ -1155,7 +1157,7 @@ sequenceDiagram
 
     You->>Vars: 10. Update CODEX_MASTER_KEY_LAST_VERIFIED (§9.5)
 
-    Note over You,CI: ✅ Rotation complete — all systems aligned
+    Note over You,CI:  Rotation complete — all systems aligned
 ```
 
 > **🚨 Critical ordering rule:** Always update `CODEX_BACKUP_KEY` **before** `CODEX_MASTER_KEY`.
@@ -1189,7 +1191,7 @@ graph LR
         B2["☑ workflow"]
         B1 --- B2
     end
-    subgraph "❌ Never Select"
+    subgraph " Never Select"
         X1["☐ delete_repo"]
         X2["☐ admin:org"]
         X3["☐ admin:enterprise"]
@@ -1232,12 +1234,12 @@ Use it to prioritise which rotation to complete first in an emergency.
 | Personal Access Tokens (create/rotate) | [/settings/tokens](https://github.com/settings/tokens) <!-- pragma: allowlist secret --> |
 | Repo Variables (view/edit) | [/settings/variables/actions](https://github.com/Aries-Serpent/_codex_/settings/variables/actions) |
 | Admin Setup Verification (run test) | [actions/workflows/admin_setup_verification.yml](https://github.com/Aries-Serpent/_codex_/actions/workflows/admin_setup_verification.yml) |
-| Token Authority Reference Doc | [docs/ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md](https://github.com/Aries-Serpent/_codex_/blob/main/GITHUB_API_COPILOT_AGENT_REFERENCE.md) <!-- pragma: allowlist secret --> |
+| Token Authority Reference Doc | [docs/ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md](../GITHUB_API_COPILOT_AGENT_REFERENCE.md) <!-- pragma: allowlist secret --> |
 | Variables & Secrets Full Reference | [docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md](./GITHUB_VARIABLES_SECRETS_REFERENCE.md) <!-- pragma: allowlist secret --> |
 | MCP Tool Reference | [.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md](../../.codex/docs/COPILOT_MCP_TOOL_REFERENCE.md) |
 | Agentic Repo State (auth confirmed) | [.codex/AGENTIC_REPO_STATE.md](../../.codex/AGENTIC_REPO_STATE.md) |
 | Rate Limit Awareness | [.codex/docs/RATE_LIMIT_AWARENESS.md](../../.codex/docs/RATE_LIMIT_AWARENESS.md) |
-| Post-Rotation Verify Script | [scripts/ci/post_rotation_verify.sh](https://github.com/Aries-Serpent/_codex_/blob/main/scripts/ci/post_rotation_verify.sh) |
+| Post-Rotation Verify Script | [scripts/ci/post_rotation_verify.sh](../scripts/ci/post_rotation_verify.sh) |
 
 ---
 
@@ -1253,11 +1255,11 @@ Use it to prioritise which rotation to complete first in an emergency.
 ### 10.1 Variable & Secret Taxonomy
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing "🏢 Organization Secrets\nAries-Serpent org level\nShared across ALL repos\nRequires org owner to update", "🔐 Repository Secrets\nRepo-level secrets\nVisible only to this repo\nMaintainer can update"'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing "🏢 Organization Secrets\nAries-Serpent org level\nShared across ALL repos\nRequires org owner to update", " Repository Secrets\nRepo-level secrets\nVisible only to this repo\nMaintainer can update"'}}%%
 graph TD
     subgraph "Scope Hierarchy (broadest → narrowest)"
         ORG["🏢 Organization Secrets\nAries-Serpent org level\nShared across ALL repos\nRequires org owner to update"]
-        REPO_S["🔐 Repository Secrets\nRepo-level secrets\nVisible only to this repo\nMaintainer can update"]
+        REPO_S[" Repository Secrets\nRepo-level secrets\nVisible only to this repo\nMaintainer can update"]
         ENV_S["🌍 Environment Secrets\nScoped to a named Environment\nCan add approval gates\nExample: Aries_Serpent_codex_"]
         REPO_V["📋 Repository Variables\nNon-secret config values\nVisible in workflow logs\nMaintainer can update"]
         ENV_V["🌍 Environment Variables\nScoped to named Environment\nMerged with repo variables\nMaintainer can update"]
@@ -1383,101 +1385,101 @@ This is the complete set of 70 repo-level variables grouped by functional domain
 
 | Variable | Value | Purpose | Safe to Change? |
 |----------|-------|---------|----------------|
-| `AGENT_HANDOFF_TIMEOUT_SECONDS` | `120` | Max seconds agent waits for handoff before aborting | ✅ Increase if agent tasks time out at boundaries |
-| `AGENT_KILL_SWITCH` | `0` | Set to `1` to emergency-stop all autonomous agent actions | ✅ **Use `1` immediately if agent behaves unexpectedly** |
-| `AGENT_RUNNER_BUDGET_SECONDS` | `180` | Max wall-clock seconds per agent runner iteration | ✅ Increase for long tasks; decrease to enforce stricter budgets |
-| `AGENT_RUNNER_DRY_RUN` | `0` | Set to `1` to run agents in dry-run mode (no writes) | ✅ Use `1` when testing new agent behaviour safely |
-| `AGENT_RUNNER_ITERATIONS` | `2` | Max self-healing iterations per agent runner invocation | ✅ Increase for complex tasks; keep ≤5 to avoid runaway loops |
+| `AGENT_HANDOFF_TIMEOUT_SECONDS` | `120` | Max seconds agent waits for handoff before aborting |  Increase if agent tasks time out at boundaries |
+| `AGENT_KILL_SWITCH` | `0` | Set to `1` to emergency-stop all autonomous agent actions |  **Use `1` immediately if agent behaves unexpectedly** |
+| `AGENT_RUNNER_BUDGET_SECONDS` | `180` | Max wall-clock seconds per agent runner iteration |  Increase for long tasks; decrease to enforce stricter budgets |
+| `AGENT_RUNNER_DRY_RUN` | `0` | Set to `1` to run agents in dry-run mode (no writes) |  Use `1` when testing new agent behaviour safely |
+| `AGENT_RUNNER_ITERATIONS` | `2` | Max self-healing iterations per agent runner invocation |  Increase for complex tasks; keep ≤5 to avoid runaway loops |
 | `AUTONOMOUS_ACTIONS_ENABLED` | `true` | Master gate for all autonomous CI/CD actions | ⚠️ **Set `false` to disable all autonomous actions globally** |
-| `AUTONOMY_BUDGET_SECONDS` | `90` | Budget for autonomy engine wall-clock per action | ✅ Tune with `AGENT_RUNNER_BUDGET_SECONDS` |
-| `AUTONOMY_DRY_RUN` | `0` | Autonomy engine dry-run mode | ✅ Same as `AGENT_RUNNER_DRY_RUN` but for autonomy engine |
-| `AUTONOMY_MAX_ITERATIONS` | `3` | Max iterations for autonomy loop | ✅ Keep ≤5 |
-| `UNCERTAINTY_BUDGET_SECONDS` | `20` | Time budget for uncertainty resolution in agent decisions | ✅ Increase if agents abort early on ambiguous states |
+| `AUTONOMY_BUDGET_SECONDS` | `90` | Budget for autonomy engine wall-clock per action |  Tune with `AGENT_RUNNER_BUDGET_SECONDS` |
+| `AUTONOMY_DRY_RUN` | `0` | Autonomy engine dry-run mode |  Same as `AGENT_RUNNER_DRY_RUN` but for autonomy engine |
+| `AUTONOMY_MAX_ITERATIONS` | `3` | Max iterations for autonomy loop |  Keep ≤5 |
+| `UNCERTAINTY_BUDGET_SECONDS` | `20` | Time budget for uncertainty resolution in agent decisions |  Increase if agents abort early on ambiguous states |
 | `COPILOT_AGENT_AUTH_ENABLED` | `true` | Token delegation active — Copilot agent can use elevated tokens | ⚠️ Managed by `agent-auth-delegation.yml` — don't set manually <!-- pragma: allowlist secret --> |
 | `COPILOT_AGENT_MAX_AUTONOMY_LEVEL` | `D` | Highest FSM autonomy level allowed (A=advisory, D=autonomous) | ⚠️ Requires E→D gate passage before changing |
-| `COPILOT_AGENT_SESSION_RESTORE_ENABLED` | `true` | Enable session state restore across Copilot sessions | ✅ Set `false` to force fresh session state |
-| `AUTO_PROMOTE_TIER_ENABLED` | `true` | Allow automatic tier promotion when AAIS gates pass | ✅ Set `false` to require manual tier promotion |
+| `COPILOT_AGENT_SESSION_RESTORE_ENABLED` | `true` | Enable session state restore across Copilot sessions |  Set `false` to force fresh session state |
+| `AUTO_PROMOTE_TIER_ENABLED` | `true` | Allow automatic tier promotion when AAIS gates pass |  Set `false` to require manual tier promotion |
 
 #### 10.6.2 CI Behaviour & Quality Gates
 
 | Variable | Value | Purpose | Safe to Change? |
 |----------|-------|---------|----------------|
-| `CODEX_CI_FAILURE_RATE` | `1.0:ok` | **Auto-managed** — current CI failure rate percentage | ❌ **Never edit manually** — set by `copilot-agent-checkin.yml` |
-| `CODEX_CI_FAILURE_THRESHOLD` | `10.0` | Max tolerated CI failure rate % before AAIS Reliability degrades | ✅ Reduce to enforce stricter green CI requirement |
-| `CODEX_CI_LAST_GREEN_SHA` | *(latest green SHA)* | **Auto-managed** — last commit SHA where all required checks passed | ❌ **Never edit manually** — set by CI |
-| `CODEX_COVERAGE_THRESHOLD` | `80` | Minimum test coverage % required by coverage gate | ✅ Increase gradually; never decrease |
-| `CODEX_LINT_STRICT` | `true` | Enable strict linting (ruff + mypy strict mode) | ✅ Keep `true`; set `false` only for emergency merge |
-| `CODEX_TEST_PARALLELISM` | `auto` | Test parallelism (`auto`, `1`, or integer) | ✅ Set to `1` to debug race conditions |
+| `CODEX_CI_FAILURE_RATE` | `1.0:ok` | **Auto-managed** — current CI failure rate percentage |  **Never edit manually** — set by `copilot-agent-checkin.yml` |
+| `CODEX_CI_FAILURE_THRESHOLD` | `10.0` | Max tolerated CI failure rate % before AAIS Reliability degrades |  Reduce to enforce stricter green CI requirement |
+| `CODEX_CI_LAST_GREEN_SHA` | *(latest green SHA)* | **Auto-managed** — last commit SHA where all required checks passed |  **Never edit manually** — set by CI |
+| `CODEX_COVERAGE_THRESHOLD` | `80` | Minimum test coverage % required by coverage gate |  Increase gradually; never decrease |
+| `CODEX_LINT_STRICT` | `true` | Enable strict linting (ruff + mypy strict mode) |  Keep `true`; set `false` only for emergency merge |
+| `CODEX_TEST_PARALLELISM` | `auto` | Test parallelism (`auto`, `1`, or integer) |  Set to `1` to debug race conditions |
 | `CODEX_OFFLINE` | `1` | Run all CI tools in offline mode (no network calls) | ⚠️ Set `0` only for workflows that explicitly need network |
-| `CODEX_SANDBOX_TIMEOUT` | `60` | Sandbox job timeout in seconds | ✅ Increase for slow-starting containers |
-| `AUDIT_RETENTION_DAYS` | `90` | Retention window for audit log artefacts | ✅ Must be ≥ compliance requirement (recommend 90+) |
+| `CODEX_SANDBOX_TIMEOUT` | `60` | Sandbox job timeout in seconds |  Increase for slow-starting containers |
+| `AUDIT_RETENTION_DAYS` | `90` | Retention window for audit log artefacts |  Must be ≥ compliance requirement (recommend 90+) |
 | `ENABLE_LIVE_TESTS` | `true` | Enable integration tests that call live external services | ⚠️ Set `false` in offline/isolated environments |
 
 #### 10.6.3 Cognitive Brain & Session Management
 
 | Variable | Value | Purpose | Safe to Change? |
 |----------|-------|---------|----------------|
-| `COGNITIVE_BRAIN_ALLOWED_ACTORS` | *(login list)* | Comma-separated logins allowed to trigger Cognitive Brain | ✅ Add new bot/login; never remove `mbaetiong` |
-| `COGNITIVE_BRAIN_INJECTION_ENABLED` | `true` | Enable Cognitive Brain session context injection | ✅ Set `false` to disable CB for debugging |
-| `COGNITIVE_BRAIN_LTM_RETENTION_DAYS` | `90` | Long-term memory retention window (days) | ✅ Match `AUDIT_RETENTION_DAYS` |
-| `COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS` | `128000` | Max token budget for CB context injection | ✅ Match your model's context window <!-- pragma: allowlist secret --> |
-| `COGNITIVE_BRAIN_MEMORY_TIER` | `both` | Memory tiers to use: `stm`, `ltm`, or `both` | ✅ |
-| `COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE` | `0.75` | Min confidence score for pattern recall (0.0–1.0) | ✅ Raise to reduce noise; lower to catch weak patterns |
-| `COGNITIVE_BRAIN_SESSION_NUMBER` | *(auto-incremented)* | **Auto-managed** — current session counter | ❌ **Never edit manually** |
-| `COPILOT_ACTIVE_SESSION` | *(auto-set)* | **Auto-managed** — `PR|RUN_ID|APPROVAL_RUN_ID` | ❌ **Never edit manually** |
-| `COPILOT_SESSION_QUEUE` | *(PR numbers)* | **Auto-managed** — queue of pending Copilot session PRs | ❌ **Never edit manually** |
-| `CODEX_SESSION_ID` | `UUID v4` | Template value — actual UUID generated per session | ✅ Seed with specific UUID if replaying a session |
-| `CODEX_SESSION_LOG_DIR` | `.codex/sessions` | NDJSON session log directory | ✅ Change only if log volume requires a different mount |
+| `COGNITIVE_BRAIN_ALLOWED_ACTORS` | *(login list)* | Comma-separated logins allowed to trigger Cognitive Brain |  Add new bot/login; never remove `mbaetiong` |
+| `COGNITIVE_BRAIN_INJECTION_ENABLED` | `true` | Enable Cognitive Brain session context injection |  Set `false` to disable CB for debugging |
+| `COGNITIVE_BRAIN_LTM_RETENTION_DAYS` | `90` | Long-term memory retention window (days) |  Match `AUDIT_RETENTION_DAYS` |
+| `COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS` | `128000` | Max token budget for CB context injection |  Match your model's context window <!-- pragma: allowlist secret --> |
+| `COGNITIVE_BRAIN_MEMORY_TIER` | `both` | Memory tiers to use: `stm`, `ltm`, or `both` |  |
+| `COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE` | `0.75` | Min confidence score for pattern recall (0.0–1.0) |  Raise to reduce noise; lower to catch weak patterns |
+| `COGNITIVE_BRAIN_SESSION_NUMBER` | *(auto-incremented)* | **Auto-managed** — current session counter |  **Never edit manually** |
+| `COPILOT_ACTIVE_SESSION` | *(auto-set)* | **Auto-managed** — `PR|RUN_ID|APPROVAL_RUN_ID` |  **Never edit manually** |
+| `COPILOT_SESSION_QUEUE` | *(PR numbers)* | **Auto-managed** — queue of pending Copilot session PRs |  **Never edit manually** |
+| `CODEX_SESSION_ID` | `UUID v4` | Template value — actual UUID generated per session |  Seed with specific UUID if replaying a session |
+| `CODEX_SESSION_LOG_DIR` | `.codex/sessions` | NDJSON session log directory |  Change only if log volume requires a different mount |
 
 #### 10.6.4 LLM & ML Configuration
 
 | Variable | Value | Purpose | Safe to Change? |
 |----------|-------|---------|----------------|
-| `CODEX_LLM_MODEL` | `gpt-4o` | Default LLM model for Cognitive Brain and agent tasks | ✅ Update when upgrading model version |
-| `CODEX_LLM_RATE_LIMIT_DELAY` | `1.0` | Seconds to wait between LLM API calls | ✅ Increase to reduce rate-limit 429 errors |
-| `CODEX_FORCE_CPU` | `0` | Force CPU-only execution (disable GPU) | ✅ Set `1` in CPU-only CI environments |
-| `GPU_OPT` | `--gpus all` | Docker GPU option passed to containers | ✅ Set to empty string `""` for CPU-only |
-| `HF_HOME` | `~/.cache/huggingface` | HuggingFace model/dataset cache directory | ✅ Point to a mounted volume for large models |
-| `TORCH_HOME` | `~/.cache/torch` | PyTorch hub cache directory | ✅ Point to a mounted volume |
-| `TRANSFORMERS_OFFLINE` | `1` | Force HuggingFace Transformers to offline mode | ✅ Set `0` when downloading new models |
-| `MLFLOW_EXPERIMENT_NAME` | `saas_knowledge_training` | MLflow experiment name for training runs | ✅ Change per experiment |
-| `WANDB_MODE` | `offline` | W&B logging mode (`online`/`offline`/`disabled`) | ✅ Set `online` when W&B reporting is needed |
-| `EMBEDDING_INDEX_AUTO_REBUILD` | `true` | Auto-rebuild RAG embedding index on code changes | ✅ Set `false` to skip rebuild (faster CI) |
+| `CODEX_LLM_MODEL` | `gpt-4o` | Default LLM model for Cognitive Brain and agent tasks |  Update when upgrading model version |
+| `CODEX_LLM_RATE_LIMIT_DELAY` | `1.0` | Seconds to wait between LLM API calls |  Increase to reduce rate-limit 429 errors |
+| `CODEX_FORCE_CPU` | `0` | Force CPU-only execution (disable GPU) |  Set `1` in CPU-only CI environments |
+| `GPU_OPT` | `--gpus all` | Docker GPU option passed to containers |  Set to empty string `""` for CPU-only |
+| `HF_HOME` | `~/.cache/huggingface` | HuggingFace model/dataset cache directory |  Point to a mounted volume for large models |
+| `TORCH_HOME` | `~/.cache/torch` | PyTorch hub cache directory |  Point to a mounted volume |
+| `TRANSFORMERS_OFFLINE` | `1` | Force HuggingFace Transformers to offline mode |  Set `0` when downloading new models |
+| `MLFLOW_EXPERIMENT_NAME` | `saas_knowledge_training` | MLflow experiment name for training runs |  Change per experiment |
+| `WANDB_MODE` | `offline` | W&B logging mode (`online`/`offline`/`disabled`) |  Set `online` when W&B reporting is needed |
+| `EMBEDDING_INDEX_AUTO_REBUILD` | `true` | Auto-rebuild RAG embedding index on code changes |  Set `false` to skip rebuild (faster CI) |
 
 #### 10.6.5 Infrastructure & Docker
 
 | Variable | Value | Purpose | Safe to Change? |
 |----------|-------|---------|----------------|
-| `DOCKER_BUILDKIT` | `1` | Enable BuildKit for faster Docker builds | ✅ Keep `1` |
-| `COMPOSE_DOCKER_CLI_BUILD` | `1` | Use Docker CLI BuildKit in Compose | ✅ Keep `1` |
-| `CODEX_CLI_API_URL` | `http://localhost:8765` | Base URL for Cognitive Brain CLI API | ✅ Change if port conflicts |
-| `COPILOT_CLI_BASE_URL` | `http://localhost:8765` | Alias for CB CLI URL (Copilot sessions) | ✅ Keep in sync with `CODEX_CLI_API_URL` |
-| `COPILOT_CLI_ENABLED` | `true` | Enable CLI interface for Cognitive Brain | ✅ Set `false` to disable CB CLI |
-| `WEBHOOK_RECEIVER_URL` | `https://${CODESPACE_NAME}-8765...` | Codespace webhook receiver URL | ✅ Dynamically constructed — rarely needs changing |
+| `DOCKER_BUILDKIT` | `1` | Enable BuildKit for faster Docker builds |  Keep `1` |
+| `COMPOSE_DOCKER_CLI_BUILD` | `1` | Use Docker CLI BuildKit in Compose |  Keep `1` |
+| `CODEX_CLI_API_URL` | `http://localhost:8765` | Base URL for Cognitive Brain CLI API |  Change if port conflicts |
+| `COPILOT_CLI_BASE_URL` | `http://localhost:8765` | Alias for CB CLI URL (Copilot sessions) |  Keep in sync with `CODEX_CLI_API_URL` |
+| `COPILOT_CLI_ENABLED` | `true` | Enable CLI interface for Cognitive Brain |  Set `false` to disable CB CLI |
+| `WEBHOOK_RECEIVER_URL` | `https://${CODESPACE_NAME}-8765...` | Codespace webhook receiver URL |  Dynamically constructed — rarely needs changing |
 | `CODEX_NETWORK_MODE` | `isolated` | Network mode for agent execution (`isolated`/`open`) | ⚠️ Keep `isolated` for security; `open` only for debugging |
-| `CODEX_ISOLATED_PATH` | `/codex/network/isolated` | Mount path for isolated network namespace | ✅ |
+| `CODEX_ISOLATED_PATH` | `/codex/network/isolated` | Mount path for isolated network namespace |  |
 | `CODEX_BRIDGE_DIR` | *(env var)* | See §10.5 environment variables | — |
 
 #### 10.6.6 External Services & Integrations
 
 | Variable | Value | Purpose | Safe to Change? |
 |----------|-------|---------|----------------|
-| `ZENDESK_RATE_LIMIT` | `100` | Zendesk API rate limit (requests/minute) | ✅ Match your Zendesk plan limit <!-- pragma: allowlist secret --> |
-| `ZENDESK_SYNC_INTERVAL` | `3600` | Zendesk sync interval in seconds | ✅ <!-- pragma: allowlist secret --> |
-| `CODEX_ZENDESK_DOCS_ROOT` | `docs/vendors/zendesk` | Path to Zendesk documentation root | ✅ <!-- pragma: allowlist secret --> |
-| `CODEX_D365_POLICIES_PATH` | `configs/deployment/d365/sla_policies.json` | Path to D365 SLA policies | ✅ |
+| `ZENDESK_RATE_LIMIT` | `100` | Zendesk API rate limit (requests/minute) |  Match your Zendesk plan limit <!-- pragma: allowlist secret --> |
+| `ZENDESK_SYNC_INTERVAL` | `3600` | Zendesk sync interval in seconds |  <!-- pragma: allowlist secret --> |
+| `CODEX_ZENDESK_DOCS_ROOT` | `docs/vendors/zendesk` | Path to Zendesk documentation root |  <!-- pragma: allowlist secret --> |
+| `CODEX_D365_POLICIES_PATH` | `configs/deployment/d365/sla_policies.json` | Path to D365 SLA policies |  |
 
 #### 10.6.7 Repository Identity & Versioning
 
 | Variable | Value | Purpose | Safe to Change? |
 |----------|-------|---------|----------------|
 | `CODEX_AGENT_NAME` | `ai_org_repo_admin` | Canonical agent name used in logs and reports | ⚠️ Change requires updating all log parsers |
-| `CODEX_API_VERSION` | `2022-11-28` | GitHub REST API version header | ✅ Update when GitHub releases breaking API changes |
-| `CODEX_ORG_NAME` | `Aries-Serpent` | GitHub organization name | ❌ Changing breaks all hardcoded org references |
-| `CODEX_PYTHON_VERSION` | `3.12` | Python version target (minor pinned, patch floating) | ✅ Keep in sync with `CODEX_ENV_PYTHON_VERSION` |
-| `CODEX_CACHE_VERSION` | `v2` | Cache key version prefix | ✅ Increment (`v3`, `v4`...) to bust all caches |
-| `GENESIS_TIMESTAMP` | `2025-12-26T16:04:45Z` | Repository Genesis Protocol activation time | ❌ Historical — never change |
-| `CODEX_PR_LIFECYCLE_VERSION` | *(JSON blob)* | PR lifecycle version metadata | ✅ Updated by session wrapup scripts |
+| `CODEX_API_VERSION` | `2022-11-28` | GitHub REST API version header |  Update when GitHub releases breaking API changes |
+| `CODEX_ORG_NAME` | `Aries-Serpent` | GitHub organization name |  Changing breaks all hardcoded org references |
+| `CODEX_PYTHON_VERSION` | `3.12` | Python version target (minor pinned, patch floating) |  Keep in sync with `CODEX_ENV_PYTHON_VERSION` |
+| `CODEX_CACHE_VERSION` | `v2` | Cache key version prefix |  Increment (`v3`, `v4`...) to bust all caches |
+| `GENESIS_TIMESTAMP` | `2025-12-26T16:04:45Z` | Repository Genesis Protocol activation time |  Historical — never change |
+| `CODEX_PR_LIFECYCLE_VERSION` | *(JSON blob)* | PR lifecycle version metadata |  Updated by session wrapup scripts |
 
 ---
 
@@ -1640,13 +1642,13 @@ Based on the current variable inventory, these improvements would increase secur
 
 | Variable | Issue | Recommendation |
 |----------|-------|----------------|
-| `CODEX_GHP_TOKEN_BASE64` | Encoded token stored as secret — doubles rotation surface | ✅ Keep only if a workflow *requires* base64 input; otherwise replace callers with direct secret reference <!-- pragma: allowlist secret --> |
-| `CODEX_GHP_TOKEN_HEX` | Same issue as BASE64 | ✅ Audit callers; remove if unused <!-- pragma: allowlist secret --> |
-| `WEBHOOK_RECEIVER_URL` | Contains `${CODESPACE_NAME}` — only valid in Codespaces | ✅ Move to environment variable scoped to Codespaces environment |
-| `CODEX_FORCE_CPU` | Duplicate of `GPU_OPT=""` | ✅ Consider replacing with a single `USE_GPU=true/false` flag |
-| `COPILOT_AGENT_FIREWALL_ALLOW_LIST_ADDITIONS` | Very long JSON blob in variable | ✅ Move to a config file in `.codex/config/firewall_allowlist.json` |
-| `COPILOT_BOT_COMMENT_KNOWN_ISSUES` | Large JSON in variable — hard to maintain | ✅ Move to `.codex/config/bot_comment_known_issues.json` |
-| `COPILOT_WEC_TEMPLATE_DRIFT` | Stale — last audited `2026-04-06` | ✅ Re-audit and update or automate via WEC gate |
+| `CODEX_GHP_TOKEN_BASE64` | Encoded token stored as secret — doubles rotation surface |  Keep only if a workflow *requires* base64 input; otherwise replace callers with direct secret reference <!-- pragma: allowlist secret --> |
+| `CODEX_GHP_TOKEN_HEX` | Same issue as BASE64 |  Audit callers; remove if unused <!-- pragma: allowlist secret --> |
+| `WEBHOOK_RECEIVER_URL` | Contains `${CODESPACE_NAME}` — only valid in Codespaces |  Move to environment variable scoped to Codespaces environment |
+| `CODEX_FORCE_CPU` | Duplicate of `GPU_OPT=""` |  Consider replacing with a single `USE_GPU=true/false` flag |
+| `COPILOT_AGENT_FIREWALL_ALLOW_LIST_ADDITIONS` | Very long JSON blob in variable |  Move to a config file in `.codex/config/firewall_allowlist.json` |
+| `COPILOT_BOT_COMMENT_KNOWN_ISSUES` | Large JSON in variable — hard to maintain |  Move to `.codex/config/bot_comment_known_issues.json` |
+| `COPILOT_WEC_TEMPLATE_DRIFT` | Stale — last audited `2026-04-06` |  Re-audit and update or automate via WEC gate |
 
 #### 10.9.3 Security Hardening Recommendations
 
@@ -1715,9 +1717,9 @@ jobs:
         env:
           MY_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
-          # ✅ Pass to tool that reads from env:
+          #  Pass to tool that reads from env:
           python my_script.py  # reads MY_KEY from os.environ
-          # ❌ NEVER do: echo $MY_KEY
+          #  NEVER do: echo $MY_KEY
 
       - name: Update a variable from within a workflow
         env:
@@ -1785,7 +1787,7 @@ graph TB
         W10["process-variable-intents.yml\nMailbox worker for var write intents\nProcesses .codex/pending_ops/*.json"]
     end
 
-    subgraph "🔐 Secrets Management"
+    subgraph " Secrets Management"
         W11["secrets-baseline-enforcer.yml\nKeeps .secrets.baseline in sync\nAuto-adds pragmas, fails on real secrets"]
         W12["auth-secret-rotation.md\n(workflow stub) Secret rotation\nBackup → rotate → verify"]
         W13["phase10-automated-secrets-setup.md\n(workflow stub) Secrets injection\nFor Genesis Phase 2"]
@@ -2130,48 +2132,48 @@ These workflow stubs exist as `.md` documentation files but need their `.yml` co
 ### 11.3 Recommended Workflow Execution Order for a Full Refresh
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Sequence Diagram: >>Admin: MASTER_KEY ✅ BACKUP_K'}}%%
+%%{init: {'accessibility': {'title': 'Sequence Diagram: >>Admin: MASTER_KEY  BACKUP_K'}}%%
 sequenceDiagram
     participant Admin as 👤 Admin (mbaetiong)
     participant GH as 🐙 GitHub Actions
-    participant Copilot as 🤖 Copilot Agent
+    participant Copilot as  Copilot Agent
 
     Note over Admin,Copilot: Phase A — Validate current state
     Admin->>GH: 1. Run token-probe.yml (pr=4346)
-    GH-->>Admin: MASTER_KEY ✅ BACKUP_KEY ✅
+    GH-->>Admin: MASTER_KEY  BACKUP_KEY 
     Admin->>GH: 2. Run scan-secrets-variables.yml
     GH-->>Admin: Full inventory snapshot
     Admin->>GH: 3. Run test-variables-api.yml (dry_run=false)
-    GH-->>Admin: CRUD ✅ — API ready
+    GH-->>Admin: CRUD  — API ready
 
     Note over Admin,Copilot: Phase B — Rotate tokens
     Admin->>GH: 4. Rotate CODEX_MASTER_KEY (GitHub UI → Settings → Secrets)
     Admin->>GH: 5. Rotate CODEX_BACKUP_KEY
     Admin->>GH: 6. Re-run token-probe.yml (verify new tokens work)
-    GH-->>Admin: New tokens ✅
+    GH-->>Admin: New tokens 
     Admin->>GH: 7. Run post_rotation_verify.sh (or scripts/ci/post_rotation_verify.sh)
 
     Note over Admin,Copilot: Phase C — Implement §10.9.1 new variables
     Admin->>Copilot: 8. @copilot implement variable governance plan
     Copilot->>GH: 9. Write intent files → process-variable-intents.yml
-    GH-->>Copilot: Variables created ✅
+    GH-->>Copilot: Variables created 
     Copilot->>GH: 10. Run vars-guide-sync.yml (layers=all)
-    GH-->>Copilot: Reference doc updated ✅
+    GH-->>Copilot: Reference doc updated 
 
     Note over Admin,Copilot: Phase D — Verify final state
     Admin->>GH: 11. Run admin_setup_verification.yml
-    GH-->>Admin: All §2/§3/§6 checks ✅
+    GH-->>Admin: All §2/§3/§6 checks 
     Admin->>GH: 12. Run repo-var-sync-schedule.yml
-    GH-->>Admin: agent_context.json synced ✅
+    GH-->>Admin: agent_context.json synced 
     Admin->>GH: 13. Run validate.yml
-    GH-->>Admin: secrets baseline ✅ ruff ✅ sync_tracked ✅
+    GH-->>Admin: secrets baseline  ruff  sync_tracked 
 ```
 
 ---
 
 > **Maintainer:** @mbaetiong
 > **Next review:** 2026-06-08 (monthly cadence)
-> **Last updated:** 2026-05-08 — Sections 10 and 11 added (Variable & Secret Governance + Workflow Catalog)
+> **Last updated: 2026-07-11
 > **Auto-update:** This document is updated by `copilot-swe-agent[bot]` at session start when token state changes.
 
 ---
@@ -2193,10 +2195,10 @@ graph TB
     subgraph "Rate Limit Pools — Separate Counters"
         P1["🔑 CODEX_MASTER_KEY\npool: core REST\n5,000 req/hr\nUsed by: ~40 workflows"]
         P2["🔑 CODEX_BACKUP_KEY\npool: core REST\n5,000 req/hr\nFallback only"]
-        P3["🤖 Copilot sandbox token\npool: core REST (shared)\n5,000 req/hr shared\nUsed by: MCP tools"]
-        P4["⚙️ GITHUB_TOKEN\npool: core REST\n1,000 req/hr (Actions)\nUsed by: workflow steps"]
+        P3[" Copilot sandbox token\npool: core REST (shared)\n5,000 req/hr shared\nUsed by: MCP tools"]
+        P4[" GITHUB_TOKEN\npool: core REST\n1,000 req/hr (Actions)\nUsed by: workflow steps"]
         P5["🔍 code_scanning pool\nSeparate endpoint pool\nUsed by: /code-scanning/alerts\ncodeql-alert-fetcher.yml"]
-        P6["📊 GraphQL pool\n5,000 pts/hr\nUsed by: github-script steps\ncopilot-agent-session-done.yml"]
+        P6[" GraphQL pool\n5,000 pts/hr\nUsed by: github-script steps\ncopilot-agent-session-done.yml"]
     end
 
     P1 -->|"exhausted → fallback"| P2
@@ -2612,5 +2614,5 @@ gantt
 
 > **Maintainer:** @mbaetiong
 > **Next review:** 2026-06-08 (monthly cadence)
-> **Last updated:** 2026-05-08 — Section 12 (Rate-Limit Awareness Workflow Improvements) added
+> **Last updated: 2026-07-11
 > **Auto-update:** This document is updated by `copilot-swe-agent[bot]` at session start when token state changes.

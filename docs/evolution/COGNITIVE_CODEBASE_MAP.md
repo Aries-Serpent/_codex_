@@ -1,4 +1,6 @@
 # Cognitive Codebase Map — AI Intuitiveness by Component
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Last Updated**: 2026-06-22  
 **Version**: 1.0.0  
@@ -7,7 +9,7 @@
 
 ---
 
-## 🧠 Cognitive Architecture Overview
+##  Cognitive Architecture Overview
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "L1: Aspirational (Ethics & Mission)", ".codex/guardrails.md"'}}%%
@@ -65,7 +67,7 @@ graph TD
 
 ---
 
-## 📊 Component Intuitiveness Scores
+##  Component Intuitiveness Scores
 
 ### Source Code (`src/`)
 
@@ -136,7 +138,7 @@ graph TD
 
 ---
 
-## 🎯 Intuitiveness Heatmap
+##  Intuitiveness Heatmap
 
 ```text
 Component Intuitiveness Distribution (N=35 components scored)
@@ -197,12 +199,12 @@ Windows-safe timestamps         codex.utils.path_utils           No colons in fi
 
 | Layer | Components | Avg Score | Status |
 |-------|:----------:|:---------:|--------|
-| L1: Aspirational | 3 | 90.7 | 🟢 Solid |
-| L2: Global Strategy | 6 | 94.5 | ✅ Excellent |
-| L3: Agent Model | 9 | 93.2 | ✅ Excellent |
-| L4: Executive Function | 5 | 91.4 | 🟢 Solid |
-| L5: Cognitive Control | 8 | 92.4 | 🟢 Solid |
-| L6: Task Prosecution | 5 | 91.8 | 🟢 Solid |
+| L1: Aspirational | 3 | 90.7 |  Solid |
+| L2: Global Strategy | 6 | 94.5 |  Excellent |
+| L3: Agent Model | 9 | 93.2 |  Excellent |
+| L4: Executive Function | 5 | 91.4 |  Solid |
+| L5: Cognitive Control | 8 | 92.4 |  Solid |
+| L6: Task Prosecution | 5 | 91.8 |  Solid |
 
 ### By Domain
 
@@ -223,4 +225,4 @@ Windows-safe timestamps         codex.utils.path_utils           No colons in fi
 - [Evolution Timeline](EVOLUTION_TIMELINE.md) — Phase history
 - [Planset Registry](PLANSET_REGISTRY.md) — Completed plansets as evidence
 - [cognitive_app](../cognitive_app.md) — Human-facing dashboard
-- [Agent Evolution Map](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/cognitive_brain/COGNITIVE_BRAIN_AGENT_EVOLUTION_MAP.md) — Agent lineage
+- [Agent Evolution Map](../.codex/cognitive_brain/COGNITIVE_BRAIN_AGENT_EVOLUTION_MAP.md) — Agent lineage

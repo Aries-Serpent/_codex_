@@ -1,4 +1,6 @@
 # Incident Response Procedures
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Version**: 1.0.0
 **Last Updated**: 2026-06-22
@@ -200,7 +202,7 @@ Updates will be posted every [15/30/60] minutes.
 ### Status Update
 
 ```
-📊 INCIDENT UPDATE - [Severity]
+ INCIDENT UPDATE - [Severity]
 
 Current Status: [Investigating/Identified/Mitigating/Resolved]
 Impact: [Current impact assessment]
@@ -212,7 +214,7 @@ Next Update: [Time]
 ### Resolution Notice
 
 ```
-✅ INCIDENT RESOLVED - [Severity]
+ INCIDENT RESOLVED - [Severity]
 
 Incident: [Brief description]
 Duration: [Start to End]
@@ -305,7 +307,7 @@ We apologize for any inconvenience.
 
 ---
 
-## Quick Reference
+## Reference
 
 ### Incident Commands
 

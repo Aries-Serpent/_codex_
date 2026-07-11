@@ -1,6 +1,8 @@
 # FAISS Vector Store - User Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## Overview
 
@@ -20,7 +22,7 @@ The FAISS Vector Store provides local, CPU-based vector similarity search for em
 pip install faiss-cpu numpy
 ```text
 
-## Quick Start
+## Quickstart
 
 ### Basic Usage
 

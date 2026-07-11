@@ -1,4 +1,6 @@
 # Agent Documentation
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Last Updated**: 2026-06-22  
 > **Version**: 1.0 (Phase 7D)  
@@ -23,7 +25,7 @@ The _codex_ agent ecosystem provides production-ready AI agents with specialized
 
 ---
 
-## 📚 Documentation Index
+##  Documentation Index
 
 ### Getting Started
 - **[OPERATIONAL_GUIDELINES](OPERATIONAL_GUIDELINES.md)** — Standard operation procedures for all agents
@@ -112,7 +114,7 @@ print(f"Errors/hour: {health_report.error_rate}")
 
 ---
 
-## 🎯 Best Practices
+##  Best Practices
 
 1. **Always validate token scope** before initiating operations
 2. **Use session management** for proper lifecycle control
@@ -133,6 +135,6 @@ print(f"Errors/hour: {health_report.error_rate}")
 
 ---
 
-*Last Updated: 2026-06-22T09:30:00Z*  
+*Last Updated: 2026-06-22
 *Authority: @mbaetiong*  
-*Status: ✅ Phase 7D Complete*
+*Status:  Phase 7D Complete*

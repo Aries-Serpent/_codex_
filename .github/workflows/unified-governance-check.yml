@@ -6,7 +6,7 @@ name: Unified Governance Check
     - synchronize
     - reopened
 concurrency:
-  group: unified-governance-check-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 permissions:
   contents: read

@@ -1,6 +1,8 @@
 # Testing Conventions
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 This document outlines the testing conventions and best practices for the _codex_ repository. Following these conventions ensures consistency, maintainability, and prevents common configuration errors.
 
@@ -54,7 +56,7 @@ filterwarnings =
 
 ## Centralized vs. Workflow-Specific Settings
 
-### ✅ Settings That Belong in pytest.ini
+###  Settings That Belong in pytest.ini
 
 These settings should **always** be in `pytest.ini`, never duplicated in workflow files:
 
@@ -67,7 +69,7 @@ These settings should **always** be in `pytest.ini`, never duplicated in workflo
 | `filterwarnings` | Warning filters | `ignore::DeprecationWarning` |
 | `testpaths` | Default test discovery paths | `tests` |
 
-### ✅ Settings That Belong in Workflows
+###  Settings That Belong in Workflows
 
 These settings are **appropriate for workflow-specific configuration**:
 
@@ -168,22 +170,22 @@ Override the global timeout only for:
       --timeout-method=thread
 ```
 
-### ❌ DON'T Duplicate Global Settings
+###  DON'T Duplicate Global Settings
 
 **BAD** - Duplicates pytest.ini settings:
 ```yaml
 - name: Run tests
   run: |
     pytest tests/ \
-      --timeout=300 \          # ❌ Already in pytest.ini
-      --timeout-method=thread  # ❌ Already in pytest.ini
+      --timeout=300 \          #  Already in pytest.ini
+      --timeout-method=thread  #  Already in pytest.ini
 ```
 
 **GOOD** - Relies on pytest.ini:
 ```yaml
 - name: Run tests
   run: |
-    pytest tests/  # ✅ Uses 300s timeout from pytest.ini
+    pytest tests/  #  Uses 300s timeout from pytest.ini
 ```
 
 ---
@@ -346,7 +348,7 @@ jobs:
 
 ## Common Pitfalls
 
-### ❌ Pitfall 1: Duplicate Timeout Arguments
+###  Pitfall 1: Duplicate Timeout Arguments
 
 **Problem**: Specifying `--timeout` in workflow when it's already in `pytest.ini`
 
@@ -359,16 +361,16 @@ pytest: error: unrecognized arguments: --timeout=300 --timeout-method=thread
 
 **Example**:
 ```yaml
-# ❌ BAD - Causes error
+#  BAD - Causes error
 pytest tests/ --timeout=300 --timeout-method=thread
 
-# ✅ GOOD - Uses pytest.ini defaults
+#  GOOD - Uses pytest.ini defaults
 pytest tests/
 ```
 
 ---
 
-## ❌ Pitfall 2: Wrong Plugin Package Name
+##  Pitfall 2: Wrong Plugin Package Name
 
 **Problem**: Installing `pytest-retry` instead of `pytest-rerunfailures`
 
@@ -379,16 +381,16 @@ pytest: error: unrecognized arguments: --reruns=2 --reruns-delay=1
 
 **Solution**: Install correct plugin:
 ```bash
-# ❌ WRONG
+#  WRONG
 pip install pytest-retry
 
-# ✅ CORRECT
+#  CORRECT
 pip install pytest-rerunfailures
 ```
 
 ---
 
-## ❌ Pitfall 3: Conflicting Coverage Configurations
+##  Pitfall 3: Conflicting Coverage Configurations
 
 **Problem**: Multiple coverage configurations in different places
 
@@ -400,7 +402,7 @@ pip install pytest-rerunfailures
 
 **Example**:
 ```yaml
-# ✅ GOOD - Explicit coverage config in workflow
+#  GOOD - Explicit coverage config in workflow
 pytest tests/ \
   --cov=src \
   --cov-report=xml \
@@ -498,7 +500,7 @@ Before adding or modifying test workflows:
 
 ---
 
-## Quick Reference
+## Reference
 
 ### Install Test Dependencies
 ```bash

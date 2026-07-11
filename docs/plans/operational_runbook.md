@@ -1,4 +1,5 @@
 # Codex Ingestion Pipeline Operations Runbook
+**Last Updated:** 2026-07-11
 
 > **⚠️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 
@@ -16,7 +17,7 @@ This runbook provides step-by-step instructions for operating the Codex Python I
 - `OPENAI_API_KEY` environment variable set (optional, for LLM features)
 - Docker (optional, for sandboxed execution)
 
-## Quick Start
+## Quickstart
 
 ```bash
 # 1. Create a manifest for your script
@@ -112,9 +113,9 @@ python -m codex.cli transform 20251217-abc123 --tier A --auto --no-dry-run
 
 | Tier | Name | Auto-Apply | Examples |
 |------|------|------------|----------|
-| A | Safe Auto-Apply | ✅ Yes | Black formatting, isort, pathlib migration |
-| B | Apply with Tests | ✅ With tests | Type hints, function extraction |
-| C | Suggest Only | ❌ No | Async conversion, API redesign |
+| A | Safe Auto-Apply |  Yes | Black formatting, isort, pathlib migration |
+| B | Apply with Tests |  With tests | Type hints, function extraction |
+| C | Suggest Only |  No | Async conversion, API redesign |
 
 ## Step 4: Verify
 

@@ -1,8 +1,10 @@
 # Custom Preview Image Plan
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
-> **Status:** ✅ Implemented (PR #3503 W-126, 2026-03-05)  
+> **Status:**  Implemented (PR #3503 W-126, 2026-03-05)  
 > **Owner:** github-app-manager agent  
 > **Related:** `Dockerfile.preview`, `.devcontainer/devcontainer.json`,
 > `.github/workflows/build-preview-image.yml`

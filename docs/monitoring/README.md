@@ -1,6 +1,8 @@
 # Monitoring
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-28
+**Last Updated: 2026-06-28
 
 > Documentation index for monitoring and observability in Codex ML
 

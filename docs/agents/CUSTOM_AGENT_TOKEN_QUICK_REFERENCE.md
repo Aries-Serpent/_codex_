@@ -1,4 +1,5 @@
 # CUSTOM_AGENT_TOKEN_QUICK_REFERENCE.md
+**Version:** v0.2.1
 
 **Quick Reference Guide for Token Requirements in 13 Level-1 Custom Agents**
 
@@ -8,25 +9,25 @@
 
 ---
 
-## 🎯 Quick Lookup Table
+##  Quick Lookup Table
 
 All 13 Level-1 agents at a glance:
 
 | # | Agent Name | Token Level | Primary Scopes | Fallback? | Status |
 |---|---|---|---|---|---|
-| 1 | **ci-emergency-response-agent** | Level 3 | repo, workflow, actions:write | ❌ NO | ✅ Active |
-| 2 | **security-alert-verification-agent** | Level 2 | repo, security_events, actions:read_self | ✅ YES | ✅ Active |
-| 3 | **codeql-alert-resolution-agent** | Level 2 | repo, security_events, contents:write | ✅ YES | ✅ Active |
-| 4 | **secret-detection-agent** | Level 2 | repo, security_events, contents:write | ✅ YES | ✅ Active |
-| 5 | **dependency-vulnerability-scanner** | Level 2 | repo, contents:read | ✅ YES | ✅ Active |
-| 6 | **ci-auto-healer-agent** | Level 2 | repo, workflow, contents:write | ✅ YES | ✅ Active |
-| 7 | **workflow-compliance-guardian** | Level 2 | repo, workflow, actions:write | ✅ YES | ✅ Active |
-| 8 | **branch-divergence-resolution-agent** | Level 2 | repo, contents:write, pull_requests | ✅ YES | ✅ Active |
-| 9 | **self-healing-orchestrator-agent** | Level 3 | repo, workflow, actions:write | ❌ NO | ✅ Active |
-| 10 | **ci-parameter-mismatch-healer** | Level 2 | repo, workflow, contents:write | ✅ YES | ✅ Active |
-| 11 | **ci-importerror-agent** | Level 2 | repo, contents:write, actions:read_self | ✅ YES | ✅ Active |
-| 12 | **unified-security-scanner** | Level 2 | repo, security_events, contents:read | ✅ YES | ✅ Active |
-| 13 | **mypy-manager-agent** | Level 2 | repo, contents:write, actions:read_self | ✅ YES | ✅ Active |
+| 1 | **ci-emergency-response-agent** | Level 3 | repo, workflow, actions:write |  NO |  Active |
+| 2 | **security-alert-verification-agent** | Level 2 | repo, security_events, actions:read_self |  YES |  Active |
+| 3 | **codeql-alert-resolution-agent** | Level 2 | repo, security_events, contents:write |  YES |  Active |
+| 4 | **secret-detection-agent** | Level 2 | repo, security_events, contents:write |  YES |  Active |
+| 5 | **dependency-vulnerability-scanner** | Level 2 | repo, contents:read |  YES |  Active |
+| 6 | **ci-auto-healer-agent** | Level 2 | repo, workflow, contents:write |  YES |  Active |
+| 7 | **workflow-compliance-guardian** | Level 2 | repo, workflow, actions:write |  YES |  Active |
+| 8 | **branch-divergence-resolution-agent** | Level 2 | repo, contents:write, pull_requests |  YES |  Active |
+| 9 | **self-healing-orchestrator-agent** | Level 3 | repo, workflow, actions:write |  NO |  Active |
+| 10 | **ci-parameter-mismatch-healer** | Level 2 | repo, workflow, contents:write |  YES |  Active |
+| 11 | **ci-importerror-agent** | Level 2 | repo, contents:write, actions:read_self |  YES |  Active |
+| 12 | **unified-security-scanner** | Level 2 | repo, security_events, contents:read |  YES |  Active |
+| 13 | **mypy-manager-agent** | Level 2 | repo, contents:write, actions:read_self |  YES |  Active |
 
 ---
 
@@ -451,7 +452,7 @@ if not token:
 
 ---
 
-## ✅ Testing Checklist for Agent Developers
+##  Testing Checklist for Agent Developers
 
 Use this checklist when implementing or updating an agent:
 
@@ -507,7 +508,7 @@ Use this checklist when implementing or updating an agent:
 
 ---
 
-## 📊 Token Usage Summary
+##  Token Usage Summary
 
 ### By Level
 
@@ -536,7 +537,7 @@ Use this checklist when implementing or updating an agent:
 
 ---
 
-## 🚀 Quick Start for New Agent Development
+##  Quick Start for New Agent Development
 
 ### Step 1: Choose Token Level
 

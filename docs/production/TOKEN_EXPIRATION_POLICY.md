@@ -1,3 +1,5 @@
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 ## 2. Alert Thresholds & Notifications
 
@@ -9,7 +11,7 @@
 Day 75: 📧 Email to security team
 Day 80: 📧 Second email
 Day 85: 🚨 Daily alerts
-Day 90: ❌ ROTATION REQUIRED
+Day 90:  ROTATION REQUIRED
 ```
 
 ### 2.2 Token Types & Periods

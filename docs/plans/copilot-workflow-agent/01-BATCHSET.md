@@ -1,4 +1,6 @@
 # Copilot Workflow Agent - Batchset Plan
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **⚠️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 
@@ -10,8 +12,8 @@
 
 | Batch | Name | Phase | Status | Checkpoint |
 |-------|------|-------|--------|------------|
-| B0 | Plan Documentation | 0 | ✅ COMPLETE | `B0-COMPLETE` |
-| B1 | GitHub API Client | 1 | ✅ COMPLETE | `B1-COMPLETE` |
+| B0 | Plan Documentation | 0 |  COMPLETE | `B0-COMPLETE` |
+| B1 | GitHub API Client | 1 |  COMPLETE | `B1-COMPLETE` |
 | B2 | Workflow Inventory | 1 | 🔜 PENDING | `B2-COMPLETE` |
 | B3 | Session State | 1 | 🔜 PENDING | `B3-COMPLETE` |
 | B4 | Agent Orchestrator | 1 | 🔜 PENDING | `B4-COMPLETE` |
@@ -29,8 +31,8 @@
 **Checkpoint**: `B0-COMPLETE`
 
 ### Missing Files
-- `docs/plans/copilot-workflow-agent/README.md` ✅
-- `docs/plans/copilot-workflow-agent/00-PLANSET.md` ✅
+- `docs/plans/copilot-workflow-agent/README.md` 
+- `docs/plans/copilot-workflow-agent/00-PLANSET.md` 
 - `docs/plans/copilot-workflow-agent/01-BATCHSET.md` ⏳
 - `docs/plans/copilot-workflow-agent/02-PATCHSET.md` 🔜
 - `docs/plans/copilot-workflow-agent/03-ARCHITECTURE.md` 🔜
@@ -56,16 +58,16 @@ ls -la docs/plans/copilot-workflow-agent/
 
 ## B1 — GitHub API Client
 
-**Status**: ✅ COMPLETE  
+**Status**:  COMPLETE  
 **Checkpoint**: `B1-COMPLETE`  
 **Dependencies**: B0
 
 ### Target Files
-- `src/services/github/__init__.py` ✅
-- `src/services/github/client.py` ✅
-- `src/services/github/types.py` ✅
-- `src/services/github/exceptions.py` ✅
-- `tests/services/github/test_client.py` ✅
+- `src/services/github/__init__.py` 
+- `src/services/github/client.py` 
+- `src/services/github/types.py` 
+- `src/services/github/exceptions.py` 
+- `tests/services/github/test_client.py` 
 
 ### Prompt
 > Implement a GitHub API client wrapper with typed interfaces for workflow operations. Include methods for triggering workflows via workflow_dispatch, polling run status, retrieving job logs, and downloading artifacts. Use async/await, implement retry with exponential backoff, handle rate limits gracefully, and support both PAT and GitHub App authentication.
@@ -470,7 +472,7 @@ graph TD
 
 ---
 
-## Quick Reference
+## Reference
 
 ### Start a Batch
 ```

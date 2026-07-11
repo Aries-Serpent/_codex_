@@ -1,10 +1,12 @@
 # W-121/W-122: Copilot Agent — Larger Runner Upgrade
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 **Ref:** [GitHub Docs — Upgrading to larger GitHub-hosted GitHub Actions runners][gh-docs]
 **Date:** 2026-03-05 | **PR:** #3499 | **AAIS Impact:** +3.5 (Pillar 3: Operational Maturity)
-**Status:** ✅ LIVE — runner `ubuntu-latest-m` active in group `AS Larger Runners`
+**Status:**  LIVE — runner `ubuntu-latest-m` active in group `AS Larger Runners`
 
 [gh-docs]: https://docs.github.com/en/copilot/how-tos/use-copilot-agents/coding-agent/customize-the-agent-environment#upgrading-to-larger-github-hosted-github-actions-runners
 
@@ -24,7 +26,7 @@
 | **Public IP** | Disabled |
 | **Network Configuration** | Disabled |
 | **Image source** | GitHub-owned |
-| **Custom image generation** | ✅ **Enabled (Preview)** |
+| **Custom image generation** |  **Enabled (Preview)** |
 | **Provisioned** | 2026-03-05 by @mbaetiong |
 
 ---
@@ -59,7 +61,7 @@ graph TB
             AG[Agent Session]
         end
         subgraph Runners["AS Larger Runners Group"]
-            RM["ubuntu-latest-m ✅ ACTIVE\n4-core / 16 GB / 150 GB\nUbuntu 24.04\nCustom Image Gen: Preview"]
+            RM["ubuntu-latest-m  ACTIVE\n4-core / 16 GB / 150 GB\nUbuntu 24.04\nCustom Image Gen: Preview"]
         end
         subgraph Legacy["Standard Runners (legacy)"]
             R0["ubuntu-latest\n2-core / 7 GB\n(fallback only)"]
@@ -125,10 +127,10 @@ gantt
 
 | Symptom | Root Cause | Status |
 |---------|-----------|--------|
-| `ml-heavy` setup times out near 30-min cap | PyTorch CPU + `pip install -e ".[dev,ml]"` on 2 cores takes 25–30 min | ✅ Fixed |
-| Cold venv rebuild blocks agent start by 10+ min | 2-core pip resolution is CPU-bound | ✅ Fixed |
-| `cargo build --release` stalls | Single-core equivalent throughput | ✅ Fixed |
-| AAIS Pillar 3 "Scalability" sub-score below target | Runner couldn't handle concurrent heavy tasks | ✅ Fixed |
+| `ml-heavy` setup times out near 30-min cap | PyTorch CPU + `pip install -e ".[dev,ml]"` on 2 cores takes 25–30 min |  Fixed |
+| Cold venv rebuild blocks agent start by 10+ min | 2-core pip resolution is CPU-bound |  Fixed |
+| `cargo build --release` stalls | Single-core equivalent throughput |  Fixed |
+| AAIS Pillar 3 "Scalability" sub-score below target | Runner couldn't handle concurrent heavy tasks |  Fixed |
 
 ---
 
@@ -136,7 +138,7 @@ gantt
 
 | Label | Group | vCPU | RAM | SSD | Default for | Status |
 |-------|-------|------|-----|-----|-------------|--------|
-| `ubuntu-latest-m` | AS Larger Runners | 4 | 16 GB | 150 GB | All sessions | ✅ **ACTIVE** |
+| `ubuntu-latest-m` | AS Larger Runners | 4 | 16 GB | 150 GB | All sessions |  **ACTIVE** |
 | `ubuntu-latest` | Standard | 2 | 7 GB | 14 GB | Fallback only | Legacy |
 | `ubuntu-8-core` | AS Larger Runners | 8 | 32 GB | 300 GB | ml-heavy | Provision if needed |
 | `ubuntu-16-core` | AS Larger Runners | 16 | 64 GB | 600 GB | Security+Rust release | Provision if needed |
@@ -174,8 +176,8 @@ sequenceDiagram
     GH->>WF: runs-on = "ubuntu-8-core"
     WF->>Runner: provision runner
 
-    Runner->>WF: 🧠 AAIS Runner Adequacy Check
-    WF-->>Owner: ✅ ADEQUATE — runner meets requirements for ml-heavy
+    Runner->>WF:  AAIS Runner Adequacy Check
+    WF-->>Owner:  ADEQUATE — runner meets requirements for ml-heavy
 
     Note over Owner: After heavy session completes — reset to default
     CB->>VM: set_variable("COPILOT_RUNNER_PROFILE", "ubuntu-latest-m")
@@ -202,9 +204,9 @@ flowchart TD
 
     I --> J["runs-on resolves:\n${{ vars.COPILOT_RUNNER_PROFILE\n|| 'ubuntu-latest-m' }}"]
     J --> L[copilot-setup-steps job\nprovisions runner]
-    L --> M[🧠 AAIS Runner\nAdequacy Check step]
+    L --> M[ AAIS Runner\nAdequacy Check step]
     M --> N{runner_cpus ≥\nENV_TYPE.min_cpus?}
-    N -->|✅ Yes| O[runner_adequate=true\nContinue setup]
+    N -->| Yes| O[runner_adequate=true\nContinue setup]
     N -->|⚠️ No| P["runner_adequate=false\nLog recommendation\nContinue anyway"]
 
     style C fill:#3b82f6,color:#fff
@@ -233,14 +235,14 @@ Emitted on every session — example output for the active runner:
 
 ```
 ╔══════════════════════════════════════════════════════════════╗
-║  🧠 AAIS Runner Adequacy Assessment (Pillar 3: Observability) ║
+║   AAIS Runner Adequacy Assessment (Pillar 3: Observability) ║
 ╠══════════════════════════════════════════════════════════════╣
 ║  Active runner    : ubuntu-latest-m (4 vCPU / 16 GB RAM)
 ║  Runner tier      : standard-plus
 ║  Environment type : standard
 ║  Required tier    : standard-plus (≥ 4 vCPU)
 ╠══════════════════════════════════════════════════════════════╣
-║  ✅ ADEQUATE — runner meets requirements for standard
+║   ADEQUATE — runner meets requirements for standard
 ╚══════════════════════════════════════════════════════════════╝
 ```
 
@@ -332,8 +334,8 @@ graph LR
     end
     subgraph WF["copilot-setup-steps.yml"]
         RO["runs-on:\n${{ vars.COPILOT_RUNNER_PROFILE\n|| 'ubuntu-latest-m' }}"]
-        AC["🧠 AAIS Runner\nAdequacy Check\n(id: runner_check)"]
-        VS["✅ Validate Env\nSurfaces runner_adequate\nin AAIS summary"]
+        AC[" AAIS Runner\nAdequacy Check\n(id: runner_check)"]
+        VS[" Validate Env\nSurfaces runner_adequate\nin AAIS summary"]
     end
 
     PP --> BC --> VM --> MK --> VA --> RV --> RO --> AC --> VS
@@ -375,15 +377,15 @@ timeline
 ```
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing "W-119b ✅\nYAML parse fix\n(sessions unblocked)", "W-121 ✅\nAutonomous switch\nMermaid diagrams\nAAIS check step"'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing "W-119b \nYAML parse fix\n(sessions unblocked)", "W-121 \nAutonomous switch\nMermaid diagrams\nAAIS check step"'}}%%
 graph TD
-    W119B["W-119b ✅\nYAML parse fix\n(sessions unblocked)"] --> W121
-    W121["W-121 ✅\nAutonomous switch\nMermaid diagrams\nAAIS check step"] --> W122
-    W122["W-122 ✅\nRunner provisioned\nubuntu-latest-m\nAS Larger Runners\nCustom Image: Preview"]
+    W119B["W-119b \nYAML parse fix\n(sessions unblocked)"] --> W121
+    W121["W-121 \nAutonomous switch\nMermaid diagrams\nAAIS check step"] --> W122
+    W122["W-122 \nRunner provisioned\nubuntu-latest-m\nAS Larger Runners\nCustom Image: Preview"]
 
     W121 --> RO["runs-on:\n${{ vars.COPILOT_RUNNER_PROFILE\n|| 'ubuntu-latest-m' }}"]
-    W121 --> AC["🧠 AAIS Runner\nAdequacy Check"]
-    W122 --> LIVE["✅ Agent sessions\nnow run on 4-core\nUbuntu 24.04 runner"]
+    W121 --> AC[" AAIS Runner\nAdequacy Check"]
+    W122 --> LIVE[" Agent sessions\nnow run on 4-core\nUbuntu 24.04 runner"]
     W122 --> CI["🔮 Custom Image\n(Preview — future)\n~30 sec cold-start"]
 
     style W119B fill:#10b981,color:#fff
@@ -401,7 +403,7 @@ graph TD
 [x] W-119b: Fix duplicate run: key blocking all agent sessions (commit 542625d)
 [x] W-121: runs-on → ${{ vars.COPILOT_RUNNER_PROFILE || 'ubuntu-latest-m' }}
 [x] W-121: timeout-minutes 30 → 59
-[x] W-121: Add 🧠 AAIS Runner Adequacy Check step (id: runner_check)
+[x] W-121: Add  AAIS Runner Adequacy Check step (id: runner_check)
 [x] W-121: runner_adequate output surfaced in Phase 7 Validate step
 [x] W-122: Runner ubuntu-latest-m provisioned in AS Larger Runners group (@mbaetiong)
 [x] W-122: Custom image generation: Enabled (Preview) on ubuntu-latest-m
@@ -413,7 +415,7 @@ graph TD
       (Optional: leave unset — fallback expression handles it automatically)
 [ ] Smoke test: trigger workflow_dispatch on copilot-setup-steps
       Verify "Set up job" log: Runner: ubuntu-latest-m
-      Verify AAIS Adequacy Check: ✅ ADEQUATE
+      Verify AAIS Adequacy Check:  ADEQUATE
 [ ] Future: Custom image build plan (§ 5b) — separate PR once Preview API stabilises
 [ ] Future: Provision ubuntu-8-core in AS Larger Runners for ml-heavy sessions
 [ ] W-123: Identify and document all repository webhooks → docs/plans/webhook-identification.md (TASK DEFINED)
@@ -445,13 +447,13 @@ queue or fall back gracefully.
 
 | Metric | Before (ubuntu-latest) | Now (ubuntu-latest-m) | Future (custom image) |
 |--------|------------------------|----------------------|----------------------|
-| Setup wall-clock (standard) | ~8 min | ~4 min ✅ | ~30 sec |
-| Setup wall-clock (ml-heavy) | ~25 min ⚠️ | ~12 min ✅ | ~2 min |
-| Timeout risk | High | None ✅ | None |
-| Agent start latency | ~10 min | ~5 min ✅ | ~1 min |
-| `cargo build --release` | ~3 min | ~90 sec ✅ | ~90 sec |
-| AAIS Pillar 3 Reliability | 75/100 | 86/100 ✅ | ~90/100 |
-| Ubuntu version | 22.04 | **24.04** ✅ | 24.04 |
+| Setup wall-clock (standard) | ~8 min | ~4 min  | ~30 sec |
+| Setup wall-clock (ml-heavy) | ~25 min ⚠️ | ~12 min  | ~2 min |
+| Timeout risk | High | None  | None |
+| Agent start latency | ~10 min | ~5 min  | ~1 min |
+| `cargo build --release` | ~3 min | ~90 sec  | ~90 sec |
+| AAIS Pillar 3 Reliability | 75/100 | 86/100  | ~90/100 |
+| Ubuntu version | 22.04 | **24.04**  | 24.04 |
 
 ---
 

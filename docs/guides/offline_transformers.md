@@ -1,6 +1,8 @@
 # Offline ML Toolkit Hardening
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 This playbook consolidates the fixes adopted in the hardening round for `_codex_`.
 Each subsection cites the upstream guidance so the workflow can be reproduced on

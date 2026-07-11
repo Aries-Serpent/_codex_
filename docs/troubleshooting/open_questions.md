@@ -1,6 +1,8 @@
 # Open Questions & Next Steps — Run 4 (2025-10-05)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## Offline Hardening Integration Notes
 - Deterministic dataset assignments now flow through `src/codex_ml/data/splits.py` and the JSONL/CSV loaders so every record carries a stable `split` keyed by its hashed identifier.
@@ -13,9 +15,9 @@
 - Deterministic mode helper `src/codex_ml/utils/determinism.py` backs the shared seeding path and respects `CUBLAS_WORKSPACE_CONFIG` requirements.
 
 ## Menu Items Covered This Run
-- ✅ **Observability (5)** — Closed the system-metrics telemetry gap by wiring `log_system_metrics` and the collector surfaced in the Phase 10 status update.【F:reports/gap_risk_resolution.md†L9-L11】【F:src/codex_ml/training/__init__.py†L90-L156】
-- ✅ **Docs polish (7)** — Authored the gap→risk→resolution register so subsequent runs inherit a prioritized mitigation backlog.【F:reports/gap_risk_resolution.md†L1-L15】
-- ✅ **Self-management (8)** — Refreshed the high-signal dashboard to highlight remaining open items (advanced modeling, security, deployment).【F:reports/high_signal_findings.md†L1-L7】
+-  **Observability (5)** — Closed the system-metrics telemetry gap by wiring `log_system_metrics` and the collector surfaced in the Phase 10 status update.【F:reports/gap_risk_resolution.md†L9-L11】【F:src/codex_ml/training/__init__.py†L90-L156】
+-  **Docs polish (7)** — Authored the gap→risk→resolution register so subsequent runs inherit a prioritized mitigation backlog.【F:reports/gap_risk_resolution.md†L1-L15】
+-  **Self-management (8)** — Refreshed the high-signal dashboard to highlight remaining open items (advanced modeling, security, deployment).【F:reports/high_signal_findings.md†L1-L7】
 
 ## Proposed Menu Focus for Run 5
 1. **ChatGPT Codex Modeling (2)** — Deliver guarded Hugging Face model loading and LoRA tests to close the open modeling item.【F:reports/_codex_status_update-2025-10-05.md†L53-L53】

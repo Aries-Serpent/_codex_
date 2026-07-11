@@ -1,4 +1,6 @@
 # Integration Examples
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Version**: 1.4.0  
 **Last Updated**: 2026-06-22
@@ -117,10 +119,10 @@ jobs:
           print(f"Average score: {avg_score:.2f}")
 
           if avg_score < 0.70:
-              print(f"❌ Score {avg_score:.2f} below threshold 0.70")
+              print(f" Score {avg_score:.2f} below threshold 0.70")
               exit(1)
           else:
-              print(f"✅ Score {avg_score:.2f} meets threshold 0.70")
+              print(f" Score {avg_score:.2f} meets threshold 0.70")
           EOF
 ```
 
@@ -200,7 +202,7 @@ echo "Running audit pipeline..."
 
 # Run fast audit (skips S2, S5, S7)
 if ! make space-audit-fast; then
-    echo "❌ Audit failed"
+    echo " Audit failed"
     exit 1
 fi
 
@@ -211,7 +213,7 @@ if [ -f audit_artifacts/baselines/baseline.json ]; then
         --new audit_artifacts/capabilities_scored.json
 fi
 
-echo "✅ Audit passed"
+echo " Audit passed"
 exit 0
 ```
 
@@ -277,7 +279,7 @@ def log_audit_results():
             if coverages:
                 mlflow.log_metric("avg_coverage", sum(coverages) / len(coverages))
 
-        print("✅ Audit results logged to MLflow")
+        print(" Audit results logged to MLflow")
         print(f"   Run ID: {mlflow.active_run().info.run_id}")
 
 if __name__ == "__main__":
@@ -368,14 +370,14 @@ def notify_slack():
             "type": "section",
             "text": {
                 "type": "mrkdwn",
-                "text": f"*✅ Top Performers:*\n{high_list}"
+                "text": f"* Top Performers:*\n{high_list}"
             }
         })
 
     # Send to Slack
     response = requests.post(SLACK_WEBHOOK, json=message)
     response.raise_for_status()
-    print("✅ Notification sent to Slack")
+    print(" Notification sent to Slack")
 
 if __name__ == "__main__":
     notify_slack()
@@ -494,7 +496,7 @@ def export_prometheus_metrics():
 
     # Write to file for node_exporter textfile collector
     write_to_textfile('/var/lib/node_exporter/audit_metrics.prom', registry)
-    print("✅ Metrics exported to Prometheus")
+    print(" Metrics exported to Prometheus")
 
 if __name__ == "__main__":
     export_prometheus_metrics()
@@ -535,7 +537,7 @@ def send_webhook(url, data):
 
     response = requests.post(url, json=payload, timeout=10)
     response.raise_for_status()
-    print(f"✅ Webhook delivered: {response.status_code}")
+    print(f" Webhook delivered: {response.status_code}")
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:

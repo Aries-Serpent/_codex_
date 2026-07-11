@@ -1,8 +1,10 @@
 # Outstanding Codex Automation Questions
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 This log tracks every open Codex automation question or gate failure that still needs visibility in status updates. When a disposition changes, update both this canonical list and the latest status report. Every Codex status update must include this table (or a direct copy of it) so that outstanding remediation items remain visible.
 
-_Last updated: 2026-06-22 (optional dependency guard remediation)._
+_Last updated: 2026-06-22
 
 > 2025-09-18: Base and optional extras now use strict version pins in `pyproject.toml` and the
 > refreshed lock files. Use `uv sync --frozen` (or `uv pip sync requirements/lock.txt`) and avoid

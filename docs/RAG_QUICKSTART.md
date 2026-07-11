@@ -1,6 +1,8 @@
 # RAG Quickstart Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 Welcome to the Codex RAG (Retrieval-Augmented Generation) system! This guide will get you up and running in minutes.
 
@@ -10,11 +12,11 @@ The Codex RAG system provides semantic search over your codebase and documentati
 
 ### Key Features
 
-- 🚀 **Fast Semantic Search**: Query code and docs using natural language
+-  **Fast Semantic Search**: Query code and docs using natural language
 - 🏢 **Multi-Tenant**: Isolated workspaces for different projects/customers
 - ⚡ **Smart Caching**: 100x faster repeated queries with LRU cache
-- 📊 **Full Provenance**: Track every result back to source with line numbers
-- 🔒 **No API Keys**: Uses local sentence-transformers (offline-capable)
+-  **Full Provenance**: Track every result back to source with line numbers
+-  **No API Keys**: Uses local sentence-transformers (offline-capable)
 
 ---
 
@@ -65,7 +67,7 @@ index_path = build_index_from_files(
     overlap=128
 )
 
-print(f"✅ Index created at: {index_path}")
+print(f" Index created at: {index_path}")
 ```
 
 **Output**:
@@ -73,7 +75,7 @@ print(f"✅ Index created at: {index_path}")
 Loading embedding model: sentence-transformers/all-MiniLM-L6-v2
 Generating embeddings for 45 chunks
 Added 45 vectors to FAISS index
-✅ Index created at: .codex/tenants/quickstart/my_docs
+ Index created at: .codex/tenants/quickstart/my_docs
 ```
 
 ## Step 2: Query Your Index
@@ -179,7 +181,7 @@ for customer in ["acme", "globex", "initech"]:
         index_names=["docs"],
         files=[Path(f"docs/{customer}/")],
     )
-    print(f"✅ Created index for {customer}")
+    print(f" Created index for {customer}")
 
 # Query customer-specific docs
 retriever_acme = Retriever(index_name="docs", tenant_id="acme")
@@ -346,9 +348,9 @@ manage_tenant_indices(
 
 ## Next Steps
 
-- 📚 **Advanced Guide**: See `docs/RAG_ADVANCED.md` for multi-index, provenance, and advanced caching
-- 🤖 **Custom Agents**: Learn about `@rag-index-manager` and `@semantic-search` agents
-- 📊 **Monitoring**: Set up Prometheus and Grafana dashboards
+-  **Advanced Guide**: See `docs/RAG_ADVANCED.md` for multi-index, provenance, and advanced caching
+-  **Custom Agents**: Learn about `@rag-index-manager` and `@semantic-search` agents
+-  **Monitoring**: Set up Prometheus and Grafana dashboards
 - 🧪 **Examples**: Check `examples/rag_workflow.py` for complete workflows
 
 ---
@@ -381,7 +383,7 @@ metrics.export_cloudwatch()
 
 ## Support
 
-- 📖 Documentation: `docs/`
+-  Documentation: `docs/`
 - 🐛 Issues: GitHub Issues
 - 💬 Discussions: GitHub Discussions
 - 📧 Email: rag-team@example.com

@@ -1,6 +1,8 @@
 # Conventional Commit Guidelines
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 To keep version history consistent we follow the [Conventional Commits](https://www.conventionalcommits.org/) standard.
 

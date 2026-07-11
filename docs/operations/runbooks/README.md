@@ -1,6 +1,8 @@
 # Operational Runbooks
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 Comprehensive incident response procedures for production ML operations.
 
@@ -11,7 +13,7 @@ Comprehensive incident response procedures for production ML operations.
 3. **deployment_rollback.md** - Automated rollback procedures
 4. **security_incidents.md** - Security incident response
 
-## Quick Reference
+## Reference
 
 | Incident Type | Severity | Response Time | Runbook |
 |---------------|----------|---------------|---------|

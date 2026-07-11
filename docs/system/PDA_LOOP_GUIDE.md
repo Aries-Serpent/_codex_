@@ -1,6 +1,8 @@
 # PDA Loop Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 **Status**: Active  
 **Pattern ID**: P-PROC-001  
@@ -60,9 +62,9 @@ Before writing a single line of code or documentation, every agent MUST:
 ### Tasks
 | Priority | Task | Files | Success Criteria |
 |----------|------|-------|-----------------|
-| 🔴 P1 | ... | ... | ... |
+|  P1 | ... | ... | ... |
 | 🟡 P2 | ... | ... | ... |
-| 🟢 P3 | ... | ... | ... |
+|  P3 | ... | ... | ... |
 
 ### Risk Assessment
 - **Scope**: N files, M tests
@@ -181,11 +183,11 @@ A session is complete ONLY when:
 
 The PDA loop terminates when ALL of the following are true:
 
-1. ✅ All tasks in the plan are checked off
-2. ✅ 5+ self-review iterations completed with zero concerns
-3. ✅ CI shows 0 errors, 0 warnings on the branch
-4. ✅ Cognitive brain status updated with patterns/learnings
-5. ✅ Follow-up `@copilot` prompt posted on the PR
+1.  All tasks in the plan are checked off
+2.  5+ self-review iterations completed with zero concerns
+3.  CI shows 0 errors, 0 warnings on the branch
+4.  Cognitive brain status updated with patterns/learnings
+5.  Follow-up `@copilot` prompt posted on the PR
 
 If any criterion is not met → loop back to **PLAN** with updated context.
 

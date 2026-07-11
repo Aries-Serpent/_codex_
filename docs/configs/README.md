@@ -1,4 +1,6 @@
 # OmegaConf Configuration - MOVED
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 ⚠️ **This directory has been consolidated**
 
@@ -15,7 +17,7 @@ All configuration files have been moved to **[`docs/configuration/`](../configur
 All configuration documentation is now centralized at:
 👉 **[`docs/configuration/`](../configuration/)**
 
-## Quick Start
+## Quickstart
 
 1. Go to [`docs/configuration/`](../configuration/)
 2. Read [`INDEX.md`](../configuration/INDEX.md) for overview

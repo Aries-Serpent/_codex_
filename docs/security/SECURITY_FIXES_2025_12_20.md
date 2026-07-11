@@ -1,4 +1,7 @@
 # Security Fixes Report - 2025-12-20
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-22T01:50:00Z | Author: Automated Security Review
 
 ## Executive Summary
@@ -11,7 +14,7 @@ This document tracks the resolution of 24 high-severity security issues identifi
 
 **File:** `services/ita/app/security.py:72`  
 **Severity:** High  
-**Status:** ✅ RESOLVED
+**Status:**  RESOLVED
 
 ### Analysis
 The code uses SHA-256 for hashing API keys. While SHA-256 is not "broken", it's not ideal for password/key hashing as it's designed for speed, not resistance to brute-force attacks.
@@ -39,7 +42,7 @@ def hash_key(value: str) -> str:
 
 **File:** `src/security/core.py:55`  
 **Severity:** High  
-**Status:** ✅ RESOLVED
+**Status:**  RESOLVED
 
 ### Analysis
 Line 55 uses regex for HTML filtering: `re.sub(r"<script[^>]*>.*?</script>", "", text, flags=re.IGNORECASE | re.DOTALL)`
@@ -71,7 +74,7 @@ sanitized = bleach.clean(text, tags=allowed_tags, attributes=allowed_attrs, stri
 
 **File:** `src/codex_ml/deployment/package.py:57`  
 **Severity:** High  
-**Status:** ✅ RESOLVED
+**Status:**  RESOLVED
 
 ### Analysis
 Deployment credentials or sensitive configuration stored in clear text.
@@ -96,7 +99,7 @@ if not credentials:
 - `tools/codex_secret_scan_stub.py:62`
 
 **Severity:** High  
-**Status:** ✅ RESOLVED
+**Status:**  RESOLVED
 
 ### Analysis
 The secret scan stub writes findings (which may contain sensitive snippets) to output files.
@@ -124,7 +127,7 @@ def _sanitize_snippet(snippet: str) -> str:
 - `tools/status/generate_status_update.py:1076`
 
 **Severity:** High  
-**Status:** ✅ RESOLVED
+**Status:**  RESOLVED
 
 ### Analysis
 Logging of tokens, credentials, or other sensitive data in plain text.
@@ -188,7 +191,7 @@ def _mask_sensitive(value: str, show_chars: int = 4) -> str:
 - `services/msp_gateway/routers/admin.py:34, 57, 169, 204`
 
 **Severity:** High  
-**Status:** ✅ RESOLVED
+**Status:**  RESOLVED
 
 ### Analysis
 Logging user-controlled input without sanitization allows log injection attacks (e.g., log forging, log poisoning).
@@ -225,7 +228,7 @@ logger.info(f"User request: {sanitize_for_logging(user_input)}")
 - `src/codex_ml/tracking/writers.py:160`
 
 **Severity:** Medium-High  
-**Status:** ✅ RESOLVED
+**Status:**  RESOLVED
 
 ### Analysis
 Files created with overly permissive permissions (e.g., 0o777 or 0o666) allow unauthorized access.

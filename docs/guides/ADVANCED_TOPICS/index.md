@@ -1,4 +1,6 @@
 # Advanced Topics Index
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Status**: Placeholder document - under construction
 > **Created**: 2026-07-08

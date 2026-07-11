@@ -1,8 +1,11 @@
 # Security & Compliance Roadmap
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 **_codex_ v0.1.0 | Enterprise Security Strategy**
 
 > **Version:** 1.0.0  
-> **Last Updated:** 2026-05-27  
+> **Last Updated: 2026-07-11
 > **Enforcement:** Mandatory for all security implementations  
 > **Owner:** Security & Compliance Team
 
@@ -90,7 +93,7 @@ python scripts/ci/pre_flight_check.py --validate-lock-file
 ## 2. Code Security Layer
 
 ### 2.1 SAST — Semgrep Integration
-**Status:** ✅ Implemented  
+**Status:**  Implemented  
 **Location:** `.semgrep/`, `semgrep_rules/`, `.github/workflows/semgrep*.yml`
 
 **Coverage:**
@@ -126,7 +129,7 @@ semgrep --config=.semgrep . --json -o semgrep_results.json
 ```
 
 ## 2.2 SAST — CodeQL Integration
-**Status:** ✅ Implemented  
+**Status:**  Implemented  
 **Location:** `.codeql/`, `.github/workflows/codeql.yml`
 
 **Database:** Created on every PR  
@@ -151,7 +154,7 @@ codeql database analyze codeql_db \
 ```
 
 ## 2.3 Type Checking — Mypy
-**Status:** ✅ Implemented  
+**Status:**  Implemented  
 **Location:** `mypy.ini`, `.mypy_baseline.txt`
 
 **Coverage:** ~80% of codebase  
@@ -210,7 +213,7 @@ gitleaks detect --source . --verbose --log-opts="--all"
 ```
 
 ## 3.2 Secrets Baseline
-**Status:** ✅ Implemented  
+**Status:**  Implemented  
 **Location:** `.secrets.baseline`
 
 **False Positives Management:**
@@ -248,7 +251,7 @@ grep -r "password\|secret\|api_key\|token" --include="*.py" src/ | grep -v "test
 ## 4. Runtime Security Layer
 
 ### 4.1 Permission Models & Token Delegation
-**Status:** ✅ Implemented  
+**Status:**  Implemented  
 **Location:** `src/security/`, `src/codex_bridge/bridge_protocol_v2.py`
 
 **Token Types:**
@@ -281,7 +284,7 @@ token = mgr.create_agent_token(  # pragma: allowlist secret
 ```
 
 ## 4.2 Rate Limiting & Request Throttling
-**Status:** ✅ Implemented  
+**Status:**  Implemented  
 **Location:** `src/services/`, `slowapi>=0.1.9`
 
 **Limits Configured:**
@@ -307,7 +310,7 @@ rate_limits:
 ```
 
 ## 4.3 Audit Logging
-**Status:** ✅ Implemented  
+**Status:**  Implemented  
 **Location:** `src/monitoring/audit_logger.py`, `.codex/audit_logs/`
 
 **Events Logged:**
@@ -342,7 +345,7 @@ rate_limits:
 ## 5. Supply Chain Security
 
 ### 5.1 Dependency Verification
-**Status:** ✅ Implemented  
+**Status:**  Implemented  
 **Tool:** pip-audit, safety, dependency-check
 
 **Commands:**
@@ -358,7 +361,7 @@ dependency-check --project codex --scan src/
 ```
 
 ## 5.2 Build Integrity
-**Status:** ✅ Implemented  
+**Status:**  Implemented  
 **Location:** `Dockerfile`, `docker-compose.yml`
 
 **Measures:**
@@ -384,7 +387,7 @@ RUN chmod 555 /app
 ```
 
 ## 5.3 SBOM (Software Bill of Materials)
-**Status:** ✅ Implemented  
+**Status:**  Implemented  
 **Location:** `.github/workflows/sbom.yml`, `SBOM.json`
 
 **Format:** CycloneDX JSON  
@@ -498,6 +501,6 @@ pytest tests/security/test_audit_logging.py -v
 
 ---
 
-**Status:** ✅ Complete & Validated (2026-05-27)  
+**Status:**  Complete & Validated (2026-05-27)  
 **Next Review:** 2026-06-27  
 **Certification:** Enterprise-Grade Security Built-In ✓

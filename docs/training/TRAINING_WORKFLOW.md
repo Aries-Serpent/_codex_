@@ -1,4 +1,6 @@
 # Training Workflow
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Last Updated**: 2026-01-20  
 **Version**: v0.9.0  
@@ -11,15 +13,15 @@
 ```mermaid
 %%{init: {'accessibility': {'title': 'Model Training Workflow<br/>Configuration to Checkpoint'}, 'theme': 'base'}}%%
 graph TD
-    Start(["🚀 Training Start"]) --> LoadCfg["⚙️ Load Configuration<br/>• config.yaml<br/>• defaults resolution<br/>• override application"]
+    Start([" Training Start"]) --> LoadCfg[" Load Configuration<br/>• config.yaml<br/>• defaults resolution<br/>• override application"]
     
     LoadCfg --> ValidCfg{"Config<br/>Valid?"}
-    ValidCfg -->|"❌ Error"| CfgError["Return Error<br/>Fix and retry"]
-    ValidCfg -->|"✅ OK"| PrepData["📥 Data Preparation<br/>• Load dataset<br/>• Tokenize text<br/>• Create batches<br/>• Compute statistics"]
+    ValidCfg -->|" Error"| CfgError["Return Error<br/>Fix and retry"]
+    ValidCfg -->|" OK"| PrepData["📥 Data Preparation<br/>• Load dataset<br/>• Tokenize text<br/>• Create batches<br/>• Compute statistics"]
     
-    PrepData --> SplitData["📊 Train/Val/Test Split<br/>• training: 70%<br/>• validation: 15%<br/>• test: 15%"]
+    PrepData --> SplitData[" Train/Val/Test Split<br/>• training: 70%<br/>• validation: 15%<br/>• test: 15%"]
     
-    SplitData --> LoadModel["🧠 Load Model<br/>• Architecture: GPT-2 style<br/>• Init: Xavier/He<br/>• Parameters: 124M<br/>• Device: GPU/CPU"]
+    SplitData --> LoadModel[" Load Model<br/>• Architecture: GPT-2 style<br/>• Init: Xavier/He<br/>• Parameters: 124M<br/>• Device: GPU/CPU"]
     
     LoadModel --> Optimizer["🔄 Setup Optimizer<br/>• Algorithm: AdamW<br/>• LR: 5e-4<br/>• Weight decay: 0.01<br/>• Scheduler: Cosine"]
     
@@ -52,37 +54,37 @@ graph TD
     
     LogBatch --> BatchCheck{"More<br/>Batches?"}
     
-    BatchCheck -->|"✅ Yes"| BatchNum
-    BatchCheck -->|"❌ No"| EvalVal["🎯 Evaluate Validation<br/>• Forward on val set<br/>• Compute val loss<br/>• Compute metrics<br/>• No backprop"]
+    BatchCheck -->|" Yes"| BatchNum
+    BatchCheck -->|" No"| EvalVal[" Evaluate Validation<br/>• Forward on val set<br/>• Compute val loss<br/>• Compute metrics<br/>• No backprop"]
     
-    EvalVal --> ValMetrics["📊 Validation Metrics<br/>• Val loss: Y.YYY<br/>• Val accuracy: YY%<br/>• Best so far?"]
+    EvalVal --> ValMetrics[" Validation Metrics<br/>• Val loss: Y.YYY<br/>• Val accuracy: YY%<br/>• Best so far?"]
     
     ValMetrics --> IsBest{"Better than<br/>Best?"}
     
-    IsBest -->|"✅ Yes"| SaveBest["💾 Save Best Model<br/>• Save weights<br/>• Save optimizer state<br/>• Save epoch info"]
+    IsBest -->|" Yes"| SaveBest["💾 Save Best Model<br/>• Save weights<br/>• Save optimizer state<br/>• Save epoch info"]
     
-    IsBest -->|"❌ No"| CheckEarly["🛑 Check Early Stop<br/>• No improvement<br/>• for N epochs?"]
+    IsBest -->|" No"| CheckEarly["🛑 Check Early Stop<br/>• No improvement<br/>• for N epochs?"]
     
     SaveBest --> CheckEarly
     
     CheckEarly --> StopEarly{"/No improve<br/>N epochs?"}
     
-    StopEarly -->|"✅ Stop"| StopEpoch["🛑 Early Stopping<br/>Trigger"]
+    StopEarly -->|" Stop"| StopEpoch["🛑 Early Stopping<br/>Trigger"]
     
-    StopEarly -->|"❌ Continue"| LRSchedule["🔄 Update LR Schedule<br/>• Cosine schedule<br/>• Decay: 1 - t/T<br/>• New LR: 4.9e-4"]
+    StopEarly -->|" Continue"| LRSchedule["🔄 Update LR Schedule<br/>• Cosine schedule<br/>• Decay: 1 - t/T<br/>• New LR: 4.9e-4"]
     
     LRSchedule --> EpochCheck{"More<br/>Epochs?"}
     
-    EpochCheck -->|"✅ Yes"| EpochNum
-    EpochCheck -->|"❌ No"| EpochDone["✅ Training Done"]
+    EpochCheck -->|" Yes"| EpochNum
+    EpochCheck -->|" No"| EpochDone[" Training Done"]
     
     StopEpoch --> EpochDone
     
     EpochDone --> LoadBest["📂 Load Best Model<br/>• Restore weights<br/>• Optimizer state"]
     
-    LoadBest --> EvalTest["🎯 Evaluate Test<br/>• Forward on test set<br/>• Final metrics<br/>• No backprop"]
+    LoadBest --> EvalTest[" Evaluate Test<br/>• Forward on test set<br/>• Final metrics<br/>• No backprop"]
     
-    EvalTest --> TestMetrics["📊 Final Test Metrics<br/>• Test loss: Z.ZZZ<br/>• Test accuracy: ZZ%<br/>• Precision: 0.XX<br/>• F1: 0.XX"]
+    EvalTest --> TestMetrics[" Final Test Metrics<br/>• Test loss: Z.ZZZ<br/>• Test accuracy: ZZ%<br/>• Precision: 0.XX<br/>• F1: 0.XX"]
     
     TestMetrics --> SaveFinal["💾 Save Final Checkpoint<br/>• Weights<br/>• Config<br/>• Metadata<br/>• Hyperparameters<br/>• Training stats"]
     
@@ -92,12 +94,12 @@ graph TD
     
     LogExp --> NotifyGH["🐙 Notify GitHub<br/>• PR comment<br/>• 'Training complete'<br/>• Metrics summary<br/>• Checkpoint link"]
     
-    NotifyGH --> End(["✅ Training Complete"])
+    NotifyGH --> End([" Training Complete"])
     
     CfgError -.error.-> End
     
     %% Error handling
-    Forward -.catch.-> ErrorHandle["❌ Handle Error<br/>• Log error<br/>• Save checkpoint<br/>• Alert user<br/>• Cleanup"]
+    Forward -.catch.-> ErrorHandle[" Handle Error<br/>• Log error<br/>• Save checkpoint<br/>• Alert user<br/>• Cleanup"]
     ErrorHandle --> End
     
     %% Styling
@@ -213,19 +215,19 @@ Epoch 1/30
   Batch 2: loss=4.189, acc=0.18, lr=5.0e-4
   ...
   Batch 100: loss=3.234, acc=0.35, lr=5.0e-4
-  Val: loss=3.156, acc=0.37 ✅ NEW BEST
+  Val: loss=3.156, acc=0.37  NEW BEST
   
 Epoch 2/30
   ...
-  Val: loss=3.089, acc=0.41 ✅ NEW BEST
+  Val: loss=3.089, acc=0.41  NEW BEST
 
 Epoch 15/30 (trained 6 hours)
   ...
-  Val: loss=2.123, acc=0.72 ✅ NEW BEST
+  Val: loss=2.123, acc=0.72  NEW BEST
 
 Epoch 20/30
   ...
-  Val: loss=2.145, acc=0.71 ❌ No improvement (5/5)
+  Val: loss=2.145, acc=0.71  No improvement (5/5)
   🛑 Early stopping triggered
 
 Final Test Results:

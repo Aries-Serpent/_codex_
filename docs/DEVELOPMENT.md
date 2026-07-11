@@ -1,4 +1,6 @@
 # Development Setup Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Last Updated**: 2026-07-08  
 **Version**: 1.0.0
@@ -16,7 +18,7 @@ This guide walks you through setting up your development environment to contribu
 
 ---
 
-## Quick Start
+## Quickstart
 
 Get up and running in 5 minutes:
 

@@ -1,6 +1,8 @@
 # Kubernetes Deployment Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 This guide outlines the key components required to run Codex ML on Kubernetes using Helm or raw manifests.
 

@@ -1,10 +1,12 @@
 # Guides & References
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 Comprehensive guides, references, and documentation for repository usage and architecture.
 
-## Quick Start
+## Quickstart
 - [Quickstart Guide](./quickstart.md) - Get started quickly
 
 ## Architecture & Design
@@ -21,8 +23,8 @@ Comprehensive guides, references, and documentation for repository usage and arc
 
 ## Additional Resources
 - [Testing Conventions](../testing/TESTING_CONVENTIONS.md)
-- [Main README](https://github.com/Aries-Serpent/_codex_/blob/main/README.md)
-- [Contributing Guide](https://github.com/Aries-Serpent/_codex_/blob/main/CONTRIBUTING.md)
+- [Main README](../README.md)
+- [Contributing Guide](../CONTRIBUTING.md)
 
 ## Quick Links
 - [Back to Main Documentation](../README.md)

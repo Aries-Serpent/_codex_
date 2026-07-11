@@ -1,4 +1,6 @@
 # Codex ML Architecture - Consolidated Reference
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Version**: 1.1.0 (Consolidated)  
 > **Last Updated**: 2026-06-22  
@@ -653,9 +655,9 @@ See: `docs/deployment/kubernetes-guide.md`
 
 ### Phase 1: Consolidation (Current)
 
-- ✅ Single authoritative architecture document
-- ✅ Merged documentation sources
-- ✅ Redirect notices for old docs
+-  Single authoritative architecture document
+-  Merged documentation sources
+-  Redirect notices for old docs
 - ⏳ Link validation and cross-references
 
 ### Phase 2: Enhancement (Planned)

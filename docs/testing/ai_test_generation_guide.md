@@ -1,4 +1,6 @@
 # AI-Assisted Test Generation Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 ## Overview
 
@@ -14,7 +16,7 @@ This guide explains how to use the test generation framework to create comprehen
 6. [Best Practices](#best-practices)
 7. [Troubleshooting](#troubleshooting)
 
-## Quick Start
+## Quickstart
 
 ### Generate Tests for a Specific Flow
 

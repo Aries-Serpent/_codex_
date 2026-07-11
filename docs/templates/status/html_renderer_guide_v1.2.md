@@ -1,6 +1,9 @@
 # Guide: Status HTML Renderer (v1.2)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
-🧠 Roles: [Primary: Publisher], [Secondary: Reviewer] ⚡ Energy: 5
+ Roles: [Primary: Publisher], [Secondary: Reviewer] ⚡ Energy: 5
 
 Purpose
 - Render a shareable HTML status report from the v1.2 JSON.

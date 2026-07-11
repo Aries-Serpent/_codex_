@@ -1,6 +1,8 @@
 # Codex Evaluator v3 — Rubric (Local-Only)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 This page summarizes the evaluator rules captured in `manifests/codex_eval_rules.v3.json`.
 

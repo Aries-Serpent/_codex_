@@ -1,4 +1,6 @@
 # Cognitive Evolution Tree — Process Mapping
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Last Updated**: 2026-06-22
 **Version**: 3.0.0  
@@ -16,20 +18,20 @@ graph TD
         P6[Phase 6: MCP Package System<br/>9 Topics · 93KB Docs]
     end
 
-    subgraph Cognitive["🧠 Cognitive Era (2025-12 → 2026-01)"]
+    subgraph Cognitive[" Cognitive Era (2025-12 → 2026-01)"]
         P7[Phase 7: Cognitive Brain<br/>100+ Files · 22 Modules]
         P8[Phase 8: Doc Consolidation<br/>693+ Files Indexed]
         P9[Phase 9: Coverage & Perf<br/>90% Threshold · Hydra Training]
         P10[Phase 10: Genesis Foundation<br/>Owner Guard · Safety Layers]
     end
 
-    subgraph Advancement["🚀 Advancement Era (2026-01 → Present)"]
-        P11[Phase 11: MCP Advanced<br/>✅ PS-11 + PS-12 Complete]
-        P12[Phase 12: Agent Enhancement<br/>✅ PS-13 Complete · 🟢 PS-14 Active]
-        PS11[PS-11: Size Estimation ✅<br/>--estimate flag]
-        PS12[PS-12: Exclude Patterns ✅<br/>--exclude flag]
-        PS13[PS-13: Agent Task Router ✅<br/>L4 Classification · 7 Categories]
-        PS14[PS-14: MSV Dashboard 🟢<br/>L3 Visualization · Design Complete]
+    subgraph Advancement[" Advancement Era (2026-01 → Present)"]
+        P11[Phase 11: MCP Advanced<br/> PS-11 + PS-12 Complete]
+        P12[Phase 12: Agent Enhancement<br/> PS-13 Complete ·  PS-14 Active]
+        PS11[PS-11: Size Estimation <br/>--estimate flag]
+        PS12[PS-12: Exclude Patterns <br/>--exclude flag]
+        PS13[PS-13: Agent Task Router <br/>L4 Classification · 7 Categories]
+        PS14[PS-14: MSV Dashboard <br/>L3 Visualization · Design Complete]
         P11 --- PS11
         P11 --- PS12
         P12 --- PS13
@@ -81,12 +83,12 @@ graph TD
 
 ---
 
-## 🧬 Planset Dependency Graph
+##  Planset Dependency Graph
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing "🔒 Security Plansets", PS-02: IPC Bridge<br/>Hardening'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing " Security Plansets", PS-02: IPC Bridge<br/>Hardening'}}%%
 graph LR
-    subgraph Security["🔒 Security Plansets"]
+    subgraph Security[" Security Plansets"]
         PS02[PS-02: IPC Bridge<br/>Hardening]
         PS04[PS-04: Privacy-First<br/>Memory PII]
         PS05[PS-05: Token Security<br/>Neutralization]
@@ -98,22 +100,22 @@ graph LR
         PS08[PS-08: Microservice<br/>Root Cleanup]
     end
 
-    subgraph Intelligence["🧠 Intelligence Plansets"]
+    subgraph Intelligence[" Intelligence Plansets"]
         PS06[PS-06: Knowledge<br/>Crawler]
         PS06e[PS-06e: Crawler<br/>Enhancement]
     end
 
-    subgraph Operations["⚙️ Operations Plansets"]
+    subgraph Operations[" Operations Plansets"]
         PS07[PS-07: Business Logic<br/>D365 SLA]
         PS09[PS-09: Training<br/>Unification]
         PS10[PS-10: Owner Guard<br/>CI/CD]
     end
 
-    subgraph Advancement["🚀 Advancement Plansets"]
-        PS11[PS-11: MCP Size<br/>Estimation ✅]
-        PS12[PS-12: MCP Exclude<br/>Patterns ✅]
-        PS13[PS-13: Agent Task<br/>Router ✅]
-        PS14[PS-14: MSV Dashboard<br/>🟢 Active]
+    subgraph Advancement[" Advancement Plansets"]
+        PS11[PS-11: MCP Size<br/>Estimation ]
+        PS12[PS-12: MCP Exclude<br/>Patterns ]
+        PS13[PS-13: Agent Task<br/>Router ]
+        PS14[PS-14: MSV Dashboard<br/> Active]
     end
 
     PS01 -->|"Config foundation"| PS03
@@ -149,7 +151,7 @@ graph LR
 
 ---
 
-## 🤖 Agent Evolution Lineage
+##  Agent Evolution Lineage
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "Generation 1: Standalone Agents", CI Testing Agent'}}%%
@@ -224,7 +226,7 @@ graph TD
 
 ---
 
-## 📊 Capability Maturity Model
+##  Capability Maturity Model
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "Level 1: Reactive", Code Suggestions'}}%%
@@ -301,4 +303,4 @@ timeline
 - [Evolution Timeline](EVOLUTION_TIMELINE.md) — Detailed phase history
 - [Planset Registry](PLANSET_REGISTRY.md) — Queryable planset catalog
 - [AI Emergence Storyboard](AI_EMERGENCE_STORYBOARD.md) — Narrative context
-- [Agent Evolution Map](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/cognitive_brain/COGNITIVE_BRAIN_AGENT_EVOLUTION_MAP.md) — Detailed agent lineage
+- [Agent Evolution Map](../.codex/cognitive_brain/COGNITIVE_BRAIN_AGENT_EVOLUTION_MAP.md) — Detailed agent lineage

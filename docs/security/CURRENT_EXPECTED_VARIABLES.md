@@ -1,46 +1,48 @@
 # Current Expected Variables and Secrets - _codex_ Repository
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > ⚠️ **SUPERSEDED** — This document is preserved for historical reference only.  
 > **The current unified reference is: [`docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md`](../admin/GITHUB_VARIABLES_MASTER_GUIDE.md)**
 
 **Generated**: 2026-06-22
-**Status**: ✅ Verified Against Codebase
+**Status**:  Verified Against Codebase
 **Purpose**: Reference document for all secrets and variables
 
 ---
 
-## 📊 Complete Inventory
+##  Complete Inventory
 
-### 🔐 Repository Secrets (10 total)
+###  Repository Secrets (10 total)
 
 | Secret Name | Usage | Referenced In | Status |
 |-------------|-------|---------------|--------|
-| `CODEX_GHP_TOKEN_BASE64` | Base64-encoded GitHub token | copilot-with-mcp.yml, token-rotation.yml | ✅ Active |
-| `CODEX_GHP_TOKEN_CONFIG` | Combined AES config (JSON) | copilot-with-mcp.yml, token-rotation.yml | ✅ Active |
+| `CODEX_GHP_TOKEN_BASE64` | Base64-encoded GitHub token | copilot-with-mcp.yml, token-rotation.yml |  Active |
+| `CODEX_GHP_TOKEN_CONFIG` | Combined AES config (JSON) | copilot-with-mcp.yml, token-rotation.yml |  Active |
 | `CODEX_MASTER_KEY` | Master encryption key | (Reserved for future use) | 🟡 Planned |
-| `ENABLE_LIVE_TESTS` | Enable live API tests | integration-gated.yml | ✅ Active |
-| `GH_TOKEN` | GitHub token (alias) | Multiple workflows | ✅ Active |
-| `GITHUB_CODEX` | OpenAI API key | agent-runtime.yml | ✅ Active |
-| `GITHUB_TOKEN` | Default GitHub Actions token | Auto-provided by Actions | ✅ Active |
+| `ENABLE_LIVE_TESTS` | Enable live API tests | integration-gated.yml |  Active |
+| `GH_TOKEN` | GitHub token (alias) | Multiple workflows |  Active |
+| `GITHUB_CODEX` | OpenAI API key | agent-runtime.yml |  Active |
+| `GITHUB_TOKEN` | Default GitHub Actions token | Auto-provided by Actions |  Active |
 | `GITLEAKS_LICENSE` | Gitleaks license key for Pro/Enterprise | security-suite.yml | 🟡 Optional |
-| `OPENAI_API_KEY` | OpenAI API key | integration-gated.yml | ✅ Active |
-| `PINECONE_API_KEY` | Pinecone vector DB key | integration-gated.yml | ✅ Active |
+| `OPENAI_API_KEY` | OpenAI API key | integration-gated.yml |  Active |
+| `PINECONE_API_KEY` | Pinecone vector DB key | integration-gated.yml |  Active |
 
 ### 📦 Repository Variables (11 total)
 
 | Variable Name | Usage | Referenced In | Status |
 |---------------|-------|---------------|--------|
-| `CODEX_AGENT_NAME` | Agent identifier | copilot-with-mcp.yml | ✅ Active |
-| `CODEX_API_VERSION` | API version string | copilot-with-mcp.yml | ✅ Active |
-| `CODEX_LOG_LEVEL` | Logging verbosity | copilot-with-mcp.yml | ✅ Active |
-| `CODEX_ORG_NAME` | Organization name | copilot-with-mcp.yml | ✅ Active |
-| `CODEX_REPO_ID` | Repository identifier | copilot-with-mcp.yml | ✅ Active |
-| `CODEX_SECURITY_ADMIN_GUIDE_B64` | Base64 admin guide | security-tools-bootstrap.yml | ✅ Active |
-| `CODEX_SECURITY_DECODER_MODULE_B64` | Base64 decoder module | security-tools-bootstrap.yml | ✅ Active |
-| `CODEX_SECURITY_ENCRYPTION_TOOL_B64` | Base64 encryption tool | security-tools-bootstrap.yml | ✅ Active |
-| `CODEX_SECURITY_MANIFEST_JSON` | Security manifest | security-tools-bootstrap.yml | ✅ Active |
-| `GENESIS_TIMESTAMP` | Repository creation time | (Metadata) | ✅ Active |
-| `RUNS_ON` | Default runner label | (Workflow configuration) | ✅ Active |
+| `CODEX_AGENT_NAME` | Agent identifier | copilot-with-mcp.yml |  Active |
+| `CODEX_API_VERSION` | API version string | copilot-with-mcp.yml |  Active |
+| `CODEX_LOG_LEVEL` | Logging verbosity | copilot-with-mcp.yml |  Active |
+| `CODEX_ORG_NAME` | Organization name | copilot-with-mcp.yml |  Active |
+| `CODEX_REPO_ID` | Repository identifier | copilot-with-mcp.yml |  Active |
+| `CODEX_SECURITY_ADMIN_GUIDE_B64` | Base64 admin guide | security-tools-bootstrap.yml |  Active |
+| `CODEX_SECURITY_DECODER_MODULE_B64` | Base64 decoder module | security-tools-bootstrap.yml |  Active |
+| `CODEX_SECURITY_ENCRYPTION_TOOL_B64` | Base64 encryption tool | security-tools-bootstrap.yml |  Active |
+| `CODEX_SECURITY_MANIFEST_JSON` | Security manifest | security-tools-bootstrap.yml |  Active |
+| `GENESIS_TIMESTAMP` | Repository creation time | (Metadata) |  Active |
+| `RUNS_ON` | Default runner label | (Workflow configuration) |  Active |
 
 ### 🌍 Common Environment Variables (50+ total)
 
@@ -67,9 +69,9 @@ These secrets should be created by running the encryption tool:
 
 ```python
 # Primary secrets (choose one method)
-CODEX_GHP_TOKEN_BASE64       # ✅ Recommended: Simple encoding
+CODEX_GHP_TOKEN_BASE64       #  Recommended: Simple encoding
 CODEX_GHP_TOKEN_HEX          # Alternative: Hex encoding
-CODEX_GHP_TOKEN_CONFIG       # ✅ Recommended: Combined AES config
+CODEX_GHP_TOKEN_CONFIG       #  Recommended: Combined AES config
 
 # AES-256-GCM components (if not using combined config)
 CODEX_GHP_TOKEN_AES_KEY
@@ -159,7 +161,7 @@ secrets:
 
 ---
 
-## ✅ Verification Checklist
+##  Verification Checklist
 
 Use this checklist to verify your secrets/variables configuration:
 
@@ -209,21 +211,21 @@ Use this checklist to verify your secrets/variables configuration:
 ### Compatibility
 
 All variables listed are compatible with:
-- ✅ GitHub Actions workflows
-- ✅ `token_encryption_tool.py` (v2.0)
-- ✅ `copilot_token_decoder.py` (v2.0)
-- ✅ `security-tools-bootstrap.yml` workflow
-- ✅ All agent workflows in `.github/workflows/`
+-  GitHub Actions workflows
+-  `token_encryption_tool.py` (v2.0)
+-  `copilot_token_decoder.py` (v2.0)
+-  `security-tools-bootstrap.yml` workflow
+-  All agent workflows in `.github/workflows/`
 
 ---
 
-## 📚 Related Documentation
+##  Related Documentation
 
 - **Token Setup**: [`docs/admin/security/ADMIN_TOKEN_SETUP.md`](../admin/security/ADMIN_TOKEN_SETUP.md)
-- **Encryption Tool**: [`scripts/security/token_encryption_tool.py`](https://github.com/Aries-Serpent/_codex_/blob/main/scripts/security/token_encryption_tool.py)
+- **Encryption Tool**: [`scripts/security/token_encryption_tool.py`](../scripts/security/token_encryption_tool.py)
 - **Decoder Module**: `scripts/security/copilot_token_decoder.py`
 - **Security Policy**: [`SECURITY.md`](../SECURITY.md)
-- **Secrets Configuration**: [`.github/agents/SECRETS_CONFIGURATION.md`](https://github.com/Aries-Serpent/_codex_/blob/main/.github/agents/SECRETS_CONFIGURATION.md)
+- **Secrets Configuration**: [`.github/agents/SECRETS_CONFIGURATION.md`](../.github/agents/SECRETS_CONFIGURATION.md)
 - **Token Review**: [`docs/security/token_encryption_tool_review_2026-01-01.md`](token_encryption_tool_review_2026-01-01.md)
 
 ---

@@ -1,6 +1,8 @@
 # Tutorial 03 — Setting Up Continuous Learning
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 **Estimated time:** 30 minutes  
 **Prerequisites:** Tutorials 01 and 02 recommended first
@@ -136,9 +138,9 @@ Before promoting the new model, run it through the eval gate:
 
 ```python
 if pipeline.eval_gate(eval_metrics):
-    print("✅ New model passed all quality thresholds")
+    print(" New model passed all quality thresholds")
 else:
-    print("❌ Model rejected — keeping previous version")
+    print(" Model rejected — keeping previous version")
     print("   Reasons:", pipeline._gate.evaluate(eval_metrics).reasons)
 ```
 
@@ -179,7 +181,7 @@ promoted = pipeline.promote(
 )
 
 if promoted:
-    print(f"🚀 Model promoted: {registry['model_path']}")
+    print(f" Model promoted: {registry['model_path']}")
     print(f"   Promoted at:   {registry['promoted_at']}")
 ```
 

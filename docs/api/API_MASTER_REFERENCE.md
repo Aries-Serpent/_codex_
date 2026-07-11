@@ -1,9 +1,10 @@
 # Comprehensive API Reference Master
+**Version:** v0.2.1
 
 > **Consolidated Master Document** for Codex APIs  
 > **Created**: 2026-07-08  
 > **Consolidation Campaign**: Phase 12 WS3  
-> **Status**: ✅ Active Master Document
+> **Status**:  Active Master Document
 
 **Consolidated from** 8 source files:
 - docs/API_REFERENCE.md
@@ -497,5 +498,5 @@ def search_codebase(query, limit=10):
 
 **This document is the authoritative API reference for Codex.**
 
-*Last Updated: 2026-07-08*  
-*Consolidation Status: ✅ Complete (8 files merged)*
+*Last Updated: 2026-07-08
+*Consolidation Status:  Complete (8 files merged)*

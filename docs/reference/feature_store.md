@@ -1,6 +1,7 @@
 # Feature Store API Reference
+**Last Updated:** 2026-07-11
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## Overview
 
@@ -540,5 +541,5 @@ metadata = FeatureMetadata(
 ## See Also
 
 - [Feature Engineering Guide](./feature_engineering.md) - Best practices and patterns
-- [Feature Store Monitoring](https://github.com/Aries-Serpent/_codex_/blob/main/src/codex_ml/features/monitoring.py) - Health checks and alerts
+- [Feature Store Monitoring](../src/codex_ml/features/monitoring.py) - Health checks and alerts
 - [Training Pipeline Integration](../training/) - Using features in training

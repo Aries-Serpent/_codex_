@@ -1,10 +1,12 @@
 # Getting Started Guide for API Consumers
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-07-08  
+**Last Updated: 2026-07-08
 **Target Audience:** Backend developers, API integrators, SDK users, third-party developers  
 **Estimated Time:** 10-15 minutes to first API call
 
-## 🎯 Your Goal
+##  Your Goal
 
 Integrate Codex ML into your applications via REST APIs, Python SDK, or client libraries. This guide covers authentication, rate limiting, error handling, and common API patterns.
 
@@ -437,7 +439,7 @@ response = client.predict(...)
 
 ---
 
-## 📚 Documentation
+##  Documentation
 
 - **Full API Reference**: [API Docs](../API_REFERENCE_PHASE_15_16.md)
 - **Python SDK Docs**: [SDK Documentation](../api/PYTHON_SDK.md)
@@ -452,4 +454,4 @@ response = client.predict(...)
 
 ---
 
-**Happy integrating! 🚀**
+**Happy integrating! **

@@ -1,6 +1,8 @@
 # Checkpoint Integrity (Atomic Writes & Digests)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 Codex checkpoints are persisted with **atomic write semantics** to avoid torn files:
 

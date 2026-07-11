@@ -1,6 +1,8 @@
 # Quickstart: Local Quality Gates
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 These checks run on your machine (local-only) to catch formatting and fence issues early.
 

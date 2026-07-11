@@ -1,6 +1,8 @@
 # Tutorial: training a Codex model offline
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 This walkthrough uses the new `codex_ml.codex_model` and `codex_ml.codex_data`
 helpers to run a deterministic training loop without external services.

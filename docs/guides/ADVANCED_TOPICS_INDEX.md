@@ -1,10 +1,12 @@
 # Advanced Topics & Specialized Guides Index
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-07-08
+**Last Updated: 2026-07-08
 
 ---
 
-## 📚 Advanced Guides Available
+##  Advanced Guides Available
 
 ### Model Optimization & Performance
 
@@ -131,7 +133,7 @@
 
 ---
 
-## 🎯 Choose by Your Goal
+##  Choose by Your Goal
 
 ### "I want to make my model faster"
 → [Quantization](./ADVANCED_QUANTIZATION.md)
@@ -162,7 +164,7 @@
 
 ---
 
-## 📖 Reading Order by Experience Level
+##  Reading Order by Experience Level
 
 ### Intermediate (6-12 months ML experience)
 1. LoRA Fine-tuning
@@ -218,7 +220,7 @@
 
 ---
 
-## 📚 External Resources
+##  External Resources
 
 ### Papers & Research
 - Quantization: [Binary Networks](https://arxiv.org/abs/1602.02830)
@@ -251,7 +253,7 @@
 
 ---
 
-## 🚀 Next Steps
+##  Next Steps
 
 1. **Pick your goal** from "Choose by Your Goal" section
 2. **Read the corresponding guide**

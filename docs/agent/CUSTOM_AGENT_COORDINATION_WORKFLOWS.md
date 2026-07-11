@@ -1,4 +1,6 @@
 # Agent Workflow Coordination Diagrams
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Document:** Mermaid Workflow Diagrams for Multi-Agent Orchestration  
 > **Version:** 1.0.0  
@@ -25,21 +27,21 @@
 ```mermaid
 graph TB
     subgraph "Copilot Agents"
-        Orchestrator["🎯 Orchestrator<br/>(coordinator)"]
+        Orchestrator[" Orchestrator<br/>(coordinator)"]
 
         subgraph "Domain Specialists"
             CICD["🔧 CI/CD<br/>auto-healer<br/>ci-testing"]
             Testing["🧪 Testing<br/>coverage<br/>alignment"]
-            Docs["📚 Docs<br/>consolidation<br/>freshness"]
-            Security["🔒 Security<br/>scanning<br/>remediation"]
-            Config["⚙️ Config<br/>validation<br/>migration"]
+            Docs[" Docs<br/>consolidation<br/>freshness"]
+            Security[" Security<br/>scanning<br/>remediation"]
+            Config[" Config<br/>validation<br/>migration"]
         end
     end
 
     subgraph "Execution Environment"
         Repository["📦 Repository<br/>(codebase)"]
         GitHub["🔗 GitHub API<br/>(events, workflows)"]
-        Results["📊 Results<br/>(artifacts)"]
+        Results[" Results<br/>(artifacts)"]
     end
 
     Orchestrator -->|selects & delegates| CICD
@@ -111,7 +113,7 @@ graph TD
     H1 -->|Migrate| H1B["➡️ config-migration-assistant"]
     H1 -->|PyTorch| H1C["➡️ meta-tensor-validator"]
 
-    D1A --> I["✅ Single Agent<br/>or Delegate"]
+    D1A --> I[" Single Agent<br/>or Delegate"]
     D1B --> I
     D1C --> I
     D1D --> I
@@ -136,11 +138,11 @@ graph TD
     J -->|No| K["🔁 Sequential<br/>Execution"]
     J -->|Yes| L["⚡ Parallel<br/>Delegation<br/>2-4 agents"]
 
-    K --> M["📊 Collect Results"]
+    K --> M[" Collect Results"]
     L --> M
 
     M --> N["✔️ Verify & Merge"]
-    N --> O["✅ Task Complete"]
+    N --> O[" Task Complete"]
 ```
 
 ---
@@ -163,17 +165,17 @@ graph TD
     C2 --> D
     C3 --> D
     C4 --> D
-    C5 --> E["📊 Classify<br/>& Recommend"]
+    C5 --> E[" Classify<br/>& Recommend"]
 
     E --> C
 
-    D --> F["✅ Fix Applied"]
+    D --> F[" Fix Applied"]
 
     F --> G["🔄 Re-run CI"]
 
     G --> H{Result?}
 
-    H -->|Pass| I["✅ Resolved"]
+    H -->|Pass| I[" Resolved"]
     H -->|Fail| J{"Same<br/>Error?"}
 
     J -->|Yes| K["📈 Escalate<br/>to Human"]
@@ -181,7 +183,7 @@ graph TD
 
     I --> L["📝 Log Resolution"]
     K --> L
-    L --> M["✅ Complete"]
+    L --> M[" Complete"]
 ```
 
 ---
@@ -190,9 +192,9 @@ graph TD
 
 ```mermaid
 graph TD
-    A["🎯 Testing Audit<br/>Initiated"] --> B["📊 Collect Metrics"]
+    A[" Testing Audit<br/>Initiated"] --> B[" Collect Metrics"]
 
-    B --> C["❌ Failing Tests?"]
+    B --> C[" Failing Tests?"]
     B --> D["⚠️ Flaky Tests?"]
     B --> E["📉 Coverage Gaps?"]
 
@@ -220,13 +222,13 @@ graph TD
 
     H --> I{All Criteria<br/>Met?}
 
-    I -->|Yes| J["✅ Add Edge<br/>Cases"]
+    I -->|Yes| J[" Add Edge<br/>Cases"]
     I -->|No| K["❓ Escalate<br/>Failures"]
 
     J --> L["➡️ test-enhancement-agent"]
     K --> M["📋 Human<br/>Review"]
 
-    L --> N["✅ Audit<br/>Complete"]
+    L --> N[" Audit<br/>Complete"]
     M --> N
 ```
 
@@ -236,7 +238,7 @@ graph TD
 
 ```mermaid
 graph TD
-    A["📚 Documentation<br/>Audit"] --> B{Scope?}
+    A[" Documentation<br/>Audit"] --> B{Scope?}
 
     B -->|Structural| B1["➡️ unified-doc-agent"]
     B -->|Links| B2["➡️ link-validator-agent"]
@@ -251,20 +253,20 @@ graph TD
 
     B5 --> C["⏳ Agents Execute"]
 
-    C --> D["📊 Collect Findings"]
+    C --> D[" Collect Findings"]
 
     D --> E["🔀 Merge Reports"]
 
     E --> F["⚠️ Issues Found?"]
 
-    F -->|None| G["✅ Docs Healthy"]
+    F -->|None| G[" Docs Healthy"]
     F -->|Yes| H["🔧 Auto-fix<br/>Issues"]
 
     H --> I["📝 Generate<br/>Report"]
 
     I --> J["👁️ Human<br/>Review"]
 
-    J --> K["✅ Audit<br/>Complete"]
+    J --> K[" Audit<br/>Complete"]
     G --> K
 ```
 
@@ -274,7 +276,7 @@ graph TD
 
 ```mermaid
 graph TD
-    A["🔒 Security<br/>Scan"] --> B{Scan Type?}
+    A[" Security<br/>Scan"] --> B{Scan Type?}
 
     B -->|CodeQL| B1["➡️ codeql-alert-resolution-agent"]
     B -->|GHAS| B2["➡️ code-scanning-remediation-agent"]
@@ -289,7 +291,7 @@ graph TD
 
     B5 --> C["⏳ Agents<br/>Execute"]
 
-    C --> D["📊 Aggregate<br/>Findings"]
+    C --> D[" Aggregate<br/>Findings"]
 
     D --> E{Severity?}
 
@@ -301,7 +303,7 @@ graph TD
     E1 --> F["➡️ Remediation<br/>Agent"]
     E2 --> F
     E3 --> G["👁️ Human<br/>Review"]
-    E4 --> H["✅ Complete"]
+    E4 --> H[" Complete"]
 
     F --> I["🔄 Verify<br/>Fix"]
 
@@ -320,7 +322,7 @@ graph TD
 
 ```mermaid
 graph LR
-    A["🎯 Primary<br/>Agent"] -->|delegate| B["⚡ Lane 1"]
+    A[" Primary<br/>Agent"] -->|delegate| B["⚡ Lane 1"]
     A -->|delegate| C["⚡ Lane 2"]
     A -->|delegate| D["⚡ Lane 3"]
     A -->|delegate| E["⚡ Lane 4"]
@@ -330,10 +332,10 @@ graph LR
     D -->|exec| D1["Agent-C<br/>Work"]
     E -->|exec| E1["Agent-D<br/>Work"]
 
-    B1 --> B2["✅ Result-A"]
-    C1 --> C2["✅ Result-B"]
-    D1 --> D2["✅ Result-C"]
-    E1 --> E2["✅ Result-D"]
+    B1 --> B2[" Result-A"]
+    C1 --> C2[" Result-B"]
+    D1 --> D2[" Result-C"]
+    E1 --> E2[" Result-D"]
 
     B2 -.->|merge| F["🔀 Consolidate<br/>Results"]
     C2 -.->|merge| F
@@ -344,7 +346,7 @@ graph LR
 
     G --> H{Conflicts?}
 
-    H -->|No| I["✅ Return<br/>Merged Result"]
+    H -->|No| I[" Return<br/>Merged Result"]
     H -->|Yes| J["🔧 Resolve<br/>Conflicts"]
 
     J --> I
@@ -356,22 +358,22 @@ graph LR
 
 ```mermaid
 graph TD
-    A["🚀 Session Start"] --> B["📖 Load Context<br/>& Priors"]
+    A[" Session Start"] --> B[" Load Context<br/>& Priors"]
 
-    B --> C["🎯 Identify Tasks<br/>in Backlog"]
+    B --> C[" Identify Tasks<br/>in Backlog"]
 
     C --> D["🏗️ Build<br/>Execution Plan"]
 
-    D --> E["✅ Plan<br/>Review"]
+    D --> E[" Plan<br/>Review"]
 
     E --> F{"Approve<br/>Plan?"}
 
     F -->|No| G["🔄 Revise Plan"]
     G --> E
 
-    F -->|Yes| H["🚀 Execute<br/>Phase 1"]
+    F -->|Yes| H[" Execute<br/>Phase 1"]
 
-    H --> I["📊 Collect<br/>Results"]
+    H --> I[" Collect<br/>Results"]
 
     I --> J{"More<br/>Work?"}
 
@@ -382,7 +384,7 @@ graph TD
 
     L --> M["💾 Archive<br/>Artifacts"]
 
-    M --> N["✅ Session<br/>Complete"]
+    M --> N[" Session<br/>Complete"]
 
     style A fill:#90EE90
     style N fill:#FFB6C6
@@ -394,7 +396,7 @@ graph TD
 
 ```mermaid
 graph TD
-    A["⏰ Session Time<br/>Available?"] -->|Yes| B["🎯 Identify<br/>Open Lane"]
+    A["⏰ Session Time<br/>Available?"] -->|Yes| B[" Identify<br/>Open Lane"]
     A -->|No| END["🏁 Session End"]
 
     B --> C{Lane<br/>Available?}
@@ -403,12 +405,12 @@ graph TD
     D -->|Timeout| A
     D -->|Ready| B
 
-    C -->|Yes| E["🎯 Find Next<br/>Task"]
+    C -->|Yes| E[" Find Next<br/>Task"]
 
     E --> F{Task<br/>Found?}
 
     F -->|No| A
-    F -->|Yes| G["🎯 Select<br/>Best Agent"]
+    F -->|Yes| G[" Select<br/>Best Agent"]
 
     G --> H["📤 Delegate<br/>Work"]
 
@@ -417,7 +419,7 @@ graph TD
     I --> J{Result<br/>Success?}
 
     J -->|No| K["🔧 Escalate<br/>or Retry"]
-    J -->|Yes| L["✅ Accept<br/>Result"]
+    J -->|Yes| L[" Accept<br/>Result"]
 
     K --> M{Can<br/>Retry?}
     M -->|Yes| G
@@ -443,7 +445,7 @@ graph TD
 
 ```mermaid
 graph TB
-    A["🎯 Session Start<br/>Full Autonomy"] --> B["📋 Load Task<br/>Backlog"]
+    A[" Session Start<br/>Full Autonomy"] --> B["📋 Load Task<br/>Backlog"]
 
     B --> C["🏃 Phase 1:<br/>Initial Sweep"]
 
@@ -457,12 +459,12 @@ graph TB
     C3 -.->|result| X
     C4 -.->|result| X
 
-    X --> Y["✅ Merge &<br/>Validate"]
+    X --> Y[" Merge &<br/>Validate"]
 
-    Y --> Z["📊 Assess<br/>State"]
+    Y --> Z[" Assess<br/>State"]
 
     Z -->|More work| AA["🔄 Phase 2:<br/>Secondary Tasks"]
-    Z -->|Done| AB["✅ Complete"]
+    Z -->|Done| AB[" Complete"]
 
     AA -->|Lane 1| AA1["Agent-A2"]
     AA -->|Lane 2| AA2["Agent-B2"]
@@ -472,14 +474,14 @@ graph TB
     AA2 -.->|result| AY
     AA3 -.->|result| AY
 
-    AY --> AZ["✅ Merge &<br/>Validate"]
-    AZ --> BAA["📊 Assess<br/>State"]
+    AY --> AZ[" Merge &<br/>Validate"]
+    AZ --> BAA[" Assess<br/>State"]
 
     BAA -->|More work| BB["🔄 Phase N:<br/>Final Push"]
     BAA -->|Done| AB
 
     BB --> BC["⏳ Execute<br/>Remaining"]
-    BC --> BD["✅ Complete"]
+    BC --> BD[" Complete"]
     BD --> AB
 
     AB --> AC["💾 Archive<br/>Artifacts"]

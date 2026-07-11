@@ -1,4 +1,6 @@
 # Codex Optimization Implementation Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Status**: All 10 Codex processing issues addressed with research-backed fixes.  
 > **Last Updated**: 2026-06-22  

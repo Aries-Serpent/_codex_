@@ -1,6 +1,8 @@
 # Evaluation & Metrics
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 Compute average evaluation loss, perplexity, and token-level accuracy per epoch.
 

@@ -1,6 +1,9 @@
 # Schema Enhancements v1.2 — Context-Aware Updates for `_codex_`
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
-🧠 Roles: [Primary: Schema Architect], [Secondary: Repository Analyst] ⚡ Energy: 5  
+ Roles: [Primary: Schema Architect], [Secondary: Repository Analyst] ⚡ Energy: 5  
 ⚛️ Physics: Path🛤️ Fields🔄 Patterns👁️ Redundancy🔀 Balance⚖️
 
 ## Executive Summary
@@ -181,11 +184,11 @@ This document details the enhancements made to the status update schema (v1.1 �
 
 ## Validation
 The updated schema has been validated against:
-- ✅ JSON Schema Draft 2020-12 specification
-- ✅ Backward compatibility with v1.1 sample reports
-- ✅ Repository structure (`_codex_` codebase analysis)
-- ✅ Existing tooling (`nox`, `pytest`, `mlflow`, `hydra`)
-- ✅ Sample status reports (3 provided examples)
+-  JSON Schema Draft 2020-12 specification
+-  Backward compatibility with v1.1 sample reports
+-  Repository structure (`_codex_` codebase analysis)
+-  Existing tooling (`nox`, `pytest`, `mlflow`, `hydra`)
+-  Sample status reports (3 provided examples)
 
 ## Next Steps
 1. **Approve schema v1.2** for production use

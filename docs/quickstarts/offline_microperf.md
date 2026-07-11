@@ -1,6 +1,8 @@
 # Offline micro-perf & observability (addendum)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 This builds on the existing offline quickstart with a tiny perf harness and system samplers.
 

@@ -1,4 +1,6 @@
 # 5-Layer Architecture Overview
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Last Updated**: 2026-01-20  
 **Version**: v0.9.0  
@@ -7,7 +9,7 @@
 
 ---
 
-## Quick Reference
+## Reference
 
 The Aries-Serpent/_codex_ platform is organized into **5 horizontal layers**, each handling specific responsibilities:
 
@@ -21,18 +23,18 @@ graph TB
 
     subgraph L2["Layer 2: ML Platform"]
         TRAIN["🔄 Training Engine<br/>●Model training loops<br/>●Hyperparameter tuning<br/>●Checkpoint management"]
-        EVAL["📊 Evaluation Engine<br/>●Metric computation<br/>●Benchmark runs<br/>●Performance tracking"]
-        SERVE["🚀 Serving/Inference<br/>●Model loading<br/>●Prediction pipeline<br/>●Batch processing"]
+        EVAL[" Evaluation Engine<br/>●Metric computation<br/>●Benchmark runs<br/>●Performance tracking"]
+        SERVE[" Serving/Inference<br/>●Model loading<br/>●Prediction pipeline<br/>●Batch processing"]
     end
 
     subgraph L3["Layer 3: Data Pipeline"]
         INGEST["📥 Code Ingestion<br/>●File parsing<br/>●AST analysis<br/>●Token counting"]
         RAG["🔍 RAG System<br/>●Vector indexing<br/>●Semantic retrieval<br/>●Context building"]
-        TRANSFORM["⚙️ Data Transformation<br/>●Preprocessing<br/>●Format conversion<br/>●Feature extraction"]
+        TRANSFORM[" Data Transformation<br/>●Preprocessing<br/>●Format conversion<br/>●Feature extraction"]
     end
 
     subgraph L4["Layer 4: Infrastructure"]
-        CONFIG["⚙️ Configuration<br/>●Hydra composition<br/>●Secret management<br/>●Environment handling"]
+        CONFIG[" Configuration<br/>●Hydra composition<br/>●Secret management<br/>●Environment handling"]
         DB["💾 Database Layer<br/>●Session storage<br/>●Checkpoint persistence<br/>●Metadata management"]
         CACHE["⚡ Caching<br/>●Result caching<br/>●Model cache<br/>●Embedding cache"]
         MONITOR["📈 Monitoring<br/>●Metrics collection<br/>●Health checks<br/>●Alerts & notifications"]
@@ -42,7 +44,7 @@ graph TB
         GH["🐙 GitHub Integration<br/>●PR automation<br/>●Issue management<br/>●Workflow triggers"]
         ZENDESK["🎫 Zendesk Integration<br/>●Ticket sync<br/>●Customer support<br/>●CRM integration"]
         CLOUD["☁️ Cloud Services<br/>●Storage backends<br/>●Compute resources<br/>●API services"]
-        AUTH["🔐 Auth & Security<br/>●User authentication<br/>●Access control<br/>●Audit logging"]
+        AUTH[" Auth & Security<br/>●User authentication<br/>●Access control<br/>●Audit logging"]
     end
 
     %% Dependencies flow upward
@@ -153,7 +155,7 @@ Query → Semantic Search → Ranking → Context Assembly → Return
 
 ---
 
-### Layer 4: Infrastructure ⚙️
+### Layer 4: Infrastructure 
 **Responsibility**: System support, persistence, and observability  
 **Key Components**:
 - **Configuration** - Hydra composition and secret management
@@ -217,22 +219,22 @@ graph LR
 
 | Layer | Component | Status | Docs |
 |-------|-----------|--------|------|
-| **L1** | CLI | ✅ Production | [docs/cli](../cli/) |
-| **L1** | API Gateway | ✅ Production | [docs/api](../api/) |
-| **L2** | Training Engine | ✅ Production | [docs/training](../training/) |
-| **L2** | Evaluation Engine | ✅ Production | [docs/evaluation](../evaluation/) |
-| **L2** | Serving | ✅ Production | src/inference/ |
-| **L3** | Code Ingestion | ✅ Production | src/codex/ingestion/ |
-| **L3** | RAG System | ✅ Production | [docs/rag](../rag/) |
-| **L3** | Data Transform | ✅ Production | src/codex/data/ |
-| **L4** | Configuration | ✅ Production | [docs/configuration](../configuration/) |
-| **L4** | Database | ✅ Production | [docs/database](../database/) |
-| **L4** | Caching | ✅ Production | src/codex/cache/ |
-| **L4** | Monitoring | ✅ Production | [docs/monitoring](../monitoring/) |
-| **L5** | GitHub Integration | ✅ Production | [docs/integration](../integration/) |
-| **L5** | Zendesk Integration | ✅ Production | [docs/zendesk](../zendesk/) |
-| **L5** | Cloud Services | ✅ Production | infrastructure/ |
-| **L5** | Auth & Security | ✅ Production | [docs/security](../security/) |
+| **L1** | CLI |  Production | [docs/cli](../cli/) |
+| **L1** | API Gateway |  Production | [docs/api](../api/) |
+| **L2** | Training Engine |  Production | [docs/training](../training/) |
+| **L2** | Evaluation Engine |  Production | [docs/evaluation](../evaluation/) |
+| **L2** | Serving |  Production | src/inference/ |
+| **L3** | Code Ingestion |  Production | src/codex/ingestion/ |
+| **L3** | RAG System |  Production | [docs/rag](../rag/) |
+| **L3** | Data Transform |  Production | src/codex/data/ |
+| **L4** | Configuration |  Production | [docs/configuration](../configuration/) |
+| **L4** | Database |  Production | [docs/database](../database/) |
+| **L4** | Caching |  Production | src/codex/cache/ |
+| **L4** | Monitoring |  Production | [docs/monitoring](../monitoring/) |
+| **L5** | GitHub Integration |  Production | [docs/integration](../integration/) |
+| **L5** | Zendesk Integration |  Production | [docs/zendesk](../zendesk/) |
+| **L5** | Cloud Services |  Production | infrastructure/ |
+| **L5** | Auth & Security |  Production | [docs/security](../security/) |
 
 ---
 

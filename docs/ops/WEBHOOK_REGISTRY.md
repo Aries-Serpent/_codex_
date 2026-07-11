@@ -1,4 +1,6 @@
 # Repository Webhook Registry — Aries-Serpent/_codex_
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Audit date:** 2026-03-05T06:53:00Z
 **Audited by:** Copilot agent W-123 (`@agent-infra list-webhooks`)
@@ -14,12 +16,12 @@
 
 | Condition | Status |
 |-----------|--------|
-| `CODEX_MASTER_KEY` available in workflow | ✅ (via `secrets.CODEX_MASTER_KEY`) |
-| `WEBHOOK_SECRET` available in workflow | ✅ (via `secrets.WEBHOOK_SECRET`) |
-| `WEBHOOK_RECEIVER_URL` repo variable set | ✅ **Auto-set by Codespace `post-start.sh`** — format: `https://${CODESPACE_NAME}-8765.preview.app.github.dev/webhook/github` |
-| `POST /webhook/github` endpoint | ✅ **Implemented** in `cognitive_app/src/server/cli_api_server.py` |
+| `CODEX_MASTER_KEY` available in workflow |  (via `secrets.CODEX_MASTER_KEY`) |
+| `WEBHOOK_SECRET` available in workflow |  (via `secrets.WEBHOOK_SECRET`) |
+| `WEBHOOK_RECEIVER_URL` repo variable set |  **Auto-set by Codespace `post-start.sh`** — format: `https://${CODESPACE_NAME}-8765.preview.app.github.dev/webhook/github` |
+| `POST /webhook/github` endpoint |  **Implemented** in `cognitive_app/src/server/cli_api_server.py` |
 | Port 8765 public visibility | ⚠️ Must be set manually in Codespace Ports panel for GitHub delivery |
-| Hooks `active: true` | ❌ Both hooks have `active: false` (intentional — activate after confirming delivery works) |
+| Hooks `active: true` |  Both hooks have `active: false` (intentional — activate after confirming delivery works) |
 | **Apply result** | ⏳ **READY** — once port 8765 is public and hooks are set to `active: true` |
 
 > **To activate:** Set port 8765 to **public** in the Codespace Ports panel. Update both hooks to `active: true`
@@ -144,7 +146,7 @@ sequenceDiagram
 | **Events** | `push`, `pull_request`, `issue_comment`, `pull_request_review_comment`, `workflow_run`, `repository_dispatch`, `check_run`, `check_suite` |
 | **Content type** | `application/json` |
 | **Secret** | `WEBHOOK_SECRET` org secret (HMAC-SHA256) |
-| **SSL verification** | ✅ Enabled |
+| **SSL verification** |  Enabled |
 | **Active** | `false` — pending server deployment |
 | **Status** | ⏳ PENDING DEPLOYMENT |
 
@@ -196,14 +198,14 @@ graph LR
 
 | GitHub Event | Webhook-Triggerable | Critical Workflows | AAIS Relevance |
 |---|---|---|---|
-| `workflow_run` | ✅ | `cognitive_brain_ci_feedback.yml` | Pillar 2: Adaptive Learning |
-| `pull_request` | ✅ | `agent-auth-delegation.yml` | Pillar 3: Reliability |
-| `issue_comment` | ✅ | `chatops_copilot_trigger.yml`, `agent-handoff-gate.yml`, `session-watchdog.yml`, `agent-var-writer.yml` | Pillar 3: Automation Coverage |
-| `push` | ✅ | 20+ workflows | Pillar 1: CI/CD Maturity |
-| `check_run` / `check_suite` | ✅ | Status monitoring | Pillar 3: Observability |
-| `repository_dispatch` | ✅ | `agent_infrastructure_manager.yml` | Pillar 3: Automation |
-| `schedule` | ❌ (cron, not webhook) | 15+ workflows | — |
-| `workflow_dispatch` | ❌ (manual, not webhook) | 60+ workflows | — |
+| `workflow_run` |  | `cognitive_brain_ci_feedback.yml` | Pillar 2: Adaptive Learning |
+| `pull_request` |  | `agent-auth-delegation.yml` | Pillar 3: Reliability |
+| `issue_comment` |  | `chatops_copilot_trigger.yml`, `agent-handoff-gate.yml`, `session-watchdog.yml`, `agent-var-writer.yml` | Pillar 3: Automation Coverage |
+| `push` |  | 20+ workflows | Pillar 1: CI/CD Maturity |
+| `check_run` / `check_suite` |  | Status monitoring | Pillar 3: Observability |
+| `repository_dispatch` |  | `agent_infrastructure_manager.yml` | Pillar 3: Automation |
+| `schedule` |  (cron, not webhook) | 15+ workflows | — |
+| `workflow_dispatch` |  (manual, not webhook) | 60+ workflows | — |
 
 ---
 
@@ -214,8 +216,8 @@ graph LR
 graph LR
     GH["GitHub\n(sender)"] -->|POST + X-Hub-Signature-256| RECV["Receiver endpoint"]
     RECV -->|HMAC-SHA256(body, WEBHOOK_SECRET)| VERIFY{"Signature\nvalid?"}
-    VERIFY -->|✅ Yes| PROCESS["Process payload"]
-    VERIFY -->|❌ No| REJECT["HTTP 403\nDrop payload"]
+    VERIFY -->| Yes| PROCESS["Process payload"]
+    VERIFY -->| No| REJECT["HTTP 403\nDrop payload"]
 
     style VERIFY fill:#f59e0b,color:#000
     style REJECT fill:#ef4444,color:#fff
@@ -224,11 +226,11 @@ graph LR
 
 | Security Control | Status | Implementation |
 |---|---|---|
-| HMAC-SHA256 signature | ✅ Configured in schema | `WEBHOOK_SECRET` org secret → `webhook_configurator.py` |
-| SSL/TLS verification | ✅ `insecure_ssl: "0"` | Set in `create_hook()` body |
-| Secret rotation runbook | ✅ Exists | `docs/ops/HMAC_rotation.md` |
-| Token for management | ✅ Documented | `CODEX_ADMIN_KEY` (Webhooks:write) or `CODEX_MASTER_KEY` (admin:repo_hook) |
-| Receiver HMAC validation | ✅ **Implemented** | `POST /webhook/github` in `cognitive_app/src/server/cli_api_server.py` — fails closed if `WEBHOOK_SECRET` not set |
+| HMAC-SHA256 signature |  Configured in schema | `WEBHOOK_SECRET` org secret → `webhook_configurator.py` |
+| SSL/TLS verification |  `insecure_ssl: "0"` | Set in `create_hook()` body |
+| Secret rotation runbook |  Exists | `docs/ops/HMAC_rotation.md` |
+| Token for management |  Documented | `CODEX_ADMIN_KEY` (Webhooks:write) or `CODEX_MASTER_KEY` (admin:repo_hook) |
+| Receiver HMAC validation |  **Implemented** | `POST /webhook/github` in `cognitive_app/src/server/cli_api_server.py` — fails closed if `WEBHOOK_SECRET` not set |
 
 ---
 

@@ -1,14 +1,16 @@
 # Prompt Templates - User Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Purpose**: Standards and guidelines for AI agent prompt templates in the `_codex_` repository.
 
 **Last Updated**: 2026-06-22  
 **Version**: 2.0.0  
-**Status**: 🟢 Active
+**Status**:  Active
 
 ---
 
-## 📚 Available Prompts
+##  Available Prompts
 
 ### Active Prompts
 
@@ -42,11 +44,11 @@ All prompts should follow this standard format:
 **Last Updated**: YYYY-MM-DD  
 **Purpose**: [One-line description]  
 **Target Agent**: [GitHub Copilot | ChatGPT | Custom]  
-**Status**: 🟢 Active | 🟡 Draft | 🔴 Deprecated
+**Status**:  Active | 🟡 Draft |  Deprecated
 
 ---
 
-## 🧠 Context
+##  Context
 
 ### Cognitive Brain References
 - [Cognitive Map](../system/CODEBASE_COGNITIVE_MAP.md) - System architecture
@@ -59,7 +61,7 @@ All prompts should follow this standard format:
 
 ---
 
-## 🎯 Objective
+##  Objective
 
 [Clear, measurable goal statement]
 
@@ -77,7 +79,7 @@ All prompts should follow this standard format:
 
 ---
 
-## ✅ Validation
+##  Validation
 
 ### Acceptance Criteria
 - [ ] Criterion 1
@@ -90,7 +92,7 @@ All prompts should follow this standard format:
 
 ---
 
-## 📚 Related
+##  Related
 
 - Related Prompt: `other_prompt.md` (placeholder)
 - Documentation: `../path/to/doc.md` (placeholder)
@@ -108,7 +110,7 @@ All prompts should follow this standard format:
 
 **Always include** cognitive brain references:
 ```markdown
-## 🧠 Context
+##  Context
 
 Start by loading the cognitive brain:
 1. [Cognitive Map](../system/CODEBASE_COGNITIVE_MAP.md) - Understand architecture
@@ -120,7 +122,7 @@ Start by loading the cognitive brain:
 
 **Be specific** about goals:
 ```markdown
-## 🎯 Objective
+##  Objective
 
 Increase test coverage from 72% to 80% by adding tests for:
 - Uncovered branches in error handling
@@ -156,7 +158,7 @@ Success metric: `pytest --cov --cov-fail-under=80` passes
 
 **Define success** measurably:
 ```markdown
-## ✅ Validation
+##  Validation
 
 ### Acceptance Criteria
 - [ ] Coverage ≥ 80%
@@ -237,7 +239,7 @@ mypy src/
 
 ---
 
-## 📊 Prompt Effectiveness Metrics
+##  Prompt Effectiveness Metrics
 
 ### Track These Metrics
 
@@ -257,7 +259,7 @@ mypy src/
 
 ---
 
-## 🎯 Creating New Prompts
+##  Creating New Prompts
 
 ### Checklist
 
@@ -290,7 +292,7 @@ git commit -m "docs: Add new prompt for [purpose]"
 
 ---
 
-## 📚 Related Documentation
+##  Related Documentation
 
 - [Agent Continuation Protocol](../workflows/AGENT_CONTINUATION_PROTOCOL.md) - Session handoff
 - [Cognitive Brain](../system/) - Context system

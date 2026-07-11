@@ -1,10 +1,12 @@
 # Getting Started Guide for ML Engineers
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-07-08  
+**Last Updated: 2026-07-08
 **Target Audience:** ML engineers, MLOps professionals, production ML specialists  
 **Estimated Time:** 20-25 minutes to production deployment
 
-## 🎯 Your Goal
+##  Your Goal
 
 Deploy, monitor, and scale ML models in production with enterprise-grade reliability, versioning, and observability. This guide covers the full ML lifecycle from model registration to canary deployment.
 
@@ -115,7 +117,7 @@ registry.register(
     is_private=False  # Make public for Hugging Face Hub
 )
 
-print(f"✅ Model registered: {registry.latest_version()}")
+print(f" Model registered: {registry.latest_version()}")
 ```
 
 ### Version Control & Lineage
@@ -343,7 +345,7 @@ if drift_report['detected']:
     
     # Auto-trigger retraining if needed
     if drift_report['recommendation'] == 'retrain':
-        print("🚀 Auto-triggering retraining pipeline...")
+        print(" Auto-triggering retraining pipeline...")
         # trigger_retraining_pipeline()
 ```
 
@@ -416,12 +418,12 @@ while canary.is_running():
     print(f"Canary latency: {status['canary_latency_ms']:.0f}ms")
     
     if status['should_rollback']:
-        print("❌ Rollback triggered - reverting to stable version")
+        print(" Rollback triggered - reverting to stable version")
         canary.rollback()
         break
     
     if status['canary_percent'] == 100:
-        print("✅ Canary deployment successful!")
+        print(" Canary deployment successful!")
         canary.complete()
         break
     
@@ -441,8 +443,8 @@ bg = BlueGreenDeployment(
 )
 
 # Deploy green environment (zero downtime)
-print("🔵 Blue (production) running...")
-print("🟢 Green (staging) starting...")
+print(" Blue (production) running...")
+print(" Green (staging) starting...")
 bg.deploy_green()
 
 # Run smoke tests on green
@@ -450,13 +452,13 @@ smoke_tests = bg.run_smoke_tests()
 print(f"Smoke tests passed: {smoke_tests['passed']}/{smoke_tests['total']}")
 
 if not smoke_tests['all_passed']:
-    print("❌ Smoke tests failed - keeping blue production")
+    print(" Smoke tests failed - keeping blue production")
     bg.destroy_green()
 else:
     # Switch traffic instantly
     print("⚡ Switching traffic blue → green...")
     bg.switch_traffic()
-    print("🟢 Green is now production!")
+    print(" Green is now production!")
     
     # Keep blue as fallback for quick rollback
     time.sleep(300)  # Wait 5 minutes
@@ -567,7 +569,7 @@ kubectl get hpa  # Monitor
 
 ---
 
-## 📚 Next Steps
+##  Next Steps
 
 - **CI/CD Pipeline**: [GitHub Actions Setup](./CI_CD_SETUP.md)
 - **Kubernetes Guide**: [K8s Deployment](../admin/KUBERNETES_DEPLOYMENT.md)
@@ -582,4 +584,4 @@ kubectl get hpa  # Monitor
 
 ---
 
-**Welcome to enterprise ML! 🚀**
+**Welcome to enterprise ML! **

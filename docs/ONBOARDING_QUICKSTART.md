@@ -1,8 +1,10 @@
-# 🚀 Codex ML: 5-Minute Onboarding Quickstart
+#  Codex ML: 5-Minute Onboarding Quickstart
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Total Setup Time:** 5 minutes (local) or 15 minutes (Docker)  
 > **Audience:** New developers, ML engineers, AI researchers  
-> **Updated:** 2026-06-27  
+> **Updated: 2026-06-27
 
 ---
 
@@ -25,7 +27,7 @@ docker build -t codex-ml .
 docker run -it codex-ml python -m codex.cli train --config config/examples/minimal.yaml
 ```
 
-**✅ Success:** You should see training logs and a checkpoint saved to `outputs/`.
+** Success:** You should see training logs and a checkpoint saved to `outputs/`.
 
 ---
 
@@ -53,7 +55,7 @@ clang --version  # macOS
 
 ---
 
-## 🎯 Path 1: Local Development Setup (5 minutes)
+##  Path 1: Local Development Setup (5 minutes)
 
 ### Step 1: Clone & Navigate (1 min)
 ```bash
@@ -89,14 +91,14 @@ python -m codex.cli train --config config/examples/minimal.yaml
 python examples/basic_training.py
 ```
 
-**✅ Success Indicators:**
+** Success Indicators:**
 - Training logs appear in console
 - Checkpoint saved to `outputs/checkpoints/`
 - No errors or warnings
 
 ---
 
-## 🎯 Path 2: Docker Setup (15 minutes)
+##  Path 2: Docker Setup (15 minutes)
 
 ### Step 1: Clone Repository
 ```bash
@@ -127,7 +129,7 @@ python -m codex.cli train --config config/examples/minimal.yaml
 
 ---
 
-## 🎯 Path 3: Minimal Setup (Code Examples Only)
+##  Path 3: Minimal Setup (Code Examples Only)
 
 If you just want to explore code without full installation:
 
@@ -146,13 +148,13 @@ python -c "from codex.cli import app; print('Import successful!')"
 
 ## 🧭 What to Do Next?
 
-### 🤖 Interested in Agents & Automation?
+###  Interested in Agents & Automation?
 → Read [Cognitive Brain Guide](./cognitive_brain/README.md)
 - 145+ autonomous agents
 - Decision-making patterns
 - Self-healing CI/CD
 
-### 📊 Interested in Machine Learning?
+###  Interested in Machine Learning?
 → Read [ML Training Guide](./training/README.md)
 - Distributed training with PyTorch
 - Hyperparameter tuning with Hydra
@@ -170,7 +172,7 @@ python -c "from codex.cli import app; print('Import successful!')"
 - Environment variables
 - Plugin architecture
 
-### 📚 Want to Understand the Architecture?
+###  Want to Understand the Architecture?
 → Read [Architecture Deep Dive](./architecture/INDEX.md)
 - 5-layer architecture
 - Design patterns
@@ -184,7 +186,7 @@ python -c "from codex.cli import app; print('Import successful!')"
 
 ---
 
-## ✅ Verify Installation
+##  Verify Installation
 
 Run this to verify everything is set up correctly:
 
@@ -195,7 +197,7 @@ import codex
 import hydra
 import torch
 import ray
-print('✅ All core imports successful!')
+print(' All core imports successful!')
 "
 
 # Check CLI
@@ -209,7 +211,7 @@ pytest tests/unit/test_imports.py -v
 
 ## 🆘 Common Setup Issues
 
-### ❌ "Python 3.12 not found"
+###  "Python 3.12 not found"
 **Solution:** Install Python 3.12+
 ```bash
 # macOS with Homebrew
@@ -223,20 +225,20 @@ python3.12 -m venv .venv
 # Windows: Download from python.org
 ```
 
-### ❌ "ModuleNotFoundError: No module named 'torch'"
+###  "ModuleNotFoundError: No module named 'torch'"
 **Solution:** Reinstall dependencies
 ```bash
 pip install --force-reinstall torch
 pip install -e ".[dev]"
 ```
 
-### ❌ "C++ compiler not found (Windows)"
+###  "C++ compiler not found (Windows)"
 **Solution:** Install Microsoft C++ Build Tools
 1. Download from [Microsoft Visual C++](https://visualstudio.microsoft.com/cpp-build-tools/)
 2. Run installer and select "C++ build tools"
 3. Restart terminal and try again
 
-### ❌ "cuda/GPU errors"
+###  "cuda/GPU errors"
 **Solution:** Use CPU-only build
 ```bash
 # Uninstall GPU PyTorch
@@ -246,7 +248,7 @@ pip uninstall torch torchvision torchaudio -y
 pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
 ```
 
-### ❌ "Permission denied" on `.venv/bin/activate`
+###  "Permission denied" on `.venv/bin/activate`
 **Solution:** Make it executable
 ```bash
 chmod +x .venv/bin/activate
@@ -281,7 +283,7 @@ source .venv/bin/activate
 
 ---
 
-## 📚 Key Resources
+##  Key Resources
 
 | Resource | Purpose | Time |
 |----------|---------|------|
@@ -293,7 +295,7 @@ source .venv/bin/activate
 
 ---
 
-## 💡 Pro Tips
+##  Pro Tips
 
 - **Use editable install**: `pip install -e ".[dev]"` lets you edit code without reinstalling
 - **Activate venv every session**: Always run `source .venv/bin/activate` before coding
@@ -307,7 +309,7 @@ source .venv/bin/activate
 
 ---
 
-## 🤖 Getting Help
+##  Getting Help
 
 - **Setup issues?** → [Troubleshooting Guide](./TROUBLESHOOTING.md)
 - **Architecture questions?** → [Architecture Guide](./architecture/INDEX.md)
@@ -325,4 +327,4 @@ You've successfully set up Codex ML! 🎉
 
 **Questions?** Check [Troubleshooting](./TROUBLESHOOTING.md) or open an issue.
 
-**Happy coding!** 🚀
+**Happy coding!** 

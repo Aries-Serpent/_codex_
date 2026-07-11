@@ -1,6 +1,8 @@
 # ADR-2025-11-02: Archive Sigstore Keyless Signing Integration
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 **Date**: 2025-11-02  
 **Status**: Accepted (Phase 2)  
@@ -13,12 +15,12 @@ The _codex_ archive system currently lacks cryptographic signatures on evidence 
 
 ## Requirements
 
-- ✅ Achieve SLSA L3 cryptographic identity binding
-- ✅ Enable tamper-evident audit trails
-- ✅ Support GitHub Actions native OIDC integration
-- ✅ Maintain backward compatibility with v1 records
-- ✅ Minimize operational overhead (no key management)
-- ✅ Support production deployment immediately
+-  Achieve SLSA L3 cryptographic identity binding
+-  Enable tamper-evident audit trails
+-  Support GitHub Actions native OIDC integration
+-  Maintain backward compatibility with v1 records
+-  Minimize operational overhead (no key management)
+-  Support production deployment immediately
 
 ## Decision
 
@@ -38,12 +40,12 @@ Integrate **Sigstore keyless signing** using GitHub OIDC tokens for cryptographi
 
 ### Positive
 
-✅ **SLSA L3 Compliance**: Evidence records cryptographically signed with actor identity  
-✅ **Zero Key Management**: Ephemeral certificates issued by Fulcio, no long-lived secrets  
-✅ **Auditability**: All signatures logged publicly in Rekor transparency log  
-✅ **GitHub Native**: Works seamlessly with GitHub Actions without additional setup  
-✅ **Backward Compatible**: Existing v1 records unaffected, optional for v2  
-✅ **Production Ready**: Sigstore GA ensures stability and support  
+ **SLSA L3 Compliance**: Evidence records cryptographically signed with actor identity  
+ **Zero Key Management**: Ephemeral certificates issued by Fulcio, no long-lived secrets  
+ **Auditability**: All signatures logged publicly in Rekor transparency log  
+ **GitHub Native**: Works seamlessly with GitHub Actions without additional setup  
+ **Backward Compatible**: Existing v1 records unaffected, optional for v2  
+ **Production Ready**: Sigstore GA ensures stability and support  
 
 ### Negative
 
@@ -64,20 +66,20 @@ Integrate **Sigstore keyless signing** using GitHub OIDC tokens for cryptographi
 ## Alternatives Considered
 
 ### Alternative 1: Traditional GPG Signing
-- ❌ Requires key management, rotation, storage
-- ❌ Not SLSA L3 compatible
-- ❌ Doesn't integrate with GitHub Actions
-- ✅ Familiar to team
+-  Requires key management, rotation, storage
+-  Not SLSA L3 compatible
+-  Doesn't integrate with GitHub Actions
+-  Familiar to team
 
 ### Alternative 2: TUF (The Update Framework)
-- ✅ Supply chain security framework
-- ❌ Heavier than needed for evidence signing
-- ❌ Requires separate infrastructure
+-  Supply chain security framework
+-  Heavier than needed for evidence signing
+-  Requires separate infrastructure
 
 ### Alternative 3: No Signing (Defer to Phase 3)
-- ✅ Faster Phase 2 delivery
-- ❌ Delays SLSA L3 achievement
-- ❌ Evidence records remain unsigned, audit trail incomplete
+-  Faster Phase 2 delivery
+-  Delays SLSA L3 achievement
+-  Evidence records remain unsigned, audit trail incomplete
 
 ## Decision Rationale
 

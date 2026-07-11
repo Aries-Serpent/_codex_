@@ -1,7 +1,9 @@
 # Installation Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Version:** 0.1.0  
-**Last Updated:** 2026-07-09  
+**Last Updated: 2026-07-09
 **Audience:** DevOps, SRE, Developers
 
 ---
@@ -132,4 +134,4 @@ docker run -p 9000:8000 aries-serpent-api:0.1.0-final
 
 **Documentation:** [docs/](../)  
 **Issues:** [GitHub Issues](https://github.com/Aries-Serpent/_codex_/issues)  
-**Last Updated:** 2026-07-09
+**Last Updated: 2026-07-09

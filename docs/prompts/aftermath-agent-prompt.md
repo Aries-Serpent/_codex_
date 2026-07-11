@@ -1,4 +1,7 @@
 # [Prompt]: AfterMath Action Workflow — Copilot Agent Emission Standard
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > **Version**: 1.0.0  
 > **Last Updated**: 2026-06-22  
 > **Purpose**: Structured session logging for AI-driven lessons learned
@@ -258,12 +261,12 @@ jobs:
 
 ## Success Criteria
 
-- ✅ Aftermath blocks emitted in every session
-- ✅ Lessons learned cumulative file updated
-- ✅ Metrics tracking operational
-- ✅ Checkpoint resume tested and working
-- ✅ Cognitive brain integration complete
-- ✅ All future Copilot sessions adopt standard
+-  Aftermath blocks emitted in every session
+-  Lessons learned cumulative file updated
+-  Metrics tracking operational
+-  Checkpoint resume tested and working
+-  Cognitive brain integration complete
+-  All future Copilot sessions adopt standard
 
 ## Best Practices
 

@@ -1,4 +1,6 @@
 # Data Flow Architecture
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Last Updated**: 2026-01-20  
 **Version**: v0.9.0  
@@ -24,9 +26,9 @@ graph LR
     end
 
     subgraph "Processing Layer"
-        Preprocess["⚙️ Preprocessor<br/>• Cleaning<br/>• Normalization<br/>• Deduplication"]
+        Preprocess[" Preprocessor<br/>• Cleaning<br/>• Normalization<br/>• Deduplication"]
         Transform["🔄 Transformer<br/>• Feature extract<br/>• Format convert<br/>• Augmentation"]
-        Embed["🧠 Embedding<br/>• Encode to vectors<br/>• Normalize<br/>• Cache vectors"]
+        Embed[" Embedding<br/>• Encode to vectors<br/>• Normalize<br/>• Cache vectors"]
     end
 
     subgraph "Storage Layer"
@@ -37,14 +39,14 @@ graph LR
 
     subgraph "Retrieval & Ranking"
         Search["🔎 Semantic Search<br/>• Encode query<br/>• Vector search<br/>• Get candidates"]
-        Rank["📊 Ranker<br/>• Score matches<br/>• Filter duplicates<br/>• Sort by relevance"]
+        Rank[" Ranker<br/>• Score matches<br/>• Filter duplicates<br/>• Sort by relevance"]
         Build["🏗️ Context Builder<br/>• Assemble chunks<br/>• Add metadata<br/>• Format output"]
     end
 
     subgraph "ML Operations"
         Train["🔄 Training<br/>• Load context<br/>• Forward pass<br/>• Backprop"]
         Cache["⚡ Cache<br/>• Store results<br/>• Embeddings<br/>• Predictions"]
-        Eval["📊 Evaluation<br/>• Load test data<br/>• Compute metrics<br/>• Compare"]
+        Eval[" Evaluation<br/>• Load test data<br/>• Compute metrics<br/>• Compare"]
     end
 
     subgraph "Output & Integration"

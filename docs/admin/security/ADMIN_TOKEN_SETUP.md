@@ -1,8 +1,10 @@
-# 🔐 Admin Token Setup Guide for _codex_
+#  Admin Token Setup Guide for _codex_
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Generated**: 2026-06-22
 > **Repository**: Aries-Serpent/_codex_
-> **Security Level**: 🔐🔐🔐🔐🔐 (5/5)
+> **Security Level**:  (5/5)
 > **Roles**: [Org Admin], [Security Officer]
 
 ## 📋 Table of Contents
@@ -22,9 +24,9 @@ This guide walks administrators through setting up **secure GitHub token storage
 
 | Method | Security | Complexity | Recommended |
 |--------|----------|------------|-------------|
-| **AES-256-GCM** | 🔐🔐🔐🔐🔐 | Medium | ✅ Production |
-| **Base64** | 🔐🔐 | Low | Development/Testing |
-| **Hex** | 🔐🔐 | Low | Alternative encoding |
+| **AES-256-GCM** |  | Medium |  Production |
+| **Base64** |  | Low | Development/Testing |
+| **Hex** |  | Low | Alternative encoding |
 
 ---
 
@@ -85,13 +87,13 @@ python3 scripts/security/token_encryption_tool.py
 **Example output**:
 
 ```
-🔐 _CODEX_ TOKEN ENCRYPTION TOOL v2.0  # pragma: allowlist secret
-⚡ Energy: 5/5 | 🧠 Security Mode Active
+ _CODEX_ TOKEN ENCRYPTION TOOL v2.0  # pragma: allowlist secret
+⚡ Energy: 5/5 |  Security Mode Active
 ================================================================================
 
 Enter GitHub token: ghp_PLACEHOLDER_EXAMPLE_TOKEN  # pragma: allowlist secret
 
-✅ Encryption complete!
+ Encryption complete!
 
 📋 COPY THESE VALUES TO GITHUB SECRETS:  # pragma: allowlist secret
 
@@ -99,7 +101,7 @@ Enter GitHub token: ghp_PLACEHOLDER_EXAMPLE_TOKEN  # pragma: allowlist secret
    Secret Name:  CODEX_GHP_TOKEN_BASE64  # pragma: allowlist secret
    Secret Value: Z2hwX3h4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4  # pragma: allowlist secret
 
-🔐 MOST SECURE - AES-256-GCM Encryption:
+ MOST SECURE - AES-256-GCM Encryption:
    Secret Name: CODEX_GHP_TOKEN_AES_KEY  # pragma: allowlist secret
    Secret Value: dGVzdGtleXZhbHVlZm9yZGVtb25zdHJhdGlvbnB1cnBvc2VzMTIz  # pragma: allowlist secret
    ...
@@ -158,7 +160,7 @@ gh secret set CODEX_GHP_TOKEN_AES_KEY --body "YOUR_AES_KEY" --repo Aries-Serpent
 python3 -c "
 from scripts.security.token_encryption_tool import copilot_get_github_token_safe
 token = copilot_get_github_token_safe()
-print('✅ Token retrieved successfully' if token else '❌ Token retrieval failed')
+print(' Token retrieved successfully' if token else ' Token retrieval failed')
 "
 
 # Method 2: Full integration test
@@ -247,25 +249,25 @@ python3 scripts/security/token_encryption_tool.py
 
 ### Token Permissions
 
-- ✅ Use **least privilege principle** (minimum required scopes)
-- ✅ Set **expiration date** (90 days recommended)
-- ✅ Enable **SSO/SAML** if available
-- ✅ Use **fine-grained tokens** when possible
+-  Use **least privilege principle** (minimum required scopes)
+-  Set **expiration date** (90 days recommended)
+-  Enable **SSO/SAML** if available
+-  Use **fine-grained tokens** when possible
 
 ### Secret Management
 
-- ✅ Never commit tokens to repository
-- ✅ Use repository secrets (not hardcoded in workflows)
-- ✅ Rotate tokens regularly
-- ✅ Revoke compromised tokens immediately
-- ✅ Enable audit logging for secret access
+-  Never commit tokens to repository
+-  Use repository secrets (not hardcoded in workflows)
+-  Rotate tokens regularly
+-  Revoke compromised tokens immediately
+-  Enable audit logging for secret access
 
 ### Access Control
 
-- ✅ Limit repository admin access
-- ✅ Review secret access logs regularly
-- ✅ Use environment protection rules
-- ✅ Enable branch protection with required reviews
+-  Limit repository admin access
+-  Review secret access logs regularly
+-  Use environment protection rules
+-  Enable branch protection with required reviews
 
 ---
 
@@ -292,13 +294,13 @@ python3 scripts/security/token_encryption_tool.py
 
 ---
 
-## 🎯 Mission Overview
+##  Mission Overview
 
 **Objective**: Enable secure token management for AI agents through AES-256-GCM encryption with zero plaintext exposure.
 
 **Energy Level**: ⚡⚡⚡⚡⚡ (5/5 - Security Critical)
 
-**Status**: 🟢 Active
+**Status**:  Active
 
 ---
 
@@ -324,11 +326,11 @@ python3 scripts/security/token_encryption_tool.py
 
 | Metric | Current | Target | Status |
 |--------|---------|--------|--------|
-| Token Encryption Method | AES-256-GCM | AES-256-GCM | 🟢 | <!-- pragma: allowlist secret -->
-| Token Rotation Frequency | 90 iterations | 90 iterations | 🟢 | <!-- pragma: allowlist secret -->
-| Plaintext Exposure | 0 instances | 0 instances | 🟢 |
-| Secret Validation | SHA-256 | SHA-256 | 🟢 | <!-- pragma: allowlist secret -->
-| Setup Completion Time | 30-45 min | <60 min | 🟢 |
+| Token Encryption Method | AES-256-GCM | AES-256-GCM |  | <!-- pragma: allowlist secret -->
+| Token Rotation Frequency | 90 iterations | 90 iterations |  | <!-- pragma: allowlist secret -->
+| Plaintext Exposure | 0 instances | 0 instances |  |
+| Secret Validation | SHA-256 | SHA-256 |  | <!-- pragma: allowlist secret -->
+| Setup Completion Time | 30-45 min | <60 min |  |
 
 ---
 
@@ -358,7 +360,7 @@ python3 scripts/security/token_encryption_tool.py
 
 ---
 
-## 🧠 Redundancy Patterns
+##  Redundancy Patterns
 
 **Rollback Strategy**: If encrypted token fails, immediately generate new token and re-run encryption process with verified parameters.
 

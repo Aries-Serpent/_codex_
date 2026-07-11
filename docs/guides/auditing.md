@@ -1,6 +1,8 @@
 # Auditing search providers
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 This guide documents how to configure the optional external search provider
 used by the Codex ML auditing pipeline. The internal ripgrep-based provider is

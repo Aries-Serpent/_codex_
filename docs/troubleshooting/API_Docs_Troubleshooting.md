@@ -1,6 +1,8 @@
 # API Docs Build Troubleshooting
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 > Common Pitfalls & Fixes
 
@@ -329,7 +331,7 @@ If issues persist after trying these solutions:
 - [API Documentation Guide](../api/index.md)
 - [Build Script Documentation](../api/index.md#building-api-documentation)
 
-## Quick Reference
+## Reference
 
 | Issue | Quick Fix |
 |-------|-----------|

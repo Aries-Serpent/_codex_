@@ -1,6 +1,8 @@
 # ADR-2025-11-03: Evidence Record Schema Versioning
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 **Date**: 2025-11-03  
 **Status**: Accepted (Phase 2)  
@@ -11,10 +13,10 @@
 
 The evidence log (`.codex/evidence/archive_ops.jsonl`) uses a fixed v1 schema. To support standardization enhancements (standardization metadata, cryptographic signatures, future Merkle proofs), we need an evolution strategy that:
 
-- ✅ Enables schema changes without breaking existing deployments
-- ✅ Supports coexistence of multiple schema versions
-- ✅ Allows automatic migration and validation
-- ✅ Maintains append-only guarantees
+-  Enables schema changes without breaking existing deployments
+-  Supports coexistence of multiple schema versions
+-  Allows automatic migration and validation
+-  Maintains append-only guarantees
 
 ## Requirements
 
@@ -100,11 +102,11 @@ version = record.get("schemaVersion", auto_detect(record))
 
 ### Positive
 
-✅ **Non-Breaking**: v1 records remain valid and queryable  
-✅ **Flexible**: Schema changes don't require all-or-nothing migration  
-✅ **Auditable**: Version field makes record provenance clear  
-✅ **Scalable**: Supports unlimited future schema versions  
-✅ **Safe**: Validation catches malformed records early  
+ **Non-Breaking**: v1 records remain valid and queryable  
+ **Flexible**: Schema changes don't require all-or-nothing migration  
+ **Auditable**: Version field makes record provenance clear  
+ **Scalable**: Supports unlimited future schema versions  
+ **Safe**: Validation catches malformed records early  
 
 ### Negative
 
@@ -151,10 +153,10 @@ python -m codex.cli archive migrate-evidence-to-v2
 ## Backward Compatibility Guarantee
 
 All existing v1 records:
-- ✅ Remain readable indefinitely
-- ✅ Valid for all queries and operations
-- ✅ No automatic modification unless explicitly migrated
-- ✅ Coexist with v2 records in same log file
+-  Remain readable indefinitely
+-  Valid for all queries and operations
+-  No automatic modification unless explicitly migrated
+-  Coexist with v2 records in same log file
 
 ## Schema Registry
 
@@ -167,10 +169,10 @@ schemas/
 └── archive_evidence_schema_v3.json   [future]
 ```text
 Each schema is:
-- ✅ JSON Schema (draft-07) compliant
-- ✅ Self-documenting (includes descriptions)
-- ✅ Versioned in git for audit trail
-- ✅ Used for runtime validation
+-  JSON Schema (draft-07) compliant
+-  Self-documenting (includes descriptions)
+-  Versioned in git for audit trail
+-  Used for runtime validation
 
 ## Timeline
 

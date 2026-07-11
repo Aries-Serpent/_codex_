@@ -1,6 +1,8 @@
 # Safety & Security Modules
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 The safety subsystem now consolidates validation, filtering, and secret management in `src/security`.
 

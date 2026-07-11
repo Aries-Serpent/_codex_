@@ -1,4 +1,7 @@
 # Prompt: Repository Audit Template
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: {{date}} {{utc_time}} | Author: mbaetiong
 > Updated: Repository Audit Template alignment (offline-first, error-capture, fence discipline)
 

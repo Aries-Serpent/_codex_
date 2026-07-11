@@ -1,6 +1,8 @@
 # Tokenisation
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 `_codex_` uses a small adapter layer to provide a consistent interface across
 different tokeniser back‑ends.  All tokenisers implement the abstract

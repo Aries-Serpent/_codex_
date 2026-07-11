@@ -1,4 +1,6 @@
 # Issue Reporting & Feature Request Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Last Updated**: 2026-07-08  
 **Version**: 1.0.0
@@ -129,7 +131,7 @@ model = load_model('/tmp/my_config/model.yaml')  # Works ✓
 
 ### Bug Report Quality Tips
 
-#### ✅ Good Bug Reports Include
+####  Good Bug Reports Include
 
 - **Title**: Specific and descriptive
   - Good: "Model loading fails with spaces in path"
@@ -161,7 +163,7 @@ model = load_model('/tmp/my_config/model.yaml')  # Works ✓
   - Good: "Python 3.12.1, Ubuntu 22.04, codex-ml 0.1.0"
   - Bad: "Latest version"
 
-#### ❌ Avoid
+####  Avoid
 
 - Vague descriptions
 - Multi-issue reports (one issue per report)
@@ -261,7 +263,7 @@ Related discussions:
 
 ### Feature Request Quality Tips
 
-#### ✅ Good Feature Requests
+####  Good Feature Requests
 
 - **Clear title**: What feature is being requested?
 - **Motivation**: Why is it needed? (not just "would be cool")
@@ -271,7 +273,7 @@ Related discussions:
 - **Alternatives**: Other ways to solve the problem
 - **Impact assessment**: How big is this change?
 
-#### ❌ Avoid
+####  Avoid
 
 - "I think this would be cool"
 - Vague descriptions without motivation
@@ -303,7 +305,7 @@ Good minimal examples:
 
 ### Example MRE
 
-**❌ Too Complex** (unnecessary dependencies):
+** Too Complex** (unnecessary dependencies):
 ```python
 from my_company.data import load_data
 from my_company.model import MyModel
@@ -321,7 +323,7 @@ model.fit(preprocessed)
 predictions = model.predict(preprocessed)
 ```
 
-**✅ Minimal** (shows only the issue):
+** Minimal** (shows only the issue):
 ```python
 # This reproduces the issue without external dependencies
 data = [
@@ -402,7 +404,7 @@ If you find the solution yourself:
 
 ## Common Mistakes & How to Avoid Them
 
-### ❌ Screenshot of Error Message
+###  Screenshot of Error Message
 
 **Wrong**:
 ```
@@ -418,13 +420,13 @@ Traceback (most recent call last):
 ValueError: invalid literal for int() with base 10: 'abc'
 ```
 
-### ❌ Asking in Wrong Place
+###  Asking in Wrong Place
 
 **Wrong**: Using issues for "how do I" questions
 
 **Right**: Use GitHub Discussions for questions, Issues for bugs/features
 
-### ❌ Missing Reproduction Steps
+###  Missing Reproduction Steps
 
 **Wrong**: "It doesn't work when I load models"
 
@@ -433,13 +435,13 @@ ValueError: invalid literal for int() with base 10: 'abc'
 2. Run `load_model('/tmp/test.yaml')`
 3. Observe ValueError
 
-### ❌ Including Secrets
+###  Including Secrets
 
 **Wrong**: Posting your API keys or credentials
 
 **Right**: Use dummy values or scrub real ones
 
-### ❌ Multiple Issues in One
+###  Multiple Issues in One
 
 **Wrong**: "Bug in loader AND feature request for streaming"
 

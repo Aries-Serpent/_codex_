@@ -1,4 +1,6 @@
 # Deep Research: GitHub Copilot Coding Agent — Discussion & Comment Posting Methodologies
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Generated**: 2026-06-22  
 > **Scope**: Methodologies for GitHub Copilot Coding Agent to post discussions, PR comments,
@@ -78,7 +80,7 @@ making it the lightest-weight method for Copilot-triggered comment posting.
         owner: context.repo.owner,
         repo: context.repo.repo,
         issue_number: context.issue.number,
-        body: '✅ Copilot agent completed analysis. See PR #...'
+        body: ' Copilot agent completed analysis. See PR #...'
       });
 ```
 
@@ -138,7 +140,7 @@ curl -s -X POST https://api.github.com/graphql \
     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   run: |
     gh pr comment ${{ github.event.pull_request.number }} \
-      --body "## 🤖 Copilot Agent Report\n\n$(cat .codex/report.md)"
+      --body "##  Copilot Agent Report\n\n$(cat .codex/report.md)"
 
     # Or create a new issue discussion
     gh issue comment $ISSUE_NUMBER --body "Analysis complete. See PR #${PR}."

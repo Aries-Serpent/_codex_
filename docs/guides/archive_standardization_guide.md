@@ -1,4 +1,6 @@
 # Archive Standardization Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Generated**: 2026-06-22 | **Author**: Archive Team | **Version**: 1.0
 
@@ -15,17 +17,17 @@
 
 ---
 
-## Introduction
+## Overview
 
 Archive standardization brings **SLSA L3 compliance**, **cryptographic integrity**, and **schema versioning** to the _codex_ archive system while maintaining **100% backward compatibility**.
 
 ### What You Get
 
-✅ **SLSA L3 Compliance** - Industry-standard supply chain security
-✅ **Schema Versioning** - Explicit v1/v2 format support
-✅ **Cryptographic Signatures** - Keyless signing via Sigstore
-✅ **Backward Compatibility** - Existing v1 records work unchanged
-✅ **Audit-Ready** - Compliance mapping and verification tools
+ **SLSA L3 Compliance** - Industry-standard supply chain security
+ **Schema Versioning** - Explicit v1/v2 format support
+ **Cryptographic Signatures** - Keyless signing via Sigstore
+ **Backward Compatibility** - Existing v1 records work unchanged
+ **Audit-Ready** - Compliance mapping and verification tools
 
 ### Prerequisites
 
@@ -52,13 +54,13 @@ python -m codex.cli archive show-standardization-status
 ============================================================
 Standard Version: 2.0
 SLSA Level: L3
-Signing Enabled: ❌ No
+Signing Enabled:  No
 Schema Versions Supported: 1.0, 2.0
 
 Compliance:
-  ✅ SLSA_L3
-  ✅ IN_TOTO_READY
-  ✅ SAA_COMPLIANT
+   SLSA_L3
+   IN_TOTO_READY
+   SAA_COMPLIANT
 ```text
 ## 2. Enable Standardization
 
@@ -259,24 +261,24 @@ print(f"Details: {result['verification_details']}")
 
 **Success**:
 ```text
-📊 Validation Results: 1234 records scanned
-   ✅ Valid: 1234
+ Validation Results: 1234 records scanned
+    Valid: 1234
    ⚠️  Warnings: 0
-   ❌ Errors: 0
+    Errors: 0
 
-✅ All checks passed!
+ All checks passed!
 ```text
 **With Issues**:
 ```text
-📊 Validation Results: 1234 records scanned
-   ✅ Valid: 1230
+ Validation Results: 1234 records scanned
+    Valid: 1230
    ⚠️  Warnings: 2
-   ❌ Errors: 2
+    Errors: 2
 
 ⚠️  Warnings:
    Line 100: Signature verification failed
 
-❌ Errors:
+ Errors:
    Line 50: Schema error: 'schemaVersion' is required
    Line 75: Invalid JSON: Expecting ',' delimiter
 ```text
@@ -311,7 +313,7 @@ python -m codex.cli archive migrate-evidence-to-v2
 ⚠️  This will modify .codex/evidence/archive_ops.jsonl. Continue? [y/N]: y
 🔄 Starting migration v1 → v2...
 📦 Backed up original to: .codex/evidence/archive_ops.jsonl.backup
-✅ Migration complete: 1234 records converted
+ Migration complete: 1234 records converted
    v1 records: 0
    v2 records: 1234
 ```text
@@ -346,7 +348,7 @@ python -m codex.cli archive validate-standardization --check-schema-version
 
 **Symptom**:
 ```text
-❌ Line 50: Schema error: 'sha256' is a required property
+ Line 50: Schema error: 'sha256' is a required property
 ```text
 **Solution**:
 1. Check record has all required fields: `ts`, `action`, `actor`, `tombstone`, `sha256`
@@ -360,7 +362,7 @@ python -m codex.cli archive validate-standardization --check-schema-version
 
 **Symptom**:
 ```text
-❌ Standardization module not available
+ Standardization module not available
 ```text
 **Solution**:
 ```bash
@@ -429,13 +431,13 @@ print(f"Operation took {elapsed*1000:.2f}ms")
 
 ### 1. Version Control
 
-✅ **DO**: Commit evidence log changes with meaningful messages
+ **DO**: Commit evidence log changes with meaningful messages
 ```bash
 git add .codex/evidence/archive_ops.jsonl
 git commit -m "Archive legacy module per retention policy"
 ```text
 
-❌ **DON'T**: Manually edit evidence log
+ **DON'T**: Manually edit evidence log
 ```bash
 # Never do this:
 vim .codex/evidence/archive_ops.jsonl
@@ -443,17 +445,17 @@ vim .codex/evidence/archive_ops.jsonl
 
 ## 2. Schema Version Selection
 
-✅ **DO**: Use v2 for new deployments
+ **DO**: Use v2 for new deployments
 ```bash
 export CODEX_STANDARDIZATION_ENABLED=true
 ```text
 
-✅ **DO**: Keep v1 for existing deployments (backward compatible)
+ **DO**: Keep v1 for existing deployments (backward compatible)
 ```bash
 # No action required - v1 works as-is
 ```text
 
-❌ **DON'T**: Mix standardization settings across environments
+ **DON'T**: Mix standardization settings across environments
 ```bash
 # Avoid:
 # Dev: CODEX_STANDARDIZATION_ENABLED=true
@@ -462,7 +464,7 @@ export CODEX_STANDARDIZATION_ENABLED=true
 
 ## 3. Signing Strategy
 
-✅ **DO**: Enable signing in production (GitHub Actions)
+ **DO**: Enable signing in production (GitHub Actions)
 ```yaml
 permissions:
   id-token: write
@@ -470,12 +472,12 @@ env:
   CODEX_ENABLE_SIGNING: "true"
 ```text
 
-✅ **DO**: Disable signing in development (faster iteration)
+ **DO**: Disable signing in development (faster iteration)
 ```bash
 export CODEX_ENABLE_SIGNING=false
 ```text
 
-❌ **DON'T**: Enable signing without OIDC setup
+ **DON'T**: Enable signing without OIDC setup
 ```bash
 # Will fail:
 CODEX_ENABLE_SIGNING=true python -m codex.cli archive store ...
@@ -484,7 +486,7 @@ CODEX_ENABLE_SIGNING=true python -m codex.cli archive store ...
 
 ## 4. Validation Frequency
 
-✅ **DO**: Validate in CI/CD pipelines
+ **DO**: Validate in CI/CD pipelines
 ```yaml
 steps:
   - name: Validate archive standardization
@@ -494,36 +496,36 @@ steps:
         --check-signatures
 ```text
 
-✅ **DO**: Validate before major migrations
+ **DO**: Validate before major migrations
 ```bash
 python -m codex.cli archive validate-standardization --check-schema-version
 ```text
 
-❌ **DON'T**: Skip validation after schema changes
+ **DON'T**: Skip validation after schema changes
 ```bash
 # Always validate after updates to standardization code
 ```text
 
 ## 5. Evidence Log Maintenance
 
-✅ **DO**: Keep evidence log in version control
+ **DO**: Keep evidence log in version control
 ```bash
 git add .codex/evidence/archive_ops.jsonl
 ```text
 
-✅ **DO**: Monitor evidence log size
+ **DO**: Monitor evidence log size
 ```bash
 ls -lh .codex/evidence/archive_ops.jsonl
 ```text
 
-✅ **DO**: Backup before migrations
+ **DO**: Backup before migrations
 ```bash
 cp .codex/evidence/archive_ops.jsonl{,.backup}
 ```text
 
 ---
 
-## Quick Reference
+## Reference
 
 ### Commands
 

@@ -1,8 +1,10 @@
 # Agent Integration Guide — PR Merge Readiness Protocol
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Status:** ✅ Production Ready  
+**Status:**  Production Ready  
 **Audience:** Copilot coding agents, CI/CD automation  
-**Last Updated:** 2026-06-25
+**Last Updated: 2026-06-25
 
 ---
 
@@ -20,7 +22,7 @@ from scripts.ci.pr_description_helper import build_pr_description_with_wec
 # (This happens automatically in build_pr_description_with_wec)
 
 # 3. Build your progress checklist
-progress_checklist = """## ✅ Session Progress
+progress_checklist = """##  Session Progress
 
 ### Phase 1: PR Body Preparation
 - [x] Created base PR description
@@ -59,42 +61,42 @@ engine_tools_report_progress(
 
 ## Operational Rules (Mandatory)
 
-### Rule 1: Read-Before-Write Pattern ✅
+### Rule 1: Read-Before-Write Pattern 
 
 **When:** Every `report_progress` call  
 **What:** Extract maintainer WEC state from live PR body before rebuilding
 
 ```python
-# ✅ CORRECT
+#  CORRECT
 pr_description = build_pr_description_with_wec(
     checklist_text=my_checklist,
     pr_number=4662  # Read live state from GitHub
 )
 
-# ❌ WRONG — reconstructs WEC from template, loses [x] selections
+#  WRONG — reconstructs WEC from template, loses [x] selections
 pr_description = my_checklist + "\n" + hardcoded_wec_template
 ```
 
-### Rule 2: Always Append WEC ✅
+### Rule 2: Always Append WEC 
 
 **When:** Every `report_progress` call  
 **What:** WEC block MUST be included in `prDescription` — never omit
 
 ```python
-# ✅ CORRECT
+#  CORRECT
 report_progress(
     prDescription=f"{checklist}\n{wec_block}",
     commitMessage="..."
 )
 
-# ❌ WRONG — WEC stripped on push
+#  WRONG — WEC stripped on push
 report_progress(
     prDescription=checklist_only,  # WEC lost!
     commitMessage="..."
 )
 ```
 
-### Rule 3: Never Uncheck Always-Required Items ✅
+### Rule 3: Never Uncheck Always-Required Items 
 
 **When:** Building/updating WEC  
 **What:** These 6 items MUST stay `[x]` (enforced automatically):
@@ -107,10 +109,10 @@ report_progress(
 6. `cost-gate.yml`
 
 ```python
-# ✅ These are auto-forced to [x] by _build_wec_block()
+#  These are auto-forced to [x] by _build_wec_block()
 # Even if existing_state has them as False, they'll be True in output
 
-# ✅ Optional items (6–8) can be toggled
+#  Optional items (6–8) can be toggled
 existing_state = {
     "copilot-agent-checkin.yml": False,  # You can uncheck this
     "copilot-agent-session-done.yml": False,  # You can uncheck this
@@ -118,7 +120,7 @@ existing_state = {
 }
 ```
 
-### Rule 4: Document Your WEC Choices ✅
+### Rule 4: Document Your WEC Choices 
 
 **When:** Setting optional items to checked  
 **What:** Explain in PR body why you're enabling optional workflows
@@ -141,7 +143,7 @@ Workflows can be skipped/dispatched by updating these checkboxes:
 **Session Note:** Enabled self-healing for test failures in test_module.py:45-67
 ```
 
-### Rule 5: Track Merge Readiness Score ✅
+### Rule 5: Track Merge Readiness Score 
 
 **When:** Each `report_progress` turn  
 **What:** Calculate and record the 10-gate readiness score
@@ -167,7 +169,7 @@ score = calculate_merge_readiness_score(gates_status)
 # Result: 85/100 (9/10 pass, security gate fails)
 
 # Include in PR description
-checklist = f"""## 📊 Merge Readiness Progress
+checklist = f"""##  Merge Readiness Progress
 - Turn 1: 45/100 (Phase 1 setup)
 - Turn 2: 68/100 (Phases 1–2 complete, security pending)
 - Turn 3: 85/100 (9/10 gates pass, 1 CodeQL alert blocking)
@@ -190,13 +192,13 @@ checklist = f"""## 📊 Merge Readiness Progress
 ## 🔧 Changes
 [Your changes]
 
-## ✅ Testing
+##  Testing
 [Your testing]
 
-## ✅ Checklist
+##  Checklist
 [Completion status]
 
-## 📊 Baseline Metrics
+##  Baseline Metrics
 [Coverage, CodeQL, AAIS score]
 
 ## 🔄 Workflow Execution Checklist
@@ -270,7 +272,7 @@ The workflow runs all 10 gates. For each failing gate:
 from scripts.ci.pr_description_helper import build_pr_description_with_wec
 
 # Build initial checklist
-checklist_turn_1 = """## 📊 Turn 1: Phase 1 Setup
+checklist_turn_1 = """##  Turn 1: Phase 1 Setup
 
 - [x] Created PR body structure
 - [x] Recorded baseline metrics (94.8% coverage, 0 CodeQL alerts)
@@ -337,7 +339,7 @@ gates = {
 score_turn_2 = calculate_merge_readiness_score(gates)  # ~68/100
 
 # Build PR description for turn 2
-checklist_turn_2 = f"""## 📊 Turn 2: Code Quality & Test Coverage
+checklist_turn_2 = f"""##  Turn 2: Code Quality & Test Coverage
 
 - [x] Fixed 12 ruff violations
 - [x] Added type hints to 8 functions
@@ -364,8 +366,8 @@ engine_tools_report_progress(
 ```
 
 **Expected Result:**
-- Code Quality gate: ✅ Pass
-- Test Coverage gate: ✅ Pass
+- Code Quality gate:  Pass
+- Test Coverage gate:  Pass
 - Merge readiness: 68/100 (+38 from setup)
 - `comment-review-gate.yml` + `deferral-language-gate.yml` still running
 
@@ -392,7 +394,7 @@ gates_turn_3 = {
 score_turn_3 = calculate_merge_readiness_score(gates_turn_3)  # 100/100
 
 # Build final PR description
-checklist_turn_3 = f"""## 📊 Turn 3: Security & Final Verification
+checklist_turn_3 = f"""##  Turn 3: Security & Final Verification
 
 - [x] CodeQL check: 0 open alerts
 - [x] Secrets baseline: Pass  # pragma: allowlist secret
@@ -400,7 +402,7 @@ checklist_turn_3 = f"""## 📊 Turn 3: Security & Final Verification
 - [x] Accountability records: Updated
 - [x] All 10 gates passing
 
-**Merge Readiness: {score_turn_3}/100 ✅ READY FOR MERGE**"""
+**Merge Readiness: {score_turn_3}/100  READY FOR MERGE**"""
 
 pr_desc_turn_3 = build_pr_description_with_wec(
     checklist_text=checklist_turn_3,
@@ -419,7 +421,7 @@ engine_tools_report_progress(
 ```
 
 **Expected Result:**
-- All 10 gates: ✅ Pass
+- All 10 gates:  Pass
 - Merge readiness: **100/100**
 - WEC: All 9 items present with always-required checked
 - Accountability: .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md updated
@@ -435,10 +437,10 @@ engine_tools_report_progress(
 
 **Solution:**
 ```python
-# ❌ WRONG
+#  WRONG
 report_progress(prDescription=checklist_only, commitMessage="Missing WEC")
 
-# ✅ CORRECT
+#  CORRECT
 from scripts.ci.pr_description_helper import build_pr_description_with_wec
 
 pr_desc = build_pr_description_with_wec(checklist_text=checklist_only, pr_number=4662)
@@ -451,7 +453,7 @@ report_progress(prDescription=pr_desc, commitMessage="Preserve WEC")
 
 **Solution:**
 ```python
-# ✅ Always pass pr_number to read live state
+#  Always pass pr_number to read live state
 pr_desc = build_pr_description_with_wec(
     checklist_text=my_checklist,
     pr_number=4662  # ← Enables reading live WEC state
@@ -495,6 +497,6 @@ python -m json.tool .codex/wec_state.json
 
 ---
 
-**Status:** ✅ Ready for Agent Deployment  
+**Status:**  Ready for Agent Deployment  
 **Last Tested:** 2026-06-25  
 **Validation:** All integration points verified

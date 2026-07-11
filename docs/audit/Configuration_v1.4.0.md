@@ -1,4 +1,5 @@
 # Configuration Guide for v1.4.0 Features
+**Last Updated:** 2026-07-11
 
 **Version**: 1.4.0  
 **Last Updated**: 2026-06-22

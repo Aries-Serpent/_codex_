@@ -1,4 +1,6 @@
 # Pattern Library Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > Complete guide to discovering, applying, and integrating patterns from the Phase 15-16 Pattern Library (Lane 2 Output).
 
@@ -358,11 +360,11 @@ print(pattern.indicators)
 
 **Step 3**: Apply fix
 ```python
-# ❌ VULNERABLE
+#  VULNERABLE
 query = f"SELECT * FROM users WHERE id = {user_id}"
 result = db.execute(query)
 
-# ✅ SECURE - Use parameterized queries
+#  SECURE - Use parameterized queries
 query = "SELECT * FROM users WHERE id = ?"
 result = db.execute(query, (user_id,))
 ```
@@ -549,13 +551,13 @@ jobs:
 
 ### 1. Pattern Selection
 
-✅ **DO**:
+ **DO**:
 - Choose patterns with confidence ≥ 0.75
 - Match patterns to your problem domain
 - Use combinations for complex issues
 - Start with high-confidence patterns
 
-❌ **DON'T**:
+ **DON'T**:
 - Apply low-confidence patterns (< 0.50) without validation
 - Mix incompatible patterns
 - Skip reading pattern rationale
@@ -563,13 +565,13 @@ jobs:
 
 ### 2. Pattern Application
 
-✅ **DO**:
+ **DO**:
 - Test patterns in branch first
 - Review generated fixes before merging
 - Update pattern feedback after use
 - Document applied patterns
 
-❌ **DON'T**:
+ **DON'T**:
 - Auto-merge pattern fixes to main
 - Apply multiple conflicting patterns simultaneously
 - Ignore pattern validation failures
@@ -577,13 +579,13 @@ jobs:
 
 ### 3. Pattern Maintenance
 
-✅ **DO**:
+ **DO**:
 - Update pattern confidence scores based on results
 - Add new patterns as you discover them
 - Archive patterns that stop working
 - Share patterns across lanes
 
-❌ **DON'T**:
+ **DON'T**:
 - Let patterns become stale
 - Forget to update affected_files list
 - Mix old and new pattern versions

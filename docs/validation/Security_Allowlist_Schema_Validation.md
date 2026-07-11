@@ -1,6 +1,9 @@
 # [Validation]: Security Allowlist Schema
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
-🧠 Roles: [Primary: Security Reviewer], [Secondary: QA Validator] ⚡ Energy: 5  
+ Roles: [Primary: Security Reviewer], [Secondary: QA Validator] ⚡ Energy: 5  
 ⚛️ Physics: Path🛤️ [Define → Validate → Enforce] Fields🔄 [JSON Schema, Allowlist] Patterns👁️ [Expiry-gated, Explicit IDs] Redundancy🔀 [Schema + Runtime checks] Balance⚖️ [Strict vs Usability]
 
 ## Rules

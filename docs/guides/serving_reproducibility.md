@@ -1,6 +1,8 @@
 # Serving Reproducibility Playbook
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 The HHG logistics serving stack prioritizes deterministic inference and offline safety. Use this checklist whenever deploying or troubleshooting the Ray Serve application.
 

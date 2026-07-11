@@ -1,10 +1,12 @@
 # Retention Policy Operations Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Version**: 1.0  
 **Last Updated**: 2026-07-15  
 **Audience**: DevOps, Infrastructure, Maintenance Teams  
 **Authority**: Phase D Tier 2 Documentation  
-**Status**: ✅ Active
+**Status**:  Active
 
 ---
 
@@ -14,7 +16,7 @@ This guide provides operational procedures for managing the artifact retention l
 
 ---
 
-## 🎯 Quick Start
+##  Quick Start
 
 ### One-Time Manual Cleanup
 
@@ -161,7 +163,7 @@ retention:
 
 ---
 
-## 📊 Monitoring & Alerting
+##  Monitoring & Alerting
 
 ### Setup Log Monitoring
 
@@ -334,7 +336,7 @@ echo "Data recovered from archive: $(date)" >> .codex/cleanup_audit.log
 
 ---
 
-## 🔒 Backup & Recovery
+##  Backup & Recovery
 
 ### Pre-Cleanup Backup
 
@@ -507,7 +509,7 @@ tar -czf .codex/archives/test.tar.gz memory/sessions/sample.ndjson
 
 ---
 
-## 📚 Related Resources
+##  Related Resources
 
 - [Retention Policy](../.codex/RETENTION_POLICY.md)
 - [Artifact Lifecycle Automation](../.codex/ARTIFACT_LIFECYCLE_AUTOMATION.md)
@@ -535,7 +537,7 @@ tar -czf .codex/archives/test.tar.gz memory/sessions/sample.ndjson
 
 ---
 
-## ✅ Sign-Off
+##  Sign-Off
 
 **Document Authority**: Phase D Tier 2  
 **Approved By**: @mbaetiong (D-mode autonomous)  

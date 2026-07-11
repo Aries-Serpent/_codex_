@@ -1,3 +1,5 @@
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 ## Table of Contents
 
@@ -5,7 +7,7 @@
 
 ## Each entry includes: Equation (canonical), Brief description, Unique "Agent" use case addressing “Due to complexity/time constraints…”, and a clear path toward Future evolution.
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ### Format per item:
 - PROMPT.Goal

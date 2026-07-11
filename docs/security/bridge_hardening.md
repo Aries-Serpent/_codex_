@@ -1,6 +1,8 @@
 # Bridge Security Hardening - Phase 3.1
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## Overview
 
@@ -192,7 +194,7 @@ See `tests/integration/test_bridge_security.py` for security validation tests:
 
 - STRIDE Threat Model
 - [SECURITY.md](../SECURITY.md)
-- [Bridge Manager Implementation](https://github.com/Aries-Serpent/_codex_/blob/main/src/bridge_manager.py)
+- [Bridge Manager Implementation](../src/bridge_manager.py)
 
 ## Compliance
 
@@ -213,8 +215,8 @@ This implementation addresses:
 
 ---
 
-**Status:** ✅ Secure bridge implementation complete (Phase 3.1)
+**Status:**  Secure bridge implementation complete (Phase 3.1)
 
-**Last Updated:** 2026-01-08
+**Last Updated: 2026-07-11
 
 **Reviewed By:** Lead Systems Architect & Integration Engineer

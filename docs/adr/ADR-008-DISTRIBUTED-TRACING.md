@@ -1,4 +1,5 @@
 # ADR-008: Distributed Tracing for Observability
+**Last Updated:** 2026-07-11
 
 **Status:** Accepted  
 **Date:** 2026-07-10  
@@ -165,12 +166,12 @@ spec:
 ## Consequences
 
 ### Positive
-✅ Complete visibility into request flow  
-✅ Performance bottlenecks identified automatically  
-✅ Easier debugging of distributed issues  
-✅ Automatic service dependency mapping  
-✅ Integrates with Prometheus metrics  
-✅ Sampling reduces overhead  
+ Complete visibility into request flow  
+ Performance bottlenecks identified automatically  
+ Easier debugging of distributed issues  
+ Automatic service dependency mapping  
+ Integrates with Prometheus metrics  
+ Sampling reduces overhead  
 
 ### Negative
 ⚠️ Additional infrastructure (Jaeger)  

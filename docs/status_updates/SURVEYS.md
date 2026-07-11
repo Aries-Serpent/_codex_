@@ -1,6 +1,8 @@
 # Survey Reports (Ring/PR Ground Truth)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 This folder captures **human-readable** surveys that embed raw, normalized output
 from Codex or other tools, without breaking Markdown rendering.
@@ -15,7 +17,7 @@ from Codex or other tools, without breaking Markdown rendering.
 - Ensures raw tool output is fenced (triple backticks) to preserve formatting
 - Mirrors the style validated in prior surveys (e.g., survey-0D_base_-and-1926-YYYY-MM-DD.md)
 
-## Quick Start
+## Quickstart
 1. Copy the template:
    ```bash
    cp docs/status_updates/TEMPLATE_survey.md \

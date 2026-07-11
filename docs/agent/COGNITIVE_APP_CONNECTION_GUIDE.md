@@ -1,8 +1,10 @@
 # Cognitive App CLI — Copilot Agent Connection Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
-> **Status:** ✅ VERIFIED 2026-03-05 (PR #3497 W-114 audit)
+> **Status:**  VERIFIED 2026-03-05 (PR #3497 W-114 audit)
 > **Server:** `http://localhost:8765` (FastAPI — auto-started by `copilot-setup-steps.yml`)
 > **Frontend:** `https://aries-serpent.github.io/_codex_/cognitive_app` (GitHub Pages SPA)
 > **Source:** `cognitive_app/src/server/cli_api_server.py`
@@ -58,17 +60,17 @@ Run these four lines at the start of every Copilot Coding Agent session to confi
 
 ```bash
 # 1 — Server alive?
-curl -sf http://localhost:8765/api/health && echo " ✅ server up"
+curl -sf http://localhost:8765/api/health && echo "  server up"
 
 # 2 — GitHub API proxy working?
 curl -sf -X POST http://localhost:8765/api/request \
   -H "Content-Type: application/json" \
   -d '{"method":"GET","url":"https://api.github.com/repos/Aries-Serpent/_codex_"}' \
-  | python3 -c "import json,sys; d=json.load(sys.stdin); b=d.get('body',{}); print('✅ repo:', b.get('full_name'), '| status:', d.get('status_code'))"
+  | python3 -c "import json,sys; d=json.load(sys.stdin); b=d.get('body',{}); print(' repo:', b.get('full_name'), '| status:', d.get('status_code'))"
 
 # 3 — History DB accessible?
 curl -sf http://localhost:8765/api/cli/history?limit=1 \
-  | python3 -c "import json,sys; d=json.load(sys.stdin); print('✅ history total:', d['total'])"
+  | python3 -c "import json,sys; d=json.load(sys.stdin); print(' history total:', d['total'])"
 
 # 4 — Env vars injected?
 echo "CODEX_CLI_API_URL=${CODEX_CLI_API_URL:-NOT SET}"
@@ -77,9 +79,9 @@ echo "COPILOT_CLI_BASE_URL=${COPILOT_CLI_BASE_URL:-NOT SET}"
 
 Expected output:
 ```
-{"status":"ok",...} ✅ server up
-✅ repo: Aries-Serpent/_codex_ | status: 200
-✅ history total: 0
+{"status":"ok",...}  server up
+ repo: Aries-Serpent/_codex_ | status: 200
+ history total: 0
 CODEX_CLI_API_URL=http://localhost:8765
 COPILOT_CLI_BASE_URL=http://localhost:8765
 ```
@@ -353,8 +355,8 @@ history = client.memory_state()    # ⚠️ needs CODEX_MASTER_KEY
 | Property | Value |
 |----------|-------|
 | URL | `https://aries-serpent.github.io/_codex_/cognitive_app` |
-| `web_fetch` | ✅ Returns static HTML shell |
-| Playwright browser | ❌ Blocked — `ERR_BLOCKED_BY_CLIENT` (sandbox network policy) |
+| `web_fetch` |  Returns static HTML shell |
+| Playwright browser |  Blocked — `ERR_BLOCKED_BY_CLIENT` (sandbox network policy) |
 | Agent direct use | Via `curl`/`BrainClient` — full functionality available |
 
 The GitHub Pages frontend is a React SPA. It communicates with the same `http://localhost:8765`
@@ -370,15 +372,15 @@ capability — all operations the frontend performs are available via the REST A
 
 | # | Operation | Method | Endpoint | HTTP | Result |
 |---|-----------|--------|----------|------|--------|
-| 1 | Brain Health | `GET` | `/api/health` | **200** | ✅ `status: ok` |
-| 2 | Run cmd | `POST` | `/api/cli/run` | **200** | ✅ `returncode: 0`, git log returned 3 commits |
-| 3 | CLI History | `GET` | `/api/cli/history` | **200** | ✅ `total: 3` after 3 prior commands |
-| 4 | Clear History | `DELETE` | `/api/cli/history` | **200** | ✅ `{"cleared": true}`, history = 0 after |
-| 5 | GET GH Repo | `POST→GET` | `/api/request` → `api.github.com/repos/…` | **200** | ✅ `full_name: Aries-Serpent/_codex_`, `language: Python` |
-| 6 | GET GH Runs | `POST→GET` | `/api/request` → `api.github.com/…/actions/runs?per_page=1` | **200** | ✅ `total_count: 40000`, latest run 22702237122 |
-| 7 | PUT proxy | `POST→PUT` | `/api/request` → `httpbin.org/put` | **200** | ✅ body echoed correctly |
-| 8 | PATCH proxy | `POST→PATCH` | `/api/request` → `httpbin.org/patch` | **200** | ✅ body echoed correctly |
-| 9 | GitHub Pages | browser | `https://aries-serpent.github.io/_codex_/cognitive_app` | ❌ | `ERR_BLOCKED_BY_CLIENT` — permanent sandbox constraint (RC-6) |
+| 1 | Brain Health | `GET` | `/api/health` | **200** |  `status: ok` |
+| 2 | Run cmd | `POST` | `/api/cli/run` | **200** |  `returncode: 0`, git log returned 3 commits |
+| 3 | CLI History | `GET` | `/api/cli/history` | **200** |  `total: 3` after 3 prior commands |
+| 4 | Clear History | `DELETE` | `/api/cli/history` | **200** |  `{"cleared": true}`, history = 0 after |
+| 5 | GET GH Repo | `POST→GET` | `/api/request` → `api.github.com/repos/…` | **200** |  `full_name: Aries-Serpent/_codex_`, `language: Python` |
+| 6 | GET GH Runs | `POST→GET` | `/api/request` → `api.github.com/…/actions/runs?per_page=1` | **200** |  `total_count: 40000`, latest run 22702237122 |
+| 7 | PUT proxy | `POST→PUT` | `/api/request` → `httpbin.org/put` | **200** |  body echoed correctly |
+| 8 | PATCH proxy | `POST→PATCH` | `/api/request` → `httpbin.org/patch` | **200** |  body echoed correctly |
+| 9 | GitHub Pages | browser | `https://aries-serpent.github.io/_codex_/cognitive_app` |  | `ERR_BLOCKED_BY_CLIENT` — permanent sandbox constraint (RC-6) |
 
 **Overall: 8/8 API operations successful. 1 known permanent limitation (browser blocked).**
 
@@ -483,8 +485,8 @@ curl -s -X POST http://localhost:8765/api/request \
 
 | Tier | Mechanism | Operation | Result |
 |------|-----------|-----------|--------|
-| **1 — Primary** | `github-mcp-server-search_repositories` MCP tool | GET repo info | ✅ `200` full response, admin perms confirmed |
-| **2 — Secondary** | `POST /api/request` → `GET /repos/…/actions/variables` | List repo vars | ✅ `200` outer; upstream `401` when `CODEX_MASTER_KEY` absent (expected — key not injected into sandbox process env); `200` with full list when key is set |
+| **1 — Primary** | `github-mcp-server-search_repositories` MCP tool | GET repo info |  `200` full response, admin perms confirmed |
+| **2 — Secondary** | `POST /api/request` → `GET /repos/…/actions/variables` | List repo vars |  `200` outer; upstream `401` when `CODEX_MASTER_KEY` absent (expected — key not injected into sandbox process env); `200` with full list when key is set |
 | **3 — Fallback** | `urllib.request` direct | (not tested — MCP was sufficient) | N/A |
 
 **Variable management (when `CODEX_MASTER_KEY` is set in server env):**
@@ -609,4 +611,4 @@ See pattern `DETECT_SECRETS_002` in `.codex/patterns/ci_failure_patterns.yaml`.
 
 ---
 
-*Last verified: 2026-03-05T04:25:08Z — PR #3497 W-114 audit | All 8 API operations confirmed ✅*
+*Last verified: 2026-03-05T04:25:08Z — PR #3497 W-114 audit | All 8 API operations confirmed *

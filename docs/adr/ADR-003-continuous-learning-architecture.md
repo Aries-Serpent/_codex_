@@ -1,6 +1,8 @@
 # ADR-003: Event-Driven Continuous Learning via Drift → Trigger → EvalGate → Promote
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 **Status:** Accepted
 **Date:** 2025-01-15

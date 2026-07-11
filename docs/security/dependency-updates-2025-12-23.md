@@ -1,6 +1,8 @@
 # Dependency Security Updates - 2025-12-23
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## Summary
 
@@ -11,28 +13,28 @@ Verified all critical dependencies are at secure versions. No vulnerable version
 ### torch (RCE hardening note)
 - **Current**: `torch>=2.2.2,<3.0.0` (requirements.txt), `torch==2.9.1+cpu` (lock.txt)
 - **Required**: >=2.2.0
-- **Status**: ✅ SECURE
+- **Status**:  SECURE
 
 ### starlette (DoS)
 - **Current**: `starlette==0.50.0` (lock.txt)
 - **Required**: >=0.38.6
-- **Status**: ✅ SECURE
+- **Status**:  SECURE
 
 ### nbconvert (Code Execution)
 - **Current**: `nbconvert==7.16.6` (lock.txt)
 - **Required**: >=7.16.5
-- **Status**: ✅ SECURE
+- **Status**:  SECURE
 - **Note**: Windows uncontrolled search path issue - no complete fix available upstream
 
 ### marshmallow (DoS)
 - **Current**: `marshmallow==3.26.1` (lock.txt)
 - **Required**: >=3.23.0
-- **Status**: ✅ SECURE
+- **Status**:  SECURE
 
 ### aiohttp (HTTP Smuggling)
 - **Current**: `aiohttp==3.12.15` (lock.txt)
 - **Required**: >=3.11.0
-- **Status**: ✅ SECURE
+- **Status**:  SECURE
 
 ## Verification Commands
 

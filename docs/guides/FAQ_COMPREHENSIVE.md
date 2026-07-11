@@ -1,11 +1,13 @@
 # Comprehensive FAQ Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-07-08  
+**Last Updated: 2026-07-08
 **Sections:** 60+ frequently asked questions organized by user type
 
 ---
 
-## 💡 Quick Search
+##  Quick Search
 
 **What's your role?**
 - [Data Scientist FAQs](#-data-scientist-faqs)
@@ -154,7 +156,7 @@ metrics = evaluator.compute(
 
 ---
 
-## 🚀 ML Engineer FAQs
+##  ML Engineer FAQs
 
 ### Deployment & Serving
 
@@ -486,7 +488,7 @@ A: Try:
 
 ---
 
-## 📚 More Help
+##  More Help
 
 - **Video Tutorials**: [YouTube Channel](https://youtube.com/codex-ml)
 - **Documentation**: [Full Docs](../index.md)

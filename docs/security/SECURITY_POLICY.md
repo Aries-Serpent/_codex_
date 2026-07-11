@@ -1,12 +1,14 @@
 # Security Policy
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## Supported Versions
 
 | Version | Supported |
 |---------|-----------|
-| main | ✅ |
+| main |  |
 
 ## Reporting Vulnerabilities
 - Email: security@codex-project.org

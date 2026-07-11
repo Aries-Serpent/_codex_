@@ -1,4 +1,7 @@
 # [Docs]: Reproducibility & Determinism
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-22 02:35:00 | Author: mbaetiong
 Roles: [Primary], [Secondary] ⚡ Energy: [5]
 
@@ -169,15 +172,15 @@ print(result["checkpoint_sha256_last"])
 
 | Item | Status | Action |
 |------|--------|--------|
-| Fixed seed default | ✅ | Use / override `seed` |
-| CUDNN deterministic toggle | ✅ | Pass `deterministic_cudnn=True` |
-| Full LR trace | ✅ | Inspect `learning_rate_history` |
-| State continuity after resume | ✅ | See `resumed_from_epoch` |
-| Checkpoint integrity hash | ✅ | Verify `checkpoint_sha256_last` |
-| Config capture | ✅ | `config.snapshot.json` |
-| Atomic latest pointer | ❌ | Future: temp + rename |
-| Retention pruning | ✅ | Configure `training.checkpoint.best_k` (defaults to 2) and inspect JSON metadata sidecars |
-| Integrity hash in pointer | ✅ | In `latest.json` |
+| Fixed seed default |  | Use / override `seed` |
+| CUDNN deterministic toggle |  | Pass `deterministic_cudnn=True` |
+| Full LR trace |  | Inspect `learning_rate_history` |
+| State continuity after resume |  | See `resumed_from_epoch` |
+| Checkpoint integrity hash |  | Verify `checkpoint_sha256_last` |
+| Config capture |  | `config.snapshot.json` |
+| Atomic latest pointer |  | Future: temp + rename |
+| Retention pruning |  | Configure `training.checkpoint.best_k` (defaults to 2) and inspect JSON metadata sidecars |
+| Integrity hash in pointer |  | In `latest.json` |
 
 ## Roadmap Enhancements
 1. Atomic write + backup for `latest.json`.

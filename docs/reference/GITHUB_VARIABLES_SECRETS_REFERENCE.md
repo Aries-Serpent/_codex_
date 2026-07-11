@@ -1,4 +1,6 @@
 # Reference: GitHub Variables & Secrets — All Scopes, All Methods
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Generated:** 2026-04-05 | **Author:** mbaetiong | **Verified against upstream:** 2026-04-05  
 > **Sources:** [Actions Secrets](https://docs.github.com/en/rest/actions/secrets) · [Actions Variables](https://docs.github.com/en/rest/actions/variables) · [Dependabot Secrets](https://docs.github.com/en/rest/dependabot/secrets) · [Codespaces Secrets](https://docs.github.com/en/rest/codespaces/secrets) · [GitHub CLI](https://cli.github.com/manual/) · [MCP Server](https://github.com/github/github-mcp-server)  
@@ -10,10 +12,10 @@
 
 | Scope | Variables | Secrets | Dependabot Secrets | Codespaces Secrets |
 |---|---|---|---|---|
-| **repository** | ✅ | ✅ | ✅ | ✅ |
-| **Organization** | ✅ | ✅ | ✅ | ✅ |
-| **Environment** | ✅ | ✅ | ✗ | ✗ |
-| **User (Codespaces)** | ✗ | ✅ | ✗ | ✅ |
+| **repository** |  |  |  |  |
+| **Organization** |  |  |  |  |
+| **Environment** |  |  | ✗ | ✗ |
+| **User (Codespaces)** | ✗ |  | ✗ |  |
 
 ---
 
@@ -298,17 +300,17 @@ gh workflow run validate.yml --repo OWNER/REPO --ref BRANCH
 
 | Toolset | Covers | Default? |
 |---|---|---|
-| `context` | `get_me`, repo context | ✅ |
-| `issues` | Create/update/read issues | ✅ |
-| `pull_requests` | Create/update/read PRs, reviews, comments | ✅ |
-| `repos` | File content, branches, commits, releases | ✅ |
-| `users` | User lookup | ✅ |
-| `actions` | workflow runs, jobs, artifacts | ❌ opt-in |
-| `secret_protection` | Secret scanning alerts (GHAS, read-only) | ❌ opt-in |
-| `dependabot` | Dependabot alerts (read-only) | ❌ opt-in |
-| `code_security` | Code scanning alerts (read-only) | ❌ opt-in |
-| `discussions` | GitHub Discussions read/write | ❌ opt-in |
-| `notifications` | Notification management | ❌ opt-in |
+| `context` | `get_me`, repo context |  |
+| `issues` | Create/update/read issues |  |
+| `pull_requests` | Create/update/read PRs, reviews, comments |  |
+| `repos` | File content, branches, commits, releases |  |
+| `users` | User lookup |  |
+| `actions` | workflow runs, jobs, artifacts |  opt-in |
+| `secret_protection` | Secret scanning alerts (GHAS, read-only) |  opt-in |
+| `dependabot` | Dependabot alerts (read-only) |  opt-in |
+| `code_security` | Code scanning alerts (read-only) |  opt-in |
+| `discussions` | GitHub Discussions read/write |  opt-in |
+| `notifications` | Notification management |  opt-in |
 
 ### 3b. ⚠️ Critical Gap — Secrets/Variables CRUD not available via MCP
 
@@ -316,18 +318,18 @@ As of 2026-04-05, the GitHub MCP Server does **not** include tools to create, up
 
 | Operation | REST API | CLI (`gh`) | MCP Server |
 |---|---|---|---|
-| Repo Actions variable (CRUD) | ✅ Full | ✅ Full | ❌ Not supported |
-| Repo Actions secret (CRUD) | ✅ Full | ✅ Full | ❌ Not supported |
-| Org Actions variable (CRUD) | ✅ Full | ✅ Full | ❌ Not supported |
-| Org Actions secret (CRUD) | ✅ Full | ✅ Full | ❌ Not supported |
-| Environment variable (CRUD) | ✅ Full | ✅ Full | ❌ Not supported |
-| Environment secret (CRUD) | ✅ Full | ✅ Full | ❌ Not supported |
-| Dependabot secret (CRUD) | ✅ Full | ✅ Full | ❌ Not supported |
-| Codespaces secret (CRUD) | ✅ Full | ✅ Full | ❌ Not supported |
-| Secret scanning alerts (read) | ✅ | ✅ | ✅ (`secret_protection`) |
-| Dependabot alerts (read) | ✅ | ✅ | ✅ (`dependabot`) |
-| workflow runs/jobs (read) | ✅ | ✅ | ✅ (`actions`) |
-| PR comments (write) | ✅ | ✅ | ✅ (`pull_requests`) |
+| Repo Actions variable (CRUD) |  Full |  Full |  Not supported |
+| Repo Actions secret (CRUD) |  Full |  Full |  Not supported |
+| Org Actions variable (CRUD) |  Full |  Full |  Not supported |
+| Org Actions secret (CRUD) |  Full |  Full |  Not supported |
+| Environment variable (CRUD) |  Full |  Full |  Not supported |
+| Environment secret (CRUD) |  Full |  Full |  Not supported |
+| Dependabot secret (CRUD) |  Full |  Full |  Not supported |
+| Codespaces secret (CRUD) |  Full |  Full |  Not supported |
+| Secret scanning alerts (read) |  |  |  (`secret_protection`) |
+| Dependabot alerts (read) |  |  |  (`dependabot`) |
+| workflow runs/jobs (read) |  |  |  (`actions`) |
+| PR comments (write) |  |  |  (`pull_requests`) |
 
 ### 3c. MCP Server Configuration — Remote (VS Code / Copilot)
 

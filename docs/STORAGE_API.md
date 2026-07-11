@@ -1,9 +1,11 @@
 # Storage & Archive API Reference
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Status:** Phase 2 - Master API Documentation  
 **Coverage:** 72+ public functions & classes  
 **Modules:** archive/dal.py, rag/indexer.py, rag/embeddings.py  
-**Last Updated:** 2026-07-08
+**Last Updated: 2026-07-08
 
 ---
 

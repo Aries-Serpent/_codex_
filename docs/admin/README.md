@@ -1,4 +1,5 @@
 # Admin Documentation
+**Version:** v0.2.1
 
 This directory contains administrative and operational documentation for managing the _codex_ system.
 

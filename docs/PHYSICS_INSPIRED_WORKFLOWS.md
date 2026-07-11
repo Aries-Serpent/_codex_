@@ -1,9 +1,11 @@
 # Physics-Inspired Workflows and CLI Reference
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Version:** 1.0.0
 > **Generated:** 2025-12-12
-> **Status:** Production Ready ✅
-> **CodeQL Scan:** Clear ✅
+> **Status:** Production Ready 
+> **CodeQL Scan:** Clear 
 
 This document provides a comprehensive reference for all physics-inspired workflows, patterns, and CLI commands available in the Aries-Serpent/_codex_ repository.
 
@@ -1307,5 +1309,5 @@ print(f"P(frontend succeeds | backend succeeds): {p_b_given_a:.2%}")
 
 **Version**: 2.0.0
 **Last Updated**: 2025-12-12
-**CodeQL Scan**: Clear ✅
+**CodeQL Scan**: Clear 
 **Maintained by**: Aries-Serpent/_codex_ team

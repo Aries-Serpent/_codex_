@@ -1,26 +1,28 @@
 # PR #4511 — What's Next
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 ## 🔄 Code-Quality Fix Batch: Test Helper Scoping + Workflow Merge Improvements
 
-**Updated: 2026-05-20T00:45Z — S2 review remediations applied**
+**Updated: 2026-07-11
 
 | Objective | Status |
 |-----------|--------|
-| Apply 3 AI findings to `tests/services/audio/test_transcription_workflow.py` | ✅ Complete |
-| Apply 4 AI findings to `tools/workflow_merge.py` | ✅ Complete |
-| Address code-review: list comprehension in `compile_replacements` | ✅ Complete |
-| Fix `compile_replacements` conditional word-boundary look-arounds | ✅ S2 — resolves dot-token regression |
-| Fix `count_references` — pass `allow_failure=True` to `rg` (exits 1 on no match) | ✅ S2 — resolves `CalledProcessError` on empty result |
-| Audit `allow_failure` call sites | ✅ Complete — 0 external callers; `rg` call now explicitly opts in |
-| Add unit tests: `compile_replacements`, `replace_in_file`, `update_references` | ✅ 16 tests — all passing |
-| Fix test docstring: remove stale bullet; add actual `update_references` test | ✅ S2 |
-| Validate with ruff + pytest | ✅ Passing; 3 line-length violations also fixed |
-| Create verification report | ✅ `docs/roadmap/PR4511_verification_report.md` |
-| Remediate 6 inline code-review comments | ✅ S2 complete |
-| Deduplicate living docs (whats_next, session_diagram) | ✅ S2 |
-| Fix follow-up prompt (stale PR #4510 refs, metadata) | ✅ S2 |
-| Update CHANGELOG + AGENT_ACCOUNTABILITY_REPORT | ✅ S2 |
-| Run `sync_tracked_files --fix` (Pattern 22 drift) | ✅ S2 |
+| Apply 3 AI findings to `tests/services/audio/test_transcription_workflow.py` |  Complete |
+| Apply 4 AI findings to `tools/workflow_merge.py` |  Complete |
+| Address code-review: list comprehension in `compile_replacements` |  Complete |
+| Fix `compile_replacements` conditional word-boundary look-arounds |  S2 — resolves dot-token regression |
+| Fix `count_references` — pass `allow_failure=True` to `rg` (exits 1 on no match) |  S2 — resolves `CalledProcessError` on empty result |
+| Audit `allow_failure` call sites |  Complete — 0 external callers; `rg` call now explicitly opts in |
+| Add unit tests: `compile_replacements`, `replace_in_file`, `update_references` |  16 tests — all passing |
+| Fix test docstring: remove stale bullet; add actual `update_references` test |  S2 |
+| Validate with ruff + pytest |  Passing; 3 line-length violations also fixed |
+| Create verification report |  `docs/roadmap/PR4511_verification_report.md` |
+| Remediate 6 inline code-review comments |  S2 complete |
+| Deduplicate living docs (whats_next, session_diagram) |  S2 |
+| Fix follow-up prompt (stale PR #4510 refs, metadata) |  S2 |
+| Update CHANGELOG + AGENT_ACCOUNTABILITY_REPORT |  S2 |
+| Run `sync_tracked_files --fix` (Pattern 22 drift) |  S2 |
 
 ### Changes Applied — S1 (initial)
 

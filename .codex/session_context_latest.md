@@ -1,32 +1,32 @@
-# Session Context — 2026-07-11T06:56:52Z
-**Branch:** `copilot/explore-codebase-implementation-plan`  **Access:** `rest, graphql, gh_cli`
+# Session Context — 2026-07-11T12:15:42Z
+**Branch:** `copilot/post-merge-verification`  **PR:** #5297  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4996` (✅)
-- GraphQL remaining: `4991` (✅)
+- REST remaining: `5000` (✅)
+- GraphQL remaining: `5000` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #5296 — [WIP] Phase 20.4: Production deployment and release for v0.2.1
-State: `open`  Draft: `True`  Branch: `copilot/phase-20-4-production-deployment-again` → `copilot/explore-codebase-implementation-plan`
+## 📋 PR #5297 — Publish DEPLOYMENT_GUIDE on site and remove GitHub repo links from deployed docs
+State: `open`  Draft: `True`  Branch: `copilot/post-merge-verification` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **.github/workflows/autonomy-phase-ci-matrix.yml** — `failure` on `copilot/phase-20-4-production-deployment-again` (2026-07-11)
-- **.github/workflows/ci-checkpoint-validation.yml** — `failure` on `copilot/phase-20-4-production-deployment-again` (2026-07-11)
-- **.github/workflows/autonomous-agent.yml** — `failure` on `copilot/phase-20-4-production-deployment-again` (2026-07-11)
-- **.github/workflows/actionlint-audit.yml** — `failure` on `copilot/phase-20-4-production-deployment-again` (2026-07-11)
-- **.github/workflows/13-3-enterprise-compliance.yml** — `failure` on `copilot/phase-20-4-production-deployment-again` (2026-07-11)
+- **.github/workflows/chatops_copilot_trigger.yml** — `failure` on `copilot/post-merge-verification` (2026-07-11)
+- **.github/workflows/build-preview-image.yml** — `failure` on `copilot/post-merge-verification` (2026-07-11)
+- **.github/workflows/ci-failure-issue-creator.yml** — `failure` on `copilot/post-merge-verification` (2026-07-11)
+- **.github/workflows/ci-pass-rate-gate.yml** — `failure` on `copilot/post-merge-verification` (2026-07-11)
+- **.github/workflows/agent-auth-delegation.yml** — `failure` on `copilot/post-merge-verification` (2026-07-11)
 
 ## 📝 Recent Commits
-- `90237b4e` docs(phase-20): Add comprehensive Phase 20.4 pre-deployment validation report — copilot-swe-agent[bot] (2026-07-11)
-- `b304e460` chore(phase-20): Add verification report and Phase 20.4 production deployment br — copilot-swe-agent[bot] (2026-07-11)
-- `daca7362` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-07-11)
-- `33ad767b` Phase 15: Cognitive App Enhancement - FastAPI endpoints, comprehensive test suit — Copilot (2026-07-11)
-- `31aa9371` 🧠 Update cognitive brain patterns [automated] — github-actions[bot] (2026-07-11)
-- `7faab53e` docs: update Phase 8.2 triage dashboard [skip ci] — github-actions[bot] (2026-07-11)
-- `77b7f598` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-07-11)
-- `370d2469` refactor(root-org): organize 55 root files into designated directories with zero — Copilot (2026-07-11)
+- `548d514c` Changes before error encountered — copilot-swe-agent[bot] (2026-07-11)
+- `7c4e1334` docs: fix all internal links to point to site (zero deadlinks) — copilot-swe-agent[bot] (2026-07-11)
+- `acb8e2f4` Apply remaining changes — copilot-swe-agent[bot] (2026-07-11)
+- `bda796ea` fix(docs): Add DEPLOYMENT_GUIDE to mkdocs navigation and remove GitHub repo link — copilot-swe-agent[bot] (2026-07-11)
+- `b070aeb7` docs(v0.2.1): Update deployment guide with version 0.2.1 references and examples — copilot-swe-agent[bot] (2026-07-11)
+- `419c8f88` fix(deployment): Add aries_serpent_core to package, document phase objects, upda — copilot-swe-agent[bot] (2026-07-11)
+- `e5ecc5a6` test(v0.2.1): Initial deployment package testing and gap analysis — copilot-swe-agent[bot] (2026-07-11)
+- `c65f3019` docs: Add Phase 4-5 release execution summary for v0.2.1 — copilot-swe-agent[bot] (2026-07-11)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`

@@ -1,13 +1,15 @@
 # Test Fixes Validation Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## Overview
 This document describes the fixes applied to resolve 5 failing tests identified in workflow run #21366314434.
 
 ## Fixes Applied
 
-### 1. ✅ SentencePieceAdapter.encode() - Add padding parameter
+### 1.  SentencePieceAdapter.encode() - Add padding parameter
 **File**: `src/codex_ml/tokenization/sentencepiece_adapter.py`
 
 **Change**: Extended `encode()` method signature to support padding
@@ -34,7 +36,7 @@ def encode(
 pytest tests/tokenization/test_sentencepiece_adapter_train.py::test_train_or_load_stubs -v
 ```
 
-### 2. ✅ SentencePieceAdapter.load() - Add FileNotFoundError check
+### 2.  SentencePieceAdapter.load() - Add FileNotFoundError check
 **File**: `src/codex_ml/tokenization/sentencepiece_adapter.py`
 
 **Change**: Added explicit file existence check at start of `load()` method
@@ -58,7 +60,7 @@ def load(self) -> "SentencePieceAdapter":
 pytest tests/tokenization/test_sentencepiece_adapter_train.py::test_load_requires_model -v
 ```
 
-### 3. ✅ Test Fix - Remove invalid HuggingFace revision
+### 3.  Test Fix - Remove invalid HuggingFace revision
 **File**: `tests/data/test_cache_roundtrip.py`
 
 **Change**: Removed invalid revision parameter from tokenizer loading
@@ -81,7 +83,7 @@ tok = load_from_pretrained(AutoTokenizer, "hf-internal-testing/llama-tokenizer")
 pytest tests/data/test_cache_roundtrip.py::test_cache_roundtrip -v
 ```
 
-## 4. ✅ Plugin Registry - Add deduplication
+## 4.  Plugin Registry - Add deduplication
 **File**: `src/codex_ml/plugins/programmatic.py`
 
 **Change**: Modified `PluginRegistry.register()` to log duplicates instead of raising
@@ -108,7 +110,7 @@ def register(self, plugin: BasePlugin, *, override: bool = False) -> None:
 pytest tests/plugins/test_list_plugins_cli_json.py::test_json_shape_no_discover -v
 ```
 
-### 5. ✅ test_render_monthly_html - No Fix Needed
+### 5.  test_render_monthly_html - No Fix Needed
 **File**: `tests/status/test_render_monthly_html.py`
 
 **Status**: Test already has proper implementation - no placeholder assertion found
@@ -179,11 +181,11 @@ pytest tests/ --maxfail=5
 
 | Test File | Test Name | Status | Notes |
 |-----------|-----------|--------|-------|
-| `test_list_plugins_cli_json.py` | `test_json_shape_no_discover` | ✅ Should Pass | Deduplication prevents errors |
-| `test_sentencepiece_adapter_train.py` | `test_train_or_load_stubs` | ✅ Should Pass | Padding parameter added |
-| `test_sentencepiece_adapter_train.py` | `test_load_requires_model` | ✅ Should Pass | FileNotFoundError raised |
-| `test_cache_roundtrip.py` | `test_cache_roundtrip` | ✅ Should Pass | Valid tokenizer loading |
-| `test_render_monthly_html.py` | `test_render_monthly_html` | ✅ Should Pass | Already correct |
+| `test_list_plugins_cli_json.py` | `test_json_shape_no_discover` |  Should Pass | Deduplication prevents errors |
+| `test_sentencepiece_adapter_train.py` | `test_train_or_load_stubs` |  Should Pass | Padding parameter added |
+| `test_sentencepiece_adapter_train.py` | `test_load_requires_model` |  Should Pass | FileNotFoundError raised |
+| `test_cache_roundtrip.py` | `test_cache_roundtrip` |  Should Pass | Valid tokenizer loading |
+| `test_render_monthly_html.py` | `test_render_monthly_html` |  Should Pass | Already correct |
 
 ## Code Quality Checks
 
@@ -195,7 +197,7 @@ python -m py_compile \
   src/codex_ml/plugins/programmatic.py \
   tests/data/test_cache_roundtrip.py
 ```
-✅ Verified
+ Verified
 
 ### Import Validation
 All modified modules import successfully:
@@ -203,14 +205,14 @@ All modified modules import successfully:
 from codex_ml.tokenization.sentencepiece_adapter import SentencePieceAdapter
 from codex_ml.plugins.programmatic import PluginRegistry
 ```
-✅ Verified
+ Verified
 
 ### Signature Validation
 All method signatures are correct:
 - `SentencePieceAdapter.encode()`: `(text, add_special_tokens=True, padding=False, max_length=None, **kwargs)`
 - `SentencePieceAdapter.load()`: `() -> SentencePieceAdapter`
 - `PluginRegistry.register()`: `(plugin, *, override=False) -> None`
-✅ Verified
+ Verified
 
 ## Environment Notes
 

@@ -1,6 +1,9 @@
 # [Template]: Intent Validation & Plan of Action Approval Gate
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 **Version:** v1.0.0  
-**Last Updated:** 2025-10-25  
+**Last Updated: 2026-07-11
 **Role Workflow:** Developers draft → Maintainers review → Stakeholders approve
 
 > [PLACEHOLDER: INTENT_STATEMENT]
@@ -19,7 +22,7 @@ Summarize the user problem, measurable outcome, and scope boundaries. Reference 
 
 ## Discovery Inputs
 - User research, bug reports, or telemetry referenced.
-- Dependencies or services impacted (e.g., [`src/cli/`](https://github.com/Aries-Serpent/_codex_/blob/main/src/cli), `codex_ml` pipelines).
+- Dependencies or services impacted (e.g., [`src/cli/`](../src/cli), `codex_ml` pipelines).
 - Feature flags or configuration toggles that gate the rollout.
 
 ## Validation Activities

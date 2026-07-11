@@ -1,6 +1,8 @@
 # Python 3.12 Migration Plan
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 **Status**: Temporary — `requires-python = ">=3.11,<3.13"` (supports both)
 **Target**: `requires-python = ">=3.12,<3.13"` (3.12-only, strict)

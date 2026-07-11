@@ -1,6 +1,8 @@
 # Governance — _codex_
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## Purpose
 
@@ -175,11 +177,11 @@ This governance document may be updated through the Major Changes process (ADR +
 
 ---
 
-## 🎯 Mission Overview
+##  Mission Overview
 
 **Objective:** Establish transparent decision-making framework and role-based collaboration model  
 **Energy Level:** ⚡⚡⚡⚡ (4/5 - Operational Framework)  
-**Status:** ✅ Framework Defined | 🔄 Active Enforcement  
+**Status:**  Framework Defined | 🔄 Active Enforcement  
 
 This governance document defines the authority structure, decision protocols, and conflict resolution mechanisms for the _codex_ project. It ensures efficient collaboration while maintaining technical quality and security standards. The framework adapts to project maturity while preserving core principles of transparency and meritocracy.
 
@@ -189,14 +191,14 @@ This governance document defines the authority structure, decision protocols, an
 
 | Governance Area | Checkpoint | Validation Criteria | Status |
 |----------------|-----------|---------------------|--------|
-| **Roles** | Teams Defined | All 5 core teams have assigned members | ✅ |
-| **Permissions** | CODEOWNERS Setup | CODEOWNERS file reflects team structure | ✅ |
-| **Decision Process** | PR Templates | Templates include decision framework guidance | ✅ |
-| **Conflict Resolution** | Escalation Path | Clear escalation hierarchy documented | ✅ |
+| **Roles** | Teams Defined | All 5 core teams have assigned members |  |
+| **Permissions** | CODEOWNERS Setup | CODEOWNERS file reflects team structure |  |
+| **Decision Process** | PR Templates | Templates include decision framework guidance |  |
+| **Conflict Resolution** | Escalation Path | Clear escalation hierarchy documented |  |
 | **Release Process** | Checklist Active | Release checklist followed for all releases | 🔄 |
-| **Team Membership** | Onboarding Process | New member process validated | ✅ |
-| **Communication** | Channels Active | All communication channels operational | ✅ |
-| **Code of Conduct** | Enforcement | CoC violations handled per guidelines | ✅ |
+| **Team Membership** | Onboarding Process | New member process validated |  |
+| **Communication** | Channels Active | All communication channels operational |  |
+| **Code of Conduct** | Enforcement | CoC violations handled per guidelines |  |
 
 ---
 
@@ -278,7 +280,7 @@ Community Contributors:      █ 5% (External contributions)
 
 ---
 
-## 🧠 Redundancy Patterns
+##  Redundancy Patterns
 
 ### Conflict Resolution Rollback
 

@@ -1,4 +1,6 @@
 # PS-01: Configuration Consolidation Deployment Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 ## Prerequisites
 - Python 3.9+
@@ -54,5 +56,5 @@ git checkout HEAD~1 -- src/codex/utils/config_loader.py
 - [ ] Dual-path fallback working
 - [ ] Performance: Config loading <100ms
 
-**Status:** ✅ Production Ready
-**Last Updated:** 2026-01-09
+**Status:**  Production Ready
+**Last Updated: 2026-07-11

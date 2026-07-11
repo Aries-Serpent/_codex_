@@ -1,4 +1,6 @@
 # Secrets & Credentials Audit Procedures
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Document**: Operations & Investigation Guide  
 **Audience**: Security Team, Incident Responders, Auditors  
@@ -142,7 +144,7 @@ if __name__ == "__main__":
 INCIDENT_TIME="2026-06-14T12:34:56Z"
 WINDOW_HOURS=24
 
-echo "📊 INCIDENT TIMELINE: $INCIDENT_TIME (±${WINDOW_HOURS}h window)"
+echo " INCIDENT TIMELINE: $INCIDENT_TIME (±${WINDOW_HOURS}h window)"
 echo "============================================================"
 
 # Query audit logs
@@ -234,7 +236,7 @@ with open(".codex/aftermath/secrets_audit.jsonl", "r") as f:  # pragma: allowlis
         escalation_patterns[actor].append(status)
 
 # Analyze for suspicious patterns
-print("🔒 ESCALATION PATTERN DETECTION")
+print(" ESCALATION PATTERN DETECTION")
 print("=" * 50)
 
 for actor, statuses in escalation_patterns.items():

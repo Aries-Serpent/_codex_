@@ -1,4 +1,6 @@
 # Code Review Guidelines
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Last Updated**: 2026-07-08  
 **Version**: 1.0.0
@@ -90,12 +92,12 @@ Code reviews are critical for maintaining code quality, sharing knowledge, and f
 
 ### Effective Feedback Examples
 
-#### ❌ Don't:
+####  Don't:
 ```markdown
 This code is terrible. Fix it.
 ```
 
-#### ✅ Do:
+####  Do:
 ```markdown
 This function has high complexity and is hard to follow. Consider
 breaking it into smaller functions, or adding more inline comments
@@ -103,12 +105,12 @@ to explain the logic. For example, the loop on lines 42-67 could be
 its own function that validates the batch.
 ```
 
-#### ❌ Don't:
+####  Don't:
 ```markdown
 Why would anyone do it this way?
 ```
 
-#### ✅ Do:
+####  Do:
 ```markdown
 I'm not immediately clear on why you're using a list instead of
 a set here. Sets have O(1) lookup. Is there a reason you need to
@@ -116,12 +118,12 @@ preserve order? If so, consider using `collections.OrderedDict` or
 adding a comment explaining the requirement.
 ```
 
-#### ❌ Don't:
+####  Don't:
 ```markdown
 Add tests.
 ```
 
-#### ✅ Do:
+####  Do:
 ```markdown
 The new `validate_config()` function isn't covered by tests. Could
 you add tests for:
@@ -251,61 +253,61 @@ Closes #ISSUE_NUMBER
 ### Receiving Feedback
 
 **Do**:
-- ✅ Read all feedback carefully
-- ✅ Ask clarifying questions
-- ✅ Respond to all comments (even if just saying "Done")
-- ✅ Make requested changes
-- ✅ Acknowledge good suggestions
-- ✅ Push fixes and re-request review
+-  Read all feedback carefully
+-  Ask clarifying questions
+-  Respond to all comments (even if just saying "Done")
+-  Make requested changes
+-  Acknowledge good suggestions
+-  Push fixes and re-request review
 
 **Don't**:
-- ❌ Ignore feedback
-- ❌ Dismiss suggestions without explanation
-- ❌ Argue about subjective preferences
-- ❌ Make excuses
-- ❌ Push new features while being reviewed
+-  Ignore feedback
+-  Dismiss suggestions without explanation
+-  Argue about subjective preferences
+-  Make excuses
+-  Push new features while being reviewed
 
 ### Responding to Feedback
 
 **To disagreement**:
 ```markdown
-✅ Good:
+ Good:
 I see your point about using a set here. I was thinking about the
 order requirement - we need to preserve insertion order. Would it be
 better to use `collections.OrderedDict` instead and update the comment?
 
-❌ Dismissive:
+ Dismissive:
 It works fine as is.
 ```
 
 **To suggestions**:
 ```markdown
-✅ Good:
+ Good:
 Great idea! I implemented that suggestion on line 42. Let me know
 if it addresses your concern.
 
-❌ Dismissive:
+ Dismissive:
 Already thought of that.
 ```
 
 **When you disagree**:
 ```markdown
-✅ Good:
+ Good:
 I understand your point. However, the current approach handles [case]
 better because [reason]. Would you be okay with this approach if I add
 a comment explaining this trade-off?
 
-❌ Dismissive:
+ Dismissive:
 My way is better.
 ```
 
 **When something is unclear**:
 ```markdown
-✅ Good:
+ Good:
 Can you clarify what you mean by "simplify"? Are you suggesting I
 extract this into a helper function, or refactor the algorithm?
 
-❌ Dismissive:
+ Dismissive:
 I don't understand.
 ```
 
@@ -337,7 +339,7 @@ If your PR is stuck (not reviewed in several days):
 
 ### Testing
 
-- [ ] Tests pass (CI green ✅)
+- [ ] Tests pass (CI green )
 - [ ] Coverage doesn't decrease
 - [ ] New code has tests
 - [ ] Edge cases covered
@@ -390,12 +392,12 @@ If your PR is stuck (not reviewed in several days):
 
 ### Missing Tests
 
-**❌ Don't**:
+** Don't**:
 ```markdown
 Add tests.
 ```
 
-**✅ Do**:
+** Do**:
 ```markdown
 This new function isn't covered by tests. Could you add tests for:
 1. Valid inputs (happy path)
@@ -408,12 +410,12 @@ See `tests/test_module.py` for our testing patterns.
 
 ### Poor Variable Names
 
-**❌ Don't**:
+** Don't**:
 ```markdown
 Bad variable names.
 ```
 
-**✅ Do**:
+** Do**:
 ```markdown
 The variable `x` on line 42 could have a more descriptive name.
 Based on the context, something like `token_count` or `validated_items`
@@ -422,12 +424,12 @@ would be clearer. What does it represent?
 
 ### Missing Documentation
 
-**❌ Don't**:
+** Don't**:
 ```markdown
 Add docs.
 ```
 
-**✅ Do**:
+** Do**:
 ```markdown
 Could you add a docstring to this function? Include:
 - What it does
@@ -460,12 +462,12 @@ def process_data(items: list[dict], batch_size: int = 32) -> Iterator[list]:
 
 ### Style Violations
 
-**❌ Don't**:
+** Don't**:
 ```markdown
 Fix your style.
 ```
 
-**✅ Do**:
+** Do**:
 ```markdown
 This line is 125 characters long (our limit is 100). Could you break
 it into multiple lines?
@@ -479,12 +481,12 @@ black file.py
 
 ### Logic Issues
 
-**❌ Don't**:
+** Don't**:
 ```markdown
 This logic is wrong.
 ```
 
-**✅ Do**:
+** Do**:
 ```markdown
 I think there might be an issue here. If `user_id` is None (which can
 happen on line 35), then line 42 will raise an AttributeError instead
@@ -501,12 +503,12 @@ Or if None is acceptable, what should happen?
 
 ### Performance Concerns
 
-**❌ Don't**:
+** Don't**:
 ```markdown
 This is inefficient.
 ```
 
-**✅ Do**:
+** Do**:
 ```markdown
 This O(n²) loop might be slow for large datasets. Consider using a set
 for lookups instead:

@@ -1,7 +1,9 @@
 # Approval Telemetry Collector — Phase 12 Wave 2 D3.2 Deployment
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Authority:** @mbaetiong (D-tier)  
-**Status:** ✅ Production Ready  
+**Status:**  Production Ready  
 **Version:** 1.0.0  
 **Created:** 2026-07-03  
 
@@ -24,17 +26,17 @@ This deliverable implements a complete telemetry collection infrastructure for m
 
 ---
 
-## 🎯 SUCCESS CRITERIA VALIDATION
+##  SUCCESS CRITERIA VALIDATION
 
-All success criteria **✅ MET**:
+All success criteria ** MET**:
 
-- ✅ **All 17 approval metrics collected** from D2.2
+-  **All 17 approval metrics collected** from D2.2
   - 8 workflow metrics (request, latency, resolution, decision time, chain depth, rejections, overrides, SLA)
   - 3 escalation metrics (triggered, resolution time, overrides)
   - 3 authorization metrics (decision latency, errors, delegations)
   - 3 audit metrics (audit log entries, policy violations, unauthorized attempts)
 
-- ✅ **All 8 event types ingested** with proper schema
+-  **All 8 event types ingested** with proper schema
   - approval.request.submitted
   - approval.decision.made
   - approval.stage.completed
@@ -45,20 +47,20 @@ All success criteria **✅ MET**:
   - approval.policy.violated
   - approval.completed
 
-- ✅ **Cardinality < 900 timeseries** (safe for 150+ agents)
+-  **Cardinality < 900 timeseries** (safe for 150+ agents)
   - Baseline: ~500-800 timeseries
   - Low-cardinality dimensions: policy_category (8), approver_role (8-10), approval_stage (3-4)
   - Medium-cardinality: aggregated by role
   - High-cardinality: stored separately in audit logs (append-only)
 
-- ✅ **SLA threshold alerts configured** and tested
+-  **SLA threshold alerts configured** and tested
   - ApprovalP95ExceedsSLA (p95 > 4h threshold)
   - ApprovalSLABreach (SLA violations detected)
   - EscalationRateHigh (>3 escalations in 5m)
   - UnauthorizedApprovalAttempt (security monitoring)
   - Plus 11 more compliance/operational alerts
 
-- ✅ **Approval SLA dashboard** populated with:
+-  **Approval SLA dashboard** populated with:
   - SLA compliance % by policy category
   - Approval request latency (p50/p95/p99)
   - Escalation rate & resolution time
@@ -67,12 +69,12 @@ All success criteria **✅ MET**:
   - Policy violations
   - Decision latency by approver role
 
-- ✅ **Multi-tenant cost attribution** working
+-  **Multi-tenant cost attribution** working
   - Per-agent-ecosystem tracking in per_agent_metrics
   - Cardinality class tagging (low/medium/high)
   - Retention tier assignment (hot/warm/cold)
 
-- ✅ **5-tier retention policies enforced**
+-  **5-tier retention policies enforced**
   - hot: 7 days (real-time alerting)
   - warm: 90 days (operational analytics) 
   - cold: 7 years (legal hold)
@@ -131,7 +133,7 @@ pytest tests/observability/test_approval_telemetry.py -v
 
 ---
 
-## 🚀 INTEGRATION WITH D2.2 APPROVAL SERVICE
+##  INTEGRATION WITH D2.2 APPROVAL SERVICE
 
 ### Integration Point: State Change Events
 
@@ -186,7 +188,7 @@ integration.on_decision_made(
 
 ---
 
-## 📊 METRICS REFERENCE
+##  METRICS REFERENCE
 
 ### 17 Approval Metrics
 
@@ -355,18 +357,18 @@ pytest tests/observability/test_approval_telemetry.py::TestApprovalServiceIntegr
 
 ### Validation Checklist
 
-- ✅ Metrics are collected for all 8 event types
-- ✅ SLA calculations are correct (latency ≤ threshold = met)
-- ✅ Cardinality stays < 900 timeseries (verified with validation script)
-- ✅ Events conform to schema v1.0.0 (validated with ApprovalEventValidator)
-- ✅ Alerts fire correctly on SLA breach (tested with synthetic data)
-- ✅ Dashboard displays all 10 panels correctly
-- ✅ Per-agent metrics aggregated by role (not per-agent)
-- ✅ Audit events are immutable and append-only
+-  Metrics are collected for all 8 event types
+-  SLA calculations are correct (latency ≤ threshold = met)
+-  Cardinality stays < 900 timeseries (verified with validation script)
+-  Events conform to schema v1.0.0 (validated with ApprovalEventValidator)
+-  Alerts fire correctly on SLA breach (tested with synthetic data)
+-  Dashboard displays all 10 panels correctly
+-  Per-agent metrics aggregated by role (not per-agent)
+-  Audit events are immutable and append-only
 
 ---
 
-## 📖 USAGE EXAMPLES
+##  USAGE EXAMPLES
 
 ### Example 1: Record a Multi-Stage Approval
 
@@ -464,7 +466,7 @@ print(f"Violations (24h): {daily['total_violations_24h']}")
 
 ---
 
-## 🔐 SECURITY CONSIDERATIONS
+##  SECURITY CONSIDERATIONS
 
 ### Cardinality Limits
 - **Hard limit:** 900 timeseries (enforced by validator)
@@ -491,7 +493,7 @@ print(f"Violations (24h): {daily['total_violations_24h']}")
 
 ---
 
-## 📊 CARDINALITY MANAGEMENT
+##  CARDINALITY MANAGEMENT
 
 ### Per-Policy Analysis
 
@@ -597,7 +599,7 @@ print(f"Errors: {errors}")
 
 ---
 
-## ✅ DEPLOYMENT CHECKLIST
+##  DEPLOYMENT CHECKLIST
 
 - [ ] Code deployed to `/scripts/observability/`
 - [ ] Tests passing: `pytest tests/observability/test_approval_telemetry.py -v`
@@ -613,7 +615,7 @@ print(f"Errors: {errors}")
 
 ---
 
-**Status:** ✅ Phase 12 Wave 2 D3.2 — COMPLETE  
+**Status:**  Phase 12 Wave 2 D3.2 — COMPLETE  
 **Delivered:** 2026-07-03  
 **Authority:** @mbaetiong (D-tier)  
 **Handoff:** Ready for D1.2 & D2.2 integration  

@@ -1,6 +1,8 @@
 # ADR-0001: Distributed Tracing Strategy
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 **Date:** 2026-06-05
 **Status:** Deferred

@@ -1,7 +1,9 @@
 ````markdown
 # Minimal Experiment Tracking in `_codex_` (Scaffolding)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 This document describes the *current* experiment tracking story for
 `_codex_`. It is intentionally minimal and offline-only.

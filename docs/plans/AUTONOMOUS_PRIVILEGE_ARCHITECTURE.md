@@ -1,9 +1,11 @@
 # Codebase-Wide Autonomy: PR Template · WEC · Workflows · Discussions · Elevated Privileges
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 > **Document:** `docs/plans/AUTONOMOUS_PRIVILEGE_ARCHITECTURE.md`  
-> **Status:** ✅ Living document — 2026-05-08  
+> **Status:**  Living document — 2026-05-08  
 > **Scope:** How every surface (PR template, WEC, GitHub Actions, Discussions, Webhooks) is wired
 > together via elevated token privileges to achieve full codebase-wide agentic autonomy.  
 > **Policy anchor:** [`ELEVATED_PRIVILEGES_TOKEN_REVIEW.md`](../reference/ELEVATED_PRIVILEGES_TOKEN_REVIEW.md) · [`CODEBASE_AGENCY_POLICY.md`](../../.codex/CODEBASE_AGENCY_POLICY.md)
@@ -35,7 +37,7 @@ graph TD
     subgraph SURFACES["🏗️ Five Autonomy Surfaces"]
         PR["📋 PR Template\n• Agent context metadata\n• WEC checkbox block\n• Cost governance\n• Token delegation gate\n• Safety confirmations"]
         WEC["🔄 WEC Process\n• 41 workflow checkboxes\n• Parsed on every PR body edit\n• Dispatch checked / cancel unchecked\n• Never-check loop guard\n• Auto-approve integration"]
-        WF["⚙️ Workflows / Actions\n• 154 active workflows\n• 125 use CODEX_MASTER_KEY\n• 8 use GitHub App token\n• Self-healing loop\n• PDA loop management"]
+        WF[" Workflows / Actions\n• 154 active workflows\n• 125 use CODEX_MASTER_KEY\n• 8 use GitHub App token\n• Self-healing loop\n• PDA loop management"]
         DISC["💬 Discussions\n• #3673 Accountability Report\n• #3756 Q&A Bridge\n• Bridged → PR via RC-3\n• GitHub App identity posts"]
         WH["🔗 Webhooks\n• 3 queued (pending WEBHOOK_RECEIVER_URL)\n• HMAC-SHA256 signed\n• Feed Cognitive Brain API\n• Real-time CI event bus"]
     end
@@ -45,7 +47,7 @@ graph TD
         T2["CODEX_BACKUP_KEY\nrepo+workflow\n115 workflows"]
         T3["CODEX_ADMIN_KEY\nWebhooks:write\nWebhook CRUD only"]
         T4["GitHub App\nRSA JWT → install token\nDiscussions · signed commits"]
-        T5["github.token\ncontents:read · pr:write\n❌ No Variables API\n❌ No security_events"]
+        T5["github.token\ncontents:read · pr:write\n No Variables API\n No security_events"]
     end
 
     PR -->|"CODEX_MASTER_KEY\nPR body edits"| T1
@@ -70,17 +72,17 @@ graph TD
 ## 2. Master Privilege Routing Map
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing /"Agent needs to perform an operation"/, "Use CODEX_MASTER_KEY\n✅ Variables API\n✅ Secrets API"'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing /"Agent needs to perform an operation"/, "Use CODEX_MASTER_KEY\n Variables API\n Secrets API"'}}%%
 flowchart TD
     OP[/"Agent needs to perform an operation"/]
 
     OP --> Q1{"Operation type?"}
 
-    Q1 -->|"Create/update repo variable\nor secret"| USE_MK["Use CODEX_MASTER_KEY\n✅ Variables API\n✅ Secrets API"]
+    Q1 -->|"Create/update repo variable\nor secret"| USE_MK["Use CODEX_MASTER_KEY\n Variables API\n Secrets API"]
     Q1 -->|"Approve pending workflow run\n(action_required)"| USE_MK
     Q1 -->|"Dispatch workflow\n(workflow_dispatch)"| USE_MK
     Q1 -->|"Force-push to protected branch"| USE_MK
-    Q1 -->|"Create/update/delete webhook"| USE_AK["Use CODEX_ADMIN_KEY\n✅ Webhooks:write\nor CODEX_MASTER_KEY\n(admin:repo_hook)"]
+    Q1 -->|"Create/update/delete webhook"| USE_AK["Use CODEX_ADMIN_KEY\n Webhooks:write\nor CODEX_MASTER_KEY\n(admin:repo_hook)"]
     Q1 -->|"Fetch CodeQL / security alerts"| USE_SEC["Use CODEX_MASTER_KEY\n+ security_events scope\n⚠️ T-03: scope not yet added"]
     Q1 -->|"Post to Discussion\nas App identity"| USE_APP["Mint GitHub App token\n_GITHUB_APP_PRIVATE_KEY\n→ JWT → installation token"]
     Q1 -->|"Edit PR body\n(WEC, scorecard, metadata)"| USE_MK
@@ -108,18 +110,18 @@ The PR template (`.github/PULL_REQUEST_TEMPLATE.md`) is the **single source of t
 ### 3.1 Template Anatomy
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing "📋 PR Template (v3.0.0)", "🤖 Agent Context Table\n(AUTO-filled by session_wrapup_autofix.py)\n• PR Number • Branch • Head SHA\n• Session ID • AAIS Score\n• Merge Readiness • Rate-Limit Status\n• Token Chain declaration"'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing "📋 PR Template (v3.0.0)", " Agent Context Table\n(AUTO-filled by session_wrapup_autofix.py)\n• PR Number • Branch • Head SHA\n• Session ID • AAIS Score\n• Merge Readiness • Rate-Limit Status\n• Token Chain declaration"'}}%%
 graph LR
     subgraph TEMPLATE["📋 PR Template (v3.0.0)"]
-        META["🤖 Agent Context Table\n(AUTO-filled by session_wrapup_autofix.py)\n• PR Number • Branch • Head SHA\n• Session ID • AAIS Score\n• Merge Readiness • Rate-Limit Status\n• Token Chain declaration"]
-        PRE["🧠 Agent Pre-Load Checklist\n• AGENTIC_REPO_STATE.md\n• CODEBASE_AGENCY_POLICY.md\n• .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md\n• pda_iterations.jsonl\n• agent_context.json\n• store_memory (session memories)"]
+        META[" Agent Context Table\n(AUTO-filled by session_wrapup_autofix.py)\n• PR Number • Branch • Head SHA\n• Session ID • AAIS Score\n• Merge Readiness • Rate-Limit Status\n• Token Chain declaration"]
+        PRE[" Agent Pre-Load Checklist\n• AGENTIC_REPO_STATE.md\n• CODEBASE_AGENCY_POLICY.md\n• .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md\n• pda_iterations.jsonl\n• agent_context.json\n• store_memory (session memories)"]
         P045["⚡ P-045 Wrap-Up Gate\n• ruff check --fix\n• mypy baseline\n• sync_tracked_files\n• auto_fix_common_issues\n• actionlint *.yml\n• git diff --diff-filter=U (must be EMPTY)"]
         CHANGE["📋 Change Summary\n• Type · Scope · Linked Issue\n• Breaking change flag\n• Key files modified"]
         SAFETY["⚠️ Safety Confirmations\n• Security review checkbox\n• Network safety ACK\n• Offline mode confirm\n• Test validation\n• Deferral-language gate"]
-        COST["💰 Cost Governance\n• GREEN / YELLOW / RED tiers\n• Effective-minutes calculation\n• Owner sign-off checkbox\n• Polled by cost-gate.yml"]
+        COST[" Cost Governance\n• GREEN / YELLOW / RED tiers\n• Effective-minutes calculation\n• Owner sign-off checkbox\n• Polled by cost-gate.yml"]
         RATELIMIT["🚦 Rate-Limit Awareness\n• github_api_trickle.py --status\n• Polite-sleep table\n• Circuit-breaker pattern"]
         WEC_BLOCK["🔄 WEC Block (41 items)\n• Always Required (7)\n• Always Active (4)\n• Opt-In Testing (13)\n• Opt-In Security (9)\n• Opt-In Docs (2)\n• Opt-In Infra (7)\n• Auto-Approve (1)"]
-        DELEGATION["🔐 Agent Token Delegation\n• Single checkbox\n• Triggers environment gate\n• Owner approval in GH UI\n• Sets COPILOT_AGENT_AUTH_ENABLED=true\n• Adds agent to ALLOWED_ACTORS"]
+        DELEGATION[" Agent Token Delegation\n• Single checkbox\n• Triggers environment gate\n• Owner approval in GH UI\n• Sets COPILOT_AGENT_AUTH_ENABLED=true\n• Adds agent to ALLOWED_ACTORS"]
     end
 
     META --> PRE --> P045
@@ -146,14 +148,14 @@ The WEC block is the **runtime control plane** for all 41 optional workflows. Ch
 ### 4.1 WEC Item Classification & Token Routing
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing "WEC Checkbox Classes", "✅ ALWAYS REQUIRED (7 items)\npre-merge-validation.yml\ncomment-review-gate.yml\ndeferral-language-gate.yml\nagent-auth-delegation.yml\nworkflow-execution-gate.yml\ncopilot-agent-checkin.yml\ncost-gate.yml\n→ Auto-checked, cannot be unchecked\n→ Fire on every push via normal triggers"'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing "WEC Checkbox Classes", " ALWAYS REQUIRED (7 items)\npre-merge-validation.yml\ncomment-review-gate.yml\ndeferral-language-gate.yml\nagent-auth-delegation.yml\nworkflow-execution-gate.yml\ncopilot-agent-checkin.yml\ncost-gate.yml\n→ Auto-checked, cannot be unchecked\n→ Fire on every push via normal triggers"'}}%%
 graph TD
     subgraph WEC_CLASSES["WEC Checkbox Classes"]
-        AR["✅ ALWAYS REQUIRED (7 items)\npre-merge-validation.yml\ncomment-review-gate.yml\ndeferral-language-gate.yml\nagent-auth-delegation.yml\nworkflow-execution-gate.yml\ncopilot-agent-checkin.yml\ncost-gate.yml\n→ Auto-checked, cannot be unchecked\n→ Fire on every push via normal triggers"]
+        AR[" ALWAYS REQUIRED (7 items)\npre-merge-validation.yml\ncomment-review-gate.yml\ndeferral-language-gate.yml\nagent-auth-delegation.yml\nworkflow-execution-gate.yml\ncopilot-agent-checkin.yml\ncost-gate.yml\n→ Auto-checked, cannot be unchecked\n→ Fire on every push via normal triggers"]
 
         AA["🔄 ALWAYS ACTIVE (2 items)\ncopilot-agent-session-done.yml\ncopilot-iterative-self-healing.yml\n→ In _WEC_NEVER_CHECK\n→ NEVER auto-checked by agent\n→ Prevents unbounded continuation loops\n→ Maintainer may enable manually"]
 
-        AUT["🤖 AUTONOMOUS AUTO-CHECK (1 item)\nauto-approve-workflows\n→ Auto-checked when AUTH_ENABLED=true\n→ Approves ALL action_required runs\n→ Requires CODEX_MASTER_KEY\n→ Maintainer can override with [ ]"]
+        AUT[" AUTONOMOUS AUTO-CHECK (1 item)\nauto-approve-workflows\n→ Auto-checked when AUTH_ENABLED=true\n→ Approves ALL action_required runs\n→ Requires CODEX_MASTER_KEY\n→ Maintainer can override with [ ]"]
 
         OPT["📋 OPT-IN (31 items)\nTesting, Security, Docs, Infra\n→ Default [ ] (unchecked)\n→ Maintainer or agent checks to activate\n→ Each dispatch via CODEX_MASTER_KEY\n→ Rate-limit aware (≤10 per session)"]
     end
@@ -173,10 +175,10 @@ graph TD
 
 | Invariant | Formula | Status |
 |-----------|---------|--------|
-| Never-check workflows never in merge-required | `_WEC_NEVER_CHECK ∩ _MERGE_REQUIRED_WORKFLOWS = ∅` | ✅ Verified |
-| Always-required never in never-check | `_WEC_ALWAYS_REQUIRED ∩ _WEC_NEVER_CHECK = ∅` | ✅ Verified |
-| Autonomous auto-check not in never-check | `_WEC_AUTONOMOUS_AUTO_CHECK ∩ _WEC_NEVER_CHECK = ∅` | ✅ Verified |
-| All merge-required items exist in WEC_ITEMS | subset check | ✅ Verified |
+| Never-check workflows never in merge-required | `_WEC_NEVER_CHECK ∩ _MERGE_REQUIRED_WORKFLOWS = ∅` |  Verified |
+| Always-required never in never-check | `_WEC_ALWAYS_REQUIRED ∩ _WEC_NEVER_CHECK = ∅` |  Verified |
+| Autonomous auto-check not in never-check | `_WEC_AUTONOMOUS_AUTO_CHECK ∩ _WEC_NEVER_CHECK = ∅` |  Verified |
+| All merge-required items exist in WEC_ITEMS | subset check |  Verified |
 
 ---
 
@@ -412,7 +414,7 @@ sequenceDiagram
     Dev->>PR: Create PR (template auto-populated)
     PR->>Auth: PR opened → detect delegation checkbox
     Auth->>Auth: Pause at environment gate\n(owner approval in GH UI)
-    Dev->>Auth: ✅ Approve in GitHub UI
+    Dev->>Auth:  Approve in GitHub UI
     Auth->>Auth: CODEX_MASTER_KEY → set COPILOT_AGENT_AUTH_ENABLED=true
     Auth->>Auth: Add agents to COGNITIVE_BRAIN_ALLOWED_ACTORS
     Auth->>PR: POST "@copilot continue"
@@ -431,10 +433,10 @@ sequenceDiagram
 
     Note over Copilot: CI runs complete
 
-    alt CI passes ✅
+    alt CI passes 
         Copilot->>PR: parallel_validation → final commit
         Copilot->>Disc: post-accountability-to-discussion.yml\n(GitHub App token → Discussion #3673)
-    else CI fails ❌
+    else CI fails 
         Healing->>Healing: classify RP-001..RP-004
         Healing->>Healing: CODEX_MASTER_KEY → push fix commit
         Healing->>PR: Update PR with fix
@@ -455,7 +457,7 @@ sequenceDiagram
 flowchart TD
     START(["Autonomous operation needed"]) --> AUTH_CHECK{"COPILOT_AGENT_AUTH_ENABLED\n= true? (permanent — always yes)"}
 
-    AUTH_CHECK -- "✅ Always true" --> CHECK_TOKEN{"Which token does\nthis operation need?"}
+    AUTH_CHECK -- " Always true" --> CHECK_TOKEN{"Which token does\nthis operation need?"}
 
     CHECK_TOKEN -->|"Variable CRUD\nWorkflow approve/dispatch\nForce-push\nPR body edit"| USE_MK["Use CODEX_MASTER_KEY\n→ 125 workflows pre-armed\n→ auto-approve fires on push\n→ action_required → approved instantly"]
 
@@ -468,7 +470,7 @@ flowchart TD
     CHECK_TOKEN -->|"PR comment / read"| USE_GT["github.token\n→ Always available\n→ No approval needed"]
 
     USE_MK --> RATE_CHECK{"Rate limit OK?\n≥ GH_TRICKLE_MIN_REMAINING"}
-    RATE_CHECK -- "✅ Yes" --> EXECUTE["✅ Execute\nPolite sleep 0.3s\nLog to .codex/healing_attempts/"]
+    RATE_CHECK -- " Yes" --> EXECUTE[" Execute\nPolite sleep 0.3s\nLog to .codex/healing_attempts/"]
     RATE_CHECK -- "⚠️ Low" --> BACKOFF["rate_limit_orchestrator.py\nExponential backoff\nSwitch token if available"]
     BACKOFF --> EXECUTE
 
@@ -616,7 +618,7 @@ python scripts/ci/rate_limit_orchestrator.py \
 ## 12.5 Full Autonomy Stack — One-Line Checklist
 
 ```
-□ COPILOT_AGENT_AUTH_ENABLED=true            → confirmed ✅ (permanent)
+□ COPILOT_AGENT_AUTH_ENABLED=true            → confirmed  (permanent)
 □ auto-approve-workflows [x] in WEC          → all action_required runs auto-approved
 □ @agent-var-writer apply comment posted     → pending variables deployed
 □ @agent-infra apply-webhooks comment posted → 4 webhooks deployed
@@ -628,5 +630,5 @@ python scripts/ci/rate_limit_orchestrator.py \
 ---
 
 *Document maintained by the Copilot Cloud Agent autonomous system.*  
-*Last verified: 2026-05-08 | Token inventory: 5 tiers | WEC items: 41 | Workflows: 154 | Invariants: 5/5 ✅*  
+*Last verified: 2026-05-08 | Token inventory: 5 tiers | WEC items: 41 | Workflows: 154 | Invariants: 5/5 *  
 *Next action: Apply `.codex/pending_var_updates.json` via agent-var-writer after PR merge.*

@@ -1,4 +1,6 @@
 # [Validation]: CI Fast Defaults Policy
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > Generated: 2026-06-22 11:59:51 | Author: mbaetiong
 

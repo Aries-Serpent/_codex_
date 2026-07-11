@@ -1,7 +1,9 @@
 # Copilot Cloud Agent — Session Handoff & WEC Autonomy Design
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Document:** `docs/plans/COPILOT_SESSION_HANDOFF_DESIGN.md`  
-> **Status:** ✅ Living document — updated 2026-05-08  
+> **Status:**  Living document — updated 2026-05-08  
 > **Scope:** Session continuity, WEC self-management, autonomous self-healing for GitHub Copilot Cloud Agent / Copilot Coding Agent
 
 ---
@@ -40,9 +42,9 @@ The goal is a **zero-RTT context injection** system that gives the incoming agen
 | Phase | Step | Description | Failure Mode |
 |-------|------|-------------|--------------|
 | 1 | Checkout | Full-depth clone, no LFS | LFS blobs missing |
-| 2 | 🧠 Session Preload | Reads AGENTIC_REPO_STATE, policy, accountability, PDA loop | Script error (non-blocking) |
+| 2 |  Session Preload | Reads AGENTIC_REPO_STATE, policy, accountability, PDA loop | Script error (non-blocking) |
 | 3 | 🔌 Access Probe | Discovers tokens, rate limits, writes manifest | Token exhaustion |
-| 4 | 🧠 RAG Context | Builds PR context from FAISS + GitHub API | API rate limit |
+| 4 |  RAG Context | Builds PR context from FAISS + GitHub API | API rate limit |
 | 5 | Git config | Non-interactive editor, no merge conflict hints | — |
 | 6 | Branch refs | Fetch all remote refs, promote main + base | Shallow clone |
 | 7 | Merge conflict pre-check | §0.4 check — CONFLICTING / MERGEABLE / UNKNOWN | Git error |
@@ -107,9 +109,9 @@ flowchart TD
 ### WEC Item Classification
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing "✅ Always Required (auto-checked)", pre-merge-validation.yml'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing " Always Required (auto-checked)", pre-merge-validation.yml'}}%%
 graph LR
-    subgraph ALWAYS["✅ Always Required (auto-checked)"]
+    subgraph ALWAYS[" Always Required (auto-checked)"]
         AR1[pre-merge-validation.yml]
         AR2[comment-review-gate.yml]
         AR3[deferral-language-gate.yml]
@@ -124,7 +126,7 @@ graph LR
         NC2[copilot-iterative-self-healing.yml]
     end
 
-    subgraph AUTONOMOUS["🤖 Auto-Checked When AUTH_ENABLED=true"]
+    subgraph AUTONOMOUS[" Auto-Checked When AUTH_ENABLED=true"]
         AU1[auto-approve-workflows]
     end
 
@@ -161,8 +163,8 @@ stateDiagram-v2
 
     P045Gate --> ConflictCheck : git fetch origin main
     ConflictCheck --> RuffCheck : No conflicts
-    RuffCheck --> SyncCheck : ruff ✅
-    SyncCheck --> Commit : sync_tracked_files ✅
+    RuffCheck --> SyncCheck : ruff 
+    SyncCheck --> Commit : sync_tracked_files 
     Commit --> CommitLoop : More work pending
     Commit --> WrapUp : All tasks complete
 
@@ -278,7 +280,7 @@ flowchart TD
     ITER -- No --> ESCALATE[Create GitHub issue\nci-health-alert label\nTag @mbaetiong]
 
     COMMIT --> UPDATE[Update PDA loop\n.codex/aftermath/pda_iterations.jsonl]
-    UPDATE --> DONE([Healing complete ✅])
+    UPDATE --> DONE([Healing complete ])
 
     style FIX004 fill:#ffd43b,color:#000
     style ESCALATE fill:#ff6b6b,color:#fff
@@ -303,7 +305,7 @@ CODEX Manifest Auto-Refresh
 PR Comment Review Gate
 Agent Token Delegation
 🔄 Auto-Post @copilot review After Agent Session
-🤖 Agent Check-In — Q&A Bridge
+ Agent Check-In — Q&A Bridge
 ```
 
 ---
@@ -326,7 +328,7 @@ flowchart TD
     SELECT --> CALL[Make API call]
 
     CALL --> RESP{HTTP response?}
-    RESP -- 200/201/202 --> SUCCESS([Return result ✅])
+    RESP -- 200/201/202 --> SUCCESS([Return result ])
     RESP -- 429/403 --> BACKOFF[Exponential backoff\n2^attempt + jitter]
     BACKOFF --> RETRY{attempt < 3?}
     RETRY -- Yes --> CALL
@@ -345,7 +347,7 @@ flowchart TD
 flowchart LR
     PUSH([New push to branch]) --> LIST[List in-progress runs\nfor each cancellable workflow]
     LIST --> COUNT{runs > 1?}
-    COUNT -- No --> KEEP([Keep single run ✅])
+    COUNT -- No --> KEEP([Keep single run ])
     COUNT -- Yes --> SORT[Sort by run_number DESC\nnewers = higher number]
     SORT --> KEEP1[Keep run[0]\nnewist run]
     SORT --> CANCEL[Cancel run[1..N]\nPOST /runs/ID/cancel]
@@ -372,7 +374,7 @@ state = json.load(open('.codex/wec_state.json'))
 with open(os.environ['GITHUB_ENV'], 'a') as f:
     f.write(f'WEC_LAST_PR={state.get(\"pr_number\", \"\")}\n')
     f.write(f'WEC_CHECKED_COUNT={len(state.get(\"checked\", []))}\n')
-print('✅ WEC state injected')
+print(' WEC state injected')
 "
     fi
 ```
@@ -396,7 +398,7 @@ print('✅ WEC state injected')
         --branch "${{ github.head_ref }}" \
         --max-concurrent 6 \
         --dry-run  # Remove --dry-run when COPILOT_AGENT_AUTH_ENABLED=true
-      echo "✅ Rate-limit orchestration complete"
+      echo " Rate-limit orchestration complete"
     fi
 ```
 
@@ -418,11 +420,11 @@ These invariants are verified at module load by `session_wrapup_autofix.py`:
 
 | Invariant | Formula | Verified? |
 |-----------|---------|-----------|
-| Never-check workflows never in merge-required | `_WEC_NEVER_CHECK ∩ _MERGE_REQUIRED_WORKFLOWS = ∅` | ✅ |
-| Always-required never in never-check | `_WEC_ALWAYS_REQUIRED ∩ _WEC_NEVER_CHECK = ∅` | ✅ |
-| Autonomous auto-check not in never-check | `_WEC_AUTONOMOUS_AUTO_CHECK ∩ _WEC_NEVER_CHECK = ∅` | ✅ |
-| All merge-required items exist in WEC_ITEMS | `_MERGE_REQUIRED_WORKFLOWS ⊆ {fname for fname,_,_ in _WEC_ITEMS}` | ✅ |
-| Protected workflows not cancellable by orchestrator | `_PROTECTED_WORKFLOWS ∩ _DEDUP_WORKFLOWS = ∅` | ✅ |
+| Never-check workflows never in merge-required | `_WEC_NEVER_CHECK ∩ _MERGE_REQUIRED_WORKFLOWS = ∅` |  |
+| Always-required never in never-check | `_WEC_ALWAYS_REQUIRED ∩ _WEC_NEVER_CHECK = ∅` |  |
+| Autonomous auto-check not in never-check | `_WEC_AUTONOMOUS_AUTO_CHECK ∩ _WEC_NEVER_CHECK = ∅` |  |
+| All merge-required items exist in WEC_ITEMS | `_MERGE_REQUIRED_WORKFLOWS ⊆ {fname for fname,_,_ in _WEC_ITEMS}` |  |
+| Protected workflows not cancellable by orchestrator | `_PROTECTED_WORKFLOWS ∩ _DEDUP_WORKFLOWS = ∅` |  |
 
 ---
 
@@ -444,4 +446,4 @@ These invariants are verified at module load by `session_wrapup_autofix.py`:
 ---
 
 *Document maintained by the Copilot Cloud Agent session management system.*  
-*Last verified: 2026-05-08 | WEC items: 41 | Invariants: 5/5 ✅*
+*Last verified: 2026-05-08 | WEC items: 41 | Invariants: 5/5 *

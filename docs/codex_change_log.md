@@ -1,4 +1,7 @@
-**Last Updated:** 2026-06-22
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
+**Last Updated: 2026-06-22
 
 | 2025-12-01T00:44:37Z | 1 | 1.1 | ok | Command: python -c "import yaml" |
 | 2025-12-01T00:44:37Z | 1 | 1.2 | ok | Command: python -c "import pathlib as p; (p.Path('codex_change_log.md')).touch(); (p.Path('codex_error_questions.md')).touch(); print('prepared logs')" |

@@ -1,4 +1,5 @@
 # Isolated Deployment Guide
+**Last Updated:** 2026-07-11
 
 ## Default Security Posture
 

@@ -1,9 +1,10 @@
 # Phase 6 Batch 2 — Deployment Approval Workflow & Governance Gates
+**Last Updated:** 2026-07-11
 
 **Version:** 1.0.0  
 **Status:** FINAL  
 **Audience:** DevOps, deployment engineers, owners, tech leads  
-**Last Updated:** 2026-02-22
+**Last Updated: 2026-07-11
 
 ---
 
@@ -31,14 +32,14 @@ This document defines the deployment approval workflow, governance gates, and SL
 **Prerequisites:**
 ```yaml
 Merge Status:
-  ✅ All PR gates passed (code review, security, tests, policy)
-  ✅ Integration tests passing on 0D_base_
+   All PR gates passed (code review, security, tests, policy)
+   Integration tests passing on 0D_base_
 
 Deployment Health Checks:
-  ✅ Staging environment online
-  ✅ Required services running
-  ✅ Database migrations compatible
-  ✅ No active deployments in progress
+   Staging environment online
+   Required services running
+   Database migrations compatible
+   No active deployments in progress
 ```
 
 **Approval Process:**
@@ -118,23 +119,23 @@ Manual Rollback (if needed):
 
 ```yaml
 Merge Status:
-  ✅ All PR gates passed
-  ✅ Promotion PR merged (0D_base_ → main)
+   All PR gates passed
+   Promotion PR merged (0D_base_ → main)
 
 Staging Validation (mandatory):
-  ✅ Deployed to staging ≥24 hours ago
-  ✅ All integration tests passing for ≥24h
-  ✅ No critical bugs reported
-  ✅ Performance acceptable (no degradation)
-  ✅ Smoke tests passing consistently
+   Deployed to staging ≥24 hours ago
+   All integration tests passing for ≥24h
+   No critical bugs reported
+   Performance acceptable (no degradation)
+   Smoke tests passing consistently
 
 Production Readiness:
-  ✅ CHANGELOG.md updated with release notes
-  ✅ Runbook available (link in deployment request)
-  ✅ Rollback plan documented
-  ✅ Deployment window confirmed
-  ✅ On-call engineer available
-  ✅ Communication plan ready (if customer-facing)
+   CHANGELOG.md updated with release notes
+   Runbook available (link in deployment request)
+   Rollback plan documented
+   Deployment window confirmed
+   On-call engineer available
+   Communication plan ready (if customer-facing)
 ```
 
 **Approval Process:**
@@ -158,9 +159,9 @@ Step 2: Tech Lead Review (24-48 hours)
     ☐ Confirm deployment window appropriate
 
   Actions:
-    ✅ Comment: "Staging validation complete, ready for approval"
+     Comment: "Staging validation complete, ready for approval"
     or
-    ❌ Comment: "Need to address [specific concern]"
+     Comment: "Need to address [specific concern]"
 
 Step 3: Owner Approval (4-8 hours after tech lead)
   Requirements:
@@ -170,10 +171,10 @@ Step 3: Owner Approval (4-8 hours after tech lead)
     ☐ Owner verifies runbook completeness
 
   Actions:
-    ✅ Comment: "@tech-lead and I have approved this deployment"
-    ✅ React: 👍 emoji for approval marker
+     Comment: "@tech-lead and I have approved this deployment"
+     React: 👍 emoji for approval marker
     or
-    ❌ Comment: "Hold deployment pending [reason]"
+     Comment: "Hold deployment pending [reason]"
 
 Step 4: Manual Deployment Trigger (Owner Only)
   - Tech lead and owner must both approve
@@ -211,11 +212,11 @@ Timeline of notifications:
     "Deployment: Stage 4 - Health checks passing"
 
   T+15 min: Success notification
-    "✅ Production deployment complete!
+    " Production deployment complete!
      Version: [version]
      Metrics dashboard: [link]"
     or
-    "❌ Production deployment failed - auto-rolled back
+    " Production deployment failed - auto-rolled back
      Error: [details]
      Incident created: [link]"
 
@@ -273,10 +274,10 @@ Issue Severity:
   - Production impact: service down, data loss risk, or security breach
 
 Hotfix Validation:
-  ✅ Issue reproduced in production (proof)
-  ✅ Fix verified in staging environment
-  ✅ Minimal risk assessment completed
-  ✅ Rollback plan (quick revert possible)
+   Issue reproduced in production (proof)
+   Fix verified in staging environment
+   Minimal risk assessment completed
+   Rollback plan (quick revert possible)
 ```
 
 **Approval Process:**
@@ -370,16 +371,16 @@ Within 5 days:
 
 ```yaml
 Security Review Complete:
-  ✅ Threat model documented
-  ✅ Fix verified against threat model
-  ✅ No new vulnerabilities introduced
-  ✅ Security scanning: 0 issues
+   Threat model documented
+   Fix verified against threat model
+   No new vulnerabilities introduced
+   Security scanning: 0 issues
 
 Testing Complete:
-  ✅ Full test suite passing
-  ✅ Security-specific tests added (if applicable)
-  ✅ No regressions (coverage maintained)
-  ✅ Staging validation: 12-24 hours stable
+   Full test suite passing
+   Security-specific tests added (if applicable)
+   No regressions (coverage maintained)
+   Staging validation: 12-24 hours stable
 ```
 
 **Approval Process:**

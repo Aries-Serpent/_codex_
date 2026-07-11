@@ -1,6 +1,8 @@
 # PR Plan — Checkpoint Resume, Deterministic Splits, Local MLflow Smoke
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## Why
 - **Determinism/Reproducibility**: snapshot/restore RNG (CPU & CUDA) and deterministic `random_split(..., generator=...)`.

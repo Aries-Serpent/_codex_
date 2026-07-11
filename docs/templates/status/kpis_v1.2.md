@@ -1,6 +1,9 @@
 # KPIs: Status Reporting (v1.2)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
-🧠 Roles: [Primary: KPI Curator], [Secondary: Reviewer] ⚡ Energy: 5
+ Roles: [Primary: KPI Curator], [Secondary: Reviewer] ⚡ Energy: 5
 
 Purpose
 - Track high-level health signals across per-iteration reports.

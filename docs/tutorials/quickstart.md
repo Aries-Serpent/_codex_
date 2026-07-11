@@ -1,8 +1,10 @@
 <!-- BEGIN: CODEX_DOCS_TUTORIALS_QUICKSTART -->
 
 # Quickstart (CPU)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 Get Codex running locally in under five minutes — no GPU required.
 

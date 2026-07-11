@@ -1,4 +1,7 @@
 # [Plan]: Curated Patch Sets Roadmap — Aries-Serpent/_codex_ (main @ 3eb0094)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
 Roles: [Audit Orchestrator], [Capability Cartographer] Energy: 5
 

@@ -1,4 +1,6 @@
 # [Validation]: Determinism Checklist
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > Generated: 2026-06-22 11:59:51 | Author: mbaetiong
 
@@ -19,7 +21,7 @@ python scripts/canonicalize_artifacts.py --out audit_artifacts/canonical_B.json
 2. Compare sidecars.
 
 ```bash
-diff -q audit_artifacts/canonical_A.json audit_artifacts/canonical_B.json && echo "Deterministic ✅"
+diff -q audit_artifacts/canonical_A.json audit_artifacts/canonical_B.json && echo "Deterministic "
 ```text
 
 ## Gates

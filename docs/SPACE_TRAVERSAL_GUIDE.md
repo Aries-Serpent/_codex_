@@ -1,4 +1,6 @@
 # Space Traversal Capability Audit Guide (v1.4.0)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > Generated: 2026-06-22 | Author: Codex Audit System  
 > Roles: [Audit Orchestrator], [Capability Cartographer]  

@@ -1,7 +1,9 @@
 # Upgrade Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Version:** 0.1.0  
-**Last Updated:** 2026-07-09  
+**Last Updated: 2026-07-09
 **Audience:** DevOps, Platform Engineers, Developers
 
 ---
@@ -356,15 +358,15 @@ pytest tests/compatibility/ -v
 
 Upgrade is successful when:
 
-- ✅ All tests passing
-- ✅ Zero downtime (for rolling upgrades)
-- ✅ Performance baseline met
-- ✅ No error spikes
-- ✅ All features working
-- ✅ Health checks passing
-- ✅ Monitoring stable
+-  All tests passing
+-  Zero downtime (for rolling upgrades)
+-  Performance baseline met
+-  No error spikes
+-  All features working
+-  Health checks passing
+-  Monitoring stable
 
 ---
 
-**Last Updated:** 2026-07-09  
+**Last Updated: 2026-07-09
 **Support:** [GitHub Issues](https://github.com/Aries-Serpent/_codex_/issues)

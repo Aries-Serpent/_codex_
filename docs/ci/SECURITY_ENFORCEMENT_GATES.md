@@ -1,4 +1,6 @@
 # Security Enforcement Gates — _codex_ Repository
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Version**: 1.0  
 **Date**: 2026-06-27  
@@ -227,7 +229,7 @@ Key skips (security-justified):
 
 | Language | Status | Continue-on-Error |
 |----------|--------|-------------------|
-| Python | ✅ Required | false (must pass) |
+| Python |  Required | false (must pass) |
 | JavaScript | ⚠️ Optional | true (may fail) |
 
 ### Queries
@@ -277,9 +279,9 @@ Result: PR can merge only if all gates pass
 ### Branch Protection Rules
 
 **Main Branch** (`main`):
-- Require semgrep ✅
-- Require pip-audit ✅
-- Require bandit ✅
+- Require semgrep 
+- Require pip-audit 
+- Require bandit 
 - Require CodeQL (advisory → blocking after Phase 4)
 - Require status checks to pass
 - Dismiss stale PR approvals on new commits

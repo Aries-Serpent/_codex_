@@ -1,4 +1,6 @@
 # API Reference - Phase 15-16
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > Complete reference for all 11 FastAPI endpoints in the Phase 15-16 system.
 
@@ -719,11 +721,11 @@ response = requests.post(
 
 result = response.json()["data"]
 if result["gate_passed"]:
-    print("✅ All gates passed!")
+    print(" All gates passed!")
 else:
     for check in result["checks"]:
         if check["status"] != "passed":
-            print(f"❌ {check['name']}: {check['message']}")
+            print(f" {check['name']}: {check['message']}")
 ```
 
 ### 11. GET /api/workflows/rate-limit

@@ -1,6 +1,8 @@
 # Changelog for PR #2310 (monolithic)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 - Add decoder/extractor for Phase-A validator snapshot (base64+gz)
 - Add baseline generation helper and wiring (--generate-baseline)

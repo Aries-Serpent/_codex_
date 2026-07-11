@@ -1,11 +1,13 @@
 # Production Readiness Checklist — _codex_ Repository
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Last Updated**: 2026-06-22 (PR #2390)  
 **Status**: 🟡 IN PROGRESS (40% Complete)
 
 ---
 
-## Core Infrastructure ✅ COMPLETE
+## Core Infrastructure  COMPLETE
 
 ### Audit Pipeline
 - [x] S1-S7 stages implemented
@@ -111,7 +113,7 @@
 
 ### Shadowing
 - [x] verify_conflicts.py --expect-site-packages
-- [x] yaml → site-packages ✅
+- [x] yaml → site-packages 
 - [ ] **hydra → site-packages** (requires pip install hydra-core)
 - [ ] Split-brain resolution (training, tokenization)
 
@@ -132,16 +134,16 @@
 |-----------|--------|---------|
 | Determinism (2-run equality) | ⏸️ Pending | Requires full audit execution |
 | Shadowing (yaml/hydra) | ⚠️ Partial | hydra-core not installed |
-| Legacy imports (≥50% reduction) | ❌ 0% | Refactoring not started |
+| Legacy imports (≥50% reduction) |  0% | Refactoring not started |
 | Tests PASS | ⏸️ Pending | pytest not available in env |
-| Security (0 critical) | ✅ PASS | - |
+| Security (0 critical) |  PASS | - |
 
 ### Important (Should Pass)
 
 | Criterion | Status | Note |
 |-----------|--------|------|
-| CI artifacts uploaded | ✅ Ready | Workflow configured |
-| Baseline metadata | ✅ Ready | System implemented |
+| CI artifacts uploaded |  Ready | Workflow configured |
+| Baseline metadata |  Ready | System implemented |
 | Documentation complete | 🟡 80% | Final polish needed |
 | Monitoring active | 🟡 Ready | Needs execution |
 | Rollback tested | 📋 Documented | Not executed |
@@ -199,7 +201,7 @@
 ### Technical Lead
 - [ ] Code review complete
 - [ ] Architecture approved
-- [ ] Security scan passed ✅
+- [ ] Security scan passed 
 - [ ] Performance acceptable
 
 ### QA/Validation
@@ -215,7 +217,7 @@
 - [ ] Release notes prepared
 
 ### Maintainer (mbaetiong)
-- [x] Autonomous execution approved ✅
+- [x] Autonomous execution approved 
 - [ ] Final review and merge authorization
 - [ ] Production deployment approval
 

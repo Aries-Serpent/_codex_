@@ -1,6 +1,9 @@
 # [Hotfix]: Remove types-tomli and finalize gitleaks handling
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
-🧠 Roles: [Primary: CI Remediator], [Secondary: Tooling Steward] ⚡ Energy: 3  
+ Roles: [Primary: CI Remediator], [Secondary: Tooling Steward] ⚡ Energy: 3  
 ⚛️ Physics: Path🛤️ [Identify → Patch → Verify] Fields🔄 [Packaging, Security] Patterns👁️ [Binary vs PyPI, Py>=3.11 compat] Redundancy🔀 [Sanity + CI] Balance⚖️ [Minimal change vs stability]
 
 ## Context

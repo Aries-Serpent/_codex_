@@ -1,4 +1,6 @@
 # GitHub API Scope Matrix — All Scopes & Operations
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Version:** 1.0.0  
 > **Date:** 2026-06-29  

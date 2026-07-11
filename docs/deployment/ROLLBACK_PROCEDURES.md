@@ -1,11 +1,13 @@
 # Rollback Procedures
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 **Version:** 1.0.0  
 **Created:** 2026-01-18  
 **Phase:** 18.3 - Deployment Automation  
-**Status:** ✅ Production Ready
+**Status:**  Production Ready
 
 ---
 
@@ -15,7 +17,7 @@ This document outlines rollback procedures for the Codex platform. Follow these 
 
 ---
 
-## Quick Reference
+## Reference
 
 ### Immediate Rollback (< 5 minutes)
 
@@ -190,7 +192,7 @@ Maintain a record of deployed versions for quick rollback reference:
 ### Initial Notification
 
 ```
-🔴 INCIDENT: Rollback Initiated
+ INCIDENT: Rollback Initiated
 
 Service: Codex Platform
 Severity: [Critical/High/Medium]
@@ -209,7 +211,7 @@ Updates: #incident-channel
 ### Resolution Notification
 
 ```
-🟢 RESOLVED: Rollback Complete
+ RESOLVED: Rollback Complete
 
 Service: Codex Platform
 Duration: XX minutes
@@ -247,4 +249,4 @@ Next Steps:
 
 **Owner:** Platform Engineering  
 **Review Cadence:** Monthly  
-**Last Updated:** 2026-01-18
+**Last Updated: 2026-07-11

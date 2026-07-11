@@ -1,6 +1,8 @@
 # Next Steps for Zendesk Integration
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 This document outlines future work items after completing the initial
 implementation of the Zendesk configuration-as-code framework.

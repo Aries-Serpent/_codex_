@@ -6,6 +6,9 @@ on:
 permissions:
   contents: read
   issues: write
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
 jobs:
   check-freshness:
     name: Check Documentation Freshness

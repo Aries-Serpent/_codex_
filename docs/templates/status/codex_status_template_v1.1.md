@@ -1,6 +1,9 @@
 # Template: `_codex_` per-iteration Status Update
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
-🧠 Roles: [Primary: Repo Audit Template Architect], [Secondary: Execution Readiness Reviewer] ⚡ Energy: 5  
+ Roles: [Primary: Repo Audit Template Architect], [Secondary: Execution Readiness Reviewer] ⚡ Energy: 5  
 
 
 This is the canonical template for producing the per-iteration, single-document, full-technical status update and repo audit. It is designed for offline-first workflows and includes a complete snapshot, delta, risk/confidence scoring, standardized atomic patch diffs, automation ingest placeholders, tokenization insights, and secret-masking guidance. It now supports dynamic Capability discovery and an extensible Reproducibility Registry.
@@ -139,7 +142,7 @@ Provide core controls plus an extensible registry to accommodate evolving needs.
 
 | Control | Status | Notes |
 | --- | --- | --- |
-| Seeds across Python/NumPy/Torch | <✅/⚠️/❌> | <notes> |
+| Seeds across Python/NumPy/Torch | </⚠️/> | <notes> |
 | Env capture (OS, Python, pip freeze) |  |  |
 | Lockfiles and pinning |  |  |
 | Deterministic data splits |  |  |

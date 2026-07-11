@@ -1,16 +1,18 @@
 # GitHub API Reference for Copilot Coding agent
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Scope:** Aries-Serpent/_codex_ repository  
 > **Audience:** GitHub Copilot Coding agent (Web UI)  
 > **Authority:** Acting on behalf of maintainer `@mbaetiong`  
-> **Last Updated:** 2026-04-05 — S-3876  
+> **Last Updated: 2026-07-11
 > **Full Secrets/Variables Reference:** [`docs/reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md`](../reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md)  
 > **CB Knowledge Entry:** [`.codex/docs/GITHUB_API_AND_MCP_REFERENCE.md`](../../.codex/docs/GITHUB_API_AND_MCP_REFERENCE.md)  
 > **Policy:** `.codex/CODEBASE_AGENCY_POLICY.md` §0–§4
 
 ---
 
-## 🔐 TOKEN HIERARCHY — WHICH TOKEN TO USE WHEN
+##  TOKEN HIERARCHY — WHICH TOKEN TO USE WHEN
 
 Every GitHub API call requires the correct token. Using the wrong token causes silent
 permission errors. Follow this hierarchy **exactly**:
@@ -295,11 +297,11 @@ if session_file.exists():
     session = json.loads(session_file.read_text())
     expires = datetime.fromisoformat(session["expires_at"])
     if datetime.now(timezone.utc) < expires:
-        print(f"✅ Session active until {expires.isoformat()}")
+        print(f" Session active until {expires.isoformat()}")
     else:
-        print("❌ Session expired — request re-delegation")
+        print(" Session expired — request re-delegation")
 else:
-    print("❌ No session token — maintainer must check COPILOT_AGENT_AUTH_ENABLED")
+    print(" No session token — maintainer must check COPILOT_AGENT_AUTH_ENABLED")
 ```
 
 ### Required Secrets for Full Maintainer-Equivalent Authority
@@ -395,7 +397,7 @@ python scripts/ci/check_deferral_language.py \
 
 ### How the Gate Works
 1. Lists all review threads via `github.rest.pulls.listReviewComments`
-2. Filters for threads containing keywords: `MUST`, `REQUIRED`, `BLOCKING`, `❌`, `🚫`
+2. Filters for threads containing keywords: `MUST`, `REQUIRED`, `BLOCKING`, ``, `🚫`
 3. Checks if each flagged thread is `resolved: true`
 4. Fails CI if any blocking thread is unresolved
 
@@ -418,7 +420,7 @@ gh pr view "$PR_NUMBER" \
 
 ---
 
-## 📊 CI STATUS — CHECKING AND REACTING
+##  CI STATUS — CHECKING AND REACTING
 
 ### Get all check runs for a commit SHA
 ```bash
@@ -454,7 +456,7 @@ gh api "/repos/Aries-Serpent/_codex_/actions/jobs/${JOB_ID}/logs" > job.log
 
 ---
 
-## 🧠 COGNITIVE BRAIN CONNECTED APP — API SURFACE
+##  COGNITIVE BRAIN CONNECTED APP — API SURFACE
 
 The Cognitive Brain app exposes a FastAPI server (default: `http://localhost:8765`
 or `$CODEX_CLI_API_URL` / `$COGNITIVE_APP_API_URL`).
@@ -567,7 +569,7 @@ report_progress(
 
 ---
 
-## ✅ PRE-CONCLUSION CHECKLIST (§0 CODEBASE_AGENCY_POLICY.md)
+##  PRE-CONCLUSION CHECKLIST (§0 CODEBASE_AGENCY_POLICY.md)
 
 Before ending any session the agent MUST verify:
 
@@ -592,7 +594,7 @@ Before ending any session the agent MUST verify:
 
 ## 🔄 Workflow Execution Checklist
 
-### ✅ Always Required — fire automatically on every push (cannot be skipped)
+###  Always Required — fire automatically on every push (cannot be skipped)
 - [x] pre-merge-validation.yml — Pre-merge checks (always required)
 - [x] comment-review-gate.yml — Comment review gate (always required)
 - [x] deferral-language-gate.yml — Deferral language guard (always required)
@@ -614,7 +616,7 @@ Before ending any session the agent MUST verify:
 - [ ] test-rag.yml — RAG Module Tests (coverage ≥95%)
 - [ ] nox_gates.yml — Nox quality gates (ruff, mypy, coverage)
 
-### 🔒 Opt-In: Security & Quality
+###  Opt-In: Security & Quality
 - [ ] security-scanning-suite.yml — Full security audit (bandit, pip-audit)
 
 ### 📄 Opt-In: Documentation
@@ -657,10 +659,10 @@ Before ending any session the agent MUST verify:
 
 | Scope | Variables | Actions Secrets | Dependabot Secrets | Codespaces Secrets |
 |---|---|---|---|---|
-| repository | ✅ `repo` PAT | ✅ `repo` PAT | ✅ `repo` PAT | ✅ `repo` PAT |
-| Organization | ✅ `admin:org` | ✅ `admin:org` | ✅ `admin:org` | ✅ `admin:org` |
-| Environment | ✅ `repo` PAT | ✅ `repo` PAT | ✗ | ✗ |
-| User (Codespaces) | ✗ | ✗ | ✗ | ✅ `codespace` |
+| repository |  `repo` PAT |  `repo` PAT |  `repo` PAT |  `repo` PAT |
+| Organization |  `admin:org` |  `admin:org` |  `admin:org` |  `admin:org` |
+| Environment |  `repo` PAT |  `repo` PAT | ✗ | ✗ |
+| User (Codespaces) | ✗ | ✗ | ✗ |  `codespace` |
 
 ### ⚠️ Why `GITHUB_TOKEN` Returns 403 on Variables API
 

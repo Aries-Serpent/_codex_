@@ -1,4 +1,6 @@
 # Dependency Version Constraints
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 This document explains critical version constraints in the _codex_ project dependencies.
 
@@ -14,10 +16,10 @@ This document explains critical version constraints in the _codex_ project depen
 
 This project has been upgraded to use pandas 3.x to take advantage of performance improvements and modern APIs. The constraint `>=3.0.3,<4` ensures compatibility with the latest pandas releases while maintaining stability:
 
-- ✅ pandas 3.0.3+ is stable and production-ready
-- ✅ All MLflow 3.x+ versions support pandas 3.x
-- ✅ Codebase has been updated to use pandas 3.x-compatible APIs
-- ✅ Performance improvements with pandas 3.x
+-  pandas 3.0.3+ is stable and production-ready
+-  All MLflow 3.x+ versions support pandas 3.x
+-  Codebase has been updated to use pandas 3.x-compatible APIs
+-  Performance improvements with pandas 3.x
 
 **Issue Reference:**
 - Resolved pip ResolutionImpossible conflicts by aligning to pandas 3.x-compatible dependency stack

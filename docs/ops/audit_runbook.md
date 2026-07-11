@@ -1,6 +1,9 @@
 # Space Traversal Audit Runbook (v1.4.0)
-> Updated: 2026-06-22 | Author: Audit System  
-🧠 Roles: [Primary: Audit Lead], [Secondary: CI Maintainer] ⚡ Energy: 5
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
+> Updated: 2026-06-22
+ Roles: [Primary: Audit Lead], [Secondary: CI Maintainer] ⚡ Energy: 5
 
 ## Purpose
 
@@ -8,7 +11,7 @@ End-to-end operational guide for running, validating, and interpreting the capab
 
 ---
 
-## Quick Reference
+## Reference
 
 | Command | Purpose |
 |---------|---------|

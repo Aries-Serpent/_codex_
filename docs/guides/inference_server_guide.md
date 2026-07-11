@@ -1,6 +1,8 @@
 # FastAPI Inference Server - User Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## Overview
 
@@ -21,7 +23,7 @@ The FastAPI Inference Server provides ML model serving with comprehensive safegu
 pip install fastapi uvicorn pydantic
 ```text
 
-## Quick Start
+## Quickstart
 
 ### Basic Server
 

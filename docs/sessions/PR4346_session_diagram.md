@@ -1,28 +1,30 @@
 # Session Diagram — PR #4346 · S864 · 2026-05-08
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Branch:** `finding-autofix-faa8614c`
 > **Agent:** `copilot-swe-agent[bot]`
 > **Sessions:** S859 (AAIS 99.9), S860 (PR review fixes, RL-2 P1), S861 (RL-2 P2), S861-cont (merge fix, RL-2c, RL-3b, admin-action pattern), S862 (review threads resolved, final wrap-up), S863 (Scan PR comments gate), S864 (Fast Validation 3 hook fixes)
-> **Current AAIS:** 100.0/100 ✅ · **actionlint:** 0 · **ruff:** ✅
+> **Current AAIS:** 100.0/100  · **actionlint:** 0 · **ruff:** 
 
 ---
 
 ## 1. Full Session Flow (S864 — Current)
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing "🟢 S864 · 2026-05-08T04:45Z", "🔍 Diagnose Fast Validation\nRun 25536229750 — 3 pre-commit failures\n① detect-secrets exit 3\n② check-shell-true FP\n③ validate-internal-links"'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing " S864 · 2026-05-08T04:45Z", "🔍 Diagnose Fast Validation\nRun 25536229750 — 3 pre-commit failures\n① detect-secrets exit 3\n② check-shell-true FP\n③ validate-internal-links"'}}%%
 flowchart TD
-    START(["🟢 S864 · 2026-05-08T04:45Z"]) --> DIAG
+    START([" S864 · 2026-05-08T04:45Z"]) --> DIAG
 
     DIAG["🔍 Diagnose Fast Validation\nRun 25536229750 — 3 pre-commit failures\n① detect-secrets exit 3\n② check-shell-true FP\n③ validate-internal-links"] --> FIX
 
-    FIX["✅ Fixes Applied\n① .secrets.baseline v1.5.0 committed\n   run_validation.sh → detect-secrets==1.5.0\n② subprocess.py: removed shell=True string\n③ ELEVATED_PRIVILEGES… link fixed: ../../.codex/"] --> DOCS
+    FIX[" Fixes Applied\n① .secrets.baseline v1.5.0 committed\n   run_validation.sh → detect-secrets==1.5.0\n② subprocess.py: removed shell=True string\n③ ELEVATED_PRIVILEGES… link fixed: ../../.codex/"] --> DOCS
 
-    DOCS["✅ Living Docs Updated\n• PR4346_whats_next.md — S864 status\n• PR4346_session_diagram.md — this\n• CHANGELOG — S864 entry\n• AGENT_ACCOUNTABILITY_REPORT"] --> GATE
+    DOCS[" Living Docs Updated\n• PR4346_whats_next.md — S864 status\n• PR4346_session_diagram.md — this\n• CHANGELOG — S864 entry\n• AGENT_ACCOUNTABILITY_REPORT"] --> GATE
 
-    GATE["🔒 P-045 Gate\nruff ✅ · sync_tracked_files ✅\nno conflicts ✅ · reply #4403330132"] --> END
+    GATE[" P-045 Gate\nruff  · sync_tracked_files \nno conflicts  · reply #4403330132"] --> END
 
-    END(["🏁 PR #4346 MERGE READY\nScore: 100/100\nOBJ-A/C/E/F ✅\nOBJ-B/D ⛔ admin-action-t03.yml notifies"])
+    END(["🏁 PR #4346 MERGE READY\nScore: 100/100\nOBJ-A/C/E/F \nOBJ-B/D ⛔ admin-action-t03.yml notifies"])
 
     style START fill:#27ae60,color:#fff
     style END fill:#27ae60,color:#fff
@@ -36,15 +38,15 @@ flowchart TD
 ## 2. S862 Flow
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing "🟢 S862 · 2026-05-08T04:10Z", "✅ Copilot AI Review Threads\n5 unresolved → all confirmed fixed\n• wec_enforcer.py _find_and_approve (no completed check)\n• wec_enforcer.py summary counter (distinct outcomes)\n• post_rotation_verify.sh (value redacted)\n• token-probe.yml + pr-size-analyzer.yml (aais-cache)"'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing " S862 · 2026-05-08T04:10Z", " Copilot AI Review Threads\n5 unresolved → all confirmed fixed\n• wec_enforcer.py _find_and_approve (no completed check)\n• wec_enforcer.py summary counter (distinct outcomes)\n• post_rotation_verify.sh (value redacted)\n• token-probe.yml + pr-size-analyzer.yml (aais-cache)"'}}%%
 flowchart TD
-    START(["🟢 S862 · 2026-05-08T04:10Z"]) --> REVIEW
+    START([" S862 · 2026-05-08T04:10Z"]) --> REVIEW
 
-    REVIEW["✅ Copilot AI Review Threads\n5 unresolved → all confirmed fixed\n• wec_enforcer.py _find_and_approve (no completed check)\n• wec_enforcer.py summary counter (distinct outcomes)\n• post_rotation_verify.sh (value redacted)\n• token-probe.yml + pr-size-analyzer.yml (aais-cache)"] --> DOCS
+    REVIEW[" Copilot AI Review Threads\n5 unresolved → all confirmed fixed\n• wec_enforcer.py _find_and_approve (no completed check)\n• wec_enforcer.py summary counter (distinct outcomes)\n• post_rotation_verify.sh (value redacted)\n• token-probe.yml + pr-size-analyzer.yml (aais-cache)"] --> DOCS
 
-    DOCS["✅ Living Docs Updated\n• PR4346_whats_next.md — S862 status\n• PR4346_session_diagram.md — this\n• CHANGELOG — S862 entry\n• AGENT_ACCOUNTABILITY_REPORT"] --> GATE
+    DOCS[" Living Docs Updated\n• PR4346_whats_next.md — S862 status\n• PR4346_session_diagram.md — this\n• CHANGELOG — S862 entry\n• AGENT_ACCOUNTABILITY_REPORT"] --> GATE
 
-    GATE["🔒 P-045 Gate\nruff ✅ · sync_tracked_files ✅\nno conflicts ✅ · replies sent"] --> END
+    GATE[" P-045 Gate\nruff  · sync_tracked_files \nno conflicts  · replies sent"] --> END
 
     END(["🏁 S862 Complete — 100/100"])
 
@@ -59,21 +61,21 @@ flowchart TD
 ## 3. S861-cont Flow
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing "🟢 S861-cont · 2026-05-08T03:20Z", "✅ Merge Conflict Resolved\n.secrets.baseline — ours strategy\ngit merge origin/main"'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing " S861-cont · 2026-05-08T03:20Z", " Merge Conflict Resolved\n.secrets.baseline — ours strategy\ngit merge origin/main"'}}%%
 flowchart TD
-    START2(["🟢 S861-cont · 2026-05-08T03:20Z"]) --> MERGE
+    START2([" S861-cont · 2026-05-08T03:20Z"]) --> MERGE
 
-    MERGE["✅ Merge Conflict Resolved\n.secrets.baseline — ours strategy\ngit merge origin/main"] --> SEC
+    MERGE[" Merge Conflict Resolved\n.secrets.baseline — ours strategy\ngit merge origin/main"] --> SEC
 
-    SEC["✅ Security Fix\npost_rotation_verify.sh\nvalue redacted (not val[:20])"] --> CACHE
+    SEC[" Security Fix\npost_rotation_verify.sh\nvalue redacted (not val[:20])"] --> CACHE
 
-    CACHE["✅ aais-cache Comments Fixed\ntoken-probe.yml\npr-size-analyzer.yml"] --> RL2C
+    CACHE[" aais-cache Comments Fixed\ntoken-probe.yml\npr-size-analyzer.yml"] --> RL2C
 
-    RL2C["✅ RL-2c — CodeQL Schedule Stagger\ncodeql.yml → Monday 03:00 UTC\ncodeql-analysis.yml → Thursday 03:00 UTC"] --> RL3B
+    RL2C[" RL-2c — CodeQL Schedule Stagger\ncodeql.yml → Monday 03:00 UTC\ncodeql-analysis.yml → Thursday 03:00 UTC"] --> RL3B
 
-    RL3B["✅ RL-3b — artifact-monitoring.yml\nRate-limit pre-check + guards"] --> ADMIN
+    RL3B[" RL-3b — artifact-monitoring.yml\nRate-limit pre-check + guards"] --> ADMIN
 
-    ADMIN["✅ Admin Action Notifier Pattern\n(reproducible for all future gaps)\n• admin-action-notifier.yml\n• admin-action-t03.yml\n• admin_action_probe.py\n• ADMIN_ACTION_WORKFLOW_PATTERN.md"] --> END2
+    ADMIN[" Admin Action Notifier Pattern\n(reproducible for all future gaps)\n• admin-action-notifier.yml\n• admin-action-t03.yml\n• admin_action_probe.py\n• ADMIN_ACTION_WORKFLOW_PATTERN.md"] --> END2
 
     END2(["🏁 S861-cont Complete"])
 
@@ -98,7 +100,7 @@ flowchart TD
     PROBE["Probe step\nGET /code-scanning/alerts?per_page=1\nCODEX_MASTER_KEY"] --> CHECK
 
     CHECK{HTTP status?}
-    CHECK -- "200 ✅" --> CLOSE
+    CHECK -- "200 " --> CLOSE
     CHECK -- "403 ⚠️" --> ISSUE
     CHECK -- "other ℹ️" --> SKIP
 
@@ -122,9 +124,9 @@ flowchart TD
 ## 4. Adding a New Admin-Action Gap (Pattern Reproducibility)
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing "📖 .codex/docs/\nADMIN_ACTION_WORKFLOW_PATTERN.md\nGap Registry + How-To", "1. Identify probe endpoint\nGET /api/endpoint → 200 = ok\n403 = gap open"'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing " .codex/docs/\nADMIN_ACTION_WORKFLOW_PATTERN.md\nGap Registry + How-To", "1. Identify probe endpoint\nGET /api/endpoint → 200 = ok\n403 = gap open"'}}%%
 flowchart LR
-    DOC["📖 .codex/docs/\nADMIN_ACTION_WORKFLOW_PATTERN.md\nGap Registry + How-To"] --> STEP1
+    DOC[" .codex/docs/\nADMIN_ACTION_WORKFLOW_PATTERN.md\nGap Registry + How-To"] --> STEP1
 
     STEP1["1. Identify probe endpoint\nGET /api/endpoint → 200 = ok\n403 = gap open"] --> STEP2
 
@@ -146,34 +148,34 @@ flowchart LR
 > **Branch:** `finding-autofix-faa8614c`
 > **Agent:** `copilot-swe-agent[bot]`
 > **Sessions:** S859 (AAIS 99.9), S860 (PR review fixes, RL-2 P1), S861 (RL-2 P2), S861-cont (merge fix, RL-2c, RL-3b, admin-action pattern)
-> **Current AAIS:** 100.0/100 ✅ · **actionlint:** 0 · **ruff:** ✅
+> **Current AAIS:** 100.0/100  · **actionlint:** 0 · **ruff:** 
 
 ---
 
 ## 1. Full Session Flow (S861-cont)
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing "🟢 S861-cont · 2026-05-08T03:20Z", "✅ Merge Conflict Resolved\n.secrets.baseline — ours strategy\ngit merge origin/main\n(2 parents: branch + main)"'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing " S861-cont · 2026-05-08T03:20Z", " Merge Conflict Resolved\n.secrets.baseline — ours strategy\ngit merge origin/main\n(2 parents: branch + main)"'}}%%
 flowchart TD
-    START(["🟢 S861-cont · 2026-05-08T03:20Z"]) --> MERGE
+    START([" S861-cont · 2026-05-08T03:20Z"]) --> MERGE
 
-    MERGE["✅ Merge Conflict Resolved\n.secrets.baseline — ours strategy\ngit merge origin/main\n(2 parents: branch + main)"] --> SEC
+    MERGE[" Merge Conflict Resolved\n.secrets.baseline — ours strategy\ngit merge origin/main\n(2 parents: branch + main)"] --> SEC
 
-    SEC["✅ Security Fix\npost_rotation_verify.sh\nremoved partial token value from log\n(variable name only — closes PR review)"] --> CACHE
+    SEC[" Security Fix\npost_rotation_verify.sh\nremoved partial token value from log\n(variable name only — closes PR review)"] --> CACHE
 
-    CACHE["✅ Comment Accuracy Fixes\ntoken-probe.yml\npr-size-analyzer.yml\n# aais-cache: none rationale corrected"] --> RL2C
+    CACHE[" Comment Accuracy Fixes\ntoken-probe.yml\npr-size-analyzer.yml\n# aais-cache: none rationale corrected"] --> RL2C
 
-    RL2C["✅ RL-2c — CodeQL Schedule Stagger\ncodeql.yml → Monday 03:00 UTC\ncodeql-analysis.yml → Thursday 03:00 UTC\neliminate concurrent GHAS upload"] --> RL3B
+    RL2C[" RL-2c — CodeQL Schedule Stagger\ncodeql.yml → Monday 03:00 UTC\ncodeql-analysis.yml → Thursday 03:00 UTC\neliminate concurrent GHAS upload"] --> RL3B
 
-    RL3B["✅ RL-3b — artifact-monitoring.yml\nGH_TRICKLE env block added\nRate-limit pre-check step\nif: RATE_LIMIT_OK != false guards\non all heavy steps"] --> ADMIN
+    RL3B[" RL-3b — artifact-monitoring.yml\nGH_TRICKLE env block added\nRate-limit pre-check step\nif: RATE_LIMIT_OK != false guards\non all heavy steps"] --> ADMIN
 
-    ADMIN["✅ Admin Action Notifier Pattern\n(reproducible for all future gaps)\n• admin-action-notifier.yml (reusable engine)\n• admin-action-t03.yml (T-03 caller)\n• admin_action_probe.py (CLI script)\n• ADMIN_ACTION_WORKFLOW_PATTERN.md\n• variable_set_master_key_rotated.json"] --> DOCS
+    ADMIN[" Admin Action Notifier Pattern\n(reproducible for all future gaps)\n• admin-action-notifier.yml (reusable engine)\n• admin-action-t03.yml (T-03 caller)\n• admin_action_probe.py (CLI script)\n• ADMIN_ACTION_WORKFLOW_PATTERN.md\n• variable_set_master_key_rotated.json"] --> DOCS
 
-    DOCS["✅ Living Docs Updated\n• PR4346_whats_next.md — S861-cont\n• PR4346_session_diagram.md — this\n• CHANGELOG — full S861-cont entry\n• AGENT_ACCOUNTABILITY_REPORT"] --> GATE
+    DOCS[" Living Docs Updated\n• PR4346_whats_next.md — S861-cont\n• PR4346_session_diagram.md — this\n• CHANGELOG — full S861-cont entry\n• AGENT_ACCOUNTABILITY_REPORT"] --> GATE
 
-    GATE["🔒 P-045 Gate\nruff ✅ · actionlint ✅\nsync_tracked_files ✅\nno conflicts · replies sent"] --> END
+    GATE[" P-045 Gate\nruff  · actionlint \nsync_tracked_files \nno conflicts · replies sent"] --> END
 
-    END(["🏁 Session Close\nAAIS 100.0 · OBJ-A/C/E/F ✅\nOBJ-B/D ⛔ admin-action-t03.yml will notify"])
+    END(["🏁 Session Close\nAAIS 100.0 · OBJ-A/C/E/F \nOBJ-B/D ⛔ admin-action-t03.yml will notify"])
 
     style START fill:#27ae60,color:#fff
     style END fill:#27ae60,color:#fff
@@ -200,7 +202,7 @@ flowchart TD
     PROBE["Probe step\nGET /code-scanning/alerts?per_page=1\nCODEX_MASTER_KEY"] --> CHECK
 
     CHECK{HTTP status?}
-    CHECK -- "200 ✅" --> CLOSE
+    CHECK -- "200 " --> CLOSE
     CHECK -- "403 ⚠️" --> ISSUE
     CHECK -- "other ℹ️" --> SKIP
 
@@ -224,9 +226,9 @@ flowchart TD
 ## 3. Adding a New Admin-Action Gap (Pattern Reproducibility)
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing "📖 .codex/docs/\nADMIN_ACTION_WORKFLOW_PATTERN.md\nGap Registry + How-To", "1. Identify probe endpoint\nGET /api/endpoint → 200 = ok\n403 = gap open"'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing " .codex/docs/\nADMIN_ACTION_WORKFLOW_PATTERN.md\nGap Registry + How-To", "1. Identify probe endpoint\nGET /api/endpoint → 200 = ok\n403 = gap open"'}}%%
 flowchart LR
-    DOC["📖 .codex/docs/\nADMIN_ACTION_WORKFLOW_PATTERN.md\nGap Registry + How-To"] --> STEP1
+    DOC[" .codex/docs/\nADMIN_ACTION_WORKFLOW_PATTERN.md\nGap Registry + How-To"] --> STEP1
 
     STEP1["1. Identify probe endpoint\nGET /api/endpoint → 200 = ok\n403 = gap open"] --> STEP2
 
@@ -252,7 +254,7 @@ flowchart LR
     S859(["S859\nAAIS 97.34→99.9\nCodeQL callable fix\ndoc-link 4 fixes\nToken Review doc"]) --> S860
     S860(["S860\nPR review fixes\nwec_enforcer.py\npost_rotation_verify.sh\nRL-2 Phase 1\ntoken-expiry-monitor.yml"]) --> S861
     S861(["S861\nRL-2 Phase 2\ncodebase-health-sweep.yml\ncopilot-iterative-self-healing.yml\nComment gate replies"]) --> S861C
-    S861C(["S861-cont\nMerge conflict ✅\nRL-2c codeql stagger ✅\nRL-3b artifact-monitoring ✅\nAdmin action pattern ✅\nSecurity fix ✅"])
+    S861C(["S861-cont\nMerge conflict \nRL-2c codeql stagger \nRL-3b artifact-monitoring \nAdmin action pattern \nSecurity fix "])
 
     style S859 fill:#9b59b6,color:#fff
     style S860 fill:#4a90d9,color:#fff
@@ -267,24 +269,24 @@ flowchart LR
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "Pattern A pre-check\nGH_TRICKLE_POLITE_SLEEP: 0.5\nsparse checkout for trickle.py\nbefore bulk PR-list API call", "Pattern D page-guard\nremaining<20 break\nboth Active-PR guard calls\n(main + 0D_base_)"'}}%%
 flowchart TB
-    subgraph "RL-2a — copilot-iterative-self-healing.yml ✅"
+    subgraph "RL-2a — copilot-iterative-self-healing.yml "
         direction LR
         RL2A["Pattern A pre-check\nGH_TRICKLE_POLITE_SLEEP: 0.5\nsparse checkout for trickle.py\nbefore bulk PR-list API call"]
     end
-    subgraph "RL-2b — codebase-health-sweep.yml ✅"
+    subgraph "RL-2b — codebase-health-sweep.yml "
         direction LR
         RL2B["Pattern D page-guard\nremaining<20 break\nboth Active-PR guard calls\n(main + 0D_base_)"]
     end
-    subgraph "RL-2c — codeql.yml + codeql-analysis.yml ✅"
+    subgraph "RL-2c — codeql.yml + codeql-analysis.yml "
         direction LR
         RL2C["Schedule stagger\nMonday 03:00 UTC\nThursday 03:00 UTC\nnot concurrent GHAS upload"]
     end
-    subgraph "RL-3b — artifact-monitoring.yml ✅"
+    subgraph "RL-3b — artifact-monitoring.yml "
         direction LR
         RL3B["Pre-check step\nGH_TRICKLE env block\nif: RATE_LIMIT_OK != false\nguards on all heavy steps"]
     end
 
-    RL2A & RL2B & RL2C & RL3B --> DONE["✅ All RL-2 + RL-3b workflows hardened"]
+    RL2A & RL2B & RL2C & RL3B --> DONE[" All RL-2 + RL-3b workflows hardened"]
 
     style DONE fill:#27ae60,color:#fff
 ```
@@ -319,7 +321,7 @@ sequenceDiagram
 
     WE->>GHA: POST /actions/runs/XXXXX/approve\nCODEX_MASTER_KEY (actions:write)
     GHA-->>WE: HTTP 204 (approved)
-    Note over WE: ✅ Run unblocked immediately
+    Note over WE:  Run unblocked immediately
 
     CQF->>CQF: Fetch CodeQL alerts\n(CODEX_MASTER_KEY security_events scope)
     CQF->>GHA: Upload artifact\ncodeql-alerts-open-codeql-{run_id}.zip\n├ alerts_raw.json\n├ alerts_by_rule.md\n├ alerts_fixable.md\n└ alerts_summary.json
@@ -335,13 +337,13 @@ sequenceDiagram
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "self-healing.yml\non:\n  workflow_run: ['*', "trigger-on-approval.yml\nsteps:\n  - run: |\n      PR_REF='${{github.event\n        .pull_request.head.ref}}'\n      ← ERROR: untrusted value\n        in inline run script\n        (script injection risk)"'}}%%
 flowchart LR
-    subgraph "❌ BEFORE — 2 actionlint errors"
+    subgraph " BEFORE — 2 actionlint errors"
         direction TB
         SH_OLD["self-healing.yml\non:\n  workflow_run: ['*']\n  workflow_dispatch:\n\njobs:\n  delegate:\n    uses: iterative-self-healing-ci.yml\n    ← ERROR: no workflow_call trigger\n    ← double workflow_run execution\n    ← permissions: contents: read (too broad)"]
         TA_OLD["trigger-on-approval.yml\nsteps:\n  - run: |\n      PR_REF='${{github.event\n        .pull_request.head.ref}}'\n      ← ERROR: untrusted value\n        in inline run script\n        (script injection risk)"]
     end
 
-    subgraph "✅ AFTER — 0 actionlint errors"
+    subgraph " AFTER — 0 actionlint errors"
         direction TB
         SH_NEW["self-healing.yml\non:\n  workflow_dispatch:  ← only\n\njobs:\n  dispatch-healing:\n    permissions:\n      actions: write  ← minimal\n    steps:\n      - run: gh workflow run\n          iterative-self-healing-ci.yml\n          ← correct dispatch pattern\n          ← no reusable-workflow misuse"]
         TA_NEW["trigger-on-approval.yml\nsteps:\n  - env:\n      PR_HEAD_REF: ${{github.event\n        .pull_request.head.ref}}\n    run: |\n      PR_REF=\"$PR_HEAD_REF\"\n      ← value routed through env\n        injection vector eliminated\n        CodeQL alert resolved"]
@@ -361,23 +363,23 @@ flowchart LR
 ## 4. Token Authority Hierarchy
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing "🔑 CODEX_MASTER_KEY\nscopes: repo + workflow + actions:write\n+ security_events\n\n✅ workflow dispatch\n✅ run approve/cancel\n✅ CodeQL alert fetch\n✅ variable CRUD\n✅ secret CRUD", "🔑 CODEX_BACKUP_KEY\nscopes: repo + workflow\n\n✅ workflow dispatch\n✅ run approve\n❌ security_events\n❌ variable CRUD"'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing "🔑 CODEX_MASTER_KEY\nscopes: repo + workflow + actions:write\n+ security_events\n\n workflow dispatch\n run approve/cancel\n CodeQL alert fetch\n variable CRUD\n secret CRUD", "🔑 CODEX_BACKUP_KEY\nscopes: repo + workflow\n\n workflow dispatch\n run approve\n security_events\n variable CRUD"'}}%%
 flowchart TD
     subgraph "Token Tier Map — PR #4346"
-        T1["🔑 CODEX_MASTER_KEY\nscopes: repo + workflow + actions:write\n+ security_events\n\n✅ workflow dispatch\n✅ run approve/cancel\n✅ CodeQL alert fetch\n✅ variable CRUD\n✅ secret CRUD"]
+        T1["🔑 CODEX_MASTER_KEY\nscopes: repo + workflow + actions:write\n+ security_events\n\n workflow dispatch\n run approve/cancel\n CodeQL alert fetch\n variable CRUD\n secret CRUD"]
 
-        T2["🔑 CODEX_BACKUP_KEY\nscopes: repo + workflow\n\n✅ workflow dispatch\n✅ run approve\n❌ security_events\n❌ variable CRUD"]
+        T2["🔑 CODEX_BACKUP_KEY\nscopes: repo + workflow\n\n workflow dispatch\n run approve\n security_events\n variable CRUD"]
 
-        T3["🔑 github.token\n(installation token)\n\n✅ PR read/write\n✅ issue comment\n❌ actions:write (403)\n❌ security_events (403)\n❌ variable CRUD (403)"]
+        T3["🔑 github.token\n(installation token)\n\n PR read/write\n issue comment\n actions:write (403)\n security_events (403)\n variable CRUD (403)"]
 
-        T4["🔑 GITHUB_APP_TOKEN\n(_GITHUB_APP_ID)\n\n✅ all org-wide\n✅ approve any PR\n⚠️ not yet configured"]
+        T4["🔑 GITHUB_APP_TOKEN\n(_GITHUB_APP_ID)\n\n all org-wide\n approve any PR\n⚠️ not yet configured"]
     end
 
     subgraph "Used In This Session"
-        U1["wec_enforcer.py\n--dispatch-checked\nCODEX_MASTER_KEY ✅"]
-        U2["trigger-on-approval.yml\nworkflow dispatch\nCODEX_MASTER_KEY ✅"]
-        U3["codeql-alert-fetcher.yml\nsecurity_events\nCODEX_MASTER_KEY ✅"]
-        U4["workflow-execution-gate.yml\ndispatch-checked job\nCODEX_MASTER_KEY ✅"]
+        U1["wec_enforcer.py\n--dispatch-checked\nCODEX_MASTER_KEY "]
+        U2["trigger-on-approval.yml\nworkflow dispatch\nCODEX_MASTER_KEY "]
+        U3["codeql-alert-fetcher.yml\nsecurity_events\nCODEX_MASTER_KEY "]
+        U4["workflow-execution-gate.yml\ndispatch-checked job\nCODEX_MASTER_KEY "]
     end
 
     T1 --> U1
@@ -412,9 +414,9 @@ pie title Files Changed by Category (PR #4346 cumulative)
 ```mermaid
 %%{init: {'accessibility': {'title': 'Pie Chart'}}%%
 pie title CI Checks — Latest Push (finding-autofix-faa8614c)
-    "✅ Passing" : 31
+    " Passing" : 31
     "🔄 In Progress" : 4
-    "❌ Failing (0 expected)" : 0
+    " Failing (0 expected)" : 0
 ```
 
 ---
@@ -468,7 +470,7 @@ stateDiagram-v2
     ArtifactUploaded --> [*] : artifact available for download
     DispatchFailed --> [*] : logged, non-fatal
 
-    Approved : ✅ IMMEDIATE\n(< 60s total)
+    Approved :  IMMEDIATE\n(< 60s total)
     FallbackSchedule : ⏱ DELAYED\n(≤ 5 min)
 ```
 
@@ -477,27 +479,27 @@ stateDiagram-v2
 ## 9. Merge Readiness Scorecard
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing "✅ auto_fix — 0 auto-fixable issues", "✅ sync_tracked_files — consistent"'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing " auto_fix — 0 auto-fixable issues", " sync_tracked_files — consistent"'}}%%
 flowchart LR
     subgraph "Scorecard — PR #4346 End of S859"
         direction TB
-        R1["✅ auto_fix — 0 auto-fixable issues"]
-        R2["✅ sync_tracked_files — consistent"]
-        R3["✅ action_versions — all approved"]
-        R4["✅ ruff src/ — clean"]
-        R5["✅ github-script ≥ v8"]
-        R6["✅ Pattern 27 registered"]
-        R7["✅ download-artifact min v5"]
-        R8["✅ PDA entry today"]
-        R9["✅ accountability report today"]
-        R10["✅ AAIS composite 99.9/100"]
-        R11["✅ actionlint 0 errors"]
-        R12["✅ CodeQL alerts addressed"]
-        R13["✅ WEC dispatch auto-approve"]
+        R1[" auto_fix — 0 auto-fixable issues"]
+        R2[" sync_tracked_files — consistent"]
+        R3[" action_versions — all approved"]
+        R4[" ruff src/ — clean"]
+        R5[" github-script ≥ v8"]
+        R6[" Pattern 27 registered"]
+        R7[" download-artifact min v5"]
+        R8[" PDA entry today"]
+        R9[" accountability report today"]
+        R10[" AAIS composite 99.9/100"]
+        R11[" actionlint 0 errors"]
+        R12[" CodeQL alerts addressed"]
+        R13[" WEC dispatch auto-approve"]
     end
 
     subgraph "Score"
-        S["🟢 100 / 100\nMERGE READY"]
+        S[" 100 / 100\nMERGE READY"]
     end
 
     R1 & R2 & R3 & R4 & R5 & R6 & R7 & R8 & R9 & R10 & R11 & R12 & R13 --> S
@@ -511,14 +513,14 @@ flowchart LR
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "workflow-execution-gate.yml\n5 API calls, 0 guards", "auto-approve-workflows.yml\n6 API calls, 1 guard"'}}%%
 flowchart TD
-    subgraph "P1 Workflows — Before (❌ 0 guards)"
+    subgraph "P1 Workflows — Before ( 0 guards)"
         A1["workflow-execution-gate.yml\n5 API calls, 0 guards"]
         A2["auto-approve-workflows.yml\n6 API calls, 1 guard"]
         A3["promote-integration-branch.yml\n5 PATCH calls, 0 guards"]
         A4["copilot-agent-session-done.yml\n3 REST + GraphQL, 0 guards"]
     end
 
-    subgraph "P1 Workflows — After (✅ Pattern A/C/D/GraphQL)"
+    subgraph "P1 Workflows — After ( Pattern A/C/D/GraphQL)"
         B1["workflow-execution-gate.yml\nPattern A pre-check\nGH_TRICKLE_POLITE_SLEEP: 0.3\ndetect step gated on RATE_LIMITED"]
         B2["auto-approve-workflows.yml\nPattern D page-guard\nGH_TRICKLE_POLITE_SLEEP: 1.0\nremaining<20 → break loop"]
         B3["promote-integration-branch.yml\nPattern C _api_with_retry()\n3 attempts, 10/20/40s backoff\non PATCH ref update"]
@@ -547,12 +549,12 @@ flowchart TD
 flowchart TD
     A["⏰ token-expiry-monitor.yml\ncron 0 9 * * * (09:00 UTC daily)\nor workflow_dispatch"] --> B["Read vars:\nCODEX_MASTER_KEY_EXPIRY_DATE\nCODEX_BACKUP_KEY_EXPIRY_DATE"]
     B --> C{days_left?}
-    C -- "> 14 days" --> D["✅ Print healthy\nno action"]
+    C -- "> 14 days" --> D[" Print healthy\nno action"]
     C -- "≤ 14 days" --> E["⚠️ Warn in\njob summary"]
     C -- "≤ 7 days\nor expired" --> F["🚨 Warn +\ncreate/update\nGitHub Issue"]
     F --> G["Issue assigned to @mbaetiong\nLabel: security\n7-step rotation guide linked"]
-    G --> H["❌ Fail job\n(not dry-run)"]
-    E --> I["✅ Job passes\n(early warning only)"]
+    G --> H[" Fail job\n(not dry-run)"]
+    E --> I[" Job passes\n(early warning only)"]
 
     style A fill:#4a90d9,color:#fff
     style F fill:#e74c3c,color:#fff
@@ -578,14 +580,14 @@ flowchart LR
 ## 13. S860 — Secrets Baseline Enforcer Fix (False-Positive Resolution)
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing "variable_set_c4b.json\ngit SHA value\n(40-char hex)", "🔐 Secrets Baseline Enforcer\nFAIL"'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing "variable_set_c4b.json\ngit SHA value\n(40-char hex)", " Secrets Baseline Enforcer\nFAIL"'}}%%
 flowchart LR
-    A["variable_set_c4b.json\ngit SHA value\n(40-char hex)"] -->|"HexHighEntropyString\ntrigger"| B["🔐 Secrets Baseline Enforcer\nFAIL"]
+    A["variable_set_c4b.json\ngit SHA value\n(40-char hex)"] -->|"HexHighEntropyString\ntrigger"| B[" Secrets Baseline Enforcer\nFAIL"]
     C["variable_set_c6.json\nsha256 hash value\n(64-char hex)"] -->|"HexHighEntropyString\ntrigger"| B
     B --> D["Programmatic FP injection\npython3 — hashlib.sha1(val)\nis_secret: false"]
     D --> E[".secrets.baseline updated\n2 new FP entries"]
-    E --> F["detect-secrets-hook\n--baseline .secrets.baseline\nexit: 0 ✅"]
-    F --> G["sync_tracked_files.py --fix\n✅ consistent"]
+    E --> F["detect-secrets-hook\n--baseline .secrets.baseline\nexit: 0 "]
+    F --> G["sync_tracked_files.py --fix\n consistent"]
 
     style B fill:#e74c3c,color:#fff
     style F fill:#27ae60,color:#fff
@@ -599,9 +601,9 @@ flowchart LR
 flowchart TD
     A["/tmp/ audit\nat session end"] --> B{Useful tools?}
     B -->|"pr_body.txt\npr_body_updated.txt"| C["Agent-generated\nPR body snapshots\n(ephemeral only)"]
-    B -->|"No scripts\nNo .py/.sh/.md\ntools found"| D["✅ Nothing to migrate\nAll session tools\nalready in codebase"]
+    B -->|"No scripts\nNo .py/.sh/.md\ntools found"| D[" Nothing to migrate\nAll session tools\nalready in codebase"]
     C --> E["Not migrated\n(runtime artifacts,\nnot reproducible tools)"]
-    D --> F["scripts/ci/build_expiry_issue_body.py\nscripts/ci/github_api_trickle.py (enhanced)\nscripts/ci/wec_enforcer.py (hardened)\nAlready committed ✅"]
+    D --> F["scripts/ci/build_expiry_issue_body.py\nscripts/ci/github_api_trickle.py (enhanced)\nscripts/ci/wec_enforcer.py (hardened)\nAlready committed "]
 
     style D fill:#27ae60,color:#fff
     style F fill:#27ae60,color:#fff

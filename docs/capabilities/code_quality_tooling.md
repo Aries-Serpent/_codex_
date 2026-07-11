@@ -1,12 +1,14 @@
 # Code Quality Tooling
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
-> **Navigation**: [📖 Main README](https://github.com/Aries-Serpent/_codex_/blob/main/README.md#-capabilities-documentation) | [💾 Checkpointing](checkpointing.md) | [🔄 Training Loops](train_loop.md) | [🎯 PEFT Techniques](peft_hooks.md) | [🔧 GitHub CLI Guide](https://github.com/Aries-Serpent/_codex_/blob/main/.github/docs/GH_CLI_Resolution_Copilot.md)
+> **Navigation**: [ Main README](../README.md#-capabilities-documentation) | [💾 Checkpointing](checkpointing.md) | [🔄 Training Loops](train_loop.md) | [ PEFT Techniques](peft_hooks.md) | [🔧 GitHub CLI Guide](../.github/docs/GH_CLI_Resolution_Copilot.md)
 
 ## Overview
 
-**Status**: ✅ Complete - Comprehensive code quality tooling guide with configurations and examples
+**Status**:  Complete - Comprehensive code quality tooling guide with configurations and examples
 
 This capability covers comprehensive code quality tooling for the _codex_ repository, including linting, formatting, type checking, and static analysis tools.
 
@@ -375,9 +377,9 @@ git commit -m "feat: add new feature"
 | Feature | Ruff | Black | mypy | pytest |
 |---------|------|-------|------|--------|
 | Speed | ⚡⚡⚡ (100x faster) | ⚡⚡ | ⚡ | ⚡⚡ |
-| Auto-fix | ✅ | ✅ | ❌ | N/A |
-| Customizable | ✅ High | ⚠️ Limited | ✅ High | ✅ High |
-| Error Messages | ✅ Clear | N/A | ⚠️ Can be cryptic | ✅ Clear |
+| Auto-fix |  |  |  | N/A |
+| Customizable |  High | ⚠️ Limited |  High |  High |
+| Error Messages |  Clear | N/A | ⚠️ Can be cryptic |  Clear |
 
 ## Troubleshooting
 
@@ -438,7 +440,7 @@ ignore_missing_imports = true
 - [pre-commit Documentation](https://pre-commit.com/)
 - [nox Documentation](https://nox.thea.codes/)
 - Code Quality Workflow
-- [Project Configuration](https://github.com/Aries-Serpent/_codex_/blob/main/pyproject.toml)
+- [Project Configuration](../pyproject.toml)
 
 ---
 

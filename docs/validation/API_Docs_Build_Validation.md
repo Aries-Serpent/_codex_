@@ -1,4 +1,6 @@
 # API Docs Build Validation
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > Dry-Run, Import Gating, Success Criteria
 
@@ -56,10 +58,10 @@ nox -f nox_sessions/docs_validation.py -s docs_validate_full
 
 ## Success criteria (pass conditions)
 
-- ✅ Build completes (`ok: true` in report)
-- ✅ No "errors" (hard import failures) reported
-- ✅ Optional dependency misses only include allowlisted packages (e.g., wandb, tensorboard, torch)
-- ✅ At least one HTML file present in the output directory
+-  Build completes (`ok: true` in report)
+-  No "errors" (hard import failures) reported
+-  Optional dependency misses only include allowlisted packages (e.g., wandb, tensorboard, torch)
+-  At least one HTML file present in the output directory
 
 ## Example JSON output
 
@@ -169,5 +171,5 @@ echo "✓ API docs validation passed"
 
 - [API Documentation Guide](../api/index.md)
 - [Troubleshooting Guide](../troubleshooting/API_Docs_Troubleshooting.md)
-- [Build Script](https://github.com/Aries-Serpent/_codex_/blob/main/tools/build_api_docs.py)
-- [Validator Script](https://github.com/Aries-Serpent/_codex_/blob/main/tools/validate_api_docs.py)
+- [Build Script](../tools/build_api_docs.py)
+- [Validator Script](../tools/validate_api_docs.py)

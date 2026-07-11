@@ -1,4 +1,7 @@
 # Test Coverage Baseline Report for _codex_ Repository
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 **Generated:** 2026-01-18  
 ## Table of Contents
 

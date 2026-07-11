@@ -1,10 +1,12 @@
 # Getting Started Guide for Data Scientists
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-07-08  
+**Last Updated: 2026-07-08
 **Target Audience:** Data scientists, ML researchers, model developers  
 **Estimated Time:** 15-20 minutes to first model
 
-## 🎯 Your Goal
+##  Your Goal
 
 Transform raw data into trained ML models using Codex ML's integrated training pipeline. This guide covers data loading, model training, evaluation, and experimentation tracking.
 
@@ -35,7 +37,7 @@ pip install --upgrade pip
 pip install 'codex-ml[ml]'
 
 # Verify installation
-python -c "from codex_ml.training import TrainingEngine; print('✅ Ready to train!')"
+python -c "from codex_ml.training import TrainingEngine; print(' Ready to train!')"
 ```
 
 ### Verify Your Setup
@@ -45,7 +47,7 @@ python -c "from codex_ml.training import TrainingEngine; print('✅ Ready to tra
 python -c "import torch; print(f'GPU Available: {torch.cuda.is_available()}')"
 
 # Check Hugging Face access
-python -c "from transformers import AutoModel; print('✅ Transformers ready')"
+python -c "from transformers import AutoModel; print(' Transformers ready')"
 
 # Check configuration system
 codex config show
@@ -128,10 +130,10 @@ codex evaluate \
   --metrics accuracy f1 precision recall
 
 # Output will show:
-# ✅ Accuracy: 89.5%
-# ✅ F1 Score: 0.892
-# ✅ Precision: 0.891
-# ✅ Recall: 0.893
+#  Accuracy: 89.5%
+#  F1 Score: 0.892
+#  Precision: 0.891
+#  Recall: 0.893
 ```
 
 ---
@@ -369,7 +371,7 @@ for text, pred in zip(texts, results):
 
 ---
 
-## 📚 Next Steps
+##  Next Steps
 
 - **Explore Fine-tuning**: Check [Fine-tuning Guide](./FINE_TUNING_GUIDE.md)
 - **Build Ensemble**: See [Ensemble Methods](./ENSEMBLE_GUIDE.md)
@@ -384,4 +386,4 @@ for text, pred in zip(texts, results):
 
 ---
 
-**Happy experimenting! 🚀**
+**Happy experimenting! **

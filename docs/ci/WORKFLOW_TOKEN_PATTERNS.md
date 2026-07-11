@@ -1,4 +1,6 @@
 # Workflow Token Patterns Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 This guide provides standardized token usage patterns for GitHub Actions workflows. All 209 workflows should follow these patterns to ensure consistent, secure authentication and proper API access levels.
 
@@ -39,11 +41,11 @@ jobs:
 ```
 
 **When to Use:**
-- ✅ Modifying PR properties (title, body, labels)
-- ✅ Writing to repository variables
-- ✅ Triggering workflow dispatch
-- ✅ Creating/updating workflow runs
-- ✅ Managing repository settings via API
+-  Modifying PR properties (title, body, labels)
+-  Writing to repository variables
+-  Triggering workflow dispatch
+-  Creating/updating workflow runs
+-  Managing repository settings via API
 
 ---
 
@@ -87,11 +89,11 @@ jobs:
 ```
 
 **When to Use:**
-- ✅ Listing/viewing workflow runs
-- ✅ Posting PR/issue comments
-- ✅ Managing artifacts (download, upload)
-- ✅ Reading repository data
-- ✅ Checking CI/CD status
+-  Listing/viewing workflow runs
+-  Posting PR/issue comments
+-  Managing artifacts (download, upload)
+-  Reading repository data
+-  Checking CI/CD status
 
 ---
 
@@ -132,9 +134,9 @@ jobs:
 ```
 
 **When to Use:**
-- ✅ Workflows combining read and write operations
-- ✅ CI gates that read status and update variables
-- ✅ Monitoring workflows that collect data and post results
+-  Workflows combining read and write operations
+-  CI gates that read status and update variables
+-  Monitoring workflows that collect data and post results
 
 ---
 

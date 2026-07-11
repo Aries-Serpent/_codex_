@@ -1,8 +1,10 @@
 # Threat Model - Phase 12 Update
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Status:** Production Ready  
 **Version:** 1.0.0  
-**Last Updated:** 2026-07-08  
+**Last Updated: 2026-07-08
 **Author:** Phase 12 WS3 Documentation Team
 
 ---
@@ -388,24 +390,24 @@ Severity
 ### Priority Mitigations (Phase 12)
 
 **Tier 1 (Must Have):**
-- ✅ OAuth 2.0 + MFA
-- ✅ RBAC system
-- ✅ Approval workflows
-- ✅ Token management
-- ✅ Encryption at rest
+-  OAuth 2.0 + MFA
+-  RBAC system
+-  Approval workflows
+-  Token management
+-  Encryption at rest
 
 **Tier 2 (Should Have):**
-- ✅ Input validation
-- ✅ Audit logging
-- ✅ Rate limiting
-- ✅ Secret rotation
-- ✅ TLS 1.3
+-  Input validation
+-  Audit logging
+-  Rate limiting
+-  Secret rotation
+-  TLS 1.3
 
 **Tier 3 (Nice to Have):**
-- ✅ Hardware security modules
-- ✅ Advanced threat detection
-- ✅ Behavioral analytics
-- ✅ Penetration testing
+-  Hardware security modules
+-  Advanced threat detection
+-  Behavioral analytics
+-  Penetration testing
 
 ---
 
@@ -503,6 +505,6 @@ def incident_post_mortem(incident_id: str):
 
 ---
 
-**Last Updated:** 2026-07-08  
+**Last Updated: 2026-07-08
 **Version:** 1.0.0  
 **Status:** Production Ready

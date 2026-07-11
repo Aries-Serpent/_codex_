@@ -1,6 +1,8 @@
 # CI Triage Reproducibility Reference — S145
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 > **Session:** S145 | **PR:** #3606 | **Date:** 2026-03-17
 > **Script:** `scripts/ci/ci_triage_repro.sh`
@@ -162,7 +164,7 @@ ratchet it down incrementally as errors are fixed.
 
 ```bash
 python scripts/ci/mypy_baseline.py
-# Expected: "✅ X errors ≤ baseline Y"
+# Expected: " X errors ≤ baseline Y"
 ```
 
 ---
@@ -310,7 +312,7 @@ print(base64.b64encode(script.encode()).decode())
 
 ```bash
 bash scripts/ci/ci_triage_repro.sh --check 5
-# Expected: "✅ PASS — Telemetry extraction: FAILURE_RATE=11.7%  TOTAL_RUNS=180  FAILED_RUNS=21"
+# Expected: " PASS — Telemetry extraction: FAILURE_RATE=11.7%  TOTAL_RUNS=180  FAILED_RUNS=21"
 ```
 
 ---
@@ -360,7 +362,7 @@ Change the dashboard awk expression from `> 99.6` to `>= 99.7`:
 
 ```bash
 bash scripts/ci/ci_triage_repro.sh --check 6
-# Expected: "✅ PASS — Thresholds aligned: dashboard '>= 99.7' == enforcement '99.7'"
+# Expected: " PASS — Thresholds aligned: dashboard '>= 99.7' == enforcement '99.7'"
 ```
 
 ---
@@ -402,7 +404,7 @@ to the correct PR number.
 
 ```bash
 bash scripts/ci/ci_triage_repro.sh --check 7
-# Expected: "✅ PASS — CHANGELOG: no self-inconsistent PR number references"
+# Expected: " PASS — CHANGELOG: no self-inconsistent PR number references"
 ```
 
 ---

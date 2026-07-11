@@ -1,19 +1,21 @@
 # Pre-commit Verification Hook
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Version:** 1.0.0  
-> **Status:** ✅ Active  
-> **Last Updated:** 2026-02-10T09:30:00Z  
+> **Status:**  Active  
+> **Last Updated: 2026-07-11
 > **Cognitive Brain Plan:** Plan 1 of Short-term Planset (CB-ST-2026-02-05)
 
 ---
 
-## 🎯 Overview
+##  Overview
 
 The Pre-commit Verification Hook ensures that all files logged in `action_log.ndjson` as created or modified are properly staged before commit. This prevents accidental omission of files that were worked on during a session.
 
 ---
 
-## 📊 Architecture
+##  Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -86,7 +88,7 @@ python scripts/hooks/pre_commit_verify.py --action-log /path/to/action_log.ndjso
 
 ## 📄 Sample Output
 
-### All Files Staged ✅
+### All Files Staged 
 
 ```
 ============================================================
@@ -94,10 +96,10 @@ Pre-commit Verification Report
 ============================================================
 
 Expected files from action log: 5
-Correctly staged: 5 ✅
+Correctly staged: 5 
 Missing from staging: 0
 
-✅ Staged Files (Correct):
+ Staged Files (Correct):
    - scripts/hooks/pre_commit_verify.py
    - tests/hooks/test_pre_commit_verify.py
    - .pre-commit-config.yaml
@@ -105,7 +107,7 @@ Missing from staging: 0
    - .codex/action_log.ndjson
 
 ============================================================
-INFO: All expected files are staged ✅
+INFO: All expected files are staged 
 ```
 
 ### Missing Files ⚠️
@@ -116,10 +118,10 @@ Pre-commit Verification Report
 ============================================================
 
 Expected files from action log: 5
-Correctly staged: 3 ✅
+Correctly staged: 3 
 Missing from staging: 2
 
-✅ Staged Files (Correct):
+ Staged Files (Correct):
    - scripts/hooks/pre_commit_verify.py
    - tests/hooks/test_pre_commit_verify.py
    - .pre-commit-config.yaml
@@ -189,7 +191,7 @@ A detailed report is generated showing:
 
 ---
 
-## ⚙️ Pre-commit Configuration
+##  Pre-commit Configuration
 
 The hook is configured in `.pre-commit-config.yaml`:
 
@@ -244,7 +246,7 @@ The hook helps maintain the 98%+ commit verification rate identified in the sess
 
 ---
 
-## 📚 Related Documents
+##  Related Documents
 
 - Short-term Planset: `.codex/plans/cognitive_brain_short_term_planset.md`
 - Session Analysis Report: `reports/COPILOT_SESSION_ANALYSIS_2026_02_05.md`
@@ -272,4 +274,4 @@ For issues or enhancements:
 ---
 
 **Document Version:** 1.0.0  
-**Last Updated:** 2026-02-05T09:30:00Z
+**Last Updated: 2026-07-11

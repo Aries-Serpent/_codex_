@@ -1,4 +1,6 @@
 # Secrets Rotation Runbook — `CODEX_MASTER_KEY` / `CODEX_BACKUP_KEY`
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Document**: `docs/ops/secrets_rotation_runbook.md`  
 > **Version**: 1.0 (P10-06 — S96 2026-06-22)  
@@ -178,7 +180,7 @@ def _get_active_key() -> bytes:
 
 | Rotation | Due Date | Status |
 |----------|----------|--------|
-| Initial provisioning | 2026-02-28 | ✅ Keys set |
+| Initial provisioning | 2026-02-28 |  Keys set |
 | Rotation 1 | 2026-05-28 | ⏳ Scheduled |
 | Rotation 2 | 2026-08-26 | ⏳ Scheduled |
 

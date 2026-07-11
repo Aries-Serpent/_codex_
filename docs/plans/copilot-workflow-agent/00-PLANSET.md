@@ -1,4 +1,6 @@
 # Copilot Workflow Agent - Master Planset
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **⚠️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 
@@ -40,8 +42,8 @@ Build a GitHub Copilot Workflow Agent that autonomously manages CI/CD lifecycle 
 
 | Deliverable | File | Status |
 |-------------|------|--------|
-| Plan directory structure | `docs/plans/copilot-workflow-agent/` | ✅ DONE |
-| Master planset | `00-PLANSET.md` | ✅ DONE |
+| Plan directory structure | `docs/plans/copilot-workflow-agent/` |  DONE |
+| Master planset | `00-PLANSET.md` |  DONE |
 | Work batches | `01-BATCHSET.md` | ⏳ IN PROGRESS |
 | Patch prompts | `02-PATCHSET.md` | ⏳ IN PROGRESS |
 | Architecture doc | `03-ARCHITECTURE.md` | ⏳ IN PROGRESS |
@@ -176,12 +178,12 @@ class AutoRemediator:
 
 | Category | Auto-Remediation | Example |
 |----------|-----------------|---------|
-| Dependency Missing | ✅ Yes | Add missing pip package |
-| Timeout | ✅ Yes | Increase timeout value |
-| YAML Syntax | ✅ Yes | Fix YAML formatting |
+| Dependency Missing |  Yes | Add missing pip package |
+| Timeout |  Yes | Increase timeout value |
+| YAML Syntax |  Yes | Fix YAML formatting |
 | Test Flaky | ⚠️ Partial | Add retry or skip |
-| API Deprecated | ✅ Yes | Upgrade action version |
-| Permission | ❌ No | Requires manual review |
+| API Deprecated |  Yes | Upgrade action version |
+| Permission |  No | Requires manual review |
 
 ### Acceptance Criteria
 - [ ] Detector identifies 90%+ of common failures

@@ -1,4 +1,6 @@
 # API Data Types Reference
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 Complete reference for all data types and schemas used in the Codex API.
 
@@ -530,7 +532,7 @@ Fields that can be null/absent (optional):
 ### TypeScript
 
 ```typescript
-// ✅ Good: Strict typing
+//  Good: Strict typing
 const result: QueryResult = {
   document_id: "doc_001",
   content: "...",
@@ -538,14 +540,14 @@ const result: QueryResult = {
   metadata: { source: "file.txt" }
 };
 
-// ❌ Bad: Loose typing
+//  Bad: Loose typing
 const result: any = { ...data };
 ```
 
 ### Python
 
 ```python
-# ✅ Good: Use Pydantic models
+#  Good: Use Pydantic models
 from pydantic import BaseModel
 
 class Document(BaseModel):
@@ -553,7 +555,7 @@ class Document(BaseModel):
     content: str
     metadata: Optional[Dict[str, str]] = None
 
-# ❌ Bad: Unvalidated dicts
+#  Bad: Unvalidated dicts
 document = {"id": "doc_001", ...}  # No validation
 ```
 
@@ -562,15 +564,15 @@ document = {"id": "doc_001", ...}  # No validation
 Always validate data before sending:
 
 ```typescript
-// ✅ Good
+//  Good
 if (indexName.match(/^[A-Za-z0-9._-]{1,128}$/)) {
   // Proceed
 }
 
-// ❌ Bad
+//  Bad
 // Just send without validation
 ```
 
 ---
 
-**Last Updated:** 2026-07-08
+**Last Updated: 2026-07-08

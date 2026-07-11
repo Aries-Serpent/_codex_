@@ -1,4 +1,6 @@
 # GitHub Token Regeneration Configuration Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Last Updated**: 2026-01-26T19:00:00Z  
 > **Status**: Active - Token Refreshed  
@@ -6,7 +8,7 @@
 
 ---
 
-## 🎯 Overview
+##  Overview
 
 This guide provides comprehensive instructions for updating all repository components after GitHub token regeneration. Follow these steps to ensure proper configuration across workflows, scripts, documentation, and agent systems.
 
@@ -17,48 +19,48 @@ This guide provides comprehensive instructions for updating all repository compo
 ### Personal Access Token (PAT) - Classic
 
 **Required Scopes:**
-- ✅ `repo` (Full control of private repositories)
-- ✅ `workflow` (Update GitHub Action workflows)
-- ✅ `write:packages` (Upload packages to GitHub Package Registry)
-- ✅ `delete:packages` (Delete packages from GitHub Package Registry)
-- ✅ `admin:org` (Full control of orgs and teams)
-- ✅ `admin:public_key` (Full control of user public keys)
-- ✅ `admin:repo_hook` (Full control of repository hooks)
-- ✅ `admin:org_hook` (Full control of organization hooks)
-- ✅ `gist` (Create gists)
-- ✅ `notifications` (Access notifications)
-- ✅ `user` (Update ALL user data)
-- ✅ `delete_repo` (Delete repositories)
-- ✅ `write:discussion` (Read and write team discussions)
-- ✅ `read:packages` (Download packages from GitHub Package Registry)
-- ✅ `read:org` (Read org and team membership, read org projects)
-- ✅ `write:org` (Read and write org and team membership, read and write org projects)
-- ✅ `admin:gpg_key` (Full control of user gpg keys)
-- ✅ `codespace` (Full control of codespaces)
-- ✅ `project` (Full control of projects)
-- ✅ `security_events` (Read and write security events)
+-  `repo` (Full control of private repositories)
+-  `workflow` (Update GitHub Action workflows)
+-  `write:packages` (Upload packages to GitHub Package Registry)
+-  `delete:packages` (Delete packages from GitHub Package Registry)
+-  `admin:org` (Full control of orgs and teams)
+-  `admin:public_key` (Full control of user public keys)
+-  `admin:repo_hook` (Full control of repository hooks)
+-  `admin:org_hook` (Full control of organization hooks)
+-  `gist` (Create gists)
+-  `notifications` (Access notifications)
+-  `user` (Update ALL user data)
+-  `delete_repo` (Delete repositories)
+-  `write:discussion` (Read and write team discussions)
+-  `read:packages` (Download packages from GitHub Package Registry)
+-  `read:org` (Read org and team membership, read org projects)
+-  `write:org` (Read and write org and team membership, read and write org projects)
+-  `admin:gpg_key` (Full control of user gpg keys)
+-  `codespace` (Full control of codespaces)
+-  `project` (Full control of projects)
+-  `security_events` (Read and write security events)
 
 ### Fine-Grained Personal Access Token (Recommended)
 
 **Repository Permissions:**
-- ✅ Actions: Read and write
-- ✅ Contents: Read and write
-- ✅ Issues: Read and write
-- ✅ Metadata: Read-only (automatic)
-- ✅ Pull requests: Read and write
-- ✅ Secrets: Read and write
-- ✅ Workflows: Read and write
-- ✅ Code scanning alerts: Read and write
-- ✅ Dependabot alerts: Read and write
-- ✅ Secret scanning alerts: Read and write
+-  Actions: Read and write
+-  Contents: Read and write
+-  Issues: Read and write
+-  Metadata: Read-only (automatic)
+-  Pull requests: Read and write
+-  Secrets: Read and write
+-  Workflows: Read and write
+-  Code scanning alerts: Read and write
+-  Dependabot alerts: Read and write
+-  Secret scanning alerts: Read and write
 
 **Organization Permissions:**
-- ✅ Members: Read-only (for team operations)
-- ✅ Administration: Read and write (for org-level operations)
+-  Members: Read-only (for team operations)
+-  Administration: Read and write (for org-level operations)
 
 ---
 
-## 🔐 Step 1: Generate New Token
+##  Step 1: Generate New Token
 
 ### Via GitHub UI
 
@@ -163,7 +165,7 @@ github:
 
 ---
 
-## ✅ Step 4: Verify Token Configuration
+##  Step 4: Verify Token Configuration
 
 ### 4.1 Test GitHub API Access
 
@@ -217,7 +219,7 @@ gh run view --log | grep -i "permission\|403\|401\|unauthorized"
 
 ---
 
-## 🚀 Step 5: Update Agent Systems
+##  Step 5: Update Agent Systems
 
 ### 5.1 Update Autonomous Agent Configuration
 
@@ -254,7 +256,7 @@ Update agent configuration files in `.github/agents/`:
 **Token Secret**: `CODEX_MASTER_KEY`  
 **Last Refreshed**: 2026-01-26T19:00:00Z  
 **Expiry**: 2027-01-26T00:00:00Z  
-**Status**: ✅ Active
+**Status**:  Active
 
 ## Verification
 
@@ -266,7 +268,7 @@ gh api /repos/Aries-Serpent/_codex_/code-scanning/alerts --paginate | jq 'length
 
 ---
 
-## 📚 Step 6: Update Documentation
+##  Step 6: Update Documentation
 
 ### 6.1 Update Token Status Documents
 
@@ -275,7 +277,7 @@ Update the following documentation files:
 1. **`.codex/QUICK_REFERENCE_TOKEN_STATUS.md`**
    - Update "Last Refreshed" timestamp
    - Update "Expiry Date"
-   - Update "Status" to ✅ Active
+   - Update "Status" to  Active
 
 2. **`.codex/HUMAN_ADMIN_REQUIRED_TOKEN_SETUP.md`**
    - Add completion timestamp
@@ -294,7 +296,7 @@ Update workflow documentation to reflect token configuration:
 # Update workflow README
 cat >> .github/workflows/README.md <<EOF
 
-## Token Configuration (Updated: 2026-01-26)
+## Token Configuration (Updated: 2026-07-11
 
 All workflows requiring elevated permissions use the \`CODEX_MASTER_KEY\` secret.
 
@@ -392,22 +394,22 @@ echo "🔍 Validating GitHub Token Permissions..."
 echo "============================================"
 
 # Test each required permission
-echo "✅ Testing repo access..."
+echo " Testing repo access..."
 gh api /repos/Aries-Serpent/_codex_ > /dev/null
 
-echo "✅ Testing workflow access..."
+echo " Testing workflow access..."
 gh api /repos/Aries-Serpent/_codex_/actions/workflows > /dev/null
 
-echo "✅ Testing security events access..."
+echo " Testing security events access..."
 gh api /repos/Aries-Serpent/_codex_/code-scanning/alerts > /dev/null
 
-echo "✅ Testing issues access..."
+echo " Testing issues access..."
 gh api /repos/Aries-Serpent/_codex_/issues > /dev/null
 
-echo "✅ Testing pull requests access..."
+echo " Testing pull requests access..."
 gh api /repos/Aries-Serpent/_codex_/pulls > /dev/null
 
-echo "✅ Testing secrets access..."
+echo " Testing secrets access..."
 gh api /repos/Aries-Serpent/_codex_/actions/secrets > /dev/null
 
 echo ""
@@ -421,7 +423,7 @@ chmod +x /tmp/validate_all_permissions.sh
 
 ---
 
-## 📊 Step 9: Update Monitoring & Logging
+##  Step 9: Update Monitoring & Logging
 
 ### 9.1 Log Token Rotation Event
 
@@ -437,19 +439,19 @@ cat >> .codex/change_log.md <<EOF
 **Verified By**: @mbaetiong
 
 **Components Updated**:
-- ✅ Repository secret (CODEX_MASTER_KEY)
-- ✅ Configuration files (.codex/flags.json, .codex/flags.yml)
-- ✅ Autonomous agent config
-- ✅ Cognitive brain system
-- ✅ Documentation
-- ✅ Workflow integrations
+-  Repository secret (CODEX_MASTER_KEY)
+-  Configuration files (.codex/flags.json, .codex/flags.yml)
+-  Autonomous agent config
+-  Cognitive brain system
+-  Documentation
+-  Workflow integrations
 
 **Validation**:
-- ✅ GitHub API access confirmed
-- ✅ Workflow execution successful
-- ✅ Code scanning operations functional
-- ✅ Issue creation tested
-- ✅ All permission scopes verified
+-  GitHub API access confirmed
+-  Workflow execution successful
+-  Code scanning operations functional
+-  Issue creation tested
+-  All permission scopes verified
 
 EOF
 ```
@@ -473,7 +475,7 @@ def check_token_expiry():
         print(f"   Action Required: Regenerate token before expiry")
         return False
     else:
-        print(f"✅ Token valid for {days_until_expiry} days")
+        print(f" Token valid for {days_until_expiry} days")
         return True
 
 if __name__ == "__main__":
@@ -587,7 +589,7 @@ Set calendar reminders:
 
 ---
 
-## ✅ Completion Checklist
+##  Completion Checklist
 
 After completing all steps, verify:
 
@@ -613,4 +615,4 @@ After completing all steps, verify:
 
 ---
 
-**End of Token Regeneration Guide** ✅
+**End of Token Regeneration Guide** 

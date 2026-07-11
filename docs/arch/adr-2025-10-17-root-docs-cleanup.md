@@ -1,6 +1,8 @@
 # ADR: Retire legacy status reports from the repository root
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 - **Status**: Accepted
 - **Date**: 2025-10-17

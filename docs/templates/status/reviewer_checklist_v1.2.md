@@ -1,6 +1,9 @@
 # Checklist: Reviewer Guide for Status v1.2
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
-🧠 Roles: [Primary: Reviewer], [Secondary: QA Buddy] ⚡ Energy: 5
+ Roles: [Primary: Reviewer], [Secondary: QA Buddy] ⚡ Energy: 5
 
 Review Focus
 

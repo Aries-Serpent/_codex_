@@ -1,7 +1,10 @@
 # [Wave 3]: Split-Brain Convergence & Canonical Imports (v1.2.9)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-22 | Author: mbaetiong
 
-🧠 Roles: [Audit Orchestrator], [Capability Cartographer] ⚡ Energy: 5  
+ Roles: [Audit Orchestrator], [Capability Cartographer] ⚡ Energy: 5  
 ⚛️ Physics: Path🛤️ Fields🔄 Patterns👁️ Redundancy🔀 Balance⚖️
 
 ---
@@ -23,17 +26,17 @@
 During v1.2.8 refactoring (99 → 42 legacy imports, 57.6% reduction), code review identified:
 
 1. **Root `training/` contains**:
-   - `engine_hf_trainer.py` ✅
-   - `functional_training.py` ✅
-   - `checkpoint_manager.py` ✅
-   - `data_utils.py` ✅
-   - `config.py` ✅
+   - `engine_hf_trainer.py` 
+   - `functional_training.py` 
+   - `checkpoint_manager.py` 
+   - `data_utils.py` 
+   - `config.py` 
    - Other actual implementation modules
 
 2. **`src/training/` contains**:
-   - `trainer.py` ✅
-   - `simple_trainer.py` ✅
-   - `checkpointing.py` ✅
+   - `trainer.py` 
+   - `simple_trainer.py` 
+   - `checkpointing.py` 
    - DIFFERENT set of modules
 
 3. **Root `training/__init__.py`**:
@@ -50,7 +53,7 @@ Refactoring changed imports from `training.engine_hf_trainer` to `src.training.e
 
 | Option | Description | Risk | Path to 99% | Status |
 |--------|-------------|------|-------------|--------|
-| **A (Recommended)** | Keep `src.*` as canonical; add shims forwarding to legacy modules now; subsequently move legacy modules into `src/` | Low | After shim validation, move files and remove shims | ✅ **CHOSEN** |
+| **A (Recommended)** | Keep `src.*` as canonical; add shims forwarding to legacy modules now; subsequently move legacy modules into `src/` | Low | After shim validation, move files and remove shims |  **CHOSEN** |
 | B | Expand legacy root shims to re-export from `src.*` forever | Medium (technical debt) | Accept debt; codify policy in docs | Deferred |
 | C | Revert refactors; keep root as canonical | Medium/High (rework) | Contradicts convergence plan | Rejected |
 
@@ -269,7 +272,7 @@ from src.training.engine_hf_trainer import run_hf_trainer
 from src.training.engine_hf_trainer import run_hf_trainer
 # → src/training/engine_hf_trainer.py loads
 # → Shim imports training.engine_hf_trainer
-# → run_hf_trainer is available ✅
+# → run_hf_trainer is available 
 ```
 
 ## Shim Overhead
@@ -284,10 +287,10 @@ from src.training.engine_hf_trainer import run_hf_trainer
 ## Conclusion
 
 Wave 3 successfully resolves the split-brain architecture issue identified in v1.2.8 through canonical `src.*` import shims. This approach:
-- ✅ Preserves all v1.2.8 refactoring work
-- ✅ Eliminates runtime import failures
-- ✅ Maintains clear path to full consolidation
-- ✅ Raises production readiness to ≥85%
+-  Preserves all v1.2.8 refactoring work
+-  Eliminates runtime import failures
+-  Maintains clear path to full consolidation
+-  Raises production readiness to ≥85%
 
 The system is now operational with a safe, documented path to 99% readiness through optional file consolidation in v1.3.0.
 

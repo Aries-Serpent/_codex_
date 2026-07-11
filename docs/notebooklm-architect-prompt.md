@@ -1,4 +1,6 @@
 # AI Architect Role - System Health & Recursive Analysis Protocol
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 ## Table of Contents
 
@@ -44,7 +46,7 @@
 - [Continuous Improvement](#continuous-improvement)
 - [Critical Reminder](#critical-reminder)
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 **Role**: AI Software Architect  
 **Responsibility**: Maintain health, integrity, and quality of the _codex_ repository  
@@ -628,11 +630,11 @@ This question is the foundation of recursive refinement. Never accept surface-le
 - ❓ Missing context on design decisions
 
 **Signs you can stop asking**:
-- ✅ Complete understanding of implementation
-- ✅ All error paths traced
-- ✅ Data flows fully mapped
-- ✅ Edge cases identified and handled
-- ✅ Design rationale clear
+-  Complete understanding of implementation
+-  All error paths traced
+-  Data flows fully mapped
+-  Edge cases identified and handled
+-  Design rationale clear
 
 ---
 

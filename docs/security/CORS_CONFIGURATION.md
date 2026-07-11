@@ -1,4 +1,6 @@
 # CORS Configuration Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Document Version**: 1.0  
 **Last Updated**: 2026-06-22  
@@ -87,7 +89,7 @@ app.add_middleware(
 
 ## Security Best Practices
 
-### ✅ DO
+###  DO
 
 1. **Use specific origins** - Always list explicit allowed domains
 2. **Use HTTPS in production** - Never allow HTTP origins in production
@@ -96,7 +98,7 @@ app.add_middleware(
 5. **Restrict headers** - Explicitly list allowed headers
 6. **Test configuration** - Verify CORS works before deploying
 
-### ❌ DON'T
+###  DON'T
 
 1. **Don't use wildcards** - Never use `["*"]` for `allow_origins`
 2. **Don't enable credentials with wildcards** - This is a critical security issue

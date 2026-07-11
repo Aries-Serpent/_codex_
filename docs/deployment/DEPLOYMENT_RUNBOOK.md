@@ -1,9 +1,11 @@
 # Deployment Runbook
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Version:** 1.0.0  
 **Created:** 2026-01-18  
 **Phase:** 18.3 - Deployment Automation  
-**Status:** ✅ Production Ready
+**Status:**  Production Ready
 
 ---
 
@@ -237,4 +239,4 @@ curl -H "Host: api.codex.io" http://LOAD_BALANCER_IP/health
 
 **Owner:** Platform Engineering  
 **Review Cadence:** Quarterly  
-**Last Updated:** 2026-01-18
+**Last Updated: 2026-07-11

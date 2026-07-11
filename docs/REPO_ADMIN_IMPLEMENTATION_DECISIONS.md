@@ -1,4 +1,6 @@
 # Repository Admin Implementation Decisions
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Version:** 1.0.0
 > **Generated:** 2025-12-21
@@ -32,10 +34,10 @@ This document provides comprehensive, physics-logic-driven recommendations for c
 
 | Category | Question | Recommendation | Priority |
 |----------|----------|----------------|----------|
-| Thresholds | Long function lines | **50 lines** (current) ✅ | HIGH |
-| Thresholds | Max arguments | **5 arguments** (current) ✅ | HIGH |
-| Thresholds | Max nesting | **4 levels** (current) ✅ | HIGH |
-| Thresholds | God class methods | **20 methods** (current) ✅ | HIGH |
+| Thresholds | Long function lines | **50 lines** (current)  | HIGH |
+| Thresholds | Max arguments | **5 arguments** (current)  | HIGH |
+| Thresholds | Max nesting | **4 levels** (current)  | HIGH |
+| Thresholds | God class methods | **20 methods** (current)  | HIGH |
 | Export | All 5 formats needed? | **YES** - Each serves distinct use case | MEDIUM |
 | Parser | LibCST primary? | **YES** - Best for refactoring | HIGH |
 | Config | AST_SIMILARITY_ENABLE default | **NO** - Keep optional (CI: YES) | MEDIUM |
@@ -157,7 +159,7 @@ The maintainability index calculation already incorporates these factors, sugges
 
 ## Recommendation
 
-**✅ KEEP CURRENT THRESHOLDS** - All four values are well-calibrated
+** KEEP CURRENT THRESHOLDS** - All four values are well-calibrated
 
 **Rationale:**
 1. **Industry Alignment**: Values fall within established best practices
@@ -256,7 +258,7 @@ This shows JSON is already the default, with extensibility for other formats.
 
 ## Recommendation
 
-**✅ KEEP ALL 5 FORMATS** - Each serves distinct, non-overlapping use cases
+** KEEP ALL 5 FORMATS** - Each serves distinct, non-overlapping use cases
 
 **Rationale:**
 1. **Workflow Optimization**: Each format minimizes friction for specific user personas
@@ -318,13 +320,13 @@ Current hierarchy: **AST (primary) → LibCST (secondary) → Parso (tertiary)**
 
 | Feature | Python AST | LibCST | Tree-sitter |
 |---------|-----------|--------|-------------|
-| **Formatting info** | ❌ Lost | ✅ Preserved | ✅ Preserved |
-| **Comments** | ❌ Lost | ✅ Preserved | ✅ Preserved |
-| **Whitespace** | ❌ Lost | ✅ Preserved | ✅ Preserved |
-| **Round-trip** | ❌ No | ✅ Yes | ✅ Yes |
-| **Refactoring safety** | ⚠️ Low | ✅ High | ✅ High |
-| **Speed** | ✅ Fast | ⚠️ Slower | ✅ Fastest |
-| **Semantic API** | ✅ Yes | ✅ Yes | ⚠️ Partial |
+| **Formatting info** |  Lost |  Preserved |  Preserved |
+| **Comments** |  Lost |  Preserved |  Preserved |
+| **Whitespace** |  Lost |  Preserved |  Preserved |
+| **Round-trip** |  No |  Yes |  Yes |
+| **Refactoring safety** | ⚠️ Low |  High |  High |
+| **Speed** |  Fast | ⚠️ Slower |  Fastest |
+| **Semantic API** |  Yes |  Yes | ⚠️ Partial |
 
 **Use Case Alignment:**
 
@@ -362,7 +364,7 @@ LibCST is already a core dependency, not optional.
 
 ## Recommendation
 
-**✅ YES - ELEVATE LibCST TO PRIMARY PARSER** (with AST as fast-path)
+** YES - ELEVATE LibCST TO PRIMARY PARSER** (with AST as fast-path)
 
 **Rationale:**
 1. **Refactoring Critical**: Repository includes AI-driven code transformation tools
@@ -451,11 +453,11 @@ parsing:
 
 | Aspect | AST Primary | LibCST Primary |
 |--------|-------------|----------------|
-| **Speed** | ✅ Faster (2-3x) | ⚠️ Slower |
-| **Refactoring** | ❌ Limited | ✅ Excellent |
-| **Memory** | ✅ Lower | ⚠️ Higher (~30%) |
-| **Ecosystem** | ✅ stdlib | ⚠️ Third-party |
-| **Comments** | ❌ Lost | ✅ Preserved |
+| **Speed** |  Faster (2-3x) | ⚠️ Slower |
+| **Refactoring** |  Limited |  Excellent |
+| **Memory** |  Lower | ⚠️ Higher (~30%) |
+| **Ecosystem** |  stdlib | ⚠️ Third-party |
+| **Comments** |  Lost |  Preserved |
 
 **Verdict**: LibCST primary with AST fast-path achieves optimal balance.
 
@@ -516,14 +518,14 @@ from agents.advanced_physics_calculators import RelativityScheduler
 
 | Environment | AST Similarity Needed? | Rationale |
 |-------------|----------------------|-----------|
-| **Local Dev** | ❌ Optional | Fast feedback; developers don't need similarity on every save |
-| **Pull Request CI** | ✅ Yes | Catch duplication before merge; inform code reviews |
-| **Main Branch CI** | ✅ Yes | Track similarity trends over time |
-| **Nightly/per-phase** | ✅ Yes | Comprehensive analysis; generate refactoring reports |
+| **Local Dev** |  Optional | Fast feedback; developers don't need similarity on every save |
+| **Pull Request CI** |  Yes | Catch duplication before merge; inform code reviews |
+| **Main Branch CI** |  Yes | Track similarity trends over time |
+| **Nightly/per-phase** |  Yes | Comprehensive analysis; generate refactoring reports |
 
 ## Recommendation
 
-**❌ NO - Keep DISABLED by default locally, ✅ YES - Enable in CI**
+** NO - Keep DISABLED by default locally,  YES - Enable in CI**
 
 **Rationale:**
 1. **Context-Appropriate**: Follows relativistic principle of environment-specific behavior
@@ -668,7 +670,7 @@ from agents.advanced_physics_calculators import ElectromagneticField
 
 ## Recommendation
 
-**✅ YES - Log warnings for decode errors, use `errors="replace"`**
+** YES - Log warnings for decode errors, use `errors="replace"`**
 
 **Rationale:**
 1. **Visibility**: Developers aware of encoding issues
@@ -845,7 +847,7 @@ Analyzing existing scripts:
 
 ## Recommendation
 
-**✅ YES - Register all CLI tools in pyproject.toml**
+** YES - Register all CLI tools in pyproject.toml**
 
 **Rationale:**
 1. **User Experience**: Consistent, discoverable command interface
@@ -996,9 +998,9 @@ from agents.advanced_physics_calculators import ElectromagneticField
 
 | Severity | Description | CI Behavior | Examples |
 |----------|-------------|-------------|----------|
-| **INFO** | Best practice suggestion | ✅ Pass | Comment ratio, doc coverage |
+| **INFO** | Best practice suggestion |  Pass | Comment ratio, doc coverage |
 | **WARNING** | Code smell detected | ⚠️ Pass with notice | Long function (50-60 lines) |
-| **ERROR** | Serious quality issue | ❌ Fail | God class, deep nesting (>6) |
+| **ERROR** | Serious quality issue |  Fail | God class, deep nesting (>6) |
 | **CRITICAL** | Security or correctness | 🚨 Fail + alert | Security vulnerability |
 
 **Industry Patterns:**
@@ -1220,7 +1222,7 @@ from agents.advanced_physics_calculators import ChaoticAttractor
 
 ## Recommendation
 
-**✅ YES - Standardize on `.codex/` directory structure**
+** YES - Standardize on `.codex/` directory structure**
 
 **Rationale:**
 1. **Predictability**: Tools know where to find data
@@ -1420,7 +1422,7 @@ Current pain points:
 
 ## Recommendation
 
-**✅ YES - High value addition, MEDIUM priority**
+** YES - High value addition, MEDIUM priority**
 
 **Rationale:**
 1. **Cross-language Analysis**: Unified tooling across Python/YAML/SQL
@@ -1597,7 +1599,7 @@ from agents.advanced_physics_calculators import RelativityScheduler
 
 ## Recommendation
 
-**✅ YES - Performance critical, HIGH priority**
+** YES - Performance critical, HIGH priority**
 
 **Rationale:**
 1. **Scalability**: Essential for large codebases
@@ -1806,7 +1808,7 @@ Visual reports serve different audience:
 
 #### Recommendation
 
-**✅ YES - High user value, MEDIUM priority**
+** YES - High user value, MEDIUM priority**
 
 **Rationale:**
 1. **User Experience**: Dramatically improved readability

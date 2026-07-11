@@ -1,4 +1,6 @@
 # End-to-End Request Flow
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Last Updated**: 2026-01-20  
 **Version**: v0.9.0  
@@ -13,7 +15,7 @@ This diagram shows how a request flows through all 5 layers from entry to respon
 ```mermaid
 %%{init: {'accessibility': {'title': 'End-to-End Request Flow<br/>From Input to Output'}, 'theme': 'base'}}%%
 graph TD
-    Start(["🚀 Request Entry"]) --> L1["Layer 1: Interface & CLI"]
+    Start([" Request Entry"]) --> L1["Layer 1: Interface & CLI"]
     
     %% Layer 1: Parse & Validate
     L1 --> CLI{Check Request<br/>Type}
@@ -23,16 +25,16 @@ graph TD
     AParse --> Hydra
     
     Hydra --> ValidCfg{"Config<br/>Valid?"}
-    ValidCfg -->|"❌ Error"| ErrorCfg["Return Error<br/>Invalid Configuration"]
-    ValidCfg -->|"✅ OK"| RouteCmd["Route Command<br/>to Layer 2"]
+    ValidCfg -->|" Error"| ErrorCfg["Return Error<br/>Invalid Configuration"]
+    ValidCfg -->|" OK"| RouteCmd["Route Command<br/>to Layer 2"]
     
     %% Layer 2: ML Operation
     RouteCmd --> L2["Layer 2: ML Platform"]
     L2 --> SelectOp{Operation<br/>Type?}
     
     SelectOp -->|"train"| Train["🔄 Training Engine<br/>• Load model<br/>• Load dataset<br/>• Run training loop"]
-    SelectOp -->|"eval"| Eval["📊 Evaluation Engine<br/>• Load checkpoint<br/>• Run evaluation<br/>• Compute metrics"]
-    SelectOp -->|"predict"| Serve["🚀 Serving Engine<br/>• Load model<br/>• Preprocess input<br/>• Run inference"]
+    SelectOp -->|"eval"| Eval[" Evaluation Engine<br/>• Load checkpoint<br/>• Run evaluation<br/>• Compute metrics"]
+    SelectOp -->|"predict"| Serve[" Serving Engine<br/>• Load model<br/>• Preprocess input<br/>• Run inference"]
     
     %% Data dependencies (Layer 3)
     Train --> L3A["Layer 3: Data Pipeline"]
@@ -42,7 +44,7 @@ graph TD
     L3A --> DataOp{Data<br/>Operation?}
     DataOp -->|"Need raw code"| Ingest["📥 Code Ingestion<br/>• Parse files<br/>• Generate AST<br/>• Count tokens"]
     DataOp -->|"Need context"| RAG["🔍 RAG System<br/>• Vector encode<br/>• Semantic search<br/>• Rank results"]
-    DataOp -->|"Need transform"| Trans["⚙️ Transformation<br/>• Preprocess data<br/>• Format conversion<br/>• Feature extract"]
+    DataOp -->|"Need transform"| Trans[" Transformation<br/>• Preprocess data<br/>• Format conversion<br/>• Feature extract"]
     
     Ingest --> StoreL4["Persist to Layer 4"]
     RAG --> StoreL4
@@ -50,7 +52,7 @@ graph TD
     
     %% Infrastructure (Layer 4)
     StoreL4 --> L4["Layer 4: Infrastructure"]
-    L4 --> ConfigOp["⚙️ Configuration<br/>• Load secrets<br/>• Merge settings<br/>• Validate params"]
+    L4 --> ConfigOp[" Configuration<br/>• Load secrets<br/>• Merge settings<br/>• Validate params"]
     ConfigOp --> StorageOp["💾 Storage<br/>• Load/save model<br/>• Load/save data<br/>• Update cache"]
     StorageOp --> MetricsOp["📈 Monitoring<br/>• Record metrics<br/>• Log events<br/>• Update health"]
     
@@ -58,12 +60,12 @@ graph TD
     MetricsOp --> L2Complete["Return to Layer 2"]
     L2Complete --> OpComplete{"Operation<br/>Complete?"}
     
-    OpComplete -->|"❌ Error"| ErrorOp["Handle Error<br/>Log & retry/fail"]
-    OpComplete -->|"✅ Success"| ExternalCheck{"Notify<br/>External?"}
+    OpComplete -->|" Error"| ErrorOp["Handle Error<br/>Log & retry/fail"]
+    OpComplete -->|" Success"| ExternalCheck{"Notify<br/>External?"}
     
     %% Layer 5: Integration
-    ExternalCheck -->|"❌ Internal Only"| Format["Return Result<br/>to User"]
-    ExternalCheck -->|"✅ Notify"| L5["Layer 5: Integration"]
+    ExternalCheck -->|" Internal Only"| Format["Return Result<br/>to User"]
+    ExternalCheck -->|" Notify"| L5["Layer 5: Integration"]
     
     L5 --> IntOp{Integration<br/>Type?}
     IntOp -->|"GitHub"| GHSync["🐙 GitHub Integration<br/>• Post PR comment<br/>• Create issue<br/>• Update workflow"]
@@ -80,7 +82,7 @@ graph TD
     ExtComplete --> Format
     ErrorOp --> Format
     Format --> Response["📤 Return Response<br/>• Status code<br/>• Result data<br/>• Metadata"]
-    Response --> End(["✅ Request Complete"])
+    Response --> End([" Request Complete"])
     ErrorCfg --> End
     
     %% Styling
@@ -143,7 +145,7 @@ Layer 4: Save checkpoint to DB + cloud storage
   ↓
 Layer 5: Log to MLflow, upload metrics
   ↓
-Return: ✅ Training complete, saved to <checkpoint>
+Return:  Training complete, saved to <checkpoint>
 ```
 
 ### Inference/Prediction Request Flow
@@ -165,7 +167,7 @@ Layer 4: Cache result, log metrics
   ↓
 Layer 5: (Optional) Upload to prediction service
   ↓
-Return: ✅ Prediction: [result], inference_time: 0.045s
+Return:  Prediction: [result], inference_time: 0.045s
 ```
 
 ### Evaluation Request Flow
@@ -187,7 +189,7 @@ Layer 4: Persist metrics to DB, update dashboards
   ↓
 Layer 5: Log to MLflow, push to leaderboard
   ↓
-Return: ✅ Metrics: {accuracy: 0.92, f1: 0.88, ...}
+Return:  Metrics: {accuracy: 0.92, f1: 0.88, ...}
 ```
 
 ---

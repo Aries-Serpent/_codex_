@@ -1,4 +1,7 @@
 # [Prompt]: Self-Healing Disciplined Engineer — Gap Card Sweep
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
 > Extends: `AUDIT_PROMPT.md`, `docs/prompts/codex_run_prompt_0A_base_.md`, `docs/prompts/codex_run_prompt_0D_base_.md`
 > Compatibility: ChatGPT Builder “Data Analysis” (Code Interpreter) must be **enabled**. Keep the GitHub connector **read-only**.

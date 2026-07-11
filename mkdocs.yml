@@ -30,9 +30,9 @@ exclude_docs: |
 
 nav:
 - Home: index.md
-- 📊 Status Dashboard: status/GITHUB_PAGES_STATUS.md
-- 🧠 Cognitive App: cognitive_app.md
-- 🧬 Evolution Center:
+- Status Dashboard: status/GITHUB_PAGES_STATUS.md
+- Cognitive App: cognitive_app.md
+- Evolution Center:
   - Overview: evolution/INDEX.md
   - Evolution Timeline: evolution/EVOLUTION_TIMELINE.md
   - Planset Registry: evolution/PLANSET_REGISTRY.md
@@ -54,7 +54,7 @@ nav:
   - LFS Policy: guides/lfs_policy.md
   - Asset Instruction Playbook: guides/asset_instruction_playbook.md
   - Logging (Stdlib): guides/LOGGING.md
-- 🔐 Token Management:
+- Token Management:
   - Overview: tokens/INDEX.md
   - Token Hierarchy Guide: tokens/TOKEN_HIERARCHY_GUIDE.md
   - Token Regeneration Guide: tokens/TOKEN_REGENERATION_GUIDE.md
@@ -72,6 +72,7 @@ nav:
   - Distributed Troubleshooting: training/distributed_troubleshooting.md
 - Deployment:
   - Deploy Pipeline: deployment/deploy_pipeline.md
+  - Deployment Guide: deployment/DEPLOYMENT_GUIDE.md
 - Logging & Troubleshooting:
   - Logging Guide: logging/logging_guide.md
   - End-to-End Logging: logging/end_to_end_logging.md
@@ -98,7 +99,7 @@ nav:
   - Overview: accountability/INDEX.md
   - Agent Accountability Report: accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
   - Agent Access Experience Report: accountability/AGENT_ACCESS_EXPERIENCE_REPORT.md
-- 🚀 Phase 9 Execution:
+- Phase 9 Execution:
   - Coordination Dashboard: phase-9/PHASE_9_COORDINATION_DASHBOARD.md
   - Daily Standup Template: phase-9/PHASE_9_DAILY_STANDUP_TEMPLATE.md
   - Post-Merge Action Plan: phase-9/POST_MERGE_ACTION_PLAN.md
@@ -140,7 +141,7 @@ nav:
 - Examples:
   - Codex Symbolic Pipeline: examples/codex_symbolic_pipeline.md
 - Ops:
-  - 💰 Cost Dashboard: ops/cost-dashboard.md
+  - Cost Dashboard: ops/cost-dashboard.md
   - Cost Governance: ops/COST_GOVERNANCE.md
   - Monitoring: ops/monitoring.md
   - Deployment (Legacy): ops/deployment.md
@@ -154,8 +155,9 @@ nav:
   - Review Checklist: review/diff_intake_confirmation.md
 repo_name: Aries-Serpent/_codex_
 repo_url: https://github.com/Aries-Serpent/_codex_
-site_description: Project documentation (MkDocs Material)
-site_name: Codex Docs
+site_url: https://aries-serpent.github.io/_codex_/
+site_description: "Project documentation - v0.2.1 (MkDocs Material)"
+site_name: Codex Docs v0.2.1
 strict: false
 theme:
   name: material

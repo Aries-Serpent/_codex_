@@ -1,0 +1,101 @@
+{
+  "release_version": "0.2.1",
+  "release_type": "minor_release",
+  "timestamp": "2026-07-11T07:51:43.352442+00:00",
+  "build_timestamp": "2026-07-11T07:50:00+00:00",
+  "package_info": {
+    "name": "codex-ml",
+    "version": "0.2.1",
+    "summary": "Codex ML training, evaluation, and plugin framework",
+    "description_long": "Complete ML framework with training, evaluation, and extensible plugin architecture",
+    "author": "Aries Serpent",
+    "license": "MIT",
+    "python_requires": ">=3.12",
+    "home_page": "https://github.com/Aries-Serpent/_codex_",
+    "docs_url": "https://aries-serpent.github.io/_codex_/"
+  },
+  "distributions": {
+    "wheel": {
+      "filename": "codex_ml-0.2.1-py3-none-any.whl",
+      "type": "bdist_wheel",
+      "size_bytes": 2348162,
+      "size_mb": 2.24,
+      "sha256": "83e984e41193f006bf6f0151dc2df4cf99ea455adcc3c9b69f648a1711630379",
+      "python_version": "py3",
+      "abi": "none",
+      "platform": "any",
+      "files_contained": 1122,
+      "entry_points": [
+        "codex-ml = codex_ml.cli:main"
+      ],
+      "status": "ready"
+    },
+    "source": {
+      "filename": "codex_ml-0.2.1.tar.gz",
+      "type": "sdist",
+      "size_bytes": 3456669,
+      "size_mb": 3.3,
+      "sha256": "7a0b8ea20c2bccce9d3c58ec30f4112c12f1c18d573a61752bcef429d47b460b",
+      "compression": "gzip",
+      "archive_format": "tar",
+      "includes_license": true,
+      "includes_readme": true,
+      "status": "ready"
+    }
+  },
+  "metadata": {
+    "classifiers": [
+      "Programming Language :: Python :: 3",
+      "Programming Language :: Python :: 3 :: Only",
+      "Programming Language :: Python :: 3.12",
+      "Operating System :: OS Independent"
+    ],
+    "keywords": [
+      "ml",
+      "training",
+      "evaluation",
+      "plugins",
+      "hydra",
+      "cli"
+    ],
+    "dependencies_core": 20,
+    "dependencies_optional": 3,
+    "pep_standards": {
+      "pep_427_wheel": true,
+      "pep_440_versioning": true,
+      "pep_508_dependencies": true,
+      "pep_621_pyproject": true,
+      "pep_639_license": true
+    }
+  },
+  "validation": {
+    "version_semver_compliant": true,
+    "distributions_build_success": true,
+    "metadata_validated": true,
+    "integrity_verified": true,
+    "no_build_errors": true,
+    "no_build_warnings": false,
+    "sensitive_files_excluded": true,
+    "all_required_files_present": true
+  },
+  "phase_status": {
+    "phase": "Phase 2",
+    "status": "COMPLETE",
+    "ready_for_next_phase": true,
+    "next_phase": "Phase 3 (PyPI Publish)",
+    "approval": "APPROVED"
+  },
+  "deployment": {
+    "pypi_environment": "pypi",
+    "oidc_trusted_publisher": true,
+    "requires_manual_upload": false,
+    "workflow_trigger": "tag v0.2.1 push"
+  },
+  "checksums": {
+    "total_distributions": 2,
+    "total_bytes": 5804831,
+    "total_mb": 5.54,
+    "wheel_sha256": "83e984e41193f006bf6f0151dc2df4cf99ea455adcc3c9b69f648a1711630379",
+    "source_sha256": "7a0b8ea20c2bccce9d3c58ec30f4112c12f1c18d573a61752bcef429d47b460b"
+  }
+}

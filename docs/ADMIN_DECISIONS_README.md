@@ -1,6 +1,8 @@
 # Repository Admin Implementation Decisions - Documentation Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 > Complete guide to physics-inspired configuration decisions for the _codex_ repository
 
@@ -21,7 +23,7 @@ docs/
 
 ---
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### For Busy Executives (5 minutes)
 Read: [REPO_ADMIN_DECISIONS_SUMMARY.md](./REPO_ADMIN_DECISIONS_SUMMARY.md)
@@ -45,47 +47,47 @@ Read: Full [REPO_ADMIN_IMPLEMENTATION_DECISIONS.md](./REPO_ADMIN_IMPLEMENTATION_
 
 ---
 
-## 📊 What Questions Are Answered?
+##  What Questions Are Answered?
 
 ### 4.1 Implementation Questions
 1. **Are default smell thresholds appropriate?**
-   - Long function: 50 lines ✅
-   - Max arguments: 5 ✅
-   - Max nesting: 4 levels ✅
-   - God class: 20 methods ✅
+   - Long function: 50 lines 
+   - Max arguments: 5 
+   - Max nesting: 4 levels 
+   - God class: 20 methods 
 
 2. **Are all 5 export formats needed?**
-   - JSON, YAML, HTML, CSV, SQLite ✅
+   - JSON, YAML, HTML, CSV, SQLite 
 
 3. **Should LibCST remain primary parser?**
-   - Yes, elevate to primary ✅
+   - Yes, elevate to primary 
 
 ### 4.2 Configuration Questions
 4. **Should AST_SIMILARITY_ENABLE be default in CI?**
-   - Yes in CI, No locally ✅
+   - Yes in CI, No locally 
 
 5. **Should errors="ignore" log warnings?**
-   - Yes, use errors="replace" + logging ✅
+   - Yes, use errors="replace" + logging 
 
 ### 4.3 Integration Questions
 6. **Should CLI entry points be registered?**
-   - Yes, register codex-analyze, codex-audit, codex-diff ✅
+   - Yes, register codex-analyze, codex-audit, codex-diff 
 
 7. **Should code smell detection block merges?**
    - Warnings only (3-phase rollout) ⚠️
 
 8. **Standard SQLite location?**
-   - Yes, `.codex/session_logs.db` ✅
+   - Yes, `.codex/session_logs.db` 
 
 ### 4.4 Future Direction Questions
 9. **Tree-sitter for YAML/SQL?**
-   - Yes, medium priority ✅
+   - Yes, medium priority 
 
 10. **Incremental analysis needed?**
-    - Yes, high priority (10-100x faster) ✅
+    - Yes, high priority (10-100x faster) 
 
 11. **HTML report generation?**
-    - Yes, medium priority ✅
+    - Yes, medium priority 
 
 ---
 
@@ -117,7 +119,7 @@ Each decision leverages physics paradigms from `agents/advanced_physics_calculat
 
 ---
 
-## 📖 How to Use This Documentation
+##  How to Use This Documentation
 
 ### Scenario 1: Making a Quick Decision
 1. Open [REPO_ADMIN_DECISIONS_SUMMARY.md](./REPO_ADMIN_DECISIONS_SUMMARY.md)
@@ -149,7 +151,7 @@ Each decision leverages physics paradigms from `agents/advanced_physics_calculat
 
 ---
 
-## 🎯 Success Metrics
+##  Success Metrics
 
 Track these metrics to measure implementation success:
 
@@ -177,7 +179,7 @@ Documentation includes research from:
 
 ---
 
-## 💡 Key Innovations
+##  Key Innovations
 
 1. **Physics-Logic Framework**: Apply physical principles to software decisions
 2. **Context-Aware Configs**: Different settings for local/CI/production
@@ -207,7 +209,7 @@ Found an issue or have suggestions?
 
 ---
 
-## 📚 Related Documentation
+##  Related Documentation
 
 - **[.codex/archive/deprecated/AGENTS.md](./agents.md)** - Repository operations playbook
 - **[ADVANCED_PHYSICS_GUIDE.md](./ADVANCED_PHYSICS_GUIDE.md)** - Physics paradigms integration
@@ -216,13 +218,13 @@ Found an issue or have suggestions?
 
 ---
 
-## ✅ Document Status
+##  Document Status
 
 | Document | Status | Lines | Last Updated |
 |----------|--------|-------|--------------|
-| [REPO_ADMIN_IMPLEMENTATION_DECISIONS.md](./REPO_ADMIN_IMPLEMENTATION_DECISIONS.md) | ✅ Complete | 2,080 | 2025-12-21 |
-| [REPO_ADMIN_DECISIONS_SUMMARY.md](./REPO_ADMIN_DECISIONS_SUMMARY.md) | ✅ Complete | 198 | 2025-12-21 |
-| [ADMIN_DECISIONS_README.md](./ADMIN_DECISIONS_README.md) | ✅ Complete | 174 | 2025-12-21 |
+| [REPO_ADMIN_IMPLEMENTATION_DECISIONS.md](./REPO_ADMIN_IMPLEMENTATION_DECISIONS.md) |  Complete | 2,080 | 2025-12-21 |
+| [REPO_ADMIN_DECISIONS_SUMMARY.md](./REPO_ADMIN_DECISIONS_SUMMARY.md) |  Complete | 198 | 2025-12-21 |
+| [ADMIN_DECISIONS_README.md](./ADMIN_DECISIONS_README.md) |  Complete | 174 | 2025-12-21 |
 
 **Total Documentation**: 2,452 lines covering 14 configuration questions
 

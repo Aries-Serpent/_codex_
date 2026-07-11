@@ -2093,7 +2093,7 @@ When modifying the topology, update both the diagram and `docs/guides/serving_re
    source .venv/bin/activate
    codex repo-map --reasoning
    ```
-2. **Select a template** using `codex reasoning-templates list` (see [`codex_cli`](https://github.com/Aries-Serpent/_codex_/blob/main/src/codex_cli/app.py)). Templates
+2. **Select a template** using `codex reasoning-templates list` (see [`codex_cli`](../src/codex_cli/app.py)). Templates
    live under `configs/training/reasoning/` and ship default datasets plus evaluator bindings.
 3. **Materialise runtime overlays**
    ```bash
@@ -2112,7 +2112,7 @@ This PodSpec is a **dry-run template**, not production hosting.
 Its job is to make resource shape, telemetry, curriculum phase,
 trace capture mode, and rollout ring explicit before anything moves
 toward `main`. A dry-run configuration is provided at
-[`configs/deploy/reasoning_pod.yaml`](https://github.com/Aries-Serpent/_codex_/blob/main/configs/deploy/reasoning_pod.yaml).
+[`configs/deploy/reasoning_pod.yaml`](../configs/deploy/reasoning_pod.yaml).
 Link the generated manifest to your rollout plan.
 
 ## Guided reasoning pipelines
@@ -2201,12 +2201,12 @@ hands-on guides that keep bespoke model hosting disciplined.
 
 ### Reasoning Pod Deployment
 Refer to [`deployment/reasoning_pod.md`](./deployment/reasoning_pod.md) and
-[`https://github.com/Aries-Serpent/_codex_/blob/main/configs/deploy/reasoning_pod.yaml`](https://github.com/Aries-Serpent/_codex_/blob/main/configs/deploy/reasoning_pod.yaml) for dry-run deployment guidance.
+[`../configs/deploy/reasoning_pod.yaml`](../configs/deploy/reasoning_pod.yaml) for dry-run deployment guidance.
 These assets are designed for offline validation and do not require hosted services.
 
-## 🚀 Quick links for reasoning teams
+##  Quick links for reasoning teams
 - **Reasoning templates in the CLI** — `codex reasoning-templates list` surfaces curated training/eval bundles. See the
-  [`codex_cli` help](https://github.com/Aries-Serpent/_codex_/blob/main/src/codex_cli/app.py) for command details.
+  [`codex_cli` help](../src/codex_cli/app.py) for command details.
 - **End-to-end quickstart** — Follow `quickstart.md` with the `+reasoning=baseline` overrides highlighted in
   [`README_ROOT.md`](../README_ROOT.md#training-quickstart).
 - **Evaluation ledger** — Use [`guides/reasoning_overview.md`](./guides/reasoning_overview.md#evaluation-readiness) to configure
@@ -2290,7 +2290,7 @@ Nothing targeting `main` should be treated as eligible for hosting without:
 - CHANGELOG practices follow “Keep a Changelog” with an **Unreleased** section at the top.
 
 ---
-Last updated: 2026-02-10
+Last updated: 2026-07-11
 
 [END CONTENT]
 ````
@@ -2785,7 +2785,7 @@ Nothing targeting `main` should be treated as eligible for hosting without:
 - CHANGELOG practices follow “Keep a Changelog” with an **Unreleased** section at the top.
 
 ---
-Last updated: 2026-02-10
+Last updated: 2026-07-11
 
 --- docs/README_ROOT.md ---
 - `evaluation.preset`
@@ -2843,7 +2843,7 @@ This PodSpec is a **dry-run template**, not production hosting.
 Its job is to make resource shape, telemetry, curriculum phase,
 trace capture mode, and rollout ring explicit before anything moves
 toward `main`. A dry-run configuration is provided at
-[`configs/deploy/reasoning_pod.yaml`](https://github.com/Aries-Serpent/_codex_/blob/main/configs/deploy/reasoning_pod.yaml).
+[`configs/deploy/reasoning_pod.yaml`](../configs/deploy/reasoning_pod.yaml).
 Link the generated manifest to your rollout plan.
 
 ## Guided reasoning pipelines

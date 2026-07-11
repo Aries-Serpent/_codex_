@@ -1,10 +1,12 @@
 # PR Comment & Workflow Automation Lifecycle
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 > **Version:** 1.0.0  
 > **Created:** 2026-03-31  
-> **Status:** ✅ Authoritative — reflects current state of `0D_base_` after S259 changes  
+> **Status:**  Authoritative — reflects current state of `0D_base_` after S259 changes  
 > **Scope:** All automated comments, WEC wiring, gate interactions, overlap analysis, and consolidation recommendations
 
 ---
@@ -77,10 +79,10 @@ flowchart TD
     TRIGGERS --> AAD[agent-auth-delegation.yml\nInjects WEC block if missing]
 
     CRG --> |"Finds unaddressed blocking comment"| CRFAIL[🚨 CI Rescue Comment Review Gate Failed\nNEW comment per commit SHA\n<!-- ci-rescue:PR:SHA -->]
-    CRG --> |"All addressed"| CRPASS[✅ Gate passes — no new comment]
+    CRG --> |"All addressed"| CRPASS[ Gate passes — no new comment]
 
     CRFAIL --> |"Copilot replies to all blocking items"| CRPASS
-    CRFAIL --> |"No reply after N minutes"| ESCALATE[🤖 Self-Healing Escalation\nUpdates #4164436067 in-place\n<!-- copilot-escalation:PR -->]
+    CRFAIL --> |"No reply after N minutes"| ESCALATE[ Self-Healing Escalation\nUpdates #4164436067 in-place\n<!-- copilot-escalation:PR -->]
 
     WORKFLOW_RUN[Workflow Run Completes] --> VMATCH{Pattern matched?}
     VMATCH --> |"Known pattern"| CIRESCUE[CI Rescue @copilot Fix Required\nAppends 🔄 section to #4163937524\n<!-- ci-rescue:PR -->]
@@ -101,8 +103,8 @@ flowchart TD
     AUTOAPPROVE --> |"No"| NOAPPROVE[Skip approval]
 
     AGENTFILESIZE[agent-file-size-gate.yml\nNo HTML marker ⚠️] --> FSGATE{File > 30,000 chars?}
-    FSGATE --> |"Yes"| FSFAIL[❌ Agent File Size Gate FAILED\nNEW comment — no dedup marker]
-    FSGATE --> |"No"| FSPASS[✅ Pass — no comment]
+    FSGATE --> |"Yes"| FSFAIL[ Agent File Size Gate FAILED\nNEW comment — no dedup marker]
+    FSGATE --> |"No"| FSPASS[ Pass — no comment]
 
     PREMERGE[pre-merge-validation.yml] --> PMSUM[Updates #4164144682 in-place\n<!-- pre-merge-validation-summary -->]
 
@@ -125,7 +127,7 @@ flowchart LR
     subgraph WEC_READERS["WEC Block Readers (reads)"]
         EXECGATE["workflow-execution-gate.yml\nReads each checkbox line\nSkips unchecked workflows"]
         SESDONE_R["copilot-agent-session-done.yml\nReads Auto-Post checkbox\nReads auto-approve-workflows"]
-        COSTGATE["cost-gate.yml\nReads 💰 Cost Proposal Approved\n(legacy — cost now in WEC)"]
+        COSTGATE["cost-gate.yml\nReads  Cost Proposal Approved\n(legacy — cost now in WEC)"]
         AUTHGATE["agent-auth-delegation.yml\nReads COPILOT_AGENT_AUTH_ENABLED\n(repo var, not WEC)"]
     end
 
@@ -175,7 +177,7 @@ sequenceDiagram
 ### ⚠️ Issue 2: Agent File Size Gate — No HTML Dedup Marker
 
 **Affected comment:** 4164732123  
-**HTML marker:** ❌ **NONE**
+**HTML marker:**  **NONE**
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing agent-file-size-gate.yml, POST new comment\nno dedup marker'}}%%
@@ -202,7 +204,7 @@ flowchart LR
 flowchart TD
     PUSH1[Push SHA-1] --> CPF1[POST comment with marker]
     PUSH2[Push SHA-2] --> CPF2{Find existing comment\nwith same marker?}
-    CPF2 --> |"Yes → update"| UPDATE[✅ Updates in-place - correct]
+    CPF2 --> |"Yes → update"| UPDATE[ Updates in-place - correct]
     CPF2 --> |"But SHA in title changes"| CONFUSION[Checklist shows OLD SHA]
 ```
 
@@ -210,70 +212,70 @@ flowchart TD
 
 ---
 
-### ✅ Consistent Patterns (no issues)
+###  Consistent Patterns (no issues)
 
 | Comment | Update Strategy | Assessment |
 |---------|----------------|------------|
-| PR Status Dashboard | Update in-place | ✅ Correct |
-| Cost Check | Update in-place | ✅ Correct |
-| Pre-Merge Validation Summary | Update in-place | ✅ Correct |
-| Self-Healing Escalation | Update in-place (per PR) | ✅ Correct |
-| CI Rescue @copilot Fix | Append 🔄 sections | ✅ Correct |
-| Session Gate Queued | Update in-place | ✅ Correct |
-| Branch Rebase Resolved | Post once (idempotent) | ✅ Correct |
-| Follow-up Prompt Generated | Post once | ✅ Correct |
+| PR Status Dashboard | Update in-place |  Correct |
+| Cost Check | Update in-place |  Correct |
+| Pre-Merge Validation Summary | Update in-place |  Correct |
+| Self-Healing Escalation | Update in-place (per PR) |  Correct |
+| CI Rescue @copilot Fix | Append 🔄 sections |  Correct |
+| Session Gate Queued | Update in-place |  Correct |
+| Branch Rebase Resolved | Post once (idempotent) |  Correct |
+| Follow-up Prompt Generated | Post once |  Correct |
 
 ---
 
 ## Process Overlap & Consolidation Opportunities
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing "🔴 OVERLAP 1: Three separate CI rescue channels", "ci-rescue:3835 — @copilot Fix Required\nAppends 🔄 sections per failure"'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing " OVERLAP 1: Three separate CI rescue channels", "ci-rescue:3835 — @copilot Fix Required\nAppends 🔄 sections per failure"'}}%%
 flowchart TD
-    subgraph OVERLAP_1["🔴 OVERLAP 1: Three separate CI rescue channels"]
+    subgraph OVERLAP_1[" OVERLAP 1: Three separate CI rescue channels"]
         CR1["ci-rescue:3835 — @copilot Fix Required\nAppends 🔄 sections per failure"]
         CR2["ci-rescue:PR:SHA — Comment Review Gate Failed\nNEW comment per commit"]
         CR3["ci-rescue-rca:SHA — Root Cause Analysis\nNEW comment per SHA"]
         COP_ESC["copilot-escalation:3835 — Self-Healing\nUpdates in-place"]
     end
 
-    subgraph CONSOLIDATE_1["✅ PROPOSED: Single CI Rescue Dashboard"]
+    subgraph CONSOLIDATE_1[" PROPOSED: Single CI Rescue Dashboard"]
         UNIFIED["<!-- ci-rescue:PR --> (single comment)\n§1 @copilot Fix Required (auto-append)\n§2 Comment Review Gate status (update)\n§3 RCA section (update when available)\n§4 Self-Healing Escalation (update)"]
     end
 
     OVERLAP_1 --> |"Merge into"| CONSOLIDATE_1
 
-    subgraph OVERLAP_2["🔴 OVERLAP 2: REQ-4/5 detection duplicated"]
+    subgraph OVERLAP_2[" OVERLAP 2: REQ-4/5 detection duplicated"]
         WF1["cognitive-preflight.yml\nChecks .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md\nPosts preflight checklist comment"]
         WF2["agent-auth-delegation.yml\nChecks same files for REQ-4/5\nPosts delegation comment"]
         WF3["session_wrapup_autofix.py\n--check mode checks same files\nUsed by copilot-agent-session-done.yml"]
         WF4["sync-tracked-files pre-commit hook\nChecks CODEX_MANIFEST.json sync\nSame as REQ-6"]
     end
 
-    subgraph CONSOLIDATE_2["✅ PROPOSED: session_wrapup_autofix.py --check as single source"]
+    subgraph CONSOLIDATE_2[" PROPOSED: session_wrapup_autofix.py --check as single source"]
         UNIFIED2["All REQ checks → session_wrapup_autofix.py\n--check: diagnostic output\n--fix-all: apply all fixes\nUsed by ALL workflows via composite action"]
     end
 
     OVERLAP_2 --> |"Consolidate into"| CONSOLIDATE_2
 
-    subgraph OVERLAP_3["🔴 OVERLAP 3: WEC injection in 3 places"]
+    subgraph OVERLAP_3[" OVERLAP 3: WEC injection in 3 places"]
         INJ1["agent-auth-delegation.yml\ninject-wec step"]
         INJ2["session_wrapup_autofix.py\nfix_pr_body_checkboxes()"]
         INJ3["PR templates\nInitial WEC block"]
     end
 
-    subgraph CONSOLIDATE_3["✅ These 3 are CORRECT by design (defense-in-depth)"]
+    subgraph CONSOLIDATE_3[" These 3 are CORRECT by design (defense-in-depth)"]
         LAYERED["Template = initial\nAAD = on-push restore\nWrapup = post-session restore\nAll three are needed"]
     end
 
     OVERLAP_3 --> CONSOLIDATE_3
 
-    subgraph OVERLAP_4["🔴 OVERLAP 4: Cost governance duplicated"]
-        COST1["## 💰 Cost Governance — Stakeholder Approval\n(full section with tier table)"]
+    subgraph OVERLAP_4[" OVERLAP 4: Cost governance duplicated"]
+        COST1["##  Cost Governance — Stakeholder Approval\n(full section with tier table)"]
         COST2["cost-gate.yml checkbox in WEC\n- [ ] cost-gate.yml — Cost governance gate"]
     end
 
-    subgraph CONSOLIDATE_4["✅ Keep BOTH — different purposes"]
+    subgraph CONSOLIDATE_4[" Keep BOTH — different purposes"]
         KEEP["§ Cost Governance section = stakeholder education + tier table\nWEC cost-gate.yml checkbox = workflow execution control\nNot duplicates — complementary"]
     end
 
@@ -284,32 +286,32 @@ flowchart TD
 
 | Overlap | Severity | Action | Effort |
 |---------|----------|--------|--------|
-| 3× CI rescue comment channels | 🔴 High | Unify into single `<!-- ci-rescue:PR -->` comment with sections | Medium |
-| REQ-4/5 detection in 3 workflows | 🔴 High | Route all through `session_wrapup_autofix.py --check` composite action | Medium |
-| Agent File Size Gate has no marker | 🔴 High | Add `<!-- agent-file-size-gate -->` marker + update-in-place | Low |
+| 3× CI rescue comment channels |  High | Unify into single `<!-- ci-rescue:PR -->` comment with sections | Medium |
+| REQ-4/5 detection in 3 workflows |  High | Route all through `session_wrapup_autofix.py --check` composite action | Medium |
+| Agent File Size Gate has no marker |  High | Add `<!-- agent-file-size-gate -->` marker + update-in-place | Low |
 | Comment Review Gate creates per-SHA comments | 🟡 Medium | Change marker to PR-scoped, update-in-place | Low |
-| Cognitive Pre-flight SHA staleness | 🟢 Low | Add "last updated SHA" field to in-place update | Low |
-| WEC injection in 3 places | ✅ By Design | Keep — defense-in-depth against report_progress stripping | None |
-| Cost governance dual-presence | ✅ By Design | Keep both — different purposes | None |
+| Cognitive Pre-flight SHA staleness |  Low | Add "last updated SHA" field to in-place update | Low |
+| WEC injection in 3 places |  By Design | Keep — defense-in-depth against report_progress stripping | None |
+| Cost governance dual-presence |  By Design | Keep both — different purposes | None |
 
 ---
 
 ## WEC Inclusion Recommendations
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing "Current WEC Block (S259)", "✅ Always Required / Always Active\npre-merge-validation.yml\nresilient_validation.yml\nnox_gates.yml"'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing "Current WEC Block (S259)", " Always Required / Always Active\npre-merge-validation.yml\nresilient_validation.yml\nnox_gates.yml"'}}%%
 flowchart TD
     subgraph CURRENT_WEC["Current WEC Block (S259)"]
-        V["✅ Always Required / Always Active\npre-merge-validation.yml\nresilient_validation.yml\nnox_gates.yml"]
-        SQ["✅ Security & Quality\ncomment-review-gate.yml\nsecurity-scanning-suite.yml\ndeferral-language-gate.yml"]
+        V[" Always Required / Always Active\npre-merge-validation.yml\nresilient_validation.yml\nnox_gates.yml"]
+        SQ[" Security & Quality\ncomment-review-gate.yml\nsecurity-scanning-suite.yml\ndeferral-language-gate.yml"]
         D["📄 Opt-In: Documentation\ndocumentation-link-checker.yml"]
-        A["🤖 Automation\nagent-auth-delegation.yml\ncopilot-agent-checkin.yml\ncost-gate.yml\ncopilot-agent-session-done.yml"]
+        A[" Automation\nagent-auth-delegation.yml\ncopilot-agent-checkin.yml\ncost-gate.yml\ncopilot-agent-session-done.yml"]
         AP["⚡ Auto-Approve\nauto-approve-workflows"]
     end
 
     subgraph RECOMMEND["Recommended WEC Additions (next session)"]
         R1["🔍 Governance\ncognitive-preflight.yml — S259 Issue 3\nroot-org-validation.yml — already fires on push"]
-        R2["🤖 Automation\ncopilot-iterative-self-healing.yml — controls self-heal loop\nworkflow-execution-gate.yml — gate control itself"]
+        R2[" Automation\ncopilot-iterative-self-healing.yml — controls self-heal loop\nworkflow-execution-gate.yml — gate control itself"]
         R3["⚡ Auto-Approve (already added in S259)"]
     end
 
@@ -322,9 +324,9 @@ flowchart TD
 |---------|------------|--------|
 | `cognitive-preflight.yml` | 🟡 Consider | Pre-flight checks map to REQ-4/5 — Copilot should confirm they ran |
 | `root-org-validation.yml` | 🟡 Consider | Fires every push — could be gated for PRs that don't touch root |
-| `copilot-iterative-self-healing.yml` | ✅ Yes | Controls self-healing loop — Copilot should be able to disable it per session |
-| `workflow-execution-gate.yml` | ✅ Yes | The gate itself should be self-describing in the WEC |
-| `comment-review-gate.yml` | ✅ Already present | — |
+| `copilot-iterative-self-healing.yml` |  Yes | Controls self-healing loop — Copilot should be able to disable it per session |
+| `workflow-execution-gate.yml` |  Yes | The gate itself should be self-describing in the WEC |
+| `comment-review-gate.yml` |  Already present | — |
 | `agent-file-size-gate.yml` | 🟡 Consider | Could allow Copilot to acknowledge the fix was applied |
 
 ---
@@ -390,7 +392,7 @@ flowchart TD
     TRIGGERS --> FIXES
     FIXES --> GUARDS
     GUARDS --> COMMIT["git add + git commit [skip ci]\ngit push HEAD:branch"]
-    COMMIT --> RESULT["✅ All compliance gates satisfied\nPR body WEC restored\nNext CI scan passes"]
+    COMMIT --> RESULT[" All compliance gates satisfied\nPR body WEC restored\nNext CI scan passes"]
 ```
 
 ---
@@ -410,15 +412,15 @@ due to time constraints. This prompt resumes work in the next session.
 3. Load `docs/workflows/PR_COMMENT_LIFECYCLE.md` (THIS document — S259 analysis)
 4. Run: `git log --oneline -8` to confirm S259 commits are present
 
-### 🔴 Issue 1 — Comment Review Gate creates per-SHA comment spam
+###  Issue 1 — Comment Review Gate creates per-SHA comment spam
 **File:** `.github/workflows/comment-review-gate.yml` (or `check_pr_comments.py`)
 **Problem:** Marker `<!-- ci-rescue:PR:SHA -->` is commit-scoped → 7 duplicate comments
 **Fix:** Change to PR-scoped marker `<!-- comment-review-gate:PR -->`. Find existing
          comment by marker, update in-place. Only create new if none exists.
 **Test:** Push 2 commits → verify only 1 comment-review-gate failure comment exists
 
-### 🔴 Issue 2 — Agent File Size Gate has no HTML dedup marker
-**File:** Workflow that posts the "❌ Agent File Size Gate — FAILED" comment
+###  Issue 2 — Agent File Size Gate has no HTML dedup marker
+**File:** Workflow that posts the " Agent File Size Gate — FAILED" comment
 **Problem:** No `<!-- agent-file-size-gate -->` marker → can't update in-place,
              check_pr_comments.py can't programmatically identify/dismiss it
 **Fix:** Add `<!-- agent-file-size-gate -->` to the comment body. Use update-in-place.
@@ -426,7 +428,7 @@ due to time constraints. This prompt resumes work in the next session.
 
 ### 🟡 Issue 3 — Cognitive Pre-flight comment shows stale SHA
 **File:** Workflow posting `<!-- cognitive-preflight-checklist -->`
-**Problem:** SHA in heading `## 🧠 COGNITIVE PRE-FLIGHT CHECKLIST — SHA: ab08d21`
+**Problem:** SHA in heading `##  COGNITIVE PRE-FLIGHT CHECKLIST — SHA: ab08d21`
              becomes stale when comment is updated for later commits
 **Fix:** Update heading SHA on every in-place edit. Add `Last updated: TIMESTAMP` line.
 
@@ -435,7 +437,7 @@ due to time constraints. This prompt resumes work in the next session.
 **Problem:** `<!-- ci-rescue-rca:SHA -->` creates new comment per failing SHA
 **Fix:** Consolidate into the main `<!-- ci-rescue:PR -->` comment as a `### RCA` section
 
-### 🟢 Issue 5 — Add workflow-execution-gate.yml and copilot-iterative-self-healing.yml to WEC
+###  Issue 5 — Add workflow-execution-gate.yml and copilot-iterative-self-healing.yml to WEC
 **Files:** `scripts/ci/session_wrapup_autofix.py`, both PR templates, `agent-auth-delegation.yml`
 **Action:** Add to _WEC_ITEMS, update _REQUIRED_PR_CHECKBOXES, update both templates
 
@@ -486,13 +488,13 @@ pie title CI Failure Distribution (PR #3835 / 0D_base_)
 
 | Hook | Status | Cause | Fix Applied |
 |------|--------|-------|-------------|
-| `📏 Agent file size limit` | ❌ FAIL (commit `4165e99e`) | `cognitive-brain-manager.md` = 31,983 chars | ✅ S258 trimmed to 29,516 chars |
-| `🔄 Sync tracked files` | ❌ FAIL (commit `4165e99e`) | `.secrets.baseline` hash `7db0ecdcebb...` stale; manifest changed to `ab893648...` | ✅ S259 `fix_manifest_baseline()` + baseline patched |
-| Both above | ✅ PASS (current HEAD) | S258+S259 fixes applied | ✅ Verified locally |
+| `📏 Agent file size limit` |  FAIL (commit `4165e99e`) | `cognitive-brain-manager.md` = 31,983 chars |  S258 trimmed to 29,516 chars |
+| `🔄 Sync tracked files` |  FAIL (commit `4165e99e`) | `.secrets.baseline` hash `7db0ecdcebb...` stale; manifest changed to `ab893648...` |  S259 `fix_manifest_baseline()` + baseline patched |
+| Both above |  PASS (current HEAD) | S258+S259 fixes applied |  Verified locally |
 
 ### Agent Token Delegation Root Causes (14 failures)
 
-All failures are `🧠 Cognitive Pre-flight Check → Verify Accountability Report updated in last commit`.
+All failures are ` Cognitive Pre-flight Check → Verify Accountability Report updated in last commit`.
 **Pattern:** `session_wrapup_autofix.py --fix-all` now runs on EVERY session completion (not just when
 Auto-Post checkbox is checked), covering REQ-4/5/6 + WEC in a single call.
 

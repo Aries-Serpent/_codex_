@@ -1,10 +1,12 @@
 # Configuration Validation Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 This guide explains how to validate Codex configuration files against the bundled schemas and how the checks run locally and in CI.
 
-## Quick Start
+## Quickstart
 
 Validate all default config groups with strict enforcement:
 

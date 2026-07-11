@@ -1,6 +1,8 @@
 # Codex AST Analysis Module
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## Overview
 
@@ -30,7 +32,7 @@ For optional features (tree-sitter, SQL parsing):
 pip install -e ".[ast]"
 ```
 
-## Quick Start
+## Quickstart
 
 ### Parsing Python Code
 
@@ -291,4 +293,4 @@ See inline documentation for detailed API information.
 
 ## License
 
-MIT License - see [LICENSE](https://github.com/Aries-Serpent/_codex_/blob/main/LICENSE) for details.
+MIT License - see [LICENSE](../LICENSE) for details.

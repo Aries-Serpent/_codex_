@@ -1,6 +1,7 @@
 # CI/CD Documentation
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 This directory contains comprehensive documentation for the Continuous Integration and Continuous Deployment (CI/CD) system.
 

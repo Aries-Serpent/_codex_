@@ -1,4 +1,6 @@
 # Agents Module API Reference
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Module Path**: `src/codex/agents/`  
 **Version**: Phase 10+  
@@ -454,7 +456,7 @@ print(f"Total duration: {result.data['duration_seconds']}s")
 ### 1. Agent Design
 
 ```python
-# ✅ GOOD: Clear, specific capabilities
+#  GOOD: Clear, specific capabilities
 agent = Agent(
     name="security-analyzer",
     capabilities=[
@@ -470,7 +472,7 @@ agent = Agent(
     ]
 )
 
-# ❌ POOR: Vague, overly broad capabilities
+#  POOR: Vague, overly broad capabilities
 agent = Agent(
     name="analyzer",
     capabilities=[
@@ -483,7 +485,7 @@ agent = Agent(
 ### 2. Team Composition
 
 ```python
-# ✅ GOOD: Balanced team with complementary skills
+#  GOOD: Balanced team with complementary skills
 team = Assemblage(name="code-quality-team")
 
 # Different specialists
@@ -492,7 +494,7 @@ team.add_agent(create_security_scanner())     # Security
 team.add_agent(create_performance_profiler()) # Performance
 team.add_agent(create_test_coverage_checker()) # Testing
 
-# ❌ POOR: Redundant team with overlapping capabilities
+#  POOR: Redundant team with overlapping capabilities
 team = Assemblage(name="team")
 team.add_agent(create_generic_analyzer())  # Does everything vaguely
 team.add_agent(create_generic_analyzer())  # Duplicate agent
@@ -502,7 +504,7 @@ team.add_agent(create_generic_analyzer())  # More duplication
 ### 3. Task Delegation Strategy
 
 ```python
-# ✅ GOOD: Appropriate strategy for task type
+#  GOOD: Appropriate strategy for task type
 def delegate_tasks(team):
     # Independent analysis - parallelize
     result1 = team.delegate_task(
@@ -525,7 +527,7 @@ def delegate_tasks(team):
         strategy="optimal"  # Use single best reviewer
     )
 
-# ❌ POOR: Wrong strategy for task
+#  POOR: Wrong strategy for task
 team.delegate_task(
     task_name="parallel-analysis",
     strategy="sequential"  # Wastes team capacity

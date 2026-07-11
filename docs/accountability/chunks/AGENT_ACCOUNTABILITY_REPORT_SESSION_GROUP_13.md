@@ -1,4 +1,6 @@
 # Agent Accountability Report — Session Group 13
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Group:** 13 of 32  
 **Sessions:** S993-cont5-cherry-pick-4445 to S_PR4536_APPROVAL_MONITOR_WRAPUP_SYNC  
@@ -51,7 +53,7 @@
 
 **Tags:** None  
 **Patterns Fixed:** None  
-**CI Checks:** 0 ✅ / 0 ❌  
+**CI Checks:** 0  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_122  
@@ -73,7 +75,7 @@
 
 **Tags:** None  
 **Patterns Fixed:** None  
-**CI Checks:** 0 ✅ / 0 ❌  
+**CI Checks:** 0  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_123  
@@ -95,7 +97,7 @@
 
 **Tags:** None  
 **Patterns Fixed:** None  
-**CI Checks:** 0 ✅ / 0 ❌  
+**CI Checks:** 0  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_124  
@@ -117,7 +119,7 @@
 
 **Tags:** None  
 **Patterns Fixed:** None  
-**CI Checks:** 0 ✅ / 0 ❌  
+**CI Checks:** 0  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_125  
@@ -139,7 +141,7 @@
 
 **Tags:** None  
 **Patterns Fixed:** None  
-**CI Checks:** 0 ✅ / 0 ❌  
+**CI Checks:** 0  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_126  
@@ -161,7 +163,7 @@
 
 **Tags:** None  
 **Patterns Fixed:** None  
-**CI Checks:** 0 ✅ / 0 ❌  
+**CI Checks:** 0  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_127  
@@ -183,7 +185,7 @@
 
 **Tags:** None  
 **Patterns Fixed:** None  
-**CI Checks:** 0 ✅ / 0 ❌  
+**CI Checks:** 0  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_128  
@@ -205,7 +207,7 @@
 
 **Tags:** complete  
 **Patterns Fixed:** None  
-**CI Checks:** 0 ✅ / 0 ❌  
+**CI Checks:** 0  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_195  
@@ -227,7 +229,7 @@ Fixed: PR4536-SECURITY-SUITE-SECRET-COUNT-PARSE, PR4536-SECURITY-SUITE-PIPEFAIL,
 
 **Tags:** ci, complete, security, docs  
 **Patterns Fixed:** PR4536-SECURITY-SUITE-SECRET-COUNT-PARSE, PR4536-SECURITY-SUITE-PIPEFAIL, PR4536-LIVING-DOC-SCOPE-ALIGNMENT, PR4536-SECRETS-BASELINE-FP-WORKFLOW-LINE  
-**CI Checks:** 0 ✅ / 0 ❌  
+**CI Checks:** 0  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_196  
@@ -249,7 +251,7 @@ Fixed: PR4536-LIVING-DOCS-APPROVAL-MONITOR-SYNC
 
 **Tags:** complete, docs  
 **Patterns Fixed:** PR4536-LIVING-DOCS-APPROVAL-MONITOR-SYNC  
-**CI Checks:** 0 ✅ / 0 ❌  
+**CI Checks:** 0  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_197  

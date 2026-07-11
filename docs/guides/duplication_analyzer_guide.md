@@ -1,6 +1,8 @@
 # Duplication Analyzer - User Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## Overview
 
@@ -19,7 +21,7 @@ The Duplication Analyzer provides actionable insights into code duplication acro
 
 No additional dependencies required - uses Python standard library.
 
-## Quick Start
+## Quickstart
 
 ### Command Line Usage
 

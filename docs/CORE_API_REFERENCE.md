@@ -1,9 +1,11 @@
 # Core API Reference
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Status:** Phase 2 - Master API Documentation  
 **Coverage:** 65+ public functions & classes  
 **Modules:** cli.py, training.py, session/* modules  
-**Last Updated:** 2026-07-08
+**Last Updated: 2026-07-08
 
 ---
 

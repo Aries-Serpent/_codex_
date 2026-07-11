@@ -1,4 +1,5 @@
 # Quick-Start Guides by User Profile
+**Last Updated:** 2026-07-11
 
 ## 1. Local Developer (90% use case)
 
@@ -294,6 +295,6 @@ python -m codex.cli health
 
 ---
 
-**Last Updated:** Phase 9 Groundwork (2026-07-08)
+**Last Updated: 2026-07-08
 **For:** All User Profiles
 **Activation:** 2026-07-10T10:00Z

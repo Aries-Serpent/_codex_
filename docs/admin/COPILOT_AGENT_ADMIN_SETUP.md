@@ -1,4 +1,6 @@
 # Copilot Coding Agent — Complete Human Admin Setup Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 ## Table of Contents
 
@@ -50,7 +52,7 @@
   - [PDA Loop — AfterMath auth-state logging](#pda-loop--aftermath-auth-state-logging)
 - [Summary Table — All Human Actions](#summary-table--all-human-actions)
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 > **Repository:** `Aries-Serpent/_codex_`
 > **Audience:** Human admin (`mbaetiong`) — every action in this file requires clicking in
@@ -96,7 +98,7 @@ Use this as your "did I do everything?" reference. Tick each box as you complete
 ### Step 1.1 — Generate the token
 
 1. Open: **https://github.com/settings/personal-access-tokens/new**
-   *(GitHub top-right avatar → ⚙️ Settings → Developer settings → Personal access tokens →
+   *(GitHub top-right avatar →  Settings → Developer settings → Personal access tokens →
    Fine-grained tokens → Generate new token)*
 2. Fill in the form:
 
@@ -139,14 +141,14 @@ Use this as your "did I do everything?" reference. Tick each box as you complete
 ### Step 1.2 — Inject the secret into the repository
 
 1. Open: **https://github.com/Aries-Serpent/_codex_/settings/secrets/actions**
-   *(Repo → ⚙️ Settings → Secrets and variables → Actions)*
+   *(Repo →  Settings → Secrets and variables → Actions)*
 2. Click **New repository secret**.
 3. Fill in:
    - **Name:** `CODEX_MASTER_KEY`
    - **Secret:** paste the token from Step 1.1
 4. Click **Add secret**.
 
-✅ **Verification:** The secret should appear in the list as `CODEX_MASTER_KEY`.
+ **Verification:** The secret should appear in the list as `CODEX_MASTER_KEY`.
 
 ---
 
@@ -173,7 +175,7 @@ Repeat Steps 1.1–1.2 with a second fine-grained PAT:
 ### Step 2.1 — Allow all actions
 
 1. Open: **https://github.com/Aries-Serpent/_codex_/settings/actions**
-   *(Repo → ⚙️ Settings → Actions → General)*
+   *(Repo →  Settings → Actions → General)*
 2. Under **Actions permissions**, select:
    - ● **Allow all actions and reusable workflows**
 3. Click **Save**.
@@ -223,7 +225,7 @@ Repeat Steps 1.1–1.2 with a second fine-grained PAT:
 ### Step 3.1 — Update `main` branch protection
 
 1. Open: **https://github.com/Aries-Serpent/_codex_/settings/branches**
-   *(Repo → ⚙️ Settings → Branches)*
+   *(Repo →  Settings → Branches)*
 2. Find the rule for `main` and click **Edit** (pencil icon).
 3. Scroll to **Allow specified actors to bypass required pull requests**.
 4. In the search box, type `copilot-swe-agent` and select
@@ -257,7 +259,7 @@ Repeat Step 3.1 for the `0D_base_` branch:
 
 1. Open: **https://github.com/organizations/Aries-Serpent/settings/copilot/policies**
    *(GitHub top-right avatar → Your organisations → Aries-Serpent →
-   ⚙️ Settings → Copilot → Policies)*
+    Settings → Copilot → Policies)*
 2. Find **Copilot coding agent** (or **"Allow Copilot to create pull requests"**).
 3. Set it to **Enabled** (toggle on).
 4. Under **Operator access**, choose **Allow all repositories** (or select `_codex_`
@@ -269,7 +271,7 @@ Repeat Step 3.1 for the `0D_base_` branch:
 ### Step 4.2 — Enable Copilot in the repository
 
 1. Open: **https://github.com/Aries-Serpent/_codex_/settings/copilot**
-   *(Repo → ⚙️ Settings → Copilot)*
+   *(Repo →  Settings → Copilot)*
 2. Ensure Copilot is **enabled** for this repository.
 3. Under **Coding agent**, set to **Enabled**.
 
@@ -278,7 +280,7 @@ Repeat Step 3.1 for the `0D_base_` branch:
 ### Step 4.3 — Allow Copilot to edit files and open PRs (Copilot plan setting)
 
 1. Open: **https://github.com/settings/copilot** (your personal settings)
-   *(GitHub avatar → ⚙️ Settings → GitHub Copilot)*
+   *(GitHub avatar →  Settings → GitHub Copilot)*
 2. Scroll to **Copilot coding agent**.
 3. Confirm both toggles are **On**:
    - **Allow Copilot coding agent to edit files**
@@ -342,7 +344,7 @@ For each variable in the table above:
 ### Step 6.1 — Remove required reviewers from the environment
 
 1. Open: **https://github.com/Aries-Serpent/_codex_/settings/environments**
-   *(Repo → ⚙️ Settings → Environments)*
+   *(Repo →  Settings → Environments)*
 2. Click **agent-auth-delegation** (create it if it doesn't exist — see Step 6.2).
 3. Under **Required reviewers**, remove any names in the list (click the `×` next to each).
 4. Ensure the list is empty.
@@ -379,7 +381,7 @@ For each variable in the table above:
 > without waiting for a human. This must be enabled at the repo level.
 
 1. Open: **https://github.com/Aries-Serpent/_codex_/settings**
-   *(Repo → ⚙️ Settings → General)*
+   *(Repo →  Settings → General)*
 2. Scroll to **Pull Requests**.
 3. Check **☑ Allow auto-merge**.
 4. Check **☑ Automatically delete head branches** (keeps the repo clean).
@@ -546,13 +548,13 @@ flowchart TD
     C -- yes --> D[always-approve-and-arm job]
     C -- no  --> D
     D --> E[session_wrapup_autofix.py\n--activate-workflows]
-    E --> F[WEC: all core items set to ✅ WILL RUN]
+    E --> F[WEC: all core items set to  WILL RUN]
     F --> G[workflow-execution-gate.yml dispatched]
     G --> H[agent-auth-delegation.yml triggered]
     H --> I{cognitive-preflight\nchecks pass?}
     I -- success OR failure --> J[activate-delegation job]
     J --> K[CODEX_AGENT_DELEGATED = true\nrepo variable written]
-    K --> L[🟢 Copilot fully authorised\nno human approval needed]
+    K --> L[ Copilot fully authorised\nno human approval needed]
 ```
 
 ### Auto-Approve — Same-repo PR action_required clearance
@@ -565,8 +567,8 @@ flowchart TD
     AA --> B[Enumerate all open PRs]
     B --> C[For each PR HEAD SHA:\nfind action_required runs]
     C --> D{Run type?}
-    D -- fork PR --> E[approveWorkflowRun API\n✅ works for forks]
-    D -- same-repo PR\n'not from a fork' --> F[gh run rerun {run_id}\n✅ clears action_required\nfor same-repo branches]
+    D -- fork PR --> E[approveWorkflowRun API\n works for forks]
+    D -- same-repo PR\n'not from a fork' --> F[gh run rerun {run_id}\n clears action_required\nfor same-repo branches]
     E --> G[Run unblocked]
     F --> G
 ```
@@ -574,9 +576,9 @@ flowchart TD
 ### WEC State — Workflow Execution Checklist (always-on)
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing "✅ Always Required (auto-checked by Copilot)", validate.yml'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing " Always Required (auto-checked by Copilot)", validate.yml'}}%%
 flowchart LR
-    subgraph ALWAYS_REQUIRED["✅ Always Required (auto-checked by Copilot)"]
+    subgraph ALWAYS_REQUIRED[" Always Required (auto-checked by Copilot)"]
         V[validate.yml]
         RV[resilient_validation.yml]
         NG[nox_gates.yml]
@@ -591,7 +593,7 @@ flowchart LR
         CG[comment-review-gate.yml]
         DG[deferral-language-gate.yml]
     end
-    subgraph COPILOT_MANAGED["🤖 Managed by session_wrapup_autofix.py"]
+    subgraph COPILOT_MANAGED[" Managed by session_wrapup_autofix.py"]
         SW[--activate-workflows flag\nsets all above to x on every push]
     end
     COPILOT_MANAGED --> ALWAYS_REQUIRED

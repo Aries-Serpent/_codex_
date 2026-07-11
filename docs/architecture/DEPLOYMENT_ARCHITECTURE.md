@@ -1,4 +1,6 @@
 # Deployment Architecture
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Last Updated**: 2026-01-20  
 **Version**: v0.9.0  
@@ -18,7 +20,7 @@ graph TB
 
     subgraph "Docker Containerized"
         BuildStage["🔨 Build Stage<br/>• Dockerfile multi-stage<br/>• Install dependencies<br/>• Compile wheels"]
-        RuntimeStage["🚀 Runtime Stage<br/>• Minimal base image<br/>• Python slim<br/>• Security scanning"]
+        RuntimeStage[" Runtime Stage<br/>• Minimal base image<br/>• Python slim<br/>• Security scanning"]
         Registry["📦 Container Registry<br/>• GitHub Container Reg<br/>• Version tags<br/>• Signature validation"]
     end
 
@@ -38,8 +40,8 @@ graph TB
 
     subgraph "CI/CD Pipeline"
         Git["🐙 Git Repository<br/>• Source code<br/>• Commit triggers<br/>• Branch protection"]
-        GHActions["⚙️ GitHub Actions<br/>• Build jobs<br/>• Test jobs<br/>• Deploy jobs"]
-        Tests["✅ Automated Tests<br/>• Unit tests<br/>• Integration tests<br/>• E2E tests"]
+        GHActions[" GitHub Actions<br/>• Build jobs<br/>• Test jobs<br/>• Deploy jobs"]
+        Tests[" Automated Tests<br/>• Unit tests<br/>• Integration tests<br/>• E2E tests"]
         Publish["📤 Publish<br/>• Push to registry<br/>• Create release<br/>• Tag version"]
     end
 
@@ -384,7 +386,7 @@ storage:
 | **Scaling** | Manual | Manual | Auto | Auto |
 | **Monitoring** | Local | Logs | Prometheus | CloudWatch |
 | **Cost** | Free | Free | $100-500/mo | $500-2000/mo |
-| **HA** | ❌ | ❌ | ✅ | ✅ |
+| **HA** |  |  |  |  |
 | **Security** | Basic | Good | Excellent | Excellent |
 
 ---

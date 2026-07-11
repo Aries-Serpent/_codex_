@@ -1,6 +1,9 @@
 # FAQ: Status v1.2
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
-🧠 Roles: [Primary: Docs Maintainer], [Secondary: Onboarding Mentor] ⚡ Energy: 5
+ Roles: [Primary: Docs Maintainer], [Secondary: Onboarding Mentor] ⚡ Energy: 5
 
 Q: Do I need to fill every section?
 - A: Provide a full snapshot; mark delta N/A if no prior report.

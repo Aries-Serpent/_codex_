@@ -1,4 +1,6 @@
 # Concurrent Workflow Monitoring & Cherry-Pick Process — Reproducibility Reference
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Session:** S146 | **PR:** #3615 | **Date:** 2026-03-17
 > **CLI tool:** `scripts/ci/monitor_run.py`
@@ -23,7 +25,7 @@ flowchart TD
         D2 --> D3[(PID file\n.codex/monitor/RUN_ID/daemon.pid)]
         D2 --> D4[(State file\n.codex/monitor/RUN_ID/state.json\nupdated each poll)]
         D2 --> D5[(Log file\n.codex/monitor/RUN_ID/daemon.log)]
-        D2 --> D6["✅ Returns PID\nimmediately"]
+        D2 --> D6[" Returns PID\nimmediately"]
     end
 
     subgraph PARALLEL["🛠️  Parallel Agent Work  (Loop B — unblocked)"]
@@ -202,8 +204,8 @@ gh api "repos/Aries-Serpent/_codex_/actions/runs/${RUN_ID}" \
 | Output | Meaning | Next step |
 |--------|---------|-----------|
 | `in_progress    null    <timestamp>` | Still running | Wait 5 min, re-poll |
-| `completed    success    <timestamp>` | ✅ Run succeeded — may have pushed commits | → Step 4 |
-| `completed    failure    <timestamp>` | ❌ Run failed | → Step 3 |
+| `completed    success    <timestamp>` |  Run succeeded — may have pushed commits | → Step 4 |
+| `completed    failure    <timestamp>` |  Run failed | → Step 3 |
 | `completed    skipped    <timestamp>` | Run skipped (no matching trigger) | → Step 4 (no new commits expected) |
 
 ## Poll loop (bash)
@@ -308,15 +310,15 @@ bash scripts/ci/ci_triage_repro.sh
 
 ```
 ━━━ Summary ━━━
-  ✅ 1_actionlint: 0 errors
-  ✅ 2_ruff_i001: 0 issues
-  ✅ 3_mypy_baseline: 282 <= 282
-  ✅ 4_autofix: exit 0 (0 informational)
-  ✅ 5_telemetry: all 3 fields correct
-  ✅ 6_threshold: both=99.7
-  ✅ 7_changelog: consistent
+   1_actionlint: 0 errors
+   2_ruff_i001: 0 issues
+   3_mypy_baseline: 282 <= 282
+   4_autofix: exit 0 (0 informational)
+   5_telemetry: all 3 fields correct
+   6_threshold: both=99.7
+   7_changelog: consistent
 
-All checks passed ✅
+All checks passed 
 ```
 
 **If any check fails:** Run `bash scripts/ci/ci_triage_repro.sh --fix` then re-run.
@@ -364,7 +366,7 @@ Use the `report_progress` tool which stages, commits, and pushes atomically.
 
 ```bash
 # Repro: final pre-commit checklist
-echo "=== 1. Triage ===" && bash scripts/ci/ci_triage_repro.sh 2>&1 | grep -E "✅|❌|Summary" | tail -10
+echo "=== 1. Triage ===" && bash scripts/ci/ci_triage_repro.sh 2>&1 | grep -E "||Summary" | tail -10
 echo "=== 2. Tests ===" && python -m pytest tests/ci/ -q 2>&1 | tail -5
 echo "=== 3. ruff ===" && python -m ruff check scripts/ci/ tests/ci/ 2>&1 | tail -3
 echo "=== 4. Diff ===" && git diff --stat HEAD
@@ -450,7 +452,7 @@ bash scripts/ci/ci_triage_repro.sh
 echo "▶ Step 6: Run tests"
 python -m pytest tests/ci/ -q 2>&1 | tail -5
 
-echo "✅ Ready to commit via report_progress"
+echo " Ready to commit via report_progress"
 ```
 
 ---
@@ -494,13 +496,13 @@ parallel because they do not conflict with the agent run's expected output:
 
 | Task | Safe? | Reason |
 |------|-------|--------|
-| Add unit tests for existing functions | ✅ | New file; no conflict |
-| Update CHANGELOG.md / .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md | ✅ | Append-only; merge trivially |
-| Create new docs (this file) | ✅ | New file; no conflict |
-| Wire new CI step in a workflow | ✅ | Agent run does not touch workflows |
+| Add unit tests for existing functions |  | New file; no conflict |
+| Update CHANGELOG.md / .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md |  | Append-only; merge trivially |
+| Create new docs (this file) |  | New file; no conflict |
+| Wire new CI step in a workflow |  | Agent run does not touch workflows |
 | Modify files the agent run is likely editing | ⚠️ | Risk of conflict on integration |
 | Modify `.mypy_baseline` | ⚠️ | Agent may also modify; check diff carefully |
-| Merge / rebase | ❌ | Wait until run completes |
+| Merge / rebase |  | Wait until run completes |
 
 ---
 

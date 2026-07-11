@@ -1,10 +1,12 @@
 # [Human Admin] Repository Variables Setup Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **For:** Human administrator (mbaetiong) — manual GitHub UI / CLI actions required  
 > **Source:** [PR #3483 comment #issuecomment-3988416714](https://github.com/Aries-Serpent/_codex_/pull/3483#issuecomment-3988416714)  
 > **Technical reference:** [`REPO_VARIABLES_IMPLEMENTATION_GUIDE.md`](./REPO_VARIABLES_IMPLEMENTATION_GUIDE.md)  
 > **Version:** 1.0.0  
-> **Last Updated:** 2026-03-03
+> **Last Updated: 2026-07-11
 
 ---
 
@@ -27,9 +29,9 @@ from PR #3483. Each section has:
 ## Setup Flow
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing 🚀 Start, "Complete prerequisites\n(CODEX_MASTER_KEY, gh CLI)"'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing  Start, "Complete prerequisites\n(CODEX_MASTER_KEY, gh CLI)"'}}%%
 flowchart TD
-    START([🚀 Start]) --> PREREQ{Prerequisites\nmet?}
+    START([ Start]) --> PREREQ{Prerequisites\nmet?}
     PREREQ -->|No| FIX_PREREQ["Complete prerequisites\n(CODEX_MASTER_KEY, gh CLI)"]
     FIX_PREREQ --> PREREQ
     PREREQ -->|Yes| CHOICE{Setup method?}
@@ -37,7 +39,7 @@ flowchart TD
     CHOICE -->|Careful — UI| UI_METHOD["§2 GitHub UI\n~20 minutes"]
     BATCH --> VERIFY["§3 Verify\nAll 13 variables present"]
     UI_METHOD --> VERIFY
-    VERIFY --> DONE([✅ Complete])
+    VERIFY --> DONE([ Complete])
 
     style START fill:#22c55e,color:#fff
     style DONE fill:#22c55e,color:#fff
@@ -75,9 +77,9 @@ REPO="Aries-Serpent/_codex_"
 create_var() {
   local name="$1" value="$2"
   if gh variable set "$name" --body "$value" --repo "$REPO" 2>/dev/null; then
-    echo "✅  $name = $value"
+    echo "  $name = $value"
   else
-    echo "❌  FAILED: $name"
+    echo "  FAILED: $name"
   fi
 }
 
@@ -112,7 +114,7 @@ echo "https://github.com/Aries-Serpent/_codex_/settings/variables/actions"
 echo "──────────────────────────────────────────────────"
 ```
 
-**After running**, check all 13 lines show ✅. If any show ❌, see [§4 Troubleshooting](#4-troubleshooting).
+**After running**, check all 13 lines show . If any show , see [§4 Troubleshooting](#4-troubleshooting).
 
 ---
 

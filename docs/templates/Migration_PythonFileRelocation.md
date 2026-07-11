@@ -1,6 +1,9 @@
 # [Template]: Python File Relocation with Backward Compatibility
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 **Version:** v1.0.0  
-**Last Updated:** 2025-10-25  
+**Last Updated: 2026-07-11
 **Role Workflow:** Developers draft → Maintainers execute → Reviewers certify
 
 > [PLACEHOLDER: MIGRATION_INTENT_SUMMARY]
@@ -33,11 +36,11 @@ Use this template when relocating Python files or packages while maintaining imp
 
 ## Phase 3 — Update Dependency Graph
 1. Adjust imports in code and templates to point at `[PLACEHOLDER: NEW_PACKAGE_PATH]`.
-2. Update configuration references (e.g., [`pyproject.toml`](https://github.com/Aries-Serpent/_codex_/blob/main/pyproject.toml), DAGs, or env vars).
+2. Update configuration references (e.g., [`pyproject.toml`](../pyproject.toml), DAGs, or env vars).
 3. Run targeted pytest suites (`pytest [PLACEHOLDER: TEST_SELECTOR]`) to validate dependency updates.
 
 ## Phase 4 — Migrate Regression Coverage
-1. Move fixtures within [`tests/`](https://github.com/Aries-Serpent/_codex_/blob/main/tests) to mirror the new module layout.
+1. Move fixtures within [`tests/`](../tests) to mirror the new module layout.
 2. Add regression tests for aliases to confirm backward compatibility.
 3. Ensure coverage remains ≥85% by adding tests where gaps exist.
 
@@ -75,5 +78,5 @@ Use this template when relocating Python files or packages while maintaining imp
 
 ## References
 - `sitecustomize.py` for runtime aliases.
-- [`conftest.py`](https://github.com/Aries-Serpent/_codex_/blob/main/conftest.py) for pytest fixtures impacted by module moves.
+- [`conftest.py`](../conftest.py) for pytest fixtures impacted by module moves.
 - [`docs/templates/README.md`](./README.md) for workflow overview.

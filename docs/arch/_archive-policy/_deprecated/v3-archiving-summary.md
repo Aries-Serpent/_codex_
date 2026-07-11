@@ -6,8 +6,10 @@ summary: "Legacy abbreviated archive workflow outline."
 ---
 
 # Archive Policy Summary (v3, Deprecated)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 Variant v3 condensed the archival workflow into a checklist-oriented format. All actionable guidance has been merged into the
 [Canonical Archiving Policy](../canonical-archiving-policy.md), which now serves as the single maintained reference.

@@ -1,4 +1,5 @@
-# 🔐 Token Management Documentation
+#  Token Management Documentation
+**Version:** v0.2.1
 
 Complete guide to token management, authentication, and GitHub token patterns in Aries-Serpent/_codex_.
 
@@ -6,7 +7,7 @@ Complete guide to token management, authentication, and GitHub token patterns in
 
 This section provides comprehensive documentation for managing GitHub tokens, authenticating with the Codex system, and implementing secure token patterns across the repository.
 
-## 📚 Documentation Files
+##  Documentation Files
 
 ### 1. [Token Hierarchy Guide](TOKEN_HIERARCHY_GUIDE.md)
 **Purpose:** Understanding GitHub token scopes, hierarchy, and authentication chains  
@@ -71,7 +72,7 @@ This section provides comprehensive documentation for managing GitHub tokens, au
 - FAQ section
 - Emergency procedures
 
-## 🔒 Security Considerations
+##  Security Considerations
 
 All token documentation follows these security principles:
 
@@ -80,7 +81,7 @@ All token documentation follows these security principles:
 - **Rotation cadence**: Tokens rotated every 90 days minimum
 - **Audit trail**: All token operations logged and auditable
 
-## 🚀 Getting Started
+##  Getting Started
 
 1. **New to tokens?** Start with [Quick Reference](QUICK_REFERENCE.md)
 2. **Setting up for first time?** Follow [Human Admin Setup](HUMAN_ADMIN_SETUP.md)
@@ -116,4 +117,4 @@ Token documentation is maintained by:
 - Security updates: As needed
 - Agent training: Quarterly
 
-Last updated: 2026-06-29T04:49:19Z
+Last updated: 2026-06-29

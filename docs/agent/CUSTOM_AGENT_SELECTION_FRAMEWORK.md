@@ -1,4 +1,6 @@
 # Custom Agent Selection Framework
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Document:** Custom Agent Selection & Decision Framework  
 > **Version:** 1.0.0  
@@ -64,7 +66,7 @@ This framework enables systematic selection of the most appropriate custom agent
 - Blocking incident requiring rapid response → `ci-emergency-response-agent`
 - Complex multi-failure scenario → `ci-testing-agent` first (diagnosis), then specialists
 
-**Parallel Potential:** ✅ HIGH (delegate 2-3 agents per category)
+**Parallel Potential:**  HIGH (delegate 2-3 agents per category)
 
 ---
 
@@ -85,7 +87,7 @@ This framework enables systematic selection of the most appropriate custom agent
 - Post-API-change alignment → `test-alignment-fixer`
 - Test quality improvement → `test-enhancement-agent`
 
-**Parallel Potential:** ✅ VERY HIGH (delegate 3-5 agents per cycle)
+**Parallel Potential:**  VERY HIGH (delegate 3-5 agents per cycle)
 
 ---
 
@@ -105,7 +107,7 @@ This framework enables systematic selection of the most appropriate custom agent
 - Terminology audit → `terminology-consistency-agent`
 - Post-merge alignment → `post-merge-doc-alignment-agent`
 
-**Parallel Potential:** ✅ MODERATE (2-3 agents for comprehensive doc audit)
+**Parallel Potential:**  MODERATE (2-3 agents for comprehensive doc audit)
 
 ---
 
@@ -126,7 +128,7 @@ This framework enables systematic selection of the most appropriate custom agent
 - Secret detection → `secret-detection-agent`
 - Code scanning findings → `code-scanning-remediation-agent`
 
-**Parallel Potential:** ✅ HIGH (delegate all 3-4 for full audit)
+**Parallel Potential:**  HIGH (delegate all 3-4 for full audit)
 
 ---
 
@@ -145,7 +147,7 @@ This framework enables systematic selection of the most appropriate custom agent
 - PyTorch model issues → `meta-tensor-validator`
 - Filename cross-platform check → `cross-platform-filename-validator`
 
-**Parallel Potential:** ✅ MODERATE (2-3 per platform update cycle)
+**Parallel Potential:**  MODERATE (2-3 per platform update cycle)
 
 ---
 
@@ -276,7 +278,7 @@ NO  → Try next candidate
 
 ## Anti-Patterns & Pitfalls
 
-### ❌ Pitfall 1: Using Generalist When Specialist Available
+###  Pitfall 1: Using Generalist When Specialist Available
 
 ```
 WRONG:
@@ -294,7 +296,7 @@ Result: Direct, authoritative remediation
 
 ---
 
-### ❌ Pitfall 2: Sequential When Parallel Viable
+###  Pitfall 2: Sequential When Parallel Viable
 
 ```
 WRONG:
@@ -315,7 +317,7 @@ Use case: Multi-aspect testing audit
 
 ---
 
-### ❌ Pitfall 3: Missing Prerequisite Checks
+###  Pitfall 3: Missing Prerequisite Checks
 
 ```
 WRONG:
@@ -336,7 +338,7 @@ Selection: autonomous-test-healer-agent
 
 ---
 
-### ❌ Pitfall 4: Overloading Single Agent
+###  Pitfall 4: Overloading Single Agent
 
 ```
 WRONG:
@@ -363,14 +365,14 @@ CORRECT:
 
 | Domain | Primary | Specialist | Readiness |
 |--------|---------|------------|-----------|
-| CI/CD | ci-auto-healer-agent | 5 available | ✅ Production |
-| Testing | unified-coverage-agent | 8 available | ✅ Production |
-| Docs | unified-doc-agent | 5 available | ✅ Production |
-| Security | unified-security-scanner | 7 available | ✅ Production |
-| Config | config-validator | 5 available | ✅ Production |
-| RAG | rag-index-manager | 6 available | ✅ Production |
+| CI/CD | ci-auto-healer-agent | 5 available |  Production |
+| Testing | unified-coverage-agent | 8 available |  Production |
+| Docs | unified-doc-agent | 5 available |  Production |
+| Security | unified-security-scanner | 7 available |  Production |
+| Config | config-validator | 5 available |  Production |
+| RAG | rag-index-manager | 6 available |  Production |
 | Platform | cross-platform-filename-validator | 3 available | ⚠️ Partial |
-| Session | agent-orchestrator | 4 available | ✅ Production |
+| Session | agent-orchestrator | 4 available |  Production |
 
 ### Delegation Patterns
 

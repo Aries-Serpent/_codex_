@@ -1,4 +1,7 @@
 # Guide: _codex_ Codebase Overview
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-22 16:17:26 | Author: mbaetiong
 
  Roles: [Primary] Educator, [Secondary] Navigator   Energy: 5/5  
@@ -24,9 +27,9 @@ Note: The quick inventory below is based on a partial browse limit from the plat
 
 | Path | Role | Notes / Key Files |
 |---|---|---|
-| [pyproject.toml](https://github.com/Aries-Serpent/_codex_/blob/main/pyproject.toml) | Project packaging | Declares the main “codex-ml” package, dependency groups, console scripts, plugin entry points |
-| [README.md](https://github.com/Aries-Serpent/_codex_/blob/main/README.md) | Top-level overview | High-level project intro and how to get started |
-| [mkdocs.yml](https://github.com/Aries-Serpent/_codex_/blob/main/mkdocs.yml) | Docs site config | MkDocs Material-based documentation navigation and theme |
+| [pyproject.toml](../pyproject.toml) | Project packaging | Declares the main “codex-ml” package, dependency groups, console scripts, plugin entry points |
+| [README.md](../README.md) | Top-level overview | High-level project intro and how to get started |
+| [mkdocs.yml](../mkdocs.yml) | Docs site config | MkDocs Material-based documentation navigation and theme |
 | src/ | Source root | Contains core packages (e.g., `src/codex_ml`, `src/training`, `src/tokenization`) |
 | cli/ | Unified CLI layer | Consolidated entry points for end-to-end workflows and utilities |
 | codex_ml/ | ML framework | Training, evaluation, registry/entry points, metrics, loaders |
@@ -52,7 +55,7 @@ Note: The quick inventory below is based on a partial browse limit from the plat
 
 ## How the pieces fit together
 
-- Core package: The main distribution “codex-ml” (declared in [pyproject.toml](https://github.com/Aries-Serpent/_codex_/blob/main/pyproject.toml)) exposes:
+- Core package: The main distribution “codex-ml” (declared in [pyproject.toml](../pyproject.toml)) exposes:
   - A CLI toolkit for training, evaluation, generation, validation, and performance testing
   - A plugin/registry mechanism to register tokenizers, models, metrics, data loaders, and trainers
   - Hydra/OmegaConf-based configuration for reproducible runs and environment overrides
@@ -69,13 +72,13 @@ Note: The quick inventory below is based on a partial browse limit from the plat
   - Fence validation and file integrity audits for repository hygiene
 
 - Documentation:
-  - MkDocs Material site driven by [mkdocs.yml](https://github.com/Aries-Serpent/_codex_/blob/main/mkdocs.yml) with navigation covering “Getting Started”, “Guides”, “Architecture”, “Logging & Troubleshooting”, “Reference”, and “Tutorials”.
+  - MkDocs Material site driven by [mkdocs.yml](../mkdocs.yml) with navigation covering “Getting Started”, “Guides”, “Architecture”, “Logging & Troubleshooting”, “Reference”, and “Tutorials”.
 
 ---
 
 ## Key console entry points
 
-From the project’s [pyproject.toml](https://github.com/Aries-Serpent/_codex_/blob/main/pyproject.toml):
+From the project’s [pyproject.toml](../pyproject.toml):
 
 | Command | Purpose |
 |---|---|
@@ -205,8 +208,8 @@ Runbook references are under docs/ops and docs/templates in the MkDocs site.
 ## Learning path for newcomers
 
 1) Orientation
-   - Read [README.md](https://github.com/Aries-Serpent/_codex_/blob/main/README.md) and the MkDocs “Getting Started” page
-   - Skim [pyproject.toml](https://github.com/Aries-Serpent/_codex_/blob/main/pyproject.toml) to see scripts, extras, and entry points
+   - Read [README.md](../README.md) and the MkDocs “Getting Started” page
+   - Skim [pyproject.toml](../pyproject.toml) to see scripts, extras, and entry points
 
 2) CLI first
    - `codex-list-plugins` to discover models/tokenizers/metrics/trainers

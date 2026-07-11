@@ -1,4 +1,6 @@
 # GitHub API Usage Patterns — Code Examples
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Version:** 1.0.0  
 > **Date:** 2026-06-29  
@@ -435,7 +437,7 @@ try:
     )
     
     if status == 403:
-        print("❌ Token missing 'repo' scope")
+        print(" Token missing 'repo' scope")
         print("Required: CODEX_MASTER_KEY with 'repo' scope")
     
 except Exception as err:
@@ -520,11 +522,11 @@ from scripts.ci._gh_api import resolve_token
 token = resolve_token()
 
 if not token:
-    print("❌ No GitHub token found")
+    print(" No GitHub token found")
     print("Set one of: CODEX_MASTER_KEY, CODEX_BACKUP_KEY, GH_TOKEN, GITHUB_TOKEN")
     exit(1)
 
-print(f"✅ Using token from: {resolve_token() and 'environment'}")
+print(f" Using token from: {resolve_token() and 'environment'}")
 ```
 
 ---

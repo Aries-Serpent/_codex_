@@ -1,6 +1,8 @@
 # Local Gates
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 These checks are **local-only**. They do not create or activate any GitHub Actions workflows.
 For one-command runs, a `nox` session is provided (optional).
@@ -10,7 +12,7 @@ For one-command runs, a `nox` session is provided (optional).
 - `pre-commit` installed (`pip install pre-commit`).
 - (Optional) `jsonschema` for schema validation (`pip install jsonschema`).
 
-## Quick Start
+## Quickstart
 ```bash
 # 1) Fence validator
 python tools/validate_fences.py

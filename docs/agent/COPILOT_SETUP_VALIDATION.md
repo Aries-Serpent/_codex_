@@ -1,6 +1,8 @@
 # Copilot Setup Steps Validation Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 Complete documentation for the pre-merge testing infrastructure for `.github/workflows/copilot-setup-steps.yml`.
 
@@ -34,8 +36,8 @@ The copilot-setup-steps.yml validation system ensures the critical GitHub Action
 **Purpose:** Ensure the workflow file is syntactically valid YAML.
 
 **Tests:**
-- ✅ YAML syntax parse (Python yaml.safe_load)
-- ✅ Proper indentation (2-space standard)
+-  YAML syntax parse (Python yaml.safe_load)
+-  Proper indentation (2-space standard)
 
 **Run individually:**
 ```bash
@@ -62,7 +64,7 @@ python scripts/ci/validate_copilot_setup_steps.py | grep "YAML"
 
 **Failure message example:**
 ```
-❌ Critical CCA Variables: Missing required variables: COPILOT_AGENT_CCA_VERSION_LOCK
+ Critical CCA Variables: Missing required variables: COPILOT_AGENT_CCA_VERSION_LOCK
 ```
 
 **Recovery:** These variables are in the workflow template at lines 99-101. Ensure they weren't accidentally removed during edits.
@@ -76,8 +78,8 @@ python scripts/ci/validate_copilot_setup_steps.py | grep "YAML"
 **Purpose:** Protect critical sections of the workflow from being accidentally broken.
 
 **Tests:**
-- ✅ Session preload uses block scalar syntax (`run: |`)
-- ✅ Protected sections not removed (lines 99-101, 132-137)
+-  Session preload uses block scalar syntax (`run: |`)
+-  Protected sections not removed (lines 99-101, 132-137)
 
 **Protected sections:**
 - Lines 99-101: CCA variables definitions
@@ -86,15 +88,15 @@ python scripts/ci/validate_copilot_setup_steps.py | grep "YAML"
 **Critical syntax requirement:**
 
 ```yaml
-# ✅ CORRECT (block scalar)
-- name: "🧠 Session Context Pre-load"
+#  CORRECT (block scalar)
+- name: " Session Context Pre-load"
   run: |
     if ! python3 .github/scripts/session_preload.py; then
       echo "warning"
     fi
 
-# ❌ WRONG (flow scalar) — CAUSES PARSE FAILURE
-- name: "🧠 Session Context Pre-load"
+#  WRONG (flow scalar) — CAUSES PARSE FAILURE
+- name: " Session Context Pre-load"
   run: 'if ! python3 .github/scripts/session_preload.py; then echo "warning"; fi'
 ```
 
@@ -135,9 +137,9 @@ python scripts/ci/validate_copilot_setup_steps.py | grep "YAML"
 **Purpose:** Prevent security issues like hardcoded secrets and invalid token references.
 
 **Tests:**
-- ✅ Hardcoded secrets scan (pattern matching for token formats)
-- ✅ Token reference validation (GITHUB_TOKEN, CODEX_MASTER_KEY, CODEX_BACKUP_KEY)
-- ✅ YAML injection prevention (special character escaping)
+-  Hardcoded secrets scan (pattern matching for token formats)
+-  Token reference validation (GITHUB_TOKEN, CODEX_MASTER_KEY, CODEX_BACKUP_KEY)
+-  YAML injection prevention (special character escaping)
 
 **What triggers failures:**
 - Hardcoded GitHub tokens (ghp_, ghu_, ghs_, ghe_ patterns)
@@ -154,20 +156,20 @@ python scripts/ci/validate_copilot_setup_steps.py | grep "YAML"
 **Purpose:** Detect unexpected file size growth, complexity increases, or configuration drift.
 
 **Tests:**
-- ✅ File size regression (baseline: 673 lines, tolerance: ±5%)
-- ✅ Complexity analysis (job/step count)
-- ✅ LFS configuration (verify not corrupted)
+-  File size regression (baseline: 673 lines, tolerance: ±5%)
+-  Complexity analysis (job/step count)
+-  LFS configuration (verify not corrupted)
 
 **Thresholds:**
 - ⚠️ Warning: 750+ lines (might indicate bloat)
-- ❌ Failure: 1000+ lines (too large, merge blocked)
-- ✅ Acceptable: 640-700 lines (±5% tolerance)
+-  Failure: 1000+ lines (too large, merge blocked)
+-  Acceptable: 640-700 lines (±5% tolerance)
 
 **Complexity baseline:**
 - 2 jobs (expected)
 - 27 steps (expected)
 - ⚠️ Warning if >30 steps (might indicate bloat)
-- ❌ Failure if >50 steps (too complex)
+-  Failure if >50 steps (too complex)
 
 **Failure actions:** BLOCKS MERGE if >1000 lines; WARNING if >750 lines
 
@@ -232,7 +234,7 @@ bash scripts/ci/validate_setup_steps_yaml.sh
 python scripts/ci/validate_copilot_setup_steps.py && \
 python scripts/ci/validate_copilot_dependencies.py && \
 python scripts/ci/validate_copilot_security.py && \
-echo "✅ All validation tests passed!"
+echo " All validation tests passed!"
 ```
 
 ## CI/CD Integration
@@ -264,25 +266,25 @@ The workflow creates 4 automated checks:
 After all tests complete, the workflow posts a summary comment on the PR:
 
 ```markdown
-## 🤖 Copilot Setup Steps Validation
+##  Copilot Setup Steps Validation
 
 ### Test Results
 | Phase | Status | Result |
 |-------|--------|--------|
-| Core Validation | ✅ | 9/9 passed |
-| Integration | ✅ | 4/4 passed |
-| Security | ✅ | 3/3 passed |
+| Core Validation |  | 9/9 passed |
+| Integration |  | 4/4 passed |
+| Security |  | 3/3 passed |
 
 ### Summary
 **Total: 16/16 tests passed**
 
-✅ **All validation tests passed!**
+ **All validation tests passed!**
 
 ### Merge Gates
-- ✅ All automated tests pass
+-  All automated tests pass
 - ⏳ All 3 CCA variables present (validated by tests)
 - ⏳ All 5 dependent workflows validate (validated by tests)
-- ✅ Security/secrets tests pass
+-  Security/secrets tests pass
 - ⏳ File size within acceptable range (validated by tests)
 - ⏳ At least 1 human reviewer approval
 ```
@@ -297,24 +299,24 @@ All tests passed. Example output:
 ========================================================================================
 Test Suite: Copilot Setup Steps Validation
 ========================================================================================
-  ✅ YAML Syntax Parse: Valid YAML structure (no parse errors)
-  ✅ YAML Indentation: Proper 2-space indentation throughout
-  ✅ Critical CCA Variables: All 3 CCA variables present and correct
-  ✅ Session Preload Block Scalar: Uses correct block scalar syntax (run: |)
-  ✅ Git Diff Protection: Protected sections verified (CCA variables, session preload)
-  ✅ Dependent Workflows (2.1): All 5 dependent workflows valid
-  ✅ Supporting Scripts (2.2): All 3 supporting scripts valid
-  ✅ Environment Variables (2.3): All 10 critical environment variables properly defined
-  ✅ Hardcoded Secrets Scan (5.1): No obvious hardcoded secrets detected in workflow  # pragma: allowlist secret
-  ✅ Token Reference Validation (5.2): All token references properly use GitHub secrets  # pragma: allowlist secret
-  ✅ YAML Injection Prevention (5.3): YAML injection prevention check passed
-  ✅ File Size Regression: 673 lines (+0.0% from baseline 673)
-  ✅ Complexity Analysis: 2 jobs, 27 steps (within acceptable bounds)
-  ✅ LFS Configuration: LFS configuration correct (GIT_LFS_SKIP_SMUDGE=1)
+   YAML Syntax Parse: Valid YAML structure (no parse errors)
+   YAML Indentation: Proper 2-space indentation throughout
+   Critical CCA Variables: All 3 CCA variables present and correct
+   Session Preload Block Scalar: Uses correct block scalar syntax (run: |)
+   Git Diff Protection: Protected sections verified (CCA variables, session preload)
+   Dependent Workflows (2.1): All 5 dependent workflows valid
+   Supporting Scripts (2.2): All 3 supporting scripts valid
+   Environment Variables (2.3): All 10 critical environment variables properly defined
+   Hardcoded Secrets Scan (5.1): No obvious hardcoded secrets detected in workflow  # pragma: allowlist secret
+   Token Reference Validation (5.2): All token references properly use GitHub secrets  # pragma: allowlist secret
+   YAML Injection Prevention (5.3): YAML injection prevention check passed
+   File Size Regression: 673 lines (+0.0% from baseline 673)
+   Complexity Analysis: 2 jobs, 27 steps (within acceptable bounds)
+   LFS Configuration: LFS configuration correct (GIT_LFS_SKIP_SMUDGE=1)
 
 Summary: 14/14 passed
 
-✅ All validation tests passed!
+ All validation tests passed!
 ```
 
 ### Failure (Exit Code 1)
@@ -325,13 +327,13 @@ Critical tests failed. Example output:
 ========================================================================================
 Test Suite: Copilot Setup Steps Validation
 ========================================================================================
-  ❌ Critical CCA Variables: Missing required variables: COPILOT_AGENT_CCA_VERSION_LOCK
-  ✅ Session Preload Block Scalar: Uses correct block scalar syntax (run: |)
+   Critical CCA Variables: Missing required variables: COPILOT_AGENT_CCA_VERSION_LOCK
+   Session Preload Block Scalar: Uses correct block scalar syntax (run: |)
   ...
 
 Summary: 13/14 passed
 
-🔴 1 CRITICAL FAILURE(S) — MERGE BLOCKED
+ 1 CRITICAL FAILURE(S) — MERGE BLOCKED
    - Critical CCA Variables: Missing required variables: COPILOT_AGENT_CCA_VERSION_LOCK
 ```
 
@@ -427,7 +429,7 @@ If tests fail and you're unsure how to fix:
 
 The PR can only be merged when ALL of the following are true:
 
-### Automated Requirements ✅
+### Automated Requirements 
 - [ ] **All 6 CI job test suites pass** (0 failures)
 - [ ] **All 3 CCA variables present & correct** (validated)
 - [ ] **All 5 dependent workflows validate** (exist and valid YAML)
@@ -435,7 +437,7 @@ The PR can only be merged when ALL of the following are true:
 - [ ] **Security/secrets tests pass** (0 security issues)
 - [ ] **File size within range** (<1000 lines, <750 warning)
 
-### Human Requirements ✅
+### Human Requirements 
 - [ ] **At least 1 human code review** (using COPILOT_SETUP_REVIEW_CHECKLIST.md)
 - [ ] **Reviewer approves the diff**
 - [ ] **All commit messages are clear**
@@ -446,13 +448,13 @@ The PR can only be merged when ALL of the following are true:
 - [ ] All documentation updated
 
 ### Blocking Conditions 🛑
-- ❌ Any automated test fails
-- ❌ CCA variables removed or incorrect
-- ❌ Session preload converted to flow-scalar
-- ❌ Hardcoded secrets detected
-- ❌ File size >1000 lines
-- ❌ Dependent workflows broken
-- ❌ No human review
+-  Any automated test fails
+-  CCA variables removed or incorrect
+-  Session preload converted to flow-scalar
+-  Hardcoded secrets detected
+-  File size >1000 lines
+-  Dependent workflows broken
+-  No human review
 
 ---
 
@@ -461,7 +463,7 @@ The PR can only be merged when ALL of the following are true:
 - **Review Checklist**: [.github/COPILOT_SETUP_REVIEW_CHECKLIST.md](../../.github/COPILOT_SETUP_REVIEW_CHECKLIST.md)
 - **Guard Documentation**: [docs/agent/COPILOT_SETUP_STEPS_GUARD.md](COPILOT_SETUP_STEPS_GUARD.md)
 - **Validation Workflow**: [.github/workflows/copilot-setup-validation.yml](../../.github/workflows/copilot-setup-validation.yml)
-- **CCA Integration**: [CODEBASE_AGENCY_POLICY.md](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/CODEBASE_AGENCY_POLICY.md)
+- **CCA Integration**: [CODEBASE_AGENCY_POLICY.md](../.codex/CODEBASE_AGENCY_POLICY.md)
 
 ## Questions?
 

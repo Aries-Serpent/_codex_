@@ -1,4 +1,5 @@
 # Helm Chart Deployment Guide
+**Last Updated:** 2026-07-11
 
 **Last Updated**: 2026-07-08  
 **Version**: 1.0  

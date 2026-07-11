@@ -1,9 +1,11 @@
 # Phase 6 Batch 2 — PR Approval Workflow & Governance Gates
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Version:** 1.0.0  
 **Status:** FINAL  
 **Audience:** All contributors, code reviewers, CI/CD operators  
-**Last Updated:** 2026-02-22
+**Last Updated: 2026-07-11
 
 ---
 
@@ -13,7 +15,7 @@ This document defines the PR approval workflow, governance gates, and review SLA
 
 **Related Docs:**
 - 📋 Full governance framework: `.codex/BATCH_2_GOVERNANCE_FRAMEWORK.md` (Part 3)
-- ✅ Policy compliance checklist: `docs/production/POLICY_COMPLIANCE_CHECKLIST.md`
+-  Policy compliance checklist: `docs/production/POLICY_COMPLIANCE_CHECKLIST.md`
 
 ---
 
@@ -51,7 +53,7 @@ Code Quality Criteria:
 
 ```yaml
 Tool: GitHub branch protection rules
-Status: ❌ HARD BLOCK (PR cannot merge)
+Status:  HARD BLOCK (PR cannot merge)
 Timeline: 24-48 hours expected
 Escalation: Tech lead if stuck >72h
 Manual Override: Owner approval required
@@ -66,14 +68,14 @@ Implementation:
 
 ```
 What counts as valid approval:
-  ✅ GitHub "Approve" review from code owner
-  ✅ "Looks good to me" comment with approval emoji
-  ✅ Code walk-through with documented sign-off
+   GitHub "Approve" review from code owner
+   "Looks good to me" comment with approval emoji
+   Code walk-through with documented sign-off
 
 What does NOT count:
-  ❌ Just opening the PR / commenting
-  ❌ Approving without reviewing
-  ❌ Approval from non-code-owner
+   Just opening the PR / commenting
+   Approving without reviewing
+   Approval from non-code-owner
 ```
 
 ---
@@ -116,7 +118,7 @@ Tools:
   - Dependabot audit (GitHub)
   - Semgrep + Bandit (custom workflows)
 
-Status: ❌ HARD BLOCK (PR cannot merge)
+Status:  HARD BLOCK (PR cannot merge)
 Timeline: <15 minutes for scan completion
 Override: Owner approval required via workflow dispatch
 ```
@@ -170,7 +172,7 @@ Test Categories (all must pass):
 ```yaml
 Tool: pytest + coverage + pytest-cov
 Execution: Automatic on PR push
-Status: ❌ HARD BLOCK (PR cannot merge)
+Status:  HARD BLOCK (PR cannot merge)
 Timeline: <60 minutes (or CODEX_TEST_TIMEOUT_MINUTES)
 Report: Posted as PR comment with detailed breakdown
 
@@ -184,12 +186,12 @@ Waiver Conditions (rare, requires owner approval):
 
 ```
 Coverage Summary:
-  Overall: 82.5% (target: 80%) ✅
+  Overall: 82.5% (target: 80%) 
 
   File Breakdown:
-    src/auth.py:      95.2% ✅
+    src/auth.py:      95.2% 
     src/api.py:       78.9% ⚠️ (below threshold)
-    src/utils.py:     88.3% ✅
+    src/utils.py:     88.3% 
 
   Change Summary:
     Lines added: 245
@@ -199,7 +201,7 @@ Coverage Summary:
   Regression Check:
     Main branch coverage: 82.1%
     This PR coverage: 82.5%
-    Change: +0.4% ✅
+    Change: +0.4% 
 ```
 
 ---
@@ -291,7 +293,7 @@ Tools:
   - cognitive-preflight workflow (REQ-11)
   - policy-compliance-audit.py (script)
 
-Status: ❌ HARD BLOCK (PR cannot merge)
+Status:  HARD BLOCK (PR cannot merge)
 Timeline: <2 minutes for check, 1-24 hours for remediation
 Remediation: Specific fix requirements posted as PR comment
 ```
@@ -299,7 +301,7 @@ Remediation: Specific fix requirements posted as PR comment
 **Policy Violation Remediation Example:**
 
 ```
-❌ POLICY COMPLIANCE GATE FAILED
+ POLICY COMPLIANCE GATE FAILED
 
 Violation: Deferral language detected in PR body
 - Found: "This is pre-existing"
@@ -313,8 +315,8 @@ Required Action:
   4. Push to trigger re-check
 
 Approved Alternatives:
-  ✅ "This issue exists in the codebase and is documented in #XYZ"
-  ✅ "Escalated to @person in separate issue #XYZ"
+   "This issue exists in the codebase and is documented in #XYZ"
+   "Escalated to @person in separate issue #XYZ"
 ```
 
 ---
@@ -343,47 +345,47 @@ Timeline: Gates 2,3,5 complete in <2 minutes
 
 ```yaml
 Scenario 1: ALL GATES GREEN
-  - Code review: ✅ Approved
-  - Security: ✅ 0 high/critical issues
-  - Test coverage: ✅ 82% (>80%)
-  - Docs: ✅ Updated (or N/A)
-  - Policy: ✅ Compliant
+  - Code review:  Approved
+  - Security:  0 high/critical issues
+  - Test coverage:  82% (>80%)
+  - Docs:  Updated (or N/A)
+  - Policy:  Compliant
 
-  RESULT: ✅ APPROVED FOR MERGE
+  RESULT:  APPROVED FOR MERGE
   Action: Auto-post approval comment
   Timeline: Immediate
   Merge: Ready for owner/tech lead
 
 Scenario 2: SECURITY GATE RED
-  - Code review: ✅ Approved
-  - Security: ❌ HIGH issue detected (SQL injection)
-  - Test coverage: ✅ 82%
-  - Docs: ✅ Updated
-  - Policy: ✅ Compliant
+  - Code review:  Approved
+  - Security:  HIGH issue detected (SQL injection)
+  - Test coverage:  82%
+  - Docs:  Updated
+  - Policy:  Compliant
 
-  RESULT: ❌ BLOCKED FOR MERGE
+  RESULT:  BLOCKED FOR MERGE
   Action: Post remediation steps (fix SQL injection)
   Timeline: Author must fix, then re-check
   Merge: Cannot proceed until security issue fixed
 
 Scenario 3: TEST COVERAGE RED
-  - Code review: ✅ Approved
-  - Security: ✅ 0 issues
-  - Test coverage: ❌ 72% (<80%)
-  - Docs: ✅ Updated
-  - Policy: ✅ Compliant
+  - Code review:  Approved
+  - Security:  0 issues
+  - Test coverage:  72% (<80%)
+  - Docs:  Updated
+  - Policy:  Compliant
 
-  RESULT: ❌ BLOCKED FOR MERGE
+  RESULT:  BLOCKED FOR MERGE
   Action: Post coverage report with specific gaps
   Timeline: Author must add tests to reach 80%
   Merge: Cannot proceed until coverage meets threshold
 
 Scenario 4: CODE REVIEW PENDING
   - Code review: ⏳ Pending (no approvals yet)
-  - Security: ✅ 0 issues
-  - Test coverage: ✅ 85%
-  - Docs: ✅ Updated
-  - Policy: ✅ Compliant
+  - Security:  0 issues
+  - Test coverage:  85%
+  - Docs:  Updated
+  - Policy:  Compliant
 
   RESULT: ⏳ WAITING FOR CODE REVIEW
   Action: Post request for reviewer
@@ -391,25 +393,25 @@ Scenario 4: CODE REVIEW PENDING
   Merge: Cannot proceed until code review approved
 
 Scenario 5: POLICY VIOLATION
-  - Code review: ✅ Approved
-  - Security: ✅ 0 issues
-  - Test coverage: ✅ 85%
-  - Docs: ✅ Updated
-  - Policy: ❌ Deferral language found
+  - Code review:  Approved
+  - Security:  0 issues
+  - Test coverage:  85%
+  - Docs:  Updated
+  - Policy:  Deferral language found
 
-  RESULT: ❌ BLOCKED FOR MERGE
+  RESULT:  BLOCKED FOR MERGE
   Action: Post policy violation details + fix instructions
   Timeline: Author fixes deferral language in PR description
   Merge: Cannot proceed until policy compliant
 
 Scenario 6: MULTIPLE GATES RED
-  - Code review: ❌ 1 comment unresolved
-  - Security: ❌ MEDIUM issue detected
-  - Test coverage: ❌ 75% (<80%)
+  - Code review:  1 comment unresolved
+  - Security:  MEDIUM issue detected
+  - Test coverage:  75% (<80%)
   - Docs: ⚠️ Update recommended
-  - Policy: ✅ Compliant
+  - Policy:  Compliant
 
-  RESULT: ❌ BLOCKED FOR MERGE (critical issues)
+  RESULT:  BLOCKED FOR MERGE (critical issues)
            ⚠️ WARNINGS (non-blocking)
   Action: Post summary of all failures with priorities
   Timeline: Fix critical issues first (security, coverage)
@@ -586,14 +588,14 @@ SLA: 24 hours, relaxed timeline OK
 ║                   MERGE READINESS CHECK                     ║
 ╚════════════════════════════════════════════════════════════╝
 
-  Code Review:        ✅ Approved (1/1)
-  Security Scan:      ✅ 0 HIGH/CRITICAL issues
-  Test Coverage:      ✅ 82% (target: 80%)
-  Documentation:      ✅ Updated
-  Policy Compliance:  ✅ Deferral language check passed
-  Merge Conflicts:    ✅ None
+  Code Review:         Approved (1/1)
+  Security Scan:       0 HIGH/CRITICAL issues
+  Test Coverage:       82% (target: 80%)
+  Documentation:       Updated
+  Policy Compliance:   Deferral language check passed
+  Merge Conflicts:     None
 
-STATUS: ✅ APPROVED FOR MERGE
+STATUS:  APPROVED FOR MERGE
 Approved by: @reviewer1 (@code-owner)
 Ready to merge after: 2026-02-22 15:30 UTC
 
@@ -611,11 +613,11 @@ Actions available:
 ║                   MERGE BLOCKED - ISSUES FOUND              ║
 ╚════════════════════════════════════════════════════════════╝
 
-❌ Code Review
+ Code Review
   - 1 unresolved comment from @reviewer1
   - Action: Resolve comment or approve dismissal
 
-❌ Test Coverage
+ Test Coverage
   - Coverage: 72% (target: 80%)
   - Gap: 8% (245 lines, 42 untested)
   - Files below threshold:
@@ -682,4 +684,4 @@ Final Approval:
   ☐ Ready for production
 ```
 
-✅ **PR APPROVAL WORKFLOW: COMPLETE & OPERATIONAL**
+ **PR APPROVAL WORKFLOW: COMPLETE & OPERATIONAL**

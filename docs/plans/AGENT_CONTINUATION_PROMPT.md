@@ -1,4 +1,6 @@
 # Agent Continuation Prompt: S-14, S-15, S-02 Implementation
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **⚠️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 
@@ -8,42 +10,42 @@
 
 ---
 
-## What's Done ✅
+## What's Done 
 
 ### S-17: Deterministic Docs Pipeline (COMPLETE)
 **Commits**: 3a59994, ef0eed5, 5c8f464, 90adcff
 
 **Infrastructure**:
-- ✅ PR template with Agent-run checkboxes (`.github/pull_request_template.md`)
-- ✅ Workflows: `docs.yml`, `space-audit.yml`, `draft-audit-pr.yml`
-- ✅ Scripts: `docs_build.sh`, `probe_env.py`, `canonicalize_artifacts.py`, `run_selected_jobs.sh`
-- ✅ Baseline management: `capture_baseline.sh`, `rotate_baselines.py`
-- ✅ Nox session: `docs_build`
-- ✅ Makefile targets: `docs-build`, `capture-baseline`, `rotate-baselines`
-- ✅ Documentation: API docs guide, baseline policy, Agent validation
+-  PR template with Agent-run checkboxes (`.github/pull_request_template.md`)
+-  Workflows: `docs.yml`, `space-audit.yml`, `draft-audit-pr.yml`
+-  Scripts: `docs_build.sh`, `probe_env.py`, `canonicalize_artifacts.py`, `run_selected_jobs.sh`
+-  Baseline management: `capture_baseline.sh`, `rotate_baselines.py`
+-  Nox session: `docs_build`
+-  Makefile targets: `docs-build`, `capture-baseline`, `rotate-baselines`
+-  Documentation: API docs guide, baseline policy, Agent validation
 
 ### S-vector: Vector Store Stubs (COMPLETE)
 **Commit**: 90adcff
 
 **Modules**:
-- ✅ `codex_addons/vector_stores/__init__.py`
-- ✅ `codex_addons/vector_stores/pgvector_stub.py`
-- ✅ `codex_addons/vector_stores/weaviate_stub.py`
-- ✅ `tests/test_vector_store_stub.py`
-- ✅ `scripts/space_traversal/detectors/vector_store_detector.py`
-- ✅ `docs/modeling/LoRA.md`
+-  `codex_addons/vector_stores/__init__.py`
+-  `codex_addons/vector_stores/pgvector_stub.py`
+-  `codex_addons/vector_stores/weaviate_stub.py`
+-  `tests/test_vector_store_stub.py`
+-  `scripts/space_traversal/detectors/vector_store_detector.py`
+-  `docs/modeling/LoRA.md`
 
 ---
 
-## What's Next 🚀
+## What's Next 
 
 ### S-14: Distributed Training (CPU-safe guards)
 **Status**: Module exists (`training/accelerate_init_guard.py`), needs tests + docs
 
 **Tasks Remaining**:
-1. ✅ Module: `training/accelerate_init_guard.py` (EXISTS - validate it matches spec)
+1.  Module: `training/accelerate_init_guard.py` (EXISTS - validate it matches spec)
 2. ⏳ Test: `tests/integration/test_distributed_init.py` (EXISTS - validate alignment)
-3. ✅ Doc: `docs/training/distributed_troubleshooting.md` (EXISTS - validate content)
+3.  Doc: `docs/training/distributed_troubleshooting.md` (EXISTS - validate content)
 
 **Acceptance**:
 - CPU path never raises in default/CI environments
@@ -67,9 +69,9 @@ pytest -q tests/integration/test_distributed_init.py
 
 **Tasks Remaining**:
 1. ⏳ Module: `codex_addons/registry_names.py` (CREATE - canonical names + aliases)
-2. ✅ Module: `codex_addons/registry.py` (EXISTS - validate deterministic list())
+2.  Module: `codex_addons/registry.py` (EXISTS - validate deterministic list())
 3. ⏳ Test: `tests/test_factory_registry.py` (EXISTS - validate alignment)
-4. ✅ Doc: `docs/plugins/Plugin_API_Broader.md` (EXISTS - validate content)
+4.  Doc: `docs/plugins/Plugin_API_Broader.md` (EXISTS - validate content)
 
 **Spec for `registry_names.py`**:
 ```python
@@ -110,7 +112,7 @@ pytest -q tests/test_factory_registry.py
 1. ⏳ Module: `codex_ml/metrics/_optional_bleu_rouge.py` (CREATE)
 2. ⏳ Test: `tests/metrics/test_bleu_rouge.py` (CREATE)
 3. ⏳ Doc: `docs/metrics.md` (UPDATE or CREATE)
-4. ✅ Requirements: `requirements-optional.txt` (EXISTS - verify nltk, rouge-score)
+4.  Requirements: `requirements-optional.txt` (EXISTS - verify nltk, rouge-score)
 
 **Spec for `_optional_bleu_rouge.py`**:
 ```python
@@ -169,9 +171,9 @@ pytest -q tests/metrics/test_bleu_rouge.py
 **Status**: Module + test exist, need validation
 
 **Tasks Remaining**:
-1. ✅ Module: `models/lora/_test_utils.py` (EXISTS - validate)
-2. ✅ Test: `tests/modeling/test_lora_minimal.py` (EXISTS - validate)
-3. ✅ Doc: `docs/modeling/LoRA.md` (CREATED in commit 90adcff)
+1.  Module: `models/lora/_test_utils.py` (EXISTS - validate)
+2.  Test: `tests/modeling/test_lora_minimal.py` (EXISTS - validate)
+3.  Doc: `docs/modeling/LoRA.md` (CREATED in commit 90adcff)
 
 **Acceptance**:
 - Tests skip by default (require `RUN_LORA_TESTS=1`)
@@ -215,11 +217,11 @@ RUN_LORA_TESTS=1 pytest -q tests/modeling/test_lora_minimal.py
 ## Success Criteria
 
 ### All S-IDs Complete When:
-- ✅ All Python files compile (`python -m py_compile <file>`)
-- ✅ All tests pass or skip appropriately (env gates working)
-- ✅ Documentation complete for each S-ID
-- ✅ No hard dependencies on optional packages (graceful degradation)
-- ✅ Determinism verified (registry list order, artifact SHAs)
+-  All Python files compile (`python -m py_compile <file>`)
+-  All tests pass or skip appropriately (env gates working)
+-  Documentation complete for each S-ID
+-  No hard dependencies on optional packages (graceful degradation)
+-  Determinism verified (registry list order, artifact SHAs)
 
 ### Final Commit Message Template:
 ```text
@@ -240,36 +242,36 @@ Complete S-14, S-15, S-02 follow-on modules
 ```text
 .
 ├── codex_addons/
-│   ├── registry.py              ✅ Exists (validate)
+│   ├── registry.py               Exists (validate)
 │   ├── registry_names.py        ⏳ CREATE (S-15)
-│   └── vector_stores/           ✅ Complete
+│   └── vector_stores/            Complete
 │       ├── __init__.py
 │       ├── pgvector_stub.py
 │       └── weaviate_stub.py
 ├── codex_ml/metrics/
 │   └── _optional_bleu_rouge.py  ⏳ CREATE (S-02)
 ├── training/
-│   └── accelerate_init_guard.py ✅ Exists (validate)
+│   └── accelerate_init_guard.py  Exists (validate)
 ├── models/lora/
-│   └── _test_utils.py           ✅ Exists (validate)
+│   └── _test_utils.py            Exists (validate)
 ├── tests/
 │   ├── integration/
-│   │   └── test_distributed_init.py    ✅ Exists (validate)
+│   │   └── test_distributed_init.py     Exists (validate)
 │   ├── metrics/
 │   │   └── test_bleu_rouge.py          ⏳ CREATE (S-02)
 │   ├── modeling/
-│   │   └── test_lora_minimal.py        ✅ Exists (validate)
-│   ├── test_factory_registry.py        ✅ Exists (validate)
-│   └── test_vector_store_stub.py       ✅ Complete
+│   │   └── test_lora_minimal.py         Exists (validate)
+│   ├── test_factory_registry.py         Exists (validate)
+│   └── test_vector_store_stub.py        Complete
 ├── docs/
 │   ├── training/
-│   │   └── distributed_troubleshooting.md  ✅ Exists (validate)
+│   │   └── distributed_troubleshooting.md   Exists (validate)
 │   ├── plugins/
-│   │   └── Plugin_API_Broader.md           ✅ Exists (validate)
+│   │   └── Plugin_API_Broader.md            Exists (validate)
 │   ├── modeling/
-│   │   └── LoRA.md                         ✅ Complete
+│   │   └── LoRA.md                          Complete
 │   └── metrics.md                          ⏳ CREATE/UPDATE (S-02)
-└── requirements-optional.txt               ✅ Exists (verify nltk, rouge-score)
+└── requirements-optional.txt                Exists (verify nltk, rouge-score)
 ```text
 
 ---
@@ -306,4 +308,4 @@ git add .
 git commit -m "Complete S-14, S-15, S-02 follow-on modules"
 ```text
 
-**Ready to proceed!** 🚀
+**Ready to proceed!** 

@@ -1,4 +1,6 @@
 # codex-ml Installation Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 Welcome to codex-ml v0.1.0! This guide covers installation across three distinct deployment profiles.
 
@@ -11,7 +13,7 @@ Welcome to codex-ml v0.1.0! This guide covers installation across three distinct
 
 This multi-namespace design allows codex-ml to leverage shared infrastructure from aries-serpent-core without creating circular dependencies. Entry points may reference any of these namespaces. For example, the `codex-import-ndjson` command uses `aries_serpent_core.logging.import_ndjson` for log import functionality.
 
-## Quick Start
+## Quickstart
 
 ### Core Profile (Lightweight, Offline-First)
 ```bash

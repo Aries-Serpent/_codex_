@@ -1,12 +1,14 @@
 # Continuous Learning Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## Overview
 
 The Continuous Learning Pipeline enables automatic model retraining when drift is detected, maintaining model performance without manual intervention.
 
-## Quick Start
+## Quickstart
 
 ```python
 from codex_ml.training.continuous_learning import ContinuousLearningPipeline
@@ -112,10 +114,10 @@ comparison = pipeline.compare_models(
 )
 
 if comparison["is_better"]:
-    print(f"✅ New model improved by {comparison['improvement']:.3f}")
+    print(f" New model improved by {comparison['improvement']:.3f}")
     pipeline.deploy_model(new_version)
 else:
-    print(f"❌ New model worse by {-comparison['improvement']:.3f}")
+    print(f" New model worse by {-comparison['improvement']:.3f}")
     pipeline.rollback()
 ```
 
@@ -233,13 +235,13 @@ def retrain_and_deploy(new_data, drift_score):
 
     # 7. Deploy if better
     if comparison["is_better"]:
-        print(f"✅ Deploying {new_version.version}")
+        print(f" Deploying {new_version.version}")
         pipeline.deploy_model(new_version)
 
         # Update baseline statistics
         update_baseline_statistics(eval_metrics)
     else:
-        print(f"❌ New model not better, keeping current")
+        print(f" New model not better, keeping current")
 ```
 
 ## Configuration
@@ -583,13 +585,13 @@ def update_metrics():
 ## Summary
 
 **Key Points:**
-- ✅ Monitor drift continuously
-- ✅ Auto-retrain when thresholds exceeded
-- ✅ Compare new models with baselines
-- ✅ Gradual rollout for safety
-- ✅ Automated rollback on degradation
-- ✅ Track all experiments
-- ✅ Integrate with A/B testing
+-  Monitor drift continuously
+-  Auto-retrain when thresholds exceeded
+-  Compare new models with baselines
+-  Gradual rollout for safety
+-  Automated rollback on degradation
+-  Track all experiments
+-  Integrate with A/B testing
 
 **Next Steps:**
 - See [A/B Testing Guide](TESTING_GUIDE.md) for testing strategies

@@ -1,6 +1,8 @@
 # Offline Testing Matrix
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 This matrix documents which test targets run in a completely offline developer
 environment and which suites require optional dependencies or GPU support.

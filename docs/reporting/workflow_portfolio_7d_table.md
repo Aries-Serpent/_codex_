@@ -1,6 +1,8 @@
 # Workflow Portfolio 7-Day Table
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 Source: `docs/reporting/workflow_portfolio_7d_table.csv`
 
@@ -62,7 +64,7 @@ Source: `docs/reporting/workflow_portfolio_7d_table.csv`
 | 📈 OTel Coherence Snapshot | .github/workflows/coherence-snapshot.yml | active | False | 0 |  | keep-enabled-scheduled | unobserved-7d | low |
 | PR Comment Review Gate | .github/workflows/comment-review-gate.yml | active | True | 6 | 2026-05-15T16:03:08Z | keep-enabled-wec-critical | observed-failures | low |
 | Consolidated PR Status | .github/workflows/consolidated-pr-status.yml | active | False | 0 |  | keep-enabled-orchestration | unobserved-7d | low |
-| 🤖 Agent Check-In — Q&A Bridge (Discussion #3756) | .github/workflows/copilot-agent-checkin.yml | active | True | 5 | 2026-05-15T16:03:08Z | keep-enabled-wec-critical | observed-green | medium |
+|  Agent Check-In — Q&A Bridge (Discussion #3756) | .github/workflows/copilot-agent-checkin.yml | active | True | 5 | 2026-05-15T16:03:08Z | keep-enabled-wec-critical | observed-green | medium |
 | 🔄 Auto-Post @copilot review After Agent Session | .github/workflows/copilot-agent-session-done.yml | active | True | 10 | 2026-05-15T07:27:34Z | keep-enabled-active | approval-gated-or-mixed | high |
 | Agent Vars Bootstrap | .github/workflows/copilot-agent-vars-bootstrap.yml | active | True | 5 | 2026-05-15T16:55:44Z | keep-enabled-active | approval-gated-or-mixed | medium |
 | Copilot Automation Suite | .github/workflows/copilot-automation.yml | disabled_stub | False | 0 |  | already-disabled | disabled | unknown |
@@ -70,10 +72,10 @@ Source: `docs/reporting/workflow_portfolio_7d_table.csv`
 | Copilot Issue Triage | .github/workflows/copilot-issue-triage.yml | active | True | 1 | 2026-05-15T03:30:38Z | keep-enabled-active | observed-failures | low |
 | Copilot Iterative Self-Healing Auto-Poster | .github/workflows/copilot-iterative-self-healing.yml | disabled_manually | True | 55 | 2026-05-15T02:16:56Z | already-disabled | disabled | medium |
 | Copilot PR Session Injector | .github/workflows/copilot-pr-session-injector.yml | active | False | 0 |  | review-manually-high-impact | unobserved-7d | medium |
-| 🤖 Copilot Review Responder | .github/workflows/copilot-review-responder.yml | active | True | 5 | 2026-05-15T16:03:08Z | keep-enabled-active | observed-green | medium |
+|  Copilot Review Responder | .github/workflows/copilot-review-responder.yml | active | True | 5 | 2026-05-15T16:03:08Z | keep-enabled-active | observed-green | medium |
 | 🔗 Copilot Session Chain | .github/workflows/copilot-session-chain.yml | active | False | 0 |  | review-manually-high-impact | unobserved-7d | high |
 | Copilot Agent Environment Setup | .github/workflows/copilot-setup-steps.yml | active | False | 0 |  | review-manually-high-impact | unobserved-7d | medium |
-| 💰 Cost Gate | .github/workflows/cost-gate.yml | active | False | 0 |  | keep-enabled-wec-critical | unobserved-7d | low |
+|  Cost Gate | .github/workflows/cost-gate.yml | active | False | 0 |  | keep-enabled-wec-critical | unobserved-7d | low |
 | Coverage with Timeout Guards | .github/workflows/coverage-with-timeout.yml | active | True | 1 | 2026-05-15T04:04:54Z | keep-enabled-active | observed-green | low |
 | 🔀 Create Sub-PR: Session Branch → 0D_base_ | .github/workflows/create-sub-pr-to-0D_base_.yml | active | False | 0 |  | archive-review-candidate | unobserved-7d | low |
 | D_CAPABLE Agent Promotion Gate | .github/workflows/d-capable-promotion-gate.yml | active | False | 0 |  | keep-enabled-scheduled | unobserved-7d | medium |
@@ -86,7 +88,7 @@ Source: `docs/reporting/workflow_portfolio_7d_table.csv`
 | Duplicate Detection on PR | .github/workflows/detect-duplicates.yml | active | False | 0 |  | archive-review-candidate | unobserved-7d | low |
 | 🧹 Discussion Cleanup — Deduplicate Comments | .github/workflows/discussion-cleanup.yml | active | True | 1 | 2026-05-15T07:21:17Z | keep-enabled-active | observed-green | low |
 | 🌉 Discussion → PR Response Bridge (RC-3) | .github/workflows/discussion-response-bridge.yml | active | True | 4 | 2026-05-15T04:49:39Z | keep-enabled-active | observed-green | low |
-| 📚 Documentation Freshness Check | .github/workflows/doc-freshness-check.yml | active | False | 0 |  | keep-enabled-scheduled | unobserved-7d | low |
+|  Documentation Freshness Check | .github/workflows/doc-freshness-check.yml | active | False | 0 |  | keep-enabled-scheduled | unobserved-7d | low |
 | 🔄 Doc Refresh Gate (AAIS) | .github/workflows/doc-refresh-gate.yml | active | False | 0 |  | archive-review-candidate | unobserved-7d | low |
 | CI - Build, Smoke Test, and Push Docker (GHCR) — OWNER APPROVED (NO-MARKETPLACE) | .github/workflows/docker-build-push.yml | disabled_manually | False | 0 |  | already-disabled | disabled | low |
 | Docs Health (Post-Merge) | .github/workflows/docs-health.yml | active | False | 0 |  | review-manually-high-impact | unobserved-7d | medium |
@@ -118,10 +120,10 @@ Source: `docs/reporting/workflow_portfolio_7d_table.csv`
 | Pages Pre-Merge Validation | .github/workflows/pages-pre-merge-validation.yml | active | False | 0 |  | review-manually-high-impact | unobserved-7d | medium |
 | Pages Scheduled Validation | .github/workflows/pages-scheduled-validation.yml | active | True | 1 | 2026-05-15T00:34:53Z | keep-enabled-active | observed-green | low |
 | 📋 Post Accountability Report to Discussion | .github/workflows/post-accountability-to-discussion.yml | active | False | 0 |  | active-keep | unobserved-7d | low |
-| 🧠 Post CI Status to Discussions | .github/workflows/post-ci-status-to-discussion.yml | active | False | 0 |  | active-keep | unobserved-7d | low |
+|  Post CI Status to Discussions | .github/workflows/post-ci-status-to-discussion.yml | active | False | 0 |  | active-keep | unobserved-7d | low |
 | Post-Merge Validation (Optimized) | .github/workflows/post-merge-validation-optimized.yml | disabled_manually | False | 0 |  | already-disabled | disabled | medium |
 | PR Checks (Isolated Cache) | .github/workflows/pr-checks.yml | disabled_manually | False | 0 |  | already-disabled | disabled | low |
-| 💰 PR Cost Check | .github/workflows/pr-cost-check.yml | active | True | 6 | 2026-05-15T04:44:06Z | keep-enabled-active | observed-green | low |
+|  PR Cost Check | .github/workflows/pr-cost-check.yml | active | True | 6 | 2026-05-15T04:44:06Z | keep-enabled-active | observed-green | low |
 | Generate PR Follow-Up Prompt | .github/workflows/pr-followup-generator.yml | active | True | 6 | 2026-05-15T04:44:06Z | keep-enabled-active | observed-green | medium |
 | PR Size Analyzer | .github/workflows/pr-size-analyzer.yml | active | True | 1 | 2026-05-15T04:04:54Z | keep-enabled-active | observed-green | low |
 | Pre-Flight CI Validation | .github/workflows/pre-flight-validation.yml | active | False | 0 |  | active-keep | unobserved-7d | low |
@@ -129,7 +131,7 @@ Source: `docs/reporting/workflow_portfolio_7d_table.csv`
 | 🔍 Proactive CI Monitor | .github/workflows/proactive-ci-monitor.yml | active | True | 19 | 2026-05-15T17:59:39Z | keep-enabled-active | observed-failures | low |
 | Process Variable Intents | .github/workflows/process-variable-intents.yml | active | False | 0 |  | review-manually-high-impact | unobserved-7d | medium |
 | Progressive Validation Suite | .github/workflows/progressive-validation.yml | active | True | 1 | 2026-05-15T04:04:54Z | keep-enabled-active | observed-green | low |
-| 🚀 Promote Integration Branch (0D_base_ → main) | .github/workflows/promote-integration-branch.yml | active | False | 0 |  | archive-review-candidate | unobserved-7d | low |
+|  Promote Integration Branch (0D_base_ → main) | .github/workflows/promote-integration-branch.yml | active | False | 0 |  | archive-review-candidate | unobserved-7d | low |
 | Publish Status Dashboard Release | .github/workflows/publish_dashboard_release.yml | disabled_manually | False | 0 |  | already-disabled | disabled | low |
 | Publish Python Package to PyPI | .github/workflows/pypi-publish.yml | active | False | 0 |  | archive-review-candidate | unobserved-7d | low |
 | QA Walkthrough Agent | .github/workflows/qa-walkthrough.yml | active | True | 1 | 2026-05-15T04:04:54Z | keep-enabled-active | observed-green | low |
@@ -150,7 +152,7 @@ Source: `docs/reporting/workflow_portfolio_7d_table.csv`
 | Scan and Report GitHub Secrets and Variables | .github/workflows/scan-secrets-variables.yml | active | True | 2 | 2026-05-15T04:04:54Z | keep-enabled-active | observed-green | low |
 | Scheduled Archival | .github/workflows/scheduled-archival.yml | disabled_manually | False | 0 |  | already-disabled | disabled | low |
 | Scheduled Dependency Audit & SBOM | .github/workflows/scheduled-dependency-audit.yml | disabled_manually | False | 0 |  | already-disabled | disabled | low |
-| 🔐 Secrets Baseline Enforcer | .github/workflows/secrets-baseline-enforcer.yml | active | True | 5 | 2026-05-15T16:55:44Z | keep-enabled-active | approval-gated-or-mixed | medium |
+|  Secrets Baseline Enforcer | .github/workflows/secrets-baseline-enforcer.yml | active | True | 5 | 2026-05-15T16:55:44Z | keep-enabled-active | approval-gated-or-mixed | medium |
 | Security Alert Notification | .github/workflows/security-alert-notification.yml | active | True | 1 | 2026-05-15T09:53:39Z | keep-enabled-active | observed-green | low |
 | Security Scanning Suite | .github/workflows/security-scanning-suite.yml | active | True | 6 | 2026-05-15T16:55:44Z | keep-enabled-wec-critical | approval-gated-or-mixed | low |
 | Security Scanning | .github/workflows/security-scanning.yml | disabled_manually | False | 0 |  | already-disabled | disabled | unknown |

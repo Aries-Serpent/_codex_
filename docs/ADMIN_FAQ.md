@@ -1,6 +1,8 @@
 # _codex_ Admin FAQ
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 > Frequently Asked Questions for Repository Administrators
 
@@ -144,11 +146,11 @@
 ### Q: What security features should I enable?
 
 **A:** Enable all of these:
-- ✅ Dependency graph
-- ✅ Dependabot alerts
-- ✅ Dependabot security updates
-- ✅ Secret scanning
-- ✅ Push protection
+-  Dependency graph
+-  Dependabot alerts
+-  Dependabot security updates
+-  Secret scanning
+-  Push protection
 
 ### Q: Why is push protection blocking my commits?
 
@@ -231,4 +233,4 @@ Issue: Secrets not working
 
 ---
 
-*Last updated: 2026-02-10*
+*Last updated: 2026-07-11

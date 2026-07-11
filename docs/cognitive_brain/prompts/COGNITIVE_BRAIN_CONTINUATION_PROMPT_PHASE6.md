@@ -1,19 +1,21 @@
 # Cognitive Brain Continuation Prompt — Phase 6 Production Graduation
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Version:** 6.2.0
 > **Created:** 2026-02-19 (Session 39)
-> **Updated:** 2026-02-20 (Session 43) — PR #3336 CI+CodeQL resolution complete
+> **Updated: 2026-07-11
 > **Status:** READY FOR EXECUTION (PR #3336 fixes committed, pending CI green)
 > **Blocking PR**: [#3336](https://github.com/Aries-Serpent/_codex_/pull/3336) — CI fixes pending
 > **Full Planset**: `.codex/plans/PHASE6_CONTINUATION_PLANSET.md`
 > **Consolidation Map**: `.codex/PRODUCTION_READINESS_CONSOLIDATION_MAP.md` 🆕
-> **Previous Phase:** Phase 5 + CI Remediation (Sessions 35–43) — ✅ COMPLETE
+> **Previous Phase:** Phase 5 + CI Remediation (Sessions 35–43) —  COMPLETE
 > **Branch:** `copilot/sub-pr-3336`
 > **PR:** #3336
 
 ---
 
-## 🎯 Session Start Checklist (MUST DO FIRST)
+##  Session Start Checklist (MUST DO FIRST)
 
 1. **Verify CI green** — check if Resilient Validation Suite (run 22203971518 on commit 756c152,
    then the follow-up commit with evaluator.py fix) passed:
@@ -26,24 +28,24 @@
 
 ---
 
-## 📊 Current State (as of 2026-02-19 Session 39)
+##  Current State (as of 2026-02-19 Session 39)
 
 | Metric | Value | Target | Status |
 |--------|-------|--------|--------|
-| Accuracy | 100% | ≥84% | ✅ |
-| Coherence | 0.814 | ≥0.650 | ✅ |
-| k₁ | 0.332 | ≤0.35 | ✅ |
-| Tests | 346 | All pass | ✅ |
-| Scalability (1000×5) | 96.8% | ≥95% | ✅ |
-| Noise (10% gate) | 91.4% | ≥90% | ✅ |
-| CodeQL alerts | 0 | 0 | ✅ |
-| Ruff errors | 0 | 0 | ✅ |
-| CI false positives | 0 blocking | 0 blocking | ✅ |
-| Agent files k₁=0.332 | All updated | All | ✅ |
+| Accuracy | 100% | ≥84% |  |
+| Coherence | 0.814 | ≥0.650 |  |
+| k₁ | 0.332 | ≤0.35 |  |
+| Tests | 346 | All pass |  |
+| Scalability (1000×5) | 96.8% | ≥95% |  |
+| Noise (10% gate) | 91.4% | ≥90% |  |
+| CodeQL alerts | 0 | 0 |  |
+| Ruff errors | 0 | 0 |  |
+| CI false positives | 0 blocking | 0 blocking |  |
+| Agent files k₁=0.332 | All updated | All |  |
 
 ---
 
-## 🔴 Priority 1 — Immediate
+##  Priority 1 — Immediate
 
 ### P1.1: Verify evaluator.py fix resolves test_run_eval_cli
 
@@ -104,7 +106,7 @@ def _enforce_query_budget(self) -> bool:
 
 ## 🟡 Priority 2 — Extended Noise Validation (1000 scenarios)
 
-**Current**: 91.4% accuracy at 10% gate error on 200 scenarios ✅
+**Current**: 91.4% accuracy at 10% gate error on 200 scenarios 
 **Target**: Verify ≥90% at 10% gate error on 1000 scenarios
 
 ```bash
@@ -115,7 +117,7 @@ PYTHONPATH=src python src/cognitive_brain/experiments/exp1b_revalidation.py \
 
 ---
 
-## 🟢 Priority 3 — Enhancement
+##  Priority 3 — Enhancement
 
 ### Bayesian CPD EM Update
 
@@ -153,12 +155,12 @@ def test_compliance_chain_prompting_workflow():
 ```
 ensure_pinned_kwargs priority:
 1. Caller-supplied revision/commit_id in kwargs  ← evaluator.py WAS here (wrong)
-2. KNOWN_MODEL_REVISIONS (curated production pins)  ← evaluator.py NOW hits here ✅
+2. KNOWN_MODEL_REVISIONS (curated production pins)  ← evaluator.py NOW hits here 
 3. Environment variables (HF_REVISION, etc.) — only for unknown models
 4. ValueError — remote models must have a pin
 ```
 
-### Graceful degradation (confirmed ✅)
+### Graceful degradation (confirmed )
 ```
 load_from_pretrained():
   1. Try local cache (fast, offline) → local_files_only=True
@@ -180,7 +182,7 @@ load_from_pretrained():
 
 ---
 
-## ✅ Verification Commands
+##  Verification Commands
 
 ```bash
 # 1. Quantum compliance suite (346 tests)
@@ -193,7 +195,7 @@ from codex_ml.utils.hf_pinning import ensure_pinned_kwargs
 rev, _ = ensure_pinned_kwargs('sshleifer/tiny-gpt2', {})
 print(f'tiny-gpt2 revision: {rev}')
 assert rev != 'abcdef0', 'abcdef0 is a fake stub hash!'
-print('✅ KNOWN_MODEL_REVISIONS working correctly')
+print(' KNOWN_MODEL_REVISIONS working correctly')
 "
 
 # 3. Ruff lint

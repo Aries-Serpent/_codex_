@@ -1,4 +1,6 @@
 # DeepResearch: GitHub Discussions — Codebase Integration, Hardening, and CLI Design
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Generated:** 2026-03-25 | **Author:** Copilot Coding Agent (S192) | **PR:** #3741
 > **Roles:** [Primary: Research Integrator], [Secondary: CI Engineer] ⚡ Energy: 9
@@ -32,24 +34,24 @@ subcommands that close the remaining gaps:
 
 | Method | Status | Purpose |
 |---|---|---|
-| `create_discussion()` | ✅ Pre-existing | Create a new Discussion (GraphQL `createDiscussion`) |
-| `post_session_summary_discussion()` | ✅ Pre-existing | Wrapper: S-number summary → "session-summaries" category |
-| `add_discussion_comment()` | ✅ **New S192** | Add a comment to an existing Discussion |
-| `upsert_discussion_comment()` | ✅ **New S192** | Idempotent add-or-update by HTML marker |
-| `post_ci_pattern_summary()` | ✅ **New S192** | Upsert CI pattern knowledge-graph summary |
-| `post_continuation_chain()` | ✅ **New S192** | Always-new comment: tokenized chain prompt | <!-- pragma: allowlist secret -->
-| `_resolve_discussion_node_id()` | ✅ **New S192** | GraphQL: discussion number → node ID |
-| `_find_discussion_comment()` | ✅ **New S192** | GraphQL: search 50 most recent comments for marker |
-| `_update_discussion_comment()` | ✅ **New S192** | GraphQL `updateDiscussionComment` |
-| `_resolve_discussion_ids()` | ✅ Pre-existing | repo + category → node IDs for `createDiscussion` |
-| `retrieve_cb_patterns()` | ✅ Pre-existing | Query CB SQLite → markdown table for context injection |
+| `create_discussion()` |  Pre-existing | Create a new Discussion (GraphQL `createDiscussion`) |
+| `post_session_summary_discussion()` |  Pre-existing | Wrapper: S-number summary → "session-summaries" category |
+| `add_discussion_comment()` |  **New S192** | Add a comment to an existing Discussion |
+| `upsert_discussion_comment()` |  **New S192** | Idempotent add-or-update by HTML marker |
+| `post_ci_pattern_summary()` |  **New S192** | Upsert CI pattern knowledge-graph summary |
+| `post_continuation_chain()` |  **New S192** | Always-new comment: tokenized chain prompt | <!-- pragma: allowlist secret -->
+| `_resolve_discussion_node_id()` |  **New S192** | GraphQL: discussion number → node ID |
+| `_find_discussion_comment()` |  **New S192** | GraphQL: search 50 most recent comments for marker |
+| `_update_discussion_comment()` |  **New S192** | GraphQL `updateDiscussionComment` |
+| `_resolve_discussion_ids()` |  Pre-existing | repo + category → node IDs for `createDiscussion` |
+| `retrieve_cb_patterns()` |  Pre-existing | Query CB SQLite → markdown table for context injection |
 
 ### 2.2 Workflows
 
 | Workflow | File | Status | Purpose |
 |---|---|---|---|
-| Post Accountability to Discussion | `post-accountability-to-discussion.yml` | ✅ Pre-existing | Upserts the latest accountability session entry into authoritative discussion #3673 with a branch/PR/session/turn key |
-| Post CI Status to Discussions | `post-ci-status-to-discussion.yml` | ✅ **New S192** | Posts continuation chain + CI pattern summary on push to `0D_base_`/`copilot/**` |
+| Post Accountability to Discussion | `post-accountability-to-discussion.yml` |  Pre-existing | Upserts the latest accountability session entry into authoritative discussion #3673 with a branch/PR/session/turn key |
+| Post CI Status to Discussions | `post-ci-status-to-discussion.yml` |  **New S192** | Posts continuation chain + CI pattern summary on push to `0D_base_`/`copilot/**` |
 
 ### 2.3 Discussion Threads in Use
 

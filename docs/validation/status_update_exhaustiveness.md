@@ -1,4 +1,7 @@
 # Validation Checklist: Mandated Status Update Template
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Updated: 2026-06-22
 
 Use this checklist to confirm that a `_codex_` status update conforms to the 2025-09-22 mandated format. The report may be generated manually or via automation, but it **must** follow the structure codified in `docs/status_update_prompt.md` and `AUDIT_PROMPT.md`.

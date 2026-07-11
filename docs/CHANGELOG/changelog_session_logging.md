@@ -1,8 +1,9 @@
 # Session Logging Change Log
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
-Date: 2025-08-18T12:21:47.014117+00:00
+Date: 2026-07-11
 
 ## Summary
 

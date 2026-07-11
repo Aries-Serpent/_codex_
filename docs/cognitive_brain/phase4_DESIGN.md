@@ -1,6 +1,8 @@
 # Phase 4 Design: Bayesian Networks, Fuzzy Logic & Active Learning
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 **Date**: 2026-02-18
 **Status**: PoC Complete — Integration Pending Feature Flags
@@ -15,9 +17,9 @@ each behind a feature flag defaulting to **false** to ensure zero production reg
 
 | Enhancement | Flag | Est. Benefit | Status |
 |-------------|------|-------------|--------|
-| Bayesian Networks | `CODEX_BAYESIAN_MODE` | 30% FP reduction | ✅ PoC |
-| Fuzzy Logic | `CODEX_FUZZY_MODE` | 12% FN reduction | ✅ PoC |
-| Active Learning | `CODEX_ACTIVE_LEARNING` | 30%+ ongoing FP reduction | ✅ Hook |
+| Bayesian Networks | `CODEX_BAYESIAN_MODE` | 30% FP reduction |  PoC |
+| Fuzzy Logic | `CODEX_FUZZY_MODE` | 12% FN reduction |  PoC |
+| Active Learning | `CODEX_ACTIVE_LEARNING` | 30%+ ongoing FP reduction |  Hook |
 
 ---
 
@@ -218,17 +220,17 @@ PYTHONPATH=src:$PYTHONPATH python src/cognitive_brain/experiments/exp1b_revalida
 | 1000 | 92.7%    | 0.39  | 0.759     | Cross-seed generalisation |
 
 **Interpretation:**
-- Primary benchmark (seed=42, 110 GT scenarios): **100% accuracy, k₁ ≤ 0.35** ✅
+- Primary benchmark (seed=42, 110 GT scenarios): **100% accuracy, k₁ ≤ 0.35** 
 - Cross-seed generalisation (200 scenarios): **91–94% accuracy** — above the 84% production minimum
 - k₁ increase at scale is expected: k₁ was optimised for the 110 GT scenario set; timing
   variance grows with larger scenario counts (more ThreadPoolExecutor fluctuation)
-- Coherence ≥ 0.650 maintained across all seeds ✅
-- No errors, no crashes, no memory leaks ✅
+- Coherence ≥ 0.650 maintained across all seeds 
+- No errors, no crashes, no memory leaks 
 
 **Success criteria update:**
-- Primary benchmark accuracy: 100% ✅
-- Cross-seed accuracy: ≥84% (production minimum) ✅
-- System stability: no errors across 5 seeds ✅
+- Primary benchmark accuracy: 100% 
+- Cross-seed accuracy: ≥84% (production minimum) 
+- System stability: no errors across 5 seeds 
 
 ---
 

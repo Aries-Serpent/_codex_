@@ -1,6 +1,8 @@
 # ChatGPT Continuation Protocol
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 This document defines the pagination and resume contract for handling long responses that exceed token budgets.
 
@@ -245,5 +247,5 @@ def format_resume_prompt(cursor, topic):
 ---
 
 **Version:** 1.0  
-**Last Updated:** 2025-11-02  
+**Last Updated: 2026-07-11
 **Maintainer:** @Aries-Serpent/docs-team

@@ -1,6 +1,8 @@
 # PR #4389 — Session Diagram
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 **PR:** [#4389](https://github.com/Aries-Serpent/_codex_/pull/4389)
 **Branch:** `copilot/add-full-path-to-init-tracing-docs`
@@ -32,7 +34,7 @@ graph TD
     F & G & H & I --> J[CHANGELOG + AGENT_ACCOUNTABILITY_REPORT<br/>docs/roadmap/PR4389_whats_next.md<br/>docs/sessions/PR4389_session_diagram.md]
     J --> K[Commit 1cb56a95<br/>Push + 17 workflows approved]
     K --> L{CI Results}
-    L -->|Green| M[🟢 Ready to Merge]
+    L -->|Green| M[ Ready to Merge]
     L -->|Failures| N[Next session: address failures<br/>load PR4389_whats_next.md for context]
 ```
 
@@ -68,14 +70,14 @@ graph LR
 
 | Category | Item | Status |
 |----------|------|--------|
-| Security | 6 CodeQL Python error-level alerts | ✅ Fixed |
-| Security | 4 CodeQL Actions code-injection alerts | ✅ Fixed |
-| Conflict | CODEX_MANIFEST.json merge conflict | ✅ Resolved |
-| Code quality | trainer_mod shadowing + bundle guard | ✅ Fixed |
-| Resilience | `rate_limit_handler.py` | ✅ Created |
-| Resilience | `push_conflict_resolver.py` | ✅ Created |
-| Resilience | Pattern 33 in auto_fix_common_issues | ✅ Added |
-| Resilience | `docs/ops/RATE_LIMIT_RECOVERY.md` | ✅ Created |
-| Tests | `tests/ci/test_rate_limit_handler.py` (18 tests) | ✅ Created |
-| Docs | `PR4389_whats_next.md` | ✅ Created |
-| Docs | `PR4389_session_diagram.md` | ✅ Created |
+| Security | 6 CodeQL Python error-level alerts |  Fixed |
+| Security | 4 CodeQL Actions code-injection alerts |  Fixed |
+| Conflict | CODEX_MANIFEST.json merge conflict |  Resolved |
+| Code quality | trainer_mod shadowing + bundle guard |  Fixed |
+| Resilience | `rate_limit_handler.py` |  Created |
+| Resilience | `push_conflict_resolver.py` |  Created |
+| Resilience | Pattern 33 in auto_fix_common_issues |  Added |
+| Resilience | `docs/ops/RATE_LIMIT_RECOVERY.md` |  Created |
+| Tests | `tests/ci/test_rate_limit_handler.py` (18 tests) |  Created |
+| Docs | `PR4389_whats_next.md` |  Created |
+| Docs | `PR4389_session_diagram.md` |  Created |

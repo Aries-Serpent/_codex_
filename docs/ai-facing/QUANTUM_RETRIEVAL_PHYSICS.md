@@ -1,6 +1,8 @@
 # Quantum Retrieval Physics Principles
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 **Document Version:** 1.0  
 **Author:** Copilot Agent  
@@ -443,4 +445,4 @@ retriever.quantum_scorer = scorer
 **Related Documents:**
 - [Quantum RAG Integration Guide](QUANTUM_RAG_docs/api/reference/INTEGRATION.md)
 - [RAG Pipelines API Documentation](../api/rag_pipelines.md)
-- [Advanced Physics Calculators](https://github.com/Aries-Serpent/_codex_/blob/main/agents/advanced_physics_calculators.py)
+- [Advanced Physics Calculators](../agents/advanced_physics_calculators.py)

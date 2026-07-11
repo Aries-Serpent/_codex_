@@ -1,6 +1,8 @@
 # Fast-Forward Safe Files + Auto-Approve Workflows Integration Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## Overview
 
@@ -10,9 +12,9 @@ This document explains how to use **fast-forward-safe-files.yml** and **auto-app
 
 GitHub Actions workflows only take effect **from the default branch (main)**. When you define a new workflow (like `post-phase-4-5-to-discussion.yml`) in a PR:
 
-- ❌ The `workflow_dispatch` button is **inactive** on the PR branch
-- ❌ Schedule triggers are **inert** until the file lands on main
-- ❌ The workflow can only run **after the PR is fully merged**
+-  The `workflow_dispatch` button is **inactive** on the PR branch
+-  Schedule triggers are **inert** until the file lands on main
+-  The workflow can only run **after the PR is fully merged**
 
 **Result**: Discussion posts are delayed until PR merge, slowing down communication.
 
@@ -150,15 +152,15 @@ To add more patterns, edit `.codex/fast_forward_allowlist.yaml` and commit it to
 
 ## Safety Guarantees
 
-✅ **Denied files are NEVER promoted** — Deployment/release/publish workflows are blocked
+ **Denied files are NEVER promoted** — Deployment/release/publish workflows are blocked
 
-✅ **Default mode is safe** — Creates a PR (never pushes directly to main)
+ **Default mode is safe** — Creates a PR (never pushes directly to main)
 
-✅ **All operations are logged** — Every fast-forward is recorded in `.codex/fast_forward_log.ndjson`
+ **All operations are logged** — Every fast-forward is recorded in `.codex/fast_forward_log.ndjson`
 
-✅ **Dry-run available** — Preview changes before applying: `--dry_run=true`
+ **Dry-run available** — Preview changes before applying: `--dry_run=true`
 
-✅ **Manual review** — Maintainers review the Fast-Forward PR before merge (unless auto-approve is configured)
+ **Manual review** — Maintainers review the Fast-Forward PR before merge (unless auto-approve is configured)
 
 ## Example: Real-World Scenario
 
@@ -196,7 +198,7 @@ gh pr edit 3860 --add-label "wec:auto-approve-once"
 
 # 8. Verify
 # Go to Actions → post-phase-4-5-to-discussion.yml
-# "Run workflow" button is now ACTIVE ✅
+# "Run workflow" button is now ACTIVE 
 ```
 
 ## Troubleshooting

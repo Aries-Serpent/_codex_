@@ -1,6 +1,8 @@
 # Method D — Post-Deployment Validation Checklist
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 Use this checklist after deploying the Method D patch to
 `.github/workflows/copilot-setup-steps.yml` and before merging to `main`.
@@ -27,9 +29,9 @@ Run locally before pushing the branch.
   ```bash
   bash scripts/ci/validate_setup_steps_yaml.sh .github/workflows/copilot-setup-steps.yml
   ```
-  Expected: all 5 checks ✅, including `Check 3/5: session preload uses block scalar`
+  Expected: all 5 checks , including `Check 3/5: session preload uses block scalar`
 
-- [ ] **Guard comment present** — confirm a line near `"🧠 Session Context Pre-load"` step contains:
+- [ ] **Guard comment present** — confirm a line near `" Session Context Pre-load"` step contains:
   `# ⚠️ DO NOT REFACTOR THIS STEP`
 
 - [ ] **`id: session_preload` present** in the step
@@ -53,7 +55,7 @@ Open the job log and confirm each marker appears:
 
 - [ ] `::group::Session Context Pre-load` — step started executing
 - [ ] `::endgroup::` — step completed normally
-- [ ] Step status: ✅ (green, or yellow with `continue-on-error`)
+- [ ] Step status:  (green, or yellow with `continue-on-error`)
 - [ ] No `YAML parse error` in the log
 - [ ] `Session Access Probe` step starts after preload — proves preload didn't hard-fail
 

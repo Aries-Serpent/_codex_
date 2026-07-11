@@ -1,6 +1,8 @@
 # Offline default catalogue
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 Codex ML now ships a small catalogue of offline-ready components spanning
 models, tokenizers, datasets, metrics, trainers, reward models and RL agents.

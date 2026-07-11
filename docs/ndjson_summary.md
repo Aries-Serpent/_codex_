@@ -1,6 +1,8 @@
 # NDJSON Summary CLI
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 Summarise rotated `metrics.ndjson` shards into CSV or JSONL reports.
 

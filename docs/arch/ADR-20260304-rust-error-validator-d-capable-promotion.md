@@ -1,4 +1,7 @@
 # ADR-20260304: Third D_CAPABLE Agent Promotion — `rust-error-validator`
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-22T23:18:00Z | Author: copilot-swe-agent[bot]
 > Status: Accepted
 > Related PRs: #3495
@@ -31,24 +34,24 @@ Both gaps have now been resolved:
 
 | Condition | Status |
 |-----------|--------|
-| C1: AGENT_REGISTRY.yaml schema-valid | ✅ |
-| C2: CODEX_MANIFEST.json valid | ✅ |
-| C3: SOFT policy count ≤ 2 (current: 2) | ✅ |
-| C4: agent-handoff-gate.yml deployed | ✅ |
-| C5: GROUNDED Tier-1 count ≥ 8 (current: 21) | ✅ |
+| C1: AGENT_REGISTRY.yaml schema-valid |  |
+| C2: CODEX_MANIFEST.json valid |  |
+| C3: SOFT policy count ≤ 2 (current: 2) |  |
+| C4: agent-handoff-gate.yml deployed |  |
+| C5: GROUNDED Tier-1 count ≥ 8 (current: 21) |  |
 
 ## 2. D_CAPABLE Criteria — Final Scorecard
 
 | # | Criterion | Requirement | Actual | Pass? |
 |---|-----------|-------------|--------|-------|
-| C1 | `enforcement_tier` | `GROUNDED` | GROUNDED | ✅ |
-| C2 | `handoff_protocol` | `structured` | structured | ✅ |
-| C3 | `accepts_handoff_from` | non-empty | `[orchestrator, agent-orchestrator]` | ✅ |
-| C4 | `violations_30d` | `0` (set) | `0` (historical evidence) | ✅ |
-| C5 | `has_tests` | `true` | `true` (24/24 tests, 100%) | ✅ |
-| C6 | `has_docs` | `true` | `true` | ✅ |
-| C7 | `maturity` | `production` | `production` (@mbaetiong sign-off) | ✅ |
-| C8 | `activation_frequency_rank` | ≤ 20 | 20 | ✅ |
+| C1 | `enforcement_tier` | `GROUNDED` | GROUNDED |  |
+| C2 | `handoff_protocol` | `structured` | structured |  |
+| C3 | `accepts_handoff_from` | non-empty | `[orchestrator, agent-orchestrator]` |  |
+| C4 | `violations_30d` | `0` (set) | `0` (historical evidence) |  |
+| C5 | `has_tests` | `true` | `true` (24/24 tests, 100%) |  |
+| C6 | `has_docs` | `true` | `true` |  |
+| C7 | `maturity` | `production` | `production` (@mbaetiong sign-off) |  |
+| C8 | `activation_frequency_rank` | ≤ 20 | 20 |  |
 
 **All 8 criteria met. Promotion approved.**
 
@@ -58,7 +61,7 @@ Evidence gathered from repository history:
 
 | Source | Finding |
 |--------|---------|
-| `.codex/PHASE8_FINAL_COGNITIVE_BRAIN_UPDATE.md` line 100 | `rust-error-validator` 24/24 tests ✅ 100% pass rate, status Complete |
+| `.codex/PHASE8_FINAL_COGNITIVE_BRAIN_UPDATE.md` line 100 | `rust-error-validator` 24/24 tests  100% pass rate, status Complete |
 | `.codex/qa_walkthrough/capability_registry.json` | Agent registered as standard capability, no violation flags |
 | All CI run outcomes in `docs/cognitive_brain/status/` | Zero enforcement violations recorded against this agent |
 | AGENT_SESSIONS audit trail | No demotion annotations observed |

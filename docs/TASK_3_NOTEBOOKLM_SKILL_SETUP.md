@@ -1,6 +1,7 @@
 # Task 3: Configure Agentic Troubleshooting Skill
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 # NotebookLM Claude Code Integration Guide
 
 **Objective**: Enable direct AI-to-AI research of `_codex_` via Claude Code  
@@ -58,7 +59,7 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 
 # Verify installation
-python -c "import notebooklm_skill; print('✅ Installation successful')"
+python -c "import notebooklm_skill; print(' Installation successful')"
 ```
 
 ## Step 3: Google Authentication Setup
@@ -95,10 +96,10 @@ python scripts/run.py auth_manager.py verify
 
 **Expected Output**:
 ```
-✅ Authentication successful
-✅ Drive API access: ENABLED
-✅ NotebookLM access: ENABLED
-✅ Credentials saved to: ~/.claude/skills/notebooklm/credentials.json
+ Authentication successful
+ Drive API access: ENABLED
+ NotebookLM access: ENABLED
+ Credentials saved to: ~/.claude/skills/notebooklm/credentials.json
 ```
 
 ## Step 4: Add _codex_ Notebook to Skill
@@ -121,14 +122,14 @@ python scripts/run.py notebook_manager.py list
 
 **Expected Output**:
 ```
-📚 Registered Notebooks:
+ Registered Notebooks:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Name: codex_architecture
 Description: Codex Architecture Knowledge Base - AI-powered development platform
 Notebook ID: [YOUR_NOTEBOOK_ID]
 Sources: 1 (codex-architecture-sync.xml)
-Status: ✅ Active
-Last updated: 2026-02-10
+Status:  Active
+Last updated: 2026-07-11
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
@@ -142,7 +143,7 @@ python scripts/run.py notebook_manager.py query \
 
 **Expected Response** (truncated):
 ```
-🤖 Query: What is the architecture of the auto-remediation system?
+ Query: What is the architecture of the auto-remediation system?
 
 📝 Response:
 The auto-remediation system in _codex_ follows a multi-stage pipeline:

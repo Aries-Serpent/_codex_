@@ -1,6 +1,8 @@
 # Copilot Agent Session — Standard Operating Model
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 > **Cross-reference (Canonical Planset):** [.codex/plans/LEAN_WORKFLOW_OS_PLANSET.md](../../.codex/plans/LEAN_WORKFLOW_OS_PLANSET.md)
 > **Lifecycle:** ACTIVE OPERATIONAL
@@ -133,7 +135,7 @@ Detect drift:  git log main..HEAD --oneline | wc -l
 
 **HIGH-risk workflows to guard (write-capable; conflict immediately if main drifts):**
 
-| 🔴 Workflow | Runs/7d | Required mitigation |
+|  Workflow | Runs/7d | Required mitigation |
 |---|---:|---|
 | `iterative-self-healing-ci.yml` | 413 | `CODEX_SWEEP_SKIP_MAIN=true` + `CODEX_MAX_HEALER_RUNS_PER_HOUR≤3` + `CODEX_HEALER_SKIP_SKIPCI=true` |
 | `copilot-evolution-suite.yml` | 10 | `CODEX_SWEEP_SKIP_MAIN=true`; do not trigger during HIGH drift |

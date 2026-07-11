@@ -1,16 +1,18 @@
 # _codex_ Documentation Master Index
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Purpose**: Central index for all documentation in the `_codex_` repository. Use this to discover, navigate, and understand the documentation structure.
 
 **Last Updated**: 2026-06-22
 **Version**: 1.0.0
-**Status**: 🟢 Active
+**Status**:  Active
 
 ---
 
 ## 🗺️ Navigation
 
-### Quick Start
+### Quickstart
 - **New Users**: Start with [NEWCOMER_GUIDE.md](NEWCOMER_GUIDE.md)
 - **Contributors**: See [CONTRIBUTING.md](./CONTRIBUTING.md)
 - **Developers**: Check [Dev Guide](dev/CODE_STYLE_GUIDE.md)
@@ -23,7 +25,7 @@
 
 ---
 
-## 📚 Documentation by Category
+##  Documentation by Category
 
 ### 🏗️ Architecture & System Design
 
@@ -35,7 +37,7 @@
 | [IMPLEMENTATION_COMPLETE.md](IMPLEMENTATION_COMPLETE.md) | Implementation status | PM, Leads |
 | [SPACE_TRAVERSAL_GUIDE.md](SPACE_TRAVERSAL_GUIDE.md) | State space navigation | ML Engineers |
 
-### 🤖 Agent System
+###  Agent System
 
 | Document | Purpose | Audience |
 |----------|---------|----------|
@@ -69,7 +71,7 @@
 | [ERROR_HANDLING_IMPROVEMENT_GUIDE.md](ERROR_HANDLING_IMPROVEMENT_GUIDE.md) | Error handling patterns | Developers |
 | [DUPLICATION_METRICS_GUIDE.md](DUPLICATION_METRICS_GUIDE.md) | Code quality metrics | Developers |
 
-### 🚀 CI/CD & Operations
+###  CI/CD & Operations
 
 | Document | Purpose | Audience |
 |----------|---------|----------|
@@ -79,7 +81,7 @@
 | [workflows/COPILOT_CONTINUATION_GUIDE.md](workflows/COPILOT_CONTINUATION_GUIDE.md) | Workflow automation | DevOps |
 | [COPILOT_PR_TEMPLATE_USAGE_GUIDE.md](COPILOT_PR_TEMPLATE_USAGE_GUIDE.md) | PR templates | All |
 
-### 🔐 Security
+###  Security
 
 | Document | Purpose | Audience |
 |----------|---------|----------|
@@ -87,7 +89,7 @@
 | [mcp/MCP_SECURITY_GUIDE.md](mcp/MCP_SECURITY_GUIDE.md) | MCP security | Security |
 | [admin/GENESIS_SETUP_GUIDE.md](./admin/GENESIS_SETUP_GUIDE.md) | Genesis protocol | Admins |
 
-### 🎯 API & Integration
+###  API & Integration
 
 | Document | Purpose | Audience |
 |----------|---------|----------|
@@ -106,7 +108,7 @@
 | [PYTORCH_MIGRATION_GUIDE.md](PYTORCH_MIGRATION_GUIDE.md) | PyTorch migration | ML Engineers |
 | [VECTOR_STORE_INTEGRATION_GUIDE.md](VECTOR_STORE_INTEGRATION_GUIDE.md) | Vector databases | ML Engineers |
 
-### 📊 Data & ML Operations
+###  Data & ML Operations
 
 | Document | Purpose | Audience |
 |----------|---------|----------|
@@ -175,7 +177,7 @@
 
 ---
 
-## 📖 Documentation Standards
+##  Documentation Standards
 
 ### Canonical Sources
 Each topic has **one canonical document**. All other references should link to it:

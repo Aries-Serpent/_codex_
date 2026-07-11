@@ -1,6 +1,7 @@
 # Inference Serving
+**Last Updated:** 2026-07-11
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## Overview
 

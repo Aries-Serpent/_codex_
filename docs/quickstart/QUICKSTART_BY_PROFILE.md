@@ -1,4 +1,6 @@
 # Codex ML Quick Start by Profile
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 This guide shows how to get started with each of Codex ML's three installation profiles.
 
@@ -14,7 +16,7 @@ python -m pip install --upgrade pip
 
 ---
 
-## 🔵 Core Profile: Lightweight & Offline-First (8-15 MB)
+##  Core Profile: Lightweight & Offline-First (8-15 MB)
 
 **Use when:** Building edge devices, offline environments, or minimal deployments with zero external dependencies beyond stdlib.
 
@@ -70,7 +72,7 @@ python -c "from codex_ml.config import Config; print('Core profile OK')"
 
 ---
 
-## 🟢 Runtime Profile: Production Inference & APIs (20-35 MB)
+##  Runtime Profile: Production Inference & APIs (20-35 MB)
 
 **Use when:** Deploying to production, building APIs, running inference at scale, or pattern-learning systems.
 

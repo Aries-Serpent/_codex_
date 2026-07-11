@@ -1,6 +1,8 @@
 # Prometheus Metrics Setup
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 Codex ML exposes Prometheus-compatible metrics for both CLI and service workflows. This guide covers the
 minimal configuration needed to scrape the metrics endpoint and visualise the exported series.

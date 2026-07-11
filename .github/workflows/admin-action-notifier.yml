@@ -92,6 +92,9 @@ permissions:
   issues: write
   security-events: read  # Required for probing code-scanning API
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
 jobs:
   probe-and-notify:
     name: Probe ${{ inputs.gap_id }} — ${{ inputs.issue_title }}

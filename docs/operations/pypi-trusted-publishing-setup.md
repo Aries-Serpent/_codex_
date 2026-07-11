@@ -1,4 +1,5 @@
 # PyPI Trusted Publishing Setup for GitHub Actions
+**Last Updated:** 2026-07-11
 
 > **Generated:** 2026-02-10T08:00:00Z | **Author:** mbaetiong  
 > **Type:** Operations Guide  
@@ -6,7 +7,7 @@
 
 ---
 
-## 🎯 Overview
+##  Overview
 
 This guide provides **end-to-end, click-by-click instructions** for configuring PyPI Trusted Publishing (OIDC) to allow GitHub Actions workflows to publish Python packages without API tokens.
 
@@ -36,7 +37,7 @@ Non-user identities cannot create new projects.
 
 ---
 
-## 🚀 Phase 1: Manual PyPI Project Creation
+##  Phase 1: Manual PyPI Project Creation
 
 ### Step 1: Build Your First Package Locally
 
@@ -170,7 +171,7 @@ Checking dist/codex_ml-0.0.0.tar.gz: PASSED
 
 ---
 
-## 🔐 Phase 2: Configure Trusted Publishing
+##  Phase 2: Configure Trusted Publishing
 
 ### Step 4: Add GitHub Actions as Trusted Publisher
 
@@ -261,7 +262,7 @@ Checking dist/codex_ml-0.0.0.tar.gz: PASSED
 
 ---
 
-## ✅ Phase 3: Testing & Verification
+##  Phase 3: Testing & Verification
 
 ### Step 6: Test Trusted Publishing with Workflow Dispatch
 
@@ -291,15 +292,15 @@ Checking dist/codex_ml-0.0.0.tar.gz: PASSED
 
 ```
 🔍 Build Distribution
-✅ Build package
-✅ Check distribution
+ Build package
+ Check distribution
 
 🔍 Publish to PyPI
 Requesting OIDC token from GitHub  # pragma: allowlist secret
-✅ Token received  # pragma: allowlist secret
+ Token received  # pragma: allowlist secret
 Uploading distributions to https://upload.pypi.org/legacy/
 Uploading codex_ml-0.0.0-py3-none-any.whl
-✅ Successfully uploaded codex_ml-0.0.0-py3-none-any.whl
+ Successfully uploaded codex_ml-0.0.0-py3-none-any.whl
 ```
 
 **Validation:**
@@ -410,7 +411,7 @@ curl -s https://pypi.org/pypi/codex-ml/json | jq '.info.version'
 
 ---
 
-## 📚 Additional Resources
+##  Additional Resources
 
 ### Official Documentation
 
@@ -427,12 +428,12 @@ curl -s https://pypi.org/pypi/codex-ml/json | jq '.info.version'
 ### Support
 
 - **Questions:** Create GitHub Issue with `[PyPI]` tag
-- **Security Issues:** Follow [Security Policy](https://github.com/Aries-Serpent/_codex_/blob/main/SECURITY.md)
+- **Security Issues:** Follow [Security Policy](../SECURITY.md)
 - **Maintainer:** @mbaetiong
 
 ---
 
-## 📊 Success Criteria
+##  Success Criteria
 
 **Definition of Done:**
 - [x] PyPI project `codex-ml` created
@@ -539,7 +540,7 @@ If you want to test on TestPyPI first:
 
 ---
 
-## ✅ Verification Checklist
+##  Verification Checklist
 
 **Post-Setup Verification:**
 - [ ] Can trigger workflow manually
@@ -576,7 +577,7 @@ If you want to test on TestPyPI first:
 
 ---
 
-**Status:** ✅ Complete Setup Guide  
+**Status:**  Complete Setup Guide  
 **Generated:** 2026-02-10T08:00:00Z  
 **Author:** mbaetiong  
 **Next Review:** 2026-05-10 (Quarterly)

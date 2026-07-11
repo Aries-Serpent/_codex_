@@ -1,4 +1,6 @@
 # BLEU Brevity Penalty Fix – Migration Note
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Audience:** Model owners and evaluation maintainers
 

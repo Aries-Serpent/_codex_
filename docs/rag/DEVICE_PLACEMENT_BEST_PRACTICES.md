@@ -1,4 +1,5 @@
 # RAG Module Device Placement Best Practices
+**Version:** v0.2.1
 
 **Module**: `src/codex/rag/`  
 **Last Updated**: 2026-06-22  

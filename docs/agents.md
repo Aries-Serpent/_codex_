@@ -1,8 +1,10 @@
 # AGENTS — Guidelines for contributors and Codex automation
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Version**: 2.1.0  
 > **Updated**: 2026-06-22  
-> **CI/CD Status**: ✅ Fully Operational
+> **CI/CD Status**:  Fully Operational
 
 Keep this document updated as conventions evolve.
 
@@ -59,7 +61,7 @@ As of 2025-12-16:
 Activate comprehensive task completion mode with:
 - `Enable CTEP` or `CTEP Mode: ON` or `Task mode: ON`
 
-See `https://github.com/Aries-Serpent/_codex_/blob/main/.github/docs/Copilot_Task_Execution_Protocol.md` for full specification.
+See `.github/docs/Copilot_Task_Execution_Protocol.md` for full specification.
 
 ## Prohibited actions
 
@@ -97,5 +99,5 @@ See Hydra's docs for background on defaults lists and composition order.
 
 ## Related Documentation
 
-- [CTEP Protocol](https://github.com/Aries-Serpent/_codex_/blob/main/.github/docs/Copilot_Task_Execution_Protocol.md) - Task execution protocol
+- [CTEP Protocol](.github/docs/Copilot_Task_Execution_Protocol.md) - Task execution protocol
 - [CHANGELOG](CHANGELOG.md) - Version history

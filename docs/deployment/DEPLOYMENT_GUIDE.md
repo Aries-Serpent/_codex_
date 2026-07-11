@@ -1,8 +1,11 @@
-# Deployment Guide - Cognitive Brain v0.1.0
+# Deployment Guide - codex-ml v0.2.1
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated**: 2026-07-07  
-**Version**: 1.0  
-**Audience**: Maintainers, DevOps engineers, production operators
+**Last Updated**: 2026-07-11  
+**Version**: 2.0  
+**Package**: codex-ml  
+**Audience**: Maintainers, DevOps engineers, production operators, users deploying the Cognitive Brain package
 
 ---
 
@@ -31,11 +34,11 @@ This guide provides comprehensive deployment procedures for the Cognitive Brain 
 
 ### Key Guarantees
 
-- ✅ **Reproducible**: All dependencies locked in `uv.lock`
-- ✅ **Offline-Capable**: Core profile works without network
-- ✅ **Verified**: Hash-checked manifests and SBOMs included
-- ✅ **Secure**: CVE governance and network policy enforcement
-- ✅ **Tested**: Smoke tests for all profile combinations
+-  **Reproducible**: All dependencies locked in `uv.lock`
+-  **Offline-Capable**: Core profile works without network
+-  **Verified**: Hash-checked manifests and SBOMs included
+-  **Secure**: CVE governance and network policy enforcement
+-  **Tested**: Smoke tests for all profile combinations
 
 ---
 
@@ -44,7 +47,7 @@ This guide provides comprehensive deployment procedures for the Cognitive Brain 
 **Timeline**: 1-2 days before release  
 **Owner**: Release manager or maintainer with PyPI credentials
 
-### ✅ Governance Gates (Auto-verified)
+###  Governance Gates (Auto-verified)
 
 - [ ] **P0 Gate**: Lock/profile alignment verified
   - Confirm `.codex/PROFILE_DRIFT_AUDIT.json` exists
@@ -61,14 +64,14 @@ This guide provides comprehensive deployment procedures for the Cognitive Brain 
   - Confirm `.github/workflows/smoke-tests-deployment.yml` exists
   - Confirm `.github/workflows/pre-release-validation.yml` exists
 
-### ✅ Code Quality Gates
+###  Code Quality Gates
 
 - [ ] **All tests passing**: `pytest tests/ -x`
 - [ ] **No type errors**: `mypy src/`
 - [ ] **No security alerts**: `bandit -r src/`
 - [ ] **No new CVEs**: `pip-audit`
 
-### ✅ Release Preparation
+###  Release Preparation
 
 - [ ] **Version bumped** in `pyproject.toml`
   ```toml
@@ -101,7 +104,7 @@ This guide provides comprehensive deployment procedures for the Cognitive Brain 
   # Don't push yet - pre-release validation will trigger this
   ```
 
-### ✅ Infrastructure Ready
+###  Infrastructure Ready
 
 - [ ] **PyPI credentials configured** in GitHub Secrets
   - Secret: `PYPI_API_TOKEN`
@@ -121,7 +124,7 @@ This guide provides comprehensive deployment procedures for the Cognitive Brain 
   scripts/deploy/bootstrap_offline.py wheelhouse_core/
   ```
 
-### ✅ Documentation Ready
+###  Documentation Ready
 
 - [ ] **Deployment guide reviewed** (this document)
 - [ ] **Rollback procedures documented** (see below)
@@ -156,9 +159,9 @@ This guide provides comprehensive deployment procedures for the Cognitive Brain 
 
 3. Open PR: `release/v0.1.0-prepare` → `main`
 4. Wait for **pre-release-validation.yml** to verify:
-   - Version bumped ✅
-   - CHANGELOG updated ✅
-   - All gates passing ✅
+   - Version bumped 
+   - CHANGELOG updated 
+   - All gates passing 
 
 5. Get code review and merge
 
@@ -187,7 +190,7 @@ Watch for these steps:
 1. **Pre-release checks** (1-2 min)
    - Gate verification: P0, P1, P2
    - Version validation
-   - Expected output: ✅ All gates verified
+   - Expected output:  All gates verified
 
 2. **Build wheels** (3-5 min)
    - Multi-platform build
@@ -203,11 +206,11 @@ Watch for these steps:
 
 5. **Verify manifest** (1 min)
    - Hash verification
-   - Expected output: ✅ Manifest verified
+   - Expected output:  Manifest verified
 
 6. **Publish to PyPI** (2-3 min)
    - Upload wheels
-   - Expected output: "Successfully uploaded codex-ml-0.1.0-py3-none-any.whl"
+   - Expected output: "Successfully uploaded codex-ml-0.2.1-py3-none-any.whl"
 
 7. **Create GitHub release** (1 min)
    - Release notes
@@ -216,16 +219,16 @@ Watch for these steps:
 
 **Failure scenarios**:
 
-- ❌ **Pre-release checks fail**: Gates not met
+-  **Pre-release checks fail**: Gates not met
   - Action: Resolve missing gates, update version, push new tag
   
-- ❌ **Build fails**: Platform-specific issue
+-  **Build fails**: Platform-specific issue
   - Action: Review build logs, fix issue, delete tag, push new tag
   
-- ❌ **PyPI upload fails**: Credentials or network issue
+-  **PyPI upload fails**: Credentials or network issue
   - Action: Verify `PYPI_API_TOKEN` secret, retry release workflow
   
-- ❌ **Smoke tests fail**: Package doesn't install correctly
+-  **Smoke tests fail**: Package doesn't install correctly
   - Action: See [Rollback Procedures](#rollback-procedures)
 
 ---
@@ -252,20 +255,20 @@ Test on clean machine or in docker:
 # Test core profile
 python -m venv test-core
 source test-core/bin/activate
-pip install codex-ml[core]==0.1.0
-python -c "from cognitive_brain.ooda import OODALoop; print('✅ Core profile works')"
+pip install codex-ml[core]==0.2.1
+python -c "from cognitive_brain.ooda import OODALoop; print(' Core profile works')"
 
 # Test runtime profile
 python -m venv test-runtime
 source test-runtime/bin/activate
-pip install codex-ml[runtime]==0.1.0
-python -c "import torch; print('✅ Runtime profile works')"
+pip install codex-ml[runtime]==0.2.1
+python -c "import torch; print(' Runtime profile works')"
 
 # Test full profile
 python -m venv test-full
 source test-full/bin/activate
-pip install codex-ml[full]==0.1.0
-python -c "import pytest; print('✅ Full profile works')"
+pip install codex-ml[full]==0.2.1
+python -c "import pytest; print(' Full profile works')"
 ```
 
 ### Smoke Test Verification (< 2 min)
@@ -273,13 +276,13 @@ python -c "import pytest; print('✅ Full profile works')"
 Check GitHub Actions: **Smoke Tests - Deployment Verification** workflow
 
 All 12 test combinations should pass:
-- ✅ Python 3.12, core, with-ml
-- ✅ Python 3.12, core, without-ml
-- ✅ Python 3.12, runtime, with-ml
-- ✅ Python 3.12, runtime, without-ml
-- ✅ Python 3.12, full, with-ml
-- ✅ Python 3.12, full, without-ml
-- ✅ Python 3.13, [same 6 combinations]
+-  Python 3.12, core, with-ml
+-  Python 3.12, core, without-ml
+-  Python 3.12, runtime, with-ml
+-  Python 3.12, runtime, without-ml
+-  Python 3.12, full, with-ml
+-  Python 3.12, full, without-ml
+-  Python 3.13, [same 6 combinations]
 
 ### Monitoring Setup (5-10 min)
 
@@ -297,7 +300,7 @@ All 12 test combinations should pass:
    ```
 
 3. **Create monitoring dashboard**:
-   - Location: `.codex/RELEASE_METRICS_v0.1.0.json`
+   - Location: `.codex/RELEASE_METRICS_v0.2.1.json`
    - Contents: Build duration, sizes, test results, download stats
 
 ---
@@ -307,15 +310,15 @@ All 12 test combinations should pass:
 ### Profile: Core
 
 **When to use**:
-- ✅ Lightweight deployments (< 50 MB total)
-- ✅ Offline environments or air-gapped networks
-- ✅ Edge devices with limited resources
-- ✅ CI/CD pipelines that only need OODA loop
-- ✅ Containers where size matters
+-  Lightweight deployments (< 50 MB total)
+-  Offline environments or air-gapped networks
+-  Edge devices with limited resources
+-  CI/CD pipelines that only need OODA loop
+-  Containers where size matters
 
 **Installation**:
 ```bash
-pip install codex-ml[core]==0.1.0
+pip install codex-ml[core]==0.2.1
 ```
 
 **What's included**:
@@ -339,7 +342,7 @@ pip install codex-ml[core]==0.1.0
 
 **Verification**:
 ```bash
-python -c "from cognitive_brain.ooda import OODALoop; ooda = OODALoop(); print('✅ Core works')"
+python -c "from cognitive_brain.ooda import OODALoop; ooda = OODALoop(); print(' Core works')"
 ```
 
 ---
@@ -347,15 +350,15 @@ python -c "from cognitive_brain.ooda import OODALoop; ooda = OODALoop(); print('
 ### Profile: Runtime
 
 **When to use**:
-- ✅ Production ML inference services
-- ✅ API deployments (FastAPI, Flask)
-- ✅ Pattern recognition in production
-- ✅ Ray serve workers
-- ✅ AWS Lambda / GCP Cloud Functions
+-  Production ML inference services
+-  API deployments (FastAPI, Flask)
+-  Pattern recognition in production
+-  Ray serve workers
+-  AWS Lambda / GCP Cloud Functions
 
 **Installation**:
 ```bash
-pip install codex-ml[runtime]==0.1.0
+pip install codex-ml[runtime]==0.2.1
 ```
 
 **What's included**:
@@ -380,7 +383,7 @@ pip install codex-ml[runtime]==0.1.0
 
 **Verification**:
 ```bash
-python -c "import torch; from cognitive_brain.runtime import MLInference; print('✅ Runtime works')"
+python -c "import torch; from cognitive_brain.runtime import MLInference; print(' Runtime works')"
 ```
 
 ---
@@ -388,15 +391,15 @@ python -c "import torch; from cognitive_brain.runtime import MLInference; print(
 ### Profile: Full
 
 **When to use**:
-- ✅ Local development
-- ✅ Testing and QA
-- ✅ Building custom extensions
-- ✅ Contributing to the project
-- ✅ Research and experimentation
+-  Local development
+-  Testing and QA
+-  Building custom extensions
+-  Contributing to the project
+-  Research and experimentation
 
 **Installation**:
 ```bash
-pip install codex-ml[full]==0.1.0
+pip install codex-ml[full]==0.2.1
 ```
 
 **What's included**:
@@ -421,8 +424,76 @@ pip install codex-ml[full]==0.1.0
 
 **Verification**:
 ```bash
-python -c "import pytest; from cognitive_brain.full import DevEnvironment; print('✅ Full works')"
+python -c "import pytest; from cognitive_brain.full import DevEnvironment; print(' Full works')"
 ```
+
+---
+
+## Phase Objects (Planned Execution Tracks)
+
+### What Are Phase Objects?
+
+**Phase Objects** are planned execution tracks included in the `codex-ml` package. They define multi-track deployment plans for complex operations:
+
+- **Track A-G**: Sequential execution phases (A → B → C → D → E → F → G)
+- **Tasks PR**: Comprehensive task roadmap (99.6 KB, 3,193 lines)
+- **Batch Segments**: Segmented data batches for parallel processing
+
+### Accessing Phase Objects
+
+Phase objects are automatically included in all installation profiles (`core`, `runtime`, `full`) and can be accessed via the `codex_plans` module:
+
+```python
+# List all available plans
+from codex_plans import list_plan_documents
+
+plans = list_plan_documents()
+for plan in plans:
+    print(f"  📄 {plan.name} ({plan.stat().st_size} bytes)")
+```
+
+Expected output:
+```
+📄 Tasks_PR_2459.md (99647 bytes)
+📄 track_A.md (1587 bytes)
+📄 track_B.md (1462 bytes)
+📄 track_C.md (1979 bytes)
+📄 track_D.md (1695 bytes)
+📄 track_E.md (2494 bytes)
+📄 track_F.md (2902 bytes)
+📄 track_G.md (3673 bytes)
+```
+
+### Reading a Phase Plan
+
+```python
+from pathlib import Path
+from codex_plans import list_plan_documents
+
+plans = list_plan_documents()
+with open(plans[0]) as f:
+    content = f.read()
+    print(f"Plan: {plans[0].name}")
+    print(f"Lines: {len(content.splitlines())}")
+    print("\n" + content[:500] + "...")
+```
+
+### Use Cases
+
+**Development**:
+- Reference implementation roadmaps
+- Understand deployment phasing strategy
+- Track multi-phase execution plans
+
+**CI/CD Integration**:
+- Programmatically read phase definitions
+- Trigger phase-based workflows
+- Track execution state across phases
+
+**Documentation**:
+- Generate deployment timelines
+- Create phase execution reports
+- Publish guidance for multi-phase operations
 
 ---
 
@@ -430,7 +501,7 @@ python -c "import pytest; from cognitive_brain.full import DevEnvironment; print
 
 ### Release Metrics Collection
 
-After release, the workflow automatically creates `.codex/RELEASE_METRICS_v0.1.0.json`:
+After release, the workflow automatically creates `.codex/RELEASE_METRICS_v0.2.1.json`:
 
 ```json
 {
@@ -524,11 +595,11 @@ python scripts/deploy/rollback_release.py \
 
 ### When to Rollback
 
-- ❌ Core profile doesn't import (immediate)
-- ❌ OODA loop crashes on initialization (immediate)
-- ❌ Network policy violated in core (immediate)
-- ❌ Smoke tests fail for > 1 profile (within 30 min)
-- ❌ Critical security vulnerability found (within 24 hours)
+-  Core profile doesn't import (immediate)
+-  OODA loop crashes on initialization (immediate)
+-  Network policy violated in core (immediate)
+-  Smoke tests fail for > 1 profile (within 30 min)
+-  Critical security vulnerability found (within 24 hours)
 - ⚠️ Performance regression > 50% (discuss first)
 - ⚠️ Optional dependency issues (non-blocking)
 
@@ -546,10 +617,7 @@ python scripts/deploy/rollback_release.py \
 ```bash
 # Wait 5 minutes and retry
 sleep 300
-pip install codex-ml[core]==0.1.0
-
-# Or install from GitHub release directly
-pip install https://github.com/Aries-Serpent/_codex_/releases/download/v0.1.0/codex_ml-0.1.0-py3-none-any.whl
+pip install codex-ml[core]==0.2.1
 ```
 
 ### Issue: `ImportError: No module named 'cognitive_brain'`
@@ -568,10 +636,37 @@ python -c "import cognitive_brain; print(cognitive_brain.__file__)"
 
 # Try reinstall
 pip uninstall -y codex-ml
-pip install codex-ml[core]==0.1.0
+pip install codex-ml[core]==0.2.1
 
 # Check Python path
 python -c "import sys; print('\n'.join(sys.path))"
+```
+
+### Issue: CLI commands (`codex-ml`, `codex-ml-cli`, `codex-cli`) fail with `ModuleNotFoundError`
+
+**Symptom**: 
+```
+ModuleNotFoundError: No module named 'aries_serpent_core'
+```
+
+**Cause**: The CLI module requires `aries_serpent_core` which wasn't included in older package builds. This was fixed in v0.2.1+.
+
+**Solution**:
+```bash
+# Upgrade to v0.2.1 or later
+pip install --upgrade codex-ml>=0.2.1
+
+# Verify CLI works
+codex-ml --help
+
+# Or use the working smoke CLI
+codex-smoke --help
+```
+
+**If upgrade is not possible**:
+```bash
+# Install from full profile (includes all dependencies)
+pip install codex-ml[full]>=0.2.1
 ```
 
 ### Issue: Runtime profile is 2GB, too large for production
@@ -584,7 +679,7 @@ python -c "import sys; print('\n'.join(sys.path))"
 ```bash
 # Use core profile instead
 pip uninstall codex-ml
-pip install codex-ml[core]==0.1.0
+pip install codex-ml[core]==0.2.1
 
 # If ML needed, use Docker with layer caching
 # or AWS SageMaker (pre-cached)
@@ -647,12 +742,258 @@ A: It will work, but wastes 100+ MB of disk space and install time. Consider opt
 
 A: Yes, downgrade is safe:
 ```bash
-pip install --force-reinstall codex-ml[core]==0.1.0
+pip install --force-reinstall codex-ml[core]==0.2.1
 ```
 
 **Q: How long is v0.1.0 supported?**
 
 A: Until v0.2.0 is released (typically 6-12 months). See [Support Policy](../../SECURITY.md).
+
+---
+
+## Local Documentation Site Deployment
+
+This section covers deployment of the documentation site to local development environments (127.0.0.1:8000).
+
+### Quick Start
+
+```bash
+# Step 1: Install MkDocs and plugins
+pip install mkdocs mkdocs-material mkdocs-mermaid2-plugin \
+            mkdocstrings[python] mkdocs-git-revision-date-localized-plugin
+
+# Step 2: Start local server
+cd /home/runner/work/_codex_/_codex_
+mkdocs serve
+
+# Step 3: Open browser
+# Navigate to http://127.0.0.1:8000
+```
+
+### Local Development Workflow
+
+**For Documentation Changes**:
+
+```bash
+# Terminal 1: Start MkDocs server (hot-reload enabled)
+mkdocs serve
+
+# Terminal 2: Edit documentation in your editor
+# Changes automatically reload in browser
+# Edit: docs/path/to/file.md
+# Result: Live preview at http://127.0.0.1:8000/path/to/file
+```
+
+### Configuration Validation
+
+Before deploying locally, verify the mkdocs.yml configuration:
+
+```bash
+# Check configuration syntax
+mkdocs build --dry-run
+
+# Full build with strict validation
+mkdocs build --strict
+
+# Output shows any configuration issues
+# If no errors: Documentation is ready to serve
+```
+
+### Testing Checklist
+
+Use this checklist to validate the local deployment:
+
+- [ ] **Server Start**: `mkdocs serve` runs without errors
+- [ ] **Home Page**: http://127.0.0.1:8000 loads correctly
+- [ ] **Navigation**: Sidebar navigation opens/closes properly
+- [ ] **Theme Toggle**: Dark/light mode toggle works
+- [ ] **Search**: Search box appears and is functional
+- [ ] **Internal Links**: All documentation links work
+- [ ] **Diagrams**: Mermaid diagrams render correctly
+- [ ] **Code Blocks**: Copy button appears on code examples
+- [ ] **Mobile View**: Site is responsive on mobile (test with browser dev tools)
+- [ ] **Performance**: Page loads in < 2 seconds
+
+### Performance Optimization
+
+**Enable Caching** (faster rebuilds):
+
+```bash
+# MkDocs automatically caches:
+# - Plugin output
+# - Generated pages
+# - Static assets
+
+# To rebuild without cache:
+mkdocs build --clean
+
+# To force cache invalidation:
+rm -rf .cache/
+mkdocs serve
+```
+
+**Build Time Benchmarks**:
+
+```
+Initial build:        15-30 seconds (full)
+Subsequent builds:      2-5 seconds (incremental)
+Single file change:    < 1 second (hot-reload)
+```
+
+### Troubleshooting Local Deployment
+
+**Issue: "Port 8000 is already in use"**
+
+```bash
+# Find process using port 8000
+lsof -i :8000
+
+# Kill process
+kill -9 <PID>
+
+# Or use alternate port
+mkdocs serve -a 127.0.0.1:8001
+```
+
+**Issue: "Module not found" error**
+
+```bash
+# Ensure all dependencies are installed
+pip install -r requirements-docs.txt
+
+# Or install individually
+pip install mkdocs-material mkdocs-mermaid2-plugin
+```
+
+**Issue: Diagrams not rendering (showing code block instead)**
+
+```bash
+# Check Mermaid plugin is enabled in mkdocs.yml
+# Verify fence is correct:
+# ✅ Correct: ```mermaid
+# ❌ Wrong:   ```diagram
+
+# Check markdown file has correct syntax:
+mkdocs build --verbose
+```
+
+**Issue: Changes not reflecting in browser**
+
+```bash
+# Hard refresh browser (Ctrl+Shift+R or Cmd+Shift+R)
+
+# Or clear browser cache:
+# DevTools > Application > Cache > Clear
+
+# If still not working, restart server:
+# Press Ctrl+C to stop mkdocs serve
+# Then run: mkdocs serve again
+```
+
+**Issue: Search not working**
+
+```bash
+# Search requires build to complete
+# Ensure no build errors:
+mkdocs build
+
+# Then restart serve:
+mkdocs serve
+
+# Search index is now available
+```
+
+### Deployment to GitHub Pages
+
+For production deployment to https://aries-serpent.github.io/_codex_/:
+
+```bash
+# 1. Commit changes
+git add docs/ mkdocs.yml
+git commit -m "docs: update documentation"
+
+# 2. Push to main (triggers automatic deployment)
+git push origin main
+
+# 3. GitHub Actions automatically:
+#    - Builds the site
+#    - Validates links
+#    - Deploys to GitHub Pages
+#    - Runs health checks
+#    - Reports status
+
+# 4. Verify deployment succeeded
+# Check Actions tab on GitHub for workflow status
+# Site available at: https://aries-serpent.github.io/_codex_/
+```
+
+### Environment Variables
+
+Optional configuration via environment variables:
+
+```bash
+# Control MkDocs behavior
+export MKDOCS_SITE_URL=https://aries-serpent.github.io/_codex_/
+export MKDOCS_REPO_URL=https://github.com/Aries-Serpent/_codex_
+
+# Enable strict mode (fail on warnings)
+export MKDOCS_STRICT=true
+
+# Control plugin behavior
+export MKDOCS_PLUGINS_MERMAID_VERSION="10.4.0"
+```
+
+### Advanced Usage
+
+**Building Static Site**:
+
+```bash
+# Generate static HTML (site/ directory)
+mkdocs build
+
+# Output: site/
+# Contains all HTML, CSS, JavaScript, assets
+# Can be deployed to any static host
+```
+
+**Custom Theme Features**:
+
+```bash
+# Material theme features (in mkdocs.yml):
+# - navigation.instant (XHR page loading)
+# - navigation.tracking (URL updates)
+# - navigation.tabs (top-level tabs)
+# - search.suggest (search suggestions)
+# - content.code.copy (copy code button)
+
+# All features are pre-configured
+# See mkdocs.yml for complete list
+```
+
+### Documentation Site Architecture
+
+```
+127.0.0.1:8000/
+├─ /                      # Home page
+├─ /evolution/           # Evolution Center
+├─ /tokens/              # Token Management
+├─ /architecture/        # Architecture docs
+├─ /deployment/          # Deployment guides
+├─ /guides/              # How-to guides
+├─ /search/              # Full-text search
+├─ /assets/              # CSS, JS, images
+└─ /health               # Health check endpoint
+
+All pages accessible via sidebar navigation
+Search available in top navigation bar
+Dark/light mode toggle in top right
+```
+
+### Related Documentation
+
+- [mkdocs.yml](../../mkdocs.yml) - Site configuration
+- [.github/workflows/pages-mkdocs.yml](../../.github/workflows/pages-mkdocs.yml) - Deployment workflow
+- [LANE_4_DEPLOYMENT_ALIGNMENT_REPORT.md](../../.codex/LANE_4_DEPLOYMENT_ALIGNMENT_REPORT.md) - Comprehensive alignment report
 
 ---
 
@@ -662,9 +1003,10 @@ A: Until v0.2.0 is released (typically 6-12 months). See [Support Policy](../../
 - **DevOps**: @[devops-team]
 - **Security Issues**: security@[organization]
 - **Incident Response**: [incident-channel]
+- **Documentation**: See `.codex/LANE_4_DEPLOYMENT_ALIGNMENT_REPORT.md`
 
 ---
 
-**Document Version**: 1.0  
-**Last Updated**: 2026-07-07  
-**Next Review**: 2026-08-07
+**Document Version**: 2.0  
+**Last Updated**: 2026-07-11  
+**Next Review**: 2026-08-11

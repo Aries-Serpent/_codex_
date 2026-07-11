@@ -50,7 +50,7 @@ jobs:
       actions: read
     steps:
       - name: Log rescue trigger context
-      env:
+        env:
         GH_EVENT_NAME: ${{ github.event_name }}
         GH_WF_RUN_NAME: ${{ github.event.workflow_run.name }}
         GH_WF_RUN_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
@@ -59,7 +59,7 @@ jobs:
           }}
         GH_AUTH_ENABLED: ${{ vars.COPILOT_AGENT_AUTH_ENABLED || 'not set (rescue runs
           unconditionally)' }}
-      run: 'echo "=== CI Rescue Trigger ==="
+        run: 'echo "=== CI Rescue Trigger ==="
 
         echo "Event:          ${GH_EVENT_NAME}"
 
@@ -77,19 +77,19 @@ jobs:
         uses: actions/cache@v5
         if: always()
         with:
-        path: .pytest_cache/
-        key: ${{ runner.os }}-pytest-${{ github.sha }}
+          path: .pytest_cache/
+          key: ${{ runner.os }}-pytest-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-pytest-
 
       - name: Set up Python
-      uses: actions/setup-python@v6
-      with:
-        cache: pip
-        python-version: 3.12.13
+        uses: actions/setup-python@v6
+        with:
+          cache: pip
+          python-version: 3.12.13
       - name: Load Copilot test environment
-      id: env_setup
-      run: "python -m pip install --quiet --upgrade pip\npython -m pip install --quiet\
+        id: env_setup
+        run: "python -m pip install --quiet --upgrade pip\npython -m pip install --quiet\
         \ \\\n  requests \\\n  \"detect-secrets==1.4.0\" \\\n  \"ruff>=0.6.2\" \\\n\
         \  \"pytest>=8.2.0\" \\\n  \"pytest-timeout>=2.3\" \\\n  \"pytest-xdist>=3.5.0\"\
         \ \\\n  \"pytest-rerunfailures>=14.0\" \\\n  \"pre-commit>=3\" \\\n  pyyaml\n\
@@ -102,11 +102,11 @@ jobs:
         \ \"detect-secrets==1.4.0\" --quiet\nEOF\necho \"env_manifest_ready=true\"\
         \ >> \"$GITHUB_OUTPUT\"\n"
       - name: Fetch rescue engine
-      env:
+        env:
         GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
         HEAD_SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
-      run: "REFS=\"${HEAD_SHA} HEAD\"\nfor REF in $REFS; do\n  curl -sS -L \\\n  \
+        run: "REFS=\"${HEAD_SHA} HEAD\"\nfor REF in $REFS; do\n  curl -sS -L \\\n  \
         \  -H \"Authorization: Bearer ${GITHUB_TOKEN}\" \\\n    -H \"Accept: application/vnd.github.raw+json\"\
         \ \\\n    \"https://api.github.com/repos/${{ github.repository }}/contents/scripts/ci/ci_rescue.py?ref=${REF}\"\
         \ \\\n    -o /tmp/ci_rescue.py 2>/dev/null\n  if [ -s /tmp/ci_rescue.py ]\
@@ -118,11 +118,11 @@ jobs:
         \  echo \"::warning::ci_rescue.py not available from any ref — rescue engine\
         \ unavailable\"\n  echo \"RESCUE_UNAVAILABLE=true\" >> \"$GITHUB_ENV\"\nfi\n"
       - name: Lookup CI Failure Triage Report issue URL
-      id: triage-url
-      env:
+        id: triage-url
+        env:
         GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
-      run: "# Find the open \"\U0001F4CA CI Failure Triage Report\" issue created\
+        run: "# Find the open \"\U0001F4CA CI Failure Triage Report\" issue created\
         \ by batch-ci-triage.yml\n# and expose its URL so the rescue engine can link\
         \ to it in RCA comments.\n# Response is stored to a temp file so the JSON\
         \ parser receives clean input.\ncurl -sS \\\n  -H \"Authorization: Bearer\
@@ -138,15 +138,15 @@ jobs:
         \ open ci-triage issue found — triage URL will be omitted from RCA\"\n  echo\
         \ \"url=\" >> \"$GITHUB_OUTPUT\"\nfi\n"
       - name: Run CI rescue engine
-      id: rescue
-      env:
+        id: rescue
+        env:
         GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
         TRIAGE_ISSUE_URL: ${{ steps.triage-url.outputs.url }}
         GH_HEAD_BRANCH: ${{ github.event.workflow_run.head_branch || github.ref_name
           }}
         GH_REPOSITORY: ${{ github.repository }}
-      run: "RUN_ID=\"${{ github.event.workflow_run.id || inputs.run_id }}\"\nCOMMIT_SHA=\"\
+        run: "RUN_ID=\"${{ github.event.workflow_run.id || inputs.run_id }}\"\nCOMMIT_SHA=\"\
         ${{ github.event.workflow_run.head_sha || github.sha }}\"\nPR_NUMBER=\"${{\
         \ inputs.pr_number }}\"\nWORKFLOW_NAME=\"${{ github.event.workflow_run.name\
         \ || 'unknown' }}\"\nDRY_FLAG=\"\"\nif [ \"${{ inputs.dry_run }}\" = \"true\"\
@@ -240,8 +240,8 @@ jobs:
         \ || true\n    echo \"deep_rescue_exit=$?\" >> \"$GITHUB_OUTPUT\"\n  fi\n\
         fi\n"
       - name: Print rescue summary
-      if: always()
-      run: "echo \"=== CI Rescue Summary ===\"\ncat /tmp/rescue_output.txt 2>/dev/null\
+        if: always()
+        run: "echo \"=== CI Rescue Summary ===\"\ncat /tmp/rescue_output.txt 2>/dev/null\
         \ || echo \"(no output captured)\"\necho \"Rescue exit: ${{ steps.rescue.outputs.rescue_exit\
         \ }}\"\nif [ -s /tmp/deep_rescue_output.txt ]; then\n  echo \"\"\n  echo \"\
         === Deep Rescue Summary (COPILOT_AGENT_AUTH_ENABLED) ===\"\n  cat /tmp/deep_rescue_output.txt\n\

@@ -1,6 +1,8 @@
 # Experiment Records
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 Well-structured experiment notes make it easy to reproduce results and reason about follow-up work. This template captures the
 minimum metadata required to tie together configuration snapshots, dataset manifests, run logs, and conclusions.

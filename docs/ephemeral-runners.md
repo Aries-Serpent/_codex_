@@ -1,6 +1,8 @@
 # Ephemeral (Single-Job) Self-Hosted Runners — Codex Toolkit
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 This repository includes a toolkit so ChatGPT Codex can launch a self-hosted runner that processes **one** job and then automatically de-registers.
 

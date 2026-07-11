@@ -1,4 +1,6 @@
 # Test Coverage Roadmap: Path from 0% to 100%
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 ## Table of Contents
 
@@ -9,7 +11,7 @@
 - [Phase Overview](#phase-overview)
 - [Phase 14.0: Foundation (Current Phase)](#phase-140-foundation-current-phase)
   - [Completed Items](#completed-items)
-  - [Exit Criteria - ALL MET ✅](#exit-criteria---all-met-)
+  - [Exit Criteria - ALL MET ](#exit-criteria---all-met-)
 - [Phase 14.1: Core Modules (30% → 50%)](#phase-141-core-modules-30--50)
   - [Priority Modules (High Impact)](#priority-modules-high-impact)
   - [Top 10 Priority Modules (from Priority Matrix)](#top-10-priority-modules-from-priority-matrix)
@@ -60,14 +62,14 @@
 - [References](#references)
 - [Next Steps](#next-steps)
   - [Phase 14.1 Implementation Checklist](#phase-141-implementation-checklist)
-- [Phase 14.2: Security Hardening - ✅ COMPLETE](#phase-142-security-hardening----complete)
-- [Phase 14.3: Integration & Edge Cases - ✅ COMPLETE](#phase-143-integration--edge-cases----complete)
+- [Phase 14.2: Security Hardening -  COMPLETE](#phase-142-security-hardening----complete)
+- [Phase 14.3: Integration & Edge Cases -  COMPLETE](#phase-143-integration--edge-cases----complete)
 
 **Created:** 2026-01-18  
-**Updated:** 2026-01-18  
+**Updated: 2026-07-11
 **Current Baseline:** ~27.5% (estimated 196 of 714 modules covered)  
 **Target:** 100% test coverage  
-**Status:** ✅ Phase 14.0 Complete | 🚧 Phase 14.1 Executing
+**Status:**  Phase 14.0 Complete | 🚧 Phase 14.1 Executing
 
 ---
 
@@ -77,11 +79,11 @@
 
 | Phase | Planset Ready | Execution Status |
 |-------|---------------|------------------|
-| Phase 14.0 | ✅ Complete | ✅ DONE |
-| Phase 14.1 | ✅ Ready | 🚧 EXECUTING |
-| Phase 14.2 | ✅ Ready | 📋 Queued |
-| Phase 14.3 | ✅ Ready | 📋 Queued |
-| Phase 14.4 | ✅ Ready | 📋 Queued |
+| Phase 14.0 |  Complete |  DONE |
+| Phase 14.1 |  Ready | 🚧 EXECUTING |
+| Phase 14.2 |  Ready | 📋 Queued |
+| Phase 14.3 |  Ready | 📋 Queued |
+| Phase 14.4 |  Ready | 📋 Queued |
 
 ### AI Agency Policy Compliance Checklist
 
@@ -127,13 +129,13 @@ This roadmap provides a structured, phased approach to achieve 100% test coverag
 **Goal:** Establish test infrastructure and baseline coverage  
 **Duration:** 2 phases  
 **Threshold:** `fail_under = 0`  
-**Status:** ✅ COMPLETE
+**Status:**  COMPLETE
 
 ### Completed Items
 - [x] Fix CI/CD pipeline issues (Rust compilation, pytest plugin discovery)
 - [x] Align Python version matrix with project requirements (3.11+)
 - [x] Fix pytest plugin discovery in xdist workers
-- [x] Create coverage analysis baseline (`https://github.com/Aries-Serpent/_codex_/blob/main/.codex/qa_walkthrough/coverage_analysis.json`)
+- [x] Create coverage analysis baseline (`.codex/qa_walkthrough/coverage_analysis.json`)
 - [x] Create test priority matrix (`.codex/qa_walkthrough/test_priority_matrix.json`)
 - [x] Create test templates (`tests/templates/`)
 - [x] Create shared fixtures (`tests/conftest_shared.py`)
@@ -141,11 +143,11 @@ This roadmap provides a structured, phased approach to achieve 100% test coverag
 - [x] Fix yamllint issues per AI Agency Policy
 - [x] Create coverage roadmap (this document)
 
-### Exit Criteria - ALL MET ✅
-- ✅ All CI jobs passing
-- ✅ Coverage baseline established (27.5%)
-- ✅ Test infrastructure documented
-- ✅ Templates and fixtures ready
+### Exit Criteria - ALL MET 
+-  All CI jobs passing
+-  Coverage baseline established (27.5%)
+-  Test infrastructure documented
+-  Templates and fixtures ready
 
 ---
 
@@ -431,7 +433,7 @@ Each phase should update the CI workflow thresholds:
 
 ## Priority Test Proposals
 
-Based on `https://github.com/Aries-Serpent/_codex_/blob/main/.codex/qa_walkthrough/coverage_analysis.json`:
+Based on `.codex/qa_walkthrough/coverage_analysis.json`:
 
 ### TP-001: Unit Tests for High-Priority Modules
 - **Target:** 390 untested high-priority modules
@@ -493,7 +495,7 @@ if TYPE_CHECKING:  # pragma: no cover
     ...
 
 # Unacceptable exclusions:
-if complex_condition:  # pragma: no cover  # ❌ Don't do this
+if complex_condition:  # pragma: no cover  #  Don't do this
     important_logic()
 ```
 
@@ -525,7 +527,7 @@ if complex_condition:  # pragma: no cover  # ❌ Don't do this
 
 - [RAG 100% Coverage Plan](./PLAN_100_PERCENT_COVERAGE.md)
 - [Test Coverage Plan for RAG](./TEST_COVERAGE_PLAN_RAG.md)
-- [Coverage Analysis JSON](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/qa_walkthrough/coverage_analysis.json)
+- [Coverage Analysis JSON](.codex/qa_walkthrough/coverage_analysis.json)
 - [pytest Documentation](https://docs.pytest.org/)
 - [pytest-cov Documentation](https://pytest-cov.readthedocs.io/)
 
@@ -533,52 +535,52 @@ if complex_condition:  # pragma: no cover  # ❌ Don't do this
 
 ## Next Steps
 
-1. ✅ Fix current CI failures (xdist plugin discovery)
-2. ✅ Verify all existing tests pass
-3. ✅ Phase 14.0 Complete - Foundation established
+1.  Fix current CI failures (xdist plugin discovery)
+2.  Verify all existing tests pass
+3.  Phase 14.0 Complete - Foundation established
 4. 🚧 Begin Phase 14.1 - Core modules unit tests
 5. 📋 Update coverage threshold to 30% after Phase 14.1
 
 ### Phase 14.1 Implementation Checklist
 
 **CLI Tests (55+ tests):**
-- [x] `tests/cli/test_main_coverage.py` - 25+ tests for `src/codex_ml/cli/main.py` ✅ CREATED
-- [x] `tests/cli/test_train_coverage.py` - 15+ tests for `src/codex_ml/cli/train.py` ✅ CREATED
-- [x] `tests/cli/test_metrics_coverage.py` - 10+ tests for `src/codex_ml/cli/metrics_cli.py` ✅ CREATED
-- [x] `tests/cli/test_hydra_coverage.py` - 10+ tests for `src/codex_ml/cli/hydra_main.py` ✅ CREATED
+- [x] `tests/cli/test_main_coverage.py` - 25+ tests for `src/codex_ml/cli/main.py`  CREATED
+- [x] `tests/cli/test_train_coverage.py` - 15+ tests for `src/codex_ml/cli/train.py`  CREATED
+- [x] `tests/cli/test_metrics_coverage.py` - 10+ tests for `src/codex_ml/cli/metrics_cli.py`  CREATED
+- [x] `tests/cli/test_hydra_coverage.py` - 10+ tests for `src/codex_ml/cli/hydra_main.py`  CREATED
 
 **Data Tests (60+ tests):**
-- [x] `tests/data/test_loader_coverage.py` - 30+ tests for `src/codex_ml/data/loader.py` ✅ CREATED
-- [x] `tests/data/test_validation_coverage.py` - 20+ tests for `src/codex_ml/data/validation.py` ✅ CREATED
-- [x] `tests/data/test_split_coverage.py` - 15+ tests for `src/codex_ml/data/split.py` ✅ CREATED
+- [x] `tests/data/test_loader_coverage.py` - 30+ tests for `src/codex_ml/data/loader.py`  CREATED
+- [x] `tests/data/test_validation_coverage.py` - 20+ tests for `src/codex_ml/data/validation.py`  CREATED
+- [x] `tests/data/test_split_coverage.py` - 15+ tests for `src/codex_ml/data/split.py`  CREATED
 
 **Training Tests (65+ tests):**
-- [x] `tests/training/test_unified_coverage.py` - 35+ tests for `src/codex_ml/training/unified_training.py` ✅ CREATED
-- [x] `tests/training/test_legacy_coverage.py` - 20+ tests for `src/codex_ml/training/legacy_api.py` ✅ CREATED
-- [x] `tests/training/test_strategies_coverage.py` - 15+ tests for `src/codex_ml/training/strategies.py` ✅ CREATED
+- [x] `tests/training/test_unified_coverage.py` - 35+ tests for `src/codex_ml/training/unified_training.py`  CREATED
+- [x] `tests/training/test_legacy_coverage.py` - 20+ tests for `src/codex_ml/training/legacy_api.py`  CREATED
+- [x] `tests/training/test_strategies_coverage.py` - 15+ tests for `src/codex_ml/training/strategies.py`  CREATED
 
 **Phase 14.1 Progress Summary:**
 
 | Category | Target | Created | % |
 |----------|--------|---------|---|
-| CLI Tests | 55+ | 60+ | ✅ 100% |
-| Data Tests | 60+ | 65+ | ✅ 100% |
-| Training Tests | 65+ | 70+ | ✅ 100% |
-| **Total** | **180+** | **195+** | ✅ 100% |
+| CLI Tests | 55+ | 60+ |  100% |
+| Data Tests | 60+ | 65+ |  100% |
+| Training Tests | 65+ | 70+ |  100% |
+| **Total** | **180+** | **195+** |  100% |
 
 ---
 
-## Phase 14.2: Security Hardening - ✅ COMPLETE
+## Phase 14.2: Security Hardening -  COMPLETE
 
 **Security Tests Progress:**
 
 | Category | Target | Created | % |
 |----------|--------|---------|---|
-| CVE Monitor Tests | 15+ | 20+ | ✅ 100% |
-| Denylist Tests | 15+ | 20+ | ✅ 100% |
-| Sanitizers Tests | 20+ | 25+ | ✅ 100% |
-| Moderation Tests | 20+ | 25+ | ✅ 100% |
-| **Total** | **70+** | **90+** | ✅ 100% |
+| CVE Monitor Tests | 15+ | 20+ |  100% |
+| Denylist Tests | 15+ | 20+ |  100% |
+| Sanitizers Tests | 20+ | 25+ |  100% |
+| Moderation Tests | 20+ | 25+ |  100% |
+| **Total** | **70+** | **90+** |  100% |
 
 **Files Created:**
 - [x] `tests/security/test_cve_monitor_coverage.py` - 20+ tests
@@ -588,15 +590,15 @@ if complex_condition:  # pragma: no cover  # ❌ Don't do this
 
 ---
 
-## Phase 14.3: Integration & Edge Cases - ✅ COMPLETE
+## Phase 14.3: Integration & Edge Cases -  COMPLETE
 
 **Integration Tests Progress:**
 
 | Category | Target | Created | % |
 |----------|--------|---------|---|
-| Cross-Module Integration | 30+ | 35+ | ✅ 100% |
-| Edge Case & Boundary | 40+ | 45+ | ✅ 100% |
-| **Total** | **70+** | **80+** | ✅ 100% |
+| Cross-Module Integration | 30+ | 35+ |  100% |
+| Edge Case & Boundary | 40+ | 45+ |  100% |
+| **Total** | **70+** | **80+** |  100% |
 
 **Files Created:**
 - [x] `tests/integration/test_phase14_cross_module_coverage.py` - 35+ tests

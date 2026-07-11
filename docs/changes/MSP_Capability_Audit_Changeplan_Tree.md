@@ -1,6 +1,8 @@
 # [Change Plan]: MSP Capability-Audit — File/Folder Tree and Scope
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 Roles: [Audit Orchestrator], [Capability Cartographer] Energy: 5
 
 Note: This tree lists all files to create/update/refactor to close identified gaps:

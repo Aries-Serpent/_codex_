@@ -1,9 +1,11 @@
 # Governance & Memory API Reference
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Status:** Phase 2 - Master API Documentation  
 **Coverage:** 52+ public functions & classes  
 **Modules:** governance/*, cognitive/brain_interface.py, brain/memory_sync.py  
-**Last Updated:** 2026-07-08
+**Last Updated: 2026-07-08
 
 ---
 

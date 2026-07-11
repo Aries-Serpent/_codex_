@@ -1,10 +1,12 @@
 # Operations Documentation
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Directory Purpose**: Operations procedures, policies, and governance for Aries-Serpent/_codex_
 
 ---
 
-## 📚 Quick Navigation
+##  Quick Navigation
 
 - **Operations Manual** - Main operations procedures
 - **Change Management** - Change control procedures
@@ -28,7 +30,7 @@ docs/operations/
 
 ---
 
-## 📖 Contents
+##  Contents
 
 ### Operations Manual
 - **Standard Operating Procedures** - Main SOP documentation
@@ -62,7 +64,7 @@ docs/operations/
 
 ---
 
-## 🚀 Quick Start
+##  Quick Start
 
 1. **New to Operations?** → Start with Operations Manual
 2. **Making Changes?** → Follow Change Management
@@ -80,7 +82,7 @@ docs/operations/
 
 ---
 
-## 📊 Key Processes
+##  Key Processes
 
 | Process | Type | Frequency | Owner |
 |---------|------|-----------|-------|
@@ -91,7 +93,7 @@ docs/operations/
 
 ---
 
-## 🔐 Security & Compliance
+##  Security & Compliance
 
 - Follow change control procedures
 - Document all changes and decisions
@@ -110,7 +112,7 @@ docs/operations/
 
 ---
 
-## 💡 Best Practices
+##  Best Practices
 
 - Document all procedures
 - Test procedures regularly
@@ -123,4 +125,4 @@ docs/operations/
 
 **Last Updated**: 2026-06-22  
 **Category**: Operations & Governance  
-**Status**: ✅ Active
+**Status**:  Active

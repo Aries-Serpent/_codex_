@@ -1,8 +1,10 @@
 <!-- BEGIN: CODEX_DOCS_SAFETY -->
 
 # Safety
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 Codex provides several layers of safeguards to reduce accidental leakage and
 harmful behaviour:

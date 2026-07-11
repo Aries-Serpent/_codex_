@@ -1,6 +1,8 @@
 # GitHub Copilot Agent: Coverage Enhancement Prompt
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## Comprehensive Reusable Prompt for Raising Test Coverage to 100%
 
@@ -8,7 +10,7 @@ Use this prompt template to instruct GitHub Copilot Agent to systematically rais
 
 ---
 
-## 🎯 MASTER PROMPT
+##  MASTER PROMPT
 
 ```
 @copilot You are tasked with raising test coverage for this repository to 100%. Follow this systematic approach:
@@ -388,16 +390,16 @@ For each file:
 
 ---
 
-## 📊 TRACKING TEMPLATE
+##  TRACKING TEMPLATE
 
 | File | Before | After | Test File | Status |
 |------|--------|-------|-----------|--------|
-| src/module/file.py | 45% | 100% | tests/module/test_file.py | ✅ |
-| src/other/file.py | 0% | 100% | tests/other/test_file.py | ✅ |
+| src/module/file.py | 45% | 100% | tests/module/test_file.py |  |
+| src/other/file.py | 0% | 100% | tests/other/test_file.py |  |
 
 ---
 
-## 🚀 QUICK START
+##  QUICK START
 
 Copy and paste this to start:
 

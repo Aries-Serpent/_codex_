@@ -1,7 +1,9 @@
 # RAG Pipelines API Documentation
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Version:** 1.0  
-**Last Updated:** 2025-12-24
+**Last Updated: 2026-07-11
 
 ## Overview
 
@@ -538,12 +540,12 @@ pytest tests/integration/test_physics_inspired_rag.py
 
 - [Quantum Retrieval Physics Principles](../ai-facing/QUANTUM_RETRIEVAL_PHYSICS.md)
 - [Quantum RAG Integration Guide](../ai-facing/QUANTUM_RAG_docs/api/reference/INTEGRATION.md)
-- [Agent Memory Documentation](https://github.com/Aries-Serpent/_codex_/blob/main/agents/agent_memory.py)
-- [MCP Metrics Documentation](https://github.com/Aries-Serpent/_codex_/blob/main/src/mcp/metrics/mcp_metrics.py)
+- [Agent Memory Documentation](../agents/agent_memory.py)
+- [MCP Metrics Documentation](../src/mcp/metrics/mcp_metrics.py)
 
 ---
 
 **API Version:** 1.0  
 **Module Version:** Matches package version  
-**Last Updated:** 2025-12-24  
+**Last Updated: 2026-07-11  
 **Maintained By:** _codex_ Development Team

@@ -27,19 +27,19 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout repository
-      uses: actions/checkout@v5
-      with:
+        uses: actions/checkout@v5
+        with:
         fetch-depth: 1
       - name: Set up Python
-      uses: ./.github/actions/setup-python-cached
-      with:
-        python-version: 3.12.13
-        cache-tier: common
-        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: 3.12.13
+          cache-tier: common
+          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
       - name: Install dependencies
-      run: pip install jsonschema pyyaml --quiet
+        run: pip install jsonschema pyyaml --quiet
       - name: Refresh CODEX_MANIFEST.json
-      run: '# Regenerate the manifest on every validation run so generated_at is always
+        run: '# Regenerate the manifest on every validation run so generated_at is always
         fresh.
 
         # This keeps C2 (manifest current <24h) satisfied in e-to-d-transition-gate.
@@ -50,8 +50,8 @@ jobs:
 
         '
       - name: Validate AGENT_REGISTRY.yaml schema
-      id: registry_validation
-      run: "python3 - << 'PYEOF'\nimport json\nimport os\nimport sys\nimport yaml\n\
+        id: registry_validation
+        run: "python3 - << 'PYEOF'\nimport json\nimport os\nimport sys\nimport yaml\n\
         \ntry:\n    import jsonschema\nexcept ImportError:\n    print(\"::warning::jsonschema\
         \ not installed — skipping schema validation\")\n    sys.exit(0)\n\nschema_path\
         \ = \".codex/schemas/AgentRegistrySchema.json\"\nregistry_path = \".github/agents/AGENT_REGISTRY.yaml\"\
@@ -79,8 +79,8 @@ jobs:
         \        f.write(\"registry_valid=true\\n\")\n        f.write(\"error_count=0\\\
         n\")\nPYEOF\n"
       - name: Validate capability_tags quality
-      id: tags_quality
-      run: "python3 - << 'PYEOF'\n# Enforce capability_tags quality rules on every\
+        id: tags_quality
+        run: "python3 - << 'PYEOF'\n# Enforce capability_tags quality rules on every\
         \ PR that touches AGENT_REGISTRY.yaml.\n# Rules (Tier-1 GROUNDED — hard gate):\n\
         #   1. Every agent must have at least one capability_tag.\n#   2. Tags must\
         \ be snake_case (a-z, 0-9, underscore only; no hyphens, spaces, commas).\n\
@@ -110,8 +110,8 @@ jobs:
         \ tags\")\n    with open(gf, \"a\") as f:\n        f.write(\"tags_valid=true\\\
         n\")\n        f.write(\"tag_violations=0\\n\")\nPYEOF\n"
       - name: Validate CODEX_MANIFEST.json integrity
-      id: manifest_validation
-      run: "python3 - << 'PYEOF'\nimport hashlib\nimport json\nimport os\nimport sys\n\
+        id: manifest_validation
+        run: "python3 - << 'PYEOF'\nimport hashlib\nimport json\nimport os\nimport sys\n\
         \ntry:\n    import jsonschema\nexcept ImportError:\n    jsonschema = None\n\
         \nmanifest_path = \"CODEX_MANIFEST.json\"\nschema_path = \".codex/schemas/CodexManifestSchema.json\"\
         \n\nif not os.path.exists(manifest_path):\n    print(\"::error::CODEX_MANIFEST.json\
@@ -137,15 +137,15 @@ jobs:
         GITHUB_OUTPUT\", \"/dev/null\"), \"a\") as f:\n    f.write(\"manifest_valid=true\\\
         n\")\nPYEOF\n"
       - name: Post validation summary
-      if: github.event_name == 'pull_request'
-      uses: actions/github-script@v8
-      env:
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v8
+        env:
         REGISTRY_VALID: ${{ steps.registry_validation.outputs.registry_valid }}
         MANIFEST_VALID: ${{ steps.manifest_validation.outputs.manifest_valid }}
         ERROR_COUNT: ${{ steps.registry_validation.outputs.error_count }}
-      with:
-        github-token: ${{ github.token }}
-        script: "const registryValid = process.env.REGISTRY_VALID;\nconst manifestValid\
+        with:
+          github-token: ${{ github.token }}
+          script: "const registryValid = process.env.REGISTRY_VALID;\nconst manifestValid\
           \ = process.env.MANIFEST_VALID;\nconst errorCount = process.env.ERROR_COUNT\
           \ || '0';\n\n// Only post a comment if there are issues to report\nif (registryValid\
           \ === 'true' && manifestValid === 'true') {\n  core.info('Registry and manifest\
@@ -169,19 +169,18 @@ jobs:
         uses: actions/cache@v5
         if: always()
         with:
-        path: .pytest_cache/
-        key: ${{ runner.os }}-pytest-${{ github.sha }}
+          path: .pytest_cache/
+          key: ${{ runner.os }}-pytest-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-pytest-
 
       - name: Trigger embedding index refresh
-      if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.EMBEDDING_INDEX_AUTO_REBUILD
-        != 'false'
-      run: "gh workflow run embedding-index-rebuild.yml --ref main \\\n  && echo \"\
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.EMBEDDING_INDEX_AUTO_REBUILD != 'false'
+        run: "gh workflow run embedding-index-rebuild.yml --ref main \\\n  && echo \"\
         ✅ Triggered embedding-index-rebuild.yml — FAISS index will refresh\" \\\n\
         \  || echo \"::warning::Failed to trigger embedding index rebuild — run manually:\
         \ gh workflow run embedding-index-rebuild.yml --ref main\"\n"
-      env:
+        env:
         GH_TOKEN: ${{ github.token }}
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
@@ -203,12 +202,12 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout repository
-      uses: actions/checkout@v5
-      with:
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        uses: actions/checkout@v5
+        with:
+          token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1
       - name: Post or update rescue comment
-      env:
+        env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
@@ -219,7 +218,7 @@ jobs:
         RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
           github.run_id }}
         BRANCH: ${{ github.head_ref }}
-      run: python scripts/ci/post_rescue_comment.py
+        run: python scripts/ci/post_rescue_comment.py
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}

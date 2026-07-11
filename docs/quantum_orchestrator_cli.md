@@ -1,6 +1,8 @@
 # Quantum Orchestrator CLI Documentation
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## Overview
 
@@ -14,7 +16,7 @@ The CLI is integrated with the main Codex CLI and is available after installing 
 pip install -e .
 ```
 
-## Quick Start
+## Quickstart
 
 ```bash
 # View available commands
@@ -419,4 +421,4 @@ For issues or questions:
 
 - CLI Version: 0.3.0
 - Phase C.4: Gauge Symmetries and CLI Commands
-- Last updated: 2026-02-10
+- Last updated: 2026-07-11

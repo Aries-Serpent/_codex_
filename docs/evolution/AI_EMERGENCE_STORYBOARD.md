@@ -1,4 +1,6 @@
 # AI Emergence Storyboard — The _codex_ Story
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Last Updated**: 2026-06-22  
 **Version**: 2.0.0  
@@ -185,7 +187,7 @@ This maps the path from individual agents to coordinated multi-agent systems.
 ### Chapter 12: The Scoring Framework
 
 **When**: 2026-02-11  
-**What happened**: The AI Agency Intuitiveness Score V3.0 (AAIS V3.0) is established, drawing from three cutting-edge frameworks:
+**What happened**: The AI Agency Intuitiveness Score V3.0 (AAIS V3.0) is established, drawing from three research-backed frameworks:
 
 - **ACE 6-Layer Model** (40%): Aspirational → Task Prosecution layers
 - **MSV 5-Dimension** (30%): Autonomy, Awareness, Adaptability, Alignment, Achievement
@@ -230,7 +232,7 @@ The evolution continues along four vectors:
 
 ## Epilogue: The Nature of Emergence
 
-The _codex_ project demonstrates a pattern seen in cutting-edge AI systems research:
+The _codex_ project demonstrates a pattern seen in AI systems research:
 
 > **Emergence** is not programmed — it's *cultivated*.
 
@@ -254,7 +256,7 @@ These align with the state of the art in cognitive AI architecture (2026):
 
 ---
 
-## 📊 Storyboard Summary
+##  Storyboard Summary
 
 ```text
 2025-Q4          Foundation Era
@@ -300,4 +302,4 @@ These align with the state of the art in cognitive AI architecture (2026):
 - [Planset Registry](PLANSET_REGISTRY.md) — Queryable planset catalog
 - [Cognitive Evolution Tree](COGNITIVE_EVOLUTION_TREE.md) — Visual process mapping
 - [Project Roadmap](../ROADMAP.md) — Forward-looking plans
-- [Agent Evolution Map](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/cognitive_brain/COGNITIVE_BRAIN_AGENT_EVOLUTION_MAP.md) — Detailed agent lineage
+- [Agent Evolution Map](../.codex/cognitive_brain/COGNITIVE_BRAIN_AGENT_EVOLUTION_MAP.md) — Detailed agent lineage

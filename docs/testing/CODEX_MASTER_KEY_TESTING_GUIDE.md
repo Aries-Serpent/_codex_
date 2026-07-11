@@ -1,7 +1,9 @@
 # Testing CODEX_MASTER_KEY: Comprehensive Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Version:** 1.0.0  
-> **Last Updated:** 2026-06-29  
+> **Last Updated: 2026-06-29
 > **Author:** GitHub Copilot Agent  
 > **Scope:** 10 GitHub API processes, 20+ GitHub API endpoints, all CODEX_MASTER_KEY scopes
 
@@ -25,7 +27,7 @@ This guide documents the comprehensive test suite for GitHub API processes that 
 
 ---
 
-## 🎯 Top 10 Processes Tested
+##  Top 10 Processes Tested
 
 ### 1️⃣ Repository Variables Management
 
@@ -326,19 +328,19 @@ python scripts/ci/test_codex_master_key_scopes.py --report-json scopes.json
 
 ---
 
-## 📊 Test Coverage Matrix
+##  Test Coverage Matrix
 
 ### Scope Coverage
 
 | Scope | Process | Test File | Status |
 |-------|---------|-----------|--------|
-| `repo` | 1, 3, 5 | `test_variables_comprehensive.py`, `test_secrets_management_comprehensive.py` | ✅ |
-| `admin:org` | 2, 4 | `test_variables_comprehensive.py`, `test_secrets_management_comprehensive.py` | ✅ |
-| `codespace` | 6 | `test_secrets_management_comprehensive.py` | ✅ |
-| `workflow` | 7 | `test_workflow_operations.py` | ✅ |
-| `admin:repo_hook` | 8 | `test_webhook_management.py` | ✅ |
-| `admin:org_hook` | 9 | `test_webhook_management.py` | ✅ |
-| `audit_log` | 10 | `test_audit_log_access.py` | ✅ |
+| `repo` | 1, 3, 5 | `test_variables_comprehensive.py`, `test_secrets_management_comprehensive.py` |  |
+| `admin:org` | 2, 4 | `test_variables_comprehensive.py`, `test_secrets_management_comprehensive.py` |  |
+| `codespace` | 6 | `test_secrets_management_comprehensive.py` |  |
+| `workflow` | 7 | `test_workflow_operations.py` |  |
+| `admin:repo_hook` | 8 | `test_webhook_management.py` |  |
+| `admin:org_hook` | 9 | `test_webhook_management.py` |  |
+| `audit_log` | 10 | `test_audit_log_access.py` |  |
 
 ### API Endpoint Coverage
 
@@ -350,7 +352,7 @@ python scripts/ci/test_codex_master_key_scopes.py --report-json scopes.json
 
 ---
 
-## 🚀 Running the Tests
+##  Running the Tests
 
 ### Prerequisites
 
@@ -386,7 +388,7 @@ python scripts/ci/test_codex_master_key_scopes.py --report-json .codex/scope_rep
 
 ---
 
-## 🔐 Security Considerations
+##  Security Considerations
 
 ### Token Exposure Prevention
 
@@ -455,7 +457,7 @@ python -c "import nacl; print(nacl.__version__)"
 
 ---
 
-## 📚 Additional Resources
+##  Additional Resources
 
 - [GitHub REST API Documentation](https://docs.github.com/en/rest)
 - [GitHub Actions Variables](https://docs.github.com/en/rest/actions/variables)

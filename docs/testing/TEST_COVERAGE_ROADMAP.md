@@ -1,6 +1,8 @@
 # Test Coverage Roadmap
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 **Status**: Active  
 **Created**: 2026-01-18  
@@ -121,7 +123,7 @@ Utility modules, stubs, and rarely-used features.
 ## Resources
 
 - **Priority Matrix**: `.codex/qa_walkthrough/test_priority_matrix.json`
-- **Coverage Analysis**: `https://github.com/Aries-Serpent/_codex_/blob/main/.codex/qa_walkthrough/coverage_analysis.json`
+- **Coverage Analysis**: `../.codex/qa_walkthrough/coverage_analysis.json`
 - **Test Templates**: `tests/templates/`
 - **Test Patterns**: `docs/testing/TEST_PATTERNS.md`
 

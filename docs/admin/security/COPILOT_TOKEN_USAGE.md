@@ -1,9 +1,11 @@
-# 🤖 Copilot Agent Token Usage Guide
+#  Copilot Agent Token Usage Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Generated**: 2026-06-22
 > **Repository**: Aries-Serpent/_codex_
 > **Audience**: Copilot Agent, Automation Engineers
-> **Security Level**: 🔐🔐🔐🔐🔐 (5/5)
+> **Security Level**:  (5/5)
 
 ## 📋 Table of Contents
 
@@ -20,11 +22,11 @@
 
 The _codex_ repository provides **automatic secure token decryption** for Copilot Agent operations. The system:
 
-- ✅ **Auto-detects** available encryption method
-- ✅ **Fallback chain** for reliability (AES → Base64 → Hex → Plaintext)
-- ✅ **Zero configuration** required in most cases
-- ✅ **Backward compatible** with existing code
-- ✅ **Token validation** with SHA-256 verification
+-  **Auto-detects** available encryption method
+-  **Fallback chain** for reliability (AES → Base64 → Hex → Plaintext)
+-  **Zero configuration** required in most cases
+-  **Backward compatible** with existing code
+-  **Token validation** with SHA-256 verification
 
 ---
 
@@ -51,7 +53,7 @@ from scripts.security.copilot_token_decoder import copilot_get_github_token_safe
 token = copilot_get_github_token_safe()
 
 if token:
-    print("✅ Token retrieved successfully")
+    print(" Token retrieved successfully")
     # Use token...
 else:
     print("⚠️ No token configured, using fallback method")
@@ -100,7 +102,7 @@ def main():
     response = requests.get('https://api.github.com/user', headers=headers)
     user = response.json()
 
-    print(f"✅ Authenticated as: {user['login']}")
+    print(f" Authenticated as: {user['login']}")
 
     # Example: List repository issues
     response = requests.get(
@@ -223,7 +225,7 @@ jobs:
           headers = {'Authorization': f'token {token}'}
 
           response = requests.get('https://api.github.com/user', headers=headers)
-          print(f'✅ Authenticated as: {response.json()[\"login\"]}')
+          print(f' Authenticated as: {response.json()[\"login\"]}')
           "
 ```
 
@@ -272,13 +274,13 @@ def main():
     token = copilot_get_github_token_safe()
 
     if not token:
-        print("❌ ERROR: No GitHub token configured")
+        print(" ERROR: No GitHub token configured")
         print("Please configure CODEX_GHP_TOKEN_* secrets")
         print("See: docs/admin/security/ADMIN_TOKEN_SETUP.md")
         return 1
 
     # Continue with token...
-    print("✅ Token retrieved successfully")
+    print(" Token retrieved successfully")
     return 0
 
 if __name__ == '__main__':
@@ -308,10 +310,10 @@ def main():
         token = decoder.get_token(method='plaintext')
 
     if not token:
-        print("❌ All decryption methods failed")
+        print(" All decryption methods failed")
         return 1
 
-    print("✅ Token retrieved via fallback chain")
+    print(" Token retrieved via fallback chain")
     return 0
 
 if __name__ == '__main__':
@@ -325,10 +327,10 @@ if __name__ == '__main__':
 ### 1. Never Log or Print Full Token
 
 ```python
-# ❌ BAD - Exposes token in logs
+#  BAD - Exposes token in logs
 print(f"Token: {token}")
 
-# ✅ GOOD - Shows only prefix
+#  GOOD - Shows only prefix
 print(f"Token: {token[:10]}... (length: {len(token)})")
 ```
 
@@ -457,13 +459,13 @@ logging.info(f"Token method: {CodexTokenDecoder.detect_encoding_type()}")
 
 ---
 
-## 🎯 Mission Overview
+##  Mission Overview
 
 **Objective**: Provide zero-configuration secure token retrieval for AI automation with automatic fallback chain and integrity verification.
 
 **Energy Level**: ⚡⚡⚡⚡⚡ (5/5 - Security Critical)
 
-**Status**: 🟢 Active
+**Status**:  Active
 
 ---
 
@@ -489,11 +491,11 @@ logging.info(f"Token method: {CodexTokenDecoder.detect_encoding_type()}")
 
 | Metric | Current | Target | Status |
 |--------|---------|--------|--------|
-| Retrieval Success Rate | 99.9% | >99% | 🟢 |
-| Fallback Chain Coverage | 4 methods | ≥3 methods | 🟢 |
-| Auto-Detection Accuracy | 100% | 100% | 🟢 |
-| Integration Time | <5 min | <10 min | 🟢 |
-| Zero-Config Operations | Yes | Yes | 🟢 |
+| Retrieval Success Rate | 99.9% | >99% |  |
+| Fallback Chain Coverage | 4 methods | ≥3 methods |  |
+| Auto-Detection Accuracy | 100% | 100% |  |
+| Integration Time | <5 min | <10 min |  |
+| Zero-Config Operations | Yes | Yes |  |
 
 ---
 
@@ -523,7 +525,7 @@ logging.info(f"Token method: {CodexTokenDecoder.detect_encoding_type()}")
 
 ---
 
-## 🧠 Redundancy Patterns
+##  Redundancy Patterns
 
 **Rollback Strategy**: If automated retrieval fails, provide environment variable override for manual token injection during incident response.
 

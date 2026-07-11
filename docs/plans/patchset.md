@@ -1,6 +1,8 @@
 # RAG + Verification Stack Patchset Prompts
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 Use these iterative prompts to generate and self-verify each missing artifact until all files exist and meet production criteria. Execute prompts batch-by-batch; after each file is produced, re-run quick checks and update evidence links.
 

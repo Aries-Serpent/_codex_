@@ -1,6 +1,8 @@
 # Reproducibility & Integrity
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## Seeds & Determinism
 - Set all RNG seeds early; prefer deterministic kernels when available.

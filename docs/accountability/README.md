@@ -1,10 +1,12 @@
 # Agent Accountability Report — Landing Page
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Phase 2.3 Complete** ✅ — Accountability report migration from monolithic (4.1MB) to chunked (32×12KB) format.
+**Phase 2.3 Complete**  — Accountability report migration from monolithic (4.1MB) to chunked (32×12KB) format.
 
 ---
 
-## 🎯 Quick Start
+##  Quick Start
 
 - **New to this report?** Start with [.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md](./AGENT_ACCOUNTABILITY_REPORT.md) for the index
 - **Want the latest sessions?** Jump to [Group 32](./chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_32.md)
@@ -29,7 +31,7 @@ docs/accountability/
 
 ---
 
-## 📊 Report Overview
+##  Report Overview
 
 | Aspect | Detail |
 |--------|--------|
@@ -38,7 +40,7 @@ docs/accountability/
 | **Sessions per Chunk** | 10 (avg) |
 | **Total Size** | ~280 KB |
 | **Size per Chunk** | ~8.75 KB |
-| **GitHub Render Limit** | <256 KB ✅ |
+| **GitHub Render Limit** | <256 KB  |
 | **Format** | Markdown tables + JSON metadata |
 | **Last Updated** | 2026-06-23T02:51:08Z |
 
@@ -87,15 +89,15 @@ docs/accountability/
 ```
 
 ### Benefits
-✅ **Faster rendering** — GitHub handles <256KB files instantly  
-✅ **Better navigation** — Index → group → session flow  
-✅ **Reduced memory** — No need to load 4.1MB in browser  
-✅ **Easier updates** — Modify individual session groups  
-✅ **Full backward compatibility** — Old report still available  
+ **Faster rendering** — GitHub handles <256KB files instantly  
+ **Better navigation** — Index → group → session flow  
+ **Reduced memory** — No need to load 4.1MB in browser  
+ **Easier updates** — Modify individual session groups  
+ **Full backward compatibility** — Old report still available  
 
 ---
 
-## 📖 How to Use This Report
+##  How to Use This Report
 
 ### Find a Session by ID
 1. Open [.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md](./AGENT_ACCOUNTABILITY_REPORT.md)
@@ -146,14 +148,14 @@ Available for reference if needed. Contains the exact same data as all 32 chunks
 
 ---
 
-## ✅ Verification
+##  Verification
 
-- ✅ All 32 chunk files generated
-- ✅ Each chunk <256 KB (GitHub render limit)
-- ✅ Prev/Next navigation verified
-- ✅ Index links validated
-- ✅ 100% data coverage (316 sessions)
-- ✅ 0% data loss
+-  All 32 chunk files generated
+-  Each chunk <256 KB (GitHub render limit)
+-  Prev/Next navigation verified
+-  Index links validated
+-  100% data coverage (316 sessions)
+-  0% data loss
 
 ---
 
@@ -171,4 +173,4 @@ Available for reference if needed. Contains the exact same data as all 32 chunks
 
 **Document Generated:** 2026-06-23T02:51:08Z  
 **Format Version:** Phase 2.3 (Chunked)  
-**Status:** ✅ Complete
+**Status:**  Complete

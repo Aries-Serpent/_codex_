@@ -57,7 +57,7 @@ dependencies = [
     "requests>=2.33.0",  # Security: CVE-2026-25645 fix
     "defusedxml>=0.7.1",
 ]
-version = "0.2.0"
+version = "0.2.1"
 
 [project.optional-dependencies]
 # ==============================================================================
@@ -310,6 +310,7 @@ where = [
 # Bundled packages (production code and AI subsystems)
 include = [
     "agents*",              # AI agents subsystem
+    "aries_serpent_core*",  # Core Aries Serpent logging and utilities (required by CLI)
     "codex_ml*",            # ML training, evaluation, and utilities
     "codex*",               # Core utilities (codex, codex_bridge, etc.)
     "common*",              # Common utilities

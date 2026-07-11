@@ -1,14 +1,16 @@
 # [Prompt Title]
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Version**: 1.0.0  
 **Last Updated**: YYYY-MM-DD  
 **Purpose**: [One-line description of what this prompt accomplishes]  
 **Target Agent**: [GitHub Copilot | ChatGPT | Claude | Custom]  
-**Status**: 🟢 Active
+**Status**:  Active
 
 ---
 
-## 🧠 Context
+##  Context
 
 ### Cognitive Brain References
 
@@ -31,7 +33,7 @@ Before starting, load the cognitive brain for full context:
 
 ---
 
-## 🎯 Objective
+##  Objective
 
 [Clear, specific, measurable goal statement]
 
@@ -105,7 +107,7 @@ Before starting, load the cognitive brain for full context:
 
 ---
 
-## ✅ Validation
+##  Validation
 
 ### Acceptance Criteria
 
@@ -146,7 +148,7 @@ Before concluding, perform 5-pass self-review:
 
 ---
 
-## 📊 Token Budget
+##  Token Budget
 
 | Phase | Estimated Tokens | Duration | Priority |
 |-------|------------------|----------|----------|
@@ -166,7 +168,7 @@ Before concluding, perform 5-pass self-review:
 
 ---
 
-## 📚 Related Resources
+##  Related Resources
 
 **Documentation**:
 - Related Guide: `../path/to/guide.md` (placeholder) - Description
@@ -244,7 +246,7 @@ If work remains after session:
 
 ---
 
-## 🎯 Follow-Up
+##  Follow-Up
 
 After completion:
 - [ ] Update cognitive brain (Dashboard, Roadmap)

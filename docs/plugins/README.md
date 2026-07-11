@@ -1,6 +1,6 @@
 # Plugins Documentation
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 This directory contains documentation for the plugin system and available plugins.
 
@@ -47,7 +47,7 @@ my-plugin/
 
 ## Plugin Development
 
-### Quick Start
+### Quickstart
 
 ```python
 # plugin.py

@@ -1,4 +1,6 @@
 # Secret Rotation Policy
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Version**: 1.0.0  
 **Effective Date**: 2026-06-14  
@@ -66,11 +68,11 @@ This policy applies to:
 - **Annually (365 days)**: TLS certificates (shorter expiry recommended)
 
 **Triggers for Immediate Rotation**:
-- ✅ Credential compromise detected
-- ✅ Employee separation
-- ✅ Unauthorized access attempt
-- ✅ Policy violation
-- ✅ Regular security audit findings
+-  Credential compromise detected
+-  Employee separation
+-  Unauthorized access attempt
+-  Policy violation
+-  Regular security audit findings
 
 ---
 
@@ -88,18 +90,18 @@ This policy applies to:
 ```bash
 # 1.1 Verify current key is secure
 python scripts/security/verify_key_integrity.py
-# Expected output: ✅ Key integrity verified, entropy: 256-bit
+# Expected output:  Key integrity verified, entropy: 256-bit
 
 # 1.2 Check deployment readiness
 python scripts/security/check_rotation_readiness.py
 # Expected output:
-# ✅ All services can be updated
-# ✅ Backup procedures ready
-# ✅ Fallback key available
+#  All services can be updated
+#  Backup procedures ready
+#  Fallback key available
 
 # 1.3 Test rotation scripts in staging
 nox -s security -- test-key-rotation-staging
-# Expected output: ✅ All rotation steps passed in staging
+# Expected output:  All rotation steps passed in staging
 ```
 
 **Phase 2: Generate New Key**
@@ -121,7 +123,7 @@ python scripts/security/backup_key.py \
   --key=CODEX_MASTER_KEY \
   --archive-days=90
 
-# Output: ✅ Key backed up to: .codex/backups/mk-2026-03-14-001.enc
+# Output:  Key backed up to: .codex/backups/mk-2026-03-14-001.enc
 ```
 
 **Phase 3: Dual-Write Phase** (24 hours)
@@ -161,7 +163,7 @@ git push origin feature/key-rotation-$(date +%Y%m%d)
 
 # 4.4 Verify primary key active
 python scripts/security/verify_rotation_complete.py
-# Expected: ✅ Primary key active, no encryption errors
+# Expected:  Primary key active, no encryption errors
 ```
 
 **Phase 5: Grace Period & Cleanup** (48 hours)
@@ -175,7 +177,7 @@ python scripts/security/revoke_key.py \
   --key-id=mk-2026-03-14-001 \
   --archive-retention=90days
 
-# Output: ✅ Old key revoked, archived for 90 days
+# Output:  Old key revoked, archived for 90 days
 
 # 5.3 Update rotation log
 echo "mk-2026-03-14-001 → mk-2026-06-14-001: SUCCESS" >> .codex/rotation.log
@@ -212,10 +214,10 @@ python scripts/security/invalidate_sessions.py \
 ```
 
 **Test Coverage**: `tests/security/test_key_rotation.py`
-- ✅ `test_quarterly_rotation_success`
-- ✅ `test_emergency_rotation_immediate`
-- ✅ `test_dual_write_phase_integrity`
-- ✅ `test_old_key_revocation`
+-  `test_quarterly_rotation_success`
+-  `test_emergency_rotation_immediate`
+-  `test_dual_write_phase_integrity`
+-  `test_old_key_revocation`
 
 ---
 
@@ -287,7 +289,7 @@ python scripts/manage_db_credentials.py \
   --from=codex-app-2026-q1 \
   --to=codex-app-2026-q2
 
-# Output: ✅ Permissions replicated
+# Output:  Permissions replicated
 
 # 3. Update DATABASE_URL secret (dual-phase)
 NEW_DB_URL="******db.example.com/codex"
@@ -311,7 +313,7 @@ python scripts/manage_db_credentials.py \
   --username=codex-app-2026-q1 \
   --archive-logs=true
 
-# Output: ✅ Old user dropped, audit logs archived
+# Output:  Old user dropped, audit logs archived
 ```
 
 ---
@@ -431,11 +433,11 @@ openssl s_client -connect api.example.com:443 -tls1_3
 ### Monitoring During Rotation
 
 **Metrics to Track**:
-- ✅ Authentication success rate (should remain >99.9%)
-- ✅ Authorization check latency
-- ✅ Secret cache hit rate
-- ✅ Decryption error count (should be 0)
-- ✅ Failed decrypt attempts (investigate any)
+-  Authentication success rate (should remain >99.9%)
+-  Authorization check latency
+-  Secret cache hit rate
+-  Decryption error count (should be 0)
+-  Failed decrypt attempts (investigate any)
 
 **Alert Thresholds**:
 - ⚠️ Authentication failures > 1% → Rollback
@@ -467,12 +469,12 @@ echo "Secret rotated: $TYPE, date: $(date), status: SUCCESS" >> .codex/rotation.
 
 ### When to Trigger
 
-- ✅ Credential found in public repository
-- ✅ Unauthorized access detected
-- ✅ Disgruntled employee departing
-- ✅ Security policy violation
-- ✅ Audit findings
-- ✅ Suspected compromise
+-  Credential found in public repository
+-  Unauthorized access detected
+-  Disgruntled employee departing
+-  Security policy violation
+-  Audit findings
+-  Suspected compromise
 
 ### Emergency Procedure
 
@@ -529,13 +531,13 @@ date,secret_type,old_key_id,new_key_id,reason,status,duration_hours  # pragma: a
 ### Audit Logging
 
 All rotation events logged to immutable audit trail:
-- ✅ Who performed rotation (user/service account)
-- ✅ When rotation occurred
-- ✅ Which secret was rotated
-- ✅ Old and new key IDs
-- ✅ Reason for rotation
-- ✅ Status (success/failed)
-- ✅ Any errors or warnings
+-  Who performed rotation (user/service account)
+-  When rotation occurred
+-  Which secret was rotated
+-  Old and new key IDs
+-  Reason for rotation
+-  Status (success/failed)
+-  Any errors or warnings
 
 ### Compliance Checks
 
@@ -545,10 +547,10 @@ python scripts/security/compliance_report.py --month=$(date +%Y-%m)
 # Output: Rotation compliance status
 
 # Expected output:
-# ✅ CODEX_MASTER_KEY: Last rotated 2026-06-14 (within schedule)
-# ✅ GitHub Tokens: Last rotated 2026-06-14 (within schedule)
+#  CODEX_MASTER_KEY: Last rotated 2026-06-14 (within schedule)
+#  GitHub Tokens: Last rotated 2026-06-14 (within schedule)
 # ⚠️ Database Creds: Last rotated 2026-03-14 (DUE 2026-06-14)
-# ✅ TLS Certificates: Valid until 2027-01-15
+#  TLS Certificates: Valid until 2027-01-15
 ```
 
 **Audit Trail Verification** (quarterly):

@@ -1,4 +1,6 @@
 # Phase 1: Session Tracking Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **For:** AI Agents & Developers  
 **Version:** 1.0  
@@ -6,7 +8,7 @@
 
 ---
 
-## Quick Start
+## Quickstart
 
 ### For Agents (Python API)
 

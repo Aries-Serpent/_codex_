@@ -1,7 +1,9 @@
 # Capacity Planning & Scaling Strategy - Codex ML
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Document Version:** 1.0.0  
-**Last Updated:** 2026-07-08  
+**Last Updated: 2026-07-08
 **Authority:** Phase 12 WS3 Documentation Lane 8  
 **Audience:** Infrastructure Engineers, Product Managers, Finance  
 **Status:** Growth Roadmap

@@ -1,4 +1,6 @@
 # Status
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Auto-generated index** — 2026-03-23 | Edit this file to add descriptions.
 > Directory: `docs/status/`

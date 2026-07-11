@@ -1,6 +1,8 @@
 # Getting started with Track G primitives
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 This tutorial keeps everything offline and deterministic. The steps rely on the
 new Hydra-ready `conf/` presets and the minimal training fallback so you can run

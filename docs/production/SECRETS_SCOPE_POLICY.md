@@ -1,6 +1,8 @@
 # GitHub Secrets Scope & Environment Policy
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 **Document**: Security & Compliance Policy  
 **Audience**: DevOps, Security, Platform Engineering  
@@ -218,7 +220,7 @@ ACCESSIBLE_SECRETS = {  # pragma: allowlist secret
 def check_forbidden_secrets():  # pragma: allowlist secret
     """Check that environment doesn't have cross-environment secrets"""  # pragma: allowlist secret
     if ENVIRONMENT not in ACCESSIBLE_SECRETS:  # pragma: allowlist secret
-        print(f"❌ Unknown environment: {ENVIRONMENT}")
+        print(f" Unknown environment: {ENVIRONMENT}")
         sys.exit(1)
 
     allowed = ACCESSIBLE_SECRETS[ENVIRONMENT]  # pragma: allowlist secret
@@ -233,12 +235,12 @@ def check_forbidden_secrets():  # pragma: allowlist secret
     for pattern in forbidden_patterns[ENVIRONMENT]:
         for secret in os.environ:  # pragma: allowlist secret
             if pattern in secret:  # pragma: allowlist secret
-                print(f"❌ Forbidden secret detected: {secret}")  # pragma: allowlist secret
+                print(f" Forbidden secret detected: {secret}")  # pragma: allowlist secret
                 print(f"   Environment: {ENVIRONMENT}")
                 print(f"   Pattern: {pattern}")
                 sys.exit(1)
 
-    print(f"✅ No cross-environment secrets detected in {ENVIRONMENT}")  # pragma: allowlist secret
+    print(f" No cross-environment secrets detected in {ENVIRONMENT}")  # pragma: allowlist secret
 
 if __name__ == "__main__":
     check_forbidden_secrets()  # pragma: allowlist secret
@@ -313,7 +315,7 @@ if unexpected:
     print(f"⚠️  Unexpected secrets detected: {unexpected}")
 
 if not missing and not unexpected:
-    print("✅ All secrets properly scoped and configured")
+    print(" All secrets properly scoped and configured")
 PYTHON
 ```
 
@@ -432,7 +434,7 @@ jobs:
 
 # Prevent committing secrets
 if git diff --cached | grep -i "password\|api_key\|token\|secret"; then
-    echo "❌ Potential secrets detected in staged changes"
+    echo " Potential secrets detected in staged changes"
     echo "Use 'git restore --staged <file>' to unstage"
     exit 1
 fi
@@ -477,10 +479,10 @@ If a secret is compromised:
 ### 8.1 Compliance Certification
 
 This policy ensures compliance with:
-- ✅ **OWASP Top 10**: A02:2021 – Cryptographic Failures
-- ✅ **NIST Framework**: PR.DS (Data Security)
-- ✅ **CWE-798**: Use of Hard-Coded Credentials
-- ✅ **SOC 2 Type II**: AC (Access Control)
+-  **OWASP Top 10**: A02:2021 – Cryptographic Failures
+-  **NIST Framework**: PR.DS (Data Security)
+-  **CWE-798**: Use of Hard-Coded Credentials
+-  **SOC 2 Type II**: AC (Access Control)
 
 ### 8.2 Sign-off
 

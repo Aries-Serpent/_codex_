@@ -1,6 +1,8 @@
 # Docker Optimization Guide (D1)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## Overview
 
@@ -8,11 +10,11 @@ This guide documents the optimized Docker setup for Codex ML with multi-stage bu
 
 ## Features
 
-✅ **Multi-stage builds** - Separate builder and runtime stages for minimal image size  
-✅ **Non-root user** - All containers run as `appuser` (UID 1000, GID 1000)  
-✅ **ARG flags** - Conditional feature installation (GPU, MLflow, Ray, build environment)  
-✅ **Security scanning** - Automated vulnerability scanning with Trivy and Hadolint  
-✅ **Best practices** - Health checks, tini init, minimal base images, OCI labels  
+ **Multi-stage builds** - Separate builder and runtime stages for minimal image size  
+ **Non-root user** - All containers run as `appuser` (UID 1000, GID 1000)  
+ **ARG flags** - Conditional feature installation (GPU, MLflow, Ray, build environment)  
+ **Security scanning** - Automated vulnerability scanning with Trivy and Hadolint  
+ **Best practices** - Health checks, tini init, minimal base images, OCI labels  
 
 ## Dockerfiles
 
@@ -180,12 +182,12 @@ REPORT_DIR=./my-reports ./scripts/docker_security_scan.sh codex:prod
 ```
 
 The script checks:
-- ✅ Dockerfile linting (Hadolint)
-- ✅ CVE vulnerabilities (Trivy)
-- ✅ Docker Scout analysis
-- ✅ Best practices compliance
-- ✅ Non-root user verification
-- ✅ Health check presence
+-  Dockerfile linting (Hadolint)
+-  CVE vulnerabilities (Trivy)
+-  Docker Scout analysis
+-  Best practices compliance
+-  Non-root user verification
+-  Health check presence
 
 ## Running Containers
 
@@ -350,10 +352,10 @@ docker run --gpus all codex:gpu nvidia-smi
 ### 1. Use Versioned Tags
 
 ```bash
-# ❌ Don't use latest in production
+#  Don't use latest in production
 docker pull codex:latest
 
-# ✅ Use specific versions
+#  Use specific versions
 docker pull codex:1.0.0
 ```
 
@@ -382,12 +384,12 @@ DOCKER_BUILDKIT=1 docker build -t codex:new .
 ## 4. Minimize Layers
 
 ```dockerfile
-# ❌ Multiple RUN commands
+#  Multiple RUN commands
 RUN apt-get update
 RUN apt-get install -y curl
 RUN rm -rf /var/lib/apt/lists/*
 
-# ✅ Combined RUN command
+#  Combined RUN command
 RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 ```
 
@@ -397,29 +399,29 @@ RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 2025-12-08
 
 ### Deliverables Completed
-✅ Optimized Dockerfile with multi-stage builds (`Dockerfile.optimized`)  
-✅ Non-root user implementation (appuser:1000:1000)  
-✅ ARG flags for conditional features (BUILD_ENV, ENABLE_GPU, ENABLE_MLFLOW, ENABLE_RAY)  
-✅ Security scanning script (`scripts/docker_security_scan.sh`)  
-✅ Comprehensive documentation (this file)  
-✅ OCI metadata labels  
-✅ Health checks configured  
-✅ Build examples for all scenarios  
+ Optimized Dockerfile with multi-stage builds (`Dockerfile.optimized`)  
+ Non-root user implementation (appuser:1000:1000)  
+ ARG flags for conditional features (BUILD_ENV, ENABLE_GPU, ENABLE_MLFLOW, ENABLE_RAY)  
+ Security scanning script (`scripts/docker_security_scan.sh`)  
+ Comprehensive documentation (this file)  
+ OCI metadata labels  
+ Health checks configured  
+ Build examples for all scenarios  
 
 ### Security Features Implemented
-✅ Multi-stage builds (builder + runtime)  
-✅ Minimal base images (python-slim, cuda-runtime)  
-✅ Non-root user (all containers)  
-✅ No secrets in layers  
-✅ Tini init system (zombie process reaping)  
-✅ Vulnerability scanning script  
-✅ Health checks  
-✅ Proper file permissions  
+ Multi-stage builds (builder + runtime)  
+ Minimal base images (python-slim, cuda-runtime)  
+ Non-root user (all containers)  
+ No secrets in layers  
+ Tini init system (zombie process reaping)  
+ Vulnerability scanning script  
+ Health checks  
+ Proper file permissions  
 
 ### Next Steps
-1. ✅ D4: Config Consolidation - COMPLETE
-2. ✅ D3: Multi-node Training - COMPLETE
-3. ✅ D1: Docker Optimization - COMPLETE
+1.  D4: Config Consolidation - COMPLETE
+2.  D3: Multi-node Training - COMPLETE
+3.  D1: Docker Optimization - COMPLETE
 4. Continue with D2: Plugin Registry
 
 ## References

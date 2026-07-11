@@ -1,4 +1,6 @@
 # Post-Merge Documentation Alignment — Copilot Session Prompt
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **USE AFTER:** PR #3818 (`0D_base_` → `main`) is merged
 > **INVOKE WITH:** `@copilot Execute docs/agents/POST_MERGE_ALIGNMENT_PROMPT.md`
@@ -87,7 +89,7 @@ URL: https://aries-serpent.github.io/_codex_/ci/INDEX/
 URL: https://aries-serpent.github.io/_codex_/
 ```
 - [ ] "🚨 CI Rescue & Health" section visible in nav sidebar
-- [ ] "🔄 CI Rescue Pipeline" quick-link present under "🚀 Quick Links → 🚨 CI Rescue & Health"
+- [ ] "🔄 CI Rescue Pipeline" quick-link present under " Quick Links → 🚨 CI Rescue & Health"
 - [ ] No broken links in the quick-links section
 
 ### 1B. Verify Site Navigation
@@ -179,7 +181,7 @@ if broken:
         print(f"  {b}")
     sys.exit(1)
 else:
-    print("✅ All nav paths resolve to real files")
+    print(" All nav paths resolve to real files")
 EOF
 ```
 
@@ -207,7 +209,7 @@ for f in \
   scripts/ci/check_cross_references.py \
   scripts/ci/check_pr_comments.py \
   scripts/ci/session_bootstrap.py; do
-  [ -f "$f" ] && echo "✅ $f" || echo "❌ MISSING: $f"
+  [ -f "$f" ] && echo " $f" || echo " MISSING: $f"
 done
 ```
 
@@ -233,8 +235,8 @@ mkdocs build --strict 2>&1 | tee /tmp/mkdocs_post_align.log
 
 # Summary
 echo "--- Build Summary ---"
-grep -c "WARNING" /tmp/mkdocs_post_align.log && echo "warnings found" || echo "0 warnings ✅"
-grep -c "ERROR" /tmp/mkdocs_post_align.log && echo "errors found" || echo "0 errors ✅"
+grep -c "WARNING" /tmp/mkdocs_post_align.log && echo "warnings found" || echo "0 warnings "
+grep -c "ERROR" /tmp/mkdocs_post_align.log && echo "errors found" || echo "0 errors "
 grep "Done" /tmp/mkdocs_post_align.log
 ```
 
@@ -271,13 +273,13 @@ Triggered by: docs/agents/POST_MERGE_ALIGNMENT_PROMPT.md"
 Post this summary as a comment on PR #3818 (or as a new issue if the PR is already merged):
 
 ```markdown
-## 📚 Post-Merge Documentation Alignment Complete — S244
+##  Post-Merge Documentation Alignment Complete — S244
 
 **Site:** https://aries-serpent.github.io/_codex_/
 **Merged PR:** #3818 (0D_base_ → main, S233–S244)
 **Alignment session:** S244-doc-align — {DATE}
 
-### ✅ New Pages Verified on Live Site
+###  New Pages Verified on Live Site
 - CI Rescue Pipeline: {STATUS} — {N}/9 Mermaid diagrams rendering
 - CI/CD Index: {STATUS}
 - Homepage quick-link: {STATUS}
@@ -291,8 +293,8 @@ Post this summary as a comment on PR #3818 (or as a new issue if the PR is alrea
 | Stale session IDs | N | Updated to S244 |
 
 ### 🔨 MkDocs Build
-- Warnings: 0 ✅
-- Errors: 0 ✅
+- Warnings: 0 
+- Errors: 0 
 - Pages built: N
 
 ### 🔗 Commit
@@ -330,7 +332,7 @@ Phase 3 — Build
   [ ] mkdocs build --strict: 0 warnings, 0 errors
 
 Phase 4 — Commit + Report
-  [ ] sync_tracked_files.py --fix: all 5 checks ✅
+  [ ] sync_tracked_files.py --fix: all 5 checks 
   [ ] Commit pushed with fix(docs): prefix
   [ ] Report comment posted on PR #3818
 ```

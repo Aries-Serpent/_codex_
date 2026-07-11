@@ -1,6 +1,8 @@
 # ADR: Introduce Intent Validation & Plan of Action Approval Gate
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## Status
 Accepted — 2025-10-26

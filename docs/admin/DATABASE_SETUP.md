@@ -1,4 +1,5 @@
 # Database Setup & Configuration Guide
+**Last Updated:** 2026-07-11
 
 > **Version**: 2.0.0  
 > **Last Updated**: 2026-06-20  
@@ -12,7 +13,7 @@
 
 ```bash
 # SQLite is built-in to Python
-python -c "import sqlite3; print('✅ SQLite ready')"
+python -c "import sqlite3; print(' SQLite ready')"
 
 # Connection string for config
 DATABASE_URL="sqlite:///./codex.db"
@@ -114,7 +115,7 @@ psql -U codex_user codex_production < backup_2026-06-20.sql
 
 ```bash
 # Check backup integrity
-psql -U codex_user -d test_restore < backup.sql > /dev/null 2>&1 && echo "✅ Backup OK" || echo "❌ Backup corrupt"
+psql -U codex_user -d test_restore < backup.sql > /dev/null 2>&1 && echo " Backup OK" || echo " Backup corrupt"
 ```
 
 ---
@@ -133,11 +134,11 @@ CREATE INDEX idx_timestamp ON events(created_at);
 ### Query Optimization
 
 ```sql
--- ❌ SLOW: N+1 query problem
+--  SLOW: N+1 query problem
 SELECT * FROM users;
 -- Then for each user: SELECT * FROM orders WHERE user_id = ?
 
--- ✅ FAST: Join
+--  FAST: Join
 SELECT u.*, o.* FROM users u
 LEFT JOIN orders o ON u.id = o.user_id;
 ```
@@ -155,4 +156,4 @@ LEFT JOIN orders o ON u.id = o.user_id;
 
 ---
 
-**Last Updated:** 2026-06-20
+**Last Updated: 2026-06-20

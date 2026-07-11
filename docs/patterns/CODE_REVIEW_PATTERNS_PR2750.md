@@ -1,6 +1,8 @@
 # Code Review Patterns and Best Practices (PR #2750)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 This document captures reusable patterns discovered during the code review and self-healing process for PR #2750.
 
@@ -12,12 +14,12 @@ This document captures reusable patterns discovered during the code review and s
 
 **Example**:
 ```bash
-# ❌ VULNERABLE - Direct interpolation
+#  VULNERABLE - Direct interpolation
 python3 <<PYEOF
 path = '${USER_INPUT}'
 PYEOF
 
-# ✅ SECURE - Environment variables with quoted heredoc
+#  SECURE - Environment variables with quoted heredoc
 export BUILD_PATH="${USER_INPUT}"
 python3 <<'PYEOF'
 import os
@@ -39,11 +41,11 @@ PYEOF
 
 **Example**:
 ```python
-# ❌ FRAGILE - String comparison
+#  FRAGILE - String comparison
 if str(model.device) == "meta":
     model = model.to("cpu")
 
-# ✅ ROBUST - Type attribute comparison
+#  ROBUST - Type attribute comparison
 if hasattr(model, "device"):
     device_type = getattr(model.device, "type", None)
     if device_type == "meta":
@@ -114,13 +116,13 @@ src/codex/rag/
 
 **Example**:
 ```python
-# ❌ UNCLEAR - Silent error swallowing
+#  UNCLEAR - Silent error swallowing
 try:
     data = json.load(f)
 except (json.JSONDecodeError, OSError):
     pass
 
-# ✅ CLEAR - Documented intent
+#  CLEAR - Documented intent
 try:
     data = json.load(f)
 except (json.JSONDecodeError, OSError):
@@ -141,7 +143,7 @@ except (json.JSONDecodeError, OSError):
 
 The repository has **two RAG implementations**:
 
-1. ✅ **Primary**: `src/codex/rag/` - Uses sentence-transformers (local, no API key)
+1.  **Primary**: `src/codex/rag/` - Uses sentence-transformers (local, no API key)
 2. ⚠️ **Legacy**: `src/rag/pipelines/` - Original implementation
 
 **Preference**: Use sentence-transformers for new RAG features. OpenAI integration is optional for development.

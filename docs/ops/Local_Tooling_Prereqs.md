@@ -1,6 +1,9 @@
 # [Guide]: Local Tooling Prerequisites — Docker & Security
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
-🧠 Roles: [Audit Orchestrator], [Capability Cartographer] ⚡ Energy: 5
+ Roles: [Audit Orchestrator], [Capability Cartographer] ⚡ Energy: 5
 
 ## Purpose
 Document external CLI dependencies used by local hygiene gates (opt-in) and how to enable/defer them safely.

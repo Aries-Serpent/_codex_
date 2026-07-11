@@ -1,6 +1,8 @@
 # [Playbook]: Component Improvements
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 Roles: [Audit Orchestrator], [Capability Cartographer] Energy: 5
 
 | Component | How it's measured | Common root causes | Remediation checklist |

@@ -1,6 +1,8 @@
 # Duplication Metrics Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## Overview
 
@@ -15,7 +17,7 @@ The Duplication Metrics system provides automated detection, measurement, and tr
 - **CI/CD Ready**: Exit codes, thresholds, and baseline comparison
 - **Configurable**: Adjustable minimum lines, trivial pattern filtering, severity levels
 
-## Quick Start
+## Quickstart
 
 ### Basic Duplication Check
 
@@ -126,7 +128,7 @@ codex duplication check src/ --min-lines=6 --threshold=0.15 --output=scan.json
 ```text
 🔍 Scanning /home/user/project for duplicates...
 
-📊 Duplication Report:
+ Duplication Report:
   Total lines: 15,234
   Duplicate lines: 1,523
   Duplication ratio: 10.00%
@@ -134,7 +136,7 @@ codex duplication check src/ --min-lines=6 --threshold=0.15 --output=scan.json
   Files with duplicates: 12
   Duplicate blocks: 8
 
-✅ Duplication ratio 10.00% is within threshold 10.00%
+ Duplication ratio 10.00% is within threshold 10.00%
 ```text
 
 ---
@@ -269,22 +271,22 @@ codex duplication compare current.json
 
 **Output with Baseline:**
 ```text
-📊 Duplication Comparison
+ Duplication Comparison
   Baseline: 12.00%
   Current:  15.00%
   Change:   +3.00% (+25.0%)
 
-❌ Duplication increased by 3.00%, exceeds threshold 2.00%
+ Duplication increased by 3.00%, exceeds threshold 2.00%
 ```text
 
 **Output without Baseline:**
 ```text
-📊 Current Duplication Metrics
+ Current Duplication Metrics
   Ratio: 15.00%
   Total lines: 10,000
   Duplicate lines: 1,500
 
-💡 Use --baseline to compare against a previous report
+ Use --baseline to compare against a previous report
 ```text
 
 ## Python API
@@ -461,7 +463,7 @@ CURRENT_RATIO=$(jq -r '.ratio' current.json)
 BASELINE_RATIO=$(jq -r '.ratio' baseline.json 2>/dev/null || echo "1.0")
 
 if (( $(echo "$CURRENT_RATIO < $BASELINE_RATIO" | bc -l) )); then
-    echo "✅ New baseline: $CURRENT_RATIO (was $BASELINE_RATIO)"
+    echo " New baseline: $CURRENT_RATIO (was $BASELINE_RATIO)"
     cp current.json baseline.json
 fi
 ```text
@@ -686,6 +688,6 @@ For issues or questions:
 
 ---
 
-**Last Updated:** 2025-11-17  
+**Last Updated: 2026-07-11
 **Version:** 1.0.0  
 **Maintainer:** Codex Team

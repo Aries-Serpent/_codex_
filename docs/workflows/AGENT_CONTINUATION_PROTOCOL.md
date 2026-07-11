@@ -1,14 +1,16 @@
 # agent Continuation Protocol
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Purpose**: Standardized protocol for AI agents to continue work across sessions using the cognitive brain for context and planning.
 
 **Last Updated**: 2026-06-22  
 **Version**: 2.0.0  
-**Status**: 🟢 Active
+**Status**:  Active
 
 ---
 
-## 🧠 Overview
+##  Overview
 
 This protocol enables AI agents (GitHub Copilot, ChatGPT, etc.) to:
 1. Maintain context continuity across sessions
@@ -18,7 +20,7 @@ This protocol enables AI agents (GitHub Copilot, ChatGPT, etc.) to:
 
 ---
 
-## 🎯 Session workflow
+##  Session workflow
 
 ### Phase 1: Context Loading (First 2K tokens)
 
@@ -124,7 +126,7 @@ This protocol enables AI agents (GitHub Copilot, ChatGPT, etc.) to:
 
 ---
 
-## 🎯 Duration-Aware Planning
+##  Duration-Aware Planning
 
 ### Token Budget Guidelines
 
@@ -163,7 +165,7 @@ When posting continuation prompts to PR comments:
 ```markdown
 @copilot Continue Phase [N]: [Phase Name]
 
-## ✅ Session Summary
+##  Session Summary
 
 **Completed Work**:
 - [x] task 1 (commit abc123)
@@ -175,7 +177,7 @@ When posting continuation prompts to PR comments:
 
 **Commits**: abc123, def456, ghi789
 
-## 🎯 Next Steps
+##  Next Steps
 
 **Priority Tasks**:
 1. [ ] task A - [Brief description]
@@ -188,7 +190,7 @@ When posting continuation prompts to PR comments:
 
 **Duration Estimate**: [X] sessions (~[Y]K tokens)
 
-## 📚 Context References
+##  Context References
 
 - [Cognitive Map](../system/CODEBASE_COGNITIVE_MAP.md)
 - [Dashboard](../system/CODEBASE_DASHBOARD.md)
@@ -231,7 +233,7 @@ When posting continuation prompts to PR comments:
 ```markdown
 | Capability | Status | Completion | Notes |
 |------------|--------|------------|-------|
-| [Name] | 🟢 Active | 75% | Session [date] progress |
+| [Name] |  Active | 75% | Session [date] progress |
 ```
 
 ---
@@ -280,7 +282,7 @@ Context:
 
 ## 🎓 Best Practices
 
-### Do's ✅
+### Do's 
 - **Always** load cognitive brain first
 - **Always** perform 5-pass self-review
 - **Always** update Dashboard with progress
@@ -288,7 +290,7 @@ Context:
 - **Always** continue if capacity remains
 - **Always** post continuation prompt if incomplete
 
-### Don'ts ❌
+### Don'ts 
 - **Never** stop prematurely when capacity remains
 - **Never** skip self-review passes
 - **Never** leave Dashboard outdated
@@ -298,7 +300,7 @@ Context:
 
 ---
 
-## 📊 Success Metrics
+##  Success Metrics
 
 ### Session Quality
 - Self-review: 5/5 passes complete, 0 concerns
@@ -329,7 +331,7 @@ Context:
 
 ---
 
-## 📚 Related Documentation
+##  Related Documentation
 
 - [Cognitive Map](../system/CODEBASE_COGNITIVE_MAP.md) - Architecture
 - [Dashboard](../system/CODEBASE_DASHBOARD.md) - Status

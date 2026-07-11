@@ -1,4 +1,7 @@
 # [Runbook]: Convergence & Audit Verification
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-22 | Author: mbaetiong
 
 ## Commands
@@ -249,14 +252,14 @@ Before approving audit remediation PR, verify:
 ### Overview
 Wave 2 focused on resolving critical shadowing issues and establishing production-ready CI regression tracking.
 
-**Status**: ✅ **COMPLETE**  
+**Status**:  **COMPLETE**  
 **Date**: 2025-12-04  
 **PR**: #2389  
 **Key Commits**: `b8e4b83`, `1a81ef1`, `569844b`
 
 ### Key Achievements
 
-#### 1. YAML Shadowing Resolution ✅
+#### 1. YAML Shadowing Resolution 
 **Problem**: Local `yaml/` directory was shadowing the PyYAML library, breaking S6-S7 stages.
 
 **Solution**:
@@ -266,7 +269,7 @@ Wave 2 focused on resolving critical shadowing issues and establishing productio
 
 **Result**: Full pipeline S1-S7 now operational.
 
-#### 2. Hydra Namespace Preparation ✅
+#### 2. Hydra Namespace Preparation 
 **Problem**: Local `hydra/` directory shadowing `hydra-core` package.
 
 **Solution**:
@@ -277,7 +280,7 @@ Wave 2 focused on resolving critical shadowing issues and establishing productio
 
 **Result**: Clear migration path established; shadowing detected and documented.
 
-#### 3. CI Regression Baseline ✅
+#### 3. CI Regression Baseline 
 **Implemented**:
 - Baseline storage: `audit_artifacts/baselines/capabilities_scored.json`
 - Establishment script: `scripts/ci/establish_baseline.sh`
@@ -290,7 +293,7 @@ Wave 2 focused on resolving critical shadowing issues and establishing productio
 
 **Result**: Automated regression detection prevents score degradation.
 
-#### 4. Enhanced Testing ✅
+#### 4. Enhanced Testing 
 **New Tests**:
 - `tests/validation/test_shadowing.py` - Detects yaml/hydra shadowing
 - `tests/validation/test_audit_pipeline.py` - Validates S1-S7 stages
@@ -298,7 +301,7 @@ Wave 2 focused on resolving critical shadowing issues and establishing productio
 
 **Coverage**: Critical paths for audit system integrity.
 
-#### 5. Determinism Verification ✅
+#### 5. Determinism Verification 
 **Tool**: `scripts/space_traversal/verify_determinism.py`
 
 **Features**:
@@ -312,11 +315,11 @@ Wave 2 focused on resolving critical shadowing issues and establishing productio
 
 | Gate | Tool | Threshold | Status |
 |------|------|-----------|--------|
-| Shadowing Prevention | `verify_conflicts.py` | 0 shadowed imports | ✅ Enforced |
-| Template Integrity | `validate_template_hash.py` | Hash match | ✅ Enforced |
-| Score Regression | `audit_runner.py diff` | ±2% tolerance | ✅ Enforced |
-| Low Maturity | Quality gates job | Info only (not blocking) | ✅ Tracked |
-| Legacy Imports | Legacy report | Info only (not blocking) | ✅ Tracked |
+| Shadowing Prevention | `verify_conflicts.py` | 0 shadowed imports |  Enforced |
+| Template Integrity | `validate_template_hash.py` | Hash match |  Enforced |
+| Score Regression | `audit_runner.py diff` | ±2% tolerance |  Enforced |
+| Low Maturity | Quality gates job | Info only (not blocking) |  Tracked |
+| Legacy Imports | Legacy report | Info only (not blocking) |  Tracked |
 
 ### Documentation Updates
 
@@ -354,7 +357,7 @@ Wave 2 focused on resolving critical shadowing issues and establishing productio
 ### Wave 2.1 Update (Determinism Hardening) - 2025-12-05
 
 **PR**: #2390 (sub-PR copilot/sub-pr-2390)  
-**Status**: ✅ **COMPLETE**
+**Status**:  **COMPLETE**
 
 #### Additional Improvements
 
@@ -388,12 +391,12 @@ Wave 2 focused on resolving critical shadowing issues and establishing productio
 #### Validation Results (2025-12-05)
 
 ```
-✅ Determinism Check: PASS (2 runs identical)
-✅ Template Hash: PASS (manifest matches computed hash)
-✅ Shadowing Gates: PASS (yaml & hydra resolve to site-packages)
-✅ Baseline: Established (39 capabilities tracked)
-✅ Regression Diff: All deltas = 0.0000 (perfect baseline match)
-✅ Validation Tests: 9/10 PASS (1 minor context_index test failure)
+ Determinism Check: PASS (2 runs identical)
+ Template Hash: PASS (manifest matches computed hash)
+ Shadowing Gates: PASS (yaml & hydra resolve to site-packages)
+ Baseline: Established (39 capabilities tracked)
+ Regression Diff: All deltas = 0.0000 (perfect baseline match)
+ Validation Tests: 9/10 PASS (1 minor context_index test failure)
 ```
 
 #### Artifacts SHA256 (for verification)

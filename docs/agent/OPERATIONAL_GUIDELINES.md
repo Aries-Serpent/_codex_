@@ -1,4 +1,6 @@
 # AI agent Operational Guidelines
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Generated:** 2026-03-17T00:00:00Z | **Author:** mbaetiong
 > **agent Identity:** ai_org_repo_admin
@@ -581,8 +583,8 @@ When approaching limits:
 
 ### Documentation
 - [Genesis Setup Guide](../admin/GENESIS_SETUP_GUIDE.md)
-- [Autonomous agent README](https://github.com/Aries-Serpent/_codex_/blob/main/scripts/AUTONOMOUS_AGENT_README.md)
-- [Guardrails](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/guardrails.md)
+- [Autonomous agent README](../scripts/AUTONOMOUS_AGENT_README.md)
+- [Guardrails](../.codex/guardrails.md)
 
 ### Contact
 - **Human Admin**: @mbaetiong
@@ -592,6 +594,6 @@ When approaching limits:
 ---
 
 > **Document Version:** 1.0.0
-> **Last Updated:** 2026-02-10T07:54:45Z
+> **Last Updated: 2026-07-11
 > **agent Identity:** ai_org_repo_admin
 > **Status:** Template - Awaiting Genesis Completion

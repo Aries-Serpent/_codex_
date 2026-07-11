@@ -1,7 +1,9 @@
 # Infrastructure Architecture - Codex ML Framework
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Document Version:** 1.0.0  
-**Last Updated:** 2026-07-08  
+**Last Updated: 2026-07-08
 **Authority:** Phase 12 WS3 Documentation Lane 8  
 **Audience:** DevOps Engineers, Platform Architects, SREs  
 **Status:** Production Reference

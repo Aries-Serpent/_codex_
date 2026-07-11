@@ -1,6 +1,8 @@
 # CI/CD Strategy — Manual-First, Offline-Capable
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 Phase 4 confirms that the Codex delivery model relies on local quality gates
 instead of hosted CI, keeping the workflow compliant with the repository

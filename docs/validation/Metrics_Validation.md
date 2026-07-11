@@ -1,4 +1,6 @@
 # Validation: Metrics — Generative (BLEU/ROUGE) Optional Behavior
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > Generated: 2026-06-22 07:27:25 | Author: mbaetiong
 

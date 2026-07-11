@@ -1,4 +1,6 @@
 # Golden Harness Integration, Honesty, and Tool Truthfulness
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 The Golden Harness remains the contract for tracing and auditing training behaviour, supporting highly auditable offline ML and tool-based workflows. Its latest design ties together experiment tracking, honesty statements, local tool tracing, and RA (Readiness Assessment) policy signals—allowing operators to evaluate the readiness, reproducibility, and integrity of an offline run. Structured NDJSON format is used for traceability, auditability, and downstream scorecards, without requiring third-party platforms like MLflow or W&B.
 

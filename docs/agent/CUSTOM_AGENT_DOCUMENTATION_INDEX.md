@@ -1,11 +1,13 @@
 # Custom Agent Documentation Suite — Index
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Generated:** 2026-06-26  
 > **Purpose:** Central hub for custom agent methodology, patterns, and best practices  
 
 ---
 
-## 📚 Documentation Guide
+##  Documentation Guide
 
 This documentation suite provides comprehensive methodology for effective multi-agent orchestration and full agentic autonomy within the Aries-Serpent/_codex_ repository.
 
@@ -80,7 +82,7 @@ This documentation suite provides comprehensive methodology for effective multi-
 
 ---
 
-## 🎯 Quick Start by Use Case
+##  Quick Start by Use Case
 
 ### "I need to fix a single issue"
 → **Selection Framework**: Use decision tree to pick 1 agent  
@@ -140,7 +142,7 @@ REPEATABLE_PROCESSES.md
 
 ---
 
-## 📊 Key Concepts
+##  Key Concepts
 
 ### Agent Domain Classification
 
@@ -184,7 +186,7 @@ Key gates:
 
 ---
 
-## 🚀 Common Workflows
+##  Common Workflows
 
 ### Workflow 1: Simple Fix
 
@@ -348,7 +350,7 @@ docs/
 
 ## 📝 Document Maintenance
 
-**Last Updated:** 2026-06-26  
+**Last Updated: 2026-06-26
 **Version:** 1.0.0  
 **Maintainer:** @mbaetiong  
 
@@ -361,4 +363,4 @@ docs/
 
 ---
 
-**🚀 Ready to get started?** Pick a use case above and follow the recommended documents!
+** Ready to get started?** Pick a use case above and follow the recommended documents!

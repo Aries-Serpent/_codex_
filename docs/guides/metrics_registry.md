@@ -1,4 +1,7 @@
 # [Guide]: Metrics Registry (PS-07)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-22 04:20:17 | Author: mbaetiong  
 Roles: [Primary: Audit Orchestrator], [Secondary: Capability Cartographer] ⚡ Energy: 5  
 Physics: Path🛤️ Fields🔄 Patterns👁️ Redundancy🔀 Balance⚖️

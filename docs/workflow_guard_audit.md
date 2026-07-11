@@ -1,6 +1,8 @@
 # Workflow Guard Audit
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 **Date**: 2026-01-17  
 **Phase**: 11.Z Workflow Guard Audit  

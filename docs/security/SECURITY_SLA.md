@@ -1,9 +1,11 @@
 # Security Remediation SLA
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Owner**: `unified-security-scanner` (primary), `security-audit-agent` (backup)  
 **Last updated**: 2026-05-27  
 **Dashboard**: [`../../.codex/COMPLETION_DASHBOARD.md`](../../.codex/COMPLETION_DASHBOARD.md)  
-**Tracking workflow**: [`.github/workflows/nightly-codeql-alert-triage.yml`](https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/nightly-codeql-alert-triage.yml)
+**Tracking workflow**: [`.github/workflows/nightly-codeql-alert-triage.yml`](../.github/workflows/nightly-codeql-alert-triage.yml)
 
 ---
 
@@ -43,7 +45,7 @@ flowchart LR
     end
 
     MTTR["nightly-security-mttr.yml\nComputes age of each finding"]
-    CLOSE["✅ Remediated\nPR merged + finding closed"]
+    CLOSE[" Remediated\nPR merged + finding closed"]
 
     FIND --> TRIAGE
     TRIAGE -->|critical| CRITICAL
@@ -62,10 +64,10 @@ flowchart LR
 
 | Severity | SLA | Block release if overdue? |
 |----------|-----|--------------------------|
-| **Critical** | ≤ 3 business days | ✅ Yes |
-| **High** | ≤ 10 business days | ✅ Yes |
+| **Critical** | ≤ 3 business days |  Yes |
+| **High** | ≤ 10 business days |  Yes |
 | **Medium** | ≤ 30 calendar days | ⚠️ Warning only |
-| **Low / Info** | ≤ 90 calendar days | ❌ No |
+| **Low / Info** | ≤ 90 calendar days |  No |
 
 Business days exclude weekends and public holidays (UTC calendar).
 

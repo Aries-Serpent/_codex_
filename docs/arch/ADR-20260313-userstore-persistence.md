@@ -1,6 +1,8 @@
 # ADR-20260313: UserStore Persistence Backend
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 **Status:** Proposed  
 **Date:** 2026-03-13  

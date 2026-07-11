@@ -1,4 +1,6 @@
 # Agent Accountability Report — Session Group 20
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Group:** 20 of 32  
 **Sessions:** S1049 to S293  
@@ -51,7 +53,7 @@
 
 **Tags:** None  
 **Patterns Fixed:** None  
-**CI Checks:** 0 ✅ / 0 ❌  
+**CI Checks:** 0  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_160  
@@ -73,7 +75,7 @@
 
 **Tags:** None  
 **Patterns Fixed:** None  
-**CI Checks:** 0 ✅ / 0 ❌  
+**CI Checks:** 0  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_191  
@@ -95,7 +97,7 @@
 
 **Tags:** None  
 **Patterns Fixed:** None  
-**CI Checks:** 0 ✅ / 0 ❌  
+**CI Checks:** 0  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_192  
@@ -117,7 +119,7 @@
 
 **Tags:** None  
 **Patterns Fixed:** None  
-**CI Checks:** 0 ✅ / 0 ❌  
+**CI Checks:** 0  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_193  
@@ -139,7 +141,7 @@
 
 **Tags:** None  
 **Patterns Fixed:** None  
-**CI Checks:** 0 ✅ / 0 ❌  
+**CI Checks:** 0  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_194  
@@ -161,7 +163,7 @@
 
 **Tags:** None  
 **Patterns Fixed:** None  
-**CI Checks:** 0 ✅ / 0 ❌  
+**CI Checks:** 0  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_133  
@@ -183,7 +185,7 @@
 
 **Tags:** None  
 **Patterns Fixed:** None  
-**CI Checks:** 0 ✅ / 0 ❌  
+**CI Checks:** 0  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_134  
@@ -205,7 +207,7 @@
 
 **Tags:** None  
 **Patterns Fixed:** None  
-**CI Checks:** 0 ✅ / 0 ❌  
+**CI Checks:** 0  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_138  
@@ -227,7 +229,7 @@
 
 **Tags:** None  
 **Patterns Fixed:** None  
-**CI Checks:** 0 ✅ / 0 ❌  
+**CI Checks:** 0  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_139  
@@ -249,7 +251,7 @@
 
 **Tags:** None  
 **Patterns Fixed:** None  
-**CI Checks:** 0 ✅ / 0 ❌  
+**CI Checks:** 0  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_145  

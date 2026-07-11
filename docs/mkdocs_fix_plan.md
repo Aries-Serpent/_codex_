@@ -1,6 +1,8 @@
 # MkDocs Warning Fix Plan
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 **Date**: 2026-01-17  
 **Phase**: 11.X Documentation Quality  
@@ -16,7 +18,7 @@
 
 ## Fix Strategy
 
-### Batch 1: Quick Fixes ✅ COMPLETE
+### Batch 1: Quick Fixes  COMPLETE
 
 **Scope**: Fix nav configuration and relative links where docs equivalents exist
 
@@ -36,7 +38,7 @@
 
 **Scope**: Replace root-level relative links with GitHub URLs
 
-**Pattern**: `../README.md` → `https://github.com/Aries-Serpent/_codex_/blob/main/README.md`
+**Pattern**: `../README.md` → `README.md`
 
 **Files to Update**:
 - DOCUMENTATION_INDEX.md (33 links)
@@ -88,7 +90,7 @@
 
 | Batch | Impact | Effort | Priority |
 |-------|--------|--------|----------|
-| Batch 1 | Low | Low | ✅ DONE |
+| Batch 1 | Low | Low |  DONE |
 | Batch 4 | Medium | Low | HIGH |
 | Batch 2 | High | Medium | MEDIUM |
 | Batch 3 | Medium | High | LOW |
@@ -119,7 +121,7 @@ validation:
 **Cons**: Hides some link issues
 
 ### Option C: Hybrid Approach (RECOMMENDED)
-1. Complete Batch 1 ✅
+1. Complete Batch 1 
 2. Add validation overrides for `omitted_files`
 3. Fix high-impact broken links (Batches 2, 4)
 4. Enable strict mode with reduced scope

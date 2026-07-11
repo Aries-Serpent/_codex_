@@ -1,30 +1,33 @@
 # Repository Secrets and Variables Inventory
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-03T22:09:48Z | Author: mbaetiong
 ## Table of Contents
 
 - [⚠️ CONSOLIDATED TODO LIST (All Open Items — moved to top per convention)](#-consolidated-todo-list-all-open-items--moved-to-top-per-convention)
-  - [🔴 BLOCKING — Secrets Pass (Must complete before full agent operation)](#-blocking--secrets-pass-must-complete-before-full-agent-operation)
+  - [ BLOCKING — Secrets Pass (Must complete before full agent operation)](#-blocking--secrets-pass-must-complete-before-full-agent-operation)
   - [🟡 HIGH — Post-Variables Verification](#-high--post-variables-verification)
-  - [🟢 COMPLETED](#-completed)
-  - [🟠 DEFERRED / BLOCKED](#-deferred--blocked)
+  - [ COMPLETED](#-completed)
+  - [ DEFERRED / BLOCKED](#-deferred--blocked)
 - [🚧 Blocker Status: API `403` → Secrets pending manual entry only](#-blocker-status-api-403--secrets-pending-manual-entry-only)
 - [📋 TABLE OF CONTENTS](#-table-of-contents)
 - [🔍 copilot-setup-steps.yml Verification](#-copilot-setup-stepsyml-verification)
   - [Variables Used by copilot-setup-steps.yml](#variables-used-by-copilot-setup-stepsyml)
   - [Secrets Used by copilot-setup-steps.yml](#secrets-used-by-copilot-setup-stepsyml)
-  - [✅ PREVIOUSLY MISSING VARIABLES — NOW IMPLEMENTED](#-previously-missing-variables--now-implemented)
+  - [ PREVIOUSLY MISSING VARIABLES — NOW IMPLEMENTED](#-previously-missing-variables--now-implemented)
   - [0) Open required pages first (direct URLs)](#0-open-required-pages-first-direct-urls)
-  - [0.5) ✅ Single-Source Copy/Paste Packs (Variables + Secrets)](#05--single-source-copypaste-packs-variables--secrets)
+  - [0.5)  Single-Source Copy/Paste Packs (Variables + Secrets)](#05--single-source-copypaste-packs-variables--secrets)
     - [A) Pass-2 Missing Variables — validated expected values (ready to enter)](#a-pass-2-missing-variables--validated-expected-values-ready-to-enter)
-    - [B) Copy/Paste block — Repository Variables (Actions) ✅ IMPLEMENTED](#b-copypaste-block--repository-variables-actions--implemented)
+    - [B) Copy/Paste block — Repository Variables (Actions)  IMPLEMENTED](#b-copypaste-block--repository-variables-actions--implemented)
     - [C) Copy/Paste block — Repository Secrets (Actions)](#c-copypaste-block--repository-secrets-actions)
     - [D) Copy/Paste block — Environment Secrets (`Aries_Serpent_codex_`)](#d-copypaste-block--environment-secrets-aries_serpent_codex_)
     - [E) Copy/Paste block — Organization Secrets](#e-copypaste-block--organization-secrets)
-    - [F) Copy/Paste block — Agents Variables + Secrets ✅ IMPLEMENTED (JSON values provided)](#f-copypaste-block--agents-variables--secrets--implemented-json-values-provided)
+    - [F) Copy/Paste block — Agents Variables + Secrets  IMPLEMENTED (JSON values provided)](#f-copypaste-block--agents-variables--secrets--implemented-json-values-provided)
 - [Agents Variables — simple values](#agents-variables--simple-values)
 - [Agents Secrets (minimum) — link org/repo secrets to Agents scope](#agents-secrets-minimum--link-orgrepo-secrets-to-agents-scope)
-- [1) Repository Variables (`/settings/variables/actions`) ✅ ALL IMPLEMENTED](#1-repository-variables-settingsvariablesactions--all-implemented)
-  - [✅ Previously Missing Variables — Now Implemented](#-previously-missing-variables--now-implemented)
+- [1) Repository Variables (`/settings/variables/actions`)  ALL IMPLEMENTED](#1-repository-variables-settingsvariablesactions--all-implemented)
+  - [ Previously Missing Variables — Now Implemented](#-previously-missing-variables--now-implemented)
     - [Update/Verify Existing Variables](#updateverify-existing-variables)
     - [Complete Repository Variables List (76 total)](#complete-repository-variables-list-76-total)
   - [2) Repository Secrets (`/settings/secrets/actions`)](#2-repository-secrets-settingssecretsactions)
@@ -60,7 +63,7 @@
     - [Verification](#verification)
   - [8) Post-Setup Validation: Verify copilot-setup-steps.yml Works](#8-post-setup-validation-verify-copilot-setup-stepsyml-works)
     - [Validation Checklist](#validation-checklist)
-- [📊 Complete Inventory Tables](#-complete-inventory-tables)
+- [ Complete Inventory Tables](#-complete-inventory-tables)
   - [Environment Variables (Aries_Serpent_codex_ Environment)](#environment-variables-aries_serpent_codex_-environment)
     - [Maintainer Add/Update Notes — Environment Variables](#maintainer-addupdate-notes--environment-variables)
   - [Repository Variables](#repository-variables)
@@ -71,11 +74,11 @@
     - [Maintainer Add/Update Notes — Repository Secrets](#maintainer-addupdate-notes--repository-secrets)
   - [Organization Secrets](#organization-secrets)
     - [Maintainer Add/Update Notes — Organization Secrets](#maintainer-addupdate-notes--organization-secrets)
-- [🤖 Maintainer Required Additions — Agent Variables and Secrets](#-maintainer-required-additions--agent-variables-and-secrets)
+- [ Maintainer Required Additions — Agent Variables and Secrets](#-maintainer-required-additions--agent-variables-and-secrets)
   - [Agent Variables (Copilot Agent Settings)](#agent-variables-copilot-agent-settings)
   - [Agent Secrets (Copilot Agent Settings)](#agent-secrets-copilot-agent-settings)
 - [📈 Summary Statistics](#-summary-statistics)
-- [🧠 Key Observations](#-key-observations)
+- [ Key Observations](#-key-observations)
   - [Most Recently Updated (from source snapshot)](#most-recently-updated-from-source-snapshot)
   - [Oldest Items Requiring Rotation/Audit Attention](#oldest-items-requiring-rotationaudit-attention)
 - [🔗 Quick Reference URLs (All-in-One)](#-quick-reference-urls-all-in-one)
@@ -84,11 +87,11 @@
   - [Workflow & Validation](#workflow--validation)
   - [External Services (for secret/token generation)](#external-services-for-secrettoken-generation)
 - [▶️ What's Next (Post Variables-Only Pass)](#-whats-next-post-variables-only-pass)
-- [✅ Maintainer Execution Checklist](#-maintainer-execution-checklist)
-  - [Phase 1: Critical Repository Setup ✅ COMPLETE](#phase-1-critical-repository-setup--complete)
-  - [Phase 2: Environment Configuration ✅ COMPLETE (variables); Secrets pending](#phase-2-environment-configuration--complete-variables-secrets-pending)
+- [ Maintainer Execution Checklist](#-maintainer-execution-checklist)
+  - [Phase 1: Critical Repository Setup  COMPLETE](#phase-1-critical-repository-setup--complete)
+  - [Phase 2: Environment Configuration  COMPLETE (variables); Secrets pending](#phase-2-environment-configuration--complete-variables-secrets-pending)
   - [Phase 3: Organization Secrets (Requires Org Owner/Admin)](#phase-3-organization-secrets-requires-org-owneradmin)
-  - [Phase 4: Agents Configuration (Copilot/Agents Scope) ✅ COMPLETE (variables); Secrets pending](#phase-4-agents-configuration-copilotagents-scope--complete-variables-secrets-pending)
+  - [Phase 4: Agents Configuration (Copilot/Agents Scope)  COMPLETE (variables); Secrets pending](#phase-4-agents-configuration-copilotagents-scope--complete-variables-secrets-pending)
   - [Phase 5: Validation](#phase-5-validation)
   - [Phase 6: Post-Setup](#phase-6-post-setup)
 - [📅 Secret Rotation Schedule Template](#-secret-rotation-schedule-template)
@@ -106,7 +109,7 @@
 
 > **Status as of 2026-06-04T17:43Z**: All repository variables (Actions, Agents, Environment) have been set by the maintainer. **Secrets have NOT yet been entered** — pending maintainer confirmation that all variables are visible before secrets pass begins.
 
-### 🔴 BLOCKING — Secrets Pass (Must complete before full agent operation)
+###  BLOCKING — Secrets Pass (Must complete before full agent operation)
 
 - [ ] **SECRETS-1**: Execute **repository secrets pass** — create/verify 7 repo secrets (section 2):
   - [ ] `OPENAI_API_KEY` ⭐ CRITICAL — OpenAI API key (`sk-proj-…`)
@@ -152,7 +155,7 @@
 
 - [ ] **VERIFY-4**: Trigger `copilot-setup-steps.yml` manual run and confirm green: https://github.com/Aries-Serpent/_codex_/actions/workflows/copilot-setup-steps.yml
 
-### 🟢 COMPLETED
+###  COMPLETED
 
 - [x] Resolve `COPILOT_WEC_TEMPLATE_DRIFT` by adding missing workflows to `_WEC_ITEMS` in `scripts/ci/session_wrapup_autofix.py`
 - [x] Create 4 previously-MISSING repository variables (`CODEX_MAX_HEALER_RUNS_PER_HOUR`, `CODEX_SWEEP_SKIP_MAIN`, `CODEX_HEALER_SKIP_SKIPCI`, `COPILOT_AGENT_STATE`)
@@ -164,7 +167,7 @@
 - [x] copilot-setup-steps.yml canonical `run: |` block restored (PR #4750)
 - [x] test_layer_boundaries.py aligned with canonical preload block form (PR #4750)
 
-### 🟠 DEFERRED / BLOCKED
+###  DEFERRED / BLOCKED
 
 - [ ] Re-run full inventory export and replace remaining `<placeholder>` references with live values once secrets API access is restored
 - [ ] Reconcile `settings/variables/agents` against repo variables to ensure no drift
@@ -205,36 +208,36 @@ The Copilot agent environment setup workflow (`.github/workflows/copilot-setup-s
 
 | Variable Name | Usage in Workflow | Required? | Default Fallback | Current Status |
 |---------------|-------------------|-----------|------------------|----------------|
-| `COPILOT_RUNNER_PROFILE` | Line 99: `runs-on: ${{ vars.COPILOT_RUNNER_PROFILE \|\| 'ubuntu-latest' }}` | No | `ubuntu-latest` | ✅ Set in inventory |
-| `CODEX_MAX_HEALER_RUNS_PER_HOUR` | Line 402: CI healer rate limit | No | none | ✅ **IMPLEMENTED** (`3`) |
-| `CODEX_SWEEP_SKIP_MAIN` | Line 403: Skip main branch in sweep operations | No | none | ✅ **IMPLEMENTED** (`true`) |
-| `CODEX_HEALER_SKIP_SKIPCI` | Line 404: Skip commits with [skip ci] | No | none | ✅ **IMPLEMENTED** (`true`) |
-| `CODEX_CACHE_VERSION` | Line 406, 771: Cache key versioning | No | `v2` | ✅ Set in inventory |
-| `COPILOT_AGENT_STATE` | Line 407: Agent state tracking | No | none | ✅ **IMPLEMENTED** (`idle`) |
-| `CODEX_CI_LAST_GREEN_SHA` | Line 408: Last all-green commit SHA | No | none | ✅ Set in inventory (automated) |
+| `COPILOT_RUNNER_PROFILE` | Line 99: `runs-on: ${{ vars.COPILOT_RUNNER_PROFILE \|\| 'ubuntu-latest' }}` | No | `ubuntu-latest` |  Set in inventory |
+| `CODEX_MAX_HEALER_RUNS_PER_HOUR` | Line 402: CI healer rate limit | No | none |  **IMPLEMENTED** (`3`) |
+| `CODEX_SWEEP_SKIP_MAIN` | Line 403: Skip main branch in sweep operations | No | none |  **IMPLEMENTED** (`true`) |
+| `CODEX_HEALER_SKIP_SKIPCI` | Line 404: Skip commits with [skip ci] | No | none |  **IMPLEMENTED** (`true`) |
+| `CODEX_CACHE_VERSION` | Line 406, 771: Cache key versioning | No | `v2` |  Set in inventory |
+| `COPILOT_AGENT_STATE` | Line 407: Agent state tracking | No | none |  **IMPLEMENTED** (`idle`) |
+| `CODEX_CI_LAST_GREEN_SHA` | Line 408: Last all-green commit SHA | No | none |  Set in inventory (automated) |
 
 ### Secrets Used by copilot-setup-steps.yml
 
 | Secret Name | Usage in Workflow | Required? | Priority | Current Status |
 |-------------|-------------------|-----------|----------|----------------|
-| `CODEX_MASTER_KEY` | Lines 117, 118, 168, 169, 197, 198, 268, 336, 1108, 1113: Primary auth token for agent operations | **YES** | **CRITICAL** | ✅ Org secret |
-| `CODEX_BACKUP_KEY` | Lines 118, 169, 198, 268, 336, 1113: Fallback auth token | **YES** | **CRITICAL** | ✅ Org secret |
-| `GITHUB_TOKEN` | Line 170, fallback in token chains: Default workflow token | Auto-provided | N/A | ✅ Auto-injected |
+| `CODEX_MASTER_KEY` | Lines 117, 118, 168, 169, 197, 198, 268, 336, 1108, 1113: Primary auth token for agent operations | **YES** | **CRITICAL** |  Org secret |
+| `CODEX_BACKUP_KEY` | Lines 118, 169, 198, 268, 336, 1113: Fallback auth token | **YES** | **CRITICAL** |  Org secret |
+| `GITHUB_TOKEN` | Line 170, fallback in token chains: Default workflow token | Auto-provided | N/A |  Auto-injected |
 
-### ✅ PREVIOUSLY MISSING VARIABLES — NOW IMPLEMENTED
+###  PREVIOUSLY MISSING VARIABLES — NOW IMPLEMENTED
 
 The following variables were previously missing from the inventory and have now been created by the maintainer:
 
-1. **`CODEX_MAX_HEALER_RUNS_PER_HOUR`** = `3` ✅
+1. **`CODEX_MAX_HEALER_RUNS_PER_HOUR`** = `3` 
    - Rate limit for autonomous CI healer to prevent runaway healing loops
 
-2. **`CODEX_SWEEP_SKIP_MAIN`** = `true` ✅
+2. **`CODEX_SWEEP_SKIP_MAIN`** = `true` 
    - Boolean flag to skip main branch in automated sweep operations
 
-3. **`CODEX_HEALER_SKIP_SKIPCI`** = `true` ✅
+3. **`CODEX_HEALER_SKIP_SKIPCI`** = `true` 
    - Boolean flag to skip commits marked `[skip ci]` in healer operations
 
-4. **`COPILOT_AGENT_STATE`** = `idle` ✅
+4. **`COPILOT_AGENT_STATE`** = `idle` 
    - Current agent state tracking (idle/active/blocked)
 
 ---
@@ -251,7 +254,7 @@ The following variables were previously missing from the inventory and have now 
 8. Organization **Actions Variables**: https://github.com/organizations/Aries-Serpent/settings/variables/actions
 9. Organization **Actions Secrets**: https://github.com/organizations/Aries-Serpent/settings/secrets/actions
 
-### 0.5) ✅ Single-Source Copy/Paste Packs (Variables + Secrets)
+### 0.5)  Single-Source Copy/Paste Packs (Variables + Secrets)
 
 Use this section as the **single maintainer execution source** for manual entry.
 
@@ -279,7 +282,7 @@ Use this section as the **single maintainer execution source** for manual entry.
 | `EMBEDDING_INDEX_AUTO_REBUILD` | `true` | Current CI rebuild behavior in master guide |
 | `WEBHOOK_RECEIVER_URL` | `https://bootstrap-pending-8765.app.github.dev/webhook/github` | **Bootstrap placeholder only** — must be replaced with the active Codespace name before use (format: `https://<codespace-name>-8765.app.github.dev/webhook/github`) |
 
-#### B) Copy/Paste block — Repository Variables (Actions) ✅ IMPLEMENTED
+#### B) Copy/Paste block — Repository Variables (Actions)  IMPLEMENTED
 
 All variables below have been set. This block is retained as a reference/reset guide:
 
@@ -356,7 +359,7 @@ CODECOV_TOKEN=<paste-secret>
 _CODEX_ACTION_RUNNER=<paste-secret>
 ```
 
-#### F) Copy/Paste block — Agents Variables + Secrets ✅ IMPLEMENTED (JSON values provided)
+#### F) Copy/Paste block — Agents Variables + Secrets  IMPLEMENTED (JSON values provided)
 
 - Agents Variables: https://github.com/Aries-Serpent/_codex_/settings/variables/agents
 - Agents Secrets: https://github.com/Aries-Serpent/_codex_/settings/secrets/agents
@@ -403,20 +406,20 @@ OPENAI_API_KEY=<link-repo-secret>
 
 ---
 
-## 1) Repository Variables (`/settings/variables/actions`) ✅ ALL IMPLEMENTED
+## 1) Repository Variables (`/settings/variables/actions`)  ALL IMPLEMENTED
 
 **Direct URL**: https://github.com/Aries-Serpent/_codex_/settings/variables/actions
 
 Click path: **Settings** → **Secrets and variables** → **Actions** → **Variables** → **New repository variable**.
 
-### ✅ Previously Missing Variables — Now Implemented
+###  Previously Missing Variables — Now Implemented
 
 All 4 previously-missing variables required by `copilot-setup-steps.yml` have been created:
 
-1. **`CODEX_MAX_HEALER_RUNS_PER_HOUR`** = `3` ✅
-2. **`CODEX_SWEEP_SKIP_MAIN`** = `true` ✅
-3. **`CODEX_HEALER_SKIP_SKIPCI`** = `true` ✅
-4. **`COPILOT_AGENT_STATE`** = `idle` ✅
+1. **`CODEX_MAX_HEALER_RUNS_PER_HOUR`** = `3` 
+2. **`CODEX_SWEEP_SKIP_MAIN`** = `true` 
+3. **`CODEX_HEALER_SKIP_SKIPCI`** = `true` 
+4. **`COPILOT_AGENT_STATE`** = `idle` 
 
 #### Update/Verify Existing Variables
 
@@ -1071,13 +1074,13 @@ After completing all above sections, validate the configuration:
    - Wait for the workflow to complete (~2-5 minutes)
 
 2. **Check workflow logs** for these success indicators:
-   - ✅ `Environment profile set to: ubuntu-latest-m` (or `ubuntu-latest` if `COPILOT_RUNNER_PROFILE` not set)
-   - ✅ `Installing system packages...` completes without errors
-   - ✅ `Setting up Python 3.12...` completes
-   - ✅ `Injecting CODEX_MASTER_KEY into session environment` (confirms secret available)
-   - ✅ `Injecting CODEX_BACKUP_KEY into session environment` (confirms backup secret available)
-   - ✅ `Loading Copilot session context...` (confirms agent variable access)
-   - ✅ All steps show green checkmarks
+   -  `Environment profile set to: ubuntu-latest-m` (or `ubuntu-latest` if `COPILOT_RUNNER_PROFILE` not set)
+   -  `Installing system packages...` completes without errors
+   -  `Setting up Python 3.12...` completes
+   -  `Injecting CODEX_MASTER_KEY into session environment` (confirms secret available)
+   -  `Injecting CODEX_BACKUP_KEY into session environment` (confirms backup secret available)
+   -  `Loading Copilot session context...` (confirms agent variable access)
+   -  All steps show green checkmarks
 
 3. **Verify no error messages** related to:
    - Missing variables (e.g., `vars.COPILOT_AGENT_STATE is undefined`)
@@ -1097,10 +1100,10 @@ After completing all above sections, validate the configuration:
    - Fix the issue, then re-run the workflow
 
 6. **Success Criteria**:
-   - ✅ Workflow shows **green checkmark** overall
-   - ✅ All setup steps completed
-   - ✅ No missing variable/secret errors in logs
-   - ✅ Agent environment loaded successfully
+   -  Workflow shows **green checkmark** overall
+   -  All setup steps completed
+   -  No missing variable/secret errors in logs
+   -  Agent environment loaded successfully
 
 7. **UI Verification**:
    - Re-open each of the 7 URLs above (sections 1-7) and confirm all required names are present
@@ -1108,7 +1111,7 @@ After completing all above sections, validate the configuration:
 
 ---
 
-## 📊 Complete Inventory Tables
+##  Complete Inventory Tables
 
 > This copy preserves the 2026-06-03 inventory baseline and is updated to the latest **variables-only** snapshot: **90 variables total** (14 environment + 76 repository). Secrets were not rotated/modified in this pass.
 
@@ -1204,7 +1207,7 @@ After completing all above sections, validate the configuration:
 
 ---
 
-## 🤖 Maintainer Required Additions — Agent Variables and Secrets
+##  Maintainer Required Additions — Agent Variables and Secrets
 
 > Target UI for variables: https://github.com/Aries-Serpent/_codex_/settings/variables/agents  
 > Target UI for secrets: https://github.com/Aries-Serpent/_codex_/settings/secrets/agents
@@ -1263,7 +1266,7 @@ After completing all above sections, validate the configuration:
 
 ---
 
-## 🧠 Key Observations
+##  Key Observations
 
 ### Most Recently Updated (from source snapshot)
 - `CODEX_CI_FAILURE_RATE`
@@ -1318,19 +1321,19 @@ Copy this section for fast access to all GitHub settings pages:
 > **Status 2026-06-04T17:43Z**: All non-secret variables are implemented. See consolidated TODO at the top of this document.
 
 - [ ] Execute **secrets pass** (repo/env/org) — see SECRETS-1/2/3/4/5 in TODO block above. _(Waiting for maintainer confirmation that all variables are visible before secrets pass begins.)_
-- [x] Resolve `COPILOT_WEC_TEMPLATE_DRIFT` by adding the missing workflows to `_WEC_ITEMS` in `scripts/ci/session_wrapup_autofix.py` (`e-to-d-transition-gate.yml`, `d-capable-promotion-gate.yml`, `mcp-health.yml`). ✅ Done
-- [x] Replace all "placeholder JSON" references with concrete initial values. ✅ Done (see Copy/Paste Pack F for `COPILOT_AGENT_PREFLIGHT_RULES`, `COPILOT_WEC_SELECTION_MATRIX`, `COPILOT_WEC_TEMPLATE_DRIFT`, `COPILOT_SESSION_TOOL_CAPABILITIES`)
+- [x] Resolve `COPILOT_WEC_TEMPLATE_DRIFT` by adding the missing workflows to `_WEC_ITEMS` in `scripts/ci/session_wrapup_autofix.py` (`e-to-d-transition-gate.yml`, `d-capable-promotion-gate.yml`, `mcp-health.yml`).  Done
+- [x] Replace all "placeholder JSON" references with concrete initial values.  Done (see Copy/Paste Pack F for `COPILOT_AGENT_PREFLIGHT_RULES`, `COPILOT_WEC_SELECTION_MATRIX`, `COPILOT_WEC_TEMPLATE_DRIFT`, `COPILOT_SESSION_TOOL_CAPABILITIES`)
 - [ ] Reconcile `settings/variables/agents` against repo variables to ensure no drift between Actions Variables and Agents Variables pages
 - [ ] After secrets pass, regenerate summary totals and update this file's timestamp block
 - [ ] Update `WEBHOOK_RECEIVER_URL` with the active Codespace name when spinning up Codespace environment
 
 ---
 
-## ✅ Maintainer Execution Checklist
+##  Maintainer Execution Checklist
 
 Use this checklist to systematically configure all secrets and variables:
 
-### Phase 1: Critical Repository Setup ✅ COMPLETE
+### Phase 1: Critical Repository Setup  COMPLETE
 - [x] **1.1**: Create 4 MISSING repository variables (see section 1):
   - [x] `CODEX_MAX_HEALER_RUNS_PER_HOUR` = `3`
   - [x] `CODEX_SWEEP_SKIP_MAIN` = `true`
@@ -1343,7 +1346,7 @@ Use this checklist to systematically configure all secrets and variables:
   - [ ] `_CODEX_BOT_RUNNER`
   - [ ] `CODEX_REPO_ID`
 
-### Phase 2: Environment Configuration ✅ COMPLETE (variables); Secrets pending
+### Phase 2: Environment Configuration  COMPLETE (variables); Secrets pending
 - [x] **2.1**: Create or verify `Aries_Serpent_codex_` environment exists
 - [x] **2.2**: Add all 13 environment variables (see section 3)
 - [ ] **2.3**: Add all 3 environment secrets (see section 3)
@@ -1359,7 +1362,7 @@ Use this checklist to systematically configure all secrets and variables:
   - [ ] `_GITHUB_APP_CLIENT_SECRET`
 - [ ] **3.2**: Verify repository access for ALL org secrets includes `Aries-Serpent/_codex_`
 
-### Phase 4: Agents Configuration (Copilot/Agents Scope) ✅ COMPLETE (variables); Secrets pending
+### Phase 4: Agents Configuration (Copilot/Agents Scope)  COMPLETE (variables); Secrets pending
 - [x] **4.1**: Create 18 Agents Variables (see section 6):
   - [x] 7 MUST-HAVE variables (including JSON vars — see Copy/Paste Pack F)
   - [x] 11 SHOULD-HAVE variables

@@ -1,8 +1,10 @@
 # GitHub MCP Service & Playwright Enhancement Plan
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
-> **Status:** ✅ Active  
+> **Status:**  Active  
 > **Created:** S174 (2026-03-21)  
 > **Owner:** @mbaetiong  
 > **Tracking PR:** `copilot/update-ci-failure-rate-and-confirm-transition`
@@ -545,23 +547,23 @@ def test_create_ref_and_pr_roundtrip(respx_mock):
 
 | IMP-ID | Description | Effort | Priority |
 |--------|-------------|--------|----------|
-| IMP-001 | `GitHubMCPPoster` write methods (`create_ref`, `create_pull_request`, etc.) | S | ✅ DONE S175 |
-| IMP-004 | MCP real-mode JSON-RPC transport | M | ✅ DONE S175 |
-| IMP-010 | CLI `create-branch`, `create-pr`, `merge-branch` commands | S | ✅ DONE S175 |
-| IMP-003 | Retry + rate-limit back-off | S | ✅ DONE S175 |
-| IMP-006 | Playwright storage-state auth | S | ✅ DONE S175 |
-| IMP-012 | Cognitive brain branch/PR lifecycle hooks | M | ✅ DONE S175 |
-| IMP-013 | Cognitive-brain context in `@copilot continue` | S | ✅ DONE S175 |
-| IMP-007 | HAR replay for offline CI | M | ✅ DONE S177 |
-| IMP-009 | Resilient selector strategy in scraper | S | ✅ DONE S176 |
-| IMP-011 | `actions_server.py` POST endpoints | M | ✅ DONE S176 |
-| IMP-014 | Multi-target MCP config with health checks | L | ✅ DONE S177 |
-| IMP-015 | MCP metrics CI gate | S | ✅ DONE S177 |
-| IMP-016 | Upload Playwright results as CI artifacts | S | ✅ DONE S177 |
-| IMP-017 | End-to-end delegation test fixture | M | ✅ DONE S176 |
-| IMP-008 | Playwright CDP cookie injection | M | ✅ DONE S178 |
-| IMP-005 | Capability schema validation | L | ✅ DONE S178 |
-| IMP-002 | Git Data API autonomous commits | L | ✅ DONE S178 |
+| IMP-001 | `GitHubMCPPoster` write methods (`create_ref`, `create_pull_request`, etc.) | S |  DONE S175 |
+| IMP-004 | MCP real-mode JSON-RPC transport | M |  DONE S175 |
+| IMP-010 | CLI `create-branch`, `create-pr`, `merge-branch` commands | S |  DONE S175 |
+| IMP-003 | Retry + rate-limit back-off | S |  DONE S175 |
+| IMP-006 | Playwright storage-state auth | S |  DONE S175 |
+| IMP-012 | Cognitive brain branch/PR lifecycle hooks | M |  DONE S175 |
+| IMP-013 | Cognitive-brain context in `@copilot continue` | S |  DONE S175 |
+| IMP-007 | HAR replay for offline CI | M |  DONE S177 |
+| IMP-009 | Resilient selector strategy in scraper | S |  DONE S176 |
+| IMP-011 | `actions_server.py` POST endpoints | M |  DONE S176 |
+| IMP-014 | Multi-target MCP config with health checks | L |  DONE S177 |
+| IMP-015 | MCP metrics CI gate | S |  DONE S177 |
+| IMP-016 | Upload Playwright results as CI artifacts | S |  DONE S177 |
+| IMP-017 | End-to-end delegation test fixture | M |  DONE S176 |
+| IMP-008 | Playwright CDP cookie injection | M |  DONE S178 |
+| IMP-005 | Capability schema validation | L |  DONE S178 |
+| IMP-002 | Git Data API autonomous commits | L |  DONE S178 |
 
 **Effort key:** S = < 1 hour | M = 1–4 hours | L = 4–8 hours
 **All IMP items complete as of S178.  IMP backlog is fully closed.**

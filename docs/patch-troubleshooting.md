@@ -1,4 +1,6 @@
 # Handling "patch with only garbage" Errors
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 When applying patches, you may see errors like:
 

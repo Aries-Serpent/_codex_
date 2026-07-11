@@ -1,6 +1,8 @@
 # Unified Training Orchestrator (Schema v2 Alignment)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 The unified orchestrator consolidates legacy and functional loops behind a **single public API**.
 
@@ -13,7 +15,7 @@ The unified orchestrator consolidates legacy and functional loops behind a **sin
 | Determinism | Central seeding (Python, NumPy, Torch) |
 | Deprecation | Legacy loop wrapped with `DeprecationWarning` |
 
-## Quick Start
+## Quickstart
 ```python
 from codex_ml.training.unified_training import UnifiedTrainingConfig, run_unified_training
 cfg = UnifiedTrainingConfig(model_name="demo", epochs=1)

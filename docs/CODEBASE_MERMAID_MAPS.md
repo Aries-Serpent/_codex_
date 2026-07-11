@@ -1,7 +1,9 @@
 # 🗺️ Codebase-Wide Mermaid Architecture Maps
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Version:** 1.4.1 (S1292a · 2026-06-03)  
-> **Updated:** 2026-06-03  
+> **Updated: 2026-07-11
 > **Purpose:** Single reference for ALL architectural mermaid diagrams across `Aries-Serpent/_codex_`  
 > **Policy:** Per `CODEBASE_AGENCY_POLICY.md §0` — agents must consult this file during pre-flight  
 > **Previous:** v1.3.0 S1259 · 2026-05-23
@@ -127,7 +129,7 @@ flowchart LR
         GATE -->|yes| WRAP[Wrap-up:\naccountability +\ncognitive brain]
         GATE -->|no| HEAL[iterative\nself-healing]
         HEAL --> SESSION
-        WRAP -->|post comment| DONE[✅ Session Done]
+        WRAP -->|post comment| DONE[ Session Done]
     end
 
     PR --> TASK
@@ -296,8 +298,8 @@ flowchart TD
     end
 
     subgraph "Outcome"
-        PASS[✅ CI PASS\nAll blocking addressed]
-        FAIL[❌ CI FAIL\nPost checklist comment]
+        PASS[ CI PASS\nAll blocking addressed]
+        FAIL[ CI FAIL\nPost checklist comment]
     end
 
     SCAN --> CLASSIFY
@@ -330,7 +332,7 @@ stateDiagram-v2
     DISPATCH_SWEEP --> VERIFY: run all patterns
 
     VERIFY --> GATE: sync_tracked_files --check
-    GATE --> COMMIT: all 4 consistent ✅
+    GATE --> COMMIT: all 4 consistent 
     GATE --> ESCALATE: sync drift persists
 
     COMMIT --> IDLE: [skip ci] commit
@@ -381,12 +383,12 @@ flowchart LR
 ## 10. P19 Shadow Import Module Map
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing src/codex/\n__init__.py\nconfig/\nservices/, src/codex/config/\nopenai_client.py ❌ MISSING'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing src/codex/\n__init__.py\nconfig/\nservices/, src/codex/config/\nopenai_client.py  MISSING'}}%%
 graph TD
     subgraph "src/ layout (editable install)"
         SRC_CODEX[src/codex/\n__init__.py\nconfig/\nservices/]
-        SRC_CONFIG[src/codex/config/\nopenai_client.py ❌ MISSING]
-        SRC_SVC[src/codex/services/github/\nclient.py ❌ MISSING]
+        SRC_CONFIG[src/codex/config/\nopenai_client.py  MISSING]
+        SRC_SVC[src/codex/services/github/\nclient.py  MISSING]
     end
 
     subgraph "Legacy shadow (root-level)"
@@ -681,11 +683,11 @@ graph LR
 
     subgraph "Phase 10 In Progress"
         P10A[Coverage maintenance gate — 17.57% overall baseline S1292]
-        P10B[Fill src/ coverage gaps — security 90.72% ✅ S1292]
+        P10B[Fill src/ coverage gaps — security 90.72%  S1292]
         P10C[Update all living docs to v1.4.0 baseline S1292]
         P10D[Adaptive Learning Phase 8.3 80 to 100 percent]
-        P10E[ITA service coverage tests added ✅ S1292]
-        P10F[MSP Gateway coverage tests added ✅ S1292]
+        P10E[ITA service coverage tests added  S1292]
+        P10F[MSP Gateway coverage tests added  S1292]
     end
 
     P9A & P9B & P9C & P9D & P9E --> P9J
@@ -720,11 +722,11 @@ graph LR
 > **Added S1259 (2026-05-23) · Updated S1292 (2026-05-28)**
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing Overall statements: 17.57%, src/security/: 90.72% ✅'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing Overall statements: 17.57%, src/security/: 90.72% '}}%%
 graph TD
     subgraph "Coverage Baseline (S1292 — 2026-05-28)"
         CB1[Overall statements: 17.57%]
-        CB2[src/security/: 90.72% ✅]
+        CB2[src/security/: 90.72% ]
         CB3[Test files: 2,130]
         CB4[Phase 9+10 tests added: 196+ ITA MSP training security]
     end
@@ -741,16 +743,16 @@ graph TD
         GF2[src/codex/cognitive_brain/ — brain ops ⏳]
         GF3[src/training/ — trainer loops ⏳]
         GF4[src/codex/rag/ — retrieval paths ⏳]
-        GF5[src/security/ — auth + secrets ✅ 90.72%]
-        GF6[services/ita/ — ITA service ✅]
-        GF7[services/msp_gateway/ — MSP Gateway ✅]
+        GF5[src/security/ — auth + secrets  90.72%]
+        GF6[services/ita/ — ITA service ]
+        GF7[services/msp_gateway/ — MSP Gateway ]
         GF8[Target: 25% overall statements milestone]
     end
 
     subgraph "Phase 10C — Documentation Alignment"
-        DA1[CODEBASE_MERMAID_MAPS v1.4.0 ✅ S1292]
-        DA2[ARCHITECTURE.md metrics refresh ✅ S1292]
-        DA3[docs/diagrams/*.mmd updated ✅ S1292]
+        DA1[CODEBASE_MERMAID_MAPS v1.4.0  S1292]
+        DA2[ARCHITECTURE.md metrics refresh  S1292]
+        DA3[docs/diagrams/*.mmd updated  S1292]
         DA4[AGENT_NAVIGATION.md — Phase 10 agents ⏳]
         DA5[.codex/cognitive_brain/ status update ⏳]
     end
@@ -802,24 +804,24 @@ graph TD
 > **Updated S1293 (2026-05-28)**
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing Security module: src/security/\n90.72% coverage ✅, ITA service tests\ntests/services/ita/ ✅'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing Security module: src/security/\n90.72% coverage , ITA service tests\ntests/services/ita/ '}}%%
 graph LR
     subgraph "Completed in S1292"
-        S1A[Security module: src/security/\n90.72% coverage ✅]
-        S1B[ITA service tests\ntests/services/ita/ ✅]
-        S1C[MSP Gateway tests\ntests/services/msp_gateway/ ✅]
-        S1D[Training module tests\ntests/training/ targeted ✅]
-        S1E[Docs + mermaid maps\nv1.4.0 refresh ✅]
+        S1A[Security module: src/security/\n90.72% coverage ]
+        S1B[ITA service tests\ntests/services/ita/ ]
+        S1C[MSP Gateway tests\ntests/services/msp_gateway/ ]
+        S1D[Training module tests\ntests/training/ targeted ]
+        S1E[Docs + mermaid maps\nv1.4.0 refresh ]
     end
 
     subgraph "Completed in S1293"
-        P1[src/codex/cognitive_brain/\nbrain ops coverage 76.92% ✅]
-        P2[src/codex/cli.py\nCLI CliRunner smoke tests ✅]
-        P3[src/codex/rag/\nFAISS-mocked retriever + indexer ✅]
-        P4[src/training/trainer.py\nmixed-precision + checkpoint hooks ✅]
-        P5[Adaptive Learning Phase 8.3\nk₁ Bayesian tuning from PDA ✅]
-        P6[AGENT_NAVIGATION.md + agent_context.json\nPhase 10 agents registered ✅]
-        P7[CI rate_limit_orchestrator.py\ncancel_superseded_runs hardened ✅]
+        P1[src/codex/cognitive_brain/\nbrain ops coverage 76.92% ]
+        P2[src/codex/cli.py\nCLI CliRunner smoke tests ]
+        P3[src/codex/rag/\nFAISS-mocked retriever + indexer ]
+        P4[src/training/trainer.py\nmixed-precision + checkpoint hooks ]
+        P5[Adaptive Learning Phase 8.3\nk₁ Bayesian tuning from PDA ]
+        P6[AGENT_NAVIGATION.md + agent_context.json\nPhase 10 agents registered ]
+        P7[CI rate_limit_orchestrator.py\ncancel_superseded_runs hardened ]
     end
 
     subgraph "Phase 11 — Production Hardening"
@@ -862,25 +864,25 @@ graph LR
 > One tailored prompt per component requiring ongoing work. Use these to resume work in a new session.
 > **Phase 10 items below are COMPLETED (S1293).** Phase 11 prompts follow.
 
-### ✅ DONE — Coverage: `src/codex/cognitive_brain/` (S1293)
+###  DONE — Coverage: `src/codex/cognitive_brain/` (S1293)
 > OODAOrchestrator, SharedMemory, PatternLibrary tests added. `tests/cognitive/test_ooda_meta_learning_coverage.py`
 
-### ✅ DONE — Coverage: `src/codex/cli.py` (S1293)
+###  DONE — Coverage: `src/codex/cli.py` (S1293)
 > CliRunner smoke + branch tests. `tests/codex/test_cli_click_lightweight_smoke.py`
 
-### ✅ DONE — Coverage: `src/codex/rag/` (S1293)
+###  DONE — Coverage: `src/codex/rag/` (S1293)
 > FAISS-mocked indexer, retriever, embedding cache. `tests/rag/test_rag_faiss_mocked_units.py`
 
-### ✅ DONE — Coverage: `src/training/trainer.py` (S1293)
+###  DONE — Coverage: `src/training/trainer.py` (S1293)
 > Mixed-precision + checkpoint hooks. `tests/unit/test_trainer_checkpoint_hooks_phase10.py`
 
-### ✅ DONE — Adaptive Learning QEC k₁ Tuning Phase 8.3 (S1293)
+###  DONE — Adaptive Learning QEC k₁ Tuning Phase 8.3 (S1293)
 > Bayesian tuning from pda_iterations.jsonl. `src/cognitive_brain/quantum/adaptive_scoring.py`
 
-### ✅ DONE — AGENT_NAVIGATION.md + .codex status (S1293)
+###  DONE — AGENT_NAVIGATION.md + .codex status (S1293)
 > Phase 10 agents registered. `.codex/AGENT_NAVIGATION.md`, `.codex/agent_context.json`
 
-### ✅ DONE — CI superseded-run cancellation hardening (S1293)
+###  DONE — CI superseded-run cancellation hardening (S1293)
 > `cancel_superseded_runs()` wrapper with `--keep-latest` default. `scripts/ci/rate_limit_orchestrator.py`
 
 ---
@@ -889,7 +891,7 @@ graph LR
 
 > Target: ~100% production readiness — zero CodeQL/security findings, no placeholder code, overall ≥25% statement coverage.
 
-### 🔴 P11-SEC: CodeQL + Bandit clean run
+###  P11-SEC: CodeQL + Bandit clean run
 ```
 You are continuing Phase 11 security hardening on Aries-Serpent/_codex_.
 Context: CodeQL open findings must reach zero before production gate.
@@ -899,11 +901,11 @@ Task:
 3. Fix any CWE-078 (os.system), CWE-089 (SQLi), CWE-601 (open redirect) in src/
 4. Re-run bandit; assert exit code 0
 5. Run: python -m pytest tests/security/ --cov=src/security --cov-report=term-missing -q
-6. Update docs/CODEBASE_MERMAID_MAPS.md Section 18 N3 node to ✅
+6. Update docs/CODEBASE_MERMAID_MAPS.md Section 18 N3 node to 
 Constraints: No suppression comments unless a true false-positive with justification.
 ```
 
-### 🔴 P11-PLACEHOLDER: Audit TODO/FIXME/placeholder in production code
+###  P11-PLACEHOLDER: Audit TODO/FIXME/placeholder in production code
 ```
 You are continuing Phase 11 code hardening on Aries-Serpent/_codex_.
 Context: Production code must contain no unintentional TODO/FIXME stubs or NotImplementedError raises.
@@ -911,11 +913,11 @@ Task:
 1. grep -r "TODO\|FIXME\|raise NotImplementedError\|pass  # placeholder" src/ > reports/placeholder_audit.txt
 2. For each hit: either implement the stub, convert to a logged warning, or add an explicit @pytest.mark.skip
 3. Verify no new test failures: python -m pytest tests/ -q --tb=no -x
-4. Update docs/CODEBASE_MERMAID_MAPS.md Section 18 N4 node to ✅
+4. Update docs/CODEBASE_MERMAID_MAPS.md Section 18 N4 node to 
 Constraints: Do NOT delete test stubs — only production src/ paths.
 ```
 
-### 🔵 P11-COV-ZERO: Close 0%-coverage modules
+###  P11-COV-ZERO: Close 0%-coverage modules
 ```
 You are continuing Phase 11 coverage work on Aries-Serpent/_codex_.
 Context: Two modules remain at 0% coverage from the S1293 cognitive run.
@@ -926,10 +928,10 @@ Constraints:
 - Mock all external I/O (DB, HTTP)
 - Do NOT alter existing tests
 - Run: python -m pytest tests/cognitive/ --cov=src/codex/cognitive --cov-report=term-missing -q
-- Update docs/CODEBASE_MERMAID_MAPS.md Section 18 N1 node to ✅
+- Update docs/CODEBASE_MERMAID_MAPS.md Section 18 N1 node to 
 ```
 
-### 🔵 P11-COV-DEPTH: Raise low-coverage cognitive modules to ≥75%
+###  P11-COV-DEPTH: Raise low-coverage cognitive modules to ≥75%
 ```
 You are continuing Phase 11 coverage depth work on Aries-Serpent/_codex_.
 Context: Several cognitive modules are at 58–69% coverage after S1293.
@@ -942,10 +944,10 @@ Task: Add gap-filling tests for each module.
 Constraints:
 - Use tests/cognitive/ directory
 - Run: python -m pytest tests/cognitive/ --cov=src/codex/cognitive --cov-report=term-missing -q
-- Update docs/CODEBASE_MERMAID_MAPS.md Section 18 N2 node to ✅
+- Update docs/CODEBASE_MERMAID_MAPS.md Section 18 N2 node to 
 ```
 
-### 🔵 P11-COV-MILESTONE: Reach overall ≥25% statement coverage
+###  P11-COV-MILESTONE: Reach overall ≥25% statement coverage
 ```
 You are driving the Phase 11 overall coverage milestone on Aries-Serpent/_codex_.
 Context: Current overall coverage baseline is 17.57% (S1292). Target: 25%.
@@ -954,7 +956,7 @@ Task:
 2. Identify top-10 uncovered modules by statement count
 3. Add targeted tests for the top-3 modules not already in the P11 backlog
 4. Re-run coverage; assert ≥25%
-5. Update docs/CODEBASE_MERMAID_MAPS.md Section 18 N5 node to ✅
+5. Update docs/CODEBASE_MERMAID_MAPS.md Section 18 N5 node to 
 ```
 
 ### 🟡 P11-RAG-E2E: RAG end-to-end corpus round-trip test
@@ -966,11 +968,11 @@ Task:
 2. Write an integration test that indexes a 5-document corpus and queries it
 3. Use pytest tmp_path for index persistence; skip if faiss not installed
 4. Run: python -m pytest tests/rag/ --cov=src/codex/rag --cov-report=term-missing -q
-5. Update docs/CODEBASE_MERMAID_MAPS.md Section 18 N6 node to ✅
+5. Update docs/CODEBASE_MERMAID_MAPS.md Section 18 N6 node to 
 ```
 
 ---
 
 *All diagrams render on GitHub markdown. Use [Mermaid Live Editor](https://mermaid.live) for offline preview.*
 
-*Updated: S1293 · 2026-05-28 — v1.5.0: Phase 10 items fully completed (cognitive brain 76.92%, CLI, RAG, trainer, k₁ tuning, agent nav, CI dedup); Phase 11 hardening prompts added (CodeQL clean, placeholder audit, 0%-coverage modules, ≥25% overall milestone, RAG E2E).*
+*Updated: 2026-07-11

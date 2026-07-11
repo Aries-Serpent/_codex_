@@ -1,4 +1,6 @@
 # Workflow Conflict Analysis — PR #4368 / Active Session Impact
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Generated:** S899-cont · 2026-05-09
 > **Author:** Copilot agent (S899)
@@ -36,37 +38,37 @@ Total = 8 pending (set A + set B)
 ```
 
 **Each approval of the 8** runs `agent-auth-delegation.yml` which pushes `chore(auth)`
-and `chore(d00)` commits (both have `[skip ci]` ✅ — these do NOT re-cascade).
+and `chore(d00)` commits (both have `[skip ci]`  — these do NOT re-cascade).
 But `pr-followup-generator` fires again on the NEXT synchronize → cycle repeats.
 
 ---
 
 ## Workflow Audit: Push Behavior & Conflict Risk
 
-### 🔴 HIGH — Can push commits to branch (directly affects session work)
+###  HIGH — Can push commits to branch (directly affects session work)
 
 | Workflow | Trigger | Commit message | `[skip ci]`? | Fix applied |
 |----------|---------|----------------|-------------|-------------|
-| `pr-followup-generator.yml` | `synchronize, edited, opened, ...` | `chore: Generate follow-up prompt for PR #N` | ❌ **MISSING** | ✅ Added `[skip ci]` (S899-cont) |
-| `iterative-self-healing-ci.yml` | `workflow_run: completed` | `self-heal(iter-N): auto-fix PATTERN [skip ci-if-no-change]` | ❌ Non-standard tag | ✅ Fixed to `[skip ci]` (S899-cont) |
-| `auto-fix-pr-check.yml` | `pull_request: synchronize` | `fix(ci): resolve auto-fixable issues` | ❌ **MISSING** | ✅ Added `[skip ci]` (S899-cont) |
-| `auto-fix-common-issues.yml` | `workflow_dispatch` only | `fix(ci): auto-fix common CI issues` | ❌ **MISSING** | ✅ Added `[skip ci]` (S899-cont) |
-| `agent-auth-delegation.yml` | `pull_request: edited, opened, ...` | `chore(auth)/chore(d00)/fix(docs)` | ✅ All have `[skip ci]` | No change needed |
-| `copilot-agent-session-done.yml` | `workflow_run: completed` | `fix(docs): auto-post pre-flight auto-fix` | ✅ Has `[skip ci]` | No change needed |
-| `codex-manifest-refresh.yml` | `pull_request: opened, reopened` / schedule | `chore(manifest): auto-refresh` | ✅ Has `[skip ci]` | No change needed |
-| `e-to-d-transition-gate.yml` | `pull_request` | `chore(manifest): auto-heal C2` | ✅ Has `[skip ci]` | No change needed |
-| `codebase-health-sweep.yml` | `workflow_run: completed` | `fix(ci): nightly codebase health sweep` | ✅ Has `[skip ci]` | No change needed |
+| `pr-followup-generator.yml` | `synchronize, edited, opened, ...` | `chore: Generate follow-up prompt for PR #N` |  **MISSING** |  Added `[skip ci]` (S899-cont) |
+| `iterative-self-healing-ci.yml` | `workflow_run: completed` | `self-heal(iter-N): auto-fix PATTERN [skip ci-if-no-change]` |  Non-standard tag |  Fixed to `[skip ci]` (S899-cont) |
+| `auto-fix-pr-check.yml` | `pull_request: synchronize` | `fix(ci): resolve auto-fixable issues` |  **MISSING** |  Added `[skip ci]` (S899-cont) |
+| `auto-fix-common-issues.yml` | `workflow_dispatch` only | `fix(ci): auto-fix common CI issues` |  **MISSING** |  Added `[skip ci]` (S899-cont) |
+| `agent-auth-delegation.yml` | `pull_request: edited, opened, ...` | `chore(auth)/chore(d00)/fix(docs)` |  All have `[skip ci]` | No change needed |
+| `copilot-agent-session-done.yml` | `workflow_run: completed` | `fix(docs): auto-post pre-flight auto-fix` |  Has `[skip ci]` | No change needed |
+| `codex-manifest-refresh.yml` | `pull_request: opened, reopened` / schedule | `chore(manifest): auto-refresh` |  Has `[skip ci]` | No change needed |
+| `e-to-d-transition-gate.yml` | `pull_request` | `chore(manifest): auto-heal C2` |  Has `[skip ci]` | No change needed |
+| `codebase-health-sweep.yml` | `workflow_run: completed` | `fix(ci): nightly codebase health sweep` |  Has `[skip ci]` | No change needed |
 
 ### 🟡 MEDIUM — Fire on every push/PR update (generate action_required cascades)
 
 | Workflow | Trigger types | Concurrency cancel? | Session impact |
 |----------|--------------|---------------------|---------------|
-| `workflow-execution-gate.yml` | `pull_request: edited`, `pull_request_review: submitted` | ✅ yes | Fires on every PR-body update from `report_progress` |
-| `agent-auth-delegation.yml` | `pull_request: opened/edited/reopened/ready_for_review/closed` | ✅ yes | Fires on every `report_progress` PR-body update |
+| `workflow-execution-gate.yml` | `pull_request: edited`, `pull_request_review: submitted` |  yes | Fires on every PR-body update from `report_progress` |
+| `agent-auth-delegation.yml` | `pull_request: opened/edited/reopened/ready_for_review/closed` |  yes | Fires on every `report_progress` PR-body update |
 | `pr-cost-check.yml` | `pull_request: *` | unknown | Fires on every push |
-| `pr-followup-generator.yml` | `pull_request: opened/reopened/synchronize/edited/ready_for_review` | ✅ yes | Fires on EVERY push — high frequency |
+| `pr-followup-generator.yml` | `pull_request: opened/reopened/synchronize/edited/ready_for_review` |  yes | Fires on EVERY push — high frequency |
 
-### 🟢 LOW — Read-only validation (safe, no push risk)
+###  LOW — Read-only validation (safe, no push risk)
 
 | Workflow | Notes |
 |----------|-------|
@@ -100,7 +102,7 @@ configure `iterative-self-healing-ci.yml` to only run on `workflow_dispatch`, no
 found, if it fires while an agent session is mid-commit it can create non-fast-forward
 conflicts.
 
-**Current concurrency guard:** `group: auto-fix-${{ github.ref }}` cancel-in-progress ✅
+**Current concurrency guard:** `group: auto-fix-${{ github.ref }}` cancel-in-progress 
 **Recommended:** Restrict trigger to `workflow_dispatch` only, or add a flag check
 for active Copilot sessions before pushing.
 
@@ -121,7 +123,7 @@ if: |
 ### ⚠️ RCP-04 — `agent-auth-delegation.yml` fires on `pull_request: edited`
 
 `report_progress` updates the PR body → `pull_request: edited` → `agent-auth-delegation`
-runs → pushes `chore(auth)` + `chore(d00)` (both `[skip ci]` ✅). The commits don't cascade,
+runs → pushes `chore(auth)` + `chore(d00)` (both `[skip ci]` ). The commits don't cascade,
 but the delegation workflow itself still runs on every `report_progress` call, consuming
 Actions minutes and generating approval cycles.
 

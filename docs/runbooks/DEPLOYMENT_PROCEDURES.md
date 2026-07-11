@@ -1,7 +1,9 @@
 # RUNBOOK: Deployment Procedures for Codex ML Platform
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Version:** 1.0.0  
-**Last Updated:** 2026-07-10  
+**Last Updated: 2026-07-10
 **Audience:** DevOps, Deployment Engineers  
 **SLA:** Deployment should complete in 30-60 minutes  
 

@@ -1,6 +1,8 @@
 # Plugin API - Broader Factory System
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 > Comprehensive guide to the Codex plugin system and factory registries
 
@@ -558,7 +560,7 @@ def test_plugin_discovery():
 
 - [API Documentation](../api/index.md) - Auto-generated API reference
 - [Metrics Guide](../guides/metrics.md) - Implementing custom metrics
-- [Examples](https://github.com/Aries-Serpent/_codex_/blob/main/examples/plugins) - Example plugin implementations
+- [Examples](../examples/plugins) - Example plugin implementations
 
 ## Support
 

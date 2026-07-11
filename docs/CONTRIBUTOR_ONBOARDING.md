@@ -1,6 +1,8 @@
 # Contributor Onboarding Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 Welcome to the Codex repository! This guide will help you get started as a contributor, whether you're a human developer or an AI Agent.
 
@@ -19,7 +21,7 @@ Welcome to the Codex repository! This guide will help you get started as a contr
 
 ---
 
-## Quick Start
+## Quickstart
 
 ### For Human Contributors
 
@@ -564,7 +566,7 @@ Welcome to the Codex project! We're excited to have you as a contributor. This r
 - Write tests
 - Have fun!
 
-**Happy Contributing! 🚀**
+**Happy Contributing! **
 
 ---
 

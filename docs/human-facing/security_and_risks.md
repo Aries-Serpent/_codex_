@@ -1,4 +1,6 @@
 # Security & Risks
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > Last updated: 2026-06-22
 
@@ -83,10 +85,10 @@ Automated security scanning runs on every commit:
 
 | Risk | Likelihood | Impact | Mitigation Status |
 |------|------------|--------|-------------------|
-| API key compromise | Low | Critical | ✅ Rotation policy in place |
-| Prompt injection | Medium | High | ✅ Input sanitization |
-| Model hallucination | High | Medium | ✅ CoVe verification |
-| Rate limit bypass | Low | Medium | ✅ Multiple layers |
+| API key compromise | Low | Critical |  Rotation policy in place |
+| Prompt injection | Medium | High |  Input sanitization |
+| Model hallucination | High | Medium |  CoVe verification |
+| Rate limit bypass | Low | Medium |  Multiple layers |
 
 ## Security Contacts
 

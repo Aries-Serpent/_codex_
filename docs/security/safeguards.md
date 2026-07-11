@@ -1,6 +1,9 @@
 # Security & Safeguards: Dependency Vulnerability Gate
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
-🧠 Roles: [Primary: Security Gate Owner], [Secondary: Implementer] ⚡ Energy: 5/5  
+ Roles: [Primary: Security Gate Owner], [Secondary: Implementer] ⚡ Energy: 5/5  
 ⚛️ Physics: Path🛤️ [Scan → Parse → Decide → Artifact] Fields🔄 [pip-audit, JSON] Patterns👁️ [Fail High/Critical, Allowlist Expiry] Redundancy🔀 [Artifact + Index] Balance⚖️ [Strict vs. Developer Velocity]
 
 ## Policy

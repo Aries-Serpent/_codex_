@@ -7,7 +7,7 @@ on:
     types:
     - completed
 concurrency:
-  group: auto-post-copilot-review-${{ github.event.workflow_run.pull_requests[0] &&
+  group: ${{ github.workflow }}-${{ github.ref }}
     github.event.workflow_run.pull_requests[0].number || github.event.workflow_run.id
     }}
   cancel-in-progress: true

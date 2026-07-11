@@ -1,6 +1,9 @@
 # [Report]: Codebase Status Audit — Aries-Serpent/*codex* (main)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
-🧠 Roles: [Audit Orchestrator], [Capability Cartographer] ⚡ Energy: 5
+ Roles: [Audit Orchestrator], [Capability Cartographer] ⚡ Energy: 5
 
 ## 1) Executive Summary
 

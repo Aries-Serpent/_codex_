@@ -1,8 +1,10 @@
 # [Guide]: The Genesis Protocol - Sovereign Admin Initialization
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Generated:** 2026-03-17T00:00:00Z | **Author:** mbaetiong
 > **repository:** `Aries-Serpent/_codex_` (ID: 1040037790)
-> **Classification:** 🔒 Internal - Administrative Operations
+> **Classification:**  Internal - Administrative Operations
 
 ## Executive Overview
 
@@ -19,10 +21,10 @@
 ## Prerequisites
 
 ### Subscription Requirements
-- ✅ GitHub Copilot Pro+ (Personal) - Required
-- ✅ GitHub Team (Org-Repo) - Required
-- ✅ Repository Admin Access - Required
-- ✅ Email Verification - Required
+-  GitHub Copilot Pro+ (Personal) - Required
+-  GitHub Team (Org-Repo) - Required
+-  Repository Admin Access - Required
+-  Email Verification - Required
 
 ### Required Files
 - `.codex/autonomous_agent.yaml` - agent configuration
@@ -39,7 +41,7 @@
 
 **Navigation:**
 1. Go to: https://github.com/settings/personal-access-tokens/new
-2. Or: GitHub Profile → ⚙️ Settings → Developer settings → Personal access tokens → Fine-grained tokens
+2. Or: GitHub Profile →  Settings → Developer settings → Personal access tokens → Fine-grained tokens
 
 **Token Configuration:**
 - **Token name**: `CODEX_MASTER_KEY_Aries-Serpent`
@@ -81,10 +83,10 @@
 
 | Secret Name | Value Source | Purpose | Priority |
 |-------------|--------------|---------|----------|
-| `CODEX_MASTER_KEY` | Step 0.1 output | Primary API authentication | 🔴 Critical |
-| `CODEX_REPO_ID` | `1040037790` | repository identifier | 🔴 Critical |
+| `CODEX_MASTER_KEY` | Step 0.1 output | Primary API authentication |  Critical |
+| `CODEX_REPO_ID` | `1040037790` | repository identifier |  Critical |
 | `CODEX_WEBHOOK_SECRET` | `openssl rand -hex 32` | Webhook signature verification | 🟡 High |
-| `CODEX_BACKUP_KEY` | Secondary PAT (optional) | Fallback authentication | 🟢 Recommended |
+| `CODEX_BACKUP_KEY` | Secondary PAT (optional) | Fallback authentication |  Recommended |
 
 **Secret Injection Steps:**
 
@@ -130,7 +132,7 @@ openssl rand -hex 32
 | **Actions permissions** | Allow all actions and reusable workflows | Enable full workflow capability |
 | **Fork pull request workflows** | Require approval for first-time contributors | Security gate |
 | **workflow permissions** | Read and write permissions | Enable content modifications |
-| **Allow GitHub Actions to create and approve pull requests** | ✅ Enabled | agent PR operations |
+| **Allow GitHub Actions to create and approve pull requests** |  Enabled | agent PR operations |
 
 **Environment Configuration:**
 
@@ -156,13 +158,13 @@ Create `codex-production` environment:
 1. Navigate to: https://github.com/Aries-Serpent/_codex_/actions/workflows/genesis-bootstrap.yml
 2. Click "Run workflow" dropdown
 3. Configure inputs:
-   - **genesis_validation**: ✅ Check (Enable)
+   - **genesis_validation**:  Check (Enable)
    - **human_admin**: `mbaetiong`
 4. Click "Run workflow"
 5. Monitor execution (1-2 minutes)
 
 **Success Criteria:**
-- workflow shows ✅ green checkmark
+- workflow shows  green checkmark
 - Artifact `genesis-validation-report` available
 - `.codex/genesis_validation.json` created
 - `.codex/change_log.md` updated with Genesis entry
@@ -172,7 +174,7 @@ Create `codex-production` environment:
 
 ## Phase 1: Post-Genesis agent Autonomy
 
-> 🎯 **Zero-Touch Operations Enabled**
+>  **Zero-Touch Operations Enabled**
 > After Genesis completion, the Copilot agent operates autonomously within defined guardrails.
 
 ### agent Capabilities Matrix
@@ -241,15 +243,15 @@ FILES=(
 
 for file in "${FILES[@]}"; do
   if [ -f "$file" ]; then
-    echo "✅ $file exists"
+    echo " $file exists"
   else
-    echo "❌ $file missing"
+    echo " $file missing"
   fi
 done
 
 # Check autonomous_actions_enabled
 if grep -q "autonomous_actions_enabled: true" .codex/autonomous_agent.yaml; then
-  echo "✅ Autonomous actions enabled"
+  echo " Autonomous actions enabled"
 else
   echo "⚠️  Autonomous actions still disabled"
 fi
@@ -338,17 +340,17 @@ Upon successful completion of all phases:
 ---
 
 > **Document Version:** 1.1.0
-> **Last Updated:** 2026-02-10T11:00:00Z
+> **Last Updated: 2026-07-11
 > **Maintainer:** mbaetiong (Human Admin)
-> **Classification:** 🔒 Internal - Administrative Operations
+> **Classification:**  Internal - Administrative Operations
 
 ---
 
-## 🎯 Mission Overview
+##  Mission Overview
 
 **Objective:** Establish sovereign AI operational authority through secure initialization protocol
 **Energy Level:** ⚡⚡⚡⚡⚡ (5/5 - Foundational Critical)
-**Status:** ✅ Template Complete | ⏳ Awaiting Genesis Execution
+**Status:**  Template Complete | ⏳ Awaiting Genesis Execution
 
 This protocol represents the foundational initialization that grants the AI agent (`ai_org_repo_admin`) sovereign operational authority within the repository. Success requires precise execution of human-controlled steps (Phase 0) followed by validation of agent autonomy (Phase 1). The Genesis Protocol is the cornerstone of all subsequent autonomous operations.
 
@@ -440,7 +442,7 @@ Post-Genesis Operations: ████ 15% (Steady-state monitoring)
 
 ---
 
-## 🧠 Redundancy Patterns
+##  Redundancy Patterns
 
 ### Rollback Strategy
 **Trigger Conditions:**

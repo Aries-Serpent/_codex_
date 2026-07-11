@@ -1,7 +1,9 @@
 # Pre-Merge Validation Gates — Complete Reference
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Status:** ✅ Authoritative Gate Definitions  
-**Last Updated:** 2026-06-25  
+**Status:**  Authoritative Gate Definitions  
+**Last Updated: 2026-06-25
 **Audience:** PR reviewers, CI/CD engineers, Copilot agents
 
 ---
@@ -35,8 +37,8 @@ The **Pre-Merge Readiness System** uses 10 weighted validation gates to determin
 **Failure Criterion:** Any ruff error or mypy error blocks merge
 
 **PR Body Impact:**
-- Record: "✅ Code Quality (12/12): 0 ruff errors, all types typed"
-- Or: "❌ Code Quality (0/12): 15 ruff errors in src/, 3 mypy errors. Fix required."
+- Record: " Code Quality (12/12): 0 ruff errors, all types typed"
+- Or: " Code Quality (0/12): 15 ruff errors in src/, 3 mypy errors. Fix required."
 
 **Weight:** 12 points
 
@@ -57,8 +59,8 @@ The **Pre-Merge Readiness System** uses 10 weighted validation gates to determin
 **Failure Criterion:** Coverage < 95% blocks merge
 
 **PR Body Impact:**
-- Record coverage delta: "✅ Test Coverage (12/12): 96.5% (+1.7% from baseline)"
-- Or: "❌ Test Coverage (0/12): 94.2% coverage (below 95% threshold, -0.8% delta)"
+- Record coverage delta: " Test Coverage (12/12): 96.5% (+1.7% from baseline)"
+- Or: " Test Coverage (0/12): 94.2% coverage (below 95% threshold, -0.8% delta)"
 
 **Weight:** 12 points
 
@@ -94,8 +96,8 @@ The **Pre-Merge Readiness System** uses 10 weighted validation gates to determin
 **Failure Criterion:** Any new secrets detected OR new CodeQL errors > threshold OR pip audit failures
 
 **PR Body Impact:**
-- Record: "✅ Security & Secrets (15/15): 0 new secrets, 0 CodeQL errors, 0 pip vulnerabilities"
-- Or: "❌ Security & Secrets (5/15): 1 CodeQL error (py/wrong-named-arg), 2 pip audit warnings. Partial credit for addressing py/ alert."
+- Record: " Security & Secrets (15/15): 0 new secrets, 0 CodeQL errors, 0 pip vulnerabilities"
+- Or: " Security & Secrets (5/15): 1 CodeQL error (py/wrong-named-arg), 2 pip audit warnings. Partial credit for addressing py/ alert."
 
 **Weight:** 15 points (highest weight — security critical)
 
@@ -131,8 +133,8 @@ The **Pre-Merge Readiness System** uses 10 weighted validation gates to determin
 **Failure Criterion:** Missing WEC section OR incomplete items OR always-required items unchecked → blocks merge
 
 **PR Body Impact:**
-- Record: "✅ WEC Integrity (14/14): All 9 items present, all always-required checked"
-- Or: "❌ WEC Integrity (0/14): WEC section missing or incomplete. Add canonical WEC block."
+- Record: " WEC Integrity (14/14): All 9 items present, all always-required checked"
+- Or: " WEC Integrity (0/14): WEC section missing or incomplete. Add canonical WEC block."
 
 **Weight:** 14 points (critical for workflow orchestration)
 
@@ -162,8 +164,8 @@ The **Pre-Merge Readiness System** uses 10 weighted validation gates to determin
 **Failure Criterion:** Any prohibited phrase detected → blocks merge
 
 **PR Body Impact:**
-- Record: "✅ Deferral Language (10/10): No prohibited phrases detected"
-- Or: "❌ Deferral Language (0/10): Phrase detected: 'These are pre-existing issues' in commit message. Reword to use affirmative language."
+- Record: " Deferral Language (10/10): No prohibited phrases detected"
+- Or: " Deferral Language (0/10): Phrase detected: 'These are pre-existing issues' in commit message. Reword to use affirmative language."
 
 **Weight:** 10 points
 
@@ -197,8 +199,8 @@ The **Pre-Merge Readiness System** uses 10 weighted validation gates to determin
 **Failure Criterion:** Unresolved blocking comment from maintainer or security bot → blocks merge
 
 **PR Body Impact:**
-- Record: "✅ Comment Review (12/12): All 2 blocking comments resolved"
-- Or: "❌ Comment Review (0/12): 1 unresolved comment from @mbaetiong: 'Fix the type error in line 123.' [Link to comment]"
+- Record: " Comment Review (12/12): All 2 blocking comments resolved"
+- Or: " Comment Review (0/12): 1 unresolved comment from @mbaetiong: 'Fix the type error in line 123.' [Link to comment]"
 
 **Weight:** 12 points
 
@@ -234,7 +236,7 @@ The **Pre-Merge Readiness System** uses 10 weighted validation gates to determin
 **Failure Criterion:** Either file missing after auto-fix attempt → manual update required OR auto-fix succeeds (no blocking failure)
 
 **PR Body Impact:**
-- Record: "✅ Accountability (8/8): .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md updated in commit abc1234"
+- Record: " Accountability (8/8): .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md updated in commit abc1234"
 - Or: "⚠️ Accountability (8/8): Auto-fixed — entries generated in commit xyz5678"
 
 **Weight:** 8 points
@@ -263,8 +265,8 @@ The **Pre-Merge Readiness System** uses 10 weighted validation gates to determin
 **Failure Criterion:** Unapproved action version detected after auto-fix → blocks merge
 
 **PR Body Impact:**
-- Record: "✅ Action Versions (7/7): All actions use approved versions"
-- Or: "✅ Action Versions (7/7): Auto-fixed 2 action versions (actions/checkout v4→v5, actions/setup-python v5→v6)"
+- Record: " Action Versions (7/7): All actions use approved versions"
+- Or: " Action Versions (7/7): Auto-fixed 2 action versions (actions/checkout v4→v5, actions/setup-python v5→v6)"
 
 **Weight:** 7 points
 
@@ -299,8 +301,8 @@ The **Pre-Merge Readiness System** uses 10 weighted validation gates to determin
 **Failure Criterion:** Any actionlint error OR yamllint error → blocks merge
 
 **PR Body Impact:**
-- Record: "✅ Workflow Syntax (7/7): 0 actionlint errors, 0 yamllint errors"
-- Or: "❌ Workflow Syntax (0/7): 2 actionlint errors in test.yml, 1 yamllint error in build.yml. Run actionlint and yamllint locally to fix."
+- Record: " Workflow Syntax (7/7): 0 actionlint errors, 0 yamllint errors"
+- Or: " Workflow Syntax (0/7): 2 actionlint errors in test.yml, 1 yamllint error in build.yml. Run actionlint and yamllint locally to fix."
 
 **Weight:** 7 points
 
@@ -331,8 +333,8 @@ The **Pre-Merge Readiness System** uses 10 weighted validation gates to determin
 **Failure Criterion:** Unresolved conflicts OR outdated branch (without documented reason) → blocks merge
 
 **PR Body Impact:**
-- Record: "✅ Merge Dependencies (3/3): Branch clean, up-to-date with main, all protections satisfied"
-- Or: "❌ Merge Dependencies (0/3): 2 unresolved merge conflicts in src/module.py. Resolve conflicts before merge."
+- Record: " Merge Dependencies (3/3): Branch clean, up-to-date with main, all protections satisfied"
+- Or: " Merge Dependencies (0/3): 2 unresolved merge conflicts in src/module.py. Resolve conflicts before merge."
 
 **Weight:** 3 points (lowest weight — usually resolved by auto-merge)
 
@@ -355,26 +357,26 @@ where:
 
 | Gate | Weight | Status | Rate | Contribution |
 |------|--------|--------|------|--------------|
-| Code Quality | 12 | ✅ Pass | 1.0 | 12 |
-| Test Coverage | 12 | ✅ Pass | 1.0 | 12 |
+| Code Quality | 12 |  Pass | 1.0 | 12 |
+| Test Coverage | 12 |  Pass | 1.0 | 12 |
 | Security | 15 | ⚠️ Partial | 0.5 | 7.5 |
-| WEC Integrity | 14 | ✅ Pass | 1.0 | 14 |
-| Deferral Language | 10 | ✅ Pass | 1.0 | 10 |
-| Comment Review | 12 | ❌ Fail | 0.0 | 0 |
-| Accountability | 8 | ✅ Pass | 1.0 | 8 |
-| Action Versions | 7 | ✅ Pass | 1.0 | 7 |
-| Workflow Syntax | 7 | ✅ Pass | 1.0 | 7 |
-| Merge Dependencies | 3 | ✅ Pass | 1.0 | 3 |
+| WEC Integrity | 14 |  Pass | 1.0 | 14 |
+| Deferral Language | 10 |  Pass | 1.0 | 10 |
+| Comment Review | 12 |  Fail | 0.0 | 0 |
+| Accountability | 8 |  Pass | 1.0 | 8 |
+| Action Versions | 7 |  Pass | 1.0 | 7 |
+| Workflow Syntax | 7 |  Pass | 1.0 | 7 |
+| Merge Dependencies | 3 |  Pass | 1.0 | 3 |
 | **TOTAL** | **100** | **8/10 pass, 1 partial** | — | **80.5/100** |
 
 ### Interpretation
 
-- **0–29/100:** 🔴 Critical issues — cannot merge
+- **0–29/100:**  Critical issues — cannot merge
 - **30–69/100:** 🟡 Major issues — significant remediation needed
-- **70–89/100:** 🟠 Moderate issues — address before merge
-- **90–94/100:** 🟢 Minor issues — close to ready
-- **95–99/100:** ✅ Merge-ready (A+ grade)
-- **100/100:** ✅✅ Perfect — all gates pass
+- **70–89/100:**  Moderate issues — address before merge
+- **90–94/100:**  Minor issues — close to ready
+- **95–99/100:**  Merge-ready (A+ grade)
+- **100/100:**  Perfect — all gates pass
 
 ---
 
@@ -383,20 +385,20 @@ where:
 Use this format in every PR body to document gate status:
 
 ```markdown
-## 📊 Merge Readiness Summary
+##  Merge Readiness Summary
 
 | Gate | Weight | Status | Score |
 |------|--------|--------|-------|
-| Code Quality | 12 | ✅ | 12/12 |
-| Test Coverage | 12 | ✅ | 12/12 |
+| Code Quality | 12 |  | 12/12 |
+| Test Coverage | 12 |  | 12/12 |
 | Security & Secrets | 15 | ⚠️ Partial | 7.5/15 |
-| WEC Integrity | 14 | ✅ | 14/14 |
-| Deferral Language | 10 | ✅ | 10/10 |
-| Comment Review | 12 | ❌ | 0/12 |
-| Accountability Report | 8 | ✅ | 8/8 |
-| Action Versions | 7 | ✅ | 7/7 |
-| Workflow Syntax | 7 | ✅ | 7/7 |
-| Merge Dependencies | 3 | ✅ | 3/3 |
+| WEC Integrity | 14 |  | 14/14 |
+| Deferral Language | 10 |  | 10/10 |
+| Comment Review | 12 |  | 0/12 |
+| Accountability Report | 8 |  | 8/8 |
+| Action Versions | 7 |  | 7/7 |
+| Workflow Syntax | 7 |  | 7/7 |
+| Merge Dependencies | 3 |  | 3/3 |
 | **TOTAL** | **100** | **8/10** | **80.5/100** |
 
 ### Failing Gates (Remediation Required)
@@ -446,5 +448,5 @@ Use this checklist when reviewing PRs against the 10-gate model:
 
 ---
 
-**Status:** ✅ Ready for Production Use  
+**Status:**  Ready for Production Use  
 **Last Validated:** 2026-06-25T15:50:00Z

@@ -1,4 +1,6 @@
 # Agent Accountability Report — Session Group 14
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Group:** 14 of 32  
 **Sessions:** auto-pda-2026-05-23 to auto-pda-2026-06-04  
@@ -51,7 +53,7 @@
 
 **Tags:** None  
 **Patterns Fixed:** None  
-**CI Checks:** 0 ✅ / 0 ❌  
+**CI Checks:** 0  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_198  
@@ -73,7 +75,7 @@ Fixed: missing-concurrency-blocks, missing-timeout-minutes, gate-no-exit-1, +3 m
 
 **Tags:** complete  
 **Patterns Fixed:** missing-concurrency-blocks, missing-timeout-minutes, gate-no-exit-1, duplicate-PYEOF, optional-artefact-hardcoded, broken-doc-links  
-**CI Checks:** 5 ✅ / 1 ❌  
+**CI Checks:** 5  / 1   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_231  
@@ -95,7 +97,7 @@ Fixed: latency-baseline-wrong-schema, actionlint-skips-copilot-setup-steps, secr
 
 **Tags:** complete  
 **Patterns Fixed:** latency-baseline-wrong-schema, actionlint-skips-copilot-setup-steps, secrets-baseline-stale, admin-docs-timestamp-stale, deferred-follow-up-tasks  
-**CI Checks:** 7 ✅ / 0 ❌  
+**CI Checks:** 7  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_232  
@@ -117,7 +119,7 @@ Fixed: latency-baseline-wrong-schema, actionlint-skips-copilot-setup-steps, secr
 
 **Tags:** None  
 **Patterns Fixed:** None  
-**CI Checks:** 0 ✅ / 0 ❌  
+**CI Checks:** 0  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_245  
@@ -139,7 +141,7 @@ Fixed: latency-baseline-wrong-schema, actionlint-skips-copilot-setup-steps, secr
 
 **Tags:** None  
 **Patterns Fixed:** None  
-**CI Checks:** 0 ✅ / 0 ❌  
+**CI Checks:** 0  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_246  
@@ -161,7 +163,7 @@ Fixed: latency-baseline-wrong-schema, actionlint-skips-copilot-setup-steps, secr
 
 **Tags:** None  
 **Patterns Fixed:** None  
-**CI Checks:** 0 ✅ / 0 ❌  
+**CI Checks:** 0  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_247  
@@ -183,7 +185,7 @@ Fixed: latency-baseline-wrong-schema, actionlint-skips-copilot-setup-steps, secr
 
 **Tags:** None  
 **Patterns Fixed:** None  
-**CI Checks:** 0 ✅ / 0 ❌  
+**CI Checks:** 0  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_248  
@@ -205,7 +207,7 @@ Fixed: latency-baseline-wrong-schema, actionlint-skips-copilot-setup-steps, secr
 
 **Tags:** None  
 **Patterns Fixed:** None  
-**CI Checks:** 0 ✅ / 0 ❌  
+**CI Checks:** 0  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_249  
@@ -227,7 +229,7 @@ Fixed: latency-baseline-wrong-schema, actionlint-skips-copilot-setup-steps, secr
 
 **Tags:** None  
 **Patterns Fixed:** None  
-**CI Checks:** 0 ✅ / 0 ❌  
+**CI Checks:** 0  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_250  
@@ -249,7 +251,7 @@ Fixed: latency-baseline-wrong-schema, actionlint-skips-copilot-setup-steps, secr
 
 **Tags:** None  
 **Patterns Fixed:** None  
-**CI Checks:** 0 ✅ / 0 ❌  
+**CI Checks:** 0  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_251  

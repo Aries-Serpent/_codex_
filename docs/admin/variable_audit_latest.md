@@ -1,4 +1,6 @@
 # Variable / Secret Audit Report
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 ## Table of Contents
 
@@ -12,15 +14,15 @@
 
 **Repository:** `Aries-Serpent/_codex_`  
 **Generated:** `2026-03-20T06:16:37.803611+00:00`  
-**Auth:** ❌ no token (expected-only mode)
+**Auth:**  no token (expected-only mode)
 
 ## Summary
 
 | Metric | Count |
 |--------|-------|
 | Total expected | 99 |
-| ✅ Present | 0 |
-| ❌ Absent (required) | 0 |
+|  Present | 0 |
+|  Absent (required) | 0 |
 | ❓ Unknown (no API access) | 99 |
 | ➕ Extra (not in guide) | 0 |
 
@@ -38,7 +40,7 @@
 | ❓ | `PYPI_TOKEN` | Publish | optional | No auth token — run with CODEX_MASTER_KEY set for live checks |
 | ❓ | `RAG_OPENAI_KEY` | ML | yes | No auth token — run with CODEX_MASTER_KEY set for live checks |
 | ❓ | `_CODEX_ACTION_RUNNER` | CI/CD | yes | No auth token — run with CODEX_MASTER_KEY set for live checks |
-| ❓ | `_GITHUB_APP_CLIENT_SECRET` 🔒 | GitHub App | yes | No auth token — run with CODEX_MASTER_KEY set for live checks |
+| ❓ | `_GITHUB_APP_CLIENT_SECRET`  | GitHub App | yes | No auth token — run with CODEX_MASTER_KEY set for live checks |
 | ❓ | `_GITHUB_APP_ID` | GitHub App | yes | No auth token — run with CODEX_MASTER_KEY set for live checks |
 | ❓ | `_GITHUB_APP_INSTALLATION_ID` | GitHub App | yes | No auth token — run with CODEX_MASTER_KEY set for live checks |
 | ❓ | `_GITHUB_APP_PRIVATE_KEY` | GitHub App | yes | No auth token — run with CODEX_MASTER_KEY set for live checks |
@@ -74,8 +76,8 @@
 | ❓ | `COGNITIVE_BRAIN_MEMORY_TIER` | Cognitive Brain | yes | No auth token — run with CODEX_MASTER_KEY set for live checks |
 | ❓ | `COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE` | Cognitive Brain | yes | No auth token — run with CODEX_MASTER_KEY set for live checks |
 | ❓ | `COGNITIVE_BRAIN_SESSION_NUMBER` | Cognitive Brain | yes | No auth token — run with CODEX_MASTER_KEY set for live checks |
-| ❓ | `COPILOT_AGENT_AUTH_ENABLED` 🔒 | Copilot Runtime | yes | No auth token — run with CODEX_MASTER_KEY set for live checks |
-| ❓ | `COPILOT_AGENT_FIREWALL_ENABLED` 🔒 | Copilot Runtime | yes | No auth token — run with CODEX_MASTER_KEY set for live checks |
+| ❓ | `COPILOT_AGENT_AUTH_ENABLED`  | Copilot Runtime | yes | No auth token — run with CODEX_MASTER_KEY set for live checks |
+| ❓ | `COPILOT_AGENT_FIREWALL_ENABLED`  | Copilot Runtime | yes | No auth token — run with CODEX_MASTER_KEY set for live checks |
 | ❓ | `COPILOT_AGENT_FIREWALL_ALLOW_LIST_ADDITIONS` | Copilot Runtime | yes | No auth token — run with CODEX_MASTER_KEY set for live checks |
 | ❓ | `COPILOT_AGENT_MAX_AUTONOMY_LEVEL` | Copilot Runtime | yes | No auth token — run with CODEX_MASTER_KEY set for live checks |
 | ❓ | `COPILOT_AGENT_SESSION_RESTORE_ENABLED` | Copilot Runtime | yes | No auth token — run with CODEX_MASTER_KEY set for live checks |
@@ -83,7 +85,7 @@
 | ❓ | `COPILOT_CLI_ENABLED` | Copilot Runtime | yes | No auth token — run with CODEX_MASTER_KEY set for live checks |
 | ❓ | `AGENT_HANDOFF_TIMEOUT_SECONDS` | CI/CD | yes | No auth token — run with CODEX_MASTER_KEY set for live checks |
 | ❓ | `AUTO_PROMOTE_TIER_ENABLED` | CI/CD | yes | No auth token — run with CODEX_MASTER_KEY set for live checks |
-| ❓ | `AUTONOMOUS_ACTIONS_ENABLED` 🔒 | CI/CD | yes | No auth token — run with CODEX_MASTER_KEY set for live checks |
+| ❓ | `AUTONOMOUS_ACTIONS_ENABLED`  | CI/CD | yes | No auth token — run with CODEX_MASTER_KEY set for live checks |
 | ❓ | `CODEX_CI_FAILURE_RATE` | CI/CD | yes | No auth token — run with CODEX_MASTER_KEY set for live checks |
 | ❓ | `CODEX_CI_FAILURE_THRESHOLD` | CI/CD | yes | No auth token — run with CODEX_MASTER_KEY set for live checks |
 | ❓ | `CODEX_CI_LAST_GREEN_SHA` | CI/CD | yes | No auth token — run with CODEX_MASTER_KEY set for live checks |
@@ -124,7 +126,7 @@
 | ❓ | `ZENDESK_SYNC_INTERVAL` | ML | optional | No auth token — run with CODEX_MASTER_KEY set for live checks |
 | ❓ | `CODEX_ACTIVE_CODESPACE` | Webhook/Infra | yes | No auth token — run with CODEX_MASTER_KEY set for live checks |
 | ❓ | `WEBHOOK_RECEIVER_URL` | Webhook/Infra | yes | No auth token — run with CODEX_MASTER_KEY set for live checks |
-| ❓ | `AGENT_KILL_SWITCH` 🔒 | Autonomous Agent | yes | No auth token — run with CODEX_MASTER_KEY set for live checks |
+| ❓ | `AGENT_KILL_SWITCH`  | Autonomous Agent | yes | No auth token — run with CODEX_MASTER_KEY set for live checks |
 | ❓ | `AUTONOMY_BUDGET_SECONDS` | Autonomous Agent | optional | No auth token — run with CODEX_MASTER_KEY set for live checks |
 | ❓ | `AUTONOMY_MAX_ITERATIONS` | Autonomous Agent | optional | No auth token — run with CODEX_MASTER_KEY set for live checks |
 | ❓ | `AUTONOMY_DRY_RUN` | Autonomous Agent | optional | No auth token — run with CODEX_MASTER_KEY set for live checks |

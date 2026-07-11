@@ -1,4 +1,6 @@
 # API Documentation Inventory
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Status:** Phase 1 Complete - Discovery & Analysis  
 **Campaign:** WS1 API Documentation Expansion  

@@ -1,10 +1,12 @@
 # Operations Documentation
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Directory Purpose**: Operational procedures, runbooks, and incident management for Aries-Serpent/_codex_
 
 ---
 
-## 📚 Quick Navigation
+##  Quick Navigation
 
 - **Operational Runbooks** - Standard operating procedures
 - **Incident Management** - Incident response procedures
@@ -28,7 +30,7 @@ docs/ops/
 
 ---
 
-## 📖 Contents
+##  Contents
 
 ### Operational Runbooks
 - **Daily Checks** - Daily monitoring tasks
@@ -62,7 +64,7 @@ docs/ops/
 
 ---
 
-## 🚀 Quick Start
+##  Quick Start
 
 1. **First Time?** → Read Daily Checks
 2. **Incident?** → Check Incident Response
@@ -80,7 +82,7 @@ docs/ops/
 
 ---
 
-## 📊 Key Procedures
+##  Key Procedures
 
 | Procedure | Frequency | Owner | Est. Time |
 |-----------|-----------|-------|-----------|
@@ -100,7 +102,7 @@ docs/ops/
 
 ---
 
-## 💡 Tips for Operations
+##  Tips for Operations
 
 - Automate routine tasks where possible
 - Keep procedures documented and current
@@ -121,4 +123,4 @@ docs/ops/
 
 **Last Updated**: 2026-06-22  
 **Category**: Operations & Maintenance  
-**Status**: ✅ Active
+**Status**:  Active

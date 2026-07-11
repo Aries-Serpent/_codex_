@@ -1,4 +1,6 @@
 # Agent Accountability Report — Session Group 32
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Group:** 32 of 32  
 **Sessions:** S293-pytest to S921-pr-autofix-self-healing  
@@ -47,7 +49,7 @@
 
 **Tags:** None  
 **Patterns Fixed:** None  
-**CI Checks:** 0 ✅ / 0 ❌  
+**CI Checks:** 0  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_307  
@@ -69,7 +71,7 @@
 
 **Tags:** None  
 **Patterns Fixed:** None  
-**CI Checks:** 0 ✅ / 0 ❌  
+**CI Checks:** 0  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_310  
@@ -91,7 +93,7 @@
 
 **Tags:** None  
 **Patterns Fixed:** None  
-**CI Checks:** 0 ✅ / 0 ❌  
+**CI Checks:** 0  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_311  
@@ -113,7 +115,7 @@
 
 **Tags:** None  
 **Patterns Fixed:** None  
-**CI Checks:** 0 ✅ / 0 ❌  
+**CI Checks:** 0  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_312  
@@ -135,7 +137,7 @@
 
 **Tags:** None  
 **Patterns Fixed:** None  
-**CI Checks:** 0 ✅ / 0 ❌  
+**CI Checks:** 0  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_313  
@@ -157,7 +159,7 @@
 
 **Tags:** None  
 **Patterns Fixed:** None  
-**CI Checks:** 0 ✅ / 0 ❌  
+**CI Checks:** 0  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_103  

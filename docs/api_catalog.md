@@ -1,6 +1,8 @@
 # Zendesk API Catalog
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 This document enumerates the Zendesk API endpoints leveraged by the
 `_codex_` Zendesk adapters. It captures method, path, authentication

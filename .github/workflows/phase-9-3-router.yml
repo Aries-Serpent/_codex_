@@ -23,7 +23,7 @@ on:
         default: 'false'
 
 concurrency:
-  group: phase-9-3-router-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: false
 
 env:

@@ -9,6 +9,9 @@ on:
 permissions:
   contents: read
   security-events: write
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
 jobs:
   bandit:
     name: Bandit Security Scan
@@ -18,26 +21,26 @@ jobs:
       - name: Cache Python dependencies (Layer 1)
         uses: actions/cache@v5
         with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml') }}
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml') }}
           restore-keys: |
             ${{ runner.os }}-pip-
 
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v6
-      with:
-        cache: pip
-        python-version: '3.12'
+        with:
+          cache: pip
+          python-version: '3.12'
       - name: Install Bandit
-      run: pip install bandit
+        run: pip install bandit
       - name: Run Bandit scan
-      run: bandit -r src -f json -c .bandit.yaml -o bandit-report.json || true
+        run: bandit -r src -f json -c .bandit.yaml -o bandit-report.json || true
       - if: always()
-      name: Upload Bandit results (JSON)
-      uses: actions/upload-artifact@v5
-      with:
-        name: bandit-report
-        path: bandit-report.json
+        name: Upload Bandit results (JSON)
+        uses: actions/upload-artifact@v5
+        with:
+          name: bandit-report
+          path: bandit-report.json
     timeout-minutes: 30
   codeql:
     name: CodeQL Security Analysis
@@ -45,17 +48,17 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - uses: github/codeql-action/init@v3
-      with:
+        with:
         languages: ${{ matrix.language }}
       - uses: github/codeql-action/autobuild@v3
       - uses: github/codeql-action/analyze@v3
-      with:
-        category: /language:${{ matrix.language }}
+        with:
+          category: /language:${{ matrix.language }}
     strategy:
       matrix:
         language:
-      - python
-      - javascript
+          - python
+          - javascript
     timeout-minutes: 30
   compliance-report:
     if: always()
@@ -68,7 +71,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Create compliance dashboard
-      run: 'echo "# 🛡️ Compliance Audit Report"
+        run: 'echo "# 🛡️ Compliance Audit Report"
 
         echo "Generated: $(date)"
 
@@ -100,15 +103,15 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Install Semgrep
-      run: pip install semgrep
+        run: pip install semgrep
       - name: Run Semgrep
-      run: 'semgrep --config .semgrep/semgrep.yml src --sarif > semgrep-report.json
+        run: 'semgrep --config .semgrep/semgrep.yml src --sarif > semgrep-report.json
         || true
 
         '
       - if: always()
-      name: Upload Semgrep results
-      uses: github/codeql-action/upload-sarif@v3
-      with:
+        name: Upload Semgrep results
+        uses: github/codeql-action/upload-sarif@v3
+        with:
         sarif_file: semgrep-report.json
     timeout-minutes: 30

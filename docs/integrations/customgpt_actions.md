@@ -1,6 +1,8 @@
 # CustomGPT Actions for `_codex_` (Local, Offline-first)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 This integration exposes minimal HTTP endpoints for CustomGPT **Actions** to:
 1) list branches, 2) fetch files at a ref, 3) run lightweight search, 4) healthcheck.

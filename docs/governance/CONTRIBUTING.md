@@ -1,6 +1,8 @@
 # Contributing
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 Thank you for improving `codex-universal`.
 
@@ -172,7 +174,7 @@ When changes affect the snapshot database or related tooling, perform manual val
 
 ## Scope
 
-See [docs/guides/.codex/archive/deprecated/AGENTS.md](https://github.com/Aries-Serpent/_codex_/blob/main/.github/.codex/archive/deprecated/AGENTS.md) for full guidelines.
+See [docs/guides/.codex/archive/deprecated/AGENTS.md](../.github/.codex/archive/deprecated/AGENTS.md) for full guidelines.
 
 ## Extending Codex ML components
 

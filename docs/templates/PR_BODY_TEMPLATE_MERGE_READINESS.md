@@ -1,8 +1,10 @@
 # PR Body Template — Merge Readiness Preparation
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Location:** Use this as a reference when creating new PRs to ensure all required sections are present.  
-**Status:** ✅ Mandatory for PRs targeting 100% merge readiness  
-**Last Updated:** 2026-06-25
+**Status:**  Mandatory for PRs targeting 100% merge readiness  
+**Last Updated: 2026-06-25
 
 ---
 
@@ -71,7 +73,7 @@
 **Purpose:** Test coverage, edge cases addressed, manual validation steps.
 
 ```markdown
-## ✅ Testing
+##  Testing
 
 ### Automated Tests
 - [x] Unit tests: [N] new, [M] updated, [K] passing
@@ -96,7 +98,7 @@
 **Purpose:** Status of all implementation objectives.
 
 ```markdown
-## ✅ Implementation Checklist
+##  Implementation Checklist
 
 ### Code Quality
 - [x] Ruff linting: All checks passed
@@ -127,13 +129,13 @@
 **Purpose:** Quantitative readiness indicators.
 
 ```markdown
-## 📊 Baseline Metrics
+##  Baseline Metrics
 
 | Metric | Value | Status |
 |--------|-------|--------|
-| Code Coverage | [X]% | ✅ Meets 95% threshold |
-| CodeQL Alerts | [N] open | ✅ No new alerts |
-| AAIS Composite Score | [XX]/100 | ✅ Target ≥95 |
+| Code Coverage | [X]% |  Meets 95% threshold |
+| CodeQL Alerts | [N] open |  No new alerts |
+| AAIS Composite Score | [XX]/100 |  Target ≥95 |
 | Files Modified | [N] | — |
 | Lines Added/Removed | +[A]/-[D] | — |
 | Commits | [N] | — |
@@ -209,7 +211,7 @@ This PR introduces a comprehensive PR merge readiness framework with WEC (Workfl
 ### Configuration
 - **.codex/agent_pr_template.md**: New template for agent-created PRs
 
-## ✅ Testing
+##  Testing
 
 ### Automated Tests
 - [x] Integration test: WEC extraction/building from session_wrapup_autofix (passing)
@@ -221,7 +223,7 @@ This PR introduces a comprehensive PR merge readiness framework with WEC (Workfl
 - [x] Verified WEC rebuild preserves maintainer [x] selections
 - [x] Verified always-required items cannot be unchecked
 
-## ✅ Implementation Checklist
+##  Implementation Checklist
 
 ### Code Quality
 - [x] Ruff linting: All checks passed
@@ -242,12 +244,12 @@ This PR introduces a comprehensive PR merge readiness framework with WEC (Workfl
 - [x] .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md updated
 - [x] CHANGELOG.md entry added
 
-## 📊 Baseline Metrics
+##  Baseline Metrics
 
 | Metric | Value | Status |
 |--------|-------|--------|
-| Code Coverage | 96.0% | ✅ Meets 95% threshold |
-| CodeQL Alerts | 0 open | ✅ No new alerts |
+| Code Coverage | 96.0% |  Meets 95% threshold |
+| CodeQL Alerts | 0 open |  No new alerts |
 | AAIS Composite Score | 94/100 | ⚠️ Target ≥95 (gap: 1 pt in Operational Maturity) |
 | Files Modified | 5 | — |
 | Lines Added/Removed | +287/-42 | — |
@@ -307,5 +309,5 @@ Workflows can be skipped/dispatched by updating these checkboxes:
 
 ---
 
-**Status:** ✅ Ready for use in all Copilot coding agent sessions  
+**Status:**  Ready for use in all Copilot coding agent sessions  
 **Last Validated:** 2026-06-25T15:50:00Z

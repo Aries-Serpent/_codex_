@@ -1,6 +1,8 @@
 # ML Interpretability Module
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 The ML Interpretability module provides tools for analyzing and interpreting machine learning models, with a focus on transformer architectures.
 
@@ -19,7 +21,7 @@ The interpretability module is included in the main `codex` package:
 pip install -e .
 ```
 
-## Quick Start
+## Quickstart
 
 ### Attention Analysis
 

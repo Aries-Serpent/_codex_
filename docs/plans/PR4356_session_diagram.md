@@ -1,6 +1,8 @@
 # PR #4356 — Session Diagram (S867 + S868)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 > **Sessions:** S867–S873 | **Branch:** `copilot/fix-webhook-receiver-url-format`
 > **Date:** 2026-05-08 | **Model:** claude-sonnet-4.x
@@ -11,7 +13,7 @@
 ## 🗺️ Full Session Flow (S867 → S873)
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Sequence Diagram: >>A: validate ✅ · resilient ✅ '}}%%
+%%{init: {'accessibility': {'title': 'Sequence Diagram: >>A: validate  · resilient  '}}%%
 sequenceDiagram
     participant M as Maintainer (@mbaetiong)
     participant A as Copilot Agent (S867/S868)
@@ -41,7 +43,7 @@ sequenceDiagram
     A->>WEC: report_progress (WEC 9 boxes checked)
     WEC->>AA: Dispatch newly-checked workflows
     AA->>CI: Approve all action_required runs (CODEX_MASTER_KEY)
-    CI-->>A: validate ✅ · resilient ✅ · nox ✅ · codeql ✅ · pr-checks ✅
+    CI-->>A: validate  · resilient  · nox  · codeql  · pr-checks 
 
     Note over A,CI: parallel_validation → 4 code review comments
     A->>A: Fix 4 review comments (R3)<br/>isinstance assertion · int() try/except<br/>backoff cap · run_number fallback
@@ -66,7 +68,7 @@ sequenceDiagram
 
     A->>A: Expand PR4356_session_diagram (this file)<br/>Full CI matrix · CodeQL status · handoff update
 
-    A->>A: P-045 gate: ruff ✅ · no conflicts ✅ · sync ✅
+    A->>A: P-045 gate: ruff  · no conflicts  · sync 
 
     A->>WEC: Final report_progress (S868)
     WEC->>CB: post-accountability-to-discussion.yml fires
@@ -93,7 +95,7 @@ graph TD
         U2["COGNITIVE_BRAIN_UNIFIED_IMPLEMENTATION_TASKS.md\n• Phase 9: Autonomous Agent Operations\n• All S867/S868 deliverables\n• Unimplemented plan registry"]
     end
 
-    subgraph CODE["⚙️ Code Changes"]
+    subgraph CODE[" Code Changes"]
         C1["rate_limit_orchestrator.py\n• Deduplication per workflow\n• Concurrent cap enforcement\n• Exponential backoff capped 2^6=64s\n• Status + orchestrate CLI\n• int() env-var parsing with try/except"]
         C2["agent-var-writer.yml\n• +3 ALLOWED_VAR_NAMES"]
         C3["workflow-link-validation.yml\n• T-01 CODEX_BACKUP_KEY added"]
@@ -116,7 +118,7 @@ graph TD
 
 ---
 
-## 🔒 Security & CodeQL Status
+##  Security & CodeQL Status
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "🔍 CodeQL Status", "13 alerts fixed (S866)\n'Wrong number of arguments'\nin test_inference_enhanced.py"'}}%%
@@ -127,13 +129,13 @@ graph LR
         A3["T-03 pending\nsecurity_events scope\nnot yet on CODEX_MASTER_KEY\n(admin action required)"]
     end
 
-    subgraph SECRETS["🔐 Secrets Baseline"]
+    subgraph SECRETS[" Secrets Baseline"]
         S1["is_secret=None → False\n3 entries classified (S867 R3)"]
-        S2["Secrets Baseline Enforcer\n✅ passing on latest push"]
+        S2["Secrets Baseline Enforcer\n passing on latest push"]
     end
 
     subgraph DEPS["📦 Dependency Submission"]
-        D1["dependency-submission.yml\n✅ continue-on-error: true\nInfra-resilient since S154"]
+        D1["dependency-submission.yml\n continue-on-error: true\nInfra-resilient since S154"]
         D2["GitHub-managed auto-submission\nTransient HTTP 503\nCannot be modified by agent\nNot a code defect"]
     end
 
@@ -154,13 +156,13 @@ graph LR
 ## 🔑 Privilege Tier Map (Established This Session)
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing "CODEX_MASTER_KEY\n✅ Variables API\n✅ Workflow approve/dispatch\n✅ Force-push\n125 workflows", "CODEX_BACKUP_KEY\n✅ Read/write\n❌ Variables API\n115 workflows"'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing "CODEX_MASTER_KEY\n Variables API\n Workflow approve/dispatch\n Force-push\n125 workflows", "CODEX_BACKUP_KEY\n Read/write\n Variables API\n115 workflows"'}}%%
 graph LR
-    T1["CODEX_MASTER_KEY\n✅ Variables API\n✅ Workflow approve/dispatch\n✅ Force-push\n125 workflows"]
-    T2["CODEX_BACKUP_KEY\n✅ Read/write\n❌ Variables API\n115 workflows"]
-    T3["CODEX_ADMIN_KEY\n✅ Webhooks:write\n4 webhooks queued"]
-    T4["GitHub App\n✅ Discussion posts\n✅ Signed commits\n8 workflows"]
-    T5["github.token\n✅ Comments/reads\n❌ Variables API\n❌ security_events"]
+    T1["CODEX_MASTER_KEY\n Variables API\n Workflow approve/dispatch\n Force-push\n125 workflows"]
+    T2["CODEX_BACKUP_KEY\n Read/write\n Variables API\n115 workflows"]
+    T3["CODEX_ADMIN_KEY\n Webhooks:write\n4 webhooks queued"]
+    T4["GitHub App\n Discussion posts\n Signed commits\n8 workflows"]
+    T5["github.token\n Comments/reads\n Variables API\n security_events"]
 
     T1 -->|"|| fallback"| T2 -->|"|| fallback"| T5
     T3 -.->|"webhook ops"| T1
@@ -182,7 +184,7 @@ graph LR
 flowchart TD
     PUSH["git push to branch"]
     WEC_PARSE["workflow-execution-gate.yml\nParse WEC checkbox block\nfrom PR body"]
-    DISPATCH["Dispatch ✅-checked workflows\nvia CODEX_MASTER_KEY workflow_dispatch"]
+    DISPATCH["Dispatch -checked workflows\nvia CODEX_MASTER_KEY workflow_dispatch"]
     CANCEL["Cancel unchecked workflows\n(if previously running)"]
     AUTO_APPROVE["auto-approve-workflows.yml\nApprove action_required runs\non latest commit SHA"]
     CI_RUN["CI Workflows execute\nvalidate · resilient · nox\ncodeql · pr-checks · reference-integrity"]
@@ -223,7 +225,7 @@ stateDiagram-v2
 
     Active --> Working : Agent reads PR state\nloads memories & context\nbegins implementation
 
-    Working --> Committing : Changes ready\nP-045 gate passes\n(ruff ✅ · no conflicts ✅ · sync ✅)
+    Working --> Committing : Changes ready\nP-045 gate passes\n(ruff  · no conflicts  · sync )
 
     Committing --> WECUpdate : report_progress called\nWEC block preserved\ncommit + push
 
@@ -251,29 +253,29 @@ stateDiagram-v2
         P-045 gate (MANDATORY):
         1. git fetch origin main
         2. git diff --diff-filter=U → EMPTY
-        3. ruff check ✅
-        4. sync_tracked_files --fix ✅
+        3. ruff check 
+        4. sync_tracked_files --fix 
     end note
 ```
 
 ---
 
-## 📊 Full CI Matrix (Latest HEAD `95c55bd`)
+##  Full CI Matrix (Latest HEAD `95c55bd`)
 
 | Category | Workflow | Result |
 |----------|----------|--------|
-| 🟢 Core | Resilient Validation Suite | ✅ success |
-| 🟢 Core | Reference Integrity + Agent Size Gate | ✅ success |
-| 🟢 Core | Deferral Language Gate | ✅ success |
-| 🟢 Core | PR Comment Review Gate | ✅ success |
-| 🟢 Core | Workflow Compliance Audit (actionlint) | ✅ success |
-| 🟢 Core | Workflow Execution Gate | ✅ success |
-| 🟢 Core | Auto-Approve Pending Workflow Runs | ✅ success |
-| 🟢 Core | Documentation Link Checker | ✅ success |
-| 🟢 Core | Trigger validations on approval | ✅ success |
-| �� Core | 💰 PR Cost Check | ✅ success |
-| 🟢 Security | CodeQL Analysis (codeql-analysis.yml) | ✅ success |
-| 🟢 Security | Security Scanning Suite | ✅ success |
+|  Core | Resilient Validation Suite |  success |
+|  Core | Reference Integrity + Agent Size Gate |  success |
+|  Core | Deferral Language Gate |  success |
+|  Core | PR Comment Review Gate |  success |
+|  Core | Workflow Compliance Audit (actionlint) |  success |
+|  Core | Workflow Execution Gate |  success |
+|  Core | Auto-Approve Pending Workflow Runs |  success |
+|  Core | Documentation Link Checker |  success |
+|  Core | Trigger validations on approval |  success |
+| �� Core |  PR Cost Check |  success |
+|  Security | CodeQL Analysis (codeql-analysis.yml) |  success |
+|  Security | Security Scanning Suite |  success |
 | ⏳ Auth | Agent Token Delegation | action_required (pending approval) |
 | ⚠️ Infra | Automatic Dependency Submission (GitHub-managed) | GitHub HTTP 503 — transient, non-blocking |
 | ⚠️ Infra | Rust-Python Hybrid Swarm CI/CD | startup_failure — pre-existing Rust runner |
@@ -289,14 +291,14 @@ stateDiagram-v2
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "📋 Issue #4360
-97 failures · 24 workflows", "🔐 Secrets Baseline Enforcer
+97 failures · 24 workflows", " Secrets Baseline Enforcer
 webhook_config.json lines 7+85
 'Secret Keyword' false positive"'}}%%
 graph TD
     I4360["📋 Issue #4360
 97 failures · 24 workflows"]
 
-    I4360 --> P1["🔐 Secrets Baseline Enforcer
+    I4360 --> P1[" Secrets Baseline Enforcer
 webhook_config.json lines 7+85
 'Secret Keyword' false positive"]
     I4360 --> P2["Validation Pipeline
@@ -309,7 +311,7 @@ Separate bot branch"]
     I4360 --> P5["Agent Token Delegation
 action_required gate"]
 
-    P1 --> FIX1["✅ Fixed
+    P1 --> FIX1[" Fixed
 is_secret=false in .secrets.baseline"]
     P2 --> INFO1["ℹ️ Not current HEAD
 already resolved in S864+"]
@@ -339,7 +341,7 @@ graph LR
     RC --> F6[PR scope note\ndescription updated]
     F1 & F2 & F3 & F4 & F5 & F6 --> COMMIT[commit 91763033f]
     COMMIT --> RUFF[ruff E501 per-file-ignore\npyproject.toml]
-    RUFF --> GREEN[RC=0 ✅]
+    RUFF --> GREEN[RC=0 ]
     COMMIT --> REPLIES[8/8 threads replied]
     GREEN & REPLIES --> MERGE_READY[Merge Ready]
 ```
@@ -349,7 +351,7 @@ graph LR
 ## S873 CI Rescue + Approval Dispatch
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Sequence Diagram: >>A: 39/40 ✅ · 3 startup_failu'}}%%
+%%{init: {'accessibility': {'title': 'Sequence Diagram: >>A: 39/40  · 3 startup_failu'}}%%
 sequenceDiagram
     participant M as Maintainer
     participant BOT as Auto-Rescue Bot
@@ -362,7 +364,7 @@ sequenceDiagram
     M->>A: Comment #4404772494 — Approval Dispatch + @copilot continue
 
     Note over A: Session S873 start
-    A->>A: P-045 gate: fetch main, no conflicts, ruff ✅
+    A->>A: P-045 gate: fetch main, no conflicts, ruff 
     A->>A: Update whats_next → S873 CI table (99/100 · 39/40)
     A->>A: Update session_diagram → S867–S873 header
     A->>A: Update CHANGELOG (S873 Fixed entry)
@@ -372,7 +374,7 @@ sequenceDiagram
     A->>M: Reply #4404734578 — 99 failures resolved in 91763033f
     A->>M: Reply #4404772494 — continued, 99/100, 39/40 passing
 
-    CI-->>A: 39/40 ✅ · 3 startup_failure (pre-existing)
+    CI-->>A: 39/40  · 3 startup_failure (pre-existing)
     Note over A,CI: HEAD 047bf03b → S873 commit
 ```
 
@@ -381,8 +383,8 @@ sequenceDiagram
 | Metric | Value |
 |--------|-------|
 | HEAD | `047bf03b` |
-| Merge readiness | 99/100 ✅ |
+| Merge readiness | 99/100  |
 | CI checks | 39/40 passing |
-| Review threads | 8/8 resolved ✅ |
-| CodeQL alerts | 0 ✅ |
+| Review threads | 8/8 resolved  |
+| CodeQL alerts | 0  |
 | New commits this session | 1 (living docs) |

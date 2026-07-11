@@ -1,6 +1,9 @@
 # Spec: Status Artifacts Bundle (v1.2)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
-🧠 Roles: [Primary: Artifacts Steward], [Secondary: Reviewer] ⚡ Energy: 5
+ Roles: [Primary: Artifacts Steward], [Secondary: Reviewer] ⚡ Energy: 5
 
 Contents
 - audit_run_manifest.json

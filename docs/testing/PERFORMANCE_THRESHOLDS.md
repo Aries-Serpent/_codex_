@@ -1,6 +1,8 @@
 # Performance Thresholds Documentation
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## Overview
 
@@ -37,10 +39,10 @@ GitHub Actions shared runners experience significant performance variability due
 
 The 200 tasks/s threshold was chosen to:
 
-- ✅ **Catch catastrophic regressions**: A drop below 200 tasks/s indicates a severe performance issue (>95% regression from baseline)
-- ✅ **Avoid false positives**: Minimizes flaky test failures due to CI environment variability
-- ✅ **Maintain CI stability**: Tests pass consistently across different runner types and load conditions
-- ✅ **Signal critical issues**: While permissive, still alerts on fundamental algorithmic or architectural problems
+-  **Catch catastrophic regressions**: A drop below 200 tasks/s indicates a severe performance issue (>95% regression from baseline)
+-  **Avoid false positives**: Minimizes flaky test failures due to CI environment variability
+-  **Maintain CI stability**: Tests pass consistently across different runner types and load conditions
+-  **Signal critical issues**: While permissive, still alerts on fundamental algorithmic or architectural problems
 
 ### What This Threshold Does NOT Catch
 

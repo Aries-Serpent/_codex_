@@ -1,6 +1,8 @@
 # Duplicate Detection Inventory
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 Comprehensive duplicate detection system for identifying and managing code duplication across the entire codebase.
 
@@ -121,7 +123,7 @@ After running, the following files are generated:
 
 The tool automatically cross-references detected duplicates with `.github/SHIM_INVENTORY.yaml`:
 
-- ✅ **In Inventory & Whitelisted**: These are tracked and approved
+-  **In Inventory & Whitelisted**: These are tracked and approved
 - ⚠️ **In Inventory but Not Whitelisted**: Need attention
 - 🚨 **NOT in Inventory**: High priority - should be reviewed immediately
 

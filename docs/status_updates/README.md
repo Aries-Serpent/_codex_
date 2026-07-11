@@ -1,4 +1,6 @@
 # Status Updates
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 Use this folder to track repeatable, ring-by-ring progress for reasoning enablement.
 
@@ -7,7 +9,7 @@ Use this folder to track repeatable, ring-by-ring progress for reasoning enablem
 - **Save instances as**: `docs/status_updates/<slug>-<YYYY-MM-DD>.md`
 - **Store large attachments under**: `docs/status_updates/artifacts/<YYYY-MM-DD>-<slug>/`
 
-## Quick Start
+## Quickstart
 
 1. Copy the template:
    ```bash

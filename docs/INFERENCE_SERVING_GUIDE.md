@@ -1,6 +1,8 @@
 # Inference Serving Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## Overview
 
@@ -16,7 +18,7 @@ The Codex ML Inference Server provides a production-ready inference serving laye
 - **Error Handling**: Graceful error handling with detailed error messages
 - **Metrics Collection**: Request tracking and performance metrics
 
-## Quick Start
+## Quickstart
 
 ### Basic Setup (Stub Model)
 

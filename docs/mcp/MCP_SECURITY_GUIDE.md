@@ -1,7 +1,9 @@
 # MCP Security Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Version:** 1.0
-**Last Updated:** 2025-11-18
+**Last Updated: 2026-07-11
 **Audience:** Developers, Security Engineers, Operations
 
 ## Overview
@@ -61,13 +63,13 @@ principal = authenticator.authenticate(api_key)
 ```
 
 **Security Best Practices**:
-- ✅ Use bcrypt/argon2 for password hashing (NOT SHA-256)
-- ✅ SHA-256 is acceptable for API key/token comparison only
-- ✅ Use secure RNG with seed for token generation
-- ✅ Implement token expiration
-- ✅ Use HTTPS for credential transmission
-- ✅ Never log plaintext credentials
-- ❌ Never store plaintext API keys
+-  Use bcrypt/argon2 for password hashing (NOT SHA-256)
+-  SHA-256 is acceptable for API key/token comparison only
+-  Use secure RNG with seed for token generation
+-  Implement token expiration
+-  Use HTTPS for credential transmission
+-  Never log plaintext credentials
+-  Never store plaintext API keys
 
 ## Authorization Patterns
 
@@ -155,14 +157,14 @@ result = execute_tool(tool_name)
 
 ## Security Best Practices
 
-- ✅ Set conservative default limits (5-10 req/sec)
-- ✅ Use burst capacity for legitimate spikes
-- ✅ Implement per-principal tracking
-- ✅ Use RNG with seed for deterministic testing in offline mode
-- ✅ Monitor RateLimitExceeded errors for abuse detection
-- ✅ Different limits for different tool categories
-- ❌ Don't allow unlimited requests
-- ❌ Don't share rate limits across tenants
+-  Set conservative default limits (5-10 req/sec)
+-  Use burst capacity for legitimate spikes
+-  Implement per-principal tracking
+-  Use RNG with seed for deterministic testing in offline mode
+-  Monitor RateLimitExceeded errors for abuse detection
+-  Different limits for different tool categories
+-  Don't allow unlimited requests
+-  Don't share rate limits across tenants
 
 ### DDoS Protection
 
@@ -250,14 +252,14 @@ except MCPError as e:
 
 ### Security Considerations
 
-- ✅ Use specific error classes (ToolNotFound, Unauthorized, RateLimitExceeded)
-- ✅ Map errors to appropriate HTTP status codes
-- ✅ Log errors with full context internally
-- ✅ Return sanitized errors externally
-- ✅ Include request correlation ID (X-Request-Id)
-- ❌ Never expose stack traces to clients
-- ❌ Never expose internal paths or configuration
-- ❌ Never leak database schema information
+-  Use specific error classes (ToolNotFound, Unauthorized, RateLimitExceeded)
+-  Map errors to appropriate HTTP status codes
+-  Log errors with full context internally
+-  Return sanitized errors externally
+-  Include request correlation ID (X-Request-Id)
+-  Never expose stack traces to clients
+-  Never expose internal paths or configuration
+-  Never leak database schema information
 
 ---
 
@@ -328,14 +330,14 @@ def get_tools_for_tenant(tenant_id: str):
 ```
 
 **Security Best Practices**:
-- ✅ Always include tenant_id in Principal
-- ✅ Validate tenant_id on every request
-- ✅ Use tenant-specific encryption keys
-- ✅ Implement tenant-specific rate limits
-- ✅ Audit all cross-tenant access attempts
-- ✅ Use checksums to verify tenant data integrity
-- ❌ Never allow wildcard tenant access
-- ❌ Never share resources across tenants without explicit permission
+-  Always include tenant_id in Principal
+-  Validate tenant_id on every request
+-  Use tenant-specific encryption keys
+-  Implement tenant-specific rate limits
+-  Audit all cross-tenant access attempts
+-  Use checksums to verify tenant data integrity
+-  Never allow wildcard tenant access
+-  Never share resources across tenants without explicit permission
 
 ---
 
@@ -572,7 +574,7 @@ python scripts/space_traversal/audit_runner.py explain mcp-authz-authn
 - [MCP Capabilities Reference](MCP_CAPABILITIES_REFERENCE.md)
 - [MCP Developer Guide](MCP_DEVELOPER_GUIDE.md)
 - [MCP Implementation Summary](MCP_IMPLEMENTATION_SUMMARY.md)
-- [Audit Runner Documentation](https://github.com/Aries-Serpent/_codex_/blob/main/scripts/space_traversal/README.md)
+- [Audit Runner Documentation](../scripts/space_traversal/README.md)
 
 ## Security Contact
 
@@ -580,7 +582,7 @@ For security issues, please review the audit reports and implement recommended s
 
 ---
 
-## 🎯 Mission Overview
+##  Mission Overview
 
 **Objective**: Provide comprehensive security guidance for implementing and deploying MCP capabilities in production environments, ensuring authentication, authorization, rate limiting, error handling, multi-tenant security, and audit compliance across all mcp-* capabilities.
 
@@ -589,7 +591,7 @@ For security issues, please review the audit reports and implement recommended s
 - High stakes: Security breaches have severe consequences
 - Long-term value: Foundation for trusted MCP deployments
 
-**Status**: ✅ Production Ready | 🔒 Security Hardened | 🔄 Continuously Audited
+**Status**:  Production Ready |  Security Hardened | 🔄 Continuously Audited
 
 ---
 
@@ -636,14 +638,14 @@ For security issues, please review the audit reports and implement recommended s
 
 | Metric | Target | Current | Status |
 |--------|--------|---------|--------|
-| Safeguard Score (mcp-authz-authn) | ≥70% | 85% | ✅ Excellent |
-| Safeguard Score (mcp-rate-limiting) | ≥70% | 80% | ✅ Excellent |
-| Unauthorized Access Attempts | <1% | 0.3% | ✅ Secure |
-| Rate Limit Violation Rate | <5% | 2.1% | ✅ Healthy |
-| Security Incident Response Time | <15 min | ~10 min | ✅ Fast |
-| Credential Compromise Rate | 0% | 0% | ✅ Perfect |
-| Audit Log Coverage | 100% | 100% | ✅ Complete |
-| Security Review Frequency | Weekly | Weekly | ✅ On Track |
+| Safeguard Score (mcp-authz-authn) | ≥70% | 85% |  Excellent |
+| Safeguard Score (mcp-rate-limiting) | ≥70% | 80% |  Excellent |
+| Unauthorized Access Attempts | <1% | 0.3% |  Secure |
+| Rate Limit Violation Rate | <5% | 2.1% |  Healthy |
+| Security Incident Response Time | <15 min | ~10 min |  Fast |
+| Credential Compromise Rate | 0% | 0% |  Perfect |
+| Audit Log Coverage | 100% | 100% |  Complete |
+| Security Review Frequency | Weekly | Weekly |  On Track |
 
 ---
 
@@ -690,7 +692,7 @@ Security (strict controls) ↔ Usability (developer experience) ↔ Performance 
 
 ---
 
-## 🧠 Redundancy Patterns
+##  Redundancy Patterns
 
 **Credential Compromise Recovery**:
 1. **Pre-compromise state**: All credentials secure
@@ -724,6 +726,6 @@ Security (strict controls) ↔ Usability (developer experience) ↔ Performance 
 
 **Last Updated**: 2026-01-23T11:45:00Z
 **Version**: 2.0
-**Security Level**: 🔒 Hardened
-**Audit Status**: ✅ Compliant (Safeguard Score: 80%+)
-**Template Compliance**: ✅ Phase 2 Physics-Aligned
+**Security Level**:  Hardened
+**Audit Status**:  Compliant (Safeguard Score: 80%+)
+**Template Compliance**:  Phase 2 Physics-Aligned

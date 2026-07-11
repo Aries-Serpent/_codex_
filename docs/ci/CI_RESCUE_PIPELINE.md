@@ -1,6 +1,8 @@
 # CI Rescue Pipeline — Golden Path Documentation
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 > **Status:** Canonical reference (S280, 2026-04-02)
 > **Scope:** End-to-end lifecycle from workflow failure to Copilot fix — including Proactive CI Monitor and Fast-Forward Safe-File Promotion
@@ -396,11 +398,11 @@ graph LR
 
 | Component | Detects failure | Posts Channel A | Posts Channel B RCA | Deduplicates | Retriggers dropped sessions |
 |-----------|:-:|:-:|:-:|:-:|:-:|
-| Inline rescue jobs (auto-fix-pr-check, pre-merge-validation, etc.) | ✅ | ✅ | ❌ | ✅ PR-scoped PATCH | ❌ |
-| `ci-rescue.yml` | ✅ workflow_run | ❌ | ✅ | ✅ SHA-scoped PATCH | ❌ |
-| `ci_rescue.py` | ✅ log analysis | ❌ | ✅ | ✅ HTTP_STATUS delimiter | ❌ |
-| `copilot-agent-checkin.yml` missed-trigger guard | ❌ | ❌ | ❌ | ✅ grace period | ✅ |
-| `auto_fix_common_issues.py` | ✅ Pattern 22+ | ❌ | ❌ | N/A | ❌ |
+| Inline rescue jobs (auto-fix-pr-check, pre-merge-validation, etc.) |  |  |  |  PR-scoped PATCH |  |
+| `ci-rescue.yml` |  workflow_run |  |  |  SHA-scoped PATCH |  |
+| `ci_rescue.py` |  log analysis |  |  |  HTTP_STATUS delimiter |  |
+| `copilot-agent-checkin.yml` missed-trigger guard |  |  |  |  grace period |  |
+| `auto_fix_common_issues.py` |  Pattern 22+ |  |  | N/A |  |
 
 ### Marker Reference
 

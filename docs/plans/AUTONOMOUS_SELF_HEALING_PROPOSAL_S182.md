@@ -1,10 +1,12 @@
-# 🤖 Autonomous Self-Healing Agent — Comprehensive Design Proposal
+#  Autonomous Self-Healing Agent — Comprehensive Design Proposal
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 > **Session:** S182 | **PR:** #3724 | **Status:** 📋 PROPOSAL (awaiting owner review)
 > **Author:** Copilot Coding Agent (claude-opus-4.6) | **Date:** 2026-03-23
-> **Policy Compliance:** ✅ Full adherence to [AI Codebase Agency Policy](../../.codex/CODEBASE_AGENCY_POLICY.md)
+> **Policy Compliance:**  Full adherence to [AI Codebase Agency Policy](../../.codex/CODEBASE_AGENCY_POLICY.md)
 
 ---
 
@@ -34,10 +36,10 @@ at a time (by default), with an opt-in mechanism to allow multiple concurrent se
 
 | Component | Status | Action |
 |-----------|--------|--------|
-| Iterative Self-Healing CI | ✅ Deployed (S154) | Extend with Copilot escalation |
-| Agent Token Delegation | ✅ Deployed (S110) | Add session concurrency guard | <!-- pragma: allowlist secret -->
-| Session Chain Workflow | ✅ Deployed (S163) | Add lock/unlock mechanism |
-| PR Template | ✅ Deployed | Add "Multiple Sessions" checkbox |
+| Iterative Self-Healing CI |  Deployed (S154) | Extend with Copilot escalation |
+| Agent Token Delegation |  Deployed (S110) | Add session concurrency guard | <!-- pragma: allowlist secret -->
+| Session Chain Workflow |  Deployed (S163) | Add lock/unlock mechanism |
+| PR Template |  Deployed | Add "Multiple Sessions" checkbox |
 | Session Concurrency Gate | 🆕 NEW | Design & implement |
 | Copilot Escalation Trigger | 🆕 NEW | Design & implement |
 
@@ -63,7 +65,7 @@ flowchart TD
     I -->|no| F
 
     H --> J[Verify Fix]
-    J -->|pass| K[✅ Self-Healed]
+    J -->|pass| K[ Self-Healed]
     J -->|fail| I
 
     style A fill:#ff6b6b
@@ -75,16 +77,16 @@ flowchart TD
 
 | Pattern | Auto-Fix | Method |
 |---------|----------|--------|
-| `ruff-*` (F401/F841/I001/F541) | ✅ Full | `ruff --fix` |
+| `ruff-*` (F401/F841/I001/F541) |  Full | `ruff --fix` |
 | `import-*` (missing/circular) | ⚠️ Partial | Heuristic rewrite |
 | `yaml-*` (indentation) | ⚠️ Detect only | Manual |
-| `timeout-config` | ✅ Full | Config patch |
-| `mypy-baseline` | ✅ Full | Baseline bump |
-| `changelog-*` | ✅ Full | Auto-append |
-| `policy-gate-*` | ✅ Full | session_wrapup_autofix.py |
-| `branch-diverged` | ✅ Full | Auto-rebase |
-| `self-healing` (cascade) | ❌ Block | Cascade detection |
-| `unknown` | ❌ Escalate | Human required |
+| `timeout-config` |  Full | Config patch |
+| `mypy-baseline` |  Full | Baseline bump |
+| `changelog-*` |  Full | Auto-append |
+| `policy-gate-*` |  Full | session_wrapup_autofix.py |
+| `branch-diverged` |  Full | Auto-rebase |
+| `self-healing` (cascade) |  Block | Cascade detection |
+| `unknown` |  Escalate | Human required |
 
 ### Gap Analysis: Where Auto-Fix Falls Short
 
@@ -128,7 +130,7 @@ flowchart LR
 ### Detailed Merge Direction
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Sequence Diagram: >>SubPR: ✅ All checks pass
+%%{init: {'accessibility': {'title': 'Sequence Diagram: >>SubPR:  All checks pass
 
   '}}%%
 sequenceDiagram
@@ -143,15 +145,15 @@ sequenceDiagram
     Agent->>SubPR: Create copilot/session-* branch
     Agent->>SubPR: Push commits (code changes)
     CI->>SubPR: Run CI checks
-    CI-->>SubPR: ✅ All checks pass
+    CI-->>SubPR:  All checks pass
 
     SubPR->>OD: Merge sub-PR into 0D_base_
     CI->>OD: Run integration checks
-    CI-->>OD: ✅ Staging verified
+    CI-->>OD:  Staging verified
 
     OD->>Main: Promotion PR #3630 merge
     CI->>Main: Run production checks
-    CI-->>Main: ✅ Production ready
+    CI-->>Main:  Production ready
 ```
 
 ### Workflow Relationships
@@ -263,7 +265,7 @@ flowchart TD
     COMPLETE --> RELEASE[Clear COPILOT_ACTIVE_SESSION]
     RELEASE --> NEXT{Queued sessions?}
     NEXT -->|yes| TRIGGER_NEXT["Post @copilot continue<br/>on queued PR"]
-    NEXT -->|no| DONE[✅ Done]
+    NEXT -->|no| DONE[ Done]
 
     style TRIGGER fill:#74c0fc
     style QUEUE fill:#ffd43b
@@ -296,7 +298,7 @@ sequenceDiagram
     Gate->>Var: Check COPILOT_ACTIVE_SESSION
     Var-->>Gate: empty
     Gate->>Var: Set = "3724|1774576800|12345"
-    Gate->>PR1: ✅ Session started
+    Gate->>PR1:  Session started
 
     PR2->>Gate: @copilot continue
     Gate->>Var: Check COPILOT_ACTIVE_SESSION
@@ -320,10 +322,10 @@ The session gate integrates into `agent-auth-delegation.yml` at two points:
 2. **On session completion** (new workflow or job) — Release lock, trigger next
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing detect-checkbox, activate-delegation ✅ always-on'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing detect-checkbox, activate-delegation  always-on'}}%%
 flowchart LR
     subgraph "agent-auth-delegation.yml"
-        A[detect-checkbox] --> B[activate-delegation ✅ always-on]
+        A[detect-checkbox] --> B[activate-delegation  always-on]
         B --> C[cognitive-preflight]
         C --> D[activate-delegation]
         D --> E{Session Gate}
@@ -356,11 +358,11 @@ The "Multiple Copilot Coding Agent Sessions" checkbox is added **below** the exi
 Agent Token Delegation checkbox in the PR template:
 
 ```markdown
-### 🔐 Agent Token Delegation
+###  Agent Token Delegation
 
 - [ ] **Enable Agent Token Delegation** (`COPILOT_AGENT_AUTH_ENABLED`)
   - Authorizes `copilot-swe-agent[bot]`, `github-copilot[bot]`, and `github-actions[bot]`
-  - Triggers the [`agent-auth-delegation`](https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/agent-auth-delegation.yml) gated workflow
+  - Triggers the [`agent-auth-delegation`](../.github/workflows/agent-auth-delegation.yml) gated workflow
   - **Owner must approve in the GitHub Actions UI** ("Waiting for approval")
 
 - [ ] **Multiple Copilot Coding Agent Sessions** (`COPILOT_MULTI_SESSION`)
@@ -423,7 +425,7 @@ flowchart TD
         CLASSIFY -->|blocked/security| HUMAN[Create Issue<br/>tag @mbaetiong]
     end
 
-    COMMIT1 --> DONE[✅ Self-Healed]
+    COMMIT1 --> DONE[ Self-Healed]
     COMMIT2 --> DONE
 
     style FAIL fill:#ff6b6b
@@ -474,7 +476,7 @@ flowchart TD
     T -->|policy-gate-*| P[session_wrapup_autofix.py]
     T -->|branch-diverged| B[Auto-rebase]
     T -->|timeout-config| TC[Config patch]
-    T -->|self-healing| SH[❌ Block cascade]
+    T -->|self-healing| SH[ Block cascade]
     T -->|unknown| U["@copilot escalation"]
 
     R --> V{Verify}
@@ -487,7 +489,7 @@ flowchart TD
     TC --> V
     U --> V
 
-    V -->|pass| DONE[✅ Fixed]
+    V -->|pass| DONE[ Fixed]
     V -->|fail, retries left| T
     V -->|fail, no retries| U
 
@@ -580,11 +582,11 @@ flowchart TD
 **File:** `scripts/ci/branch_rebase_check.py` (authoritative rebase gate)
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing PR push/synchronize, ✅ REQ-10 PASS'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing PR push/synchronize,  REQ-10 PASS'}}%%
 flowchart TD
     PR[PR push/synchronize] --> CHECK{Compare base vs head}
 
-    CHECK -->|up-to-date| PASS[✅ REQ-10 PASS]
+    CHECK -->|up-to-date| PASS[ REQ-10 PASS]
     CHECK -->|ahead only| PASS
     CHECK -->|behind / diverged| GAP[Fetch gap commits]
 
@@ -593,7 +595,7 @@ flowchart TD
     CLASSIFY -->|no| MANUAL[Post rich helper comment<br/>with conflict analysis]
 
     AUTO --> MERGED{Merge succeeded?}
-    MERGED -->|yes| RESOLVED[✅ Auto-merged<br/>BRANCH_REBASE_RESOLVED posted]
+    MERGED -->|yes| RESOLVED[ Auto-merged<br/>BRANCH_REBASE_RESOLVED posted]
     MERGED -->|no| MANUAL
 
     MANUAL --> RISK[detect_conflict_risk:<br/>file overlap analysis]
@@ -627,7 +629,7 @@ def detect_conflict_risk(pr_files: list[str], gap_files: set[str]) -> list[str]:
 ```
 
 When overlapping files are detected, the comment includes:
-- 🔴 **HIGH** risk badge
+-  **HIGH** risk badge
 - Explicit list of conflicting files
 - Warning that manual conflict resolution may be required
 
@@ -859,16 +861,16 @@ flowchart TD
         A1["@copilot continue triggers"] --> A2[copilot-setup-steps.yml runs]
         A2 --> A3{Check PR mergeable<br/>via GitHub API}
         A3 -->|CONFLICTING| A4["::warning:: annotation<br/>COPILOT_MERGE_CONFLICT=true"]
-        A3 -->|MERGEABLE| A5["✅ No conflicts<br/>COPILOT_MERGE_CONFLICT=false"]
+        A3 -->|MERGEABLE| A5[" No conflicts<br/>COPILOT_MERGE_CONFLICT=false"]
         A3 -->|UNKNOWN| A6["ℹ️ Status pending"]
 
         A2 --> A7{Check branch<br/>behind count}
         A7 -->|behind > 0| A8["::warning:: annotation<br/>COPILOT_BRANCH_BEHIND=N"]
-        A7 -->|behind = 0| A9["✅ Up-to-date"]
+        A7 -->|behind = 0| A9[" Up-to-date"]
 
         A2 --> A10{git merge-tree<br/>dry-run}
         A10 -->|conflicts| A11["::warning:: N file(s)<br/>with potential conflicts"]
-        A10 -->|clean| A12["✅ No file-level conflicts"]
+        A10 -->|clean| A12[" No file-level conflicts"]
 
         A4 --> A13[Agent resolves conflicts<br/>BEFORE any other work]
         A8 --> A13
@@ -878,11 +880,11 @@ flowchart TD
         B1[Agent about to conclude] --> B2[Fetch latest base branch]
         B2 --> B3{Re-check mergeable<br/>status}
         B3 -->|CONFLICTING| B4[Resolve before final commit]
-        B3 -->|MERGEABLE| B5["✅ Session ends clean"]
+        B3 -->|MERGEABLE| B5[" Session ends clean"]
 
         B1 --> B6{Check for new commits<br/>on base since session start}
         B6 -->|new commits| B7[Rebase/merge base into head]
-        B6 -->|no new commits| B8["✅ No drift"]
+        B6 -->|no new commits| B8[" No drift"]
     end
 
     style A4 fill:#ff6b6b
@@ -942,7 +944,7 @@ flowchart TD
         S2 --> S4{Open issues?}
         S3 --> S4
         S4 -->|yes| S5["::warning:: annotation<br/>Lists issue titles<br/>Sets COPILOT_CI_FAILURE_ISSUES=N"]
-        S4 -->|no| S6["✅ No open CI failure issues"]
+        S4 -->|no| S6[" No open CI failure issues"]
     end
 
     subgraph "Agent Action"
@@ -977,13 +979,13 @@ check whether CI failure issues exist.
 
 | Conflict Source | Detection | Resolution | Automation Level |
 |----------------|-----------|------------|-----------------|
-| Bot metadata drift (main → branch) | `branch_rebase_check.py` (REQ-10) | Auto-merge via GitHub Merges API | ✅ Fully automatic |
+| Bot metadata drift (main → branch) | `branch_rebase_check.py` (REQ-10) | Auto-merge via GitHub Merges API |  Fully automatic |
 | Functional commits in gap | `branch_rebase_check.py` (REQ-10) | Rich helper comment + `@copilot` prompt | ⚠️ Semi-automatic |
-| Concurrent agent sessions — sentinel files | Session Concurrency Gate (new) | Sequential execution prevents conflict | ✅ Fully automatic |
+| Concurrent agent sessions — sentinel files | Session Concurrency Gate (new) | Sequential execution prevents conflict |  Fully automatic |
 | Concurrent agent sessions — code files | Multi-session mode warning | `git pull --rebase` + Copilot escalation | ⚠️ Semi-automatic |
-| Self-healing push vs active session | Active-session check (new) | Skip push, defer to active session | ✅ Fully automatic |
-| `report_progress` push failure | `git pull --rebase` (auto-stash) | Automatic rebase before push | ✅ Fully automatic |
-| Promotion merge (0D_base_ → main) | PR mergeable status check | Manual review + human approval | 🔴 Manual (by design) |
+| Self-healing push vs active session | Active-session check (new) | Skip push, defer to active session |  Fully automatic |
+| `report_progress` push failure | `git pull --rebase` (auto-stash) | Automatic rebase before push |  Fully automatic |
+| Promotion merge (0D_base_ → main) | PR mergeable status check | Manual review + human approval |  Manual (by design) |
 | Semantic conflict (compiles but breaks) | CI test suite on merged code | Copilot escalation for test fix | ⚠️ Semi-automatic |
 
 ### Conflict Prevention Architecture (Full Picture)
@@ -1107,7 +1109,7 @@ flowchart TD
 
 ## 9. Implementation Roadmap
 
-### Phase 1: Session Concurrency Gate ~~(S183)~~ ✅ COMPLETE (S182)
+### Phase 1: Session Concurrency Gate ~~(S183)~~  COMPLETE (S182)
 
 > **Updated:** All Phase 1–3 items implemented in S182. Phase 4 (verification) pending.
 
@@ -1254,10 +1256,10 @@ gh variable list --repo Aries-Serpent/_codex_ | grep COPILOT_ACTIVE_SESSION
 gh variable list --repo Aries-Serpent/_codex_ | grep COPILOT_MULTI_SESSION
 
 # Verify PR template has new checkbox
-grep -q "COPILOT_MULTI_SESSION" .github/PULL_REQUEST_TEMPLATE.md && echo "✅" || echo "❌"
+grep -q "COPILOT_MULTI_SESSION" .github/PULL_REQUEST_TEMPLATE.md && echo "" || echo ""
 
 # Verify self-healing escalation job exists
-grep -q "copilot-escalation" .github/workflows/iterative-self-healing-ci.yml && echo "✅" || echo "❌"
+grep -q "copilot-escalation" .github/workflows/iterative-self-healing-ci.yml && echo "" || echo ""
 ```
 
 ---

@@ -1,6 +1,8 @@
 # Gap Pipeline Quickstart
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 This guide shows how to run the _codex_ gap pipeline end-to-end using the
 unified CLI.

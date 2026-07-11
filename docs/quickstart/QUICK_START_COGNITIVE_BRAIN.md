@@ -1,4 +1,6 @@
 # Quick Start: Cognitive Brain v0.1.0
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 Welcome to **Cognitive Brain** — a lightweight AI coordination framework for autonomous agents. Get up and running in 5 minutes.
 
@@ -171,12 +173,12 @@ brain.decide(context)
 
 ## Summary
 
-✅ **Installation**: PyPI or ZIP archive  
-✅ **First Program**: Working OODA loop  
-✅ **21 APIs**: Complete reference  
-✅ **Code Examples**: Copy-paste ready  
-✅ **Troubleshooting**: Common solutions  
-✅ **Offline**: No network required  
+ **Installation**: PyPI or ZIP archive  
+ **First Program**: Working OODA loop  
+ **21 APIs**: Complete reference  
+ **Code Examples**: Copy-paste ready  
+ **Troubleshooting**: Common solutions  
+ **Offline**: No network required  
 
 **Ready to build?** Start with examples or dive into full documentation.
 

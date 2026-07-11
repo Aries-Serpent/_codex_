@@ -1,6 +1,8 @@
 # Knowledge Crawler Service - Operational Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 **Service:** Zendesk Knowledge Synchronization  
 **Version:** 2.0  
@@ -15,16 +17,16 @@ The Zendesk Knowledge Crawler Service implements "Check and Pull" synchronizatio
 
 ### Key Features
 
-✅ **Incremental Sync** - Only fetch changed articles (80% bandwidth reduction)  
-✅ **Drift Detection** - ETag and Last-Modified tracking  
-✅ **PII Scrubbing** - Mandatory before disk writes  
-✅ **State Management** - Persistent cache  
-✅ **Error Handling** - Retry logic with exponential backoff  
-✅ **JSON Dataset Export** - Structured data for ML pipelines
+ **Incremental Sync** - Only fetch changed articles (80% bandwidth reduction)  
+ **Drift Detection** - ETag and Last-Modified tracking  
+ **PII Scrubbing** - Mandatory before disk writes  
+ **State Management** - Persistent cache  
+ **Error Handling** - Retry logic with exponential backoff  
+ **JSON Dataset Export** - Structured data for ML pipelines
 
 ---
 
-## Quick Start
+## Quickstart
 
 ```bash
 # Incremental sync (default)
@@ -116,12 +118,12 @@ pytest tests/services/test_zendesk_sync.py -v
 
 ## References
 
-- [Service Implementation](https://github.com/Aries-Serpent/_codex_/blob/main/src/services/crawler/zendesk_sync.py)
-- [Test Suite](https://github.com/Aries-Serpent/_codex_/blob/main/tests/services/test_zendesk_sync.py)
-- [Configuration](https://github.com/Aries-Serpent/_codex_/blob/main/configs/services/zendesk_crawler.yaml)
-- [PS-06 Planset](https://github.com/Aries-Serpent/_codex_/blob/main/.github/plans/PLANSET_06_KNOWLEDGE_CRAWLER.md)
+- [Service Implementation](../src/services/crawler/zendesk_sync.py)
+- [Test Suite](../tests/services/test_zendesk_sync.py)
+- [Configuration](../configs/services/zendesk_crawler.yaml)
+- [PS-06 Planset](../.github/plans/PLANSET_06_KNOWLEDGE_CRAWLER.md)
 
 ---
 
-**Last Updated:** 2026-01-09  
+**Last Updated: 2026-07-11
 **Status:** Production Ready

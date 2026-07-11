@@ -1,4 +1,5 @@
 # API Reference
+**Version:** v0.2.1
 
 **Version:** 1.0.0 | **Release Date:** 2026-06-22
 
@@ -6,7 +7,7 @@ Complete API reference for all Cognitive Brain and Codex ML modules.
 
 ---
 
-## Quick Start
+## Quickstart
 
 ### Build & View API Docs
 
@@ -106,7 +107,7 @@ result = uti.execute_task(spec)
 
 ## Building API Documentation
 
-### Quick Start
+### Quickstart
 
 ```bash
 # Using nox (recommended - deterministic offline build)
@@ -350,4 +351,4 @@ The build script is designed for local-only use. To integrate with CI:
 
 ---
 
-Last updated: 2026-02-10
+Last updated: 2026-07-11

@@ -44,6 +44,7 @@ using a general YAML checker like [yamllint][].
 
 <a name="check-unexpected-keys"></a>
 # Unexpected keys
+**Last Updated:** 2026-07-11
 
 ## Table of Contents
 
@@ -90,7 +91,7 @@ using a general YAML checker like [yamllint][].
 - [Check deprecated workflow commands](#check-deprecated-workflow-commands)
 - [Conditions always evaluated to true at `if:`](#conditions-always-evaluated-to-true-at-if)
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 <!-- anchor: check-unexpected-keys -->
 
 Example input:

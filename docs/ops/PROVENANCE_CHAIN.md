@@ -1,6 +1,8 @@
 # Provenance-Chain Autonomous Agentic Agency
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 **Version:** 1.0.0  
 **Session:** S115 (2026-02-28)  
@@ -59,14 +61,14 @@ COPILOT_AGENT_AUTH_ENABLED=true          ← repo variable
 Once mbaetiong approves the `agent-auth-delegation` environment gate, the agent
 can autonomously perform ALL of the following **without further manual approval**:
 
-### ✅ Already Working (S108–S114)
+###  Already Working (S108–S114)
 - Write, commit, and push code changes
 - Bypass `owner_approval_guard.sh` for cost-gated tools (S112)
 - Scope bypass to specific TOOL_KEYs (S113)
 - Post PR/issue comments via `mcp_poster.py` (S108)
 - Store cross-session memory via `store_memory` tool
 
-### ✅ New in S115
+###  New in S115
 - **Session token bypass**: All sessions within 4h TTL skip the guard without
   needing `COPILOT_AGENT_AUTH_ENABLED` to be re-set
 - **Autonomous variable writes**: Agent posts `@agent-var-writer apply` →

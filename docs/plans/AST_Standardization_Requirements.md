@@ -1,4 +1,6 @@
-# 🧠 AST Standardization: Codebase Analysis Architecture
+#  AST Standardization: Codebase Analysis Architecture
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 ## Table of Contents
 
@@ -38,13 +40,13 @@
   - [High Priority Issues](#high-priority-issues)
   - [Medium Priority Issues](#medium-priority-issues)
   - [Low Priority Issues](#low-priority-issues)
-- [📊 Phase 5: Metrics & Validation Framework](#-phase-5-metrics--validation-framework)
+- [ Phase 5: Metrics & Validation Framework](#-phase-5-metrics--validation-framework)
   - [5.1 AST Analysis Quality Metrics](#51-ast-analysis-quality-metrics)
   - [5.2 Validation Test Suite](#52-validation-test-suite)
 - [🛠️ Phase 6: Tooling & CLI Integration](#-phase-6-tooling--cli-integration)
   - [6.1 Entry Points](#61-entry-points)
   - [6.2 Sample CLI Workflows](#62-sample-cli-workflows)
-- [📚 Phase 7: Knowledge Transfer & Documentation](#-phase-7-knowledge-transfer--documentation)
+- [ Phase 7: Knowledge Transfer & Documentation](#-phase-7-knowledge-transfer--documentation)
   - [7.1 API Reference Structure](#71-api-reference-structure)
 - [AST Analysis Framework - API Reference](#ast-analysis-framework---api-reference)
 - [Core Classes](#core-classes)
@@ -56,7 +58,7 @@
 - [Find cycles](#find-cycles)
 - [Example 3: Export to SQLite](#example-3-export-to-sqlite)
 - [Query using sqlite3](#query-using-sqlite3)
-- [🚀 Phase 8: Deployment & Adoption](#-phase-8-deployment--adoption)
+- [ Phase 8: Deployment & Adoption](#-phase-8-deployment--adoption)
   - [8.1 Installation](#81-installation)
   - [8.2 CI/CD Integration](#82-cicd-integration)
   - [8.3 Team Adoption Strategy](#83-team-adoption-strategy)
@@ -69,8 +71,8 @@
 - [📋 Phase 10: Success Criteria & Acceptance](#-phase-10-success-criteria--acceptance)
   - [10.1 Definition of Done](#101-definition-of-done)
   - [10.2 Acceptance Criteria](#102-acceptance-criteria)
-- [🎯 Conclusion](#-conclusion)
-- [📊 Deep Codebase Analysis: Requirements Specification](#-deep-codebase-analysis-requirements-specification)
+- [ Conclusion](#-conclusion)
+- [ Deep Codebase Analysis: Requirements Specification](#-deep-codebase-analysis-requirements-specification)
 - [1. Scope Definition](#1-scope-definition)
   - [1.1 What is "Deep Codebase Analysis"?](#11-what-is-deep-codebase-analysis)
   - [1.2 Scope Boundaries](#12-scope-boundaries)
@@ -123,7 +125,7 @@
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
 
-**🧠 Roles:** [Primary: Architecture Lead], [Secondary: DevOps Engineer] | ⚡ Energy: 5/5
+** Roles:** [Primary: Architecture Lead], [Secondary: DevOps Engineer] | ⚡ Energy: 5/5
 
 ---
 
@@ -132,11 +134,11 @@
 This document provides **requirements, architecture, and standardization strategy** for a dedicated AST (Abstract Syntax Tree) analysis project to enable **deep codebase analysis beyond test scope**. It bridges the gap between MATURITY_REMAINING_WORK.md findings and systematic, automated codebase intelligence.
 
 **Key Objectives:**
-1. ✅ Standardize AST parsing across Python/YAML/JSON/SQL codebases
-2. ✅ Enable automated codebase metrics extraction (complexity, coverage, dependencies)
-3. ✅ Create knowledge graphs for semantic codebase understanding
-4. ✅ Integrate maturity tracking with objective AST-derived findings
-5. ✅ Provide CLI tools for continuous codebase auditing
+1.  Standardize AST parsing across Python/YAML/JSON/SQL codebases
+2.  Enable automated codebase metrics extraction (complexity, coverage, dependencies)
+3.  Create knowledge graphs for semantic codebase understanding
+4.  Integrate maturity tracking with objective AST-derived findings
+5.  Provide CLI tools for continuous codebase auditing
 
 **Scope:** Beyond unit tests → structural, semantic, and quality analysis
 
@@ -754,7 +756,7 @@ def analyze_and_update_maturity():
 
 ---
 
-## 📊 Phase 5: Metrics & Validation Framework
+##  Phase 5: Metrics & Validation Framework
 
 ### 5.1 AST Analysis Quality Metrics
 
@@ -884,7 +886,7 @@ $ codex-diff HEAD~5 HEAD --metric complexity
 
 ---
 
-## 📚 Phase 7: Knowledge Transfer & Documentation
+##  Phase 7: Knowledge Transfer & Documentation
 
 ### 7.1 API Reference Structure
 
@@ -991,7 +993,7 @@ for row in cursor:
 
 ---
 
-## 🚀 Phase 8: Deployment & Adoption
+##  Phase 8: Deployment & Adoption
 
 ### 8.1 Installation
 
@@ -1130,7 +1132,7 @@ codex-analyze --smell-threshold high src/
 
 ### 10.2 Acceptance Criteria
 
-✅ Acceptance Test Suite
+ Acceptance Test Suite
 
 1. Parser Test
    - Parse 100% of codebase without errors
@@ -1157,15 +1159,15 @@ codex-analyze --smell-threshold high src/
 
 ---
 
-## 🎯 Conclusion
+##  Conclusion
 
 This **AST Standardization Project** provides a **foundation for deep codebase analysis** that extends far beyond test coverage. By standardizing AST parsing, building comprehensive metrics frameworks, and integrating with maturity tracking, you enable:
 
-✅ **Objective Codebase Health Assessment**  
-✅ **Automated Refactoring Recommendations**  
-✅ **Data-Driven Architecture Decisions**  
-✅ **Reproducible Code Quality Tracking**  
-✅ **Team-Wide Code Intelligence**  
+ **Objective Codebase Health Assessment**  
+ **Automated Refactoring Recommendations**  
+ **Data-Driven Architecture Decisions**  
+ **Reproducible Code Quality Tracking**  
+ **Team-Wide Code Intelligence**  
 
 **Next Steps:**
 1. AI Assistant autonomous document review
@@ -1183,10 +1185,10 @@ This **AST Standardization Project** provides a **foundation for deep codebase a
 
 ---
 
-# 📊 Deep Codebase Analysis: Requirements Specification
+#  Deep Codebase Analysis: Requirements Specification
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
 
-**🧠 Roles:** [Primary: Requirements Engineer], [Secondary: QA Lead] | ⚡ Energy: 5/5
+** Roles:** [Primary: Requirements Engineer], [Secondary: QA Lead] | ⚡ Energy: 5/5
 
 ---
 
@@ -1210,19 +1212,19 @@ This **AST Standardization Project** provides a **foundation for deep codebase a
 ### 1.2 Scope Boundaries
 
 **IN SCOPE:**
-- ✅ Python source code analysis (primary)
-- ✅ Configuration files (YAML, JSON, SQL)
-- ✅ Static analysis (no runtime execution)
-- ✅ Offline operation (no cloud services)
-- ✅ CLI tools + integrations
-- ✅ Knowledge graph building
-- ✅ Metrics aggregation & reporting
+-  Python source code analysis (primary)
+-  Configuration files (YAML, JSON, SQL)
+-  Static analysis (no runtime execution)
+-  Offline operation (no cloud services)
+-  CLI tools + integrations
+-  Knowledge graph building
+-  Metrics aggregation & reporting
 
 **OUT OF SCOPE:**
-- ❌ Runtime profiling (requires execution)
-- ❌ Security vulnerability scanning (use specialized tools: bandit, safety)
-- ❌ Performance optimization (requires benchmarking)
-- ❌ Automated code generation/refactoring
+-  Runtime profiling (requires execution)
+-  Security vulnerability scanning (use specialized tools: bandit, safety)
+-  Performance optimization (requires benchmarking)
+-  Automated code generation/refactoring
 
 ---
 
@@ -1803,10 +1805,10 @@ codex-audit src/ --update-maturity MATURITY_REMAINING_WORK.md
 
 This **Requirements Specification** provides **comprehensive, verifiable, and measurable** requirements for the deep codebase analysis system. By following this specification, the implementation team can ensure:
 
-✅ **Completeness** — All necessary functionality covered  
-✅ **Quality** — Non-functional requirements met  
-✅ **Testability** — Clear acceptance criteria  
-✅ **Traceability** — All features verified  
+ **Completeness** — All necessary functionality covered  
+ **Quality** — Non-functional requirements met  
+ **Testability** — Clear acceptance criteria  
+ **Traceability** — All features verified  
 
 **Next Steps:**
 1. Review with stakeholders

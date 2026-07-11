@@ -1,10 +1,12 @@
 # Cache Warm-up Runbook
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Purpose:** Operational guide for cache warm-up procedures  
 **Audience:** DevOps engineers, CI/CD operators  
 **Status:** Production Ready  
 **Version:** 1.0.0  
-**Last Updated:** 2026-02-10  
+**Last Updated: 2026-07-11
 
 ---
 
@@ -20,7 +22,7 @@
 
 ---
 
-## Quick Start
+## Quickstart
 
 ### Standard Weekly Warm-up
 
@@ -66,7 +68,7 @@ while true; do
   sleep 60
 done
 
-echo "✅ Cache warm-up complete. Deployment ready."
+echo " Cache warm-up complete. Deployment ready."
 ```
 
 ---
@@ -228,7 +230,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
           cache-tier: ${{ inputs.tier || 'LIVE' }}
       - run: |
-          echo "✅ L1 cache warmed for Python ${{ matrix.python-version }}"
+          echo " L1 cache warmed for Python ${{ matrix.python-version }}"
 
   warmup-l2:
     runs-on: ubuntu-latest
@@ -243,7 +245,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
           cache-tier: ${{ inputs.tier || 'LIVE' }}
       - run: pip install -e ".[dev]"
-      - run: echo "✅ L2 cache warmed"
+      - run: echo " L2 cache warmed"
 
   warmup-l3:
     runs-on: ubuntu-latest
@@ -259,7 +261,7 @@ jobs:
           python -m pytest --collect-only tests/ 2>&1 | head -20
           python -m mypy --version
           python -m ruff --version
-          echo "✅ L3 cache warmed (static analysis tools)"
+          echo " L3 cache warmed (static analysis tools)"
 
   warmup-l4:
     runs-on: ubuntu-latest
@@ -275,7 +277,7 @@ jobs:
           pip install -e ".[dev]"
           # Pre-download common models to L4 cache
           python -c "from transformers import AutoModel; AutoModel.from_pretrained('bert-base-uncased')"
-          echo "✅ L4 cache warmed (ML models)"
+          echo " L4 cache warmed (ML models)"
 
   notify:
     runs-on: ubuntu-latest
@@ -291,7 +293,7 @@ jobs:
           curl -X POST ${{ secrets.SLACK_WEBHOOK }} \
             -H 'Content-Type: application/json' \
             -d '{
-              "text": "✅ Cache warm-up complete. Hit rate: 94.7%",
+              "text": " Cache warm-up complete. Hit rate: 94.7%",
               "attachments": [{
                 "color": "good",
                 "fields": [{
@@ -335,12 +337,12 @@ done"
 # Verify success
 gh run view $RUN_ID --json conclusion --jq '.conclusion' | grep -q "success"
 if [ $? -eq 0 ]; then
-  echo "✅ Cache warm-up successful!"
+  echo " Cache warm-up successful!"
   echo "Cache health:"
   python -m codex.ci.cache_manager health
   exit 0
 else
-  echo "❌ Cache warm-up failed!"
+  echo " Cache warm-up failed!"
   gh run view $RUN_ID --json jobs --jq '.jobs[] | select(.conclusion == "failure")'
   exit 1
 fi
@@ -383,7 +385,7 @@ echo "🚨 Emergency cache warm-up initiated"
 # Option 1: Restore from backup (if available)
 if [ -f "/tmp/cache-backup.tar.gz" ]; then
   tar -xzf /tmp/cache-backup.tar.gz -C ~/.cache/
-  echo "✅ Restored cache from backup"
+  echo " Restored cache from backup"
   exit 0
 fi
 
@@ -400,7 +402,7 @@ for py_ver in 3.11 3.12; do
 done
 
 wait
-echo "✅ Emergency warm-up complete"
+echo " Emergency warm-up complete"
 
 # Verify
 python -m codex.ci.cache_manager health
@@ -418,7 +420,7 @@ python -m codex.ci.cache_manager health
 
 RUN_ID=$1
 
-echo "📊 Cache Warm-up Monitoring (Run: $RUN_ID)"
+echo " Cache Warm-up Monitoring (Run: $RUN_ID)"
 echo ""
 
 while true; do
@@ -442,7 +444,7 @@ while true; do
 
   if [[ "$STATUS" != "in_progress" && "$STATUS" != "null" ]]; then
     echo ""
-    echo "✅ Warm-up complete (Status: $STATUS)"
+    echo " Warm-up complete (Status: $STATUS)"
     break
   fi
 
@@ -481,7 +483,7 @@ echo "4️⃣  Running sample workflow for cache validation..."
 gh workflow run pr-checks.yml --repo Aries-Serpent/_codex_ --ref main --inputs check_type=smoke_test
 
 echo ""
-echo "✅ Verification complete"
+echo " Verification complete"
 ```
 
 ---
@@ -622,7 +624,7 @@ gh cache list --json key | jq -r '.[] | .key' | while read key; do
   gh cache delete "$key" 2>/dev/null || true
 done
 
-echo "✅ All caches deleted"
+echo " All caches deleted"
 
 # Immediately trigger warm-up to rebuild
 echo "🔄 Starting automatic warm-up recovery..."
@@ -650,7 +652,7 @@ gh cache list --json key | jq -r '.[] | select(.key | contains("venv")) | .key' 
   gh cache delete "$key"
 done
 
-echo "✅ L3 cache reset"
+echo " L3 cache reset"
 
 # Trigger targeted warm-up
 gh workflow run cache-warmup.yml \
@@ -701,6 +703,6 @@ gh issue create \
 
 ---
 
-**Runbook Status:** ✅ Production Ready  
-**Last Updated:** 2026-02-10  
+**Runbook Status:**  Production Ready  
+**Last Updated: 2026-07-11
 **Next Review:** 2026-03-10

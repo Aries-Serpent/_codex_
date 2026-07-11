@@ -1,4 +1,6 @@
 # Rate-Limit Recovery Runbook
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Applies to:** Copilot Cloud Agent sessions on `Aries-Serpent/_codex_`
 **Pattern:** `RATE_LIMIT_001` (added S923, 2026-05-11)
@@ -55,7 +57,7 @@ The resolver handles these automatically:
 | `CODEX_MANIFEST.json` | `--theirs` (remote) | Auto-generated; latest is authoritative |
 | `.codex/agent_context.json` | `--theirs` (remote) | Auto-generated |
 | `.secrets.baseline` | `--ours` (branch) | P-045: always keep branch version |
-| All other files | ❌ Unresolvable | Requires manual intervention |
+| All other files |  Unresolvable | Requires manual intervention |
 
 ## Step 2 — Load the checkpoint to understand session state
 
@@ -79,7 +81,7 @@ python3 scripts/ci/rate_limit_handler.py --resolve --session S924
 
 ---
 
-## 🤖 Saving a Checkpoint (during/after a 429 failure)
+##  Saving a Checkpoint (during/after a 429 failure)
 
 When a session is interrupted by a 429 error, call the handler to preserve state:
 
@@ -127,7 +129,7 @@ This is **informational only** — it never blocks CI or causes a non-zero exit.
 
 ---
 
-## 🔒 Preventing the Cascade
+##  Preventing the Cascade
 
 The cascade (8 sessions, all 429) happens because CI automation re-queues
 the agent immediately after each failure. Mitigations:

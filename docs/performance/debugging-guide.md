@@ -1,4 +1,6 @@
 # Performance Debugging Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > Complete guide to profiling, benchmarking, and optimizing Python applications  
 > **Level**: Intermediate to Advanced | **Prerequisites**: Python profiling knowledge  
@@ -335,7 +337,7 @@ def benchmark_comparison():
 from functools import lru_cache
 import time
 
-# ❌ WITHOUT caching
+#  WITHOUT caching
 def expensive_calculation(n):
     time.sleep(0.1)  # Expensive operation
     return n ** 2
@@ -344,7 +346,7 @@ def expensive_calculation(n):
 for i in range(10):
     result = expensive_calculation(i % 3)
 
-# ✅ WITH caching
+#  WITH caching
 @lru_cache(maxsize=128)
 def cached_calculation(n):
     time.sleep(0.1)
@@ -360,7 +362,7 @@ for i in range(10):
 ```python
 import numpy as np
 
-# ❌ SLOW: Element-wise operations
+#  SLOW: Element-wise operations
 def slow_distance(points1, points2):
     distances = []
     for p1, p2 in zip(points1, points2):
@@ -368,7 +370,7 @@ def slow_distance(points1, points2):
         distances.append(dist)
     return distances
 
-# ✅ FAST: Vectorized operations
+#  FAST: Vectorized operations
 def fast_distance(points1, points2):
     p1 = np.array(points1)
     p2 = np.array(points2)
@@ -381,13 +383,13 @@ points = [(i, i*2) for i in range(10000)]
 ## Pattern 3: Lazy Evaluation
 
 ```python
-# ❌ EAGER: Process all data immediately
+#  EAGER: Process all data immediately
 def process_all_data(data):
     filtered = [x for x in data if x > 0]
     doubled = [x * 2 for x in filtered]
     return [x for x in doubled if x < 100]
 
-# ✅ LAZY: Process on demand
+#  LAZY: Process on demand
 def process_data_lazy(data):
     for x in data:
         if x > 0:
@@ -406,14 +408,14 @@ for result in process_data_lazy(range(1000000)):
 ## Pattern 4: Batch Processing
 
 ```python
-# ❌ SLOW: Process one at a time
+#  SLOW: Process one at a time
 def process_one(item):
     import requests
     return requests.get(f"http://api.example.com/process?id={item}").json()
 
 results = [process_one(item) for item in items]  # Sequential
 
-# ✅ FAST: Batch processing
+#  FAST: Batch processing
 def process_batch(items, batch_size=100):
     for i in range(0, len(items), batch_size):
         batch = items[i:i+batch_size]
@@ -662,4 +664,4 @@ def batch_processor():
 ---
 
 **Word Count**: 2,458 | **Examples**: 20 | **Patterns**: 6
-**Last Updated**: 2026-06-22 | **Status**: ✅ Complete
+**Last Updated**: 2026-06-22 | **Status**:  Complete

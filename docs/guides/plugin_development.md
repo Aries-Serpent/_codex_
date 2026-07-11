@@ -1,4 +1,6 @@
 # Plugin Development Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 This guide explains how to extend `_codex_` with custom datasets, metrics, and
 logging sinks using the existing registry patterns.
@@ -41,4 +43,4 @@ def load_my_dataset(path: str, *, seed: int = 1234) -> dict[str, list[dict[str, 
 - Update `docs/how-to` or `docs/training` sections with usage instructions when
   shipping new registries.
 
-*Last updated: 2026-06-22*
+*Last updated: 2026-06-22

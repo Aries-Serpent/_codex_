@@ -1,9 +1,11 @@
 # ML Validation & Inference API Reference
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Status:** Phase 2 - Master API Documentation  
 **Coverage:** 49+ public functions & classes  
 **Modules:** cognitive/ml/validation.py, cognitive/ml/integration.py  
-**Last Updated:** 2026-07-08
+**Last Updated: 2026-07-08
 
 ---
 
@@ -424,7 +426,7 @@ test_data = [
 report = validator.validate_model("model.pkl", test_data)
 
 # Check results
-print(f"✅ Model Valid: {report.passed}")
+print(f" Model Valid: {report.passed}")
 print(f"Accuracy: {report.metrics['accuracy']:.3f}")
 print(f"F1 Score: {report.metrics['f1']:.3f}")
 

@@ -1,6 +1,9 @@
 # Guide: Evidence & Citation in Status (v1.2)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
-🧠 Roles: [Primary: Evidence Curator], [Secondary: Reviewer] ⚡ Energy: 5
+ Roles: [Primary: Evidence Curator], [Secondary: Reviewer] ⚡ Energy: 5
 
 Purpose
 - Standardize how authors reference evidence (tests, logs, artifacts) to support claims in daily status.

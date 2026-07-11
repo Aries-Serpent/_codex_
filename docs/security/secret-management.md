@@ -1,4 +1,6 @@
 # Secret Management Documentation
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > Comprehensive guide to managing secrets securely across development, staging, and production  
 > **Level**: Intermediate | **Prerequisites**: Basic security knowledge  
@@ -126,7 +128,7 @@ echo "6️⃣  Deactivating old key in $SERVICE_NAME..."
 echo "   Manual action: Log into $SERVICE_NAME and deactivate old key"
 echo "   Retain for 7 days before deletion"
 
-echo "✅ API key rotation complete!"
+echo " API key rotation complete!"
 ```
 
 **Usage**:
@@ -159,7 +161,7 @@ if [ "$BACKUP_REQUIRED" = "true" ]; then
       --host "$DB_HOST" \
       --all-databases \
       > db_backup_$(date +%Y%m%d_%H%M%S).sql
-    echo "   ✅ Backup created"
+    echo "    Backup created"
 fi
 
 # Step 2: Create new user with temporary permissions
@@ -172,8 +174,8 @@ EOF
 # Step 3: Test new credentials
 echo "3️⃣  Testing new credentials..."
 mysql -h "$DB_HOST" -u "$DB_USER" -p"$NEW_PASSWORD" -e "SELECT 1;" \
-  && echo "   ✅ New credentials work" \
-  || { echo "   ❌ New credentials failed"; exit 1; }
+  && echo "    New credentials work" \
+  || { echo "    New credentials failed"; exit 1; }
 
 # Step 4: Update in secrets manager
 echo "4️⃣  Updating secrets..."
@@ -192,10 +194,10 @@ sleep 10
 # Step 6: Verify services running
 echo "6️⃣  Verifying services..."
 curl -s http://localhost:8000/health | jq . \
-  && echo "   ✅ API healthy" \
-  || { echo "   ❌ API failed"; exit 1; }
+  && echo "    API healthy" \
+  || { echo "    API failed"; exit 1; }
 
-echo "✅ Database password rotation complete!"
+echo " Database password rotation complete!"
 ```
 
 ## 3. OAuth Token Rotation
@@ -241,7 +243,7 @@ class OAuthTokenRotator:  # pragma: allowlist secret
                 self.log(f"Token verification failed: {result.stderr}", "ERROR")  # pragma: allowlist secret
                 return False
 
-            self.log("✅ New token verified")  # pragma: allowlist secret
+            self.log(" New token verified")  # pragma: allowlist secret
 
             # Step 2: Update in secrets manager  # pragma: allowlist secret
             self.log("Updating GitHub token in secrets...")  # pragma: allowlist secret
@@ -255,7 +257,7 @@ class OAuthTokenRotator:  # pragma: allowlist secret
             self.log("Recording rotation in audit log...")
             self._record_rotation_audit("GitHub", "token")  # pragma: allowlist secret
 
-            self.log("✅ GitHub token rotation complete", "SUCCESS")  # pragma: allowlist secret
+            self.log(" GitHub token rotation complete", "SUCCESS")  # pragma: allowlist secret
             return True
 
         except Exception as e:
@@ -384,7 +386,7 @@ echo "🔍 Secret Access Audit Analysis"
 echo "================================"
 
 # Most accessed secrets
-echo -e "\n📊 Top 10 Most Accessed Secrets:"
+echo -e "\n Top 10 Most Accessed Secrets:"
 jq -s 'group_by(.secret_name) |
        map({name: .[0].secret_name, count: length}) |
        sort_by(-.count) |
@@ -488,7 +490,7 @@ cat > "incidents/security_$(date +%Y%m%d_%H%M%S).md" << EOF
 - [ ] Process improvements implemented
 EOF
 
-echo "✅ Recovery complete! Review incident report."
+echo " Recovery complete! Review incident report."
 ```
 
 ### 2. Failed Deployment Recovery
@@ -522,7 +524,7 @@ class DeploymentRecovery:
                 )
                 health[service] = result.returncode == 0
             except Exception as e:
-                print(f"❌ {service} health check failed: {e}")
+                print(f" {service} health check failed: {e}")
                 health[service] = False
 
         return health
@@ -563,10 +565,10 @@ class DeploymentRecovery:
                 check=True
             )
 
-            print("✅ Secrets rolled back")  # pragma: allowlist secret
+            print(" Secrets rolled back")  # pragma: allowlist secret
 
         except subprocess.CalledProcessError as e:
-            print(f"❌ Rollback failed: {e}")
+            print(f" Rollback failed: {e}")
             sys.exit(1)
 
     def restart_services(self):
@@ -584,7 +586,7 @@ class DeploymentRecovery:
             import time
             time.sleep(5)
 
-        print("✅ Services restarted")
+        print(" Services restarted")
 
     def run_recovery(self):
         """Execute full recovery procedure"""
@@ -592,7 +594,7 @@ class DeploymentRecovery:
 
         # 1. Check health
         health = self.check_deployment_health()
-        print(f"\n📊 Service Health: {health}")
+        print(f"\n Service Health: {health}")
 
         # 2. Identify problems
         mismatches = self.identify_secret_mismatches()  # pragma: allowlist secret
@@ -610,10 +612,10 @@ class DeploymentRecovery:
         new_health = self.check_deployment_health()
 
         if all(new_health.values()):
-            print("✅ Recovery successful!")
+            print(" Recovery successful!")
             return True
         else:
-            print(f"❌ Recovery incomplete: {new_health}")
+            print(f" Recovery incomplete: {new_health}")
             return False
 
 # Usage
@@ -724,16 +726,16 @@ jobs:
 
 1. **Never log secrets**: Use masking in logs
 ```python
-logger.info(f"Connecting to {host}:{port}")  # ✅ Safe
-logger.info(f"Auth: {api_key}")  # ❌ Never  # pragma: allowlist secret
+logger.info(f"Connecting to {host}:{port}")  #  Safe
+logger.info(f"Auth: {api_key}")  #  Never  # pragma: allowlist secret
 ```
 
 2. **Use environment variables**: Not config files
    ```bash
-   # ✅ Good
+   #  Good
    export API_KEY="$(aws secretsmanager get-secret-value ...)"
 
-   # ❌ Bad
+   #  Bad
    API_KEY = "hardcoded_key_here"  # In config file <!-- pragma: allowlist secret -->
    ```
 
@@ -778,4 +780,4 @@ gh secret set MY_SECRET --body "$(aws secretsmanager get-secret-value ...)" --en
 ---
 
 **Word Count**: 2,156 | **Examples**: 15 | **Runbooks**: 6
-**Last Updated**: 2026-06-22 | **Status**: ✅ Complete
+**Last Updated**: 2026-06-22 | **Status**:  Complete

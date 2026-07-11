@@ -1,6 +1,8 @@
 # D Model Activation Checklist
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 > **Purpose:** Step-by-step checklist for activating the D model (full autonomous operations)
 > after successful Genesis Phase 1 and Phase 2 completion.
@@ -18,7 +20,7 @@ Before starting, confirm all of the following:
 
 - [ ] Genesis Phase 1 complete (template files committed, safety guards active)
 - [ ] Genesis Phase 2 complete (human admin injected secrets, enabled workflows)
-- [ ] `admin_setup_verification.yml` passes with ✅ for all §2–§7 checks
+- [ ] `admin_setup_verification.yml` passes with  for all §2–§7 checks
 - [ ] `CODEX_MASTER_KEY` and `CODEX_BACKUP_KEY` are functional (§3a/§3b green)
 - [ ] GitHub Discussions enabled and accessible (§4 green)
 - [ ] At least one Copilot agent session has completed successfully on PR #3854
@@ -79,13 +81,13 @@ grep -n "^    if:" .github/workflows/genesis-bootstrap.yml | head -3
 ### Step 1: Enable Agent Token Delegation
 
 1. Navigate to PR #3854 on GitHub
-2. Check the box **"🔐 Agent Token Delegation"** in the PR description
+2. Check the box **" Agent Token Delegation"** in the PR description
 3. Confirm `COPILOT_AGENT_AUTH_ENABLED=true` is set as a repository variable
 4. The `agent-auth-delegation.yml` workflow will fire on the next push
 
 ### Step 2: Approve Cost Governance
 
-1. In the PR description, check **"💰 Cost Proposal Approved"**
+1. In the PR description, check **" Cost Proposal Approved"**
 2. This serves as standing approval for all sessions on this PR
 3. Copilot sessions will now start without requiring additional approval gates
 
@@ -124,11 +126,11 @@ gh workflow run "Admin Setup Verification" \
 ```
 
 Verify all checks pass:
-- [ ] `CODEX_MASTER_KEY` read + write: ✅
-- [ ] `CODEX_BACKUP_KEY` read + write: ✅ (or ⚠️ if optional)
-- [ ] GitHub Discussions: ✅
-- [ ] Repository variables: ✅
-- [ ] Follow-up prompt file: ✅
+- [ ] `CODEX_MASTER_KEY` read + write: 
+- [ ] `CODEX_BACKUP_KEY` read + write:  (or ⚠️ if optional)
+- [ ] GitHub Discussions: 
+- [ ] Repository variables: 
+- [ ] Follow-up prompt file: 
 
 ## 3.2 Session Health Checks
 
@@ -157,7 +159,7 @@ print('Last SHA:', d.get('CODEX_CI_LAST_GREEN_SHA', '')[:12])
 python3 scripts/ci/scan_failing_workflows.py --sha "$(git rev-parse HEAD)"
 
 # Verify ruff is clean
-python3 -m ruff check . --quiet && echo "Ruff: ✅ clean" || echo "Ruff: ❌ errors"
+python3 -m ruff check . --quiet && echo "Ruff:  clean" || echo "Ruff:  errors"
 ```
 
 ## 3.4 Session Completion Attestation

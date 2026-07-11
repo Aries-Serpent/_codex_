@@ -1,4 +1,6 @@
 # MCP Usage Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Status**: Production Ready
 **Last Updated**: 2026-06-22T00:00:00Z
@@ -41,7 +43,7 @@ cd _codex_
 pip install -e .
 
 # Verify installation
-python3 -c "import mcp; print('✅ MCP ready')"
+python3 -c "import mcp; print(' MCP ready')"
 ```
 
 ## Quick Test
@@ -56,7 +58,7 @@ config = MCPConfig.load()
 registry = MCPToolRegistry()
 server = MCPJSONRPCServer(config, registry=registry)
 
-print(f"✅ Server ready with {len(registry.list_tools())} tools")
+print(f" Server ready with {len(registry.list_tools())} tools")
 ```
 
 ---
@@ -84,7 +86,7 @@ registry.register_tool(
     }
 )
 
-print(f"✅ Tool 'greet' registered")
+print(f" Tool 'greet' registered")
 ```
 
 ### 2. List Available Tools
@@ -318,7 +320,7 @@ permissions = {
 # Check permission
 def execute_with_auth(user_role: str, action: str):
     if action in permissions.get(user_role, []):
-        return "✅ Authorized"
+        return " Authorized"
     else:
         raise Unauthorized(f"Role '{user_role}' cannot perform '{action}'")
 ```
@@ -534,7 +536,7 @@ print(f"Supported: {MCP_VERSIONS}")
 
 ---
 
-## 🎯 Mission Overview
+##  Mission Overview
 
 **Objective**: Provide practical, hands-on usage instructions for MCP across all common scenarios from basic tool registration to advanced multi-tenant deployments, enabling developers to quickly implement and operate MCP-based systems.
 
@@ -543,7 +545,7 @@ print(f"Supported: {MCP_VERSIONS}")
 - High usage: Daily developer consultation
 - Long-term value: Enables production deployments
 
-**Status**: ✅ Production Ready | 📖 Comprehensive | 🔄 Continuously Updated
+**Status**:  Production Ready |  Comprehensive | 🔄 Continuously Updated
 
 ---
 
@@ -569,11 +571,11 @@ print(f"Supported: {MCP_VERSIONS}")
 
 | Metric | Target | Current | Status |
 |--------|--------|---------|--------|
-| Usage Scenario Coverage | >10 | 15 | ✅ Excellent |
-| Code Example Accuracy | 100% | 100% | ✅ Verified |
-| Developer Satisfaction | >4/5 | 4.6/5 | ✅ High |
-| Time to First Tool | <10 min | ~7 min | ✅ Fast |
-| Production Deployment Success | >90% | ~95% | ✅ Excellent |
+| Usage Scenario Coverage | >10 | 15 |  Excellent |
+| Code Example Accuracy | 100% | 100% |  Verified |
+| Developer Satisfaction | >4/5 | 4.6/5 |  High |
+| Time to First Tool | <10 min | ~7 min |  Fast |
+| Production Deployment Success | >90% | ~95% |  Excellent |
 
 ---
 
@@ -620,7 +622,7 @@ Simplicity (easy examples) ↔ Completeness (all scenarios) ↔ Clarity (step-by
 
 ---
 
-## 🧠 Redundancy Patterns
+##  Redundancy Patterns
 
 **Usage Issue Recovery**:
 1. **Problem encountered**: Developer stuck on implementation
@@ -642,5 +644,5 @@ Simplicity (easy examples) ↔ Completeness (all scenarios) ↔ Clarity (step-by
 **Version**: 2.0
 **Usage Scenarios**: 15+
 **Code Examples**: 30+
-**Status**: Production Ready ✅
-**Template Compliance**: ✅ Phase 2 Physics-Aligned
+**Status**: Production Ready 
+**Template Compliance**:  Phase 2 Physics-Aligned

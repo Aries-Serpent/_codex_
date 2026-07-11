@@ -1,6 +1,8 @@
 # Checkpointing Integration Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 `CheckpointManager` provides save/restore of model state, optimizer state, LR scheduler, tokenizer, and training configuration. It supports keep-last and keep-best rotation policies to bound disk usage.
 

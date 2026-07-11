@@ -1,4 +1,7 @@
 # ADR-20260302: Self-Healing CI Governance (Phases 5–6)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-22T07:00:00Z | Author: copilot-swe-agent[bot]
 > Status: Accepted
 > Related PRs: #3447

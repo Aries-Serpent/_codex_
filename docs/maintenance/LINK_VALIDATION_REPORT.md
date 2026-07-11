@@ -1,4 +1,6 @@
 # Documentation Link Validation Report
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **⚠️ DEPRECATED**: This is a legacy report from a previous validation run.
 >
@@ -162,7 +164,7 @@ _... and 41 more files_
 
 ### agents/prompts/debugging/performance-optimization.md
 
-- `[Codex performance utilities](https://github.com/Aries-Serpent/_codex_/blob/main/scripts/space_traversal/performance.py)` → No suggestion
+- `[Codex performance utilities](../scripts/space_traversal/performance.py)` → No suggestion
 
 ### agents/prompts/debugging/resolve-merge-conflicts.md
 

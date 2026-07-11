@@ -1,6 +1,8 @@
 # Tokenizer Cache Parity (Offline-First)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 - Default cache is local at `artifacts/tokenizer_cache/`.
 - Remote downloads are **disabled** by default; enable only with explicit flags/env.

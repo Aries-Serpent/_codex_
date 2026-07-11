@@ -1,6 +1,8 @@
 # RAG + Verification Stack Backlog — Batchset Plan
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## Current state
 - Scanned 81 expected artifacts; 74 are missing. Existing files: `README.md`, `LICENSE`, `.gitignore`, `.env.example`, `.github/workflows/ci.yml`, and the repo root itself. All other architecture, RAG, tooling, verification, evaluation, and infra files listed in the consolidated spec are absent and require creation.

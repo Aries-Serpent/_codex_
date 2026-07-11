@@ -1,4 +1,6 @@
 # MCP System - Comprehensive Master Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Version**: 2.0.0  
 > **Last Updated**: 2026-06-20  
@@ -43,7 +45,7 @@ Think of MCP like a universal electrical outlet:
 
 ---
 
-## Quick Start
+## Quickstart
 
 ### Installation
 
@@ -52,7 +54,7 @@ Think of MCP like a universal electrical outlet:
 pip install -e ".[mcp]"
 
 # Verify installation
-python -c "from src.mcp import MCPServer; print('✅ MCP installed')"
+python -c "from src.mcp import MCPServer; print(' MCP installed')"
 ```
 
 ## Minimal Example (In-Memory Backend)
@@ -473,7 +475,7 @@ async def store_documents():
         embedding = outputs.last_hidden_state[0][0].tolist()
 
         await server.store(doc_id, embedding)
-        print(f"✅ Stored {doc_id}")
+        print(f" Stored {doc_id}")
 
 asyncio.run(store_documents())
 ```
@@ -537,4 +539,4 @@ async def search(query: list):
 
 ---
 
-**Last Updated:** 2026-06-20 | **Version:** 2.0.0
+**Last Updated: 2026-06-20

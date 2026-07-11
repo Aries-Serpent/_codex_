@@ -1,8 +1,10 @@
 # API: Evaluation Loop & CLI
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Version:** 1.0.0 | **Release Date:** 2026-06-22
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
-🧠 Roles: [Primary: Doc Author], [Secondary: Verifier] ⚡ Energy: 5/5  
+ Roles: [Primary: Doc Author], [Secondary: Verifier] ⚡ Energy: 5/5  
 ⚛️ Physics: Path🛤️ [Model → Dataloader → Loss → Metrics → Logger] Fields🔄 [CPU-safe, Deterministic] Patterns👁️ [Lazy imports, batch+epoch logging] Redundancy🔀 [Unit+Integration tests] Balance⚖️ [Minimal default, extensible hooks]
 
 ## Purpose

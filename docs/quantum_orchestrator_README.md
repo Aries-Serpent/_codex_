@@ -1,6 +1,8 @@
 # Quantum-Relativistic-Dirac Orchestrator Framework
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 A physics-inspired task orchestration framework implementing quantum mechanics, special relativity, and Dirac spinor dynamics for intelligent, self-healing task scheduling.
 
@@ -66,7 +68,7 @@ pip install numpy
 export PYTHONPATH="/home/runner/work/_codex_/_codex_/src:$PYTHONPATH"
 ```
 
-## Quick Start
+## Quickstart
 
 ```python
 from codex.quantum_orchestrator.orchestrator import create_orchestrator

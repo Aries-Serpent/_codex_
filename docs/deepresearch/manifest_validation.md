@@ -1,6 +1,9 @@
 # DeepResearch: Manifest Validation
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
-🧠 Roles: [Primary: Research Integrator], [Secondary: Reviewer] ⚡ Energy: 5
+ Roles: [Primary: Research Integrator], [Secondary: Reviewer] ⚡ Energy: 5
 
 Checks
 - docs/deepresearch/apis contains OpenAPI files (yaml/json)

@@ -1,4 +1,7 @@
 # [Implementation Update]: Training CLI, Checkpoint Helpers, and API Inference Wiring
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-22 00:32:28 | Author: mbaetiong
 
 Roles: [Primary], [Secondary] ⚡ Energy: [3]

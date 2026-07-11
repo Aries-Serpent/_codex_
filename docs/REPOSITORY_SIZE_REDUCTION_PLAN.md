@@ -1,4 +1,6 @@
 # Repository Size Reduction & Archival Plan
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Goal**: Reduce repository size from 11.2MB to under 10MB to enable CodeQL scanning  
 **Date**: 2025-12-10  
@@ -97,11 +99,11 @@ artifacts/coverage/*.xml
 ## 4. Verification Steps
 
 Before moving files:
-1. ✅ Verify file is not imported/required by active code
-2. ✅ Check if file is referenced in documentation
-3. ✅ Ensure backup exists (git history)
-4. ✅ Run tests after moving to ensure no breakage
-5. ✅ Document in metadata.json
+1.  Verify file is not imported/required by active code
+2.  Check if file is referenced in documentation
+3.  Ensure backup exists (git history)
+4.  Run tests after moving to ensure no breakage
+5.  Document in metadata.json
 
 ---
 
@@ -142,11 +144,11 @@ Before moving files:
 ## Safety Guarantees
 
 **Files in `misc/repo-owner-review/` are:**
-- ✅ Non-essential for functionality
-- ✅ Not imported by any active code
-- ✅ Not required for builds or tests
-- ✅ Backed up in git history
-- ✅ Safe for owner to delete
+-  Non-essential for functionality
+-  Not imported by any active code
+-  Not required for builds or tests
+-  Backed up in git history
+-  Safe for owner to delete
 
 **Files are explicitly marked as:**
 - Subject to deletion by repository owner

@@ -1,4 +1,6 @@
 # Security Architecture
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Last Updated**: 2026-01-20  
 **Version**: v0.9.0  
@@ -15,8 +17,8 @@ graph TB
     subgraph "Authentication & Authorization"
         OAuth["🔓 OAuth2/GitHub<br/>• GitHub login<br/>• Token exchange<br/>• Session creation"]
         JWT["🎫 JWT Tokens<br/>• Token generation<br/>• Signature validation<br/>• Expiry management"]
-        MFA["🔐 Multi-Factor Auth<br/>• TOTP support<br/>• Backup codes<br/>• Recovery flows"]
-        RBAC["🎯 Role-Based Access<br/>• User roles (admin, user)<br/>• Permission checks<br/>• Policy enforcement"]
+        MFA[" Multi-Factor Auth<br/>• TOTP support<br/>• Backup codes<br/>• Recovery flows"]
+        RBAC[" Role-Based Access<br/>• User roles (admin, user)<br/>• Permission checks<br/>• Policy enforcement"]
     end
 
     subgraph "Secret Management"
@@ -28,18 +30,18 @@ graph TB
     subgraph "Code Scanning & Analysis"
         Static["🔎 Static Analysis<br/>• Semgrep rules<br/>• CodeQL queries<br/>• Custom patterns"]
         Bandit["🚨 Bandit/Safety<br/>• Security linting<br/>• Dep vulnerabilities<br/>• Best practices"]
-        SAST["📊 SAST Engine<br/>• Flow analysis<br/>• Taint tracking<br/>• Risk scoring"]
-        Secrets["🔐 Secrets Detection<br/>• Committed secrets<br/>• API keys found<br/>• Credential exposure"]
+        SAST[" SAST Engine<br/>• Flow analysis<br/>• Taint tracking<br/>• Risk scoring"]
+        Secrets[" Secrets Detection<br/>• Committed secrets<br/>• API keys found<br/>• Credential exposure"]
     end
 
     subgraph "Encryption & Transport"
-        TLS["🔒 TLS/HTTPS<br/>• End-to-end encryption<br/>• Certificate pinning<br/>• Strong ciphers"]
+        TLS[" TLS/HTTPS<br/>• End-to-end encryption<br/>• Certificate pinning<br/>• Strong ciphers"]
         DataEnc["💾 Data Encryption<br/>• At-rest encryption<br/>• Key derivation<br/>• Algorithm: AES-256"]
         Transit["📦 Transit Encryption<br/>• In-flight protection<br/>• Signed messages<br/>• Integrity checks"]
     end
 
     subgraph "Monitoring & Detection"
-        AnomalyDetect["🎯 Anomaly Detection<br/>• Unusual logins<br/>• Permission escalation<br/>• Data exfiltration"]
+        AnomalyDetect[" Anomaly Detection<br/>• Unusual logins<br/>• Permission escalation<br/>• Data exfiltration"]
         RateLimit["⏱️ Rate Limiting<br/>• Per-user limits<br/>• Per-endpoint limits<br/>• DDoS protection"]
         AuditLog["📋 Audit Logging<br/>• All actions logged<br/>• Immutable records<br/>• Retention policy"]
         Alerts["⚠️ Security Alerts<br/>• Real-time alerts<br/>• Escalation chain<br/>• Incident response"]
@@ -48,9 +50,9 @@ graph TB
     subgraph "Request Processing"
         Incoming["📥 Incoming Request<br/>HTTPS"]
         Input["✓ Input Validation<br/>• Type checking<br/>• Length limits<br/>• Sanitization"]
-        Auth["🔐 Authentication<br/>• Verify token<br/>• Check signature<br/>• Validate expiry"]
-        AuthZ["🎯 Authorization<br/>• Check permissions<br/>• Verify RBAC<br/>• Policy eval"]
-        Process["⚙️ Process Request<br/>Application logic"]
+        Auth[" Authentication<br/>• Verify token<br/>• Check signature<br/>• Validate expiry"]
+        AuthZ[" Authorization<br/>• Check permissions<br/>• Verify RBAC<br/>• Policy eval"]
+        Process[" Process Request<br/>Application logic"]
         Output["📤 Output Encoding<br/>• Context-aware<br/>• Sanitization<br/>• Safe formatting"]
     end
 
@@ -58,8 +60,8 @@ graph TB
     Incoming --> Input
     Input --> Auth
     Auth --> AuthZ
-    AuthZ -->|"✅ Allowed"| Process
-    AuthZ -->|"❌ Denied"| Denied["Return 403<br/>Forbidden"]
+    AuthZ -->|" Allowed"| Process
+    AuthZ -->|" Denied"| Denied["Return 403<br/>Forbidden"]
     Process --> Output
     Output --> Response["📥 Response<br/>HTTPS"]
 
@@ -220,12 +222,12 @@ graph TB
 
 ```mermaid
 graph LR
-    Discover["🔍 Discover CVE"] -->|"Alert"| Assess["📊 Assess<br/>Severity: High"]
+    Discover["🔍 Discover CVE"] -->|"Alert"| Assess[" Assess<br/>Severity: High"]
     Assess --> Patch["🔧 Create Patch"]
-    Patch --> Test["✅ Test Fix"]
+    Patch --> Test[" Test Fix"]
     Test --> Review["👀 Code Review"]
-    Review --> Merge["✅ Merge"]
-    Merge --> Deploy["🚀 Deploy"]
+    Review --> Merge[" Merge"]
+    Merge --> Deploy[" Deploy"]
     Deploy --> Verify["✔️ Verify<br/>Fixed"]
 
     style Discover fill:#f59e0b,stroke:#d97706,stroke-width:2px
@@ -244,11 +246,11 @@ graph LR
 
 | Standard | Coverage | Status |
 |----------|----------|--------|
-| **OWASP Top 10** | XSS, CSRF, Injection | ✅ Mitigated |
-| **CWE** | 25 most dangerous | ✅ Covered |
-| **NIST Cybersecurity** | Core functions | ✅ Implemented |
-| **GDPR** | Data privacy | ✅ Compliant |
-| **SOC 2** | Security controls | ✅ Ready |
+| **OWASP Top 10** | XSS, CSRF, Injection |  Mitigated |
+| **CWE** | 25 most dangerous |  Covered |
+| **NIST Cybersecurity** | Core functions |  Implemented |
+| **GDPR** | Data privacy |  Compliant |
+| **SOC 2** | Security controls |  Ready |
 
 ---
 

@@ -1,6 +1,8 @@
 # Error Handling Improvement Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## Overview
 
@@ -13,7 +15,7 @@ This document provides guidelines for improving error handling patterns across t
 **Problem**: Silent exception swallowing makes debugging impossible and hides failures.
 
 ```python
-# ❌ BAD: Silent failure
+#  BAD: Silent failure
 try:
     risky_operation()
 except:
@@ -23,7 +25,7 @@ except:
 **Solution**: Add logging and proper error context.
 
 ```python
-# ✅ GOOD: Logged failure with context
+#  GOOD: Logged failure with context
 import logging
 logger = logging.getLogger(__name__)
 
@@ -81,7 +83,7 @@ except PermissionError:
 Use context managers for automatic cleanup:
 
 ```python
-# ✅ GOOD: Automatic cleanup
+#  GOOD: Automatic cleanup
 with open(file_path, 'r') as f:
     content = f.read()
 # File automatically closed even if exception occurs
@@ -160,11 +162,11 @@ def add_logging_to_bare_except(file_path: Path) -> bool:
 ### 1. Always Use Specific Exception Types
 
 ```text
-# ❌ Too broad
+#  Too broad
 except Exception:
     pass
 
-# ✅ Specific
+#  Specific
 except (FileNotFoundError, PermissionError) as e:
     logger.warning(f"File access error: {e}")
 ```
@@ -172,24 +174,24 @@ except (FileNotFoundError, PermissionError) as e:
 ## 2. Include Context in Log Messages
 
 ```python
-# ❌ Generic message
+#  Generic message
 logger.error("Operation failed")
 
-# ✅ Specific context
+#  Specific context
 logger.error(f"Failed to process file {file_path}: {e}", exc_info=True)
 ```
 
 ## 3. Use exc_info for Stack Traces
 
 ```python
-# ✅ Include full traceback for debugging
+#  Include full traceback for debugging
 logger.error("Operation failed", exc_info=True)
 ```
 
 ## 4. Fail Fast for Unexpected Errors
 
 ```python
-# ✅ Don't catch what you can't handle
+#  Don't catch what you can't handle
 try:
     critical_operation()
 except ValueError as e:

@@ -1,4 +1,5 @@
 # Codex UI Enhancement - Complete Integration Strategy
+**Last Updated:** 2026-07-11
 
 > **Version:** 1.0.0  
 > **Generated:** 2026-01-04  
@@ -728,7 +729,7 @@ interface Agent {
 
 const WORKFLOWS = [
   { token: 'AUDIT_EXEC', label: 'Audit', icon: '📋' },
-  { token: 'DOC_GEN', label: 'Document', icon: '📚' },
+  { token: 'DOC_GEN', label: 'Document', icon: '' },
   { token: 'HEAL', label: 'Heal', icon: '🔧' },
   { token: 'DECIDE', label: 'Decide', icon: '⚛️' },
   { token: 'ORGANIZE', label: 'Organize', icon: '📁' },
@@ -1192,7 +1193,7 @@ DATABASE_URL=sqlite:///.codex/session_logs.db
 VITE_CODEX_KEY=demo-key
 ```
 
-## Quick Start
+## Quickstart
 
 ```bash
 # Clone the repository
@@ -1257,17 +1258,17 @@ uvicorn services.api.main:app --reload --port 8000
 This master plan provides a complete, production-ready integration strategy for connecting the GitHub Spark UI with the _Codex_ cognitive brain backend. All code examples are complete and ready to implement. Follow the 4 phase roadmap for systematic implementation, and use the success metrics to validate progress.
 
 **Key Deliverables:**
-- ✅ 6 FastAPI routers with complete implementations
-- ✅ 3 major React components ready to use
-- ✅ Extended design system with 15+ new color variables
-- ✅ WebSocket real-time updates
-- ✅ Docker deployment configuration
-- ✅ Integration tests and validation criteria
+-  6 FastAPI routers with complete implementations
+-  3 major React components ready to use
+-  Extended design system with 15+ new color variables
+-  WebSocket real-time updates
+-  Docker deployment configuration
+-  Integration tests and validation criteria
 
 **Ready to start:** Copy the API code into `services/api/` and the component code into `src/components/`, then follow the Week 1 roadmap.
 
 ---
 
 *Document Version: 1.0.0*  
-*Last updated: 2026-02-10*  
+*Last updated: 2026-07-11
 *Status: Ready for Implementation*

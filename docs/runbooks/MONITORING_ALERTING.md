@@ -1,7 +1,8 @@
 # RUNBOOK: Monitoring & Alerting Configuration
+**Last Updated:** 2026-07-11
 
 **Version:** 1.0.0  
-**Last Updated:** 2026-07-10  
+**Last Updated: 2026-07-10
 **Audience:** DevOps, SRE  
 
 ---

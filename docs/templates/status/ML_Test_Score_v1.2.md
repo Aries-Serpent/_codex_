@@ -1,6 +1,9 @@
 # Guide: ML Test Score Framework (v1.2)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
-🧠 Roles: [Primary: ML Test Architect], [Secondary: QA Reviewer] ⚡ Energy: 5
+ Roles: [Primary: ML Test Architect], [Secondary: QA Reviewer] ⚡ Energy: 5
 
 Purpose
 - Operationalize the "ml_test_score" section in the v1.2 status schema with concrete definitions, targets, and evidence paths.

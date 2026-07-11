@@ -1,6 +1,8 @@
 # Contributing to _codex_
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-07-08  
+**Last Updated: 2026-07-08
 **Audience:** Contributors, Maintainers  
 **Related:** [Code Style Guide](guides/code_style_guide.md), [Testing Guide](TESTING.md), [Documentation Style Guide](../.codex/DOCUMENTATION_STYLE_GUIDE.md)
 
@@ -196,13 +198,13 @@ Check `.pre-commit-config.yaml` for available stages. Values match hook names (`
 
 ### What Reviewers Check
 
-- ✅ Code follows style guide
-- ✅ Tests cover new code
-- ✅ Documentation is updated
-- ✅ Examples are working
-- ✅ No breaking changes (unless major version)
-- ✅ Commit messages are clear
-- ✅ Related issues are linked
+-  Code follows style guide
+-  Tests cover new code
+-  Documentation is updated
+-  Examples are working
+-  No breaking changes (unless major version)
+-  Commit messages are clear
+-  Related issues are linked
 
 ### How to Prepare
 
@@ -228,4 +230,4 @@ Please review our [Code of Conduct](../CODE_OF_CONDUCT.md) before contributing. 
 
 ---
 
-*Thank you for contributing to _codex_! 🚀*
+*Thank you for contributing to _codex_! *

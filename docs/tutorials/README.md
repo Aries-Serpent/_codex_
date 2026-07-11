@@ -1,6 +1,8 @@
 # Tutorials
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 Practical, hands-on guides for using the `_codex_` ML platform.  Each tutorial
 walks through a concrete use-case with working Python code you can paste

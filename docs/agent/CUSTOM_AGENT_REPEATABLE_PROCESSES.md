@@ -1,4 +1,6 @@
 # Custom Agent Repeatable Processes
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Document:** Repeatable Processes for Full Agentic Autonomy  
 > **Version:** 1.0.0  
@@ -292,13 +294,13 @@ Constraint: Only dispatch independent tasks to parallel lanes
 
 Examples:
 
-✅ GOOD PARALLELISM:
+ GOOD PARALLELISM:
    Lane 1: Fix failing tests (independent)
    Lane 2: Check doc links (independent)
    Lane 3: Validate config (independent)
    Result: All can run simultaneously
 
-❌ BAD PARALLELISM:
+ BAD PARALLELISM:
    Lane 1: config-migration-assistant (generates config)
    Lane 2: config-validator (needs config from Lane 1)
    Problem: Lane 2 blocked until Lane 1 complete

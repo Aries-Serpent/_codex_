@@ -1,6 +1,8 @@
 # Distributed Training Guide (D3)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## Overview
 
@@ -8,15 +10,15 @@ This guide documents the multi-node distributed training support for Codex ML. T
 
 ## Features
 
-- ✅ PyTorch DDP wrapper for multi-GPU/multi-node training
-- ✅ Optional Ray Train integration for cluster orchestration
-- ✅ Automatic world size detection from environment
-- ✅ Graceful fallback to single-GPU/CPU
-- ✅ Context manager for easy resource management
-- ✅ Distributed data loading with automatic sampler creation
-- ✅ Launch script for multi-node training
+-  PyTorch DDP wrapper for multi-GPU/multi-node training
+-  Optional Ray Train integration for cluster orchestration
+-  Automatic world size detection from environment
+-  Graceful fallback to single-GPU/CPU
+-  Context manager for easy resource management
+-  Distributed data loading with automatic sampler creation
+-  Launch script for multi-node training
 
-## Quick Start
+## Quickstart
 
 ### Single Node, Single GPU
 
@@ -297,12 +299,12 @@ with distributed_context() as manager:
 Barriers are expensive. Use them sparingly:
 
 ```python
-# ❌ Too frequent
+#  Too frequent
 for batch in dataloader:
     loss = train_step(batch)
     manager.barrier()  # Don't do this!
 
-# ✅ Better
+#  Better
 for batch in dataloader:
     loss = train_step(batch)
 
@@ -391,23 +393,23 @@ python scripts/launch_distributed.py --help
 2025-12-08
 
 ### Deliverables Completed
-✅ Distributed training module (`src/codex_ml/training/distributed.py`)
-✅ Ray integration module (`src/codex_ml/training/ray_distributed.py`)
-✅ Launch script (`scripts/launch_distributed.py`)
-✅ Comprehensive tests (`tests/training/test_distributed.py`)
-✅ Documentation (this file)
+ Distributed training module (`src/codex_ml/training/distributed.py`)
+ Ray integration module (`src/codex_ml/training/ray_distributed.py`)
+ Launch script (`scripts/launch_distributed.py`)
+ Comprehensive tests (`tests/training/test_distributed.py`)
+ Documentation (this file)
 
 ### Verification Status
-✅ Module imports verified
-✅ DistributedConfig tested
-✅ DistributedManager tested
-✅ Context manager verified
-✅ Launch script help tested
-✅ All functions working as expected
+ Module imports verified
+ DistributedConfig tested
+ DistributedManager tested
+ Context manager verified
+ Launch script help tested
+ All functions working as expected
 
 ### Next Steps
-1. ✅ D4: Config Consolidation - COMPLETE
-2. ✅ D3: Multi-node Training - COMPLETE
+1.  D4: Config Consolidation - COMPLETE
+2.  D3: Multi-node Training - COMPLETE
 3. Continue with D1: Docker Optimization
 4. Continue with D2: Plugin Registry
 

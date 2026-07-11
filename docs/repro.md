@@ -1,4 +1,7 @@
-**Last Updated:** 2026-06-22
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
+**Last Updated: 2026-06-22
 
 `set_reproducible()` seeds Python, NumPy and PyTorch, enables deterministic
 algorithms and disables cuDNN benchmarking. The custom training loop in

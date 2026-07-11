@@ -1,6 +1,8 @@
 # Advanced Physics Implementation - Technical Reference
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## Purpose
 This document serves as a comprehensive technical reference for AI Assistants and Agents to intuitively apply and make corrections to the advanced physics calculators. It contains all validated physics equations, implementation patterns, and design decisions.
@@ -302,17 +304,17 @@ def export_project(self, output_dir: str = '.', overwrite: bool = False) -> Dict
 ## Known Issues and Mitigations
 
 ### Fixed Issues
-1. ✅ **Local maxima detection bug** (EMFieldRouter)
+1.  **Local maxima detection bug** (EMFieldRouter)
    - **Issue**: Compared value to itself
    - **Fix**: Exclude center point using `np.delete(neighborhood, 4)`
    - **Commit**: fbd5baa
 
-2. ✅ **Division by zero** (WavePropagator)
+2.  **Division by zero** (WavePropagator)
    - **Issue**: expected_power could be zero
    - **Fix**: Add epsilon `expected_power + 1e-10`
    - **Commit**: fbd5baa
 
-3. ✅ **O(n²) complexity** (FluidFlowScheduler)
+3.  **O(n²) complexity** (FluidFlowScheduler)
    - **Issue**: Pairwise iteration over all channels
    - **Fix**: Max/min approach for O(n)
    - **Commit**: fbd5baa
@@ -462,4 +464,4 @@ def export_project(self, output_dir: str = '.', overwrite: bool = False) -> Dict
 **Document Version**: 1.1.0  
 **Last Updated**: 2025-12-12  
 **Maintained By**: Codex AI Development Team  
-**Status**: Production Ready ✅
+**Status**: Production Ready 

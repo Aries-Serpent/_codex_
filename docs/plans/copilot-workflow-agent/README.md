@@ -1,4 +1,6 @@
 # Copilot Workflow Agent Implementation Plan
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **⚠️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 
@@ -81,6 +83,6 @@ Or use the continuation prompts:
 
 ## Related Documents
 
-- [CTEP Protocol](https://github.com/Aries-Serpent/_codex_/blob/main/.github/docs/Copilot_Task_Execution_Protocol.md)
+- [CTEP Protocol](../../.github/docs/Copilot_Task_Execution_Protocol.md)
 - Workflow Files
 - [.codex/archive/deprecated/AGENTS.md](../../agents.md)

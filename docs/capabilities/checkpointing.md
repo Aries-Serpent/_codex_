@@ -1,12 +1,14 @@
 # Model Checkpointing
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
-> **Navigation**: [📖 Main README](https://github.com/Aries-Serpent/_codex_/blob/main/README.md#-capabilities-documentation) | [🔄 Training Loops](train_loop.md) | [🎯 PEFT Techniques](peft_hooks.md) | [🔍 Code Quality](code_quality_tooling.md)
+> **Navigation**: [ Main README](../README.md#-capabilities-documentation) | [🔄 Training Loops](train_loop.md) | [ PEFT Techniques](peft_hooks.md) | [🔍 Code Quality](code_quality_tooling.md)
 
 ## Overview
 
-**Status**: ✅ Complete - Full implementation details and examples provided
+**Status**:  Complete - Full implementation details and examples provided
 
 This capability covers model checkpointing strategies for saving and loading model state during training, enabling recovery from failures and experiment reproducibility.
 

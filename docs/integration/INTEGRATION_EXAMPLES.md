@@ -1,7 +1,9 @@
 # Integration Examples
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Version:** 0.1.0  
-**Last Updated:** 2026-07-09  
+**Last Updated: 2026-07-09
 **Audience:** Developers, Integration Engineers
 
 ---
@@ -41,7 +43,7 @@ print(f"Intelligence Score: {score}")
 
 # Threshold-based action
 if score > 0.8:
-    print("✅ APPROVED: Deploy to production")
+    print(" APPROVED: Deploy to production")
 else:
     print("⏸️ HOLD: Review decision before deploying")
 ```
@@ -283,5 +285,5 @@ except Exception as e:
 
 ---
 
-**Last Updated:** 2026-07-09  
+**Last Updated: 2026-07-09
 **GitHub:** [Issues](https://github.com/Aries-Serpent/_codex_/issues)

@@ -1,7 +1,9 @@
 # CODEX_MASTER_KEY Capabilities Reference
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Generated:** 2026-06-29  
-> **Last Updated:** 2026-06-29  
+> **Last Updated: 2026-06-29
 > **Scope Count:** 23 total scopes  
 > **Processes:** 10 core workflows documented  
 > **Test Coverage:** 100% scope coverage with 50+ API operations

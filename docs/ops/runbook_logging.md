@@ -1,6 +1,8 @@
 # Logging & Monitoring Runbook
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 This runbook captures the minimal steps to enable Codex ML's optional telemetry
 stack offline.
