@@ -249,7 +249,7 @@ TOTAL: 20 LANES | 721+ TESTS | 0.952 CONFIDENCE ✅
 ## 🔟 NEXT IMMEDIATE ACTIONS
 
 ### ✅ IMMEDIATE (Next 5 minutes)
-1. ✅ Append this verification report to PR #5293 comment thread (if needed)
+1. ✅ Append this verification report to this PR comment thread (if needed)
 2. ✅ Confirm Phase 20.4 briefing is staged in `.codex/`
 3. ✅ Notify @mbaetiong of continuation readiness
 

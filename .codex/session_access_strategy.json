@@ -17,5 +17,5 @@
     5295
   ],
   "branch": "copilot/phase-20-4-production-deployment-again",
-  "recommendation": "Use REST for data fetches. "
+  "recommendation": "Use REST for data fetches."
 }
