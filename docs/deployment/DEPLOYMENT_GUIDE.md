@@ -1,8 +1,9 @@
-# Deployment Guide - Cognitive Brain v0.1.0
+# Deployment Guide - codex-ml v0.2.1
 
-**Last Updated**: 2026-07-07  
-**Version**: 1.0  
-**Audience**: Maintainers, DevOps engineers, production operators
+**Last Updated**: 2026-07-11  
+**Version**: 2.0  
+**Package**: codex-ml  
+**Audience**: Maintainers, DevOps engineers, production operators, users deploying the Cognitive Brain package
 
 ---
 
@@ -426,6 +427,74 @@ python -c "import pytest; from cognitive_brain.full import DevEnvironment; print
 
 ---
 
+## Phase Objects (Planned Execution Tracks)
+
+### What Are Phase Objects?
+
+**Phase Objects** are planned execution tracks included in the `codex-ml` package. They define multi-track deployment plans for complex operations:
+
+- **Track A-G**: Sequential execution phases (A → B → C → D → E → F → G)
+- **Tasks PR**: Comprehensive task roadmap (99.6 KB, 3,193 lines)
+- **Batch Segments**: Segmented data batches for parallel processing
+
+### Accessing Phase Objects
+
+Phase objects are automatically included in all installation profiles (`core`, `runtime`, `full`) and can be accessed via the `codex_plans` module:
+
+```python
+# List all available plans
+from codex_plans import list_plan_documents
+
+plans = list_plan_documents()
+for plan in plans:
+    print(f"  📄 {plan.name} ({plan.stat().st_size} bytes)")
+```
+
+Expected output:
+```
+📄 Tasks_PR_2459.md (99647 bytes)
+📄 track_A.md (1587 bytes)
+📄 track_B.md (1462 bytes)
+📄 track_C.md (1979 bytes)
+📄 track_D.md (1695 bytes)
+📄 track_E.md (2494 bytes)
+📄 track_F.md (2902 bytes)
+📄 track_G.md (3673 bytes)
+```
+
+### Reading a Phase Plan
+
+```python
+from pathlib import Path
+from codex_plans import list_plan_documents
+
+plans = list_plan_documents()
+with open(plans[0]) as f:
+    content = f.read()
+    print(f"Plan: {plans[0].name}")
+    print(f"Lines: {len(content.splitlines())}")
+    print("\n" + content[:500] + "...")
+```
+
+### Use Cases
+
+**Development**:
+- Reference implementation roadmaps
+- Understand deployment phasing strategy
+- Track multi-phase execution plans
+
+**CI/CD Integration**:
+- Programmatically read phase definitions
+- Trigger phase-based workflows
+- Track execution state across phases
+
+**Documentation**:
+- Generate deployment timelines
+- Create phase execution reports
+- Publish guidance for multi-phase operations
+
+---
+
 ## Monitoring & Observability
 
 ### Release Metrics Collection
@@ -572,6 +641,33 @@ pip install codex-ml[core]==0.1.0
 
 # Check Python path
 python -c "import sys; print('\n'.join(sys.path))"
+```
+
+### Issue: CLI commands (`codex-ml`, `codex-ml-cli`, `codex-cli`) fail with `ModuleNotFoundError`
+
+**Symptom**: 
+```
+ModuleNotFoundError: No module named 'aries_serpent_core'
+```
+
+**Cause**: The CLI module requires `aries_serpent_core` which wasn't included in older package builds. This was fixed in v0.2.1+.
+
+**Solution**:
+```bash
+# Upgrade to v0.2.1 or later
+pip install --upgrade codex-ml>=0.2.1
+
+# Verify CLI works
+codex-ml --help
+
+# Or use the working smoke CLI
+codex-smoke --help
+```
+
+**If upgrade is not possible**:
+```bash
+# Install from full profile (includes all dependencies)
+pip install codex-ml[full]>=0.2.1
 ```
 
 ### Issue: Runtime profile is 2GB, too large for production
