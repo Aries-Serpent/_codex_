@@ -415,7 +415,7 @@ git commit -m "Phase 2.3: Accountability Report Migration (32 chunks)"
 
 ### Main Documents
 
-- **Index:** [docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md](./accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md)
+- **Index:** [docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md](./accountability/AGENT_ACCOUNTABILITY_REPORT.md)
 - **Landing:** [docs/accountability/README.md](./accountability/README.md)
 - **Chunks:** [docs/accountability/chunks/](./accountability/chunks/)
 
@@ -430,7 +430,7 @@ git commit -m "Phase 2.3: Accountability Report Migration (32 chunks)"
 ### Questions?
 
 1. **How do I find a session?**
-   - Open index: [.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md](./accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md)
+   - Open index: [.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md](./accountability/AGENT_ACCOUNTABILITY_REPORT.md)
    - Ctrl+F search for session ID
    - Click group link
 

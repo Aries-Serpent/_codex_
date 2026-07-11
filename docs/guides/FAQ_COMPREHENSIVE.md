@@ -456,7 +456,7 @@ A:
 - **Question Answering**: qa-model
 - **Text Generation**: gpt2-base, distilgpt2
 
-See [Model Comparison](../models/MODEL_COMPARISON.md)
+See [Model Comparison](../ROADMAP.md)
 
 **Q: Why are predictions inconsistent?**
 

@@ -95,7 +95,7 @@
 - **PR Link:** https://github.com/Aries-Serpent/_codex_/pull/4351
 - **Original Issue:** CodeQL "Wrong number of arguments" alerts
 - **Session Diagram:** [PR4351_session_diagram.md](../sessions/PR4351_session_diagram.md)
-- **Accountability:** [.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md](../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md)
+- **Accountability:** [.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md](../accountability/AGENT_ACCOUNTABILITY_REPORT.md)
 
 ---
 
