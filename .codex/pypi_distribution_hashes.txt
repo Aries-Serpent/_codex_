@@ -1,0 +1,32 @@
+# PyPI Distribution Hashes (SHA256)
+# Generated: 2026-07-11T07:51:30+00:00
+# Version: 0.2.1
+# Release: codex-ml v0.2.1
+
+## Wheel Distribution
+83e984e41193f006bf6f0151dc2df4cf99ea455adcc3c9b69f648a1711630379  codex_ml-0.2.1-py3-none-any.whl
+
+## Source Distribution
+7a0b8ea20c2bccce9d3c58ec30f4112c12f1c18d573a61752bcef429d47b460b  codex_ml-0.2.1.tar.gz
+
+## Integrity Verification
+# Verify hashes with:
+#   sha256sum -c pypi_distribution_hashes.txt
+# 
+# Or verify individual files:
+#   sha256sum dist/codex_ml-0.2.1-py3-none-any.whl
+#   sha256sum dist/codex_ml-0.2.1.tar.gz
+
+## Total Package Size
+# Wheel:  2,348,162 bytes (2.24 MB)
+# Source: 3,456,669 bytes (3.30 MB)
+# Total:  5,804,831 bytes (5.54 MB)
+
+## PEP 503 Direct URL Format (for pip)
+# pip install https://files.pythonhosted.org/packages/.../codex_ml-0.2.1-py3-none-any.whl
+# pip install https://files.pythonhosted.org/packages/.../codex_ml-0.2.1.tar.gz
+
+## Notes
+- Both distributions built from identical source (commit hash in metadata)
+- Hashes are deterministic for exact rebuilds
+- Store these hashes in your release notes for integrity verification
