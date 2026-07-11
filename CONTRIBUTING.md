@@ -1169,19 +1169,19 @@ When reviewing a PR:
 ### Understanding the Codebase
 
 - **[Codebase Cognitive Map](docs/system/CODEBASE_COGNITIVE_MAP.md)** - High-level architecture
-- **[Module Documentation](docs/API.md)** - Detailed API reference
+- **[Module Documentation](docs/API_REFERENCE.md)** - Detailed API reference
 - **[Architecture Decision Records](docs/adr/)** - Design decisions
 
 ### Coding Best Practices
 
 - **[Code Style Guide](docs/dev/CODE_STYLE_GUIDE.md)** - Formatting and naming conventions
 - **[Testing Guide](docs/dev/testing.md)** - How to write good tests
-- **[Performance Guide](docs/dev/PERFORMANCE.md)** - Optimization techniques
+- **[Performance Guide](docs/DEVELOPMENT.md)** - Optimization techniques
 
 ### Development Tools
 
 - **[Local Testing Guide](docs/dev/CI_LOCAL_TESTING.md)** - Run CI checks locally
-- **[Pre-commit Hooks](docs/.pre-commit-config.yaml)** - Automated quality gates
+- **[Pre-commit Hooks](.pre-commit-config.yaml)** - Automated quality gates
 - **[Workflow Documentation](docs/workflows/)** - GitHub Actions setup
 
 ---

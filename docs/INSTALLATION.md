@@ -1136,8 +1136,8 @@ if torch.cuda.is_available():
 - **🚀 Quick Start ML:** [./quickstart/QUICK_START_ML.md](./quickstart/QUICK_START_ML.md)
 - **🧠 Cognitive Brain Guide:** [./quickstart/QUICK_START_COGNITIVE_BRAIN.md](./quickstart/QUICK_START_COGNITIVE_BRAIN.md)
 - **⚙️ Configuration Guide:** [docs/configuration/](configuration/)
-- **🐳 Docker Guide:** [docker/README.md](../../docker/README.md)
-- **☸️ Kubernetes Guide:** [k8s/README.md](../../k8s/README.md)
+- **🐳 Docker Guide:** [docker/README.md](../../docker/Dockerfile.api)
+- **☸️ Kubernetes Guide:** [k8s/README.md](../../k8s/Deployment.yaml)
 
 ### Community Support
 

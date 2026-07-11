@@ -3942,11 +3942,11 @@ python -m codex --version  # Should output: 0.1.0-final
 
 #### Related Documentation
 
-- [Phase 7C Release Deployment Report](./.codex/PHASE_7C_RELEASE_DEPLOYMENT_COMPLETE.md)
-- [Phase 7C Release Notes Final](./.codex/PHASE_7C_RELEASE_NOTES_FINAL.md)
-- [Phase 7C Execution Plan](./.codex/PHASE_7C_EXECUTION_PLAN_20260626T020419Z.md)
-- [Phase 7A: Coverage Expansion](./.codex/PHASE_7A_TASK3_TEST_GENERATION_REPORT.md)
-- [Phase 7B: Metrics Dashboard](./.codex/PHASE_7B_FINAL_METRICS_DASHBOARD.md)
+- [Phase 7C Release Deployment Report](./.codex/archive/phase-reports/phase-1-10/PHASE_7C_RELEASE_DEPLOYMENT_COMPLETE.md)
+- [Phase 7C Release Notes Final](./.codex/archive/phase-reports/phase-1-10/PHASE_7C_RELEASE_NOTES_FINAL.md)
+- [Phase 7C Execution Plan](./.codex/archive/phase-reports/phase-1-10/PHASE_7C_EXECUTION_PLAN_20260626T020419Z.md)
+- [Phase 7A: Coverage Expansion](./.codex/archive/phase-reports/phase-1-10/PHASE_7A_TASK3_TEST_GENERATION_REPORT.md)
+- [Phase 7B: Metrics Dashboard](./.codex/archive/phase-reports/phase-1-10/PHASE_7B_FINAL_METRICS_DASHBOARD.md)
 
 ---
 

@@ -326,7 +326,7 @@ python -c "from cognitive_brain import Planner; print('OK')"
 
 ## Next Steps
 
-- **Core users:** See [../../../.codex/archive/misc/INSTALL.md](../../../.codex/archive/misc/INSTALL.md) for offline deployment
+- **Core users:** See [../.codex/archive/misc/INSTALL.md](../.codex/archive/misc/INSTALL.md) for offline deployment
 - **Runtime users:** Check [docs/api/reference/INTEGRATION.md](docs/api/reference/INTEGRATION.md) for API integration
 - **Full profile:** See [docs/](docs/) for development guides and API reference
 - **All users:** Review [README.md](README.md) for overview

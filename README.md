@@ -168,10 +168,10 @@ bash OFFLINE_BOOTSTRAP.sh \
 
 **Getting Started Guides:**
 - 📖 [Installation Guide](docs/INSTALLATION.md) - **Complete installation guide** ⭐ START HERE
-- 📖 [Core Installation](docs/installation/INSTALL_CORE.md) - Minimal setup for edge devices
-- 📖 [Runtime Setup](docs/installation/INSTALL_RUNTIME.md) - Production inference deployment
-- 📖 [Full Development](docs/installation/INSTALL_FULL.md) - Complete development environment
+- 📖 [Getting Started](docs/getting-started.md) - Quick start for users
+- 📖 [Local Development Setup](docs/guides/local-development-setup.md) - Development environment
 - 📖 [Offline Deployment](docs/release/OFFLINE_DEPLOYMENT.md) - Air-gapped environment setup
+- 📖 [PyPI Setup](docs/operations/pypi-trusted-publishing-setup.md) - Package publishing setup
 
 ---
 
@@ -427,7 +427,7 @@ A React/Vite-based quantum-enhanced code generation platform with real-time cogn
 - ✅ 5 Custom React hooks
 - ⚠️ Backend API integration pending (see `cognitive_app/CODEX_INTEGRATION_MASTER_PLAN.md`)
 
-**Documentation:** [`cognitive_app/README_docs/api/reference/INTEGRATION.md`](cognitive_app/README_docs/api/reference/INTEGRATION.md)
+**Documentation:** [`docs/api/reference/INTEGRATION.md`](docs/api/reference/INTEGRATION.md)
 
 ## 🆕 Recent Additions (2025-12-24)
 

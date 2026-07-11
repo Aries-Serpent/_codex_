@@ -340,10 +340,10 @@ python -u scripts/deployment_orchestrator.py --pr-number 2207 --dry-run 2>&1 | t
 
 ## References
 
-- [Deployment Orchestration Specification](.github/docs/DEPLOYMENT_ORCHESTRATION_PR2207.md)
-- [Deployment Playbook](.github/docs/PR_2207_DEPLOYMENT_PLAYBOOK.md)
-- [Sign-Off Checklist](.github/docs/PR_2207_FINAL_SIGN_OFF_CHECKLIST.md)
-- [Copilot Agent Instructions](.github/docs/COPILOT_AGENT_DEPLOYMENT_INSTRUCTIONS.md)
+- [Deployment Orchestration Specification](../.github/docs/DEPLOYMENT_ORCHESTRATION_PR2207.md)
+- [Deployment Playbook](../.github/docs/PR_2207_DEPLOYMENT_PLAYBOOK.md)
+- [Sign-Off Checklist](../.github/docs/PR_2207_FINAL_SIGN_OFF_CHECKLIST.md)
+- [Copilot Agent Instructions](../.github/docs/COPILOT_AGENT_DEPLOYMENT_INSTRUCTIONS.md)
 
 ## Version History
 

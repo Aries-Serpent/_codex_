@@ -71,8 +71,8 @@ Total Folders: 250
 ## All Folders (Alphabetical)
 
 - [`.` (root)](.)
-- [`.codex`](.codex)
-- [`.codex/archive`](.codex/archive)
+- [`.codex`](../../.codex)
+- [`.codex/archive`](../../.codex/archive)
 ...
 ```
 
@@ -83,13 +83,13 @@ Grouped by top-level directory:
 
 ## .CODEX
 
-- [`.codex`](.codex)
-- [`.codex/archive`](.codex/archive)
+- [`.codex`](../../.codex)
+- [`.codex/archive`](../../.codex/archive)
 
 ## .GITHUB
 
-- [`.github`](.github)
-- [`.github/actions`](.github/actions)
+- [`.github`](../../.github)
+- [`.github/actions`](../../.github/actions)
 ...
 ```
 
@@ -100,13 +100,13 @@ Hierarchical tree with links:
 
 [`.` (root)](.)
 
-├── [`.codex`](.codex)
-│   ├── [`archive`](.codex/archive)
-│   ├── [`cognitive_brain`](.codex/cognitive_brain)
-│   └── [`plans`](.codex/plans)
-├── [`.github`](.github)
-│   ├── [`actions`](.github/actions)
-│   └── [`agents`](.github/agents)
+├── [`.codex`](../../.codex)
+│   ├── [`archive`](../../.codex/archive)
+│   ├── [`cognitive_brain`](../../.codex/cognitive_brain)
+│   └── [`plans`](../../.codex/plans)
+├── [`.github`](../../.github)
+│   ├── [`actions`](../../.github/actions)
+│   └── [`agents`](../../.github/agents)
 ...
 ```
 
@@ -119,8 +119,8 @@ Lists all files in each folder (requires `--include-files`):
 
 **Files**: 15
 
-- [`change_log.md`](.codex/change_log.md)
-- [`results.md`](.codex/results.md)
+- [`change_log.md`](../../.codex/change_log.md)
+- [`results.md`](../../.codex/results.md)
 ...
 ```
 
