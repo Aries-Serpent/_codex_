@@ -15,7 +15,7 @@ permissions:
   pull-requests: read
 
 concurrency:
-  group: phase-8-2-issue-triage-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:

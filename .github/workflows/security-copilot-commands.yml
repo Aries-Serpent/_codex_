@@ -8,6 +8,9 @@ permissions:
   contents: read
   issues: read
   pull-requests: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
 jobs:
   handle-command:
     if: contains(github.event.comment.body, '@copilot scan-summary')

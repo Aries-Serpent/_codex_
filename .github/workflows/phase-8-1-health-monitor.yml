@@ -15,7 +15,7 @@ permissions:
   issues: write
   pull-requests: read
 concurrency:
-  group: phase-8-1-health-monitor-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: false
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

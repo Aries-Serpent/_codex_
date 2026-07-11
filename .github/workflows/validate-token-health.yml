@@ -9,7 +9,7 @@ permissions:
   checks: write
   issues: write
 concurrency:
-  group: validate-token-health-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: false
 env:
   CODEX_REPO_ID: '1040037790'

@@ -35,7 +35,7 @@ on:
         type: string
         default: '5'
 concurrency:
-  group: adaptive-agent-delegation-${{ github.head_ref || github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: false
 permissions:
   contents: read

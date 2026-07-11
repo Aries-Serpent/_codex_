@@ -17,7 +17,7 @@ permissions:
   issues: write
 
 concurrency:
-  group: smoke-tests-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: false
 
 env:
