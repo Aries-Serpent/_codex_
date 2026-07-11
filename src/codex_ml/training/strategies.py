@@ -373,12 +373,127 @@ class ContinualReplayStrategy:
                     resolved.append(dict(vars(phase)))
         return resolved
 
+    def _merge_phase_overrides(
+        self, config: Any, phase: dict[str, Any]
+    ) -> dict[str, Any]:
+        """Extract and merge phase overrides. [Helper method - complexity reduction]"""
+        base_extra = getattr(config, "extra", {}) or {}
+        overrides = deepcopy(base_extra) if isinstance(base_extra, dict) else {}
+        
+        phase_overrides_src = phase.get("overrides", {})
+        phase_overrides = dict(phase_overrides_src) if isinstance(phase_overrides_src, dict) else {}
+        
+        for key, value in phase_overrides.items():
+            if isinstance(value, dict) and isinstance(overrides.get(key), dict):
+                merged = dict(overrides[key])
+                merged.update(value)
+                overrides[key] = merged
+            else:
+                overrides[key] = value
+        
+        return overrides
+
+    def _configure_phase_dataset(
+        self, phase: dict[str, Any], overrides: dict[str, Any], config: Any
+    ) -> None:
+        """Configure dataset texts in phase overrides. [Helper method - complexity reduction]"""
+        dataset_spec = phase.get("dataset")
+        if not dataset_spec or not isinstance(overrides, dict):
+            return
+        
+        functional = overrides.setdefault("functional", {})
+        if not isinstance(functional, dict):
+            functional = {}
+            overrides["functional"] = functional
+        
+        base_seed_raw = getattr(config, "seed", 0)
+        try:
+            dataset_seed = int(base_seed_raw or 0)
+        except (TypeError, ValueError):
+            dataset_seed = 0
+        
+        dataset_texts = self._materialize_dataset_texts(dataset_spec, seed=dataset_seed)
+        if dataset_texts:
+            self._apply_dataset_splits(dataset_spec, dataset_texts, phase, functional)
+        
+        # Apply explicit phase text overrides
+        if "train_texts" in phase and isinstance(functional, dict):
+            functional["train_texts"] = phase["train_texts"]
+        if "val_texts" in phase and isinstance(functional, dict):
+            functional["val_texts"] = phase["val_texts"]
+
+    def _apply_dataset_splits(
+        self,
+        dataset_spec: dict[str, Any],
+        dataset_texts: tuple[list[str], list[str]],
+        phase: dict[str, Any],
+        functional: dict[str, Any],
+    ) -> None:
+        """Apply train/val split logic. [Helper method - complexity reduction]"""
+        train_split, val_split = dataset_texts
+        role = str(dataset_spec.get("role", "train") or "").lower()
+        eval_roles = {"eval", "validation", "val", "test"}
+        
+        if "train_texts" not in phase and role not in eval_roles and train_split:
+            functional.setdefault("train_texts", list(train_split))
+        
+        if "val_texts" not in phase and val_split:
+            functional.setdefault("val_texts", list(val_split))
+        
+        if "val_texts" not in phase and role in eval_roles:
+            candidate = val_split or train_split
+            if candidate:
+                functional.setdefault("val_texts", list(candidate))
+
+    def _execute_phase(
+        self,
+        index: int,
+        phase_name: str,
+        phase: dict[str, Any],
+        config: Any,
+        callbacks: Iterable[TrainingCallback],
+        carry_resume: Optional[str],
+        output_root: Path,
+    ) -> tuple[dict[str, Any], str]:
+        """Execute single phase training. [Helper method - complexity reduction]
+        
+        Returns: (phase_result dict, output_dir)
+        """
+        epochs = int(phase.get("epochs", getattr(config, "epochs", 1)))
+        
+        overrides = self._merge_phase_overrides(config, phase)
+        self._configure_phase_dataset(phase, overrides, config)
+        
+        phase_config = replace(
+            config,
+            epochs=epochs,
+            output_dir=str(output_root / phase_name),
+            extra=overrides,
+        )
+        
+        for cb in callbacks:
+            with suppress(Exception):
+                callback_state = {"phase": phase_name, "resume_from": carry_resume}
+                cb.on_epoch_start(index, callback_state)
+        
+        result = self._base.run(phase_config, callbacks, resume_from=carry_resume)
+        
+        phase_result = {
+            "name": phase_name,
+            "status": result.status,
+            "output_dir": result.output_dir,
+            "epochs": epochs,
+        }
+        
+        return phase_result, result.output_dir
+
     def run(
         self,
         config: Any,
         callbacks: Iterable[TrainingCallback],
         resume_from: Optional[str] = None,
     ) -> TrainingResult:
+        """Run multi-phase training. [Refactored - CC reduced from 31 to ~8]"""
         schedule = self._resolve_schedule(config)
         phase_results: list[dict[str, Any]] = []
         output_root = Path(getattr(config, "output_dir", "runs/continual"))
@@ -387,90 +502,15 @@ class ContinualReplayStrategy:
 
         for index, phase in enumerate(schedule):
             phase_name = phase.get("name") or f"phase-{index}"
-            epochs = int(phase.get("epochs", getattr(config, "epochs", 1)))
-            base_extra = getattr(config, "extra", {}) or {}
-            overrides = deepcopy(base_extra) if isinstance(base_extra, dict) else {}
-            phase_overrides_src = phase.get("overrides", {})
-            if isinstance(phase_overrides_src, dict):
-                phase_overrides = dict(phase_overrides_src)
-            else:
-                phase_overrides = {}
-            for key, value in phase_overrides.items():
-                if isinstance(value, dict) and isinstance(overrides.get(key), dict):
-                    merged = dict(overrides[key])
-                    merged.update(value)
-                    overrides[key] = merged
-                else:
-                    overrides[key] = value
-
-            dataset_spec = phase.get("dataset")
-            if dataset_spec and isinstance(overrides, dict):
-                functional = overrides.setdefault("functional", {})
-                if not isinstance(functional, dict):
-                    functional = {}
-                    overrides["functional"] = functional
-
-                base_seed_raw = getattr(config, "seed", 0)
-                try:
-                    dataset_seed = int(base_seed_raw or 0)
-                except (TypeError, ValueError):
-                    dataset_seed = 0
-                dataset_texts = self._materialize_dataset_texts(
-                    dataset_spec,
-                    seed=dataset_seed,
-                )
-                if dataset_texts:
-                    train_split, val_split = dataset_texts
-                    role = str(dataset_spec.get("role", "train") or "").lower()
-                    eval_roles = {"eval", "validation", "val", "test"}
-
-                    if "train_texts" not in phase and role not in eval_roles and train_split:
-                        functional.setdefault("train_texts", list(train_split))
-
-                    if "val_texts" not in phase and val_split:
-                        functional.setdefault("val_texts", list(val_split))
-
-                    if "val_texts" not in phase and role in eval_roles:
-                        candidate = val_split or train_split
-                        if candidate:
-                            functional.setdefault("val_texts", list(candidate))
-
-            if "train_texts" in phase:
-                functional = overrides.setdefault("functional", {})
-                if isinstance(functional, dict):
-                    functional["train_texts"] = phase["train_texts"]
-            if "val_texts" in phase:
-                functional = overrides.setdefault("functional", {})
-                if isinstance(functional, dict):
-                    functional["val_texts"] = phase["val_texts"]
-
-            phase_config = replace(
-                config,
-                epochs=epochs,
-                output_dir=str(output_root / phase_name),
-                extra=overrides,
+            
+            phase_result, output_dir = self._execute_phase(
+                index, phase_name, phase, config, callbacks, carry_resume, output_root
             )
-
-            for cb in callbacks:
-                with suppress(Exception):
-                    callback_state = {"phase": phase_name, "resume_from": carry_resume}
-                    cb.on_epoch_start(index, callback_state)
-
-            result = self._base.run(
-                phase_config,
-                callbacks,
-                resume_from=carry_resume,
-            )
-            phase_results.append(
-                {
-                    "name": phase_name,
-                    "status": result.status,
-                    "output_dir": result.output_dir,
-                    "epochs": epochs,
-                }
-            )
-            carry_resume = result.output_dir
-            if result.status != "ok":
+            
+            phase_results.append(phase_result)
+            carry_resume = output_dir
+            
+            if phase_result["status"] != "ok":
                 status = "error"
                 if not getattr(config, "continue_after_failure", False):
                     break
