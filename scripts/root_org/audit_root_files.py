@@ -12,8 +12,9 @@ Usage:
 import json
 import re
 import subprocess
+import sys
 from pathlib import Path
-from typing import Dict, List, Set, Tuple
+from typing import Dict, List, Set
 from datetime import datetime
 
 
@@ -31,8 +32,12 @@ def get_root_files(root_dir: Path) -> Dict[str, List[Path]]:
     }
 
     for item in root_dir.iterdir():
-        if not item.is_file() or item.name.startswith('.'):
+        if not item.is_file():
             continue
+        # Skip dotfiles, but allow specific baseline/config files
+        if item.name.startswith('.') and item.name not in {'.coverage_baseline.json'}:
+            if not item.name.startswith('.mutmut'):
+                continue
 
         # Categorize
         if item.name in {"README.md", "CHANGELOG.md", "CONTRIBUTING.md", "SECURITY.md", 
@@ -68,13 +73,6 @@ def find_references(root_dir: Path, filename: str) -> Dict[str, List[Dict]]:
         "documentation": [],
         "conditional": [],
     }
-
-    # Search patterns to use
-    patterns = [
-        filename,  # Direct filename
-        filename.replace('.json', ''),  # Without extension
-        filename.replace('_', '-'),  # With dashes instead of underscores
-    ]
 
     try:
         # Search in workflows
@@ -124,7 +122,7 @@ def find_references(root_dir: Path, filename: str) -> Dict[str, List[Dict]]:
 
         # Search for conditional checks
         result = subprocess.run(
-            ['grep', '-r', f'-f "{filename}"', '--include=*.sh', '--include=*.yml'],
+            ['grep', '-r', '-E', f'(if|test).*{filename}', '--include=*.sh', '--include=*.yml', '.'],
             cwd=root_dir,
             capture_output=True,
             text=True,
@@ -138,9 +136,9 @@ def find_references(root_dir: Path, filename: str) -> Dict[str, List[Dict]]:
                 })
 
     except subprocess.TimeoutExpired:
-        pass
+        print(f"⚠️ Warning: grep search for '{filename}' timed out (exceeded 10s)", file=sys.stderr)
     except Exception as e:
-        pass
+        print(f"⚠️ Warning: grep search for '{filename}' failed with error: {e}", file=sys.stderr)
 
     return references
 
@@ -186,8 +184,6 @@ def generate_dependency_map(root_dir: Path, output_dir: Path) -> None:
     }
 
     # Analyze each file
-    all_files_analyzed = {}
-    
     for category, files in categories.items():
         dependency_map["files_by_category"][category] = []
         
