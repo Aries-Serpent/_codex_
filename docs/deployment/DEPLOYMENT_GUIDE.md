@@ -616,9 +616,6 @@ python scripts/deploy/rollback_release.py \
 # Wait 5 minutes and retry
 sleep 300
 pip install codex-ml[core]==0.2.1
-
-# Or install from GitHub release directly
-pip install https://github.com/Aries-Serpent/_codex_/releases/download/v0.1.0/codex_ml-0.1.0-py3-none-any.whl
 ```
 
 ### Issue: `ImportError: No module named 'cognitive_brain'`

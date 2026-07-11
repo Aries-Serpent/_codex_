@@ -53,7 +53,7 @@ For backlog triage, anchor discussions in [`docs/guides/reasoning_overview.md`](
 ### Control surface knobs and promotion checklist
 
 `codex repo-map --reasoning` surfaces a shared set of knobs defined in
-[`configs/training/reasoning/baseline.yaml`](https://github.com/Aries-Serpent/_codex_/blob/main/configs/training/reasoning/baseline.yaml):
+`configs/training/reasoning/baseline.yaml`:
 
 - `trace_mode`
 - `curriculum.preset`
@@ -112,7 +112,7 @@ When modifying the topology, update both the diagram and `docs/guides/serving_re
    source .venv/bin/activate
    codex repo-map --reasoning
    ```
-2. **Select a template** using `codex reasoning-templates list` (see [`codex_cli`](https://github.com/Aries-Serpent/_codex_/blob/main/src/codex_cli/app.py)). Templates
+2. **Select a template** using `codex reasoning-templates list` (see `codex_cli` module). Templates
    live under `configs/training/reasoning/` and ship default datasets plus evaluator bindings.
 3. **Materialise runtime overlays**
    ```bash
@@ -130,8 +130,8 @@ For service integrations, adopt the PodSpec defined in
 This PodSpec is a **dry-run template**, not production hosting.
 Its job is to make resource shape, telemetry, curriculum phase,
 trace capture mode, and rollout ring explicit before anything moves
-toward `main`. A dry-run configuration is provided at
-[`configs/deploy/reasoning_pod.yaml`](https://github.com/Aries-Serpent/_codex_/blob/main/configs/deploy/reasoning_pod.yaml).
+toward `main`. A dry-run configuration is provided in
+`configs/deploy/reasoning_pod.yaml`.
 Link the generated manifest to your rollout plan.
 
 ## Guided reasoning pipelines

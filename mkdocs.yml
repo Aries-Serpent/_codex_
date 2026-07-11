@@ -72,6 +72,7 @@ nav:
   - Distributed Troubleshooting: training/distributed_troubleshooting.md
 - Deployment:
   - Deploy Pipeline: deployment/deploy_pipeline.md
+  - Deployment Guide: deployment/DEPLOYMENT_GUIDE.md
 - Logging & Troubleshooting:
   - Logging Guide: logging/logging_guide.md
   - End-to-End Logging: logging/end_to_end_logging.md
