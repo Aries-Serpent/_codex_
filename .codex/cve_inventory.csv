@@ -1,0 +1,9 @@
+CVE_ID,Package,CVSS_Score,Severity_Level,Description,Fixed_Version,Current_Requirement,Status
+CVE-2026-25645,requests,7.5,P2 (HIGH),TLS bypass vulnerability,2.33.0,>=2.33.0,FIXED
+CVE-2026-27448,pyOpenSSL,7.8,P2 (HIGH),Cryptographic vulnerability,26.0.0,">=26.0.0,<27.0.0",FIXED
+CVE-2026-27459,pyOpenSSL,7.5,P2 (HIGH),Certificate validation issue,26.0.0,">=26.0.0,<27.0.0",FIXED
+CVE-2026-26007,cryptography,6.5,P3 (MEDIUM),OpenSSL vulnerability in wheels,48.0.5,">=48.0.0,<50.0.0",FIXED
+PYSEC-2026-120,PyJWT,6.0,P3 (MEDIUM),JWT validation bypass,2.12.0,">=2.13.0,<3.0.0",FIXED
+CVE-2024-56326,jinja2,5.8,P3 (MEDIUM),RCE via sandbox escape,3.1.6,>=3.1.6,FIXED
+CVE-2025-71176,pytest,3.5,P4 (LOW),Test runner vulnerability,9.0.3,">=9.0.3,<10.0.0",FIXED
+CVE-2024-39689,certifi,3.0,P4 (LOW),Root certificate trust issue,2026.6.17,>=2026.6.17,FIXED
