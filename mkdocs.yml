@@ -154,8 +154,9 @@ nav:
   - Review Checklist: review/diff_intake_confirmation.md
 repo_name: Aries-Serpent/_codex_
 repo_url: https://github.com/Aries-Serpent/_codex_
-site_description: Project documentation (MkDocs Material)
-site_name: Codex Docs
+site_url: https://aries-serpent.github.io/_codex_/
+site_description: "Project documentation - v0.2.1 (MkDocs Material)"
+site_name: Codex Docs v0.2.1
 strict: false
 theme:
   name: material
