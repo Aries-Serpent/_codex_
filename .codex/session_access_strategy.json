@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-11T02:10:43.179515+00:00",
+  "generated_at": "2026-07-11T02:19:00.809813+00:00",
   "methods": [
     "rest",
     "graphql",
@@ -11,7 +11,7 @@
   "graphql_remaining": 5000,
   "gh_cli_available": true,
   "codeql_available": false,
-  "best_token_var": "CODEX_MASTER_KEY",
+  "best_token_var": "GITHUB_TOKEN",
   "open_prs": [],
   "branch": "copilot/implement-campaign-plan",
   "recommendation": "Use REST for data fetches. "
