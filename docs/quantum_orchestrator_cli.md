@@ -16,7 +16,7 @@ The CLI is integrated with the main Codex CLI and is available after installing 
 pip install -e .
 ```
 
-## Quick Start
+## Quickstart
 
 ```bash
 # View available commands

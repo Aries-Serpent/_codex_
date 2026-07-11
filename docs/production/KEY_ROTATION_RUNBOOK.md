@@ -9,7 +9,7 @@
 
 ---
 
-## Quick Reference
+## Reference
 
 | Action | Command | Approver |
 |--------|---------|----------|

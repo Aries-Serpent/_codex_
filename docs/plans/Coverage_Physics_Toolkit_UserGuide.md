@@ -45,7 +45,7 @@ The Coverage Physics Toolkit implements 4 comprehensive Physics Reference Tables
 
 ---
 
-## Quick Start
+## Quickstart
 
 ### 1. Validate All Tables Are Loaded
 

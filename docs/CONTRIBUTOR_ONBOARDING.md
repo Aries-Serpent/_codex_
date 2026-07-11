@@ -21,7 +21,7 @@ Welcome to the Codex repository! This guide will help you get started as a contr
 
 ---
 
-## Quick Start
+## Quickstart
 
 ### For Human Contributors
 

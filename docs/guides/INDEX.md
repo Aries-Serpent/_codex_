@@ -6,7 +6,7 @@
 
 Comprehensive guides, references, and documentation for repository usage and architecture.
 
-## Quick Start
+## Quickstart
 - [Quickstart Guide](./quickstart.md) - Get started quickly
 
 ## Architecture & Design

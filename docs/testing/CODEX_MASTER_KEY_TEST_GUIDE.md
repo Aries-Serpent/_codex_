@@ -7,7 +7,7 @@
 > **Audience:** Developers, QA, Site Reliability Engineers  
 > **Scope:** Complete testing framework for CODEX_MASTER_KEY (23 scopes, 10 processes)
 
-## Quick Start
+## Quickstart
 
 ### Prerequisites
 

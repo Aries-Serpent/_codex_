@@ -57,7 +57,7 @@ Production:
 
 ---
 
-## Quick Start
+## Quickstart
 
 ### 1. Health Check
 

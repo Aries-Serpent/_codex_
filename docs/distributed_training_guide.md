@@ -18,7 +18,7 @@ This guide documents the multi-node distributed training support for Codex ML. T
 -  Distributed data loading with automatic sampler creation
 -  Launch script for multi-node training
 
-## Quick Start
+## Quickstart
 
 ### Single Node, Single GPU
 

@@ -17,7 +17,7 @@ from Codex or other tools, without breaking Markdown rendering.
 - Ensures raw tool output is fenced (triple backticks) to preserve formatting
 - Mirrors the style validated in prior surveys (e.g., survey-0D_base_-and-1926-YYYY-MM-DD.md)
 
-## Quick Start
+## Quickstart
 1. Copy the template:
    ```bash
    cp docs/status_updates/TEMPLATE_survey.md \

@@ -17,7 +17,7 @@ All configuration files have been moved to **[`docs/configuration/`](../configur
 All configuration documentation is now centralized at:
 👉 **[`docs/configuration/`](../configuration/)**
 
-## Quick Start
+## Quickstart
 
 1. Go to [`docs/configuration/`](../configuration/)
 2. Read [`INDEX.md`](../configuration/INDEX.md) for overview

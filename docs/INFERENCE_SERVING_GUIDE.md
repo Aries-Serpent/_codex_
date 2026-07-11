@@ -18,7 +18,7 @@ The Codex ML Inference Server provides a production-ready inference serving laye
 - **Error Handling**: Graceful error handling with detailed error messages
 - **Metrics Collection**: Request tracking and performance metrics
 
-## Quick Start
+## Quickstart
 
 ### Basic Setup (Stub Model)
 

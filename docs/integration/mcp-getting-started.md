@@ -71,7 +71,7 @@ The Model Context Protocol (MCP) is a standardized protocol for AI applications 
 
 ---
 
-## Quick Start
+## Quickstart
 
 ### 1. Installation
 
@@ -562,7 +562,7 @@ server_options:
 
 ---
 
-## Quick Reference
+## Reference
 
 ### Common Tool Pattern
 

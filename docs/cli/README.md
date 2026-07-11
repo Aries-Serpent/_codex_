@@ -25,7 +25,7 @@ This directory contains documentation for the command-line interface (CLI) tools
 - Automation
 - Integration with CI/CD
 
-## Quick Reference
+## Reference
 
 ### Common Commands
 

@@ -17,7 +17,7 @@ This document outlines rollback procedures for the Codex platform. Follow these 
 
 ---
 
-## Quick Reference
+## Reference
 
 ### Immediate Rollback (< 5 minutes)
 

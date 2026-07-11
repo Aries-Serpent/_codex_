@@ -39,7 +39,7 @@ from codex.security import (
 from codex.security.storage import SecureStorage, generate_key
 ```
 
-### Quick Start
+### Quickstart
 
 ```python
 # Mask sensitive data

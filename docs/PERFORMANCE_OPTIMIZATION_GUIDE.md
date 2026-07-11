@@ -561,7 +561,7 @@ def monitor_performance():
 
 ## Summary
 
-### Quick Reference
+### Reference
 
 | Problem | Solution | Tool |
 |---------|----------|------|

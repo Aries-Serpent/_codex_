@@ -22,7 +22,7 @@ Windows filesystems prohibit certain characters in filenames, including colons (
 3. **Migration Script:** `scripts/remediation/rename_windows_incompatible_files.py`
 4. **Validation:** Pre-commit hook + integration tests
 
-## Quick Start
+## Quickstart
 
 ### For New Code
 

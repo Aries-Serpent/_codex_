@@ -67,7 +67,7 @@ pip install wandb prometheus-client
 pip install -e ".[dev]"
 ```
 
-## Quick Start
+## Quickstart
 
 ### 1. Basic Training with Determinism
 

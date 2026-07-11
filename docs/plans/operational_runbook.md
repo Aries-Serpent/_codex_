@@ -17,7 +17,7 @@ This runbook provides step-by-step instructions for operating the Codex Python I
 - `OPENAI_API_KEY` environment variable set (optional, for LLM features)
 - Docker (optional, for sandboxed execution)
 
-## Quick Start
+## Quickstart
 
 ```bash
 # 1. Create a manifest for your script

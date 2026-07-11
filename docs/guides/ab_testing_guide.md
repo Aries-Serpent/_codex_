@@ -8,7 +8,7 @@
 
 The A/B Testing Framework enables scientific validation of model improvements through controlled experiments with statistical significance testing.
 
-## Quick Start
+## Quickstart
 
 ```python
 from codex_ml.training.ab_testing import ABTestManager, ABTestConfig

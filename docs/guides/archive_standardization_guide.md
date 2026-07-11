@@ -17,7 +17,7 @@
 
 ---
 
-## Introduction
+## Overview
 
 Archive standardization brings **SLSA L3 compliance**, **cryptographic integrity**, and **schema versioning** to the _codex_ archive system while maintaining **100% backward compatibility**.
 
@@ -525,7 +525,7 @@ cp .codex/evidence/archive_ops.jsonl{,.backup}
 
 ---
 
-## Quick Reference
+## Reference
 
 ### Commands
 

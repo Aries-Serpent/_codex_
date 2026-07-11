@@ -751,15 +751,262 @@ A: Until v0.2.0 is released (typically 6-12 months). See [Support Policy](../../
 
 ---
 
+## Local Documentation Site Deployment
+
+This section covers deployment of the documentation site to local development environments (127.0.0.1:8000).
+
+### Quick Start
+
+```bash
+# Step 1: Install MkDocs and plugins
+pip install mkdocs mkdocs-material mkdocs-mermaid2-plugin \
+            mkdocstrings[python] mkdocs-git-revision-date-localized-plugin
+
+# Step 2: Start local server
+cd /home/runner/work/_codex_/_codex_
+mkdocs serve
+
+# Step 3: Open browser
+# Navigate to http://127.0.0.1:8000
+```
+
+### Local Development Workflow
+
+**For Documentation Changes**:
+
+```bash
+# Terminal 1: Start MkDocs server (hot-reload enabled)
+mkdocs serve
+
+# Terminal 2: Edit documentation in your editor
+# Changes automatically reload in browser
+# Edit: docs/path/to/file.md
+# Result: Live preview at http://127.0.0.1:8000/path/to/file
+```
+
+### Configuration Validation
+
+Before deploying locally, verify the mkdocs.yml configuration:
+
+```bash
+# Check configuration syntax
+mkdocs build --dry-run
+
+# Full build with strict validation
+mkdocs build --strict
+
+# Output shows any configuration issues
+# If no errors: Documentation is ready to serve
+```
+
+### Testing Checklist
+
+Use this checklist to validate the local deployment:
+
+- [ ] **Server Start**: `mkdocs serve` runs without errors
+- [ ] **Home Page**: http://127.0.0.1:8000 loads correctly
+- [ ] **Navigation**: Sidebar navigation opens/closes properly
+- [ ] **Theme Toggle**: Dark/light mode toggle works
+- [ ] **Search**: Search box appears and is functional
+- [ ] **Internal Links**: All documentation links work
+- [ ] **Diagrams**: Mermaid diagrams render correctly
+- [ ] **Code Blocks**: Copy button appears on code examples
+- [ ] **Mobile View**: Site is responsive on mobile (test with browser dev tools)
+- [ ] **Performance**: Page loads in < 2 seconds
+
+### Performance Optimization
+
+**Enable Caching** (faster rebuilds):
+
+```bash
+# MkDocs automatically caches:
+# - Plugin output
+# - Generated pages
+# - Static assets
+
+# To rebuild without cache:
+mkdocs build --clean
+
+# To force cache invalidation:
+rm -rf .cache/
+mkdocs serve
+```
+
+**Build Time Benchmarks**:
+
+```
+Initial build:        15-30 seconds (full)
+Subsequent builds:      2-5 seconds (incremental)
+Single file change:    < 1 second (hot-reload)
+```
+
+### Troubleshooting Local Deployment
+
+**Issue: "Port 8000 is already in use"**
+
+```bash
+# Find process using port 8000
+lsof -i :8000
+
+# Kill process
+kill -9 <PID>
+
+# Or use alternate port
+mkdocs serve -a 127.0.0.1:8001
+```
+
+**Issue: "Module not found" error**
+
+```bash
+# Ensure all dependencies are installed
+pip install -r requirements-docs.txt
+
+# Or install individually
+pip install mkdocs-material mkdocs-mermaid2-plugin
+```
+
+**Issue: Diagrams not rendering (showing code block instead)**
+
+```bash
+# Check Mermaid plugin is enabled in mkdocs.yml
+# Verify fence is correct:
+# ✅ Correct: ```mermaid
+# ❌ Wrong:   ```diagram
+
+# Check markdown file has correct syntax:
+mkdocs build --verbose
+```
+
+**Issue: Changes not reflecting in browser**
+
+```bash
+# Hard refresh browser (Ctrl+Shift+R or Cmd+Shift+R)
+
+# Or clear browser cache:
+# DevTools > Application > Cache > Clear
+
+# If still not working, restart server:
+# Press Ctrl+C to stop mkdocs serve
+# Then run: mkdocs serve again
+```
+
+**Issue: Search not working**
+
+```bash
+# Search requires build to complete
+# Ensure no build errors:
+mkdocs build
+
+# Then restart serve:
+mkdocs serve
+
+# Search index is now available
+```
+
+### Deployment to GitHub Pages
+
+For production deployment to https://aries-serpent.github.io/_codex_/:
+
+```bash
+# 1. Commit changes
+git add docs/ mkdocs.yml
+git commit -m "docs: update documentation"
+
+# 2. Push to main (triggers automatic deployment)
+git push origin main
+
+# 3. GitHub Actions automatically:
+#    - Builds the site
+#    - Validates links
+#    - Deploys to GitHub Pages
+#    - Runs health checks
+#    - Reports status
+
+# 4. Verify deployment succeeded
+# Check Actions tab on GitHub for workflow status
+# Site available at: https://aries-serpent.github.io/_codex_/
+```
+
+### Environment Variables
+
+Optional configuration via environment variables:
+
+```bash
+# Control MkDocs behavior
+export MKDOCS_SITE_URL=https://aries-serpent.github.io/_codex_/
+export MKDOCS_REPO_URL=https://github.com/Aries-Serpent/_codex_
+
+# Enable strict mode (fail on warnings)
+export MKDOCS_STRICT=true
+
+# Control plugin behavior
+export MKDOCS_PLUGINS_MERMAID_VERSION="10.4.0"
+```
+
+### Advanced Usage
+
+**Building Static Site**:
+
+```bash
+# Generate static HTML (site/ directory)
+mkdocs build
+
+# Output: site/
+# Contains all HTML, CSS, JavaScript, assets
+# Can be deployed to any static host
+```
+
+**Custom Theme Features**:
+
+```bash
+# Material theme features (in mkdocs.yml):
+# - navigation.instant (XHR page loading)
+# - navigation.tracking (URL updates)
+# - navigation.tabs (top-level tabs)
+# - search.suggest (search suggestions)
+# - content.code.copy (copy code button)
+
+# All features are pre-configured
+# See mkdocs.yml for complete list
+```
+
+### Documentation Site Architecture
+
+```
+127.0.0.1:8000/
+├─ /                      # Home page
+├─ /evolution/           # Evolution Center
+├─ /tokens/              # Token Management
+├─ /architecture/        # Architecture docs
+├─ /deployment/          # Deployment guides
+├─ /guides/              # How-to guides
+├─ /search/              # Full-text search
+├─ /assets/              # CSS, JS, images
+└─ /health               # Health check endpoint
+
+All pages accessible via sidebar navigation
+Search available in top navigation bar
+Dark/light mode toggle in top right
+```
+
+### Related Documentation
+
+- [mkdocs.yml](../../mkdocs.yml) - Site configuration
+- [.github/workflows/pages-mkdocs.yml](../../.github/workflows/pages-mkdocs.yml) - Deployment workflow
+- [LANE_4_DEPLOYMENT_ALIGNMENT_REPORT.md](../../.codex/LANE_4_DEPLOYMENT_ALIGNMENT_REPORT.md) - Comprehensive alignment report
+
+---
+
 ## Contacts & Escalation
 
 - **Release Manager**: @mbaetiong
 - **DevOps**: @[devops-team]
 - **Security Issues**: security@[organization]
 - **Incident Response**: [incident-channel]
+- **Documentation**: See `.codex/LANE_4_DEPLOYMENT_ALIGNMENT_REPORT.md`
 
 ---
 
-**Document Version**: 1.0  
-**Last Updated**: 2026-07-07  
-**Next Review**: 2026-08-07
+**Document Version**: 2.0  
+**Last Updated**: 2026-07-11  
+**Next Review**: 2026-08-11

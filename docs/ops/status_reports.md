@@ -8,7 +8,7 @@
 
 The repository now includes a comprehensive, schema-driven status update generator that provides automated analysis and JSON-formatted reports.
 
-### Quick Start
+### Quickstart
 ```bash
 # Generate JSON status update
 codex-status-audit --generate
@@ -38,7 +38,7 @@ python tools/generate_status_update.py
 
 *Generate a self-contained `STATUS_REPORT.md` that summarizes repository gates and (optionally) evaluates assistant candidates from a JSON summary.*
 
-### Quick Start
+### Quickstart
 ```bash
 python tools/status_report.py \
   --summary samples/assistant_message_summary.sample.json \

@@ -25,7 +25,7 @@ This guide explains how to integrate the quantum-thermodynamic retrieval scoring
 
 ---
 
-## Quick Start
+## Quickstart
 
 ### Installation
 

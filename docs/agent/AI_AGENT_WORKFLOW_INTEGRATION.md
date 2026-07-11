@@ -17,7 +17,7 @@ This guide explains how AI agents can effectively use the new consolidated workf
 5. [Best Practices](#best-practices)
 6. [Troubleshooting](#troubleshooting)
 
-## Quick Start
+## Quickstart
 
 ### Basic Workflow Invocation
 

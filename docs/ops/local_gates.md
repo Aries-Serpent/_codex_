@@ -12,7 +12,7 @@ For one-command runs, a `nox` session is provided (optional).
 - `pre-commit` installed (`pip install pre-commit`).
 - (Optional) `jsonschema` for schema validation (`pip install jsonschema`).
 
-## Quick Start
+## Quickstart
 ```bash
 # 1) Fence validator
 python tools/validate_fences.py

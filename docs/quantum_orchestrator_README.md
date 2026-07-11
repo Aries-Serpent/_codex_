@@ -68,7 +68,7 @@ pip install numpy
 export PYTHONPATH="/home/runner/work/_codex_/_codex_/src:$PYTHONPATH"
 ```
 
-## Quick Start
+## Quickstart
 
 ```python
 from codex.quantum_orchestrator.orchestrator import create_orchestrator

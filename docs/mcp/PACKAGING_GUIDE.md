@@ -274,7 +274,7 @@ Install dependencies (Ubuntu/Debian):
 sudo apt-get update && sudo apt-get install -y python3 jq zip
 ```
 
-## Quick Start
+## Quickstart
 
 Package the "zendesk" topic:
 

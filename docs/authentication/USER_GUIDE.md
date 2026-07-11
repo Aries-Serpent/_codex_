@@ -19,7 +19,7 @@
 
 ---
 
-## Quick Start
+## Quickstart
 
 ### Installation
 

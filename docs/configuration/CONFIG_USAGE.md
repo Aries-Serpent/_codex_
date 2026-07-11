@@ -11,7 +11,7 @@
 
 This guide provides practical examples and patterns for using the centralized configuration system introduced in PS-01 Configuration Consolidation.
 
-## Quick Start
+## Quickstart
 
 ### Loading a Configuration
 

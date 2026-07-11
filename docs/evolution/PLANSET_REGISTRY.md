@@ -728,7 +728,7 @@ Current Scores (PS-14 Implementation):
 | **Era** | Evolution |
 | **Category** | AI/Platform |
 
-**Objective**: Define next-generation capabilities — AAIS V4.0 framework, multi-repo orchestration, ML performance tracking, automated documentation generation, and cross-team knowledge sharing.
+**Objective**: Define advanced capabilities — AAIS V4.0 framework, multi-repo orchestration, ML performance tracking, automated documentation generation, and cross-team knowledge sharing.
 
 **Sub-Plansets**:
 

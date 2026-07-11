@@ -17,7 +17,7 @@ The Duplication Metrics system provides automated detection, measurement, and tr
 - **CI/CD Ready**: Exit codes, thresholds, and baseline comparison
 - **Configurable**: Adjustable minimum lines, trivial pattern filtering, severity levels
 
-## Quick Start
+## Quickstart
 
 ### Basic Duplication Check
 

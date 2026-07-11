@@ -16,7 +16,7 @@ The Vector Store integration provides a unified interface for storing, retrievin
 - **Embedding Generation**: Integrated `/embed` endpoint in Inference Server
 - **Validation**: Comprehensive input validation and error handling
 
-## Quick Start
+## Quickstart
 
 ### Basic Vector Store Usage
 

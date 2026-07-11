@@ -15,7 +15,7 @@ The unified orchestrator consolidates legacy and functional loops behind a **sin
 | Determinism | Central seeding (Python, NumPy, Torch) |
 | Deprecation | Legacy loop wrapped with `DeprecationWarning` |
 
-## Quick Start
+## Quickstart
 ```python
 from codex_ml.training.unified_training import UnifiedTrainingConfig, run_unified_training
 cfg = UnifiedTrainingConfig(model_name="demo", epochs=1)

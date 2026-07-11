@@ -187,7 +187,7 @@ This maps the path from individual agents to coordinated multi-agent systems.
 ### Chapter 12: The Scoring Framework
 
 **When**: 2026-02-11  
-**What happened**: The AI Agency Intuitiveness Score V3.0 (AAIS V3.0) is established, drawing from three cutting-edge frameworks:
+**What happened**: The AI Agency Intuitiveness Score V3.0 (AAIS V3.0) is established, drawing from three research-backed frameworks:
 
 - **ACE 6-Layer Model** (40%): Aspirational → Task Prosecution layers
 - **MSV 5-Dimension** (30%): Autonomy, Awareness, Adaptability, Alignment, Achievement
@@ -232,7 +232,7 @@ The evolution continues along four vectors:
 
 ## Epilogue: The Nature of Emergence
 
-The _codex_ project demonstrates a pattern seen in cutting-edge AI systems research:
+The _codex_ project demonstrates a pattern seen in AI systems research:
 
 > **Emergence** is not programmed — it's *cultivated*.
 

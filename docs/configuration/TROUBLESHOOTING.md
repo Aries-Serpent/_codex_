@@ -475,7 +475,7 @@ If problem persists:
 
 ---
 
-## Quick Reference
+## Reference
 
 ### Essential Commands
 

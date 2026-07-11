@@ -100,7 +100,7 @@ docs/
 pip install -e .
 ```
 
-## Quick Start
+## Quickstart
 
 ### 1. Deterministic Training
 

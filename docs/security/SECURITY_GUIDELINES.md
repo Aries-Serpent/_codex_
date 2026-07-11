@@ -342,7 +342,7 @@ os.chmod("secret.txt", stat.S_IRUSR | stat.S_IWUSR)  # 0o600
 
 ---
 
-## Quick Reference
+## Reference
 
 ### Import Statement
 

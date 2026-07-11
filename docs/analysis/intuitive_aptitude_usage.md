@@ -46,7 +46,7 @@ The `intuitive_aptitude` module provides rich code analysis helpers for Python s
    - Generate skeleton code from structure
    - Generate common patterns
 
-## Quick Start
+## Quickstart
 
 ### Basic Usage
 

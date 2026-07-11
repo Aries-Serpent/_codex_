@@ -20,7 +20,7 @@
 
 ---
 
-## Quick Start
+## Quickstart
 
 For experienced developers working with Phase 6.2 infrastructure:
 

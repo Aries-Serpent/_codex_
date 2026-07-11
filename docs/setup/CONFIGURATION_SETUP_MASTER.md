@@ -29,7 +29,7 @@
 
 ---
 
-## Quick Start
+## Quickstart
 
 ### For Local Development
 

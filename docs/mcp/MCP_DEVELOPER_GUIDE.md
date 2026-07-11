@@ -31,7 +31,7 @@ except ImportError as e:
 "
 ```
 
-## Quick Start
+## Quickstart
 
 ```python
 # Safe import pattern with error handling

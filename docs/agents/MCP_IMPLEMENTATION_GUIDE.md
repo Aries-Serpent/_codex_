@@ -6,7 +6,7 @@
 
 This guide provides step-by-step instructions for AI agents to implement, extend, and maintain MCP (Model Context Protocol) capabilities in the `_codex_` repository.
 
-## Quick Reference
+## Reference
 
 ### MCP Module Locations
 

@@ -14,7 +14,7 @@ The expanded context workflow consists of three main components:
 2. **Retriever** (`src/codex/rag/retriever.py`) - Semantic search with provenance tracking
 3. **Embeddings** (`src/codex/rag/embeddings.py`) - Embedding provider abstraction with caching
 
-## Quick Start
+## Quickstart
 
 ### Installation
 

@@ -7,7 +7,7 @@ Complete API reference for all Cognitive Brain and Codex ML modules.
 
 ---
 
-## Quick Start
+## Quickstart
 
 ### Build & View API Docs
 
@@ -107,7 +107,7 @@ result = uti.execute_task(spec)
 
 ## Building API Documentation
 
-### Quick Start
+### Quickstart
 
 ```bash
 # Using nox (recommended - deterministic offline build)

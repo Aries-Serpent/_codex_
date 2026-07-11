@@ -12,7 +12,7 @@ This directory contains all documentation related to managing Zendesk Support wi
 
 ## Documentation Overview
 
-### Quick Reference
+### Reference
 
 | Document | Description | Audience |
 |----------|-------------|----------|

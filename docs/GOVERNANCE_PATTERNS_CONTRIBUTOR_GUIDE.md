@@ -24,7 +24,7 @@
 
 ---
 
-## Quick Start
+## Quickstart
 
 ### For Code Contributors
 

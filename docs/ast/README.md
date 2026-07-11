@@ -32,7 +32,7 @@ For optional features (tree-sitter, SQL parsing):
 pip install -e ".[ast]"
 ```
 
-## Quick Start
+## Quickstart
 
 ### Parsing Python Code
 

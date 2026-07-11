@@ -8,7 +8,7 @@
 
 The project uses **pytest** as the primary test runner with comprehensive CI/CD integration.
 
-### Quick Start
+### Quickstart
 
 **Basic test run:**
 ```bash

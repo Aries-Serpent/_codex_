@@ -677,7 +677,7 @@ docker run -p 8000:8000 codex-model:1.0-old
 
 ---
 
-## Quick Reference
+## Reference
 
 ### Useful Commands
 ```bash

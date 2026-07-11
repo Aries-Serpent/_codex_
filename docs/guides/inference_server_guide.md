@@ -23,7 +23,7 @@ The FastAPI Inference Server provides ML model serving with comprehensive safegu
 pip install fastapi uvicorn pydantic
 ```text
 
-## Quick Start
+## Quickstart
 
 ### Basic Server
 

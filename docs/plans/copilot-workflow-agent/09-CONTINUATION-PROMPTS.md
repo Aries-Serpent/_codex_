@@ -8,7 +8,7 @@
 > Generated: 2026-06-22  
 > Purpose: Ready-to-use prompts for resuming implementation
 
-## Quick Start
+## Quickstart
 
 ### Resume from Last Checkpoint
 ```

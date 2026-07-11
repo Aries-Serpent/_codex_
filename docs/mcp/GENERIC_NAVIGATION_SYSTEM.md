@@ -439,7 +439,7 @@ Import logger: `from src.utils.logging import get_logger`
 ### Configuration
 Access config: `from src.config import settings`
 
-## Quick Reference
+## Reference
 
 ### Most Modified Files
 1. `src/agents/workflow_navigator.py` - Workflow engine
@@ -1002,7 +1002,7 @@ class NavigationSystemGenerator:
 - Feature tests: `tests/<feature_name>/`
 - Feature docs: `docs/<feature_name>/`
 
-### Quick Reference
+### Reference
 See archive/sessions/2026-01/QUICK_REFERENCE.md for common patterns and utilities.
 """
 

@@ -26,7 +26,7 @@ The Zendesk Knowledge Crawler Service implements "Check and Pull" synchronizatio
 
 ---
 
-## Quick Start
+## Quickstart
 
 ```bash
 # Incremental sync (default)

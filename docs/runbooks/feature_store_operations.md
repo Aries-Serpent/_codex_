@@ -13,7 +13,7 @@ This runbook covers feature store operations, health monitoring, and troubleshoo
 
 ---
 
-## Quick Reference
+## Reference
 
 ### Check Feature Store Health
 

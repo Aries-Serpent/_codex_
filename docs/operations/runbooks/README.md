@@ -13,7 +13,7 @@ Comprehensive incident response procedures for production ML operations.
 3. **deployment_rollback.md** - Automated rollback procedures
 4. **security_incidents.md** - Security incident response
 
-## Quick Reference
+## Reference
 
 | Incident Type | Severity | Response Time | Runbook |
 |---------------|----------|---------------|---------|

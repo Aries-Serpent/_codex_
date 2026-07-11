@@ -70,7 +70,7 @@ _codex_/
 | `cli/` | Command-line interface implementations |
 | `examples/` | Working examples and sample configurations |
 
-## Quick Start
+## Quickstart
 
 ### Prerequisites
 

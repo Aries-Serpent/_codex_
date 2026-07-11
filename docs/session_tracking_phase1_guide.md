@@ -8,7 +8,7 @@
 
 ---
 
-## Quick Start
+## Quickstart
 
 ### For Agents (Python API)
 

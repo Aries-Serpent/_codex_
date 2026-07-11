@@ -32,7 +32,7 @@ The _codex_ system uses multiple databases:
 - **Search Index**: Elasticsearch (optional)
 - **Time Series**: InfluxDB (optional)
 
-## Quick Reference
+## Reference
 
 ### Connection Information
 

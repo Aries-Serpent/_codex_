@@ -24,7 +24,7 @@
 
 The Codex CLI provides comprehensive command-line interfaces for managing RAG indices, Zendesk configurations, knowledge bases, and releases. Built with **Typer** and **Click**, the CLI supports multiple frameworks and output formats.
 
-### Quick Start
+### Quickstart
 
 ```bash
 # Get help

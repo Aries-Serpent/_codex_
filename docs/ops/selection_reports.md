@@ -6,7 +6,7 @@
 
 Produce a local-only **SELECTION_REPORT.md** recommending the best assistant candidate (1–4) given an input summary JSON.
 
-## Quick Start
+## Quickstart
 ```bash
 python tools/selection_report.py \
   --summary samples/assistant_message_summary.sample.json \

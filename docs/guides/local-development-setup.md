@@ -24,7 +24,7 @@
 
 ---
 
-## Quick Start
+## Quickstart
 
 For experienced developers, here's the 5-minute setup:
 

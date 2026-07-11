@@ -8,7 +8,7 @@
 
 The Continuous Learning Pipeline enables automatic model retraining when drift is detected, maintaining model performance without manual intervention.
 
-## Quick Start
+## Quickstart
 
 ```python
 from codex_ml.training.continuous_learning import ContinuousLearningPipeline

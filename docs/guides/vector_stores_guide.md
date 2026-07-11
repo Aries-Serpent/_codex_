@@ -22,7 +22,7 @@ The FAISS Vector Store provides local, CPU-based vector similarity search for em
 pip install faiss-cpu numpy
 ```text
 
-## Quick Start
+## Quickstart
 
 ### Basic Usage
 

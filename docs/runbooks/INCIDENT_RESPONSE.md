@@ -9,7 +9,7 @@
 
 ---
 
-## Quick Reference
+## Reference
 
 | Incident Type | P1 SLA | P2 SLA | P3 SLA | Action |
 |---|---|---|---|---|

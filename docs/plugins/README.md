@@ -47,7 +47,7 @@ my-plugin/
 
 ## Plugin Development
 
-### Quick Start
+### Quickstart
 
 ```python
 # plugin.py

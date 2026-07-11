@@ -339,7 +339,7 @@ All agents universally MUST check `AGENT_KILL_SWITCH` at startup.
 
 ---
 
-## Quick Reference
+## Reference
 
 ### Common Commands
 ```bash

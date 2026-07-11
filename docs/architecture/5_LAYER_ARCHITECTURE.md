@@ -9,7 +9,7 @@
 
 ---
 
-## Quick Reference
+## Reference
 
 The Aries-Serpent/_codex_ platform is organized into **5 horizontal layers**, each handling specific responsibilities:
 

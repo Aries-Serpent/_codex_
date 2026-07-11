@@ -10,7 +10,7 @@ steps beyond what is already in the repository.
 
 ---
 
-## Quick Start
+## Quickstart
 
 ```bash
 # from the repo root

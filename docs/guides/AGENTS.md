@@ -15,7 +15,7 @@ This directory contains comprehensive guides for using the repository.
 
 ##  Security Guides (2025-12-23)
 
-### Quick Reference
+### Reference
 
 ```python
 from codex.security import mask_token, sanitize_log, hash_secure

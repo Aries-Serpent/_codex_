@@ -17,7 +17,7 @@ This guide documents the entry-point based plugin system for Codex ML. The syste
  **CLI management tool** - Discover, list, validate, and inspect plugins  
  **Graceful error handling** - Failed plugins don't break the system  
 
-## Quick Start
+## Quickstart
 
 ### Discovering Plugins
 

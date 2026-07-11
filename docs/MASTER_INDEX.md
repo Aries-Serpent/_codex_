@@ -12,7 +12,7 @@
 
 ## 🗺️ Navigation
 
-### Quick Start
+### Quickstart
 - **New Users**: Start with [NEWCOMER_GUIDE.md](NEWCOMER_GUIDE.md)
 - **Contributors**: See [CONTRIBUTING.md](./CONTRIBUTING.md)
 - **Developers**: Check [Dev Guide](dev/CODE_STYLE_GUIDE.md)

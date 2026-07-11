@@ -115,7 +115,7 @@ pip install aries-serpent-cognitive-brain
 3. Add to PYTHONPATH: `export PYTHONPATH=$PWD/src:$PYTHONPATH`
 4. Import: `from codex.cognitive import OODAOrchestrator`
 
-### Quick Start
+### Quickstart
 ```python
 from codex.cognitive import OODAOrchestrator
 

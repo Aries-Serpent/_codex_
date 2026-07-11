@@ -251,7 +251,7 @@ Template:
 
 [Brief description of what this module does]
 
-## Quick Start
+## Quickstart
 
 \`\`\`python
 from src.mcp.[module_name] import [Class]

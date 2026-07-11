@@ -398,7 +398,7 @@ Tracked Metrics:
 
 ---
 
-## Quick Reference
+## Reference
 
 ### Command Cheatsheet
 

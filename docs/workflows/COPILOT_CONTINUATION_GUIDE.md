@@ -108,7 +108,7 @@ Posts Status Comment
 
 ---
 
-## Quick Start
+## Quickstart
 
 ### For Developers
 

@@ -18,7 +18,7 @@ This guide walks you through setting up your development environment to contribu
 
 ---
 
-## Quick Start
+## Quickstart
 
 Get up and running in 5 minutes:
 

@@ -18,7 +18,7 @@ Archive standardization adds **cryptographic integrity** and **compliance tracki
  **Backward Compatible** - Existing v1 records work unchanged  
  **Zero Breaking Changes** - Opt-in via environment variables  
 
-## Quick Start
+## Quickstart
 
 ### 1. Enable Standardization
 

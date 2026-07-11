@@ -938,7 +938,7 @@ If migrating from traditional ZAF apps:
 6. **Latency**: Budget ~1.6s per external API call
 7. **Security**: Permissions conserved; forbidden operations blocked at wall
 
-### Quick Reference
+### Reference
 
 ```python
 def should_build_in_navbar(feature):

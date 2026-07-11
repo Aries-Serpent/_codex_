@@ -14,7 +14,7 @@ This guide provides step-by-step instructions for using MLflow tracking in produ
 
 ---
 
-## Quick Start
+## Quickstart
 
 ### Enable MLflow Tracking
 

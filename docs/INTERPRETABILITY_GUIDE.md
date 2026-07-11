@@ -21,7 +21,7 @@ The interpretability module is included in the main `codex` package:
 pip install -e .
 ```
 
-## Quick Start
+## Quickstart
 
 ### Attention Analysis
 

@@ -16,7 +16,7 @@ This guide covers distributed training strategies using:
 - **Hugging Face Accelerate** — Simplified distributed training framework
 - **Parameter Server** — Distributed gradient computation
 
-## Quick Start
+## Quickstart
 
 ### Single-Node Multi-GPU Training
 

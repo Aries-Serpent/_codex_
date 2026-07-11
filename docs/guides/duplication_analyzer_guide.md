@@ -21,7 +21,7 @@ The Duplication Analyzer provides actionable insights into code duplication acro
 
 No additional dependencies required - uses Python standard library.
 
-## Quick Start
+## Quickstart
 
 ### Command Line Usage
 

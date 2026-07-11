@@ -45,7 +45,7 @@ Think of MCP like a universal electrical outlet:
 
 ---
 
-## Quick Start
+## Quickstart
 
 ### Installation
 

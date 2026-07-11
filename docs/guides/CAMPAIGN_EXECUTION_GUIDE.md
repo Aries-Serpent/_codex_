@@ -5,7 +5,7 @@
 
 This guide explains how to use the Campaign Framework to orchestrate multi-phase workflows with parallel agent delegation.
 
-## Quick Start
+## Quickstart
 
 ### 1. List Available Campaigns
 

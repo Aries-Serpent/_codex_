@@ -8,7 +8,7 @@
 
 ---
 
-## Quick Start
+## Quickstart
 
 ### 1. Tool Location
 ```bash

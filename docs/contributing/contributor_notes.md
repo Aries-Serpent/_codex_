@@ -4,7 +4,7 @@
 
 **Last Updated: 2026-06-22
 
-## Quick Start
+## Quickstart
 
 Welcome to the _codex_ project! This guide helps you get started with contributing.
 

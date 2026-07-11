@@ -1193,7 +1193,7 @@ DATABASE_URL=sqlite:///.codex/session_logs.db
 VITE_CODEX_KEY=demo-key
 ```
 
-## Quick Start
+## Quickstart
 
 ```bash
 # Clone the repository

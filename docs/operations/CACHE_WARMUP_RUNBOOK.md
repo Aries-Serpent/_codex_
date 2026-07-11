@@ -22,7 +22,7 @@
 
 ---
 
-## Quick Start
+## Quickstart
 
 ### Standard Weekly Warm-up
 
