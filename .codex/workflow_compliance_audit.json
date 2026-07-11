@@ -1,0 +1,515 @@
+{
+  "timestamp": "2026-07-11T07:12:19.447675",
+  "stats": {
+    "total": 239,
+    "active": 239,
+    "disabled": 0,
+    "concurrency_pass": 190,
+    "concurrency_fail": 27,
+    "timeout_pass": 49,
+    "timeout_fail": 168,
+    "orphaned": 0,
+    "yaml_errors": 22
+  },
+  "compliance_score": 50.0,
+  "violations": {
+    "concurrency": [
+      {
+        "workflow": "adaptive-agent-delegation.yml",
+        "issue": "Invalid concurrency pattern",
+        "current": "{'group': 'adaptive-agent-delegation-${{ github.head_ref || github.ref }}', 'cancel-in-progress': False}",
+        "required": "${{ github.workflow }}-${{ github.head_ref || github.ref }}"
+      },
+      {
+        "workflow": "admin-action-notifier.yml",
+        "issue": "Missing concurrency configuration",
+        "required": "${{ github.workflow }}-${{ github.head_ref || github.ref }}"
+      },
+      {
+        "workflow": "ci-pattern-healer.yml",
+        "issue": "Invalid concurrency pattern",
+        "current": "{'group': 'ci-pattern-healer', 'cancel-in-progress': True}",
+        "required": "${{ github.workflow }}-${{ github.head_ref || github.ref }}"
+      },
+      {
+        "workflow": "ci-templates/behavior-compare.yaml",
+        "issue": "Missing concurrency configuration",
+        "required": "${{ github.workflow }}-${{ github.head_ref || github.ref }}"
+      },
+      {
+        "workflow": "consistency-checks.yml",
+        "issue": "Invalid concurrency pattern",
+        "current": "{'group': 'consistency-${{ github.ref }}', 'cancel-in-progress': True}",
+        "required": "${{ github.workflow }}-${{ github.head_ref || github.ref }}"
+      },
+      {
+        "workflow": "copilot-agent-session-done.yml",
+        "issue": "Invalid concurrency pattern",
+        "current": "{'group': 'auto-post-copilot-review-${{ github.event.workflow_run.pull_requests[0] && github.event.workflow_run.pull_requests[0].number || github.event.workflow_run.id }}', 'cancel-in-progress': True}",
+        "required": "${{ github.workflow }}-${{ github.head_ref || github.ref }}"
+      },
+      {
+        "workflow": "doc-freshness-check.yml",
+        "issue": "Missing concurrency configuration",
+        "required": "${{ github.workflow }}-${{ github.head_ref || github.ref }}"
+      },
+      {
+        "workflow": "examples/copilot-with-mcp.yml",
+        "issue": "Missing concurrency configuration",
+        "required": "${{ github.workflow }}-${{ github.head_ref || github.ref }}"
+      },
+      {
+        "workflow": "examples/mcp-cache-warm.yml",
+        "issue": "Missing concurrency configuration",
+        "required": "${{ github.workflow }}-${{ github.head_ref || github.ref }}"
+      },
+      {
+        "workflow": "manifest-drift-guard.yml",
+        "issue": "Invalid concurrency pattern",
+        "current": "{'group': 'manifest-drift-guard-${{ github.ref }}', 'cancel-in-progress': True}",
+        "required": "${{ github.workflow }}-${{ github.head_ref || github.ref }}"
+      },
+      {
+        "workflow": "observable-release.yml",
+        "issue": "Missing concurrency configuration",
+        "required": "${{ github.workflow }}-${{ github.head_ref || github.ref }}"
+      },
+      {
+        "workflow": "phase-8-1-health-monitor.yml",
+        "issue": "Invalid concurrency pattern",
+        "current": "{'group': 'phase-8-1-health-monitor-${{ github.ref }}', 'cancel-in-progress': False}",
+        "required": "${{ github.workflow }}-${{ github.head_ref || github.ref }}"
+      },
+      {
+        "workflow": "phase-8-2-issue-triage.yml",
+        "issue": "Invalid concurrency pattern",
+        "current": "{'group': 'phase-8-2-issue-triage-${{ github.ref }}', 'cancel-in-progress': False}",
+        "required": "${{ github.workflow }}-${{ github.head_ref || github.ref }}"
+      },
+      {
+        "workflow": "phase-8-3-perf-monitor.yml",
+        "issue": "Invalid concurrency pattern",
+        "current": "{'group': 'perf-monitoring', 'cancel-in-progress': False}",
+        "required": "${{ github.workflow }}-${{ github.head_ref || github.ref }}"
+      },
+      {
+        "workflow": "phase-9-3-router.yml",
+        "issue": "Invalid concurrency pattern",
+        "current": "{'group': 'phase-9-3-router-${{ github.ref }}', 'cancel-in-progress': False}",
+        "required": "${{ github.workflow }}-${{ github.head_ref || github.ref }}"
+      },
+      {
+        "workflow": "pre-release-validation.yml",
+        "issue": "Invalid concurrency pattern",
+        "current": "{'cancel-in-progress': True, 'group': 'pre-release-${{ github.ref }}'}",
+        "required": "${{ github.workflow }}-${{ github.head_ref || github.ref }}"
+      },
+      {
+        "workflow": "premerge-triage-gate.yml",
+        "issue": "Missing concurrency configuration",
+        "required": "${{ github.workflow }}-${{ github.head_ref || github.ref }}"
+      },
+      {
+        "workflow": "release-to-pypi.yml",
+        "issue": "Invalid concurrency pattern",
+        "current": "{'group': 'release-${{ github.ref }}', 'cancel-in-progress': False}",
+        "required": "${{ github.workflow }}-${{ github.head_ref || github.ref }}"
+      },
+      {
+        "workflow": "rust-ffi.yml",
+        "issue": "Invalid concurrency pattern",
+        "current": "{'group': 'rust-ffi-${{ github.ref }}', 'cancel-in-progress': True}",
+        "required": "${{ github.workflow }}-${{ github.head_ref || github.ref }}"
+      },
+      {
+        "workflow": "security-copilot-commands.yml",
+        "issue": "Missing concurrency configuration",
+        "required": "${{ github.workflow }}-${{ github.head_ref || github.ref }}"
+      },
+      {
+        "workflow": "security-findings-api.yml",
+        "issue": "Missing concurrency configuration",
+        "required": "${{ github.workflow }}-${{ github.head_ref || github.ref }}"
+      },
+      {
+        "workflow": "security-findings-copilot-handoff.yml",
+        "issue": "Invalid concurrency pattern",
+        "current": "{'group': '${{ github.workflow }}-${{ github.event.workflow_run.head_branch }}', 'cancel-in-progress': True}",
+        "required": "${{ github.workflow }}-${{ github.head_ref || github.ref }}"
+      },
+      {
+        "workflow": "security-pr-enhancement.yml",
+        "issue": "Missing concurrency configuration",
+        "required": "${{ github.workflow }}-${{ github.head_ref || github.ref }}"
+      },
+      {
+        "workflow": "security-scan-phase-16.yml",
+        "issue": "Invalid concurrency pattern",
+        "current": "{'group': 'security-scan-${{ github.ref }}', 'cancel-in-progress': True}",
+        "required": "${{ github.workflow }}-${{ github.head_ref || github.ref }}"
+      },
+      {
+        "workflow": "smoke-tests-deployment.yml",
+        "issue": "Invalid concurrency pattern",
+        "current": "{'group': 'smoke-tests-${{ github.ref }}', 'cancel-in-progress': False}",
+        "required": "${{ github.workflow }}-${{ github.head_ref || github.ref }}"
+      },
+      {
+        "workflow": "unified-governance-check.yml",
+        "issue": "Invalid concurrency pattern",
+        "current": "{'group': 'unified-governance-check-${{ github.ref }}', 'cancel-in-progress': True}",
+        "required": "${{ github.workflow }}-${{ github.head_ref || github.ref }}"
+      },
+      {
+        "workflow": "validate-token-health.yml",
+        "issue": "Invalid concurrency pattern",
+        "current": "{'group': 'validate-token-health-${{ github.ref }}', 'cancel-in-progress': False}",
+        "required": "${{ github.workflow }}-${{ github.head_ref || github.ref }}"
+      }
+    ],
+    "timeout": [
+      {
+        "workflow": "adaptive-agent-delegation.yml",
+        "job": "load_context",
+        "issue": "Timeout out of range: 5",
+        "range": "30-360 minutes"
+      },
+      {
+        "workflow": "adaptive-agent-delegation.yml",
+        "job": "coalesce_results",
+        "issue": "Timeout out of range: 10",
+        "range": "30-360 minutes"
+      },
+      {
+        "workflow": "adaptive-agent-delegation.yml",
+        "job": "finalize",
+        "issue": "Timeout out of range: 5",
+        "range": "30-360 minutes"
+      },
+      {
+        "workflow": "admin-action-notifier.yml",
+        "job": "probe-and-notify",
+        "issue": "Timeout out of range: 5",
+        "range": "30-360 minutes"
+      },
+      {
+        "workflow": "agent-handoff-gate.yml",
+        "job": "validate-handoff",
+        "issue": "Timeout out of range: 5",
+        "range": "30-360 minutes"
+      },
+      {
+        "workflow": "agent-handoff-gate.yml",
+        "job": "rescue-comment",
+        "issue": "Timeout out of range: 5",
+        "range": "30-360 minutes"
+      },
+      {
+        "workflow": "agent-task-janitor.yml",
+        "job": "janitor",
+        "issue": "Timeout out of range: 20",
+        "range": "30-360 minutes"
+      },
+      {
+        "workflow": "agentic-diff-guard.yml",
+        "job": "deterministic-diff-guard",
+        "issue": "Timeout out of range: 10",
+        "range": "30-360 minutes"
+      },
+      {
+        "workflow": "app-package-download.yml",
+        "job": "package-app",
+        "issue": "Timeout out of range: 10",
+        "range": "30-360 minutes"
+      },
+      {
+        "workflow": "audit-qa-suite.yml",
+        "job": "rescue-comment",
+        "issue": "Timeout out of range: 5",
+        "range": "30-360 minutes"
+      },
+      {
+        "workflow": "auto-approve-workflows.yml",
+        "job": "approve-on-push",
+        "issue": "Timeout out of range: 20",
+        "range": "30-360 minutes"
+      },
+      {
+        "workflow": "auto-approve-workflows.yml",
+        "job": "evaluate-approval",
+        "issue": "Timeout out of range: 20",
+        "range": "30-360 minutes"
+      },
+      {
+        "workflow": "auto-approve-workflows.yml",
+        "job": "cleanup-single-session",
+        "issue": "Timeout out of range: 10",
+        "range": "30-360 minutes"
+      },
+      {
+        "workflow": "auto-approve-workflows.yml",
+        "job": "publish-metrics",
+        "issue": "Timeout out of range: 15",
+        "range": "30-360 minutes"
+      },
+      {
+        "workflow": "auto-fix-common-issues.yml",
+        "job": "rescue-comment",
+        "issue": "Timeout out of range: 5",
+        "range": "30-360 minutes"
+      },
+      {
+        "workflow": "auto-fix-pr-check.yml",
+        "job": "rescue-comment",
+        "issue": "Timeout out of range: 5",
+        "range": "30-360 minutes"
+      },
+      {
+        "workflow": "automated-compliance-check.yml",
+        "job": "compliance-check",
+        "issue": "Timeout out of range: 15",
+        "range": "30-360 minutes"
+      },
+      {
+        "workflow": "automated-post-deployment-verification.yml",
+        "job": "verify-service-startup",
+        "issue": "Timeout out of range: 15",
+        "range": "30-360 minutes"
+      },
+      {
+        "workflow": "automated-post-deployment-verification.yml",
+        "job": "health-checks",
+        "issue": "Timeout out of range: 20",
+        "range": "30-360 minutes"
+      },
+      {
+        "workflow": "automated-post-deployment-verification.yml",
+        "job": "generate-report",
+        "issue": "Timeout out of range: 15",
+        "range": "30-360 minutes"
+      },
+      {
+        "workflow": "automated-post-deployment-verification.yml",
+        "job": "slack-notification",
+        "issue": "Timeout out of range: 10",
+        "range": "30-360 minutes"
+      },
+      {
+        "workflow": "automated-post-deployment-verification.yml",
+        "job": "create-issue-on-failure",
+        "issue": "Timeout out of range: 10",
+        "range": "30-360 minutes"
+      },
+      {
+        "workflow": "branch-cleanup.yml",
+        "job": "cleanup",
+        "issue": "Timeout out of range: 20",
+        "range": "30-360 minutes"
+      },
+      {
+        "workflow": "branch-divergence-monitor.yml",
+        "job": "detect",
+        "issue": "Timeout out of range: 10",
+        "range": "30-360 minutes"
+      },
+      {
+        "workflow": "branch-divergence-monitor.yml",
+        "job": "auto-correct",
+        "issue": "Timeout out of range: 15",
+        "range": "30-360 minutes"
+      },
+      {
+        "workflow": "branch-divergence-monitor.yml",
+        "job": "report",
+        "issue": "Timeout out of range: 5",
+        "range": "30-360 minutes"
+      },
+      {
+        "workflow": "branch-divergence-monitor.yml",
+        "job": "rescue-comment-push",
+        "issue": "Timeout out of range: 5",
+        "range": "30-360 minutes"
+      },
+      {
+        "workflow": "cache-pruning.yml",
+        "job": "prune-caches",
+        "issue": "Timeout out of range: 10",
+        "range": "30-360 minutes"
+      },
+      {
+        "workflow": "ci-health-monitor.yml",
+        "job": "rescue-comment-push",
+        "issue": "Timeout out of range: 5",
+        "range": "30-360 minutes"
+      },
+      {
+        "workflow": "ci-pattern-healer.yml",
+        "job": "detect-failures",
+        "issue": "Timeout out of range: 10",
+        "range": "30-360 minutes"
+      },
+      {
+        "workflow": "ci-pattern-healer.yml",
+        "job": "heal-patterns",
+        "issue": "Timeout out of range: 15",
+        "range": "30-360 minutes"
+      },
+      {
+        "workflow": "ci-pattern-healer.yml",
+        "job": "post-heal-validation",
+        "issue": "Timeout out of range: 10",
+        "range": "30-360 minutes"
+      },
+      {
+        "workflow": "ci-templates/behavior-compare.yaml",
+        "job": "compare",
+        "issue": "Missing timeout-minutes",
+        "suggestion": "360 minutes"
+      },
+      {
+        "workflow": "cleanup-stale-pr-comments.yml",
+        "job": "cleanup",
+        "issue": "Timeout out of range: 10",
+        "range": "30-360 minutes"
+      },
+      {
+        "workflow": "code-quality-coverage-suite.yml",
+        "job": "change_filter",
+        "issue": "Timeout out of range: 10",
+        "range": "30-360 minutes"
+      },
+      {
+        "workflow": "code-quality-coverage-suite.yml",
+        "job": "quality-ruff",
+        "issue": "Timeout out of range: 10",
+        "range": "30-360 minutes"
+      },
+      {
+        "workflow": "code-quality-coverage-suite.yml",
+        "job": "quality-mypy",
+        "issue": "Timeout out of range: 10",
+        "range": "30-360 minutes"
+      },
+      {
+        "workflow": "code-quality-coverage-suite.yml",
+        "job": "quality-bandit",
+        "issue": "Timeout out of range: 10",
+        "range": "30-360 minutes"
+      },
+      {
+        "workflow": "code-quality-coverage-suite.yml",
+        "job": "quality-radon",
+        "issue": "Timeout out of range: 10",
+        "range": "30-360 minutes"
+      },
+      {
+        "workflow": "code-quality-coverage-suite.yml",
+        "job": "unified_summary",
+        "issue": "Timeout out of range: 15",
+        "range": "30-360 minutes"
+      },
+      {
+        "workflow": "code-quality-coverage-suite.yml",
+        "job": "rescue-comment",
+        "issue": "Timeout out of range: 5",
+        "range": "30-360 minutes"
+      },
+      {
+        "workflow": "codebase-health-sweep.yml",
+        "job": "sweep-main",
+        "issue": "Timeout out of range: 20",
+        "range": "30-360 minutes"
+      },
+      {
+        "workflow": "codebase-health-sweep.yml",
+        "job": "sweep-staging",
+        "issue": "Timeout out of range: 20",
+        "range": "30-360 minutes"
+      },
+      {
+        "workflow": "codebase-health-sweep.yml",
+        "job": "report-manual-issues",
+        "issue": "Timeout out of range: 10",
+        "range": "30-360 minutes"
+      },
+      {
+        "workflow": "codeql-alert-fetcher.yml",
+        "job": "fetch-alerts",
+        "issue": "Timeout out of range: 25",
+        "range": "30-360 minutes"
+      },
+      {
+        "workflow": "codeql-analysis.yml",
+        "job": "post-codeql-auto-approve",
+        "issue": "Timeout out of range: 5",
+        "range": "30-360 minutes"
+      },
+      {
+        "workflow": "codeql-analysis.yml",
+        "job": "rescue-comment",
+        "issue": "Timeout out of range: 5",
+        "range": "30-360 minutes"
+      },
+      {
+        "workflow": "codeql-fix-verification.yml",
+        "job": "enforce-codeql-fix-discipline",
+        "issue": "Timeout out of range: 20",
+        "range": "30-360 minutes"
+      },
+      {
+        "workflow": "codeql.yml",
+        "job": "post-codeql-auto-approve",
+        "issue": "Timeout out of range: 5",
+        "range": "30-360 minutes"
+      },
+      {
+        "workflow": "codeql.yml",
+        "job": "rescue-comment",
+        "issue": "Timeout out of range: 5",
+        "range": "30-360 minutes"
+      }
+    ],
+    "yaml_errors": [
+      {
+        "workflow": "13-3-cve-scanning.yml",
+        "error": "mapping values are not allowed here\n  in \"<unicode string>\", line 27, column 23:\n              resto"
+      },
+      {
+        "workflow": "13-3-enterprise-compliance.yml",
+        "error": "mapping values are not allowed here\n  in \"<unicode string>\", line 23, column 23:\n              resto"
+      },
+      {
+        "workflow": "13-3-secrets-detection.yml",
+        "error": "mapping values are not allowed here\n  in \"<unicode string>\", line 26, column 23:\n              resto"
+      },
+      {
+        "workflow": "actionlint-audit.yml",
+        "error": "mapping values are not allowed here\n  in \"<unicode string>\", line 30, column 23:\n              resto"
+      },
+      {
+        "workflow": "agent-auth-delegation.yml",
+        "error": "while parsing a block collection\n  in \"<unicode string>\", line 36, column 7:\n          - name: Check"
+      },
+      {
+        "workflow": "agent-health-check.yml",
+        "error": "mapping values are not allowed here\n  in \"<unicode string>\", line 25, column 23:\n              resto"
+      },
+      {
+        "workflow": "agent-orchestration-unified.yml",
+        "error": "while parsing a block collection\n  in \"<unicode string>\", line 67, column 7:\n          - name: Check"
+      },
+      {
+        "workflow": "agent-registry-validation.yml",
+        "error": "while parsing a block collection\n  in \"<unicode string>\", line 29, column 7:\n          - name: Check"
+      },
+      {
+        "workflow": "auth-tests.yml",
+        "error": "mapping values are not allowed here\n  in \"<unicode string>\", line 44, column 23:\n              resto"
+      },
+      {
+        "workflow": "automated-release-creation.yml",
+        "error": "mapping values are not allowed here\n  in \"<unicode string>\", line 38, column 23:\n              resto"
+      }
+    ]
+  }
+}

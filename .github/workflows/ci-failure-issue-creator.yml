@@ -54,19 +54,19 @@ jobs:
       failed_job_count: ${{ steps.jobs.outputs.failed_job_count }}
     steps:
       - name: Checkout (consolidator + OTel)
-      uses: actions/checkout@v5
-      with:
-        sparse-checkout: 'scripts/ci/pr_comment_consolidator.py
+        uses: actions/checkout@v5
+        with:
+          sparse-checkout: 'scripts/ci/pr_comment_consolidator.py
 
           src/codex/monitoring/
 
           '
         sparse-checkout-cone-mode: false
       - name: Classify severity and labels
-      id: classify
-      uses: actions/github-script@v8
-      with:
-        script: "const wfName = context.payload.workflow_run.name;\nconst wfSlug =\
+        id: classify
+        uses: actions/github-script@v8
+        with:
+          script: "const wfName = context.payload.workflow_run.name;\nconst wfSlug =\
           \ wfName.toLowerCase()\n                 .replace(/[^a-z0-9]+/g, '-')\n\
           \                 .replace(/^-+|-+$/g, '');\n\n// Critical patterns \u2014\
           \ first match wins\nconst CRITICAL = [\n  { re: /security|codeql|semgrep|vuln/i,\n\
@@ -88,18 +88,18 @@ jobs:
         uses: actions/cache@v5
         if: always()
         with:
-        path: .pytest_cache/
-        key: ${{ runner.os }}-pytest-${{ github.sha }}
+          path: .pytest_cache/
+          key: ${{ runner.os }}-pytest-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-pytest-
 
       - name: Fetch failed job details
-      id: jobs
-      if: github.event.workflow_run.conclusion == 'failure'
-      uses: actions/github-script@v8
-      with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
-        script: "const { data } = await github.rest.actions.listJobsForWorkflowRun({\n\
+        id: jobs
+        if: github.event.workflow_run.conclusion == 'failure'
+        uses: actions/github-script@v8
+        with:
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+          script: "const { data } = await github.rest.actions.listJobsForWorkflowRun({\n\
           \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  run_id: context.payload.workflow_run.id,\n\
           \  filter: 'latest',\n});\nconst failed = data.jobs.filter(j => j.conclusion\
           \ === 'failure');\nconst md = failed.length\n  ? failed.map(j => {\n   \
@@ -112,12 +112,12 @@ jobs:
           core.setOutput('first_job_url',   first?.html_url || '');\ncore.setOutput('first_job_name',\
           \  first?.name     || '');\n"
       - name: "Deduplicate \u2014 issue + single-branch check"
-      id: dedup
-      if: github.event.workflow_run.conclusion == 'failure'
-      uses: actions/github-script@v8
-      with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
-        script: "const wfSlug = '${{ steps.classify.outputs.wf_slug }}';\nconst owner\
+        id: dedup
+        if: github.event.workflow_run.conclusion == 'failure'
+        uses: actions/github-script@v8
+        with:
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+          script: "const wfSlug = '${{ steps.classify.outputs.wf_slug }}';\nconst owner\
           \  = context.repo.owner;\nconst repo   = context.repo.repo;\n\n// L1 \u2014\
           \ open issue already tracking this workflow slug\nconst { data: openIssues\
           \ } = await github.rest.issues.listForRepo({\n  owner, repo, state: 'open',\
@@ -160,13 +160,13 @@ jobs:
       issue_url: ${{ steps.issue.outputs.issue_url }}
     steps:
       - name: Create GitHub Issue
-      id: issue
-      uses: actions/github-script@v8
-      env:
+        id: issue
+        uses: actions/github-script@v8
+        env:
         FAILED_JOBS_MD: ${{ needs.triage.outputs.failed_jobs_md }}
-      with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
-        script: "const run          = context.payload.workflow_run;\nconst wfName\
+        with:
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+          script: "const run          = context.payload.workflow_run;\nconst wfName\
           \       = run.name;\nconst wfSlug       = '${{ needs.triage.outputs.wf_slug\
           \ }}';\nconst severity     = '${{ needs.triage.outputs.severity }}';\nconst\
           \ labels       = JSON.parse('${{ needs.triage.outputs.labels_json }}');\n\
@@ -227,15 +227,15 @@ jobs:
       pr_number: ${{ steps.pr.outputs.pr_number }}
     steps:
       - name: Checkout main
-      uses: actions/checkout@v5
-      with:
-        ref: main
-        fetch-depth: 1
+        uses: actions/checkout@v5
+        with:
+          ref: main
+          fetch-depth: 1
       - name: Create fix branch + tracking stub
-      id: branch
-      env:
+        id: branch
+        env:
         GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
-      run: "WF_SLUG=\"${{ needs.triage.outputs.wf_slug }}\"\nSHORT_SLUG=\"${WF_SLUG:0:30}\"\
+        run: "WF_SLUG=\"${{ needs.triage.outputs.wf_slug }}\"\nSHORT_SLUG=\"${WF_SLUG:0:30}\"\
         \nBRANCH=\"fix/ci-${SHORT_SLUG}-$(date +%Y%m%d%H%M%S)\"\necho \"fix_branch=${BRANCH}\"\
         \ >> \"$GITHUB_OUTPUT\"\n\ngit config user.name  \"github-actions[bot]\"\n\
         git config user.email \"github-actions[bot]@users.noreply.github.com\"\ngit\
@@ -250,13 +250,13 @@ jobs:
         \ }} [skip ci]\"\ngit push origin \"${BRANCH}\"\necho \"\u2705 Pushed: ${BRANCH}\"\
         \n"
       - name: Open fix PR with @copilot command
-      id: pr
-      uses: actions/github-script@v8
-      env:
+        id: pr
+        uses: actions/github-script@v8
+        env:
         FAILED_JOBS_MD: ${{ needs.triage.outputs.failed_jobs_md }}
-      with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
-        script: "const run         = context.payload.workflow_run;\nconst wfName \
+        with:
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+          script: "const run         = context.payload.workflow_run;\nconst wfName \
           \     = run.name;\nconst wfSlug      = '${{ needs.triage.outputs.wf_slug\
           \ }}';\nconst fixBranch   = '${{ steps.branch.outputs.fix_branch }}';\n\
           const issueNum    = '${{ needs.create-issue.outputs.issue_number }}';\n\
@@ -309,25 +309,25 @@ jobs:
     if: always() && github.event.workflow_run.head_branch == 'main'
     steps:
       - name: Checkout (consolidator)
-      uses: actions/checkout@v5
-      with:
-        sparse-checkout: 'scripts/ci/pr_comment_consolidator.py
+        uses: actions/checkout@v5
+        with:
+          sparse-checkout: 'scripts/ci/pr_comment_consolidator.py
 
           src/codex/monitoring/
 
           '
         sparse-checkout-cone-mode: false
       - name: Set up Python
-      uses: actions/setup-python@v6
-      with:
-        python-version: 3.12.13
-        cache: 'pip'
+        uses: actions/setup-python@v6
+        with:
+          python-version: 3.12.13
+          cache: 'pip'
       - name: Find target PR for dashboard post
-      id: find-pr
-      uses: actions/github-script@v8
-      with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
-        script: "// Priority: new fix PR > active branch PR > most-recently-updated\
+        id: find-pr
+        uses: actions/github-script@v8
+        with:
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+          script: "// Priority: new fix PR > active branch PR > most-recently-updated\
           \ open PR\nconst newPrNum  = '${{ needs.create-fix-pr.outputs.pr_number\
           \ }}';\nif (newPrNum)   { core.setOutput('pr_number', newPrNum); return;\
           \ }\n\nconst activePR = '${{ needs.triage.outputs.active_fix_pr }}';\nif\
@@ -338,8 +338,8 @@ jobs:
           \ per_page: 1,\n});\ncore.setOutput('pr_number', prs[0]?.number?.toString()\
           \ || '');\n"
       - name: Build dashboard section
-      id: section
-      env:
+        id: section
+        env:
         CONCLUSION: ${{ github.event.workflow_run.conclusion }}
         WF_NAME: ${{ github.event.workflow_run.name }}
         WF_RUN_URL: ${{ github.event.workflow_run.html_url }}
@@ -351,7 +351,7 @@ jobs:
         FIX_PR_URL: ${{ needs.create-fix-pr.outputs.pr_url }}
         ACTIVE_BRANCH: ${{ needs.triage.outputs.active_fix_branch }}
         ACTIVE_PR: ${{ needs.triage.outputs.active_fix_pr }}
-      run: "python3 - <<'PYEOF'\nimport os\n\nconclusion   = os.environ.get(\"CONCLUSION\"\
+        run: "python3 - <<'PYEOF'\nimport os\n\nconclusion   = os.environ.get(\"CONCLUSION\"\
         , \"\")\nwf_name      = os.environ[\"WF_NAME\"]\nwf_run_url   = os.environ[\"\
         WF_RUN_URL\"]\naction       = os.environ.get(\"ACTION\", \"\")\nseverity \
         \    = os.environ.get(\"SEVERITY\", \"normal\")\nissue_url    = os.environ.get(\"\
@@ -397,11 +397,11 @@ jobs:
         )\n        f.write(\"details<<__EOF__\\n\" + details + \"\\n__EOF__\\n\")\n\
         PYEOF\n"
       - name: Post to PR Status Dashboard
-      if: steps.find-pr.outputs.pr_number != ''
-      env:
+        if: steps.find-pr.outputs.pr_number != ''
+        env:
         GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         GITHUB_REPOSITORY: ${{ github.repository }}
-      run: "python scripts/ci/pr_comment_consolidator.py \\\n  --pr-number  \"${{\
+        run: "python scripts/ci/pr_comment_consolidator.py \\\n  --pr-number  \"${{\
         \ steps.find-pr.outputs.pr_number }}\" \\\n  --workflow   \"CI Monitor: ${{\
         \ github.event.workflow_run.name }}\" \\\n  --status     \"${{ steps.section.outputs.status\
         \ }}\" \\\n  --summary    \"${{ steps.section.outputs.summary }}\" \\\n  --details\
@@ -420,10 +420,10 @@ jobs:
       '
     steps:
       - name: Close matching open ci-failure issues
-      uses: actions/github-script@v8
-      with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
-        script: "const wfName = context.payload.workflow_run.name;\nconst wfSlug =\
+        uses: actions/github-script@v8
+        with:
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
+          script: "const wfName = context.payload.workflow_run.name;\nconst wfSlug =\
           \ wfName.toLowerCase()\n                 .replace(/[^a-z0-9]+/g, '-')\n\
           \                 .replace(/^-+|-+$/g, '');\nconst owner  = context.repo.owner;\n\
           const repo   = context.repo.repo;\n\nconst { data: issues } = await github.rest.issues.listForRepo({\n\

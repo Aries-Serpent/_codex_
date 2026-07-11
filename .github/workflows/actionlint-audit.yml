@@ -25,17 +25,17 @@ jobs:
         uses: actions/cache@v5
         if: always()
         with:
-        path: .pytest_cache/
-        key: ${{ runner.os }}-pytest-${{ github.sha }}
+          path: .pytest_cache/
+          key: ${{ runner.os }}-pytest-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-pytest-
 
       - name: Checkout repository
-      uses: actions/checkout@v5
-      with:
-        fetch-depth: 1
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
       - name: Install actionlint
-      run: "# Pinned version with fallback to latest on API failure\nPINNED=\"v1.7.7\"\
+        run: "# Pinned version with fallback to latest on API failure\nPINNED=\"v1.7.7\"\
         \nLATEST=$(curl -fsSL --max-time 10 https://api.github.com/repos/rhysd/actionlint/releases/latest\
         \ \\\n  | python3 -c \"import sys,json; print(json.load(sys.stdin)['tag_name'])\"\
         \ 2>/dev/null \\\n  || echo \"${PINNED}\")\nTARGET=\"${LATEST:-${PINNED}}\"\
@@ -43,8 +43,8 @@ jobs:
         \ \\\n  | tar xz actionlint\nsudo mv actionlint /usr/local/bin/\nactionlint\
         \ --version\n"
       - name: Run actionlint on all workflows
-      id: actionlint
-      run: "# Run and capture output; save to file for summary\n# shellcheck disable=SC2016\
+        id: actionlint
+        run: "# Run and capture output; save to file for summary\n# shellcheck disable=SC2016\
         \  # Go template syntax, not shell variables\nmapfile -t WORKFLOW_FILES <\
         \ <(find .github/workflows -maxdepth 1 -name '*.yml' | sort)\nactionlint \\\
         \n  -format '{{range $e := .}}::error file={{$e.Filepath}},line={{$e.Line}}::{{$e.Message}}{{end}}'\
@@ -56,8 +56,8 @@ jobs:
         \ \"✅ actionlint: 0 errors across $(find .github/workflows -maxdepth 1 -name\
         \ '*.yml' | wc -l) workflow files\"\n"
       - name: Post summary
-      if: always()
-      run: "{\n  echo \"## Workflow Compliance Audit (actionlint)\"\n  echo \"\"\n\
+        if: always()
+        run: "{\n  echo \"## Workflow Compliance Audit (actionlint)\"\n  echo \"\"\n\
         \  if [ -f /tmp/actionlint_results.txt ] && [ -s /tmp/actionlint_results.txt\
         \ ]; then\n    echo \"\\`\\`\\`\"\n    cat /tmp/actionlint_results.txt\n \
         \   echo \"\\`\\`\\`\"\n  else\n    TOTAL=$(find .github/workflows -maxdepth\
@@ -83,12 +83,12 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout repository
-      uses: actions/checkout@v5
-      with:
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-        fetch-depth: 1
+        uses: actions/checkout@v5
+        with:
+          token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          fetch-depth: 1
       - name: Post or update rescue comment
-      env:
+        env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
@@ -99,7 +99,7 @@ jobs:
         RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
           github.run_id }}
         BRANCH: ${{ github.head_ref }}
-      run: python scripts/ci/post_rescue_comment.py
+        run: python scripts/ci/post_rescue_comment.py
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}

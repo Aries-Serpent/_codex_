@@ -33,131 +33,131 @@ jobs:
         uses: actions/cache@v5
         if: always()
         with:
-        path: .pytest_cache/
-        key: ${{ runner.os }}-pytest-${{ github.sha }}
+          path: .pytest_cache/
+          key: ${{ runner.os }}-pytest-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-pytest-
 
       - name: Checkout repository
-      uses: actions/checkout@v5
-      with:
-        fetch-depth: 0
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
       - name: Set up Python
-      uses: actions/setup-python@v6
-      with:
-        python-version: '3.12'
-        cache: 'pip'
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+          cache: 'pip'
       - name: Extract release notes
-      id: extract-notes
-      run: "python scripts/deployment/extract_release_notes.py \\\n  --version ${{\
+        id: extract-notes
+        run: "python scripts/deployment/extract_release_notes.py \\\n  --version ${{\
         \ github.event.inputs.version }} \\\n  --output .codex/release-notes.md\n\
         echo \"release_notes_path=.codex/release-notes.md\" >> $GITHUB_OUTPUT\n"
       - name: Validate release notes
-      id: validate-notes
-      run: "python scripts/deployment/validate_release_notes.py \\\n  ${{ steps.extract-notes.outputs.release_notes_path\
+        id: validate-notes
+        run: "python scripts/deployment/validate_release_notes.py \\\n  ${{ steps.extract-notes.outputs.release_notes_path\
         \ }} \\\n  --json > .codex/validation-report.json\ncat .codex/validation-report.json\n"
       - name: Generate SBOM
-      id: generate-sbom
-      run: "python scripts/generate_sbom.py \\\n  --output .codex/sbom-release-${{\
+        id: generate-sbom
+        run: "python scripts/generate_sbom.py \\\n  --output .codex/sbom-release-${{\
         \ github.event.inputs.version }}.json\necho \"sbom_path=.codex/sbom-release-${{\
         \ github.event.inputs.version }}.json\" >> $GITHUB_OUTPUT\n"
       - name: Validate SBOM
-      id: validate-sbom
-      run: "python scripts/deployment/validate_sbom_completeness.py \\\n  ${{ steps.generate-sbom.outputs.sbom_path\
+        id: validate-sbom
+        run: "python scripts/deployment/validate_sbom_completeness.py \\\n  ${{ steps.generate-sbom.outputs.sbom_path\
         \ }} \\\n  --json > .codex/sbom-validation.json\ncat .codex/sbom-validation.json\n"
       - name: Generate attestations
-      id: generate-attestations
-      run: "python scripts/deployment/generate_attestations.py \\\n  --version ${{\
+        id: generate-attestations
+        run: "python scripts/deployment/generate_attestations.py \\\n  --version ${{\
         \ github.event.inputs.version }} \\\n  --output .codex/attestations\necho\
         \ \"attestations_path=.codex/attestations/attestations.json\" >> $GITHUB_OUTPUT\n"
       - name: Generate provenance
-      id: generate-provenance
-      run: "python scripts/deployment/generate_provenance.py \\\n  --version ${{ github.event.inputs.version\
+        id: generate-provenance
+        run: "python scripts/deployment/generate_provenance.py \\\n  --version ${{ github.event.inputs.version\
         \ }} \\\n  --output .codex\necho \"provenance_path=.codex/provenance.json\"\
         \ >> $GITHUB_OUTPUT\n"
       - name: Generate announcement templates
-      id: generate-announcements
-      run: "python scripts/deployment/generate_announcement_templates.py \\\n  --version\
+        id: generate-announcements
+        run: "python scripts/deployment/generate_announcement_templates.py \\\n  --version\
         \ ${{ github.event.inputs.version }} \\\n  --output .codex/release-announcements\n\
         echo \"announcements_dir=.codex/release-announcements\" >> $GITHUB_OUTPUT\n"
       - name: Generate release audit
-      id: generate-audit
-      run: "python scripts/deployment/generate_release_audit.py \\\n  --version ${{\
+        id: generate-audit
+        run: "python scripts/deployment/generate_release_audit.py \\\n  --version ${{\
         \ github.event.inputs.version }} \\\n  --output .codex/release-audits\necho\
         \ \"audit_path=.codex/release-audits/${{ github.event.inputs.version }}-audit.json\"\
         \ >> $GITHUB_OUTPUT\n"
       - name: Read release notes
-      id: read-notes
-      run: "if [ -f \".codex/release-notes.md\" ]; then\n  {\n    echo \"RELEASE_NOTES<<EOF\"\
+        id: read-notes
+        run: "if [ -f \".codex/release-notes.md\" ]; then\n  {\n    echo \"RELEASE_NOTES<<EOF\"\
         \n    cat .codex/release-notes.md\n    echo \"EOF\"\n  } >> $GITHUB_ENV\n\
         fi\n"
       - name: Create GitHub Release (Draft)
-      if: github.event.inputs.dry_run == 'true'
-      id: create-release-draft
-      uses: actions/create-release@v1.1.1
-      env:
+        if: github.event.inputs.dry_run == 'true'
+        id: create-release-draft
+        uses: actions/create-release@v1.1.1
+        env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.event.inputs.version }}
-        release_name: Release ${{ github.event.inputs.version }}
-        body: ${{ env.RELEASE_NOTES }}
-        draft: true
-        prerelease: false
+        with:
+          tag_name: ${{ github.event.inputs.version }}
+          release_name: Release ${{ github.event.inputs.version }}
+          body: ${{ env.RELEASE_NOTES }}
+          draft: true
+          prerelease: false
       - name: Create GitHub Release (Published)
-      if: github.event.inputs.dry_run == 'false'
-      id: create-release
-      uses: actions/create-release@v1.1.1
-      env:
+        if: github.event.inputs.dry_run == 'false'
+        id: create-release
+        uses: actions/create-release@v1.1.1
+        env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.event.inputs.version }}
-        release_name: Release ${{ github.event.inputs.version }}
-        body: ${{ env.RELEASE_NOTES }}
-        draft: false
-        prerelease: false
+        with:
+          tag_name: ${{ github.event.inputs.version }}
+          release_name: Release ${{ github.event.inputs.version }}
+          body: ${{ env.RELEASE_NOTES }}
+          draft: false
+          prerelease: false
       - name: Upload SBOM to release
-      if: github.event.inputs.dry_run == 'false'
-      uses: actions/upload-release-asset@v1.0.2
-      env:
+        if: github.event.inputs.dry_run == 'false'
+        uses: actions/upload-release-asset@v1.0.2
+        env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create-release.outputs.upload_url }}
-        asset_path: ${{ steps.generate-sbom.outputs.sbom_path }}
-        asset_name: sbom-${{ github.event.inputs.version }}.json
-        asset_content_type: application/json
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: ${{ steps.generate-sbom.outputs.sbom_path }}
+          asset_name: sbom-${{ github.event.inputs.version }}.json
+          asset_content_type: application/json
       - name: Upload attestations to release
-      if: github.event.inputs.dry_run == 'false'
-      uses: actions/upload-release-asset@v1.0.2
-      env:
+        if: github.event.inputs.dry_run == 'false'
+        uses: actions/upload-release-asset@v1.0.2
+        env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create-release.outputs.upload_url }}
-        asset_path: ${{ steps.generate-attestations.outputs.attestations_path }}
-        asset_name: attestations.json
-        asset_content_type: application/json
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: ${{ steps.generate-attestations.outputs.attestations_path }}
+          asset_name: attestations.json
+          asset_content_type: application/json
       - name: Upload provenance to release
-      if: github.event.inputs.dry_run == 'false'
-      uses: actions/upload-release-asset@v1.0.2
-      env:
+        if: github.event.inputs.dry_run == 'false'
+        uses: actions/upload-release-asset@v1.0.2
+        env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create-release.outputs.upload_url }}
-        asset_path: ${{ steps.generate-provenance.outputs.provenance_path }}
-        asset_name: provenance.json
-        asset_content_type: application/json
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: ${{ steps.generate-provenance.outputs.provenance_path }}
+          asset_name: provenance.json
+          asset_content_type: application/json
       - name: Create GitHub Discussion announcement
-      if: github.event.inputs.dry_run == 'false'
-      run: "discussion_content=$(cat \".codex/release-announcements/github-discussions-${{\
+        if: github.event.inputs.dry_run == 'false'
+        run: "discussion_content=$(cat \".codex/release-announcements/github-discussions-${{\
         \ github.event.inputs.version }}.md\")\n\n# Create discussion via GitHub CLI\n\
         gh discussion create \\\n  --repo Aries-Serpent/_codex_ \\\n  --category \"\
         Announcements\" \\\n  --title \"Release ${{ github.event.inputs.version }}\
         \ is now available\" \\\n  --body \"$discussion_content\" \\\n  || echo \"\
         ⚠️ Failed to create discussion (may require additional permissions)\"\n"
-      env:
+        env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Generate summary report
-      id: summary
-      run: 'cat > release-summary.md << ''EOF''
+        id: summary
+        run: 'cat > release-summary.md << ''EOF''
 
         # Release ${{ github.event.inputs.version }} Summary
 
@@ -222,10 +222,10 @@ jobs:
 
         '
       - name: Upload artifacts
-      uses: actions/upload-artifact@v5
-      with:
-        name: release-${{ github.event.inputs.version }}-artifacts
-        path: '.codex/release-notes.md
+        uses: actions/upload-artifact@v5
+        with:
+          name: release-${{ github.event.inputs.version }}-artifacts
+          path: '.codex/release-notes.md
 
           .codex/sbom-*.json
 
@@ -242,7 +242,7 @@ jobs:
           '
         retention-days: 90
       - name: Print workflow summary
-      run: "echo \"## ✅ Release Creation Workflow Complete\" >> $GITHUB_STEP_SUMMARY\n\
+        run: "echo \"## ✅ Release Creation Workflow Complete\" >> $GITHUB_STEP_SUMMARY\n\
         echo \"\" >> $GITHUB_STEP_SUMMARY\necho \"**Version**: ${{ github.event.inputs.version\
         \ }}\" >> $GITHUB_STEP_SUMMARY\necho \"**Mode**: ${{ github.event.inputs.dry_run\
         \ && 'Draft (Dry Run)' || 'Published' }}\" >> $GITHUB_STEP_SUMMARY\necho \"\
