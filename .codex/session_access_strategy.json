@@ -1,18 +1,20 @@
 {
-  "generated_at": "2026-07-10T23:11:34.807569+00:00",
+  "generated_at": "2026-07-11T00:06:51.580105+00:00",
   "methods": [
     "rest",
     "graphql",
     "gh_cli"
   ],
   "rest_available": true,
-  "rest_remaining": 4991,
+  "rest_remaining": 4989,
   "graphql_available": true,
   "graphql_remaining": 5000,
   "gh_cli_available": true,
   "codeql_available": false,
   "best_token_var": "CODEX_MASTER_KEY",
-  "open_prs": [],
-  "branch": "copilot/cleanup-root-folder-structure",
+  "open_prs": [
+    5292
+  ],
+  "branch": "copilot/explore-codebase-and-implement-structure-plan",
   "recommendation": "Use REST for data fetches. "
 }

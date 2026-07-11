@@ -114,3 +114,8 @@ scripts/ci/session_preload.py
 # Test files for secret detection validation (synthetic patterns only)
 secrets.txt
 mlruns/
+/coverage.json
+/coverage_cache.json
+/coverage_post_ws1.json
+/performance_baseline.json
+/decision_history.json
