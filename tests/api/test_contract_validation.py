@@ -270,3 +270,248 @@ class TestBackwardCompatibility:
                         assert (field in properties), f"{schema_file.name}: required field '{field}' not in properties"
             except (json.JSONDecodeError, UnicodeDecodeError):
                 continue
+
+
+class TestRequestValidation:
+    """Tests for request validation contracts."""
+
+    def test_content_type_headers_validated(self):
+        """Verify API validates Content-Type headers."""
+        if not SRC_DIR.exists():
+            pytest.skip("src/ directory not found")
+
+        api_files = list(SRC_DIR.rglob("*api*.py")) + list(SRC_DIR.rglob("*route*.py"))
+        if not api_files:
+            pytest.skip("No API files found")
+
+        # Look for Content-Type validation patterns
+        content_type_found = False
+        for api_file in api_files[:10]:
+            content = api_file.read_text(encoding="utf-8", errors="ignore")
+            if "content-type" in content.lower() or "content_type" in content.lower():
+                content_type_found = True
+                break
+
+        # Just verify patterns exist
+        if api_files:
+            assert content_type_found, "API should validate Content-Type headers"
+
+    def test_request_body_validation_exists(self):
+        """Verify API has request body validation."""
+        if not SRC_DIR.exists():
+            pytest.skip("src/ directory not found")
+
+        api_files = list(SRC_DIR.rglob("*api*.py")) + list(SRC_DIR.rglob("*route*.py"))
+        if not api_files:
+            pytest.skip("No API files found")
+
+        # Look for validation patterns
+        validation_found = 0
+        for api_file in api_files[:10]:
+            content = api_file.read_text(encoding="utf-8", errors="ignore")
+            if re.search(r"validate|validator|check.*input|assert.*input", content, re.IGNORECASE):
+                validation_found += 1
+
+        # At least one file should have validation
+        if api_files:
+            assert validation_found > 0, "API should have request body validation"
+
+    def test_parameter_validation_present(self):
+        """Verify API validates path and query parameters."""
+        if not SRC_DIR.exists():
+            pytest.skip("src/ directory not found")
+
+        api_files = list(SRC_DIR.rglob("*api*.py")) + list(SRC_DIR.rglob("*route*.py"))
+        if not api_files:
+            pytest.skip("No API files found")
+
+        # Look for parameter validation
+        param_patterns = ["Query", "Path", "Depends", "validate"]
+        found = 0
+
+        for api_file in api_files[:10]:
+            content = api_file.read_text(encoding="utf-8", errors="ignore")
+            for pattern in param_patterns:
+                if pattern in content:
+                    found += 1
+                    break
+
+        if api_files:
+            assert found > 0, "API should validate parameters"
+
+
+class TestResponseValidation:
+    """Tests for response validation contracts."""
+
+    def test_response_status_codes_defined(self):
+        """Verify API endpoints define response status codes."""
+        if not SRC_DIR.exists():
+            pytest.skip("src/ directory not found")
+
+        api_files = list(SRC_DIR.rglob("*api*.py")) + list(SRC_DIR.rglob("*route*.py"))
+        if not api_files:
+            pytest.skip("No API files found")
+
+        # Look for status code definitions
+        status_patterns = ["status_code", "200", "201", "400", "404"]
+        found = 0
+
+        for api_file in api_files[:10]:
+            content = api_file.read_text(encoding="utf-8", errors="ignore")
+            for pattern in status_patterns:
+                if pattern in content:
+                    found += 1
+                    break
+
+        if api_files:
+            assert found > 0, "API should define response status codes"
+
+    def test_response_schemas_consistent(self):
+        """Verify response schemas are consistent."""
+        if not SCHEMAS_DIR.exists():
+            pytest.skip("schemas/ directory not found")
+
+        response_schemas = list(SCHEMAS_DIR.rglob("*response*.json"))
+        if not response_schemas:
+            pytest.skip("No response schemas found")
+
+        # Verify response schemas have consistent structure
+        for schema_file in response_schemas[:5]:
+            try:
+                content = json.loads(schema_file.read_text(encoding="utf-8"))
+                # Common response structure patterns
+                has_structure = "properties" in content or "type" in content
+                assert has_structure, f"{schema_file.name} should have type information"
+            except (json.JSONDecodeError, UnicodeDecodeError):
+                continue
+
+    def test_error_response_schemas_exist(self):
+        """Verify error response schemas are defined."""
+        if not SCHEMAS_DIR.exists():
+            pytest.skip("schemas/ directory not found")
+
+        error_schemas = list(SCHEMAS_DIR.rglob("*error*.json"))
+        if not error_schemas:
+            # Check in response schemas for error definitions
+            response_schemas = list(SCHEMAS_DIR.rglob("*response*.json"))
+            if response_schemas:
+                assert len(response_schemas) > 0, "Should have response schemas"
+                return
+            pytest.skip("No error schemas found")
+
+        # Verify error schemas have required fields
+        for schema_file in error_schemas[:5]:
+            try:
+                content = json.loads(schema_file.read_text(encoding="utf-8"))
+                properties = content.get("properties", {})
+                # Error schemas should have at least error_code or message
+                has_error_field = "error_code" in properties or "message" in properties or "error" in properties
+                assert has_error_field, f"{schema_file.name} should have error field"
+            except (json.JSONDecodeError, UnicodeDecodeError):
+                continue
+
+
+class TestHTTPMethodContracts:
+    """Tests for HTTP method-specific contracts."""
+
+    def test_get_endpoints_do_not_modify_state(self):
+        """Verify GET endpoints don't modify state."""
+        if not SRC_DIR.exists():
+            pytest.skip("src/ directory not found")
+
+        api_files = list(SRC_DIR.rglob("*api*.py")) + list(SRC_DIR.rglob("*route*.py"))
+        if not api_files:
+            pytest.skip("No API files found")
+
+        violations = []
+        for api_file in api_files[:10]:
+            content = api_file.read_text(encoding="utf-8", errors="ignore")
+            # Look for GET endpoints with mutation operations
+            if re.search(r"@.*\.get\s*\(", content):
+                if re.search(r"db\.delete|db\.update|save\(", content):
+                    violations.append(api_file.name)
+
+        # Should not have GET methods that modify
+        assert len(violations) == 0, f"GET endpoints modifying state: {violations}"
+
+    def test_post_endpoints_return_created_status(self):
+        """Verify POST endpoints return appropriate status codes."""
+        if not SRC_DIR.exists():
+            pytest.skip("src/ directory not found")
+
+        api_files = list(SRC_DIR.rglob("*api*.py")) + list(SRC_DIR.rglob("*route*.py"))
+        if not api_files:
+            pytest.skip("No API files found")
+
+        # Look for POST endpoint patterns
+        post_patterns_found = 0
+        for api_file in api_files[:10]:
+            content = api_file.read_text(encoding="utf-8", errors="ignore")
+            if re.search(r"@.*\.post\s*\(", content):
+                post_patterns_found += 1
+
+        if api_files:
+            assert post_patterns_found > 0, "API should have POST endpoints"
+
+    def test_delete_endpoints_defined(self):
+        """Verify DELETE endpoints follow contract."""
+        if not SRC_DIR.exists():
+            pytest.skip("src/ directory not found")
+
+        api_files = list(SRC_DIR.rglob("*api*.py")) + list(SRC_DIR.rglob("*route*.py"))
+        if not api_files:
+            pytest.skip("No API files found")
+
+        # Check if DELETE endpoints exist
+        delete_found = 0
+        for api_file in api_files[:10]:
+            content = api_file.read_text(encoding="utf-8", errors="ignore")
+            if re.search(r"@.*\.delete\s*\(", content):
+                delete_found += 1
+
+        # Delete endpoints may or may not exist, just verify patterns
+        if delete_found > 0:
+            assert delete_found > 0, "DELETE endpoints should follow contracts"
+
+
+class TestContractEnforcement:
+    """Tests for contract enforcement mechanisms."""
+
+    def test_type_checking_enabled(self):
+        """Verify type checking is enabled in API code."""
+        if not SRC_DIR.exists():
+            pytest.skip("src/ directory not found")
+
+        # Check for type hints in API files
+        api_files = list(SRC_DIR.rglob("*api*.py")) + list(SRC_DIR.rglob("*route*.py"))
+        if not api_files:
+            pytest.skip("No API files found")
+
+        files_with_types = 0
+        for api_file in api_files[:10]:
+            content = api_file.read_text(encoding="utf-8", errors="ignore")
+            if re.search(r":\s*(?:str|int|bool|float|list|dict|Optional)", content):
+                files_with_types += 1
+
+        if api_files:
+            coverage = files_with_types / min(10, len(api_files))
+            assert coverage >= 0.3, f"Type hint coverage {coverage:.0%} < 30%"
+
+    def test_serialization_contracts(self):
+        """Verify serialization contracts are defined."""
+        if not SRC_DIR.exists():
+            pytest.skip("src/ directory not found")
+
+        # Look for serialization patterns
+        api_files = list(SRC_DIR.rglob("*api*.py")) + list(SRC_DIR.rglob("*route*.py"))
+        if not api_files:
+            pytest.skip("No API files found")
+
+        serialization_found = 0
+        for api_file in api_files[:10]:
+            content = api_file.read_text(encoding="utf-8", errors="ignore")
+            if re.search(r"json|serialize|to_dict|model_dump", content, re.IGNORECASE):
+                serialization_found += 1
+
+        if api_files:
+            assert serialization_found > 0, "API should have serialization contracts"

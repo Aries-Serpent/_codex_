@@ -153,3 +153,25 @@ class TestInferenceMonitoring:
                 continue
 
         pytest.skip("No health check found (optional)")
+
+
+class TestInferenceErrorHandling:
+    """Tests for inference error handling."""
+
+    def test_error_handling_present(self):
+        """Verify error handling in inference code."""
+        error_patterns = ["except", "try", "error", "exception"]
+
+        error_files = 0
+        for py_file in list(SRC_DIR.rglob("*inference*.py")) if SRC_DIR.exists() else []:
+            try:
+                content = py_file.read_text(encoding="utf-8", errors="ignore")
+                if any(p in content for p in error_patterns):
+                    error_files += 1
+            except (UnicodeDecodeError, OSError):
+                continue
+
+        # Some error handling should be present
+        inference_files = len(list(SRC_DIR.rglob("*inference*.py"))) if SRC_DIR.exists() else 0
+        if inference_files > 0:
+            assert error_files > 0, "Inference code should have error handling"

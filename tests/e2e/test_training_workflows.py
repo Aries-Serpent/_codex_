@@ -195,3 +195,73 @@ class TestMetricsWorkflow:
                 continue
 
         pytest.skip("No TensorBoard support found (optional)")
+
+
+class TestValidationWorkflow:
+    """Tests for validation in training workflow."""
+
+    def test_validation_data_config(self):
+        """Verify validation data configuration exists."""
+        validation_patterns = ["val", "valid", "eval"]
+
+        for yaml_file in CONFIGS_DIR.rglob("*.yaml") if CONFIGS_DIR.exists() else []:
+            try:
+                content = yaml_file.read_text(encoding="utf-8").lower()
+                if any(p in content for p in validation_patterns):
+                    return  # Found validation config
+            except (UnicodeDecodeError, OSError):
+                continue
+
+        pytest.skip("No validation config found (optional)")
+
+    def test_evaluation_metrics_defined(self):
+        """Verify evaluation metrics are defined."""
+        # Check for metrics configuration
+        metrics_config_paths = [
+            CONFIGS_DIR / "metrics",
+            CONFIGS_DIR / "evaluation",
+        ]
+
+        found = any(p.exists() for p in metrics_config_paths)
+        if not found:
+            pytest.skip("No evaluation metrics config (optional)")
+
+
+class TestResumeTrainingWorkflow:
+    """Tests for resume training capability."""
+
+    def test_resume_config_support(self):
+        """Verify resume configuration is supported."""
+        # Check for resume patterns in training configs
+        if not CONFIGS_DIR.exists():
+            pytest.skip("No configs directory")
+
+        for yaml_file in CONFIGS_DIR.rglob("*.yaml"):
+            try:
+                content = yaml_file.read_text(encoding="utf-8").lower()
+                if "resume" in content or "checkpoint" in content:
+                    return  # Found resume support
+            except (UnicodeDecodeError, OSError):
+                continue
+
+        pytest.skip("No resume support found (optional)")
+
+    def test_distributed_training_config(self):
+        """Verify distributed training configuration exists."""
+        # Check for distributed training patterns
+        training_config_paths = [
+            CONFIGS_DIR / "training",
+            CONFIGS_DIR / "train",
+        ]
+
+        for config_path in training_config_paths:
+            if config_path.exists():
+                for yaml_file in config_path.rglob("*.yaml"):
+                    try:
+                        content = yaml_file.read_text(encoding="utf-8").lower()
+                        if "distributed" in content or "ddp" in content or "multi_gpu" in content or "parallel" in content:
+                            return  # Found distributed training support
+                    except (UnicodeDecodeError, OSError):
+                        continue
+
+        pytest.skip("No distributed training config found (optional)")

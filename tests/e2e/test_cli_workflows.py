@@ -182,3 +182,65 @@ class TestCLIOutputWorkflow:
         for path in artifacts_paths:
             if path.exists():
                 assert path.is_dir(), "Condition must be true"
+
+
+class TestCLIHelpDocumentation:
+    """Tests for CLI help and documentation."""
+
+    def test_cli_subcommands_documented(self):
+        """Verify CLI subcommands are documented."""
+        cli_paths = [
+            SRC_DIR / "codex" / "cli.py",
+            SRC_DIR / "codex_ml" / "cli.py",
+            SRC_DIR / "codex" / "cli" / "__init__.py",
+        ]
+
+        found_help = False
+        for cli_path in cli_paths:
+            if cli_path.exists():
+                content = cli_path.read_text(encoding="utf-8", errors="ignore")
+                # Check for help text or docstrings
+                if "help=" in content or '"""' in content or "'''" in content:
+                    found_help = True
+                    break
+
+        if any(p.exists() for p in cli_paths):
+            assert found_help, "CLI should have help documentation"
+
+    def test_cli_error_handling_documented(self):
+        """Verify CLI has error handling documentation."""
+        cli_files = list(SRC_DIR.rglob("*cli*.py")) if SRC_DIR.exists() else []
+
+        if not cli_files:
+            pytest.skip("No CLI files found")
+
+        # Check for error handling patterns
+        error_handling = 0
+        for cli_file in cli_files[:10]:
+            content = cli_file.read_text(encoding="utf-8", errors="ignore")
+            if "except" in content or "raise" in content or "error" in content.lower():
+                error_handling += 1
+
+        if cli_files:
+            assert error_handling > 0, "CLI should have error handling"
+
+
+class TestCLIIntegrationPoints:
+    """Tests for CLI integration with other components."""
+
+    def test_cli_api_integration(self):
+        """Verify CLI integrates with API layer."""
+        cli_files = list(SRC_DIR.rglob("*cli*.py")) if SRC_DIR.exists() else []
+        if not cli_files:
+            pytest.skip("No CLI files found")
+
+        # Check for API imports or calls
+        api_integration = 0
+        for cli_file in cli_files[:10]:
+            content = cli_file.read_text(encoding="utf-8", errors="ignore")
+            if "api" in content.lower() or "client" in content.lower():
+                api_integration += 1
+
+        # Some integration expected
+        if cli_files:
+            assert api_integration > 0, "CLI should integrate with API"

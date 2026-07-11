@@ -313,3 +313,36 @@ class TestContributingDocumentation:
                 assert matches >= 2, "CONTRIBUTING.md should discuss PR guidelines"
                 return
         pytest.skip("No CONTRIBUTING.md found")
+
+
+class TestDocumentationCompleteness:
+    """Tests for documentation completeness and coverage."""
+
+    def test_all_major_features_documented(self):
+        """Verify major features are documented."""
+        readme = REPO_ROOT / "README.md"
+        if not readme.exists():
+            pytest.skip("README.md not found")
+
+        content = readme.read_text(encoding="utf-8").lower()
+        # Check for key feature documentation
+        features = [
+            "installation",
+            "usage",
+            "example",
+            "feature",
+        ]
+        matches = sum(1 for feature in features if feature in content)
+        assert matches >= 2, "README should document major features"
+
+    def test_license_properly_documented(self):
+        """Verify license information is properly documented."""
+        license_paths = [
+            REPO_ROOT / "LICENSE",
+            REPO_ROOT / "COPYING",
+            REPO_ROOT / "LICENSES",
+        ]
+
+        # At least one license file should exist
+        found = any(p.exists() for p in license_paths if p.is_file() or (p.is_dir() and list(p.glob("*"))))
+        assert found, "License information should be documented"
