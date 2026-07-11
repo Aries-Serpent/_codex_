@@ -176,7 +176,7 @@ jobs:
 
       - name: Archive Security Reports
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v5
         with:
           name: security-reports
           path: |
@@ -242,7 +242,7 @@ jobs:
 
       - name: Upload coverage to Codecov
         if: always()
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           files: ./coverage.xml
           flags: security-tests
@@ -251,7 +251,7 @@ jobs:
 
       - name: Upload coverage report
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v5
         with:
           name: coverage-report
           path: htmlcov/
@@ -344,7 +344,7 @@ jobs:
 
       - name: Upload Test Results
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v5
         with:
           name: phase-16-test-results
           path: |
@@ -461,7 +461,7 @@ jobs:
           echo "- ✅ No CodeQL alerts" >> PHASE_16_RESULTS.md
 
       - name: Upload Summary
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v5
         with:
           name: phase-16-complete
           path: PHASE_16_RESULTS.md
