@@ -1,32 +1,29 @@
-# Session Context — 2026-07-11T00:06:51Z
-**Branch:** `copilot/explore-codebase-and-implement-structure-plan`  **PR:** #5292  **Access:** `rest, graphql, gh_cli`
+# Session Context — 2026-07-11T01:12:13Z
+**Branch:** `copilot/implement-campaign-plan`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4989` (✅)
+- REST remaining: `4997` (✅)
 - GraphQL remaining: `5000` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #5292 — refactor(root-org): organize 55 root files into designated directories with zero-breakage guarantee
-State: `open`  Draft: `False`  Branch: `copilot/explore-codebase-and-implement-structure-plan` → `main`
-
 ## 🚨 Recent CI Failures (last 5 runs)
-- **.github/workflows/ci-failure-issue-creator.yml** — `failure` on `copilot/explore-codebase-and-implement-structure-plan` (2026-07-10)
-- **.github/workflows/build-preview-image.yml** — `failure` on `copilot/explore-codebase-and-implement-structure-plan` (2026-07-10)
-- **.github/workflows/13-3-enterprise-compliance.yml** — `failure` on `copilot/explore-codebase-and-implement-structure-plan` (2026-07-10)
-- **.github/workflows/autonomy-phase-ci-matrix.yml** — `failure` on `copilot/explore-codebase-and-implement-structure-plan` (2026-07-10)
-- **.github/workflows/autonomous-agent.yml** — `failure` on `copilot/explore-codebase-and-implement-structure-plan` (2026-07-10)
+- **Automated Compliance Check** — `failure` on `main` (2026-07-11)
+- **ML Lifecycle E2E Gate** — `failure` on `main` (2026-07-11)
+- **Documentation Link Checker** — `failure` on `main` (2026-07-11)
+- **🔐 Secrets Baseline Enforcer** — `failure` on `main` (2026-07-11)
+- **Nox Quality Gates** — `failure` on `main` (2026-07-11)
 
 ## 📝 Recent Commits
-- `f2e6f060` docs(root-org): add final session summary and completion status — copilot-swe-agent[bot] (2026-07-10)
-- `f9684e91` docs: add batch execution and post-move validation reports for root folder reorg — copilot-swe-agent[bot] (2026-07-10)
-- `e3ad8a30` refactor(root-org): batch 6 - move 12 mutation testing configs to .mutmut/ — copilot-swe-agent[bot] (2026-07-10)
-- `5ffa3c58` refactor(root-org): batch 5 - move 9 requirement files to requirements/ — copilot-swe-agent[bot] (2026-07-10)
-- `151627c2` refactor(root-org): batch 4 - move 5 performance/coverage baselines to .codex/ba — copilot-swe-agent[bot] (2026-07-10)
-- `7ffe50a0` refactor(root-org): batch 3 - move 4 release packages to .codex/archive/releases — copilot-swe-agent[bot] (2026-07-10)
-- `3748b8cc` refactor(root-org): batch 2 - move 15 phase logs to .codex/archive/phase_logs/ — copilot-swe-agent[bot] (2026-07-10)
-- `46d4675e` refactor(root-org): batch 1 - move 10 audit reports to .codex/archive/reports/ — copilot-swe-agent[bot] (2026-07-10)
+- `77b7f598` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-07-11)
+- `370d2469` refactor(root-org): organize 55 root files into designated directories with zero — Copilot (2026-07-11)
+- `1e1a0034` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-07-10)
+- `68634a06` chore(root-org): Clean up root folder sprawl — organize 81 files into archives ( — Copilot (2026-07-10)
+- `52f2840e` docs: update Phase 8.2 triage dashboard [skip ci] — github-actions[bot] (2026-07-10)
+- `f1902318` build(release): v0.1.1 patch release with dynamic workflow verification (#5288) — Copilot (2026-07-10)
+- `c65fe038` docs: update Phase 8.2 triage dashboard [skip ci] — github-actions[bot] (2026-07-10)
+- `c2ea8612` docs: update Phase 8.2 triage dashboard [skip ci] — github-actions[bot] (2026-07-10)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
