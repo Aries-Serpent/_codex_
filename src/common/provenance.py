@@ -76,16 +76,15 @@ def _deep_update_dict(target: dict[str, Any], new: dict[str, Any]) -> None:
             target[key] = value
 
 
-def collect_dvc_stage(lock: dict[str, Any], stage: str = "prepare") -> DVCStageProvenance | None:
-    stages = lock.get("stages") or {}
-    s = stages.get(stage)
-    if not s:
-        return None
-    outs_list = s.get("outs") or []
-    deps_list = s.get("deps") or []
-    raw_params = s.get("params") or {}
-
+def _extract_params_by_file(raw_params: Any) -> dict[str, dict[str, Any]]:
+    """Extract and normalize params structure from DVC lock file.
+    
+    Handles both dict and list formats, merging as needed.
+    
+    Reduces complexity by extracting nested if-elif logic (7+ branches).
+    """
     params_by_file: dict[str, dict[str, Any]] = {}
+    
     if isinstance(raw_params, dict):
         params_by_file = {
             key: dict(value) for key, value in raw_params.items() if isinstance(value, dict)
@@ -101,14 +100,56 @@ def collect_dvc_stage(lock: dict[str, Any], stage: str = "prepare") -> DVCStageP
                     params_by_file[filename] = dict(value)
                 else:
                     _deep_update_dict(params_by_file[filename], value)
+    
+    return params_by_file
 
+
+def _extract_artifacts(items: list[dict[str, Any]], key: str) -> dict[str, Any]:
+    """Extract artifacts (outs/deps) from DVC lock file.
+    
+    Creates a mapping from path to metadata.
+    
+    Reduces complexity by extracting dictionary comprehension logic (3 branches).
+    """
+    if not items:
+        return {}
+    
+    return {
+        item["path"]: {k: v for k, v in item.items() if k != "path"}
+        for item in items
+        if isinstance(item, dict) and "path" in item
+    }
+
+
+def collect_dvc_stage(lock: dict[str, Any], stage: str = "prepare") -> DVCStageProvenance | None:
+    """Collect DVC stage metadata from lock file.
+    
+    Args:
+        lock: DVC lock.yaml content
+        stage: Stage name to extract
+    
+    Returns:
+        DVCStageProvenance or None if stage not found
+    
+    Reduced complexity through helper function extraction.
+    """
+    stages = lock.get("stages") or {}
+    s = stages.get(stage)
+    if not s:
+        return None
+    
+    outs_list = s.get("outs") or []
+    deps_list = s.get("deps") or []
+    raw_params = s.get("params") or {}
+
+    # Extract params using helper
+    params_by_file = _extract_params_by_file(raw_params)
     params = params_by_file.get("params.yaml", {})
-    outs = {
-        o["path"]: {k: v for k, v in o.items() if k != "path"} for o in outs_list if "path" in o
-    }
-    deps = {
-        d["path"]: {k: v for k, v in d.items() if k != "path"} for d in deps_list if "path" in d
-    }
+    
+    # Extract artifacts using helper
+    outs = _extract_artifacts(outs_list, "outs")
+    deps = _extract_artifacts(deps_list, "deps")
+    
     return DVCStageProvenance(stage=stage, outs=outs, deps=deps, params=params)
 
 

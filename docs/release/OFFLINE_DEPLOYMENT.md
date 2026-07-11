@@ -418,10 +418,10 @@ pip install -e . \
 
 ## Next Steps
 
-- **Core profile:** [docs/quickstart/QUICKSTART_BY_PROFILE.md](docs/quickstart/QUICKSTART_BY_PROFILE.md#-core-profile-lightweight--offline-first-8-15-mb)
-- **Runtime profile:** [docs/quickstart/QUICKSTART_BY_PROFILE.md](docs/quickstart/QUICKSTART_BY_PROFILE.md#-runtime-profile-production-inference--apis-20-35-mb)
-- **Configuration:** [docs/configuration/](docs/configuration/)
-- **API Reference:** See [CONTRIBUTING.md](CONTRIBUTING.md#10-stable-public-apis-v010)
+- **Core profile:** [../quickstart/QUICKSTART_BY_PROFILE.md](../quickstart/QUICKSTART_BY_PROFILE.md#-core-profile-lightweight--offline-first-8-15-mb)
+- **Runtime profile:** [../quickstart/QUICKSTART_BY_PROFILE.md](../quickstart/QUICKSTART_BY_PROFILE.md#-runtime-profile-production-inference--apis-20-35-mb)
+- **Configuration:** [../configuration/](../configuration/)
+- **API Reference:** See [CONTRIBUTING.md](../../CONTRIBUTING.md#stable-public-apis)
 
 ---
 

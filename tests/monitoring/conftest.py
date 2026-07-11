@@ -17,5 +17,13 @@ Author: Codex Team
 
 import pytest
 
-pytest.importorskip("omegaconf")
-pytest.importorskip("hydra")
+# Skip modules if not available (but don't fail test collection)
+try:
+    import omegaconf  # noqa: F401
+except ImportError:
+    pass
+
+try:
+    import hydra  # noqa: F401
+except ImportError:
+    pass

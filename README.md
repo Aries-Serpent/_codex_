@@ -168,10 +168,10 @@ bash OFFLINE_BOOTSTRAP.sh \
 
 **Getting Started Guides:**
 - 📖 [Installation Guide](docs/INSTALLATION.md) - **Complete installation guide** ⭐ START HERE
-- 📖 [Core Installation](docs/installation/INSTALL_CORE.md) - Minimal setup for edge devices
-- 📖 [Runtime Setup](docs/installation/INSTALL_RUNTIME.md) - Production inference deployment
-- 📖 [Full Development](docs/installation/INSTALL_FULL.md) - Complete development environment
+- 📖 [Getting Started](docs/getting-started.md) - Quick start for users
+- 📖 [Local Development Setup](docs/guides/local-development-setup.md) - Development environment
 - 📖 [Offline Deployment](docs/release/OFFLINE_DEPLOYMENT.md) - Air-gapped environment setup
+- 📖 [PyPI Setup](docs/operations/pypi-trusted-publishing-setup.md) - Package publishing setup
 
 ---
 
@@ -427,7 +427,7 @@ A React/Vite-based quantum-enhanced code generation platform with real-time cogn
 - ✅ 5 Custom React hooks
 - ⚠️ Backend API integration pending (see `cognitive_app/CODEX_INTEGRATION_MASTER_PLAN.md`)
 
-**Documentation:** [`cognitive_app/README_docs/api/reference/INTEGRATION.md`](cognitive_app/README_docs/api/reference/INTEGRATION.md)
+**Documentation:** [`docs/api/reference/INTEGRATION.md`](docs/api/reference/INTEGRATION.md)
 
 ## 🆕 Recent Additions (2025-12-24)
 
@@ -817,6 +817,25 @@ python -m scripts.space_traversal.wiki_generator
 ### API Reference
 
 📚 **[API Documentation](docs/api/index.md)** - Comprehensive API reference auto-generated from source code docstrings
+
+**Phase 15-16 API Reference** 🆕 **v0.1.0**:
+- **[Phase 15-16 Architecture](docs/ARCHITECTURE_PHASE_15_16.md)** - Complete system design with 11 FastAPI endpoints (Decision API, Memory API, Workflow API)
+- **[Phase 15-16 API Reference](docs/API_REFERENCE_PHASE_15_16.md)** - Full API documentation with cURL, Python, and JavaScript examples
+- **[Pattern Library Guide](docs/PATTERN_LIBRARY_GUIDE.md)** - 40+ patterns discovered in Phase 15-16 with integration guides
+- **[Documentation Index](docs/PHASE_15_16_DOCUMENTATION_INDEX.md)** - Complete navigation and search guide
+
+**11 Documented Endpoints**:
+1. `POST /api/decisions/submit` - Record autonomous decisions
+2. `GET /api/decisions/{id}` - Retrieve decision details
+3. `GET /api/decisions/recent` - List recent decisions
+4. `GET /api/decisions/history` - Paginated decision history
+5. `POST /api/memory/store` - Store patterns and learnings
+6. `GET /api/memory/retrieve` - Search pattern library
+7. `POST /api/memory/stm-push` - Cache session data
+8. `GET /api/memory/stats` - Memory system statistics
+9. `GET /api/workflows/status` - Workflow execution status
+10. `POST /api/workflows/gate-check` - Validate workflow gates
+11. `GET /api/workflows/rate-limit` - Check API rate limits
 
 To build API docs locally:
 ```bash

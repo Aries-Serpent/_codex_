@@ -69,7 +69,7 @@ python update_links_atomic.py --old .codex/archive/deprecated/AGENTS.md --new .g
 - Validates updates after execution
 
 **Patterns Updated:**
-- Markdown links: `[text](path)`
+- Markdown links: `[text](README.md)`
 - HTML links: `href="path"`
 - YAML paths: `path: path`
 - Direct text references

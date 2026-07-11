@@ -53,7 +53,7 @@ Then inject at: https://github.com/Aries-Serpent/_codex_/settings/secrets/action
 
 Review these critical files:
 - `.codex/autonomous_agent.yaml` - Agent configuration with safe defaults
-- `.codex/guardrails.md` - Operational policies and constraints
+- `../.codex/guardrails.md` - Operational policies and constraints
 
 Verify:
 - `autonomous_actions_enabled: false` (should be false initially)
@@ -139,7 +139,7 @@ Expected output: Status summary showing all checks passed.
 For comprehensive instructions, see:
 - **Admin Guide**: [docs/admin/GENESIS_SETUP_GUIDE.md](../docs/admin/GENESIS_SETUP_GUIDE.md)
 - **Agent Guidelines**: [docs/agent/OPERATIONAL_GUIDELINES.md](../docs/agent/OPERATIONAL_GUIDELINES.md)
-- **Guardrails**: [.codex/guardrails.md](.codex/guardrails.md)
+- **Guardrails**: [../.codex/guardrails.md](../.codex/guardrails.md)
 
 ### Support
 

@@ -37,7 +37,7 @@ python scripts/monitoring/artifact_monitor.py --dry-run
 python scripts/monitoring/artifact_monitor.py --verbose
 
 # Specify custom config
-python scripts/monitoring/artifact_monitor.py --config .codex/config/monitoring.yaml
+python scripts/monitoring/artifact_monitor.py --config ./.codex/config/monitoring.yaml
 
 # Specify state file location
 python scripts/monitoring/artifact_monitor.py --state .codex/monitoring/state/monitor_state.json
@@ -49,7 +49,7 @@ python scripts/monitoring/artifact_monitor.py --state .codex/monitoring/state/mo
 - `CODEX_MASTER_KEY`: Optional fallback token for authenticated operations
 
 **CLI Flags:**
-- `--config PATH`: Path to monitoring configuration file (default: .codex/config/monitoring.yaml)
+- `--config PATH`: Path to monitoring configuration file (default: ./.codex/config/monitoring.yaml)
 - `--state PATH`: Path to state file for tracking monitoring history (default: .codex/monitoring/state/monitor_state.json)
 - `--dry-run`: Run without creating GitHub issues (testing mode)
 - `--verbose`: Enable detailed logging output
@@ -68,7 +68,7 @@ Orchestrates multiple monitoring agents and coordinates their activities.
 python scripts/monitoring/agent_orchestrator.py
 
 # With custom config
-python scripts/monitoring/agent_orchestrator.py --config .codex/config/monitoring.yaml
+python scripts/monitoring/agent_orchestrator.py --config ./.codex/config/monitoring.yaml
 ```
 
 ### pattern_analyzer.py
@@ -99,7 +99,7 @@ python scripts/monitoring/issue_manager.py close --issue-id 12345
 
 ## Configuration
 
-See `.codex/config/monitoring.yaml` for configuration options:
+See `./.codex/config/monitoring.yaml` for configuration options:
 
 ```yaml
 monitoring:
@@ -183,7 +183,7 @@ If you encounter configuration errors:
 python validate_monitoring_config.py
 
 # Check YAML syntax
-yamllint .codex/config/monitoring.yaml
+yamllint ./.codex/config/monitoring.yaml
 ```
 
 ## Security Considerations
@@ -194,9 +194,9 @@ yamllint .codex/config/monitoring.yaml
 
 ## Related Documentation
 
-- [Monitoring Configuration](.codex/config/monitoring.yaml)
-- [Artifact Monitoring Workflow](.github/workflows/artifact-monitoring.yml)
-- [PyGithub Installation Plan](.codex/plans/pygithub_installation_plan.md)
+- [Monitoring Configuration](./.codex/config/monitoring.yaml)
+- [Artifact Monitoring Workflow](./.github/workflows/artifact-monitoring.yml)
+- [PyGithub Installation Plan](./.codex/plans/pygithub_installation_plan.md)
 - [Phase 32 Continuation Prompt](.codex/cognitive_brain/PHASE_32_CONTINUATION_PROMPT.md)
 
 ## Support

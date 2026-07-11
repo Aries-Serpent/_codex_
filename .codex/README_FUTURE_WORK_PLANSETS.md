@@ -179,7 +179,7 @@ After completing all three Future Work items:
 
 ### Policy and Guidelines
 - [.codex/CODEBASE_AGENCY_POLICY.md](./CODEBASE_AGENCY_POLICY.md) - Mandatory compliance
-- [../.codex/archive/deprecated/AGENTS.md](../.github/.codex/archive/deprecated/AGENTS.md) - Agent operational guidelines
+- [../.codex/archive/deprecated/AGENTS.md](./.codex/archive/deprecated/AGENTS.md) - Agent operational guidelines
 
 ### Current Status
 - [../COPILOT_CONTINUATION_PROMPT.md](../COPILOT_CONTINUATION_PROMPT.md) - All IPs complete

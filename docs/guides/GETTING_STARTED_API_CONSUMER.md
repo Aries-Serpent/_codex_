@@ -439,7 +439,7 @@ response = client.predict(...)
 
 ## 📚 Documentation
 
-- **Full API Reference**: [API Docs](../api/API_REFERENCE.md)
+- **Full API Reference**: [API Docs](../API_REFERENCE_PHASE_15_16.md)
 - **Python SDK Docs**: [SDK Documentation](../api/PYTHON_SDK.md)
 - **Examples**: [Code Examples](../examples/)
 - **Status Page**: [API Status](https://status.codex-ml.dev)

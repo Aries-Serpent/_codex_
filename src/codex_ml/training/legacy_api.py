@@ -528,27 +528,64 @@ def _stop_system_metrics_logger(logger: Any) -> None:
             logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
 
 
-def _coerce_config(raw: Mapping[str, Any]) -> TrainingRunConfig:
-    mapping = _normalize_config(raw)
-    base = TrainingRunConfig()
-
-    dataset_cfg = dict(base.dataset)
-    dataset_cfg["train_texts"] = list(dataset_cfg.get("train_texts", []))
-    dataset_cfg["eval_texts"] = list(dataset_cfg.get("eval_texts", []))
-
+def _extract_dataset_config_section(
+    mapping: Mapping[str, Any], training_section: Mapping[str, Any]
+) -> dict[str, Any]:
+    """Extract and merge dataset configuration from mapping and training section.
+    [Helper method - complexity reduction]"""
+    dataset_cfg: dict[str, Any] = {
+        "train_texts": [],
+        "eval_texts": [],
+    }
+    
     maybe_dataset = mapping.get("dataset", {})
     if isinstance(maybe_dataset, Mapping):
         _merge_dataset_config(dataset_cfg, maybe_dataset)
-
-    training_section = mapping.get("training", {})
+    
     if isinstance(training_section, Mapping):
         _merge_dataset_config(dataset_cfg, training_section)
         nested_dataset = training_section.get("dataset")
         if isinstance(nested_dataset, Mapping):
             _merge_dataset_config(dataset_cfg, nested_dataset)
-    else:
+    
+    return dataset_cfg
+
+
+def _extract_checkpoint_config_section(
+    mapping: Mapping[str, Any], training_section: Mapping[str, Any]
+) -> dict[str, Any] | None:
+    """Extract checkpoint configuration from mapping and training section.
+    [Helper method - complexity reduction]"""
+    checkpoint_section: Mapping[str, Any] | None = None
+    maybe_checkpoint = mapping.get("checkpoint")
+    if isinstance(maybe_checkpoint, Mapping):
+        checkpoint_section = maybe_checkpoint
+    
+    if isinstance(training_section, Mapping):
+        nested_checkpoint = training_section.get("checkpoint")
+        if isinstance(nested_checkpoint, Mapping):
+            checkpoint_section = nested_checkpoint
+    
+    return dict(checkpoint_section) if checkpoint_section else None
+
+
+def _coerce_config(raw: Mapping[str, Any]) -> TrainingRunConfig:
+    mapping = _normalize_config(raw)
+    base = TrainingRunConfig()
+
+    # Extract training section for later use
+    training_section = mapping.get("training", {})
+    if not isinstance(training_section, Mapping):
         training_section = {}
 
+    # Use helper to extract and merge dataset config
+    dataset_cfg = dict(base.dataset)
+    dataset_cfg["train_texts"] = list(dataset_cfg.get("train_texts", []))
+    dataset_cfg["eval_texts"] = list(dataset_cfg.get("eval_texts", []))
+    extracted_dataset = _extract_dataset_config_section(mapping, training_section)
+    dataset_cfg.update(extracted_dataset)
+
+    # Extract safety config
     safety_mapping: Any = mapping.get("safety")
     if isinstance(training_section, Mapping) and training_section.get("safety") is not None:
         safety_mapping = training_section.get("safety")
@@ -585,19 +622,13 @@ def _coerce_config(raw: Mapping[str, Any]) -> TrainingRunConfig:
     checkpoint_every_value: Any = _scalar(
         base.checkpoint_every_n_steps, "checkpoint_every_n_steps", "save_every"
     )
-    checkpoint_section: Mapping[str, Any] | None = None
-    maybe_checkpoint = mapping.get("checkpoint")
-    if isinstance(maybe_checkpoint, Mapping):
-        checkpoint_section = maybe_checkpoint
-    if isinstance(training_section, Mapping):
+    
+    # Use helper to extract checkpoint config
+    checkpoint_section = _extract_checkpoint_config_section(mapping, training_section)
+    if checkpoint_section is not None:
         if checkpoint_dir is None:
-            checkpoint_dir = training_section.get("checkpoint_dir")
-        nested_checkpoint = training_section.get("checkpoint")
-        if isinstance(nested_checkpoint, Mapping):
-            checkpoint_section = nested_checkpoint
-    if isinstance(checkpoint_section, Mapping):
-        if checkpoint_dir is None and checkpoint_section.get("dir") is not None:
             checkpoint_dir = checkpoint_section.get("dir")
+
         if checkpoint_section.get("every_n_steps") is not None:
             checkpoint_every_value = checkpoint_section.get("every_n_steps")
 

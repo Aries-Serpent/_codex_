@@ -225,7 +225,7 @@ except TypeError:
 ## 🔗 Related Documentation
 
 - [PR4351_whats_next.md](../roadmap/PR4351_whats_next.md) - Next steps and planning
-- [.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md](../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md) - Session summaries
+- [.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md](../accountability/AGENT_ACCOUNTABILITY_REPORT.md) - Session summaries
 - [CHANGELOG.md](../../CHANGELOG.md) - Detailed change log
 - [.codex/CODEBASE_AGENCY_POLICY.md](../../.codex/CODEBASE_AGENCY_POLICY.md) - Agency policy
 

@@ -6,7 +6,7 @@
 ## Contents
 
 - [INDEX](INDEX.md)
-- [architecture](architecture.md)
+- [architecture](../architecture/ARCHITECTURE_CONSOLIDATED.md)
 - [docs_architecture_diataxis](docs_architecture_diataxis.md)
 - [golden_harness](golden_harness.md)
 - [reproducibility](reproducibility.md)

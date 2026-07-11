@@ -109,16 +109,16 @@ nox -s format
 
 ## 📚 Documentation
 
-- [Codex Pipeline Guide](../docs/plans/operational_runbook.md)
-- [Architecture Overview](../docs/ARCHITECTURE.md)
-- [API Reference](../docs/API_REFERENCE.md)
-- [Cognitive Map](../docs/system/CODEBASE_COGNITIVE_MAP.md)
+- [Codex Pipeline Guide](../../docs/plans/operational_runbook.md)
+- [Architecture Overview](../../docs/ARCHITECTURE.md)
+- [API Reference](../../docs/API_REFERENCE.md)
+- [Cognitive Map](../../docs/system/CODEBASE_COGNITIVE_MAP.md)
 
 ---
 
 ## 🤝 Contributing
 
-See [Contributing Guide](../docs/CONTRIBUTING.md) for development workflow.
+See [Contributing Guide](../../CONTRIBUTING.md) for development workflow.
 
 ---
 

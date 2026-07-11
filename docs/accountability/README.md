@@ -6,7 +6,7 @@
 
 ## 🎯 Quick Start
 
-- **New to this report?** Start with [.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md](./.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md) for the index
+- **New to this report?** Start with [.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md](./AGENT_ACCOUNTABILITY_REPORT.md) for the index
 - **Want the latest sessions?** Jump to [Group 32](./chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_32.md)
 - **Looking for specific sessions?** Use the index and navigate via the table
 
@@ -57,7 +57,7 @@ docs/accountability/
 - [📄 Group 03 (Sessions 21-30)](./chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_03.md)
 
 ### Mid-Range Sessions (Groups 11-21)
-- [📄 Group 11-21 (Sessions 101-210)](./.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md#all-groups-1-32)
+- [📄 Group 11-21 (Sessions 101-210)](./AGENT_ACCOUNTABILITY_REPORT.md#all-groups-1-32)
 
 ---
 
@@ -98,7 +98,7 @@ docs/accountability/
 ## 📖 How to Use This Report
 
 ### Find a Session by ID
-1. Open [.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md](./.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md)
+1. Open [.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md](./AGENT_ACCOUNTABILITY_REPORT.md)
 2. Use Ctrl+F to search for session ID (e.g., "S250")
 3. Click the group link to navigate to that chunk
 4. Session details are in that chunk
@@ -109,7 +109,7 @@ docs/accountability/
 3. Use Next/Previous links to browse adjacent groups
 
 ### Access Full Index
-- [Complete list of all 32 groups](./.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md)
+- [Complete list of all 32 groups](./AGENT_ACCOUNTABILITY_REPORT.md)
 
 ---
 
@@ -160,7 +160,7 @@ Available for reference if needed. Contains the exact same data as all 32 chunks
 ## 📞 Support
 
 **Questions?**
-- Check the index: [.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md](./.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md)
+- Check the index: [.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md](./AGENT_ACCOUNTABILITY_REPORT.md)
 - Use Ctrl+F to search
 - Navigate via group links
 

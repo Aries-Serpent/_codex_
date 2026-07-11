@@ -191,3 +191,33 @@ class TestREADMELinks:
         ]
 
         assert len(external_http) == 0, f"External links should use HTTPS: {external_http[:3]}"
+
+
+class TestREADMEExampleCompleteness:
+    """Tests for completeness of README examples."""
+
+    def test_readme_installation_example(self):
+        """Verify README has installation example."""
+        readme = REPO_ROOT / "README.md"
+        content = readme.read_text(encoding="utf-8").lower()
+        
+        install_keywords = ["pip", "conda", "install", "clone", "git"]
+        matches = sum(1 for kw in install_keywords if kw in content)
+        assert matches >= 2, "README should have installation instructions"
+
+    def test_readme_usage_example_complete(self):
+        """Verify README usage example is complete."""
+        readme = REPO_ROOT / "README.md"
+        content = readme.read_text(encoding="utf-8")
+        
+        # Extract code blocks
+        pattern = re.compile(r"```(\w*)\n(.*?)```", re.DOTALL)
+        code_blocks = pattern.findall(content)
+        
+        # Should have at least one substantial code example
+        substantial_blocks = [
+            code for lang, code in code_blocks
+            if lang.lower() in ("python", "py", "") and len(code.strip()) > 50
+        ]
+        
+        assert len(substantial_blocks) > 0, "README should have substantial usage examples"

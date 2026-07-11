@@ -18,7 +18,7 @@ Complete documentation for the _codex_ AI/ML platform. Find guides, API referenc
 1. **Get started:** [Quickstart Guide](getting-started.md)
 2. **Understand the system:** [Architecture Quick Reference](ARCHITECTURE_QUICK_REFERENCE.md)
 3. **Code & test:** [Contributing Guidelines](CONTRIBUTING.md), [Testing Guide](TESTING.md)
-4. **Integrate:** [API Reference](API_REFERENCE.md), [CLI Guide](cli.md)
+4. **Integrate:** [API Reference](API_REFERENCE.md), [CLI Guide](./api/cli.md)
 
 ### 🔧 **DevOps & Operations**
 1. **Deploy:** [Deployment Guide](DEPLOYMENT_GUIDE.md)
@@ -41,7 +41,7 @@ Complete documentation for the _codex_ AI/ML platform. Find guides, API referenc
 - [Contributing](CONTRIBUTING.md) — Contribute to the project
 
 ### User Guides
-- [CLI Usage](cli.md) — Command-line interface guide
+- [CLI Usage](./api/cli.md) — Command-line interface guide
 - **API Documentation** — Complete API reference (NEW!)
   - [API Documentation Index](API_DOCUMENTATION_INDEX.md) — Start here
   - [Core API Reference](CORE_API_REFERENCE.md) — CLI, training, utilities

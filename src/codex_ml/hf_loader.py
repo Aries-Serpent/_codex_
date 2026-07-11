@@ -233,6 +233,126 @@ def load_model(
     return model
 
 
+def _build_loader_kwargs(
+    repo_id: RepoId,
+    revision: Optional[str],
+    trust_remote_code: bool,
+    dtype: Optional[str],
+) -> tuple[str, dict[str, Any]]:
+    """Build kwargs for AutoModelForCausalLM.from_pretrained.
+    
+    Reduces complexity by extracting argument building logic (5+ branches).
+    """
+    from typing import Any, Optional
+    from codex_ml.hf_loader import _required_revision, _map_amp_dtype
+    
+    rev = _required_revision(repo_id, revision)
+    torch_dtype = _map_amp_dtype(dtype)
+    loader_kwargs: dict[str, Any] = {
+        "revision": rev,
+        "trust_remote_code": trust_remote_code,
+    }
+    if torch_dtype is not None:
+        loader_kwargs["torch_dtype"] = torch_dtype
+    
+    return rev, loader_kwargs
+
+
+def _load_model_with_fallback(
+    repo_id: RepoId,
+    loader_kwargs: dict[str, Any],
+) -> Any:
+    """Load model with fallback for older transformers versions.
+    
+    Reduces complexity by extracting fallback logic (2 branches).
+    """
+    from transformers import AutoModelForCausalLM
+    import logging
+    
+    logger = logging.getLogger(__name__)
+    
+    try:
+        model = AutoModelForCausalLM.from_pretrained(
+            repo_id,
+            **loader_kwargs,
+        )
+    except TypeError as e:
+        logger.debug("TypeError during model load with torch_dtype, retrying without it")
+        logger.warning("TypeError: retrying", exc_info=True)
+        # Older versions of transformers do not support the ``torch_dtype`` kwarg.
+        loader_kwargs.pop("torch_dtype", None)
+        model = AutoModelForCausalLM.from_pretrained(
+            repo_id,
+            **loader_kwargs,
+        )
+    
+    return model
+
+
+def _move_model_to_device(model: Any, device: Optional[str]) -> None:
+    """Move model to target device (best-effort).
+    
+    Reduces complexity by extracting device movement (1 branch).
+    """
+    if device and model is not None:
+        try:
+            model.to(device)
+        except (ImportError, AttributeError) as exc:
+            logger.info("load_causal_lm: unable to move model to %s: %s", device, exc)
+
+
+def _apply_lora_config(model: Any, peft_cfg: dict[str, Any]) -> None:
+    """Apply LoRA configuration to model.
+    
+    Reduces complexity by extracting LoRA setup (5 nested try-except blocks → 1).
+    """
+    try:
+        from peft import LoraConfig, get_peft_model
+    except (ImportError, AttributeError) as exc:
+        logger.info("load_causal_lm: LoRA not applied (dependency missing): %s", exc)
+        return
+    
+    try:
+        lora = LoraConfig(**peft_cfg)
+    except (ValueError, TypeError, RuntimeError) as exc:
+        logger.info("load_causal_lm: LoRA config rejected: %s", exc)
+        return
+    
+    try:
+        model = get_peft_model(model, lora)
+        logger.info(
+            "load_causal_lm: LoRA attached (r=%s, alpha=%s)",
+            getattr(lora, "r", "?"),
+            getattr(lora, "lora_alpha", "?"),
+        )
+    except (IOError, OSError) as exc:
+        logger.info("load_causal_lm: LoRA not applied (runtime error): %s", exc)
+
+
+def _load_peft_adapter(model: Any, adapter_path: str) -> None:
+    """Load PEFT adapter from path.
+    
+    Reduces complexity by extracting adapter loading (2 nested try-except blocks → 1).
+    """
+    try:
+        from peft import PeftModel
+    except (IOError, OSError) as exc:
+        logger.info(
+            "load_causal_lm: PEFT adapter not applied (dependency missing): %s",
+            exc,
+        )
+        return
+    
+    try:
+        model = PeftModel.from_pretrained(model, adapter_path)
+        logger.info(
+            "load_causal_lm: PEFT adapter loaded from %s",
+            adapter_path,
+        )
+    except (IOError, OSError) as exc:
+        logger.info("load_causal_lm: PEFT adapter not applied (runtime error): %s", exc)
+
+
 def load_causal_lm(
     repo_id: RepoId,
     *,
@@ -243,8 +363,13 @@ def load_causal_lm(
     peft_cfg: Optional[dict[str, Any]] = None,
     peft_path: Optional[str | os.PathLike[str]] = None,
 ) -> PreTrainedModel:  # type: ignore[valid-type]
+    """Load a causal language model from HuggingFace Hub.
+    
+    Reduced complexity through strategic helper extraction.
+    """
     if not TRANSFORMERS_AVAILABLE or AutoModelForCausalLM is None:
         raise ImportError("transformers is required to load causal language models")
+    
     if isinstance(repo_id, str):
         ctor = get_registered_causal_lm(repo_id)
         if ctor is not None:
@@ -257,83 +382,21 @@ def load_causal_lm(
                 kwargs["peft_cfg"] = peft_cfg
             return ctor(**kwargs)
 
-    rev = _required_revision(repo_id, revision)
-    torch_dtype = _map_amp_dtype(dtype)
-    loader_kwargs: dict[str, Any] = {
-        "revision": rev,
-        "trust_remote_code": trust_remote_code,
-    }
-    if torch_dtype is not None:
-        loader_kwargs["torch_dtype"] = torch_dtype
+    # Extract model loading with helper
+    _, loader_kwargs = _build_loader_kwargs(repo_id, revision, trust_remote_code, dtype)
+    model = _load_model_with_fallback(repo_id, loader_kwargs)
+    
+    # Move to device (best-effort)
+    _move_model_to_device(model, device)
 
-    try:
-        model = AutoModelForCausalLM.from_pretrained(  # nosec B615 - revision enforced via _required_revision
-            repo_id,
-            **loader_kwargs,
-        )
-    except TypeError as e:
-        type(e).__name__
-        logger.debug("TypeError: <ERROR_TYPE>")
-        logger.warning("TypeError: <ERROR_TYPE>", exc_info=True)
-        # Older versions of transformers do not support the ``torch_dtype`` kwarg.
-        loader_kwargs.pop("torch_dtype", None)
-        model = AutoModelForCausalLM.from_pretrained(
-            repo_id,
-            **loader_kwargs,
-        )
-
-    if device and model is not None:
-        try:
-            model = model.to(device)
-        except (
-            ImportError,
-            AttributeError,
-        ) as exc:  # pragma: no cover - device mapping best-effort
-            logger.info("load_causal_lm: unable to move model to %s: %s", device, exc)
-
+    # Apply LoRA configuration if provided
     if peft_cfg:
-        try:
-            from peft import LoraConfig, get_peft_model
-        except (ImportError, AttributeError) as exc:  # pragma: no cover - optional dependency
-            logger.info("load_causal_lm: LoRA not applied (dependency missing): %s", exc)
-        else:
-            try:
-                lora = LoraConfig(**peft_cfg)
-            except (
-                ValueError,
-                TypeError,
-                RuntimeError,
-            ) as exc:  # pragma: no cover - invalid config values
-                logger.info("load_causal_lm: LoRA config rejected: %s", exc)
-            else:
-                try:
-                    model = get_peft_model(model, lora)
-                    logger.info(
-                        "load_causal_lm: LoRA attached (r=%s, alpha=%s)",
-                        getattr(lora, "r", "?"),
-                        getattr(lora, "lora_alpha", "?"),
-                    )
-                except (IOError, OSError) as exc:  # pragma: no cover - PEFT runtime failure
-                    logger.info("load_causal_lm: LoRA not applied (runtime error): %s", exc)
+        _apply_lora_config(model, peft_cfg)
 
+    # Load PEFT adapter if provided
     adapter_path = peft_path or os.getenv("PEFT_ADAPTER_PATH")
     if adapter_path:
-        try:
-            from peft import PeftModel
-        except (IOError, OSError) as exc:  # pragma: no cover - optional dependency
-            logger.info(
-                "load_causal_lm: PEFT adapter not applied (dependency missing): %s",
-                exc,
-            )
-        else:
-            try:
-                model = PeftModel.from_pretrained(model, adapter_path)
-                logger.info(
-                    "load_causal_lm: PEFT adapter loaded from %s",
-                    adapter_path,
-                )
-            except (IOError, OSError) as exc:  # pragma: no cover - runtime failure
-                logger.info("load_causal_lm: PEFT adapter not applied (runtime error): %s", exc)
+        _load_peft_adapter(model, adapter_path)
 
     return model
 
