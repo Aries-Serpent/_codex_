@@ -123,7 +123,7 @@
    - Caching for repeated requests
    - Rate limiting handling
 
-3. **[API Reference - Complete](../api/API_REFERENCE.md)**
+3. **[API Reference - Complete](../API_REFERENCE.md)**
    - Endpoint documentation
    - Request/response schemas
    - Code examples (Python, Node.js, curl)
@@ -204,7 +204,7 @@
 **I want to integrate with my app...**
 - [API Consumer Guide](./GETTING_STARTED_API_CONSUMER.md)
 - [Integration Workflow](./COMMON_WORKFLOWS.md#workflow-7-integrate-with-external-api)
-- [API Reference](../api/API_REFERENCE.md)
+- [API Reference](../API_REFERENCE.md)
 - [SDK Examples](../examples/SDK_EXAMPLES.md)
 
 ---

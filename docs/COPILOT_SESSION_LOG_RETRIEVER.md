@@ -285,8 +285,8 @@ If file operations aren't detected:
 
 ## Related Documentation
 
-- [Session Logger](../src/codex/logging/session_logger.py)
-- [Session Query](../src/codex/logging/session_query.py)
+- [Session Logger](../../src/codex/logging/session_logger.py)
+- [Session Query](../../src/codex/logging/session_query.py)
 - [.codex/archive/deprecated/AGENTS.md](../.github/.codex/archive/deprecated/AGENTS.md)
 - [Operational Guidelines](./agent/OPERATIONAL_GUIDELINES.md)
 

@@ -56,8 +56,8 @@ pip install codex-ml==0.1.0
 ### Documentation
 
 - **[Installation Guide](.codex/archive/misc/INSTALL.md)** - Detailed setup instructions
-- **[Quick Start ML](docs/quickstart/QUICK_START_ML.md)** - 5-minute introduction
-- **[Getting Started](docs/getting-started.md)** - Comprehensive guide
+- **[Quick Start ML](../quickstart/QUICK_START_ML.md)** - 5-minute introduction
+- **[Getting Started](../quickstart/QUICK_START_ML.md)** - Comprehensive guide
 - **[Architecture Overview](docs/system/CODEBASE_COGNITIVE_MAP.md)** - System design
 
 ### Downloads

@@ -22,7 +22,7 @@ Main CLI module providing command-line interface entry points.
 
 For detailed CLI documentation, see:
 
-- [CLI Module](../cli.md) - CLI implementation details
+- [CLI Module](../reference/cli.md) - CLI implementation details
 - [Reference CLI](../reference/cli.md) - CLI reference documentation
 - [API Index](index.md) - Main API documentation index
 
@@ -44,7 +44,7 @@ python -m codex.cli dataset --list
 
 ## Related Documentation
 
-- [CLI Implementation](../cli.md)
+- [CLI Implementation](../reference/cli.md)
 - [Reference Documentation](../reference/cli.md)
 - [Unified Training](../dev/unified_training.md) - Training guide
 - [PEFT Configuration](../guides/peft_configuration.md) - Configuration reference
