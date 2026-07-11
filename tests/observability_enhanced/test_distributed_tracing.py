@@ -15,7 +15,7 @@ Test Categories:
 Total: 25+ comprehensive distributed tracing tests
 """
 
-import json
+import json  # pragma: allowlist secret  # pragma: allowlist secret
 import re
 import threading
 import time

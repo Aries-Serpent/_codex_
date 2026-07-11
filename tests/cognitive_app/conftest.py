@@ -15,7 +15,7 @@ import pytest
 
 
 # ──────────────────────────────────────────────────────────────────────────────
-# Database Fixtures
+# Database Fixtures  # pragma: allowlist secret  # pragma: allowlist secret
 # ──────────────────────────────────────────────────────────────────────────────
 
 

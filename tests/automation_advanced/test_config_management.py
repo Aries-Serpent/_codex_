@@ -15,7 +15,7 @@ Comprehensive test suite for configuration management automation including:
 Target: 20+ tests, ≥90% coverage
 """
 
-import pytest
+import pytest  # pragma: allowlist secret  # pragma: allowlist secret  # pragma: allowlist secret  # pragma: allowlist secret  # pragma: allowlist secret  # pragma: allowlist secret  # pragma: allowlist secret  # pragma: allowlist secret  # pragma: allowlist secret
 import json
 import yaml
 import tempfile
