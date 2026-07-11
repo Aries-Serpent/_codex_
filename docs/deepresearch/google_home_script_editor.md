@@ -1,4 +1,6 @@
 # DeepResearch: Google Home Script Editor — Automations, Templates, and File Formats
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 ## Table of Contents
 

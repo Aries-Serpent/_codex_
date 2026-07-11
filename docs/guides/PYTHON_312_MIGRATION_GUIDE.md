@@ -1,12 +1,14 @@
 # Python 3.12 Migration Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Version:** 1.0.0  
-**Last Updated:** 2026-01-25  
+**Last Updated: 2026-07-11
 **Target Audience:** Users and Contributors
 
 ---
 
-## 🎯 Overview
+##  Overview
 
 This repository now **requires Python 3.12.10 or later** (but < 3.13). Python 3.11 and earlier versions are no longer supported.
 
@@ -27,8 +29,8 @@ This repository now **requires Python 3.12.10 or later** (but < 3.13). Python 3.
 - **Workflows:** All CI/CD now runs on Python 3.12 only
 
 ### Impact
-- ❌ Python 3.11 and earlier will **NOT work**
-- ✅ Python 3.12.10+ will work
+-  Python 3.11 and earlier will **NOT work**
+-  Python 3.12.10+ will work
 - ⚠️ Python 3.13+ will **NOT work** (not yet supported)
 
 ---
@@ -86,7 +88,7 @@ python3.12 --version  # Should show Python 3.12.x
 **Windows:**
 1. Download Python 3.12.10 from [python.org](https://www.python.org/downloads/)
 2. Run the installer
-3. ✅ **IMPORTANT:** Check "Add Python 3.12 to PATH"
+3.  **IMPORTANT:** Check "Add Python 3.12 to PATH"
 4. Click "Install Now"
 5. Verify in Command Prompt:
    ```cmd
@@ -362,7 +364,7 @@ def process(data: str | int) -> list[dict[str, str]] | None:
 
 ---
 
-## 📚 Additional Resources
+##  Additional Resources
 
 ### Official Python Documentation
 - [What's New in Python 3.12](https://docs.python.org/3/whatsnew/3.12.html)
@@ -381,7 +383,7 @@ def process(data: str | int) -> list[dict[str, str]] | None:
 
 ---
 
-## ✅ Verification Checklist
+##  Verification Checklist
 
 After migration, verify:
 
@@ -399,7 +401,7 @@ After migration, verify:
 
 ## 🎉 Success!
 
-If you've completed all steps and verification passes, you're all set! Welcome to Python 3.12! 🚀
+If you've completed all steps and verification passes, you're all set! Welcome to Python 3.12! 
 
 **Need Help?**
 - Create an issue on GitHub
@@ -409,5 +411,5 @@ If you've completed all steps and verification passes, you're all set! Welcome t
 ---
 
 **Document Version:** 1.0.0  
-**Last Updated:** 2026-01-25  
+**Last Updated: 2026-07-11
 **Maintained by:** Aries-Serpent/_codex_ Team

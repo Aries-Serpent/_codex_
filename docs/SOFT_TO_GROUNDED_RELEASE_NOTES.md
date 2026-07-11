@@ -1,6 +1,8 @@
 # Soft → GROUNDED Conversion: Release Notes & User Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 > **Version:** 1.0.0 | **Date:** 2026-03-02  
 > **Scope:** Complete enforcement infrastructure upgrade (Phases 0–6)  
@@ -65,7 +67,7 @@ Comment on any PR to see how agents are distributed across enforcement tiers:
 
 **Example output (as PR comment):**
 ```
-📊 Agent Tier Distribution
+ Agent Tier Distribution
 GROUNDED: 8 agents
 PARTIAL: 144 agents
 SOFT: 0 agents
@@ -204,7 +206,7 @@ These 5 gates run on every PR and block merges on violations:
 
 ## Merge Safety Assessment
 
-### ✅ Safe to Merge
+###  Safe to Merge
 
 This PR is safe to merge with `main`. Rationale:
 

@@ -1,9 +1,11 @@
 # 🔑 CODEX_MASTER_KEY & CODEX_BACKUP_KEY — Token Rotation Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **For:** Human administrator (`@mbaetiong`) — manual GitHub UI / CLI steps required  
 > **Scope:** `CODEX_MASTER_KEY` and `CODEX_BACKUP_KEY` repository secrets  
 > **Policy:** Rotate every **90 days** or immediately on suspected compromise  
-> **Last Updated:** 2026-03-17  
+> **Last Updated: 2026-07-11
 > **Version:** 1.0.0
 
 ---
@@ -22,10 +24,10 @@ flowchart TD
     REQUIRED_SCOPES --> UPDATE_SECRET["§3 Update CODEX_MASTER_KEY secret\nin repository settings"]
     UPDATE_SECRET --> UPDATE_BACKUP["§4 Rotate CODEX_BACKUP_KEY\n(same process, different PAT)"]
     UPDATE_BACKUP --> VERIFY["§5 Verify — trigger\nagent-auth-delegation.yml"]
-    VERIFY -->|✅ Pass| REVOKE_OLD["§6 Revoke old PAT\n(GitHub Developer Settings)"]
-    VERIFY -->|❌ Fail| DEBUG["§7 Debug — see Troubleshooting"]
+    VERIFY -->| Pass| REVOKE_OLD["§6 Revoke old PAT\n(GitHub Developer Settings)"]
+    VERIFY -->| Fail| DEBUG["§7 Debug — see Troubleshooting"]
     REVOKE_OLD --> LOG["§8 Log rotation in\nthis file + CHANGELOG.md"]
-    LOG --> DONE([✅ Rotation Complete])
+    LOG --> DONE([ Rotation Complete])
 ```
 
 ---
@@ -126,16 +128,16 @@ Or navigate to:
 ### Expected output (success)
 
 ```
-✅ CODEX_MASTER_KEY: secret present (length > 0)
-✅ Cognitive Pre-flight Check: PASS
-✅ activate-delegation: success
+ CODEX_MASTER_KEY: secret present (length > 0)
+ Cognitive Pre-flight Check: PASS
+ activate-delegation: success
 ```
 
 ### Check in CI log
 
-Look for the `🧠 Cognitive Pre-flight Check` job → step `Set repo variables via CODEX_MASTER_KEY`:
-- Status: ✅ `COPILOT_AGENT_AUTH_ENABLED=true`
-- Status: ✅ Session number incremented
+Look for the ` Cognitive Pre-flight Check` job → step `Set repo variables via CODEX_MASTER_KEY`:
+- Status:  `COPILOT_AGENT_AUTH_ENABLED=true`
+- Status:  Session number incremented
 
 ---
 

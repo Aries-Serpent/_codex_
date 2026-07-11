@@ -1,4 +1,6 @@
 # [Prompt Template]: Intent Validation & Plan of Action Approval Gate
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 ## Table of Contents
 
@@ -75,7 +77,7 @@
 > **⚠️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
-> 🧠 Roles: [Primary: Execution Lead], [Secondary: Audit Orchestrator]
+>  Roles: [Primary: Execution Lead], [Secondary: Audit Orchestrator]
 > ⚡ Energy: 5
 > ⚛️ Physics:
 > Path🛤️ [Assess → Plan → Execute → Verify]

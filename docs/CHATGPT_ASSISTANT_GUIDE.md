@@ -1,6 +1,8 @@
 # Codex ML - ChatGPT Assistant Setup Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 **Version:** 1.0.0  
 **Date:** Dec 6, 2025  
@@ -13,7 +15,7 @@
 ### System Status
 
 ```
-Status: ✅ PRODUCTION READY
+Status:  PRODUCTION READY
 Azure MLOps Level: 4 (Perfect 71/71 - 100%)
 Components: 38 major systems
 Test Coverage: 90% (125+ tests, 100% pass rate)
@@ -208,7 +210,7 @@ for name, module in components.items():
 
 ```bash
 # Count implemented capabilities
-grep -c "✅ Met" .github/prompts/followup_execution_plan/AZURE_MLOPS_CAPABILITY_ASSESSMENT.md
+grep -c " Met" .github/prompts/followup_execution_plan/AZURE_MLOPS_CAPABILITY_ASSESSMENT.md
 
 # Expected: 71
 ```
@@ -295,7 +297,7 @@ python3 -c "from codex_ml.events import EventBus" 2>/dev/null && echo "✓ Event
 [ -f "scripts/k8s_deploy.sh" ] && echo "✓ Deploy script OK" || echo "✗ Deploy script MISSING"
 
 # 4. Check capabilities
-CAPS=$(grep -c "✅ Met" .github/prompts/followup_execution_plan/AZURE_MLOPS_CAPABILITY_ASSESSMENT.md 2>/dev/null)
+CAPS=$(grep -c " Met" .github/prompts/followup_execution_plan/AZURE_MLOPS_CAPABILITY_ASSESSMENT.md 2>/dev/null)
 [ "$CAPS" -eq 71 ] && echo "✓ Capabilities: 71/71" || echo "⚠ Capabilities: $CAPS/71"
 
 echo ""
@@ -403,5 +405,5 @@ export TRANSFORMERS_OFFLINE="1"
 ---
 
 **Last Updated:** Dec 6, 2025  
-**Status:** Production Ready ✅  
-**Capabilities:** 71/71 (100%) ✅
+**Status:** Production Ready   
+**Capabilities:** 71/71 (100%) 

@@ -1,8 +1,10 @@
 # Delegated-Comment Workflows — Reference, Diagrams & Audit
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
-> **Status:** ✅ Current (S227 · 2026-03-29) — Race condition fixes applied; REQ-13 comment-review-gate added  
+> **Status:**  Current (S227 · 2026-03-29) — Race condition fixes applied; REQ-13 comment-review-gate added  
 > **Scope:** Every GitHub Actions workflow that posts PR/issue comments on behalf of the maintainer or an autonomous agent.  
 > **Run-link attribution:** All comments now end with `_[🔗 Workflow run](https://github.com/Aries-Serpent/_codex_/actions/runs/RUN_ID)_` so every automated post can be traced to its exact run.
 
@@ -54,7 +56,7 @@ graph TB
         R12["pages-scheduled-validation.yml\n(JS-CONCAT issue)"]
     end
 
-    subgraph SESSION["🤖 Session Lifecycle"]
+    subgraph SESSION[" Session Lifecycle"]
         S1["agent-auth-delegation.yml\n(checklist + REQ-11 + rescue)"]
         S2["copilot-agent-checkin.yml\n(missed-trigger + incomplete guard)"]
         S3["copilot-agent-session-done.yml\n(retrigger + loop-break)"]
@@ -71,7 +73,7 @@ graph TB
         H3["agent-registry-validation.yml\n(JS-CONCAT validation)"]
     end
 
-    subgraph COST["💰 Cost & Status"]
+    subgraph COST[" Cost & Status"]
         C1["cost-gate.yml\n(JS array master comment)"]
         C2["pr-cost-check.yml\n(JS-TMPL + PY rescue)"]
         C3["consolidated-pr-status.yml\n(post-pr-summary action)"]
@@ -115,41 +117,41 @@ graph TB
 
 | # | Workflow File | Comment Type | Token Used | Trigger | Body Pattern | Run-link Added |
 |---|--------------|--------------|-----------|---------|--------------|----------------|
-| 1 | `actionlint-audit.yml` | Rescue (upsert) | `CODEX_MASTER_KEY` | `workflow_run` | JS-ARRAY + PY-RESCUE | ✅ Both |
-| 2 | `agent-auth-delegation.yml` | Preflight checklist + REQ-11 guard + rescue | `CODEX_MASTER_KEY` | `pull_request` | JS-ARRAY (×3) + PY-RESCUE | ✅ All |
-| 3 | `agent-handoff-gate.yml` | Handoff status | `GITHUB_TOKEN` | `issue_comment` | JS-CONCAT | ✅ |
-| 4 | `agent-registry-validation.yml` | Schema validation | `GITHUB_TOKEN` | `pull_request` | JS-CONCAT + PY-RESCUE | ✅ Both |
-| 5 | `agent-var-writer.yml` | Variable write result | `CODEX_MASTER_KEY` | `workflow_dispatch` | JS-ARRAY (standardised) | ✅ |
-| 6 | `auto-fix-common-issues.yml` | Auto-fix detected issues | `GITHUB_TOKEN` | `pull_request` | JS-TMPL + PY-RESCUE | ✅ Both |
-| 7 | `auto-fix-pr-check.yml` | Fix instructions | `GITHUB_TOKEN` | `pull_request` | PY-RESCUE | ✅ |
-| 8 | `chatops_copilot_trigger.yml` | Reject unauth + status + tier | `CODEX_MASTER_KEY` | `issue_comment` | curl API + PY + JS | ✅ All |
-| 9 | `ci-failure-issue-creator.yml` | Issue body + cross-link + auto-close | `CODEX_MASTER_KEY` | `workflow_run` | JS-ARRAY + inline | ✅ All |
-| 10 | `ci-rescue.yml` | Rescue fallback | `CODEX_MASTER_KEY` | `workflow_run` | PY-CONCAT | ✅ |
-| 11 | `consolidated-pr-status.yml` | PR dashboard | `CODEX_MASTER_KEY` | `workflow_call` | Custom action | ✅ (action) |
-| 12 | `copilot-agent-checkin.yml` | Missed-trigger + incomplete-session + discussion | `CODEX_MASTER_KEY` | `push`+`schedule` | JS-ARRAY (×3) | ✅ All |
-| 13 | `copilot-agent-session-done.yml` | Retrigger + loop-break | `CODEX_MASTER_KEY` | `push` | JS-ARRAY (×2) | ✅ Both |
-| 14 | `copilot-issue-triage.yml` | AI triage summary | `GITHUB_TOKEN` | `issues` | JS-ARRAY | ✅ |
-| 15 | `copilot-iterative-self-healing.yml` | Self-healing escalation | `CODEX_MASTER_KEY` | `workflow_run` | BASH (`gh pr comment`) | ✅ |
-| 16 | `copilot-review-responder.yml` | Apply-review trigger + rescue | `CODEX_MASTER_KEY` | `pull_request_review` | JS-ARRAY + PY-RESCUE | ✅ Both |
-| 17 | `copilot-session-chain.yml` | Session trigger (retrigger + new PR) + rescue | `CODEX_MASTER_KEY` | `workflow_dispatch` | BASH (×2) + PY-RESCUE | ✅ All |
-| 18 | `cost-gate.yml` | Cost proposal master comment + rescue | `GITHUB_TOKEN` | `workflow_call` | JS-ARRAY + PY-RESCUE | ✅ Both |
-| 19 | `e-to-d-transition-gate.yml` | C2 self-heal notice + rescue | `GITHUB_TOKEN` | `pull_request` | JS-ARRAY + PY-RESCUE | ✅ Both |
-| 20 | `iterative-self-healing-ci.yml` | Escalation (printf + heredoc) | `CODEX_MASTER_KEY` | `workflow_run` | BASH (×2) | ✅ Both |
-| 21 | `pages-scheduled-validation.yml` | Pages validation issue comment | `GITHUB_TOKEN` | `schedule` | JS-CONCAT | ✅ |
-| 22 | `pr-cost-check.yml` | Cost summary + rescue | `GITHUB_TOKEN` | `pull_request` | JS-TMPL + PY-RESCUE | ✅ Both |
-| 23 | `pr-followup-generator.yml` | Follow-up prompt notice + rescue | `GITHUB_TOKEN` | `push` | JS-TMPL + PY-RESCUE | ✅ Both |
-| 24 | `pre-flight-validation.yml` | Pre-flight failure notice + rescue | `GITHUB_TOKEN` | `pull_request` | JS-TMPL + PY-RESCUE | ✅ Both |
-| 25 | `pre-merge-validation.yml` | Rescue | `CODEX_MASTER_KEY` | `pull_request` | PY-RESCUE | ✅ |
-| 26 | `reference-integrity.yml` | Ref-check gate + agent file size + rescue | `GITHUB_TOKEN` | `pull_request` | JS inline + PY-RESCUE | ✅ All |
-| 27 | `resilient_validation.yml` | Rescue (upsert, sharded ×2) | `CODEX_MASTER_KEY` | `pull_request` | JS-ARRAY (×2) | ✅ Both |
-| 28 | `root-org-validation.yml` | Validation report (upsert) + rescue | `GITHUB_TOKEN` | `pull_request` | JS-ARRAY + PY-RESCUE | ✅ Both |
-| 29 | `rust_swarm_ci.yml` | Benchmark results + rescue | `GITHUB_TOKEN` | `pull_request` | JS-TMPL + PY-RESCUE | ✅ Both |
-| 30 | `session-incremental-summary-reminder.yml` | Incremental summary nudge | `CODEX_MASTER_KEY` | `schedule` | JS-ARRAY | ✅ |
-| 31 | `session-watchdog.yml` | Timebox start + exploration + expired | `CODEX_MASTER_KEY` | `issue_comment` | JS-ARRAY (×3) | ✅ All |
-| 32 | `telemetry-collection.yml` | CI health alert | `GITHUB_TOKEN` | `schedule` | JS-CONCAT | ✅ |
-| 33 | `token-probe.yml` | Token probe result | `CODEX_MASTER_KEY` | `workflow_dispatch` | JS-ARRAY | ✅ |
-| 34 | `workflow-link-validation.yml` | Link-check + rescue | `GITHUB_TOKEN` | `pull_request` | PY-RESCUE | ✅ |
-| 35 | `comment-review-gate.yml` | Live PR comment checklist + blocking gate | `CODEX_MASTER_KEY` | `pull_request` / `issue_comment` (mbaetiong) | JS-ARRAY + rescue | ✅ |
+| 1 | `actionlint-audit.yml` | Rescue (upsert) | `CODEX_MASTER_KEY` | `workflow_run` | JS-ARRAY + PY-RESCUE |  Both |
+| 2 | `agent-auth-delegation.yml` | Preflight checklist + REQ-11 guard + rescue | `CODEX_MASTER_KEY` | `pull_request` | JS-ARRAY (×3) + PY-RESCUE |  All |
+| 3 | `agent-handoff-gate.yml` | Handoff status | `GITHUB_TOKEN` | `issue_comment` | JS-CONCAT |  |
+| 4 | `agent-registry-validation.yml` | Schema validation | `GITHUB_TOKEN` | `pull_request` | JS-CONCAT + PY-RESCUE |  Both |
+| 5 | `agent-var-writer.yml` | Variable write result | `CODEX_MASTER_KEY` | `workflow_dispatch` | JS-ARRAY (standardised) |  |
+| 6 | `auto-fix-common-issues.yml` | Auto-fix detected issues | `GITHUB_TOKEN` | `pull_request` | JS-TMPL + PY-RESCUE |  Both |
+| 7 | `auto-fix-pr-check.yml` | Fix instructions | `GITHUB_TOKEN` | `pull_request` | PY-RESCUE |  |
+| 8 | `chatops_copilot_trigger.yml` | Reject unauth + status + tier | `CODEX_MASTER_KEY` | `issue_comment` | curl API + PY + JS |  All |
+| 9 | `ci-failure-issue-creator.yml` | Issue body + cross-link + auto-close | `CODEX_MASTER_KEY` | `workflow_run` | JS-ARRAY + inline |  All |
+| 10 | `ci-rescue.yml` | Rescue fallback | `CODEX_MASTER_KEY` | `workflow_run` | PY-CONCAT |  |
+| 11 | `consolidated-pr-status.yml` | PR dashboard | `CODEX_MASTER_KEY` | `workflow_call` | Custom action |  (action) |
+| 12 | `copilot-agent-checkin.yml` | Missed-trigger + incomplete-session + discussion | `CODEX_MASTER_KEY` | `push`+`schedule` | JS-ARRAY (×3) |  All |
+| 13 | `copilot-agent-session-done.yml` | Retrigger + loop-break | `CODEX_MASTER_KEY` | `push` | JS-ARRAY (×2) |  Both |
+| 14 | `copilot-issue-triage.yml` | AI triage summary | `GITHUB_TOKEN` | `issues` | JS-ARRAY |  |
+| 15 | `copilot-iterative-self-healing.yml` | Self-healing escalation | `CODEX_MASTER_KEY` | `workflow_run` | BASH (`gh pr comment`) |  |
+| 16 | `copilot-review-responder.yml` | Apply-review trigger + rescue | `CODEX_MASTER_KEY` | `pull_request_review` | JS-ARRAY + PY-RESCUE |  Both |
+| 17 | `copilot-session-chain.yml` | Session trigger (retrigger + new PR) + rescue | `CODEX_MASTER_KEY` | `workflow_dispatch` | BASH (×2) + PY-RESCUE |  All |
+| 18 | `cost-gate.yml` | Cost proposal master comment + rescue | `GITHUB_TOKEN` | `workflow_call` | JS-ARRAY + PY-RESCUE |  Both |
+| 19 | `e-to-d-transition-gate.yml` | C2 self-heal notice + rescue | `GITHUB_TOKEN` | `pull_request` | JS-ARRAY + PY-RESCUE |  Both |
+| 20 | `iterative-self-healing-ci.yml` | Escalation (printf + heredoc) | `CODEX_MASTER_KEY` | `workflow_run` | BASH (×2) |  Both |
+| 21 | `pages-scheduled-validation.yml` | Pages validation issue comment | `GITHUB_TOKEN` | `schedule` | JS-CONCAT |  |
+| 22 | `pr-cost-check.yml` | Cost summary + rescue | `GITHUB_TOKEN` | `pull_request` | JS-TMPL + PY-RESCUE |  Both |
+| 23 | `pr-followup-generator.yml` | Follow-up prompt notice + rescue | `GITHUB_TOKEN` | `push` | JS-TMPL + PY-RESCUE |  Both |
+| 24 | `pre-flight-validation.yml` | Pre-flight failure notice + rescue | `GITHUB_TOKEN` | `pull_request` | JS-TMPL + PY-RESCUE |  Both |
+| 25 | `pre-merge-validation.yml` | Rescue | `CODEX_MASTER_KEY` | `pull_request` | PY-RESCUE |  |
+| 26 | `reference-integrity.yml` | Ref-check gate + agent file size + rescue | `GITHUB_TOKEN` | `pull_request` | JS inline + PY-RESCUE |  All |
+| 27 | `resilient_validation.yml` | Rescue (upsert, sharded ×2) | `CODEX_MASTER_KEY` | `pull_request` | JS-ARRAY (×2) |  Both |
+| 28 | `root-org-validation.yml` | Validation report (upsert) + rescue | `GITHUB_TOKEN` | `pull_request` | JS-ARRAY + PY-RESCUE |  Both |
+| 29 | `rust_swarm_ci.yml` | Benchmark results + rescue | `GITHUB_TOKEN` | `pull_request` | JS-TMPL + PY-RESCUE |  Both |
+| 30 | `session-incremental-summary-reminder.yml` | Incremental summary nudge | `CODEX_MASTER_KEY` | `schedule` | JS-ARRAY |  |
+| 31 | `session-watchdog.yml` | Timebox start + exploration + expired | `CODEX_MASTER_KEY` | `issue_comment` | JS-ARRAY (×3) |  All |
+| 32 | `telemetry-collection.yml` | CI health alert | `GITHUB_TOKEN` | `schedule` | JS-CONCAT |  |
+| 33 | `token-probe.yml` | Token probe result | `CODEX_MASTER_KEY` | `workflow_dispatch` | JS-ARRAY |  |
+| 34 | `workflow-link-validation.yml` | Link-check + rescue | `GITHUB_TOKEN` | `pull_request` | PY-RESCUE |  |
+| 35 | `comment-review-gate.yml` | Live PR comment checklist + blocking gate | `CODEX_MASTER_KEY` | `pull_request` / `issue_comment` (mbaetiong) | JS-ARRAY + rescue |  |
 
 ---
 
@@ -186,15 +188,15 @@ sequenceDiagram
 
     R1-->>PR: 🚨 rescue comment (PY-RESCUE)\n[🔗 Run link]
     R2-->>PR: 🚨 rescue comment (upsert)\n[🔗 Run link]
-    R3-->>PR: ❌ auto-fix issues detected\n[🔗 Run link]
-    R4-->>PR: ❌ fix instructions\n[🔗 Run link]
+    R3-->>PR:  auto-fix issues detected\n[🔗 Run link]
+    R4-->>PR:  fix instructions\n[🔗 Run link]
     R5-->>PR: 🚨 rescue via ci-rescue.yml fallback\n[🔗 Run link]
-    R6-->>PR: 🧠 preflight checklist (upsert)\n[🔗 Run link]
+    R6-->>PR:  preflight checklist (upsert)\n[🔗 Run link]
 
     Note over PR: ⚠️ Up to 6 separate rescue comments\ncan land on the same PR within 60 seconds
 
     GHA->>H1: workflow_run (completed, failure)
-    H1-->>PR: 🤖 @copilot escalation prompt\n[🔗 Run link]
+    H1-->>PR:  @copilot escalation prompt\n[🔗 Run link]
 
     Note over PR: ⚠️ iterative-self-healing ALSO fires\ncreating a 7th simultaneous poster
 ```
@@ -355,9 +357,9 @@ flowchart LR
 
 | Cluster | Workflows Firing Together | Trigger | Frequency | Risk Level |
 |---------|--------------------------|---------|-----------|------------|
-| **C-01** | `pre-merge-validation` + `resilient_validation` + `auto-fix-common-issues` + `auto-fix-pr-check` + `validate.yml` + `agent-auth-delegation` | Push to `0D_base_` | Every commit | 🔴 **Critical** |
-| **C-02** | `iterative-self-healing-ci` + `copilot-iterative-self-healing` | `workflow_run` completed (any failure) | Every CI failure | 🟠 **High** |
-| **C-03** | `ci-failure-issue-creator` + `copilot-issue-triage` | Issue created by C-02 | Cascades from C-02 | 🟠 **High** |
+| **C-01** | `pre-merge-validation` + `resilient_validation` + `auto-fix-common-issues` + `auto-fix-pr-check` + `validate.yml` + `agent-auth-delegation` | Push to `0D_base_` | Every commit |  **Critical** |
+| **C-02** | `iterative-self-healing-ci` + `copilot-iterative-self-healing` | `workflow_run` completed (any failure) | Every CI failure |  **High** |
+| **C-03** | `ci-failure-issue-creator` + `copilot-issue-triage` | Issue created by C-02 | Cascades from C-02 |  **High** |
 | **C-04** | `copilot-agent-checkin` + `session-watchdog` + `copilot-agent-session-done` | Push + `issue_comment` | Agent session | 🟡 **Medium** |
 | **C-05** | `cost-gate` (called by multiple workflows) | `workflow_call` from C-01 | Every commit | 🟡 **Medium** |
 

@@ -1,8 +1,10 @@
 # Architecture Documentation - Aries-Serpent v0.1.0
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Document Type:** Architecture & Design Guide  
 **Audience:** Architects, Senior Developers, DevOps Engineers  
-**Last Updated:** 2026-07-09
+**Last Updated: 2026-07-09
 
 ## System Overview
 
@@ -10,9 +12,9 @@ Aries-Serpent is a modular AI agent framework with three main components:
 
 ```mermaid
 graph TB
-    CB["🧠 Cognitive Brain<br/>(Pattern Recognition & Memory)"]
-    CORE["⚙️ Core<br/>(OODA Loop & Protocol Engine)"]
-    ML["🤖 ML Components<br/>(Inference & Training)"]
+    CB[" Cognitive Brain<br/>(Pattern Recognition & Memory)"]
+    CORE[" Core<br/>(OODA Loop & Protocol Engine)"]
+    ML[" ML Components<br/>(Inference & Training)"]
     API["📡 API Layer<br/>(FastAPI Services)"]
     
     CB -->|Patterns| CORE
@@ -43,10 +45,10 @@ graph TB
 **Location:** `src/codex/cognitive_brain/`
 
 **Capabilities:**
-- ✅ Real-time pattern recognition
-- ✅ Short-term & long-term memory
-- ✅ Probabilistic decision making
-- ✅ Learning from feedback
+-  Real-time pattern recognition
+-  Short-term & long-term memory
+-  Probabilistic decision making
+-  Learning from feedback
 
 ### 2. Core System (OODA Loop)
 
@@ -388,5 +390,5 @@ graph LR
 
 ---
 
-**Status:** ✅ COMPLETE  
-**Last Updated:** 2026-07-09
+**Status:**  COMPLETE  
+**Last Updated: 2026-07-09

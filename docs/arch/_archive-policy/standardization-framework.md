@@ -1,6 +1,8 @@
 # Archive Standardization Framework
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 > **Status**: Phase 2 | **Effective**: 2025-11-02 | **Version**: 1.0
 
@@ -147,20 +149,20 @@ steps:
 
 | SLSA Requirement | _codex_ Implementation | Evidence |
 |---|---|---|
-| **Provenance exists** | ✅ Evidence records created | `.codex/evidence/archive_ops.jsonl` |
-| **Provenance signed** | ✅ Sigstore keyless signature | `standardizationMetadata.signature` |
-| **Signed by service account** | ✅ GitHub OIDC identity | `standardizationMetadata.issuer` |
-| **Ephemeral credentials** | ✅ Short-lived Fulcio cert | Certificate chain in Rekor |
-| **Tamper protection** | ✅ Append-only + immutable | JSONL format + git history |
+| **Provenance exists** |  Evidence records created | `.codex/evidence/archive_ops.jsonl` |
+| **Provenance signed** |  Sigstore keyless signature | `standardizationMetadata.signature` |
+| **Signed by service account** |  GitHub OIDC identity | `standardizationMetadata.issuer` |
+| **Ephemeral credentials** |  Short-lived Fulcio cert | Certificate chain in Rekor |
+| **Tamper protection** |  Append-only + immutable | JSONL format + git history |
 
 ### in-toto Framework Readiness
 
 | in-toto Component | _codex_ Support | Status |
 |---|---|---|
-| **Layout** | Canonically defined in policy doc | ✅ Phase 2 |
-| **Link Metadata** | Structure compatible | ✅ Phase 2 (optional field) |
-| **Step Authorization** | Via OIDC claims + CODEOWNERS | ✅ Phase 2 |
-| **Verification** | Automated checklist | ✅ Phase 2 |
+| **Layout** | Canonically defined in policy doc |  Phase 2 |
+| **Link Metadata** | Structure compatible |  Phase 2 (optional field) |
+| **Step Authorization** | Via OIDC claims + CODEOWNERS |  Phase 2 |
+| **Verification** | Automated checklist |  Phase 2 |
 
 ## Migration & Deployment
 
@@ -244,13 +246,13 @@ python -m codex.cli archive show-standardization-status
 # ============================================================
 # Standard Version: 2.0
 # SLSA Level: L3
-# Signing Enabled: ✅ Yes
+# Signing Enabled:  Yes
 # Schema Versions Supported: 1.0, 2.0
 #
 # Compliance:
-# ✅ SLSA_L3
-# ✅ IN_TOTO_READY
-# ✅ SAA_COMPLIANT
+#  SLSA_L3
+#  IN_TOTO_READY
+#  SAA_COMPLIANT
 ```text
 
 ## Validate Evidence Records
@@ -276,7 +278,7 @@ python -m codex.cli archive migrate-evidence-to-v2
 # ⚠️  This will modify .codex/evidence/archive_ops.jsonl. Continue? [y/N]: y
 # 🔄 Starting migration v1 → v2...
 # 📦 Backed up original to: .codex/evidence/archive_ops.jsonl.backup
-# ✅ Migration complete: 1234 records converted
+#  Migration complete: 1234 records converted
 # v1 records: 0
 # v2 records: 1234
 ```text

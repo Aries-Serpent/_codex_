@@ -1,6 +1,8 @@
 # Status Update Templates
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 This directory contains the canonical templates and schemas for `_codex_` per-iteration status updates.
 

@@ -1,6 +1,9 @@
 # Validation: Status Report v1.2 — End-to-End Gates
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
-🧠 Roles: [Primary: Validation Lead], [Secondary: CI Maintainer] ⚡ Energy: 5
+ Roles: [Primary: Validation Lead], [Secondary: CI Maintainer] ⚡ Energy: 5
 
 Scope
 - Define the complete validation flow for status reports and related schemas.

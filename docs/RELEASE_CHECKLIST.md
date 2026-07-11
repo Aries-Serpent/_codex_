@@ -1,4 +1,6 @@
 # Release Checklist
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 ## Pro-safe notes (no-cost)
 - Prefer **GitHub Releases** for binaries (≤ 2 GiB/asset, no bandwidth cap).

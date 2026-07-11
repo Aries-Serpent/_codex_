@@ -1,4 +1,6 @@
 # Test Execution Guide - Complete Instructions
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **⚠️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 
@@ -9,7 +11,7 @@
 
 ---
 
-## 🎯 Quick Start (Recommended)
+##  Quick Start (Recommended)
 
 ### Prerequisites
 
@@ -31,7 +33,7 @@ python -m pytest tests/agents/ --cov=agents --cov-report=term --cov-report=json 
 
 ---
 
-## 📊 Step-by-Step Execution (Recommended for Validation)
+##  Step-by-Step Execution (Recommended for Validation)
 
 ### Step 1: Run Phase 1 Completion Tests (5 minutes)
 
@@ -169,7 +171,7 @@ python -m pytest \
 
 ---
 
-## 🎯 Coverage Goals Validation
+##  Coverage Goals Validation
 
 ### After Phase 1 Tests
 
@@ -198,7 +200,7 @@ python -c "import json; data = json.load(open('coverage.json')); print(f\"Phase 
 
 ---
 
-## 📊 Expected Test Results Summary
+##  Expected Test Results Summary
 
 | Test File | Tests | Expected Pass | Expected Skip | Coverage Gain |
 |-----------|-------|---------------|---------------|---------------|
@@ -210,7 +212,7 @@ python -c "import json; data = json.load(open('coverage.json')); print(f\"Phase 
 
 ---
 
-## 🚀 If Coverage < 50% - Additional Steps
+##  If Coverage < 50% - Additional Steps
 
 ### Analyze Remaining Gaps
 
@@ -262,26 +264,26 @@ Use this checklist to verify test execution:
 ## 🎉 Success Criteria
 
 ### Minimum Success (Pass)
-- ✅ At least 300 tests pass
-- ✅ Coverage ≥ 45%
-- ✅ No critical import errors
-- ✅ Phase 1 target (30%) exceeded
+-  At least 300 tests pass
+-  Coverage ≥ 45%
+-  No critical import errors
+-  Phase 1 target (30%) exceeded
 
 ### Expected Success (Good)
-- ✅ At least 330 tests pass
-- ✅ Coverage ≥ 49%
-- ✅ Phase 2 target (50%) nearly achieved
-- ✅ Less than 50 tests skipped
+-  At least 330 tests pass
+-  Coverage ≥ 49%
+-  Phase 2 target (50%) nearly achieved
+-  Less than 50 tests skipped
 
 ### Optimal Success (Excellent)
-- ✅ At least 350 tests pass
-- ✅ Coverage ≥ 52%
-- ✅ Phase 2 target (50%) exceeded
-- ✅ Less than 25 tests skipped
+-  At least 350 tests pass
+-  Coverage ≥ 52%
+-  Phase 2 target (50%) exceeded
+-  Less than 25 tests skipped
 
 ---
 
-## 📊 Coverage Report Interpretation
+##  Coverage Report Interpretation
 
 ### After Running Tests
 

@@ -1,6 +1,9 @@
 # Quickstart: `_codex_` Status v1.2 (One‑Pager)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
-🧠 Roles: [Primary: Author Quickstart Curator], [Secondary: Reviewer] ⚡ Energy: 5
+ Roles: [Primary: Author Quickstart Curator], [Secondary: Reviewer] ⚡ Energy: 5
 
 Goal
 - Produce a daily, schema‑valid status in under 10 minutes.

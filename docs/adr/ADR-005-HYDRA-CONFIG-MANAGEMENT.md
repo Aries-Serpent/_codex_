@@ -1,4 +1,6 @@
 # ADR-005: Configuration Management via Hydra
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Status:** Accepted  
 **Date:** 2026-07-10  
@@ -117,12 +119,12 @@ cs.store(name="config", node=AppConfig)
 ## Consequences
 
 ### Positive
-✅ Configuration fully reproducible and versionable  
-✅ Experiments easy to run and compare  
-✅ No hardcoded parameters scattered throughout codebase  
-✅ Team can run experiments without code changes  
-✅ Type safety catches config errors early  
-✅ CLI-based workflows feel natural to users  
+ Configuration fully reproducible and versionable  
+ Experiments easy to run and compare  
+ No hardcoded parameters scattered throughout codebase  
+ Team can run experiments without code changes  
+ Type safety catches config errors early  
+ CLI-based workflows feel natural to users  
 
 ### Negative
 ⚠️ Learning curve for Hydra concepts (Compose API, overrides)  

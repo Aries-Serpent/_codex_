@@ -1,8 +1,10 @@
 <!-- BEGIN: FIREWALL_ALLOWLIST -->
 
 # Firewall Allow-List — _codex_ Repository
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 > **Registered:** 2026-02-28  
 > **Scope:** All outbound connections made by the codebase, CI/CD pipelines,  

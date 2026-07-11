@@ -1,6 +1,8 @@
 # Research Note 03 — Equation Variables, Mermaid Maps, and Calculation Templates
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## 1. Canonical Variables
 

@@ -1,6 +1,8 @@
 # PR #4346 — Holistic Analysis: Quantum-Inspired CI/CD Health Model
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 > **Document:** S860 Holistic Analysis
 > **Branch:** `finding-autofix-faa8614c`
@@ -21,8 +23,8 @@
 | Actionlint errors | 7 | 0 | **−7** |
 | Workflows with rate-limit guards | 3 | 10 | **+7** |
 | PR template completeness (agent usability) | 40% | 95% | **+55 pp** |
-| Tracked-file sync drift | ✗ | ✅ | resolved |
-| Token expiry monitoring gap (T-02) | ✗ | ✅ | closed |
+| Tracked-file sync drift | ✗ |  | resolved |
+| Token expiry monitoring gap (T-02) | ✗ |  | closed |
 | Variable governance intent files | 0 | 13 | **+13** |
 
 ---
@@ -32,7 +34,7 @@
 ### 2.1 CI/CD Health as a Wave Function
 
 The overall CI/CD health of a repository branch can be modelled as a quantum superposition
-of passing (|✅⟩) and failing (|❌⟩) states across all $N$ independent check dimensions:
+of passing (|⟩) and failing (|⟩) states across all $N$ independent check dimensions:
 
 $$
 |\Psi_{\text{CI}}\rangle = \sum_{k=1}^{N} \alpha_k \, |d_k\rangle
@@ -161,9 +163,9 @@ $$
 ## 3. Change Graph — S855 → S860
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing "🔴 Root Cause (S855)", CodeQL: py/call-to-non-callable'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing " Root Cause (S855)", CodeQL: py/call-to-non-callable'}}%%
 graph TD
-    subgraph S855_ROOT["🔴 Root Cause (S855)"]
+    subgraph S855_ROOT[" Root Cause (S855)"]
         A[CodeQL: py/call-to-non-callable]
         B[actionlint: 7 workflow errors]
         C[Rate-limit: 0 guards in 7 workflows]
@@ -184,7 +186,7 @@ graph TD
         L[Rate-limit gap register: 9 workflows identified]
     end
 
-    subgraph S860["S860: Implementation Wave ✅"]
+    subgraph S860["S860: Implementation Wave "]
         M[OBJ-1: Rate-limit guards on 4 P1 workflows]
         N[OBJ-2: 7 governance variable intent files]
         O[OBJ-3: token-expiry-monitor.yml created]
@@ -260,10 +262,10 @@ quadrantChart
 
 | Security Finding | Severity | Fix Applied |
 |-----------------|----------|------------|
-| `post_rotation_verify.sh` printed `val[:20]` of token | 🔴 High | Removed — print name only |
+| `post_rotation_verify.sh` printed `val[:20]` of token |  High | Removed — print name only |
 | `wec_enforcer.py` approved "completed" runs (false positive) | 🟡 Medium | Check only `queued`/`in_progress` |
 | `token-expiry-monitor.yml` missing (T-02 gap) | 🟡 Medium | Created — daily cron + issue creation |
-| `wec_enforcer.py` approval counter overcounted | 🟢 Low | Split into 4 distinct outcome types |
+| `wec_enforcer.py` approval counter overcounted |  Low | Split into 4 distinct outcome types |
 
 ---
 
@@ -315,14 +317,14 @@ timeline
 
 | Feature | v2.1 | v3.0 |
 |---------|:----:|:----:|
-| Session ID / SHA auto-fields | ✗ | ✅ (9 `<!-- AUTO -->` fields) |
-| Agent pre-load checklist | ✗ | ✅ (6-step mandatory sequence) |
-| P-045 wrap-up gate block | ✗ | ✅ (copy-paste ready) |
-| Rate-limit awareness section | ✗ | ✅ (polite-sleep table + JS circuit-breaker) |
-| Token chain documented | partial | ✅ (full chain + GITHUB_ENV export) |
-| CI triage as collapsed table | ✗ | ✅ (`<details>` with 11-row table) |
-| `token-expiry-monitor.yml` in WEC | ✗ | ✅ |
-| Hardened WEC instruction | partial | ✅ (generate via CLI instruction) |
+| Session ID / SHA auto-fields | ✗ |  (9 `<!-- AUTO -->` fields) |
+| Agent pre-load checklist | ✗ |  (6-step mandatory sequence) |
+| P-045 wrap-up gate block | ✗ |  (copy-paste ready) |
+| Rate-limit awareness section | ✗ |  (polite-sleep table + JS circuit-breaker) |
+| Token chain documented | partial |  (full chain + GITHUB_ENV export) |
+| CI triage as collapsed table | ✗ |  (`<details>` with 11-row table) |
+| `token-expiry-monitor.yml` in WEC | ✗ |  |
+| Hardened WEC instruction | partial |  (generate via CLI instruction) |
 
 ---
 

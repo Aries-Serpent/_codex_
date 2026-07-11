@@ -1,4 +1,7 @@
 # Docker Validation — Build, Run, Smoke, Scan
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
 
 This runbook verifies the Docker workflow locally (CI remains gated). Use a machine with Docker installed.

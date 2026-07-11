@@ -1,6 +1,8 @@
 # Environment Snapshot and Dependency Report
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 This guide describes the lightweight, offline tooling that captures the local execution context for _codex_. The artifacts are intended to be fast to generate and easy to audit, forming the base inputs for downstream reproducibility manifests.
 

@@ -1,6 +1,8 @@
 # Evaluation Metrics Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 This guide documents the built-in metrics available in the `codex_ml` evaluation framework and how to use them for model assessment.
 

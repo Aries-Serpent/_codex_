@@ -1,10 +1,12 @@
 # WEC PR Body Append — Conflicts & Best Approach
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 > **Version:** 1.0.0
 > **Created:** 2026-03-31 S260
-> **Status:** ✅ Authoritative — identified in S260, hardened in `session_wrapup_autofix.py`
+> **Status:**  Authoritative — identified in S260, hardened in `session_wrapup_autofix.py`
 
 ---
 
@@ -27,7 +29,7 @@ explicitly included.
 | **Effect** | Entire PR body replaced with `prDescription` value |
 | **Result** | WEC stripped unless explicitly appended to `prDescription` |
 | **Frequency** | Every session (multiple times per session) |
-| **Severity** | 🔴 Critical — breaks agent-auth-delegation WEC gate |
+| **Severity** |  Critical — breaks agent-auth-delegation WEC gate |
 
 **Root cause:** `report_progress` uses GitHub API `updatePullRequest` which sets `body`
 to whatever string is passed. There is no "append-only" mode.
@@ -69,7 +71,7 @@ to whatever string is passed. There is no "append-only" mode.
 
 ## Recommended Approach: Always-Append Strategy
 
-**Selected approach:** ✅ **Option A — Explicit WEC in every `report_progress` call**
+**Selected approach:**  **Option A — Explicit WEC in every `report_progress` call**
 
 ### Why Option A
 

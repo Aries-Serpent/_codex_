@@ -1,4 +1,6 @@
 # Consistency Checks Setup Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 This guide explains how to set up and use the CI/CD consistency checks for the *codex* repository.
 
@@ -201,10 +203,10 @@ From repository root
 
 **Supported:**
 
-- ✅ Relative paths
-- ✅ Absolute repo paths
-- ✅ Anchor references
-- ✅ External URLs (HTTP/HTTPS)
+-  Relative paths
+-  Absolute repo paths
+-  Anchor references
+-  External URLs (HTTP/HTTPS)
 
 **Skipped:**
 
@@ -215,10 +217,10 @@ From repository root
 
 All documents must follow:
 
-1. ✅ First heading is H1 (`#`)
-2. ✅ No hierarchy jumps (H1 → H3 invalid, must use H2)
-3. ✅ Consistent nesting within documents
-4. ✅ Unique headings within sections (MD024)
+1.  First heading is H1 (`#`)
+2.  No hierarchy jumps (H1 → H3 invalid, must use H2)
+3.  Consistent nesting within documents
+4.  Unique headings within sections (MD024)
 
 ## Troubleshooting
 
@@ -270,7 +272,7 @@ grep "## My Heading" docs/file.md
 The checker reports external links as warnings. To ignore them:
 
 ```bash
-python3 .github/scripts/check-cross-references.py --format=text | grep "❌ BROKEN"
+python3 .github/scripts/check-cross-references.py --format=text | grep " BROKEN"
 ```
 
 ## Common Errors & Fixes
@@ -312,7 +314,7 @@ The workflow file `.github/workflows/consistency-checks.yml` includes:
 
 **PR Annotations:**
 
-- Errors appear as ❌ annotations on PR
+- Errors appear as  annotations on PR
 - Warnings appear as ⚠️ (external links)
 - PR comments with detailed issues
 
@@ -325,7 +327,7 @@ The workflow file `.github/workflows/consistency-checks.yml` includes:
 
 For merging PRs:
 
-- ✅ All consistency checks must pass
+-  All consistency checks must pass
 - ⚠️ Warnings do not block merge
 - 🔄 External link warnings are informational
 

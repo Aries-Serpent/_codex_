@@ -1,6 +1,8 @@
 # ML Test Score Mapping for `_codex_` (Scaffolding)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 This document describes how `_codex_` maps tests to ML Test Score
 categories using `codex_ml_test_map.yaml` and `tools/codex_mltest_runner.py`.

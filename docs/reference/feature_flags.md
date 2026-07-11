@@ -1,6 +1,8 @@
 # Feature Flags (Local-Only Guards)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 All feature flags are disabled by default and must be explicitly enabled via environment variables.
 

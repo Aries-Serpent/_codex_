@@ -1,6 +1,8 @@
 # Reproducibility notes
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 - Seeds propagate through `DataConfig.seed` and the training CLI fallback; they
   also influence the cache key so split reuse remains deterministic.

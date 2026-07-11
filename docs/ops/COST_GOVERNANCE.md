@@ -1,6 +1,8 @@
 # Cost Governance Policy
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 > **Subscription:** GitHub Team ($4/user/mo) + Copilot Pro Plus ($39/mo)
 > **Budget:** 3,000 Linux-equivalent Actions minutes/month · 2 GB artifact storage
@@ -64,10 +66,10 @@ RED    → > 90 effective min OR GHCR push   → Blocked until stakeholder check
 
 | Workflow | Tier | Reason | Added |
 |----------|------|--------|-------|
-| `build-preview-image.yml` | 🔴 RED | `ubuntu-latest-m` × 30 min × 2 matrix + GHCR push = 120 eff-min + transfer cost | PR #3575 |
-| `data-quality-suite.yml` | 🔴 RED | 3 jobs × 60 min = 180 eff-min | PR #3575 |
-| `scheduled-archival.yml` | 🔴 RED | 3 jobs × 60 min = 180 eff-min, runs on schedule | PR #3575 |
-| `rust_swarm_ci.yml` | 🔴 RED | 3 jobs × 60 min = 180 eff-min | PR #3575 |
+| `build-preview-image.yml` |  RED | `ubuntu-latest-m` × 30 min × 2 matrix + GHCR push = 120 eff-min + transfer cost | PR #3575 |
+| `data-quality-suite.yml` |  RED | 3 jobs × 60 min = 180 eff-min | PR #3575 |
+| `scheduled-archival.yml` |  RED | 3 jobs × 60 min = 180 eff-min, runs on schedule | PR #3575 |
+| `rust_swarm_ci.yml` |  RED | 3 jobs × 60 min = 180 eff-min | PR #3575 |
 | `embedding-index-rebuild.yml` | ⚠️ YELLOW | 15 min, scheduled (frequent trigger risk) | PR #3575 |
 
 **Workflows intentionally not gated (GREEN tier, < 30 effective min):**
@@ -84,17 +86,17 @@ RED    → > 90 effective min OR GHCR push   → Blocked until stakeholder check
 ## 5 — Approval Flow
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing "PR opened / push to branch", "💰 cost-gate job\ncost_estimator.py calculates tier"'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing "PR opened / push to branch", " cost-gate job\ncost_estimator.py calculates tier"'}}%%
 flowchart TD
     PR["PR opened / push to branch"]
-    COST["💰 cost-gate job\ncost_estimator.py calculates tier"]
-    GREEN["✅ GREEN\nAuto-approved\nJob proceeds immediately"]
+    COST[" cost-gate job\ncost_estimator.py calculates tier"]
+    GREEN[" GREEN\nAuto-approved\nJob proceeds immediately"]
     YELLOW["⚠️ YELLOW\nWarning comment posted\nAuto-proceeds after 60 s"]
-    RED["🔴 RED\nBlocking comment posted\nPolls PR body every 60 s"]
-    CHECKBOX["Stakeholder ticks\n- [x] 💰 Cost Proposal Approved\nin PR description"]
+    RED[" RED\nBlocking comment posted\nPolls PR body every 60 s"]
+    CHECKBOX["Stakeholder ticks\n- [x]  Cost Proposal Approved\nin PR description"]
     DISPATCH["Owner triggers via\nworkflow_dispatch\n(bypass)"]
-    APPROVED["✅ Gate passed\nExpensive job unblocked"]
-    TIMEOUT["❌ Gate timed out\n(10 min with no approval)\nJob fails — re-run after ticking"]
+    APPROVED[" Gate passed\nExpensive job unblocked"]
+    TIMEOUT[" Gate timed out\n(10 min with no approval)\nJob fails — re-run after ticking"]
 
     PR --> COST
     COST --> GREEN --> APPROVED
@@ -117,17 +119,17 @@ flowchart TD
 
 ## 6 — Stakeholder Approval Instructions
 
-When the Cost Gate posts a 🔴 RED comment on your PR:
+When the Cost Gate posts a  RED comment on your PR:
 
 1. **Read the comment** — it shows the estimated effective minutes and cost tier reason
 2. **Decide** — is the spend justified for this PR?
 3. **Approve** — in the PR description, find the Cost Governance section and change:
    ```
-   - [ ] 💰 Cost Proposal Approved
+   - [ ]  Cost Proposal Approved
    ```
    to:
    ```
-   - [x] 💰 Cost Proposal Approved
+   - [x]  Cost Proposal Approved
    ```
 4. **Wait** — the gate polls every 60 seconds and unblocks within ~60 s of your tick
 5. **Alternative** — trigger the workflow manually via `Actions → Run workflow` to bypass the PR gate
@@ -159,7 +161,7 @@ in `jobs:` using the reusable workflow:
 ```yaml
 jobs:
   cost-gate:
-    name: "💰 Cost Gate"
+    name: " Cost Gate"
     uses: ./.github/workflows/cost-gate.yml
     with:
       workflow_name:   "My Expensive Workflow"

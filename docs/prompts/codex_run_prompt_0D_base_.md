@@ -1,4 +1,7 @@
-**Last Updated:** 2026-06-22
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
+**Last Updated: 2026-06-22
 
 @codex implement plan
 title: "Run 0D_base_ audit and commit artifacts"

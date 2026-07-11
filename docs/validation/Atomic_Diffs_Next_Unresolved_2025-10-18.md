@@ -1,4 +1,7 @@
 # [Validation]: Atomic Diffs — Next/Unresolved (v1.1.0)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
 
  Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5

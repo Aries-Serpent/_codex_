@@ -1,6 +1,8 @@
 # Survey — <RING> and <PR_OR_REF> — <YYYY-MM-DD>
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 > **Purpose:** Capture an auditable, human-readable snapshot of ground truth pulled from a specific ring/PR/ref.
 > **Save As:** `docs/status_updates/survey-<ring>-and-<pr-or-ref>-<YYYY-MM-DD>.md`

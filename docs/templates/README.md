@@ -1,6 +1,8 @@
 # Operational Templates Index
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 The `docs/templates/` directory curates reusable runbooks that combine execution guidance with customizable placeholders. Each template follows a role-gated workflow: **developers** draft the plan, **maintainers** execute or approve the rollout, and **reviewers** confirm success criteria using the embedded checklists.
 
@@ -51,9 +53,9 @@ See [`status/README.md`](./status/README.md) for complete documentation.
 | Template | Key References |
 | --- | --- |
 | Iteration Plan | [`docs/TERMINOLOGY_MIGRATION.md`](../TERMINOLOGY_MIGRATION.md), [`docs/plans/`](../plans/), [`.codex/archive/deprecated/AGENTS.md`](../agents.md) |
-| Python File Relocation | `sitecustomize.py`, [`conftest.py`](https://github.com/Aries-Serpent/_codex_/blob/main/conftest.py), [`tests/`](https://github.com/Aries-Serpent/_codex_/blob/main/tests) |
-| CLI Hardening | [`src/cli/`](https://github.com/Aries-Serpent/_codex_/blob/main/src/cli), [`tests/cli/`](https://github.com/Aries-Serpent/_codex_/blob/main/tests/cli), [`pyproject.toml`](https://github.com/Aries-Serpent/_codex_/blob/main/pyproject.toml) |
-| Intent Validation | [`docs/validation/`](../validation/), [`docs/templates/README.md`](./README.md), [`tests/conftest.py`](https://github.com/Aries-Serpent/_codex_/blob/main/tests/conftest.py) |
+| Python File Relocation | `sitecustomize.py`, [`conftest.py`](../conftest.py), [`tests/`](../tests) |
+| CLI Hardening | [`src/cli/`](../src/cli), [`tests/cli/`](../tests/cli), [`pyproject.toml`](../pyproject.toml) |
+| Intent Validation | [`docs/validation/`](../validation/), [`docs/templates/README.md`](./README.md), [`tests/conftest.py`](../tests/conftest.py) |
 | Status Update | [`status/codex_status_template_v1.1.md`](./status/codex_status_template_v1.1.md), [`status/authoring_guide_v1.1.md`](./status/authoring_guide_v1.1.md), `reports/per-iteration/` |
 
 ## Maintenance Notes

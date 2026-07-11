@@ -1,4 +1,6 @@
 # GitHub Environment Setup Guide for MCP Integration
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 ## Table of Contents
 
@@ -35,7 +37,7 @@
   - [Issue: MCP Service Won't Start](#issue-mcp-service-wont-start)
   - [Issue: Rate Limit Errors](#issue-rate-limit-errors)
 - [Additional Resources](#additional-resources)
-- [🎯 Mission Overview](#-mission-overview)
+- [ Mission Overview](#-mission-overview)
 - [⚖️ Verification Checklist](#-verification-checklist)
 - [📈 Success Metrics](#-success-metrics)
 - [⚛️ Physics Alignment](#-physics-alignment)
@@ -45,7 +47,7 @@
   - [Redundancy 🔀 (Backup Mechanisms)](#redundancy--backup-mechanisms)
   - [Balance ⚖️ (Security vs Usability)](#balance--security-vs-usability)
 - [⚡ Energy Distribution](#-energy-distribution)
-- [🧠 Redundancy Patterns](#-redundancy-patterns)
+- [ Redundancy Patterns](#-redundancy-patterns)
 
 > **Purpose**: Configure GitHub Organization and Repository environment variables/secrets for MCP integration
 > **Audience**: Human Administrators with org/repo admin permissions
@@ -337,11 +339,11 @@ def main():
 
     # Generate master encryption key
     master_key = generate_master_key()
-    print(f"✅ Generated CODEX_MASTER_KEY: {master_key}\n")
+    print(f" Generated CODEX_MASTER_KEY: {master_key}\n")
 
     # Generate MCP service token
     service_token = generate_service_token()
-    print(f"✅ Generated MCP_SERVICE_TOKEN: {service_token}\n")
+    print(f" Generated MCP_SERVICE_TOKEN: {service_token}\n")
 
     # Prompt for GitHub PAT
     print("\n" + "-" * 80)
@@ -357,7 +359,7 @@ def main():
 
     if github_token:
         token_config = encode_github_token(github_token, master_key)
-        print("\n✅ Encoded GitHub token successfully!")
+        print("\n Encoded GitHub token successfully!")
     else:
         print("\n⚠️  Skipped GitHub token encoding.")
         token_config = {
@@ -385,7 +387,7 @@ def main():
             app_id = int(input("Enter GitHub App ID: ").strip())
             key_path = input("Enter path to private key PEM file (or press Enter to skip): ").strip()
             app_config = generate_github_app_config(app_id, key_path if key_path else None)
-            print("\n✅ GitHub App configuration generated!")
+            print("\n GitHub App configuration generated!")
         except ValueError:
             print("\n⚠️  Invalid App ID. Skipping GitHub App configuration.")
             app_config = {}
@@ -404,7 +406,7 @@ def main():
     # Print configuration tables
     print_config_table(
         {"CODEX_MASTER_KEY": master_key},
-        "🔐 Organization Secret: Encryption Key"
+        " Organization Secret: Encryption Key"
     )
 
     print_config_table(
@@ -412,18 +414,18 @@ def main():
             "CODEX_GHP_TOKEN_BASE64": token_config["CODEX_GHP_TOKEN_BASE64"],
             "CODEX_GHP_TOKEN_CONFIG": token_config["CODEX_GHP_TOKEN_CONFIG"]
         },
-        "🔐 Organization Secrets: GitHub Token"
+        " Organization Secrets: GitHub Token"
     )
 
     print_config_table(
         {"MCP_SERVICE_TOKEN": service_token},
-        "🔐 Organization Secret: MCP Service Authentication"
+        " Organization Secret: MCP Service Authentication"
     )
 
     if app_config:
         print_config_table(
             app_config,
-            "🔐 Organization Secrets: GitHub App (Optional)"
+            " Organization Secrets: GitHub App (Optional)"
         )
 
     # Save to file for reference (optional)
@@ -445,7 +447,7 @@ def main():
                 f.write(f"{key}:\n{value}\n\n")
                 f.write("-" * 80 + "\n\n")
 
-        print(f"\n✅ Configuration saved to: {filename}")
+        print(f"\n Configuration saved to: {filename}")
         print("⚠️  Remember to delete this file after copying secrets to GitHub!")
 
     print("\n" + "=" * 80)
@@ -499,17 +501,17 @@ if __name__ == "__main__":
 - name: Verify Secrets (masked)
   run: |
     if [ -z "${{ secrets.CODEX_MASTER_KEY }}" ]; then
-      echo "❌ CODEX_MASTER_KEY not set"
+      echo " CODEX_MASTER_KEY not set"
       exit 1
     else
-      echo "✅ CODEX_MASTER_KEY is set"
+      echo " CODEX_MASTER_KEY is set"
     fi
 
     if [ -z "${{ secrets.CODEX_GHP_TOKEN_BASE64 }}" ]; then
-      echo "❌ CODEX_GHP_TOKEN_BASE64 not set"
+      echo " CODEX_GHP_TOKEN_BASE64 not set"
       exit 1
     else
-      echo "✅ CODEX_GHP_TOKEN_BASE64 is set"
+      echo " CODEX_GHP_TOKEN_BASE64 is set"
     fi
 ```
 
@@ -525,7 +527,7 @@ if __name__ == "__main__":
     python3 -c "
     from scripts.security.copilot_token_decoder import copilot_get_github_token_safe
     token = copilot_get_github_token_safe()
-    print('✅ Token decryption successful' if token else '❌ Token decryption failed')
+    print(' Token decryption successful' if token else ' Token decryption failed')
     "
 ```
 
@@ -535,7 +537,7 @@ if __name__ == "__main__":
 # In a workflow with MCP service container:
 - name: Test MCP Connection
   run: |
-    echo "✅ MCP service is healthy"
+    echo " MCP service is healthy"
 ```
 
 ---
@@ -599,7 +601,7 @@ if __name__ == "__main__":
 
 ---
 
-## 🎯 Mission Overview
+##  Mission Overview
 
 **Objective**: Enable secure MCP integration by configuring GitHub environment variables and secrets for the _codex_ repository, providing human administrators with comprehensive setup guidance and automated secret generation tools.
 
@@ -608,7 +610,7 @@ if __name__ == "__main__":
 - Moderate complexity: Requires organization admin access
 - Time-sensitive: Blocks MCP workflow execution
 
-**Status**: ✅ Documentation Complete | ⏸️ Awaiting Human Setup
+**Status**:  Documentation Complete | ⏸️ Awaiting Human Setup
 
 ---
 
@@ -714,7 +716,7 @@ if __name__ == "__main__":
 
 ---
 
-## 🧠 Redundancy Patterns
+##  Redundancy Patterns
 
 **Configuration Rollback Strategy**:
 

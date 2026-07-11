@@ -1,4 +1,6 @@
 # Brain Module API Reference
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Module Path**: `src/codex/brain/`  
 **Version**: Phase 10+  
@@ -435,7 +437,7 @@ if result.success:
 ### 1. Checkpoint Strategy
 
 ```python
-# ✅ GOOD: Regular checkpoints with meaningful titles
+#  GOOD: Regular checkpoints with meaningful titles
 def checkpoint_at_milestones(manager, session_id, phase):
     manager.create_checkpoint(
         session_id=session_id,
@@ -445,7 +447,7 @@ def checkpoint_at_milestones(manager, session_id, phase):
         metadata={"phase": phase, "checkpoint_type": "milestone"}
     )
 
-# ❌ POOR: Vague, infrequent checkpoints
+#  POOR: Vague, infrequent checkpoints
 def poor_checkpointing(manager, session_id):
     manager.create_checkpoint(
         session_id=session_id,
@@ -458,7 +460,7 @@ def poor_checkpointing(manager, session_id):
 ### 2. Memory Management
 
 ```python
-# ✅ GOOD: Regular consolidation with analysis
+#  GOOD: Regular consolidation with analysis
 def manage_memory(engine, consolidation_interval=3600):
     metrics = engine.consolidate_memories()
     
@@ -470,7 +472,7 @@ def manage_memory(engine, consolidation_interval=3600):
     
     return {"metrics": metrics, "patterns": patterns, "tags": tags}
 
-# ❌ POOR: No consolidation or analysis
+#  POOR: No consolidation or analysis
 def poor_memory_mgmt():
     # Memory grows unbounded without consolidation
     pass
@@ -479,7 +481,7 @@ def poor_memory_mgmt():
 ### 3. Error Recovery
 
 ```python
-# ✅ GOOD: Graceful recovery with fallback
+#  GOOD: Graceful recovery with fallback
 def safe_resume(session_id, fallback_checkpoint=None):
     resume = SessionResume()
     result = resume.resume_from_checkpoint(session_id)
@@ -494,7 +496,7 @@ def safe_resume(session_id, fallback_checkpoint=None):
     
     return result
 
-# ❌ POOR: Crash on resume failure
+#  POOR: Crash on resume failure
 def unsafe_resume(session_id):
     resume = SessionResume()
     result = resume.resume_from_checkpoint(session_id)

@@ -1,4 +1,7 @@
 # [Validation]: SBOM Config and Workflow
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-22 23:34:52 | Author: mbaetiong
 
 ## Local validation

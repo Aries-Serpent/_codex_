@@ -1,6 +1,8 @@
 # Contributor Notes
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## Quick Start
 
@@ -150,13 +152,13 @@ and `[unused-ignore]` cascades.
 **Example (correct)**:
 ```python
 # Inside src/training/functional_training.py
-from .engine_hf_trainer import get_hf_revision  # ✅ relative — mypy resolves directly
+from .engine_hf_trainer import get_hf_revision  #  relative — mypy resolves directly
 ```
 
 **Example (incorrect)**:
 ```python
 # Inside src/training/functional_training.py
-from training.engine_hf_trainer import get_hf_revision  # ❌ routes through root shim
+from training.engine_hf_trainer import get_hf_revision  #  routes through root shim
 ```
 
 **Enforcement**: CI runs `scripts/ci/mypy_baseline.py --require-baseline`; routing through
@@ -179,7 +181,7 @@ handled by `ignore_missing_imports = True` in `mypy.ini`. Such comments become
 
 **Unacceptable**:
 ```python
-import numpy as np  # type: ignore        ❌ numpy has bundled stubs
-import torch  # type: ignore               ❌ torch has bundled stubs
-from peft import LoraConfig  # type: ignore  ❌ --ignore-missing-imports covers this
+import numpy as np  # type: ignore         numpy has bundled stubs
+import torch  # type: ignore                torch has bundled stubs
+from peft import LoraConfig  # type: ignore   --ignore-missing-imports covers this
 ```

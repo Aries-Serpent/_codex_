@@ -1,4 +1,6 @@
 # MCP Implementation Guide for AI Agents
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > Version: 1.0.0 | Generated: 2026-06-22 | Author: Copilot Agent
 
@@ -261,6 +263,6 @@ Before completing any MCP implementation:
 
 ## Related Resources
 
-- [Copilot MCP Integration Guide](https://github.com/Aries-Serpent/_codex_/blob/main/.github/Copilot_MCP_Integration.md)
+- [Copilot MCP Integration Guide](../.github/Copilot_MCP_Integration.md)
 - [Operational Runbook](../plans/operational_runbook.md)
 - [Plan Status Dashboard](../plans/PLAN_STATUS_DASHBOARD.md)

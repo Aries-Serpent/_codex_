@@ -1,6 +1,8 @@
 # PR Workflow Comment Plan
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 **Version:** 1.0.0  
 **Date:** 2026-04-05  
@@ -56,21 +58,21 @@ flowchart TD
 
 | Workflow file | Comment marker(s) | Current behavior | SHA-scoped? | Target behavior | Status | Priority | CB/MCP method |
 |---|---|---|---|---|---|---|---|
-| `post_rescue_comment.py` | `ci-rescue-sha:{pr}:{sha12}` | Creates / appends | ✅ Yes | **Canonical anchor** — all others append here | ✅ Done | P1 | `SECTION_CONTENT` env var |
-| `ci_rescue.py` | `ci-rescue-rca:{pr}:sha-{sha12}` | Creates new or appends | ✅ Yes | Prefer appending to `ci-rescue-sha` anchor | ✅ Done | P1 | `_find_rescue_sha_comment()` |
+| `post_rescue_comment.py` | `ci-rescue-sha:{pr}:{sha12}` | Creates / appends |  Yes | **Canonical anchor** — all others append here |  Done | P1 | `SECTION_CONTENT` env var |
+| `ci_rescue.py` | `ci-rescue-rca:{pr}:sha-{sha12}` | Creates new or appends |  Yes | Prefer appending to `ci-rescue-sha` anchor |  Done | P1 | `_find_rescue_sha_comment()` |
 | `copilot-agent-session-done.yml` | `copilot-healing:{pr}:{sha12}` | Creates new | Partial | Use `APPEND_ONLY=true` + `SECTION_CONTENT` | 🔄 In Progress | P1 | `post_rescue_comment.py` |
-| `compiled-bot-feedback.yml` | `compiled-bot-feedback:{pr}` | Creates new | ❌ No | Append to rescue-sha; fallback create | 📋 Planned | P2 | `post_rescue_comment.py` |
-| `copilot-escalation.yml` | `copilot-escalation:{pr}:{sha12}` | Creates new | ✅ Yes | Use `APPEND_ONLY=true` + `SECTION_CONTENT` | 📋 Planned | P2 | `post_rescue_comment.py` |
-| `session-done-retrigger.yml` | `session-done-retrigger:{pr}` | Creates new | ❌ No | Append to rescue-sha anchor | 📋 Planned | P2 | `post_rescue_comment.py` |
-| `comment-review-gate.yml` | `comment-review-gate-checklist:{pr}` | Creates new | ❌ No | Keep separate (review gate ≠ failure) | 📋 Planned | P3 | N/A — different purpose |
-| `workflow-execution-gate.yml` | `workflow-execution-gate:{pr}` | Upserts (no SHA) | ❌ No | Keep separate (plan summary ≠ failure) | 📋 Planned | P3 | N/A — different purpose |
-| `post-pr-summary` (action) | `PR_STATUS_DASHBOARD_v1` | Upserts | ❌ No | Keep separate (dashboard ≠ failure) | 📋 Planned | P3 | N/A |
-| `validate.yml` | `ci-rescue-sha` (via script) | Appends | ✅ Yes | Already correct | ✅ Done | P1 | `post_rescue_comment.py` |
-| `resilient_validation.yml` | `ci-rescue-sha` (via script) | Appends | ✅ Yes | Already correct | ✅ Done | P1 | `post_rescue_comment.py` |
-| `nox_gates.yml` | `ci-rescue-sha` (via script) | Appends | ✅ Yes | Already correct | ✅ Done | P1 | `post_rescue_comment.py` |
-| `security-scanning-suite.yml` | `ci-rescue-sha` (via script) | Appends | ✅ Yes | Already correct | ✅ Done | P1 | `post_rescue_comment.py` |
-| `pre-merge-validation.yml` | `ci-rescue-sha` (via script) | Appends | ✅ Yes | Already correct | ✅ Done | P1 | `post_rescue_comment.py` |
-| `agent-auth-delegation.yml` | `ci-rescue-sha` (via script) | Appends | ✅ Yes | Already correct | ✅ Done | P1 | `post_rescue_comment.py` |
+| `compiled-bot-feedback.yml` | `compiled-bot-feedback:{pr}` | Creates new |  No | Append to rescue-sha; fallback create | 📋 Planned | P2 | `post_rescue_comment.py` |
+| `copilot-escalation.yml` | `copilot-escalation:{pr}:{sha12}` | Creates new |  Yes | Use `APPEND_ONLY=true` + `SECTION_CONTENT` | 📋 Planned | P2 | `post_rescue_comment.py` |
+| `session-done-retrigger.yml` | `session-done-retrigger:{pr}` | Creates new |  No | Append to rescue-sha anchor | 📋 Planned | P2 | `post_rescue_comment.py` |
+| `comment-review-gate.yml` | `comment-review-gate-checklist:{pr}` | Creates new |  No | Keep separate (review gate ≠ failure) | 📋 Planned | P3 | N/A — different purpose |
+| `workflow-execution-gate.yml` | `workflow-execution-gate:{pr}` | Upserts (no SHA) |  No | Keep separate (plan summary ≠ failure) | 📋 Planned | P3 | N/A — different purpose |
+| `post-pr-summary` (action) | `PR_STATUS_DASHBOARD_v1` | Upserts |  No | Keep separate (dashboard ≠ failure) | 📋 Planned | P3 | N/A |
+| `validate.yml` | `ci-rescue-sha` (via script) | Appends |  Yes | Already correct |  Done | P1 | `post_rescue_comment.py` |
+| `resilient_validation.yml` | `ci-rescue-sha` (via script) | Appends |  Yes | Already correct |  Done | P1 | `post_rescue_comment.py` |
+| `nox_gates.yml` | `ci-rescue-sha` (via script) | Appends |  Yes | Already correct |  Done | P1 | `post_rescue_comment.py` |
+| `security-scanning-suite.yml` | `ci-rescue-sha` (via script) | Appends |  Yes | Already correct |  Done | P1 | `post_rescue_comment.py` |
+| `pre-merge-validation.yml` | `ci-rescue-sha` (via script) | Appends |  Yes | Already correct |  Done | P1 | `post_rescue_comment.py` |
+| `agent-auth-delegation.yml` | `ci-rescue-sha` (via script) | Appends |  Yes | Already correct |  Done | P1 | `post_rescue_comment.py` |
 
 ---
 
@@ -200,8 +202,8 @@ flowchart TD
     A --> M[validate-wec-integrity job]
     M --> N[wec_enforcer.py --validate-body]
     N --> O{Always-required items checked?}
-    O -- Yes --> P[✅ WEC valid]
-    O -- No --> Q[❌ Fail — missing required items]
+    O -- Yes --> P[ WEC valid]
+    O -- No --> Q[ Fail — missing required items]
 ```
 
 ---

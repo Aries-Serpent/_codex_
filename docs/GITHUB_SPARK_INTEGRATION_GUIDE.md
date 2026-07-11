@@ -1,4 +1,6 @@
 # GitHub Spark Integration Guide for _Codex_ Cognitive Brain
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Purpose**: Comprehensive guide for developing GitHub Spark applications that integrate with the _Codex_ backend for advanced code generation and cognitive brain demonstrations.
 >
@@ -385,9 +387,9 @@ Build an agent control panel with:
 
 TOP - Active Agents Grid (3 columns):
 - Each agent card shows:
-  - Icon (🤖 workflow, ⚛️ quantum, 🔬 physics)
+  - Icon ( workflow, ⚛️ quantum, 🔬 physics)
   - Agent name
-  - Status badge (🟢 idle, 🟡 active, 🔴 error)
+  - Status badge ( idle, 🟡 active,  error)
   - Last execution time
 - Hover effect: border glow + shadow
 
@@ -435,8 +437,8 @@ PIPELINE VISUALIZATION:
 - 4-stage horizontal flow:
   1. Ingest (📥)
   2. Analyze (🔍)
-  3. Transform (⚙️)
-  4. Verify (✅)
+  3. Transform ()
+  4. Verify ()
 - Each stage shows:
   - Icon + name
   - Progress bar (0-100%)
@@ -604,7 +606,7 @@ OVERVIEW CARDS (Top row, 4 cards):
 2. k₁ Factor
    - Large "0.35" text
    - Progress bar to target
-   - Status: ✅ ACHIEVED
+   - Status:  ACHIEVED
 
 3. Accuracy
    - Large "86.4%" text
@@ -648,7 +650,7 @@ Add pre-built example scenarios section:
 
 GRID LAYOUT (2 columns, 3 rows):
 
-1. 🔒 Security Analysis
+1.  Security Analysis
    - Description: "Detect SQL injection and XSS vulnerabilities"
    - Example code preview (collapsed)
    - [Try it] button → pre-fills prompt
@@ -658,7 +660,7 @@ GRID LAYOUT (2 columns, 3 rows):
    - Example code preview
    - [Try it] button
 
-3. 📚 Documentation Generation
+3.  Documentation Generation
    - Description: "Auto-generate docstrings and README"
    - Example code preview
    - [Try it] button
@@ -1581,7 +1583,7 @@ pip install mangum
 
 - **[Codebase Cognitive Map](./system/CODEBASE_COGNITIVE_MAP.md)** - Architecture overview
 - **[Codebase Dashboard](./system/CODEBASE_DASHBOARD.md)** - Live metrics
-- **[Repository README](https://github.com/Aries-Serpent/_codex_/blob/main/README.md)** - Complete project documentation
+- **[Repository README](README.md)** - Complete project documentation
 - **[.codex/archive/deprecated/AGENTS.md](./agents.md)** - Autonomous agent system
 - **[MCP Quick Start](mcp/QUICK_START.md)** - Package system guide
 - **[Advanced Physics Guide](ADVANCED_PHYSICS_GUIDE.md)** - 6 physics paradigms
@@ -1636,11 +1638,11 @@ pip install mangum
 ### Q: Is this production-ready?
 
 **A**: Yes! _Codex_ is Level 4 MLOps certified:
-- ✅ 21,500+ tests (100% passing)
-- ✅ 34.56% agents/ coverage (Phase 9.4 baseline), targeting 50% overall (Phase 10)
-- ✅ 0 security vulnerabilities
-- ✅ CI/CD pipelines
-- ✅ Comprehensive documentation
+-  21,500+ tests (100% passing)
+-  34.56% agents/ coverage (Phase 9.4 baseline), targeting 50% overall (Phase 10)
+-  0 security vulnerabilities
+-  CI/CD pipelines
+-  Comprehensive documentation
 
 ### Q: What are the rate limits?
 
@@ -1673,7 +1675,7 @@ pip install mangum
 
 ## License
 
-MIT License - see [LICENSE](https://github.com/Aries-Serpent/_codex_/blob/main/LICENSE) for details
+MIT License - see [LICENSE](LICENSE) for details
 
 ---
 

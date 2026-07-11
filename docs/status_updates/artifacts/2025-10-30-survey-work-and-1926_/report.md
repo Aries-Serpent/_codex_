@@ -1,6 +1,8 @@
 # Repo Survey — work & PR 1926 — 2025-10-30 (UTC)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 **Ref:** branch `work`  commit `6404edf9`  •  **Artifacts:** `docs/status_updates/artifacts/2025-10-30-survey-work-and-1926_`
 

@@ -1,4 +1,6 @@
 # Questions Requiring Deep Research - PR #3344 (S66)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 ## Table of Contents
 
@@ -120,8 +122,8 @@
   - [DRQ-S75-003: FAISS Availability Detection False Positive](#drq-s75-003-faiss-availability-detection-false-positive)
     - [Root Cause](#root-cause)
     - [S79 Deep-Research Addendum (2026-02-24)](#s79-deep-research-addendum-2026-02-24)
-- [✅ CORRECT — import the native lib directly in the guard:](#-correct--import-the-native-lib-directly-in-the-guard)
-- [❌ WRONG — Python class may be importable even without the native lib:](#-wrong--python-class-may-be-importable-even-without-the-native-lib)
+- [ CORRECT — import the native lib directly in the guard:](#-correct--import-the-native-lib-directly-in-the-guard)
+- [ WRONG — Python class may be importable even without the native lib:](#-wrong--python-class-may-be-importable-even-without-the-native-lib)
 - [Updated Summary Table](#updated-summary-table)
 - [S80 Deep Research Addenda — DRQ-S75-001 / S75-002 / S75-003](#s80-deep-research-addenda--drq-s75-001--s75-002--s75-003)
   - [DRQ-S75-001-R3 (S80): Bandit B314 false positive — `solution_xml.py`](#drq-s75-001-r3-s80-bandit-b314-false-positive--solution_xmlpy)
@@ -166,7 +168,7 @@
     - [Interim Fix Applied](#interim-fix-applied)
     - [Acceptance Criteria](#acceptance-criteria)
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 **Created**: 2026-02-22 08:30
 **Status**: Awaiting Research
@@ -205,7 +207,7 @@ Hydra 1.3.2 with `version_base=None` does NOT change CWD. The original test assu
 #### Interim Fix Applied (S81)
 Changed `outputs_dir = Path(tmp_path) / "outputs"` → `ndjson_files = list(output_dir.glob("**/predictions.ndjson"))` in `tests/test_evaluate_cli.py`. Verified: `eval/predictions.ndjson` and `eval/summary.json` ARE written correctly (confirmed via `/tmp/pytest-of-runner/pytest-7/test_evaluate_cli_runs0/eval/summary.json`).
 
-**Status**: Interim fix confirmed working ✅; root cause research deferred
+**Status**: Interim fix confirmed working ; root cause research deferred
 
 ---
 
@@ -227,7 +229,7 @@ Is using a module-level FastAPI singleton in combination with pytest a supported
 #### Interim Fix Applied (S81)
 Added `_clear_app_state()` helper to the `_set_env` autouse fixture — clears `app.state.tokenizer` and `app.state.model` before and after each test. Used `with TestClient(app) as client:` for proper ASGI lifecycle (startup/shutdown events).
 
-**Status**: Interim fix working ✅; factory pattern refactor deferred
+**Status**: Interim fix working ; factory pattern refactor deferred
 
 ---
 
@@ -608,7 +610,7 @@ Does `OptimizedVectorStore.search()` actually call `self.cache.set(key, results)
 **Priority**: High
 **Impact**: High — blocks 16 tests in quick suite
 **Created**: 2026-02-23 (S70)
-**Status**: 🔴 OPEN — root cause unresolved
+**Status**:  OPEN — root cause unresolved
 **CI Run**: `22291570163` (sha `8eab1b2`, branch `copilot/sub-pr-3336-again`)
 
 #### Context
@@ -654,7 +656,7 @@ None of these modules import `chat` at the top level.
 **Priority**: High
 **Impact**: High — 4 tests blocked in quick suite
 **Created**: 2026-02-23 (S70)
-**Status**: 🔴 OPEN
+**Status**:  OPEN
 **CI Run**: `22291570163`
 
 #### Context
@@ -724,7 +726,7 @@ accept a `argv` parameter — the test calls `ft.main(["--output-dir", ..., "--e
 **Priority**: Medium
 **Impact**: Medium — affects timestamp correctness across the codebase
 **Created**: 2026-02-23 (S70)
-**Status**: ✅ RESOLVED (S72 — all 35 remaining occurrences fixed)
+**Status**:  RESOLVED (S72 — all 35 remaining occurrences fixed)
 **Files**: All 47 occurrences in `src/` now use `datetime.now(timezone.utc)`
 
 #### Resolution (S72)
@@ -750,7 +752,7 @@ Research questions answered:
 **Priority**: Medium
 **Impact**: Medium — flaky failures mask real failures in CI
 **Created**: 2026-02-23 (S70)
-**Status**: 🔴 OPEN
+**Status**:  OPEN
 
 #### Context
 Several Hypothesis tests show `FlakyFailure: Inconsistent results from replaying a test case!`
@@ -780,11 +782,11 @@ This suggests the `chat` ImportError (DRQ-S70-001) is non-deterministic — some
 | Q005 | `audit_runner.py` full vs minimal output env flags | Compatibility   | Medium   | Medium  | ⏳ Awaiting Research |
 | Q006 | Pytest string-path monkeypatch CI failure          | Test Infra      | High     | High    | ⏳ Awaiting Research (S67: interim fix) |
 | Q007 | OptimizedVectorStore cache never persists          | Bug Root Cause  | Medium   | Medium  | ⏳ Awaiting Research |
-| DRQ-S70-001 | `test_property_based.py` `chat` ImportError stub interference | Test Infra | High | High | ✅ RESOLVED (S71: `_missing_attr` raises `AttributeError` for dunders) |
-| DRQ-S70-002 | `test_data_splits.py` torch stub vs real torch | Test Infra | High | High | ✅ RESOLVED (S71: `torch/__init__.py` `__getattr__` + stub factory funcs) |
-| DRQ-S70-003 | `codex.training` missing `load_training_cfg`/`run_hf_trainer` | Missing Impl | Medium | Medium | ✅ RESOLVED (S70) |
-| DRQ-S70-004 | `datetime.now()` TZ-naive in 47 src/ files | Code Quality | Medium | Medium | ✅ RESOLVED (all 35 remaining files fixed in S72) |
-| DRQ-S70-005 | Hypothesis FlakyFailure from non-deterministic import order | Test Flakiness | Medium | Medium | ✅ RESOLVED (S71: same fix as DRQ-S70-001) |
+| DRQ-S70-001 | `test_property_based.py` `chat` ImportError stub interference | Test Infra | High | High |  RESOLVED (S71: `_missing_attr` raises `AttributeError` for dunders) |
+| DRQ-S70-002 | `test_data_splits.py` torch stub vs real torch | Test Infra | High | High |  RESOLVED (S71: `torch/__init__.py` `__getattr__` + stub factory funcs) |
+| DRQ-S70-003 | `codex.training` missing `load_training_cfg`/`run_hf_trainer` | Missing Impl | Medium | Medium |  RESOLVED (S70) |
+| DRQ-S70-004 | `datetime.now()` TZ-naive in 47 src/ files | Code Quality | Medium | Medium |  RESOLVED (all 35 remaining files fixed in S72) |
+| DRQ-S70-005 | Hypothesis FlakyFailure from non-deterministic import order | Test Flakiness | Medium | Medium |  RESOLVED (S71: same fix as DRQ-S70-001) |
 
 ---
 
@@ -796,7 +798,7 @@ This suggests the `chat` ImportError (DRQ-S70-001) is non-deterministic — some
 **Priority**: Low
 **Impact**: Low — tested, working correctly
 **Created**: 2026-02-23 (S73)
-**Status**: ✅ ANSWERED — No fix needed
+**Status**:  ANSWERED — No fix needed
 
 #### Research Findings (S74 — CI Testing Agent)
 
@@ -816,7 +818,7 @@ pruning with `*.pt` count, excluding `state.pt`.
 **Priority**: Low
 **Impact**: Low — test design is sound
 **Created**: 2026-02-23 (S73)
-**Status**: ✅ ANSWERED — No fix needed
+**Status**:  ANSWERED — No fix needed
 
 #### Research Findings (S74 — CI Testing Agent)
 
@@ -832,7 +834,7 @@ and where failure occurs (dataset preparation vs Trainer.train()). No tightening
 **Priority**: Medium
 **Impact**: Low risk — local usage is safe (`datetime.now(timezone.utc)`)
 **Created**: 2026-02-23 (S73)
-**Status**: ✅ RESOLVED (S74)
+**Status**:  RESOLVED (S74)
 
 #### Research Findings (S74 — CI Testing Agent)
 
@@ -854,7 +856,7 @@ from the module-level import. The local import at line 345 was safe (used with
 **Priority**: Low
 **Impact**: None — no duplicate exists
 **Created**: 2026-02-23 (S73)
-**Status**: ✅ ANSWERED — No fix needed
+**Status**:  ANSWERED — No fix needed
 
 #### Research Findings (S74 — CI Testing Agent)
 
@@ -870,7 +872,7 @@ call, consistent with the S71 fix pattern. DRQ entry was filed based on a false 
 **Priority**: High
 **Impact**: High — blocks fast-suite on every commit
 **Created**: 2026-02-23 (S74)
-**Status**: ✅ RESOLVED (S74)
+**Status**:  RESOLVED (S74)
 
 #### Root Cause
 
@@ -891,7 +893,7 @@ pattern in all non-test Python files and fails if found.
 **Priority**: High
 **Impact**: High — `test_cache_concurrent_access` fails (5 threads × `AttributeError`)
 **Created**: 2026-02-23 (S74)
-**Status**: ✅ RESOLVED (S74)
+**Status**:  RESOLVED (S74)
 
 #### Root Cause
 
@@ -913,7 +915,7 @@ but did NOT add a `.set()` method. Tests across `test_rag_caching_system.py` cal
 **Priority**: High
 **Impact**: High — `test_unified_training_resume_flow` failing with `KeyError: 'loaded'`
 **Created**: 2026-02-23 (S74)
-**Status**: ✅ RESOLVED (S74)
+**Status**:  RESOLVED (S74)
 
 #### Root Cause
 
@@ -938,7 +940,7 @@ requires `payload=` as keyword-only arg.
 **Priority**: Medium
 **Impact**: Medium — triggers auto-fix CI workflows to fail
 **Created**: 2026-02-23 (S74)
-**Status**: ✅ RESOLVED (S74)
+**Status**:  RESOLVED (S74)
 
 #### Root Cause
 
@@ -980,7 +982,7 @@ grep -rn "^    from datetime import datetime$" src/ tests/
 **Category**: API Investigation
 **Priority**: Low — possibly obsolete
 **Created**: 2026-02-23 (S74 — re-investigation of Q001)
-**Status**: ✅ ANSWERED (S75 deep research) — function found in `src/codex_ml/cli/codex_cli.py`
+**Status**:  ANSWERED (S75 deep research) — function found in `src/codex_ml/cli/codex_cli.py`
 
 #### Research Findings (S75 — mbaetiong deep research, comment-3947609438)
 
@@ -998,7 +1000,7 @@ Recommend marking Q001 as actionable: route provenance to stderr per standard CL
 **Category**: CI Infrastructure
 **Priority**: High
 **Created**: 2026-02-23 (S75 — fast-suite CI failure)
-**Status**: ✅ RESOLVED (S75)
+**Status**:  RESOLVED (S75)
 
 #### Root Cause
 
@@ -1047,7 +1049,7 @@ permanent production fallback in security-sensitive paths. The S75 fix only uses
 **Category**: Test Correctness
 **Priority**: High
 **Created**: 2026-02-23 (S75 — slow-suite CI failure)
-**Status**: ✅ RESOLVED (S75)
+**Status**:  RESOLVED (S75)
 
 #### Root Cause
 
@@ -1106,7 +1108,7 @@ if (
 **Category**: Test Infra
 **Priority**: Medium
 **Created**: 2026-02-23 (S75 — slow-suite CI failure)
-**Status**: ✅ RESOLVED (S75)
+**Status**:  RESOLVED (S75)
 
 #### Root Cause
 
@@ -1133,7 +1135,7 @@ In any test file that skips based on an optional C-extension library (`faiss`, `
 class that may defer the native import:
 
 ```python
-# ✅ CORRECT — import the native lib directly in the guard:
+#  CORRECT — import the native lib directly in the guard:
 try:
     import faiss  # noqa: F401
     from src.codex.retrieval.stores.faiss_store import FAISSStore
@@ -1141,7 +1143,7 @@ try:
 except ImportError:
     FAISS_AVAILABLE = False
 
-# ❌ WRONG — Python class may be importable even without the native lib:
+#  WRONG — Python class may be importable even without the native lib:
 try:
     from src.codex.retrieval.stores.faiss_store import FAISSStore
     FAISS_AVAILABLE = True  # FALSE POSITIVE if faiss not installed
@@ -1208,7 +1210,7 @@ process-wide protection against XXE via third-party code without changing any
 existing import patterns. Filed as S81 enhancement recommendation.
 
 **File**: `src/codex/dynamics/solution_xml.py:32`
-**Status**: B314 false positive suppressed ✅; `defuse_stdlib()` startup call ⏳ S81
+**Status**: B314 false positive suppressed ; `defuse_stdlib()` startup call ⏳ S81
 
 ---
 
@@ -1235,7 +1237,7 @@ if device.type == "cuda" and cfg.dtype in {"fp32", "fp16", "bf16"}:
 3. Add MPS support: `if hasattr(torch.backends, 'mps') and torch.backends.mps.is_available(): torch.mps.manual_seed(seed)`.
 
 **File**: `training/functional_training.py:443`
-**Status**: DRQ-S75-002-R1 rule enforced in engine_hf_trainer.py (S79b) ✅;
+**Status**: DRQ-S75-002-R1 rule enforced in engine_hf_trainer.py (S79b) ;
 functional_training.py auto-call recommendation ⏳ S81
 
 ---
@@ -1261,7 +1263,7 @@ guarded `try/except ImportError` block.
 3. Add `faiss-cpu` to `requirements/lock-test.txt` as optional CI dep.
 
 **File**: `src/codex/retrieval/stores/__init__.py`
-**Status**: FAISS guard added ✅; RetrievalEngine factory migration ⏳ S81
+**Status**: FAISS guard added ; RetrievalEngine factory migration ⏳ S81
 
 ---
 
@@ -1309,7 +1311,7 @@ suppress both ruff F401 and CodeQL unused-import alerts.
 **Priority**: HIGH
 **Impact**: HIGH — Shard 2/2 crashes with `ValueError("I/O operation on closed file.")` + `lost sys.stderr`, blocking meaningful CI signal from the second half of the test suite
 **Created**: 2026-02-28
-**Status**: ✅ Interim fix applied
+**Status**:  Interim fix applied
 
 #### Context
 **Where discovered**: Resilient Validation Suite / Sharded quick tests (shard 2/2), run 22517735336
@@ -1348,7 +1350,7 @@ Added `-p no:rerunfailures` to the sharded-quick pytest command in `resilient_va
 **Priority**: MEDIUM
 **Impact**: MEDIUM — `Code scanning results / CodeQL` PR check shows "Failing after 2s — N configurations not found", blocking PR merge confidence
 **Created**: 2026-02-28
-**Status**: ✅ Interim fix applied
+**Status**:  Interim fix applied
 
 #### Context
 **Where discovered**: PR #3389 checks, check_run_id=65238276083
@@ -1392,7 +1394,7 @@ brings the active count from 2 to 3; GHAS will retire stale entries over time.
 **Priority**: MEDIUM
 **Impact**: MEDIUM — Without `.test_durations`, pytest-split falls back to count-based splitting. All test definitions must be collected on every shard before any can run. Combined with ~2000 quick tests, shard 2/2 collects 1000+ test items before executing any — adding significant overhead. Tests appear to run at 1 test/3s pace when collection + execution are measured together.
 **Created**: 2026-02-28
-**Status**: ✅ Interim fix applied
+**Status**:  Interim fix applied
 
 #### The Question
 Should `.test_durations` be committed to the repository (removing it from `.gitignore`) to make the split deterministic and fast from day one? Or is the cache-based approach sufficient for progressive improvement?
@@ -1466,7 +1468,7 @@ the test suite to catch any newly-broken imports. Likely 2–3 CI iterations to 
 **Priority**: HIGH
 **Impact**: HIGH — `nox -s tests` stops at 143 collection errors, blocking baseline CI signal
 **Created**: 2026-05-17
-**Status**: ✅ Interim fix applied
+**Status**:  Interim fix applied
 
 #### Context
 **Where discovered**: Session S1043 / `/home/runner/work/_codex_/_codex_` baseline `nox -s tests` run.  

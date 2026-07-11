@@ -1,4 +1,6 @@
 # Community Guidelines & Getting Help
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Last Updated**: 2026-07-08  
 **Version**: 1.0.0
@@ -170,16 +172,16 @@ What actually happens...
 
 ### Examples of Good Questions
 
-**Good ✅**:
+**Good **:
 > "I'm trying to load a model from a config file with spaces in the path. When I run `load_model('/my path/model.yaml')` I get `ValueError: Invalid path`. How can I escape spaces or handle this?"
 
-**Less Good ❌**:
+**Less Good **:
 > "How do I load models?"
 
-**Good ✅**:
+**Good **:
 > "I want to add authentication to the API endpoint. Should I use JWT tokens or session cookies? What are the tradeoffs?"
 
-**Less Good ❌**:
+**Less Good **:
 > "How do authentication?"
 
 ---
@@ -282,20 +284,20 @@ HuggingFace Hub has 10k+ public models. This would enable:
 ### Healthy Discussions
 
 **Do**:
-- ✅ Ask clarifying questions
-- ✅ Share relevant experience
-- ✅ Provide concrete examples
-- ✅ Acknowledge good points
-- ✅ Link to relevant resources
-- ✅ Stay on topic
+-  Ask clarifying questions
+-  Share relevant experience
+-  Provide concrete examples
+-  Acknowledge good points
+-  Link to relevant resources
+-  Stay on topic
 
 **Don't**:
-- ❌ Go off-topic
-- ❌ Post the same question multiple times
-- ❌ Ignore answers and repeat questions
-- ❌ Use discussions for bugs/issues (use Issues instead)
-- ❌ Cross-post to many places (spam)
-- ❌ Post promotional/advertising content
+-  Go off-topic
+-  Post the same question multiple times
+-  Ignore answers and repeat questions
+-  Use discussions for bugs/issues (use Issues instead)
+-  Cross-post to many places (spam)
+-  Post promotional/advertising content
 
 ### Following Conversations
 
@@ -322,37 +324,37 @@ If your question is answered:
 
 **Be Constructive**:
 ```markdown
-❌ Bad:
+ Bad:
 "This code is wrong."
 
-✅ Good:
+ Good:
 "This approach causes a race condition when multiple threads access
 the cache simultaneously. Consider using a lock, like in PR #123."
 ```
 
 **Be Specific**:
 ```markdown
-❌ Bad:
+ Bad:
 "Fix the code."
 
-✅ Good:
+ Good:
 "Line 42: The variable `count` might be None here. Add a null check
 before using it on line 43, or initialize it in line 35."
 ```
 
 **Be Humble**:
 ```markdown
-❌ Bad:
+ Bad:
 "Why would anyone do this?"
 
-✅ Good:
+ Good:
 "I'm not sure I understand the approach here. Can you explain the
 reasoning? I might be missing something."
 ```
 
 **Be Appreciative**:
 ```markdown
-✅ Good:
+ Good:
 "Nice refactoring! This makes the code much clearer. One small thing:
 could you also update the docstring to match?"
 ```
@@ -376,11 +378,11 @@ could you also update the docstring to match?"
 
 **Respond to Comments**:
 ```markdown
-✅ Good:
+ Good:
 "Good catch! I fixed that on line 45. Would you like me to add a
 test case for this edge case as well?"
 
-❌ Dismissive:
+ Dismissive:
 "That's fine, it works."
 ```
 
@@ -453,7 +455,7 @@ git config --global user.email "you@example.com"
 
 ## Anti-Patterns to Avoid
 
-### ❌ Spamming
+###  Spamming
 
 Don't:
 - Post the same question in multiple places
@@ -461,7 +463,7 @@ Don't:
 - Bump discussions without new information
 - Promote products/services
 
-### ❌ Arguing About Preferences
+###  Arguing About Preferences
 
 Don't:
 - Bikeshed on code style (we use Black, case closed)
@@ -471,7 +473,7 @@ Don't:
 
 **Instead**: Focus on functionality and correctness.
 
-### ❌ Inactivity
+###  Inactivity
 
 Don't:
 - Open issues/PRs and abandon them
@@ -480,7 +482,7 @@ Don't:
 
 **Instead**: If you can't work on something, let maintainers know.
 
-### ❌ Demanding/Entitled Tone
+###  Demanding/Entitled Tone
 
 Don't:
 - "You need to fix this NOW"
@@ -489,7 +491,7 @@ Don't:
 
 **Instead**: "Would it be possible to...?" or "I'd be happy to help with..."
 
-### ❌ Hijacking Discussions
+###  Hijacking Discussions
 
 Don't:
 - Take over someone else's issue/PR with different topic
@@ -498,7 +500,7 @@ Don't:
 
 **Instead**: Open a new discussion/issue for your topic.
 
-### ❌ Passive Aggression
+###  Passive Aggression
 
 Don't:
 - "As you might know..." (condescending)

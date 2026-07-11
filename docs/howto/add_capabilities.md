@@ -1,6 +1,8 @@
 # How-to: add capabilities safely
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 1. Start from the structured configs in `conf/` and extend the relevant group
    (for example, add a new file under `conf/model/` for a variant that requires

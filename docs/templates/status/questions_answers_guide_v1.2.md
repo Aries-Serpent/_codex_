@@ -1,6 +1,9 @@
 # Guide: Questions & Answers Section (v1.2)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
-🧠 Roles: [Primary: Q&A Steward], [Secondary: Reviewer] ⚡ Energy: 5
+ Roles: [Primary: Q&A Steward], [Secondary: Reviewer] ⚡ Energy: 5
 
 Purpose
 - Standardize usage of `questions` in the status schema for traceability.

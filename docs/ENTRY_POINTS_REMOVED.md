@@ -1,4 +1,6 @@
 # Entry Points Removed or Commented Out
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 This document explains why 22 entry points are commented out in `pyproject.toml` and which profiles will enable them.
 
@@ -27,13 +29,13 @@ This document maintains clarity about:
 
 | Command | Module Reference | Reason | Status |
 |---------|------------------|--------|--------|
-| `codex-analyze` | `codex.analysis.cli:analyze_main` | Module not found in current codebase | ❌ Not Implemented |
-| `codex-audit` | `codex.audit.cli:audit_main` | Module not found in current codebase | ❌ Not Implemented |
-| `codex-smell` | `codex.quality.cli:smell_main` | Module not found in current codebase | ❌ Not Implemented |
-| `codex-metrics` | `codex.ast.cli:metrics_main` | Module not found in current codebase | ❌ Not Implemented |
-| `codex-ast` | `codex.cli.ast_cli:main` | Module not found in current codebase | ❌ Not Implemented |
-| `codex-report` | `codex.reporting.cli:report_main` | Module not found in current codebase | ❌ Not Implemented |
-| `codex-dashboard` | `codex.reporting.cli:dashboard_main` | Module not found in current codebase | ❌ Not Implemented |
+| `codex-analyze` | `codex.analysis.cli:analyze_main` | Module not found in current codebase |  Not Implemented |
+| `codex-audit` | `codex.audit.cli:audit_main` | Module not found in current codebase |  Not Implemented |
+| `codex-smell` | `codex.quality.cli:smell_main` | Module not found in current codebase |  Not Implemented |
+| `codex-metrics` | `codex.ast.cli:metrics_main` | Module not found in current codebase |  Not Implemented |
+| `codex-ast` | `codex.cli.ast_cli:main` | Module not found in current codebase |  Not Implemented |
+| `codex-report` | `codex.reporting.cli:report_main` | Module not found in current codebase |  Not Implemented |
+| `codex-dashboard` | `codex.reporting.cli:dashboard_main` | Module not found in current codebase |  Not Implemented |
 
 ### Utility Commands (Requires [full] profile)
 
@@ -56,10 +58,10 @@ This document maintains clarity about:
 
 | Status | Meaning |
 |--------|---------|
-| ✅ Core | Available in [core] profile |
+|  Core | Available in [core] profile |
 | ⏳ Runtime | Enabled in [runtime] profile |
 | ⏳ Full | Enabled in [full] profile |
-| ❌ Not Implemented | Module does not exist in codebase |
+|  Not Implemented | Module does not exist in codebase |
 
 ## Activation Plan
 

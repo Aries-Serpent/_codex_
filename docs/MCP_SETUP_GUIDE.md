@@ -1,6 +1,8 @@
 # MCP (Model Context Protocol) Setup Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 **Purpose:** Enable AI assistants to interact with GitHub repositories, run tests, and perform development tasks through standardized Model Context Protocol servers.
 
@@ -86,10 +88,10 @@ Model Context Protocol (MCP) is a standardized way for AI assistants to interact
    c. Name: "MCP Server Access"
 
    d. Select scopes:
-      - ✅ `repo` (Full control of private repositories)
-      - ✅ `workflow` (Update GitHub Action workflows)
-      - ✅ `read:org` (Read org and team membership)
-      - ✅ `project` (Access projects)
+      -  `repo` (Full control of private repositories)
+      -  `workflow` (Update GitHub Action workflows)
+      -  `read:org` (Read org and team membership)
+      -  `project` (Access projects)
 
    e. Click "Generate token"
 
@@ -173,26 +175,26 @@ For comprehensive development capabilities, use this full configuration:
 ## Security Best Practices
 
 ### 1. Token Security
-- ✅ Use fine-grained tokens when possible
-- ✅ Set token expiration (90 days recommended)
-- ✅ Never commit tokens to repositories
-- ✅ Rotate tokens regularly
-- ❌ Don't share tokens
+-  Use fine-grained tokens when possible
+-  Set token expiration (90 days recommended)
+-  Never commit tokens to repositories
+-  Rotate tokens regularly
+-  Don't share tokens
 
 ### 2. Filesystem Access
-- ✅ Limit `ALLOWED_DIRECTORIES` to project directories and `/tmp`
-- ✅ Never allow root directory `/`
-- ✅ Review file access patterns regularly
+-  Limit `ALLOWED_DIRECTORIES` to project directories and `/tmp`
+-  Never allow root directory `/`
+-  Review file access patterns regularly
 
 ### 3. Command Execution
-- ✅ Use `ALLOWED_COMMANDS` to restrict bash operations
-- ✅ Avoid allowing destructive commands (`rm -rf`, `sudo`, etc.)
-- ✅ Review command execution logs
+-  Use `ALLOWED_COMMANDS` to restrict bash operations
+-  Avoid allowing destructive commands (`rm -rf`, `sudo`, etc.)
+-  Review command execution logs
 
 ### 4. Repository Access
-- ✅ Use read-only tokens for read-only operations
-- ✅ Limit token scope to necessary repositories
-- ✅ Monitor token usage in GitHub settings
+-  Use read-only tokens for read-only operations
+-  Limit token scope to necessary repositories
+-  Monitor token usage in GitHub settings
 
 ---
 

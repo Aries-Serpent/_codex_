@@ -1,6 +1,8 @@
 # Runnable Examples — Codex ML
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 Interactive, standalone Python scripts demonstrating key modules in this
 repository. Each script can be run directly with no extra `pip install`

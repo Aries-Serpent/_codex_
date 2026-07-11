@@ -1,6 +1,8 @@
 # Configuration System
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 Codex ML relies on structured [Hydra](https://hydra.cc) configuration backed by
 Python dataclasses defined in `codex_ml.config`. Four primary configuration

@@ -1,4 +1,6 @@
 # Suggested Tasks — _codex_ Status Update (2025-09-16)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 ## Table of Contents
 
@@ -24,7 +26,7 @@
   - [Suggested Task ST-4.3 — Strengthen examples & CLI help surface](#suggested-task-st-43--strengthen-examples--cli-help-surface)
 - [Phase 5 — Final Regression & Release Readiness](#phase-5--final-regression--release-readiness)
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 This execution blueprint sequences the follow-up work required to close the partially implemented capabilities, high-signal findings, and atomic diffs captured in the 2025-09-16 status update. Each suggested task references the existing artefacts to touch, explains how it mitigates the recorded risks and gaps, and lists the offline validation gates to run before hand-off.
 

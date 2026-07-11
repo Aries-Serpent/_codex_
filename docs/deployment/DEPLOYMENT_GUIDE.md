@@ -1,4 +1,6 @@
 # Deployment Guide - codex-ml v0.2.1
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Last Updated**: 2026-07-11  
 **Version**: 2.0  
@@ -32,11 +34,11 @@ This guide provides comprehensive deployment procedures for the Cognitive Brain 
 
 ### Key Guarantees
 
-- ✅ **Reproducible**: All dependencies locked in `uv.lock`
-- ✅ **Offline-Capable**: Core profile works without network
-- ✅ **Verified**: Hash-checked manifests and SBOMs included
-- ✅ **Secure**: CVE governance and network policy enforcement
-- ✅ **Tested**: Smoke tests for all profile combinations
+-  **Reproducible**: All dependencies locked in `uv.lock`
+-  **Offline-Capable**: Core profile works without network
+-  **Verified**: Hash-checked manifests and SBOMs included
+-  **Secure**: CVE governance and network policy enforcement
+-  **Tested**: Smoke tests for all profile combinations
 
 ---
 
@@ -45,7 +47,7 @@ This guide provides comprehensive deployment procedures for the Cognitive Brain 
 **Timeline**: 1-2 days before release  
 **Owner**: Release manager or maintainer with PyPI credentials
 
-### ✅ Governance Gates (Auto-verified)
+###  Governance Gates (Auto-verified)
 
 - [ ] **P0 Gate**: Lock/profile alignment verified
   - Confirm `.codex/PROFILE_DRIFT_AUDIT.json` exists
@@ -62,14 +64,14 @@ This guide provides comprehensive deployment procedures for the Cognitive Brain 
   - Confirm `.github/workflows/smoke-tests-deployment.yml` exists
   - Confirm `.github/workflows/pre-release-validation.yml` exists
 
-### ✅ Code Quality Gates
+###  Code Quality Gates
 
 - [ ] **All tests passing**: `pytest tests/ -x`
 - [ ] **No type errors**: `mypy src/`
 - [ ] **No security alerts**: `bandit -r src/`
 - [ ] **No new CVEs**: `pip-audit`
 
-### ✅ Release Preparation
+###  Release Preparation
 
 - [ ] **Version bumped** in `pyproject.toml`
   ```toml
@@ -102,7 +104,7 @@ This guide provides comprehensive deployment procedures for the Cognitive Brain 
   # Don't push yet - pre-release validation will trigger this
   ```
 
-### ✅ Infrastructure Ready
+###  Infrastructure Ready
 
 - [ ] **PyPI credentials configured** in GitHub Secrets
   - Secret: `PYPI_API_TOKEN`
@@ -122,7 +124,7 @@ This guide provides comprehensive deployment procedures for the Cognitive Brain 
   scripts/deploy/bootstrap_offline.py wheelhouse_core/
   ```
 
-### ✅ Documentation Ready
+###  Documentation Ready
 
 - [ ] **Deployment guide reviewed** (this document)
 - [ ] **Rollback procedures documented** (see below)
@@ -157,9 +159,9 @@ This guide provides comprehensive deployment procedures for the Cognitive Brain 
 
 3. Open PR: `release/v0.1.0-prepare` → `main`
 4. Wait for **pre-release-validation.yml** to verify:
-   - Version bumped ✅
-   - CHANGELOG updated ✅
-   - All gates passing ✅
+   - Version bumped 
+   - CHANGELOG updated 
+   - All gates passing 
 
 5. Get code review and merge
 
@@ -188,7 +190,7 @@ Watch for these steps:
 1. **Pre-release checks** (1-2 min)
    - Gate verification: P0, P1, P2
    - Version validation
-   - Expected output: ✅ All gates verified
+   - Expected output:  All gates verified
 
 2. **Build wheels** (3-5 min)
    - Multi-platform build
@@ -204,7 +206,7 @@ Watch for these steps:
 
 5. **Verify manifest** (1 min)
    - Hash verification
-   - Expected output: ✅ Manifest verified
+   - Expected output:  Manifest verified
 
 6. **Publish to PyPI** (2-3 min)
    - Upload wheels
@@ -217,16 +219,16 @@ Watch for these steps:
 
 **Failure scenarios**:
 
-- ❌ **Pre-release checks fail**: Gates not met
+-  **Pre-release checks fail**: Gates not met
   - Action: Resolve missing gates, update version, push new tag
   
-- ❌ **Build fails**: Platform-specific issue
+-  **Build fails**: Platform-specific issue
   - Action: Review build logs, fix issue, delete tag, push new tag
   
-- ❌ **PyPI upload fails**: Credentials or network issue
+-  **PyPI upload fails**: Credentials or network issue
   - Action: Verify `PYPI_API_TOKEN` secret, retry release workflow
   
-- ❌ **Smoke tests fail**: Package doesn't install correctly
+-  **Smoke tests fail**: Package doesn't install correctly
   - Action: See [Rollback Procedures](#rollback-procedures)
 
 ---
@@ -254,19 +256,19 @@ Test on clean machine or in docker:
 python -m venv test-core
 source test-core/bin/activate
 pip install codex-ml[core]==0.2.1
-python -c "from cognitive_brain.ooda import OODALoop; print('✅ Core profile works')"
+python -c "from cognitive_brain.ooda import OODALoop; print(' Core profile works')"
 
 # Test runtime profile
 python -m venv test-runtime
 source test-runtime/bin/activate
 pip install codex-ml[runtime]==0.2.1
-python -c "import torch; print('✅ Runtime profile works')"
+python -c "import torch; print(' Runtime profile works')"
 
 # Test full profile
 python -m venv test-full
 source test-full/bin/activate
 pip install codex-ml[full]==0.2.1
-python -c "import pytest; print('✅ Full profile works')"
+python -c "import pytest; print(' Full profile works')"
 ```
 
 ### Smoke Test Verification (< 2 min)
@@ -274,13 +276,13 @@ python -c "import pytest; print('✅ Full profile works')"
 Check GitHub Actions: **Smoke Tests - Deployment Verification** workflow
 
 All 12 test combinations should pass:
-- ✅ Python 3.12, core, with-ml
-- ✅ Python 3.12, core, without-ml
-- ✅ Python 3.12, runtime, with-ml
-- ✅ Python 3.12, runtime, without-ml
-- ✅ Python 3.12, full, with-ml
-- ✅ Python 3.12, full, without-ml
-- ✅ Python 3.13, [same 6 combinations]
+-  Python 3.12, core, with-ml
+-  Python 3.12, core, without-ml
+-  Python 3.12, runtime, with-ml
+-  Python 3.12, runtime, without-ml
+-  Python 3.12, full, with-ml
+-  Python 3.12, full, without-ml
+-  Python 3.13, [same 6 combinations]
 
 ### Monitoring Setup (5-10 min)
 
@@ -308,11 +310,11 @@ All 12 test combinations should pass:
 ### Profile: Core
 
 **When to use**:
-- ✅ Lightweight deployments (< 50 MB total)
-- ✅ Offline environments or air-gapped networks
-- ✅ Edge devices with limited resources
-- ✅ CI/CD pipelines that only need OODA loop
-- ✅ Containers where size matters
+-  Lightweight deployments (< 50 MB total)
+-  Offline environments or air-gapped networks
+-  Edge devices with limited resources
+-  CI/CD pipelines that only need OODA loop
+-  Containers where size matters
 
 **Installation**:
 ```bash
@@ -340,7 +342,7 @@ pip install codex-ml[core]==0.2.1
 
 **Verification**:
 ```bash
-python -c "from cognitive_brain.ooda import OODALoop; ooda = OODALoop(); print('✅ Core works')"
+python -c "from cognitive_brain.ooda import OODALoop; ooda = OODALoop(); print(' Core works')"
 ```
 
 ---
@@ -348,11 +350,11 @@ python -c "from cognitive_brain.ooda import OODALoop; ooda = OODALoop(); print('
 ### Profile: Runtime
 
 **When to use**:
-- ✅ Production ML inference services
-- ✅ API deployments (FastAPI, Flask)
-- ✅ Pattern recognition in production
-- ✅ Ray serve workers
-- ✅ AWS Lambda / GCP Cloud Functions
+-  Production ML inference services
+-  API deployments (FastAPI, Flask)
+-  Pattern recognition in production
+-  Ray serve workers
+-  AWS Lambda / GCP Cloud Functions
 
 **Installation**:
 ```bash
@@ -381,7 +383,7 @@ pip install codex-ml[runtime]==0.2.1
 
 **Verification**:
 ```bash
-python -c "import torch; from cognitive_brain.runtime import MLInference; print('✅ Runtime works')"
+python -c "import torch; from cognitive_brain.runtime import MLInference; print(' Runtime works')"
 ```
 
 ---
@@ -389,11 +391,11 @@ python -c "import torch; from cognitive_brain.runtime import MLInference; print(
 ### Profile: Full
 
 **When to use**:
-- ✅ Local development
-- ✅ Testing and QA
-- ✅ Building custom extensions
-- ✅ Contributing to the project
-- ✅ Research and experimentation
+-  Local development
+-  Testing and QA
+-  Building custom extensions
+-  Contributing to the project
+-  Research and experimentation
 
 **Installation**:
 ```bash
@@ -422,7 +424,7 @@ pip install codex-ml[full]==0.2.1
 
 **Verification**:
 ```bash
-python -c "import pytest; from cognitive_brain.full import DevEnvironment; print('✅ Full works')"
+python -c "import pytest; from cognitive_brain.full import DevEnvironment; print(' Full works')"
 ```
 
 ---
@@ -593,11 +595,11 @@ python scripts/deploy/rollback_release.py \
 
 ### When to Rollback
 
-- ❌ Core profile doesn't import (immediate)
-- ❌ OODA loop crashes on initialization (immediate)
-- ❌ Network policy violated in core (immediate)
-- ❌ Smoke tests fail for > 1 profile (within 30 min)
-- ❌ Critical security vulnerability found (within 24 hours)
+-  Core profile doesn't import (immediate)
+-  OODA loop crashes on initialization (immediate)
+-  Network policy violated in core (immediate)
+-  Smoke tests fail for > 1 profile (within 30 min)
+-  Critical security vulnerability found (within 24 hours)
 - ⚠️ Performance regression > 50% (discuss first)
 - ⚠️ Optional dependency issues (non-blocking)
 

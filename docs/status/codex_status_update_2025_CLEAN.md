@@ -1,4 +1,6 @@
 # Codex Status Update (Clean - 2025-11-05)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > Generated: 2026-06-22 09:00:51 | Author: mbaetiong
 

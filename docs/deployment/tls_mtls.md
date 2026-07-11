@@ -1,6 +1,8 @@
 # TLS and Mutual TLS Configuration
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 This guide outlines common deployment patterns for securing Codex ML APIs with TLS and mutual TLS (mTLS).
 

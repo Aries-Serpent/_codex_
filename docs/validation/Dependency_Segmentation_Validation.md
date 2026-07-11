@@ -1,4 +1,7 @@
 # Validation: Dependency Segmentation Readiness
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
 
 ## Summary
@@ -35,14 +38,14 @@ This validation confirms that the opened workbench files and new support utiliti
 
 | Check | Result | Evidence |
 |-------|--------|----------|
-| CPU posture enforced | ✅ | env CODEX_FORCE_CPU=1 in CI |
-| Vendor guard invoked pre/post | ✅ | scripts/vendor_guard.py steps |
-| Evidence logging enabled | ✅ | CODEX_DEPENDENCY_EVIDENCE_ENABLE=1 |
-| Evidence schema validated | ✅ | scripts/check_dependency_evidence.py |
-| Session split operative | ✅ | noxfile.py tests/ml_tests/eval_tests |
-| Requirements segmented | ✅ | three requirements-*.txt files |
-| Rollback documented | ✅ | docs/ops/dependency_segmentation_rollback.md |
-| Disk savings verifiable | ✅ | scripts/disk_snapshot.sh artifact |
+| CPU posture enforced |  | env CODEX_FORCE_CPU=1 in CI |
+| Vendor guard invoked pre/post |  | scripts/vendor_guard.py steps |
+| Evidence logging enabled |  | CODEX_DEPENDENCY_EVIDENCE_ENABLE=1 |
+| Evidence schema validated |  | scripts/check_dependency_evidence.py |
+| Session split operative |  | noxfile.py tests/ml_tests/eval_tests |
+| Requirements segmented |  | three requirements-*.txt files |
+| Rollback documented |  | docs/ops/dependency_segmentation_rollback.md |
+| Disk savings verifiable |  | scripts/disk_snapshot.sh artifact |
 
 ## Enhancement Notes
 - Consider enabling `CODEX_VENDOR_ENFORCE_LOCK_PRUNE=1` for CI once dry-run diffs stabilize.

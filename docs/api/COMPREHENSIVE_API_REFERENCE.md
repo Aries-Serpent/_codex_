@@ -1,7 +1,9 @@
 # Comprehensive API Reference Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Version:** 1.0.0  
-**Last Updated:** 2026-07-08  
+**Last Updated: 2026-07-08
 **Author:** Codex Team
 
 ---
@@ -969,5 +971,5 @@ For issues or questions:
 
 ---
 
-**Last Updated:** 2026-07-08  
+**Last Updated: 2026-07-08
 **Version:** 1.0.0

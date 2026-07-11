@@ -1,6 +1,8 @@
 # Metrics Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 > Comprehensive guide to evaluation metrics in the Codex ML framework
 
@@ -386,7 +388,7 @@ pip install rouge-score
 
 - Evaluation Guide - End-to-end evaluation workflows
 - [Plugin API](plugins/Plugin_API_Broader.md) - Custom metric registration
-- [Testing Guide](https://github.com/Aries-Serpent/_codex_/blob/main/tests/README.md) - Testing metrics with optional dependencies
+- [Testing Guide](tests/README.md) - Testing metrics with optional dependencies
 
 ## References
 

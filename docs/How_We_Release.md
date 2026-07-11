@@ -1,6 +1,8 @@
 # How We Release
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 This repository uses **small, reviewable changes** and local-only checks. We do not enable any CI or paid services by default.
 

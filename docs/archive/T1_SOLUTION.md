@@ -1,4 +1,6 @@
 # T1 Coverage Gate Implementation - Solution Summary
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 <!-- archive: this file is a historical record; content is intentionally preserved -->
 
@@ -159,10 +161,10 @@ def run_inference(prompt: str) -> tuple[str, str]:
 
 ## Validation Results
 
-✅ **All tests passing**: 5/5 sanitize tests pass  
-✅ **Sanitization working**: CLI correctly escapes malicious input  
-✅ **Coverage gate enforced**: pytest.ini and noxfile.py configured  
-✅ **Deterministic fixture**: autouse=True ensures all tests use it  
+ **All tests passing**: 5/5 sanitize tests pass  
+ **Sanitization working**: CLI correctly escapes malicious input  
+ **Coverage gate enforced**: pytest.ini and noxfile.py configured  
+ **Deterministic fixture**: autouse=True ensures all tests use it  
 ⚠️ **Overall coverage**: Currently 1.19% (needs additional tests)
 
 ## Next Steps

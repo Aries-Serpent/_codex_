@@ -1,6 +1,7 @@
 # _codex_ Deployment Guide
+**Last Updated:** 2026-07-11
 
-> **Last Updated:** 2026-06-27  
+> **Last Updated: 2026-06-27
 > **Status:** Phase 3 - Documentation Enhancement Campaign  
 > **Reading Level:** 8th Grade (Flesch-Kincaid)  
 > **Scope:** Local Development → Docker → Cloud (AWS/Azure/GCP)
@@ -27,9 +28,9 @@
 
 ### Prerequisites
 ```bash
-✅ _codex_ installed: pip install -e .
-✅ Python 3.8+: python --version
-✅ A trained model: ls runs/experiment_1/model.pt
+ _codex_ installed: pip install -e .
+ Python 3.8+: python --version
+ A trained model: ls runs/experiment_1/model.pt
 ```
 
 ### Let's Go!
@@ -58,16 +59,16 @@ curl -X POST http://localhost:8000/predict \
 }
 ```
 
-✅ **You just deployed a model!**
+ **You just deployed a model!**
 
 ---
 
 ## Local Deployment (Development)
 
 ### When to Use
-- ✅ Testing locally
-- ✅ Development & debugging
-- ✅ Quick validation
+-  Testing locally
+-  Development & debugging
+-  Quick validation
 
 ### Setup (10 minutes)
 
@@ -132,15 +133,15 @@ pkill -f "serving.cli serve"
 
 ### Why Docker?
 - 🐳 Works same on all machines
-- 🔒 Isolated environment (safer)
+-  Isolated environment (safer)
 - ⚡ Easy to scale
 - 📦 Reproducible deployments
 
 ### Prerequisites
 ```bash
-✅ Docker installed: docker --version
-✅ Docker running: docker ps
-✅ Model trained: ls runs/experiment_1/model.pt
+ Docker installed: docker --version
+ Docker running: docker ps
+ Model trained: ls runs/experiment_1/model.pt
 ```
 
 ### Build Docker Image (15 minutes)
@@ -782,8 +783,8 @@ gcloud run deploy codex-model --image gcr.io/project/codex-model:1.0
 
 ## Getting Help
 
-- 📖 [FAQ](FAQ.md) - Common questions
-- 📚 [Full Documentation](README.md) - Complete guide
+-  [FAQ](FAQ.md) - Common questions
+-  [Full Documentation](README.md) - Complete guide
 - 🐛 [Report Issues](https://github.com/Aries-Serpent/_codex_/issues)
 - 💬 [Ask Questions](https://github.com/Aries-Serpent/_codex_/discussions)
 
@@ -799,9 +800,9 @@ gcloud run deploy codex-model --image gcr.io/project/codex-model:1.0
 | **Deployment Methods** | 5 (Local, Docker, AWS, Azure, GCP) |
 | **Checklists** | 1 (Pre-deployment) |
 | **Code Examples** | 30+ |
-| **Status** | ✅ Production Ready |
+| **Status** |  Production Ready |
 
 ---
 
 **Maintained by:** _codex_ Documentation Team  
-**Last updated:** 2026-06-27
+**Last updated: 2026-06-27

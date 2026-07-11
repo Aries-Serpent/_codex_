@@ -1,4 +1,6 @@
 # MLflow Tracking Operations Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Version**: 1.0.0  
 **Last Updated**: 2026-06-22  

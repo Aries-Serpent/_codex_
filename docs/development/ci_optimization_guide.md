@@ -1,6 +1,8 @@
 # CI Workflow Optimization Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## Overview
 
@@ -10,9 +12,9 @@ This guide documents the CI/CD optimization strategies implemented for the _code
 
 | Metric | Target | Current | Status |
 |--------|--------|---------|--------|
-| Post-merge validation | ≤ 10 min | ~8 min | ✅ |
-| Documentation validation | ≤ 5 min | ~3 min | ✅ |
-| PR validation (fast track) | ≤ 15 min | ~12 min | ✅ |
+| Post-merge validation | ≤ 10 min | ~8 min |  |
+| Documentation validation | ≤ 5 min | ~3 min |  |
+| PR validation (fast track) | ≤ 15 min | ~12 min |  |
 
 ## Optimization Strategies
 

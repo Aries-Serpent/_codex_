@@ -1,6 +1,8 @@
 # Documentation Archive
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-01-26  
+**Last Updated: 2026-07-11
 **Purpose:** Historical documentation and completed work  
 **Organization:** Chronological and categorical
 
@@ -182,7 +184,7 @@ Historical continuation prompts for various initiatives.
 
 ### Active Documentation
 - [Cognitive Brain Status](../cognitive_brain/INDEX.md) - Current state
-- [Root Organization](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/prompts) - Current work
+- [Root Organization](../.codex/prompts) - Current work
 - [Main Documentation](../README.md) - Overview
 
 ### Historical Context
@@ -217,6 +219,6 @@ Historical continuation prompts for various initiatives.
 **Total Files:** 50 (38 phases + 4 sessions + 3 completion + 5 prompts)  
 **Date Range:** 2025-2026  
 **Last Reorganization:** 2026-01-21 (Root Organization Phase 3)  
-**Status:** ✅ Complete and organized
+**Status:**  Complete and organized
 
 For current/active documentation, see [Main Documentation](../README.md) or [Cognitive Brain](../cognitive_brain/INDEX.md)

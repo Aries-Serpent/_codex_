@@ -1,6 +1,8 @@
 # ADR-20260304-third-d-capable-evaluation
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## Context
 
@@ -46,13 +48,13 @@ All criteria must be met:
 
 | Criterion | Required | Actual | Pass? |
 |-----------|----------|--------|-------|
-| C1 enforcement_tier | GROUNDED | **PARTIAL** | ❌ |
-| C2 handoff_protocol | structured | **none** | ❌ |
-| C3 accepts_handoff_from | non-empty | **[]** | ❌ |
-| C4 violations_30d | 0 | NOT SET | ❌ |
+| C1 enforcement_tier | GROUNDED | **PARTIAL** |  |
+| C2 handoff_protocol | structured | **none** |  |
+| C3 accepts_handoff_from | non-empty | **[]** |  |
+| C4 violations_30d | 0 | NOT SET |  |
 | C5 has_tests | true | NOT SET | — |
 | C6 has_docs | NOT SET | NOT SET | — |
-| C7 maturity | production | production | ✅ |
+| C7 maturity | production | production |  |
 | C8 rank | ≤ 20 | NOT SET | — |
 
 **Rationale for rejection:** `ci-emergency-response-agent` has `handoff_protocol: none` and
@@ -69,14 +71,14 @@ protocol would undermine the safety model established in PR #3494.
 
 | Criterion | Required | Actual | Pass? |
 |-----------|----------|--------|-------|
-| C1 enforcement_tier | GROUNDED | GROUNDED | ✅ |
-| C2 handoff_protocol | structured | structured | ✅ |
-| C3 accepts_handoff_from | non-empty | `[orchestrator, agent-orchestrator]` | ✅ |
-| C4 violations_30d | 0 | **NOT SET** | ❌ |
-| C5 has_tests | true | true | ✅ |
-| C6 has_docs | true | true | ✅ |
-| C7 maturity | production | **beta** | ❌ |
-| C8 rank | ≤ 20 | 20 | ✅ |
+| C1 enforcement_tier | GROUNDED | GROUNDED |  |
+| C2 handoff_protocol | structured | structured |  |
+| C3 accepts_handoff_from | non-empty | `[orchestrator, agent-orchestrator]` |  |
+| C4 violations_30d | 0 | **NOT SET** |  |
+| C5 has_tests | true | true |  |
+| C6 has_docs | true | true |  |
+| C7 maturity | production | **beta** |  |
+| C8 rank | ≤ 20 | 20 |  |
 
 **Gaps requiring resolution:**
 1. **C7 maturity `beta` → `production`**: Requires owner sign-off that the agent has

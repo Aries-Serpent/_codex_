@@ -1,4 +1,6 @@
 # codex-ml Installation Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 Welcome to codex-ml v0.1.0! This guide covers installation across three distinct deployment profiles.
 

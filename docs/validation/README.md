@@ -1,6 +1,7 @@
 # Validation Documentation
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 This directory contains documentation for validation, testing, and quality assurance procedures.
 

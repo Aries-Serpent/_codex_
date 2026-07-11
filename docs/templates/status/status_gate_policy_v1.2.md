@@ -1,6 +1,9 @@
 # Policy: Status Gate (.statusrc) (v1.2)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
-🧠 Roles: [Primary: Policy Author], [Secondary: Reviewer] ⚡ Energy: 5
+ Roles: [Primary: Policy Author], [Secondary: Reviewer] ⚡ Energy: 5
 
 Goal
 - Define local gate thresholds and expectations enforced by tools/status_gate_from_statusrc.py and CI.

@@ -1,6 +1,8 @@
 # AI Agent Integration Guide for Consolidated Workflows
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## Overview
 
@@ -413,14 +415,14 @@ jobs:
 Don't run everything if you don't need to:
 
 ```yaml
-# ❌ Bad: Always runs all tests
+#  Bad: Always runs all tests
 jobs:
   tests:
     uses: ./.github/workflows/test-suite.yml
     with:
       test-scope: 'all'
 
-# ✅ Good: Only runs relevant tests
+#  Good: Only runs relevant tests
 jobs:
   tests:
     uses: ./.github/workflows/test-suite.yml
@@ -433,7 +435,7 @@ jobs:
 Run independent operations in parallel:
 
 ```yaml
-# ✅ Good: Parallel execution
+#  Good: Parallel execution
 jobs:
   tests:
     uses: ./.github/workflows/test-suite.yml
@@ -501,10 +503,10 @@ jobs:
 
 **Solution:** Ensure you're using the correct path:
 ```yaml
-# ✅ Correct
+#  Correct
 uses: ./.github/workflows/test-suite.yml
 
-# ❌ Wrong
+#  Wrong
 uses: test-suite.yml
 ```
 
@@ -565,6 +567,6 @@ For issues or questions:
 
 ---
 
-**Last Updated:** 2026-01-26
+**Last Updated: 2026-07-11
 **Version:** 1.0.0
 **Maintained by:** @mbaetiong

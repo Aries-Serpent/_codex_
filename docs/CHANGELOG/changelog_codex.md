@@ -1,4 +1,6 @@
 # Codex Changelog
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 ## Table of Contents
 
@@ -76,7 +78,7 @@
   - [Unreleased - 2025-09-07](#unreleased---2025-09-07)
 - [2025-09-26 – Codex-ready task sequence foundation](#2025-09-26--codex-ready-task-sequence-foundation)
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## 2025-10-14 – Evaluation helper & tokenizer adapter refresh
 

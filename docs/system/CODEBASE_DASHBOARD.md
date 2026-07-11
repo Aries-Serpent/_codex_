@@ -1,27 +1,29 @@
 # Codebase Dashboard
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 ## Table of Contents
 
-- [🎯 Mission Overview](#-mission-overview)
-- [🎯 Current State Summary](#-current-state-summary)
+- [ Mission Overview](#-mission-overview)
+- [ Current State Summary](#-current-state-summary)
   - [Repository Health](#repository-health)
   - [Variables & Secrets Health](#variables--secrets-health)
   - [Workflow Variable Integration Progress](#workflow-variable-integration-progress)
   - [CI Tracking Variables (Auto-Updated)](#ci-tracking-variables-auto-updated)
   - [Active Initiatives](#active-initiatives)
-    - [🚀 Phase 6: MCP Package System (COMPLETE ✅)](#-phase-6-mcp-package-system-complete-)
-    - [🧠 Phase 7: Cognitive Brain Infrastructure (COMPLETE ✅)](#-phase-7-cognitive-brain-infrastructure-complete-)
-    - [📚 Phase 8: Documentation Consolidation (COMPLETE ✅)](#-phase-8-documentation-consolidation-complete-)
-    - [📚 PR #2782: Documentation & Process Guidance (COMPLETE ✅)](#-pr-2782-documentation--process-guidance-complete-)
-    - [🤖 PR #2782/#2820: Comprehensive Multi-Phase Execution & Agent Standardization (IN PROGRESS 🟢)](#-pr-27822820-comprehensive-multi-phase-execution--agent-standardization-in-progress-)
-    - [🎯 Phase 9: Coverage & Performance Enhancement (COMPLETE ✅)](#-phase-9-coverage--performance-enhancement-complete-)
-- [📊 Work Status Breakdown](#-work-status-breakdown)
-  - [✅ Complete (Production Ready)](#-complete-production-ready)
+    - [ Phase 6: MCP Package System (COMPLETE )](#-phase-6-mcp-package-system-complete-)
+    - [ Phase 7: Cognitive Brain Infrastructure (COMPLETE )](#-phase-7-cognitive-brain-infrastructure-complete-)
+    - [ Phase 8: Documentation Consolidation (COMPLETE )](#-phase-8-documentation-consolidation-complete-)
+    - [ PR #2782: Documentation & Process Guidance (COMPLETE )](#-pr-2782-documentation--process-guidance-complete-)
+    - [ PR #2782/#2820: Comprehensive Multi-Phase Execution & Agent Standardization (IN PROGRESS )](#-pr-27822820-comprehensive-multi-phase-execution--agent-standardization-in-progress-)
+    - [ Phase 9: Coverage & Performance Enhancement (COMPLETE )](#-phase-9-coverage--performance-enhancement-complete-)
+- [ Work Status Breakdown](#-work-status-breakdown)
+  - [ Complete (Production Ready)](#-complete-production-ready)
   - [🔄 In Progress](#-in-progress)
   - [⏳ Pending (Ready to Start)](#-pending-ready-to-start)
-  - [🔴 Blocked](#-blocked)
+  - [ Blocked](#-blocked)
   - [⏸️ Deferred](#-deferred)
-- [🎯 Next 3 Iterations (Best Path Forward)](#-next-3-iterations-best-path-forward)
+- [ Next 3 Iterations (Best Path Forward)](#-next-3-iterations-best-path-forward)
   - [Iteration 1: Immediate (This Session - ~850K tokens remaining)](#iteration-1-immediate-this-session---850k-tokens-remaining)
   - [Iteration 2: Short-term (Next Session)](#iteration-2-short-term-next-session)
   - [Iteration 3: Next Iteration Focus](#iteration-3-next-iteration-focus)
@@ -42,7 +44,7 @@
 - [Testing](#testing)
 - [Quality](#quality)
 - [MCP packaging](#mcp-packaging)
-- [🎯 Decision Log](#-decision-log)
+- [ Decision Log](#-decision-log)
   - [Recent Decisions](#recent-decisions)
 - [📋 Action Items](#-action-items)
   - [Immediate (This Session)](#immediate-this-session)
@@ -63,26 +65,26 @@
   - [Workflow Alignment](#workflow-alignment)
 - [📈 Dashboard Metrics](#-dashboard-metrics)
 - [⚛️ Physics Alignment](#-physics-alignment)
-- [🧠 Redundancy Patterns](#-redundancy-patterns)
+- [ Redundancy Patterns](#-redundancy-patterns)
 - [⚡ Energy Distribution](#-energy-distribution)
-- [🧠 AfterMath Insights (Last 5 Sessions)](#-aftermath-insights-last-5-sessions)
+- [ AfterMath Insights (Last 5 Sessions)](#-aftermath-insights-last-5-sessions)
   - [Session Metrics](#session-metrics)
   - [Latest Session](#latest-session)
   - [Previous Session](#previous-session)
   - [Older Session](#older-session)
 
-> Created: 2026-01-12 | Updated: 2026-06-03T18:29:00Z | Updated by: @mbaetiong (variables expansion S1325)
+> Created: 2026-01-12 | Updated: 2026-07-11
 > Reference session: S1325 | PR queue: 47 pending
 
 ---
 
-## 🎯 Mission Overview
+##  Mission Overview
 
 **Objective**: Provide live status dashboard for `_codex_` repository tracking current state, active work, next steps, and blockers for AI agents and human contributors.
 
 **Energy Level**: ⚡⚡⚡⚡⚡ (5/5 - Critical Operational Document)
 
-**Status**: 🟢 Active Development
+**Status**:  Active Development
 
 **Last Updated**: 2026-06-03T18:02:00Z
 **Version**: 2.1.0
@@ -90,42 +92,42 @@
 
 ---
 
-## 🎯 Current State Summary
+##  Current State Summary
 
 ### Repository Health
 
 | Metric | Status | Value | Target | Trend |
 |--------|--------|-------|--------|-------|
-| **Tests** | ✅ Passing | 21,500+ (100%) | 100% | ⬆️ Growing |
+| **Tests** |  Passing | 21,500+ (100%) | 100% | ⬆️ Growing |
 | **Coverage** | 🟡 Active | 10.7% (overall) | 80%+ | ⬆️ Improving |
-| **Security** | ✅ Clean | 0 vulnerabilities | 0 | ➡️ Stable |
-| **CI Failure Rate** | ✅ OK | 2.5% | <10% | ➡️ Stable |
-| **MLOps Maturity** | ✅ Elite | Level 4 (100/100) | Level 4 | ➡️ Stable |
-| **Cache Usage** | ✅ Healthy | 7.69 GB / 10 GB | <8 GB | ➡️ Stable |
-| **Active Agents** | ✅ | 145 (159 total — 14 archived) | — | ➡️ Stable |
+| **Security** |  Clean | 0 vulnerabilities | 0 | ➡️ Stable |
+| **CI Failure Rate** |  OK | 2.5% | <10% | ➡️ Stable |
+| **MLOps Maturity** |  Elite | Level 4 (100/100) | Level 4 | ➡️ Stable |
+| **Cache Usage** |  Healthy | 7.69 GB / 10 GB | <8 GB | ➡️ Stable |
+| **Active Agents** |  | 145 (159 total — 14 archived) | — | ➡️ Stable |
 | **Session Number** | 🔄 Active | S1325 | — | ⬆️ Growing |
 
 ### Variables & Secrets Health
 
 | Category | Count | Status |
 |----------|-------|--------|
-| Environment Variables | 14 | ✅ Current (`CODEX_ENV_NODE_VERSION` updated 18→22) |
-| Repository Variables | 76 | ✅ Current |
-| Environment Secrets | 3 | ✅ Current |
-| Repository Secrets | 7 | ✅ Current |
+| Environment Variables | 14 |  Current (`CODEX_ENV_NODE_VERSION` updated 18→22) |
+| Repository Variables | 76 |  Current |
+| Environment Secrets | 3 |  Current |
+| Repository Secrets | 7 |  Current |
 | Organization Secrets | 13 | ⚠️ 5 overdue rotation |
 | **Gap Variables (code-referenced, not in inventory)** | **30+** | 🟡 Documented — maintainer action required to create in GitHub UI |
-| **Workflow Variable Usage** | 5 categories mapped | ✅ New — see [usage map](../SECRETS_AND_ENVIRONMENT_VARIABLES.md#🗺️-workflow--agent-variable-usage-map) |
-| **Agent Variable Expectations** | 145 agents, 6 categories | ✅ New — see [`agents/VARIABLE_EXPECTATIONS.md`](../../agents/VARIABLE_EXPECTATIONS.md) |
+| **Workflow Variable Usage** | 5 categories mapped |  New — see [usage map](../SECRETS_AND_ENVIRONMENT_VARIABLES.md#🗺️-workflow--agent-variable-usage-map) |
+| **Agent Variable Expectations** | 145 agents, 6 categories |  New — see [`agents/VARIABLE_EXPECTATIONS.md`](../../agents/VARIABLE_EXPECTATIONS.md) |
 
 ### Workflow Variable Integration Progress
 
 | Workflow | Variable Integration | Status |
 |----------|---------------------|--------|
-| `copilot-setup-steps.yml` | `NODE_VERSION` → `vars.NODE_JS_VERSION \|\| '22'` | ✅ Updated (Node 20→22) |
-| `nox_gates.yml` | `cache-version`, `timeout-minutes` via `CODEX_CACHE_VERSION`, `CODEX_TEST_TIMEOUT_MINUTES` | ✅ Updated |
-| `coverage-with-timeout.yml` | `cache-version` via `CODEX_CACHE_VERSION`, `timeout-minutes` via `CODEX_TEST_TIMEOUT_MINUTES` | ✅ Updated |
-| All `setup-python-cached` callers | `cache-version: ${{ vars.CODEX_CACHE_VERSION \|\| 'v2' }}` | ✅ Fallback `v2` — set `CODEX_CACHE_VERSION` in repo vars to override |
+| `copilot-setup-steps.yml` | `NODE_VERSION` → `vars.NODE_JS_VERSION \|\| '22'` |  Updated (Node 20→22) |
+| `nox_gates.yml` | `cache-version`, `timeout-minutes` via `CODEX_CACHE_VERSION`, `CODEX_TEST_TIMEOUT_MINUTES` |  Updated |
+| `coverage-with-timeout.yml` | `cache-version` via `CODEX_CACHE_VERSION`, `timeout-minutes` via `CODEX_TEST_TIMEOUT_MINUTES` |  Updated |
+| All `setup-python-cached` callers | `cache-version: ${{ vars.CODEX_CACHE_VERSION \|\| 'v2' }}` |  Fallback `v2` — set `CODEX_CACHE_VERSION` in repo vars to override |
 
 ### CI Tracking Variables (Auto-Updated)
 
@@ -140,57 +142,57 @@
 
 ### Active Initiatives
 
-#### 🚀 Phase 6: MCP Package System (COMPLETE ✅)
+####  Phase 6: MCP Package System (COMPLETE )
 **Status**: Production Ready
 **Completion**: 100%
 **Branch**: `copilot/sub-pr-2668-again`
 **PR**: #2671
 
 **Deliverables**:
-- ✅ Core packaging infrastructure (CLI, scripts, workflows)
-- ✅ 9 predefined topics (zendesk, agents, quantum, docs, mcp, workflows, python_dev, testing, security)
-- ✅ GitHub Actions workflow with dropdown menu
-- ✅ 3 test packages created and validated
-- ✅ 93+ KB comprehensive documentation (8 guides)
-- ✅ Advanced features roadmap (Iteration-based phases)
-- ✅ All PR review comments resolved
+-  Core packaging infrastructure (CLI, scripts, workflows)
+-  9 predefined topics (zendesk, agents, quantum, docs, mcp, workflows, python_dev, testing, security)
+-  GitHub Actions workflow with dropdown menu
+-  3 test packages created and validated
+-  93+ KB comprehensive documentation (8 guides)
+-  Advanced features roadmap (Iteration-based phases)
+-  All PR review comments resolved
 
 **Recent Commits**:
 - `c257a5e` - Fix PR review comments (shebang, BSD date, error handling)
 - `1fc7a01` - Priority 3 documentation complete
 - `f769e52` - Capability topics + workflow dropdown
 
-#### 🧠 Phase 7: Cognitive Brain Infrastructure (COMPLETE ✅)
+####  Phase 7: Cognitive Brain Infrastructure (COMPLETE )
 **Status**: Production Ready
 **Completion**: 100%
 **Completed**: 2025-12-30
 
 **Deliverables**:
-- ✅ `docs/system/CODEBASE_COGNITIVE_MAP.md` - Architecture map (8.5 KB)
-- ✅ `docs/system/CODEBASE_DASHBOARD.md` - This file (13 KB)
-- ✅ `docs/ROADMAP.md` - Unified roadmap with iteration-based plans (13 KB)
-- ✅ `README.md` updates - Cognitive brain links added
-- ✅ Component-level READMEs (`src/`, `agents/`, `scripts/`)
+-  `docs/system/CODEBASE_COGNITIVE_MAP.md` - Architecture map (8.5 KB)
+-  `docs/system/CODEBASE_DASHBOARD.md` - This file (13 KB)
+-  `docs/ROADMAP.md` - Unified roadmap with iteration-based plans (13 KB)
+-  `README.md` updates - Cognitive brain links added
+-  Component-level READMEs (`src/`, `agents/`, `scripts/`)
 
 **Commits**:
 - `f786673` - Complete cognitive brain infrastructure
 
-#### 📚 Phase 8: Documentation Consolidation (COMPLETE ✅)
+####  Phase 8: Documentation Consolidation (COMPLETE )
 **Status**: Production Ready
 **Completion**: 100%
 **Completed**: 2025-12-30
 
 **Deliverables**:
-- ✅ `docs/MASTER_INDEX.md` - Complete documentation index (10.4 KB)
-- ✅ `docs/workflows/AGENT_CONTINUATION_PROTOCOL.md` - Enhanced protocol v2.0.0 (8.5 KB)
-- ✅ `scripts/maintenance/check_doc_links.py` - Automated link checker (8.5 KB)
-- ✅ `docs/maintenance/LINK_VALIDATION_REPORT.md` - 321 broken links analyzed
-- ✅ `agents/NORMALIZATION_CHECKLIST.md` - Compliance audit (6.4 KB)
-- ✅ `agents/README.md` - Enhanced with standards (11.5 KB)
-- ✅ `docs/prompts/README.md` - Template guide (6.9 KB)
-- ✅ `docs/prompts/TEMPLATE_PROMPT.md` - Standard template (5.3 KB)
-- ✅ `CONTRIBUTING.md` - Updated with cognitive brain links
-- ✅ Dashboard updated - Phase tracking
+-  `docs/MASTER_INDEX.md` - Complete documentation index (10.4 KB)
+-  `docs/workflows/AGENT_CONTINUATION_PROTOCOL.md` - Enhanced protocol v2.0.0 (8.5 KB)
+-  `scripts/maintenance/check_doc_links.py` - Automated link checker (8.5 KB)
+-  `docs/maintenance/LINK_VALIDATION_REPORT.md` - 321 broken links analyzed
+-  `agents/NORMALIZATION_CHECKLIST.md` - Compliance audit (6.4 KB)
+-  `agents/README.md` - Enhanced with standards (11.5 KB)
+-  `docs/prompts/README.md` - Template guide (6.9 KB)
+-  `docs/prompts/TEMPLATE_PROMPT.md` - Standard template (5.3 KB)
+-  `CONTRIBUTING.md` - Updated with cognitive brain links
+-  Dashboard updated - Phase tracking
 
 **Commits**:
 - `aa4dff6` - Master index & continuation protocol
@@ -200,25 +202,25 @@
 - `57ffeb1` - Phase 9 continuation prompt
 
 **Achievements**:
-- 📚 20+ comprehensive guides (188+ KB)
+-  20+ comprehensive guides (188+ KB)
 - 🔗 Automated link validation (1,296 files scanned)
-- 🤖 Agent standards documented (81% compliant)
+-  Agent standards documented (81% compliant)
 - 📝 Prompt template system established
-- 🧠 Cognitive brain fully integrated
+-  Cognitive brain fully integrated
 
-#### 📚 PR #2782: Documentation & Process Guidance (COMPLETE ✅)
+####  PR #2782: Documentation & Process Guidance (COMPLETE )
 **Status**: Merged
 **Completion**: 100%
 **Completed**: 2026-01-12
 
 **Deliverables**:
-- ✅ Final completion summary for PR #2785
-- ✅ Continuation prompt for post-CI phases
-- ✅ Comprehensive self-review and cognitive brain update
-- ✅ Custom agent validation (architect.py, tester.py)
-- ✅ CI/CD fixes (deny.toml, compression.rs formatting)
-- ✅ Phase 2 post-CI validation completed
-- ✅ Pre-existing issues documented (RAG torch, Semgrep)
+-  Final completion summary for PR #2785
+-  Continuation prompt for post-CI phases
+-  Comprehensive self-review and cognitive brain update
+-  Custom agent validation (architect.py, tester.py)
+-  CI/CD fixes (deny.toml, compression.rs formatting)
+-  Phase 2 post-CI validation completed
+-  Pre-existing issues documented (RAG torch, Semgrep)
 
 **Commits**:
 - `2c43057` - Code review feedback addressed
@@ -237,7 +239,7 @@
 - `.codex/github_issues/rag_torch_compatibility.md` - RAG torch meta tensor issue (high priority)
 - `.codex/github_issues/semgrep_transient_failures.md` - Semgrep CI flakiness (low priority)
 
-#### 🤖 PR #2782/#2820: Comprehensive Multi-Phase Execution & Agent Standardization (IN PROGRESS 🟢)
+####  PR #2782/#2820: Comprehensive Multi-Phase Execution & Agent Standardization (IN PROGRESS )
 **Status**: Active - Phase C & A Execution
 **Completion**: 85%
 **Started**: 2026-01-12
@@ -247,27 +249,27 @@
 **Objective**: Complete comprehensive multi-phase execution plan with CODEX_MASTER_KEY access, fully standardize custom agents, and prepare for production deployment per continuation prompts.
 
 **Phase Status**:
-- ✅ Phase 1: Environment Validation (100%)
-- ✅ Phase 2: Review Comments (100%)
-- ✅ Phase 3: Self-Review & Security (100%)
-- ✅ Phase 4: Custom Agent Work (100% - test-assertion-updater fully standardized)
-- 🟢 Phase 5: Autonomous Review Loop (100% - copilot-review-responder + copilot-agent-session-done live)
-- ✅ Phase 6: Production Deployment Prep (100% - checklist created)
-- ✅ Phase 7: Documentation & Communication (100% - summaries created)
+-  Phase 1: Environment Validation (100%)
+-  Phase 2: Review Comments (100%)
+-  Phase 3: Self-Review & Security (100%)
+-  Phase 4: Custom Agent Work (100% - test-assertion-updater fully standardized)
+-  Phase 5: Autonomous Review Loop (100% - copilot-review-responder + copilot-agent-session-done live)
+-  Phase 6: Production Deployment Prep (100% - checklist created)
+-  Phase 7: Documentation & Communication (100% - summaries created)
 - 🔄 Phase 8: Final Validation (In Progress - CI validation pending)
 - 🔄 Phase C: Custom Agent Development (Continuing - 4 Tier 1 agents remaining)
 - 🔄 Phase A: Production Deployment (Continuing - deployment execution pending)
 
 **Deliverables**:
-- ✅ `.codex/COGNITIVE_BRAIN_UPDATE_PHASE2_COMPLETE.md` - Comprehensive phase 1-5 update (13.9KB)
-- ✅ `.codex/AGENT_DESIGNS.md` - Production-ready architecture for 30+ agents (20.8KB)
-- ✅ `.github/agents/AGENT_REGISTRY.md` - Complete agent catalog (11.2KB, v1.1.0)
-- ✅ `.github/agents/test-assertion-updater/` - Fully standardized agent (100% test coverage, full documentation)
-- ✅ `.codex/PR2820_PRODUCTION_DEPLOYMENT_CHECKLIST.md` - Production deployment guide (7.6KB)
-- ✅ `.codex/PR2820_FINAL_COMPLETION_SUMMARY.md` - Comprehensive completion summary (11.7KB)
-- ✅ `.codex/PR2782_FAILING_CHECKS_ANALYSIS.md` - CI analysis report (11.2KB)
-- ✅ `.codex/CONTINUATION_PROMPT_PR2820_NEXT_SESSION.md` - Next session guide (9.8KB)
-- ✅ `docs/system/CODEBASE_DASHBOARD.md` - Updated with PR #2820 status (this update)
+-  `.codex/COGNITIVE_BRAIN_UPDATE_PHASE2_COMPLETE.md` - Comprehensive phase 1-5 update (13.9KB)
+-  `.codex/AGENT_DESIGNS.md` - Production-ready architecture for 30+ agents (20.8KB)
+-  `.github/agents/AGENT_REGISTRY.md` - Complete agent catalog (11.2KB, v1.1.0)
+-  `.github/agents/test-assertion-updater/` - Fully standardized agent (100% test coverage, full documentation)
+-  `.codex/PR2820_PRODUCTION_DEPLOYMENT_CHECKLIST.md` - Production deployment guide (7.6KB)
+-  `.codex/PR2820_FINAL_COMPLETION_SUMMARY.md` - Comprehensive completion summary (11.7KB)
+-  `.codex/PR2782_FAILING_CHECKS_ANALYSIS.md` - CI analysis report (11.2KB)
+-  `.codex/CONTINUATION_PROMPT_PR2820_NEXT_SESSION.md` - Next session guide (9.8KB)
+-  `docs/system/CODEBASE_DASHBOARD.md` - Updated with PR #2820 status (this update)
 
 **Commits** (Last 5):
 - `5bd9f7b` - Initial plan for Phase 4-8 completion
@@ -277,8 +279,8 @@
 - `1b96a53` - Phase 4 complete - test-assertion-updater fully standardized
 
 **Agent Standardization Progress**:
-- ✅ CI-Diagnostician (21/21 tests, 100% coverage, Production maturity)
-- ✅ Test-Assertion-Updater (16/16 tests, 100% coverage, full documentation, Production maturity)
+-  CI-Diagnostician (21/21 tests, 100% coverage, Production maturity)
+-  Test-Assertion-Updater (16/16 tests, 100% coverage, full documentation, Production maturity)
 - 🔄 Tier 1 agents remaining: project-architect-researcher, pyo3-integration-tester, rust-error-validator (requires standardization)
 - 🔄 Tier 2 agents planned: dependency-conflict-resolver, security-vulnerability-patcher, documentation-sync-validator
 
@@ -305,7 +307,7 @@
 - Continuation prompts enable seamless multi-session workflows
 - Surgical changes reduce review overhead and merge conflicts
 
-#### 🎯 Phase 9: Coverage & Performance Enhancement (COMPLETE ✅)
+####  Phase 9: Coverage & Performance Enhancement (COMPLETE )
 **Status**: Complete
 **Completion**: 100%
 **Started**: 2025-12-31 (Historical reference)
@@ -313,37 +315,37 @@
 
 **Objective**: Achieve **100% agents/ directory test coverage** (baseline was 10.7% overall, agents/ reached 34.56%)
 
-**Current Phase**: 9.4 - Edge Case Coverage ✅ COMPLETE
+**Current Phase**: 9.4 - Edge Case Coverage  COMPLETE
 
 **Recent Activity**:
-- ✅ Phase 9.1: Critical path coverage — 176 tests (commit a prior session)
-- ✅ Phase 9.2: Public API coverage — 154+ tests (commits eb94f69, b1821e9)
-- ✅ Phase 9.3: Error path coverage — 50 tests (agents + MCP error paths)
-- ✅ Phase 9.4: Edge case coverage — 71 tests (52 agents + 19 MCP)
+-  Phase 9.1: Critical path coverage — 176 tests (commit a prior session)
+-  Phase 9.2: Public API coverage — 154+ tests (commits eb94f69, b1821e9)
+-  Phase 9.3: Error path coverage — 50 tests (agents + MCP error paths)
+-  Phase 9.4: Edge case coverage — 71 tests (52 agents + 19 MCP)
 
 **Deliverables**:
-- ✅ `docs/testing/COVERAGE_100_ROADMAP.md` - Comprehensive 100% coverage plan
-- ✅ `docs/testing/PHASE9_1_EXECUTION_PLAN.md` - Phase 9.1 execution plan
-- ✅ `.github/CONTINUATION_PROMPT_PHASE9.md` - Phase 9 continuation guide
-- ✅ `tests/agents/test_error_paths_phase9_3.py` - 44 agent error-path tests
-- ✅ `tests/scripts/mcp/test_mcp_error_paths_phase9_3.py` - 6 MCP error-path tests
-- ✅ `tests/agents/test_edge_cases_phase9_4.py` - 52 agent edge-case tests
-- ✅ `tests/scripts/mcp/test_mcp_edge_cases_phase9_4.py` - 19 MCP edge-case tests
+-  `docs/testing/COVERAGE_100_ROADMAP.md` - Comprehensive 100% coverage plan
+-  `docs/testing/PHASE9_1_EXECUTION_PLAN.md` - Phase 9.1 execution plan
+-  `.github/CONTINUATION_PROMPT_PHASE9.md` - Phase 9 continuation guide
+-  `tests/agents/test_error_paths_phase9_3.py` - 44 agent error-path tests
+-  `tests/scripts/mcp/test_mcp_error_paths_phase9_3.py` - 6 MCP error-path tests
+-  `tests/agents/test_edge_cases_phase9_4.py` - 52 agent edge-case tests
+-  `tests/scripts/mcp/test_mcp_edge_cases_phase9_4.py` - 19 MCP edge-case tests
 
 **Phase 9 Progress** (agents/ directory coverage):
-- ✅ Phase 9.1: Critical path coverage (10.7% → 25%) - 176 tests
-- ✅ Phase 9.2: Public API coverage (25% → 30%) - 154+ tests
-- ✅ Phase 9.3: Error path coverage (30% → 33%) - 50 tests
-- ✅ Phase 9.4: Edge case coverage (33% → 34.56%) - 71 tests
+-  Phase 9.1: Critical path coverage (10.7% → 25%) - 176 tests
+-  Phase 9.2: Public API coverage (25% → 30%) - 154+ tests
+-  Phase 9.3: Error path coverage (30% → 33%) - 50 tests
+-  Phase 9.4: Edge case coverage (33% → 34.56%) - 71 tests
 
 **Target**: 34.56% agents/ coverage — **ACHIEVED**
 **Next**: Phase 10 - Expand to full-stack modules (cognitive brain, RAG, security) targeting 50% overall
 
 ---
 
-## 📊 Work Status Breakdown
+##  Work Status Breakdown
 
-### ✅ Complete (Production Ready)
+###  Complete (Production Ready)
 1. **MCP Package System** - Full packaging infrastructure operational
 2. **Phase 3C-Lite Caching** - Tool caches optimized (90%+ hit rate)
 3. **PR #2668 Review Fixes** - All comments addressed
@@ -392,7 +394,7 @@
    - Workflow guard removal
    - Agent autonomy enablement
 
-### 🔴 Blocked
+###  Blocked
 None currently
 
 ### ⏸️ Deferred
@@ -401,13 +403,13 @@ None currently
 
 ---
 
-## 🎯 Next 3 Iterations (Best Path Forward)
+##  Next 3 Iterations (Best Path Forward)
 
 ### Iteration 1: Immediate (This Session - ~850K tokens remaining)
 **Focus**: Complete cognitive brain infrastructure + quick wins
 
 **Tasks**:
-1. ✅ Create CODEBASE_COGNITIVE_MAP.md
+1.  Create CODEBASE_COGNITIVE_MAP.md
 2. 🔄 Create CODEBASE_DASHBOARD.md (this file)
 3. ⏳ Create unified ROADMAP.md with statuses
 4. ⏳ Update root README.md with cognitive brain links
@@ -471,9 +473,9 @@ None active. All blockers resolved or have mitigation plans.
 | **Documentation fragmentation** | Medium | Medium | Cognitive brain consolidation (in progress) |
 
 ### Mitigation Status
-- ✅ Cache monitoring and cleanup infrastructure operational
-- ✅ Workflow optimization complete (Phase 3C-Lite)
-- ✅ Continuation protocol established
+-  Cache monitoring and cleanup infrastructure operational
+-  Workflow optimization complete (Phase 3C-Lite)
+-  Continuation protocol established
 - 🔄 Documentation consolidation in progress
 - ⏳ Genesis Protocol documentation ready, awaiting activation
 
@@ -482,12 +484,12 @@ None active. All blockers resolved or have mitigation plans.
 ## 📈 Progress Tracking
 
 ### Recent Achievements (Last 7 iterations)
-- ✅ MCP Package System complete (Phase 6)
-- ✅ 93+ KB documentation created
-- ✅ 3 capability topics added (python_dev, testing, security)
-- ✅ Workflow dropdown menu implemented
-- ✅ All PR #2671 review comments resolved
-- ✅ Cognitive brain foundation laid
+-  MCP Package System complete (Phase 6)
+-  93+ KB documentation created
+-  3 capability topics added (python_dev, testing, security)
+-  Workflow dropdown menu implemented
+-  All PR #2671 review comments resolved
+-  Cognitive brain foundation laid
 
 ### Key Metrics
 - **Lines of Code**: ~50K+ (excluding tests)
@@ -514,15 +516,15 @@ None active. All blockers resolved or have mitigation plans.
 - [MCP Quick Start](../mcp/QUICK_START.md) - ChatGPT packaging
 
 ### Key Components
-- [Codex Pipeline](https://github.com/Aries-Serpent/_codex_/blob/main/src/codex/README.md) - Code ingestion (coming soon)
+- [Codex Pipeline](../src/codex/README.md) - Code ingestion (coming soon)
 - [Agent System](../../agents/README.md) - Autonomous agents (coming soon)
-- [MCP System](https://github.com/Aries-Serpent/_codex_/blob/main/scripts/mcp/README.md) - ChatGPT packaging
-- [Test Suite](https://github.com/Aries-Serpent/_codex_/blob/main/tests/README.md) - Testing infrastructure
+- [MCP System](../scripts/mcp/README.md) - ChatGPT packaging
+- [Test Suite](../tests/README.md) - Testing infrastructure
 
 ### Workflows
-- [CI/CD Workflows](https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows) - All workflows
-- [MCP Workflow](https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/app-package-download.yml) - Packaging
-- [Security Workflow](https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/scan-secrets-variables.yml) - Secrets scan
+- [CI/CD Workflows](../.github/workflows) - All workflows
+- [MCP Workflow](../.github/workflows/app-package-download.yml) - Packaging
+- [Security Workflow](../.github/workflows/scan-secrets-variables.yml) - Secrets scan
 
 ### Tools & Commands
 ```bash
@@ -543,7 +545,7 @@ nox -s lint type format
 
 ---
 
-## 🎯 Decision Log
+##  Decision Log
 
 ### Recent Decisions
 
@@ -687,10 +689,10 @@ nox -s lint type format
 
 | Metric | Target | Current | Status |
 |--------|--------|---------|--------|
-| Documentation freshness | <30 iterations | 0 iterations | ✅ |
-| Active initiatives tracking | 100% | 100% | ✅ |
-| Outdated references | 0 | 0 | ✅ |
-| Action items relevance | >90% | 95% | ✅ |
+| Documentation freshness | <30 iterations | 0 iterations |  |
+| Active initiatives tracking | 100% | 100% |  |
+| Outdated references | 0 | 0 |  |
+| Action items relevance | >90% | 95% |  |
 
 ---
 
@@ -706,7 +708,7 @@ nox -s lint type format
 
 ---
 
-## 🧠 Redundancy Patterns
+##  Redundancy Patterns
 
 **Update Strategy**:
 - Real-time updates during active sessions
@@ -745,14 +747,14 @@ nox -s lint type format
 
 ---
 
-**Dashboard Status**: 🟢 Live & Updating
+**Dashboard Status**:  Live & Updating
 **Next Update**: End of current session or significant milestone
 **Automation**: AI agent maintains this file automatically
 
 
 
 
-## 🧠 AfterMath Insights (Last 5 Sessions)
+##  AfterMath Insights (Last 5 Sessions)
 **Last Updated**: 2026-03-20 04:56 UTC
 
 ### Session Metrics
@@ -767,7 +769,7 @@ nox -s lint type format
 
 ### Latest Session
 - **ID**: S164
-- **Status**: ✅ Complete
+- **Status**:  Complete
 - **Context**: Cherry-pick PRs #3636–#3639 — telemetry REQ-11 fix, CB-INV-001 Playwright, workflow crash guards, flatted bump
 - **Date**: 2026-03-20
 - **Key Outcomes**:
@@ -780,10 +782,10 @@ nox -s lint type format
 
 ### Previous Session
 - **ID**: S163
-- **Status**: ✅ Complete
+- **Status**:  Complete
 - **Context**: Autonomous branch-divergence resolution, integration branch model hardening — PR #3634
 
 ### Older Session
 - **ID**: S162
-- **Status**: ✅ Complete
+- **Status**:  Complete
 - **Context**: PR #3633 — autonomous review loop fix, 4 review comments, CVE-2026-33154, CI triage #3627

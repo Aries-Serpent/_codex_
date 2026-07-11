@@ -1,4 +1,5 @@
 # Skills Module API Reference
+**Last Updated:** 2026-07-11
 
 **Module Path**: `src/codex/skills/`  
 **Version**: Phase 10+  
@@ -427,7 +428,7 @@ print(f"\nHigh-quality skills: {len(high_quality_skills)}")
 ### 1. Skill Definition
 
 ```python
-# ✅ GOOD: Clear, well-documented skill definition
+#  GOOD: Clear, well-documented skill definition
 skill_def = SkillDefinition(
     name="code-analyzer",
     description="Analyzes Python code for quality issues, complexity, and style violations",
@@ -452,7 +453,7 @@ skill_def = SkillDefinition(
     retry_policy=RetryPolicy(max_attempts=3, backoff_factor=2)
 )
 
-# ❌ POOR: Vague, undocumented definition
+#  POOR: Vague, undocumented definition
 skill_def = SkillDefinition(
     name="analyzer",
     description="Analyzes code",
@@ -464,7 +465,7 @@ skill_def = SkillDefinition(
 ### 2. Execution with Timeout
 
 ```python
-# ✅ GOOD: Proper timeout handling
+#  GOOD: Proper timeout handling
 envelope = ExecutionEnvelope(
     skill_name="long-running-analysis",
     inputs={"data": large_dataset},
@@ -478,7 +479,7 @@ except TimeoutError:
     # Handle gracefully - perhaps with partial results
     cleanup_resources()
 
-# ❌ POOR: No timeout protection
+#  POOR: No timeout protection
 envelope = ExecutionEnvelope(
     skill_name="long-running-analysis",
     inputs={"data": large_dataset}
@@ -489,7 +490,7 @@ envelope = ExecutionEnvelope(
 ### 3. Error Recovery
 
 ```python
-# ✅ GOOD: Comprehensive error handling
+#  GOOD: Comprehensive error handling
 def robust_skill_execution(skill_name, inputs):
     envelope = ExecutionEnvelope(
         skill_name=skill_name,
@@ -514,7 +515,7 @@ def robust_skill_execution(skill_name, inputs):
         logger.exception(f"Unexpected error: {e}")
         raise
 
-# ❌ POOR: No error handling
+#  POOR: No error handling
 def unsafe_skill_execution(skill_name, inputs):
     envelope = ExecutionEnvelope(skill_name, inputs)
     return envelope.run().get_output()  # Crashes on any error

@@ -1,4 +1,6 @@
 # PS-02: IPC Bridge Hardening Deployment Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 ## Prerequisites
 - Linux OS (named pipes/Unix sockets)
@@ -15,7 +17,7 @@ echo "CODEX_BRIDGE_TOKEN=$CODEX_BRIDGE_TOKEN" >> .env
 
 ### Step 2: Verify Bridge Implementation
 ```bash
-python3 -c "from src.bridge_manager import SecureBridge; print('✅ Bridge available')"
+python3 -c "from src.bridge_manager import SecureBridge; print(' Bridge available')"
 ```
 
 ### Step 3: Test Bridge Security
@@ -58,5 +60,5 @@ git checkout HEAD~5 -- src/bridge_manager.py
 - [ ] Audit trail logging
 - [ ] Latency <10ms
 
-**Status:** ✅ Production Ready
-**Last Updated:** 2026-01-09
+**Status:**  Production Ready
+**Last Updated: 2026-07-11

@@ -1,4 +1,6 @@
 # Monitoring & Observability Architecture
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Last Updated**: 2026-01-20  
 **Version**: v0.9.0  
@@ -12,15 +14,15 @@
 %%{init: {'accessibility': {'title': 'Monitoring Architecture<br/>Metrics Logs Traces Alerts'}, 'theme': 'base'}}%%
 graph TB
     subgraph "Data Sources"
-        ML["🤖 ML Operations<br/>• Training metrics<br/>• Evaluation results<br/>• Inference latency"]
-        App["⚙️ Application<br/>• Request duration<br/>• Error rates<br/>• Resource usage"]
+        ML[" ML Operations<br/>• Training metrics<br/>• Evaluation results<br/>• Inference latency"]
+        App[" Application<br/>• Request duration<br/>• Error rates<br/>• Resource usage"]
         Infra["🖥️ Infrastructure<br/>• CPU/Memory<br/>• Disk I/O<br/>• Network usage"]
         Logs["📝 Application Logs<br/>• Info/Debug/Error<br/>• Structured JSON<br/>• Trace IDs"]
     end
 
     subgraph "Collection Layer"
         LogCollector["📥 Log Collector<br/>• Fluent Bit<br/>• Parse & enrich<br/>• Buffer & batch"]
-        MetricsCollector["📊 Metrics Collector<br/>• Prometheus client<br/>• Scrape endpoints<br/>• Aggregation"]
+        MetricsCollector[" Metrics Collector<br/>• Prometheus client<br/>• Scrape endpoints<br/>• Aggregation"]
         TraceCollector["🔗 Trace Collector<br/>• OpenTelemetry<br/>• Span collection<br/>• Sampling"]
     end
 
@@ -32,11 +34,11 @@ graph TB
 
     subgraph "Analysis & Querying"
         Query["🔎 Query Engine<br/>• PromQL (metrics)<br/>• Kibana (logs)<br/>• Jaeger UI (traces)"]
-        Analysis["📊 Analysis<br/>• Aggregations<br/>• Time series<br/>• Correlations"]
+        Analysis[" Analysis<br/>• Aggregations<br/>• Time series<br/>• Correlations"]
     end
 
     subgraph "Visualization & Alerting"
-        Dashboard["📊 Dashboards<br/>• Grafana<br/>• Real-time updates<br/>• Custom panels"]
+        Dashboard[" Dashboards<br/>• Grafana<br/>• Real-time updates<br/>• Custom panels"]
         Alert["⚠️ Alerting<br/>• Threshold rules<br/>• Anomaly detection<br/>• Escalation"]
         Notify["📢 Notifications<br/>• Slack<br/>• PagerDuty<br/>• Email"]
     end
@@ -309,9 +311,9 @@ Level 4 (Critical):
 ┌─────────────────────────────────────┐
 │ API Health (Last 24h)               │
 ├─────────────────────────────────────┤
-│ Uptime: 99.98% ✅                   │
+│ Uptime: 99.98%                    │
 │ Avg Latency: 145ms (target: <200ms) │
-│ Error Rate: 0.02% ✅ (target: <0.1%)│
+│ Error Rate: 0.02%  (target: <0.1%)│
 │ Throughput: 1,250 req/s             │
 └─────────────────────────────────────┘
 
@@ -326,7 +328,7 @@ Level 4 (Critical):
 ┌─────────────────────────────────────┐
 │ Recent Incidents                    │
 ├─────────────────────────────────────┤
-│ None in last 24h ✅                 │
+│ None in last 24h                  │
 └─────────────────────────────────────┘
 ```
 

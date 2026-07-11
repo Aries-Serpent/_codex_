@@ -1,9 +1,11 @@
 # Merge Readiness Validation Checklist
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Purpose:** Quick reference for validating PR merge readiness against the 10-gate model  
 **Audience:** PR reviewers, maintainers, quality gates  
-**Status:** ✅ Production Ready  
-**Last Updated:** 2026-06-25
+**Status:**  Production Ready  
+**Last Updated: 2026-06-25
 
 ---
 
@@ -11,7 +13,7 @@
 
 Use this checklist when reviewing a PR for merge readiness. All items must pass for 100% readiness.
 
-### ✅ Gate 1: Code Quality (12 pts) — MUST PASS
+###  Gate 1: Code Quality (12 pts) — MUST PASS
 
 **Responsibility:** CI/CD (`pre-merge-validation.yml`)  
 **Local Validation:**
@@ -26,13 +28,13 @@ python -m mypy src/ --ignore-missing-imports
 - [ ] No ruff violations (run: `ruff check src/ tests/`)
 - [ ] All types covered (run: `mypy src/`)
 - [ ] No E402 or F811 violations in src/ (per-file ignores OK in tests/)
-- [ ] PR body documents: "✅ Code Quality (12/12): X ruff errors, Y mypy errors"
+- [ ] PR body documents: " Code Quality (12/12): X ruff errors, Y mypy errors"
 
 **Evidence:** GitHub Actions → pre-merge-validation.yml → Code Quality step
 
 ---
 
-### ✅ Gate 2: Test Coverage (12 pts) — MUST PASS
+###  Gate 2: Test Coverage (12 pts) — MUST PASS
 
 **Responsibility:** CI/CD (`pre-merge-validation.yml`)  
 **Threshold:** ≥95% code coverage
@@ -50,13 +52,13 @@ pytest --cov=src --cov=codex_ml --cov-report=json -q
 - [ ] Coverage ≥ 95% (check: `pytest --cov` report)
 - [ ] Coverage delta documented (e.g., "+1.2% from baseline" or "-0.5%")
 - [ ] New test cases added for new code (verify in PR diff)
-- [ ] PR body shows: "✅ Test Coverage (12/12): 96.5% (+1.7% delta)"
+- [ ] PR body shows: " Test Coverage (12/12): 96.5% (+1.7% delta)"
 
 **Evidence:** GitHub Actions → pre-merge-validation.yml → Test Coverage step
 
 ---
 
-### ✅ Gate 3: Security & Secrets (15 pts) — HIGHEST WEIGHT
+###  Gate 3: Security & Secrets (15 pts) — HIGHEST WEIGHT
 
 **Responsibility:** CI/CD (`pre-merge-validation.yml`) + agents
 
@@ -78,7 +80,7 @@ python -m pip_audit --skip-editable --desc
 - [ ] No new secrets detected (`detect-secrets-hook` exit: 0)
 - [ ] CodeQL open alert count: 0 new (document pre-existing if any)
 - [ ] Pip audit: No new vulnerabilities
-- [ ] PR body shows: "✅ Security & Secrets (15/15): 0 new secrets, 0 CodeQL errors, 0 pip vulns"
+- [ ] PR body shows: " Security & Secrets (15/15): 0 new secrets, 0 CodeQL errors, 0 pip vulns"
 
 **If Failed:**
 - [ ] CodeQL error fix committed (with commit SHA in PR body)
@@ -89,7 +91,7 @@ python -m pip_audit --skip-editable --desc
 
 ---
 
-### ✅ Gate 4: WEC Integrity (14 pts) — CRITICAL ORCHESTRATION
+###  Gate 4: WEC Integrity (14 pts) — CRITICAL ORCHESTRATION
 
 **Responsibility:** Agent + `workflow-execution-gate.yml`  
 **Must Be Present:** Workflow Execution Checklist section in PR body
@@ -130,7 +132,7 @@ Workflows can be skipped/dispatched by updating these checkboxes:
 
 ---
 
-### ✅ Gate 5: Deferral Language Policy (10 pts)
+###  Gate 5: Deferral Language Policy (10 pts)
 
 **Responsibility:** `deferral-language-gate.yml` + agent
 
@@ -144,14 +146,14 @@ Workflows can be skipped/dispatched by updating these checkboxes:
 - [ ] Run: `deferral-language-gate.yml` passes in Actions
 
 **Examples:**
-- ❌ "These are pre-existing issues"
-- ✅ "These issues are fixed in commit abc1234"
-- ❌ "Will address in a future PR"
-- ✅ "Addressed in this PR via refactor at line 123"
+-  "These are pre-existing issues"
+-  "These issues are fixed in commit abc1234"
+-  "Will address in a future PR"
+-  "Addressed in this PR via refactor at line 123"
 
 ---
 
-### ✅ Gate 6: Comment Review Policy (12 pts)
+###  Gate 6: Comment Review Policy (12 pts)
 
 **Responsibility:** `comment-review-gate.yml` + agent  
 **Scope:** Blocking comments from maintainers, security bots, code review bots
@@ -168,11 +170,11 @@ Workflows can be skipped/dispatched by updating these checkboxes:
 - [ ] Create reply comment: "@copilot Addressed in commit [SHA]" (with fix link)
 - [ ] Or: "Documented as known gap: [reason]"
 
-**Evidence:** PR conversation tab shows ✅ Resolved next to resolved comments
+**Evidence:** PR conversation tab shows  Resolved next to resolved comments
 
 ---
 
-### ✅ Gate 7: Accountability Report & CHANGELOG (8 pts)
+###  Gate 7: Accountability Report & CHANGELOG (8 pts)
 
 **Responsibility:** Agent + auto-fix (`session_wrapup_autofix.py`)
 
@@ -204,16 +206,16 @@ Workflows can be skipped/dispatched by updating these checkboxes:
 
 ---
 
-### ✅ Gate 8: Action Versions Enforcement (7 pts)
+###  Gate 8: Action Versions Enforcement (7 pts)
 
 **Responsibility:** `pre-merge-validation.yml` + auto-fix (`enforce_actions_versions.py`)
 
 **Approved Versions (as of 2026-06-22):**
-- `actions/checkout@v5` ✅ (not v3, v4)
-- `actions/setup-node@v5` ✅ (not v3, v4)
-- `actions/github-script@v8` ✅ (not v7 or older)
-- `actions/setup-python@v6` ✅ (not v4, v5)
-- `actions/upload-artifact@v5` ✅ (not v3, v4)
+- `actions/checkout@v5`  (not v3, v4)
+- `actions/setup-node@v5`  (not v3, v4)
+- `actions/github-script@v8`  (not v7 or older)
+- `actions/setup-python@v6`  (not v4, v5)
+- `actions/upload-artifact@v5`  (not v3, v4)
 
 **Checklist:**
 - [ ] All GitHub Actions in `.github/workflows/` use approved versions
@@ -232,7 +234,7 @@ Workflows can be skipped/dispatched by updating these checkboxes:
 
 ---
 
-### ✅ Gate 9: YAML Workflow Syntax & Indentation (7 pts)
+###  Gate 9: YAML Workflow Syntax & Indentation (7 pts)
 
 **Responsibility:** `pre-merge-validation.yml`
 
@@ -258,7 +260,7 @@ yamllint .github/workflows/ --config-file .yamllint.yml
   - Keys properly quoted
   - No trailing whitespace
 - [ ] If modified `.github/workflows/*.yml` files: Each passes both checks
-- [ ] PR body shows: "✅ Workflow Syntax (7/7): 0 actionlint, 0 yamllint errors"
+- [ ] PR body shows: " Workflow Syntax (7/7): 0 actionlint, 0 yamllint errors"
 
 **Common Fixes:**
 - Add spaces after list markers: `-` → `- ` (before `name:`)
@@ -268,7 +270,7 @@ yamllint .github/workflows/ --config-file .yamllint.yml
 
 ---
 
-### ✅ Gate 10: Merge Dependency Checks (3 pts)
+###  Gate 10: Merge Dependency Checks (3 pts)
 
 **Responsibility:** `pre-merge-validation.yml` + maintainer
 
@@ -287,7 +289,7 @@ yamllint .github/workflows/ --config-file .yamllint.yml
   - [ ] All status checks passing (green checkmarks)
   - [ ] All required reviewers approved (if configured)
   - [ ] No blocking dismissals
-- [ ] PR body confirms: "✅ Merge Dependencies (3/3): Branch clean, up-to-date, all protections OK"
+- [ ] PR body confirms: " Merge Dependencies (3/3): Branch clean, up-to-date, all protections OK"
 
 **If Conflicts Detected:**
 - [ ] Resolve conflicts locally and push: `git merge main` → fix conflicts → `git commit` → `git push`
@@ -298,16 +300,16 @@ yamllint .github/workflows/ --config-file .yamllint.yml
 
 | Gate # | Gate Name | Weight | Required | Status | Score |
 |--------|-----------|--------|----------|--------|-------|
-| 1 | Code Quality | 12 | ✅ | [ ] | [ ]/12 |
-| 2 | Test Coverage | 12 | ✅ | [ ] | [ ]/12 |
-| 3 | Security & Secrets | 15 | ✅ | [ ] | [ ]/15 | <!-- pragma: allowlist secret -->
-| 4 | WEC Integrity | 14 | ✅ | [ ] | [ ]/14 |
-| 5 | Deferral Language | 10 | ✅ | [ ] | [ ]/10 |
-| 6 | Comment Review | 12 | ✅ | [ ] | [ ]/12 |
-| 7 | Accountability | 8 | ✅ | [ ] | [ ]/8 |
-| 8 | Action Versions | 7 | ✅ | [ ] | [ ]/7 |
-| 9 | Workflow Syntax | 7 | ✅ | [ ] | [ ]/7 |
-| 10 | Merge Dependencies | 3 | ✅ | [ ] | [ ]/3 |
+| 1 | Code Quality | 12 |  | [ ] | [ ]/12 |
+| 2 | Test Coverage | 12 |  | [ ] | [ ]/12 |
+| 3 | Security & Secrets | 15 |  | [ ] | [ ]/15 | <!-- pragma: allowlist secret -->
+| 4 | WEC Integrity | 14 |  | [ ] | [ ]/14 |
+| 5 | Deferral Language | 10 |  | [ ] | [ ]/10 |
+| 6 | Comment Review | 12 |  | [ ] | [ ]/12 |
+| 7 | Accountability | 8 |  | [ ] | [ ]/8 |
+| 8 | Action Versions | 7 |  | [ ] | [ ]/7 |
+| 9 | Workflow Syntax | 7 |  | [ ] | [ ]/7 |
+| 10 | Merge Dependencies | 3 |  | [ ] | [ ]/3 |
 | **TOTAL** | — | **100** | **10/10** | **?** | **[ ]/100** |
 
 ---
@@ -317,7 +319,7 @@ yamllint .github/workflows/ --config-file .yamllint.yml
 Before clicking "Merge", confirm:
 
 ```markdown
-## 🚀 Ready for Merge
+##  Ready for Merge
 
 - [ ] All 10 gates passing (score = 100/100)
 - [ ] WEC section present with canonical format (9 items)
@@ -328,7 +330,7 @@ Before clicking "Merge", confirm:
 - [ ] AAIS V4.0 composite score ≥ 95/100
 - [ ] .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md updated
 
-**Merge Status:** ✅ APPROVED FOR MERGE
+**Merge Status:**  APPROVED FOR MERGE
 ```
 
 ---
@@ -345,6 +347,6 @@ Before clicking "Merge", confirm:
 
 ---
 
-**Last Updated:** 2026-06-25T15:50:00Z  
+**Last Updated: 2026-06-25T15:50:00Z  
 **Maintained By:** Copilot Agents + Maintainer  
-**Status:** ✅ Production Ready
+**Status:**  Production Ready

@@ -1,6 +1,8 @@
 # Codex Archive Runbook
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 This runbook documents the repeatable workflow for moving inactive code and documentation
 into the Codex tombstone archive while preserving evidence and making restoration

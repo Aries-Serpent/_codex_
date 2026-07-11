@@ -1,4 +1,6 @@
 # CUSTOM_AGENT_TOKEN_GUIDANCE.md
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Token Requirements and Implementation Guide for Custom Agents**
 
@@ -8,7 +10,7 @@
 
 ---
 
-## 🎯 Overview
+##  Overview
 
 This document specifies token requirements for 13 custom agents identified in Phase 1 audit. Each agent profile includes required token level, scope specifications, and implementation patterns.
 
@@ -84,7 +86,7 @@ except requests.HTTPError as e:
 - [ ] Test cross-repo access
 - [ ] Test error recovery
 
-**Status**: ✅ Active, requires Level 2 token
+**Status**:  Active, requires Level 2 token
 
 ---
 
@@ -127,7 +129,7 @@ class AutonomousTestHealerAgent:
         pass
 ```
 
-**Status**: ✅ Active, Phase 5 integration complete
+**Status**:  Active, Phase 5 integration complete
 
 ---
 
@@ -175,7 +177,7 @@ class CodeQLAlertResolutionAgent:
         return response.json()
 ```
 
-**Status**: ✅ Active, security-focused
+**Status**:  Active, security-focused
 
 ---
 
@@ -215,7 +217,7 @@ class WorkflowComplianceGuardian:
         return result.is_compliant
 ```
 
-**Status**: ✅ Active, uses enforce_token_patterns.py
+**Status**:  Active, uses enforce_token_patterns.py
 
 ---
 
@@ -238,7 +240,7 @@ workflow:read       # Read workflows
 contents:write      # Write fixes
 ```
 
-**Status**: ✅ Active, integrated with ci-testing-agent
+**Status**:  Active, integrated with ci-testing-agent
 
 ---
 
@@ -260,7 +262,7 @@ repo:full           # Repository access
 contents:write      # Fix code/dependencies
 ```
 
-**Status**: ✅ Active, Python-focused
+**Status**:  Active, Python-focused
 
 ---
 
@@ -283,7 +285,7 @@ workflow:read       # Read test workflows
 contents:read       # Analyze test code
 ```
 
-**Status**: ✅ Active
+**Status**:  Active
 
 ---
 
@@ -306,7 +308,7 @@ contents:write      # Update baseline
 pull_requests:write # Create PRs
 ```
 
-**Status**: ✅ Active, integrated with mypy.manager Cognitive Brain Skill
+**Status**:  Active, integrated with mypy.manager Cognitive Brain Skill
 
 ---
 
@@ -328,7 +330,7 @@ repo:full           # Repository access (standard)
 issues:write        # Create vulnerability issues
 ```
 
-**Status**: ✅ Active
+**Status**:  Active
 
 ---
 
@@ -350,7 +352,7 @@ repo:full           # Repository access
 contents:write      # Fix code
 ```
 
-**Status**: ✅ Active
+**Status**:  Active
 
 ---
 
@@ -373,7 +375,7 @@ contents:write      # Create patches
 pull_requests:write # Create PRs
 ```
 
-**Status**: ✅ Active
+**Status**:  Active
 
 ---
 
@@ -396,7 +398,7 @@ contents:read       # Read test code
 workflow:read       # Read coverage workflows
 ```
 
-**Status**: ✅ Active
+**Status**:  Active
 
 ---
 
@@ -418,7 +420,7 @@ repo:full           # Repository access
 contents:write      # Update configs
 ```
 
-**Status**: ✅ Active
+**Status**:  Active
 
 ---
 
@@ -496,27 +498,27 @@ class CustomAgent:
 
 ---
 
-## 📊 Agent Summary Table
+##  Agent Summary Table
 
 | Agent | Token Level | Primary Operations | Status | Prompt Update |
 |-------|:---:|---|:---:|:---:|
-| ci-auto-healer-agent | L2 | Read logs, fix CI | ✅ | ⏳ Phase 6.2 |
-| autonomous-test-healer-agent | L2 | Fix tests, mark flaky | ✅ | ⏳ Phase 6.2 |
-| codeql-alert-resolution-agent | L2-L3 | Resolve security alerts | ✅ | ⏳ Phase 6.2 |
-| workflow-compliance-guardian | L2 | Validate workflows | ✅ | ⏳ Phase 6.2 |
-| ci-failure-resolution-agent | L2 | Fix CI failures | ✅ | ⏳ Phase 6.2 |
-| ci-importerror-agent | L2 | Fix import errors | ✅ | ⏳ Phase 6.2 |
-| test-failure-analyzer-agent | L2 | Analyze test failures | ✅ | ⏳ Phase 6.2 |
-| mypy-manager-agent | L2 | Manage type checking | ✅ | ⏳ Phase 6.2 |
-| dependency-vulnerability-scanner | L1-L2 | Scan vulnerabilities | ✅ | ⏳ Phase 6.2 |
-| python-312-type-fixer | L2 | Fix type annotations | ✅ | ⏳ Phase 6.2 |
-| telemetry-classifier-agent | L2 | Classify failures | ✅ | ⏳ Phase 6.2 |
-| unified-coverage-agent | L2 | Manage coverage | ✅ | ⏳ Phase 6.2 |
-| packaging-validation-agent | L1-L2 | Validate packaging | ✅ | ⏳ Phase 6.2 |
+| ci-auto-healer-agent | L2 | Read logs, fix CI |  | ⏳ Phase 6.2 |
+| autonomous-test-healer-agent | L2 | Fix tests, mark flaky |  | ⏳ Phase 6.2 |
+| codeql-alert-resolution-agent | L2-L3 | Resolve security alerts |  | ⏳ Phase 6.2 |
+| workflow-compliance-guardian | L2 | Validate workflows |  | ⏳ Phase 6.2 |
+| ci-failure-resolution-agent | L2 | Fix CI failures |  | ⏳ Phase 6.2 |
+| ci-importerror-agent | L2 | Fix import errors |  | ⏳ Phase 6.2 |
+| test-failure-analyzer-agent | L2 | Analyze test failures |  | ⏳ Phase 6.2 |
+| mypy-manager-agent | L2 | Manage type checking |  | ⏳ Phase 6.2 |
+| dependency-vulnerability-scanner | L1-L2 | Scan vulnerabilities |  | ⏳ Phase 6.2 |
+| python-312-type-fixer | L2 | Fix type annotations |  | ⏳ Phase 6.2 |
+| telemetry-classifier-agent | L2 | Classify failures |  | ⏳ Phase 6.2 |
+| unified-coverage-agent | L2 | Manage coverage |  | ⏳ Phase 6.2 |
+| packaging-validation-agent | L1-L2 | Validate packaging |  | ⏳ Phase 6.2 |
 
 ---
 
-## ✅ Prompt Update Checklist
+##  Prompt Update Checklist
 
 For Phase 6.2, update each agent prompt with:
 

@@ -1,6 +1,8 @@
 # Large Download Prevention Strategy
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## Requirement
 Skip large downloads if they are over 1 GB or even 500+ MB to prevent disk space exhaustion.
@@ -14,15 +16,15 @@ From our test execution attempt, we identified these large downloads:
 | Package | Size | Action |
 |---------|------|--------|
 | torch | 899.7 MB | ⚠️ SKIP (close to limit) |
-| nvidia-cublas-cu12 | 594.3 MB | ✅ SKIP |
-| nvidia-cudnn-cu12 | 706.8 MB | ✅ SKIP |
-| nvidia-cusparse-cu12 | 288.2 MB | ✅ ALLOW |
-| nvidia-cusolver-cu12 | 267.5 MB | ✅ ALLOW |
-| nvidia-cusparselt-cu12 | 287.2 MB | ✅ ALLOW |
-| nvidia-nccl-cu12 | 322.3 MB | ✅ ALLOW |
-| nvidia-cufft-cu12 | 193.1 MB | ✅ ALLOW |
-| triton | 170.5 MB | ✅ ALLOW |
-| transformers | 12.0 MB | ✅ ALLOW |
+| nvidia-cublas-cu12 | 594.3 MB |  SKIP |
+| nvidia-cudnn-cu12 | 706.8 MB |  SKIP |
+| nvidia-cusparse-cu12 | 288.2 MB |  ALLOW |
+| nvidia-cusolver-cu12 | 267.5 MB |  ALLOW |
+| nvidia-cusparselt-cu12 | 287.2 MB |  ALLOW |
+| nvidia-nccl-cu12 | 322.3 MB |  ALLOW |
+| nvidia-cufft-cu12 | 193.1 MB |  ALLOW |
+| triton | 170.5 MB |  ALLOW |
+| transformers | 12.0 MB |  ALLOW |
 
 **Total CUDA dependencies**: ~3.5 GB (ALL SKIP)
 **Torch alone**: ~900 MB (SKIP)
@@ -174,7 +176,7 @@ def install_with_size_limit(packages: list, max_size_mb: int = 500):
 
 ### What We Can Do NOW (Without Large Downloads)
 
-1. ✅ **Run minimal tests**:
+1.  **Run minimal tests**:
    ```bash
    # Install only pytest, ruff, black (<200 MB total)
    pip install pytest pytest-cov ruff black mypy
@@ -183,7 +185,7 @@ def install_with_size_limit(packages: list, max_size_mb: int = 500):
    pytest -m "not requires_torch" -q
    ```
 
-2. ✅ **Run security scans**:
+2.  **Run security scans**:
    ```bash
    # Bandit already installed (<100 MB)
    bandit -r src/ -c bandit.yaml
@@ -193,13 +195,13 @@ def install_with_size_limit(packages: list, max_size_mb: int = 500):
    semgrep scan --config semgrep_rules/ src/
    ```
 
-3. ✅ **Fix fence errors**:
+3.  **Fix fence errors**:
    ```bash
    # No dependencies needed
    python /tmp/fence_fixer_automated.py --path .
    ```
 
-4. ✅ **Generate final reports**:
+4.  **Generate final reports**:
    ```bash
    # No dependencies needed
    # All reporting is just file I/O
@@ -207,14 +209,14 @@ def install_with_size_limit(packages: list, max_size_mb: int = 500):
 
 ### What We SKIP (Large Downloads)
 
-1. ❌ **ML tests with CUDA**: 3.5 GB of CUDA libraries
-2. ❌ **Full torch installation**: 900 MB
-3. ❌ **Transformers model downloads**: Variable size
-4. ❌ **Full dependency installation**: 4-5 GB total
+1.  **ML tests with CUDA**: 3.5 GB of CUDA libraries
+2.  **Full torch installation**: 900 MB
+3.  **Transformers model downloads**: Variable size
+4.  **Full dependency installation**: 4-5 GB total
 
 ## Updated Verification Strategy
 
-### Tier 1: Minimal Verification (<200 MB) ✅ DO NOW
+### Tier 1: Minimal Verification (<200 MB)  DO NOW
 - Code quality (already done)
 - Syntax validation (already done)
 - Non-ML tests
@@ -226,7 +228,7 @@ def install_with_size_limit(packages: list, max_size_mb: int = 500):
 - Basic ML tests
 - Transformers without models
 
-### Tier 3: Full ML Verification (5+ GB) ❌ SKIP IN CURRENT ENV
+### Tier 3: Full ML Verification (5+ GB)  SKIP IN CURRENT ENV
 - CUDA support
 - Full ML test suite
 - Model download tests

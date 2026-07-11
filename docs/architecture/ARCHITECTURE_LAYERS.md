@@ -1,4 +1,6 @@
 # Architecture Layers
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Domain**: D1 — Architecture & Layer Boundaries  
 **Owner**: `code-analysis-agent`  
@@ -36,10 +38,10 @@ CI workflow on every PR targeting `main`.
 
 | # | Criterion | Status |
 |---|-----------|--------|
-| 1 | Architecture doc present (`docs/architecture/ARCHITECTURE_LAYERS.md`) | ✅ |
-| 2 | `.importlinter` config present | ✅ |
-| 3 | `import-linter.yml` CI workflow present | ✅ |
-| 4 | Domain ownership map present (`.codex/DOMAIN_OWNERSHIP.md`) | ✅ |
+| 1 | Architecture doc present (`docs/architecture/ARCHITECTURE_LAYERS.md`) |  |
+| 2 | `.importlinter` config present |  |
+| 3 | `import-linter.yml` CI workflow present |  |
+| 4 | Domain ownership map present (`.codex/DOMAIN_OWNERSHIP.md`) |  |
 
 ---
 

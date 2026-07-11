@@ -1,6 +1,8 @@
 # Metric Registry
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 `codex_ml.metrics.registry` manages deterministic metrics and offers offline
 friendly variants that rely on local artefacts.

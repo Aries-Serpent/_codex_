@@ -1,6 +1,8 @@
 # Minimal _codex_ Run (Scaffolding)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 This example describes a minimal local run using the scaffolding modules:
 

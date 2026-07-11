@@ -1,4 +1,6 @@
 # Ray Serve Deployment Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Version**: 2.0.0  
 > **Last Updated**: 2026-06-20  
@@ -381,9 +383,9 @@ if __name__ == "__main__":
     gpt_handle = serve.run(GPTModel.bind())
     embed_handle = serve.run(EmbeddingModel.bind())
 
-    print("✅ GPT Model deployed at /generate")
-    print("✅ Embedding Model deployed at /embed")
-    print("✅ Dashboard: http://localhost:8265")
+    print(" GPT Model deployed at /generate")
+    print(" Embedding Model deployed at /embed")
+    print(" Dashboard: http://localhost:8265")
 ```
 
 ## Example 3: Batch Processing
@@ -563,4 +565,4 @@ class Model:
 
 ---
 
-**Last Updated:** 2026-06-20 | **Version:** 2.0.0
+**Last Updated: 2026-06-20

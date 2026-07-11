@@ -1,4 +1,6 @@
 # Changelog
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 All notable changes to this project will be documented in this file.
 
@@ -32,12 +34,12 @@ All notable changes to this project will be documented in this file.
 - **Release Metadata**: Updated GitHub Pages configuration with new release information
 
 ### Release Verification
-- Phase 1-3 Improvements verified ✅
-- SBOM validation complete ✅
-- Production deployment confirmed ✅
-- Distribution quality assured ✅
-- Zero new vulnerabilities introduced ✅
-- Full backward compatibility maintained ✅
+- Phase 1-3 Improvements verified 
+- SBOM validation complete 
+- Production deployment confirmed 
+- Distribution quality assured 
+- Zero new vulnerabilities introduced 
+- Full backward compatibility maintained 
 
 ---
 
@@ -61,10 +63,10 @@ All notable changes to this project will be documented in this file.
 - **accountability:** Session context for v0.1.1 deployment recorded
 
 ### Release Verification
-- All 32 certification gates passed ✅ (inherited from v0.1.0-final)
-- Production readiness score: 100/100 ✅
-- Zero new vulnerabilities introduced ✅
-- Full backward compatibility maintained ✅
+- All 32 certification gates passed  (inherited from v0.1.0-final)
+- Production readiness score: 100/100 
+- Zero new vulnerabilities introduced 
+- Full backward compatibility maintained 
 
 ---
 
@@ -94,8 +96,8 @@ All notable changes to this project will be documented in this file.
   integration, `self_healing` config block (enabled, max 3 iterations), `iteration_history`
   tracking S244/S251/S252/S253 runs, `cognitive_integration_level: 3`.
 - **fix(docs):** `docs/index.md` "Last Updated" refreshed to 2026-03-31.
-- **health(sweep):** Issue #3829 nightly health sweep S200 completed — ruff check ✅ 0 violations;
-  CodeQL on main ✅ success (3 consecutive); last 5 CI runs on main: success/skipped ✅;
+- **health(sweep):** Issue #3829 nightly health sweep S200 completed — ruff check  0 violations;
+  CodeQL on main  success (3 consecutive); last 5 CI runs on main: success/skipped ;
   cognitive brain metadata updated; accountability report updated.
 
 ### Fixed (auto-update — PR #3831)

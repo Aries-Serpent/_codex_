@@ -1,6 +1,8 @@
 # Zendesk Support Administrator Newcomer Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 Welcome to Zendesk administration with **_codex_**! This guide will help you understand how to manage Zendesk Support configurations as code, enabling reproducible, version-controlled administrative workflows.
 
@@ -31,12 +33,12 @@ _codex_ provides a **configuration-as-code** approach to managing Zendesk Suppor
 
 ### Benefits
 
-✅ **Version Control**: Track all configuration changes in Git
-✅ **Reproducibility**: Consistent deployments across environments
-✅ **Safety**: Review changes before applying
-✅ **Auditing**: Complete history of who changed what and when
-✅ **Automation**: Scriptable workflows for common tasks
-✅ **Documentation**: Self-documenting configurations
+ **Version Control**: Track all configuration changes in Git
+ **Reproducibility**: Consistent deployments across environments
+ **Safety**: Review changes before applying
+ **Auditing**: Complete history of who changed what and when
+ **Automation**: Scriptable workflows for common tasks
+ **Documentation**: Self-documenting configurations
 
 ### Supported Zendesk Objects
 

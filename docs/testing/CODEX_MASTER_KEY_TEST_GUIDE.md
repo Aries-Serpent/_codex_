@@ -1,7 +1,9 @@
 # CODEX_MASTER_KEY Testing Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Version:** 1.0  
-> **Last Updated:** 2026-06-29  
+> **Last Updated: 2026-06-29
 > **Audience:** Developers, QA, Site Reliability Engineers  
 > **Scope:** Complete testing framework for CODEX_MASTER_KEY (23 scopes, 10 processes)
 
@@ -45,10 +47,10 @@ pytest tests/integration/test_codex_master_key_integration.py -v
 - `tests/github/test_codex_master_key_scopes.py` — Scope validation
 
 **What It Tests:**
-- ✅ All 23 token scopes present
-- ✅ Token fallback hierarchy (MASTER → BACKUP → GH_TOKEN)
-- ✅ API version header validation
-- ✅ Rate limit header parsing
+-  All 23 token scopes present
+-  Token fallback hierarchy (MASTER → BACKUP → GH_TOKEN)
+-  API version header validation
+-  Rate limit header parsing
 
 **Running Phase 1:**
 ```bash
@@ -67,10 +69,10 @@ pytest tests/github/test_codex_master_key_scopes.py -v
 - `tests/github/test_pr_issue_operations.py` (Process 7)
 
 **What It Tests:**
-- ✅ CRUD operations (Create, Read, Update, Delete)
-- ✅ Batch operations
-- ✅ Error scenarios (401, 403, 404, 409, 422, 429)
-- ✅ State synchronization
+-  CRUD operations (Create, Read, Update, Delete)
+-  Batch operations
+-  Error scenarios (401, 403, 404, 409, 422, 429)
+-  State synchronization
 
 **Running Phase 2:**
 ```bash
@@ -89,12 +91,12 @@ pytest tests/github/test_repo_variables_comprehensive.py::TestRepositoryScopeCRU
 - `tests/github/test_agent_autonomy_framework.py` (Process 10)
 
 **What It Tests:**
-- ✅ CodeQL alert management
-- ✅ Secret scanning
-- ✅ Token scope verification
-- ✅ Token rotation
-- ✅ Token delegation
-- ✅ Agent autonomy framework
+-  CodeQL alert management
+-  Secret scanning
+-  Token scope verification
+-  Token rotation
+-  Token delegation
+-  Agent autonomy framework
 
 **Running Phase 3:**
 ```bash
@@ -111,11 +113,11 @@ pytest tests/github/test_agent_autonomy_framework.py -v
 - `tests/integration/test_rate_limiting_strategy.py` — Rate limit handling
 
 **What It Tests:**
-- ✅ Complete end-to-end workflows
-- ✅ Multi-agent coordination
-- ✅ Error recovery scenarios
-- ✅ State consistency
-- ✅ Concurrent operations
+-  Complete end-to-end workflows
+-  Multi-agent coordination
+-  Error recovery scenarios
+-  State consistency
+-  Concurrent operations
 
 **Running Phase 4:**
 ```bash
@@ -386,11 +388,11 @@ Hints:
 
 | Component | Target | Current |
 |-----------|--------|---------|
-| All 23 scopes | 100% | ✅ 100% |
-| All 10 processes | 100% | ✅ 100% |
-| API operations | 50+ | ✅ 60+ |
-| Error codes | 100% | ✅ 100% (401, 403, 404, 409, 422, 429) |
-| Integration scenarios | 20+ | ✅ 25+ |
+| All 23 scopes | 100% |  100% |
+| All 10 processes | 100% |  100% |
+| API operations | 50+ |  60+ |
+| Error codes | 100% |  100% (401, 403, 404, 409, 422, 429) |
+| Integration scenarios | 20+ |  25+ |
 
 ### Generating Coverage Report
 
@@ -433,4 +435,4 @@ open htmlcov/index.html
 - [CODEX_MASTER_KEY Capabilities](../reference/CODEX_MASTER_KEY_CAPABILITIES.md)
 - [GitHub API Reference](../ci/GITHUB_API_COPILOT_AGENT_REFERENCE.md)
 - [Variables & Secrets Reference](../reference/GITHUB_VARIABLES_SECRETS_REFERENCE.md)
-- [Test Infrastructure](https://github.com/Aries-Serpent/_codex_/blob/main/tests/github/conftest_codex_master_key.py) — External test configuration file
+- [Test Infrastructure](../tests/github/conftest_codex_master_key.py) — External test configuration file

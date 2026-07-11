@@ -1,8 +1,10 @@
 <!-- BEGIN: CODEX_IFACE_DOCS -->
 
 # Interfaces & Extensibility
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 This project defines abstract interfaces to allow **swappable implementations** without code changes.
 

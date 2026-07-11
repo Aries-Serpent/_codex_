@@ -1,3 +1,6 @@
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 Usage
 =====
 
@@ -5,7 +8,7 @@ This document describes how to use [actionlint](..).
 
 ## `actionlint` command
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 With no argument, actionlint finds all workflow files in the current repository and checks them.
 

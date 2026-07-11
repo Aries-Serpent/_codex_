@@ -1,4 +1,6 @@
 # System Context Diagram (C4 Context)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Last Updated**: 2026-01-20  
 **Version**: v0.9.0  
@@ -17,21 +19,21 @@ graph TB
         GH["🐙 GitHub<br/>PR Management<br/>Issue Tracking<br/>Workflows"]
         ZD["🎫 Zendesk<br/>Support Tickets<br/>Customer Data<br/>CRM Integration"]
         HF["🤗 Hugging Face<br/>Model Hub<br/>Model Weights<br/>Community Models"]
-        MLFLOW["📊 MLflow<br/>Experiment Tracking<br/>Model Registry<br/>Artifacts"]
+        MLFLOW[" MLflow<br/>Experiment Tracking<br/>Model Registry<br/>Artifacts"]
         S3["☁️ Cloud Storage<br/>S3/GCS/Azure<br/>Model Storage<br/>Data Backup"]
         BENCH["📈 Benchmark<br/>Services<br/>Performance Tracking<br/>Leaderboards"]
     end
 
     subgraph "Aries-Serpent/_codex_ System"
-        CORE["🎯 Core Platform<br/>Training<br/>Evaluation<br/>Serving<br/>RAG Pipeline"]
-        AGENTS["🤖 Agent System<br/>161 Autonomous Agents<br/>Task Orchestration<br/>Execution Engine"]
-        BRAIN["🧠 Cognitive Brain<br/>OODA Loops<br/>Quantum Orchestration<br/>Decision Making"]
-        INFRA["⚙️ Infrastructure<br/>Config Management<br/>Database<br/>Monitoring<br/>Caching"]
+        CORE[" Core Platform<br/>Training<br/>Evaluation<br/>Serving<br/>RAG Pipeline"]
+        AGENTS[" Agent System<br/>161 Autonomous Agents<br/>Task Orchestration<br/>Execution Engine"]
+        BRAIN[" Cognitive Brain<br/>OODA Loops<br/>Quantum Orchestration<br/>Decision Making"]
+        INFRA[" Infrastructure<br/>Config Management<br/>Database<br/>Monitoring<br/>Caching"]
     end
 
     subgraph "Users"
         DEV["👨‍💻 ML Engineers<br/>Model Development<br/>Experimentation<br/>Training"]
-        DS["📊 Data Scientists<br/>Feature Engineering<br/>Data Analysis<br/>EDA"]
+        DS[" Data Scientists<br/>Feature Engineering<br/>Data Analysis<br/>EDA"]
         OPS["🔧 DevOps/SRE<br/>Deployment<br/>Monitoring<br/>Operations"]
         LEAD["👔 Team Leads<br/>Progress Tracking<br/>Resource Planning<br/>Governance"]
     end

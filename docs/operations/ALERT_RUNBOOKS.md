@@ -1,6 +1,8 @@
 # Operations Alert Runbooks
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 **Version**: 1.0.0
 **Status**: Production Ready
 **Date**: 2026-06-14
@@ -13,7 +15,7 @@ All CRITICAL alerts require immediate action. These runbooks are designed to res
 
 ---
 
-## 🔴 CRITICAL: High Error Rate (>5% for 5 min)
+##  CRITICAL: High Error Rate (>5% for 5 min)
 
 **Alert Trigger**:
 - Error rate exceeds 5% for 5 consecutive minutes
@@ -116,7 +118,7 @@ kubectl scale deployment payment-service -n production --replicas=5
 
 ---
 
-## 🔴 CRITICAL: Response Latency p99 > 2 seconds
+##  CRITICAL: Response Latency p99 > 2 seconds
 
 **Alert Trigger**:
 - p99 latency exceeds 2 seconds for 5 consecutive minutes
@@ -207,7 +209,7 @@ watch "kubectl logs metrics | grep p99"
 
 ---
 
-## 🔴 CRITICAL: Health Check Failed (>3 consecutive failures)
+##  CRITICAL: Health Check Failed (>3 consecutive failures)
 
 **Alert Trigger**:
 - Service health check fails 3+ consecutive times (>30 seconds)
@@ -464,7 +466,7 @@ escalation_timing:
 
 ---
 
-## 📊 Incident Tracking Template
+##  Incident Tracking Template
 
 ```markdown
 ## Incident: [Alert Name]

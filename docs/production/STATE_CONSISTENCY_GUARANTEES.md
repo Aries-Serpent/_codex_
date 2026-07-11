@@ -1,6 +1,8 @@
 # State Consistency Guarantees: Technical Specification
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 **Version**: 1.0  
 **Date**: 2025-01-20  
@@ -34,15 +36,15 @@
 
 **Guarantees**:
 ```
-✅ If transaction T = {INSERT row1, INSERT row2}:
+ If transaction T = {INSERT row1, INSERT row2}:
    - Both row1 AND row2 appear, OR
    - Neither row1 NOR row2 appear
    - Never just one of them
 ```
 
 **Test Coverage**:
-- ✅ `tests/auth/test_sqlite_user_repository.py::test_concurrent_creates`
-- ✅ `tests/test_sqlite_pool.py::test_sqlite_pool_allows_concurrent_writes`
+-  `tests/auth/test_sqlite_user_repository.py::test_concurrent_creates`
+-  `tests/test_sqlite_pool.py::test_sqlite_pool_allows_concurrent_writes`
 
 ### Consistency
 
@@ -108,9 +110,9 @@ Isolation Level: SERIALIZABLE (via RLock)
 ```
 
 **Isolation Test Results**:
-- ✅ `tests/test_sqlite_wal.py::test_wal_mode_read_while_write` - PASS
-- ✅ `tests/auth/test_sqlite_user_repository.py::test_concurrent_reads_and_writes` - PASS
-- ✅ No dirty reads, non-repeatable reads, or phantom reads observed
+-  `tests/test_sqlite_wal.py::test_wal_mode_read_while_write` - PASS
+-  `tests/auth/test_sqlite_user_repository.py::test_concurrent_reads_and_writes` - PASS
+-  No dirty reads, non-repeatable reads, or phantom reads observed
 
 ### Durability
 
@@ -131,8 +133,8 @@ Failure recovery:
 ```
 
 **Durability Test Results**:
-- ✅ `tests/test_sqlite_wal.py` - WAL recovery validated
-- ✅ `tests/test_session_logger_wal.py` - Session logging durability verified
+-  `tests/test_sqlite_wal.py` - WAL recovery validated
+-  `tests/test_session_logger_wal.py` - Session logging durability verified
 
 ---
 
@@ -144,12 +146,12 @@ SQLite supports **SERIALIZABLE** isolation (strictest level):
 
 ```
 Level             Read Uncommitted | Read Committed | Repeatable Read | Serializable
-                  (Not in SQLite)   | (Not in SQLite) | (Not in SQLite) | ✅ ENFORCED
+                  (Not in SQLite)   | (Not in SQLite) | (Not in SQLite) |  ENFORCED
 
-Dirty reads       ❌ Not possible
-Non-repeatable    ❌ Not possible
-Phantom reads     ❌ Not possible
-Lost updates      ❌ Not possible
+Dirty reads        Not possible
+Non-repeatable     Not possible
+Phantom reads      Not possible
+Lost updates       Not possible
 ```
 
 ### Implementation: Snapshot Isolation (WAL) vs Serializable (RLock)
@@ -232,8 +234,8 @@ State transitions:
 (append-only, no updates)
 
 Invalid transitions:
-❌ No DELETE (immutable log)
-❌ No UPDATE (immutable log)
+ No DELETE (immutable log)
+ No UPDATE (immutable log)
 ```
 
 #### users Table
@@ -245,10 +247,10 @@ State transitions:
 [ * ] → UPDATE roles → [ * with new roles ]
 
 Invalid states:
-❌ Duplicate username (UNIQUE constraint)
-❌ Duplicate email (UNIQUE constraint)
-❌ Invalid is_active value (INTEGER only)
-❌ NULL username/email (NOT NULL constraint)
+ Duplicate username (UNIQUE constraint)
+ Duplicate email (UNIQUE constraint)
+ Invalid is_active value (INTEGER only)
+ NULL username/email (NOT NULL constraint)
 ```
 
 #### archive items Table
@@ -259,10 +261,10 @@ State transitions:
 [ restored ] → DELETE (TTL) → [ absent ]
 
 Invalid states:
-❌ Invalid kind (CHECK constraint)
-❌ Invalid reason (CHECK constraint)
-❌ Missing artifact_id (FOREIGN KEY constraint)
-❌ Duplicate tombstone_id (UNIQUE constraint)
+ Invalid kind (CHECK constraint)
+ Invalid reason (CHECK constraint)
+ Missing artifact_id (FOREIGN KEY constraint)
+ Duplicate tombstone_id (UNIQUE constraint)
 ```
 
 ### State Consistency Proof
@@ -361,7 +363,7 @@ Reader thread (concurrent):
 Result: Readers never block (high throughput)
 ```
 
-**Verified by**: `tests/test_sqlite_wal.py::test_wal_mode_read_while_write` ✅
+**Verified by**: `tests/test_sqlite_wal.py::test_wal_mode_read_while_write` 
 
 #### users.db (RLock, Serializable)
 ```
@@ -395,10 +397,10 @@ Benefit: No write conflicts, lost updates impossible
 
 | Test | Result | Notes |
 |------|--------|-------|
-| test_sqlite_pool_allows_concurrent_writes | ✅ PASS | 5 threads × 20 writes each |
-| test_wal_mode_read_while_write | ✅ PASS | Reader during active writes |
-| test_concurrent_creates | ✅ PASS | Multiple threads creating users |
-| test_concurrent_reads_and_writes | ✅ PASS | Mixed workload |
+| test_sqlite_pool_allows_concurrent_writes |  PASS | 5 threads × 20 writes each |
+| test_wal_mode_read_while_write |  PASS | Reader during active writes |
+| test_concurrent_creates |  PASS | Multiple threads creating users |
+| test_concurrent_reads_and_writes |  PASS | Mixed workload |
 
 ---
 
@@ -471,46 +473,46 @@ class SQLiteUserRepository:
 
 | Scenario | Availability |
 |----------|--------------|
-| Single reader, no writers | ✅ 100% (immediate) |
-| Multiple readers, no writers | ✅ 100% (all concurrent) |
-| Single writer, blocked readers | ✅ High (WAL mode reduces blocking) |
-| Disk full | ❌ 0% (explicit error, graceful degradation) |
-| Corrupted database | ❌ 0% (requires restore) |
+| Single reader, no writers |  100% (immediate) |
+| Multiple readers, no writers |  100% (all concurrent) |
+| Single writer, blocked readers |  High (WAL mode reduces blocking) |
+| Disk full |  0% (explicit error, graceful degradation) |
+| Corrupted database |  0% (requires restore) |
 
 ### Performance Targets
 
 | Operation | Target | Actual | Status |
 |-----------|--------|--------|--------|
-| Simple INSERT | < 10ms | ~1ms | ✅ EXCEEDS |
-| Simple SELECT | < 5ms | ~0.5ms | ✅ EXCEEDS |
-| Concurrent writes (5 threads) | < 100ms | ~10ms | ✅ EXCEEDS |
-| Query with index | < 20ms | ~2ms | ✅ EXCEEDS |
+| Simple INSERT | < 10ms | ~1ms |  EXCEEDS |
+| Simple SELECT | < 5ms | ~0.5ms |  EXCEEDS |
+| Concurrent writes (5 threads) | < 100ms | ~10ms |  EXCEEDS |
+| Query with index | < 20ms | ~2ms |  EXCEEDS |
 
 ### Data Consistency Guarantees
 
 ```
-✅ GUARANTEE 1: ACID Compliance
+ GUARANTEE 1: ACID Compliance
    Every transaction is Atomic, Consistent, Isolated, Durable
 
-✅ GUARANTEE 2: Constraint Enforcement
+ GUARANTEE 2: Constraint Enforcement
    All declared constraints enforced at database level
 
-✅ GUARANTEE 3: Isolation
+ GUARANTEE 3: Isolation
    Concurrent transactions see consistent snapshots
 
-✅ GUARANTEE 4: Durability
+ GUARANTEE 4: Durability
    Committed data survives any failure before commit acknowledgment
 
-✅ GUARANTEE 5: Atomicity
+ GUARANTEE 5: Atomicity
    Partial transactions impossible (all-or-nothing)
 
-✅ GUARANTEE 6: No Lost Updates
+ GUARANTEE 6: No Lost Updates
    Write serialization prevents lost updates (writes never concurrent)
 
-✅ GUARANTEE 7: Referential Integrity
+ GUARANTEE 7: Referential Integrity
    Foreign key constraints prevent orphaned records
 
-✅ GUARANTEE 8: Immutable Logs
+ GUARANTEE 8: Immutable Logs
    Session events cannot be modified or deleted (append-only)
 ```
 
@@ -522,6 +524,6 @@ class SQLiteUserRepository:
 
 **Grade**: A (95/100)
 
-**Production Readiness**: ✅ APPROVED
+**Production Readiness**:  APPROVED
 
 **Final Recommendation**: Deploy with confidence. Implement recommended monitoring for operational excellence.

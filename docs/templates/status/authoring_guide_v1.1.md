@@ -1,6 +1,9 @@
 # Guide: Authoring the `_codex_` per-iteration Status Update (v1.1)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
-🧠 Roles: [Primary: Authoring Guide Maintainer], [Secondary: QA Reviewer] ⚡ Energy: 5  
+ Roles: [Primary: Authoring Guide Maintainer], [Secondary: QA Reviewer] ⚡ Energy: 5  
 ⚛️ Physics: Path🛤️ Fields🔄 Patterns👁️ Redundancy🔀 Balance⚖️
 
 This guide explains how to produce the per-iteration report using codex_status_template_v1.1.md.

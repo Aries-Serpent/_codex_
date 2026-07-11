@@ -1,4 +1,6 @@
 # Zendesk Support Administration Documentation
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 This directory contains all documentation related to managing Zendesk Support with _codex_.
 
@@ -169,30 +171,30 @@ See [ZENDESK_NEWCOMER_GUIDE.md#troubleshooting](ZENDESK_NEWCOMER_GUIDE.md#troubl
 
 ## Best Practices
 
-✅ **Always test in dev first**  
-✅ **Version control all configurations**  
-✅ **Review diffs before applying**  
-✅ **Monitor metrics regularly**  
-✅ **Keep snapshots for rollback**  
-✅ **Document changes in commit messages**  
-✅ **Use task sequences for repeatability**  
-✅ **Never commit API tokens**  
+ **Always test in dev first**  
+ **Version control all configurations**  
+ **Review diffs before applying**  
+ **Monitor metrics regularly**  
+ **Keep snapshots for rollback**  
+ **Document changes in commit messages**  
+ **Use task sequences for repeatability**  
+ **Never commit API tokens**  
 
 ## Supported Zendesk Objects
 
 | Object | CRUD | Notes |
 |--------|------|-------|
-| Triggers | ✅ | Automated actions on ticket events |
-| Views | ✅ | Saved filters for agent queues |
-| Macros | ✅ | Predefined responses and actions |
-| Ticket Fields | ✅ | Custom fields on tickets |
-| Ticket Forms | ✅ | Different submission types |
-| Groups | ✅ | Agent teams and routing |
-| Webhooks | ✅ | External integrations |
-| Routing | ✅ | Skills-based routing |
+| Triggers |  | Automated actions on ticket events |
+| Views |  | Saved filters for agent queues |
+| Macros |  | Predefined responses and actions |
+| Ticket Fields |  | Custom fields on tickets |
+| Ticket Forms |  | Different submission types |
+| Groups |  | Agent teams and routing |
+| Webhooks |  | External integrations |
+| Routing |  | Skills-based routing |
 | Talk IVR | ⚠️ | Phone menu system (limited) |
 
-Legend: ✅ Full support | ⚠️ Partial support | ❌ Not yet supported
+Legend:  Full support | ⚠️ Partial support |  Not yet supported
 
 ## Environment Setup
 
@@ -330,4 +332,4 @@ EOF
 
 ---
 
-**Ready to get started?** Head to [ZENDESK_NEWCOMER_GUIDE.md](ZENDESK_NEWCOMER_GUIDE.md) and begin your journey! 🚀
+**Ready to get started?** Head to [ZENDESK_NEWCOMER_GUIDE.md](ZENDESK_NEWCOMER_GUIDE.md) and begin your journey! 

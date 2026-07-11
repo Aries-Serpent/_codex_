@@ -1,4 +1,6 @@
 # Security Best Practices Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > Comprehensive guide to secure development, deployment, and operations  
 > **Level**: Advanced | **Prerequisites**: Basic security knowledge  
@@ -49,12 +51,12 @@ Security is a continuous process, not a destination. This guide provides practic
 **Risk**: Users can access resources they shouldn't
 
 ```python
-# ❌ VULNERABLE: No access control
+#  VULNERABLE: No access control
 @app.get("/users/{user_id}")
 def get_user(user_id: int):
     return database.get_user(user_id)
 
-# ✅ SECURE: Check authorization
+#  SECURE: Check authorization
 from functools import wraps
 
 def require_permission(resource_type: str):
@@ -120,11 +122,11 @@ def update_user_settings(request, user_id: int, settings: dict):
 **Risk**: Sensitive data exposed due to weak encryption
 
 ```python
-# ❌ VULNERABLE: No encryption
+#  VULNERABLE: No encryption
 def store_credit_card(card_number: str):
     database.save("credit_cards", {"card": card_number})
 
-# ✅ SECURE: Encrypt sensitive data
+#  SECURE: Encrypt sensitive data
 from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2
@@ -176,21 +178,21 @@ services:
 **Risk**: Attacker injects malicious code (SQL, command, template)
 
 ```python
-# ❌ VULNERABLE: SQL injection
+#  VULNERABLE: SQL injection
 def get_user_by_email(email: str):
     query = f"SELECT * FROM users WHERE email = '{email}'"
     return database.execute(query)
 
-# ✅ SECURE: Parameterized queries
+#  SECURE: Parameterized queries
 def get_user_by_email(email: str):
     query = "SELECT * FROM users WHERE email = ?"
     return database.execute(query, (email,))
 
-# ❌ VULNERABLE: Command injection
+#  VULNERABLE: Command injection
 def backup_database(backup_name: str):
     os.system(f"mysqldump -u root -p{password} > {backup_name}.sql")  # pragma: allowlist secret
 
-# ✅ SECURE: Use subprocess with list
+#  SECURE: Use subprocess with list
 import subprocess
 def backup_database(backup_name: str):
     subprocess.run([
@@ -200,14 +202,14 @@ def backup_database(backup_name: str):
         ">", f"{backup_name}.sql"
     ], check=True)
 
-# ❌ VULNERABLE: Template injection
+#  VULNERABLE: Template injection
 @app.post("/emails")
 def send_email(template_name: str, user_data: dict):
     template = get_template(f"templates/{template_name}.html")
     html = template.format(**user_data)  # User can inject code
     return send_email_template(html)
 
-# ✅ SECURE: Use safe templating
+#  SECURE: Use safe templating
 from jinja2 import Template, Markup
 def send_email(template_name: str, user_data: dict):
     template_path = f"templates/{template_name}.html"
@@ -262,7 +264,7 @@ class PaymentThreatModel:
 **Risk**: Default credentials, unnecessary services, verbose error messages
 
 ```python
-# ❌ VULNERABLE: Exposes stack traces
+#  VULNERABLE: Exposes stack traces
 @app.exception_handler(Exception)
 def handle_error(request, exc):
     return {
@@ -270,7 +272,7 @@ def handle_error(request, exc):
         "traceback": traceback.format_exc()  # Reveals internals
     }
 
-# ✅ SECURE: Generic error messages
+#  SECURE: Generic error messages
 @app.exception_handler(Exception)
 def handle_error(request, exc):
     logger.error(f"Unexpected error: {exc}", exc_info=True)  # Log internally
@@ -303,7 +305,7 @@ pip install --upgrade <package_name>
 **Risk**: Weak password policies, session management issues
 
 ```python
-# ✅ SECURE: Strong password validation  # pragma: allowlist secret
+#  SECURE: Strong password validation  # pragma: allowlist secret
 import re
 from password_validator import PasswordValidator  # pragma: allowlist secret
 
@@ -324,7 +326,7 @@ class PasswordValidator:  # pragma: allowlist secret
             return False, "Password does not meet requirements"  # pragma: allowlist secret
         return True, "Valid"
 
-# ✅ SECURE: Multi-factor authentication
+#  SECURE: Multi-factor authentication
 import pyotp
 
 class MFAService:
@@ -338,7 +340,7 @@ class MFAService:
         totp = pyotp.TOTP(secret)  # pragma: allowlist secret
         return totp.verify(code)
 
-# ✅ SECURE: Session management
+#  SECURE: Session management
 @app.post("/login")
 def login(credentials: dict):
     user = authenticate_user(credentials)
@@ -402,7 +404,7 @@ jobs:
 ## 9. Identification and Authentication Failures
 
 ```python
-# ✅ SECURE: Rate limiting for login attempts
+#  SECURE: Rate limiting for login attempts
 from slowapi import Limiter
 
 limiter = Limiter(key_func=get_remote_address)
@@ -422,13 +424,13 @@ def login(request: Request, credentials: dict):
 ## 10. Server-Side Request Forgery (SSRF)
 
 ```python
-# ❌ VULNERABLE: No URL validation
+#  VULNERABLE: No URL validation
 @app.post("/fetch")
 def fetch_url(url: str):
     response = requests.get(url)
     return response.text
 
-# ✅ SECURE: Validate URL
+#  SECURE: Validate URL
 from urllib.parse import urlparse
 
 class URLValidator:
@@ -539,12 +541,12 @@ is_valid, errors = validator.validate(user_input)
 ```python
 from markupsafe import escape
 
-# ❌ VULNERABLE
+#  VULNERABLE
 @app.get("/user/{name}")
 def get_user_page(name: str):
     return f"<h1>Welcome {name}</h1>"  # Could inject script
 
-# ✅ SECURE
+#  SECURE
 @app.get("/user/{name}")
 def get_user_page(name: str):
     return f"<h1>Welcome {escape(name)}</h1>"
@@ -606,7 +608,7 @@ class ThreatModel:
 ### Pattern 1: Secure Defaults
 
 ```python
-# ✅ Deny by default, allow explicitly
+#  Deny by default, allow explicitly
 @dataclass
 class SecurityConfig:
     allow_cors: bool = False
@@ -709,4 +711,4 @@ zaproxy --cli -quick -self-contained -project-file scan.zapproj -url http://loca
 ---
 
 **Word Count**: 2,814 | **Examples**: 24 | **Patterns**: 8
-**Last Updated**: 2026-06-22 | **Status**: ✅ Complete
+**Last Updated**: 2026-06-22 | **Status**:  Complete

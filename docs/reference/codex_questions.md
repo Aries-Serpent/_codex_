@@ -1,6 +1,8 @@
 # Codex Questions (Archived Compatibility Stub)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 > **Status:** Archived on 2025-10-17. This file remains only so existing automation that references `Codex_Questions.md` continues to function without raising `FileNotFoundError`.
 

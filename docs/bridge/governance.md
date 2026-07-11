@@ -1,4 +1,6 @@
 # Bridge Governance & Guardrails
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 Codex and Copilot share responsibility for safe execution. The bridge centralises policy so that
 clients can remain thin and predictable. Use this guide when configuring production or Ubuntu-based

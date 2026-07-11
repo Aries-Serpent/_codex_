@@ -1,4 +1,6 @@
 # [Guide]: GitHub MCP Integration for `_codex_`
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 ## Table of Contents
 
@@ -64,7 +66,7 @@
   - [Internal Documentation](#internal-documentation)
   - [Support Channels](#support-channels)
 - [Appendix: Human Admin Actions Required](#appendix-human-admin-actions-required)
-- [🎯 Mission Overview](#-mission-overview)
+- [ Mission Overview](#-mission-overview)
 - [⚖️ Verification Checklist](#-verification-checklist)
 - [📈 Success Metrics](#-success-metrics)
 - [⚛️ Physics Alignment](#-physics-alignment)
@@ -74,12 +76,12 @@
   - [Redundancy 🔀 (Fault Tolerance)](#redundancy--fault-tolerance)
   - [Balance ⚖️ (Context vs Token Limits)](#balance--context-vs-token-limits)
 - [⚡ Energy Distribution](#-energy-distribution)
-- [🧠 Redundancy Patterns](#-redundancy-patterns)
+- [ Redundancy Patterns](#-redundancy-patterns)
 
 > **Generated**: 2026-06-22 | **Author**: mbaetiong
 > **Repository**: `Aries-Serpent/_codex_` | **ID**: 1040037790
 > **Roles**: [Primary: DevOps Architect], [Secondary: Security Engineer]
-> **⚡ Energy**: 5/5 | **🧠 Context**: Production-Ready Implementation
+> **⚡ Energy**: 5/5 | ** Context**: Production-Ready Implementation
 
 ---
 
@@ -285,19 +287,19 @@ jobs:
 
 | Capability | Status | Location | Notes |
 |------------|--------|----------|-------|
-| `mcp-tooling-registry` | ✅ Implemented | `scripts/space_traversal/detectors/mcp_tooling_registry.py` | Tool registration and discovery |
-| `mcp-protocol-surface` | ✅ Implemented | `scripts/space_traversal/detectors/mcp_protocol_surface.py` | JSON-RPC protocol handling |
-| `mcp-configuration` | ✅ Implemented | `scripts/space_traversal/detectors/mcp_configuration.py` | Server config management |
-| `mcp-security-safeguards` | ✅ Implemented | `scripts/space_traversal/detectors/mcp_security_safeguards.py` | Authentication and authorization |
-| `mcp-authz-authn` | ✅ Implemented | `scripts/space_traversal/detectors/mcp_authz_authn.py` | OAuth2/token validation | <!-- pragma: allowlist secret -->
-| `mcp-rate-limiting` | ✅ Implemented | `scripts/space_traversal/detectors/mcp_rate_limiting.py` | Request throttling |
-| `mcp-error-handling` | ✅ Implemented | `scripts/space_traversal/detectors/mcp_error_handling.py` | Graceful error recovery |
-| `mcp-observability` | ✅ Implemented | `scripts/space_traversal/detectors/mcp_observability.py` | Metrics and logging |
-| `mcp-lifecycle-management` | ✅ Implemented | `scripts/space_traversal/detectors/mcp_lifecycle_management.py` | Server startup/shutdown |
-| `mcp-versioning-compat` | ✅ Implemented | `scripts/space_traversal/detectors/mcp_versioning_compat.py` | Protocol version negotiation |
-| `mcp-schema-validation` | ✅ Implemented | `scripts/space_traversal/detectors/mcp_schema_validation.py` | Request/response validation |
-| `mcp-multi-tenant` | ✅ Implemented | `scripts/space_traversal/detectors/mcp_multi_tenant.py` | Multi-user support |
-| `mcp-tools-integration` | ✅ Implemented | `scripts/space_traversal/detectors/mcp_tools_integration.py` | External tool orchestration |
+| `mcp-tooling-registry` |  Implemented | `scripts/space_traversal/detectors/mcp_tooling_registry.py` | Tool registration and discovery |
+| `mcp-protocol-surface` |  Implemented | `scripts/space_traversal/detectors/mcp_protocol_surface.py` | JSON-RPC protocol handling |
+| `mcp-configuration` |  Implemented | `scripts/space_traversal/detectors/mcp_configuration.py` | Server config management |
+| `mcp-security-safeguards` |  Implemented | `scripts/space_traversal/detectors/mcp_security_safeguards.py` | Authentication and authorization |
+| `mcp-authz-authn` |  Implemented | `scripts/space_traversal/detectors/mcp_authz_authn.py` | OAuth2/token validation | <!-- pragma: allowlist secret -->
+| `mcp-rate-limiting` |  Implemented | `scripts/space_traversal/detectors/mcp_rate_limiting.py` | Request throttling |
+| `mcp-error-handling` |  Implemented | `scripts/space_traversal/detectors/mcp_error_handling.py` | Graceful error recovery |
+| `mcp-observability` |  Implemented | `scripts/space_traversal/detectors/mcp_observability.py` | Metrics and logging |
+| `mcp-lifecycle-management` |  Implemented | `scripts/space_traversal/detectors/mcp_lifecycle_management.py` | Server startup/shutdown |
+| `mcp-versioning-compat` |  Implemented | `scripts/space_traversal/detectors/mcp_versioning_compat.py` | Protocol version negotiation |
+| `mcp-schema-validation` |  Implemented | `scripts/space_traversal/detectors/mcp_schema_validation.py` | Request/response validation |
+| `mcp-multi-tenant` |  Implemented | `scripts/space_traversal/detectors/mcp_multi_tenant.py` | Multi-user support |
+| `mcp-tools-integration` |  Implemented | `scripts/space_traversal/detectors/mcp_tools_integration.py` | External tool orchestration |
 
 ---
 
@@ -364,30 +366,30 @@ See [GITHUB_ENVIRONMENT_SETUP.md](./GITHUB_ENVIRONMENT_SETUP.md) for the complet
 
 For full MCP functionality, the GitHub Personal Access Token needs:
 
-- ✅ `repo` - Full repository access
-- ✅ `workflow` - Workflow management
-- ✅ `read:org` - Organization read access
-- ✅ `write:discussion` - Discussion participation
+-  `repo` - Full repository access
+-  `workflow` - Workflow management
+-  `read:org` - Organization read access
+-  `write:discussion` - Discussion participation
 - ⚠️ `admin:repo_hook` - Webhook management (optional)
 - ⚠️ `delete:packages` - Package cleanup (optional)
 
 ### Security Best Practices
 
-- ✅ Use GitHub App with minimal permissions (not PAT)
-- ✅ Rotate tokens every 90 iterations (automate with workflow)
-- ✅ Enable audit logging for MCP access
-- ✅ Implement rate limiting on MCP endpoints (10 req/min per client)
-- ✅ Use HTTPS only (no HTTP in production)
-- ✅ Validate all request signatures (JWT from GitHub App)
-- ✅ Sanitize all user inputs (file paths, query params)
-- ✅ Never log full tokens or secrets
-- ✅ Use network policies (allowlist GitHub Actions IPs)
-- ✅ Enable Dependabot for MCP dependencies
-- ✅ Run MCP service with non-root user
-- ✅ Implement request timeout (30s max)
-- ✅ Add CORS policy (restrict to _codex_ domain)
-- ✅ Enable Prometheus metrics with authentication
-- ✅ Set up alerting for failed auth attempts (>5/min)
+-  Use GitHub App with minimal permissions (not PAT)
+-  Rotate tokens every 90 iterations (automate with workflow)
+-  Enable audit logging for MCP access
+-  Implement rate limiting on MCP endpoints (10 req/min per client)
+-  Use HTTPS only (no HTTP in production)
+-  Validate all request signatures (JWT from GitHub App)
+-  Sanitize all user inputs (file paths, query params)
+-  Never log full tokens or secrets
+-  Use network policies (allowlist GitHub Actions IPs)
+-  Enable Dependabot for MCP dependencies
+-  Run MCP service with non-root user
+-  Implement request timeout (30s max)
+-  Add CORS policy (restrict to _codex_ domain)
+-  Enable Prometheus metrics with authentication
+-  Set up alerting for failed auth attempts (>5/min)
 
 ---
 
@@ -613,12 +615,12 @@ See [GITHUB_ENVIRONMENT_SETUP.md](./GITHUB_ENVIRONMENT_SETUP.md) for:
 
 **Last Updated**: 2026-06-22T00:00:00Z
 **Maintainer**: @mbaetiong
-**Status**: Production Ready ✅
+**Status**: Production Ready 
 **Version**: 2.0.0
 
 ---
 
-## 🎯 Mission Overview
+##  Mission Overview
 
 **Objective**: Provide comprehensive guidance for integrating MCP (Model Context Protocol) with the _codex_ repository, enabling GitHub Copilot Agent to access curated codebase context, dependency manifests, and browser automation capabilities for enhanced code generation.
 
@@ -627,7 +629,7 @@ See [GITHUB_ENVIRONMENT_SETUP.md](./GITHUB_ENVIRONMENT_SETUP.md) for:
 - High complexity: Multi-service integration (MCP + GitHub + Playwright + Pinecone)
 - Long-term value: Foundation for AI-driven development
 
-**Status**: ✅ Documentation Complete | 🔄 Implementation Ready
+**Status**:  Documentation Complete | 🔄 Implementation Ready
 
 ---
 
@@ -739,7 +741,7 @@ See [GITHUB_ENVIRONMENT_SETUP.md](./GITHUB_ENVIRONMENT_SETUP.md) for:
 
 ---
 
-## 🧠 Redundancy Patterns
+##  Redundancy Patterns
 
 **MCP Integration Rollback Strategy**:
 

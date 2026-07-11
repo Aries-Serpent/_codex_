@@ -1,6 +1,8 @@
 # Tutorial 04 — Building Resilient ML Services
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 **Estimated time:** 25 minutes  
 **Prerequisites:** Python 3.10+, `_codex_` on `PYTHONPATH`

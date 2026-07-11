@@ -1,6 +1,8 @@
 # Rollback Checklist - Release Deployment
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Status Indicator**: 🔴 **EMERGENCY** | 🟡 **WARNING** | 🟢 **NORMAL**
+**Status Indicator**:  **EMERGENCY** | 🟡 **WARNING** |  **NORMAL**
 
 **Current Time**: [To be filled during rollback]  
 **Release Version**: [e.g., v0.1.0]  
@@ -51,10 +53,10 @@ START
 
 | Issue Severity | Decision Timeline | Escalation |
 |---|---|---|
-| 🔴 **Critical** (imports fail, crashes) | < 15 min | Immediate |
+|  **Critical** (imports fail, crashes) | < 15 min | Immediate |
 | 🟡 **High** (smoke tests fail, CVE) | < 1 hour | VP Engineering |
-| 🟠 **Medium** (performance issue, partial failure) | < 4 hours | Engineering Lead |
-| 🟢 **Low** (minor bugs, non-blocking issues) | 24+ hours | Team discussion |
+|  **Medium** (performance issue, partial failure) | < 4 hours | Engineering Lead |
+|  **Low** (minor bugs, non-blocking issues) | 24+ hours | Team discussion |
 
 ---
 
@@ -63,7 +65,7 @@ START
 **Timeline**: < 5 minutes  
 **Owner**: Release manager (with engineering lead approval for non-critical issues)
 
-### ✅ Verify Issue Severity
+###  Verify Issue Severity
 
 **Checklist**:
 
@@ -87,7 +89,7 @@ START
   - Can wait for v0.1.1 patch: Yes / No
   - Requires immediate action: Yes / No
 
-### ✅ Decision Documentation
+###  Decision Documentation
 
 **Rollback Decision**: 
 - [ ] Yes, proceed with rollback
@@ -129,7 +131,7 @@ gh repo edit \
   --dismiss-stale-reviews \
   main
 
-echo "✅ Deployments stopped"
+echo " Deployments stopped"
 ```
 
 ### Step 2: Verify Release Status (2 min)
@@ -183,7 +185,7 @@ result = subprocess.run([
 })
 
 if result.returncode == 0:
-    print(f"✅ Version {VERSION} marked as yanked on PyPI")
+    print(f" Version {VERSION} marked as yanked on PyPI")
 else:
     print(f"⚠️  Note: Yanking requires PyPI token with proper permissions")
 
@@ -211,7 +213,7 @@ git tag | grep v0.1.0
 
 # Expected: No output (tag deleted)
 
-echo "✅ Release tag v0.1.0 deleted"
+echo " Release tag v0.1.0 deleted"
 ```
 
 ### Step 5: Restore Previous Version (2 min)
@@ -235,7 +237,7 @@ pip index versions codex-ml | head -3
 
 # Expected output shows v0.0.9 as latest (not yanked)
 
-echo "✅ Previous version ${PREVIOUS_VERSION} restored as latest"
+echo " Previous version ${PREVIOUS_VERSION} restored as latest"
 ```
 
 ### Step 6: Verify Rollback on PyPI (2 min)
@@ -263,7 +265,7 @@ curl -s https://pypi.org/pypi/codex-ml/0.1.0/json | \
 #   "yanked": true
 # }
 
-echo "✅ PyPI correctly shows v0.0.9 as latest, v0.1.0 as yanked"
+echo " PyPI correctly shows v0.0.9 as latest, v0.1.0 as yanked"
 ```
 
 ### Step 7: Notify Users (2 min)
@@ -326,7 +328,7 @@ gh repo edit \
   main
 
 # Resume normal operations
-echo "✅ Deployment pipeline resumed"
+echo " Deployment pipeline resumed"
 ```
 
 ---
@@ -336,7 +338,7 @@ echo "✅ Deployment pipeline resumed"
 **Timeline**: 10-15 minutes total  
 **Owner**: Release manager + QA
 
-### ✅ Verify Previous Version Works
+###  Verify Previous Version Works
 
 ```bash
 # Test all three profiles from PyPI
@@ -346,16 +348,16 @@ for PROFILE in core runtime full; do
   pip install codex-ml[${PROFILE}]
   
   # Quick import test
-  python -c "from cognitive_brain.ooda import OODALoop; print('✅ ${PROFILE} works')"
+  python -c "from cognitive_brain.ooda import OODALoop; print(' ${PROFILE} works')"
   
   deactivate
   rm -rf test-${PROFILE}
 done
 
-echo "✅ All profiles verified"
+echo " All profiles verified"
 ```
 
-### ✅ Verify PyPI State
+###  Verify PyPI State
 
 ```bash
 # Confirm v0.0.9 is latest
@@ -366,10 +368,10 @@ pip index versions codex-ml | head -1
 curl -s https://pypi.org/pypi/codex-ml/0.1.0/json | jq .info.yanked
 # Should show true
 
-echo "✅ PyPI state verified"
+echo " PyPI state verified"
 ```
 
-### ✅ Verify GitHub State
+###  Verify GitHub State
 
 ```bash
 # Confirm tag deleted
@@ -380,10 +382,10 @@ git tag | grep v0.1.0
 gh release list | grep rollback
 # Should show rollback release
 
-echo "✅ GitHub state verified"
+echo " GitHub state verified"
 ```
 
-### ✅ Monitor Download Recovery
+###  Monitor Download Recovery
 
 ```bash
 # Check downloads resume
@@ -412,10 +414,10 @@ A critical issue was discovered in v0.1.0 and a rollback is underway.
 **Rollback Time**: ~5 minutes
 
 **Actions Taken**:
-✅ v0.1.0 marked as yanked on PyPI
-✅ Release tag deleted
-✅ v0.0.9 restored as latest
-✅ Users notified via GitHub release
+ v0.1.0 marked as yanked on PyPI
+ Release tag deleted
+ v0.0.9 restored as latest
+ Users notified via GitHub release
 
 **Next Steps**:
 [ ] Investigate root cause (ETA: [TIME])
@@ -498,7 +500,7 @@ BUSINESS IMPACT:
 **Owner**: Release manager + engineering lead  
 **Participants**: Everyone involved in release
 
-### ✅ Post-Mortem Meeting
+###  Post-Mortem Meeting
 
 1. **Gather facts** (15 min)
    - What was released? `v0.1.0`
@@ -524,7 +526,7 @@ BUSINESS IMPACT:
 
 5. **Action items** (15 min)
 
-### ✅ Post-Mortem Document
+###  Post-Mortem Document
 
 Create `.codex/incidents/rollback-v0.1.0-postmortem.md`:
 
@@ -557,9 +559,9 @@ How was the issue found?
 - Monitoring alert: YES / NO
 
 ## Resolution
-- Rollback time: 5 minutes ✅
+- Rollback time: 5 minutes 
 - User impact: [N users, [TIME] downtime]
-- Data integrity: ✅ No data loss
+- Data integrity:  No data loss
 
 ## Contributing Factors
 1. [Factor 1]
@@ -640,7 +642,7 @@ pip show codex-ml
 
 **Rollback Approved By**: `[Name]` (Release Manager)  
 **Timestamp**: `[ISO8601]`  
-**Final Status**: ✅ Complete / ⏳ In Progress
+**Final Status**:  Complete / ⏳ In Progress
 
 ---
 

@@ -1,6 +1,8 @@
 # Secrets Configuration Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 Complete guide for configuring all required secrets for the GitHub Agent PR Reviewer.
 
@@ -101,7 +103,7 @@ aws secretsmanager create-secret \
 
 ---
 
-## 🔐 3. Set Environment Variables
+##  3. Set Environment Variables
 
 ### For Terraform Deployment
 
@@ -134,7 +136,7 @@ source ~/.bashrc  # or source ~/.zshrc
 
 ---
 
-## 🔒 4. Secure Storage Best Practices
+##  4. Secure Storage Best Practices
 
 ### Use a .env File for Local Development
 
@@ -195,7 +197,7 @@ aws secretsmanager update-secret \
 
 ---
 
-## ✅ 5. Verification Checklist
+##  5. Verification Checklist
 
 ### Pre-Deployment Verification
 
@@ -207,33 +209,33 @@ echo "=== Secret Verification ==="
 errors=0
 
 if [[ -z "${TF_VAR_github_app_id}" ]]; then
-    echo "❌ TF_VAR_github_app_id not set"
+    echo " TF_VAR_github_app_id not set"
     ((errors++))
 else
-    echo "✅ TF_VAR_github_app_id set"
+    echo " TF_VAR_github_app_id set"
 fi
 
 if [[ -z "${TF_VAR_github_webhook_secret}" ]]; then
-    echo "❌ TF_VAR_github_webhook_secret not set"
+    echo " TF_VAR_github_webhook_secret not set"
     ((errors++))
 else
-    echo "✅ TF_VAR_github_webhook_secret set"
+    echo " TF_VAR_github_webhook_secret set"
 fi
 
 if aws secretsmanager describe-secret --secret-id github-app-private-key-dev &>/dev/null; then
-    echo "✅ Private key exists in Secrets Manager"
+    echo " Private key exists in Secrets Manager"
 else
-    echo "❌ Private key NOT found in Secrets Manager"
+    echo " Private key NOT found in Secrets Manager"
     ((errors++))
 fi
 
 if [[ $errors -eq 0 ]]; then
     echo ""
-    echo "✅ All secrets configured correctly"
+    echo " All secrets configured correctly"
     exit 0
 else
     echo ""
-    echo "❌ ${errors} error(s) found - fix before deploying"
+    echo " ${errors} error(s) found - fix before deploying"
     exit 1
 fi
 VERIFY
@@ -300,7 +302,7 @@ ssh-keygen -p -m PEM -f private-key.pem
 
 ---
 
-## 📊 Security Audit Checklist
+##  Security Audit Checklist
 
 - [ ] Private key stored in Secrets Manager (not in code)
 - [ ] Webhook secret is strong (>= 32 characters)
@@ -370,12 +372,12 @@ terraform.tfstate              # Terraform state (use S3 backend)
 
 ---
 
-## 🎯 Mission Overview
+##  Mission Overview
 
 **Agent Name**: Secrets Configuration Guide  
 **Agent Type**: Specialized Domain  
 **Energy Level**: 3/5  
-**Operational Status**: ✅ Active
+**Operational Status**:  Active
 
 ### Purpose
 This agent provides specialized functionality for secrets configuration guide operations within the Codex ecosystem.
@@ -408,10 +410,10 @@ Triggered by specific events, manual invocation, or scheduled workflows.
 - [ ] Integration points functional
 
 ### Agent Capabilities
-- ✅ Autonomous operation
-- ✅ Error detection and recovery
-- ✅ Progress reporting
-- ✅ Result validation
+-  Autonomous operation
+-  Error detection and recovery
+-  Progress reporting
+-  Result validation
 
 **Last Updated**: 2026-01-23T19:45:00Z
 
@@ -421,10 +423,10 @@ Triggered by specific events, manual invocation, or scheduled workflows.
 
 | Metric | Target | Current | Status | Iteration |
 |--------|--------|---------|--------|-----------|
-| Success Rate | ≥95% | 96% | ✅ | Current |
-| Avg Execution Time | <5min | 3.2min | ✅ | Current |
-| Error Rate | <5% | 2.1% | ✅ | Current |
-| Coverage | ≥90% | 100% | ✅ | Current |
+| Success Rate | ≥95% | 96% |  | Current |
+| Avg Execution Time | <5min | 3.2min |  | Current |
+| Error Rate | <5% | 2.1% |  | Current |
+| Coverage | ≥90% | 100% |  | Current |
 
 ### Performance Indicators
 - **Reliability**: 96% success rate across all invocations
@@ -499,7 +501,7 @@ Input Processing [20%] → Core Execution [40%] → Validation [20%] → Reporti
 
 
 
-## 🧠 Redundancy Patterns
+##  Redundancy Patterns
 
 ### Fallback Strategies
 
@@ -561,12 +563,12 @@ Input Processing [20%] → Core Execution [40%] → Validation [20%] → Reporti
 
 | Capability | Available | Permission Level | Notes |
 |------------|-----------|------------------|-------|
-| File System Access | ✅ | Read/Write | Scoped to workspace |
-| Network Access | ✅ | Restricted | Approved endpoints only |
-| Process Execution | ✅ | Sandboxed | Monitored execution |
+| File System Access |  | Read/Write | Scoped to workspace |
+| Network Access |  | Restricted | Approved endpoints only |
+| Process Execution |  | Sandboxed | Monitored execution |
 | Database Access | ⚠️ | Read-only | If configured |
-| API Integrations | ✅ | Authenticated | Token-based |
-| Git Operations | ✅ | Full | Within repository |
+| API Integrations |  | Authenticated | Token-based |
+| Git Operations |  | Full | Within repository |
 
 ### Tool Access
 - **bash**: Command execution
@@ -579,7 +581,7 @@ Input Processing [20%] → Core Execution [40%] → Validation [20%] → Reporti
 
 
 
-## 💡 Usage Examples
+##  Usage Examples
 
 ### Basic Invocation
 
@@ -756,7 +758,7 @@ requests>=2.31.0
 ```markdown
 # Agent Execution Report
 
-**Status**: ✅ Success  
+**Status**:  Success  
 **Timestamp**: 2026-01-23T19:45:00Z  
 **Duration**: 3.2s
 
@@ -824,9 +826,9 @@ requests>=2.31.0
 
 | Category | Severity | Auto-Retry | Escalation |
 |----------|----------|------------|------------|
-| Transient | Low | ✅ Yes (3x) | After retries |
-| Configuration | Medium | ❌ No | Immediate |
-| Permission | High | ❌ No | Immediate |
+| Transient | Low |  Yes (3x) | After retries |
+| Configuration | Medium |  No | Immediate |
+| Permission | High |  No | Immediate |
 | System | Critical | ⚠️ Once | Immediate |
 
 ### Recovery Patterns

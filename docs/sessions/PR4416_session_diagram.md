@@ -1,6 +1,8 @@
 # PR #4416 — Session Diagram
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing S952 Start<br/>PR #4395 merged 2026-05-11T17:57Z<br/>Branch: copilot/sync-docs-and-confirm-latest-state, Download CodeQL artifact<br/>codeql-alerts-open-codeql-25688174911<br/>58 open alerts identified'}}%%
@@ -17,7 +19,7 @@ graph TD
   J[Commit 29df6bd<br/>All 58 CodeQL alerts addressed] --> K
   K[Parallel validation<br/>Code Review: 0 findings<br/>CodeQL: timed out — no new issues introduced] --> L
   L[PR #4416 created<br/>Maintainer approved all pending workflows] --> M
-  M[Monitor in-progress runs<br/>Resilient Validation Suite: ✅ success<br/>startup_failure trio: 0-job infra-class] --> N
+  M[Monitor in-progress runs<br/>Resilient Validation Suite:  success<br/>startup_failure trio: 0-job infra-class] --> N
   N[Update PR4416 living docs<br/>whats_next + session_diagram + CHANGELOG + accountability]
 ```
 
@@ -39,4 +41,4 @@ graph TD
 | `startup_failure` with 0 jobs | Infra/startup-state | Monitor only — not code failure |
 | `action_required` (Agent Token Delegation, WEC Gate, Cost Check) | Approval/delegation state | Monitor only |
 | In-progress opt-in suites (CodeQL, Security, Quality) | Running after maintainer approval | Await conclusion |
-| `Resilient Validation Suite` success | ✅ Green | Confirms no test regressions |
+| `Resilient Validation Suite` success |  Green | Confirms no test regressions |

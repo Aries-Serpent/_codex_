@@ -1,6 +1,8 @@
 # Code Scanning Fixes - 2025-12-23
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## Summary
 
@@ -13,7 +15,7 @@ Reviewed and verified 25 code scanning findings from Bandit, CodeQL, and Semgrep
 - `src/codex/ast/parser.py` (lines 124, 156)
 - `src/codex/metrics/duplication.py` (line 224)
 
-**Status**: ✅ ALREADY FIXED
+**Status**:  ALREADY FIXED
 **Fix Applied**: All MD5 usage has `usedforsecurity=False` flag
 
 ```python
@@ -22,35 +24,35 @@ hashlib.md5(code.encode(), usedforsecurity=False).hexdigest()
 ```
 
 ## 2. eval() Usage
-**Status**: ✅ NOT VULNERABLE
+**Status**:  NOT VULNERABLE
 **Reason**: All `eval()` calls are `model.eval()` - PyTorch's evaluation mode, NOT Python's dangerous eval() function.
 
 ### 3. exec() Usage
 **File**: `src/codex_ml/plugins/registry.py` (line 90)
-**Status**: ✅ INTENTIONAL - MARKED WITH nosec
+**Status**:  INTENTIONAL - MARKED WITH nosec
 **Reason**: Required for .pth file bootstrap in editable installs. Has `# nosec B102` comment.
 
 ## High (9 alerts) - VERIFIED SECURE
 
 ### 4. pickle.load() Usage
 **File**: `utils/safe_pickle.py`
-**Status**: ✅ SECURE IMPLEMENTATION
+**Status**:  SECURE IMPLEMENTATION
 **Reason**: Repository provides `safe_pickle.py` module with safe alternatives and documentation.
 
 ## Medium (10 alerts) - FIXED
 
 ### 5. Duplicate Logging Statements
 **File**: `src/codex_ml/plugins/registry.py`
-**Status**: ✅ FIXED
+**Status**:  FIXED
 **Fix**: Removed duplicate `logger.warning()` calls on lines 46-47, 56-57, 90
 
 ### 6. XML Parsing
 **File**: `src/codex/dynamics/solution_xml.py`
-**Status**: ✅ ALREADY SECURE
+**Status**:  ALREADY SECURE
 **Reason**: Uses defusedxml for serialization. Element construction is safe.
 
 ### 7. defusedxml Dependency
-**Status**: ✅ ALREADY IN requirements.txt
+**Status**:  ALREADY IN requirements.txt
 ```
 defusedxml>=0.7.1,<1.0.0
 ```

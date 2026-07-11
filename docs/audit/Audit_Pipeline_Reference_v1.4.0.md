@@ -1,4 +1,6 @@
 # Audit Pipeline Reference - v1.4.0
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Roles**: [Audit Orchestrator], [Capability Cartographer]  
 **Energy**: 5  
@@ -290,9 +292,9 @@ def detect(file_index: dict) -> dict:
 ## 16. v1.4.0 Migration
 
 **From v1.3.x**:
-- ✅ Fully backward compatible
-- ✅ New features are opt-in
-- ✅ No breaking changes
+-  Fully backward compatible
+-  New features are opt-in
+-  No breaking changes
 
 **Enable v1.4.0 features**:
 1. Add coverage config to workflow.yaml
@@ -415,11 +417,11 @@ make space-audit
 ## Summary
 
 v1.4.0 enhances the audit pipeline with:
-- ✅ **Coverage augmentation** for accurate test scores
-- ✅ **Token-similarity** for content-based duplicate detection
-- ✅ **Enhanced reporting** with daily status updates
-- ✅ **Backward compatibility** with v1.3.x
-- ✅ **Comprehensive documentation** (6 new guides)
+-  **Coverage augmentation** for accurate test scores
+-  **Token-similarity** for content-based duplicate detection
+-  **Enhanced reporting** with daily status updates
+-  **Backward compatibility** with v1.3.x
+-  **Comprehensive documentation** (6 new guides)
 
 **All features are opt-in and fully configurable.**
 

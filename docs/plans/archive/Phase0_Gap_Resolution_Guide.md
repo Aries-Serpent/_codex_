@@ -1,4 +1,6 @@
 # 🔧 Phase 0: Gap Resolution Implementation Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 ## Table of Contents
 
@@ -86,16 +88,16 @@
 - [File: src/codex_ml/ast/compat.py](#file-srccodex_mlastcompatpy)
 - [Old API → New API mapping](#old-api--new-api-mapping)
 - [4.3 Phase 1 Refactoring (High Priority Files)](#43-phase-1-refactoring-high-priority-files)
-- [✅ Section 5: Testing Infrastructure Setup](#-section-5-testing-infrastructure-setup)
+- [ Section 5: Testing Infrastructure Setup](#-section-5-testing-infrastructure-setup)
   - [5.1 Create Test Fixtures](#51-create-test-fixtures)
 - [File: tests/ast/fixtures.py](#file-testsastfixturespy)
-- [📊 Go/No-Go Decision Framework](#-gono-go-decision-framework)
+- [ Go/No-Go Decision Framework](#-gono-go-decision-framework)
   - [Pre-Conditions for Sprint 1 Start](#pre-conditions-for-sprint-1-start)
   - [Sign-Off Required From](#sign-off-required-from)
   - [Decision Gate: 2025-11-23 14:00 UTC](#decision-gate-2025-11-23-1400-utc)
 - [📈 Success Metrics](#-success-metrics)
-- [🚀 Phase 0 Timeline](#-phase-0-timeline)
-- [✅ Phase 0: Validation & Risk Mitigation Guide](#-phase-0-validation--risk-mitigation-guide)
+- [ Phase 0 Timeline](#-phase-0-timeline)
+- [ Phase 0: Validation & Risk Mitigation Guide](#-phase-0-validation--risk-mitigation-guide)
 - [📋 Executive Summary](#-executive-summary)
 - [Section 1: Dependency Validation](#section-1-dependency-validation)
   - [1.1 Conflict Detection](#11-conflict-detection)
@@ -144,7 +146,7 @@
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
 
-**🧠 Roles:** [Primary: Implementation Lead], [Secondary: DevOps Engineer] | ⚡ Energy: 5/5
+** Roles:** [Primary: Implementation Lead], [Secondary: DevOps Engineer] | ⚡ Energy: 5/5
 
 ⚛️ **Physics:** Path🛤️ [Linear dependency chain] | Fields🔄 [Modular resolution] | Patterns👁️ [DRY principles] | Redundancy🔀 [Fallback strategies] | Balance⚖️ [Speed vs. stability]
 
@@ -1363,7 +1365,7 @@ def parse_code(source: str, filename: str = "<string>") -> Any:
 
 ---
 
-## ✅ Section 5: Testing Infrastructure Setup
+##  Section 5: Testing Infrastructure Setup
 
 ### 5.1 Create Test Fixtures
 
@@ -1416,7 +1418,7 @@ def decorated_class_code():
 
 ---
 
-## 📊 Go/No-Go Decision Framework
+##  Go/No-Go Decision Framework
 
 ### Pre-Conditions for Sprint 1 Start
 
@@ -1439,7 +1441,7 @@ def decorated_class_code():
 
 ### Decision Gate: 2025-11-23 14:00 UTC
 
-**If ALL conditions met**: ✅ **PROCEED TO SPRINT 1**
+**If ALL conditions met**:  **PROCEED TO SPRINT 1**
 **If ANY condition not met**: 🚫 **DEFER; REASSESS IN 2 phaseS**
 
 ---
@@ -1456,7 +1458,7 @@ def decorated_class_code():
 
 ---
 
-## 🚀 Phase 0 Timeline
+##  Phase 0 Timeline
 
 ```text
 2025-11-10 → 2025-11-11: Dependency Resolution (BLOCK-DEP-001 to 005)
@@ -1480,10 +1482,10 @@ def decorated_class_code():
 Now creating the detailed validation and risk mitigation guide:
 
 ```markdown name=Phase0_Validation_Copilot.md
-# ✅ Phase 0: Validation & Risk Mitigation Guide
+#  Phase 0: Validation & Risk Mitigation Guide
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
 
-**🧠 Roles:** [Primary: QA Lead], [Secondary: Risk Manager] | ⚡ Energy: 5/5
+** Roles:** [Primary: QA Lead], [Secondary: Risk Manager] | ⚡ Energy: 5/5
 
 ⚛️ **Physics:** Path🛤️ [Validation gates] | Fields🔄 [Risk mitigation] | Patterns👁️ [Regression prevention] | Redundancy🔀 [Fallback testing] | Balance⚖️ [Quality vs. speed]
 
@@ -1494,11 +1496,11 @@ Now creating the detailed validation and risk mitigation guide:
 **Phase 0 Validation** ensures **zero regressions** and **all blockers resolved** before Sprint 1 proceeds.
 
 **Validation Strategy:**
-- ✅ Dependency conflict detection
-- ✅ Architecture design review
-- ✅ Performance validation
-- ✅ Test infrastructure verification
-- ✅ Risk mitigation deployment
+-  Dependency conflict detection
+-  Architecture design review
+-  Performance validation
+-  Test infrastructure verification
+-  Risk mitigation deployment
 
 ---
 
@@ -1519,7 +1521,7 @@ def check_dependency_conflicts():
                           capture_output=True, text=True)
 
     if result.returncode != 0:
-        print("❌ Dependency conflicts detected:")
+        print(" Dependency conflicts detected:")
         print(result.stdout)
         return False
 
@@ -1533,7 +1535,7 @@ def check_security_vulnerabilities():
 
     # Check for HIGH/CRITICAL severity
     if "CRITICAL" in result.stdout or "HIGH" in result.stdout:
-        print("❌ Security vulnerabilities found:")
+        print(" Security vulnerabilities found:")
         print(result.stdout)
         return False
 
@@ -1555,7 +1557,7 @@ def check_import_availability():
             __import__(module_name)
             print(f"✓ {display_name} importable")
         except ImportError as e:
-            print(f"❌ {display_name} import failed: {e}")
+            print(f" {display_name} import failed: {e}")
             all_ok = False
 
     return all_ok
@@ -1580,10 +1582,10 @@ def main():
     print(f"Passed: {passed}/{total}")
 
     if passed == total:
-        print("✅ All dependency validations passed")
+        print(" All dependency validations passed")
         return 0
     else:
-        print("❌ Some validations failed")
+        print(" Some validations failed")
         return 1
 
 if __name__ == "__main__":
@@ -1601,11 +1603,11 @@ python .github/scripts/validate_dependencies.py
 
 | Dependency | Minimum | Tested | Maximum | Status |
 |-----------|---------|--------|---------|--------|
-| libcst | 1.0.0 | 1.0.4 | 1.1.0 | ✅ OK |
-| radon | 6.0.0 | 6.0.1 | 6.1.0 | ✅ OK |
-| parso | 0.8.0 | 0.8.3 | 0.9.0 | ✅ OK |
-| tree-sitter | 0.20.0 | 0.20.3 | 0.21.0 | ✅ OK |
-| torch | 2.0.0 | 2.1.0 | 2.2.0 | ✅ OK |
+| libcst | 1.0.0 | 1.0.4 | 1.1.0 |  OK |
+| radon | 6.0.0 | 6.0.1 | 6.1.0 |  OK |
+| parso | 0.8.0 | 0.8.3 | 0.9.0 |  OK |
+| tree-sitter | 0.20.0 | 0.20.3 | 0.21.0 |  OK |
+| torch | 2.0.0 | 2.1.0 | 2.2.0 |  OK |
 
 ---
 
@@ -1796,10 +1798,10 @@ steps:
 
 | Item | Owner | Status |
 |------|-------|--------|
-| Phase 0 features locked | Project Manager | ✅ Locked |
-| No new requirements | Tech Lead | ✅ Frozen |
-| Existing PRs only | QA Lead | ✅ Approved |
-| Timeline immutable | Project Manager | ✅ Fixed |
+| Phase 0 features locked | Project Manager |  Locked |
+| No new requirements | Tech Lead |  Frozen |
+| Existing PRs only | QA Lead |  Approved |
+| Timeline immutable | Project Manager |  Fixed |
 
 ---
 
@@ -1935,14 +1937,14 @@ def parse(self, source, file_path):
 
 All Phase 0 guidance documents now created and ready for implementation. Both comprehensive implementation guides cover:
 
-✅ **Detailed task breakdowns** with acceptance criteria
-✅ **Complete code implementations** for all components
-✅ **Validation & testing procedures**
-✅ **Risk mitigation strategies**
-✅ **Rollback procedures**
-✅ **Go/No-Go decision framework**
-✅ **Sign-off process**
-✅ **Timeline & resource allocation**
+ **Detailed task breakdowns** with acceptance criteria
+ **Complete code implementations** for all components
+ **Validation & testing procedures**
+ **Risk mitigation strategies**
+ **Rollback procedures**
+ **Go/No-Go decision framework**
+ **Sign-off process**
+ **Timeline & resource allocation**
 
 **Ready to proceed with Phase 0 implementation on 2025-11-10.**
 

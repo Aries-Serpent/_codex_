@@ -1,4 +1,6 @@
 # Security Open Findings Matrix
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 ## Table of Contents
 
@@ -11,7 +13,7 @@
 - [False positive / accepted noise](#false-positive--accepted-noise)
 - [Residual backlog summary](#residual-backlog-summary)
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 - Canonical source set: `remediation_plan_codeql_python.md`, `remediation_plan_semgrep.md`, `remediation_plan_secrets.md`
 - Current supporting artifacts sampled: `security-suite-artifacts/run-26992144518/security-suite-codeql-python/codeql-reports/codeql-python-summary.md`, `security-suite-artifacts/run-26992144518/security-suite-semgrep/semgrep-summary.md`, `security-suite-artifacts/run-26992144518/security-suite-secrets/secret-scan-summary.md`, `security-suite-artifacts/run-26992144518/security-suite-dependency/pip-audit-report.txt`, `artifacts/security/bandit.txt`

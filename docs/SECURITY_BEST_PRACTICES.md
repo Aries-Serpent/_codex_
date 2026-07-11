@@ -1,6 +1,8 @@
 # Security Best Practices Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## Overview
 
@@ -8,7 +10,7 @@ This guide provides security best practices for developers working on the _codex
 
 ---
 
-## 🔐 Core Principles
+##  Core Principles
 
 ### 1. Defense in Depth
 Apply multiple layers of security controls:
@@ -34,7 +36,7 @@ Apply multiple layers of security controls:
 
 ### Model Loading (PyTorch)
 
-#### ✅ SAFE Pattern
+####  SAFE Pattern
 ```python
 from utils.safe_torch_loader import safe_load
 
@@ -43,7 +45,7 @@ model_state = safe_load('model.pth', weights_only=True)
 model.load_state_dict(model_state)
 ```
 
-## ❌ UNSAFE Pattern
+##  UNSAFE Pattern
 ```python
 # NEVER do this with untrusted models
 model = torch.load('untrusted.pth')  # RCE vulnerability!
@@ -55,7 +57,7 @@ model = torch.load('untrusted.pth')  # RCE vulnerability!
 
 ## Pickle Deserialization
 
-### ✅ SAFE Pattern
+###  SAFE Pattern
 ```python
 from utils.safe_pickle import safe_pickle_load
 
@@ -63,7 +65,7 @@ from utils.safe_pickle import safe_pickle_load
 data = safe_pickle_load('data.pkl', use_restricted_unpickler=True)
 ```
 
-## ❌ UNSAFE Pattern
+##  UNSAFE Pattern
 ```python
 # NEVER deserialize untrusted pickle data directly
 with open('untrusted.pkl', 'rb') as f:
@@ -89,7 +91,7 @@ state_dict = load_file('model.safetensors')
 
 ## Subprocess Execution
 
-### ✅ SAFE Pattern
+###  SAFE Pattern
 ```python
 import subprocess
 import shlex
@@ -106,7 +108,7 @@ args = shlex.split(command)
 result = subprocess.run(args, capture_output=True, text=True)
 ```
 
-## ❌ UNSAFE Pattern
+##  UNSAFE Pattern
 ```python
 # NEVER use shell=True with user input
 user_input = request.args.get('file')
@@ -119,7 +121,7 @@ subprocess.run(f'cat {user_input}', shell=True)  # Command injection!
 
 ## Cryptographic Hashing
 
-### ✅ SAFE Pattern
+###  SAFE Pattern
 ```python
 import hashlib
 
@@ -130,7 +132,7 @@ secure_hash = hashlib.sha256(data).hexdigest()
 cache_key = hashlib.md5(data, usedforsecurity=False).hexdigest()
 ```
 
-## ❌ UNSAFE Pattern
+##  UNSAFE Pattern
 ```python
 # Don't use MD5 for security without marking it
 hash_value = hashlib.md5(password)  # Security warning!
@@ -142,7 +144,7 @@ hash_value = hashlib.md5(password)  # Security warning!
 
 ## Error Handling
 
-### ✅ SAFE Pattern
+###  SAFE Pattern
 ```text
 import logging
 logger = logging.getLogger(__name__)
@@ -159,7 +161,7 @@ except PermissionError as e:
     raise
 ```
 
-#### ❌ UNSAFE Pattern
+####  UNSAFE Pattern
 ```python
 # Silent failure - hides bugs
 try:
@@ -180,7 +182,7 @@ except Exception:  # Too broad
 
 ## API Security
 
-### ✅ SAFE Pattern
+###  SAFE Pattern
 ```python
 from fastapi import FastAPI, HTTPException
 from services.api.middleware.form_validator import SecureMultipartMiddleware
@@ -205,7 +207,7 @@ async def upload_file(file: UploadFile):
     return {"status": "success"}
 ```
 
-#### ❌ UNSAFE Pattern
+####  UNSAFE Pattern
 ```python
 # No validation, no size limits
 @app.post("/upload")
@@ -220,7 +222,7 @@ async def upload_file(file: UploadFile):
 
 ## XML Parsing
 
-### ✅ SAFE Pattern
+###  SAFE Pattern
 ```python
 from defusedxml.ElementTree import parse
 
@@ -228,7 +230,7 @@ from defusedxml.ElementTree import parse
 tree = parse('data.xml')
 ```
 
-## ❌ UNSAFE Pattern
+##  UNSAFE Pattern
 ```python
 from xml.etree.ElementTree import parse
 
@@ -240,7 +242,7 @@ tree = parse('untrusted.xml')
 
 ---
 
-## 🔒 Security Checklist for Code Reviews
+##  Security Checklist for Code Reviews
 
 ### Before Committing
 - [ ] No `eval()` or `exec()` with user input
@@ -263,7 +265,7 @@ tree = parse('untrusted.xml')
 
 ---
 
-## 📚 Additional Resources
+##  Additional Resources
 
 ### Internal Documentation
 - [SECURITY.md](./SECURITY.md) - Security policy and patched vulnerabilities
@@ -307,7 +309,7 @@ If you discover a security vulnerability:
 
 ---
 
-## 📊 Security Metrics
+##  Security Metrics
 
 Track these metrics for ongoing security health:
 
@@ -318,7 +320,7 @@ Track these metrics for ongoing security health:
 
 ---
 
-## ✅ Quick Reference Card
+##  Quick Reference Card
 
 ### Most Common Security Mistakes
 

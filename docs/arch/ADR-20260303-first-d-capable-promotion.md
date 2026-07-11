@@ -1,4 +1,7 @@
 # ADR-20260303: First D_CAPABLE Agent Promotion — `ci-testing-agent`
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-22T02:25:00Z | Author: copilot-swe-agent[bot]
 > Status: Accepted
 > Related PRs: #3494
@@ -11,11 +14,11 @@ All prerequisite conditions for D_CAPABLE promotion have been met:
 
 | Condition | Status |
 |-----------|--------|
-| C1: AGENT_REGISTRY.yaml schema-valid | ✅ |
-| C2: CODEX_MANIFEST.json valid < 24h | ✅ |
-| C3: SOFT policy count ≤ 2 (current: 2) | ✅ |
-| C4: agent-handoff-gate.yml deployed | ✅ |
-| C5: GROUNDED Tier-1 count ≥ 8 (current: 21) | ✅ |
+| C1: AGENT_REGISTRY.yaml schema-valid |  |
+| C2: CODEX_MANIFEST.json valid < 24h |  |
+| C3: SOFT policy count ≤ 2 (current: 2) |  |
+| C4: agent-handoff-gate.yml deployed |  |
+| C5: GROUNDED Tier-1 count ≥ 8 (current: 21) |  |
 
 The follow-up prompt for PR #3492 (`.codex/docs/FOLLOWUP_PROMPT_PR3492.md`)
 identifies Priority 2 as: *First D_CAPABLE Promotion*.  This ADR documents
@@ -43,10 +46,10 @@ operating model matures.
 
 | Agent | Tier | Maturity | Handoff | Tests | Docs | Rank | Decision |
 |-------|------|----------|---------|-------|------|------|----------|
-| `ci-testing-agent` | GROUNDED | production | structured | ✅ | ✅ | 1 | **PROMOTE** |
-| `workflow-ci-fixer` | GROUNDED | production | structured | ✅ | ✅ | 3 | Future |
-| `doc-freshness-checker` | GROUNDED | production | structured | ✅ | ✅ | 14 | Future |
-| `dependency-vulnerability-scanner` | GROUNDED | production | structured | ✅ | ✅ | 15 | Future |
+| `ci-testing-agent` | GROUNDED | production | structured |  |  | 1 | **PROMOTE** |
+| `workflow-ci-fixer` | GROUNDED | production | structured |  |  | 3 | Future |
+| `doc-freshness-checker` | GROUNDED | production | structured |  |  | 14 | Future |
+| `dependency-vulnerability-scanner` | GROUNDED | production | structured |  |  | 15 | Future |
 
 `ci-testing-agent` is the clear first candidate: it holds activation rank 1
 (most frequently invoked agent in the system), is the only agent with
@@ -72,7 +75,7 @@ The `enforcement_tier` remains `GROUNDED` and `handoff_protocol` remains
 
 | Driver | Notes |
 |--------|-------|
-| Infrastructure readiness | E→D gate 5/5 ✅ — prerequisites fully met |
+| Infrastructure readiness | E→D gate 5/5  — prerequisites fully met |
 | Highest frequency agent | Rank 1 — most exposure, most CI validation coverage |
 | GROUNDED enforcement | CI enforces its behaviour; violations block PRs |
 | Structured handoff | Machine-verifiable inter-agent protocol |

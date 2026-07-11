@@ -1,4 +1,6 @@
 # Deep Research: Soft → GROUNDED Conversion for Monorepo Agentic AI Systems
+**Last Updated:** 2026-07-11
+
 > Generated: 2026-06-22 | Author: mbaetiong | Chunk: 1 of N
 ## Table of Contents
 
@@ -16,7 +18,7 @@
 - [Pattern: Read AGENT_REGISTRY.yaml as GitHub Actions matrix input](#pattern-read-agent_registryyaml-as-github-actions-matrix-input)
 - [Used in: agent-auth-delegation.yml, e-to-d-transition-gate.yml](#used-in-agent-auth-delegationyml-e-to-d-transition-gateyml)
 - [Governance Trend (2024–2025)](#governance-trend-20242025)
-- [🔐 DOMAIN 2 — Policy-as-Code: Grounded Enforcement in CI/CD](#-domain-2--policy-as-code-grounded-enforcement-in-cicd)
+- [ DOMAIN 2 — Policy-as-Code: Grounded Enforcement in CI/CD](#-domain-2--policy-as-code-grounded-enforcement-in-cicd)
   - [(All Phases Validation)](#all-phases-validation)
   - [Key Finding: Hard Gates Are Now Industry Standard](#key-finding-hard-gates-are-now-industry-standard)
   - [Industry Validation of the Three-Tier Model](#industry-validation-of-the-three-tier-model)
@@ -33,7 +35,7 @@
   - [Validated AgentHandoffManifest Schema (Phase 2 — v1.1)](#validated-agenthandoffmanifest-schema-phase-2--v11)
   - [Key Design Decisions Validated by Research](#key-design-decisions-validated-by-research)
   - [PR Comment Template (Q3-partial-B — Tier-2 Present-Tense Injection)](#pr-comment-template-q3-partial-b--tier-2-present-tense-injection)
-- [🧠 DOMAIN 4 — Sentence-Transformers + FAISS: Unified Agent Memory Corpus](#-domain-4--sentence-transformers--faiss-unified-agent-memory-corpus)
+- [ DOMAIN 4 — Sentence-Transformers + FAISS: Unified Agent Memory Corpus](#-domain-4--sentence-transformers--faiss-unified-agent-memory-corpus)
   - [(Phase 3 Validation)](#phase-3-validation)
   - [Key Finding: all-MiniLM-L6-v2 is the Correct Choice](#key-finding-all-minilm-l6-v2-is-the-correct-choice)
   - [Validated `build_embeddings.py` Pattern (Phase 3)](#validated-build_embeddingspy-pattern-phase-3)
@@ -42,11 +44,11 @@
 - [.github/workflows/embedding-index-rebuild.yml](#githubworkflowsembedding-index-rebuildyml)
 - [Phase 3: Nightly FAISS index rebuild — Tier-2 enforcement for corpus freshness](#phase-3-nightly-faiss-index-rebuild--tier-2-enforcement-for-corpus-freshness)
 - [Memory Corpus Architecture Decision](#memory-corpus-architecture-decision)
-- [📊 Research Findings Summary — Chunk 1](#-research-findings-summary--chunk-1)
+- [ Research Findings Summary — Chunk 1](#-research-findings-summary--chunk-1)
 - [🔗 Full Source List — Chunk 1](#-full-source-list--chunk-1)
 - [Deep Research: Soft → GROUNDED Conversion for Monorepo Agentic AI Systems](#deep-research-soft--grounded-conversion-for-monorepo-agentic-ai-systems)
 - [🧭 Chunk 2 Coverage](#-chunk-2-coverage)
-- [🤖 DOMAIN 5 — E→D Tiered Autonomy Architecture](#-domain-5--ed-tiered-autonomy-architecture)
+- [ DOMAIN 5 — E→D Tiered Autonomy Architecture](#-domain-5--ed-tiered-autonomy-architecture)
   - [(Phase 4 Validation)](#phase-4-validation)
   - [Key Finding: FSM-Based Transition Gates Are the Research-Validated Pattern](#key-finding-fsm-based-transition-gates-are-the-research-validated-pattern)
   - [Validated 4-Tier Role Taxonomy (Phase 4 `AGENT_REGISTRY.yaml`)](#validated-4-tier-role-taxonomy-phase-4-agent_registryyaml)
@@ -77,7 +79,7 @@
 - [actionlint Integration (Phase 0 Workflow Audit)](#actionlint-integration-phase-0-workflow-audit)
 - [.github/workflows/actionlint-audit.yml](#githubworkflowsactionlint-audityml)
 - [Phase 0 → Phase 6: Continuous workflow compliance linting](#phase-0--phase-6-continuous-workflow-compliance-linting)
-- [🔐 DOMAIN 8 — CODEX_MANIFEST Security & Runtime Injection Hardening](#-domain-8--codex_manifest-security--runtime-injection-hardening)
+- [ DOMAIN 8 — CODEX_MANIFEST Security & Runtime Injection Hardening](#-domain-8--codex_manifest-security--runtime-injection-hardening)
   - [(NEW — All Phases Risk Surface)](#new--all-phases-risk-surface)
   - [⚠️ Critical New Finding: Prompt/Context Injection is the #1 Risk](#-critical-new-finding-promptcontext-injection-is-the-1-risk)
   - [Required Hardening: CODEX_MANIFEST.json Security Controls](#required-hardening-codex_manifestjson-security-controls)
@@ -87,8 +89,8 @@
 - [Security Controls Added to Plan (All Phases)](#security-controls-added-to-plan-all-phases)
   - [REQ-9 Security Gate Addition (Phase 1)](#req-9-security-gate-addition-phase-1)
 - [Addition to cognitive-preflight: REQ-9 with integrity check](#addition-to-cognitive-preflight-req-9-with-integrity-check)
-- [📊 Consolidated Tooling Comparison — All Phases](#-consolidated-tooling-comparison--all-phases)
-- [📊 Full Research Findings Summary — Chunk 2](#-full-research-findings-summary--chunk-2)
+- [ Consolidated Tooling Comparison — All Phases](#-consolidated-tooling-comparison--all-phases)
+- [ Full Research Findings Summary — Chunk 2](#-full-research-findings-summary--chunk-2)
 - [🔗 Full Source List — Chunk 2](#-full-source-list--chunk-2)
 - [Deep Research: Soft → GROUNDED Conversion — Implementation Guide](#deep-research-soft--grounded-conversion--implementation-guide)
 - [🧭 Chunk 3 Coverage](#-chunk-3-coverage)
@@ -115,13 +117,13 @@
 - [Manifest and registry: only mbaetiong can approve changes](#manifest-and-registry-only-mbaetiong-can-approve-changes)
 - [Agent definitions: all new agents require owner review](#agent-definitions-all-new-agents-require-owner-review)
 - [Enforcement chain: only owner can modify gates](#enforcement-chain-only-owner-can-modify-gates)
-- [📚 SECTION 3 — Master Key Terms Glossary](#-section-3--master-key-terms-glossary)
+- [ SECTION 3 — Master Key Terms Glossary](#-section-3--master-key-terms-glossary)
   - [Tier Enforcement Terms](#tier-enforcement-terms)
   - [Agent Architecture Terms](#agent-architecture-terms)
   - [Memory & Corpus Terms](#memory--corpus-terms)
   - [CI/CD & Monorepo Governance Terms](#cicd--monorepo-governance-terms)
   - [Security Terms (Domain 8 — New)](#security-terms-domain-8--new)
-- [✅ SECTION 4 — Phase 0 Execution Checklist](#-section-4--phase-0-execution-checklist)
+- [ SECTION 4 — Phase 0 Execution Checklist](#-section-4--phase-0-execution-checklist)
   - [Agent-Ready: Structured for Direct Copilot Agent Handoff](#agent-ready-structured-for-direct-copilot-agent-handoff)
 - [Phase 0 Execution Checklist — Baseline Audit](#phase-0-execution-checklist--baseline-audit)
 - [Pre-Flight (MANDATORY — verify before any file changes)](#pre-flight-mandatory--verify-before-any-file-changes)
@@ -132,10 +134,10 @@
 - [Task 5 — KPI Baseline Document](#task-5--kpi-baseline-document)
 - [Task 6 — Accountability Report + CHANGELOG Update (MANDATORY)](#task-6--accountability-report--changelog-update-mandatory)
 - [Phase 0 Completion Gate](#phase-0-completion-gate)
-- [📊 Complete Research Coverage Summary — All Chunks](#-complete-research-coverage-summary--all-chunks)
+- [ Complete Research Coverage Summary — All Chunks](#-complete-research-coverage-summary--all-chunks)
 - [Deep Research: Soft → GROUNDED Conversion — Final Chunk](#deep-research-soft--grounded-conversion--final-chunk)
 - [🧭 Chunk 4 Coverage](#-chunk-4-coverage)
-- [✅ SECTION 1 — Phase 1 Agent-Ready Execution Checklist](#-section-1--phase-1-agent-ready-execution-checklist)
+- [ SECTION 1 — Phase 1 Agent-Ready Execution Checklist](#-section-1--phase-1-agent-ready-execution-checklist)
 - [Phase 1 Execution Checklist — Agent Registry & Discovery Infrastructure](#phase-1-execution-checklist--agent-registry--discovery-infrastructure)
 - [Pre-Flight (MANDATORY)](#pre-flight-mandatory)
 - [Task 1 — JSON Schema Definitions](#task-1--json-schema-definitions)
@@ -147,7 +149,7 @@
 - [Task 7 — CODEOWNERS Security (Domain 8 Hardening)](#task-7--codeowners-security-domain-8-hardening)
 - [Task 8 — Accountability Report + CHANGELOG Update (MANDATORY)](#task-8--accountability-report--changelog-update-mandatory)
 - [Phase 1 Completion Gate](#phase-1-completion-gate)
-- [✅ SECTION 2 — Phase 2 Agent-Ready Execution Checklist](#-section-2--phase-2-agent-ready-execution-checklist)
+- [ SECTION 2 — Phase 2 Agent-Ready Execution Checklist](#-section-2--phase-2-agent-ready-execution-checklist)
 - [Phase 2 Execution Checklist — Handoff Protocol + Top-20 Consolidation](#phase-2-execution-checklist--handoff-protocol--top-20-consolidation)
 - [Pre-Flight (MANDATORY)](#pre-flight-mandatory)
 - [Task 1 — AgentHandoffManifest Schema](#task-1--agenthandoffmanifest-schema)
@@ -167,15 +169,15 @@
 - [🧭 Extended Notation](#-extended-notation)
 - [20. 🔄 E→D Transition — Finite State Machine](#20--ed-transition--finite-state-machine)
 - [21. 🏗️ Tiered Role Taxonomy — Potential Energy Ladder](#21--tiered-role-taxonomy--potential-energy-ladder)
-- [22. 🎯 Semantic Capability Routing — Vector Field Projection](#22--semantic-capability-routing--vector-field-projection)
+- [22.  Semantic Capability Routing — Vector Field Projection](#22--semantic-capability-routing--vector-field-projection)
 - [23. 🔀 Agent-to-Agent Handoff — Information Conservation Law](#23--agent-to-agent-handoff--information-conservation-law)
 - [24. 🔧 Self-Healing CI — Thermodynamic Repair Cycle](#24--self-healing-ci--thermodynamic-repair-cycle)
-- [25. 📊 Auto-Documentation — Gradient Descent on Documentation Debt](#25--auto-documentation--gradient-descent-on-documentation-debt)
+- [25.  Auto-Documentation — Gradient Descent on Documentation Debt](#25--auto-documentation--gradient-descent-on-documentation-debt)
 - [26. 🔍 Monorepo Compliance Audit — Coverage Integral](#26--monorepo-compliance-audit--coverage-integral)
-- [27. 🔐 Context Injection Attack Surface — Electromagnetic Analogy](#27--context-injection-attack-surface--electromagnetic-analogy)
+- [27.  Context Injection Attack Surface — Electromagnetic Analogy](#27--context-injection-attack-surface--electromagnetic-analogy)
 - [28. 🧮 Master Security-Enforcement Field Equation (Extended)](#28--master-security-enforcement-field-equation-extended)
 - [Summary Table: Extended Physics Map](#summary-table-extended-physics-map)
-- [📚 SECTION 4 — Final Consolidated Bibliography](#-section-4--final-consolidated-bibliography)
+- [ SECTION 4 — Final Consolidated Bibliography](#-section-4--final-consolidated-bibliography)
 - [Deep Research Bibliography — Soft → GROUNDED Conversion](#deep-research-bibliography--soft--grounded-conversion)
 - [D1 — Agent Registry & Schema](#d1--agent-registry--schema)
 - [D2 — Policy-as-Code & Grounded Enforcement](#d2--policy-as-code--grounded-enforcement)
@@ -318,7 +320,7 @@ Research from arXiv survey [[3]](https://arxiv.org/html/2508.03095v1) confirms:
 
 ---
 
-## 🔐 DOMAIN 2 — Policy-as-Code: Grounded Enforcement in CI/CD
+##  DOMAIN 2 — Policy-as-Code: Grounded Enforcement in CI/CD
 ### (All Phases Validation)
 
 ### Key Finding: Hard Gates Are Now Industry Standard
@@ -532,7 +534,7 @@ _agent-handoff-gate.yml | [AgentHandoffManifest v1.1](https://github.com/Aries-S
 
 ---
 
-## 🧠 DOMAIN 4 — Sentence-Transformers + FAISS: Unified Agent Memory Corpus
+##  DOMAIN 4 — Sentence-Transformers + FAISS: Unified Agent Memory Corpus
 ### (Phase 3 Validation)
 
 ### Key Finding: all-MiniLM-L6-v2 is the Correct Choice
@@ -546,7 +548,7 @@ the Phase 3 use case:
 |----------|-------|-----------|
 | Model size | ~80MB | Fits in CI runner without timeout risk |
 | Embedding dim | 384 | FAISS `IndexFlatL2` works efficiently |
-| Offline capable | ✅ | No API dependency in CI |
+| Offline capable |  | No API dependency in CI |
 | Build time for ~10K chunks | <2 min | Under Phase 3 acceptance criterion (<5 min) |
 | License | Apache 2.0 | No commercial restriction |
 
@@ -772,20 +774,20 @@ QUERY
 
 ---
 
-## 📊 Research Findings Summary — Chunk 1
+##  Research Findings Summary — Chunk 1
 
 | Phase | Component | Research Status | Recommendation |
 |-------|-----------|----------------|---------------|
-| Phase 1 | `AGENT_REGISTRY.yaml` schema | ✅ Validated — aligns with Microsoft AgentSchema | Use schema as designed; add `accepts_handoff_from[]` |
-| Phase 1 | `CODEX_MANIFEST.json` | ✅ Validated — registry-as-phone-book is standard | Proceed as planned |
-| Phase 1 | REQ-9 validation method | ✅ Validated — `jsonschema` first, Conftest later | Python `jsonschema` for Phase 1; Conftest upgrade in Phase 5 |
-| Phase 2 | `AgentHandoffManifest` v1.1 | ✅ Validated — aligns with A2A + Agents JSON | Use v1.1 schema above; `additionalProperties: true` for forward compat |
-| Phase 2 | PR comment injection | ✅ Validated — OpenAI cookbook confirms present-tense injection | Proceed as planned |
-| Phase 2 | Canary Tier-2 → Tier-1 | ✅ Validated — Harness + Adaptive Enforcement Lab confirm | 2-sprint observation is correct |
-| Phase 3 | `all-MiniLM-L6-v2` model | ✅ Validated — optimal for offline CI, <5 min build | Confirmed |
-| Phase 3 | FAISS + SQLite hybrid | ✅ Validated — Hugging Face + HackerNoon confirm | Proceed as planned |
-| Phase 3 | Nightly rebuild workflow | ✅ Validated — incremental indexing pattern confirmed | Use workflow above |
-| All | Three-tier enforcement model | ✅ Validated — exactly matches OPA warn/deny tiers | Proceed — `_codex_` is ahead of industry |
+| Phase 1 | `AGENT_REGISTRY.yaml` schema |  Validated — aligns with Microsoft AgentSchema | Use schema as designed; add `accepts_handoff_from[]` |
+| Phase 1 | `CODEX_MANIFEST.json` |  Validated — registry-as-phone-book is standard | Proceed as planned |
+| Phase 1 | REQ-9 validation method |  Validated — `jsonschema` first, Conftest later | Python `jsonschema` for Phase 1; Conftest upgrade in Phase 5 |
+| Phase 2 | `AgentHandoffManifest` v1.1 |  Validated — aligns with A2A + Agents JSON | Use v1.1 schema above; `additionalProperties: true` for forward compat |
+| Phase 2 | PR comment injection |  Validated — OpenAI cookbook confirms present-tense injection | Proceed as planned |
+| Phase 2 | Canary Tier-2 → Tier-1 |  Validated — Harness + Adaptive Enforcement Lab confirm | 2-sprint observation is correct |
+| Phase 3 | `all-MiniLM-L6-v2` model |  Validated — optimal for offline CI, <5 min build | Confirmed |
+| Phase 3 | FAISS + SQLite hybrid |  Validated — Hugging Face + HackerNoon confirm | Proceed as planned |
+| Phase 3 | Nightly rebuild workflow |  Validated — incremental indexing pattern confirmed | Use workflow above |
+| All | Three-tier enforcement model |  Validated — exactly matches OPA warn/deny tiers | Proceed — `_codex_` is ahead of industry |
 
 ---
 
@@ -852,7 +854,7 @@ Plus: **Consolidated Tooling Comparison Table** (all phases)
 
 ---
 
-## 🤖 DOMAIN 5 — E→D Tiered Autonomy Architecture
+##  DOMAIN 5 — E→D Tiered Autonomy Architecture
 ### (Phase 4 Validation)
 
 ### Key Finding: FSM-Based Transition Gates Are the Research-Validated Pattern
@@ -990,7 +992,7 @@ jobs:
             const gvsDoc = fs.existsSync('.codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md')
               ? fs.readFileSync('.codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md', 'utf8')
               : '';
-            const softCount = (gvsDoc.match(/❌ \*\*SOFT\*\*/g) || []).length;
+            const softCount = (gvsDoc.match(/ \*\*SOFT\*\*/g) || []).length;
             conditions.push({ id: 'C3', label: `Tier-3 count ≤2 (current: ${softCount})`, pass: softCount <= 2 });
 
             // C4: agent-handoff-gate.yml exists (Phase 2 complete)
@@ -998,7 +1000,7 @@ jobs:
             conditions.push({ id: 'C4', label: 'agent-handoff-gate.yml deployed', pass: handoffGate });
 
             // C5: GROUNDED gate count >= 8 Tier-1 gates
-            const tier1Count = (gvsDoc.match(/✅ \*\*GROUNDED\*\*/g) || []).length;
+            const tier1Count = (gvsDoc.match(/ \*\*GROUNDED\*\*/g) || []).length;
             conditions.push({ id: 'C5', label: `Tier-1 gates ≥8 (current: ${tier1Count})`, pass: tier1Count >= 8 });
 
             const score = conditions.filter(c => c.pass).length;
@@ -1008,9 +1010,9 @@ jobs:
             let summary = `## 🔄 E→D Transition Readiness: ${score}/5\n\n`;
             summary += `| ID | Condition | Status |\n|----|-----------|---------|\n`;
             for (const c of conditions) {
-              summary += `| ${c.id} | ${c.label} | ${c.pass ? '✅' : '❌'} |\n`;
+              summary += `| ${c.id} | ${c.label} | ${c.pass ? '' : ''} |\n`;
             }
-            summary += `\n**Operating Model:** ${capable ? '🟢 D_CAPABLE' : '🟡 E (continue building)'}\n`;
+            summary += `\n**Operating Model:** ${capable ? ' D_CAPABLE' : '🟡 E (continue building)'}\n`;
             await core.summary.addRaw(summary).write();
 
             core.setOutput('score', score.toString());
@@ -1203,8 +1205,8 @@ def append_session_entry(session_id: str) -> None:
         f"| W-{w_num:03d} | Session {session_id[:8]} — Agent: {agent_id} | "
         f"PR #{pr_num} | Tier: {tier} | "
         f"Violations: {violations} | Handoffs: {handoffs} | "
-        f"Summary posted: {'✅' if summary else '❌'} | "
-        f"✅ Auto-appended ({datetime.date.today()}) |\n"
+        f"Summary posted: {'' if summary else ''} | "
+        f" Auto-appended ({datetime.date.today()}) |\n"
     )
 
     # Insert before last --- separator
@@ -1322,10 +1324,10 @@ def generate_matrix() -> None:
     for a in audits:
         lines.append(
             f"| `{a.name}` "
-            f"| {'✅' if a.has_concurrency else '❌'} "
-            f"| {'✅' if a.has_timeout else '❌'} "
-            f"| {'⚠️' if a.has_cascade_risk else '✅'} "
-            f"| {'✅' if a.has_base_ref_fetch else 'N/A'} "
+            f"| {'' if a.has_concurrency else ''} "
+            f"| {'' if a.has_timeout else ''} "
+            f"| {'⚠️' if a.has_cascade_risk else ''} "
+            f"| {'' if a.has_base_ref_fetch else 'N/A'} "
             f"| {a.enforcement_tier} "
             f"| {'; '.join(a.notes) or '—'} |"
         )
@@ -1447,7 +1449,7 @@ jobs:
 
 ---
 
-## 🔐 DOMAIN 8 — CODEX_MANIFEST Security & Runtime Injection Hardening
+##  DOMAIN 8 — CODEX_MANIFEST Security & Runtime Injection Hardening
 ### (NEW — All Phases Risk Surface)
 
 ### ⚠️ Critical New Finding: Prompt/Context Injection is the #1 Risk
@@ -1572,23 +1574,23 @@ These controls must be retrofitted into Phases 1–5:
       print("::error::CODEX_MANIFEST.json integrity check FAILED — possible tampering")
       sys.exit(1)   # Tier-1: tampered manifest is an immediate hard block
 
-    print("✅ CODEX_MANIFEST.json integrity verified")
+    print(" CODEX_MANIFEST.json integrity verified")
     PYEOF
 ```
 
 ---
 
-## 📊 Consolidated Tooling Comparison — All Phases
+##  Consolidated Tooling Comparison — All Phases
 
 | Tool | Phase | Purpose | Verdict | Dependency |
 |------|-------|---------|---------|-----------|
-| `jsonschema` (Python) | 1, 2 | Registry + manifest + handoff validation | ✅ Use — already in stack | `pip install jsonschema` |
-| `sentence-transformers` | 3 | Embedding generation (`all-MiniLM-L6-v2`) | ✅ Use — offline, Apache 2.0 | `pip install sentence-transformers` |
-| `faiss-cpu` | 3 | Vector similarity search | ✅ Use — no GPU needed | `pip install faiss-cpu` |
-| `pyyaml` | 0, 1 | Workflow compliance scan + registry parse | ✅ Already in stack | Built-in |
-| `sqlite3` | 3, 4, 5 | Session corpus + violation history | ✅ Already in stack | Python stdlib |
-| `actionlint` | 0, 6 | Workflow YAML linting (hard gate) | ✅ Add — fills syntax gap | Binary download in CI |
-| `Semgrep` | 0, 5 | Pattern-based soft enforcement detection | ✅ Add for Phase 5 gap scan | `pip install semgrep` |
+| `jsonschema` (Python) | 1, 2 | Registry + manifest + handoff validation |  Use — already in stack | `pip install jsonschema` |
+| `sentence-transformers` | 3 | Embedding generation (`all-MiniLM-L6-v2`) |  Use — offline, Apache 2.0 | `pip install sentence-transformers` |
+| `faiss-cpu` | 3 | Vector similarity search |  Use — no GPU needed | `pip install faiss-cpu` |
+| `pyyaml` | 0, 1 | Workflow compliance scan + registry parse |  Already in stack | Built-in |
+| `sqlite3` | 3, 4, 5 | Session corpus + violation history |  Already in stack | Python stdlib |
+| `actionlint` | 0, 6 | Workflow YAML linting (hard gate) |  Add — fills syntax gap | Binary download in CI |
+| `Semgrep` | 0, 5 | Pattern-based soft enforcement detection |  Add for Phase 5 gap scan | `pip install semgrep` |
 | `Conftest + OPA` | 5 → | Policy-as-code for registry/manifest | 🟡 Phase 5 upgrade only | `brew/apt install conftest` |
 | `CrewAI` | 4 | Hierarchical agent orchestration framework | 🟡 Evaluate only — may conflict with existing `agent-auth-delegation.yml` | `pip install crewai` |
 | `Renovate` | 6 | Dependency update automation | 🟡 Optional — useful for long-term governance | GitHub App install |
@@ -1596,18 +1598,18 @@ These controls must be retrofitted into Phases 1–5:
 
 ---
 
-## 📊 Full Research Findings Summary — Chunk 2
+##  Full Research Findings Summary — Chunk 2
 
 | Phase | Component | Research Status | Key Finding |
 |-------|-----------|----------------|-------------|
-| Phase 4 | E→D FSM transition | ✅ Validated — Agentic Lybic arXiv paper | FSM is the correct model; 5-condition gate is correct |
-| Phase 4 | 4-tier role taxonomy | ✅ Validated — Microsoft, AWS, Anthropic | Orchestrator/Specialist/Worker/Utility maps perfectly |
-| Phase 4 | Semantic routing | ✅ Validated — Microsoft Multi-Agent Ref Arch | FAISS corpus → `capability_tags` routing confirmed |
-| Phase 5 | Self-healing CI | ✅ Validated — GitHub Agentic WF, AutoDevOps, Repo Doctor | Production-ready; dry-run-only is correct security posture |
-| Phase 5 | Auto-documentation | ✅ Validated — Continue CLI, Elastic+Claude pattern | git diff → doc update is standard pattern |
-| Phase 5 | Accountability auto-append | ✅ Validated — Scalex self-healing audit trail pattern | SQLite → W-NNN append is correct |
-| Phase 0 | Workflow compliance scan | ✅ Validated — actionlint + Semgrep + pyyaml | `workflow_compliance_scan.py` pattern confirmed |
-| Phase 6 | Final hardening tools | ✅ Validated — Semgrep, actionlint, CODEOWNERS | Full governance stack confirmed |
+| Phase 4 | E→D FSM transition |  Validated — Agentic Lybic arXiv paper | FSM is the correct model; 5-condition gate is correct |
+| Phase 4 | 4-tier role taxonomy |  Validated — Microsoft, AWS, Anthropic | Orchestrator/Specialist/Worker/Utility maps perfectly |
+| Phase 4 | Semantic routing |  Validated — Microsoft Multi-Agent Ref Arch | FAISS corpus → `capability_tags` routing confirmed |
+| Phase 5 | Self-healing CI |  Validated — GitHub Agentic WF, AutoDevOps, Repo Doctor | Production-ready; dry-run-only is correct security posture |
+| Phase 5 | Auto-documentation |  Validated — Continue CLI, Elastic+Claude pattern | git diff → doc update is standard pattern |
+| Phase 5 | Accountability auto-append |  Validated — Scalex self-healing audit trail pattern | SQLite → W-NNN append is correct |
+| Phase 0 | Workflow compliance scan |  Validated — actionlint + Semgrep + pyyaml | `workflow_compliance_scan.py` pattern confirmed |
+| Phase 6 | Final hardening tools |  Validated — Semgrep, actionlint, CODEOWNERS | Full governance stack confirmed |
 | ALL | CODEX_MANIFEST security | ⚠️ **NEW RISK** — arXiv + CVE-2025-55319/61260 | Context injection is #1 new attack surface; integrity hash + field allowlist required |
 
 ---
@@ -1809,9 +1811,9 @@ def extract_enforcement_kpis() -> dict[str, int]:
         return {}
     text = GVS_DOC.read_text(encoding="utf-8")
     return {
-        "tier1_count":  len(re.findall(r"✅ \*\*GROUNDED\*\*", text)),
+        "tier1_count":  len(re.findall(r" \*\*GROUNDED\*\*", text)),
         "tier2_count":  len(re.findall(r"🟡 \*\*(PARTIAL|TIER-2)\*\*", text)),
-        "tier3_count":  len(re.findall(r"❌ \*\*SOFT\*\*", text)),
+        "tier3_count":  len(re.findall(r" \*\*SOFT\*\*", text)),
         "ungatable":    2,  # confirmed permanent
     }
 
@@ -1961,7 +1963,7 @@ if __name__ == "__main__":
 
     if args.verify_integrity:
         ok = verify_integrity(MANIFEST)
-        print("✅ Integrity OK" if ok else "❌ Integrity FAILED")
+        print(" Integrity OK" if ok else " Integrity FAILED")
         raise SystemExit(0 if ok else 1)
 
     manifest = generate()
@@ -2082,7 +2084,7 @@ def check_and_demote() -> bool:
 
     if model.get("transition_active") and rate > VIOLATION_THRESHOLD:
         print(f"⚠️  Violation rate {rate:.0%} > threshold {VIOLATION_THRESHOLD:.0%}")
-        print("🔴 Suspending D-model — reverting to E (safe state)")
+        print(" Suspending D-model — reverting to E (safe state)")
 
         # Update CODEX_AGENT_AUTONOMY_LEVEL repo variable via pending_var_updates.json
         pvu_path = REPO_ROOT / ".codex/pending_var_updates.json"
@@ -2096,7 +2098,7 @@ def check_and_demote() -> bool:
         print("Written pending_var_updates.json — apply with @agent-var-writer apply")
         return True
 
-    print(f"✅ Violation rate {rate:.0%} within threshold — D-model status unchanged")
+    print(f" Violation rate {rate:.0%} within threshold — D-model status unchanged")
     return False
 
 if __name__ == "__main__":
@@ -2153,7 +2155,7 @@ a single consolidated risk register:
 
 ---
 
-## 📚 SECTION 3 — Master Key Terms Glossary
+##  SECTION 3 — Master Key Terms Glossary
 
 Cross-referenced to all 3 chunks and all 8 research domains.
 
@@ -2251,7 +2253,7 @@ Cross-referenced to all 3 chunks and all 8 research domains.
 
 ---
 
-## ✅ SECTION 4 — Phase 0 Execution Checklist
+##  SECTION 4 — Phase 0 Execution Checklist
 ### Agent-Ready: Structured for Direct Copilot Agent Handoff
 
 This checklist is formatted for direct use as a Copilot agent session
@@ -2403,17 +2405,17 @@ All of the following must be true before Phase 1 begins:
 
 ---
 
-## 📊 Complete Research Coverage Summary — All Chunks
+##  Complete Research Coverage Summary — All Chunks
 
 | Domain | Chunk | Phase(s) | Research Status | Files Validated |
 |--------|-------|----------|----------------|-----------------|
-| D1: Agent Registry | 1 | 1 | ✅ Microsoft AgentSchema + arXiv survey | `AGENT_REGISTRY.yaml`, `CODEX_MANIFEST.json` |
-| D2: Policy-as-Code | 1 | All | ✅ OPA/Conftest/Harness/Pulumi | `cognitive-preflight`, REQ-N pattern |
-| D3: Handoff Protocol | 1 | 2 | ✅ A2A / Agents JSON / OpenAI cookbook | `AgentHandoffManifest v1.1` |
-| D4: FAISS+SQLite | 1 | 3 | ✅ Hugging Face / HackerNoon / PyPI | `build_embeddings.py`, `query_corpus.py` |
-| D5: Tiered Autonomy | 2 | 4 | ✅ arXiv Agentic Lybic / Anthropic / Microsoft | `e-to-d-transition-gate.yml` |
-| D6: Self-Healing CI | 2 | 5 | ✅ GitHub Agentic WF / AutoDevOps / Scalex | `auto_promote_tier.py`, `auto_append_accountability.py` |
-| D7: Monorepo Governance | 2 | 0, 6 | ✅ actionlint / Semgrep / Aviator | `workflow_compliance_scan.py`, `actionlint-audit.yml` |
+| D1: Agent Registry | 1 | 1 |  Microsoft AgentSchema + arXiv survey | `AGENT_REGISTRY.yaml`, `CODEX_MANIFEST.json` |
+| D2: Policy-as-Code | 1 | All |  OPA/Conftest/Harness/Pulumi | `cognitive-preflight`, REQ-N pattern |
+| D3: Handoff Protocol | 1 | 2 |  A2A / Agents JSON / OpenAI cookbook | `AgentHandoffManifest v1.1` |
+| D4: FAISS+SQLite | 1 | 3 |  Hugging Face / HackerNoon / PyPI | `build_embeddings.py`, `query_corpus.py` |
+| D5: Tiered Autonomy | 2 | 4 |  arXiv Agentic Lybic / Anthropic / Microsoft | `e-to-d-transition-gate.yml` |
+| D6: Self-Healing CI | 2 | 5 |  GitHub Agentic WF / AutoDevOps / Scalex | `auto_promote_tier.py`, `auto_append_accountability.py` |
+| D7: Monorepo Governance | 2 | 0, 6 |  actionlint / Semgrep / Aviator | `workflow_compliance_scan.py`, `actionlint-audit.yml` |
 | D8: Security Hardening | 2,3 | All | ⚠️ CVE-2025-55319/61260 — NEW RISK | `generate_manifest.py` security additions |
 
 ---
@@ -2454,7 +2456,7 @@ All of the following must be true before Phase 1 begins:
 
 ---
 
-## ✅ SECTION 1 — Phase 1 Agent-Ready Execution Checklist
+##  SECTION 1 — Phase 1 Agent-Ready Execution Checklist
 
 ```markdown name=PHASE_1_AGENT_CHECKLIST.md
 # Phase 1 Execution Checklist — Agent Registry & Discovery Infrastructure
@@ -2562,7 +2564,7 @@ All of the following must be true before Phase 1 begins:
            data   = yaml.safe_load(open('AGENT_REGISTRY.yaml'))
            for agent in data['agents']:
                jsonschema.validate(agent, schema['properties']['agents']['items'])
-           print('✅ All', len(data['agents']), 'agents valid')
+           print(' All', len(data['agents']), 'agents valid')
            "
            ```
 - [ ] 3.5  Confirm `total_agents` field matches actual agent count in list
@@ -2585,7 +2587,7 @@ All of the following must be true before Phase 1 begins:
            schema = json.load(open('.codex/schemas/CodexManifestSchema.json'))
            data   = json.load(open('CODEX_MANIFEST.json'))
            jsonschema.validate(data, schema)
-           print('✅ CODEX_MANIFEST.json valid')
+           print(' CODEX_MANIFEST.json valid')
            "
            ```
 - [ ] 4.3  Commit updated `CODEX_MANIFEST.json`
@@ -2602,7 +2604,7 @@ All of the following must be true before Phase 1 begins:
              id: req9
              run: |
                python3 scripts/ci/generate_manifest.py --verify-integrity \
-                 && echo "✅ Manifest integrity OK" \
+                 && echo " Manifest integrity OK" \
                  || echo "::warning::CODEX_MANIFEST.json integrity check failed"
                # NOTE: using ::warning:: (Tier-2 canary)
                # Promote to exit 1 (Tier-1) after 2-sprint observation
@@ -2611,7 +2613,7 @@ All of the following must be true before Phase 1 begins:
            ```bash
            python3 -c "import yaml; yaml.safe_load(open(
              '.github/workflows/agent-auth-delegation.yml'))"
-           echo "✅ YAML valid"
+           echo " YAML valid"
            ```
 - [ ] 5.3  Create test: intentionally corrupt `CODEX_MANIFEST.json`
            integrity hash → confirm REQ-9 emits `::warning::`
@@ -2639,7 +2641,7 @@ All of the following must be true before Phase 1 begins:
                ctx['codex_manifest'] = safe
                pathlib.Path('agent_context.json').write_text(
                  json.dumps(ctx, indent=2))
-               print('✅ agent_context.json updated with safe manifest fields')
+               print(' agent_context.json updated with safe manifest fields')
                "
            ```
 - [ ] 6.2  Verify `agent_context.json` contains `codex_manifest` key after step runs
@@ -2704,7 +2706,7 @@ All of the following must be true before Phase 2 begins:
 
 ---
 
-## ✅ SECTION 2 — Phase 2 Agent-Ready Execution Checklist
+##  SECTION 2 — Phase 2 Agent-Ready Execution Checklist
 
 ```markdown name=PHASE_2_AGENT_CHECKLIST.md
 # Phase 2 Execution Checklist — Handoff Protocol + Top-20 Consolidation
@@ -2749,7 +2751,7 @@ All of the following must be true before Phase 2 begins:
            schema = json.load(open(
              '.codex/schemas/AgentHandoffManifest_v1.1.json'))
            jsonschema.Draft7Validator.check_schema(schema)
-           print('✅ AgentHandoffManifest schema valid')
+           print(' AgentHandoffManifest schema valid')
            "
            ```
 - [ ] 1.3  Add schema path to `CODEX_MANIFEST.json` `policies[]` section
@@ -2788,9 +2790,9 @@ if __name__ == "__main__":
     data = json.loads(pathlib.Path(sys.argv[1]).read_text())
     errs = validate(data)
     if errs:
-        for e in errs: print(f"❌ {e}")
+        for e in errs: print(f" {e}")
         sys.exit(1)
-    print("✅ Handoff manifest valid")
+    print(" Handoff manifest valid")
 ```
 - [ ] 2.2  Create a test valid manifest `tests/fixtures/valid_handoff.json`
            covering all 7 required fields + delegation_trace
@@ -2848,7 +2850,7 @@ def query(query_text: str, top_k: int = 5) -> list[dict]:
            ```bash
            python3 -c "import yaml; yaml.safe_load(open(
              '.github/workflows/agent-handoff-gate.yml'))"
-           echo "✅ Workflow YAML valid"
+           echo " Workflow YAML valid"
            ```
 - [ ] 4.3  Add to `CODEX_MANIFEST.json` workflows array
            via `generate_manifest.py` re-run
@@ -3068,7 +3070,7 @@ $$
 
 ---
 
-## 22. 🎯 Semantic Capability Routing — Vector Field Projection
+## 22.  Semantic Capability Routing — Vector Field Projection
 
 Orchestrator selects specialist via **vector projection** onto capability space:
 
@@ -3154,7 +3156,7 @@ $$
 
 ---
 
-## 25. 📊 Auto-Documentation — Gradient Descent on Documentation Debt
+## 25.  Auto-Documentation — Gradient Descent on Documentation Debt
 
 Documentation debt $\mathcal{D}$ is minimized by Phase 5's
 auto-update hooks:
@@ -3217,7 +3219,7 @@ $$
 
 ---
 
-## 27. 🔐 Context Injection Attack Surface — Electromagnetic Analogy
+## 27.  Context Injection Attack Surface — Electromagnetic Analogy
 
 The security risk from `CODEX_MANIFEST.json` injection
 is modeled as an **electromagnetic field exposure**:
@@ -3307,7 +3309,7 @@ This gives three simultaneous requirements:
 
 ---
 
-## 📚 SECTION 4 — Final Consolidated Bibliography
+##  SECTION 4 — Final Consolidated Bibliography
 
 All sources across all 4 chunks, organized by domain. 52 sources total.
 
@@ -3434,15 +3436,15 @@ All sources across all 4 chunks, organized by domain. 52 sources total.
 
 | Domain | Sources | Phases Covered | Confidence |
 |--------|---------|----------------|-----------|
-| D1: Agent Registry | 9 | Phase 1 | ✅ High |
-| D2: Policy-as-Code | 8 | All phases | ✅ High |
-| D3: Handoff Protocol | 5 | Phase 2 | ✅ High |
-| D4: FAISS+SQLite | 9 | Phase 3 | ✅ High |
-| D5: Tiered Autonomy | 8 | Phase 4 | ✅ High |
-| D6: Self-Healing CI | 8 | Phase 5 | ✅ High |
-| D7: Monorepo Governance | 5 | Phase 0, 6 | ✅ High |
+| D1: Agent Registry | 9 | Phase 1 |  High |
+| D2: Policy-as-Code | 8 | All phases |  High |
+| D3: Handoff Protocol | 5 | Phase 2 |  High |
+| D4: FAISS+SQLite | 9 | Phase 3 |  High |
+| D5: Tiered Autonomy | 8 | Phase 4 |  High |
+| D6: Self-Healing CI | 8 | Phase 5 |  High |
+| D7: Monorepo Governance | 5 | Phase 0, 6 |  High |
 | D8: Security | 4 | All phases | ⚠️ Critical |
-| **Total** | **56** | **All 7 phases** | ✅ |
+| **Total** | **56** | **All 7 phases** |  |
 
 ---
 *Author: mbaetiong | Generated: 2026-03-02 | All 4 Deep Research Chunks*
@@ -3463,7 +3465,7 @@ All sources across all 4 chunks, organized by domain. 52 sources total.
 Copilot agent handoff. Phases 1–6 checklists available on request.
 
 ---
-> **✅ END OF DEEP RESEARCH — All 4 Chunks Complete**
+> ** END OF DEEP RESEARCH — All 4 Chunks Complete**
 >
 > All domains researched, all phases validated, all risks documented,
 > all formulas extended, full bibliography consolidated.

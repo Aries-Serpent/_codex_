@@ -1,4 +1,6 @@
 # ADR-007: Environment-Based Secrets Management
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Status:** Accepted  
 **Date:** 2026-07-10  
@@ -17,9 +19,9 @@ The platform needs to manage secrets (API keys, database passwords, tokens) secu
 4. **Must rotate** — Secrets should rotate without code changes
 
 Previous approaches stored secrets in:
-- Hardcoded strings ❌
-- Config files ❌
-- `.env` files (now only for local dev) ✅
+- Hardcoded strings 
+- Config files 
+- `.env` files (now only for local dev) 
 
 ---
 
@@ -189,16 +191,16 @@ def refresh_secrets():
 ## Security Guarantees
 
 **What is protected:**
-✅ API keys  
-✅ Database passwords  
-✅ Encryption keys  
-✅ OAuth tokens  
-✅ Webhook signing secrets  
+ API keys  
+ Database passwords  
+ Encryption keys  
+ OAuth tokens  
+ Webhook signing secrets  
 
 **What is NOT in .env:**
-✅ Public configuration (feature flags) — goes in Hydra config  
-✅ Non-sensitive settings — in config files  
-✅ Schema definitions — in code  
+ Public configuration (feature flags) — goes in Hydra config  
+ Non-sensitive settings — in config files  
+ Schema definitions — in code  
 
 ---
 
@@ -237,12 +239,12 @@ jobs:
 ## Consequences
 
 ### Positive
-✅ Secrets never committed to Git  
-✅ Easy rotation without code changes  
-✅ Different secrets per environment  
-✅ No hardcoded values in codebase  
-✅ Clear separation of concerns (config vs secrets)  
-✅ Compatible with all cloud providers  
+ Secrets never committed to Git  
+ Easy rotation without code changes  
+ Different secrets per environment  
+ No hardcoded values in codebase  
+ Clear separation of concerns (config vs secrets)  
+ Compatible with all cloud providers  
 
 ### Negative
 ⚠️ Developers must manage local `.env` files  

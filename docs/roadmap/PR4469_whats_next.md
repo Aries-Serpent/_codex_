@@ -1,15 +1,17 @@
 # PR #4469 — What's Next
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## 🔄 Approved-Workflow Re-Monitor + Final Review Polish (S1032 — 2026-05-14T21:30Z)
 
 | Objective | Status |
 |-----------|--------|
-| Re-monitor the latest approved workflow fanout on the newest pushed head | ✅ Snapshot captured |
-| Close the remaining automated review comments on test/docs files | ✅ In progress in this update set |
-| Refresh living docs + CHANGELOG + accountability with the latest status | ✅ Complete in this update set |
-| Preserve a final wrap-up / reply window | ✅ Active |
+| Re-monitor the latest approved workflow fanout on the newest pushed head |  Snapshot captured |
+| Close the remaining automated review comments on test/docs files |  In progress in this update set |
+| Refresh living docs + CHANGELOG + accountability with the latest status |  Complete in this update set |
+| Preserve a final wrap-up / reply window |  Active |
 
 ### Current Head / Workflow Snapshot
 - Branch: `copilot/fix-deprecated-utcfromtimestamp`
@@ -40,11 +42,11 @@
 
 | Objective | Status |
 |-----------|--------|
-| Resolve stacked-PR merge conflicts against `copilot/fix-deprecation-warning-datetime` | ✅ Complete |
-| Address unresolved review comments on `tests/agents/test_phase2_deep_coverage_batch11.py:550` | ✅ Complete locally |
-| Monitor newly approved required workflows on merge commit `2e77a78` | ✅ Active snapshot captured |
-| Refresh living docs + CHANGELOG + accountability with current state | ✅ Complete |
-| Leave ~5 minutes for wrap-up / final reply / re-check | ✅ Active |
+| Resolve stacked-PR merge conflicts against `copilot/fix-deprecation-warning-datetime` |  Complete |
+| Address unresolved review comments on `tests/agents/test_phase2_deep_coverage_batch11.py:550` |  Complete locally |
+| Monitor newly approved required workflows on merge commit `2e77a78` |  Active snapshot captured |
+| Refresh living docs + CHANGELOG + accountability with current state |  Complete |
+| Leave ~5 minutes for wrap-up / final reply / re-check |  Active |
 
 ### Current Head / Workflow Snapshot
 - Branch: `copilot/fix-deprecated-utcfromtimestamp`
@@ -59,11 +61,11 @@
   - **action_required auxiliary runs:** Agent Token Delegation, Workflow Execution Gate, Generate PR Follow-Up Prompt
 
 ### Current Local Validation Snapshot
-- `python -m ruff check src/codex/archive/logging_config.py tests/agents/test_phase2_deep_coverage_batch11.py tests/agents/test_phase2_deep_coverage_batch8.py tests/api/test_auth_token_lifecycle.py tests/quantum/conftest.py` ✅
-- `python -m pytest tests/archive/test_logging_config.py tests/agents/test_phase2_deep_coverage_batch11.py tests/agents/test_phase2_deep_coverage_batch8.py tests/api/test_auth_token_lifecycle.py tests/quantum/test_integration.py -q` ✅
-- `python scripts/ci/sync_tracked_files.py --check` ✅
-- `python scripts/ci/mypy_baseline.py --require-baseline` ✅
-- `python scripts/ci/auto_fix_common_issues.py --check-only` ✅ after the merge-resolution accountability commit
+- `python -m ruff check src/codex/archive/logging_config.py tests/agents/test_phase2_deep_coverage_batch11.py tests/agents/test_phase2_deep_coverage_batch8.py tests/api/test_auth_token_lifecycle.py tests/quantum/conftest.py` 
+- `python -m pytest tests/archive/test_logging_config.py tests/agents/test_phase2_deep_coverage_batch11.py tests/agents/test_phase2_deep_coverage_batch8.py tests/api/test_auth_token_lifecycle.py tests/quantum/test_integration.py -q` 
+- `python scripts/ci/sync_tracked_files.py --check` 
+- `python scripts/ci/mypy_baseline.py --require-baseline` 
+- `python scripts/ci/auto_fix_common_issues.py --check-only`  after the merge-resolution accountability commit
 
 ### Merge / Review Delta
 1. The stacked-branch conflict set has been resolved and pushed:

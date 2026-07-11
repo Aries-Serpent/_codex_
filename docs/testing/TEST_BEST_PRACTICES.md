@@ -1,9 +1,11 @@
 # Test Best Practices Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Version**: 1.0.0  
 **Last Updated**: 2026-07-08  
 **Author**: Test Pattern Guardian Agent  
-**Status**: 🟢 APPROVED FOR ALL TEST DEVELOPMENT
+**Status**:  APPROVED FOR ALL TEST DEVELOPMENT
 
 ---
 
@@ -21,12 +23,12 @@
 
 ## 1. Test Naming & Structure
 
-### ✅ GOOD: Descriptive Test Names
+###  GOOD: Descriptive Test Names
 
 Test names should clearly describe **what** is being tested and **what** the expected behavior is.
 
 ```python
-# ✅ GOOD - Clear, descriptive, actionable
+#  GOOD - Clear, descriptive, actionable
 def test_user_creation_with_valid_email_succeeds():
     """Test that user creation succeeds when email is valid."""
     user = create_user(email="test@example.com")
@@ -44,10 +46,10 @@ def test_duplicate_email_prevents_user_creation():
         create_user(email="test@example.com")
 ```
 
-### ❌ BAD: Ambiguous or Single-Word Names
+###  BAD: Ambiguous or Single-Word Names
 
 ```python
-# ❌ BAD - Too short, unclear intent
+#  BAD - Too short, unclear intent
 def test_user():
     # What about the user? Create? Validate? Delete?
     pass
@@ -75,17 +77,17 @@ test_<subject>_<action>_<expected_result>
 
 ## 2. Assertion Patterns
 
-### ✅ GOOD: Specific Assertions
+###  GOOD: Specific Assertions
 
 ```python
-# ✅ GOOD - Specific assertions with clear messages
+#  GOOD - Specific assertions with clear messages
 def test_user_name_is_stored_correctly():
     """Test that user name is stored and retrieved correctly."""
     user = create_user(name="Alice Smith")
     assert user.name == "Alice Smith", f"Expected 'Alice Smith', got {user.name}"
     assert len(user.name) > 0, "User name should not be empty"
 
-# ✅ GOOD - Multiple assertions for different aspects
+#  GOOD - Multiple assertions for different aspects
 def test_created_user_has_correct_defaults():
     """Test that new user has correct default values."""
     user = create_user(email="test@example.com")
@@ -99,19 +101,19 @@ def test_created_user_has_correct_defaults():
     assert user.is_admin is False
 ```
 
-### ❌ BAD: Broad or Missing Assertions
+###  BAD: Broad or Missing Assertions
 
 ```python
-# ❌ BAD - No assertion (test does nothing)
+#  BAD - No assertion (test does nothing)
 def test_user_creation():
     user = create_user(email="test@example.com")
 
-# ❌ BAD - Overly broad assertion
+#  BAD - Overly broad assertion
 def test_user_data():
     user = create_user(email="test@example.com")
     assert user  # Just checks if user exists, not what properties it has
 
-# ❌ BAD - Message says "must not be empty" but tests something else
+#  BAD - Message says "must not be empty" but tests something else
 def test_user_email():
     user = create_user(email="test@example.com")
     assert user.name == "Alice", "Result must not be empty"  # Misleading message
@@ -121,10 +123,10 @@ def test_user_email():
 
 ## 3. Mock & Fixture Design
 
-### ✅ GOOD: Proper Mock Configuration
+###  GOOD: Proper Mock Configuration
 
 ```python
-# ✅ GOOD - Use return_value for repeated calls (infinite)
+#  GOOD - Use return_value for repeated calls (infinite)
 @pytest.fixture
 def mock_api():
     mock = MagicMock()
@@ -140,7 +142,7 @@ def test_fetch_user_multiple_times(mock_api):
     assert user1 == user2 == user3 == {"id": 1, "name": "Alice"}
     assert mock_api.get_user.call_count == 3
 
-# ✅ GOOD - Use side_effect with callable for complex scenarios
+#  GOOD - Use side_effect with callable for complex scenarios
 @pytest.fixture
 def mock_api_with_state():
     mock = MagicMock()
@@ -157,10 +159,10 @@ def mock_api_with_state():
     return mock
 ```
 
-### ❌ BAD: Side Effect List Exhaustion
+###  BAD: Side Effect List Exhaustion
 
 ```python
-# ❌ BAD - side_effect with list exhausts after N calls
+#  BAD - side_effect with list exhausts after N calls
 @pytest.fixture
 def mock_api():
     mock = MagicMock()
@@ -180,7 +182,7 @@ def test_fetch_three_users(mock_api):
 ### Fixture Design Principles
 
 ```python
-# ✅ GOOD - Fixtures with single responsibility
+#  GOOD - Fixtures with single responsibility
 @pytest.fixture
 def mock_database():
     """Mock database for testing queries."""
@@ -195,7 +197,7 @@ def mock_api_client():
     mock.get.return_value = {"status": "ok"}
     return mock
 
-# ✅ GOOD - Factory fixtures for flexibility
+#  GOOD - Factory fixtures for flexibility
 @pytest.fixture
 def make_user():
     """Factory fixture to create test users with custom properties."""
@@ -212,17 +214,17 @@ def test_user_with_custom_name(make_user):
 
 ## 4. Async Test Patterns
 
-### ✅ GOOD: Proper Async Test Structure
+###  GOOD: Proper Async Test Structure
 
 ```python
-# ✅ GOOD - Use @pytest.mark.asyncio for async tests
+#  GOOD - Use @pytest.mark.asyncio for async tests
 @pytest.mark.asyncio
 async def test_async_user_creation():
     """Test async user creation succeeds."""
     user = await create_user_async(email="test@example.com")
     assert user.email == "test@example.com"
 
-# ✅ GOOD - Async fixture with proper setup
+#  GOOD - Async fixture with proper setup
 @pytest.fixture
 async def async_db():
     """Async database fixture."""
@@ -239,16 +241,16 @@ async def test_with_async_db(async_db):
     assert user is not None
 ```
 
-### ❌ BAD: Async Anti-Patterns
+###  BAD: Async Anti-Patterns
 
 ```python
-# ❌ BAD - Missing @pytest.mark.asyncio
+#  BAD - Missing @pytest.mark.asyncio
 async def test_async_user_creation():
     user = await create_user_async(email="test@example.com")
     assert user.email == "test@example.com"
     # Will not run as async test!
 
-# ❌ BAD - Blocking call in async test
+#  BAD - Blocking call in async test
 @pytest.mark.asyncio
 async def test_blocking_in_async():
     user = await create_user_async(email="test@example.com")
@@ -260,33 +262,33 @@ async def test_blocking_in_async():
 
 ## 5. Exception Handling
 
-### ✅ GOOD: Specific Exception Handling
+###  GOOD: Specific Exception Handling
 
 ```python
-# ✅ GOOD - Catch specific exceptions
+#  GOOD - Catch specific exceptions
 try:
     user = create_user(email="invalid@")
 except (ValidationError, ValueError) as e:
     logger.error(f"User creation failed: {e}")
     pass
 
-# ✅ GOOD - Specific exception in tests
+#  GOOD - Specific exception in tests
 def test_invalid_email_raises_validation_error():
     """Test that invalid email raises ValidationError."""
     with pytest.raises(ValidationError, match="Invalid email format"):
         create_user(email="invalid@")
 ```
 
-### ❌ BAD: Bare Except Clauses
+###  BAD: Bare Except Clauses
 
 ```python
-# ❌ BAD - Catches all exceptions including KeyboardInterrupt, SystemExit
+#  BAD - Catches all exceptions including KeyboardInterrupt, SystemExit
 try:
     user = create_user(email="test@example.com")
 except:
     pass  # Silently swallows all errors!
 
-# ❌ BAD - Too broad exception catching
+#  BAD - Too broad exception catching
 try:
     user = create_user(email="test@example.com")
 except Exception:
@@ -296,7 +298,7 @@ except Exception:
 ### Exception Handling in Tests
 
 ```python
-# ✅ GOOD - Clear exception expectations
+#  GOOD - Clear exception expectations
 def test_handles_network_error_gracefully():
     """Test that network errors are handled gracefully."""
     with patch('requests.get') as mock_get:
@@ -305,7 +307,7 @@ def test_handles_network_error_gracefully():
         with pytest.raises(ConnectionError):
             fetch_user_data("test@example.com")
 
-# ✅ GOOD - Specific exception type matching
+#  GOOD - Specific exception type matching
 def test_invalid_config_raises_config_error():
     """Test that invalid config raises ConfigError with helpful message."""
     with pytest.raises(ConfigError) as exc_info:
@@ -319,7 +321,7 @@ def test_invalid_config_raises_config_error():
 
 ## 6. Documentation
 
-### ✅ GOOD: Clear Test Documentation
+###  GOOD: Clear Test Documentation
 
 ```python
 def test_user_email_validation_accepts_standard_format():
@@ -339,7 +341,7 @@ def test_user_email_validation_accepts_standard_format():
         user = create_user(email=email)
         assert user.email == email, f"Email {email} should be valid"
 
-# ✅ GOOD - Class-level documentation
+#  GOOD - Class-level documentation
 class TestUserCreation:
     """Tests for user creation functionality.
     
@@ -355,20 +357,20 @@ class TestUserCreation:
         pass
 ```
 
-### ❌ BAD: Missing or Unclear Documentation
+###  BAD: Missing or Unclear Documentation
 
 ```python
-# ❌ BAD - No docstring
+#  BAD - No docstring
 def test_user():
     user = create_user(email="test@example.com")
     assert user is not None
 
-# ❌ BAD - Misleading message
+#  BAD - Misleading message
 def test_email():
     """Test email."""  # Too vague
     pass
 
-# ❌ BAD - Documentation that doesn't match code
+#  BAD - Documentation that doesn't match code
 def test_user_creation():
     """Test that user is created with id."""
     user = create_user(email="test@example.com")
@@ -382,7 +384,7 @@ def test_user_creation():
 ### Anti-Pattern 1: Test Interdependencies
 
 ```python
-# ❌ BAD - Tests depend on execution order
+#  BAD - Tests depend on execution order
 class TestUserWorkflow:
     user_id = None
     
@@ -394,7 +396,7 @@ class TestUserWorkflow:
         """Second test depends on first."""
         update_user(self.user_id, name="Alice")
 
-# ✅ GOOD - Tests are independent
+#  GOOD - Tests are independent
 @pytest.fixture
 def created_user():
     """Fixture creates user for each test."""
@@ -412,13 +414,13 @@ def test_update_user(created_user):
 ### Anti-Pattern 2: Hardcoded Timeouts
 
 ```python
-# ❌ BAD - Hardcoded sleep causes flakiness
+#  BAD - Hardcoded sleep causes flakiness
 def test_async_operation():
     start_operation()
     time.sleep(2)  # What if it takes 2.1 seconds?
     assert operation_completed()
 
-# ✅ GOOD - Use polling with timeout
+#  GOOD - Use polling with timeout
 def test_async_operation():
     start_operation()
     
@@ -431,7 +433,7 @@ def test_async_operation():
     else:
         pytest.fail(f"Operation did not complete within {max_wait}s")
 
-# ✅ GOOD - Use pytest.mark.timeout
+#  GOOD - Use pytest.mark.timeout
 @pytest.mark.timeout(5)
 def test_async_operation():
     start_operation()
@@ -441,7 +443,7 @@ def test_async_operation():
 ### Anti-Pattern 3: Shared Mutable State
 
 ```python
-# ❌ BAD - Shared mock state between tests
+#  BAD - Shared mock state between tests
 mock_db = MagicMock()
 
 def test_1():
@@ -454,7 +456,7 @@ def test_2():
     result = db.query()
     assert result == []  # FAILS
 
-# ✅ GOOD - Fresh fixtures for each test
+#  GOOD - Fresh fixtures for each test
 @pytest.fixture
 def mock_db():
     return MagicMock()
@@ -473,12 +475,12 @@ def test_2(mock_db):
 ### Anti-Pattern 4: Missing Assertions
 
 ```python
-# ❌ BAD - Test does nothing
+#  BAD - Test does nothing
 def test_user_creation():
     user = create_user(email="test@example.com")
     # No assertions!
 
-# ✅ GOOD - Clear assertions
+#  GOOD - Clear assertions
 def test_user_creation_succeeds():
     """Test that user creation succeeds with valid email."""
     user = create_user(email="test@example.com")
@@ -490,7 +492,7 @@ def test_user_creation_succeeds():
 ### Anti-Pattern 5: Overly Broad Exception Catching
 
 ```python
-# ❌ BAD - Catches system exceptions
+#  BAD - Catches system exceptions
 def test_user_creation():
     try:
         user = create_user(email="test@example.com")
@@ -498,7 +500,7 @@ def test_user_creation():
     except:
         pytest.fail("Should not raise exception")
 
-# ✅ GOOD - Specific exception handling
+#  GOOD - Specific exception handling
 def test_user_creation():
     """Test that user creation succeeds."""
     user = create_user(email="test@example.com")
@@ -512,7 +514,7 @@ def test_invalid_email_raises_error():
 
 ---
 
-## 📊 Checklist for Every Test
+##  Checklist for Every Test
 
 Before merging a test, verify:
 
@@ -529,7 +531,7 @@ Before merging a test, verify:
 
 ---
 
-## 🚀 Running Tests
+##  Running Tests
 
 ```bash
 # Run quick tests (not slow, not integration)

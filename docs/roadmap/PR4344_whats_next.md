@@ -1,6 +1,8 @@
 # PR #4344 — What's Next
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-> **Last updated:** 2026-05-07T23:14Z — Session 46
+> **Last updated: 2026-07-11
 > **Status:** 🟡 In progress — additional bot findings remediated, CI rescue checks re-validated
 
 ## Current Objectives
@@ -13,8 +15,8 @@
 
 - Investigated `Auto-Fix Common CI Issues` failure run `25525872834` (head `1eb01cc`).
 - Confirmed current branch state now reports no auto-fixable issues:
-  - `python scripts/ci/auto_fix_common_issues.py --check-only` ✅
-  - `python scripts/ci/session_wrapup_autofix.py --pr-number 4344` ✅
+  - `python scripts/ci/auto_fix_common_issues.py --check-only` 
+  - `python scripts/ci/session_wrapup_autofix.py --pr-number 4344` 
 - Applied review-thread adjustments:
   - `src/codex/utils/subprocess.py` — return typing now reflects `text=True/False` via overloads.
   - `tests/mcp/test_utilities.py` — cleanup warning now uses module-scoped logger.
@@ -32,11 +34,11 @@
   - `src/codex/utils/subprocess.py` — converted overload bodies from `...` to `pass` and hardened type-only `CompletedProcess` annotations via `TYPE_CHECKING` import.
   - `scripts/ci/auto_fix_common_issues.py` — fixed `E741` ambiguous variable naming in exception classifier path.
 - Validation status:
-  - `python3 -m ruff check` ✅
-  - `python3 -m pytest -x` ❌ currently stops at `tests/logging/test_registry_logger.py::test_registry_ndjson_logger_includes_system_metrics`
-  - `python -m ruff check src/ tests/ --fix` ✅
-  - `python scripts/ci/mypy_baseline.py --require-baseline` ✅ (`126 == baseline 126`)
-  - `python scripts/ci/auto_fix_common_issues.py --check-only` ✅
+  - `python3 -m ruff check` 
+  - `python3 -m pytest -x`  currently stops at `tests/logging/test_registry_logger.py::test_registry_ndjson_logger_includes_system_metrics`
+  - `python -m ruff check src/ tests/ --fix` 
+  - `python scripts/ci/mypy_baseline.py --require-baseline`  (`126 == baseline 126`)
+  - `python scripts/ci/auto_fix_common_issues.py --check-only` 
 
 ## Repository Living-Docs Inventory (gathered this session)
 

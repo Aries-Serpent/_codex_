@@ -1,6 +1,8 @@
 # Training Loop Notes
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 The functional training loop (`codex_ml.training.functional_training.train`) is
 designed for deterministic local runs where the Hugging Face trainer is not

@@ -1,4 +1,6 @@
 # AST Standardization Implementation - Blockers & Issues Report
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 ## Table of Contents
 
@@ -236,7 +238,7 @@ Based on the requirements documents, here's the realistic effort breakdown:
 | Resource | Requirement | Current State | Gap |
 |----------|-------------|---------------|-----|
 | **Engineering Time** | 1 full-time engineer, 11-13 phases | Not allocated | **CRITICAL GAP** |
-| **Code Review** | Senior architect, 20% time | Available | ✅ OK |
+| **Code Review** | Senior architect, 20% time | Available |  OK |
 | **QA Time** | 2 phases testing effort | Not allocated | **MEDIUM GAP** |
 | **Documentation** | Technical writer, 1 phase | Not allocated | **LOW GAP** |
 
@@ -281,10 +283,10 @@ Based on the requirements documents, here's the realistic effort breakdown:
 5. **Current State**: **98 tests (75% complete)** already addresses core maturity improvement goals
 
 **Recommendation**:
-- ✅ **Accept current maturity improvement work as complete** (Phases 1-3)
-- ✅ **Defer AST standardization** to dedicated engineering project (as already decided)
-- ✅ **Document requirements** in AST project planning (already done via linked documents)
-- ✅ **Create ADR** documenting deferral decision
+-  **Accept current maturity improvement work as complete** (Phases 1-3)
+-  **Defer AST standardization** to dedicated engineering project (as already decided)
+-  **Document requirements** in AST project planning (already done via linked documents)
+-  **Create ADR** documenting deferral decision
 
 ---
 
@@ -293,11 +295,11 @@ Based on the requirements documents, here's the realistic effort breakdown:
 If AST work must proceed despite recommendations, here's a **minimal viable scope**:
 
 **Minimal Scope** (2-3 phases):
-1. ✅ Add libcst to core dependencies (resolve BLOCK-DEP-001)
-2. ✅ Create basic StandardizedASTNode (resolve BLOCK-ARCH-001)
-3. ✅ Centralize existing AST usage (resolve ISSUE-EXIST-004)
-4. ✅ Add basic AST tests (resolve ISSUE-TEST-001)
-5. ✅ Document AST patterns (resolve ISSUE-DOC-001)
+1.  Add libcst to core dependencies (resolve BLOCK-DEP-001)
+2.  Create basic StandardizedASTNode (resolve BLOCK-ARCH-001)
+3.  Centralize existing AST usage (resolve ISSUE-EXIST-004)
+4.  Add basic AST tests (resolve ISSUE-TEST-001)
+5.  Document AST patterns (resolve ISSUE-DOC-001)
 
 **What This Provides**:
 - Consistent AST usage across codebase
@@ -392,10 +394,10 @@ If AST work must proceed despite recommendations, here's a **minimal viable scop
 ### 8.1 Current Repository Capabilities
 
 **What Works Well**:
-- ✅ Basic AST parsing in multiple files
-- ✅ ast_signature_similarity.py demonstrates AST analysis patterns
-- ✅ cli/ast_upgrade.py shows AST transformation experience
-- ✅ Existing test infrastructure (98 tests from maturity work)
+-  Basic AST parsing in multiple files
+-  ast_signature_similarity.py demonstrates AST analysis patterns
+-  cli/ast_upgrade.py shows AST transformation experience
+-  Existing test infrastructure (98 tests from maturity work)
 
 **What Needs Improvement**:
 - ⚠️ No standardization across AST usage
@@ -408,14 +410,14 @@ If AST work must proceed despite recommendations, here's a **minimal viable scop
 ### 8.2 Lessons from Existing AST Usage
 
 **From ast_signature_similarity.py**:
-- ✅ Counter-based node type analysis works well
-- ✅ Cosine similarity is effective for duplication detection
+-  Counter-based node type analysis works well
+-  Cosine similarity is effective for duplication detection
 - ⚠️ Parse errors need better handling
 - ⚠️ Large files need streaming support
 
 **From cli/ast_upgrade.py**:
-- ✅ Tiered parser approach (ast → libcst → parso) is sound
-- ✅ Error capture blocks improve resilience
+-  Tiered parser approach (ast → libcst → parso) is sound
+-  Error capture blocks improve resilience
 - ⚠️ Complex logic needs better testing
 - ⚠️ Documentation is insufficient for maintenance
 
@@ -437,11 +439,11 @@ If AST work must proceed despite recommendations, here's a **minimal viable scop
 
 **DEFER FULL AST STANDARDIZATION** to dedicated engineering project for the following reasons:
 
-1. ✅ **Scope Appropriate**: Current maturity work (98 tests, 75% complete) successfully addresses test coverage goals
-2. ✅ **Resource Constraints**: AST standardization requires 3 months dedicated engineering (not available)
-3. ✅ **High Risk**: 46 identified blockers/issues create significant delivery risk
-4. ✅ **Architecture Impact**: Requires major architectural changes beyond test scope
-5. ✅ **Requirements Clear**: Detailed requirements documents provide foundation for future project
+1.  **Scope Appropriate**: Current maturity work (98 tests, 75% complete) successfully addresses test coverage goals
+2.  **Resource Constraints**: AST standardization requires 3 months dedicated engineering (not available)
+3.  **High Risk**: 46 identified blockers/issues create significant delivery risk
+4.  **Architecture Impact**: Requires major architectural changes beyond test scope
+5.  **Requirements Clear**: Detailed requirements documents provide foundation for future project
 
 **Rationale for Deferral**:
 - AST standardization is **infrastructure improvement**, not **test improvement**
@@ -450,10 +452,10 @@ If AST work must proceed despite recommendations, here's a **minimal viable scop
 - Current maturity improvement work provides **strong foundation** for future AST work
 
 **Next Steps**:
-1. ✅ Accept current maturity improvement work (98 tests) as **COMPLETE**
-2. ✅ Document AST deferral decision in **ADR** (Architecture Decision Record)
-3. ✅ Include AST requirements in **future roadmap** planning
-4. ✅ Close current maturity improvement PR with **75% success rate**
+1.  Accept current maturity improvement work (98 tests) as **COMPLETE**
+2.  Document AST deferral decision in **ADR** (Architecture Decision Record)
+3.  Include AST requirements in **future roadmap** planning
+4.  Close current maturity improvement PR with **75% success rate**
 
 ---
 

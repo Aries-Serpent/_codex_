@@ -1,9 +1,11 @@
 # 🚨 CI Failure Auto-Response
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Owner:** @mbaetiong  
 > **Version:** 1.0.0  
-> **Last Updated:** 2026-03-17  
-> **Workflow:** [`.github/workflows/ci-failure-issue-creator.yml`](https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/ci-failure-issue-creator.yml)
+> **Last Updated: 2026-07-11
+> **Workflow:** [`.github/workflows/ci-failure-issue-creator.yml`](../.github/workflows/ci-failure-issue-creator.yml)
 
 ---
 
@@ -17,7 +19,7 @@ automatically:
    `@copilot` command so the Copilot Coding Agent begins the investigation immediately.
 3. **Enforces a single-branch rule** — at most one `fix/ci-*` branch exists at any
    given time. Additional failures are _queued_ (issue opened, no second branch created).
-4. **Posts every outcome** to the **📊 PR Status Dashboard** via
+4. **Posts every outcome** to the ** PR Status Dashboard** via
    `pr_comment_consolidator.py` — all state is visible in one place.
 5. **Auto-closes** the tracking issue when the workflow passes on `main` again.
 
@@ -32,12 +34,12 @@ flowchart TD
 
     B -- success --> Z1[Job: close-on-fix]
     Z1 --> Z2{Open ci-failure\nissue for this workflow?}
-    Z2 -- Yes --> Z3[✅ Auto-close issue\n+ post comment]
+    Z2 -- Yes --> Z3[ Auto-close issue\n+ post comment]
     Z2 -- No  --> Z4([End — nothing to close])
 
     B -- failure --> C
 
-    subgraph LOCK ["🔒 Global Serialisation Lock (one instance at a time)"]
+    subgraph LOCK [" Global Serialisation Lock (one instance at a time)"]
         C[Job: triage\nClassify + Deduplicate]
 
         C --> D{L1: open ci-failure\nissue already exists?}
@@ -113,13 +115,13 @@ stateDiagram-v2
 ## 3. Severity Classification
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing Workflow Name, 🔴 Critical\nlabels: ci-failure\npriority-critical\nsecurity-risk'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing Workflow Name,  Critical\nlabels: ci-failure\npriority-critical\nsecurity-risk'}}%%
 flowchart LR
     WF([Workflow Name]) --> SC{Pattern match}
 
-    SC -->|security · codeql\nsemgrep · vuln| S1[🔴 Critical\nlabels: ci-failure\npriority-critical\nsecurity-risk]
-    SC -->|build · docker\ndeploy · publish| S2[🔴 Critical\nlabels: ci-failure\npriority-critical\nbuild-break]
-    SC -->|test · pytest\nauth · critical-path| S3[🔴 Critical\nlabels: ci-failure\npriority-critical\ntest-regression]
+    SC -->|security · codeql\nsemgrep · vuln| S1[ Critical\nlabels: ci-failure\npriority-critical\nsecurity-risk]
+    SC -->|build · docker\ndeploy · publish| S2[ Critical\nlabels: ci-failure\npriority-critical\nbuild-break]
+    SC -->|test · pytest\nauth · critical-path| S3[ Critical\nlabels: ci-failure\npriority-critical\ntest-regression]
     SC -->|no match| S4[🟡 Normal\nlabels: ci-failure\npriority-medium\nneeds-investigation]
 
     S1 & S2 & S3 --> FPR[🔧 Fix PR\n+ @copilot]
@@ -135,7 +137,7 @@ flowchart LR
 sequenceDiagram
     actor CI   as CI Workflow (main)
     participant WR as workflow_run trigger
-    participant T  as triage job (🔒 locked)
+    participant T  as triage job ( locked)
     participant GH as GitHub API
     participant DB as PR Status Dashboard
     participant CP as @copilot Agent
@@ -171,23 +173,23 @@ sequenceDiagram
 
     CI  ->> WR : concludes: success (after fix)
     WR  ->> GH : auto-close matching ci-failure issues
-    GH  ->> DB : post ✅ resolved section to dashboard
+    GH  ->> DB : post  resolved section to dashboard
 ```
 
 ---
 
 ## 5. Dashboard Integration
 
-Every outcome writes **one section** to the **📊 PR Status Dashboard** comment on the
+Every outcome writes **one section** to the ** PR Status Dashboard** comment on the
 active PR.  No additional standalone comments are posted.
 
 | Outcome | Dashboard status | Dashboard summary example |
 |---------|-----------------|--------------------------|
-| Workflow passed (resolved) | ✅ success | `✅ \`CodeQL Analysis\` — passing on \`main\`` |
-| Skip (existing issue) | ⚠️ warning | `🔴 \`CodeQL Analysis\` failed — existing tracker covers this` |
-| Queued (branch active) | ⚠️ warning | `🔴 \`CodeQL Analysis\` failed — queued (single-branch rule active)` |
-| Normal failure → new issue | ❌ failure | `🟡 \`Data Quality Suite\` failed — issue opened, manual fix required` |
-| Critical → fix PR opened | ❌ failure | `🔴 CRITICAL \`Auth Tests\` failed — fix PR opened, @copilot assigned` |
+| Workflow passed (resolved) |  success | ` \`CodeQL Analysis\` — passing on \`main\`` |
+| Skip (existing issue) | ⚠️ warning | ` \`CodeQL Analysis\` failed — existing tracker covers this` |
+| Queued (branch active) | ⚠️ warning | ` \`CodeQL Analysis\` failed — queued (single-branch rule active)` |
+| Normal failure → new issue |  failure | `🟡 \`Data Quality Suite\` failed — issue opened, manual fix required` |
+| Critical → fix PR opened |  failure | ` CRITICAL \`Auth Tests\` failed — fix PR opened, @copilot assigned` |
 
 ---
 
@@ -221,9 +223,9 @@ gantt
 ## 7. Job Dependency Graph
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing triage\n🔒 holds global lock, create-issue\nall non-skip failures'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing triage\n holds global lock, create-issue\nall non-skip failures'}}%%
 graph LR
-    T[triage\n🔒 holds global lock]
+    T[triage\n holds global lock]
 
     T --> CI[create-issue\nall non-skip failures]
     T --> CF[close-on-fix\nsuccess path only]
@@ -278,5 +280,5 @@ on:
 
 ---
 
-> 🤖 _This document is maintained alongside `.github/workflows/ci-failure-issue-creator.yml`.  
+>  _This document is maintained alongside `.github/workflows/ci-failure-issue-creator.yml`.  
 > Update both when changing the process logic._

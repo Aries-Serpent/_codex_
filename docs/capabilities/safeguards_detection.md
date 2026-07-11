@@ -1,6 +1,8 @@
 # Safeguards Detection and Validation
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## Overview
 
@@ -468,7 +470,7 @@ Safeguards detected: validation, bounded, deterministic, reproducible, seed, off
         if cap['id'] == 'safeguards_keywords':
             density = cap.get('safeguard_density', 0)
             if density < 0.4:
-                print(f'❌ Safeguard density {density:.2%} below 40%')
+                print(f' Safeguard density {density:.2%} below 40%')
                 exit(1)
             print(f'✓ Safeguard density {density:.2%}')
     "
@@ -540,6 +542,6 @@ For audit detection, these keywords indicate safeguard practices:
 
 ## See Also
 
-- [Detector Implementation](https://github.com/Aries-Serpent/_codex_/blob/main/scripts/space_traversal/detectors/detector_safeguards.py)
-- [Test Suite](https://github.com/Aries-Serpent/_codex_/blob/main/tests/safeguards/test_keyword_detection.py)
+- [Detector Implementation](../scripts/space_traversal/detectors/detector_safeguards.py)
+- [Test Suite](../tests/safeguards/test_keyword_detection.py)
 - [Audit Pipeline Guide](../SPACE_TRAVERSAL_GUIDE.md)

@@ -1,6 +1,8 @@
 # [Validation]: Optional Dependencies Soft-Fail Mechanism
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## Mechanism
 
@@ -37,7 +39,7 @@ CODEX_OPTIONAL_SOFTFAIL=0 pytest -q -k evaluator  # should raise SystemExit(2)
 def _require_module(name: str) -> None:
     if importlib.util.find_spec(name) is None:
         sys.stderr.write(f"[evaluator] Missing: '{name}'.\n")
-        raise SystemExit(2)  # ❌ Aborts pytest collection
+        raise SystemExit(2)  #  Aborts pytest collection
 
 for _optional in ("pydantic", "typer"):
     _require_module(_optional)
@@ -52,7 +54,7 @@ for _pkg in _OPTIONAL_PACKAGES:
     _try_import(_pkg)  # Populates MISSING_OPTIONALS
 
 if MISSING_OPTIONALS and not SOFT_FAIL:
-    raise SystemExit(2)  # ✅ Only fails if explicitly disabled
+    raise SystemExit(2)  #  Only fails if explicitly disabled
 ```text
 
 ### Test Adaptation

@@ -1,6 +1,8 @@
 # Architecture Decision Records
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 This directory contains Architecture Decision Records (ADRs) for the _codex_ project.
 ADRs capture significant architectural decisions, their context, and consequences.

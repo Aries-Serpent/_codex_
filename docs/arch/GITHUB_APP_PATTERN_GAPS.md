@@ -1,6 +1,8 @@
 # GitHub App Design-Pattern Gap Analysis
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 **Produced by:** copilot-swe-agent (W-098d, PR #3494)
 **Date:** 2026-03-04
@@ -16,10 +18,10 @@ identifies what is complete vs. what remains to be done.
 
 | Pattern | Code Layer | Operational Layer | Overall |
 |---------|-----------|-------------------|---------|
-| 1. Act on behalf of a user (user-to-server) | ✅ Complete | ⚠️ App not registered | ⚠️ Partial |
-| 2. Act on its own behalf (server-to-server) | ✅ Complete | ⚠️ App not registered | ⚠️ Partial |
-| 3. Respond to webhooks | ✅ Complete | ⚠️ No live receiver URL | ⚠️ Partial |
-| 4. Take certain actions (permissions) | ✅ Complete | ⚠️ App not registered | ⚠️ Partial |
+| 1. Act on behalf of a user (user-to-server) |  Complete | ⚠️ App not registered | ⚠️ Partial |
+| 2. Act on its own behalf (server-to-server) |  Complete | ⚠️ App not registered | ⚠️ Partial |
+| 3. Respond to webhooks |  Complete | ⚠️ No live receiver URL | ⚠️ Partial |
+| 4. Take certain actions (permissions) |  Complete | ⚠️ App not registered | ⚠️ Partial |
 
 **Root cause of all gaps:** The GitHub App has not been registered yet.
 Once registered via `scripts/ci/github_app_bootstrap.py`, all four patterns
@@ -35,7 +37,7 @@ The app authenticates with a **user access token** obtained through the OAuth
 authorization code flow. The app is limited by both the app's permissions and
 the authorizing user's permissions.
 
-### ✅ What is implemented
+###  What is implemented
 
 | File | What it provides |
 |------|-----------------|
@@ -77,7 +79,7 @@ The app authenticates with an **installation access token**, exchanged from
 a short-lived App JWT (RS256). The app is limited only by its configured
 permissions, not by any user's permissions.
 
-### ✅ What is implemented
+###  What is implemented
 
 | File | What it provides |
 |------|-----------------|
@@ -107,7 +109,7 @@ The app subscribes to GitHub events (push, pull_request, issue_comment, etc.)
 and receives HTTP POST payloads to a registered URL. Payloads are authenticated
 with `X-Hub-Signature-256` (HMAC-SHA256).
 
-### ✅ What is implemented
+###  What is implemented
 
 | File | What it provides |
 |------|-----------------|
@@ -146,7 +148,7 @@ When registering the GitHub App, specific permissions are configured (e.g.,
 `contents: write`, `pull_requests: write`). These determine what the app can
 do via the GitHub API and what webhook events it can receive.
 
-### ✅ What is implemented
+###  What is implemented
 
 | File | What it provides |
 |------|-----------------|
@@ -200,4 +202,4 @@ been registered.
 
 ---
 
-*Last updated: 2026-03-04 (W-098d, PR #3494)*
+*Last updated: 2026-07-11

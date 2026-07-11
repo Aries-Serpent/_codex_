@@ -1,7 +1,9 @@
 # RUNBOOK: Incident Response and Recovery Procedures
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Version:** 1.0.0  
-**Last Updated:** 2026-07-10  
+**Last Updated: 2026-07-10
 **Audience:** On-Call Engineers, DevOps  
 **Response Time SLA:** P1 issues < 15 min, P2 < 1 hour, P3 < 4 hours  
 

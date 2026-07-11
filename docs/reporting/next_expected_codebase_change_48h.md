@@ -1,4 +1,6 @@
 # Next Expected Codebase Change (48-Hour Alignment)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 Generated: 2026-05-27T21:19:05Z
 Repository: `Aries-Serpent/_codex_`
@@ -119,14 +121,14 @@ Coefficient interpretation (normalized scoring model):
 
 ## 6) Iterative Expected Session Promptset (Outline)
 
-1. **Session A — Loader Contract Remediation** ✅ COMPLETE (S1042-2026-05-17)
+1. **Session A — Loader Contract Remediation**  COMPLETE (S1042-2026-05-17)
    - Root cause confirmed: `pytest_plugins` in non-root `tests/quantum/conftest.py` caused a hard pytest collection interrupt blocking all 16,373 tests.
    - Fix applied: removed deprecated `pytest_plugins`, directly imported `quantum_plugin_fixture` in conftest.
    - Before: `Interrupted: 1 error during collection` — 0 tests collected.
    - After: **0 collection errors — 16,373 tests collected**.
    - Targeted suite: 95/95 quantum tests pass; 105/106 in broader targeted set (1 pre-existing flaky isolation-dependent test unrelated to this fix).
 
-2. **Session B — CI Signal Stabilization** ✅ COMPLETE (S1043-2026-05-17)
+2. **Session B — CI Signal Stabilization**  COMPLETE (S1043-2026-05-17)
    - Re-ran `nox -s tests`: quantum conftest fix held, but collection did **not** reach zero.
    - Applied minimal loader/import remediation:
      - removed eager `from . import dataloader, loaders` imports from `src/codex_ml/data/__init__.py`
@@ -147,7 +149,7 @@ Coefficient interpretation (normalized scoring model):
      - `tests/test_loaders.py tests/data/test_loaders.py tests/safety/test_safety_filter_integration.py` → **16 passed**
      - `tests/quantum/test_quantum_testing.py` → **14 passed**
 
-3. **Session C — Baseline Dep Normalization + SHA-Branch Workflow** ✅ COMPLETE (S1044-2026-05-17)
+3. **Session C — Baseline Dep Normalization + SHA-Branch Workflow**  COMPLETE (S1044-2026-05-17)
    - Added missing baseline test deps to `requirements-dev.txt`: `pydantic>=2.4,<3`, `click>=8.1,<9`, `fastapi>=0.135.3,<1`, `httpx>=0.26,<1`, `cryptography>=42.0.0,<47.0.0`.
    - Targeted `collect-only` nox run: **0 ModuleNotFoundError** instances (nox session marked successful).
    - Full `nox -s tests` runtime run: started, runtime failures visible (partial at session end — see Session D).
@@ -182,13 +184,13 @@ Coefficient interpretation (normalized scoring model):
 
 ### C. Promptset Pack (Iterative)
 
-**Prompt 1 — Baseline Capture** ✅ DONE
+**Prompt 1 — Baseline Capture**  DONE
 > Baseline captured: `pytest_plugins` in `tests/quantum/conftest.py` caused hard collection interrupt (0/16,373 tests collected).
 
-**Prompt 2 — Minimal Remediation** ✅ DONE
+**Prompt 2 — Minimal Remediation**  DONE
 > Fixes applied: replaced `pytest_plugins` with direct quantum fixture import, then repaired the loader import contract in `src/codex_ml/data/__init__.py` and `src/codex_ml/connectors/remote.py`. Post-fix nox collection delta: 143 → 56.
 
-**Prompt 3 — Stability Verification** ✅ DONE
+**Prompt 3 — Stability Verification**  DONE
 > `nox -s tests` rerun after the import-contract fix: `_core_loaders.stream_paths` collection cascade is gone; remaining collection blockers are baseline dependency gaps (`pydantic`, `click`, `fastapi.testclient`, `httpx`, `cryptography`). Reporting/accountability updated with exact counts and targeted-pass evidence.
 
 **Prompt 4 — Handoff Closure**

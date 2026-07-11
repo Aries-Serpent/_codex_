@@ -1,4 +1,6 @@
 # CI/CD Validation & Analysis Archive
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 This directory contains historical CI/CD analysis, failure analysis, and validation reports.
 
@@ -17,7 +19,7 @@ This directory contains historical CI/CD analysis, failure analysis, and validat
 - **Back to Archive:** [../INDEX.md](../INDEX.md)
 - **Phase Reports:** [../phases/INDEX.md](../phases/INDEX.md)
 - **Session Reports:** [../sessions/INDEX.md](../sessions/INDEX.md)
-- **Main Documentation:** [../../../README.md](https://github.com/Aries-Serpent/_codex_/blob/main/README.md)
+- **Main Documentation:** [../../../README.md](../../README.md)
 
 ## Purpose
 
@@ -36,4 +38,4 @@ CI/CD reports are moved here once:
 3. No active work references the reports
 4. Content is historical/reference only
 
-**Last Updated:** 2026-01-26
+**Last Updated: 2026-07-11

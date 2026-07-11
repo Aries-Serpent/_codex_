@@ -1,13 +1,15 @@
 # Cognitive Brain Documentation Index
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-05-08T08:34Z (S873)
+**Last Updated: 2026-07-11
 **Total Files:** 29+ (organized from root)
 **Structure:** 4 directories (status, prompts, architecture, root)
 **Phase 9 (PR #4356):** Autonomous Ops — 95% complete · S867–S873
 
 ---
 
-## 🧬 Evolution Tracking
+##  Evolution Tracking
 
 The cognitive brain's complete evolutionary history is documented in the **Evolution Center**:
 
@@ -31,7 +33,7 @@ The cognitive brain's complete evolutionary history is documented in the **Evolu
 
 ---
 
-## 📊 Status Reports
+##  Status Reports
 
 Current cognitive brain status and historical versions.
 
@@ -41,9 +43,9 @@ Current cognitive brain status and historical versions.
 - **[Phase 9 — Autonomous Ops 95% Complete](../evolution/EVOLUTION_TIMELINE.md#phase-9)** — S867–S873 PR #4356 ⭐ CURRENT
 - **[Phase 9 Deliverables](../evolution/PLANSET_REGISTRY.md#phase-9)** — 15 completed, 4 pending post-merge
 - **[CODEBASE_MERMAID_MAPS v1.2.0](../CODEBASE_MERMAID_MAPS.md)** — Sections 13-16 added (Autonomous Privilege, Rate-Limit, Session Handoff, Phase 9 Ops)
-- [Phase 4 Enhancement PoCs](phase4_DESIGN.md) - **Bayesian, Fuzzy Logic, Active Learning** ✅
-- [Phase 3 Production Hardening](status/COGNITIVE_BRAIN_STATUS_PHASE3_COMPLETE.md) - **Quantum Compliance Phase 3 Complete** ✅
-- [Phase 2 Completion Report](phase2_coherence_k1_plan.md) - **Quantum Compliance Phase 2 Complete** ✅
+- [Phase 4 Enhancement PoCs](phase4_DESIGN.md) - **Bayesian, Fuzzy Logic, Active Learning** 
+- [Phase 3 Production Hardening](status/COGNITIVE_BRAIN_STATUS_PHASE3_COMPLETE.md) - **Quantum Compliance Phase 3 Complete** 
+- [Phase 2 Completion Report](phase2_coherence_k1_plan.md) - **Quantum Compliance Phase 2 Complete** 
 - [Phase 1 Completion (100%)](phase1_completion_100_percent.md) - Accuracy 81.8% → 100%
 - [STATUS_V20_PROGRESS.md](status/COGNITIVE_BRAIN_STATUS_V20_PROGRESS.md) - Phase 20 progress
 - [STATUS_V19_COMPLETE.md](status/COGNITIVE_BRAIN_STATUS_V19_COMPLETE.md) - Phase 19 completion
@@ -162,7 +164,7 @@ Additional cognitive brain documentation.
 
 ---
 
-## 🎯 Quick Links
+##  Quick Links
 
 ### For Developers
 - [Phase 2 Completion Report](phase2_coherence_k1_plan.md)
@@ -219,7 +221,7 @@ docs/cognitive_brain/
 **Directories Created:** 4
 **Last Reorganization:** 2026-01-21 (Root Organization Phase 1 & 2)
 
-For additional cognitive brain information, see [.codex/cognitive_brain/](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/cognitive_brain)
+For additional cognitive brain information, see [.codex/cognitive_brain/](../.codex/cognitive_brain)
 
 ---
 
@@ -238,7 +240,7 @@ For additional cognitive brain information, see [.codex/cognitive_brain/](https:
 ### Verified-Mode k₁ Reporting
 - `EXP1BResults.k1_verified` field added — set to k₁ when verified-label mode active, 0.0 otherwise
 - `run_scalability_test()` reports `Max k₁ (verified)` with structural explanation note
-- Authoritative target: single-seed benchmark k₁ ≤ 0.35 ✅ (0.3406)
+- Authoritative target: single-seed benchmark k₁ ≤ 0.35  (0.3406)
 
 ### Tuning Rules
 - `audit_artifacts/poctune/target_patterns.json` — rules for patterns H (×1.4), F (×1.3), E (×1.5), C (×1.2)
@@ -248,7 +250,7 @@ For additional cognitive brain information, see [.codex/cognitive_brain/](https:
 - `.github/agents/quantum-compliance-tuning-agent.md` — production Copilot agent for PoC tuning operations
 
 ### Metrics (maintained)
-- Accuracy: **100.0%** ✅ | Coherence: **0.814** ✅ | k₁: **0.3406** ✅
+- Accuracy: **100.0%**  | Coherence: **0.814**  | k₁: **0.3406** 
 
 ---
 
@@ -257,7 +259,7 @@ For additional cognitive brain information, see [.codex/cognitive_brain/](https:
 ### Scalability Artifacts
 - `audit_artifacts/poctune/iteration_0_baseline.json` — Multi-seed baseline (200×5, no tuning)
 - `audit_artifacts/poctune/iteration_1_results.json` — Tuning iteration 1 (BAYESIAN+FUZZY, 200×5, min acc 95.0%)
-- `audit_artifacts/results/phase4_scalability_verified_1000.json` — Extended 1000×5 validated (min acc 96.8% ✅)
+- `audit_artifacts/results/phase4_scalability_verified_1000.json` — Extended 1000×5 validated (min acc 96.8% )
 
 ### CI Fixes
 - `agents/mental_mapping.py` — 7 test failures fixed: `metadata` param, `total_outcomes`, edge_type None guard, decomposition wording, evidence list, LEARNING node creation, iterative_review scan
@@ -266,8 +268,8 @@ For additional cognitive brain information, see [.codex/cognitive_brain/](https:
 - `docs/cognitive_brain/prompts/COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE4_5.md`
 
 ### Final Phase 4.5 Metrics
-- Accuracy: **100%** ✅ | Coherence: **0.814** ✅ | k₁: **0.332** ✅
-- Scalability (1000×5 verified): Min **96.8%** ✅ | Tuning iter 1 (200×5): Min **95.0%** ✅
+- Accuracy: **100%**  | Coherence: **0.814**  | k₁: **0.332** 
+- Scalability (1000×5 verified): Min **96.8%**  | Tuning iter 1 (200×5): Min **95.0%** 
 
 ---
 
@@ -279,7 +281,7 @@ For additional cognitive brain information, see [.codex/cognitive_brain/](https:
 - 63 new Phase 5 tests (33 agent + 30 monitoring), **346 total**
 
 ### Staging Validation
-- `audit_artifacts/staging/bayesian_staging_report.md` — CODEX_BAYESIAN_MODE+FUZZY simulation: min acc 95.0% ✅, k₁ 0.332 ✅
+- `audit_artifacts/staging/bayesian_staging_report.md` — CODEX_BAYESIAN_MODE+FUZZY simulation: min acc 95.0% , k₁ 0.332 
 
 ### Migration
 - `docs/ops/PYTHON312_MIGRATION_PHASE1_COMPLETE.md` — Python 3.12 migration Phase 1 complete (temp 3.11 support active)
@@ -288,4 +290,4 @@ For additional cognitive brain information, see [.codex/cognitive_brain/](https:
 - `docs/cognitive_brain/prompts/COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE5.md`
 
 ### Phase 5 Metrics
-- Accuracy: **100%** ✅ | Coherence: **0.814** ✅ | k₁: **0.332** ✅ | Tests: **346** ✅
+- Accuracy: **100%**  | Coherence: **0.814**  | k₁: **0.332**  | Tests: **346** 

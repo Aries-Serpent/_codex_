@@ -1,6 +1,8 @@
 # Pre-flight Checklist for Codex Operations
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 > **Purpose**: Address CODEX-005 (planning deficit). Reduces rework from 50% → 15%.  
 > **Usage**: Copy, fill, commit before complex operations.  

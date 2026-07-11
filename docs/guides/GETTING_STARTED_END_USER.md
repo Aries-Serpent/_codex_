@@ -1,10 +1,12 @@
 # Getting Started Guide for End Users & Business Users
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-07-08  
+**Last Updated: 2026-07-08
 **Target Audience:** Business analysts, non-technical users, decision makers, SMEs  
 **Estimated Time:** 10 minutes to first prediction
 
-## 🎯 Your Goal
+##  Your Goal
 
 Use pre-trained models through web interfaces, no coding required. Make predictions, track results, and export insights for business decisions.
 
@@ -36,7 +38,7 @@ Use pre-trained models through web interfaces, no coding required. Make predicti
 1. **Go to Models** → You'll see available pre-trained models:
    - 📧 Sentiment Analyzer
    - 🔍 Text Classifier
-   - 📊 Anomaly Detector
+   -  Anomaly Detector
    - And more...
 
 2. **Click a Model** to view details:
@@ -105,10 +107,10 @@ Use pre-trained models through web interfaces, no coding required. Make predicti
 
 **Result:**
 ```
-✅ 1000 reviews processed
-✅ 78% positive sentiment
-✅ 15% negative sentiment  
-✅ 7% neutral
+ 1000 reviews processed
+ 78% positive sentiment
+ 15% negative sentiment  
+ 7% neutral
 → Share dashboard link with team
 ```
 
@@ -125,9 +127,9 @@ Use pre-trained models through web interfaces, no coding required. Make predicti
 
 **Result:**
 ```
-✅ Billing Issues: 245 tickets
-✅ Technical Support: 428 tickets
-✅ Feature Requests: 187 tickets
+ Billing Issues: 245 tickets
+ Technical Support: 428 tickets
+ Feature Requests: 187 tickets
 → Auto-route to teams
 ```
 
@@ -145,9 +147,9 @@ Use pre-trained models through web interfaces, no coding required. Make predicti
 
 **Result:**
 ```
-✅ 5000 products scanned
+ 5000 products scanned
 ⚠️ 12 anomalies detected
-✅ Manual review queue ready
+ Manual review queue ready
 → QA team investigates
 ```
 
@@ -161,9 +163,9 @@ Use pre-trained models through web interfaces, no coding required. Make predicti
 1. Go to Results → "Share"
 2. Select predictions to include
 3. Choose report format:
-   - 📊 Dashboard (interactive)
+   -  Dashboard (interactive)
    - 📄 PDF (printable)
-   - 📊 PowerPoint (presentation)
+   -  PowerPoint (presentation)
 4. Enter recipient emails
 5. Click "Send"
 
@@ -191,14 +193,14 @@ Use pre-trained models through web interfaces, no coding required. Make predicti
 Alert: Daily Sentiment Summary
 📧 Send to: team@company.com
 📅 Time: 9:00 AM daily
-📊 Include: Sentiment trends, top issues
+ Include: Sentiment trends, top issues
 ```
 
 ---
 
 ## Phase 5: Best Practices & Tips
 
-### ✅ Do's
+###  Do's
 
 - **Prepare clean data**: Remove extra spaces, fix formatting
 - **Check confidence scores**: High confidence (>90%) = more reliable
@@ -208,7 +210,7 @@ Alert: Daily Sentiment Summary
 - **Save important results**: Use star/folder feature
 - **Ask for help**: Click "?" on any page for assistance
 
-### ❌ Don'ts
+###  Don'ts
 
 - **Don't trust 100%**: All models make mistakes sometimes
 - **Don't upload sensitive data**: PII, financial info, etc.
@@ -217,7 +219,7 @@ Alert: Daily Sentiment Summary
 - **Don't edit raw results**: Keep original for audit trail
 - **Don't process identical data repeatedly**: Use saved results instead
 
-### 💡 Pro Tips
+###  Pro Tips
 
 **Tip 1: Batch Processing is Faster**
 - Processing 1 item: 1-2 seconds
@@ -226,7 +228,7 @@ Alert: Daily Sentiment Summary
 
 **Tip 2: Look for Confidence Scores**
 ```
-✅ 95% confidence = Very reliable
+ 95% confidence = Very reliable
 ⚠️ 70% confidence = Generally reliable
 ⚠️⚠️ 50% confidence = Be cautious
 ```
@@ -255,10 +257,10 @@ Alert: Daily Sentiment Summary
 
 **How to fix:**
 ```
-❌ customer_reviews.pdf → Download as CSV
-❌ data.txt (no headers) → Add headers: text, date, category
-❌ huge_file_500mb.csv → Split into 5 files of 100mb each
-✅ feedback.csv → Ready to upload
+ customer_reviews.pdf → Download as CSV
+ data.txt (no headers) → Add headers: text, date, category
+ huge_file_500mb.csv → Split into 5 files of 100mb each
+ feedback.csv → Ready to upload
 ```
 
 ### Issue: "Predictions Look Wrong"
@@ -297,7 +299,7 @@ Alert: Daily Sentiment Summary
 
 ## Phase 7: Getting Help
 
-### 📚 Learning Resources
+###  Learning Resources
 
 - **Video Tutorials**: [YouTube Channel](https://youtube.com/codex-ml)
   - 2-5 minute walkthroughs
@@ -362,10 +364,10 @@ Alert: Daily Sentiment Summary
 ### Data Privacy
 
 **Your Data:**
-- ✅ Your predictions are private
-- ✅ We don't share your data with others
-- ✅ You can delete all data anytime
-- ✅ GDPR/CCPA compliant
+-  Your predictions are private
+-  We don't share your data with others
+-  You can delete all data anytime
+-  GDPR/CCPA compliant
 
 **Download Your Data:**
 1. Settings → Data → "Download My Data"

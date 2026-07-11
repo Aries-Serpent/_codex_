@@ -1,6 +1,8 @@
 # Configuration Troubleshooting Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-01-09  
+**Last Updated: 2026-07-11
 **PS-01 Status:** Cycle 3 (Validation & Testing)
 
 ---
@@ -523,5 +525,5 @@ When reporting configuration-related bugs, include:
 ---
 
 **Maintained By:** PS-01 Configuration Consolidation  
-**Last Updated:** 2026-01-09  
+**Last Updated: 2026-07-11
 **Questions:** File an issue with "configuration" label

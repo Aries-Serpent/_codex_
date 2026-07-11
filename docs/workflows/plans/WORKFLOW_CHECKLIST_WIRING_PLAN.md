@@ -1,6 +1,8 @@
 # Workflow Execution Checklist Wiring Plan
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 **Version:** 1.0.0  
 **Status:** 🟡 Drafted (S228)  
@@ -13,7 +15,7 @@
 
 This plan defines an **explicit checklist-based workflow execution gate** that:
 - Lets Copilot Coding Agent **check off only the workflows it needs** during wrap-up
-- Posts an **execution-plan comment** listing which workflows are allowed (✅) vs skipped (⏭️)
+- Posts an **execution-plan comment** listing which workflows are allowed () vs skipped (⏭️)
 - Target workflows must **opt in** (via a `gate-check` step) to actually skip execution
 - Is approved by the **owner approval gate** before execution proceeds
 - Prevents unintended workflow runs from generating artefacts, comments, or commits
@@ -32,7 +34,7 @@ This plan defines an **explicit checklist-based workflow execution gate** that:
 flowchart TD
     A[Copilot Agent Wraps Up] -->|updates PR body| B[Workflow Execution Checklist]
     B -->|owner reviews| C{Owner Approval Gate}
-    C -->|approved| D[workflow-execution-gate.yml\nM1 ✅ DONE]
+    C -->|approved| D[workflow-execution-gate.yml\nM1  DONE]
     D -->|reads checklist| E{Parse PR body}
     E -->|checked item| F[Post: WILL RUN notice]
     E -->|unchecked item| G[Post: SKIPPED notice]
@@ -69,7 +71,7 @@ the Copilot wrap-up phase.
 <!-- gate-managed-by: workflow-execution-gate.yml -->
 <!-- gate-version: 1.0.0 -->
 
-### ✅ Always Required — fire automatically on every push (cannot be skipped)
+###  Always Required — fire automatically on every push (cannot be skipped)
 - [x] pre-merge-validation.yml — Pre-merge checks (always required)
 - [x] comment-review-gate.yml — Comment review gate (always required)
 - [x] deferral-language-gate.yml — Deferral language guard (always required)
@@ -92,7 +94,7 @@ the Copilot wrap-up phase.
 ### 📄 Opt-In: Documentation
 - [ ] documentation-link-checker.yml — Documentation link checker (opt-in: docs changes)
 
-### ⚙️ Infrastructure (Admin Only)
+###  Infrastructure (Admin Only)
 - [ ] genesis-bootstrap.yml — Genesis protocol (ADMIN ONLY — never check)
 - [ ] branch-divergence-monitor.yml — Branch divergence (auto, not Copilot-triggered)
 ```
@@ -180,7 +182,7 @@ jobs:
 
           echo "workflows_to_run=${CHECKED%,}" >> "$GITHUB_OUTPUT"
           echo "workflows_to_skip=${UNCHECKED%,}" >> "$GITHUB_OUTPUT"
-          echo "✅ Workflows to run: ${CHECKED}"
+          echo " Workflows to run: ${CHECKED}"
           echo "⏭️ Workflows to skip: ${UNCHECKED}"
 
   post-gate-summary:
@@ -198,7 +200,7 @@ jobs:
           TO_SKIP="${{ needs.parse-checklist.outputs.workflows_to_skip }}"
 
           BODY="<!-- workflow-execution-gate:${PR} -->
-          ## ⚙️ Workflow Execution Gate — Execution Plan
+          ##  Workflow Execution Gate — Execution Plan
 
           | Status | Workflow |
           |--------|---------|"
@@ -206,7 +208,7 @@ jobs:
           IFS=',' read -ra RUN_LIST <<< "$TO_RUN"
           for wf in "${RUN_LIST[@]}"; do
             BODY="${BODY}
-          | ✅ WILL RUN | \`${wf}\` |"
+          |  WILL RUN | \`${wf}\` |"
           done
 
           IFS=',' read -ra SKIP_LIST <<< "$TO_SKIP"
@@ -246,7 +248,7 @@ the final session wrap-up step:
 
     # Only inject if section doesn't exist yet
     if echo "$BODY" | grep -q "## 🔄 Workflow Execution Checklist"; then
-      echo "✅ Workflow Execution Checklist already present — skipping injection"
+      echo " Workflow Execution Checklist already present — skipping injection"
       exit 0
     fi
 
@@ -256,12 +258,12 @@ the final session wrap-up step:
 <!-- gate-managed-by: workflow-execution-gate.yml -->
 <!-- gate-version: 1.0.0 -->
 
-### ✅ Always Required / Always Active
+###  Always Required / Always Active
 - [x] pre-merge-validation.yml — Pre-merge checks (always required)
 - [x] resilient_validation.yml — Resilient validation
 - [ ] nox_gates.yml — Nox test gates
 
-### 🔒 Opt-In: Security & Quality
+###  Opt-In: Security & Quality
 - [x] comment-review-gate.yml — Comment review gate (always required)
 - [ ] security-scanning-suite.yml — Full security audit
 - [x] deferral-language-gate.yml — Deferral language guard
@@ -269,7 +271,7 @@ the final session wrap-up step:
 ### 📄 Opt-In: Documentation
 - [ ] documentation-link-checker.yml — Documentation link checker
 
-### 🤖 Always Active Automation
+###  Always Active Automation
 - [x] agent-auth-delegation.yml — Agent auth delegation (always required)
 - [x] copilot-agent-checkin.yml — Agent check-in (always required)
 - [x] cost-gate.yml — Cost governance gate
@@ -279,7 +281,7 @@ the final session wrap-up step:
 
     UPDATED_BODY="${BODY}${CHECKLIST}"
     gh pr edit "$PR" --repo "${{ github.repository }}" --body "$UPDATED_BODY"
-    echo "✅ Workflow Execution Checklist injected into PR #${PR}"
+    echo " Workflow Execution Checklist injected into PR #${PR}"
 ```
 
 ---
@@ -313,7 +315,7 @@ For workflows that should respect the gate (opt-in, not always-required), add th
       echo "⏭️ ${WORKFLOW_NAME} is unchecked in Workflow Execution Checklist — skipping"
     else
       echo "skip=false" >> "$GITHUB_OUTPUT"
-      echo "✅ ${WORKFLOW_NAME} is checked (or not in checklist) — proceeding"
+      echo " ${WORKFLOW_NAME} is checked (or not in checklist) — proceeding"
     fi
 
 - name: Skip guard
@@ -444,8 +446,8 @@ escalation comments to prevent cascade flooding:
 
 | Milestone | Task | Owner | Status |
 |-----------|------|-------|--------|
-| M1 | Create `workflow-execution-gate.yml` | Copilot | ✅ Done (S228) |
-| M2 | Inject checklist in `agent-auth-delegation.yml` wrap-up | Copilot | ✅ Done (S228) |
+| M1 | Create `workflow-execution-gate.yml` | Copilot |  Done (S228) |
+| M2 | Inject checklist in `agent-auth-delegation.yml` wrap-up | Copilot |  Done (S228) |
 | M3 | Add opt-in gate check to `security-scanning-suite.yml` | Copilot | ⬜ Pending |
 | M4 | Add opt-in gate check to `documentation-link-checker.yml` | Copilot | ⬜ Pending |
 | M5 | Add opt-in gate check to `nox_gates.yml` | Copilot | ⬜ Pending |
@@ -518,7 +520,7 @@ Each PDA iteration is recorded as a JSONL entry in `.codex/aftermath/pda_iterati
 
 | Pattern ID | Pattern | Outcome | Iteration |
 |-----------|---------|---------|-----------|
-| P-WEC-001 | Checklist injected by agent-auth-delegation on first session | ✅ Works | 1 |
+| P-WEC-001 | Checklist injected by agent-auth-delegation on first session |  Works | 1 |
 | P-WEC-002 | Gate triggers on workflow_dispatch (Copilot wrap-up) | 🔮 Untested | — |
 | P-WEC-003 | Gate triggers on pull_request_review (owner approval) | 🔮 Untested | — |
 | P-WEC-004 | Unchecked workflow correctly skipped via gate | 🔮 Untested | — |

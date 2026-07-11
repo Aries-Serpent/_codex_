@@ -1,6 +1,8 @@
 # Open Questions by Capability
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 - **Q0001** — What are the possible causes, and how can this be resolved while preserving intended functionality?  
   _source:_ `docs/reference/audit_prompt.md:24`

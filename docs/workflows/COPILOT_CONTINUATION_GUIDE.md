@@ -1,6 +1,8 @@
 # Copilot Continuation System - Complete Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## Table of Contents
 
@@ -131,7 +133,7 @@ Posts Status Comment
 **On `@copilot continue`**:
 1. Load prompt from `.github/copilot-prompts/active/PR-{number}-followup.md`
 2. Execute Priority 1 tasks with validation
-3. Update prompt with completed tasks (✅)
+3. Update prompt with completed tasks ()
 4. Post status comment
 5. Generate new prompt if work remains
 
@@ -360,13 +362,13 @@ cat .github/copilot-prompts/templates/pr-continuation.md
 
 ### 1. Prompt Quality
 
-✅ **DO**:
+ **DO**:
 - Be explicit with file paths, commands, expected outputs
 - Include validation steps for every task
 - Document failure resolution plans
 - Link to all relevant resources
 
-❌ **DON'T**:
+ **DON'T**:
 - Leave tasks vague or ambiguous
 - Skip validation commands
 - Omit failure scenarios
@@ -405,7 +407,7 @@ MANDATORY 5 passes before concluding:
 ### 4. Prompt Maintenance
 
 - Update after every session
-- Mark completed tasks with ✅
+- Mark completed tasks with 
 - Document blockers/issues
 - Add new tasks as discovered
 - Commit frequently

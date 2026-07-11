@@ -1,9 +1,11 @@
 # Phase 6 Batch 2 — Policy Compliance Checklist for Contributors
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Version:** 1.0.0  
 **Status:** FINAL  
 **Audience:** All contributors (human & AI)  
-**Last Updated:** 2026-02-22
+**Last Updated: 2026-07-11
 
 ---
 
@@ -24,10 +26,10 @@ This must be completed within the first 5 minutes of your session. Skipping this
 ### Step 1: Review All Bot Comments ✓
 
 **Action:** Go to the PR and read every comment from:
-- ✅ `copilot-pull-request-reviewer[bot]` — Code review feedback
-- ✅ `github-advanced-security[bot]` — Security alerts (CodeQL, secret scanning)
-- ✅ `github-actions[bot]` — CI/CD status and gate failures
-- ✅ **@mbaetiong** — Maintainer comments (BLOCKING — must reply to each one)
+-  `copilot-pull-request-reviewer[bot]` — Code review feedback
+-  `github-advanced-security[bot]` — Security alerts (CodeQL, secret scanning)
+-  `github-actions[bot]` — CI/CD status and gate failures
+-  **@mbaetiong** — Maintainer comments (BLOCKING — must reply to each one)
 
 **Evidence Required:**
 ```
@@ -123,25 +125,25 @@ git push --force-with-lease
 
 ```
 BLOCKED PHRASES (hard block — PR will not merge):
-  ❌ "This is pre-existing" / "Pre-existing issue"
-  ❌ "Out of scope" / "Not related to my PR"
-  ❌ "Not my responsibility"
-  ❌ "This is a future PR" / "Defer to next PR"
-  ❌ "I won't fix this" / "Not fixing this"
+   "This is pre-existing" / "Pre-existing issue"
+   "Out of scope" / "Not related to my PR"
+   "Not my responsibility"
+   "This is a future PR" / "Defer to next PR"
+   "I won't fix this" / "Not fixing this"
 ```
 
 **ALLOWED ALTERNATIVES (use these instead):**
 
 ```
-✅ INSTEAD OF "This is pre-existing":
+ INSTEAD OF "This is pre-existing":
    "This issue exists in the codebase and is not related to my changes.
     It is documented in issue #XYZ and should be addressed in a separate PR."
 
-✅ INSTEAD OF "Out of scope":
+ INSTEAD OF "Out of scope":
    "This falls outside the scope of this PR (which addresses X).
     I've created issue #XYZ to track it separately."
 
-✅ INSTEAD OF "Not my responsibility":
+ INSTEAD OF "Not my responsibility":
    "This requires changes outside my domain of expertise.
     I've escalated to @person-X in issue #XYZ."
 ```
@@ -149,7 +151,7 @@ BLOCKED PHRASES (hard block — PR will not merge):
 **Enforcement:**
 ```
 CI GATE: deferral-language-gate.yml
-STATUS: ❌ HARD BLOCK (PR will not merge)
+STATUS:  HARD BLOCK (PR will not merge)
 OVERRIDE: Owner approval required (@mbaetiong)
 ```
 
@@ -169,12 +171,12 @@ OVERRIDE: Owner approval required (@mbaetiong)
 **MANDATE: You must fix ALL encountered issues, not just your assigned work.**
 
 **What counts as an "issue"?**
-- ❌ Test failure in any module
-- ❌ Linting error (`pylint`, `flake8`, `mypy`)
-- ❌ Type checking error
-- ❌ Documentation broken link
-- ❌ Security vulnerability
-- ❌ Coverage regression
+-  Test failure in any module
+-  Linting error (`pylint`, `flake8`, `mypy`)
+-  Type checking error
+-  Documentation broken link
+-  Security vulnerability
+-  Coverage regression
 
 **Evidence Required:**
 
@@ -195,10 +197,10 @@ pytest --tb=short 2>&1 | grep -c FAILED  # Should be 0
 Format: "Fix [CATEGORY]: [Description] ([related-to-main-work])"
 
 Examples:
-  ✅ "Fix test failure: test_auth_invalid_token (ensures PR doesn't break auth)"  # pragma: allowlist secret
-  ✅ "Fix linting error: unused import in utils.py (cleanup before PR merge)"
-  ✅ "Fix broken doc link: CONTRIBUTING.md → guides/setup.md (improves contributor experience)"
-  ✅ "Fix security issue: SQL injection in query builder (critical vulnerability)"
+   "Fix test failure: test_auth_invalid_token (ensures PR doesn't break auth)"  # pragma: allowlist secret
+   "Fix linting error: unused import in utils.py (cleanup before PR merge)"
+   "Fix broken doc link: CONTRIBUTING.md → guides/setup.md (improves contributor experience)"
+   "Fix security issue: SQL injection in query builder (critical vulnerability)"
 ```
 
 **Evidence Required:**
@@ -219,12 +221,12 @@ Examples:
 **MANDATE: Leave codebase better than you found it.**
 
 **What counts as "improvement"?**
-- ✅ Add type hints to untyped functions
-- ✅ Refactor duplicated code
-- ✅ Improve variable names (clarity)
-- ✅ Add docstrings to undocumented functions
-- ✅ Increase test coverage
-- ✅ Optimize performance bottlenecks
+-  Add type hints to untyped functions
+-  Refactor duplicated code
+-  Improve variable names (clarity)
+-  Add docstrings to undocumented functions
+-  Increase test coverage
+-  Optimize performance bottlenecks
 
 **Evidence Required:**
 ```
@@ -242,10 +244,10 @@ Examples:
 Format: "Improve [CATEGORY]: [Description]"
 
 Examples:
-  ✅ "Improve typing: Add type hints to auth module functions"
-  ✅ "Improve docs: Add docstring to parse_config function"
-  ✅ "Improve test coverage: Add edge case tests for token validation"  # pragma: allowlist secret
-  ✅ "Improve performance: Cache config parsing results (fixes N+1 query)"
+   "Improve typing: Add type hints to auth module functions"
+   "Improve docs: Add docstring to parse_config function"
+   "Improve test coverage: Add edge case tests for token validation"  # pragma: allowlist secret
+   "Improve performance: Cache config parsing results (fixes N+1 query)"
 ```
 
 ---
@@ -374,11 +376,11 @@ Final CI Status:
 
 | Gate | Trigger | Enforcement | Override |
 |------|---------|------------|----------|
-| Deferral Language | PR body/commits | ❌ HARD BLOCK | Owner approval |
-| Pre-Session Review | Bot comments unaddressed | ❌ HARD BLOCK | N/A |
-| Test Coverage | Coverage < 80% | ❌ HARD BLOCK | N/A |
-| Security Scan | High/critical issues | ❌ HARD BLOCK | Owner approval |
-| Policy Compliance | Gate failures | ❌ HARD BLOCK | Owner approval |
+| Deferral Language | PR body/commits |  HARD BLOCK | Owner approval |
+| Pre-Session Review | Bot comments unaddressed |  HARD BLOCK | N/A |
+| Test Coverage | Coverage < 80% |  HARD BLOCK | N/A |
+| Security Scan | High/critical issues |  HARD BLOCK | Owner approval |
+| Policy Compliance | Gate failures |  HARD BLOCK | Owner approval |
 
 ### Accountability Tracking
 
@@ -426,6 +428,6 @@ python scripts/ci/generate_accountability_report.py --session-id $SESSION_ID
 
 ---
 
-**STATUS: ✅ POLICY COMPLIANCE CHECKLIST COMPLETE AND OPERATIONAL**
+**STATUS:  POLICY COMPLIANCE CHECKLIST COMPLETE AND OPERATIONAL**
 
 All governance requirements from CODEBASE_AGENCY_POLICY.md (v1.1.0) are now enforceable via this checklist and CI/CD gates.

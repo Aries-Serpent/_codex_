@@ -1,4 +1,6 @@
 # AI Emergence Storyboard — The _codex_ Story
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Last Updated**: 2026-06-22  
 **Version**: 2.0.0  
@@ -254,7 +256,7 @@ These align with the state of the art in cognitive AI architecture (2026):
 
 ---
 
-## 📊 Storyboard Summary
+##  Storyboard Summary
 
 ```text
 2025-Q4          Foundation Era
@@ -300,4 +302,4 @@ These align with the state of the art in cognitive AI architecture (2026):
 - [Planset Registry](PLANSET_REGISTRY.md) — Queryable planset catalog
 - [Cognitive Evolution Tree](COGNITIVE_EVOLUTION_TREE.md) — Visual process mapping
 - [Project Roadmap](../ROADMAP.md) — Forward-looking plans
-- [Agent Evolution Map](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/cognitive_brain/COGNITIVE_BRAIN_AGENT_EVOLUTION_MAP.md) — Detailed agent lineage
+- [Agent Evolution Map](../.codex/cognitive_brain/COGNITIVE_BRAIN_AGENT_EVOLUTION_MAP.md) — Detailed agent lineage

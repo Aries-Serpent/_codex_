@@ -1,4 +1,6 @@
 # PR #4393 — Session Diagram
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Artifact Retrieved<br/>codeql-alerts-open-codeql-25648728868<br/>249 total alerts, S930 Batch 1<br/>Resolve top 50 fixable alerts'}}%%

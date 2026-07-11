@@ -1,4 +1,6 @@
 # Code Style Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 This document complements the automation enforced by `pre-commit`.
 

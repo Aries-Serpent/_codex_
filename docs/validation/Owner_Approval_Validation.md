@@ -1,4 +1,7 @@
 # Owner Approval Validation — 24h Duration Window
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
 
 This runbook verifies the OWNER approval window for cost-incurring workflows with a 24h duration. CI workflows remain disabled by policy; validation runs locally.

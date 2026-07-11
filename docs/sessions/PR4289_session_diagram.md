@@ -1,6 +1,8 @@
 # PR #4289 — Session Diagram: Full Scope of What Was Accomplished
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-> **Last updated: 2026-05-06T02:11Z — S296 active**
+> **Last updated: 2026-07-11
 > **Stats: 64 commits · 118 files changed · 2,050 insertions(+) · 384 deletions(-)**
 > **Sessions: S293 (initial) → S294 → S295 → S296 (current)**
 
@@ -84,7 +86,7 @@ flowchart TD
         W8E["PDA entry 2026-05-06 added\nPattern 25 updated every commit"]
     end
 
-    WAVE8 --> DONE(["✅ PR #4289 HEAD\nAll CodeQL alerts addressed\nAll CI gates green\nruff: 0 violations\nsync_tracked_files: consistent"])
+    WAVE8 --> DONE([" PR #4289 HEAD\nAll CodeQL alerts addressed\nAll CI gates green\nruff: 0 violations\nsync_tracked_files: consistent"])
 ```
 
 ---
@@ -110,7 +112,7 @@ stateDiagram-v2
 
     DefinitiveFix --> Closed : CodeQL re-scan\nno longer flagged
 
-    Closed --> [*] : Alert resolved ✅
+    Closed --> [*] : Alert resolved 
 
     note right of Open
         13330-13332 weak-hashing
@@ -153,7 +155,7 @@ sequenceDiagram
     FastAPI->>Validator: _validate_path_segment("../../etc", "tenant_id")
     Note over Validator: os.path.basename("../../etc") = "etc"<br/>BUT "etc" != "../../etc" → mismatch
     Validator-->>FastAPI: HTTPException(400) "Invalid tenant_id"
-    FastAPI-->>Client: 400 Bad Request ❌ BLOCKED
+    FastAPI-->>Client: 400 Bad Request  BLOCKED
 
     Client->>FastAPI: DELETE /index/my-index?tenant_id=valid_tenant
     FastAPI->>Validator: _validate_path_segment("valid_tenant", "tenant_id")
@@ -165,7 +167,7 @@ sequenceDiagram
     Guard-->>FastAPI: "/rag-files" == base ✓ CONTAINED
     FastAPI->>FS: rmtree("/rag-files/valid_tenant")
     FS-->>FastAPI: success
-    FastAPI-->>Client: 200 OK ✅ ALLOWED
+    FastAPI-->>Client: 200 OK  ALLOWED
 ```
 
 ---
@@ -251,11 +253,11 @@ classDiagram
 ## 5. Security Remediation Map — All 68 CodeQL Alerts
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing "All Alerts at PR Open — 68 Total", "🔴 py/path-injection\n13339–13344 · 13355–13357\n13359–13361 · 13385–13391\n18 alerts · rag_api.py"'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing "All Alerts at PR Open — 68 Total", " py/path-injection\n13339–13344 · 13355–13357\n13359–13361 · 13385–13391\n18 alerts · rag_api.py"'}}%%
 flowchart LR
     subgraph OPEN["All Alerts at PR Open — 68 Total"]
-        A1["🔴 py/path-injection\n13339–13344 · 13355–13357\n13359–13361 · 13385–13391\n18 alerts · rag_api.py"]
-        A2["🔴 py/weak-sensitive-data-hashing\n13330–13332\n3 alerts · security.py"]
+        A1[" py/path-injection\n13339–13344 · 13355–13357\n13359–13361 · 13385–13391\n18 alerts · rag_api.py"]
+        A2[" py/weak-sensitive-data-hashing\n13330–13332\n3 alerts · security.py"]
         A3["🟡 py/unused-local-variable\n13349\n1 alert · test file"]
         A4["🟡 py/empty-except\n13377–13382\n6 alerts · 4 test files"]
         A5["⚠️ Warning-level × 40\nunreachable · dead-branch\nweak-pattern · implicit-concat\nmutable-default · attr-overwrite"]
@@ -270,11 +272,11 @@ flowchart LR
     end
 
     subgraph CLOSED["Closed — 68 / 68"]
-        R1["✅ Path-injection\n18 alerts closed"]
-        R2["✅ Weak-hashing\n3 alerts closed"]
-        R3["✅ Unused-var\n1 alert closed"]
-        R4["✅ Empty-except\n6 alerts closed"]
-        R5["✅ 40 Warnings\nclosed"]
+        R1[" Path-injection\n18 alerts closed"]
+        R2[" Weak-hashing\n3 alerts closed"]
+        R3[" Unused-var\n1 alert closed"]
+        R4[" Empty-except\n6 alerts closed"]
+        R5[" 40 Warnings\nclosed"]
     end
 
     A1 --> F1 --> R1
@@ -307,7 +309,7 @@ flowchart LR
 
     CLASSIFY -->|functional call| N7["except Exception\nas _err:\n# allow failure\npass"]
 
-    N1 & N2 & N3 & N4 & N5 & N6 & N7 --> RESULT["✅ 113 instances narrowed\n64 files · no silent swallows\nCodeQL + ruff clean"]
+    N1 & N2 & N3 & N4 & N5 & N6 & N7 --> RESULT[" 113 instances narrowed\n64 files · no silent swallows\nCodeQL + ruff clean"]
 ```
 
 ---
@@ -327,9 +329,9 @@ flowchart TD
 
     subgraph AFTER["auto_fix_common_issues.py — After PR"]
         A_N["18 auto-fixable patterns\n+2 promoted"]
-        A_P6["P6 — Test Assertions ✅\nauto-fixable\nnarrow-context script"]
-        A_P7["P7 — Redundant Imports ✅\nauto-fixable\ntop-level importlib replacement"]
-        A_P17["P17 — CI SHA Drift ✅\ngit merge-base ancestor check\nzero false-positives"]
+        A_P6["P6 — Test Assertions \nauto-fixable\nnarrow-context script"]
+        A_P7["P7 — Redundant Imports \nauto-fixable\ntop-level importlib replacement"]
+        A_P17["P17 — CI SHA Drift \ngit merge-base ancestor check\nzero false-positives"]
         A_MANUAL["manual_review_patterns\nP6/P7 removed"]
     end
 
@@ -343,34 +345,34 @@ flowchart TD
 ## 8. CI Health — Full Check Inventory Before vs After
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing "Before PR — Failing / Broken", "❌ Cleanup Stale PR Comments\nSyntaxError Python 3.12\nglobal-before-use"'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing "Before PR — Failing / Broken", " Cleanup Stale PR Comments\nSyntaxError Python 3.12\nglobal-before-use"'}}%%
 flowchart LR
     subgraph BEFORE["Before PR — Failing / Broken"]
         direction TB
-        B1["❌ Cleanup Stale PR Comments\nSyntaxError Python 3.12\nglobal-before-use"]
-        B2["❌ CodeQL 13330–13391\n~68 security alerts total"]
-        B3["❌ Auto-Fix PR Check\n116 issues / exit 1"]
-        B4["❌ Pre-Merge Validation\nCancelled by failures"]
-        B5["❌ Fast Validation\nruff violations + sync drift"]
-        B6["❌ Merge Readiness 78/100"]
-        B7["❌ github-code-quality bot\n15+ findings across PR"]
-        B8["❌ Deferral-language-gate\nfailing on PR description"]
-        B9["❌ Action Version Enforcer\nstale checkout/setup versions"]
-        B10["❌ import_check.py\nsilent ImportError swallow"]
+        B1[" Cleanup Stale PR Comments\nSyntaxError Python 3.12\nglobal-before-use"]
+        B2[" CodeQL 13330–13391\n~68 security alerts total"]
+        B3[" Auto-Fix PR Check\n116 issues / exit 1"]
+        B4[" Pre-Merge Validation\nCancelled by failures"]
+        B5[" Fast Validation\nruff violations + sync drift"]
+        B6[" Merge Readiness 78/100"]
+        B7[" github-code-quality bot\n15+ findings across PR"]
+        B8[" Deferral-language-gate\nfailing on PR description"]
+        B9[" Action Version Enforcer\nstale checkout/setup versions"]
+        B10[" import_check.py\nsilent ImportError swallow"]
     end
 
     subgraph AFTER["After PR — All Addressed"]
         direction TB
-        A1["✅ Cleanup Stale PR Comments\nglobal decl at top of main()"]
-        A2["✅ CodeQL 0 open alerts\nall 68 definitively addressed"]
-        A3["✅ Auto-Fix PR Check\n0 issues / exit 0"]
-        A4["✅ Pre-Merge Validation\ngreen on HEAD"]
-        A5["✅ Fast Validation\n0 ruff violations + sync clean"]
-        A6["✅ Merge Readiness ~95/100"]
-        A7["✅ github-code-quality bot\nall findings fixed + commented"]
-        A8["✅ Deferral-language-gate\nclean PR description"]
-        A9["✅ Action Version Enforcer\n162 workflow files compliant"]
-        A10["✅ import_check.py\nfailures appended to list"]
+        A1[" Cleanup Stale PR Comments\nglobal decl at top of main()"]
+        A2[" CodeQL 0 open alerts\nall 68 definitively addressed"]
+        A3[" Auto-Fix PR Check\n0 issues / exit 0"]
+        A4[" Pre-Merge Validation\ngreen on HEAD"]
+        A5[" Fast Validation\n0 ruff violations + sync clean"]
+        A6[" Merge Readiness ~95/100"]
+        A7[" github-code-quality bot\nall findings fixed + commented"]
+        A8[" Deferral-language-gate\nclean PR description"]
+        A9[" Action Version Enforcer\n162 workflow files compliant"]
+        A10[" import_check.py\nfailures appended to list"]
     end
 
     BEFORE --> AFTER
@@ -489,7 +491,7 @@ flowchart TD
         F11["pyproject.toml"]
     end
 
-    FILES --> DEP_OUT(["✅ All 10 Dependabot PRs\nconsolidated in one PR"])
+    FILES --> DEP_OUT([" All 10 Dependabot PRs\nconsolidated in one PR"])
 ```
 
 ---
@@ -885,11 +887,11 @@ flowchart LR
     A5 --> F5
 
     subgraph RESULT["Result"]
-        R1["All path-injection\nalerts closed ✅"]
-        R2["All weak-hashing\nalerts closed ✅"]
-        R3["Unused-var\nalert closed ✅"]
-        R4["Empty-except\nalerts closed ✅"]
-        R5["40 Warning alerts\nclosed ✅"]
+        R1["All path-injection\nalerts closed "]
+        R2["All weak-hashing\nalerts closed "]
+        R3["Unused-var\nalert closed "]
+        R4["Empty-except\nalerts closed "]
+        R5["40 Warning alerts\nclosed "]
     end
 
     F1 --> R1
@@ -916,7 +918,7 @@ flowchart LR
     CLASSIFY -->|branch-cov test| N6["except Exception as _err:\nintentional comment"]
     CLASSIFY -->|functional body| N7["except Exception as _err:"]
 
-    N1 --> RESULT["Specific type\nno silent swallow\n✅ 113 fixed"]
+    N1 --> RESULT["Specific type\nno silent swallow\n 113 fixed"]
     N2 --> RESULT
     N3 --> RESULT
     N4 --> RESULT
@@ -968,14 +970,14 @@ flowchart LR
     end
 
     subgraph AFTER["After PR — Passing / Addressed"]
-        A1["Cleanup Stale PR Comments\nglobal decl fixed ✅"]
-        A2["CodeQL — all alerts addressed\nm.group taint-break + PBKDF2 ✅"]
-        A3["Auto-Fix PR Check\n0 issues / exit 0 ✅"]
-        A4["Pre-Merge Validation\ngreen ✅"]
-        A5["Fast Validation\ngreen ✅"]
-        A6["Merge Readiness ~95/100 ✅"]
-        A7["github-code-quality bot\nall findings fixed ✅"]
-        A8["Deferral-language-gate\npassed ✅"]
+        A1["Cleanup Stale PR Comments\nglobal decl fixed "]
+        A2["CodeQL — all alerts addressed\nm.group taint-break + PBKDF2 "]
+        A3["Auto-Fix PR Check\n0 issues / exit 0 "]
+        A4["Pre-Merge Validation\ngreen "]
+        A5["Fast Validation\ngreen "]
+        A6["Merge Readiness ~95/100 "]
+        A7["github-code-quality bot\nall findings fixed "]
+        A8["Deferral-language-gate\npassed "]
     end
 
     BEFORE --> AFTER
@@ -1067,10 +1069,10 @@ flowchart LR
     S296_START([S296 Start\n2026-05-06T02:11Z\ncomment 4384471249]) --> VERIFY
 
     subgraph VERIFY["Verification Pass"]
-        V1[ruff src/ → 0 violations ✅]
-        V2[sync_tracked_files → consistent ✅]
-        V3[merge conflicts → 0 ✅]
-        V4[empty-except 13377-13382 → fixed ✅]
+        V1[ruff src/ → 0 violations ]
+        V2[sync_tracked_files → consistent ]
+        V3[merge conflicts → 0 ]
+        V4[empty-except 13377-13382 → fixed ]
     end
 
     VERIFY --> ACTIONS
@@ -1104,9 +1106,9 @@ stateDiagram-v2
 
     state P1_ACTIVE {
         [*] --> P1_sync : check sync_tracked_files
-        P1_sync --> P1_ruff : all consistent ✅
-        P1_ruff --> P1_conflicts : 0 violations ✅
-        P1_conflicts --> P1_done : 0 conflicts ✅
+        P1_sync --> P1_ruff : all consistent 
+        P1_ruff --> P1_conflicts : 0 violations 
+        P1_conflicts --> P1_done : 0 conflicts 
         P1_done --> [*]
     }
 
@@ -1114,8 +1116,8 @@ stateDiagram-v2
 
     state P2_ACTIVE {
         [*] --> P2_codeql : verify CodeQL alerts
-        P2_codeql --> P2_baseline : all addressed ✅
-        P2_baseline --> P2_done : baseline consistent ✅
+        P2_codeql --> P2_baseline : all addressed 
+        P2_baseline --> P2_done : baseline consistent 
         P2_done --> [*]
     }
 
@@ -1123,7 +1125,7 @@ stateDiagram-v2
 
     state P3_ACTIVE {
         [*] --> P3_stale : stale-comment workflow
-        P3_stale --> P3_done : monitoring active ✅
+        P3_stale --> P3_done : monitoring active 
         P3_done --> [*]
     }
 
@@ -1179,11 +1181,11 @@ S(rho) = -Tr[rho * ln(rho)]  →  0   as system reaches DFS
 
 | CI Dimension | Lindblad Operator | S296 Eigenvalue |
 |--------------|------------------|----------------|
-| ruff violations | `Gamma_ruff` | 0 (in DFS) ✅ |
-| sync_tracked drift | `Gamma_sync` | 0 (in DFS) ✅ |
-| CodeQL open alerts | `Gamma_CodeQL` | 0 (in DFS) ✅ |
-| Pattern 25 freshness | `Gamma_P25` | 0 days (in DFS) ✅ |
-| Merge conflicts | `Gamma_merge` | 0 (in DFS) ✅ |
+| ruff violations | `Gamma_ruff` | 0 (in DFS)  |
+| sync_tracked drift | `Gamma_sync` | 0 (in DFS)  |
+| CodeQL open alerts | `Gamma_CodeQL` | 0 (in DFS)  |
+| Pattern 25 freshness | `Gamma_P25` | 0 days (in DFS)  |
+| Merge conflicts | `Gamma_merge` | 0 (in DFS)  |
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'XY Chart showing "S293", "S294-W1", "S294-W2", "S294-W3", "S294-W4", "S295", "S296", 3.8, 2.9, 2.1, 1.4, 0.8, 0.2, 0.0'}}%%
@@ -1244,7 +1246,7 @@ where `t` is measured in sessions and `N(t)` is the open alert count.
 | `N(S293)` | 68 |
 | `N(S294)` | ~30 |
 | `N(S295)` | ~6 |
-| `N(S296)` | **0** ✅ |
+| `N(S296)` | **0**  |
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'XY Chart showing "S293", "S294-W1", "S294-W3", "S294-W5", "S294-W7", "S295", "S296", 68, 50, 35, 20, 10, 6, 0'}}%%
@@ -1305,14 +1307,14 @@ sequenceDiagram
     GH_API-->>Workflow: count=1 (PR #4289 is open)
     Workflow->>Workflow: pr_skip=true ⛔
     Workflow-->>Main: push SKIPPED
-    note over PR,Main: No divergence created ✅
+    note over PR,Main: No divergence created 
 
     note over Scheduler,PR: After PR merges:
     Scheduler->>Workflow: next scheduled trigger
     Workflow->>GH_API: GET /pulls?base=main&state=open&per_page=1
     GH_API-->>Workflow: count=0 (no active PRs)
-    Workflow->>Workflow: pr_skip=false ✅
-    Workflow->>Main: git push origin HEAD:main ✅
+    Workflow->>Workflow: pr_skip=false 
+    Workflow->>Main: git push origin HEAD:main 
 ```
 
 ---

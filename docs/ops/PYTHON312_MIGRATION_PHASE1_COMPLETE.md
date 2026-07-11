@@ -1,6 +1,8 @@
 # Python 3.12 Migration Phase 1 — Complete
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 > **Status**: Phase 1 COMPLETE
 > **Date**: 2026-02-19

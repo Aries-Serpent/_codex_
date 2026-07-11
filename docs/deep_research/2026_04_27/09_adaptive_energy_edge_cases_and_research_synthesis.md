@@ -1,6 +1,8 @@
 # Research Note 09 — Edge Cases and Synthesis for Adaptive Energy-Management
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## NotebookLM Metadata
 

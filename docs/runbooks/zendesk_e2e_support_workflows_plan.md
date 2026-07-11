@@ -1,4 +1,7 @@
 # Plan: End-to-End Zendesk Support Workflows with Codex
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-22 16:17:26 | Author: mbaetiong
 
 This plan explains how to leverage Codex to design, implement, and operate complete Support workflows in Zendesk, building on the first-cycle desired state.

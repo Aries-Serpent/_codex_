@@ -1,11 +1,13 @@
 # RAG Freshness & Quality SLA
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Owner**: `rag-freshness-loop-agent` (primary), `rag-index-manager` (backup)  
 **Last updated**: 2026-05-27  
-**Dashboard**: [Completion Dashboard](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/COMPLETION_DASHBOARD.md)  
-**Freshness scheduler**: [`.github/workflows/rag-freshness-scheduler.yml`](https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/rag-freshness-scheduler.yml)  
-**Quality gate**: [`.github/workflows/test-rag.yml`](https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/test-rag.yml)  
-**Drift config**: [`.codex/config/rag_quality.yaml`](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/config/rag_quality.yaml)
+**Dashboard**: [Completion Dashboard](../.codex/COMPLETION_DASHBOARD.md)  
+**Freshness scheduler**: [`.github/workflows/rag-freshness-scheduler.yml`](../.github/workflows/rag-freshness-scheduler.yml)  
+**Quality gate**: [`.github/workflows/test-rag.yml`](../.github/workflows/test-rag.yml)  
+**Drift config**: [`.codex/config/rag_quality.yaml`](../.codex/config/rag_quality.yaml)
 
 ---
 
@@ -33,9 +35,9 @@ flowchart TD
     DRIFT["Drift Detection\nrag_quality.yaml config\ncompares to baseline\nrecall=0.82 MRR=0.74"]
     DRIFT_OK{"Drift\n≤ threshold?"}
 
-    DEPLOY["✅ RAG Serving\nIndex current + quality gated"]
+    DEPLOY[" RAG Serving\nIndex current + quality gated"]
     STALE_ALERT["⚠️ STALE ALERT\nrag-freshness-scheduler.yml / rag-quality-nightly.yml\nGitHub Issue"]
-    QUALITY_ALERT["❌ QUALITY BREACH\nBlock PR merge\nAlert rag-freshness-loop-agent"]
+    QUALITY_ALERT[" QUALITY BREACH\nBlock PR merge\nAlert rag-freshness-loop-agent"]
     DRIFT_ALERT["📉 DRIFT ALERT\nrag-index-manager auto-retrain\nReport to COMPLETION_DASHBOARD.md"]
 
     SCHED --> AGE

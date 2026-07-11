@@ -1,6 +1,8 @@
 # Method D — YAML Patch Reference
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## Overview
 
@@ -22,7 +24,7 @@ Session Access Probe pattern, which has never regressed.
 ## Exact YAML to Apply
 
 Apply this to `.github/workflows/copilot-setup-steps.yml`, replacing the
-current `"🧠 Session Context Pre-load"` step (search for `Session Context Pre-load`
+current `" Session Context Pre-load"` step (search for `Session Context Pre-load`
 to locate it — the exact line numbers may shift as the file evolves):
 
 ```yaml
@@ -30,7 +32,7 @@ to locate it — the exact line numbers may shift as the file evolves):
       # Canonical form: block scalar run: | with flow scalar fallback (Method D)
       # This pattern is proven stable in Session Access Probe step; never regressed.
       # RULE: if you are fixing a CI failure, fix the failing file — NOT this step.
-      - name: "🧠 Session Context Pre-load (memory + policy + accountability + PDA)"
+      - name: " Session Context Pre-load (memory + policy + accountability + PDA)"
         id: session_preload
         continue-on-error: true   # non-blocking: agent must start even if preload fails
         run: |
@@ -48,7 +50,7 @@ The `|| { }` (flow scalar) shell construct is **valid bash** but causes
 YAML parsing failures when written directly as a `run:` flow scalar value:
 
 ```yaml
-# ❌ BROKEN — YAML parser sees the { as part of YAML flow mapping
+#  BROKEN — YAML parser sees the { as part of YAML flow mapping
 run: python3 script.py || {
   echo "failed"
 }
@@ -58,7 +60,7 @@ Method D wraps the construct in a block scalar (`run: |`), making the entire
 shell snippet an opaque string to the YAML parser:
 
 ```yaml
-# ✅ CORRECT — YAML parser sees only the | sigil; bash handles the rest
+#  CORRECT — YAML parser sees only the | sigil; bash handles the rest
 run: |
   python3 script.py || {
     echo "failed"
@@ -69,9 +71,9 @@ run: |
 
 | Method | Form | Status |
 |--------|------|--------|
-| Flow scalar direct | `run: python3 script.py \|\| { ... }` | ❌ YAML parse failure |
+| Flow scalar direct | `run: python3 script.py \|\| { ... }` |  YAML parse failure |
 | Method B — if/fi | `run: \|` + `if ! python3; then ... fi` | ⚠️ Agents revert 8+ times |
-| **Method D** | `run: \|` + `\|\| { }` inside block | ✅ **Never regressed** |
+| **Method D** | `run: \|` + `\|\| { }` inside block |  **Never regressed** |
 
 Method D is proven because it is already active in the Session Access Probe
 step (lines ~166–184) in the same workflow file.

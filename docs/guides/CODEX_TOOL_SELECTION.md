@@ -1,6 +1,7 @@
 # Codex Tool Selection Guide
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 > **Purpose**: Prevent wrong tool selection (CODEX-007) causing 45% session waste.  
 > **References**: RFC 3881, Git documentation, Bash reference manual
@@ -50,7 +51,7 @@ START: "I need to create/modify a file"
 
 ### Scenario 1: Create New File (Recommended)
 
-✅ **CORRECT**: Using `cat <<'EOF'`
+ **CORRECT**: Using `cat <<'EOF'`
 ```bash
 cat <<'EOF' > scripts/new_script.sh
 #!/usr/bin/env bash
@@ -62,7 +63,7 @@ chmod +x scripts/new_script.sh
 
 ## Scenario 2: Single-Line Change
 
-✅ **CORRECT**: Using `sed -i`
+ **CORRECT**: Using `sed -i`
 ```bash
 # Replace first occurrence on line
 sed -i 's/old_value/new_value/' config.yaml
@@ -76,7 +77,7 @@ sed -i.bak 's/old_value/new_value/' config.yaml
 
 ## Scenario 3: Multi-Line File with Variables
 
-✅ **CORRECT**: Using `cat <<EOF` (unquoted for expansion)
+ **CORRECT**: Using `cat <<EOF` (unquoted for expansion)
 ```bash
 branch="feature/pr-1926"
 cat <<EOF > .codex/session_info.txt
@@ -88,7 +89,7 @@ EOF
 
 ### Scenario 4: Complex Script (Multiple Lines)
 
-✅ **BEST**: Using temp file for safety
+ **BEST**: Using temp file for safety
 ```bash
 # Generate to temp
 temp_script=$(mktemp)
@@ -108,7 +109,7 @@ chmod +x scripts/final_script.sh
 
 ## Scenario 5: Patch Application
 
-✅ **CORRECT**: Validate before applying
+ **CORRECT**: Validate before applying
 ```bash
 # Create patch (if not already)
 git diff > changes.patch
@@ -126,14 +127,14 @@ fi
 
 ### Mistake 1: Using wrong quotes in heredoc
 
-❌ **WRONG**: Unquoted delimiter when you want literals
+ **WRONG**: Unquoted delimiter when you want literals
 ```bash
 cat <<EOF > file.json
 { "var": "$VAR" }  # VAR will expand!
 EOF
 ```text
 
-✅ **CORRECT**: Quote delimiter for literal
+ **CORRECT**: Quote delimiter for literal
 ```bash
 cat <<'EOF' > file.json
 { "var": "$VAR" }  # VAR stays literal
@@ -142,12 +143,12 @@ EOF
 
 ### Mistake 2: Forgetting to escape $ in sed
 
-❌ **WRONG**: Dollar sign not escaped
+ **WRONG**: Dollar sign not escaped
 ```bash
 sed -i 's/price/$100/g' file.txt  # $ has special meaning in sed!
 ```text
 
-✅ **CORRECT**: Escape or use different delimiter
+ **CORRECT**: Escape or use different delimiter
 ```bash
 sed -i 's/price/\$100/g' file.txt
 # OR
@@ -156,12 +157,12 @@ sed -i 's|price|$100|g' file.txt  # Use | as delimiter
 
 ## Mistake 3: Not validating complex patches
 
-❌ **WRONG**: Applying patch without checking
+ **WRONG**: Applying patch without checking
 ```bash
 git apply potentially-broken.patch  # may silently fail or corrupt files!
 ```text
 
-✅ **CORRECT**: Dry-run first
+ **CORRECT**: Dry-run first
 ```bash
 git apply --check potentially-broken.patch  # Dry-run
 if [[ $? -eq 0 ]]; then

@@ -1,4 +1,6 @@
 # Custom Backends Integration Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Version**: 2.0.0  
 > **Last Updated**: 2026-06-20  
@@ -121,4 +123,4 @@ async def test_backend():
 
 ---
 
-**Last Updated:** 2026-06-20 | **Version:** 2.0.0
+**Last Updated: 2026-06-20

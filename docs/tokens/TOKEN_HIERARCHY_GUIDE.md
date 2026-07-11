@@ -1,4 +1,6 @@
 # TOKEN HIERARCHY GUIDE
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Quick Reference for Token Selection in CODEX_MASTER_KEY Implementation**
 
@@ -8,7 +10,7 @@
 
 ---
 
-## 🎯 Quick Start: Which Token Should I Use?
+##  Quick Start: Which Token Should I Use?
 
 ### The Three-Token Hierarchy
 
@@ -20,20 +22,20 @@
 
 ---
 
-## 📊 Token Scope Comparison
+##  Token Scope Comparison
 
 ### Operations Matrix: Which Token for Each Operation?
 
 | Operation | GitHub_TOKEN | CODEX_BACKUP_TOKEN | CODEX_MASTER_KEY | Recommended |
 |-----------|:---:|:---:|:---:|---|
-| **Read Organization Variables** | ❌ | ✅ | ✅ | Level 2+ |
-| **Create Organization Variables** | ❌ | ❌ | ✅ | Level 3 |
-| **Read Repository Variables** | ✅ | ✅ | ✅ | Level 1 |
-| **Create Repository Variables** | ✅ | ✅ | ✅ | Level 1 |
-| **Update Workflow Files** | ❌ | ✅ | ✅ | Level 2+ |
-| **Dispatch Workflow Run** | ❌ | ❌ | ✅ | Level 3 |
-| **Read Public Secrets List** | ✅ | ✅ | ✅ | Level 1 |
-| **Access Repository Secrets** | ✅ | ✅ | ✅ | Level 1 |
+| **Read Organization Variables** |  |  |  | Level 2+ |
+| **Create Organization Variables** |  |  |  | Level 3 |
+| **Read Repository Variables** |  |  |  | Level 1 |
+| **Create Repository Variables** |  |  |  | Level 1 |
+| **Update Workflow Files** |  |  |  | Level 2+ |
+| **Dispatch Workflow Run** |  |  |  | Level 3 |
+| **Read Public Secrets List** |  |  |  | Level 1 |
+| **Access Repository Secrets** |  |  |  | Level 1 |
 
 ### Scope Details for Each Token
 
@@ -101,7 +103,7 @@ REPOSITORY OPERATIONS:
 
 ---
 
-## 💡 Common Use Cases & Examples
+##  Common Use Cases & Examples
 
 ### Use Case 1: Developer Reading Repository Variables
 
@@ -436,16 +438,16 @@ def api_call_with_retry(url, token, max_retries=3):
 
 ---
 
-## 🔐 Security Best Practices
+##  Security Best Practices
 
 ### 1. Token Environment Variables
 
-**✅ DO**: Keep tokens in environment variables
+** DO**: Keep tokens in environment variables
 ```python
 token = os.environ.get('GITHUB_TOKEN')
 ```
 
-**❌ DON'T**: Hardcode tokens in scripts
+** DON'T**: Hardcode tokens in scripts
 ```python
 # WRONG!
 token = "******"
@@ -453,12 +455,12 @@ token = "******"
 
 ### 2. Logging Token Usage Safely
 
-**✅ DO**: Log operation without exposing token
+** DO**: Log operation without exposing token
 ```python
 logging.info(f"Using {token_level} token for org variable read")
 ```
 
-**❌ DON'T**: Log token values
+** DON'T**: Log token values
 ```python
 # WRONG!
 logging.info(f"Using token: {token}")
@@ -466,7 +468,7 @@ logging.info(f"Using token: {token}")
 
 ### 3. Token Scope Validation
 
-**✅ DO**: Validate scope before operation
+** DO**: Validate scope before operation
 ```python
 from scripts.ci._token_resolver import validate_token_scope
 
@@ -474,7 +476,7 @@ if not validate_token_scope(token, ['admin:org']):
     raise Exception("Token lacks required scope")
 ```
 
-**❌ DON'T**: Assume token has sufficient scope
+** DON'T**: Assume token has sufficient scope
 ```python
 # WRONG! - Might fail with 403
 requests.get(url, headers={"Authorization": f"token {token}"})
@@ -482,7 +484,7 @@ requests.get(url, headers={"Authorization": f"token {token}"})
 
 ### 4. Error Messages
 
-**✅ DO**: Include helpful guidance in errors
+** DO**: Include helpful guidance in errors
 ```python
 if response.status_code == 403:
     raise Exception(
@@ -492,7 +494,7 @@ if response.status_code == 403:
     )
 ```
 
-**❌ DON'T**: Expose token in error messages
+** DON'T**: Expose token in error messages
 ```python
 # WRONG!
 raise Exception(f"API failed with token {token}: {response.text}")
@@ -510,7 +512,7 @@ raise Exception(f"API failed with token {token}: {response.text}")
 
 ---
 
-## ✅ Quick Reference Checklist
+##  Quick Reference Checklist
 
 Use this checklist when choosing a token:
 

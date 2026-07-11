@@ -1,6 +1,8 @@
 # Zendesk AI Agent App Builder: Mathematical Model & Design Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 This document provides a formal, physics-inspired mathematical model for understanding the capabilities, limitations, and optimal design patterns for **Zendesk AI Agent App Builder** (distinct from the traditional Zendesk App Framework/ZAF).
 
@@ -667,7 +669,7 @@ $$
 2.9 \times 8 - (1.0 \times 7 + 0.5 \times 1.0 + 0.3 \times 0.2) = 23.2 - 7.56 \approx 15.6 > \tau
 $$
 
-**Verdict**: ✅ **YES — Build in Navbar** (sweet spot: high value, manageable complexity, location match)
+**Verdict**:  **YES — Build in Navbar** (sweet spot: high value, manageable complexity, location match)
 
 ---
 
@@ -703,7 +705,7 @@ $$
 
 Borderline, but $\phi_{\text{Realtime}}$ is critically low.
 
-**Verdict**: ❌ **NO — Don't build in Navbar** → Move to **Sidebar** or use **external polling service**
+**Verdict**:  **NO — Don't build in Navbar** → Move to **Sidebar** or use **external polling service**
 
 ---
 
@@ -732,7 +734,7 @@ $$
 \text{Latency penalty} = \mu \cdot 80 \gg v_C
 $$
 
-**Verdict**: ❌ **NO — Don't build in Navbar** → Use **async job queue** or **external service** with status polling
+**Verdict**:  **NO — Don't build in Navbar** → Use **async job queue** or **external service** with status polling
 
 ---
 
@@ -761,7 +763,7 @@ $$
 (0.8 + 0.5 + 0.6) \times 5 - (1.0 \times 3 + 0.5 \times 1.6) = 9.5 - 3.8 = 5.7
 $$
 
-**Verdict**: ✅ **YES — Build with care** (low complexity makes it viable despite moderate $\Psi$)
+**Verdict**:  **YES — Build with care** (low complexity makes it viable despite moderate $\Psi$)
 
 ## Implementation Guidance
 
@@ -812,35 +814,35 @@ Before implementing a Navbar feature:
 **Never attempt in App Builder**:
 
 ```javascript
-// ❌ Direct external API call (bypassing proxy)
+//  Direct external API call (bypassing proxy)
 fetch('https://external-api.com/data')
 
-// ❌ Custom backend server
+//  Custom backend server
 const server = express()
 
-// ❌ Direct database access
+//  Direct database access
 const db = mongoose.connect('mongodb://...')
 
-// ❌ Native code execution
+//  Native code execution
 eval(userInput)
 
-// ❌ Client-stored credentials
+//  Client-stored credentials
 localStorage.setItem('api_key', secretKey)
 ```text
 
 **Always use**:
 
 ```javascript
-// ✅ Proxy-mediated API calls
+//  Proxy-mediated API calls
 zendeskAPI.request({
   url: '/api/v2/external/proxy',
   type: 'GET'
 })
 
-// ✅ Zendesk-managed state
+//  Zendesk-managed state
 client.set('mykey', value)
 
-// ✅ OAuth flows
+//  OAuth flows
 client.invoke('oauth', {provider: 'custom'})
 ```text
 
@@ -918,7 +920,7 @@ If migrating from traditional ZAF apps:
 
 | ZAF Pattern | App Builder Equivalent |
 |-------------|----------------------|
-| Custom backend | ❌ Not supported → Use Zendesk APIs + external webhook targets |
+| Custom backend |  Not supported → Use Zendesk APIs + external webhook targets |
 | Direct API calls | Proxy-mediated calls via Zendesk API |
 | iFrame embedding | Native UI components |
 | Custom OAuth | Zendesk-managed OAuth flows |

@@ -1,12 +1,14 @@
-# 📚 Codex ML: Structured Learning Paths
+#  Codex ML: Structured Learning Paths
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Version:** v0.1.0 Pre-Release  
-> **Last Updated:** 2026-06-27  
+> **Last Updated: 2026-06-27
 > **Total Estimated Time:** 20-40 hours depending on path  
 
 ---
 
-## 🎯 Choose Your Path
+##  Choose Your Path
 
 - **[Beginner Path](#beginner-path)** — 2-4 hours — Setup to first code contribution
 - **[Intermediate Path](#intermediate-path)** — 6-8 hours — Extending components, custom models
@@ -136,17 +138,17 @@ def test_config_loads():
    pytest tests/unit/test_beginner.py -v
    ```
 
-4. **Checkpoint:** Test passes ✅
+4. **Checkpoint:** Test passes 
 
 ---
 
-## ✅ Beginner Path Complete!
+##  Beginner Path Complete!
 
 You've learned:
-- ✅ How to set up Codex ML
-- ✅ The 5-layer architecture
-- ✅ How Hydra configuration works
-- ✅ How to write basic tests
+-  How to set up Codex ML
+-  The 5-layer architecture
+-  How Hydra configuration works
+-  How to write basic tests
 
 **Next:** Choose [Intermediate Path](#intermediate-path) or a [Specialized Path](#specialized-paths)
 
@@ -225,7 +227,7 @@ trainer.train()
    - Watch logs in `outputs/logs/`
    - Check checkpoint in `outputs/checkpoints/`
 
-5. **Checkpoint:** Training completes successfully ✅
+5. **Checkpoint:** Training completes successfully 
 
 ---
 
@@ -313,17 +315,17 @@ def test_my_component():
 
 ```
 
-6. **Checkpoint:** Tests pass ✅
+6. **Checkpoint:** Tests pass 
 
 ---
 
-## ✅ Intermediate Path Complete!
+##  Intermediate Path Complete!
 
 You've learned:
-- ✅ Advanced Hydra configuration
-- ✅ How to train custom models
-- ✅ How to evaluate and debug
-- ✅ How to extend Codex ML
+-  Advanced Hydra configuration
+-  How to train custom models
+-  How to evaluate and debug
+-  How to extend Codex ML
 
 **Next:** Choose [Advanced Path](#advanced-path) or a [Specialized Path](#specialized-paths)
 
@@ -485,7 +487,7 @@ print(f"Peak: {peak / 1024 / 1024:.1f} MB")
    time python examples/training.py
    ```
 
-5. **Checkpoint:** Achieved 20%+ performance improvement ✅
+5. **Checkpoint:** Achieved 20%+ performance improvement 
 
 ---
 
@@ -519,18 +521,18 @@ print(f"Peak: {peak / 1024 / 1024:.1f} MB")
    - Link related issues
    - Include test results
 
-7. **Checkpoint:** PR merged ✅
+7. **Checkpoint:** PR merged 
 
 ---
 
-## ✅ Advanced Path Complete!
+##  Advanced Path Complete!
 
 You've learned:
-- ✅ Complete 5-layer architecture
-- ✅ Agent orchestration systems
-- ✅ Memory-augmented reasoning
-- ✅ Performance optimization
-- ✅ Open-source contribution workflow
+-  Complete 5-layer architecture
+-  Agent orchestration systems
+-  Memory-augmented reasoning
+-  Performance optimization
+-  Open-source contribution workflow
 
 **Congratulations!** You're now a Codex ML expert! 🎉
 
@@ -540,7 +542,7 @@ You've learned:
 
 Choose a specialization based on your interests:
 
-### 🤖 ML Engineering Path
+###  ML Engineering Path
 
 **Time:** 6-8 hours  
 **Focus:** Training, evaluation, optimization
@@ -590,7 +592,7 @@ Choose a specialization based on your interests:
    - Testing automation
    - Deployment automation
 
-### 🤖 Cognitive Systems & Agents Path
+###  Cognitive Systems & Agents Path
 
 **Time:** 8-10 hours  
 **Focus:** Agent design, decision-making, memory
@@ -615,7 +617,7 @@ Choose a specialization based on your interests:
    - Task dependency graphs
    - Agent coordination
 
-### 📊 Data & Testing Path
+###  Data & Testing Path
 
 **Time:** 6-8 hours  
 **Focus:** Data engineering, testing strategies
@@ -651,14 +653,14 @@ Use this checklist to track your progress:
 - [ ] Step 2: Project structure understood
 - [ ] Step 3: Hydra configuration working
 - [ ] Step 4: First test running
-- [ ] Beginner path complete ✅
+- [ ] Beginner path complete 
 
 ### Intermediate Path
 - [ ] Step 1: Configuration mastered
 - [ ] Step 2: Custom model trained
 - [ ] Step 3: Evaluation working
 - [ ] Step 4: Custom component added
-- [ ] Intermediate path complete ✅
+- [ ] Intermediate path complete 
 
 ### Advanced Path
 - [ ] Step 1: Architecture mastered
@@ -666,7 +668,7 @@ Use this checklist to track your progress:
 - [ ] Step 3: Memory systems explored
 - [ ] Step 4: Performance optimized
 - [ ] Step 5: Contribution submitted
-- [ ] Advanced path complete ✅
+- [ ] Advanced path complete 
 
 ---
 
@@ -705,4 +707,4 @@ Use this checklist to track your progress:
 
 ---
 
-**Happy learning!** 🚀
+**Happy learning!** 

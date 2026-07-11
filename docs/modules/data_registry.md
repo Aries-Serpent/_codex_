@@ -1,6 +1,8 @@
 # Dataset Registry
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 `codex_ml.data.registry` exposes dataset loaders that can operate entirely
 offline. Each loader is registered by name and can be accessed through

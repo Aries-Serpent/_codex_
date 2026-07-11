@@ -1,4 +1,6 @@
 # Aries-Serpent ML v0.1.0-beta3 Quick Start Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 Welcome! This guide shows you how to get started with the Aries-Serpent ML package.
 
@@ -276,6 +278,6 @@ model = AutoModel.from_pretrained("bert-base-uncased")
 
 ---
 
-**Happy ML Training! 🚀**
+**Happy ML Training! **
 
 For questions or feedback, please reach out on GitHub Discussions or open an issue.

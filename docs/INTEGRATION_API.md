@@ -1,9 +1,11 @@
 # Integration & GitHub API Reference
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Status:** Phase 2 - Master API Documentation  
 **Coverage:** 78+ public functions & classes  
 **Modules:** github/*, auth/*  
-**Last Updated:** 2026-07-08
+**Last Updated: 2026-07-08
 
 ---
 
@@ -76,7 +78,7 @@ Post comment on pull request.
 ```python
 comment_meta = poster.post_comment(
     pr_number=42,
-    comment="✅ API documentation complete\n\n" +
+    comment=" API documentation complete\n\n" +
             "- [ ] Core module\n" +
             "- [x] Storage module"
 )
@@ -175,7 +177,7 @@ Format structured update as Markdown.
 **Example:**
 ```python
 sections = {
-    "Summary": "✅ Complete",
+    "Summary": " Complete",
     "Metrics": "- Coverage: 25%\n- Functions: 200+",
     "Next": "Phase 3"
 }
@@ -541,7 +543,7 @@ poster = MCPPoster(
 # Post status update on PR
 poster.post_comment(
     pr_number=42,
-    comment="✅ API documentation phase complete\n\n" +
+    comment=" API documentation phase complete\n\n" +
             "**Coverage:** 4.3% → 20%\n" +
             "**Signatures:** 200+ documented"
 )

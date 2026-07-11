@@ -1,6 +1,8 @@
 # Readiness Scoring
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 R = α·E + β·T + γ·D
 α=0.40, β=0.30, γ=0.30

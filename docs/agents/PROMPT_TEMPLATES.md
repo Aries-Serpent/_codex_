@@ -1,4 +1,6 @@
 # Prompt Templates for AI Agents
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > Version: 1.0.0 | Generated: 2026-06-22
 
@@ -298,7 +300,7 @@ Format for new capability:
 ### [Capability Name]
 
 **Location:** `src/mcp/[file].py`
-**Status:** ✅ Complete
+**Status:**  Complete
 
 Description of what the capability does.
 
@@ -365,7 +367,7 @@ Output Format:
 
 | Component | Implemented | Tested | Documented | Priority | Action |
 |-----------|-------------|--------|------------|----------|--------|
-| [name]    | ✅/❌       | ✅/❌  | ✅/❌      | P0-P3    | [action] |
+| [name]    | /       | /  | /      | P0-P3    | [action] |
 
 Priority Definitions:
 - P0: Blocking - must fix immediately

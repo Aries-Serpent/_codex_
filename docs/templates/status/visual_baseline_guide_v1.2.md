@@ -1,6 +1,9 @@
 # Guide: Visual Baselines for HTML Reports (v1.2)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
-🧠 Roles: [Primary: Visual QA], [Secondary: Publisher] ⚡ Energy: 5
+ Roles: [Primary: Visual QA], [Secondary: Publisher] ⚡ Energy: 5
 
 Purpose
 - Maintain baseline screenshots to detect unintended visual regressions in rendered HTML reports.

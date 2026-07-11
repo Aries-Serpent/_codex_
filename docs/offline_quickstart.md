@@ -1,6 +1,8 @@
 # Offline Quickstart & Reproducibility Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 This guide shows how to run **fully offline**, emit local artifacts, and keep runs **deterministic**.
 

@@ -1,6 +1,8 @@
 # Cache Shared Datasets — Aries-Serpent/_codex_
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 > **Version**: 1.0.0 | **Created**: 2026-06-22 (W-132) | **Owner**: @mbaetiong
 > **Purpose**: Single reference for every cache layer, shared dataset, and cross-agent
@@ -87,9 +89,9 @@ Defined in `.github/WORKFLOW_CACHE_TIERS.md`. Now **functional** — tier is emb
 L1/L3 keys, not just informational.
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing "🟢 LIVE Tier (permanent)", "copilot-setup-steps.yml"'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing " LIVE Tier (permanent)", "copilot-setup-steps.yml"'}}%%
 graph LR
-    subgraph LIVE["🟢 LIVE Tier (permanent)"]
+    subgraph LIVE[" LIVE Tier (permanent)"]
         WF1["copilot-setup-steps.yml"]
         WF2["agent-auth-delegation.yml"]
         WF3["nox_gates.yml"]
@@ -105,7 +107,7 @@ graph LR
         WF10["pre-flight-validation.yml"]
     end
 
-    subgraph EPHEMERAL["🔴 EPHEMERAL Tier (1-day)"]
+    subgraph EPHEMERAL[" EPHEMERAL Tier (1-day)"]
         WF11["html_visual_regression.yml"]
         WF12["build-preview-image.yml"]
     end
@@ -281,7 +283,7 @@ adding `cache-tier: common` with `setup-python-cached`:
 How caches are kept coherent across concurrent workflow runs:
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Sequence Diagram: >>WF: ✅ Cache hit → skip venv '}}%%
+%%{init: {'accessibility': {'title': 'Sequence Diagram: >>WF:  Cache hit → skip venv '}}%%
 sequenceDiagram
     participant WF as Workflow (any tier)
     participant L1 as L1 pip cache
@@ -290,13 +292,13 @@ sequenceDiagram
 
     WF->>L3: Restore attempt (exact key)
     alt Exact hit
-        L3-->>WF: ✅ Cache hit → skip venv rebuild
+        L3-->>WF:  Cache hit → skip venv rebuild
     else Restore-key partial hit
         L3-->>WF: ⚠️ Partial hit → refresh venv (pip install -e . --upgrade)
         WF->>L1: Use pip download cache for fresh packages
         WF->>L3: Save refreshed venv (new exact key)
     else Miss
-        L3-->>WF: ❌ Cache miss → full venv build
+        L3-->>WF:  Cache miss → full venv build
         WF->>L1: Restore pip download cache
         WF->>L3: Save new venv
         WF->>L1: Save new pip downloads

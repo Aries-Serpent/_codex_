@@ -1,6 +1,8 @@
 # Continual learning readiness overview
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 The table below summarises the infrastructure already present in `codex-universal` that can be leveraged when introducing continual learning or broader skill acquisition workflows. It also highlights key opportunities to extend each area.
 

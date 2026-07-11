@@ -1,4 +1,6 @@
 # Cognitive Codebase AI Evolution Center
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Last Updated**: 2026-06-22  
 **Purpose**: Permanent, queryable archive of the _codex_ AI agency evolution — from conception through emergence to autonomous operation.  
@@ -30,22 +32,22 @@ This documentation center implements cutting-edge patterns for cognitive AI agen
 
 ---
 
-## 📊 Quick Status
+##  Quick Status
 
 | Metric | Value | Verified |
 |--------|-------|----------|
 | Total Phases | 18+ (Cycles 1-4) | 2026-02-11 |
-| Completed Phases | 1-10 | ✅ |
-| Active Phases | 11-12 | 🟢 |
+| Completed Phases | 1-10 |  |
+| Active Phases | 11-12 |  |
 | Planned Phases | 13-18 | 🟡 |
-| Plansets (PS) | 11 complete, 3 active, 1 planning | ✅ |
-| Active Plansets | PS-11, PS-12, PS-13 | 🟢 |
-| Autonomous Agents | 53+ | ✅ |
-| Test Coverage | 75% threshold | ✅ |
-| Tests Passing | 36500+ | ✅ |
-| Security (CVEs Fixed) | 26 | ✅ |
-| **AAIS V3.0 Score** | **93.2/100 (A)** | ✅ |
-| Cognitive Map Components | 35 scored | ✅ |
+| Plansets (PS) | 11 complete, 3 active, 1 planning |  |
+| Active Plansets | PS-11, PS-12, PS-13 |  |
+| Autonomous Agents | 53+ |  |
+| Test Coverage | 75% threshold |  |
+| Tests Passing | 36500+ |  |
+| Security (CVEs Fixed) | 26 |  |
+| **AAIS V3.0 Score** | **93.2/100 (A)** |  |
+| Cognitive Map Components | 35 scored |  |
 
 ---
 
@@ -76,10 +78,10 @@ docs/evolution/
 
 ---
 
-## 📚 References
+##  References
 
 - [Cognitive Brain Index](../cognitive_brain/INDEX.md) — Status reports, prompts, architecture
 - [Project Roadmap](../ROADMAP.md) — Unified project roadmap
 - [Documentation Index](../DOCUMENTATION_INDEX.md) — Complete documentation catalog
 - [GitHub Pages Status](../status/GITHUB_PAGES_STATUS.md) — Deployment health
-- [Agent Evolution Map](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/cognitive_brain/COGNITIVE_BRAIN_AGENT_EVOLUTION_MAP.md) — Agent lineage tracking
+- [Agent Evolution Map](../.codex/cognitive_brain/COGNITIVE_BRAIN_AGENT_EVOLUTION_MAP.md) — Agent lineage tracking

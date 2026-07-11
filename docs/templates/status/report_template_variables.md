@@ -1,6 +1,9 @@
 # Reference: Report Template Variables (v1.2)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
-🧠 Roles: [Primary: Template Author], [Secondary: Reviewer] ⚡ Energy: 5
+ Roles: [Primary: Template Author], [Secondary: Reviewer] ⚡ Energy: 5
 
 Variables (suggested)
 - metadata.title

@@ -1,6 +1,8 @@
 # Common Workflows Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-07-08  
+**Last Updated: 2026-07-08
 **Coverage:** Step-by-step procedures for common tasks across all user types
 
 ---
@@ -303,7 +305,7 @@ for day in range(7):
 results = ab_test.get_results()
 improvement = results['variant_b_accuracy'] - results['variant_a_accuracy']
 
-print(f"\n📊 A/B Test Results")
+print(f"\n A/B Test Results")
 print(f"Variant A: {results['variant_a_accuracy']:.2%}")
 print(f"Variant B: {results['variant_b_accuracy']:.2%}")
 print(f"Improvement: {improvement:+.2%}")
@@ -311,10 +313,10 @@ print(f"Improvement: {improvement:+.2%}")
 # 5. Make decision
 if results['variant_b_winner']:
     ab_test.promote_variant_b()
-    print("✅ Variant B promoted to production!")
+    print(" Variant B promoted to production!")
 else:
     ab_test.keep_variant_a()
-    print("✅ Variant A remains in production")
+    print(" Variant A remains in production")
 ```
 
 ---
@@ -351,10 +353,10 @@ def check_performance_and_retrain():
         print(f"⚠️ PERFORMANCE DROP: {accuracy:.2%} (target: 92%)")
         trigger_retrain()
     else:
-        print(f"✅ Performance OK: {accuracy:.2%}")
+        print(f" Performance OK: {accuracy:.2%}")
 
 def trigger_retrain():
-    print("🚀 Starting retraining...")
+    print(" Starting retraining...")
     
     # 1. Load new data collected since last training
     new_data = collect_new_training_data()
@@ -367,7 +369,7 @@ def trigger_retrain():
     # 3. Validate new model
     test_metrics = engine.evaluate(new_data['test'])
     if test_metrics['accuracy'] > 0.92:
-        print(f"✅ New model better: {test_metrics['accuracy']:.2%}")
+        print(f" New model better: {test_metrics['accuracy']:.2%}")
         
         # 4. Register new version
         registry = ModelRegistry()
@@ -381,7 +383,7 @@ def trigger_retrain():
         # 5. Deploy gradually (canary)
         deploy_canary_update('1.0.1')
     else:
-        print(f"❌ New model worse: {test_metrics['accuracy']:.2%}")
+        print(f" New model worse: {test_metrics['accuracy']:.2%}")
         print("Keeping current model in production")
 
 # 3. Schedule automatic checks
@@ -499,7 +501,7 @@ results_df['sentiment'] = [p['label'] for p in predictions]
 results_df['confidence'] = [p['confidence'] for p in predictions]
 results_df.to_csv('outputs/results.csv', index=False)
 
-print(f"✅ Processed {len(predictions)} items")
+print(f" Processed {len(predictions)} items")
 print(f"Positive: {sum(1 for p in predictions if p['label']=='positive')}")
 print(f"Negative: {sum(1 for p in predictions if p['label']=='negative')}")
 ```
@@ -628,12 +630,12 @@ deployment_config = {
 
 # 5) Measure savings
 new_cost = cost_report['total_cost'] * 0.5  # Expected 50% savings
-print(f"\n💰 Projected savings: ${cost_report['total_cost'] - new_cost:.0f}/month")
+print(f"\n Projected savings: ${cost_report['total_cost'] - new_cost:.0f}/month")
 ```
 
 ---
 
-## 📚 See Also
+##  See Also
 
 - [Detailed Task Guides](./TASK_GUIDES/)
 - [Advanced Topics](./ADVANCED_TOPICS/)
@@ -642,4 +644,4 @@ print(f"\n💰 Projected savings: ${cost_report['total_cost'] - new_cost:.0f}/mo
 
 ---
 
-**All workflows tested on real datasets ✅**
+**All workflows tested on real datasets **

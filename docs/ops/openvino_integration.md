@@ -1,11 +1,13 @@
 # Intel OpenVINO Optional iGPU Acceleration Path
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
-**Status**: 🟢 Phase C Complete — S100 (P10-05 / P11-03)
-- Phase A ✅ (architecture doc — S97)
-- Phase B ✅ (backend skeleton `src/codex_ml/backends/openvino_backend.py` + 11 smoke tests — S98)
-- Phase C ✅ (CI iGPU smoke test on Intel Arc runner — S100; `TestOpenVINOPhaseC` + `openvino-phase-c.yml`)
+**Status**:  Phase C Complete — S100 (P10-05 / P11-03)
+- Phase A  (architecture doc — S97)
+- Phase B  (backend skeleton `src/codex_ml/backends/openvino_backend.py` + 11 smoke tests — S98)
+- Phase C  (CI iGPU smoke test on Intel Arc runner — S100; `TestOpenVINOPhaseC` + `openvino-phase-c.yml`)
 **Tier**: Tier 2 (Optional / Gracefully Degraded)  
 **Hardware target**: Intel Core Ultra 5 135U vPro — Intel Arc iGPU + AI Boost NPU  
 **Dependency**: `openvino` (optional; not installed by default)

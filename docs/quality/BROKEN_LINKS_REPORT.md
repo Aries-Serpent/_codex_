@@ -1,6 +1,8 @@
 # Broken Links Report
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 > **⚠️ DEPRECATED**: This is a legacy report from a previous validation run.
 >
@@ -111,9 +113,9 @@
 
 ### cognitive_app.md
 
-- Line 10: `[`/cognitive_app`](https://github.com/Aries-Serpent/_codex_/blob/main/cognitive_app)`
+- Line 10: `[`/cognitive_app`](../cognitive_app)`
   - Status: not_found: /home/runner/work/_codex_/cognitive_app
-- Line 233: `[LICENSE](https://github.com/Aries-Serpent/_codex_/blob/main/cognitive_app/LICENSE)`
+- Line 233: `[LICENSE](../cognitive_app/LICENSE)`
   - Status: not_found: /home/runner/work/_codex_/cognitive_app/LICENSE
 
 ### maintenance/LINK_VALIDATION_REPORT.md

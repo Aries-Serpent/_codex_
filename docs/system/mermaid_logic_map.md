@@ -1,8 +1,10 @@
 # Mermaid Runtime Logic Map — Narrative Companion
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-> **Status:** ✅ Active
+> **Status:**  Active
 >
-> **Last updated:** 2026-05-13
+> **Last updated: 2026-07-11
 >
 > This document is the **narrative companion** to the standalone Mermaid diagram
 > at [`docs/diagrams/runtime_logic_map.mmd`](../diagrams/runtime_logic_map.mmd),
@@ -23,12 +25,12 @@ The six-step workflow used to produce this document and its diagram:
 
 | Step | Activity | Status |
 |------|----------|--------|
-| 1 | **Repository Discovery** — locate canonical entry points, doc conventions, MkDocs Mermaid support | ✅ |
-| 2 | **Flow Tracing** — trace each entry point to its handler chain | ✅ |
-| 3 | **Evidence Collection** — map every diagram node to a real file/function | ✅ |
-| 4 | **Mermaid Drafting** — author `runtime_logic_map.mmd` using confirmed evidence only | ✅ |
-| 5 | **Syntax Verification** — validate against MkDocs build (`mkdocs build --verbose`) | ✅ |
-| 6 | **Final Output Location** — selected `docs/system/` (canonical host per `docs/index.md`) | ✅ |
+| 1 | **Repository Discovery** — locate canonical entry points, doc conventions, MkDocs Mermaid support |  |
+| 2 | **Flow Tracing** — trace each entry point to its handler chain |  |
+| 3 | **Evidence Collection** — map every diagram node to a real file/function |  |
+| 4 | **Mermaid Drafting** — author `runtime_logic_map.mmd` using confirmed evidence only |  |
+| 5 | **Syntax Verification** — validate against MkDocs build (`mkdocs build --verbose`) |  |
+| 6 | **Final Output Location** — selected `docs/system/` (canonical host per `docs/index.md`) |  |
 
 ---
 
@@ -40,30 +42,30 @@ stated symbol/function was confirmed by reading the source.
 
 | Node label | File | Key symbol | Verified |
 |------------|------|------------|---------|
-| repo-root shim | `codex_ml/__main__.py` | `run()` via `_package_main` | ✅ |
-| installed-package entry | `src/codex_ml/__main__.py` | `run()` → `_package_main.run()` | ✅ |
-| `_package_main` orchestrator | `src/codex_ml/_package_main.py` | `_run_cli()`, `run()` | ✅ |
-| `codex` console-script | `src/codex_ml/cli/codex_cli.py` | `@click.group codex` | ✅ |
-| `tokenizer` subgroup | `src/codex_ml/cli/codex_cli.py` | `@codex.group tokenizer` | ✅ |
-| `tokenizer_pipeline` | `src/codex_ml/tokenization/pipeline` | `run_train`, `run_validate` | ✅ |
-| `status-report` | `src/codex_ml/cli/codex_cli.py` | `build_status_report()` | ✅ |
-| `run_unified_training` | `src/codex_ml/training/unified_training.py` | `run_unified_training()` | ✅ |
-| `resolve_strategy` | `src/codex_ml/training/strategies.py` | `resolve_strategy()` | ✅ |
-| `TrainLoop` | `src/codex_ml/train_loop.py` | reasoning harness, trace capture | ✅ |
-| `run_evaluator` | `src/codex_ml/eval/evaluator.py` | `run_evaluator()` | ✅ |
-| `ReasoningHarness` | `src/codex_ml/models/reasoning.py` | `capture_trace()` | ✅ (import-guarded) |
-| training bootstrap | `src/cli.py` | `Trainer`, `CheckpointConfig` | ✅ |
-| `Trainer` | `src/training/trainer.py` | `train()`, `close()` | ✅ |
-| ingestion CLI | `src/codex/cli.py` | `@click.group main` | ✅ |
-| ingestion pipeline — ingest | `src/codex/ingest` | `ingest()` | ✅ |
-| ingestion pipeline — analyze | `src/codex/analyze/static` | `analyze()` | ✅ |
-| ingestion pipeline — transform | `src/codex/transform/transformer` | `transform()`, `Tier` | ✅ |
-| ingestion pipeline — verify | `src/codex/verify/comparator` | `compare()`, `ComparisonMode` | ✅ |
-| ingestion pipeline — pr | `src/codex/cli/pr_operator` | `pr_operator` | ✅ |
-| quantum orchestrator CLI | `src/codex/quantum_orchestrator/cli.py` | `@click.group` | ✅ |
-| QFT extensions | `src/codex/quantum_orchestrator/qft` | `TaskSpawner`, `BellState` | ✅ (optional import) |
-| Rust core | `src/lib.rs` | `SwarmEngine`, `TaskManager` | ✅ |
-| PyO3 bindings | `src/lib.rs` | `#[pymodule] fn codex_swarm` | ✅ (feature-gated) |
+| repo-root shim | `codex_ml/__main__.py` | `run()` via `_package_main` |  |
+| installed-package entry | `src/codex_ml/__main__.py` | `run()` → `_package_main.run()` |  |
+| `_package_main` orchestrator | `src/codex_ml/_package_main.py` | `_run_cli()`, `run()` |  |
+| `codex` console-script | `src/codex_ml/cli/codex_cli.py` | `@click.group codex` |  |
+| `tokenizer` subgroup | `src/codex_ml/cli/codex_cli.py` | `@codex.group tokenizer` |  |
+| `tokenizer_pipeline` | `src/codex_ml/tokenization/pipeline` | `run_train`, `run_validate` |  |
+| `status-report` | `src/codex_ml/cli/codex_cli.py` | `build_status_report()` |  |
+| `run_unified_training` | `src/codex_ml/training/unified_training.py` | `run_unified_training()` |  |
+| `resolve_strategy` | `src/codex_ml/training/strategies.py` | `resolve_strategy()` |  |
+| `TrainLoop` | `src/codex_ml/train_loop.py` | reasoning harness, trace capture |  |
+| `run_evaluator` | `src/codex_ml/eval/evaluator.py` | `run_evaluator()` |  |
+| `ReasoningHarness` | `src/codex_ml/models/reasoning.py` | `capture_trace()` |  (import-guarded) |
+| training bootstrap | `src/cli.py` | `Trainer`, `CheckpointConfig` |  |
+| `Trainer` | `src/training/trainer.py` | `train()`, `close()` |  |
+| ingestion CLI | `src/codex/cli.py` | `@click.group main` |  |
+| ingestion pipeline — ingest | `src/codex/ingest` | `ingest()` |  |
+| ingestion pipeline — analyze | `src/codex/analyze/static` | `analyze()` |  |
+| ingestion pipeline — transform | `src/codex/transform/transformer` | `transform()`, `Tier` |  |
+| ingestion pipeline — verify | `src/codex/verify/comparator` | `compare()`, `ComparisonMode` |  |
+| ingestion pipeline — pr | `src/codex/cli/pr_operator` | `pr_operator` |  |
+| quantum orchestrator CLI | `src/codex/quantum_orchestrator/cli.py` | `@click.group` |  |
+| QFT extensions | `src/codex/quantum_orchestrator/qft` | `TaskSpawner`, `BellState` |  (optional import) |
+| Rust core | `src/lib.rs` | `SwarmEngine`, `TaskManager` |  |
+| PyO3 bindings | `src/lib.rs` | `#[pymodule] fn codex_swarm` |  (feature-gated) |
 
 ---
 

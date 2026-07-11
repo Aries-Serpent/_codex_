@@ -1,4 +1,6 @@
 # RBAC & Approval Chains Architecture
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Version**: 1.0.0  
 **Generated**: 2026-07-08 (Phase 12 WS3 Track E Validation)  
@@ -136,26 +138,26 @@ This document describes the complete Role-Based Access Control (RBAC) system and
 | Capability | Owner | Admin | Editor | Reviewer | Operator | Viewer | Service |
 |------------|-------|-------|--------|----------|----------|--------|---------|
 | **Repo Management** |
-| Create/delete repos | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| Manage settings | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Create/delete repos |  |  |  |  |  |  |  |
+| Manage settings |  |  |  |  |  |  |  |
 | **Code Management** |
-| Push commits | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| Create PRs | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ |
-| Approve PRs | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ |
-| Merge PRs | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ |
+| Push commits |  |  |  |  |  |  |  |
+| Create PRs |  |  |  |  |  |  |  |
+| Approve PRs |  |  |  |  |  |  |  |
+| Merge PRs |  |  |  |  |  |  |  |
 | **Deployment** |
-| Deploy to dev | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ✅ |
-| Deploy to staging | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ✅ |
-| Deploy to prod | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ |
+| Deploy to dev |  |  |  |  |  |  |  |
+| Deploy to staging |  |  |  |  |  |  |  |
+| Deploy to prod |  |  |  |  |  |  |  |
 | **Secrets & Config** |
-| View secrets | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ |
-| Manage secrets | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| Rotate CODEX_MASTER_KEY | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| Manage variables | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| View secrets |  |  |  |  |  |  |  |
+| Manage secrets |  |  |  |  |  |  |  |
+| Rotate CODEX_MASTER_KEY |  |  |  |  |  |  |  |
+| Manage variables |  |  |  |  |  |  |  |
 | **Security & Audit** |
-| Access audit logs | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ |
-| Approve releases | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ |
-| Update RBAC | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Access audit logs |  |  |  |  |  |  |  |
+| Approve releases |  |  |  |  |  |  |  |
+| Update RBAC |  |  |  |  |  |  |  |
 
 ---
 
@@ -169,27 +171,27 @@ graph TD
     B --> C["🔍 GitHub Actions Check Suite"]
     C --> D{All checks pass?}
     
-    D -->|❌ Failed| E["🚫 Require fixes"]
+    D -->| Failed| E["🚫 Require fixes"]
     E --> A
     
-    D -->|✅ Passed| F["⏳ Awaiting Review"]
+    D -->| Passed| F["⏳ Awaiting Review"]
     F --> G["👨‍💼 Maintainer Reviews Code"]
     G --> H{Approve?}
     
-    H -->|❌ Request Changes| I["📝 Developer addresses feedback"]
+    H -->| Request Changes| I["📝 Developer addresses feedback"]
     I --> A
     
-    H -->|✅ Approved| J["🔑 trigger-on-approval.yml"]
-    J --> K["🔐 Token Chain Check"]
+    H -->| Approved| J["🔑 trigger-on-approval.yml"]
+    J --> K[" Token Chain Check"]
     K --> L{Token Valid?}
     
-    L -->|❌ No| M["⚠️ Token Fallback"]
+    L -->| No| M["⚠️ Token Fallback"]
     M --> N["📋 Use github.token or CODEX_BACKUP_KEY"]
     
-    L -->|✅ Yes| O["🎯 Dispatch validation suite"]
+    L -->| Yes| O[" Dispatch validation suite"]
     O --> P["auto-approve-workflows.yml"]
-    P --> Q["✅ All gates pass"]
-    Q --> R["🚀 PR Approved"]
+    P --> Q[" All gates pass"]
+    Q --> R[" PR Approved"]
     R --> S{Merge target?}
     
     S -->|main| T["📦 Merge to main"]
@@ -267,9 +269,9 @@ Step 3.1: PR Context Resolution
 
 Step 3.2: Token Tier Detection
   ├─ Check: Is CODEX_MASTER_KEY available?
-  ├─ ✅ YES: Set token_tier=master
+  ├─  YES: Set token_tier=master
   │  └─ Use: secrets.CODEX_MASTER_KEY
-  └─ ❌ NO: Set token_tier=fallback
+  └─  NO: Set token_tier=fallback
      └─ Use: secrets.CODEX_BACKUP_KEY || github.token
 
 Step 3.3: Token Scopes Verification
@@ -515,7 +517,7 @@ steps:
         exit 0  # Acceptable fallback
       fi
       
-      echo "✅ CODEX_MASTER_KEY available"
+      echo " CODEX_MASTER_KEY available"
       echo "   Proceeding with elevated privileges"
       exit 0
 
@@ -526,7 +528,7 @@ steps:
       TOKEN="${{ secrets.CODEX_MASTER_KEY }}"
       
       if [ -z "$TOKEN" ]; then
-        echo "❌ CRITICAL: CODEX_MASTER_KEY required for production"
+        echo " CRITICAL: CODEX_MASTER_KEY required for production"
         exit 1  # BLOCK deployment
       fi
       
@@ -606,15 +608,15 @@ Configuration:
 ```mermaid
 graph TD
     subgraph "Branch Strategy"
-        main["🔴 main"]
-        develop["🟠 develop"]
+        main[" main"]
+        develop[" develop"]
         feature["🟡 feature/*"]
-        hotfix["🔴 hotfix/*"]
+        hotfix[" hotfix/*"]
     end
     
     subgraph "Environment Deployment"
-        prod["🔴 production"]
-        staging["🟠 staging"]
+        prod[" production"]
+        staging[" staging"]
         dev["🟡 dev"]
     end
     
@@ -648,11 +650,11 @@ graph TD
 
 | Operation | Environment | Reviewer | Token | Timeout | Auto-Approve |
 |-----------|-------------|----------|-------|---------|--------------|
-| **Merge PR** | any | ✅ Required | github.token | N/A | ❌ No |
-| **Deploy to staging** | staging | Optional | CODEX_BACKUP_KEY | 1 hour | ✅ Yes |
-| **Deploy to prod** | production | ✅ Required | CODEX_MASTER_KEY | 30 min | ❌ No |
-| **Rotate secrets** | org | ✅ Required | CODEX_MASTER_KEY | 5 min | ❌ No |
-| **Release to PyPI** | release | ✅ Required | CODEX_MASTER_KEY | 2 hours | ❌ No |
+| **Merge PR** | any |  Required | github.token | N/A |  No |
+| **Deploy to staging** | staging | Optional | CODEX_BACKUP_KEY | 1 hour |  Yes |
+| **Deploy to prod** | production |  Required | CODEX_MASTER_KEY | 30 min |  No |
+| **Rotate secrets** | org |  Required | CODEX_MASTER_KEY | 5 min |  No |
+| **Release to PyPI** | release |  Required | CODEX_MASTER_KEY | 2 hours |  No |
 
 ### Branch Protection Rules
 
@@ -725,11 +727,11 @@ Every approval event MUST be logged:
 ### Emergency Token Rotation
 
 **Trigger Conditions**:
-- ✅ Token compromise detected
-- ✅ Unauthorized access attempt
-- ✅ Employee separation
-- ✅ Security audit failure
-- ✅ Policy violation
+-  Token compromise detected
+-  Unauthorized access attempt
+-  Employee separation
+-  Security audit failure
+-  Policy violation
 
 **Immediate Response (within 1 hour)**:
 
@@ -803,4 +805,4 @@ echo "🚨 Emergency token rotation initiated" | \
 
 **Generated**: 2026-07-08 (Phase 12 WS3 Track E)  
 **Version**: 1.0.0  
-**Status**: Production Ready ✅
+**Status**: Production Ready 

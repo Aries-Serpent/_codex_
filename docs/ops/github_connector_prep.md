@@ -1,6 +1,9 @@
 # Ops: GitHub Connector Prep (v1.2)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
-🧠 Roles: [Primary: Integration Lead], [Secondary: CI Maintainer] ⚡ Energy: 5
+ Roles: [Primary: Integration Lead], [Secondary: CI Maintainer] ⚡ Energy: 5
 
 Scope
 - Prepare repository for API-level integrations via a GitHub Connector.

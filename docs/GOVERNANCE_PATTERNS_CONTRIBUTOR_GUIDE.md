@@ -1,4 +1,6 @@
 # Governance Patterns Contributor Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Purpose**: Enable contributors, custom agents, and governance teams to extend and customize governance patterns.  
 > **Authority**: Phase D Tier 2 operational guidance (autonomous execution)  

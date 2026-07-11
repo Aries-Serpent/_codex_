@@ -1,6 +1,8 @@
 # How-to: run audits and collect experiment summaries
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 1. Execute your training or evaluation runs. Each invocation of `codex-train`
    records events under `artifacts/experiments/<run_id>/` using NDJSON.

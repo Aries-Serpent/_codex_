@@ -1,8 +1,10 @@
 <!-- BEGIN: CODEX_TRAIN_ARGS_DOC -->
 
 # Training Arguments (YAML/Hydra)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 - **gradient_accumulation_steps** / **grad_accum**: accumulate before optimizer step; both keys are now honoured by the HF trainer entrypoint.
 - **early_stopping**: enable with patience/min_delta; wire to callbacks.EarlyStopping in your trainer loop.

@@ -1,4 +1,6 @@
 # Agent Accountability Report — Session Group 03
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Group:** 3 of 32  
 **Sessions:** S_PR3958_CTEP_SWEEP to S315_PR4048_WEEKLY_DEPENDABOT_FOLDIN  
@@ -51,7 +53,7 @@
 
 **Tags:** None  
 **Patterns Fixed:** None  
-**CI Checks:** 0 ✅ / 0 ❌  
+**CI Checks:** 0  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_21  
@@ -73,7 +75,7 @@
 
 **Tags:** None  
 **Patterns Fixed:** None  
-**CI Checks:** 0 ✅ / 0 ❌  
+**CI Checks:** 0  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_22  
@@ -95,7 +97,7 @@
 
 **Tags:** None  
 **Patterns Fixed:** None  
-**CI Checks:** 0 ✅ / 0 ❌  
+**CI Checks:** 0  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_23  
@@ -117,7 +119,7 @@ Fixed: PR3958-P0-CI-ALL-GREEN, PR3958-P4-GITHUB-SCRIPT-V8, PR3958-P4-NODEJS20-DE
 
 **Tags:** ci, complete  
 **Patterns Fixed:** PR3958-P0-CI-ALL-GREEN, PR3958-P4-GITHUB-SCRIPT-V8, PR3958-P4-NODEJS20-DETECTOR-GROUP-D, AUTOFIX-P27-TARGETED-SCAN  
-**CI Checks:** 0 ✅ / 0 ❌  
+**CI Checks:** 0  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_24  
@@ -139,7 +141,7 @@ Fixed: PR3958-P0-CI-ALL-GREEN, PR3958-P4-GITHUB-SCRIPT-V8, PR3958-P4-NODEJS20-DE
 
 **Tags:** complete  
 **Patterns Fixed:** None  
-**CI Checks:** 0 ✅ / 0 ❌  
+**CI Checks:** 0  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_25  
@@ -161,7 +163,7 @@ Fixed: PR3958-P0-CI-ALL-GREEN, PR3958-P4-GITHUB-SCRIPT-V8, PR3958-P4-NODEJS20-DE
 
 **Tags:** None  
 **Patterns Fixed:** None  
-**CI Checks:** 0 ✅ / 0 ❌  
+**CI Checks:** 0  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_26  
@@ -183,7 +185,7 @@ Fixed: PR3958-P0-CI-ALL-GREEN, PR3958-P4-GITHUB-SCRIPT-V8, PR3958-P4-NODEJS20-DE
 
 **Tags:** None  
 **Patterns Fixed:** None  
-**CI Checks:** 0 ✅ / 0 ❌  
+**CI Checks:** 0  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_27  
@@ -205,7 +207,7 @@ Fixed: PR3958-P0-CI-ALL-GREEN, PR3958-P4-GITHUB-SCRIPT-V8, PR3958-P4-NODEJS20-DE
 
 **Tags:** None  
 **Patterns Fixed:** None  
-**CI Checks:** 0 ✅ / 0 ❌  
+**CI Checks:** 0  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_28  
@@ -227,7 +229,7 @@ Fixed: PR3958-P0-CI-ALL-GREEN, PR3958-P4-GITHUB-SCRIPT-V8, PR3958-P4-NODEJS20-DE
 
 **Tags:** None  
 **Patterns Fixed:** None  
-**CI Checks:** 0 ✅ / 0 ❌  
+**CI Checks:** 0  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_29  
@@ -249,7 +251,7 @@ Fixed: PR3958-P0-CI-ALL-GREEN, PR3958-P4-GITHUB-SCRIPT-V8, PR3958-P4-NODEJS20-DE
 
 **Tags:** None  
 **Patterns Fixed:** None  
-**CI Checks:** 0 ✅ / 0 ❌  
+**CI Checks:** 0  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_30  

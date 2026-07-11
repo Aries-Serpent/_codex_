@@ -1,6 +1,8 @@
 # A/B Testing Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## Overview
 
@@ -79,7 +81,7 @@ Check if results are statistically significant:
 ```python
 # Check significance
 if manager.is_significant(alpha=0.05):
-    print("✅ Results are statistically significant (p < 0.05)")
+    print(" Results are statistically significant (p < 0.05)")
 
     # Determine winner
     winner = manager.get_winner()
@@ -187,7 +189,7 @@ def run_ab_test_experiment(manager, duration_hours=24):
             print(f"Processed {request_count} requests")
             print_interim_results(manager)
 
-    print(f"✅ Experiment complete: {request_count} requests processed")
+    print(f" Experiment complete: {request_count} requests processed")
     return manager
 ```
 
@@ -251,14 +253,14 @@ def deploy_if_successful(manager, min_improvement=0.02):
     """Deploy if test shows significant improvement."""
 
     if not manager.is_significant():
-        print("❌ Not deploying: results not significant")
+        print(" Not deploying: results not significant")
         return False
 
     winner = manager.get_winner()
 
     # Check if winner is treatment (not control)
     if winner == config.control_variant:
-        print("❌ Not deploying: control variant won")
+        print(" Not deploying: control variant won")
         return False
 
     # Check improvement threshold
@@ -268,11 +270,11 @@ def deploy_if_successful(manager, min_improvement=0.02):
     improvement = (winner_metric - control_metric) / control_metric
 
     if improvement < min_improvement:
-        print(f"❌ Not deploying: improvement ({improvement:.2%}) below threshold ({min_improvement:.2%})")
+        print(f" Not deploying: improvement ({improvement:.2%}) below threshold ({min_improvement:.2%})")
         return False
 
     # All checks passed - deploy!
-    print(f"✅ Deploying {winner} (improvement: {improvement:.2%})")
+    print(f" Deploying {winner} (improvement: {improvement:.2%})")
 
     # Gradual rollout
     manager.gradual_rollout(winner, steps=5)
@@ -357,7 +359,7 @@ def run_sequential_test(manager, check_interval=100, early_stop_threshold=0.001)
             winner = manager.get_winner()
 
             if winner != config.control_variant:
-                print(f"✅ Early stop: {winner} is clear winner")
+                print(f" Early stop: {winner} is clear winner")
                 print(f"Stopped after {request_count} requests")
                 return True
 
@@ -603,13 +605,13 @@ metrics = {
 ## Summary
 
 **Key Points:**
-- ✅ Configure experiments with traffic splits
-- ✅ Record results for all variants
-- ✅ Check statistical significance
-- ✅ Use gradual rollout for safety
-- ✅ Calculate required sample sizes
-- ✅ Apply multiple testing corrections
-- ✅ Integrate with continuous learning
+-  Configure experiments with traffic splits
+-  Record results for all variants
+-  Check statistical significance
+-  Use gradual rollout for safety
+-  Calculate required sample sizes
+-  Apply multiple testing corrections
+-  Integrate with continuous learning
 
 **Next Steps:**
 - See [Continuous Learning Guide](continuous_learning_guide.md)

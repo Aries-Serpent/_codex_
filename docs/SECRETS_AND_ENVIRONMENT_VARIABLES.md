@@ -1,9 +1,11 @@
 # Secrets and Environment Variables Documentation
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 ## Table of Contents
 
 - [Overview](#overview)
-- [📊 Full Inventory](#-full-inventory)
+- [ Full Inventory](#-full-inventory)
   - [Environment Variables — `Aries_Serpent_codex_` Environment](#environment-variables--aries_serpent_codex_-environment)
   - [Repository Variables](#repository-variables)
     - [Agent & Autonomy Control](#agent--autonomy-control)
@@ -16,7 +18,7 @@
   - [Environment Secrets — `Aries_Serpent_codex_`](#environment-secrets--aries_serpent_codex_)
   - [Repository Secrets](#repository-secrets)
   - [Organization Secrets](#organization-secrets)
-- [🔴 Gap Analysis — Variables Referenced in Code but NOT in Inventory](#-gap-analysis--variables-referenced-in-code-but-not-in-inventory)
+- [ Gap Analysis — Variables Referenced in Code but NOT in Inventory](#-gap-analysis--variables-referenced-in-code-but-not-in-inventory)
   - [Service API (`services/api/main.py`)](#service-api-servicesapimainpy)
   - [Nox / ML Pipeline (`noxfile.py`, `scripts/`)](#nox--ml-pipeline-noxfilepy-scripts)
   - [Cognitive Brain & Session (`.codex/CRITICAL_REPOSITORY_VARIABLES.md`)](#cognitive-brain--session-codexcritical_repository_variablesmd)
@@ -81,7 +83,7 @@
 - [Troubleshooting](#troubleshooting)
   - [Missing Secret Errors](#missing-secret-errors)
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 > **Last Full Audit**: 2026-06-03T17:39:00Z | **Auditor**: @mbaetiong
 > **Total Tracked**: 113 (14 env vars · 76 repo vars · 3 env secrets · 7 repo secrets · 13 org secrets)
@@ -94,7 +96,7 @@ This document provides comprehensive documentation for all secrets and environme
 
 ---
 
-## 📊 Full Inventory
+##  Full Inventory
 
 ### Environment Variables — `Aries_Serpent_codex_` Environment
 
@@ -273,7 +275,7 @@ These are injected into the Copilot agent sandbox via `copilot-setup-steps.yml`.
 
 ---
 
-## 🔴 Gap Analysis — Variables Referenced in Code but NOT in Inventory
+##  Gap Analysis — Variables Referenced in Code but NOT in Inventory
 
 The following variables are referenced in source code, workflow files, or `.codex/` docs but **are not present** in the active repository/environment variable inventory. The maintainer should evaluate each for creation.
 
@@ -794,7 +796,7 @@ Complete mapping of all secrets to workflows: **.codex/security/secrets_usage_ma
 
 1. **Never commit secrets** to the repository
 2. **Use environment-specific secrets** for dev/staging/prod
-3. **Rotate compromised secrets immediately** (see emergency procedures in https://github.com/Aries-Serpent/_codex_/blob/main/.codex/security/rotation_schedule.md)
+3. **Rotate compromised secrets immediately** (see emergency procedures in .codex/security/rotation_schedule.md)
 4. **Audit secret access** via GitHub audit logs
 5. **Use least privilege** for workflow permissions
 6. **Document all secrets** in this file

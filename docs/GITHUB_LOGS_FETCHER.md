@@ -1,6 +1,8 @@
 # GitHub Actions Log Fetcher
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 Complete implementation for fetching GitHub Actions logs via MCP, CLI, and API.
 
@@ -13,13 +15,13 @@ This implementation provides three interfaces for fetching logs from GitHub Acti
 
 ## Features
 
-- ✅ Fetch check run logs by ID
-- ✅ Fetch workflow job logs by ID
-- ✅ List check runs for a git reference (commit, branch, tag)
-- ✅ Multiple output formats (text, JSON)
-- ✅ Comprehensive error handling
-- ✅ Rate limit handling
-- ✅ Authentication support via `GITHUB_TOKEN`
+-  Fetch check run logs by ID
+-  Fetch workflow job logs by ID
+-  List check runs for a git reference (commit, branch, tag)
+-  Multiple output formats (text, JSON)
+-  Comprehensive error handling
+-  Rate limit handling
+-  Authentication support via `GITHUB_TOKEN`
 
 ## Prerequisites
 

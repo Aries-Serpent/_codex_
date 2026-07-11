@@ -1,4 +1,6 @@
 # Codex Repository File Mapping (v1.4.0)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 <!-- archive: this file is a historical record; content is intentionally preserved -->
 
@@ -6,7 +8,7 @@
 **Purpose**: Quick reference for navigating the _codex_ repository structure  
 **Audience**: AI agents, contributors, maintainers
 
-## 📊 Quick Navigation Matrix
+##  Quick Navigation Matrix
 
 ### Core Entry Points
 
@@ -134,7 +136,7 @@ docs/
 - `.copilot-space/workflow.yaml` - Weight/threshold tuning
 - Test files - Per feature implementation
 
-## 🎯 Critical File Relationships
+##  Critical File Relationships
 
 ### Verification Chain (PR #2449)
 ```
@@ -280,7 +282,7 @@ ls -1 status_update_*.md
 ls -1 reports/capability_matrix_*.md
 ```
 
-## 📊 Dependency Graph (Key Files)
+##  Dependency Graph (Key Files)
 
 ```
 pyproject.toml

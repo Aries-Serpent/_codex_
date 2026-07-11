@@ -1,6 +1,8 @@
 # Shell Session Hooks
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 The `scripts/session_hooks.sh` script exposes two functions for lightweight
 session logging:

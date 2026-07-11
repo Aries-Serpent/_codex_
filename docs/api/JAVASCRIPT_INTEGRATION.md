@@ -1,4 +1,6 @@
 # JavaScript/TypeScript Integration Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 Complete guide for integrating the Codex API with JavaScript/TypeScript.
 
@@ -714,4 +716,4 @@ describe('CodexAPIClient', () => {
 
 ---
 
-**Last Updated:** 2026-07-08
+**Last Updated: 2026-07-08

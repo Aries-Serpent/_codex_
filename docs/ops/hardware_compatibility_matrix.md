@@ -1,6 +1,8 @@
 # Hardware Compatibility Matrix — Primary Test Machine
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 > **Policy**: The codebase MUST function as intended on the primary test machine.
 > Components that require hardware not present on this machine MUST be optional
@@ -18,32 +20,32 @@
 | **Storage** | 512 GB PCIe Gen 4 NVMe SSD |
 | **OS** | Windows 11 Pro (primary) / Ubuntu 22.04 (CI runner) |
 | **GPU** | Intel® Arc™ integrated graphics (Xe-LP) — **no discrete GPU** |
-| **CUDA** | ❌ Not available (`torch.cuda.is_available()` → `False`) |
+| **CUDA** |  Not available (`torch.cuda.is_available()` → `False`) |
 | **NPU** | Intel® AI Boost NPU (OpenVINO path only — not PyTorch CUDA) |
-| **TPU** | ❌ Not available |
+| **TPU** |  Not available |
 
 ---
 
 ## Compatibility Tiers
 
-### Tier 1 — Fully Supported ✅
+### Tier 1 — Fully Supported 
 All code paths in this tier run on the primary test machine without modification.
 
 | Component | Status | Notes |
 |-----------|--------|-------|
-| Python 3.11+ runtime | ✅ Full | All tests |
-| PyTorch CPU | ✅ Full | `device="cpu"` default |
-| Transformers (CPU inference) | ✅ Full | Tiny models only (memory bound at 16 GB) |
-| SQLite / JSONL backends | ✅ Full | File-based storage |
-| NDJSON logging | ✅ Full | |
-| Hydra / OmegaConf config | ✅ Full | |
-| MLflow tracking (local) | ✅ Full | File-backend only |
-| Ruff / Bandit security gates | ✅ Full | 0 issues |
-| rvs_env_preflight (22 packages) | ✅ Full | CPU extras only |
-| BatchScanRunner API | ✅ Full | |
-| BridgeLock (POSIX + Windows) | ✅ Full | msvcrt.locking on Windows |
-| sandbox.py (enforce_limits=False) | ✅ Full | resource guards apply |
-| fcntl (POSIX) / msvcrt (Windows) | ✅ Full | Platform-guarded in all modules |
+| Python 3.11+ runtime |  Full | All tests |
+| PyTorch CPU |  Full | `device="cpu"` default |
+| Transformers (CPU inference) |  Full | Tiny models only (memory bound at 16 GB) |
+| SQLite / JSONL backends |  Full | File-based storage |
+| NDJSON logging |  Full | |
+| Hydra / OmegaConf config |  Full | |
+| MLflow tracking (local) |  Full | File-backend only |
+| Ruff / Bandit security gates |  Full | 0 issues |
+| rvs_env_preflight (22 packages) |  Full | CPU extras only |
+| BatchScanRunner API |  Full | |
+| BridgeLock (POSIX + Windows) |  Full | msvcrt.locking on Windows |
+| sandbox.py (enforce_limits=False) |  Full | resource guards apply |
+| fcntl (POSIX) / msvcrt (Windows) |  Full | Platform-guarded in all modules |
 
 ### Tier 2 — Conditional / Graceful Degradation ⚠️
 These components work but skip GPU-accelerated paths, or log a warning.
@@ -60,7 +62,7 @@ These components work but skip GPU-accelerated paths, or log a warning.
 | `@skip_real_st_models` tests | ⚠️ Skipped | pytest mark | SentenceTransformer CPU guard |
 | `sandbox.py(enforce_limits=False)` | ⚠️ Warning | resource module check | Logs warning; runs without limits |
 
-### Tier 3 — Deferred / N/A ❌
+### Tier 3 — Deferred / N/A 
 These components require hardware NOT present on the primary test machine.
 They are **optional** and MUST NOT cause import errors or test failures.
 
@@ -103,7 +105,7 @@ All platform-specific imports have been guarded against Windows/CPU-only failure
 `torch.cuda.is_available()` returns `False`. There is no CUDA runtime available.
 
 **Resolution (S95)**:
-- **CPU smoke suite** (20 tests in `tests/smoke/test_cpu_integration_smoke.py`) — ✅ FULLY SATISFIES B-03 for the primary test machine
+- **CPU smoke suite** (20 tests in `tests/smoke/test_cpu_integration_smoke.py`) —  FULLY SATISFIES B-03 for the primary test machine
 - **GPU smoke suite** — marked **N/A for primary test machine**; tracked in S95 backlog as a cloud-runner-only item, NOT a blocking deployment gate for the primary machine
 - **B-03 is now CLOSED** for the primary test machine. GPU testing is an enhancement, not a requirement, for `0.9.0-rc1` on this hardware.
 

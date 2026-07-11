@@ -1,6 +1,8 @@
 # Codex Swarm Engine (Rust)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 High-performance orchestration layer for the Codex AI Agent Swarm.
 
@@ -138,14 +140,14 @@ cargo doc --open
 
 ## Compliance
 
-- ✅ AI Agent Policy v2.0.0
-- ✅ Cognitive Brain Integration (Phase 11)
-- ✅ Zero additional cost (GitHub Team + Copilot Pro+)
-- ✅ Production-ready architecture
+-  AI Agent Policy v2.0.0
+-  Cognitive Brain Integration (Phase 11)
+-  Zero additional cost (GitHub Team + Copilot Pro+)
+-  Production-ready architecture
 
 ## Roadmap
 
-- [x] **Milestone 1.1**: Project Scaffolding ✅
+- [x] **Milestone 1.1**: Project Scaffolding 
 - [ ] **Milestone 1.2**: SwarmState Bridge
 - [ ] **Milestone 1.3**: Tokio Runtime Integration
 - [ ] **Milestone 2.1**: Async Task Queue

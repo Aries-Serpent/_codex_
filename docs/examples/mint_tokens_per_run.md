@@ -1,6 +1,8 @@
 # Mint GitHub tokens per run
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 This script mints short-lived GitHub installation tokens scoped for a single
 run. Use it when you need ephemeral credentials for Codex workflows that touch

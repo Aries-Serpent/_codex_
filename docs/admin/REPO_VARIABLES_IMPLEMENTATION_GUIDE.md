@@ -1,9 +1,11 @@
 # Repository Variables — Implementation Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Source:** [PR #3483 comment #issuecomment-3988416714](https://github.com/Aries-Serpent/_codex_/pull/3483#issuecomment-3988416714)  
 > **Author:** Copilot variable analysis (2026-03-03)  
 > **Version:** 1.0.0  
-> **Last Updated:** 2026-03-03  
+> **Last Updated: 2026-07-11
 > **Human Admin Action Guide:** [`HUMAN_ADMIN_REPO_VARIABLES_SETUP.md`](./HUMAN_ADMIN_REPO_VARIABLES_SETUP.md)
 
 ---
@@ -28,14 +30,14 @@ The repository variables feed three subsystems: the **Cognitive Brain** (memory 
 the **Copilot CLI** (FastAPI cognitive_app at port 8765), and the **CI/CD health** automation layer.
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Diagram showing "GitHub Repository Variables", "🧠 Cognitive Brain\nMAX_CONTEXT_TOKENS\nLTM_RETENTION_DAYS\nPATTERN_MIN_CONFIDENCE\nMEMORY_TIER\nSESSION_NUMBER\nINJECTION_ENABLED\nALLOWED_ACTORS"'}}%%
+%%{init: {'accessibility': {'title': 'Diagram showing "GitHub Repository Variables", " Cognitive Brain\nMAX_CONTEXT_TOKENS\nLTM_RETENTION_DAYS\nPATTERN_MIN_CONFIDENCE\nMEMORY_TIER\nSESSION_NUMBER\nINJECTION_ENABLED\nALLOWED_ACTORS"'}}%%
 graph TB
     subgraph GH["GitHub Repository Variables"]
         direction TB
-        CB_GROUP["🧠 Cognitive Brain\nMAX_CONTEXT_TOKENS\nLTM_RETENTION_DAYS\nPATTERN_MIN_CONFIDENCE\nMEMORY_TIER\nSESSION_NUMBER\nINJECTION_ENABLED\nALLOWED_ACTORS"]
+        CB_GROUP[" Cognitive Brain\nMAX_CONTEXT_TOKENS\nLTM_RETENTION_DAYS\nPATTERN_MIN_CONFIDENCE\nMEMORY_TIER\nSESSION_NUMBER\nINJECTION_ENABLED\nALLOWED_ACTORS"]
         CLI_GROUP["🖥️ Copilot CLI\nCLI_BASE_URL\nCLI_ENABLED\nSESSION_RESTORE_ENABLED\nMAX_AUTONOMY_LEVEL\nAGENT_AUTH_ENABLED\nAGENT_FIREWALL_ENABLED"]
-        CI_GROUP["⚙️ CI/CD Health\nCI_FAILURE_RATE\nCI_FAILURE_THRESHOLD\nCI_LAST_GREEN_SHA\nHANDOFF_TIMEOUT_SECONDS\nEMBEDDING_INDEX_AUTO_REBUILD\nAUTO_PROMOTE_TIER_ENABLED"]
-        STATIC_GROUP["🔒 Static / Identity\nAGENT_NAME\nAPI_VERSION\nORG_NAME\nISOLATED_PATH\nNETWORK_MODE\nGENESIS_TIMESTAMP\nAUDIT_RETENTION_DAYS"]
+        CI_GROUP[" CI/CD Health\nCI_FAILURE_RATE\nCI_FAILURE_THRESHOLD\nCI_LAST_GREEN_SHA\nHANDOFF_TIMEOUT_SECONDS\nEMBEDDING_INDEX_AUTO_REBUILD\nAUTO_PROMOTE_TIER_ENABLED"]
+        STATIC_GROUP[" Static / Identity\nAGENT_NAME\nAPI_VERSION\nORG_NAME\nISOLATED_PATH\nNETWORK_MODE\nGENESIS_TIMESTAMP\nAUDIT_RETENTION_DAYS"]
     end
 
     subgraph CONSUMERS["Workflow / Code Consumers"]

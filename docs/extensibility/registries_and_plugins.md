@@ -1,6 +1,8 @@
 # Registries and plugin hooks
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 The Codex stack exposes lightweight registries for datasets, metrics, models, and tokenizers. Extensions stay offline-first and can be shipped as local modules.
 

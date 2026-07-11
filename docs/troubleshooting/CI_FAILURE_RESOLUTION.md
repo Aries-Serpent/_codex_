@@ -1,6 +1,8 @@
 # 🚨 CI Failure Resolution Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-> **Last Updated:** 2026-02-10
+> **Last Updated: 2026-07-11
 > **Status:** Active Reference Document
 
 This guide documents common CI/CD pipeline failures and their resolutions, with a focus on the GitHub Actions workflows in the Aries-Serpent/_codex_ repository.
@@ -56,10 +58,10 @@ from typing import List, Tuple
 
 This single missing import caused a cascade of failures:
 
-1. ❌ `rust_tests` - FAILED (script crashed)
+1.  `rust_tests` - FAILED (script crashed)
 2. ⏭️ `code_coverage` - SKIPPED (depends on rust_tests)
 3. ⏭️ `python_integration` - SKIPPED (depends on rust_tests)
-4. ❌ `status_check` - FAILED (depends on skipped jobs)
+4.  `status_check` - FAILED (depends on skipped jobs)
 5. 🚫 **Deployment blocked**
 
 ### Solution Implemented

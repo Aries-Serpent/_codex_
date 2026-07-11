@@ -1,7 +1,9 @@
-# 📊 Skills Telemetry Dashboard
+#  Skills Telemetry Dashboard
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Category:** Autonomous Agentic Agency — Telemetry
-> **Status:** ✅ Active | **Last Updated:** 2026-04-02T11:35:00Z | **Session:** S277
+> **Status:**  Active | **Last Updated: 2026-07-11
 > **Owner:** skills-master-agent v1.0.0
 > **Data Source:** `logs/skill_events.jsonl` via `codex-skill telemetry push`
 
@@ -88,13 +90,13 @@ graph LR
 
 | Skill ID | Version | AAIS | Risk | Calls Budget | Tokens Budget | Status | agent Consumers |
 |----------|---------|------|------|-------------|--------------|--------|-----------------|
-| `doc.retriever.core` | 1.0.0 | 0.92 | 🟢 low | 1,000 | 200K | ✅ Active | doc-alignment, doc-quality, skills-master |
-| `doc.refresh.agent` | 1.0.0 | 0.90 | 🟡 medium | 200 | 500K | ✅ Active | doc-alignment, freshness-checker, skills-master |
-| `code.search.extract` | 1.0.0 | 0.88 | 🟡 medium | 500 | 150K | ✅ Active | ci-testing, test-healer, skills-master |
+| `doc.retriever.core` | 1.0.0 | 0.92 |  low | 1,000 | 200K |  Active | doc-alignment, doc-quality, skills-master |
+| `doc.refresh.agent` | 1.0.0 | 0.90 | 🟡 medium | 200 | 500K |  Active | doc-alignment, freshness-checker, skills-master |
+| `code.search.extract` | 1.0.0 | 0.88 | 🟡 medium | 500 | 150K |  Active | ci-testing, test-healer, skills-master |
 
 ---
 
-## 🎯 AAIS Scores — Radar Chart
+##  AAIS Scores — Radar Chart
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Diagram Configuration showing "Concision: 0.85", "Acronym: 0.95"'}}%%
@@ -154,16 +156,16 @@ consumers, and complementary execution patterns. Percentage = recommendation con
 
 | Merge Candidate A | Merge Candidate B | Overlap | Recommendation % | Status | Rationale |
 |---|---|---|---|---|---|
-| `ci-failure-resolution-agent` | `ci-testing-agent` | 85% tags | **95%** ✅ | ✅ Merged (v4.0) | Already absorbed — identical fix patterns |
-| `ci-emergency-response-agent` | `ci-testing-agent` | 80% tags | **92%** ✅ | ✅ Merged (v4.0) | Emergency = critical subset of CI triage |
-| `coverage-gapfill-agent` | `unified-coverage-agent` | 90% tags | **98%** ✅ | ✅ Deprecated | Gap-fill is a sub-workflow of unified |
-| `coverage-maintenance-agent` | `unified-coverage-agent` | 88% tags | **96%** ✅ | ✅ Deprecated | Maintenance folded into unified |
-| `test-coverage-agent` | `unified-coverage-agent` | 92% tags | **97%** ✅ | ✅ Deprecated | Monitoring folded into unified |
+| `ci-failure-resolution-agent` | `ci-testing-agent` | 85% tags | **95%**  |  Merged (v4.0) | Already absorbed — identical fix patterns |
+| `ci-emergency-response-agent` | `ci-testing-agent` | 80% tags | **92%**  |  Merged (v4.0) | Emergency = critical subset of CI triage |
+| `coverage-gapfill-agent` | `unified-coverage-agent` | 90% tags | **98%**  |  Deprecated | Gap-fill is a sub-workflow of unified |
+| `coverage-maintenance-agent` | `unified-coverage-agent` | 88% tags | **96%**  |  Deprecated | Maintenance folded into unified |
+| `test-coverage-agent` | `unified-coverage-agent` | 92% tags | **97%**  |  Deprecated | Monitoring folded into unified |
 | `doc-freshness-checker` | `post-merge-doc-alignment-agent` | 65% tags | **72%** 🟡 | 📋 Review | Freshness check is a subset of alignment loop |
 | `ci-auto-healer-agent` | `self-healing-orchestrator-agent` | 70% tags | **78%** 🟡 | 📋 Review | Auto-healer handles patterns; orchestrator coordinates |
 | `rag-meta-tensor-guardian` | `meta-tensor-validator` | 75% tags | **80%** 🟡 | 📋 Review | Guardian + validator = complementary checks |
-| `link-validator-agent` | `doc-freshness-checker` | 55% tags | **60%** 🟠 | ⏳ Future | Link validation + freshness = two angles on doc quality |
-| `security-audit-agent` | `unified-security-scanner` | 60% tags | **68%** 🟠 | ⏳ Future | Audit = manual; scanner = automated |
+| `link-validator-agent` | `doc-freshness-checker` | 55% tags | **60%**  | ⏳ Future | Link validation + freshness = two angles on doc quality |
+| `security-audit-agent` | `unified-security-scanner` | 60% tags | **68%**  | ⏳ Future | Audit = manual; scanner = automated |
 
 ---
 
@@ -178,7 +180,7 @@ flowchart TD
     TEL --> OTEL["OpenTelemetry Span\n(when SDK available)"]
     JSONL --> READ["read_events()"]
     READ --> SUM["summarise_events()"]
-    SUM --> DASH["📊 This Dashboard\n(update via upsert)"]
+    SUM --> DASH[" This Dashboard\n(update via upsert)"]
     SUM --> APP["Cognitive Brain App\npush_to_app()"]
     SUM --> GH["GitHub Discussions\n(telemetry category)"]
 ```
@@ -210,13 +212,13 @@ stateDiagram-v2
 
 ---
 
-## 📊 Budget Consumption — Per Skill
+##  Budget Consumption — Per Skill
 
 | Skill ID | Calls Used | Calls Budget | % Used | Tokens Used | Tokens Budget | % Used | Status |
 |----------|-----------|-------------|--------|------------|--------------|--------|--------|
-| `doc.retriever.core` | 0 | 1,000 | 0% | 0 | 200,000 | 0% | 🟢 Fresh |
-| `doc.refresh.agent` | 0 | 200 | 0% | 0 | 500,000 | 0% | 🟢 Fresh |
-| `code.search.extract` | 0 | 500 | 0% | 0 | 150,000 | 0% | 🟢 Fresh |
+| `doc.retriever.core` | 0 | 1,000 | 0% | 0 | 200,000 | 0% |  Fresh |
+| `doc.refresh.agent` | 0 | 200 | 0% | 0 | 500,000 | 0% |  Fresh |
+| `code.search.extract` | 0 | 500 | 0% | 0 | 150,000 | 0% |  Fresh |
 
 > Budget resets at the start of each policy window. Updated by `ExecutionEnvelope.run()`.
 
@@ -228,22 +230,22 @@ stateDiagram-v2
 
 | Capability | Skill | Coverage |
 |-----------|-------|----------|
-| Document retrieval | `doc.retriever.core` | ✅ Full |
-| Document refresh | `doc.refresh.agent` | ✅ Full |
-| Code search | `code.search.extract` | ✅ Full |
-| AAIS scoring | `codex.skills.aais` (module) | ✅ Full |
-| Telemetry | `codex.skills.telemetry` (module) | ✅ Full |
-| Compression | `codex.skills.compression` (module) | ✅ Full |
+| Document retrieval | `doc.retriever.core` |  Full |
+| Document refresh | `doc.refresh.agent` |  Full |
+| Code search | `code.search.extract` |  Full |
+| AAIS scoring | `codex.skills.aais` (module) |  Full |
+| Telemetry | `codex.skills.telemetry` (module) |  Full |
+| Compression | `codex.skills.compression` (module) |  Full |
 
 ### Identified Gaps — Candidate New Skills
 
 | Gap | Proposed Skill ID | Priority | Status |
 |-----|------------------|----------|--------|
-| Test failure pattern matching | `test.failure.matcher` | 🔴 High | 📋 Planned |
-| CI workflow health analysis | `ci.health.analyzer` | 🔴 High | 📋 Planned |
+| Test failure pattern matching | `test.failure.matcher` |  High | 📋 Planned |
+| CI workflow health analysis | `ci.health.analyzer` |  High | 📋 Planned |
 | Dependency vulnerability scan | `security.dep.scanner` | 🟡 Medium | 📋 Planned |
 | RAG index rebuild | `rag.index.rebuild` | 🟡 Medium | 📋 Planned |
-| agent AAIS batch scorer | `agent.aais.batch` | 🟢 Low | 📋 Planned |
+| agent AAIS batch scorer | `agent.aais.batch` |  Low | 📋 Planned |
 
 ---
 

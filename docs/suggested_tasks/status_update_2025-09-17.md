@@ -1,4 +1,6 @@
 # *codex*: Status Update (2025-09-17)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 ## Table of Contents
 
@@ -18,7 +20,7 @@
 - [8. Error Capture Blocks](#8-error-capture-blocks)
 - [Attempt to import yaml; fallback to JSON if unavailable](#attempt-to-import-yaml-fallback-to-json-if-unavailable)
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## 1. Repo Map
 

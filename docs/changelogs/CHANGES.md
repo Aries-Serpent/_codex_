@@ -1,3 +1,6 @@
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 ## [Unreleased]
 
 ### Fixed
@@ -45,13 +48,13 @@
 ## [2025-11-09] Feature Batch 1: Metrics & MLflow Guard
 
 ### Added
-- ✅ Metrics API completion: F1, BLEU, token accuracy, recall classes plus NDJSON summariser
-- ✅ Guarded MLflow initialization and safe logging wrappers
-- ✅ Deterministic RNG checkpoint capture/restore utilities
-- ✅ Dataset schema validator CLI (`scripts/validate_dataset.py`)
-- ✅ Hydra multirun sweep configuration (`configs/base/hydra_sweep.yaml`)
-- ✅ Device/dtype auto-detection layer for unified training
-- ✅ Unified `codex_exec` task runner CLI
+-  Metrics API completion: F1, BLEU, token accuracy, recall classes plus NDJSON summariser
+-  Guarded MLflow initialization and safe logging wrappers
+-  Deterministic RNG checkpoint capture/restore utilities
+-  Dataset schema validator CLI (`scripts/validate_dataset.py`)
+-  Hydra multirun sweep configuration (`configs/base/hydra_sweep.yaml`)
+-  Device/dtype auto-detection layer for unified training
+-  Unified `codex_exec` task runner CLI
 
 ### Modified
 - `src/codex_ml/training/unified_training.py`: MLflow guard integration, RNG restore, device state capture

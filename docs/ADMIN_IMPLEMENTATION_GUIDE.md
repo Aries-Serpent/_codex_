@@ -1,16 +1,18 @@
 # _codex_ Repository: Complete Admin Implementation Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 ## Table of Contents
 
-- [🎯 Executive Summary for Administrators](#-executive-summary-for-administrators)
+- [ Executive Summary for Administrators](#-executive-summary-for-administrators)
   - [Purpose](#purpose)
   - [Your Role as Administrator](#your-role-as-administrator)
   - [Systems Requiring Admin Action](#systems-requiring-admin-action)
-- [📊 Quick Status Dashboard](#-quick-status-dashboard)
-- [🔐 Section 1: GitHub Organization Settings](#-section-1-github-organization-settings)
+- [ Quick Status Dashboard](#-quick-status-dashboard)
+- [ Section 1: GitHub Organization Settings](#-section-1-github-organization-settings)
   - [1.1 Enable GitHub Copilot for Organization](#11-enable-github-copilot-for-organization)
   - [1.2 Repository Permissions](#12-repository-permissions)
-- [🤖 Section 2: GitHub App Creation (PR Reviewer Bot)](#-section-2-github-app-creation-pr-reviewer-bot)
+- [ Section 2: GitHub App Creation (PR Reviewer Bot)](#-section-2-github-app-creation-pr-reviewer-bot)
   - [2.1 Create GitHub App](#21-create-github-app)
     - [Step 1: Basic Information](#step-1-basic-information)
     - [Step 2: Identifying and authorizing users](#step-2-identifying-and-authorizing-users)
@@ -29,7 +31,7 @@
   - [3.3 Optional Secrets (Enhanced Features)](#33-optional-secrets-enhanced-features)
   - [3.4 How to Add a Secret](#34-how-to-add-a-secret)
   - [3.5 Personal Access Token (if needed)](#35-personal-access-token-if-needed)
-- [🚀 Section 4: Deployment Infrastructure](#-section-4-deployment-infrastructure)
+- [ Section 4: Deployment Infrastructure](#-section-4-deployment-infrastructure)
   - [4.1 Choose Deployment Method](#41-choose-deployment-method)
     - [Option A: GitHub Actions Only (Simplest - RECOMMENDED for start)](#option-a-github-actions-only-simplest---recommended-for-start)
     - [Option B: AWS Lambda (Recommended for Production)](#option-b-aws-lambda-recommended-for-production)
@@ -66,7 +68,7 @@
 - [List any issues or blockers](#list-any-issues-or-blockers)
 - [Questions for Copilot Agent](#questions-for-copilot-agent)
 - [Additional notes](#additional-notes)
-- [📚 Section 8: Troubleshooting Guide](#-section-8-troubleshooting-guide)
+- [ Section 8: Troubleshooting Guide](#-section-8-troubleshooting-guide)
   - [Common Issues and Solutions](#common-issues-and-solutions)
     - [Issue: "Copilot Agents not available"](#issue-copilot-agents-not-available)
     - [Issue: "Workflows failing with permission errors"](#issue-workflows-failing-with-permission-errors)
@@ -78,7 +80,7 @@
   - [Documentation Links](#documentation-links)
   - [Getting Help](#getting-help)
   - [Repository-Specific Resources](#repository-specific-resources)
-- [✅ Section 10: Final Validation](#-section-10-final-validation)
+- [ Section 10: Final Validation](#-section-10-final-validation)
   - [Test 1: Verify Workflow Execution](#test-1-verify-workflow-execution)
 - [Using GitHub CLI](#using-github-cli)
 - [Trigger a workflow manually](#trigger-a-workflow-manually)
@@ -94,13 +96,13 @@
 - [📝 Notes Section](#-notes-section)
   - [Admin Notes](#admin-notes)
   - [Version History](#version-history)
-- [📊 Document Metadata](#-document-metadata)
+- [ Document Metadata](#-document-metadata)
 
 > **Version:** 1.0.0 | **Generated:** 2025-12-21 | **Status:** IMPLEMENTATION_REQUIRED
 
 ---
 
-## 🎯 Executive Summary for Administrators
+##  Executive Summary for Administrators
 
 ### Purpose
 
@@ -125,19 +127,19 @@ You need to:
 
 ---
 
-## 📊 Quick Status Dashboard
+##  Quick Status Dashboard
 
 | System | Current Status | Admin Actions Required | Priority |
 |--------|---------------|----------------------|----------|
-| Copilot Agent | ❌ Not Configured | 5 actions | **CRITICAL** |
-| PR Reviewer | ❌ App Not Created | 8 actions | **HIGH** |
+| Copilot Agent |  Not Configured | 5 actions | **CRITICAL** |
+| PR Reviewer |  App Not Created | 8 actions | **HIGH** |
 | Security Scanning | ⚠️ Partial | 3 actions | **HIGH** |
 | Workflows | ⚠️ Failing | 4 actions | **MEDIUM** |
-| Evolution System | ❌ Not Deployed | 6 actions | **MEDIUM** |
+| Evolution System |  Not Deployed | 6 actions | **MEDIUM** |
 
 ---
 
-## 🔐 Section 1: GitHub Organization Settings
+##  Section 1: GitHub Organization Settings
 
 ### 1.1 Enable GitHub Copilot for Organization
 
@@ -151,7 +153,7 @@ You need to:
 4. Enable: **"Copilot Agents"** (if available in your plan)
 5. Copy and provide: **Organization ID**
 
-> 💡 **How to find Organization ID:**
+>  **How to find Organization ID:**
 > - Go to `https://api.github.com/orgs/Aries-Serpent`
 > - Look for the `"id"` field in the JSON response
 
@@ -174,15 +176,15 @@ organization_settings:
 
 | Setting | Location | Required Value |
 |---------|----------|---------------|
-| Actions | Settings → Actions → General | ✅ Enabled |
+| Actions | Settings → Actions → General |  Enabled |
 | Workflow Permissions | Settings → Actions → General | Read and write permissions |
-| Allow PR approval | Settings → Actions → General | ✅ Allow GitHub Actions to create and approve pull requests |
-| Dependency Graph | Settings → Security → Code security | ✅ Enabled |
-| Dependabot Alerts | Settings → Security → Code security | ✅ Enabled |
-| Dependabot Security Updates | Settings → Security → Code security | ✅ Enabled |
-| Secret Scanning | Settings → Security → Code security | ✅ Enabled |
-| Push Protection | Settings → Security → Code security | ✅ Enabled |
-| GitHub Pages | Settings → Pages | ✅ Enabled (Deploy from Actions) |
+| Allow PR approval | Settings → Actions → General |  Allow GitHub Actions to create and approve pull requests |
+| Dependency Graph | Settings → Security → Code security |  Enabled |
+| Dependabot Alerts | Settings → Security → Code security |  Enabled |
+| Dependabot Security Updates | Settings → Security → Code security |  Enabled |
+| Secret Scanning | Settings → Security → Code security |  Enabled |
+| Push Protection | Settings → Security → Code security |  Enabled |
+| GitHub Pages | Settings → Pages |  Enabled (Deploy from Actions) |
 
 **Step-by-Step for Actions Permissions:**
 
@@ -196,7 +198,7 @@ organization_settings:
 
 ---
 
-## 🤖 Section 2: GitHub App Creation (PR Reviewer Bot)
+##  Section 2: GitHub App Creation (PR Reviewer Bot)
 
 ### 2.1 Create GitHub App
 
@@ -221,22 +223,22 @@ Copy these values exactly:
 | Setting | Value |
 |---------|-------|
 | Callback URL | Leave empty |
-| Expire user authorization tokens | ✅ Enabled |
-| Request user authorization (OAuth) during installation | ❌ Disabled |
-| Enable Device Flow | ❌ Disabled |
+| Expire user authorization tokens |  Enabled |
+| Request user authorization (OAuth) during installation |  Disabled |
+| Enable Device Flow |  Disabled |
 
 #### Step 3: Post installation
 
 | Setting | Value |
 |---------|-------|
 | Setup URL (optional) | Leave empty |
-| Redirect on update | ❌ Disabled |
+| Redirect on update |  Disabled |
 
 #### Step 4: Webhook Configuration
 
 | Setting | Value |
 |---------|-------|
-| Active | ✅ Enabled |
+| Active |  Enabled |
 | Webhook URL | `https://github.com/Aries-Serpent/_codex_/dispatches` (or leave empty initially) |
 | Webhook secret | Generate using command below |
 
@@ -427,7 +429,7 @@ secrets_configured:
 
 ---
 
-## 🚀 Section 4: Deployment Infrastructure
+##  Section 4: Deployment Infrastructure
 
 ### 4.1 Choose Deployment Method
 
@@ -548,11 +550,11 @@ tar xzf ./actions-runner-linux-x64-2.311.0.tar.gz
 
 | Feature | Status Required | How to Enable |
 |---------|----------------|---------------|
-| Dependency graph | ✅ Enabled | Settings → Security → Enable |
-| Dependabot alerts | ✅ Enabled | Settings → Security → Enable |
-| Dependabot security updates | ✅ Enabled | Settings → Security → Enable |
-| Secret scanning | ✅ Enabled | Settings → Security → Enable |
-| Push protection | ✅ Enabled | Settings → Security → Enable |
+| Dependency graph |  Enabled | Settings → Security → Enable |
+| Dependabot alerts |  Enabled | Settings → Security → Enable |
+| Dependabot security updates |  Enabled | Settings → Security → Enable |
+| Secret scanning |  Enabled | Settings → Security → Enable |
+| Push protection |  Enabled | Settings → Security → Enable |
 | Code scanning | ⚠️ Optional | Configure in workflow |
 
 ### 5.2 Branch Protection Rules
@@ -567,14 +569,14 @@ tar xzf ./actions-runner-linux-x64-2.311.0.tar.gz
 
 | Setting | Value |
 |---------|-------|
-| Require a pull request before merging | ✅ |
+| Require a pull request before merging |  |
 | Require approvals | 1 |
-| Dismiss stale pull request approvals | ✅ |
+| Dismiss stale pull request approvals |  |
 | Require review from Code Owners | ⚠️ Optional |
-| Require status checks to pass | ✅ |
-| Require branches to be up to date | ✅ |
+| Require status checks to pass |  |
+| Require branches to be up to date |  |
 | **Required status checks:** | See list below |
-| Require conversation resolution | ✅ |
+| Require conversation resolution |  |
 | Do not allow bypassing | ⚠️ Optional |
 | Restrict who can push | ⚠️ Optional |
 
@@ -743,7 +745,7 @@ notes: |
 
 ---
 
-## 📚 Section 8: Troubleshooting Guide
+##  Section 8: Troubleshooting Guide
 
 ### Common Issues and Solutions
 
@@ -850,7 +852,7 @@ notes: |
 
 ---
 
-## ✅ Section 10: Final Validation
+##  Section 10: Final Validation
 
 Once all sections are complete, perform these validation tests:
 
@@ -941,7 +943,7 @@ _Use this space for any additional notes, concerns, or observations:_
 
 ---
 
-## 📊 Document Metadata
+##  Document Metadata
 
 | Property | Value |
 |----------|-------|
@@ -953,7 +955,7 @@ _Use this space for any additional notes, concerns, or observations:_
 
 ---
 
-**🚀 Ready to Start?** Begin with Section 1 and work through each section in order. Return the completed template from Section 7 when finished.
+** Ready to Start?** Begin with Section 1 and work through each section in order. Return the completed template from Section 7 when finished.
 
 ---
 

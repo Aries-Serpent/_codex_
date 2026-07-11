@@ -1,6 +1,8 @@
 # Cognitive Codex Web Application
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## Overview
 
@@ -9,13 +11,13 @@ The Cognitive Codex App is a quantum-enhanced code generation platform with real
 ## Quick Links
 
 - **Source Code:** [`/cognitive_app`](https://github.com/Aries-Serpent/_codex_/tree/main/cognitive_app)
-- **Integration Guide:** [cognitive_app/README_docs/api/reference/INTEGRATION.md](https://github.com/Aries-Serpent/_codex_/blob/main/cognitive_app/README_docs/api/reference/INTEGRATION.md)
-- **Master Plan:** [cognitive_app/CODEX_INTEGRATION_MASTER_PLAN.md](https://github.com/Aries-Serpent/_codex_/blob/main/cognitive_app/CODEX_INTEGRATION_MASTER_PLAN.md)
-- **Implementation Status:** [cognitive_app/IMPLEMENTATION_STATUS.md](https://github.com/Aries-Serpent/_codex_/blob/main/cognitive_app/IMPLEMENTATION_STATUS.md)
+- **Integration Guide:** [cognitive_app/README_docs/api/reference/INTEGRATION.md](cognitive_app/README_docs/api/reference/INTEGRATION.md)
+- **Master Plan:** [cognitive_app/CODEX_INTEGRATION_MASTER_PLAN.md](cognitive_app/CODEX_INTEGRATION_MASTER_PLAN.md)
+- **Implementation Status:** [cognitive_app/IMPLEMENTATION_STATUS.md](cognitive_app/IMPLEMENTATION_STATUS.md)
 
 ## Features
 
-### 🧠 Quantum Decision Engine
+###  Quantum Decision Engine
 Real-time cognitive brain metrics visualization:
 - **k₁ Factor Tracking** - Target: ≤0.35 (currently 0.35)
 - **Quantum Advantage** - 2.86× over classical approaches
@@ -23,7 +25,7 @@ Real-time cognitive brain metrics visualization:
 - **Superposition States** - Parallel scenario evaluation
 - **Wave Function Collapse** - Animated decision visualization
 
-### 🤖 Agent Orchestration
+###  Agent Orchestration
 Multi-agent workflow management:
 - **6 Physics Paradigms** - Chaos, Fractal, Fluid, EM, Wave, Relativity
 - **Pre-built Workflow Tokens** - AUDIT_EXEC, DOC_GEN, HEAL, DECIDE, ORGANIZE, REVIEW
@@ -47,7 +49,7 @@ Natural language to code:
 - **Multi-language Support** - Python, TypeScript, JavaScript, Go, etc.
 - **Copy/Download** - Easy code export
 
-### 📊 Metrics Dashboard
+###  Metrics Dashboard
 Real-time system monitoring:
 - **Quantum Brain Metrics** - k₁, coherence, quantum advantage
 - **Agent System Status** - Active agents, current tasks
@@ -169,7 +171,7 @@ VITE_CODEX_KEY=demo-key               # API key
 
 **Overall: 95% Complete**
 
-✅ **Complete:**
+ **Complete:**
 - Core infrastructure (React, Vite, TypeScript, Tailwind)
 - Design system (OKLCH colors, animations, typography)
 - Custom hooks (useQuantumState, useAgentOrchestration, useMemorySystem)
@@ -184,7 +186,7 @@ VITE_CODEX_KEY=demo-key               # API key
 - Enhanced code pipeline (30%)
 - WebSocket real-time updates (0%)
 
-❌ **Not Started:**
+ **Not Started:**
 - Unit tests (0% coverage)
 - Integration tests
 - E2E tests
@@ -192,9 +194,9 @@ VITE_CODEX_KEY=demo-key               # API key
 ## Next Steps
 
 ### Immediate
-1. ✅ Integrate files into repository
-2. ✅ Configure build for GitHub Pages
-3. ✅ Test local build
+1.  Integrate files into repository
+2.  Configure build for GitHub Pages
+3.  Test local build
 4. 🔄 Deploy to GitHub Pages
 5. 🔄 Verify accessibility
 
@@ -214,20 +216,20 @@ VITE_CODEX_KEY=demo-key               # API key
 
 ## Documentation
 
-- **Integration Guide:** [README_docs/api/reference/INTEGRATION.md](https://github.com/Aries-Serpent/_codex_/blob/main/cognitive_app/README_docs/api/reference/INTEGRATION.md)
-- **Master Plan:** [CODEX_INTEGRATION_MASTER_PLAN.md](https://github.com/Aries-Serpent/_codex_/blob/main/cognitive_app/CODEX_INTEGRATION_MASTER_PLAN.md) - Complete backend API specification
-- **Implementation Status:** [IMPLEMENTATION_STATUS.md](https://github.com/Aries-Serpent/_codex_/blob/main/cognitive_app/IMPLEMENTATION_STATUS.md) - Detailed progress tracking
-- **Product Requirements:** [PRD.md](https://github.com/Aries-Serpent/_codex_/blob/main/cognitive_app/PRD.md)
-- **Component README:** [src/components/quantum/README.md](https://github.com/Aries-Serpent/_codex_/blob/main/cognitive_app/src/components/quantum/README.md)
+- **Integration Guide:** [README_docs/api/reference/INTEGRATION.md](cognitive_app/README_docs/api/reference/INTEGRATION.md)
+- **Master Plan:** [CODEX_INTEGRATION_MASTER_PLAN.md](cognitive_app/CODEX_INTEGRATION_MASTER_PLAN.md) - Complete backend API specification
+- **Implementation Status:** [IMPLEMENTATION_STATUS.md](cognitive_app/IMPLEMENTATION_STATUS.md) - Detailed progress tracking
+- **Product Requirements:** [PRD.md](cognitive_app/PRD.md)
+- **Component README:** [src/components/quantum/README.md](cognitive_app/src/components/quantum/README.md)
 
 ## Support
 
 For issues or questions:
-1. Check [IMPLEMENTATION_STATUS.md](https://github.com/Aries-Serpent/_codex_/blob/main/cognitive_app/IMPLEMENTATION_STATUS.md) for known gaps
-2. Review [CODEX_INTEGRATION_MASTER_PLAN.md](https://github.com/Aries-Serpent/_codex_/blob/main/cognitive_app/CODEX_INTEGRATION_MASTER_PLAN.md) for architecture
+1. Check [IMPLEMENTATION_STATUS.md](cognitive_app/IMPLEMENTATION_STATUS.md) for known gaps
+2. Review [CODEX_INTEGRATION_MASTER_PLAN.md](cognitive_app/CODEX_INTEGRATION_MASTER_PLAN.md) for architecture
 3. Consult component documentation in source files
 4. Open an issue in the repository
 
 ## License
 
-See [LICENSE](https://github.com/Aries-Serpent/_codex_/blob/main/cognitive_app/LICENSE) file.
+See [LICENSE](cognitive_app/LICENSE) file.

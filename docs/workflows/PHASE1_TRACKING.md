@@ -1,6 +1,8 @@
 # Workflow Consolidation - Phase 1 Implementation Tracking
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 **Issue Type**: Epic
 **Priority**: High
@@ -269,7 +271,7 @@ After successful completion:
 
 - [Workflow Consolidation Plan](../workflows/CONSOLIDATION_PLAN.md)
 - Gap Analysis
-- [GitHub Workflows Directory](https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows)
+- [GitHub Workflows Directory](../.github/workflows)
 
 ## AI Assistant Sign-off
 

@@ -1,4 +1,6 @@
 # Hidden Scripts Security Architecture Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 ## Table of Contents
 
@@ -273,19 +275,19 @@ Scripts that directly impact authentication and encryption infrastructure.
 - `credential_manager.py` - Manages org-level credentials
 
 **Access Control**:
-- ✅ CODEX_MASTER_KEY only
-- ✅ Requires MFA approval (manual step)
-- ✅ 24-hour rotation enforced
+-  CODEX_MASTER_KEY only
+-  Requires MFA approval (manual step)
+-  24-hour rotation enforced
 
 **Audit Requirements**:
-- ✅ All access logged
-- ✅ Execution results recorded
-- ✅ Any tampering immediately alerts
+-  All access logged
+-  Execution results recorded
+-  Any tampering immediately alerts
 
 **Sandboxing**:
-- ✅ Isolated network namespace
-- ✅ Read-only filesystem except /tmp
-- ✅ No external process spawning
+-  Isolated network namespace
+-  Read-only filesystem except /tmp
+-  No external process spawning
 
 ### Level 2: HIGH
 
@@ -297,19 +299,19 @@ Vulnerability detection and pattern-matching automation.
 - `license_compliance_scanner.py` - License vulnerability scanning
 
 **Access Control**:
-- ✅ CODEX_MASTER_KEY only
+-  CODEX_MASTER_KEY only
 - ⚠️ No MFA required
-- ✅ Weekly rotation encouraged
+-  Weekly rotation encouraged
 
 **Audit Requirements**:
-- ✅ Store/retrieve events logged
-- ✅ Execution time recorded
-- ✅ Security flags monitored
+-  Store/retrieve events logged
+-  Execution time recorded
+-  Security flags monitored
 
 **Sandboxing**:
-- ✅ Limited CPU/memory (4 cores, 512MB)
-- ✅ 300-second timeout
-- ✅ Read-only access to codebase
+-  Limited CPU/memory (4 cores, 512MB)
+-  300-second timeout
+-  Read-only access to codebase
 
 ### Level 3: MEDIUM
 
@@ -321,12 +323,12 @@ General compliance and audit processing.
 - `metrics_aggregator.py` - Aggregates security metrics
 
 **Access Control**:
-- ✅ CODEX_MASTER_KEY or CODEX_BACKUP_KEY
-- ✅ Standard token scope sufficient
+-  CODEX_MASTER_KEY or CODEX_BACKUP_KEY
+-  Standard token scope sufficient
 - ⚠️ Monthly rotation
 
 **Audit Requirements**:
-- ✅ Basic logging
+-  Basic logging
 - ⚠️ Error-only alerting
 
 ### Level 4: PUBLIC
@@ -339,7 +341,7 @@ Non-sensitive utilities and helpers.
 - `metrics_writer.py` - Writes metrics to storage
 
 **Access Control**:
-- ✅ Any token accepted
+-  Any token accepted
 - ⚠️ No MFA needed
 
 ---
@@ -534,10 +536,10 @@ def generate_compliance_report(manager, events):
 ```
 
 **Automatically triggered when:**
-- ❌ 5+ access denials in 1 hour
-- ❌ Checksum mismatch detected
-- ❌ Execution timeout exceeded
-- ❌ Non-CODEX_MASTER_KEY token attempted on Level 1 script
+-  5+ access denials in 1 hour
+-  Checksum mismatch detected
+-  Execution timeout exceeded
+-  Non-CODEX_MASTER_KEY token attempted on Level 1 script
 
 ---
 
@@ -606,7 +608,7 @@ def rollover_key():
 
 **Before** (git-committed - INSECURE):
 ```python
-# vuln_detector.py - STORED IN GIT (❌ visible in history)
+# vuln_detector.py - STORED IN GIT ( visible in history)
 import requests
 import json
 
@@ -704,10 +706,10 @@ result = manager.execute_hidden_script("token_validator")
 ```
 
 **Interpretation**:
-- ✅ Elevated token was used (not exposed, just marked "elevated")
-- ✅ Execution succeeded in 3.4 seconds
-- ✅ Dependabot ran the detector (audit trail)
-- ✅ No token value in log (secure)
+-  Elevated token was used (not exposed, just marked "elevated")
+-  Execution succeeded in 3.4 seconds
+-  Dependabot ran the detector (audit trail)
+-  No token value in log (secure)
 
 ### Example 4: Compliance Report
 
@@ -774,9 +776,9 @@ success, msg = manager.store_hidden_script(
 )
 
 if success:
-    print(f"✅ Stored: {msg}")
+    print(f" Stored: {msg}")
 else:
-    print(f"❌ Failed: {msg}")
+    print(f" Failed: {msg}")
 ```
 
 ### Step 3: Retrieve and Execute
@@ -789,10 +791,10 @@ result = manager.execute_hidden_script(
 )
 
 if result["status"] == "success":
-    print(f"✅ Execution succeeded in {result['execution_time_ms']}ms")
+    print(f" Execution succeeded in {result['execution_time_ms']}ms")
     print(f"Output: {result['output']}")
 else:
-    print(f"❌ Execution failed: {result['error']}")
+    print(f" Execution failed: {result['error']}")
 ```
 
 ### Step 4: Review Audit Trail
@@ -876,4 +878,4 @@ result = manager.execute_hidden_script(
 
 **Document Version**: 1.0.0
 **Last Updated**: 2024-01-23
-**Status**: ✅ Production Ready
+**Status**:  Production Ready

@@ -1,6 +1,8 @@
 # Security Gating Checklist — Enabling Live Integration Tests
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 Purpose
 - Checklist for repository administrators to follow before enabling integration-gated CI workflows that run live provider tests.

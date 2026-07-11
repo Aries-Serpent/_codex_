@@ -1,8 +1,10 @@
 # GitHub Codespace — Copilot Agent Configuration Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
-> **Status:** ✅ NEW (PR #3503 W-126, 2026-03-05)  
+> **Status:**  NEW (PR #3503 W-126, 2026-03-05)  
 > **Session:** S114  
 > **Audience:** Copilot Coding Agents, repository maintainers  
 > **Related:** `.devcontainer/devcontainer.json`, `copilot-setup-steps.yml`,  
@@ -225,7 +227,7 @@ from codex.auth.github_app import GitHubApp, GitHubAppConfig, _resolve_github_to
 
 # ── 1. Check token chain ────────────────────────────────────────────────────
 for val, name in _resolve_github_token():
-    status = "✅" if val else "❌"
+    status = "" if val else ""
     print(f"  {status} {name}")
 
 # ── 2. Generate App JWT (needs _GITHUB_APP_ID + _GITHUB_APP_PRIVATE_KEY) ──────
@@ -263,7 +265,7 @@ verifier = WebhookVerifier(secret=os.environ["WEBHOOK_SECRET"])
 # Verify a payload (e.g., from a test script)
 payload = b'{"action":"opened","number":42}'
 sig = verifier.compute_signature(payload)      # "sha256=abc123..."
-assert verifier.verify(payload, sig) is True   # ✅
+assert verifier.verify(payload, sig) is True   # 
 
 # Forward to OODA loop via CLI server
 from codex.agents.brain_client import BrainClient
@@ -321,7 +323,7 @@ bash .devcontainer/scripts/post-start.sh   # restart
 python3 -c "
 from codex.auth.github_app import _resolve_github_token
 for val, name in _resolve_github_token():
-    print(f'{\"✅\" if val else \"❌\"} {name}')
+    print(f'{\"\" if val else \"\"} {name}')
 "
 # If missing: Settings → Codespaces → Secrets → add the secret
 ```
@@ -343,18 +345,18 @@ echo "$_GITHUB_APP_PRIVATE_KEY" | head -1   # should be "-----BEGIN RSA PRIVATE 
 
 | copilot-setup-steps.yml step | devcontainer equivalent | Status |
 |------------------------------|------------------------|--------|
-| Phase 1: checkout + git lfs | `on-create.sh` | ✅ |
-| Phase 2: system deps (apt) | `on-create.sh` | ✅ |
-| Phase 3: Python venv + pip | `update-content.sh` | ✅ |
-| Phase 4: Node + Rust | `update-content.sh` | ✅ |
-| Phase 5: Rust build | `update-content.sh` | ✅ |
-| Phase 6: Set Codex env vars | `post-create.sh` → `~/.codex_env` | ✅ |
-| Phase 6: Export auth tokens | Codespace secrets → env vars | ✅ |
-| Phase 6: Load agent config | `post-create.sh` | ✅ |
-| Phase 7: Start CLI server | `post-start.sh` | ✅ |
-| Phase 7: Health-check retry | `post-start.sh` | ✅ |
-| Phase 7: Auth token banner | `post-attach.sh` | ✅ |
-| `COPILOT_RUNNER_PROFILE` | `hostRequirements` (4 CPU / 8 GB) | ✅ |
+| Phase 1: checkout + git lfs | `on-create.sh` |  |
+| Phase 2: system deps (apt) | `on-create.sh` |  |
+| Phase 3: Python venv + pip | `update-content.sh` |  |
+| Phase 4: Node + Rust | `update-content.sh` |  |
+| Phase 5: Rust build | `update-content.sh` |  |
+| Phase 6: Set Codex env vars | `post-create.sh` → `~/.codex_env` |  |
+| Phase 6: Export auth tokens | Codespace secrets → env vars |  |
+| Phase 6: Load agent config | `post-create.sh` |  |
+| Phase 7: Start CLI server | `post-start.sh` |  |
+| Phase 7: Health-check retry | `post-start.sh` |  |
+| Phase 7: Auth token banner | `post-attach.sh` |  |
+| `COPILOT_RUNNER_PROFILE` | `hostRequirements` (4 CPU / 8 GB) |  |
 
 ---
 

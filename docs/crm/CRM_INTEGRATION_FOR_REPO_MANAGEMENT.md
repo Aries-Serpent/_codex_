@@ -1,14 +1,16 @@
 # CRM Integration for Repository Management
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Document Status:** Active  
-**Last Updated:** 2026-02-07  
+**Last Updated: 2026-07-11
 **Purpose:** Strategic guidance for using CRM SaaS products (Zendesk, Dynamics 365/D365) as methodology for managing codebase repository issues, bugs, and workflows.
 
 **Naming Convention:** Throughout this codebase, "Dynamics 365" is abbreviated as "D365" or "d365" in code, file paths, and CLI commands. Both forms are used interchangeably and refer to Microsoft Dynamics 365.
 
 ---
 
-## 🎯 Strategic Vision
+##  Strategic Vision
 
 The `_codex_` repository implements **CRM-native repository management**, enabling AI agents and developers to leverage enterprise CRM platforms (Zendesk, Dynamics 365/D365) for comprehensive issue tracking, bug management, and workflow orchestration.
 
@@ -76,7 +78,7 @@ docs/crm/admin-runbooks/d365.md          # D365 runbook
 
 ---
 
-## 🚀 Quick Start Guide
+##  Quick Start Guide
 
 ### Scenario 1: Map GitHub Issues to Zendesk Tickets
 
@@ -204,7 +206,7 @@ graph LR
 
 ---
 
-## 🤖 AI Agent Integration
+##  AI Agent Integration
 
 ### Agent Capabilities
 
@@ -277,7 +279,7 @@ steps:
 
 ---
 
-## 📊 Analytics & Reporting
+##  Analytics & Reporting
 
 ### Zendesk Dashboards
 
@@ -309,7 +311,7 @@ steps:
 
 ---
 
-## 🔒 Security & Compliance
+##  Security & Compliance
 
 ### Data Protection
 
@@ -328,7 +330,7 @@ steps:
 
 ---
 
-## 📚 Documentation Index
+##  Documentation Index
 
 ### Getting Started
 - [Zendesk Integration Deep Dive](../guides/codex_zendesk_integration_deep_dive.md)
@@ -406,9 +408,9 @@ steps:
 
 | Component | Status | Coverage |
 |-----------|--------|----------|
-| Zendesk Integration | ✅ Production | 100% |
-| Dynamics 365 (D365) Integration | ✅ Production | 100% |
-| Common Data Model | ✅ Production | 80% |
+| Zendesk Integration |  Production | 100% |
+| Dynamics 365 (D365) Integration |  Production | 100% |
+| Common Data Model |  Production | 80% |
 | AI Agent Automation | 🚧 Beta | 60% |
 | Analytics Dashboards | 🚧 Beta | 40% |
 

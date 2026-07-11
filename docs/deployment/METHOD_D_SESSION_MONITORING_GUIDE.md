@@ -1,6 +1,8 @@
 # METHOD D SESSION MONITORING GUIDE — Real-Time Execution Verification
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 **Use this guide to monitor a live Copilot session executing the Method D patch.**
 
@@ -8,7 +10,7 @@
 
 ---
 
-## 🟢 PRE-SESSION SETUP (5 minutes)
+##  PRE-SESSION SETUP (5 minutes)
 
 ### 1. Open GitHub Actions Tab
 
@@ -57,7 +59,7 @@ Open a text editor to document observations:
 
 ---
 
-## 🔴 REAL-TIME MONITORING TIMELINE
+##  REAL-TIME MONITORING TIMELINE
 
 ### Timeline: Minute 0–2 (Checkout Phase)
 
@@ -69,7 +71,7 @@ Open a text editor to document observations:
 - `Fetching ...` (git operations)
 
 **Status indicator:**
-- ✅ Expected to see these messages
+-  Expected to see these messages
 
 **If not seen:**
 - ⚠️ Job may be queued; wait another 30 seconds
@@ -80,13 +82,13 @@ Open a text editor to document observations:
 
 **What's happening:** The workflow is now running the session preload step
 
-**🔴 CRITICAL MARKERS TO WATCH:**
+** CRITICAL MARKERS TO WATCH:**
 
 ```
 Marker 1: "Session Context Pre-load"
 ├─ WHERE: Step name in the job log
 ├─ LOOK FOR: The step appears as a clickable/expandable section
-└─ MEANING: ✅ Step started; YAML parsed successfully
+└─ MEANING:  Step started; YAML parsed successfully
 ```
 
 **ACTION:** When you see "Session Context Pre-load" step, click to expand it.
@@ -97,15 +99,15 @@ Marker 1: "Session Context Pre-load"
 
 **What's happening:** The step is executing the Python preload script
 
-**🔴 CRITICAL MARKERS:**
+** CRITICAL MARKERS:**
 
 ```
 Marker 2: "::group::Session Context Pre-load"
 ├─ WHERE: Inside expanded "Session Context Pre-load" step
 ├─ LOOK FOR: This exact text as a log line
-├─ MEANING: ✅ Block scalar executed; group started
+├─ MEANING:  Block scalar executed; group started
 ├─ RECORD: Note the timestamp this appeared
-└─ If missing after 5 min: ❌ YAML parse failure
+└─ If missing after 5 min:  YAML parse failure
 ```
 
 **ACTION:** Copy the timestamp when you see this marker.
@@ -115,7 +117,7 @@ Marker 3: Python Script Output (OR Error)
 ├─ LOOK FOR EITHER:
 │  ├─ Lines showing context being loaded (success case)
 │  └─ "⚠️ session_preload.py failed (non-blocking)" (failure case)
-├─ MEANING: ✅ Script is executing (either way)
+├─ MEANING:  Script is executing (either way)
 └─ RECORD: What output you see
 ```
 
@@ -125,13 +127,13 @@ Marker 3: Python Script Output (OR Error)
 
 **What's happening:** Step is completing (success or fallback execution)
 
-**🔴 CRITICAL MARKERS:**
+** CRITICAL MARKERS:**
 
 ```
 Marker 4: "::endgroup::"
 ├─ WHERE: End of the Session Context Pre-load step log
 ├─ LOOK FOR: This exact text
-├─ MEANING: ✅ Group closed; step logic completed
+├─ MEANING:  Group closed; step logic completed
 ├─ RECORD: Timestamp when you see this
 └─ If missing after 10 min: ⚠️ Script hung (wait 2 more min)
 ```
@@ -152,18 +154,18 @@ Questions to answer:
 
 **What's happening:** Next step in the workflow should be running (Session Access Probe)
 
-**🔴 CRITICAL MARKERS:**
+** CRITICAL MARKERS:**
 
 ```
 Marker 5: "Session Access Probe"
 ├─ WHERE: As a new step in the job log
 ├─ LOOK FOR: The step appears after Session Context Pre-load
-├─ MEANING: ✅ Preload didn't hard-fail; workflow continued
+├─ MEANING:  Preload didn't hard-fail; workflow continued
 ├─ RECORD: Did this step appear? When?
 └─ If NOT found after 15 min: ⚠️ Preload may have blocked workflow
 ```
 
-**ACTION:** If you see Session Access Probe starting, Method D is working so far. ✅
+**ACTION:** If you see Session Access Probe starting, Method D is working so far. 
 
 **Record in monitoring notes:**
 ```markdown
@@ -177,21 +179,21 @@ Marker 5: "Session Access Probe"
 
 ---
 
-## 📊 MARKER REFERENCE TABLE
+##  MARKER REFERENCE TABLE
 
 **Use this table while monitoring. Search for each marker in logs:**
 
 | Marker | Status | Location | Timeline | Action |
 |--------|--------|----------|----------|--------|
-| `Session Context Pre-load` | ✅ Expected | Step name | Min 2–5 | Click to expand |
-| `::group::Session Context Pre-load` | ✅ Expected | Inside step logs | Min 3–7 | Record timestamp |
+| `Session Context Pre-load` |  Expected | Step name | Min 2–5 | Click to expand |
+| `::group::Session Context Pre-load` |  Expected | Inside step logs | Min 3–7 | Record timestamp |
 | `⚠️ session_preload.py failed` | ⚠️ Possible | Inside group | Min 5–10 | Non-blocking; continue |
 | `SESSION_PRELOAD_STATUS=failed` | ⚠️ Possible | Inside group | Min 5–10 | Fallback executed |
-| `::endgroup::` | ✅ Expected | Step end | Min 7–10 | Record timestamp |
-| `Session Access Probe` | ✅ Expected | Next step | Min 10–15 | Workflow continued ✅ |
-| `YAML parse error` | ❌ ERROR | Early in logs | Min 0–2 | **STOP** — syntax issue |
-| `unexpected key` | ❌ ERROR | Early in logs | Min 0–2 | **STOP** — syntax issue |
-| `[Step] did not start` | ❌ ERROR | Job summary | Min 15+ | **STOP** — workflow failed |
+| `::endgroup::` |  Expected | Step end | Min 7–10 | Record timestamp |
+| `Session Access Probe` |  Expected | Next step | Min 10–15 | Workflow continued  |
+| `YAML parse error` |  ERROR | Early in logs | Min 0–2 | **STOP** — syntax issue |
+| `unexpected key` |  ERROR | Early in logs | Min 0–2 | **STOP** — syntax issue |
+| `[Step] did not start` |  ERROR | Job summary | Min 15+ | **STOP** — workflow failed |
 
 ---
 
@@ -214,7 +216,7 @@ Marker 5: "Session Access Probe"
    ```
 4. **Fix:** Re-apply patch and re-push
 
-**Result:** ❌ Method D not applied correctly; do not proceed to validation
+**Result:**  Method D not applied correctly; do not proceed to validation
 
 ---
 
@@ -271,19 +273,19 @@ Marker 5: "Session Access Probe"
 **Observation:**
 - All markers appear correctly
 - Session Access Probe starts
-- But at the end, job shows ❌ FAILED
+- But at the end, job shows  FAILED
 
 **Diagnosis:** Failure is in a downstream step, not preload
 
 **Action:**
 1. **Check which step failed**
-   - Look for the step with ❌ status
+   - Look for the step with  status
    - Likely not "Session Context Pre-load"
 2. **If Session Access Probe or RAG Build failed:**
    - This is unrelated to Method D
    - Fix the broken downstream step
-3. **If Session Context Pre-load shows ❌:**
-   - This is unexpected (should show ✅ due to `continue-on-error: true`)
+3. **If Session Context Pre-load shows :**
+   - This is unexpected (should show  due to `continue-on-error: true`)
    - Review the preload logs for the failure
 
 **Result:** ⚠️ Other issue in workflow; Method D itself is executing
@@ -313,9 +315,9 @@ Marker 5: "Session Access Probe"
    - **High:** Syntax changed to old broken form (regression cycle repeating)
 4. **Decision:**
    - **Low severity:** Proceed, add guard comment again
-   - **High severity:** ❌ Do NOT merge; create issue documenting regression
+   - **High severity:**  Do NOT merge; create issue documenting regression
 
-**Result:** 🔴 CRITICAL — Agent is still regressing the fix
+**Result:**  CRITICAL — Agent is still regressing the fix
 
 ---
 
@@ -352,10 +354,10 @@ grep -A50 "Session Context Pre-load" copilot-setup-steps.txt > preload_full.txt
 ```bash
 # Check marker presence
 echo "=== Marker Check ==="
-grep "::group::Session Context Pre-load" copilot-setup-steps.txt && echo "✅ Group start found" || echo "❌ Group start missing"
-grep "::endgroup::" copilot-setup-steps.txt && echo "✅ Group end found" || echo "❌ Group end missing"
+grep "::group::Session Context Pre-load" copilot-setup-steps.txt && echo " Group start found" || echo " Group start missing"
+grep "::endgroup::" copilot-setup-steps.txt && echo " Group end found" || echo " Group end missing"
 grep "SESSION_PRELOAD_STATUS" copilot-setup-steps.txt && echo "ℹ️ Fallback status found" || echo "ℹ️ Fallback not used (preload succeeded)"
-grep "Session Access Probe" copilot-setup-steps.txt && echo "✅ Next step ran" || echo "❌ Next step didn't run"
+grep "Session Access Probe" copilot-setup-steps.txt && echo " Next step ran" || echo " Next step didn't run"
 ```
 
 ## Step 4: Check for Errors
@@ -363,7 +365,7 @@ grep "Session Access Probe" copilot-setup-steps.txt && echo "✅ Next step ran" 
 ```bash
 # Search for any errors in the preload section
 sed -n '/Session Context Pre-load/,/::endgroup::/p' copilot-setup-steps.txt | \
-  grep -i "error\|fail\|exception\|fatal" && echo "⚠️ Errors found in preload" || echo "✅ No errors in preload"
+  grep -i "error\|fail\|exception\|fatal" && echo "⚠️ Errors found in preload" || echo " No errors in preload"
 ```
 
 ## Step 5: Verify Agent Didn't Break It
@@ -383,15 +385,15 @@ done < commits.txt
 
 ---
 
-## ✅ SUCCESS CRITERIA
+##  SUCCESS CRITERIA
 
 **Method D is working correctly IF:**
 
-1. ✅ `::group::Session Context Pre-load` appears in logs
-2. ✅ `::endgroup::` appears in logs (same step)
-3. ✅ Session Access Probe starts (next step runs)
-4. ✅ No YAML parse errors
-5. ✅ Agent didn't modify the preload step
+1.  `::group::Session Context Pre-load` appears in logs
+2.  `::endgroup::` appears in logs (same step)
+3.  Session Access Probe starts (next step runs)
+4.  No YAML parse errors
+5.  Agent didn't modify the preload step
 
 **If ALL 5 criteria met:** Proceed to validation checklist Phase 7 (Sign-Off)
 
@@ -415,11 +417,11 @@ done < commits.txt
 
 | Minute | Marker | Status | Notes |
 |--------|--------|--------|-------|
-| 2–5 | Session Context Pre-load step visible | ✅ / ❌ | Appeared at [time] |
-| 3–7 | ::group::Session Context Pre-load | ✅ / ❌ | Appeared at [time] |
-| 5–10 | Script output or fallback | ✅ / ❌ | [Describe output] |
-| 7–10 | ::endgroup:: | ✅ / ❌ | Appeared at [time] |
-| 10–15 | Session Access Probe | ✅ / ❌ | Started at [time] |
+| 2–5 | Session Context Pre-load step visible |  /  | Appeared at [time] |
+| 3–7 | ::group::Session Context Pre-load |  /  | Appeared at [time] |
+| 5–10 | Script output or fallback |  /  | [Describe output] |
+| 7–10 | ::endgroup:: |  /  | Appeared at [time] |
+| 10–15 | Session Access Probe |  /  | Started at [time] |
 
 ## Post-Session Verification
 
@@ -446,12 +448,12 @@ done < commits.txt
 
 ---
 
-## 🎯 NEXT STEPS
+##  NEXT STEPS
 
 **After monitoring completes:**
 
 1. **Successful session?**
-   - ✅ Proceed to validation checklist (Phase 7: Sign-Off)
+   -  Proceed to validation checklist (Phase 7: Sign-Off)
    - Move to merge and main deployment
 
 2. **Issues found?**

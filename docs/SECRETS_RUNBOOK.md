@@ -1,4 +1,6 @@
 # Secrets Runbook
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Last Updated**: 2026-06-03T18:02:00Z | **Maintainer**: @mbaetiong
 > Full inventory: [`docs/SECRETS_AND_ENVIRONMENT_VARIABLES.md`](./SECRETS_AND_ENVIRONMENT_VARIABLES.md)
@@ -21,7 +23,7 @@ Document how to store, rotate, and audit repository secrets and environment vari
 
 ---
 
-## 🔴 Immediate Actions Required (As of 2026-06-03)
+##  Immediate Actions Required (As of 2026-06-03)
 
 The following org secrets are 5+ months old and past their recommended rotation window:
 

@@ -1,10 +1,12 @@
 # Workflow Remediation Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 ## Critical Workflows - Detailed Fix Instructions
 
 
 ## copilot-setup-steps.yml
-**Risk Level**: 🔴 CRITICAL
+**Risk Level**:  CRITICAL
 
 ### Issues Found
 
@@ -41,12 +43,12 @@
    ```
 
 4. **Validation:**
-   - ✅ Workflow triggers on .codex/ changes
-   - ✅ Workflow triggers on pyproject.toml changes
-   - ✅ Setup steps execute correctly
+   -  Workflow triggers on .codex/ changes
+   -  Workflow triggers on pyproject.toml changes
+   -  Setup steps execute correctly
 
 ## required-actions-enforcer.yml
-**Risk Level**: 🔴 CRITICAL
+**Risk Level**:  CRITICAL
 
 ### Issues Found
 
@@ -80,11 +82,11 @@
    ```
 
 4. **Validation:**
-   - ✅ Workflow triggers on workflow file changes
-   - ✅ Enforcement validation executes
+   -  Workflow triggers on workflow file changes
+   -  Enforcement validation executes
 
 ## resilient_validation.yml
-**Risk Level**: 🔴 CRITICAL
+**Risk Level**:  CRITICAL
 
 ### Issues Found
 
@@ -124,12 +126,12 @@
    ```
 
 5. **Validation:**
-   - ✅ Workflow triggers on test/codex changes
-   - ✅ Validation runs successfully
-   - ✅ Coverage artifacts upload correctly
+   -  Workflow triggers on test/codex changes
+   -  Validation runs successfully
+   -  Coverage artifacts upload correctly
 
 ## test-rag.yml
-**Risk Level**: 🔴 CRITICAL
+**Risk Level**:  CRITICAL
 
 ### Issues Found
 
@@ -176,7 +178,7 @@
    ```
 
 5. **Validation:**
-   - ✅ Workflow triggers correctly
-   - ✅ Environment setup works
-   - ✅ RAG tests pass
-   - ✅ No import/config errors
+   -  Workflow triggers correctly
+   -  Environment setup works
+   -  RAG tests pass
+   -  No import/config errors

@@ -1,7 +1,9 @@
 # Performance Tuning Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Version:** 0.1.0  
-**Last Updated:** 2026-07-09  
+**Last Updated: 2026-07-09
 **Audience:** MLOps, Performance Engineers, DevOps
 
 ---
@@ -318,5 +320,5 @@ logger = logging.getLogger('codex.ml.performance')
 
 ---
 
-**Last Updated:** 2026-07-09  
+**Last Updated: 2026-07-09
 **Support:** [GitHub Issues](https://github.com/Aries-Serpent/_codex_/issues)

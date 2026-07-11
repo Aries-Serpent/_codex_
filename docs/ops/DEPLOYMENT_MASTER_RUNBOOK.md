@@ -1,9 +1,11 @@
 # Deployment & Operations Master Runbook
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Consolidated Master Document** for Codex Deployment  
 > **Created**: 2026-07-08  
 > **Consolidation Campaign**: Phase 12 WS3  
-> **Status**: ✅ Active Master Document
+> **Status**:  Active Master Document
 
 **Consolidated from** 10 source files:
 - docs/docs/release/ISOLATED_DEPLOYMENT.md
@@ -61,11 +63,11 @@
 
 | Model | Use Case | Infrastructure | Readiness |
 |-------|----------|-----------------|-----------|
-| **Standard** | Cloud deployment | AWS/GCP/Azure | ✅ Ready |
-| **Docker** | Container-based | Docker/Podman | ✅ Ready |
-| **Kubernetes** | Orchestrated | K8s 1.20+ | ✅ Ready |
-| **Offline** | Air-gapped networks | Local + USB drives | ✅ Ready |
-| **Isolated** | Sandboxed environment | Local VM/Container | ✅ Ready |
+| **Standard** | Cloud deployment | AWS/GCP/Azure |  Ready |
+| **Docker** | Container-based | Docker/Podman |  Ready |
+| **Kubernetes** | Orchestrated | K8s 1.20+ |  Ready |
+| **Offline** | Air-gapped networks | Local + USB drives |  Ready |
+| **Isolated** | Sandboxed environment | Local VM/Container |  Ready |
 
 ---
 
@@ -348,7 +350,7 @@ curl -f http://api.example.com/api/v1/db/check || exit 1
 curl -f http://api.example.com/api/v1/cache/check || exit 1
 
 # All tests passed
-echo "✅ Smoke tests passed"
+echo " Smoke tests passed"
 ```
 
 ### Metrics Validation
@@ -357,19 +359,19 @@ echo "✅ Smoke tests passed"
 # 1. Check error rate
 ERROR_RATE=$(curl -s http://metrics.example.com/error_rate)
 if (( $(echo "$ERROR_RATE > 1.0" | bc -l) )); then
-  echo "❌ Error rate too high: $ERROR_RATE%"
+  echo " Error rate too high: $ERROR_RATE%"
   exit 1
 fi
 
 # 2. Check latency
 LATENCY_P95=$(curl -s http://metrics.example.com/latency_p95)
 if (( $(echo "$LATENCY_P95 > 100" | bc -l) )); then
-  echo "❌ Latency too high: ${LATENCY_P95}ms"
+  echo " Latency too high: ${LATENCY_P95}ms"
   exit 1
 fi
 
 # All metrics nominal
-echo "✅ Metrics validation passed"
+echo " Metrics validation passed"
 ```
 
 ### Data Validation
@@ -379,18 +381,18 @@ echo "✅ Metrics validation passed"
 MIGRATED_COUNT=$(psql -c "SELECT COUNT(*) FROM migrated_data")
 EXPECTED_COUNT=1000000
 if [[ $MIGRATED_COUNT -ne $EXPECTED_COUNT ]]; then
-  echo "❌ Migration count mismatch: $MIGRATED_COUNT vs $EXPECTED_COUNT"
+  echo " Migration count mismatch: $MIGRATED_COUNT vs $EXPECTED_COUNT"
   exit 1
 fi
 
 # 2. Check data integrity
 INTEGRITY_CHECK=$(python scripts/validate_data_integrity.py)
 if [[ $INTEGRITY_CHECK != "OK" ]]; then
-  echo "❌ Data integrity check failed"
+  echo " Data integrity check failed"
   exit 1
 fi
 
-echo "✅ Data validation passed"
+echo " Data validation passed"
 ```
 
 ---
@@ -565,5 +567,5 @@ helm rollback codex 1
 
 **This document is the authoritative deployment and operations guide for Codex.**
 
-*Last Updated: 2026-07-08*  
-*Consolidation Status: ✅ Complete (10 files merged)*
+*Last Updated: 2026-07-08
+*Consolidation Status:  Complete (10 files merged)*

@@ -1,6 +1,7 @@
 # Bash Heredoc Reference Guide
+**Last Updated:** 2026-07-11
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 > **Purpose**: Resolve escape sequence confusion (CODEX-002, CODEX-009).  
 > **References**: Bash reference manual §3.1.7, POSIX Shell Command Language
@@ -9,9 +10,9 @@
 
 | Syntax | Variable Expansion | Command Substitution | Backslash Meaning | Recommended Use |
 |--------|--------------------|----------------------|-------------------|-----------------|
-| `<<EOF` | ✅ Yes | ✅ Yes | ✅ Special | Dynamic content, templating |
-| `<<'EOF'` | ❌ No | ❌ No | ❌ Literal | Configuration files, scripts |
-| `<<"EOF"` | ✅ Yes | ✅ Yes | ❌ Literal except `\$` | Rare; when you need expansion but literal quotes |
+| `<<EOF` |  Yes |  Yes |  Special | Dynamic content, templating |
+| `<<'EOF'` |  No |  No |  Literal | Configuration files, scripts |
+| `<<"EOF"` |  Yes |  Yes |  Literal except `\$` | Rare; when you need expansion but literal quotes |
 | `<<-EOF` | Depends on quoting | Depends | Tabs stripped | Indented heredocs |
 
 ### Decision Checklist

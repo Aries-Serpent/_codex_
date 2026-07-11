@@ -1,10 +1,12 @@
 # Deployment Documentation
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Directory Purpose**: Deployment guides, strategies, and procedures for Aries-Serpent/_codex_
 
 ---
 
-## 📚 Quick Navigation
+##  Quick Navigation
 
 - **Deployment Guides** - Step-by-step deployment procedures
 - **Environment Configuration** - Deployment environment setup
@@ -26,7 +28,7 @@ docs/deploy/
 
 ---
 
-## 📖 Contents
+##  Contents
 
 ### Deployment Guides
 - **Pre-Deployment Checklist** - Verification steps before deployment
@@ -52,7 +54,7 @@ docs/deploy/
 
 ---
 
-## 🚀 Quick Start
+##  Quick Start
 
 1. **New to Deployments?** → Start with pre-deployment checklist
 2. **Production Ready?** → Follow production deployment guide
@@ -70,7 +72,7 @@ docs/deploy/
 
 ---
 
-## 📊 Key Files
+##  Key Files
 
 | File | Purpose | Owner |
 |------|---------|-------|
@@ -81,7 +83,7 @@ docs/deploy/
 
 ---
 
-## 💡 Tips & Best Practices
+##  Tips & Best Practices
 
 - Always run pre-deployment checklists
 - Document all manual steps
@@ -93,4 +95,4 @@ docs/deploy/
 
 **Last Updated**: 2026-06-22  
 **Category**: Infrastructure & Deployment  
-**Status**: ✅ Active
+**Status**:  Active

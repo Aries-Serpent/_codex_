@@ -1,4 +1,6 @@
 # Cognitive Brain Status — PR #3575 (CI Failure Triage + Auto-Fix Mechanism)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Generated:** 2026-03-14T04:45Z
 **PR:** #3575 — fix: CI failures — Python 3.11→3.12, deferral scanner hardening, actionlint SC2170, agent-auth branch resolution
@@ -12,17 +14,17 @@
 
 | Phase | Status | Description |
 |-------|--------|-------------|
-| Phase 1 — Python version alignment | ✅ COMPLETE | 4 workflows updated 3.11 → 3.12 |
-| Phase 2 — Deferral scanner hardening | ✅ COMPLETE | Lookbehind fix, exemption tightening, inline code stripping |
-| Phase 3 — actionlint SC2170 fix | ✅ COMPLETE | `consolidated-pr-status.yml` arithmetic evaluation |
-| Phase 4 — Agent auth branch resolution | ✅ COMPLETE | Merge-ref guard narrowed to `^[0-9]+/merge$` |
-| Phase 5 — Cognitive Pre-flight auto-fix | ✅ COMPLETE | `session_wrapup_autofix.py` + workflow step |
-| Phase 6 — PR review thread resolution | ✅ COMPLETE | `is` → `==`, exemption anchor tightened |
-| Phase 7 — Documentation compliance | ✅ COMPLETE | Accountability report + CHANGELOG updated |
-| Phase 8 — Double-backtick span fix (Session 23) | ✅ COMPLETE | `_INLINE_CODE_SPAN` extended to strip double-bt spans first (Deferral Gate run #71) |
-| Phase 9 — Outer-single-bt display wrapper fix (Session 24) | ✅ COMPLETE | Three-tier `_INLINE_CODE_SPAN` pattern; test isolation fixture (Deferral Gate run #74) |
-| Phase 10 — Full docs/QA/configs/mermaid review (Session 24) | ✅ COMPLETE | 27 Mermaid diagrams, 8 QA docs, 24 ADRs, Pattern #25, status doc all updated |
-| Phase 11 — Cognitive brain state files update (Session 24) | ✅ COMPLETE | session_tracker.md, objectives_tracker.md, pattern_learning_store.json refreshed |
+| Phase 1 — Python version alignment |  COMPLETE | 4 workflows updated 3.11 → 3.12 |
+| Phase 2 — Deferral scanner hardening |  COMPLETE | Lookbehind fix, exemption tightening, inline code stripping |
+| Phase 3 — actionlint SC2170 fix |  COMPLETE | `consolidated-pr-status.yml` arithmetic evaluation |
+| Phase 4 — Agent auth branch resolution |  COMPLETE | Merge-ref guard narrowed to `^[0-9]+/merge$` |
+| Phase 5 — Cognitive Pre-flight auto-fix |  COMPLETE | `session_wrapup_autofix.py` + workflow step |
+| Phase 6 — PR review thread resolution |  COMPLETE | `is` → `==`, exemption anchor tightened |
+| Phase 7 — Documentation compliance |  COMPLETE | Accountability report + CHANGELOG updated |
+| Phase 8 — Double-backtick span fix (Session 23) |  COMPLETE | `_INLINE_CODE_SPAN` extended to strip double-bt spans first (Deferral Gate run #71) |
+| Phase 9 — Outer-single-bt display wrapper fix (Session 24) |  COMPLETE | Three-tier `_INLINE_CODE_SPAN` pattern; test isolation fixture (Deferral Gate run #74) |
+| Phase 10 — Full docs/QA/configs/mermaid review (Session 24) |  COMPLETE | 27 Mermaid diagrams, 8 QA docs, 24 ADRs, Pattern #25, status doc all updated |
+| Phase 11 — Cognitive brain state files update (Session 24) |  COMPLETE | session_tracker.md, objectives_tracker.md, pattern_learning_store.json refreshed |
 | Phase 12 — Infrastructure failures | ⏳ ADMIN REQUIRED | GHCR, CodeQL, Dependency Submission need admin action |
 
 ---
@@ -43,9 +45,9 @@ flowchart TD
 
     S3 --> SCAN["Deferral pattern matching\n(DEFERRAL_TRIGGERS regex)"]
     SCAN -->|match| EXEMPTION["Exemption check\n(# noqa, <!-- noqa -->, path anchors)"]
-    SCAN -->|no match| PASS["✅ PASS"]
+    SCAN -->|no match| PASS[" PASS"]
     EXEMPTION -->|exempt| PASS
-    EXEMPTION -->|not exempt| FAIL["❌ FAIL — policy violation"]
+    EXEMPTION -->|not exempt| FAIL[" FAIL — policy violation"]
 
     style S1 fill:#ffd700
     style S2 fill:#98fb98
@@ -101,10 +103,10 @@ flowchart TD
         R5 -->|FAIL| AFX
         AFX --> FIX["session_wrapup_autofix.py\n--fix-accountability\n--fix-changelog"]
         FIX --> PUSH["git commit [skip ci]\ngit push → PR branch"]
-        PUSH --> NEXT["Next non-skip run:\nREQ-4 ✅ REQ-5 ✅"]
+        PUSH --> NEXT["Next non-skip run:\nREQ-4  REQ-5 "]
     end
 
-    R4 -->|PASS| DONE["✅ continue"]
+    R4 -->|PASS| DONE[" continue"]
     R5 -->|PASS| DONE
 
     style AFX fill:#ffd700
@@ -143,15 +145,15 @@ flowchart TD
 
 | CI Gate | Before PR #3575 | Session 22 | Session 23 | Session 24 |
 |---------|-----------------|------------|------------|------------|
-| Deferral Gate — plain text | ❌ Fails | ✅ `noqa` + single-bt | ✅ | ✅ |
-| Deferral Gate — double-bt span | ❌ Fails | ❌ Not handled | ✅ Double-bt first | ✅ |
-| Deferral Gate — outer-single-bt | ❌ Fails | ❌ | ❌ | ✅ Three-tier pattern |
-| Cognitive Pre-flight REQ-4 | ❌ Manual fix | ✅ Auto-heal | ✅ | ✅ |
-| Cognitive Pre-flight REQ-5 | ❌ Manual fix | ✅ Auto-heal | ✅ | ✅ |
-| Python version mismatch | ❌ Fail | ✅ 3.12 | ✅ | ✅ |
-| actionlint SC2170 | ❌ Flags | ✅ Fixed | ✅ | ✅ |
-| Agent auth branch | ❌ Pushes to merge ref | ✅ Guard | ✅ | ✅ |
-| Brain interface tests (`_MIN_CONFIDENCE`) | ❌ 3 failing | ❌ | ❌ | ✅ Fixture isolation |
+| Deferral Gate — plain text |  Fails |  `noqa` + single-bt |  |  |
+| Deferral Gate — double-bt span |  Fails |  Not handled |  Double-bt first |  |
+| Deferral Gate — outer-single-bt |  Fails |  |  |  Three-tier pattern |
+| Cognitive Pre-flight REQ-4 |  Manual fix |  Auto-heal |  |  |
+| Cognitive Pre-flight REQ-5 |  Manual fix |  Auto-heal |  |  |
+| Python version mismatch |  Fail |  3.12 |  |  |
+| actionlint SC2170 |  Flags |  Fixed |  |  |
+| Agent auth branch |  Pushes to merge ref |  Guard |  |  |
+| Brain interface tests (`_MIN_CONFIDENCE`) |  3 failing |  |  |  Fixture isolation |
 
 ---
 
@@ -180,13 +182,13 @@ _Cognitive Brain Status | PR #3575 | 2026-03-14T04:45Z | Sessions 22–24 | WF-0
 
 | Phase | Status | Description |
 |-------|--------|-------------|
-| Phase 1 — Python version alignment | ✅ COMPLETE | 4 workflows updated 3.11 → 3.12 |
-| Phase 2 — Deferral scanner hardening | ✅ COMPLETE | Lookbehind fix, exemption tightening, inline code stripping |
-| Phase 3 — actionlint SC2170 fix | ✅ COMPLETE | `consolidated-pr-status.yml` arithmetic evaluation |
-| Phase 4 — Agent auth branch resolution | ✅ COMPLETE | Merge-ref guard narrowed to `^[0-9]+/merge$` |
-| Phase 5 — Cognitive Pre-flight auto-fix | ✅ COMPLETE | `session_wrapup_autofix.py` + workflow step |
-| Phase 6 — PR review thread resolution | ✅ COMPLETE | `is` → `==`, exemption anchor tightened |
-| Phase 7 — Documentation compliance | ✅ COMPLETE | Accountability report + CHANGELOG updated |
+| Phase 1 — Python version alignment |  COMPLETE | 4 workflows updated 3.11 → 3.12 |
+| Phase 2 — Deferral scanner hardening |  COMPLETE | Lookbehind fix, exemption tightening, inline code stripping |
+| Phase 3 — actionlint SC2170 fix |  COMPLETE | `consolidated-pr-status.yml` arithmetic evaluation |
+| Phase 4 — Agent auth branch resolution |  COMPLETE | Merge-ref guard narrowed to `^[0-9]+/merge$` |
+| Phase 5 — Cognitive Pre-flight auto-fix |  COMPLETE | `session_wrapup_autofix.py` + workflow step |
+| Phase 6 — PR review thread resolution |  COMPLETE | `is` → `==`, exemption anchor tightened |
+| Phase 7 — Documentation compliance |  COMPLETE | Accountability report + CHANGELOG updated |
 
 ---
 
@@ -239,7 +241,7 @@ Agent Token Delegation enabled  # pragma: allowlist secret
 │                                 --fix-changelog          │
 │    2. git add + git commit [skip ci]                     │
 │    3. git push → PR branch (CODEX_MASTER_KEY)           │
-│    4. Next non-skip run: REQ-4 ✅, REQ-5 ✅              │
+│    4. Next non-skip run: REQ-4 , REQ-5               │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -297,12 +299,12 @@ Agent Token Delegation enabled  # pragma: allowlist secret
 
 | CI Gate | Before This PR | After This PR |
 |---------|----------------|---------------|
-| Deferral Language Gate | ❌ Fails on doc examples | ✅ Inline code spans exempt |
-| Cognitive Pre-flight REQ-4 | ❌ Manual fix required | ✅ Auto-heal via `session_wrapup_autofix.py` |
-| Cognitive Pre-flight REQ-5 | ❌ Manual fix required | ✅ Auto-heal via `session_wrapup_autofix.py` |
-| Python version mismatch | ❌ `pip install` fails | ✅ All 4 workflows use 3.12 |
-| actionlint SC2170 | ❌ Flags arithmetic in workflow | ✅ `(( ${VAR:-0} > 0 ))` |
-| Agent auth branch | ❌ Pushes to merge ref | ✅ `^[0-9]+/merge$` guard |
+| Deferral Language Gate |  Fails on doc examples |  Inline code spans exempt |
+| Cognitive Pre-flight REQ-4 |  Manual fix required |  Auto-heal via `session_wrapup_autofix.py` |
+| Cognitive Pre-flight REQ-5 |  Manual fix required |  Auto-heal via `session_wrapup_autofix.py` |
+| Python version mismatch |  `pip install` fails |  All 4 workflows use 3.12 |
+| actionlint SC2170 |  Flags arithmetic in workflow |  `(( ${VAR:-0} > 0 ))` |
+| Agent auth branch |  Pushes to merge ref |  `^[0-9]+/merge$` guard |
 
 ---
 

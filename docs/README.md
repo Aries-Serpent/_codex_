@@ -1,6 +1,8 @@
 # _codex_ Documentation
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-07-08  
+**Last Updated: 2026-07-08
 **Audience:** Developers, DevOps, Admins  
 **Related:** [Master Index](MASTER_INDEX.md), [Style Guide](../.codex/DOCUMENTATION_STYLE_GUIDE.md)
 
@@ -26,7 +28,7 @@ Complete documentation for the _codex_ AI/ML platform. Find guides, API referenc
 3. **Troubleshoot:** [Troubleshooting Guide](TROUBLESHOOTING.md)
 4. **Manage:** [Admin Guide](admin/INDEX.md)
 
-### 🔐 **Security & Compliance**
+###  **Security & Compliance**
 1. **Review policies:** [Security Guide](SECURITY.md)
 2. **Understand governance:** [Governance Guide](admin/GOVERNANCE.md)
 3. **Manage access:** [Token Management](tokens/INDEX.md)
@@ -146,14 +148,14 @@ Improve the documentation:
 ### Documentation Standards
 
 All documentation follows these standards:
-- ✅ Single H1 title per page
-- ✅ Metadata header (Last Updated, Audience)
-- ✅ Clear, active voice
-- ✅ Working code examples
-- ✅ Proper heading hierarchy
-- ✅ Relative links for internal docs
-- ✅ 13-point quality checklist
-- ✅ Updated every 6 months
+-  Single H1 title per page
+-  Metadata header (Last Updated, Audience)
+-  Clear, active voice
+-  Working code examples
+-  Proper heading hierarchy
+-  Relative links for internal docs
+-  13-point quality checklist
+-  Updated every 6 months
 
 See [Style Guide](../.codex/DOCUMENTATION_STYLE_GUIDE.md) for full standards.
 

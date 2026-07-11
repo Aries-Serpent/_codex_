@@ -1,13 +1,15 @@
 # Codex Research Question Handling Reference
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 This note provides a quick-access guide for ChatGPT Codex sessions to track, answer, and retire outstanding research questions. It consolidates where questions live, how we resolve them, and how to query their status while debugging.
 
 ## Canonical sources of truth
 
 - **Primary log:** [`docs/status_update_outstanding_questions.md`](status_update_outstanding_questions.md) — authoritative table referenced by each Codex status update (embedding the full table in the report is no longer required under the 2025-09-22 mandate).
-- **Session scratchpad:** [`.codex/notes/Codex_Questions.md`](https://github.com/Aries-Serpent/_codex_/blob/main/.codex/notes/Codex_Questions.md) — ad-hoc capture of Q&A snippets created during automation workflows.
+- **Session scratchpad:** [`.codex/notes/Codex_Questions.md`](.codex/notes/Codex_Questions.md) — ad-hoc capture of Q&A snippets created during automation workflows.
 - **Historical error log:** [`docs/troubleshooting/error_log.md`](troubleshooting/error_log.md) — recent failures promoted into the canonical table.
 
 Always reconcile new questions against the canonical table so that status updates remain in sync.

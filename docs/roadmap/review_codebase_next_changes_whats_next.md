@@ -1,4 +1,6 @@
 # Review Codebase / Next Changes — What's Next
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 ## Table of Contents
 
@@ -55,19 +57,19 @@
 - [Next Objectives (Session D continuation)](#next-objectives-session-d-continuation)
 - [Follow-Up Continuation Prompt](#follow-up-continuation-prompt)
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## Session Status (Current — PR #4641 continue dispatch + CI evidence pass · 2026-05-28T16:02Z)
 
 | Item | Status | Result |
 |---|---|---|
-| Session budget | 🟢 Early session checkpoint | Preserve final 5-minute wrap-up reserve |
-| Continue target head | ✅ `2e845b29f` | Re-checked latest workflow runs on `copilot/fix-asyncssh-path-traversal` |
+| Session budget |  Early session checkpoint | Preserve final 5-minute wrap-up reserve |
+| Continue target head |  `2e845b29f` | Re-checked latest workflow runs on `copilot/fix-asyncssh-path-traversal` |
 | Completed run outcomes on current head | ⚠ Infra-gated | Latest completed runs are `action_required` (e.g., `26586425969`, `26586426145`) with **0 jobs** |
-| Code-fixable failed jobs (current head) | ✅ None | No completed `failure` jobs found in latest branch runs |
-| Infrastructure-only evidence | ✅ Captured | `get_job_logs(run_id=26586135512, failed_only=true)` returned `total_jobs: 0` |
+| Code-fixable failed jobs (current head) |  None | No completed `failure` jobs found in latest branch runs |
+| Infrastructure-only evidence |  Captured | `get_job_logs(run_id=26586135512, failed_only=true)` returned `total_jobs: 0` |
 | Legacy base-branch failure check | ℹ Reviewed | `0D_base_` had historical failure `26582476436` on old SHA `a031e054` (not current PR head) |
-| PR #4641 review threads | ✅ No new unresolved requests | Existing reviewer threads are outdated and already replied with fix commit references |
+| PR #4641 review threads |  No new unresolved requests | Existing reviewer threads are outdated and already replied with fix commit references |
 | Living docs sync | 🔄 In progress | whats_next + session_diagram + CHANGELOG + accountability being refreshed |
 
 ### Immediate Remaining Objectives (this session)
@@ -78,9 +80,9 @@
 
 | Item | Status | Result |
 |---|---|---|
-| Session budget | 🟢 ~3/60 min used at start | Keep final 5 min for wrap-up |
-| Maintainer approval state | ✅ Confirmed | All pending workflows approved |
-| Latest head | ✅ `754f57e28` | Tracking runs on `copilot/fix-asyncssh-path-traversal` |
+| Session budget |  ~3/60 min used at start | Keep final 5 min for wrap-up |
+| Maintainer approval state |  Confirmed | All pending workflows approved |
+| Latest head |  `754f57e28` | Tracking runs on `copilot/fix-asyncssh-path-traversal` |
 | Current workflow monitor snapshot | 🔄 Active | In-progress: Agent Token Delegation, Generate PR Follow-Up Prompt, Addressing comment on PR #4641 |
 | Current completed conclusions | ⚠ Mixed | `Workflow Execution Gate` success + `action_required` reruns present; no failed-job logs surfaced in current monitor pass |
 | PR #4641 review-thread scope | 🔄 In progress | Applying all 3 unresolved review comments in referenced files |
@@ -111,15 +113,15 @@
 | Item | Status | Result |
 |---|---|---|
 | Session budget | 🟡 ~8/60 min used | Reserve final 5 min for wrap-up |
-| `/tmp/nox_full_run.log` | ❌ Not present | Artifact not persisted from prior session (expected — /tmp is ephemeral) |
-| Coverage measurement via `unified-coverage-agent` | ✅ Delegated + completed | **17.57%** overall — parity with baseline |
-| Regression vs 17.57% baseline | ✅ No regression | Baseline held; no delegation to unified-coverage-agent remediation path |
+| `/tmp/nox_full_run.log` |  Not present | Artifact not persisted from prior session (expected — /tmp is ephemeral) |
+| Coverage measurement via `unified-coverage-agent` |  Delegated + completed | **17.57%** overall — parity with baseline |
+| Regression vs 17.57% baseline |  No regression | Baseline held; no delegation to unified-coverage-agent remediation path |
 | Collection errors (2 modules) | ⚠️ Known blockers | `tests/monitoring/test_monitoring_mlflow_utils.py` + `tests/src/test_cli_phase10.py` |
-| HEAD on main (`d8d5d0ef`) | ✅ Healthy | Nightly health sweep committed; Auto-Approve ran; Admin scope gate success |
+| HEAD on main (`d8d5d0ef`) |  Healthy | Nightly health sweep committed; Auto-Approve ran; Admin scope gate success |
 | PR-branch `fb15b05892` workflow queue | ⚠️ action_required | SecurityScan, Rust, Dependabot, Secrets, AgentVars, CodeQL — all pending approval |
-| `copilot-setup-steps.yml` on PR-branch | ❌ Failure | Run `26553433879` — requires investigation |
+| `copilot-setup-steps.yml` on PR-branch |  Failure | Run `26553433879` — requires investigation |
 | Living docs update | 🔄 In progress | Updating whats_next, session_diagram, CHANGELOG, accountability report |
-| Artifact storage policy | ✅ Enforced | All tracked work to use repo paths; /tmp off-limits for persistent artifacts |
+| Artifact storage policy |  Enforced | All tracked work to use repo paths; /tmp off-limits for persistent artifacts |
 
 ### Coverage Snapshot (2026-05-28T03:56Z)
 | Domain | Coverage |
@@ -146,7 +148,7 @@
 | Security Scanning Suite | 26553434357 | https://github.com/Aries-Serpent/_codex_/actions/runs/26553434357 |
 | Rust-Python Hybrid Swarm CI/CD | 26553434379 | https://github.com/Aries-Serpent/_codex_/actions/runs/26553434379 |
 | Resilient Dependency Submission | 26553434381 | https://github.com/Aries-Serpent/_codex_/actions/runs/26553434381 |
-| 🔐 Secrets Baseline Enforcer | 26553434358 | https://github.com/Aries-Serpent/_codex_/actions/runs/26553434358 |
+|  Secrets Baseline Enforcer | 26553434358 | https://github.com/Aries-Serpent/_codex_/actions/runs/26553434358 |
 | Agent Vars Bootstrap | 26553434383 | https://github.com/Aries-Serpent/_codex_/actions/runs/26553434383 |
 | CodeQL | 26553434424 | https://github.com/Aries-Serpent/_codex_/actions/runs/26553434424 |
 | copilot-setup-steps.yml (**FAILED**) | 26553433879 | https://github.com/Aries-Serpent/_codex_/actions/runs/26553433879 |
@@ -195,12 +197,12 @@ ARTIFACT STORAGE: All tracked results must go to repo paths — NEVER /tmp
 
 | Item | Status | Result |
 |---|---|---|
-| Phase 0 + Wave A + Phase B | ✅ Complete | 4 blockers fixed; 3079 tests; agents=74.4%, overall=6.66% baseline |
-| Torch collection blockers | ✅ Fixed | conftest.py: space_traversal + 4 root files ignored when torch absent |
-| Phase C — Security coverage | ✅ **COMPLETE** | src/security/ **90.72%** (target ≥70%) — 885 passed, 17 skip, 3 xfail |
-| Phase D — CB objectives | ✅ **COMPLETE** | CB-001 through CB-006 all done |
-| Phase E — Lift overall | ✅ **COMPLETE** | services/api/main.py 0%→71.38%; rate_limit 0%→49.52%; training 11.97% (torch-blocked) |
-| Living docs update | ✅ Done | CHANGELOG, accountability, roadmap, 48h report all updated |
+| Phase 0 + Wave A + Phase B |  Complete | 4 blockers fixed; 3079 tests; agents=74.4%, overall=6.66% baseline |
+| Torch collection blockers |  Fixed | conftest.py: space_traversal + 4 root files ignored when torch absent |
+| Phase C — Security coverage |  **COMPLETE** | src/security/ **90.72%** (target ≥70%) — 885 passed, 17 skip, 3 xfail |
+| Phase D — CB objectives |  **COMPLETE** | CB-001 through CB-006 all done |
+| Phase E — Lift overall |  **COMPLETE** | services/api/main.py 0%→71.38%; rate_limit 0%→49.52%; training 11.97% (torch-blocked) |
+| Living docs update |  Done | CHANGELOG, accountability, roadmap, 48h report all updated |
 
 ### Phase C Final Coverage (src/security/)
 | Module | Before | After |
@@ -218,12 +220,12 @@ ARTIFACT STORAGE: All tracked results must go to repo paths — NEVER /tmp
 | **TOTAL** | **~5%** | **90.72%** |
 
 ### Phase D CB Objectives
-- CB-001: ✅ Typer API migration (`src/codex_cli/app.py`)
-- CB-002: ✅ RAG test coverage (`tests/rag/test_rag_analytics_coverage.py`, 30+ tests)
-- CB-003: ✅ actionlint YAML multiline fix (`.github/workflows/copilot-setup-steps.yml`)
-- CB-004: ✅ PDA pattern library 11→16 entries (`src/codex/skills/ci_health_analyzer/handler.py`)
-- CB-005: ✅ max_concurrency throttling (`src/codex/skills/aais_batch/handler.py`)
-- CB-006: ✅ proactive-ci-monitor.py wired to ci_health_analyzer
+- CB-001:  Typer API migration (`src/codex_cli/app.py`)
+- CB-002:  RAG test coverage (`tests/rag/test_rag_analytics_coverage.py`, 30+ tests)
+- CB-003:  actionlint YAML multiline fix (`.github/workflows/copilot-setup-steps.yml`)
+- CB-004:  PDA pattern library 11→16 entries (`src/codex/skills/ci_health_analyzer/handler.py`)
+- CB-005:  max_concurrency throttling (`src/codex/skills/aais_batch/handler.py`)
+- CB-006:  proactive-ci-monitor.py wired to ci_health_analyzer
 
 ### Phase E Final Coverage
 | Module | Before | After |
@@ -258,10 +260,10 @@ STATE: Phase C/D/E delegated to background agents (phase-c-security-coverage, ph
 | Item | Status |
 |---|---|
 | Session budget tracking | 🔄 Maintainer note acknowledged: ~8/60 minutes used; preserve final 5 minutes for wrap-up |
-| Branch alignment with `main` | ✅ Verified: branch is ahead-only and not behind `origin/main` |
-| Approved-workflow monitoring (`a1fb880`) | ✅ Previously `action_required` workflows are now approved and transitioned |
-| Latest head outcome snapshot | ✅ `7` completed-success runs (`CodeQL`, `Security Scanning Suite`, `Secrets Baseline Enforcer`, docs/dependency gates) and `1` in-progress (`Running Copilot cloud agent`) |
-| Code-fixable failure triage | ✅ No completed failed jobs on latest head; no additional remediation required in this pass |
+| Branch alignment with `main` |  Verified: branch is ahead-only and not behind `origin/main` |
+| Approved-workflow monitoring (`a1fb880`) |  Previously `action_required` workflows are now approved and transitioned |
+| Latest head outcome snapshot |  `7` completed-success runs (`CodeQL`, `Security Scanning Suite`, `Secrets Baseline Enforcer`, docs/dependency gates) and `1` in-progress (`Running Copilot cloud agent`) |
+| Code-fixable failure triage |  No completed failed jobs on latest head; no additional remediation required in this pass |
 | Living docs / tracking updates | 🔄 Updating `whats_next`, `session_diagram`, `CHANGELOG.md`, and `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` in this pass |
 | Final 5-minute reserve | ⏳ Preserve for wrap-up + continuation prompt |
 
@@ -271,9 +273,9 @@ STATE: Phase C/D/E delegated to background agents (phase-c-security-coverage, ph
 @copilot continue coverage improvement on branch copilot/explore-codebase-implementation-plan.
 STATE: Phase C/D/E COMPLETE (2026-05-27T21:19Z session).
 CONFIRMED RESULTS:
-  - Phase C: src/security/ = 90.72% ✅ (885 passed, 17 skip)
-  - Phase D: CB-001 through CB-006 all complete ✅
-  - Phase E: services/api/main.py 71.38% ✅, rate_limit 49.52%, training 11.97% (torch-blocked)
+  - Phase C: src/security/ = 90.72%  (885 passed, 17 skip)
+  - Phase D: CB-001 through CB-006 all complete 
+  - Phase E: services/api/main.py 71.38% , rate_limit 49.52%, training 11.97% (torch-blocked)
 
 NEXT OBJECTIVES (delegate to unified-coverage-agent + test-enhancement-agent):
 1. services/msp_gateway/: rate_limit 49%→≥70%, tenant_context 16%→≥50%, msp_gateway/app.py 0%→≥60%
@@ -299,11 +301,11 @@ UPDATE LIVING DOCS after each phase:
 | Item | Status |
 |---|---|
 | Session budget tracking | 🔄 Maintainer note acknowledged: ~14/60 minutes used; reserve final 5 minutes for wrap-up |
-| CI rescue root cause (`4048c786`) | ✅ Confirmed from run `26235874552` failed job logs: Pattern 25 (`.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` not updated in last commit) |
-| Required artifact fetch | ✅ Downloaded and reviewed artifacts `7125084971` and `7125082754` from run `26199091939` |
-| Artifact concern handling | ✅ Dependency-scan findings reviewed explicitly; SBOM files reviewed; no new PR-scoped code regressions introduced by this session |
-| CI auto-fix execution | ✅ Ran `auto_fix_common_issues.py`; Pattern 25 auto-fix applied to accountability tracking |
-| Required validation chain | ✅ `ruff check src/ tests/ --fix` and `auto_fix_common_issues.py --check-only` executed; `mypy_baseline --require-baseline` currently reports pre-existing baseline regression (+6) |
+| CI rescue root cause (`4048c786`) |  Confirmed from run `26235874552` failed job logs: Pattern 25 (`.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` not updated in last commit) |
+| Required artifact fetch |  Downloaded and reviewed artifacts `7125084971` and `7125082754` from run `26199091939` |
+| Artifact concern handling |  Dependency-scan findings reviewed explicitly; SBOM files reviewed; no new PR-scoped code regressions introduced by this session |
+| CI auto-fix execution |  Ran `auto_fix_common_issues.py`; Pattern 25 auto-fix applied to accountability tracking |
+| Required validation chain |  `ruff check src/ tests/ --fix` and `auto_fix_common_issues.py --check-only` executed; `mypy_baseline --require-baseline` currently reports pre-existing baseline regression (+6) |
 | Living docs / tracking updates | 🔄 Updating `whats_next`, `session_diagram`, `CHANGELOG.md`, and `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` in this pass |
 | Final 5-minute reserve | ⏳ Preserve for wrap-up + continuation prompt |
 
@@ -322,11 +324,11 @@ UPDATE LIVING DOCS after each phase:
 | Item | Status |
 |---|---|
 | Session budget tracking | 🔄 Maintainer note acknowledged: ~11/60 minutes used; reserve final 5 minutes for wrap-up |
-| Objective source | ✅ Issue #4524 comment `4504378838` loaded and triaged |
-| Critical trigger audit | ✅ Completed for `cleanup-stale-pr-comments`, `ci-failure-issue-creator`, `comment-review-gate`, `proactive-ci-monitor` |
-| Trigger remediation applied | ✅ `proactive-ci-monitor.yml` schedule reduced from `*/30 * * * *` to `0 */6 * * *` |
-| Documentation updates | ✅ Added `docs/workflows/WORKFLOW_TRIGGER_AUDIT_2026-05-21.md`; updated `docs/workflows/CONSOLIDATION_PLAN.md` with Phase 4 section |
-| Tracking freshness maintenance | ✅ `auto_fix_common_issues.py` + `doc_metrics_sync.py --fix` + `sync_tracked_files.py --fix` executed |
+| Objective source |  Issue #4524 comment `4504378838` loaded and triaged |
+| Critical trigger audit |  Completed for `cleanup-stale-pr-comments`, `ci-failure-issue-creator`, `comment-review-gate`, `proactive-ci-monitor` |
+| Trigger remediation applied |  `proactive-ci-monitor.yml` schedule reduced from `*/30 * * * *` to `0 */6 * * *` |
+| Documentation updates |  Added `docs/workflows/WORKFLOW_TRIGGER_AUDIT_2026-05-21.md`; updated `docs/workflows/CONSOLIDATION_PLAN.md` with Phase 4 section |
+| Tracking freshness maintenance |  `auto_fix_common_issues.py` + `doc_metrics_sync.py --fix` + `sync_tracked_files.py --fix` executed |
 | Changelog/accountability updates | 🔄 Updating in this pass |
 | Final 5-minute reserve | ⏳ Preserve for wrap-up + continuation prompt |
 
@@ -345,11 +347,11 @@ UPDATE LIVING DOCS after each phase:
 | Item | Status |
 |---|---|
 | Session budget tracking | 🔄 Maintainer guidance: ~12/60 minutes used; preserve final 5 minutes for wrap-up |
-| PR review comments applied | ✅ Interactive speaker naming timeout is now configurable via `AudioTranscriberUI(speaker_name_timeout_seconds=...)`; audio workflow tests now use public `process_path()` coverage with a stubbed `process_file()` helper; pyannote test fixture now uses a named fake segment class |
-| Targeted validation | ✅ `python -m ruff check apps/dev/audio_transcriber_ui.py tests/services/audio/test_transcription_workflow.py`; ✅ `python -m pytest -q tests/services/audio/test_transcription_workflow.py`; ✅ `python -m pytest -q tests/services/audio` |
-| Manual verification | ✅ `_gui_input_func()` verified with a stubbed root and `speaker_name_timeout_seconds=0.01`, returning the expected empty-string timeout fallback |
+| PR review comments applied |  Interactive speaker naming timeout is now configurable via `AudioTranscriberUI(speaker_name_timeout_seconds=...)`; audio workflow tests now use public `process_path()` coverage with a stubbed `process_file()` helper; pyannote test fixture now uses a named fake segment class |
+| Targeted validation |  `python -m ruff check apps/dev/audio_transcriber_ui.py tests/services/audio/test_transcription_workflow.py`;  `python -m pytest -q tests/services/audio/test_transcription_workflow.py`;  `python -m pytest -q tests/services/audio` |
+| Manual verification |  `_gui_input_func()` verified with a stubbed root and `speaker_name_timeout_seconds=0.01`, returning the expected empty-string timeout fallback |
 | Approved-workflow monitor (`f0185d1e`) | 🔄 Active fan-out confirmed via MCP: validation/security/QA workflows are in progress; control workflows (`Agent Token Delegation`, `Workflow Execution Gate`, `PR Cost Check`, `Generate PR Follow-Up Prompt`) are currently `action_required` |
-| Startup-level fail-like runs | ✅ `Rust-Python Hybrid Swarm CI/CD` (`26129073147`), `Progressive Validation Suite` (`26129073150`), and `Data Quality & Determinism Suite` (`26129073148`) each currently expose `0` jobs via MCP in this snapshot |
+| Startup-level fail-like runs |  `Rust-Python Hybrid Swarm CI/CD` (`26129073147`), `Progressive Validation Suite` (`26129073150`), and `Data Quality & Determinism Suite` (`26129073148`) each currently expose `0` jobs via MCP in this snapshot |
 | Living docs / accountability parity | 🔄 Updating `whats_next`, `session_diagram`, `CHANGELOG.md`, and `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` in this pass |
 | Final 5-minute reserve | ⏳ Preserve for final validation + wrap-up |
 
@@ -358,49 +360,49 @@ UPDATE LIVING DOCS after each phase:
 | Item | Status |
 |---|---|
 | Session budget tracking | 🔄 ~20/60 minutes consumed; preserve final 5 minutes for wrap-up |
-| Transcription workflow extension (`src/services/audio`) | ✅ Added ingest → diarize → speaker-label map → transcribe → output merge pipeline |
-| CLI extension (`smart_cli.py`) | ✅ Added `transcribe` command with backward-compatible tune default |
-| Speaker labeling + mapping | ✅ JSON speaker-map support + interactive fallback + stable IDs (`SPEAKER_00+`) |
-| Output formats | ✅ TXT + JSON + SRT + VTT generation |
-| Standalone desktop UI | ✅ Added `apps/dev/audio_transcriber_ui.py` with browse/run/status UX |
-| Downloadable packaging path | ✅ Updated `app-package-download.yml` with `app_name=audio_transcriber_ui` packaging flow |
-| Standalone runtime hardening | ✅ Packaged local `services/audio/workflow/transcription_workflow.py` + package markers |
-| AI Findings follow-up (tests) | ✅ Consolidated redundant docstrings + strengthened profile/aggressive assertions |
-| Validation snapshot | ✅ `ruff` and `pytest -q tests/services/audio` passing |
+| Transcription workflow extension (`src/services/audio`) |  Added ingest → diarize → speaker-label map → transcribe → output merge pipeline |
+| CLI extension (`smart_cli.py`) |  Added `transcribe` command with backward-compatible tune default |
+| Speaker labeling + mapping |  JSON speaker-map support + interactive fallback + stable IDs (`SPEAKER_00+`) |
+| Output formats |  TXT + JSON + SRT + VTT generation |
+| Standalone desktop UI |  Added `apps/dev/audio_transcriber_ui.py` with browse/run/status UX |
+| Downloadable packaging path |  Updated `app-package-download.yml` with `app_name=audio_transcriber_ui` packaging flow |
+| Standalone runtime hardening |  Packaged local `services/audio/workflow/transcription_workflow.py` + package markers |
+| AI Findings follow-up (tests) |  Consolidated redundant docstrings + strengthened profile/aggressive assertions |
+| Validation snapshot |  `ruff` and `pytest -q tests/services/audio` passing |
 
 ## Session Status (Current — S1071 codebase-review-quick-wins · 2026-05-19T01:41Z)
 
 | Item | Status |
 |---|---|
-| Top 5 quick wins identification | ✅ Completed |
-| Quick Win 1: Fix DTZ003 `datetime.utcnow()` in scripts/tools/cli (130+ files) | ✅ Implemented |
-| Quick Win 2: Fix Pattern 25 accountability drift | ✅ Auto-fixed |
-| Quick Win 3: Update PDA iterations JSONL | ✅ Appended session entry |
-| Quick Win 4: Update living docs (whats_next + codebase_review_quick_wins.md) | ✅ Created |
-| Quick Win 5: Agentic behavior summary document | ✅ Created at `docs/roadmap/codebase_review_quick_wins.md` |
-| DTZ003 ruff check in scripts/tools/cli | ✅ All checks passed |
+| Top 5 quick wins identification |  Completed |
+| Quick Win 1: Fix DTZ003 `datetime.utcnow()` in scripts/tools/cli (130+ files) |  Implemented |
+| Quick Win 2: Fix Pattern 25 accountability drift |  Auto-fixed |
+| Quick Win 3: Update PDA iterations JSONL |  Appended session entry |
+| Quick Win 4: Update living docs (whats_next + codebase_review_quick_wins.md) |  Created |
+| Quick Win 5: Agentic behavior summary document |  Created at `docs/roadmap/codebase_review_quick_wins.md` |
+| DTZ003 ruff check in scripts/tools/cli |  All checks passed |
 
 ## Session Status (Prior — S1070 PR #4501 approved-workflow monitoring continuation · 2026-05-19T01:08Z)
 
 | Item | Status |
 |---|---|
 | Session budget tracking | 🔄 Maintainer guidance: ~20/60 minutes used; preserve final 5 minutes for wrap-up |
-| Approval state | ✅ Maintainer confirms pending workflows approved for current PR |
+| Approval state |  Maintainer confirms pending workflows approved for current PR |
 | Current-head in-progress snapshot (`f6d749c6`) | 🔄 30 runs currently in progress (validation/security/qa/auto-fix fan-out active) |
-| Current-head completed snapshot (`f6d749c6`) | ✅ Multiple control gates succeeded (`cost`, `comment-review`, `deferral`, `rebase-gate`, `auto-approve`) |
-| Startup-level triage on completed fail-like runs | ✅ `Rust-Python Hybrid Swarm CI/CD` (`26070028902`), `Data Quality & Determinism Suite` (`26070028991`), and `Progressive Validation Suite` (`26070028955`) each report `total_count: 0` jobs (no in-job remediation path) |
-| Living docs parity | ✅ `whats_next` + `session_diagram` refreshed in this pass |
-| Changelog/accountability parity | ✅ Updated in this pass |
+| Current-head completed snapshot (`f6d749c6`) |  Multiple control gates succeeded (`cost`, `comment-review`, `deferral`, `rebase-gate`, `auto-approve`) |
+| Startup-level triage on completed fail-like runs |  `Rust-Python Hybrid Swarm CI/CD` (`26070028902`), `Data Quality & Determinism Suite` (`26070028991`), and `Progressive Validation Suite` (`26070028955`) each report `total_count: 0` jobs (no in-job remediation path) |
+| Living docs parity |  `whats_next` + `session_diagram` refreshed in this pass |
+| Changelog/accountability parity |  Updated in this pass |
 | Final 5-minute reserve | ⏳ Preserved for concise wrap-up/handoff |
 
 ## Session Status (Current — S1069 PR #4501 comment-thread + CI rescue remediation · 2026-05-19T01:00Z)
 
 | Item | Status |
 |---|---|
-| Review-thread remediation (`pullrequestreview-4314989322`) | ✅ Resolved by removing out-of-scope PR artifacts and narrowing scope to requested docs/test updates only |
-| CI auto-fix failure (`PR Auto-Fix Check` run `26069350387`) | ✅ Root cause captured from job logs (`Pattern 25/30`: accountability + PDA freshness + tracked sync drift) |
-| Living docs updates requested by maintainer | ✅ `whats_next` + `session_diagram` updated in this pass |
-| Tracking updates requested by maintainer | ✅ `CHANGELOG.md` + `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` updated in this pass |
+| Review-thread remediation (`pullrequestreview-4314989322`) |  Resolved by removing out-of-scope PR artifacts and narrowing scope to requested docs/test updates only |
+| CI auto-fix failure (`PR Auto-Fix Check` run `26069350387`) |  Root cause captured from job logs (`Pattern 25/30`: accountability + PDA freshness + tracked sync drift) |
+| Living docs updates requested by maintainer |  `whats_next` + `session_diagram` updated in this pass |
+| Tracking updates requested by maintainer |  `CHANGELOG.md` + `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` updated in this pass |
 | Final wrap-up reserve | ⏳ Preserve final ~5 minutes for concise handoff |
 
 ## Session Status (Current — S1068 approved-workflow monitoring continuation · 2026-05-18T23:21Z)
@@ -408,12 +410,12 @@ UPDATE LIVING DOCS after each phase:
 | Item | Status |
 |---|---|
 | Session budget tracking | 🔄 Maintainer guidance: ~12/60 minutes used; preserve final 5 minutes for wrap-up |
-| Approval state | ✅ Maintainer confirms pending workflows approved |
+| Approval state |  Maintainer confirms pending workflows approved |
 | Latest completed-head snapshot (`e35c2520`) | 🔄 Most critical checks now green/cancelled/skipped; three startup-level fail-like runs observed (`Progressive Validation Suite`, `Data Quality & Determinism Suite`, `Rust-Python Hybrid Swarm CI/CD`) |
-| Startup-failure job triage | ✅ `list_workflow_jobs` for runs `26066450670`, `26066450659`, `26066450700` each returned `total_count: 0` (no in-job logs/code-fix path) |
+| Startup-failure job triage |  `list_workflow_jobs` for runs `26066450670`, `26066450659`, `26066450700` each returned `total_count: 0` (no in-job logs/code-fix path) |
 | In-progress run monitor (`e35c2520`) | 🔄 Active queue includes docs/registry/audit/security/pre-flight flows; continue monitor-only until concrete failed job logs exist |
-| Living docs parity | ✅ Updated `whats_next` + `session_diagram` in this pass |
-| Changelog/accountability parity | ✅ Updated in this pass |
+| Living docs parity |  Updated `whats_next` + `session_diagram` in this pass |
+| Changelog/accountability parity |  Updated in this pass |
 | Final 5-minute reserve | ⏳ Preserved for concise wrap-up/handoff |
 
 ## Session Status (Current — S1067 approved-workflow monitoring + wrap-up reserve tracking · 2026-05-18T23:21Z)
@@ -421,12 +423,12 @@ UPDATE LIVING DOCS after each phase:
 | Item | Status |
 |---|---|
 | Session budget tracking | 🔄 Maintainer guidance: ~10/60 minutes used; preserve final 5 minutes for wrap-up |
-| Approval state | ✅ Maintainer confirmed pending workflows approved for current PR |
+| Approval state |  Maintainer confirmed pending workflows approved for current PR |
 | Latest completed-head snapshot (`5dbd9410`) | 🔄 Predominantly `action_required`/queued workflow states tied to approval-gated execution; no failed job logs captured yet for code remediation |
 | Latest in-progress head snapshot (`fa43f721`) | 🔄 Active queue on validation/security/code-quality flows; continue monitor-only until concrete failed job logs appear |
-| Current job-level triage | ✅ Sampled current jobs via MCP (`Auto-Fix Common CI Issues`, `Workflow Execution Gate`, `CI Checkpoint Validation`) and found no completed failed jobs requiring code fixes |
-| Living docs parity | ✅ Updated `whats_next` + `session_diagram` in this pass |
-| Changelog/accountability parity | ✅ Updating in this pass |
+| Current job-level triage |  Sampled current jobs via MCP (`Auto-Fix Common CI Issues`, `Workflow Execution Gate`, `CI Checkpoint Validation`) and found no completed failed jobs requiring code fixes |
+| Living docs parity |  Updated `whats_next` + `session_diagram` in this pass |
+| Changelog/accountability parity |  Updating in this pass |
 | Final 5-minute reserve | ⏳ Preserved for concise wrap-up/handoff |
 
 ## Session Status (Current — S1066 approval-dispatch continuation + expanded checklist · 2026-05-18T23:21Z)
@@ -434,10 +436,10 @@ UPDATE LIVING DOCS after each phase:
 | Item | Status |
 |---|---|
 | Session budget tracking | 🔄 ~42/60 minutes used; preserve final 5 minutes for wrap-up |
-| New blocking maintainer continuation comment (`#4483007895`) | ✅ Triaged and continuation resumed |
+| New blocking maintainer continuation comment (`#4483007895`) |  Triaged and continuation resumed |
 | Latest PR-head monitor snapshot (`fa43f721`) | 🔄 Approval-dispatched runs currently in progress/queued; no failed jobs captured yet for in-job remediation |
-| Job-log triage on latest head | ✅ inspected run jobs for `Secrets Baseline Enforcer`, `CodeQL`, `Security Scanning Suite`, `Agent Vars Bootstrap`, `Resilient Dependency Submission`, `Documentation Link Checker`; none currently failed |
-| Continuation prompt alignment | ✅ Appended expanded 10-item Priority 1 checklist to `.github/copilot-prompts/active/PR-4498-followup.md` |
+| Job-log triage on latest head |  inspected run jobs for `Secrets Baseline Enforcer`, `CodeQL`, `Security Scanning Suite`, `Agent Vars Bootstrap`, `Resilient Dependency Submission`, `Documentation Link Checker`; none currently failed |
+| Continuation prompt alignment |  Appended expanded 10-item Priority 1 checklist to `.github/copilot-prompts/active/PR-4498-followup.md` |
 | Required validation + targeted checkpoint parity reruns | 🔄 Running in this pass |
 | Living docs + changelog + accountability | 🔄 Updating in this pass |
 | Final 5-minute reserve | ⏳ Pending |
@@ -447,10 +449,10 @@ UPDATE LIVING DOCS after each phase:
 | Item | Status |
 |---|---|
 | Session budget tracking | 🔄 ~34/60 minutes used; preserve final 5 minutes for wrap-up |
-| New approval-dispatch comment (`#4482756378`) | ✅ Triaged and continuation flow resumed |
-| Latest run monitor snapshot | ✅ Head `a1ace279` currently shows `Automatic Dependency Submission (Python)` completed success |
+| New approval-dispatch comment (`#4482756378`) |  Triaged and continuation flow resumed |
+| Latest run monitor snapshot |  Head `a1ace279` currently shows `Automatic Dependency Submission (Python)` completed success |
 | Prior active-head monitor snapshot (`b31f0d5`) | 🔄 Startup-level fail-like runs observed (`Progressive Validation Suite`, `Data Quality & Determinism Suite`, `Rust-Python Hybrid Swarm CI/CD`) with **0 jobs** each; no in-job code remediation path |
-| Continuation prompt alignment | ✅ Appended requested `@copilot continue` Priority 1 six-task checklist to `.github/copilot-prompts/active/PR-4498-followup.md` |
+| Continuation prompt alignment |  Appended requested `@copilot continue` Priority 1 six-task checklist to `.github/copilot-prompts/active/PR-4498-followup.md` |
 | Living docs + changelog + accountability | 🔄 Updating in this pass |
 | Final 5-minute reserve | ⏳ Pending |
 
@@ -459,12 +461,12 @@ UPDATE LIVING DOCS after each phase:
 | Item | Status |
 |---|---|
 | Session budget tracking | 🔄 ~29/60 minutes used at latest maintainer checkpoint; preserve final 5 minutes for wrap-up |
-| Approval-coupled Copilot queue hygiene | ✅ Implemented in `approve_pending_runs.py` and wired in `trigger-on-approval.yml` |
-| `👀` cleanup behavior | ✅ Removes stale Copilot `eyes` reactions during approval pass when token scope permits; non-fatal logging on permission blocks |
-| CI rescue comment context (`64cca281`) | ✅ Verified via MCP: fail-like signals are startup-level with 0 jobs for affected runs (no code-level job logs) |
+| Approval-coupled Copilot queue hygiene |  Implemented in `approve_pending_runs.py` and wired in `trigger-on-approval.yml` |
+| `👀` cleanup behavior |  Removes stale Copilot `eyes` reactions during approval pass when token scope permits; non-fatal logging on permission blocks |
+| CI rescue comment context (`64cca281`) |  Verified via MCP: fail-like signals are startup-level with 0 jobs for affected runs (no code-level job logs) |
 | Latest PR-head workflow monitor (`153e43b0`) | 🔄 Active — three startup-level fail-like runs (`Rust-Python Hybrid Swarm CI/CD`, `Progressive Validation Suite`, `Data Quality & Determinism Suite`) all report **0 jobs** (non-code-fixable at job layer) |
-| Required validation chain | ✅ `ruff` + `mypy_baseline` + `auto_fix_common_issues --check-only` all green |
-| Living docs + changelog + accountability | ✅ Updated in this pass |
+| Required validation chain |  `ruff` + `mypy_baseline` + `auto_fix_common_issues --check-only` all green |
+| Living docs + changelog + accountability |  Updated in this pass |
 | Final 5-minute reserve | ⏳ Pending |
 
 ## Session Status (Current — S1063 PR #4498 review-thread closure + workflow monitor · 2026-05-18T22:00Z)
@@ -472,11 +474,11 @@ UPDATE LIVING DOCS after each phase:
 | Item | Status |
 |---|---|
 | Session budget tracking | 🔄 ~35/60 minutes used; preserve final 5 minutes for wrap-up |
-| Review thread `pullrequestreview-4313843683` closure | ✅ Addressed all requested items (`PR-4498-followup.md`, accountability PR field, `training/checkpoint_manager.py`, `src/training/checkpoint_manager.py` parity) |
-| Checkpoint parity fixes (legacy `training/` vs `src/training/`) | ✅ Applied and validated (save guard, step-0 callback guard, prune-path protection, CUDA RNG helper extraction in src fallback) |
-| Required validation chain | ✅ `pytest` targeted set + `ruff` + `mypy_baseline` + `auto_fix_common_issues --check-only` |
+| Review thread `pullrequestreview-4313843683` closure |  Addressed all requested items (`PR-4498-followup.md`, accountability PR field, `training/checkpoint_manager.py`, `src/training/checkpoint_manager.py` parity) |
+| Checkpoint parity fixes (legacy `training/` vs `src/training/`) |  Applied and validated (save guard, step-0 callback guard, prune-path protection, CUDA RNG helper extraction in src fallback) |
+| Required validation chain |  `pytest` targeted set + `ruff` + `mypy_baseline` + `auto_fix_common_issues --check-only` |
 | Current PR-head workflow monitor (`0cdaf740`) | 🔄 Active — many runs in progress; currently observed `startup_failure` on `Progressive Validation Suite` and `Data Quality & Determinism Suite` with **0 jobs** each (startup-level, non-code-fixable from repo code). A few earlier control runs show `cancelled` due superseding pushes. |
-| Copilot queued 👀 reaction hygiene | ✅ Verified process: detect comments with `eyes` reactions and inspect reaction owners; delete attempt for reaction `358870127` currently blocked by token scope (`403 Resource not accessible by integration`) |
+| Copilot queued 👀 reaction hygiene |  Verified process: detect comments with `eyes` reactions and inspect reaction owners; delete attempt for reaction `358870127` currently blocked by token scope (`403 Resource not accessible by integration`) |
 | Living docs + changelog + accountability | 🔄 Updating in this pass |
 | Final 5-minute reserve | ⏳ Pending |
 
@@ -485,12 +487,12 @@ UPDATE LIVING DOCS after each phase:
 | Item | Status |
 |---|---|
 | Session budget tracking | 🔄 ~10/60 minutes used; preserve final 5 minutes for wrap-up |
-| Artifact ingestion (`run 26058314535`) | ✅ Downloaded and SHA256-verified (`dependency-scan-results`, `sbom-reports`) |
-| Dependency scan remediation status | ✅ Explicitly reviewed — 2 known CVEs (`diskcache`, `sqlitedict`) still no fix versions; existing `pip-audit` ignore policy in `pyproject.toml` remains current |
-| SBOM remediation status | ✅ `sbom.json` reviewed: 326 components, 0 vulnerabilities |
-| Requested code diffs application | ✅ Complete — requested checkpoint manager and test diffs applied |
-| Targeted validation status | ✅ `pytest` target set, `ruff` (changed files), and `nox -s tests` target run all passing |
-| Living docs + changelog + accountability | ✅ Updated in this pass |
+| Artifact ingestion (`run 26058314535`) |  Downloaded and SHA256-verified (`dependency-scan-results`, `sbom-reports`) |
+| Dependency scan remediation status |  Explicitly reviewed — 2 known CVEs (`diskcache`, `sqlitedict`) still no fix versions; existing `pip-audit` ignore policy in `pyproject.toml` remains current |
+| SBOM remediation status |  `sbom.json` reviewed: 326 components, 0 vulnerabilities |
+| Requested code diffs application |  Complete — requested checkpoint manager and test diffs applied |
+| Targeted validation status |  `pytest` target set, `ruff` (changed files), and `nox -s tests` target run all passing |
+| Living docs + changelog + accountability |  Updated in this pass |
 | Final 5-minute reserve | ⏳ Pending |
 
 ## Session Status (Current — S1061 approval-monitor continuation · 2026-05-18T19:19Z)
@@ -498,12 +500,12 @@ UPDATE LIVING DOCS after each phase:
 | Item | Status |
 |---|---|
 | Session budget tracking | 🔄 ~26/60 minutes used; reserve final 5 minutes for wrap-up |
-| Latest PR head SHA | ✅ `2986420f2187f1567b9c914dc97337ecf7cb8da0` (`MERGEABLE`) |
+| Latest PR head SHA |  `2986420f2187f1567b9c914dc97337ecf7cb8da0` (`MERGEABLE`) |
 | Approval-dispatched workflow monitoring | 🔄 Maintainer approved pending workflows; latest check-run snapshot shows heavy active load (`35 in_progress`, `3 queued`) plus `action_required` workflow conclusions on the same head — under active monitoring |
 | Tracked-file/accountability freshness | 🔄 In progress — refresh docs/changelog/accountability in this pass |
 | Validation chain parity | 🔄 In progress — rerun `ruff`, `mypy_baseline`, `auto_fix_common_issues` and compare with CI outcomes |
 | Workflow action pin/comment drift | 🔄 In progress — recheck for new drift after branch updates |
-| `PR-4497-followup.md` continuation prompt | ✅ Updated — appended current Priority 1 task block for next @copilot phase |
+| `PR-4497-followup.md` continuation prompt |  Updated — appended current Priority 1 task block for next @copilot phase |
 | Final 5-minute reserve | ⏳ Pending — preserve for wrap-up and handoff |
 
 ### Merge-readiness checkpoint
@@ -537,11 +539,11 @@ Priority: monitor approved workflow queue outcomes, keep tracked/accountability 
 | Item | Status |
 |---|---|
 | Session budget tracking | 🔄 ~28/60 minutes used; reserve final 5 minutes for wrap-up |
-| PR merge conflict state (`gh pr view`) | ✅ Cleared — PR #4497 now `MERGEABLE` on HEAD `e0fee31` |
-| Review thread `pullrequestreview-4312820254` remediation | ✅ Complete — workflow comment alignment + pages SHA pin + stale status-label cleanup |
-| CI dependency resolver blocker (`mlflow` vs `pandas`) | ✅ Complete — pandas constraints restored to `>=2.3.1,<3` / `2.3.3` pins |
+| PR merge conflict state (`gh pr view`) |  Cleared — PR #4497 now `MERGEABLE` on HEAD `e0fee31` |
+| Review thread `pullrequestreview-4312820254` remediation |  Complete — workflow comment alignment + pages SHA pin + stale status-label cleanup |
+| CI dependency resolver blocker (`mlflow` vs `pandas`) |  Complete — pandas constraints restored to `>=2.3.1,<3` / `2.3.3` pins |
 | Workflow monitoring after approval dispatch | 🔄 Ongoing — latest runs on `e0fee31` are predominantly `action_required`/queued; no new code-fixable failures identified in current snapshot |
-| Living docs + CHANGELOG + accountability sync | ✅ Updated in-session |
+| Living docs + CHANGELOG + accountability sync |  Updated in-session |
 | Final 5-minute reserve | ⏳ Pending — hold remaining time for wrap-up summary and handoff |
 
 ## Session Status (S1056 snapshot — Dependabot absorb session · 2026-05-18T17:20Z)
@@ -549,11 +551,11 @@ Priority: monitor approved workflow queue outcomes, keep tracked/accountability 
 | Item | Status |
 |---|---|
 | Session budget tracking | 🔄 ~52/60 minutes used; final 5 minutes reserved for wrap-up |
-| Active Dependabot PR absorb into `copilot/gather-active-dependabots` | ✅ Complete — 15 update commits cherry-picked on top of `9aa5ae4` through HEAD `5d14f3b` |
-| Consumed GitHub Actions PRs | ✅ `#4480`, `#4482`, `#4484`, `#4493`, `#4494` absorbed |
-| Consumed Python dependency PRs | ✅ `#4481`, `#4483`, `#4485`, `#4486`, `#4487`, `#4488`, `#4489`, `#4490`, `#4491`, `#4492` absorbed |
-| Closure candidate list | ✅ Prepared — #4480, #4481, #4482, #4483, #4484, #4485, #4486, #4487, #4488, #4489, #4490, #4491, #4492, #4493, #4494 |
-| Living docs + CHANGELOG + accountability sync | ✅ Complete (`whats_next`, `session_diagram`, `CHANGELOG`, `AGENT_ACCOUNTABILITY_REPORT`) |
+| Active Dependabot PR absorb into `copilot/gather-active-dependabots` |  Complete — 15 update commits cherry-picked on top of `9aa5ae4` through HEAD `5d14f3b` |
+| Consumed GitHub Actions PRs |  `#4480`, `#4482`, `#4484`, `#4493`, `#4494` absorbed |
+| Consumed Python dependency PRs |  `#4481`, `#4483`, `#4485`, `#4486`, `#4487`, `#4488`, `#4489`, `#4490`, `#4491`, `#4492` absorbed |
+| Closure candidate list |  Prepared — #4480, #4481, #4482, #4483, #4484, #4485, #4486, #4487, #4488, #4489, #4490, #4491, #4492, #4493, #4494 |
+| Living docs + CHANGELOG + accountability sync |  Complete (`whats_next`, `session_diagram`, `CHANGELOG`, `AGENT_ACCOUNTABILITY_REPORT`) |
 | Final wrap-up / PR closure sweep | ⏳ Pending — keep final 5-minute reserve |
 
 ### Dependabot absorb summary
@@ -567,15 +569,15 @@ Priority: monitor approved workflow queue outcomes, keep tracked/accountability 
 | Item | Status |
 |---|---|
 | Session budget tracking | 🔄 ~25/60 minutes used; reserve final 5 minutes for wrap-up |
-| Session D runtime rerun — 3 collection errors fixed | ✅ Complete (Bucket A: path-shadow; Bucket B ×2: numpy importorskip) |
-| CI: `sync_tracked_files` stale hash | ✅ Fixed (`sync_tracked_files.py --fix`) |
-| CI: Secrets Baseline Enforcer (archive_ops.jsonl false positives) | ✅ Fixed (4 new entries added to `.secrets.baseline`) |
-| `sys.path.insert` module-level calls audit + fixture migration | ✅ Complete (`conftest.py` created in `tests/scripts/` and `tests/checkpointing/`) |
-| Code review: narrow `except ImportError` → `ModuleNotFoundError` | ✅ Fixed (commit `b588342`) |
-| Code review: fix wrong PR #4478 reference in `PR-4479-followup.md` | ✅ Fixed (commit `b588342`) |
-| Code review: remove duplicate checklist block in `PR-4479-followup.md` | ✅ Fixed (commit `b588342`) |
-| CI: Auto-Fix PR Check on commit `173a5ad` (superseded) | ✅ Superseded — current HEAD passes `Auto-Fix Common CI Issues` |
-| CI rescue command set (`ruff`, `mypy_baseline`, `auto_fix_common_issues`) | ✅ All pass on current HEAD |
+| Session D runtime rerun — 3 collection errors fixed |  Complete (Bucket A: path-shadow; Bucket B ×2: numpy importorskip) |
+| CI: `sync_tracked_files` stale hash |  Fixed (`sync_tracked_files.py --fix`) |
+| CI: Secrets Baseline Enforcer (archive_ops.jsonl false positives) |  Fixed (4 new entries added to `.secrets.baseline`) |
+| `sys.path.insert` module-level calls audit + fixture migration |  Complete (`conftest.py` created in `tests/scripts/` and `tests/checkpointing/`) |
+| Code review: narrow `except ImportError` → `ModuleNotFoundError` |  Fixed (commit `b588342`) |
+| Code review: fix wrong PR #4478 reference in `PR-4479-followup.md` |  Fixed (commit `b588342`) |
+| Code review: remove duplicate checklist block in `PR-4479-followup.md` |  Fixed (commit `b588342`) |
+| CI: Auto-Fix PR Check on commit `173a5ad` (superseded) |  Superseded — current HEAD passes `Auto-Fix Common CI Issues` |
+| CI rescue command set (`ruff`, `mypy_baseline`, `auto_fix_common_issues`) |  All pass on current HEAD |
 | Living docs + CHANGELOG + accountability sync | 🔄 In progress (this update) |
 | Final 5-minute wrap-up + continuation prompt | ⏳ Pending (reserve at end of session) |
 
@@ -606,13 +608,13 @@ Priority: monitor approved workflow queue outcomes, keep tracked/accountability 
 
 | Item | Status |
 |---|---|
-| Core report (`next_expected_codebase_change_48h.md`) | ✅ Complete |
-| Mermaid + expected results + equations + token descriptions | ✅ Complete |
-| Iterative promptset + groundwork package | ✅ Complete |
-| Living docs sync (`whats_next`, `session_diagram`) | ✅ Complete |
-| CHANGELOG + accountability updates | ✅ Complete |
-| **S1042 — Quantum conftest remediation** | ✅ Complete |
-| **S1043 — Loader import-contract stabilization** | ✅ Complete |
+| Core report (`next_expected_codebase_change_48h.md`) |  Complete |
+| Mermaid + expected results + equations + token descriptions |  Complete |
+| Iterative promptset + groundwork package |  Complete |
+| Living docs sync (`whats_next`, `session_diagram`) |  Complete |
+| CHANGELOG + accountability updates |  Complete |
+| **S1042 — Quantum conftest remediation** |  Complete |
+| **S1043 — Loader import-contract stabilization** |  Complete |
 
 ## Evidence Summary (S1042/S1043-2026-05-17)
 
@@ -693,19 +695,19 @@ Priority: monitor approved workflow queue outcomes, keep tracked/accountability 
 
 | Item | Status |
 |---|---|
-| Core report (`next_expected_codebase_change_48h.md`) | ✅ Complete |
-| Mermaid + expected results + equations + token descriptions | ✅ Complete |
-| Iterative promptset + groundwork package | ✅ Complete |
-| Living docs sync (`whats_next`, `session_diagram`) | ✅ Complete |
-| CHANGELOG + accountability updates | ✅ Complete |
-| **S1042 — Quantum conftest remediation** | ✅ Complete |
-| **S1043 — Loader import-contract stabilization** | ✅ Complete |
-| **S1044 — Baseline dep normalization** | ✅ Complete (`requirements-dev.txt` +5 deps, 0 collection errors) |
-| **S1044 — SHA→branch promotion workflow** | ✅ Complete (`promote-integration-branch.yml` generalized) |
+| Core report (`next_expected_codebase_change_48h.md`) |  Complete |
+| Mermaid + expected results + equations + token descriptions |  Complete |
+| Iterative promptset + groundwork package |  Complete |
+| Living docs sync (`whats_next`, `session_diagram`) |  Complete |
+| CHANGELOG + accountability updates |  Complete |
+| **S1042 — Quantum conftest remediation** |  Complete |
+| **S1043 — Loader import-contract stabilization** |  Complete |
+| **S1044 — Baseline dep normalization** |  Complete (`requirements-dev.txt` +5 deps, 0 collection errors) |
+| **S1044 — SHA→branch promotion workflow** |  Complete (`promote-integration-branch.yml` generalized) |
 | Full `nox -s tests` runtime failure triage | 🔄 In progress (S1045 reached 98%; rerun required for terminal summary in current session env) |
-| Runtime failure marker inventory (`F/E/node-down`) | ✅ Captured |
+| Runtime failure marker inventory (`F/E/node-down`) |  Captured |
 | `promote-integration-branch.yml` Actions-tab dispatch validation (`target_branch=main`) | 🔄 Pending verification (use current branch tip SHA) |
-| WEC/template-aligned PR preparation + report console alignment | ✅ In progress |
+| WEC/template-aligned PR preparation + report console alignment |  In progress |
 
 ## Next Objectives (Session D continuation)
 

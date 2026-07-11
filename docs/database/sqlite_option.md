@@ -1,6 +1,8 @@
 # SQLite Option A Configuration
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 Option A stores all conversation logs in a local SQLite database. The database
 can be shared across tools and supports a lightweight connection pool for

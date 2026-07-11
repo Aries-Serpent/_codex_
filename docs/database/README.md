@@ -1,4 +1,5 @@
 # Database Documentation
+**Version:** v0.2.1
 
 This directory contains documentation for database schemas, operations, and management.
 

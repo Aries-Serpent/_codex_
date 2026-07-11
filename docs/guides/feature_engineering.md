@@ -1,6 +1,8 @@
 # Feature Engineering Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## Introduction
 
@@ -650,5 +652,5 @@ features = store.materialize_features("expensive_group", inputs)
 ## See Also
 
 - [Feature Store API Reference](./feature_store.md)
-- [Feature Monitoring](https://github.com/Aries-Serpent/_codex_/blob/main/src/codex_ml/features/monitoring.py)
+- [Feature Monitoring](../src/codex_ml/features/monitoring.py)
 - [Training Pipeline](../training/)

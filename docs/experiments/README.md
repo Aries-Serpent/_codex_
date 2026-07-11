@@ -1,6 +1,8 @@
 # Experiment Logging
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 Codex writes all run artefacts to the `runs/` directory.  Each invocation of
 `run_functional_training` or the `codex codex train` CLI creates a new
@@ -28,7 +30,7 @@ runs/
 
 All files are valid line-delimited JSON and can be consumed with tools such as
 `jq`, `sqlite-utils`, or the helper script
-[`examples/mlflow_offline.py`](https://github.com/Aries-Serpent/_codex_/blob/main/examples/mlflow_offline.py).  To export a
+[`examples/mlflow_offline.py`](../examples/mlflow_offline.py).  To export a
 CSV summary, run:
 
 ```bash

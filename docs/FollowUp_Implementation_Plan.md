@@ -1,16 +1,19 @@
 # [Plan]: Training Loop Enhancements & Resume Logic Roadmap
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-22 01:40:18 | Author: mbaetiong  
 Roles: [Primary], [Secondary] ⚡ Energy: [5]
 
 ## Status Update
-- P1.1 (Resume Logic) ✅
-- P1.2 (Resume test) ✅
-- P1.3 (Optimizer wiring) ✅
-- P1.4 (Optimizer checkpoint save/load) ✅
-- P1.5 (Scheduler minimal linear/step) ✅ (epoch-based; linear + step)
-- P1.11 (Dataset real loader JSONL/CSV) ✅ (src/codex_ml/data/loaders.py)
-- P1.13 (/infer masking tests) ✅
-- P1.14 (/infer tokenizer roundtrip test) ✅
+- P1.1 (Resume Logic) 
+- P1.2 (Resume test) 
+- P1.3 (Optimizer wiring) 
+- P1.4 (Optimizer checkpoint save/load) 
+- P1.5 (Scheduler minimal linear/step)  (epoch-based; linear + step)
+- P1.11 (Dataset real loader JSONL/CSV)  (src/codex_ml/data/loaders.py)
+- P1.13 (/infer masking tests) 
+- P1.14 (/infer tokenizer roundtrip test) 
 
 ## Newly Completed (This Increment)
 
@@ -107,11 +110,11 @@ python -m codex_ml.cli.train epochs=3 steps_per_epoch=5 grad_accum=2 \
 
 | Check | Status |
 |-------|--------|
-| Scheduler linear decay applied | ✅ |
-| Scheduler step decay applied | ✅ |
-| Dataset loaders return checksum | ✅ |
-| Secret masking patterns covered by tests | ✅ |
-| Tokenizer fallback echo path validated | ✅ |
+| Scheduler linear decay applied |  |
+| Scheduler step decay applied |  |
+| Dataset loaders return checksum |  |
+| Secret masking patterns covered by tests |  |
+| Tokenizer fallback echo path validated |  |
 
 ---
 ```text

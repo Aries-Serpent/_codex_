@@ -1,8 +1,10 @@
 # GitHub App ↔ cognitive_app CLI — Integration Mapping Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
-> **Status:** ✅ NEW (PR #3503 W-126, 2026-03-05)  
+> **Status:**  NEW (PR #3503 W-126, 2026-03-05)  
 > **Audience:** Copilot Coding Agent sessions, integration engineers  
 > **Related:** `docs/agent/COGNITIVE_APP_CONNECTION_GUIDE.md`, `src/codex/auth/github_app.py`,
 > `cognitive_app/src/server/cli_api_server.py`, `src/codex/agents/brain_client.py`
@@ -215,7 +217,7 @@ curl -sf http://localhost:8765/api/health
 python3 - <<'EOF'
 from codex.auth.github_app import _resolve_github_token
 for val, name in _resolve_github_token():
-    status = "✅ set" if val else "❌ missing"
+    status = " set" if val else " missing"
     print(f"  {name}: {status}")
 EOF
 

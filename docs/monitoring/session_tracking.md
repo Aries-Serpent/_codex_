@@ -1,6 +1,8 @@
 # Session Tracking & Event Correlation
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 Codex ML records every training, inference, and CLI invocation with a unique session identifier. Session-aware
 logging enables reproducible experiments and simplifies incident reconstruction.

@@ -1,4 +1,7 @@
 # [ADR]: Style - Line Length and Formatting
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-22  
 > Status: Accepted  
 > Decision: Adopt Black default line length (88) and align ruff configuration

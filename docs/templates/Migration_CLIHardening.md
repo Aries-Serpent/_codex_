@@ -1,6 +1,9 @@
 # [Template]: CLI Module Hardening & Test Coverage Enhancement
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 **Version:** v1.0.0  
-**Last Updated:** 2025-10-25  
+**Last Updated: 2026-07-11
 **Role Workflow:** Developers draft → Maintainers approve → Release engineers monitor
 
 > [PLACEHOLDER: CLI_HARDENING_SUMMARY]
@@ -16,9 +19,9 @@ Apply this template to harden a CLI module, expand regression coverage, and alig
 
 ## Baseline Assessment
 1. Capture current CLI help output: `python -m [PLACEHOLDER: CLI_ENTRYPOINT] --help`.
-2. Review [`src/cli/`](https://github.com/Aries-Serpent/_codex_/blob/main/src/cli) for deprecated patterns (e.g., click legacy invocations).
+2. Review [`src/cli/`](../src/cli) for deprecated patterns (e.g., click legacy invocations).
 3. Audit coverage reports and identify gaps below 85%.
-4. Inventory tests in [`tests/cli/`](https://github.com/Aries-Serpent/_codex_/blob/main/tests/cli) and map them to CLI commands.
+4. Inventory tests in [`tests/cli/`](../tests/cli) and map them to CLI commands.
 5. Confirm telemetry hooks exist for commands that mutate state.
 
 ## Hardening Task 1 — Interface Validation
@@ -27,17 +30,17 @@ Apply this template to harden a CLI module, expand regression coverage, and alig
 - Ensure error messages reference remediation paths and docs links.
 
 ## Hardening Task 2 — Dependency Upgrades
-- Verify new dependencies are declared in [`pyproject.toml`](https://github.com/Aries-Serpent/_codex_/blob/main/pyproject.toml).
+- Verify new dependencies are declared in [`pyproject.toml`](../pyproject.toml).
 - Update optional extras if CLI features rely on them.
 - Run `uv pip compile` or equivalent to refresh lock files.
 
 ## Hardening Task 3 — Coverage Expansion
-- Create targeted tests under [`tests/cli/`](https://github.com/Aries-Serpent/_codex_/blob/main/tests/cli) for uncovered scenarios.
+- Create targeted tests under [`tests/cli/`](../tests/cli) for uncovered scenarios.
 - Use pytest markers (`@pytest.mark.cli`) to isolate CLI suites.
 - Capture coverage report before/after and confirm ≥85%.
 
 ## Hardening Task 4 — Observability and Rollout
-- Ensure logs and metrics surface to monitoring dashboards documented in [`monitoring/`](https://github.com/Aries-Serpent/_codex_/blob/main/monitoring).
+- Ensure logs and metrics surface to monitoring dashboards documented in [`monitoring/`](../monitoring).
 - Draft rollout checklist and pair with the planning template for approvals.
 - Prepare incident response notes for potential regressions.
 
@@ -64,6 +67,6 @@ Apply this template to harden a CLI module, expand regression coverage, and alig
 | `[PLACEHOLDER: COMMS_PLAN]` | Stakeholder communication approach. | "Weekly async updates in #cli-maintainers" |
 
 ## References
-- [`src/cli/`](https://github.com/Aries-Serpent/_codex_/blob/main/src/cli) implementation details.
-- [`tests/cli/`](https://github.com/Aries-Serpent/_codex_/blob/main/tests/cli) regression suites.
+- [`src/cli/`](../src/cli) implementation details.
+- [`tests/cli/`](../tests/cli) regression suites.
 - [`docs/templates/README.md`](./README.md) for workflow context.

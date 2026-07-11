@@ -1,6 +1,8 @@
 # Agent & Workflow Consolidation Planset — S174
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 > **Created:** 2026-03-21 (S173 / PR #3661)
 > **Scope:** GitHub Actions workflows (128 active) + Custom Agents (203 files)
@@ -10,7 +12,7 @@
 
 ---
 
-## 📊 Current State
+##  Current State
 
 | Category | Count | Target | Reduction |
 |----------|-------|--------|-----------|
@@ -22,7 +24,7 @@
 
 ---
 
-## 🔴 P0 — Must consolidate (duplicate triggers / race conditions)
+##  P0 — Must consolidate (duplicate triggers / race conditions)
 
 ### P0-1: Self-Healing CI Triad → Single canonical workflow
 
@@ -205,7 +207,7 @@ capabilities are fully covered. Keep specialized ones (Docker, ImportError, Log 
 
 ---
 
-## 🟢 P2 — Nice to consolidate (reduce noise)
+##  P2 — Nice to consolidate (reduce noise)
 
 ### P2-1: `Art_`-prefixed workflow renaming
 
@@ -291,7 +293,7 @@ Post-consolidation:
 
 ---
 
-## 💡 Success Criteria
+##  Success Criteria
 
 | Metric | Before | Target | Verification |
 |--------|--------|--------|-------------|

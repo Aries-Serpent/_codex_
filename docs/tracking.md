@@ -2,7 +2,7 @@ All metrics logged to MLflow must include an explicit `step` parameter for prope
 
 ## Tracking URI
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 Codex utilities read the `CODEX_MLFLOW_URI` environment variable to determine
 where to store runs. If unset, a local file-based store `file:mlruns` is used so
@@ -21,6 +21,9 @@ logging:
 
 ```bash
 # Enable MLflow with a local file store
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 codex train --config configs/training/base.yaml --mlflow --mlflow-tracking-uri file:mlruns
 
 # Disable MLflow even if the config enables it

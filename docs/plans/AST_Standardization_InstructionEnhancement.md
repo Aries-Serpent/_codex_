@@ -1,4 +1,6 @@
 # 📋 AST: Deep Codebase Analysis Requirements
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 ## Table of Contents
 
@@ -59,7 +61,7 @@
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
 
-**🧠 Roles:** [Primary: Requirements Engineer], [Secondary: Architecture Lead] | ⚡ Energy: 5/5
+** Roles:** [Primary: Requirements Engineer], [Secondary: Architecture Lead] | ⚡ Energy: 5/5
 
 ---
 
@@ -68,11 +70,11 @@
 This document establishes **comprehensive, binding requirements** for developing an **AST (Abstract Syntax Tree) Standardization Project** that enables **deep codebase analysis beyond test scope**.
 
 **Strategic Objectives:**
-- ✅ Standardize AST parsing across Python/YAML/JSON codebases
-- ✅ Enable automated structural and semantic codebase analysis
-- ✅ Provide objective metrics for code quality, complexity, and dependencies
-- ✅ Integrate maturity tracking with AST-derived findings
-- ✅ Create knowledge graphs for team-wide code intelligence
+-  Standardize AST parsing across Python/YAML/JSON codebases
+-  Enable automated structural and semantic codebase analysis
+-  Provide objective metrics for code quality, complexity, and dependencies
+-  Integrate maturity tracking with AST-derived findings
+-  Create knowledge graphs for team-wide code intelligence
 
 **Scope:** Comprehensive codebase analysis → structural, semantic, quality, and evolution tracking
 
@@ -575,10 +577,10 @@ codex-analyze --smell-threshold high src/
 This requirements document provides **complete, verifiable, and measurable** specifications for the AST Standardization Project.
 
 **Critical Success Factors:**
-1. ✅ **Adherence to FR & NFR**: Implement exactly as specified; deviations require RFP amendment
-2. ✅ **Test-Driven Development**: Write tests before code; maintain >80% coverage
-3. ✅ **Regular Sign-Offs**: Validate at each phase gate; no surprises at end
-4. ✅ **Documentation**: Keep docs in sync with code; mandatory for all APIs
+1.  **Adherence to FR & NFR**: Implement exactly as specified; deviations require RFP amendment
+2.  **Test-Driven Development**: Write tests before code; maintain >80% coverage
+3.  **Regular Sign-Offs**: Validate at each phase gate; no surprises at end
+4.  **Documentation**: Keep docs in sync with code; mandatory for all APIs
 
 **Next Actions:**
 1. **This Week:** Schedule kickoff with team; assign roles
@@ -599,7 +601,7 @@ Now creating the complementary validation and implementation guidance file:
 # 🔄 AST: Standardization Implementation Guidance
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
 
-**🧠 Roles:** [Primary: Implementation Lead], [Secondary: Technical Architect] | ⚡ Energy: 5/5
+** Roles:** [Primary: Implementation Lead], [Secondary: Technical Architect] | ⚡ Energy: 5/5
 
 ⚛️ **Physics:** Path🛤️ [Sequential phases] | Fields🔄 [Modular components] | Patterns👁️ [DRY code, reusable analyzers] | Redundancy🔀 [Fallback strategies] | Balance⚖️ [Performance vs accuracy]
 
@@ -1403,11 +1405,11 @@ jobs:
 
 This **Implementation Guidance** provides:
 
-✅ **Module-by-module implementation templates**  
-✅ **Test-driven development patterns**  
-✅ **Performance benchmarks and validation**  
-✅ **CI/CD integration strategies**  
-✅ **Phase-gate criteria for sign-off**  
+ **Module-by-module implementation templates**  
+ **Test-driven development patterns**  
+ **Performance benchmarks and validation**  
+ **CI/CD integration strategies**  
+ **Phase-gate criteria for sign-off**  
 
 **Critical Success Factors:**
 - Write tests before code (TDD)

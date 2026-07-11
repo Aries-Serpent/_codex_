@@ -1,6 +1,8 @@
 # Code Quality: Import Organization Guidelines
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 > **Version:** 1.0.0
 > **Created:** 2026-02-17
@@ -216,11 +218,11 @@ F821 (undefined name) errors cause **runtime failures** and must be **zero toler
 
 1. **Missing typing imports:**
 ```python
-# ❌ WRONG: F821 undefined name 'Optional'
+#  WRONG: F821 undefined name 'Optional'
 def process(config: Optional[Dict]) -> Any:
     pass
 
-# ✅ CORRECT: Import typing
+#  CORRECT: Import typing
 from typing import Any, Dict, Optional
 def process(config: Optional[Dict]) -> Any:
     pass
@@ -228,10 +230,10 @@ def process(config: Optional[Dict]) -> Any:
 
 2. **Missing logger definitions:**
 ```python
-# ❌ WRONG: F821 undefined name 'logger'
+#  WRONG: F821 undefined name 'logger'
 logger.info("Starting...")
 
-# ✅ CORRECT: Define logger
+#  CORRECT: Define logger
 import logging
 logger = logging.getLogger(__name__)
 logger.info("Starting...")
@@ -239,10 +241,10 @@ logger.info("Starting...")
 
 3. **Missing stdlib imports:**
 ```python
-# ❌ WRONG: F821 undefined name 'Path'
+#  WRONG: F821 undefined name 'Path'
 path = Path("/tmp")
 
-# ✅ CORRECT: Import from pathlib
+#  CORRECT: Import from pathlib
 from pathlib import Path
 path = Path("/tmp")
 ```
@@ -255,7 +257,7 @@ F821 errors are enforced via pre-commit hooks with **zero tolerance**:
 # .pre-commit-config.yaml
 - id: ruff-f821-check
   name: Ruff F821 Check (undefined names - ZERO TOLERANCE)
-  entry: bash -c 'ruff check --select F821 . && echo "✅ No undefined names"'
+  entry: bash -c 'ruff check --select F821 . && echo " No undefined names"'
   language: system
   pass_filenames: false
 ```
@@ -328,7 +330,7 @@ ignore = ["E501"]  # Line too long
 
 - id: ruff-f821-strict
   name: Ruff F821 Strict (undefined names - ZERO TOLERANCE)
-  entry: bash -c 'ruff check --select F821 . && echo "✅ No F821 errors"'
+  entry: bash -c 'ruff check --select F821 . && echo " No F821 errors"'
   language: system
   pass_filenames: false
 ```
@@ -359,11 +361,11 @@ from codex.core import validate_config
 If import is **not** an acceptable pattern, reorganize:
 
 ```python
-# ❌ BEFORE: Genuinely misplaced import
+#  BEFORE: Genuinely misplaced import
 x = compute_value()
 import os  # E402
 
-# ✅ AFTER: Import at top
+#  AFTER: Import at top
 import os
 x = compute_value()
 ```
@@ -374,7 +376,7 @@ x = compute_value()
 
 ### Current Status (Post-GAP-REF)
 
-- **F821 errors:** 0 ✅ (ZERO TOLERANCE enforced)
+- **F821 errors:** 0  (ZERO TOLERANCE enforced)
 - **E402 errors:** 2,519 (documented acceptable patterns)
 - **E402 acceptable:** ~2,300 (91.3% - intentional patterns)
 - **E402 fixable:** ~200 (8.7% - genuinely misplaced)
@@ -385,7 +387,7 @@ Track quality metrics via CI/CD:
 
 ```bash
 # F821 check (must pass)
-ruff check --select F821 . && echo "✅ PASS"
+ruff check --select F821 . && echo " PASS"
 
 # E402 check (informational)
 ruff check --select E402 . | wc -l  # Track trend over time

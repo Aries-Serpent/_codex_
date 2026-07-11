@@ -1,6 +1,8 @@
 # Plugin Architecture
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 Codex exposes first-class registries for tokenizers, models, data loaders,
 metrics and trainers.  Registries are case-insensitive and discover third-party
@@ -26,7 +28,7 @@ awesome = "my_pkg.models:build_model"
 3. Distribute the package (wheel, editable install, etc.).
 4. Codex will discover it on demand: `codex_ml.registry.get_model("awesome", cfg)`.
 
-See [`examples/plugins`](https://github.com/Aries-Serpent/_codex_/blob/main/examples/plugins) for toy implementations.
+See [`examples/plugins`](../examples/plugins) for toy implementations.
 
 ## Handling conflicts
 

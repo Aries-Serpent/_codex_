@@ -1,4 +1,6 @@
 # Phase 11 — Quality Hardening & Coverage Growth
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Status**: 🔶 In Progress (S101 complete — CodeQL + CI fixes; P11-01 deferred to S102)  
 **Predecessor**: Phase 10 — Hardware-First Production Readiness (complete S96)  
@@ -12,16 +14,16 @@
 
 | ID | Objective | Status |
 |----|-----------|--------|
-| P10-01 | Hardware-first policy enforced | ✅ DONE (S95) |
-| P10-02 | All GPU components optional/deferred | ✅ DONE (S92–S95) |
-| P10-03 | 0.9.0-rc1 publishable | ✅ DONE (S94) |
-| P10-04 | CPU performance baseline | ✅ DONE (S96) |
-| P10-05 | Intel OpenVINO optional iGPU path | ✅ DONE (S97 doc + S98 Phase B backend) |
-| P10-06 | Secrets rotation runbook | ✅ DONE (S96) |
-| P10-07 | SBOM CI integration | ✅ DONE (S96) |
-| P10-08 | Pattern 6 catch-alls systematic fix | ✅ DONE (S97 — 222→118) |
-| P10-09 | Coverage threshold raise to 30% | ✅ DONE (S96) |
-| P10-10 | OTel spans on BatchScanRunner | ✅ DONE (S96) |
+| P10-01 | Hardware-first policy enforced |  DONE (S95) |
+| P10-02 | All GPU components optional/deferred |  DONE (S92–S95) |
+| P10-03 | 0.9.0-rc1 publishable |  DONE (S94) |
+| P10-04 | CPU performance baseline |  DONE (S96) |
+| P10-05 | Intel OpenVINO optional iGPU path |  DONE (S97 doc + S98 Phase B backend) |
+| P10-06 | Secrets rotation runbook |  DONE (S96) |
+| P10-07 | SBOM CI integration |  DONE (S96) |
+| P10-08 | Pattern 6 catch-alls systematic fix |  DONE (S97 — 222→118) |
+| P10-09 | Coverage threshold raise to 30% |  DONE (S96) |
+| P10-10 | OTel spans on BatchScanRunner |  DONE (S96) |
 
 ---
 
@@ -98,17 +100,17 @@
 | Session | Primary Focus | Target Deliverable |
 |---------|--------------|-------------------|
 | S97 | CodeQL alerts, Pattern 6 222→118, P10-05 doc | This document |
-| **S98** | **Ruff E501 3100→0, Pattern 6 118→77, P10-05 Phase B backend, AAIS 98.6** | ✅ **DONE** |
-| **S99** | **HOTFIX: YAML/auth/perms, Pattern 6 77→40, AAIS 98.9** | ✅ **DONE** |
-| **S100** | **OpenVINO Phase C, Pattern 6→0, CI sharding, SBOM validation, v0.9.0, AAIS V5.0** | ✅ **DONE** |
-| **S101** | **CodeQL #12471-#12477 resolved, Fast Validation XML fix, cognitive brain updated** | ✅ **DONE** |
+| **S98** | **Ruff E501 3100→0, Pattern 6 118→77, P10-05 Phase B backend, AAIS 98.6** |  **DONE** |
+| **S99** | **HOTFIX: YAML/auth/perms, Pattern 6 77→40, AAIS 98.9** |  **DONE** |
+| **S100** | **OpenVINO Phase C, Pattern 6→0, CI sharding, SBOM validation, v0.9.0, AAIS V5.0** |  **DONE** |
+| **S101** | **CodeQL #12471-#12477 resolved, Fast Validation XML fix, cognitive brain updated** |  **DONE** |
 | S102 | Coverage gap-fill (P11-01a) — `fail_under = 35` (needs measured ≥ 33%) | Measure on full runner |
 | S103 | Coverage 50% gate — `fail_under = 50` | `fail_under = 50`, Phase 11 final |
-| **S112** | **owner_approval_guard COPILOT_AGENT_AUTH_ENABLED bypass (PR #3402 P3)** | ✅ **DONE** |
-| **S113** | **owner_approval_guard COPILOT_AGENT_AUTH_BYPASS_TOOLS scope filter** | ✅ **DONE** |
-| **S114** | **Ruff 0 errors (F401/F841/I001), accountability report, full dep install** | ✅ **DONE** |
-| **S115** | **Provenance-chain autonomous agency: session token (A-001), agent-var-writer (A-002), PROVENANCE_CHAIN.md, access report** | ✅ **DONE** |
-| **S116** | **§8 auto-post @copilot continue on push (idempotent + repository_dispatch); AGENTIC_AGENCY_TIPS.md** | ✅ **DONE** |
+| **S112** | **owner_approval_guard COPILOT_AGENT_AUTH_ENABLED bypass (PR #3402 P3)** |  **DONE** |
+| **S113** | **owner_approval_guard COPILOT_AGENT_AUTH_BYPASS_TOOLS scope filter** |  **DONE** |
+| **S114** | **Ruff 0 errors (F401/F841/I001), accountability report, full dep install** |  **DONE** |
+| **S115** | **Provenance-chain autonomous agency: session token (A-001), agent-var-writer (A-002), PROVENANCE_CHAIN.md, access report** |  **DONE** |
+| **S116** | **§8 auto-post @copilot continue on push (idempotent + repository_dispatch); AGENTIC_AGENCY_TIPS.md** |  **DONE** |
 
 ---
 

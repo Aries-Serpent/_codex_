@@ -1,4 +1,6 @@
 # Security Documentation
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 Security advisories, vulnerability fixes, and CodeQL remediation documentation.
 
@@ -13,14 +15,14 @@ Security advisories, vulnerability fixes, and CodeQL remediation documentation.
 - [Security Exceptions](./security-exceptions.md) - Documented exceptions
 
 ## Vulnerability Status
-- ✅ 48 vulnerabilities fixed (IP-005 Complete)
-- ✅ 0 current vulnerabilities
-- ✅ All GitHub Actions updated to secure versions
+-  48 vulnerabilities fixed (IP-005 Complete)
+-  0 current vulnerabilities
+-  All GitHub Actions updated to secure versions
 
 ## Related Documentation
-- [CI/CD Documentation](https://github.com/Aries-Serpent/_codex_/blob/main/INDEX.md)
+- [CI/CD Documentation](../INDEX.md)
 - [Archive](../archive/INDEX.md)
 
 ## Quick Links
 - [Back to Main Documentation](../README.md)
-- [GitHub Actions Workflows](https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/)
+- [GitHub Actions Workflows](../.github/workflows/)

@@ -1,4 +1,6 @@
 # ADR-006: Event-Driven Architecture for Cross-Layer Communication
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Status:** Accepted  
 **Date:** 2026-07-10  
@@ -157,12 +159,12 @@ graph LR
 ## Consequences
 
 ### Positive
-✅ Loose coupling between layers — easy to modify individual layers  
-✅ Asynchronous processing — non-blocking operations  
-✅ Natural audit trail — all events logged  
-✅ Easy to add monitoring and alerting  
-✅ Testing easier — mock event bus  
-✅ Future-proof for distributed systems  
+ Loose coupling between layers — easy to modify individual layers  
+ Asynchronous processing — non-blocking operations  
+ Natural audit trail — all events logged  
+ Easy to add monitoring and alerting  
+ Testing easier — mock event bus  
+ Future-proof for distributed systems  
 
 ### Negative
 ⚠️ Learning curve for event-driven patterns  

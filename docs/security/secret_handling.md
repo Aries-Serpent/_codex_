@@ -1,6 +1,8 @@
 # Secret Handling (Offline)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 - All scans run locally; no data leaves the machine.
 - Findings are masked in `audit_artifacts/secret_scan.json`.

@@ -1,7 +1,10 @@
 # [Checklist]: PR Audit Template (v1.3.0) — Deterministic Capability Audit & Compliance
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-22 | Author: mbaetiong
 
-🧠 Roles: [Audit Orchestrator], [Capability Cartographer]  
+ Roles: [Audit Orchestrator], [Capability Cartographer]  
 ⚡ Energy: 5  
 ⚛️ Physics:
 - Path🛤️
@@ -365,7 +368,7 @@ jobs:
 
 ---
 
-**Template Status**: ✅ ACTIVE  
+**Template Status**:  ACTIVE  
 **Recommended For**: All PRs with code changes, especially those affecting capabilities, detectors, or audit pipeline  
 **Maintained By**: @copilot, @mbaetiong  
 **Last Updated**: 2026-06-22

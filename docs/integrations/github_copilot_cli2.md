@@ -1,8 +1,10 @@
 You’re right to call out the apparent contradiction. Let’s nail it down precisely, then give you a **complete, validated implementation guide** you can drop into your internal runbooks so teams can use **GitHub Copilot in the CLI** on Ubuntu 24.x reliably—and understand exactly what it is (and is not).
 
 # Reconciling the discrepancy (one paragraph you can quote)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 * **True:** There is **no public programmatic inference API** to call GitHub Copilot (or Copilot Chat) from an external agent like Codex. You can’t fetch Copilot’s suggestions by HTTP API the way you do with OpenAI, nor can you legally scrape its IDE channel. Multiple official references and community threads confirm this. ([Stack Overflow][1])
 * **Also true:** GitHub ships an **official Copilot integration for terminals** as a **GitHub CLI extension**: `gh copilot`. It runs locally in a shell, relies on your GitHub account entitlements, and provides *interactive* commands—primarily `explain` and `suggest`—plus shell aliases. That’s not an API; it’s a **user-facing client** on top of your GitHub auth. ([GitHub Docs][2])

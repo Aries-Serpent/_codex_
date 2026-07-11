@@ -1,4 +1,6 @@
 # Local Development Environment Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Version**: 1.0.0  
 > **Last Updated**: 2026-06-22  
@@ -465,7 +467,7 @@ curl http://localhost:8000/metrics
 
 2. **Configure Python Interpreter**:
    - Settings → Project → Python Interpreter
-   - Click ⚙️ → Add...
+   - Click  → Add...
    - Select Existing Environment
    - Browse to `venv/bin/python`
 

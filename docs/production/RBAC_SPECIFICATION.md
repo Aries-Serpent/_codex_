@@ -1,4 +1,6 @@
 # RBAC Specification
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Version**: 1.0.0  
 **Effective Date**: 2026-06-14  
@@ -124,21 +126,21 @@ This document defines the Role-Based Access Control (RBAC) system for the _codex
 
 | Permission | Description | Owner | Admin | Editor | Reviewer | Operator | Viewer | Service |
 |---|---|---|---|---|---|---|---|---|
-| `repo:read` | Read repository | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅* |
-| `repo:write` | Write to repository | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| `repo:admin` | Repository administration | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| `branch:protect:write` | Modify branch protection | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| `branch:protect:bypass` | Bypass protection | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| `repo:read` | Read repository |  |  |  |  |  |  | * |
+| `repo:write` | Write to repository |  |  |  |  |  |  |  |
+| `repo:admin` | Repository administration |  |  |  |  |  |  |  |
+| `branch:protect:write` | Modify branch protection |  |  |  |  |  |  |  |
+| `branch:protect:bypass` | Bypass protection |  |  |  |  |  |  |  |
 
 ### Deployment Permissions
 
 | Permission | Description | Owner | Admin | Editor | Operator |
 |---|---|---|---|---|---|
-| `deploy:read` | View deployments | ✅ | ✅ | ❌ | ✅ |
-| `deploy:write` | Deploy (staging) | ✅ | ✅ | ✅ | ✅ |
-| `deploy:prod` | Deploy to production | ✅ | ✅* | ❌ | ✅* |
-| `deploy:rollback` | Rollback deployment | ✅ | ✅* | ❌ | ✅* |
-| `deploy:approve` | Approve deployment | ✅ | ❌ | ❌ | ❌ |
+| `deploy:read` | View deployments |  |  |  |  |
+| `deploy:write` | Deploy (staging) |  |  |  |  |
+| `deploy:prod` | Deploy to production |  | * |  | * |
+| `deploy:rollback` | Rollback deployment |  | * |  | * |
+| `deploy:approve` | Approve deployment |  |  |  |  |
 
 *Requires secondary approval
 
@@ -146,19 +148,19 @@ This document defines the Role-Based Access Control (RBAC) system for the _codex
 
 | Permission | Description | Owner | Admin | Others |
 |---|---|---|---|---|
-| `secret:read` | Read secrets | ✅ | ✅ | ❌ | <!-- pragma: allowlist secret -->
-| `secret:write` | Create/update secrets | ✅ | ✅ | ❌ | <!-- pragma: allowlist secret -->
-| `secret:rotate` | Rotate secrets | ✅ | ✅ | ❌ | <!-- pragma: allowlist secret -->
-| `secret:delete` | Delete secrets | ✅ | ❌ | ❌ | <!-- pragma: allowlist secret -->
+| `secret:read` | Read secrets |  |  |  | <!-- pragma: allowlist secret -->
+| `secret:write` | Create/update secrets |  |  |  | <!-- pragma: allowlist secret -->
+| `secret:rotate` | Rotate secrets |  |  |  | <!-- pragma: allowlist secret -->
+| `secret:delete` | Delete secrets |  |  |  | <!-- pragma: allowlist secret -->
 
 ### Security & Compliance
 
 | Permission | Description | Owner | Admin |
 |---|---|---|---|
-| `security:audit` | View audit logs | ✅ | ✅ |
-| `security:config` | Update security policies | ✅ | ❌ |
-| `security:incident` | Create incidents | ✅ | ✅ |
-| `security:keys:manage` | Manage encryption keys | ✅ | ❌ |
+| `security:audit` | View audit logs |  |  |
+| `security:config` | Update security policies |  |  |
+| `security:incident` | Create incidents |  |  |
+| `security:keys:manage` | Manage encryption keys |  |  |
 
 ---
 

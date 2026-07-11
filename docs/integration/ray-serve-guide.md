@@ -1,4 +1,5 @@
 # Ray Serve Integration Guide
+**Last Updated:** 2026-07-11
 
 > Complete guide to deploying and scaling applications with Ray Serve  
 > **Level**: Intermediate | **Prerequisites**: Basic Ray knowledge  
@@ -33,14 +34,14 @@ Ray Serve is a lightweight, high-performance serving library built on Ray. It en
 
 ### When to Use Ray Serve
 
-✅ **Good use cases**:
+ **Good use cases**:
 - ML model serving at scale
 - Microservices that need autoscaling
 - Multi-model deployments
 - Real-time inference with latency requirements
 - Complex serving logic with composition
 
-❌ **Not ideal for**:
+ **Not ideal for**:
 - Simple synchronous APIs (use FastAPI directly)
 - Stateless functions without composition
 - Very short-lived applications
@@ -760,4 +761,4 @@ ray logs cluster
 ---
 
 **Word Count**: 2,604 | **Examples**: 22 | **Patterns**: 8
-**Last Updated**: 2026-06-22 | **Status**: ✅ Complete
+**Last Updated**: 2026-06-22 | **Status**:  Complete

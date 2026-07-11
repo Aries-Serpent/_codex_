@@ -1,6 +1,8 @@
 # PyTorch Security Migration Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 **Date**: 2025-12-22  
 **Purpose**: Migrate existing `torch.load()` calls to secure wrappers
@@ -9,7 +11,7 @@
 
 CVE-2024-XXXXX: PyTorch's `torch.load()` can execute arbitrary code when loading malicious model files. This affects all versions before 2.2.2 and requires using `weights_only=True`.
 
-## ✅ Solution
+##  Solution
 
 We've created `utils/safe_torch_loader.py` which enforces secure loading practices.
 
@@ -92,9 +94,9 @@ Based on grep analysis, the following files need updates:
 - [ ] `tests/checkpointing/test_checkpoint_comprehensive.py`
 - [ ] `tests/data/test_data_cache.py`
 
-## 🔒 Security Best Practices
+##  Security Best Practices
 
-### DO ✅
+### DO 
 ```python
 from utils.safe_torch_loader import safe_load
 
@@ -109,7 +111,7 @@ with torch_resource_guard():
     model.load_state_dict(state)
 ```
 
-## DON'T ❌
+## DON'T 
 ```python
 # NEVER do this - RCE vulnerability!
 state = torch.load('model.pth')
@@ -134,7 +136,7 @@ torch.save(model.state_dict(), '/tmp/test_model.pth')
 # Load it back safely
 state = safe_load('/tmp/test_model.pth')
 assert isinstance(state, dict)
-print("✅ Safe loading works!")
+print(" Safe loading works!")
 ```
 
 ## 📞 Support
@@ -145,7 +147,7 @@ If you encounter issues during migration:
 3. For legacy models that fail with weights_only=True, consider re-saving them
 4. Contact security team if you have questions
 
-## 🎯 Completion Checklist
+##  Completion Checklist
 
 - [x] Security wrappers created
 - [x] Migration guide written
@@ -159,5 +161,5 @@ If you encounter issues during migration:
 
 - [CVE-2024-XXXXX](https://github.com/Aries-Serpent/_codex_/security)
 - [PyTorch Security Advisory](https://pytorch.org/docs/stable/generated/torch.load.html)
-- [utils/safe_torch_loader.py](https://github.com/Aries-Serpent/_codex_/blob/main/utils/safe_torch_loader.py)
+- [utils/safe_torch_loader.py](utils/safe_torch_loader.py)
 - [SECURITY.md](./SECURITY.md)

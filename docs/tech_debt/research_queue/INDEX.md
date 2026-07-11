@@ -1,4 +1,6 @@
 # Research Queue Index — PR #3344 (S66)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Last Updated**: 2026-06-22
 **Total Questions**: 5
@@ -9,7 +11,7 @@
 
 ## By Priority
 
-### 🔴 High Priority
+###  High Priority
 | ID   | Title                                         | Impact | Status               |
 |------|-----------------------------------------------|--------|----------------------|
 | Q001 | `_emit_provenance_summary` stdout vs stderr   | High   | ⏳ Awaiting Research |

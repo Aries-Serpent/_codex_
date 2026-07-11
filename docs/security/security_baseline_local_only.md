@@ -1,6 +1,8 @@
 # Security Baseline (Local-only)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 This document summarizes the lightweight security utilities available in the repository for local use. The tools are offline-first and are intended to prevent common mistakes (committing secrets or shipping unpinned dependencies) without requiring external services.
 

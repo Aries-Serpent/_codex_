@@ -1,6 +1,8 @@
 # Data Handling
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 Utilities under `src/codex_ml/data/` provide flexible ingestion of text
 datasets.  `load_dataset` automatically detects the input format:

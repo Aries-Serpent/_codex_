@@ -1,6 +1,8 @@
 # Configuration Usage Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-01-09  
+**Last Updated: 2026-07-11
 **PS-01 Status:** Cycle 3 (Validation & Testing)
 
 ---
@@ -228,7 +230,7 @@ overrides = [
 
 ## Best Practices
 
-### DO ✅
+### DO 
 
 1. **Use ConfigLoader for all config loading**
 ```python
@@ -263,7 +265,7 @@ except MissingConfigException:
     # Handle missing config
 ```
 
-### DON'T ❌
+### DON'T 
 
 1. **Don't hardcode config paths**
 ```python

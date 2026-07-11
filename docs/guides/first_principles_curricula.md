@@ -1,6 +1,8 @@
 # First principles curricula
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 Curriculum-first training anchors the reasoning roadmap. This guide walks through how we design, stage, and evaluate
 curricula across training, evaluation, and deployment.

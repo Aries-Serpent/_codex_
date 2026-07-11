@@ -1,4 +1,6 @@
 # Status Update — _codex_ (Branch: {{branch}}, PR: {{pr}})
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 ## Gates Summary
 {{gates_summary}}

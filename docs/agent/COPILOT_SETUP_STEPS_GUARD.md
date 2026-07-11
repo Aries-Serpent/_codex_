@@ -1,6 +1,8 @@
 # COPILOT_SETUP_STEPS_GUARD — Do Not Refactor
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 **Status:** HARD RULE — enforced by CI (`scripts/ci/validate_setup_steps_yaml.sh`)
 **Relevant file:** `.github/workflows/copilot-setup-steps.yml`
@@ -57,7 +59,7 @@ is the authoritative version. It is the only version that simultaneously has:
       # (|| { } syntax) or orphaning the run: key. yamllint 1.38.0 crashes on
       # flow scalar brace syntax. Canonical baseline: commit 12f7a861 / blob 8c84a8c1.
       # RULE: if you are fixing a CI failure, fix the failing file — NOT this step.
-      - name: "🧠 Session Context Pre-load (memory + policy + accountability + PDA)"
+      - name: " Session Context Pre-load (memory + policy + accountability + PDA)"
         continue-on-error: true   # non-blocking: agent must start even if preload fails
         run: |
           if ! python3 .github/scripts/session_preload.py; then

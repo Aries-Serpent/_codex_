@@ -1,4 +1,6 @@
 # ⚠️ ARCHIVED: Consolidated Architecture Document Available
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Status**: ARCHIVED - Please use the consolidated document instead
 > **Redirect Target**: [`docs/architecture/ARCHITECTURE_CONSOLIDATED.md`](architecture/ARCHITECTURE_CONSOLIDATED.md)
@@ -246,13 +248,13 @@ flowchart TB
         Trends[Trend Database]
     end
 
-    subgraph ML["🤖 ML Framework"]
+    subgraph ML[" ML Framework"]
         Training[Training Engine]
         Eval[Evaluation]
         Models[Model Registry]
     end
 
-    subgraph Viz["📊 Visualization"]
+    subgraph Viz[" Visualization"]
         Dashboard[HTML Dashboard]
         Terminal[ASCII Terminal]
         Reports[Markdown Reports]
@@ -518,7 +520,7 @@ pytest -m smoke -v
 - **Semgrep**: Pattern-based scanning (`semgrep_rules/`)
 - **CodeQL**: Static analysis (GitHub Advanced Security)
 
-**Current Status**: ✅ Zero known vulnerabilities
+**Current Status**:  Zero known vulnerabilities
 
 ### Recent Security Fixes
 
@@ -864,11 +866,11 @@ cat agents/prompts/debugging/test-failure-debugging.md
 ### Current Status
 
 **Achieved**:
-- ✅ Level 4 MLOps Certification (100/100)
-- ✅ 2,079+ test files with 10.7% coverage (ratchet roadmap in progress)
-- ✅ Zero critical gaps (all P0 stubs are correct patterns)
-- ✅ Comprehensive documentation (693+ files)
-- ✅ AI Agent infrastructure operational
+-  Level 4 MLOps Certification (100/100)
+-  2,079+ test files with 10.7% coverage (ratchet roadmap in progress)
+-  Zero critical gaps (all P0 stubs are correct patterns)
+-  Comprehensive documentation (693+ files)
+-  AI Agent infrastructure operational
 
 **Metrics**:
 - MLOps Score: 100/100

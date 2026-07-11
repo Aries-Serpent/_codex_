@@ -1,6 +1,8 @@
 # Gap Policy Linkage
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 This document explains how the Gap Registry fields and task sequence steps
 are intended to align with higher-level policies such as hardship maps and

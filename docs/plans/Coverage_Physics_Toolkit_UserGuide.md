@@ -1,4 +1,6 @@
 # Coverage Physics Toolkit - User Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **⚠️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 
@@ -56,13 +58,13 @@ python tools/coverage_physics_toolkit.py --mode validate
 ================================================================================
 PHYSICS REFERENCE TABLES VALIDATION
 ================================================================================
-TABLE1_TIME_CONSTRAINTS                       ✅ PASS
-TABLE2_IMPORT_MONITORING                      ✅ PASS
-TABLE3_MULTI_ORCHESTRATOR                     ✅ PASS
-TABLE4_COVERAGE_UPLIFT                        ✅ PASS
+TABLE1_TIME_CONSTRAINTS                        PASS
+TABLE2_IMPORT_MONITORING                       PASS
+TABLE3_MULTI_ORCHESTRATOR                      PASS
+TABLE4_COVERAGE_UPLIFT                         PASS
 
 ================================================================================
-Overall Status: ✅ ALL TABLES VALIDATED
+Overall Status:  ALL TABLES VALIDATED
 ================================================================================
 ```
 
@@ -415,7 +417,7 @@ Compare to toolkit predictions (20.65% per hour theoretical)
 
 ### Issue: "Validation Failed"
 
-**Symptom**: One or more tables show ❌ FAIL
+**Symptom**: One or more tables show  FAIL
 
 **Solution**:
 1. Check toolkit file: `tools/coverage_physics_toolkit.py`
@@ -482,7 +484,7 @@ Compare to toolkit predictions (20.65% per hour theoretical)
 - [Table 1: Time Constraints](./Physics_Equations_Time_Constraints_Plan_Prompts.md)
 - [Table 2: Import Monitoring](./Physics_Equations_Monitor_Behavior_Plan_Prompts.md)
 - [Table 4: Coverage Uplift Paths](./Physics_Equations_Coverage_Uplift_Paths.md)
-- [Coverage Physics Toolkit Source](https://github.com/Aries-Serpent/_codex_/blob/main/tools/coverage_physics_toolkit.py)
+- [Coverage Physics Toolkit Source](../tools/coverage_physics_toolkit.py)
 
 ---
 

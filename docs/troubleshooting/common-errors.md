@@ -1,4 +1,6 @@
 # Common Error Troubleshooting Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > Comprehensive troubleshooting guide for common errors and their solutions  
 > **Level**: Beginner to Intermediate | **Prerequisites**: Basic Python knowledge  
@@ -76,14 +78,14 @@ sys.path.insert(0, '/path/to/module')
 
 4. **Fix circular imports**:
 ```python
-# ❌ WRONG: Circular import
+#  WRONG: Circular import
 # module_a.py
 from module_b import func_b
 
 # module_b.py
 from module_a import func_a
 
-# ✅ CORRECT: Import inside function
+#  CORRECT: Import inside function
 # module_a.py
 def func_a():
     from module_b import func_b
@@ -148,10 +150,10 @@ pwd
 **Solutions**:
 
 ```python
-# ❌ WRONG: Hardcoded path
+#  WRONG: Hardcoded path
 config_path = "configs/config.yaml"
 
-# ✅ CORRECT: Relative to script location
+#  CORRECT: Relative to script location
 import os
 from pathlib import Path
 
@@ -172,20 +174,20 @@ yaml.scanner.ScannerError: mapping values are not allowed here
 **Common Mistakes**:
 
 ```yaml
-# ❌ WRONG: Missing colon
+#  WRONG: Missing colon
 database
   host: localhost
 
-# ✅ CORRECT
+#  CORRECT
 database:
   host: localhost
 
-# ❌ WRONG: Inconsistent indentation
+#  WRONG: Inconsistent indentation
 config:
   setting1: value1
     setting2: value2  # Wrong indentation
 
-# ✅ CORRECT
+#  CORRECT
 config:
   setting1: value1
   setting2: value2
@@ -201,17 +203,17 @@ def validate_yaml(file_path):
     try:
         with open(file_path) as f:
             yaml.safe_load(f)
-        print(f"✅ {file_path} is valid YAML")
+        print(f" {file_path} is valid YAML")
     except yaml.YAMLError as e:
-        print(f"❌ {file_path} has syntax error: {e}")
+        print(f" {file_path} has syntax error: {e}")
 
 def validate_json(file_path):
     try:
         with open(file_path) as f:
             json.load(f)
-        print(f"✅ {file_path} is valid JSON")
+        print(f" {file_path} is valid JSON")
     except json.JSONDecodeError as e:
-        print(f"❌ {file_path} has syntax error: {e}")
+        print(f" {file_path} has syntax error: {e}")
 ```
 
 ## Issue: Config Key Not Found
@@ -236,13 +238,13 @@ print(config.keys())  # Available keys
 **Solutions**:
 
 ```python
-# ❌ WRONG: Direct key access
+#  WRONG: Direct key access
 host = config["database_host"]
 
-# ✅ CORRECT: Safe access
+#  CORRECT: Safe access
 host = config.get("database_host", "localhost")
 
-# ✅ OR: With validation
+#  OR: With validation
 from pydantic import BaseSettings
 
 class Config(BaseSettings):
@@ -286,10 +288,10 @@ print(f"Process memory: {process.memory_info().rss / 1e9:.2f} GB")
 
 1. **Process data in batches**:
 ```python
-# ❌ WRONG: Load entire dataset
+#  WRONG: Load entire dataset
 data = np.loadtxt('huge_file.txt')  # All at once
 
-# ✅ CORRECT: Process in chunks
+#  CORRECT: Process in chunks
 def process_in_chunks(file_path, chunk_size=1000):
     with open(file_path) as f:
         for i, lines in enumerate(iter(lambda: f.readlines(chunk_size), [])):
@@ -303,10 +305,10 @@ for lines in process_in_chunks('huge_file.txt'):
 
 2. **Use generators instead of lists**:
 ```python
-# ❌ WRONG: Create entire list
+#  WRONG: Create entire list
 results = [process(x) for x in range(1_000_000_000)]
 
-# ✅ CORRECT: Generator
+#  CORRECT: Generator
 def process_generator():
     for x in range(1_000_000_000):
         yield process(x)
@@ -319,10 +321,10 @@ for result in process_generator():
 ```python
 import numpy as np
 
-# ❌ WRONG: Default float64
+#  WRONG: Default float64
 array = np.array([1.0, 2.0, 3.0])  # 8 bytes per element
 
-# ✅ CORRECT: Use float32
+#  CORRECT: Use float32
 array = np.array([1.0, 2.0, 3.0], dtype=np.float32)  # 4 bytes per element
 ```
 
@@ -348,13 +350,13 @@ tracemalloc.stop()
 **Solutions**:
 
 ```python
-# ❌ WRONG: Accumulating references
+#  WRONG: Accumulating references
 cache = []
 def process():
     result = expensive_operation()
     cache.append(result)  # Keeps growing
 
-# ✅ CORRECT: Clear cache periodically
+#  CORRECT: Clear cache periodically
 cache = []
 def process():
     if len(cache) > 100:
@@ -362,7 +364,7 @@ def process():
     result = expensive_operation()
     cache.append(result)
 
-# ✅ OR: Use bounded cache
+#  OR: Use bounded cache
 from functools import lru_cache
 
 @lru_cache(maxsize=128)  # Limited to 128 entries
@@ -388,7 +390,7 @@ import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 
-# ✅ CORRECT: Add timeout and retries
+#  CORRECT: Add timeout and retries
 def request_with_retry(url, timeout=10, retries=3):
     session = requests.Session()
 
@@ -502,12 +504,12 @@ stats.print_stats(10)  # Top 10 slowest
 **Solutions**:
 
 ```python
-# ❌ WRONG: Load model each time
+#  WRONG: Load model each time
 def predict(data):
     model = load_model()  # Expensive!
     return model.predict(data)
 
-# ✅ CORRECT: Cache model
+#  CORRECT: Cache model
 import joblib
 
 _model_cache = None
@@ -522,7 +524,7 @@ def predict(data):
     model = get_model()
     return model.predict(data)
 
-# ✅ OR: Batch predictions
+#  OR: Batch predictions
 def predict_batch(data_list):
     model = get_model()
     # Vectorized operation is faster than loops
@@ -543,7 +545,7 @@ python -m cProfile -s cumulative app.py > profile.txt
 **Solutions**:
 
 ```python
-# ✅ Use multiprocessing for CPU-bound tasks
+#  Use multiprocessing for CPU-bound tasks
 from multiprocessing import Pool
 
 def process_item(item):
@@ -553,7 +555,7 @@ if __name__ == "__main__":
     with Pool(4) as pool:  # 4 processes
         results = pool.map(process_item, items)
 
-# ✅ Use numba for numerical code
+#  Use numba for numerical code
 from numba import jit
 
 @jit(nopython=True)
@@ -625,7 +627,7 @@ print(dir(module))
 **Solutions**:
 
 ```python
-# ✅ CORRECT: Handle version differences
+#  CORRECT: Handle version differences
 import sklearn
 
 if sklearn.__version__ >= "1.0":
@@ -633,7 +635,7 @@ if sklearn.__version__ >= "1.0":
 else:
     from sklearn.cross_validation import cross_val_score as cross_validate
 
-# ✅ OR: Try-except
+#  OR: Try-except
 try:
     from new_location import function
 except ImportError:
@@ -699,4 +701,4 @@ y = x.something()
 ---
 
 **Word Count**: 2,387 | **Examples**: 26 | **Solutions**: 35
-**Last Updated**: 2026-06-22 | **Status**: ✅ Complete
+**Last Updated**: 2026-06-22 | **Status**:  Complete

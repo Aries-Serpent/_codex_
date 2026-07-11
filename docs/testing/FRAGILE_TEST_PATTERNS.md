@@ -1,4 +1,6 @@
 # Fragile Test Patterns and Stabilization Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Document Status**: STABLE ✓
 **Last Updated**: 2026-06-27

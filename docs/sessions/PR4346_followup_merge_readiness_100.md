@@ -1,4 +1,6 @@
 # PR #4346 — Follow-up Prompt: Merge Readiness → 100%
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Generated:** 2026-05-08 · S860-FINAL
 > **Branch:** `finding-autofix-faa8614c` · **PR:** #4346
@@ -7,13 +9,13 @@
 
 ---
 
-## 🚀 Ideal Follow-up Prompt (copy-paste ready)
+##  Ideal Follow-up Prompt (copy-paste ready)
 
 ```
 @copilot CTEP Mode: ON
 Branch: finding-autofix-faa8614c   PR: #4346   Start commit: (latest HEAD)
 
-## 🎯 Session Goal: Bring PR #4346 to 100% Merge Readiness
+##  Session Goal: Bring PR #4346 to 100% Merge Readiness
 
 ### Mandatory Pre-load (do these first, in order)
 1. READ .codex/AGENTIC_REPO_STATE.md
@@ -95,25 +97,25 @@ If any dimension still failing, address it before closing.
 
 ---
 
-## 📊 Merge Readiness Gap Analysis
+##  Merge Readiness Gap Analysis
 
 | Dimension | Wt | Current | Gap | Fix |
 |-----------|---:|:-------:|:---:|-----|
-| `auto_fix` | 15 | ✅ | 0 | — |
-| `sync_tracked_files` | 12 | ❌ | **12** | OBJ-A: confirm variables processed |
-| `action_versions` | 12 | ✅ | 0 | — |
-| `ruff` | 10 | ✅ | 0 | — |
-| `github-script ≥ v8` | 8 | ✅ | 0 | — |
-| `Pattern 27 registered` | 7 | ✅ | 0 | — |
-| `download-artifact min v5` | 7 | ✅ | 0 | — |
-| `PDA entry today` | 8 | ✅ | 0 | — |
-| `accountability report today` | 8 | ✅ | 0 | — |
-| `AAIS composite 100/100` | 13 | ✅ | 0 | — |
-| **Comment Review Gate** | — | ❌ | blocks | OBJ-C: reply to open comments |
+| `auto_fix` | 15 |  | 0 | — |
+| `sync_tracked_files` | 12 |  | **12** | OBJ-A: confirm variables processed |
+| `action_versions` | 12 |  | 0 | — |
+| `ruff` | 10 |  | 0 | — |
+| `github-script ≥ v8` | 8 |  | 0 | — |
+| `Pattern 27 registered` | 7 |  | 0 | — |
+| `download-artifact min v5` | 7 |  | 0 | — |
+| `PDA entry today` | 8 |  | 0 | — |
+| `accountability report today` | 8 |  | 0 | — |
+| `AAIS composite 100/100` | 13 |  | 0 | — |
+| **Comment Review Gate** | — |  | blocks | OBJ-C: reply to open comments |
 | **CodeQL alerts** | — | open | blocks | OBJ-B: fix py/wrong-named-arg ×15+ |
-| **Secrets Baseline** | — | ❌→✅ | fixed S860 | verify enforcer passes |
+| **Secrets Baseline** | — | → | fixed S860 | verify enforcer passes |
 
-**Projected score after S861:** 100/100 ✅
+**Projected score after S861:** 100/100 
 
 ---
 
@@ -159,13 +161,13 @@ detect-secrets-hook --baseline .secrets.baseline $(git diff --name-only HEAD~1 H
 
 ---
 
-## ✅ Completion Criteria for 100% Merge Readiness
+##  Completion Criteria for 100% Merge Readiness
 
 | Check | Command | Target |
 |-------|---------|--------|
 | Merge readiness score | `python scripts/ci/aais_v4_scorer.py` | **100/100** |
 | CodeQL alerts | `gh api /repos/Aries-Serpent/_codex_/code-scanning/alerts?state=open` | **0 open** |
-| Comment Review Gate | Check Actions tab | **✅ green** |
+| Comment Review Gate | Check Actions tab | ** green** |
 | Secrets Baseline | `detect-secrets-hook --baseline .secrets.baseline $(git diff --name-only HEAD~1 HEAD)` | **exit: 0** |
 | actionlint | `actionlint .github/workflows/*.yml 2>&1 \| grep -c error` | **0** |
 | ruff | `python -m ruff check src/ tests/` | **All checks passed** |

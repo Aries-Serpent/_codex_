@@ -1,4 +1,6 @@
 # [Report]: CI Failure Remediation Plan — Job 55143949728
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 ## Summary
 Coverage session failed during collection (15 errors) due to:
@@ -46,12 +48,12 @@ Coverage session failed during collection (15 errors) due to:
 
 | Step | Status |
 |------|--------|
-| transformers added to requirements-dev.txt | ✅ |
-| cpu marker registered in pytest.ini | ✅ |
-| conftest.py updated with transformers skip logic | ✅ |
-| Hydra compatibility shim created | ✅ |
-| CI sanity script created | ✅ |
-| optional_deps.py updated | ✅ |
+| transformers added to requirements-dev.txt |  |
+| cpu marker registered in pytest.ini |  |
+| conftest.py updated with transformers skip logic |  |
+| Hydra compatibility shim created |  |
+| CI sanity script created |  |
+| optional_deps.py updated |  |
 
 ## Next Steps
 After merging:

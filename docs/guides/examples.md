@@ -1,6 +1,8 @@
 # Examples
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 Comprehensive examples for all Cognitive Brain components.
 

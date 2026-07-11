@@ -1,9 +1,11 @@
 # Architecture Master Reference
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Consolidated Master Document** for Codex Architecture  
 > **Created**: 2026-07-08  
 > **Consolidation Campaign**: Phase 12 WS3  
-> **Status**: ✅ Active Master Document
+> **Status**:  Active Master Document
 
 **Source Files Consolidated**:
 - agents/prompts/ARCHITECTURE.md
@@ -109,19 +111,19 @@ flowchart TB
         State[State Management]
     end
 
-    subgraph Services["⚙️ Services Layer"]
+    subgraph Services[" Services Layer"]
         API[REST APIs]
         Auth[Authentication]
         Validation[Input Validation]
     end
 
-    subgraph ML["🤖 ML Core"]
+    subgraph ML[" ML Core"]
         Models[Pre-trained Models]
         Inference[Inference Engine]
         Embeddings[Embeddings]
     end
 
-    subgraph Training["📚 Training"]
+    subgraph Training[" Training"]
         DataLoader[Data Loading]
         Pipeline[Training Pipeline]
         Eval[Evaluation]
@@ -282,13 +284,13 @@ Application
 ### Prohibited Cross-Layer Imports
 
 ```
-❌ FORBIDDEN:
+ FORBIDDEN:
   - src/codex/ → src/codex_ml/ or training/
   - src/codex_ml/ → training/
   - src/services/ → cli/ or apps/
   - tests/ → src/codex/ (circular imports)
 
-✅ ALLOWED:
+ ALLOWED:
   - CLI/Apps → All layers (top-level access)
   - Services → ML Core, Domain, stdlib
   - ML Core → Domain, stdlib, third-party
@@ -345,10 +347,10 @@ Domain 4 (D4): Agent & Orchestration
 
 | # | Criterion | Status | Reference |
 |---|-----------|--------|-----------|
-| 1 | Architecture doc present | ✅ | This document |
-| 2 | `.importlinter` config present | ✅ | `.importlinter` |
-| 3 | `import-linter.yml` CI workflow | ✅ | `.github/workflows/` |
-| 4 | Domain ownership map | ✅ | `.codex/DOMAIN_OWNERSHIP.md` |
+| 1 | Architecture doc present |  | This document |
+| 2 | `.importlinter` config present |  | `.importlinter` |
+| 3 | `import-linter.yml` CI workflow |  | `.github/workflows/` |
+| 4 | Domain ownership map |  | `.codex/DOMAIN_OWNERSHIP.md` |
 
 ---
 
@@ -372,5 +374,5 @@ Domain 4 (D4): Agent & Orchestration
 **This document is the authoritative architecture reference for Codex.**  
 Keep in sync with import linters, governance policies, and domain ownership maps.
 
-*Last Updated: 2026-07-08*  
-*Consolidation Status: ✅ Complete (12 files merged)*
+*Last Updated: 2026-07-08
+*Consolidation Status:  Complete (12 files merged)*

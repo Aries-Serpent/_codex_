@@ -1,6 +1,8 @@
 # Migration Guide: v1.3.x to v1.4.0
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 **Target Audience**: Users upgrading from audit pipeline v1.3.x  
 **Migration Difficulty**: Easy  
@@ -11,16 +13,16 @@
 ## Overview
 
 Upgrade your audit pipeline from v1.3.x to v1.4.0 to gain:
-- ✅ **Coverage Augmentation**: Accurate test scoring using actual coverage data
-- ✅ **Token-Similarity Detection**: Better duplication detection using content analysis
-- ✅ **Enhanced Reporting**: Daily status updates and improved reports
-- ✅ **Backward Compatibility**: All v1.3.x configurations work without changes
+-  **Coverage Augmentation**: Accurate test scoring using actual coverage data
+-  **Token-Similarity Detection**: Better duplication detection using content analysis
+-  **Enhanced Reporting**: Daily status updates and improved reports
+-  **Backward Compatibility**: All v1.3.x configurations work without changes
 
 ---
 
 ## Breaking Changes
 
-**None** ✅ - v1.4.0 is fully backward compatible with v1.3.x
+**None**  - v1.4.0 is fully backward compatible with v1.3.x
 
 You can upgrade immediately and your existing configurations will continue to work.
 
@@ -115,7 +117,7 @@ make space-audit
 ls -lh audit_artifacts/capabilities_scored.json
 ```
 
-✅ **At this point, you're running v1.4.0 with full backward compatibility**
+ **At this point, you're running v1.4.0 with full backward compatibility**
 
 ---
 
@@ -400,10 +402,10 @@ After migration, verify:
 ## Summary
 
 v1.4.0 migration is **easy and safe**:
-- ✅ Fully backward compatible
-- ✅ No breaking changes
-- ✅ New features are opt-in
-- ✅ Can rollback easily if needed
-- ✅ Comprehensive documentation available
+-  Fully backward compatible
+-  No breaking changes
+-  New features are opt-in
+-  Can rollback easily if needed
+-  Comprehensive documentation available
 
 **Recommendation**: Upgrade now, test, then gradually enable new features.

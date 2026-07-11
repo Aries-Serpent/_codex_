@@ -1,4 +1,6 @@
 # Codex Remediation Task Queue – Phase 1 Execution Packet (2025-09-17)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 ## Table of Contents
 
@@ -19,7 +21,7 @@
 - [4. Forward Queue Preparation (Phase 2 and Beyond)](#4-forward-queue-preparation-phase2-and-beyond)
 - [5. Logging & Reporting Checklist](#5-logging--reporting-checklist)
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## 0. Orientation & Linkage
 

@@ -1,6 +1,8 @@
 # Resume workflow and resume_manifest.json
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 This document describes the resume manifest format, the precedence rules used by the CLI, and examples of how to resume training deterministically.
 

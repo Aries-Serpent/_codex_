@@ -1,6 +1,9 @@
 # Validation: Status Schema and Config Validation Tooling
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
-🧠 Roles: [Primary: Validation Architect], [Secondary: Toolsmith] ⚡ Energy: 5  
+ Roles: [Primary: Validation Architect], [Secondary: Toolsmith] ⚡ Energy: 5  
 
 
 This document explains how to use the new validation tooling to satisfy v1.2 requirements.

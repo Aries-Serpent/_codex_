@@ -1,4 +1,6 @@
 # Intent Validation & Plan of Action Approval Gate (Iteration-Based)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Template Version**: 2.0.0-iteration-based  
 > **Generated**: 2026-06-22T00:00:00Z  
@@ -7,13 +9,13 @@
 
 ---
 
-## 🎯 Template Purpose
+##  Template Purpose
 
 This template defines how AI assistants must respond for any **non-trivial or higher-risk task**. These rules are binding for the interaction and enforce iteration-based workflow terminology aligned with _codex_ incremental development philosophy.
 
 **Energy Level**: ⚡⚡⚡⚡ (4/5 - High Value Governance)
 
-**Status**: 🟢 Active Template
+**Status**:  Active Template
 
 ---
 
@@ -31,7 +33,7 @@ This template defines how AI assistants must respond for any **non-trivial or hi
 
 ---
 
-## 🧬 Global Behavior
+##  Global Behavior
 
 When this template is invoked, the AI must **apply it to the specific task** and produce a **single, fully fleshed-out plan** that can be approved, edited, or rejected.
 
@@ -80,7 +82,7 @@ The plan must be:
 
 ---
 
-## 📊 Iteration-Based Plan Structure
+##  Iteration-Based Plan Structure
 
 ### Iteration Organization
 
@@ -287,7 +289,7 @@ Explain how to **revert or recover** if something goes wrong during or after exe
 Structure by iteration:
 
 ```markdown
-## 🧠 Rollback / Fallback Plan
+##  Rollback / Fallback Plan
 
 ### Rollback Strategy by Iteration
 
@@ -349,13 +351,13 @@ Structure the entire response using these sections and headings:
 
 ---
 
-## 🎯 Intent Validation
+##  Intent Validation
 
 [2-3 sentence paragraph restating intent, objective, constraints, success criteria, and non-goals]
 
 ---
 
-## 💡 Assumptions
+##  Assumptions
 
 - ✓ [Confirmed assumption 1]
 - ? [Uncertain assumption 2]
@@ -474,7 +476,7 @@ Structure the entire response using these sections and headings:
 
 ---
 
-## ✅ Acceptance Criteria
+##  Acceptance Criteria
 
 - [ ] [Criterion 1: Quality threshold]
 - [ ] [Criterion 2: Operational constraint]
@@ -484,7 +486,7 @@ Structure the entire response using these sections and headings:
 
 ---
 
-## 🧠 Rollback / Fallback Plan
+##  Rollback / Fallback Plan
 
 ### Rollback Strategy by Iteration
 
@@ -517,7 +519,7 @@ Structure the entire response using these sections and headings:
 
 ---
 
-## 🚀 Next Step
+##  Next Step
 
 Awaiting your approval or feedback on the plan above (including any adjustments to recommended options for Open Questions).
 
@@ -527,7 +529,7 @@ Awaiting your approval or feedback on the plan above (including any adjustments 
 
 ---
 
-**End of Plan** ✅
+**End of Plan** 
 ```
 
 ---
@@ -550,7 +552,7 @@ If the plan is rejected or partially approved, the AI must revise accordingly an
 
 ### Required Replacements
 
-| ❌ Calendar-Based (Avoid) | ✅ Iteration-Based (Use) |
+|  Calendar-Based (Avoid) |  Iteration-Based (Use) |
 |---------------------------|--------------------------|
 | Week 1, Week 2 | Iteration 1, Iteration 2 |
 | Day 1, Day 2 | Commit 1.1, Commit 1.2 |
@@ -639,7 +641,7 @@ All using iteration-based terminology, no calendar references.
 
 ---
 
-## 📚 Template Philosophy
+##  Template Philosophy
 
 ### Core Principles
 
@@ -651,12 +653,12 @@ All using iteration-based terminology, no calendar references.
 
 ### Anti-Patterns to Avoid
 
-- ❌ Calendar-based timelines ("complete by Friday")
-- ❌ Implicit assumptions (mark uncertainty explicitly)
-- ❌ Single-choice questions (always provide options)
-- ❌ Execution before approval (strict gate enforcement)
-- ❌ Missing rollback strategies
-- ❌ Undefined decision gates
+-  Calendar-based timelines ("complete by Friday")
+-  Implicit assumptions (mark uncertainty explicitly)
+-  Single-choice questions (always provide options)
+-  Execution before approval (strict gate enforcement)
+-  Missing rollback strategies
+-  Undefined decision gates
 
 ### Quality Gates
 
@@ -685,10 +687,10 @@ Before considering any plan "complete":
 | **Version** | 2.0.0-iteration-based |
 | **Energy Cost** | ⚡⚡⚡⚡ (High) |
 | **Framework Alignment** | 100% (18/18 components) |
-| **Status** | 🟢 Production Ready |
+| **Status** |  Production Ready |
 | **Last Updated** | 2026-01-23T21:05:00Z |
 | **Next Review** | After 10 usage instances |
 
 ---
 
-**End of Intent Validation & Plan of Action Template (Iteration-Based)** ✅
+**End of Intent Validation & Plan of Action Template (Iteration-Based)** 

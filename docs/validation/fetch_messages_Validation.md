@@ -1,6 +1,8 @@
 # Fetch messages sqlite_patch import change
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 - Import changed to: `from codex.db.sqlite_patch import auto_enable_from_env`
 - Kept a minimal no-op fallback to avoid hard failures in edge cases.

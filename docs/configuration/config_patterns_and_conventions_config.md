@@ -1,6 +1,8 @@
 # Configuration Patterns & Conventions in `_codex_` (Scaffolding)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 This document describes the current, **minimal** configuration patterns
 for `_codex_`. The goal is to provide a typed "spine" that can support:

@@ -1,6 +1,8 @@
 # SOP (Local/Self-hosted): How ChatGPT Codex proposes PRs here
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 1) **PRs are text-only.** If a change includes binaries (`*.model`, `*.zip`, `*.7z`, etc.), Codex must exclude them.
 2) **Binaries travel via Releases.** A maintainer (or CI on self-hosted) attaches binaries to the Release. Keep `SHA256SUMS` in Git.

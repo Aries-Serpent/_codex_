@@ -1,6 +1,8 @@
 # Newcomer Guide to _codex_
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 Welcome to **_codex_**! This guide will help you understand the repository structure, get started quickly, and navigate the codebase effectively.
 
@@ -301,8 +303,8 @@ _codex_ provides comprehensive tools for managing Zendesk Support as code. See t
 - **[Zendesk Configuration-as-Code Guide](zendesk/ZENDESK_NEWCOMER_GUIDE.md)** - Complete admin workflow guide
 - **[AI agent App Builder Mathematical Model](./zendesk/AI_AGENT_APP_BUILDER.md)** - Physics-inspired optimization framework for AI agent App Builder (not ZAF)
 - **[workflow Diagrams](./zendesk/WORKFLOW_DIAGRAMS.md)** - Visual workflow guides and decision trees
-- **[Quick Start Script](https://github.com/Aries-Serpent/_codex_/blob/main/examples/zendesk/quickstart.sh)** - Interactive setup automation
-- **[Examples & Templates](https://github.com/Aries-Serpent/_codex_/blob/main/examples/zendesk/README.md)** - Configuration examples and templates
+- **[Quick Start Script](examples/zendesk/quickstart.sh)** - Interactive setup automation
+- **[Examples & Templates](examples/zendesk/README.md)** - Configuration examples and templates
 
 ### Quick Zendesk workflow
 
@@ -375,7 +377,7 @@ All PRs automatically run tests via `.github/workflows/ci-pytest.yml`:
 - Coverage reports uploaded as artifacts
 - Automatic PR comments with results
 
-See [`tests/README.md`](https://github.com/Aries-Serpent/_codex_/blob/main/tests/README.md) for comprehensive testing instructions.
+See [`tests/README.md`](tests/README.md) for comprehensive testing instructions.
 
 ## Code Quality Tools
 
@@ -411,7 +413,7 @@ Before committing:
 1. **Start here**: [Documentation Hub](./index.md)
 2. **Architecture**: [./ARCHITECTURE.md](./architecture/INDEX.md)
 3. **Contributing**: [CONTRIBUTING.md](CONTRIBUTING.md)
-4. **Changelog**: [docs/CHANGELOG.md](https://github.com/Aries-Serpent/_codex_/blob/main/CHANGELOG.md)
+4. **Changelog**: [docs/CHANGELOG.md](CHANGELOG.md)
 5. **CLI Reference**: [./CLI.md](./ast/CLI.md)
 
 ### Troubleshooting
@@ -484,7 +486,7 @@ See `.github/copilot-instructions.md` for complete list.
 2. Review [docs/templates/README.md](templates/README.md) for workflow templates
 3. Study [docs/QUALITY_GATES.md](./QUALITY_GATES.md)
 4. Check [docs/How_We_Release.md](./How_We_Release.md)
-5. Explore [noxfile.py](https://github.com/Aries-Serpent/_codex_/blob/main/noxfile.py) for automation tasks
+5. Explore [noxfile.py](noxfile.py) for automation tasks
 
 ### Learning Paths
 
@@ -586,4 +588,4 @@ nox -s tests
 
 **Welcome to _codex_!** We're excited to have you here. If you have questions or need help, don't hesitate to ask in discussions or open an issue.
 
-Happy coding! 🚀
+Happy coding! 

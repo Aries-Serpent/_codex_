@@ -1,4 +1,5 @@
 # Feature Store Operations Runbook
+**Last Updated:** 2026-07-11
 
 **Version**: 1.0.0  
 **Last Updated**: 2026-06-22  
@@ -373,11 +374,11 @@ export FEATURE_STORE_ENABLED=false
 
 | Operation | Target | Current | Status |
 |-----------|--------|---------|--------|
-| Feature retrieval (p50) | <5ms | 3ms | ✅ |
-| Feature retrieval (p95) | <10ms | 8ms | ✅ |
-| Feature retrieval (p99) | <50ms | 25ms | ✅ |
-| Registration | <100ms | 50ms | ✅ |
-| Health check | <1s | 0.5s | ✅ |
+| Feature retrieval (p50) | <5ms | 3ms |  |
+| Feature retrieval (p95) | <10ms | 8ms |  |
+| Feature retrieval (p99) | <50ms | 25ms |  |
+| Registration | <100ms | 50ms |  |
+| Health check | <1s | 0.5s |  |
 
 ---
 

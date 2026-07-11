@@ -1,6 +1,8 @@
 # [ARCHIVED] Documentation Hub
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 > **⚠️ ARCHIVED FILE**: This file has been merged into `docs/index.md`.
 > Links in this file are preserved for reference only and may not work.
@@ -16,12 +18,12 @@
 
 **Welcome to the `_codex_` documentation hub**. Comprehensive documentation for the ML/AI platform with autonomous agent orchestration.
 
-## 🧠 Cognitive Brain (Start Here for AI Agents)
+##  Cognitive Brain (Start Here for AI Agents)
 
 ### **Unified Navigation System**
 - 🗺️ **Cognitive Map** - Complete architecture, components, flows, dependencies
-- 📊 **Dashboard** - Live status, current work, blockers, metrics
-- 🎯 **Roadmap** - Iteration plans, priorities, future scope
+-  **Dashboard** - Live status, current work, blockers, metrics
+-  **Roadmap** - Iteration plans, priorities, future scope
 
 ### **Why This Matters**
 The cognitive brain enables:
@@ -34,21 +36,21 @@ The cognitive brain enables:
 ## 📁 Quick Links
 
 ### Core Documentation
-- 📖 **Architecture** - Detailed technical architecture
+-  **Architecture** - Detailed technical architecture
 - 🤝 **Contributing** - Development workflow and guidelines
-- 🔐 **Admin Guide** - Setup and management
-- 📚 **API Reference** - Complete API documentation
+-  **Admin Guide** - Setup and management
+-  **API Reference** - Complete API documentation
 
 ### MCP Package System (93+ KB Documentation)
 - 📦 **Quick Start** - 5-minute onboarding guide
 - 📘 **Packaging Guide** - Complete packaging workflows
-- 🎯 **Packageable Capabilities** - Capability transfer framework
+-  **Packageable Capabilities** - Capability transfer framework
 
 ### Capability Guides
 - 📝 **Model Checkpointing** - Checkpoint management with SafeTensors
 - 🏋️ **Training Loops** - Production training patterns
 - 🔧 **PEFT Techniques** - Parameter-efficient fine-tuning
-- ✅ **Code Quality** - Complete quality stack
+-  **Code Quality** - Complete quality stack
 
 ---
 

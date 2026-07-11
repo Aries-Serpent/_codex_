@@ -1,4 +1,7 @@
 # Metrics Plugin Conflict Resolution Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
 
 ## Overview
@@ -8,11 +11,11 @@ Plugin-discovered metrics (entry points) may duplicate locally registered metric
 
 | Policy | Behavior | Local Retained | Plugin Retained | Additional Registration | Raises Error |
 |--------|----------|----------------|-----------------|-------------------------|--------------|
-| prefer_local (default) | Suppress plugin | ✅ | ❌ | None | ❌ |
-| prefer_plugin | Override with plugin | ❌ (replaced) | ✅ | None | ❌ |
-| alias_plugin | Keep both | ✅ | ✅ (as alias) | plugin:<name> | ❌ |
-| shadow_warn | Keep local; warn | ✅ | ❌ | None | ❌ |
-| error | Strict legacy behavior | Depends | Depends | None | ✅ |
+| prefer_local (default) | Suppress plugin |  |  | None |  |
+| prefer_plugin | Override with plugin |  (replaced) |  | None |  |
+| alias_plugin | Keep both |  |  (as alias) | plugin:<name> |  |
+| shadow_warn | Keep local; warn |  |  | None |  |
+| error | Strict legacy behavior | Depends | Depends | None |  |
 
 ## Configuration Sources
 1. Environment variable: `CODEX_METRIC_PLUGIN_POLICY`

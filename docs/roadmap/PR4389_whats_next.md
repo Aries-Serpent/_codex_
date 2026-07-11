@@ -1,4 +1,6 @@
 # PR #4389 — What's Next
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **PR:** [#4389](https://github.com/Aries-Serpent/_codex_/pull/4389) — fix(security): resolve merge conflict, fix 6 CodeQL error alerts, patch 4 code-injection workflow vulns + rate-limit recovery system
 **Branch:** `copilot/add-full-path-to-init-tracing-docs`
@@ -8,23 +10,23 @@
 
 ---
 
-## 📊 Merge Readiness
+##  Merge Readiness
 
 | Gate | Status | Notes |
 |------|--------|-------|
-| Merge conflict | ✅ | `CODEX_MANIFEST.json` resolved (two-parent merge commit `43c86951`) |
-| CodeQL Python alerts | ✅ | 6 error-level alerts fixed (#13447 #13431 #13397 #13430 #13432 #13429) |
-| CodeQL Actions alerts | ✅ | 4 code-injection alerts fixed (#13245 #13246 #13243 #13244) |
-| Code-review feedback | ✅ | Shadowed `trainer` variable + redundant `bundle` guard both fixed |
-| Rate-limit recovery system | ✅ | `rate_limit_handler.py` + `push_conflict_resolver.py` + Pattern 33 |
-| CHANGELOG Pattern 25 | ✅ | Updated in S923 commit |
-| AGENT_ACCOUNTABILITY_REPORT | ✅ | Updated in S923 commit |
+| Merge conflict |  | `CODEX_MANIFEST.json` resolved (two-parent merge commit `43c86951`) |
+| CodeQL Python alerts |  | 6 error-level alerts fixed (#13447 #13431 #13397 #13430 #13432 #13429) |
+| CodeQL Actions alerts |  | 4 code-injection alerts fixed (#13245 #13246 #13243 #13244) |
+| Code-review feedback |  | Shadowed `trainer` variable + redundant `bundle` guard both fixed |
+| Rate-limit recovery system |  | `rate_limit_handler.py` + `push_conflict_resolver.py` + Pattern 33 |
+| CHANGELOG Pattern 25 |  | Updated in S923 commit |
+| AGENT_ACCOUNTABILITY_REPORT |  | Updated in S923 commit |
 | CI workflows (approved) | 🔄 | 17 workflows in-progress on `1cb56a95` (approved by mbaetiong) |
-| parallel_validation | 🔄 | Code Review ✅ · CodeQL DB too large (skipped) |
+| parallel_validation | 🔄 | Code Review  · CodeQL DB too large (skipped) |
 
 ---
 
-## 🚀 Immediate Next Steps (next session / after CI green)
+##  Immediate Next Steps (next session / after CI green)
 
 1. **Monitor CI results** — 17 workflows approved and running; check for failures in:
    - `validate.yml` (Fast Validation — sync_tracked_files + ruff)

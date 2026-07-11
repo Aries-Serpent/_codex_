@@ -1,6 +1,8 @@
 # Run Artifact Retention
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 - Keep the latest failed run and the last 20 successful runs or 90 iterations, whichever is longer.
 - Older artifacts may be pruned.

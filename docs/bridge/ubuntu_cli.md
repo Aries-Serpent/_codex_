@@ -1,6 +1,8 @@
 # Ubuntu CLI Integration Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 This quickstart targets Ubuntu 24.04 LTS (the Codex universal base). It walks through preparing a
 developer workstation or self-hosted runner so Codex and Copilot automations can reach the Internal

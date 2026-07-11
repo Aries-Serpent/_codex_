@@ -1,4 +1,7 @@
 # ADR-20260304: Second D_CAPABLE Agent Promotion — `workflow-ci-fixer`
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-22T19:04:00Z | Author: copilot-swe-agent[bot]
 > Status: Accepted
 > Related PRs: #3494
@@ -19,11 +22,11 @@ The 2-sprint observation period completed without demotion annotations in
 
 | Condition | Status |
 |-----------|--------|
-| C1: AGENT_REGISTRY.yaml schema-valid | ✅ |
-| C2: CODEX_MANIFEST.json valid < 24h | ✅ |
-| C3: SOFT policy count ≤ 2 (current: 2) | ✅ |
-| C4: agent-handoff-gate.yml deployed | ✅ |
-| C5: GROUNDED Tier-1 count ≥ 8 (current: 21) | ✅ |
+| C1: AGENT_REGISTRY.yaml schema-valid |  |
+| C2: CODEX_MANIFEST.json valid < 24h |  |
+| C3: SOFT policy count ≤ 2 (current: 2) |  |
+| C4: agent-handoff-gate.yml deployed |  |
+| C5: GROUNDED Tier-1 count ≥ 8 (current: 21) |  |
 
 ## 2. D_CAPABLE Criteria (from ADR-20260303 §2)
 
@@ -45,13 +48,13 @@ Two candidates were identified in the follow-up prompt:
 
 | Criterion | Value | Pass? |
 |-----------|-------|-------|
-| Enforcement tier | PARTIAL | ❌ |
-| Maturity | production | ✅ |
-| Handoff protocol | none | ❌ |
-| Has tests | not set | ❌ |
-| Has docs | not set | ❌ |
-| Activation frequency | unranked | ❌ |
-| Violation history | none recorded | ✅ |
+| Enforcement tier | PARTIAL |  |
+| Maturity | production |  |
+| Handoff protocol | none |  |
+| Has tests | not set |  |
+| Has docs | not set |  |
+| Activation frequency | unranked |  |
+| Violation history | none recorded |  |
 
 **Decision: NOT PROMOTED** — fails 5 of 7 criteria (no GROUNDED tier, no
 structured handoff, unranked). Would require significant registry uplift
@@ -61,13 +64,13 @@ before meeting D_CAPABLE threshold.
 
 | Criterion | Value | Pass? |
 |-----------|-------|-------|
-| Enforcement tier | GROUNDED (concurrent upgrade — see §4 note below) | ✅ |
-| Maturity | production | ✅ |
-| Handoff protocol | structured | ✅ |
-| Has tests | true | ✅ |
-| Has docs | true | ✅ |
-| Activation frequency | rank 13, consolidation_priority: true | ✅ |
-| Violation history | 0 violations in last 30 days | ✅ |
+| Enforcement tier | GROUNDED (concurrent upgrade — see §4 note below) |  |
+| Maturity | production |  |
+| Handoff protocol | structured |  |
+| Has tests | true |  |
+| Has docs | true |  |
+| Activation frequency | rank 13, consolidation_priority: true |  |
+| Violation history | 0 violations in last 30 days |  |
 
 **Decision: PROMOTE** — meets all 7 criteria.
 
@@ -104,7 +107,7 @@ The `handoff_protocol` remains `structured` — no other existing fields change.
 
 | Driver | Notes |
 |--------|-------|
-| Pre-evaluated in ADR-20260303 | Listed as "Future" candidate with all criteria ✅ |
+| Pre-evaluated in ADR-20260303 | Listed as "Future" candidate with all criteria  |
 | Clean observation window | 2-sprint observation of `ci-testing-agent` complete; zero violations |
 | Structured handoff | Machine-verifiable inter-agent protocol already in place |
 | Production maturity | Not beta or experimental; CI coverage validated |

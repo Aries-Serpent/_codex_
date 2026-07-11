@@ -1,4 +1,6 @@
 # Python 3.12 Migration Guide
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Version:** 1.0.0
 > **Status:** Production Ready
@@ -22,7 +24,7 @@
 
 ---
 
-## 🎯 Overview
+##  Overview
 
 This guide covers migration from Python 3.11 to 3.12 for the **_codex_** repository.
 
@@ -32,23 +34,23 @@ This guide covers migration from Python 3.11 to 3.12 for the **_codex_** reposit
 |--------|---------|
 | **Current Baseline** | Python ≥ 3.11 |
 | **Target Version** | Python 3.12 (primary), maintain 3.11 compatibility |
-| **Migration Status** | ✅ **READY** - All dependencies compatible |
+| **Migration Status** |  **READY** - All dependencies compatible |
 | **Breaking Changes** | **0** - Zero breaking changes required |
-| **Risk Level** | 🟢 **LOW** - Modern codebase, proactive patterns |
+| **Risk Level** |  **LOW** - Modern codebase, proactive patterns |
 | **Estimated Effort** | 2-4 hours (testing + validation) |
 | **Test Coverage** | ≥70% minimum, 100% target for future |
 
 ### Key Findings
 
-✅ **All 37 core dependencies** support Python 3.12
-✅ **Modern codebase** already uses Python 3.12-compatible patterns
-✅ **No deprecated modules** found (no distutils, imp, asyncore)
-✅ **Proactive patterns** in place (compat modules, proper type hints)
-✅ **Comprehensive test suite** created (2,382 lines, 8 test modules)
+ **All 37 core dependencies** support Python 3.12
+ **Modern codebase** already uses Python 3.12-compatible patterns
+ **No deprecated modules** found (no distutils, imp, asyncore)
+ **Proactive patterns** in place (compat modules, proper type hints)
+ **Comprehensive test suite** created (2,382 lines, 8 test modules)
 
 ---
 
-## ✅ Prerequisites
+##  Prerequisites
 
 ### System Requirements
 
@@ -64,7 +66,7 @@ Before migrating, verify all dependencies support Python 3.12:
 # Run dependency compatibility checker
 python scripts/check_py312_deps.py
 
-# Expected output: "✅ Python 3.12 migration readiness: READY"
+# Expected output: " Python 3.12 migration readiness: READY"
 # Report saved to: .codex/py312_deps_report.json
 ```
 
@@ -80,7 +82,7 @@ python --version > python_version_backup.txt
 
 ---
 
-## 🚀 Migration Steps
+##  Migration Steps
 
 ### Step 1: Update Environment
 
@@ -166,16 +168,16 @@ The CI pipeline already tests both Python 3.12 and 3.12. No changes needed.
 
 The _codex_ codebase is already compatible with Python 3.12. The following have been verified:
 
-### ✅ Verified Compatible
+###  Verified Compatible
 
 | Feature | Status | Notes |
 |---------|--------|-------|
-| Type Hints (PEP 585/604) | ✅ Compatible | Using `dict[str, Any]`, `X \| None` syntax |
-| tomllib (TOML parsing) | ✅ Compatible | Proper fallback to `tomli` in place |
-| asyncio patterns | ✅ Compatible | No deprecated `get_event_loop()` usage |
-| Exception handling | ✅ Compatible | ExceptionGroup not used (as expected) |
-| Import system | ✅ Compatible | Using `importlib`, not deprecated `imp` |
-| Collections ABC | ✅ Compatible | Proper imports from `typing` |
+| Type Hints (PEP 585/604) |  Compatible | Using `dict[str, Any]`, `X \| None` syntax |
+| tomllib (TOML parsing) |  Compatible | Proper fallback to `tomli` in place |
+| asyncio patterns |  Compatible | No deprecated `get_event_loop()` usage |
+| Exception handling |  Compatible | ExceptionGroup not used (as expected) |
+| Import system |  Compatible | Using `importlib`, not deprecated `imp` |
+| Collections ABC |  Compatible | Proper imports from `typing` |
 
 ### 🔍 Patterns Already Modernized
 
@@ -189,7 +191,7 @@ The codebase proactively uses:
 
 ---
 
-## 🚀 Performance Improvements
+##  Performance Improvements
 
 Python 3.12 provides significant performance gains:
 
@@ -197,12 +199,12 @@ Python 3.12 provides significant performance gains:
 
 | Operation | Improvement | Impact on _codex_ |
 |-----------|-------------|-------------------|
-| **Overall Speed** | 5-10% faster | ✅ Training/inference speedup |
-| **Dict Operations** | Up to 10% faster | ✅ Config/metadata processing |
-| **Comprehensions** | 10-15% faster | ✅ Data transformations |
-| **f-strings** | 2x faster | ✅ Logging and formatting |
-| **Import Time** | Faster imports | ✅ Faster startup |
-| **asyncio** | Improved performance | ✅ FastAPI/Ray Serve |
+| **Overall Speed** | 5-10% faster |  Training/inference speedup |
+| **Dict Operations** | Up to 10% faster |  Config/metadata processing |
+| **Comprehensions** | 10-15% faster |  Data transformations |
+| **f-strings** | 2x faster |  Logging and formatting |
+| **Import Time** | Faster imports |  Faster startup |
+| **asyncio** | Improved performance |  FastAPI/Ray Serve |
 
 ### Benchmark Results
 
@@ -351,35 +353,35 @@ gh issue create --title "Python 3.12 Migration Issue: [brief description]" \
 
 ---
 
-## 📊 Support Matrix
+##  Support Matrix
 
 ### Python Version Support
 
 | Python Version | Support Status | Notes |
 |---------------|----------------|-------|
-| **3.10** | ❌ Not Supported | Below minimum requirement |
-| **3.11** | ✅ Supported | Current baseline, fully tested |
-| **3.12** | ✅ Primary Target | Recommended for new deployments |
+| **3.10** |  Not Supported | Below minimum requirement |
+| **3.11** |  Supported | Current baseline, fully tested |
+| **3.12** |  Primary Target | Recommended for new deployments |
 | **3.13** | 🔄 Future | Planned for future iteration |
 
 ### Operating System Support
 
 | OS | Python 3.12 | Python 3.12 | Notes |
 |----|------------|-------------|-------|
-| **Linux (Ubuntu 20.04+)** | ✅ | ✅ | Fully supported |
-| **macOS (11+)** | ✅ | ✅ | Fully supported |
-| **Windows (10+)** | ✅ | ✅ | Fully supported |
+| **Linux (Ubuntu 20.04+)** |  |  | Fully supported |
+| **macOS (11+)** |  |  | Fully supported |
+| **Windows (10+)** |  |  | Fully supported |
 
 ### Dependency Compatibility
 
 All 37 core dependencies verified compatible with Python 3.12:
 
-✅ torch ≥2.6.0
-✅ transformers ≥4.48.0
-✅ numpy ≥1.26
-✅ pandas ≥2.1
-✅ pydantic ≥2.4
-✅ fastapi ≥0.110
+ torch ≥2.6.0
+ transformers ≥4.48.0
+ numpy ≥1.26
+ pandas ≥2.1
+ pydantic ≥2.4
+ fastapi ≥0.110
 ... (see full list in `docs/admin/PYTHON_3.11_TO_3.12_MIGRATION_AUDIT.md`)
 
 ---
@@ -481,7 +483,7 @@ pytest tests/some_test.py -m "not py312" -v
 
 ---
 
-## 🎯 Path to 100% Coverage
+##  Path to 100% Coverage
 
 Current test coverage: **≥70%** (minimum requirement met)
 Target: **100%** (future iteration)
@@ -594,7 +596,7 @@ After completing migration, verify these metrics:
 
 ---
 
-## 📚 Additional Resources
+##  Additional Resources
 
 ### Official Documentation
 
@@ -627,6 +629,6 @@ For questions or issues:
 
 ---
 
-**Document Status:** ✅ Production Ready
-**Last Updated:** 2026-01-22T17:27:00Z
+**Document Status:**  Production Ready
+**Last Updated: 2026-07-11
 **Next Review:** After Phase 6 (100% coverage) completion

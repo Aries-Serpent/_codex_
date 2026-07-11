@@ -1,6 +1,9 @@
 # Spec: Automation Data Ingest for Status v1.2
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
-🧠 Roles: [Primary: Automation Spec Author], [Secondary: CI Integrator] ⚡ Energy: 5
+ Roles: [Primary: Automation Spec Author], [Secondary: CI Integrator] ⚡ Energy: 5
 
 Scope
 - Defines required/optional fields for `automation` in the v1.2 status schema.

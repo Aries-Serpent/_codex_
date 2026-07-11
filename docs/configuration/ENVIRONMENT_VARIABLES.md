@@ -1,4 +1,6 @@
 # Environment Variables Reference
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Version**: 2.0.0  
 > **Last Updated**: 2026-06-20  
@@ -16,7 +18,7 @@ cp .env.example .env
 nano .env
 
 # Verify setup
-python -c "from dotenv import load_dotenv; load_dotenv(); print('✅ Env loaded')"
+python -c "from dotenv import load_dotenv; load_dotenv(); print(' Env loaded')"
 ```
 
 ---
@@ -298,9 +300,9 @@ required = ['ENVIRONMENT', 'DATABASE_URL', 'SECRET_KEY']
 missing = [var for var in required if not os.getenv(var)]
 
 if missing:
-    print(f'❌ Missing variables: {missing}')
+    print(f' Missing variables: {missing}')
 else:
-    print('✅ All required variables set')
+    print(' All required variables set')
 "
 ```
 
@@ -317,4 +319,4 @@ else:
 
 ---
 
-**Last Updated:** 2026-06-20
+**Last Updated: 2026-06-20

@@ -1,7 +1,9 @@
 # GitHub Copilot No-Auto-PR Policy
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Effective:** 2026-03 (GitHub change)
-> **Status:** ✅ Codebase fully adapted (PR #3661 / S173)
+> **Status:**  Codebase fully adapted (PR #3661 / S173)
 
 ## 🔍 What Changed
 
@@ -23,15 +25,15 @@ session completes.
 
 ---
 
-## 📊 Impact on This Repository
+##  Impact on This Repository
 
 | Workflow | Context | Impact | Fix Applied |
 |----------|---------|--------|-------------|
-| `copilot-session-chain.yml` | Posts `@copilot` on **pre-created PR** | ✅ Not affected | Trigger comments updated with "work on this PR branch" note |
-| `ci-failure-issue-creator.yml` | Posts `@copilot` on **pre-created PR** | ✅ Not affected | PR instruction updated with "commit to this PR branch" note |
-| `branch-divergence-monitor.yml` | Posts `@copilot` on an **ISSUE** | ❌ Affected | Added "open a PR targeting `0D_base_`" instruction |
-| `agent-auth-delegation.yml` | Preflight on existing PRs | ✅ Not affected | Added "PR requirement" row to enforcement table |
-| `chatops_copilot_trigger.yml` | Posts `@copilot continue` on existing PRs | ✅ Not affected | No change needed |
+| `copilot-session-chain.yml` | Posts `@copilot` on **pre-created PR** |  Not affected | Trigger comments updated with "work on this PR branch" note |
+| `ci-failure-issue-creator.yml` | Posts `@copilot` on **pre-created PR** |  Not affected | PR instruction updated with "commit to this PR branch" note |
+| `branch-divergence-monitor.yml` | Posts `@copilot` on an **ISSUE** |  Affected | Added "open a PR targeting `0D_base_`" instruction |
+| `agent-auth-delegation.yml` | Preflight on existing PRs |  Not affected | Added "PR requirement" row to enforcement table |
+| `chatops_copilot_trigger.yml` | Posts `@copilot continue` on existing PRs |  Not affected | No change needed |
 | Agent documentation | Various agent `.md` files | ⚠️ Documentation | Updated guidance |
 
 ---
@@ -43,15 +45,15 @@ the entire PR description** with the agent's task checklist. This strips two man
 sections from the PR body:
 
 ```
-### 💰 Cost Governance
-- [ ] **💰 Cost Proposal Approved**
+###  Cost Governance
+- [ ] ** Cost Proposal Approved**
 
-### 🔐 Agent Token Delegation
+###  Agent Token Delegation
 - [x] **Enable Agent Token Delegation** (`COPILOT_AGENT_AUTH_ENABLED`)
 ```
 
 **Why this matters:**
-- `cost-gate.yml` reads the `💰 Cost Proposal Approved` checkbox from the PR body. If
+- `cost-gate.yml` reads the ` Cost Proposal Approved` checkbox from the PR body. If
   missing, the cost gate blocks indefinitely (no checkbox to tick → RED tier stays
   blocked forever).
 - `agent-auth-delegation.yml` reads the `COPILOT_AGENT_AUTH_ENABLED` checkbox from the
@@ -100,11 +102,11 @@ Always include the full required sections in `prDescription`:
 - [x] Task 1 completed
 - [ ] Task 2 pending
 
-### 💰 Cost Governance
+###  Cost Governance
 
-- [ ] **💰 Cost Proposal Approved**
+- [ ] ** Cost Proposal Approved**
 
-### 🔐 Agent Token Delegation
+###  Agent Token Delegation
 
 - [x] **Enable Agent Token Delegation** (`COPILOT_AGENT_AUTH_ENABLED`)
 ```
@@ -114,14 +116,14 @@ Always include the full required sections in `prDescription`:
 ## 🔄 Self-Healing Architecture
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing report_progress overwrites PR body, ✅ No action needed'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing report_progress overwrites PR body,  No action needed'}}%%
 flowchart TD
     A[report_progress overwrites PR body] --> B{Checkboxes present?}
-    B -->|Yes| C[✅ No action needed]
+    B -->|Yes| C[ No action needed]
     B -->|No| D[pr-body-checkpoint-guardian job fires]
     D --> E[gh pr edit — append missing checkboxes]
     E --> F[detect-checkbox re-reads repaired body]
-    F --> G[✅ Delegation activates normally]
+    F --> G[ Delegation activates normally]
 
     H[session_wrapup_autofix.py] --> I[fix_pr_body_checkboxes]
     I --> E
@@ -142,4 +144,4 @@ flowchart TD
 
 ---
 
-*Last updated: 2026-03-21 (S173) | Author: copilot-swe-agent[bot]*
+*Last updated: 2026-07-11

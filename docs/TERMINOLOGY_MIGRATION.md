@@ -1,4 +1,6 @@
 # Terminology Migration Guide: Week-Based → Iteration-Based
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Status**: Active Migration  
 > **Version**: 1.0  
@@ -16,7 +18,7 @@ The _codex_ project is migrating from week-based timelines to iteration-based wo
 
 ### Timeline References
 
-| ❌ Old Term | ✅ New Term | Example Usage |
+|  Old Term |  New Term | Example Usage |
 |------------|------------|---------------|
 | Pre-commit 1-2, Pre-commit 3-4 | Iteration 1, Iteration 2 | "Iteration 1: Foundation" |
 | Day 1, Day 2 | Commit Step 1, Commit Step 2 | "Commit Step 3: Integration" |
@@ -27,7 +29,7 @@ The _codex_ project is migrating from week-based timelines to iteration-based wo
 
 ### Phase References
 
-| ❌ Old Term | ✅ New Term |
+|  Old Term |  New Term |
 |------------|------------|
 | Phase 1 (Pre-commit 1-4) | Iteration 1 |
 | Phase 2 (Pre-commit 5-8) | Iteration 2 |
@@ -140,10 +142,10 @@ See: `docs/templates/ITERATION_PLAN_TEMPLATE.md`
 ## Status: Current Documentation
 
 ### Updated Files
-- ✅ `docs/templates/ITERATION_PLAN_TEMPLATE.md` - Created
-- ✅ `docs/reporting/REPORTING.md` - Uses iteration terminology
-- ✅ Recent PHASE2 documents - Already use iteration terminology
-- ✅ Most completion reports - Use iteration structure
+-  `docs/templates/ITERATION_PLAN_TEMPLATE.md` - Created
+-  `docs/reporting/REPORTING.md` - Uses iteration terminology
+-  Recent PHASE2 documents - Already use iteration terminology
+-  Most completion reports - Use iteration structure
 
 ### Files with Week References (508 occurrences)
 
@@ -159,7 +161,7 @@ See: `docs/templates/ITERATION_PLAN_TEMPLATE.md`
 
 ## Guidelines for New Content
 
-### ✅ DO:
+###  DO:
 - Use "Iteration N" for phases
 - Use "Pre-commit Checkpoint" for prerequisites
 - Use "Commit Tasks" for action items
@@ -167,7 +169,7 @@ See: `docs/templates/ITERATION_PLAN_TEMPLATE.md`
 - Include flexible timelines without fixed dates
 - Focus on deliverables over duration
 
-### ❌ DON'T:
+###  DON'T:
 - Use "Week N" or "Day N" for new plans
 - Specify fixed calendar durations
 - Create rigid time-based schedules

@@ -1,6 +1,7 @@
 # MCP Server Deployment
+**Last Updated:** 2026-07-11
 
-**Last Updated:** 2026-01-23T11:45:00Z
+**Last Updated: 2026-07-11
 
 This guide covers low/no-cost hosting for the MCP HTTP prototype and how to align with GitHub Copilot Agent flows.
 
@@ -37,15 +38,15 @@ graph TB
 - **Best For**: Read-heavy workloads, global distribution
 
 **Pros:**
-- ✅ Free tier generous
-- ✅ Global edge network (low latency)
-- ✅ Auto-scaling
-- ✅ Built-in DDoS protection
+-  Free tier generous
+-  Global edge network (low latency)
+-  Auto-scaling
+-  Built-in DDoS protection
 
 **Cons:**
-- ❌ CPU time limits (50ms per request)
-- ❌ Limited to JavaScript/WASM
-- ❌ No persistent storage (use KV/Durable Objects)
+-  CPU time limits (50ms per request)
+-  Limited to JavaScript/WASM
+-  No persistent storage (use KV/Durable Objects)
 
 ### Fly.io (persistent container)
 - **Runtime**: Python 3.12 (FastAPI `src/mcp/server/http.py`)
@@ -55,15 +56,15 @@ graph TB
 - **Best For**: Python workloads, stateful services
 
 **Pros:**
-- ✅ Free tier includes 3 VMs + 3GB storage
-- ✅ Native Python/container support
-- ✅ Persistent volumes
-- ✅ Easy scaling
+-  Free tier includes 3 VMs + 3GB storage
+-  Native Python/container support
+-  Persistent volumes
+-  Easy scaling
 
 **Cons:**
-- ❌ Cold start latency
-- ❌ Manual scaling (not auto-scale on free tier)
-- ❌ Regional (not global edge)
+-  Cold start latency
+-  Manual scaling (not auto-scale on free tier)
+-  Regional (not global edge)
 
 ### Local Compose
 - **Runtime**: Docker Compose
@@ -73,14 +74,14 @@ graph TB
 - **Best For**: Development workflow
 
 **Pros:**
-- ✅ Full control
-- ✅ Fast iteration
-- ✅ Matches production environment
+-  Full control
+-  Fast iteration
+-  Matches production environment
 
 **Cons:**
-- ❌ Not accessible externally (without tunneling)
-- ❌ Requires Docker installed
-- ❌ Local resources only
+-  Not accessible externally (without tunneling)
+-  Requires Docker installed
+-  Local resources only
 
 ## Deployment Architecture Comparison
 
@@ -89,10 +90,10 @@ graph TB
 | **Cost (Free Tier)** | 100k req/day | 3 VMs + 3GB | Unlimited (local) |
 | **Latency** | <50ms (edge) | 50-200ms (regional) | <10ms (local) |
 | **Scaling** | Auto (millions RPS) | Manual (3 VMs max free) | Manual (local resources) |
-| **Python Support** | No (Node/WASM) | ✅ Native | ✅ Native |
-| **Persistent Storage** | KV/Durable Objects | ✅ Volumes | ✅ Volumes |
+| **Python Support** | No (Node/WASM) |  Native |  Native |
+| **Persistent Storage** | KV/Durable Objects |  Volumes |  Volumes |
 | **Cold Start** | None (edge) | ~1-2s | None (always on) |
-| **TLS/HTTPS** | ✅ Automatic | ✅ Automatic | Manual (self-signed) |
+| **TLS/HTTPS** |  Automatic |  Automatic | Manual (self-signed) |
 
 ## Deployment Steps (FastAPI on Fly.io)
 
@@ -730,13 +731,13 @@ fly autoscale set min=1 max=10
 
 ---
 
-## 🎯 Mission Overview
+##  Mission Overview
 
 **Objective:** Provide production-ready deployment options for MCP servers across edge (Cloudflare Workers), container (Fly.io), and local (Docker Compose) environments with cost-effective free tiers.
 
 **Energy Level:** 4/5 (High Priority - Deployment Infrastructure)
 
-**Operational Status:** ✅ **ACTIVE** - Production deployments running on Fly.io and Workers
+**Operational Status:**  **ACTIVE** - Production deployments running on Fly.io and Workers
 
 ## ⚖️ Verification Checklist
 
@@ -763,14 +764,14 @@ fly autoscale set min=1 max=10
 
 | Metric | Target | Current | Status |
 |--------|--------|---------|--------|
-| **Deployment Time (Fly.io)** | <5 minutes | 3-4 minutes | ✅ |
-| **Deployment Time (Workers)** | <2 minutes | 1-2 minutes | ✅ |
-| **Cold Start (Fly.io)** | <2s | 1-1.5s | ✅ |
-| **Cold Start (Workers)** | 0ms (edge) | 0ms | ✅ |
-| **Uptime (Fly.io)** | >99.9% | 99.95% | ✅ |
-| **Uptime (Workers)** | >99.99% | 99.99% | ✅ |
-| **Cost (Free Tier)** | $0/month | $0/month | ✅ |
-| **TLS Certificate Renewal** | Automatic | ✅ Automatic | ✅ |
+| **Deployment Time (Fly.io)** | <5 minutes | 3-4 minutes |  |
+| **Deployment Time (Workers)** | <2 minutes | 1-2 minutes |  |
+| **Cold Start (Fly.io)** | <2s | 1-1.5s |  |
+| **Cold Start (Workers)** | 0ms (edge) | 0ms |  |
+| **Uptime (Fly.io)** | >99.9% | 99.95% |  |
+| **Uptime (Workers)** | >99.99% | 99.99% |  |
+| **Cost (Free Tier)** | $0/month | $0/month |  |
+| **TLS Certificate Renewal** | Automatic |  Automatic |  |
 
 ## ⚛️ Physics Alignment
 
@@ -823,9 +824,9 @@ fly autoscale set min=1 max=10
 
 ### Balance ⚖️
 **Cost vs Performance:**
-- ✅ Free tiers for MVP/preview
+-  Free tiers for MVP/preview
 - ⚖️ Trade-off: Cold starts (Fly.io) vs instant (Workers)
-- ✅ Pay-as-you-grow pricing
+-  Pay-as-you-grow pricing
 
 **Simplicity vs Features:**
 - Workers: Simple, limited features
@@ -842,7 +843,7 @@ fly autoscale set min=1 max=10
 | **P1** | Docker Compose | 15% | Local development |
 | **P2** | Monitoring setup | 5% | Operational visibility |
 
-## 🧠 Redundancy Patterns
+##  Redundancy Patterns
 
 ### Rollback Strategies
 

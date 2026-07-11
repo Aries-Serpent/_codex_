@@ -1,4 +1,6 @@
 # Cognitive Brain Status — PR #3610 (S140)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Generated**: 2026-06-22T00:00:00Z  
 **Session**: S140  
@@ -13,17 +15,17 @@
 
 | Component | Status | Notes |
 |-----------|--------|-------|
-| PatternCompressor /health | ✅ DONE | Phase 4 complete |
-| BrainClient health endpoint | ✅ DONE | Phase 4 complete |
-| Redis RAG + Feast backend | ✅ DONE | Phase 4 complete |
-| CrossEncoderReranker | ✅ DONE | Phase 4 complete |
-| capability_detectors (25 tests) | ✅ DONE | Phase 4 complete |
-| Bot comment upsert (9 types) | ✅ DONE | Race-safe, retry loop |
-| Deferral fence-opener fix | ✅ DONE | Opener buffered in fence_buffer |
-| Comment upsert pagination | ✅ **NEW S140** | All 4 workflow upserts paginate past 100 |
-| Consolidator dedup newest-first | ✅ **NEW S140** | Returns most-recently-updated marker |
-| evaluate_datasets at module scope | ✅ **NEW S140** | Monkeypatch-safe |
-| PooledConnectionProxy backup fix | ✅ **NEW S140** | `_raw_conn()` unwraps for C-extension |
+| PatternCompressor /health |  DONE | Phase 4 complete |
+| BrainClient health endpoint |  DONE | Phase 4 complete |
+| Redis RAG + Feast backend |  DONE | Phase 4 complete |
+| CrossEncoderReranker |  DONE | Phase 4 complete |
+| capability_detectors (25 tests) |  DONE | Phase 4 complete |
+| Bot comment upsert (9 types) |  DONE | Race-safe, retry loop |
+| Deferral fence-opener fix |  DONE | Opener buffered in fence_buffer |
+| Comment upsert pagination |  **NEW S140** | All 4 workflow upserts paginate past 100 |
+| Consolidator dedup newest-first |  **NEW S140** | Returns most-recently-updated marker |
+| evaluate_datasets at module scope |  **NEW S140** | Monkeypatch-safe |
+| PooledConnectionProxy backup fix |  **NEW S140** | `_raw_conn()` unwraps for C-extension |
 | Token rotation e2e | ⏳ ADMIN NEEDED | Requires real GitHub App from human admin |
 
 ### S140 Changes Applied
@@ -66,7 +68,7 @@ graph TD
         GH["codex.github<br/>(explicit import guard)"]
     end
 
-    subgraph "Production Hardening (Phase 4 ✅)"
+    subgraph "Production Hardening (Phase 4 )"
         PC["PatternCompressor /health"]
         BC["BrainClient health"]
         RD["Redis RAG backend"]
@@ -144,31 +146,31 @@ gantt
 ## CB Dashboard v3 — Real-Time CI Metrics Widget (S143)
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Diagram showing "cost-gate.yml<br/>pip cache ✅", "branch-rebase-gate.yml<br/>pip cache ✅"'}}%%
+%%{init: {'accessibility': {'title': 'Diagram showing "cost-gate.yml<br/>pip cache ", "branch-rebase-gate.yml<br/>pip cache "'}}%%
 graph TB
     subgraph "CI Health — S143 Baseline (2026-03-17)"
         direction LR
 
-        subgraph "S141 ✅"
-            A1["cost-gate.yml<br/>pip cache ✅"]
-            A2["branch-rebase-gate.yml<br/>pip cache ✅"]
-            A3["deferral-language-gate.yml<br/>pip cache ✅"]
-            A4["root-org-validation.yml<br/>actionlint ✅"]
-            A5["CHANGELOG REQ-5 ✅"]
+        subgraph "S141 "
+            A1["cost-gate.yml<br/>pip cache "]
+            A2["branch-rebase-gate.yml<br/>pip cache "]
+            A3["deferral-language-gate.yml<br/>pip cache "]
+            A4["root-org-validation.yml<br/>actionlint "]
+            A5["CHANGELOG REQ-5 "]
         end
 
-        subgraph "S142 ✅"
-            B1["mypy 0 errors ✅"]
-            B2["78 unused-ignores removed ✅"]
-            B3["TOKEN_ROTATION_GUIDE.md ✅"]
-            B4["533 stale docs remediated ✅"]
-            B5["doc-freshness-check.yml ✅"]
+        subgraph "S142 "
+            B1["mypy 0 errors "]
+            B2["78 unused-ignores removed "]
+            B3["TOKEN_ROTATION_GUIDE.md "]
+            B4["533 stale docs remediated "]
+            B5["doc-freshness-check.yml "]
         end
 
-        subgraph "S143 ✅ (Now)"
-            C1["pyasn1 0.6.3<br/>CVE-2026-30922 ✅"]
-            C2["OTel coherence histogram ✅<br/>workflow.coherence.score"]
-            C3["compute_coherence() ✅<br/>policy-alignment helper"]
+        subgraph "S143  (Now)"
+            C1["pyasn1 0.6.3<br/>CVE-2026-30922 "]
+            C2["OTel coherence histogram <br/>workflow.coherence.score"]
+            C3["compute_coherence() <br/>policy-alignment helper"]
         end
 
         subgraph "Admin-Gated ⏳"
@@ -214,7 +216,7 @@ sequenceDiagram
 | Stale docs (>1 month) | 533 | 533 | **~82 fixed** | **~82 fixed** |
 | Security vulnerabilities (pyasn1) | CVE present | CVE present | CVE present | **0** |
 | AAIS score | 95.9 | 95.9 | **99.7** | **99.7** |
-| Phase 6 items complete | 0/6 | 4/6 | 6/6 | **8/8 ✅** |
+| Phase 6 items complete | 0/6 | 4/6 | 6/6 | **8/8 ** |
 
 ---
 
@@ -230,7 +232,7 @@ sequenceDiagram
 - [ ] **Coherence dashboard** — Weekly GitHub Actions step that snapshots coherence histogram and posts to PR
 - [ ] **P2 plans content review** — `@mbaetiong` to validate historical decision records
 
-### Completed in Phase 6 (S141–S143) ✅
+### Completed in Phase 6 (S141–S143) 
 - [x] `src/codex/monitoring/otel_metrics.py` — `workflow_job_duration_seconds` + `workflow_step_duration` + `workflow_coherence_score` histograms
 - [x] `src/codex/monitoring/otel_metrics.py` — `compute_coherence()` helper for policy-alignment scoring
 - [x] `tests/test_otel_metrics.py` — 18 tests (10 existing + 8 coherence)

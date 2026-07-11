@@ -1,4 +1,6 @@
 # Remaining Work - PR #2205 Gap Analysis
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Generated:** 2025-11-11  
 **Current HEAD:** 04fcefc (Fix P1: keep_last checkpoint retention leak in best-k)  
@@ -22,7 +24,7 @@ All P1 bugs fixed and all components from Iterations 1-3 implemented. This docum
 | **Security Gate** | Nox session unified; allowlist present | Run nox -s security; attach artifacts/security_report.json | No HIGH/CRITICAL unallowlisted | HIGH | 🔄 READY |
 | **Determinism** | CLI compare supports check | Add cross-process repro tests; env snapshot | Determinism proof; env snapshot artifact | MEDIUM | 📋 PLANNED |
 | **Config Validator** | Fixed + tested; nox session added | Run nox -s validate-configs in verification | Session green; logs attached | HIGH | 🔄 READY |
-| **AST CLI** | Implemented with tests | Verify --json output; stable exit codes | Integration tests pass | MEDIUM | ✅ DONE |
+| **AST CLI** | Implemented with tests | Verify --json output; stable exit codes | Integration tests pass | MEDIUM |  DONE |
 | **Artifacts** | IMPLEMENTATION_STATUS.md created | Generate coverage.xml, security_report.json, validation logs | All artifacts committed/attached | HIGH | 🔄 IN PROGRESS |
 
 ---
@@ -224,9 +226,9 @@ artifacts/
 ## Next Steps
 
 ### Immediate (Can execute now):
-1. ✅ Run `nox -s tests` and generate coverage report
-2. ✅ Run `nox -s security` and commit security_report.json
-3. ✅ Run `nox -s validate-configs` and verify output
+1.  Run `nox -s tests` and generate coverage report
+2.  Run `nox -s security` and commit security_report.json
+3.  Run `nox -s validate-configs` and verify output
 
 ### Short-term (This iteration):
 4. 📋 Run `nox -s lint` and fix reported issues
@@ -259,4 +261,4 @@ artifacts/
 
 ---
 
-**Last Updated:** 2025-11-11 (after commit 04fcefc)
+**Last Updated: 2026-07-11

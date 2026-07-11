@@ -1,10 +1,12 @@
 # Offline Deployment Procedure - Phase 8
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Version**: 1.0.0-phase8-groundwork  
 **Timeline**: 3 days post-merge (2026-07-09 activation)  
 **Lead Agent**: unified-security-scanner  
 
-## 🎯 Overview
+##  Overview
 
 Codex Cognitive Brain supports **air-gap (fully offline) deployment** using pre-generated offline wheelhouses. This enables deployment to isolated machines with **zero external network calls** required.
 
@@ -43,7 +45,7 @@ pip install cyclonedx-bom
 
 ---
 
-## 🚀 Phase 8 Groundwork Execution (Starting 2026-07-09)
+##  Phase 8 Groundwork Execution (Starting 2026-07-09)
 
 ### Step 1: Generate Offline Wheelhouse on Network-Connected Machine
 
@@ -210,7 +212,7 @@ ip addr show  # Confirm network interface exists but is isolated
 
 ---
 
-## 🔒 Configure for Air-Gap Operation
+##  Configure for Air-Gap Operation
 
 ### Environment Variables for Offline Mode
 
@@ -268,7 +270,7 @@ chmod +x /usr/local/bin/codex-offline
 
 ---
 
-## ✅ Verify Air-Gap Compliance
+##  Verify Air-Gap Compliance
 
 ### 1. Network Isolation Test (requires root)
 
@@ -476,7 +478,7 @@ sudo iptables -L -v | grep -E "(OUTPUT|FORWARD)"
 
 ---
 
-## 📊 Monitoring & Validation
+##  Monitoring & Validation
 
 ### System Resource Monitoring
 
@@ -604,7 +606,7 @@ pip install codex-ml
 
 ---
 
-## 📚 Related Documentation
+##  Related Documentation
 
 - **.codex/archive/misc/INTELLIGENCE_CAMPAIGN_BASELINE.md** (§DECIDE Phase Decision 3)
 - **OFFLINE_BOOTSTRAP.sh** (Emergency offline bootstrap)
@@ -613,7 +615,7 @@ pip install codex-ml
 
 ---
 
-## 🔐 Security Considerations
+##  Security Considerations
 
 ### Data Isolation
 - All data stays on local machine (no cloud sync)

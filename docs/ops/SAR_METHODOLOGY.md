@@ -1,11 +1,13 @@
 # Search and Rescue (SAR) Methodology — Aries-Serpent/_codex_
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 ## Codebase Alignment at Level 4 MLOps
 
 **Version:** 1.0.0  
 **Date:** 2026-03-06  
-**Status:** ✅ Actionable — executable by Copilot Coding Agent  
+**Status:**  Actionable — executable by Copilot Coding Agent  
 **Owner:** @mbaetiong  
 **Reference Standards:** Azure MLOps Maturity Model · NGMN MLOps v1.2 (2025) · ISO/IEC 23053  
 
@@ -68,16 +70,16 @@ quadrantChart
 
 | Dimension | L4 Requirement | _codex_ State | Score | SAR Priority |
 |-----------|----------------|---------------|-------|--------------|
-| **CI/CD Automation** | Full end-to-end; zero manual gates | ✅ 100 workflows; self-healing CI | 9.2/10 | — |
-| **Cognitive Memory** | Persistent agent memory + pattern learning | ✅ SQLite STM/LTM; cognitive brain app | 8.5/10 | — |
-| **Security & Governance** | 0 CVEs; auto policy enforcement; audit trail | ✅ 48 CVEs fixed; CodeQL; detect-secrets | 9.0/10 | — | <!-- pragma: allowlist secret -->
-| **Variable Hygiene** | All secrets/vars present, rotated, audited | ✅ 9 Codespace secrets set (SAR-G01 COMPLETE W-142) | 9.0/10 | ✅ | <!-- pragma: allowlist secret -->
+| **CI/CD Automation** | Full end-to-end; zero manual gates |  100 workflows; self-healing CI | 9.2/10 | — |
+| **Cognitive Memory** | Persistent agent memory + pattern learning |  SQLite STM/LTM; cognitive brain app | 8.5/10 | — |
+| **Security & Governance** | 0 CVEs; auto policy enforcement; audit trail |  48 CVEs fixed; CodeQL; detect-secrets | 9.0/10 | — | <!-- pragma: allowlist secret -->
+| **Variable Hygiene** | All secrets/vars present, rotated, audited |  9 Codespace secrets set (SAR-G01 COMPLETE W-142) | 9.0/10 |  | <!-- pragma: allowlist secret -->
 | **Cache Efficiency** | Shared L1–L5 hierarchy; < 5% miss rate | ⚠️ 24+ workflows miss cache wiring | 5.5/10 | P2 |
 | **Model Lifecycle** | Auto-train → deploy → monitor → retrain | ⚠️ Auto-train + deploy; no auto-retrain | 5.5/10 | **P1** |
 | **Data / Model Drift** | Real-time detection + auto-remediation | ⚠️ Basic MLflow tracking; no auto-retrain | 4.0/10 | **P1** |
-| **Feature Store** | Centralised, versioned, discoverable | ✅ 5 backends: InMemory/SQLite/Redis/DuckDB + Arrow IPC (SAR-G02 97/100 W-142) | 9.0/10 | ✅ |
-| **Observability** | Live metrics; distributed tracing; alerting | ✅ `drift_span()` + `OTEL_EXPORTER_OTLP_ENDPOINT` live in devcontainer (SAR-G05 100/100 W-142) | 9.0/10 | ✅ |
-| **Explainability** | SHAP/LIME or equivalent; decision logs | ❌ Not implemented | 1.2/10 | P3 |
+| **Feature Store** | Centralised, versioned, discoverable |  5 backends: InMemory/SQLite/Redis/DuckDB + Arrow IPC (SAR-G02 97/100 W-142) | 9.0/10 |  |
+| **Observability** | Live metrics; distributed tracing; alerting |  `drift_span()` + `OTEL_EXPORTER_OTLP_ENDPOINT` live in devcontainer (SAR-G05 100/100 W-142) | 9.0/10 |  |
+| **Explainability** | SHAP/LIME or equivalent; decision logs |  Not implemented | 1.2/10 | P3 |
 
 **Overall Level: 3.95 / 4.0** — SAR target: all P1 gaps resolved → **Level 4.0 certified**
 
@@ -86,16 +88,16 @@ quadrantChart
 ## 2. SAR Five-Layer Architecture
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Diagram showing "🧠 LAYER 5 — COGNITIVE BRAIN", "SQLite STM/LTM\nSession Patterns\nAgent Knowledge\nImprovementArea Tags"'}}%%
+%%{init: {'accessibility': {'title': 'Diagram showing " LAYER 5 — COGNITIVE BRAIN", "SQLite STM/LTM\nSession Patterns\nAgent Knowledge\nImprovementArea Tags"'}}%%
 block-beta
   columns 1
-  block:L5["🧠 LAYER 5 — COGNITIVE BRAIN"]
+  block:L5[" LAYER 5 — COGNITIVE BRAIN"]
     CB["SQLite STM/LTM\nSession Patterns\nAgent Knowledge\nImprovementArea Tags"]
   end
-  block:L4["🤖 LAYER 4 — ML MODELS & DATA"]
+  block:L4[" LAYER 4 — ML MODELS & DATA"]
     ML["Training Runs\nModel Checkpoints\nFAISS Embeddings\nMLflow Registry"]
   end
-  block:L3["⚙️ LAYER 3 — CONFIGURATION"]
+  block:L3[" LAYER 3 — CONFIGURATION"]
     CFG["GitHub Vars/Secrets\ndevcontainer.json\nHydra Configs\npyproject.toml"]
   end
   block:L2["🔄 LAYER 2 — CI/CD PIPELINE"]
@@ -165,7 +167,7 @@ flowchart TD
     subgraph TRIAGE["Phase 2 — TRIAGE 🏷️"]
         T1{Severity?}
         T1 -->|P0 Critical| T_P0[🚨 Human escalation\n< 1 hour]
-        T1 -->|P1 Blocker| T_P1[🤖 Copilot agent\nauto-fix attempt]
+        T1 -->|P1 Blocker| T_P1[ Copilot agent\nauto-fix attempt]
         T1 -->|P2 Degraded| T_P2[⏱️ Scheduled\nremediation]
         T1 -->|P3 Advisory| T_P3[📋 Backlog\nnext sprint]
     end
@@ -177,7 +179,7 @@ flowchart TD
         R2 -->|No — needs human| R4[Open blocker issue\nTag @mbaetiong]
     end
 
-    subgraph REINTEGRATE["Phase 4 — REINTEGRATE ✅"]
+    subgraph REINTEGRATE["Phase 4 — REINTEGRATE "]
         V1[Run validation gate\n6 checks] --> V2{All gates pass?}
         V2 -->|Yes| V3[Merge to main\nUpdate LEVEL_4 score]
         V2 -->|No| V4[Return to RESCUE]
@@ -326,15 +328,15 @@ python scripts/cognitive/pattern_health_check.py --min-confidence 0.75
 ### 5.1 Decision Flowchart
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing Anomaly detected, 🔴 P0 — CRITICAL\nImmediate human escalation\nSLA: < 1 hour'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing Anomaly detected,  P0 — CRITICAL\nImmediate human escalation\nSLA: < 1 hour'}}%%
 flowchart TD
     A([Anomaly detected]) --> B{Data loss or\nsecurity breach?}
-    B -->|Yes| P0[🔴 P0 — CRITICAL\nImmediate human escalation\nSLA: < 1 hour]
+    B -->|Yes| P0[ P0 — CRITICAL\nImmediate human escalation\nSLA: < 1 hour]
     B -->|No| C{Blocks PRs\nor deployment?}
-    C -->|Yes| P1[🟠 P1 — BLOCKER\nCopilot auto-fix + issue\nSLA: < 4 hours]
+    C -->|Yes| P1[ P1 — BLOCKER\nCopilot auto-fix + issue\nSLA: < 4 hours]
     C -->|No| D{Measurably degrades\nperformance/reliability?}
     D -->|Yes| P2[🟡 P2 — DEGRADED\nScheduled remediation\nSLA: < 24 hours]
-    D -->|No| P3[🟢 P3 — ADVISORY\nBacklog — next sprint\nSLA: < 1 week]
+    D -->|No| P3[ P3 — ADVISORY\nBacklog — next sprint\nSLA: < 1 week]
 
     P0 --> E0[Escalate to @mbaetiong\nCreate P0 incident issue\nHalt all agent autonomous actions]
     P1 --> E1[Dispatch Copilot agent\nRun matching playbook\nOpen blocker issue]
@@ -407,17 +409,17 @@ sequenceDiagram
 
     Agent->>Writer: set --name VAR_A --value X --scope repo
     Writer->>Ops: write variable_20260306_VAR_A.json
-    Writer-->>Agent: ✅ intent queued
+    Writer-->>Agent:  intent queued
 
     Agent->>+WF: gh workflow run (on push trigger)
     WF->>Ops: read variable_*.json
     WF->>GH: POST /repos/.../actions/variables (CODEX_MASTER_KEY)
     GH-->>WF: 201 Created
     WF->>Ops: delete processed intent file
-    WF-->>-Agent: ✅ variables created
+    WF-->>-Agent:  variables created
 
     Agent->>CLI: check --fail-on-absent
-    CLI-->>Agent: ✅ all required variables present
+    CLI-->>Agent:  all required variables present
 ```
 
 ### 6.3 SAR-002 — CI Failure Recovery (State Diagram)
@@ -493,9 +495,9 @@ python scripts/tools/variable_audit_cli.py rotate-check --days 90
 ### 7.1 Validation Gate Pipeline
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing 🚀 Begin Reintegration, ruff / black fix\nreturn to RESCUE'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing  Begin Reintegration, ruff / black fix\nreturn to RESCUE'}}%%
 flowchart TD
-    START([🚀 Begin Reintegration]) --> G1
+    START([ Begin Reintegration]) --> G1
 
     G1{Gate 1\nCode Quality}
     G1 -->|pass| G2
@@ -521,7 +523,7 @@ flowchart TD
     G6 -->|pass| MERGE
     G6 -->|fail| FAIL6[Run SAR-002\nself-healing CI]
 
-    MERGE([✅ Merge to main\nUpdate L4 score])
+    MERGE([ Merge to main\nUpdate L4 score])
 
     style MERGE fill:#006400,color:#fff
     style FAIL1 fill:#8b0000,color:#fff
@@ -555,7 +557,7 @@ python scripts/tools/codex_yaml_gap_check.py
 RATE=$(gh api repos/Aries-Serpent/_codex_/actions/variables/CODEX_CI_FAILURE_RATE \
   -q '.value' 2>/dev/null | cut -d: -f1)
 python3 -c "import sys; sys.exit(1 if float('${RATE:-0}') > 10.0 else 0)" \
-  && echo "✅ CI rate OK: ${RATE}%" || echo "❌ CI rate too high: ${RATE}%"
+  && echo " CI rate OK: ${RATE}%" || echo " CI rate too high: ${RATE}%"
 ```
 
 ---
@@ -607,18 +609,18 @@ flowchart TB
         W_WE[workflow-expiry-enforcer.yml]
     end
 
-    subgraph L3["⚙️ Layer 3 — Configuration"]
+    subgraph L3[" Layer 3 — Configuration"]
         W_VG[vars-guide-sync.yml ✨NEW]
         W_PI[process-variable-intents.yml]
         W_AD[agent-auth-delegation.yml]
     end
 
-    subgraph L4["🤖 Layer 4 — ML Models"]
+    subgraph L4[" Layer 4 — ML Models"]
         W_EI[embedding-index-rebuild.yml]
         W_CB[cognitive_brain_ci_feedback.yml]
     end
 
-    subgraph L5["🧠 Layer 5 — Cognitive Brain"]
+    subgraph L5[" Layer 5 — Cognitive Brain"]
         W_MS[memory-sync-agent]
         W_RI[rag-index-manager]
     end
@@ -651,16 +653,16 @@ flowchart TB
 
 | ID | Gap | Layer | Severity | Status | Owner | Playbook |
 |----|-----|-------|----------|--------|-------|----------|
-| SAR-G01 | 7 Codespace secrets missing | L3 | 🔴 P1 | ✅ RESOLVED W-142 (2026-03-07) | @mbaetiong | SAR-001 §13 | <!-- pragma: allowlist secret -->
-| SAR-G02 | Feature store absent | L4 | 🔴 P1 | ✅ RESOLVED W-142 (97/100 — 5 backends + Arrow IPC) | @mbaetiong | New design |
-| SAR-G03 | Auto-retrain on drift absent | L4 | 🔴 P1 | OPEN | @mbaetiong | SAR-004 |
+| SAR-G01 | 7 Codespace secrets missing | L3 |  P1 |  RESOLVED W-142 (2026-03-07) | @mbaetiong | SAR-001 §13 | <!-- pragma: allowlist secret -->
+| SAR-G02 | Feature store absent | L4 |  P1 |  RESOLVED W-142 (97/100 — 5 backends + Arrow IPC) | @mbaetiong | New design |
+| SAR-G03 | Auto-retrain on drift absent | L4 |  P1 | OPEN | @mbaetiong | SAR-004 |
 | SAR-G04 | 18+ Python workflows missing cache | L2 | 🟡 P2 | IN PROGRESS (6 done W-139) | @copilot | SAR-002 |
-| SAR-G05 | Distributed tracing absent | L2 | 🟡 P2 | ✅ RESOLVED W-142 (100/100 — drift_span + OTEL endpoint) | @mbaetiong | New design |
+| SAR-G05 | Distributed tracing absent | L2 | 🟡 P2 |  RESOLVED W-142 (100/100 — drift_span + OTEL endpoint) | @mbaetiong | New design |
 | SAR-G06 | Model auto-rollback absent | L4 | 🟡 P2 | OPEN | @mbaetiong | SAR-004 |
-| SAR-G07 | SHAP/LIME explainability absent | L4 | 🟢 P3 | OPEN | Future | New design |
-| SAR-G08 | Cognitive Brain LTM healthy | L5 | — | ✅ OK | auto | SAR-005 |
-| SAR-G09 | vars-guide auto-sync absent | L3 | 🟢 P3 | ✅ RESOLVED W-139 | @copilot | — |
-| SAR-G10 | Empty except in intent writer | L1 | 🟢 P3 | ✅ RESOLVED W-139 | @copilot | — |
+| SAR-G07 | SHAP/LIME explainability absent | L4 |  P3 | OPEN | Future | New design |
+| SAR-G08 | Cognitive Brain LTM healthy | L5 | — |  OK | auto | SAR-005 |
+| SAR-G09 | vars-guide auto-sync absent | L3 |  P3 |  RESOLVED W-139 | @copilot | — |
+| SAR-G10 | Empty except in intent writer | L1 |  P3 |  RESOLVED W-139 | @copilot | — |
 
 ### 10.2 Resolution Roadmap (Gantt)
 
@@ -730,15 +732,15 @@ flowchart TD
         L_CS["⚠️ Not listable via API\n(Codespace secrets)"]
     end
 
-    subgraph AUDIT_ENGINE["⚙️ Audit Engine\nvariable_audit_cli.py run_audit()"]
+    subgraph AUDIT_ENGINE[" Audit Engine\nvariable_audit_cli.py run_audit()"]
         COMPARE{Compare\nexpected vs live}
-        PRESENT["✅ present"]
-        ABSENT["❌ absent"]
+        PRESENT[" present"]
+        ABSENT[" absent"]
         UNKNOWN["❓ unknown\n(no token or\nCodespace)"]
         EXTRA["➕ extra\n(not in guide)"]
     end
 
-    subgraph OUTPUTS["📊 Outputs"]
+    subgraph OUTPUTS[" Outputs"]
         TABLE["Terminal table\n--format table"]
         JSON["Machine-readable\n--format json\nvariable_audit_latest.json"]
         MD["Markdown report\nvariable_audit_latest.md"]

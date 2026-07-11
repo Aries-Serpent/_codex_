@@ -1,6 +1,8 @@
 # Codex Reporting
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 This guide documents how to generate audit trend reports and dashboards from the
 trend database produced by the audit pipeline.

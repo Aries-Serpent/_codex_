@@ -1,4 +1,6 @@
 # AGENTS — Documentation Guides
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Last Updated**: 2026-06-22  
 **Scope**: docs/guides/**
@@ -11,7 +13,7 @@ This directory contains comprehensive guides for using the repository.
 
 ---
 
-## 🔒 Security Guides (2025-12-23)
+##  Security Guides (2025-12-23)
 
 ### Quick Reference
 
@@ -28,7 +30,7 @@ from codex.security.storage import SecureStorage
 
 ---
 
-## 📖 Additional Guides
+##  Additional Guides
 
 - AST implementation guides
 - Deployment guides
@@ -37,7 +39,7 @@ from codex.security.storage import SecureStorage
 
 ---
 
-**See**: [Main .codex/archive/deprecated/AGENTS.md](../agents.md) | [Security Module Docs](https://github.com/Aries-Serpent/_codex_/blob/main/src/codex/security)
+**See**: [Main .codex/archive/deprecated/AGENTS.md](../agents.md) | [Security Module Docs](../src/codex/security)
 
 ---
 

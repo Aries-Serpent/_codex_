@@ -1,4 +1,6 @@
 # [Report]: Expanded Transformed PR Overview — Deterministic Docs, Agent-Run, Optional Metrics & Stubs
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 <!-- archive: this file is a historical record; content is intentionally preserved -->
 
@@ -25,22 +27,22 @@ This PR establishes a deterministic docs build pipeline (S‑17), Agent‑run ha
 
 | Finding | Impact | Resolution |
 |---------|--------|------------|
-| Makefile recipe lines missing tabs | Syntax error prevents make execution | ✅ Fixed: Added tab characters to all recipe lines (status, quick, test, lint, env, perf, scan, deps targets) |
-| SKIP_OPTIONAL/FAIL_ON_MISSING variable assignment | Correct usage of ?= at Makefile top level | ✅ Verified: Variables properly defined outside recipes using Makefile conditional assignment syntax |
-| Environment gating for heavy tests | Ensures fast CI defaults | ✅ Implemented: pytest.ini markers, tests.yml workflow, run_tests.sh with ACCELERATE_TEST, RUN_LORA_TESTS, RUN_PERF_SMOKE gates |
-| Determinism verification | Critical for reproducible builds | ✅ Implemented: canonicalize_artifacts.py, Determinism_Checklist.md with validation steps |
-| YAML linting configuration | Maintains workflow quality | ✅ Implemented: .yamllint.yml with line-length: 140, truthy warnings, no document-start requirement |
+| Makefile recipe lines missing tabs | Syntax error prevents make execution |  Fixed: Added tab characters to all recipe lines (status, quick, test, lint, env, perf, scan, deps targets) |
+| SKIP_OPTIONAL/FAIL_ON_MISSING variable assignment | Correct usage of ?= at Makefile top level |  Verified: Variables properly defined outside recipes using Makefile conditional assignment syntax |
+| Environment gating for heavy tests | Ensures fast CI defaults |  Implemented: pytest.ini markers, tests.yml workflow, run_tests.sh with ACCELERATE_TEST, RUN_LORA_TESTS, RUN_PERF_SMOKE gates |
+| Determinism verification | Critical for reproducible builds |  Implemented: canonicalize_artifacts.py, Determinism_Checklist.md with validation steps |
+| YAML linting configuration | Maintains workflow quality |  Implemented: .yamllint.yml with line-length: 140, truthy warnings, no document-start requirement |
 
 ## 4) S-ID Implementation Status
 
 | S-ID | Status | Artifacts | Notes |
 |------|--------|-----------|-------|
-| S‑17 | ✅ Complete | docs_build.sh, noxfile.py, workflows, baselines | Deterministic docs pipeline with SKIP_OPTIONAL/FAIL_ON_MISSING |
-| S‑vector | ✅ Complete | vector_stores/*, detector, tests | PGVector/Weaviate stubs with informative errors |
-| S‑02 | ✅ Complete | _optional_bleu_rouge.py, docs/metrics.md | BLEU/ROUGE with graceful degradation |
-| S‑14 | ✅ Validated | training/accelerate_init_guard.py | CPU-safe distributed init with structured diagnostics |
-| S‑15 | ✅ Validated | registry.py, registry_names.py | Deterministic list() and stable name mapping |
-| S‑12 | ✅ Partial | docs/modeling/LoRA.md | Documentation complete, test utils ready for extension |
+| S‑17 |  Complete | docs_build.sh, noxfile.py, workflows, baselines | Deterministic docs pipeline with SKIP_OPTIONAL/FAIL_ON_MISSING |
+| S‑vector |  Complete | vector_stores/*, detector, tests | PGVector/Weaviate stubs with informative errors |
+| S‑02 |  Complete | _optional_bleu_rouge.py, docs/metrics.md | BLEU/ROUGE with graceful degradation |
+| S‑14 |  Validated | training/accelerate_init_guard.py | CPU-safe distributed init with structured diagnostics |
+| S‑15 |  Validated | registry.py, registry_names.py | Deterministic list() and stable name mapping |
+| S‑12 |  Partial | docs/modeling/LoRA.md | Documentation complete, test utils ready for extension |
 
 ## 5) Key Features
 
@@ -70,7 +72,7 @@ This PR establishes a deterministic docs build pipeline (S‑17), Agent‑run ha
 
 ## 6) Validation Summary
 
-✅ **All validations passing**:
+ **All validations passing**:
 - Python files compile successfully
 - Bash scripts syntax-valid
 - YAML workflows valid (yamllint compliant)
@@ -127,6 +129,6 @@ All acceptance criteria met:
 
 ---
 
-**Status**: ✅ Ready for merge  
+**Status**:  Ready for merge  
 **Risk**: Low (infrastructure/tooling only, no core changes)  
 **Breaking**: None (additive changes with backward compatibility)

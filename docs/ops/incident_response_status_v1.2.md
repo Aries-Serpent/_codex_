@@ -1,6 +1,9 @@
 # Ops: Incident Response for Status/Validation (v1.2)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
-🧠 Roles: [Primary: Incident Commander], [Secondary: CI Maintainer] ⚡ Energy: 5
+ Roles: [Primary: Incident Commander], [Secondary: CI Maintainer] ⚡ Energy: 5
 
 Trigger Conditions
 - status_validation.yml red for >24h

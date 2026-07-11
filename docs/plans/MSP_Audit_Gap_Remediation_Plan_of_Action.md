@@ -1,6 +1,8 @@
 # MSP Audit Gap Remediation — Plan of Action
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 Roles: [Audit Orchestrator], [Capability Cartographer] Energy: 5
 
 ## Objectives
@@ -12,11 +14,11 @@ Roles: [Audit Orchestrator], [Capability Cartographer] Energy: 5
 
 | Pillar | Status | Evidence |
 |--------|--------|----------|
-| Policy Gates | ✅ Enabled via `.copilot-space/workflow.yaml` and `audit_runner validate` | See docs/remediation/policy.md |
-| Reporting | ✅ Matrix shows missing patterns and ZERO markers | templates/audit/capability_matrix.md.j2 |
-| Remediation Enablement | ✅ Docs available under `docs/remediation/` | docs/remediation/README.md |
-| Validation | ✅ Checklist and scripts published | docs/validation/Gaps_Coverage_Checklist_And_Scripts.md |
-| CI Automation | ✅ Workflow `capability-audit.yml` bootstrapped | .github/workflows/capability-audit.yml |
+| Policy Gates |  Enabled via `.copilot-space/workflow.yaml` and `audit_runner validate` | See docs/remediation/policy.md |
+| Reporting |  Matrix shows missing patterns and ZERO markers | templates/audit/capability_matrix.md.j2 |
+| Remediation Enablement |  Docs available under `docs/remediation/` | docs/remediation/README.md |
+| Validation |  Checklist and scripts published | docs/validation/Gaps_Coverage_Checklist_And_Scripts.md |
+| CI Automation |  Workflow `capability-audit.yml` bootstrapped | .github/workflows/capability-audit.yml |
 
 ## Follow-up Links
 - Component gaps artifact: `audit_artifacts/component_gaps.json`

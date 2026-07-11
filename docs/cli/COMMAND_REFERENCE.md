@@ -1,7 +1,9 @@
 # Codex CLI Command Reference
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Version:** 1.0.0  
-**Last Updated:** 2026-01-21  
+**Last Updated: 2026-07-11
 **Coverage:** 90% (45 of 50 commands documented)
 
 ## Table of Contents
@@ -1128,7 +1130,7 @@ CODEX_LOG_DB_PATH=.codex/session_logs.db
 ## Document Status
 
 - **Version:** 1.0.0
-- **Last Updated:** 2026-01-21
+- **Last Updated: 2026-07-11
 - **Maintainer:** Codex Team
 - **Coverage:** 90% (45/50 commands)
 

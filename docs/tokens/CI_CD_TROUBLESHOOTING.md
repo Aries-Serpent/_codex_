@@ -1,4 +1,6 @@
 # CI_CD_TOKEN_TROUBLESHOOTING.md
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Diagnostic Guide for Token-Related CI/CD Failures**
 
@@ -8,7 +10,7 @@
 
 ---
 
-## 🎯 Quick Diagnosis Guide
+##  Quick Diagnosis Guide
 
 Use this flowchart to identify token-related failures:
 
@@ -74,10 +76,10 @@ echo "Conclusion: GITHUB_TOKEN has insufficient scopes"
 
 **Solution**:
 ```python
-# ❌ WRONG: Using GITHUB_TOKEN for org variable read
+#  WRONG: Using GITHUB_TOKEN for org variable read
 token = os.environ['GITHUB_TOKEN']  # Level 1 - insufficient
 
-# ✅ CORRECT: Use CODEX_BACKUP_KEY or CODEX_MASTER_KEY
+#  CORRECT: Use CODEX_BACKUP_KEY or CODEX_MASTER_KEY
 from scripts.ci._token_resolver import get_token
 
 token, token_source = get_token(required_elevated=True)
@@ -276,7 +278,7 @@ Token was revoked
 #!/bin/bash
 # 1. Validate token format
 if [[ ! $TOKEN =~ ^gh(p|o|u|r|s)_ ]]; then
-    echo "❌ Token format invalid"
+    echo " Token format invalid"
     echo "   Expected: ghp_... or gho_... or ghu_..." <!-- pragma: allowlist secret -->
     echo "   Got: $TOKEN"
     exit 1
@@ -288,11 +290,11 @@ RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" \
   https://api.github.com/user)
 
 if [ "$RESPONSE" == "401" ]; then
-    echo "❌ Token invalid or revoked"
+    echo " Token invalid or revoked"
     echo "   HTTP Status: 401"
     exit 1
 elif [ "$RESPONSE" == "200" ]; then
-    echo "✅ Token is valid"
+    echo " Token is valid"
 else
     echo "⚠️ Unexpected response: $RESPONSE"
 fi
@@ -335,7 +337,7 @@ echo "Checking token validity..."
 # Test 1: Basic auth
 if ! curl -s -H "Authorization: token $TOKEN" \
     https://api.github.com/user > /dev/null 2>&1; then
-    echo "❌ Token failed basic auth - revoked or expired"
+    echo " Token failed basic auth - revoked or expired"
     echo "Recovery actions:"
     echo "1. For GITHUB_TOKEN: Automatic in next run"
     echo "2. For CODEX_BACKUP_TOKEN: Contact admin"
@@ -343,7 +345,7 @@ if ! curl -s -H "Authorization: token $TOKEN" \
     exit 1
 fi
 
-echo "✅ Token is valid"
+echo " Token is valid"
 
 # Test 2: Scope check
 SCOPES=$(curl -s -H "Authorization: token $TOKEN" \
@@ -468,7 +470,7 @@ curl -X PUT \
 
 # Step 5: Notify team
 echo "Step 5: Notifying security team..."
-echo "✅ Token rotation completed"
+echo " Token rotation completed"
 ```
 
 ---
@@ -495,9 +497,9 @@ echo "Token available: $TOKEN_AVAILABLE"
 if [ "$TOKEN_AVAILABLE" == "YES" ]; then
     echo "Step 2: Re-running workflow..."
     gh workflow run "$WORKFLOW_ID"
-    echo "✅ Workflow re-triggered"
+    echo " Workflow re-triggered"
 else
-    echo "❌ Token still unavailable - cannot re-run"
+    echo " Token still unavailable - cannot re-run"
     echo "Recovery options:"
     echo "1. Request token from admin"
     echo "2. Use alternative approach"
@@ -511,7 +513,7 @@ gh run list --workflow="$WORKFLOW_ID" --limit=1 --json status
 
 ---
 
-## ✅ Prevention Strategies
+##  Prevention Strategies
 
 ### Pre-Deployment Validation
 
@@ -525,7 +527,7 @@ validate_tokens() {
     
     # Check GITHUB_TOKEN
     if [ -z "${GITHUB_TOKEN:-}" ]; then
-        echo "❌ GITHUB_TOKEN not set"
+        echo " GITHUB_TOKEN not set"
         return 1
     fi
     
@@ -533,12 +535,12 @@ validate_tokens() {
     for TOKEN in GITHUB_TOKEN CODEX_BACKUP_TOKEN CODEX_MASTER_KEY; do
         VALUE="${!TOKEN:-}"
         if [ -n "$VALUE" ] && [[ ! "$VALUE" =~ ^gh[pours]_ ]]; then
-            echo "❌ $TOKEN has invalid format"
+            echo " $TOKEN has invalid format"
             return 1
         fi
     done
     
-    echo "✅ All tokens valid"
+    echo " All tokens valid"
     return 0
 }
 

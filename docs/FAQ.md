@@ -1,6 +1,8 @@
 # _codex_ Frequently Asked Questions (FAQ)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-> **Last Updated:** 2026-06-27  
+> **Last Updated: 2026-06-27
 > **Status:** Phase 3 - Documentation Enhancement Campaign  
 > **Reading Level:** 8th Grade (Flesch-Kincaid)
 
@@ -66,7 +68,7 @@ pip install -e ".[dev,all]"  # Includes all optional dependencies
 
 **Verify installation:**
 ```bash
-python -c "import codex_ml; print('✅ _codex_ installed successfully')"
+python -c "import codex_ml; print(' _codex_ installed successfully')"
 ```
 
 ---
@@ -111,10 +113,10 @@ If still failing: Check [GitHub Issues](https://github.com/Aries-Serpent/_codex_
 
 **A:** **Hydra** is a framework for managing complex configurations. In _codex_, we use it to:
 
-- ✅ Organize settings in YAML files (easy to read)
-- ✅ Override settings from command line (no code changes needed)
-- ✅ Create experiment variations (A/B testing)
-- ✅ Track which settings produced which results
+-  Organize settings in YAML files (easy to read)
+-  Override settings from command line (no code changes needed)
+-  Create experiment variations (A/B testing)
+-  Track which settings produced which results
 
 **Example:**
 ```bash
@@ -261,7 +263,7 @@ Training started...
 Epoch 1/10: Loss=0.45, Accuracy=0.82
 Epoch 2/10: Loss=0.38, Accuracy=0.85
 ...
-✅ Training complete!
+ Training complete!
 Model saved to: runs/experiment_1/model.pt
 ```
 
@@ -412,7 +414,7 @@ Epoch 1: Loss=0.45, Accuracy=82%
 ↑ Accuracy is improving (good!)
 
 Epoch 10: Loss=0.05, Accuracy=95%
-✅ Model is learning well
+ Model is learning well
 ```
 
 **Warning signs:**
@@ -749,10 +751,10 @@ python -m codex_ml.serving.cli serve \
 ## Additional Resources
 
 ### Documentation
-- 📖 [Main Documentation](./README.md)
-- 🚀 [Quick Start Guide](./docs/guides/QUICKSTART.md)
-- ⚙️ [Configuration Guide](./configuration/)
-- 📊 [Evaluation Guide](./evaluation/README.md)
+-  [Main Documentation](./README.md)
+-  [Quick Start Guide](./docs/guides/QUICKSTART.md)
+-  [Configuration Guide](./configuration/)
+-  [Evaluation Guide](./evaluation/README.md)
 - 🚢 [Deployment Guide](./guides/production_deployment.md)
 
 ### Community
@@ -778,7 +780,7 @@ python -m codex_ml.serving.cli serve \
 | **Categories** | 6 |
 | **Links** | 15+ internal docs |
 | **Freshness** | Current |
-| **Status** | ✅ Production Ready |
+| **Status** |  Production Ready |
 
 ---
 
@@ -789,5 +791,5 @@ Found a gap in this FAQ? Help us improve:
 2. Add your question and we'll answer it
 3. Check back - your answer will be added here!
 
-**Last updated:** 2026-06-27  
+**Last updated: 2026-06-27
 **Maintained by:** _codex_ Documentation Team

@@ -1,4 +1,6 @@
 # Workflow Consolidation Recommendations
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 ## Table of Contents
 
@@ -25,10 +27,10 @@
   - [📦 Archived (2)](#-archived-2)
   - [🔍 Dynamic / GitHub-Managed (7) — No file-level action possible](#-dynamic--github-managed-7--no-file-level-action-possible)
   - [⚠️ Orphan-Equivalent Pending (3) — No backing file, not yet stubbed](#-orphan-equivalent-pending-3--no-backing-file-not-yet-stubbed)
-  - [✅ Keep Active (26)](#-keep-active-26)
+  - [ Keep Active (26)](#-keep-active-26)
 - [Phase 2 Consolidation Targets](#phase-2-consolidation-targets)
 - [Phase 3 Consolidation Decisions (2026-05-21)](#phase-3-consolidation-decisions-2026-05-21)
-  - [P3.1 — Security SAST: semgrep_sarif.yml → security-scanning-suite.yml ✅](#p31--security-sast-semgrep_sarifyml--security-scanning-suiteyml-)
+  - [P3.1 — Security SAST: semgrep_sarif.yml → security-scanning-suite.yml ](#p31--security-sast-semgrep_sarifyml--security-scanning-suiteyml-)
   - [P3.2 — Discussion Poster Pair: KEEP as separate workflows](#p32--discussion-poster-pair-keep-as-separate-workflows)
   - [P3.3 — Validation Cluster: KEEP as separate workflows](#p33--validation-cluster-keep-as-separate-workflows)
 - [Investigation Report: Workflow Portfolio Triage (Phase 1-2)](#investigation-report-workflow-portfolio-triage-phase-1-2)
@@ -45,7 +47,7 @@
   - [Phase 5 cache-aware workflow goals](#phase-5-cache-aware-workflow-goals)
   - [Phase 5 deferrals](#phase-5-deferrals)
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## Current State
 
@@ -241,10 +243,10 @@ jobs:
 
 | Action | Workflows | Status |
 |---|---|---|
-| Created orphan stub files (no triggers) | `cache-health-monitor.yml`, `cache-validation.yml`, `documentation-quality-check.yml` | ✅ Done |
-| Archived dispatch shim | `self-healing.yml` → `.github/workflow-archive/disabled/` | ✅ Done |
-| Archived test simulator | `test-analytics-failure-sim.yml` → `.github/workflow-archive/disabled/` | ✅ Done |
-| Full 41-workflow analysis | All decisions documented in table below | ✅ Done |
+| Created orphan stub files (no triggers) | `cache-health-monitor.yml`, `cache-validation.yml`, `documentation-quality-check.yml` |  Done |
+| Archived dispatch shim | `self-healing.yml` → `.github/workflow-archive/disabled/` |  Done |
+| Archived test simulator | `test-analytics-failure-sim.yml` → `.github/workflow-archive/disabled/` |  Done |
+| Full 41-workflow analysis | All decisions documented in table below |  Done |
 
 ## Full Archive Review Decision Matrix (41 Workflows)
 
@@ -283,7 +285,7 @@ jobs:
 | 218151123 | `maturity-check.yml` | File absent from `main`. Create disabled stub in Phase 2. |
 | 218151122 | `benchmarks.yml` | File absent from `main`. Create disabled stub in Phase 2. |
 
-### ✅ Keep Active (26)
+###  Keep Active (26)
 
 | Workflow ID | Name | File | Keep Reason |
 |---|---|---|---|
@@ -291,8 +293,8 @@ jobs:
 | 249744244 | 📋 Post Accountability Report | `post-accountability-to-discussion.yml` | Audit trail + cognitive brain feed. |
 | 249908045 | 🔀 Create Sub-PR | `create-sub-pr-to-0D_base_.yml` | Core branch-management in session pipeline. |
 | 256293349 | 🔄 Doc Refresh Gate (AAIS) | `doc-refresh-gate.yml` | AAIS doc governance gate. |
-| 251020901 | 🧠 Post CI Status to Discussions | `post-ci-status-to-discussion.yml` | PRIORITY 0 cognitive brain feed. |
-| 249908046 | 🚀 Promote Integration Branch | `promote-integration-branch.yml` | Gated `0D_base_` → `main` promotion. |
+| 251020901 |  Post CI Status to Discussions | `post-ci-status-to-discussion.yml` | PRIORITY 0 cognitive brain feed. |
+| 249908046 |  Promote Integration Branch | `promote-integration-branch.yml` | Gated `0D_base_` → `main` promotion. |
 | 239988735 | 🚿 Flush Queued Runs | `flush-queued-runs.yml` | CI queue management during high-volume sessions. |
 | 234039814 | App Package Download | `app-package-download.yml` | User-facing packaging utility with maintained docs. |
 | 223917608 | Authentication Tests | `auth-tests.yml` | Auth module path-triggered tests. |
@@ -321,16 +323,16 @@ jobs:
 
 | Cluster | Merge Path | Priority | Est. Savings | Status |
 |---|---|---|---|---|
-| Orphan-equivalent stubs | `copilot-automation.yml`, `maturity-check.yml`, `benchmarks.yml` | 🟢 Quick | 3 stubs | ✅ Done (2026-05-21) |
-| Security SAST | `semgrep_sarif.yml` → absorbed by `security-scanning-suite.yml` | 🟡 Medium | −1 workflow | ✅ Done (2026-05-21) |
-| Discussion poster pair | `post-accountability` and `post-ci-status` — kept separate (distinct auth chains, incompatible job logic) | 🟡 Medium | −0 workflows | ✅ Resolved: KEEP (2026-05-21) |
-| Validation cluster | `optimized-ci.yml`, `pre-flight-validation.yml`, `mypy-baseline.yml` — kept separate (incompatible triggers) | 🟡 Medium | −0 workflows | ✅ Resolved: KEEP (2026-05-21) |
+| Orphan-equivalent stubs | `copilot-automation.yml`, `maturity-check.yml`, `benchmarks.yml` |  Quick | 3 stubs |  Done (2026-05-21) |
+| Security SAST | `semgrep_sarif.yml` → absorbed by `security-scanning-suite.yml` | 🟡 Medium | −1 workflow |  Done (2026-05-21) |
+| Discussion poster pair | `post-accountability` and `post-ci-status` — kept separate (distinct auth chains, incompatible job logic) | 🟡 Medium | −0 workflows |  Resolved: KEEP (2026-05-21) |
+| Validation cluster | `optimized-ci.yml`, `pre-flight-validation.yml`, `mypy-baseline.yml` — kept separate (incompatible triggers) | 🟡 Medium | −0 workflows |  Resolved: KEEP (2026-05-21) |
 
 ---
 
 ## Phase 3 Consolidation Decisions (2026-05-21)
 
-### P3.1 — Security SAST: semgrep_sarif.yml → security-scanning-suite.yml ✅
+### P3.1 — Security SAST: semgrep_sarif.yml → security-scanning-suite.yml 
 
 **Decision: CONSOLIDATE**
 
@@ -435,7 +437,7 @@ trigger definition.
 
 | Category | Count |
 |---|---|
-| ✅ Active — Keep | 74 (previously 69; +5 reclassified from archive-review-candidate: 2 discussion posters + 3 validation cluster) |
+|  Active — Keep | 74 (previously 69; +5 reclassified from archive-review-candidate: 2 discussion posters + 3 validation cluster) |
 | ⛔ Already Disabled (pre-existing) | 26 |
 | ⛔ Orphan stubs created (Phase 1) | 3 |
 | ⛔ Orphan-equivalent stubs created (Phase 2) | 3 |

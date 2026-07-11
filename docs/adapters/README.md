@@ -1,6 +1,8 @@
 # Adapter implementation notes
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 This short guide describes the adapter interface required by MCP and how to implement a new backend adapter.
 

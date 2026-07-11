@@ -1,4 +1,7 @@
 # Repository File Inventory
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-22  
 > Purpose: Comprehensive catalog of files scanned for .codex/archive/deprecated/AGENTS.md creation
 

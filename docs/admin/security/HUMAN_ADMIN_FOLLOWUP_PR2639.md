@@ -1,11 +1,12 @@
-# 🔐 HUMAN ADMIN FOLLOW-UP: Token Encryption System Setup
+#  HUMAN ADMIN FOLLOW-UP: Token Encryption System Setup
+**Version:** v0.2.1
 
 **Repository**: Aries-Serpent/_codex_  
 **PR**: #2639 / #2660  
 **Branch**: copilot/sub-pr-2639  
-**Status**: ✅ Implementation Complete - **ACTION REQUIRED**  
+**Status**:  Implementation Complete - **ACTION REQUIRED**  
 **Generated**: 2026-06-22  
-**Priority**: 🔴 **HIGH** - Security Enhancement
+**Priority**:  **HIGH** - Security Enhancement
 
 ---
 
@@ -14,10 +15,10 @@
 The secure token encryption system has been **fully implemented** and is ready for production use. This system provides military-grade encryption (AES-256-GCM) for GitHub tokens used by Copilot Agent automation.
 
 **What's Been Done**:
-- ✅ Core encryption/decryption tools created
-- ✅ Comprehensive documentation written  
-- ✅ Bootstrap workflows implemented
-- ✅ 5-pass security review completed (ZERO concerns)
+-  Core encryption/decryption tools created
+-  Comprehensive documentation written  
+-  Bootstrap workflows implemented
+-  5-pass security review completed (ZERO concerns)
 
 **What You Need To Do**:
 1. **Review and test** the implementation
@@ -30,9 +31,9 @@ The secure token encryption system has been **fully implemented** and is ready f
 
 ---
 
-## 🎯 ACTION ITEMS FOR HUMAN ADMIN
+##  ACTION ITEMS FOR HUMAN ADMIN
 
-### ✅ PHASE 1: Review Implementation (Est. 10 min)
+###  PHASE 1: Review Implementation (Est. 10 min)
 
 #### Task 1.1: Review Created Files
 
@@ -75,12 +76,12 @@ python3 scripts/security/token_encryption_tool.py --help
 
 # Test decoder module
 python3 scripts/security/copilot_token_decoder.py
-# Expected: "❌ No token secrets configured" (this is normal before setup)
+# Expected: " No token secrets configured" (this is normal before setup)
 ```
 
 ---
 
-## 🔐 PHASE 2: Generate and Encrypt Token (Est. 15 min)
+##  PHASE 2: Generate and Encrypt Token (Est. 15 min)
 
 ### Task 2.1: Create GitHub Personal Access Token
 
@@ -114,12 +115,12 @@ python3 scripts/security/token_encryption_tool.py
 
 **Expected Output**:
 ```
-🔐 _CODEX_ TOKEN ENCRYPTION TOOL v2.0
+ _CODEX_ TOKEN ENCRYPTION TOOL v2.0
 ================================================================================
 
 Enter GitHub token: ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx <!-- pragma: allowlist secret -->
 
-✅ Encryption complete!
+ Encryption complete!
 
 📋 COPY THESE VALUES TO GITHUB SECRETS:
 
@@ -212,7 +213,7 @@ gh secret set CODEX_GHP_TOKEN_CONFIG \
 
 ---
 
-### ✅ PHASE 4: Verify Setup (Est. 5 min)
+###  PHASE 4: Verify Setup (Est. 5 min)
 
 #### Task 4.1: Test Token Retrieval Locally
 
@@ -227,8 +228,8 @@ python3 scripts/security/copilot_token_decoder.py
 # 🔓 _codex_ Token Decoder Test
 # ==============================================================
 # Detected encoding type: base64
-# ✅ Token retrieved successfully: ghp_xxxxxx...xxxx
-# ✅ Token format and hash verified
+#  Token retrieved successfully: ghp_xxxxxx...xxxx
+#  Token format and hash verified
 # ==============================================================
 ```
 
@@ -259,7 +260,7 @@ gh secret list --repo Aries-Serpent/_codex_
 
 ---
 
-## 🔒 PHASE 5: Security Cleanup (Est. 5 min)
+##  PHASE 5: Security Cleanup (Est. 5 min)
 
 ### Task 5.1: Revoke Old Token (CRITICAL)
 
@@ -292,7 +293,7 @@ history -c  # Clears history in current session
 
 ---
 
-## 📊 VERIFICATION CHECKLIST
+##  VERIFICATION CHECKLIST
 
 Before marking this complete, verify:
 
@@ -385,16 +386,16 @@ After basic setup is complete, consider:
 Once all phases are complete, update this document:
 
 ```
-✅ COMPLETED BY: [Your Name]
-✅ DATE: [YYYY-MM-DD]
-✅ TOKEN EXPIRATION: [YYYY-MM-DD] (90 days from creation)
-✅ NEXT ROTATION DUE: [YYYY-MM-DD]
-✅ VERIFICATION: All checklist items confirmed
+ COMPLETED BY: [Your Name]
+ DATE: [YYYY-MM-DD]
+ TOKEN EXPIRATION: [YYYY-MM-DD] (90 days from creation)
+ NEXT ROTATION DUE: [YYYY-MM-DD]
+ VERIFICATION: All checklist items confirmed
 ```
 
 ---
 
-## 📚 REFERENCE DOCUMENTATION
+##  REFERENCE DOCUMENTATION
 
 **Local Files**:
 - Admin Guide: `docs/admin/security/ADMIN_TOKEN_SETUP.md`
@@ -417,11 +418,11 @@ Once all phases are complete, update this document:
 **Document Version**: 1.0  
 **Last Updated**: 2026-06-22T00:00:00Z  
 **Maintainer**: @mbaetiong  
-**Status**: 🟢 **READY FOR ADMIN ACTION**
+**Status**:  **READY FOR ADMIN ACTION**
 
 ---
 
-## 🎯 Mission Overview
+##  Mission Overview
 
 **Objective**: Guide human administrator through complete token encryption system deployment from code review to production activation.
 
@@ -460,10 +461,10 @@ Once all phases are complete, update this document:
 
 | Metric | Current | Target | Status |
 |--------|---------|--------|--------|
-| Implementation Completeness | 100% | 100% | 🟢 |
-| Admin Action Progress | 0/5 phases | 5/5 phases | 🔴 |
-| Security Review Issues | 0 concerns | 0 concerns | 🟢 |
-| Deployment Time Estimate | 30-45 min | <60 min | 🟢 |
+| Implementation Completeness | 100% | 100% |  |
+| Admin Action Progress | 0/5 phases | 5/5 phases |  |
+| Security Review Issues | 0 concerns | 0 concerns |  |
+| Deployment Time Estimate | 30-45 min | <60 min |  |
 | Token Security Level | N/A | AES-256-GCM | 🟡 |
 
 ---
@@ -494,7 +495,7 @@ Once all phases are complete, update this document:
 
 ---
 
-## 🧠 Redundancy Patterns
+##  Redundancy Patterns
 
 **Rollback Strategy**: If deployment encounters issues, system remains in pre-deployment state (safe). Original plaintext token only revoked after successful verification.
 

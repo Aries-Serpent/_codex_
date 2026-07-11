@@ -1,6 +1,8 @@
 # Expanded Context Workflow - RAG Implementation
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 This document describes the expanded-context workflow implementation for RAG (Retrieval-Augmented Generation) with vectorstore persistence, embeddings caching, and semantic retrieval at 64k-512k token scale.
 

@@ -1,6 +1,8 @@
 # Deep Research Prompts for Repository TODOs
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 This document enumerates all current TODO comments in the repository and provides suggested prompts for ChatGPT-5 Deep Research to investigate and address them.
 

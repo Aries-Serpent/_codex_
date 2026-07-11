@@ -1,4 +1,6 @@
 # Database Recovery Runbook
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Audience**: Production operators, DevOps engineers, SREs  
 **Scope**: SQLite databases in Codex production deployment  
@@ -252,7 +254,7 @@ for db in /var/data/codex_*.db; do
     fi
 done
 
-echo "✅ Backup completed at $TIMESTAMP"
+echo " Backup completed at $TIMESTAMP"
 ```
 
 **Cron Job**:
@@ -324,10 +326,10 @@ chmod 660 /var/data/codex_*.db
 for db in /var/data/codex_*.db; do
     result=$(sqlite3 $db "PRAGMA integrity_check;")
     if [[ $result != "ok" ]]; then
-        echo "❌ FAILED: $db - $result"
+        echo " FAILED: $db - $result"
         exit 1
     else
-        echo "✅ PASSED: $db"
+        echo " PASSED: $db"
     fi
 done
 ```
@@ -449,14 +451,14 @@ for db in /var/data/codex_*.db; do
     # Integrity check
     integrity=$(sqlite3 $db "PRAGMA integrity_check;")
     if [[ $integrity == "ok" ]]; then
-        echo "  ✅ Integrity: PASS"
+        echo "   Integrity: PASS"
     else
-        echo "  ❌ Integrity: FAIL - $integrity"
+        echo "   Integrity: FAIL - $integrity"
     fi
 
     # Size check
     size=$(du -h $db | cut -f1)
-    echo "  📊 Size: $size"
+    echo "   Size: $size"
 
     echo
 done

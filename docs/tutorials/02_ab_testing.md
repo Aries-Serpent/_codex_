@@ -1,6 +1,8 @@
 # Tutorial 02 — Running A/B Tests on Model Outputs
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 **Estimated time:** 20 minutes  
 **Prerequisites:** Python 3.10+, `_codex_` on `PYTHONPATH`  
@@ -139,15 +141,15 @@ suite.add_test(ABTest(
 results = suite.run_all()
 
 for name, r in results.items():
-    status = "✅" if r.significant else "➖"
+    status = "" if r.significant else "➖"
     print(f"{status} {name:15s}  winner={r.winner:12s}  p={r.p_value:.4f}  d={r.effect_size:.3f}")
 ```
 
 Example output:
 ```
-✅ accuracy         winner=treatment    p=0.0041  d=0.95
-✅ f1_score         winner=treatment    p=0.0218  d=0.84
-✅ latency_ms       winner=control      p=0.0003  d=-1.42
+ accuracy         winner=treatment    p=0.0041  d=0.95
+ f1_score         winner=treatment    p=0.0218  d=0.84
+ latency_ms       winner=control      p=0.0003  d=-1.42
 ```
 
 Reading this: Model B is significantly better on accuracy and F1, but

@@ -1,6 +1,8 @@
 # Fence_Discipline_OnePager.md
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 > Purpose: Ensure well-formed fenced blocks in all outputs.
 
 ## Rules

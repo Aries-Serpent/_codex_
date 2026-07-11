@@ -1,6 +1,8 @@
 # Token Rotation Manual Procedure
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## Overview
 
@@ -34,7 +36,7 @@ pip install PyGithub PyNaCl cryptography requests
 ### 4. Verify Installation
 ```bash
 # Test imports
-python3 -c "from github import Github; from cryptography.fernet import Fernet; print('✅ Dependencies OK')"
+python3 -c "from github import Github; from cryptography.fernet import Fernet; print(' Dependencies OK')"
 
 # Test scripts load
 python3 scripts/rotate_jwt_secret.py --help
@@ -73,9 +75,9 @@ python3 scripts/rotate_jwt_secret.py
 python3 scripts/rotate_jwt_secret.py --verify
 
 # Expected output:
-# ✅ TOKEN_SECRET_KEY is set
-# ✅ CODEX_MASTER_KEY is set
-# ✅ Backup directory exists
+#  TOKEN_SECRET_KEY is set
+#  CODEX_MASTER_KEY is set
+#  Backup directory exists
 ```
 
 ## Step 3: Perform Rotation
@@ -117,11 +119,11 @@ payload = {
     'exp': datetime.utcnow() + timedelta(hours=1)
 }
 token = jwt.encode(payload, secret, algorithm='HS256')
-print(f'✅ JWT generated: {token[:50]}...')
+print(f' JWT generated: {token[:50]}...')
 
 # Verify token
 decoded = jwt.decode(token, secret, algorithms=['HS256'])
-print(f'✅ JWT verified: {decoded}')
+print(f' JWT verified: {decoded}')
 "
 ```
 
@@ -198,9 +200,9 @@ python3 scripts/github_secrets_sync.py --rotate
 python3 scripts/github_secrets_sync.py --validate
 
 # Expected output:
-# ✅ TOKEN_SECRET_KEY: accessible
-# ✅ GITHUB_OAUTH_CLIENT_SECRET: accessible
-# ✅ SESSION_ENCRYPTION_KEY: accessible
+#  TOKEN_SECRET_KEY: accessible
+#  GITHUB_OAUTH_CLIENT_SECRET: accessible
+#  SESSION_ENCRYPTION_KEY: accessible
 ```
 
 ## Step 5: Sync to Downstream Systems
@@ -269,7 +271,7 @@ python3 scripts/phase10/automated_secrets_manager.py \
   --name SECRET_NAME
 
 # Expected output:
-# ✅ SECRET_NAME exists in GitHub Secrets
+#  SECRET_NAME exists in GitHub Secrets
 ```
 
 ## Step 4: List All Secrets
@@ -361,34 +363,34 @@ cat .codex/secrets/backups/*.log
 ## Security Best Practices
 
 ### 1. Secure Key Storage
-- ✅ Store `CODEX_MASTER_KEY` in password manager (1Password, LastPass)
-- ✅ Never commit `CODEX_MASTER_KEY` to version control
-- ✅ Rotate `CODEX_MASTER_KEY` annually
-- ✅ Use different master keys for dev/staging/production
+-  Store `CODEX_MASTER_KEY` in password manager (1Password, LastPass)
+-  Never commit `CODEX_MASTER_KEY` to version control
+-  Rotate `CODEX_MASTER_KEY` annually
+-  Use different master keys for dev/staging/production
 
 ### 2. GitHub Token Hygiene
-- ✅ Use fine-grained PATs with minimal scopes
-- ✅ Set expiration dates (30-90 days recommended)
-- ✅ Rotate tokens regularly
-- ✅ Revoke unused tokens immediately
+-  Use fine-grained PATs with minimal scopes
+-  Set expiration dates (30-90 days recommended)
+-  Rotate tokens regularly
+-  Revoke unused tokens immediately
 
 ### 3. Backup Management
-- ✅ Verify `.codex/secrets/backups/` in `.gitignore`
-- ✅ Keep backups encrypted
-- ✅ Store off-site backup of `CODEX_MASTER_KEY`
-- ✅ Test backup restoration quarterly
+-  Verify `.codex/secrets/backups/` in `.gitignore`
+-  Keep backups encrypted
+-  Store off-site backup of `CODEX_MASTER_KEY`
+-  Test backup restoration quarterly
 
 ### 4. Audit Logging
-- ✅ Review rotation logs after each operation
-- ✅ Monitor GitHub audit log for secret access
-- ✅ Set up alerts for unexpected secret changes
-- ✅ Keep rotation logs for compliance (1+ year)
+-  Review rotation logs after each operation
+-  Monitor GitHub audit log for secret access
+-  Set up alerts for unexpected secret changes
+-  Keep rotation logs for compliance (1+ year)
 
 ### 5. Emergency Procedures
-- ✅ Document rollback steps (see above)
-- ✅ Have backup contact for emergencies
-- ✅ Test rollback procedure quarterly
-- ✅ Keep offline copy of recovery procedures
+-  Document rollback steps (see above)
+-  Have backup contact for emergencies
+-  Test rollback procedure quarterly
+-  Keep offline copy of recovery procedures
 
 ---
 

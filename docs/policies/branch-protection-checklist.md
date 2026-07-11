@@ -1,6 +1,8 @@
 # Branch Protection Checklist (Archive & Hygiene)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 This checklist aligns GitHub Branch Protection with our Archive & Hygiene workflow so that merges are gated on evidence, provenance, and governance.
 

@@ -1,7 +1,9 @@
 # Production Checklist
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Version:** 0.1.0  
-**Last Updated:** 2026-07-09  
+**Last Updated: 2026-07-09
 **Audience:** SRE, DevOps, Platform Engineers
 
 ---
@@ -213,15 +215,15 @@ If issues occur:
 
 Production deployment is successful when:
 
-- ✅ 99.9% uptime maintained
-- ✅ p95 latency <100ms
-- ✅ Error rate <0.1%
-- ✅ No critical security issues
-- ✅ Team confident in operations
-- ✅ Customers reporting positive experience
+-  99.9% uptime maintained
+-  p95 latency <100ms
+-  Error rate <0.1%
+-  No critical security issues
+-  Team confident in operations
+-  Customers reporting positive experience
 
 ---
 
-**Last Updated:** 2026-07-09  
+**Last Updated: 2026-07-09
 **Review Frequency:** Monthly  
 **Owner:** @sre-team

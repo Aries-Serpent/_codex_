@@ -1,8 +1,10 @@
 # RBAC Design & Implementation - Detailed
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Status:** Production Ready  
 **Version:** 1.0.0  
-**Last Updated:** 2026-07-08  
+**Last Updated: 2026-07-08
 **Author:** Phase 12 WS3 Documentation Team
 
 ---
@@ -688,12 +690,12 @@ def issue_token(
 
 ### 1. Always Use Enforcer
 
-✅ **GOOD:**
+ **GOOD:**
 ```python
 enforcer.enforce_action(user_id, role, Action.DELETE, ResourceType.AGENTS)
 ```
 
-❌ **BAD:**
+ **BAD:**
 ```python
 # Don't check permissions manually
 if user_role == "admin":
@@ -702,7 +704,7 @@ if user_role == "admin":
 
 ### 2. Include Context in Logs
 
-✅ **GOOD:**
+ **GOOD:**
 ```python
 enforcer.audit_action(
     user_id="alice",
@@ -713,14 +715,14 @@ enforcer.audit_action(
 )
 ```
 
-❌ **BAD:**
+ **BAD:**
 ```python
 logger.info(f"User {user_id} created agent")  # No context
 ```
 
 ### 3. Fail Safely
 
-✅ **GOOD:**
+ **GOOD:**
 ```python
 try:
     enforcer.enforce_action(...)
@@ -730,7 +732,7 @@ except PermissionDeniedError as e:
     return 403_FORBIDDEN
 ```
 
-❌ **BAD:**
+ **BAD:**
 ```python
 enforcer.enforce_action(...)  # No error handling
 execute_privileged_action()   # Could proceed without permission
@@ -738,7 +740,7 @@ execute_privileged_action()   # Could proceed without permission
 
 ### 4. Document Role Requirements
 
-✅ **GOOD:**
+ **GOOD:**
 ```python
 def deploy_agent(agent_id: str) -> None:
     """
@@ -752,7 +754,7 @@ def deploy_agent(agent_id: str) -> None:
     enforcer.enforce_action(...)
 ```
 
-❌ **BAD:**
+ **BAD:**
 ```python
 def deploy_agent(agent_id: str) -> None:
     """Deploy agent."""  # No role requirements documented
@@ -761,14 +763,14 @@ def deploy_agent(agent_id: str) -> None:
 
 ### 5. Use Least Privilege for API Tokens
 
-✅ **GOOD:**
+ **GOOD:**
 ```python
 # Service account for reading agent logs
 scopes = [TokenScope.API_AGENTS_READ.value]
 token = issue_token("service_logger", scopes)
 ```
 
-❌ **BAD:**
+ **BAD:**
 ```python
 # Service account with admin token
 token = issue_admin_token()  # Overly privileged
@@ -799,6 +801,6 @@ def audit_role_assignments():
 
 ---
 
-**Last Updated:** 2026-07-08  
+**Last Updated: 2026-07-08
 **Version:** 1.0.0  
 **Status:** Production Ready

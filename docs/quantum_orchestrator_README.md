@@ -1,6 +1,8 @@
 # Quantum-Relativistic-Dirac Orchestrator Framework
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 A physics-inspired task orchestration framework implementing quantum mechanics, special relativity, and Dirac spinor dynamics for intelligent, self-healing task scheduling.
 

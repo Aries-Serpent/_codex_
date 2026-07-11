@@ -1,6 +1,8 @@
 # Health Probes & Kubernetes Readiness
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 Codex services expose lightweight health endpoints for operators and orchestrators. Combine the HTTP checks with
 Kubernetes probes or load balancer health checks to detect degraded dependencies early.

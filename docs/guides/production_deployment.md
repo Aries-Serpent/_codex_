@@ -1,7 +1,8 @@
 # Production Deployment Guide
+**Last Updated:** 2026-07-11
 
 > **Version**: 1.0 (Phase 7D)  
-> **Status**: ✅ Complete and production-ready  
+> **Status**:  Complete and production-ready  
 > **Last Updated**: 2026-06-22T09:30:00Z  
 > **Authority**: @mbaetiong
 
@@ -12,12 +13,12 @@
 This guide provides comprehensive procedures for deploying the _codex_ system to production environments. It covers infrastructure setup, containerization, orchestration, monitoring, and disaster recovery.
 
 **Key Capabilities**:
-- ✅ Multi-cloud deployment (AWS, Azure, GCP)
-- ✅ Kubernetes orchestration with Helm charts
-- ✅ Zero-downtime deployments (blue-green, canary)
-- ✅ Automatic health checks and monitoring
-- ✅ Disaster recovery and rollback procedures
-- ✅ Security compliance and secrets management
+-  Multi-cloud deployment (AWS, Azure, GCP)
+-  Kubernetes orchestration with Helm charts
+-  Zero-downtime deployments (blue-green, canary)
+-  Automatic health checks and monitoring
+-  Disaster recovery and rollback procedures
+-  Security compliance and secrets management
 
 ---
 
@@ -447,7 +448,7 @@ The application requires a secret key for JWT token signing and session encrypti
 export AUTH_SECRET_KEY=$(openssl rand -hex 32)
 
 # Verify it was set
-echo "✅ AUTH_SECRET_KEY is set: ${#AUTH_SECRET_KEY} characters"
+echo " AUTH_SECRET_KEY is set: ${#AUTH_SECRET_KEY} characters"
 
 # In your deployment environment (Docker, Kubernetes, etc.):
 # Add to .env file, secrets manager, or environment variables
@@ -488,10 +489,10 @@ export GITHUB_APP_CLIENT_SECRET="<your-github-app-client-secret>"
 
 # Step 2: Verify in deployment (DO NOT log the actual value)
 if [ -z "$GITHUB_APP_CLIENT_SECRET" ]; then
-    echo "❌ ERROR: GITHUB_APP_CLIENT_SECRET not set!"
+    echo " ERROR: GITHUB_APP_CLIENT_SECRET not set!"
     exit 1
 else
-    echo "✅ GITHUB_APP_CLIENT_SECRET is set (length: ${#GITHUB_APP_CLIENT_SECRET})"
+    echo " GITHUB_APP_CLIENT_SECRET is set (length: ${#GITHUB_APP_CLIENT_SECRET})"
 fi
 
 # Step 3: Configure in deployment environment
@@ -576,12 +577,12 @@ Before deploying to production, verify:
 
 - [ ] **AUTH_SECRET_KEY is set:**
   ```bash
-  if [ -z "$AUTH_SECRET_KEY" ]; then echo "❌ NOT SET"; else echo "✅ SET"; fi
+  if [ -z "$AUTH_SECRET_KEY" ]; then echo " NOT SET"; else echo " SET"; fi
   ```
 
 - [ ] **GITHUB_APP_CLIENT_SECRET is set** (if using GitHub OAuth):
   ```bash
-  if [ -z "$GITHUB_APP_CLIENT_SECRET" ]; then echo "❌ NOT SET"; else echo "✅ SET"; fi
+  if [ -z "$GITHUB_APP_CLIENT_SECRET" ]; then echo " NOT SET"; else echo " SET"; fi
   ```
 
 - [ ] **All service credentials are set:**
@@ -589,16 +590,16 @@ Before deploying to production, verify:
   # Check all required environment variables
   for var in AUTH_SECRET_KEY GITHUB_APP_CLIENT_SECRET SLACK_WEBHOOK_URL; do
     if [ -z "$(eval echo \$$var)" ]; then
-      echo "❌ $var is NOT SET"
+      echo " $var is NOT SET"
     else
-      echo "✅ $var is set (length: ${#var})"
+      echo " $var is set (length: ${#var})"
     fi
   done
   ```
 
 - [ ] **Secrets are NOT committed to git:**
   ```bash
-  git log -p | grep -i "AUTH_SECRET_KEY\|GITHUB_APP_CLIENT_SECRET" || echo "✅ No secrets in git history"
+  git log -p | grep -i "AUTH_SECRET_KEY\|GITHUB_APP_CLIENT_SECRET" || echo " No secrets in git history"
   ```
 
 - [ ] **Environment variables are isolated per environment:**
@@ -848,6 +849,6 @@ kubectl exec codex-xxxx -n production -- \
 
 ---
 
-*Last Updated: 2026-06-22T09:30:00Z*  
+*Last Updated: 2026-06-22
 *Authority: @mbaetiong*  
-*Status: ✅ Phase 7D Complete*
+*Status:  Phase 7D Complete*

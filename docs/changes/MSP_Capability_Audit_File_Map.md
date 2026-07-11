@@ -1,6 +1,8 @@
 # [Change Map]: Files Affected, Purpose, and Research References
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 Roles: [Audit Orchestrator], [Capability Cartographer] Energy: 5
 
 | File | Action | Purpose | Key Changes | Gaps Addressed | CI/Policy Impact | Determinism Notes | References (/deepresearch style) |

@@ -1,6 +1,8 @@
 # Structured JSON logging (stdlib only)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 - One event per line (JSONL) emitted to **stderr**.
 - Core fields: `timestamp`, `log.level`, `log.logger`, `event.name`, `message`.

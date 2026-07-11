@@ -1,4 +1,5 @@
 # API Reference
+**Version:** v0.2.1
 
 **Version:** 1.0.0 | **Release Date:** 2026-06-22
 
@@ -350,4 +351,4 @@ The build script is designed for local-only use. To integrate with CI:
 
 ---
 
-Last updated: 2026-02-10
+Last updated: 2026-07-11

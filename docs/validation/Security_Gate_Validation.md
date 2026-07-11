@@ -1,6 +1,8 @@
 # [Validation]: Security Gate — pip-audit, Bandit, gitleaks
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## Acceptance Criteria
 - pip-audit JSON exists, parsed; 0 HIGH/CRITICAL unless in security_allowlist.json and not expired.

@@ -1,23 +1,25 @@
 # MCP HTTP API Schema
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Last Updated**: 2026-06-22T00:00:00Z  
-**Status**: ✅ Prototype Specification  
+**Status**:  Prototype Specification  
 **Priority**: P2 (Supporting Documentation)  
 **MCP Protocol Version**: 2024-11-05  
 **API Version**: v1
 
 ---
 
-## 🎯 Mission Overview
+##  Mission Overview
 
 **Objective**: Define FastAPI-based HTTP API schema for MCP server deployments, enabling edge-compatible (Cloudflare Workers, Fly.io) and container-based MCP endpoints.
 
 **Energy Level**: ⚡⚡⚡ (3/5) - Active API specification supporting prototype deployment.
 
 **Operational Status**:
-- ✅ Prototype implemented in `src/mcp/server/http.py`
-- ✅ Three core endpoints operational (/health, /query, /context)
-- ✅ Authentication headers defined
+-  Prototype implemented in `src/mcp/server/http.py`
+-  Three core endpoints operational (/health, /query, /context)
+-  Authentication headers defined
 - 🔄 OpenAPI schema generation pending
 - 🔮 Production hardening in progress
 
@@ -140,7 +142,7 @@ graph LR
 
 ---
 
-## 🧠 Redundancy Patterns
+##  Redundancy Patterns
 
 ### Rollback Strategies
 

@@ -1,6 +1,9 @@
 # Checklist: Serving/Deployment Readiness (v1.2)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
-🧠 Roles: [Primary: Serving Auditor], [Secondary: Release Reviewer] ⚡ Energy: 5
+ Roles: [Primary: Serving Auditor], [Secondary: Release Reviewer] ⚡ Energy: 5
 
 Packaging
 - [ ] Dockerfile builds locally

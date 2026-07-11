@@ -1,4 +1,6 @@
 # Reproducibility Manifest & Status Digest for `_codex_` (Scaffolding)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 This document describes the current reproducibility manifest tooling in
 `_codex_`, and how it ties together:

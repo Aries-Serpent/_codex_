@@ -1,6 +1,8 @@
 # Suggested Task: clarify offline safeguards across logging, security, and training stacks
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## Summary
 Strengthen repo documentation so contributors can exercise the new Hydra override and API middleware safeguards without

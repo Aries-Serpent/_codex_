@@ -1,4 +1,6 @@
 # Agent Accountability Report — Session Group 01
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Group:** 1 of 32  
 **Sessions:** S228 to S_PR3954_SELF_HEALING  
@@ -51,7 +53,7 @@
 
 **Tags:** None  
 **Patterns Fixed:** None  
-**CI Checks:** 0 ✅ / 0 ❌  
+**CI Checks:** 0  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_1  
@@ -73,7 +75,7 @@ Fixed: RP-SC2089, RP-ZIP-SLIP, RP-REPO-ROOT-ORDER, +1 more
 
 **Tags:** complete, security, docs  
 **Patterns Fixed:** RP-SC2089, RP-ZIP-SLIP, RP-REPO-ROOT-ORDER, RP-DOCSTRING-PATTERN-ID  
-**CI Checks:** 4 ✅ / 2 ❌  
+**CI Checks:** 4  / 2   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_2  
@@ -95,7 +97,7 @@ Fixed: MYPY-OPT-IMPORT, MYPY-REDUNDANT-CAST, MYPY-CALL-ARG, +6 more
 
 **Tags:** typing, complete  
 **Patterns Fixed:** MYPY-OPT-IMPORT, MYPY-REDUNDANT-CAST, MYPY-CALL-ARG, MYPY-ARG-TYPE, MYPY-NONE-GUARD, MYPY-ARG-NONE, MYPY-TYPEDDICT, MYPY-NO-REDEF, MYPY-UNION-NARROW  
-**CI Checks:** 0 ✅ / 0 ❌  
+**CI Checks:** 0  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_3  
@@ -117,7 +119,7 @@ Fixed: MYPY-OPT-IMPORT, MYPY-REDUNDANT-CAST, MYPY-CALL-ARG, +6 more
 
 **Tags:** complete  
 **Patterns Fixed:** None  
-**CI Checks:** 0 ✅ / 12 ❌  
+**CI Checks:** 0  / 12   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_4  
@@ -139,7 +141,7 @@ Fixed: RP-SPARSE-CHECKOUT-CACHE, RP-SPARSE-CHECKOUT-EDITABLE-INSTALL, RP-CODECOV
 
 **Tags:** ci, complete  
 **Patterns Fixed:** RP-SPARSE-CHECKOUT-CACHE, RP-SPARSE-CHECKOUT-EDITABLE-INSTALL, RP-CODECOV-PROTECTED-BRANCH, RP-COMMENT-GATE-REVIEW-BOT, RP-COGNITIVE-PREFLIGHT-REQ4  
-**CI Checks:** 4 ✅ / 0 ❌  
+**CI Checks:** 4  / 0   
 
 **Source:** .codex/sessions/S_PR3946_aftermath.md  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_5  
@@ -161,7 +163,7 @@ Fixed: RP-SPARSE-CHECKOUT-CACHE, RP-SPARSE-CHECKOUT-EDITABLE-INSTALL, RP-CODECOV
 
 **Tags:** None  
 **Patterns Fixed:** None  
-**CI Checks:** 0 ✅ / 0 ❌  
+**CI Checks:** 0  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_6  
@@ -183,7 +185,7 @@ Fixed: RP-SPARSE-CHECKOUT-CACHE, RP-SPARSE-CHECKOUT-EDITABLE-INSTALL, RP-CODECOV
 
 **Tags:** None  
 **Patterns Fixed:** None  
-**CI Checks:** 0 ✅ / 0 ❌  
+**CI Checks:** 0  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_7  
@@ -205,7 +207,7 @@ Fixed: RP-SPARSE-CHECKOUT-CACHE, RP-SPARSE-CHECKOUT-EDITABLE-INSTALL, RP-CODECOV
 
 **Tags:** None  
 **Patterns Fixed:** None  
-**CI Checks:** 0 ✅ / 0 ❌  
+**CI Checks:** 0  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_8  
@@ -227,7 +229,7 @@ Fixed: RP-SPARSE-CHECKOUT-CACHE, RP-SPARSE-CHECKOUT-EDITABLE-INSTALL, RP-CODECOV
 
 **Tags:** None  
 **Patterns Fixed:** None  
-**CI Checks:** 0 ✅ / 0 ❌  
+**CI Checks:** 0  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_9  
@@ -249,7 +251,7 @@ Fixed: RP-SPARSE-CHECKOUT-CACHE, RP-SPARSE-CHECKOUT-EDITABLE-INSTALL, RP-CODECOV
 
 **Tags:** None  
 **Patterns Fixed:** None  
-**CI Checks:** 0 ✅ / 0 ❌  
+**CI Checks:** 0  / 0   
 
 **Source:** None  
 **Index Location:** .codex/aftermath/pda_iterations.jsonl:line_10  

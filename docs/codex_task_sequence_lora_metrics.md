@@ -1,6 +1,8 @@
 # Codex Sequential Execution Block: LoRA Integration, Metrics, Security, Packaging, Reproducibility
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 ## Phase 1 — Preparation
 1.1 Establish working directories (`logs/codex_tasks`, `reports/codex_tasks`) and timestamped run identifier.

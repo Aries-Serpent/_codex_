@@ -1,6 +1,8 @@
 # MLflow Offline Workflows
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 Codex keeps MLflow disabled by default to avoid accidental network calls.  When
 ready, opt in locally:
@@ -17,7 +19,7 @@ the machine:
 mlflow ui --backend-store-uri file:./runs/mlflow
 ```text
 For a higher-level summary, run
-[`examples/mlflow_offline.py`](https://github.com/Aries-Serpent/_codex_/blob/main/examples/mlflow_offline.py) against a run
+[`examples/mlflow_offline.py`](../examples/mlflow_offline.py) against a run
 directory.  The helper prints the MLflow command above and highlights the most
 recent metrics.
 

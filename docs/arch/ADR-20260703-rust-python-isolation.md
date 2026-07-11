@@ -1,4 +1,6 @@
 # ADR: Rust-Python Environment Isolation
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 ## Context
 CI success rates dropped to 26.7%, partially due to environment pollution between Rust and Python toolchains in mixed jobs.

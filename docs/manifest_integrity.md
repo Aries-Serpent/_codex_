@@ -1,6 +1,8 @@
 # Manifest Integrity
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 Use canonical JSON for reproducible hashing/signing.
 - Deterministic property order and compact separators (RFC 8785 / JCS).

@@ -1,4 +1,6 @@
 # Observability Module API Reference
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Module Path**: `src/codex/observability/`  
 **Version**: Phase 10+  
@@ -493,7 +495,7 @@ print(f"  Team success rate: {team_metrics.success_rate*100:.1f}%")
 ### 1. Structured Logging
 
 ```python
-# ✅ GOOD: Detailed, structured logs
+#  GOOD: Detailed, structured logs
 logger.log_workflow_event(
     event_type="task_complete",
     metadata={
@@ -511,7 +513,7 @@ logger.log_workflow_event(
     }
 )
 
-# ❌ POOR: Vague logging
+#  POOR: Vague logging
 logger.log_workflow_event(
     event_type="complete",
     metadata={"done": True}
@@ -521,7 +523,7 @@ logger.log_workflow_event(
 ### 2. Comprehensive Metrics
 
 ```python
-# ✅ GOOD: Rich metrics with context
+#  GOOD: Rich metrics with context
 collector.record_agent_execution(
     agent_id="analyzer-1",
     duration=150.5,
@@ -536,7 +538,7 @@ collector.record_agent_execution(
     }
 )
 
-# ❌ POOR: Minimal metrics
+#  POOR: Minimal metrics
 collector.record_agent_execution(
     agent_id="analyzer-1",
     duration=150.5,
@@ -547,7 +549,7 @@ collector.record_agent_execution(
 ### 3. Error Context
 
 ```python
-# ✅ GOOD: Full error context
+#  GOOD: Full error context
 try:
     result = execute_task(task_data)
 except Exception as e:
@@ -565,7 +567,7 @@ except Exception as e:
         }
     )
 
-# ❌ POOR: Minimal error info
+#  POOR: Minimal error info
 except Exception:
     logger.log_workflow_event(
         event_type="error",

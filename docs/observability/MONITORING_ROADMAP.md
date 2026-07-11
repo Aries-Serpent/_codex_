@@ -1,8 +1,11 @@
 # Observability & Monitoring Roadmap
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
+
 **_codex_ v0.1.0 | Enterprise Observability Strategy**
 
 > **Version:** 1.0.0  
-> **Last Updated:** 2026-05-27  
+> **Last Updated: 2026-07-11
 > **Enforcement:** Mandatory for all monitoring implementations  
 > **Owner:** Cognitive Brain Monitoring Team
 
@@ -23,7 +26,7 @@ This roadmap ensures **100% observability coverage** across all platform compone
 ## 1. Experiment Tracking Layer
 
 ### 1.1 MLflow Integration
-**Status:** ✅ Implemented  
+**Status:**  Implemented  
 **Version:** >= 2.22.4 (43+ CVEs fixed from 2.11)  
 **Location:** `src/codex_ml/monitoring/codex_logging.py`, `training/checkpoint_manager.py`
 
@@ -34,7 +37,7 @@ This roadmap ensures **100% observability coverage** across all platform compone
 - Automatic parameter logging
 
 ### 1.2 Weights & Biases Integration
-**Status:** ✅ Implemented  
+**Status:**  Implemented  
 **Version:** >= 0.16  
 **Location:** `src/codex_ml/monitoring/codex_logging.py`
 
@@ -45,7 +48,7 @@ This roadmap ensures **100% observability coverage** across all platform compone
 - Model versioning and comparison
 
 ### 1.3 Custom Metrics Pipeline
-**Status:** ✅ Implemented  
+**Status:**  Implemented  
 **Location:** `src/metrics/`, `src/codex_ml/utils/metrics.py`
 
 **Metrics Exported:**
@@ -58,7 +61,7 @@ This roadmap ensures **100% observability coverage** across all platform compone
 ## 2. Application Monitoring Layer
 
 ### 2.1 TensorBoard Integration
-**Status:** ✅ Implemented  
+**Status:**  Implemented  
 **Location:** `src/codex_ml/monitoring/codex_logging.py`, `src/training/trainer.py`
 
 **Capabilities:**
@@ -68,7 +71,7 @@ This roadmap ensures **100% observability coverage** across all platform compone
 - Embedding visualization
 
 ### 2.2 Prometheus Metrics
-**Status:** ✅ Implemented  
+**Status:**  Implemented  
 **Version:** >= 0.14  
 **Location:** `src/codex_ml/monitoring/codex_logging.py`
 
@@ -78,7 +81,7 @@ This roadmap ensures **100% observability coverage** across all platform compone
 - System metrics (CPU, memory, GPU utilization)
 
 ### 2.3 Structured Logging
-**Status:** ✅ Implemented  
+**Status:**  Implemented  
 **Location:** `src/codex_ml/monitoring/codex_logging.py`, `src/cli.py`
 
 **Log Format:** JSON with structured context  
@@ -89,7 +92,7 @@ This roadmap ensures **100% observability coverage** across all platform compone
 ## 3. Cognitive Brain Monitoring Layer
 
 ### 3.1 Phase 8a Monitoring Thresholds
-**Status:** ✅ Implemented  
+**Status:**  Implemented  
 **Location:** `.codex/config/monitoring.yaml:cognitive_brain.thresholds`  
 **Hot-Reload:** Yes (automatic, no restart required)
 
@@ -100,7 +103,7 @@ This roadmap ensures **100% observability coverage** across all platform compone
 - `workflow_orchestration`: concurrent limits, task queue, latency budgets
 
 ### 3.2 Hot-Reload Mechanism
-**Status:** ✅ Implemented  
+**Status:**  Implemented  
 **Location:** `scripts/cognitive/actions/monitoring_actions.py`, `scripts/cognitive/sensors/monitoring_sensor.py`
 
 **How It Works:**
@@ -110,7 +113,7 @@ This roadmap ensures **100% observability coverage** across all platform compone
 4. Automatic rollback on validation failure
 
 ### 3.3 Per-Workflow Monitoring Overrides
-**Status:** ✅ Implemented  
+**Status:**  Implemented  
 **Location:** `.github/workflows/*.yml` (per-job `env:` section)
 
 **Precedence Order:**
@@ -123,7 +126,7 @@ This roadmap ensures **100% observability coverage** across all platform compone
 ## 4. Infrastructure Observability Layer
 
 ### 4.1 Ray Serve Integration
-**Status:** ✅ Implemented  
+**Status:**  Implemented  
 **Location:** `cognitive_app/src/server/cli_api_server.py`
 
 **Auto-Instrumented Metrics:**
@@ -132,7 +135,7 @@ This roadmap ensures **100% observability coverage** across all platform compone
 - Error counts and rates
 
 ### 4.2 FastAPI Integration
-**Status:** ✅ Implemented  
+**Status:**  Implemented  
 **Location:** `cognitive_app/src/server/cli_api_server.py`
 
 **Endpoints:**
@@ -141,7 +144,7 @@ This roadmap ensures **100% observability coverage** across all platform compone
 - `GET /metrics` — Prometheus metrics export
 
 ### 4.3 System Telemetry
-**Status:** ✅ Implemented  
+**Status:**  Implemented  
 **Packages:** `psutil>=5.9`, `pynvml>=11.5`
 
 **Captured Metrics:**
@@ -212,6 +215,6 @@ python scripts/validation/validate_observability.py
 
 ---
 
-**Status:** ✅ Complete & Validated (2026-05-27)  
+**Status:**  Complete & Validated (2026-05-27)  
 **Next Review:** 2026-06-27  
 **Certification:** Enterprise-Grade Observability Built-In ✓

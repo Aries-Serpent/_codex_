@@ -1,6 +1,8 @@
 # Local Gates
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 These checks are **local-only**. They do not create or activate any GitHub Actions workflows.
 For one-command runs, a `nox` session is provided (optional).

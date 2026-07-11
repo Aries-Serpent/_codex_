@@ -1,6 +1,8 @@
 # Production Operations Runbook
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 **Version:** 1.0.0  
 **Date:** 2026-06-14T04:05:00Z  
@@ -9,7 +11,7 @@
 
 ---
 
-## 📖 Table of Contents
+##  Table of Contents
 
 1. [Daily Operations](#daily-operations)
 2. [Scaling & Performance](#scaling--performance)

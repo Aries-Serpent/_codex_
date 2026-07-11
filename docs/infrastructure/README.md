@@ -1,10 +1,12 @@
 # Infrastructure Documentation
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 **Directory Purpose**: Infrastructure setup, architecture, and configuration for Aries-Serpent/_codex_
 
 ---
 
-## 📚 Quick Navigation
+##  Quick Navigation
 
 - **Infrastructure Architecture** - System architecture and design
 - **Provisioning Guides** - Infrastructure provisioning steps
@@ -28,7 +30,7 @@ docs/infrastructure/
 
 ---
 
-## 📖 Contents
+##  Contents
 
 ### Infrastructure Architecture
 - **System Overview** - High-level architecture
@@ -62,7 +64,7 @@ docs/infrastructure/
 
 ---
 
-## 🚀 Quick Start
+##  Quick Start
 
 1. **Getting Started?** → Read System Overview first
 2. **Setting Up Infrastructure?** → Follow Provisioning Guides
@@ -80,7 +82,7 @@ docs/infrastructure/
 
 ---
 
-## 📊 Key Components
+##  Key Components
 
 | Component | Type | Owner | Docs |
 |-----------|------|-------|------|
@@ -91,7 +93,7 @@ docs/infrastructure/
 
 ---
 
-## 💡 Best Practices
+##  Best Practices
 
 - Infrastructure as Code (IaC) - Use Terraform/CloudFormation
 - Automated provisioning - Use automation tools
@@ -101,7 +103,7 @@ docs/infrastructure/
 
 ---
 
-## 🔐 Security Considerations
+##  Security Considerations
 
 - Network isolation and segmentation
 - Encryption at rest and in transit
@@ -113,4 +115,4 @@ docs/infrastructure/
 
 **Last Updated**: 2026-06-22  
 **Category**: Infrastructure & Operations  
-**Status**: ✅ Active
+**Status**:  Active

@@ -1,4 +1,6 @@
 # AAIS Score 100 & 100% Test Coverage — Research-Backed Roadmap
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 ## Table of Contents
 
@@ -45,7 +47,7 @@
 > **Generated:** 2026-03-14T05:15Z  
 > **Baseline:** AAIS 98.5/100 | Coverage 72% (branch target 70%+) | Mutation 96%  
 > **Framework:** ACE (arXiv:2310.06775) + MSV (TheWebConf 2026) + RagaAI AAEF  
-> **Research updated:** 2026-03-14 via deep web search (Galileo Labs, Microsoft, RagaAI, ICLR 2026)
+> **Research updated: 2026-07-11
 
 ---
 
@@ -235,14 +237,14 @@ gantt
 |-------|---------|--------|-----------|----------|
 | Core utilities (path_utils, logging) | ~90% | 100% | ~15 | 🟡 Medium |
 | Auth (UserStore, UserRepository) | ~85% | 100% | ~20 | 🟡 Medium |
-| Cognitive brain (brain_interface, agent_brain_api) | ~75% | 100% | ~35 | 🔴 High |
-| RAG advanced (indexing, query optimization) | ~50% | 100% | ~80 | 🔴 High |
-| ML training advanced (schedulers, optimizers) | ~55% | 100% | ~70 | 🔴 High |
-| CLI commands (all subcommands) | ~60% | 100% | ~40 | 🔴 High |
-| Error recovery + resilience patterns | ~45% | 100% | ~50 | 🔴 High |
+| Cognitive brain (brain_interface, agent_brain_api) | ~75% | 100% | ~35 |  High |
+| RAG advanced (indexing, query optimization) | ~50% | 100% | ~80 |  High |
+| ML training advanced (schedulers, optimizers) | ~55% | 100% | ~70 |  High |
+| CLI commands (all subcommands) | ~60% | 100% | ~40 |  High |
+| Error recovery + resilience patterns | ~45% | 100% | ~50 |  High |
 | Configuration edge cases | ~65% | 100% | ~30 | 🟡 Medium |
 | Evaluation metrics (BLEU, ROUGE) | ~60% | 100% | ~30 | 🟡 Medium |
-| Integration + E2E pipelines | ~30% | 100% | ~80 | 🔴 High |
+| Integration + E2E pipelines | ~30% | 100% | ~80 |  High |
 | **TOTAL ESTIMATED** | **72%** | **100%** | **~450** | — |
 
 ---

@@ -1,6 +1,8 @@
 # Top 5 GitHub Public Projects Aligned with `_codex_` (codex-ml)
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 > **Research Date:** 2026-03-21  
 > **Session:** S170  
@@ -19,16 +21,16 @@
 
 | Dimension | `_codex_` | MLflow | Ray | Metaflow | ZenML | PromptFlow |
 |-----------|-----------|--------|-----|----------|-------|------------|
-| ML Training & Evaluation | ✅ PyTorch + LoRA/QLoRA | ✅ Tracking + Eval | ✅ Distributed | ✅ Prototype→Prod | ✅ Pipelines | ✅ LLM eval |
-| Autonomous Agents / Cognitive | ✅ 153 agents + Cognitive Brain | ✅ AgentOps | ✅ RLlib + Actors | ⚠️ Partial | ✅ Agent Pipelines | ✅ Prompt agents |
-| MLOps Lifecycle Automation | ✅ Level 4 certified | ✅ Model Registry | ✅ Ray Serve | ✅ Deploy/Orchestrate | ✅ Full lifecycle | ✅ Prototype→Prod |
-| Distributed Compute | ✅ Ray + distributed | ✅ Via integrations | ✅ Native core | ✅ Cloud burst | ✅ Via backends | ⚠️ Limited |
-| Self-Healing / Agentic CI/CD | ✅ 75-87% auto-fix | ⚠️ Monitoring only | ⚠️ Retry logic | ⚠️ Retry/fallback | ⚠️ Partial | ❌ Not primary |
-| Config Management (Hydra) | ✅ Native Hydra | ⚠️ YAML/OmegaConf | ⚠️ YAML | ⚠️ Decorators | ✅ Stack configs | ⚠️ YAML |
-| Experiment Tracking | ✅ MLflow native | ✅ Core feature | ✅ Via MLflow | ✅ Client API | ✅ MLflow integr. | ✅ Traces |
-| Security / CVE Compliance | ✅ 26 CVEs fixed | ✅ Active patches | ✅ Active patches | ✅ Active patches | ✅ Active patches | ✅ Active patches |
-| Test Coverage ≥80% | ✅ 80% / 20K+ tests | ✅ High | ✅ High | ✅ High | ✅ High | ✅ High |
-| MCP Integration | ✅ Native MCP core | ❌ | ❌ | ❌ | ❌ | ❌ |
+| ML Training & Evaluation |  PyTorch + LoRA/QLoRA |  Tracking + Eval |  Distributed |  Prototype→Prod |  Pipelines |  LLM eval |
+| Autonomous Agents / Cognitive |  153 agents + Cognitive Brain |  AgentOps |  RLlib + Actors | ⚠️ Partial |  Agent Pipelines |  Prompt agents |
+| MLOps Lifecycle Automation |  Level 4 certified |  Model Registry |  Ray Serve |  Deploy/Orchestrate |  Full lifecycle |  Prototype→Prod |
+| Distributed Compute |  Ray + distributed |  Via integrations |  Native core |  Cloud burst |  Via backends | ⚠️ Limited |
+| Self-Healing / Agentic CI/CD |  75-87% auto-fix | ⚠️ Monitoring only | ⚠️ Retry logic | ⚠️ Retry/fallback | ⚠️ Partial |  Not primary |
+| Config Management (Hydra) |  Native Hydra | ⚠️ YAML/OmegaConf | ⚠️ YAML | ⚠️ Decorators |  Stack configs | ⚠️ YAML |
+| Experiment Tracking |  MLflow native |  Core feature |  Via MLflow |  Client API |  MLflow integr. |  Traces |
+| Security / CVE Compliance |  26 CVEs fixed |  Active patches |  Active patches |  Active patches |  Active patches |  Active patches |
+| Test Coverage ≥80% |  80% / 20K+ tests |  High |  High |  High |  High |  High |
+| MCP Integration |  Native MCP core |  |  |  |  |  |
 
 ---
 

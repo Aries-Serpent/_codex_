@@ -1,4 +1,6 @@
 # AST Standardization - Dependency Requirements
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **⚠️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 
@@ -59,10 +61,10 @@ ast = [
 
 | Dependency | Python 3.8 | Python 3.9 | Python 3.10 | Python 3.11 | Python 3.12 |
 |------------|------------|------------|-------------|-------------|-------------|
-| libcst>=1.0.0 | ✅ | ✅ | ✅ | ✅ | ✅ |
-| radon>=6.0.0 | ✅ | ✅ | ✅ | ✅ | ✅ |
-| parso>=0.8.0 | ✅ | ✅ | ✅ | ✅ | ✅ |
-| tree-sitter>=0.20.0 | ✅ | ✅ | ✅ | ✅ | ⚠️ (test) |
+| libcst>=1.0.0 |  |  |  |  |  |
+| radon>=6.0.0 |  |  |  |  |  |
+| parso>=0.8.0 |  |  |  |  |  |
+| tree-sitter>=0.20.0 |  |  |  |  | ⚠️ (test) |
 
 ---
 
@@ -75,7 +77,7 @@ ast = [
 pip install libcst>=1.0.0 radon>=6.0.0 parso>=0.8.0
 
 # Verify installation
-python -c "import libcst, radon, parso; print('✅ Core AST deps installed')"
+python -c "import libcst, radon, parso; print(' Core AST deps installed')"
 ```text
 
 ## Phase 2: Optional Dependencies
@@ -85,7 +87,7 @@ python -c "import libcst, radon, parso; print('✅ Core AST deps installed')"
 pip install tree-sitter>=0.20.0 tree-sitter-python>=0.20.0
 
 # Verify installation
-python -c "import tree_sitter; print('✅ tree-sitter installed')"
+python -c "import tree_sitter; print(' tree-sitter installed')"
 ```text
 
 ## Phase 3: Validation
@@ -146,9 +148,9 @@ try:
     import libcst as cst
     code = "def hello(): pass"
     tree = cst.parse_module(code)
-    print(f"✅ libcst: {cst.__version__}")
+    print(f" libcst: {cst.__version__}")
 except Exception as e:
-    print(f"❌ libcst failed: {e}")
+    print(f" libcst failed: {e}")
     sys.exit(1)
 
 # Test radon
@@ -156,9 +158,9 @@ try:
     from radon.complexity import cc_visit
     code = "def hello():\n    pass"
     result = cc_visit(code)
-    print(f"✅ radon: works")
+    print(f" radon: works")
 except Exception as e:
-    print(f"❌ radon failed: {e}")
+    print(f" radon failed: {e}")
     sys.exit(1)
 
 # Test parso
@@ -166,12 +168,12 @@ try:
     import parso
     code = "def hello(): pass"
     tree = parso.parse(code)
-    print(f"✅ parso: {parso.__version__}")
+    print(f" parso: {parso.__version__}")
 except Exception as e:
-    print(f"❌ parso failed: {e}")
+    print(f" parso failed: {e}")
     sys.exit(1)
 
-print("\n✅ All AST dependencies validated")
+print("\n All AST dependencies validated")
 EOF
 ```text
 
@@ -190,7 +192,7 @@ EOF
 
 ## Next Steps
 
-1. ✅ AI Assistant autonomous document review
+1.  AI Assistant autonomous document review
 2. ⏳ Create test environment for validation
 3. ⏳ Test dependency installation
 4. ⏳ Update pyproject.toml

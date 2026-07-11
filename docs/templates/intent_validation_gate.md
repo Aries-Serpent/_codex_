@@ -1,6 +1,8 @@
 # Intent Validation & Plan of Action Approval Gate
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
-**Last Updated:** 2026-06-22
+**Last Updated: 2026-06-22
 
 This template is used to front-load alignment, risks, and acceptance criteria **before** any code or docs changes are executed.
 

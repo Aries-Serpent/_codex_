@@ -1,4 +1,6 @@
 # 📋 Documentation Freshness Audit & Remediation Plan
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Audit Date:** 2026-03-17  
 > **Auditor:** Copilot Agent S142  
@@ -12,14 +14,14 @@
 
 | Priority | Count | Status | Action |
 |----------|-------|--------|--------|
-| **P0** — CI/Admin-critical | 15 | ✅ Updated in S142 | Headers updated to 2026-03-17 |
+| **P0** — CI/Admin-critical | 15 |  Updated in S142 | Headers updated to 2026-03-17 |
 | **P1** — Developer how-to & ops | 46 | ⚠️ Partial (9 updated) | Remainder: systematic script |
 | **P2** — Plans & specs | 62 | 📋 Planned | Content review required |
 | **P3** — Archive | 410 | 🗄️ Low priority | Add archive notice headers |
 
 ---
 
-## P0 — Updated in S142 ✅
+## P0 — Updated in S142 
 
 These docs were updated with refreshed date headers on 2026-03-17:
 
@@ -188,7 +190,7 @@ but alerts maintainers to docs older than 90 days.
 
 | Phase | Scope | Owner | Deadline |
 |-------|-------|-------|---------|
-| **S142 (now)** | P0 admin/agent/how-to (21 files) | Copilot | ✅ Done |
+| **S142 (now)** | P0 admin/agent/how-to (21 files) | Copilot |  Done |
 | **S143** | P1 ops/mcp/ci (37 files) | Copilot | Next PR |
 | **S143** | Create `scripts/ci/update_doc_freshness.py` | Copilot | Next PR |
 | **S143** | Create `.github/workflows/doc-freshness-check.yml` | Copilot | Next PR |

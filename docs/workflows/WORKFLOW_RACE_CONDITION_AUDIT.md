@@ -1,4 +1,6 @@
 # Workflow Race Condition & False-Positive Audit Report
+**Last Updated:** 2026-07-11
+**Version:** v0.2.1
 
 > **Generated:** S227 · 2026-03-29  
 > **Scope:** 8 high-risk workflows identified from [Issue #3779](https://github.com/Aries-Serpent/_codex_/issues/3779)  
@@ -12,14 +14,14 @@
 1. [Executive Summary](#1-executive-summary)
 2. [Audit Methodology](#2-audit-methodology)
 3. [Detailed Findings — 8 Workflows](#3-detailed-findings)
-   - 3.1 `iterative-self-healing-ci.yml` 🔴 CRITICAL
-   - 3.2 `copilot-issue-triage.yml` 🟠 HIGH
+   - 3.1 `iterative-self-healing-ci.yml`  CRITICAL
+   - 3.2 `copilot-issue-triage.yml`  HIGH
    - 3.3 `auto-fix-common-issues.yml` 🟡 MEDIUM
    - 3.4 `auto-fix-pr-check.yml` 🟡 MEDIUM
    - 3.5 `cost-gate.yml` 🟡 MEDIUM
    - 3.6 `copilot-agent-checkin.yml` 🟡 MEDIUM
-   - 3.7 `pre-merge-validation.yml` 🟢 LOW (already safe)
-   - 3.8 `resilient_validation.yml` 🟢 LOW (already safe)
+   - 3.7 `pre-merge-validation.yml`  LOW (already safe)
+   - 3.8 `resilient_validation.yml`  LOW (already safe)
 4. [Simultaneous-Trigger Matrix](#4-simultaneous-trigger-matrix)
 5. [Root Cause Patterns (RCP-01 – RCP-06)](#5-root-cause-patterns)
 6. [Fixes Applied](#6-fixes-applied)
@@ -113,7 +115,7 @@ For each workflow the following sections were extracted and analysed:
 
 ## 3. Detailed Findings
 
-### 3.1 `iterative-self-healing-ci.yml` 🔴 CRITICAL
+### 3.1 `iterative-self-healing-ci.yml`  CRITICAL
 
 **Trigger:**
 ```yaml
@@ -165,7 +167,7 @@ gh pr comment "${PR_NUMBER}" --repo Aries-Serpent/_codex_ --body "${BODY}"
 
 ---
 
-## 3.2 `copilot-issue-triage.yml` 🟠 HIGH
+## 3.2 `copilot-issue-triage.yml`  HIGH
 
 **Trigger:**
 ```yaml
@@ -221,8 +223,8 @@ on:
 
 **Concurrency:** None (missing)
 
-**Comment dedup:** Uses `<!-- auto-fix-ci-issues -->` marker ✅  
-**Upsert logic:** Full pagination loop ✅
+**Comment dedup:** Uses `<!-- auto-fix-ci-issues -->` marker   
+**Upsert logic:** Full pagination loop 
 
 **PROBLEM — No concurrency group:**  
 `auto-fix-common-issues` and `auto-fix-pr-check` both fire on the same `pull_request` path triggers and both use `<!-- ci-rescue-rca:{sha_short} -->` for their rescue comment. Without a concurrency group, they race on the same marker.
@@ -254,7 +256,7 @@ concurrency:
   cancel-in-progress: true
 ```
 
-**Comment dedup:** Uses `<!-- auto-fix-ci-check-{sha_short} -->` per-SHA marker ✅
+**Comment dedup:** Uses `<!-- auto-fix-ci-check-{sha_short} -->` per-SHA marker 
 
 **PROBLEM — Same SHA marker race with `auto-fix-common-issues`:**  
 Both workflows fire on `push` to a PR matching `.github/workflows/*.yml`. When both start simultaneously and find no existing comment, both create new comments. The SHA-based marker only helps if one finishes and creates the comment before the other starts.
@@ -332,8 +334,8 @@ if: |
 **PROBLEM — Fires on every push including bot-only commits:**  
 Even with `[skip ci]` / `chore(auth)` / `chore(d00)` guards, commits from `copilot-swe-agent[bot]` that are regular code commits (e.g. `docs+feat:` commits) will trigger a full Discussion post. On a busy PR with 10 commits per session, this fires 10 times.
 
-**Comment logic:** Uses `upsertComment()` with GraphQL pagination — already robust ✅  
-**Dedup:** Per `{topic}:{sessionId}` — already robust ✅
+**Comment logic:** Uses `upsertComment()` with GraphQL pagination — already robust   
+**Dedup:** Per `{topic}:{sessionId}` — already robust 
 
 **Fixes applied:**
 - Added bot-commit filter: skip if `github.triggering_actor` is `copilot-swe-agent[bot]` and commit is in the push event (not manual trigger)
@@ -341,7 +343,7 @@ Even with `[skip ci]` / `chore(auth)` / `chore(d00)` guards, commits from `copil
 
 ---
 
-### 3.7 `pre-merge-validation.yml` 🟢 LOW (already safe)
+### 3.7 `pre-merge-validation.yml`  LOW (already safe)
 
 **Trigger:**
 ```yaml
@@ -356,21 +358,21 @@ on:
 ```yaml
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true    # ← cancels previous run on new push ✅
+  cancel-in-progress: true    # ← cancels previous run on new push 
 ```
 
 **Job condition:**
 ```yaml
-if: github.event.pull_request.draft == false    # ✅
+if: github.event.pull_request.draft == false    # 
 ```
 
-**Comment dedup:** `<!-- ci-rescue-rca:{sha_short} -->` per-SHA marker + full pagination upsert ✅
+**Comment dedup:** `<!-- ci-rescue-rca:{sha_short} -->` per-SHA marker + full pagination upsert 
 
 **Residual risk:** SHA-based marker means each new commit creates a new rescue thread. After 10 pushes, 10 threads exist on the PR. Addressed by the shared per-PR marker change (see §6).
 
 ---
 
-### 3.8 `resilient_validation.yml` 🟢 LOW (already safe)
+### 3.8 `resilient_validation.yml`  LOW (already safe)
 
 **Trigger:**
 ```yaml
@@ -388,11 +390,11 @@ on:
 ```yaml
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true    # ✅
+  cancel-in-progress: true    # 
 ```
 
-**Comment dedup:** `<!-- ci-rescue-rca:${shaShort} -->` per-SHA + `github.paginate()` upsert ✅  
-**Shard dedup:** Both `validation` and `sharded-quick` jobs share the same marker — one creates, the other appends ✅
+**Comment dedup:** `<!-- ci-rescue-rca:${shaShort} -->` per-SHA + `github.paginate()` upsert   
+**Shard dedup:** Both `validation` and `sharded-quick` jobs share the same marker — one creates, the other appends 
 
 **Residual risk:** Same SHA-vs-PR marker issue as `pre-merge-validation`.
 
@@ -412,9 +414,9 @@ resilient_validation           pull_request    YES (rescue)    per-SHA ⚠️
 auto-fix-common-issues         pull_request    YES (rescue)    per-SHA ⚠️
 auto-fix-pr-check              pull_request    YES (rescue)    per-SHA ⚠️
 validate.yml                   pull_request    YES (rescue)    per-SHA ⚠️
-agent-auth-delegation          pull_request    YES (checklist) per-PR ✅
+agent-auth-delegation          pull_request    YES (checklist) per-PR 
 actionlint-audit               pull_request    YES (rescue)    per-SHA ⚠️
-reference-integrity            pull_request    YES (gate fail) no marker ❌
+reference-integrity            pull_request    YES (gate fail) no marker 
 ─────────────────────────────────────────────────────────────────
 THEN: iterative-self-healing-ci fires on EACH of the above failing
   → fires 7–8 times → posts 7–8 escalation comments with NO marker
