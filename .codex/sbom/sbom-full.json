@@ -1,0 +1,699 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.4",
+  "version": 1,
+  "metadata": {
+    "component": {
+      "type": "application",
+      "name": "codex-ml[full]",
+      "version": "0.2.0"
+    }
+  },
+  "components": [
+    {
+      "type": "library",
+      "name": "annotated-doc",
+      "version": "0.0.4"
+    },
+    {
+      "type": "library",
+      "name": "annotated-types",
+      "version": "0.7.0"
+    },
+    {
+      "type": "library",
+      "name": "antlr4-python3-runtime",
+      "version": "4.9.3"
+    },
+    {
+      "type": "library",
+      "name": "anyio",
+      "version": "4.14.1"
+    },
+    {
+      "type": "library",
+      "name": "argcomplete",
+      "version": "3.7.0"
+    },
+    {
+      "type": "library",
+      "name": "attrs",
+      "version": "23.2.0"
+    },
+    {
+      "type": "library",
+      "name": "Automat",
+      "version": "22.10.0"
+    },
+    {
+      "type": "library",
+      "name": "Babel",
+      "version": "2.10.3"
+    },
+    {
+      "type": "library",
+      "name": "bcc",
+      "version": "0.29.1"
+    },
+    {
+      "type": "library",
+      "name": "bcrypt",
+      "version": "3.2.2"
+    },
+    {
+      "type": "library",
+      "name": "blinker",
+      "version": "1.7.0"
+    },
+    {
+      "type": "library",
+      "name": "boto3",
+      "version": "1.34.46"
+    },
+    {
+      "type": "library",
+      "name": "botocore",
+      "version": "1.34.46"
+    },
+    {
+      "type": "library",
+      "name": "build",
+      "version": "1.5.1"
+    },
+    {
+      "type": "library",
+      "name": "certifi",
+      "version": "2026.6.17"
+    },
+    {
+      "type": "library",
+      "name": "cffi",
+      "version": "2.1.0"
+    },
+    {
+      "type": "library",
+      "name": "chardet",
+      "version": "5.2.0"
+    },
+    {
+      "type": "library",
+      "name": "charset-normalizer",
+      "version": "3.4.9"
+    },
+    {
+      "type": "library",
+      "name": "click",
+      "version": "8.1.6"
+    },
+    {
+      "type": "library",
+      "name": "cloud-init",
+      "version": "26.1"
+    },
+    {
+      "type": "library",
+      "name": "colorama",
+      "version": "0.4.6"
+    },
+    {
+      "type": "library",
+      "name": "command-not-found",
+      "version": "0.3"
+    },
+    {
+      "type": "library",
+      "name": "configobj",
+      "version": "5.0.8"
+    },
+    {
+      "type": "library",
+      "name": "constantly",
+      "version": "23.10.4"
+    },
+    {
+      "type": "library",
+      "name": "cryptography",
+      "version": "49.0.0"
+    },
+    {
+      "type": "library",
+      "name": "dbus-python",
+      "version": "1.3.2"
+    },
+    {
+      "type": "library",
+      "name": "defusedxml",
+      "version": "0.7.1"
+    },
+    {
+      "type": "library",
+      "name": "distro",
+      "version": "1.9.0"
+    },
+    {
+      "type": "library",
+      "name": "distro-info",
+      "version": "1.7+build1"
+    },
+    {
+      "type": "library",
+      "name": "docutils",
+      "version": "0.23"
+    },
+    {
+      "type": "library",
+      "name": "fastapi",
+      "version": "0.139.0"
+    },
+    {
+      "type": "library",
+      "name": "filelock",
+      "version": "3.29.7"
+    },
+    {
+      "type": "library",
+      "name": "h11",
+      "version": "0.16.0"
+    },
+    {
+      "type": "library",
+      "name": "httpcore",
+      "version": "1.0.9"
+    },
+    {
+      "type": "library",
+      "name": "httplib2",
+      "version": "0.20.4"
+    },
+    {
+      "type": "library",
+      "name": "httpx",
+      "version": "0.28.1"
+    },
+    {
+      "type": "library",
+      "name": "hydra-core",
+      "version": "1.3.2"
+    },
+    {
+      "type": "library",
+      "name": "hyperlink",
+      "version": "21.0.0"
+    },
+    {
+      "type": "library",
+      "name": "id",
+      "version": "1.6.1"
+    },
+    {
+      "type": "library",
+      "name": "idna",
+      "version": "3.18"
+    },
+    {
+      "type": "library",
+      "name": "incremental",
+      "version": "22.10.0"
+    },
+    {
+      "type": "library",
+      "name": "iniconfig",
+      "version": "2.3.0"
+    },
+    {
+      "type": "library",
+      "name": "jaraco.classes",
+      "version": "3.4.0"
+    },
+    {
+      "type": "library",
+      "name": "jaraco.context",
+      "version": "6.1.2"
+    },
+    {
+      "type": "library",
+      "name": "jaraco.functools",
+      "version": "4.5.0"
+    },
+    {
+      "type": "library",
+      "name": "jeepney",
+      "version": "0.9.0"
+    },
+    {
+      "type": "library",
+      "name": "Jinja2",
+      "version": "3.1.6"
+    },
+    {
+      "type": "library",
+      "name": "jmespath",
+      "version": "1.0.1"
+    },
+    {
+      "type": "library",
+      "name": "jsonpatch",
+      "version": "1.32"
+    },
+    {
+      "type": "library",
+      "name": "jsonpointer",
+      "version": "2.0"
+    },
+    {
+      "type": "library",
+      "name": "jsonschema",
+      "version": "4.10.3"
+    },
+    {
+      "type": "library",
+      "name": "keyring",
+      "version": "25.7.0"
+    },
+    {
+      "type": "library",
+      "name": "launchpadlib",
+      "version": "1.11.0"
+    },
+    {
+      "type": "library",
+      "name": "lazr.restfulclient",
+      "version": "0.14.6"
+    },
+    {
+      "type": "library",
+      "name": "lazr.uri",
+      "version": "1.0.6"
+    },
+    {
+      "type": "library",
+      "name": "libcst",
+      "version": "1.8.6"
+    },
+    {
+      "type": "library",
+      "name": "mando",
+      "version": "0.7.1"
+    },
+    {
+      "type": "library",
+      "name": "markdown-it-py",
+      "version": "3.0.0"
+    },
+    {
+      "type": "library",
+      "name": "MarkupSafe",
+      "version": "2.1.5"
+    },
+    {
+      "type": "library",
+      "name": "marshmallow",
+      "version": "4.3.0"
+    },
+    {
+      "type": "library",
+      "name": "mdurl",
+      "version": "0.1.2"
+    },
+    {
+      "type": "library",
+      "name": "mercurial",
+      "version": "6.7.2"
+    },
+    {
+      "type": "library",
+      "name": "more-itertools",
+      "version": "11.1.0"
+    },
+    {
+      "type": "library",
+      "name": "netaddr",
+      "version": "0.8.0"
+    },
+    {
+      "type": "library",
+      "name": "netifaces",
+      "version": "0.11.0"
+    },
+    {
+      "type": "library",
+      "name": "nh3",
+      "version": "0.3.6"
+    },
+    {
+      "type": "library",
+      "name": "numpy",
+      "version": "2.5.1"
+    },
+    {
+      "type": "library",
+      "name": "oauthlib",
+      "version": "3.2.2"
+    },
+    {
+      "type": "library",
+      "name": "omegaconf",
+      "version": "2.3.1"
+    },
+    {
+      "type": "library",
+      "name": "packaging",
+      "version": "24.0"
+    },
+    {
+      "type": "library",
+      "name": "parso",
+      "version": "0.8.7"
+    },
+    {
+      "type": "library",
+      "name": "passlib",
+      "version": "1.7.4"
+    },
+    {
+      "type": "library",
+      "name": "pexpect",
+      "version": "4.9.0"
+    },
+    {
+      "type": "library",
+      "name": "pip",
+      "version": "24.0"
+    },
+    {
+      "type": "library",
+      "name": "pipx",
+      "version": "1.15.0"
+    },
+    {
+      "type": "library",
+      "name": "platformdirs",
+      "version": "4.10.0"
+    },
+    {
+      "type": "library",
+      "name": "pluggy",
+      "version": "1.6.0"
+    },
+    {
+      "type": "library",
+      "name": "ptyprocess",
+      "version": "0.7.0"
+    },
+    {
+      "type": "library",
+      "name": "pyasn1",
+      "version": "0.4.8"
+    },
+    {
+      "type": "library",
+      "name": "pyasn1-modules",
+      "version": "0.2.8"
+    },
+    {
+      "type": "library",
+      "name": "pycparser",
+      "version": "3.0"
+    },
+    {
+      "type": "library",
+      "name": "pydantic",
+      "version": "2.13.4"
+    },
+    {
+      "type": "library",
+      "name": "pydantic-settings",
+      "version": "2.14.2"
+    },
+    {
+      "type": "library",
+      "name": "pydantic_core",
+      "version": "2.46.4"
+    },
+    {
+      "type": "library",
+      "name": "Pygments",
+      "version": "2.17.2"
+    },
+    {
+      "type": "library",
+      "name": "PyGObject",
+      "version": "3.48.2"
+    },
+    {
+      "type": "library",
+      "name": "PyHamcrest",
+      "version": "2.1.0"
+    },
+    {
+      "type": "library",
+      "name": "PyJWT",
+      "version": "2.13.0"
+    },
+    {
+      "type": "library",
+      "name": "PyNaCl",
+      "version": "1.6.2"
+    },
+    {
+      "type": "library",
+      "name": "pyOpenSSL",
+      "version": "26.3.0"
+    },
+    {
+      "type": "library",
+      "name": "pyparsing",
+      "version": "3.1.1"
+    },
+    {
+      "type": "library",
+      "name": "pyparted",
+      "version": "3.12.0"
+    },
+    {
+      "type": "library",
+      "name": "pyproject_hooks",
+      "version": "1.2.0"
+    },
+    {
+      "type": "library",
+      "name": "pyrsistent",
+      "version": "0.20.0"
+    },
+    {
+      "type": "library",
+      "name": "pyserial",
+      "version": "3.5"
+    },
+    {
+      "type": "library",
+      "name": "pytest",
+      "version": "9.1.1"
+    },
+    {
+      "type": "library",
+      "name": "pytest-timeout",
+      "version": "2.4.0"
+    },
+    {
+      "type": "library",
+      "name": "python-apt",
+      "version": "2.7.7+ubuntu5.2"
+    },
+    {
+      "type": "library",
+      "name": "python-dateutil",
+      "version": "2.8.2"
+    },
+    {
+      "type": "library",
+      "name": "python-debian",
+      "version": "0.1.49+ubuntu2"
+    },
+    {
+      "type": "library",
+      "name": "python-dotenv",
+      "version": "1.2.2"
+    },
+    {
+      "type": "library",
+      "name": "python-magic",
+      "version": "0.4.27"
+    },
+    {
+      "type": "library",
+      "name": "pytz",
+      "version": "2024.1"
+    },
+    {
+      "type": "library",
+      "name": "PyYAML",
+      "version": "6.0.1"
+    },
+    {
+      "type": "library",
+      "name": "radon",
+      "version": "6.0.1"
+    },
+    {
+      "type": "library",
+      "name": "readme_renderer",
+      "version": "45.0"
+    },
+    {
+      "type": "library",
+      "name": "requests",
+      "version": "2.34.2"
+    },
+    {
+      "type": "library",
+      "name": "requests-toolbelt",
+      "version": "1.0.0"
+    },
+    {
+      "type": "library",
+      "name": "rfc3986",
+      "version": "2.0.0"
+    },
+    {
+      "type": "library",
+      "name": "rich",
+      "version": "15.0.0"
+    },
+    {
+      "type": "library",
+      "name": "s3transfer",
+      "version": "0.10.1"
+    },
+    {
+      "type": "library",
+      "name": "scipy",
+      "version": "1.18.0"
+    },
+    {
+      "type": "library",
+      "name": "SecretStorage",
+      "version": "3.5.0"
+    },
+    {
+      "type": "library",
+      "name": "service-identity",
+      "version": "24.1.0"
+    },
+    {
+      "type": "library",
+      "name": "setuptools",
+      "version": "68.1.2"
+    },
+    {
+      "type": "library",
+      "name": "shellingham",
+      "version": "1.5.4"
+    },
+    {
+      "type": "library",
+      "name": "six",
+      "version": "1.16.0"
+    },
+    {
+      "type": "library",
+      "name": "sos",
+      "version": "4.10.2"
+    },
+    {
+      "type": "library",
+      "name": "ssh-import-id",
+      "version": "5.11"
+    },
+    {
+      "type": "library",
+      "name": "starlette",
+      "version": "1.3.1"
+    },
+    {
+      "type": "library",
+      "name": "systemd-python",
+      "version": "235"
+    },
+    {
+      "type": "library",
+      "name": "tenacity",
+      "version": "9.1.4"
+    },
+    {
+      "type": "library",
+      "name": "twine",
+      "version": "6.2.0"
+    },
+    {
+      "type": "library",
+      "name": "Twisted",
+      "version": "24.3.0"
+    },
+    {
+      "type": "library",
+      "name": "typer",
+      "version": "0.26.8"
+    },
+    {
+      "type": "library",
+      "name": "typing-inspection",
+      "version": "0.4.2"
+    },
+    {
+      "type": "library",
+      "name": "typing_extensions",
+      "version": "4.16.0"
+    },
+    {
+      "type": "library",
+      "name": "ubuntu-pro-client",
+      "version": "8001"
+    },
+    {
+      "type": "library",
+      "name": "ufw",
+      "version": "0.36.2"
+    },
+    {
+      "type": "library",
+      "name": "urllib3",
+      "version": "2.7.0"
+    },
+    {
+      "type": "library",
+      "name": "userpath",
+      "version": "1.9.2"
+    },
+    {
+      "type": "library",
+      "name": "uvicorn",
+      "version": "0.51.0"
+    },
+    {
+      "type": "library",
+      "name": "wadllib",
+      "version": "1.3.6"
+    },
+    {
+      "type": "library",
+      "name": "WALinuxAgent",
+      "version": "2.15.0.1"
+    },
+    {
+      "type": "library",
+      "name": "wheel",
+      "version": "0.42.0"
+    },
+    {
+      "type": "library",
+      "name": "zope.interface",
+      "version": "6.1"
+    },
+    {
+      "type": "library",
+      "name": "zstandard",
+      "version": "0.22.0"
+    }
+  ]
+}
