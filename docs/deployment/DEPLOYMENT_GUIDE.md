@@ -208,7 +208,7 @@ Watch for these steps:
 
 6. **Publish to PyPI** (2-3 min)
    - Upload wheels
-   - Expected output: "Successfully uploaded codex-ml-0.1.0-py3-none-any.whl"
+   - Expected output: "Successfully uploaded codex-ml-0.2.1-py3-none-any.whl"
 
 7. **Create GitHub release** (1 min)
    - Release notes
@@ -253,19 +253,19 @@ Test on clean machine or in docker:
 # Test core profile
 python -m venv test-core
 source test-core/bin/activate
-pip install codex-ml[core]==0.1.0
+pip install codex-ml[core]==0.2.1
 python -c "from cognitive_brain.ooda import OODALoop; print('✅ Core profile works')"
 
 # Test runtime profile
 python -m venv test-runtime
 source test-runtime/bin/activate
-pip install codex-ml[runtime]==0.1.0
+pip install codex-ml[runtime]==0.2.1
 python -c "import torch; print('✅ Runtime profile works')"
 
 # Test full profile
 python -m venv test-full
 source test-full/bin/activate
-pip install codex-ml[full]==0.1.0
+pip install codex-ml[full]==0.2.1
 python -c "import pytest; print('✅ Full profile works')"
 ```
 
@@ -298,7 +298,7 @@ All 12 test combinations should pass:
    ```
 
 3. **Create monitoring dashboard**:
-   - Location: `.codex/RELEASE_METRICS_v0.1.0.json`
+   - Location: `.codex/RELEASE_METRICS_v0.2.1.json`
    - Contents: Build duration, sizes, test results, download stats
 
 ---
@@ -316,7 +316,7 @@ All 12 test combinations should pass:
 
 **Installation**:
 ```bash
-pip install codex-ml[core]==0.1.0
+pip install codex-ml[core]==0.2.1
 ```
 
 **What's included**:
@@ -356,7 +356,7 @@ python -c "from cognitive_brain.ooda import OODALoop; ooda = OODALoop(); print('
 
 **Installation**:
 ```bash
-pip install codex-ml[runtime]==0.1.0
+pip install codex-ml[runtime]==0.2.1
 ```
 
 **What's included**:
@@ -397,7 +397,7 @@ python -c "import torch; from cognitive_brain.runtime import MLInference; print(
 
 **Installation**:
 ```bash
-pip install codex-ml[full]==0.1.0
+pip install codex-ml[full]==0.2.1
 ```
 
 **What's included**:
@@ -499,7 +499,7 @@ with open(plans[0]) as f:
 
 ### Release Metrics Collection
 
-After release, the workflow automatically creates `.codex/RELEASE_METRICS_v0.1.0.json`:
+After release, the workflow automatically creates `.codex/RELEASE_METRICS_v0.2.1.json`:
 
 ```json
 {
@@ -615,7 +615,7 @@ python scripts/deploy/rollback_release.py \
 ```bash
 # Wait 5 minutes and retry
 sleep 300
-pip install codex-ml[core]==0.1.0
+pip install codex-ml[core]==0.2.1
 
 # Or install from GitHub release directly
 pip install https://github.com/Aries-Serpent/_codex_/releases/download/v0.1.0/codex_ml-0.1.0-py3-none-any.whl
@@ -637,7 +637,7 @@ python -c "import cognitive_brain; print(cognitive_brain.__file__)"
 
 # Try reinstall
 pip uninstall -y codex-ml
-pip install codex-ml[core]==0.1.0
+pip install codex-ml[core]==0.2.1
 
 # Check Python path
 python -c "import sys; print('\n'.join(sys.path))"
@@ -680,7 +680,7 @@ pip install codex-ml[full]>=0.2.1
 ```bash
 # Use core profile instead
 pip uninstall codex-ml
-pip install codex-ml[core]==0.1.0
+pip install codex-ml[core]==0.2.1
 
 # If ML needed, use Docker with layer caching
 # or AWS SageMaker (pre-cached)
@@ -743,7 +743,7 @@ A: It will work, but wastes 100+ MB of disk space and install time. Consider opt
 
 A: Yes, downgrade is safe:
 ```bash
-pip install --force-reinstall codex-ml[core]==0.1.0
+pip install --force-reinstall codex-ml[core]==0.2.1
 ```
 
 **Q: How long is v0.1.0 supported?**
