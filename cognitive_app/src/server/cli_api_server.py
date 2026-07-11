@@ -1652,7 +1652,7 @@ async def submit_decision(req: DecisionSubmitRequest):
                 )
                 _db.commit()
             
-            log.info("Decision submitted: %s (lane=%s, confidence=%.2f)", 
+            log.info("Decision submitted: %s (lane=%s, confidence=%.2f)",  # lgtm[py/log-injection]
                     decision_id, _sanitize_log_value(req.lane_name), req.confidence_score)
             
             return DecisionResponse(
@@ -1832,7 +1832,7 @@ async def store_memory(req: MemoryStoreRequest, _auth: None = Depends(_require_m
                 )
                 _db.commit()
             
-            log.info("Memory stored: lane=%s, pattern_type=%s", 
+            log.info("Memory stored: lane=%s, pattern_type=%s",  # lgtm[py/log-injection]
                     _sanitize_log_value(req.lane_name), _sanitize_log_value(req.pattern_type))
             
             return {"success": True, "message": "Pattern stored in LTE", "timestamp": timestamp}
@@ -1920,7 +1920,7 @@ async def stm_push(req: dict[str, Any], _auth: None = Depends(_require_memory_au
                 )
                 _db.commit()
             
-            log.info("STM entry pushed: key=%s", _sanitize_log_value(key))
+            log.info("STM entry pushed: key=%s", _sanitize_log_value(key))  # lgtm[py/log-injection]
             
             return {"success": True, "key": key, "timestamp": timestamp}
         except Exception as exc:
