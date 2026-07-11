@@ -1625,8 +1625,6 @@ async def api_proxy(req: ApiProxyRequest):
     }
 
 
-# ── Phase 15: Decision Visualization Endpoints ──────────────────────────────────
-
 @app.post("/api/decisions/submit", response_model=DecisionResponse, status_code=201)
 async def submit_decision(req: DecisionSubmitRequest):
     """
@@ -1672,41 +1670,6 @@ async def submit_decision(req: DecisionSubmitRequest):
         except Exception as exc:
             log.warning("submit_decision error: %s", sanitize_for_log(type(exc).__name__))
             raise HTTPException(status_code=500, detail="Error submitting decision")
-
-
-@app.get("/api/decisions/{decision_id}", response_model=DecisionResponse)
-async def get_decision(decision_id: str):
-    """
-    Retrieve a specific decision by ID.
-    """
-    with tracer.start_as_current_span("get_decision"):
-        try:
-            with _db_lock:
-                row = _db.execute(
-                    "SELECT * FROM decisions WHERE decision_id = ?",
-                    (decision_id,),
-                ).fetchone()
-            
-            if not row:
-                raise HTTPException(status_code=404, detail="Decision not found")
-            
-            return DecisionResponse(
-                decision_id=row["decision_id"],
-                lane_name=row["lane_name"],
-                candidate=row["candidate"],
-                confidence_score=row["confidence_score"],
-                k1_factor=row["k1_factor"],
-                coherence_metric=row["coherence_metric"],
-                superposition_state=row["superposition_state"],
-                submitted_at=row["submitted_at"],
-                outcome=row["outcome"],
-                outcome_at=row["outcome_at"],
-            )
-        except HTTPException:
-            raise
-        except Exception as exc:
-            log.warning("get_decision error: %s", sanitize_for_log(type(exc).__name__))
-            raise HTTPException(status_code=500, detail="Error retrieving decision")
 
 
 @app.get("/api/decisions/recent", response_model=list[DecisionResponse])
@@ -1806,6 +1769,41 @@ async def get_decision_history(lane_name: Optional[str] = None, page: int = 1, p
         except Exception as exc:
             log.warning("get_decision_history error: %s", sanitize_for_log(type(exc).__name__))
             raise HTTPException(status_code=500, detail="Error retrieving decision history")
+
+
+@app.get("/api/decisions/{decision_id}", response_model=DecisionResponse)
+async def get_decision(decision_id: str):
+    """
+    Retrieve a specific decision by ID.
+    """
+    with tracer.start_as_current_span("get_decision"):
+        try:
+            with _db_lock:
+                row = _db.execute(
+                    "SELECT * FROM decisions WHERE decision_id = ?",
+                    (decision_id,),
+                ).fetchone()
+            
+            if not row:
+                raise HTTPException(status_code=404, detail="Decision not found")
+            
+            return DecisionResponse(
+                decision_id=row["decision_id"],
+                lane_name=row["lane_name"],
+                candidate=row["candidate"],
+                confidence_score=row["confidence_score"],
+                k1_factor=row["k1_factor"],
+                coherence_metric=row["coherence_metric"],
+                superposition_state=row["superposition_state"],
+                submitted_at=row["submitted_at"],
+                outcome=row["outcome"],
+                outcome_at=row["outcome_at"],
+            )
+        except HTTPException:
+            raise
+        except Exception as exc:
+            log.warning("get_decision error: %s", sanitize_for_log(type(exc).__name__))
+            raise HTTPException(status_code=500, detail="Error retrieving decision")
 
 
 # ── Phase 15: Memory Management Endpoints ──────────────────────────────────────

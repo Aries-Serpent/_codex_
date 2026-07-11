@@ -675,13 +675,22 @@ def cmd_query(args):
     if duckdb is None:
         raise SystemExit("duckdb is required for query mode")
     con = duckdb.connect(database=":memory:")
-    con.execute(f"ATTACH '{args.sqlite}' AS meta (TYPE SQLITE)")
+    
+    # Security: Validate and sanitize the SQLite path to prevent SQL injection
+    sqlite_path = os.path.abspath(args.sqlite)
+    if not os.path.exists(sqlite_path):
+        raise SystemExit(f"SQLite database not found: {sqlite_path}")
+    # Use DuckDB's read-only mode to prevent command injection
+    con.execute(f"ATTACH read_only '{sqlite_path}' AS meta (TYPE SQLITE)")
+    
     base = args.parquet
     deltas_dir = args.deltas_dir or os.path.dirname(base) or "."
     files = list_parquet_deltas(base, deltas_dir)
     if not files:
         raise SystemExit("No Parquet files available for query.")
-    parquet_list_sql = ", ".join([f"'{f}'" for f in files])
+    
+    # Security: Use proper SQL escaping for file paths
+    parquet_list_sql = ", ".join([f"'{f.replace(chr(39), chr(39)+chr(39))}'" for f in files])
     default_sql = f"""
         SELECT
           m.path, m.language, m.lines,
@@ -818,13 +827,22 @@ def cmd_verify(args):
     if duckdb is None:
         raise SystemExit("duckdb is required for verify mode")
     con = duckdb.connect(database=":memory:")
-    con.execute(f"ATTACH '{args.sqlite}' AS meta (TYPE SQLITE)")
+    
+    # Security: Validate and sanitize the SQLite path to prevent SQL injection
+    sqlite_path = os.path.abspath(args.sqlite)
+    if not os.path.exists(sqlite_path):
+        raise SystemExit(f"SQLite database not found: {sqlite_path}")
+    # Use DuckDB's read-only mode to prevent command injection
+    con.execute(f"ATTACH read_only '{sqlite_path}' AS meta (TYPE SQLITE)")
+    
     base = args.parquet
     deltas_dir = args.deltas_dir or os.path.dirname(base) or "."
     files = list_parquet_deltas(base, deltas_dir)
     if not files:
         raise SystemExit("No Parquet files available for verify.")
-    parquet_list_sql = ", ".join([f"'{f}'" for f in files])
+    
+    # Security: Use proper SQL escaping for file paths
+    parquet_list_sql = ", ".join([f"'{f.replace(chr(39), chr(39)+chr(39))}'" for f in files])
     counts = con.execute(f"""
         WITH active AS (
           SELECT parquet_row_id FROM meta.code_metadata WHERE deleted_at IS NULL

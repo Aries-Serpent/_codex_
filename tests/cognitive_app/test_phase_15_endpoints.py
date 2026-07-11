@@ -33,11 +33,17 @@ def temp_db_path():
         yield db_path
 
 
+@pytest.fixture(autouse=True)
+def mock_get_token():
+    """Auto-use fixture to mock get_token for all tests."""
+    with patch("scripts.ci._token_resolver.get_token") as mock:
+        mock.return_value = ("test-token-12345", "test-backup")
+        yield mock
+
+
 @pytest.fixture
 def client(temp_db_path):
     """Create FastAPI test client with temporary database."""
-    from unittest.mock import patch, MagicMock
-    
     # Set the database path before importing the app
     os.environ["CODEX_DB_PATH"] = temp_db_path
     
@@ -47,42 +53,34 @@ def client(temp_db_path):
         del sys.modules["cognitive_app.src.server.cli_api_server"]
     
     try:
+        from cognitive_app.src.server.cli_api_server import app as fastapi_app
         from fastapi.testclient import TestClient
     except ImportError as e:
-        pytest.skip(f"fastapi not installed: {e}")
+        pytest.skip(f"cognitive_app not installed: {e}")
     
-    # Mock the get_token function to return a test token
-    with patch("cognitive_app.src.server.cli_api_server.get_token") as mock_get_token:
-        mock_get_token.return_value = ("test-token-12345", "test-backup")
-        
-        try:
-            from cognitive_app.src.server.cli_api_server import app as fastapi_app
-        except ImportError as e:
-            pytest.skip(f"cognitive_app not installed: {e}")
-        
-        client = TestClient(fastapi_app)
-        # Add helper method to make authenticated requests
-        original_get = client.get
-        original_post = client.post
-        
-        def get_with_auth(path, *args, **kwargs):
-            if "/api/memory/" in path:
-                if "headers" not in kwargs:
-                    kwargs["headers"] = {}
-                kwargs["headers"]["Authorization"] = "******"
-            return original_get(path, *args, **kwargs)
-        
-        def post_with_auth(path, *args, **kwargs):
-            if "/api/memory/" in path:
-                if "headers" not in kwargs:
-                    kwargs["headers"] = {}
-                kwargs["headers"]["Authorization"] = "******"
-            return original_post(path, *args, **kwargs)
-        
-        client.get = get_with_auth
-        client.post = post_with_auth
-        
-        yield client
+    client = TestClient(fastapi_app)
+    # Add helper method to make authenticated requests
+    original_get = client.get
+    original_post = client.post
+    
+    def get_with_auth(path, *args, **kwargs):
+        if "/api/memory/" in path:
+            if "headers" not in kwargs:
+                kwargs["headers"] = {}
+            kwargs["headers"]["Authorization"] = "******"
+        return original_get(path, *args, **kwargs)
+    
+    def post_with_auth(path, *args, **kwargs):
+        if "/api/memory/" in path:
+            if "headers" not in kwargs:
+                kwargs["headers"] = {}
+            kwargs["headers"]["Authorization"] = "******"
+        return original_post(path, *args, **kwargs)
+    
+    client.get = get_with_auth
+    client.post = post_with_auth
+    
+    return client
 
 
 # ────────────────────────────────────────────────────────────────────────────────

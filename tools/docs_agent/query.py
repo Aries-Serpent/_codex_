@@ -81,7 +81,22 @@ def query_document(repo_root: Path, document_id: str) -> dict[str, Any]:
 
 
 def query_table(repo_root: Path, table: str, limit: int = 100) -> dict[str, Any]:
+    """Query a table from the documentation database.
+    
+    Security: Table name is validated against a whitelist to prevent SQL injection.
+    Only safe, known tables are allowed.
+    """
+    # Security: Whitelist of allowed tables to prevent SQL injection via table name
+    ALLOWED_TABLES = {
+        "documents", "sections", "actions", "requirements", "decisions", 
+        "relationships", "docs_fts"
+    }
+    
+    if table not in ALLOWED_TABLES:
+        raise ValueError(f"Invalid table name: {table}. Allowed tables: {', '.join(ALLOWED_TABLES)}")
+    
     with _db(repo_root) as conn:
+        # Safe: table name is validated against whitelist, limit is parameterized
         rows = conn.execute(f"SELECT * FROM {table} LIMIT ?", (limit,)).fetchall()
         cols = [d[0] for d in conn.execute(f"SELECT * FROM {table} LIMIT 1").description]
     return {"table": table, "rows": [dict(zip(cols, r)) for r in rows]}
@@ -110,28 +125,38 @@ def query_related(repo_root: Path, entity_id: str, depth: int) -> dict[str, Any]
 
 
 def query_impact(repo_root: Path, files: list[str]) -> dict[str, Any]:
+    """Query impact of file changes on documentation.
+    
+    Security: File list is validated and used only as parameterized query values,
+    never interpolated into SQL strings.
+    """
     with _db(repo_root) as conn:
-        docs = (
-            conn.execute(
-                "SELECT id, title, source_path FROM documents WHERE source_path IN ({})".format(
-                    ",".join("?" * len(files)) if files else "''"
-                ),
+        # Security: Use parameterized queries to prevent SQL injection
+        # Build the WHERE clause with one ? per file to ensure safe parameterization
+        if files:
+            # Safe: Placeholders are parameterized, files list is only used for parameter values
+            placeholders = ",".join("?" * len(files))
+            docs = conn.execute(
+                f"SELECT id, title, source_path FROM documents WHERE source_path IN ({placeholders})",
                 tuple(files),
             ).fetchall()
-            if files
-            else []
-        )
+        else:
+            docs = []
+            
         doc_ids = [d[0] for d in docs]
         actions = []
         requirements = []
         decisions = []
+        
         if doc_ids:
+            # Safe: Use parameterized query with placeholders for doc_ids
             q = ",".join("?" * len(doc_ids))
             actions = conn.execute(
                 f"SELECT id, title, status FROM actions WHERE document_id IN ({q})", tuple(doc_ids)
             ).fetchall()
             requirements = conn.execute("SELECT id, statement, status FROM requirements").fetchall()
             decisions = conn.execute("SELECT id, statement, status FROM decisions").fetchall()
+            
     return {
         "changed_files": files,
         "affected_documents": [{"id": d[0], "title": d[1], "source_path": d[2]} for d in docs],
