@@ -1,5 +1,5 @@
 # Session Context — 2026-07-11T06:56:52Z
-**Branch:** `copilot/explore-codebase-implementation-plan`  **PR:** #5296  **Access:** `rest, graphql, gh_cli`
+**Branch:** `copilot/explore-codebase-implementation-plan`  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`

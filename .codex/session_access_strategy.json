@@ -17,5 +17,5 @@
     5295
   ],
   "branch": "copilot/explore-codebase-implementation-plan",
-  "recommendation": "Use REST for data fetches. "
+  "recommendation": "Use REST for data fetches."
 }
