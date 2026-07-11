@@ -637,7 +637,7 @@ print(f"\n💰 Projected savings: ${cost_report['total_cost'] - new_cost:.0f}/mo
 
 - [Detailed Task Guides](./TASK_GUIDES/)
 - [Advanced Topics](./ADVANCED_TOPICS/)
-- [API Reference](../api/API_REFERENCE.md)
+- [API Reference](../API_REFERENCE_PHASE_15_16.md)
 - [Troubleshooting FAQ](./FAQ_TROUBLESHOOTING.md)
 
 ---

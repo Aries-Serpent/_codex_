@@ -10,7 +10,7 @@ Comprehensive CI/CD failure analysis, fixes, and validation reports.
 ## Failure Analysis & Fixes
 - [CI Failure Analysis](CI_FAILURE_ANALYSIS.md) - Root cause analysis of CI failures
 - [CI Fixes: Pytest & MkDocs](CI_FIXES_PYTEST_MKDOCS.md) - Test and documentation fixes
-- [CI Fix Summary](CI_FIX_SUMMARY.md) - Summary of CI improvements
+- [CI Fix Summary](./CI_FIX_SUMMARY.md) - Summary of CI improvements
 - [CI Test Fixes PR#2883](CI_TEST_FIXES_PR2883.md) - Specific PR test fixes
 
 ## Validation Reports

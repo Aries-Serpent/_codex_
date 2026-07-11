@@ -51,4 +51,4 @@ No GPU is required — the symbolic pipeline runs fully on CPU.
 | Full end-to-end training | [End-to-End CPU tutorial](end_to_end_cpu.md) |
 | Deploy to production | [Deploy Pipeline](../deployment/deploy_pipeline.md) |
 | Configure the model | [Codex Setup Guide](../guides/codex_setup.md) |
-| Understand the architecture | [Architecture](../architecture.md) |
+| Understand the architecture | [Architecture](../../docs/architecture/ARCHITECTURE_CONSOLIDATED.md) |

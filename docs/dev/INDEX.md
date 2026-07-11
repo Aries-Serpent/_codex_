@@ -7,7 +7,7 @@
 
 - [CI_LOCAL_TESTING](CI_LOCAL_TESTING.md)
 - [CODE_STYLE_GUIDE](CODE_STYLE_GUIDE.md)
-- [CONTRIBUTING](CONTRIBUTING.md)
+- [CONTRIBUTING](../../CONTRIBUTING.md)
 - [INDEX](INDEX.md)
 - [Import_Contracts](Import_Contracts.md)
 - [plugins](plugins.md)

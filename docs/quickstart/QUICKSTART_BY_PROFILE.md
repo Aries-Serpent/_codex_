@@ -192,7 +192,7 @@ async def main():
         "batch_size": 32
     }
     
-    # This is a simplified example - see docs/ml/ for real training pipelines
+    # This is a simplified example - see ../ml/ for real training pipelines
     print("Training setup complete")
     
     # Evaluate (full profile feature)
@@ -326,15 +326,15 @@ python -c "from cognitive_brain import Planner; print('OK')"
 
 ## Next Steps
 
-- **Core users:** See [../.codex/archive/misc/INSTALL.md](../.codex/archive/misc/INSTALL.md) for offline deployment
-- **Runtime users:** Check [docs/api/reference/INTEGRATION.md](docs/api/reference/INTEGRATION.md) for API integration
-- **Full profile:** See [docs/](docs/) for development guides and API reference
-- **All users:** Review [README.md](README.md) for overview
+- **Core users:** See [../../INSTALL.md](../../INSTALL.md) for offline deployment
+- **Runtime users:** Check [../api/reference/INTEGRATION.md](../api/reference/INTEGRATION.md) for API integration
+- **Full profile:** See [../](../) for development guides and API reference
+- **All users:** Review [../../README.md](../../README.md) for overview
 
 ---
 
 ## Support
 
-- **Documentation:** [docs/](docs/)
+- **Documentation:** [../](../)
 - **Issue tracker:** https://github.com/Aries-Serpent/_codex_/issues
 - **License:** MIT
