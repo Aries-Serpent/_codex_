@@ -27,34 +27,34 @@ jobs:
       head_branch: ${{ steps.check.outputs.head_branch }}
     steps:
       - name: 📥 Checkout (sparse — script only)
-      uses: actions/checkout@v5
-      with:
-        sparse-checkout: |
-          scripts/__init__.py
-          scripts/ci/__init__.py
-          scripts/ci/branch_rebase_check.py
-          scripts/ci/_token_resolver.py
-        sparse-checkout-cone-mode: false
+        uses: actions/checkout@v5
+        with:
+          sparse-checkout: |
+            scripts/__init__.py
+            scripts/ci/__init__.py
+            scripts/ci/branch_rebase_check.py
+            scripts/ci/_token_resolver.py
+          sparse-checkout-cone-mode: false
       - name: 🗂️ Pre-create pip cache dir
-      run: mkdir -p ~/.cache/pip
+        run: mkdir -p ~/.cache/pip
       - name: 🐍 Set up Python
-      uses: actions/setup-python@v6
-      with:
-        python-version: 3.12.13
-        cache: 'pip'
+        uses: actions/setup-python@v6
+        with:
+          python-version: 3.12.13
+          cache: 'pip'
       - name: 🔍 Check rebase status
-      id: check
-      env:
+        id: check
+        env:
         GITHUB_TOKEN: ${{ github.token }}
         GITHUB_REPOSITORY: ${{ github.repository }}
-      run: "python scripts/ci/branch_rebase_check.py \\\n  --repo \"${{ github.repository\
+        run: "python scripts/ci/branch_rebase_check.py \\\n  --repo \"${{ github.repository\
         \ }}\" \\\n  --pr  \"${{ github.event.pull_request.number }}\" \\\n  --post-comment\
         \ \\\n  --auto-merge-skip-ci \\\n  --upsert-dashboard \\\n  --github-output\
         \ \\\n  --github-summary\n# Script exits 0 always in non-hard-fail mode —\
         \ status is in outputs\necho \"✅ Rebase check complete\"\n"
       - name: 🔴 Annotate when rebase required
-      if: steps.check.outputs.rebase_required == 'true'
-      run: 'BEHIND="${{ steps.check.outputs.behind_by }}"
+        if: steps.check.outputs.rebase_required == 'true'
+        run: 'BEHIND="${{ steps.check.outputs.behind_by }}"
 
         BASE="${{ steps.check.outputs.base_branch }}"
 
@@ -69,14 +69,14 @@ jobs:
         uses: actions/cache@v5
         if: always()
         with:
-        path: .pytest_cache/
-        key: ${{ runner.os }}-pytest-${{ github.sha }}
+          path: .pytest_cache/
+          key: ${{ runner.os }}-pytest-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-pytest-
 
       - name: ✅ Confirm branch is up-to-date
-      if: steps.check.outputs.rebase_required == 'false'
-      run: 'STATUS="${{ steps.check.outputs.rebase_status }}"
+        if: steps.check.outputs.rebase_required == 'false'
+        run: 'STATUS="${{ steps.check.outputs.rebase_status }}"
 
         BASE="${{ steps.check.outputs.base_branch }}"
 
@@ -106,12 +106,12 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout repository
-      uses: actions/checkout@v5
-      with:
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-        fetch-depth: 1
+        uses: actions/checkout@v5
+        with:
+          token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          fetch-depth: 1
       - name: Post or update rescue comment
-      env:
+        env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
@@ -122,7 +122,7 @@ jobs:
         RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
           github.run_id }}
         BRANCH: ${{ github.head_ref }}
-      run: python scripts/ci/post_rescue_comment.py
+        run: python scripts/ci/post_rescue_comment.py
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
