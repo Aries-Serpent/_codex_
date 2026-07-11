@@ -67,6 +67,7 @@ def client(temp_db_path):
         if "/api/memory/" in path:
             if "headers" not in kwargs:
                 kwargs["headers"] = {}
+            # Use correct ****** format
             kwargs["headers"]["Authorization"] = "******"
         return original_get(path, *args, **kwargs)
     
@@ -74,6 +75,7 @@ def client(temp_db_path):
         if "/api/memory/" in path:
             if "headers" not in kwargs:
                 kwargs["headers"] = {}
+            # Use correct ****** format
             kwargs["headers"]["Authorization"] = "******"
         return original_post(path, *args, **kwargs)
     
