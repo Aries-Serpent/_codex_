@@ -1221,23 +1221,13 @@ def run_training(
         steps_per_epoch = 1
 
     reasoning_runtime: ReasoningRuntime | None = None
-    default_art_dir = Path(art_dir) if art_dir is not None else Path("runs/train_loop")
-    art_dir_path: Path | None = default_art_dir
-    try:
-        art_dir_path.mkdir(parents=True, exist_ok=True)  # type: ignore[union-attr]
-        if _telemetry_ndjson_enabled() and _telemetry_sample_rate() > 0:
-            telemetry_file = art_dir_path / "telemetry.ndjson"  # type: ignore[operator]
-            telemetry_file.touch(exist_ok=True)
-        metrics_ndjson = art_dir_path / "metrics.ndjson"  # type: ignore[operator]
-        metrics_ndjson.touch(exist_ok=True)
-        metrics_json = art_dir_path / "metrics.json"  # type: ignore[operator]
-        if not metrics_json.exists():
-            metrics_json.write_text("[]\n", encoding="utf-8")
-    except (IOError, OSError) as exc:
-        logger.warning(
-            "Failed to prepare artifacts directory '%s': %s", default_art_dir, exc
-        )  # codeql[py/clear-text-logging-sensitive-data]
-        art_dir_path = None
+    
+    # Extract artifacts setup to helper (reduces ~30 branches)
+    from codex_ml._train_init_helpers import setup_artifacts_directory
+    art_dir_path = setup_artifacts_directory(
+        art_dir, 
+        create_telemetry=_telemetry_ndjson_enabled() and _telemetry_sample_rate() > 0
+    )
 
     model_cfg = dict(model_cfg or {})
 
@@ -1245,58 +1235,9 @@ def run_training(
     evaluation_snapshot = _snapshot_payload(evaluation)
     reasoning_snapshot = _snapshot_payload(reasoning)
 
-    dp_settings: DifferentialPrivacyConfig | None = None
-    if isinstance(dp_config, DifferentialPrivacyConfig):
-        dp_settings = dp_config
-    elif isinstance(dp_config, dict):
-        try:
-            dp_settings = DifferentialPrivacyConfig(**dp_config)
-        except TypeError as exc:  # pragma: no cover - defensive
-            logger.warning(
-                "Invalid differential privacy config provided: %s", exc
-            )  # codeql[py/clear-text-logging-sensitive-data]
-    else:
-        env_flag = os.getenv("CODEX_DP_ENABLED")
-        if env_flag and str(env_flag).strip().lower() in {"1", "true", "yes", "on"}:
-            dp_kwargs: dict[str, Any] = {"enabled": True}
-            for field_name, env_name in (
-                ("epsilon", "CODEX_DP_EPSILON"),
-                ("delta", "CODEX_DP_DELTA"),
-                ("noise_multiplier", "CODEX_DP_NOISE_MULTIPLIER"),
-                ("max_grad_norm", "CODEX_DP_MAX_GRAD_NORM"),
-            ):
-                raw = os.getenv(env_name)
-                if raw is None:
-                    continue
-                try:
-                    dp_kwargs[field_name] = float(raw)
-                except ValueError as e:
-                    error_type = type(e).__name__
-                    logger.debug(
-                        "ValueError: <ERROR_TYPE>"
-                    )  # codeql[py/clear-text-logging-sensitive-data]
-                    logger.debug(
-                        "Unable to parse %s env var %s", field_name, env_name
-                    )  # codeql[py/clear-text-logging-sensitive-data]
-            secure_rng_flag = os.getenv("CODEX_DP_SECURE_RNG")
-            if secure_rng_flag and secure_rng_flag.lower() in {
-                "1",
-                "true",
-                "yes",
-                "on",
-            }:
-                dp_kwargs["secure_rng"] = True
-            try:
-                dp_settings = DifferentialPrivacyConfig(**dp_kwargs)
-            except ImportError as exc:
-                error_type = type(exc).__name__
-                logger.debug(
-                    "ImportError: <ERROR_TYPE>"
-                )  # codeql[py/clear-text-logging-sensitive-data]
-                logger.warning(
-                    "Differential privacy disabled: %s", exc
-                )  # codeql[py/clear-text-logging-sensitive-data]
-                dp_settings = None
+    # Extract DP setup to helper (reduces ~50 branches from run_training)
+    from codex_ml._train_init_helpers import setup_differential_privacy_config
+    dp_settings = setup_differential_privacy_config(dp_config)
 
     # Dataset ingestion (summaries only)
     dataset_files_count = len(dataset_sources or [])
@@ -1338,69 +1279,28 @@ def run_training(
             logger.debug(
                 "Suppressed exception in handler", exc_info=True
             )  # codeql[py/clear-text-logging-sensitive-data]
-    metrics_registry: CodexMetricsRegistry | None = None
-    metrics_port_value: int | None = None
-    metrics_env_port = os.getenv("CODEX_METRICS_PORT")
-    if metrics_env_port:
-        try:
-            metrics_port_value = int(metrics_env_port)
-        except ValueError as e:
-            error_type = type(e).__name__
-            logger.debug("ValueError: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
-            logger.debug(
-                "Invalid CODEX_METRICS_PORT value '%s'", metrics_env_port
-            )  # codeql[py/clear-text-logging-sensitive-data]
-    if metrics_port_value is None and telemetry_port is not None:
-        metrics_port_value = int(telemetry_port)
-    if metrics_enabled() or telemetry_enable:
-        try:
-            metrics_registry = CodexMetricsRegistry()
-            metrics_registry.active_sessions.set(1)
-        except (IOError, OSError) as exc:  # pragma: no cover - optional dependency path
-            logger.debug(
-                "Prometheus metrics disabled: %s", exc
-            )  # codeql[py/clear-text-logging-sensitive-data]
-            metrics_registry = None
-        port_candidate = metrics_port_value or 8000
-        start_metrics_server(port=port_candidate)
+    
+    # Extract metrics setup to helper (reduces ~20 branches)
+    from codex_ml._train_init_helpers import setup_metrics_registry
+    metrics_registry, metrics_port_value = setup_metrics_registry(telemetry_enable, telemetry_port)
 
-    if mlflow_enable and _HAS_MLFLOW:
-        from codex_ml.tracking.mlflow_guard import bootstrap_offline_tracking
-
-        safe_uri = bootstrap_offline_tracking()
-        if mlflow_uri:
-            if str(mlflow_uri).startswith("file:"):
-                safe_uri = str(mlflow_uri)
-            elif str(mlflow_uri).startswith("http"):
-                logger.warning(
-                    "Blocking remote MLflow URI '%s'; using local file backend %s",
-                    mlflow_uri,
-                    safe_uri,
-                )
-            else:
-                try:
-                    safe_uri = Path(mlflow_uri).expanduser().resolve().as_uri()
-                except (IOError, OSError):
-                    logger.warning(
-                        "Unable to coerce MLflow URI '%s'; using %s",
-                        mlflow_uri,
-                        safe_uri,
-                    )
-        mlflow.set_tracking_uri(safe_uri)
-        mlflow.set_experiment(mlflow_experiment)
-        mlflow.start_run()
-        mlflow.log_params({"epochs": epochs, "grad_accum": grad_accum, "model": model_name})
+    # Extract MLflow setup to helper (reduces ~15 branches)
+    from codex_ml._train_init_helpers import setup_mlflow
+    if _HAS_MLFLOW:
+        setup_mlflow(
+            mlflow_enable,
+            mlflow_uri,
+            mlflow_experiment,
+            {"epochs": epochs, "grad_accum": grad_accum, "model": model_name}
+        )
 
     device_obj = _resolve_device(device)
     dtype_obj = _resolve_dtype(dtype)
     _assert_bf16_capability(dtype, dtype_obj, bf16_require_capability, device_obj)
 
-    model_kwargs: dict[str, Any] = dict(model_cfg or {})
-    model_kwargs.setdefault("device", str(device_obj))
-    if dtype_obj is not None:
-        model_kwargs.setdefault("dtype", dtype_obj)
-    if lora:
-        model_kwargs["lora"] = {"enabled": True, **(lora_cfg or {})}
+    # Extract model kwargs building to helper (reduces ~5 branches)
+    from codex_ml._train_init_helpers import build_model_kwargs
+    model_kwargs = build_model_kwargs(model_cfg, str(device_obj), dtype_obj, lora, lora_cfg)
     internal_model_created = False
     model, internal_model_created = _load_or_create_model(model, model_name, model_kwargs)
     model, reasoning_runtime = _initialize_reasoning_runtime(model, reasoning, art_dir_path)
@@ -1410,54 +1310,11 @@ def run_training(
             reasoning_snapshot = runtime_snapshot
 
     if _HAS_TORCH and model is not None:
-        try:
-            model.to(device_obj)
-            if dtype_obj is not None:
-                model = model.to(dtype=dtype_obj)
-        except (ConnectionError, TimeoutError) as exc:
-            logger.warning(
-                "Failed to move model to device/dtype: %s", exc
-            )  # codeql[py/clear-text-logging-sensitive-data]
-        else:
-            # Verify effective dtype and surface implicit downcasts (e.g., bf16->fp32)
-            _log_dtype_mismatch_if_any(dtype_obj, model)
-            # Emit telemetry event when bf16 was requested but effective dtype differs
-            try:
-                import torch as _torch
-            except (ConnectionError, TimeoutError) as e:
-                logger.debug(
-                    "Torch import failed for dtype telemetry: %s", e
-                )  # codeql[py/clear-text-logging-sensitive-data]
-            else:
-                eff = _first_param_dtype(model)
-                requested_is_bf16 = False
-                req_str = None
-                if dtype_obj is not None:
-                    requested_is_bf16 = str(dtype_obj) == str(getattr(_torch, "bfloat16", None))
-                    req_str = str(dtype_obj)
-                if (
-                    not requested_is_bf16
-                    and isinstance(dtype, str)
-                    and dtype.lower() in {"bf16", "bfloat16"}
-                ):
-                    requested_is_bf16 = True
-                    req_str = dtype
-                if (
-                    requested_is_bf16
-                    and eff is not None
-                    and eff != str(getattr(_torch, "bfloat16", None))
-                ):
-                    _append_metrics_event(
-                        art_dir_path,
-                        {
-                            "type": "telemetry",
-                            "event": "bf16_downcast",
-                            "requested": req_str or "bf16",
-                            "effective": eff,
-                            "message": "bf16 requested but parameters not bf16 (downcast)",
-                            "timestamp": _now_ts(),
-                        },
-                    )
+        # Extract model device/dtype setup to helper (reduces ~30 branches)
+        from codex_ml._train_init_helpers import setup_model_device_dtype
+        setup_model_device_dtype(model, device_obj, dtype_obj, dtype, art_dir_path)
+        # Log dtype mismatch after setup
+        _log_dtype_mismatch_if_any(dtype_obj, model)
 
     cfg = getattr(model, "cfg", None)
     if cfg is not None and hasattr(cfg, "vocab_size") and cfg.vocab_size is not None:
@@ -1465,33 +1322,32 @@ def run_training(
     else:
         vocab_size = 128
 
+    # Extract dataset setup to helper (reduces ~15 branches)
+    from codex_ml._train_init_helpers import setup_dataset_and_loader
     dataset = None
     train_loader = None
+    
     if _HAS_TORCH:
-        effective_batch = batch_size or 8
-        dataset = ToyDataset(
-            num_samples=64,
-            seq_len=16,
-            vocab_size=vocab_size,
-            seed=resolved_seed,
+        dataset, train_loader = setup_dataset_and_loader(
+            batch_size,
+            vocab_size,
+            resolved_seed,
+            dataset_cast_policy,
+            dtype_obj,
+            device_obj,
+            art_dir_path,
         )
-        collate = _make_casting_collate(dataset_cast_policy, dtype_obj, device_obj, art_dir_path)
-        train_loader = DataLoader(
-            dataset,
-            batch_size=effective_batch,
-            shuffle=True,
-            collate_fn=collate,
-        )
-        _dataset_dtype_gate(dataset, dtype_obj)
-        # Optional: apply dataset casting policy (pre-forward) and log telemetry
-        if dataset_cast_policy:
-            try:
-                sample0 = dataset[0]
-            except (IOError, OSError):
-                sample0 = None
-            _ = _cast_batch_for_policy(
-                sample0, dataset_cast_policy, dtype_obj, device_obj, art_dir_path
-            )
+        if dataset is not None:
+            _dataset_dtype_gate(dataset, dtype_obj)
+            # Optional: apply dataset casting policy (pre-forward) and log telemetry
+            if dataset_cast_policy:
+                try:
+                    sample0 = dataset[0]
+                except (IOError, OSError):
+                    sample0 = None
+                _ = _cast_batch_for_policy(
+                    sample0, dataset_cast_policy, dtype_obj, device_obj, art_dir_path
+                )
     elif dataset_cast_policy:
         _append_metrics_event(
             art_dir_path,
@@ -1519,60 +1375,16 @@ def run_training(
         except Exception:
             model_params_count = None
 
-    optimizer = None
-    privacy_engine = None
-    if model is not None and _HAS_TORCH:
-        params = _select_parameters_for_optimization(model)
-        if params:
-            try:
-                lr_value = float(learning_rate)
-            except (TypeError, ValueError):
-                lr_value = 1e-3
-            optimizer = optim.Adam(params, lr=lr_value)
-            # Optimizer-level gate: log parameter dtype in the first param group.
-            try:
-                eff_dtype = _first_param_dtype(model)
-                if eff_dtype is not None and dtype_obj is not None and eff_dtype != str(dtype_obj):
-                    logger.warning(
-                        "Optimizer built for params dtype=%s; requested model dtype=%s",
-                        eff_dtype,
-                        str(dtype_obj),
-                    )
-            except (ConnectionError, TimeoutError) as e:
-                logger.debug(
-                    "Failed to check optimizer dtype compatibility: %s", e
-                )  # codeql[py/clear-text-logging-sensitive-data]
-
-    if (
-        dp_settings is not None
-        and _HAS_TORCH
-        and optimizer is not None
-        and train_loader is not None
-    ):
-        try:
-            model, optimizer, train_loader, privacy_engine = make_private_model(
-                model, optimizer, train_loader, dp_settings
-            )
-            if reasoning_runtime is not None:
-                reasoning_runtime.bind_model(model)
-        except ImportError as exc:
-            error_type = type(exc).__name__
-            logger.debug(
-                "ImportError: <ERROR_TYPE>"
-            )  # codeql[py/clear-text-logging-sensitive-data]
-            logger.warning(
-                "Differential privacy disabled: %s", exc
-            )  # codeql[py/clear-text-logging-sensitive-data]
-            dp_settings = None
-        except (IOError, OSError) as exc:  # pragma: no cover - optional dependency path
-            logger.warning(
-                "Failed to enable differential privacy: %s", exc
-            )  # codeql[py/clear-text-logging-sensitive-data]
-            dp_settings = None
-    elif dp_settings is not None and not _HAS_TORCH:
+    # Extract optimizer and DP setup to helper (reduces ~20 branches)
+    from codex_ml._train_init_helpers import setup_optimizer_with_dp
+    optimizer, privacy_engine = setup_optimizer_with_dp(
+        model, learning_rate, dtype_obj, dp_settings, train_loader
+    )
+    
+    if dp_settings is not None and not _HAS_TORCH:
         logger.warning(
             "Differential privacy requested but torch is unavailable; skipping"
-        )  # codeql[py/clear-text-logging-sensitive-data]
+        )
         dp_settings = None
 
     if _HAS_TORCH:

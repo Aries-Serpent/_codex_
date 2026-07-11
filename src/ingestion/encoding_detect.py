@@ -70,6 +70,112 @@ def _norm_encoding(name: Optional[str]) -> Optional[str]:
         return None
 
 
+def _detect_bom(raw: bytes) -> Optional[str]:
+    """Detect byte-order marks for common UTF variants.
+    
+    Returns:
+        Detected encoding string or None
+    
+    Reduces complexity by extracting BOM checks (5 branches).
+    """
+    try:
+        if raw.startswith(b"\xff\xfe\x00\x00") or raw.startswith(b"\x00\x00\xfe\xff"):
+            return "utf-32"
+        if raw.startswith(b"\xff\xfe") or raw.startswith(b"\xfe\xff"):
+            return "utf-16"
+        if raw.startswith(b"\xef\xbb\xbf"):
+            return "utf-8"
+    except (ValueError, TypeError, RuntimeError):
+        logger.warning("Exception occurred", exc_info=True)
+    return None
+
+
+def _try_chardet(raw: bytes) -> Optional[str]:
+    """Try chardet detection.
+    
+    Returns:
+        Encoding if safe encoding found, None otherwise
+    
+    Reduces complexity by extracting chardet logic (3 branches).
+    """
+    if _chardet is None:
+        return None
+    
+    try:
+        res = _chardet.detect(raw) or {}
+        enc = _norm_encoding(res.get("encoding"))
+        if enc in _SAFE_ENCODINGS:
+            return "cp1252" if enc == "windows-1252" else enc
+    except (IOError, OSError):
+        logger.warning("Exception occurred", exc_info=True)
+    return None
+
+
+def _try_charset_normalizer_bytes(raw: bytes) -> Optional[str]:
+    """Try charset-normalizer from_bytes detection.
+    
+    Returns:
+        Encoding if safe encoding found, None otherwise
+    
+    Reduces complexity by extracting charset-normalizer bytes logic (3 branches).
+    """
+    if _cn_from_bytes is None:
+        return None
+    
+    try:
+        result = _cn_from_bytes(raw)
+        best = result.best() if result is not None else None
+        enc = _norm_encoding(getattr(best, "encoding", None))
+        if enc in _SAFE_ENCODINGS:
+            return "cp1252" if enc == "windows-1252" else enc
+    except (IOError, OSError):
+        logger.warning("Exception occurred", exc_info=True)
+    return None
+
+
+def _try_charset_normalizer_path(path: Path) -> Optional[str]:
+    """Try charset-normalizer from_path detection.
+    
+    Returns:
+        Encoding if safe encoding found, None otherwise
+    
+    Reduces complexity by extracting charset-normalizer path logic (3 branches).
+    """
+    if _cn_from_path is None:
+        return None
+    
+    try:
+        result = _cn_from_path(str(path))
+        best = result.best() if result is not None else None
+        enc = _norm_encoding(getattr(best, "encoding", None))
+        if enc in _SAFE_ENCODINGS:
+            return "cp1252" if enc == "windows-1252" else enc
+    except (IOError, OSError):
+        logger.warning("Exception occurred", exc_info=True)
+    return None
+
+
+def _try_decode_heuristics(raw: bytes) -> Optional[str]:
+    """Try simple heuristics: attempt to decode using common encodings.
+    
+    Returns:
+        Encoding if successful decode, None otherwise
+    
+    Reduces complexity by extracting heuristic logic (5 branches).
+    """
+    for trial in ("utf-8", "cp1252", "iso-8859-1"):
+        try:
+            raw.decode(trial)
+            return trial
+        except (UnicodeDecodeError, LookupError):
+            logger.debug("Exception caught, continuing", exc_info=True)
+            continue
+        except (ValueError, TypeError):
+            logger.warning("Exception occurred", exc_info=True)
+            continue
+    return None
+
+
 def detect_encoding(path: str | Path, default: str = "utf-8", sample_size: int = 131072) -> str:
     """Return best-effort text encoding for a file at *path*.
 
@@ -84,79 +190,37 @@ def detect_encoding(path: str | Path, default: str = "utf-8", sample_size: int =
     """
     p = Path(path)
 
-    # 0) Read a sample of bytes early to allow BOM detection and byte-based
-    # detectors to operate. If we can use charset-normalizer.from_path we still
-    # prefer to use the bytes for BOM + chardet consistency, but we will fall
-    # back to from_path if available and bytes-based detection isn't conclusive.
+    # Read a sample of bytes early to allow BOM detection and byte-based
+    # detectors to operate.
     try:
         raw = p.read_bytes()[: max(1024, int(sample_size))]
     except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)
-        # Could not read file (missing file, permission, etc) — return default.
         return default
 
-    # 0a) Detect BOMs for common UTF variants
-    try:
-        if raw.startswith(b"\xff\xfe\x00\x00") or raw.startswith(b"\x00\x00\xfe\xff"):
-            return "utf-32"
-        if raw.startswith(b"\xff\xfe") or raw.startswith(b"\xfe\xff"):
-            return "utf-16"
-        if raw.startswith(b"\xef\xbb\xbf"):
-            return "utf-8"
-    except (ValueError, TypeError, RuntimeError):
-        logger.warning("Exception occurred", exc_info=True)
-        # If something odd happens while checking BOMs, continue gracefully.
+    # 0) Detect BOMs for common UTF variants
+    bom_result = _detect_bom(raw)
+    if bom_result:
+        return bom_result
 
     # 1) chardet (preferred if installed)
-    if _chardet is not None:
-        try:
-            res = _chardet.detect(raw) or {}
-            enc = _norm_encoding(res.get("encoding"))
-        except (IOError, OSError):
-            logger.warning("Exception occurred", exc_info=True)
-            enc = None
-        if enc in _SAFE_ENCODINGS:
-            # Normalize windows-1252 to cp1252 for consistency with previous code
-            return "cp1252" if enc == "windows-1252" else enc
+    chardet_result = _try_chardet(raw)
+    if chardet_result:
+        return chardet_result
 
     # 2) charset-normalizer (try from_bytes first, then from_path)
-    enc = None
-    if _cn_from_bytes is not None:
-        try:
-            result = _cn_from_bytes(raw)
-            best = result.best() if result is not None else None
-            enc = _norm_encoding(getattr(best, "encoding", None))
-        except (IOError, OSError):
-            logger.warning("Exception occurred", exc_info=True)
-            enc = None
-        if enc in _SAFE_ENCODINGS:
-            return "cp1252" if enc == "windows-1252" else enc
+    cn_bytes_result = _try_charset_normalizer_bytes(raw)
+    if cn_bytes_result:
+        return cn_bytes_result
 
-    if _cn_from_path is not None:
-        try:
-            # from_path will read and analyze the file itself (may be slower but
-            # can be more accurate for some inputs).
-            result = _cn_from_path(str(p))
-            best = result.best() if result is not None else None
-            enc = _norm_encoding(getattr(best, "encoding", None))
-        except (IOError, OSError):
-            logger.warning("Exception occurred", exc_info=True)
-            enc = None
-        if enc in _SAFE_ENCODINGS:
-            return "cp1252" if enc == "windows-1252" else enc
+    cn_path_result = _try_charset_normalizer_path(p)
+    if cn_path_result:
+        return cn_path_result
 
     # 3) simple heuristics: attempt to decode using common encodings.
-    for trial in ("utf-8", "cp1252", "iso-8859-1"):
-        try:
-            raw.decode(trial)
-            return trial
-        except (UnicodeDecodeError, LookupError):
-            logger.debug("Exception caught, continuing", exc_info=True)
-            continue
-        except (ValueError, TypeError):
-            logger.warning("Exception occurred", exc_info=True)
-            # Any other unexpected error skip to next trial
-            continue
+    heuristic_result = _try_decode_heuristics(raw)
+    if heuristic_result:
+        return heuristic_result
 
     # 4) Default fallback
     return default
