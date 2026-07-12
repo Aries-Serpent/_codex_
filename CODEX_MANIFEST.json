@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-07-12T03:41:38Z",
+  "generated_at": "2026-07-12T08:28:43Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1980,7 +1980,7 @@
     },
     {
       "name": "security-scanning-suite",
-      "enforcement_tier": "PARTIAL",
+      "enforcement_tier": "GROUNDED",
       "has_concurrency": true
     },
     {
@@ -2548,5 +2548,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "64b9c302f45d248a1936b659cb58bcbfe52a346a86b9091f49bd83f0a27d1e7a"
+  "integrity_sha256": "9a7015a0a79251232043cffcdf3205ebf0124743ad574777597e1dd65f9a0405"
 }
