@@ -7,12 +7,13 @@
 **Changes:**
 - ✅ **Repository Scan**: Automated health monitoring identified 25 offload candidates totaling 188.21 MB (SBOM files, coverage reports, docs-data)
 - ✅ **Compliance**: Added WEC template with 5 required workflows to PR body (pre-merge-validation, comment-review-gate, deferral-language-gate, agent-auth-delegation, workflow-execution-gate)
-- ✅ **Documentation**: Updated AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md (REQ-4/REQ-5 compliance)
+- ✅ **Documentation**: Updated AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md (REQ-4/REQ-5 compliance); created docs/accountability/.codex/archive/reports/ directory structure
 - ✅ **Security Analysis**: Verified security findings in PR description are placeholder/simulated data (referenced files don't exist in actual repository structure)
 
 **Artifacts:**
 - `.codex/repository_health/offload_candidates.json` (25 candidates, 188.21 MB total)
 - `.codex/action_log.ndjson` (scan entry appended)
+- `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` (created)
 
 ---
 
