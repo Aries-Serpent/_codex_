@@ -1,0 +1,581 @@
+{
+  "components": [
+    {
+      "bom-ref": "BomRef.5949435754995488.7009874358607384",
+      "name": "Jinja2",
+      "type": "library",
+      "version": "3.1.6"
+    },
+    {
+      "bom-ref": "BomRef.318454938325752.8408976198944742",
+      "name": "MarkupSafe",
+      "type": "library",
+      "version": "3.0.3"
+    },
+    {
+      "bom-ref": "BomRef.3611141529181823.8579253434895577",
+      "name": "PyJWT",
+      "type": "library",
+      "version": "2.13.0"
+    },
+    {
+      "bom-ref": "BomRef.940599949070125.12961874862646272",
+      "name": "PyNaCl",
+      "type": "library",
+      "version": "1.6.2"
+    },
+    {
+      "bom-ref": "BomRef.4625715190799937.405665539418707",
+      "name": "PyYAML",
+      "type": "library",
+      "version": "6.0.3"
+    },
+    {
+      "bom-ref": "BomRef.9527173076017597.41403887519006777",
+      "name": "Pygments",
+      "type": "library",
+      "version": "2.20.0"
+    },
+    {
+      "bom-ref": "BomRef.5656580075380794.579226090905208",
+      "name": "annotated-doc",
+      "type": "library",
+      "version": "0.0.4"
+    },
+    {
+      "bom-ref": "BomRef.8882456243221866.3770236215896041",
+      "name": "anyio",
+      "type": "library",
+      "version": "4.14.2"
+    },
+    {
+      "bom-ref": "BomRef.2436525626691669.4236289722143115",
+      "name": "argcomplete",
+      "type": "library",
+      "version": "3.7.0"
+    },
+    {
+      "bom-ref": "BomRef.43887364515893934.9619942178023546",
+      "name": "attrs",
+      "type": "library",
+      "version": "26.1.0"
+    },
+    {
+      "bom-ref": "BomRef.9600965016818611.29402600741848717",
+      "name": "certifi",
+      "type": "library",
+      "version": "2026.6.17"
+    },
+    {
+      "bom-ref": "BomRef.00010353606865209919.639450051227597",
+      "name": "cffi",
+      "type": "library",
+      "version": "2.1.0"
+    },
+    {
+      "bom-ref": "BomRef.04840761866419241.36201473885415436",
+      "name": "charset-normalizer",
+      "type": "library",
+      "version": "3.4.9"
+    },
+    {
+      "bom-ref": "BomRef.5656014456922486.9736093139717131",
+      "name": "click",
+      "type": "library",
+      "version": "8.4.2"
+    },
+    {
+      "bom-ref": "BomRef.7146418454545854.8028652476358175",
+      "name": "colorlog",
+      "type": "library",
+      "version": "6.10.1"
+    },
+    {
+      "bom-ref": "BomRef.2769441460623464.8785411418059041",
+      "name": "coverage",
+      "type": "library",
+      "version": "7.15.1"
+    },
+    {
+      "bom-ref": "BomRef.8215680351258116.8699102243424479",
+      "name": "cryptography",
+      "type": "library",
+      "version": "49.0.0"
+    },
+    {
+      "bom-ref": "BomRef.9331938698513637.689436830031953",
+      "name": "defusedxml",
+      "type": "library",
+      "version": "0.7.1"
+    },
+    {
+      "bom-ref": "BomRef.24858127318813117.032035029194896314",
+      "name": "dependency-groups",
+      "type": "library",
+      "version": "1.3.1"
+    },
+    {
+      "bom-ref": "BomRef.017462848799452924.9865493917520394",
+      "name": "distlib",
+      "type": "library",
+      "version": "0.4.3"
+    },
+    {
+      "bom-ref": "BomRef.3086167186651203.6734719363776587",
+      "name": "execnet",
+      "type": "library",
+      "version": "2.1.2"
+    },
+    {
+      "bom-ref": "BomRef.8950877916928636.4796059354079325",
+      "name": "filelock",
+      "type": "library",
+      "version": "3.29.7"
+    },
+    {
+      "bom-ref": "BomRef.6403165212677934.876544824600759",
+      "name": "fsspec",
+      "type": "library",
+      "version": "2026.6.0"
+    },
+    {
+      "bom-ref": "BomRef.6694479525363601.27245622011194015",
+      "name": "h11",
+      "type": "library",
+      "version": "0.16.0"
+    },
+    {
+      "bom-ref": "BomRef.7627726514807533.38815753644649975",
+      "name": "hf-xet",
+      "type": "library",
+      "version": "1.5.1"
+    },
+    {
+      "bom-ref": "BomRef.7398815436563313.7635485008706321",
+      "name": "httpcore",
+      "type": "library",
+      "version": "1.0.9"
+    },
+    {
+      "bom-ref": "BomRef.8571209566835342.14217942132082528",
+      "name": "httpx",
+      "type": "library",
+      "version": "0.28.1"
+    },
+    {
+      "bom-ref": "BomRef.695465625289412.7806430408464463",
+      "name": "huggingface_hub",
+      "type": "library",
+      "version": "1.23.0"
+    },
+    {
+      "bom-ref": "BomRef.3706969661450633.23912827059880515",
+      "name": "humanize",
+      "type": "library",
+      "version": "4.16.0"
+    },
+    {
+      "bom-ref": "BomRef.4862855242134694.842301092278213",
+      "name": "idna",
+      "type": "library",
+      "version": "3.18"
+    },
+    {
+      "bom-ref": "BomRef.313418979494658.3437857918978905",
+      "name": "iniconfig",
+      "type": "library",
+      "version": "2.3.0"
+    },
+    {
+      "bom-ref": "BomRef.3077652173146759.25737294996829574",
+      "name": "jsonschema",
+      "type": "library",
+      "version": "4.26.0"
+    },
+    {
+      "bom-ref": "BomRef.4486115213750087.7701968164686199",
+      "name": "jsonschema-specifications",
+      "type": "library",
+      "version": "2025.9.1"
+    },
+    {
+      "bom-ref": "BomRef.7920480553270159.9362598059327519",
+      "name": "markdown-it-py",
+      "type": "library",
+      "version": "4.2.0"
+    },
+    {
+      "bom-ref": "BomRef.13534166627333033.21466033531275008",
+      "name": "mdurl",
+      "type": "library",
+      "version": "0.1.2"
+    },
+    {
+      "bom-ref": "BomRef.5927376349542086.19652287597655094",
+      "name": "mpmath",
+      "type": "library",
+      "version": "1.3.0"
+    },
+    {
+      "bom-ref": "BomRef.4608833915251309.6455586655020382",
+      "name": "networkx",
+      "type": "library",
+      "version": "3.6.1"
+    },
+    {
+      "bom-ref": "BomRef.42056538139607036.6141216191725576",
+      "name": "nox",
+      "type": "library",
+      "version": "2026.7.11"
+    },
+    {
+      "bom-ref": "BomRef.18893418135800966.6392024481520657",
+      "name": "numpy",
+      "type": "library",
+      "version": "2.5.1"
+    },
+    {
+      "bom-ref": "BomRef.8102067430112497.35216421193066716",
+      "name": "platformdirs",
+      "type": "library",
+      "version": "4.10.0"
+    },
+    {
+      "bom-ref": "BomRef.23818653237134257.2575204455330059",
+      "name": "pluggy",
+      "type": "library",
+      "version": "1.6.0"
+    },
+    {
+      "bom-ref": "BomRef.9694061434814157.04208607619359761",
+      "name": "psutil",
+      "type": "library",
+      "version": "7.2.2"
+    },
+    {
+      "bom-ref": "BomRef.7397995431594608.8676708457054488",
+      "name": "pyOpenSSL",
+      "type": "library",
+      "version": "26.3.0"
+    },
+    {
+      "bom-ref": "BomRef.014739688058393985.4025180829542504",
+      "name": "pycparser",
+      "type": "library",
+      "version": "3.0"
+    },
+    {
+      "bom-ref": "BomRef.2745704547171588.2730512076811835",
+      "name": "pytest",
+      "type": "library",
+      "version": "9.1.1"
+    },
+    {
+      "bom-ref": "BomRef.344784189032619.9050561874358598",
+      "name": "pytest-cov",
+      "type": "library",
+      "version": "5.0.0"
+    },
+    {
+      "bom-ref": "BomRef.5488906414287829.45624371103915107",
+      "name": "pytest-xdist",
+      "type": "library",
+      "version": "3.8.0"
+    },
+    {
+      "bom-ref": "BomRef.019527181141863248.7645358613380692",
+      "name": "python-discovery",
+      "type": "library",
+      "version": "1.4.4"
+    },
+    {
+      "bom-ref": "BomRef.8300227731225082.975555763562731",
+      "name": "referencing",
+      "type": "library",
+      "version": "0.37.0"
+    },
+    {
+      "bom-ref": "BomRef.8091018417278957.41521358519379115",
+      "name": "regex",
+      "type": "library",
+      "version": "2026.7.10"
+    },
+    {
+      "bom-ref": "BomRef.6851615901714706.6005279334976321",
+      "name": "requests",
+      "type": "library",
+      "version": "2.34.2"
+    },
+    {
+      "bom-ref": "BomRef.7717368194705458.6560951011979935",
+      "name": "rich",
+      "type": "library",
+      "version": "15.0.0"
+    },
+    {
+      "bom-ref": "BomRef.5170490292837194.45095091783540275",
+      "name": "rpds-py",
+      "type": "library",
+      "version": "2026.6.3"
+    },
+    {
+      "bom-ref": "BomRef.4084694349221143.39548049857130574",
+      "name": "safetensors",
+      "type": "library",
+      "version": "0.8.0"
+    },
+    {
+      "bom-ref": "BomRef.7275899734811936.5734971567705116",
+      "name": "shellingham",
+      "type": "library",
+      "version": "1.5.4"
+    },
+    {
+      "bom-ref": "BomRef.7368909517321612.7458617806497881",
+      "name": "sympy",
+      "type": "library",
+      "version": "1.14.0"
+    },
+    {
+      "bom-ref": "BomRef.22229907864456144.5891795355889196",
+      "name": "tokenizers",
+      "type": "library",
+      "version": "0.22.2"
+    },
+    {
+      "bom-ref": "BomRef.5849625215050696.588603576700479",
+      "name": "tqdm",
+      "type": "library",
+      "version": "4.68.4"
+    },
+    {
+      "bom-ref": "BomRef.30449201244753776.6069261736089819",
+      "name": "transformers",
+      "type": "library",
+      "version": "5.13.1"
+    },
+    {
+      "bom-ref": "BomRef.23823515177840493.6441588030568793",
+      "name": "typer",
+      "type": "library",
+      "version": "0.26.8"
+    },
+    {
+      "bom-ref": "BomRef.7943733818466912.011858705751095155",
+      "name": "typing_extensions",
+      "type": "library",
+      "version": "4.16.0"
+    },
+    {
+      "bom-ref": "BomRef.6203635170516014.3781960696528808",
+      "name": "urllib3",
+      "type": "library",
+      "version": "2.7.0"
+    },
+    {
+      "bom-ref": "BomRef.4286056422535677.4019726183724701",
+      "name": "virtualenv",
+      "type": "library",
+      "version": "21.6.1"
+    }
+  ],
+  "dependencies": [
+    {
+      "ref": "BomRef.00010353606865209919.639450051227597"
+    },
+    {
+      "ref": "BomRef.014739688058393985.4025180829542504"
+    },
+    {
+      "ref": "BomRef.017462848799452924.9865493917520394"
+    },
+    {
+      "ref": "BomRef.019527181141863248.7645358613380692"
+    },
+    {
+      "ref": "BomRef.04840761866419241.36201473885415436"
+    },
+    {
+      "ref": "BomRef.13534166627333033.21466033531275008"
+    },
+    {
+      "ref": "BomRef.18893418135800966.6392024481520657"
+    },
+    {
+      "ref": "BomRef.22229907864456144.5891795355889196"
+    },
+    {
+      "ref": "BomRef.23818653237134257.2575204455330059"
+    },
+    {
+      "ref": "BomRef.23823515177840493.6441588030568793"
+    },
+    {
+      "ref": "BomRef.2436525626691669.4236289722143115"
+    },
+    {
+      "ref": "BomRef.24858127318813117.032035029194896314"
+    },
+    {
+      "ref": "BomRef.2745704547171588.2730512076811835"
+    },
+    {
+      "ref": "BomRef.2769441460623464.8785411418059041"
+    },
+    {
+      "ref": "BomRef.30449201244753776.6069261736089819"
+    },
+    {
+      "ref": "BomRef.3077652173146759.25737294996829574"
+    },
+    {
+      "ref": "BomRef.3086167186651203.6734719363776587"
+    },
+    {
+      "ref": "BomRef.313418979494658.3437857918978905"
+    },
+    {
+      "ref": "BomRef.318454938325752.8408976198944742"
+    },
+    {
+      "ref": "BomRef.344784189032619.9050561874358598"
+    },
+    {
+      "ref": "BomRef.3611141529181823.8579253434895577"
+    },
+    {
+      "ref": "BomRef.3706969661450633.23912827059880515"
+    },
+    {
+      "ref": "BomRef.4084694349221143.39548049857130574"
+    },
+    {
+      "ref": "BomRef.42056538139607036.6141216191725576"
+    },
+    {
+      "ref": "BomRef.4286056422535677.4019726183724701"
+    },
+    {
+      "ref": "BomRef.43887364515893934.9619942178023546"
+    },
+    {
+      "ref": "BomRef.4486115213750087.7701968164686199"
+    },
+    {
+      "ref": "BomRef.4608833915251309.6455586655020382"
+    },
+    {
+      "ref": "BomRef.4625715190799937.405665539418707"
+    },
+    {
+      "ref": "BomRef.4862855242134694.842301092278213"
+    },
+    {
+      "ref": "BomRef.5170490292837194.45095091783540275"
+    },
+    {
+      "ref": "BomRef.5488906414287829.45624371103915107"
+    },
+    {
+      "ref": "BomRef.5656014456922486.9736093139717131"
+    },
+    {
+      "ref": "BomRef.5656580075380794.579226090905208"
+    },
+    {
+      "ref": "BomRef.5849625215050696.588603576700479"
+    },
+    {
+      "ref": "BomRef.5927376349542086.19652287597655094"
+    },
+    {
+      "ref": "BomRef.5949435754995488.7009874358607384"
+    },
+    {
+      "ref": "BomRef.6203635170516014.3781960696528808"
+    },
+    {
+      "ref": "BomRef.6403165212677934.876544824600759"
+    },
+    {
+      "ref": "BomRef.6694479525363601.27245622011194015"
+    },
+    {
+      "ref": "BomRef.6851615901714706.6005279334976321"
+    },
+    {
+      "ref": "BomRef.695465625289412.7806430408464463"
+    },
+    {
+      "ref": "BomRef.7146418454545854.8028652476358175"
+    },
+    {
+      "ref": "BomRef.7275899734811936.5734971567705116"
+    },
+    {
+      "ref": "BomRef.7368909517321612.7458617806497881"
+    },
+    {
+      "ref": "BomRef.7397995431594608.8676708457054488"
+    },
+    {
+      "ref": "BomRef.7398815436563313.7635485008706321"
+    },
+    {
+      "ref": "BomRef.7627726514807533.38815753644649975"
+    },
+    {
+      "ref": "BomRef.7717368194705458.6560951011979935"
+    },
+    {
+      "ref": "BomRef.7920480553270159.9362598059327519"
+    },
+    {
+      "ref": "BomRef.7943733818466912.011858705751095155"
+    },
+    {
+      "ref": "BomRef.8091018417278957.41521358519379115"
+    },
+    {
+      "ref": "BomRef.8102067430112497.35216421193066716"
+    },
+    {
+      "ref": "BomRef.8215680351258116.8699102243424479"
+    },
+    {
+      "ref": "BomRef.8300227731225082.975555763562731"
+    },
+    {
+      "ref": "BomRef.8571209566835342.14217942132082528"
+    },
+    {
+      "ref": "BomRef.8882456243221866.3770236215896041"
+    },
+    {
+      "ref": "BomRef.8950877916928636.4796059354079325"
+    },
+    {
+      "ref": "BomRef.9331938698513637.689436830031953"
+    },
+    {
+      "ref": "BomRef.940599949070125.12961874862646272"
+    },
+    {
+      "ref": "BomRef.9527173076017597.41403887519006777"
+    },
+    {
+      "ref": "BomRef.9600965016818611.29402600741848717"
+    },
+    {
+      "ref": "BomRef.9694061434814157.04208607619359761"
+    }
+  ],
+  "metadata": {
+    "timestamp": "2026-07-13T04:57:30.828060+00:00"
+  },
+  "serialNumber": "urn:uuid:b042b846-cb00-475b-88e4-87b095c7707f",
+  "version": 1,
+  "$schema": "http://cyclonedx.org/schema/bom-1.4.schema.json",
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.4"
+}

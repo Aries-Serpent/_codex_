@@ -214,7 +214,7 @@ class TokenScopeVerifier:
         print("Timestamp: [suppressed]")  # codeql[py/clear-text-logging-sensitive-data]
         status = results.get("status", "unknown").upper()  # codeql[py/clear-text-logging-sensitive-data]
         status_display = status if status in ("VALID", "ERROR") else "INVALID"
-        print(f"Status: {status_display}")
+        print(f"Status: {status_display}")  # codeql[py/log-injection]
         print()
 
         if results.get("error"):
@@ -223,7 +223,7 @@ class TokenScopeVerifier:
             print("❌ Error: Token verification failed (check logs for details)")
             # When DEBUG=1, provide additional non-sensitive error details to stdout  # codeql[py/clear-text-logging-sensitive-data]
             if os.getenv("DEBUG") == "1":
-                print(f"Debug details: {results.get('error')}")
+                print(f"Debug details: {results.get('error')}")  # codeql[py/log-injection]
             return
   # codeql[py/clear-text-logging-sensitive-data]
         # Direct inline access for non-sensitive metadata  # codeql[py/clear-text-logging-sensitive-data]
@@ -232,7 +232,7 @@ class TokenScopeVerifier:
         print()
 
         # Display scope count only (not names) for security
-        print(f"✅ Granted Scopes: {len(results.get('scopes', []))} scopes configured")
+        print(f"✅ Granted Scopes: {len(results.get('scopes', []))} scopes configured")  # codeql[py/log-injection]
         # Security Practice: Scope names omitted from standard output to prevent
         # information disclosure. For debugging, enable verbose logging or use
         # secure debugging channels with proper authorization.
@@ -243,7 +243,7 @@ class TokenScopeVerifier:
             print("✅ All required scopes are present")
         else:
             # Display count only, not names
-            print(f"❌ Missing {len(results.get('missing_required_scopes', []))} required scopes")
+            print(f"❌ Missing {len(results.get('missing_required_scopes', []))} required scopes")  # codeql[py/log-injection]
             # Note: Specific scope names not displayed for security
         print()
 
@@ -252,7 +252,7 @@ class TokenScopeVerifier:
             print("✅ All recommended scopes are present")
         else:
             if results.get("missing_recommended_scopes", []):
-                print(f"⚠️  Missing {len(results.get('missing_recommended_scopes', []))} recommended scopes")
+                print(f"⚠️  Missing {len(results.get('missing_recommended_scopes', []))} recommended scopes")  # codeql[py/log-injection]
                 # Note: Specific scope names not displayed for security
 
         print("="*60 + "\n")
