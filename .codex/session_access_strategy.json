@@ -1,20 +1,27 @@
 {
-  "generated_at": "2026-07-13T03:47:43.686173+00:00",
+  "generated_at": "2026-07-13T09:50:18.543723+00:00",
   "methods": [
     "rest",
     "graphql",
     "gh_cli"
   ],
   "rest_available": true,
-  "rest_remaining": 5000,
+  "rest_remaining": 4980,
   "graphql_available": true,
-  "graphql_remaining": 4987,
+  "graphql_remaining": 4977,
   "gh_cli_available": true,
   "codeql_available": false,
   "best_token_var": "CODEX_MASTER_KEY",
   "open_prs": [
-    5302
+    5311,
+    5310,
+    5308,
+    5307,
+    5306,
+    5305,
+    5304,
+    5303
   ],
-  "branch": "copilot/multi-lane-agent-orchestration",
+  "branch": "dependabot/github_actions/softprops/action-gh-release-3",
   "recommendation": "Use REST for data fetches. "
 }
