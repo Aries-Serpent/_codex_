@@ -1,18 +1,27 @@
 {
-  "generated_at": "2026-07-13T04:54:01.858494+00:00",
+  "generated_at": "2026-07-13T10:54:49.059722+00:00",
   "methods": [
     "rest",
     "graphql",
     "gh_cli"
   ],
   "rest_available": true,
-  "rest_remaining": 5000,
+  "rest_remaining": 4798,
   "graphql_available": true,
-  "graphql_remaining": 4995,
+  "graphql_remaining": 4999,
   "gh_cli_available": true,
   "codeql_available": false,
   "best_token_var": "CODEX_MASTER_KEY",
-  "open_prs": [],
+  "open_prs": [
+    5311,
+    5310,
+    5308,
+    5307,
+    5306,
+    5305,
+    5304,
+    5303
+  ],
   "branch": "copilot/production-deployment-v022",
   "recommendation": "Use REST for data fetches. "
 }
