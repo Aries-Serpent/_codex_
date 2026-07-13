@@ -1,69 +1,52 @@
 name: Release
-on:
+true:
+  push:
+    tags:
+    - v*
   workflow_dispatch:
     inputs:
       tag:
         description: Release tag (e.g. v1.0.0-rc1)
         required: true
         type: string
-  push:
-    tags:
-    - v*
 concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: false
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
 permissions:
+  actions: write
   contents: write
   packages: read
-  actions: write
 jobs:
-  validate:
-    name: Pre-release Validation
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v5
-      with:
-            persist-credentials: false
-    - name: Set up Python
-      uses: actions/setup-python@v6
-      with:
-        python-version: 3.12.13
-        cache: 'pip'
-    - name: Validate version tag
-      run: "TAG=\"${{ github.event.inputs.tag || github.ref_name }}\"\necho \"Release\
-        \ tag: $TAG\"\nif [[ ! \"$TAG\" =~ ^v[0-9]+\\.[0-9]+\\.[0-9]+ ]]; then\n \
-        \ echo \"::error::Invalid version tag format: $TAG (expected vX.Y.Z[-suffix])\"\
-        \n  exit 1\nfi\n"
-    - name: Verify CHANGELOG entry
-      run: "TAG=\"${{ github.event.inputs.tag || github.ref_name }}\"\nVERSION=\"\
-        ${TAG#v}\"\nif ! grep -q \"\\[$VERSION\\]\" CHANGELOG.md 2>/dev/null; then\n\
-        \  echo \"::warning::No CHANGELOG.md entry found for version $VERSION\"\n\
-        fi\n"
+  generate-sbom:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
-  generate-sbom:
     name: Generate SBOM
     needs: validate
-    uses: ./.github/workflows/sbom.yml
     secrets:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
+    uses: ./.github/workflows/sbom.yml
   release:
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
     name: Create GitHub Release
     needs:
     - validate
     - generate-sbom
     runs-on: ubuntu-latest
-    timeout-minutes: 15
     steps:
+    - name: Configure secret masking
+      run: 'echo ''::add-mask::'' ${{ secrets.CODEX_MASTER_KEY }}
+
+        echo ''::add-mask::'' ${{ secrets.CODEX_BACKUP_KEY }}'
     - name: Checkout
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
-    - name: Determine tag
-      id: tag
+        persist-credentials: false
+    - id: tag
+      name: Determine tag
       run: 'TAG="${{ github.event.inputs.tag || github.ref_name }}"
 
         echo "tag=$TAG" >> "$GITHUB_OUTPUT"
@@ -72,10 +55,8 @@ jobs:
 
         '
     - name: Create Release
-      uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b  # v3
+      uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b
       with:
-        tag_name: ${{ steps.tag.outputs.tag }}
-        name: Release ${{ steps.tag.outputs.tag }}
         body: '## Release ${{ steps.tag.outputs.tag }}
 
 
@@ -95,8 +76,39 @@ jobs:
 
           '
         draft: false
+        name: Release ${{ steps.tag.outputs.tag }}
         prerelease: ${{ contains(steps.tag.outputs.tag, 'rc') || contains(steps.tag.outputs.tag,
           'alpha') || contains(steps.tag.outputs.tag, 'beta') }}
+        tag_name: ${{ steps.tag.outputs.tag }}
+    timeout-minutes: 15
+  validate:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    name: Pre-release Validation
+    runs-on: ubuntu-latest
+    steps:
+    - name: Configure secret masking
+      run: 'echo ''::add-mask::'' ${{ secrets.CODEX_MASTER_KEY }}
+
+        echo ''::add-mask::'' ${{ secrets.CODEX_BACKUP_KEY }}'
+    - name: Checkout
+      uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        cache: pip
+        python-version: 3.12.13
+    - name: Validate version tag
+      run: "TAG=\"${{ github.event.inputs.tag || github.ref_name }}\"\necho \"Release\
+        \ tag: $TAG\"\nif [[ ! \"$TAG\" =~ ^v[0-9]+\\.[0-9]+\\.[0-9]+ ]]; then\n \
+        \ echo \"::error::Invalid version tag format: $TAG (expected vX.Y.Z[-suffix])\"\
+        \n  exit 1\nfi\n"
+    - name: Verify CHANGELOG entry
+      run: "TAG=\"${{ github.event.inputs.tag || github.ref_name }}\"\nVERSION=\"\
+        ${TAG#v}\"\nif ! grep -q \"\\[$VERSION\\]\" CHANGELOG.md 2>/dev/null; then\n\
+        \  echo \"::warning::No CHANGELOG.md entry found for version $VERSION\"\n\
+        fi\n"
+    timeout-minutes: 15

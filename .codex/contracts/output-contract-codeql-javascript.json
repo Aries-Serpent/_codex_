@@ -1,0 +1,13 @@
+{
+  "schema_version": "1.0.0",
+  "job": "codeql-scan",
+  "language": "javascript",
+  "lane_id": "lane-security",
+  "shard_id": "shard-0",
+  "input_lock_sha256": "00601f534c56cced2ab192dc2a2546cf15737a07f65d99a6c2061272f979e870",
+  "required_outputs": [
+    "codeql-sarif/javascript",
+    "codeql-reports/codeql-javascript-summary.md"
+  ],
+  "status": "success"
+}

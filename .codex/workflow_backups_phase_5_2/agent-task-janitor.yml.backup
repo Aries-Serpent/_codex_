@@ -1,67 +1,61 @@
 name: 🧹 Agent Task Janitor
-true:
-  schedule:
-  - cron: 27 3 * * *
+on:
   workflow_dispatch:
     inputs:
-      discovery_limit:
-        default: '100'
-        description: Max non-archived tasks to inspect
-        required: false
-      execute:
-        default: 'false'
-        description: true applies cleanup actions, false is dry-run
-        options:
-        - 'false'
-        - 'true'
-        required: true
-        type: choice
-      require_closed_pr:
-        default: 'true'
-        description: Only janitor tasks linked to closed/merged PRs
-        options:
-        - 'true'
-        - 'false'
-        required: true
-        type: choice
-      stale_hours:
-        default: '168'
-        description: Only janitor stale tasks older than this many hours
-        required: false
       task_id:
-        default: ''
         description: Optional task UUID for one-time validation/cleanup
         required: false
+        default: ''
+      execute:
+        description: true applies cleanup actions, false is dry-run
+        required: true
+        type: choice
+        default: 'false'
+        options:
+        - 'false'
+        - 'true'
+      stale_hours:
+        description: Only janitor stale tasks older than this many hours
+        required: false
+        default: '168'
+      discovery_limit:
+        description: Max non-archived tasks to inspect
+        required: false
+        default: '100'
+      require_closed_pr:
+        description: Only janitor tasks linked to closed/merged PRs
+        required: true
+        type: choice
+        default: 'true'
+        options:
+        - 'true'
+        - 'false'
+  schedule:
+  - cron: 27 3 * * *
 concurrency:
-  cancel-in-progress: true
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 permissions:
   contents: read
   pull-requests: read
 jobs:
   janitor:
-    env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-        }}
     name: Validate and cleanup stale agent tasks
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
-    - name: Configure secret masking
-      run: 'echo ''::add-mask::'' ${{ secrets.CODEX_MASTER_KEY }}
-
-        echo ''::add-mask::'' ${{ secrets.CODEX_BACKUP_KEY }}'
-    - env:
-        DISCOVERY_LIMIT: ${{ github.event.inputs.discovery_limit || '100' }}
-        EXECUTE: ${{ github.event.inputs.execute || 'false' }}
+    - name: Inspect and optionally cleanup stale Copilot tasks
+      env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
-        OWNER_REPO: ${{ github.repository }}
-        REQUIRE_CLOSED_PR: ${{ github.event.inputs.require_closed_pr || 'true' }}
-        STALE_HOURS: ${{ github.event.inputs.stale_hours || '168' }}
-        TASK_ID: ${{ github.event.inputs.task_id || '' }}
         TOKEN_SOURCE: ${{ secrets.CODEX_MASTER_KEY && 'CODEX_MASTER_KEY' || secrets.CODEX_BACKUP_KEY
           && 'CODEX_BACKUP_KEY' || 'GITHUB_TOKEN' }}
-      name: Inspect and optionally cleanup stale Copilot tasks
+        OWNER_REPO: ${{ github.repository }}
+        TASK_ID: ${{ github.event.inputs.task_id || '' }}
+        EXECUTE: ${{ github.event.inputs.execute || 'false' }}
+        STALE_HOURS: ${{ github.event.inputs.stale_hours || '168' }}
+        DISCOVERY_LIMIT: ${{ github.event.inputs.discovery_limit || '100' }}
+        REQUIRE_CLOSED_PR: ${{ github.event.inputs.require_closed_pr || 'true' }}
       run: "set -euo pipefail\npython3 - <<'PY'\nimport json\nimport os\nimport re\n\
         import urllib.error\nimport urllib.parse\nimport urllib.request\nfrom datetime\
         \ import datetime, timedelta, timezone\n\nowner_repo = os.environ[\"OWNER_REPO\"\
@@ -166,10 +160,10 @@ jobs:
         : archive_payload.get(\"message\")},\n            \"patch\": {\"status\":\
         \ patch_status, \"message\": patch_payload.get(\"message\")},\n        },\n\
         \    }\n\nprocessed_ids: set[str] = set()\nfor task in candidates:\n    tid\
-        \ = str(task.get(\"id\", \"\"))\n  # Prevent duplicate cleanup attempts when\
-        \ the same task is present in\n  # list results and separately inserted from\
-        \ explicit task_id lookup.\n    if not tid or tid in processed_ids:\n    \
-        \    continue\n    processed_ids.add(tid)\n    if execute:\n        action_results.append(attempt_cleanup(tid))\n\
+        \ = str(task.get(\"id\", \"\"))\n  # Prevent duplicate cleanup attempts\
+        \ when the same task is present in\n  # list results and separately inserted\
+        \ from explicit task_id lookup.\n    if not tid or tid in processed_ids:\n\
+        \        continue\n    processed_ids.add(tid)\n    if execute:\n        action_results.append(attempt_cleanup(tid))\n\
         \    else:\n        action_results.append(\n            {\n              \
         \  \"task_id\": tid,\n                \"method\": \"dry-run\",\n         \
         \       \"ok\": True,\n                \"status\": 0,\n                \"\
@@ -223,4 +217,6 @@ jobs:
         \ CODEX_MASTER_KEY or CODEX_BACKUP_KEY; refusing with GITHUB_TOKEN.\"\n  \
         \  )\nif execute and failures:\n    raise SystemExit(\"One or more cleanup\
         \ operations failed. Review workflow summary for API details.\")\nPY\n"
-    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
