@@ -1,5 +1,17 @@
 ## [Unreleased]
 
+### Fixed (auto-update — v0.2.3 Post-Merge Validation)
+- Complete 8-item post-merge validation for PR #5318 deployment
+- Verify and confirm all import migrations from `from src.codex.*` to `from codex.*` (535+ occurrences)
+- Validate zstandard collection ignore mechanism for tests/archive/
+- Confirm NameError collection fixes for 6 test files (Path, pytest, CliRunner, patch, logging, pynvml)
+- Verify doc_loader.py exception handling and YAML error logging
+- Confirm test_mypy_manager.py audit (494 commented lines; TestPDALog active)
+- Validate test_aais_batch_additional zero_concurrency test (Semaphore(0) deadlock fix)
+- Create requirements-dev.txt for ML Lifecycle E2E Gate workflows
+- Fix codex-manifest-refresh.yml persist-credentials YAML indentation
+- Update tests/README.md import documentation (from src.codex → codex)
+
 ### Fixed (auto-update — PR #5318 CI Rescue Round 3)
 - Fix `pytest_ignore_collect` returning `False` instead of `None` — blocked `collect_ignore` mechanism causing 180+ slow test collection errors
 - Fix `envelope.py` `_target()` catching only `(IOError, OSError)` — handler exceptions were silently swallowed
