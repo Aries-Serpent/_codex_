@@ -1,10 +1,10 @@
-# Session Context — 2026-07-13T14:43:41Z
+# Session Context — 2026-07-13T15:05:06Z
 **Branch:** `copilot/phase-5-post-merge-continuation`  **PR:** #5314  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4954` (✅)
-- GraphQL remaining: `5000` (✅)
+- REST remaining: `5000` (✅)
+- GraphQL remaining: `4997` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
@@ -16,20 +16,20 @@ State: `open`  Draft: `False`  Branch: `copilot/phase-5-post-merge-continuation`
 
 ## 🚨 Recent CI Failures (last 5 runs)
 - **Self-Healing CI Loop** — `failure` on `main` (2026-07-13)
-- **.github/workflows/autonomous-agent.yml** — `failure` on `copilot/phase-5-post-merge-continuation` (2026-07-13)
-- **.github/workflows/copilot-pr-session-injector.yml** — `failure` on `copilot/phase-5-post-merge-continuation` (2026-07-13)
-- **.github/workflows/pr-size-analyzer.yml** — `failure` on `copilot/phase-5-post-merge-continuation` (2026-07-13)
-- **.github/workflows/auto-approve-workflows.yml** — `failure` on `copilot/phase-5-post-merge-continuation` (2026-07-13)
+- **.github/workflows/profile-validation.yml** — `failure` on `copilot/phase-5-post-merge-continuation` (2026-07-13)
+- **.github/workflows/workflow-compliance-gate.yml** — `failure` on `copilot/phase-5-post-merge-continuation` (2026-07-13)
+- **.github/workflows/openvino-phase-c.yml** — `failure` on `copilot/phase-5-post-merge-continuation` (2026-07-13)
+- **.github/workflows/rust_swarm_ci.yml** — `failure` on `copilot/phase-5-post-merge-continuation` (2026-07-13)
 
 ## 📝 Recent Commits
+- `62e8a213` fix(security): Pin all unpinned GitHub Actions to commit hashes and fix clear-te — copilot-swe-agent[bot] (2026-07-13)
+- `f35c3115` Initial plan: Address 26 CodeQL alerts - unpinned actions and log injection — copilot-swe-agent[bot] (2026-07-13)
 - `2c1062a6` fix: Correct YAML indentation in ci-rescue.yml — copilot-swe-agent[bot] (2026-07-13)
 - `f621e3d2` fix: Resolve code review issues in GitHub Actions workflows — copilot-swe-agent[bot] (2026-07-13)
 - `f0ae5994` fix(workflows): Restore valid YAML structure (on: instead of true:) — copilot-swe-agent[bot] (2026-07-13)
 - `85362482` fix(security): Resolve CodeQL code injection in GitHub Actions secret masking — copilot-swe-agent[bot] (2026-07-13)
 - `0850ef55` fix(security): Resolve CodeQL code injection vulnerabilities in adaptive-agent-d — copilot-swe-agent[bot] (2026-07-13)
 - `ffbaafaf` Initial plan: Address CodeQL code injection vulnerabilities in adaptive-agent-de — copilot-swe-agent[bot] (2026-07-13)
-- `ec12a0e9` fix(security/phase-5.4.1): Patch 39 of 40 CVEs - wheel, certifi, setuptools, pip — copilot-swe-agent[bot] (2026-07-13)
-- `5eb9a8e8` docs(phase-5.4): Comprehensive security verification - Bandit PASS, pip-audit 40 — copilot-swe-agent[bot] (2026-07-13)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`

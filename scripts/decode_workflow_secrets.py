@@ -145,12 +145,11 @@ def generate_secret_report(inventory_path: Path, authorized: bool = False) -> No
             hint = secret_info.get("hint", "N/A")
             filename = workflow.get("filename", "unknown")
 
-            if encoded and token:
+            if encoded:
                 decoded_name = decode_secret_name(encoded)
 
                 if decoded_name not in all_secrets:
                     all_secrets[decoded_name] = {
-                        "token": token,
                         "hint": hint,
                         "workflows": []
                     }
