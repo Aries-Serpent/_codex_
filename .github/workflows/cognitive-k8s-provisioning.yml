@@ -36,9 +36,9 @@ jobs:
       patterns: ${{ steps.query.outputs.patterns }}
     steps:
     - name: 🔐 Configure secret masking
-      run: 'echo ''::add-mask::'' ${{ secrets.CODEX_MASTER_KEY }}
-
-        echo ''::add-mask::'' ${{ secrets.CODEX_BACKUP_KEY }}'
+      run: |
+        echo "::add-mask::${{ secrets.CODEX_MASTER_KEY }}"
+        echo "::add-mask::${{ secrets.CODEX_BACKUP_KEY }}"
     - name: Checkout
       uses: actions/checkout@v5
       with:
@@ -74,9 +74,9 @@ jobs:
     timeout-minutes: 30
     steps:
     - name: 🔐 Configure secret masking
-      run: 'echo ''::add-mask::'' ${{ secrets.CODEX_MASTER_KEY }}
-
-        echo ''::add-mask::'' ${{ secrets.CODEX_BACKUP_KEY }}'
+      run: |
+        echo "::add-mask::${{ secrets.CODEX_MASTER_KEY }}"
+        echo "::add-mask::${{ secrets.CODEX_BACKUP_KEY }}"
     - name: Checkout
       uses: actions/checkout@v5
       with:
@@ -110,9 +110,9 @@ jobs:
     timeout-minutes: 30
     steps:
     - name: 🔐 Configure secret masking
-      run: 'echo ''::add-mask::'' ${{ secrets.CODEX_MASTER_KEY }}
-
-        echo ''::add-mask::'' ${{ secrets.CODEX_BACKUP_KEY }}'
+      run: |
+        echo "::add-mask::${{ secrets.CODEX_MASTER_KEY }}"
+        echo "::add-mask::${{ secrets.CODEX_BACKUP_KEY }}"
     - name: Checkout
       uses: actions/checkout@v5
       with:
@@ -146,9 +146,9 @@ jobs:
     timeout-minutes: 30
     steps:
     - name: 🔐 Configure secret masking
-      run: 'echo ''::add-mask::'' ${{ secrets.CODEX_MASTER_KEY }}
-
-        echo ''::add-mask::'' ${{ secrets.CODEX_BACKUP_KEY }}'
+      run: |
+        echo "::add-mask::${{ secrets.CODEX_MASTER_KEY }}"
+        echo "::add-mask::${{ secrets.CODEX_BACKUP_KEY }}"
     - name: Checkout
       uses: actions/checkout@v5
       with:
@@ -182,9 +182,9 @@ jobs:
     timeout-minutes: 45
     steps:
     - name: 🔐 Configure secret masking
-      run: 'echo ''::add-mask::'' ${{ secrets.CODEX_MASTER_KEY }}
-
-        echo ''::add-mask::'' ${{ secrets.CODEX_BACKUP_KEY }}'
+      run: |
+        echo "::add-mask::${{ secrets.CODEX_MASTER_KEY }}"
+        echo "::add-mask::${{ secrets.CODEX_BACKUP_KEY }}"
     - name: Checkout
       uses: actions/checkout@v5
       with:
@@ -230,9 +230,9 @@ jobs:
       name: infrastructure-approval
     steps:
     - name: 🔐 Configure secret masking
-      run: 'echo ''::add-mask::'' ${{ secrets.CODEX_MASTER_KEY }}
-
-        echo ''::add-mask::'' ${{ secrets.CODEX_BACKUP_KEY }}'
+      run: |
+        echo "::add-mask::${{ secrets.CODEX_MASTER_KEY }}"
+        echo "::add-mask::${{ secrets.CODEX_BACKUP_KEY }}"
     - name: Checkout
       uses: actions/checkout@v5
       with:
@@ -294,9 +294,9 @@ jobs:
     if: always()
     steps:
     - name: 🔐 Configure secret masking
-      run: 'echo ''::add-mask::'' ${{ secrets.CODEX_MASTER_KEY }}
-
-        echo ''::add-mask::'' ${{ secrets.CODEX_BACKUP_KEY }}'
+      run: |
+        echo "::add-mask::${{ secrets.CODEX_MASTER_KEY }}"
+        echo "::add-mask::${{ secrets.CODEX_BACKUP_KEY }}"
     - name: Checkout
       uses: actions/checkout@v5
       with:

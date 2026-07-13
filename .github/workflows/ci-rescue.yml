@@ -50,9 +50,9 @@ jobs:
       actions: read
     steps:
     - name: 🔐 Configure secret masking
-      run: 'echo ''::add-mask::'' ${{ secrets.CODEX_MASTER_KEY }}
-
-        echo ''::add-mask::'' ${{ secrets.CODEX_BACKUP_KEY }}'
+      run: |
+        echo "::add-mask::${{ secrets.CODEX_MASTER_KEY }}"
+        echo "::add-mask::${{ secrets.CODEX_BACKUP_KEY }}"
     - name: Log rescue trigger context
       env: null
       GH_EVENT_NAME: ${{ github.event_name }}

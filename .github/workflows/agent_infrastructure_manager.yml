@@ -46,9 +46,9 @@ jobs:
       pr_number: ${{ steps.check.outputs.pr_number }}
     steps:
     - name: 🔐 Configure secret masking
-      run: 'echo ''::add-mask::'' ${{ secrets.CODEX_MASTER_KEY }}
-
-        echo ''::add-mask::'' ${{ secrets.CODEX_BACKUP_KEY }}'
+      run: |
+        echo "::add-mask::${{ secrets.CODEX_MASTER_KEY }}"
+        echo "::add-mask::${{ secrets.CODEX_BACKUP_KEY }}"
     - name: Check actor and parse command
       id: check
       env:
@@ -94,9 +94,9 @@ jobs:
       '
     steps:
     - name: 🔐 Configure secret masking
-      run: 'echo ''::add-mask::'' ${{ secrets.CODEX_MASTER_KEY }}
-
-        echo ''::add-mask::'' ${{ secrets.CODEX_BACKUP_KEY }}'
+      run: |
+        echo "::add-mask::${{ secrets.CODEX_MASTER_KEY }}"
+        echo "::add-mask::${{ secrets.CODEX_BACKUP_KEY }}"
     - name: Cache Python dependencies (Layer 1)
       uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25
       with:
@@ -160,9 +160,9 @@ jobs:
       '
     steps:
     - name: 🔐 Configure secret masking
-      run: 'echo ''::add-mask::'' ${{ secrets.CODEX_MASTER_KEY }}
-
-        echo ''::add-mask::'' ${{ secrets.CODEX_BACKUP_KEY }}'
+      run: |
+        echo "::add-mask::${{ secrets.CODEX_MASTER_KEY }}"
+        echo "::add-mask::${{ secrets.CODEX_BACKUP_KEY }}"
     - uses: actions/checkout@v5
       with:
         persist-credentials: false
@@ -199,9 +199,9 @@ jobs:
       '
     steps:
     - name: 🔐 Configure secret masking
-      run: 'echo ''::add-mask::'' ${{ secrets.CODEX_MASTER_KEY }}
-
-        echo ''::add-mask::'' ${{ secrets.CODEX_BACKUP_KEY }}'
+      run: |
+        echo "::add-mask::${{ secrets.CODEX_MASTER_KEY }}"
+        echo "::add-mask::${{ secrets.CODEX_BACKUP_KEY }}"
     - uses: actions/checkout@v5
       with:
         persist-credentials: false
@@ -236,9 +236,9 @@ jobs:
       '
     steps:
     - name: 🔐 Configure secret masking
-      run: 'echo ''::add-mask::'' ${{ secrets.CODEX_MASTER_KEY }}
-
-        echo ''::add-mask::'' ${{ secrets.CODEX_BACKUP_KEY }}'
+      run: |
+        echo "::add-mask::${{ secrets.CODEX_MASTER_KEY }}"
+        echo "::add-mask::${{ secrets.CODEX_BACKUP_KEY }}"
     - uses: actions/checkout@v5
       with:
         persist-credentials: false
@@ -257,9 +257,9 @@ jobs:
       \ == 'app-status' ||\n needs.auth-check.outputs.operation == 'app-manifest')\n"
     steps:
     - name: 🔐 Configure secret masking
-      run: 'echo ''::add-mask::'' ${{ secrets.CODEX_MASTER_KEY }}
-
-        echo ''::add-mask::'' ${{ secrets.CODEX_BACKUP_KEY }}'
+      run: |
+        echo "::add-mask::${{ secrets.CODEX_MASTER_KEY }}"
+        echo "::add-mask::${{ secrets.CODEX_BACKUP_KEY }}"
     - uses: actions/checkout@v5
       with:
         persist-credentials: false

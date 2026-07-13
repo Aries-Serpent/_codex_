@@ -25,9 +25,9 @@ jobs:
     timeout-minutes: 20
     steps:
     - name: 🔐 Configure secret masking
-      run: 'echo ''::add-mask::'' ${{ secrets.CODEX_MASTER_KEY }}
-
-        echo ''::add-mask::'' ${{ secrets.CODEX_BACKUP_KEY }}'
+      run: |
+        echo "::add-mask::${{ secrets.CODEX_MASTER_KEY }}"
+        echo "::add-mask::${{ secrets.CODEX_BACKUP_KEY }}"
     - uses: actions/checkout@v5
       with:
         persist-credentials: false
@@ -47,9 +47,9 @@ jobs:
     timeout-minutes: 20
     steps:
     - name: 🔐 Configure secret masking
-      run: 'echo ''::add-mask::'' ${{ secrets.CODEX_MASTER_KEY }}
-
-        echo ''::add-mask::'' ${{ secrets.CODEX_BACKUP_KEY }}'
+      run: |
+        echo "::add-mask::${{ secrets.CODEX_MASTER_KEY }}"
+        echo "::add-mask::${{ secrets.CODEX_BACKUP_KEY }}"
     - uses: actions/checkout@v5
       with:
         persist-credentials: false
@@ -69,9 +69,9 @@ jobs:
     timeout-minutes: 10
     steps:
     - name: 🔐 Configure secret masking
-      run: 'echo ''::add-mask::'' ${{ secrets.CODEX_MASTER_KEY }}
-
-        echo ''::add-mask::'' ${{ secrets.CODEX_BACKUP_KEY }}'
+      run: |
+        echo "::add-mask::${{ secrets.CODEX_MASTER_KEY }}"
+        echo "::add-mask::${{ secrets.CODEX_BACKUP_KEY }}"
     - uses: actions/checkout@v5
       with:
         persist-credentials: false
@@ -95,9 +95,9 @@ jobs:
     timeout-minutes: 10
     steps:
     - name: 🔐 Configure secret masking
-      run: 'echo ''::add-mask::'' ${{ secrets.CODEX_MASTER_KEY }}
-
-        echo ''::add-mask::'' ${{ secrets.CODEX_BACKUP_KEY }}'
+      run: |
+        echo "::add-mask::${{ secrets.CODEX_MASTER_KEY }}"
+        echo "::add-mask::${{ secrets.CODEX_BACKUP_KEY }}"
     - uses: actions/checkout@v5
       with:
         persist-credentials: false
@@ -123,9 +123,9 @@ jobs:
     timeout-minutes: 5
     steps:
     - name: 🔐 Configure secret masking
-      run: 'echo ''::add-mask::'' ${{ secrets.CODEX_MASTER_KEY }}
-
-        echo ''::add-mask::'' ${{ secrets.CODEX_BACKUP_KEY }}'
+      run: |
+        echo "::add-mask::${{ secrets.CODEX_MASTER_KEY }}"
+        echo "::add-mask::${{ secrets.CODEX_BACKUP_KEY }}"
     - name: Evaluate D2 exit criteria
       run: "python3 - <<'PYEOF'\nimport json, sys\nfrom datetime import datetime,\
         \ timezone\n\nresults = {\n    \"reproducibility\": \"${{ needs.reproducibility-check.result\

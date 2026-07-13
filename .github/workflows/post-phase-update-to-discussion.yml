@@ -25,9 +25,9 @@ jobs:
       discussions: write
     steps:
     - name: 🔐 Configure secret masking
-      run: 'echo ''::add-mask::'' ${{ secrets.CODEX_MASTER_KEY }}
-
-        echo ''::add-mask::'' ${{ secrets.CODEX_BACKUP_KEY }}'
+      run: |
+        echo "::add-mask::${{ secrets.CODEX_MASTER_KEY }}"
+        echo "::add-mask::${{ secrets.CODEX_BACKUP_KEY }}"
     - name: Checkout code
       uses: actions/checkout@v5
       with:
