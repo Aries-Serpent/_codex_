@@ -113,12 +113,13 @@ jobs:
     - name: Mask secrets
       run: |
         echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
-      # ── 1. Probe the API endpoint ─────────────────────────────────────────
-      - name: Probe ${{ inputs.gap_id }} endpoint
-        id: probe
-        env:
-          PROBE_URL:    ${{ inputs.probe_url }}
-          EXPECTED_OK:  ${{ inputs.expected_ok_status }}
+
+    # ── 1. Probe the API endpoint ─────────────────────────────────────────
+    - name: Probe ${{ inputs.gap_id }} endpoint
+      id: probe
+      env:
+        PROBE_URL:    ${{ inputs.probe_url }}
+        EXPECTED_OK:  ${{ inputs.expected_ok_status }}
         run: |
           HTTP_STATUS=$(curl -s -o "${RUNNER_TEMP}/admin_probe_response.json" -w "%{http_code}" \
             -H "Authorization: Bearer ${GH_TOKEN}" \
@@ -148,15 +149,15 @@ jobs:
             echo "ℹ️  ${{ inputs.gap_id }} INCONCLUSIVE — HTTP ${HTTP_STATUS}: ${RESPONSE_MSG}"
           fi
 
-      # ── 2a. Create/update issue when gap is OPEN ─────────────────────────
-      - name: Create or update issue for ${{ inputs.gap_id }}
-        id: notify
-        if: steps.probe.outputs.scope_ok == 'false'
-        uses: actions/github-script@v8  # v9
-        env:
-          GAP_ID:       ${{ inputs.gap_id }}
-          ISSUE_TITLE:  ${{ inputs.issue_title }}
-          ISSUE_BODY:   ${{ inputs.issue_body_md }}
+    # ── 2a. Create/update issue when gap is OPEN ─────────────────────────
+    - name: Create or update issue for ${{ inputs.gap_id }}
+      id: notify
+      if: steps.probe.outputs.scope_ok == 'false'
+      uses: actions/github-script@v8  # v9
+      env:
+        GAP_ID:       ${{ inputs.gap_id }}
+        ISSUE_TITLE:  ${{ inputs.issue_title }}
+        ISSUE_BODY:   ${{ inputs.issue_body_md }}
           ISSUE_LABEL:  ${{ inputs.issue_label }}
           ASSIGNEE:     ${{ inputs.assignee }}
           HTTP_STATUS:  ${{ env.HTTP_STATUS }}
@@ -209,8 +210,8 @@ jobs:
             }
             core.setOutput('issue_number', String(issueNum));
 
-      # ── 2b. Auto-close issue when gap is RESOLVED ─────────────────────────
-      - name: Auto-close issue for ${{ inputs.gap_id }} (gap resolved)
+    # ── 2b. Auto-close issue when gap is RESOLVED ─────────────────────────
+    - name: Auto-close issue for ${{ inputs.gap_id }} (gap resolved)
         if: steps.probe.outputs.scope_ok == 'true'
         uses: actions/github-script@v8  # v9
         env:
@@ -245,8 +246,8 @@ jobs:
               core.info(`ℹ️  No open ${process.env.GAP_ID} issue found — nothing to close`);
             }
 
-      # ── 3. Step Summary ───────────────────────────────────────────────────
-      - name: Step summary
+    # ── 3. Step Summary ───────────────────────────────────────────────────
+    - name: Step summary
         if: always()
         env:
           GAP_ID:         ${{ inputs.gap_id }}
