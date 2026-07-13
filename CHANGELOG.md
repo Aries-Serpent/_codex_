@@ -1,7 +1,7 @@
 ## [Unreleased]
 
-### Fixed (auto-update — PR #5299)
-- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5299 (SHA `8e5a7d99`) at 2026-07-13T09:51Z [auto-generated]
+### Fixed (auto-update — PR #5303)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5303 (SHA `8e5a7d99`) at 2026-07-13T09:51Z [auto-generated]
 
 ### 📚 Site-First Documentation Initiative — Professional Documentation Transformation (2026-07-13)
 
