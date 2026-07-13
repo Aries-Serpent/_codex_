@@ -3,7 +3,7 @@ import time
 from unittest.mock import MagicMock
 
 import pytest
-from src.codex.auth.middleware import (
+from codex.auth.middleware import (
     APIKeyValidator,
     AuthConfig,  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
     AuthMethod,
@@ -13,7 +13,7 @@ from src.codex.auth.middleware import (
     get_current_scopes,
     get_current_user,
 )
-from src.codex.auth.token_manager import TokenManager
+from codex.auth.token_manager import TokenManager
 
 
 class TestAuthConfig:

@@ -420,7 +420,7 @@ def pytest_ignore_collect(collection_path: pathlib.Path, config):  # type: ignor
 
     return (not _torch_available() and _path_requires_torch(collection_path)) or (
         not _pydantic_available() and _path_requires_pydantic(collection_path)
-    )
+    ) or None
 
 
 def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item]) -> None:

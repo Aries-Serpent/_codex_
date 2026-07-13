@@ -495,6 +495,12 @@
 # PDA log integration (smoke test)
 # ---------------------------------------------------------------------------
 
+from codex.skills.mypy_manager.handler import run
+
+SAMPLE_REDUNDANT_CAST = (
+    'src/security/encryption.py:54: error: Redundant cast to "bytes"  [redundant-cast]\n'
+)
+
 
 class TestPDALog:
     def test_pda_log_creates_file(self, tmp_path):

@@ -34,7 +34,7 @@ jobs:
         env:
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
-          python scripts/ci/enforce_actions_versions.py --check
+          python scripts/ci/enforce_actions_versions.py
           echo "check_status=success" >> $GITHUB_OUTPUT
 
       - name: Comment on PR with results

@@ -33,7 +33,7 @@ try:
     import yaml as _yaml_module
 
     yaml = _yaml_module
-except (IOError, OSError):  # pragma: no cover
+except Exception:  # pragma: no cover
     yaml = None
 
 
@@ -64,7 +64,7 @@ def _extract_frontmatter(text: str) -> dict[str, Any]:
     try:
         data = yaml.safe_load(match.group(1)) or {}
         return data if isinstance(data, dict) else {}
-    except (IOError, OSError):
+    except Exception:
         return {}
 
 

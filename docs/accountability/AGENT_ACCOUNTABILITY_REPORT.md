@@ -1,4 +1,25 @@
-## SESSION SUMMARY — 2026-07-13T22:49:50Z [v0.2.3 CI RESCUE ROUND 2 — ACTION VERSIONS + COMPLIANCE]
+## SESSION SUMMARY — 2026-07-13T23:12:54Z [v0.2.3 CI RESCUE ROUND 3 — 8 FAILING CHECKS + 180 COLLECTION ERRORS]
+
+**Session:** PR #5318 CI Rescue Round 3 | **Task:** Resolve all 8 failing CI checks including 180 slow-test collection errors, skills test failures, auth import migration, workflow YAML bugs | **Date:** 2026-07-13T23:12:54Z | **Authority:** @copilot | **Status:** ✅ COMPLETE | **Autonomy Level:** D-tier autonomous
+
+### EXECUTION SUMMARY
+
+**Root Causes Fixed:**
+- ✅ **Action Version Enforcement Check**: Removed unsupported `--check` flag from `action-version-check.yml` — script's default mode IS the check
+- ✅ **Automated Compliance Check**: Fixed YAML indentation error in `pre-release-validation.yml` `validate-version` job (`persist-credentials: false` at 12 spaces, should be 8)
+- ✅ **Detect & Block Secrets**: Removed `--string-multiline-detection` flag from `13-3-secrets-detection.yml` (unsupported by detect-secrets 1.5.0)
+- ✅ **Fast/Integration/Slow Tests (180 collection errors)**: Root cause — `pytest_ignore_collect` hook returned `False` instead of `None` when no torch/pydantic ignore conditions met. Since `pytest_ignore_collect` is a `firstresult=True` hook, `False` (first non-None result) blocked pytest's built-in `collect_ignore` mechanism entirely. Fix: append `or None` so umatched paths return `None`.
+- ✅ **validation (skills) — test_handler_exception, test_retry_on_retryable_error**: `envelope.py` `_target()` caught only `(IOError, OSError)` — `ValueError` from error handlers fell through → returns "no result". Fixed to catch `Exception`.
+- ✅ **validation (skills) — test_invalid_yaml, test_discover_skips_invalid_manifest**: `doc_loader.py` `_extract_frontmatter` caught only `(IOError, OSError)` — `yaml.YAMLError` from `yaml.safe_load` was unhandled. Fixed to catch `Exception`.
+- ✅ **validation (skills) — test_async_with_zero_concurrency_unsupported**: `asyncio.Semaphore(0)` deadlocked all async tasks. `run_async` with `max_concurrency=0` now falls back to default concurrency.
+- ✅ **validation (skills) — TestPDALog.test_pda_log_creates_file/false_skips_write**: `run` import was commented out; `SAMPLE_REDUNDANT_CAST` constant undefined. Added both.
+- ✅ **validation (skills) — test_register_records_source_path**: `import os` missing from `tests/skills/test_registry.py`.
+- ✅ **validation (quick) / Fast Unit Tests**: `tests/auth/*.py` files used `from src.codex.auth.*` (legacy `src.*` import not on sys.path). Migrated to `from codex.auth.*` (resolved by import hook to `src/aries_serpent_core/auth/`).
+
+### Agents Used
+- Direct investigation and fixes (no sub-agents)
+
+
 
 **Session:** PR #5318 CI Rescue Round 2 | **Task:** Fix 6 failing CI checks: Enforce Action Versions, Integration Tests, Final Pre-Merge Checks, compliance-check, Detect & Block Secrets | **Date:** 2026-07-13T22:49:50Z | **Authority:** @copilot | **Status:** ✅ COMPLETE | **Autonomy Level:** D-tier autonomous
 

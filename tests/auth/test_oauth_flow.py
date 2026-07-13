@@ -8,7 +8,7 @@ import time
 from unittest.mock import MagicMock, Mock, patch
 
 import pytest
-from src.codex.auth.oauth_manager import (
+from codex.auth.oauth_manager import (
     OAuthConfig,
     OAuthManager,
     OAuthToken,

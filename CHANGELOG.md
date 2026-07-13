@@ -1,5 +1,17 @@
 ## [Unreleased]
 
+### Fixed (auto-update — PR #5318 CI Rescue Round 3)
+- Fix `pytest_ignore_collect` returning `False` instead of `None` — blocked `collect_ignore` mechanism causing 180+ slow test collection errors
+- Fix `envelope.py` `_target()` catching only `(IOError, OSError)` — handler exceptions were silently swallowed
+- Fix `doc_loader.py` `_extract_frontmatter` catching only `(IOError, OSError)` — `yaml.YAMLError` from invalid YAML was unhandled
+- Fix `aais_batch/handler.py` `run_async` with `max_concurrency=0` — `asyncio.Semaphore(0)` deadlocked all tasks; now falls back to default concurrency
+- Fix `action-version-check.yml` using unsupported `--check` flag; script's default mode IS the check
+- Fix `pre-release-validation.yml` YAML indentation error in `validate-version` job checkout step
+- Fix `13-3-secrets-detection.yml` using `--string-multiline-detection` flag unsupported by detect-secrets 1.5.0
+- Fix `tests/skills/test_mypy_manager.py` — add `run` import and `SAMPLE_REDUNDANT_CAST` constant used by `TestPDALog`
+- Fix `tests/skills/test_registry.py` — add missing `import os`
+- Fix `tests/auth/*.py` — migrate legacy `from src.codex.auth.*` imports to `from codex.auth.*`
+
 ### Fixed (auto-update — PR #5318)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5318 (SHA `16b3e4b4`) at 2026-07-13T22:50Z [auto-generated]
 
