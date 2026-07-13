@@ -1,5 +1,5 @@
 name: Agent Infrastructure Manager
-true:
+on:
   workflow_dispatch:
     inputs:
       operation:
@@ -45,10 +45,6 @@ jobs:
       extra_args: ${{ steps.check.outputs.extra_args }}
       pr_number: ${{ steps.check.outputs.pr_number }}
     steps:
-    - name: 🔐 Configure secret masking
-      run: 'echo ''::add-mask::'' ${{ secrets.CODEX_MASTER_KEY }}
-
-        echo ''::add-mask::'' ${{ secrets.CODEX_BACKUP_KEY }}'
     - name: Check actor and parse command
       id: check
       env:
@@ -93,22 +89,16 @@ jobs:
 
       '
     steps:
-    - name: 🔐 Configure secret masking
-      run: 'echo ''::add-mask::'' ${{ secrets.CODEX_MASTER_KEY }}
-
-        echo ''::add-mask::'' ${{ secrets.CODEX_BACKUP_KEY }}'
     - name: Cache Python dependencies (Layer 1)
-      uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25
+      uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25  # v5
       with:
         path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml')
-          }}
-        restore-keys: '${{ runner.os }}-pip-
-
-          '
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
     - uses: actions/checkout@v5
       with:
-        persist-credentials: false
+            persist-credentials: false
     - name: Cache pip downloads
       uses: actions/cache@v5
       with:
@@ -121,26 +111,23 @@ jobs:
         \  --class INFRA_WRITE \\\n  --actor \"${{ github.actor }}\" || true\n"
     - name: Run variable writer
       env:
-        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY
-          }}
-        CODEX_ADMIN_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY
-          }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        CODEX_ADMIN_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         GITHUB_REPOSITORY: ${{ github.repository }}
         EXTRA_ARGS: ${{ needs.auth-check.outputs.extra_args }}
       run: "pip install -q requests 2>/dev/null || true\nif [ -f \".codex/pending_var_updates.json\"\
         \ ]; then\n  python scripts/ci/github_var_writer.py --batch .codex/pending_var_updates.json\
-        \ $EXTRA_ARGS\nelse\n  echo \"No pending_var_updates.json found — nothing\
+        \ $EXTRA_ARGS\nelse\n  echo \"No pending_var_updates.json found \u2014 nothing\
         \ to apply\"\nfi\n"
     - name: Post result to PR
       if: needs.auth-check.outputs.pr_number != ''
       env:
-        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY
-          }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         REPO: ${{ github.repository }}
         PR_NUMBER: ${{ needs.auth-check.outputs.pr_number }}
       run: "STATUS=$(tail -n 5 .codex/evidence/var_write_audit.jsonl 2>/dev/null ||\
         \ echo \"no audit log\")\nexport STATUS\nBODY=$(python3 -c 'import json,os,sys;\
-        \ s=os.environ.get(\"STATUS\",\"\"); f=\"```\"; b=\"✅ **Agent Infrastructure:**\
+        \ s=os.environ.get(\"STATUS\",\"\"); f=\"```\"; b=\"\u2705 **Agent Infrastructure:**\
         \ Variable write complete.\\n\"+f+\"\\n\"+s+\"\\n\"+f; sys.stdout.write(json.dumps({\"\
         body\":b}))')\ncurl -s -X POST \\\n  -H \"Authorization: Bearer ${CODEX_MASTER_KEY}\"\
         \ \\\n  -H \"Accept: application/vnd.github+json\" \\\n  \"https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments\"\
@@ -159,27 +146,21 @@ jobs:
 
       '
     steps:
-    - name: 🔐 Configure secret masking
-      run: 'echo ''::add-mask::'' ${{ secrets.CODEX_MASTER_KEY }}
-
-        echo ''::add-mask::'' ${{ secrets.CODEX_BACKUP_KEY }}'
     - uses: actions/checkout@v5
       with:
-        persist-credentials: false
+            persist-credentials: false
     - name: Cache test results (Layer 3)
-      uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25
+      uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25  # v5
       if: always()
       with:
         path: .pytest_cache/
         key: ${{ runner.os }}-pytest-${{ github.sha }}
-        restore-keys: '${{ runner.os }}-pytest-
-
-          '
+        restore-keys: |
+          ${{ runner.os }}-pytest-
     - name: Configure webhooks
       id: webhook_config
       env:
-        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY
-          }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         WEBHOOK_SECRET: ${{ secrets.WEBHOOK_SECRET }}
         GITHUB_REPOSITORY: ${{ github.repository }}
         WEBHOOK_RECEIVER_URL: ${{ vars.WEBHOOK_RECEIVER_URL }}
@@ -198,17 +179,12 @@ jobs:
 
       '
     steps:
-    - name: 🔐 Configure secret masking
-      run: 'echo ''::add-mask::'' ${{ secrets.CODEX_MASTER_KEY }}
-
-        echo ''::add-mask::'' ${{ secrets.CODEX_BACKUP_KEY }}'
     - uses: actions/checkout@v5
       with:
-        persist-credentials: false
+            persist-credentials: false
     - name: List variables and post to PR
       env:
-        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY
-          }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         GITHUB_REPOSITORY: ${{ github.repository }}
         PR_NUMBER: ${{ needs.auth-check.outputs.pr_number }}
         REPO: ${{ github.repository }}
@@ -235,17 +211,12 @@ jobs:
 
       '
     steps:
-    - name: 🔐 Configure secret masking
-      run: 'echo ''::add-mask::'' ${{ secrets.CODEX_MASTER_KEY }}
-
-        echo ''::add-mask::'' ${{ secrets.CODEX_BACKUP_KEY }}'
     - uses: actions/checkout@v5
       with:
-        persist-credentials: false
+            persist-credentials: false
     - name: List webhooks
       env:
-        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY
-          }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         GITHUB_REPOSITORY: ${{ github.repository }}
       run: python scripts/ci/webhook_configurator.py --list
   app-status:
@@ -256,13 +227,9 @@ jobs:
     if: "needs.auth-check.outputs.authorized == 'true' &&\n(needs.auth-check.outputs.operation\
       \ == 'app-status' ||\n needs.auth-check.outputs.operation == 'app-manifest')\n"
     steps:
-    - name: 🔐 Configure secret masking
-      run: 'echo ''::add-mask::'' ${{ secrets.CODEX_MASTER_KEY }}
-
-        echo ''::add-mask::'' ${{ secrets.CODEX_BACKUP_KEY }}'
     - uses: actions/checkout@v5
       with:
-        persist-credentials: false
+            persist-credentials: false
     - name: Show app status or generate manifest URL
       env:
         CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
@@ -276,8 +243,7 @@ jobs:
     - name: Post result to PR
       if: needs.auth-check.outputs.pr_number != ''
       env:
-        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY
-          }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         REPO: ${{ github.repository }}
         PR_NUMBER: ${{ needs.auth-check.outputs.pr_number }}
         OPERATION: ${{ needs.auth-check.outputs.operation }}
@@ -287,11 +253,11 @@ jobs:
         \ print(d.get('html_url','?'))\")\n  MSG=\"## \U0001F916 GitHub App Status\\\
         n\\n| Field | Value |\\n|-------|-------|\\n| App ID | \\`${APP_ID}\\` |\\\
         n| URL | ${APP_URL} |\\n| Private Key | $(test -f .codex/github_app/private_key.pem\
-        \ && echo '✅ present' || echo '❌ missing') |\"\nelse\n  MSG=\"## \U0001F916\
-        \ GitHub App\\n\\nNo app registered yet.\\n\\nRun:\\n\\`\\`\\`\\n@agent-infra\
-        \ app-manifest\\n\\`\\`\\`\\nto generate the manifest URL.\"\nfi\ncurl -s\
-        \ -X POST \\\n  -H \"Authorization: Bearer ${CODEX_MASTER_KEY}\" \\\n  -H\
-        \ \"Accept: application/vnd.github+json\" \\\n  \"https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments\"\
+        \ && echo '\u2705 present' || echo '\u274C missing') |\"\nelse\n  MSG=\"##\
+        \ \U0001F916 GitHub App\\n\\nNo app registered yet.\\n\\nRun:\\n\\`\\`\\`\\\
+        n@agent-infra app-manifest\\n\\`\\`\\`\\nto generate the manifest URL.\"\n\
+        fi\ncurl -s -X POST \\\n  -H \"Authorization: Bearer ${CODEX_MASTER_KEY}\"\
+        \ \\\n  -H \"Accept: application/vnd.github+json\" \\\n  \"https://api.github.com/repos/${REPO}/issues/${PR_NUMBER}/comments\"\
         \ \\\n  -d \"{\\\"body\\\":\\\"${MSG}\\\"}\" > /dev/null\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token

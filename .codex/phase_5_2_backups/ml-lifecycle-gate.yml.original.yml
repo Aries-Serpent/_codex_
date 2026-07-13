@@ -1,5 +1,5 @@
 name: ML Lifecycle E2E Gate
-true:
+on:
   workflow_dispatch: null
   schedule:
   - cron: 0 4 * * 1
@@ -24,13 +24,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-    - name: 🔐 Configure secret masking
-      run: 'echo ''::add-mask::'' ${{ secrets.CODEX_MASTER_KEY }}
-
-        echo ''::add-mask::'' ${{ secrets.CODEX_BACKUP_KEY }}'
     - uses: actions/checkout@v5
       with:
-        persist-credentials: false
+            persist-credentials: false
     - uses: actions/setup-python@v6
       with:
         python-version: 3.12.13
@@ -46,13 +42,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-    - name: 🔐 Configure secret masking
-      run: 'echo ''::add-mask::'' ${{ secrets.CODEX_MASTER_KEY }}
-
-        echo ''::add-mask::'' ${{ secrets.CODEX_BACKUP_KEY }}'
     - uses: actions/checkout@v5
       with:
-        persist-credentials: false
+            persist-credentials: false
     - uses: actions/setup-python@v6
       with:
         python-version: 3.12.13
@@ -68,13 +60,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-    - name: 🔐 Configure secret masking
-      run: 'echo ''::add-mask::'' ${{ secrets.CODEX_MASTER_KEY }}
-
-        echo ''::add-mask::'' ${{ secrets.CODEX_BACKUP_KEY }}'
     - uses: actions/checkout@v5
       with:
-        persist-credentials: false
+            persist-credentials: false
     - uses: actions/setup-python@v6
       with:
         python-version: 3.12.13
@@ -94,13 +82,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-    - name: 🔐 Configure secret masking
-      run: 'echo ''::add-mask::'' ${{ secrets.CODEX_MASTER_KEY }}
-
-        echo ''::add-mask::'' ${{ secrets.CODEX_BACKUP_KEY }}'
     - uses: actions/checkout@v5
       with:
-        persist-credentials: false
+            persist-credentials: false
     - uses: actions/setup-python@v6
       with:
         python-version: 3.12.13
@@ -122,10 +106,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-    - name: 🔐 Configure secret masking
-      run: 'echo ''::add-mask::'' ${{ secrets.CODEX_MASTER_KEY }}
-
-        echo ''::add-mask::'' ${{ secrets.CODEX_BACKUP_KEY }}'
     - name: Evaluate D2 exit criteria
       run: "python3 - <<'PYEOF'\nimport json, sys\nfrom datetime import datetime,\
         \ timezone\n\nresults = {\n    \"reproducibility\": \"${{ needs.reproducibility-check.result\

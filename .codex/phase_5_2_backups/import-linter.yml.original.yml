@@ -1,5 +1,5 @@
 name: Import Linter
-true:
+on:
   pull_request:
     branches:
     - main
@@ -27,14 +27,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-    - name: 🔐 Configure secret masking
-      run: 'echo ''::add-mask::'' ${{ secrets.CODEX_MASTER_KEY }}
-
-        echo ''::add-mask::'' ${{ secrets.CODEX_BACKUP_KEY }}'
     - name: Checkout
       uses: actions/checkout@v5
       with:
-        persist-credentials: false
+            persist-credentials: false
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
