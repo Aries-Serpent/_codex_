@@ -81,6 +81,7 @@ class SecretDetectionAgent:
             patterns = result.get("patterns_matched", [])
             
             # Log metadata (NOT token values)
+            # lgtm[py/log-injection]: Logging only safe metadata (counts, repo name), not sensitive data
             logger.info(
                 "secret_scan_complete",
                 extra={
