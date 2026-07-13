@@ -53,13 +53,9 @@ jobs:
       first_job_name: ${{ steps.jobs.outputs.first_job_name }}
       failed_job_count: ${{ steps.jobs.outputs.failed_job_count }}
     steps:
-    - name: Mask secrets
-      run: |
-        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
       - name: Checkout (consolidator + OTel)
         uses: actions/checkout@v5
         with:
-            persist-credentials: false
           sparse-checkout: |
             scripts/ci/pr_comment_consolidator.py
             src/codex/monitoring/
@@ -231,7 +227,6 @@ jobs:
       - name: Checkout main
         uses: actions/checkout@v5
         with:
-            persist-credentials: false
           ref: main
           fetch-depth: 1
       - name: Create fix branch + tracking stub
@@ -314,7 +309,6 @@ jobs:
       - name: Checkout (consolidator)
         uses: actions/checkout@v5
         with:
-            persist-credentials: false
           sparse-checkout: 'scripts/ci/pr_comment_consolidator.py
 
           src/codex/monitoring/

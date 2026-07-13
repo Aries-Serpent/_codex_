@@ -63,9 +63,6 @@ jobs:
       \ || 'all')\n"
     continue-on-error: ${{ github.event_name == 'pull_request' }}
     steps:
-    - name: Mask secrets
-      run: |
-        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
     
       - name: Cache Python dependencies (Layer 1)
         uses: actions/cache@v5
@@ -76,8 +73,6 @@ jobs:
             ${{ runner.os }}-pip-
 
       - uses: actions/checkout@v5
-      with:
-            persist-credentials: false
       - uses: actions/setup-python@v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
@@ -106,8 +101,6 @@ jobs:
     continue-on-error: ${{ github.event_name == 'pull_request' }}
     steps:
       - uses: actions/checkout@v5
-      with:
-            persist-credentials: false
       - uses: actions/setup-python@v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
@@ -151,8 +144,6 @@ jobs:
     continue-on-error: ${{ github.event_name == 'pull_request' }}
     steps:
       - uses: actions/checkout@v5
-      with:
-            persist-credentials: false
       - uses: actions/setup-python@v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}

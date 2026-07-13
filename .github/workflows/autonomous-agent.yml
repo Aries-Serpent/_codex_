@@ -41,7 +41,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v5
         with:
-            persist-credentials: false
           sparse-checkout: |
             .github
             scripts/ci
@@ -74,7 +73,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v5
         with:
-            persist-credentials: false
           fetch-depth: 0
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
       - name: Set up Python 3.12 with tiered cache
