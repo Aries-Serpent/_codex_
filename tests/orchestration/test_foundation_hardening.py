@@ -15,7 +15,7 @@ from src.orchestration.gates.contract_gate import (
 )
 from src.orchestration.healing.policy_tier_engine import (
     PolicyTierEngine,
-    TierClassification,
+    TierClassification,  # pragma: allowlist secret
 )
 from src.orchestration.safety.rollback_controls import (
     RollbackControlSystem,
