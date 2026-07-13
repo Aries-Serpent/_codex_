@@ -25,7 +25,7 @@ class TestInstallation:
     """Test codex-ml installation scenarios."""
 
     def test_core_profile_installation(self, tmp_path: Path) -> None:
-        """Test installation of codex-ml[core]==0.2.2 in isolated venv."""
+        """Test installation of codex-ml[core]==0.2.3 in isolated venv."""
         venv_path = tmp_path / "venv_core"
         result = subprocess.run(
             [sys.executable, "-m", "venv", str(venv_path)],
@@ -36,7 +36,7 @@ class TestInstallation:
 
         pip_exe = venv_path / ("Scripts" if sys.platform == "win32" else "bin") / "pip"
         result = subprocess.run(
-            [str(pip_exe), "install", "--no-cache-dir", "codex-ml[core]==0.2.2"],
+            [str(pip_exe), "install", "--no-cache-dir", "codex-ml[core]==0.2.3"],
             capture_output=True,
             text=True,
             timeout=300,
@@ -45,7 +45,7 @@ class TestInstallation:
         assert "Successfully installed" in result.stdout or "already satisfied" in result.stdout
 
     def test_full_version_installation(self, tmp_path: Path) -> None:
-        """Test installation of codex-ml==0.2.2 (base profile)."""
+        """Test installation of codex-ml==0.2.3 (base profile)."""
         venv_path = tmp_path / "venv_base"
         result = subprocess.run(
             [sys.executable, "-m", "venv", str(venv_path)],
@@ -56,7 +56,7 @@ class TestInstallation:
 
         pip_exe = venv_path / ("Scripts" if sys.platform == "win32" else "bin") / "pip"
         result = subprocess.run(
-            [str(pip_exe), "install", "--no-cache-dir", "codex-ml==0.2.2"],
+            [str(pip_exe), "install", "--no-cache-dir", "codex-ml==0.2.3"],
             capture_output=True,
             text=True,
             timeout=300,
@@ -77,7 +77,7 @@ class TestInstallation:
 
         # First install codex-ml
         result = subprocess.run(
-            [str(pip_exe), "install", "--no-cache-dir", "codex-ml[core]==0.2.2"],
+            [str(pip_exe), "install", "--no-cache-dir", "codex-ml[core]==0.2.3"],
             capture_output=True,
             text=True,
             timeout=300,
@@ -132,7 +132,7 @@ class TestEntryPoints:
 
         pip_exe = venv_path / ("Scripts" if sys.platform == "win32" else "bin") / "pip"
         result = subprocess.run(
-            [str(pip_exe), "install", "--no-cache-dir", "codex-ml==0.2.2"],
+            [str(pip_exe), "install", "--no-cache-dir", "codex-ml==0.2.3"],
             capture_output=True,
             text=True,
             timeout=300,
@@ -155,7 +155,7 @@ class TestEntryPoints:
 
         pip_exe = venv_path / ("Scripts" if sys.platform == "win32" else "bin") / "pip"
         subprocess.run(
-            [str(pip_exe), "install", "--no-cache-dir", "codex-ml==0.2.2"],
+            [str(pip_exe), "install", "--no-cache-dir", "codex-ml==0.2.3"],
             capture_output=True,
             text=True,
             timeout=300,
@@ -348,7 +348,7 @@ class TestPackageMetadata:
 
         # Check if version is defined
         if hasattr(codex_ml, "__version__"):
-            assert codex_ml.__version__ == "0.2.2"
+            assert codex_ml.__version__ == "0.2.3"
 
     def test_package_name(self) -> None:
         """Test package name is correct."""

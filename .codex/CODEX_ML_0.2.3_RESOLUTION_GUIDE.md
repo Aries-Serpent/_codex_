@@ -1,4 +1,4 @@
-# codex-ml v0.2.2: Issue Resolution & Implementation Guide
+# codex-ml v0.2.3: Issue Resolution & Implementation Guide
 
 **Created:** 2026-07-13T20:53:47Z  
 **Status:** Ready for Implementation  
@@ -546,7 +546,7 @@ def test_runtime_profile_has_ml():
         python = venv / ("Scripts" if sys.platform == "win32" else "bin") / "python"
         
         subprocess.run(
-            [str(pip), "install", "codex-ml[runtime]==0.2.2"],
+            [str(pip), "install", "codex-ml[runtime]==0.2.3"],
             check=True,
             capture_output=True,
             timeout=600,
@@ -606,14 +606,14 @@ pip install codex-ml[core]==0.2.3
 
 ### Runtime Profile (Recommended for ML)
 ```bash
-pip install codex-ml[runtime]==0.2.2
+pip install codex-ml[runtime]==0.2.3
 # Size: ~35 MB
 # Use: ML inference, API services
 ```
 
 ### Full Profile (Recommended for development)
 ```bash
-pip install codex-ml[full]==0.2.2
+pip install codex-ml[full]==0.2.3
 # Size: ~150 MB
 # Use: Development, testing, experimentation
 ```
@@ -662,7 +662,7 @@ $ python -c "from codex_ml.data import *; print('SUCCESS')"
 
 # ✅ Test 2: All entry points functional
 $ codex-ml --version
-# Output: codex-ml version 0.2.2
+# Output: codex-ml version 0.2.3
 
 # ✅ Test 3: Tests pass
 $ pytest tests/test_profile_core_isolation.py -v

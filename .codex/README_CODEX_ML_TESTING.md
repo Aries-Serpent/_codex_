@@ -1,4 +1,4 @@
-# codex-ml v0.2.2: Complete Testing & Analysis Results
+# codex-ml v0.2.3: Complete Testing & Analysis Results
 
 **Date:** 2026-07-13T20:53:47Z  
 **Package:** codex-ml==0.2.3  
@@ -9,7 +9,7 @@
 
 ## 📊 Overview
 
-Comprehensive testing of codex-ml v0.2.2 installation, functionality, and dependency isolation has been completed. **77.3 KB of documentation** with analysis, test cases, and solutions have been generated.
+Comprehensive testing of codex-ml v0.2.3 installation, functionality, and dependency isolation has been completed. **77.3 KB of documentation** with analysis, test cases, and solutions have been generated.
 
 ### Quick Results
 
@@ -62,7 +62,7 @@ Comprehensive testing of codex-ml v0.2.2 installation, functionality, and depend
 
 ---
 
-### 2. **CODEX_ML_0.2.2_ANALYSIS_REPORT.md** (18 KB)
+### 2. **CODEX_ML_0.2.3_ANALYSIS_REPORT.md** (18 KB)
 **For:** Technical leads, architects  
 **Read Time:** 30 minutes  
 **Contents:**
@@ -77,7 +77,7 @@ Comprehensive testing of codex-ml v0.2.2 installation, functionality, and depend
 
 ---
 
-### 3. **CODEX_ML_0.2.2_RESOLUTION_GUIDE.md** (18 KB)
+### 3. **CODEX_ML_0.2.3_RESOLUTION_GUIDE.md** (18 KB)
 **For:** Developers implementing fixes  
 **Read Time:** 45 minutes (+ 3 hours implementation)  
 **Contents:**
@@ -233,12 +233,12 @@ Overall Score:           67/100 (needs critical fixes)
 3. Timeline: 3 hours for complete fix
 
 ### For Technical Leads
-1. Read: CODEX_ML_0.2.2_ANALYSIS_REPORT.md (30 min)
-2. Review: CODEX_ML_0.2.2_RESOLUTION_GUIDE.md (45 min)
+1. Read: CODEX_ML_0.2.3_ANALYSIS_REPORT.md (30 min)
+2. Review: CODEX_ML_0.2.3_RESOLUTION_GUIDE.md (45 min)
 3. Plan: Implementation and testing
 
 ### For Developers
-1. Read: CODEX_ML_0.2.2_RESOLUTION_GUIDE.md (45 min)
+1. Read: CODEX_ML_0.2.3_RESOLUTION_GUIDE.md (45 min)
 2. Implement: Follow step-by-step instructions (3 hours)
 3. Test: Use provided test suites
 4. Verify: Run validation checklist
@@ -325,8 +325,8 @@ After implementing all fixes, verify:
 ```
 README_CODEX_ML_TESTING.md (You are here)
 ├── CODEX_ML_EXECUTIVE_SUMMARY.md (5 min read)
-├── CODEX_ML_0.2.2_ANALYSIS_REPORT.md (30 min read)
-├── CODEX_ML_0.2.2_RESOLUTION_GUIDE.md (45 min + 3 hours work)
+├── CODEX_ML_0.2.3_ANALYSIS_REPORT.md (30 min read)
+├── CODEX_ML_0.2.3_RESOLUTION_GUIDE.md (45 min + 3 hours work)
 ├── test_codex_ml_installation.py (test suite)
 └── test_codex_ml_discovery.py (discovery tests)
 ```
@@ -351,7 +351,7 @@ README_CODEX_ML_TESTING.md (You are here)
 
 ## 🏆 Conclusion
 
-**codex-ml v0.2.2 has excellent design and security but needs 3 critical fixes to restore core profile functionality. All fixes are low-risk, well-documented, and can be completed in ~3 hours.**
+**codex-ml v0.2.3 has excellent design and security but needs 3 critical fixes to restore core profile functionality. All fixes are low-risk, well-documented, and can be completed in ~3 hours.**
 
 ### Status
 - **Installation:** ✅ Works

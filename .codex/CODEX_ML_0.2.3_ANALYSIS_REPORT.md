@@ -9,7 +9,7 @@
 
 ## Executive Summary
 
-Successfully tested codex-ml v0.2.2 installation and functionality. The package implements a **3-profile packaging strategy** (core, runtime, full) with strong security focus. However, **critical issues** were identified related to module organization and dependency isolation that prevent proper offline-first functionality in the core profile.
+Successfully tested codex-ml v0.2.3 installation and functionality. The package implements a **3-profile packaging strategy** (core, runtime, full) with strong security focus. However, **critical issues** were identified related to module organization and dependency isolation that prevent proper offline-first functionality in the core profile.
 
 ### Key Findings
 
@@ -27,7 +27,7 @@ Successfully tested codex-ml v0.2.2 installation and functionality. The package 
 ## Phase 1: Installation Testing Results
 
 ### 1.1 Version Consistency
-- **Version:** 0.2.2 (consistent across pyproject.toml, line 60)
+- **Version:** 0.2.3 (consistent across pyproject.toml, line 60)
 - **Python Requirement:** >=3.12 ✅
 - **Build System:** setuptools >=78.1.1, wheel >=0.46.2 ✅
 
@@ -368,7 +368,7 @@ def test_core_profile_no_runtime_deps():
 **5. Run Security Audit**
 ```bash
 pip install safety
-safety check --json > .codex/safety_audit_v0.2.2.json
+safety check --json > .codex/safety_audit_v0.2.3.json
 ```
 
 **6. Improve Type Hints**
@@ -392,7 +392,7 @@ mypy src/codex_ml --strict --ignore-missing-imports > .codex/mypy_report.txt
 - Pin exact versions for reproducibility
 
 **9. Create Migration Guide**
-- Guide for v0.1.0 → v0.2.2 users
+- Guide for v0.1.0 → v0.2.3 users
 - Profile selection recommendations
 - Install size comparisons
 
@@ -467,7 +467,7 @@ $venv1/bin/pip freeze | wc -l  # Core profile package count
 
 venv2=$(mktemp -d)
 python -m venv $venv2
-$venv2/bin/pip install codex-ml[runtime]==0.2.2
+$venv2/bin/pip install codex-ml[runtime]==0.2.3
 $venv2/bin/pip freeze | wc -l  # Runtime profile package count
 
 # Verify:
@@ -485,10 +485,10 @@ $venv2/bin/pip freeze | wc -l  # Runtime profile package count
 ```bash
 # Generate SBOM (Software Bill of Materials)
 pip install cyclonedx-bom
-cyclonedx-py -o json -format 1.4 > sbom_codex_ml_v0.2.2.json
+cyclonedx-py -o json -format 1.4 > sbom_codex_ml_v0.2.3.json
 
 # Cross-reference with CVE database
-python scripts/verify_cve_patches.py sbom_codex_ml_v0.2.2.json
+python scripts/verify_cve_patches.py sbom_codex_ml_v0.2.3.json
 ```
 
 ---
@@ -554,7 +554,7 @@ python scripts/verify_cve_patches.py sbom_codex_ml_v0.2.2.json
 **File:** `docs/ENTRY_POINTS.md`
 
 ```markdown
-# Entry Points in codex-ml v0.2.2
+# Entry Points in codex-ml v0.2.3
 
 ## Core Profile Entry Points
 - `codex-ml`: Main CLI (uses typer)
@@ -639,7 +639,7 @@ pytest --cov=codex_ml tests/ --cov-report=term-missing
 ```
 Platform: Linux (ubuntu-latest)
 Python: 3.12.x
-codex-ml version: 0.2.2
+codex-ml version: 0.2.3
 
 IMPORT TESTS:
 ✅ codex_ml base import
