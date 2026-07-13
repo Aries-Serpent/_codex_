@@ -122,7 +122,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
         fetch-depth: 0
     - name: Set up Python
       uses: ./.github/actions/setup-python-cached
@@ -190,7 +189,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
         fetch-depth: 0
         persist-credentials: false
         ref: ${{ (github.event_name == 'pull_request' && (inputs.target_ref || github.event.pull_request.head.sha)) || (github.event_name == 'issue_comment' && 'main') || inputs.target_ref || github.sha || '' }}
@@ -311,7 +309,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
         persist-credentials: false
     - name: Generate improvement PR
       env:
@@ -402,7 +399,6 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1
     - name: Post or update rescue comment

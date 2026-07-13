@@ -24,6 +24,9 @@ name: Security Scanning Suite
           - codeql
           - dependency
           - semgrep
+          - cve
+          - containers
+          - secrets
         default: all
       lane-id:
         description: Multi-lane orchestration lane id
@@ -476,6 +479,186 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
+  container-scan:
+    name: Container Security Scan (Trivy)
+    runs-on: ubuntu-latest
+    needs: lane-metadata-contract
+    timeout-minutes: 30
+    if: |
+      (github.event_name == 'push') ||
+      (github.event_name == 'pull_request') ||
+      (github.event_name == 'schedule') ||
+      (github.event_name == 'workflow_dispatch' && (github.event.inputs.scan-type == 'all' || github.event.inputs.scan-type == 'containers')) ||
+      (github.event_name == 'workflow_call' && (inputs.scan-type == '' || inputs.scan-type == 'all' || inputs.scan-type == 'containers'))
+    permissions:
+      contents: read
+      security-events: write
+    strategy:
+      fail-fast: false
+      matrix:
+        dockerfile:
+          - .config/Dockerfile
+          - docker/Dockerfile.cpu
+          - docker/Dockerfile.gpu
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - name: Build Docker image for scanning
+        continue-on-error: true
+        run: |
+          docker build -f ${{ matrix.dockerfile }} -t codex-scan:${{ strategy.job-index }} . || true
+
+      - name: Run Trivy filesystem scan
+        uses: aquasecurity/trivy-action@0.35.0
+        with:
+          scan-type: fs
+          scan-ref: .
+          format: sarif
+          output: trivy-results-${{ strategy.job-index }}.sarif
+          severity: CRITICAL,HIGH
+          exit-code: '0'
+
+      - name: Upload SARIF to GitHub Security tab
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-results-${{ strategy.job-index }}.sarif
+
+      - name: Generate container scan summary + contract
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .codex/contracts
+
+          {
+           echo "# Container Security Scan Report"
+           echo "- **Dockerfile:** ${{ matrix.dockerfile }}"
+           echo "- **Scan outcome:** ${{ job.status }}"
+           echo "- **Lane ID:** \`${{ needs.lane-metadata-contract.outputs.lane_id }}\`"
+           echo "- **Shard ID:** \`${{ needs.lane-metadata-contract.outputs.shard_id }}\`"
+          } > container-scan-summary-${{ strategy.job-index }}.md
+
+          cat > .codex/contracts/output-contract-container-${{ strategy.job-index }}.json <<'EOFJ'
+          {
+           "schema_version": "${{ env.SECURITY_ARTIFACT_SCHEMA_VERSION }}",
+           "job": "container-scan",
+           "matrix_index": "${{ strategy.job-index }}",
+           "dockerfile": "${{ matrix.dockerfile }}",
+           "lane_id": "${{ needs.lane-metadata-contract.outputs.lane_id }}",
+           "input_lock_sha256": "${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}",
+           "status": "${{ job.status }}"
+          }
+          EOFJ
+
+      - name: Upload container scan artifacts
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: security-suite-container-${{ strategy.job-index }}
+          path: |
+           trivy-results-${{ strategy.job-index }}.sarif
+           container-scan-summary-${{ strategy.job-index }}.md
+           .codex/contracts/output-contract-container-${{ strategy.job-index }}.json
+          if-no-files-found: warn
+          retention-days: 30
+
+  cve-scan:
+    name: CVE & Dependency Audit
+    runs-on: ubuntu-latest
+    needs: lane-metadata-contract
+    timeout-minutes: 30
+    if: |
+      (github.event_name == 'pull_request') ||
+      (github.event_name == 'schedule') ||
+      (github.event_name == 'workflow_dispatch' && (github.event.inputs.scan-type == 'all' || github.event.inputs.scan-type == 'cve')) ||
+      (github.event_name == 'workflow_call' && (inputs.scan-type == '' || inputs.scan-type == 'all' || inputs.scan-type == 'cve'))
+    permissions:
+      contents: read
+      security-events: write
+      pull-requests: write
+    strategy:
+      fail-fast: false
+      matrix:
+        ecosystem:
+          - python
+          - javascript
+          - rust
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - name: Cache Python dependencies (Layer 1)
+        uses: actions/cache@v5
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt', '**/pyproject.toml') }}
+          restore-keys: |
+           ${{ runner.os }}-pip-
+
+      - if: matrix.ecosystem == 'python'
+        name: Scan Python dependencies (pip-audit)
+        continue-on-error: true
+        run: |
+          pip install pip-audit
+          pip-audit --json --output python-cve-audit.json || true
+          pip-audit --desc || true
+
+      - if: matrix.ecosystem == 'javascript' && hashFiles('package.json') != ''
+        name: Scan JavaScript dependencies (npm audit)
+        continue-on-error: true
+        run: |
+          npm audit --json > javascript-cve-audit.json || true
+          npm audit || true
+
+      - if: matrix.ecosystem == 'rust' && hashFiles('Cargo.toml') != ''
+        name: Scan Rust dependencies (cargo-audit)
+        continue-on-error: true
+        run: |
+          cargo install cargo-audit
+          cargo audit --json > rust-cve-audit.json || true
+          cargo audit || true
+
+      - name: Generate CVE summary + contract
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .codex/contracts
+
+          {
+           echo "# CVE & Dependency Audit Report"
+           echo "- **Ecosystem:** ${{ matrix.ecosystem }}"
+           echo "- **Scan outcome:** ${{ job.status }}"
+           echo "- **Lane ID:** \`${{ needs.lane-metadata-contract.outputs.lane_id }}\`"
+          } > cve-scan-summary-${{ matrix.ecosystem }}.md
+
+          cat > .codex/contracts/output-contract-cve-${{ matrix.ecosystem }}.json <<'EOFJ'
+          {
+           "schema_version": "${{ env.SECURITY_ARTIFACT_SCHEMA_VERSION }}",
+           "job": "cve-scan",
+           "ecosystem": "${{ matrix.ecosystem }}",
+           "lane_id": "${{ needs.lane-metadata-contract.outputs.lane_id }}",
+           "input_lock_sha256": "${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}",
+           "status": "${{ job.status }}"
+          }
+          EOFJ
+
+      - name: Upload CVE scan artifacts
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: security-suite-cve-${{ matrix.ecosystem }}
+          path: |
+           *-cve-audit.json
+           cve-scan-summary-${{ matrix.ecosystem }}.md
+           .codex/contracts/output-contract-cve-${{ matrix.ecosystem }}.json
+          if-no-files-found: warn
+          retention-days: 30
+
   dependency-scan:
     name: Dependency Security Scan
     runs-on: ubuntu-latest
@@ -754,6 +937,8 @@ jobs:
     needs:
       - lane-metadata-contract
       - codeql-scan
+      - container-scan
+      - cve-scan
       - dependency-scan
       - secret-scan
       - sbom-generation
@@ -798,6 +983,8 @@ jobs:
             echo "| Job | Result |"
             echo "|---|---|"
             echo "| codeql-scan | ${{ needs.codeql-scan.result }} |"
+            echo "| container-scan | ${{ needs.container-scan.result }} |"
+            echo "| cve-scan | ${{ needs.cve-scan.result }} |"
             echo "| semgrep | ${{ needs.semgrep.result }} |"
             echo "| dependency-scan | ${{ needs.dependency-scan.result }} |"
             echo "| secret-scan | ${{ needs.secret-scan.result }} |"

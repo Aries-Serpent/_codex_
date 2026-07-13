@@ -37,7 +37,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
-            persist-credentials: false
           fetch-depth: 0
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -175,8 +174,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
-      with:
-            persist-credentials: false
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
@@ -201,8 +198,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
-      with:
-            persist-credentials: false
       - name: Set up Python
         uses: actions/setup-python@v6
         with:

@@ -26,8 +26,6 @@ jobs:
             ${{ runner.os }}-pip-
 
       - uses: actions/checkout@v5
-      with:
-            persist-credentials: false
       - name: Compute rolling success rate from compliance log
         id: metrics
         run: "python3 - <<'PYEOF'\nimport json, os, re, sys\nfrom datetime import datetime,\
@@ -81,8 +79,6 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v5
-      with:
-            persist-credentials: false
       - uses: actions/setup-python@v6
         with:
           python-version: 3.12.13

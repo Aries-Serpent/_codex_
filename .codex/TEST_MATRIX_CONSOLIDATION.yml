@@ -1,0 +1,270 @@
+# Consolidated Test Matrix Configuration
+# Phase 3.3 Lane 2 - Testing Consolidation
+# Created: 2026-07-13T16:54:22Z
+# Authority: D-tier autonomous (@mbaetiong)
+
+consolidation_metadata:
+  version: "1.0"
+  phase: "3.3"
+  lane: "2"
+  created_at: "2026-07-13T16:54:22Z"
+  target_reduction: "63%"
+  status: "implemented"
+
+# Workflow Consolidation Summary
+consolidation_summary:
+  current_active_workflows: 5
+  current_disabled_workflows: 3
+  target_workflows: 3
+  reduction_percentage: "63%"
+  
+  active_workflows:
+    - auth-tests.yml
+    - ml-tests.yml
+    - test-rag.yml
+    - optimized-test-execution.yml
+    - rust_swarm_ci.yml
+  
+  disabled_workflows:
+    - ci-pytest.yml.disabled
+    - comprehensive_tests.yml.disabled
+    - tests.yml.disabled
+
+# Primary Consolidator Configuration
+primary_consolidator:
+  name: "optimized-test-execution.yml"
+  purpose: "Master workflow for consolidated test execution"
+  enhancements:
+    - workflow_dispatch input for selective test-type execution
+    - conditional jobs based on file paths and inputs
+    - P19 shadow import detection
+    - parallel execution matrix for ML tests
+    - unified coverage reporting
+  
+  test_groups:
+    core:
+      description: "Baseline tests (always run on PR/push)"
+      jobs:
+        - check-imports (P19 detection)
+        - test-fast (unit tests, parallel)
+        - test-integration (integration tests, 2-worker)
+        - test-slow (performance tests, sequential)
+        - test-coverage (coverage aggregation)
+    
+    auth:
+      description: "Authentication module tests"
+      trigger: "auth path changes"
+      condition: "inputs.test-type == 'auth' || auth files changed"
+      python_versions: ["3.12"]
+      timeout_minutes: 30
+    
+    ml:
+      description: "ML components tests"
+      trigger: "ML/training path changes"
+      condition: "inputs.test-type == 'ml' || ML files changed"
+      matrix:
+        python_version: ["3.11", "3.12"]
+        test_suite:
+          - training
+          - data
+          - metrics
+      timeout_minutes: 45
+    
+    rag:
+      description: "RAG pipeline tests"
+      trigger: "RAG path changes"
+      condition: "inputs.test-type == 'rag' || RAG files changed"
+      python_versions: ["3.12"]
+      timeout_minutes: 30
+    
+    rust:
+      description: "Rust swarm tests"
+      trigger: "Rust path changes"
+      condition: "inputs.test-type == 'rust' || .rs files changed"
+      timeout_minutes: 45
+
+# Trigger Configuration
+triggers:
+  pull_request:
+    branches:
+      - main
+      - develop
+    paths:
+      - src/**
+      - tests/**
+      - pyproject.toml
+      - requirements*.txt
+      - .github/workflows/optimized-test-execution.yml
+  
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - src/codex/auth/**
+      - src/codex/rag/**
+      - src/**/*.py
+      - training/**/*.py
+      - tests/**
+      - pyproject.toml
+      - requirements*.txt
+  
+  workflow_dispatch:
+    inputs:
+      test_type:
+        default: "all"
+        options: ["all", "core", "auth", "ml", "rag", "rust"]
+      test_level:
+        default: "full"
+        options: ["smoke", "full", "extended"]
+
+# Specialized Workflow Retention Policy
+specialized_workflows:
+  auth_tests:
+    name: "auth-tests.yml"
+    status: "KEEP (specialized trigger)"
+    reason: "Runs on auth code changes only; complex auth workflows"
+    trigger: "auth/** paths"
+    consolidation_impact: "Triggers included in optimized workflow"
+  
+  ml_tests:
+    name: "ml-tests.yml"
+    status: "KEEP (specialized trigger)"
+    reason: "Complex ML dependencies; scheduled runs; matrix execution"
+    trigger: "ML/** paths or schedule"
+    consolidation_impact: "Consolidated into optimized with matrix"
+  
+  test_rag:
+    name: "test-rag.yml"
+    status: "KEEP (specialized trigger)"
+    reason: "RAG-specific tests; separate trigger required"
+    trigger: "RAG/** paths"
+    consolidation_impact: "Consolidated into optimized workflow"
+  
+  rust_swarm_ci:
+    name: "rust_swarm_ci.yml"
+    status: "KEEP (specialized trigger)"
+    reason: "Rust compilation + tests; distinct toolchain"
+    trigger: ".rs files and Rust paths"
+    consolidation_impact: "Consolidated into optimized workflow"
+
+# Disabled Workflows Archival Plan
+disabled_workflows_archival:
+  ci_pytest:
+    name: "ci-pytest.yml.disabled"
+    action: "DELETE"
+    reason: "Superceded by optimized-test-execution.yml"
+    replacement: "optimized-test-execution.yml"
+    preserved_in: ".codex/archive/ci-pytest.yml.archived"
+  
+  comprehensive_tests:
+    name: "comprehensive_tests.yml.disabled"
+    action: "DELETE"
+    reason: "Functionality merged into optimized workflow"
+    replacement: "optimized-test-execution.yml"
+    preserved_in: ".codex/archive/comprehensive_tests.yml.archived"
+  
+  tests:
+    name: "tests.yml.disabled"
+    action: "DELETE"
+    reason: "Legacy workflow; replaced by optimized"
+    replacement: "optimized-test-execution.yml"
+    preserved_in: ".codex/archive/tests.yml.archived"
+
+# Parallel Execution Strategy
+parallel_execution:
+  core_tests:
+    - test-fast (15m)
+    - test-integration (20m)
+    - test-slow (20m)
+    - combined_estimated_time: "20m (parallel)"
+    - sequential_baseline: "55m"
+    - estimated_savings: "64%"
+  
+  ml_tests:
+    - matrix: "python 3.11 & 3.12 × 3 test suites"
+    - parallelization: "2-worker pytest-xdist"
+    - estimated_time: "45m"
+  
+  specialized_tests:
+    - auth: "30m (parallel xdist)"
+    - rag: "30m (parallel xdist)"
+    - rust: "45m (cargo parallel)"
+
+# Coverage and P19 Detection
+quality_gates:
+  p19_shadow_import:
+    enabled: true
+    check_location: "check-imports job"
+    resolution: "pip install --force-reinstall --no-deps -e ."
+    failure_mode: "CRITICAL (blocks all tests)"
+  
+  coverage:
+    collection: "test-coverage job"
+    aggregation: "from fast + integration + slow tests"
+    artifacts: ".coverage.json, htmlcov/**"
+    retention_days: 90
+
+# Migration Checklist
+migration_checklist:
+  - "✓ Enhanced optimized-test-execution.yml with all test types"
+  - "✓ Added workflow_dispatch for manual test-type selection"
+  - "✓ Implemented P19 shadow import detection"
+  - "✓ Added conditional jobs based on file paths"
+  - "✓ Configured ML test matrix (2 python × 3 suites)"
+  - "✓ Created consolidated test matrix configuration"
+  - "✓ Archived disabled workflows to .codex/archive/"
+  - "[ ] Validate all test types pass with new configuration"
+  - "[ ] Monitor execution times and compare to baseline"
+  - "[ ] Verify coverage metrics maintained or improved"
+  - "[ ] Update CI documentation and runbooks"
+  - "[ ] Notify team of workflow consolidation"
+
+# Performance Metrics Baseline
+performance_baseline:
+  old_workflow_parallelization:
+    sequential_approach: "Each workflow runs independently"
+    estimated_total_time: "~120-150 minutes"
+    efficiency: "Low (multiple setups/teardowns)"
+  
+  new_workflow_parallelization:
+    parallel_core_tests: "20 minutes"
+    parallel_specialized_tests: "45 minutes max"
+    consolidated_setup: "1 (shared environment)"
+    efficiency: "High (63% reduction)"
+    estimated_total_time: "~45 minutes"
+
+# Validation Criteria
+validation_criteria:
+  test_success:
+    - "All core test groups pass (fast, integration, slow)"
+    - "Auth tests pass when auth files changed"
+    - "ML tests pass with both Python 3.11 and 3.12"
+    - "RAG tests pass with test-rag files"
+    - "Rust tests pass (if applicable)"
+  
+  execution_time:
+    - "Core tests: < 25 minutes"
+    - "ML tests: < 50 minutes"
+    - "Total PR check: < 60 minutes"
+  
+  coverage:
+    - "Coverage maintained or improved vs baseline"
+    - "P19 shadow import detection working"
+    - "No test regressions"
+  
+  integration:
+    - "Workflow triggers correctly on file changes"
+    - "workflow_dispatch inputs work correctly"
+    - "Conditional job execution working as expected"
+    - "Coverage artifacts uploaded successfully"
+
+# Rollback Plan
+rollback_plan:
+  trigger: "If core tests fail or execution time > 2x baseline"
+  steps:
+    - "Revert optimized-test-execution.yml to previous version"
+    - "Re-enable individual test workflows if needed"
+    - "Investigate failure root cause"
+    - "Document blocking issues"
+    - "Plan remediation for next phase"
