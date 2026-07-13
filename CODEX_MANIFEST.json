@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-07-12T19:16:46Z",
+  "generated_at": "2026-07-13T09:15:13Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1995,7 +1995,7 @@
     },
     {
       "name": "self-healing",
-      "enforcement_tier": "SOFT",
+      "enforcement_tier": "GROUNDED",
       "has_concurrency": true
     },
     {
@@ -2548,5 +2548,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "dcbd31957f3550e9fddb2be470fc81321f10fa7a66cd005793965d454a5e406d"
+  "integrity_sha256": "ec62158bb204e5b42838bffd66d50056a9519f6a5b986cf31e0cbe9b183ce505"
 }
