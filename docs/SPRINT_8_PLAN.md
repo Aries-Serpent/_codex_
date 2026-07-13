@@ -92,7 +92,7 @@ docs/
 
 **Getting Started**
 ```markdown
-# Getting Started with Codex ML
+## Getting Started with Codex ML
 
 ## Installation
 

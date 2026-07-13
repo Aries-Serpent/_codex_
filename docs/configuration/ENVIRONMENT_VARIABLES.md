@@ -234,7 +234,7 @@ MCP_BACKEND=mock
 ```bash
 # Production requirements
 ENVIRONMENT=production
-DEBUG=False  # ⚠️ NEVER set to True in production
+DEBUG=False  # ️ NEVER set to True in production
 LOG_LEVEL=WARNING
 DATABASE_URL=******db.production.svc/codex
 MCP_BACKEND=pinecone

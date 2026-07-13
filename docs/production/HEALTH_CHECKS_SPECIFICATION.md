@@ -9,7 +9,7 @@
 
 ---
 
-## 📋 Overview
+##  Overview
 
 This document specifies all health check endpoints for production services, their SLAs, failure modes, and remediation procedures.
 
@@ -207,7 +207,7 @@ This document specifies all health check endpoints for production services, thei
 
 ---
 
-## 🔍 Dependency Health Checks
+##  Dependency Health Checks
 
 ### Database Health Check
 
@@ -315,7 +315,7 @@ def check_message_queue():
 
 ---
 
-## ⚠️ Health Check Failure Modes
+## ️ Health Check Failure Modes
 
 ### Scenario 1: Database Slow (Latency >5s)
 
@@ -409,7 +409,7 @@ def check_message_queue():
 
 ---
 
-## 📈 SLA Targets
+##  SLA Targets
 
 | Metric | Target | Threshold |
 |--------|--------|-----------|

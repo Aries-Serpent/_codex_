@@ -16,10 +16,10 @@
 3. [Detailed Findings — 8 Workflows](#3-detailed-findings)
    - 3.1 `iterative-self-healing-ci.yml`  CRITICAL
    - 3.2 `copilot-issue-triage.yml`  HIGH
-   - 3.3 `auto-fix-common-issues.yml` 🟡 MEDIUM
-   - 3.4 `auto-fix-pr-check.yml` 🟡 MEDIUM
-   - 3.5 `cost-gate.yml` 🟡 MEDIUM
-   - 3.6 `copilot-agent-checkin.yml` 🟡 MEDIUM
+   - 3.3 `auto-fix-common-issues.yml`  MEDIUM
+   - 3.4 `auto-fix-pr-check.yml`  MEDIUM
+   - 3.5 `cost-gate.yml`  MEDIUM
+   - 3.6 `copilot-agent-checkin.yml`  MEDIUM
    - 3.7 `pre-merge-validation.yml`  LOW (already safe)
    - 3.8 `resilient_validation.yml`  LOW (already safe)
 4. [Simultaneous-Trigger Matrix](#4-simultaneous-trigger-matrix)
@@ -206,7 +206,7 @@ await github.rest.issues.createComment({ ... body: triageBody });
 
 ---
 
-### 3.3 `auto-fix-common-issues.yml` 🟡 MEDIUM
+### 3.3 `auto-fix-common-issues.yml`  MEDIUM
 
 **Trigger:**
 ```yaml
@@ -234,7 +234,7 @@ on:
 
 ---
 
-### 3.4 `auto-fix-pr-check.yml` 🟡 MEDIUM
+### 3.4 `auto-fix-pr-check.yml`  MEDIUM
 
 **Trigger:**
 ```yaml
@@ -266,7 +266,7 @@ Both workflows fire on `push` to a PR matching `.github/workflows/*.yml`. When b
 
 ---
 
-### 3.5 `cost-gate.yml` 🟡 MEDIUM
+### 3.5 `cost-gate.yml`  MEDIUM
 
 **Trigger:** `workflow_call` (called by multiple workflows simultaneously in Cluster C-01)
 
@@ -300,7 +300,7 @@ The 4-attempt linear retry handles sequential retries within one run but cannot 
 
 ---
 
-## 3.6 `copilot-agent-checkin.yml` 🟡 MEDIUM
+## 3.6 `copilot-agent-checkin.yml`  MEDIUM
 
 **Trigger:**
 ```yaml
@@ -409,13 +409,13 @@ Event: push to 0D_base_ PR branch
 ─────────────────────────────────────────────────────────────────
 Workflow                       Trigger         Posts Comment?  Marker Type
 ─────────────────────────────────────────────────────────────────
-pre-merge-validation           pull_request    YES (rescue)    per-SHA ⚠️
-resilient_validation           pull_request    YES (rescue)    per-SHA ⚠️
-auto-fix-common-issues         pull_request    YES (rescue)    per-SHA ⚠️
-auto-fix-pr-check              pull_request    YES (rescue)    per-SHA ⚠️
-validate.yml                   pull_request    YES (rescue)    per-SHA ⚠️
+pre-merge-validation           pull_request    YES (rescue)    per-SHA ️
+resilient_validation           pull_request    YES (rescue)    per-SHA ️
+auto-fix-common-issues         pull_request    YES (rescue)    per-SHA ️
+auto-fix-pr-check              pull_request    YES (rescue)    per-SHA ️
+validate.yml                   pull_request    YES (rescue)    per-SHA ️
 agent-auth-delegation          pull_request    YES (checklist) per-PR 
-actionlint-audit               pull_request    YES (rescue)    per-SHA ⚠️
+actionlint-audit               pull_request    YES (rescue)    per-SHA ️
 reference-integrity            pull_request    YES (gate fail) no marker 
 ─────────────────────────────────────────────────────────────────
 THEN: iterative-self-healing-ci fires on EACH of the above failing
@@ -436,7 +436,7 @@ All workflows use the pattern: "search for existing marker → create if none �
 ### RCP-02 — SHA-based vs PR-based Marker Scope
 Markers scoped to `{sha_short}` accumulate one comment per commit push. After 10 pushes, a PR has 10 separate rescue threads. No single comment consolidates all CI health for the PR.
 
-**Fix:** Change all rescue markers from `<!-- ci-rescue-rca:{sha_short} -->` to `<!-- ci-rescue:{pr_number} -->`. New failures append a `### 🔄 Failure Update` section to the existing PR-level rescue comment.
+**Fix:** Change all rescue markers from `<!-- ci-rescue-rca:{sha_short} -->` to `<!-- ci-rescue:{pr_number} -->`. New failures append a `###  Failure Update` section to the existing PR-level rescue comment.
 
 ### RCP-03 — `[skip ci]` on Self-Healer Commits
 `branch-divergence-monitor.yml` auto-merge commits use `[skip ci]`. When the self-healer subsequently fixes a CI failure (e.g. REQ-4), it commits with `[skip ci]`, preventing CI re-run and leaving the original failure in permanent FAILED state.
@@ -515,4 +515,4 @@ grep -A3 'rescue-comment:' .github/workflows/validate.yml
 
 ---
 
-*Document generated S227 · 2026-03-29 · [🔗 PR #3790](https://github.com/Aries-Serpent/_codex_/pull/3790)*
+*Document generated S227 · 2026-03-29 · [ PR #3790](https://github.com/Aries-Serpent/_codex_/pull/3790)*

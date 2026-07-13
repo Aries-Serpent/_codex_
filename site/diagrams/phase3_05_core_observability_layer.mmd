@@ -1,0 +1,137 @@
+%% Core Observability Layer — Aries-Serpent/_codex_
+%% Phase 3.5 — Component Relationship Diagrams
+%% Logging, metrics, debugging, tracing
+%% Evidence: src/codex/logging/, .codex/aftermath/
+
+graph LR
+
+    %% ── Instrumentation ─────────────────────────────────────────────────────
+    subgraph INSTR ["📡 Instrumentation Points"]
+        LOG_CALLS["Log Function Calls\n(entry, exit)"]
+        LOG_DATA["Log Data Values\n(variables)"]
+        LOG_ERRORS["Log Errors\n(exception, traceback)"]
+        LOG_TIMING["Log Timing\n(duration, checkpoints)"]
+    end
+
+    %% ── Log Collection ──────────────────────────────────────────────────────
+    subgraph COLLECT ["🎯 Log Collection  •  SessionLogger"]
+        CONTEXT_ADD["Add Context\n(session_id, user)"]
+        STRUCTURE["Structure Logs\n(JSON schema)"]
+        ASYNC_WRITE["Async Write\n(non-blocking)"]
+    end
+
+    LOG_CALLS --> CONTEXT_ADD
+    LOG_DATA --> CONTEXT_ADD
+    LOG_ERRORS --> CONTEXT_ADD
+    LOG_TIMING --> CONTEXT_ADD
+    CONTEXT_ADD --> STRUCTURE
+    STRUCTURE --> ASYNC_WRITE
+
+    %% ── Storage Backends ────────────────────────────────────────────────────
+    subgraph STORAGE ["💾 Storage Backends"]
+        NDJSON_FILES["NDJSON Files\n(.codex/logs/)"]
+        SQLITE_DB["SQLite DB\n(CODEX_DB_PATH)"]
+        INDEX["Full-text Index\n(FTS5)"]
+    end
+
+    ASYNC_WRITE --> NDJSON_FILES
+    ASYNC_WRITE --> SQLITE_DB
+    SQLITE_DB --> INDEX
+
+    %% ── Metrics Extraction ──────────────────────────────────────────────────
+    subgraph METRICS ["📊 Metrics Extraction"]
+        PARSE_LOGS["Parse Logs\n(JSON → dict)"]
+        AGGREGATE_WINDOW["Aggregate by Window\n(1min, 1hour, 1day)"]
+        COMPUTE_STATS["Compute Stats\n(mean, p50, p95, p99)"]
+        STORE_METRICS["Store Metrics\n(time-series DB)"]
+    end
+
+    NDJSON_FILES --> PARSE_LOGS
+    PARSE_LOGS --> AGGREGATE_WINDOW
+    AGGREGATE_WINDOW --> COMPUTE_STATS
+    COMPUTE_STATS --> STORE_METRICS
+
+    %% ── Query & Analysis ────────────────────────────────────────────────────
+    subgraph QUERY ["🔍 Query & Analysis  •  viewer.py"]
+        SEARCH_LOGS["Full-text Search\n(keyword, regex)"]
+        TIME_FILTER["Time Filters\n(since, until)"]
+        AGGREGATE_QUERY["Aggregate Query\n(group by)"]
+        EXPORT["Export Results\n(JSON, CSV)"]
+    end
+
+    INDEX --> SEARCH_LOGS
+    STORE_METRICS --> TIME_FILTER
+    SEARCH_LOGS --> AGGREGATE_QUERY
+    AGGREGATE_QUERY --> EXPORT
+
+    %% ── Alerting System ─────────────────────────────────────────────────────
+    subgraph ALERT ["🚨 Alerting System"]
+        THRESHOLD_CHECK["Threshold Check\n(static, dynamic)"]
+        ANOMALY_DETECT["Anomaly Detection\n(z-score, isolation forest)"]
+        CLASSIFY_SEVERITY["Classify Severity\n(info, warn, crit)"]
+        ROUTE_ALERT["Route Alert\n(email, Slack, PagerDuty)"]
+    end
+
+    COMPUTE_STATS --> THRESHOLD_CHECK
+    COMPUTE_STATS --> ANOMALY_DETECT
+    THRESHOLD_CHECK --> CLASSIFY_SEVERITY
+    ANOMALY_DETECT --> CLASSIFY_SEVERITY
+    CLASSIFY_SEVERITY --> ROUTE_ALERT
+
+    %% ── Tracing ─────────────────────────────────────────────────────────────
+    subgraph TRACE ["🔗 Distributed Tracing"]
+        TRACE_ID["Trace ID\n(unique per request)"]
+        SPAN_ID["Span ID\n(per operation)"]
+        PARENT_CHILD["Parent-Child Links\n(call tree)"]
+        LATENCY_TRACK["Latency Tracking\n(operation duration)"]
+    end
+
+    CONTEXT_ADD --> TRACE_ID
+    TRACE_ID --> SPAN_ID
+    SPAN_ID --> PARENT_CHILD
+    PARENT_CHILD --> LATENCY_TRACK
+
+    %% ── Debugging ───────────────────────────────────────────────────────────
+    subgraph DEBUG ["🐛 Debugging"]
+        REPLAY_LOGS["Replay Logs\n(timeline view)"]
+        COMPARE_RUNS["Compare Runs\n(diff metrics)"]
+        CORRELATE["Correlate Events\n(find root cause)"]
+        BREAKPOINT["Interactive Breakpoint\n(pdb)"]
+    end
+
+    EXPORT --> REPLAY_LOGS
+    EXPORT --> COMPARE_RUNS
+    COMPARE_RUNS --> CORRELATE
+    CORRELATE --> BREAKPOINT
+
+    %% ── Dashboard ───────────────────────────────────────────────────────────
+    subgraph DASH ["📈 Dashboard"]
+        LOSS_CHART["Loss Chart\n(over time)"]
+        LATENCY_HISTO["Latency Histogram\n(p50, p95)"]
+        ERROR_RATE["Error Rate\n(% failures)"]
+        RESOURCE_GAUGE["Resource Gauge\n(GPU, memory)"]
+    end
+
+    STORE_METRICS --> LOSS_CHART
+    LATENCY_TRACK --> LATENCY_HISTO
+    CLASSIFY_SEVERITY --> ERROR_RATE
+    COMPUTE_STATS --> RESOURCE_GAUGE
+
+    %% ── Output ──────────────────────────────────────────────────────────────
+    REPLAY_LOGS --> OUTPUT["✅ Observability Ready"]
+    LOSS_CHART --> OUTPUT
+    LATENCY_HISTO --> OUTPUT
+    ERROR_RATE --> OUTPUT
+    ROUTE_ALERT --> OUTPUT
+
+    %% ── Styling ────────────────────────────────────────────────────────────
+    style INSTR fill:#16213e,color:#e0e0e0
+    style COLLECT fill:#0f3460,color:#e0e0e0
+    style STORAGE fill:#2d6a4f,color:#fff
+    style METRICS fill:#457b9d,color:#fff
+    style QUERY fill:#4a4e69,color:#fff
+    style ALERT fill:#e63946,color:#fff
+    style TRACE fill:#533483,color:#fff
+    style DEBUG fill:#665c84,color:#fff
+    style DASH fill:#1b4332,color:#fff
+    style OUTPUT fill:#1b4332,color:#fff

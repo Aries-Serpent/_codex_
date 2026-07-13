@@ -4,7 +4,7 @@
 
 ## Table of Contents
 
-- [📋 Table of Contents](#-table-of-contents)
+- [ Table of Contents](#-table-of-contents)
 - [Overview](#overview)
   - [What is MCP in the Context of _codex_?](#what-is-mcp-in-the-context-of-_codex_)
   - [Why MCP Enhances Copilot Agent](#why-mcp-enhances-copilot-agent)
@@ -67,25 +67,25 @@
   - [Support Channels](#support-channels)
 - [Appendix: Human Admin Actions Required](#appendix-human-admin-actions-required)
 - [ Mission Overview](#-mission-overview)
-- [⚖️ Verification Checklist](#-verification-checklist)
-- [📈 Success Metrics](#-success-metrics)
+- [️ Verification Checklist](#-verification-checklist)
+- [ Success Metrics](#-success-metrics)
 - [⚛️ Physics Alignment](#-physics-alignment)
-  - [Path 🛤️ (Context Delivery Optimization)](#path--context-delivery-optimization)
-  - [Fields 🔄 (Information Flow Architecture)](#fields--information-flow-architecture)
-  - [Patterns 👁️ (Integration Recognition)](#patterns--integration-recognition)
-  - [Redundancy 🔀 (Fault Tolerance)](#redundancy--fault-tolerance)
-  - [Balance ⚖️ (Context vs Token Limits)](#balance--context-vs-token-limits)
-- [⚡ Energy Distribution](#-energy-distribution)
+  - [Path ️ (Context Delivery Optimization)](#path--context-delivery-optimization)
+  - [Fields  (Information Flow Architecture)](#fields--information-flow-architecture)
+  - [Patterns ️ (Integration Recognition)](#patterns--integration-recognition)
+  - [Redundancy  (Fault Tolerance)](#redundancy--fault-tolerance)
+  - [Balance ️ (Context vs Token Limits)](#balance--context-vs-token-limits)
+- [ Energy Distribution](#-energy-distribution)
 - [ Redundancy Patterns](#-redundancy-patterns)
 
 > **Generated**: 2026-06-22 | **Author**: mbaetiong
 > **Repository**: `Aries-Serpent/_codex_` | **ID**: 1040037790
 > **Roles**: [Primary: DevOps Architect], [Secondary: Security Engineer]
-> **⚡ Energy**: 5/5 | ** Context**: Production-Ready Implementation
+> ** Energy**: 5/5 | ** Context**: Production-Ready Implementation
 
 ---
 
-## 📋 Table of Contents
+##  Table of Contents
 
 1. [Overview](#overview)
 2. <!-- BROKEN ANCHOR: [MCP Architecture in _codex_](#mcp-architecture-in-_codex_) -->
@@ -370,8 +370,8 @@ For full MCP functionality, the GitHub Personal Access Token needs:
 -  `workflow` - Workflow management
 -  `read:org` - Organization read access
 -  `write:discussion` - Discussion participation
-- ⚠️ `admin:repo_hook` - Webhook management (optional)
-- ⚠️ `delete:packages` - Package cleanup (optional)
+- ️ `admin:repo_hook` - Webhook management (optional)
+- ️ `delete:packages` - Package cleanup (optional)
 
 ### Security Best Practices
 
@@ -624,16 +624,16 @@ See [GITHUB_ENVIRONMENT_SETUP.md](./GITHUB_ENVIRONMENT_SETUP.md) for:
 
 **Objective**: Provide comprehensive guidance for integrating MCP (Model Context Protocol) with the _codex_ repository, enabling GitHub Copilot Agent to access curated codebase context, dependency manifests, and browser automation capabilities for enhanced code generation.
 
-**Energy Level**: ⚡⚡⚡⚡ (4/5) - Setup Critical
+**Energy Level**:  (4/5) - Setup Critical
 - High impact: Transforms Copilot Agent capabilities
 - High complexity: Multi-service integration (MCP + GitHub + Playwright + Pinecone)
 - Long-term value: Foundation for AI-driven development
 
-**Status**:  Documentation Complete | 🔄 Implementation Ready
+**Status**:  Documentation Complete |  Implementation Ready
 
 ---
 
-## ⚖️ Verification Checklist
+## ️ Verification Checklist
 
 **MCP Architecture Understanding**:
 - [ ] MCP service endpoints documented (7 endpoints)
@@ -661,7 +661,7 @@ See [GITHUB_ENVIRONMENT_SETUP.md](./GITHUB_ENVIRONMENT_SETUP.md) for:
 
 ---
 
-## 📈 Success Metrics
+##  Success Metrics
 
 | Metric | Target | Measurement |
 |--------|--------|-------------|
@@ -682,31 +682,31 @@ See [GITHUB_ENVIRONMENT_SETUP.md](./GITHUB_ENVIRONMENT_SETUP.md) for:
 
 ## ⚛️ Physics Alignment
 
-### Path 🛤️ (Context Delivery Optimization)
+### Path ️ (Context Delivery Optimization)
 - **Shortest Path**: Copilot Agent → MCP `/manifest` → Filtered context → Code generation
 - **Parallel Execution**: Cache warming + dependency indexing + browser pool warming (simultaneous)
 - **Lazy Loading**: Browser sessions created on-demand, not pre-allocated
 - **Compression**: Tree-sitter reduces context size by ~60%
 
-### Fields 🔄 (Information Flow Architecture)
+### Fields  (Information Flow Architecture)
 - **Request Flow**: GitHub Action → MCP HTTP → libcst Parser → Filtered Manifest → Copilot
 - **Cache Flow**: PyPI/npm → GitHub Actions Cache → MCP Service → Copilot Context
 - **Browser Flow**: Playwright Pool → Session Management → Screenshot/HAR → Test Generation
 - **Feedback Loop**: Context quality metrics → Filtering adjustments → Improved relevance
 
-### Patterns 👁️ (Integration Recognition)
+### Patterns ️ (Integration Recognition)
 - **Service Container Pattern**: Docker Compose → GitHub Actions Service → Ephemeral MCP
 - **Fallback Chain**: libcst (primary) → stdlib ast (fallback) → graceful degradation
 - **Token Management**: Encrypted master key → Base64 PAT → Decryption → Authentication
 - **Rate Limiting**: Token bucket → 60 req/min → Exponential backoff on 429
 
-### Redundancy 🔀 (Fault Tolerance)
+### Redundancy  (Fault Tolerance)
 - **Authentication Redundancy**: GitHub App (preferred) ↔ Personal Access Token (backup)
 - **Parser Redundancy**: libcst → ast → basic text extraction
 - **Cache Redundancy**: GitHub Actions Cache → GHCR images → Re-download fallback
 - **Endpoint Redundancy**: Direct HTTP → Service container → Localhost proxy
 
-### Balance ⚖️ (Context vs Token Limits)
+### Balance ️ (Context vs Token Limits)
 - **Completeness**: Full codebase indexing (comprehensive)
 - **Efficiency**: Smart filtering (relevant only)
 - **Trade-off**: 100K token budget ↔ LLM context window
@@ -714,7 +714,7 @@ See [GITHUB_ENVIRONMENT_SETUP.md](./GITHUB_ENVIRONMENT_SETUP.md) for:
 
 ---
 
-## ⚡ Energy Distribution
+##  Energy Distribution
 
 **P0 - Critical Setup (50%)**:
 - Environment variables configuration (13 variables)

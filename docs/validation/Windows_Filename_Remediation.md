@@ -3,7 +3,7 @@
 **Version:** v0.2.1
 
 > **Generated:** 2026-01-21 | **Author:** mbaetiong
->  **Roles:** [Primary: Platform Validator], [Secondary: CI Orchestrator] ⚡ **Energy:** 5
+>  **Roles:** [Primary: Platform Validator], [Secondary: CI Orchestrator]  **Energy:** 5
 
 ## Problem Statement
 
@@ -92,7 +92,7 @@ pre-commit run check-windows-filenames --all-files
 # Creates colons - fails on Windows
 timestamp = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
 filepath = Path(f"reports/status_{timestamp}.json")
-# Result: reports/status_2026-01-21T14:30:45Z.json ⚠️ INVALID ON WINDOWS
+# Result: reports/status_2026-01-21T14:30:45Z.json ️ INVALID ON WINDOWS
 ```
 
 ## After ( Safe)

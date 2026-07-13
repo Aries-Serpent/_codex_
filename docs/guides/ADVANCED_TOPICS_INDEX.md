@@ -241,7 +241,7 @@
 
 ---
 
-## 🔗 Quick Links
+##  Quick Links
 
 | Topic | Beginner | Intermediate | Advanced |
 |-------|----------|--------------|----------|
@@ -263,4 +263,4 @@
 
 ---
 
-**Want to contribute a guide? [Open an issue](https://github.com/Aries-Serpent/_codex_/issues/new?labels=documentation) 📝**
+**Want to contribute a guide? [Open an issue](https://github.com/Aries-Serpent/_codex_/issues/new?labels=documentation) **

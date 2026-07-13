@@ -14,8 +14,8 @@
 |---|---|---|---|---|
 | **repository** |  |  |  |  |
 | **Organization** |  |  |  |  |
-| **Environment** |  |  | ✗ | ✗ |
-| **User (Codespaces)** | ✗ |  | ✗ |  |
+| **Environment** |  |  |  |  |
+| **User (Codespaces)** |  |  |  |  |
 
 ---
 
@@ -260,7 +260,7 @@ gh variable list --env ENVIRONMENT_NAME --repo OWNER/REPO
 gh variable delete VAR_NAME --repo OWNER/REPO
 ```
 
-> ⚠️ **Note:** Codespaces and Dependabot scopes are **not** supported for `gh variable` — only for `gh secret`.
+> ️ **Note:** Codespaces and Dependabot scopes are **not** supported for `gh variable` — only for `gh secret`.
 
 ## 2c. Patterns Used in This repository
 
@@ -312,7 +312,7 @@ gh workflow run validate.yml --repo OWNER/REPO --ref BRANCH
 | `discussions` | GitHub Discussions read/write |  opt-in |
 | `notifications` | Notification management |  opt-in |
 
-### 3b. ⚠️ Critical Gap — Secrets/Variables CRUD not available via MCP
+### 3b. ️ Critical Gap — Secrets/Variables CRUD not available via MCP
 
 As of 2026-04-05, the GitHub MCP Server does **not** include tools to create, update, or delete Actions variables, Actions secrets, Dependabot secrets, or Codespaces secrets. Use the REST API or `gh` CLI for write operations on secrets and variables.
 

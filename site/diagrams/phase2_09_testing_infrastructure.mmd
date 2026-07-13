@@ -1,0 +1,132 @@
+%% Testing Infrastructure — Aries-Serpent/_codex_
+%% Phase 2.9 — Module Interaction Diagrams
+%% Test framework, runners, CI integration, and result collection
+%% Evidence: tests/, conftest.py, pytest.ini, .github/workflows/
+
+flowchart TD
+
+    %% ── Test Discovery ──────────────────────────────────────────────────────
+    subgraph DISCOVER ["🔍 Test Discovery  •  pytest"]
+        SCAN_TESTS["Scan Test Files\n(tests/**/*test*.py)"]
+        PARSE_MARKERS["Parse Markers\n(@pytest.mark.flaky)"]
+        COLLECT_TESTS["Collect Test Functions\n(test_* methods)"]
+        GROUP_TESTS["Group by Category\n(unit, integration, e2e)"]
+        
+        SCAN_TESTS --> PARSE_MARKERS
+        PARSE_MARKERS --> COLLECT_TESTS
+        COLLECT_TESTS --> GROUP_TESTS
+    end
+
+    %% ── Test Configuration ──────────────────────────────────────────────────
+    subgraph CONFIG ["⚙️  Configuration  •  pytest.ini, conftest.py"]
+        LOAD_CONFIG["Load pytest.ini\n(markers, plugins)"]
+        SETUP_FIXTURES["Setup Fixtures\n(session, module, function)"]
+        SETUP_DB["Setup Test DB\n(SQLite in-memory)"]
+        MOCK_EXTERNAL["Mock External\n(APIs, services)"]
+        
+        LOAD_CONFIG --> SETUP_FIXTURES
+        SETUP_FIXTURES --> SETUP_DB
+        SETUP_DB --> MOCK_EXTERNAL
+    end
+
+    GROUP_TESTS --> LOAD_CONFIG
+
+    %% ── Test Execution ──────────────────────────────────────────────────────
+    subgraph EXEC ["▶️  Test Execution"]
+        RUN_PARALLEL["Run in Parallel\n(pytest-xdist)"]
+        CAPTURE_OUTPUT["Capture Output\n(stdout, stderr)"]
+        MEASURE_TIME["Measure Execution Time\n(slow/fast)"]
+        DETECT_FLAKY["Detect Flakiness\n(retry if fail)"]
+        
+        RUN_PARALLEL --> CAPTURE_OUTPUT
+        CAPTURE_OUTPUT --> MEASURE_TIME
+        MEASURE_TIME --> DETECT_FLAKY
+    end
+
+    MOCK_EXTERNAL --> RUN_PARALLEL
+
+    %% ── Coverage Tracking ───────────────────────────────────────────────────
+    subgraph COVERAGE ["📊 Coverage Tracking  •  pytest-cov"]
+        INSTRUMENT["Instrument Code\n(coverage.py)"]
+        TRACK_LINES["Track Lines Hit\n(during execution)"]
+        TRACK_BRANCHES["Track Branches\n(if/else coverage)"]
+        CALC_PCT["Calculate Coverage %\n(line, branch)"]
+        
+        DETECT_FLAKY --> INSTRUMENT
+        INSTRUMENT --> TRACK_LINES
+        TRACK_LINES --> TRACK_BRANCHES
+        TRACK_BRANCHES --> CALC_PCT
+    end
+
+    %% ── Assertion & Validation ──────────────────────────────────────────────
+    subgraph ASSERT ["✓ Assertion & Validation"]
+        RUN_ASSERT["Run Assertions\n(assert statements)"]
+        COMPARE_VALUES["Compare Values\n(expected vs actual)"]
+        GENERATE_DIFF["Generate Diff\n(pretty print)"]
+        MARK_PASS_FAIL["Mark Test\n(PASS, FAIL, SKIP)"]
+        
+        RUN_ASSERT --> COMPARE_VALUES
+        COMPARE_VALUES --> GENERATE_DIFF
+        GENERATE_DIFF --> MARK_PASS_FAIL
+    end
+
+    RUN_PARALLEL --> RUN_ASSERT
+
+    %% ── Result Collection ───────────────────────────────────────────────────
+    subgraph RESULTS ["📋 Result Collection"]
+        COLLECT_RESULTS["Collect Test Results\n(JSON, XML)"]
+        EXTRACT_METRICS["Extract Metrics\n(pass rate, duration)"]
+        STORE_DB["Store in DB\n(SQLite test_results)"]
+        GENERATE_REPORT["Generate Report\n(HTML, text)"]
+        
+        MARK_PASS_FAIL --> COLLECT_RESULTS
+        CALC_PCT --> EXTRACT_METRICS
+        EXTRACT_METRICS --> STORE_DB
+        STORE_DB --> GENERATE_REPORT
+    end
+
+    %% ── CI Integration ──────────────────────────────────────────────────────
+    subgraph CI ["🔄 CI Integration  •  GitHub Actions"]
+        CI_TRIGGER["CI Trigger\n(push, PR)"]
+        RUN_MATRIX["Run Test Matrix\n(Python 3.10, 3.11, 3.12)"]
+        UPLOAD_COV["Upload Coverage\n(to Codecov)"]
+        POST_BADGE["Post Badge\n(coverage, passing)"]
+        
+        CI_TRIGGER --> RUN_MATRIX
+        UPLOAD_COV --> POST_BADGE
+    end
+
+    GENERATE_REPORT --> CI_TRIGGER
+    COLLECT_RESULTS --> RUN_MATRIX
+    CALC_PCT --> UPLOAD_COV
+
+    %% ── Analysis & Feedback ─────────────────────────────────────────────────
+    subgraph ANALYSIS ["📊 Analysis & Feedback"]
+        FIND_FLAKY_TESTS["Find Flaky Tests\n(high retry rate)"]
+        IDENTIFY_SLOW["Identify Slow Tests\n(> 5s)"]
+        COVERAGE_GAPS["Identify Coverage Gaps\n(untested code)"]
+        SUGGEST_FIX["Suggest Fixes\n(add tests)"]
+        
+        POST_BADGE --> FIND_FLAKY_TESTS
+        FIND_FLAKY_TESTS --> IDENTIFY_SLOW
+        IDENTIFY_SLOW --> COVERAGE_GAPS
+        COVERAGE_GAPS --> SUGGEST_FIX
+    end
+
+    %% ── Output ──────────────────────────────────────────────────────────────
+    SUGGEST_FIX --> OUTPUT{"All tests\npassed?"}
+    
+    OUTPUT -->|"✅"| SUCCESS["✅ CI Passed\n(ready for merge)"]
+    OUTPUT -->|"❌"| FAILURE["❌ CI Failed\n(fix required)"]
+
+    %% ── Styling ────────────────────────────────────────────────────────────
+    style DISCOVER fill:#16213e,color:#e0e0e0
+    style CONFIG fill:#0f3460,color:#e0e0e0
+    style EXEC fill:#4a4e69,color:#fff
+    style COVERAGE fill:#2d6a4f,color:#fff
+    style ASSERT fill:#533483,color:#fff
+    style RESULTS fill:#457b9d,color:#fff
+    style CI fill:#1b4332,color:#fff
+    style ANALYSIS fill:#665c84,color:#fff
+    style SUCCESS fill:#1b4332,color:#fff
+    style FAILURE fill:#e63946,color:#fff

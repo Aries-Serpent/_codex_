@@ -58,10 +58,10 @@ flowchart TD
 
     P1 --> MC["Resolve merge conflicts\nCODEX_MANIFEST.json timestamp divergence\n DONE — no conflict markers in working tree"]
     P1 --> EE["Fix CodeQL empty-except\nalerts 13377–13382\n6 locations in 4 test files\n DONE — explanatory comments added"]
-    P1 --> CQ["Verify GitHub Security tab\nall alerts 13330–13391\nshown as Closed / Fixed\n⏳ Awaiting next CodeQL re-scan"]
+    P1 --> CQ["Verify GitHub Security tab\nall alerts 13330–13391\nshown as Closed / Fixed\n Awaiting next CodeQL re-scan"]
     P1 --> RF["ruff check src/ tests/\n0 violations\n DONE — confirmed clean"]
     P1 --> SC["sync_tracked_files.py --check\nall hashes consistent\n DONE — all consistent"]
-    P1 --> P25["Pattern 25 — AGENT_ACCOUNTABILITY\nupdated in every commit\n DONE — entry 2026-05-06T01:46Z"]
+    P1 --> P25["Pattern 25 — AGENT_ACCOUNTABILITY\nupdated 2026-07-13
     P1 --> DD["Update session diagram\n+ roadmap docs\n DONE — comprehensive expansion"]
 
     MC & EE & CQ & RF & SC & P25 & DD --> MERGE_READY[" PR #4289\nReady for Merge Review"]
@@ -424,7 +424,7 @@ Agent authority transitions are modelled as **quantum phase transitions** — ab
 |--------|---------|------------|--------|---------|
 | `auto_fix --check-only` exit | `1` (116 issues) | **`0`**  | 0 forever | P1–P32 |
 | CodeQL open alerts | `68` | **`0`**  | 0 forever | SAST |
-| Merge Readiness Score | `78/100` | **`~95/100`** 🔄 | ≥ 95 | P30 |
+| Merge Readiness Score | `78/100` | **`~95/100`**  | ≥ 95 | P30 |
 | ruff violations `src/` | unknown | **`0`**  | 0 forever | P8 |
 | sync_tracked_files | stale | **consistent**  | always clean | P22 |
 | mypy error count | ~282 | ~282 | ≤ 215 | P15 |
@@ -496,7 +496,7 @@ The `-X ours` merge strategy applies zero energy to resolve — it selects the P
 |--------|---------|------------|------------|--------|
 | `auto_fix --check-only` exit | `1` (116 issues) | **`0`**  | **`0`**  | 0 always |
 | CodeQL open alerts | `68` | **`0`**  | **`0`**  | 0 always |
-| Merge Readiness Score | `78/100` | `~88/100` | **`~95/100`** 🔄 | ≥ 95 |
+| Merge Readiness Score | `78/100` | `~88/100` | **`~95/100`**  | ≥ 95 |
 | ruff violations `src/` | unknown | **`0`**  | **`0`**  | 0 always |
 | sync_tracked_files | stale | **consistent**  | **consistent**  | always |
 | Merge conflicts | 1 (CODEX_MANIFEST) | 1 remaining | **0**  | 0 always |
@@ -514,9 +514,9 @@ The `-X ours` merge strategy applies zero energy to resolve — it selects the P
 
 | Workflow | Guard Status Before | Guard Status After |
 |----------|--------------------|--------------------|
-| `codex-manifest-refresh.yml` | ⚠️ File-overlap only (missed non-touching PRs) |  Any open/draft PR → skip |
-| `codebase-health-sweep.yml` (main) | ⚠️ File-overlap only |  Any open/draft PR → skip |
-| `codebase-health-sweep.yml` (0D_base_) | ⚠️ File-overlap only |  Any open/draft PR → skip |
+| `codex-manifest-refresh.yml` | ️ File-overlap only (missed non-touching PRs) |  Any open/draft PR → skip |
+| `codebase-health-sweep.yml` (main) | ️ File-overlap only |  Any open/draft PR → skip |
+| `codebase-health-sweep.yml` (0D_base_) | ️ File-overlap only |  Any open/draft PR → skip |
 | `embedding-index-rebuild.yml` |  No guard |  Any open/draft PR → skip |
 | `model-drift-retrain.yml` |  No guard |  Any open/draft PR → skip |
 | `forward-sync-autogen.yml` |  No guard |  Any open/draft PR → skip |

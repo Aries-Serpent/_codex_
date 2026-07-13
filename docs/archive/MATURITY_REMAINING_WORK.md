@@ -39,7 +39,7 @@ All 5 capabilities addressed with 27 tests created (100% passing):
 
 ---
 
-## 📋 Remaining Work
+##  Remaining Work
 
 ### Phase 4: AST-Level Consistency (v1.6.x) - DEFERRED
 
@@ -389,13 +389,13 @@ The maturity improvement initiative has successfully addressed 75% of identified
  Phase 2.5 (status-reporting) - Already has some tests, just needs expansion  
 
 ### Medium Risk (Requires Implementation)
-⚠️ Phase 3.1 (inference-serving) - Requires FastAPI implementation  
-⚠️ Phase 3.2 (vector-stores) - may defer or implement stubs  
-⚠️ Phase 4 (AST consistency) - Requires standardization effort  
+️ Phase 3.1 (inference-serving) - Requires FastAPI implementation  
+️ Phase 3.2 (vector-stores) - may defer or implement stubs  
+️ Phase 4 (AST consistency) - Requires standardization effort  
 
 ### Decision Points
-❓ Phase 3.3 (duplication_ratio) - Defer vs. Implement decision needed  
-❓ Phase 3.2 (vector-stores) - Full implementation vs. enhanced stubs  
+ Phase 3.3 (duplication_ratio) - Defer vs. Implement decision needed  
+ Phase 3.2 (vector-stores) - Full implementation vs. enhanced stubs  
 
 ---
 

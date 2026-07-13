@@ -38,7 +38,7 @@
   - [9.1 Summary of Blockers](#91-summary-of-blockers)
   - [9.2 Final Recommendation](#92-final-recommendation)
 
-> **⚠️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
+> **️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 
 
 **Generated**: 2026-06-22  
@@ -400,10 +400,10 @@ If AST work must proceed despite recommendations, here's a **minimal viable scop
 -  Existing test infrastructure (98 tests from maturity work)
 
 **What Needs Improvement**:
-- ⚠️ No standardization across AST usage
-- ⚠️ No comprehensive error handling
-- ⚠️ No performance optimization
-- ⚠️ No integration between AST tools
+- ️ No standardization across AST usage
+- ️ No comprehensive error handling
+- ️ No performance optimization
+- ️ No integration between AST tools
 
 ---
 
@@ -412,14 +412,14 @@ If AST work must proceed despite recommendations, here's a **minimal viable scop
 **From ast_signature_similarity.py**:
 -  Counter-based node type analysis works well
 -  Cosine similarity is effective for duplication detection
-- ⚠️ Parse errors need better handling
-- ⚠️ Large files need streaming support
+- ️ Parse errors need better handling
+- ️ Large files need streaming support
 
 **From cli/ast_upgrade.py**:
 -  Tiered parser approach (ast → libcst → parso) is sound
 -  Error capture blocks improve resilience
-- ⚠️ Complex logic needs better testing
-- ⚠️ Documentation is insufficient for maintenance
+- ️ Complex logic needs better testing
+- ️ Documentation is insufficient for maintenance
 
 ---
 

@@ -88,27 +88,27 @@ Successfully implemented comprehensive CI/CD consistency checks for the Aries-Se
 
 **Example output:**
 ```
-🔍 Running Pre-Commit Consistency Checks
+ Running Pre-Commit Consistency Checks
 ════════════════════════════════════════════════════════════════════
 
 [1/5] Scanning for secrets...
-✓ No secrets detected
+ No secrets detected
 
 [2/5] Linting Markdown files...
-✓ Markdown linting passed (5 files)
+ Markdown linting passed (5 files)
 
 [3/5] Validating cross-references...
-✓ All cross-references valid
+ All cross-references valid
 
 [4/5] Checking Python files...
-✓ Black formatting OK (2 files)
-✓ Ruff linting OK
+ Black formatting OK (2 files)
+ Ruff linting OK
 
 [5/5] Validating YAML files...
-✓ YAML validation OK (3 files)
+ YAML validation OK (3 files)
 
 ════════════════════════════════════════════════════════════════════
-✓ All pre-commit checks passed!
+ All pre-commit checks passed!
 ```
 
 ### 4. GitHub Actions Workflow (`.github/workflows/consistency-checks.yml`)
@@ -185,15 +185,15 @@ Successfully implemented comprehensive CI/CD consistency checks for the Aries-Se
 
 Valid links:
 ```markdown
-[docs](docs/file.md)           # Relative
-[docs](/docs/file.md)          # Absolute
+[docs](./file.md)           # Relative
+[docs](./file.md)          # Absolute
 [section](#anchor)              # Anchor
 [external](https://github.com)  # External
 ```
 
 Invalid links (detected):
 ```markdown
-[missing](docs/nonexistent.md)  # File not found
+[missing](./nonexistent.md)  # File not found
 [bad-anchor](file.md#missing)   # Anchor missing
 ```
 
@@ -235,7 +235,7 @@ Tested scenarios:
 
 ## Installation Instructions
 
-### Quick Start (Recommended)
+## Quick Start (Recommended)
 
 ```bash
 # From repository root
@@ -354,8 +354,8 @@ Automatic on:
 
 ### Immediate Actions (Phase 6)
 1.  **Merge consistency check implementation** - COMPLETE
-2. ⏳ **Fix 929 broken cross-references** (separate task, not in scope)
-3. ⏳ **Document special cases** (archived files, dynamic links, etc.)
+2.  **Fix 929 broken cross-references** (separate task, not in scope)
+3.  **Document special cases** (archived files, dynamic links, etc.)
 
 ### Future Enhancements
 1. **Link health checks** - Periodic validation of external URLs

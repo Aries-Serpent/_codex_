@@ -20,7 +20,7 @@ PR #2827 security remediation is progressing well. **Phases 1-4 are complete** w
 
 ### Phase 5: CI/CD Improvements (High Priority)
 
-#### Task 5.1: Fix Rust Unit Test Failures ⚠️
+#### Task 5.1: Fix Rust Unit Test Failures ️
 **Status**: Needs investigation  
 **Command to run**:
 ```bash
@@ -47,7 +47,7 @@ fn process_data<'a>(data: &'a str) -> &'a str {
 let data = data.clone(); // Clone if needed
 ```
 
-#### Task 5.2: Optimize RAG Test Performance ⚠️
+#### Task 5.2: Optimize RAG Test Performance ️
 **Status**: Tests timing out after 4-6 minutes  
 **Files**: `tests/rag/` or related RAG modules
 

@@ -61,7 +61,7 @@ python -m codex.cli --help
 ### Purpose
 
 Codex is a Level 4 MLOps production system with:
-- **Audit Pipeline v1.5.5**: Deterministic capability tracking
+- **Audit Pipeline v0.2.1**: Deterministic capability tracking
 - **1,208+ tests**: Comprehensive test coverage
 - **693 documentation files**: Extensive documentation
 - **AI-First Design**: Built for AI Assistant/Agent intuitiveness

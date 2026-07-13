@@ -53,7 +53,7 @@
 | `ci-rescue` |  |  |  | N/A | PARTIAL | — |
 | `cleanup-stale-branches` |  |  |  | N/A | SOFT | — |
 | `cleanup-stale-pr-comments` |  |  |  | N/A | GROUNDED | — |
-| `code-quality-coverage-suite` |  |  |  | N/A | GROUNDED | ⚠️ Cross-branch diff without explicit base-ref fetch |
+| `code-quality-coverage-suite` |  |  |  | N/A | GROUNDED | ️ Cross-branch diff without explicit base-ref fetch |
 | `codebase-health-sweep` |  |  |  | N/A | PARTIAL | — |
 | `codeql-alert-fetcher` |  |  |  | N/A | PARTIAL | — |
 | `codeql-analysis` |  |  |  | N/A | SOFT | — |
@@ -84,7 +84,7 @@
 | `copilot-setup-steps` |  |  |  |  | PARTIAL | — |
 | `copilot-setup-validation` |  |  |  | N/A | GROUNDED | — |
 | `cost-gate` |  |  |  | N/A | PARTIAL | — |
-| `coverage-ratchet` |  |  |  | N/A | GROUNDED | ⚠️ Cross-branch diff without explicit base-ref fetch |
+| `coverage-ratchet` |  |  |  | N/A | GROUNDED | ️ Cross-branch diff without explicit base-ref fetch |
 | `coverage-with-timeout` |  |  |  | N/A | PARTIAL | — |
 | `create-sub-pr-to-0D_base_` |  |  |  | N/A | GROUNDED | — |
 | `d-capable-promotion-gate` |  |  |  | N/A | SOFT | — |
@@ -152,7 +152,7 @@
 | `pr-followup-generator` |  |  |  | N/A | GROUNDED | — |
 | `pr-size-analyzer` |  |  |  | N/A | SOFT | — |
 | `pre-flight-validation` |  |  |  | N/A | GROUNDED | — |
-| `pre-merge-validation` |  |  |  | N/A | GROUNDED | ⚠️ Cross-branch diff without explicit base-ref fetch |
+| `pre-merge-validation` |  |  |  | N/A | GROUNDED | ️ Cross-branch diff without explicit base-ref fetch |
 | `proactive-ci-monitor` |  |  |  | N/A | SOFT | — |
 | `process-variable-intents` |  |  |  | N/A | SOFT | — |
 | `progressive-validation` |  |  |  | N/A | GROUNDED | — |
@@ -172,7 +172,7 @@
 | `required-actions-enforcer` |  |  |  | N/A | PARTIAL | — |
 | `resilient_validation` |  |  |  |  | SOFT | — |
 | `restore-pipeline-ci` |  |  |  | N/A | GROUNDED | — |
-| `root-org-validation` |  |  |  | N/A | GROUNDED | ⚠️ Cross-branch diff without explicit base-ref fetch |
+| `root-org-validation` |  |  |  | N/A | GROUNDED | ️ Cross-branch diff without explicit base-ref fetch |
 | `runner-diagnostics` |  |  |  | N/A | GROUNDED | — |
 | `rust-error-validator-observation` |  |  |  | N/A | PARTIAL | — |
 | `rust_swarm_ci` |  |  |  | N/A | GROUNDED | — |
@@ -211,7 +211,7 @@
 | `validate-api-null-handling` |  |  |  | N/A | GROUNDED | — |
 | `validate-code-examples` |  |  |  | N/A | GROUNDED | — |
 | `validate-token-health` |  |  |  | N/A | GROUNDED | — |
-| `validate` |  |  |  | N/A | SOFT | ⚠️ Cross-branch diff without explicit base-ref fetch |
+| `validate` |  |  |  | N/A | SOFT | ️ Cross-branch diff without explicit base-ref fetch |
 | `vars-guide-sync` |  |  |  | N/A | GROUNDED | — |
 | `workflow-analytics-unified` |  |  |  | N/A | SOFT | — |
 | `workflow-compliance-gate` |  |  |  | N/A | GROUNDED | — |

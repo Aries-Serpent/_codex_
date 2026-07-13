@@ -72,7 +72,7 @@ flowchart TD
 
 5. Click **"Generate token"** — copy the token immediately (shown only once).
 
-> ⚠️ **Store the new token securely** in your password manager before proceeding.
+> ️ **Store the new token securely** in your password manager before proceeding.
 
 ---
 
@@ -143,7 +143,7 @@ Look for the ` Cognitive Pre-flight Check` job → step `Set repo variables via 
 
 ## § 5 — Revoke Old Token
 
-> ⚠️ **Only do this AFTER §4 passes.** Revoking before verification will break CI.
+> ️ **Only do this AFTER §4 passes.** Revoking before verification will break CI.
 
 1. Navigate to: `https://github.com/settings/tokens`
 2. Find the **old** `codex-master-key-YYYY-MM` token
@@ -188,7 +188,7 @@ If you believe the token was leaked (e.g., accidentally committed, exposed in lo
 
 ### `CODEX_MASTER_KEY not available` in CI
 
-**Symptom:** CI log shows `⚠️ CODEX_MASTER_KEY not available`  
+**Symptom:** CI log shows `️ CODEX_MASTER_KEY not available`  
 **Cause:** Secret was not saved, wrong repo, or expired  
 **Fix:**
 ```bash

@@ -20,13 +20,13 @@
   - [Pre-commit 3-4: Security Suite Consolidation](#pre-commit-3-4-security-suite-consolidation)
 - [Next Steps](#next-steps)
 - [Related Documents](#related-documents)
-- [Session Update: Workflow Portfolio Triage (2026-05-21)](#session-update-workflow-portfolio-triage-2026-05-21)
+- [Session Update: 2026-07-13](#session-update-workflow-portfolio-triage-2026-05-21)
 - [Session Actions Completed](#session-actions-completed)
 - [Full Archive Review Decision Matrix (41 Workflows)](#full-archive-review-decision-matrix-41-workflows)
   - [⛔ Orphan Stubs Created (3)](#-orphan-stubs-created-3)
   - [📦 Archived (2)](#-archived-2)
-  - [🔍 Dynamic / GitHub-Managed (7) — No file-level action possible](#-dynamic--github-managed-7--no-file-level-action-possible)
-  - [⚠️ Orphan-Equivalent Pending (3) — No backing file, not yet stubbed](#-orphan-equivalent-pending-3--no-backing-file-not-yet-stubbed)
+  - [ Dynamic / GitHub-Managed (7) — No file-level action possible](#-dynamic--github-managed-7--no-file-level-action-possible)
+  - [️ Orphan-Equivalent Pending (3) — No backing file, not yet stubbed](#-orphan-equivalent-pending-3--no-backing-file-not-yet-stubbed)
   - [ Keep Active (26)](#-keep-active-26)
 - [Phase 2 Consolidation Targets](#phase-2-consolidation-targets)
 - [Phase 3 Consolidation Decisions (2026-05-21)](#phase-3-consolidation-decisions-2026-05-21)
@@ -233,7 +233,7 @@ jobs:
 
 ---
 
-# Session Update: Workflow Portfolio Triage (2026-05-21)
+# Session Update: 2026-07-13
 
 > **Session:** Workflow Portfolio Triage (PR copilot/review-and-assess-workflows)
 > **Scope:** 41 Archive Review + 3 Orphan workflows → explicit disposition
@@ -265,7 +265,7 @@ jobs:
 | 225897127 | `test-analytics-failure-sim.yml` | Auto-generated test simulator; intentionally fails; no production CI path uses it. |
 | 223032333 | `self-healing.yml` | Pure dispatch shim for `iterative-self-healing-ci.yml`; file header said "Manual trigger alias". |
 
-### 🔍 Dynamic / GitHub-Managed (7) — No file-level action possible
+###  Dynamic / GitHub-Managed (7) — No file-level action possible
 
 | Workflow ID | Name | Notes |
 |---|---|---|
@@ -277,7 +277,7 @@ jobs:
 | 198731352 | Dependabot Updates | Core GitHub dependency management. Keep. |
 | 223327346 | Dependency Graph | Core security feature. Keep. |
 
-### ⚠️ Orphan-Equivalent Pending (3) — No backing file, not yet stubbed
+### ️ Orphan-Equivalent Pending (3) — No backing file, not yet stubbed
 
 | Workflow ID | File | Action Needed |
 |---|---|---|
@@ -289,10 +289,10 @@ jobs:
 
 | Workflow ID | Name | File | Keep Reason |
 |---|---|---|---|
-| 256293350 | ⚡ Fast-Forward Safe Files to Main | `fast-forward-safe-files.yml` | Critical agent utility for PR → main file promotion. |
-| 249744244 | 📋 Post Accountability Report | `post-accountability-to-discussion.yml` | Audit trail + cognitive brain feed. |
-| 249908045 | 🔀 Create Sub-PR | `create-sub-pr-to-0D_base_.yml` | Core branch-management in session pipeline. |
-| 256293349 | 🔄 Doc Refresh Gate (AAIS) | `doc-refresh-gate.yml` | AAIS doc governance gate. |
+| 256293350 |  Fast-Forward Safe Files to Main | `fast-forward-safe-files.yml` | Critical agent utility for PR → main file promotion. |
+| 249744244 |  Post Accountability Report | `post-accountability-to-discussion.yml` | Audit trail + cognitive brain feed. |
+| 249908045 |  Create Sub-PR | `create-sub-pr-to-0D_base_.yml` | Core branch-management in session pipeline. |
+| 256293349 |  Doc Refresh Gate (AAIS) | `doc-refresh-gate.yml` | AAIS doc governance gate. |
 | 251020901 |  Post CI Status to Discussions | `post-ci-status-to-discussion.yml` | PRIORITY 0 cognitive brain feed. |
 | 249908046 |  Promote Integration Branch | `promote-integration-branch.yml` | Gated `0D_base_` → `main` promotion. |
 | 239988735 | 🚿 Flush Queued Runs | `flush-queued-runs.yml` | CI queue management during high-volume sessions. |
@@ -324,9 +324,9 @@ jobs:
 | Cluster | Merge Path | Priority | Est. Savings | Status |
 |---|---|---|---|---|
 | Orphan-equivalent stubs | `copilot-automation.yml`, `maturity-check.yml`, `benchmarks.yml` |  Quick | 3 stubs |  Done (2026-05-21) |
-| Security SAST | `semgrep_sarif.yml` → absorbed by `security-scanning-suite.yml` | 🟡 Medium | −1 workflow |  Done (2026-05-21) |
-| Discussion poster pair | `post-accountability` and `post-ci-status` — kept separate (distinct auth chains, incompatible job logic) | 🟡 Medium | −0 workflows |  Resolved: KEEP (2026-05-21) |
-| Validation cluster | `optimized-ci.yml`, `pre-flight-validation.yml`, `mypy-baseline.yml` — kept separate (incompatible triggers) | 🟡 Medium | −0 workflows |  Resolved: KEEP (2026-05-21) |
+| Security SAST | `semgrep_sarif.yml` → absorbed by `security-scanning-suite.yml` |  Medium | −1 workflow |  Done (2026-05-21) |
+| Discussion poster pair | `post-accountability` and `post-ci-status` — kept separate (distinct auth chains, incompatible job logic) |  Medium | −0 workflows |  Resolved: KEEP (2026-05-21) |
+| Validation cluster | `optimized-ci.yml`, `pre-flight-validation.yml`, `mypy-baseline.yml` — kept separate (incompatible triggers) |  Medium | −0 workflows |  Resolved: KEEP (2026-05-21) |
 
 ---
 
@@ -444,7 +444,7 @@ trigger definition.
 | ⛔ Semgrep stub (Phase 3, consolidated) | 1 |
 | 📦 Archived (Phase 1) | 2 |
 | 📦 Archived (Phase 3, semgrep source) | 1 |
-| 🔍 Dynamic/GitHub-managed | 7 |
+|  Dynamic/GitHub-managed | 7 |
 | **Total** | **117** |
 
 > Note: Active-keep count rose because discussion poster pair (2) and validation cluster (3)

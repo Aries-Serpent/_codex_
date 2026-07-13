@@ -22,11 +22,11 @@ tokenizer = get_tokenizer("hf", name_or_path="sshleifer/tiny-gpt2")
 
 ```toml
 [project.entry-points."codex_ml.models"]
-awesome = "my_pkg.models:build_model"
+ = "my_pkg.models:build_model"
 ```text
 2. Ensure `build_model(cfg: dict) -> nn.Module` returns an instantiated model.
 3. Distribute the package (wheel, editable install, etc.).
-4. Codex will discover it on demand: `codex_ml.registry.get_model("awesome", cfg)`.
+4. Codex will discover it on demand: `codex_ml.registry.get_model("", cfg)`.
 
 See [`examples/plugins`](../examples/plugins) for toy implementations.
 

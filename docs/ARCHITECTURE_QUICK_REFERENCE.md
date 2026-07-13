@@ -70,7 +70,7 @@ _codex_/
 
 ---
 
-## 🔄 Data Flow
+##  Data Flow
 
 ```
 Config (YAML) → Hydra → Framework
@@ -154,7 +154,7 @@ Load Balancer
 
 ---
 
-## 📈 Scalability Design
+##  Scalability Design
 
 ### Horizontal Scaling
 - Stateless API servers
@@ -170,7 +170,7 @@ Load Balancer
 
 ---
 
-## 🔗 Key Documentation
+##  Key Documentation
 
 ### Architecture & Design
 - **[Consolidated Architecture](./architecture/ARCHITECTURE_CONSOLIDATED.md)** - Complete reference
@@ -224,7 +224,7 @@ Load Balancer
 
 ---
 
-## 🔍 Finding More Information
+##  Finding More Information
 
 | Need | Resource |
 |------|----------|
@@ -237,7 +237,7 @@ Load Balancer
 
 ---
 
-##  Quick Start Links
+## Quick Start Links
 
 - **Setup**: [Installation Guide](./setup/)
 - **Configuration**: [Quick Start](./configuration/hydra_quickstart.md)

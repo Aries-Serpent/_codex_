@@ -24,10 +24,10 @@
 
 | Plan | Status | Owner | Target |
 |------|--------|-------|--------|
-| Coverage Improvement Roadmap | 🟡 In Progress | QA | Q3 2026 |
-| MSP Audit Gap Remediation | 🟡 In Progress | Compliance | Q2 2026 |
-| Copilot Workflow Agent | 🟡 In Progress | AI/Agents | Q3 2026 |
-| Operational Runbook | 🟡 In Progress | Ops | Q2 2026 |
+| Coverage Improvement Roadmap |  In Progress | QA | Q3 2026 |
+| MSP Audit Gap Remediation |  In Progress | Compliance | Q2 2026 |
+| Copilot Workflow Agent |  In Progress | AI/Agents | Q3 2026 |
+| Operational Runbook |  In Progress | Ops | Q2 2026 |
 
 ### Recent Plans
 
@@ -97,7 +97,7 @@ docs/plans/
 
 ---
 
-## 📋 Full Plan Index
+##  Full Plan Index
 
 ### Coverage & Quality
 - `COVERAGE_IMPROVEMENT_ROADMAP.md` - Test coverage roadmap
@@ -183,15 +183,15 @@ Example: Link to `./plans/archive/PHASE_1_PLAN.md`
 |----------|-------|--------|
 | Active Plans | ~60 |  Current |
 | Archived Plans | ~33 |  Complete |
-| Phases | 5+ | 🟡 In Progress |
-| Infrastructure | 3 | 🟡 Active |
-| Compliance | 2 | 🟡 Active |
-| AI/Agents | 5+ | 🟡 Active |
-| **Total** | **93+** | **📋 Organized** |
+| Phases | 5+ |  In Progress |
+| Infrastructure | 3 |  Active |
+| Compliance | 2 |  Active |
+| AI/Agents | 5+ |  Active |
+| **Total** | **93+** | ** Organized** |
 
 ---
 
-## 🔗 Related Documentation
+##  Related Documentation
 
 - **[docs/archive/](../archive/)** - Archived documentation
 - **[docs/](../)** - Main documentation hub
@@ -210,7 +210,7 @@ Example: Link to `./plans/archive/PHASE_1_PLAN.md`
 
 ---
 
-## 🔄 Plan Lifecycle
+##  Plan Lifecycle
 
 ```
 Create → Active → In Progress → Complete → Archive
@@ -226,7 +226,7 @@ Create → Active → In Progress → Complete → Archive
 
 ---
 
-## 📝 Contributing
+##  Contributing
 
 When adding or updating plans:
 1. Use clear, descriptive titles

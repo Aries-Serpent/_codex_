@@ -31,7 +31,7 @@ This document provides a comprehensive assessment of CODEX's MLOps maturity usin
 -  Centralized model registry (MLflow)
 -  Model versioning and lineage
 -  Metadata tracking
-- ⚠️ Basic model monitoring
+- ️ Basic model monitoring
 -  Manual deployment approval
 
 ### Level 3: Automated Model Deployment
@@ -40,15 +40,15 @@ This document provides a comprehensive assessment of CODEX's MLOps maturity usin
 -  A/B testing infrastructure
 -  Model performance monitoring
 -  Rollback capabilities
-- ⚠️ Manual production promotion
-- ⚠️ Basic drift detection
+- ️ Manual production promotion
+- ️ Basic drift detection
 
 ### Level 4: Full MLOps Automation
-- ⚠️ Automated model retraining (in development)
+- ️ Automated model retraining (in development)
 -  Feature store (5 backends: InMemory/SQLite/Redis/DuckDB + Arrow IPC — SAR-G02 97/100)
-- ⚠️ Advanced drift detection (in development)
+- ️ Advanced drift detection (in development)
 -  Continuous model evaluation
-- ⚠️ Automated production promotion with governance
+- ️ Automated production promotion with governance
 -  Federated learning (future consideration)
 
 ---
@@ -90,7 +90,7 @@ This document provides a comprehensive assessment of CODEX's MLOps maturity usin
 
 ---
 
-### ⚠️ Gaps to Level 4 (In Progress)
+### ️ Gaps to Level 4 (In Progress)
 
 #### 1. Feature Store  RESOLVED (SAR-G02 97/100 — W-142)
 **Current State**: 5 production-grade backends implemented in `src/codex_ml/features/feast_compat.py`
@@ -173,8 +173,8 @@ in `.devcontainer/devcontainer.json`. Per-feature spans with `drift.type`, `drif
 ### Current Performance (2026-03-06 — W-139)
 - **Deployment Frequency**: 20 deployments/month  (target: 20)
 - **Lead Time (code → production)**: 2 iterations  (target: 1)
-- **Model Accuracy Drift**: 2.1% avg degradation/month ⚠️ (target: <1%)
-- **Incident Response Time**: 30 min ⚠️ (target: 15 min — self-healing CI active)
+- **Model Accuracy Drift**: 2.1% avg degradation/month ️ (target: <1%)
+- **Incident Response Time**: 30 min ️ (target: 15 min — self-healing CI active)
 - **Automated vs Manual Deployments**: 85% automated  (target: 95%)
 
 ### Level 4 Targets (Phase 4 (2026))

@@ -1,17 +1,17 @@
-# [Wave 3]: Split-Brain Convergence & Canonical Imports (v1.2.9)
+# [Wave 3]: Split-Brain Convergence & Canonical Imports (v0.2.1)
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
 > Generated: 2026-06-22 | Author: mbaetiong
 
- Roles: [Audit Orchestrator], [Capability Cartographer] ⚡ Energy: 5  
-⚛️ Physics: Path🛤️ Fields🔄 Patterns👁️ Redundancy🔀 Balance⚖️
+ Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5  
+⚛️ Physics: Path️ Fields Patterns️ Redundancy Balance️
 
 ---
 
 ## Executive Summary
 
-**Issue**: Split-brain architecture discovered across root `training/`, `tokenization/` and `src/training/`, `src/tokenization/` led to broken refactors in v1.2.8. Refactored imports targeting `src.*` modules that didn't exist caused potential runtime failures.
+**Issue**: Split-brain architecture discovered across root `training/`, `tokenization/` and `src/training/`, `src/tokenization/` led to broken refactors in v0.2.1. Refactored imports targeting `src.*` modules that didn't exist caused potential runtime failures.
 
 **Action**: Introduce canonical `src.*` import shims that forward to legacy modules to preserve runtime while enabling continued migration toward consolidated architecture.
 
@@ -21,9 +21,9 @@
 
 ## Background: The Split-Brain Architecture
 
-### Discovery (v1.2.8 Post-Refactor Analysis)
+### Discovery (v0.2.1 Post-Refactor Analysis)
 
-During v1.2.8 refactoring (99 → 42 legacy imports, 57.6% reduction), code review identified:
+During v0.2.1 refactoring (99 → 42 legacy imports, 57.6% reduction), code review identified:
 
 1. **Root `training/` contains**:
    - `engine_hf_trainer.py` 
@@ -58,7 +58,7 @@ Refactoring changed imports from `training.engine_hf_trainer` to `src.training.e
 | C | Revert refactors; keep root as canonical | Medium/High (rework) | Contradicts convergence plan | Rejected |
 
 **Rationale for Option A**:
-- Preserves v1.2.8 refactoring work (57 occurrences eliminated)
+- Preserves v0.2.1 refactoring work (57 occurrences eliminated)
 - No runtime breakage (shims bridge the gap)
 - Clear path to full consolidation (move + remove shims)
 - Maintains momentum toward 99% readiness
@@ -173,17 +173,17 @@ pytest -q tests/validation/test_import_shims.py tests/validation/
 - [ ] Wave3 convergence document complete
 - [ ] Convergence plan aligns to Option A timeline
 - [ ] Rollback procedures documented
-- [ ] Next iteration prompt generated (v1.3.0)
+- [ ] Next iteration prompt generated (v0.2.1)
 
 ---
 
 ## Impact on Production Readiness
 
-### Before (v1.2.8)
+### Before (v0.2.1)
 - **75% ready**: Infrastructure complete, refactoring done but broken
 - **Blocker**: Runtime import failures expected
 
-### After (v1.2.9)
+### After (v0.2.1)
 - **≥85% ready**: Shims resolve imports, system operational
 - **Path to 99%**: Clear roadmap via file consolidation
 
@@ -195,7 +195,7 @@ pytest -q tests/validation/test_import_shims.py tests/validation/
 
 ---
 
-## Next Steps (v1.3.0)
+## Next Steps (v0.2.1)
 
 ### Phase 1: File Consolidation (Optional)
 
@@ -234,7 +234,7 @@ After confirming all imports work:
 | Shim import failures | Low | High | Comprehensive tests added |
 | Circular imports | Low | Medium | Shims use runtime import_module |
 | Performance degradation | Very Low | Low | Module caching prevents overhead |
-| Confusion about canonical path | Medium | Low | Documentation clearly states src.* is canonical |
+| Confusion about canonical path | Medium | Low | Documentation states src.* is canonical |
 
 ---
 
@@ -286,17 +286,17 @@ from src.training.engine_hf_trainer import run_hf_trainer
 
 ## Conclusion
 
-Wave 3 successfully resolves the split-brain architecture issue identified in v1.2.8 through canonical `src.*` import shims. This approach:
--  Preserves all v1.2.8 refactoring work
+Wave 3 successfully resolves the split-brain architecture issue identified in v0.2.1 through canonical `src.*` import shims. This approach:
+-  Preserves all v0.2.1 refactoring work
 -  Eliminates runtime import failures
 -  Maintains clear path to full consolidation
 -  Raises production readiness to ≥85%
 
-The system is now operational with a safe, documented path to 99% readiness through optional file consolidation in v1.3.0.
+The system is now operational with a safe, documented path to 99% readiness through optional file consolidation in v0.2.1.
 
 ---
 
 **Document Version**: 1.0  
 **Status**: Active  
-**Next Review**: After v1.3.0 file consolidation  
+**Next Review**: After v0.2.1 file consolidation  
 **Maintainer**: @mbaetiong

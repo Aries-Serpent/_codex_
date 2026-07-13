@@ -9,7 +9,7 @@
 
 ##  Quick Navigation
 
-### Getting Started
+## Getting Started
 - **[HYDRA_GUIDE.md](HYDRA_GUIDE.md)** - Comprehensive Hydra configuration guide
 - **[Quick Start](hydra_quickstart.md)** - 5-minute quick start
 - **[INDEX.md](INDEX.md)** - Complete configuration index
@@ -59,7 +59,7 @@ This directory contains **all configuration-related documentation** for the Arie
 
 ---
 
-## ⚠️ Consolidation Notice
+## ️ Consolidation Notice
 
 **Files consolidated from**:
 - ~~`docs/config/`~~ → Redirects to this directory
@@ -70,7 +70,7 @@ This directory contains **all configuration-related documentation** for the Arie
 
 ---
 
-## 🔍 Finding What You Need
+##  Finding What You Need
 
 ### By Topic
 
@@ -91,12 +91,12 @@ This directory contains **all configuration-related documentation** for the Arie
 2. Read [HYDRA_GUIDE.md](HYDRA_GUIDE.md)
 3. Check [CONFIG_USAGE.md](CONFIG_USAGE.md)
 
-**👨‍💼 Migrating**
+**👨‍ Migrating**
 1. Read [MIGRATION_MAPPING.md](MIGRATION_MAPPING.md)
 2. Follow [HYDRA_MIGRATION_GUIDE.md](HYDRA_MIGRATION_GUIDE.md)
 3. Verify with [TROUBLESHOOTING.md](TROUBLESHOOTING.md)
 
-**🔧 Troubleshooting**
+** Troubleshooting**
 1. Check [TROUBLESHOOTING.md](TROUBLESHOOTING.md)
 2. Review [CONFIG_USAGE.md](CONFIG_USAGE.md)
 3. See [HYDRA_GUIDE.md](HYDRA_GUIDE.md) for details
@@ -120,7 +120,7 @@ This directory contains **all configuration-related documentation** for the Arie
 
 ---
 
-## 🔗 Related Documentation
+##  Related Documentation
 
 - **[docs/](../)** - Main documentation directory
 - **[docs/dev/](../dev/)** - Development documentation
@@ -129,7 +129,7 @@ This directory contains **all configuration-related documentation** for the Arie
 
 ---
 
-## 📝 Contributing
+##  Contributing
 
 When adding new configuration documentation:
 

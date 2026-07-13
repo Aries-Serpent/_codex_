@@ -45,7 +45,7 @@ all_names = get_all_stable_names()
 
 # Check if a name is stable
 if is_stable_name("metrics", "token_accuracy"):
-    print("✓ Stable metric name")
+    print(" Stable metric name")
 
 # Get description for a stable name
 desc = get_description("metrics", "f1")
@@ -89,7 +89,7 @@ item = registry.get("my_component")
 
 # Check membership
 if "my_component" in registry:
-    print("✓ Component registered")
+    print(" Component registered")
 ```
 
 **Key guarantees:**

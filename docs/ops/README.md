@@ -64,7 +64,7 @@ docs/ops/
 
 ---
 
-##  Quick Start
+## Quick Start
 
 1. **First Time?** → Read Daily Checks
 2. **Incident?** → Check Incident Response
@@ -73,7 +73,7 @@ docs/ops/
 
 ---
 
-## 🔗 Related Documentation
+##  Related Documentation
 
 - **[docs/operations/](../operations/)** - Broader operations documentation
 - **[docs/monitoring/](../monitoring/)** - Monitoring setup

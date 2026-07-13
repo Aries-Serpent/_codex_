@@ -3,7 +3,7 @@
 **Version:** v0.2.1
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
- Roles: [Primary: Author Quickstart Curator], [Secondary: Reviewer] ⚡ Energy: 5
+ Roles: [Primary: Author Quickstart Curator], [Secondary: Reviewer]  Energy: 5
 
 Goal
 - Produce a daily, schema‑valid status in under 10 minutes.

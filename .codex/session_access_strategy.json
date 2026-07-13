@@ -1,18 +1,20 @@
 {
-  "generated_at": "2026-07-13T02:47:41.633929+00:00",
+  "generated_at": "2026-07-13T02:13:46.644415+00:00",
   "methods": [
     "rest",
     "graphql",
     "gh_cli"
   ],
   "rest_available": true,
-  "rest_remaining": 4999,
+  "rest_remaining": 4968,
   "graphql_available": true,
-  "graphql_remaining": 4979,
+  "graphql_remaining": 4983,
   "gh_cli_available": true,
   "codeql_available": false,
-  "best_token_var": "CODEX_MASTER_KEY",
-  "open_prs": [],
-  "branch": "copilot/multi-lane-agent-orchestration",
+  "best_token_var": "GITHUB_TOKEN",
+  "open_prs": [
+    5300
+  ],
+  "branch": "copilot/site-first-documentation-initiative",
   "recommendation": "Use REST for data fetches. "
 }

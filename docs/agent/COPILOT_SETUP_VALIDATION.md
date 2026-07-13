@@ -161,14 +161,14 @@ python scripts/ci/validate_copilot_setup_steps.py | grep "YAML"
 -  LFS configuration (verify not corrupted)
 
 **Thresholds:**
-- ⚠️ Warning: 750+ lines (might indicate bloat)
+- ️ Warning: 750+ lines (might indicate bloat)
 -  Failure: 1000+ lines (too large, merge blocked)
 -  Acceptable: 640-700 lines (±5% tolerance)
 
 **Complexity baseline:**
 - 2 jobs (expected)
 - 27 steps (expected)
-- ⚠️ Warning if >30 steps (might indicate bloat)
+- ️ Warning if >30 steps (might indicate bloat)
 -  Failure if >50 steps (too complex)
 
 **Failure actions:** BLOCKS MERGE if >1000 lines; WARNING if >750 lines
@@ -282,11 +282,11 @@ After all tests complete, the workflow posts a summary comment on the PR:
 
 ### Merge Gates
 -  All automated tests pass
-- ⏳ All 3 CCA variables present (validated by tests)
-- ⏳ All 5 dependent workflows validate (validated by tests)
+-  All 3 CCA variables present (validated by tests)
+-  All 5 dependent workflows validate (validated by tests)
 -  Security/secrets tests pass
-- ⏳ File size within acceptable range (validated by tests)
-- ⏳ At least 1 human reviewer approval
+-  File size within acceptable range (validated by tests)
+-  At least 1 human reviewer approval
 ```
 
 ## Understanding Results
@@ -342,7 +342,7 @@ Summary: 13/14 passed
 Non-critical tests failed. Example output:
 
 ```
-🟡 1 WARNING(S) — Review recommended
+ 1 WARNING(S) — Review recommended
    - File Size Regression: File larger than warning threshold: 825 lines
 ```
 

@@ -13,7 +13,7 @@
 - [PowerShell — set for current session](#powershell--set-for-current-session)
 - [3. TPU —  Not Available](#3-tpu---not-available)
   - [4. Distributed / Multi-GPU Training —  Not Available](#4-distributed--multi-gpu-training---not-available)
-  - [5. Mixed Precision / Quantization —  / ⚠️](#5-mixed-precision--quantization----)
+  - [5. Mixed Precision / Quantization —  / ️](#5-mixed-precision--quantization----)
   - [6. Windows OS Compatibility](#6-windows-os-compatibility)
     - [6a. Shell Scripts —  Not Directly Runnable](#6a-shell-scripts---not-directly-runnable)
     - [6b. POSIX-Only Python APIs](#6b-posix-only-python-apis)
@@ -55,7 +55,7 @@
 ## Capability Assessment
 
 The sections below catalogue every codebase feature against this machine.
-Each item is rated ** Works** · **⚠️ Degraded** · ** Will Not Work**.
+Each item is rated ** Works** · **️ Degraded** · ** Will Not Work**.
 
 ---
 
@@ -84,8 +84,8 @@ graphics does **not** expose a CUDA interface.
 | `nvidia-*` Python wheels (nvidia-cublas, etc.) |  Not installed | `CODEX_ABORT_ON_GPU_PULL=1` prevents accidental pull |
 | `triton` JIT kernels |  Will Not Work | Triton requires CUDA; CPU-only builds have no Triton |
 | `torch.compile` with Triton/Inductor backend |  Will Not Work | Falls back to eager mode |
-| `pin_memory=True` in DataLoaders | ⚠️ No-op | `torch.cuda.is_available()` is `False`; code auto-disables |
-| CUDA-guarded tests (`@skip_if_no_cuda`) | ⚠️ Skipped | 147+ tests will be skipped, not failed — correct behaviour |
+| `pin_memory=True` in DataLoaders | ️ No-op | `torch.cuda.is_available()` is `False`; code auto-disables |
+| CUDA-guarded tests (`@skip_if_no_cuda`) | ️ Skipped | 147+ tests will be skipped, not failed — correct behaviour |
 
 **Mitigation already in codebase:**  
 Set `CODEX_FORCE_CPU=1` in your environment. The training stack checks
@@ -130,11 +130,11 @@ runtime. Ensure these tests remain stub-only or are skipped under
 | `DistributedDataParallel` (DDP) |  Will Not Work | Requires multiple CUDA devices |
 | FSDP (`src/codex_ml/training/fsdp_wrapper.py`) |  Will Not Work | Requires CUDA; `FSDP = None` fallback activates |
 | Multi-node orchestration (`multi_node_orchestration.py`) |  Will Not Work | Requires cluster GPUs + NCCL |
-| `gloo` backend (CPU distributed) | ⚠️ Degraded | Usable for local multi-process CPU experiments only; not for production training |
+| `gloo` backend (CPU distributed) | ️ Degraded | Usable for local multi-process CPU experiments only; not for production training |
 
 ---
 
-### 5. Mixed Precision / Quantization —  / ⚠️
+### 5. Mixed Precision / Quantization —  / ️
 
 | Feature | Status | Notes |
 |---------|--------|-------|
@@ -156,11 +156,11 @@ setup scripts, pre-commit hooks). None run natively in CMD or PowerShell.
 
 | Script area | Status | Workaround |
 |-------------|--------|-----------|
-| `.github/scripts/*.sh`, `.github/workflows` | ⚠️ CI-only | Run in GitHub Actions (Linux runners) |
-| `docker/entrypoint.sh`, `docker/ci_run.sh` | ⚠️ Docker | Run inside Docker container |
-| `deploy/setup_universal.sh` | ⚠️ Linux | Use WSL 2 or Docker |
+| `.github/scripts/*.sh`, `.github/workflows` | ️ CI-only | Run in GitHub Actions (Linux runners) |
+| `docker/entrypoint.sh`, `docker/ci_run.sh` | ️ Docker | Run inside Docker container |
+| `deploy/setup_universal.sh` | ️ Linux | Use WSL 2 or Docker |
 | `scripts/gpu/check_gpu.sh` |  N/A | No NVIDIA GPU; skip |
-| `.pre-commit-scripts/*.sh` | ⚠️ WSL/Git Bash | Install Git for Windows (provides bash) or WSL 2 |
+| `.pre-commit-scripts/*.sh` | ️ WSL/Git Bash | Install Git for Windows (provides bash) or WSL 2 |
 
 **Recommended fix:** Install **WSL 2** (Windows Subsystem for Linux) or run all
 shell-dependent operations inside Docker.
@@ -169,11 +169,11 @@ shell-dependent operations inside Docker.
 
 | Module / API | Status | Notes |
 |-------------|--------|-------|
-| `fcntl` (file locking) | ⚠️ Gracefully degraded | `training/data_utils.py` and `src/training/data_utils.py` catch `ImportError` and fall back to unlocked write — safe for single-process use |
+| `fcntl` (file locking) | ️ Gracefully degraded | `training/data_utils.py` and `src/training/data_utils.py` catch `ImportError` and fall back to unlocked write — safe for single-process use |
 | `src/bridge_manager.py:17 import fcntl` |  Fixed (S92) | Wrapped in `try/except ImportError`; `BridgeLock.acquire()` returns `True` (no-op) on Windows — safe for single-process use |
 | `resource` module (`RLIMIT_*`) |  Fixed (S92) | `src/codex_ml/safety/sandbox.py` now guards `import resource` with `try/except ImportError`; `_limits()` is a no-op when `_HAS_RESOURCE=False` |
 | `signal.SIGHUP` |  Not on Windows | `tests/cli/test_cli_edge_cases_phase26.py` skips when SIGHUP unavailable |
-| `os.symlink` (checkpoint best-symlink) | ⚠️ Requires admin | `training/checkpoint_manager.py` uses `os.symlink`; Windows requires Developer Mode or elevated prompt |
+| `os.symlink` (checkpoint best-symlink) | ️ Requires admin | `training/checkpoint_manager.py` uses `os.symlink`; Windows requires Developer Mode or elevated prompt |
 | `psutil` |  Works | Cross-platform; available for Windows |
 
 #### 6c. PyTorch on Windows
@@ -182,8 +182,8 @@ shell-dependent operations inside Docker.
 |------|--------|-------|
 | `torch` CPU-only wheel |  Works | Use `--extra-index-url https://download.pytorch.org/whl/cpu` |
 | `torch` with CUDA on Windows |  N/A | No NVIDIA GPU |
-| `torch` extras marked `platform_system != 'Windows'` | ⚠️ Skipped by pip | Three optional dependency groups exclude Windows — this is intentional |
-| `DataLoader num_workers > 0` | ⚠️ Requires guard | On Windows, multiprocessing DataLoaders require `if __name__ == "__main__"` guard; tests using `num_workers=4` may hang without it |
+| `torch` extras marked `platform_system != 'Windows'` | ️ Skipped by pip | Three optional dependency groups exclude Windows — this is intentional |
+| `DataLoader num_workers > 0` | ️ Requires guard | On Windows, multiprocessing DataLoaders require `if __name__ == "__main__"` guard; tests using `num_workers=4` may hang without it |
 
 #### 6d. File Paths
 
@@ -204,10 +204,10 @@ Windows uses backslashes and has reserved filenames (`CON`, `PRN`, `AUX`, `NUL`,
 |----------|--------|-------|
 | Unit / integration tests |  Works | Baseline tests use < 2 GB |
 | Small model fine-tuning (< 1 B params, CPU) |  Works | `sshleifer/tiny-gpt2` and stub models fit easily |
-| Medium model inference (7 B params, CPU) | ⚠️ Degraded | 7 B model in `fp32` needs ~28 GB; **exceeds 16 GB RAM** — use quantized or smaller models |
+| Medium model inference (7 B params, CPU) | ️ Degraded | 7 B model in `fp32` needs ~28 GB; **exceeds 16 GB RAM** — use quantized or smaller models |
 | Large model training (≥ 1 B params) |  Will Not Work | OOM; requires GPU VRAM or machine with ≥ 32 GB RAM |
-| RAG with large embedding indexes (FAISS) | ⚠️ Degraded | Large corpora may exhaust RAM; limit index size |
-| `pin_memory=True` DataLoader | ⚠️ No-op | Silently disabled when CUDA unavailable |
+| RAG with large embedding indexes (FAISS) | ️ Degraded | Large corpora may exhaust RAM; limit index size |
+| `pin_memory=True` DataLoader | ️ No-op | Silently disabled when CUDA unavailable |
 
 **Recommendation:** For local development, use `sshleifer/tiny-gpt2` or other
 sub-125 M parameter stubs. Set `CODEX_FORCE_CPU=1` and avoid loading production
@@ -221,9 +221,9 @@ model weights locally.
 |------|---------------|--------|
 | Repository + Python venv | ~2–4 GB |  Fine |
 | PyTorch CPU wheel | ~200 MB |  Fine |
-| Transformers model cache (one 7B model) | ~14 GB | ⚠️ Cumulative risk |
-| FAISS index for large corpus | 1–10 GB | ⚠️ Monitor |
-| Full HuggingFace model cache (several models) | 30–100 GB | ⚠️ Set `HF_HOME` to a managed path |
+| Transformers model cache (one 7B model) | ~14 GB | ️ Cumulative risk |
+| FAISS index for large corpus | 1–10 GB | ️ Monitor |
+| Full HuggingFace model cache (several models) | 30–100 GB | ️ Set `HF_HOME` to a managed path |
 | CI artifact history | Managed by GitHub |  Not local |
 
 **Recommendation:** Set `HF_HOME` and `TRANSFORMERS_CACHE` to a dedicated
@@ -239,11 +239,11 @@ life and responsiveness, not sustained compute throughput.
 | Task | Status | Notes |
 |------|--------|-------|
 | Running Python tests |  Works | Fast for unit tests; slow tests may take longer than on desktop |
-| CPU training (small models, dev loops) | ⚠️ Degraded | Training throughput is roughly 10–50× slower than a GPU workstation |
+| CPU training (small models, dev loops) | ️ Degraded | Training throughput is roughly 10–50× slower than a GPU workstation |
 | Inference with small models |  Works | Acceptable latency for < 125 M param models |
 | `torch.compile` (eager fallback) |  Works | Torch compile falls back to eager without Triton |
-| Parallelism — `num_workers` > 0 in DataLoader | ⚠️ Limited | 12 logical cores; cap `num_workers` at 4–6 to avoid thermal throttling |
-| Long nox / pytest sessions | ⚠️ Thermal throttle risk | The 135U will throttle under sustained load; use test selection (`-k`) to keep sessions short |
+| Parallelism — `num_workers` > 0 in DataLoader | ️ Limited | 12 logical cores; cap `num_workers` at 4–6 to avoid thermal throttling |
+| Long nox / pytest sessions | ️ Thermal throttle risk | The 135U will throttle under sustained load; use test selection (`-k`) to keep sessions short |
 
 ---
 

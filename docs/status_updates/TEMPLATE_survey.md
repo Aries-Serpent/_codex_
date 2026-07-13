@@ -32,7 +32,7 @@ This survey collects:
 - Evaluation surfaces + CLI UX affordances
 - Docs promises vs. assets (deployment, quickstart, gates)
 
-**Requested refs:** Clearly label each file as `<path>@<ref>` and keep code/text readable.
+**Requested refs:** label each file as `<path>@<ref>` and keep code/text readable.
 
 ---
 

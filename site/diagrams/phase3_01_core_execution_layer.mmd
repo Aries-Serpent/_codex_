@@ -1,0 +1,168 @@
+%% Core Execution Layer — Aries-Serpent/_codex_
+%% Phase 3.1 — Component Relationship Diagrams
+%% CLI, entry points, orchestration, and dispatch
+%% Evidence: src/cli.py, src/codex_ml/cli/, scripts/, orchestrator-agent
+
+graph TB
+
+    %% ── Entry Points ────────────────────────────────────────────────────────
+    subgraph ENTRY ["🖥️  Entry Points"]
+        CLI_MAIN["codex CLI\n(src/codex_ml/cli/codex_cli.py)"]
+        CLI_INGEST["python -m codex.cli\n(ingestion pipeline)"]
+        CLI_QO["python -m codex.quantum_orchestrator.cli\n(QO interface)"]
+        CLI_SRC["python src/cli.py\n(training bootstrap)"]
+    end
+
+    %% ── CLI Processing ──────────────────────────────────────────────────────
+    subgraph CLI_PROC ["⚙️  CLI Processing"]
+        PARSE_ARGS["Parse Arguments\n(argparse, click)"]
+        LOAD_CONFIG["Load Configuration\n(Hydra)"]
+        RESOLVE_PATHS["Resolve Paths\n(absolute, relative)"]
+        VALIDATE_INPUTS["Validate Inputs\n(type, range, required)"]
+    end
+
+    CLI_MAIN --> PARSE_ARGS
+    CLI_INGEST --> PARSE_ARGS
+    CLI_QO --> PARSE_ARGS
+    CLI_SRC --> PARSE_ARGS
+    PARSE_ARGS --> LOAD_CONFIG
+    LOAD_CONFIG --> RESOLVE_PATHS
+    RESOLVE_PATHS --> VALIDATE_INPUTS
+
+    %% ── Orchestration Hub ───────────────────────────────────────────────────
+    subgraph ORCHESTR ["🎯 Orchestration Hub  •  orchestrator-agent"]
+        DISPATCH["Dispatch Logic\n(route to handler)"]
+        SELECT_HANDLER["Select Handler\n(training, inference, mgmt)"]
+        BUILD_CONTEXT["Build Execution Context\n(env, config, session)"]
+        SPAWN_AGENT["Spawn Agent Task\n(create subprocess)"]
+    end
+
+    VALIDATE_INPUTS --> DISPATCH
+    DISPATCH --> SELECT_HANDLER
+    SELECT_HANDLER --> BUILD_CONTEXT
+    BUILD_CONTEXT --> SPAWN_AGENT
+
+    %% ── Execution Handlers ──────────────────────────────────────────────────
+    subgraph HANDLERS ["🚀 Execution Handlers"]
+        TRAIN_HANDLER["Training Handler\n(ml-training workflow)"]
+        INFER_HANDLER["Inference Handler\n(query → agent → response)"]
+        EVAL_HANDLER["Evaluation Handler\n(benchmark models)"]
+        MGMT_HANDLER["Management Handler\n(config, registry, skill)"]
+    end
+
+    SELECT_HANDLER --> TRAIN_HANDLER
+    SELECT_HANDLER --> INFER_HANDLER
+    SELECT_HANDLER --> EVAL_HANDLER
+    SELECT_HANDLER --> MGMT_HANDLER
+
+    %% ── Training Pipeline Dispatch ──────────────────────────────────────────
+    subgraph TRAIN_DISPATCH ["📚 Training Dispatch"]
+        TRAIN_PRE["Pre-training Setup\n(data, model, optimizer)"]
+        TRAIN_MAIN["Main Training Loop\n(unified_trainer.py)"]
+        TRAIN_POST["Post-training\n(eval, export, log)"]
+        TRAIN_PRE --> TRAIN_MAIN
+        TRAIN_MAIN --> TRAIN_POST
+    end
+
+    TRAIN_HANDLER --> TRAIN_PRE
+
+    %% ── Inference Pipeline Dispatch ────────────────────────────────────────
+    subgraph INFER_DISPATCH ["💭 Inference Dispatch"]
+        INFER_ROUTE["Route to Agent\n(orchestrator)")
+        INFER_EXEC["Execute Agent\n(OODA cycle)"]
+        INFER_RESP["Format Response\n(to user)"]
+        INFER_ROUTE --> INFER_EXEC
+        INFER_EXEC --> INFER_RESP
+    end
+
+    INFER_HANDLER --> INFER_ROUTE
+
+    %% ── Evaluation Dispatch ─────────────────────────────────────────────────
+    subgraph EVAL_DISPATCH ["📊 Evaluation Dispatch"]
+        EVAL_LOAD["Load Models\n(checkpoints)"]
+        EVAL_BENCH["Run Benchmarks\n(perplexity, speed)"]
+        EVAL_COMPARE["Compare Results\n(rank models)"]
+        EVAL_LOAD --> EVAL_BENCH
+        EVAL_BENCH --> EVAL_COMPARE
+    end
+
+    EVAL_HANDLER --> EVAL_LOAD
+
+    %% ── Management Dispatch ─────────────────────────────────────────────────
+    subgraph MGMT_DISPATCH ["⚙️  Management Dispatch"]
+        MGMT_CONFIG["Manage Config\n(save, load, override)"]
+        MGMT_REGISTRY["Manage Registry\n(agents, skills, models)"]
+        MGMT_CACHE["Manage Cache\n(clear, stats)"]
+        MGMT_CONFIG --> MGMT_REGISTRY
+        MGMT_REGISTRY --> MGMT_CACHE
+    end
+
+    MGMT_HANDLER --> MGMT_CONFIG
+
+    %% ── Execution Environment ───────────────────────────────────────────────
+    subgraph ENV ["🌍 Execution Environment"]
+        SESSION_CTX["Session Context\n(user, session_id, timestamp)"]
+        DEVICE_SEL["Device Selection\n(GPU/CPU)"]
+        RESOURCE_ALLOC["Resource Allocation\n(memory, threads)"]
+        SIGNAL_HANDLER["Signal Handling\n(SIGINT, SIGTERM)"]
+    end
+
+    BUILD_CONTEXT --> SESSION_CTX
+    BUILD_CONTEXT --> DEVICE_SEL
+    BUILD_CONTEXT --> RESOURCE_ALLOC
+    BUILD_CONTEXT --> SIGNAL_HANDLER
+
+    %% ── Concurrent Task Management ──────────────────────────────────────────
+    subgraph TASK_MGMT ["🔄 Task Management"]
+        ASYNC_TASKS["Async Tasks\n(queue, executor)"]
+        MONITOR_TASKS["Monitor Tasks\n(progress, timeout)"]
+        COLLECT_RESULTS["Collect Results\n(merge outputs)"]
+        ASYNC_TASKS --> MONITOR_TASKS
+        MONITOR_TASKS --> COLLECT_RESULTS
+    end
+
+    SPAWN_AGENT --> ASYNC_TASKS
+
+    %% ── Output & Cleanup ────────────────────────────────────────────────────
+    subgraph OUTPUT ["📤 Output & Cleanup"]
+        LOG_RESULT["Log Result\n(telemetry)"]
+        SAVE_ARTIFACT["Save Artifact\n(checkpoint, report)"]
+        CLEANUP_TEMP["Cleanup Temp\n(files, memory)"]
+        RETURN_CODE["Return Exit Code\n(0=success)"]
+    end
+
+    COLLECT_RESULTS --> LOG_RESULT
+    TRAIN_POST --> LOG_RESULT
+    INFER_RESP --> LOG_RESULT
+    EVAL_COMPARE --> LOG_RESULT
+    MGMT_CACHE --> LOG_RESULT
+    LOG_RESULT --> SAVE_ARTIFACT
+    SAVE_ARTIFACT --> CLEANUP_TEMP
+    CLEANUP_TEMP --> RETURN_CODE
+
+    %% ── Error Handling ──────────────────────────────────────────────────────
+    subgraph ERROR_HANDLE ["🚨 Error Handling"]
+        CATCH_ERR["Catch Exception\n(all handlers)"]
+        LOG_ERR["Log Error\n(structured)"]
+        ROLLBACK["Rollback State\n(if needed)"]
+        EXIT_CODE["Exit Code\n(non-zero)"]
+    end
+
+    RETURN_CODE -.->|"on error"| CATCH_ERR
+    CATCH_ERR --> LOG_ERR
+    LOG_ERR --> ROLLBACK
+    ROLLBACK --> EXIT_CODE
+
+    %% ── Styling ────────────────────────────────────────────────────────────
+    style ENTRY fill:#16213e,color:#e0e0e0
+    style CLI_PROC fill:#0f3460,color:#e0e0e0
+    style ORCHESTR fill:#533483,color:#fff
+    style HANDLERS fill:#4a4e69,color:#fff
+    style TRAIN_DISPATCH fill:#1b4332,color:#fff
+    style INFER_DISPATCH fill:#2d6a4f,color:#fff
+    style EVAL_DISPATCH fill:#457b9d,color:#fff
+    style MGMT_DISPATCH fill:#665c84,color:#fff
+    style ENV fill:#2d6a4f,color:#fff
+    style TASK_MGMT fill:#457b9d,color:#fff
+    style OUTPUT fill:#1b4332,color:#fff
+    style ERROR_HANDLE fill:#e63946,color:#fff

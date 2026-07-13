@@ -211,7 +211,7 @@ Resume from NEXT_CURSOR:INV_SRC_DIRECTORY and continue repository inventory
 Before emitting a continuation footer:
 
 - [ ] Cursor is unique and descriptive
-- [ ] NEXT_STEPS clearly describes remaining work
+- [ ] NEXT_STEPS describes remaining work
 - [ ] Current chunk ends at a logical boundary
 - [ ] Next chunk can start cleanly from cursor
 - [ ] Total chunks estimate is reasonable

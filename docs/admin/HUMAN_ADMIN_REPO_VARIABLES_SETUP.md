@@ -16,8 +16,8 @@ This guide contains **every action needed to implement the repository variable r
 from PR #3483. Each section has:
 
 - ☐ checkboxes to track completion
-- 📋 copy-paste ready code blocks
-- 🔗 direct URLs — no searching required
+-  copy-paste ready code blocks
+-  direct URLs — no searching required
 - 👆 exact click-by-click steps
 
 **Total variables to create: 13**  
@@ -340,7 +340,7 @@ E
 > **Purpose:** Runtime cap on agent autonomy tier. `E` = advisory only (current safe default).
 > Change to `D` only after `e-to-d-transition-gate.yml` confirms 5/5 conditions AND you have
 > reviewed the E→D Transition Map.  
-> ⚠️ **Do not set to `D` without explicit owner review.**
+> ️ **Do not set to `D` without explicit owner review.**
 
 ---
 
@@ -453,7 +453,7 @@ false
 
 > **Purpose:** Gates `scripts/ci/auto_promote_tier.py`. Start at `false` — automation will
 > not promote agent tiers autonomously.  
-> ⚠️ **Only set to `true` after thorough validation of the promotion script logic.**
+> ️ **Only set to `true` after thorough validation of the promotion script logic.**
 
 ---
 

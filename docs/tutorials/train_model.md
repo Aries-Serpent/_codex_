@@ -1,4 +1,4 @@
-# Tutorial: training a Codex model offline
+## Guide: training a Codex model offline
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 

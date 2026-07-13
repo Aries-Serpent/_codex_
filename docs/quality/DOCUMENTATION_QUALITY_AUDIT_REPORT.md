@@ -123,7 +123,7 @@ Undocumented Items: 3190
 Total Estimated Effort:       286.8 hours
 Weeks at 20hrs/week:           14.3 phases
 
-⚠️  Phase 5 (8 phases) may be tight. Consider 14 phases or prioritization.
+️  Phase 5 (8 phases) may be tight. Consider 14 phases or prioritization.
 
 ================================================================================
 END OF REPORT

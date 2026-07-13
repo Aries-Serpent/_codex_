@@ -150,7 +150,7 @@ The Makefile enforces `requirements/lock.txt` for reproducible installs.
 
 ---
 
-### [G] Tokenization CLI: Explicit Offline-first Flags ⚠️
+### [G] Tokenization CLI: Explicit Offline-first Flags ️
 
 **Status**: Partially implemented  
 **Location**: `src/codex_ml/tokenization/cli.py`
@@ -188,7 +188,7 @@ FROM python:3.11-slim AS builder
 6. **Docker best practices**: Digest-pin documented
 7. **NDJSON metrics**: Default sink configured
 
-### ⚠️ Pending Validations
+### ️ Pending Validations
 
 1. **Tokenization roundtrip test**: Test file path from patchset needs verification
 2. **No CI YAML touched**: Confirmed - no workflow files modified

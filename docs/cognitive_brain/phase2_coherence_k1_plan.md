@@ -205,7 +205,7 @@ Average approximation error: ±0.03 (well within acceptable bounds).
 
 ---
 
-## ⚡ Phase 2B: k₁ Process Factor Optimization (1,573 → 0.32)
+##  Phase 2B: k₁ Process Factor Optimization (1,573 → 0.32)
 
 ### The k₁ Metric
 

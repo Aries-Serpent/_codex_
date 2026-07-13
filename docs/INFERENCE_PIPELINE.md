@@ -1,4 +1,4 @@
-# Deterministic Inference Pipeline (v1.0.0)
+# Deterministic Inference Pipeline (v0.2.1)
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 

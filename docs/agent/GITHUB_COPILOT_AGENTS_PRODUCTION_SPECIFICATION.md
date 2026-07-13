@@ -1,4 +1,6 @@
 # GitHub Copilot Agents - Production Specification
+
+**Version**: v0.2.1
 **Last Updated:** 2026-07-11
 
 **Last Updated: 2026-06-22
@@ -782,15 +784,15 @@ echo "Testing agents..."
 
 # Test Auth Manager
 python .github/agents/github-auth-manager/agent.py --dry-run
-echo "✓ Auth Manager"
+echo " Auth Manager"
 
 # Test Security Enforcer
 python .github/agents/github-security-enforcer/agent.py --dry-run
-echo "✓ Security Enforcer"
+echo " Security Enforcer"
 
 # Test Workflow Optimizer
 python .github/agents/github-workflow-optimizer/agent.py --dry-run
-echo "✓ Workflow Optimizer"
+echo " Workflow Optimizer"
 
 echo "All agents tested successfully!"
 ```
@@ -900,7 +902,7 @@ jobs:
             github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: '⚠️ Agent Health Check Failed',
+              title: '️ Agent Health Check Failed',
               body: 'One or more agents are unhealthy. See logs for details.',
               labels: ['alert', 'agents', 'monitoring']
             });
@@ -1024,9 +1026,9 @@ gh auth status
 | Auth Manager | 1 |  Active | `auth-token-rotation.yml` | README |
 | Security Enforcer | 1 |  Active | `auth-security-audit.yml` | README |
 | Workflow Optimizer | 1 |  Active | (manual) | README |
-| Code Reviewer | 2 | 🔄 Proposed | N/A | TBD |
-| Test Orchestrator | 1 | 🔄 Proposed | N/A | TBD |
-| Deployment Gatekeeper | 1 | 🔄 Proposed | N/A | TBD |
+| Code Reviewer | 2 |  Proposed | N/A | TBD |
+| Test Orchestrator | 1 |  Proposed | N/A | TBD |
+| Deployment Gatekeeper | 1 |  Proposed | N/A | TBD |
 
 ### Version History
 

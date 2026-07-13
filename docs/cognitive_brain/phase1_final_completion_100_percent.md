@@ -42,7 +42,7 @@ Average Time:             0.51ms
 
 ---
 
-## 🔧 Key Fixes Applied
+##  Key Fixes Applied
 
 ### Pattern E (6 failures → 0)
 1. **PII reject logic**: Simplified to match ground truth exactly (`pii >= 3 OR risk == "high" → REJECT`)
@@ -88,7 +88,7 @@ Average Time:             0.51ms
 
 ---
 
-## 📈 Journey Summary
+##  Journey Summary
 
 | Stage | Accuracy | Failures | Improvement |
 |-------|----------|----------|-------------|

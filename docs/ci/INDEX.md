@@ -6,7 +6,7 @@
 
 Comprehensive CI/CD failure analysis, fixes, and validation reports.
 
-## 🚨 CI Rescue Pipeline (Golden Path)
+##  CI Rescue Pipeline (Golden Path)
 - **[CI Rescue Pipeline](CI_RESCUE_PIPELINE.md)** — Complete golden-path documentation: how workflow failures automatically trigger Copilot sessions, with Mermaid flowcharts, sequence diagrams, deduplication state machine, anti-pattern maps, and component responsibility matrix. Captured from PR #3818 session S244.
 
 ## Failure Analysis & Fixes

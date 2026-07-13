@@ -29,16 +29,16 @@
 | **Navigation** |  COMPLETE | All pages accessible via nav |
 | **cognitive_app** |  LIVE | vite bumped 7.2.6→7.3.2 + esbuild 0.25.12→0.27.7 (PR #3901/S304) |
 | **README.md conflict** |  FIXED | `exclude_docs: README.md _config.yml _layouts/` in mkdocs.yml |
-| **MkDocs Warnings** | ⚠️ 1 REMAINING | Mermaid CDN URL check (network-only, non-blocking) |
+| **MkDocs Warnings** | ️ 1 REMAINING | Mermaid CDN URL check (network-only, non-blocking) |
 | **Search** |  ENABLED | Search with suggestions |
 | **Code Blocks** |  ENHANCED | Copy button enabled |
 | **Markdown Extensions** |  FULL | Mermaid, tabs, task lists |
-| **Link Validation** | 🔄 AUTOMATED | Pre-merge + scheduled checks |
+| **Link Validation** |  AUTOMATED | Pre-merge + scheduled checks |
 | **Auto-Remediation** |  ENABLED | Issues/PRs created automatically |
 | **yamllint gate** |  FIXED | `[colons]` error-level violations removed from `auto-approve-workflows.yml` (S304) |
 | **sync-tracked-files** |  FIXED | `.secrets.baseline` CODEX_MANIFEST entry re-synced (S304) |
 
-## 📋 Recent Validation (2026-04-06T20:18Z)
+##  Recent Validation (2026-04-06T20:18Z)
 
 | Check | Status | Notes |
 |-------|--------|-------|
@@ -50,9 +50,9 @@
 | E→D Transition Readiness |  5/5 | D_CAPABLE unlocked  |
 | Branch Rebase Gate |  Up-to-date | `0D_base_` is current with `main` |
 | CI Monitor |  Passing | Code Quality & Coverage Suite green |
-| GitHub Pages Validation | ⚠️ Non-critical | Warnings only — no errors |
+| GitHub Pages Validation | ️ Non-critical | Warnings only — no errors |
 
-## 🔄 Recent Changes (S304 — 2026-04-06)
+##  Recent Changes (S304 — 2026-04-06)
 
 ### PR #3901 — Post-Merge Hotfix Sweep (Session S304)
 -  `docs/ROADMAP.md` "Last Updated" bumped to 2026-04-06
@@ -102,18 +102,18 @@
 -  Tabbed content
 -  Task lists
 
-## 🔗 Quick Links
+##  Quick Links
 
 - [ Production Site](https://aries-serpent.github.io/_codex_/)
 - [ Cost Estimator Dashboard](https://aries-serpent.github.io/_codex_/ops/cost-dashboard/)
 - [ Workflow Configuration](../.github/workflows/pages-mkdocs.yml)
-- [📝 Documentation Source](https://github.com/Aries-Serpent/_codex_/tree/main/docs)
+- [ Documentation Source](https://github.com/Aries-Serpent/_codex_/tree/main/docs)
 - [🎨 Theme Config](../mkdocs.yml)
-- [💼 Cost Governance Policy](../ops/COST_GOVERNANCE.md)
+- [ Cost Governance Policy](../ops/COST_GOVERNANCE.md)
 - [ GitHub Pages Manager Agent](../.github/agents/github-pages-manager.md)
 - [ CI Triage Report](https://github.com/Aries-Serpent/_codex_/issues/3875)
 
-## 📋 Documentation Checklist
+##  Documentation Checklist
 
 ### Theme & Configuration
 - [x] Enable dark mode toggle
@@ -170,7 +170,7 @@
 @copilot Use github-pages-manager to update the status dashboard with latest metrics
 ```
 
-## 📈 Metrics to Track
+##  Metrics to Track
 
 ### Deployment Metrics
 - Build success rate (target: >99%)
@@ -184,7 +184,7 @@
 - Documentation sync (target: 100%)
 - Navigation coverage (target: 100%)
 
-## 🔧 Configuration Files
+##  Configuration Files
 
 | File | Purpose |
 |------|---------|
@@ -199,7 +199,7 @@
 
 | Pattern | Status | Notes |
 |---------|--------|-------|
-| Mermaid CDN URL check | ⚠️ Non-blocking | Network-only check; not a code failure |
+| Mermaid CDN URL check | ️ Non-blocking | Network-only check; not a code failure |
 | yamllint `[truthy]` / `[line-length]` |  Warnings only | `.yamllint.yml` sets these to `warning` level — exit 0 |
 | `detect-secrets` P23 plugin mismatch |  Documented | `auto_fix_common_issues.py --pattern 23` |
 | `sync-tracked-files` P22 drift |  Auto-repaired | Run `sync_tracked_files.py --fix` after CODEX_MANIFEST changes |

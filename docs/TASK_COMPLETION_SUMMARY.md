@@ -171,7 +171,7 @@
 | 7 | AST similarity in CI? |  CI: YES /  Local: NO | Context-dependent |
 | 8 | Log encoding errors? |  YES | Visibility critical |
 | 9 | Register CLI tools? |  YES | Discoverability |
-| 10 | CI merge blocking? | ⚠️ WARNINGS ONLY | Gradual adoption |
+| 10 | CI merge blocking? | ️ WARNINGS ONLY | Gradual adoption |
 | 11 | Standard SQLite location? |  YES | .codex/ convention |
 | 12 | Tree-sitter YAML/SQL? |  YES | High value (Phase 3) |
 | 13 | Incremental analysis? |  YES | 10-100x faster (Phase 2) |
@@ -194,15 +194,15 @@
 
 ---
 
-## 📈 Implementation Progress
+##  Implementation Progress
 
 ### Overall: 50% Complete
 
 ```
 Phase 1 (Foundation)        ████████████████████ 100% 
 Phase 2 (CI Integration)    ██████████░░░░░░░░░░  50% 🏗️
-Phase 3 (Enhanced Analysis) ░░░░░░░░░░░░░░░░░░░░   0% 📋
-Phase 4 (Advanced Features) ░░░░░░░░░░░░░░░░░░░░   0% 📋
+Phase 3 (Enhanced Analysis) ░░░░░░░░░░░░░░░░░░░░   0% 
+Phase 4 (Advanced Features) ░░░░░░░░░░░░░░░░░░░░   0% 
 ```
 
 ### Files Created: 17 total

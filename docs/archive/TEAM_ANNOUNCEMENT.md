@@ -53,7 +53,7 @@
 
 ---
 
-##  Quick Start
+## Quick Start
 
 ### Run Duplicate Scan
 ```bash
@@ -105,7 +105,7 @@ data = model.to_dict()  # {"name": "test", "value": 42}
 
 ---
 
-## 🔄 Continuous Monitoring
+##  Continuous Monitoring
 
 **per-phase automated scans**:
 - GitHub Actions workflow: `.github/workflows/duplicate-detection-per-phase.yml`
@@ -117,17 +117,17 @@ data = model.to_dict()  # {"name": "test", "value": 42}
 
 ---
 
-## 📋 Next Steps for Team
+##  Next Steps for Team
 
 ### Immediate (This Week)
 1.  **Merge this PR** - All validation passed, production ready
 2.  **Review SHIM entries** - New entries added for config migration
-3. 📝 **Try duplicate scan** - Run on your local branch before PRs
+3.  **Try duplicate scan** - Run on your local branch before PRs
 
 ### Short-term (Next Sprint)
 1. 🎫 **Review P1 tickets** - 217 tickets in `.codex/duplicate_analysis_full/`
-2. 🔧 **Use DictSerializable** - Replace to_dict() implementations gradually
-3. 🔍 **Monitor per-phase scans** - Review new duplicate alerts
+2.  **Use DictSerializable** - Replace to_dict() implementations gradually
+3.  **Monitor per-phase scans** - Review new duplicate alerts
 
 ### Medium-term (Next Quarter)
 1. 🏗️ **Execute P1 refactoring** - High-value consolidation opportunities
@@ -136,7 +136,7 @@ data = model.to_dict()  # {"name": "test", "value": 42}
 
 ---
 
-## ⚡ High-Impact Opportunities
+##  High-Impact Opportunities
 
 **Top 5 Refactoring Tickets** (from analysis):
 

@@ -1,4 +1,6 @@
 # Phase 6 Batch 2 — Deployment Approval Workflow & Governance Gates
+
+**Version**: v0.2.1
 **Last Updated:** 2026-07-11
 
 **Version:** 1.0.0  
@@ -13,8 +15,8 @@
 This document defines the deployment approval workflow, governance gates, and SLAs for staging and production deployments in the Aries-Serpent/_codex_ repository.
 
 **Related Docs:**
-- 📋 Full governance framework: `.codex/BATCH_2_GOVERNANCE_FRAMEWORK.md` (Part 3)
-- 🔄 Variable lifecycle policy: `docs/production/VARIABLE_LIFECYCLE_POLICY.md`
+-  Full governance framework: `.codex/BATCH_2_GOVERNANCE_FRAMEWORK.md` (Part 3)
+-  Variable lifecycle policy: `docs/production/VARIABLE_LIFECYCLE_POLICY.md`
 
 ---
 

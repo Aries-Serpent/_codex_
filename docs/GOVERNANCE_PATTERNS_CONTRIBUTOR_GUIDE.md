@@ -720,7 +720,7 @@ Avoid these mistakes when creating governance patterns:
 **Problem**: Pattern depends on another pattern but doesn't document it.
 
 **Example of Pitfall**: AP-001 (Code Review Approval) references review process without noting it depends on GP-001 (Issue Resolution).  
-**Example of Fix**: AP-001 section clearly states "Prerequisites: GP-001. Code review gate requires issue context from GP-001."
+**Example of Fix**: AP-001 section states "Prerequisites: GP-001. Code review gate requires issue context from GP-001."
 
 **Prevention**:
 - Map all upstream dependencies (what must be true first)

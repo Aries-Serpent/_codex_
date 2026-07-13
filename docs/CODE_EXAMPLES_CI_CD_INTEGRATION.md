@@ -150,7 +150,7 @@ jobs:
 . "$(dirname "$0")/_/husky.sh"
 
 # Code example validation (optional, informational only)
-echo "🔍 Validating code examples (first 20)..."
+echo " Validating code examples (first 20)..."
 python tools/code_example_validator.py \
   --extract \
   --validate \

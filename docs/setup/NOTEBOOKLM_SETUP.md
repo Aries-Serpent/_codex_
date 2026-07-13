@@ -8,7 +8,7 @@
 
 ---
 
-## 📋 Overview
+##  Overview
 
 This guide provides instructions for ingesting the Aries-Serpent `_codex_` repository into NotebookLM's Grounding Engine. Three artifacts have been created to bridge the Python "Cognitive Brain" and Rust "Orchestration Layer."
 
@@ -159,7 +159,7 @@ Result: NotebookLM can answer questions with specific file references
 
 ---
 
-## 🔍 Query Examples
+##  Query Examples
 
 Once ingestion is complete, you can ask NotebookLM:
 

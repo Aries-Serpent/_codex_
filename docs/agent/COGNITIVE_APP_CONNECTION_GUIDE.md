@@ -293,7 +293,7 @@ curl -s -X POST http://localhost:8765/api/request \
 curl -s http://localhost:8765/api/memory/state
 ```
 
-**⚠️ Requires `CODEX_MASTER_KEY` env var.** Returns `503` when the key is absent (expected in CI).
+**️ Requires `CODEX_MASTER_KEY` env var.** Returns `503` when the key is absent (expected in CI).
 See RC-4 in `docs/arch/ADR-20260304-copilot-agent-cli-api-gaps.md`.
 
 ---
@@ -345,7 +345,7 @@ print(runs["total_count"])         # 40000
 print(client.git_status())
 
 # Command history
-history = client.memory_state()    # ⚠️ needs CODEX_MASTER_KEY
+history = client.memory_state()    # ️ needs CODEX_MASTER_KEY
 ```
 
 ---

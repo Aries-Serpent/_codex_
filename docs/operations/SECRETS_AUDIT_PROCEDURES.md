@@ -43,15 +43,15 @@ gh secret list --repo Aries-Serpent/_codex_ > /tmp/secrets_audit.txt
 # 2. Check environment-specific secrets
 for env in production staging development; do
     echo "=== $env environment ==="
-    grep -E "_${env^^}" /tmp/secrets_audit.txt || echo "✓ Clean"
+    grep -E "_${env^^}" /tmp/secrets_audit.txt || echo " Clean"
 done
 
 # 3. Verify no cross-environment issues
 if grep -E "_DEV.*_PRODUCTION|_STAGING.*_PRODUCTION" /tmp/secrets_audit.txt; then
-    echo "⚠️  Cross-environment secrets detected!"
+    echo "️  Cross-environment secrets detected!"
     exit 1
 else
-    echo "✓ All secrets properly scoped"
+    echo " All secrets properly scoped"
 fi
 ```
 
@@ -104,12 +104,12 @@ def analyze_access_patterns():
                 failed_attempts.append(event)
 
     # Analyze patterns
-    print("🔍 ACCESS PATTERN ANALYSIS")
+    print(" ACCESS PATTERN ANALYSIS")
     print("=" * 50)
 
     # Check for excessive failed attempts
     if len(failed_attempts) > 10:
-        print(f"⚠️  {len(failed_attempts)} failed access attempts")
+        print(f"️  {len(failed_attempts)} failed access attempts")
         print("   Actors:")
         for event in failed_attempts[-5:]:
             print(f"   - {event['actor']['id']} at {event['timestamp']}")
@@ -129,7 +129,7 @@ def analyze_access_patterns():
         if "PRODUCTION" in secret:  # pragma: allowlist secret
             for actor, ts, status in accesses:
                 if actor not in ["devops-lead", "security-lead"]:
-                    print(f"  ⚠️  Unexpected access: {actor} to {secret}")  # pragma: allowlist secret
+                    print(f"  ️  Unexpected access: {actor} to {secret}")  # pragma: allowlist secret
 
 if __name__ == "__main__":
     analyze_access_patterns()
@@ -191,7 +191,7 @@ PYTHON
 #!/bin/bash
 # Check for signs of compromise
 
-echo "🔍 COMPROMISE DETECTION SCAN"
+echo " COMPROMISE DETECTION SCAN"
 echo "============================="
 
 # Check 1: Failed access attempts spike
@@ -245,7 +245,7 @@ for actor, statuses in escalation_patterns.items():
     failed_count = sum(1 for s in recent if s == "failure")
 
     if failed_count >= 5 and recent[-1] == "success":
-        print(f"⚠️  SUSPICIOUS: {actor}")
+        print(f"️  SUSPICIOUS: {actor}")
         print(f"   Failed attempts: {failed_count}")
         print(f"   Pattern: Failures followed by success")
         print(f"   Action: INVESTIGATE")
@@ -266,9 +266,9 @@ CURRENT_HASH=$(grep "ROTATION_COMPLETE" .codex/key-archive/rotation-log.txt | \
   tail -1)
 
 if [ "$OLD_HASH" != "$CURRENT_HASH" ]; then
-    echo "✓ Confirmed: Key was rotated (expected)"
+    echo " Confirmed: Key was rotated (expected)"
 else
-    echo "⚠️  WARNING: Key hash unchanged"
+    echo "️  WARNING: Key hash unchanged"
 fi
 ```
 

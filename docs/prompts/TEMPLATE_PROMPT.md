@@ -43,7 +43,7 @@ Before starting, load the cognitive brain for full context:
 
 ---
 
-## 📋 Instructions
+##  Instructions
 
 ### Phase 1: [Phase Name] (Estimated: XK tokens, Y minutes)
 
@@ -184,7 +184,7 @@ Before concluding, perform 5-pass self-review:
 
 ---
 
-## 🔄 Continuation Protocol
+##  Continuation Protocol
 
 If work remains after session:
 
@@ -212,7 +212,7 @@ If work remains after session:
 
 ---
 
-## 📝 Notes
+##  Notes
 
 ### Tips
 - Tip 1: [Helpful hint]
@@ -236,7 +236,7 @@ If work remains after session:
 
 ---
 
-## 📈 Success Metrics
+##  Success Metrics
 
 | Metric | Target | Actual | Status |
 |--------|--------|--------|--------|

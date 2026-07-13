@@ -1,4 +1,6 @@
 # Skills Module API Reference
+
+**Version**: v0.2.1
 **Last Updated:** 2026-07-11
 
 **Module Path**: `src/codex/skills/`  
@@ -416,7 +418,7 @@ for skill_info in all_skills:
     if score.overall >= 80:
         high_quality_skills.append(skill_info)
     elif score.overall < 70:
-        print(f"  ⚠️ Low quality score. Issues: {score.issues}")
+        print(f"  ️ Low quality score. Issues: {score.issues}")
 
 print(f"\nHigh-quality skills: {len(high_quality_skills)}")
 ```

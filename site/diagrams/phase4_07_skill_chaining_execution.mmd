@@ -1,0 +1,20 @@
+%% Skill Chaining Execution — Aries-Serpent/_codex_
+%% Phase 4.7 — Integration Scenario Diagrams
+
+flowchart TD
+    A["📋 Plan Chain\n(S1 → S2 → S3)"]
+    B["⚙️ Skill 1: Parse\n(extract structure)"]
+    C["✓ Validate Output\n(schema check)"]
+    D["➡️ Pass to Skill 2"]
+    E["⚙️ Skill 2: Analyze\n(compute metrics)"]
+    F["✓ Validate Output"]
+    G["➡️ Pass to Skill 3"]
+    H["⚙️ Skill 3: Transform\n(apply rules)"]
+    I["✓ Validate Output"]
+    J["📦 Aggregate Chain\n(merge results)"]
+    K["✅ Return Final\n(to user)"]
+    
+    A --> B --> C --> D --> E --> F --> G --> H --> I --> J --> K
+    
+    style A fill:#4a4e69,color:#fff
+    style K fill:#1b4332,color:#fff

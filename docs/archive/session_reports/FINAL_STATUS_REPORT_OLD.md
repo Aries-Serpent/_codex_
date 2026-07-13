@@ -201,7 +201,7 @@ coverage:
  **Training Infrastructure**: 4/5 capabilities ≥0.70
 - training-engine (0.79), unified-training (0.82)
 - checkpointing (0.85), train_loop (0.74)
-- ⚠️ functional_training (0.62) - needs final push
+- ️ functional_training (0.62) - needs final push
 
  **MCP Services**: 11/11 capabilities ≥0.70
 - 4 capabilities ≥0.90 (rate-limiting, error-handling, versioning, auth)

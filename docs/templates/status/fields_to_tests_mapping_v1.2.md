@@ -3,7 +3,7 @@
 **Version:** v0.2.1
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
- Roles: [Primary: Mapping Curator], [Secondary: Reviewer] ⚡ Energy: 5
+ Roles: [Primary: Mapping Curator], [Secondary: Reviewer]  Energy: 5
 
 Purpose
 - Map key status.json fields to concrete tests and artifacts for easier review and gap detection.

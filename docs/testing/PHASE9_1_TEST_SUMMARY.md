@@ -320,7 +320,7 @@ pytest tests/**/test_*_phase9_1.py \
 |----------|--------|----------|--------|
 | New Tests Created | 150-200 | 205 |  EXCEEDED |
 | Test Files | 5-7 | 7 |  MET |
-| Coverage Target | 85% ±2% | TBD* | 🔄 IN PROGRESS |
+| Coverage Target | 85% ±2% | TBD* |  IN PROGRESS |
 | Pass Rate | 100% | ~90%+ |  ACCEPTABLE |
 | No Regressions | 0 | 0 |  MET |
 

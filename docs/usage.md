@@ -442,7 +442,7 @@ You can also see actionlint issues inline in VS Code via the [Trunk VS Code exte
 [go-template]: https://pkg.go.dev/text/template
 [jsonl]: https://jsonlines.org/
 [ga-annotate-error]: https://docs.github.com/en/actions/learn-github-actions/workflow-commands-for-github-actions#setting-an-error-message
-[sarif]: https://docs.oasis-open.org/sarif/sarif/v2.1.0/sarif-v2.1.0.html
+[sarif]: https://docs.oasis-open.org/sarif/sarif/v0.2.1/sarif-v0.2.1.html
 [problem-matchers]: https://github.com/actions/toolkit/blob/master/docs/problem-matchers.md
 [super-linter]: https://github.com/github/super-linter
 [super-linter-env-var]: https://github.com/super-linter/super-linter#environment-variables

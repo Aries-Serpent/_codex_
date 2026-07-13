@@ -5,7 +5,7 @@
 **Last Updated: 2026-06-22
 
 **Status:** Accepted
-**Date:** 2025-01-15
+**Date:2026-07-13
 **Deciders:** codex-ml platform team
 **Technical Story:** Gap 45 context — comprehensive testing strategy formalising the existing multi-layer approach
 
@@ -39,7 +39,7 @@ directories; this ADR formalises and standardises the multi-layer approach.
 ## Decision
 
 We adopt **six explicit test layers**, each in its own `tests/<layer>/`
-directory, each with a clearly scoped purpose:
+directory, each with a scoped purpose:
 
 ### Layer 1: Unit Tests (`tests/unit/`)
 

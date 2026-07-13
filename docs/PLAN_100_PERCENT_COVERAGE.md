@@ -700,8 +700,8 @@ pytest tests/test_rag_*.py \
 |-----------|----------------|----------|--------|
 | Current | 95%+ | - |  Complete |
 | Iteration 1 | 96-97% | +1-2% |  Next |
-| Iteration 2 | 97-98% | +1% | 📋 Planned |
-| Iteration 3 | 98-99% | +1% | 📋 Planned |
+| Iteration 2 | 97-98% | +1% |  Planned |
+| Iteration 3 | 98-99% | +1% |  Planned |
 | Iteration 4 | 100% | +1-2% |  Target |
 
 ### Test Count Targets

@@ -5,7 +5,7 @@
 **Last Updated: 2026-06-22
 
 **Produced by:** copilot-swe-agent (W-098d, PR #3494)
-**Date:** 2026-03-04
+**Date:2026-07-13
 **Reference:** [About creating GitHub Apps](https://docs.github.com/en/apps/creating-github-apps/about-creating-github-apps/about-creating-github-apps)
 
 ---
@@ -18,10 +18,10 @@ identifies what is complete vs. what remains to be done.
 
 | Pattern | Code Layer | Operational Layer | Overall |
 |---------|-----------|-------------------|---------|
-| 1. Act on behalf of a user (user-to-server) |  Complete | ⚠️ App not registered | ⚠️ Partial |
-| 2. Act on its own behalf (server-to-server) |  Complete | ⚠️ App not registered | ⚠️ Partial |
-| 3. Respond to webhooks |  Complete | ⚠️ No live receiver URL | ⚠️ Partial |
-| 4. Take certain actions (permissions) |  Complete | ⚠️ App not registered | ⚠️ Partial |
+| 1. Act on behalf of a user (user-to-server) |  Complete | ️ App not registered | ️ Partial |
+| 2. Act on its own behalf (server-to-server) |  Complete | ️ App not registered | ️ Partial |
+| 3. Respond to webhooks |  Complete | ️ No live receiver URL | ️ Partial |
+| 4. Take certain actions (permissions) |  Complete | ️ App not registered | ️ Partial |
 
 **Root cause of all gaps:** The GitHub App has not been registered yet.
 Once registered via `scripts/ci/github_app_bootstrap.py`, all four patterns
@@ -48,7 +48,7 @@ the authorizing user's permissions.
 | `examples/authentication/04_complete_flow.py` | Complete auth flow demo (GitHub OAuth + MFA + token management) |
 | `tests/auth/test_oauth_flow.py` | OAuth flow tests |
 
-### ⚠️ What is missing
+### ️ What is missing
 
 - **GitHub App not registered** — `GITHUB_APP_ID`, `GITHUB_CLIENT_ID`,
   `GITHUB_CLIENT_SECRET` are still placeholder env vars; the App must be
@@ -90,7 +90,7 @@ permissions, not by any user's permissions.
 | `tests/github/test_app_token.py` | JWT build + header/payload validation |
 | `tests/github/test_app_token_cli.py` | CLI token helper tests |
 
-### ⚠️ What is missing
+### ️ What is missing
 
 - **GitHub App not registered** — `GITHUB_APP_ID`, `GITHUB_APP_INSTALLATION_ID`
   are unset. All helper functions will `raise AuthError` / `raise SystemExit`
@@ -118,7 +118,7 @@ with `X-Hub-Signature-256` (HMAC-SHA256).
 | `scripts/space_traversal/webhooks.py` | Generic webhook delivery with HMAC signing + retry/backoff |
 | `tests/space_traversal/test_webhooks.py` | Webhook delivery tests |
 
-### ⚠️ What is missing
+### ️ What is missing
 
 - **No live webhook receiver deployed** — `hook_attributes.url` in
   `APP_MANIFEST` (see `scripts/ci/github_app_bootstrap.py`) defaults to
@@ -157,7 +157,7 @@ do via the GitHub API and what webhook events it can receive.
 | `.github/workflows/*.yml` | Explicit `permissions:` blocks (e.g., `contents: read`, `pull-requests: write`) on all workflows |
 | `agent-auth-delegation.yml` | Granular per-job permission scoping |
 
-### ⚠️ What is missing
+### ️ What is missing
 
 - **App permissions take effect only after registration.** The manifest is
   defined but not applied.

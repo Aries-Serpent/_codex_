@@ -3,7 +3,7 @@
 **Version:** v0.2.1
 
 **Last Updated**: 2026-01-20  
-**Version**: v0.9.0  
+**Version**: v0.2.1  
 **Reference**: [5-Layer Architecture](5_LAYER_ARCHITECTURE.md)
 
 ---
@@ -21,7 +21,7 @@ graph TB
         HF["🤗 Hugging Face<br/>Model Hub<br/>Model Weights<br/>Community Models"]
         MLFLOW[" MLflow<br/>Experiment Tracking<br/>Model Registry<br/>Artifacts"]
         S3["☁️ Cloud Storage<br/>S3/GCS/Azure<br/>Model Storage<br/>Data Backup"]
-        BENCH["📈 Benchmark<br/>Services<br/>Performance Tracking<br/>Leaderboards"]
+        BENCH[" Benchmark<br/>Services<br/>Performance Tracking<br/>Leaderboards"]
     end
 
     subgraph "Aries-Serpent/_codex_ System"
@@ -34,7 +34,7 @@ graph TB
     subgraph "Users"
         DEV["👨‍💻 ML Engineers<br/>Model Development<br/>Experimentation<br/>Training"]
         DS[" Data Scientists<br/>Feature Engineering<br/>Data Analysis<br/>EDA"]
-        OPS["🔧 DevOps/SRE<br/>Deployment<br/>Monitoring<br/>Operations"]
+        OPS[" DevOps/SRE<br/>Deployment<br/>Monitoring<br/>Operations"]
         LEAD["👔 Team Leads<br/>Progress Tracking<br/>Resource Planning<br/>Governance"]
     end
 

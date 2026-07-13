@@ -2,7 +2,7 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Date:** 2026-01-09  
+**Date:2026-07-13
 **Status:** Accepted  
 **Deciders:** mbaetiong, GitHub Copilot
 
@@ -27,8 +27,8 @@ Replace TCP sockets with Unix Domain Sockets + authentication tokens.
 -  10/10 security score
 
 ### Negative
-- ⚠️ Linux-only (not Windows native)
-- ⚠️ Requires token management
+- ️ Linux-only (not Windows native)
+- ️ Requires token management
 
 ### Neutral
 -  Same API surface as TCP

@@ -5,7 +5,7 @@
 **Last Updated: 2026-06-22
 
 > **Sessions:** S867–S873 | **Branch:** `copilot/fix-webhook-receiver-url-format`
-> **Date:** 2026-05-08 | **Model:** claude-sonnet-4.x
+> **Date:2026-07-13
 > **HEAD:** `047bf03b` · 99/100 merge readiness · 39/40 checks passing · 8/8 review threads resolved
 
 ---
@@ -90,7 +90,7 @@ graph TD
         D5["DOCS_CONSOLIDATION_MAP.md\n• 81 plan docs catalogued\n• 28 archive candidates\n• 5 merge candidates\n• Active living docs list"]
     end
 
-    subgraph DOCS_UPDATED["📝 Updated Documentation (S868)"]
+    subgraph DOCS_UPDATED[" Updated Documentation (S868)"]
         U1["PLAN_STATUS_DASHBOARD.md\n• Phase 9 added\n• S867/S868 completions"]
         U2["COGNITIVE_BRAIN_UNIFIED_IMPLEMENTATION_TASKS.md\n• Phase 9: Autonomous Agent Operations\n• All S867/S868 deliverables\n• Unimplemented plan registry"]
     end
@@ -102,7 +102,7 @@ graph TD
         C4["agent-auth-delegation.yml\n• Session TTL 3600→43200s (12h)\n• Session-lock TTL 12h"]
     end
 
-    subgraph FIXES["🔧 Problem-Statement Fixes (all 12)"]
+    subgraph FIXES[" Problem-Statement Fixes (all 12)"]
         F1["subprocess.py\n• text: Literal[True]=True overload\n• Expanded shell/text docstring"]
         F2["test_inference_enhanced.py\n• Metrics type + range assertions\n• Patch path fix · alias removed\n• noqa: F401 probe import"]
         F3["test_phase2_deep_coverage_batch4.py\n• Remove or True no-op"]
@@ -121,9 +121,9 @@ graph TD
 ##  Security & CodeQL Status
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing "🔍 CodeQL Status", "13 alerts fixed (S866)\n'Wrong number of arguments'\nin test_inference_enhanced.py"'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing " CodeQL Status", "13 alerts fixed (S866)\n'Wrong number of arguments'\nin test_inference_enhanced.py"'}}%%
 graph LR
-    subgraph CODEQL["🔍 CodeQL Status"]
+    subgraph CODEQL[" CodeQL Status"]
         A1["13 alerts fixed (S866)\n'Wrong number of arguments'\nin test_inference_enhanced.py"]
         A2["0 new alerts introduced\n(parallel_validation confirmed)"]
         A3["T-03 pending\nsecurity_events scope\nnot yet on CODEX_MASTER_KEY\n(admin action required)"]
@@ -177,7 +177,7 @@ graph LR
 
 ---
 
-## 🔄 WEC Self-Healing Loop (Verified This Session)
+##  WEC Self-Healing Loop (Verified This Session)
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "git push to branch", "workflow-execution-gate.yml\nParse WEC checkbox block\nfrom PR body"'}}%%
@@ -276,11 +276,11 @@ stateDiagram-v2
 | �� Core |  PR Cost Check |  success |
 |  Security | CodeQL Analysis (codeql-analysis.yml) |  success |
 |  Security | Security Scanning Suite |  success |
-| ⏳ Auth | Agent Token Delegation | action_required (pending approval) |
-| ⚠️ Infra | Automatic Dependency Submission (GitHub-managed) | GitHub HTTP 503 — transient, non-blocking |
-| ⚠️ Infra | Rust-Python Hybrid Swarm CI/CD | startup_failure — pre-existing Rust runner |
-| ⚠️ Infra | Progressive Validation Suite | startup_failure — pre-existing runner infra |
-| ⚠️ Infra | Data Quality & Determinism Suite | startup_failure — pre-existing runner infra |
+|  Auth | Agent Token Delegation | action_required (pending approval) |
+| ️ Infra | Automatic Dependency Submission (GitHub-managed) | GitHub HTTP 503 — transient, non-blocking |
+| ️ Infra | Rust-Python Hybrid Swarm CI/CD | startup_failure — pre-existing Rust runner |
+| ️ Infra | Progressive Validation Suite | startup_failure — pre-existing runner infra |
+| ️ Infra | Data Quality & Determinism Suite | startup_failure — pre-existing runner infra |
 
 > **34/38 checks passing** → Merge readiness 96/100
 > The 4 non-passing items are infrastructure limitations, not code defects.
@@ -290,12 +290,12 @@ stateDiagram-v2
 ## 🏁 S870 Final Status — Issue #4360 Triage
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing "📋 Issue #4360
+%%{init: {'accessibility': {'title': 'Flowchart showing " Issue #4360
 97 failures · 24 workflows", " Secrets Baseline Enforcer
 webhook_config.json lines 7+85
 'Secret Keyword' false positive"'}}%%
 graph TD
-    I4360["📋 Issue #4360
+    I4360[" Issue #4360
 97 failures · 24 workflows"]
 
     I4360 --> P1[" Secrets Baseline Enforcer

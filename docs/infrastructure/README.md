@@ -64,7 +64,7 @@ docs/infrastructure/
 
 ---
 
-##  Quick Start
+## Quick Start
 
 1. **Getting Started?** → Read System Overview first
 2. **Setting Up Infrastructure?** → Follow Provisioning Guides
@@ -73,7 +73,7 @@ docs/infrastructure/
 
 ---
 
-## 🔗 Related Documentation
+##  Related Documentation
 
 - **[docs/deployment/](../deployment/)** - Deployment procedures
 - **[docs/operations/](../operations/)** - Operational procedures

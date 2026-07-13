@@ -127,9 +127,9 @@ cs.store(name="config", node=AppConfig)
  CLI-based workflows feel natural to users  
 
 ### Negative
-⚠️ Learning curve for Hydra concepts (Compose API, overrides)  
-⚠️ Large config files can become hard to navigate  
-⚠️ Debugging config composition issues can be tricky  
+️ Learning curve for Hydra concepts (Compose API, overrides)  
+️ Large config files can become hard to navigate  
+️ Debugging config composition issues can be tricky  
 
 ### Mitigations
 - Comprehensive Hydra training for team

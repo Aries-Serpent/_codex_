@@ -4,7 +4,7 @@
 
 **Group:** 17 of 32  
 **Sessions:** auto-pda-2026-06-08 to chpp-phase6-consolidation  
-**Date Range:** 2026-06-08 to 2026-06-11  
+**Date 2026-07-13
 **Total Sessions in Group:** 10  
 
 ---

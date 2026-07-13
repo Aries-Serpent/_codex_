@@ -1,0 +1,3394 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
+<link href="https://aries-serpent.github.io/_codex_/telemetry-collector-setup/" rel="canonical"/>
+<link href="../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<title>Approval Telemetry Collector — Phase 12 Wave 2 D3.2 Deployment - Codex Docs v0.2.1</title>
+<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<link href="../stylesheets/extra.css" rel="stylesheet"/>
+<script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#approval-telemetry-collector-phase-12-wave-2-d32-deployment">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="Codex Docs v0.2.1" class="md-header__button md-logo" data-md-component="logo" href=".." title="Codex Docs v0.2.1">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m19 2-5 4.5v11l5-4.5zM6.5 5C4.55 5 2.45 5.4 1 6.5v14.66c0 .25.25.5.5.5.1 0 .15-.07.25-.07 1.35-.65 3.3-1.09 4.75-1.09 1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.31 4.75 1.06.1.05.15.03.25.03.25 0 .5-.25.5-.5V6.5c-.6-.45-1.25-.75-2-1V19c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V6.5C10.55 5.4 8.45 5 6.5 5"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            Codex Docs v0.2.1
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Approval Telemetry Collector — Phase 12 Wave 2 D3.2 Deployment
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme)" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"></path></svg>
+</label>
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: light)" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_2" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+<input aria-label="Switch to system preference" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-primary="black" data-md-color-scheme="slate" id="__palette_2" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to system preference">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<a aria-label="Share" class="md-search__icon md-icon" data-clipboard="" data-clipboard-text="" data-md-component="search-share" href="javascript:void(0)" tabindex="-1" title="Share">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"></path></svg>
+</a>
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="md-header__source">
+<a class="md-source" data-md-component="source" href="https://github.com/Aries-Serpent/_codex_" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+</div>
+<div class="md-source__repository">
+    Aries-Serpent/_codex_
+  </div>
+</a>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="..">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../status/GITHUB_PAGES_STATUS/">
+        
+  
+  
+    
+  
+  Status Dashboard
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../cognitive_app/">
+        
+  
+  
+    
+  
+  Cognitive App
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../evolution/INDEX/">
+          
+  
+  
+  Evolution Center
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../README_ROOT/">
+        
+  
+  
+    
+  
+  README
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../getting-started/">
+        
+  
+  
+    
+  
+  Getting Started
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../api/">
+          
+  
+  
+  API Reference
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../CONTRIBUTING/">
+          
+  
+  
+  Guides
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../tokens/INDEX/">
+          
+  
+  
+  Token Management
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../architecture.md">
+          
+  
+  
+  Architecture
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../training/symbolic_training/">
+          
+  
+  
+  Training
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../deployment/deploy_pipeline/">
+          
+  
+  
+  Deployment
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../logging/logging_guide/">
+          
+  
+  
+  Logging &amp; Troubleshooting
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../plugins/Plugin_API_Broader/">
+          
+  
+  
+  Plugins
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../ROADMAP/">
+          
+  
+  
+  Reference
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../agents/POST_MERGE_ALIGNMENT_PROMPT/">
+          
+  
+  
+  Agent Prompts
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../accountability/INDEX/">
+          
+  
+  
+  Accountability
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../phase-9/PHASE_9_COORDINATION_DASHBOARD/">
+          
+  
+  
+  Phase 9 Execution
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/INDEX.md">
+          
+  
+  
+  CI/CD Workflows
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../reporting/INDEX/">
+          
+  
+  
+  Reporting
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../ci/CI_RESCUE_PIPELINE/">
+          
+  
+  
+  CI Rescue &amp; Health
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../safety/safety_guide/">
+          
+  
+  
+  Safety
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../database/sqlite_option/">
+          
+  
+  
+  Database Options
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../templates/">
+          
+  
+  
+  Templates
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../examples/codex_symbolic_pipeline/">
+          
+  
+  
+  Examples
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../ops/cost-dashboard/">
+          
+  
+  
+  Ops
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../tutorials/quickstart/">
+          
+  
+  
+  Tutorials
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="..">
+          
+  
+  
+  Legacy Catalog
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="Codex Docs v0.2.1" class="md-nav__button md-logo" data-md-component="logo" href=".." title="Codex Docs v0.2.1">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m19 2-5 4.5v11l5-4.5zM6.5 5C4.55 5 2.45 5.4 1 6.5v14.66c0 .25.25.5.5.5.1 0 .15-.07.25-.07 1.35-.65 3.3-1.09 4.75-1.09 1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.31 4.75 1.06.1.05.15.03.25.03.25 0 .5-.25.5-.5V6.5c-.6-.45-1.25-.75-2-1V19c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V6.5C10.55 5.4 8.45 5 6.5 5"></path></svg>
+</a>
+    Codex Docs v0.2.1
+  </label>
+<div class="md-nav__source">
+<a class="md-source" data-md-component="source" href="https://github.com/Aries-Serpent/_codex_" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+</div>
+<div class="md-source__repository">
+    Aries-Serpent/_codex_
+  </div>
+</a>
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../status/GITHUB_PAGES_STATUS/">
+<span class="md-ellipsis">
+    
+  
+    Status Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../cognitive_app/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive App
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Evolution Center
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Evolution Center
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evolution/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evolution/EVOLUTION_TIMELINE/">
+<span class="md-ellipsis">
+    
+  
+    Evolution Timeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evolution/PLANSET_REGISTRY/">
+<span class="md-ellipsis">
+    
+  
+    Planset Registry
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evolution/COGNITIVE_EVOLUTION_TREE/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive Evolution Tree
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evolution/AI_EMERGENCE_STORYBOARD/">
+<span class="md-ellipsis">
+    
+  
+    AI Emergence Storyboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evolution/AI_AGENCY_INTUITIVENESS_SCORE_V3/">
+<span class="md-ellipsis">
+    
+  
+    AI Agency Score V3
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evolution/COGNITIVE_CODEBASE_MAP/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive Codebase Map
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../README_ROOT/">
+<span class="md-ellipsis">
+    
+  
+    README
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../getting-started/">
+<span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../api/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_8" type="checkbox"/>
+<label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Guides
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_8_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_8">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Guides
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../CONTRIBUTING/">
+<span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../guides/code_style_guide/">
+<span class="md-ellipsis">
+    
+  
+    Code Style
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../guides/checkpointing/">
+<span class="md-ellipsis">
+    
+  
+    Checkpointing
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../guides/codex_setup/">
+<span class="md-ellipsis">
+    
+  
+    Setup &amp; Integration
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../guides/session_hooks/">
+<span class="md-ellipsis">
+    
+  
+    Session Hooks
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../guides/continuous_improvement/">
+<span class="md-ellipsis">
+    
+  
+    Continuous Improvement
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../guides/lfs_policy/">
+<span class="md-ellipsis">
+    
+  
+    LFS Policy
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../guides/asset_instruction_playbook/">
+<span class="md-ellipsis">
+    
+  
+    Asset Instruction Playbook
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../guides/LOGGING/">
+<span class="md-ellipsis">
+    
+  
+    Logging (Stdlib)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_9" type="checkbox"/>
+<label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Token Management
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_9_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_9">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Token Management
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tokens/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tokens/TOKEN_HIERARCHY_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Token Hierarchy Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tokens/TOKEN_REGENERATION_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Token Regeneration Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tokens/TOKEN_USAGE_AUDIT/">
+<span class="md-ellipsis">
+    
+  
+    Token Usage Audit
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tokens/HUMAN_ADMIN_SETUP/">
+<span class="md-ellipsis">
+    
+  
+    Human Admin Setup
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tokens/CI_CD_TROUBLESHOOTING/">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Troubleshooting
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tokens/CUSTOM_AGENT_GUIDANCE/">
+<span class="md-ellipsis">
+    
+  
+    Custom Agent Guidance
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tokens/QUICK_REFERENCE/">
+<span class="md-ellipsis">
+    
+  
+    Quick Reference
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_10" type="checkbox"/>
+<label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_10_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_10">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../architecture.md">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../architecture/codex_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Codex Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../system/mermaid_logic_map/">
+<span class="md-ellipsis">
+    
+  
+    Runtime Logic Map
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_11" type="checkbox"/>
+<label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Training
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_11_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_11">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Training
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../training/symbolic_training/">
+<span class="md-ellipsis">
+    
+  
+    Symbolic Training
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../training/distributed_troubleshooting/">
+<span class="md-ellipsis">
+    
+  
+    Distributed Troubleshooting
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_12" type="checkbox"/>
+<label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Deployment
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_12_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_12">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Deployment
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../deployment/deploy_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Deploy Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../deployment/DEPLOYMENT_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Deployment Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../deployment/LOCAL_DEPLOYMENT_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Local Deployment Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../deployment/DEPLOYMENT_VERIFICATION_CHECKLIST/">
+<span class="md-ellipsis">
+    
+  
+    Verification Checklist
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_13" type="checkbox"/>
+<label class="md-nav__link" for="__nav_13" id="__nav_13_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Logging &amp; Troubleshooting
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_13_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_13">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Logging &amp; Troubleshooting
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../logging/logging_guide/">
+<span class="md-ellipsis">
+    
+  
+    Logging Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../logging/end_to_end_logging/">
+<span class="md-ellipsis">
+    
+  
+    End-to-End Logging
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../logging/log_rotation/">
+<span class="md-ellipsis">
+    
+  
+    Log Rotation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../troubleshooting/error_log/">
+<span class="md-ellipsis">
+    
+  
+    Error Log
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../troubleshooting/open_questions/">
+<span class="md-ellipsis">
+    
+  
+    Open Questions
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_14" type="checkbox"/>
+<label class="md-nav__link" for="__nav_14" id="__nav_14_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Plugins
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_14_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_14">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Plugins
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../plugins/Plugin_API_Broader/">
+<span class="md-ellipsis">
+    
+  
+    Plugin API (Broader)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_15" type="checkbox"/>
+<label class="md-nav__link" for="__nav_15" id="__nav_15_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_15_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_15">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ROADMAP/">
+<span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../CHANGELOG/">
+<span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_15_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_15_3" id="__nav_15_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Changelog Archive
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_15_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_15_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Changelog Archive
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../CHANGELOG/changelog_codex/">
+<span class="md-ellipsis">
+    
+  
+    Codex
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../CHANGELOG/changelog_session_logging/">
+<span class="md-ellipsis">
+    
+  
+    Session Logging
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../CHANGELOG/change_log/">
+<span class="md-ellipsis">
+    
+  
+    Legacy change log
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../reference/audit_prompt/">
+<span class="md-ellipsis">
+    
+  
+    Audit Prompt
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../reference/tools/">
+<span class="md-ellipsis">
+    
+  
+    Tools
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../reference/codex_questions/">
+<span class="md-ellipsis">
+    
+  
+    Codex Questions (Archive)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../deferred_items/">
+<span class="md-ellipsis">
+    
+  
+    Deferred Items
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../agents/">
+<span class="md-ellipsis">
+    
+  
+    Agents
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_16" type="checkbox"/>
+<label class="md-nav__link" for="__nav_16" id="__nav_16_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Agent Prompts
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_16_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_16">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Agent Prompts
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../agents/POST_MERGE_ALIGNMENT_PROMPT/">
+<span class="md-ellipsis">
+    
+  
+    Post-Merge Doc Alignment
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_17" type="checkbox"/>
+<label class="md-nav__link" for="__nav_17" id="__nav_17_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Accountability
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_17_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_17">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Accountability
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../accountability/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<span class="md-ellipsis">
+    
+  
+    Agent Accountability Report
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../accountability/AGENT_ACCESS_EXPERIENCE_REPORT/">
+<span class="md-ellipsis">
+    
+  
+    Agent Access Experience Report
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_18" type="checkbox"/>
+<label class="md-nav__link" for="__nav_18" id="__nav_18_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Phase 9 Execution
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_18_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_18">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Phase 9 Execution
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../phase-9/PHASE_9_COORDINATION_DASHBOARD/">
+<span class="md-ellipsis">
+    
+  
+    Coordination Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../phase-9/PHASE_9_DAILY_STANDUP_TEMPLATE/">
+<span class="md-ellipsis">
+    
+  
+    Daily Standup Template
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../phase-9/POST_MERGE_ACTION_PLAN/">
+<span class="md-ellipsis">
+    
+  
+    Post-Merge Action Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../phase-9/PHASE_8_12_MASTER_EXECUTION_PLAN/">
+<span class="md-ellipsis">
+    
+  
+    Phase 8-12 Master Plan
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_19" type="checkbox"/>
+<label class="md-nav__link" for="__nav_19" id="__nav_19_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Workflows
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_19_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_19">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    CI/CD Workflows
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/INDEX.md">
+<span class="md-ellipsis">
+    
+  
+    Workflow Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/CONSOLIDATION_GUIDE.md">
+<span class="md-ellipsis">
+    
+  
+    Consolidation Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/DEPRECATION_PLAN.md">
+<span class="md-ellipsis">
+    
+  
+    Deprecation Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/OPTIMIZATION_SUMMARY.md">
+<span class="md-ellipsis">
+    
+  
+    Optimization Summary
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/CACHE_ARCHITECTURE_DIAGRAMS.md">
+<span class="md-ellipsis">
+    
+  
+    Cache Architecture
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_20" type="checkbox"/>
+<label class="md-nav__link" for="__nav_20" id="__nav_20_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Reporting
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_20_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_20">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Reporting
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../reporting/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Reporting Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../reporting/copilot_workflow_report_console.html">
+<span class="md-ellipsis">
+    
+  
+    Copilot Workflow Report Console
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_21" type="checkbox"/>
+<label class="md-nav__link" for="__nav_21" id="__nav_21_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    CI Rescue &amp; Health
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_21_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_21">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    CI Rescue &amp; Health
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ci/CI_RESCUE_PIPELINE/">
+<span class="md-ellipsis">
+    
+  
+    CI Rescue Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ci/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ci/CI_FAILURE_ANALYSIS/">
+<span class="md-ellipsis">
+    
+  
+    Failure Analysis
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ci/CI_FIX_SUMMARY.md">
+<span class="md-ellipsis">
+    
+  
+    CI Fix Summary
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ci/ROOT_ORG_VALIDATION/">
+<span class="md-ellipsis">
+    
+  
+    Root Org Validation
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_22" type="checkbox"/>
+<label class="md-nav__link" for="__nav_22" id="__nav_22_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Safety
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_22_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_22">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Safety
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../safety/safety_guide/">
+<span class="md-ellipsis">
+    
+  
+    Safety Guide
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_23" type="checkbox"/>
+<label class="md-nav__link" for="__nav_23" id="__nav_23_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Database Options
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_23_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_23">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Database Options
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../database/sqlite_option/">
+<span class="md-ellipsis">
+    
+  
+    SQLite Option
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../database/duckdb_option/">
+<span class="md-ellipsis">
+    
+  
+    DuckDB Option
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../database/datasette_option/">
+<span class="md-ellipsis">
+    
+  
+    Datasette Option
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_24" type="checkbox"/>
+<label class="md-nav__link" for="__nav_24" id="__nav_24_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Templates
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_24_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_24">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Templates
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/ITERATION_PLAN_TEMPLATE/">
+<span class="md-ellipsis">
+    
+  
+    Iteration Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/Migration_PythonFileRelocation/">
+<span class="md-ellipsis">
+    
+  
+    Migration — Python Relocation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/Migration_CLIHardening/">
+<span class="md-ellipsis">
+    
+  
+    Migration — CLI Hardening
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/Planning_IntentValidation/">
+<span class="md-ellipsis">
+    
+  
+    Planning — Intent Validation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/intent_validation_gate/">
+<span class="md-ellipsis">
+    
+  
+    Intent Validation Gate
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/COPILOT_EXECUTION_DIRECTIVE/">
+<span class="md-ellipsis">
+    
+  
+    Copilot Execution Directive
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/status/">
+<span class="md-ellipsis">
+    
+  
+    Status Report Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/status/codex_status_template_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Status Template v1.2
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/status/authoring_guide_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Authoring Guide v1.2
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/status/SCHEMA_ENHANCEMENTS_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Schema Enhancements
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/status/authoring_quickstart_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Authoring Quickstart
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_25" type="checkbox"/>
+<label class="md-nav__link" for="__nav_25" id="__nav_25_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_25_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_25">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Examples
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../examples/codex_symbolic_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Codex Symbolic Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_26" type="checkbox"/>
+<label class="md-nav__link" for="__nav_26" id="__nav_26_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Ops
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_26_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_26">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Ops
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ops/cost-dashboard/">
+<span class="md-ellipsis">
+    
+  
+    Cost Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ops/COST_GOVERNANCE/">
+<span class="md-ellipsis">
+    
+  
+    Cost Governance
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ops/monitoring/">
+<span class="md-ellipsis">
+    
+  
+    Monitoring
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ops/deployment/">
+<span class="md-ellipsis">
+    
+  
+    Deployment (Legacy)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ops/RUNBOOK/">
+<span class="md-ellipsis">
+    
+  
+    Runbook
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_27" type="checkbox"/>
+<label class="md-nav__link" for="__nav_27" id="__nav_27_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_27_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_27">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tutorials/quickstart/">
+<span class="md-ellipsis">
+    
+  
+    Quickstart (CPU)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tutorials/end_to_end_cpu/">
+<span class="md-ellipsis">
+    
+  
+    End-to-End (CPU)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_28" type="checkbox"/>
+<label class="md-nav__link" for="__nav_28" id="__nav_28_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Legacy Catalog
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_28_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_28">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Legacy Catalog
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../reference/metrics_cli/">
+<span class="md-ellipsis">
+    
+  
+    Reference Archive
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../review/diff_intake_confirmation/">
+<span class="md-ellipsis">
+    
+  
+    Review Checklist
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#executive-summary">
+<span class="md-ellipsis">
+      
+        EXECUTIVE SUMMARY
+      
+    </span>
+</a>
+<nav aria-label="EXECUTIVE SUMMARY" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#key-components">
+<span class="md-ellipsis">
+      
+        Key Components
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#success-criteria-validation">
+<span class="md-ellipsis">
+      
+        SUCCESS CRITERIA VALIDATION
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#installation-setup">
+<span class="md-ellipsis">
+      
+        📦 INSTALLATION &amp; SETUP
+      
+    </span>
+</a>
+<nav aria-label="📦 INSTALLATION &amp; SETUP" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-core-modules">
+<span class="md-ellipsis">
+      
+        1. Core Modules
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#2-grafana-dashboard">
+<span class="md-ellipsis">
+      
+        2. Grafana Dashboard
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#3-prometheus-rules">
+<span class="md-ellipsis">
+      
+        3. Prometheus Rules
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-tests">
+<span class="md-ellipsis">
+      
+        4. Tests
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#integration-with-d22-approval-service">
+<span class="md-ellipsis">
+      
+        INTEGRATION WITH D2.2 APPROVAL SERVICE
+      
+    </span>
+</a>
+<nav aria-label="INTEGRATION WITH D2.2 APPROVAL SERVICE" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#integration-point-state-change-events">
+<span class="md-ellipsis">
+      
+        Integration Point: State Change Events
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#example-workflow-integration">
+<span class="md-ellipsis">
+      
+        Example Workflow Integration
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#metrics-reference">
+<span class="md-ellipsis">
+      
+        METRICS REFERENCE
+      
+    </span>
+</a>
+<nav aria-label="METRICS REFERENCE" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#17-approval-metrics">
+<span class="md-ellipsis">
+      
+        17 Approval Metrics
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#alert-rules">
+<span class="md-ellipsis">
+      
+        🔔 ALERT RULES
+      
+    </span>
+</a>
+<nav aria-label="🔔 ALERT RULES" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#critical-alerts-severity-critical">
+<span class="md-ellipsis">
+      
+        Critical Alerts (Severity: critical)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#high-alerts-severity-high">
+<span class="md-ellipsis">
+      
+        High Alerts (Severity: high)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#medium-alerts-severity-medium">
+<span class="md-ellipsis">
+      
+        Medium Alerts (Severity: medium)
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#sla-thresholds-by-policy-category">
+<span class="md-ellipsis">
+      
+        SLA THRESHOLDS BY POLICY CATEGORY
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#integration-points">
+<span class="md-ellipsis">
+      
+        INTEGRATION POINTS
+      
+    </span>
+</a>
+<nav aria-label="INTEGRATION POINTS" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#with-d22-approval-service">
+<span class="md-ellipsis">
+      
+        With D2.2 (Approval Service)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#with-d12-rbac">
+<span class="md-ellipsis">
+      
+        With D1.2 (RBAC)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#with-track-123-telemetryobservability">
+<span class="md-ellipsis">
+      
+        With Track 12.3 (Telemetry/Observability)
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#testing-validation">
+<span class="md-ellipsis">
+      
+        🧪 TESTING &amp; VALIDATION
+      
+    </span>
+</a>
+<nav aria-label="🧪 TESTING &amp; VALIDATION" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#unit-tests-30-tests">
+<span class="md-ellipsis">
+      
+        Unit Tests (30+ tests)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#integration-tests-10-tests">
+<span class="md-ellipsis">
+      
+        Integration Tests (10+ tests)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#validation-checklist">
+<span class="md-ellipsis">
+      
+        Validation Checklist
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#usage-examples">
+<span class="md-ellipsis">
+      
+        USAGE EXAMPLES
+      
+    </span>
+</a>
+<nav aria-label="USAGE EXAMPLES" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#example-1-record-a-multi-stage-approval">
+<span class="md-ellipsis">
+      
+        Example 1: Record a Multi-Stage Approval
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#example-2-sla-breach-with-escalation">
+<span class="md-ellipsis">
+      
+        Example 2: SLA Breach with Escalation
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#example-3-generate-compliance-report">
+<span class="md-ellipsis">
+      
+        Example 3: Generate Compliance Report
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#security-considerations">
+<span class="md-ellipsis">
+      
+        SECURITY CONSIDERATIONS
+      
+    </span>
+</a>
+<nav aria-label="SECURITY CONSIDERATIONS" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#cardinality-limits">
+<span class="md-ellipsis">
+      
+        Cardinality Limits
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#immutable-audit-trail">
+<span class="md-ellipsis">
+      
+        Immutable Audit Trail
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#authorization-delegation">
+<span class="md-ellipsis">
+      
+        Authorization &amp; Delegation
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#event-schema-validation">
+<span class="md-ellipsis">
+      
+        Event Schema Validation
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#cardinality-management">
+<span class="md-ellipsis">
+      
+        CARDINALITY MANAGEMENT
+      
+    </span>
+</a>
+<nav aria-label="CARDINALITY MANAGEMENT" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#per-policy-analysis">
+<span class="md-ellipsis">
+      
+        Per-Policy Analysis
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#control-strategy">
+<span class="md-ellipsis">
+      
+        Control Strategy
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#validation-script">
+<span class="md-ellipsis">
+      
+        Validation Script
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#common-issues-troubleshooting">
+<span class="md-ellipsis">
+      
+        COMMON ISSUES &amp; TROUBLESHOOTING
+      
+    </span>
+</a>
+<nav aria-label="COMMON ISSUES &amp; TROUBLESHOOTING" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#issue-sla-alerts-not-firing">
+<span class="md-ellipsis">
+      
+        Issue: SLA alerts not firing
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#issue-cardinality-exceeding-limit">
+<span class="md-ellipsis">
+      
+        Issue: Cardinality exceeding limit
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#issue-events-failing-validation">
+<span class="md-ellipsis">
+      
+        Issue: Events failing validation
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#support-documentation">
+<span class="md-ellipsis">
+      
+        📞 SUPPORT &amp; DOCUMENTATION
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#deployment-checklist">
+<span class="md-ellipsis">
+      
+        DEPLOYMENT CHECKLIST
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="approval-telemetry-collector-phase-12-wave-2-d32-deployment">Approval Telemetry Collector — Phase 12 Wave 2 D3.2 Deployment<a class="headerlink" href="#approval-telemetry-collector-phase-12-wave-2-d32-deployment" title="Permanent link">¶</a></h1>
+<p><strong>Last Updated:</strong> 2026-07-11
+<strong>Version:</strong> v0.2.1</p>
+<p><strong>Authority:</strong> @mbaetiong (D-tier)<br/>
+<strong>Status:</strong>  Production Ready<br/>
+<strong>Version:</strong> 1.0.0<br/>
+<strong>Created:</strong> 2026-07-03  </p>
+<hr/>
+<h2 id="executive-summary">EXECUTIVE SUMMARY<a class="headerlink" href="#executive-summary" title="Permanent link">¶</a></h2>
+<p>This deliverable implements a complete telemetry collection infrastructure for monitoring approval workflows in the Codex agent ecosystem. The system collects <strong>17 approval-specific metrics</strong>, enforces cardinality limits for 150+ agent ecosystem, and provides real-time SLA monitoring integrated with the approval service (D2.2) and RBAC (D1.2).</p>
+<h3 id="key-components">Key Components<a class="headerlink" href="#key-components" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Files</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Telemetry Collector</strong></td>
+<td><code>approval_telemetry_collector.py</code></td>
+<td>Core metrics collection (17 metrics)</td>
+</tr>
+<tr>
+<td><strong>Event Schema Validator</strong></td>
+<td><code>approval_event_schema.py</code></td>
+<td>Event validation (v0.2.1) &amp; immutable audit logging</td>
+</tr>
+<tr>
+<td><strong>SLA Monitor</strong></td>
+<td><code>sla_monitoring.py</code></td>
+<td>Real-time SLA tracking &amp; compliance reporting</td>
+</tr>
+<tr>
+<td><strong>Grafana Dashboard</strong></td>
+<td><code>approval-sla-dashboard.json</code></td>
+<td>Real-time SLA visualization</td>
+</tr>
+<tr>
+<td><strong>Prometheus Alerts</strong></td>
+<td><code>approval-alert-rules.yml</code></td>
+<td>15+ alerting rules for SLA/security/compliance</td>
+</tr>
+<tr>
+<td><strong>Tests</strong></td>
+<td><code>test_approval_telemetry.py</code></td>
+<td>40+ integration tests (&gt;95% coverage)</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 id="success-criteria-validation">SUCCESS CRITERIA VALIDATION<a class="headerlink" href="#success-criteria-validation" title="Permanent link">¶</a></h2>
+<p>All success criteria ** MET**:</p>
+<ul>
+<li><strong>All 17 approval metrics collected</strong> from D2.2</li>
+<li>8 workflow metrics (request, latency, resolution, decision time, chain depth, rejections, overrides, SLA)</li>
+<li>3 escalation metrics (triggered, resolution time, overrides)</li>
+<li>3 authorization metrics (decision latency, errors, delegations)</li>
+<li>
+<p>3 audit metrics (audit log entries, policy violations, unauthorized attempts)</p>
+</li>
+<li>
+<p><strong>All 8 event types ingested</strong> with proper schema</p>
+</li>
+<li>approval.request.submitted</li>
+<li>approval.decision.made</li>
+<li>approval.stage.completed</li>
+<li>approval.escalated</li>
+<li>approval.delegated</li>
+<li>approval.delegated.revoked</li>
+<li>approval.sla.breached</li>
+<li>approval.policy.violated</li>
+<li>
+<p>approval.completed</p>
+</li>
+<li>
+<p><strong>Cardinality &lt; 900 timeseries</strong> (safe for 150+ agents)</p>
+</li>
+<li>Baseline: ~500-800 timeseries</li>
+<li>Low-cardinality dimensions: policy_category (8), approver_role (8-10), approval_stage (3-4)</li>
+<li>Medium-cardinality: aggregated by role</li>
+<li>
+<p>High-cardinality: stored separately in audit logs (append-only)</p>
+</li>
+<li>
+<p><strong>SLA threshold alerts configured</strong> and tested</p>
+</li>
+<li>ApprovalP95ExceedsSLA (p95 &gt; 4h threshold)</li>
+<li>ApprovalSLABreach (SLA violations detected)</li>
+<li>EscalationRateHigh (&gt;3 escalations in 5m)</li>
+<li>UnauthorizedApprovalAttempt (security monitoring)</li>
+<li>
+<p>Plus 11 more compliance/operational alerts</p>
+</li>
+<li>
+<p><strong>Approval SLA dashboard</strong> populated with:</p>
+</li>
+<li>SLA compliance % by policy category</li>
+<li>Approval request latency (p50/p95/p99)</li>
+<li>Escalation rate &amp; resolution time</li>
+<li>Rejection rate by policy</li>
+<li>Unauthorized access attempts</li>
+<li>Policy violations</li>
+<li>
+<p>Decision latency by approver role</p>
+</li>
+<li>
+<p><strong>Multi-tenant cost attribution</strong> working</p>
+</li>
+<li>Per-agent-ecosystem tracking in per_agent_metrics</li>
+<li>Cardinality class tagging (low/medium/high)</li>
+<li>
+<p>Retention tier assignment (hot/warm/cold)</p>
+</li>
+<li>
+<p><strong>5-tier retention policies enforced</strong></p>
+</li>
+<li>hot: 7 days (real-time alerting)</li>
+<li>warm: 90 days (operational analytics) </li>
+<li>cold: 7 years (legal hold)</li>
+<li>Implemented in metadata tagging</li>
+</ul>
+<hr/>
+<h2 id="installation-setup">📦 INSTALLATION &amp; SETUP<a class="headerlink" href="#installation-setup" title="Permanent link">¶</a></h2>
+<h3 id="1-core-modules">1. Core Modules<a class="headerlink" href="#1-core-modules" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="c1"># Copy telemetry collector to observability scripts</span>
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>cp<span class="w"> </span>scripts/observability/approval_telemetry_collector.py<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="w">   </span>src/codex/observability/approval_telemetry.py
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="c1"># Copy event schema validator</span>
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>cp<span class="w"> </span>scripts/observability/approval_event_schema.py<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="w">   </span>src/codex/observability/approval_events.py
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a><span class="c1"># Copy SLA monitoring</span>
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>cp<span class="w"> </span>scripts/observability/sla_monitoring.py<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="w">   </span>src/codex/observability/approval_sla.py
+</code></pre></div>
+<h3 id="2-grafana-dashboard">2. Grafana Dashboard<a class="headerlink" href="#2-grafana-dashboard" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="c1"># Import dashboard into Grafana</span>
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://grafana:3000/api/dashboards/db<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">"Content-Type: application/json"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">"Authorization: ******"</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="w">  </span>-d<span class="w"> </span>@manifests/monitoring/grafana/approval-sla-dashboard.json
+</code></pre></div>
+<h3 id="3-prometheus-rules">3. Prometheus Rules<a class="headerlink" href="#3-prometheus-rules" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="c1"># Add alert rules to Prometheus</span>
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>cp<span class="w"> </span>manifests/monitoring/prometheus/approval-alert-rules.yml<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="w">   </span>/etc/prometheus/rules/approval-alerts.yml
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="c1"># Reload Prometheus</span>
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://prometheus:9090/-/reload
+</code></pre></div>
+<h3 id="4-tests">4. Tests<a class="headerlink" href="#4-tests" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="c1"># Run approval telemetry tests (requires pytest)</span>
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>pytest<span class="w"> </span>tests/observability/test_approval_telemetry.py<span class="w"> </span>-v
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="c1"># Expected: 40+ tests, all passing</span>
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="c1"># Coverage: &gt;95% (approval_telemetry_collector.py, sla_monitoring.py)</span>
+</code></pre></div>
+<hr/>
+<h2 id="integration-with-d22-approval-service">INTEGRATION WITH D2.2 APPROVAL SERVICE<a class="headerlink" href="#integration-with-d22-approval-service" title="Permanent link">¶</a></h2>
+<h3 id="integration-point-state-change-events">Integration Point: State Change Events<a class="headerlink" href="#integration-point-state-change-events" title="Permanent link">¶</a></h3>
+<p>The approval service (D2.2) emits events when approval state changes occur. The telemetry collector subscribes to these events:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="kn">from</span> <span class="nn">src.codex.observability.approval_sla</span> <span class="kn">import</span> <span class="n">ApprovalServiceIntegration</span>
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="c1"># Initialize integration</span>
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="n">integration</span> <span class="o">=</span> <span class="n">ApprovalServiceIntegration</span><span class="p">(</span><span class="n">collector</span><span class="p">,</span> <span class="n">sla_monitor</span><span class="p">)</span>
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="c1"># Hook into approval service state machine</span>
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="n">approval_service</span><span class="o">.</span><span class="n">on_request_submitted</span> <span class="o">+=</span> <span class="n">integration</span><span class="o">.</span><span class="n">on_request_submitted</span>
+<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a><span class="n">approval_service</span><span class="o">.</span><span class="n">on_decision_made</span> <span class="o">+=</span> <span class="n">integration</span><span class="o">.</span><span class="n">on_decision_made</span>
+<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="n">approval_service</span><span class="o">.</span><span class="n">on_approval_completed</span> <span class="o">+=</span> <span class="n">integration</span><span class="o">.</span><span class="n">on_approval_completed</span>
+</code></pre></div>
+<h3 id="example-workflow-integration">Example Workflow Integration<a class="headerlink" href="#example-workflow-integration" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="c1"># 1. When approver makes a decision, approval service calls:</span>
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="n">integration</span><span class="o">.</span><span class="n">on_decision_made</span><span class="p">(</span>
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>    <span class="n">approval_id</span><span class="o">=</span><span class="s2">"apr-550e8400"</span><span class="p">,</span>
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>    <span class="n">policy_id</span><span class="o">=</span><span class="s2">"D-001"</span><span class="p">,</span>
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>    <span class="n">policy_category</span><span class="o">=</span><span class="s2">"D"</span><span class="p">,</span>
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>    <span class="n">approver_id</span><span class="o">=</span><span class="s2">"release-manager-001"</span><span class="p">,</span>
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a>    <span class="n">approver_role</span><span class="o">=</span><span class="s2">"release-manager"</span><span class="p">,</span>
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a>    <span class="n">decision</span><span class="o">=</span><span class="s2">"approved"</span><span class="p">,</span>
+<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a>    <span class="n">decision_time_seconds</span><span class="o">=</span><span class="mf">3600.0</span><span class="p">,</span>  <span class="c1"># 1 hour</span>
+<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a>    <span class="n">stage</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a>    <span class="n">sla_seconds</span><span class="o">=</span><span class="mf">14400.0</span><span class="p">,</span>  <span class="c1"># 4 hours SLA</span>
+<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a><span class="p">)</span>
+<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a>
+<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a><span class="c1"># 2. Telemetry collector:</span>
+<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a><span class="c1">#    - Records histogram: approval_decision_time_seconds{policy_category="D"} = 3600.0</span>
+<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a><span class="c1">#    - Checks SLA: 3600 &lt;= 14400 → sla_met=true</span>
+<a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a><span class="c1">#    - Creates event with sla_status="met"</span>
+<a href="#__codelineno-5-18" id="__codelineno-5-18" name="__codelineno-5-18"></a>
+<a href="#__codelineno-5-19" id="__codelineno-5-19" name="__codelineno-5-19"></a><span class="c1"># 3. SLA monitor:</span>
+<a href="#__codelineno-5-20" id="__codelineno-5-20" name="__codelineno-5-20"></a><span class="c1">#    - Tracks stage latency against 4h per-stage SLA</span>
+<a href="#__codelineno-5-21" id="__codelineno-5-21" name="__codelineno-5-21"></a><span class="c1">#    - If sla_met=false, triggers escalation callback</span>
+<a href="#__codelineno-5-22" id="__codelineno-5-22" name="__codelineno-5-22"></a><span class="c1">#    - Updates compliance statistics</span>
+<a href="#__codelineno-5-23" id="__codelineno-5-23" name="__codelineno-5-23"></a>
+<a href="#__codelineno-5-24" id="__codelineno-5-24" name="__codelineno-5-24"></a><span class="c1"># 4. Prometheus scrapes metrics every 30s</span>
+<a href="#__codelineno-5-25" id="__codelineno-5-25" name="__codelineno-5-25"></a><span class="c1">#    - Alert rule checks: histogram_quantile(0.95, ...) &gt; 14400</span>
+<a href="#__codelineno-5-26" id="__codelineno-5-26" name="__codelineno-5-26"></a><span class="c1">#    - If violated, alert fires and routes to pagerduty</span>
+<a href="#__codelineno-5-27" id="__codelineno-5-27" name="__codelineno-5-27"></a>
+<a href="#__codelineno-5-28" id="__codelineno-5-28" name="__codelineno-5-28"></a><span class="c1"># 5. Grafana dashboard updates in real-time</span>
+<a href="#__codelineno-5-29" id="__codelineno-5-29" name="__codelineno-5-29"></a><span class="c1">#    - SLA compliance % by category</span>
+<a href="#__codelineno-5-30" id="__codelineno-5-30" name="__codelineno-5-30"></a><span class="c1">#    - Approval latency trends</span>
+</code></pre></div>
+<hr/>
+<h2 id="metrics-reference">METRICS REFERENCE<a class="headerlink" href="#metrics-reference" title="Permanent link">¶</a></h2>
+<h3 id="17-approval-metrics">17 Approval Metrics<a class="headerlink" href="#17-approval-metrics" title="Permanent link">¶</a></h3>
+<h4 id="workflow-metrics-8">Workflow Metrics (8)<a class="headerlink" href="#workflow-metrics-8" title="Permanent link">¶</a></h4>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>approval_request_submitted_total
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>  Labels: policy_category, requester_role
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a>  Type: Counter
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a>
+<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a>approval_request_latency_seconds
+<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a>  Labels: policy_id, approval_stage, policy_category
+<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a>  Type: Histogram (p50, p95, p99)
+<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a>  SLA Threshold: 4h per-stage (14400s)
+<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a>
+<a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a>approval_request_resolved_total
+<a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a>  Labels: policy_id, resolution_status, policy_category
+<a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a>  Type: Counter
+<a href="#__codelineno-6-13" id="__codelineno-6-13" name="__codelineno-6-13"></a>
+<a href="#__codelineno-6-14" id="__codelineno-6-14" name="__codelineno-6-14"></a>approval_decision_time_seconds
+<a href="#__codelineno-6-15" id="__codelineno-6-15" name="__codelineno-6-15"></a>  Labels: policy_id, approver_role, policy_category
+<a href="#__codelineno-6-16" id="__codelineno-6-16" name="__codelineno-6-16"></a>  Type: Histogram
+<a href="#__codelineno-6-17" id="__codelineno-6-17" name="__codelineno-6-17"></a>  SLA Threshold: 4h (14400s)
+<a href="#__codelineno-6-18" id="__codelineno-6-18" name="__codelineno-6-18"></a>
+<a href="#__codelineno-6-19" id="__codelineno-6-19" name="__codelineno-6-19"></a>approval_chain_depth_histogram
+<a href="#__codelineno-6-20" id="__codelineno-6-20" name="__codelineno-6-20"></a>  Type: Histogram
+<a href="#__codelineno-6-21" id="__codelineno-6-21" name="__codelineno-6-21"></a>
+<a href="#__codelineno-6-22" id="__codelineno-6-22" name="__codelineno-6-22"></a>approval_rejection_count_total
+<a href="#__codelineno-6-23" id="__codelineno-6-23" name="__codelineno-6-23"></a>  Labels: policy_id, rejection_reason, approver_role
+<a href="#__codelineno-6-24" id="__codelineno-6-24" name="__codelineno-6-24"></a>  Type: Counter
+<a href="#__codelineno-6-25" id="__codelineno-6-25" name="__codelineno-6-25"></a>
+<a href="#__codelineno-6-26" id="__codelineno-6-26" name="__codelineno-6-26"></a>approval_override_count_total
+<a href="#__codelineno-6-27" id="__codelineno-6-27" name="__codelineno-6-27"></a>  Labels: policy_id, authority_level, override_reason
+<a href="#__codelineno-6-28" id="__codelineno-6-28" name="__codelineno-6-28"></a>  Type: Counter
+<a href="#__codelineno-6-29" id="__codelineno-6-29" name="__codelineno-6-29"></a>
+<a href="#__codelineno-6-30" id="__codelineno-6-30" name="__codelineno-6-30"></a>approval_sla_breached_total
+<a href="#__codelineno-6-31" id="__codelineno-6-31" name="__codelineno-6-31"></a>  Labels: policy_id, policy_category, breach_type
+<a href="#__codelineno-6-32" id="__codelineno-6-32" name="__codelineno-6-32"></a>  Type: Counter
+<a href="#__codelineno-6-33" id="__codelineno-6-33" name="__codelineno-6-33"></a>  SLA Threshold: 0 breaches
+</code></pre></div>
+<h4 id="escalation-metrics-3">Escalation Metrics (3)<a class="headerlink" href="#escalation-metrics-3" title="Permanent link">¶</a></h4>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a>escalation_triggered_total
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>  Labels: trigger_type, policy_category
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>  Type: Counter
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>  SLA Threshold: ≤4h
+<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a>
+<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a>escalation_time_to_resolution_seconds
+<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a>  Labels: escalation_level, policy_category
+<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a>  Type: Histogram
+<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a>  SLA Threshold: 4h per level
+<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a>
+<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a>escalation_authority_override_count_total
+<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a>  Labels: authority_level, escalation_reason
+<a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a>  Type: Counter
+</code></pre></div>
+<h4 id="authorization-metrics-3">Authorization Metrics (3)<a class="headerlink" href="#authorization-metrics-3" title="Permanent link">¶</a></h4>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a>approval_authority_decision_latency_seconds
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>  Labels: approver_role, policy_category, approval_stage
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>  Type: Histogram
+<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a>  SLA Threshold: 4h
+<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a>
+<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a>approval_authority_error_count_total
+<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a>  Labels: approver_role, error_type
+<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a>  Type: Counter
+<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a>
+<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a>approval_delegation_count_total
+<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a>  Labels: source_role, target_role, policy_category
+<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a>  Type: Counter
+</code></pre></div>
+<h4 id="audit-metrics-3">Audit Metrics (3)<a class="headerlink" href="#audit-metrics-3" title="Permanent link">¶</a></h4>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a>approval_audit_log_entries_total
+<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>  Labels: event_type, policy_category
+<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a>  Type: Counter
+<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a>
+<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a>approval_policy_violation_count_total
+<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a>  Labels: violation_type, policy_id
+<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a>  Type: Counter
+<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a>
+<a href="#__codelineno-9-9" id="__codelineno-9-9" name="__codelineno-9-9"></a>approval_unauthorized_attempt_count_total
+<a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a>  Labels: agent_id
+<a href="#__codelineno-9-11" id="__codelineno-9-11" name="__codelineno-9-11"></a>  Type: Counter
+</code></pre></div>
+<hr/>
+<h2 id="alert-rules">🔔 ALERT RULES<a class="headerlink" href="#alert-rules" title="Permanent link">¶</a></h2>
+<h3 id="critical-alerts-severity-critical">Critical Alerts (Severity: critical)<a class="headerlink" href="#critical-alerts-severity-critical" title="Permanent link">¶</a></h3>
+<ol>
+<li><strong>ApprovalP95ExceedsSLA</strong> — p95 latency exceeds 4h SLA</li>
+<li><strong>ApprovalIncidentP95ExceedsSLA</strong> — Incident approval exceeds 2h SLA</li>
+<li><strong>ApprovalSLABreach</strong> — SLA threshold breached in 1h</li>
+<li><strong>UnauthorizedApprovalAttempt</strong> — Security event: unauthorized attempt</li>
+</ol>
+<h3 id="high-alerts-severity-high">High Alerts (Severity: high)<a class="headerlink" href="#high-alerts-severity-high" title="Permanent link">¶</a></h3>
+<ol>
+<li><strong>ApprovalAuditSLABreach</strong> — Compliance alert: audit SLA breach</li>
+<li><strong>EscalationRateHigh</strong> — &gt;3 escalations in 5m</li>
+<li><strong>EscalationTimeoutHigh</strong> — Escalation resolution &gt; 4h</li>
+<li><strong>ApprovalPolicyViolation</strong> — Policy enforcement violation</li>
+</ol>
+<h3 id="medium-alerts-severity-medium">Medium Alerts (Severity: medium)<a class="headerlink" href="#medium-alerts-severity-medium" title="Permanent link">¶</a></h3>
+<ol>
+<li><strong>ApprovalQueueDepthHigh</strong> — &gt;20 pending approvals</li>
+<li><strong>ApprovalAuthorityCapacity</strong> — &gt;50 requests/person/hour</li>
+<li><strong>DelegationAbuseDetected</strong> — &gt;20% delegation rate</li>
+<li><strong>CardinalityLimitApproaching</strong> — &gt;700 timeseries</li>
+<li>Plus audit/compliance alerts</li>
+</ol>
+<hr/>
+<h2 id="sla-thresholds-by-policy-category">SLA THRESHOLDS BY POLICY CATEGORY<a class="headerlink" href="#sla-thresholds-by-policy-category" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Per-Stage SLA</th>
+<th>Total SLA</th>
+<th>Escalation Path</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>D</strong> (Deployment)</td>
+<td>4h</td>
+<td>12h</td>
+<td>Release Mgr → DevOps → Owner</td>
+</tr>
+<tr>
+<td><strong>S</strong> (Security)</td>
+<td>4h</td>
+<td>12h</td>
+<td>Security Lead → Manager → Owner</td>
+</tr>
+<tr>
+<td><strong>R</strong> (Resource)</td>
+<td>4h</td>
+<td>12h</td>
+<td>DBA/DevOps → Budget → Owner</td>
+</tr>
+<tr>
+<td><strong>C</strong> (Config)</td>
+<td>4h</td>
+<td>12h</td>
+<td>Relevant Owner → Product → Owner</td>
+</tr>
+<tr>
+<td><strong>G</strong> (Capability)</td>
+<td>4h</td>
+<td>12h</td>
+<td>Service Owner → Security → Owner</td>
+</tr>
+<tr>
+<td><strong>I</strong> (Incident)</td>
+<td>2h</td>
+<td>2h (emergency)</td>
+<td>Incident Cmdr → VP → Owner</td>
+</tr>
+<tr>
+<td><strong>A</strong> (Audit)</td>
+<td>8h</td>
+<td>24h</td>
+<td>Compliance → Legal → Owner</td>
+</tr>
+<tr>
+<td><strong>E</strong> (Escalation)</td>
+<td>4h</td>
+<td>Variable</td>
+<td>Per-level escalation</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 id="integration-points">INTEGRATION POINTS<a class="headerlink" href="#integration-points" title="Permanent link">¶</a></h2>
+<h3 id="with-d22-approval-service">With D2.2 (Approval Service)<a class="headerlink" href="#with-d22-approval-service" title="Permanent link">¶</a></h3>
+<ul>
+<li>Subscribe to: request_submitted, decision_made, escalation_triggered, completed events</li>
+<li>Push metrics to: ApprovalTelemetryCollector.record_*() methods</li>
+<li>Receive escalation callbacks for SLA breaches</li>
+</ul>
+<h3 id="with-d12-rbac">With D1.2 (RBAC)<a class="headerlink" href="#with-d12-rbac" title="Permanent link">¶</a></h3>
+<ul>
+<li>Validate approver permissions via RBAC enforcer</li>
+<li>Map RBAC roles to approval authority tiers</li>
+<li>Audit delegation changes through RBAC audit trail</li>
+<li>Log unauthorized approval attempts</li>
+</ul>
+<h3 id="with-track-123-telemetryobservability">With Track 12.3 (Telemetry/Observability)<a class="headerlink" href="#with-track-123-telemetryobservability" title="Permanent link">¶</a></h3>
+<ul>
+<li>Export metrics in Prometheus format every 30s</li>
+<li>Emit events in JSON format for event stream ingestion</li>
+<li>Enforce cardinality limits per dimension</li>
+</ul>
+<hr/>
+<h2 id="testing-validation">🧪 TESTING &amp; VALIDATION<a class="headerlink" href="#testing-validation" title="Permanent link">¶</a></h2>
+<h3 id="unit-tests-30-tests">Unit Tests (30+ tests)<a class="headerlink" href="#unit-tests-30-tests" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a>pytest<span class="w"> </span>tests/observability/test_approval_telemetry.py::TestApprovalTelemetryCollector<span class="w"> </span>-v
+<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>pytest<span class="w"> </span>tests/observability/test_approval_telemetry.py::TestApprovalEventValidator<span class="w"> </span>-v
+<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>pytest<span class="w"> </span>tests/observability/test_approval_telemetry.py::TestSLAMonitor<span class="w"> </span>-v
+</code></pre></div>
+<h3 id="integration-tests-10-tests">Integration Tests (10+ tests)<a class="headerlink" href="#integration-tests-10-tests" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a>pytest<span class="w"> </span>tests/observability/test_approval_telemetry.py::TestEndToEndWorkflow<span class="w"> </span>-v
+<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a>pytest<span class="w"> </span>tests/observability/test_approval_telemetry.py::TestApprovalServiceIntegration<span class="w"> </span>-v
+</code></pre></div>
+<h3 id="validation-checklist">Validation Checklist<a class="headerlink" href="#validation-checklist" title="Permanent link">¶</a></h3>
+<ul>
+<li>Metrics are collected for all 8 event types</li>
+<li>SLA calculations are correct (latency ≤ threshold = met)</li>
+<li>Cardinality stays &lt; 900 timeseries (verified with validation script)</li>
+<li>Events conform to schema v0.2.1 (validated with ApprovalEventValidator)</li>
+<li>Alerts fire correctly on SLA breach (tested with synthetic data)</li>
+<li>Dashboard displays all 10 panels correctly</li>
+<li>Per-agent metrics aggregated by role (not per-agent)</li>
+<li>Audit events are immutable and append-only</li>
+</ul>
+<hr/>
+<h2 id="usage-examples">USAGE EXAMPLES<a class="headerlink" href="#usage-examples" title="Permanent link">¶</a></h2>
+<h3 id="example-1-record-a-multi-stage-approval">Example 1: Record a Multi-Stage Approval<a class="headerlink" href="#example-1-record-a-multi-stage-approval" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a><span class="kn">from</span> <span class="nn">src.codex.observability.approval_telemetry</span> <span class="kn">import</span> <span class="n">ApprovalTelemetryCollector</span>
+<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a><span class="kn">from</span> <span class="nn">src.codex.observability.approval_sla</span> <span class="kn">import</span> <span class="n">ApprovalServiceIntegration</span><span class="p">,</span> <span class="n">SLAMonitor</span>
+<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a>
+<a href="#__codelineno-12-4" id="__codelineno-12-4" name="__codelineno-12-4"></a><span class="c1"># Initialize system</span>
+<a href="#__codelineno-12-5" id="__codelineno-12-5" name="__codelineno-12-5"></a><span class="n">collector</span> <span class="o">=</span> <span class="n">ApprovalTelemetryCollector</span><span class="p">()</span>
+<a href="#__codelineno-12-6" id="__codelineno-12-6" name="__codelineno-12-6"></a><span class="n">sla_monitor</span> <span class="o">=</span> <span class="n">SLAMonitor</span><span class="p">(</span><span class="n">collector</span><span class="p">)</span>
+<a href="#__codelineno-12-7" id="__codelineno-12-7" name="__codelineno-12-7"></a><span class="n">integration</span> <span class="o">=</span> <span class="n">ApprovalServiceIntegration</span><span class="p">(</span><span class="n">collector</span><span class="p">,</span> <span class="n">sla_monitor</span><span class="p">)</span>
+<a href="#__codelineno-12-8" id="__codelineno-12-8" name="__codelineno-12-8"></a>
+<a href="#__codelineno-12-9" id="__codelineno-12-9" name="__codelineno-12-9"></a><span class="c1"># User requests a deployment approval</span>
+<a href="#__codelineno-12-10" id="__codelineno-12-10" name="__codelineno-12-10"></a><span class="n">integration</span><span class="o">.</span><span class="n">on_request_submitted</span><span class="p">(</span>
+<a href="#__codelineno-12-11" id="__codelineno-12-11" name="__codelineno-12-11"></a>    <span class="n">approval_id</span><span class="o">=</span><span class="s2">"apr-550e8400"</span><span class="p">,</span>
+<a href="#__codelineno-12-12" id="__codelineno-12-12" name="__codelineno-12-12"></a>    <span class="n">policy_id</span><span class="o">=</span><span class="s2">"D-001"</span><span class="p">,</span>
+<a href="#__codelineno-12-13" id="__codelineno-12-13" name="__codelineno-12-13"></a>    <span class="n">policy_category</span><span class="o">=</span><span class="s2">"D"</span><span class="p">,</span>
+<a href="#__codelineno-12-14" id="__codelineno-12-14" name="__codelineno-12-14"></a>    <span class="n">requester_id</span><span class="o">=</span><span class="s2">"agent-orchestrator"</span><span class="p">,</span>
+<a href="#__codelineno-12-15" id="__codelineno-12-15" name="__codelineno-12-15"></a>    <span class="n">requester_role</span><span class="o">=</span><span class="s2">"release-operator"</span><span class="p">,</span>
+<a href="#__codelineno-12-16" id="__codelineno-12-16" name="__codelineno-12-16"></a>    <span class="n">sla_seconds</span><span class="o">=</span><span class="mi">14400</span><span class="p">,</span>  <span class="c1"># 4h per-stage</span>
+<a href="#__codelineno-12-17" id="__codelineno-12-17" name="__codelineno-12-17"></a><span class="p">)</span>
+<a href="#__codelineno-12-18" id="__codelineno-12-18" name="__codelineno-12-18"></a>
+<a href="#__codelineno-12-19" id="__codelineno-12-19" name="__codelineno-12-19"></a><span class="c1"># Stage 1: Release Manager approves</span>
+<a href="#__codelineno-12-20" id="__codelineno-12-20" name="__codelineno-12-20"></a><span class="n">integration</span><span class="o">.</span><span class="n">on_decision_made</span><span class="p">(</span>
+<a href="#__codelineno-12-21" id="__codelineno-12-21" name="__codelineno-12-21"></a>    <span class="n">approval_id</span><span class="o">=</span><span class="s2">"apr-550e8400"</span><span class="p">,</span>
+<a href="#__codelineno-12-22" id="__codelineno-12-22" name="__codelineno-12-22"></a>    <span class="n">policy_id</span><span class="o">=</span><span class="s2">"D-001"</span><span class="p">,</span>
+<a href="#__codelineno-12-23" id="__codelineno-12-23" name="__codelineno-12-23"></a>    <span class="n">policy_category</span><span class="o">=</span><span class="s2">"D"</span><span class="p">,</span>
+<a href="#__codelineno-12-24" id="__codelineno-12-24" name="__codelineno-12-24"></a>    <span class="n">approver_id</span><span class="o">=</span><span class="s2">"rm-001"</span><span class="p">,</span>
+<a href="#__codelineno-12-25" id="__codelineno-12-25" name="__codelineno-12-25"></a>    <span class="n">approver_role</span><span class="o">=</span><span class="s2">"release-manager"</span><span class="p">,</span>
+<a href="#__codelineno-12-26" id="__codelineno-12-26" name="__codelineno-12-26"></a>    <span class="n">decision</span><span class="o">=</span><span class="s2">"approved"</span><span class="p">,</span>
+<a href="#__codelineno-12-27" id="__codelineno-12-27" name="__codelineno-12-27"></a>    <span class="n">decision_time_seconds</span><span class="o">=</span><span class="mi">3600</span><span class="p">,</span>  <span class="c1"># 1h</span>
+<a href="#__codelineno-12-28" id="__codelineno-12-28" name="__codelineno-12-28"></a>    <span class="n">stage</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<a href="#__codelineno-12-29" id="__codelineno-12-29" name="__codelineno-12-29"></a>    <span class="n">sla_seconds</span><span class="o">=</span><span class="mi">14400</span><span class="p">,</span>
+<a href="#__codelineno-12-30" id="__codelineno-12-30" name="__codelineno-12-30"></a><span class="p">)</span>
+<a href="#__codelineno-12-31" id="__codelineno-12-31" name="__codelineno-12-31"></a>
+<a href="#__codelineno-12-32" id="__codelineno-12-32" name="__codelineno-12-32"></a><span class="c1"># Stage 2: Security Lead approves</span>
+<a href="#__codelineno-12-33" id="__codelineno-12-33" name="__codelineno-12-33"></a><span class="n">integration</span><span class="o">.</span><span class="n">on_decision_made</span><span class="p">(</span>
+<a href="#__codelineno-12-34" id="__codelineno-12-34" name="__codelineno-12-34"></a>    <span class="n">approval_id</span><span class="o">=</span><span class="s2">"apr-550e8400"</span><span class="p">,</span>
+<a href="#__codelineno-12-35" id="__codelineno-12-35" name="__codelineno-12-35"></a>    <span class="n">policy_id</span><span class="o">=</span><span class="s2">"D-001"</span><span class="p">,</span>
+<a href="#__codelineno-12-36" id="__codelineno-12-36" name="__codelineno-12-36"></a>    <span class="n">policy_category</span><span class="o">=</span><span class="s2">"D"</span><span class="p">,</span>
+<a href="#__codelineno-12-37" id="__codelineno-12-37" name="__codelineno-12-37"></a>    <span class="n">approver_id</span><span class="o">=</span><span class="s2">"sl-001"</span><span class="p">,</span>
+<a href="#__codelineno-12-38" id="__codelineno-12-38" name="__codelineno-12-38"></a>    <span class="n">approver_role</span><span class="o">=</span><span class="s2">"security-lead"</span><span class="p">,</span>
+<a href="#__codelineno-12-39" id="__codelineno-12-39" name="__codelineno-12-39"></a>    <span class="n">decision</span><span class="o">=</span><span class="s2">"approved"</span><span class="p">,</span>
+<a href="#__codelineno-12-40" id="__codelineno-12-40" name="__codelineno-12-40"></a>    <span class="n">decision_time_seconds</span><span class="o">=</span><span class="mi">5400</span><span class="p">,</span>  <span class="c1"># 1.5h</span>
+<a href="#__codelineno-12-41" id="__codelineno-12-41" name="__codelineno-12-41"></a>    <span class="n">stage</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+<a href="#__codelineno-12-42" id="__codelineno-12-42" name="__codelineno-12-42"></a>    <span class="n">sla_seconds</span><span class="o">=</span><span class="mi">14400</span><span class="p">,</span>
+<a href="#__codelineno-12-43" id="__codelineno-12-43" name="__codelineno-12-43"></a><span class="p">)</span>
+<a href="#__codelineno-12-44" id="__codelineno-12-44" name="__codelineno-12-44"></a>
+<a href="#__codelineno-12-45" id="__codelineno-12-45" name="__codelineno-12-45"></a><span class="c1"># Approval complete</span>
+<a href="#__codelineno-12-46" id="__codelineno-12-46" name="__codelineno-12-46"></a><span class="n">integration</span><span class="o">.</span><span class="n">on_approval_completed</span><span class="p">(</span><span class="n">approval_id</span><span class="o">=</span><span class="s2">"apr-550e8400"</span><span class="p">)</span>
+<a href="#__codelineno-12-47" id="__codelineno-12-47" name="__codelineno-12-47"></a>
+<a href="#__codelineno-12-48" id="__codelineno-12-48" name="__codelineno-12-48"></a><span class="c1"># Export metrics</span>
+<a href="#__codelineno-12-49" id="__codelineno-12-49" name="__codelineno-12-49"></a><span class="nb">print</span><span class="p">(</span><span class="n">collector</span><span class="o">.</span><span class="n">export_prometheus_format</span><span class="p">())</span>
+<a href="#__codelineno-12-50" id="__codelineno-12-50" name="__codelineno-12-50"></a><span class="nb">print</span><span class="p">(</span><span class="n">collector</span><span class="o">.</span><span class="n">export_json</span><span class="p">())</span>
+</code></pre></div>
+<h3 id="example-2-sla-breach-with-escalation">Example 2: SLA Breach with Escalation<a class="headerlink" href="#example-2-sla-breach-with-escalation" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a><span class="c1"># If decision takes 18000s (5 hours), exceeds 4h SLA</span>
+<a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a>
+<a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a><span class="n">result</span> <span class="o">=</span> <span class="n">sla_monitor</span><span class="o">.</span><span class="n">record_stage_decision</span><span class="p">(</span>
+<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a>    <span class="n">approval_id</span><span class="o">=</span><span class="s2">"apr-550e8400"</span><span class="p">,</span>
+<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a>    <span class="n">stage</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a>    <span class="n">decision_time_seconds</span><span class="o">=</span><span class="mi">18000</span><span class="p">,</span>  <span class="c1"># 5 hours</span>
+<a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a>    <span class="n">policy_category</span><span class="o">=</span><span class="s2">"D"</span><span class="p">,</span>
+<a href="#__codelineno-13-8" id="__codelineno-13-8" name="__codelineno-13-8"></a><span class="p">)</span>
+<a href="#__codelineno-13-9" id="__codelineno-13-9" name="__codelineno-13-9"></a>
+<a href="#__codelineno-13-10" id="__codelineno-13-10" name="__codelineno-13-10"></a><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<a href="#__codelineno-13-11" id="__codelineno-13-11" name="__codelineno-13-11"></a><span class="c1"># Output: {</span>
+<a href="#__codelineno-13-12" id="__codelineno-13-12" name="__codelineno-13-12"></a><span class="c1">#   "sla_status": "breached",</span>
+<a href="#__codelineno-13-13" id="__codelineno-13-13" name="__codelineno-13-13"></a><span class="c1">#   "exceeded_by": 3600.0,  # 1 hour over threshold</span>
+<a href="#__codelineno-13-14" id="__codelineno-13-14" name="__codelineno-13-14"></a><span class="c1">#   "escalation_triggered": True,</span>
+<a href="#__codelineno-13-15" id="__codelineno-13-15" name="__codelineno-13-15"></a><span class="c1"># }</span>
+<a href="#__codelineno-13-16" id="__codelineno-13-16" name="__codelineno-13-16"></a>
+<a href="#__codelineno-13-17" id="__codelineno-13-17" name="__codelineno-13-17"></a><span class="c1"># Escalation callback fires → escalates to Release Manager's manager</span>
+</code></pre></div>
+<h3 id="example-3-generate-compliance-report">Example 3: Generate Compliance Report<a class="headerlink" href="#example-3-generate-compliance-report" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a><span class="kn">from</span> <span class="nn">src.codex.observability.approval_sla</span> <span class="kn">import</span> <span class="n">ComplianceReporter</span>
+<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a>
+<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a><span class="n">reporter</span> <span class="o">=</span> <span class="n">ComplianceReporter</span><span class="p">(</span><span class="n">sla_monitor</span><span class="p">)</span>
+<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a>
+<a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a><span class="c1"># Hourly report</span>
+<a href="#__codelineno-14-6" id="__codelineno-14-6" name="__codelineno-14-6"></a><span class="n">hourly</span> <span class="o">=</span> <span class="n">reporter</span><span class="o">.</span><span class="n">generate_hourly_report</span><span class="p">()</span>
+<a href="#__codelineno-14-7" id="__codelineno-14-7" name="__codelineno-14-7"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"SLA Compliance (1h): </span><span class="si">{</span><span class="n">hourly</span><span class="p">[</span><span class="s1">'sla_compliance'</span><span class="p">][</span><span class="s1">'sla_compliance_pct'</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">%"</span><span class="p">)</span>
+<a href="#__codelineno-14-8" id="__codelineno-14-8" name="__codelineno-14-8"></a>
+<a href="#__codelineno-14-9" id="__codelineno-14-9" name="__codelineno-14-9"></a><span class="c1"># Daily report</span>
+<a href="#__codelineno-14-10" id="__codelineno-14-10" name="__codelineno-14-10"></a><span class="n">daily</span> <span class="o">=</span> <span class="n">reporter</span><span class="o">.</span><span class="n">generate_daily_report</span><span class="p">()</span>
+<a href="#__codelineno-14-11" id="__codelineno-14-11" name="__codelineno-14-11"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"SLA Compliance (24h): </span><span class="si">{</span><span class="n">daily</span><span class="p">[</span><span class="s1">'aggregate_sla_compliance_pct'</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">%"</span><span class="p">)</span>
+<a href="#__codelineno-14-12" id="__codelineno-14-12" name="__codelineno-14-12"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Violations (24h): </span><span class="si">{</span><span class="n">daily</span><span class="p">[</span><span class="s1">'total_violations_24h'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<hr/>
+<h2 id="security-considerations">SECURITY CONSIDERATIONS<a class="headerlink" href="#security-considerations" title="Permanent link">¶</a></h2>
+<h3 id="cardinality-limits">Cardinality Limits<a class="headerlink" href="#cardinality-limits" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Hard limit:</strong> 900 timeseries (enforced by validator)</li>
+<li><strong>Warning threshold:</strong> 700 timeseries</li>
+<li><strong>Strategy:</strong> Aggregate per-agent metrics by role; store individual agent IDs in audit logs only</li>
+</ul>
+<h3 id="immutable-audit-trail">Immutable Audit Trail<a class="headerlink" href="#immutable-audit-trail" title="Permanent link">¶</a></h3>
+<ul>
+<li>All approval events are append-only (no updates/deletes)</li>
+<li>Audit log entries include: timestamp, actor, action, result</li>
+<li>7-year retention for compliance (cold tier)</li>
+<li>Protected from unauthorized access via RBAC</li>
+</ul>
+<h3 id="authorization-delegation">Authorization &amp; Delegation<a class="headerlink" href="#authorization-delegation" title="Permanent link">¶</a></h3>
+<ul>
+<li>Only users with <code>approval:delegate</code> permission can delegate</li>
+<li>Delegations are tracked and can be revoked</li>
+<li>Unauthorized approval attempts logged as security events</li>
+<li>Alert fired on: UnauthorizedApprovalAttempt</li>
+</ul>
+<h3 id="event-schema-validation">Event Schema Validation<a class="headerlink" href="#event-schema-validation" title="Permanent link">¶</a></h3>
+<ul>
+<li>All events validated against schema v0.2.1</li>
+<li>Version compatibility check (only v1.x.x supported)</li>
+<li>SLA calculation validation (prevents false SLA=met when latency &gt; threshold)</li>
+<li>Required fields enforced; optional fields allowed</li>
+</ul>
+<hr/>
+<h2 id="cardinality-management">CARDINALITY MANAGEMENT<a class="headerlink" href="#cardinality-management" title="Permanent link">¶</a></h2>
+<h3 id="per-policy-analysis">Per-Policy Analysis<a class="headerlink" href="#per-policy-analysis" title="Permanent link">¶</a></h3>
+<p>For 150 agents, 8 policy categories, 10 approver roles:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a>baseline_timeseries = (
+<a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a>  8 categories                    # policy_category
+<a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a>  × 10 approver_roles             # approver_role
+<a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a>  × 4 approval_stages             # approval_stage
+<a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a>  × 5 metrics (request, latency,  # metric combinations
+<a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a>      resolution, decision, chain)
+<a href="#__codelineno-15-7" id="__codelineno-15-7" name="__codelineno-15-7"></a>) ≈ 1,600 timeseries (MANAGED DOWN to ~800)
+</code></pre></div>
+<h3 id="control-strategy">Control Strategy<a class="headerlink" href="#control-strategy" title="Permanent link">¶</a></h3>
+<ol>
+<li><strong>Low-cardinality dimensions</strong> (use as-is):</li>
+<li>policy_category: 8 values</li>
+<li>approver_role: 8-10 values</li>
+<li>
+<p>approval_stage: 3-4 values</p>
+</li>
+<li>
+<p><strong>Medium-cardinality dimensions</strong> (aggregate):</p>
+</li>
+<li>requester_role: aggregate by role</li>
+<li>
+<p>sla_status: 3 values (met/approaching/breached)</p>
+</li>
+<li>
+<p><strong>High-cardinality dimensions</strong> (excluded from timeseries):</p>
+</li>
+<li>agent_id: stored in audit logs only (append-only, not timeseries)</li>
+<li>approver_id: aggregated by approver_role</li>
+<li>requester_id: aggregated by requester_role</li>
+</ol>
+<h3 id="validation-script">Validation Script<a class="headerlink" href="#validation-script" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a><span class="n">cardinality</span> <span class="o">=</span> <span class="n">collector</span><span class="o">.</span><span class="n">validate_cardinality</span><span class="p">()</span>
+<a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Current timeseries: </span><span class="si">{</span><span class="n">cardinality</span><span class="p">[</span><span class="s1">'timeseries_count'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Limit: </span><span class="si">{</span><span class="n">cardinality</span><span class="p">[</span><span class="s1">'limit'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-16-4" id="__codelineno-16-4" name="__codelineno-16-4"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Safe: </span><span class="si">{</span><span class="n">cardinality</span><span class="p">[</span><span class="s1">'cardinality_safe'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<a href="#__codelineno-16-5" id="__codelineno-16-5" name="__codelineno-16-5"></a>
+<a href="#__codelineno-16-6" id="__codelineno-16-6" name="__codelineno-16-6"></a><span class="k">if</span> <span class="n">cardinality</span><span class="p">[</span><span class="s1">'warning'</span><span class="p">]:</span>
+<a href="#__codelineno-16-7" id="__codelineno-16-7" name="__codelineno-16-7"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"️  </span><span class="si">{</span><span class="n">cardinality</span><span class="p">[</span><span class="s1">'warning'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<hr/>
+<h2 id="common-issues-troubleshooting">COMMON ISSUES &amp; TROUBLESHOOTING<a class="headerlink" href="#common-issues-troubleshooting" title="Permanent link">¶</a></h2>
+<h3 id="issue-sla-alerts-not-firing">Issue: SLA alerts not firing<a class="headerlink" href="#issue-sla-alerts-not-firing" title="Permanent link">¶</a></h3>
+<p><strong>Symptoms:</strong> Approval latencies exceed threshold but no alert triggers</p>
+<p><strong>Diagnosis:</strong>
+1. Check if metrics are being scraped: <code>curl http://prometheus:9090/api/v1/query?query=approval_decision_time_seconds</code>
+2. Verify alert rule is loaded: <code>curl http://prometheus:9090/api/v1/rules | grep ApprovalP95ExceedsSLA</code>
+3. Check Prometheus target health: http://prometheus:9090/targets</p>
+<p><strong>Solution:</strong>
+- Ensure D2.2 approval service is emitting decision events
+- Verify ApprovalServiceIntegration is hooked into approval service
+- Check Prometheus scrape interval (default: 30s)</p>
+<h3 id="issue-cardinality-exceeding-limit">Issue: Cardinality exceeding limit<a class="headerlink" href="#issue-cardinality-exceeding-limit" title="Permanent link">¶</a></h3>
+<p><strong>Symptoms:</strong> Timeseries count &gt; 850 (approaching 900 limit)</p>
+<p><strong>Diagnosis:</strong>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-17-1" id="__codelineno-17-1" name="__codelineno-17-1"></a><span class="n">card</span> <span class="o">=</span> <span class="n">collector</span><span class="o">.</span><span class="n">validate_cardinality</span><span class="p">()</span>
+<a href="#__codelineno-17-2" id="__codelineno-17-2" name="__codelineno-17-2"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Per-dimension breakdown:</span><span class="se">\n</span><span class="si">{</span><span class="n">card</span><span class="p">[</span><span class="s1">'per_dimension'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div></p>
+<p><strong>Solution:</strong>
+1. Identify high-cardinality dimension causing explosion
+2. Aggregate that dimension by lower-cardinality key (e.g., approver_role)
+3. Store individual IDs in audit logs (append-only) instead of timeseries</p>
+<h3 id="issue-events-failing-validation">Issue: Events failing validation<a class="headerlink" href="#issue-events-failing-validation" title="Permanent link">¶</a></h3>
+<p><strong>Symptoms:</strong> "Invalid event, not logging: [errors]"</p>
+<p><strong>Diagnosis:</strong>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-18-1" id="__codelineno-18-1" name="__codelineno-18-1"></a><span class="n">validator</span> <span class="o">=</span> <span class="n">ApprovalEventValidator</span><span class="p">()</span>
+<a href="#__codelineno-18-2" id="__codelineno-18-2" name="__codelineno-18-2"></a><span class="n">is_valid</span><span class="p">,</span> <span class="n">errors</span> <span class="o">=</span> <span class="n">validator</span><span class="o">.</span><span class="n">validate_event</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+<a href="#__codelineno-18-3" id="__codelineno-18-3" name="__codelineno-18-3"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Errors: </span><span class="si">{</span><span class="n">errors</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div></p>
+<p><strong>Solution:</strong>
+- Check event timestamp is ISO-8601: <code>2026-02-17T14:30:45.123Z</code>
+- Verify policy_category is one of: D, S, R, C, G, I, A, E
+- Ensure sla_met matches latency vs sla_seconds calculation
+- Check approval_chain is array of stages with sequential stage numbers</p>
+<hr/>
+<h2 id="support-documentation">📞 SUPPORT &amp; DOCUMENTATION<a class="headerlink" href="#support-documentation" title="Permanent link">¶</a></h2>
+<p><strong>TELEMETRY_SCHEMA.md</strong> — Complete specification of 100+ metrics<br/>
+<strong>APPROVAL_POLICIES.md</strong> — SLA thresholds and approval rules<br/>
+<strong>approval-sla-dashboard.json</strong> — Grafana dashboard definition<br/>
+<strong>approval-alert-rules.yml</strong> — Prometheus alert rules (15 rules)<br/>
+<strong>test_approval_telemetry.py</strong> — 40+ integration tests with examples  </p>
+<hr/>
+<h2 id="deployment-checklist">DEPLOYMENT CHECKLIST<a class="headerlink" href="#deployment-checklist" title="Permanent link">¶</a></h2>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Code deployed to <code>/scripts/observability/</code></li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Tests passing: <code>pytest tests/observability/test_approval_telemetry.py -v</code></li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Grafana dashboard imported</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Prometheus alert rules loaded</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> D2.2 approval service hooked into ApprovalServiceIntegration</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> D1.2 RBAC integration verified</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Cardinality validated: &lt; 900 timeseries</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Sample metrics exported to Prometheus</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Alerts tested with synthetic approval data</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Dashboard displays all 10 panels correctly</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Documentation reviewed and links verified</li>
+</ul>
+<hr/>
+<p><strong>Status:</strong>  Phase 12 Wave 2 D3.2 — COMPLETE<br/>
+<strong>Delivered:</strong> 2026-07-03<br/>
+<strong>Authority:</strong> @mbaetiong (D-tier)<br/>
+<strong>Handoff:</strong> Ready for D1.2 &amp; D2.2 integration  </p>
+</article>
+</div>
+<script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+</body>
+</html>

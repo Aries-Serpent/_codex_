@@ -1,4 +1,6 @@
 # Configuration & Setup Master Guide
+
+**Version**: v0.2.1
 **Last Updated:** 2026-07-11
 
 > **Consolidated Master Document** for Codex Configuration  

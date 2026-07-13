@@ -2,7 +2,7 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-## 🔄 CodeQL follow-up cleanup + comment-gate closure
+##  CodeQL follow-up cleanup + comment-gate closure
 
 **Updated: 2026-07-11
 
@@ -15,15 +15,15 @@
 | Refresh PR #4544 follow-up prompt file |  Complete |
 | Update living docs (`whats_next`, `session_diagram`) |  Complete |
 | Update `CHANGELOG.md` + `docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md` |  Complete |
-| Reply on PR with resolution commit so Comment Review Gate can rescan | ⏳ Next step |
-| Monitor latest-head workflow fan-out on `856b1280` | ⏳ In progress — latest push spawned many `action_required` runs |
+| Reply on PR with resolution commit so Comment Review Gate can rescan |  Next step |
+| Monitor latest-head workflow fan-out on `856b1280` |  In progress — latest push spawned many `action_required` runs |
 
 ### Current Validation State
 
 - `python -m ruff check src/ tests/ --fix` 
 - `pytest -q tests/branch_coverage/test_branch_coverage_rag.py tests/typing/test_py312_type_hints.py tests/test_loader_registry.py tests/test_interfaces_compat.py` 
 - `python scripts/ci/auto_fix_common_issues.py --check-only` 
-- `python scripts/ci/mypy_baseline.py --require-baseline` ⚠️ pre-existing branch regression remains above baseline; not introduced by this PR follow-up
+- `python scripts/ci/mypy_baseline.py --require-baseline` ️ pre-existing branch regression remains above baseline; not introduced by this PR follow-up
 
 ### Latest Head Snapshot
 

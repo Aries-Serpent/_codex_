@@ -1,4 +1,4 @@
-# Next Iteration Prompt v1.3.0
+# Next Iteration Prompt v0.2.1
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
@@ -159,7 +159,7 @@ def test_no_hydra_shadowing():
       AGE_DAYS=$(python -c "import os, time; print(int((time.time() - os.path.getmtime('audit_artifacts/baselines/capabilities_scored.json')) / 86400))")
       echo "age_days=$AGE_DAYS" >> $GITHUB_OUTPUT
       if [ $AGE_DAYS -gt 30 ]; then
-        echo "⚠️ Baseline is $AGE_DAYS days old - consider refreshing"
+        echo "️ Baseline is $AGE_DAYS days old - consider refreshing"
       fi
     fi
 ```
@@ -288,7 +288,7 @@ For this iteration to be considered **complete and ready for merge**:
 - [ ] Security scan clean
 - [ ] Linters passing
 
-### Functionality 🔄
+### Functionality 
 - [ ] Legacy imports analyzed
 - [ ] High-priority imports refactored
 - [ ] Tests covering changes
@@ -373,8 +373,8 @@ This iteration completes the audit remediation system validation. Key deliverabl
 -  Production-ready CI workflow
 -  Comprehensive documentation
 -  Quality gates enforced
-- 🔄 Determinism validation (pending)
-- 🔄 Legacy import strategy (in progress)
+-  Determinism validation (pending)
+-  Legacy import strategy (in progress)
 
 **Recommended Approval Path**:
 1. Review validation summaries (PartB_Validation_Summary.md)

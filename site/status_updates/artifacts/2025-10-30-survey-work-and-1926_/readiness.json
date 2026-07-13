@@ -1,0 +1,21 @@
+{
+  "context": {
+    "R_min": "0.50",
+    "branch": "work",
+    "date_utc": "2025-10-30",
+    "meets_threshold": true,
+    "pr": "1926"
+  },
+  "readiness": "0.8000",
+  "schema_version": 1,
+  "scores": {
+    "D": "0.90",
+    "E": "0.60",
+    "T": "0.70"
+  },
+  "weights": {
+    "alpha": "0.20",
+    "beta": "0.20",
+    "gamma": "0.60"
+  }
+}

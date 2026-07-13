@@ -28,7 +28,7 @@ Before you proceed, please do two things in this order:
      • Estimated effort or dependencies.
 
    - Include these sections:
-     • Assumptions: List key assumptions (derived from my request, conventions, or your inference). Mark each as ✓ (confirmed), ? (uncertain), or ⚠️ (needs clarification).
+     • Assumptions: List key assumptions (derived from my request, conventions, or your inference). Mark each as  (confirmed), ? (uncertain), or ️ (needs clarification).
      • Open Questions: At least 3 questions you need answered to proceed confidently. Prioritize by criticality.
      • Risks and Mitigations: A table of Low/Medium/High risks with recommended mitigations.
      • Deliverables: What I will receive at each phase and at the end.
@@ -49,7 +49,7 @@ Use this context (you may propose adjustments, but do not execute):
 
 Reply format (Markdown):
   - **Intent Validation** (paragraph, 2–3 sentences)
-  - **Assumptions** (bulleted list with confidence markers: ✓ ? ⚠️)
+  - **Assumptions** (bulleted list with confidence markers:  ? ️)
   - **Open Questions** (numbered list, 1–2 sentences each, prioritized)
   - **Phases of Action** (numbered phases with sub-bullets, decision gates, effort estimates)
   - **Risks and Mitigations** (table: Risk | Severity | Mitigation)

@@ -34,7 +34,7 @@
   as new agent docs are added). 372 likely counted all file-system entries including
   sub-directories, JSON files, YAML, and other non-.md artefacts.
   Of the 197 `.md` files, **149** are genuine agent definitions (lowercase stem).
-- **128 registered (AGENT_REGISTRY.yaml v1.7.0)**: The authoritative registry
+- **128 registered (AGENT_REGISTRY.yaml v0.2.1)**: The authoritative registry
   includes agents with full metadata (id, status, capabilities).
 - **193 plan reference**: `soft_to_GROUNDED.md` references 193 as the target
   registry size after Phase 1 expansion. This is the **target**, not current state.

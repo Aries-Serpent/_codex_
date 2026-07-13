@@ -213,7 +213,7 @@ STABILIZE SERVICE
 ### P0 Response (< 15 minutes)
 
 ```bash
-# ⚠️ IMMEDIATE ACTIONS - Execute within 5 minutes
+# ️ IMMEDIATE ACTIONS - Execute within 5 minutes
 
 # 1. IDENTIFY compromised credential
 CREDENTIAL_TYPE="github_oauth_token"  # or: api_key, jwt_key, db_password
@@ -396,7 +396,7 @@ echo "Credential compromise contained and remediated" >> incident.log
 ### P0 Response (< 15 minutes)
 
 ```bash
-# ⚠️ IMMEDIATE ACTIONS
+# ️ IMMEDIATE ACTIONS
 
 # 1. IDENTIFY attacker
 ATTACKER_IP=$(grep "Failed password" /var/log/auth.log | tail -1 | awk '{print $NF}')
@@ -427,7 +427,7 @@ fi
 python scripts/security/reset_mfa.py --user=$COMPROMISED_USER
 
 # 6. NOTIFY immediately
-slack-notify "#security" "🚨 UNAUTHORIZED ACCESS: IP $ATTACKER_IP blocked, account locked"
+slack-notify "#security" " UNAUTHORIZED ACCESS: IP $ATTACKER_IP blocked, account locked"
 ```
 
 ## Investigation Phase
@@ -500,7 +500,7 @@ curl -H "Authorization: ******" \
 ### P0 Response (< 15 minutes)
 
 ```bash
-# ⚠️ IMMEDIATE ACTIONS
+# ️ IMMEDIATE ACTIONS
 
 # 1. ISOLATE affected database
 python scripts/security/isolate_database.py \
@@ -521,7 +521,7 @@ chmod 600 /secure/forensics/db-snapshot-*.sql
 # - Sensitive data types?
 
 # 5. NOTIFY stakeholders
-slack-notify "#security" "🚨 P0 DATA BREACH: Scope being determined"
+slack-notify "#security" " P0 DATA BREACH: Scope being determined"
 
 # 6. BEGIN investigation
 python scripts/security/analyze_data_access.py \
@@ -725,7 +725,7 @@ python scripts/security/analyze_build_history.py \
 
 **Immediate** (within 5 minutes):
 ```
-🚨 INCIDENT - [SEVERITY]
+ INCIDENT - [SEVERITY]
 
 Incident ID: INC-2026-0614-001
 Category: [Type]

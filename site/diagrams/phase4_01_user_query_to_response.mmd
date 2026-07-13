@@ -1,0 +1,47 @@
+%% User Query to Response Workflow — Aries-Serpent/_codex_
+%% Phase 4.1 — Integration Scenario Diagrams
+%% Complete end-to-end: user input → agent → skill → response
+%% Evidence: agents/, orchestrator-agent, skills, OODA loop
+
+flowchart TD
+
+    USER["👤 User\n(issues query)"]
+    
+    USER -->|"PR comment, CLI, API"| PARSE["Parse Input\n(extract intent)"]
+    
+    PARSE --> AUTH["Authenticate\n(validate token)"]
+    AUTH -->|"✓"| AUTH_OK["User authorized"]
+    AUTH -->|"✗"| DENY["Deny Access\n(403)"]
+    
+    AUTH_OK --> BUILD_CTX["Build Context\n(session, org/repo)"]
+    BUILD_CTX --> OBSERVE["📡 OBSERVE\n(capture state)"]
+    
+    OBSERVE --> ORIENT["🧭 ORIENT\n(build model)"]
+    ORIENT --> RAG["Query RAG\n(retrieve context)"]
+    
+    RAG --> DECIDE["🎯 DECIDE\n(select strategy)"]
+    DECIDE --> SELECT_AGENT["Select Agent\n(best match)"]
+    
+    SELECT_AGENT --> SELECT_SKILLS["Plan Skills\n(sequence)"]
+    SELECT_SKILLS --> ACT["⚡ ACT\n(execute)"]
+    
+    ACT --> SKILL1["Skill 1: Analyze"]
+    SKILL1 --> SKILL2["Skill 2: Transform"]
+    SKILL2 --> SKILL3["Skill 3: Validate"]
+    
+    SKILL3 --> COLLECT["Collect Results\n(merge outputs)"]
+    COLLECT --> FORMAT["Format Response\n(markdown)"]
+    
+    FORMAT --> FEEDBACK["Extract Lessons\n(for future)"]
+    FEEDBACK --> RETURN["Return to User\n(PR comment, response)"]
+    
+    RETURN --> COMPLETE["✅ Workflow Complete"]
+    DENY --> COMPLETE
+    
+    style USER fill:#4a4e69,color:#fff
+    style OBSERVE fill:#16213e,color:#e0e0e0
+    style ORIENT fill:#0f3460,color:#e0e0e0
+    style DECIDE fill:#533483,color:#fff
+    style ACT fill:#1b4332,color:#fff
+    style COMPLETE fill:#1b4332,color:#fff
+    style DENY fill:#e63946,color:#fff

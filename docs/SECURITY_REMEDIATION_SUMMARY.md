@@ -96,7 +96,7 @@ See: [docs/SECURITY_SCAN_REPORT.md](./SECURITY_SCAN_REPORT.md)
 - Created reusable security utilities
 - Documented 25 additional code scanning findings for future work
 
-## 🔍 Verification
+##  Verification
 
 Run the security audit script to verify all patches:
 
@@ -110,7 +110,7 @@ Expected output:
  All 14 Dependabot vulnerabilities have been remediated.
 ```
 
-## 📝 Commits
+##  Commits
 
 1. `b35a32f` - security: patch all 14 Dependabot vulnerabilities
 2. `a370ba3` - docs: add comprehensive security scan report with 25 findings

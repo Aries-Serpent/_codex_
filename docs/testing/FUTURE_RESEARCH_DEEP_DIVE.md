@@ -514,7 +514,7 @@ class MutationTester:
         mutation_score = self.calculate_score(results)
 
         if mutation_score < threshold:
-            print(f"⚠️  Low mutation score: {mutation_score:.1f}%")
+            print(f"️  Low mutation score: {mutation_score:.1f}%")
             print("Survived mutants:")
             for mutant in results['survived']:
                 print(f"  - Line {mutant['lineno']}: {mutant['operator']}")
@@ -586,7 +586,7 @@ jobs:
 | Module | Coverage | Mutation Score | Assertions/Test | Status |
 |--------|----------|----------------|-----------------|--------|
 | agents/workflow_navigator.py | 95% | 82% | 3.2 |  Good |
-| src/codex/rag.py | 78% | 65% | 1.8 | ⚠️ Weak Tests |
+| src/codex/rag.py | 78% | 65% | 1.8 | ️ Weak Tests |
 | scripts/mcp/select_components.py | 100% | 91% | 4.1 |  Excellent |
 ```
 
@@ -965,7 +965,7 @@ TestWorkflowNavigator = WorkflowNavigatorStateMachine.TestCase
 2. "Effective Software Testing" (Maurício Aniche)
 3. "The Fuzzing Book" (Andreas Zeller et al.)
 
-### Tutorials
+## Guides
 1. Hypothesis documentation: hypothesis.readthedocs.io
 2. Mutation testing tutorial: cosmic-ray.readthedocs.io
 3. "Introduction to Property-Based Testing" (PyCon talks)

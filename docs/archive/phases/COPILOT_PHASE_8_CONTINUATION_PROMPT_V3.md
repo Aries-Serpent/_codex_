@@ -29,7 +29,7 @@
 
 ## Immediate Next Steps (Phase 8.3-8.4)
 
-### Task 8.3: ML Threat Detection Prototype ⚡ CRITICAL
+### Task 8.3: ML Threat Detection Prototype  CRITICAL
 
 **Priority**: High  
 **Timeline**: 4-5 iterations  
@@ -315,7 +315,7 @@ if __name__ == "__main__":
         detector.save_model("ml_threat_detector_model.pkl")
         print(f"🎉 Model meets 85%+ accuracy requirement!")
     else:
-        print(f"⚠️ Model accuracy {accuracy:.2%} below 85% threshold")
+        print(f"️ Model accuracy {accuracy:.2%} below 85% threshold")
 ```
 
 **Run**:

@@ -1,4 +1,4 @@
-# Quick Start: Cognitive Brain v0.1.0
+## Quick Start: Cognitive Brain v0.2.1
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
@@ -22,7 +22,7 @@ export PYTHONPATH="${PYTHONPATH}:$(pwd)/src"
 
 ### Verify
 ```bash
-python -c "from codex.cognitive import brain; print('✓ Installed!')"
+python -c "from codex.cognitive import brain; print(' Installed!')"
 ```
 
 **Requirements:** Python 3.12+, no external dependencies, works offline

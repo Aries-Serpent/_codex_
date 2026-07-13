@@ -15,7 +15,7 @@
 
 ## Recent-Date Web Search Note
 
-Recent web searches were performed on **2026-04-27** and added to `00_notebooklm_import_index.md` under "Recent-Date Web Search Grounding — 2026-04-27". Use that section as the packet-level source anchor for 2024–2026 smart-grid, DERMS, RF-harvesting, wireless-power-transfer, and safety-standard references.
+Recent web searches were performed on **2026-04-27** and added to `00_notebooklm_import_index.md` under "Recent-Date 2026-07-13
 
 ## 1. Core Thesis
 

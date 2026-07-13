@@ -582,13 +582,13 @@ AuditCode.AUTO_APPROVAL_RBAC_PRIVILEGE = "AUTO_APPROVAL_RBAC_PRIVILEGE"
 graph TD
     A["Approval Request<br/>policy_code: AGENT_DEPLOY_DEV<br/>5-minute SLA"] --> B{"Requester has<br/>agent_operator<br/>role?"}
     
-    B -->|Yes| C["✓ Auto-Approve<br/>status: APPROVED"]
+    B -->|Yes| C[" Auto-Approve<br/>status: APPROVED"]
     B -->|No| D["Require Approval<br/>status: PENDING<br/>Start 5-minute SLA"]
     
     D --> E{"approver<br/>responds?"}
-    E -->|Approved| F["✓ Approved<br/>status: APPROVED"]
-    E -->|Rejected| G["✗ Rejected<br/>status: REJECTED"]
-    E -->|No Response| H["✗ Expired<br/>status: EXPIRED<br/>Request expires"]
+    E -->|Approved| F[" Approved<br/>status: APPROVED"]
+    E -->|Rejected| G[" Rejected<br/>status: REJECTED"]
+    E -->|No Response| H[" Expired<br/>status: EXPIRED<br/>Request expires"]
     
     C --> I["Proceed"]
     F --> I
@@ -603,8 +603,8 @@ graph TD
     A["Request Submitted<br/>SLA: 4 hours"] --> B["Level 1 Approver<br/>(Primary Owner)"]
     
     B --> C{"L1 Response?"}
-    C -->|Approved| D["✓ L1 Approved"]
-    C -->|Rejected| E["✗ Rejected"]
+    C -->|Approved| D[" L1 Approved"]
+    C -->|Rejected| E[" Rejected"]
     C -->|No Response| F["L1 SLA Elapsed"]
     
     D --> G["Continue"]
@@ -614,8 +614,8 @@ graph TD
     I --> J["Level 2 Approver<br/>(Secondary)<br/>SLA: 4 hours"]
     J --> K{"L2 Response?"}
     
-    K -->|Approved| L["✓ L2 Approved"]
-    K -->|Rejected| M["✗ Rejected"]
+    K -->|Approved| L[" L2 Approved"]
+    K -->|Rejected| M[" Rejected"]
     K -->|No Response| N["L2 SLA Elapsed"]
     
     L --> O["Continue"]
@@ -625,8 +625,8 @@ graph TD
     P --> Q["Level 3 Approver<br/>(Senior Authority)<br/>SLA: 4 hours"]
     Q --> R{"L3 Response?"}
     
-    R -->|Approved| S["✓ L3 Approved"]
-    R -->|Rejected| T["✗ Rejected"]
+    R -->|Approved| S[" L3 Approved"]
+    R -->|Rejected| T[" Rejected"]
     R -->|No Response| U["Auto-Approve<br/>Quorum Unavailable"]
     
     S --> V["Proceed"]
@@ -643,8 +643,8 @@ graph TD
     B --> C["Level 1 Approver<br/>(Primary)"]
     C --> D{"L1 Response<br/>30 min SLA?"}
     
-    D -->|Approved| E["✓ Approved"]
-    D -->|Rejected| F["✗ Rejected"]
+    D -->|Approved| E[" Approved"]
+    D -->|Rejected| F[" Rejected"]
     D -->|No Response| G["Skip L2<br/>Go to L3"]
     
     E --> H["Proceed"]
@@ -652,8 +652,8 @@ graph TD
     G --> J["Level 3 Approver<br/>(Senior Authority)<br/>30-minute SLA"]
     
     J --> K{"L3 Response?"}
-    K -->|Approved| L["✓ Approved"]
-    K -->|Rejected| M["✗ Rejected"]
+    K -->|Approved| L[" Approved"]
+    K -->|Rejected| M[" Rejected"]
     K -->|No Response| N["Auto-Approve<br/>Incident Override"]
     
     L --> H

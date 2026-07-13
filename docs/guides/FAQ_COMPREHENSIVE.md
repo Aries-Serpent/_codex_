@@ -388,7 +388,7 @@ A: Yes! Multiple formats:
 
 ---
 
-## ❓ General FAQs
+##  General FAQs
 
 ### Account & Billing
 

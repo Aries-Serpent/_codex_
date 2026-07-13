@@ -1,0 +1,117 @@
+%% Cognitive Brain OODA Loop — Aries-Serpent/_codex_
+%% Phase 2.4 — Module Interaction Diagrams
+%% OODA cycle: Observe, Orient, Decide, Act
+%% Evidence: scripts/cognitive/, cognitive_brain_core.py, OODAOrchestrator
+
+flowchart LR
+
+    %% ── Observe Phase ───────────────────────────────────────────────────────
+    subgraph OBS ["👀 OBSERVE"]
+        LISTEN["Listen for Input\n(API, webhook, CLI)"]
+        PARSE_INPUT["Parse Input\n(intent, context)"]
+        CAPTURE_STATE["Capture System State\n(metrics, config)"]
+        RETRIEVE_CTX["Retrieve Context\n(session, history)"]
+        
+        LISTEN --> PARSE_INPUT
+        PARSE_INPUT --> CAPTURE_STATE
+        PARSE_INPUT --> RETRIEVE_CTX
+    end
+
+    %% ── Orient Phase ────────────────────────────────────────────────────────
+    subgraph ORIENT ["🧭 ORIENT"]
+        LOAD_PATTERNS["Load Pattern Library\n(previous solutions)"]
+        SEMANTIC_MATCH["Semantic Matching\n(similar past issues)"]
+        QUERY_KB["Query Knowledge Base\n(RAG retrieval)"]
+        ASSESS_COND["Assess Conditions\n(environment state)"]
+        BUILD_MODEL["Build Mental Model\n(problem structure)"]
+        
+        LOAD_PATTERNS --> SEMANTIC_MATCH
+        QUERY_KB --> BUILD_MODEL
+        ASSESS_COND --> BUILD_MODEL
+        SEMANTIC_MATCH --> BUILD_MODEL
+    end
+
+    RETRIEVE_CTX --> LOAD_PATTERNS
+    CAPTURE_STATE --> ASSESS_COND
+
+    %% ── Decide Phase ────────────────────────────────────────────────────────
+    subgraph DECIDE ["🎯 DECIDE"]
+        GEN_OPTIONS["Generate Options\n(candidate solutions)"]
+        EVAL_OPTIONS["Evaluate Options\n(risk, cost, impact)"]
+        PICK_STRATEGY["Pick Strategy\n(best option)"]
+        PLAN_EXEC["Plan Execution\n(skill sequence)"]
+        
+        GEN_OPTIONS --> EVAL_OPTIONS
+        EVAL_OPTIONS --> PICK_STRATEGY
+        PICK_STRATEGY --> PLAN_EXEC
+    end
+
+    BUILD_MODEL --> GEN_OPTIONS
+
+    %% ── Act Phase ───────────────────────────────────────────────────────────
+    subgraph ACT ["⚡ ACT"]
+        LOAD_SKILL["Load Skill\n(from registry)"]
+        EXEC_SKILL["Execute Skill\n(with parameters)"]
+        MONITOR_EXEC["Monitor Execution\n(progress, errors)"]
+        HANDLE_FAIL["Handle Failure\n(retry, fallback)"]
+        
+        LOAD_SKILL --> EXEC_SKILL
+        EXEC_SKILL --> MONITOR_EXEC
+        MONITOR_EXEC --> HANDLE_FAIL
+    end
+
+    PLAN_EXEC --> LOAD_SKILL
+
+    %% ── Memory & Feedback ───────────────────────────────────────────────────
+    subgraph MEMORY ["💾 Memory Management"]
+        STM["Short-Term Memory\n(session context)"]
+        LTM["Long-Term Memory\n(learned patterns)"]
+        PROMOTE["STM → LTM Promotion\n(80% capacity gate)"]
+        PRUNE["Prune Stale\n(age-based eviction)"]
+        
+        STM --> PROMOTE
+        PROMOTE --> LTM
+        LTM --> PRUNE
+    end
+
+    PARSE_INPUT --> STM
+    EXEC_SKILL --> STM
+    MONITOR_EXEC --> STM
+
+    %% ── Feedback Loop (back to Observe) ────────────────────────────────────
+    subgraph FEEDBACK ["🔄 Feedback Evaluation"]
+        MEASURE_OUTCOME["Measure Outcome\n(success metrics)"]
+        COMPARE_EXPECTED["Compare vs Expected\n(delta analysis)"]
+        EXTRACT_LESSON["Extract Lesson\n(what worked)"]
+        UPDATE_PATTERNS["Update Patterns\n(new solution)"]
+        
+        MEASURE_OUTCOME --> COMPARE_EXPECTED
+        COMPARE_EXPECTED --> EXTRACT_LESSON
+        EXTRACT_LESSON --> UPDATE_PATTERNS
+    end
+
+    HANDLE_FAIL --> MEASURE_OUTCOME
+    UPDATE_PATTERNS --> LOAD_PATTERNS
+
+    %% ── Output & Iteration ──────────────────────────────────────────────────
+    MEASURE_OUTCOME -->|"✅ success"| OUTPUT["📤 Return Result\n(to user)"]
+
+    MEASURE_OUTCOME -->|"⚠️ partial"| ITERATE["🔁 Continue Loop\n(refine strategy)"]
+    ITERATE -.->|"new iteration"| OBS
+
+    MEASURE_OUTCOME -->|"❌ failed"| ESCALATE["🚨 Escalate\n(human review)"]
+
+    %% ── Long-term Tuning ────────────────────────────────────────────────────
+    UPDATE_PATTERNS -->|"periodic"| TUNE["⚙️  Tune Hyperparams\n(exploit-explore trade-off)"]
+    TUNE -.->|"affects future"| ORIENT
+
+    %% ── Styling ────────────────────────────────────────────────────────────
+    style OBS fill:#16213e,color:#e0e0e0
+    style ORIENT fill:#0f3460,color:#e0e0e0
+    style DECIDE fill:#533483,color:#fff
+    style ACT fill:#1b4332,color:#fff
+    style MEMORY fill:#2d6a4f,color:#fff
+    style FEEDBACK fill:#457b9d,color:#fff
+    style OUTPUT fill:#1b4332,color:#fff
+    style ITERATE fill:#665c84,color:#fff
+    style ESCALATE fill:#e63946,color:#fff

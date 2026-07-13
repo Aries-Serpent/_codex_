@@ -23,7 +23,7 @@
 
 ## Overview
 
-The Codex governance system provides enterprise-grade Role-Based Access Control (RBAC), approval workflows, and audit logging for all sensitive operations. It ensures that all actions are validated against a comprehensive permission matrix and properly audited.
+The Codex governance system provides Production Role-Based Access Control (RBAC), approval workflows, and audit logging for all sensitive operations. It ensures that all actions are validated against a comprehensive permission matrix and properly audited.
 
 **Key Principles:**
 - **Zero unauthorized actions:** Every permission check failure raises `PermissionDeniedError`

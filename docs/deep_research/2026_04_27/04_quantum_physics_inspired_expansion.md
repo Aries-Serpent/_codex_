@@ -7,7 +7,7 @@
 ## NotebookLM Metadata
 
 - **Source type:** Research collection note
-- **Topic:** Clearly labeled speculative variable expansion using quantum/physics-inspired logic
+- **Topic:** labeled speculative variable expansion using quantum/physics-inspired logic
 - **Note:** These are analogical models, not established physical laws of cybersecurity.
 
 ## 1. Access Wave Function

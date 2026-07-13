@@ -3,7 +3,7 @@
 **Version:** v0.2.1
 
 **Last Updated**: 2026-01-20  
-**Version**: v0.9.0  
+**Version**: v0.2.1  
 **Status**: Production-Ready  
 **Coverage**: 108+ Components
 
@@ -22,22 +22,22 @@ graph TB
     end
 
     subgraph L2["Layer 2: ML Platform"]
-        TRAIN["🔄 Training Engine<br/>●Model training loops<br/>●Hyperparameter tuning<br/>●Checkpoint management"]
+        TRAIN[" Training Engine<br/>●Model training loops<br/>●Hyperparameter tuning<br/>●Checkpoint management"]
         EVAL[" Evaluation Engine<br/>●Metric computation<br/>●Benchmark runs<br/>●Performance tracking"]
         SERVE[" Serving/Inference<br/>●Model loading<br/>●Prediction pipeline<br/>●Batch processing"]
     end
 
     subgraph L3["Layer 3: Data Pipeline"]
         INGEST["📥 Code Ingestion<br/>●File parsing<br/>●AST analysis<br/>●Token counting"]
-        RAG["🔍 RAG System<br/>●Vector indexing<br/>●Semantic retrieval<br/>●Context building"]
+        RAG[" RAG System<br/>●Vector indexing<br/>●Semantic retrieval<br/>●Context building"]
         TRANSFORM[" Data Transformation<br/>●Preprocessing<br/>●Format conversion<br/>●Feature extraction"]
     end
 
     subgraph L4["Layer 4: Infrastructure"]
         CONFIG[" Configuration<br/>●Hydra composition<br/>●Secret management<br/>●Environment handling"]
         DB["💾 Database Layer<br/>●Session storage<br/>●Checkpoint persistence<br/>●Metadata management"]
-        CACHE["⚡ Caching<br/>●Result caching<br/>●Model cache<br/>●Embedding cache"]
-        MONITOR["📈 Monitoring<br/>●Metrics collection<br/>●Health checks<br/>●Alerts & notifications"]
+        CACHE[" Caching<br/>●Result caching<br/>●Model cache<br/>●Embedding cache"]
+        MONITOR[" Monitoring<br/>●Metrics collection<br/>●Health checks<br/>●Alerts & notifications"]
     end
 
     subgraph L5["Layer 5: Integration"]
@@ -122,7 +122,7 @@ User Command → CLI Parser → Hydra Config → Layer 2 (Training/Eval/Serving)
 
 ---
 
-### Layer 2: ML Platform 🔄
+### Layer 2: ML Platform 
 **Responsibility**: Core machine learning operations  
 **Key Components**:
 - **Training Engine** - Model training with checkpoint management

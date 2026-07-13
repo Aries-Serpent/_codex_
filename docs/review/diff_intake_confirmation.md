@@ -72,7 +72,7 @@ Post-Merge Smoke (see prompt file in /docs/prompts)
 Risks & Mitigations
 - Filesystem semantics: fsync/replace differences across platforms (low risk; tests avoid strict FS timing).
 - Deprecation shim: warns by design; tests assert presence of DeprecationWarning, skip adapters if absent.
-- Admin bootstrap: online-only, gated; docs clearly separate runbook.
+- Admin bootstrap: online-only, gated; docs separate runbook.
 
 Conclusion
 - All listed artifacts are clear to add to 0A_base_. Use the tailored prompt to validate integration end-to-end post-merge.

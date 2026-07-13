@@ -14,18 +14,18 @@
 
 **Objective**: Define FastAPI-based HTTP API schema for MCP server deployments, enabling edge-compatible (Cloudflare Workers, Fly.io) and container-based MCP endpoints.
 
-**Energy Level**: ⚡⚡⚡ (3/5) - Active API specification supporting prototype deployment.
+**Energy Level**:  (3/5) - Active API specification supporting prototype deployment.
 
 **Operational Status**:
 -  Prototype implemented in `src/mcp/server/http.py`
 -  Three core endpoints operational (/health, /query, /context)
 -  Authentication headers defined
-- 🔄 OpenAPI schema generation pending
+-  OpenAPI schema generation pending
 - 🔮 Production hardening in progress
 
 ---
 
-## ⚖️ Verification Checklist
+## ️ Verification Checklist
 
 **API Specification Requirements**:
 - [ ] OpenAPI 3.0+ schema documented
@@ -49,7 +49,7 @@
 
 ---
 
-## 📈 Success Metrics
+##  Success Metrics
 
 | Endpoint | Target Latency (p95) | Target Success Rate | Current | Status |
 |----------|----------------------|---------------------|---------|--------|
@@ -67,7 +67,7 @@
 
 ## ⚛️ Physics Alignment
 
-### Path 🛤️ (Request Flow)
+### Path ️ (Request Flow)
 **Request Path**: Client → Auth → Validation → Processing → Response
 
 ```mermaid
@@ -91,7 +91,7 @@ graph LR
     L --> M[200 OK + JSON]
 ```
 
-### Fields 🔄 (State Transitions)
+### Fields  (State Transitions)
 **Request Lifecycle**:
 1. **Received**: HTTP request enters server
 2. **Authenticated**: Headers validated
@@ -100,27 +100,27 @@ graph LR
 5. **Responding**: JSON serialization
 6. **Completed**: Response sent to client
 
-### Patterns 👁️ (API Patterns)
+### Patterns ️ (API Patterns)
 - **Health Check Pattern**: Stateless, fast, no auth required
 - **Query Pattern**: Auth required, read-only, cacheable
 - **Upsert Pattern**: Auth required, write operation, idempotent
 - **Error Pattern**: Consistent JSON structure `{"error": {...}}`
 
-### Redundancy 🔀 (Resilience)
+### Redundancy  (Resilience)
 **Fault Tolerance**:
 - Health endpoint always responds (no dependencies)
 - Query endpoint falls back to empty results on error
 - Context upsert retries on transient failures
 - Circuit breakers prevent cascading failures
 
-### Balance ⚖️ (Trade-offs)
+### Balance ️ (Trade-offs)
 - **Latency vs. Accuracy**: Query top_k = 5 (default) balances speed and relevance
 - **Security vs. Usability**: API key header simple but less secure than OAuth
 - **Statelessness vs. Performance**: No server-side caching for edge compatibility
 
 ---
 
-## ⚡ Energy Distribution
+##  Energy Distribution
 
 ### P0 Critical (40%)
 - Schema correctness (15%)

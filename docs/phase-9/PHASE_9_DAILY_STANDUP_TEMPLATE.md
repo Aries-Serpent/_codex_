@@ -1,4 +1,4 @@
-# 📋 PHASE 9 DAILY STANDUP TEMPLATE
+#  PHASE 9 DAILY STANDUP TEMPLATE
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
@@ -17,8 +17,8 @@
 **Current Progress:** [X%] (Tasks: [N/6] complete)
 
 ### Completed Tasks (Today)
-- [ ] Task 9.1.1 — /⏳/
-- [ ] Task 9.1.2 — /⏳/
+- [ ] Task 9.1.1 — //
+- [ ] Task 9.1.2 — //
 - [Add completed tasks here]
 
 ### In-Progress Tasks
@@ -49,8 +49,8 @@
 **Current Progress:** [X%] (Tasks: [N/6] complete)
 
 ### Completed Tasks (Today)
-- [ ] Task 9.2.1 — /⏳/
-- [ ] Task 9.2.2 — /⏳/
+- [ ] Task 9.2.1 — //
+- [ ] Task 9.2.2 — //
 - [Add completed tasks here]
 
 ### In-Progress Tasks
@@ -81,8 +81,8 @@
 **Current Progress:** [X%] (Tasks: [N/6] complete)
 
 ### Completed Tasks (Today)
-- [ ] Task 9.3.1 — /⏳/
-- [ ] Task 9.3.2 — /⏳/
+- [ ] Task 9.3.1 — //
+- [ ] Task 9.3.2 — //
 - [Add completed tasks here]
 
 ### In-Progress Tasks
@@ -123,7 +123,7 @@ Track 9.3: ████░░░░░░░░░░░░░░░░░░░
 
 ---
 
-## 🚨 ESCALATIONS & DECISIONS NEEDED
+##  ESCALATIONS & DECISIONS NEEDED
 
 | Issue | Impact | Required Decision | Escalate To |
 |-------|--------|---|---|
@@ -136,7 +136,7 @@ Track 9.3: ████░░░░░░░░░░░░░░░░░░░
 
 **Gate:** [Gate 1/2/3 name and date, if relevant]  
 **Criteria Met:** [X/Y]  
-**Status:** 🟡 ON TRACK /  PASS /  FAIL
+**Status:**  ON TRACK /  PASS /  FAIL
 
 ### Criteria Checklist (if at gate)
 - [ ] T9.1: [Specific criterion]
@@ -145,7 +145,7 @@ Track 9.3: ████░░░░░░░░░░░░░░░░░░░
 
 ---
 
-## 🔗 ARTIFACTS & LINKS
+##  ARTIFACTS & LINKS
 
 **Dashboard:** [.codex/PHASE_9_COORDINATION_DASHBOARD.md](./PHASE_9_COORDINATION_DASHBOARD.md)  
 **Master Plan:** [.codex/PHASE_8_12_MASTER_EXECUTION_PLAN.md](./PHASE_8_12_MASTER_EXECUTION_PLAN.md)

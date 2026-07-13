@@ -1,0 +1,140 @@
+%% Agent-to-Skill Mapping — Aries-Serpent/_codex_
+%% Phase 3.12 — Component Relationship Diagrams
+%% How agents discover, invoke, and coordinate skills
+%% Evidence: agents/, skills-master-agent, AGENT_REGISTRY.yaml
+
+graph TB
+
+    %% ── Skill Registry ──────────────────────────────────────────────────────
+    subgraph SKILL_REG ["🗂️  Skill Registry  •  skills-master-agent"]
+        SKILL_CATALOG["Skill Catalog\n(name, version, tags)"]
+        SKILL_SCHEMA["Input/Output Schema\n(type hints)"]
+        SKILL_METADATA["Metadata\n(latency, cost, risk)"]
+        SKILL_CODE["Skill Implementation\n(Python modules)"]
+    end
+
+    %% ── Agent Task Analysis ─────────────────────────────────────────────────
+    subgraph ANALYSIS ["📋 Agent Task Analysis"]
+        PARSE_TASK["Parse Task\n(intent, constraints)"]
+        DECOMPOSE["Decompose Task\n(subtasks)"]
+        PRIORITIZE["Prioritize Subtasks\n(dependencies)"]
+    end
+
+    %% ── Skill Discovery ─────────────────────────────────────────────────────
+    subgraph DISCOVER ["🔍 Skill Discovery"]
+        QUERY_TAGS["Query by Tags\n(category, agent)"]
+        SEMANTIC_SEARCH["Semantic Search\n(embedding match)"]
+        FILTER_CONSTRAINTS["Filter by Constraints\n(latency, cost)"]
+        RANK_RELEVANCE["Rank by Relevance\n(match score)"]
+    end
+
+    PARSE_TASK --> QUERY_TAGS
+    DECOMPOSE --> SEMANTIC_SEARCH
+    PRIORITIZE --> FILTER_CONSTRAINTS
+    FILTER_CONSTRAINTS --> RANK_RELEVANCE
+
+    SKILL_CATALOG --> QUERY_TAGS
+    SKILL_METADATA --> FILTER_CONSTRAINTS
+
+    %% ── Skill Selection ─────────────────────────────────────────────────────
+    subgraph SELECT ["👉 Skill Selection"]
+        PICK_PRIMARY["Pick Primary Skill\n(best ranked)"]
+        PICK_BACKUP["Pick Backup Skill\n(fallback)"]
+        PLAN_SEQUENCE["Plan Sequence\n(skill chain)"]
+    end
+
+    RANK_RELEVANCE --> PICK_PRIMARY
+    RANK_RELEVANCE --> PICK_BACKUP
+    PICK_PRIMARY --> PLAN_SEQUENCE
+
+    %% ── Input Preparation ──────────────────────────────────────────────────
+    subgraph PREPARE ["⚙️  Input Preparation"]
+        EXTRACT_PARAMS["Extract Parameters\n(from task context)"]
+        VALIDATE_SCHEMA["Validate Schema\n(type, required)"]
+        COERCE_TYPES["Coerce Types\n(str → int, etc)"]
+        BUILD_KWARGS["Build Kwargs\n(skill parameters)"]
+    end
+
+    PICK_PRIMARY --> EXTRACT_PARAMS
+    SKILL_SCHEMA --> VALIDATE_SCHEMA
+    EXTRACT_PARAMS --> VALIDATE_SCHEMA
+    VALIDATE_SCHEMA --> COERCE_TYPES
+    COERCE_TYPES --> BUILD_KWARGS
+
+    %% ── Skill Invocation ────────────────────────────────────────────────────
+    subgraph INVOKE ["⚡ Skill Invocation"]
+        LOAD_SKILL["Load Skill Code\n(import module)"]
+        CALL_FUNC["Call Function\n(skill_name(**kwargs))"]
+        CAPTURE_OUTPUT["Capture Output\n(result, error)"]
+    end
+
+    BUILD_KWARGS --> LOAD_SKILL
+    LOAD_SKILL --> CALL_FUNC
+    CALL_FUNC --> CAPTURE_OUTPUT
+
+    %% ── Output Processing ───────────────────────────────────────────────────
+    subgraph OUTPUT_PROC ["📤 Output Processing"]
+        VALIDATE_OUTPUT["Validate Output\n(schema match)"]
+        EXTRACT_RESULT["Extract Result\n(from nested obj)"]
+        FORMAT_RESPONSE["Format Response\n(user-facing)"]
+    end
+
+    CAPTURE_OUTPUT --> VALIDATE_OUTPUT
+    VALIDATE_OUTPUT --> EXTRACT_RESULT
+    EXTRACT_RESULT --> FORMAT_RESPONSE
+
+    %% ── Error Handling ──────────────────────────────────────────────────────
+    subgraph ERROR_HANDLE ["🚨 Error Handling"]
+        CATCH_ERROR["Catch Exception\n(try-except)"]
+        CLASSIFY_ERROR["Classify Error\n(transient, fatal)"]
+        RETRY_LOGIC["Retry Skill\n(with backoff)"]
+        FALLBACK_SKILL["Use Fallback Skill\n(PICK_BACKUP)"]
+    end
+
+    CAPTURE_OUTPUT -->|"error"| CATCH_ERROR
+    CATCH_ERROR --> CLASSIFY_ERROR
+    CLASSIFY_ERROR -->|"transient"| RETRY_LOGIC
+    CLASSIFY_ERROR -->|"fatal"| FALLBACK_SKILL
+    FALLBACK_SKILL -.->|"repeat"| EXTRACT_PARAMS
+
+    %% ── Skill Chaining ──────────────────────────────────────────────────────
+    subgraph CHAIN ["🔗 Skill Chaining"]
+        IS_LAST["Last Skill?"]
+        PASS_OUTPUT["Pass Output\n(to next skill)"]
+        AGGREGATE["Aggregate Results\n(from all skills)"]
+    end
+
+    FORMAT_RESPONSE -->|"next"| IS_LAST
+    IS_LAST -->|"no"| PASS_OUTPUT
+    PASS_OUTPUT -.->|"next subtask"| DECOMPOSE
+    IS_LAST -->|"yes"| AGGREGATE
+
+    %% ── Monitoring & Logging ────────────────────────────────────────────────
+    subgraph MONITOR ["📊 Monitoring & Logging"]
+        LOG_INVOKE["Log Invocation\n(skill, input)"]
+        LOG_RESULT["Log Result\n(output, latency)"]
+        TRACK_LATENCY["Track Latency\n(execution time)"]
+        UPDATE_METRICS["Update Metrics\n(success rate)"]
+    end
+
+    CALL_FUNC --> LOG_INVOKE
+    CAPTURE_OUTPUT --> LOG_RESULT
+    LOAD_SKILL --> TRACK_LATENCY
+    CALL_FUNC --> TRACK_LATENCY
+    TRACK_LATENCY --> UPDATE_METRICS
+
+    %% ── Final Output ────────────────────────────────────────────────────────
+    AGGREGATE --> FINAL["✅ Final Result\n(to user/agent)"]
+
+    %% ── Styling ────────────────────────────────────────────────────────────
+    style SKILL_REG fill:#16213e,color:#e0e0e0
+    style ANALYSIS fill:#0f3460,color:#e0e0e0
+    style DISCOVER fill:#4a4e69,color:#fff
+    style SELECT fill:#533483,color:#fff
+    style PREPARE fill:#2d6a4f,color:#fff
+    style INVOKE fill:#1b4332,color:#fff
+    style OUTPUT_PROC fill:#457b9d,color:#fff
+    style ERROR_HANDLE fill:#e63946,color:#fff
+    style CHAIN fill:#665c84,color:#fff
+    style MONITOR fill:#2d6a4f,color:#fff
+    style FINAL fill:#1b4332,color:#fff

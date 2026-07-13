@@ -81,9 +81,9 @@
 |-------|---------------|------------------|
 | Phase 14.0 |  Complete |  DONE |
 | Phase 14.1 |  Ready | 🚧 EXECUTING |
-| Phase 14.2 |  Ready | 📋 Queued |
-| Phase 14.3 |  Ready | 📋 Queued |
-| Phase 14.4 |  Ready | 📋 Queued |
+| Phase 14.2 |  Ready |  Queued |
+| Phase 14.3 |  Ready |  Queued |
+| Phase 14.4 |  Ready |  Queued |
 
 ### AI Agency Policy Compliance Checklist
 
@@ -164,10 +164,10 @@ This roadmap provides a structured, phased approach to achieve 100% test coverag
 |--------|-------|---------------|--------|--------|--------|
 | `src/codex/logging/` | 8 | 2 | 8 | Critical - session logging | 🚧 |
 | `src/codex/cli/` | 3 | 1 | 3 | Critical - entry points | 🚧 |
-| `src/codex/utils/` | 5 | 1 | 5 | High - utility functions | 📋 |
-| `src/codex_ml/config/` | 3 | 0 | 3 | High - configuration | 📋 |
-| `src/codex_ml/cli/` | 25 | 3 | 15 | High - CLI commands | 📋 |
-| `src/codex_ml/data/` | 18 | 4 | 12 | High - data loading | 📋 |
+| `src/codex/utils/` | 5 | 1 | 5 | High - utility functions |  |
+| `src/codex_ml/config/` | 3 | 0 | 3 | High - configuration |  |
+| `src/codex_ml/cli/` | 25 | 3 | 15 | High - CLI commands |  |
+| `src/codex_ml/data/` | 18 | 4 | 12 | High - data loading |  |
 
 ### Top 10 Priority Modules (from Priority Matrix)
 
@@ -539,7 +539,7 @@ if complex_condition:  # pragma: no cover  #  Don't do this
 2.  Verify all existing tests pass
 3.  Phase 14.0 Complete - Foundation established
 4. 🚧 Begin Phase 14.1 - Core modules unit tests
-5. 📋 Update coverage threshold to 30% after Phase 14.1
+5.  Update coverage threshold to 30% after Phase 14.1
 
 ### Phase 14.1 Implementation Checklist
 

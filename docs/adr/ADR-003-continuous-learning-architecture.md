@@ -5,7 +5,7 @@
 **Last Updated: 2026-06-22
 
 **Status:** Accepted
-**Date:** 2025-01-15
+**Date:2026-07-13
 **Deciders:** codex-ml platform team
 **Technical Story:** Gap 36/38/39 — continuous learning pipeline, automated retraining, feedback loop
 

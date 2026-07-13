@@ -601,8 +601,8 @@ class CapabilityDetector:
 - **Detailed User Guide:** .codex/archive/deprecated/AGENTS.md ( Complete)
 - **Developer Guide:** agents/prompts/ARCHITECTURE.md ( Complete)
 - **API Reference:** agents/prompts/API_MODEL.md ( Complete)
-- **Troubleshooting Guide:** (🔄 To be created)
-- **Video Tutorials:** (📝 Planned)
+- **Troubleshooting Guide:** ( To be created)
+- **Video Tutorials:** ( Planned)
 
 ### 8.2 Support Resources
 - **GitHub Issues:** For bug reports and feature requests

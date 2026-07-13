@@ -11,7 +11,7 @@
 
 **Objective**: Provide a high-level cognitive map of the `_codex_` repository including components, flows, dependencies, and operational context for AI agents and human contributors.
 
-**Energy Level**: ⚡⚡⚡⚡ (4/5 - High Priority Reference Document)
+**Energy Level**:  (4/5 - High Priority Reference Document)
 
 **Status**:  Active
 
@@ -373,7 +373,7 @@ python -m scripts.space_traversal.audit_runner agent-interface
 
 ## Navigation for AI Agents
 
-### Getting Started
+## Getting Started
 1. **Architecture**: This doc → `docs/ARCHITECTURE.md`
 2. **Capabilities**: `docs/capabilities/*.md`
 3. **Workflows**: `agents/TOKENIZED_WORKFLOWS.md`
@@ -412,7 +412,7 @@ python -m scripts.space_traversal.audit_runner agent-interface
 
 ---
 
-## ⚖️ Verification Checklist
+## ️ Verification Checklist
 
 ### Architecture Accuracy
 - [x] component structure matches current repository layout
@@ -427,13 +427,13 @@ python -m scripts.space_traversal.audit_runner agent-interface
 - [x] Commands and paths are accurate
 
 ### Currency
-- [x] Updated to reflect latest repository state (2026-01-23)
+- [x] Updated 2026-07-13
 - [x] Version number incremented (2.0.0)
 - [x] Iteration-based workflow language used throughout
 
 ---
 
-## 📈 Success Metrics
+##  Success Metrics
 
 | Metric | Target | Current | Status |
 |--------|--------|---------|--------|
@@ -448,11 +448,11 @@ python -m scripts.space_traversal.audit_runner agent-interface
 
 | Principle | Application | Section |
 |-----------|-------------|---------|
-| Path 🛤️ | Clear navigation from overview to detailed components | All sections |
-| Fields 🔄 | Data flows show transformation through pipeline | Data Flows |
-| Patterns 👁️ | Architecture patterns visible and documented | Components |
-| Redundancy 🔀 | Multiple entry points and cross-references | Navigation |
-| Balance ⚖️ | Balanced detail across all major components | All sections |
+| Path ️ | Clear navigation from overview to detailed components | All sections |
+| Fields  | Data flows show transformation through pipeline | Data Flows |
+| Patterns ️ | Architecture patterns visible and documented | Components |
+| Redundancy  | Multiple entry points and cross-references | Navigation |
+| Balance ️ | Balanced detail across all major components | All sections |
 
 ---
 
@@ -470,15 +470,15 @@ python -m scripts.space_traversal.audit_runner agent-interface
 
 ---
 
-## ⚡ Energy Distribution
+##  Energy Distribution
 
 | Section | Energy | Rationale |
 |---------|--------|-----------|
-| Architecture Overview | ⚡⚡⚡⚡ | Critical for understanding system structure |
-| Core Components | ⚡⚡⚡⚡⚡ | Essential for development and maintenance |
-| Data Flows | ⚡⚡⚡ | Important for troubleshooting and optimization |
-| CI/CD Pipeline | ⚡⚡⚡ | Key for deployment and automation |
-| Quick Reference | ⚡⚡ | Utility section for common tasks |
+| Architecture Overview |  | Critical for understanding system structure |
+| Core Components |  | Essential for development and maintenance |
+| Data Flows |  | Important for troubleshooting and optimization |
+| CI/CD Pipeline |  | Key for deployment and automation |
+| Quick Reference |  | Utility section for common tasks |
 
 ---
 

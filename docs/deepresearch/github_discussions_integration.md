@@ -3,7 +3,7 @@
 **Version:** v0.2.1
 
 > **Generated:** 2026-03-25 | **Author:** Copilot Coding Agent (S192) | **PR:** #3741
-> **Roles:** [Primary: Research Integrator], [Secondary: CI Engineer] ⚡ Energy: 9
+> **Roles:** [Primary: Research Integrator], [Secondary: CI Engineer]  Energy: 9
 > **Target:** `https://github.com/Aries-Serpent/_codex_/discussions`
 > **Index:** `docs/deepresearch/INDEX.md`
 

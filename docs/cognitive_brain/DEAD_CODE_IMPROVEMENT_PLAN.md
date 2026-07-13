@@ -55,7 +55,7 @@ response token.
 
 ---
 
-## 🟡 Remaining Backlog (Pending Design Decisions)
+##  Remaining Backlog (Pending Design Decisions)
 
 > CB-001, CB-002, CB-006 acceptance test gaps closed in S123.
 > CB-004, CB-005 acceptance tests closed in S124.
@@ -115,7 +115,7 @@ Items 1–5 are closed (done during PR #3605/3607). Items 6–12 carry forward:
 
 ---
 
-## 🔗 Related Issues
+##  Related Issues
 
 - PR #3586 — original dead code scan and fixes  
 - PR #3604 — gap analysis and stub completion (S129–S130)  
@@ -142,7 +142,7 @@ Items 1–5 are closed (done during PR #3605/3607). Items 6–12 carry forward:
 
 | Priority | Area | Action | Owner | Status |
 |----------|------|--------|-------|--------|
-| P0 | Security | Token rotation end-to-end test with real GitHub App | Human admin | ⏳ Awaiting admin |
+| P0 | Security | Token rotation end-to-end test with real GitHub App | Human admin |  Awaiting admin |
 | P1 | Cognitive Brain | Wire `PatternCompressor` metrics to monitoring dashboard | Agent |  S131 — `/health` endpoint |
 | P1 | Cognitive Brain | Add `BrainClient` health check to `/api/health` endpoint | Agent |  S131 — health diagnostics |
 | P2 | RAG | Add distributed cache backend (Redis) for multi-node deployments | Agent |  S116 — RedisBackend |
@@ -156,7 +156,7 @@ Items 1–5 are closed (done during PR #3605/3607). Items 6–12 carry forward:
 
 ---
 
-### Phase 5: CI Robustness & Observability — 🔄 ACTIVE (PR #3607 / S138)
+### Phase 5: CI Robustness & Observability —  ACTIVE (PR #3607 / S138)
 
 | Priority | Area | Action | Owner | Status |
 |----------|------|--------|-------|--------|
@@ -165,11 +165,11 @@ Items 1–5 are closed (done during PR #3605/3607). Items 6–12 carry forward:
 | P0 | Workflows | `root-org-validation.yml` template indentation fixed (array-join) | Agent |  S138 — no 4-space code-block rendering |
 | P1 | Bot Comments | All 9 PR bot comment types race-safe upsert + retry | Agent |  S136–S137 — complete |
 | P1 | Logging | `session_logger.py`, `session_hooks.py` import ordering + retry dedup | Agent |  S138 — stdlib-first, 2-iter loop |
-| P2 | CODEX_VERY_STALE_BRANCH_DAYS | Promote policy to `.codex/guardrails.md` | Agent | ⏳ Next session |
-| P2 | Coverage | Add `@pytest.mark.slow` to any remaining unmarked long-running tests | Agent | ⏳ Next session |
-| P2 | CI Monitor | Add `session-analysis-agent` post-merge scan to verify `main` health | Agent | ⏳ Next session |
-| P3 | Observability | Add grafana-style workflow-run timing histogram to CI dashboard | Agent | ⏳ Backlog |
-| P3 | Observability | Emit OTEL span for `pr_comment_consolidator.py` upsert latency | Agent | ⏳ Backlog |
+| P2 | CODEX_VERY_STALE_BRANCH_DAYS | Promote policy to `.codex/guardrails.md` | Agent |  Next session |
+| P2 | Coverage | Add `@pytest.mark.slow` to any remaining unmarked long-running tests | Agent |  Next session |
+| P2 | CI Monitor | Add `session-analysis-agent` post-merge scan to verify `main` health | Agent |  Next session |
+| P3 | Observability | Add grafana-style workflow-run timing histogram to CI dashboard | Agent |  Backlog |
+| P3 | Observability | Emit OTEL span for `pr_comment_consolidator.py` upsert latency | Agent |  Backlog |
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "Phase 4 — Production Hardening  COMPLETE", "PatternCompressor /health "'}}%%
@@ -187,15 +187,15 @@ flowchart TD
         P4J["capability_detectors 25 tests "]
     end
 
-    subgraph P5["Phase 5 — CI Robustness 🔄 ACTIVE"]
+    subgraph P5["Phase 5 — CI Robustness  ACTIVE"]
         P5A["Fence-opener bypass prevention  S138"]
         P5B["PRECOMMIT_FILES post-sync augment  S138"]
         P5C["Template-literal indentation fix  S138"]
         P5D["9 bot-comment upsert types  S136-S137"]
         P5E["Logging import ordering  S138"]
-        P5F["CODEX_VERY_STALE_BRANCH_DAYS guardrail ⏳"]
-        P5G["slow-test marker audit ⏳"]
-        P5H["session-analysis post-merge scan ⏳"]
+        P5F["CODEX_VERY_STALE_BRANCH_DAYS guardrail "]
+        P5G["slow-test marker audit "]
+        P5H["session-analysis post-merge scan "]
     end
 
     subgraph P6["Phase 6 — Observability 🔮 PLANNED"]

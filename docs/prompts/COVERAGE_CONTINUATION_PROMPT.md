@@ -34,7 +34,7 @@ Primary patterns still needing fixes:
 
 ---
 
-## 🔧 RESUME INSTRUCTIONS
+##  RESUME INSTRUCTIONS
 
 ```
 @copilot Resume fixing test failures and raising coverage to 100%.
@@ -157,7 +157,7 @@ python3 -m pytest tests/ --cov=agents --cov=src --cov-report=html -q
 
 ---
 
-## 🔄 ITERATION CYCLE
+##  ITERATION CYCLE
 
 1. **Run tests** → Identify failures
 2. **Categorize** → Group by error type
@@ -171,7 +171,7 @@ python3 -m pytest tests/ --cov=agents --cov=src --cov-report=html -q
 
 ---
 
-## 📝 NOTES
+##  NOTES
 
 - The repository uses `pytest` for testing
 - Tests are in `tests/agents/` directory
@@ -183,7 +183,7 @@ python3 -m pytest tests/ --cov=agents --cov=src --cov-report=html -q
 
 ---
 
-##  QUICK START
+## Quick Start
 
 Copy and paste this to resume:
 

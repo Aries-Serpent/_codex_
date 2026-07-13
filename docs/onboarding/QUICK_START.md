@@ -1,4 +1,4 @@
-# Quick Start Guide for _codex_ Contributors
+## Quick Start Guide for _codex_ Contributors
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
@@ -25,13 +25,13 @@ Best for: Testing examples, simple scripts, learning
 
 ---
 
-## 📋 Prerequisites
+##  Prerequisites
 
 | Requirement | Linux | macOS | Windows | Notes |
 |-------------|-------|-------|---------|-------|
 | **Python 3.10+** |  apt/dnf |  Homebrew |  winget/Chocolatey | `python --version` |
 | **Git 2.30+** |  apt/dnf |  Homebrew |  winget | `git --version` |
-| **C/C++ compiler** |  gcc/g++ |  Xcode CLT | ⚠️ MSVC | For PyTorch compilation |
+| **C/C++ compiler** |  gcc/g++ |  Xcode CLT | ️ MSVC | For PyTorch compilation |
 | **~2 GB free disk** | Required | Required | Required | Source + dependencies |
 
 **Check prerequisites:**
@@ -241,7 +241,7 @@ _codex_/
 
 ---
 
-## 🔧 Development Workflow
+##  Development Workflow
 
 ### 1. Create a Branch
 
@@ -351,7 +351,7 @@ for issue in report.issues:
 
 ---
 
-## 🔍 Common Tasks
+##  Common Tasks
 
 ### Adding a New Feature
 

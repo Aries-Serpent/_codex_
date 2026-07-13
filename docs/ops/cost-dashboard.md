@@ -12,7 +12,7 @@
 
 <div id="cost-dashboard">
   <div id="dash-loading" style="text-align:center;padding:3rem;font-size:1.1rem;color:#888;">
-    ⏳ Loading cost data…
+     Loading cost data…
   </div>
 </div>
 
@@ -173,7 +173,7 @@
 
   /* ── Colour helpers ───────────────────────────────────────────────────── */
   const TIER_COLOR = { GREEN: '#10b981', YELLOW: '#f59e0b', RED: '#ef4444' };
-  const TIER_EMOJI = { GREEN: '', YELLOW: '⚠️', RED: '' };
+  const TIER_EMOJI = { GREEN: '', YELLOW: '️', RED: '' };
 
   function pctColor(pct) {
     if (pct < 60) return '#10b981';
@@ -331,7 +331,7 @@ ${rrTable}
       new Chart(tierCtx, {
         type: 'doughnut',
         data: {
-          labels: [' GREEN', '🟡 YELLOW', ' RED'],
+          labels: [' GREEN', ' YELLOW', ' RED'],
           datasets: [{
             data: [tc.GREEN, tc.YELLOW, tc.RED],
             backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
@@ -409,7 +409,7 @@ ${rrTable}
     .catch(err => {
       document.getElementById('cost-dashboard').innerHTML = `
 <div style="padding:2rem;text-align:center;opacity:.6;">
-  <p>⚠️ Could not load cost data (<code>${err.message}</code>).</p>
+  <p>️ Could not load cost data (<code>${err.message}</code>).</p>
   <p style="font-size:.85rem;">The dashboard data is generated at Pages build time.
   If you are viewing a preview build, the data file may not yet be present.</p>
   <p style="font-size:.85rem;">

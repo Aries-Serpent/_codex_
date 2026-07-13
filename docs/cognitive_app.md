@@ -181,7 +181,7 @@ VITE_CODEX_KEY=demo-key               # API key
 - Component documentation
 - Build and deployment configuration
 
-⚠️ **In Progress:**
+️ **In Progress:**
 - Backend API implementation (0%)
 - Enhanced code pipeline (30%)
 - WebSocket real-time updates (0%)
@@ -197,8 +197,8 @@ VITE_CODEX_KEY=demo-key               # API key
 1.  Integrate files into repository
 2.  Configure build for GitHub Pages
 3.  Test local build
-4. 🔄 Deploy to GitHub Pages
-5. 🔄 Verify accessibility
+4.  Deploy to GitHub Pages
+5.  Verify accessibility
 
 ### Short-term
 1. Implement FastAPI backend services

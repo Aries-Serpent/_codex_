@@ -6,7 +6,7 @@
 
 **Purpose:** Enable AI assistants to interact with GitHub repositories, run tests, and perform development tasks through standardized Model Context Protocol servers.
 
-**Date:** 2025-12-18  
+**Date:2026-07-13
 **Repository:** Aries-Serpent/_codex_
 
 ---
@@ -381,9 +381,9 @@ Watch for MCP support in JetBrains IDEs.
 │   claude_desktop_config.json                    │
 │                                                  │
 │ Required Token Scopes:                          │
-│ ✓ repo                                          │
-│ ✓ workflow                                      │
-│ ✓ read:org                                      │
+│  repo                                          │
+│  workflow                                      │
+│  read:org                                      │
 │                                                  │
 │ Test Setup:                                     │
 │ "List workflows in Aries-Serpent/_codex_"      │

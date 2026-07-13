@@ -3,7 +3,7 @@
 **Version:** v0.2.1
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
- Roles: [Primary: Governance Lead], [Secondary: Reviewer] ⚡ Energy: 5
+ Roles: [Primary: Governance Lead], [Secondary: Reviewer]  Energy: 5
 
 RACI
 

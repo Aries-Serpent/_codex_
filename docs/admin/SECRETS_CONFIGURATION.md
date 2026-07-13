@@ -8,7 +8,7 @@ Complete guide for configuring all required secrets for the GitHub Agent PR Revi
 
 ---
 
-## 📋 Overview
+##  Overview
 
 **Required Secrets:**
 1. GitHub App ID
@@ -256,7 +256,7 @@ cat /tmp/response.json
 
 ---
 
-## 🚨 Troubleshooting
+##  Troubleshooting
 
 ### Error: "Secret not found"
 
@@ -315,7 +315,7 @@ ssh-keygen -p -m PEM -f private-key.pem
 
 ---
 
-## 🔄 Multi-Environment Setup
+##  Multi-Environment Setup
 
 ### Development
 ```bash
@@ -340,7 +340,7 @@ aws secretsmanager create-secret --name github-app-private-key-prod --secret-str
 
 ---
 
-## 📝 Quick Reference
+##  Quick Reference
 
 **Environment Variables:**
 ```bash
@@ -395,7 +395,7 @@ Triggered by specific events, manual invocation, or scheduled workflows.
 
 
 
-## ⚖️ Verification Checklist
+## ️ Verification Checklist
 
 ### Prerequisites
 - [ ] Required tools and dependencies installed
@@ -419,7 +419,7 @@ Triggered by specific events, manual invocation, or scheduled workflows.
 
 
 
-## 📈 Success Metrics
+##  Success Metrics
 
 | Metric | Target | Current | Status | Iteration |
 |--------|--------|---------|--------|-----------|
@@ -440,30 +440,30 @@ Triggered by specific events, manual invocation, or scheduled workflows.
 
 ## ⚛️ Physics Alignment
 
-### Path 🛤️ (Information Flow)
+### Path ️ (Information Flow)
 ```
 Input → Validation → Processing → Output → Verification
 ```
 
-### Fields 🔄 (State Management)
+### Fields  (State Management)
 - **Input State**: Raw parameters and context
 - **Processing State**: Transformation and execution
 - **Output State**: Results and artifacts
 - **Feedback State**: Validation and reporting
 
-### Patterns 👁️ (Observable Behaviors)
+### Patterns ️ (Observable Behaviors)
 - Consistent execution patterns
 - Predictable error handling
 - Standard output formats
 - Repeatable results
 
-### Redundancy 🔀 (Failure Recovery)
+### Redundancy  (Failure Recovery)
 - Automatic retry on transient failures
 - Fallback strategies for degraded operation
 - State preservation across failures
 - Graceful degradation patterns
 
-### Balance ⚖️ (Resource Optimization)
+### Balance ️ (Resource Optimization)
 - CPU: Optimized processing algorithms
 - Memory: Efficient data structures
 - I/O: Batched operations where possible
@@ -473,7 +473,7 @@ Input → Validation → Processing → Output → Verification
 
 
 
-## ⚡ Energy Distribution
+##  Energy Distribution
 
 ### Priority Breakdown
 
@@ -566,7 +566,7 @@ Input Processing [20%] → Core Execution [40%] → Validation [20%] → Reporti
 | File System Access |  | Read/Write | Scoped to workspace |
 | Network Access |  | Restricted | Approved endpoints only |
 | Process Execution |  | Sandboxed | Monitored execution |
-| Database Access | ⚠️ | Read-only | If configured |
+| Database Access | ️ | Read-only | If configured |
 | API Integrations |  | Authenticated | Token-based |
 | Git Operations |  | Full | Within repository |
 
@@ -626,7 +626,7 @@ prompt: |
 
 
 
-## 🔗 Integration Patterns
+##  Integration Patterns
 
 ### Workflow Integration
 
@@ -663,7 +663,7 @@ graph LR
 
 
 
-## ⚡ Activation Commands
+##  Activation Commands
 
 ### Manual Activation
 
@@ -786,7 +786,7 @@ requests>=2.31.0
 
 
 
-## ⚠️ Error Handling
+## ️ Error Handling
 
 ### Common Failure Modes
 
@@ -829,7 +829,7 @@ requests>=2.31.0
 | Transient | Low |  Yes (3x) | After retries |
 | Configuration | Medium |  No | Immediate |
 | Permission | High |  No | Immediate |
-| System | Critical | ⚠️ Once | Immediate |
+| System | Critical | ️ Once | Immediate |
 
 ### Recovery Patterns
 

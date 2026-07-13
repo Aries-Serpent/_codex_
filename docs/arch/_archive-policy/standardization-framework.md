@@ -242,7 +242,7 @@ python -m codex.cli archive show-standardization-status
 
 # Output:
 # ============================================================
-# 📋 Archive Standardization Status
+#  Archive Standardization Status
 # ============================================================
 # Standard Version: 2.0
 # SLSA Level: L3
@@ -275,8 +275,8 @@ python -m codex.cli archive validate-standardization --check-schema-version --re
 python -m codex.cli archive migrate-evidence-to-v2
 
 # Output:
-# ⚠️  This will modify .codex/evidence/archive_ops.jsonl. Continue? [y/N]: y
-# 🔄 Starting migration v1 → v2...
+# ️  This will modify .codex/evidence/archive_ops.jsonl. Continue? [y/N]: y
+#  Starting migration v1 → v2...
 # 📦 Backed up original to: .codex/evidence/archive_ops.jsonl.backup
 #  Migration complete: 1234 records converted
 # v1 records: 0

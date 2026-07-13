@@ -63,7 +63,7 @@ A comprehensive repository-wide QA walkthrough has been successfully executed, p
 | **Production Auth** | Examples only | Production ready | Not ready | IP-004 (3-4 phases) |
 | **Security Review** | 137 files | All reviewed | Pending | IP-003 (1 phase) |
 
-### 🟡 MEDIUM PRIORITY
+###  MEDIUM PRIORITY
 
 | Issue | Details | Action |
 |-------|---------|--------|
@@ -100,7 +100,7 @@ Dependencies:              56 runtime + 9 requirement files
 | ID | Title | Priority | Effort | Timeline | Dependencies |
 |----|-------|----------|--------|----------|--------------|
 | **IP-001** | Increase Test Coverage to 70% |  HIGH | Large | 4-6 phases | None |
-| **IP-002** | Consolidate Legacy Configuration | 🟡 MEDIUM | Medium | 1-2 phases | None |
+| **IP-002** | Consolidate Legacy Configuration |  MEDIUM | Medium | 1-2 phases | None |
 | **IP-003** | Enhance Security Documentation |  HIGH | Small | 1 phase | None |
 | **IP-004** | Production-Ready Authentication |  HIGH | Large | 3-4 phases | IP-003 |
 | **IP-005** | Dependency Audit and Update |  HIGH | Medium | 2 phases | None |
@@ -126,8 +126,8 @@ Dependencies:              56 runtime + 9 requirement files
 | Configuration Management |  Active |  Yes | conf/, configs/ |
 | Plugin System |  Active |  Yes | src/codex_ml/plugins/ |
 | AST Analysis |  Active |  Yes | src/codex/ast/ |
-| Authentication | ⚠️ Partial |  No | examples/authentication/ |
-| RAG Pipeline | ⚠️ Partial |  No | examples/ |
+| Authentication | ️ Partial |  No | examples/authentication/ |
+| RAG Pipeline | ️ Partial |  No | examples/ |
 
 ---
 
@@ -140,7 +140,7 @@ Dependencies:              56 runtime + 9 requirement files
 | Dependencies | No CVEs | Updated |  **PASS** |
 | Linting | Pass | Configured |  **PASS** |
 
-**Overall**: 🟡 **PARTIAL** - Would fail coverage gate
+**Overall**:  **PARTIAL** - Would fail coverage gate
 
 ---
 

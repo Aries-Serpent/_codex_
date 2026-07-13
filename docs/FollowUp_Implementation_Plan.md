@@ -3,7 +3,7 @@
 **Version:** v0.2.1
 
 > Generated: 2026-06-22 01:40:18 | Author: mbaetiong  
-Roles: [Primary], [Secondary] ⚡ Energy: [5]
+Roles: [Primary], [Secondary]  Energy: [5]
 
 ## Status Update
 - P1.1 (Resume Logic) 

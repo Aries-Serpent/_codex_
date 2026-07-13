@@ -1,0 +1,167 @@
+%% Session Metadata Propagation — Aries-Serpent/_codex_
+%% Phase 3.15 — Component Relationship Diagrams
+%% Context propagation through entire system
+%% Evidence: scripts/cognitive/, src/codex/logging/, .codex/
+
+graph TD
+
+    %% ── Session Initialization ──────────────────────────────────────────────
+    subgraph INIT ["🎯 Session Initialization"]
+        CREATE_SESSION["Create Session\n(session_id = UUID)"]
+        TIMESTAMP["Add Timestamp\n(session_start)"]
+        USER_ID["Capture User ID\n(from auth)"]
+        ORG_REPO["Capture Org/Repo\n(context)"]
+        BUILD_CONTEXT["Build Context Object\n(dict/dataclass)"]
+    end
+
+    CREATE_SESSION --> TIMESTAMP
+    TIMESTAMP --> USER_ID
+    USER_ID --> ORG_REPO
+    ORG_REPO --> BUILD_CONTEXT
+
+    %% ── Context Components ──────────────────────────────────────────────────
+    subgraph CTX_COMP ["📦 Context Components"]
+        CTX_ID["session_id"]
+        CTX_USER["user_id"]
+        CTX_ORG["org/repo"]
+        CTX_TIME["start_time"]
+        CTX_PARENT["parent_session_id\n(if delegated)"]
+        CTX_TAGS["tags/labels"]
+    end
+
+    BUILD_CONTEXT --> CTX_ID
+    BUILD_CONTEXT --> CTX_USER
+    BUILD_CONTEXT --> CTX_ORG
+    BUILD_CONTEXT --> CTX_TIME
+    BUILD_CONTEXT --> CTX_PARENT
+    BUILD_CONTEXT --> CTX_TAGS
+
+    %% ── Function/Method Calls ───────────────────────────────────────────────
+    subgraph PROP1 ["↓ Propagation: Function Calls"]
+        PASS_CTX1["Pass Context\n(as parameter)"]
+        CLOSURE_CTX["Store in Closure\n(thread-local)"]
+        IMPLICIT_CTX["Implicit Context\n(from thread var)"]
+    end
+
+    CTX_ID --> PASS_CTX1
+    PASS_CTX1 --> CLOSURE_CTX
+    CLOSURE_CTX --> IMPLICIT_CTX
+
+    %% ── Logging & Events ────────────────────────────────────────────────────
+    subgraph PROP2 ["↓ Propagation: Logging"]
+        LOG_ATTACH["Attach Context\n(to every log)"]
+        LOG_STRUCTURE["Structured Log\n({session_id, event})"]
+        LOG_STORE["Store in DB\n(session_id → logs)"]
+    end
+
+    IMPLICIT_CTX --> LOG_ATTACH
+    LOG_ATTACH --> LOG_STRUCTURE
+    LOG_STRUCTURE --> LOG_STORE
+
+    %% ── Agent/Skill Execution ───────────────────────────────────────────────
+    subgraph PROP3 ["↓ Propagation: Agent Execution"]
+        AGENT_CTX["Pass to Agent\n(in environment)"]
+        SKILL_CTX["Pass to Skill\n(as kwargs)"]
+        EXEC_CONTEXT["Execution Metadata\n(agent, skill, timestamp)"]
+    end
+
+    IMPLICIT_CTX --> AGENT_CTX
+    AGENT_CTX --> SKILL_CTX
+    SKILL_CTX --> EXEC_CONTEXT
+
+    %% ── Nested Contexts (Delegation) ────────────────────────────────────────
+    subgraph NEST ["🔄 Nested Contexts (Delegation)"]
+        CREATE_CHILD["Create Child Context\n(from parent)"]
+        INHERIT_ATTRS["Inherit Attributes\n(user, org, time)"]
+        ADD_CHILD_ID["Add Child Session ID\n(unique)"]
+        LINK_PARENT["Link to Parent\n(parent_session_id)"]
+    end
+
+    AGENT_CTX --> CREATE_CHILD
+    CTX_COMP --> INHERIT_ATTRS
+    CREATE_CHILD --> ADD_CHILD_ID
+    ADD_CHILD_ID --> LINK_PARENT
+
+    %% ── Memory Storage ──────────────────────────────────────────────────────
+    subgraph MEMORY ["💾 Memory Storage"]
+        STM_CTX["Short-Term Memory\n(current session)"]
+        LTM_CTX["Long-Term Memory\n(pattern learning)"]
+        METADATA_DB["Metadata DB\n(session → metadata)"]
+    end
+
+    LOG_STORE --> STM_CTX
+    STM_CTX --> LTM_CTX
+    EXEC_CONTEXT --> METADATA_DB
+
+    %% ── Query & Retrieval ───────────────────────────────────────────────────
+    subgraph QUERY ["🔍 Query & Retrieval"]
+        FILTER_BY_SESSION["Filter by Session ID\n(logs, metrics)"]
+        FIND_RELATED["Find Related Sessions\n(same user, org)"]
+        HISTORICAL_CONTEXT["Historical Context\n(recent sessions)"]
+    end
+
+    METADATA_DB --> FILTER_BY_SESSION
+    FILTER_BY_SESSION --> FIND_RELATED
+    FIND_RELATED --> HISTORICAL_CONTEXT
+
+    %% ── Observability Integration ───────────────────────────────────────────
+    subgraph OBS ["📊 Observability Integration"]
+        TRACE_ID["Trace ID\n(= session_id)"]
+        SPAN_CONTEXT["Span Context\n(nested)"]
+        DISTRIBUTED_TRACE["Distributed Trace\n(show call tree)"]
+    end
+
+    CTX_ID --> TRACE_ID
+    EXEC_CONTEXT --> SPAN_CONTEXT
+    TRACE_ID --> DISTRIBUTED_TRACE
+    SPAN_CONTEXT --> DISTRIBUTED_TRACE
+
+    %% ── Output & Reporting ─────────────────────────────────────────────────
+    subgraph REPORT ["📋 Output & Reporting"]
+        SESSION_SUMMARY["Session Summary\n(duration, events)"]
+        AUDIT_LOG["Audit Log\n(who, what, when)"]
+        ACCOUNTABILITY["Accountability Report\n(.codex/aftermath/)"]
+    end
+
+    HISTORICAL_CONTEXT --> SESSION_SUMMARY
+    LOG_STORE --> AUDIT_LOG
+    SESSION_SUMMARY --> ACCOUNTABILITY
+    AUDIT_LOG --> ACCOUNTABILITY
+
+    %% ── Error Context ───────────────────────────────────────────────────────
+    subgraph ERROR_CTX ["🚨 Error Context"]
+        ATTACH_ERROR_CTX["Attach Full Context\n(to exception)"]
+        LOG_ERROR_CTX["Log Error Context\n(for debugging)"]
+        CREATE_INCIDENT["Create Incident\n(with context)"]
+    end
+
+    LOG_STORE -.->|"on error"| ATTACH_ERROR_CTX
+    ATTACH_ERROR_CTX --> LOG_ERROR_CTX
+    LOG_ERROR_CTX --> CREATE_INCIDENT
+
+    %% ── Cleanup ─────────────────────────────────────────────────────────────
+    subgraph CLEANUP ["🧹 Cleanup"]
+        SESSION_END["End Session\n(timestamp)"]
+        FINAL_FLUSH["Final Flush\n(logs to DB)"]
+        COMPRESS_LOGS["Compress Logs\n(if large)")
+        ARCHIVE["Archive to Cold Storage\n(if old)")
+    end
+
+    ACCOUNTABILITY --> SESSION_END
+    SESSION_END --> FINAL_FLUSH
+    FINAL_FLUSH --> COMPRESS_LOGS
+    COMPRESS_LOGS --> ARCHIVE
+
+    %% ── Styling ────────────────────────────────────────────────────────────
+    style INIT fill:#16213e,color:#e0e0e0
+    style CTX_COMP fill:#0f3460,color:#e0e0e0
+    style PROP1 fill:#4a4e69,color:#fff
+    style PROP2 fill:#457b9d,color:#fff
+    style PROP3 fill:#533483,color:#fff
+    style NEST fill:#2d6a4f,color:#fff
+    style MEMORY fill:#665c84,color:#fff
+    style QUERY fill:#4a4e69,color:#fff
+    style OBS fill:#1a1a2e,color:#e0e0e0
+    style REPORT fill:#1b4332,color:#fff
+    style ERROR_CTX fill:#e63946,color:#fff
+    style CLEANUP fill:#2d6a4f,color:#fff

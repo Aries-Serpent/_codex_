@@ -57,7 +57,7 @@ Total Runtime: < 1 second
 ### CLI Module Tests
 ```
  43 tests PASSED (lightweight mode)
-⚠️  34 tests require typer (skipped in CI)
+️  34 tests require typer (skipped in CI)
 Total Runtime: < 1 second
 ```
 

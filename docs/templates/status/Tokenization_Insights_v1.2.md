@@ -3,7 +3,7 @@
 **Version:** v0.2.1
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
- Roles: [Primary: Tokenization Lead], [Secondary: Offline Readiness Reviewer] ⚡ Energy: 5
+ Roles: [Primary: Tokenization Lead], [Secondary: Offline Readiness Reviewer]  Energy: 5
 
 Checklist
 

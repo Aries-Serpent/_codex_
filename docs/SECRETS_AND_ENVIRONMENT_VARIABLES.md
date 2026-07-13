@@ -23,8 +23,8 @@
   - [Nox / ML Pipeline (`noxfile.py`, `scripts/`)](#nox--ml-pipeline-noxfilepy-scripts)
   - [Cognitive Brain & Session (`.codex/CRITICAL_REPOSITORY_VARIABLES.md`)](#cognitive-brain--session-codexcritical_repository_variablesmd)
   - [CI/CD Timeouts & Parallelism (`.codex/CRITICAL_REPOSITORY_VARIABLES.md`)](#cicd-timeouts--parallelism-codexcritical_repository_variablesmd)
-- [🔧 Token Chain](#-token-chain)
-- [🔄 Secret Rotation Schedule](#-secret-rotation-schedule)
+- [ Token Chain](#-token-chain)
+- [ Secret Rotation Schedule](#-secret-rotation-schedule)
 - [🧩 `settings/variables/agents` — Recommended Additions](#-settingsvariablesagents--recommended-additions)
 - [Workflow Permissions Reference](#workflow-permissions-reference)
 - [🗺️ Workflow & Agent Variable Usage Map](#-workflow--agent-variable-usage-map)
@@ -259,15 +259,15 @@ These are injected into the Copilot agent sandbox via `copilot-setup-steps.yml`.
 
 | Secret | Purpose | Security Level | Age <!-- pragma: allowlist secret --> |
 |--------|---------|----------------|-----|
-| `CODECOV_TOKEN` | Upload coverage reports to Codecov | MEDIUM | 5 months ⚠️ <!-- pragma: allowlist secret --> |
+| `CODECOV_TOKEN` | Upload coverage reports to Codecov | MEDIUM | 5 months ️ <!-- pragma: allowlist secret --> |
 | `CODEX_ADMIN_KEY` | Admin-level operations key | CRITICAL | 3 months |
 | `CODEX_BACKUP_KEY` | Fallback key for write operations | CRITICAL | 3 months |
 | `CODEX_MASTER_KEY` | Master key for all token-chain write ops | CRITICAL | 3 months <!-- pragma: allowlist secret --> |
-| `HF_TOKEN` | HuggingFace Hub access token | HIGH | 5 months ⚠️ <!-- pragma: allowlist secret --> |
-| `NPM_TOKEN` | npm package publishing token | HIGH | 5 months ⚠️ <!-- pragma: allowlist secret --> |
-| `PYPI_TOKEN` | PyPI package publishing token | HIGH | 5 months ⚠️ <!-- pragma: allowlist secret --> |
+| `HF_TOKEN` | HuggingFace Hub access token | HIGH | 5 months ️ <!-- pragma: allowlist secret --> |
+| `NPM_TOKEN` | npm package publishing token | HIGH | 5 months ️ <!-- pragma: allowlist secret --> |
+| `PYPI_TOKEN` | PyPI package publishing token | HIGH | 5 months ️ <!-- pragma: allowlist secret --> |
 | `RAG_OPENAI_KEY` | Dedicated OpenAI key for RAG pipeline | HIGH | 4 months |
-| `_CODEX_ACTION_RUNNER` | Actions runner registration token | HIGH | 5 months ⚠️ <!-- pragma: allowlist secret --> |
+| `_CODEX_ACTION_RUNNER` | Actions runner registration token | HIGH | 5 months ️ <!-- pragma: allowlist secret --> |
 | `_GITHUB_APP_CLIENT_SECRET` | GitHub App OAuth client secret | CRITICAL | 3 months <!-- pragma: allowlist secret --> |
 | `_GITHUB_APP_ID` | GitHub App identifier | HIGH | 3 months |
 | `_GITHUB_APP_INSTALLATION_ID` | App installation identifier | HIGH | 3 months |
@@ -287,7 +287,7 @@ The following variables are referenced in source code, workflow files, or `.code
 | `CODEX_AUTH_MIDDLEWARE_ENABLED` | Repo Var | `true` | Enable auth middleware on API service |
 | `CODEX_AUTH_RATE_LIMIT` | Repo Var | `100` | API rate limit (requests/minute) |
 | `CODEX_ENV` | Workflow-exported env (repo-var fallback optional) | `copilot-agent` in `copilot-setup-steps.yml`, otherwise `development` fallback | Sandbox/runtime environment label used by security-aware components |
-| `DISABLE_SECRET_FILTER` | Repo Var | `false` | **⚠️ DANGER — NEVER set to `true` in production.** Bypasses all secret redaction in API logs. Use ONLY in isolated local debugging sessions with no real credentials present. Any attempt to enable this in CI/CD should trigger an immediate security alert. <!-- pragma: allowlist secret --> |
+| `DISABLE_SECRET_FILTER` | Repo Var | `false` | **️ DANGER — NEVER set to `true` in production.** Bypasses all secret redaction in API logs. Use ONLY in isolated local debugging sessions with no real credentials present. Any attempt to enable this in CI/CD should trigger an immediate security alert. <!-- pragma: allowlist secret --> |
 | `ARTIFACTS_DIR` | Repo Var | `/tmp/artifacts` | API artifact output directory |
 
 ### Nox / ML Pipeline (`noxfile.py`, `scripts/`)
@@ -329,7 +329,7 @@ The following variables are referenced in source code, workflow files, or `.code
 
 ---
 
-## 🔧 Token Chain
+##  Token Chain
 
 All write operations in this repository use the following fallback chain:
 
@@ -341,7 +341,7 @@ Defined in `COPILOT_AGENT_PREFLIGHT_RULES.token_rule`. Never use `git push` dire
 
 ---
 
-## 🔄 Secret Rotation Schedule
+##  Secret Rotation Schedule
 
 | Secret | Rotation Frequency | Method | Due <!-- pragma: allowlist secret --> |
 |--------|-------------------|--------|-----|
@@ -352,11 +352,11 @@ Defined in `COPILOT_AGENT_PREFLIGHT_RULES.token_rule`. Never use `git push` dire
 | `_GITHUB_APP_CLIENT_SECRET` | Every 90 days | GitHub App → regenerate | 2026-06-04 <!-- pragma: allowlist secret --> |
 | `CODEX_RUNNER_TOKEN` | Every 90 days | Runner recycle | 2026-06-04 <!-- pragma: allowlist secret --> |
 | `OPENAI_API_KEY` | Every 90 days | OpenAI dashboard | 2026-06-03 <!-- pragma: allowlist secret --> |
-| `CODECOV_TOKEN` | Annual | Codecov dashboard | ⚠️ OVERDUE (5 months) <!-- pragma: allowlist secret --> |
-| `HF_TOKEN` | Annual | HuggingFace settings | ⚠️ OVERDUE (5 months) <!-- pragma: allowlist secret --> |
-| `NPM_TOKEN` | Annual | npm settings | ⚠️ OVERDUE (5 months) <!-- pragma: allowlist secret --> |
-| `PYPI_TOKEN` | Annual | PyPI account | ⚠️ OVERDUE (5 months) <!-- pragma: allowlist secret --> |
-| `_CODEX_ACTION_RUNNER` | Annual | GitHub Actions runners | ⚠️ OVERDUE (5 months) |
+| `CODECOV_TOKEN` | Annual | Codecov dashboard | ️ OVERDUE (5 months) <!-- pragma: allowlist secret --> |
+| `HF_TOKEN` | Annual | HuggingFace settings | ️ OVERDUE (5 months) <!-- pragma: allowlist secret --> |
+| `NPM_TOKEN` | Annual | npm settings | ️ OVERDUE (5 months) <!-- pragma: allowlist secret --> |
+| `PYPI_TOKEN` | Annual | PyPI account | ️ OVERDUE (5 months) <!-- pragma: allowlist secret --> |
+| `_CODEX_ACTION_RUNNER` | Annual | GitHub Actions runners | ️ OVERDUE (5 months) |
 
 ---
 

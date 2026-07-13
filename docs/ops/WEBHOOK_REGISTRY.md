@@ -2,7 +2,7 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Audit date:** 2026-03-05T06:53:00Z
+**Audit date:2026-07-13
 **Audited by:** Copilot agent W-123 (`@agent-infra list-webhooks`)
 **Apply attempted:** 2026-03-05T07:02:00Z
 **Apply attempted by:** Copilot agent W-124 (`@agent-infra apply-webhooks` — dry-run in sandbox)
@@ -20,9 +20,9 @@
 | `WEBHOOK_SECRET` available in workflow |  (via `secrets.WEBHOOK_SECRET`) |
 | `WEBHOOK_RECEIVER_URL` repo variable set |  **Auto-set by Codespace `post-start.sh`** — format: `https://${CODESPACE_NAME}-8765.preview.app.github.dev/webhook/github` |
 | `POST /webhook/github` endpoint |  **Implemented** in `cognitive_app/src/server/cli_api_server.py` |
-| Port 8765 public visibility | ⚠️ Must be set manually in Codespace Ports panel for GitHub delivery |
+| Port 8765 public visibility | ️ Must be set manually in Codespace Ports panel for GitHub delivery |
 | Hooks `active: true` |  Both hooks have `active: false` (intentional — activate after confirming delivery works) |
-| **Apply result** | ⏳ **READY** — once port 8765 is public and hooks are set to `active: true` |
+| **Apply result** |  **READY** — once port 8765 is public and hooks are set to `active: true` |
 
 > **To activate:** Set port 8765 to **public** in the Codespace Ports panel. Update both hooks to `active: true`
 > in `.codex/webhook_config.json`, then comment `@agent-infra apply-webhooks` on a PR.
@@ -74,7 +74,7 @@ graph TB
         EVENTS["Event Sources\n(push / PR / issue_comment\n/ workflow_run / etc.)"]
     end
     subgraph CognitiveBrain["Cognitive Brain (target)"]
-        CB_API["Cognitive Brain API Server\nhttps://api.your-cognitive-brain-server.com\n⚠️ NOT YET DEPLOYED"]
+        CB_API["Cognitive Brain API Server\nhttps://api.your-cognitive-brain-server.com\n️ NOT YET DEPLOYED"]
         CB_MEM["Memory Layer\n(CI feedback ingestion)"]
         CB_RUN["Runner Profile Manager\n(COPILOT_RUNNER_PROFILE\nauto-adjustment)"]
     end
@@ -148,7 +148,7 @@ sequenceDiagram
 | **Secret** | `WEBHOOK_SECRET` org secret (HMAC-SHA256) |
 | **SSL verification** |  Enabled |
 | **Active** | `false` — pending server deployment |
-| **Status** | ⏳ PENDING DEPLOYMENT |
+| **Status** |  PENDING DEPLOYMENT |
 
 ### Hook 2: `runner-health-notification`
 
@@ -162,7 +162,7 @@ next session.
 | **Name** | `runner-health-notification` |
 | **URL** | `https://api.your-cognitive-brain-server.com/webhook/github` *(shared with Hook 1)* |
 | **Events** | `workflow_run` only |
-| **Status** | ⏳ PENDING DEPLOYMENT — activate alongside Hook 1 |
+| **Status** |  PENDING DEPLOYMENT — activate alongside Hook 1 |
 
 ---
 

@@ -103,10 +103,10 @@ Successfully diagnosed and fixed two critical CI test failures in PR #2883:
 ## Next Steps
 
 1.  Push commits to remote branch
-2. ⏳ Monitor CI workflows in PR
-3. ⏳ Verify all tests pass
-4. ⏳ Confirm no regressions
-5. ⏳ Merge when CI is green
+2.  Monitor CI workflows in PR
+3.  Verify all tests pass
+4.  Confirm no regressions
+5.  Merge when CI is green
 
 ## Lessons Learned
 

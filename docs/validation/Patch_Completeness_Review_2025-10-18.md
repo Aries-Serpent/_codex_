@@ -1,4 +1,4 @@
-# [Review]: Space Audit Patch Completeness (v1.1.0)
+# [Review]: Space Audit Patch Completeness (v0.2.1)
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 

@@ -10,32 +10,32 @@ Track the following metrics to measure onboarding success:
 
 | Metric | Target | Current | Status |
 |--------|--------|---------|--------|
-| % users setting CODEX_REDIS_HOST | 80% | TBD | ⏳ |
-| % users setting CODEX_OLLAMA_HOST | 80% | TBD | ⏳ |
-| % users setting CODEX_MASTER_ADDR | 70% | TBD | ⏳ |
-| % users setting CODEX_MASTER_PORT | 70% | TBD | ⏳ |
-| % users setting CODEX_INFERENCE_SERVICE_HOST | 60% | TBD | ⏳ |
-| % users setting CODEX_INFERENCE_SERVICE_PORT | 60% | TBD | ⏳ |
-| % users setting CODEX_TRUSTED_HOSTS | 75% | TBD | ⏳ |
-| % users setting CODEX_LOCAL_LOOPBACK | 85% | TBD | ⏳ |
+| % users setting CODEX_REDIS_HOST | 80% | TBD |  |
+| % users setting CODEX_OLLAMA_HOST | 80% | TBD |  |
+| % users setting CODEX_MASTER_ADDR | 70% | TBD |  |
+| % users setting CODEX_MASTER_PORT | 70% | TBD |  |
+| % users setting CODEX_INFERENCE_SERVICE_HOST | 60% | TBD |  |
+| % users setting CODEX_INFERENCE_SERVICE_PORT | 60% | TBD |  |
+| % users setting CODEX_TRUSTED_HOSTS | 75% | TBD |  |
+| % users setting CODEX_LOCAL_LOOPBACK | 85% | TBD |  |
 
 ### 2. Setup Success Rate
 
 | Metric | Target | Current | Status |
 |--------|--------|---------|--------|
-| Setup completion without errors | 95% | TBD | ⏳ |
-| Configuration validation passes | 98% | TBD | ⏳ |
-| First-run success rate | 90% | TBD | ⏳ |
-| Support tickets (env var related) | <5/week | TBD | ⏳ |
+| Setup completion without errors | 95% | TBD |  |
+| Configuration validation passes | 98% | TBD |  |
+| First-run success rate | 90% | TBD |  |
+| Support tickets (env var related) | <5/week | TBD |  |
 
 ### 3. User Satisfaction
 
 | Metric | Target | Current | Status |
 |--------|--------|---------|--------|
-| Configuration clarity score | 4.5/5 | TBD | ⏳ |
-| Documentation usefulness | 4.2/5 | TBD | ⏳ |
-| Time-to-configure (minutes) | <10 min | TBD | ⏳ |
-| Onboarding completion rate | 85% | TBD | ⏳ |
+| Configuration clarity score | 4.5/5 | TBD |  |
+| Documentation usefulness | 4.2/5 | TBD |  |
+| Time-to-configure (minutes) | <10 min | TBD |  |
+| Onboarding completion rate | 85% | TBD |  |
 
 ### 4. Deployment Environment Distribution
 

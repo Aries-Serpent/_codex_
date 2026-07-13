@@ -35,17 +35,17 @@ curl -s https://api.codex.io/health | jq .
 echo "Status: $(curl -s -o /dev/null -w '%{http_code}' https://api.codex.io/health)"
 
 echo "\n=== Database Check ==="
-psql $DATABASE_URL -c "SELECT NOW();" && echo "✓ Database responding"
+psql $DATABASE_URL -c "SELECT NOW();" && echo " Database responding"
 
 echo "\n=== Cache Check ==="
-redis-cli -h $REDIS_HOST PING && echo "✓ Redis responding"
+redis-cli -h $REDIS_HOST PING && echo " Redis responding"
 
 echo "\n=== Metrics Check ==="
 curl -s https://monitoring.codex.io/api/health | jq .
 
 echo "\n=== Log Aggregation Check ==="
 # Query ELK/Splunk to ensure logs flowing
-curl -s $ELASTICSEARCH_URL/_cat/health && echo "✓ Log aggregation healthy"
+curl -s $ELASTICSEARCH_URL/_cat/health && echo " Log aggregation healthy"
 ```
 
 ## Daily Backup Verification
@@ -61,21 +61,21 @@ BACKUP_TIME=$(stat -c %y /var/backups/postgres_backup.sql.gz | cut -d' ' -f1)
 CURRENT_TIME=$(date +%Y-%m-%d)
 
 if [[ $BACKUP_TIME == $CURRENT_TIME ]]; then
-  echo "✓ Database backup completed today"
+  echo " Database backup completed today"
   echo "  Backup size: $(du -h /var/backups/postgres_backup.sql.gz)"
   echo "  Backup time: $(stat -c %y /var/backups/postgres_backup.sql.gz)"
 else
-  echo "✗ ALERT: Database backup not completed today!"
+  echo " ALERT: Database backup not completed today!"
   # Send alert
   send_alert "critical" "Database backup failed"
 fi
 
 # Check filesystem backup
 BACKUP_COUNT=$(find /var/backups -mtime -1 -type f | wc -l)
-echo "✓ Filesystem backups completed: $BACKUP_COUNT files"
+echo " Filesystem backups completed: $BACKUP_COUNT files"
 
 # Verify backup integrity
-sha256sum -c /var/backups/BACKUP_CHECKSUMS.txt && echo "✓ All backup checksums valid"
+sha256sum -c /var/backups/BACKUP_CHECKSUMS.txt && echo " All backup checksums valid"
 ```
 
 ## Routine Maintenance
@@ -97,7 +97,7 @@ for cert in /etc/ssl/certs/*.pem; do
       close(cmd); \
       days_left=(exp-systime())/86400; \
       if(days_left<30) \
-        print "⚠️  " cert " expires in " days_left " days" \
+        print "️  " cert " expires in " days_left " days" \
     }'
 done
 
@@ -218,7 +218,7 @@ sha256sum * > CHECKSUMS.txt
 # Copy to backup storage
 aws s3 cp $BACKUP_DIR s3://backups.codex.io/manual/$TIMESTAMP/ --recursive
 
-echo "✓ Backup completed: $BACKUP_DIR"
+echo " Backup completed: $BACKUP_DIR"
 ```
 
 ## Recovery Procedure
@@ -254,7 +254,7 @@ psql -h $DB_HOST -U $DB_USER -d $DB_NAME -c "SELECT COUNT(*) FROM codex_sessions
 # Restart services
 systemctl start codex-api codex-worker
 
-echo "✓ Recovery completed"
+echo " Recovery completed"
 ```
 
 ---
@@ -318,7 +318,7 @@ kubectl rollout undo deployment/codex-api
 # 7. Verify service
 echo "\n=== Verifying Service ==="
 for i in {1..10}; do
-  curl -s https://api.codex.io/health && echo "✓ Service responding" && break
+  curl -s https://api.codex.io/health && echo " Service responding" && break
   echo "Attempt $i failed, retrying..."
   sleep 5
 done
@@ -392,7 +392,7 @@ echo "Rotating encryption keys..."
 # 4. Restart services to pick up new secrets
 kubectl rollout restart deployment/codex-api
 
-echo "✓ Secrets rotation complete"
+echo " Secrets rotation complete"
 ```
 
 ## Access Control Audit

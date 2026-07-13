@@ -1,0 +1,158 @@
+%% Data Flow Through ML Pipeline — Aries-Serpent/_codex_
+%% Phase 3.11 — Component Relationship Diagrams
+%% Complete data journey from ingestion to model output
+%% Evidence: src/codex_ml/, src/tokenization/, unified_training.py
+
+flowchart LR
+
+    %% ── Raw Data Acquisition ────────────────────────────────────────────────
+    subgraph RAW ["1️⃣  Raw Data"]
+        CSV["CSV Files"]
+        JSON["JSON Files"]
+        API["API Endpoints"]
+        CSV --> FETCH["Fetch Data"]
+        JSON --> FETCH
+        API --> FETCH
+    end
+
+    %% ── Data Validation & Cleaning ──────────────────────────────────────────
+    subgraph CLEAN ["2️⃣  Validation & Cleaning"]
+        SCHEMA_CHECK["Validate Schema\n(columns, types)"]
+        DEDUPLICATE["Remove Duplicates"]
+        HANDLE_NULL["Handle Nulls\n(drop/impute)"]
+        NORMALIZE["Normalize Values\n(ranges, units)"]
+        
+        FETCH --> SCHEMA_CHECK
+        SCHEMA_CHECK --> DEDUPLICATE
+        DEDUPLICATE --> HANDLE_NULL
+        HANDLE_NULL --> NORMALIZE
+    end
+
+    %% ── Data Registration & Caching ─────────────────────────────────────────
+    subgraph REG ["3️⃣  Registration & Caching"]
+        DATA_REG["Register in DataRegistry\n(add to catalog)"]
+        SPLIT["Split Data\n(train 80% / val 10% / test 10%)"]
+        CACHE_L2["Cache to L2 Disk\n(artifacts/)"]
+        
+        NORMALIZE --> DATA_REG
+        DATA_REG --> SPLIT
+        SPLIT --> CACHE_L2
+    end
+
+    %% ── Data Loading ────────────────────────────────────────────────────────
+    subgraph LOAD ["4️⃣  Data Loading"]
+        LOAD_BATCH["Load Batch\n(32 samples)"]
+        LOAD_CACHE["Check L1 Cache\n(in-memory)"]
+        LOAD_DISK["Load from L2 if needed\n(disk cache)"]
+        
+        CACHE_L2 --> LOAD_CACHE
+        LOAD_CACHE --> LOAD_DISK
+        LOAD_DISK --> LOAD_BATCH
+    end
+
+    %% ── Tokenization & Encoding ─────────────────────────────────────────────
+    subgraph TOKENIZE ["5️⃣  Tokenization"]
+        SELECT_TOK["Select Tokenizer\n(HF, SentencePiece)"]
+        ENCODE_TEXT["Encode Text\n(text → token IDs)"]
+        ADD_SPECIAL["Add Special Tokens\n([CLS], [SEP])"]
+        PAD_TRUNCATE["Pad/Truncate\n(to 512 tokens)"]
+        
+        LOAD_BATCH --> SELECT_TOK
+        SELECT_TOK --> ENCODE_TEXT
+        ENCODE_TEXT --> ADD_SPECIAL
+        ADD_SPECIAL --> PAD_TRUNCATE
+    end
+
+    %% ── Feature Creation ────────────────────────────────────────────────────
+    subgraph FEATURES ["6️⃣  Feature Creation"]
+        EMBED_TOKENS["Embed Tokens\n(token embeddings)"]
+        POSITION["Add Position Info\n(rotary encoding)"]
+        ATTENTION_MASK["Create Attention Mask\n(real vs padded)"]
+        TOKEN_TYPE["Token Type IDs\n(if needed)"]
+        
+        PAD_TRUNCATE --> EMBED_TOKENS
+        EMBED_TOKENS --> POSITION
+        POSITION --> ATTENTION_MASK
+        ATTENTION_MASK --> TOKEN_TYPE
+    end
+
+    %% ── Batching for Training ───────────────────────────────────────────────
+    subgraph BATCH ["7️⃣  Batching"]
+        STACK_BATCH["Stack Samples\n(32 → [32, 512])"]
+        MOVE_DEVICE["Move to GPU/CPU\n(device placement)"]
+        
+        TOKEN_TYPE --> STACK_BATCH
+        STACK_BATCH --> MOVE_DEVICE
+    end
+
+    %% ── Model Forward Pass ──────────────────────────────────────────────────
+    subgraph FORWARD ["8️⃣  Model Forward"]
+        LAYER1["Transformer Layer 1\n(attention, FFN)"]
+        LAYERN["Transformer Layer N"]
+        LOGITS["Output Logits\n([32, 512, 50257])"]
+        
+        MOVE_DEVICE --> LAYER1
+        LAYER1 --> LAYERN
+        LAYERN --> LOGITS
+    end
+
+    %% ── Loss Computation ────────────────────────────────────────────────────
+    subgraph LOSS_CALC ["9️⃣  Loss Computation"]
+        SHIFT_LABELS["Shift Labels\n(next token)"]
+        CROSS_ENTROPY["CrossEntropy Loss\n(pred vs actual)"]
+        
+        LOGITS --> SHIFT_LABELS
+        SHIFT_LABELS --> CROSS_ENTROPY
+    end
+
+    %% ── Backward Pass ───────────────────────────────────────────────────────
+    subgraph BACKWARD ["🔟 Backward & Update"]
+        COMPUTE_GRADS["Compute Gradients\n(backpropagation)"]
+        CLIP_GRADS["Clip Gradients\n(max norm = 1.0)"]
+        OPTIM_STEP["Update Weights\n(Adam step)"]
+        
+        CROSS_ENTROPY --> COMPUTE_GRADS
+        COMPUTE_GRADS --> CLIP_GRADS
+        CLIP_GRADS --> OPTIM_STEP
+    end
+
+    %% ── Logging ─────────────────────────────────────────────────────────────
+    subgraph LOG ["📋 Logging"]
+        LOG_LOSS["Log Loss Value\n(to NDJSON, SQLite)"]
+        LOG_METRICS["Log Metrics\n(perplexity, acc)"]
+        
+        CROSS_ENTROPY --> LOG_LOSS
+        LOG_LOSS --> LOG_METRICS
+    end
+
+    %% ── Checkpointing ───────────────────────────────────────────────────────
+    subgraph CKPT ["🔖 Checkpointing"]
+        EVAL_VAL["Evaluate Validation\n(every N batches)"]
+        SHOULD_SAVE["Better than best?\n(compare metrics)"]
+        SAVE["Save Checkpoint\n(artifacts/runs/)"]
+        
+        LOG_METRICS --> EVAL_VAL
+        EVAL_VAL --> SHOULD_SAVE
+        SHOULD_SAVE --> SAVE
+    end
+
+    %% ── Cycle Back ──────────────────────────────────────────────────────────
+    OPTIM_STEP -.->|"next batch"| LOAD_BATCH
+
+    %% ── Final Output ────────────────────────────────────────────────────────
+    SAVE --> FINAL["✅ Trained Model\n(checkpoint ready for inference)"]
+
+    %% ── Styling ────────────────────────────────────────────────────────────
+    style RAW fill:#16213e,color:#e0e0e0
+    style CLEAN fill:#0f3460,color:#e0e0e0
+    style REG fill:#2d6a4f,color:#fff
+    style LOAD fill:#4a4e69,color:#fff
+    style TOKENIZE fill:#533483,color:#fff
+    style FEATURES fill:#457b9d,color:#fff
+    style BATCH fill:#665c84,color:#fff
+    style FORWARD fill:#1a1a2e,color:#e0e0e0
+    style LOSS_CALC fill:#1b4332,color:#fff
+    style BACKWARD fill:#4a4e69,color:#fff
+    style LOG fill:#457b9d,color:#fff
+    style CKPT fill:#2d6a4f,color:#fff
+    style FINAL fill:#1b4332,color:#fff

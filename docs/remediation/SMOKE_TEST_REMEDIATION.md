@@ -112,7 +112,7 @@ def test_validate_ok(tmp_path: Path):
 
 ### Option C: Remove Tests (Not Recommended)
 
-Only if the features are definitely not planned.
+Only if the features are not planned.
 
 ## Recommendation
 

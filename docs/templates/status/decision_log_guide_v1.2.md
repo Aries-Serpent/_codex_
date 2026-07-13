@@ -3,7 +3,7 @@
 **Version:** v0.2.1
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
- Roles: [Primary: Decision Log Curator], [Secondary: Reviewer] ⚡ Energy: 5
+ Roles: [Primary: Decision Log Curator], [Secondary: Reviewer]  Energy: 5
 
 Purpose
 - Capture important choices with context and impact.

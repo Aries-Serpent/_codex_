@@ -286,11 +286,11 @@ def analyze_quality(source_file):
     if result['success']:
         # Check complexity
         if result['summary']['metrics']['complexity'] > 10:
-            print("⚠️ High complexity detected")
+            print("️ High complexity detected")
 
         # Check for suggestions
         if result['suggestions']:
-            print("📝 Suggestions:")
+            print(" Suggestions:")
             for key, suggestion in result['suggestions'].items():
                 print(f"  - {key}: {suggestion}")
 
@@ -377,7 +377,7 @@ def check_style_consistency(project_files):
     elif camel_total > snake_total * 2:
         print(" Project follows camelCase convention")
     else:
-        print("⚠️ Mixed naming conventions detected")
+        print("️ Mixed naming conventions detected")
 ```
 
 ## Testing

@@ -180,14 +180,14 @@ This governance document may be updated through the Major Changes process (ADR +
 ##  Mission Overview
 
 **Objective:** Establish transparent decision-making framework and role-based collaboration model  
-**Energy Level:** ⚡⚡⚡⚡ (4/5 - Operational Framework)  
-**Status:**  Framework Defined | 🔄 Active Enforcement  
+**Energy Level:**  (4/5 - Operational Framework)  
+**Status:**  Framework Defined |  Active Enforcement  
 
 This governance document defines the authority structure, decision protocols, and conflict resolution mechanisms for the _codex_ project. It ensures efficient collaboration while maintaining technical quality and security standards. The framework adapts to project maturity while preserving core principles of transparency and meritocracy.
 
 ---
 
-## ⚖️ Verification Checklist
+## ️ Verification Checklist
 
 | Governance Area | Checkpoint | Validation Criteria | Status |
 |----------------|-----------|---------------------|--------|
@@ -195,14 +195,14 @@ This governance document defines the authority structure, decision protocols, an
 | **Permissions** | CODEOWNERS Setup | CODEOWNERS file reflects team structure |  |
 | **Decision Process** | PR Templates | Templates include decision framework guidance |  |
 | **Conflict Resolution** | Escalation Path | Clear escalation hierarchy documented |  |
-| **Release Process** | Checklist Active | Release checklist followed for all releases | 🔄 |
+| **Release Process** | Checklist Active | Release checklist followed for all releases |  |
 | **Team Membership** | Onboarding Process | New member process validated |  |
 | **Communication** | Channels Active | All communication channels operational |  |
 | **Code of Conduct** | Enforcement | CoC violations handled per guidelines |  |
 
 ---
 
-## 📈 Success Metrics
+##  Success Metrics
 
 | KPI | Target | Measurement Method | Current |
 |-----|--------|-------------------|---------|
@@ -219,7 +219,7 @@ This governance document defines the authority structure, decision protocols, an
 
 ## ⚛️ Physics Alignment
 
-### Path 🛤️ - Decision Flow
+### Path ️ - Decision Flow
 ```
 Contributor → Code Owner → Team Lead → Architect → Resolution
      ↓            ↓            ↓           ↓           ↓
@@ -228,25 +228,25 @@ Contributor → Code Owner → Team Lead → Architect → Resolution
 ```
 **Alignment:** Progressive authority increase with technical rigor at each gate
 
-### Fields 🔄 - Authority Gradients
+### Fields  - Authority Gradients
 - **Contributor Field:** Proposal power, implementation responsibility
 - **Code Owner Field:** Review authority, approval power for small/medium changes
 - **Team Lead Field:** Architectural guidance, medium/major change approval
 - **Architect Field:** Final authority, breaking change decisions, security coordination
 
-### Patterns 👁️ - Governance Signatures
+### Patterns ️ - Governance Signatures
 - **Lazy Consensus Pattern:** 48 iterations (Small changes) → implicit approval if no objections
 - **Standard Review Pattern:** 2 approvals + 5 iterations (Medium changes)
 - **RFC/ADR Pattern:** 10 iterations + 2 rest periods (Major changes)
 - **Emergency Pattern:** 1 maintainer approval + post-hoc review (Critical fixes)
 
-### Redundancy 🔀 - Decision Safeguards
+### Redundancy  - Decision Safeguards
 - **Primary:** CODEOWNERS automatic review assignment
 - **Backup:** Manual escalation path via GitHub issues
 - **Safety Net:** Architect veto power for all changes
 - **Audit:** All decisions logged in PR comments and ADRs
 
-### Balance ⚖️ - Efficiency vs Quality
+### Balance ️ - Efficiency vs Quality
 ```
 Small Changes: Speed 90% | Rigor 10%  (Fast iteration)
 Medium Changes: Speed 60% | Rigor 40%  (Balanced review)
@@ -257,7 +257,7 @@ Emergency: Speed 95% | Rigor 5% → 70% (Fast action + post-hoc review)
 
 ---
 
-## ⚡ Energy Distribution
+##  Energy Distribution
 
 ### Priority Breakdown by Change Type
 - **P0 (Emergency - 10%):** Critical security, production incidents (Fast-track)

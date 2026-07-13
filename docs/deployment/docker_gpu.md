@@ -145,7 +145,7 @@ docker run --rm codex-gpu:cu121 python -c "
 import torch
 import transformers
 import peft
-print('✓ All imports successful')
+print(' All imports successful')
 print(f'PyTorch version: {torch.__version__}')
 print(f'CUDA available: {torch.cuda.is_available()}')
 if torch.cuda.is_available():

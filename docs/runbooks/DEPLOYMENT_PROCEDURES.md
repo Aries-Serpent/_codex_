@@ -86,7 +86,7 @@ sqlite3 /var/lib/codex/codex.db ".dump" > /var/backups/codex_backup_$(date +%Y%m
 tar -czf /var/backups/codex_models_$(date +%Y%m%d_%H%M%S).tar.gz \
   /var/lib/codex/models/
 
-echo "✓ Backup complete"
+echo " Backup complete"
 ```
 
 #### Step 4: Install/Update Dependencies
@@ -146,7 +146,7 @@ chmod 600 /opt/codex/.env
 
 # Verify secrets loaded
 source /opt/codex/.env
-echo "✓ Secrets loaded"
+echo " Secrets loaded"
 ```
 
 #### Step 7: Migrate Database (if needed)
@@ -201,16 +201,16 @@ See [Post-Deployment Validation](#post-deployment-validation) below.
 
 ```bash
 # Build image
-docker build -t codex-ml:v1.0.0 .
+docker build -t codex-ml:v0.2.1 .
 
 # Tag for registry
-docker tag codex-ml:v1.0.0 registry.example.com/codex-ml:v1.0.0
+docker tag codex-ml:v0.2.1 registry.example.com/codex-ml:v0.2.1
 
 # Push to registry
-docker push registry.example.com/codex-ml:v1.0.0
+docker push registry.example.com/codex-ml:v0.2.1
 
 # Verify push
-docker pull registry.example.com/codex-ml:v1.0.0
+docker pull registry.example.com/codex-ml:v0.2.1
 ```
 
 #### Step 2: Update Helm Values
@@ -219,7 +219,7 @@ docker pull registry.example.com/codex-ml:v1.0.0
 # values-prod.yaml
 image:
   repository: registry.example.com/codex-ml
-  tag: v1.0.0
+  tag: v0.2.1
   pullPolicy: IfNotPresent
 
 replicas: 3
@@ -310,7 +310,7 @@ conn = sqlite3.connect('/var/lib/codex/codex.db')
 cursor = conn.cursor()
 cursor.execute('SELECT COUNT(*) FROM models')
 count = cursor.fetchone()[0]
-print(f'✓ Database connected, {count} models registered')
+print(f' Database connected, {count} models registered')
 "
 
 # 4. Check logs for errors
@@ -328,9 +328,9 @@ python -m codex.perf.benchmark \
   --timeout 30
 
 # Expected output:
-# ✓ Mean latency: 250ms (p50), 450ms (p95)
-# ✓ Throughput: 40 req/sec
-# ✓ Error rate: <1%
+#  Mean latency: 250ms (p50), 450ms (p95)
+#  Throughput: 40 req/sec
+#  Error rate: <1%
 ```
 
 ### Functionality Tests
@@ -340,10 +340,10 @@ python -m codex.perf.benchmark \
 pytest tests/smoke/ -v
 
 # Expected: All tests pass
-# ✓ test_api_health
-# ✓ test_inference_basic
-# ✓ test_data_ingestion
-# ✓ test_model_loading
+#  test_api_health
+#  test_inference_basic
+#  test_data_ingestion
+#  test_model_loading
 ```
 
 ### Monitoring Setup
@@ -379,7 +379,7 @@ sqlite3 /var/lib/codex/codex.db < /var/backups/codex_backup_YYYYMMDD_HHMMSS.sql
 
 # 3. Restore previous code version
 cd /opt/codex
-git checkout v0.9.0
+git checkout v0.2.1
 
 # 4. Install previous dependencies
 source venv/bin/activate
@@ -434,7 +434,7 @@ cursor = conn.cursor()
 # Check tables exist
 cursor.execute(\"SELECT name FROM sqlite_master WHERE type='table'\")
 tables = cursor.fetchall()
-print(f'✓ {len(tables)} tables exist')
+print(f' {len(tables)} tables exist')
 
 # Check row counts
 for table in tables:

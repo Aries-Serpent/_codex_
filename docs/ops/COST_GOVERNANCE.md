@@ -70,7 +70,7 @@ RED    → > 90 effective min OR GHCR push   → Blocked until stakeholder check
 | `data-quality-suite.yml` |  RED | 3 jobs × 60 min = 180 eff-min | PR #3575 |
 | `scheduled-archival.yml` |  RED | 3 jobs × 60 min = 180 eff-min, runs on schedule | PR #3575 |
 | `rust_swarm_ci.yml` |  RED | 3 jobs × 60 min = 180 eff-min | PR #3575 |
-| `embedding-index-rebuild.yml` | ⚠️ YELLOW | 15 min, scheduled (frequent trigger risk) | PR #3575 |
+| `embedding-index-rebuild.yml` | ️ YELLOW | 15 min, scheduled (frequent trigger risk) | PR #3575 |
 
 **Workflows intentionally not gated (GREEN tier, < 30 effective min):**
 
@@ -91,7 +91,7 @@ flowchart TD
     PR["PR opened / push to branch"]
     COST[" cost-gate job\ncost_estimator.py calculates tier"]
     GREEN[" GREEN\nAuto-approved\nJob proceeds immediately"]
-    YELLOW["⚠️ YELLOW\nWarning comment posted\nAuto-proceeds after 60 s"]
+    YELLOW["️ YELLOW\nWarning comment posted\nAuto-proceeds after 60 s"]
     RED[" RED\nBlocking comment posted\nPolls PR body every 60 s"]
     CHECKBOX["Stakeholder ticks\n- [x]  Cost Proposal Approved\nin PR description"]
     DISPATCH["Owner triggers via\nworkflow_dispatch\n(bypass)"]

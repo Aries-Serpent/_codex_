@@ -3,7 +3,7 @@
 **Version:** v0.2.1
 
 **Repository:** `Aries-Serpent/_codex_`  
-**Date:** `2026-06-04`  
+**Date:2026-07-13
 **Scope:** Variables only (pass 2), then secrets setup groundwork (pass 3 prep)
 
 ---

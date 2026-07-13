@@ -6,8 +6,8 @@
 
 ## TL;DR
  Fixed 3 truncated CI workflows  
-⏳ Commit created locally, needs push  
-⚠️  May need manual workflow approval after push  
+ Commit created locally, needs push  
+️  May need manual workflow approval after push  
 
 ---
 
@@ -18,9 +18,9 @@
 | security-scan.yml | 22 lines (truncated) | 78 lines |  Fixed |
 | determinism.yml | 25 lines (truncated) | 118 lines |  Fixed |
 | semgrep_sarif.yml | 42 lines (truncated) | 134 lines |  Fixed |
-| rust_swarm_ci.yml | 268 lines (complete) | No change | ⚠️ Needs approval |
-| test-rag.yml | 118 lines (complete) | No change | ⚠️ Needs approval |
-| documentation-link-checker.yml | 195 lines (complete) | No change | ⚠️ Needs approval |
+| rust_swarm_ci.yml | 268 lines (complete) | No change | ️ Needs approval |
+| test-rag.yml | 118 lines (complete) | No change | ️ Needs approval |
+| documentation-link-checker.yml | 195 lines (complete) | No change | ️ Needs approval |
 
 ---
 
@@ -111,22 +111,22 @@ New Documentation:
 
  All workflows have valid YAML syntax  
  Truncated workflows are now complete  
-⏳ Commit ready to push  
-⏳ Workflows run successfully after push  
-⏳ Security reports generated  
-⏳ No high-severity security issues (or addressed)  
+ Commit ready to push  
+ Workflows run successfully after push  
+ Security reports generated  
+ No high-severity security issues (or addressed)  
 
 ---
 
 ## Next Workflow Runs Should Show
 
 ```
-✓ security-scan (security-audit)          - Completed with reports
-✓ determinism (determinism-check)         - Passed validation
-✓ semgrep_sarif (semgrep)                 - SARIF uploaded
-✓ rust_swarm_ci (8 jobs)                  - All tests passed
-✓ test-rag (test-rag)                     - Coverage ≥90%
-✓ documentation-link-checker (check-links) - No broken links
+ security-scan (security-audit)          - Completed with reports
+ determinism (determinism-check)         - Passed validation
+ semgrep_sarif (semgrep)                 - SARIF uploaded
+ rust_swarm_ci (8 jobs)                  - All tests passed
+ test-rag (test-rag)                     - Coverage ≥90%
+ documentation-link-checker (check-links) - No broken links
 ```
 
 ---

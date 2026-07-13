@@ -1,4 +1,4 @@
-# Tutorial 04 — Building Resilient ML Services
+## Guide 04 — Building Resilient ML Services
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 

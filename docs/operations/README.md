@@ -64,7 +64,7 @@ docs/operations/
 
 ---
 
-##  Quick Start
+## Quick Start
 
 1. **New to Operations?** → Start with Operations Manual
 2. **Making Changes?** → Follow Change Management
@@ -73,7 +73,7 @@ docs/operations/
 
 ---
 
-## 🔗 Related Documentation
+##  Related Documentation
 
 - **[docs/ops/](../ops/)** - Short-term operations
 - **[docs/deployment/](../deployment/)** - Deployment procedures
@@ -103,7 +103,7 @@ docs/operations/
 
 ---
 
-## 📋 Key Documents
+##  Key Documents
 
 - **Change Management Policy** - Change control rules
 - **Release Management Policy** - Release procedures

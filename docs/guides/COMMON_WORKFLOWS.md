@@ -263,7 +263,7 @@ def daily_monitor_check():
     print(f"Avg latency: {metrics['latency_mean']:.0f}ms")
     
     if perf_metrics['detected']:
-        print(f"⚠️ DRIFT DETECTED: {perf_metrics['drift_magnitude']:.1%}")
+        print(f"️ DRIFT DETECTED: {perf_metrics['drift_magnitude']:.1%}")
 ```
 
 ---
@@ -350,7 +350,7 @@ def check_performance_and_retrain():
     accuracy = metrics['accuracy']
     
     if accuracy < 0.87:  # Performance dropped 5%
-        print(f"⚠️ PERFORMANCE DROP: {accuracy:.2%} (target: 92%)")
+        print(f"️ PERFORMANCE DROP: {accuracy:.2%} (target: 92%)")
         trigger_retrain()
     else:
         print(f" Performance OK: {accuracy:.2%}")
@@ -533,7 +533,7 @@ for ex in hard_examples[:5]:
 # 2. Visualize attention patterns
 visualizer = AttentionVisualizer(model)
 visualizer.plot(
-    text="This product is really amazing but also really expensive",
+    text="This product is really  but also really expensive",
     label_to_explain="positive"
 )
 # Shows which words most contributed to "positive" prediction
@@ -560,7 +560,7 @@ plt.show()
 
 # 5. Recommendations
 if len(hard_examples) > 5:
-    print("\n🔍 Debugging Recommendations:")
+    print("\n Debugging Recommendations:")
     print("1. Your model struggles with domain-specific language")
     print("2. Consider collecting more training data for edge cases")
     print("3. Try data augmentation to make model more robust")

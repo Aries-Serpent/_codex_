@@ -3,8 +3,8 @@
 **Version:** v0.2.1
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
- Roles: [Primary: Doc Author], [Secondary: Verifier] ⚡ Energy: 5/5  
-⚛️ Physics: Path🛤️ [Command → Output → Exit] Fields🔄 [Typer CLI] Patterns👁️ [Hybrid output, stable exits] Redundancy🔀 [CliRunner tests] Balance⚖️ [Human vs. JSON]
+ Roles: [Primary: Doc Author], [Secondary: Verifier]  Energy: 5/5  
+⚛️ Physics: Path️ [Command → Output → Exit] Fields [Typer CLI] Patterns️ [Hybrid output, stable exits] Redundancy [CliRunner tests] Balance️ [Human vs. JSON]
 
 ## Usage
 - Human-readable by default; `--json` for machine output.

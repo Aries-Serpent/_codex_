@@ -75,16 +75,16 @@ Ticket Sidebar            Topbar                   Navbar (App Area)
 ```text
 DIMENSION                CAPABILITY [▓]  LIMITATION [▒]  BLOCKED [░]
 ────────────────────────────────────────────────────────────────────────
-UI Complexity            [▓▓▓▓▓▓▓▓░░]  Multi-step ✓       Native modal ✗
-Data Rendering           [▓▓▓▓▓▓▓▓▓░]  Tables/Charts ✓     Real-time push ✗
-External APIs            [▓▓▓▓▓▒▒▒░░]  REST via proxy ✓     Direct calls ✗
-Authentication           [▓▓▓▓▓▒▒░░░]  OAuth/API key ✓     Custom SSO ✗
-State Management         [▓▓▓▓▓▓▒░░░]  React state ✓       Redux/Context ≈
-Backend Logic            [░░░░░░░░░░]  Client-side ✓       Custom server ✗
-Real-time Data           [▓▓▒▒░░░░░░]  Polling ✓           WebSockets ✗
-Data Persistence         [▓▓▓▒▒▒░░░░]  Zendesk objects ✓   Custom DB ✗
-Bulk Operations          [▓▓▓▒▒▒▒░░░]  Small batches ✓     1000s records ✗
-Custom Navigation        [▓▓▓▓▓▓▒░░░]  In-app routing ✓    Chrome override ✗
+UI Complexity            [▓▓▓▓▓▓▓▓░░]  Multi-step        Native modal 
+Data Rendering           [▓▓▓▓▓▓▓▓▓░]  Tables/Charts      Real-time push 
+External APIs            [▓▓▓▓▓▒▒▒░░]  REST via proxy      Direct calls 
+Authentication           [▓▓▓▓▓▒▒░░░]  OAuth/API key      Custom SSO 
+State Management         [▓▓▓▓▓▓▒░░░]  React state        Redux/Context ≈
+Backend Logic            [░░░░░░░░░░]  Client-side        Custom server 
+Real-time Data           [▓▓▒▒░░░░░░]  Polling            WebSockets 
+Data Persistence         [▓▓▓▒▒▒░░░░]  Zendesk objects    Custom DB 
+Bulk Operations          [▓▓▓▒▒▒▒░░░]  Small batches      1000s records 
+Custom Navigation        [▓▓▓▓▓▓▒░░░]  In-app routing     Chrome override 
 ```text
 **Legend**:
 - **▓** = Full or strong support
@@ -99,17 +99,17 @@ Custom Navigation        [▓▓▓▓▓▓▒░░░]  In-app routing ✓   
 ├───────────────────────────────────┤
 │ ┌────────────────────────────────┐ │
 │ │ APPLICATION (JavaScript/React) │ │
-│ │ • Render UI ✓                  │ │
-│ │ • Handle events ✓              │ │
-│ │ • Call APIs via proxy ✓        │ │
-│ │ • Store state (ephemeral) ✓    │ │
+│ │ • Render UI                   │ │
+│ │ • Handle events               │ │
+│ │ • Call APIs via proxy         │ │
+│ │ • Store state (ephemeral)     │ │
 │ └────────────────────────────────┘ │
 │                                     │
 │ ╔═══════════════╩═══════════════╗   │
 │ ║       ZENDESK SECURITY PROXY  ║   │
-│ ║ • API key hiding ✓            ║   │
-│ ║ • Rate limiting ✓             ║   │
-│ ║ • CORS bypass ✓               ║   │
+│ ║ • API key hiding             ║   │
+│ ║ • Rate limiting              ║   │
+│ ║ • CORS bypass                ║   │
 │ ╚═══════════════╤═══════════════╝   │
 │                 ║                   │
 └─────────────────╫──[External APIs]  │
@@ -119,10 +119,10 @@ Custom Navigation        [▓▓▓▓▓▓▒░░░]  In-app routing ✓   
             ╔═════╩═════╗
             ║ FORBIDDEN ║
             ║   ZONE    ║
-            ║ • Custom server ✗
-            ║ • Direct DB ✗
-            ║ • File system ✗
-            ║ • Native code ✗
+            ║ • Custom server 
+            ║ • Direct DB 
+            ║ • File system 
+            ║ • Native code 
             ╚═════════════╝
 ```text
 ### Data Flow Topology
@@ -135,9 +135,9 @@ Agent Action → App UI → Client Logic → API Proxy → External Service
        ▓           ▓            ▒            ▒              ░
 
 BOTTLENECK POINTS:
-⚠ API Proxy (rate limits, latency)
-⚠ External Service (downtime, throttling)
-⚠ Client Processing (heavy computation freezes UI)
+ API Proxy (rate limits, latency)
+ External Service (downtime, throttling)
+ Client Processing (heavy computation freezes UI)
 ```text
 ### Security Boundary Map
 
@@ -158,17 +158,17 @@ BOTTLENECK POINTS:
 │   ┌────▼────┐   ┌─────▼────┐   ┌────▼────┐
 │   │ Zendesk │   │  Agent   │   │ External│
 │   │   API   │   │   Data   │   │  APIs   │
-│   │  [✓]    │   │   [✓]    │   │  [≈]    │
+│   │  []    │   │   []    │   │  [≈]    │
 │   └─────────┘   └──────────┘   └─────────┘
 │
-│ ALLOWED:    ✓ Read agent-permitted data
-│             ✓ Write via Zendesk APIs
-│             ✓ Call external APIs (proxied)
+│ ALLOWED:     Read agent-permitted data
+│              Write via Zendesk APIs
+│              Call external APIs (proxied)
 │
-│ FORBIDDEN:  ✗ Access other agents' private data
-│             ✗ Bypass Zendesk permissions
-│             ✗ Store credentials client-side
-│             ✗ Direct external API calls
+│ FORBIDDEN:   Access other agents' private data
+│              Bypass Zendesk permissions
+│              Store credentials client-side
+│              Direct external API calls
 ```text
 ### Performance Profile
 
@@ -199,18 +199,18 @@ LEGEND: ▓ = Good, ░ = Poor   (Speed in ms: ▓ < 100, ░ > 1000)
 │      │         (Full width ~1200-1800px)                 │  │
 │      │         (Full height = viewport - chrome)         │  │
 │      │                                                   │  │
-│      │   ✓ Multi-column layouts                          │  │
-│      │   ✓ Data tables                                   │  │
-│      │   ✓ Dashboards                                    │  │
-│      │   ✓ Forms & wizards                               │  │
+│      │    Multi-column layouts                          │  │
+│      │    Data tables                                   │  │
+│      │    Dashboards                                    │  │
+│      │    Forms & wizards                               │  │
 │      └───────────────────────────────────────────────────┘  │
 └──────┴──────────────────────────────────────────────────────┘
 
 ↑ FIXED CONSTRAINTS:
-✗ Cannot hide Zendesk header/sidebar
-✗ Cannot go full-screen
-✓ Can use tabs/routing within the app area
-✓ Can open modals/overlays
+ Cannot hide Zendesk header/sidebar
+ Cannot go full-screen
+ Can use tabs/routing within the app area
+ Can open modals/overlays
 ```text
 ### Navbar Capability Signature
 
@@ -625,11 +625,11 @@ where $\tau$ is a calibrated threshold.
 ```text
 Feature Needs Space + Complexity?
     │
-    ├─ YES → Navbar ✓
+    ├─ YES → Navbar 
     │
     └─ NO → Feature Needs Context?
             │
-            ├─ YES → Sidebar ✓
+            ├─ YES → Sidebar 
             │
             └─ NO → Feature Needs Real-time?
                     │
@@ -972,15 +972,15 @@ This section provides additional visual aids and reference materials for underst
 ```text
 Pattern                Supported   Complexity   Recommended
 ──────────────────────────────────────────────────────────
-REST API                 ✓            ✓          ✓  YES
-OAuth 2.0                ✓            ✓          ✓  YES
-API Keys (proxied)       ✓            ✓          ✓  YES
-Basic Auth               ✓            ░          ≈  OK
-Webhooks (inbound)       ✓            ░          ✗  NO (use polling)
-WebSockets               ✗            ✗          ✗  NO
-GraphQL                  ✓            ░          ≈  OK
-SOAP                     ✓            ░          ✗  AVOID
-Server-Sent Events       ✗            ✗          ✗  NO
+REST API                                         YES
+OAuth 2.0                                        YES
+API Keys (proxied)                               YES
+Basic Auth                           ░          ≈  OK
+Webhooks (inbound)                   ░            NO (use polling)
+WebSockets                                       NO
+GraphQL                              ░          ≈  OK
+SOAP                                 ░            AVOID
+Server-Sent Events                               NO
 ```text
 ### Development Lifecycle
 
@@ -1029,7 +1029,7 @@ LEGEND: █ Highly Feasible | ▓ Feasible | ▒ Difficult | ░ Not Recommended
 ├─ Perform heavy computation on main thread
 └─ Assume real-time data without polling
 
-⚠️ USE WITH CAUTION:
+️ USE WITH CAUTION:
 ├─ Bulk operations (>100 items)
 ├─ Nested API calls (waterfall requests)
 ├─ Complex state management without clear patterns
@@ -1037,7 +1037,7 @@ LEGEND: █ Highly Feasible | ▓ Feasible | ▒ Difficult | ░ Not Recommended
 ├─ Animations/transitions (performance)
 └─ Multi-language support (maintenance burden)
 
-✓ RECOMMENDED PRACTICES:
+ RECOMMENDED PRACTICES:
 ├─ Use Zendesk Garden components
 ├─ Implement error boundaries
 ├─ Show loading states
@@ -1074,18 +1074,18 @@ LOW COMPLEXITY ─────────────────────�
 
 ```text
 OPTIMAL USE CASES:
-✓✓✓ Configuration interfaces
-✓✓✓ Reporting dashboards
-✓✓✓ Data management tools
-✓✓  Multi-step workflows
-✓✓  Search & filter interfaces
-✓   Analytics & insights
+ Configuration interfaces
+ Reporting dashboards
+ Data management tools
+  Multi-step workflows
+  Search & filter interfaces
+   Analytics & insights
 
 AVOID IN NAVBAR:
-✗✗✗ Real-time ticket monitoring (prefer Sidebar)
-✗✗  Quick actions (prefer Topbar)
-✗✗  Context-heavy features (prefer Sidebar)
-✗   Single-purpose simple tools
+ Real-time ticket monitoring (prefer Sidebar)
+  Quick actions (prefer Topbar)
+  Context-heavy features (prefer Sidebar)
+   Single-purpose simple tools
 ```text
 ### Recommended Workflow
 

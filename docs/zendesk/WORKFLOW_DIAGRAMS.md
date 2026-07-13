@@ -523,8 +523,7 @@ Issue Encountered
 Before Making Changes:
 □ Snapshot current state
 □ Review existing configuration
-□ Define desired state clearly
-□ Validate JSON syntax
+□ Define desired state □ Validate JSON syntax
 
 During Changes:
 □ Generate and review diff

@@ -3,7 +3,7 @@
 **Version:** v0.2.1
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
- Roles: [Primary: Schema Example Curator], [Secondary: Reviewer] ⚡ Energy: 5
+ Roles: [Primary: Schema Example Curator], [Secondary: Reviewer]  Energy: 5
 
 Purpose
 - Provide minimal but valid JSON snippets for common authoring scenarios.
@@ -12,7 +12,7 @@ Minimal Skeleton (valid against v1.2)
 ```jsonc
 {
   "metadata": {
-    "title": "📍 `_codex_` : Status Update 2025-11-02-15:29:UTC",
+    "title": "📍 `_codex_` : Status Update 2026-07-13
     "timestamp_utc": "2025-11-02T15:29:01Z",
     "report_version": "v1.0",
     "template_version": "v1.2",

@@ -645,7 +645,7 @@ Security Team
 | Action | Owner | Due Date | Status |
 |--------|-------|----------|--------|
 | Add SAST scanning to CI/CD | Security | 2024-02-01 | In Progress |
-| Update WAF rules | Ops | 2024-01-31 | Pending |
+| Update 2026-07-13
 | Security training for team | HR | 2024-03-01 | Not Started |
 ```
 

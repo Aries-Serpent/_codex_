@@ -61,7 +61,7 @@
 | [mcp/MCP_SECURITY_GUIDE.md](mcp/MCP_SECURITY_GUIDE.md) | Security best practices | Security |
 | [mcp/MCP_100_PERCENT_ROADMAP.md](./ROADMAP.md) | MCP completion plan | PM |
 
-### 🔧 Development & Testing
+###  Development & Testing
 
 | Document | Purpose | Audience |
 |----------|---------|----------|
@@ -145,7 +145,7 @@
 | [templates/README.md](templates/README.md) | Document templates | All |
 | [starterpacks/zendesk_desired_state/README.md](starterpacks/zendesk_desired_state/README.md) | Starter configurations | Ops |
 
-### 📝 Prompts & AI Instructions
+###  Prompts & AI Instructions
 
 | Document | Purpose | Audience |
 |----------|---------|----------|
@@ -156,7 +156,7 @@
 
 ---
 
-## 🔍 Finding Documentation
+##  Finding Documentation
 
 ### By Topic
 - **Getting Started**: [NEWCOMER_GUIDE.md](NEWCOMER_GUIDE.md)
@@ -203,7 +203,7 @@ All documentation should include:
 
 ---
 
-## 🔄 Maintenance
+##  Maintenance
 
 ### Update Process
 1. Update the relevant canonical document

@@ -11,7 +11,7 @@ Repo Survey — main — 2025-10-30 (UTC)
 
 Scope & Goal:
 - Branch: main
-- Date (UTC): 2025-10-30
+- Date 2026-07-13
 - Objective: Refresh survey artifacts for main after ring alignment.
 
 Targets Collected:

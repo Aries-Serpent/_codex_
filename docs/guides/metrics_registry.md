@@ -3,8 +3,8 @@
 **Version:** v0.2.1
 
 > Generated: 2026-06-22 04:20:17 | Author: mbaetiong  
-Roles: [Primary: Audit Orchestrator], [Secondary: Capability Cartographer] ⚡ Energy: 5  
-Physics: Path🛤️ Fields🔄 Patterns👁️ Redundancy🔀 Balance⚖️
+Roles: [Primary: Audit Orchestrator], [Secondary: Capability Cartographer]  Energy: 5  
+Physics: Path️ Fields Patterns️ Redundancy Balance️
 
 ## Overview
 A unified registry for metrics supporting:

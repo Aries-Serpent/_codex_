@@ -20,7 +20,7 @@ Codex Cognitive Brain supports **air-gap (fully offline) deployment** using pre-
 
 ---
 
-## 📋 Prerequisites
+##  Prerequisites
 
 - **Python 3.12+** (pre-installed on target machine)
 - **Offline wheelhouse** (pre-generated on network-connected machine)
@@ -123,7 +123,7 @@ cd wheelhouse
 
 # Verify checksums (critical for security)
 sha256sum -c CHECKSUMS.txt
-# Expected output: All files OK ✓
+# Expected output: All files OK 
 ```
 
 **If checksum fails:**
@@ -199,10 +199,10 @@ try:
     from hydra import initialize, compose
     from pydantic import BaseModel
     from cryptography.fernet import Fernet
-    print("✓ All core packages imported successfully")
-    print(f"✓ Python {sys.version}")
+    print(" All core packages imported successfully")
+    print(f" Python {sys.version}")
 except ImportError as e:
-    print(f"✗ Import failed: {e}")
+    print(f" Import failed: {e}")
     sys.exit(1)
 VERIFY_TEST
 
@@ -289,7 +289,7 @@ sudo iptables -A OUTPUT -d 10.0.0.0/8 -j DROP
 sudo iptables -A OUTPUT ! -d 127.0.0.0/8 -j DROP
 
 # Test that codex still works
-python3 -m codex.cli serve --dry-run && echo "✓ Codex works offline"
+python3 -m codex.cli serve --dry-run && echo " Codex works offline"
 
 # Restore iptables
 # sudo iptables-restore < /tmp/iptables.backup
@@ -365,7 +365,7 @@ def check_network_policy():
     assert allow_network == 'false', "ALLOW_NETWORK_CALLS must be false"
     assert local_loopback == 'true', "CODEX_LOCAL_LOOPBACK must be true"
     
-    print("✓ Environment variables correct")
+    print(" Environment variables correct")
     
     # Test localhost access (should work)
     try:
@@ -373,10 +373,10 @@ def check_network_policy():
         sock.settimeout(1)
         result = sock.connect_ex(('127.0.0.1', 6379))
         if result == 0 or result == 111:  # 0=connected, 111=connection refused (port closed)
-            print("✓ Localhost access allowed")
+            print(" Localhost access allowed")
         sock.close()
     except Exception as e:
-        print(f"⚠ Localhost test inconclusive: {e}")
+        print(f" Localhost test inconclusive: {e}")
     
     # Test external access (should fail)
     try:
@@ -384,13 +384,13 @@ def check_network_policy():
         sock.settimeout(1)
         result = sock.connect_ex(('8.8.8.8', 53))
         if result != 0:  # Non-zero means connection failed
-            print("✓ External network access blocked")
+            print(" External network access blocked")
         else:
-            print("✗ WARNING: External network access allowed!")
+            print(" WARNING: External network access allowed!")
             return False
         sock.close()
     except Exception:
-        print("✓ External network access blocked (expected error)")
+        print(" External network access blocked (expected error)")
     
     return True
 
@@ -401,12 +401,12 @@ if __name__ == '__main__':
 
 ```bash
 python3 scripts/check_offline_compliance.py
-# Expected: All checks pass ✓
+# Expected: All checks pass 
 ```
 
 ---
 
-## 🔄 Runtime Operations
+##  Runtime Operations
 
 ### Start Codex in Offline Mode
 
@@ -527,7 +527,7 @@ LOG="/var/log/codex-offline-validation-${DATE}.log"
     
     # Network connections
     echo "Active Network Connections:"
-    netstat -tan | grep ESTABLISHED | grep -v 127.0.0.1 || echo "  None (✓ Offline)"
+    netstat -tan | grep ESTABLISHED | grep -v 127.0.0.1 || echo "  None ( Offline)"
     echo ""
     
     # Disk usage
@@ -553,7 +553,7 @@ echo "Validation report saved to: $LOG"
 
 ---
 
-## 🔄 Rollback Procedure
+##  Rollback Procedure
 
 If deployment fails or you need to revert to online mode:
 
@@ -577,7 +577,7 @@ pip install codex-ml
 
 ---
 
-## 📋 Phase 8 Validation Checklist
+##  Phase 8 Validation Checklist
 
 ### Groundwork Preparation (Now)
 - [ ] `scripts/prepare_offline_env.sh` created

@@ -204,7 +204,7 @@ iconv -f ISO-8859-1 -t UTF-8 data/train.csv > data/train_utf8.csv
 python -c "
 import pandas as pd
 df = pd.read_csv('data/train_utf8.csv')
-print(f'✓ Loaded {len(df)} rows')
+print(f' Loaded {len(df)} rows')
 "
 ```
 

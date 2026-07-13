@@ -1,4 +1,4 @@
-# [Doc]: Copilot Space Traversal Workflow (v1.1.0)
+# [Doc]: Copilot Space Traversal Workflow (v0.2.1)
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 

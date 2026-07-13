@@ -260,10 +260,10 @@ $ python3 scripts/phase10/automated_secrets_manager.py --help
 
 #### Security Recommendations
 
-1. **📋 Document Required Permissions**: Clearly document GitHub token scopes needed
+1. ** Document Required Permissions**: document GitHub token scopes needed
 2. ** Backup Encryption**: Ensure backup directory `.codex/secrets/backups/` is in `.gitignore`
 3. **⏰ Rotation Frequency**: Establish clear rotation schedule (currently monthly via cron)
-4. **🔍 Audit Logging**: Consider adding structured logging for compliance
+4. ** Audit Logging**: Consider adding structured logging for compliance
 5. **🧪 Dry-Run Testing**: Add explicit `--dry-run` flag to all scripts
 
 ---
@@ -313,7 +313,7 @@ python3 scripts/phase10/automated_secrets_manager.py \
 
 ## Production Testing Workflow (WITH AUTHORIZATION)
 
-**⚠️ IMPORTANT**: Only execute with explicit human approval from mbaetiong
+**️ IMPORTANT**: Only execute with explicit human approval from mbaetiong
 
 ### Pre-Flight Checklist
 - [ ] Verify `CODEX_MASTER_KEY` is set and valid
@@ -375,7 +375,7 @@ python3 scripts/rotate_jwt_secret.py --rollback --backup-file <timestamp>.enc
 - **Unauthorized Access**: Requires both `CODEX_MASTER_KEY` and `GITHUB_TOKEN`
 - **Data Loss**: Encrypted backups prevent secret loss
 
-**Medium Risk (Acceptable)** ⚠️:
+**Medium Risk (Acceptable)** ️:
 - **Backup Directory**: Ensure `.codex/secrets/backups/` in `.gitignore` (should verify)
 - **Token Permissions**: Overly permissive `GITHUB_TOKEN` could be abused (use minimal scopes)
 
@@ -387,9 +387,9 @@ python3 scripts/rotate_jwt_secret.py --rollback --backup-file <timestamp>.enc
 
 #### Immediate Actions
 1.  **COMPLETED**: Fixed critical PBKDF2 import bug
-2. 📋 **TODO**: Verify `.codex/secrets/backups/` in `.gitignore`
-3. 📋 **TODO**: Add explicit `--dry-run` flags to all rotation scripts
-4. 📋 **TODO**: Document required GitHub token scopes in workflow files
+2.  **TODO**: Verify `.codex/secrets/backups/` in `.gitignore`
+3.  **TODO**: Add explicit `--dry-run` flags to all rotation scripts
+4.  **TODO**: Document required GitHub token scopes in workflow files
 
 #### Long-Term Improvements
 1. **Structured Logging**: Add JSON-formatted audit logs for SIEM integration
@@ -426,7 +426,7 @@ python3 scripts/rotate_jwt_secret.py --rollback --backup-file <timestamp>.enc
 1. **CRITICAL**: PBKDF2 import bug **→ FIXED**
 2. Scripts now functional and ready for testing
 
-#### Recommendations for Production 📋
+#### Recommendations for Production 
 1. Add `--dry-run` flags for safer testing
 2. Verify `.gitignore` includes backup directory
 3. Document GitHub token scope requirements

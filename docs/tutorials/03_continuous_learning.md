@@ -1,4 +1,4 @@
-# Tutorial 03 — Setting Up Continuous Learning
+## Guide 03 — Setting Up Continuous Learning
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
@@ -83,7 +83,7 @@ print(f"PSI score: {psi_result.score:.4f}  drifted: {psi_result.drifted}")
 # → PSI score: 0.2741  drifted: True
 
 if pipeline.should_retrain(psi_result):
-    print("🔄 Drift threshold exceeded — retraining triggered")
+    print(" Drift threshold exceeded — retraining triggered")
 ```
 
 `should_retrain` accepts both `DriftResult` objects and plain dicts, so you

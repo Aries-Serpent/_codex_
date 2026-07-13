@@ -339,5 +339,5 @@ bleach>=6.1.0  # HTML sanitization
 
 ---
 
-**Status:** 📋 Documented | ⏳ Awaiting Implementation  
+**Status:**  Documented |  Awaiting Implementation  
 **Next Steps:** Apply fixes to codebase and validate with security scans

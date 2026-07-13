@@ -1,4 +1,6 @@
 # Deep Research: Soft → GROUNDED Conversion for Monorepo Agentic AI Systems
+
+**Version**: v0.2.1
 **Last Updated:** 2026-07-11
 
 > Generated: 2026-06-22 | Author: mbaetiong | Chunk: 1 of N
@@ -29,7 +31,7 @@
 - [.codex/policies/agent_registry.rego](#codexpoliciesagent_registryrego)
 - [Policy: every agent must have enforcement_tier defined](#policy-every-agent-must-have-enforcement_tier-defined)
 - [Behavioral Drift Detection (Phase 5 Validation)](#behavioral-drift-detection-phase-5-validation)
-- [🔀 DOMAIN 3 — Multi-Agent Handoff Protocol & JSON Schema](#-domain-3--multi-agent-handoff-protocol--json-schema)
+- [ DOMAIN 3 — Multi-Agent Handoff Protocol & JSON Schema](#-domain-3--multi-agent-handoff-protocol--json-schema)
   - [(Phase 2 Validation)](#phase-2-validation)
   - [Key Finding: A2A Protocol is the 2025 Emerging Standard](#key-finding-a2a-protocol-is-the-2025-emerging-standard)
   - [Validated AgentHandoffManifest Schema (Phase 2 — v1.1)](#validated-agenthandoffmanifest-schema-phase-2--v11)
@@ -45,7 +47,7 @@
 - [Phase 3: Nightly FAISS index rebuild — Tier-2 enforcement for corpus freshness](#phase-3-nightly-faiss-index-rebuild--tier-2-enforcement-for-corpus-freshness)
 - [Memory Corpus Architecture Decision](#memory-corpus-architecture-decision)
 - [ Research Findings Summary — Chunk 1](#-research-findings-summary--chunk-1)
-- [🔗 Full Source List — Chunk 1](#-full-source-list--chunk-1)
+- [ Full Source List — Chunk 1](#-full-source-list--chunk-1)
 - [Deep Research: Soft → GROUNDED Conversion for Monorepo Agentic AI Systems](#deep-research-soft--grounded-conversion-for-monorepo-agentic-ai-systems)
 - [🧭 Chunk 2 Coverage](#-chunk-2-coverage)
 - [ DOMAIN 5 — E→D Tiered Autonomy Architecture](#-domain-5--ed-tiered-autonomy-architecture)
@@ -58,7 +60,7 @@
 - [Phase 4: E→D Transition Readiness Gate](#phase-4-ed-transition-readiness-gate)
 - [Canary: Tier-2 readiness score first; Tier-1 block after 2-sprint observation](#canary-tier-2-readiness-score-first-tier-1-block-after-2-sprint-observation)
 - [Dynamic Routing for Orchestrator→Specialist Selection (Phase 4)](#dynamic-routing-for-orchestratorspecialist-selection-phase-4)
-- [🔧 DOMAIN 6 — Self-Healing CI & Auto-Documentation](#-domain-6--self-healing-ci--auto-documentation)
+- [ DOMAIN 6 — Self-Healing CI & Auto-Documentation](#-domain-6--self-healing-ci--auto-documentation)
   - [(Phase 5 Validation)](#phase-5-validation)
   - [Key Finding: Self-Healing CI is Now Production-Ready](#key-finding-self-healing-ci-is-now-production-ready)
   - [Critical Security Finding for Phase 5 Auto-Documentation](#critical-security-finding-for-phase-5-auto-documentation)
@@ -68,7 +70,7 @@
 - [Pattern validated by: Continue CLI doc-writing agent approach](#pattern-validated-by-continue-cli-doc-writing-agent-approach)
 - [Self-Healing Enforcement Gap Loop (Phase 5 Full Architecture)](#self-healing-enforcement-gap-loop-phase-5-full-architecture)
   - [.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md Auto-Append (Phase 5)](#agent_accountability_reportmd-auto-append-phase-5)
-- [📋 DOMAIN 7 — Monorepo Governance & Compliance Audit Tooling](#-domain-7--monorepo-governance--compliance-audit-tooling)
+- [ DOMAIN 7 — Monorepo Governance & Compliance Audit Tooling](#-domain-7--monorepo-governance--compliance-audit-tooling)
   - [(Phase 0 + Phase 6 Validation)](#phase-0--phase-6-validation)
   - [Key Finding: actionlint + Semgrep + CODEOWNERS is the 2025 Governance Stack](#key-finding-actionlint--semgrep--codeowners-is-the-2025-governance-stack)
   - [Phase 0 Workflow Compliance Scan Script](#phase-0-workflow-compliance-scan-script)
@@ -81,7 +83,7 @@
 - [Phase 0 → Phase 6: Continuous workflow compliance linting](#phase-0--phase-6-continuous-workflow-compliance-linting)
 - [ DOMAIN 8 — CODEX_MANIFEST Security & Runtime Injection Hardening](#-domain-8--codex_manifest-security--runtime-injection-hardening)
   - [(NEW — All Phases Risk Surface)](#new--all-phases-risk-surface)
-  - [⚠️ Critical New Finding: Prompt/Context Injection is the #1 Risk](#-critical-new-finding-promptcontext-injection-is-the-1-risk)
+  - [️ Critical New Finding: Prompt/Context Injection is the #1 Risk](#-critical-new-finding-promptcontext-injection-is-the-1-risk)
   - [Required Hardening: CODEX_MANIFEST.json Security Controls](#required-hardening-codex_manifestjson-security-controls)
 - [Allowlist of fields that can be injected into agent_context.json](#allowlist-of-fields-that-can-be-injected-into-agent_contextjson)
 - [Anything outside this list is stripped before injection](#anything-outside-this-list-is-stripped-before-injection)
@@ -91,7 +93,7 @@
 - [Addition to cognitive-preflight: REQ-9 with integrity check](#addition-to-cognitive-preflight-req-9-with-integrity-check)
 - [ Consolidated Tooling Comparison — All Phases](#-consolidated-tooling-comparison--all-phases)
 - [ Full Research Findings Summary — Chunk 2](#-full-research-findings-summary--chunk-2)
-- [🔗 Full Source List — Chunk 2](#-full-source-list--chunk-2)
+- [ Full Source List — Chunk 2](#-full-source-list--chunk-2)
 - [Deep Research: Soft → GROUNDED Conversion — Implementation Guide](#deep-research-soft--grounded-conversion--implementation-guide)
 - [🧭 Chunk 3 Coverage](#-chunk-3-coverage)
 - [🏗️ SECTION 1 — Integrated Implementation Guide](#-section-1--integrated-implementation-guide)
@@ -110,7 +112,7 @@
 - [── CLI ───────────────────────────────────────────────────────────────────────](#-cli-)
 - [Phase 2 → Phase 3 Connection: Context Snapshot in Handoff Manifest](#phase-2--phase-3-connection-context-snapshot-in-handoff-manifest)
   - [Phase 4 → Phase 5 Connection: Autonomy Demotion on Violation](#phase-4--phase-5-connection-autonomy-demotion-on-violation)
-- [⚠️ SECTION 2 — Revised Risk Table](#-section-2--revised-risk-table)
+- [️ SECTION 2 — Revised Risk Table](#-section-2--revised-risk-table)
   - [CODEOWNERS Addition (R-13, R-14 Mitigation)](#codeowners-addition-r-13-r-14-mitigation)
 - [.github/CODEOWNERS — additions for agentic security](#githubcodeowners--additions-for-agentic-security)
 - [Phase 1+ security hardening per Domain 8 research](#phase-1-security-hardening-per-domain-8-research)
@@ -167,13 +169,13 @@
 - [⚛️ SECTION 3 — Physics-Inspired Formulas: Domains 5–8](#-section-3--physics-inspired-formulas-domains-58)
 - [Physics Extension: Domains 5–8 — Tiered Autonomy, Self-Healing, Governance, Security](#physics-extension-domains-58--tiered-autonomy-self-healing-governance-security)
 - [🧭 Extended Notation](#-extended-notation)
-- [20. 🔄 E→D Transition — Finite State Machine](#20--ed-transition--finite-state-machine)
+- [20.  E→D Transition — Finite State Machine](#20--ed-transition--finite-state-machine)
 - [21. 🏗️ Tiered Role Taxonomy — Potential Energy Ladder](#21--tiered-role-taxonomy--potential-energy-ladder)
 - [22.  Semantic Capability Routing — Vector Field Projection](#22--semantic-capability-routing--vector-field-projection)
-- [23. 🔀 Agent-to-Agent Handoff — Information Conservation Law](#23--agent-to-agent-handoff--information-conservation-law)
-- [24. 🔧 Self-Healing CI — Thermodynamic Repair Cycle](#24--self-healing-ci--thermodynamic-repair-cycle)
+- [23.  Agent-to-Agent Handoff — Information Conservation Law](#23--agent-to-agent-handoff--information-conservation-law)
+- [24.  Self-Healing CI — Thermodynamic Repair Cycle](#24--self-healing-ci--thermodynamic-repair-cycle)
 - [25.  Auto-Documentation — Gradient Descent on Documentation Debt](#25--auto-documentation--gradient-descent-on-documentation-debt)
-- [26. 🔍 Monorepo Compliance Audit — Coverage Integral](#26--monorepo-compliance-audit--coverage-integral)
+- [26.  Monorepo Compliance Audit — Coverage Integral](#26--monorepo-compliance-audit--coverage-integral)
 - [27.  Context Injection Attack Surface — Electromagnetic Analogy](#27--context-injection-attack-surface--electromagnetic-analogy)
 - [28. 🧮 Master Security-Enforcement Field Equation (Extended)](#28--master-security-enforcement-field-equation-extended)
 - [Summary Table: Extended Physics Map](#summary-table-extended-physics-map)
@@ -415,7 +417,7 @@ is exactly this pattern applied to agent behavioral compliance rather than infra
 
 ---
 
-## 🔀 DOMAIN 3 — Multi-Agent Handoff Protocol & JSON Schema
+##  DOMAIN 3 — Multi-Agent Handoff Protocol & JSON Schema
 ### (Phase 2 Validation)
 
 ### Key Finding: A2A Protocol is the 2025 Emerging Standard
@@ -511,7 +513,7 @@ and A2A protocol fields:
 ### PR Comment Template (Q3-partial-B — Tier-2 Present-Tense Injection)
 
 ```markdown name=handoff_pr_comment_template.md
-🔀 **AGENT_HANDOFF** | `v1.1`
+ **AGENT_HANDOFF** | `v1.1`
 
 | Field | Value |
 |-------|-------|
@@ -791,7 +793,7 @@ QUERY
 
 ---
 
-## 🔗 Full Source List — Chunk 1
+##  Full Source List — Chunk 1
 
 1. [AgentSchema — Microsoft](https://microsoft.github.io/AgentSchema/)
 2. [Agents JSON: A Standardized Schema for AI Agents — Forte Group](https://fortegrp.com/insights/agents-json-schema-ai-agents)
@@ -953,7 +955,7 @@ concurrency:
 
 jobs:
   transition-readiness:
-    name: "🔄 E→D Transition Readiness Check"
+    name: " E→D Transition Readiness Check"
     runs-on: ubuntu-latest
     timeout-minutes: 10
     outputs:
@@ -1007,12 +1009,12 @@ jobs:
             const capable = score === 5;
 
             // Post readiness summary as job annotation
-            let summary = `## 🔄 E→D Transition Readiness: ${score}/5\n\n`;
+            let summary = `##  E→D Transition Readiness: ${score}/5\n\n`;
             summary += `| ID | Condition | Status |\n|----|-----------|---------|\n`;
             for (const c of conditions) {
               summary += `| ${c.id} | ${c.label} | ${c.pass ? '' : ''} |\n`;
             }
-            summary += `\n**Operating Model:** ${capable ? ' D_CAPABLE' : '🟡 E (continue building)'}\n`;
+            summary += `\n**Operating Model:** ${capable ? ' D_CAPABLE' : ' E (continue building)'}\n`;
             await core.summary.addRaw(summary).write();
 
             core.setOutput('score', score.toString());
@@ -1061,7 +1063,7 @@ def select_specialist(task_description: str) -> str:
 
 ---
 
-## 🔧 DOMAIN 6 — Self-Healing CI & Auto-Documentation
+##  DOMAIN 6 — Self-Healing CI & Auto-Documentation
 ### (Phase 5 Validation)
 
 ### Key Finding: Self-Healing CI is Now Production-Ready
@@ -1217,7 +1219,7 @@ def append_session_entry(session_id: str) -> None:
 
 ---
 
-## 📋 DOMAIN 7 — Monorepo Governance & Compliance Audit Tooling
+##  DOMAIN 7 — Monorepo Governance & Compliance Audit Tooling
 ### (Phase 0 + Phase 6 Validation)
 
 ### Key Finding: actionlint + Semgrep + CODEOWNERS is the 2025 Governance Stack
@@ -1302,7 +1304,7 @@ def audit_workflow(path: pathlib.Path) -> WorkflowAudit:
         if "git fetch origin" in text:
             audit.has_base_ref_fetch = True
         else:
-            audit.notes.append("⚠️ Cross-branch diff without explicit base-ref fetch")
+            audit.notes.append("️ Cross-branch diff without explicit base-ref fetch")
 
     # Classify enforcement tier
     if "cognitive-preflight" in text or "exit 1" in text:
@@ -1326,7 +1328,7 @@ def generate_matrix() -> None:
             f"| `{a.name}` "
             f"| {'' if a.has_concurrency else ''} "
             f"| {'' if a.has_timeout else ''} "
-            f"| {'⚠️' if a.has_cascade_risk else ''} "
+            f"| {'️' if a.has_cascade_risk else ''} "
             f"| {'' if a.has_base_ref_fetch else 'N/A'} "
             f"| {a.enforcement_tier} "
             f"| {'; '.join(a.notes) or '—'} |"
@@ -1419,7 +1421,7 @@ concurrency:
 
 jobs:
   lint-workflows:
-    name: "🔍 actionlint — Workflow Compliance"
+    name: " actionlint — Workflow Compliance"
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -1443,7 +1445,7 @@ jobs:
       - name: Post summary
         if: always()
         run: |
-          echo "## 🔍 actionlint Results" >> $GITHUB_STEP_SUMMARY
+          echo "##  actionlint Results" >> $GITHUB_STEP_SUMMARY
           cat actionlint_results.txt >> $GITHUB_STEP_SUMMARY || echo "No issues found" >> $GITHUB_STEP_SUMMARY
 ```
 
@@ -1452,7 +1454,7 @@ jobs:
 ##  DOMAIN 8 — CODEX_MANIFEST Security & Runtime Injection Hardening
 ### (NEW — All Phases Risk Surface)
 
-### ⚠️ Critical New Finding: Prompt/Context Injection is the #1 Risk
+### ️ Critical New Finding: Prompt/Context Injection is the #1 Risk
 
 Research from arXiv
 [[16]](https://arxiv.org/html/2601.17548v1),
@@ -1591,10 +1593,10 @@ These controls must be retrofitted into Phases 1–5:
 | `sqlite3` | 3, 4, 5 | Session corpus + violation history |  Already in stack | Python stdlib |
 | `actionlint` | 0, 6 | Workflow YAML linting (hard gate) |  Add — fills syntax gap | Binary download in CI |
 | `Semgrep` | 0, 5 | Pattern-based soft enforcement detection |  Add for Phase 5 gap scan | `pip install semgrep` |
-| `Conftest + OPA` | 5 → | Policy-as-code for registry/manifest | 🟡 Phase 5 upgrade only | `brew/apt install conftest` |
-| `CrewAI` | 4 | Hierarchical agent orchestration framework | 🟡 Evaluate only — may conflict with existing `agent-auth-delegation.yml` | `pip install crewai` |
-| `Renovate` | 6 | Dependency update automation | 🟡 Optional — useful for long-term governance | GitHub App install |
-| `codetrust` | 6 | AI governance + audit logs at package level | 🟡 Future — overkill for Phase 1–5 | `pip install codetrust` |
+| `Conftest + OPA` | 5 → | Policy-as-code for registry/manifest |  Phase 5 upgrade only | `brew/apt install conftest` |
+| `CrewAI` | 4 | Hierarchical agent orchestration framework |  Evaluate only — may conflict with existing `agent-auth-delegation.yml` | `pip install crewai` |
+| `Renovate` | 6 | Dependency update automation |  Optional — useful for long-term governance | GitHub App install |
+| `codetrust` | 6 | AI governance + audit logs at package level |  Future — overkill for Phase 1–5 | `pip install codetrust` |
 
 ---
 
@@ -1610,11 +1612,11 @@ These controls must be retrofitted into Phases 1–5:
 | Phase 5 | Accountability auto-append |  Validated — Scalex self-healing audit trail pattern | SQLite → W-NNN append is correct |
 | Phase 0 | Workflow compliance scan |  Validated — actionlint + Semgrep + pyyaml | `workflow_compliance_scan.py` pattern confirmed |
 | Phase 6 | Final hardening tools |  Validated — Semgrep, actionlint, CODEOWNERS | Full governance stack confirmed |
-| ALL | CODEX_MANIFEST security | ⚠️ **NEW RISK** — arXiv + CVE-2025-55319/61260 | Context injection is #1 new attack surface; integrity hash + field allowlist required |
+| ALL | CODEX_MANIFEST security | ️ **NEW RISK** — arXiv + CVE-2025-55319/61260 | Context injection is #1 new attack surface; integrity hash + field allowlist required |
 
 ---
 
-## 🔗 Full Source List — Chunk 2
+##  Full Source List — Chunk 2
 
 1. [Agentic Lybic: Multi-Agent Execution System with Tiered Reasoning — arXiv](https://arxiv.org/html/2509.11067)
 2. [Multi-model AI Dev Pipeline Architecture — GitHub](https://github.com/p4ndroid/ai-dev-pipeline-architecture)
@@ -1812,7 +1814,7 @@ def extract_enforcement_kpis() -> dict[str, int]:
     text = GVS_DOC.read_text(encoding="utf-8")
     return {
         "tier1_count":  len(re.findall(r" \*\*GROUNDED\*\*", text)),
-        "tier2_count":  len(re.findall(r"🟡 \*\*(PARTIAL|TIER-2)\*\*", text)),
+        "tier2_count":  len(re.findall(r" \*\*(PARTIAL|TIER-2)\*\*", text)),
         "tier3_count":  len(re.findall(r" \*\*SOFT\*\*", text)),
         "ungatable":    2,  # confirmed permanent
     }
@@ -2083,7 +2085,7 @@ def check_and_demote() -> bool:
     model    = manifest.get("operating_model", {})
 
     if model.get("transition_active") and rate > VIOLATION_THRESHOLD:
-        print(f"⚠️  Violation rate {rate:.0%} > threshold {VIOLATION_THRESHOLD:.0%}")
+        print(f"️  Violation rate {rate:.0%} > threshold {VIOLATION_THRESHOLD:.0%}")
         print(" Suspending D-model — reverting to E (safe state)")
 
         # Update CODEX_AGENT_AUTONOMY_LEVEL repo variable via pending_var_updates.json
@@ -2107,7 +2109,7 @@ if __name__ == "__main__":
 
 ---
 
-## ⚠️ SECTION 2 — Revised Risk Table
+## ️ SECTION 2 — Revised Risk Table
 
 All original plan risks + Domain 8 security findings merged into
 a single consolidated risk register:
@@ -2416,7 +2418,7 @@ All of the following must be true before Phase 1 begins:
 | D5: Tiered Autonomy | 2 | 4 |  arXiv Agentic Lybic / Anthropic / Microsoft | `e-to-d-transition-gate.yml` |
 | D6: Self-Healing CI | 2 | 5 |  GitHub Agentic WF / AutoDevOps / Scalex | `auto_promote_tier.py`, `auto_append_accountability.py` |
 | D7: Monorepo Governance | 2 | 0, 6 |  actionlint / Semgrep / Aviator | `workflow_compliance_scan.py`, `actionlint-audit.yml` |
-| D8: Security Hardening | 2,3 | All | ⚠️ CVE-2025-55319/61260 — NEW RISK | `generate_manifest.py` security additions |
+| D8: Security Hardening | 2,3 | All | ️ CVE-2025-55319/61260 — NEW RISK | `generate_manifest.py` security additions |
 
 ---
 
@@ -3006,7 +3008,7 @@ All of the following must be true before Phase 4 begins
 
 ---
 
-## 20. 🔄 E→D Transition — Finite State Machine
+## 20.  E→D Transition — Finite State Machine
 
 The E→D operating model transition is a **discrete FSM** with 4 states:
 
@@ -3091,7 +3093,7 @@ $$
 
 ---
 
-## 23. 🔀 Agent-to-Agent Handoff — Information Conservation Law
+## 23.  Agent-to-Agent Handoff — Information Conservation Law
 
 Each handoff must **conserve task information** — no context is lost
 in the delegation chain. Modeled as a **Noether conservation law**:
@@ -3114,7 +3116,7 @@ $$
 
 ---
 
-## 24. 🔧 Self-Healing CI — Thermodynamic Repair Cycle
+## 24.  Self-Healing CI — Thermodynamic Repair Cycle
 
 The Phase 5 self-healing loop is modeled as a
 **thermodynamic repair cycle** (Carnot-analog):
@@ -3186,7 +3188,7 @@ $\mathcal{D}$ grows monotonically with each merge.
 
 ---
 
-## 26. 🔍 Monorepo Compliance Audit — Coverage Integral
+## 26.  Monorepo Compliance Audit — Coverage Integral
 
 Phase 0's `workflow_compliance_scan.py` computes
 **audit coverage** $\mathcal{A}$ as a surface integral
@@ -3443,7 +3445,7 @@ All sources across all 4 chunks, organized by domain. 52 sources total.
 | D5: Tiered Autonomy | 8 | Phase 4 |  High |
 | D6: Self-Healing CI | 8 | Phase 5 |  High |
 | D7: Monorepo Governance | 5 | Phase 0, 6 |  High |
-| D8: Security | 4 | All phases | ⚠️ Critical |
+| D8: Security | 4 | All phases | ️ Critical |
 | **Total** | **56** | **All 7 phases** |  |
 
 ---

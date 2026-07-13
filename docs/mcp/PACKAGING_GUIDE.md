@@ -13,18 +13,18 @@
 
 **Objective**: Provide comprehensive packaging workflow for creating ChatGPT Project-compatible archives from Aries-Serpent/_codex_ repository subsets, enabling efficient knowledge transfer without direct Git access.
 
-**Energy Level**: ⚡⚡⚡ (3/5) - Active operational documentation requiring regular maintenance as packaging system evolves.
+**Energy Level**:  (3/5) - Active operational documentation requiring regular maintenance as packaging system evolves.
 
 **Operational Status**:
 -  Core packaging workflow validated
 -  Topic selection system operational
 -  Manifest generation stable
 -  GitHub Actions automation active
-- 🔄 Advanced features (size estimation, exclusion patterns) in planning phase
+-  Advanced features (size estimation, exclusion patterns) in planning phase
 
 ---
 
-## ⚖️ Verification Checklist
+## ️ Verification Checklist
 
 **Pre-Packaging Prerequisites**:
 - [ ] Python 3.8+ installed and accessible
@@ -53,7 +53,7 @@
 
 ---
 
-## 📈 Success Metrics
+##  Success Metrics
 
 | Metric | Target | Current | Status |
 |--------|--------|---------|--------|
@@ -77,7 +77,7 @@
 
 ## ⚛️ Physics Alignment
 
-### Path 🛤️ (Information Flow)
+### Path ️ (Information Flow)
 **Workflow Path**: Repository → Selection → Staging → Flattening → Packaging → Validation → Upload → Verification
 
 ```mermaid
@@ -93,7 +93,7 @@ graph LR
     H --> I[Operational Verification]
 ```
 
-### Fields 🔄 (State Transitions)
+### Fields  (State Transitions)
 **File State Evolution**:
 1. **Source State**: Nested repository structure (`src/agents/foo.py`)
 2. **Selection State**: Matched by topic/glob patterns
@@ -104,7 +104,7 @@ graph LR
 7. **Deployment State**: Uploaded to ChatGPT Project
 8. **Operational State**: Queried by assistant with provenance
 
-### Patterns 👁️ (Observable Regularities)
+### Patterns ️ (Observable Regularities)
 - **Flat Naming Convention**: `/` → `__` deterministic transformation
 - **Manifest Schema**: Consistent JSON structure across all packages
 - **Size Distribution**: 80% of packages < 15 MB, 95% < 30 MB
@@ -112,7 +112,7 @@ graph LR
 - **Validation Success**: 100% of valid inputs produce valid outputs
 - **Error Patterns**: 98% of failures from incorrect paths or missing dependencies
 
-### Redundancy 🔀 (Fault Tolerance)
+### Redundancy  (Fault Tolerance)
 **Multi-Level Verification**:
 - File existence checked pre-staging
 - SHA256 hashing detects corruption
@@ -126,7 +126,7 @@ graph LR
 - Oversized packages: Exclusion patterns to filter (planned)
 - Missing dependencies: Clear error with file list
 
-### Balance ⚖️ (Resource Optimization)
+### Balance ️ (Resource Optimization)
 **Computational Balance**:
 - Staging I/O vs. compression CPU: Parallel where possible
 - Manifest generation vs. file count: O(n) linear scaling
@@ -139,7 +139,7 @@ graph LR
 
 ---
 
-## ⚡ Energy Distribution
+##  Energy Distribution
 
 **Priority Breakdown (P2 - Supporting Documentation)**:
 
@@ -458,7 +458,7 @@ SIZE_MB=$((SIZE_MB / 1024 / 1024))
 echo "Package size: ${SIZE_MB} MB"
 
 if [ "$SIZE_MB" -gt 50 ]; then
-    echo "⚠️  Warning: Package exceeds 50 MB recommended limit"
+    echo "️  Warning: Package exceeds 50 MB recommended limit"
 fi
 
 # 6. Cleanup
@@ -652,7 +652,7 @@ Edit `package_flatten.sh` to include custom metadata in manifest:
 2. **Validate locally**: Always check manifest before uploading
 3. **Use topics**: Prefer predefined topics over custom globs for consistency
 4. **Document overrides**: If using custom globs, document why
-5. **Version packages**: Include date or commit in output filename (e.g., `package_agents_2025-12-30.zip`)
+5. **Version packages**: Include date 2026-07-13
 6. **Test ChatGPT load**: Verify assistant can parse manifest and answer queries
 7. **Iterate**: Start broad, then narrow to specific files as needed
 

@@ -3,7 +3,7 @@
 **Version:** v0.2.1
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
- Roles: [Primary: Security Maintainer], [Secondary: Reviewer] ⚡ Energy: 5
+ Roles: [Primary: Security Maintainer], [Secondary: Reviewer]  Energy: 5
 
 Rules
 - Never commit plaintext secrets or tokens.

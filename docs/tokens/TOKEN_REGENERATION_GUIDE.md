@@ -14,7 +14,7 @@ This guide provides comprehensive instructions for updating all repository compo
 
 ---
 
-## 📋 Token Types & Scopes
+##  Token Types & Scopes
 
 ### Personal Access Token (PAT) - Classic
 
@@ -70,7 +70,7 @@ This guide provides comprehensive instructions for updating all repository compo
 4. **Expiration**: Custom → 1 year (2027-01-26)
 5. Select all required scopes (see above)
 6. Click "Generate token"
-7. **⚠️ CRITICAL**: Copy token immediately (shown only once)
+7. **️ CRITICAL**: Copy token immediately (shown only once)
 
 ### Via GitHub CLI
 
@@ -86,7 +86,7 @@ gh api -X POST /user/tokens \
 
 ---
 
-## 🔧 Step 2: Update Repository Secrets
+##  Step 2: Update Repository Secrets
 
 ### Method 1: GitHub UI
 
@@ -130,7 +130,7 @@ gh secret list --repo Aries-Serpent/_codex_ | grep CODEX_MASTER_KEY
 
 ---
 
-## 📝 Step 3: Update Configuration Files
+##  Step 3: Update Configuration Files
 
 ### 3.1 Update `.codex/flags.json`
 
@@ -314,7 +314,7 @@ EOF
 
 ---
 
-## 🔄 Step 7: Test Integration Points
+##  Step 7: Test Integration Points
 
 ### 7.1 Test Workflow Execution
 
@@ -390,7 +390,7 @@ cat > /tmp/validate_all_permissions.sh <<'EOF'
 #!/bin/bash
 set -e
 
-echo "🔍 Validating GitHub Token Permissions..."
+echo " Validating GitHub Token Permissions..."
 echo "============================================"
 
 # Test each required permission
@@ -470,7 +470,7 @@ def check_token_expiry():
     days_until_expiry = (expiry - now).days
 
     if days_until_expiry <= 30:
-        print(f"⚠️ WARNING: Token expires in {days_until_expiry} days!")
+        print(f"️ WARNING: Token expires in {days_until_expiry} days!")
         print(f"   Expiry Date: {expiry.isoformat()}")
         print(f"   Action Required: Regenerate token before expiry")
         return False
@@ -488,7 +488,7 @@ python .codex/monitoring/token_expiry_check.py
 
 ---
 
-## 🚨 Troubleshooting
+##  Troubleshooting
 
 ### Common Issues & Solutions
 
@@ -565,7 +565,7 @@ gh auth status
 
 ### Next Rotation Date
 
-**Current Token**: 2026-01-26  
+2026-07-13
 **Next Scheduled Rotation**: 2026-04-26 (90 days)  
 **Expiry Date**: 2027-01-26 (1 year)
 
@@ -578,7 +578,7 @@ Set calendar reminders:
 
 ---
 
-## 🔗 Related Documentation
+##  Related Documentation
 
 - **Token Setup Guide**: `.codex/HUMAN_ADMIN_REQUIRED_TOKEN_SETUP.md`
 - **Genesis Setup**: `docs/admin/GENESIS_SETUP_GUIDE.md`

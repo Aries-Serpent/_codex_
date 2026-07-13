@@ -167,9 +167,9 @@ graph LR
  Future-proof for distributed systems  
 
 ### Negative
-⚠️ Learning curve for event-driven patterns  
-⚠️ Harder to debug — flow is implicit rather than explicit  
-⚠️ Eventual consistency rather than immediate consistency  
+️ Learning curve for event-driven patterns  
+️ Harder to debug — flow is implicit rather than explicit  
+️ Eventual consistency rather than immediate consistency  
 
 ### Mitigations
 - Comprehensive event documentation

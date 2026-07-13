@@ -4,7 +4,7 @@
 
 **PR:** [#4393](https://github.com/Aries-Serpent/_codex_/pull/4393)  
 **Branch:** `copilot/fix-ci-failure-triage-report`  
-**Status:** 🟡 In progress — CI rescue follow-up applied; actionlint cadence fix prepared; latest fetcher artifact verification pending API access
+**Status:**  In progress — CI rescue follow-up applied; actionlint cadence fix prepared; latest fetcher artifact verification pending API access
 
 ---
 
@@ -16,8 +16,8 @@
 | CodeQL verification runs |  | `codeql-analysis.yml` `25649802257` + `codeql.yml` `25649802298` succeeded |
 | Rebase-churn guard (`agent-auth-delegation`) |  | PR-time `chore(auth)`/`chore(d00)` branch writes now skipped |
 | Sweep-push conflict guard (`iterative-self-healing-ci`) |  | Push deferred for `copilot/*` and protected branches with open PRs |
-| Optional high-cost startup failures | ⚠️ | zero-job `startup_failure` states (infra/startup-level, non-code) |
-| Fresh fetcher artifact check on latest SHA | 🔄 | pending final verification step |
+| Optional high-cost startup failures | ️ | zero-job `startup_failure` states (infra/startup-level, non-code) |
+| Fresh fetcher artifact check on latest SHA |  | pending final verification step |
 
 ---
 
@@ -43,7 +43,7 @@
 -  Implemented sweep-push conflict mitigation in `iterative-self-healing-ci.yml`:
   universal baseline-sweep now defers pushes for active `copilot/*` branches and
   for protected branches (`main`, `0D_base_`) whenever open PRs exist.
-- 🔄 Current workflow snapshot on head `5e6a479`:
+-  Current workflow snapshot on head `5e6a479`:
   - 12 completed `success`
   - 9 currently `in_progress`
   - 4 `action_required` (approval-gated runs)
@@ -57,7 +57,7 @@
   - Failed run `25649801454` (`submit-dependency-snapshot`) reviewed.
   - Newer run `25650141042` on the same branch completed `success`, including `submit-dependency-snapshot`.
   - Classified as transient workflow/platform failure, not persistent repo-code regression.
-- ⚠️ CodeQL fetcher rerun currently pending due to temporary GitHub API rate-limit
+- ️ CodeQL fetcher rerun currently pending due to temporary GitHub API rate-limit
   window on this session token; re-dispatch required once reset clears.
 -  Auto-approval process hardening for high pending-run volume:
   - `auto-approve-workflows.yml` now also triggers on `pull_request_review` submits.
@@ -65,12 +65,12 @@
   - Uses REST rerun fallback for same-repo PRs (no GH CLI token ambiguity).
   - Hardened for active Copilot sessions: workflow_run trigger now includes `requested`/`in_progress`, with aggressive multi-pass approval when agent is active.
   - Added active-session monitor mode (default 60-minute window) to repeatedly auto-approve new pending runs and verify no completed workflow failures on the current PR head.
-- 🔄 Post-approval monitoring snapshot (head `ed6fb33`):
+-  Post-approval monitoring snapshot (head `ed6fb33`):
   - 12 `in_progress`
   - 8 `pending`
   - 7 `queued`
   - 3 `startup_failure` (Data Quality, Progressive Validation, Rust-Python; infra/startup class)
-- 🔄 Latest monitoring snapshot (head `3abd8b35`):
+-  Latest monitoring snapshot (head `3abd8b35`):
   - 12 completed `action_required`
   - 1 `in_progress`
   - 1 completed `failure` (`Agent Token Delegation` helper path)
@@ -81,7 +81,7 @@
   - run `25651931743`
   - artifact `codeql-alerts-open-codeql-25651931743`
   - sha256 `c213c9edac3b483000b9871599fbef94d077a389130edf4a2ebc5b2095b9b548`
-- 🔄 Post-approval monitoring snapshot (head `235cdcc`):
+-  Post-approval monitoring snapshot (head `235cdcc`):
   - 15 completed `success`
   - 7 currently `in_progress`
   - 4 completed `action_required`
@@ -112,7 +112,7 @@
 
 ---
 
-## 📋 Session History (key handoff concept)
+##  Session History (key handoff concept)
 
 | Session | Focus | Result |
 |---------|-------|--------|
@@ -123,9 +123,9 @@
 
 ---
 
-## ⚠️ Known Non-Blocking Issues
+## ️ Known Non-Blocking Issues
 
 | Issue | Severity | Action |
 |-------|----------|--------|
-| Optional high-cost suites with `startup_failure` + zero jobs | ⚠️ infra | monitor; non-code failure mode |
-| Fetcher artifact rerun not yet captured on latest SHA | 🟡 follow-up | trigger `codeql-alert-fetcher.yml` and verify summary |
+| Optional high-cost suites with `startup_failure` + zero jobs | ️ infra | monitor; non-code failure mode |
+| Fetcher artifact rerun not yet captured on latest SHA |  follow-up | trigger `codeql-alert-fetcher.yml` and verify summary |

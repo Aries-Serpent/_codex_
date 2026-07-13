@@ -69,7 +69,7 @@ PYTHONPATH=src python src/cognitive_brain/experiments/exp1b_revalidation.py \
 
 ---
 
-### 🟡 Priority 2: Validation (not started)
+###  Priority 2: Validation (not started)
 
 #### Task 2.1: Extended Noise Resilience (10% gate error)
 ```bash

@@ -2,7 +2,7 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> **⚠️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
+> **️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 
 
 > **Source**: AST_BLOCKERS_DEEPRESEARCH_COMPREHENSIVE.md (777 lines, 25+ OSS references)  
@@ -48,7 +48,7 @@
 
 ---
 
-### ⚠️ REQUIRES STAKEHOLDER APPROVAL (Phase 2: Medium Scope)
+### ️ REQUIRES STAKEHOLDER APPROVAL (Phase 2: Medium Scope)
 
 | # | Item | Effort | Risk | Value | Prerequisites |
 |---|------|--------|------|-------|---------------|
@@ -122,7 +122,7 @@ ast_extended = [
 **Verification**:
 ```bash
 pip install -e .
-python -c "import libcst; import radon; import parso; print('✓ Dependencies OK')"
+python -c "import libcst; import radon; import parso; print(' Dependencies OK')"
 ```text
 
 **Risk Mitigation**:

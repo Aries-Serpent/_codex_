@@ -3,7 +3,7 @@
 **Version:** v0.2.1
 
 **Last Updated**: 2026-01-20  
-**Version**: v0.9.0  
+**Version**: v0.2.1  
 **Reference**: [E2E Request Flow](../architecture/E2E_REQUEST_FLOW.md)
 
 ---
@@ -23,9 +23,9 @@ graph TD
     
     SplitData --> LoadModel[" Load Model<br/>• Architecture: GPT-2 style<br/>• Init: Xavier/He<br/>• Parameters: 124M<br/>• Device: GPU/CPU"]
     
-    LoadModel --> Optimizer["🔄 Setup Optimizer<br/>• Algorithm: AdamW<br/>• LR: 5e-4<br/>• Weight decay: 0.01<br/>• Scheduler: Cosine"]
+    LoadModel --> Optimizer[" Setup Optimizer<br/>• Algorithm: AdamW<br/>• LR: 5e-4<br/>• Weight decay: 0.01<br/>• Scheduler: Cosine"]
     
-    Optimizer --> InitMonitor["📈 Init Monitoring<br/>• Loss tracking<br/>• Metric computation<br/>• Log directory setup<br/>• Tensorboard init"]
+    Optimizer --> InitMonitor[" Init Monitoring<br/>• Loss tracking<br/>• Metric computation<br/>• Log directory setup<br/>• Tensorboard init"]
     
     InitMonitor --> EpochStart(["▶️ Start Epoch Loop"])
     
@@ -46,11 +46,11 @@ graph TD
     
     Backward --> Clip["✂️ Gradient Clipping<br/>• Max norm: 1.0<br/>• Prevent exploding grads<br/>• Check L2 norm"]
     
-    Clip --> OptStep["🔄 Optimizer Step<br/>• Update weights<br/>• Apply learning rate<br/>• Update momentum"]
+    Clip --> OptStep[" Optimizer Step<br/>• Update weights<br/>• Apply learning rate<br/>• Update momentum"]
     
-    OptStep --> ZeroGrad["🔄 Zero Gradients<br/>• Reset for next iter"]
+    OptStep --> ZeroGrad[" Zero Gradients<br/>• Reset for next iter"]
     
-    ZeroGrad --> LogBatch["📝 Log Batch Metrics<br/>• Loss: X.XXX<br/>• Accuracy: XX%<br/>• Learning rate: 1e-4"]
+    ZeroGrad --> LogBatch[" Log Batch Metrics<br/>• Loss: X.XXX<br/>• Accuracy: XX%<br/>• Learning rate: 1e-4"]
     
     LogBatch --> BatchCheck{"More<br/>Batches?"}
     
@@ -71,7 +71,7 @@ graph TD
     
     StopEarly -->|" Stop"| StopEpoch["🛑 Early Stopping<br/>Trigger"]
     
-    StopEarly -->|" Continue"| LRSchedule["🔄 Update LR Schedule<br/>• Cosine schedule<br/>• Decay: 1 - t/T<br/>• New LR: 4.9e-4"]
+    StopEarly -->|" Continue"| LRSchedule[" Update LR Schedule<br/>• Cosine schedule<br/>• Decay: 1 - t/T<br/>• New LR: 4.9e-4"]
     
     LRSchedule --> EpochCheck{"More<br/>Epochs?"}
     
@@ -90,7 +90,7 @@ graph TD
     
     SaveFinal --> UploadCloud["☁️ Upload to Cloud<br/>• S3 bucket<br/>• Versioned<br/>• Metadata tagged"]
     
-    UploadCloud --> LogExp["📋 Log Experiment<br/>• MLflow: run params<br/>• Metrics & artifacts<br/>• Artifacts: weights<br/>• Tags: version, date"]
+    UploadCloud --> LogExp[" Log Experiment<br/>• MLflow: run params<br/>• Metrics & artifacts<br/>• Artifacts: weights<br/>• Tags: version, date"]
     
     LogExp --> NotifyGH["🐙 Notify GitHub<br/>• PR comment<br/>• 'Training complete'<br/>• Metrics summary<br/>• Checkpoint link"]
     

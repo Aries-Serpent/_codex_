@@ -91,7 +91,7 @@ if manager.is_significant(alpha=0.05):
     report = manager.get_comparison_report()
     print(f"Improvement: {report['winner_improvement']:.2%}")
 else:
-    print("⏳ Not enough data or no significant difference")
+    print(" Not enough data or no significant difference")
 ```
 
 ## 4. Gradual Rollout
@@ -237,7 +237,7 @@ def analyze_ab_test_results(manager):
             improvement[metric] = pct_change
             print(f"  {metric}: {pct_change:+.2f}%")
     else:
-        print("\n⚠️ No statistically significant difference detected")
+        print("\n️ No statistically significant difference detected")
         print("Recommendation: Continue experiment or try different approach")
 
     # Save report
@@ -521,7 +521,7 @@ def check_statistical_power(manager, min_detectable_effect=0.02):
         print(f"{variant_name}: n={n}, power≈{power:.2f}")
 
         if power < 0.80:
-            print(f"  ⚠️ Low power - need more samples")
+            print(f"  ️ Low power - need more samples")
 ```
 
 ## Integration with Continuous Learning

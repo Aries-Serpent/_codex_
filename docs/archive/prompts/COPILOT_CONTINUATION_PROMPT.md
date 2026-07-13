@@ -49,8 +49,8 @@ All IP-001 through IP-005 improvement proposals have been successfully completed
 
 ### Long Term
 1.  Reach 100% coverage - COMPLETE
-2. ⏳ Production RAG pipeline - Future
-3. ⏳ Remove all legacy code - Future
+2.  Production RAG pipeline - Future
+3.  Remove all legacy code - Future
 
 ## Future Work (Optional)
 

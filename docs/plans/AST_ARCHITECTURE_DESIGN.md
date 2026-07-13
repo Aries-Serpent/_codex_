@@ -2,7 +2,7 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> **⚠️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
+> **️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 
 
 **Generated**: 2026-06-22
@@ -542,13 +542,13 @@ def update_maturity_report(metrics: CodebaseMetrics, report_path: Path) -> None:
 ## Next Steps
 
 1.  AI Assistant autonomous architecture review
-2. ⏳ Prototype StandardizedASTNode
-3. ⏳ Implement Python parser
-4. ⏳ Create dependency graph
-5. ⏳ Build metrics aggregator
-6. ⏳ Develop plugin system
-7. ⏳ Create CLI tools
-8. ⏳ Write comprehensive tests
+2.  Prototype StandardizedASTNode
+3.  Implement Python parser
+4.  Create dependency graph
+5.  Build metrics aggregator
+6.  Develop plugin system
+7.  Create CLI tools
+8.  Write comprehensive tests
 
 **Status**: DESIGN COMPLETE - Awaiting implementation approval
 **Owner**: Architecture Lead

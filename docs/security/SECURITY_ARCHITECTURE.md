@@ -3,7 +3,7 @@
 **Version:** v0.2.1
 
 **Last Updated**: 2026-01-20  
-**Version**: v0.9.0  
+**Version**: v0.2.1  
 **Status**: Production-Ready  
 **CVEs Fixed**: 48
 
@@ -23,13 +23,13 @@ graph TB
 
     subgraph "Secret Management"
         SecStore["🗝️ Secret Storage<br/>• Environment vars<br/>• .env files<br/>• Vault integration"]
-        SecRotate["🔄 Rotation<br/>• Automated rotation<br/>• Scheduled updates<br/>• Audit logging"]
-        SecAccess["🔍 Access Control<br/>• Who accessed what<br/>• When & why<br/>• Audit trail"]
+        SecRotate[" Rotation<br/>• Automated rotation<br/>• Scheduled updates<br/>• Audit logging"]
+        SecAccess[" Access Control<br/>• Who accessed what<br/>• When & why<br/>• Audit trail"]
     end
 
     subgraph "Code Scanning & Analysis"
         Static["🔎 Static Analysis<br/>• Semgrep rules<br/>• CodeQL queries<br/>• Custom patterns"]
-        Bandit["🚨 Bandit/Safety<br/>• Security linting<br/>• Dep vulnerabilities<br/>• Best practices"]
+        Bandit[" Bandit/Safety<br/>• Security linting<br/>• Dep vulnerabilities<br/>• Best practices"]
         SAST[" SAST Engine<br/>• Flow analysis<br/>• Taint tracking<br/>• Risk scoring"]
         Secrets[" Secrets Detection<br/>• Committed secrets<br/>• API keys found<br/>• Credential exposure"]
     end
@@ -43,13 +43,13 @@ graph TB
     subgraph "Monitoring & Detection"
         AnomalyDetect[" Anomaly Detection<br/>• Unusual logins<br/>• Permission escalation<br/>• Data exfiltration"]
         RateLimit["⏱️ Rate Limiting<br/>• Per-user limits<br/>• Per-endpoint limits<br/>• DDoS protection"]
-        AuditLog["📋 Audit Logging<br/>• All actions logged<br/>• Immutable records<br/>• Retention policy"]
-        Alerts["⚠️ Security Alerts<br/>• Real-time alerts<br/>• Escalation chain<br/>• Incident response"]
+        AuditLog[" Audit Logging<br/>• All actions logged<br/>• Immutable records<br/>• Retention policy"]
+        Alerts["️ Security Alerts<br/>• Real-time alerts<br/>• Escalation chain<br/>• Incident response"]
     end
 
     subgraph "Request Processing"
         Incoming["📥 Incoming Request<br/>HTTPS"]
-        Input["✓ Input Validation<br/>• Type checking<br/>• Length limits<br/>• Sanitization"]
+        Input[" Input Validation<br/>• Type checking<br/>• Length limits<br/>• Sanitization"]
         Auth[" Authentication<br/>• Verify token<br/>• Check signature<br/>• Validate expiry"]
         AuthZ[" Authorization<br/>• Check permissions<br/>• Verify RBAC<br/>• Policy eval"]
         Process[" Process Request<br/>Application logic"]
@@ -222,8 +222,8 @@ graph TB
 
 ```mermaid
 graph LR
-    Discover["🔍 Discover CVE"] -->|"Alert"| Assess[" Assess<br/>Severity: High"]
-    Assess --> Patch["🔧 Create Patch"]
+    Discover[" Discover CVE"] -->|"Alert"| Assess[" Assess<br/>Severity: High"]
+    Assess --> Patch[" Create Patch"]
     Patch --> Test[" Test Fix"]
     Test --> Review["👀 Code Review"]
     Review --> Merge[" Merge"]

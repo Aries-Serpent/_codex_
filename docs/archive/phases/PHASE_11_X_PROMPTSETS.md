@@ -1,4 +1,6 @@
 # Phase 11.x Promptsets - Execution Templates
+
+**Version**: v0.2.1
 **Last Updated:** 2026-07-11
 
 **Last Updated: 2026-06-22
@@ -461,7 +463,7 @@ FORMATTING:
 ```python
 {
     "blocks": [
-        {"type": "header", "text": {"type": "plain_text", "text": "🚨 High Severity Alert"}},
+        {"type": "header", "text": {"type": "plain_text", "text": " High Severity Alert"}},
         {"type": "section", "text": {"type": "mrkdwn", "text": "*Error*: Database connection failed"}},
         {"type": "section", "fields": [
             {"type": "mrkdwn", "text": "*Environment:*\nProduction"},

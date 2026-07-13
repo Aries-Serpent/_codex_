@@ -1,0 +1,24 @@
+%% Bottleneck Identification — Aries-Serpent/_codex_
+%% Phase 4.11 — Integration Scenario Diagrams
+
+flowchart TD
+    A["🚀 End-to-End Request\n(measure latency)"]
+    B["⏱️ Trace Each Step\n(with timestamps)"]
+    C["📡 Data Loading\n(100ms)"]
+    D["🔤 Tokenization\n(50ms)"]
+    E["🧠 Model Forward\n(5000ms) ⚠️"]
+    F["💾 Post-processing\n(50ms)"]
+    G["📤 Response Return\n(10ms)"]
+    H["📊 Analyze Timeline"]
+    I{"Which step\ndominate?"}
+    J["🎯 Focus: Model\n(5000ms = 94%)"]
+    K["💡 Solutions\n(batch, quantize, cache)"]
+    L["🔄 Iterate\n(reduce latency)"]
+    
+    A --> B --> C --> D --> E --> F --> G --> H --> I
+    I -->|"model"| J --> K --> L
+    
+    style A fill:#4a4e69,color:#fff
+    style E fill:#e63946,color:#fff
+    style J fill:#e63946,color:#fff
+    style L fill:#1b4332,color:#fff

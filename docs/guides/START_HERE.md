@@ -10,7 +10,7 @@
 
 ##  Start Here Based on Your Role
 
-### 👨‍💼 Business Users / Decision Makers
+### 👨‍ Business Users / Decision Makers
 **Time to first prediction:** 5 minutes
 
 1. **[Getting Started for End Users](./GETTING_STARTED_END_USER.md)** ⭐ START HERE
@@ -170,7 +170,7 @@
 
 ---
 
-## 🔍 Find What You Need
+##  Find What You Need
 
 ### By Task
 
@@ -241,7 +241,7 @@
 
 ##  Complete Guide List
 
-### Getting Started (5 guides)
+## Getting Started (5 guides)
 - [Data Scientists](./GETTING_STARTED_DATA_SCIENTIST.md)
 - [ML Engineers](./GETTING_STARTED_ML_ENGINEER.md)
 - [DevOps Engineers](./GETTING_STARTED_DEVOPS.md)
@@ -255,7 +255,7 @@
 ### Reference & FAQ (1 guide)
 - [Comprehensive FAQ](./FAQ_COMPREHENSIVE.md) - 60+ questions
 
-### Tutorials (in progress)
+## Guides (in progress)
 - Web Dashboard Tutorial
 - CLI Tutorial
 - Python SDK Tutorial
@@ -272,7 +272,7 @@
 
 ## 🎥 Video Tutorials
 
-### Getting Started Series (5 videos, 5 min each)
+## Getting Started Series (5 videos, 5 min each)
 - Role selection
 - Installation & setup
 - First model/API call
@@ -297,7 +297,7 @@
 
 ---
 
-## 🔗 Related Documentation
+##  Related Documentation
 
 | Section | Purpose | Audience |
 |---------|---------|----------|
@@ -334,7 +334,7 @@
 
 ---
 
-## ✨ Pro Tips
+##  Pro Tips
 
 1. **Bookmark your guide** - You'll reference it often
 2. **Skim the Table of Contents** - Find what you need faster

@@ -160,7 +160,7 @@ def quantum_vae_loss(x, z, Psi):
 
 ---
 
-## 🔄 Synchronized Compression Mirrors
+##  Synchronized Compression Mirrors
 
 ### Architecture
 
@@ -253,7 +253,7 @@ def verify_mirror_consistency(mirror1, mirror2):
 
 ---
 
-## 📝 Integration Points
+##  Integration Points
 
 ### With Existing Quantum Infrastructure
 

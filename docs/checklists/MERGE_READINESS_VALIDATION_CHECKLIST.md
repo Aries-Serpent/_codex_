@@ -97,7 +97,7 @@ python -m pip_audit --skip-editable --desc
 **Must Be Present:** Workflow Execution Checklist section in PR body
 
 **Checklist:**
-- [ ] WEC section header exists: `## 🔄 Workflow Execution Checklist`
+- [ ] WEC section header exists: `##  Workflow Execution Checklist`
 - [ ] All 9 items present (see list below)
 - [ ] Always-required items are `[x]` (6 items):
   - [ ] `pre-merge-validation.yml` ← Must be `[x]`
@@ -113,7 +113,7 @@ python -m pip_audit --skip-editable --desc
 
 **Full WEC Block:**
 ```markdown
-## 🔄 Workflow Execution Checklist
+##  Workflow Execution Checklist
 
 Workflows can be skipped/dispatched by updating these checkboxes:
 

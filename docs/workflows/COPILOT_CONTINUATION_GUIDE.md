@@ -51,7 +51,7 @@ The Copilot Continuation System provides persistent, version-controlled storage 
 
 ```
 .github/
-├── pull_request_template.md          # Enhanced PR template (v1.4.0)
+├── pull_request_template.md          # Enhanced PR template (v0.2.1)
 ├── copilot-prompts/
 │   ├── README.md                      # System documentation
 │   ├── templates/                     # Reusable templates
@@ -459,7 +459,7 @@ Failed Workflows:
 Priority 1:
 - [ ] Fix import order error in module_a.py
 - [ ] Resolve linting issues (2 files)
-- [ ] Update dependency to patch CVE-2024-1234
+- [ ] Update 2026-07-13
 ```
 
 ---

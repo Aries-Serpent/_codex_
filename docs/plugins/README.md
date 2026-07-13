@@ -1,5 +1,7 @@
 # Plugins Documentation
 
+**Version**: v0.2.1
+
 **Last Updated: 2026-06-22
 
 This directory contains documentation for the plugin system and available plugins.

@@ -1,4 +1,6 @@
-# Getting Started Guide for DevOps Engineers
+## Getting Started Guide for DevOps Engineers
+
+**Version**: v0.2.1
 **Last Updated:** 2026-07-11
 
 **Last Updated: 2026-07-08
@@ -7,7 +9,7 @@
 
 ##  Your Goal
 
-Set up, manage, and scale Codex ML infrastructure with enterprise-grade reliability, automation, and disaster recovery. This guide covers infrastructure-as-code, container orchestration, and operational excellence.
+Set up, manage, and scale Codex ML infrastructure with Production reliability, automation, and disaster recovery. This guide covers infrastructure-as-code, container orchestration, and operational excellence.
 
 ---
 

@@ -7,7 +7,7 @@
 The `codex_ml.perf.profiler.PerformanceProfiler` offers a minimal, dependency-free way to capture wall-clock
 statistics for critical sections in training, inference, and data loading workflows.
 
-## Quick start
+## Quick Start
 
 ```python
 from codex_ml.perf.profiler import PerformanceProfiler

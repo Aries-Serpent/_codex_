@@ -32,7 +32,7 @@ Run locally before pushing the branch.
   Expected: all 5 checks , including `Check 3/5: session preload uses block scalar`
 
 - [ ] **Guard comment present** — confirm a line near `" Session Context Pre-load"` step contains:
-  `# ⚠️ DO NOT REFACTOR THIS STEP`
+  `# ️ DO NOT REFACTOR THIS STEP`
 
 - [ ] **`id: session_preload` present** in the step
 

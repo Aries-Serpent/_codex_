@@ -15,8 +15,8 @@
 |------|--------|-------------|
 |  | **Complete** | Verified in codebase, deliverables present |
 |  | **Active** | In development, evidence of partial work |
-| 🟡 | **Planning** | Designed but not yet started |
-| ⏳ | **Pending** | Queued for future work |
+|  | **Planning** | Designed but not yet started |
+|  | **Pending** | Queued for future work |
 |  | **Deferred** | Postponed |
 
 ---
@@ -140,8 +140,8 @@
 | Component | Status | Detail |
 |-----------|--------|--------|
 | CODEX_MASTER_KEY |  Confirmed | Human admin granted full access with all confirmations |
-| Workflow guards (`if: false`) | ⏳ Ready | Removal authorized, awaiting implementation |
-| `SAFE_MODE → False` | ⏳ Ready | Activation authorized, awaiting implementation |
+| Workflow guards (`if: false`) |  Ready | Removal authorized, awaiting implementation |
+| `SAFE_MODE → False` |  Ready | Activation authorized, awaiting implementation |
 | Token rotation plan |  Planned | Rotation schedule confirmed |
 
 **Note**: Foundation 100% complete. Full Genesis activation authorized by human admin on 2026-02-11. Implementation deferred to dedicated Phase 10.1 activation session to ensure zero-risk transition.
@@ -164,8 +164,8 @@
 | Manifest generation |  | — | SHA256, size, language, tags |
 | Size estimation (`--estimate`) |  PS-11 | PS-11 | Implementation ready per planset |
 | Exclude patterns (`--exclude`) |  PS-12 | PS-12 | Implementation ready per planset |
-| Duplicate resolution (hash suffix) | ⏳ | — | Planned (Phase 11.2) |
-| Package diff tool | ⏳ | — | Planned (Phase 11.2) |
+| Duplicate resolution (hash suffix) |  | — | Planned (Phase 11.2) |
+| Package diff tool |  | — | Planned (Phase 11.2) |
 
 **Remaining Work**: PS-11 and PS-12 implementation, then Phase 11.2 (duplicate resolution + diff tool).
 
@@ -193,7 +193,7 @@
 | Self-healing CI orchestrator |  | — | `iterative-self-healing-ci.yml` + pattern recorder |
 | CI auto-fix system (8 patterns) |  | — | `scripts/ci/auto_fix_common_issues.py` (37.5% auto-fix) |
 | Agent routing (automatic) |  PS-13 | PS-13 | Task classification taxonomy designed |
-| MSV dashboard component | 🟡 PS-14 | PS-14 | Design phase |
+| MSV dashboard component |  PS-14 | PS-14 | Design phase |
 | Multi-agent coordination |  | — | Phase 8.12 framework designed |
 | Self-evolution infrastructure |  | — | `meta_learning_engine.py` partial |
 | Learning from feedback loops |  | — | `extract_learnings.py` active |
@@ -228,10 +228,10 @@ Interactive Mode deliverables are rescheduled to Phase 13.1.
 | Cognitive Brain Phase 4 (OODA loop) |  | SQLiteMemory persistence, FastAPI :8765 (S145) |
 | 136 active workflows validated |  | `.github/workflows/` (actionlint clean) |
 | Session bootstrap protocol (D-00) |  | `scripts/ci/session_bootstrap.py` (S145) |
-| TUI file selector | ⏳ Deferred | Rescheduled → Phase 13.1 |
-| Real-time size preview | ⏳ Deferred | Rescheduled → Phase 13.1 |
-| Dynamic include/exclude | ⏳ Deferred | Rescheduled → Phase 13.1 |
-| Save selection as topic | ⏳ Deferred | Rescheduled → Phase 13.1 |
+| TUI file selector |  Deferred | Rescheduled → Phase 13.1 |
+| Real-time size preview |  Deferred | Rescheduled → Phase 13.1 |
+| Dynamic include/exclude |  Deferred | Rescheduled → Phase 13.1 |
+| Save selection as topic |  Deferred | Rescheduled → Phase 13.1 |
 
 **Key Milestone**: 34/34 CI workflows green on PR #3835 merge (commit `cb2f7ce`). Zero known CVEs in production dependencies.
 
@@ -239,40 +239,40 @@ Interactive Mode deliverables are rescheduled to Phase 13.1.
 
 ## 🔮 Future Phases (Cycle 2-4)
 
-### 🟡 Phase 13.1: MCP Interactive Mode
+###  Phase 13.1: MCP Interactive Mode
 
 **Timeline**: 2026-04-01 — 2026-04-15  
 **Features**: TUI file selector, real-time size preview, dynamic include/exclude, save selection as topic  
 **Prerequisite**: Phase 13 CI/Security hardening complete 
 
-### 🟡 Phase 14: MCP Package Merge & Diff Tools
+###  Phase 14: MCP Package Merge & Diff Tools
 
 **Timeline**: 2026-04-01 — 2026-04-30  
 **Features**: Package merge (4 strategies), diff tool with multiple formats
 
-### 🟡 Phase 15: Agent Autonomy Expansion
+###  Phase 15: Agent Autonomy Expansion
 
 **Timeline**: 2026-05-01 — 2026-06-15  
 **Focus**: Multi-agent coordination, distributed execution, advanced reasoning
 
-### 🟡 Phase 16: Self-Evolution Infrastructure
+###  Phase 16: Self-Evolution Infrastructure
 
 **Timeline**: 2026-05-15 — 2026-06-30  
 **Focus**: Learning from operations, adaptive optimization, self-improvement
 
-### 🟡 Phase 17: MCP Smart Recommendations
+###  Phase 17: MCP Smart Recommendations
 
 **Timeline**: 2026-07-01 — 2026-07-31  
 **Features**: Git analysis, auto-packaging, topic recommendations
 
-### 🟡 Phase 18: Production Scaling
+###  Phase 18: Production Scaling
 
 **Timeline**: 2026-08-01 — 2026-09-15  
 **Focus**: Multi-repository support, distributed agents, enterprise features
 
 ---
 
-## 📈 Completion Summary
+##  Completion Summary
 
 ```text
 Phases 1-5:  ████████████████████ 100%  Foundation
@@ -284,13 +284,13 @@ Phase 10:    ████████████████████ 100%  
 Phase 11:    ██████░░░░░░░░░░░░░░  30%  MCP Advanced (PS-11, PS-12 active)
 Phase 12:    ████████████████████ 100%  Agent Enhancement (WEC v2.0, 160+ agents)
 Phase 13:    ████████████████████ 100%  CI/Security Hardening (S257–S263)
-Phase 13.1:  ░░░░░░░░░░░░░░░░░░░░   0% 🟡 MCP Interactive (sprint plan ready)
-Phase 14-18: ░░░░░░░░░░░░░░░░░░░░   0% 🟡 Future Cycles
+Phase 13.1:  ░░░░░░░░░░░░░░░░░░░░   0%  MCP Interactive (sprint plan ready)
+Phase 14-18: ░░░░░░░░░░░░░░░░░░░░   0%  Future Cycles
 ```
 
 ---
 
-## 🔗 Cross-References
+##  Cross-References
 
 - [Planset Registry](PLANSET_REGISTRY.md) — Detailed PS-01 through PS-10 records
 - [Cognitive Evolution Tree](COGNITIVE_EVOLUTION_TREE.md) — Visual evolution mapping

@@ -54,12 +54,12 @@ Alert Rules:
 │  ├─ L1 (Toolchain):        98% ▶  Excellent         │
 │  ├─ L2 (Dependencies):      92% ▶  Healthy          │
 │  ├─ L3 (Tool-State):        91% ▶  Healthy          │
-│  └─ L4 (Data/Models):       89% ▶ ⚠️  Monitor         │
+│  └─ L4 (Data/Models):       89% ▶ ️  Monitor         │
 │                                                          │
 │  By Tier:                                              │
 │  ├─ LIVE (18 workflows):    95% ▶  Healthy          │
 │  ├─ COMMON (28 workflows):  93% ▶  Healthy          │
-│  └─ EPHEMERAL (7 workflows): 87% ▶ ⚠️  Monitor        │
+│  └─ EPHEMERAL (7 workflows): 87% ▶ ️  Monitor        │
 │                                                          │
 └──────────────────────────────────────────────────────────┘
 ```
@@ -267,7 +267,7 @@ Display:
 ┌─ Active Alerts ────────────────────────────────────────┐
 │                                                        │
 │  CRITICAL (0)    No critical alerts                │
-│  WARNING (1)   ⚠️   1 warning (L3 over-allocated)   │
+│  WARNING (1)   ️   1 warning (L3 over-allocated)   │
 │  INFO (2)      ℹ️   2 info (normal operation)        │
 │                                                        │
 │  Recent Alerts:                                      │
@@ -632,5 +632,5 @@ Compliance:
 ---
 
 **Dashboard Status:**  Ready for Deployment  
-**Next Update:** 2026-02-15 (After Batch 2 completion)  
+**Next Update:2026-07-13
 **Contact:** cache-management-agent@aries-serpent

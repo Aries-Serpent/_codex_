@@ -9,7 +9,7 @@
 
 ---
 
-## 📋 Agent Overview & Quick Reference
+##  Agent Overview & Quick Reference
 
 The _codex_ agent ecosystem provides production-ready AI agents with specialized capabilities. Each agent follows standardized lifecycle management, session handling, and operational procedures.
 
@@ -27,7 +27,7 @@ The _codex_ agent ecosystem provides production-ready AI agents with specialized
 
 ##  Documentation Index
 
-### Getting Started
+## Getting Started
 - **[OPERATIONAL_GUIDELINES](OPERATIONAL_GUIDELINES.md)** — Standard operation procedures for all agents
   - Session lifecycle management
   - Authentication and token handling
@@ -76,7 +76,7 @@ The _codex_ agent ecosystem provides production-ready AI agents with specialized
 
 ---
 
-## 🔧 Common Tasks
+##  Common Tasks
 
 ### Starting an Agent Session
 ```python

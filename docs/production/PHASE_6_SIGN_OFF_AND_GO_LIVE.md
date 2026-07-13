@@ -309,7 +309,7 @@ Subject: **Phase 6 COMPLETE — Go-Live Authorization Request for Aries-Serpent/
 
 | Role | Responsibility | Sign-Off Status | Evidence |
 |------|-----------------|-----------------|----------|
-| **@mbaetiong** | Production Deployment Authority | ⏳ AWAITING | Authorization request submitted |
+| **@mbaetiong** | Production Deployment Authority |  AWAITING | Authorization request submitted |
 | **Technical Lead** | Infrastructure & Architecture |  APPROVED | All technical gates passed |
 | **Security Officer** | Security Posture & Compliance |  APPROVED | 0 critical/high vulnerabilities |
 | **Operations Manager** | Operational Readiness |  APPROVED | Procedures documented & tested |

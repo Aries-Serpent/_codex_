@@ -24,7 +24,7 @@
   - [Keep-enabled after lifetime review](#keep-enabled-after-lifetime-review)
   - [Archive-review bucket](#archive-review-bucket)
 - [Similar Logic / Overlap Groups](#similar-logic--overlap-groups)
-- [🚨 Branch-Update Conflict Dashboard](#-branch-update-conflict-dashboard)
+- [ Branch-Update Conflict Dashboard](#-branch-update-conflict-dashboard)
   - [Active Session Conflict Protocol](#active-session-conflict-protocol)
   - [Mitigation Variables — Quick Reference](#mitigation-variables--quick-reference)
   - [HIGH-Risk Workflows — Mandatory Mitigation](#high-risk-workflows--mandatory-mitigation)
@@ -324,7 +324,7 @@ so disabling them will not interrupt a current repository process:
 | Docs and Pages | `documentation-link-checker.yml`, `pages-pre-merge-validation.yml`, `pages-scheduled-validation.yml`, `pages-mkdocs.yml`, `workflow-link-validation.yml` | Several docs workflows share similar signal paths and can likely be simplified. |
 | Agent and cognitive orchestration | `agent-orchestration-unified.yml`, `copilot-session-chain.yml`, `copilot-pr-session-injector.yml`, `copilot-setup-steps.yml`, `chatops_copilot_trigger.yml` | Highest coordination risk when branch drift or rate limits appear mid-session. |
 
-## 🚨 Branch-Update Conflict Dashboard
+##  Branch-Update Conflict Dashboard
 
 > **Priority section — read before editing any file during an active session.**
 > When `main` receives commits while your branch session is active, the workflows below
@@ -560,7 +560,7 @@ No immediate abort required, but monitor for `workflow_run` ordering anomalies.
 | 3 | `.github/workflows/copilot-automation.yml` | Copilot Automation Suite | active | 0 | unknown | Review trigger scope and remove stale fanout; Add timeout-minutes to jobs; Add branch-scoped concurrency group | n/a |
 | 4 | `dynamic/copilot-pull-request-reviewer/copilot-pull-request-reviewer` | Copilot code review | active | 0 | unknown | Review trigger scope and remove stale fanout; Add timeout-minutes to jobs; Add branch-scoped concurrency group | n/a |
 | 5 | `dynamic/agents/openai-code-agent` | OpenAI Codex | active | 0 | unknown | Review trigger scope and remove stale fanout; Add timeout-minutes to jobs; Add branch-scoped concurrency group | n/a |
-| 6 | `.github/workflows/copilot-session-chain.yml` | 🔗 Copilot Session Chain | active | 0 | high | Review trigger scope and remove stale fanout; Harden against main-update drift (rebase gate + write isolation) | n/a |
+| 6 | `.github/workflows/copilot-session-chain.yml` |  Copilot Session Chain | active | 0 | high | Review trigger scope and remove stale fanout; Harden against main-update drift (rebase gate + write isolation) | n/a |
 | 7 | `dynamic/copilot-swe-agent/copilot` | Copilot cloud agent | active | 6 | unknown | Add timeout-minutes to jobs; Add branch-scoped concurrency group; Add explicit rate-limit/throughput guard | n/a |
 | 8 | `.github/workflows/agent-orchestration-unified.yml` | Agent Orchestration (Unified) | active | 0 | medium | Review trigger scope and remove stale fanout; Harden against main-update drift (rebase gate + write isolation) | CODEX_CACHE_VERSION |
 | 9 | `.github/workflows/ci-rescue.yml` | CI Rescue — Auto-Fix & @copilot RCA | disabled_manually | 55 | medium | Review trigger scope and remove stale fanout; Harden against main-update drift (rebase gate + write isolation) | COPILOT_AGENT_AUTH_ENABLED |
@@ -571,10 +571,10 @@ No immediate abort required, but monitor for `workflow_run` ordering anomalies.
 | 14 | `.github/workflows/d-capable-promotion-gate.yml` | D_CAPABLE Agent Promotion Gate | active | 0 | medium | Review trigger scope and remove stale fanout; Harden against main-update drift (rebase gate + write isolation) | n/a |
 | 15 | `.github/workflows/agent-registry-validation.yml` | Agent Registry Validation | active | 0 | low | Review trigger scope and remove stale fanout | CODEX_CACHE_VERSION |
 | 16 | `.github/workflows/build-agent-env-cache.yml` | Build Agent Environment Cache | active | 0 | low | Review trigger scope and remove stale fanout | CODEX_CACHE_VERSION |
-| 17 | `.github/workflows/create-sub-pr-to-0D_base_.yml` | 🔀 Create Sub-PR: Session Branch → 0D_base_ | active | 0 | low | Review trigger scope and remove stale fanout | n/a |
+| 17 | `.github/workflows/create-sub-pr-to-0D_base_.yml` |  Create Sub-PR: Session Branch → 0D_base_ | active | 0 | low | Review trigger scope and remove stale fanout | n/a |
 | 18 | `.github/workflows/agent-var-writer.yml` | Agent Variable Writer (Provenance-Chain) | active | 5 | high | Harden against main-update drift (rebase gate + write isolation) | n/a |
 | 19 | `.github/workflows/copilot-evolution-suite.yml` | Copilot Evolution & Review (Unified) | active | 10 | high | Harden against main-update drift (rebase gate + write isolation) | n/a |
-| 20 | `.github/workflows/copilot-agent-session-done.yml` | 🔄 Auto-Post @copilot review After Agent Session | active | 10 | high | Harden against main-update drift (rebase gate + write isolation) | COPILOT_AGENT_AUTH_ENABLED |
+| 20 | `.github/workflows/copilot-agent-session-done.yml` |  Auto-Post @copilot review After Agent Session | active | 10 | high | Harden against main-update drift (rebase gate + write isolation) | COPILOT_AGENT_AUTH_ENABLED |
 
 ## Perspective: Capability + Future Vision
 

@@ -283,7 +283,7 @@ graph LR
     subgraph "Knowledge Base"
         M6 --> KB1[(Memory Store)]
         M6 --> KB2[(Pattern Library)]
-        M6 --> KB3[(Best Practices)]
+        M6 --> KB3[]
 
         KB1 --> KB4[Search Index]
         KB2 --> KB4

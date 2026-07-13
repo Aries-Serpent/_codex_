@@ -186,10 +186,10 @@ Total: 9/9  ALL CHECKS PASSED
 
 **Test Results**:
 ```markdown
-Status: ⚠️ WARNING (expected - found 1 CodeQL suppression to review)
+Status: ️ WARNING (expected - found 1 CodeQL suppression to review)
 Validations:
 - Audit Logging:  PASSED (3 docs found)
-- CodeQL Suppressions: ⚠️ WARNING (1 suppression found, needs review)
+- CodeQL Suppressions: ️ WARNING (1 suppression found, needs review)
 - Branch Protection: ℹ️ INFO (documented, not enforced via files)
 - Secret Scanning:  PASSED (2 configs found: .secrets.baseline, .gitleaks.toml)
 

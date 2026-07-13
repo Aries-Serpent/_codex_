@@ -1,0 +1,140 @@
+%% ML Module Dependencies — Aries-Serpent/_codex_
+%% Phase 3.8 — Component Relationship Diagrams
+%% ML → tokenization, data, models, evaluation
+%% Evidence: src/codex_ml/, src/tokenization/
+
+graph TB
+
+    %% ── Training Pipeline ───────────────────────────────────────────────────
+    subgraph TRAIN ["🎯 Training Pipeline"]
+        GET_DATA["Get Data\n(DataRegistry)"]
+        GET_MODEL["Get Model\n(ModelRegistry)"]
+        TRAIN_LOOP["Training Loop\n(unified_trainer.py)"]
+        SAVE_CKPT["Save Checkpoint\n(artifacts/)"]
+    end
+
+    %% ── Tokenization Dependencies ───────────────────────────────────────────
+    subgraph TOK_DEP ["🔤 Tokenization Dependencies"]
+        SELECT_TOK["Select Tokenizer\n(CentralizedTokenizerRegistry)"]
+        ENCODE_DATA["Encode Data\n(text → tokens)"]
+        CACHE_ENCODED["Cache Encoded\n(avoid recompute)"]
+    end
+
+    GET_DATA --> SELECT_TOK
+    SELECT_TOK --> ENCODE_DATA
+    ENCODE_DATA --> CACHE_ENCODED
+
+    %% ── Data Dependencies ───────────────────────────────────────────────────
+    subgraph DATA_DEP ["📊 Data Dependencies"]
+        FETCH_DATA["Fetch Data\n(DataRegistry)"]
+        VALIDATE_DATA["Validate Schema\n(columns, types)"]
+        SPLIT_DATA["Split Data\n(train/val/test)"]
+        BATCH_DATA["Batch Data\n(with DataLoader)"]
+    end
+
+    FETCH_DATA --> VALIDATE_DATA
+    VALIDATE_DATA --> SPLIT_DATA
+    SPLIT_DATA --> BATCH_DATA
+
+    CACHE_ENCODED --> BATCH_DATA
+    BATCH_DATA --> TRAIN_LOOP
+
+    %% ── Model Dependencies ──────────────────────────────────────────────────
+    subgraph MODEL_DEP ["🤖 Model Dependencies"]
+        LOAD_MODEL["Load Model\n(ModelRegistry)"]
+        LOAD_WEIGHTS["Load Weights\n(pretrained)"]
+        DEVICE_PLACE["Device Placement\n(GPU/CPU)"]
+    end
+
+    GET_MODEL --> LOAD_MODEL
+    LOAD_MODEL --> LOAD_WEIGHTS
+    LOAD_WEIGHTS --> DEVICE_PLACE
+
+    DEVICE_PLACE --> TRAIN_LOOP
+
+    %% ── Optimizer Dependencies ──────────────────────────────────────────────
+    subgraph OPTIM_DEP ["⚙️  Optimizer Dependencies"]
+        SELECT_OPTIM["Select Optimizer\n(Adam, SGD)"]
+        SET_LR["Set Learning Rate\n(from config)"]
+        SET_SCHEDULE["Set Schedule\n(warmup, decay)"]
+    end
+
+    SELECT_OPTIM --> SET_LR
+    SET_LR --> SET_SCHEDULE
+    SET_SCHEDULE --> TRAIN_LOOP
+
+    %% ── Evaluation Dependencies ─────────────────────────────────────────────
+    subgraph EVAL_DEP ["📈 Evaluation Dependencies"]
+        RUN_EVAL["Run Evaluation\n(eval_loop)"]
+        CALC_METRICS["Calculate Metrics\n(perplexity, acc)"]
+        COMPARE_BASELINE["Compare Baseline\n(previous best)"]
+    end
+
+    TRAIN_LOOP --> RUN_EVAL
+    RUN_EVAL --> CALC_METRICS
+    CALC_METRICS --> COMPARE_BASELINE
+
+    %% ── Checkpointing Dependencies ──────────────────────────────────────────
+    subgraph CKPT_DEP ["🔖 Checkpointing Dependencies"]
+        SHOULD_SAVE["Check Criteria\n(epoch, metric)"]
+        SAVE_MODEL["Save Model\n(weights, config)"]
+        SAVE_OPTIM["Save Optimizer\n(state dict)"]
+        SAVE_METRICS["Save Metrics\n(json)"]
+    end
+
+    COMPARE_BASELINE --> SHOULD_SAVE
+    SHOULD_SAVE --> SAVE_MODEL
+    SHOULD_SAVE --> SAVE_OPTIM
+    SHOULD_SAVE --> SAVE_METRICS
+    SAVE_MODEL --> SAVE_CKPT
+    SAVE_OPTIM --> SAVE_CKPT
+    SAVE_METRICS --> SAVE_CKPT
+
+    %% ── Logging Dependencies ────────────────────────────────────────────────
+    subgraph LOG_ML_DEP ["📋 Logging Dependencies"]
+        LOG_LOSS["Log Loss\n(training, val)"]
+        LOG_LR["Log Learning Rate"]
+        LOG_TIME["Log Time\n(epoch, batch)"]
+    end
+
+    TRAIN_LOOP --> LOG_LOSS
+    SET_SCHEDULE --> LOG_LR
+    TRAIN_LOOP --> LOG_TIME
+
+    %% ── Configuration Dependencies ──────────────────────────────────────────
+    subgraph CONFIG_DEP ["⚙️  Configuration Dependencies"]
+        LOAD_CONFIG["Load Config\n(Hydra)"]
+        GET_PARAMS["Get Parameters\n(lr, batch_size)"]
+    end
+
+    GET_DATA --> LOAD_CONFIG
+    GET_MODEL --> LOAD_CONFIG
+    LOAD_CONFIG --> GET_PARAMS
+
+    GET_PARAMS --> SELECT_OPTIM
+    GET_PARAMS --> SELECT_TOK
+
+    %% ── Output ──────────────────────────────────────────────────────────────
+    SAVE_CKPT --> OUTPUT["📦 Trained Model\n(ready for inference)"]
+
+    %% ── Dependency Summary ──────────────────────────────────────────────────
+    subgraph SUMMARY ["📊 Dependency Graph"]
+        DEP1["ML → Tokenization (encode data)"]
+        DEP2["ML → Data Registry (fetch data)"]
+        DEP3["ML → Model Registry (load weights)"]
+        DEP4["ML → Config (hyperparameters)"]
+        DEP5["ML → Logging (metrics)"]
+    end
+
+    %% ── Styling ────────────────────────────────────────────────────────────
+    style TRAIN fill:#533483,color:#fff
+    style TOK_DEP fill:#4a4e69,color:#fff
+    style DATA_DEP fill:#16213e,color:#e0e0e0
+    style MODEL_DEP fill:#0f3460,color:#e0e0e0
+    style OPTIM_DEP fill:#2d6a4f,color:#fff
+    style EVAL_DEP fill:#457b9d,color:#fff
+    style CKPT_DEP fill:#1b4332,color:#fff
+    style LOG_ML_DEP fill:#665c84,color:#fff
+    style CONFIG_DEP fill:#4a4e69,color:#fff
+    style OUTPUT fill:#1b4332,color:#fff
+    style SUMMARY fill:#16213e,color:#e0e0e0

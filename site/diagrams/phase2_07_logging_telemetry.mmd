@@ -1,0 +1,111 @@
+%% Logging & Telemetry System — Aries-Serpent/_codex_
+%% Phase 2.7 — Module Interaction Diagrams
+%% End-to-end logging, metrics collection, and observability
+%% Evidence: src/codex/logging/, scripts/ci/, .codex/aftermath/
+
+flowchart TD
+
+    %% ── Event Sources ───────────────────────────────────────────────────────
+    subgraph SOURCES ["📊 Event Sources"]
+        TRAIN_EVENTS["Training Events\n(epoch, loss, lr)"]
+        INFER_EVENTS["Inference Events\n(latency, tokens)"]
+        SYSTEM_EVENTS["System Events\n(memory, CPU)"]
+        APP_EVENTS["App Events\n(user action, error)"]
+        CI_EVENTS["CI Events\n(workflow status)"]
+        
+        TRAIN_EVENTS --> SOURCE_COLLECT["Unified Collector"]
+        INFER_EVENTS --> SOURCE_COLLECT
+        SYSTEM_EVENTS --> SOURCE_COLLECT
+        APP_EVENTS --> SOURCE_COLLECT
+        CI_EVENTS --> SOURCE_COLLECT
+    end
+
+    %% ── Collection Layer ────────────────────────────────────────────────────
+    subgraph COLLECT ["🎯 Collection Layer  •  src/codex/logging/"]
+        SESSION_LOGGER["SessionLogger\n(per-session NDJSON)"]
+        CONTEXTIFY["Contextify Events\n(add session_id, user)"]
+        TIMESTAMP["Add Timestamps\n(ISO-8601)"]
+        BUFFER["Buffer Events\n(in-memory queue)"]
+        
+        SOURCE_COLLECT --> SESSION_LOGGER
+        SESSION_LOGGER --> CONTEXTIFY
+        CONTEXTIFY --> TIMESTAMP
+        TIMESTAMP --> BUFFER
+    end
+
+    %% ── Storage Layer ───────────────────────────────────────────────────────
+    subgraph STORAGE ["💾 Storage Layer"]
+        NDJSON_FILE["NDJSON Files\n(.codex/logs/session_*.ndjson)"]
+        DB_MANAGER["DBManager\n(SQLite — CODEX_DB_PATH)"]
+        SCHEMA["Event Schema\n(timestamp, event_type, data)"]
+        
+        BUFFER --> NDJSON_FILE
+        BUFFER --> DB_MANAGER
+        DB_MANAGER --> SCHEMA
+    end
+
+    %% ── Metrics Pipeline ────────────────────────────────────────────────────
+    subgraph METRICS ["📈 Metrics Pipeline"]
+        EXTRACT_METRICS["Extract Metrics\n(from events)"]
+        AGGREGATE["Aggregate by Window\n(1min, 1hour, 1day)"]
+        COMPUTE_STATS["Compute Stats\n(mean, p50, p95, p99)"]
+        STORE_METRICS["Store Metrics\n(SQLite or InfluxDB)"]
+        
+        NDJSON_FILE --> EXTRACT_METRICS
+        EXTRACT_METRICS --> AGGREGATE
+        AGGREGATE --> COMPUTE_STATS
+        COMPUTE_STATS --> STORE_METRICS
+    end
+
+    %% ── Observability Platform ──────────────────────────────────────────────
+    subgraph OBSERV ["🔍 Observability Platform"]
+        VIEWER["Log Viewer\n(query_logs.py)"]
+        SEARCH_LOGS["Full-text Search\n(session, event_type)"]
+        TIME_FILTER["Time Filters\n(since, until)"]
+        EXPORT_FORMAT["Export Format\n(JSON, CSV)"]
+        
+        DB_MANAGER --> VIEWER
+        STORE_METRICS --> VIEWER
+        VIEWER --> SEARCH_LOGS
+        SEARCH_LOGS --> TIME_FILTER
+        TIME_FILTER --> EXPORT_FORMAT
+    end
+
+    %% ── Alerting ────────────────────────────────────────────────────────────
+    subgraph ALERT ["🚨 Alerting"]
+        DETECT_ANOMALY["Detect Anomaly\n(threshold, spike)"]
+        CLASSIFY_SEVERITY["Classify Severity\n(info, warn, error)"]
+        ROUTE_ALERT["Route Alert\n(email, Slack)"]
+        DEDUPLICATE["Deduplicate\n(suppress flapping)"]
+        
+        COMPUTE_STATS --> DETECT_ANOMALY
+        DETECT_ANOMALY --> CLASSIFY_SEVERITY
+        CLASSIFY_SEVERITY --> ROUTE_ALERT
+        ROUTE_ALERT --> DEDUPLICATE
+    end
+
+    %% ── Feedback Loop ───────────────────────────────────────────────────────
+    subgraph FEEDBACK ["📊 Analysis & Feedback"]
+        CORRELATION["Find Correlations\n(which events → issue)"]
+        FIND_PATTERNS["Find Patterns\n(recurring issues)"]
+        RECOMMENDATIONS["Recommendations\n(fix suggestions)"]
+        STORE_INSIGHTS["Store Insights\n(for future)"]
+        
+        EXPORT_FORMAT --> CORRELATION
+        CORRELATION --> FIND_PATTERNS
+        FIND_PATTERNS --> RECOMMENDATIONS
+        RECOMMENDATIONS --> STORE_INSIGHTS
+    end
+
+    %% ── Downstream ──────────────────────────────────────────────────────────
+    DEDUPLICATE --> ALERT_OUT["📢 Alert Output\n(to ops, devs)"]
+    STORE_INSIGHTS --> IMPROVE["💡 Improvement Triggers\n(auto-fix, escalation)"]
+
+    %% ── Styling ────────────────────────────────────────────────────────────
+    style SOURCES fill:#16213e,color:#e0e0e0
+    style COLLECT fill:#0f3460,color:#e0e0e0
+    style STORAGE fill:#2d6a4f,color:#fff
+    style METRICS fill:#457b9d,color:#fff
+    style OBSERV fill:#4a4e69,color:#fff
+    style ALERT fill:#e63946,color:#fff
+    style FEEDBACK fill:#533483,color:#fff

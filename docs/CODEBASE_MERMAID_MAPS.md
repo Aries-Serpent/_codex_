@@ -6,7 +6,7 @@
 > **Updated: 2026-07-11
 > **Purpose:** Single reference for ALL architectural mermaid diagrams across `Aries-Serpent/_codex_`  
 > **Policy:** Per `CODEBASE_AGENCY_POLICY.md §0` — agents must consult this file during pre-flight  
-> **Previous:** v1.3.0 S1259 · 2026-05-23
+> **Previous:** v0.2.1 S1259 · 2026-05-23
 
 ---
 
@@ -139,7 +139,7 @@ flowchart LR
 
 ## 4. Cognitive Brain Architecture
 
-> **Updated S873 (2026-05-08)** — Phase 9 Autonomous Ops, rate-limit orchestration, session handoff, and memory-sync agent added.
+> **Updated 2026-07-13
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing SQLiteMemory\nSTM → LTM\n80% capacity trigger, TopologyManager\nsemantic nav'}}%%
@@ -253,7 +253,7 @@ flowchart TD
     end
 
     subgraph "PR Body Checklist"
-        CB["## 🔄 Workflow Execution Checklist\n- [x] pre-merge-validation.yml\n- [x] comment-review-gate.yml\n- [ ] security-scanning-suite.yml\n- [ ] documentation-link-checker.yml"]
+        CB["##  Workflow Execution Checklist\n- [x] pre-merge-validation.yml\n- [x] comment-review-gate.yml\n- [ ] security-scanning-suite.yml\n- [ ] documentation-link-checker.yml"]
     end
 
     subgraph "workflow-execution-gate.yml"
@@ -277,13 +277,13 @@ flowchart TD
 ## 7. Comment-Review Gate (REQ-13)
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing scripts/ci/check_pr_comments.py\n--pr PR_NUMBER, 🚨 BLOCKING\nmbaetiong + critical bots'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing scripts/ci/check_pr_comments.py\n--pr PR_NUMBER,  BLOCKING\nmbaetiong + critical bots'}}%%
 flowchart TD
     subgraph "comment-review-gate.yml"
         SCAN[scripts/ci/check_pr_comments.py\n--pr PR_NUMBER]
         CLASSIFY{Classify\ncomment}
-        BLOCKING[🚨 BLOCKING\nmbaetiong + critical bots]
-        WARNING[⚠️ WARNING\ninfomational bots]
+        BLOCKING[ BLOCKING\nmbaetiong + critical bots]
+        WARNING[️ WARNING\ninfomational bots]
         INFO[ℹ️ INFO\ndependabot etc]
     end
 
@@ -419,7 +419,7 @@ graph TD
 
 ## 11. Security + Token Delegation
 
-> **Updated S873 (2026-05-08)** — T-01 fix: `workflow-link-validation.yml` now uses canonical token chain. TTL read from `COPILOT_SESSION_TTL_SECONDS` repo variable (PR #4356).
+> **Updated 2026-07-13
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing CODEX_MASTER_KEY\nfull repo access, CODEX_BACKUP_KEY\nrotation backup'}}%%
@@ -432,7 +432,7 @@ flowchart TD
 
     subgraph "Token Chain (T-01 Fixed — PR #4356)"
         CHAIN["GH_TOKEN = CODEX_MASTER_KEY\n|| CODEX_BACKUP_KEY\n|| github.token\nAll checkout + write ops"]
-        T01_NOTE["⚠️ Before T-01 fix: workflow-link-validation.yml\nused bare github.token — now uses chain"]
+        T01_NOTE["️ Before T-01 fix: workflow-link-validation.yml\nused bare github.token — now uses chain"]
     end
 
     subgraph "Session TTL Control (PR #4356)"
@@ -682,12 +682,12 @@ graph LR
     end
 
     subgraph "Phase 10 In Progress"
-        P10A[Coverage maintenance gate — 17.57% overall baseline S1292]
-        P10B[Fill src/ coverage gaps — security 90.72%  S1292]
-        P10C[Update all living docs to v1.4.0 baseline S1292]
+        P10A[Coverage maintenance gate — 17.57% overall baseline 2026-07-13
+        P10B[Fill src/ coverage gaps — security 90.72%  2026-07-13
+        P10C[Update all living docs to v0.2.1 baseline 2026-07-13
         P10D[Adaptive Learning Phase 8.3 80 to 100 percent]
-        P10E[ITA service coverage tests added  S1292]
-        P10F[MSP Gateway coverage tests added  S1292]
+        P10E[ITA service coverage tests added  2026-07-13
+        P10F[MSP Gateway coverage tests added  2026-07-13
     end
 
     P9A & P9B & P9C & P9D & P9E --> P9J
@@ -719,7 +719,7 @@ graph LR
 
 ## 17. Phase 10 — Post-Coverage Maintenance
 
-> **Added S1259 (2026-05-23) · Updated S1292 (2026-05-28)**
+> **Added S1259 (2026-05-23) · Updated 2026-07-13
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Overall statements: 17.57%, src/security/: 90.72% '}}%%
@@ -739,10 +739,10 @@ graph TD
     end
 
     subgraph "Phase 10B — Gap Fill: src/ — In Progress"
-        GF1[src/codex/cli.py — CLI command coverage ⏳]
-        GF2[src/codex/cognitive_brain/ — brain ops ⏳]
-        GF3[src/training/ — trainer loops ⏳]
-        GF4[src/codex/rag/ — retrieval paths ⏳]
+        GF1[src/codex/cli.py — CLI command coverage ]
+        GF2[src/codex/cognitive_brain/ — brain ops ]
+        GF3[src/training/ — trainer loops ]
+        GF4[src/codex/rag/ — retrieval paths ]
         GF5[src/security/ — auth + secrets  90.72%]
         GF6[services/ita/ — ITA service ]
         GF7[services/msp_gateway/ — MSP Gateway ]
@@ -750,11 +750,11 @@ graph TD
     end
 
     subgraph "Phase 10C — Documentation Alignment"
-        DA1[CODEBASE_MERMAID_MAPS v1.4.0  S1292]
-        DA2[ARCHITECTURE.md metrics refresh  S1292]
-        DA3[docs/diagrams/*.mmd updated  S1292]
-        DA4[AGENT_NAVIGATION.md — Phase 10 agents ⏳]
-        DA5[.codex/cognitive_brain/ status update ⏳]
+        DA1[CODEBASE_MERMAID_MAPS v0.2.1  2026-07-13
+        DA2[ARCHITECTURE.md metrics refresh  2026-07-13
+        DA3[docs/diagrams/*.mmd updated  2026-07-13
+        DA4[AGENT_NAVIGATION.md — Phase 10 agents ]
+        DA5[.codex/cognitive_brain/ status update ]
     end
 
     subgraph "Phase 10D — Adaptive Learning"
@@ -801,7 +801,7 @@ graph TD
 
 ## 18. Phase 10 Progress — Coverage Expansion
 
-> **Updated S1293 (2026-05-28)**
+> **Updated 2026-07-13
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Security module: src/security/\n90.72% coverage , ITA service tests\ntests/services/ita/ '}}%%
@@ -811,7 +811,7 @@ graph LR
         S1B[ITA service tests\ntests/services/ita/ ]
         S1C[MSP Gateway tests\ntests/services/msp_gateway/ ]
         S1D[Training module tests\ntests/training/ targeted ]
-        S1E[Docs + mermaid maps\nv1.4.0 refresh ]
+        S1E[Docs + mermaid maps\nv0.2.1 refresh ]
     end
 
     subgraph "Completed in S1293"
@@ -825,12 +825,12 @@ graph LR
     end
 
     subgraph "Phase 11 — Production Hardening"
-        N1[Coverage zero-gaps\nokr_tracker.py + task_router.py 0% ⏳]
-        N2[Cognitive depth\nknowledge_distiller + objective_adjuster 58% ⏳]
-        N3[CodeQL + bandit clean run\nzero open findings ⏳]
-        N4[Placeholder audit\nno unreachable TODO/FIXME in prod ⏳]
-        N5[Overall ≥25% statement coverage\nmilestone gate ⏳]
-        N6[RAG retrieval integration tests\nend-to-end corpus round-trip ⏳]
+        N1[Coverage zero-gaps\nokr_tracker.py + task_router.py 0% ]
+        N2[Cognitive depth\nknowledge_distiller + objective_adjuster 58% ]
+        N3[CodeQL + bandit clean run\nzero open findings ]
+        N4[Placeholder audit\nno unreachable TODO/FIXME in prod ]
+        N5[Overall ≥25% statement coverage\nmilestone gate ]
+        N6[RAG retrieval integration tests\nend-to-end corpus round-trip ]
     end
 
     S1A & S1B & S1C & S1D & S1E --> P1 & P2 & P3 & P4
@@ -959,7 +959,7 @@ Task:
 5. Update docs/CODEBASE_MERMAID_MAPS.md Section 18 N5 node to 
 ```
 
-### 🟡 P11-RAG-E2E: RAG end-to-end corpus round-trip test
+###  P11-RAG-E2E: RAG end-to-end corpus round-trip test
 ```
 You are continuing Phase 11 RAG integration work on Aries-Serpent/_codex_.
 Context: Unit tests with FAISS mocks exist (S1293). Full corpus round-trip is not yet tested.

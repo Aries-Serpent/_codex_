@@ -1,0 +1,23 @@
+flowchart TD
+    A["🧭 PR #4544 follow-up session start\nCodeQL unused-variable/import cleanup\n~18/60 min used · keep 5 min reserve"] --> B["🔍 Review outstanding PR comments\n3 reviewer notes + 3 code-quality findings\nComment Review Gate failing"]
+    B --> C["📡 Inspect CI via GitHub MCP\nComment Review Gate logs read\nblocking comments confirmed"]
+    C --> D["✏️ Apply smallest code fixes\nreadable cache-miss branch restored\nunused bindings removed"]
+    D --> E["🔁 Preserve runtime plugin behavior\nload cached entry points only when\nCODEX_PLUGINS_ENTRYPOINTS == 1"]
+    E --> F["🧪 Add regression tests\nmodel/tokenizer env-toggle coverage\nfocused pytest passes"]
+    F --> G["🛡️ Run validation chain\nruff ✅\nfocused pytest ✅\nauto_fix_common_issues ✅"]
+    G --> H["📝 Refresh follow-up prompt\nPR-4544-followup.md\nscope aligned to PR #4544"]
+    H --> I["📚 Update living docs\nPR4544_whats_next.md\nPR4544_session_diagram.mmd\nCHANGELOG + accountability"]
+    I --> J["⏭️ Next: reply to @copilot rescue thread\nthen monitor latest-head workflows\non branch push"]
+    J --> K["🏁 Wrap-up reserve\nleave final 5 minutes for\nhandoff + continuation prompt"]
+
+    style A fill:#4a4e69,color:#fff
+    style B fill:#457b9d,color:#fff
+    style C fill:#457b9d,color:#fff
+    style D fill:#1b4332,color:#fff
+    style E fill:#1b4332,color:#fff
+    style F fill:#1b4332,color:#fff
+    style G fill:#2d6a4f,color:#fff
+    style H fill:#2d6a4f,color:#fff
+    style I fill:#2d6a4f,color:#fff
+    style J fill:#f4a261,color:#000
+    style K fill:#e9c46a,color:#000

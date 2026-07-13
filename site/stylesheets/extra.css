@@ -1,0 +1,231 @@
+/* Custom CSS for GitHub Pages - Table Formatting Fix
+ *
+ * Ensures proper spacing between headers and tables
+ * even when markdown doesn't have blank lines
+ */
+
+/* Add margin before tables to create visual separation */
+.md-typeset table {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}
+
+/* Extra spacing when table follows a header */
+.md-typeset h1 + table,
+.md-typeset h2 + table,
+.md-typeset h3 + table,
+.md-typeset h4 + table,
+.md-typeset h5 + table,
+.md-typeset h6 + table {
+  margin-top: 1.5em;
+}
+
+/* Ensure proper spacing for table headers */
+.md-typeset table thead {
+  border-bottom: 2px solid var(--md-default-fg-color--lightest);
+}
+
+/* Better spacing for table cells */
+.md-typeset table th,
+.md-typeset table td {
+  padding: 0.8em 1em;
+  border-bottom: 1px solid var(--md-default-fg-color--lightest);
+}
+
+/* First column emphasis for definition-style tables */
+.md-typeset table th:first-child,
+.md-typeset table td:first-child {
+  font-weight: 500;
+}
+
+/* Responsive table handling */
+@media screen and (max-width: 76.1875em) {
+  .md-typeset table {
+    font-size: 0.9em;
+  }
+
+  .md-typeset table th,
+  .md-typeset table td {
+    padding: 0.6em 0.8em;
+  }
+}
+
+/* Dark mode specific adjustments */
+[data-md-color-scheme="slate"] .md-typeset table thead {
+  border-bottom-color: var(--md-default-fg-color--dark);
+}
+
+[data-md-color-scheme="slate"] .md-typeset table th,
+[data-md-color-scheme="slate"] .md-typeset table td {
+  border-bottom-color: var(--md-default-fg-color--dark);
+}
+
+/* Improve table visibility in both light and dark modes */
+.md-typeset table {
+  display: block;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.md-typeset table thead th {
+  background-color: var(--md-code-bg-color);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* Alternating row colors for better readability */
+.md-typeset table tbody tr:nth-child(even) {
+  background-color: rgba(var(--md-code-hl-color), 0.05);
+}
+
+/* Hover effect for table rows */
+.md-typeset table tbody tr:hover {
+  background-color: rgba(var(--md-accent-fg-color), 0.1);
+  transition: background-color 0.2s ease;
+}
+
+/* ============================================
+   Mermaid Diagram Support
+   ============================================ */
+
+/* Ensure mermaid diagrams render with proper spacing and visibility */
+.mermaid {
+    background-color: transparent;
+    text-align: center;
+    margin: 1.5em 0;
+    padding: 1em;
+    overflow-x: auto;
+}
+
+/* Mermaid diagram container */
+pre.mermaid,
+div.mermaid {
+    background-color: var(--md-code-bg-color, #f5f5f5);
+    border-radius: 0.2rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Dark mode support for mermaid */
+[data-md-color-scheme="slate"] .mermaid {
+    background-color: var(--md-code-bg-color, #2d2d2d);
+}
+
+/* Mermaid text visibility */
+.mermaid text {
+    fill: var(--md-default-fg-color, #000) !important;
+}
+
+[data-md-color-scheme="slate"] .mermaid text {
+    fill: var(--md-default-fg-color, #fff) !important;
+}
+
+/* Mermaid node styling */
+.mermaid .node rect,
+.mermaid .node circle,
+.mermaid .node ellipse,
+.mermaid .node polygon {
+    fill: var(--md-primary-fg-color, #4051b5) !important;
+    stroke: var(--md-accent-fg-color, #526cfe) !important;
+    stroke-width: 2px;
+}
+
+/* Mermaid edge styling */
+.mermaid .edgePath .path {
+    stroke: var(--md-default-fg-color, #333) !important;
+    stroke-width: 2px;
+}
+
+[data-md-color-scheme="slate"] .mermaid .edgePath .path {
+    stroke: var(--md-default-fg-color, #ccc) !important;
+}
+
+/* ============================================
+   Code Block Formatting
+   ============================================ */
+
+/* Ensure all code blocks have consistent styling */
+.highlight pre,
+.codehilite pre,
+pre code {
+    background-color: var(--md-code-bg-color);
+    color: var(--md-code-fg-color);
+    border-radius: 0.2rem;
+    padding: 0.8em 1em;
+    overflow-x: auto;
+    margin: 1em 0;
+}
+
+/* Code block language indicator */
+.highlight .filename,
+.codehilite .filename {
+    background-color: var(--md-code-hl-name-color);
+    color: var(--md-primary-bg-color);
+    padding: 0.3em 1em;
+    border-radius: 0.2rem 0.2rem 0 0;
+    font-size: 0.8em;
+    font-weight: bold;
+}
+
+/* ============================================
+   Heading Spacing
+   ============================================ */
+
+/* Ensure proper spacing around headings */
+.md-typeset h1,
+.md-typeset h2,
+.md-typeset h3,
+.md-typeset h4 {
+    margin-top: 1.5em;
+    margin-bottom: 0.8em;
+}
+
+/* First heading after code/table needs less top margin */
+.md-typeset .highlight + h2,
+.md-typeset .highlight + h3,
+.md-typeset table + h2,
+.md-typeset table + h3 {
+    margin-top: 2em;
+}
+
+/* ============================================
+   Admonition Blocks
+   ============================================ */
+
+/* Enhanced admonition styling */
+.md-typeset .admonition,
+.md-typeset details {
+    margin: 1.5em 0;
+    padding: 0;
+    border-left: 0.4rem solid var(--md-primary-fg-color);
+    border-radius: 0.2rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* ============================================
+   Responsive Images
+   ============================================ */
+
+/* Ensure images are responsive */
+.md-typeset img {
+    max-width: 100%;
+    height: auto;
+    margin: 1em 0;
+}
+
+/* ============================================
+   Print Styles
+   ============================================ */
+
+@media print {
+    .mermaid {
+        page-break-inside: avoid;
+    }
+
+    .md-typeset table {
+        page-break-inside: avoid;
+    }
+
+    .md-typeset pre {
+        page-break-inside: avoid;
+    }
+}

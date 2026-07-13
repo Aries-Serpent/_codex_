@@ -3,7 +3,7 @@
 **Version:** v0.2.1
 
 **Last Updated**: 2026-01-20  
-**Version**: v0.9.0  
+**Version**: v0.2.1  
 **Status**: Production-Ready
 
 ---
@@ -17,19 +17,19 @@ graph TB
         ML[" ML Operations<br/>• Training metrics<br/>• Evaluation results<br/>• Inference latency"]
         App[" Application<br/>• Request duration<br/>• Error rates<br/>• Resource usage"]
         Infra["🖥️ Infrastructure<br/>• CPU/Memory<br/>• Disk I/O<br/>• Network usage"]
-        Logs["📝 Application Logs<br/>• Info/Debug/Error<br/>• Structured JSON<br/>• Trace IDs"]
+        Logs[" Application Logs<br/>• Info/Debug/Error<br/>• Structured JSON<br/>• Trace IDs"]
     end
 
     subgraph "Collection Layer"
         LogCollector["📥 Log Collector<br/>• Fluent Bit<br/>• Parse & enrich<br/>• Buffer & batch"]
         MetricsCollector[" Metrics Collector<br/>• Prometheus client<br/>• Scrape endpoints<br/>• Aggregation"]
-        TraceCollector["🔗 Trace Collector<br/>• OpenTelemetry<br/>• Span collection<br/>• Sampling"]
+        TraceCollector[" Trace Collector<br/>• OpenTelemetry<br/>• Span collection<br/>• Sampling"]
     end
 
     subgraph "Processing & Storage"
         LogStorage["💾 Log Storage<br/>• Elasticsearch<br/>• CloudWatch Logs<br/>• Loki"]
-        MetricsDB["📈 Metrics DB<br/>• Prometheus<br/>• InfluxDB<br/>• CloudWatch"]
-        TraceDB["🔍 Trace DB<br/>• Jaeger<br/>• Zipkin<br/>• Datadog"]
+        MetricsDB[" Metrics DB<br/>• Prometheus<br/>• InfluxDB<br/>• CloudWatch"]
+        TraceDB[" Trace DB<br/>• Jaeger<br/>• Zipkin<br/>• Datadog"]
     end
 
     subgraph "Analysis & Querying"
@@ -39,8 +39,8 @@ graph TB
 
     subgraph "Visualization & Alerting"
         Dashboard[" Dashboards<br/>• Grafana<br/>• Real-time updates<br/>• Custom panels"]
-        Alert["⚠️ Alerting<br/>• Threshold rules<br/>• Anomaly detection<br/>• Escalation"]
-        Notify["📢 Notifications<br/>• Slack<br/>• PagerDuty<br/>• Email"]
+        Alert["️ Alerting<br/>• Threshold rules<br/>• Anomaly detection<br/>• Escalation"]
+        Notify[" Notifications<br/>• Slack<br/>• PagerDuty<br/>• Email"]
     end
 
     %% Data flow

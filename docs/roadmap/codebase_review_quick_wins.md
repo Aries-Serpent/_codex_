@@ -119,12 +119,12 @@ operation.
 | **Nox full runtime** |  Missing optional deps | `pydantic`, `click`, `fastapi`, `httpx`, `cryptography` not available in all CI runners |
 | **`sync_tracked_files` with `detect-secrets`** |  Fixed (commit `c03d740`) | `_detect_secrets_available()` guard added — missing module skips gracefully instead of failing |
 | **WEC `pr-checks.yml`** |  WEC integrity failure when disabled | Must remain unchecked in WEC when workflow is `disabled_manually` |
-| **Duplicate `checkpoint_manager.py`** | ⚠️ Divergence risk | `training/checkpoint_manager.py` and `src/training/checkpoint_manager.py` can diverge |
-| **Cognitive Brain API server** | ⚠️ Not validated | `COPILOT_CLI_BASE_URL=http://localhost:8765` points to local server; not running in CI |
+| **Duplicate `checkpoint_manager.py`** | ️ Divergence risk | `training/checkpoint_manager.py` and `src/training/checkpoint_manager.py` can diverge |
+| **Cognitive Brain API server** | ️ Not validated | `COPILOT_CLI_BASE_URL=http://localhost:8765` points to local server; not running in CI |
 
 ---
 
-### 🔧 What Needs Improvement for Complete Agentic Behavior
+###  What Needs Improvement for Complete Agentic Behavior
 
 #### Priority 1 — High Impact, Low Effort
 

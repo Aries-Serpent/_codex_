@@ -4,7 +4,7 @@
 
 **Last Updated: 2026-06-22
 
-**Date:** 2026-03-05 | **PR:** #3499 | **Status:**  AUDIT COMPLETE — 0 live hooks, config defined
+**Date:2026-07-13
 **Owner:** @copilot | **Reviewer:** @mbaetiong
 
 > GitHub webhooks allow external services to be notified when specific repository
@@ -208,7 +208,7 @@ Notifies an external Cognitive Brain API server of CI outcomes in real-time.
 | **Content type** | `application/json` |
 | **Secret** | `WEBHOOK_SECRET` org secret (HMAC-SHA256 validation) |
 | **Events** | `workflow_run`, `pull_request`, `issue_comment` |
-| **Status** | ⏳ Pending — URL not yet deployed |
+| **Status** |  Pending — URL not yet deployed |
 
 ### 5b. Runner Health Notification (New — W-123)
 
@@ -221,7 +221,7 @@ Notify Cognitive Brain when `copilot-setup-steps` completes so it can:
 | **Payload URL** | Same as 5a — Cognitive Brain endpoint |
 | **Events** | `workflow_run` (filter: `copilot-setup-steps`) |
 | **AAIS benefit** | Closes the autonomous runner-selection feedback loop |
-| **Status** | ⏳ Pending — depends on Cognitive Brain server deployment |
+| **Status** |  Pending — depends on Cognitive Brain server deployment |
 
 ---
 

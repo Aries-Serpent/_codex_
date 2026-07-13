@@ -71,7 +71,7 @@ results = monitor.monitor_all(
 
 # Check for critical drift
 if monitor.has_critical_drift():
-    print("⚠️ Critical drift detected!")
+    print("️ Critical drift detected!")
     summary = monitor.get_drift_summary()
     print(f"Critical alerts: {summary['critical_count']}")
 ```
@@ -313,7 +313,7 @@ def monitor_production():
 
         # Check for significant degradation
         if value < baseline * 0.95:  # 5% degradation
-            print(f"⚠️ Performance degraded: {metric}")
+            print(f"️ Performance degraded: {metric}")
             pipeline.rollback()
             break
 ```
@@ -333,7 +333,7 @@ def validate_training_data(data_path):
     # Check for drift
     if manifest.has_drift("baseline_manifest.json"):
         diff = manifest.verify("baseline_manifest.json")
-        print(f"⚠️ Dataset drift: {len(diff['modified'])} modified files")
+        print(f"️ Dataset drift: {len(diff['modified'])} modified files")
 
         # Decide whether to proceed
         if len(diff['modified']) > 10:

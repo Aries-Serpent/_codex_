@@ -6,7 +6,7 @@
 ## Codebase Alignment at Level 4 MLOps
 
 **Version:** 1.0.0  
-**Date:** 2026-03-06  
+**Date:2026-07-13
 **Status:**  Actionable — executable by Copilot Coding Agent  
 **Owner:** @mbaetiong  
 **Reference Standards:** Azure MLOps Maturity Model · NGMN MLOps v1.2 (2025) · ISO/IEC 23053  
@@ -74,9 +74,9 @@ quadrantChart
 | **Cognitive Memory** | Persistent agent memory + pattern learning |  SQLite STM/LTM; cognitive brain app | 8.5/10 | — |
 | **Security & Governance** | 0 CVEs; auto policy enforcement; audit trail |  48 CVEs fixed; CodeQL; detect-secrets | 9.0/10 | — | <!-- pragma: allowlist secret -->
 | **Variable Hygiene** | All secrets/vars present, rotated, audited |  9 Codespace secrets set (SAR-G01 COMPLETE W-142) | 9.0/10 |  | <!-- pragma: allowlist secret -->
-| **Cache Efficiency** | Shared L1–L5 hierarchy; < 5% miss rate | ⚠️ 24+ workflows miss cache wiring | 5.5/10 | P2 |
-| **Model Lifecycle** | Auto-train → deploy → monitor → retrain | ⚠️ Auto-train + deploy; no auto-retrain | 5.5/10 | **P1** |
-| **Data / Model Drift** | Real-time detection + auto-remediation | ⚠️ Basic MLflow tracking; no auto-retrain | 4.0/10 | **P1** |
+| **Cache Efficiency** | Shared L1–L5 hierarchy; < 5% miss rate | ️ 24+ workflows miss cache wiring | 5.5/10 | P2 |
+| **Model Lifecycle** | Auto-train → deploy → monitor → retrain | ️ Auto-train + deploy; no auto-retrain | 5.5/10 | **P1** |
+| **Data / Model Drift** | Real-time detection + auto-remediation | ️ Basic MLflow tracking; no auto-retrain | 4.0/10 | **P1** |
 | **Feature Store** | Centralised, versioned, discoverable |  5 backends: InMemory/SQLite/Redis/DuckDB + Arrow IPC (SAR-G02 97/100 W-142) | 9.0/10 |  |
 | **Observability** | Live metrics; distributed tracing; alerting |  `drift_span()` + `OTEL_EXPORTER_OTLP_ENDPOINT` live in devcontainer (SAR-G05 100/100 W-142) | 9.0/10 |  |
 | **Explainability** | SHAP/LIME or equivalent; decision logs |  Not implemented | 1.2/10 | P3 |
@@ -100,7 +100,7 @@ block-beta
   block:L3[" LAYER 3 — CONFIGURATION"]
     CFG["GitHub Vars/Secrets\ndevcontainer.json\nHydra Configs\npyproject.toml"]
   end
-  block:L2["🔄 LAYER 2 — CI/CD PIPELINE"]
+  block:L2[" LAYER 2 — CI/CD PIPELINE"]
     CICD["100 Workflows\nComposite Actions\nCache Hierarchy\nTest Gates"]
   end
   block:L1["📦 LAYER 1 — SOURCE CODE"]
@@ -155,21 +155,21 @@ mindmap
 ## 3. End-to-End SAR Lifecycle
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing 🔔 SAR Trigger\nSchedule / PR / Manual / Alert, "Phase 1 — SEARCH 🔍"'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing 🔔 SAR Trigger\nSchedule / PR / Manual / Alert, "Phase 1 — SEARCH "'}}%%
 flowchart TD
     TRIGGER([🔔 SAR Trigger\nSchedule / PR / Manual / Alert]) --> SEARCH
 
-    subgraph SEARCH["Phase 1 — SEARCH 🔍"]
+    subgraph SEARCH["Phase 1 — SEARCH "]
         S1[Run all layer sensors] --> S2[Collect anomaly signals]
         S2 --> S3[Compare vs Level 4 baseline]
     end
 
     subgraph TRIAGE["Phase 2 — TRIAGE 🏷️"]
         T1{Severity?}
-        T1 -->|P0 Critical| T_P0[🚨 Human escalation\n< 1 hour]
+        T1 -->|P0 Critical| T_P0[ Human escalation\n< 1 hour]
         T1 -->|P1 Blocker| T_P1[ Copilot agent\nauto-fix attempt]
         T1 -->|P2 Degraded| T_P2[⏱️ Scheduled\nremediation]
-        T1 -->|P3 Advisory| T_P3[📋 Backlog\nnext sprint]
+        T1 -->|P3 Advisory| T_P3[ Backlog\nnext sprint]
     end
 
     subgraph RESCUE["Phase 3 — RESCUE 🛠️"]
@@ -335,7 +335,7 @@ flowchart TD
     B -->|No| C{Blocks PRs\nor deployment?}
     C -->|Yes| P1[ P1 — BLOCKER\nCopilot auto-fix + issue\nSLA: < 4 hours]
     C -->|No| D{Measurably degrades\nperformance/reliability?}
-    D -->|Yes| P2[🟡 P2 — DEGRADED\nScheduled remediation\nSLA: < 24 hours]
+    D -->|Yes| P2[ P2 — DEGRADED\nScheduled remediation\nSLA: < 24 hours]
     D -->|No| P3[ P3 — ADVISORY\nBacklog — next sprint\nSLA: < 1 week]
 
     P0 --> E0[Escalate to @mbaetiong\nCreate P0 incident issue\nHalt all agent autonomous actions]
@@ -602,7 +602,7 @@ flowchart TB
         W_CS[copilot-setup-steps.yml]
     end
 
-    subgraph L2["🔄 Layer 2 — CI/CD Pipeline"]
+    subgraph L2[" Layer 2 — CI/CD Pipeline"]
         W_CH[ci-health-monitor.yml]
         W_CP[cache-pruning.yml]
         W_SH[iterative-self-healing-ci.yml]
@@ -610,7 +610,7 @@ flowchart TB
     end
 
     subgraph L3[" Layer 3 — Configuration"]
-        W_VG[vars-guide-sync.yml ✨NEW]
+        W_VG[vars-guide-sync.yml NEW]
         W_PI[process-variable-intents.yml]
         W_AD[agent-auth-delegation.yml]
     end
@@ -625,7 +625,7 @@ flowchart TB
         W_RI[rag-index-manager]
     end
 
-    subgraph REGISTRY["📋 Signal Registry"]
+    subgraph REGISTRY[" Signal Registry"]
         V_RATE[CODEX_CI_FAILURE_RATE]
         V_SHA[CODEX_CI_LAST_GREEN_SHA]
         V_AUDIT[variable_audit_latest.json]
@@ -656,9 +656,9 @@ flowchart TB
 | SAR-G01 | 7 Codespace secrets missing | L3 |  P1 |  RESOLVED W-142 (2026-03-07) | @mbaetiong | SAR-001 §13 | <!-- pragma: allowlist secret -->
 | SAR-G02 | Feature store absent | L4 |  P1 |  RESOLVED W-142 (97/100 — 5 backends + Arrow IPC) | @mbaetiong | New design |
 | SAR-G03 | Auto-retrain on drift absent | L4 |  P1 | OPEN | @mbaetiong | SAR-004 |
-| SAR-G04 | 18+ Python workflows missing cache | L2 | 🟡 P2 | IN PROGRESS (6 done W-139) | @copilot | SAR-002 |
-| SAR-G05 | Distributed tracing absent | L2 | 🟡 P2 |  RESOLVED W-142 (100/100 — drift_span + OTEL endpoint) | @mbaetiong | New design |
-| SAR-G06 | Model auto-rollback absent | L4 | 🟡 P2 | OPEN | @mbaetiong | SAR-004 |
+| SAR-G04 | 18+ Python workflows missing cache | L2 |  P2 | IN PROGRESS (6 done W-139) | @copilot | SAR-002 |
+| SAR-G05 | Distributed tracing absent | L2 |  P2 |  RESOLVED W-142 (100/100 — drift_span + OTEL endpoint) | @mbaetiong | New design |
+| SAR-G06 | Model auto-rollback absent | L4 |  P2 | OPEN | @mbaetiong | SAR-004 |
 | SAR-G07 | SHAP/LIME explainability absent | L4 |  P3 | OPEN | Future | New design |
 | SAR-G08 | Cognitive Brain LTM healthy | L5 | — |  OK | auto | SAR-005 |
 | SAR-G09 | vars-guide auto-sync absent | L3 |  P3 |  RESOLVED W-139 | @copilot | — |
@@ -708,13 +708,13 @@ xychart-beta
 ## 11. Variable Audit Data Flow
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing "📘 Source of Truth", "GITHUB_VARIABLES_MASTER_GUIDE.md\n(v1.4.0)"'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing "📘 Source of Truth", "GITHUB_VARIABLES_MASTER_GUIDE.md\n(v0.2.1)"'}}%%
 flowchart TD
     subgraph GUIDE["📘 Source of Truth"]
-        MG["GITHUB_VARIABLES_MASTER_GUIDE.md\n(v1.4.0)"]
+        MG["GITHUB_VARIABLES_MASTER_GUIDE.md\n(v0.2.1)"]
     end
 
-    subgraph REGISTRY_SRC["📋 Expected Registry\n(embedded in variable_audit_cli.py)"]
+    subgraph REGISTRY_SRC[" Expected Registry\n(embedded in variable_audit_cli.py)"]
         R_ORG["org-secrets × 13"]
         R_REPO["repo-secrets × 7"]
         R_ENV_S["env-secrets × 3"]
@@ -729,14 +729,14 @@ flowchart TD
         L_ENV_S["GET /repos/{owner}/{repo}/environments/{env}/secrets"]
         L_REPO_V["GET /repos/{owner}/{repo}/actions/variables"]
         L_ENV_V["GET /repos/{owner}/{repo}/environments/{env}/variables"]
-        L_CS["⚠️ Not listable via API\n(Codespace secrets)"]
+        L_CS["️ Not listable via API\n(Codespace secrets)"]
     end
 
     subgraph AUDIT_ENGINE[" Audit Engine\nvariable_audit_cli.py run_audit()"]
         COMPARE{Compare\nexpected vs live}
         PRESENT[" present"]
         ABSENT[" absent"]
-        UNKNOWN["❓ unknown\n(no token or\nCodespace)"]
+        UNKNOWN[" unknown\n(no token or\nCodespace)"]
         EXTRA["➕ extra\n(not in guide)"]
     end
 

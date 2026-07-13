@@ -192,7 +192,7 @@ def test_graph_traversal():
 
 ---
 
-## 📈 Long-Term Roadmap
+##  Long-Term Roadmap
 
 ### Phase 3: 50% → 70% (10-12 hours)
 
@@ -373,7 +373,7 @@ agents/
 
 ---
 
-## 🔄 Continuation Instructions
+##  Continuation Instructions
 
 ### For Next Session
 

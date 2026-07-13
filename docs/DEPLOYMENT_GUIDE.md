@@ -1,4 +1,6 @@
 # _codex_ Deployment Guide
+
+**Version**: v0.2.1
 **Last Updated:** 2026-07-11
 
 > **Last Updated: 2026-06-27
@@ -134,7 +136,7 @@ pkill -f "serving.cli serve"
 ### Why Docker?
 - 🐳 Works same on all machines
 -  Isolated environment (safer)
-- ⚡ Easy to scale
+-  Easy to scale
 - 📦 Reproducible deployments
 
 ### Prerequisites

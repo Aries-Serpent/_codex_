@@ -3,7 +3,7 @@
 **Version:** v0.2.1
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
- Roles: [Primary: Visual QA], [Secondary: Publisher] ⚡ Energy: 5
+ Roles: [Primary: Visual QA], [Secondary: Publisher]  Energy: 5
 
 Goal
 - Ensure HTML renderers produce consistent, loadable documents and screenshots.

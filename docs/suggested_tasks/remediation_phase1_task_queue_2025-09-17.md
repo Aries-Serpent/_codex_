@@ -65,7 +65,7 @@ Key conventions used in this packet:
 - **Actions**:
   1. Amend `requirements/dev.txt` (and any setup scripts) to include `nox` with an explicit version guard.
   2. Extend `cli/workflow.py` (console script `codex-workflow`) or equivalent orchestration script to probe for `nox --version`, logging results to `.codex/session_logs.db` with severity levels.
-  3. Update `docs/suggested_tasks/status_update_2025-09-17.md` Section 5 to reflect the enforced availability and provide offline installation steps.
+  3. Update 2026-07-13
   4. Run the probe in both a fresh environment and the baseline environment, capturing outputs in the session datablot.
   5. Close out outstanding question entries tied to `nox` availability.
 - **Deliverables**: Updated requirement files, orchestration scripts, documentation, and log entries verifying `nox` availability checks.

@@ -21,7 +21,7 @@
 | **4.2.1** | AST similarity default CI? |  **CI YES** /  **Local NO** | Context-dependent (relativistic effects) | MEDIUM | [Link(#top) |
 | **4.2.2** | Log encoding errors? |  **YES** | Visibility critical, use `errors="replace"` | HIGH | [Link(#top) |
 | **4.3.1** | Register CLI entry points? |  **YES** | Discoverability, ecosystem integration | HIGH | [Link(#top) |
-| **4.3.2** | CI merge blocking? | ⚠️ **WARNINGS ONLY** | Gradual adoption, non-blocking initially | MEDIUM | [Link(#top) |
+| **4.3.2** | CI merge blocking? | ️ **WARNINGS ONLY** | Gradual adoption, non-blocking initially | MEDIUM | [Link(#top) |
 | **4.3.3** | Standard SQLite location? |  **YES** | `.codex/session_logs.db` convention | LOW | [Link(#top) |
 | **4.4.1** | Tree-sitter for YAML/SQL? |  **YES** | Cross-language analysis, validation | MEDIUM | [Link(#top) |
 | **4.4.2** | Incremental analysis? |  **YES** | Performance critical (10-100x faster) | HIGH | [Link(#top) |
@@ -155,7 +155,7 @@ fail_on: [error, critical]    # Block on these severities
 3. **Incremental analysis** - Essential for scale (10-100x speedup)
 4. **LibCST elevation** - Enables safe refactoring/codemods
 
-### ⚠️ Implement Gradually (MEDIUM Priority)
+### ️ Implement Gradually (MEDIUM Priority)
 5. **AST similarity in CI** - Valuable but expensive
 6. **Tree-sitter integration** - High ROI for YAML-heavy codebases
 7. **HTML reports** - User experience multiplier

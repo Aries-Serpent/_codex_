@@ -202,11 +202,11 @@ Turn 3 (Gates 3–10): Security checks, final verification → Score: 100/100
 
 ---
 
-## 🔗 Integration Architecture
+##  Integration Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│        PR Merge Readiness Framework (v1.0.0)               │
+│        PR Merge Readiness Framework (v0.2.1)               │
 └─────────────────────────────────────────────────────────────┘
                               │
                 ┌─────────────┼─────────────┐
@@ -244,7 +244,7 @@ External Integration Points:
 
 ---
 
-##  Getting Started for Agents
+## Getting Started for Agents
 
 ### Step 1: Import the Helper Module
 
@@ -340,7 +340,7 @@ Framework completeness verification:
 
 ---
 
-## 🔧 Troubleshooting Quick Reference
+##  Troubleshooting Quick Reference
 
 | Problem | Cause | Solution |
 |---------|-------|----------|
@@ -389,7 +389,7 @@ Framework completeness verification:
 
 ---
 
-## 📋 References
+##  References
 
 ### Implementation Files
 - `scripts/ci/pr_description_helper.py` — Source of truth for WEC preservation

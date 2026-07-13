@@ -266,11 +266,11 @@ flowchart TD
         R4["py/dead-literal-value-branch (27 alerts)\nrefactor inline if/elif → helper functions\nreliability + monitoring tests"]
     end
 
-    subgraph BACKLOG["⚡ Security Backlog — Post-Merge"]
+    subgraph BACKLOG[" Security Backlog — Post-Merge"]
         B1[" PBKDF2 100k → 600k iterations\nservices/ita/app/security.py:185\nOWASP 2024 SHA-256 recommendation"]
-        B2["🟡 CodeQL push-trigger\n.github/workflows/codeql-analysis.yml\nadd on: push branches: main, 0D_base_"]
-        B3["🟡 Semgrep rule expansion\np/flask + p/sqlalchemy rulesets"]
-        B4["🟡 bandit HIGH triage\nB105/B106 hardcoded-pw, B603 subprocess"]
+        B2[" CodeQL push-trigger\n.github/workflows/codeql-analysis.yml\nadd on: push branches: main, 0D_base_"]
+        B3[" Semgrep rule expansion\np/flask + p/sqlalchemy rulesets"]
+        B4[" bandit HIGH triage\nB105/B106 hardcoded-pw, B603 subprocess"]
         B5[" pip-audit post-merge\n0 known CVEs after mistune 3.2.1 bump"]
         B6[" .secrets.baseline re-scan\nlast scan 2026-05-05T22:43Z"]
     end
@@ -594,7 +594,7 @@ flowchart TD
 | `ruff check src/` |  0 violations | Verified locally |
 | `sync_tracked_files --check` |  consistent | Verified locally |
 | Pattern 22 (tracked file sync) |  passing | SHA-drift resolved |
-| Pattern 25 (accountability entry) |  today's date | 2026-05-06 S312 entry |
+| Pattern 25 (accountability entry) |  today's date 2026-07-13
 | Pattern 30 (merge readiness) |  100/100 | All dimensions green |
 | Pattern 31 (stale type:ignore) |  0 stale | `dal.py` cleaned |
 | WEC block in PR body |  present | Every report_progress call |
@@ -825,19 +825,19 @@ flowchart TD
 | `ruff check src/` |  0 violations | Verified locally |
 | `sync_tracked_files --check` |  consistent | Verified locally |
 | Pattern 22 (tracked file sync) |  passing | SHA-drift resolved |
-| Pattern 25 (accountability entry) |  today's date | 2026-05-06 entry present |
+| Pattern 25 (accountability entry) |  today's date 2026-07-13
 | Pattern 30 (merge readiness) |  100/100 | All dimensions green |
 | WEC block in PR body |  present | Every report_progress call |
 | Dependabot PRs #4320/#4321 |  consolidated | mistune 3.2.1 in lock.txt |
 | CodeQL alerts |  0 open | Inherited from PR #4289 |
 | Comment review gate |  all addressed | 5/5 comments addressed |
-| uv.lock mistune alignment | ⚠️ pending | uv.lock=3.2.0 vs lock.txt=3.2.1 |
+| uv.lock mistune alignment | ️ pending | uv.lock=3.2.0 vs lock.txt=3.2.1 |
 
 ---
 
 ## 9. Wave 9 — S313+1 Security Continuation + Dependabot Sweep (PR #4323)
 
-**Date:** 2026-05-06T22:15Z | **Branch:** copilot/fix-timeline-structure | **PR:** #4323
+**Date:2026-07-13
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing " S313+1 Start\nPR #4323", "Semgrep p/flask+p/sqlalchemy added"'}}%%
@@ -888,7 +888,7 @@ pie title CI Results on 7a989c6 (PR #4323 HEAD)
 | Check | Status |
 |-------|--------|
 | Required workflow gates |  5/5 green |
-| startup_failure runs | ⚠️ 3 — all opt-in, expected |
+| startup_failure runs | ️ 3 — all opt-in, expected |
 | Blocking failures |  0 |
 | `.secrets.baseline` sync |  fixed by `sync_tracked_files --fix` |
 | ruff `src/` |  0 violations |

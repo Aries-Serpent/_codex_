@@ -1,4 +1,6 @@
 # Repository Administration Guide
+
+**Version**: v0.2.1
 **Last Updated:** 2026-07-11
 
 ## Complete Setup & Configuration for _codex_ Security Infrastructure
@@ -9,7 +11,7 @@
 
 ---
 
-## 📋 Table of Contents
+##  Table of Contents
 
 1. [Overview](#overview)
 2. [Repository Settings](#repository-settings)
@@ -436,7 +438,7 @@ Add webhook to `.github/workflows/security-scan.yml`:
   curl -X POST ${{ secrets.SLACK_WEBHOOK_URL }} \
       -H 'Content-Type: application/json' \
       -d '{
-        "text": "🚨 Security scan failed in _codex_",
+        "text": " Security scan failed in _codex_",
         "blocks": [{
           "type": "section",
           "text": {
@@ -659,13 +661,13 @@ For questions or updates, contact: security@localhost
 
 **Objective**: Establish comprehensive security infrastructure for repository including encryption, scanning, monitoring, and compliance enforcement.
 
-**Energy Level**: ⚡⚡⚡⚡⚡ (5/5 - Security Critical)
+**Energy Level**:  (5/5 - Security Critical)
 
 **Status**:  Active
 
 ---
 
-## ⚖️ Verification Checklist
+## ️ Verification Checklist
 
 ### Security Features Configuration
 - [ ] Dependabot alerts enabled and monitored
@@ -697,7 +699,7 @@ For questions or updates, contact: security@localhost
 
 ---
 
-## 📈 Success Metrics
+##  Success Metrics
 
 | Metric | Current | Target | Status |
 |--------|---------|--------|--------|
@@ -716,26 +718,26 @@ For questions or updates, contact: security@localhost
 
 | Principle | Application | Implementation |
 |-----------|-------------|----------------|
-| Path 🛤️ | Systematic security hardening progression | 10-phase setup: Settings → Secrets → Branch Protection → Scanning → Monitoring | <!-- pragma: allowlist secret -->
-| Fields 🔄 | Repository state transformation to secure baseline | Unsecured → Monitoring enabled → Secrets protected → Compliance enforced | <!-- pragma: allowlist secret -->
-| Patterns 👁️ | Continuous security posture observation | Iteration-cycle scans, continuous alert monitoring, milestone audits |
-| Redundancy 🔀 | Multi-layer security defense | Pre-commit hooks + CI scans + CodeQL + Dependabot + Secret scanning | <!-- pragma: allowlist secret -->
-| Balance ⚖️ | Security rigor vs developer velocity | Automated security checks with clear bypass procedures for emergencies |
+| Path ️ | Systematic security hardening progression | 10-phase setup: Settings → Secrets → Branch Protection → Scanning → Monitoring | <!-- pragma: allowlist secret -->
+| Fields  | Repository state transformation to secure baseline | Unsecured → Monitoring enabled → Secrets protected → Compliance enforced | <!-- pragma: allowlist secret -->
+| Patterns ️ | Continuous security posture observation | Iteration-cycle scans, continuous alert monitoring, milestone audits |
+| Redundancy  | Multi-layer security defense | Pre-commit hooks + CI scans + CodeQL + Dependabot + Secret scanning | <!-- pragma: allowlist secret -->
+| Balance ️ | Security rigor vs developer velocity | Automated security checks with clear bypass procedures for emergencies |
 
 ---
 
-## ⚡ Energy Distribution
+##  Energy Distribution
 
 | Phase | Energy | Rationale |
 |-------|--------|-----------|
-| Initial Repository Configuration | ⚡⚡⚡⚡⚡ | Foundation - incorrect settings undermine all other security |
-| Encryption Key Generation | ⚡⚡⚡⚡⚡ | Critical - protects all encrypted data at rest |
-| Branch Protection Setup | ⚡⚡⚡⚡⚡ | Essential - prevents unauthorized/unreviewed changes to production |
-| Security Scanning Configuration | ⚡⚡⚡⚡ | High priority - automated detection of vulnerabilities |
-| Pre-commit Hook Deployment | ⚡⚡⚡⚡ | Important - prevents secrets from entering repository | <!-- pragma: allowlist secret -->
-| Monitoring & Alerting | ⚡⚡⚡⚡ | Critical for incident response |
-| Team Permissions & CODEOWNERS | ⚡⚡⚡⚡ | Ensures human oversight of sensitive changes |
-| Dependency Management | ⚡⚡⚡ | Ongoing maintenance task |
+| Initial Repository Configuration |  | Foundation - incorrect settings undermine all other security |
+| Encryption Key Generation |  | Critical - protects all encrypted data at rest |
+| Branch Protection Setup |  | Essential - prevents unauthorized/unreviewed changes to production |
+| Security Scanning Configuration |  | High priority - automated detection of vulnerabilities |
+| Pre-commit Hook Deployment |  | Important - prevents secrets from entering repository | <!-- pragma: allowlist secret -->
+| Monitoring & Alerting |  | Critical for incident response |
+| Team Permissions & CODEOWNERS |  | Ensures human oversight of sensitive changes |
+| Dependency Management |  | Ongoing maintenance task |
 
 **Total Energy Investment**: 31/40 units
 

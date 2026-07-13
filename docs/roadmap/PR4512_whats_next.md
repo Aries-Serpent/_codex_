@@ -2,7 +2,7 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-## 🔄 Checkpoint manager + workflow-merge remediation
+##  Checkpoint manager + workflow-merge remediation
 
 **Updated: 2026-07-11
 

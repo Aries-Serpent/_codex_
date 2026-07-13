@@ -4,7 +4,7 @@
 
 **Last Updated: 2026-06-22
 
-> **Research Date:** 2026-03-21  
+> **Research Date:2026-07-13
 > **Session:** S170  
 > **Method:** Deep web search + live GitHub API data + APA citation compilation  
 > **Scope:** Projects sharing ≥3 core dimensions with `_codex_`: (1) ML training & evaluation, (2) autonomous agents / cognitive architecture, (3) MLOps lifecycle automation, (4) distributed compute, (5) self-healing or agentic CI/CD
@@ -22,11 +22,11 @@
 | Dimension | `_codex_` | MLflow | Ray | Metaflow | ZenML | PromptFlow |
 |-----------|-----------|--------|-----|----------|-------|------------|
 | ML Training & Evaluation |  PyTorch + LoRA/QLoRA |  Tracking + Eval |  Distributed |  Prototype→Prod |  Pipelines |  LLM eval |
-| Autonomous Agents / Cognitive |  153 agents + Cognitive Brain |  AgentOps |  RLlib + Actors | ⚠️ Partial |  Agent Pipelines |  Prompt agents |
+| Autonomous Agents / Cognitive |  153 agents + Cognitive Brain |  AgentOps |  RLlib + Actors | ️ Partial |  Agent Pipelines |  Prompt agents |
 | MLOps Lifecycle Automation |  Level 4 certified |  Model Registry |  Ray Serve |  Deploy/Orchestrate |  Full lifecycle |  Prototype→Prod |
-| Distributed Compute |  Ray + distributed |  Via integrations |  Native core |  Cloud burst |  Via backends | ⚠️ Limited |
-| Self-Healing / Agentic CI/CD |  75-87% auto-fix | ⚠️ Monitoring only | ⚠️ Retry logic | ⚠️ Retry/fallback | ⚠️ Partial |  Not primary |
-| Config Management (Hydra) |  Native Hydra | ⚠️ YAML/OmegaConf | ⚠️ YAML | ⚠️ Decorators |  Stack configs | ⚠️ YAML |
+| Distributed Compute |  Ray + distributed |  Via integrations |  Native core |  Cloud burst |  Via backends | ️ Limited |
+| Self-Healing / Agentic CI/CD |  75-87% auto-fix | ️ Monitoring only | ️ Retry logic | ️ Retry/fallback | ️ Partial |  Not primary |
+| Config Management (Hydra) |  Native Hydra | ️ YAML/OmegaConf | ️ YAML | ️ Decorators |  Stack configs | ️ YAML |
 | Experiment Tracking |  MLflow native |  Core feature |  Via MLflow |  Client API |  MLflow integr. |  Traces |
 | Security / CVE Compliance |  26 CVEs fixed |  Active patches |  Active patches |  Active patches |  Active patches |  Active patches |
 | Test Coverage ≥80% |  80% / 20K+ tests |  High |  High |  High |  High |  High |

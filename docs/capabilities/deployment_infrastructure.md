@@ -199,11 +199,11 @@ helm install codex-ml ./charts/codex-ml \
   --namespace codex \
   --create-namespace \
   --set replicaCount=3 \
-  --set image.tag=v1.2.0
+  --set image.tag=v0.2.1
 
 # Upgrade with rollback capability
 helm upgrade codex-ml ./charts/codex-ml \
-  --set image.tag=v1.3.0 \
+  --set image.tag=v0.2.1 \
   --wait --timeout=5m
 
 # Rollback if needed

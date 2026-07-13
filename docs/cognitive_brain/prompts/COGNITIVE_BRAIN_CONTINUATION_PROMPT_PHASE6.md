@@ -78,7 +78,7 @@ PYTHONPATH=src pytest tests/ -v --timeout=300 -x -q 2>&1 | tail -20
 
 ---
 
-## 🟡 Priority 2 — Active Learning Production Graduation
+##  Priority 2 — Active Learning Production Graduation
 
 **Goal**: Graduate Active Learning from staging to production with budget controls.
 
@@ -104,7 +104,7 @@ def _enforce_query_budget(self) -> bool:
 
 ---
 
-## 🟡 Priority 2 — Extended Noise Validation (1000 scenarios)
+##  Priority 2 — Extended Noise Validation (1000 scenarios)
 
 **Current**: 91.4% accuracy at 10% gate error on 200 scenarios 
 **Target**: Verify ≥90% at 10% gate error on 1000 scenarios
@@ -210,7 +210,7 @@ git ls-files --others --exclude-standard
 
 ---
 
-## 📝 Accountability Note
+##  Accountability Note
 
 See `.codex/ACCOUNTABILITY_REPORT_2026_02_19_PR3330.md` for root-cause analysis of the xfail policy violations in sessions 37–38.
 

@@ -1,4 +1,4 @@
-# Getting started with Track G primitives
+## Getting Started with Track G primitives
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 

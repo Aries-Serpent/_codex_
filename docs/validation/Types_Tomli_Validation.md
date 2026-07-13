@@ -3,8 +3,8 @@
 **Version:** v0.2.1
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
- Roles: [Primary: Validation Architect], [Secondary: CI Reviewer] ⚡ Energy: 3  
-⚛️ Physics: Path🛤️ [Assess → Patch → Verify] Fields🔄 [Packaging, TOML] Patterns👁️ [Stdlib over vendor, Compat shim] Redundancy🔀 [Unit test + CI] Balance⚖️ [Simplicity vs portability]
+ Roles: [Primary: Validation Architect], [Secondary: CI Reviewer]  Energy: 3  
+⚛️ Physics: Path️ [Assess → Patch → Verify] Fields [Packaging, TOML] Patterns️ [Stdlib over vendor, Compat shim] Redundancy [Unit test + CI] Balance️ [Simplicity vs portability]
 
 ## Why change
 - Python ≥ 3.12 includes `tomllib`; `types-tomli` is obsolete and not on PyPI.

@@ -127,7 +127,7 @@ gh workflow run "Admin Setup Verification" \
 
 Verify all checks pass:
 - [ ] `CODEX_MASTER_KEY` read + write: 
-- [ ] `CODEX_BACKUP_KEY` read + write:  (or ⚠️ if optional)
+- [ ] `CODEX_BACKUP_KEY` read + write:  (or ️ if optional)
 - [ ] GitHub Discussions: 
 - [ ] Repository variables: 
 - [ ] Follow-up prompt file: 

@@ -11,7 +11,7 @@
 
 ## Quick Fix Checklist
 
-### 1. Cognitive Brain Test Method Name (5 minutes) ⚡
+### 1. Cognitive Brain Test Method Name (5 minutes) 
 **File:** `tests/cognitive_brain/test_integration.py:207`  
 **Priority:** P1 - High
 
@@ -32,7 +32,7 @@ python -m pytest tests/cognitive_brain/test_integration.py::test_end_to_end_comp
 
 ---
 
-### 2. EntanglementManager Signature (15 minutes) 🔍
+### 2. EntanglementManager Signature (15 minutes) 
 **Files:** `tests/cognitive_brain/test_integration.py` (multiple tests)  
 **Priority:** P1 - High
 
@@ -49,7 +49,7 @@ grep -A 10 "def __init__" src/cognitive_brain/quantum/entanglement.py | grep -A 
 
 ---
 
-### 3. Train Loop `__version__` Error (10 minutes) 🔍
+### 3. Train Loop `__version__` Error (10 minutes) 
 **Files:** `tests/test_train_loop_smoke.py`  
 **Priority:** P1 - High
 
@@ -77,7 +77,7 @@ from codex_ml import __version__
 
 ---
 
-## 4. Hydra Config Missing (30 minutes) 📝
+## 4. Hydra Config Missing (30 minutes) 
 **Test:** `tests/config/test_hydra_defaults_tree.py::test_hydra_compose_smoke`  
 **Priority:** P0 - Critical
 
@@ -112,7 +112,7 @@ grep -n "hydra/data/base" tests/config/test_hydra_defaults_tree.py
 
 ---
 
-## 5. Config Validation Schema (30 minutes) 📋
+## 5. Config Validation Schema (30 minutes) 
 **Test:** `tests/configs/test_validate_configs_cli.py::test_group_validation_report`  
 **Priority:** P0 - Critical
 
@@ -151,7 +151,7 @@ level: "info"  # Not "INFO" or "information"
 
 ---
 
-## 6. Agent Load Tests - Review Assertions (20 minutes) 🔍
+## 6. Agent Load Tests - Review Assertions (20 minutes) 
 **Files:** `tests/agents/test_load_and_concurrent.py`  
 **Priority:** P1 - High
 
@@ -254,7 +254,7 @@ python -m pytest tests/ -v --tb=short
 
 -  All P0 tests pass (Hydra, config validation)
 -  All P1 tests pass (cognitive brain, train loop, entanglement)
-- ⚡ Agent load tests understood (pass or marked as performance tests)
+-  Agent load tests understood (pass or marked as performance tests)
 -  Total test pass rate > 95%
 
 ---

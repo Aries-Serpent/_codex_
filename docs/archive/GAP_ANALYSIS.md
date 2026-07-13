@@ -197,7 +197,7 @@ The following failures existed before our changes and are not caused by this PR:
 
 **Gaps**:
 - Some workflows install deps without version pins (now partially fixed)
-- Optional dependencies not clearly documented
+- Optional dependencies not documented
 - Dependency conflicts between components
 
 **Recommendation**:
@@ -238,9 +238,9 @@ The following failures existed before our changes and are not caused by this PR:
  Configuration externalization (secrets not hardcoded)
 
 ### Remaining
-⚠️ Review webhook security (currently disabled in workflow.yaml)
-⚠️ Audit secret scanning configuration
-⚠️ Review workflow permissions
+️ Review webhook security (currently disabled in workflow.yaml)
+️ Audit secret scanning configuration
+️ Review workflow permissions
 
 ## Next Steps
 

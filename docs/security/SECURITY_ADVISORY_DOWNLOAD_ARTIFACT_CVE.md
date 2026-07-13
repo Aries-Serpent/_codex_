@@ -1,4 +1,6 @@
 # Security Advisory: CVE-2024-XXXX - Arbitrary File Write in actions/download-artifact
+
+**Version**: v0.2.1
 **Last Updated:** 2026-07-11
 
 **Last Updated: 2026-06-22
@@ -98,14 +100,14 @@ No vulnerabilities found in related actions:
 3.  Verify no other vulnerable versions
 
 ### Short-Term
-1. 📋 Monitor for new security advisories for GitHub Actions
-2. 📋 Implement automated dependency scanning for workflow actions
-3. 📋 Add Dependabot for GitHub Actions dependencies
+1.  Monitor for new security advisories for GitHub Actions
+2.  Implement automated dependency scanning for workflow actions
+3.  Add Dependabot for GitHub Actions dependencies
 
 ### Long-Term
-1. 📋 Establish action version pinning policy
-2. 📋 Create pre-commit hooks for action version validation
-3. 📋 Implement SAST scanning for workflow files
+1.  Establish action version pinning policy
+2.  Create pre-commit hooks for action version validation
+3.  Implement SAST scanning for workflow files
 
 ## Prevention Measures
 

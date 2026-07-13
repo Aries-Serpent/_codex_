@@ -6,7 +6,7 @@
 
 ## Context
 
-**Date:** 2026-03-04  
+**Date:2026-07-13
 **PR:** #3495  
 **Session:** COGNITIVE_BRAIN_SESSION_NUMBER 112  
 **Status:** ACCEPTED — gaps resolved in this PR  
@@ -42,11 +42,11 @@ Live interrogation performed during PR #3495 agent session (2026-03-04T22:00–2
 | `DELETE /api/cli/history` |  WORKS | No auth required |
 | `POST /api/request` (HTTP proxy) |  WORKS | No auth required; GitHub auto-inject via `CODEX_MASTER_KEY` skipped (key empty) |
 | `GET /api/ooda/metrics` |  WORKS | Returns empty (orchestrator not wired) |
-| `POST /api/ooda/process` | ⚠️ PARTIAL | `cognitive_brain.base` import fails in CI |
+| `POST /api/ooda/process` | ️ PARTIAL | `cognitive_brain.base` import fails in CI |
 | `GET /api/memory/state` |  FAILS 503 | `CODEX_MASTER_KEY` not available in session |
 | `GET /api/memory/search` |  FAILS 503 | Same |
 | `POST /api/memory/consolidate` |  FAILS 503 | Same |
-| `WebSocket /ws/cli` (PTY) | ⚠️ UNTESTED | No browser in agent sandbox; works if frontend is connected |
+| `WebSocket /ws/cli` (PTY) | ️ UNTESTED | No browser in agent sandbox; works if frontend is connected |
 | GitHub Pages frontend URL |  BLOCKED | Playwright sandbox network policy (`ERR_BLOCKED_BY_CLIENT`) |
 | `web_fetch` of GitHub Pages |  WORKS | Returns static HTML shell; React SPA requires JS runtime |
 | `CODEX_CLI_API_URL` in agent env |  MISSING | Not exported to `GITHUB_ENV` in setup steps |
@@ -139,11 +139,11 @@ via the REST/WebSocket server.
 | `DELETE /api/cli/history` |  WORKS | Unchanged |
 | `POST /api/request` (HTTP proxy) |  WORKS | `httpx` now in startup install |
 | `GET /api/ooda/metrics` |  WORKS | Unchanged |
-| `POST /api/ooda/process` | ⚠️ PARTIAL | Needs `cognitive_brain.base` installed |
-| `GET /api/memory/state` | ⚠️ PENDING | Requires `CODEX_MASTER_KEY` rotation (RC-4) |
-| `GET /api/memory/search` | ⚠️ PENDING | Same |
-| `POST /api/memory/consolidate` | ⚠️ PENDING | Same |
-| `WebSocket /ws/cli` (PTY) | ⚠️ HUMAN-ONLY | Accessible from browser frontend, not agent |
+| `POST /api/ooda/process` | ️ PARTIAL | Needs `cognitive_brain.base` installed |
+| `GET /api/memory/state` | ️ PENDING | Requires `CODEX_MASTER_KEY` rotation (RC-4) |
+| `GET /api/memory/search` | ️ PENDING | Same |
+| `POST /api/memory/consolidate` | ️ PENDING | Same |
+| `WebSocket /ws/cli` (PTY) | ️ HUMAN-ONLY | Accessible from browser frontend, not agent |
 | GitHub Pages frontend |  BLOCKED | Sandbox policy; use REST API directly |
 | `CODEX_CLI_API_URL` in agent env |  FIXED | Exported by startup step (this PR) |
 | `COPILOT_CLI_BASE_URL` in agent env |  FIXED | `agent_context.json` created (this PR) |
@@ -161,7 +161,7 @@ via the REST/WebSocket server.
 | `COGNITIVE_BRAIN_SESSION_NUMBER` | Repo variable | `110` | `112` | **Update in repo variables + agent_context.json** |
 | `COPILOT_CLI_BASE_URL` | Repo variable |  `http://localhost:8765` | Unchanged | Propagated via agent_context.json |
 | `COPILOT_CLI_ENABLED` | Repo variable |  `true` | Unchanged | Propagated via agent_context.json |
-| `CODEX_MASTER_KEY` | Org secret | ⚠️ Possibly empty | **Verify & rotate** | Action for @mbaetiong |
+| `CODEX_MASTER_KEY` | Org secret | ️ Possibly empty | **Verify & rotate** | Action for @mbaetiong |
 
 ---
 

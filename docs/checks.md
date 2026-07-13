@@ -44,6 +44,8 @@ using a general YAML checker like [yamllint][].
 
 <a name="check-unexpected-keys"></a>
 # Unexpected keys
+
+**Version**: v0.2.1
 **Last Updated:** 2026-07-11
 
 ## Table of Contents

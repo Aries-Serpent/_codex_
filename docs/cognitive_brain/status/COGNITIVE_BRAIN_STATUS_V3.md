@@ -639,8 +639,8 @@ graph TB
 | Rust test flakiness | Low | Medium | Serial execution enforced |  Mitigated |
 | Ambiguous auto-remediation | Low | High | Occurrence detection added |  Mitigated |
 | CORS misconfig in prod | Very Low | High | Override warning system |  Mitigated |
-| Performance degradation | Medium | Medium | Phase 9.1 load testing | 🟡 Monitoring |
-| Security vulnerabilities | Low | High | Phase 9.2 audit | 🟡 Monitoring |
+| Performance degradation | Medium | Medium | Phase 9.1 load testing |  Monitoring |
+| Security vulnerabilities | Low | High | Phase 9.2 audit |  Monitoring |
 
 ## Self-Review Findings
 
@@ -1436,11 +1436,11 @@ python scripts/run.py config.py set --auto-context true
 
 | Metric | Target | Current | Status |
 |--------|--------|---------|--------|
-| Sync Latency | < 5 min | TBD | 🔄 Pending |
-| XML Size | < 5 MB | TBD | 🔄 Pending |
-| Secret Detection | 100% | TBD | 🔄 Pending |
-| Health Check Time | < 2 min | TBD | 🔄 Pending |
-| Architect Accuracy | > 95% | TBD | 🔄 Pending |
+| Sync Latency | < 5 min | TBD |  Pending |
+| XML Size | < 5 MB | TBD |  Pending |
+| Secret Detection | 100% | TBD |  Pending |
+| Health Check Time | < 2 min | TBD |  Pending |
+| Architect Accuracy | > 95% | TBD |  Pending |
 
 ### Risk Assessment
 

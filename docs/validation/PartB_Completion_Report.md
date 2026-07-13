@@ -76,7 +76,7 @@ $ python scripts/space_traversal/validate_template_hash.py
 **Files Updated**:
 - `docs/validation/PartB_Validation_Summary.md` (new)
 - `docs/validation/Convergence_Runbook.md` (updated with Wave 2 summary)
-- `docs/validation/Next_Iteration_Prompt_v1.3.0.md` (new)
+- `docs/validation/Next_Iteration_Prompt_v0.2.1.md` (new)
 
 **Key Sections Added**:
 - Wave 2 achievements (shadowing resolution, baseline establishment, CI gates)
@@ -95,7 +95,7 @@ $ python scripts/space_traversal/validate_template_hash.py
 - Time estimates and priority order
 - Post-merge action items
 
-**File**: `docs/validation/Next_Iteration_Prompt_v1.3.0.md`
+**File**: `docs/validation/Next_Iteration_Prompt_v0.2.1.md`
 
 ## Quality Assurance
 
@@ -120,7 +120,7 @@ $ python scripts/space_traversal/validate_template_hash.py
 
 ### New Files (3)
 1. `docs/validation/PartB_Validation_Summary.md` (198 lines)
-2. `docs/validation/Next_Iteration_Prompt_v1.3.0.md` (383 lines)
+2. `docs/validation/Next_Iteration_Prompt_v0.2.1.md` (383 lines)
 
 ### Modified Files (1)
 1. `docs/validation/Convergence_Runbook.md` (+126 lines)
@@ -233,7 +233,7 @@ Use this checklist when reviewing this PR:
 ### Documentation Review
 - [ ] PartB_Validation_Summary.md is clear and comprehensive
 - [ ] Wave 2 summary in Convergence_Runbook.md is accurate
-- [ ] Next_Iteration_Prompt_v1.3.0.md provides clear guidance
+- [ ] Next_Iteration_Prompt_v0.2.1.md provides clear guidance
 
 ### Validation Review
 - [ ] Understand why determinism validation was deferred
@@ -248,9 +248,7 @@ Use this checklist when reviewing this PR:
 ### Approval Criteria
 - [ ] Documentation accurately reflects system state
 - [ ] Deferred items are properly tracked
-- [ ] PR description explains changes clearly
-
-## Sign-off
+- [ ] PR description explains changes ## Sign-off
 
 **Prepared by**: @copilot  
 **Date**: 2025-12-05  

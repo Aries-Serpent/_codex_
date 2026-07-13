@@ -163,7 +163,7 @@ Week 7-8: Polish & Completion
 
 ---
 
-## 📈 COVERAGE TARGETS
+##  COVERAGE TARGETS
 
 ### Current vs. Target
 
@@ -303,7 +303,7 @@ week_2:
 
 ---
 
-## 📝 DOCUMENTATION STANDARDS
+##  DOCUMENTATION STANDARDS
 
 ### Docstring Format (Google Style)
 
@@ -329,10 +329,10 @@ def function_name(arg1: str, arg2: int) -> bool:
     """
 ```
 
-### Tutorial Structure
+## Guide Structure
 
 ```markdown
-# Tutorial Title
+## Guide Title
 
 ## Prerequisites
 - List prerequisites
@@ -353,7 +353,7 @@ def function_name(arg1: str, arg2: int) -> bool:
 
 ---
 
-## 🔍 AUDIT METHODOLOGY
+##  AUDIT METHODOLOGY
 
 ### Coverage Calculation
 

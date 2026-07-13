@@ -3,7 +3,7 @@
 **Version:** v0.2.1
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
- Roles: [Primary: Quality Steward], [Secondary: Reviewer] ⚡ Energy: 5
+ Roles: [Primary: Quality Steward], [Secondary: Reviewer]  Energy: 5
 
 Overview
 - Use this rubric during review to grade completeness, correctness, and actionability of daily reports.

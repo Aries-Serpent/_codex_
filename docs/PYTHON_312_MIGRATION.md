@@ -9,7 +9,7 @@
 
 ---
 
-## 📋 Table of Contents
+##  Table of Contents
 
 1. [Overview](#overview)
 2. [Prerequisites](#prerequisites)
@@ -162,7 +162,7 @@ The CI pipeline already tests both Python 3.12 and 3.12. No changes needed.
 
 ---
 
-## ⚠️ Breaking Changes
+## ️ Breaking Changes
 
 **GOOD NEWS: Zero Breaking Changes Required!** 🎉
 
@@ -179,7 +179,7 @@ The _codex_ codebase is already compatible with Python 3.12. The following have 
 | Import system |  Compatible | Using `importlib`, not deprecated `imp` |
 | Collections ABC |  Compatible | Proper imports from `typing` |
 
-### 🔍 Patterns Already Modernized
+###  Patterns Already Modernized
 
 The codebase proactively uses:
 
@@ -282,7 +282,7 @@ strategy:
 
 ---
 
-## 🔄 Rollback Procedure
+##  Rollback Procedure
 
 If issues arise during migration, follow this rollback procedure:
 
@@ -362,7 +362,7 @@ gh issue create --title "Python 3.12 Migration Issue: [brief description]" \
 | **3.10** |  Not Supported | Below minimum requirement |
 | **3.11** |  Supported | Current baseline, fully tested |
 | **3.12** |  Primary Target | Recommended for new deployments |
-| **3.13** | 🔄 Future | Planned for future iteration |
+| **3.13** |  Future | Planned for future iteration |
 
 ### Operating System Support
 
@@ -386,7 +386,7 @@ All 37 core dependencies verified compatible with Python 3.12:
 
 ---
 
-## 🔧 Troubleshooting
+##  Troubleshooting
 
 ### Common Issues
 
@@ -544,7 +544,7 @@ Comprehensive testing of:
 
 ---
 
-## 📝 Migration Checklist
+##  Migration Checklist
 
 Use this checklist to track migration progress:
 

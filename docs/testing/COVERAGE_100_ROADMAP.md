@@ -88,7 +88,7 @@ Achieve **100% test coverage** for the `_codex_` repository through systematic, 
 **Test Additions Estimate**: 150-200 new tests
 
 ### Phase 9.2: Public API Coverage (85% → 92%)
-**Priority**: 🟡 HIGH  
+**Priority**:  HIGH  
 **Effort**: 1 session (~30K-40K tokens)  
 **Focus**: Cover all public APIs and their contracts
 
@@ -267,7 +267,7 @@ pytest --cov=src --cov-fail-under=85
 
 ---
 
-## 📈 Progress Tracking
+##  Progress Tracking
 
 ### Phase 9.1: Critical Path (Target: 85%)
 - [ ] src/codex/ coverage ≥ 90%
@@ -324,7 +324,7 @@ pytest --cov=src --cov-fail-under=85
 
 ---
 
-## 🔧 Tools & Commands
+##  Tools & Commands
 
 ### Coverage Analysis
 ```bash
@@ -423,7 +423,7 @@ mutmut run --paths-to-mutate src/
 
 ---
 
-## 🔄 Continuous Improvement
+##  Continuous Improvement
 
 ### After 100% Achievement
 1. **Maintain Coverage**

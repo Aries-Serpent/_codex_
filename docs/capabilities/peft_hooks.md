@@ -4,7 +4,7 @@
 
 **Last Updated: 2026-06-22
 
-> **Navigation**: [ Main README](../README.md#-capabilities-documentation) | [💾 Checkpointing](checkpointing.md) | [🔄 Training Loops](train_loop.md) | [🔍 Code Quality](code_quality_tooling.md)
+> **Navigation**: [ Main README](../README.md#-capabilities-documentation) | [💾 Checkpointing](checkpointing.md) | [ Training Loops](train_loop.md) | [ Code Quality](code_quality_tooling.md)
 
 ## Overview
 
