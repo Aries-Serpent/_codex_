@@ -1,0 +1,509 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Multi-Lane Orchestration Canonical Artifacts",
+  "description": "JSONSchema definitions for all 7 contract artifact types used in deterministic multi-lane orchestration",
+  "version": "1.0",
+  "date": "2026-07-13",
+  "authority": "@mbaetiong",
+  "definitions": {
+    "lane_manifest": {
+      "$id": "#lane_manifest",
+      "title": "Lane Manifest",
+      "description": "Immutable declaration of lane identity, execution mode, dependencies, and metadata",
+      "type": "object",
+      "required": [
+        "lane_id",
+        "lane_name",
+        "execution_mode",
+        "owner",
+        "run_id",
+        "timestamp",
+        "dependencies",
+        "inputs",
+        "provenance"
+      ],
+      "properties": {
+        "lane_id": {
+          "type": "string",
+          "enum": ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"],
+          "description": "Lane identifier (A-K)"
+        },
+        "lane_name": {
+          "type": "string",
+          "description": "Human-readable lane name"
+        },
+        "execution_mode": {
+          "type": "string",
+          "enum": ["sequential", "parallel", "parallel_sharded"],
+          "description": "Execution mode"
+        },
+        "owner": {
+          "type": "string",
+          "description": "Agent name or @username responsible for lane"
+        },
+        "run_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique run identifier (UUID)"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+          "description": "ISO 8601 UTC timestamp with Z suffix (no +00:00)"
+        },
+        "dependencies": {
+          "type": "object",
+          "properties": {
+            "upstream_lanes": {
+              "type": "array",
+              "items": { "type": "string", "enum": ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"] },
+              "description": "List of upstream lanes that must complete first"
+            },
+            "upstream_gates": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string",
+                "enum": ["pass", "fail", "pending"]
+              },
+              "description": "Gate status mapping for upstream lanes"
+            }
+          }
+        },
+        "inputs": {
+          "type": "object",
+          "properties": {
+            "input_lock": {
+              "type": "string",
+              "description": "SHA256 hash of input-lock.json"
+            },
+            "seed": {
+              "type": "integer",
+              "description": "Deterministic random seed"
+            },
+            "policy_version": {
+              "type": "string",
+              "description": "Policy configuration version"
+            },
+            "solver_version": {
+              "type": "string",
+              "description": "Solver version (classical or hybrid)"
+            }
+          }
+        },
+        "execution_order": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Ordered list of tasks to execute"
+        },
+        "expected_outputs": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "List of expected output-contract files"
+        },
+        "provenance": {
+          "type": "object",
+          "properties": {
+            "created_by": { "type": "string" },
+            "created_at": { "type": "string", "format": "date-time", "pattern": "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$" },
+            "git_sha": { "type": "string", "pattern": "^[a-f0-9]{40}$" }
+          }
+        }
+      }
+    },
+    "input_lock": {
+      "$id": "#input_lock",
+      "title": "Input Lock",
+      "description": "Immutable snapshot of all inputs for deterministic replay",
+      "type": "object",
+      "required": [
+        "lock_version",
+        "lock_hash",
+        "generated_at",
+        "context"
+      ],
+      "properties": {
+        "lock_version": {
+          "type": "string",
+          "const": "1",
+          "description": "Schema version"
+        },
+        "lock_hash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$",
+          "description": "SHA256 hash of combined context"
+        },
+        "generated_at": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+          "description": "ISO 8601 UTC generation timestamp"
+        },
+        "context": {
+          "type": "object",
+          "properties": {
+            "policy_config": {
+              "type": "object",
+              "properties": {
+                "severity_weights": { "type": "object", "additionalProperties": { "type": "number" } },
+                "clustering_params": { "type": "object" },
+                "policy_version": { "type": "string" }
+              }
+            },
+            "solver_info": {
+              "type": "object",
+              "properties": {
+                "classical_solver": { "type": "string" },
+                "hybrid_solver": { "type": "string" },
+                "random_seed": { "type": "integer" }
+              }
+            },
+            "environment": {
+              "type": "object",
+              "properties": {
+                "lane_id": { "type": "string", "enum": ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"] },
+                "attempt_number": { "type": "integer" },
+                "prior_attempts": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "attempt": { "type": "integer" },
+                      "lock_hash": { "type": "string" },
+                      "outcome": { "type": "string", "enum": ["success", "failure", "rollback"] }
+                    }
+                  }
+                }
+              }
+            },
+            "input_checksums": {
+              "type": "object",
+              "additionalProperties": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "output_contract": {
+      "$id": "#output_contract",
+      "title": "Output Contract",
+      "description": "Schema and validation rules for lane outputs",
+      "type": "object",
+      "required": [
+        "contract_version",
+        "lane_id",
+        "expected_output_type",
+        "schema",
+        "success_criteria"
+      ],
+      "properties": {
+        "contract_version": {
+          "type": "string",
+          "description": "Version of contract schema"
+        },
+        "lane_id": {
+          "type": "string",
+          "enum": ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"]
+        },
+        "expected_output_type": {
+          "type": "string",
+          "enum": ["findings_batch", "healing_result", "quantum_metrics", "transfer_status", "sre_metrics"]
+        },
+        "schema": {
+          "type": "object",
+          "description": "JSON schema for output validation"
+        },
+        "success_criteria": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "metric": { "type": "string" },
+              "operator": { "type": "string", "enum": [">", "<", "==", ">=", "<=", "contains"] },
+              "threshold": { "oneOf": [{ "type": "number" }, { "type": "string" }] }
+            }
+          },
+          "description": "Metrics that must be satisfied for success"
+        },
+        "validation_gates": {
+          "type": "array",
+          "items": { "type": "string", "enum": ["schema_validation", "metric_check", "regression_test", "security_audit", "policy_compliance"] }
+        }
+      }
+    },
+    "decision_trace": {
+      "$id": "#decision_trace",
+      "title": "Decision Trace",
+      "description": "JSONL audit log of all decisions made during lane execution (append-only)",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "timestamp",
+          "lane_id",
+          "decision_type",
+          "input_lock_hash",
+          "outcome"
+        ],
+        "properties": {
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+            "description": "ISO 8601 UTC with milliseconds and Z"
+          },
+          "lane_id": {
+            "type": "string",
+            "enum": ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"]
+          },
+          "decision_type": {
+            "type": "string",
+            "enum": ["action", "gate_pass", "gate_fail", "escalation", "rollback"]
+          },
+          "input_lock_hash": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "description": {
+            "type": "string",
+            "description": "Human-readable decision summary"
+          },
+          "outcome": {
+            "type": "string",
+            "enum": ["success", "failure", "pending", "escalated"]
+          },
+          "evidence": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "References to supporting artifacts"
+          },
+          "context": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Additional context for this decision"
+          }
+        }
+      }
+    },
+    "artifact_provenance": {
+      "$id": "#artifact_provenance",
+      "title": "Artifact Provenance",
+      "description": "Lineage and history of an artifact across lanes and phases",
+      "type": "object",
+      "required": [
+        "artifact_id",
+        "artifact_type",
+        "created_by",
+        "created_at",
+        "lineage"
+      ],
+      "properties": {
+        "artifact_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "artifact_type": {
+          "type": "string",
+          "enum": ["lane_manifest", "input_lock", "output_contract", "decision_trace", "healing_report", "rollback_instruction"]
+        },
+        "created_by": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+        },
+        "lineage": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "phase": { "type": "string" },
+              "lane": { "type": "string", "enum": ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"] },
+              "upstream_artifacts": { "type": "array", "items": { "type": "string", "format": "uuid" } },
+              "transformation": { "type": "string" }
+            }
+          }
+        },
+        "integrity_hash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$",
+          "description": "SHA256 hash for integrity verification"
+        }
+      }
+    },
+    "healing_report": {
+      "$id": "#healing_report",
+      "title": "Healing Report",
+      "description": "Results and metrics from self-healing incident resolution",
+      "type": "object",
+      "required": [
+        "incident_id",
+        "incident_type",
+        "tier",
+        "status",
+        "timestamp"
+      ],
+      "properties": {
+        "incident_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "incident_type": {
+          "type": "string",
+          "enum": ["test_failure", "ci_failure", "security_finding", "deployment_failure"]
+        },
+        "tier": {
+          "type": "string",
+          "enum": ["T0", "T1", "T2", "T3"],
+          "description": "Policy tier applied"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["resolved", "escalated", "failed", "rolled_back"]
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+        },
+        "detection_time": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "resolution_time": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "mttr_seconds": {
+          "type": "number",
+          "description": "Mean time to resolution"
+        },
+        "strategies_tried": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "strategy_id": { "type": "string" },
+              "description": { "type": "string" },
+              "outcome": { "type": "string", "enum": ["success", "failure"] }
+            }
+          }
+        },
+        "actions_taken": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "approvals_required": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "approver": { "type": "string" },
+              "approval_time": { "type": "string", "format": "date-time" }
+            }
+          }
+        },
+        "evidence_artifacts": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "rollback_instruction": {
+      "$id": "#rollback_instruction",
+      "title": "Rollback Instruction",
+      "description": "Deterministic recovery procedure for failed lane execution",
+      "type": "object",
+      "required": [
+        "rollback_id",
+        "related_lane",
+        "trigger_condition",
+        "steps"
+      ],
+      "properties": {
+        "rollback_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "related_lane": {
+          "type": "string",
+          "enum": ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"]
+        },
+        "trigger_condition": {
+          "type": "string",
+          "description": "When this rollback should be executed"
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "step_number": { "type": "integer" },
+              "action": { "type": "string" },
+              "command": { "type": "string" },
+              "verification": { "type": "string" },
+              "on_failure": { "type": "string", "enum": ["abort", "continue", "escalate"] }
+            }
+          },
+          "description": "Ordered recovery steps"
+        },
+        "estimated_recovery_time_seconds": {
+          "type": "number"
+        },
+        "data_preservation": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "artifact": { "type": "string" },
+              "action": { "type": "string", "enum": ["preserve", "delete", "archive"] }
+            }
+          }
+        },
+        "success_criteria": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "approval_required": {
+          "type": "boolean",
+          "description": "Whether @mbaetiong approval required before executing"
+        }
+      }
+    }
+  },
+  "artifact_set": {
+    "type": "object",
+    "description": "Complete set of 7 contract artifacts",
+    "properties": {
+      "lane_manifest": { "$ref": "#lane_manifest" },
+      "input_lock": { "$ref": "#input_lock" },
+      "output_contract": { "$ref": "#output_contract" },
+      "decision_trace": { "$ref": "#decision_trace" },
+      "artifact_provenance": { "$ref": "#artifact_provenance" },
+      "healing_report": { "$ref": "#healing_report" },
+      "rollback_instruction": { "$ref": "#rollback_instruction" }
+    }
+  },
+  "validation_rules": {
+    "type": "object",
+    "properties": {
+      "immutability_rule": {
+        "description": "Input-lock and lane-manifest hashes must never change after creation"
+      },
+      "determinism_rule": {
+        "description": "Same input-lock + seed must always produce identical outputs"
+      },
+      "timestamp_rule": {
+        "description": "All timestamps must use ISO 8601 UTC with Z suffix (no +00:00)"
+      },
+      "provenance_chain_rule": {
+        "description": "Every artifact must have complete lineage back to phase start"
+      },
+      "gate_compliance_rule": {
+        "description": "All 8 gates must pass for lane to proceed"
+      }
+    }
+  }
+}
