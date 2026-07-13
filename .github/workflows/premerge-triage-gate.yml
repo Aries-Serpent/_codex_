@@ -20,6 +20,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
         with:
+            persist-credentials: false
           fetch-depth: 0
 
       - name: Enforce no unresolved triage markers

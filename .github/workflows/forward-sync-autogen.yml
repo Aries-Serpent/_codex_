@@ -26,6 +26,7 @@ jobs:
     - name: Checkout main
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         ref: main
         fetch-depth: 1
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
@@ -42,6 +43,7 @@ jobs:
       if: steps.check-target.outputs.skip != 'true'
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         persist-credentials: false
         ref: ${{ steps.resolve-target.outputs.branch }}
         fetch-depth: 1

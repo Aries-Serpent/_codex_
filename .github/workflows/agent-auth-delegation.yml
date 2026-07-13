@@ -33,9 +33,13 @@ jobs:
       pull-requests: write
       contents: read
     steps:
+    - name: Mask secrets
+      run: |
+        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
       - name: Checkout (needed for session_wrapup_autofix.py)
         uses: actions/checkout@v5
         with:
+            persist-credentials: false
           fetch-depth: 1
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -156,6 +160,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
+            persist-credentials: false
           fetch-depth: 50
       - name: Download pending session requirements (if any)
         id: session_reqs
@@ -1038,6 +1043,7 @@ jobs:
 
       - uses: actions/checkout@v5
         with:
+            persist-credentials: false
           fetch-depth: 1
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
 
@@ -1422,6 +1428,7 @@ jobs:
       - name: Checkout (for approve_pending_runs.py)
         uses: actions/checkout@v5
         with:
+            persist-credentials: false
           fetch-depth: 1
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
 
@@ -1464,6 +1471,7 @@ jobs:
       - name: Checkout repository for shared helpers
         uses: actions/checkout@v5
         with:
+            persist-credentials: false
           fetch-depth: 1
           persist-credentials: false
       - name: Release COPILOT_ACTIVE_SESSION and trigger next queued PR
@@ -1571,6 +1579,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
+            persist-credentials: false
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
 
           fetch-depth: 1

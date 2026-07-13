@@ -22,6 +22,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+      with:
+            persist-credentials: false
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -31,7 +33,7 @@ jobs:
 
       - name: Build with maturin
         # Pin the v1 action to an immutable commit for auditability and reproducible CI behavior.
-        uses: PyO3/maturin-action@v1
+        uses: PyO3/maturin-action@423a6347767a8b16e65c2a7a7042e4a921528da8  # v1
         with:
           command: build
           args: --release --manifest-path src/codex_core/Cargo.toml --out dist

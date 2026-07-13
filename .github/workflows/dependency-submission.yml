@@ -25,6 +25,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         fetch-depth: 1
     - name: Set up Python
       uses: actions/setup-python@v6
@@ -34,7 +35,7 @@ jobs:
     - name: Submit via component-detection (attempt 1, with retry)
       id: submit_component
       continue-on-error: true
-      uses: advanced-security/component-detection-dependency-submission-action@v0.1.4
+      uses: advanced-security/component-detection-dependency-submission-action@31f25a8de68ae5ce2ca274bc28546a78683c15ce  # v0.1.4
       with:
         scanDirectory: .
       env:
@@ -101,6 +102,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1
     - name: Post or update rescue comment

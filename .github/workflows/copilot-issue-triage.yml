@@ -26,7 +26,12 @@ jobs:
 
       '
     steps:
+    - name: Mask secrets
+      run: |
+        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
     - uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Analyze issue with GitHub Copilot
       id: triage
       uses: mvkaran/gh-copilot@5694b7d7a242d1c025e40d0965a0c5c5e68f5fba  # v1

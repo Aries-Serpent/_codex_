@@ -29,9 +29,13 @@ jobs:
     outputs:
       autofix_ran: ${{ steps.autofix.outputs.autofix_ran }}
     steps:
+    - name: Mask secrets
+      run: |
+        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
     - name: Checkout PR branch
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         ref: ${{ github.event.workflow_run.head_sha }}
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}

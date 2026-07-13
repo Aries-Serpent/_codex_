@@ -37,8 +37,12 @@ jobs:
       GH_TRICKLE_MIN_REMAINING: '50'
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
     steps:
+    - name: Mask secrets
+      run: |
+        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
     - uses: actions/checkout@v5
       with:
+            persist-credentials: false
         sparse-checkout: 'scripts/ci/
 
           pyproject.toml
@@ -90,6 +94,7 @@ jobs:
     steps:
     - uses: actions/checkout@v5
       with:
+            persist-credentials: false
         sparse-checkout: 'scripts/ci/
 
           pyproject.toml
@@ -178,6 +183,7 @@ jobs:
     steps:
     - uses: actions/checkout@v5
       with:
+            persist-credentials: false
         sparse-checkout: 'scripts/ci/
 
           pyproject.toml
@@ -251,6 +257,7 @@ jobs:
     steps:
     - uses: actions/checkout@v5
       with:
+            persist-credentials: false
         sparse-checkout: 'scripts/ci/
 
           pyproject.toml
@@ -460,6 +467,7 @@ jobs:
     - name: Checkout fast-forward script
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         sparse-checkout: 'scripts/ci/fast_forward_safe_files.py
 
           .codex/fast_forward_allowlist.yaml

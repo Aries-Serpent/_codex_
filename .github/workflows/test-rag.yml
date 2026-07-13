@@ -38,6 +38,8 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Initialize with repository variables
       env:
         CODEX_CACHE_VERSION: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
@@ -313,7 +315,7 @@ jobs:
         \ / | tail -1 | awk '{print \"  Available: \" $4 \", Used: \" $3 \", Size:\
         \ \" $2}'\n \nexit $TEST_EXIT\n"
     - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v4
+      uses: codecov/codecov-action@b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238  # v4
       if: always()
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
@@ -448,6 +450,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         fetch-depth: 1
     - name: Post or update rescue comment

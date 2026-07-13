@@ -39,9 +39,13 @@ jobs:
 
       '
     steps:
+    - name: Mask secrets
+      run: |
+        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
     - name: "\U0001F4E5 Checkout"
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         fetch-depth: 0
         token: ${{ env.CODEX_MASTER_KEY || env.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         ref: ${{ inputs.target_branch || github.base_ref }}
@@ -152,6 +156,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         fetch-depth: 1
     - name: Post or update rescue comment

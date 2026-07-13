@@ -48,6 +48,7 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         fetch-depth: 0
     - name: CacheManager health check
       continue-on-error: true
@@ -99,6 +100,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Setup Node.js
       uses: actions/setup-node@v5
       with:
@@ -133,6 +136,8 @@ jobs:
     steps:
     - name: Checkout Code
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Setup Python
       uses: ./.github/actions/setup-python-cached
       with:
@@ -160,6 +165,8 @@ jobs:
     steps:
     - name: Checkout Code
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Download build artifacts
       uses: actions/download-artifact@v5
       with:

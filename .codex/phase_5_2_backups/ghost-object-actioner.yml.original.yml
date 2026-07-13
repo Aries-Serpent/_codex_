@@ -1,0 +1,210 @@
+name: 👻 Ghost Object Actioner
+on:
+  workflow_dispatch:
+    inputs:
+      target_kind:
+        description: Target object type
+        required: true
+        type: choice
+        default: issues
+        options:
+        - issues
+        - pull_requests
+        - branches
+        - all
+      identifiers:
+        description: Comma-separated IDs (issue/PR numbers or branch names)
+        required: false
+        default: ''
+      mark_as:
+        description: Mark selected issues/PRs as
+        required: true
+        type: choice
+        default: not planned
+        options:
+        - not planned
+        - completed
+        - open
+      comment_body:
+        description: Optional comment for selected issues/PRs
+        required: false
+        default: Resurfacing this stale cached item for cleanup visibility.
+      execute:
+        description: true = apply changes, false = dry-run preview only
+        required: true
+        type: choice
+        default: 'false'
+        options:
+        - 'false'
+        - 'true'
+      discovery_limit:
+        description: How many records to surface per object type
+        required: false
+        default: '30'
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+jobs:
+  action-and-discover:
+    name: Action + Discovery
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+    - name: Execute ghost action + discovery
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        OWNER_REPO: ${{ github.repository }}
+        TARGET_KIND: ${{ github.event.inputs.target_kind }}
+        IDENTIFIERS: ${{ github.event.inputs.identifiers }}
+        MARK_AS: ${{ github.event.inputs.mark_as }}
+        COMMENT_BODY: ${{ github.event.inputs.comment_body }}
+        EXECUTE: ${{ github.event.inputs.execute }}
+        DISCOVERY_LIMIT: ${{ github.event.inputs.discovery_limit }}
+      run: "set -euo pipefail\npython3 - <<'PY'\nimport json\nimport os\nimport re\n\
+        import urllib.error\nimport urllib.parse\nimport urllib.request\n\ntoken =\
+        \ os.environ.get(\"GH_TOKEN\", \"\")\nowner_repo = os.environ[\"OWNER_REPO\"\
+        ]\nowner, repo = owner_repo.split(\"/\", 1)\ntarget_kind = os.environ.get(\"\
+        TARGET_KIND\", \"issues\")\nidentifiers_raw = os.environ.get(\"IDENTIFIERS\"\
+        , \"\")\nmark_as = os.environ.get(\"MARK_AS\", \"not planned\")\ncomment_body\
+        \ = os.environ.get(\"COMMENT_BODY\", \"\").strip()\nexecute = os.environ.get(\"\
+        EXECUTE\", \"false\").lower() == \"true\"\nsummary_path = os.environ[\"GITHUB_STEP_SUMMARY\"\
+        ]\n\ntry:\n    discovery_limit = int(os.environ.get(\"DISCOVERY_LIMIT\", \"\
+        30\"))\nexcept ValueError:\n    discovery_limit = 30\ndiscovery_limit = max(1,\
+        \ min(discovery_limit, 100))\n\nheaders = {\n    \"Accept\": \"application/vnd.github+json\"\
+        ,\n    \"X-GitHub-Api-Version\": \"2022-11-28\",\n    \"User-Agent\": \"ghost-object-actioner/1.0\"\
+        ,\n}\nif token:\n    headers[\"Authorization\"] = \"Bearer \" + token\n\n\
+        def call_github_api(method: str, path: str, payload: dict | None = None):\n\
+        \    data = None\n    if payload is not None:\n        data = json.dumps(payload).encode(\"\
+        utf-8\")\n    req = urllib.request.Request(\n        f\"https://api.github.com{path}\"\
+        ,\n        data=data,\n        method=method,\n        headers=headers,\n\
+        \    )\n    try:\n        with urllib.request.urlopen(req, timeout=30) as\
+        \ resp:\n            body = resp.read().decode(\"utf-8\")\n            return\
+        \ resp.status, json.loads(body) if body else {}\n    except urllib.error.HTTPError\
+        \ as e:\n        body = e.read().decode(\"utf-8\", errors=\"replace\")\n \
+        \       try:\n            parsed = json.loads(body)\n        except json.JSONDecodeError:\n\
+        \            parsed = {\"message\": body}\n        return e.code, parsed\n\
+        \nidentifier_tokens = [token_value.strip() for token_value in re.split(r\"\
+        [,\\s]+\", identifiers_raw) if token_value.strip()]\nnumbers = [t for t in\
+        \ identifier_tokens if t.isdigit()]\nbranch_names = [t for t in identifier_tokens\
+        \ if not t.isdigit()]\n\nif target_kind == \"issues\":\n    apply_issues =\
+        \ True\n    apply_prs = False\n    discover_issue = True\n    discover_pr\
+        \ = False\n    discover_branch = False\nelif target_kind == \"pull_requests\"\
+        :\n    apply_issues = False\n    apply_prs = True\n    discover_issue = False\n\
+        \    discover_pr = True\n    discover_branch = False\nelif target_kind ==\
+        \ \"branches\":\n    apply_issues = False\n    apply_prs = False\n    discover_issue\
+        \ = False\n    discover_pr = False\n    discover_branch = True\nelse:\n  \
+        \  apply_issues = True\n    apply_prs = True\n    discover_issue = True\n\
+        \    discover_pr = True\n    discover_branch = True\n\nissue_results = []\n\
+        pr_results = []\nbranch_results = []\n\nfor number in numbers:\n    issue_lookup_status\
+        \ = None\n    issue_lookup = None\n    handle_issue = apply_issues\n    handle_pr\
+        \ = apply_prs\n    if target_kind == \"all\":\n        issue_lookup_status,\
+        \ issue_lookup = call_github_api(\"GET\", f\"/repos/{owner}/{repo}/issues/{number}\"\
+        )\n        if issue_lookup_status >= 300:\n            issue_results.append({\"\
+        id\": number, \"action\": \"lookup\", \"ok\": False, \"detail\": issue_lookup.get(\"\
+        message\", \"API lookup failed\")})\n            continue\n        handle_pr\
+        \ = \"pull_request\" in issue_lookup\n        handle_issue = not handle_pr\n\
+        \n    if handle_issue:\n        if issue_lookup_status is None:\n        \
+        \    status, issue = call_github_api(\"GET\", f\"/repos/{owner}/{repo}/issues/{number}\"\
+        )\n        else:\n            status, issue = issue_lookup_status, issue_lookup\n\
+        \        if status >= 300:\n            issue_results.append({\"id\": number,\
+        \ \"action\": \"lookup\", \"ok\": False, \"detail\": issue.get(\"message\"\
+        , \"API lookup failed\")})\n        elif \"pull_request\" in issue:\n    \
+        \        issue_results.append({\"id\": number, \"action\": \"skip\", \"ok\"\
+        : False, \"detail\": f\"This is a pull request (#{number}). Use target_kind=pull_requests.\"\
+        })\n        else:\n            if execute:\n                if comment_body:\n\
+        \                    c_status, c_resp = call_github_api(\"POST\", f\"/repos/{owner}/{repo}/issues/{number}/comments\"\
+        , {\"body\": comment_body})\n                    issue_results.append({\"\
+        id\": number, \"action\": \"comment\", \"ok\": c_status < 300, \"detail\"\
+        : c_resp.get(\"message\", \"commented\") if c_status >= 300 else \"commented\"\
+        })\n\n                if mark_as in {\"not planned\", \"completed\"}:\n  \
+        \                  reason = \"not_planned\" if mark_as == \"not planned\"\
+        \ else \"completed\"\n                    p_status, p_resp = call_github_api(\"\
+        PATCH\", f\"/repos/{owner}/{repo}/issues/{number}\", {\"state\": \"closed\"\
+        , \"state_reason\": reason})\n                    issue_results.append({\"\
+        id\": number, \"action\": f\"close:{reason}\", \"ok\": p_status < 300, \"\
+        detail\": p_resp.get(\"message\", \"closed\") if p_status >= 300 else \"closed\"\
+        })\n                else:\n                    p_status, p_resp = call_github_api(\"\
+        PATCH\", f\"/repos/{owner}/{repo}/issues/{number}\", {\"state\": \"open\"\
+        })\n                    issue_results.append({\"id\": number, \"action\":\
+        \ \"reopen\", \"ok\": p_status < 300, \"detail\": p_resp.get(\"message\",\
+        \ \"open\") if p_status >= 300 else \"open\"})\n            else:\n      \
+        \          issue_results.append({\"id\": number, \"action\": \"dry-run\",\
+        \ \"ok\": True, \"detail\": f\"would comment and set {mark_as}\"})\n\n   \
+        \ if handle_pr:\n        status, pr = call_github_api(\"GET\", f\"/repos/{owner}/{repo}/pulls/{number}\"\
+        )\n        if status >= 300:\n            pr_results.append({\"id\": number,\
+        \ \"action\": \"lookup\", \"ok\": False, \"detail\": pr.get(\"message\", \"\
+        API lookup failed\")})\n        else:\n            if execute:\n         \
+        \       if comment_body:\n                    c_status, c_resp = call_github_api(\"\
+        POST\", f\"/repos/{owner}/{repo}/issues/{number}/comments\", {\"body\": comment_body})\n\
+        \                    pr_results.append({\"id\": number, \"action\": \"comment\"\
+        , \"ok\": c_status < 300, \"detail\": c_resp.get(\"message\", \"commented\"\
+        ) if c_status >= 300 else \"commented\"})\n\n                if mark_as in\
+        \ {\"not planned\", \"completed\"}:\n                    p_status, p_resp\
+        \ = call_github_api(\"PATCH\", f\"/repos/{owner}/{repo}/pulls/{number}\",\
+        \ {\"state\": \"closed\"})\n                    pr_results.append({\"id\"\
+        : number, \"action\": \"close\", \"ok\": p_status < 300, \"detail\": p_resp.get(\"\
+        message\", \"closed\") if p_status >= 300 else \"closed\"})\n            \
+        \    else:\n                    p_status, p_resp = call_github_api(\"PATCH\"\
+        , f\"/repos/{owner}/{repo}/pulls/{number}\", {\"state\": \"open\"})\n    \
+        \                pr_results.append({\"id\": number, \"action\": \"reopen\"\
+        , \"ok\": p_status < 300, \"detail\": p_resp.get(\"message\", \"open\") if\
+        \ p_status >= 300 else \"open\"})\n            else:\n                pr_results.append({\"\
+        id\": number, \"action\": \"dry-run\", \"ok\": True, \"detail\": f\"would\
+        \ comment and set {mark_as}\"})\n\nif discover_branch:\n    for branch in\
+        \ branch_names:\n        encoded_branch = urllib.parse.quote(branch, safe=\"\
+        \")\n        status, resp = call_github_api(\"GET\", f\"/repos/{owner}/{repo}/branches/{encoded_branch}\"\
+        )\n        branch_results.append({\"name\": branch, \"action\": \"lookup\"\
+        , \"ok\": status < 300, \"detail\": resp.get(\"message\", \"found\") if status\
+        \ >= 300 else \"found\", \"protected\": bool(resp.get(\"protected\")) if status\
+        \ < 300 else None})\n\ndiscovery = {}\nif discover_issue:\n    status, data\
+        \ = call_github_api(\"GET\", f\"/repos/{owner}/{repo}/issues?state=all&per_page={discovery_limit}\"\
+        )\n    if status < 300:\n        discovery[\"issues\"] = [\n            {\n\
+        \                \"number\": it.get(\"number\"),\n                \"state\"\
+        : it.get(\"state\"),\n                \"title\": it.get(\"title\"),\n    \
+        \            \"updated_at\": it.get(\"updated_at\"),\n            }\n    \
+        \        for it in data\n            if \"pull_request\" not in it\n     \
+        \   ]\n    else:\n        discovery[\"issues_error\"] = data.get(\"message\"\
+        , data)\n\nif discover_pr:\n    status, data = call_github_api(\"GET\", f\"\
+        /repos/{owner}/{repo}/pulls?state=all&per_page={discovery_limit}\")\n    if\
+        \ status < 300:\n        discovery[\"pull_requests\"] = [\n            {\n\
+        \                \"number\": it.get(\"number\"),\n                \"state\"\
+        : it.get(\"state\"),\n                \"title\": it.get(\"title\"),\n    \
+        \            \"updated_at\": it.get(\"updated_at\"),\n            }\n    \
+        \        for it in data\n        ]\n    else:\n        discovery[\"pull_requests_error\"\
+        ] = data.get(\"message\", data)\n\nif discover_branch:\n    status, data =\
+        \ call_github_api(\"GET\", f\"/repos/{owner}/{repo}/branches?per_page={discovery_limit}\"\
+        )\n    if status < 300:\n        discovery[\"branches\"] = [\n           \
+        \ {\n                \"name\": it.get(\"name\"),\n                \"protected\"\
+        : it.get(\"protected\"),\n            }\n            for it in data\n    \
+        \    ]\n    else:\n        discovery[\"branches_error\"] = data.get(\"message\"\
+        , data)\n\nwith open(summary_path, \"a\", encoding=\"utf-8\") as f:\n    f.write(\"\
+        ## \U0001F47B Ghost Object Actioner\\n\\n\")\n    f.write(f\"- Repository:\
+        \ `{owner_repo}`\\n\")\n    f.write(f\"- Target kind: `{target_kind}`\\n\"\
+        )\n    f.write(f\"- Mark as: `{mark_as}`\\n\")\n    f.write(f\"- Execute mode:\
+        \ `{execute}`\\n\")\n    f.write(f\"- Identifiers: `{identifiers_raw or '(none)'}`\\\
+        n\\n\")\n\n    if numbers:\n        f.write(\"### Numbered Targets\\n\")\n\
+        \        f.write(\"| id | action | ok | detail |\\n\")\n        f.write(\"\
+        |---:|---|:---:|---|\\n\")\n        for item in issue_results + pr_results:\n\
+        \            f.write(f\"| {item.get('id')} | {item.get('action')} | {'✅' if\
+        \ item.get('ok') else '❌'} | {str(item.get('detail', '')).replace('|', '\\\
+        \\|')} |\\n\")\n        f.write(\"\\n\")\n\n    if branch_results:\n     \
+        \   f.write(\"### Named Branch Targets\\n\")\n        f.write(\"| name | action\
+        \ | ok | protected | detail |\\n\")\n        f.write(\"|---|---|:---:|:---:|---|\\\
+        n\")\n        for item in branch_results:\n            protected = \"-\" if\
+        \ item.get(\"protected\") is None else (\"true\" if item.get(\"protected\"\
+        ) else \"false\")\n            f.write(f\"| {item.get('name')} | {item.get('action')}\
+        \ | {'✅' if item.get('ok') else '❌'} | {protected} | {str(item.get('detail',\
+        \ '')).replace('|', '\\\\|')} |\\n\")\n        f.write(\"\\n\")\n\n    f.write(\"\
+        ### Discovery Snapshot\\n\")\n    f.write(\"```json\\n\")\n    f.write(json.dumps(discovery,\
+        \ indent=2))\n    f.write(\"\\n```\\n\")\n\nhas_failure = any(not r.get(\"\
+        ok\") for r in issue_results + pr_results + branch_results)\nif execute and\
+        \ has_failure:\n    raise SystemExit(\"One or more requested actions failed.\
+        \ Check the workflow summary for detailed error information.\")\nPY\n"
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}

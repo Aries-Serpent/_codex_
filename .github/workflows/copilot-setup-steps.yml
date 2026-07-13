@@ -84,6 +84,7 @@ jobs:
     - name: "\U0001F4E6 Checkout Repository (baseline: no LFS content)"
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         fetch-depth: 0
         lfs: false
         persist-credentials: true
@@ -797,6 +798,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
         fetch-depth: 1
     - name: Post or update rescue comment

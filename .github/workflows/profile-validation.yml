@@ -32,6 +32,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
+      with:
+            persist-credentials: false
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -72,6 +74,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
+      with:
+            persist-credentials: false
 
       - name: Validate SHA256 hashes in uv.lock
         run: |
@@ -100,6 +104,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
+      with:
+            persist-credentials: false
 
       - name: Set up Python
         uses: actions/setup-python@v6

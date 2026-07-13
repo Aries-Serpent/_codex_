@@ -38,6 +38,23 @@ from pathlib import Path
 
 import yaml
 
+# Import security utilities for sanitizing sensitive data
+try:
+    from src.aries_serpent_core.security_utils import sanitize_log_message
+except ImportError:
+    # Fallback: simple sanitization if security_utils not available
+    def sanitize_log_message(msg: str) -> str:
+        """Fallback message sanitization."""
+        import re
+        patterns = [
+            (r"ghp_[a-zA-Z0-9]{36,}", "[REDACTED_GITHUB_TOKEN]"),
+            (r"github_pat_[a-zA-Z0-9_]{82}", "[REDACTED_GITHUB_PAT]"),
+        ]
+        result = msg
+        for pattern, replacement in patterns:
+            result = re.sub(pattern, replacement, result)
+        return result
+
 
 def decode_secret_name(encoded: str) -> str:
     """Decode a base64-encoded secret name."""
@@ -81,7 +98,9 @@ def list_secret_tokens(inventory_path: Path) -> None:
         return
 
     for i, (token, info) in enumerate(sorted(all_secrets.items()), 1):
-        print(f"{i}. Token: {token[:16]}... (SHA256)")
+        # Security: Use generic placeholder instead of exposing any token characters
+        # to prevent clear-text token exposure in logs/output
+        print(f"{i}. [Token fingerprint] (SHA256)")
         print(f"   Hint: {info['hint']}")
         print(f"   Used in {len(info['workflows'])} workflow(s)")
         print()
@@ -126,12 +145,11 @@ def generate_secret_report(inventory_path: Path, authorized: bool = False) -> No
             hint = secret_info.get("hint", "N/A")
             filename = workflow.get("filename", "unknown")
 
-            if encoded and token:
+            if encoded:
                 decoded_name = decode_secret_name(encoded)
 
                 if decoded_name not in all_secrets:
                     all_secrets[decoded_name] = {
-                        "token": token,
                         "hint": hint,
                         "workflows": []
                     }
@@ -146,7 +164,9 @@ def generate_secret_report(inventory_path: Path, authorized: bool = False) -> No
 
     for i, (secret_name, info) in enumerate(sorted(all_secrets.items()), 1):
         print(f"{i}. Secret: {secret_name}")
-        print(f"   Token: {info['token'][:16]}...")
+        # Security: Use generic placeholder instead of exposing any token characters
+        # to prevent clear-text token exposure in logs/output
+        print(f"   [Token fingerprint]")
         print(f"   Hint: {info['hint']}")
         print(f"   Used in {len(info['workflows'])} workflow(s):")
         for wf in sorted(info['workflows']):
@@ -214,9 +234,13 @@ Examples:
     # Handle single decode
     if args.encoded:
         decoded = decode_secret_name(args.encoded)
-        # Security: show only a masked fingerprint — CodeQL py/clear-text-logging-sensitive-data  # codeql[py/clear-text-logging-sensitive-data]
-        _decoded_fp = (str(decoded)[:8] + "…") if decoded else "<none>"
-        print(f"Decoded: {_decoded_fp}")  # codeql[py/clear-text-logging-sensitive-data]
+        # Security: Use proper masking instead of showing any part of decoded secret
+        # This prevents clear-text exposure of secret names
+        if decoded and not decoded.startswith("["):
+            # Secret was successfully decoded - mask it completely
+            print(f"Decoded: [Secret content redacted]")
+        else:
+            print(f"Decoded: [Decode error - check audit log]")
         return
 
     # Handle token listing (safe, no decoding)

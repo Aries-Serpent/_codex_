@@ -26,6 +26,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         fetch-depth: 1
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
     - name: "\U0001F500 Resolve push target (chain: sub-PR \u2192 0D_base_ \u2192\

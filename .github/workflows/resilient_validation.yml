@@ -74,6 +74,8 @@ jobs:
           }}"
     steps:
     - uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Fetch base ref for PR-scoped diff
       if: github.base_ref != 'main' || github.head_ref != '0D_base_'
       env:
@@ -132,7 +134,7 @@ jobs:
         \ --maxfail=5 --tb=short\n    ;;\nesac\n"
     - name: Post coverage to PR
       if: matrix.test-group == 'quick' && github.event_name == 'pull_request'
-      uses: MishaKav/pytest-coverage-comment@v1
+      uses: MishaKav/pytest-coverage-comment@fd9adbdca9fdfbe2b9bfa44a7340e6a83346ce6c  # v1
       with:
         pytest-coverage-path: coverage.xml
         title: "\U0001F4CA Coverage Report (quick tests)"
@@ -203,6 +205,8 @@ jobs:
         - 4
     steps:
     - uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Set up Python with shared cache
       uses: ./.github/actions/setup-python-cached
       with:

@@ -26,6 +26,8 @@ jobs:
     timeout-minutes: 60
     steps:
     - uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: CacheManager health check
       continue-on-error: true
       run: 'python scripts/ci/generate_cache_keys.py --health --workflow pypi-publish
@@ -73,7 +75,7 @@ jobs:
         name: python-package-distributions
         path: dist/
     - name: Publish to TestPyPI
-      uses: pypa/gh-action-pypi-publish@v1
+      uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b  # v1
       with:
         repository-url: https://test.pypi.org/legacy/
         password: ${{ secrets.TEST_PYPI_API_TOKEN }}
@@ -99,7 +101,7 @@ jobs:
         name: python-package-distributions
         path: dist/
     - name: Publish to PyPI
-      uses: pypa/gh-action-pypi-publish@v1
+      uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b  # v1
       with:
         skip-existing: false
     env:

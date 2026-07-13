@@ -1,0 +1,106 @@
+name: Build Agent Environment Cache
+true:
+  push:
+    branches:
+    - main
+    paths:
+    - requirements/agent.txt
+    - pyproject.toml
+    - .github/actions/setup-agent-env/action.yml
+    - scripts/ci/verify_agent_env.py
+  schedule:
+  - cron: 0 2 * * 0
+  workflow_dispatch:
+    inputs:
+      cache-version:
+        description: 'Cache-bust version (default: current CODEX_CACHE_VERSION)'
+        required: false
+        default: ''
+      force-rebuild:
+        description: Delete existing cache and force full rebuild
+        required: false
+        type: boolean
+        default: false
+env:
+  PYTHON_VERSION: '3.12'
+  CACHE_VERSION: ${{ inputs.cache-version || vars.CODEX_CACHE_VERSION || 'v2' }}
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+permissions:
+  contents: read
+jobs:
+  build-agent-env:
+    name: 🔨 Build + cache agent venv
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      actions: write
+    steps:
+    - name: 🔐 Configure secret masking
+      run: 'echo ''::add-mask::'' ${{ secrets.CODEX_MASTER_KEY }}
+
+        echo ''::add-mask::'' ${{ secrets.CODEX_BACKUP_KEY }}'
+    - name: Checkout
+      uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+    - name: Delete stale agent venv cache (force-rebuild)
+      if: inputs.force-rebuild == true
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: "CACHE_KEY=\"Linux-agent-venv-${CACHE_VERSION}-py${PYTHON_VERSION}-\"\n\
+        echo \"Deleting caches matching: $CACHE_KEY\"\ngh cache list --key \"$CACHE_KEY\"\
+        \ --json id --jq '.[].id' | \\\n  xargs -I{} gh cache delete {} || true\n"
+    - name: Setup agent environment (L6 cache build)
+      id: setup-agent
+      uses: ./.github/actions/setup-agent-env
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        cache-version: ${{ env.CACHE_VERSION }}
+        enable-brain-cache: 'false'
+        install-editable: 'true'
+        verify: 'true'
+    - name: Collect env health report (JSON)
+      id: health
+      run: "python scripts/ci/verify_agent_env.py \\\n  --venv .venv_agent \\\n  --requirements\
+        \ requirements/agent.txt \\\n  --json > /tmp/agent-env-health.json 2>&1 ||\
+        \ true\ncat /tmp/agent-env-health.json\n"
+    - name: Upload health report artifact
+      uses: actions/upload-artifact@v5
+      with:
+        name: agent-env-health-${{ github.run_id }}
+        path: /tmp/agent-env-health.json
+        retention-days: 30
+    - name: Write job summary
+      run: "python - << 'PYEOF'\nimport json, os\nfrom pathlib import Path\n\ntry:\n\
+        \    report = json.loads(Path(\"/tmp/agent-env-health.json\").read_text())\n\
+        except Exception:\n    report = {}\n\nsummary  = report.get(\"summary\", {})\n\
+        healthy  = summary.get(\"healthy\", False)\nmode     = os.environ.get(\"CACHE_MODE\"\
+        , \"built\")\npy_info  = report.get(\"python\", {}).get(\"message\", \"unknown\"\
+        )\nmsg      = summary.get(\"message\", \"unknown\")\n\nlines = [\n    \"##\
+        \ \U0001F680 Agent Environment Cache Build\",\n    \"\",\n    f\"| Key | Value\
+        \ |\",\n    f\"|-----|-------|\",\n    f\"| **Status** | {'✅ Healthy' if healthy\
+        \ else '⚠️ Degraded'} |\",\n    f\"| **Cache mode** | {mode} |\",\n    f\"\
+        | **Python** | {py_info} |\",\n    f\"| **Result** | {msg} |\",\n    f\"|\
+        \ **Cache key** | `Linux-agent-venv-{os.environ.get('CACHE_VERSION', 'v2')}-py{os.environ.get('PYTHON_VERSION',\
+        \ '3.12')}-<hash>` |\",\n    \"\",\n    \"### What this cache provides\",\n\
+        \    \"- ⚡ ~4 s agent env activation (vs ~75 s cold build)\",\n    \"- \U0001F527\
+        \ ruff, mypy, pytest, black, isort pre-installed\",\n    \"- \U0001F4C4 mkdocs\
+        \ + Material theme ready\",\n    \"- \U0001F510 GitHub App auth (pyjwt) available\"\
+        ,\n    \"- \U0001F9E0 Codex cognitive modules importable\",\n]\nwith open(os.environ[\"\
+        GITHUB_STEP_SUMMARY\"], \"a\") as f:\n    f.write(\"\\n\".join(lines) + \"\
+        \\n\")\nPYEOF\n"
+      env:
+        CACHE_MODE: ${{ steps.setup-agent.outputs.mode }}
+    - name: Fail if critical health check failed
+      run: "python - << 'PYEOF'\nimport json, sys\nfrom pathlib import Path\ntry:\n\
+        \    r = json.loads(Path(\"/tmp/agent-env-health.json\").read_text())\n  \
+        \  if r.get(\"summary\", {}).get(\"critical\"):\n        print(\"❌ Critical\
+        \ agent env failure — Python binary broken\")\n        sys.exit(1)\nexcept\
+        \ Exception as e:\n    print(f\"Warning: could not read health report: {e}\"\
+        )\nPYEOF\n"
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}

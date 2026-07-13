@@ -25,29 +25,36 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
 
 # Import security utilities
 try:
-    from src.codex.security_utils import (
+    from src.aries_serpent_core.security_utils import (
         redact_dict_with_secret_keys,
         sanitize_log_message,
     )
 except ImportError:
-    # Fallback if security_utils not available.
-    # NOTE: This fallback mirrors the behavior of src.codex.security_utils functions
-    # and MUST be kept in sync with those implementations if they change.
-    def redact_dict_with_secret_keys(data):
-        return {f"secret_{i+1}": v for i, (k, v) in enumerate(data.items())} if data else {}
+    try:
+        # Fallback to alternative import path
+        from src.codex.security_utils import (
+            redact_dict_with_secret_keys,
+            sanitize_log_message,
+        )
+    except ImportError:
+        # Fallback if security_utils not available.
+        # NOTE: This fallback mirrors the behavior of src.aries_serpent_core.security_utils functions
+        # and MUST be kept in sync with those implementations if they change.
+        def redact_dict_with_secret_keys(data):
+            return {f"secret_{i+1}": v for i, (k, v) in enumerate(data.items())} if data else {}
 
-    def sanitize_log_message(message: str) -> str:
-        """Fallback sanitization: redact common sensitive patterns."""
-        import re
-        patterns = [
-            (r'ghp_[A-Za-z0-9]{36,}', '[REDACTED_GITHUB_TOKEN]'),
-            (r'github_pat_[A-Za-z0-9_]{82}', '[REDACTED_GITHUB_PAT]'),
-            (r'(?:api[_-]?key|token|secret|password|passwd)["\']?\s*[:=]\s*["\']?([^"\'\s]+)', '[REDACTED]'),
-        ]
-        result = message
-        for pattern, replacement in patterns:
-            result = re.sub(pattern, replacement, result, flags=re.IGNORECASE)
-        return result
+        def sanitize_log_message(message: str) -> str:
+            """Fallback sanitization: redact common sensitive patterns."""
+            import re
+            patterns = [
+                (r'ghp_[A-Za-z0-9]{36,}', '[REDACTED_GITHUB_TOKEN]'),
+                (r'github_pat_[A-Za-z0-9_]{82}', '[REDACTED_GITHUB_PAT]'),
+                (r'(?:api[_-]?key|token|secret|password|passwd)["\']?\s*[:=]\s*["\']?([^"\'\s]+)', '[REDACTED]'),
+            ]
+            result = message
+            for pattern, replacement in patterns:
+                result = re.sub(pattern, replacement, result, flags=re.IGNORECASE)
+            return result
 
 # Import existing automation scripts
 try:

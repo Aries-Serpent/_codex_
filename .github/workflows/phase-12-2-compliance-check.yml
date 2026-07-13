@@ -23,9 +23,13 @@ jobs:
     outputs:
       is_merge: ${{ steps.check.outputs.is_merge }}
     steps:
+    - name: Mask secrets
+      run: |
+        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         fetch-depth: 1
     - name: Check if merge commit
       id: check
@@ -49,6 +53,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         fetch-depth: 50
     - name: Set up Python
       uses: actions/setup-python@v6

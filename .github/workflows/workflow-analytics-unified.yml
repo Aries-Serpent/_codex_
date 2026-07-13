@@ -97,6 +97,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5  # v6.0.3
+      with:
+            persist-credentials: false
 
       - name: CacheManager health check
         continue-on-error: true
@@ -150,6 +152,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5  # v6.0.3
         with:
+            persist-credentials: false
           fetch-depth: 0
 
       - name: Set up Python
@@ -218,6 +221,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5  # v6.0.3
         with:
+            persist-credentials: false
           fetch-depth: 0
 
       - name: Set up Python

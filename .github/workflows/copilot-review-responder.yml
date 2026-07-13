@@ -26,6 +26,9 @@ jobs:
       \ github.event.comment.user.login) &&\n contains(github.event.comment.body,\
       \ 'generated') &&\n contains(github.event.comment.body, 'comments'))"
     steps:
+    - name: Mask secrets
+      run: |
+        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
     - name: 👍 React to bot review and acknowledge bot comments
       uses: actions/github-script@v8
       with:
@@ -139,6 +142,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1
     - name: Post or update rescue comment

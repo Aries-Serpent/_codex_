@@ -1,0 +1,47 @@
+name: Import Linter
+on:
+  pull_request:
+    branches:
+    - main
+    - develop
+    - 0D_base_
+    paths:
+    - src/**/*.py
+    - .importlinter
+  push:
+    branches:
+    - main
+    paths:
+    - src/**/*.py
+    - .importlinter
+  workflow_dispatch: null
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+permissions:
+  contents: read
+  pull-requests: write
+jobs:
+  lint-imports:
+    name: 🔗 Import Layer Boundary Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v5
+      with:
+            persist-credentials: false
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: 3.12.13
+        cache: pip
+    - name: Install import-linter
+      run: 'pip install import-linter --quiet
+
+        '
+    - name: Run import-linter
+      run: lint-imports
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}

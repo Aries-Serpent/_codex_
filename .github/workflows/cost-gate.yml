@@ -47,6 +47,8 @@ jobs:
   estimate:
     name: "\U0001F4B0 Estimate cost (${{ inputs.workflow_name }})"
     runs-on: ubuntu-latest
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
     timeout-minutes: 5
     outputs:
       tier: ${{ steps.estimate.outputs.tier }}
@@ -54,7 +56,12 @@ jobs:
       reason: ${{ steps.estimate.outputs.reason }}
       proposal_md: ${{ steps.proposal.outputs.proposal_md }}
     steps:
+    - name: Mask secrets
+      run: |
+        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
     - uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
@@ -269,6 +276,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         token: ${{ secrets.GH_TOKEN || github.token }}
         fetch-depth: 1
     - name: Post or update rescue comment

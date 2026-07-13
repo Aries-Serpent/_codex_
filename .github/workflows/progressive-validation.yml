@@ -32,6 +32,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         fetch-depth: 0
     - name: Analyze PR Size
       id: analyze
@@ -107,6 +108,8 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Set up Python
       uses: ./.github/actions/setup-python-cached
       with:
@@ -178,6 +181,8 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Set up Python
       uses: ./.github/actions/setup-python-cached
       with:
@@ -220,6 +225,8 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Set up Python
       uses: ./.github/actions/setup-python-cached
       with:
@@ -260,6 +267,8 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Set up Python
       uses: ./.github/actions/setup-python-cached
       with:
@@ -303,6 +312,8 @@ jobs:
     steps:
     - name: Checkout (needed for post-pr-summary action)
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Generate summary
       id: gen-summary
       uses: actions/github-script@v8
@@ -356,6 +367,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1
     - name: Post or update rescue comment

@@ -10,6 +10,7 @@ Safeguards:
 - Input validation on queries
 - Bounds checking on result count
 - Defensive error handling
+- Security: Issue #5299 - Input sanitization for ChromaDB code injection vulnerability
 """
 
 from __future__ import annotations
@@ -20,6 +21,13 @@ from dataclasses import dataclass, field
 from typing import Any
 
 from .embedding import EmbeddingPipeline
+from rag.security import (
+    sanitize_query,
+    validate_filters,
+    validate_metadata,
+    validate_document_id,
+    validate_top_k,
+)
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -63,6 +71,12 @@ class InMemoryVectorStore(VectorStoreBackend):
         self._index: list[dict[str, Any]] = []
 
     def add(self, doc_id: str, content: str, embedding: list[float], metadata: dict) -> None:
+        # Security: Issue #5299 - Validate document ID to prevent code injection
+        doc_id = validate_document_id(doc_id)
+        
+        # Validate metadata to prevent code injection
+        metadata = validate_metadata(metadata)
+        
         self._index.append(
             {
                 "id": doc_id,
@@ -78,6 +92,10 @@ class InMemoryVectorStore(VectorStoreBackend):
         top_k: int,
         filters: dict | None,
     ) -> list[dict]:
+        # Security: Issue #5299 - Validate filters to prevent code injection
+        filters = validate_filters(filters)
+        top_k = validate_top_k(top_k)
+        
         scored: list[tuple[dict, float]] = []
         for doc in self._index:
             if filters:
@@ -309,22 +327,27 @@ class RetrievalPipeline:
 
         start_time = time.time()
 
-        # Input validation (safeguard)
-        if not query or not isinstance(query, str):
+        # Security: Issue #5299 - Sanitize and validate query input to prevent code injection
+        try:
+            query = sanitize_query(query)
+        except ValueError as e:
+            logger.warning(f"Query validation failed: {e}")
             return RetrievalResponse(
                 query="",
                 results=[],
                 total_found=0,
             )
 
-        # Truncate query (safeguard)
-        if len(query) > MAX_QUERY_LENGTH:
-            logger.warning("Query truncated: %d > %d", len(query), MAX_QUERY_LENGTH)
-            query = query[:MAX_QUERY_LENGTH]
+        # Security: Validate filters to prevent code injection
+        try:
+            filters = validate_filters(filters)
+        except ValueError as e:
+            logger.warning(f"Filter validation failed: {e}")
+            filters = None
 
         # Bounds check on top_k (safeguard)
         top_k = top_k or self.config.top_k
-        top_k = min(top_k, MAX_RESULTS)
+        top_k = validate_top_k(top_k)
 
         # Generate query embedding
         query_embedding = self.embedding_pipeline.embed_text(query)

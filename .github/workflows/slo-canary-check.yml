@@ -18,6 +18,8 @@ jobs:
     timeout-minutes: 15
     steps:
     - uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - uses: actions/setup-python@v6
       with:
         python-version: 3.12.13
@@ -42,6 +44,8 @@ jobs:
       7 1 * *' }}
     steps:
     - uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - uses: actions/setup-python@v6
       with:
         python-version: 3.12.13
@@ -81,6 +85,8 @@ jobs:
       7 1 * *' }}
     steps:
     - uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - uses: actions/setup-python@v6
       with:
         python-version: 3.12.13

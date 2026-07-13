@@ -32,6 +32,9 @@ jobs:
       write_status: ${{ steps.probe.outputs.write_status }}
       comment_url: ${{ steps.probe.outputs.comment_url }}
     steps:
+    - name: Mask secrets
+      run: |
+        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
     - name: "\xA73a \u2014 Read + write probe"
       id: probe
       env:

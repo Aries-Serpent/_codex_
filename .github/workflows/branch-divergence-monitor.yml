@@ -39,9 +39,13 @@ jobs:
       severity: ${{ steps.measure.outputs.severity }}
       summary_json: ${{ steps.measure.outputs.summary_json }}
     steps:
+    - name: Mask secrets
+      run: |
+        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
     - name: Check out repository (shallow)
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         fetch-depth: 0
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
     - name: Measure divergence
@@ -212,6 +216,7 @@ jobs:
     - name: Checkout 0D_base_
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         ref: 0D_base_
         fetch-depth: 5
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
@@ -316,6 +321,7 @@ jobs:
     - name: "Checkout (sparse \u2014 scripts only)"
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         sparse-checkout: .github
         sparse-checkout-cone-mode: false
     - name: Ensure required labels exist
@@ -451,6 +457,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         fetch-depth: 1
     - name: Post or update rescue comment

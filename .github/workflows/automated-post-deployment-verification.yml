@@ -37,8 +37,13 @@ jobs:
       service_url: ${{ steps.setup.outputs.service_url }}
       checklist_file: ${{ steps.setup.outputs.checklist_file }}
     steps:
+    - name: Mask secrets
+      run: |
+        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
     - name: Validate Inputs
       id: setup
+      env:
+        GITHUB_EVENT_INPUTS_ENVIRONMENT: ${{ github.event.inputs.environment }}
       run: "ENVIRONMENT=\"${{ github.event.inputs.environment }}\"\nSERVICE_URL=\"\
         ${{ github.event.inputs.service_url }}\"\n\n# Validate environment\nif [[\
         \ ! \"$ENVIRONMENT\" =~ ^(development|staging|production)$ ]]; then\n  echo\
@@ -61,8 +66,12 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Check Service Accessibility
       id: accessibility
+      env:
+        NEEDS_SETUP_OUTPUTS_SERVICE_URL: ${{ needs.setup.outputs.service_url }}
       run: "SERVICE_URL=\"${{ needs.setup.outputs.service_url }}\"\nMAX_RETRIES=5\n\
         RETRY_DELAY=10\n\necho \"Checking service accessibility at $SERVICE_URL...\"\
         \n\nfor i in $(seq 1 $MAX_RETRIES); do\n  if curl -s -o /dev/null -w \"%{http_code}\"\
@@ -83,6 +92,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
@@ -90,6 +101,8 @@ jobs:
         cache: 'pip'
     - name: Run Health Checks
       id: health
+      env:
+        ENV_VERIFICATION_DIR: ${{ env.VERIFICATION_DIR }}
       run: "mkdir -p ${{ env.VERIFICATION_DIR }}\n\nSERVICE_URL=\"${{ needs.setup.outputs.service_url\
         \ }}\"\nOUTPUT_DIR=\"${{ env.VERIFICATION_DIR }}\"\n\n# Run health check runner\
         \ (mock implementation for now)\npython scripts/deployment/health_check_runner.py\
@@ -128,6 +141,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
@@ -136,6 +151,8 @@ jobs:
     - name: Run Smoke Tests
       id: smoke
       continue-on-error: true
+      env:
+        ENV_VERIFICATION_DIR: ${{ env.VERIFICATION_DIR }}
       run: "mkdir -p ${{ env.VERIFICATION_DIR }}\n\n# Install test dependencies if\
         \ available\npip install pytest pytest-json-report 2>/dev/null || true\n\n\
         # Run smoke tests (will use test framework if available)\npython -m pytest\
@@ -164,6 +181,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
@@ -172,6 +191,8 @@ jobs:
     - name: Run Critical Path Tests
       id: critical
       continue-on-error: true
+      env:
+        ENV_VERIFICATION_DIR: ${{ env.VERIFICATION_DIR }}
       run: "mkdir -p ${{ env.VERIFICATION_DIR }}\n\n# Run critical path tests\npython\
         \ -m pytest tests/e2e/critical_path_tests.py \\\n  -v --tb=short 2>/dev/null\
         \ || echo \"Pytest not available\"\n\n# Generate report\necho \"{\\\"status\\\
@@ -199,12 +220,16 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Download Artifacts
       uses: actions/download-artifact@v5
       with:
         path: ${{ env.VERIFICATION_DIR }}/artifacts
     - name: Generate Summary Report
       id: report
+      env:
+        ENV_VERIFICATION_DIR: ${{ env.VERIFICATION_DIR }}
       run: "mkdir -p ${{ env.VERIFICATION_DIR }}\n\nREPORT_FILE=\"${{ env.VERIFICATION_DIR\
         \ }}/verification_report.md\"\n\ncat > \"$REPORT_FILE\" <<'EOF'\n# Post-Deployment\
         \ Verification Report\n\n**Generated:** $(date -u +'%Y-%m-%dT%H:%M:%SZ')\n\
@@ -262,7 +287,7 @@ jobs:
     if: github.event.inputs.notify_slack == 'true' && always()
     steps:
     - name: Send Slack Notification
-      uses: slackapi/slack-github-action@v2  # v1.24.0
+      uses: slackapi/slack-github-action@91efab103c0de0a537f72a35f6b8cda0ee76bf0a  # v2  # v1.24.0
       with:
         webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
         payload: "{\n  \"text\": \"Post-Deployment Verification Results\",\n  \"blocks\"\

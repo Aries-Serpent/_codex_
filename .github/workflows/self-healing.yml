@@ -136,6 +136,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
+      with:
+            persist-credentials: false
 
       - name: Resolve lane metadata defaults safely
         id: meta
@@ -268,6 +270,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
+            persist-credentials: false
           fetch-depth: 0
 
       - name: Set up Python
@@ -394,6 +397,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
+            persist-credentials: false
           fetch-depth: 0
 
       - name: Set up Python
@@ -484,6 +488,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
+            persist-credentials: false
           fetch-depth: 0
 
       - name: Set up Python
@@ -625,6 +630,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
+      with:
+            persist-credentials: false
 
       - name: Download all contract artifacts
         uses: actions/download-artifact@v5

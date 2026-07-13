@@ -20,6 +20,7 @@ jobs:
     steps:
     - uses: actions/checkout@v5
       with:
+            persist-credentials: false
         fetch-depth: 0
     - name: "\U0001F500 Fetch base branch ref for diff"
       env:
@@ -174,6 +175,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         fetch-depth: 1
     - name: Post or update rescue comment

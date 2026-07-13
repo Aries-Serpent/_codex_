@@ -7,6 +7,8 @@ Performance Impact:
 - 20x speedup for repeated queries (via cache)
 - 15-25% reduction in overall system latency
 - Estimated savings: $5-7K/month
+
+Security: Issue #5299 - Input sanitization for ChromaDB code injection vulnerability
 """
 
 from __future__ import annotations
@@ -16,6 +18,12 @@ from typing import Optional
 
 from rag.pipelines.embedding import EmbeddingPipeline
 from rag.pipelines.retrieval import InMemoryVectorStore, Retrieval
+from rag.security import (
+    sanitize_query,
+    validate_filters,
+    validate_metadata,
+    validate_document_id,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -65,6 +73,14 @@ class CachedRetrieval:
         Returns:
             List of retrieved documents with scores and metadata.
         """
+        # Security: Issue #5299 - Sanitize and validate inputs
+        try:
+            query = sanitize_query(query)
+            filters = validate_filters(filters)
+        except ValueError as e:
+            logger.warning(f"Input validation failed: {e}")
+            return []
+        
         # Check cache first
         cached_results = self.cache.get_query_result(query, top_k, filters)
         if cached_results:
@@ -95,6 +111,14 @@ class CachedRetrieval:
             content: Document content
             metadata: Optional metadata
         """
+        # Security: Issue #5299 - Validate inputs to prevent code injection
+        try:
+            doc_id = validate_document_id(doc_id)
+            metadata = validate_metadata(metadata)
+        except ValueError as e:
+            logger.warning(f"Document validation failed: {e}")
+            return
+        
         self.retrieval.add_document(doc_id, content, metadata)
         logger.debug(f"Added document: {doc_id}")
 
