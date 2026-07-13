@@ -10,7 +10,7 @@ tensorboard>=2.14
 bandit==1.7.5  # Security scanning (pinned for consistency)
 defusedxml==0.0.1  # XML parsing hardening (pinned)
 semgrep==1.75.0  # SAST (pinned for rule consistency)
-detect-secrets==1.4.0  # Secrets detection (pinned)
+detect-secrets==1.5.0  # Secrets detection (pinned)
 pre-commit==4.5.1
 nox==2024.3.2  # Pinned for reproducibility
 yamllint==1.26.3  # YAML validation (pinned)
