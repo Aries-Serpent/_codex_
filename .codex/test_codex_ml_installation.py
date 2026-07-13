@@ -86,7 +86,8 @@ class TestInstallation:
 
         # Check for warnings
         if "WARNING" in result.stderr or "conflict" in result.stdout.lower():
-            pytest.warns(Warning, match="dependency|conflict")
+            with pytest.warns(Warning, match="dependency|conflict"):
+                pass
 
 
 class TestImports:

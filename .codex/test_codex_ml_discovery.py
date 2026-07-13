@@ -191,7 +191,7 @@ class TestEntryPointIssues:
             parts = module_path.split(".")
 
             # Check if module exists
-            file_path = repo_root / "codex_ml" / "/".join(parts) + ".py"
+            file_path = repo_root / "src" / Path(*parts).with_suffix(".py")
             if not file_path.exists():
                 issues.append(f"Broken entry point {ep_name}: target module not found at {file_path}")
 
@@ -274,7 +274,7 @@ class TestCodeQualityGaps:
 
     def test_test_coverage_analysis(self) -> None:
         """Analyze test coverage gaps."""
-        codex_ml_path = Path("/home/runner/work/_codex_/_codex_/codex_ml")
+        codex_ml_path = Path("/home/runner/work/_codex_/_codex_/src/codex_ml")
 
         if not codex_ml_path.exists():
             pytest.skip("codex_ml not found")
@@ -299,7 +299,7 @@ class TestCodeQualityGaps:
 
     def test_type_hints_coverage(self) -> None:
         """Check type hints coverage in codebase."""
-        codex_ml_path = Path("/home/runner/work/_codex_/_codex_/codex_ml")
+        codex_ml_path = Path("/home/runner/work/_codex_/_codex_/src/codex_ml")
 
         if not codex_ml_path.exists():
             pytest.skip("codex_ml not found")
