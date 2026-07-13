@@ -292,8 +292,6 @@ class ActionExecutor:
         Raises:
             Exception: If action execution fails
         """
-        import subprocess
-
         if action.action_type == StrategyType.RERUN:
             # Rerun test
             return f"Rerun executed for {action.target}"

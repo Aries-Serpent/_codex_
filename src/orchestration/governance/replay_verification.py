@@ -5,10 +5,14 @@ This module implements:
 - Verify: identical input-lock → identical output
 - Report: 100% success rate required for production readiness
 - Evidence collection for audit
+
+SECURITY NOTE: Uses Python's `random` module for test simulation.
+For testing and non-cryptographic purposes only. Real determinism
+verification uses cryptographic hashes and deterministic RNG seeding.
 """
 
 import logging
-import random
+import random  # noqa: S311  # Used for test simulation, not cryptography
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Dict, List, Optional

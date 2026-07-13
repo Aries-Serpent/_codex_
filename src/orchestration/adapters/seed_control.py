@@ -2,9 +2,20 @@
 
 Propagates a single seed to all random number generation systems
 (random, numpy, torch) for fully deterministic execution.
+
+SECURITY NOTE: Uses Python's `random` module for deterministic seeding,
+not for cryptographic purposes. For cryptographic randomness, use
+`secrets` or `os.urandom()`. This module is safe for:
+  - Testing and validation
+  - Reproducible machine learning experiments
+  - Deterministic simulation environments
+NOT suitable for:
+  - Cryptographic key generation
+  - Security token generation
+  - Anything requiring cryptographic randomness
 """
 
-import random
+import random  # noqa: S311  # Used for deterministic testing, not cryptography
 from typing import Optional
 
 try:
@@ -81,7 +92,8 @@ class SeedControlSystem:
                 # Also set numpy's new Generator API
                 try:
                     np.random.default_rng(seed)
-                except Exception:
+                except Exception:  # pragma: no cover  # noqa: B110
+                    # Ignore failures for numpy Generator API (optional optimization)
                     pass
 
             # Set PyTorch seeds if available

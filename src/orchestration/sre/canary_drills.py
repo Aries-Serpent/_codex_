@@ -5,10 +5,13 @@ This module implements:
 - Test rollback functionality under load
 - Test failover/lane switching
 - Recovery verification and reporting
+
+SECURITY NOTE: Uses Python's `random` module for failure injection simulation.
+For testing and non-cryptographic purposes only.
 """
 
 import logging
-import random
+import random  # noqa: S311  # Used for failure injection testing, not cryptography
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum

@@ -171,7 +171,7 @@ class ValidationLoop:
             Tuple of (status, result_str, cascade_dict)
         """
         # Simulate running the failed test again
-        import random
+        import random  # noqa: S311  # Used for test simulation, not cryptography
 
         # Probability of success based on failure type
         success_prob = 0.7
