@@ -38,18 +38,14 @@
             "[ァ-ヴーｱ-ﾝﾞｰ]":"K",
             "[a-zA-Zａ-ｚＡ-Ｚ]":"A",
             "[0-9０-９]":"N"
-          }
-          // pragma: allowlist secret - Character classification patterns for tinyseg text segmentation library
-          // These Unicode character ranges are not secrets but linguistic features
+          } // pragma: allowlist secret - Character classification patterns (tinyseg library)
           this.chartype_ = [];
           for (var i in patterns) {
             var regexp = new RegExp(i);
             this.chartype_.push([regexp, patterns[i]]);
           }
 
-          // pragma: allowlist secret - TinySegmenter morphological analysis constant
-          // This numeric value (-332) is a learned weight in the Japanese text segmentation algorithm, not a sensitive value
-          this.BIAS__ = -332;
+          this.BIAS__ = -332; // pragma: allowlist secret - TinySegmenter algorithm constant
           this.BC1__ = {"HH":6,"II":2461,"KH":406,"OH":-1378};
           this.BC2__ = {"AA":-3267,"AI":2744,"AN":-878,"HH":-4070,"HM":-1711,"HN":4012,"HO":3761,"IA":1327,"IH":-1184,"II":-1332,"IK":1721,"IO":5492,"KI":3831,"KK":-8741,"MH":-3132,"MK":3334,"OO":-2920};
           this.BC3__ = {"HH":996,"HI":626,"HK":-721,"HN":-1307,"HO":-836,"IH":-301,"KK":2762,"MK":1079,"MM":4034,"OA":-1652,"OH":266};
@@ -116,9 +112,7 @@
           var result = [];
           var seg = ["B3","B2","B1"];
           var ctype = ["O","O","O"];
-          // pragma: allowlist secret - Text tokenization (character splitting)
-          // The split("") operation is part of tinyseg text segmentation, not a credential or secret
-          var o = input.split("");
+          var o = input.split(""); // pragma: allowlist secret - Text tokenization
           for (i = 0; i < o.length; ++i) {
             seg.push(o[i]);
             ctype.push(this.ctype_(o[i]))
