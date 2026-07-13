@@ -21,7 +21,7 @@ try:  # Optional dependency for Prometheus integration
     from prometheus_client import REGISTRY, CollectorRegistry, generate_latest
 
     _HAS_PROMETHEUS = True
-except (IOError, OSError):  # pragma: no cover - optional dependency path
+except ImportError:  # pragma: no cover - optional dependency path
     CollectorRegistry = None
 
     REGISTRY = None

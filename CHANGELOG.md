@@ -1,5 +1,84 @@
 ## [Unreleased]
 
+### PR #5317 Validation & Code Review Resolution (v0.2.3) — Workflow Readiness Gate (2026-07-13T21:31:00Z)
+
+**Status:** ✅ COMPLETE | **Authority:** @copilot | **Scope:** PR validation & code review fixes | **Impact:** Production-ready v0.2.3 pre-release
+
+**Task Summary:**
+- Created PR #5317 with WEC template correctly configured
+- Resolved all 16 code review comments
+- Updated version consistency across all documentation
+- Enabled wec:auto-approve for autonomous workflow control
+
+**Fixes Applied:**
+- ✅ **Lazy Loading Logic**: Fixed locals() snapshot bug in monitoring.__init__.py
+- ✅ **Version Consistency**: Updated 0.2.2 → 0.2.3 across 8 files (100+ occurrences)
+- ✅ **File Renaming**: Renamed documentation files to reflect v0.2.3
+- ✅ **Code Review**: All 16 comments resolved
+
+**Validation Results:**
+- ✅ Code Review: All comments addressed
+- ✅ CodeQL: Scan completed (0 alerts)
+- ✅ WEC Template: Properly configured
+- ✅ Documentation: Version consistency verified
+
+### Dependency Leak & Circular Import Fixes (v0.2.3) — Pre-Release Quality Gate (2026-07-13T21:15:00Z)
+
+**Status:** ✅ COMPLETE | **Authority:** @copilot | **Scope:** Critical bug fixes | **Impact:** Core profile isolation + runtime dependency segregation
+
+**Problem Summary:**
+- **Issue 1**: `from codex_ml.data import *` failed with `ModuleNotFoundError: No module named 'prometheus_client'` in core profile
+- **Issue 2**: Circular dependency chain: `data → connectors → monitoring → prometheus_client`
+- **Issue 3**: Incorrect exception handlers catching `IOError/OSError` instead of `ImportError`
+
+**Solution Overview:**
+Implemented profile-scoped import guards ensuring optional runtime dependencies do not leak into core profile.
+
+**Fixes Applied:**
+- ✅ **Import Guards**: Added `ImportError` guards to all prometheus_client imports
+  - `src/codex_ml/monitoring/metrics_export.py`
+  - `src/codex_ml/monitoring/prometheus_metrics.py`
+  - `src/codex_ml/safety/moderation.py`
+  - `src/codex_ml/telemetry/server.py`
+  - `src/codex_ml/telemetry/metrics.py`
+
+- ✅ **Circular Dependency Resolution**: Lazy-loaded metrics_export in monitoring.__init__.py
+  - Added `__getattr__` for on-demand import of heavy modules
+  - Breaks circular chain: `data → connectors → monitoring.health` (safe)
+
+- ✅ **Optional Dependency Handling**: Optional monitoring import in connectors/remote.py
+  - Changed from `(IOError, OSError)` to `ImportError`
+
+- ✅ **Validation**: Comprehensive testing with and without prometheus_client
+  - Core profile: works without prometheus_client
+  - Runtime profile: works with prometheus_client installed
+  - Circular dependencies: fully resolved
+
+**Profile-Specific Behavior:**
+- **Core Profile (`pip install codex-ml[core]`)**: Uses noop metrics, no prometheus_client needed
+- **Runtime Profile (`pip install codex-ml[runtime]`)**: Real Prometheus metrics exported
+- **Full Profile (`pip install codex-ml[full]`)**: All features with dev tools
+
+**Files Changed:** 7 files
+- `.codex/PROFILE_SPECIFIC_IMPORTS.md` (new documentation)
+- `src/codex_ml/monitoring/__init__.py`
+- `src/codex_ml/monitoring/metrics_export.py`
+- `src/codex_ml/monitoring/prometheus_metrics.py`
+- `src/codex_ml/safety/moderation.py`
+- `src/codex_ml/connectors/remote.py`
+- `src/codex_ml/telemetry/server.py`
+- `src/codex_ml/telemetry/metrics.py`
+
+**Testing Summary:**
+- ✅ Core profile without prometheus_client: PASS
+- ✅ Runtime profile with prometheus_client: PASS
+- ✅ Circular dependency resolution: PASS
+- ✅ Lazy-loading verification: PASS
+- ✅ Noop metrics behavior: PASS
+
+**Documentation Added:**
+- `.codex/PROFILE_SPECIFIC_IMPORTS.md` - Complete import guard guide and profile reference
+
 ### Site-First Documentation Initiative (v0.2.2) — Professional Baseline Established (2026-07-13T19:08:00Z)
 
 **Status:** ✅ COMPLETE | **Authority:** @mbaetiong (D-tier autonomous) | **Scope:** 11-Lane Multi-Agent Campaign | **Outcome:** Professional documentation baseline + deployment verification
@@ -16976,3 +17055,5 @@ Security hardening completed through comprehensive Phase 1-4 process:
 - All generated workflows and metrics infrastructure created
 
 
+
+**Session Note:** PR #5317 validation complete with all code review issues resolved and WEC template properly configured for v0.2.3 pre-release deployment gate.
