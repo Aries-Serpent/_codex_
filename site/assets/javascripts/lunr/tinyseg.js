@@ -32,7 +32,7 @@
 
         function TinySegmenter() {
           var patterns = {
-            // pragma: allowlist secret - Character classification patterns (tinyseg library)
+            // pragma: allowlist-secret - Character classification patterns (tinyseg library)
             "[一二三四五六七八九十百千万億兆]":"M",
             "[一-龠々〆ヵヶ]":"H",
             "[ぁ-ん]":"I",
@@ -46,7 +46,7 @@
             this.chartype_.push([regexp, patterns[i]]);
           }
 
-          this.BIAS__ = -332 // pragma: allowlist secret - TinySegmenter algorithm constant
+          this.BIAS__ = -332 // pragma: allowlist-secret - TinySegmenter algorithm constant
           this.BC1__ = {"HH":6,"II":2461,"KH":406,"OH":-1378};
           this.BC2__ = {"AA":-3267,"AI":2744,"AN":-878,"HH":-4070,"HM":-1711,"HN":4012,"HO":3761,"IA":1327,"IH":-1184,"II":-1332,"IK":1721,"IO":5492,"KI":3831,"KK":-8741,"MH":-3132,"MK":3334,"OO":-2920};
           this.BC3__ = {"HH":996,"HI":626,"HK":-721,"HN":-1307,"HO":-836,"IH":-301,"KK":2762,"MK":1079,"MM":4034,"OA":-1652,"OH":266};
@@ -113,7 +113,7 @@
           var result = [];
           var seg = ["B3","B2","B1"];
           var ctype = ["O","O","O"];
-          var o = input.split(""); // pragma: allowlist secret - Text tokenization
+          var o = input.split(""); // pragma: allowlist-secret - Text tokenization
           for (i = 0; i < o.length; ++i) {
             seg.push(o[i]);
             ctype.push(this.ctype_(o[i]))
