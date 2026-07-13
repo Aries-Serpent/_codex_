@@ -32,6 +32,8 @@ from contextlib import suppress
 from dataclasses import dataclass
 from pathlib import Path
 
+from src.security import secure_subprocess_run
+
 logger = logging.getLogger(__name__)
 
 ADR_PREFIX = "docs/arch/"
@@ -80,24 +82,30 @@ def _git_staged_files(repo_root: Path) -> list[str]:
     """Return staged file paths using ``git diff --staged``.
 
     Returns an empty list when git is unavailable or the command fails.
+    
+    PHASE 3 HARDENING: Uses secure subprocess execution with proper exception handling.
     """
-
     try:
-        proc = subprocess.run(
+        # PHASE 3 HARDENING: Use secure subprocess execution
+        proc = secure_subprocess_run(
             ["git", "diff", "--staged", "--name-only"],
-            cwd=repo_root,
-            capture_output=True,
+            timeout=30,
+            allowed_executables={"git"},
             check=False,
-            text=True,
         )
+        if proc.returncode != 0:
+            logger.debug(f"git command failed with code {proc.returncode}")
+            return []
+        return [line.strip() for line in proc.stdout.splitlines() if line.strip()]
+        
     except FileNotFoundError as e:
-        type(e).__name__
-        logger.debug("FileNotFoundError: <ERROR_TYPE>")
-        logger.warning("FileNotFoundError: <ERROR_TYPE>", exc_info=True)
+        # PHASE 3 HARDENING: Proper exception logging instead of silent pass
+        logger.debug(f"git executable not found: {e}")
         return []
-    if proc.returncode != 0:
+    except Exception as e:  # noqa: BLE001 - We need broad exception handling here for robustness
+        # PHASE 3 HARDENING: Log unexpected errors instead of silent pass
+        logger.warning(f"Unexpected error getting git staged files: {e}", exc_info=True)
         return []
-    return [line.strip() for line in proc.stdout.splitlines() if line.strip()]
 
 
 def _path_exists(repo_root: Path, rel: str) -> bool:

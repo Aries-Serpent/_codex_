@@ -149,8 +149,12 @@ class ReplayVerifier:
                 execution_2_output_hash=output_hash_2,
                 execution_3_output_hash=output_hash_3,
                 deterministic=deterministic,
-                execution_time_ms_avg=random.uniform(50, 500),
-                variance_pct=0.0 if deterministic else random.uniform(0.1, 5.0),
+                # PHASE 3 HARDENING: random.uniform() used for SIMULATION ONLY
+                # Simulates variable execution times for test scenario generation.
+                execution_time_ms_avg=random.uniform(50, 500),  # noqa: S311
+                # PHASE 3 HARDENING: random.uniform() used for SIMULATION ONLY
+                # Simulates variance in non-deterministic scenarios for testing.
+                variance_pct=0.0 if deterministic else random.uniform(0.1, 5.0),  # noqa: S311
             )
 
             if deterministic:
@@ -181,12 +185,9 @@ class ReplayVerifier:
         """Execute lane with specific input lock. Returns output hash."""
         import hashlib
 
-        # Simulate lane execution with deterministic behavior
-        # In real system, this would execute the actual lane logic
-        execution_data = f"{lane_id}-{input_lock_hash}-execution-{random.random()}"
-
-        # For determinism testing, use input lock to generate consistent output
-        # (In production, if input_lock is same, output should always be same)
+        # PHASE 3 HARDENING: For determinism testing, use input lock to generate consistent output
+        # In production, if input_lock is same, output should always be same
+        # This is NOT security-critical; it's for test scenario generation.
         execution_data = f"{lane_id}-{input_lock_hash}-execution-consistent"
 
         return hashlib.sha256(execution_data.encode()).hexdigest()

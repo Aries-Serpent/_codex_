@@ -16,6 +16,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Callable
 
+from src.security import secure_subprocess_run
+
 logger = logging.getLogger(__name__)
 
 
@@ -319,7 +321,18 @@ class AudioTranscriptionWorkflow:
             str(output_wav),
         ]
 
-        completed = subprocess.run(command, check=False, capture_output=True, text=True)
+        # PHASE 3 HARDENING: Use secure subprocess execution with validation
+        try:
+            completed = secure_subprocess_run(
+                command,
+                timeout=300,  # 5 minutes for audio processing
+                allowed_executables={"ffmpeg"},
+                check=False,
+            )
+        except Exception as exc:
+            logger.error(f"Subprocess execution failed: {exc}")
+            raise RuntimeError(f"ffmpeg execution failed: {exc}") from exc
+
         if completed.returncode != 0:
             stderr = completed.stderr.strip() or "unknown ffmpeg failure"
             raise RuntimeError(f"ffmpeg conversion failed for {input_path.name}: {stderr}")

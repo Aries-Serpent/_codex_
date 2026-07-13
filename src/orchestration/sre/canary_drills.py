@@ -125,8 +125,15 @@ class CanaryDrillOrchestrator:
         passed = 0
         failed = 0
         for test in test_cases:
-            test.execution_time_seconds = random.uniform(0.1, 5.0)
-            if random.random() > 0.1:  # 90% success rate for healthy system
+            # PHASE 3 HARDENING: random.uniform() used for SIMULATION ONLY
+            # This is NOT security-critical; it simulates variable test execution times.
+            # See: Security Finding B311 - Random number generation
+            test.execution_time_seconds = random.uniform(0.1, 5.0)  # noqa: S311
+            
+            # PHASE 3 HARDENING: random.random() used for FAILURE INJECTION SIMULATION
+            # This is NOT security-critical; it simulates a 90% system health baseline.
+            # See: Security Finding B311 - Random number generation
+            if random.random() > 0.1:  # noqa: S311  # 90% success rate for healthy system
                 test.result = DrillResult.PASSED
                 test.actual_behavior = test.expected_behavior
                 passed += 1
@@ -197,8 +204,13 @@ class CanaryDrillOrchestrator:
         passed = 0
         failed = 0
         for test in test_cases:
-            test.execution_time_seconds = random.uniform(2.0, 10.0)
-            if random.random() > 0.05:  # 95% success rate for rollback
+            # PHASE 3 HARDENING: random.uniform() used for SIMULATION ONLY (Rollback timing)
+            # This is NOT security-critical; it simulates variable rollback execution times.
+            test.execution_time_seconds = random.uniform(2.0, 10.0)  # noqa: S311
+            
+            # PHASE 3 HARDENING: random.random() used for ROLLBACK SIMULATION
+            # This is NOT security-critical; it simulates a 95% rollback success rate.
+            if random.random() > 0.05:  # noqa: S311  # 95% success rate for rollback
                 test.result = DrillResult.PASSED
                 test.actual_behavior = test.expected_behavior
                 passed += 1
@@ -269,8 +281,13 @@ class CanaryDrillOrchestrator:
         passed = 0
         failed = 0
         for test in test_cases:
-            test.execution_time_seconds = random.uniform(1.0, 8.0)
-            if random.random() > 0.08:  # 92% success rate for failover
+            # PHASE 3 HARDENING: random.uniform() used for SIMULATION ONLY (Failover timing)
+            # This is NOT security-critical; it simulates variable failover execution times.
+            test.execution_time_seconds = random.uniform(1.0, 8.0)  # noqa: S311
+            
+            # PHASE 3 HARDENING: random.random() used for FAILOVER SIMULATION
+            # This is NOT security-critical; it simulates a 92% failover success rate.
+            if random.random() > 0.08:  # noqa: S311  # 92% success rate for failover
                 test.result = DrillResult.PASSED
                 test.actual_behavior = test.expected_behavior
                 passed += 1
