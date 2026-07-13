@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+### Security (2026-07-13)
+
+- Pin `softprops/action-gh-release` to commit SHA `718ea10b132b3b2eba29c1007bb80653f286566b` (v3) in `release.yml`, `observable-release.yml`, and `release-to-pypi.yml` to resolve CodeQL unpinned-action alerts (19708, 19709, 19710).
+
 ### 📚 Site-First Documentation Initiative — Professional Documentation Transformation (2026-07-13)
 
 **Status**: ✅ COMPLETE | **Campaign Duration**: ~60 minutes | **Authority**: @mbaetiong (D-tier autonomous)

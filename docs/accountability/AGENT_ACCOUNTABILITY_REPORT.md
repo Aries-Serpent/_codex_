@@ -16474,3 +16474,14 @@ and the CI gate requirement.
 - **WEC human grant** `copilot-agent-checkin.yml` — detected 2026-07-10T21:40:49Z @ adf30990 — sticky [x] maintained by all future agent sessions
 - **WEC human grant** `cost-gate.yml` — detected 2026-07-10T21:40:49Z @ adf30990 — sticky [x] maintained by all future agent sessions
 - **WEC human grant** `auto-approve-workflows` — detected 2026-07-10T21:40:49Z @ adf30990 — sticky [x] maintained by all future agent sessions
+
+### Session: 2026-07-13T09:51Z — Pin softprops/action-gh-release to commit SHA (PR #dependabot)
+
+**Task**: Resolve CodeQL security alerts for unpinned `softprops/action-gh-release@v3` tag.
+**Status**: COMPLETE
+**Changes**:
+- Pinned `softprops/action-gh-release` to commit SHA `718ea10b132b3b2eba29c1007bb80653f286566b` (v3) in 3 workflow files:
+  - `.github/workflows/release.yml`
+  - `.github/workflows/observable-release.yml`
+  - `.github/workflows/release-to-pypi.yml`
+**Resolves**: CodeQL alerts 19708, 19709, 19710
