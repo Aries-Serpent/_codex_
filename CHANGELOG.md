@@ -1,5 +1,16 @@
 ## [Unreleased]
 
+### Fixed (auto-update — PR #5318)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5318 (SHA `16b3e4b4`) at 2026-07-13T22:50Z [auto-generated]
+
+### v0.2.3 CI Rescue Round 2 — Fix Action Versions, REQ-4/5 Compliance (2026-07-13T22:49:50Z)
+
+**Status:** COMPLETE | **Authority:** @copilot | **Scope:** CI failure remediation round 2 | **Impact:** Resolves failing checks on PR #5318
+
+**Fixes Applied:**
+- Fix `Enforce Action Versions`: Updated `action-version-check.yml`, `codeql-alert-triage.yml`, `health-dashboard-update.yml`, `workflow-health-update.yml` to use approved versions (checkout@v5, setup-python@v6, github-script@v8)
+- REQ-4/5: AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md updated in this commit
+
 ### v0.2.3 CI Rescue — Fix Import Hook, YAML, CodeQL, __version__ (2026-07-13T22:25:00Z)
 
 **Status:** COMPLETE | **Authority:** @copilot | **Scope:** CI failure remediation | **Impact:** Resolves 8 failing checks on PR #5318
