@@ -1,0 +1,2274 @@
+{
+  "metadata": {
+    "generated": "2026-07-13T17:52:42Z",
+    "total_workflows": 204,
+    "archive_location": ".github/workflow-archive/",
+    "search_version": "1.0"
+  },
+  "workflows": [
+    {
+      "name": "agent-runtime.yml",
+      "path": "backups/2025-12-28/agent-runtime.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "api-documentation.yml",
+      "path": "backups/2025-12-28/api-documentation.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "audit-improvement-pipeline.yml",
+      "path": "backups/2025-12-28/audit-improvement-pipeline.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "auto-update-configs.yml",
+      "path": "backups/2025-12-28/auto-update-configs.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "automation_ingest.yml",
+      "path": "backups/2025-12-28/automation_ingest.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "daily-status-pipeline.yml",
+      "function": "monitoring",
+      "keywords": [
+        "ingest",
+        "automation",
+        "data"
+      ],
+      "conditional_job": "job_ingest"
+    },
+    {
+      "name": "autonomous-agent.yml",
+      "path": "backups/2025-12-28/autonomous-agent.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "build-container-cache.yml",
+      "path": "backups/2025-12-28/build-container-cache.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "docker-build-push.yml",
+      "function": "deployment",
+      "keywords": [
+        "container",
+        "cache",
+        "build"
+      ],
+      "conditional_job": "job_cache_build"
+    },
+    {
+      "name": "cache-cleanup.yml",
+      "path": "backups/2025-12-28/cache-cleanup.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "cache-management.yml",
+      "function": "caching",
+      "keywords": [
+        "cache",
+        "cleanup",
+        "maintenance"
+      ],
+      "conditional_job": "job_cleanup"
+    },
+    {
+      "name": "cache-warmer.yml",
+      "path": "backups/2025-12-28/cache-warmer.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "cache-management.yml",
+      "function": "caching",
+      "keywords": [
+        "cache",
+        "warm",
+        "preload"
+      ],
+      "conditional_job": "job_warmer"
+    },
+    {
+      "name": "code-quality.yml",
+      "path": "backups/2025-12-28/code-quality.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "codeql-analysis.yml",
+      "path": "backups/2025-12-28/codeql-analysis.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "container-build.yml",
+      "path": "backups/2025-12-28/container-build.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "docker-build-push.yml",
+      "function": "deployment",
+      "keywords": [
+        "container",
+        "docker",
+        "build"
+      ],
+      "conditional_job": "job_container"
+    },
+    {
+      "name": "copilot-cascade-review.yml",
+      "path": "backups/2025-12-28/copilot-cascade-review.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "copilot-self-evolution.yml",
+      "path": "backups/2025-12-28/copilot-self-evolution.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "coverage_report.yml",
+      "path": "backups/2025-12-28/coverage_report.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "daily_status_cron.yml",
+      "path": "backups/2025-12-28/daily_status_cron.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "daily-status-pipeline.yml",
+      "function": "monitoring",
+      "keywords": [
+        "status",
+        "daily",
+        "schedule",
+        "cron"
+      ],
+      "conditional_job": "job_cron_trigger"
+    },
+    {
+      "name": "daily_status_enrich.yml",
+      "path": "backups/2025-12-28/daily_status_enrich.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "daily-status-pipeline.yml",
+      "function": "monitoring",
+      "keywords": [
+        "status",
+        "enrich",
+        "data"
+      ],
+      "conditional_job": "job_enrich"
+    },
+    {
+      "name": "data_validation.yml",
+      "path": "backups/2025-12-28/data_validation.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "decode-validate-artifact.yml",
+      "path": "backups/2025-12-28/decode-validate-artifact.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "dependency-scan.yml",
+      "path": "backups/2025-12-28/dependency-scan.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "detect-duplicates.yml",
+      "path": "backups/2025-12-28/detect-duplicates.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "determinism.yml",
+      "path": "backups/2025-12-28/determinism.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "docker-build-push.yml",
+      "path": "backups/2025-12-28/docker-build-push.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "docs.yml",
+      "path": "backups/2025-12-28/docs.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "pages-mkdocs.yml",
+      "function": "documentation",
+      "keywords": [
+        "docs",
+        "documentation",
+        "build"
+      ],
+      "conditional_job": "job_docs_legacy"
+    },
+    {
+      "name": "documentation-link-checker.yml",
+      "path": "backups/2025-12-28/documentation-link-checker.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "draft-audit-pr.yml",
+      "path": "backups/2025-12-28/draft-audit-pr.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "duplicate-detection-weekly.yml",
+      "path": "backups/2025-12-28/duplicate-detection-weekly.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "genesis-bootstrap.yml",
+      "path": "backups/2025-12-28/genesis-bootstrap.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "github_connector_check.yml",
+      "path": "backups/2025-12-28/github_connector_check.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "html_visual_baseline.yml",
+      "path": "backups/2025-12-28/html_visual_baseline.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "html_visual_regression.yml",
+      "path": "backups/2025-12-28/html_visual_regression.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "integration-gated.yml",
+      "path": "backups/2025-12-28/integration-gated.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "optimized-ci.yml",
+      "function": "testing",
+      "keywords": [
+        "integration",
+        "e2e",
+        "test"
+      ],
+      "conditional_job": "job_integration_tests"
+    },
+    {
+      "name": "labeler.yml",
+      "path": "backups/2025-12-28/labeler.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "mcp-ci.yml",
+      "path": "backups/2025-12-28/mcp-ci.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "optimized-ci.yml",
+      "function": "testing",
+      "keywords": [
+        "MCP",
+        "integration",
+        "CI"
+      ],
+      "conditional_job": "job_mcp_tests"
+    },
+    {
+      "name": "nox_gates.yml",
+      "path": "backups/2025-12-28/nox_gates.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "optimized-ci.yml",
+      "path": "backups/2025-12-28/optimized-ci.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "pages-mkdocs.yml",
+      "path": "backups/2025-12-28/pages-mkdocs.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "post-merge-validation-optimized.yml",
+      "path": "backups/2025-12-28/post-merge-validation-optimized.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "post-merge-validation.yml",
+      "path": "backups/2025-12-28/post-merge-validation.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "pr-checks.yml",
+      "path": "backups/2025-12-28/pr-checks.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "pre-release-deployment.yml",
+      "path": "backups/2025-12-28/pre-release-deployment.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "produce-trend.yml",
+      "path": "backups/2025-12-28/produce-trend.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "daily-status-pipeline.yml",
+      "function": "monitoring",
+      "keywords": [
+        "trend",
+        "analysis",
+        "report"
+      ],
+      "conditional_job": "job_trends"
+    },
+    {
+      "name": "publish_dashboard_release.yml",
+      "path": "backups/2025-12-28/publish_dashboard_release.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "ratelimit_history_prune.yml",
+      "path": "backups/2025-12-28/ratelimit_history_prune.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "repo-organization.yml",
+      "path": "backups/2025-12-28/repo-organization.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "report_publish.yml",
+      "path": "backups/2025-12-28/report_publish.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "daily-status-pipeline.yml",
+      "function": "monitoring",
+      "keywords": [
+        "report",
+        "publish",
+        "distribution"
+      ],
+      "conditional_job": "job_publish"
+    },
+    {
+      "name": "runner-diagnostics.yml",
+      "path": "backups/2025-12-28/runner-diagnostics.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "sbom.yml",
+      "path": "backups/2025-12-28/sbom.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "scheduled-archival.yml",
+      "path": "backups/2025-12-28/scheduled-archival.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "scheduled-dependency-audit.yml",
+      "path": "backups/2025-12-28/scheduled-dependency-audit.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "security-scan.yml",
+      "path": "backups/2025-12-28/security-scan.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "security-suite.yml",
+      "path": "backups/2025-12-28/security-suite.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "self-healing-ci.yml",
+      "path": "backups/2025-12-28/self-healing-ci.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "self-healing-feedback-loop.yml",
+      "path": "backups/2025-12-28/self-healing-feedback-loop.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "semgrep_sarif.yml",
+      "path": "backups/2025-12-28/semgrep_sarif.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "status_gate.yml",
+      "path": "backups/2025-12-28/status_gate.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "template-validation.yml",
+      "path": "backups/2025-12-28/template-validation.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "workflow-validation.yml",
+      "function": "validation",
+      "keywords": [
+        "template",
+        "validation",
+        "check"
+      ],
+      "conditional_job": "job_template_validation"
+    },
+    {
+      "name": "template_lint.yml",
+      "path": "backups/2025-12-28/template_lint.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "test-suite.yml",
+      "path": "backups/2025-12-28/test-suite.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "optimized-ci.yml",
+      "function": "testing",
+      "keywords": [
+        "test",
+        "unit",
+        "pytest",
+        "CI"
+      ],
+      "conditional_job": "job_test_suite"
+    },
+    {
+      "name": "validate-docs-enhanced.yml",
+      "path": "backups/2025-12-28/validate-docs-enhanced.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "pages-mkdocs.yml",
+      "function": "documentation",
+      "keywords": [
+        "docs",
+        "validation",
+        "enhanced"
+      ],
+      "conditional_job": "job_validate_docs_enhanced"
+    },
+    {
+      "name": "validate-docs.yml",
+      "path": "backups/2025-12-28/validate-docs.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "pages-mkdocs.yml",
+      "function": "documentation",
+      "keywords": [
+        "docs",
+        "validation",
+        "link-check"
+      ],
+      "conditional_job": "job_validate_docs"
+    },
+    {
+      "name": "wiki-assemble.yml",
+      "path": "backups/2025-12-28/wiki-assemble.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "workflow-expiry-enforcer.yml",
+      "path": "backups/2025-12-28/workflow-expiry-enforcer.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "workflow-lint.yml",
+      "path": "backups/2025-12-28/workflow-lint.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "workflow-validation.yml",
+      "function": "validation",
+      "keywords": [
+        "lint",
+        "workflow",
+        "validation"
+      ],
+      "conditional_job": "job_lint"
+    },
+    {
+      "name": "workflow-validator.yml",
+      "path": "backups/2025-12-28/workflow-validator.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "workflow-validation.yml",
+      "function": "validation",
+      "keywords": [
+        "validate",
+        "workflow",
+        "check"
+      ],
+      "conditional_job": "job_validator"
+    },
+    {
+      "name": "zendesk-quantum-packaging.yml",
+      "path": "backups/2025-12-28/zendesk-quantum-packaging.yml",
+      "batch": "2025-12-28",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "agent-chain-orchestrator.yml",
+      "path": "backups/2026-02-06-235537-artifact-prefix/agent-chain-orchestrator.yml",
+      "batch": "2026-02-06-235537-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "audit-improvement-pipeline.yml",
+      "path": "backups/2026-02-06-235636-artifact-prefix/audit-improvement-pipeline.yml",
+      "batch": "2026-02-06-235636-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "auth-compliance-report.yml",
+      "path": "backups/2026-02-06-235636-artifact-prefix/auth-compliance-report.yml",
+      "batch": "2026-02-06-235636-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "batch-ci-triage.yml",
+      "path": "backups/2026-02-06-235636-artifact-prefix/batch-ci-triage.yml",
+      "batch": "2026-02-06-235636-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "ci-health-suite.yml",
+      "path": "backups/2026-02-06-235636-artifact-prefix/ci-health-suite.yml",
+      "batch": "2026-02-06-235636-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "code-quality.yml",
+      "path": "backups/2026-02-06-235636-artifact-prefix/code-quality.yml",
+      "batch": "2026-02-06-235636-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "codeql-analysis.yml",
+      "path": "backups/2026-02-06-235636-artifact-prefix/codeql-analysis.yml",
+      "batch": "2026-02-06-235636-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "codeql-chunked.yml",
+      "path": "backups/2026-02-06-235636-artifact-prefix/codeql-chunked.yml",
+      "batch": "2026-02-06-235636-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "cognitive-action.yml",
+      "path": "backups/2026-02-06-235636-artifact-prefix/cognitive-action.yml",
+      "batch": "2026-02-06-235636-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "cognitive-ooda-loop-agent.yml",
+      "function": "cognitive",
+      "keywords": [
+        "cognitive",
+        "action",
+        "OODA"
+      ],
+      "conditional_job": "job_action"
+    },
+    {
+      "name": "cognitive-aftermath.yml",
+      "path": "backups/2026-02-06-235636-artifact-prefix/cognitive-aftermath.yml",
+      "batch": "2026-02-06-235636-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "cognitive-brain-session-injector.yml",
+      "function": "cognitive",
+      "keywords": [
+        "cognitive",
+        "aftermath",
+        "session"
+      ],
+      "conditional_job": "job_aftermath"
+    },
+    {
+      "name": "cognitive-brain-feed.yml",
+      "path": "backups/2026-02-06-235636-artifact-prefix/cognitive-brain-feed.yml",
+      "batch": "2026-02-06-235636-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "cognitive-decision.yml",
+      "path": "backups/2026-02-06-235636-artifact-prefix/cognitive-decision.yml",
+      "batch": "2026-02-06-235636-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "cognitive-ooda-loop-agent.yml",
+      "function": "cognitive",
+      "keywords": [
+        "cognitive",
+        "decision",
+        "OODA"
+      ],
+      "conditional_job": "job_decision"
+    },
+    {
+      "name": "copilot-self-evolution.yml",
+      "path": "backups/2026-02-06-235636-artifact-prefix/copilot-self-evolution.yml",
+      "batch": "2026-02-06-235636-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "coverage_report.yml",
+      "path": "backups/2026-02-06-235636-artifact-prefix/coverage_report.yml",
+      "batch": "2026-02-06-235636-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "data_validation.yml",
+      "path": "backups/2026-02-06-235636-artifact-prefix/data_validation.yml",
+      "batch": "2026-02-06-235636-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "decode-validate-artifact.yml",
+      "path": "backups/2026-02-06-235636-artifact-prefix/decode-validate-artifact.yml",
+      "batch": "2026-02-06-235636-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "determinism.yml",
+      "path": "backups/2026-02-06-235636-artifact-prefix/determinism.yml",
+      "batch": "2026-02-06-235636-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "docker-build-push.yml",
+      "path": "backups/2026-02-06-235636-artifact-prefix/docker-build-push.yml",
+      "batch": "2026-02-06-235636-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "documentation-link-checker.yml",
+      "path": "backups/2026-02-06-235636-artifact-prefix/documentation-link-checker.yml",
+      "batch": "2026-02-06-235636-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "documentation-suite.yml",
+      "path": "backups/2026-02-06-235636-artifact-prefix/documentation-suite.yml",
+      "batch": "2026-02-06-235636-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "html_visual_baseline.yml",
+      "path": "backups/2026-02-06-235636-artifact-prefix/html_visual_baseline.yml",
+      "batch": "2026-02-06-235636-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "html_visual_regression.yml",
+      "path": "backups/2026-02-06-235636-artifact-prefix/html_visual_regression.yml",
+      "batch": "2026-02-06-235636-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "nox_gates.yml",
+      "path": "backups/2026-02-06-235636-artifact-prefix/nox_gates.yml",
+      "batch": "2026-02-06-235636-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "optimized-ci.yml",
+      "path": "backups/2026-02-06-235636-artifact-prefix/optimized-ci.yml",
+      "batch": "2026-02-06-235636-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "post-merge-validation-optimized.yml",
+      "path": "backups/2026-02-06-235636-artifact-prefix/post-merge-validation-optimized.yml",
+      "batch": "2026-02-06-235636-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "pre-release-deployment.yml",
+      "path": "backups/2026-02-06-235636-artifact-prefix/pre-release-deployment.yml",
+      "batch": "2026-02-06-235636-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "publish_dashboard_release.yml",
+      "path": "backups/2026-02-06-235636-artifact-prefix/publish_dashboard_release.yml",
+      "batch": "2026-02-06-235636-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "repo-organization.yml",
+      "path": "backups/2026-02-06-235636-artifact-prefix/repo-organization.yml",
+      "batch": "2026-02-06-235636-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "repository-health-monitoring.yml",
+      "path": "backups/2026-02-06-235636-artifact-prefix/repository-health-monitoring.yml",
+      "batch": "2026-02-06-235636-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "rust_swarm_ci.yml",
+      "path": "backups/2026-02-06-235636-artifact-prefix/rust_swarm_ci.yml",
+      "batch": "2026-02-06-235636-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "sbom.yml",
+      "path": "backups/2026-02-06-235636-artifact-prefix/sbom.yml",
+      "batch": "2026-02-06-235636-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "scheduled-archival.yml",
+      "path": "backups/2026-02-06-235636-artifact-prefix/scheduled-archival.yml",
+      "batch": "2026-02-06-235636-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "scheduled-dependency-audit.yml",
+      "path": "backups/2026-02-06-235636-artifact-prefix/scheduled-dependency-audit.yml",
+      "batch": "2026-02-06-235636-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "security-scanning-suite.yml",
+      "path": "backups/2026-02-06-235636-artifact-prefix/security-scanning-suite.yml",
+      "batch": "2026-02-06-235636-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "security-suite.yml",
+      "path": "backups/2026-02-06-235636-artifact-prefix/security-suite.yml",
+      "batch": "2026-02-06-235636-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "self-healing-ci.yml",
+      "path": "backups/2026-02-06-235636-artifact-prefix/self-healing-ci.yml",
+      "batch": "2026-02-06-235636-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "self-healing-feedback-loop.yml",
+      "path": "backups/2026-02-06-235636-artifact-prefix/self-healing-feedback-loop.yml",
+      "batch": "2026-02-06-235636-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "self-healing.yml",
+      "path": "backups/2026-02-06-235636-artifact-prefix/self-healing.yml",
+      "batch": "2026-02-06-235636-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "test-comprehensive.yml",
+      "path": "backups/2026-02-06-235636-artifact-prefix/test-comprehensive.yml",
+      "batch": "2026-02-06-235636-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "optimized-ci.yml",
+      "function": "testing",
+      "keywords": [
+        "comprehensive",
+        "test",
+        "full-suite"
+      ],
+      "conditional_job": "job_comprehensive"
+    },
+    {
+      "name": "test-rag.yml",
+      "path": "backups/2026-02-06-235636-artifact-prefix/test-rag.yml",
+      "batch": "2026-02-06-235636-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "optimized-ci.yml",
+      "function": "testing",
+      "keywords": [
+        "RAG",
+        "test",
+        "retrieval"
+      ],
+      "conditional_job": "job_rag_tests"
+    },
+    {
+      "name": "test-suite.yml",
+      "path": "backups/2026-02-06-235636-artifact-prefix/test-suite.yml",
+      "batch": "2026-02-06-235636-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "optimized-ci.yml",
+      "function": "testing",
+      "keywords": [
+        "test",
+        "unit",
+        "pytest",
+        "CI"
+      ],
+      "conditional_job": "job_test_suite"
+    },
+    {
+      "name": "workflow-health-check.yml",
+      "path": "backups/2026-02-06-235636-artifact-prefix/workflow-health-check.yml",
+      "batch": "2026-02-06-235636-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "artifact-monitoring.yml",
+      "path": "backups/2026-02-06-235731-artifact-prefix/artifact-monitoring.yml",
+      "batch": "2026-02-06-235731-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "auth-mfa-enrollment.yml",
+      "path": "backups/2026-02-06-235731-artifact-prefix/auth-mfa-enrollment.yml",
+      "batch": "2026-02-06-235731-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "auth-security-audit.yml",
+      "path": "backups/2026-02-06-235731-artifact-prefix/auth-security-audit.yml",
+      "batch": "2026-02-06-235731-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "auth-tests.yml",
+      "path": "backups/2026-02-06-235731-artifact-prefix/auth-tests.yml",
+      "batch": "2026-02-06-235731-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "cache-suite.yml",
+      "path": "backups/2026-02-06-235731-artifact-prefix/cache-suite.yml",
+      "batch": "2026-02-06-235731-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "cache-management.yml",
+      "function": "caching",
+      "keywords": [
+        "cache",
+        "operations",
+        "management"
+      ],
+      "conditional_job": "job_suite"
+    },
+    {
+      "name": "ci-diagnostic-automation.yml",
+      "path": "backups/2026-02-06-235731-artifact-prefix/ci-diagnostic-automation.yml",
+      "batch": "2026-02-06-235731-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "codebase-qa-walkthrough.yml",
+      "path": "backups/2026-02-06-235731-artifact-prefix/codebase-qa-walkthrough.yml",
+      "batch": "2026-02-06-235731-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "copilot-setup-steps.yml",
+      "path": "backups/2026-02-06-235731-artifact-prefix/copilot-setup-steps.yml",
+      "batch": "2026-02-06-235731-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "flatten-repo-download.yml",
+      "path": "backups/2026-02-06-235731-artifact-prefix/flatten-repo-download.yml",
+      "batch": "2026-02-06-235731-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "generate-repository-structure.yml",
+      "path": "backups/2026-02-06-235731-artifact-prefix/generate-repository-structure.yml",
+      "batch": "2026-02-06-235731-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "genesis-bootstrap.yml",
+      "path": "backups/2026-02-06-235731-artifact-prefix/genesis-bootstrap.yml",
+      "batch": "2026-02-06-235731-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "notebooklm-sync.yml",
+      "path": "backups/2026-02-06-235731-artifact-prefix/notebooklm-sync.yml",
+      "batch": "2026-02-06-235731-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "phase34-codeql-alert-fetch.yml",
+      "path": "backups/2026-02-06-235731-artifact-prefix/phase34-codeql-alert-fetch.yml",
+      "batch": "2026-02-06-235731-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "pypi-publish.yml",
+      "path": "backups/2026-02-06-235731-artifact-prefix/pypi-publish.yml",
+      "batch": "2026-02-06-235731-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "root-org-validation.yml",
+      "path": "backups/2026-02-06-235731-artifact-prefix/root-org-validation.yml",
+      "batch": "2026-02-06-235731-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "security-scan.yml",
+      "path": "backups/2026-02-06-235731-artifact-prefix/security-scan.yml",
+      "batch": "2026-02-06-235731-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "semgrep_sarif.yml",
+      "path": "backups/2026-02-06-235731-artifact-prefix/semgrep_sarif.yml",
+      "batch": "2026-02-06-235731-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "workflow-analytics-manual.yml",
+      "path": "backups/2026-02-06-235731-artifact-prefix/workflow-analytics-manual.yml",
+      "batch": "2026-02-06-235731-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "workflow-analytics-scheduled.yml",
+      "path": "backups/2026-02-06-235731-artifact-prefix/workflow-analytics-scheduled.yml",
+      "batch": "2026-02-06-235731-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "workflow-link-validation.yml",
+      "path": "backups/2026-02-06-235731-artifact-prefix/workflow-link-validation.yml",
+      "batch": "2026-02-06-235731-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "zendesk-knowledge-sync.yml",
+      "path": "backups/2026-02-06-235731-artifact-prefix/zendesk-knowledge-sync.yml",
+      "batch": "2026-02-06-235731-artifact-prefix",
+      "archive_type": "backup",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "agent-chain-orchestrator.yml",
+      "path": "disabled/agent-chain-orchestrator.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "agent-runtime.yml",
+      "path": "disabled/agent-runtime.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "agent_handoff.yml",
+      "path": "disabled/agent_handoff.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "audit-improvement-pipeline.yml",
+      "path": "disabled/audit-improvement-pipeline.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "auth-compliance-report.yml",
+      "path": "disabled/auth-compliance-report.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "auth-mfa-enrollment.yml",
+      "path": "disabled/auth-mfa-enrollment.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "auth-oauth-app-sync.yml",
+      "path": "disabled/auth-oauth-app-sync.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "auth-secret-rotation.yml",
+      "path": "disabled/auth-secret-rotation.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "auth-security-audit.yml",
+      "path": "disabled/auth-security-audit.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "auth-token-rotation.yml",
+      "path": "disabled/auth-token-rotation.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "auto-update-configs.yml",
+      "path": "disabled/auto-update-configs.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "automation_ingest.yml",
+      "path": "disabled/automation_ingest.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "daily-status-pipeline.yml",
+      "function": "monitoring",
+      "keywords": [
+        "ingest",
+        "automation",
+        "data"
+      ],
+      "conditional_job": "job_ingest"
+    },
+    {
+      "name": "build-chatgpt-package.yml",
+      "path": "disabled/build-chatgpt-package.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "build-container-cache.yml",
+      "path": "disabled/build-container-cache.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "docker-build-push.yml",
+      "function": "deployment",
+      "keywords": [
+        "container",
+        "cache",
+        "build"
+      ],
+      "conditional_job": "job_cache_build"
+    },
+    {
+      "name": "cache-cleanup.yml",
+      "path": "disabled/cache-cleanup.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "cache-management.yml",
+      "function": "caching",
+      "keywords": [
+        "cache",
+        "cleanup",
+        "maintenance"
+      ],
+      "conditional_job": "job_cleanup"
+    },
+    {
+      "name": "cache-management.yml",
+      "path": "disabled/cache-management.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "cache-suite.yml",
+      "path": "disabled/cache-suite.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "cache-management.yml",
+      "function": "caching",
+      "keywords": [
+        "cache",
+        "operations",
+        "management"
+      ],
+      "conditional_job": "job_suite"
+    },
+    {
+      "name": "cache-warmer.yml",
+      "path": "disabled/cache-warmer.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "cache-management.yml",
+      "function": "caching",
+      "keywords": [
+        "cache",
+        "warm",
+        "preload"
+      ],
+      "conditional_job": "job_warmer"
+    },
+    {
+      "name": "cache-warmup.yml",
+      "path": "disabled/cache-warmup.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "ci-diagnostic-automation.yml",
+      "path": "disabled/ci-diagnostic-automation.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "ci-health-suite.yml",
+      "path": "disabled/ci-health-suite.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "cleanup-ci-caches.yml",
+      "path": "disabled/cleanup-ci-caches.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "code-quality.yml",
+      "path": "disabled/code-quality.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "codebase-qa-walkthrough.yml",
+      "path": "disabled/codebase-qa-walkthrough.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "codeql-chunked.yml",
+      "path": "disabled/codeql-chunked.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "codeql.yml",
+      "path": "disabled/codeql.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "cognitive-action.yml",
+      "path": "disabled/cognitive-action.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "cognitive-ooda-loop-agent.yml",
+      "function": "cognitive",
+      "keywords": [
+        "cognitive",
+        "action",
+        "OODA"
+      ],
+      "conditional_job": "job_action"
+    },
+    {
+      "name": "cognitive-aftermath.yml",
+      "path": "disabled/cognitive-aftermath.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "cognitive-brain-session-injector.yml",
+      "function": "cognitive",
+      "keywords": [
+        "cognitive",
+        "aftermath",
+        "session"
+      ],
+      "conditional_job": "job_aftermath"
+    },
+    {
+      "name": "cognitive-brain-feed.yml",
+      "path": "disabled/cognitive-brain-feed.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "cognitive-decision.yml",
+      "path": "disabled/cognitive-decision.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "cognitive-ooda-loop-agent.yml",
+      "function": "cognitive",
+      "keywords": [
+        "cognitive",
+        "decision",
+        "OODA"
+      ],
+      "conditional_job": "job_decision"
+    },
+    {
+      "name": "container-build.yml",
+      "path": "disabled/container-build.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "docker-build-push.yml",
+      "function": "deployment",
+      "keywords": [
+        "container",
+        "docker",
+        "build"
+      ],
+      "conditional_job": "job_container"
+    },
+    {
+      "name": "copilot-cascade-review.yml",
+      "path": "disabled/copilot-cascade-review.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "copilot-self-evolution.yml",
+      "path": "disabled/copilot-self-evolution.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "copilot-setup-steps.yml",
+      "path": "disabled/copilot-setup-steps.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "coverage_report.yml",
+      "path": "disabled/coverage_report.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "daily_status_cron.yml",
+      "path": "disabled/daily_status_cron.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "daily-status-pipeline.yml",
+      "function": "monitoring",
+      "keywords": [
+        "status",
+        "daily",
+        "schedule",
+        "cron"
+      ],
+      "conditional_job": "job_cron_trigger"
+    },
+    {
+      "name": "daily_status_enrich.yml",
+      "path": "disabled/daily_status_enrich.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "daily-status-pipeline.yml",
+      "function": "monitoring",
+      "keywords": [
+        "status",
+        "enrich",
+        "data"
+      ],
+      "conditional_job": "job_enrich"
+    },
+    {
+      "name": "data_validation.yml",
+      "path": "disabled/data_validation.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "decode-validate-artifact.yml",
+      "path": "disabled/decode-validate-artifact.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "deploy-cognitive-app.yml",
+      "path": "disabled/deploy-cognitive-app.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "determinism.yml",
+      "path": "disabled/determinism.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "docs.yml",
+      "path": "disabled/docs.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "pages-mkdocs.yml",
+      "function": "documentation",
+      "keywords": [
+        "docs",
+        "documentation",
+        "build"
+      ],
+      "conditional_job": "job_docs_legacy"
+    },
+    {
+      "name": "documentation-suite.yml",
+      "path": "disabled/documentation-suite.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "draft-audit-pr.yml",
+      "path": "disabled/draft-audit-pr.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "duplicate-detection-weekly.yml",
+      "path": "disabled/duplicate-detection-weekly.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "generate-repository-structure.yml",
+      "path": "disabled/generate-repository-structure.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "html_visual_baseline.yml",
+      "path": "disabled/html_visual_baseline.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "integration-gated.yml",
+      "path": "disabled/integration-gated.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "optimized-ci.yml",
+      "function": "testing",
+      "keywords": [
+        "integration",
+        "e2e",
+        "test"
+      ],
+      "conditional_job": "job_integration_tests"
+    },
+    {
+      "name": "mcp-ci.yml",
+      "path": "disabled/mcp-ci.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "optimized-ci.yml",
+      "function": "testing",
+      "keywords": [
+        "MCP",
+        "integration",
+        "CI"
+      ],
+      "conditional_job": "job_mcp_tests"
+    },
+    {
+      "name": "post-merge-validation.yml",
+      "path": "disabled/post-merge-validation.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "pre-release-deployment.yml",
+      "path": "disabled/pre-release-deployment.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "produce-trend.yml",
+      "path": "disabled/produce-trend.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "daily-status-pipeline.yml",
+      "function": "monitoring",
+      "keywords": [
+        "trend",
+        "analysis",
+        "report"
+      ],
+      "conditional_job": "job_trends"
+    },
+    {
+      "name": "report_publish.yml",
+      "path": "disabled/report_publish.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "daily-status-pipeline.yml",
+      "function": "monitoring",
+      "keywords": [
+        "report",
+        "publish",
+        "distribution"
+      ],
+      "conditional_job": "job_publish"
+    },
+    {
+      "name": "security-scan.yml",
+      "path": "disabled/security-scan.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "security-suite.yml",
+      "path": "disabled/security-suite.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "self-healing-ci.yml",
+      "path": "disabled/self-healing-ci.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "self-healing-feedback-loop.yml",
+      "path": "disabled/self-healing-feedback-loop.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "self-healing.yml",
+      "path": "disabled/self-healing.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "semgrep_sarif.yml",
+      "path": "disabled/semgrep_sarif.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "template-validation.yml",
+      "path": "disabled/template-validation.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "workflow-validation.yml",
+      "function": "validation",
+      "keywords": [
+        "template",
+        "validation",
+        "check"
+      ],
+      "conditional_job": "job_template_validation"
+    },
+    {
+      "name": "test-analytics-failure-sim.yml",
+      "path": "disabled/test-analytics-failure-sim.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "test-comprehensive.yml",
+      "path": "disabled/test-comprehensive.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "optimized-ci.yml",
+      "function": "testing",
+      "keywords": [
+        "comprehensive",
+        "test",
+        "full-suite"
+      ],
+      "conditional_job": "job_comprehensive"
+    },
+    {
+      "name": "test-suite.yml",
+      "path": "disabled/test-suite.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "optimized-ci.yml",
+      "function": "testing",
+      "keywords": [
+        "test",
+        "unit",
+        "pytest",
+        "CI"
+      ],
+      "conditional_job": "job_test_suite"
+    },
+    {
+      "name": "token-rotation.yml",
+      "path": "disabled/token-rotation.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "validate-docs-enhanced.yml",
+      "path": "disabled/validate-docs-enhanced.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "pages-mkdocs.yml",
+      "function": "documentation",
+      "keywords": [
+        "docs",
+        "validation",
+        "enhanced"
+      ],
+      "conditional_job": "job_validate_docs_enhanced"
+    },
+    {
+      "name": "validate-docs.yml",
+      "path": "disabled/validate-docs.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "pages-mkdocs.yml",
+      "function": "documentation",
+      "keywords": [
+        "docs",
+        "validation",
+        "link-check"
+      ],
+      "conditional_job": "job_validate_docs"
+    },
+    {
+      "name": "validate-secrets-documentation.yml",
+      "path": "disabled/validate-secrets-documentation.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "workflow-analytics-manual.yml",
+      "path": "disabled/workflow-analytics-manual.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "workflow-analytics-scheduled.yml",
+      "path": "disabled/workflow-analytics-scheduled.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "workflow-health-check.yml",
+      "path": "disabled/workflow-health-check.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "unknown",
+      "function": "other",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "workflow-lint.yml",
+      "path": "disabled/workflow-lint.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "workflow-validation.yml",
+      "function": "validation",
+      "keywords": [
+        "lint",
+        "workflow",
+        "validation"
+      ],
+      "conditional_job": "job_lint"
+    },
+    {
+      "name": "workflow-validator.yml",
+      "path": "disabled/workflow-validator.yml",
+      "batch": "disabled",
+      "archive_type": "disabled",
+      "master_workflow": "workflow-validation.yml",
+      "function": "validation",
+      "keywords": [
+        "validate",
+        "workflow",
+        "check"
+      ],
+      "conditional_job": "job_validator"
+    },
+    {
+      "name": "pr3178-pytest-execution.yml",
+      "path": "s174-consolidation/pr3178-pytest-execution.yml",
+      "batch": "s174-consolidation",
+      "archive_type": "consolidation",
+      "master_workflow": "unknown",
+      "function": "sprint-174",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "self-healing.yml",
+      "path": "s174-consolidation/self-healing.yml",
+      "batch": "s174-consolidation",
+      "archive_type": "consolidation",
+      "master_workflow": "unknown",
+      "function": "sprint-174",
+      "keywords": [],
+      "conditional_job": null
+    },
+    {
+      "name": "self_healing_ci.yml",
+      "path": "s174-consolidation/self_healing_ci.yml",
+      "batch": "s174-consolidation",
+      "archive_type": "consolidation",
+      "master_workflow": "unknown",
+      "function": "sprint-174",
+      "keywords": [],
+      "conditional_job": null
+    }
+  ],
+  "statistics": {
+    "total_workflows": 204,
+    "by_function": {
+      "other": 153,
+      "monitoring": 10,
+      "deployment": 4,
+      "caching": 6,
+      "documentation": 6,
+      "testing": 10,
+      "validation": 6,
+      "cognitive": 6,
+      "sprint-174": 3
+    },
+    "by_archive_type": {
+      "backup": 129,
+      "disabled": 72,
+      "consolidation": 3
+    },
+    "master_workflows": {
+      "optimized-ci.yml": 10,
+      "pages-mkdocs.yml": 6,
+      "cache-management.yml": 6,
+      "docker-build-push.yml": 4,
+      "daily-status-pipeline.yml": 10,
+      "workflow-validation.yml": 6
+    }
+  }
+}
