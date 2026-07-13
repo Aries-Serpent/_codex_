@@ -341,7 +341,7 @@ jobs:
     - name: Install Rust toolchain
       uses: actions-rust-lang/setup-rust-toolchain@v1
     - name: Run cargo audit
-      uses: rustsec/audit-check@v1
+      uses: rustsec/audit-check@v2
       continue-on-error: true
       with:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
