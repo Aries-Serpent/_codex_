@@ -167,6 +167,9 @@ async def run_async(payload: dict[str, Any]) -> dict[str, Any]:
     include_dims: bool = bool(payload.get("include_dimensions", False))
     _default_concurrency = min(32, len(items) + 4)
     max_concurrency: int = _get_max_concurrency(payload, _default_concurrency)
+    # Treat 0 as "use default" — asyncio.Semaphore(0) would deadlock all tasks.
+    if max_concurrency == 0:
+        max_concurrency = _default_concurrency
 
     loop = asyncio.get_running_loop()
     sem = asyncio.Semaphore(max_concurrency)

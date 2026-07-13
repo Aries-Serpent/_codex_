@@ -1,5 +1,5 @@
 import pytest
-from src.codex.auth.exceptions import (
+from codex.auth.exceptions import (
     APIKeyError,
     APIKeyRevokedError,
     AuthenticationError,

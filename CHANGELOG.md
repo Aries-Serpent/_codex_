@@ -1,6 +1,39 @@
 ## [Unreleased]
 
-### PR #5317 Validation & Code Review Resolution (v0.2.3) — Workflow Readiness Gate (2026-07-13T21:31:00Z)
+### Fixed (auto-update — PR #5318 CI Rescue Round 3)
+- Fix `pytest_ignore_collect` returning `False` instead of `None` — blocked `collect_ignore` mechanism causing 180+ slow test collection errors
+- Fix `envelope.py` `_target()` catching only `(IOError, OSError)` — handler exceptions were silently swallowed
+- Fix `doc_loader.py` `_extract_frontmatter` catching only `(IOError, OSError)` — `yaml.YAMLError` from invalid YAML was unhandled
+- Fix `aais_batch/handler.py` `run_async` with `max_concurrency=0` — `asyncio.Semaphore(0)` deadlocked all tasks; now falls back to default concurrency
+- Fix `action-version-check.yml` using unsupported `--check` flag; script's default mode IS the check
+- Fix `pre-release-validation.yml` YAML indentation error in `validate-version` job checkout step
+- Fix `13-3-secrets-detection.yml` using `--string-multiline-detection` flag unsupported by detect-secrets 1.5.0
+- Fix `tests/skills/test_mypy_manager.py` — add `run` import and `SAMPLE_REDUNDANT_CAST` constant used by `TestPDALog`
+- Fix `tests/skills/test_registry.py` — add missing `import os`
+- Fix `tests/auth/*.py` — migrate legacy `from src.codex.auth.*` imports to `from codex.auth.*`
+
+### Fixed (auto-update — PR #5318)
+- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5318 (SHA `16b3e4b4`) at 2026-07-13T22:50Z [auto-generated]
+
+### v0.2.3 CI Rescue Round 2 — Fix Action Versions, REQ-4/5 Compliance (2026-07-13T22:49:50Z)
+
+**Status:** COMPLETE | **Authority:** @copilot | **Scope:** CI failure remediation round 2 | **Impact:** Resolves failing checks on PR #5318
+
+**Fixes Applied:**
+- Fix `Enforce Action Versions`: Updated `action-version-check.yml`, `codeql-alert-triage.yml`, `health-dashboard-update.yml`, `workflow-health-update.yml` to use approved versions (checkout@v5, setup-python@v6, github-script@v8)
+- REQ-4/5: AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md updated in this commit
+
+### v0.2.3 CI Rescue — Fix Import Hook, YAML, CodeQL, __version__ (2026-07-13T22:25:00Z)
+
+**Status:** COMPLETE | **Authority:** @copilot | **Scope:** CI failure remediation | **Impact:** Resolves 8 failing checks on PR #5318
+
+**Fixes Applied:**
+- Fix `conftest.py` import hook: `startswith("codex")` incorrectly intercepted `codex_ml.*` imports, redirecting them to `aries_serpent_core/` which lacks `DEFAULT_LOG_DIR`, `ReasoningConfig`, etc.
+- Fix YAML syntax error in `session-recovery-continuous-monitoring.yml` (`persist-credentials` indentation)
+- Add `upload: never` to `13-3-enterprise-compliance.yml` CodeQL analyze step to resolve SARIF conflict with repository default setup
+- Bump `codex_ml.__version__` from "0.1.0" to "0.2.3" to match `pyproject.toml`
+
+
 
 **Status:** ✅ COMPLETE | **Authority:** @copilot | **Scope:** PR validation & code review fixes | **Impact:** Production-ready v0.2.3 pre-release
 
