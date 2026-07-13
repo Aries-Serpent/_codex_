@@ -179,13 +179,13 @@ The checker validates these link patterns (shown as code examples):
 
 **Internal file links:**
 ```markdown
-[text](docs/file.md)
+[text](./file.md)
 ```
 Relative path within repository
 
 **Anchor references:**
 ```markdown
-[text](docs/file.md#anchor)
+[text](./file.md#anchor)
 ```
 Link to specific section
 

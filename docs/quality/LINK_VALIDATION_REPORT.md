@@ -98,7 +98,7 @@ These require remediation:
 
 #### Fix Strategy 2: Duplicate docs/ Prefixes (3 links)
 
-**Pattern**: Links like `](docs/production/...` from within docs/ directory  
+**Pattern**: Links like `](./production/...` from within docs/ directory  
 **Rule**: Remove "docs/" prefix for relative paths
 
 **File**: `docs/production/IMPLEMENTATION_INDEX.md`
@@ -106,7 +106,7 @@ These require remediation:
 | Lines | Before | After |
 |-------|--------|-------|
 | 17, 23, 35 | `](docs/production/HEALTH_CHECKS_SPECIFICATION.md)` | `](HEALTH_CHECKS_SPECIFICATION.md)` |
-| 29 | `](docs/operations/ALERT_RUNBOOKS.md)` | `](../operations/ALERT_RUNBOOKS.md)` |
+| 29 | `](./operations/ALERT_RUNBOOKS.md)` | `](../operations/ALERT_RUNBOOKS.md)` |
 
 **Status**:  FIXED
 

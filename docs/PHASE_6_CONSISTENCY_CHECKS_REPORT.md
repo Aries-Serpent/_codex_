@@ -185,15 +185,15 @@ Successfully implemented comprehensive CI/CD consistency checks for the Aries-Se
 
 Valid links:
 ```markdown
-[docs](docs/file.md)           # Relative
-[docs](/docs/file.md)          # Absolute
+[docs](./file.md)           # Relative
+[docs](./file.md)          # Absolute
 [section](#anchor)              # Anchor
 [external](https://github.com)  # External
 ```
 
 Invalid links (detected):
 ```markdown
-[missing](docs/nonexistent.md)  # File not found
+[missing](./nonexistent.md)  # File not found
 [bad-anchor](file.md#missing)   # Anchor missing
 ```
 

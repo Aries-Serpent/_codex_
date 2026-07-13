@@ -171,7 +171,7 @@ Workflows can be skipped/dispatched by updating these checkboxes:
 - [ ] copilot-iterative-self-healing.yml ← Optional (only if fixing flaky tests)
 - [x] cost-gate.yml                   ← Always-required
 
-**️ Note:** WEC state is preserved across all agent updates; maintainer selections ([x]) are carried forward per [WEC_PR_BODY_CONFLICTS.md](docs/workflows/WEC_PR_BODY_CONFLICTS.md).
+**️ Note:** WEC state is preserved across all agent updates; maintainer selections ([x]) are carried forward per [WEC_PR_BODY_CONFLICTS.md](./workflows/WEC_PR_BODY_CONFLICTS.md).
 ```
 
 ---
@@ -277,7 +277,7 @@ Workflows can be skipped/dispatched by updating these checkboxes:
 - [ ] copilot-iterative-self-healing.yml ← Optional (only if fixing flaky tests)
 - [x] cost-gate.yml                   ← Always-required
 
-**️ Note:** WEC state is preserved across all agent updates; maintainer selections ([x]) are carried forward per [WEC_PR_BODY_CONFLICTS.md](docs/workflows/WEC_PR_BODY_CONFLICTS.md).
+**️ Note:** WEC state is preserved across all agent updates; maintainer selections ([x]) are carried forward per [WEC_PR_BODY_CONFLICTS.md](./workflows/WEC_PR_BODY_CONFLICTS.md).
 ```
 
 ---
