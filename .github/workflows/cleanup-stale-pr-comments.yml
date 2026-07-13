@@ -91,7 +91,6 @@ jobs:
       if: steps.pr.outputs.number != ''
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      env:
         STEPS_PR_OUTPUTS_NUMBER: ${{ steps.pr.outputs.number }}
       run: "ARGS=\"--pr-number ${{ steps.pr.outputs.number }}\"\n\nif [ \"${{ steps.pr.outputs.dry_run\
         \ }}\" = \"true\" ]; then\n  ARGS=\"$ARGS --dry-run\"\nfi\n\nif [ \"${{ steps.pr.outputs.include_rescue\

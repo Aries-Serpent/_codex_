@@ -72,7 +72,7 @@ jobs:
         echo "Token delegation (COPILOT_AGENT_AUTH_ENABLED): ${GH_AUTH_ENABLED}"
 
         '
-    
+
       - name: Cache test results (Layer 3)
         uses: actions/cache@v5
         if: always()
