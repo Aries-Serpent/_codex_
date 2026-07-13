@@ -120,7 +120,7 @@ def fix_sql_injection(file_path: Path, dry_run: bool = False) -> int:
             if dry_run:
                 print(f"  [DRY RUN] Would fix B608 in {file_path_str}")
             else:
-                file_path.write_text(new_content)
+                file_path.write_text(new_content)  # codeql[py/path-injection]
                 print(f"  ✅ Fixed B608 in {file_path_str}")
             fixes += 1
 

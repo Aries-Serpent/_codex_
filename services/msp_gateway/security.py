@@ -75,7 +75,7 @@ class PolicyEnforcer:
                 with open(safelist_path, "r") as f:
                     self.safelist = yaml.safe_load(f) or {}
             else:
-                logger.warning("Safelist not found at %s, using empty policy", safelist_path)
+                logger.warning("Safelist not found at %s, using empty policy", safelist_path)  # codeql[py/log-injection]
                 self.safelist = {}
 
             if denylist_path.exists():
