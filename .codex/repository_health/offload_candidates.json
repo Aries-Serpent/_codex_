@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "scan_time": "2026-06-29T01:44:38.394979+00:00",
+    "scan_time": "2026-07-13T01:54:51.075460+00:00",
     "repo_root": "/home/runner/work/_codex_/_codex_",
     "criteria": {
       "temp_files_age_days": 90,
@@ -10,47 +10,18 @@
     }
   },
   "summary": {
-    "total_candidates": 15,
+    "total_candidates": 25,
     "by_reason": {
-      "large": 15
+      "large": 25
     },
     "by_category": {
-      "unknown": 14,
+      "unknown": 23,
+      "coverage": 1,
       "reports": 1
     },
-    "total_size_mb": 96.6
+    "total_size_mb": 188.21
   },
   "candidates": [
-    {
-      "path": "semgrep-full.json",
-      "category": "unknown",
-      "age_days": 0,
-      "size_mb": 5.47,
-      "reasons": [
-        "large_file_5.47mb"
-      ],
-      "recommendation": "compress_or_offload"
-    },
-    {
-      "path": "coverage.json",
-      "category": "unknown",
-      "age_days": 0,
-      "size_mb": 3.37,
-      "reasons": [
-        "large_file_3.37mb"
-      ],
-      "recommendation": "review_manually"
-    },
-    {
-      "path": "semgrep-verify.json",
-      "category": "unknown",
-      "age_days": 0,
-      "size_mb": 5.46,
-      "reasons": [
-        "large_file_5.46mb"
-      ],
-      "recommendation": "compress_or_offload"
-    },
     {
       "path": "semgrep-m01-check-v2.json",
       "category": "unknown",
@@ -60,6 +31,16 @@
         "large_file_3.79mb"
       ],
       "recommendation": "review_manually"
+    },
+    {
+      "path": "code_examples_catalog.json",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 11.2,
+      "reasons": [
+        "large_file_11.20mb"
+      ],
+      "recommendation": "compress_or_offload"
     },
     {
       "path": "semgrep-m01-report.sarif",
@@ -72,22 +53,12 @@
       "recommendation": "review_manually"
     },
     {
-      "path": "semgrep-final.json",
+      "path": "workflow-audit-report.json",
       "category": "unknown",
       "age_days": 0,
-      "size_mb": 5.46,
+      "size_mb": 1.67,
       "reasons": [
-        "large_file_5.46mb"
-      ],
-      "recommendation": "compress_or_offload"
-    },
-    {
-      "path": "semgrep-m01-check.json",
-      "category": "unknown",
-      "age_days": 0,
-      "size_mb": 3.77,
-      "reasons": [
-        "large_file_3.77mb"
+        "large_file_1.67mb"
       ],
       "recommendation": "review_manually"
     },
@@ -102,17 +73,37 @@
       "recommendation": "review_manually"
     },
     {
-      "path": "semgrep-v2.json",
+      "path": "artifacts/semantic_index.jsonl",
       "category": "unknown",
       "age_days": 0,
-      "size_mb": 5.46,
+      "size_mb": 1.19,
       "reasons": [
-        "large_file_5.46mb"
+        "large_file_1.19mb"
+      ],
+      "recommendation": "review_manually"
+    },
+    {
+      "path": ".codex/baselines/coverage.json",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 11.19,
+      "reasons": [
+        "large_file_11.19mb"
       ],
       "recommendation": "compress_or_offload"
     },
     {
-      "path": "coverage_reports/coverage.json",
+      "path": ".codex/baselines/coverage_post_ws1.json",
+      "category": "coverage",
+      "age_days": 0,
+      "size_mb": 18.44,
+      "reasons": [
+        "large_file_18.44mb"
+      ],
+      "recommendation": "compress_or_offload"
+    },
+    {
+      "path": ".codex/archive/artifacts/coverage/reports/coverage.json",
       "category": "reports",
       "age_days": 0,
       "size_mb": 3.4,
@@ -122,12 +113,22 @@
       "recommendation": "review_manually"
     },
     {
-      "path": ".codex/archive/OLD_ACCOUNTABILITY_REPORT_66K.md.bak",
+      "path": ".codex/archive/releases/aries-serpent-ml-0.1.0-beta3.tar.gz",
       "category": "unknown",
       "age_days": 0,
-      "size_mb": 4.05,
+      "size_mb": 1.25,
       "reasons": [
-        "large_file_4.05mb"
+        "large_file_1.25mb"
+      ],
+      "recommendation": "review_manually"
+    },
+    {
+      "path": ".codex/release-artifacts/v0.1.0-prod/aries-serpent-ml-0.1.0.tar.gz",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 2.78,
+      "reasons": [
+        "large_file_2.78mb"
       ],
       "recommendation": "review_manually"
     },
@@ -170,6 +171,106 @@
         "large_file_2.91mb"
       ],
       "recommendation": "review_manually"
+    },
+    {
+      "path": "docs-data/actions.jsonl",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 1.09,
+      "reasons": [
+        "large_file_1.09mb"
+      ],
+      "recommendation": "review_manually"
+    },
+    {
+      "path": "docs-data/allowed-source-exceptions.json",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 1.6,
+      "reasons": [
+        "large_file_1.60mb"
+      ],
+      "recommendation": "review_manually"
+    },
+    {
+      "path": "docs-data/sections.jsonl",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 2.05,
+      "reasons": [
+        "large_file_2.05mb"
+      ],
+      "recommendation": "review_manually"
+    },
+    {
+      "path": "docs-data/blocks.jsonl",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 17.7,
+      "reasons": [
+        "large_file_17.70mb"
+      ],
+      "recommendation": "compress_or_offload"
+    },
+    {
+      "path": "docs-data/relationships.jsonl",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 20.03,
+      "reasons": [
+        "large_file_20.03mb"
+      ],
+      "recommendation": "compress_or_offload"
+    },
+    {
+      "path": "docs-data/generated/agent-context.json",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 1.6,
+      "reasons": [
+        "large_file_1.60mb"
+      ],
+      "recommendation": "review_manually"
+    },
+    {
+      "path": "docs-data/generated/markdown-inventory.json",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 2.1,
+      "reasons": [
+        "large_file_2.10mb"
+      ],
+      "recommendation": "review_manually"
+    },
+    {
+      "path": "docs-data/generated/search-index.jsonl",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 4.91,
+      "reasons": [
+        "large_file_4.91mb"
+      ],
+      "recommendation": "review_manually"
+    },
+    {
+      "path": "docs-data/generated/candidate-inventory.json",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 2.54,
+      "reasons": [
+        "large_file_2.54mb"
+      ],
+      "recommendation": "review_manually"
+    },
+    {
+      "path": "docs-data/generated/docs.sqlite",
+      "category": "unknown",
+      "age_days": 0,
+      "size_mb": 23.34,
+      "reasons": [
+        "large_file_23.34mb"
+      ],
+      "recommendation": "compress_or_offload"
     }
   ]
 }
