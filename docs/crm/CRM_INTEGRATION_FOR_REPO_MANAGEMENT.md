@@ -18,7 +18,7 @@ The `_codex_` repository implements **CRM-native repository management**, enabli
 
 > **"Treat repository issues like customer support tickets, and bugs like CRM cases."**
 
-This approach brings enterprise-grade issue management, SLA tracking, automated routing, and analytics to software development workflows.
+This approach brings Production issue management, SLA tracking, automated routing, and analytics to software development workflows.
 
 ---
 
@@ -78,7 +78,7 @@ docs/crm/admin-runbooks/d365.md          # D365 runbook
 
 ---
 
-##  Quick Start Guide
+## Quick Start Guide
 
 ### Scenario 1: Map GitHub Issues to Zendesk Tickets
 
@@ -122,7 +122,7 @@ python -m codex.cli d365 apply-slas plan_slas.json --dry-run
 
 ---
 
-## 📋 Mapping Repository Concepts to CRM
+##  Mapping Repository Concepts to CRM
 
 | Repository Concept | Zendesk | Dynamics 365 (D365) |
 |-------------------|---------|-------------|
@@ -139,7 +139,7 @@ python -m codex.cli d365 apply-slas plan_slas.json --dry-run
 
 ---
 
-## 🔄 Workflow Examples
+##  Workflow Examples
 
 ### Workflow 1: Bug Triage with Zendesk
 
@@ -332,7 +332,7 @@ steps:
 
 ##  Documentation Index
 
-### Getting Started
+## Getting Started
 - [Zendesk Integration Deep Dive](../guides/codex_zendesk_integration_deep_dive.md)
 - [Zendesk Admin Runbook](admin-runbooks/zendesk.md)
 - [D365 Admin Runbook](admin-runbooks/d365.md)

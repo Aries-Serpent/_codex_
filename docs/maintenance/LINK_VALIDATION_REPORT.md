@@ -2,7 +2,7 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> **⚠️ DEPRECATED**: This is a legacy report from a previous validation run.
+> **️ DEPRECATED**: This is a legacy report from a previous validation run.
 >
 > **Current Status**: As of 2026-02-10, enhanced validation system deployed with:
 > - Smart false positive filtering (reduces noise by 93%)

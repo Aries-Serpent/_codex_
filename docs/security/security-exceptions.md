@@ -24,7 +24,7 @@
 
 **CRITICAL RULE**: Any code flagged by security scans (Bandit, CodeQL, Semgrep, safety, pip-audit, Gitleaks, TruffleHog) MUST be either:
 1.  **FIXED** - Vulnerability remediated
-2. 📋 **DOCUMENTED** - Explicit reason why left as-is with risk acceptance and mitigation
+2.  **DOCUMENTED** - Explicit reason why left as-is with risk acceptance and mitigation
 3.  **NEVER IGNORED** - Without documented justification
 
 ### Nosec Suppression Standards
@@ -176,7 +176,7 @@ ignore-vulnerabilities:
 **Security Impact**: None - never executed in production, isolated test environment  
 **Justification**: Required to validate security tooling works correctly  
 **Mitigation**:
-- Files clearly marked with `# SECURITY TEST FIXTURE - DO NOT USE IN PRODUCTION`
+- Files marked with `# SECURITY TEST FIXTURE - DO NOT USE IN PRODUCTION`
 - Excluded from Bandit scans via `.bandit` configuration
 - Never imported by production code
 
@@ -189,7 +189,7 @@ ignore-vulnerabilities:
 **Mitigation**:
 - All examples include security warning comments
 - Examples never deployed to production
-- Documentation clearly states "example only"
+- Documentation states "example only"
 
 ### Category: Third-Party Code (If Any)
 
@@ -234,7 +234,7 @@ Pre-existing condition not introduced by current work. Fixing requires sustained
 **Risk Acceptance**:
 - Accepted By: AI Assistant Autonomous System
 - Date: 2025-12-16
-- Review Date: 2025-12-23
+- Review Date: 2026-07-13
 - Expires: 2026-01-15 (Coverage must show improvement)
 
 **Status**: ACTIVE - Improvement in progress
@@ -294,10 +294,10 @@ graph LR
 
 If a security finding MUST be temporarily accepted during an incident:
 
-1. 🚨 Create emergency exception with SEC-EMERGENCY-YYYY-MM-DD-NNN ID
-2. 📋 Document minimum required information immediately
+1.  Create emergency exception with SEC-EMERGENCY-YYYY-MM-DD-NNN ID
+2.  Document minimum required information immediately
 3. ⏱️ Set 7-day expiration (maximum)
-4. 🔄 Full documentation required within 24 hours
+4.  Full documentation required within 24 hours
 5.  Remediation plan required within 48 hours
 
 **Emergency exceptions auto-expire and trigger alerts.**
@@ -307,4 +307,4 @@ If a security finding MUST be temporarily accepted during an incident:
 **Maintained by**: AI Assistant Security System  
 **Review Frequency**: per-phase  
 **Last Security Scan**: Pending (after PR merge)  
-**Next Scheduled Review**: 2025-12-23
+**Next Scheduled Review**: 2026-07-13

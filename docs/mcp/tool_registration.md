@@ -1,4 +1,6 @@
 # MCP Tool Registration
+
+**Version**: v0.2.1
 **Last Updated:** 2026-07-11
 
 **Last Updated: 2026-07-11
@@ -723,9 +725,7 @@ def test_json_schema_generation():
 - Required parameters first, optional last
 - Use sensible defaults for optional parameters
 - Validate enums for constrained values
-- Document parameter constraints clearly
-
-### Handler Implementation
+- Document parameter constraints ### Handler Implementation
 
 - Use async handlers for I/O operations
 - Validate input parameters
@@ -751,7 +751,7 @@ def test_json_schema_generation():
 
 **Operational Status:**  **ACTIVE** - Production-ready with Python/Node implementations
 
-## ⚖️ Verification Checklist
+## ️ Verification Checklist
 
 - [x] Tool definition model (name, description, parameters)
 - [x] ToolRegistry implementation
@@ -773,7 +773,7 @@ def test_json_schema_generation():
 - Tool handler implementations
 - JSON Schema validation
 
-## 📈 Success Metrics
+##  Success Metrics
 
 | Metric | Target | Current | Status |
 |--------|--------|---------|--------|
@@ -787,7 +787,7 @@ def test_json_schema_generation():
 
 ## ⚛️ Physics Alignment
 
-### Path 🛤️
+### Path ️
 **Tool Lifecycle Flow:**
 1. Definition → Registration → Discovery → Invocation → Execution → Response
 2. Config change → Hot reload → Updated registry
@@ -797,7 +797,7 @@ def test_json_schema_generation():
 - Server startup → Tool registration → Ready for discovery
 - Discovery → Selection → Validation → Execution
 
-### Fields 🔄
+### Fields 
 **State Management:**
 - **Registry state**: In-memory tool catalog
 - **Handler state**: Function references
@@ -807,7 +807,7 @@ def test_json_schema_generation():
 - Unregistered → Registered → Available → Invoked → Executed
 - Config update → Reload → Registry refresh
 
-### Patterns 👁️
+### Patterns ️
 **Observability:**
 - Log all tool registrations
 - Track tool invocations (count, duration, errors)
@@ -820,7 +820,7 @@ def test_json_schema_generation():
 - Factory pattern (dynamic handler loading)
 - Schema-driven validation
 
-### Redundancy 🔀
+### Redundancy 
 **Failure Modes:**
 1. **Duplicate registration** → Error, reject
 2. **Handler missing** → Error on execution
@@ -832,18 +832,18 @@ def test_json_schema_generation():
 - Graceful degradation (skip failed tools)
 - Fallback to default tools if config missing
 
-### Balance ⚖️
+### Balance ️
 **Flexibility vs Validation:**
 -  Dynamic registration (flexible)
 -  Schema validation (safe)
-- ⚖️ Trade-off: Loose types vs strict validation
+- ️ Trade-off: Loose types vs strict validation
 
 **Performance vs Features:**
 - Fast in-memory registry vs persistent storage
 - Simple sync handlers vs async with concurrency
 - Static registration vs dynamic hot reload
 
-## ⚡ Energy Distribution
+##  Energy Distribution
 
 | Priority | Component | Energy | Justification |
 |----------|-----------|--------|---------------|

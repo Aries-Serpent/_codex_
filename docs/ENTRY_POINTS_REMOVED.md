@@ -19,11 +19,11 @@ This document maintains clarity about:
 
 | Command | Module Reference | Reason | Status |
 |---------|------------------|--------|--------|
-| `codex-train` | `codex_ml.cli.entrypoints:train_main` | Requires torch, transformers | ⏳ Runtime |
-| `codex-eval` | `codex_ml.cli.entrypoints:eval_main` | Requires torch, transformers | ⏳ Runtime |
-| `codex-infer` | `codex_ml.cli.infer:main` | Requires torch, transformers | ⏳ Runtime |
-| `codex-validate-config` | `codex_ml.cli.validate:main` | Requires runtime infrastructure | ⏳ Runtime |
-| `codex-perf` | `codex_ml.cli.perf.bench:main` | Requires performance testing deps | ⏳ Runtime |
+| `codex-train` | `codex_ml.cli.entrypoints:train_main` | Requires torch, transformers |  Runtime |
+| `codex-eval` | `codex_ml.cli.entrypoints:eval_main` | Requires torch, transformers |  Runtime |
+| `codex-infer` | `codex_ml.cli.infer:main` | Requires torch, transformers |  Runtime |
+| `codex-validate-config` | `codex_ml.cli.validate:main` | Requires runtime infrastructure |  Runtime |
+| `codex-perf` | `codex_ml.cli.perf.bench:main` | Requires performance testing deps |  Runtime |
 
 ### Code Analysis (Requires [full] profile or specific subsystems)
 
@@ -41,26 +41,26 @@ This document maintains clarity about:
 
 | Command | Module Reference | Reason | Status |
 |---------|------------------|--------|--------|
-| `codex-list-plugins` | `codex_ml.cli.list_plugins:main` | Plugin system requires full profile | ⏳ Full |
-| `codex-ndjson` | `codex_utils.cli.ndjson_summary:main` | Utility requiring extended functionality | ⏳ Full |
-| `codex-offline-bootstrap` | `codex_ml.cli.offline_bootstrap:main` | Bootstrap requires full environment | ⏳ Full |
-| `codex-tokenizer` | `tokenization.cli:app` | Requires tokenization infrastructure | ⏳ Full |
-| `codex-setup` | `cli.setup:main` | Setup requires full infrastructure | ⏳ Full |
-| `codex-patch-runner` | `cli.patch_runner:main` | Requires full CLI infrastructure | ⏳ Full |
-| `codex-update-runner` | `cli.update_runner:main` | Requires full CLI infrastructure | ⏳ Full |
-| `codex-script` | `cli.script_polish:main` | Script processing requires full profile | ⏳ Full |
-| `codex-workflow` | `cli.workflow:main` | Workflow requires full infrastructure | ⏳ Full |
-| `codex-task-sequence` | `cli.task_sequence:main` | Task system requires full profile | ⏳ Full |
-| `codex-ast-upgrade` | `cli.ast_upgrade:main` | AST tools require full profile | ⏳ Full |
-| `codex-audit-runner` | `cli.audit_runner_root:main` | Auditing requires full infrastructure | ⏳ Full |
+| `codex-list-plugins` | `codex_ml.cli.list_plugins:main` | Plugin system requires full profile |  Full |
+| `codex-ndjson` | `codex_utils.cli.ndjson_summary:main` | Utility requiring extended functionality |  Full |
+| `codex-offline-bootstrap` | `codex_ml.cli.offline_bootstrap:main` | Bootstrap requires full environment |  Full |
+| `codex-tokenizer` | `tokenization.cli:app` | Requires tokenization infrastructure |  Full |
+| `codex-setup` | `cli.setup:main` | Setup requires full infrastructure |  Full |
+| `codex-patch-runner` | `cli.patch_runner:main` | Requires full CLI infrastructure |  Full |
+| `codex-update-runner` | `cli.update_runner:main` | Requires full CLI infrastructure |  Full |
+| `codex-script` | `cli.script_polish:main` | Script processing requires full profile |  Full |
+| `codex-workflow` | `cli.workflow:main` | Workflow requires full infrastructure |  Full |
+| `codex-task-sequence` | `cli.task_sequence:main` | Task system requires full profile |  Full |
+| `codex-ast-upgrade` | `cli.ast_upgrade:main` | AST tools require full profile |  Full |
+| `codex-audit-runner` | `cli.audit_runner_root:main` | Auditing requires full infrastructure |  Full |
 
 ## Legend
 
 | Status | Meaning |
 |--------|---------|
 |  Core | Available in [core] profile |
-| ⏳ Runtime | Enabled in [runtime] profile |
-| ⏳ Full | Enabled in [full] profile |
+|  Runtime | Enabled in [runtime] profile |
+|  Full | Enabled in [full] profile |
 |  Not Implemented | Module does not exist in codebase |
 
 ## Activation Plan

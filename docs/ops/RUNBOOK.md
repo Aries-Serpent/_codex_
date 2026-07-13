@@ -22,13 +22,13 @@
 
 ```bash
 # lint + format (Python)
-ruff check src tests && ruff format --check .     # pass=Π_lint ✓   [oai_citation:0‡Astral Docs](https://docs.astral.sh/ruff/?utm_source=chatgpt.com)
+ruff check src tests && ruff format --check .     # pass=Π_lint    [oai_citation:0‡Astral Docs](https://docs.astral.sh/ruff/?utm_source=chatgpt.com)
 
 # tests + coverage gate
-pytest -q --cov --cov-fail-under=3.5              # pass=Π_tests ⋂ Π_cov ✓   [oai_citation:1‡pytest-cov](https://pytest-cov.readthedocs.io/en/latest/config.html?utm_source=chatgpt.com)
+pytest -q --cov --cov-fail-under=3.5              # pass=Π_tests ⋂ Π_cov    [oai_citation:1‡pytest-cov](https://pytest-cov.readthedocs.io/en/latest/config.html?utm_source=chatgpt.com)
 
 # (optional) type checks if configured
-pyright                                            # pass=Π_types ✓
+pyright                                            # pass=Π_types 
 
 # one-line smoke (if Makefile present)
 make lint && make test

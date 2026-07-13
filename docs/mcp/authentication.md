@@ -306,7 +306,7 @@ MCP_OFFLINE=false MCP_API_KEY=test-key python scripts/validate_mcp.py --run-http
 
 **Operational Status:**  **ACTIVE** - Production-ready with FastAPI/Workers implementations
 
-## ⚖️ Verification Checklist
+## ️ Verification Checklist
 
 - [x] API key validation via `X-MCP-API-Key` header
 - [x] Fallback to `Authorization: Bearer` token
@@ -325,7 +325,7 @@ MCP_OFFLINE=false MCP_API_KEY=test-key python scripts/validate_mcp.py --run-http
 - TLS certificate for production deployments
 - Generated API keys (32+ byte entropy recommended)
 
-## 📈 Success Metrics
+##  Success Metrics
 
 | Metric | Target | Current | Status |
 |--------|--------|---------|--------|
@@ -340,7 +340,7 @@ MCP_OFFLINE=false MCP_API_KEY=test-key python scripts/validate_mcp.py --run-http
 
 ## ⚛️ Physics Alignment
 
-### Path 🛤️
+### Path ️
 **Sequential Authentication Flow:**
 1. Extract API key from request headers (`X-MCP-API-Key` → `Authorization`)
 2. Check offline mode bypass
@@ -351,7 +351,7 @@ MCP_OFFLINE=false MCP_API_KEY=test-key python scripts/validate_mcp.py --run-http
 - Header extraction → Validation → Authorization decision
 - No authentication = No API access (except offline mode)
 
-### Fields 🔄
+### Fields 
 **State Management:**
 - **Stateless:** Each request independently validated
 - **Secret Rotation:** Dual-key support during transition
@@ -362,7 +362,7 @@ MCP_OFFLINE=false MCP_API_KEY=test-key python scripts/validate_mcp.py --run-http
 - Platform secrets (production: Fly, Cloudflare)
 - Fallback defaults (dev-key for local only)
 
-### Patterns 👁️
+### Patterns ️
 **Observability:**
 - Log all authentication attempts (success/failure)
 - Track API key usage per principal
@@ -372,9 +372,9 @@ MCP_OFFLINE=false MCP_API_KEY=test-key python scripts/validate_mcp.py --run-http
 **Common Patterns:**
 - Dependency injection (FastAPI `Depends`)
 - Middleware authentication (Workers)
-- Header-based auth (industry standard)
+- Header-based auth
 
-### Redundancy 🔀
+### Redundancy 
 **Failure Modes:**
 1. **Missing key** → 401 Unauthorized
 2. **Invalid key** → 401 Unauthorized + log attempt
@@ -386,19 +386,19 @@ MCP_OFFLINE=false MCP_API_KEY=test-key python scripts/validate_mcp.py --run-http
 - Offline mode for local development
 - Multiple header support (X-MCP-API-Key, Authorization)
 
-### Balance ⚖️
+### Balance ️
 **Security vs Usability:**
 -  Simple API key model (low friction)
 -  Offline bypass for development
 -  Production-grade secret management
-- ⚖️ Trade-off: API keys vs OAuth2 (complexity vs features)
+- ️ Trade-off: API keys vs OAuth2 (complexity vs features)
 
 **Performance vs Security:**
 - Fast validation (3-5ms) vs cryptographic signing
 - Header-based vs session-based auth
 - Stateless validation vs centralized auth service
 
-## ⚡ Energy Distribution
+##  Energy Distribution
 
 | Priority | Component | Energy | Justification |
 |----------|-----------|--------|---------------|

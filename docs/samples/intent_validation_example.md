@@ -8,10 +8,10 @@
 We will add local-only evaluator & fence checks, plus the approval-gate template and docs. We will not enable any GitHub Actions. Success means deterministic local runs, updated docs, ADRs, and small, reviewable patches.
 
 **Assumptions**
-- ✓ Python 3.12+ available locally.
-- ✓ `pre-commit` is allowed for local hooks.
+-  Python 3.12+ available locally.
+-  `pre-commit` is allowed for local hooks.
 - ? New docs should appear in mkdocs nav (confirm).
-- ⚠️ License header format for new Python files (needs confirmation).
+- ️ License header format for new Python files (needs confirmation).
 
 **Open Questions**
 1. Should evaluator weights be versioned in the filename (e.g., `v3`)?  

@@ -173,7 +173,7 @@ class RAGMetrics:
 | Cache Hit Rate | N/A | >70% |
 | Documentation Pages | 1 | 5+ |
 
-## 🔄 Continuous Improvement
+##  Continuous Improvement
 
 **Monthly Review Checklist**:
 - [ ] Security audit (dependency updates, CVE scanning)

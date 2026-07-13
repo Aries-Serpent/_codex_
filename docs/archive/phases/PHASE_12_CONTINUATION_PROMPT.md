@@ -213,45 +213,45 @@ PR #2858 review comments addressed:
 
 ### Tier 1 Agents (GitHub Team) - Production Ready 
 
-1. **github-auth-manager** (v1.0.0)
+1. **github-auth-manager** (v0.2.1)
    - Status:  Active
    - Workflow: `auth-token-rotation.yml`
    - Capabilities: OAuth, MFA, token rotation
 
-2. **github-security-enforcer** (v1.0.0)
+2. **github-security-enforcer** (v0.2.1)
    - Status:  Active
    - Workflow: `auth-security-audit.yml`
    - Capabilities: Security scanning, compliance
 
-3. **github-workflow-optimizer** (v1.0.0)
+3. **github-workflow-optimizer** (v0.2.1)
    - Status:  Active
    - Workflow: Manual trigger
    - Capabilities: Performance optimization
 
-4. **github-test-orchestrator** (v1.0.0) ⭐ NEW
+4. **github-test-orchestrator** (v0.2.1) ⭐ NEW
    - Status: 🆕 Just Implemented
    - Workflow: TBD
    - Capabilities: Test execution, flaky detection
 
-5. **github-deployment-gatekeeper** (v1.0.0) ⭐ NEW
+5. **github-deployment-gatekeeper** (v0.2.1) ⭐ NEW
    - Status: 🆕 Just Implemented
    - Workflow: TBD
    - Capabilities: Deployment validation, rollback
 
 ### Tier 2 Agents (Copilot Pro+) - Planned for Phase 12
 
-6. **github-code-reviewer** (v1.0.0)
-   - Status: 📋 Designed, awaiting implementation
+6. **github-code-reviewer** (v0.2.1)
+   - Status:  Designed, awaiting implementation
    - Requirements: Copilot Pro+ license
    - Capabilities: AI code review, suggestions
 
-7. **github-architecture-analyzer** (v1.0.0)
-   - Status: 📋 Planned
+7. **github-architecture-analyzer** (v0.2.1)
+   - Status:  Planned
    - Requirements: Copilot Pro+ license
    - Capabilities: System design validation
 
-8. **github-predictive-maintenance** (v1.0.0)
-   - Status: 📋 Planned
+8. **github-predictive-maintenance** (v0.2.1)
+   - Status:  Planned
    - Requirements: Copilot Pro+ license
    - Capabilities: ML-based predictions
 

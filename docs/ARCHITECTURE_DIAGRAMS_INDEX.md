@@ -69,7 +69,7 @@
 2. Access training data → [Data Flow Architecture](architecture/DATA_FLOW_ARCHITECTURE.md)
 3. Understand data pipeline → [Component Dependencies](architecture/COMPONENT_DEPENDENCIES.md)
 
-### 🔧 DevOps/SRE
+###  DevOps/SRE
 **Learn how to**:
 1. Deploy the system → [Deployment Architecture](architecture/DEPLOYMENT_ARCHITECTURE.md)
 2. Monitor performance → [Monitoring Architecture](monitoring/MONITORING_ARCHITECTURE.md)
@@ -96,7 +96,7 @@
 
 ---
 
-## 🔍 By Topic
+##  By Topic
 
 ### Core Architecture
 - [5-Layer Architecture](architecture/5_LAYER_ARCHITECTURE.md)
@@ -175,19 +175,19 @@
 
 ---
 
-## 📈 Coverage Roadmap
+##  Coverage Roadmap
 
 ###  Phase 1 Complete (17 diagrams, 15.7%)
 - System architecture foundations
 - Critical workflows
 - Operational architecture
 
-### 🔄 Phase 2 In Progress (15 diagrams, estimated 3-4 hours)
+###  Phase 2 In Progress (15 diagrams, estimated 3-4 hours)
 - Component-level details (CLI, RAG, Database, etc.)
 - Integration patterns
 - Configuration systems
 
-### ⏳ Phase 3 Planned (5 diagrams, 1 hour)
+###  Phase 3 Planned (5 diagrams, 1 hour)
 - Integration points (GitHub, Zendesk, Cloud)
 - External service connections
 

@@ -298,7 +298,7 @@ timeline
 
 ---
 
-## 🔗 Cross-References
+##  Cross-References
 
 - [Evolution Timeline](EVOLUTION_TIMELINE.md) — Detailed phase history
 - [Planset Registry](PLANSET_REGISTRY.md) — Queryable planset catalog

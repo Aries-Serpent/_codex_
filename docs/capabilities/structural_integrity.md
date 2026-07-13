@@ -107,10 +107,10 @@ project/
 **Repository Structure:**
 ```
 project/
-├── myapp/          # ⚠️ Duplicate at root
+├── myapp/          # ️ Duplicate at root
 │   └── utils.py
 ├── src/
-│   └── myapp/      # ⚠️ Also in src/
+│   └── myapp/      # ️ Also in src/
 │       └── core.py
 ```
 
@@ -136,7 +136,7 @@ project/
 **Repository Structure:**
 ```
 project/
-├── torch/          # ⚠️ Shadows PyTorch
+├── torch/          # ️ Shadows PyTorch
 │   └── custom.py
 ├── src/
 │   └── myapp/
@@ -161,10 +161,10 @@ project/
 **Repository Structure:**
 ```
 project/
-├── numpy/          # ⚠️ Shadows NumPy
-├── utils/          # ⚠️ Duplicate
+├── numpy/          # ️ Shadows NumPy
+├── utils/          # ️ Duplicate
 └── src/
-    └── utils/      # ⚠️ Duplicate
+    └── utils/      # ️ Duplicate
 ```
 
 **Detection Result:**

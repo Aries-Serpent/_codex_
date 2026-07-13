@@ -1,4 +1,6 @@
 # PyPI Trusted Publishing Setup for GitHub Actions
+
+**Version**: v0.2.1
 **Last Updated:** 2026-07-11
 
 > **Generated:** 2026-02-10T08:00:00Z | **Author:** mbaetiong  
@@ -25,7 +27,7 @@ Non-user identities cannot create new projects.
 
 ---
 
-## 📋 Prerequisites
+##  Prerequisites
 
 **Required Before Starting:**
 - [ ] PyPI user account (not TestPyPI) with verified email
@@ -291,11 +293,11 @@ Checking dist/codex_ml-0.0.0.tar.gz: PASSED
 **Expected Workflow Logs:**
 
 ```
-🔍 Build Distribution
+ Build Distribution
  Build package
  Check distribution
 
-🔍 Publish to PyPI
+ Publish to PyPI
 Requesting OIDC token from GitHub  # pragma: allowlist secret
  Token received  # pragma: allowlist secret
 Uploading distributions to https://upload.pypi.org/legacy/
@@ -447,7 +449,7 @@ curl -s https://pypi.org/pypi/codex-ml/json | jq '.info.version'
 
 ---
 
-## 🔧 Troubleshooting Guide
+##  Troubleshooting Guide
 
 ### Issue 1: "Publisher mismatch"
 
@@ -527,7 +529,7 @@ Trusted publishing exchange failure: workflow not found
 
 ---
 
-## 🔄 Related Workflows
+##  Related Workflows
 
 **TestPyPI Setup (Optional):**
 

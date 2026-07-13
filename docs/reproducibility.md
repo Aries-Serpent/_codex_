@@ -3,7 +3,7 @@
 **Version:** v0.2.1
 
 > Generated: 2026-06-22 02:35:00 | Author: mbaetiong
-Roles: [Primary], [Secondary] ⚡ Energy: [5]
+Roles: [Primary], [Secondary]  Energy: [5]
 
 ## Overview
 This document outlines how training runs in the `_codex_` project preserve reproducibility and how to restore or continue experiments deterministically. It has been updated to include: CUDNN determinism helper, checkpoint SHA256 hashing, config snapshot persistence, and checkpoint retention utilities.

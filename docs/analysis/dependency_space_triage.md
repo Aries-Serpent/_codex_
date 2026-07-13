@@ -62,7 +62,7 @@ Archival-conscious adjustment: treat removal or segmentation of large dependency
 | Keep | Core tests require; lean size | Remain in dev set | No archival action |
 | Optional | Feature-flag / importorskip / shim fallback | Move to segmented requirements file | If removed from base spec: note in CHANGELOG |
 | Defer | Only used in specialized workflows (evaluation, notebooks, distributed) | Install in dedicated nox session | Planner entry + ADR if broad removal |
-| Purge | GPU vendor wheels in CPU posture or clearly wasteful | Block or uninstall + evidence log snapshot | Evidence line + optional `archive prune-request` if code stubs impacted |
+| Purge | GPU vendor wheels in CPU posture or wasteful | Block or uninstall + evidence log snapshot | Evidence line + optional `archive prune-request` if code stubs impacted |
 | Consolidate | Overlapping libs where minimal subset suffices | Replace with slimmer stack | Markdown pointer or Python shim for deprecated sub-module paths |
 
 ---

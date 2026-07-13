@@ -4,7 +4,7 @@
 
 > Generated: 2026-06-22 00:32:28 | Author: mbaetiong
 
-Roles: [Primary], [Secondary] ⚡ Energy: [3]
+Roles: [Primary], [Secondary]  Energy: [3]
 
 This document merges the last applied atomic diffs (training CLI, checkpoint utilities, API /infer wiring, secret filtering) with the implementation summary provided. It is an authoritative, concise reference for reviewers and maintainers.
 

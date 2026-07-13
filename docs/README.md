@@ -22,7 +22,7 @@ Complete documentation for the _codex_ AI/ML platform. Find guides, API referenc
 3. **Code & test:** [Contributing Guidelines](CONTRIBUTING.md), [Testing Guide](TESTING.md)
 4. **Integrate:** [API Reference](API_REFERENCE.md), [CLI Guide](./api/cli.md)
 
-### 🔧 **DevOps & Operations**
+###  **DevOps & Operations**
 1. **Deploy:** [Deployment Guide](DEPLOYMENT_GUIDE.md)
 2. **Configure:** [Configuration Guide](CONFIGURATION_GUIDE.md)
 3. **Troubleshoot:** [Troubleshooting Guide](TROUBLESHOOTING.md)
@@ -37,7 +37,7 @@ Complete documentation for the _codex_ AI/ML platform. Find guides, API referenc
 
 ## Documentation Structure
 
-### Getting Started
+## Getting Started
 - [Quickstart Guide](getting-started.md) — Get running in 5 minutes
 - [Installation](setup/environment.md) — Detailed setup instructions
 - [Contributing](CONTRIBUTING.md) — Contribute to the project

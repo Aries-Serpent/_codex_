@@ -207,10 +207,10 @@ pip install -r requirements-ml-lite.txt  # Minimal dependencies
 
 ```bash
 # Test core imports
-python -c "import src.codex_ml; print('✓ Core installed')"
+python -c "import src.codex_ml; print(' Core installed')"
 
 # Test development tools
-python -c "import pytest; import black; print('✓ Dev tools installed')"
+python -c "import pytest; import black; print(' Dev tools installed')"
 
 # List installed packages
 pip list | grep codex
@@ -532,7 +532,7 @@ repos:
       - id: flake8
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v0.2.1
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer

@@ -31,7 +31,7 @@
 
 ---
 
-## 📝 Prompt Template Standard (v2.0)
+##  Prompt Template Standard (v2.0)
 
 ### Required Structure
 
@@ -44,7 +44,7 @@ All prompts should follow this standard format:
 **Last Updated**: YYYY-MM-DD  
 **Purpose**: [One-line description]  
 **Target Agent**: [GitHub Copilot | ChatGPT | Custom]  
-**Status**:  Active | 🟡 Draft |  Deprecated
+**Status**:  Active |  Draft |  Deprecated
 
 ---
 
@@ -67,7 +67,7 @@ All prompts should follow this standard format:
 
 ---
 
-## 📋 Instructions
+##  Instructions
 
 ### Phase 1: [Phase Name]
 1. Step 1
@@ -136,7 +136,7 @@ Success metric: `pytest --cov --cov-fail-under=80` passes
 
 **Break work** into logical phases:
 ```markdown
-## 📋 Instructions
+##  Instructions
 
 ### Phase 1: Analysis (10K tokens)
 1. Run coverage report
@@ -190,7 +190,7 @@ mypy src/
 
 ---
 
-## 🔄 Version Control
+##  Version Control
 
 ### Semantic Versioning
 

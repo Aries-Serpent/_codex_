@@ -8,7 +8,7 @@
 - [ Dependency Compatibility Matrix](#-dependency-compatibility-matrix)
   - [Core Dependencies (Python 3.12 Support)](#core-dependencies-python-312-support)
   - [Security-Critical Dependencies (IP-005)](#security-critical-dependencies-ip-005)
-- [🔍 Code Pattern Analysis](#-code-pattern-analysis)
+- [ Code Pattern Analysis](#-code-pattern-analysis)
   - [1. Type Hints - Modern Syntax ](#1-type-hints---modern-syntax-)
 - [ GOOD: Using built-in generics (PEP 585)](#-good-using-built-in-generics-pep-585)
 - [ GOOD: Union syntax (PEP 604)](#-good-union-syntax-pep-604)
@@ -24,7 +24,7 @@
 - [.github/workflows/test-comprehensive.yml](#githubworkflowstest-comprehensiveyml)
 - [🛠️ PyTorch 2.6.0 Compatibility Note](#-pytorch-260-compatibility-note)
 - [tests/conftest.py](#testsconftestpy)
-- [📋 Migration Checklist](#-migration-checklist)
+- [ Migration Checklist](#-migration-checklist)
   - [Pre-Migration Tasks](#pre-migration-tasks)
   - [Migration Execution](#migration-execution)
   - [Post-Migration Tasks](#post-migration-tasks)
@@ -33,22 +33,22 @@
   - [Option B: Gradual Migration (Support Both)](#option-b-gradual-migration-support-both)
   - [Option C: Python 3.12 as Recommended (Keep 3.11 Minimum)](#option-c-python-312-as-recommended-keep-311-minimum)
 - [ **RECOMMENDED APPROACH: Option C**](#-recommended-approach-option-c)
-- [📈 Python 3.12 Performance Benefits](#-python-312-performance-benefits)
+- [ Python 3.12 Performance Benefits](#-python-312-performance-benefits)
 - [ Security Considerations](#-security-considerations)
-- [📝 Documentation Updates Needed](#-documentation-updates-needed)
+- [ Documentation Updates Needed](#-documentation-updates-needed)
 - [🧪 Testing Strategy](#-testing-strategy)
   - [Phase 1: Local Testing (Completed )](#phase-1-local-testing-completed-)
-  - [Phase 2: CI Validation (In Progress 🔄)](#phase-2-ci-validation-in-progress-)
+  - [Phase 2: CI Validation (In Progress )](#phase-2-ci-validation-in-progress-)
   - [Phase 3: Integration Testing (Next)](#phase-3-integration-testing-next)
   - [Phase 4: Performance Testing (Next)](#phase-4-performance-testing-next)
-- [⚠️ Known Issues / Watchlist](#-known-issues--watchlist)
+- [️ Known Issues / Watchlist](#-known-issues--watchlist)
   - [1. PyTorch Profiler (FIXED )](#1-pytorch-profiler-fixed-)
   - [2. No Outstanding Issues](#2-no-outstanding-issues)
 - [ Dependency Upgrade Opportunities](#-dependency-upgrade-opportunities)
 - [ Python 3.12 New Features to Leverage](#-python-312-new-features-to-leverage)
-  - [1. PEP 701 - F-strings in Expressions ✨](#1-pep-701---f-strings-in-expressions-)
+  - [1. PEP 701 - F-strings in Expressions ](#1-pep-701---f-strings-in-expressions-)
 - [NEW in 3.12: F-strings can contain more complex expressions](#new-in-312-f-strings-can-contain-more-complex-expressions)
-- [2. PEP 695 - Type Parameter Syntax ✨](#2-pep-695---type-parameter-syntax-)
+- [2. PEP 695 - Type Parameter Syntax ](#2-pep-695---type-parameter-syntax-)
 - [NEW in 3.12: Cleaner generic type syntax](#new-in-312-cleaner-generic-type-syntax)
 - [3. Improved Error Messages ](#3-improved-error-messages-)
   - [4. Per-Interpreter GIL (PEP 684) ](#4-per-interpreter-gil-pep-684-)
@@ -64,15 +64,15 @@
   - [Recommended Next Steps:](#recommended-next-steps)
   - [Risk Assessment:  **LOW**](#risk-assessment--low)
 - [ Mission Overview](#-mission-overview)
-- [⚖️ Verification Checklist](#-verification-checklist)
-- [📈 Success Metrics](#-success-metrics)
+- [️ Verification Checklist](#-verification-checklist)
+- [ Success Metrics](#-success-metrics)
 - [⚛️ Physics Alignment](#-physics-alignment)
-  - [Path 🛤️ (Migration Route Optimization)](#path--migration-route-optimization)
-  - [Fields 🔄 (Version Transition Flow)](#fields--version-transition-flow)
-  - [Patterns 👁️ (Compatibility Recognition)](#patterns--compatibility-recognition)
-  - [Redundancy 🔀 (Multi-Version Support)](#redundancy--multi-version-support)
-  - [Balance ⚖️ (Compatibility vs Innovation)](#balance--compatibility-vs-innovation)
-- [⚡ Energy Distribution](#-energy-distribution)
+  - [Path ️ (Migration Route Optimization)](#path--migration-route-optimization)
+  - [Fields  (Version Transition Flow)](#fields--version-transition-flow)
+  - [Patterns ️ (Compatibility Recognition)](#patterns--compatibility-recognition)
+  - [Redundancy  (Multi-Version Support)](#redundancy--multi-version-support)
+  - [Balance ️ (Compatibility vs Innovation)](#balance--compatibility-vs-innovation)
+- [ Energy Distribution](#-energy-distribution)
 - [ Redundancy Patterns](#-redundancy-patterns)
 
 > **Generated:** 2026-01-22T17:30:00Z  
@@ -149,7 +149,7 @@
 
 ---
 
-## 🔍 Code Pattern Analysis
+##  Code Pattern Analysis
 
 ### 1. Type Hints - Modern Syntax 
 
@@ -214,7 +214,7 @@ async def process_batch(self, requests: list[Request]) -> list[Response]:
 - `src/codex_ml/data/loaders.py` - Async data loading
 
 **Potential Issues:**
-- ⚠️ **Watch for:** `asyncio.get_event_loop()` (deprecated in 3.12)
+- ️ **Watch for:** `asyncio.get_event_loop()` (deprecated in 3.12)
 -  **Recommendation:** Use `asyncio.get_running_loop()` or `asyncio.run()`
 
 **Assessment:**  No deprecated asyncio patterns found in primary codebase.
@@ -321,7 +321,7 @@ def disable_torch_profiler():
 
 ---
 
-## 📋 Migration Checklist
+##  Migration Checklist
 
 ### Pre-Migration Tasks
 
@@ -334,19 +334,19 @@ def disable_torch_profiler():
 
 ### Migration Execution
 
-- [ ] 🔄 Update `pyproject.toml` to `requires-python = ">=3.12"` (Optional)
-- [ ] 🔄 Update `setup.cfg` to `python_requires = >=3.12` (Optional)
-- [ ] 🔄 Run full test suite on Python 3.12
-- [ ] 🔄 Update CI/CD matrix to drop 3.11 if desired
-- [ ] 🔄 Update documentation to reflect 3.12 as baseline
+- [ ]  Update `pyproject.toml` to `requires-python = ">=3.12"` (Optional)
+- [ ]  Update `setup.cfg` to `python_requires = >=3.12` (Optional)
+- [ ]  Run full test suite on Python 3.12
+- [ ]  Update CI/CD matrix to drop 3.11 if desired
+- [ ]  Update documentation to reflect 3.12 as baseline
 
 ### Post-Migration Tasks
 
-- [ ] 📝 Update README.md with new Python version requirement
-- [ ] 📝 Add migration notes to CHANGELOG.md
-- [ ] 📝 Update Docker base images to Python 3.12
+- [ ]  Update README.md with new Python version requirement
+- [ ]  Add migration notes to CHANGELOG.md
+- [ ]  Update Docker base images to Python 3.12
 - [ ] 🧪 Run performance benchmarks (3.12 has 5-10% speedup)
-- [ ] 🔍 Monitor for any runtime issues in production
+- [ ]  Monitor for any runtime issues in production
 
 ---
 
@@ -434,7 +434,7 @@ def disable_torch_profiler():
 
 ---
 
-## 📈 Python 3.12 Performance Benefits
+##  Python 3.12 Performance Benefits
 
 | Aspect | Improvement | Impact on _codex_ |
 |--------|-------------|-------------------|
@@ -467,7 +467,7 @@ def disable_torch_profiler():
 
 ---
 
-## 📝 Documentation Updates Needed
+##  Documentation Updates Needed
 
 1. **README.md**
    - [ ] Update Python version requirement section
@@ -494,7 +494,7 @@ def disable_torch_profiler():
 - [x] Fix PyTorch profiler compatibility
 - [x] Fix test failures (10 tests fixed)
 
-### Phase 2: CI Validation (In Progress 🔄)
+### Phase 2: CI Validation (In Progress )
 - [ ] Monitor CI runs on both Python 3.11 and 3.12
 - [ ] Verify all jobs pass
 - [ ] Check coverage reports
@@ -513,7 +513,7 @@ def disable_torch_profiler():
 
 ---
 
-## ⚠️ Known Issues / Watchlist
+## ️ Known Issues / Watchlist
 
 ### 1. PyTorch Profiler (FIXED )
 - **Issue:** Type mismatch in torch.classes.profiler
@@ -538,7 +538,7 @@ While migrating to Python 3.12, consider these upgrades:
 | pydantic | ≥2.4 | 2.10+ | Better performance |  Low |
 | transformers | ≥4.48.0 | 4.48+ | Latest models |  Low |
 | torch | ≥2.6.0 | 2.6.0 |  Up-to-date |  None |
-| numpy | ≥1.26 | 2.2+ | Performance | 🟡 Medium |
+| numpy | ≥1.26 | 2.2+ | Performance |  Medium |
 | ray[serve] | ≥2.9 | 2.40+ | Bug fixes |  Low |
 
 **Recommendation:** Keep current versions, already up-to-date and secure.
@@ -547,7 +547,7 @@ While migrating to Python 3.12, consider these upgrades:
 
 ##  Python 3.12 New Features to Leverage
 
-### 1. PEP 701 - F-strings in Expressions ✨
+### 1. PEP 701 - F-strings in Expressions 
 ```python
 # NEW in 3.12: F-strings can contain more complex expressions
 debug_msg = f"User {user.name} ({
@@ -555,7 +555,7 @@ debug_msg = f"User {user.name} ({
 }) logged in at {datetime.now():%Y-%m-%d %H:%M:%S}"
 ```
 
-## 2. PEP 695 - Type Parameter Syntax ✨
+## 2. PEP 695 - Type Parameter Syntax 
 ```python
 # NEW in 3.12: Cleaner generic type syntax
 def process[T](items: list[T]) -> T:
@@ -616,11 +616,11 @@ The **_codex_** repository is in excellent shape for Python 3.12 migration:
 
 ### Recommended Next Steps:
 1.  Complete current multi-job CI fix (this PR)
-2. 📝 Update documentation to recommend Python 3.12
+2.  Update documentation to recommend Python 3.12
 3. 🐳 Update primary Docker images to Python 3.12
 4. 🧪 Run extended integration tests
 5.  Monitor performance improvements
-6. 🔄 Re-evaluate 3.11 support in Q3 2026
+6.  Re-evaluate 3.11 support in Q3 2026
 
 ### Risk Assessment:  **LOW**
 - No breaking changes required
@@ -640,7 +640,7 @@ The **_codex_** repository is in excellent shape for Python 3.12 migration:
 
 **Objective**: Provide comprehensive Python 3.11 to 3.12 migration readiness assessment for the _codex_ repository, analyzing all 37 core dependencies, code patterns, and potential blockers to enable confident version upgrade.
 
-**Energy Level**: ⚡⚡⚡⚡ (4/5) - Verification Critical
+**Energy Level**:  (4/5) - Verification Critical
 - High impact: Enables performance improvements (5-10% speedup)
 - High confidence: 95% readiness assessment (0 blockers found)
 - Long-term value: Extended security support through 2028
@@ -649,7 +649,7 @@ The **_codex_** repository is in excellent shape for Python 3.12 migration:
 
 ---
 
-## ⚖️ Verification Checklist
+## ️ Verification Checklist
 
 **Dependency Compatibility**:
 - [x] All 37 core dependencies support Python 3.12
@@ -677,7 +677,7 @@ The **_codex_** repository is in excellent shape for Python 3.12 migration:
 
 ---
 
-## 📈 Success Metrics
+##  Success Metrics
 
 | Metric | Target | Achieved | Status |
 |--------|--------|----------|--------|
@@ -698,31 +698,31 @@ The **_codex_** repository is in excellent shape for Python 3.12 migration:
 
 ## ⚛️ Physics Alignment
 
-### Path 🛤️ (Migration Route Optimization)
+### Path ️ (Migration Route Optimization)
 - **Option A (Full Migration)**: Drop 3.11 → 3.12 only (1 sprint, clean path)
 - **Option B (Gradual)**: Support both (2-3 sprints, smooth transition)
 - **Option C (Recommended)**: 3.11 minimum, 3.12 recommended (ongoing, maximum compatibility)
 - **Shortest Path**: Option C requires zero code changes (optimal)
 
-### Fields 🔄 (Version Transition Flow)
+### Fields  (Version Transition Flow)
 - **Current State**: Python ≥3.11 baseline, CI tests both versions
 - **Transition Energy**: Minimal (proactive patterns already in place)
 - **Future State**: Python 3.12 recommended, 3.11 supported
 - **Energy Conservation**: No forced upgrade reduces ecosystem disruption
 
-### Patterns 👁️ (Compatibility Recognition)
+### Patterns ️ (Compatibility Recognition)
 - **Forward-Compatible Patterns**: `from __future__ import annotations` (200+ files)
 - **Fallback Pattern**: `tomllib` → `tomli` (graceful degradation)
 - **Modern Syntax**: `dict[str, Any]` already used (no typing.Dict needed)
 - **Proactive Shims**: Deprecation warnings in tokenization compat layer
 
-### Redundancy 🔀 (Multi-Version Support)
+### Redundancy  (Multi-Version Support)
 - **CI Redundancy**: Tests on both 3.11 and 3.12 (catches version-specific issues)
 - **Docker Redundancy**: Images for both versions (user choice)
 - **Documentation Redundancy**: Migration guide + audit report + troubleshooting
 - **Rollback Path**: Keep 3.11 support for 6-12 months (safety net)
 
-### Balance ⚖️ (Compatibility vs Innovation)
+### Balance ️ (Compatibility vs Innovation)
 - **Compatibility Weight**: Support 3.11 (existing users)
 - **Innovation Weight**: Recommend 3.12 (new benefits)
 - **Trade-off Resolution**: Option C (both versions, recommend newer)
@@ -730,7 +730,7 @@ The **_codex_** repository is in excellent shape for Python 3.12 migration:
 
 ---
 
-## ⚡ Energy Distribution
+##  Energy Distribution
 
 **P0 - Migration Decision (Human Required)**:
 - Review audit report (30 min)

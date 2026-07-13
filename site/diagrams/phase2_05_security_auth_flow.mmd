@@ -1,0 +1,113 @@
+%% Security & Authentication Flow — Aries-Serpent/_codex_
+%% Phase 2.5 — Module Interaction Diagrams
+%% Auth, secrets, authorization, policy enforcement
+%% Evidence: src/security/, scripts/ci/, .github/
+
+flowchart TD
+
+    %% ── Authentication ──────────────────────────────────────────────────────
+    subgraph AUTH ["🔐 Authentication  •  src/security/"]
+        USER_INPUT["User Input\n(token, credentials)"]
+        PARSE_TOKEN["Parse Token\n(JWT, OAuth, API key)"]
+        VALIDATE_SIG["Validate Signature\n(crypto verify)"]
+        CHECK_EXPIRY["Check Expiry\n(TTL window)"]
+        EXTRACT_CLAIMS["Extract Claims\n(user_id, scope)"]
+        
+        USER_INPUT --> PARSE_TOKEN
+        PARSE_TOKEN --> VALIDATE_SIG
+        VALIDATE_SIG --> CHECK_EXPIRY
+        CHECK_EXPIRY --> EXTRACT_CLAIMS
+    end
+
+    %% ── Secrets Management ──────────────────────────────────────────────────
+    subgraph SECRETS ["🔑 Secrets Management  •  scripts/ci/"]
+        SECRET_VAULT["Secret Vault\n(GitHub Actions secrets)"]
+        SECRET_LOADER["SecretLoader\n(load from env)"]
+        SECRET_ENCRYPT["Encrypt at Rest\n(AES-256)"]
+        SECRET_AUDIT["Audit Access\n(log queries)"]
+        
+        SECRET_VAULT --> SECRET_LOADER
+        SECRET_LOADER --> SECRET_ENCRYPT
+        SECRET_ENCRYPT --> SECRET_AUDIT
+    end
+
+    %% ── Authorization ───────────────────────────────────────────────────────
+    subgraph AUTHZ ["✅ Authorization  •  src/security/"]
+        EXTRACT_CLAIMS --> LOAD_POLICY["Load Policy\n(RBAC rules)"]
+        GET_ROLE["Get User Role\n(from claims)"]
+        GET_PERMS["Get Permissions\n(role → actions)"]
+        CHECK_PERM["Check Permission\n(required vs granted)"]
+        
+        LOAD_POLICY --> GET_ROLE
+        GET_ROLE --> GET_PERMS
+        GET_PERMS --> CHECK_PERM
+    end
+
+    %% ── Secrets Scanning ────────────────────────────────────────────────────
+    subgraph SCAN ["🔍 Secrets Scanning  •  scripts/ci/"]
+        SCAN_FILES["Scan Files\n(gitleaks, truffleHog)"]
+        FIND_PATTERNS["Find Patterns\n(regex, entropy)"]
+        FALSE_POS["Filter False Positives\n(exceptions)"]
+        REDACT["Redact in Logs\n(mask output)"]
+        
+        SCAN_FILES --> FIND_PATTERNS
+        FIND_PATTERNS --> FALSE_POS
+        FALSE_POS --> REDACT
+    end
+
+    %% ── Enforcement ─────────────────────────────────────────────────────────
+    subgraph ENFORCE ["⚙️  Enforcement"]
+        AUTHZ_DECISION{"Authorized?"}
+        CHECK_PERM --> AUTHZ_DECISION
+        
+        AUTHZ_DECISION -->|"✅ yes"| ALLOW["✅ Allow Action\n(execute)"]
+        AUTHZ_DECISION -->|"❌ no"| DENY["🚫 Deny Action\n(403 Forbidden)"]
+        
+        ALLOW --> LOG_ACCESS["Log Access\n(audit trail)"]
+        DENY --> LOG_DENY["Log Denial\n(security event)"]
+    end
+
+    SECRET_AUDIT --> LOG_ACCESS
+    LOG_ACCESS --> OUTPUT["✅ Action Allowed"]
+    LOG_DENY --> INCIDENT["🚨 Incident Alert\n(to security team)"]
+
+    %% ── Policy as Code ──────────────────────────────────────────────────────
+    subgraph POLICY ["📋 Policy Management"]
+        POLICY_DEF["Policy Definition\n(YAML/JSON)"]
+        VALIDATE_POLICY["Validate Policy\n(schema check)"]
+        APPLY_POLICY["Apply Policy\n(to subjects)"]
+        AUDIT_CHANGES["Audit Changes\n(who, when)"]
+        
+        POLICY_DEF --> VALIDATE_POLICY
+        VALIDATE_POLICY --> APPLY_POLICY
+        APPLY_POLICY --> AUDIT_CHANGES
+    end
+
+    LOAD_POLICY --> POLICY_DEF
+
+    %% ── OAuth Flow (for integrations) ───────────────────────────────────────
+    subgraph OAUTH ["🔗 OAuth Integration"]
+        OAUTH_REQ["OAuth Request\n(GET /authorize)"]
+        OAUTH_CONSENT["Show Consent\n(what access)"]
+        REDIRECT["Redirect to Provider\n(GitHub, Google)"]
+        EXCHANGE_CODE["Exchange Code\n(POST /token)"]
+        STORE_REFRESH["Store Refresh Token\n(secure cache)"]
+        
+        OAUTH_REQ --> OAUTH_CONSENT
+        OAUTH_CONSENT --> REDIRECT
+        REDIRECT --> EXCHANGE_CODE
+        EXCHANGE_CODE --> STORE_REFRESH
+        STORE_REFRESH --> EXTRACT_CLAIMS
+    end
+
+    %% ── Styling ────────────────────────────────────────────────────────────
+    style AUTH fill:#16213e,color:#e0e0e0
+    style SECRETS fill:#e63946,color:#fff
+    style AUTHZ fill:#2d6a4f,color:#fff
+    style SCAN fill:#e63946,color:#fff
+    style ENFORCE fill:#1b4332,color:#fff
+    style POLICY fill:#457b9d,color:#fff
+    style OAUTH fill:#533483,color:#fff
+    style ALLOW fill:#1b4332,color:#fff
+    style DENY fill:#e63946,color:#fff
+    style OUTPUT fill:#1b4332,color:#fff

@@ -192,7 +192,7 @@ for k in priority:
         print(f'Active token: {k} ({len(v)} chars)')
         break
 else:
-    print('⚠️  No auth token found in environment')
+    print('️  No auth token found in environment')
 "
 ```
 
@@ -356,7 +356,7 @@ try:
     flag = " EXPIRED" if expired else " ACTIVE"
     print(f"  Agent token delegation:     {flag} (issued {sess.get('issued_at','')})")
 except Exception:
-    print("  Agent token delegation:     ⚠️  session file not found")
+    print("  Agent token delegation:     ️  session file not found")
 
 print("=" * 55)
 EOF

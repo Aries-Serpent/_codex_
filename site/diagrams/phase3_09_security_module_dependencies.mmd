@@ -1,0 +1,92 @@
+%% Security Module Dependencies — Aries-Serpent/_codex_
+%% Phase 3.9 — Component Relationship Diagrams
+%% Auth → secrets, policies, validation
+%% Evidence: src/security/, scripts/ci/, secrets scanning
+
+graph TB
+
+    %% ── Authentication ──────────────────────────────────────────────────────
+    subgraph AUTH ["🔐 Authentication"]
+        TOKEN_VALIDATE["Validate Token\n(JWT, signature)"]
+        EXTRACT_CLAIMS["Extract Claims\n(user_id, scope)"]
+        CHECK_EXPIRY["Check Expiry\n(TTL)"]
+    end
+
+    %% ── Secrets Dependencies ────────────────────────────────────────────────
+    subgraph SECRETS_DEP ["🔑 Secrets Dependencies"]
+        LOAD_SECRET["Load Secret\n(from vault)"]
+        DECRYPT["Decrypt\n(AES-256)"]
+        ROTATE_CHECK["Check Rotation\n(age threshold)"]
+    end
+
+    TOKEN_VALIDATE --> LOAD_SECRET
+    LOAD_SECRET --> DECRYPT
+    DECRYPT --> ROTATE_CHECK
+
+    %% ── Policy Dependencies ─────────────────────────────────────────────────
+    subgraph POLICY_DEP ["📋 Policy Dependencies"]
+        LOAD_POLICY["Load Policy\n(RBAC rules)"]
+        GET_ROLE["Get User Role\n(from claims)"]
+        GET_PERMS["Get Permissions\n(role → actions)"]
+        CHECK_PERM["Check Permission\n(required vs granted)"]
+    end
+
+    EXTRACT_CLAIMS --> LOAD_POLICY
+    LOAD_POLICY --> GET_ROLE
+    GET_ROLE --> GET_PERMS
+    GET_PERMS --> CHECK_PERM
+
+    %% ── Validation Dependencies ─────────────────────────────────────────────
+    subgraph VALIDATE_DEP ["✓ Validation Dependencies"]
+        INPUT_VALIDATE["Validate Input\n(format, type)"]
+        SANITIZE["Sanitize\n(remove injection)"]
+        CONTENT_CHECK["Content Check\n(malware scan)"]
+    end
+
+    EXTRACT_CLAIMS --> INPUT_VALIDATE
+    INPUT_VALIDATE --> SANITIZE
+    SANITIZE --> CONTENT_CHECK
+
+    %% ── Secrets Scanning Dependencies ───────────────────────────────────────
+    subgraph SCAN_DEP ["🔍 Secrets Scanning Dependencies"]
+        SCAN_FILES["Scan Files\n(gitleaks)"]
+        DETECT_PATTERNS["Detect Patterns\n(entropy, regex)"]
+        FALSE_POS["Filter False Positives"]
+        REDACT["Redact in Output"]
+    end
+
+    INPUT_VALIDATE --> SCAN_FILES
+    SCAN_FILES --> DETECT_PATTERNS
+    DETECT_PATTERNS --> FALSE_POS
+    FALSE_POS --> REDACT
+
+    %% ── Authorization Decision ──────────────────────────────────────────────
+    subgraph AUTHZ ["✅ Authorization Decision"]
+        MAKE_DECISION{"Authorized?"}
+        ALLOW["Allow Action"]
+        DENY["Deny Action\n(403)"]
+    end
+
+    CHECK_PERM --> MAKE_DECISION
+    MAKE_DECISION -->|"yes"| ALLOW
+    MAKE_DECISION -->|"no"| DENY
+
+    %% ── Audit & Logging ─────────────────────────────────────────────────────
+    subgraph AUDIT ["📋 Audit & Logging"]
+        LOG_AUTH["Log Authentication\n(success/fail)"]
+        LOG_AUTHZ["Log Authorization\n(allowed/denied)"]
+        LOG_ACCESS["Log Access\n(action, time)"]
+    end
+
+    TOKEN_VALIDATE --> LOG_AUTH
+    MAKE_DECISION --> LOG_AUTHZ
+    ALLOW --> LOG_ACCESS
+
+    %% ── Styling ────────────────────────────────────────────────────────────
+    style AUTH fill:#16213e,color:#e0e0e0
+    style SECRETS_DEP fill:#e63946,color:#fff
+    style POLICY_DEP fill:#2d6a4f,color:#fff
+    style VALIDATE_DEP fill:#4a4e69,color:#fff
+    style SCAN_DEP fill:#e63946,color:#fff
+    style AUTHZ fill:#1b4332,color:#fff
+    style AUDIT fill:#457b9d,color:#fff

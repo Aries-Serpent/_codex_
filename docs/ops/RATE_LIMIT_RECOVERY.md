@@ -8,7 +8,7 @@
 
 ---
 
-## 🔍 Symptoms
+##  Symptoms
 
 | Signal | Meaning |
 |--------|---------|
@@ -118,7 +118,7 @@ echo "$COPILOT_ERROR_JSON" | python3 scripts/ci/rate_limit_handler.py \
 automatically surfaces an unresolved checkpoint at every CI scan:
 
 ```
-⚠  Pattern 33 (Rate Limit Checkpoint): Unresolved rate-limit checkpoint from
+  Pattern 33 (Rate Limit Checkpoint): Unresolved rate-limit checkpoint from
    session S923 (PR #4389). Retry after: 2026-05-10T10:45Z. Pending: [Fix C, Fix D].
       → Load checkpoint:  python3 scripts/ci/rate_limit_handler.py --check
       → Resolve conflict: python3 scripts/ci/push_conflict_resolver.py
@@ -159,7 +159,7 @@ the agent immediately after each failure. Mitigations:
 
 ---
 
-## 🔗 References
+##  References
 
 - [GitHub Copilot Rate Limits](https://docs.github.com/copilot/concepts/rate-limits)
 - [P-045: .secrets.baseline conflict policy](../../.codex/CODEBASE_AGENCY_POLICY.md)

@@ -161,7 +161,7 @@ AI Assistant will automatically attempt to resolve common issues:
 
 **Options**:
 1.  **Proceed with cleanup** - Delete disabled workflows, continue to Phase 2
-2. ⚠️ **Extend monitoring** - Continue monitoring for another week
+2. ️ **Extend monitoring** - Continue monitoring for another week
 3.  **Rollback** - Re-enable old workflows, revise consolidation approach
 
 **Chosen Option**: TBD

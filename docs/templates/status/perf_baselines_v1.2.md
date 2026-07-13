@@ -3,7 +3,7 @@
 **Version:** v0.2.1
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
- Roles: [Primary: Performance Lead], [Secondary: Reviewer] ⚡ Energy: 5
+ Roles: [Primary: Performance Lead], [Secondary: Reviewer]  Energy: 5
 
 Baseline Fields
 - training.throughput_steps_per_sec

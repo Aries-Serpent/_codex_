@@ -324,9 +324,9 @@ Current hierarchy: **AST (primary) → LibCST (secondary) → Parso (tertiary)**
 | **Comments** |  Lost |  Preserved |  Preserved |
 | **Whitespace** |  Lost |  Preserved |  Preserved |
 | **Round-trip** |  No |  Yes |  Yes |
-| **Refactoring safety** | ⚠️ Low |  High |  High |
-| **Speed** |  Fast | ⚠️ Slower |  Fastest |
-| **Semantic API** |  Yes |  Yes | ⚠️ Partial |
+| **Refactoring safety** | ️ Low |  High |  High |
+| **Speed** |  Fast | ️ Slower |  Fastest |
+| **Semantic API** |  Yes |  Yes | ️ Partial |
 
 **Use Case Alignment:**
 
@@ -453,10 +453,10 @@ parsing:
 
 | Aspect | AST Primary | LibCST Primary |
 |--------|-------------|----------------|
-| **Speed** |  Faster (2-3x) | ⚠️ Slower |
+| **Speed** |  Faster (2-3x) | ️ Slower |
 | **Refactoring** |  Limited |  Excellent |
-| **Memory** |  Lower | ⚠️ Higher (~30%) |
-| **Ecosystem** |  stdlib | ⚠️ Third-party |
+| **Memory** |  Lower | ️ Higher (~30%) |
+| **Ecosystem** |  stdlib | ️ Third-party |
 | **Comments** |  Lost |  Preserved |
 
 **Verdict**: LibCST primary with AST fast-path achieves optimal balance.
@@ -999,9 +999,9 @@ from agents.advanced_physics_calculators import ElectromagneticField
 | Severity | Description | CI Behavior | Examples |
 |----------|-------------|-------------|----------|
 | **INFO** | Best practice suggestion |  Pass | Comment ratio, doc coverage |
-| **WARNING** | Code smell detected | ⚠️ Pass with notice | Long function (50-60 lines) |
+| **WARNING** | Code smell detected | ️ Pass with notice | Long function (50-60 lines) |
 | **ERROR** | Serious quality issue |  Fail | God class, deep nesting (>6) |
-| **CRITICAL** | Security or correctness | 🚨 Fail + alert | Security vulnerability |
+| **CRITICAL** | Security or correctness |  Fail + alert | Security vulnerability |
 
 **Industry Patterns:**
 
@@ -1018,7 +1018,7 @@ from agents.advanced_physics_calculators import ElectromagneticField
 
 ## Recommendation
 
-**⚠️ WARNINGS ONLY for non-critical smells** - Don't block merges initially
+**️ WARNINGS ONLY for non-critical smells** - Don't block merges initially
 
 **Rationale:**
 1. **Developer Experience**: Avoid frustration from blocking on minor issues

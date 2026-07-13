@@ -8,7 +8,7 @@
 
 ---
 
-## 📋 Quick Reference Examples
+##  Quick Reference Examples
 
 All examples use the token chain: `CODEX_MASTER_KEY` → `CODEX_BACKUP_KEY` → `GH_TOKEN` → `GITHUB_TOKEN`
 

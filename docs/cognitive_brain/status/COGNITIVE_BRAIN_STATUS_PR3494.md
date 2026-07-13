@@ -7,7 +7,7 @@
 **Status:**  COMPLETE
 **PR:** #3494
 **Branch:** `copilot/continue-bec-objective`
-**Date:** 2026-03-04
+**Date:2026-07-13
 **Session:** COGNITIVE_BRAIN_SESSION_NUMBER 111+
 **Agent:** copilot-swe-agent (PR #3494 session)
 
@@ -18,7 +18,7 @@
 | Work Item | Deliverable | Status |
 |-----------|-------------|--------|
 | W-096a | ADR-20260303-first-d-capable-promotion.md — criteria + decision |  Done |
-| W-096b | AGENT_REGISTRY.yaml v1.9.1 — `ci-testing-agent` promoted to `D_CAPABLE` |  Done |
+| W-096b | AGENT_REGISTRY.yaml v0.2.1 — `ci-testing-agent` promoted to `D_CAPABLE` |  Done |
 | W-096c | `auto_promote_tier.py` — `AUTO_PROMOTE_TIER_ENABLED` guard + write path |  Done |
 | W-096d | CODEX_MANIFEST.json refreshed — D_CAPABLE count: 0 → 1 |  Done |
 | W-096e | This status file — cognitive brain continuity |  Done |
@@ -41,7 +41,7 @@ graph TB
     end
 
     subgraph AGENTS["Agent State"]
-        REG["AGENT_REGISTRY.yaml v1.9.1\n152 agents\n1 D_CAPABLE, 151 E_ONLY"]
+        REG["AGENT_REGISTRY.yaml v0.2.1\n152 agents\n1 D_CAPABLE, 151 E_ONLY"]
         GATES["E→D Gate: 5/5  (unchanged)\nC2: MANIFEST fresh"]
     end
 
@@ -109,7 +109,7 @@ Owner @mbaetiong approved Agent Token Delegation via workflow run
 
 ---
 
-## W-099–W-100 Session Update (2026-03-04 ~17:40–18:10Z)
+## W-099–W-100 Session Update 2026-07-13
 
 ### W-099 — CI Fix: `agent-auth-delegation.yml` checkout ref (commit `8097414`)
 
@@ -212,7 +212,7 @@ Should print App ID, installation ID, and permissions.
 | Item | Description | Status |
 |------|-------------|--------|
 | W-096a | ADR-20260303-first-d-capable-promotion.md |  |
-| W-096b | AGENT_REGISTRY.yaml v1.9.1 — ci-testing-agent D_CAPABLE |  |
+| W-096b | AGENT_REGISTRY.yaml v0.2.1 — ci-testing-agent D_CAPABLE |  |
 | W-096c | auto_promote_tier.py — guard + write path |  |
 | W-096d | CODEX_MANIFEST.json refreshed |  |
 | W-097a | CODEX_MANIFEST.json EOF newline |  |
@@ -224,7 +224,7 @@ Should print App ID, installation ID, and permissions.
 | W-100 | test_auto_promote_tier.py ruff lint fix |  |
 | W-101 | .codex/patterns/ci_failure_patterns.yaml — TRANSIENT_001 added |  |
 | W-102 | .secrets.baseline — 2 Base64 false positives added (agent-auth-delegation.yml lines 559, 590) |  | <!-- pragma: allowlist secret -->
-| W-104a | AGENT_REGISTRY.yaml v1.9.2 — workflow-ci-fixer D_CAPABLE |  |
+| W-104a | AGENT_REGISTRY.yaml v0.2.1 — workflow-ci-fixer D_CAPABLE |  |
 | W-104b | ADR-20260304-second-d-capable-promotion.md |  |
 | W-104c | CODEX_MANIFEST.json refreshed — D_CAPABLE count: 1 → 2 + .secrets.baseline updated |  | <!-- pragma: allowlist secret -->
 | W-104d | Status / follow-up prompt updated (P2 →  COMPLETE) |  |
@@ -232,7 +232,7 @@ Should print App ID, installation ID, and permissions.
 
 ---
 
-## W-106 Session Update (2026-03-04 — CI fix + merge safety assessment)
+## W-106 Session Update 2026-07-13
 
 ### W-106 — Art_Validation CI Fix
 Two `Validation / Fast Validation` failures (run 22685833400) resolved:
@@ -247,7 +247,7 @@ Two `Validation / Fast Validation` failures (run 22685833400) resolved:
 
 ---
 
-## W-105 Session Update (2026-03-04 — 5th token delegation activation)
+## W-105 Session Update 2026-07-13
 
 ### 5th Token Delegation Activation
 Owner @mbaetiong activated Agent Token Delegation (workflow run 22685144324).
@@ -258,7 +258,7 @@ All D_CAPABLE promotions complete for this PR cycle. `workflow-ci-fixer` now in 
 
 ---
 
-## W-104 Session Update (2026-03-04 — 4th token delegation activation)
+## W-104 Session Update 2026-07-13
 
 ### 4th Token Delegation Activation
 Owner @mbaetiong activated Agent Token Delegation (workflow run 22684341839).
@@ -277,13 +277,13 @@ and zero D_CAPABLE violations. Priority 2 from the follow-up prompt executed.
 | `ci-emergency-response-agent` | PARTIAL (no structured handoff) | none | unranked |  Not promoted |
 | `workflow-ci-fixer` | GROUNDED | structured | 13 |  **PROMOTED** |
 
-**Registry changes (v1.9.1 → v1.9.2):**
+**Registry changes (v0.2.1 → v0.2.1):**
 - `workflow-ci-fixer`: `enforcement_tier` PARTIAL → GROUNDED, `autonomy_model` E → D_CAPABLE
 - `has_tests: true`, `has_docs: true`, `violations_30d: 0` added
 - ADR: `docs/arch/ADR-20260304-second-d-capable-promotion.md` created
 
 **Manifest:** regenerated 2026-03-04T19:08:27Z — D_CAPABLE count: 1 → 2.
-**`.secrets.baseline`:** updated (CODEX_MANIFEST.json line 1631 → 1635, new hash `c03794f4...`).
+**`.secrets.baseline`:** updated 2026-07-13
 
 ---
 
@@ -302,7 +302,7 @@ Both are **code**, not secrets. Added to `.secrets.baseline` with correct `hashe
 | Variable | Value | Status | Notes |
 |----------|-------|--------|-------|
 | `AUTO_PROMOTE_TIER_ENABLED` | `true` |  **NEWLY ENABLED** | Domain 8 sign-off complete (~1h before review). Write path in `auto_promote_tier.py` now active. **Action**: run `generate_manifest.py` after any auto-promotion. |
-| `CODEX_ENV_PYTHON_VERSION` | `,3.12` | ⚠️ display artifact | Leading comma in Variables Summary data extraction; env-level value confirmed `3.12`. No action required. |
+| `CODEX_ENV_PYTHON_VERSION` | `,3.12` | ️ display artifact | Leading comma in Variables Summary data extraction; env-level value confirmed `3.12`. No action required. |
 | `COPILOT_AGENT_MAX_AUTONOMY_LEVEL` | `D` |  | Correct |
 | `COPILOT_AGENT_AUTH_ENABLED` | `true` |  | Correct (3rd delegation run 22683350353) |
 | `COGNITIVE_BRAIN_ALLOWED_ACTORS` | correct set |  | Correct |

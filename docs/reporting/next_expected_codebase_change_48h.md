@@ -156,7 +156,7 @@ Coefficient interpretation (normalized scoring model):
    - Extended `.github/workflows/promote-integration-branch.yml` with `target_branch` (default `0D_base_`), `pr_base_branch` (default `main`), `create_or_update_pr` boolean inputs, enabling UI-triggered SHA→branch promotion for files from `copilot/review-codebase-and-next-changes` or any source SHA to any branch.
    - YAML validated clean via `python -c "import yaml; yaml.safe_load(open(...))"`.
 
-4. **Session D — Full Runtime Failure Triage** 🔄 PENDING
+4. **Session D — Full Runtime Failure Triage**  PENDING
    - Verify Pages deploy/health telemetry remains stable with latest changes.
    - Confirm reporting docs/nav reflect current operational status.
    - Publish final continuation prompt for the next 48-hour cycle.

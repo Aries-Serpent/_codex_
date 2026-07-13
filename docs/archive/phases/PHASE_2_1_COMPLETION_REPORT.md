@@ -256,7 +256,7 @@ Phase 2.1: Core ML Training Coverage Initiative
 | Assertions | 150+ | 256 |  |
 | Syntax valid | 100% | 100% |  |
 | Target coverage/module | 70%+ | 70%+ |  (estimated) |
-| Execution time | <5min | TBD | ⏳ (pending CI) |
+| Execution time | <5min | TBD |  (pending CI) |
 
 ---
 

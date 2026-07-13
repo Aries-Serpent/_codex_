@@ -116,6 +116,6 @@ block at the top (`# /// script`) documenting this explicitly.
 1. Create `docs/examples/<feature>_demo.py`
 2. Add the PEP 723 `# /// script` header
 3. Use `if __name__ == "__main__":` guard
-4. Print clearly labelled output sections separated by `print("=" * 60)`
+4. Print labelled output sections separated by `print("=" * 60)`
 5. Add an entry to this README
 6. Run the script and paste sample output into `workbench/evidence/`

@@ -3,7 +3,7 @@
 **Version:** v0.2.1
 
 > **Document:** `docs/plans/COPILOT_SESSION_HANDOFF_DESIGN.md`  
-> **Status:**  Living document — updated 2026-05-08  
+> **Status:**  Living document — updated 2026-07-13
 > **Scope:** Session continuity, WEC self-management, autonomous self-healing for GitHub Copilot Cloud Agent / Copilot Coding Agent
 
 ---
@@ -130,7 +130,7 @@ graph LR
         AU1[auto-approve-workflows]
     end
 
-    subgraph OPT_IN["📋 Opt-In (maintainer checks)"]
+    subgraph OPT_IN[" Opt-In (maintainer checks)"]
         OI1[validate.yml]
         OI2[resilient_validation.yml]
         OI3[codeql-analysis.yml]
@@ -304,7 +304,7 @@ Agent Vars Bootstrap
 CODEX Manifest Auto-Refresh
 PR Comment Review Gate
 Agent Token Delegation
-🔄 Auto-Post @copilot review After Agent Session
+ Auto-Post @copilot review After Agent Session
  Agent Check-In — Q&A Bridge
 ```
 
@@ -332,7 +332,7 @@ flowchart TD
     RESP -- 429/403 --> BACKOFF[Exponential backoff\n2^attempt + jitter]
     BACKOFF --> RETRY{attempt < 3?}
     RETRY -- Yes --> CALL
-    RETRY -- No --> FAIL([Exit 2 — rate critical 🚨])
+    RETRY -- No --> FAIL([Exit 2 — rate critical ])
 
     RESP -- 422 --> SUCCESS
 
@@ -365,7 +365,7 @@ flowchart LR
 
 ```yaml
 # Add to copilot-setup-steps.yml after "Inject repo variable context" step:
-- name: "📋 Inject WEC state for agent"
+- name: " Inject WEC state for agent"
   run: |
     if [ -f .codex/wec_state.json ]; then
       python3 -c "
@@ -386,7 +386,7 @@ print(' WEC state injected')
 
 ```yaml
 # Add to copilot-setup-steps.yml before Python installs:
-- name: "⚡ Rate-limit orchestration (dedup + cap)"
+- name: " Rate-limit orchestration (dedup + cap)"
   continue-on-error: true
   env:
     GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}

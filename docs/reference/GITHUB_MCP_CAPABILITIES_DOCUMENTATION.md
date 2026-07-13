@@ -16,7 +16,7 @@
   - [8. Five Ways MCP Transforms Workflow](#8-five-ways-mcp-transforms-workflow)
   - [9. Microsoft Playwright MCP Server](#9-microsoft-playwright-mcp-server)
   - [10. DeepWiki GitHub MCP Server Documentation](#10-deepwiki-github-mcp-server-documentation)
-- [🔧 Technical Implementation Details](#-technical-implementation-details)
+- [ Technical Implementation Details](#-technical-implementation-details)
   - [GitHub MCP Server Tools (100+)](#github-mcp-server-tools-100)
     - [1. Repository Tools](#1-repository-tools)
     - [2. Issue Tools](#2-issue-tools)
@@ -40,17 +40,17 @@
 - [Method 3: Using GitHub REST API via MCP](#method-3-using-github-rest-api-via-mcp)
 - [Direct API call (PRs are issues in GitHub API)](#direct-api-call-prs-are-issues-in-github-api)
 - [Expected Results](#expected-results)
-- [📋 Tool Availability Confirmation](#-tool-availability-confirmation)
+- [ Tool Availability Confirmation](#-tool-availability-confirmation)
   - [Tools Available to GitHub Copilot Agent](#tools-available-to-github-copilot-agent)
   - [Specific `githubwrite` Capabilities](#specific-githubwrite-capabilities)
-- [⚖️ Verdict & Corrective Actions](#-verdict--corrective-actions)
+- [️ Verdict & Corrective Actions](#-verdict--corrective-actions)
   - [Factual Status: FALSE CLAIM CONFIRMED](#factual-status-false-claim-confirmed)
   - [Required Corrective Actions](#required-corrective-actions)
 - [ Complete Reference List](#-complete-reference-list)
   - [Official GitHub Documentation](#official-github-documentation)
   - [Related Documentation](#related-documentation)
 - [🔖 Metadata](#-metadata)
-- [⚠️ Critical Lesson Learned](#-critical-lesson-learned)
+- [️ Critical Lesson Learned](#-critical-lesson-learned)
 
 > **Generated**: 2026-06-22T00:00:00Z  
 > **Author**: mbaetiong (documented by GitHub Copilot Agent)  
@@ -248,7 +248,7 @@
 
 ---
 
-## 🔧 Technical Implementation Details
+##  Technical Implementation Details
 
 ### GitHub MCP Server Tools (100+)
 
@@ -501,7 +501,7 @@ github_api.issues.create_comment(
 
 ---
 
-## 📋 Tool Availability Confirmation
+##  Tool Availability Confirmation
 
 ### Tools Available to GitHub Copilot Agent
 
@@ -557,7 +557,7 @@ While the tool description doesn't explicitly list all operations, `githubwrite`
 
 ---
 
-## ⚖️ Verdict & Corrective Actions
+## ️ Verdict & Corrective Actions
 
 ### Factual Status: FALSE CLAIM CONFIRMED
 
@@ -685,7 +685,7 @@ The statement "I (GitHub Copilot Agent) do not have the ability to directly post
 
 ---
 
-## ⚠️ Critical Lesson Learned
+## ️ Critical Lesson Learned
 
 **Never claim inability without attempting and showing evidence.**
 

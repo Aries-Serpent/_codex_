@@ -100,7 +100,7 @@ Total Strategies Loaded: 10
 
 ---
 
-## 📈 Coverage Projection
+##  Coverage Projection
 
 ### Conservative Estimate
 

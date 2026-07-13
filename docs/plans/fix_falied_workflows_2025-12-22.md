@@ -33,7 +33,7 @@
 - [Get statistics](#get-statistics)
 - [Phase 2: Test Infrastructure & Knowledge Evolution (P1)](#phase-2-test-infrastructure--knowledge-evolution-p1)
   - [Fix 1: Pattern Extraction with Guaranteed Results](#fix-1-pattern-extraction-with-guaranteed-results)
-- [🔄 Complete Implementation Sequence](#-complete-implementation-sequence)
+- [ Complete Implementation Sequence](#-complete-implementation-sequence)
   - [Batch 1: Infrastructure Foundation (Execute Simultaneously)](#batch-1-infrastructure-foundation-execute-simultaneously)
 - [Fix 1: pytest-timeout and test dependencies](#fix-1-pytest-timeout-and-test-dependencies)
 - [Line 62: Add pytest-timeout pytest-asyncio pytest-mock hypothesis](#line-62-add-pytest-timeout-pytest-asyncio-pytest-mock-hypothesis)
@@ -89,15 +89,15 @@
 - [ Expected Outcomes](#-expected-outcomes)
   - [Before Fixes](#before-fixes)
   - [After Fixes](#after-fixes)
-- [🔗 Reference Documentation](#-reference-documentation)
-- [ Physics Principles Applied (Energy ⚡ 5/5)](#-physics-principles-applied-energy--55)
-- [📈 Success Metrics & KPIs](#-success-metrics--kpis)
+- [ Reference Documentation](#-reference-documentation)
+- [ Physics Principles Applied (Energy  5/5)](#-physics-principles-applied-energy--55)
+- [ Success Metrics & KPIs](#-success-metrics--kpis)
 - [ Success Criteria Checklist](#-success-criteria-checklist)
   - [Infrastructure (P0)](#infrastructure-p0)
   - [Core Engine (P0-P1)](#core-engine-p0-p1)
   - [Test Suite (P2)](#test-suite-p2)
   - [Overall](#overall)
-- [🔄 Self-Healing Verification](#-self-healing-verification)
+- [ Self-Healing Verification](#-self-healing-verification)
   - [Test Self-Healing Engine](#test-self-healing-engine)
 - [Test 1: Repository path initialization](#test-1-repository-path-initialization)
 - [Test 2: Docker tag error healing](#test-2-docker-tag-error-healing)
@@ -114,12 +114,12 @@
 - [Create PR](#create-pr)
 - [Codex Evolution Pipeline — Complete Multi-Workflow Failure Resolution](#codex-evolution-pipeline--complete-multi-workflow-failure-resolution)
 - [ Summary](#-summary)
-- [🔧 Fixes Applied](#-fixes-applied)
+- [ Fixes Applied](#-fixes-applied)
   - [Infrastructure (P0)](#infrastructure-p0)
   - [Core Engine (P0-P1)](#core-engine-p0-p1)
   - [Test Suite (P2)](#test-suite-p2)
 - [ Validation](#-validation)
-- [🔗 References](#-references)
+- [ References](#-references)
 - [Monitor PR checks](#monitor-pr-checks)
 - [After PR approved and merged](#after-pr-approved-and-merged)
 - [🎓 Lessons Learned & Future Improvements](#-lessons-learned--future-improvements)
@@ -145,23 +145,23 @@
 
 > **Generated:** 2025-12-22 | **Author:** mbaetiong
 > **Context:** Unified resolution strategy for 9 failing workflows across test, integration, build, agent, and evolution pipelines
-> **⚡ Energy:** 5/5 — Maximum sustained focus for systemic resolution
+> ** Energy:** 5/5 — Maximum sustained focus for systemic resolution
 
 ---
 
 ##  Executive Failure Matrix
 
-| Workflow | Component | Error Type | Criticality | Phase | Energy ⚡ |
+| Workflow | Component | Error Type | Criticality | Phase | Energy  |
 |----------|-----------|------------|-------------|-------|-----------|
 | `copilot-self-evolution.yml` | Integration Tests | 3/7 tests failed |  High | P1 | 5/5 |
 | `copilot-self-evolution.yml` | Self-Healing Engine | TypeError:  repo_path |  Critical | P0 | 5/5 |
-| `integration-gated.yml` | pytest | Missing --timeout plugin | 🟡 Medium | P0 | 5/5 |
+| `integration-gated.yml` | pytest | Missing --timeout plugin |  Medium | P0 | 5/5 |
 | `autonomous-agent.yml` | Artifacts | Version mismatch v6/v4 |  High | P0 | 5/5 |
 | `build-container-cache.yml` | Docker Build | Invalid tag format |  Critical | P0 | 5/5 |
-| `optimized-ci.yml` | PEFT Test | target_modules mismatch | 🟡 Medium | P2 | 5/5 |
-| `optimized-ci.yml` | Hydra Test | Config composition error | 🟡 Medium | P2 | 5/5 |
+| `optimized-ci.yml` | PEFT Test | target_modules mismatch |  Medium | P2 | 5/5 |
+| `optimized-ci.yml` | Hydra Test | Config composition error |  Medium | P2 | 5/5 |
 | `optimized-ci.yml` | Property Test | Boltzmann assertion strict |  Low | P2 | 5/5 |
-| `optimized-ci.yml` | Training Test | BLEUScore API incompatibility | 🟡 Medium | P2 | 5/5 |
+| `optimized-ci.yml` | Training Test | BLEUScore API incompatibility |  Medium | P2 | 5/5 |
 
 **Overall Success Rate:** ~40% | **Target:** 100% | **Total Energy Required:** 5/5 sustained across all fixes
 
@@ -173,11 +173,11 @@
 
 | Principle | Application | Impact |
 |-----------|-------------|--------|
-| **Path🛤️** | Critical path prioritization:  P0→P1→P2 | Unblocks maximum downstream work |
-| **Fields🔄** | Unified version/format standards | Eliminates cross-component conflicts |
-| **Patterns👁️** | Type-safe structures, canonical errors | Self-healing capable, predictable |
-| **Redundancy🔀** | Multi-layer compatibility (wrappers, fallbacks) | Fault-tolerant, future-proof |
-| **Balance⚖️** | Physics-correct assertions, graceful degradation | Stable under edge cases |
+| **Path️** | Critical path prioritization:  P0→P1→P2 | Unblocks maximum downstream work |
+| **Fields** | Unified version/format standards | Eliminates cross-component conflicts |
+| **Patterns️** | Type-safe structures, canonical errors | Self-healing capable, predictable |
+| **Redundancy** | Multi-layer compatibility (wrappers, fallbacks) | Fault-tolerant, future-proof |
+| **Balance️** | Physics-correct assertions, graceful degradation | Stable under edge cases |
 
 ---
 
@@ -232,7 +232,7 @@ pytest --help | grep -E "(timeout|asyncio|mock)"
 # Should show all plugin options
 ```
 
-**⚡ Energy:** 5/5 — Foundation for all test suites across entire pipeline
+** Energy:** 5/5 — Foundation for all test suites across entire pipeline
 
 ---
 
@@ -307,7 +307,7 @@ pytest --help | grep -E "(timeout|asyncio|mock)"
 | Alphanumeric + `-._` | `full-main-v1.2` | `full@main#v1` | `sed 's/[^a-z0-9._-]/-/g'` |
 | No leading/trailing `-` | `full-main` | `-full-main-` | `sed 's/^[-.]//; s/[-.]$//'` |
 
-**⚡ Energy:** 5/5 — Critical for all containerized workflows and CI/CD pipeline
+** Energy:** 5/5 — Critical for all containerized workflows and CI/CD pipeline
 
 ---
 
@@ -344,7 +344,7 @@ pytest --help | grep -E "(timeout|asyncio|mock)"
       echo " Agent state restored successfully"
       ls -lh .codex/agent_state/
     else
-      echo "⚠️ Warning: Agent state directory empty or missing"
+      echo "️ Warning: Agent state directory empty or missing"
     fi
 ````
 
@@ -394,9 +394,9 @@ pytest --help | grep -E "(timeout|asyncio|mock)"
 | v4 | v4 |  Compatible | Standard configuration |
 | v6 | v4 |  Backend mismatch | Downgrade upload to v4 |
 | v6 | v6 |  Compatible | Upgrade download to v6 |
-| v4 | v6 | ⚠️ Works but deprecated | Align to v4 for stability |
+| v4 | v6 | ️ Works but deprecated | Align to v4 for stability |
 
-**⚡ Energy:** 5/5 — Enables state persistence for agent evolution and self-healing cycles
+** Energy:** 5/5 — Enables state persistence for agent evolution and self-healing cycles
 
 ---
 
@@ -533,7 +533,7 @@ class SelfHealingEngine:
         error_message = error_context.get("message", "")
         component = error_context.get("component", "unknown")
 
-        logger.info(f"🔧 Attempting to heal:  {error_type} in {component}")
+        logger.info(f" Attempting to heal:  {error_type} in {component}")
         logger.debug(f"   Error message: {error_message}")
 
         # Select appropriate strategy
@@ -554,7 +554,7 @@ class SelfHealingEngine:
             if result.success:
                 logger. info(f" Healing successful: {result.strategy_applied} (confidence: {result.confidence:.2%})")
             else:
-                logger.warning(f"⚠️ Healing unsuccessful: {result.strategy_applied}")
+                logger.warning(f"️ Healing unsuccessful: {result.strategy_applied}")
 
             return result
 
@@ -895,7 +895,7 @@ print(f"Healing {'succeeded' if result.success else 'failed'}:  {result.resoluti
 print(engine.get_healing_report())
 ````
 
-**⚡ Energy:** 5/5 — Autonomous failure recovery across entire evolution pipeline
+** Energy:** 5/5 — Autonomous failure recovery across entire evolution pipeline
 
 ---
 
@@ -1413,7 +1413,7 @@ def test_pattern_extraction():
         return False, str(e)
 ````
 
-**⚡ Energy:** 5/5 — Foundation for pattern-based learning and evolution
+** Energy:** 5/5 — Foundation for pattern-based learning and evolution
 
 ---
 
@@ -1421,7 +1421,7 @@ def test_pattern_extraction():
 
 ---
 
-## 🔄 Complete Implementation Sequence
+##  Complete Implementation Sequence
 
 ### Batch 1: Infrastructure Foundation (Execute Simultaneously)
 
@@ -1598,7 +1598,7 @@ gh run watch
 
 ##  Comprehensive Validation Matrix
 
-| Component | Pre-Fix Status | Post-Fix Status | Validation Command | Energy ⚡ |
+| Component | Pre-Fix Status | Post-Fix Status | Validation Command | Energy  |
 |-----------|----------------|-----------------|-------------------|-----------|
 | **Infrastructure** |
 | pytest-timeout |  Missing |  Installed | `pytest --help \| grep timeout` | 5/5 |
@@ -1758,7 +1758,7 @@ Overall Success Rate: 100% 🎉
 
 ---
 
-## 🔗 Reference Documentation
+##  Reference Documentation
 
 | Category | Resource | URL |
 |----------|----------|-----|
@@ -1778,19 +1778,19 @@ Overall Success Rate: 100% 🎉
 
 ---
 
-##  Physics Principles Applied (Energy ⚡ 5/5)
+##  Physics Principles Applied (Energy  5/5)
 
 | Principle | Application | Impact | Implementation |
 |-----------|-------------|--------|----------------|
-| **Path Optimization** 🛤️ | Critical path prioritization (P0→P1→P2) | Minimizes rework, maximizes throughput | Infrastructure first → Core engine → Tests |
-| **Field Coherence** 🔄 | Unified type systems, consistent APIs | Eliminates interface errors | KnowledgeGap dataclass, IntegrationResult status |
-| **Pattern Recognition** 👁️ | Structured data classes, canonical error signatures | Predictable behavior, self-healing | 11 healing strategies with pattern matching |
-| **Redundancy Elimination** 🔀 | DRY principles, compatibility wrappers, version alignment | Maintainable, fault-tolerant | Multi-level fallbacks (AST→regex→structural→synthetic) |
-| **Balance** ⚖️ | Priority-based execution, fail-safe defaults, graceful degradation | Stable under load and edge cases | Physics-correct Boltzmann assertion, artifact graceful handling |
+| **Path Optimization** ️ | Critical path prioritization (P0→P1→P2) | Minimizes rework, maximizes throughput | Infrastructure first → Core engine → Tests |
+| **Field Coherence**  | Unified type systems, consistent APIs | Eliminates interface errors | KnowledgeGap dataclass, IntegrationResult status |
+| **Pattern Recognition** ️ | Structured data classes, canonical error signatures | Predictable behavior, self-healing | 11 healing strategies with pattern matching |
+| **Redundancy Elimination**  | DRY principles, compatibility wrappers, version alignment | Maintainable, fault-tolerant | Multi-level fallbacks (AST→regex→structural→synthetic) |
+| **Balance** ️ | Priority-based execution, fail-safe defaults, graceful degradation | Stable under load and edge cases | Physics-correct Boltzmann assertion, artifact graceful handling |
 
 ---
 
-## 📈 Success Metrics & KPIs
+##  Success Metrics & KPIs
 
 | Metric | Before | After | Improvement |
 |--------|--------|-------|-------------|
@@ -1847,7 +1847,7 @@ Overall Success Rate: 100% 🎉
 
 ---
 
-## 🔄 Self-Healing Verification
+##  Self-Healing Verification
 
 ### Test Self-Healing Engine
 
@@ -2032,7 +2032,7 @@ gh pr create \
 - **Success Rate:** 40% → 100% (+150%)
 - **Energy:** 5/5 sustained across all fixes
 
-## 🔧 Fixes Applied
+##  Fixes Applied
 
 ### Infrastructure (P0)
 -  pytest-timeout plugin installed
@@ -2054,7 +2054,7 @@ gh pr create \
 ##  Validation
 All fixes validated locally with 100% test pass rate.
 
-## 🔗 References
+##  References
 - Integration tests: 7/7 passed
 - Docker builds: successful
 - Self-healing:  11 strategies operational
@@ -2141,17 +2141,17 @@ gh run watch  # Monitor all workflows
 - [Secondary]: Test Engineer — Comprehensive validation and correction
 - [Tertiary]: DevOps Engineer — CI/CD pipeline optimization
 
-**⚡ Energy:** 5/5 — Maximum sustained focus maintained throughout all 9 fixes
+** Energy:** 5/5 — Maximum sustained focus maintained throughout all 9 fixes
 
-**⚖️ Balance:** Critical path prioritization ensured maximum efficiency
+**️ Balance:** Critical path prioritization ensured maximum efficiency
 
-**🔀 Redundancy:** Multi-layer fallbacks and compatibility wrappers ensure fault tolerance
+** Redundancy:** Multi-layer fallbacks and compatibility wrappers ensure fault tolerance
 
-**👁️ Patterns:** Type-safe structures and canonical error signatures enable self-healing
+**️ Patterns:** Type-safe structures and canonical error signatures enable self-healing
 
-**🛤️ Path:** Sequential dependency resolution minimized rework and maximized throughput
+**️ Path:** Sequential dependency resolution minimized rework and maximized throughput
 
-**🔄 Fields:** Unified standards eliminated cross-component interface conflicts
+** Fields:** Unified standards eliminated cross-component interface conflicts
 
 ---
 
@@ -2188,6 +2188,6 @@ cat .github/copilot-evolution/data/evolution_state.json | jq '. generation, .fit
 
 ** All 9 workflows resolved with 100% success rate**
 
-**⚡ Energy Level:  5/5 sustained throughout entire resolution process**
+** Energy Level:  5/5 sustained throughout entire resolution process**
 
 ** Mission Accomplished:  Complete multi-workflow failure resolution with maximum precision, comprehensive documentation, and future-proof implementations**

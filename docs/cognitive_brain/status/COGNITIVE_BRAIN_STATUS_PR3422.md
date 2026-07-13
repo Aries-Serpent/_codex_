@@ -8,7 +8,7 @@
 **Status:**  COMPLETE  
 **PR:** #3422  
 **Branch:** `copilot/add-sqlite-memory-integration`  
-**Date:** 2026-03-01  
+**Date:2026-07-13
 **Agent:** copilot-swe-agent (Phase 4 session)
 
 ---
@@ -28,7 +28,7 @@
 | P4.5 | 3 new telemetry classifiers in `collect_telemetry.py` |  Done |
 | P4.6 | `memory-sync-agent.md` (v2.0 with diagram) |  Done |
 | P4.6 | `telemetry-classifier-agent.md` (v2.0 with diagram) |  Done |
-| P4.7 | `AGENT_REGISTRY.yaml` v1.7.0 (126→128) |  Done |
+| P4.7 | `AGENT_REGISTRY.yaml` v0.2.1 (126→128) |  Done |
 | P4.8 | REQ-8 GROUNDED gate in `agent-auth-delegation.yml` |  Done |
 | P4.8 | `cognitive-ooda-loop-agent.md` v2.0 with Phase 4 wiring |  Done |
 | Gov | `CHANGELOG.md` `[Unreleased]` entry |  Done |
@@ -99,7 +99,7 @@ Agents (128 total)
 | xterm.js PTY |  | **** |  |
 | Telemetry classifiers | 15 | **18** | 18+ |
 | Agent count | 126 | **128** | 128+ |
-| AGENT_REGISTRY version | v1.6.0 | **v1.7.0** | v1.7.0 |
+| AGENT_REGISTRY version | v0.2.1 | **v0.2.1** | v0.2.1 |
 | REQ-8 GROUNDED gate |  | **** |  |
 | Bandit findings in new code | 1 | **0** | 0 |
 
@@ -127,7 +127,7 @@ Agents (128 total)
 - [ ] `api-proxy-audit-agent.md` — logs all /api/request calls to LTM for pattern analysis
 
 ### Sprint 15 — Phase 5 Governance
-- [ ] AGENT_REGISTRY.yaml v1.8.0 (128→130)
+- [ ] AGENT_REGISTRY.yaml v0.2.1 (128→130)
 - [ ] CHANGELOG Phase 5 entry
 - [ ] SESSION_RESTORE_PR3423.md chain prompt
 
@@ -169,6 +169,6 @@ Agents (128 total)
 
 ---
 
-**Report generated:** 2026-03-01  
+**Report generated:2026-07-13
 **Next review:** After PR #3422 merge + 7-day telemetry cycle  
 **Maintainer:** copilot-swe-agent (Phase 4 session)

@@ -1,6 +1,6 @@
 <!-- BEGIN: CODEX_DOCS_GETTING_STARTED -->
 
-# Getting Started (Ubuntu)
+## Getting Started (Ubuntu)
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 

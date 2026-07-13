@@ -247,7 +247,7 @@ Created `validate_security_utils.py` that works without pytest:
 **Issue**: Some workflows may have `if: false` guards  
 **Impact**: Workflows won't run until guards removed  
 **Mitigation**: Documented in workflow files  
-**Status**: ⚠️ Requires manual review by owner
+**Status**: ️ Requires manual review by owner
 
 ---
 

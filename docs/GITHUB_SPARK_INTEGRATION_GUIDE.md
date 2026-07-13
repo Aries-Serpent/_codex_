@@ -340,7 +340,7 @@ Add a quantum decision visualizer component:
 - Real-time metrics panel:
   - k₁ factor (target ≤0.35, bold if achieved)
   - Accuracy percentage
-  - Cache hit rate with icon (✓ or ✗)
+  - Cache hit rate with icon ( or )
 ```
 
 **Expected Output**:
@@ -357,7 +357,7 @@ LEFT PANEL - Short-Term Memory:
 - Each entry shows:
   - Timestamp (relative: "2 mins ago")
   - Prompt preview (truncated to 50 chars)
-  - Result status (✓ success, ✗ error)
+  - Result status ( success,  error)
   - Processing time
 - Click to reload that interaction
 
@@ -389,7 +389,7 @@ TOP - Active Agents Grid (3 columns):
 - Each agent card shows:
   - Icon ( workflow, ⚛️ quantum, 🔬 physics)
   - Agent name
-  - Status badge ( idle, 🟡 active,  error)
+  - Status badge ( idle,  active,  error)
   - Last execution time
 - Hover effect: border glow + shadow
 
@@ -436,7 +436,7 @@ FILE UPLOAD SECTION:
 PIPELINE VISUALIZATION:
 - 4-stage horizontal flow:
   1. Ingest (📥)
-  2. Analyze (🔍)
+  2. Analyze ()
   3. Transform ()
   4. Verify ()
 - Each stage shows:
@@ -655,7 +655,7 @@ GRID LAYOUT (2 columns, 3 rows):
    - Example code preview (collapsed)
    - [Try it] button → pre-fills prompt
 
-2. ⚡ Performance Optimization
+2.  Performance Optimization
    - Description: "Identify bottlenecks and optimize loops"
    - Example code preview
    - [Try it] button
@@ -665,7 +665,7 @@ GRID LAYOUT (2 columns, 3 rows):
    - Example code preview
    - [Try it] button
 
-4. 🔄 Code Refactoring
+4.  Code Refactoring
    - Description: "Apply SOLID principles and design patterns"
    - Example code preview
    - [Try it] button
@@ -1021,7 +1021,7 @@ export const CodeGenerator: React.FC = () => {
             </div>
             <div className="metric">
               <label>Cache Hit</label>
-              <span>{result.metadata.cache_hit ? '✓' : '✗'}</span>
+              <span>{result.metadata.cache_hit ? '' : ''}</span>
             </div>
             <div className="metric">
               <label>Time</label>
@@ -1490,7 +1490,7 @@ pip install -r requirements-dev.txt
 
 # Verify installation
 python -m codex.cli --help
-python -c "from src.cognitive_brain.quantum.superposition import SuperpositionEngine; print('✓ Cognitive brain loaded')"
+python -c "from src.cognitive_brain.quantum.superposition import SuperpositionEngine; print(' Cognitive brain loaded')"
 ```
 
 ## Step 2: Start Backend API
@@ -1663,7 +1663,7 @@ pip install mangum
 
 ## Changelog
 
-### v1.0.0 (2026-01-04)
+### v0.2.1 (2026-01-04)
 - Initial release of GitHub Spark Integration Guide
 - Complete promptset plan (Phase 1-5)
 - Implementation examples (TypeScript + React)

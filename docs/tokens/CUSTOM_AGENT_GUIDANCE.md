@@ -23,7 +23,7 @@ This document specifies token requirements for 13 custom agents identified in Ph
 
 ---
 
-## 📋 Agent Token Requirements
+##  Agent Token Requirements
 
 ### 1. ci-auto-healer-agent
 
@@ -424,7 +424,7 @@ contents:write      # Update configs
 
 ---
 
-## 🔄 Implementation Template
+##  Implementation Template
 
 Use this template when implementing token access for a new agent:
 
@@ -502,19 +502,19 @@ class CustomAgent:
 
 | Agent | Token Level | Primary Operations | Status | Prompt Update |
 |-------|:---:|---|:---:|:---:|
-| ci-auto-healer-agent | L2 | Read logs, fix CI |  | ⏳ Phase 6.2 |
-| autonomous-test-healer-agent | L2 | Fix tests, mark flaky |  | ⏳ Phase 6.2 |
-| codeql-alert-resolution-agent | L2-L3 | Resolve security alerts |  | ⏳ Phase 6.2 |
-| workflow-compliance-guardian | L2 | Validate workflows |  | ⏳ Phase 6.2 |
-| ci-failure-resolution-agent | L2 | Fix CI failures |  | ⏳ Phase 6.2 |
-| ci-importerror-agent | L2 | Fix import errors |  | ⏳ Phase 6.2 |
-| test-failure-analyzer-agent | L2 | Analyze test failures |  | ⏳ Phase 6.2 |
-| mypy-manager-agent | L2 | Manage type checking |  | ⏳ Phase 6.2 |
-| dependency-vulnerability-scanner | L1-L2 | Scan vulnerabilities |  | ⏳ Phase 6.2 |
-| python-312-type-fixer | L2 | Fix type annotations |  | ⏳ Phase 6.2 |
-| telemetry-classifier-agent | L2 | Classify failures |  | ⏳ Phase 6.2 |
-| unified-coverage-agent | L2 | Manage coverage |  | ⏳ Phase 6.2 |
-| packaging-validation-agent | L1-L2 | Validate packaging |  | ⏳ Phase 6.2 |
+| ci-auto-healer-agent | L2 | Read logs, fix CI |  |  Phase 6.2 |
+| autonomous-test-healer-agent | L2 | Fix tests, mark flaky |  |  Phase 6.2 |
+| codeql-alert-resolution-agent | L2-L3 | Resolve security alerts |  |  Phase 6.2 |
+| workflow-compliance-guardian | L2 | Validate workflows |  |  Phase 6.2 |
+| ci-failure-resolution-agent | L2 | Fix CI failures |  |  Phase 6.2 |
+| ci-importerror-agent | L2 | Fix import errors |  |  Phase 6.2 |
+| test-failure-analyzer-agent | L2 | Analyze test failures |  |  Phase 6.2 |
+| mypy-manager-agent | L2 | Manage type checking |  |  Phase 6.2 |
+| dependency-vulnerability-scanner | L1-L2 | Scan vulnerabilities |  |  Phase 6.2 |
+| python-312-type-fixer | L2 | Fix type annotations |  |  Phase 6.2 |
+| telemetry-classifier-agent | L2 | Classify failures |  |  Phase 6.2 |
+| unified-coverage-agent | L2 | Manage coverage |  |  Phase 6.2 |
+| packaging-validation-agent | L1-L2 | Validate packaging |  |  Phase 6.2 |
 
 ---
 
@@ -550,7 +550,7 @@ For Phase 6.2, update each agent prompt with:
 
 ---
 
-## 🔗 Related Documentation
+##  Related Documentation
 
 - **TOKEN_HIERARCHY_GUIDE.md** - Token selection overview
 - **SCRIPT_TOKEN_docs/api/reference/INTEGRATION.md** - Token integration patterns

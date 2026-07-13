@@ -311,7 +311,7 @@ GitHub Discussions can be long. To follow along:
 ### Resolving Discussions
 
 If your question is answered:
-1. Mark the answer: Click ✓ button (if discussion template allows)
+1. Mark the answer: Click  button (if discussion template allows)
 2. Thank the responder
 3. If still unclear, follow up with specific remaining questions
 4. Close discussion when fully resolved

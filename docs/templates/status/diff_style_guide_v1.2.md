@@ -3,8 +3,8 @@
 **Version:** v0.2.1
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
- Roles: [Primary: Diff Style Curator], [Secondary: Reliability Reviewer] ⚡ Energy: 5  
-⚛️ Physics: Path🛤️ Fields🔄 Patterns👁️ Redundancy🔀 Balance⚖️
+ Roles: [Primary: Diff Style Curator], [Secondary: Reliability Reviewer]  Energy: 5  
+⚛️ Physics: Path️ Fields Patterns️ Redundancy Balance️
 
 ## 1. Mandatory Elements per Patch
 - **Title (PATCH-XXX)** and component paths

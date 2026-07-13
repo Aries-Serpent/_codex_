@@ -3,7 +3,7 @@
 **Version:** v0.2.1
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
- Roles: [Primary: Release Steward], [Secondary: Reviewer] ⚡ Energy: 5
+ Roles: [Primary: Release Steward], [Secondary: Reviewer]  Energy: 5
 
 Checklist
 - Identify patch (PATCH-XXX) and impacted files

@@ -3,7 +3,7 @@
 **Version:** v0.2.1
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
- Roles: [Primary: Report QA Lead], [Secondary: Reviewer] ⚡ Energy: 5  
+ Roles: [Primary: Report QA Lead], [Secondary: Reviewer]  Energy: 5  
 
 
 Pre-publish

@@ -1,4 +1,4 @@
-# Performance Tuning Guide - Aries-Serpent v0.1.0
+# Performance Tuning Guide - Aries-Serpent v0.2.1
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 

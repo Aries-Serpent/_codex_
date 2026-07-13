@@ -1,4 +1,6 @@
 # Ray Serve Integration Guide
+
+**Version**: v0.2.1
 **Last Updated:** 2026-07-11
 
 > Complete guide to deploying and scaling applications with Ray Serve  

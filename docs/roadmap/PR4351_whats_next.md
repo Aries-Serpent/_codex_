@@ -27,7 +27,7 @@
    -  mypy baseline (130 == 130)
    -  sync_tracked_files passed
 
-### 📋 Remaining Tasks
+###  Remaining Tasks
 
 #### High Priority
 - [ ] **Rate-limit workflow orchestration** (from maintainer comment #4404122666)
@@ -50,7 +50,7 @@
 
 ---
 
-## 🔄 Next Session Plan
+##  Next Session Plan
 
 ### Phase 1: Rate-Limit Analysis (15 min)
 1. Review GitHub Actions workflow runs for rate-limit errors
@@ -92,7 +92,7 @@
 
 ---
 
-## 🔗 Related Resources
+##  Related Resources
 
 - **PR Link:** https://github.com/Aries-Serpent/_codex_/pull/4351
 - **Original Issue:** CodeQL "Wrong number of arguments" alerts
@@ -101,7 +101,7 @@
 
 ---
 
-## 📝 Notes
+##  Notes
 
 - All code review comments successfully addressed in S866
 - Maintainer requested rate-limit workflow orchestration as additional scope

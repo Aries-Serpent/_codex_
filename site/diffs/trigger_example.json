@@ -1,0 +1,20 @@
+[
+  {
+    "op": "add",
+    "path": "/triggers/Auto-assign Billing L2",
+    "value": {
+      "name": "Auto-assign Billing L2",
+      "category": "assignment",
+      "conditions": {
+        "all": [
+          {"field": "priority", "operator": "is", "value": "urgent"}
+        ]
+      },
+      "actions": [
+        {"field": "group_id", "value": "@group:L2_Billing"},
+        {"field": "add_skills", "value": "@skills:[Language:EN#0, Product:Billing#1]"}
+      ],
+      "position": 3
+    }
+  }
+]

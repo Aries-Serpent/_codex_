@@ -313,7 +313,7 @@ Run this 12 hours before production deployment:
 #!/bin/bash
 # pre-deployment-warmup.sh
 
-echo "🔄 Starting pre-deployment cache warm-up..."
+echo " Starting pre-deployment cache warm-up..."
 
 # Trigger aggressive warm-up
 gh workflow run cache-warmup.yml \
@@ -327,7 +327,7 @@ gh workflow run cache-warmup.yml \
 # Wait for completion
 RUN_ID=$(gh run list --workflow cache-warmup.yml --limit 1 --json databaseId --jq '.[0].databaseId')
 
-echo "⏳ Waiting for warm-up to complete (ID: $RUN_ID)..."
+echo " Waiting for warm-up to complete (ID: $RUN_ID)..."
 timeout 1800 bash -c "while true; do
   STATUS=\$(gh run view $RUN_ID --json conclusion --jq '.conclusion')
   [[ \"\$STATUS\" != \"null\" ]] && break
@@ -380,7 +380,7 @@ For critical cache miss during incident:
 #!/bin/bash
 # emergency-cache-warmup.sh
 
-echo "🚨 Emergency cache warm-up initiated"
+echo " Emergency cache warm-up initiated"
 
 # Option 1: Restore from backup (if available)
 if [ -f "/tmp/cache-backup.tar.gz" ]; then
@@ -425,7 +425,7 @@ echo ""
 
 while true; do
   clear
-  echo "🔄 Cache Warm-up Progress"
+  echo " Cache Warm-up Progress"
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
   # Get job status
@@ -458,7 +458,7 @@ done
 #!/bin/bash
 # verify-warmup.sh
 
-echo "🔍 Post-Warm-up Verification"
+echo " Post-Warm-up Verification"
 echo ""
 
 # 1. Check cache health
@@ -609,7 +609,7 @@ Use ONLY if cache is corrupted and causing failures:
 #!/bin/bash
 # emergency-cache-reset.sh
 
-echo "⚠️  EMERGENCY CACHE RESET - This will delete ALL caches"
+echo "️  EMERGENCY CACHE RESET - This will delete ALL caches"
 read -p "Type 'YES' to confirm: " confirm
 
 if [[ "$confirm" != "YES" ]]; then
@@ -627,13 +627,13 @@ done
 echo " All caches deleted"
 
 # Immediately trigger warm-up to rebuild
-echo "🔄 Starting automatic warm-up recovery..."
+echo " Starting automatic warm-up recovery..."
 gh workflow run cache-warmup.yml \
   --repo Aries-Serpent/_codex_ \
   --ref main \
   --inputs mode=aggressive tier=LIVE
 
-echo "⏳ Warm-up in progress. Check back in 30 minutes."
+echo " Warm-up in progress. Check back in 30 minutes."
 ```
 
 ## Incremental Cache Recovery
@@ -669,7 +669,7 @@ When cache issues occur:
 curl -X POST ${{ secrets.SLACK_WEBHOOK }} \
   -H 'Content-Type: application/json' \
   -d '{
-    "text": "🚨 Cache Issue Detected",
+    "text": " Cache Issue Detected",
     "attachments": [{
       "color": "danger",
       "fields": [
@@ -683,7 +683,7 @@ curl -X POST ${{ secrets.SLACK_WEBHOOK }} \
 # Create GitHub issue for tracking
 gh issue create \
   --repo Aries-Serpent/_codex_ \
-  --title "⚠️ Cache Health Alert: Hit rate < 80%" \
+  --title "️ Cache Health Alert: Hit rate < 80%" \
   --body "Cache hit rate dropped below acceptable threshold. See cache monitoring dashboard for details. Emergency warm-up triggered." \
   --label infrastructure,cache,urgent
 ```

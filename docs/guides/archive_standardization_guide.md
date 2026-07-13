@@ -50,7 +50,7 @@ python -m codex.cli archive show-standardization-status
 **Expected Output**:
 ```text
 ============================================================
-📋 Archive Standardization Status
+ Archive Standardization Status
 ============================================================
 Standard Version: 2.0
 SLSA Level: L3
@@ -263,7 +263,7 @@ print(f"Details: {result['verification_details']}")
 ```text
  Validation Results: 1234 records scanned
     Valid: 1234
-   ⚠️  Warnings: 0
+   ️  Warnings: 0
     Errors: 0
 
  All checks passed!
@@ -272,10 +272,10 @@ print(f"Details: {result['verification_details']}")
 ```text
  Validation Results: 1234 records scanned
     Valid: 1230
-   ⚠️  Warnings: 2
+   ️  Warnings: 2
     Errors: 2
 
-⚠️  Warnings:
+️  Warnings:
    Line 100: Signature verification failed
 
  Errors:
@@ -310,8 +310,8 @@ python -m codex.cli archive migrate-evidence-to-v2
 
 **Interactive Prompt**:
 ```text
-⚠️  This will modify .codex/evidence/archive_ops.jsonl. Continue? [y/N]: y
-🔄 Starting migration v1 → v2...
+️  This will modify .codex/evidence/archive_ops.jsonl. Continue? [y/N]: y
+ Starting migration v1 → v2...
 📦 Backed up original to: .codex/evidence/archive_ops.jsonl.backup
  Migration complete: 1234 records converted
    v1 records: 0

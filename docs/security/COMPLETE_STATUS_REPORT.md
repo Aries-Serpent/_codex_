@@ -145,7 +145,7 @@ secret = storage.load_secret("api_key.enc")
 
 ---
 
-## 📈 DEPENDENCY SECURITY STATUS
+##  DEPENDENCY SECURITY STATUS
 
 ###  All Dependencies at Secure Versions
 
@@ -193,7 +193,7 @@ secret = storage.load_secret("api_key.enc")
 
 ---
 
-## 📋 FILES MODIFIED/CREATED
+##  FILES MODIFIED/CREATED
 
 ### Created Files (5)
 1. `src/codex/security/__init__.py` - Unified security module
@@ -276,7 +276,7 @@ secret = storage.load_secret("api_key.enc")
 
 ---
 
-## 🔄 NEXT MAINTENANCE CYCLE
+##  NEXT MAINTENANCE CYCLE
 
 ### Scheduled Reviews
 - **Weekly**: Dependabot alerts

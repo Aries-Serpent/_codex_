@@ -13,18 +13,18 @@
 
 **Objective**: Provide comprehensive system prompt template for ChatGPT Project sessions utilizing MCP-packaged datasets, ensuring consistent manifest parsing, provenance tracking, and actionable artifact generation.
 
-**Energy Level**: ⚡⚡⚡⚡⚡ (5/5) - Critical configuration determining ChatGPT assistant capability and behavior.
+**Energy Level**:  (5/5) - Critical configuration determining ChatGPT assistant capability and behavior.
 
 **Operational Status**:
 -  System prompt template validated across multiple dataset types
 -  Provenance protocol established (flat + original path)
 -  Query response protocol documented
 -  Security and privacy guidelines included
-- 🔄 Usage feedback collection in progress
+-  Usage feedback collection in progress
 
 ---
 
-## ⚖️ Verification Checklist
+## ️ Verification Checklist
 
 **System Prompt Configuration**:
 - [ ] Prompt copied to ChatGPT Project "Instructions" field
@@ -49,7 +49,7 @@
 
 ---
 
-## 📈 Success Metrics
+##  Success Metrics
 
 | Metric | Target | Iteration 0001 | Status |
 |--------|--------|----------------|--------|
@@ -70,7 +70,7 @@
 
 ## ⚛️ Physics Alignment
 
-### Path 🛤️ (Query Resolution Flow)
+### Path ️ (Query Resolution Flow)
 **Query Path**: User Question → Search Index → Analysis → Response Assembly → Provenance Annotation → Delivery
 
 ```mermaid
@@ -105,7 +105,7 @@ graph TD
     O --> R[Deliver to User]
 ```
 
-### Fields 🔄 (Assistant State Evolution)
+### Fields  (Assistant State Evolution)
 **Learning States**:
 1. **Uninitialized**: No dataset context
 2. **Manifest Loaded**: File index created
@@ -114,14 +114,14 @@ graph TD
 5. **Operational**: Capable of querying and generating artifacts
 6. **Specialized**: Deeply familiar with codebase patterns
 
-### Patterns 👁️ (Response Patterns)
+### Patterns ️ (Response Patterns)
 - **Provenance Pattern**: `📂 Original: X | 📄 Flat: Y | 📍 Lines: Z`
 - **Source Annotation Pattern**: `🏠 Local` vs `🌐 Web`
 - **Artifact Pattern**: Diffs, patches, migration plans with file references
 - **Relationship Pattern**: "Related files: tests, docs, dependencies"
 - **Security Pattern**: Redact secrets, warn about vulnerabilities
 
-### Redundancy 🔀 (Multi-Source Verification)
+### Redundancy  (Multi-Source Verification)
 **Information Validation**:
 - Cross-reference manifest with file content
 - Verify SHA256 hashes for critical files
@@ -134,20 +134,18 @@ graph TD
 - If chunks incomplete: Warn before proceeding
 - If file too large: Offer summarization
 
-### Balance ⚖️ (Local vs. Web Context)
+### Balance ️ (Local vs. Web Context)
 **Content Sourcing**:
 - Prefer local dataset (higher trust, no latency)
 - Use web for: latest API versions, external library docs, general knowledge
-- Always annotate source clearly
-
-**Response Depth**:
+- Always annotate source **Response Depth**:
 - Brief queries: Concise answers with file references
 - Complex queries: Detailed analysis with code snippets
 - Migration plans: Step-by-step with complete file paths
 
 ---
 
-## ⚡ Energy Distribution
+##  Energy Distribution
 
 ### P0 Critical (45% - Core Reliability)
 - Manifest parsing correctness (15%)

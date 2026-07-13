@@ -3,7 +3,7 @@
 **Version:** v0.2.1
 
 > **Version:** 2.3.0  
-> **Date:** 2026-04-06 (S302 — auto-approve-workflows schedule+dispatch overhaul; owner-flag protection; §24 added; §8/§14.1/§16.1/§23 updated)  
+> **Date:2026-07-13
 > **Previous:** 2.2.0 (S299 — WEC gate comment pagination fix; §14.1/§16.1/§23 aligned)  
 > **Branch:** `0D_base_`  
 > **Sources:** `.github/workflows/` inspection (60 PR-triggered workflows), CI log history, issue #3853 triage report (55 failures / 14 workflows, 2026-04-03)
@@ -148,7 +148,7 @@ see [§18 WEC workflow Catalog](#18-wec-workflow-catalog--complete-reference).
 | `reference-integrity.yml` | `pull_request`, `push` | `reference-integrity.yml` | Reference integrity + agent size gate |
 | `root-org-validation.yml` | `pull_request`, `workflow_dispatch` | `root-org-validation.yml` | Root organization validation |
 | `rust_swarm_ci.yml` | `pull_request`, `push` | `rust_swarm_ci.yml` | Rust-Python hybrid swarm CI/CD |
-| `fast-forward-safe-files.yml` | `workflow_dispatch` | ⚡ FF checkbox (separate section) | Fast-forward safe files to `main` |
+| `fast-forward-safe-files.yml` | `workflow_dispatch` |  FF checkbox (separate section) | Fast-forward safe files to `main` |
 
 ### 2.6 Auto-Triggered (not WEC-selectable)
 <!-- anchor: 2.6-auto-triggered-not-wec-selectable -->
@@ -208,7 +208,7 @@ These run **immediately** on every push or PR event, without any human approval:
 
 **Expected to pass:** Always. The baseline is set to the CI-environment count (isolated venv: `mypy>=1.8.0, types-PyYAML, types-requests` only).
 
-> ⚠️ **Note on environment parity:** The CI venv does NOT install the full project. This means
+> ️ **Note on environment parity:** The CI venv does NOT install the full project. This means
 > `# type: ignore` annotations that suppress errors from installed packages (pydantic, PyJWT,
 > cryptography, etc.) appear as "unused" in CI. The `.mypy_baseline` MUST be set using the
 > CI-isolated venv, not the local fully-installed environment.
@@ -320,7 +320,7 @@ There are **two tiers** of rescue workflows. Understanding this distinction is e
 | Tier | Trigger Type | Approval Required? | Reliability |
 |------|--------------|--------------------|-------------|
 | **Tier 1 — Approval-Free** | `pull_request` event |  None |  Always fires |
-| **Tier 2 — Approval-Gated** | `workflow_run` event with `contents: write` |  Human must approve | ⚠️ May queue in `action_required` |
+| **Tier 2 — Approval-Gated** | `workflow_run` event with `contents: write` |  Human must approve | ️ May queue in `action_required` |
 
 **Tier 1 workflows (reliably fire on every push/PR):**
 - `validate.yml` → `rescue-comment` job: posts SHA-scoped `<!-- ci-rescue-sha:{pr}:{sha} -->` comment with `@copilot` instructions + PDA Loop log
@@ -380,14 +380,14 @@ All rescue and quality-findings comments use `<details>`/`<summary>` HTML to col
 every per-failure section below the H2 headline. This keeps the PR clean and scannable:
 
 ```markdown
-## 🚨 CI Rescue — @copilot Fix Required
-<!-- anchor: 🚨-ci-rescue-—-@copilot-fix-required -->
+##  CI Rescue — @copilot Fix Required
+<!-- anchor: -ci-rescue-—-@copilot-fix-required -->
 
 **Branch:** `0D_base_` | **Commit:** `abc123def456`
 
 @copilot One or more checks are failing...
 
-<details><summary>📋 Steps to resolve</summary>
+<details><summary> Steps to resolve</summary>
 
 1. Load `.codex/CODEBASE_AGENCY_POLICY.md` ...
 ...
@@ -412,10 +412,10 @@ every per-failure section below the H2 headline. This keeps the PR clean and sca
 ```
 
 **Rules:**
-- `## 🚨` H2 headline — always visible (never collapsed)
+- `## ` H2 headline — always visible (never collapsed)
 - Each `### ` workflow failure — wrapped in `<details open=false>`  
 - Code-quality alerts — appended by `append-code-quality-to-rescue` job (see §14.4)
-- Steps-to-resolve — collapsed with `📋 Steps to resolve` summary
+- Steps-to-resolve — collapsed with ` Steps to resolve` summary
 
 ### 7.2 Rescue Cascade (when all tiers are active)
 <!-- anchor: 7.2-rescue-cascade-when-all-tiers-are-active -->
@@ -516,7 +516,7 @@ flowchart TD
         I[resilient_validation.yml shards ×6] --> J{Pass?}
     end
 
-    F -->|Fail| K[ci-rescue.yml posts 🚨 rescue comment\n+ PDA Loop log-failure]
+    F -->|Fail| K[ci-rescue.yml posts  rescue comment\n+ PDA Loop log-failure]
     H -->|Fail| K
     J -->|Fail| K
     K --> L[@copilot Fix Required comment]
@@ -534,7 +534,7 @@ flowchart TD
         WEC2[workflow-execution-gate.yml\nparses PR body checklist]
         WEC1 --> WEC2
         WEC2 --> WEC3{FF checkbox\nticked?}
-        WEC3 -->|Yes| FF["⚡ fast-forward-safe-files.yml\nPromotes safe files to main"]
+        WEC3 -->|Yes| FF[" fast-forward-safe-files.yml\nPromotes safe files to main"]
         WEC3 -->|No| SKIP_FF[FF job skipped]
         WEC2 --> WECPROT{Bot reset\nowner flag?}
         WECPROT -->|Yes — restores| RESTORE["🛡️ WEC gate rewrites PR body\n[x] auto-approve-workflows\nrestored + wec:auto-approve\nlabel added"]
@@ -556,7 +556,7 @@ flowchart TD
         U --> V[copilot-agent-session-done.yml\n• verify rescues answered\n• S221 guard on next push]
     end
 
-    V --> AAWRUN["⚡ auto-approve-workflows.yml\nfires on workflow_run\n• Approves all action_required\n• One-session: removes\n  wec:auto-approve-once label"]
+    V --> AAWRUN[" auto-approve-workflows.yml\nfires on workflow_run\n• Approves all action_required\n• One-session: removes\n  wec:auto-approve-once label"]
 
     subgraph SCHED ["⏰ Schedule Sweep (every 20 min — independent of pushes)"]
         SCHED1["auto-approve-workflows.yml\nschedule: */20 * * * *"]
@@ -612,7 +612,7 @@ sequenceDiagram
         Healer->>PDA: log-fix (verification_passed=true/false)
     else not auto-fixable
         Healer->>Rescue: triggers ci-rescue.yml
-        Rescue->>PR: UPSERT 🚨 CI Rescue comment<br/><!-- ci-rescue:PR:sha-XXXXX --><br/>(pattern ID + fix commands + @copilot)
+        Rescue->>PR: UPSERT  CI Rescue comment<br/><!-- ci-rescue:PR:sha-XXXXX --><br/>(pattern ID + fix commands + @copilot)
     end
 
     PR->>Copilot: @copilot mentioned → session starts
@@ -759,8 +759,8 @@ system, and what the pre-approval phase looks like.
 The WEC block lives at the bottom of every PR description:
 
 ```markdown
-## 🔄 Workflow Execution Checklist
-<!-- anchor: 🔄-workflow-execution-checklist -->
+##  Workflow Execution Checklist
+<!-- anchor: -workflow-execution-checklist -->
 
 ###  Validation & Testing
 <!-- anchor: -validation-&-testing -->
@@ -769,7 +769,7 @@ The WEC block lives at the bottom of every PR description:
 - [ ] mypy-baseline.yml — Type-check anti-regression
 ```
 
-> ⚠️ **Filename accuracy is mandatory.** The WEC gate parses `\S+\.yml` tokens.
+> ️ **Filename accuracy is mandatory.** The WEC gate parses `\S+\.yml` tokens.
 > `resilient-validation-suite.yml` will NOT match `resilient_validation.yml` —
 > use the **exact** filename (underscores not hyphens where the file uses underscores).
 > See [§18](#18-wec-workflow-catalog--complete-reference) for the authoritative filename list.
@@ -807,7 +807,7 @@ The following checks MUST be green before any WEC items are approved:
 | `deferral-language-gate.yml` | No forbidden deferral phrases in changed files. Must pass. |
 | `pre-merge-validation.yml` | Ruff, line-length, auto-fix check. Must pass. |
 
-> ⚠️ **Important:** `dynamic / submit-pypi (dynamic)` is GitHub's own automatic dependency
+> ️ **Important:** `dynamic / submit-pypi (dynamic)` is GitHub's own automatic dependency
 > graph workflow. It runs unconditionally on every push and pull_request event to `0D_base_`.
 > If it fails, self-healing MUST be triggered immediately (see [§11.5](#115-self-healing-for-pre-approval-failures)).
 
@@ -833,7 +833,7 @@ push and enables the newly approved workflow.
 5. Copilot sessions start → code changes → repeat from step 1 for new checks
 ```
 
-> ⚠️ **HARDENED AGENT RULE:** Once an item is checked `[x]`, it MUST NEVER be unchecked
+> ️ **HARDENED AGENT RULE:** Once an item is checked `[x]`, it MUST NEVER be unchecked
 > by a subsequent PR body update. The Copilot agent reads the CURRENT PR body and copies
 > all `[x]` items verbatim into the updated body. Only newly-added items may be set to `[ ]`.
 
@@ -845,7 +845,7 @@ push and enables the newly approved workflow.
 | **Draft** | `[Draft]` badge | Pre-approval phase | Not started | Only always-required run |
 | **Open (pre-check)** | No badge; `Open` | Pre-approval until WEC items checked | Not started | Always-required + GitHub-managed |
 | **Open (WEC approved)** | `Open` | Specific workflows approved via WEC | Active after agent-auth | All approved workflows + required |
-| **Open (FF approved)** | `Open` | ⚡ FF checkbox ticked + WEC items checked | Active | FF job fires; files promoted to main |
+| **Open (FF approved)** | `Open` |  FF checkbox ticked + WEC items checked | Active | FF job fires; files promoted to main |
 | **Ready to review** | `[Open]` (after clicking "Ready for review") | All WEC workflows may run | Post-approval active | Full suite |
 
 **Key difference between Draft and Open:**
@@ -937,7 +937,7 @@ stateDiagram-v2
         WEC gate parses PR body checklist
     end note
 
-    WECApproved --> FFApproved: Owner ticks ⚡ Fast-Forward Approved
+    WECApproved --> FFApproved: Owner ticks  Fast-Forward Approved
     note right of FFApproved
         Phase: FF promotion active
         fast-forward-safe-files.yml fires
@@ -986,7 +986,7 @@ stateDiagram-v2
 | Always-required workflows (9) |  |  |  |  |  |  |
 | GitHub-managed workflows |  |  |  |  |  |  |
 | WEC opt-in workflows |  |  |  (checked only) |  (checked) |  (all checked) |  |
-| ⚡ FF promotion fires |  |  |  |  |  if ticked |  if ticked |
+|  FF promotion fires |  |  |  |  |  if ticked |  if ticked |
 | Copilot sessions active |  |  |  |  |  |  |
 | `agent-auth-delegation` approved |  |  |  |  |  |  |
 | Self-healing + PDA Loop |  |  |  |  |  |  |
@@ -1002,7 +1002,7 @@ stateDiagram-v2
 ## 13. High-Frequency Failure Catalogue
 <!-- anchor: 13.-high-frequency-failure-catalogue -->
 
-> **Source:** Issue [#3853](https://github.com/Aries-Serpent/_codex_/issues/3853) — CI Failure Triage Report, updated 2026-04-03  
+> **Source:** Issue [#3853](https://github.com/Aries-Serpent/_codex_/issues/3853) — CI Failure Triage Report, updated 2026-07-13
 > **Total failures captured:** 71 across 14 workflows  
 > **Last updated: 2026-07-11
 > **Purpose:** Every entry below is a recurring pattern that Copilot sessions and self-healing
@@ -1013,11 +1013,11 @@ stateDiagram-v2
 
 | Rank | workflow | Count | Pattern ID | Category | Auto-fix? | Latest Status |
 |------|----------|-------|------------|----------|-----------|---------------|
-| 1 | PR Comment Review Gate | 20 | RP-COMMENT-GATE | pre-flight-gate | No — reply to comments, then push | 🔄 Ongoing |
+| 1 | PR Comment Review Gate | 20 | RP-COMMENT-GATE | pre-flight-gate | No — reply to comments, then push |  Ongoing |
 | 2 | RAG Module Tests | 13 | RP-RAG-CHRONIC | code-fix-required |  **Fixed S292** — tests for preprocessor/validator added |  Fixed |
 | 3 | Validation Pipeline | 11 | RP-P22 / RP-P23 / RP-RUFF | code-fix-required |  `auto_fix_common_issues.py` |  Fixed |
-| 4 | agent Token Delegation | 5 | RP-CHANGELOG-GATE | pre-flight-gate |  Update CHANGELOG + accountability | 🔄 Ongoing | <!-- pragma: allowlist secret -->
-| 5 | Resilient Validation Suite | 5 | RP-COLLECT / RP-019 | code-fix-required | Partial | 🔄 Ongoing |
+| 4 | agent Token Delegation | 5 | RP-CHANGELOG-GATE | pre-flight-gate |  Update CHANGELOG + accountability |  Ongoing | <!-- pragma: allowlist secret -->
+| 5 | Resilient Validation Suite | 5 | RP-COLLECT / RP-019 | code-fix-required | Partial |  Ongoing |
 | 6 | Automatic Dependency Submission | 3 | RP-TRANSIENT-API503 | transient-infra |  Re-run only | N/A |
 | 7 | Auto-Fix Common CI Issues | 3 | RP-RUFF / F401 / E501 | code-fix-required |  `auto_fix_common_issues.py` |  Fixed |
 | 8 | PR Auto-Fix Check | 3 | RP-RUFF | code-fix-required |  `auto_fix_common_issues.py` |  Fixed |
@@ -1145,13 +1145,13 @@ in §13, and the planned improvements to close each gap.
 | **Rescue comments posted as `github-actions[bot]`** | `actionlint-audit.yml` inline step used default `github.token` → Copilot ignores the `@copilot` mention | All `actions/github-script@v8` rescue steps explicitly pass `github-token: CODEX_MASTER_KEY` |  Fixed S293 | <!-- pragma: allowlist secret -->
 | **actionlint SC2269 self-assignment** | `PR="${PR}"` in `workflow-execution-gate.yml` → actionlint compliance fails | Remove redundant self-assignment |  Fixed S293 |
 | **RAG meta-tensor test isolation** | `torch.nn.Linear(10, 5).to("cpu")` fails on meta tensor after global device pollution | Use `device="cpu"` constructor argument; no `.to()` call |  Fixed S293 |
-| **Comment-gate failures not auto-diagnosed** | Healer posts generic `@copilot Fix ...` comment | Healer extracts blocking comment IDs + authors, generates structured reply template | 🔄 Ongoing |
-| **CHANGELOG/accountability gate not in auto-fix** | agent must remember to update both files every push | `auto_fix_common_issues.py` checks staleness | 🔄 Ongoing |
+| **Comment-gate failures not auto-diagnosed** | Healer posts generic `@copilot Fix ...` comment | Healer extracts blocking comment IDs + authors, generates structured reply template |  Ongoing |
+| **CHANGELOG/accountability gate not in auto-fix** | agent must remember to update both files every push | `auto_fix_common_issues.py` checks staleness |  Ongoing |
 | **RAG tests fail chronically on `0D_base_`** | 13 failures over 2 days |  **Fixed S292** — preprocessor + validator test coverage |  Fixed |
 | **actionlint expression-in-script violations** | `${{ }}` in `run: |` blocks | All expressions moved to `env:` per CB-003 |  Fixed S292 |
 | **task branch changes not merged** | Orphan root commit in Copilot tasks can't be cherry-picked normally | Explicit file-by-file diff + apply approach |  Fixed S292 |
-| **Copilot comment replies not verified post-session** | Session may end without replying to all addressed comments | `copilot-agent-session-done.yml` should verify replies | 🔄 Ongoing |
-| **submit-pypi 503 triggers rescue unnecessarily** | Healer posts escalation comment even for known-transient 503 | Classify RP-TRANSIENT-API503; suppress `@copilot` | 🔄 Ongoing |
+| **Copilot comment replies not verified post-session** | Session may end without replying to all addressed comments | `copilot-agent-session-done.yml` should verify replies |  Ongoing |
+| **submit-pypi 503 triggers rescue unnecessarily** | Healer posts escalation comment even for known-transient 503 | Classify RP-TRANSIENT-API503; suppress `@copilot` |  Ongoing |
 | **Duplicate `@copilot continue` comments** | `compile-bot-feedback` used `per_page:5` (oldest 5) — dedup marker never found → both Copilot-coding + CodeQL triggers post | GraphQL `last:50` (newest) — SHA-scoped `<!-- compiled-bot-feedback:{sha12} -->` prevents double-post |  Fixed S295 |
 | **Code-quality findings not surfaced in rescue thread** | `github-code-quality[bot]` findings appear only in Check run — easy to miss | `append-code-quality-to-rescue` job upserts findings into SHA-scoped rescue thread |  Fixed S295 |
 | **Missed-Trigger Recovery posts static text** | S221 guard posts fixed boilerplate re-trigger even when relevant rescue comment is on the PR | S221 re-trigger includes link and quote of the last unanswered rescue comment (rescue ID `{pr}:{sha12}`) |  Fixed S295 |
@@ -1172,7 +1172,7 @@ in §13, and the planned improvements to close each gap.
 <!-- anchor: 14.2-automation-cascade-improved-—-s295 -->
 
 > **Key change S292:** Added explicit Tier 1 / Tier 2 model (see §7.1). The rescue cascade
-> clearly documents which workflows are reliably approval-free.  
+> documents which workflows are reliably approval-free.  
 > **Key change S293:** `validate.yml` is NOT the only Tier 1 path — `test-rag.yml`,
 > `actionlint-audit.yml`, and `comment-review-gate.yml` are also Tier 1 (no approval needed).
 > All Tier 1 rescue steps MUST post comments using
@@ -1196,7 +1196,7 @@ in §13, and the planned improvements to close each gap.
 │ actionlint-audit.yml → inline   │         │ copilot-iterative-self.yml  │
 │ - SHA-scoped comment            │         │ (queued in action_required) │
 │ - PDA loop log                  │         │                             │
-│ - @copilot instructions         │         │ ⚠️ Token MUST be            │  # pragma: allowlist secret
+│ - @copilot instructions         │         │ ️ Token MUST be            │  # pragma: allowlist secret
 │ - posted as @mbaetiong          │         │    CODEX_MASTER_KEY         │
 │   (CODEX_MASTER_KEY required)   │         │    for @copilot to see it   │
 └─────────────────────────────────┘         └─────────────────────────────┘
@@ -1247,7 +1247,7 @@ in §13, and the planned improvements to close each gap.
 - Added `GH_REPO`, `GH_SERVER_URL`, `GH_RUN_ID`, `GATE_PR`, `GATE_TO_RUN`, `GATE_TO_SKIP`, `GATE_HAS_CHECKLIST`, `GATE_TRIGGER` to `env:`
 
 **`workflow-execution-gate.yml` — execute-ff step:**
-- Renamed step from `"⚡ Execute fast-forward (PR #${{ ... }})"` to `"⚡ Execute fast-forward"` (expressions in step names also flagged)
+- Renamed step from `" Execute fast-forward (PR #${{ ... }})"` to `" Execute fast-forward"` (expressions in step names also flagged)
 - Added `FF_PR`, `FF_MERGE_MODE`, `FF_DRY_RUN`, `FF_FILES` to `env:`
 
 ### 14.4 Skills Wired for Automation (updated S292)
@@ -1257,12 +1257,12 @@ in §13, and the planned improvements to close each gap.
 |-------|---------|--------|
 | `ci.health.analyzer` | Classify CI log → RP-XXX + fix commands; now primary engine in `proactive_ci_monitor.py` (CB-006) |  Wired S292 |
 | `agent.aais.batch` | Batch-score agent docs via `asyncio.Semaphore(max_concurrency)` — no ThreadPoolExecutor (CB-005) |  Wired S292 |
-| `test.failure.matcher` | Parse pytest/CI output → structured failures | 🔄 Ongoing |
+| `test.failure.matcher` | Parse pytest/CI output → structured failures |  Ongoing |
 
 ### 14.5 Session Protocol Checklist (for every Copilot session)
 <!-- anchor: 14.5-session-protocol-checklist-for-every-copilot-session -->
 
-**⚠️ MANDATORY — Must complete ALL items before calling `report_progress` on the final commit.**
+**️ MANDATORY — Must complete ALL items before calling `report_progress` on the final commit.**
 
 #### Pre-Session: Load Required Context (P6-B — S297)
 
@@ -1538,9 +1538,9 @@ Single push to 0D_base_ (CI fully failing):
 | Risk | Severity | Current Status | Mitigation |
 |------|----------|----------------|------------|
 | `copilot-agent-session-done.yml` fires on EVERY `workflow_run` completion |  High |  **FIXED S299** — `<!-- session-done-dedup:{sha12} -->` upsert marker added (P2-A) | SHA-scoped dedup prevents duplicate review posts for same commit |
-| `comment-review-gate.yml` fires on `issue_comment` → new gate comment → triggers itself | 🟡 Medium | `is:bot` filter partially guards | Strengthen actor filter: skip if `github.actor` contains `[bot]` |
-| Parallel `workflow_run` triggers for same SHA fire 10–15 workflows simultaneously | 🟡 Medium | Each has its own upsert marker | No global budget cap — acceptable at current cadence |
-| `copilot-review-responder.yml` fires on every PR review regardless of author | 🟡 Medium | Review event filter limits to `pull_request_review` | Add bot-actor skip guard |
+| `comment-review-gate.yml` fires on `issue_comment` → new gate comment → triggers itself |  Medium | `is:bot` filter partially guards | Strengthen actor filter: skip if `github.actor` contains `[bot]` |
+| Parallel `workflow_run` triggers for same SHA fire 10–15 workflows simultaneously |  Medium | Each has its own upsert marker | No global budget cap — acceptable at current cadence |
+| `copilot-review-responder.yml` fires on every PR review regardless of author |  Medium | Review event filter limits to `pull_request_review` | Add bot-actor skip guard |
 | Schedule-triggered workflows (`branch-divergence-monitor`, `proactive-ci-monitor`) run every 30 min |  Low | Only post if failures found | Already conditional; no change needed |
 
 ---
@@ -1581,7 +1581,7 @@ flowchart TD
 ```
 
 >  **Green node:** `copilot-agent-session-done.yml` — P2-A (S299) upsert marker `<!-- session-done-dedup:{sha12} -->` now prevents duplicate posts for same commit.  
-> 🟡 **Yellow nodes:** cascade risk on `issue_comment` triggers; guarded by actor filters.
+>  **Yellow nodes:** cascade risk on `issue_comment` triggers; guarded by actor filters.
 
 ---
 
@@ -1708,7 +1708,7 @@ python scripts/ci/pda_failure_logger.py log-failure \
 | `RP-AUTO-*` | Auto-logged from self-healing CI | `RP-AUTO-COVERAGE-TIMEOUT` |
 | `RP-019`, `RP-009`, etc. | Numeric patterns from test.failure.matcher (current format) | emitted by `test_failure_matcher/handler.py` |
 
-> 📝 **Pattern ID history:** Early docstrings used `P19`, `P009` format — those were the **legacy** IDs.
+>  **Pattern ID history:** Early docstrings used `P19`, `P009` format — those were the **legacy** IDs.
 > All pattern IDs now use `RP-...` format (e.g. `RP-019`, `RP-009`, `RP-XDIST-WORKER`).
 > Numeric `RP-NNN` IDs come from `test_failure_matcher/handler.py`; named `RP-<WORD>` IDs are used for
 > workflow infrastructure patterns logged via `pda_failure_logger.py`.
@@ -1731,9 +1731,9 @@ with root causes, fix templates, and verification commands. The resolution statu
 | mypy Baseline | 4 | `unused-ignore`, `arg-type` Literal |  Fixed S281 |
 | Workflow Compliance Audit (actionlint) | 4 | SC2089/SC2090 string-as-array |  Fixed S281/S283 |
 | RAG Module Tests | 5 | MagicMock chain, coverage threshold |  Fixed S276 |
-| Resilient Validation Suite | 2 | Transient / older commit | ⚠️ Monitor |
-| agent Token Delegation | 5 | REQ-4 accountability report not updated | ⚠️ Ongoing (auto-fix handles) | <!-- pragma: allowlist secret -->
-| PR Comment Review Gate | 5 | Unaddressed mbaetiong comments | 🔄 Addressed in S283 |
+| Resilient Validation Suite | 2 | Transient / older commit | ️ Monitor |
+| agent Token Delegation | 5 | REQ-4 accountability report not updated | ️ Ongoing (auto-fix handles) | <!-- pragma: allowlist secret -->
+| PR Comment Review Gate | 5 | Unaddressed mbaetiong comments |  Addressed in S283 |
 | Workflow Execution Gate | 5 | SC2089/SC2090 in FF job + duplicate env: |  Fixed S281/S283 |
 | Copilot Issue Triage | 1 | Infrastructure (Copilot session on main) | ℹ️ Not code-fixable |
 | Automatic Dependency Submission | 4 | submit-pypi infrastructure | ℹ️ Not code-fixable |
@@ -1756,7 +1756,7 @@ with root causes, fix templates, and verification commands. The resolution statu
 |--------------------|-------------|---------------------|
 | `pre-merge-validation.yml` | Pre-Merge Validation | Ruff, line-length, auto-fix gate — must always pass |
 | `comment-review-gate.yml` | PR Comment Review Gate | §0 policy — all mbaetiong comments must be addressed |
-| `deferral-language-gate.yml` | 🚨 Deferral Language Gate | Deferral-language CI enforcement — always active |
+| `deferral-language-gate.yml` |  Deferral Language Gate | Deferral-language CI enforcement — always active |
 | `agent-auth-delegation.yml` | agent Token Delegation | Token delegation — owner approves once per cycle | <!-- pragma: allowlist secret -->
 | `copilot-agent-checkin.yml` | agent Check-In | S221 missed-trigger guard — fires every push |
 | `cost-gate.yml` |  Cost Governance Gate | RED-tier budget gate — must always be armed |
@@ -1770,18 +1770,18 @@ with root causes, fix templates, and verification commands. The resolution statu
 | Exact WEC Filename | Display Name | Cost | Notes |
 |--------------------|-------------|------|-------|
 | `resilient_validation.yml` | Resilient Validation Suite |  High | Full pytest (4 shards + integration + slow) |
-| `nox_gates.yml` | Nox Quality Gates | 🟡 Medium | Nox ruff, mypy, coverage gates |
+| `nox_gates.yml` | Nox Quality Gates |  Medium | Nox ruff, mypy, coverage gates |
 | `validate.yml` | Validation Pipeline |  Low | Fast: detect-secrets, ruff, sync-tracked | <!-- pragma: allowlist secret -->
 | `mypy-baseline.yml` | mypy Baseline (Type-Check Anti-Regression) |  Low | Type-check gate — recommended always-on |
 | `progressive-validation.yml` | Progressive Validation Suite |  High | Full progressive suite + coverage |
-| `coverage-with-timeout.yml` | Coverage with Timeout Guards | 🟡 Medium | Coverage run with timeout |
-| `test-rag.yml` | RAG Module Tests | 🟡 Medium | RAG-specific tests; see §15 for chronic patterns |
+| `coverage-with-timeout.yml` | Coverage with Timeout Guards |  Medium | Coverage run with timeout |
+| `test-rag.yml` | RAG Module Tests |  Medium | RAG-specific tests; see §15 for chronic patterns |
 | `pre-flight-validation.yml` | Pre-Flight CI Validation |  Low | Pre-flight checks |
 | `ci-checkpoint-validation.yml` | CI Checkpoint Validation |  Low | CI checkpoint |
-| `data-quality-suite.yml` | Data Quality & Determinism Suite | 🟡 Medium | Determinism checks |
-| `audit-qa-suite.yml` | Audit & QA Suite (Unified) | 🟡 Medium | Unified audit + QA |
+| `data-quality-suite.yml` | Data Quality & Determinism Suite |  Medium | Determinism checks |
+| `audit-qa-suite.yml` | Audit & QA Suite (Unified) |  Medium | Unified audit + QA |
 
-> ⚠️ **Filename note:** `resilient_validation.yml` uses an underscore (`_`), NOT a hyphen (`-`).
+> ️ **Filename note:** `resilient_validation.yml` uses an underscore (`_`), NOT a hyphen (`-`).
 > `nox_gates.yml` also uses an underscore. Using `resilient-validation-suite.yml` or
 > `nox-gates.yml` will NOT be matched by the WEC gate parser.
 
@@ -1790,14 +1790,14 @@ with root causes, fix templates, and verification commands. The resolution statu
 
 | Exact WEC Filename | Display Name | Cost | Notes |
 |--------------------|-------------|------|-------|
-| `security-scanning-suite.yml` | Security Scanning Suite | 🟡 Medium | Bandit, pip-audit, secrets | <!-- pragma: allowlist secret -->
+| `security-scanning-suite.yml` | Security Scanning Suite |  Medium | Bandit, pip-audit, secrets | <!-- pragma: allowlist secret -->
 | `codeql-analysis.yml` | CodeQL |  High | SAST — runs on schedule too |
-| `semgrep_sarif.yml` | Semgrep SAST (SARIF Upload) | 🟡 Medium | Semgrep policy enforcement |
+| `semgrep_sarif.yml` | Semgrep SAST (SARIF Upload) |  Medium | Semgrep policy enforcement |
 | `actionlint-audit.yml` | Workflow Compliance Audit (actionlint) |  Low | workflow YAML linting |
 | `auto-fix-common-issues.yml` | Auto-Fix Common CI Issues |  Low | Applies P1/P9/P12 auto-fixes |
 | `auto-fix-pr-check.yml` | PR Auto-Fix Check |  Low | Pre-merge auto-fix check |
 | `scan-secrets-variables.yml` | Scan and Report GitHub Secrets and Variables |  Low | Secrets/vars audit | <!-- pragma: allowlist secret -->
-| `code-quality-coverage-suite.yml` | Code Quality & Coverage Suite | 🟡 Medium | Coverage + quality |
+| `code-quality-coverage-suite.yml` | Code Quality & Coverage Suite |  Medium | Coverage + quality |
 | `dependency-scan.yml` | Dependency Vulnerability Scan |  Low | pip-audit on requirements |
 | `sbom.yml` | Generate SBOM |  Low | Software Bill of Materials |
 
@@ -1807,11 +1807,11 @@ with root causes, fix templates, and verification commands. The resolution statu
 | Exact WEC Filename | Display Name | Cost | Notes |
 |--------------------|-------------|------|-------|
 | `documentation-link-checker.yml` | Documentation Link Checker |  Low | Broken link detection in docs/ |
-| `pages-mkdocs.yml` | Pages / MkDocs Documentation Build | 🟡 Medium | Builds MkDocs site |
+| `pages-mkdocs.yml` | Pages / MkDocs Documentation Build |  Medium | Builds MkDocs site |
 | `pages-pre-merge-validation.yml` | Pages Pre-Merge Validation |  Low | Pages build pre-check |
 | `doc-freshness-check.yml` | AAIS Doc Freshness Check |  Low | AAIS scoring of docs/ |
 
-> ⚠️ **Note:** There is no `docs-build.yml` workflow. The documentation build workflow is
+> ️ **Note:** There is no `docs-build.yml` workflow. The documentation build workflow is
 > `pages-mkdocs.yml`. Using `docs-build.yml` in the WEC will silently not match anything.
 
 ### 18.5 Automation & agent (opt-in `[ ]`)
@@ -1819,9 +1819,9 @@ with root causes, fix templates, and verification commands. The resolution statu
 
 | Exact WEC Filename | Display Name | Cost | Notes |
 |--------------------|-------------|------|-------|
-| `qa-walkthrough.yml` | QA Walkthrough agent | 🟡 Medium | Full QA agent walkthrough |
+| `qa-walkthrough.yml` | QA Walkthrough agent |  Medium | Full QA agent walkthrough |
 | `dependency-submission.yml` | Resilient Dependency Submission |  Low | Dependency graph submission |
-| `reference-integrity.yml` | 🔗 Reference Integrity + agent Size Gate |  Low | Cross-reference validation |
+| `reference-integrity.yml` |  Reference Integrity + agent Size Gate |  Low | Cross-reference validation |
 | `root-org-validation.yml` | Root Organization Validation |  Low | Root dir structure check |
 | `rust_swarm_ci.yml` | Rust-Python Hybrid Swarm CI/CD |  High | Rust cargo build + tests |
 | `e-to-d-transition-gate.yml` | E→D Transition Readiness Gate |  Low | Autonomy phase transition |
@@ -1837,9 +1837,9 @@ The Fast-Forward feature is controlled by its own subsection in the WEC block, N
 `[x] fast-forward-safe-files.yml` checkbox. It uses these markers:
 
 ```markdown
-### ⚡ Fast-Forward Safe Files to `main`
-<!-- anchor: ⚡-fast-forward-safe-files-to-main -->
-- [ ] ⚡ **Fast-Forward Approved** — I (@mbaetiong) approve promoting the files below to `main` immediately
+###  Fast-Forward Safe Files to `main`
+<!-- anchor: -fast-forward-safe-files-to-main -->
+- [ ]  **Fast-Forward Approved** — I (@mbaetiong) approve promoting the files below to `main` immediately
 
 <!-- FF_MERGE_MODE: create-pr -->
 <!-- FF_FILES:  -->
@@ -1883,7 +1883,7 @@ flowchart TD
     end
 
     CHEAP --> MEDIUM
-    subgraph MEDIUM ["Medium Gates (check after cheap pass 🟡)"]
+    subgraph MEDIUM ["Medium Gates (check after cheap pass )"]
         M1[resilient_validation.yml]
         M2[nox_gates.yml]
         M3[security-scanning-suite.yml]
@@ -1900,8 +1900,8 @@ flowchart TD
     end
 
     EXPENSIVE --> FF
-    subgraph FF ["Fast-Forward (separate section ⚡)"]
-        F1["⚡ FF Approved checkbox\n+ FF_BLOCK_START file list\n→ fast-forward-safe-files.yml"]
+    subgraph FF ["Fast-Forward (separate section )"]
+        F1[" FF Approved checkbox\n+ FF_BLOCK_START file list\n→ fast-forward-safe-files.yml"]
     end
 
     style ALWAYS fill:#d1ecf1,stroke:#0c5460
@@ -1941,7 +1941,7 @@ to humans. The three-step structure is:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│  ### ⚡ Fast-Forward Safe Files to `main`                                        │
+│  ###  Fast-Forward Safe Files to `main`                                        │
 │                                                                                 │
 │  **Step 1 — Set parameters**  ← visible code block shows current values         │
 │  ```                                                                            │
@@ -1960,7 +1960,7 @@ to humans. The three-step structure is:
 │  FF_BLOCK_END -->                                                               │
 │                                                                                 │
 │  **Step 3 — Approve**                                                           │
-│  - [ ] ⚡ Fast-Forward Approved  ← tick to fire fast-forward-safe-files.yml    │
+│  - [ ]  Fast-Forward Approved  ← tick to fire fast-forward-safe-files.yml    │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1993,12 +1993,12 @@ Step 4  Optionally set dry-run to preview without pushing:
         <!-- FF_DRY_RUN: true -->
 
 Step 5  Tick the Step 3 checkbox in the WEC section:
-        - [x] ⚡ Fast-Forward Approved — I approve promoting the files above to main immediately
+        - [x]  Fast-Forward Approved — I approve promoting the files above to main immediately
 
 Step 6  Save the PR body → workflow-execution-gate.yml reads the FF section and
         triggers fast-forward-safe-files.yml automatically
 
-Step 7  Check the ⚡ Fast-Forward Result comment posted to the PR for status
+Step 7  Check the  Fast-Forward Result comment posted to the PR for status
 ```
 
 ### 19.4 Allowlist & Denylist
@@ -2027,9 +2027,9 @@ Files matching the **denylist** are **denied** (blocked, logged as security conc
 <!-- anchor: 19.5-ff-gate-flow -->
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing "Maintainer edits PR body\n• Step 1: Set FF_MERGE_MODE / FF_FILES / FF_DRY_RUN\n• Step 2: Populate FF_BLOCK (optional)\n• Step 3: Tick ⚡ Fast-Forward Approved", "workflow-execution-gate.yml\nparse-ff step\ngrep + awk parse"'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing "Maintainer edits PR body\n• Step 1: Set FF_MERGE_MODE / FF_FILES / FF_DRY_RUN\n• Step 2: Populate FF_BLOCK (optional)\n• Step 3: Tick  Fast-Forward Approved", "workflow-execution-gate.yml\nparse-ff step\ngrep + awk parse"'}}%%
 flowchart TD
-    PR_EDIT["Maintainer edits PR body\n• Step 1: Set FF_MERGE_MODE / FF_FILES / FF_DRY_RUN\n• Step 2: Populate FF_BLOCK (optional)\n• Step 3: Tick ⚡ Fast-Forward Approved"]
+    PR_EDIT["Maintainer edits PR body\n• Step 1: Set FF_MERGE_MODE / FF_FILES / FF_DRY_RUN\n• Step 2: Populate FF_BLOCK (optional)\n• Step 3: Tick  Fast-Forward Approved"]
     PR_EDIT --> WEC["workflow-execution-gate.yml\nparse-ff step\ngrep + awk parse"]
 
     WEC --> FFCHECK{FF checkbox\nticked?}
@@ -2049,7 +2049,7 @@ flowchart TD
     MERGE_MODE -->|create-pr| PR_CREATED["Opens draft PR to main\n pr-created"]
     MERGE_MODE -->|direct-push| PUSH["Direct push to main\n direct-pushed\n(admin token required)"]
 
-    PR_CREATED --> RESULT["Post ⚡ Fast-Forward Result\ncomment to PR\n<!-- wec-ff-result:PR# -->"]
+    PR_CREATED --> RESULT["Post  Fast-Forward Result\ncomment to PR\n<!-- wec-ff-result:PR# -->"]
     PUSH --> RESULT
     DRY_OUT --> RESULT
     EXCLUDED --> RESULT
@@ -2109,9 +2109,9 @@ immediately, the agent MUST:
 2. In the PR body WEC section, populate the **FF_BLOCK** with those file paths (Step 2)
 3. Set `FF_MERGE_MODE: create-pr` (default — always prefer PR over direct-push)
 4. Update the visible **Step 1 parameters panel** code block to reflect the current values
-5. Tick the `⚡ Fast-Forward Approved` checkbox (Step 3)
+5. Tick the ` Fast-Forward Approved` checkbox (Step 3)
 6. Push the PR body update via `report_progress`
-7. Verify the `⚡ Fast-Forward Result` comment shows `pr-created` or `dry-run`
+7. Verify the ` Fast-Forward Result` comment shows `pr-created` or `dry-run`
 
 The agent must **NOT** use `direct-push` mode without explicit human approval in a PR comment.
 
@@ -2254,7 +2254,7 @@ STEP 5 — Commit and reply
 | **Trigger** | `pull_request` event | `workflow_run` event |
 | **Approval** | None | Human must click "Approve" in Actions UI |
 | **Workflows** | `validate.yml`, `test-rag.yml`, `actionlint-audit.yml`, `comment-review-gate.yml` | `ci-rescue.yml`, `iterative-self-healing-ci.yml`, `copilot-iterative-self-healing.yml` |
-| **Reliability** |  Always fires on push | ⚠️ May queue in `action_required` |
+| **Reliability** |  Always fires on push | ️ May queue in `action_required` |
 | **What it posts** | SHA-scoped `@copilot` rescue comment | Deep RCA, auto-fix attempts, escalation |
 
 > **Key insight:** If you see many `workflow_run` runs in `action_required` state, Tier 2 is
@@ -2285,7 +2285,7 @@ Minimum viable WEC for a feature PR:
 - [ ] security-scanning-suite.yml ← check before merge
 ```
 
-> ⚠️ **Filename accuracy is MANDATORY.** Wrong filenames silently fail to match.  
+> ️ **Filename accuracy is MANDATORY.** Wrong filenames silently fail to match.  
 > Use underscores where the file uses underscores: `resilient_validation.yml` NOT `resilient-validation-suite.yml`.  
 > Full authoritative list: [§18 WEC workflow Catalog](#18-wec-workflow-catalog--complete-reference).
 
@@ -2406,9 +2406,9 @@ Every workflow that fails on the same commit **appends** its section to this anc
 
 | Condition | Behaviour |
 |-----------|-----------|
-| First failure on SHA — no anchor exists | `post_rescue_comment.py` creates the anchor comment with `## 🚨 CI Rescue` header |
+| First failure on SHA — no anchor exists | `post_rescue_comment.py` creates the anchor comment with `##  CI Rescue` header |
 | Subsequent failure on same SHA | Script finds existing anchor → appends `<details>` section |
-| RCA from `ci_rescue.py` | `_find_rescue_sha_comment()` finds anchor → appends `📋 Root Cause Analysis` section |
+| RCA from `ci_rescue.py` | `_find_rescue_sha_comment()` finds anchor → appends ` Root Cause Analysis` section |
 | Self-healing escalation | `copilot-iterative-self-healing.yml` uses `APPEND_ONLY=true` → appends or silently skips |
 | workflow wants custom section | Set `SECTION_TITLE` + `SECTION_CONTENT` env vars → appended as named `<details>` |
 
@@ -2431,8 +2431,8 @@ flowchart LR
     end
     subgraph SHA_Anchor["Single SHA Comment\n<!-- ci-rescue-sha:{pr}:{sha} -->"]
         A1[" validate.yml failure"]
-        A2["📋 Root Cause Analysis"]
-        A3["🔄 Self-healing iteration"]
+        A2[" Root Cause Analysis"]
+        A3[" Self-healing iteration"]
         A4["�� Escalation context"]
     end
     V -->|post_rescue_comment.py| SHA_Anchor
@@ -2550,7 +2550,7 @@ python scripts/ci/wec_enforcer.py --validate-body --pr N
 ```
 
 This checks:
-- `## 🔄 Workflow Execution Checklist` section is present
+- `##  Workflow Execution Checklist` section is present
 - All `_WEC_ALWAYS_REQUIRED` items are `[x]`
 - No always-required items have been accidentally unchecked
 - No WEC items have been removed vs canonical template
@@ -2757,7 +2757,7 @@ graph TD
     FIX1[" FIX-1 (S309)<br/>continue-on-error: true<br/>on escalation checkout<br/>iterative-self-healing-ci.yml"]
     FIX2[" FIX-2 (S309)<br/>Updated .secrets.baseline<br/>hashed_secrets<br/>for CODEX_MANIFEST +<br/>agent_context.json"]
     FIX3[" FIX-3 (S309)<br/>Added --autostash<br/>to 10 git pull --rebase<br/>calls across 7 workflows"]
-    FIX4[" FIX-4 (S309)<br/>Added ⚡ Auto-Approve section<br/>+ pr-checks.yml<br/>+ html_visual_regression.yml<br/>to PULL_REQUEST_TEMPLATE.md"]
+    FIX4[" FIX-4 (S309)<br/>Added  Auto-Approve section<br/>+ pr-checks.yml<br/>+ html_visual_regression.yml<br/>to PULL_REQUEST_TEMPLATE.md"]
     FIX5[" FIX-5 (S309)<br/>Added 12 new items<br/>+  Infra section<br/>to session_wrapup_autofix.py<br/>_WEC_ITEMS"]
 
     %% ── Verification Gates ───────────────────────────────────────────────────
@@ -2853,8 +2853,8 @@ graph TD
 graph LR
     T["📄 PULL_REQUEST_TEMPLATE.md<br/>(master WEC template)"]
     S["🐍 session_wrapup_autofix.py<br/>_WEC_ITEMS list<br/>(40 items after S309)"]
-    E["🔍 wec_enforcer.py<br/>--validate-body<br/>(reads _WEC_ITEMS via import)"]
-    P["📋 PR Body<br/>(generated by session_wrapup_autofix<br/>or copied from template)"]
+    E[" wec_enforcer.py<br/>--validate-body<br/>(reads _WEC_ITEMS via import)"]
+    P[" PR Body<br/>(generated by session_wrapup_autofix<br/>or copied from template)"]
     G[" workflow-execution-gate.yml<br/>Validate WEC Template Integrity"]
 
     S -->|imports into| E
@@ -2872,5 +2872,5 @@ graph LR
 
 **S309 Sync fixes:**
 - `session_wrapup_autofix.py`: Added 12 items → `_WEC_ITEMS` now has **40 items** (was 28)
-- `PULL_REQUEST_TEMPLATE.md`: Added `⚡ Auto-Approve` section + `pr-checks.yml` + `html_visual_regression.yml`
+- `PULL_REQUEST_TEMPLATE.md`: Added ` Auto-Approve` section + `pr-checks.yml` + `html_visual_regression.yml`
 - All three sources now in sync — `wec_enforcer.py` validation will pass

@@ -1,0 +1,39 @@
+%%{init: {"theme": "default", "themeVariables": {"fontSize": "14px"}}}%%
+flowchart TD
+    S0["🔍 Session Start\n(2026-05-28 01:12)\nbranch: copilot/explore-codebase-implementation-plan"]
+
+    S0 --> A["📋 Prior Session Review\n17.57% coverage baseline\n2 collection errors\nAsyncSSH CVE #263"]
+
+    A --> B["🔐 AsyncSSH CVE Triage\nuv.lock: asyncssh 2.23.0 ✅\nrequirements/lock.txt: 2.22.0 → 2.23.0\nPR #4637 cherry-picked"]
+
+    A --> C["🐛 Collection Blocker 1\nAttributeError: _mlf missing\nfrom codex_ml.tracking.mlflow_utils"]
+
+    A --> D["🐛 Collection Blocker 2\nImportError: ALLOWED_TASKS\nfrom codex.cli (init crash)"]
+
+    C --> E["✅ Fix: Add _mlf attr\nsrc/codex_ml/tracking/mlflow_utils.py\ntry: import mlflow as _mlf\nexcept ImportError: _mlf = None"]
+
+    D --> F["✅ Fix: Guard _load_click_cli\nsrc/codex/cli/__init__.py\ntry/except around line 48\nprevents init crash → ALLOWED_TASKS=None"]
+
+    B --> G["📝 Commit: 15a3409\nFix collection blockers\n+ asyncssh lock update"]
+    E --> G
+    F --> G
+
+    G --> H["🚀 nox -s tests\nFull test suite running\n(in progress at session end)"]
+
+    H --> I["⏳ PENDING: Final Coverage\nExpected: real % with tests running\nvs 17.57% import-only baseline"]
+
+    H --> J["⏳ PENDING: parallel_validation\nPR: Continue coverage improvements\nfor MSP Gateway, ITA, training, security"]
+
+    G --> K["📄 Living Docs Updated\ndocs/roadmap/PR4637_whats_next.md\ndocs/roadmap/PR4637_session_diagram.mmd"]
+
+    subgraph Protected
+        P["⛔ PROTECTED\n.github/workflows/copilot-setup-steps.yml\nLines 141–148 (run: | block-scalar)\nHardened post-PR #4616 revert\nCurrent HEAD: 1186f05"]
+    end
+
+    subgraph NextSession["🎯 Next Session Priorities"]
+        N1["1. Record final coverage result"]
+        N2["2. Run parallel_validation"]
+        N3["3. MSP Gateway coverage"]
+        N4["4. Training module coverage"]
+        N5["5. VALIDATION_AUDIT Phase B-D"]
+    end

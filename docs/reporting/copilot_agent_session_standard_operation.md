@@ -121,7 +121,7 @@ Use tokenized variable aliases in living docs and session handoffs to keep refer
 - Approval-gated runs count against rate-limit and session time; only arm workflows that are
   actually needed for the active task.
 
-## 🚨 Branch-Update Conflict — Session Quick Reference
+##  Branch-Update Conflict — Session Quick Reference
 
 > Full per-workflow mitigation cards: [`workflow_portfolio_7d_analysis.md → Branch-Update Conflict Dashboard`](workflow_portfolio_7d_analysis.md#-branch-update-conflict-dashboard)
 

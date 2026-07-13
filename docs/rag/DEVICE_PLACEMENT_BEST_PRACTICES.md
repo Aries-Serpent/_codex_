@@ -13,7 +13,7 @@ This document provides best practices for device placement in RAG (Retrieval-Aug
 
 ---
 
-## ⚠️ Critical: Meta Tensor Compatibility
+## ️ Critical: Meta Tensor Compatibility
 
 ### The Problem
 

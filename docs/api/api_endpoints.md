@@ -36,7 +36,7 @@ API information.
 **Response:**
 ```json
 {
-  "message": "Codex API v0.2.0",
+  "message": "Codex API v0.2.1",
   "docs": "/docs"
 }
 ```

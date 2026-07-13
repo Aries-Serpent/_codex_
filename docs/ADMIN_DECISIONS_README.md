@@ -23,7 +23,7 @@ docs/
 
 ---
 
-##  Quick Start
+## Quick Start
 
 ### For Busy Executives (5 minutes)
 Read: [REPO_ADMIN_DECISIONS_SUMMARY.md](./REPO_ADMIN_DECISIONS_SUMMARY.md)
@@ -74,7 +74,7 @@ Read: Full [REPO_ADMIN_IMPLEMENTATION_DECISIONS.md](./REPO_ADMIN_IMPLEMENTATION_
    - Yes, register codex-analyze, codex-audit, codex-diff 
 
 7. **Should code smell detection block merges?**
-   - Warnings only (3-phase rollout) ⚠️
+   - Warnings only (3-phase rollout) ️
 
 8. **Standard SQLite location?**
    - Yes, `.codex/session_logs.db` 
@@ -164,7 +164,7 @@ Track these metrics to measure implementation success:
 
 ---
 
-## 🔍 Research & Citations
+##  Research & Citations
 
 Documentation includes research from:
 - **Industry Tools**: PMD, SonarQube, Designite, CodeClimate

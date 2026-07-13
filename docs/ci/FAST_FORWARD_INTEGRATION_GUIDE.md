@@ -236,7 +236,7 @@ gh workflow run fast-forward-safe-files.yml \
   -f dry_run=false
 ```
 
-⚠️ **Use with caution** — Commits directly to main, bypassing PR review.
+️ **Use with caution** — Commits directly to main, bypassing PR review.
 
 ## References
 

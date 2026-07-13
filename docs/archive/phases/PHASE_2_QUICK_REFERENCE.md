@@ -9,14 +9,14 @@
 
 ---
 
-## 📋 What Was Done
+##  What Was Done
 
 ### 1. Fixed Rust Formatting 
 - **File**: `benches/swarm_benchmarks.rs:77`
 - **Fix**: Reformatted eprintln! to multi-line
 - **Status**: Ready for CI re-run
 
-### 2. Identified CI Root Causes 🔍
+### 2. Identified CI Root Causes 
 - **Problem**: Disk space 95% full (68G/72G)
 - **Impact**: Blocking determinism & security scan
 - **Solution**: Add disk cleanup to workflows
@@ -30,7 +30,7 @@
 ### 4. Cognitive Brain Verification 
 - Phase 8.0-8.12:  COMPLETE (100%)
 - Phase 10.1:  COMPLETE (100%)
-- Phase 10.2: 🟡 IN PROGRESS (60%)
+- Phase 10.2:  IN PROGRESS (60%)
 - Health: 99/100 | k₁: 0.18 | QA: 5.56x
 
 ---

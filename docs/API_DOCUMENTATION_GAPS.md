@@ -314,14 +314,14 @@ def estimate_resource_cost(plan: ExecutionPlan) -> float:
 3.  **Fill ML/Storage gaps** (3-4 hours) — Data systems
 
 ### Medium-term
-4. 🔄 **Integration completions** (2-3 hours)
-5. 🔄 **Governance details** (1-2 hours)
-6. 🔄 **Supporting modules** (1-2 hours)
+4.  **Integration completions** (2-3 hours)
+5.  **Governance details** (1-2 hours)
+6.  **Supporting modules** (1-2 hours)
 
 ### Long-term
-7. 📋 **Add advanced examples** (ongoing)
-8. 📋 **Include performance notes** (ongoing)
-9. 📋 **Add migration guides** (when relevant)
+7.  **Add advanced examples** (ongoing)
+8.  **Include performance notes** (ongoing)
+9.  **Add migration guides** (when relevant)
 
 ---
 
@@ -350,9 +350,9 @@ def estimate_resource_cost(plan: ExecutionPlan) -> float:
 | Status | Count | Effort | Priority |
 |--------|-------|--------|----------|
 |  Documented | 98 sigs | Complete | - |
-| 🟡 Partially Done | 200 sigs | 10-12 hrs | P1-P2 |
+|  Partially Done | 200 sigs | 10-12 hrs | P1-P2 |
 |  Not Started | 270 sigs | 8-10 hrs | P2-P3 |
-| 🔄 In Progress | 0 sigs | - | - |
+|  In Progress | 0 sigs | - | - |
 
 **Total Estimated Effort:** 18-22 hours to 100% (but 20%+ achievable in 8-10 hours)
 

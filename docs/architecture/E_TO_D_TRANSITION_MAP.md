@@ -120,7 +120,7 @@ on:
   workflow_dispatch:
 jobs:
   transition-readiness:
-    name: "🔄 E→D Transition Readiness Check"
+    name: " E→D Transition Readiness Check"
     timeout-minutes: 10
     # ... 5-condition JavaScript check via actions/github-script
 ```

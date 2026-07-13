@@ -67,7 +67,7 @@ This directory contains all documentation related to managing Zendesk Support wi
 
 ## Common Tasks
 
-### Getting Started
+## Getting Started
 ```bash
 # 1. Configure credentials (per environment)
 export ZENDESK_DEV_SUBDOMAIN=your-subdomain
@@ -192,9 +192,9 @@ See [ZENDESK_NEWCOMER_GUIDE.md#troubleshooting](ZENDESK_NEWCOMER_GUIDE.md#troubl
 | Groups |  | Agent teams and routing |
 | Webhooks |  | External integrations |
 | Routing |  | Skills-based routing |
-| Talk IVR | ⚠️ | Phone menu system (limited) |
+| Talk IVR | ️ | Phone menu system (limited) |
 
-Legend:  Full support | ⚠️ Partial support |  Not yet supported
+Legend:  Full support | ️ Partial support |  Not yet supported
 
 ## Environment Setup
 

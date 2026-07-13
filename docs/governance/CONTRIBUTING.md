@@ -231,7 +231,7 @@ Offline/minimal environments can skip these extras. When optional features are i
 
 ```bash
 pip uninstall hydra-core mlflow wandb tensorboard -y
-python -c "import codex_ml; print('✓ Core imports work without extras')"
+python -c "import codex_ml; print(' Core imports work without extras')"
 pip install -r requirements/dev.txt
 ```text
 

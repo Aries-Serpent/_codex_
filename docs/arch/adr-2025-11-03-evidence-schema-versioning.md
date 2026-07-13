@@ -110,9 +110,9 @@ version = record.get("schemaVersion", auto_detect(record))
 
 ### Negative
 
-⚠️ **Parser Complexity**: Code must handle multiple versions  
-⚠️ **Storage**: JSONL file slightly larger (repeated `schemaVersion` field)  
-⚠️ **Query Complexity**: Queries must account for multiple schemas  
+️ **Parser Complexity**: Code must handle multiple versions  
+️ **Storage**: JSONL file slightly larger (repeated `schemaVersion` field)  
+️ **Query Complexity**: Queries must account for multiple schemas  
 
 ### Mitigation
 

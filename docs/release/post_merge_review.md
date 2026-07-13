@@ -199,9 +199,9 @@ Before cutting a release from main:
 ./scripts/health_check.sh  # If exists
 
 # Or manually:
-python -c "import torch; from src.codex_ml.training.unified_training import UnifiedTrainingConfig; print('✓ Imports OK')"
-pytest -m smoke --tb=no -q && echo "✓ Smoke tests OK"
-python tools/fence_fixer.py . --dry-run | grep "Files changed: 0" && echo "✓ Fences OK"
+python -c "import torch; from src.codex_ml.training.unified_training import UnifiedTrainingConfig; print(' Imports OK')"
+pytest -m smoke --tb=no -q && echo " Smoke tests OK"
+python tools/fence_fixer.py . --dry-run | grep "Files changed: 0" && echo " Fences OK"
 ```text
 
 ## Monitoring

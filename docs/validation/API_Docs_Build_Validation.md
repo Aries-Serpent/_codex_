@@ -164,7 +164,7 @@ if [ "$ok" != "true" ] || [ "$errors" != "0" ]; then
   exit 1
 fi
 
-echo "✓ API docs validation passed"
+echo " API docs validation passed"
 ```text
 
 ## Related Documentation

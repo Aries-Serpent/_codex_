@@ -1,0 +1,24 @@
+%% Hierarchical Agent Routing — Aries-Serpent/_codex_
+%% Phase 4.10 — Integration Scenario Diagrams
+
+flowchart TD
+    A["🎯 Top-Level Agent\n(orchestrator)"]
+    B["🔍 Analyze Task\n(complex?)"]
+    C{"Delegable?"}
+    D["📋 Break into Subtasks"]
+    E["👨‍💼 Manager Agent\n(subproblem 1)"]
+    F["👨‍💼 Manager Agent\n(subproblem 2)"]
+    G["👷 Worker Agent\n(detail work)"]
+    H["👷 Worker Agent\n(detail work)"]
+    I["🔄 Collect from Workers"]
+    J["🔄 Collect from Managers"]
+    K["✅ Synthesize Final"]
+    
+    A --> B --> C
+    C -->|"yes"| D --> E --> G
+    D --> F --> H
+    G --> I --> J --> K
+    H --> I
+    
+    style A fill:#4a4e69,color:#fff
+    style K fill:#1b4332,color:#fff

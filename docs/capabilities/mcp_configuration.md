@@ -419,8 +419,7 @@ assert 1024 <= config["port"] <= 65535, "Invalid port range"
 ### Configuration Documentation
 
 1. **Document All Settings**: Provide descriptions and examples
-2. **Include Defaults**: Specify default values clearly
-3. **Show Environment Variables**: Document env var names and mappings
+2. **Include Defaults**: Specify default values 3. **Show Environment Variables**: Document env var names and mappings
 4. **Provide Examples**: Include example configurations for common scenarios
 
 ## Troubleshooting

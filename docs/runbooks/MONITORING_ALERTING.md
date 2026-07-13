@@ -1,4 +1,6 @@
 # RUNBOOK: Monitoring & Alerting Configuration
+
+**Version**: v0.2.1
 **Last Updated:** 2026-07-11
 
 **Version:** 1.0.0  
@@ -340,9 +342,9 @@ try:
     cursor = conn.cursor()
     cursor.execute('SELECT COUNT(*) FROM models')
     count = cursor.fetchone()[0]
-    print(f'✓ {count} models')
+    print(f' {count} models')
 except Exception as e:
-    print(f'✗ {e}')
+    print(f' {e}')
 "
 
 # 3. Metrics Available

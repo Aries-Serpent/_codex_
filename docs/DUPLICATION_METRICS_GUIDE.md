@@ -126,7 +126,7 @@ codex duplication check src/ --min-lines=6 --threshold=0.15 --output=scan.json
 
 **Output:**
 ```text
-🔍 Scanning /home/user/project for duplicates...
+ Scanning /home/user/project for duplicates...
 
  Duplication Report:
   Total lines: 15,234

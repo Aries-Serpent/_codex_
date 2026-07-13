@@ -38,7 +38,7 @@ The Pre-commit Verification Hook ensures that all files logged in `action_log.nd
 
 ---
 
-## 🔧 Usage
+##  Usage
 
 ### As Pre-commit Hook (Automatic)
 
@@ -73,7 +73,7 @@ python scripts/hooks/pre_commit_verify.py --action-log /path/to/action_log.ndjso
 
 ---
 
-## 📋 CLI Options
+##  CLI Options
 
 | Option | Description | Default |
 |--------|-------------|---------|
@@ -110,7 +110,7 @@ Missing from staging: 0
 INFO: All expected files are staged 
 ```
 
-### Missing Files ⚠️
+### Missing Files ️
 
 ```
 ============================================================
@@ -126,10 +126,10 @@ Missing from staging: 2
    - tests/hooks/test_pre_commit_verify.py
    - .pre-commit-config.yaml
 
-⚠️  Modified but not staged (need `git add`):
+️  Modified but not staged (need `git add`):
    - docs/PRE_COMMIT_VERIFICATION.md
 
-⚠️  Untracked files (need `git add`):
+️  Untracked files (need `git add`):
    - .codex/new_file.md
 
 To stage missing files:
@@ -142,7 +142,7 @@ ERROR: Some expected files are not staged!
 
 ---
 
-## 🔍 How It Works
+##  How It Works
 
 ### 1. Parse Action Log
 
@@ -234,7 +234,7 @@ pytest tests/hooks/test_pre_commit_verify.py --cov=scripts/hooks/pre_commit_veri
 
 ---
 
-## 🔗 Integration with Cognitive Brain
+##  Integration with Cognitive Brain
 
 This hook is part of the cognitive brain improvement initiative:
 

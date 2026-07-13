@@ -30,7 +30,7 @@ Operating contract:
     - python3 -m pytest -x
     and continue the loop until:
     - the suite passes, or
-    - only clearly external/infrastructure-only blockers remain.
+    - only external/infrastructure-only blockers remain.
 12. Before final commit, clean transient runtime artifacts so the PR stays scoped.
 13. Leave ~5 minutes for wrap-up:
     - final required checks

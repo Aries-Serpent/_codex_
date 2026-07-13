@@ -230,7 +230,7 @@ Key skips (security-justified):
 | Language | Status | Continue-on-Error |
 |----------|--------|-------------------|
 | Python |  Required | false (must pass) |
-| JavaScript | ⚠️ Optional | true (may fail) |
+| JavaScript | ️ Optional | true (may fail) |
 
 ### Queries
 

@@ -437,7 +437,7 @@ Variance:    ±10-20% acceptable range
 
 ---
 
-## 📋 Compliance Evidence
+##  Compliance Evidence
 
 ### Security Testing Framework
 - **Framework:** pytest + custom security assertions

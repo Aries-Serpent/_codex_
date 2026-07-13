@@ -46,7 +46,7 @@ flowchart TD
         F4["Workflow Execution Gate\nOne run failed (transient concurrency)\none run passed on same SHA\nFIXED: subsequent push re-runs gate"]
     end
 
-    subgraph PENDING["⏳ Post-Push Expected"]
+    subgraph PENDING[" Post-Push Expected"]
         P1["Fast Validation →  PASS\ntrailing-space source removed"]
         P2["PR Auto-Fix Check →  PASS\npre-commit hook passes clean file"]
         P3["Pre-Merge Validation →  PASS\ncascades from F1/F2 fix"]
@@ -101,7 +101,7 @@ flowchart TD
         R4["CodeQL py/dead-literal-branch\n13358–13384 — 27 alerts\nrefactored to helper functions\nreliability + monitoring tests"]
     end
 
-    subgraph OPEN_BACKLOG["⚡ Security Backlog — Open Post-PR #4317"]
+    subgraph OPEN_BACKLOG[" Security Backlog — Open Post-PR #4317"]
         S1["PBKDF2 iterations\n100k → 600k\nOWASP 2024 for SHA-256\nservices/ita/app/security.py:185"]
         S2["CodeQL push-trigger coverage\ncurrently PRs only\nadd on: push + schedule: weekly\ncodeql-analysis.yml"]
         S3["Semgrep SAST rule tuning\ncurrent: p/python + p/security-audit\nadd: p/flask p/django p/sqlalchemy\nif any ORM/web framework in use"]
@@ -123,11 +123,11 @@ flowchart TD
 | Item | Priority | File | Fix Pattern | S313 Status |
 |------|:--------:|------|-------------|-------------|
 | PBKDF2 100k → 600k iterations |  HIGH | `services/ita/app/security.py:224` | Change `iterations=100_000` → `600_000` |  **DONE** — commit this session |
-| CodeQL on-push trigger | 🟡 MED | `.github/workflows/codeql-analysis.yml` | Already has `push: branches: [main, 0D_base_, develop, copilot/**]` |  **Already configured** |
-| Semgrep rule expansion | 🟡 MED | `.github/workflows/semgrep_sarif.yml` | Add `p/flask`, `p/sqlalchemy` rulesets | ⏳ Next PR |
-| bandit HIGH triage | 🟡 MED | CI artifact `bandit-report.json` | Review B105/B106/B603 per run |  **0 HIGH findings** in `src/` + `services/` |
-| pip-audit post-merge |  LOW | `requirements/lock.txt` / `uv.lock` | `pip-audit --fix` on main after merge | ⏳ Next PR |
-| .secrets.baseline re-scan |  LOW | `.secrets.baseline` | `detect-secrets scan > .secrets.baseline` | ⏳ Next PR |
+| CodeQL on-push trigger |  MED | `.github/workflows/codeql-analysis.yml` | Already has `push: branches: [main, 0D_base_, develop, copilot/**]` |  **Already configured** |
+| Semgrep rule expansion |  MED | `.github/workflows/semgrep_sarif.yml` | Add `p/flask`, `p/sqlalchemy` rulesets |  Next PR |
+| bandit HIGH triage |  MED | CI artifact `bandit-report.json` | Review B105/B106/B603 per run |  **0 HIGH findings** in `src/` + `services/` |
+| pip-audit post-merge |  LOW | `requirements/lock.txt` / `uv.lock` | `pip-audit --fix` on main after merge |  Next PR |
+| .secrets.baseline re-scan |  LOW | `.secrets.baseline` | `detect-secrets scan > .secrets.baseline` |  Next PR |
 | mypy baseline lockdown |  LOW | `.mypy_baseline` | Updated 170 → 126 |  **DONE** — this session |
 
 ---
@@ -175,10 +175,10 @@ flowchart TD
     P1([" Priority 1 — Post-PR #4317 Tasks"])
 
     P1 --> TW["trailing-whitespace source fix\nautonomous_rag_context.py lines 624/626/627\n DONE — this commit"]
-    P1 --> PBKDF2["PBKDF2 iterations 100k → 600k\nservices/ita/app/security.py:185\n⏳ First task in next security PR"]
-    P1 --> WQM["Integrate workflow_queue_manager.py\ninto codebase-health-sweep.yml\n⏳ Next session"]
+    P1 --> PBKDF2["PBKDF2 iterations 100k → 600k\nservices/ita/app/security.py:185\n First task in next security PR"]
+    P1 --> WQM["Integrate workflow_queue_manager.py\ninto codebase-health-sweep.yml\n Next session"]
     P1 --> DOCS["Living docs maintained\nroadmap + session diagram\n updated each session"]
-    P1 --> VERIFY["Verify CI green on main\nafter merge of 0D_base_\n⏳ Awaiting merge"]
+    P1 --> VERIFY["Verify CI green on main\nafter merge of 0D_base_\n Awaiting merge"]
 
     TW & PBKDF2 & WQM & DOCS & VERIFY --> MERGE_READY[" PR #4317\nMerge-Ready after this push"]
 ```
@@ -293,7 +293,7 @@ flowchart TD
 - IF not yet merged: merge PR #4317 first, then run `git fetch origin main && git rebase origin/main`
 - IF already merged: confirm with `git log --oneline origin/main | head -5`
 
-### 📋 Pre-load context (MANDATORY — do these first)
+###  Pre-load context (MANDATORY — do these first)
   view docs/roadmap/PR4317_whats_next.md    # §2 security backlog (S313 status), §6 scorecard
   view docs/sessions/PR4317_session_diagram.md  # §Wave 8 S313, §9 CodeQL map, §10 merge table
   view docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md  # last entry: S313
@@ -339,7 +339,7 @@ flowchart TD
   python scripts/ci/sync_tracked_files.py --check
   python scripts/ci/auto_fix_common_issues.py --check-only
 
-### 📝 Living docs to update each session
+###  Living docs to update each session
   docs/roadmap/PR4317_whats_next.md         # update §2 security backlog status column
   docs/sessions/PR4317_session_diagram.md   # add Wave N for each session
   docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
@@ -414,15 +414,15 @@ gantt
 ## 2. Priority 1 — Immediate Post-Merge Tasks
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing " Priority 1 — Post-PR #4317 Tasks", "Verify CI is green on main\nafter merge of 0D_base_\n⏳ Awaiting merge"'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing " Priority 1 — Post-PR #4317 Tasks", "Verify CI is green on main\nafter merge of 0D_base_\n Awaiting merge"'}}%%
 flowchart TD
     P1([" Priority 1 — Post-PR #4317 Tasks"])
 
-    P1 --> VERIFY["Verify CI is green on main\nafter merge of 0D_base_\n⏳ Awaiting merge"]
-    P1 --> WQM["Integrate workflow_queue_manager.py\ninto codebase-health-sweep.yml\nfor automated queue drain\n⏳ Next session"]
+    P1 --> VERIFY["Verify CI is green on main\nafter merge of 0D_base_\n Awaiting merge"]
+    P1 --> WQM["Integrate workflow_queue_manager.py\ninto codebase-health-sweep.yml\nfor automated queue drain\n Next session"]
     P1 --> MISTUNE["mistune 3.2.1 alignment\nrequirements/lock.txt \nuv.lock \nPR #4322  consolidated"]
-    P1 --> PAT17["Pattern 17 SHA-drift\nsuppress from merge-preview commits\nonly in validate.yml\n⏳ Follow-up hardening"]
-    P1 --> P25["Pattern 25 — AGENT_ACCOUNTABILITY\nupdated in every commit\n DONE — entry 2026-05-06"]
+    P1 --> PAT17["Pattern 17 SHA-drift\nsuppress from merge-preview commits\nonly in validate.yml\n Follow-up hardening"]
+    P1 --> P25["Pattern 25 — AGENT_ACCOUNTABILITY\nupdated 2026-07-13
     P1 --> DOCS["Living docs maintained\ndocs/roadmap/PR4317_whats_next.md\ndocs/sessions/PR4317_session_diagram.md\n updated each session"]
 
     VERIFY & WQM & MISTUNE & PAT17 & P25 & DOCS --> MERGE_READY[" PR #4317\nMerge Readiness 100/100\nReady for Review"]
@@ -632,15 +632,15 @@ gantt
 ## 2. Priority 1 — Immediate Post-Merge Tasks
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing " Priority 1 — Post-PR #4317 Tasks", "Verify CI is green on main\nafter merge of 0D_base_\n⏳ Awaiting merge"'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing " Priority 1 — Post-PR #4317 Tasks", "Verify CI is green on main\nafter merge of 0D_base_\n Awaiting merge"'}}%%
 flowchart TD
     P1([" Priority 1 — Post-PR #4317 Tasks"])
 
-    P1 --> VERIFY["Verify CI is green on main\nafter merge of 0D_base_\n⏳ Awaiting merge"]
-    P1 --> WQM["Integrate workflow_queue_manager.py\ninto codebase-health-sweep.yml\nfor automated queue drain\n⏳ Next session"]
-    P1 --> MISTUNE["Align uv.lock mistune 3.2.1\nuv.lock still at 3.2.0\nrequirements/lock.txt  3.2.1\n⏳ Minor backlog"]
-    P1 --> PAT17["Pattern 17 SHA-drift\nsuppress from merge-preview commits\nonly in validate.yml\n⏳ Follow-up hardening"]
-    P1 --> P25["Pattern 25 — AGENT_ACCOUNTABILITY\nupdated in every commit\n DONE — entry 2026-05-06"]
+    P1 --> VERIFY["Verify CI is green on main\nafter merge of 0D_base_\n Awaiting merge"]
+    P1 --> WQM["Integrate workflow_queue_manager.py\ninto codebase-health-sweep.yml\nfor automated queue drain\n Next session"]
+    P1 --> MISTUNE["Align uv.lock mistune 3.2.1\nuv.lock still at 3.2.0\nrequirements/lock.txt  3.2.1\n Minor backlog"]
+    P1 --> PAT17["Pattern 17 SHA-drift\nsuppress from merge-preview commits\nonly in validate.yml\n Follow-up hardening"]
+    P1 --> P25["Pattern 25 — AGENT_ACCOUNTABILITY\nupdated 2026-07-13
 
     VERIFY & WQM & MISTUNE & PAT17 & P25 --> MERGE_READY[" PR #4317\nReady for Merge Review"]
 ```
@@ -759,7 +759,7 @@ flowchart TD
 
 ## 6.  Merge-Readiness Scorecard
 
-**Score: 92/100 (92%) — 🟡 NEAR READY**
+**Score: 92/100 (92%) —  NEAR READY**
 
 | Dimension | Wt | Status |
 |-----------|----:|--------|
@@ -772,7 +772,7 @@ flowchart TD
 | download-artifact min v5 | 7 |  v5 |
 | PDA entry today | 8 |  entry today |
 | accountability report today | 8 |  today |
-| AAIS composite | 13 | ⚠️ pending re-scan |
+| AAIS composite | 13 | ️ pending re-scan |
 
 > **Note:** Score deducted 8pts for AAIS composite pending fresh CI re-scan after last push.
 > All local checks pass. A fresh push will trigger full CI and resolve AAIS to 97.5/100.
@@ -816,7 +816,7 @@ Run:
 | Task | Status | Notes |
 |------|--------|-------|
 | ROADMAP.md timeline clarity |  | Split nested phrase → `**Timeline**` + `**Phase Context Timeline**` |
-| ROADMAP.md Next Review date |  | 2026-05-06 → 2026-06-06 |
+| ROADMAP.md Next Review date 2026-07-13
 | lock.txt CVE comment |  | Removed unverified CVE-2025-69872; generic risk description preserved |
 | Semgrep `p/flask` + `p/sqlalchemy` |  | Added to both SARIF and text scan steps |
 | pip-audit |  | 0 HIGH/CRITICAL findings |
@@ -874,7 +874,7 @@ Run:
 |  success | 10 |
 |  failure | 0 |
 | ⏭ cancelled (deduplication) | 18 |
-| 🔄 in_progress | 1 (PR follow-up prompt generator — benign) |
+|  in_progress | 1 (PR follow-up prompt generator — benign) |
 
 **Parallel validation (Code Review + CodeQL):**  both clean — no review comments, no CodeQL alerts.
 

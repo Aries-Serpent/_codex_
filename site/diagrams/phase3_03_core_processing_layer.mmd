@@ -1,0 +1,139 @@
+%% Core Processing Layer — Aries-Serpent/_codex_
+%% Phase 3.3 — Component Relationship Diagrams
+%% ML training, tokenization, feature extraction
+%% Evidence: src/codex_ml/, src/tokenization/, unified_training.py
+
+graph LR
+
+    %% ── Input Data ──────────────────────────────────────────────────────────
+    INPUT["📦 Input Batches\n(from DataLoader)"]
+
+    %% ── Tokenization ────────────────────────────────────────────────────────
+    subgraph TOKEN ["🔤 Tokenization  •  CentralizedTokenizerRegistry"]
+        TOK_SELECT["Select Tokenizer"]
+        TOK_ENCODE["Encode → Token IDs"]
+        TOK_SPECIAL["Add Special Tokens"]
+        TOK_PAD["Pad/Truncate"]
+    end
+
+    INPUT --> TOK_SELECT
+    TOK_SELECT --> TOK_ENCODE
+    TOK_ENCODE --> TOK_SPECIAL
+    TOK_SPECIAL --> TOK_PAD
+
+    %% ── Feature Extraction ──────────────────────────────────────────────────
+    subgraph FEATURES ["✨ Feature Extraction"]
+        EMBED_INPUT["Embed Tokens\n(token_embeddings)"]
+        POS_ENCODE["Positional Encoding\n(rotary, absolute)"]
+        COMBINE_FEAT["Combine Features\n(input + position)"]
+    end
+
+    TOK_PAD --> EMBED_INPUT
+    EMBED_INPUT --> POS_ENCODE
+    POS_ENCODE --> COMBINE_FEAT
+
+    %% ── Model Forward Pass ──────────────────────────────────────────────────
+    subgraph FORWARD ["🧠 Model Forward Pass  •  model.forward()"]
+        LAYER1["Transformer Layer 1\n(attention, FFN)"]
+        LAYERN["Transformer Layer N\n(... layers)"]
+        LOGITS["Output: Logits\n(vocab_size)"]
+    end
+
+    COMBINE_FEAT --> LAYER1
+    LAYER1 --> LAYERN
+    LAYERN --> LOGITS
+
+    %% ── Loss Computation ────────────────────────────────────────────────────
+    subgraph LOSS ["📉 Loss Computation"]
+        SHIFT_TARGETS["Shift Targets\n(next token)"]
+        COMPUTE_CE["Compute CrossEntropy\n(pred vs target)"]
+        REG_LOSS["Regularization Loss\n(L1, L2, dropout)"]
+        COMBINE_LOSS["Combine Losses\n(α * CE + β * REG)"]
+    end
+
+    LOGITS --> SHIFT_TARGETS
+    SHIFT_TARGETS --> COMPUTE_CE
+    COMPUTE_CE --> REG_LOSS
+    REG_LOSS --> COMBINE_LOSS
+
+    %% ── Backward Pass ───────────────────────────────────────────────────────
+    subgraph BACKWARD ["🔄 Backward Pass  •  loss.backward()"]
+        COMPUTE_GRAD["Compute Gradients\n(chain rule)"]
+        CLIP_GRAD["Gradient Clipping\n(max norm)"]
+        ACCUMULATE_GRAD["Accumulate Gradients\n(if grad_accum)"]
+    end
+
+    COMBINE_LOSS --> COMPUTE_GRAD
+    COMPUTE_GRAD --> CLIP_GRAD
+    CLIP_GRAD --> ACCUMULATE_GRAD
+
+    %% ── Optimization ────────────────────────────────────────────────────────
+    subgraph OPTIM ["⚙️  Optimization  •  optimizer.step()"]
+        LR_SCHEDULE["Apply LR Schedule\n(warmup, decay)"]
+        OPTIM_STEP["Update Weights\n(SGD, Adam, etc)"]
+        ZERO_GRAD["Zero Gradients"]
+    end
+
+    ACCUMULATE_GRAD --> LR_SCHEDULE
+    LR_SCHEDULE --> OPTIM_STEP
+    OPTIM_STEP --> ZERO_GRAD
+
+    %% ── Evaluation ──────────────────────────────────────────────────────────
+    subgraph EVAL ["📊 Evaluation  •  eval_loop"]
+        VAL_FORWARD["Forward (no grad)"]
+        VAL_LOSS["Compute Val Loss"]
+        PERPLEXITY["Perplexity\n(exp(loss))"]
+        ACC_METRIC["Token Accuracy"]
+    end
+
+    COMBINE_LOSS -.->|"validation batch"| VAL_FORWARD
+    VAL_FORWARD --> VAL_LOSS
+    VAL_LOSS --> PERPLEXITY
+    VAL_LOSS --> ACC_METRIC
+
+    %% ── State Management ────────────────────────────────────────────────────
+    subgraph STATE ["💾 State Management"]
+        MODEL_STATE["Model State\n(weights, biases)"]
+        OPTIM_STATE["Optimizer State\n(momentum, velocity)"]
+        BATCH_COUNT["Batch Counter\n(for LR schedule)"]
+        EPOCH_COUNT["Epoch Counter"]
+    end
+
+    OPTIM_STEP --> MODEL_STATE
+    OPTIM_STEP --> OPTIM_STATE
+    OPTIM_STEP --> BATCH_COUNT
+    BATCH_COUNT --> EPOCH_COUNT
+
+    %% ── Telemetry ───────────────────────────────────────────────────────────
+    subgraph TELEMETRY ["📋 Telemetry  •  src/codex/logging/"]
+        LOG_LOSS["Log Loss\n(training, validation)"]
+        LOG_LR["Log Learning Rate\n(current value)"]
+        LOG_TIME["Log Time\n(batch, epoch)"]
+        LOG_GPU["Log Resource Usage\n(GPU, memory)"]
+    end
+
+    COMBINE_LOSS --> LOG_LOSS
+    LR_SCHEDULE --> LOG_LR
+    OPTIM_STEP --> LOG_TIME
+    OPTIM_STEP --> LOG_GPU
+
+    %% ── Output ──────────────────────────────────────────────────────────────
+    ZERO_GRAD --> NEXT_BATCH["↻ Next Batch"]
+    NEXT_BATCH -.->|"loop N epochs"| INPUT
+
+    EPOCH_COUNT --> CHECKPOINT["🔖 Save Checkpoint\n(if improved)"]
+    PERPLEXITY --> CHECKPOINT
+    ACC_METRIC --> CHECKPOINT
+
+    %% ── Styling ────────────────────────────────────────────────────────────
+    style INPUT fill:#16213e,color:#e0e0e0
+    style TOKEN fill:#0f3460,color:#e0e0e0
+    style FEATURES fill:#4a4e69,color:#fff
+    style FORWARD fill:#533483,color:#fff
+    style LOSS fill:#1b4332,color:#fff
+    style BACKWARD fill:#2d6a4f,color:#fff
+    style OPTIM fill:#457b9d,color:#fff
+    style EVAL fill:#665c84,color:#fff
+    style STATE fill:#2d6a4f,color:#fff
+    style TELEMETRY fill:#4a4e69,color:#fff
+    style CHECKPOINT fill:#1b4332,color:#fff

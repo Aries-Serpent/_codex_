@@ -1,4 +1,6 @@
 # Codex UI Enhancement - Complete Integration Strategy
+
+**Version**: v0.2.1
 **Last Updated:** 2026-07-11
 
 > **Version:** 1.0.0  
@@ -728,12 +730,12 @@ interface Agent {
 }
 
 const WORKFLOWS = [
-  { token: 'AUDIT_EXEC', label: 'Audit', icon: '📋' },
+  { token: 'AUDIT_EXEC', label: 'Audit', icon: '' },
   { token: 'DOC_GEN', label: 'Document', icon: '' },
-  { token: 'HEAL', label: 'Heal', icon: '🔧' },
+  { token: 'HEAL', label: 'Heal', icon: '' },
   { token: 'DECIDE', label: 'Decide', icon: '⚛️' },
   { token: 'ORGANIZE', label: 'Organize', icon: '📁' },
-  { token: 'REVIEW', label: 'Review', icon: '👁️' },
+  { token: 'REVIEW', label: 'Review', icon: '️' },
 ];
 
 export function AgentOrchestrationPanel() {

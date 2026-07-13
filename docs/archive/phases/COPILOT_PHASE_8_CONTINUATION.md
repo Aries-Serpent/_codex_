@@ -78,7 +78,7 @@ gh run view <run-id> --log-failed
 
 ---
 
-## 🟡 Priority 2: Create CI Diagnostic Agent (HIGH)
+##  Priority 2: Create CI Diagnostic Agent (HIGH)
 
 **Purpose**: Automated CI failure analysis and remediation
 
@@ -162,7 +162,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `## 🔍 CI Diagnostic Report\n\n${report.markdown}`
+              body: `##  CI Diagnostic Report\n\n${report.markdown}`
             });
 ```
 
@@ -259,7 +259,7 @@ jobs:
                 issue_number: context.issue.number,
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                body: `## ⚠️ ML Security Analysis\n\nHigh-risk files detected:\n${report.high_risk_files.map(f => `- ${f.path} (risk: ${f.score})`).join('\n')}`
+                body: `## ️ ML Security Analysis\n\nHigh-risk files detected:\n${report.high_risk_files.map(f => `- ${f.path} (risk: ${f.score})`).join('\n')}`
               });
             }
 ```
@@ -401,8 +401,7 @@ jobs:
 **Success Criteria**:
 - [ ] Dashboard updates every 15 minutes
 - [ ] Metrics are accurate
-- [ ] Charts show trends clearly
-- [ ] Accessible via GitHub Pages
+- [ ] Charts show trends - [ ] Accessible via GitHub Pages
 
 ---
 

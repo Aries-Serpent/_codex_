@@ -3,7 +3,7 @@
 **Version:** v0.2.1
 
 **Last Updated**: 2026-01-20  
-**Version**: v0.9.0  
+**Version**: v0.2.1  
 **Reference**: [5-Layer Architecture](5_LAYER_ARCHITECTURE.md)
 
 ---
@@ -27,14 +27,14 @@ graph LR
 
     subgraph "Processing Layer"
         Preprocess[" Preprocessor<br/>• Cleaning<br/>• Normalization<br/>• Deduplication"]
-        Transform["🔄 Transformer<br/>• Feature extract<br/>• Format convert<br/>• Augmentation"]
+        Transform[" Transformer<br/>• Feature extract<br/>• Format convert<br/>• Augmentation"]
         Embed[" Embedding<br/>• Encode to vectors<br/>• Normalize<br/>• Cache vectors"]
     end
 
     subgraph "Storage Layer"
         RawDB["💾 Raw Storage<br/>• Original files<br/>• Versioned<br/>• Archived"]
-        VectorDB["🔍 Vector DB<br/>• Embeddings<br/>• Indices<br/>• HNSW graph"]
-        MetadataDB["📋 Metadata DB<br/>• File info<br/>• Source info<br/>• Statistics"]
+        VectorDB[" Vector DB<br/>• Embeddings<br/>• Indices<br/>• HNSW graph"]
+        MetadataDB[" Metadata DB<br/>• File info<br/>• Source info<br/>• Statistics"]
     end
 
     subgraph "Retrieval & Ranking"
@@ -44,8 +44,8 @@ graph LR
     end
 
     subgraph "ML Operations"
-        Train["🔄 Training<br/>• Load context<br/>• Forward pass<br/>• Backprop"]
-        Cache["⚡ Cache<br/>• Store results<br/>• Embeddings<br/>• Predictions"]
+        Train[" Training<br/>• Load context<br/>• Forward pass<br/>• Backprop"]
+        Cache[" Cache<br/>• Store results<br/>• Embeddings<br/>• Predictions"]
         Eval[" Evaluation<br/>• Load test data<br/>• Compute metrics<br/>• Compare"]
     end
 

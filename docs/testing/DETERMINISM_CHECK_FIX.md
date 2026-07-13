@@ -56,7 +56,7 @@ if [ "$EXIT1" = "2" ] && [ "$EXIT2" = "2" ]; then
 
   # If both runs had collection errors but 0 tests selected, treat as "no tests"
   if [ -n "$SELECTED1" ] && [ -n "$SELECTED2" ]; then
-    echo "⚠️  Collection errors but no determinism tests selected (exit code 2)"
+    echo "️  Collection errors but no determinism tests selected (exit code 2)"
     # ... informative summary ...
     exit 0  # Success
   fi

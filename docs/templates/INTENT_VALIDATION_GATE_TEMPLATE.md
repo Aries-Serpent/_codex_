@@ -13,13 +13,13 @@
 
 This template defines how AI assistants must respond for any **non-trivial or higher-risk task**. These rules are binding for the interaction and enforce iteration-based workflow terminology aligned with _codex_ incremental development philosophy.
 
-**Energy Level**: ⚡⚡⚡⚡ (4/5 - High Value Governance)
+**Energy Level**:  (4/5 - High Value Governance)
 
 **Status**:  Active Template
 
 ---
 
-## 📋 Applicability Criteria
+##  Applicability Criteria
 
 **Non-trivial / higher-risk** includes any work that:
 - Affects production traffic or user-visible behavior
@@ -41,7 +41,7 @@ When this template is invoked, the AI must **apply it to the specific task** and
 
 For any **open questions**, the AI **MUST**:
 - Present each question as **multiple-choice options** (A, B, C, …)
-- Clearly mark **recommended option(s)** (e.g., `Recommended: B`)
+- mark **recommended option(s)** (e.g., `Recommended: B`)
 - Phrase options to enable:
   - Approval of all recommendations in one step (`Approve all recommended options`)
   - Override specific questions with targeted feedback
@@ -55,7 +55,7 @@ The AI may **not** skip this behavior when:
 
 ---
 
-## 🔄 Required Flow (Two-Stage Process)
+##  Required Flow (Two-Stage Process)
 
 Whenever a task references this template, the response must follow **exactly these two stages, in order**:
 
@@ -92,11 +92,11 @@ For each iteration, include:
 
 #### Iteration Header
 ```markdown
-### **Iteration N: [Name]** [Physics Symbol: 🛤️🔄👁️🔀⚖️]
+### **Iteration N: [Name]** [Physics Symbol: ️️️]
 
 **Objective**: [Single sentence describing iteration goal]
 
-**Energy Level**: ⚡⚡⚡⚡⚡ ([1-5]/5)
+**Energy Level**:  ([1-5]/5)
 ```
 
 #### Pre-commit Checkpoint
@@ -139,7 +139,7 @@ For each iteration, include:
 
 ## 🧩 Required Sections Inside Plan
 
-The Plan of Action must include these sections. For very small, clearly low-risk tasks, some sections may be brief, but they should **not** be omitted if there is material risk.
+The Plan of Action must include these sections. For very small, low-risk tasks, some sections may be brief, but they should **not** be omitted if there is material risk.
 
 ### 1. Assumptions
 
@@ -149,17 +149,17 @@ List **key assumptions** derived from:
 - AI's own inference
 
 Tag each assumption with confidence marker:
-- `✓` = confirmed or very likely
+- `` = confirmed or very likely
 - `?` = uncertain but plausible
-- `⚠️` = high-risk or explicitly requiring clarification
+- `️` = high-risk or explicitly requiring clarification
 
 **Example format**:
 ```markdown
 ## Assumptions
 
-- ✓ Authentication is currently token-based and centralized in `src/auth/`
+-  Authentication is currently token-based and centralized in `src/auth/`
 - ? Rate limiting is handled upstream by the API gateway
-- ⚠️ Production and staging environments share the same database cluster
+- ️ Production and staging environments share the same database cluster
 ```
 
 ---
@@ -169,7 +169,7 @@ Tag each assumption with confidence marker:
 Provide **at least 3 open questions** (fewer only if task is genuinely trivial), ordered by **criticality**.
 
 For each question:
-1. State the question clearly (add 1–2 sentences of context if helpful)
+1. State the question (add 1–2 sentences of context if helpful)
 2. Present multiple-choice options labeled **A, B, C, …**
 3. Mark **recommended option(s)**
 
@@ -183,7 +183,7 @@ For each question:
 
    - A) No breaking changes at all; legacy clients must continue to function indefinitely
    - B) No breaking changes now, but we can introduce a formal deprecation path
-   - C) Minor breaking changes are acceptable if clearly documented
+   - C) Minor breaking changes are acceptable if documented
    - D) Other (please specify)
 
    **Recommended:** B
@@ -319,7 +319,7 @@ This section can be concise but must describe **practical, executable** rollback
 
 ---
 
-## 📋 Context Block (Per-Task)
+##  Context Block (Per-Task)
 
 For each task using this template, supply or explicitly request these context fields:
 
@@ -340,14 +340,14 @@ Use these fields as primary anchors for Intent Validation, Assumptions, Open Que
 
 ---
 
-## 📝 Reply Format (Markdown Structure)
+##  Reply Format (Markdown Structure)
 
 Structure the entire response using these sections and headings:
 
 ```markdown
 # [Task Title]: Intent Validation & Plan of Action
 
-> Generated: [YYYY-MM-DDTHH:MM:SSZ] | Template: Intent Validation v2.0.0
+> Generated: [YYYY-MM-DDTHH:MM:SSZ] | Template: Intent Validation v0.2.1
 
 ---
 
@@ -359,13 +359,13 @@ Structure the entire response using these sections and headings:
 
 ##  Assumptions
 
-- ✓ [Confirmed assumption 1]
+-  [Confirmed assumption 1]
 - ? [Uncertain assumption 2]
-- ⚠️ [High-risk assumption 3]
+- ️ [High-risk assumption 3]
 
 ---
 
-## ❓ Open Questions
+##  Open Questions
 
 1. **[Question 1 - Critical]**
 
@@ -387,13 +387,13 @@ Structure the entire response using these sections and headings:
 
 ---
 
-## 🔄 Phases of Action (Iteration-Based)
+##  Phases of Action (Iteration-Based)
 
-### **Iteration 1: [Name]** 🛤️
+### **Iteration 1: [Name]** ️
 
 **Objective**: [Single sentence]
 
-**Energy Level**: ⚡⚡⚡⚡⚡ (5/5)
+**Energy Level**:  (5/5)
 
 #### Pre-commit Checkpoint
 - [ ] [Prerequisite 1]
@@ -426,13 +426,13 @@ Structure the entire response using these sections and headings:
 
 ---
 
-### **Iteration 2: [Name]** 🔄
+### **Iteration 2: [Name]** 
 
 [Similar structure]
 
 ---
 
-### **Iteration 3: [Name]** 👁️
+### **Iteration 3: [Name]** ️
 
 [Similar structure]
 
@@ -442,15 +442,15 @@ Structure the entire response using these sections and headings:
 
 | Principle | Application | Iteration |
 |-----------|-------------|-----------|
-| Path 🛤️ | [Forward momentum description] | Iteration 1 |
-| Fields 🔄 | [Transformation flow description] | Iteration 2 |
-| Patterns 👁️ | [Observation/recognition description] | Iteration 3 |
-| Redundancy 🔀 | [Fallback alternatives description] | All Iterations |
-| Balance ⚖️ | [Equilibrium maintenance description] | All Iterations |
+| Path ️ | [Forward momentum description] | Iteration 1 |
+| Fields  | [Transformation flow description] | Iteration 2 |
+| Patterns ️ | [Observation/recognition description] | Iteration 3 |
+| Redundancy  | [Fallback alternatives description] | All Iterations |
+| Balance ️ | [Equilibrium maintenance description] | All Iterations |
 
 ---
 
-## ⚠️ Risks and Mitigations
+## ️ Risks and Mitigations
 
 | Risk | Severity | Mitigation | Iteration |
 |------|----------|------------|-----------|
@@ -507,13 +507,13 @@ Structure the entire response using these sections and headings:
 
 ---
 
-## ⚡ Energy Distribution
+##  Energy Distribution
 
 | Iteration | Energy | Rationale |
 |-----------|--------|-----------|
-| Iteration 1 | ⚡⚡⚡⚡⚡ | [Why high priority] |
-| Iteration 2 | ⚡⚡⚡⚡ | [Why significant] |
-| Iteration 3 | ⚡⚡⚡ | [Why moderate] |
+| Iteration 1 |  | [Why high priority] |
+| Iteration 2 |  | [Why significant] |
+| Iteration 3 |  | [Why moderate] |
 
 **Total Energy Investment**: [Sum]/20 units
 
@@ -579,7 +579,7 @@ Before finalizing any plan using this template, verify:
 
 ### Structure Compliance
 - [ ] Intent Validation present (2-3 sentences)
-- [ ] Assumptions listed with confidence markers (✓?⚠️)
+- [ ] Assumptions listed with confidence markers (?️)
 - [ ] At least 3 open questions with multiple-choice options
 - [ ] Iterations use pre-commit/commit structure
 - [ ] No references to weeks, days, or calendar dates
@@ -598,12 +598,12 @@ Before finalizing any plan using this template, verify:
 - [ ] Pre-commit checkpoints have clear validation tasks
 - [ ] Commit tasks have file paths and specific actions
 - [ ] Decision gates have explicit approval requirements
-- [ ] Execution gate clearly prevents unauthorized action
+- [ ] Execution gate prevents unauthorized action
 - [ ] Approval format examples provided
 
 ---
 
-## 🔧 Usage Example
+##  Usage Example
 
 ### Invocation
 
@@ -626,7 +626,7 @@ Before finalizing any plan using this template, verify:
 The AI would respond with:
 
 1. **Intent Validation** (2-3 sentences)
-2. **Assumptions** (with ✓?⚠️ markers)
+2. **Assumptions** (with ?️ markers)
 3. **Open Questions** (minimum 3, with multiple-choice options and recommendations)
 4. **Phases of Action** (3-4 iterations with pre-commit/commit structure)
 5. **Physics Alignment** (table)
@@ -671,7 +671,7 @@ Before considering any plan "complete":
 
 ---
 
-## 🔗 Related Documentation
+##  Related Documentation
 
 - **Primary Framework**: `docs/templates/ITERATION_PLAN_TEMPLATE.md`
 - **Template Verification**: `.codex/TEMPLATE_VERIFICATION_REPORT.md`
@@ -680,12 +680,12 @@ Before considering any plan "complete":
 
 ---
 
-## ⚡ Template Metadata
+##  Template Metadata
 
 | Attribute | Value |
 |-----------|-------|
 | **Version** | 2.0.0-iteration-based |
-| **Energy Cost** | ⚡⚡⚡⚡ (High) |
+| **Energy Cost** |  (High) |
 | **Framework Alignment** | 100% (18/18 components) |
 | **Status** |  Production Ready |
 | **Last Updated** | 2026-01-23T21:05:00Z |

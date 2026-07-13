@@ -64,7 +64,7 @@ bleu = get_metric('bleu')
 score = bleu(['hello world'], ['hello world'])
 assert score is not None, 'BLEU should return value with nltk installed'
 assert 0 <= score <= 1, f'BLEU score {score} out of range'
-print(f'✓ BLEU available: score={score:.3f}')
+print(f' BLEU available: score={score:.3f}')
 "
 ```text
 
@@ -92,7 +92,7 @@ rouge = get_metric('rougeL')
 score = rouge(['the quick brown fox'], ['the quick brown fox'])
 assert score is not None, 'ROUGE-L should return value with rouge_score installed'
 assert 0 <= score <= 1, f'ROUGE-L score {score} out of range'
-print(f'✓ ROUGE-L available: score={score:.3f}')
+print(f' ROUGE-L available: score={score:.3f}')
 "
 ```text
 
@@ -172,12 +172,12 @@ print(f'ROUGE-L without deps: {score}')  # Should be None
 
 | Check | Command | With Extras | Without Extras | Status |
 |-------|---------|-------------|----------------|--------|
-| Optional behavior tests | `pytest tests/test_metrics_generative.py` | All pass | All pass | ✓ |
-| BLEU returns value | `get_metric('bleu')(...)` | Float [0,1] | None | ✓ |
-| ROUGE-L returns value | `get_metric('rougeL')(...)` | Float [0,1] | None | ✓ |
-| Runner float compat | Test mock | Accepts float | N/A | ✓ |
-| Runner dict compat | Test mock | Accepts dict | N/A | ✓ |
-| Metrics registered | `list_metrics()` | Includes bleu/rouge | Includes bleu/rouge | ✓ |
+| Optional behavior tests | `pytest tests/test_metrics_generative.py` | All pass | All pass |  |
+| BLEU returns value | `get_metric('bleu')(...)` | Float [0,1] | None |  |
+| ROUGE-L returns value | `get_metric('rougeL')(...)` | Float [0,1] | None |  |
+| Runner float compat | Test mock | Accepts float | N/A |  |
+| Runner dict compat | Test mock | Accepts dict | N/A |  |
+| Metrics registered | `list_metrics()` | Includes bleu/rouge | Includes bleu/rouge |  |
 
 ## Testing Scenarios
 

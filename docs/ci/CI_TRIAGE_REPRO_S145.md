@@ -4,7 +4,7 @@
 
 **Last Updated: 2026-06-22
 
-> **Session:** S145 | **PR:** #3606 | **Date:** 2026-03-17
+> **Session:** S145 | **PR:** #3606 | **Date:2026-07-13
 > **Script:** `scripts/ci/ci_triage_repro.sh`
 > **Runbook:** Run `bash scripts/ci/ci_triage_repro.sh` to reproduce all checks in one pass.
 
@@ -204,7 +204,7 @@ python scripts/ci/auto_fix_common_issues.py --pattern 1  # apply one pattern
 
 ```bash
 python scripts/ci/auto_fix_common_issues.py --check-only
-# Expected: all 16 patterns show "✓ No issues found"
+# Expected: all 16 patterns show " No issues found"
 ```
 
 ---

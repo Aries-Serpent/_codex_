@@ -31,7 +31,7 @@ All 13 Level-1 agents at a glance:
 
 ---
 
-## 📋 Pattern Library: 4 Common Implementation Patterns
+##  Pattern Library: 4 Common Implementation Patterns
 
 ### Pattern A: Level 3 (No Fallback) - Emergency Operations
 
@@ -222,7 +222,7 @@ HTTPError: 403 Forbidden
 
 **Solution**:
 ```python
-# ✓ Fix: Use get_token(required_elevated=True)
+#  Fix: Use get_token(required_elevated=True)
 token = get_token(required_elevated=True)
 validate_scope(token, ['repo', 'workflow'])
 
@@ -496,7 +496,7 @@ Use this checklist when implementing or updating an agent:
 
 ---
 
-## 🔗 Reference Documentation
+##  Reference Documentation
 
 | Document | Purpose | Link |
 |----------|---------|------|
@@ -537,7 +537,7 @@ Use this checklist when implementing or updating an agent:
 
 ---
 
-##  Quick Start for New Agent Development
+## Quick Start for New Agent Development
 
 ### Step 1: Choose Token Level
 

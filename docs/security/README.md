@@ -74,7 +74,7 @@ storage.store_secret("api_key.enc", secret)
 
 ---
 
-## 🔧 Tools
+##  Tools
 
 ### Pre-commit Hooks
 ```bash
@@ -93,7 +93,7 @@ pip-audit --desc
 
 ---
 
-## 🚨 Reporting Issues
+##  Reporting Issues
 
 **Contact**: security@localhost  
 **Response**: Critical (24h), High (48h), Moderate (1wk), Low (2wk)

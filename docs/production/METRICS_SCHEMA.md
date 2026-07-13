@@ -426,7 +426,7 @@ order_processing_duration_seconds_bucket{le="5"} 8000
 
 ---
 
-## 📈 Metrics Collection Pipeline
+##  Metrics Collection Pipeline
 
 **Architecture**:
 ```

@@ -6,7 +6,7 @@
 
 ---
 
-##  Quick Start
+## Quick Start
 
 - **New to this report?** Start with [.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md](./AGENT_ACCOUNTABILITY_REPORT.md) for the index
 - **Want the latest sessions?** Jump to [Group 32](./chunks/AGENT_ACCOUNTABILITY_REPORT_SESSION_GROUP_32.md)
@@ -63,7 +63,7 @@ docs/accountability/
 
 ---
 
-## 🔄 What Changed (Phase 2.3)
+##  What Changed (Phase 2.3)
 
 ### Before (Single File)
 ```
@@ -115,7 +115,7 @@ docs/accountability/
 
 ---
 
-## 🔍 Session Data Structure
+##  Session Data Structure
 
 Each session entry includes:
 
@@ -141,7 +141,7 @@ Available for reference if needed. Contains the exact same data as all 32 chunks
 
 ---
 
-## 🔗 Related Reports
+##  Related Reports
 
 - [AGENT_ACCESS_EXPERIENCE_REPORT.md](./AGENT_ACCESS_EXPERIENCE_REPORT.md) — AI agent access analysis
 - [INDEX.md](./INDEX.md) — Repository navigation index

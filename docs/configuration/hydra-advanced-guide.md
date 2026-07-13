@@ -1,4 +1,6 @@
 # Hydra Configuration Advanced Guide
+
+**Version**: v0.2.1
 **Last Updated:** 2026-07-11
 
 > Comprehensive guide to advanced Hydra features, patterns, and best practices  

@@ -9,29 +9,29 @@
 - [ S861-cont Delivery Summary](#-s861-cont-delivery-summary)
 - [ Admin Action Notifier — New Pattern (S861-cont)](#-admin-action-notifier--new-pattern-s861-cont)
 - [ RL-2 + RL-3 Rate-Limit Hardening — Complete](#-rl-2--rl-3-rate-limit-hardening--complete)
-- [⏳ Remaining (Admin Action Required — cannot be done by agent)](#-remaining-admin-action-required--cannot-be-done-by-agent)
+- [ Remaining (Admin Action Required — cannot be done by agent)](#-remaining-admin-action-required--cannot-be-done-by-agent)
   - [Admin Steps to Unblock (T-03)](#admin-steps-to-unblock-t-03)
 - [🏆 Merge Readiness Scorecard (S862 · all review comments addressed)](#-merge-readiness-scorecard-s862--all-review-comments-addressed)
-- [🔄 Ideal Follow-Up Prompt (S863)](#-ideal-follow-up-prompt-s863)
+- [ Ideal Follow-Up Prompt (S863)](#-ideal-follow-up-prompt-s863)
 - [ S861-cont Delivery Summary](#-s861-cont-delivery-summary)
 - [ Admin Action Notifier — New Pattern (S861-cont)](#-admin-action-notifier--new-pattern-s861-cont)
 - [ RL-2 + RL-3 Rate-Limit Hardening — Complete](#-rl-2--rl-3-rate-limit-hardening--complete)
-- [⏳ Remaining (Admin Action Required — cannot be done by agent)](#-remaining-admin-action-required--cannot-be-done-by-agent)
+- [ Remaining (Admin Action Required — cannot be done by agent)](#-remaining-admin-action-required--cannot-be-done-by-agent)
   - [Admin Steps to Unblock (T-03)](#admin-steps-to-unblock-t-03)
 - [🏆 Merge Readiness Scorecard (S861-cont + CI monitoring · ce4a6f44)](#-merge-readiness-scorecard-s861-cont--ci-monitoring--ce4a6f44)
-  - [🔀 Continue This Session / Merge Decision](#-continue-this-session--merge-decision)
+  - [ Continue This Session / Merge Decision](#-continue-this-session--merge-decision)
     - [Option A — Merge Now (recommended if Pre-Merge + Secrets gate pass)](#option-a--merge-now-recommended-if-pre-merge--secrets-gate-pass)
     - [Option B — Start New PR + Session S862 (for OBJ-B after T-03 resolved)](#option-b--start-new-pr--session-s862-for-obj-b-after-t-03-resolved)
-- [🔗 Key Files Produced (All Sessions)](#-key-files-produced-all-sessions)
-- [🔄 WEC → Dispatch → Auto-Approve Flow (New)](#-wec--dispatch--auto-approve-flow-new)
+- [ Key Files Produced (All Sessions)](#-key-files-produced-all-sessions)
+- [ WEC → Dispatch → Auto-Approve Flow (New)](#-wec--dispatch--auto-approve-flow-new)
 - [ Security Fixes Applied](#-security-fixes-applied)
 - [ Documentation Link Checker — Before vs After](#-documentation-link-checker--before-vs-after)
 - [🏆 AAIS Score Trajectory](#-aais-score-trajectory)
 - [⏱ Session Gantt](#-session-gantt)
 - [ Remaining Gap to AAIS 100.0](#-remaining-gap-to-aais-1000)
-- [🔗 Key Files Produced This Session](#-key-files-produced-this-session)
+- [ Key Files Produced This Session](#-key-files-produced-this-session)
 - [ Variable & Secret Governance — Copilot Cloud Agent Implementation Plan](#-variable--secret-governance--copilot-cloud-agent-implementation-plan)
-  - [📋 Implementation Checklist](#-implementation-checklist)
+  - [ Implementation Checklist](#-implementation-checklist)
     - [Phase A — Pre-Flight Validation (Admin runs manually before agent engagement)](#phase-a--pre-flight-validation-admin-runs-manually-before-agent-engagement)
     - [Phase B — Token Rotation (Admin action — GitHub UI required)](#phase-b--token-rotation-admin-action--github-ui-required)
     - [Phase C — Add §10.9.1 Suggested New Variables (Copilot agent implements)](#phase-c--add-1091-suggested-new-variables-copilot-agent-implements)
@@ -49,9 +49,9 @@
   - [Phase D: Create token-expiry-monitor.yml  # pragma: allowlist secret](#phase-d-create-token-expiry-monitoryml---pragma-allowlist-secret)
   - [Verification:](#verification)
   - [��️ Section Status](#-section-status)
-- [⚡ Rate-Limit Awareness — Workflow Improvement Plan](#-rate-limit-awareness--workflow-improvement-plan)
+- [ Rate-Limit Awareness — Workflow Improvement Plan](#-rate-limit-awareness--workflow-improvement-plan)
   - [ Audit Summary — Workflows Requiring Improvement](#-audit-summary--workflows-requiring-improvement)
-  - [🔧 Implementation Checklist](#-implementation-checklist)
+  - [ Implementation Checklist](#-implementation-checklist)
     - [Phase RL-1 — P1 Workflows (highest blast radius)](#phase-rl-1--p1-workflows-highest-blast-radius)
     - [Phase RL-2 — P2 Workflows (scheduled, self-healing)](#phase-rl-2--p2-workflows-scheduled-self-healing)
     - [Phase RL-3 — Add Rate-Limit Monitoring Variables](#phase-rl-3--add-rate-limit-monitoring-variables)
@@ -68,7 +68,7 @@
 
 | # | Deliverable | Status |
 |---|-------------|--------|
-| 1 | `detect-secrets` hook (exit 3): committed updated `.secrets.baseline` (v1.4.0→v1.5.0); `run_validation.sh` now uses `detect-secrets==1.5.0` |  | <!-- pragma: allowlist secret -->
+| 1 | `detect-secrets` hook (exit 3): committed updated `.secrets.baseline` (v0.2.1→v0.2.1); `run_validation.sh` now uses `detect-secrets==1.5.0` |  | <!-- pragma: allowlist secret -->
 | 2 | `check-shell-true` false positive: removed `shell=True` literal from `subprocess.py` error message |  |
 | 3 | `validate-internal-links` broken link: fixed `.codex/agent_context.json` → `../../.codex/agent_context.json` in `ELEVATED_PRIVILEGES_TOKEN_REVIEW.md` |  | <!-- pragma: allowlist secret -->
 | 4 | Replied to `comment_new` #4403330132 (Fast Validation failure) |  |
@@ -80,7 +80,7 @@
 
 | # | Deliverable | Status |
 |---|-------------|--------|
-| 1 | Replied to `comment_new` #4403328142 to unblock `🔍 Scan PR comments` gate |  |
+| 1 | Replied to `comment_new` #4403328142 to unblock ` Scan PR comments` gate |  |
 | 2 | P-045 gate: ruff  · sync_tracked_files  · no conflicts  |  |
 
 ---
@@ -122,7 +122,7 @@ flowchart LR
     ENGINE["admin-action-notifier.yml\n(reusable engine)\nworkflow_call"] --> PROBE
     PROBE{API probe result}
     PROBE -- "200 " --> CLOSE["Auto-close issue"]
-    PROBE -- "403 ⚠️" --> OPEN["Create/update issue\n@mbaetiong assigned"]
+    PROBE -- "403 ️" --> OPEN["Create/update issue\n@mbaetiong assigned"]
     style ENGINE fill:#9b59b6,color:#fff
     style CLOSE fill:#27ae60,color:#fff
     style OPEN fill:#e74c3c,color:#fff
@@ -151,7 +151,7 @@ flowchart LR
 
 ---
 
-## ⏳ Remaining (Admin Action Required — cannot be done by agent)
+##  Remaining (Admin Action Required — cannot be done by agent)
 
 | Item | Blocker | Auto-notifier |
 |------|---------|---------------|
@@ -181,17 +181,17 @@ flowchart LR
 | accountability report today | 8 |  today |
 | AAIS composite 100.0/100 | 13 |  100.0/100 |
 
-**Estimated score: 100/100 —  MERGE READY** (pending 1 failing CI check: `🔍 Scan PR comments`)
+**Estimated score: 100/100 —  MERGE READY** (pending 1 failing CI check: ` Scan PR comments`)
 
 ---
 
-## 🔄 Ideal Follow-Up Prompt (S863)
+##  Ideal Follow-Up Prompt (S863)
 
 ```
 @copilot CTEP Mode: ON
 
 PR #4346 is at 100/100 merge readiness. All Copilot review threads resolved.
-Only blocker: `🔍 Scan PR comments` gate (needs reply to latest comment threads — done in S862).
+Only blocker: ` Scan PR comments` gate (needs reply to latest comment threads — done in S862).
 
 After workflows complete:
   1. Verify all CI checks green (especially Comment Review Gate)
@@ -204,7 +204,7 @@ After workflows complete:
 
 > **Branch:** `finding-autofix-faa8614c` → `main`  
 > **AAIS composite:** **99.9 / 100 (S+)** · **actionlint:**  0 · **ruff:**  · **sync_tracked_files:**  · **Merge conflicts:**   
-> **Latest commit:** `ce4a6f44` · **CI (ce4a6f44):** 15  / 10 ⏳ / 4 startup_failure(infra) as of 03:48 UTC
+> **Latest commit:** `ce4a6f44` · **CI (ce4a6f44):** 15  / 10  / 4 startup_failure(infra) as of 03:48 UTC
 
 ---
 
@@ -233,7 +233,7 @@ flowchart LR
     ENGINE["admin-action-notifier.yml\n(reusable engine)\nworkflow_call"] --> PROBE
     PROBE{API probe result}
     PROBE -- "200 " --> CLOSE["Auto-close issue"]
-    PROBE -- "403 ⚠️" --> OPEN["Create/update issue\n@mbaetiong assigned"]
+    PROBE -- "403 ️" --> OPEN["Create/update issue\n@mbaetiong assigned"]
     style ENGINE fill:#9b59b6,color:#fff
     style CLOSE fill:#27ae60,color:#fff
     style OPEN fill:#e74c3c,color:#fff
@@ -262,7 +262,7 @@ flowchart LR
 
 ---
 
-## ⏳ Remaining (Admin Action Required — cannot be done by agent)
+##  Remaining (Admin Action Required — cannot be done by agent)
 
 | Item | Blocker | Auto-notifier |
 |------|---------|---------------|
@@ -295,20 +295,20 @@ flowchart LR
 | **PR review comments** | — |  all addressed |
 | **comment_new threads** | — |  all 5 replied |
 | **🔖 Required Actions Version Enforcer** | — |  PASS (ce4a6f44) |
-| **🚨 Deferral Language Gate** | — |  PASS |
+| ** Deferral Language Gate** | — |  PASS |
 | **Workflow Compliance Audit (actionlint)** | — |  PASS |
-| **🔗 Reference Integrity** | — |  PASS |
-| **Pre-Merge Validation** | — | ⏳ running |
-| ** Secrets Baseline Enforcer** | — | ⏳ pending (fires after Pre-Merge) | <!-- pragma: allowlist secret -->
-| **PR Comment Review Gate** | — | ⏳ pending |
-| **startup_failure** (4 infra) | — | ⚠️ env/billing — not code failures |
+| ** Reference Integrity** | — |  PASS |
+| **Pre-Merge Validation** | — |  running |
+| ** Secrets Baseline Enforcer** | — |  pending (fires after Pre-Merge) | <!-- pragma: allowlist secret -->
+| **PR Comment Review Gate** | — |  pending |
+| **startup_failure** (4 infra) | — | ️ env/billing — not code failures |
 
 **Estimated score: 96–98/100** · Only OBJ-B/D admin token rotation outstanding  
 **`admin-action-t03.yml` will auto-create T-03 issue on next approval event**
 
 ---
 
-### 🔀 Continue This Session / Merge Decision
+###  Continue This Session / Merge Decision
 
 #### Option A — Merge Now (recommended if Pre-Merge + Secrets gate pass)
 ```
@@ -331,7 +331,7 @@ S862 Objectives (after admin rotates CODEX_MASTER_KEY with security_events scope
 Branch: finding-autofix-faa8614c (or new PR off main after merge)
 ```
 
-## 🔗 Key Files Produced (All Sessions)
+##  Key Files Produced (All Sessions)
 
 | File | Purpose | Session |
 |------|---------|---------|
@@ -347,7 +347,7 @@ Branch: finding-autofix-faa8614c (or new PR off main after merge)
 | `docs/roadmap/PR4346_whats_next.md` | This file — living roadmap | S859–S861-cont |
 | `docs/sessions/PR4346_session_diagram.md` | 5-diagram session map | S859–S861-cont |
 
-## 🔄 WEC → Dispatch → Auto-Approve Flow (New)
+##  WEC → Dispatch → Auto-Approve Flow (New)
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "🖊️ Agent checks\n- [x, "push → workflow-execution-gate.yml\ndetect-wec-changes job"'}}%%
@@ -360,13 +360,13 @@ flowchart TD
     D --> E["POST /actions/workflows/\ncodeql-alert-fetcher.yml/dispatches\nref = head branch"]
     E --> F{HTTP 204?}
     F -- yes --> G[" Dispatched\n→ new run created"]
-    F -- no --> H["⚠️ Log warning\n(non-fatal)"]
+    F -- no --> H["️ Log warning\n(non-fatal)"]
 
     G --> I["_find_and_approve_dispatched_run()\npoll up to 45 s, 5 s interval"]
     I --> J{run status?}
     J -- action_required --> K["POST /actions/runs/{id}/approve\nCODEX_MASTER_KEY"]
     J -- queued/in_progress --> L["ℹ️ Already running\nno approval needed"]
-    J -- timeout --> M["⚠️ Soft-fail\nfalls back to 5-min\nauto-approve-workflows schedule"]
+    J -- timeout --> M["️ Soft-fail\nfalls back to 5-min\nauto-approve-workflows schedule"]
 
     K --> N[" Run unblocked\nartifacts produced\nin ~5 min"]
     L --> N
@@ -513,7 +513,7 @@ pie title AAIS 99.9 — Remaining 0.1% gap breakdown
 
 ---
 
-## 🔗 Key Files Produced This Session
+##  Key Files Produced This Session
 
 | File | Purpose |
 |------|---------|
@@ -535,7 +535,7 @@ pie title AAIS 99.9 — Remaining 0.1% gap breakdown
 > **Agent:** `copilot-swe-agent[bot]` / Copilot cloud agent
 > **Reference:** `docs/reference/ELEVATED_PRIVILEGES_TOKEN_REVIEW.md` §10.9, §10.11, §11
 
-### 📋 Implementation Checklist
+###  Implementation Checklist
 
 #### Phase A — Pre-Flight Validation (Admin runs manually before agent engagement)
 
@@ -737,19 +737,19 @@ jobs:
           ]:
               days = days_until(val)
               if days is None:
-                  print(f"⚠️  {name}: expiry date not set — add {name}_EXPIRY_DATE variable")
+                  print(f"️  {name}: expiry date not set — add {name}_EXPIRY_DATE variable")
                   issues.append(f"{name} has no expiry date tracked")
               elif days <= 0:
-                  print(f"🚨 {name}: EXPIRED on {val}")
+                  print(f" {name}: EXPIRED on {val}")
                   issues.append(f"{name} EXPIRED on {val} — rotate immediately")
               elif days <= WARN_DAYS:
-                  print(f"⚠️  {name}: expires in {days} days ({val})")
+                  print(f"️  {name}: expires in {days} days ({val})")
                   issues.append(f"{name} expires in {days} days ({val})")
               else:
                   print(f" {name}: valid for {days} more days ({val})")
 
           if issues:
-              body = "## 🚨 Token Expiry Warning\n\n" + "\n".join(f"- {i}" for i in issues)
+              body = "##  Token Expiry Warning\n\n" + "\n".join(f"- {i}" for i in issues)
               body += "\n\n**Action:** Rotate via [Settings → Secrets](https://github.com/organizations/Aries-Serpent/settings/secrets/actions)\n"
               body += "**Reference:** [Token Refresh Alignment Guide](../reference/ELEVATED_PRIVILEGES_TOKEN_REVIEW.md#9-token-refresh-alignment-guide)\n"
               with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as f:
@@ -764,7 +764,7 @@ jobs:
         run: |
           gh issue create \
             --repo "${{ github.repository }}" \
-            --title "🚨 Token Expiry Warning — rotation required" \
+            --title " Token Expiry Warning — rotation required" \
             --label "security,token-rotation" \
             --body "One or more PATs are expiring soon. See workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
 ```
@@ -825,7 +825,7 @@ jobs:
 flowchart TD
     A1["A-1 token-probe.yml\n current tokens valid?"] --> B1
     A2["A-2 scan-secrets-variables.yml\n📸 inventory snapshot"] --> B1
-    A3["A-3 test-variables-api.yml\n🔧 CRUD works?"] --> B1
+    A3["A-3 test-variables-api.yml\n CRUD works?"] --> B1
 
     B1{"Tokens valid?\nAPI accessible?"} -- yes --> C
     B1 -- no --> B2["B-1/B-2 Rotate tokens\nGitHub UI"]
@@ -907,8 +907,8 @@ CTEP Compliance: Completed = 10, Skipped = 0
 
 | Phase | Status | Assigned To | ETA |
 |-------|--------|-------------|-----|
-| A — Pre-flight | ⏳ Pending admin action | @mbaetiong | Before token rotation | <!-- pragma: allowlist secret -->
-| B — Token rotation | ⏳ Pending admin action | @mbaetiong | At refresh time | <!-- pragma: allowlist secret -->
+| A — Pre-flight |  Pending admin action | @mbaetiong | Before token rotation | <!-- pragma: allowlist secret -->
+| B — Token rotation |  Pending admin action | @mbaetiong | At refresh time | <!-- pragma: allowlist secret -->
 | C — New variables |  Agent-executable | `copilot-swe-agent[bot]` | After B completes |
 | D — token-expiry-monitor |  Agent-executable | `copilot-swe-agent[bot]` | After C-2/C-3 | <!-- pragma: allowlist secret -->
 | E — Clean-up |  Agent-executable | `copilot-swe-agent[bot]` | After D |
@@ -916,7 +916,7 @@ CTEP Compliance: Completed = 10, Skipped = 0
 
 ---
 
-## ⚡ Rate-Limit Awareness — Workflow Improvement Plan
+##  Rate-Limit Awareness — Workflow Improvement Plan
 
 > **Reference:** `docs/reference/ELEVATED_PRIVILEGES_TOKEN_REVIEW.md` §12
 > **Audit script:** `python3 scripts/ci/github_api_trickle.py --status`
@@ -935,7 +935,7 @@ CTEP Compliance: Completed = 10, Skipped = 0
 | **P2** | `codeql.yml` + `codeql-analysis.yml` | 4+5 | 0 | 9 | Schedule stagger + dedup |
 | **P3** | `iterative-self-healing-ci.yml` | 4 | 3 | 1 | Add `github_api_trickle.py --status` pre-check |
 
-### 🔧 Implementation Checklist
+###  Implementation Checklist
 
 #### Phase RL-1 — P1 Workflows (highest blast radius)
 

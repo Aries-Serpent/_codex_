@@ -140,7 +140,7 @@ cargo doc --open
 
 ## Compliance
 
--  AI Agent Policy v2.0.0
+-  AI Agent Policy v0.2.1
 -  Cognitive Brain Integration (Phase 11)
 -  Zero additional cost (GitHub Team + Copilot Pro+)
 -  Production-ready architecture

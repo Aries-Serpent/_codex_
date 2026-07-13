@@ -30,7 +30,7 @@
 - [Sources](#sources)
 
 > **Generated:** 2026-03-25 | **Author:** Copilot Coding Agent (S192) | **PR:** #3741
-> **Roles:** [Primary: Research Integrator], [Secondary: Agent Designer] ⚡ Energy: 8
+> **Roles:** [Primary: Research Integrator], [Secondary: Agent Designer]  Energy: 8
 > **Linked Agent:** `.github/agents/energy-conversion-agent.md` (cross-domain automation patterns)
 > **Index:** `docs/deepresearch/INDEX.md`
 
@@ -198,7 +198,7 @@ is "production-ready" only when it passes device availability check + schema lin
 | **Primary** | Model smart-home loads (lights, HVAC, locks) as G2E consumption nodes |
 | **Secondary** | Use Google Home Script Editor starters (e.g. `device.state.EnergyStorage`) to trigger PD optimization |
 | **Capabilities** | Add `google_home_device_loads` module; parse Google Home energy-reporting traits |
-| **Repo Alignment** | Existing agent at `.github/agents/energy-conversion-agent.md` (v1.2.0); enhance to v1.3.0 |
+| **Repo Alignment** | Existing agent at `.github/agents/energy-conversion-agent.md` (v0.2.1); enhance to v0.2.1 |
 | **Type** | Enhancement of `.github/agents/energy-conversion-agent.md` |
 | **Enhancement** | Add "Smart Home Energy Integration" section; map `device.command.OnOff` to load-shedding PD setpoints |
 
@@ -354,7 +354,7 @@ known-limitation warnings in one query.
 | `_ensure_subpath()` requires explicit `RAG_FILES_BASE_DIR` | Default CWD may not cover template library locations | Set `RAG_FILES_BASE_DIR=docs/deepresearch/google_home_templates` in CI environment |
 | Pattern DB (SQLite) lives only on the runner — lost between CI jobs | Cross-run pattern correlation requires persistence | Phase 8 P2: snapshot DB to workflow artifact (GitHub Actions `upload-artifact`) |
 | Gemini AI cognitive routines are in staged rollout | Not universally available | Design agents to degrade gracefully; fall back to static YAML templates |
-| ⚠ **Gap:** No existing Google Home schema validator in `_codex_` | Templates cannot be programmatically validated today | P1: add `docs/deepresearch/google_home_schema.json` + integrate into Pattern 3 extension |
+|  **Gap:** No existing Google Home schema validator in `_codex_` | Templates cannot be programmatically validated today | P1: add `docs/deepresearch/google_home_schema.json` + integrate into Pattern 3 extension |
 
 ---
 

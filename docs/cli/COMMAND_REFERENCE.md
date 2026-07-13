@@ -43,14 +43,14 @@ codex zendesk snapshot --env production
 
 | Module | Framework | Commands | Status |
 |--------|-----------|----------|--------|
-| cli.py | Click + Typer | 20+ | ✓ Core |
-| cli_rag.py | Typer | 8 | ✓ Complete |
-| cli_zendesk.py | Typer | 9 | ✓ Complete |
-| cli_knowledge.py | Typer | 4 | ⚠️ Partial |
-| cli_release.py | Typer | 4 | ⚠️ Partial |
-| cli_roles.py | Typer | 1 | ⚠️ Partial |
-| cli_qa.py | Typer | 1 | ⚠️ Partial |
-| cli_maps.py | Typer | 1 | ✓ Complete |
+| cli.py | Click + Typer | 20+ |  Core |
+| cli_rag.py | Typer | 8 |  Complete |
+| cli_zendesk.py | Typer | 9 |  Complete |
+| cli_knowledge.py | Typer | 4 | ️ Partial |
+| cli_release.py | Typer | 4 | ️ Partial |
+| cli_roles.py | Typer | 1 | ️ Partial |
+| cli_qa.py | Typer | 1 | ️ Partial |
+| cli_maps.py | Typer | 1 |  Complete |
 
 ---
 
@@ -72,7 +72,7 @@ codex rag build [OPTIONS]
 
 | Name | Type | Default | Required | Description |
 |------|------|---------|----------|-------------|
-| `--files` / `-f` | List[str] | — | ✓ | File patterns (glob support, e.g., `docs/**/*.md`) |
+| `--files` / `-f` | List[str] | — |  | File patterns (glob support, e.g., `docs/**/*.md`) |
 | `--index-name` / `-i` | str | `default` | — | Name for the index |
 | `--tenant-id` / `-t` | str | `default` | — | Tenant identifier for multi-tenancy |
 | `--chunk-size` / `-c` | int | 1000 | — | Max chunk size (100-10000 chars) |
@@ -114,7 +114,7 @@ codex rag query [TEXT] [OPTIONS]
 
 | Name | Type | Default | Required | Description |
 |------|------|---------|----------|-------------|
-| `query_text` | str | — | ✓ | Query text for semantic search |
+| `query_text` | str | — |  | Query text for semantic search |
 | `--index-name` / `-i` | str | `default` | — | Name of the index to query |
 | `--tenant-id` / `-t` | str | `default` | — | Tenant identifier |
 | `--top-k` / `-k` | int | 5 | — | Number of results (1-100) |
@@ -184,7 +184,7 @@ codex rag delete [OPTIONS]
 
 | Name | Type | Default | Required | Description |
 |------|------|---------|----------|-------------|
-| `--index-name` / `-i` | str | — | ✓ | Name of the index to delete |
+| `--index-name` / `-i` | str | — |  | Name of the index to delete |
 | `--tenant-id` / `-t` | str | `default` | — | Tenant identifier |
 | `--index-dir` / `-d` | str | `.codex/tenants` | — | Base directory for indices |
 | `--yes` / `-y` | bool | False | — | Skip confirmation prompt |
@@ -217,8 +217,8 @@ codex rag merge [OPTIONS]
 
 | Name | Type | Default | Required | Description |
 |------|------|---------|----------|-------------|
-| `--source` / `-s` | List[str] | — | ✓ | Source index names (repeatable, min: 2) |
-| `--target` / `-t` | str | — | ✓ | Target index name |
+| `--source` / `-s` | List[str] | — |  | Source index names (repeatable, min: 2) |
+| `--target` / `-t` | str | — |  | Target index name |
 | `--tenant-id` | str | `default` | — | Tenant identifier |
 
 #### Examples
@@ -364,7 +364,7 @@ codex zendesk env-check --env ENVIRONMENT
 
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
-| `--env` | str | ✓ | Environment identifier (e.g., prod, staging) |
+| `--env` | str |  | Environment identifier (e.g., prod, staging) |
 
 #### Environment Variables
 
@@ -457,7 +457,7 @@ codex zendesk snapshot [OPTIONS]
 
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
-| `--env` | str | ✓ | Environment identifier |
+| `--env` | str |  | Environment identifier |
 | `--output` / `-o` | Path | — | Output file path (default: stdout) |
 
 #### Examples
@@ -496,9 +496,9 @@ codex zendesk diff RESOURCE [OPTIONS]
 
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
-| `resource` | str | ✓ | Resource type (triggers/fields/forms/groups/macros/views/webhooks/apps/routing/slas/guide) |
-| `--desired-file` | Path | ✓ | Desired state file (JSON/TOML) |
-| `--current-file` | Path | ✓ | Current state file (JSON/TOML) |
+| `resource` | str |  | Resource type (triggers/fields/forms/groups/macros/views/webhooks/apps/routing/slas/guide) |
+| `--desired-file` | Path |  | Desired state file (JSON/TOML) |
+| `--current-file` | Path |  | Current state file (JSON/TOML) |
 | `--output` | Path | — | Output diff file (optional) |
 
 #### Examples
@@ -529,7 +529,7 @@ codex zendesk plan DIFF_FILE [OPTIONS]
 
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
-| `diff_file` | Path | ✓ | Diff JSON from diff command |
+| `diff_file` | Path |  | Diff JSON from diff command |
 | `--output` | Path | — | Output plan file (optional) |
 
 #### Examples
@@ -560,9 +560,9 @@ codex zendesk apply RESOURCE [OPTIONS]
 
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
-| `resource` | str | ✓ | Resource type |
-| `--plan-file` | Path | ✓ | Plan JSON file |
-| `--env` | str | ✓ | Target environment |
+| `resource` | str |  | Resource type |
+| `--plan-file` | Path |  | Plan JSON file |
+| `--env` | str |  | Target environment |
 | `--dry-run` | bool | — | Simulate without making changes |
 
 #### Examples
@@ -804,7 +804,7 @@ codex release verify BUNDLE
 
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
-| `bundle` | Path | ✓ | Bundle file path |
+| `bundle` | Path |  | Bundle file path |
 
 #### Output
 
@@ -933,9 +933,9 @@ codex roles export-matrix ZENDESK_FILE DYNAMICS_FILE OUTPUT
 
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
-| `zendesk_roles_file` | Path | ✓ | Zendesk roles (JSON/JSONL) |
-| `dynamics_roles_file` | Path | ✓ | Dynamics roles (JSON/JSONL) |
-| `output_json` | Path | ✓ | Output matrix JSON |
+| `zendesk_roles_file` | Path |  | Zendesk roles (JSON/JSONL) |
+| `dynamics_roles_file` | Path |  | Dynamics roles (JSON/JSONL) |
+| `output_json` | Path |  | Output matrix JSON |
 
 #### Input Formats
 
@@ -966,9 +966,9 @@ codex qa score RUBRIC INPUT OUTPUT
 
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
-| `rubric_file` | Path | ✓ | QA rubric file (must exist) |
-| `input_csv` | Path | ✓ | Input CSV (must exist) |
-| `output_jsonl` | Path | ✓ | Output JSONL file |
+| `rubric_file` | Path |  | QA rubric file (must exist) |
+| `input_csv` | Path |  | Input CSV (must exist) |
+| `output_jsonl` | Path |  | Output JSONL file |
 
 #### Output
 

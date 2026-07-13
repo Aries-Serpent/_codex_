@@ -188,7 +188,7 @@ Timeline:
 ### Initial Notification (Internal)
 
 ```
-🚨 INCIDENT ALERT - [Severity]
+ INCIDENT ALERT - [Severity]
 
 Incident: [Brief description]
 Impact: [Affected services/users]

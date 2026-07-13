@@ -74,14 +74,14 @@ S4 (AST sweep + docs): 2026-05-07T00:00Z → 00:10Z
    ├─ Living docs updated (S4 entry)
    └─ CHANGELOG + AGENT_ACCOUNTABILITY_REPORT updated
 
-S5 (final sweep + docs): 2026-05-07T00:10Z → 00:20Z
+2026-07-13
    ├─ Workflows approved by owner
    ├─ sync_tracked_files --check:  all consistent
    ├─ ruff check src/ tests/ tools/:  0 violations
    ├─ Living docs refreshed (S5 entry, API command updated)
    └─ CHANGELOG + AGENT_ACCOUNTABILITY_REPORT updated
 
-S6 (CodeQL fixes + rate-limit hardening): 2026-05-07T00:20Z → 00:55Z
+2026-07-13
    ├─ py/mixed-tuple-returns FIX (src/logging_utils.py):
    │      init_mlflow() split into _init_mlflow_bool + _init_mlflow_experiment
    ├─ py/call-to-non-callable FIX (src/cli.py):
@@ -89,7 +89,7 @@ S6 (CodeQL fixes + rate-limit hardening): 2026-05-07T00:20Z → 00:55Z
    ├─ Rate-limit hardening: status() + D-00 gate + RATE_LIMIT_AWARENESS.md
    └─ CHANGELOG + AGENT_ACCOUNTABILITY_REPORT updated
 
-S7 (scope-constraint confirmed + wrap-up): 2026-05-07T00:57Z → 01:10Z
+2026-07-13
    ├─  CRITICAL FINDING: Copilot sandbox tokens permanently lack security_events scope
    │      list_code_scanning_alerts MCP: ALWAYS 403 regardless of rate limits
    │      AGENT_GITHUB_TOKEN: also lacks security_events scope
@@ -288,8 +288,8 @@ S32 (sync drift fix + CI rescue + living docs): 2026-05-07T15:52Z
 | Required Actions Version Enforcer |  | 0 violations |
 | E→D Transition Readiness Gate |  | |
 | Documentation Link Checker |  | |
-| RAG Module Tests | 🔄 | In-progress |
-| Security Scanning Suite | 🔄 | In-progress |
+| RAG Module Tests |  | In-progress |
+| Security Scanning Suite |  | In-progress |
 | CodeQL py/empty-except (55) |  | Fixed → 0 (S2) |
 | CodeQL py/catch-base-exception (1) |  | Fixed (S2) |
 | CodeQL py/print-during-import (3) |  | Fixed (S2) |
@@ -302,11 +302,11 @@ S32 (sync drift fix + CI rescue + living docs): 2026-05-07T15:52Z
 | **Overall HEAD 96d8744a** | ** 15/0** | **Readiness 100/100 — all critical ** |
 | **S34 — RP-004 sync drift + RP-006 EOF** | **** | **sync_tracked_files clean, 3 JSON EOF fixed** |
 | **Overall HEAD S34** | **** | **sync_tracked_files , ruff , P-045 gate ** |
-| CodeQL 46 remaining alerts (6 rules) | ⏳ | Blocked — sandbox lacks `security_events` |
-| Build & Push Preview Image | ⚠️ | startup_failure — needs second manual approval |
-| Data Quality & Determinism Suite | ⚠️ | startup_failure — needs second manual approval |
-| Progressive Validation Suite | ⚠️ | startup_failure — needs second manual approval |
-| Rust-Python Hybrid Swarm CI/CD | ⚠️ | startup_failure — needs second manual approval |
+| CodeQL 46 remaining alerts (6 rules) |  | Blocked — sandbox lacks `security_events` |
+| Build & Push Preview Image | ️ | startup_failure — needs second manual approval |
+| Data Quality & Determinism Suite | ️ | startup_failure — needs second manual approval |
+| Progressive Validation Suite | ️ | startup_failure — needs second manual approval |
+| Rust-Python Hybrid Swarm CI/CD | ️ | startup_failure — needs second manual approval |
 
 ## Statistics
 

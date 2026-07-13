@@ -414,26 +414,26 @@ Agent B (dependent)
 Every agent should verify results before returning:
 
 ```
-✓ Type Check
+ Type Check
   - Result matches declared type (fix|analysis|verification)
   - Data structures well-formed
 
-✓ Completeness Check
+ Completeness Check
   - All success criteria addressed
   - No partial work without explanation
   - Changes documented
 
-✓ Consistency Check
+ Consistency Check
   - No conflicting changes
   - Logical coherence maintained
   - References up-to-date
 
-✓ Quality Check
+ Quality Check
   - Code/docs follow style guide
   - No regressions introduced
   - Performance acceptable
 
-✓ Audit Trail Check
+ Audit Trail Check
   - Changes tracked with commit SHAs
   - Rationale documented
   - Timestamps accurate

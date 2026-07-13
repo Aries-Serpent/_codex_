@@ -73,6 +73,8 @@ nav:
 - Deployment:
   - Deploy Pipeline: deployment/deploy_pipeline.md
   - Deployment Guide: deployment/DEPLOYMENT_GUIDE.md
+  - Local Deployment Guide: deployment/LOCAL_DEPLOYMENT_GUIDE.md
+  - Verification Checklist: deployment/DEPLOYMENT_VERIFICATION_CHECKLIST.md
 - Logging & Troubleshooting:
   - Logging Guide: logging/logging_guide.md
   - End-to-End Logging: logging/end_to_end_logging.md

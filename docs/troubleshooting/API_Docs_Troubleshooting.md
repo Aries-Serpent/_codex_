@@ -259,8 +259,8 @@ def my_function():
 ### Check package importability
 ```bash
 # Test if package can be imported
-PYTHONPATH=src python -c "import codex.cli; print('✓ codex.cli importable')"
-PYTHONPATH=src python -c "import codex_ml; print('✓ codex_ml importable')"
+PYTHONPATH=src python -c "import codex.cli; print(' codex.cli importable')"
+PYTHONPATH=src python -c "import codex_ml; print(' codex_ml importable')"
 ```text
 
 ## List package modules

@@ -23,7 +23,7 @@ This document maps the _codex_ archive standardization implementation to industr
 | **Ephemeral credentials** |  GitHub OIDC tokens (short-lived) | Fulcio certificates |
 | **Signed provenance** |  Keyless signing via Sigstore | Certificate chain in metadata |
 | **Non-falsifiable provenance** |  Append-only JSONL + signatures | Immutable evidence log |
-| **Dependency completeness** | ⏳ Phase 3 (SBOM) | Future: SBOM generation |
+| **Dependency completeness** |  Phase 3 (SBOM) | Future: SBOM generation |
 
 ### Implementation Details
 
@@ -240,7 +240,7 @@ tail -10 .codex/evidence/archive_ops.jsonl | python -m json.tool
 ```text
  Validation Results: 1234 records scanned
     Valid: 1234
-   ⚠️  Warnings: 0
+   ️  Warnings: 0
     Errors: 0
 
  All checks passed!
@@ -248,7 +248,7 @@ tail -10 .codex/evidence/archive_ops.jsonl | python -m json.tool
 **Standardization Status**:
 ```text
 ============================================================
-📋 Archive Standardization Status
+ Archive Standardization Status
 ============================================================
 Standard Version: 2.0
 SLSA Level: L3

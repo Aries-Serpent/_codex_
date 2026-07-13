@@ -108,7 +108,7 @@ The system is built on three core principles:
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
-│  codex-ml v0.1.0 System                                        │
+│  codex-ml v0.2.1 System                                        │
 │                                                                │
 │  ┌─────────────────────────────────────────────────────────┐  │
 │  │  Core ML Platform                                       │  │
@@ -233,7 +233,7 @@ _codex_/
 │   ├── architecture/           # Architecture docs
 │   └── admin/                  # Admin guides
 ├── scripts/                     # Utility scripts (195+ files)
-│   └── space_traversal/        # Audit pipeline v1.5.5
+│   └── space_traversal/        # Audit pipeline v0.2.1
 ├── configs/                     # Hydra configurations
 ├── deploy/                      # Deployment manifests
 ├── monitoring/                  # Observability tools
@@ -658,7 +658,7 @@ See: `docs/deployment/kubernetes-guide.md`
 -  Single authoritative architecture document
 -  Merged documentation sources
 -  Redirect notices for old docs
-- ⏳ Link validation and cross-references
+-  Link validation and cross-references
 
 ### Phase 2: Enhancement (Planned)
 

@@ -597,7 +597,7 @@ startup, shutdown, healthz, lifespan, initialization, cleanup, safeguard, timeou
 
 **Operational Status:**  **ACTIVE** - Production-ready with rollback support
 
-## ⚖️ Verification Checklist
+## ️ Verification Checklist
 
 - [x] LifecycleManager implementation
 - [x] Startup hook registration and execution
@@ -619,7 +619,7 @@ startup, shutdown, healthz, lifespan, initialization, cleanup, safeguard, timeou
 - Prometheus client (for metrics)
 - Signal handling support
 
-## 📈 Success Metrics
+##  Success Metrics
 
 | Metric | Target | Current | Status |
 |--------|--------|---------|--------|
@@ -633,7 +633,7 @@ startup, shutdown, healthz, lifespan, initialization, cleanup, safeguard, timeou
 
 ## ⚛️ Physics Alignment
 
-### Path 🛤️
+### Path ️
 **Lifecycle Flow:**
 1. Initializing → Starting (execute startup hooks)
 2. Starting → Ready (all hooks complete)
@@ -645,7 +645,7 @@ startup, shutdown, healthz, lifespan, initialization, cleanup, safeguard, timeou
 **Error Path:**
 - Starting → Failed (critical hook error) → Stopping → Stopped
 
-### Fields 🔄
+### Fields 
 **State Management:**
 - **Lifecycle state**: Current phase (8 states)
 - **Hook registry**: Startup/shutdown functions
@@ -657,7 +657,7 @@ startup, shutdown, healthz, lifespan, initialization, cleanup, safeguard, timeou
 - Hook-driven (success/failure)
 - Time-driven (grace period, timeouts)
 
-### Patterns 👁️
+### Patterns ️
 **Observability:**
 - Log all state transitions
 - Track hook execution times
@@ -670,7 +670,7 @@ startup, shutdown, healthz, lifespan, initialization, cleanup, safeguard, timeou
 - LIFO shutdown (reverse order cleanup)
 - Graceful degradation
 
-### Redundancy 🔀
+### Redundancy 
 **Failure Modes:**
 1. **Critical startup hook fails** → Rollback, abort startup
 2. **Non-critical startup hook fails** → Log warning, continue
@@ -682,10 +682,10 @@ startup, shutdown, healthz, lifespan, initialization, cleanup, safeguard, timeou
 - Continue shutdown even if hooks fail
 - Health checks indicate degraded but operational
 
-### Balance ⚖️
+### Balance ️
 **Reliability vs Speed:**
 -  Timeouts prevent hung startup/shutdown
-- ⚖️ Trade-off: Fast startup vs thorough initialization
+- ️ Trade-off: Fast startup vs thorough initialization
 -  Graceful degradation (serve with failed health checks)
 
 **Flexibility vs Safety:**
@@ -693,7 +693,7 @@ startup, shutdown, healthz, lifespan, initialization, cleanup, safeguard, timeou
 - Non-critical hooks allow partial startup (flexibility)
 - LIFO shutdown ensures dependencies cleaned correctly
 
-## ⚡ Energy Distribution
+##  Energy Distribution
 
 | Priority | Component | Energy | Justification |
 |----------|-----------|--------|---------------|

@@ -48,7 +48,7 @@
 3. **GitHub API Automation** - User/team provisioning 
 4. **Repository Operations** - Automated access control 
 
-### 📋 Tasks
+###  Tasks
 
 #### Task 1: GitHub Actions Workflow Templates 
 
@@ -94,7 +94,7 @@
 - [x] Notification system (integrated in workflows via GitHub Issues)
 - [x] Compliance reporter (scripts/compliance_reporter.py)
 
-### 🔧 GitHub Copilot Agent Designs
+###  GitHub Copilot Agent Designs
 
 #### Agent 1: GitHub Auth Manager
 

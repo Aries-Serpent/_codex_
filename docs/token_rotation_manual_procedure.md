@@ -8,7 +8,7 @@
 
 This document provides step-by-step instructions for manually rotating authentication tokens and secrets in the _codex_ repository.
 
-**⚠️ IMPORTANT**: Only execute these procedures with explicit authorization from repository administrators.
+**️ IMPORTANT**: Only execute these procedures with explicit authorization from repository administrators.
 
 ---
 

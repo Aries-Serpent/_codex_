@@ -95,7 +95,7 @@ pipeline = InferencePipeline("bert-base-uncased")
 texts = [
     "This movie is great!",
     "I didn't like it.",
-    "Absolutely fantastic!"
+    "!"
 ]
 
 # Run inference

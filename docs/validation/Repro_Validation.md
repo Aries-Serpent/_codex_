@@ -97,11 +97,11 @@ cat /tmp/pytest-of-*/pytest-current/test_evaluation_captures_git_*/eval_output/p
 
 | Check | Command | Expected Result | Status |
 |-------|---------|----------------|--------|
-| Reproducibility smoke tests | `nox -s repro_smoke` | All tests pass | ✓ |
-| Environment snapshot fields | Inspect `environment.json` | Contains python, platform, git_commit, pip_freeze | ✓ |
-| Deterministic metrics | Run evaluation twice with same seed | Identical metric values | ✓ |
-| Plugin loading non-fatal | Plugin init in tests | Does not raise, returns int count | ✓ |
-| System metrics toggle (optional) | `codex-train --system-metrics ...` | Emits system metrics without changing training determinism | ✓ |
+| Reproducibility smoke tests | `nox -s repro_smoke` | All tests pass |  |
+| Environment snapshot fields | Inspect `environment.json` | Contains python, platform, git_commit, pip_freeze |  |
+| Deterministic metrics | Run evaluation twice with same seed | Identical metric values |  |
+| Plugin loading non-fatal | Plugin init in tests | Does not raise, returns int count |  |
+| System metrics toggle (optional) | `codex-train --system-metrics ...` | Emits system metrics without changing training determinism |  |
 
 ## Notes
 

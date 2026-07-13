@@ -1,4 +1,4 @@
-# Usage Guide: Codex ML Offline Workflow (v1.2.0)
+# Usage Guide: Codex ML Offline Workflow (v0.2.1)
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
@@ -94,7 +94,7 @@ to confirm which config group contributes a value.
 
 ---
 
-## Audit Traversal Workflow (v1.1.0)
+## Audit Traversal Workflow (v0.2.1)
 
 ### Running the Audit Pipeline
 

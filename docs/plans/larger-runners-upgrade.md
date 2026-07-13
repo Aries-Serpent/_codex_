@@ -5,7 +5,7 @@
 **Last Updated: 2026-06-22
 
 **Ref:** [GitHub Docs — Upgrading to larger GitHub-hosted GitHub Actions runners][gh-docs]
-**Date:** 2026-03-05 | **PR:** #3499 | **AAIS Impact:** +3.5 (Pillar 3: Operational Maturity)
+**Date:2026-07-13
 **Status:**  LIVE — runner `ubuntu-latest-m` active in group `AS Larger Runners`
 
 [gh-docs]: https://docs.github.com/en/copilot/how-tos/use-copilot-agents/coding-agent/customize-the-agent-environment#upgrading-to-larger-github-hosted-github-actions-runners
@@ -207,7 +207,7 @@ flowchart TD
     L --> M[ AAIS Runner\nAdequacy Check step]
     M --> N{runner_cpus ≥\nENV_TYPE.min_cpus?}
     N -->| Yes| O[runner_adequate=true\nContinue setup]
-    N -->|⚠️ No| P["runner_adequate=false\nLog recommendation\nContinue anyway"]
+    N -->|️ No| P["runner_adequate=false\nLog recommendation\nContinue anyway"]
 
     style C fill:#3b82f6,color:#fff
     style E fill:#10b981,color:#fff
@@ -448,7 +448,7 @@ queue or fall back gracefully.
 | Metric | Before (ubuntu-latest) | Now (ubuntu-latest-m) | Future (custom image) |
 |--------|------------------------|----------------------|----------------------|
 | Setup wall-clock (standard) | ~8 min | ~4 min  | ~30 sec |
-| Setup wall-clock (ml-heavy) | ~25 min ⚠️ | ~12 min  | ~2 min |
+| Setup wall-clock (ml-heavy) | ~25 min ️ | ~12 min  | ~2 min |
 | Timeout risk | High | None  | None |
 | Agent start latency | ~10 min | ~5 min  | ~1 min |
 | `cargo build --release` | ~3 min | ~90 sec  | ~90 sec |

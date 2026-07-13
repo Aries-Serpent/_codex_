@@ -54,7 +54,7 @@ docs/deploy/
 
 ---
 
-##  Quick Start
+## Quick Start
 
 1. **New to Deployments?** → Start with pre-deployment checklist
 2. **Production Ready?** → Follow production deployment guide
@@ -63,7 +63,7 @@ docs/deploy/
 
 ---
 
-## 🔗 Related Documentation
+##  Related Documentation
 
 - **[docs/operations/](../operations/)** - Operational procedures
 - **[docs/infrastructure/](../infrastructure/)** - Infrastructure setup

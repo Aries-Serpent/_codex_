@@ -223,24 +223,24 @@ Typical Users:
                     AGENTS          WORKFLOWS        SECRETS       DOCS
 Role                C R U D E A      C R U D E A      C R U D E A   C R U D E A
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-system_admin        ✓ ✓ ✓ ✓ ✓ ✓      ✓ ✓ ✓ ✓ ✓ ✓      ✓ ✓ ✓ ✓ ✓ ✓   ✓ ✓ ✓ ✓ ✓ ✓
-agent_operator      ✓ ✓ ✓ × ✓ ×      ✓ ✓ ✓ × ✓ ×      × ✓ × × × ×   × ✓ × × × ×
-ci_operator         × ✓ × × ✓ ×      × ✓ × × ✓ ✓      × × × × × ×   × ✓ × × × ×
-security_reviewer   × ✓ × × × ×      × ✓ × × × ✓      × ✓ × × × ✓   × ✓ × × × ×
-doc_maintainer      × ✓ × × × ×      × ✓ × × × ×      × × × × × ×   ✓ ✓ ✓ ✓ × ×
-agent_reader        × ✓ × × × ×      × ✓ × × × ×      × × × × × ×   × ✓ × × × ×
-guest               × × × × × ×      × × × × × ×      × × × × × ×   × ✓ × × × ×
+system_admin                                           
+agent_operator         ×  ×         ×  ×      ×  × × × ×   ×  × × × ×
+ci_operator         ×  × ×  ×      ×  × ×        × × × × × ×   ×  × × × ×
+security_reviewer   ×  × × × ×      ×  × × ×       ×  × × ×    ×  × × × ×
+doc_maintainer      ×  × × × ×      ×  × × × ×      × × × × × ×       × ×
+agent_reader        ×  × × × ×      ×  × × × ×      × × × × × ×   ×  × × × ×
+guest               × × × × × ×      × × × × × ×      × × × × × ×   ×  × × × ×
 
                     CODE            REPORTS          ROLES         AUDIT_LOGS
 Role                C R U D E A      C R U D E A      C R U D E A   C R U D E A
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-system_admin        ✓ ✓ ✓ ✓ × ✓      ✓ ✓ ✓ ✓ × ×      ✓ ✓ ✓ ✓ × ✓   × ✓ × × × ×
-agent_operator      × ✓ ✓ × × ×      ✓ ✓ × × × ×      × ✓ × × × ×   × ✓ × × × ×
-ci_operator         × ✓ × × × ×      ✓ ✓ × × × ×      × ✓ × × × ×   × ✓ × × × ×
-security_reviewer   × ✓ ✓ × × ×      × ✓ × × × ×      × ✓ × × × ×   × ✓ × × × ×
-doc_maintainer      × ✓ × × × ×      × ✓ × × × ×      × ✓ × × × ×   × × × × × ×
-agent_reader        × ✓ × × × ×      × ✓ × × × ×      × ✓ × × × ×   × × × × × ×
-guest               × × × × × ×      × ✓ × × × ×      × × × × × ×   × × × × × ×
+system_admin            ×           × ×          ×    ×  × × × ×
+agent_operator      ×   × × ×        × × × ×      ×  × × × ×   ×  × × × ×
+ci_operator         ×  × × × ×        × × × ×      ×  × × × ×   ×  × × × ×
+security_reviewer   ×   × × ×      ×  × × × ×      ×  × × × ×   ×  × × × ×
+doc_maintainer      ×  × × × ×      ×  × × × ×      ×  × × × ×   × × × × × ×
+agent_reader        ×  × × × ×      ×  × × × ×      ×  × × × ×   × × × × × ×
+guest               × × × × × ×      ×  × × × ×      × × × × × ×   × × × × × ×
 
 Legend: C=Create, R=Read, U=Update, D=Delete, E=Execute, A=Approve, ×=Denied
 ```

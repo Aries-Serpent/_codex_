@@ -198,7 +198,7 @@ if (result := expensive_computation()):
 
 **Migration Path**:
 1. Opt-in only
-2. Apply to obviously beneficial cases
+2. Apply to beneficial cases
 3. Team discussion for coding style
 4. may remain disabled permanently
 

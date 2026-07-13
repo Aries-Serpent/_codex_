@@ -247,9 +247,9 @@ jobs:
  Compatible with all cloud providers  
 
 ### Negative
-⚠️ Developers must manage local `.env` files  
-⚠️ Missing secrets cause runtime errors (not startup)  
-⚠️ Requires Vault setup for production  
+️ Developers must manage local `.env` files  
+️ Missing secrets cause runtime errors (not startup)  
+️ Requires Vault setup for production  
 
 ### Mitigations
 - `.env.example` as template for developers

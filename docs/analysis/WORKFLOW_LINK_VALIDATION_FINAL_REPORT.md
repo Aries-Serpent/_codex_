@@ -40,7 +40,7 @@ According to the CI log analysis, broken links were related to:
 
 ---
 
-## 🔧 Fixes Applied
+##  Fixes Applied
 
 ### 1. PR #3133 Analysis Document (6 broken links)
 
@@ -156,10 +156,10 @@ False Positives: 49 (code snippets, regex patterns, etc.)
 $ python .github/scripts/validate-links.py
 
 ================================================================================
-📋 MARKDOWN LINK VALIDATION REPORT
+ MARKDOWN LINK VALIDATION REPORT
 ================================================================================
  Files checked: 1425
-⚠️  Warnings: 0
+️  Warnings: 0
  Errors: 0
 ================================================================================
 ```
@@ -168,7 +168,7 @@ $ python .github/scripts/validate-links.py
 
 ---
 
-## 📝 False Positives Identified
+##  False Positives Identified
 
 The initial scan identified 49 "broken links" that are actually:
 
@@ -220,7 +220,7 @@ Valid links to source code: `../src/codex_cli/app.py`
 
 ---
 
-## 📋 Files Modified
+##  Files Modified
 
 | File | Changes | Status |
 |------|---------|--------|
@@ -232,7 +232,7 @@ Valid links to source code: `../src/codex_cli/app.py`
 
 ---
 
-## 🔄 Validation Commands
+##  Validation Commands
 
 To verify the fixes:
 

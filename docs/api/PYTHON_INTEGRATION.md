@@ -563,7 +563,7 @@ def rag_knowledge_base_example():
         # Build index
         print("Building knowledge base...")
         result = build_rag_index(client, "programming_kb", documents)
-        print(f"✓ Built index with {result['document_count']} documents")
+        print(f" Built index with {result['document_count']} documents")
         
         # Query index
         print("\nQuerying knowledge base...")

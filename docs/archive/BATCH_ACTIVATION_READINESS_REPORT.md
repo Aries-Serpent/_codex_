@@ -220,7 +220,7 @@ pytest tests/agents/test_phase2_deep_coverage_batch17_final_gaps.py -v
 
 ---
 
-## 📈 Expected Progression
+##  Expected Progression
 
 ### Coverage Trajectory
 
@@ -243,7 +243,7 @@ pytest tests/agents/test_phase2_deep_coverage_batch17_final_gaps.py -v
 
 ---
 
-## 🔍 Known Patterns from Phase 2
+##  Known Patterns from Phase 2
 
 ### Common Issues & Fixes
 
@@ -317,7 +317,7 @@ pytest tests/agents/test_phase2_deep_coverage_batch17_final_gaps.py -v
 
 ---
 
-## 📋 Activation Checklist
+##  Activation Checklist
 
 ### Before Starting
 
@@ -346,7 +346,7 @@ For each batch:
 
 ---
 
-## 🚨 Escalation Path
+##  Escalation Path
 
 ### If Batch Activation Stalls
 
@@ -403,7 +403,7 @@ Use this template to track activation progress:
 
 **Module Imports**:  ALL VERIFIED (14/14 classes)  
 **Syntax**:  ALL VALIDATED (5/5 batches)  
-**Dependencies**: ⚠️ PYTEST REQUIRED  
+**Dependencies**: ️ PYTEST REQUIRED  
 **Readiness**:  HIGH CONFIDENCE  
 
 **Status**: **READY FOR IMMEDIATE EXECUTION**

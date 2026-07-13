@@ -18,9 +18,9 @@ This guide helps troubleshoot common issues when using distributed training feat
 from codex_ml.distributed import is_distributed_available
 
 if is_distributed_available():
-    print("✓ Distributed training is available")
+    print(" Distributed training is available")
 else:
-    print("✗ Distributed training not available (CPU-only mode)")
+    print(" Distributed training not available (CPU-only mode)")
 ```
 
 ### Check Accelerate Installation
@@ -292,7 +292,7 @@ if dist.is_initialized():
     tensor = torch.ones(1)
     dist.all_reduce(tensor)
     assert tensor.item() == dist.get_world_size()
-    print("✓ Communication test passed")
+    print(" Communication test passed")
 ```
 
 ### 4. Monitor GPU Usage
@@ -318,13 +318,13 @@ from training.accelerate_init_guard import safe_accelerate_init
 result = safe_accelerate_init(cpu_fallback=True)
 
 if result.success:
-    print(f"✓ Accelerate initialized with {result.backend}")
+    print(f" Accelerate initialized with {result.backend}")
     print(f"  World size: {result.world_size}, Rank: {result.rank}")
 elif result.skip_reason:
     print(f"⊘ Skipped: {result.skip_reason}")
     # Continue with CPU-only training
 else:
-    print(f"✗ Error: {result.error}")
+    print(f" Error: {result.error}")
     # Handle error or fall back to CPU
 ```
 

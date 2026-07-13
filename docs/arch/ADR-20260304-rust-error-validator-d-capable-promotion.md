@@ -73,7 +73,7 @@ satisfy the 30-day observation window for `rust-error-validator`.
 
 **`rust-error-validator` promoted to `D_CAPABLE`.**
 
-Changes applied to `AGENT_REGISTRY.yaml` v1.9.3 (this PR):
+Changes applied to `AGENT_REGISTRY.yaml` v0.2.1 (this PR):
 - `maturity: beta` → `maturity: production`
 - `autonomy_model: E` → `autonomy_model: D_CAPABLE`
 - `violations_30d: 0` added

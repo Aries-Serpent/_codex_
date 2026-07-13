@@ -10,13 +10,13 @@
 
 ---
 
-## 📋 Overview
+##  Overview
 
 This guide provides operational procedures for managing the artifact retention lifecycle in the Codex repository. It covers manual cleanup, emergency procedures, monitoring, and troubleshooting.
 
 ---
 
-##  Quick Start
+## Quick Start
 
 ### One-Time Manual Cleanup
 
@@ -63,7 +63,7 @@ jobs:
 
 ---
 
-## 🔧 Common Operations
+##  Common Operations
 
 ### View Cleanup Status
 
@@ -247,7 +247,7 @@ echo "\nDone!"
 
 ---
 
-## 🚨 Emergency Procedures
+##  Emergency Procedures
 
 ### Cleanup Script Hanging
 
@@ -458,7 +458,7 @@ tar -czf .codex/archives/test.tar.gz memory/sessions/sample.ndjson
 
 ---
 
-## 📋 Operational Checklists
+##  Operational Checklists
 
 ### Daily
 

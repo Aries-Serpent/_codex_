@@ -65,15 +65,15 @@
 - [Run with coverage](#run-with-coverage)
 - [Run specific test file](#run-specific-test-file)
 - [ Mission Overview](#-mission-overview)
-- [⚖️ Verification Checklist](#-verification-checklist)
-- [📈 Success Metrics](#-success-metrics)
+- [️ Verification Checklist](#-verification-checklist)
+- [ Success Metrics](#-success-metrics)
 - [⚛️ Physics Alignment](#-physics-alignment)
-  - [Path 🛤️ (Implementation Efficiency)](#path--implementation-efficiency)
-  - [Fields 🔄 (Code Analysis Flow)](#fields--code-analysis-flow)
-  - [Patterns 👁️ (Detection Architecture)](#patterns--detection-architecture)
-  - [Redundancy 🔀 (Reliability Mechanisms)](#redundancy--reliability-mechanisms)
-  - [Balance ⚖️ (Completeness vs Simplicity)](#balance--completeness-vs-simplicity)
-- [⚡ Energy Distribution](#-energy-distribution)
+  - [Path ️ (Implementation Efficiency)](#path--implementation-efficiency)
+  - [Fields  (Code Analysis Flow)](#fields--code-analysis-flow)
+  - [Patterns ️ (Detection Architecture)](#patterns--detection-architecture)
+  - [Redundancy  (Reliability Mechanisms)](#redundancy--reliability-mechanisms)
+  - [Balance ️ (Completeness vs Simplicity)](#balance--completeness-vs-simplicity)
+- [ Energy Distribution](#-energy-distribution)
 - [ Redundancy Patterns](#-redundancy-patterns)
 
 > **Generated**: 2026-06-22  
@@ -387,7 +387,7 @@ from codex.ast import BaselineManager, DeltaAnalyzer
 
 # Store baseline
 baseline = BaselineManager("audit_artifacts/baseline.db")
-baseline.store_snapshot(parsed_nodes, version="v1.0.0")
+baseline.store_snapshot(parsed_nodes, version="v0.2.1")
 
 # Compute delta
 analyzer = DeltaAnalyzer(baseline)
@@ -904,16 +904,16 @@ pytest tests/ast/test_parser.py -v
 
 **Objective**: Deliver comprehensive AST (Abstract Syntax Tree) standardization framework implementation, resolving all critical blockers and enabling code quality analysis, smell detection, and knowledge graph export across the _codex_ repository.
 
-**Energy Level**: ⚡⚡⚡ (3/5) - Informational
+**Energy Level**:  (3/5) - Informational
 - High value: Foundation for automated code analysis
 - Moderate complexity: 97 tests passing, 6 files created
 - Reference material: Tracks implementation completeness
 
-**Status**:  Phase 1 Complete | 📋 Future Work Documented
+**Status**:  Phase 1 Complete |  Future Work Documented
 
 ---
 
-## ⚖️ Verification Checklist
+## ️ Verification Checklist
 
 **Implementation Deliverables**:
 - [x] Universal Parser (FR-AST-001) - libcst with ast fallback
@@ -936,7 +936,7 @@ pytest tests/ast/test_parser.py -v
 
 ---
 
-## 📈 Success Metrics
+##  Success Metrics
 
 | Metric | Target | Achieved | Status |
 |--------|--------|----------|--------|
@@ -957,31 +957,31 @@ pytest tests/ast/test_parser.py -v
 
 ## ⚛️ Physics Alignment
 
-### Path 🛤️ (Implementation Efficiency)
+### Path ️ (Implementation Efficiency)
 - **Critical Path**: Parser → Smells → Export (sequential dependency)
 - **Parallel Work**: Test development concurrent with implementation
 - **Optimization**: Leveraged existing StandardizedASTNode (no reinvention)
 - **Minimal Friction**: Quick-start functions (`parse_python()`, `detect_smells()`, `export_knowledge_graph()`)
 
-### Fields 🔄 (Code Analysis Flow)
+### Fields  (Code Analysis Flow)
 - **Input Energy**: Python source code
 - **Transformation**: libcst → StandardizedASTNode → Metrics/Smells
 - **Output Forms**: JSON/GraphML/DOT/SQLite/Markdown
 - **Energy Conservation**: Cached AST trees avoid redundant parsing
 
-### Patterns 👁️ (Detection Architecture)
+### Patterns ️ (Detection Architecture)
 - **Rule Pattern**: Abstract SmellRule class → Concrete detectors (extensible)
 - **Visitor Pattern**: AST traversal for smell detection
 - **Export Pattern**: Polymorphic exporters (format-agnostic interface)
 - **Fallback Pattern**: libcst → stdlib ast → graceful degradation
 
-### Redundancy 🔀 (Reliability Mechanisms)
+### Redundancy  (Reliability Mechanisms)
 - **Parser Redundancy**: libcst (primary) → ast (fallback) → text extraction (emergency)
 - **Export Redundancy**: 5 formats ensure data accessibility (one format failure doesn't block others)
 - **Test Redundancy**: Unit tests + integration tests + smoke tests
 - **Documentation Redundancy**: API docs + README + inline docstrings
 
-### Balance ⚖️ (Completeness vs Simplicity)
+### Balance ️ (Completeness vs Simplicity)
 - **Feature Scope**: 9 smell rules (comprehensive but not overwhelming)
 - **API Surface**: 3 quick functions + 6 classes (simple for basic use, powerful for advanced)
 - **Test Complexity**: 97 tests (thorough without excess)
@@ -989,7 +989,7 @@ pytest tests/ast/test_parser.py -v
 
 ---
 
-## ⚡ Energy Distribution
+##  Energy Distribution
 
 **P0 - Phase 1 Complete (100% delivered)**:
 - Universal Parser implementation

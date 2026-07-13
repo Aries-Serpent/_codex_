@@ -7,7 +7,7 @@
 **Purpose**: Track broken documentation links discovered during Phase 8 consolidation.
 
 **Created**: 2025-12-30  
-**Status**: 🟡 Pending Validation  
+**Status**:  Pending Validation  
 **Priority**: Medium
 
 ---
@@ -21,7 +21,7 @@
 
 ---
 
-## 🔍 Known Broken Links
+##  Known Broken Links
 
 ### Category: Missing Target Files
 
@@ -101,7 +101,7 @@ python scripts/maintenance/check_doc_links.py
 
 ---
 
-## 📝 Notes
+##  Notes
 
 - Many broken links are in older documentation that may need archiving
 - Some links point to files that were intentionally removed
@@ -109,7 +109,7 @@ python scripts/maintenance/check_doc_links.py
 
 ---
 
-## 🔗 Related
+##  Related
 
 - [Master Index](../MASTER_INDEX.md)
 - [Documentation Standards](../MASTER_INDEX.md#documentation-standards)

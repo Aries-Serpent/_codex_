@@ -13,7 +13,7 @@ This directory contains documentation for the command-line interface (CLI) tools
 - **[Dataset CLI](./dataset_cli.md)** - Dataset management commands
 - **[Minimal Workflow](./minimal_train_eval_workflow.md)** - Quick start workflow
 
-### Getting Started
+## Getting Started
 - CLI installation instructions
 - Basic usage examples
 - Configuration files
@@ -72,9 +72,9 @@ Interactive console for prompt engineering and testing.
 ### MCP Packager
 Package management and distribution tool.
 
-## Tutorials
+## Guides
 
-### Getting Started
+## Getting Started
 1. [Installation Instructions](README.md)
 2. [Status Audit](./status_audit.md)
 3. [Dataset CLI](./dataset_cli.md)

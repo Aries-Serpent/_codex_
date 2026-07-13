@@ -10,7 +10,7 @@ Codex ML now ships structured configuration for reasoning-centric runs. The sche
 existing training profiles so you can enable chain-of-thought supervision or tool-use adapters without
 hand editing Python.
 
-## Quick starts
+## Quick Starts
 
 ### Chain-of-thought supervision
 

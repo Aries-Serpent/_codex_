@@ -1,0 +1,25 @@
+%% Deployment Workflow — Aries-Serpent/_codex_
+%% Phase 4.5 — Integration Scenario Diagrams
+
+flowchart TD
+    A["🏗️ Build Artifact\n(docker, wheel)"]
+    B["✓ Run Tests\n(suite + integration)"]
+    C["🔒 Security Scan\n(SAST, secrets)"]
+    D{"All Pass?"}
+    E["📤 Upload Artifact\n(Docker registry, PyPI)"]
+    F["🚀 Deploy to Staging\n(test environment)"]
+    G["🧪 Smoke Tests\n(basic functionality)"]
+    H["✅ Deploy to Prod\n(rollout strategy)"]
+    I["📊 Monitor\n(metrics, logs)"]
+    J["🎉 Deployment Complete"]
+    K["❌ Rollback\n(restore previous)"]
+    
+    A --> B --> C --> D
+    D -->|"no"| K
+    D -->|"yes"| E --> F --> G
+    G -->|"fail"| K
+    G -->|"pass"| H --> I --> J
+    
+    style A fill:#4a4e69,color:#fff
+    style J fill:#1b4332,color:#fff
+    style K fill:#e63946,color:#fff

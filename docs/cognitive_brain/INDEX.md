@@ -42,7 +42,7 @@ Current cognitive brain status and historical versions.
 ### Latest
 - **[Phase 9 — Autonomous Ops 95% Complete](../evolution/EVOLUTION_TIMELINE.md#phase-9)** — S867–S873 PR #4356 ⭐ CURRENT
 - **[Phase 9 Deliverables](../evolution/PLANSET_REGISTRY.md#phase-9)** — 15 completed, 4 pending post-merge
-- **[CODEBASE_MERMAID_MAPS v1.2.0](../CODEBASE_MERMAID_MAPS.md)** — Sections 13-16 added (Autonomous Privilege, Rate-Limit, Session Handoff, Phase 9 Ops)
+- **[CODEBASE_MERMAID_MAPS v0.2.1](../CODEBASE_MERMAID_MAPS.md)** — Sections 13-16 added (Autonomous Privilege, Rate-Limit, Session Handoff, Phase 9 Ops)
 - [Phase 4 Enhancement PoCs](phase4_DESIGN.md) - **Bayesian, Fuzzy Logic, Active Learning** 
 - [Phase 3 Production Hardening](status/COGNITIVE_BRAIN_STATUS_PHASE3_COMPLETE.md) - **Quantum Compliance Phase 3 Complete** 
 - [Phase 2 Completion Report](phase2_coherence_k1_plan.md) - **Quantum Compliance Phase 2 Complete** 
@@ -73,7 +73,7 @@ Current cognitive brain status and historical versions.
 
 ---
 
-## 🔄 Continuation Prompts
+##  Continuation Prompts
 
 Phase continuation guides for systematic development.
 
@@ -110,7 +110,7 @@ Additional cognitive brain documentation.
 
 ---
 
-## 🔍 Search by Topic
+##  Search by Topic
 
 ### Authentication & Security
 - Phase 11 documents (architecture, continuation, status)
@@ -129,7 +129,7 @@ Additional cognitive brain documentation.
 
 ---
 
-## 📈 Timeline View
+##  Timeline View
 
 ### Phase 22 (Latest - Quantum Compliance)
 - Phase 2 completion report (coherence + k₁)
@@ -196,7 +196,7 @@ docs/cognitive_brain/
 
 ---
 
-## 📝 Notes
+##  Notes
 
 ### Organization Principles
 - **Status files** grouped by version/phase

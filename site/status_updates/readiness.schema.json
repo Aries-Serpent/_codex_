@@ -1,0 +1,80 @@
+{
+  "$id": "https://example.org/codex/readiness.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "readiness": {
+      "description": "Overall readiness R = \u03b1\u00b7E + \u03b2\u00b7T + \u03b3\u00b7D",
+      "pattern": "^[0-9]+(\\.[0-9]+)?$",
+      "type": [
+        "string",
+        "number"
+      ]
+    },
+    "scores": {
+      "additionalProperties": false,
+      "properties": {
+        "D": {
+          "type": [
+            "string",
+            "number"
+          ]
+        },
+        "E": {
+          "type": [
+            "string",
+            "number"
+          ]
+        },
+        "T": {
+          "type": [
+            "string",
+            "number"
+          ]
+        }
+      },
+      "required": [
+        "E",
+        "T",
+        "D"
+      ],
+      "type": "object"
+    },
+    "weights": {
+      "additionalProperties": false,
+      "properties": {
+        "alpha": {
+          "type": [
+            "string",
+            "number"
+          ]
+        },
+        "beta": {
+          "type": [
+            "string",
+            "number"
+          ]
+        },
+        "gamma": {
+          "type": [
+            "string",
+            "number"
+          ]
+        }
+      },
+      "required": [
+        "alpha",
+        "beta",
+        "gamma"
+      ],
+      "type": "object"
+    }
+  },
+  "required": [
+    "readiness",
+    "scores",
+    "weights"
+  ],
+  "title": "Codex Readiness Artifact",
+  "type": "object"
+}

@@ -50,7 +50,7 @@ python tools/codex_experiment_index.py \
 
 ## 3. Task Sequence Integration
 
-`codex_task_sequence.yaml` (v0.7.0) includes a Finalization step to regenerate
+`codex_task_sequence.yaml` (v0.2.1) includes a Finalization step to regenerate
 the experiment index so recent runs are reflected in the summary artifacts.
 
 ## 4. Future Extensions

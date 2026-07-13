@@ -14,7 +14,7 @@
 
 | Metric | Value | Status |
 |--------|-------|--------|
-| **Total Workflows Analyzed** | 207 | ✓ |
+| **Total Workflows Analyzed** | 207 |  |
 | **With Root File References** | 133 | 64.2% |
 | ** CRITICAL (will break)** | **4** | **1.9%** |
 | ** HIGH-RISK (likely to break)** | **129** | **62.3%** |
@@ -296,7 +296,7 @@ These 74 workflows (35.7%) do NOT reference root-level files and will continue w
 
 ---
 
-## 📋 Cleanup Plan
+##  Cleanup Plan
 
 ### Recommended Directory Structure
 
@@ -383,7 +383,7 @@ run: pytest --cov=src --cov-report=xml  # (no change needed - finds cwd automati
 
 ---
 
-## 📈 Success Metrics
+##  Success Metrics
 
 | Metric | Before | After | Status |
 |--------|--------|-------|--------|

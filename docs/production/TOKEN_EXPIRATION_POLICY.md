@@ -10,7 +10,7 @@
 ```
 Day 75: 📧 Email to security team
 Day 80: 📧 Second email
-Day 85: 🚨 Daily alerts
+Day 85:  Daily alerts
 Day 90:  ROTATION REQUIRED
 ```
 

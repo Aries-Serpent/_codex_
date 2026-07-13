@@ -102,7 +102,7 @@
 | S97 | CodeQL alerts, Pattern 6 222→118, P10-05 doc | This document |
 | **S98** | **Ruff E501 3100→0, Pattern 6 118→77, P10-05 Phase B backend, AAIS 98.6** |  **DONE** |
 | **S99** | **HOTFIX: YAML/auth/perms, Pattern 6 77→40, AAIS 98.9** |  **DONE** |
-| **S100** | **OpenVINO Phase C, Pattern 6→0, CI sharding, SBOM validation, v0.9.0, AAIS V5.0** |  **DONE** |
+| **S100** | **OpenVINO Phase C, Pattern 6→0, CI sharding, SBOM validation, v0.2.1, AAIS V5.0** |  **DONE** |
 | **S101** | **CodeQL #12471-#12477 resolved, Fast Validation XML fix, cognitive brain updated** |  **DONE** |
 | S102 | Coverage gap-fill (P11-01a) — `fail_under = 35` (needs measured ≥ 33%) | Measure on full runner |
 | S103 | Coverage 50% gate — `fail_under = 50` | `fail_under = 50`, Phase 11 final |

@@ -1,5 +1,5 @@
 <!-- generated 2026-06-22T20:36:36 UTC -->
-# Status Report — _codex_ (v1.2.0)
+# Status Report — _codex_ (v0.2.1)
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
@@ -21,4 +21,4 @@ Generated: 2026-06-22T20:36:36
 - If any gate is FAIL, inspect tool output and iterate on the change.
 
 
-> Provenance: generated locally by `tools/status_report.py` (v1.2.0) at 2025-10-29T20:36:36.
+> Provenance: generated locally by `tools/status_report.py` (v0.2.1) at 2025-10-29T20:36:36.

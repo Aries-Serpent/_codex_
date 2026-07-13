@@ -7,7 +7,7 @@
 
 ---
 
-##  Quick Start
+## Quick Start
 
 **If you need to fix the CI failures RIGHT NOW:**
 
@@ -104,7 +104,7 @@ Auto-Fix Check (FAILED: detected 1 alert)
     ├─> Comprehensive Tests (tests , but marked  due to dependency)
     └─> Test Summary ( aggregates dependency status)
          +
-         CodeQL Scan (⚠️ log unavailable - 404 error)
+         CodeQL Scan (️ log unavailable - 404 error)
 ```
 
 **Translation**: One code quality issue → workflow marks 4 other checks as failed even though they passed.
@@ -119,7 +119,7 @@ Auto-Fix Check (FAILED: detected 1 alert)
 
 ---
 
-## 🔍 What Each Document Tells You
+##  What Each Document Tells You
 
 | Document | Question it Answers |
 |----------|---------------------|
@@ -175,7 +175,7 @@ Auto-Fix Check (FAILED: detected 1 alert)
 
 ---
 
-## 🔗 Quick Links
+##  Quick Links
 
 ### GitHub Resources
 - **PR #3133**: https://github.com/Aries-Serpent/_codex_/pull/3133
@@ -193,7 +193,7 @@ Auto-Fix Check (FAILED: detected 1 alert)
 
 ---
 
-## ⚡ Resolution Timeline
+##  Resolution Timeline
 
 **Estimated Time to Green**:
 - Fix application: 2 minutes (run auto-fix script)
@@ -203,11 +203,11 @@ Auto-Fix Check (FAILED: detected 1 alert)
 
 **Steps**:
 1.  Analysis complete (this document)
-2. ⏳ Run auto-fix script (your turn!)
-3. ⏳ Commit and push
-4. ⏳ Wait for CI
-5. ⏳ Verify all checks green
-6. ⏳ Merge PR #3133
+2.  Run auto-fix script (your turn!)
+3.  Commit and push
+4.  Wait for CI
+5.  Verify all checks green
+6.  Merge PR #3133
 
 ---
 
@@ -222,8 +222,8 @@ Auto-Fix Check (FAILED: detected 1 alert)
 -  No actual functional failures detected
 
 **Why Not 100%**:
-- ⚠️ One job log unavailable (404 error on CodeQL scan)
-- ⚠️ Large test logs truncated (tail only captured)
+- ️ One job log unavailable (404 error on CodeQL scan)
+- ️ Large test logs truncated (tail only captured)
 
 **Recommendation**: Proceed with fix. Very low risk.
 

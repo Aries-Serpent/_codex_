@@ -26,7 +26,7 @@
 | Consolidator dedup newest-first |  **NEW S140** | Returns most-recently-updated marker |
 | evaluate_datasets at module scope |  **NEW S140** | Monkeypatch-safe |
 | PooledConnectionProxy backup fix |  **NEW S140** | `_raw_conn()` unwraps for C-extension |
-| Token rotation e2e | ⏳ ADMIN NEEDED | Requires real GitHub App from human admin |
+| Token rotation e2e |  ADMIN NEEDED | Requires real GitHub App from human admin |
 
 ### S140 Changes Applied
 
@@ -173,7 +173,7 @@ graph TB
             C3["compute_coherence() <br/>policy-alignment helper"]
         end
 
-        subgraph "Admin-Gated ⏳"
+        subgraph "Admin-Gated "
             D1["Token rotation e2e<br/>(real GitHub App)"]
             D2["CODEX_MASTER_KEY<br/>rotation calendar"]
         end

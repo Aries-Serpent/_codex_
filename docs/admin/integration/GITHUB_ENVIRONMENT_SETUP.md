@@ -4,7 +4,7 @@
 
 ## Table of Contents
 
-- [📋 Table of Contents](#-table-of-contents)
+- [ Table of Contents](#-table-of-contents)
 - [Overview](#overview)
   - [Prerequisites](#prerequisites)
 - [Required Environment Variables](#required-environment-variables)
@@ -38,15 +38,15 @@
   - [Issue: Rate Limit Errors](#issue-rate-limit-errors)
 - [Additional Resources](#additional-resources)
 - [ Mission Overview](#-mission-overview)
-- [⚖️ Verification Checklist](#-verification-checklist)
-- [📈 Success Metrics](#-success-metrics)
+- [️ Verification Checklist](#-verification-checklist)
+- [ Success Metrics](#-success-metrics)
 - [⚛️ Physics Alignment](#-physics-alignment)
-  - [Path 🛤️ (Shortest Setup Route)](#path--shortest-setup-route)
-  - [Fields 🔄 (Configuration Flow)](#fields--configuration-flow)
-  - [Patterns 👁️ (Configuration Recognition)](#patterns--configuration-recognition)
-  - [Redundancy 🔀 (Backup Mechanisms)](#redundancy--backup-mechanisms)
-  - [Balance ⚖️ (Security vs Usability)](#balance--security-vs-usability)
-- [⚡ Energy Distribution](#-energy-distribution)
+  - [Path ️ (Shortest Setup Route)](#path--shortest-setup-route)
+  - [Fields  (Configuration Flow)](#fields--configuration-flow)
+  - [Patterns ️ (Configuration Recognition)](#patterns--configuration-recognition)
+  - [Redundancy  (Backup Mechanisms)](#redundancy--backup-mechanisms)
+  - [Balance ️ (Security vs Usability)](#balance--security-vs-usability)
+- [ Energy Distribution](#-energy-distribution)
 - [ Redundancy Patterns](#-redundancy-patterns)
 
 > **Purpose**: Configure GitHub Organization and Repository environment variables/secrets for MCP integration
@@ -55,7 +55,7 @@
 
 ---
 
-## 📋 Table of Contents
+##  Table of Contents
 
 1. [Overview](#overview)
 2. [Required Environment Variables](#required-environment-variables)
@@ -217,7 +217,7 @@ try:
     from cryptography.fernet import Fernet
     CRYPTO_AVAILABLE = True
 except ImportError:
-    print("⚠️  Warning: cryptography not installed. Some features will be limited.")
+    print("️  Warning: cryptography not installed. Some features will be limited.")
     print("   Install with: pip install cryptography")
     CRYPTO_AVAILABLE = False
 
@@ -244,7 +244,7 @@ def encode_github_token(token: str, master_key: str = None) -> Dict[str, str]:
         Dictionary with encoded token and metadata
     """
     if not token.startswith(('ghp_', 'github_pat_')):
-        print("⚠️  Warning: Token doesn't look like a GitHub PAT")
+        print("️  Warning: Token doesn't look like a GitHub PAT")
 
     # Base64 encode
     token_bytes = token.encode('utf-8')
@@ -322,9 +322,9 @@ def print_config_table(config: Dict[str, str], title: str):
 
         # Also provide copy-paste friendly format
         if len(str(value)) < 100:
-            print(f"\n📋 Copy-paste value:\n{value}\n")
+            print(f"\n Copy-paste value:\n{value}\n")
         else:
-            print(f"\n📋 Copy-paste value (full):\n{value}\n")
+            print(f"\n Copy-paste value (full):\n{value}\n")
 
     print(f"{'=' * 80}\n")
 
@@ -361,7 +361,7 @@ def main():
         token_config = encode_github_token(github_token, master_key)
         print("\n Encoded GitHub token successfully!")
     else:
-        print("\n⚠️  Skipped GitHub token encoding.")
+        print("\n️  Skipped GitHub token encoding.")
         token_config = {
             "CODEX_GHP_TOKEN_BASE64": "<GENERATED_AFTER_CREATING_PAT>",
             "CODEX_GHP_TOKEN_CONFIG": json.dumps({
@@ -389,10 +389,10 @@ def main():
             app_config = generate_github_app_config(app_id, key_path if key_path else None)
             print("\n GitHub App configuration generated!")
         except ValueError:
-            print("\n⚠️  Invalid App ID. Skipping GitHub App configuration.")
+            print("\n️  Invalid App ID. Skipping GitHub App configuration.")
             app_config = {}
     else:
-        print("\n⚠️  Skipped GitHub App configuration.")
+        print("\n️  Skipped GitHub App configuration.")
         app_config = {}
 
     # Compile all secrets
@@ -438,7 +438,7 @@ def main():
             f.write(" GitHub MCP Secrets Configuration\n")
             f.write(" Generated: " + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + "\n")
             f.write("=" * 80 + "\n\n")
-            f.write("⚠️  WARNING: This file contains sensitive secrets!\n")
+            f.write("️  WARNING: This file contains sensitive secrets!\n")
             f.write("   - Do NOT commit to git\n")
             f.write("   - Delete after copying to GitHub\n")
             f.write("   - Store securely if archiving\n\n")
@@ -448,7 +448,7 @@ def main():
                 f.write("-" * 80 + "\n\n")
 
         print(f"\n Configuration saved to: {filename}")
-        print("⚠️  Remember to delete this file after copying secrets to GitHub!")
+        print("️  Remember to delete this file after copying secrets to GitHub!")
 
     print("\n" + "=" * 80)
     print(" Next Steps:")
@@ -605,7 +605,7 @@ if __name__ == "__main__":
 
 **Objective**: Enable secure MCP integration by configuring GitHub environment variables and secrets for the _codex_ repository, providing human administrators with comprehensive setup guidance and automated secret generation tools.
 
-**Energy Level**: ⚡⚡⚡⚡ (4/5) - Setup Critical
+**Energy Level**:  (4/5) - Setup Critical
 - High impact: Enables advanced Copilot Agent capabilities
 - Moderate complexity: Requires organization admin access
 - Time-sensitive: Blocks MCP workflow execution
@@ -614,7 +614,7 @@ if __name__ == "__main__":
 
 ---
 
-## ⚖️ Verification Checklist
+## ️ Verification Checklist
 
 **Environment Variables (13 total)**:
 - [ ] All 8 organization-level variables configured
@@ -638,7 +638,7 @@ if __name__ == "__main__":
 
 ---
 
-## 📈 Success Metrics
+##  Success Metrics
 
 | Metric | Target | Measurement |
 |--------|--------|-------------|
@@ -659,31 +659,31 @@ if __name__ == "__main__":
 
 ## ⚛️ Physics Alignment
 
-### Path 🛤️ (Shortest Setup Route)
+### Path ️ (Shortest Setup Route)
 - **Direct Path**: Python script → GitHub UI → Validation workflow
 - **Optimization**: Single script generates all required values
 - **Efficiency**: Tabular format minimizes lookup time
 - **Friction Reduction**: Copy-paste friendly output eliminates transcription errors
 
-### Fields 🔄 (Configuration Flow)
+### Fields  (Configuration Flow)
 - **Force Vector**: Secret generation (automated) → GitHub injection (manual) → Workflow consumption (automated)
 - **Energy Flow**: Human admin → Repository settings → GitHub Actions → MCP service
 - **Feedback Loop**: Validation failures → Configuration review → Correction → Re-validation
 - **Equilibrium State**: All secrets accessible, no rotation warnings, workflows passing
 
-### Patterns 👁️ (Configuration Recognition)
+### Patterns ️ (Configuration Recognition)
 - **Organization vs Repository Scope**: Clear table-based differentiation prevents misconfiguration
 - **Rotation Schedule Pattern**: 90 iteration security cycle for sensitive credentials
 - **Fallback Pattern**: GitHub App (production) ↔ Personal Access Token (development)
 - **Validation Pattern**: Health check → Token test → Service connection → Full workflow
 
-### Redundancy 🔀 (Backup Mechanisms)
+### Redundancy  (Backup Mechanisms)
 - **Secret Recovery**: Python script re-runnable for regeneration
 - **Authentication Fallback**: PAT backup when GitHub App unavailable
 - **Documentation Redundancy**: README + inline comments + troubleshooting guide
 - **Validation Redundancy**: Manual verification steps + automated workflow checks
 
-### Balance ⚖️ (Security vs Usability)
+### Balance ️ (Security vs Usability)
 - **Security Weight**: Encrypted storage + rotation schedules + minimal scopes
 - **Usability Weight**: Automated generation + clear instructions + validation scripts
 - **Trade-off Resolution**: Helper script automates complexity without compromising security
@@ -691,7 +691,7 @@ if __name__ == "__main__":
 
 ---
 
-## ⚡ Energy Distribution
+##  Energy Distribution
 
 **P0 - Critical (Must Complete First)**:
 - CODEX_MASTER_KEY generation and injection (blocks encrypted operations)

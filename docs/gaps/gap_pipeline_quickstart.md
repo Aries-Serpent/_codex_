@@ -11,7 +11,7 @@ unified CLI.
 
 - A recent audit file, e.g.:
 
-  - `_codex_: Status Update (2025-11-27)` saved as
+  - `_codex_: Status Update 2026-07-13
     `_codex_status_update-2025-11-27.md`
 
 - Local environment with:

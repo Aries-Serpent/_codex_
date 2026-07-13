@@ -1,4 +1,6 @@
 # Feature Store Operations Runbook
+
+**Version**: v0.2.1
 **Last Updated:** 2026-07-11
 
 **Version**: 1.0.0  
@@ -49,8 +51,8 @@ python scripts/initialize_feature_store.py --config configs/production/features.
 
 **Expected Output**:
 ```
-✓ Feature store initialized at artifacts/features/production
-✓ Registered 10 feature groups
+ Feature store initialized at artifacts/features/production
+ Registered 10 feature groups
 ```
 
 **Verification**:

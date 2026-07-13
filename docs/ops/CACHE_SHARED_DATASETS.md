@@ -42,7 +42,7 @@ graph TD
 
     L1 -->|"seeds venv build on miss"| L3
     L2 -->|"find-links feed"| L3
-    L3 -->|"skip venv rebuild on hit"| FAST["⚡ Fast CI (no pip install)"]
+    L3 -->|"skip venv rebuild on hit"| FAST[" Fast CI (no pip install)"]
     L4 -->|"markdown-link-check"| DOCS["📄 Doc link checking"]
 
     style L1 fill:#10b981,color:#fff
@@ -100,7 +100,7 @@ graph LR
         WF6["codeql-analysis.yml"]
     end
 
-    subgraph COMMON["🟡 COMMON Tier (7-day)"]
+    subgraph COMMON[" COMMON Tier (7-day)"]
         WF7["cognitive_brain_ci_feedback.yml"]
         WF8["copilot-evolution-suite.yml"]
         WF9["iterative-self-healing-ci.yml"]
@@ -294,7 +294,7 @@ sequenceDiagram
     alt Exact hit
         L3-->>WF:  Cache hit → skip venv rebuild
     else Restore-key partial hit
-        L3-->>WF: ⚠️ Partial hit → refresh venv (pip install -e . --upgrade)
+        L3-->>WF: ️ Partial hit → refresh venv (pip install -e . --upgrade)
         WF->>L1: Use pip download cache for fresh packages
         WF->>L3: Save refreshed venv (new exact key)
     else Miss

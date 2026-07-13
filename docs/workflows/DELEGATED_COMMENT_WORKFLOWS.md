@@ -6,7 +6,7 @@
 
 > **Status:**  Current (S227 · 2026-03-29) — Race condition fixes applied; REQ-13 comment-review-gate added  
 > **Scope:** Every GitHub Actions workflow that posts PR/issue comments on behalf of the maintainer or an autonomous agent.  
-> **Run-link attribution:** All comments now end with `_[🔗 Workflow run](https://github.com/Aries-Serpent/_codex_/actions/runs/RUN_ID)_` so every automated post can be traced to its exact run.
+> **Run-link attribution:** All comments now end with `_[ Workflow run](https://github.com/Aries-Serpent/_codex_/actions/runs/RUN_ID)_` so every automated post can be traced to its exact run.
 
 ---
 
@@ -41,7 +41,7 @@ graph TB
         T5[/"issues (opened)"\]
     end
 
-    subgraph RESCUE["🚨 CI Rescue Layer"]
+    subgraph RESCUE[" CI Rescue Layer"]
         R1["actionlint-audit.yml\n(JS+PY rescue)"]
         R2["pre-merge-validation.yml\n(PY rescue)"]
         R3["resilient_validation.yml\n(JS rescue ×2 shards)"]
@@ -67,7 +67,7 @@ graph TB
         S8["copilot-iterative-self-healing.yml\n(BASH escalation)"]
     end
 
-    subgraph HEALING["🔧 Self-Healing Pipeline"]
+    subgraph HEALING[" Self-Healing Pipeline"]
         H1["iterative-self-healing-ci.yml\n(BASH printf + heredoc)"]
         H2["agent-handoff-gate.yml\n(JS-CONCAT gate)"]
         H3["agent-registry-validation.yml\n(JS-CONCAT validation)"]
@@ -162,7 +162,7 @@ graph TB
 Triggered whenever a PR check fails on `0D_base_`. As shown in [Issue #3779](https://github.com/Aries-Serpent/_codex_/issues/3779), **7 workflows can fire simultaneously** on the same commit.
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Sequence Diagram showing 🔗 Run link, 🔗 Run link'}}%%
+%%{init: {'accessibility': {'title': 'Sequence Diagram showing  Run link,  Run link'}}%%
 sequenceDiagram
     participant DEV as Developer push
     participant GHA as GitHub Actions
@@ -186,19 +186,19 @@ sequenceDiagram
         GHA->>R6: pull_request event
     end
 
-    R1-->>PR: 🚨 rescue comment (PY-RESCUE)\n[🔗 Run link]
-    R2-->>PR: 🚨 rescue comment (upsert)\n[🔗 Run link]
-    R3-->>PR:  auto-fix issues detected\n[🔗 Run link]
-    R4-->>PR:  fix instructions\n[🔗 Run link]
-    R5-->>PR: 🚨 rescue via ci-rescue.yml fallback\n[🔗 Run link]
-    R6-->>PR:  preflight checklist (upsert)\n[🔗 Run link]
+    R1-->>PR:  rescue comment (PY-RESCUE)\n[ Run link]
+    R2-->>PR:  rescue comment (upsert)\n[ Run link]
+    R3-->>PR:  auto-fix issues detected\n[ Run link]
+    R4-->>PR:  fix instructions\n[ Run link]
+    R5-->>PR:  rescue via ci-rescue.yml fallback\n[ Run link]
+    R6-->>PR:  preflight checklist (upsert)\n[ Run link]
 
-    Note over PR: ⚠️ Up to 6 separate rescue comments\ncan land on the same PR within 60 seconds
+    Note over PR: ️ Up to 6 separate rescue comments\ncan land on the same PR within 60 seconds
 
     GHA->>H1: workflow_run (completed, failure)
-    H1-->>PR:  @copilot escalation prompt\n[🔗 Run link]
+    H1-->>PR:  @copilot escalation prompt\n[ Run link]
 
-    Note over PR: ⚠️ iterative-self-healing ALSO fires\ncreating a 7th simultaneous poster
+    Note over PR: ️ iterative-self-healing ALSO fires\ncreating a 7th simultaneous poster
 ```
 
 ### 3.2 Agent Auth Delegation — Cognitive Pre-flight
@@ -251,31 +251,31 @@ flowchart LR
 ### 3.4 Session Lifecycle (watchdog → checkin → session-done)
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'State Diagram showing *, 🔗'}}%%
+%%{init: {'accessibility': {'title': 'State Diagram showing *, '}}%%
 stateDiagram-v2
     [*] --> Idle
 
-    Idle --> TimeboxActive : User posts "~N minutes" comment\nsession-watchdog posts\nSESSION_TIMEBOX_START [🔗]
-    Idle --> ExplorationActive : User posts "exploration session"\nsession-watchdog posts\nSESSION_TYPE_EXPLORATION [🔗]
+    Idle --> TimeboxActive : User posts "~N minutes" comment\nsession-watchdog posts\nSESSION_TIMEBOX_START []
+    Idle --> ExplorationActive : User posts "exploration session"\nsession-watchdog posts\nSESSION_TYPE_EXPLORATION []
 
-    TimeboxActive --> TimeboxExpired : schedule check\nsession-watchdog posts\nSESSION_TIMEBOX_EXPIRED [🔗]
+    TimeboxActive --> TimeboxExpired : schedule check\nsession-watchdog posts\nSESSION_TIMEBOX_EXPIRED []
     TimeboxExpired --> WaitingSummary : Agent must post\n## Session Summary
 
-    ExplorationActive --> NudgeSent : 10+ min silence\nsession-incremental-summary-reminder\nposts nudge [🔗]
+    ExplorationActive --> NudgeSent : 10+ min silence\nsession-incremental-summary-reminder\nposts nudge []
 
     WaitingSummary --> Idle : Summary posted
 
     state "Agent Active" as AA {
         [*] --> SessionRunning
-        SessionRunning --> IncompleteSuspected : copilot-agent-checkin\ndetects missing attestation\nposts incomplete-session guard [🔗]
+        SessionRunning --> IncompleteSuspected : copilot-agent-checkin\ndetects missing attestation\nposts incomplete-session guard []
         SessionRunning --> RescuePending : CI failure → rescue comment posted
-        RescuePending --> Retriggered : copilot-agent-session-done\ndetects unanswered rescue\nposts retrigger [🔗]
+        RescuePending --> Retriggered : copilot-agent-session-done\ndetects unanswered rescue\nposts retrigger []
         Retriggered --> SessionRunning : @copilot picks up
         IncompleteSuspected --> SessionRunning : Agent posts attestation
     }
 
-    Idle --> AA : @copilot comment on PR\nagent-auth-delegation fires [🔗]
-    AA --> Idle : session-done: @copilot review posted [🔗]
+    Idle --> AA : @copilot comment on PR\nagent-auth-delegation fires []
+    AA --> Idle : session-done: @copilot review posted []
 ```
 
 ### 3.5 Issue Triage & Telemetry
@@ -307,7 +307,7 @@ flowchart TD
     end
 
     IT --> TR2[ci-failure-issue-creator may also\ncreate issue for same event]
-    TR2 -.->|"RISK: duplicate issue + triage\ncomments on same event"| RISK((⚠️))
+    TR2 -.->|"RISK: duplicate issue + triage\ncomments on same event"| RISK((️))
 ```
 
 ### 3.6 Cost Gate & PR Status Dashboard
@@ -360,8 +360,8 @@ flowchart LR
 | **C-01** | `pre-merge-validation` + `resilient_validation` + `auto-fix-common-issues` + `auto-fix-pr-check` + `validate.yml` + `agent-auth-delegation` | Push to `0D_base_` | Every commit |  **Critical** |
 | **C-02** | `iterative-self-healing-ci` + `copilot-iterative-self-healing` | `workflow_run` completed (any failure) | Every CI failure |  **High** |
 | **C-03** | `ci-failure-issue-creator` + `copilot-issue-triage` | Issue created by C-02 | Cascades from C-02 |  **High** |
-| **C-04** | `copilot-agent-checkin` + `session-watchdog` + `copilot-agent-session-done` | Push + `issue_comment` | Agent session | 🟡 **Medium** |
-| **C-05** | `cost-gate` (called by multiple workflows) | `workflow_call` from C-01 | Every commit | 🟡 **Medium** |
+| **C-04** | `copilot-agent-checkin` + `session-watchdog` + `copilot-agent-session-done` | Push + `issue_comment` | Agent session |  **Medium** |
+| **C-05** | `cost-gate` (called by multiple workflows) | `workflow_call` from C-01 | Every commit |  **Medium** |
 
 ### 4.2 Collision Impact Matrix — Issue #3779 Evidence
 
@@ -426,7 +426,7 @@ Multiple callers invoke `cost-gate.yml` simultaneously (C-01 cluster). All try t
 
 **Q1.1 — How should duplicate rescue comments be deduplicated?**
 
-- [x] **(A — RECOMMENDED) Single shared HTML marker** — All rescue-posting workflows use `<!-- ci-rescue:${PR_NUMBER} -->` as the upsert key. The first poster creates; subsequent posters append a `### 🔄 Failure Update` section. One comment per PR regardless of how many workflows fail.
+- [x] **(A — RECOMMENDED) Single shared HTML marker** — All rescue-posting workflows use `<!-- ci-rescue:${PR_NUMBER} -->` as the upsert key. The first poster creates; subsequent posters append a `###  Failure Update` section. One comment per PR regardless of how many workflows fail.
 - [ ] (B) Per-workflow markers — each workflow keeps its own comment (current behaviour). Allows easier attribution but creates comment spam.
 - [ ] (C) Per-SHA markers — each commit's failures share a comment. Better than per-workflow but stale comments accumulate across commits.
 - [ ] (D) No deduplication — accept comment volume as-is.
@@ -471,7 +471,7 @@ Multiple callers invoke `cost-gate.yml` simultaneously (C-01 cluster). All try t
 
 **Q3.2 — Should the escalation comment be an upsert or a new comment?**
 
-- [x] **(A — RECOMMENDED) Upsert with a single `<!-- copilot-escalation:${PR_NUMBER} -->` marker** — append `### 🔄 Escalation Update` sections like the rescue pattern.
+- [x] **(A — RECOMMENDED) Upsert with a single `<!-- copilot-escalation:${PR_NUMBER} -->` marker** — append `###  Escalation Update` sections like the rescue pattern.
 - [ ] (B) Always create a new comment (current behaviour).
 
 ---
@@ -512,20 +512,20 @@ Multiple callers invoke `cost-gate.yml` simultaneously (C-01 cluster). All try t
 
 ---
 
-### REC-06 — `[🔗 Workflow run]` Footer Standardisation
+### REC-06 — `[ Workflow run]` Footer Standardisation
 
 > **Problem:** Before this PR, comments had no run attribution. Now all 34 workflows include the footer, but formats varied slightly.
 
 **Q6.1 — What should the canonical footer format be?**
 
-- [x] **(A — RECOMMENDED) Italic link at end: `_[🔗 Workflow run](https://github.com/Aries-Serpent/_codex_/actions/runs/RUN_ID)_`** — consistent with GitHub markdown italics convention; clearly distinct from content; already applied to all 34 workflows in this PR.
+- [x] **(A — RECOMMENDED) Italic link at end: `_[ Workflow run](https://github.com/Aries-Serpent/_codex_/actions/runs/RUN_ID)_`** — consistent with GitHub markdown italics convention; distinct from content; already applied to all 34 workflows in this PR.
 - [ ] (B) Plain link: `[Workflow run](https://github.com/Aries-Serpent/_codex_/actions/runs/RUN_ID)`.
 - [ ] (C) HTML comment containing run ID (invisible in rendered view): `<!-- run:ID -->`.
-- [ ] (D) Bold link: `**[🔗 Workflow run](https://github.com/Aries-Serpent/_codex_/actions/runs/RUN_ID)**`.
+- [ ] (D) Bold link: `**[ Workflow run](https://github.com/Aries-Serpent/_codex_/actions/runs/RUN_ID)**`.
 
 **Q6.2 — Should rescue upsert comments update the run link on each append?**
 
-- [x] **(A — RECOMMENDED) Yes — each `### 🔄 Failure Update` section should include its own run link** — the top-level footer shows the original failure; each update section shows the new run.
+- [x] **(A — RECOMMENDED) Yes — each `###  Failure Update` section should include its own run link** — the top-level footer shows the original failure; each update section shows the new run.
 - [ ] (B) Only the footer of the original comment has the run link.
 
 ---
@@ -600,4 +600,4 @@ Multiple callers invoke `cost-gate.yml` simultaneously (C-01 cluster). All try t
 
 ---
 
-*Generated S227 · 2026-03-29 · [🔗 See PR #3790](https://github.com/Aries-Serpent/_codex_/pull/3790)*
+*Generated S227 · 2026-03-29 · [ See PR #3790](https://github.com/Aries-Serpent/_codex_/pull/3790)*

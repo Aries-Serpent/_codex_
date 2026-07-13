@@ -9,7 +9,7 @@
 
 ---
 
-## 📋 Table of Contents
+##  Table of Contents
 
 1. [Test Naming & Structure](#test-naming--structure)
 2. [Assertion Patterns](#assertion-patterns)
@@ -25,7 +25,7 @@
 
 ###  GOOD: Descriptive Test Names
 
-Test names should clearly describe **what** is being tested and **what** the expected behavior is.
+Test names should describe **what** is being tested and **what** the expected behavior is.
 
 ```python
 #  GOOD - Clear, descriptive, actionable
@@ -518,7 +518,7 @@ def test_invalid_email_raises_error():
 
 Before merging a test, verify:
 
-- [ ] **Naming**: Test name clearly describes what is being tested
+- [ ] **Naming**: Test name describes what is being tested
 - [ ] **Docstring**: Function has a clear docstring explaining intent
 - [ ] **Assertions**: At least one specific assertion that validates behavior
 - [ ] **Isolation**: Test is independent and doesn't depend on other tests
@@ -558,7 +558,7 @@ pytest tests/test_user.py -s
 
 ---
 
-## 🔗 Related Resources
+##  Related Resources
 
 - **Testing Guide**: See `CONTRIBUTING.md` for testing requirements
 - **Fixtures**: Common test fixtures are in `tests/conftest.py`

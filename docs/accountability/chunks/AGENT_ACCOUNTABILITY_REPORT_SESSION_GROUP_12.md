@@ -4,7 +4,7 @@
 
 **Group:** 12 of 32  
 **Sessions:** S985-pr4434-codeql-report-followup to S993-cont4-secrets-baseline  
-**Date Range:** 2026-05-13 to 2026-05-13  
+**Date 2026-07-13
 **Total Sessions in Group:** 10  
 
 ---

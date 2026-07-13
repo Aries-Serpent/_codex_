@@ -47,7 +47,7 @@ Successfully migrated the monolithic 4.1MB Agent Accountability Report into 32 m
 
 ---
 
-## 📈 Performance Improvements
+##  Performance Improvements
 
 ### Page Load Time
 ```
@@ -99,7 +99,7 @@ docs/accountability/
 
 ---
 
-## 📋 Chunking Strategy
+##  Chunking Strategy
 
 ### Session Grouping
 
@@ -147,7 +147,7 @@ docs/accountability/
 
 ---
 
-## 🔄 Navigation Flow
+##  Navigation Flow
 
 ### User Journey: Find Session S250
 
@@ -240,7 +240,7 @@ Total distributed: 32 × 10 = 320, but group 32 = 6 → 310 + 6 = 316
 
 ---
 
-## 🔄 Backward Compatibility
+##  Backward Compatibility
 
 ### Old Report Access
 
@@ -296,7 +296,7 @@ All existing bookmarks to `.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md
 
 ---
 
-## 📝 Implementation Details
+##  Implementation Details
 
 ### Chunking Algorithm
 
@@ -413,7 +413,7 @@ git commit -m "Phase 2.3: Accountability Report Migration (32 chunks)"
 
 ---
 
-## 🔗 Phase 2.3 Resources
+##  Phase 2.3 Resources
 
 ### Main Documents
 
@@ -449,7 +449,7 @@ git commit -m "Phase 2.3: Accountability Report Migration (32 chunks)"
 
 ---
 
-## ✨ Conclusion
+##  Conclusion
 
 Phase 2.3 implementation complete. The 4.1MB monolithic accountability report has been successfully migrated to a chunked format with 32 files, each optimized for GitHub rendering. All 316 sessions preserved, all navigation functional, all success criteria met.
 

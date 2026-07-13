@@ -2,7 +2,7 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> **⚠️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
+> **️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 
 
 **Generated**: 2026-06-22  
@@ -11,7 +11,7 @@
 
 ---
 
-##  Quick Start (Recommended)
+## Quick Start (Recommended)
 
 ### Prerequisites
 
@@ -96,7 +96,7 @@ cat coverage.json | python -c "import json, sys; print(f\"Coverage: {json.load(s
 
 ---
 
-## 🔧 Troubleshooting
+##  Troubleshooting
 
 ### Issue: pytest not installed
 
@@ -132,7 +132,7 @@ pip install -e .
 
 ---
 
-## 📈 Alternative: Run Tests by Phase
+##  Alternative: Run Tests by Phase
 
 ### Phase 1 Only (All Phase 1 Test Files)
 
@@ -246,7 +246,7 @@ cat coverage.json | python -c "import json, sys; print(f\"Coverage: {json.load(s
 
 ---
 
-## 📋 Validation Checklist
+##  Validation Checklist
 
 Use this checklist to verify test execution:
 
@@ -308,7 +308,7 @@ firefox htmlcov/index.html  # or your browser
 
 ---
 
-## 🔄 Continuous Integration
+##  Continuous Integration
 
 ### For CI/CD Pipeline
 
@@ -351,7 +351,7 @@ firefox htmlcov/index.html  # or your browser
 
 ---
 
-## 📈 Next Steps After Achieving 50%
+##  Next Steps After Achieving 50%
 
 ### Phase 3 Planning (50% → 70%)
 

@@ -43,7 +43,7 @@ to whatever string is passed. There is no "append-only" mode.
 | **Trigger** | `report_progress` called without reading current WEC state first |
 | **Effect** | Maintainer-selected `[x]` items (e.g., `cost-gate.yml`, `auto-approve-workflows`) reset to `[ ]` |
 | **Result** | `agent-auth-delegation.yml` re-injection also loses state if body was overwritten |
-| **Severity** | 🟡 Medium — approval gates re-armed incorrectly |
+| **Severity** |  Medium — approval gates re-armed incorrectly |
 
 ---
 
@@ -54,7 +54,7 @@ to whatever string is passed. There is no "append-only" mode.
 | **Trigger** | `report_progress` push triggers `agent-auth-delegation.yml` which re-injects WEC |
 | **Effect** | WEC is missing in the window between push and workflow completion (~60s) |
 | **Result** | Comment Review Gate may scan during this window and see no WEC |
-| **Severity** | 🟡 Medium — transient gap, healed by workflow |
+| **Severity** |  Medium — transient gap, healed by workflow |
 
 ---
 
@@ -65,7 +65,7 @@ to whatever string is passed. There is no "append-only" mode.
 | **Trigger** | `fix_pr_body_checkboxes` called with no existing WEC state |
 | **Effect** | Falls back to `_REQUIRED_PR_CHECKBOXES` (all optional items unchecked) |
 | **Result** | Maintainer's in-session `[x]` selections lost if WEC was stripped before fix runs |
-| **Severity** | 🟡 Medium — correctible by maintainer re-checking |
+| **Severity** |  Medium — correctible by maintainer re-checking |
 
 ---
 
@@ -151,7 +151,7 @@ Every Copilot coding agent session **MUST**:
 
 1. Read current PR body WEC state via `_extract_wec_state()` before calling `report_progress`
 2. Append `_build_wec_block(existing_state)` output at the **end** of every `prDescription`
-3. Never call `report_progress` with a `prDescription` that omits the `## 🔄 Workflow Execution Checklist` heading
+3. Never call `report_progress` with a `prDescription` that omits the `##  Workflow Execution Checklist` heading
 
 Enforced by: `comment-review-gate.yml` (will flag missing WEC) + `agent-auth-delegation.yml` (re-injects as fallback).
 

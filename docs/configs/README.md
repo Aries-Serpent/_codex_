@@ -2,7 +2,7 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-⚠️ **This directory has been consolidated**
+️ **This directory has been consolidated**
 
 All configuration files have been moved to **[`docs/configuration/`](../configuration/)**
 

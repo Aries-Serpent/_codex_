@@ -72,7 +72,7 @@
 
 ```bash
 # 1. Acknowledge alert
-echo "✓ Incident acknowledged at $(date)"
+echo " Incident acknowledged at $(date)"
 
 # 2. Determine scope
 echo "Checking incident scope..."
@@ -440,18 +440,18 @@ curl http://localhost:8000/health
 If incident not resolved in SLA:
 
 **P1 (15 min):**
-- ✓ Notify on-call
+-  Notify on-call
 - → Notify team lead
 - → Notify engineering manager
 - → Page VP of Engineering
 
 **P2 (1 hour):**
-- ✓ Notify team
+-  Notify team
 - → Notify team lead after 30 min
 - → Notify engineering manager after 1 hour
 
 **P3 (4 hours):**
-- ✓ Create ticket
+-  Create ticket
 - → Assign to sprint
 - → Review in next planning meeting
 

@@ -4,13 +4,13 @@
 
 **PR:** #4366 - Fix circuit breaker test import path and replace mock with real integration test  
 **Branch:** `copilot/fix-import-path-inconsistency`  
-**Status:** 🟡 ACTIVE (S884 CI-rescue follow-up + wrap-up monitoring)  
+**Status:**  ACTIVE (S884 CI-rescue follow-up + wrap-up monitoring)  
 **Latest Session:** S884 (2026-05-08T19:14Z)  
 **Latest Commit:** `ad96aed` (S883 monitoring updates + #4365 handoff)
 
 ---
 
-## 📋 Complete Progress Tracking
+##  Complete Progress Tracking
 
 ###  Phase 11: Approved-Workflow Monitoring + Living Docs Refresh (COMPLETE)
 - [x] Confirmed pending workflows were approved by maintainer
@@ -104,7 +104,7 @@
 - [x] Prepare comment responses for new PR rescue/approval-dispatch items
 
 ###  Phase 10: CI Triage Alignment + Workflow Hardening (COMPLETE)
-- [x] Source CI Failure Triage Report issue #4365 (updated 2026-05-08)
+- [x] Source CI Failure Triage Report issue #4365 (updated 2026-07-13
 - [x] Source latest CodeQL artifact `codeql-alerts-open-codeql-25570039631` (sha256 verified)
 - [x] Review `batch-ci-triage.yml` processing scope and run outcomes
 - [x] Fix triage workflow failure pattern (`Argument list too long`) by moving failure payload transfer from env/output to on-disk JSON handoff
@@ -128,10 +128,10 @@
 |  Local Readiness Gates | Pass | 4 | Ruff, sync_tracked, mypy baseline, auto-fix patterns |
 | 📦 CodeQL Artifact Triage | Complete | 1 | Artifact `6882773618` processed and fixes applied |
 | 🧵 Review Thread Actions | Complete | 6/6 | All actionable comments remediated in code/docs |
-| 🔄 Workflow Monitoring | Active | 30 | Current head `ad96aed` snapshot: 30 completed (`action_required`) |
+|  Workflow Monitoring | Active | 30 | Current head `ad96aed` snapshot: 30 completed (`action_required`) |
 | ☑️ Workflow Approvals | Acknowledged | 1 | Maintainer confirmed pending approvals were completed for this PR |
-| 🚨 Rescue Comment Follow-up | Investigated | 1 | Prior-head run `25573049644` on `ad445fa` failed in `Validation Pipeline / Fast Validation` |
-| ⚠️ External CI Failures | Historical | 108 | From issue #4365 triage rollup (latest generated report) |
+|  Rescue Comment Follow-up | Investigated | 1 | Prior-head run `25573049644` on `ad445fa` failed in `Validation Pipeline / Fast Validation` |
+| ️ External CI Failures | Historical | 108 | From issue #4365 triage rollup (latest generated report) |
 | 🛡️ CodeQL Quick-Win Scope | Reduced | 46 | Artifact-mapped alerts in 5 changed action files (primarily `actions/code-injection/medium`) |
 |  Merge Readiness | Pass | 100/100 | Pattern 30 dimension check green |
 
@@ -211,8 +211,8 @@ and per-iteration accountability/living-doc updates.
 %%{init: {'accessibility': {'title': 'Pie Chart'}}%%
 pie title CI Workflow Status Distribution
     " Completed Successfully" : 9
-    "⏳ In Progress" : 10
-    "🔄 Pending" : 30
+    " In Progress" : 10
+    " Pending" : 30
     "ℹ️ Startup Failures (Pre-existing)" : 3
     "⏭️ Skipped" : 2
 ```
@@ -322,7 +322,7 @@ graph TD
 -  Harden `batch-ci-triage.yml` against env-size overflow failures
 -  Update all living docs with latest status and mappings
 -  Final CHANGELOG and AGENT_ACCOUNTABILITY_REPORT updates
-- ⏳ Session wrap-up and final commit/reply
+-  Session wrap-up and final commit/reply
 
 ### Post-Merge
 - Review test coverage impact
@@ -331,7 +331,7 @@ graph TD
 
 ---
 
-## 📝 Notes
+##  Notes
 
 ### Test Improvements
 The circuit breaker test now validates **real behavior** instead of mocked responses:

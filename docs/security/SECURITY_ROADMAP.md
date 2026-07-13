@@ -2,7 +2,7 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**_codex_ v0.1.0 | Enterprise Security Strategy**
+**_codex_ v0.2.1 | Enterprise Security Strategy**
 
 > **Version:** 1.0.0  
 > **Last Updated: 2026-07-11
@@ -74,7 +74,7 @@ hydra-core==1.3.2
 **Rationale:** Ceiling versions prevent automatic upgrades to breaking releases.
 
 ## 1.3 Dependency Lock File Enforcement
-**Status:** ⚠️ Planned (Phase 9.1)  
+**Status:** ️ Planned (Phase 9.1)  
 **Location:** `requirements.lock` (to be created)
 
 **CI Gate:** `pre_flight_check.py` will validate lock file freshness before test execution.
@@ -173,7 +173,7 @@ mypy src/ > .mypy_baseline.txt
 ## 3. Secret Management Layer
 
 ### 3.1 Gitleaks Integration
-**Status:** 🟡 Planned (config-only; no dedicated workflow)  
+**Status:**  Planned (config-only; no dedicated workflow)  
 **Location:** `.gitleaks.toml`  
 **Note:** Secret scanning is currently handled by `.github/workflows/security-scanning-suite.yml` via `detect-secrets`. A dedicated Gitleaks CI workflow (`.github/workflows/gitleaks.yml`) is planned but not yet implemented.
 
@@ -503,4 +503,4 @@ pytest tests/security/test_audit_logging.py -v
 
 **Status:**  Complete & Validated (2026-05-27)  
 **Next Review:** 2026-06-27  
-**Certification:** Enterprise-Grade Security Built-In ✓
+**Certification:** Production Security Built-In 

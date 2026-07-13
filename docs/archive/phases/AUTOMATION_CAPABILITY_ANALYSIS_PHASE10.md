@@ -116,7 +116,7 @@ target/
 ---
 
 ## 1.4 Test Local Consolidation
-**Automation Status**: ⚠️ 50% AUTOMATABLE (script creation automated, execution requires local environment)  
+**Automation Status**: ️ 50% AUTOMATABLE (script creation automated, execution requires local environment)  
 **Complexity**: Medium  
 **AI Agent Capability**: Test script generation  
 **Human Requirement**: Local execution with `repomix` installed
@@ -230,7 +230,7 @@ jobs:
 ---
 
 ### 2.3 Configure Google Drive Upload
-**Automation Status**: ⚠️ 75% AUTOMATABLE (workflow logic automated, secrets require human injection)  
+**Automation Status**: ️ 75% AUTOMATABLE (workflow logic automated, secrets require human injection)  
 **Complexity**: High  
 **AI Agent Capability**: Workflow action configuration, secret validation scripts  
 **Human Requirement**: Google Cloud setup (HA-GC-001), Secret injection (HA-GH-001)
@@ -377,7 +377,7 @@ python scripts/run.py notebook_manager.py add \
   --description "Codex Architecture Knowledge Base"
 ```
 
-**Automation Possibility**: ⚠️ Partial - could create shell script template, but execution requires human
+**Automation Possibility**: ️ Partial - could create shell script template, but execution requires human
 
 ---
 
@@ -544,7 +544,7 @@ jobs:
           #   -H "Authorization: Bearer ${{ secrets.NOTEBOOKLM_API_TOKEN }}" \
           #   -d '{"query": "@architect health check"}'
 
-          echo "⚠️  NotebookLM API not yet available"
+          echo "️  NotebookLM API not yet available"
           echo "Manual execution required:"
           echo "1. Open NotebookLM notebook"
           echo "2. Type: @architect health check"
@@ -565,7 +565,7 @@ jobs:
 ---
 
 ## 4.4 Implement Report Generation Scripts
-**Automation Status**: ⚠️ 50% AUTOMATABLE (script creation automated, data source requires API)  
+**Automation Status**: ️ 50% AUTOMATABLE (script creation automated, data source requires API)  
 **Complexity**: Medium  
 **AI Agent Capability**: Script generation, format definition  
 **Human Requirement**: Manual report generation until NotebookLM API available
@@ -652,7 +652,7 @@ def generate_action_items(findings: dict) -> str:
 if __name__ == "__main__":
     # TODO: Fetch findings from NotebookLM API
     # For now, requires manual JSON input
-    print("⚠️  Manual execution required:")
+    print("️  Manual execution required:")
     print("1. Query NotebookLM with: @architect health check")
     print("2. Copy response to findings.json")
     print("3. Run: python scripts/generate_architect_report.py findings.json")
@@ -660,7 +660,7 @@ if __name__ == "__main__":
 
 **Status**: Framework ready, requires API or manual data input
 
-**Current Automation**: ⚠️ 50% (script complete, data source manual)  
+**Current Automation**: ️ 50% (script complete, data source manual)  
 **Future Automation**:  100% (when API available)
 
 ---
@@ -672,10 +672,10 @@ if __name__ == "__main__":
 | **1** | Repomix config |  100% | File generation | Complete |
 | **1** | Instructions |  100% | Doc generation | Complete |
 | **1** | Ignore patterns |  100% | Pattern generation | Complete |
-| **1** | Local testing | ⚠️ 50% | Script created, execution local | Script ready |
+| **1** | Local testing | ️ 50% | Script created, execution local | Script ready |
 | **2** | GitHub workflow |  100% | YAML generation | Complete |
 | **2** | Security scanning |  100% | Tool integration | Complete |
-| **2** | Drive upload | ⚠️ 75% | Logic done, secrets manual | Workflow ready |
+| **2** | Drive upload | ️ 75% | Logic done, secrets manual | Workflow ready |
 | **2** | Webhooks |  100% | Optional feature | Complete |
 | **3** | Skill install |  0% | Requires local machine | Docs created |
 | **3** | OAuth setup |  0% | Interactive browser flow | Docs created |
@@ -683,8 +683,8 @@ if __name__ == "__main__":
 | **3** | Test commands |  0% | Claude Code UI required | Docs created |
 | **4** | Architect prompt |  100% | Content generation | Complete |
 | **4** | NB config |  0% | UI-only operation | Prompt ready |
-| **4** | Health workflow | ⚠️ 0%* | Awaits NotebookLM API | Skeleton ready |
-| **4** | Report scripts | ⚠️ 50% | Script done, API pending | Framework ready |
+| **4** | Health workflow | ️ 0%* | Awaits NotebookLM API | Skeleton ready |
+| **4** | Report scripts | ️ 50% | Script done, API pending | Framework ready |
 
 **Overall Automation Rate**: 57% (16/28 subtasks fully or partially automated)
 
@@ -721,7 +721,7 @@ if __name__ == "__main__":
 | Automation Level | Cognitive Brain Impact | Priority |
 |------------------|------------------------|----------|
 | **100% Automated** (9 tasks) |  Self-Healing 99/100 | Critical |
-| **50%+ Automated** (5 tasks) | ⚠️ Requires Human Oversight | High |
+| **50%+ Automated** (5 tasks) | ️ Requires Human Oversight | High |
 | **0% Automated** (6 tasks) |  Human-Dependent | Medium |
 | **Future Automated** (2 tasks) | 🔮 Awaits External API | Low |
 

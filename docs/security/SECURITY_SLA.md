@@ -21,9 +21,9 @@ and escalation/blocking is handled by the security notification/gating workflows
 ## MTTR Escalation Flow
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing "🔍 Finding Detected\n(CodeQL / Dependabot /\nSemgrep / Gitleaks)", "Severity Triage\ncritical / high / medium / low"'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing " Finding Detected\n(CodeQL / Dependabot /\nSemgrep / Gitleaks)", "Severity Triage\ncritical / high / medium / low"'}}%%
 flowchart LR
-    FIND["🔍 Finding Detected\n(CodeQL / Dependabot /\nSemgrep / Gitleaks)"]
+    FIND[" Finding Detected\n(CodeQL / Dependabot /\nSemgrep / Gitleaks)"]
     TRIAGE["Severity Triage\ncritical / high / medium / low"]
 
     subgraph CRITICAL["Critical (≤ 3 days)"]
@@ -66,7 +66,7 @@ flowchart LR
 |----------|-----|--------------------------|
 | **Critical** | ≤ 3 business days |  Yes |
 | **High** | ≤ 10 business days |  Yes |
-| **Medium** | ≤ 30 calendar days | ⚠️ Warning only |
+| **Medium** | ≤ 30 calendar days | ️ Warning only |
 | **Low / Info** | ≤ 90 calendar days |  No |
 
 Business days exclude weekends and public holidays (UTC calendar).

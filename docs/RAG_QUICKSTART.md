@@ -14,7 +14,7 @@ The Codex RAG system provides semantic search over your codebase and documentati
 
 -  **Fast Semantic Search**: Query code and docs using natural language
 - 🏢 **Multi-Tenant**: Isolated workspaces for different projects/customers
-- ⚡ **Smart Caching**: 100x faster repeated queries with LRU cache
+-  **Smart Caching**: 100x faster repeated queries with LRU cache
 -  **Full Provenance**: Track every result back to source with line numbers
 -  **No API Keys**: Uses local sentence-transformers (offline-capable)
 
@@ -41,7 +41,7 @@ pip install sentence-transformers faiss-cpu numpy
 pip install -e .
 
 # Verify installation
-python -c "from codex.rag import Retriever; print('✓ RAG installed')"
+python -c "from codex.rag import Retriever; print(' RAG installed')"
 ```
 
 ---
@@ -388,4 +388,4 @@ metrics.export_cloudwatch()
 - 💬 Discussions: GitHub Discussions
 - 📧 Email: rag-team@example.com
 
-Happy searching! 🔍✨
+Happy searching! 

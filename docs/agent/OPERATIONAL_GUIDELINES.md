@@ -413,7 +413,7 @@ print(f"AAIS: {score.total:.3f}")
 ### Communication
 
 1. **Be Transparent**
-   - Clearly state what actions will be taken
+   - state what actions will be taken
    - Explain rationale and risk assessment
    - Provide context for decisions
 

@@ -2,7 +2,7 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> **⚠️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
+> **️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 
 
 > Generated: 2026-06-22 | Version: 1.0.0  
@@ -27,13 +27,13 @@
 
 ## B0 — Plan Documentation
 
-**Status**: ⏳ IN PROGRESS  
+**Status**:  IN PROGRESS  
 **Checkpoint**: `B0-COMPLETE`
 
 ### Missing Files
 - `docs/plans/copilot-workflow-agent/README.md` 
 - `docs/plans/copilot-workflow-agent/00-PLANSET.md` 
-- `docs/plans/copilot-workflow-agent/01-BATCHSET.md` ⏳
+- `docs/plans/copilot-workflow-agent/01-BATCHSET.md` 
 - `docs/plans/copilot-workflow-agent/02-PATCHSET.md` 🔜
 - `docs/plans/copilot-workflow-agent/03-ARCHITECTURE.md` 🔜
 - `docs/plans/copilot-workflow-agent/08-CHECKPOINTS.md` 🔜

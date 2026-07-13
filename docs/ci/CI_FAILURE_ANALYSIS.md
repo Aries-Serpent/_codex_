@@ -70,7 +70,7 @@ Four CI workflows are failing on PR #2835 despite recent security remediation wo
 **Local Test Results**:
 ```
  cargo fmt --check: PASSED (no formatting issues)
-⏳ cargo clippy: IN PROGRESS (downloading dependencies)
+ cargo clippy: IN PROGRESS (downloading dependencies)
  cargo test --lib: PASSED (30 tests, 1 ignored)
 ```
 
@@ -108,7 +108,7 @@ Four CI workflows are failing on PR #2835 despite recent security remediation wo
 2. Use venv isolation for security tools
 3. Remove `|| true` and handle failures properly
 
-### 4. Stale Pytest Cache 🔍
+### 4. Stale Pytest Cache 
 
 **Critical Finding from `.codex/pytest.log`**:
 ```
@@ -140,7 +140,7 @@ rm -rf .pytest_cache
 rm -rf .codex/pytest.log
 ```
 
-## Fix 2: Improve Determinism Workflow 🔄
+## Fix 2: Improve Determinism Workflow 
 
 ```yaml
 # Add to .github/workflows/determinism.yml
@@ -154,7 +154,7 @@ env:
     echo "export NUMPY_SEED=42" >> $GITHUB_ENV
 ```
 
-## Fix 3: Handle Clippy Warnings 🔄
+## Fix 3: Handle Clippy Warnings 
 
 ```yaml
 # Option 1: Fix all warnings (preferred)
@@ -167,7 +167,7 @@ env:
   continue-on-error: true
 ```
 
-## Fix 4: Optimize Security Scan 🔄
+## Fix 4: Optimize Security Scan 
 
 ```yaml
 - name: Install security tools
@@ -211,9 +211,9 @@ pip-audit
 
 ### Immediate (This Session)
 1.  Clear stale pytest cache
-2. 🔄 Fix Rust clippy warnings (if any)
-3. 🔄 Update determinism workflow with seed pinning
-4. 🔄 Optimize security scan workflow
+2.  Fix Rust clippy warnings (if any)
+3.  Update determinism workflow with seed pinning
+4.  Optimize security scan workflow
 
 ### Short Term (Next PR)
 1. Add cache-clearing to CI workflows
@@ -239,10 +239,10 @@ pip-audit
 ## Success Criteria
 
 -  All ingestion imports work (verified locally)
-- ⏳ Rust tests pass with 0 warnings
-- ⏳ Determinism check produces consistent results
-- ⏳ Security scans complete without errors
-- ⏳ Overall CI status shows green
+-  Rust tests pass with 0 warnings
+-  Determinism check produces consistent results
+-  Security scans complete without errors
+-  Overall CI status shows green
 
 ## Timeline
 
@@ -264,7 +264,7 @@ pip-audit
 
 ---
 
-**Status**: 🟡 In Progress  
+**Status**:  In Progress  
 **Confidence**: High (90%)  
 **Blocker**: None  
 **Owner**: @copilot

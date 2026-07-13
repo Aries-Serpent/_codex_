@@ -753,7 +753,7 @@ git add configs/desired/zendesk/
 git commit -m "Add high-priority auto-assignment trigger"
 
 # Tag releases
-git tag -a zendesk-release-v1.2.0 -m "Add new support workflows"
+git tag -a zendesk-release-v0.2.1 -m "Add new support workflows"
 ```text
 
 ## 3. Code Review

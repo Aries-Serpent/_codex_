@@ -1,4 +1,6 @@
 # MCP Versioning and Compatibility
+
+**Version**: v0.2.1
 **Last Updated:** 2026-07-11
 
 **Last Updated: 2026-06-22
@@ -325,9 +327,9 @@ def debug_version_compatibility(client_version, server_version):
 
     compatible = negotiate_version(client_version)
     if compatible:
-        print(f"✓ Compatible: {compatible}")
+        print(f" Compatible: {compatible}")
     else:
-        print("✗ Incompatible versions")
+        print(" Incompatible versions")
         print(f"  Minimum required: {MCP_VERSIONS['minimum']}")
 ```
 

@@ -279,7 +279,7 @@ tree = parse('untrusted.xml')
 
 ---
 
-## 🚨 Reporting Security Issues
+##  Reporting Security Issues
 
 If you discover a security vulnerability:
 
@@ -293,7 +293,7 @@ If you discover a security vulnerability:
 
 ---
 
-## 🔄 Security Review Process
+##  Security Review Process
 
 ### For All Pull Requests
 1. Run security validation: `python scripts/security/validate_security.py`

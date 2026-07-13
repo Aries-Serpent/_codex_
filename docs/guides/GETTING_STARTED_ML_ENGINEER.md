@@ -1,4 +1,4 @@
-# Getting Started Guide for ML Engineers
+## Getting Started Guide for ML Engineers
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
@@ -8,7 +8,7 @@
 
 ##  Your Goal
 
-Deploy, monitor, and scale ML models in production with enterprise-grade reliability, versioning, and observability. This guide covers the full ML lifecycle from model registration to canary deployment.
+Deploy, monitor, and scale ML models in production with Production reliability, versioning, and observability. This guide covers the full ML lifecycle from model registration to canary deployment.
 
 ---
 
@@ -339,7 +339,7 @@ perf_monitor.log_prediction(
 # Check for data drift and model drift
 drift_report = perf_monitor.check_drift()
 if drift_report['detected']:
-    print(f"⚠️ Data drift detected!")
+    print(f"️ Data drift detected!")
     print(f"  Feature distribution shift: {drift_report['drift_magnitude']:.2%}")
     print(f"  Recommendation: {drift_report['recommendation']}")
     
@@ -456,7 +456,7 @@ if not smoke_tests['all_passed']:
     bg.destroy_green()
 else:
     # Switch traffic instantly
-    print("⚡ Switching traffic blue → green...")
+    print(" Switching traffic blue → green...")
     bg.switch_traffic()
     print(" Green is now production!")
     

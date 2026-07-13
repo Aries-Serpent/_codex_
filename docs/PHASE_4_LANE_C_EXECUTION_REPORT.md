@@ -214,7 +214,7 @@ Baseline scan: .secrets.baseline (maintained)
 ```yaml
 # .pre-commit-config.yaml
 - repo: https://github.com/gitleaks/gitleaks
-  rev: v8.18.4
+  rev: v0.2.1
   hooks:
     - id: gitleaks
       stages: [commit]

@@ -50,9 +50,9 @@ Adopt a **5-layer architecture** with clear separation of concerns:
  Reduces merge conflicts in large teams  
 
 ### Negative
-⚠️ More complex codebase structure initially  
-⚠️ Requires documentation to maintain boundaries  
-⚠️ May introduce slight performance overhead from abstraction layers  
+️ More complex codebase structure initially  
+️ Requires documentation to maintain boundaries  
+️ May introduce slight performance overhead from abstraction layers  
 
 ### Mitigations
 - Comprehensive documentation of interfaces
@@ -84,7 +84,7 @@ Adopt a **5-layer architecture** with clear separation of concerns:
  Architecture documented (this file)  
  Layer interfaces defined in codebase  
  CI/CD updated to respect layer boundaries  
-⚠️ Legacy code gradually being refactored into layers  
+️ Legacy code gradually being refactored into layers  
 
 ---
 

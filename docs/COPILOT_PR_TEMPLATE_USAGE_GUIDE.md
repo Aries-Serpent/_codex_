@@ -14,7 +14,7 @@ This document provides **explicit directions for Copilot to follow** when creati
 
 ---
 
-## 📋 CORE PRINCIPLES
+##  CORE PRINCIPLES
 
 ### 1. Template-Based PR Bodies
 - **ALWAYS** use `PR_TEMPLATE_COMPREHENSIVE.md` as the foundation for PR descriptions
@@ -33,7 +33,7 @@ This document provides **explicit directions for Copilot to follow** when creati
 
 ---
 
-## 🔄 WHEN TO UPDATE PR DESCRIPTIONS
+##  WHEN TO UPDATE PR DESCRIPTIONS
 
 Update the PR description using the template in these scenarios:
 
@@ -45,7 +45,7 @@ Update the PR description using the template in these scenarios:
 
 ---
 
-## 📝 HOW TO USE THE TEMPLATE
+##  HOW TO USE THE TEMPLATE
 
 ### Step 1: Load Template Structure
 ```bash
@@ -159,7 +159,7 @@ After completing "Phase D1: Request Batching", update the PR description:
 
 ---
 
-## 🚨 CRITICAL RULES
+##  CRITICAL RULES
 
 ### Before Finishing a Session
 
@@ -168,7 +168,7 @@ After completing "Phase D1: Request Batching", update the PR description:
 2.  **Update PR Description** - Fill out relevant template sections with current state
 3.  **Verify Checkboxes Match Implementation** - Ensure accuracy
 4.  **Include Summary Statistics** - Provide commit count, test count, file counts
-5.  **Document Remaining Work** - Clearly mark unchecked items that are planned
+5.  **Document Remaining Work** - mark unchecked items that are planned
 
 **MUST NOT DO:**
 1.  **Leave PR description with generic/freeform text** - Always use template structure
@@ -207,7 +207,7 @@ The next Copilot agent can quickly:
 
 ---
 
-## 🔍 VERIFICATION CHECKLIST
+##  VERIFICATION CHECKLIST
 
 Before finishing a session, verify:
 
@@ -260,16 +260,16 @@ Before finishing a session, verify:
 ```markdown
 # Comprehensive ML Platform Enhancement: [Feature Names]
 
-> **Based on:** PR_TEMPLATE_COMPREHENSIVE.md v2.0.0
+> **Based on:** PR_TEMPLATE_COMPREHENSIVE.md v0.2.1
 
 ---
 
-## 📋 PR OVERVIEW
+##  PR OVERVIEW
 
 ### Basic Information
 - [x] **PR Title**: Comprehensive ML Platform Enhancement
 - [x] **Linked Issue(s)**: Relates to #2264
-- [x] **PR Type**: ✨ New Feature, ⚡ Performance Improvement
+- [x] **PR Type**:  New Feature,  Performance Improvement
 
 ### Scope Summary
 - [x] **S-IDs Listed**: Retrieval, Inference Serving, Metrics, Performance
@@ -278,7 +278,7 @@ Before finishing a session, verify:
 
 ---
 
-## ⚠️ REQUIRED SAFETY CONFIRMATIONS
+## ️ REQUIRED SAFETY CONFIRMATIONS
 
 ### Network & Security
 - [x] **Network Safety Acknowledgment** - NO network operations performed
@@ -321,7 +321,7 @@ Before finishing a session, verify:
 
 ---
 
-## 📝 CAPABILITY IMPLEMENTATIONS
+##  CAPABILITY IMPLEMENTATIONS
 
 ### A) Inference Serving (Phase 2) 
 
@@ -496,10 +496,10 @@ If unsure about:
 
 ---
 
-## 🔄 VERSION HISTORY
+##  VERSION HISTORY
 
-- **v1.0.0** (2025-11-17): Initial creation - Comprehensive guide for Copilot PR template usage
+- **v0.2.1** (2025-11-17): Initial creation - Comprehensive guide for Copilot PR template usage
 
 ---
 
-**Remember:** The template exists to help Copilot agents communicate state clearly and efficiently. Use it well, and future sessions will thank you! 
+**Remember:** The template exists to help Copilot agents communicate state and efficiently. Use it well, and future sessions will thank you! 

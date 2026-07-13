@@ -178,7 +178,7 @@ def calculate_turn_reward(metrics):
 
 ---
 
-## 🔄 Manual Processes That Can Be Automated
+##  Manual Processes That Can Be Automated
 
 ### High Priority Automations Created This Turn
 
@@ -254,13 +254,13 @@ python scripts/convert_print_to_logger.py --directory scripts/
 | Activity | Time (minutes) | Automatable? |
 |----------|----------------|--------------|
 | Review comment analysis | 10 |  Yes (review_response_helper.py) |
-| File exploration | 5 | ⚠️ Partial |
-| Making fixes | 20 | ⚠️ Partial (linters could pre-fix) |
+| File exploration | 5 | ️ Partial |
+| Making fixes | 20 | ️ Partial (linters could pre-fix) |
 | Metadata correction | 5 |  Yes (inline scripts) |
 | Syntax validation | 3 |  Already automated |
-| Creating automation tools | 30 | ⚠️ Template-based generation possible |
+| Creating automation tools | 30 | ️ Template-based generation possible |
 | Reply composition | 10 |  Yes (review_response_helper.py) |
-| Documentation | 15 | ⚠️ Partial (template generation) |
+| Documentation | 15 | ️ Partial (template generation) |
 
 **Total Time**: ~98 minutes  
 **Automatable**: ~55 minutes (56%)  
@@ -273,7 +273,7 @@ python scripts/convert_print_to_logger.py --directory scripts/
 |------|-------|-----------|------------|
 | view | 8 |  Yes | High |
 | edit | 10 |  Yes | High |
-| bash | 5 | ⚠️ Partial | Medium |
+| bash | 5 | ️ Partial | Medium |
 | report_progress | 1 | N/A | High |
 | reply_to_comment | 10 |  Yes | High |
 | create | 3 |  Yes | High |
@@ -441,7 +441,7 @@ class TurnMetrics:
 
 ---
 
-## 📈 Success Metrics Summary
+##  Success Metrics Summary
 
 ### Quantitative Results
 
@@ -451,9 +451,9 @@ class TurnMetrics:
 | Commits Generated | 1-2 | 2 |  Optimal |
 | Files Modified | 5 | 5 |  As expected |
 | Automation Tools Created | 2 | 2 |  On target |
-| Manual Interventions | <5 | 5 | ⚠️ At limit |
+| Manual Interventions | <5 | 5 | ️ At limit |
 | Syntax Errors | 0 | 0 |  Pass |
-| Time Estimate | <60 min | 98 min | ⚠️ Over |
+| Time Estimate | <60 min | 98 min | ️ Over |
 
 ### Qualitative Assessment
 
@@ -474,7 +474,7 @@ class TurnMetrics:
 
 ---
 
-## 🔧 Implemented Automation This Turn
+##  Implemented Automation This Turn
 
 ### 1. Review Response Helper
 **File**: `scripts/review_response_helper.py`  
@@ -538,7 +538,7 @@ reward = (
 
 ---
 
-## 📝 Conclusion
+##  Conclusion
 
 This turn successfully addressed all 10 code review comments and implemented 2 automation tools to improve future efficiency. The reward score of 0.76 reflects good performance with identified opportunities for improvement.
 
@@ -549,9 +549,9 @@ This turn successfully addressed all 10 code review comments and implemented 2 a
 4.  Comprehensive analysis and documentation
 
 **Areas for Improvement**:
-1. ⚠️ Reduce manual interventions through better pre-validation
-2. ⚠️ Improve time estimation accuracy
-3. ⚠️ Enhance type checking in development workflow
+1. ️ Reduce manual interventions through better pre-validation
+2. ️ Improve time estimation accuracy
+3. ️ Enhance type checking in development workflow
 
 **Next Steps**:
 1. Use review_response_helper.py in next review cycle

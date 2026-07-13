@@ -14,15 +14,15 @@
 ###  High Priority
 | ID   | Title                                         | Impact | Status               |
 |------|-----------------------------------------------|--------|----------------------|
-| Q001 | `_emit_provenance_summary` stdout vs stderr   | High   | ⏳ Awaiting Research |
-| Q002 | `TestManageTenantIndices` root cause          | High   | ⏳ Awaiting Research |
+| Q001 | `_emit_provenance_summary` stdout vs stderr   | High   |  Awaiting Research |
+| Q002 | `TestManageTenantIndices` root cause          | High   |  Awaiting Research |
 
-### 🟡 Medium Priority
+###  Medium Priority
 | ID   | Title                                              | Impact | Status               |
 |------|----------------------------------------------------|--------|----------------------|
-| Q003 | `IncrementalSyncDecider` 95% change ratio          | Medium | ⏳ Awaiting Research |
-| Q004 | Multi-output CLI JSON testing pattern              | Medium | ⏳ Awaiting Research |
-| Q005 | `audit_runner.py` full vs minimal output env flags | Medium | ⏳ Awaiting Research |
+| Q003 | `IncrementalSyncDecider` 95% change ratio          | Medium |  Awaiting Research |
+| Q004 | Multi-output CLI JSON testing pattern              | Medium |  Awaiting Research |
+| Q005 | `audit_runner.py` full vs minimal output env flags | Medium |  Awaiting Research |
 
 ---
 

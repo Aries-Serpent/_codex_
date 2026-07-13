@@ -460,7 +460,7 @@ python -c "import yaml; yaml.safe_load(open('conf/model/base.yaml'))"
 python -c "
 from codex.utils.config_loader import load_config
 cfg = load_config('base', config_dir='conf/model')
-print('✓ Config loads successfully')
+print(' Config loads successfully')
 "
 ```
 

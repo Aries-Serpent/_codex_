@@ -81,14 +81,14 @@ All token documentation follows these security principles:
 - **Rotation cadence**: Tokens rotated every 90 days minimum
 - **Audit trail**: All token operations logged and auditable
 
-##  Getting Started
+## Getting Started
 
 1. **New to tokens?** Start with [Quick Reference](QUICK_REFERENCE.md)
 2. **Setting up for first time?** Follow [Human Admin Setup](HUMAN_ADMIN_SETUP.md)
 3. **Troubleshooting CI/CD?** Check [CI/CD Troubleshooting](CI_CD_TROUBLESHOOTING.md)
 4. **Deep dive?** Read [Token Hierarchy Guide](TOKEN_HIERARCHY_GUIDE.md)
 
-## 📋 Common Tasks
+##  Common Tasks
 
 ### Diagnose a 403 error
 See [CI/CD Troubleshooting](CI_CD_TROUBLESHOOTING.md#diagnosing-403-errors)
@@ -109,7 +109,7 @@ For token-related issues:
 2. Review [CI/CD Troubleshooting](CI_CD_TROUBLESHOOTING.md)
 3. Escalate to @mbaetiong for security concerns
 
-## 🔄 Updates & Maintenance
+##  Updates & Maintenance
 
 Token documentation is maintained by:
 - Token rotation cycle: Every 90 days

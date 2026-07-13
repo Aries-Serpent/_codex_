@@ -6,7 +6,7 @@
 
 - [Executive Summary](#executive-summary)
 - [Timeline of Recent Runs (progression and outcomes)](#timeline-of-recent-runs-progression-and-outcomes)
-- [Versioned Enhancements (v1.5.0 → v1.5.4)](#versioned-enhancements-v150--v154)
+- [Versioned Enhancements (v0.2.1 → v0.2.1)](#versioned-enhancements-v150--v154)
 - [Latest Run Metrics (representative)](#latest-run-metrics-representative)
 - [Conclusive Vendor Findings](#conclusive-vendor-findings)
 - [Egress/Network Posture](#egressnetwork-posture)
@@ -35,19 +35,19 @@
 | 2 | Setup | FAIL | Bash env helper error: invalid indirect expansion under set -u | “var: invalid indirect expansion” at ensure_default |
 | 3 | Setup | FAIL | Python NameError: psi_caps not defined | Missing/late function definition |
 | 4 | Setup | FAIL | Python NameError: os_info not defined | Missing/late function definition |
-| 5 | Setup | PASS | v1.5.3/1.5.4: fixed ordering; expanded datapoints; structured error artifact added | Full JSON persisted |
-| 6 | Maintenance | PASS | Matching v1.5.3/1.5.4 parity; stronger disk write | Full JSON persisted |
+| 5 | Setup | PASS | v0.2.1/1.5.4: fixed ordering; expanded datapoints; structured error artifact added | Full JSON persisted |
+| 6 | Maintenance | PASS | Matching v0.2.1/1.5.4 parity; stronger disk write | Full JSON persisted |
 
-## Versioned Enhancements (v1.5.0 → v1.5.4)
+## Versioned Enhancements (v0.2.1 → v0.2.1)
 
 | Version | Area | Change |
 | ------- | ---- | ------ |
-| v1.5.0 | Bench | Standardize CPU bench buffer via CODEX_CPU_BENCH_BUF_KB (default 8192 KB) |
-| v1.5.0 | Recon | Add cgroup cpu.stat, io.stat; network sysctls; TLS CA paths; inode totals |
-| v1.5.1 | Shell | Safer env sanitization under set -u; restructure here-doc → write-to-file pattern |
-| v1.5.2 | Recon | Add cpuset.cpus.effective, memory.current, swap limits, pids.{max,current}, resolv.conf, default route, IO schedulers |
-| v1.5.3 | Stability | Fix function ordering (psi_caps) and ensure completeness before use |
-| v1.5.4 | Stability | Restore/move os_info; add structured error artifacts (.error.json) and top-level try/except |
+| v0.2.1 | Bench | Standardize CPU bench buffer via CODEX_CPU_BENCH_BUF_KB (default 8192 KB) |
+| v0.2.1 | Recon | Add cgroup cpu.stat, io.stat; network sysctls; TLS CA paths; inode totals |
+| v0.2.1 | Shell | Safer env sanitization under set -u; restructure here-doc → write-to-file pattern |
+| v0.2.1 | Recon | Add cpuset.cpus.effective, memory.current, swap limits, pids.{max,current}, resolv.conf, default route, IO schedulers |
+| v0.2.1 | Stability | Fix function ordering (psi_caps) and ensure completeness before use |
+| v0.2.1 | Stability | Restore/move os_info; add structured error artifacts (.error.json) and top-level try/except |
 
 ## Latest Run Metrics (representative)
 
@@ -193,7 +193,7 @@ identifiers. Every run persists the following schema under
 | `chassis.asset_tag` | Field-service asset tracking tag | `Not Specified` |
 | `bios.brand` | BIOS/firmware vendor | `Hyper-V` |
 | `bios.version` | BIOS release number | `Hyper-V UEFI Release v4.1` |
-| `bios.date` | BIOS release date | `08/23/2024` |
+| `bios.date` | BIOS release date 2026-07-13
 | `disks[].name` | Block device (e.g., `sda`) | `sda` |
 | `disks[].brand` | Storage vendor | `Msft` |
 | `disks[].model` | Storage model | `Virtual Disk` |

@@ -14,7 +14,7 @@
 This document defines the PR approval workflow, governance gates, and review SLAs for all pull requests in the Aries-Serpent/_codex_ repository.
 
 **Related Docs:**
-- 📋 Full governance framework: `.codex/BATCH_2_GOVERNANCE_FRAMEWORK.md` (Part 3)
+-  Full governance framework: `.codex/BATCH_2_GOVERNANCE_FRAMEWORK.md` (Part 3)
 -  Policy compliance checklist: `docs/production/POLICY_COMPLIANCE_CHECKLIST.md`
 
 ---
@@ -104,7 +104,7 @@ Dependency Audit:
   - Medium/Low vulnerabilities: Reviewed by owner
 
 License Compliance:
-  - All dependencies use approved licenses: ✓
+  - All dependencies use approved licenses: 
   - GPL/AGPL: Requires special approval
   - Unknown licenses: Escalated for review
 ```
@@ -190,7 +190,7 @@ Coverage Summary:
 
   File Breakdown:
     src/auth.py:      95.2% 
-    src/api.py:       78.9% ⚠️ (below threshold)
+    src/api.py:       78.9% ️ (below threshold)
     src/utils.py:     88.3% 
 
   Change Summary:
@@ -224,7 +224,7 @@ User-Facing Features:
 API Changes:
   - CHANGELOG.md updated with change summary
   - API documentation updated
-  - Breaking changes clearly marked
+  - Breaking changes marked
   - Migration guide provided (if breaking)
 
 Configuration Changes:
@@ -243,7 +243,7 @@ New Modules:
 
 ```yaml
 Tool: doc-freshness-checker agent
-Status: ⚠️ WARNING (can merge with acknowledged warning)
+Status: ️ WARNING (can merge with acknowledged warning)
 Timeline: 6-24 hours for review
 Escalation: Owner approval if docs significantly outdated
 
@@ -381,13 +381,13 @@ Scenario 3: TEST COVERAGE RED
   Merge: Cannot proceed until coverage meets threshold
 
 Scenario 4: CODE REVIEW PENDING
-  - Code review: ⏳ Pending (no approvals yet)
+  - Code review:  Pending (no approvals yet)
   - Security:  0 issues
   - Test coverage:  85%
   - Docs:  Updated
   - Policy:  Compliant
 
-  RESULT: ⏳ WAITING FOR CODE REVIEW
+  RESULT:  WAITING FOR CODE REVIEW
   Action: Post request for reviewer
   Timeline: 24-48 hours expected
   Merge: Cannot proceed until code review approved
@@ -408,11 +408,11 @@ Scenario 6: MULTIPLE GATES RED
   - Code review:  1 comment unresolved
   - Security:  MEDIUM issue detected
   - Test coverage:  75% (<80%)
-  - Docs: ⚠️ Update recommended
+  - Docs: ️ Update recommended
   - Policy:  Compliant
 
   RESULT:  BLOCKED FOR MERGE (critical issues)
-           ⚠️ WARNINGS (non-blocking)
+           ️ WARNINGS (non-blocking)
   Action: Post summary of all failures with priorities
   Timeline: Fix critical issues first (security, coverage)
   Merge: Cannot proceed
@@ -624,12 +624,12 @@ Actions available:
     • src/api.py: 78.9% (need +1.1%)
   - Action: Add tests for untested lines
 
-⚠️ Documentation
+️ Documentation
   - API documentation not updated
   - Note: Not blocking merge, but recommended
   - Action: Update API docs when convenient
 
-🔧 Next Steps:
+ Next Steps:
   1. Resolve the code review comment
   2. Add tests to reach 80% coverage
   3. Recommend: Update API documentation

@@ -69,8 +69,8 @@
 
 ### Long Term (Ongoing)
 1.  Reach 100% coverage - COMPLETE
-2. ⏳ Production RAG pipeline - Future
-3. ⏳ Remove all legacy code - Future
+2.  Production RAG pipeline - Future
+3.  Remove all legacy code - Future
 
 ---
 

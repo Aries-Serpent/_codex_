@@ -147,7 +147,7 @@ pytest tests/security/test_security_integration.py -v
 
 ---
 
-## 🔍 Code Quality Validation
+##  Code Quality Validation
 
 ### Unused Imports Check
 ```bash
@@ -183,7 +183,7 @@ ruff check tests/security/test_security_integration.py --select F401,RET
 
 ---
 
-## 📝 Summary
+##  Summary
 
 All 3 critical blocking issues have been successfully addressed:
 

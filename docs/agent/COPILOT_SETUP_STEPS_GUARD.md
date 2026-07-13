@@ -53,7 +53,7 @@ is the authoritative version. It is the only version that simultaneously has:
 ## Canonical Session Preload Step — DO NOT CHANGE
 
 ```yaml
-      # ⚠️ DO NOT REFACTOR THIS STEP — See docs/agent/COPILOT_SETUP_STEPS_GUARD.md
+      # ️ DO NOT REFACTOR THIS STEP — See docs/agent/COPILOT_SETUP_STEPS_GUARD.md
       # Canonical form: block scalar run: | with if ! ...; then syntax.
       # This step has been broken 4+ times by agents converting it to flow scalar
       # (|| { } syntax) or orphaning the run: key. yamllint 1.38.0 crashes on
@@ -63,7 +63,7 @@ is the authoritative version. It is the only version that simultaneously has:
         continue-on-error: true   # non-blocking: agent must start even if preload fails
         run: |
           if ! python3 .github/scripts/session_preload.py; then
-            echo "⚠️ session_preload.py failed (non-blocking) — agent will operate without preloaded context"
+            echo "️ session_preload.py failed (non-blocking) — agent will operate without preloaded context"
           fi
 ```
 
@@ -83,7 +83,7 @@ python3 scripts/ci/patch_session_preload.py
 
 ## Agent Instruction
 
-> ⚠️ **If you are a Copilot coding agent reading this:**
+> ️ **If you are a Copilot coding agent reading this:**
 > Do NOT refactor, simplify, or touch the session preload step in `copilot-setup-steps.yml`.
 > If a CI failure led you here, identify and fix the **other** file that is failing.
 > If `copilot-setup-steps.yml` itself is failing, run the restore procedure above.

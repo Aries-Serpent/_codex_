@@ -28,7 +28,7 @@ current `" Session Context Pre-load"` step (search for `Session Context Pre-load
 to locate it — the exact line numbers may shift as the file evolves):
 
 ```yaml
-      # ⚠️ DO NOT REFACTOR THIS STEP — See docs/agent/COPILOT_SETUP_STEPS_GUARD.md
+      # ️ DO NOT REFACTOR THIS STEP — See docs/agent/COPILOT_SETUP_STEPS_GUARD.md
       # Canonical form: block scalar run: | with flow scalar fallback (Method D)
       # This pattern is proven stable in Session Access Probe step; never regressed.
       # RULE: if you are fixing a CI failure, fix the failing file — NOT this step.
@@ -38,7 +38,7 @@ to locate it — the exact line numbers may shift as the file evolves):
         run: |
           echo "::group::Session Context Pre-load"
           python3 .github/scripts/session_preload.py || {
-            echo "⚠️ session_preload.py failed (non-blocking) — agent will operate without preloaded context"
+            echo "️ session_preload.py failed (non-blocking) — agent will operate without preloaded context"
             echo "SESSION_PRELOAD_STATUS=failed" >> "$GITHUB_ENV"
           }
           echo "::endgroup::"
@@ -72,7 +72,7 @@ run: |
 | Method | Form | Status |
 |--------|------|--------|
 | Flow scalar direct | `run: python3 script.py \|\| { ... }` |  YAML parse failure |
-| Method B — if/fi | `run: \|` + `if ! python3; then ... fi` | ⚠️ Agents revert 8+ times |
+| Method B — if/fi | `run: \|` + `if ! python3; then ... fi` | ️ Agents revert 8+ times |
 | **Method D** | `run: \|` + `\|\| { }` inside block |  **Never regressed** |
 
 Method D is proven because it is already active in the Session Access Probe

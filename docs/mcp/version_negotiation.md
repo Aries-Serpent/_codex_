@@ -11,7 +11,7 @@ The server prefers MCP protocol version **1.0** and negotiates via `mcp.negotiat
 | Version | Status | Features | Breaking Changes |
 |---------|--------|----------|------------------|
 | **1.0** |  Current | Tool registry, JSON-RPC, HTTP endpoints | Initial release |
-| **0.9** | ⚠️ Deprecated | Basic JSON-RPC only | Limited tool support |
+| **0.9** | ️ Deprecated | Basic JSON-RPC only | Limited tool support |
 | **2.0** | 🔮 Future | Streaming, WebSockets, enhanced security | TBD |
 
 ## Version Negotiation Flow
@@ -430,7 +430,7 @@ if FeatureDetector.has_feature("1.0", "rate_limiting"):
 -  HTTP endpoints available
 -  Authentication required (API keys)
 -  Rate limiting enforced
-- ⚠️ Breaking: Some JSON-RPC methods renamed
+- ️ Breaking: Some JSON-RPC methods renamed
 
 **Migration Steps:**
 1. Update client to support version "1.0"
@@ -541,7 +541,7 @@ def test_version_negotiation_failure(client):
 ### Server Best Practices
 
 1. **Always support at least 2 versions** during transition periods
-2. **Document deprecation timeline** clearly (minimum 6 months notice)
+2. **Document deprecation timeline** (minimum 6 months notice)
 3. **Return detailed error messages** when negotiation fails
 4. **Include upgrade recommendations** in error responses
 5. **Log all negotiation attempts** for monitoring
@@ -574,7 +574,7 @@ When deprecating a version:
 
 **Operational Status:**  **ACTIVE** - Production-ready with v1.0 and v0.9 support
 
-## ⚖️ Verification Checklist
+## ️ Verification Checklist
 
 - [x] Server supports versions 1.0 and 0.9
 - [x] Version negotiation algorithm implemented
@@ -595,7 +595,7 @@ When deprecating a version:
 - Feature detection system
 - Client SDK updates
 
-## 📈 Success Metrics
+##  Success Metrics
 
 | Metric | Target | Current | Status |
 |--------|--------|---------|--------|
@@ -609,7 +609,7 @@ When deprecating a version:
 
 ## ⚛️ Physics Alignment
 
-### Path 🛤️
+### Path ️
 **Negotiation Flow:**
 1. Client connects → Sends supported versions
 2. Server receives → Checks overlap with server versions
@@ -621,7 +621,7 @@ When deprecating a version:
 - Connection → Negotiation → Authentication → API calls
 - Failed negotiation = No API access
 
-### Fields 🔄
+### Fields 
 **State Management:**
 - **Server state**: Supported versions list (static)
 - **Session state**: Negotiated version (per-connection)
@@ -631,7 +631,7 @@ When deprecating a version:
 - Unconnected → Negotiating → Negotiated → Active session
 - Version change requires new negotiation
 
-### Patterns 👁️
+### Patterns ️
 **Observability:**
 - Log all negotiation attempts (success/failure)
 - Track version distribution (clients using 1.0 vs 0.9)
@@ -644,7 +644,7 @@ When deprecating a version:
 - Semantic versioning (major.minor.patch)
 - Backward compatibility window
 
-### Redundancy 🔀
+### Redundancy 
 **Failure Modes:**
 1. **No version overlap** → Error -32602, connection refused
 2. **Missing supported field** → Error, require parameter
@@ -656,10 +656,10 @@ When deprecating a version:
 - Server maintains backward compatibility
 - Deprecation with grace period (6 months)
 
-### Balance ⚖️
+### Balance ️
 **Compatibility vs Innovation:**
 -  Support 2 versions simultaneously
-- ⚖️ Trade-off: Maintenance burden vs user stability
+- ️ Trade-off: Maintenance burden vs user stability
 -  Clear deprecation timeline
 
 **Simplicity vs Features:**
@@ -667,7 +667,7 @@ When deprecating a version:
 - Static version list vs dynamic feature detection
 - Server-driven selection vs client-driven negotiation
 
-## ⚡ Energy Distribution
+##  Energy Distribution
 
 | Priority | Component | Energy | Justification |
 |----------|-----------|--------|---------------|

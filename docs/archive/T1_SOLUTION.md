@@ -165,7 +165,7 @@ def run_inference(prompt: str) -> tuple[str, str]:
  **Sanitization working**: CLI correctly escapes malicious input  
  **Coverage gate enforced**: pytest.ini and noxfile.py configured  
  **Deterministic fixture**: autouse=True ensures all tests use it  
-⚠️ **Overall coverage**: Currently 1.19% (needs additional tests)
+️ **Overall coverage**: Currently 1.19% (needs additional tests)
 
 ## Next Steps
 

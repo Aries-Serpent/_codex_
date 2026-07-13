@@ -105,7 +105,7 @@ Data access layer, indexing, and embeddings.
 
 ---
 
-### 4. 🔗 Integration & GitHub API
+### 4.  Integration & GitHub API
 **File:** `docs/INTEGRATION_API.md`
 
 GitHub integration, authentication, and token management.
@@ -217,26 +217,26 @@ RBAC, approval workflows, and cognitive memory.
 
 | Module | Sigs | Doc | % | Tier | Status |
 |--------|------|-----|---|------|--------|
-| **cli.py** | 49 | 17 | 35% | T1 | 🟡 Partial |
-| **quantum_orchestrator** | 65 | 15 | 23% | T1 | 🟡 Partial |
-| **archive/dal.py** | 60 | 9 | 15% | T1 | 🟡 Partial |
-| **cognitive/ml/validation** | 49 | 14 | 29% | T1 | 🟡 Partial |
+| **cli.py** | 49 | 17 | 35% | T1 |  Partial |
+| **quantum_orchestrator** | 65 | 15 | 23% | T1 |  Partial |
+| **archive/dal.py** | 60 | 9 | 15% | T1 |  Partial |
+| **cognitive/ml/validation** | 49 | 14 | 29% | T1 |  Partial |
 | **workflow_optimizer** | 43 | 0 | 0% | T1 |  None |
-| **github/mcp_poster** | 32 | 6 | 19% | T2 | 🟡 Partial |
-| **autonomy/token_broker** | 28 | 4 | 14% | T2 | 🟡 Partial |
+| **github/mcp_poster** | 32 | 6 | 19% | T2 |  Partial |
+| **autonomy/token_broker** | 28 | 4 | 14% | T2 |  Partial |
 | **quantum_planset_engine** | 26 | 0 | 0% | T1 |  None |
-| **auth/github_app** | 25 | 5 | 20% | T2 | 🟡 Partial |
-| **rag/embeddings** | 24 | 2 | 8% | T2 | 🟡 Partial |
-| **governance/approval** | 24 | 6 | 25% | T2 | 🟡 Partial |
-| **github/discussion_mgr** | 21 | 6 | 29% | T2 | 🟡 Partial |
+| **auth/github_app** | 25 | 5 | 20% | T2 |  Partial |
+| **rag/embeddings** | 24 | 2 | 8% | T2 |  Partial |
+| **governance/approval** | 24 | 6 | 25% | T2 |  Partial |
+| **github/discussion_mgr** | 21 | 6 | 29% | T2 |  Partial |
 | **cognitive/agent_brain** | 20 | 0 | 0% | T1 |  None |
-| **cognitive/brain_interface** | 18 | 5 | 28% | T2 | 🟡 Partial |
-| **training.py** | 16 | 4 | 25% | T2 | 🟡 Partial |
-| **rag/indexer.py** | 12 | 3 | 25% | T2 | 🟡 Partial |
+| **cognitive/brain_interface** | 18 | 5 | 28% | T2 |  Partial |
+| **training.py** | 16 | 4 | 25% | T2 |  Partial |
+| **rag/indexer.py** | 12 | 3 | 25% | T2 |  Partial |
 | **accountability_update** | 12 | 0 | 0% | T2 |  None |
 | **cli_rag.py** | 10 | 0 | 0% | T3 |  None |
 | **cli_zendesk.py** | 9 | 0 | 0% | T3 |  None |
-| **memory_sync.py** | 9 | 5 | 56% | T3 | 🟡 Partial |
+| **memory_sync.py** | 9 | 5 | 56% | T3 |  Partial |
 
 **Totals:**
 - **Total Signatures:** 568
@@ -257,7 +257,7 @@ RBAC, approval workflows, and cognitive memory.
 
 ---
 
-## 🔗 Cross-References
+##  Cross-References
 
 ### API by Use Case
 
@@ -283,7 +283,7 @@ RBAC, approval workflows, and cognitive memory.
 
 ---
 
-##  Getting Started with APIs
+## Getting Started with APIs
 
 ### For CLI Users
 Start with [`CORE_API_REFERENCE.md`](./CORE_API_REFERENCE.md)
@@ -323,7 +323,7 @@ Phase 4: 17.3% → 20%+  (Target achieved with quick wins)
 
 ---
 
-## 📋 Next Steps
+##  Next Steps
 
 ### Immediate (8-10 hours to 20%+)
 - [ ] Document remaining 16+ signatures for 20% milestone

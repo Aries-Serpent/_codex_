@@ -12,7 +12,7 @@
 > **Audience:** Human admins, Copilot agents, CI/CD authors  
 > **Auto-synced by:** `repo-var-sync-schedule.yml` (daily 06:00 UTC → `.codex/agent_context.json`)
 
-> ⚠️ **This is the single source of truth.** All other variable docs link here.
+> ️ **This is the single source of truth.** All other variable docs link here.
 
 ---
 
@@ -213,8 +213,8 @@ Variables are grouped by subsystem. Human-governance flags must **never** be ove
 
 | # | Variable | Status | Current Value | Purpose |
 |---|---|---|---|---|
-| 1 | `COPILOT_AGENT_AUTH_ENABLED` |  | `true` | ⚠️ **Human governance flag** — gates token delegation workflow | <!-- pragma: allowlist secret -->
-| 2 | `COPILOT_AGENT_FIREWALL_ENABLED` |  | `true` | ⚠️ **Human governance flag** — network isolation control |
+| 1 | `COPILOT_AGENT_AUTH_ENABLED` |  | `true` | ️ **Human governance flag** — gates token delegation workflow | <!-- pragma: allowlist secret -->
+| 2 | `COPILOT_AGENT_FIREWALL_ENABLED` |  | `true` | ️ **Human governance flag** — network isolation control |
 | 3 | `COPILOT_AGENT_FIREWALL_ALLOW_LIST_ADDITIONS` |  | *(long allowlist)* | Additional URLs allowed through Copilot firewall |
 | 4 | `COPILOT_AGENT_MAX_AUTONOMY_LEVEL` |  | `D` | Maximum D_CAPABLE autonomy level |
 | 5 | `COPILOT_AGENT_SESSION_RESTORE_ENABLED` |  | `true` | Enable session context restoration |
@@ -228,7 +228,7 @@ Variables are grouped by subsystem. Human-governance flags must **never** be ove
 |---|---|---|---|---|
 | 1 | `AGENT_HANDOFF_TIMEOUT_SECONDS` |  | `120` | Timeout for agent handoff operations |
 | 2 | `AUTO_PROMOTE_TIER_ENABLED` |  | `true` | Auto-promotion tier for agent capabilities |
-| 3 | `AUTONOMOUS_ACTIONS_ENABLED` |  | `true` | ⚠️ **Human governance flag** — gates autonomous agent actions |
+| 3 | `AUTONOMOUS_ACTIONS_ENABLED` |  | `true` | ️ **Human governance flag** — gates autonomous agent actions |
 | 4 | `CODEX_CI_FAILURE_RATE` |  | `10.7:degraded` (auto-updated) | Current CI failure rate (%) — format: `<float>:<status>` where status ∈ `{ok, degraded, critical}`. Updated by `ci-health-monitor.yml`. |
 | 5 | `CODEX_CI_FAILURE_THRESHOLD` |  | `10.0` | CI failure rate threshold (%) for `degraded` state (e.g., `10.0` = 10.0%) |
 | 6 | `CODEX_CI_LAST_GREEN_SHA` |  | *(sha)* (auto-updated) | Last commit SHA with all-green CI |
@@ -320,7 +320,7 @@ Variables are grouped by subsystem. Human-governance flags must **never** be ove
 |---|---|---|---|---|
 | 1 | `REDIS_URL` |  **Optional** | *(not set — uses SQLite or in-memory backend)* | Redis connection URL for enabling Feast Redis online-store mode in production (e.g. `redis://localhost:6379/0` or `rediss://host:6380/0`). Leave unset to use default local/offline backends. **SAR-G02.** |
 
-> ⚠️ **Security note (REDIS_URL):** If authentication is required, do **not** store credentials in a repository variable. Set `REDIS_URL` from a **GitHub Actions Secret** or **Codespaces Secret** containing the full authenticated URL (including credentials if needed). Repository variables are visible to users with read access, while runtime environment variables injected from secrets are appropriate for credentialed values.
+> ️ **Security note (REDIS_URL):** If authentication is required, do **not** store credentials in a repository variable. Set `REDIS_URL` from a **GitHub Actions Secret** or **Codespaces Secret** containing the full authenticated URL (including credentials if needed). Repository variables are visible to users with read access, while runtime environment variables injected from secrets are appropriate for credentialed values.
 
 ##### REDIS_URL implementation notes
 
@@ -338,7 +338,7 @@ All scripts fall back to safe coded defaults when variables are unset.
 
 | # | Variable | Status | Recommended Value | Script Default | Purpose |
 |---|---|---|---|---|---|
-| 1 | `AGENT_KILL_SWITCH` |  **Set** `0` (2026-03-07) | `0` *(intentional; matches default)* | `0` | ⚠️ **Human governance flag** — set to `"1"` to halt agent loops (Phases 1 & 7). See operational notes below. |
+| 1 | `AGENT_KILL_SWITCH` |  **Set** `0` (2026-03-07) | `0` *(intentional; matches default)* | `0` | ️ **Human governance flag** — set to `"1"` to halt agent loops (Phases 1 & 7). See operational notes below. |
 | 2 | `AUTONOMY_BUDGET_SECONDS` |  **Set** `90` (2026-03-07) | `60` | `300` | Max wall-clock seconds per `autonomy_scheduler.py` run (Phase 1). Admin chose 90s (between recommended CI=60 and script default=300). |
 | 3 | `AUTONOMY_MAX_ITERATIONS` |  **Set** `3` (2026-03-07) | `3` | `10` | Max health-sense/decide/act iterations per scheduler run (Phase 1). |
 | 4 | `AUTONOMY_DRY_RUN` |  **Set** `0` (2026-03-07) | `0` | `0` | Set to `"1"` to disable all mutating filesystem writes in `autonomy_scheduler.py` (Phase 1). |
@@ -404,7 +404,7 @@ All scripts fall back to safe coded defaults when variables are unset.
 > **Injected by:** `.devcontainer/devcontainer.json` `"secrets":` block  
 > **When:** Only available inside an active GitHub Codespace session
 
-###  Quick Start — Active Codespace
+## Quick Start — Active Codespace
 <!-- anchor: -quick-start-—-active-codespace -->
 
 | | |
@@ -419,7 +419,7 @@ All scripts fall back to safe coded defaults when variables are unset.
 
 These secrets mirror the Actions org secrets but are injected into Codespace containers for interactive agent sessions.
 
-> ⚠️ **Codespace secrets are NOT automatically mirrored from org Actions secrets** — they must be set separately at the Codespace level even when the same secret exists as an Actions org secret.
+> ️ **Codespace secrets are NOT automatically mirrored from org Actions secrets** — they must be set separately at the Codespace level even when the same secret exists as an Actions org secret.
 
 | # | Secret Name | Status | Purpose | Where to Set | Actions Org Secret Equivalent | <!-- pragma: allowlist secret -->
 |---|---|---|---|---|---|
@@ -496,7 +496,7 @@ These are **not** stored in GitHub Settings — they are defined inline in workf
 | | Detail |
 |---|---|
 | ~~**Problem**~~ | ~~`CODEX_ENV_PYTHON_VERSION` (env variable) = `3.11` conflicted with `CODEX_PYTHON_VERSION` (repo variable) = `3.12`.~~ |
-| **Resolution** | `CODEX_ENV_PYTHON_VERSION` updated to `3.12` (verified in 2026-03-06 export). Both layers now agree on Python 3.12. CI should no longer have version discrepancies between environment and non-environment jobs. |
+| **Resolution** | `CODEX_ENV_PYTHON_VERSION` updated 2026-07-13
 
 ###  Issue 3 — Duplicate path variable: `CODEX_D365_POLICIES_PATH` and `D365_SLA_POLICY_PATH` — **RESOLVED 2026-03-06**
 <!-- anchor: -issue-3-—-duplicate-path-variable:-codex_d365_policies_path-and-d365_sla_policy_path-—-**resolved-2026-03-06** -->
@@ -524,7 +524,7 @@ These are **not** stored in GitHub Settings — they are defined inline in workf
 | | Detail |
 |---|---|
 | ~~**Problem**~~ | ~~`webhook_configurator.py` preferred `CODEX_ADMIN_KEY` but it was missing.~~ |
-| **Resolution** | `CODEX_ADMIN_KEY` was added as an org secret (updated 3 hours before 2026-03-06 export). `webhook_configurator.py` can now use least-privilege webhook management without falling back to `CODEX_MASTER_KEY`. | <!-- pragma: allowlist secret -->
+| **Resolution** | `CODEX_ADMIN_KEY` was added as an org secret (updated 2026-07-13
 
 ###  Issue 6 — `WEBHOOK_RECEIVER_URL` missing — **RESOLVED 2026-03-06**
 <!-- anchor: -issue-6-—-webhook_receiver_url-missing-—-**resolved-2026-03-06** -->
@@ -738,7 +738,7 @@ All 8 §6h autonomous agent repo variables confirmed set by @mbaetiong. See [§6
 <!-- anchor: -resolved -->
 
 - [x] ~~Fix Issue 1: Delete `CODEX_ENV_NODE_VERSION` env secret; recreate as env variable~~ — **Done 2026-03-06**
-- [x] ~~Fix Issue 2: Update `CODEX_ENV_PYTHON_VERSION` env variable from `3.11` → `3.12`~~ — **Done 2026-03-06**
+- [x] ~~Fix Issue 2: Update 2026-07-13
 - [x] ~~Fix Issue 3: Remove duplicate `D365_SLA_POLICY_PATH` repo variable~~ — **Done 2026-03-06** (deleted from GitHub; absent in live export)
 - [x] ~~Fix Issue 4: Rotate stale runner secrets (7 months old)~~ — **Done 2026-03-06** (`_CODEX_BOT_RUNNER`, `CODEX_ENVIRONMENT_RUNNER`, `CODEX_RUNNER_TOKEN`, `CODEX_RUNNER_SHA256` all rotated; `CODEX_MASTER_KEY` + `CODEX_BACKUP_KEY` re-rotated)
 - [x] ~~Fix Issue 5: Create `CODEX_ADMIN_KEY` org secret (fine-grained PAT, `Webhooks:write`)~~ — **Done 2026-03-06**
@@ -754,4 +754,4 @@ All 8 §6h autonomous agent repo variables confirmed set by @mbaetiong. See [§6
 ---
 
 *Supersedes: `.codex/runtime_variables.md` · `docs/security/CURRENT_EXPECTED_VARIABLES.md` · `.codex/QUICK_REFERENCE_TOKEN_STATUS.md`*  
-*Maintained by: @mbaetiong · Last reviewed: 2026-03-07 (S116/W-142 phase 3 — §6f REDIS_URL added (SAR-G02); DuckDB offline backend evaluated; §6h all 8 autonomous agent vars confirmed ; SAR-G01 all 9 Codespace secrets confirmed ; §13 converted to resolved archive; v1.7.0)*
+*Maintained by: @mbaetiong · Last reviewed: 2026-03-07 (S116/W-142 phase 3 — §6f REDIS_URL added (SAR-G02); DuckDB offline backend evaluated; §6h all 8 autonomous agent vars confirmed ; SAR-G01 all 9 Codespace secrets confirmed ; §13 converted to resolved archive; v0.2.1)*

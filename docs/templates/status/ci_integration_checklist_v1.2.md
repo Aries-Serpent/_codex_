@@ -3,7 +3,7 @@
 **Version:** v0.2.1
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
- Roles: [Primary: CI Integrator], [Secondary: Reviewer] ⚡ Energy: 5
+ Roles: [Primary: CI Integrator], [Secondary: Reviewer]  Energy: 5
 
 - [ ] status_validation.yml present and green
 - [ ] security_gates.yml present and green (or triaged)

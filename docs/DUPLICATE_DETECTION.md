@@ -108,7 +108,7 @@ After running, the following files are generated:
 ### SHIM Inventory Status
 - Duplicates in SHIM inventory
 - Whitelisted duplicates
-- **High Priority**: Duplicates NOT in SHIM inventory ⚠️
+- **High Priority**: Duplicates NOT in SHIM inventory ️
 
 ### Duplicate Groups
 - Grouped by detection type
@@ -124,8 +124,8 @@ After running, the following files are generated:
 The tool automatically cross-references detected duplicates with `.github/SHIM_INVENTORY.yaml`:
 
 -  **In Inventory & Whitelisted**: These are tracked and approved
-- ⚠️ **In Inventory but Not Whitelisted**: Need attention
-- 🚨 **NOT in Inventory**: High priority - should be reviewed immediately
+- ️ **In Inventory but Not Whitelisted**: Need attention
+-  **NOT in Inventory**: High priority - should be reviewed immediately
 
 ## Configuration File
 

@@ -1,4 +1,4 @@
-# Audit Pipeline Reference - v1.4.0
+# Audit Pipeline Reference - v0.2.1
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
@@ -10,7 +10,7 @@
 > **NOTE**: Full explanations in:  
 > - `Traversal_Workflow.md` (flow & formulas)  
 > - `Usage_Guide.md` (commands & ops)  
-> - `docs/audit/` (v1.4.0 feature guides)
+> - `docs/audit/` (v0.2.1 feature guides)
 
 ---
 
@@ -18,7 +18,7 @@
 
 Deterministic audit pipeline: harvest → facet → extract → score → gap → render → manifest (integrity chain).
 
-**NEW in v1.4.0**:
+**NEW in v0.2.1**:
 - Coverage augmentation for accurate test scoring
 - Token-similarity for content-based duplication detection
 - Enhanced reporting with daily status updates
@@ -32,9 +32,9 @@ Deterministic audit pipeline: harvest → facet → extract → score → gap �
 | S1 | context_index.json | Enumerate + hash file list (sorted) | |
 | S2 | facets.json | Regex domain clustering | |
 | S3 | capabilities_raw.json | Static + dynamic detectors merge | |
-| S4 | capabilities_scored.json | Component weighting (auto-normalize) | **v1.4.0: Coverage & token-similarity** |
+| S4 | capabilities_scored.json | Component weighting (auto-normalize) | **v0.2.1: Coverage & token-similarity** |
 | S5 | gaps.json | Threshold filter (low < 0.70) | |
-| S6 | capability_matrix_<ts>.md | Jinja render (template_hash embedded) | **v1.4.0: Enhanced reports** |
+| S6 | capability_matrix_<ts>.md | Jinja render (template_hash embedded) | **v0.2.1: Enhanced reports** |
 | S7 | audit_run_manifest.json | Hash chain (repo_root_sha + artifacts) | |
 
 ---
@@ -46,7 +46,7 @@ Deterministic audit pipeline: harvest → facet → extract → score → gap �
 - **Extensibility**: Custom detectors in `detectors/`
 - **Offline Safety**: No network calls
 - **Minimal Writes**: Only to `audit_artifacts/` and `reports/`
-- **Backward Compatibility**: v1.4.0 fully compatible with v1.3.x
+- **Backward Compatibility**: v0.2.1 fully compatible with v1.3.x
 
 ---
 
@@ -68,7 +68,7 @@ Score = Σ(weight × component ∈ [0,1])
 
 ### Component Calculations
 
-| Component | Formula | v1.4.0 Enhancement |
+| Component | Formula | v0.2.1 Enhancement |
 |-----------|---------|-------------------|
 | **Functionality** | pattern_ratio = found_patterns / required_patterns | - |
 | **Consistency** | 1 - dup_ratio | **Token-similarity available** |
@@ -78,7 +78,7 @@ Score = Σ(weight × component ∈ [0,1])
 
 ---
 
-## 5. Duplicate Heuristics (v1.4.0)
+## 5. Duplicate Heuristics (v0.2.1)
 
 ### Simple (Default, Backward Compatible)
 ```
@@ -88,7 +88,7 @@ dup_ratio = Σ(file_stem_duplicates) / evidence_count
 - Filename-based
 - Deterministic
 
-### Token-Similarity (v1.4.0 NEW)
+### Token-Similarity (v0.2.1 NEW)
 ```yaml
 # Enable in workflow.yaml
 scoring:
@@ -110,11 +110,11 @@ scoring:
 - Detects copy-paste code
 - Configurable sensitivity
 
-**See**: `docs/audit/Configuration_v1.4.0.md`
+**See**: `docs/audit/Configuration_v0.2.1.md`
 
 ---
 
-## 6. Coverage Augmentation (v1.4.0 NEW)
+## 6. Coverage Augmentation (v0.2.1 NEW)
 
 ### Enable Coverage
 ```yaml
@@ -138,7 +138,7 @@ scoring:
 - Visibility into coverage gaps
 - Incentivizes writing tests
 
-**See**: `docs/audit/Configuration_v1.4.0.md`
+**See**: `docs/audit/Configuration_v0.2.1.md`
 
 ---
 
@@ -176,15 +176,15 @@ scoring:
 | stages | list[str] | ["S1"..."S7"] | Ordered stage IDs |
 | weights | dict | See §4 | Component weights (auto-normalize) |
 | scoring.thresholds.low | float | 0.70 | Low maturity cutoff |
-| scoring.coverage.enabled | bool | false | **v1.4.0**: Enable coverage augmentation |
-| scoring.coverage.xml_patterns | list[str] | ["coverage.xml"] | **v1.4.0**: Coverage file patterns |
-| scoring.dup.heuristic | string | "simple" | **v1.4.0**: "simple" or "token_similarity" |
-| scoring.dup.threshold | float | 0.7 | **v1.4.0**: Jaccard similarity threshold |
+| scoring.coverage.enabled | bool | false | **v0.2.1**: Enable coverage augmentation |
+| scoring.coverage.xml_patterns | list[str] | ["coverage.xml"] | **v0.2.1**: Coverage file patterns |
+| scoring.dup.heuristic | string | "simple" | **v0.2.1**: "simple" or "token_similarity" |
+| scoring.dup.threshold | float | 0.7 | **v0.2.1**: Jaccard similarity threshold |
 | capability_map.dynamic | bool | false | Enable detector discovery |
 | capability_map.overrides | dict | {} | Merge/alias capability IDs |
 | options.fail_on_score_regression | bool | false | Exit non-zero if score drops |
 
-**See**: `docs/audit/Configuration_v1.4.0.md` for full v1.4.0 options
+**See**: `docs/audit/Configuration_v0.2.1.md` for full v0.2.1 options
 
 ---
 
@@ -223,15 +223,15 @@ def detect(file_index: dict) -> dict:
 
 ## 11. Manifest Fields
 
-| Field | Description | v1.4.0 |
+| Field | Description | v0.2.1 |
 |-------|-------------|--------|
-| repo_root_sha | SHA256(sorted file names) | ✓ |
-| artifacts[].sha | Per-JSON hash | ✓ |
-| template_hash | Concatenated Jinja hash | ✓ |
-| weights | Effective normalized weights | ✓ |
+| repo_root_sha | SHA256(sorted file names) |  |
+| artifacts[].sha | Per-JSON hash |  |
+| template_hash | Concatenated Jinja hash |  |
+| weights | Effective normalized weights |  |
 | coverage_enabled | Coverage augmentation status | **NEW** |
 | dup_heuristic | Duplication method used | **NEW** |
-| warnings | Weight or stage notes | ✓ |
+| warnings | Weight or stage notes |  |
 
 ---
 
@@ -243,7 +243,7 @@ def detect(file_index: dict) -> dict:
 | Regression fail | Δscore < -regression_delta | Exit non-zero |
 | Hash drift warn | template_hash changed | Manual review |
 | Missing detector | Referenced but absent | Exit non-zero |
-| **Coverage drop** | **coverage_percent < previous** | **Exit non-zero (v1.4.0)** |
+| **Coverage drop** | **coverage_percent < previous** | **Exit non-zero (v0.2.1)** |
 
 ---
 
@@ -271,9 +271,9 @@ def detect(file_index: dict) -> dict:
 | Template hash mismatch | Re-run pipeline |
 | **coverage_map.json missing** | **Check xml_patterns, verify coverage.xml exists** |
 | **Token-similarity slow** | **Reduce max_pairwise or use simple heuristic** |
-| **Scores decreased in v1.4.0** | **Token-similarity more accurate; review findings** |
+| **Scores decreased in v0.2.1** | **Token-similarity more accurate; review findings** |
 
-**See**: `docs/audit/Troubleshooting_v1.4.0.md`
+**See**: `docs/audit/Troubleshooting_v0.2.1.md`
 
 ---
 
@@ -289,14 +289,14 @@ def detect(file_index: dict) -> dict:
 
 ---
 
-## 16. v1.4.0 Migration
+## 16. v0.2.1 Migration
 
 **From v1.3.x**:
 -  Fully backward compatible
 -  New features are opt-in
 -  No breaking changes
 
-**Enable v1.4.0 features**:
+**Enable v0.2.1 features**:
 1. Add coverage config to workflow.yaml
 2. Run tests with coverage: `pytest --cov=src --cov-report=xml`
 3. Enable token-similarity: Set `scoring.dup.heuristic: "token_similarity"`
@@ -324,17 +324,17 @@ def detect(file_index: dict) -> dict:
 - `Usage_Guide.md` - Operational commands and examples
 - `.codex/archive/deprecated/AGENTS.md` - Repository conventions
 
-### v1.4.0 Feature Guides
-- `docs/audit/Configuration_v1.4.0.md` - Configuration options and examples
+### v0.2.1 Feature Guides
+- `docs/audit/Configuration_v0.2.1.md` - Configuration options and examples
 - `docs/audit/Migration_v1.3_to_v1.4.md` - Migration guide from v1.3.x
-- `docs/audit/Troubleshooting_v1.4.0.md` - Common issues and solutions
-- `docs/audit/API_Reference_v1.4.0.md` - Module API documentation
+- `docs/audit/Troubleshooting_v0.2.1.md` - Common issues and solutions
+- `docs/audit/API_Reference_v0.2.1.md` - Module API documentation
 - `docs/audit/Integration_Examples.md` - CI/CD and tool integrations
 - `docs/audit/Performance_Tuning.md` - Optimization strategies
 
 ---
 
-## 19. Quick Start v1.4.0
+## 19. Quick Start v0.2.1
 
 ### Basic Audit (v1.3.x compatible)
 ```bash
@@ -367,7 +367,7 @@ make space-audit
 make space-audit
 ```
 
-## Full v1.4.0 Experience
+## Full v0.2.1 Experience
 ```bash
 # Enable both features in workflow.yaml, then:
 pytest --cov=src --cov-report=xml
@@ -376,7 +376,7 @@ make space-audit
 
 ---
 
-## 20. Performance Tips (v1.4.0)
+## 20. Performance Tips (v0.2.1)
 
 | Scenario | Configuration | Command |
 |----------|--------------|---------|
@@ -398,9 +398,9 @@ make space-audit
 | Slow performance | Reduce `max_pairwise` or use `heuristic: "simple"` |
 | Scores decreased | Token-similarity more accurate; review if findings are valid |
 | Import errors | Run from repo root: `cd /path/to/_codex_` |
-| Type errors | Already fixed in v1.4.0; if custom code, add type ignores |
+| Type errors | Already fixed in v0.2.1; if custom code, add type ignores |
 
-**See**: `docs/audit/Troubleshooting_v1.4.0.md`
+**See**: `docs/audit/Troubleshooting_v0.2.1.md`
 
 ---
 
@@ -416,7 +416,7 @@ make space-audit
 
 ## Summary
 
-v1.4.0 enhances the audit pipeline with:
+v0.2.1 enhances the audit pipeline with:
 -  **Coverage augmentation** for accurate test scores
 -  **Token-similarity** for content-based duplicate detection
 -  **Enhanced reporting** with daily status updates

@@ -193,7 +193,7 @@ Windows-safe timestamps         codex.utils.path_utils           No colons in fi
 
 ---
 
-## 📈 Score Aggregation
+##  Score Aggregation
 
 ### By ACE Layer
 
@@ -219,7 +219,7 @@ Windows-safe timestamps         codex.utils.path_utils           No colons in fi
 
 ---
 
-## 🔗 Cross-References
+##  Cross-References
 
 - [AAIS V3.0](AI_AGENCY_INTUITIVENESS_SCORE_V3.md) — Composite scoring methodology
 - [Evolution Timeline](EVOLUTION_TIMELINE.md) — Phase history

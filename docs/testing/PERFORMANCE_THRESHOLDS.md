@@ -46,7 +46,7 @@ The 200 tasks/s threshold was chosen to:
 
 ### What This Threshold Does NOT Catch
 
-⚠️ **Important Limitations**:
+️ **Important Limitations**:
 
 - **Moderate regressions** (20-50% slowdown): A drop from 5,000 to 2,500 tasks/s would still pass
 - **Incremental degradation**: Gradual performance decay over time

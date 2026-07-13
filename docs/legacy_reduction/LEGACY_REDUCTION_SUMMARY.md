@@ -10,11 +10,11 @@
 - Initial: 30 legacy imports (29 false positives + 1 real)
 - Target: ≤15 legacy imports
 - Stretch Goal: ≤10 legacy imports  
-- **Achieved: 0 legacy imports** ✓
+- **Achieved: 0 legacy imports** 
 
 ## Root Cause Analysis
 
-The original analyzer (v1.2.0) was flagging 29 `hydra` imports as "legacy" because:
+The original analyzer (v0.2.1) was flagging 29 `hydra` imports as "legacy" because:
 1. The LEGACY_MODULES set included "hydra"
 2. These imports were actually from the PyPI package `hydra-core`, not local modules
 3. The local `hydra/` directory had already been renamed to `config_legacy/` to prevent shadowing
@@ -23,14 +23,14 @@ The original analyzer (v1.2.0) was flagging 29 `hydra` imports as "legacy" becau
 
 ## Changes Implemented
 
-### 1. Analyzer Fix (v1.2.1)
+### 1. Analyzer Fix (v0.2.1)
 **File:** `scripts/remediation/analyze_legacy_usage.py`
 
 ```python
-# Before (v1.2.0):
+# Before (v0.2.1):
 LEGACY_MODULES = {"training", "tokenization", "models", "hydra"}
 
-# After (v1.2.1):
+# After (v0.2.1):
 LEGACY_MODULES = {"training", "tokenization", "models"}
 ```
 
@@ -53,10 +53,10 @@ legacy = importlib.import_module("training.engine_hf_trainer")  # Dynamic import
 
 | Check | Tool | Result |
 |-------|------|--------|
-| Legacy Imports | analyze_legacy_usage.py | 0 occurrences ✓ |
-| Syntax Check | py_compile | PASS ✓ |
-| Strict Conflicts | verify_conflicts.py --mode strict | 0 violations ✓ |
-| Library Shadowing | verify_conflicts.py | No shadowing detected ✓ |
+| Legacy Imports | analyze_legacy_usage.py | 0 occurrences  |
+| Syntax Check | py_compile | PASS  |
+| Strict Conflicts | verify_conflicts.py --mode strict | 0 violations  |
+| Library Shadowing | verify_conflicts.py | No shadowing detected  |
 
 ## Artifacts
 
@@ -92,9 +92,9 @@ The requirement called for 5 batches to reduce 45→≤15 imports:
 
 | Module | Legacy Path | Canonical Path | Status |
 |--------|-------------|----------------|--------|
-| training | training/* | src/training/* | Migrated ✓ |
-| tokenization | tokenization/* | src/tokenization/* | Migrated ✓ |
-| models | models/* | src/modeling/* | Migrated ✓ |
+| training | training/* | src/training/* | Migrated  |
+| tokenization | tokenization/* | src/tokenization/* | Migrated  |
+| models | models/* | src/modeling/* | Migrated  |
 | hydra | (PyPI package) | (PyPI package) | N/A |
 
 ### Code Quality Metrics
@@ -105,7 +105,7 @@ The requirement called for 5 batches to reduce 45→≤15 imports:
 
 ## Recommendations
 
-1. **Maintain analyzer v1.2.1**: Keep `hydra` excluded from LEGACY_MODULES
+1. **Maintain analyzer v0.2.1**: Keep `hydra` excluded from LEGACY_MODULES
 2. **Monitor new imports**: CI should run analyzer on PRs
 3. **Deprecation timeline**: Schedule config_legacy removal (90 iterations suggested)
 4. **Documentation**: Update import guidelines for contributors

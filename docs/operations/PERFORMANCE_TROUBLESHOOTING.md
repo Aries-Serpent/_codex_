@@ -459,7 +459,7 @@ p95: 200ms
 p99: 350ms
 Error rate: 0%
 
-Assessment: ✓ PASS - All metrics within SLA
+Assessment:  PASS - All metrics within SLA
 ```
 
 ## 4.2 Stress Testing

@@ -155,9 +155,9 @@ Will be automatically included in test-suite.yml workflow once merged.
 
 ### Validation Required
 1.  Tests pass locally (assumed - would run if env available)
-2. ⏳ Tests pass in CI (pending PR merge)
-3. ⏳ Coverage increase verified (pending PR merge)
-4. ⏳ No performance degradation (pending PR merge)
+2.  Tests pass in CI (pending PR merge)
+3.  Coverage increase verified (pending PR merge)
+4.  No performance degradation (pending PR merge)
 
 ## Risks and Mitigations
 

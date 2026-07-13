@@ -182,7 +182,7 @@
 
 ---
 
-## 🔗 Quick Links
+##  Quick Links
 
 - **PR**: https://github.com/Aries-Serpent/_codex_/pull/2750
 - **Branch**: `copilot/sub-pr-2750-again`
@@ -193,7 +193,7 @@
 
 ## 🎬 Session Complete
 
-**Status**:  Phase 1-2 Complete | 📝 Phase 3-7 Documented & Ready  
+**Status**:  Phase 1-2 Complete |  Phase 3-7 Documented & Ready  
 **Next Action**: New Copilot session to execute Phases 3-7 using continuation prompt  
 **Estimated Timeline**: 24-36 hours across multiple sessions  
 

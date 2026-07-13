@@ -38,7 +38,7 @@ Start: CI/CD failure detected
 
 ---
 
-## 🔍 Common Token-Related Failures
+##  Common Token-Related Failures
 
 ### Failure 1: "Token scope insufficient for this request"
 
@@ -210,12 +210,12 @@ def api_call_with_backoff(url, token, max_retries=5):
 ERROR_MSG="$1"
 
 if echo "$ERROR_MSG" | grep -q "scope\|requires"; then
-    echo "✗ Issue: Token scope insufficient"
+    echo " Issue: Token scope insufficient"
     echo "  Solution: Use higher-level token"
     echo "  Action: Get CODEX_BACKUP_TOKEN or CODEX_MASTER_KEY"
     
 elif echo "$ERROR_MSG" | grep -q "owner\|member\|permission"; then
-    echo "✗ Issue: User lacks role permission"
+    echo " Issue: User lacks role permission"
     echo "  Solution: Request org admin role"
     echo "  Action: Contact org admin for access"
     
@@ -250,7 +250,7 @@ def diagnose_403_error(url, token, org):
             return "permission_denied"
         
         else:
-            print("❓ Unknown 403 error")
+            print(" Unknown 403 error")
             print(f"   Message: {error_msg}")
             return "unknown"
 ```
@@ -296,7 +296,7 @@ if [ "$RESPONSE" == "401" ]; then
 elif [ "$RESPONSE" == "200" ]; then
     echo " Token is valid"
 else
-    echo "⚠️ Unexpected response: $RESPONSE"
+    echo "️ Unexpected response: $RESPONSE"
 fi
 ```
 
@@ -357,7 +357,7 @@ echo "Available scopes: $SCOPES"
 
 ---
 
-## 🔍 Token Resolution Debugging
+##  Token Resolution Debugging
 
 ### How to Check Which Token is Being Used
 
@@ -430,7 +430,7 @@ TOKEN=$(get_token "elevated")
 
 ---
 
-## 🚨 Recovery Procedures
+##  Recovery Procedures
 
 ### Emergency Token Rotation
 
@@ -581,16 +581,16 @@ def check_rate_limits(token):
     remaining_pct = (core['remaining'] / core['limit']) * 100
     
     if remaining_pct < 25:
-        print(f"⚠️ Rate limit critical: {remaining_pct:.1f}% remaining")
+        print(f"️ Rate limit critical: {remaining_pct:.1f}% remaining")
     elif remaining_pct < 50:
-        print(f"⚠️ Rate limit warning: {remaining_pct:.1f}% remaining")
+        print(f"️ Rate limit warning: {remaining_pct:.1f}% remaining")
     
     return core
 ```
 
 ---
 
-## 📋 Troubleshooting Checklist
+##  Troubleshooting Checklist
 
 When diagnosing token-related failures:
 
@@ -623,7 +623,7 @@ When diagnosing token-related failures:
 
 ---
 
-## 🔗 Related Documentation
+##  Related Documentation
 
 - **TOKEN_HIERARCHY_GUIDE.md** - Token selection and scopes
 - **SCRIPT_TOKEN_docs/api/reference/INTEGRATION.md** - Error handling in scripts

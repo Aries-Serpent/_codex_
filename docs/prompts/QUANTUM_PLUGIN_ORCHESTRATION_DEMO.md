@@ -147,7 +147,7 @@ class QuantumPlugin:
 
             self._module = module
             self.state = PluginState.COLLAPSED
-            logger.info(f"✓ Plugin '{self.name}' wave function collapsed successfully")
+            logger.info(f" Plugin '{self.name}' wave function collapsed successfully")
 
             return self._module
 
@@ -949,7 +949,7 @@ background_task = ThermodynamicTask(
 
 ---
 
-## 📝 Conclusion
+##  Conclusion
 
 This demonstration showcases the capability to:
 

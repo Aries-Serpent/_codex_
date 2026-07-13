@@ -763,7 +763,7 @@ python -m codex_ml.serving.cli serve \
 - ⭐ [Star us on GitHub](https://github.com/Aries-Serpent/_codex_)
 
 ### Examples
-- 📝 [Code Examples](../examples/)
+-  [Code Examples](../examples/)
 - 📓 [Jupyter Notebooks](../notebooks/)
 - 🧪 [Test Cases](../tests/)
 

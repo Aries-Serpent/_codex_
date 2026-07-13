@@ -9,7 +9,7 @@
 
 ---
 
-## Quick start
+## Quick Start
 
 ```bash
 # Build/update wheelhouse & constraints (uses uv if available, else pip)

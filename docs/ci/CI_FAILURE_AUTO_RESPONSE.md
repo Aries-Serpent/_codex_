@@ -1,4 +1,4 @@
-# 🚨 CI Failure Auto-Response
+#  CI Failure Auto-Response
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
@@ -28,9 +28,9 @@ automatically:
 ## 1. End-to-End Process Map
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing 🔄 CI Workflow completes on main, Job: close-on-fix'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing  CI Workflow completes on main, Job: close-on-fix'}}%%
 flowchart TD
-    A([🔄 CI Workflow completes on main]) --> B{conclusion?}
+    A([ CI Workflow completes on main]) --> B{conclusion?}
 
     B -- success --> Z1[Job: close-on-fix]
     Z1 --> Z2{Open ci-failure\nissue for this workflow?}
@@ -122,10 +122,10 @@ flowchart LR
     SC -->|security · codeql\nsemgrep · vuln| S1[ Critical\nlabels: ci-failure\npriority-critical\nsecurity-risk]
     SC -->|build · docker\ndeploy · publish| S2[ Critical\nlabels: ci-failure\npriority-critical\nbuild-break]
     SC -->|test · pytest\nauth · critical-path| S3[ Critical\nlabels: ci-failure\npriority-critical\ntest-regression]
-    SC -->|no match| S4[🟡 Normal\nlabels: ci-failure\npriority-medium\nneeds-investigation]
+    SC -->|no match| S4[ Normal\nlabels: ci-failure\npriority-medium\nneeds-investigation]
 
-    S1 & S2 & S3 --> FPR[🔧 Fix PR\n+ @copilot]
-    S4 --> ISO[📋 Issue only\nManual fix]
+    S1 & S2 & S3 --> FPR[ Fix PR\n+ @copilot]
+    S4 --> ISO[ Issue only\nManual fix]
 ```
 
 ---
@@ -186,9 +186,9 @@ active PR.  No additional standalone comments are posted.
 | Outcome | Dashboard status | Dashboard summary example |
 |---------|-----------------|--------------------------|
 | Workflow passed (resolved) |  success | ` \`CodeQL Analysis\` — passing on \`main\`` |
-| Skip (existing issue) | ⚠️ warning | ` \`CodeQL Analysis\` failed — existing tracker covers this` |
-| Queued (branch active) | ⚠️ warning | ` \`CodeQL Analysis\` failed — queued (single-branch rule active)` |
-| Normal failure → new issue |  failure | `🟡 \`Data Quality Suite\` failed — issue opened, manual fix required` |
+| Skip (existing issue) | ️ warning | ` \`CodeQL Analysis\` failed — existing tracker covers this` |
+| Queued (branch active) | ️ warning | ` \`CodeQL Analysis\` failed — queued (single-branch rule active)` |
+| Normal failure → new issue |  failure | ` \`Data Quality Suite\` failed — issue opened, manual fix required` |
 | Critical → fix PR opened |  failure | ` CRITICAL \`Auth Tests\` failed — fix PR opened, @copilot assigned` |
 
 ---

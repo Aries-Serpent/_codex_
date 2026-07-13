@@ -495,7 +495,7 @@ When implementing this scope:
 
 ### 8.3 For Human Admins
 
-- Manual steps are clearly marked with "HA-" prefix
+- Manual steps are marked with "HA-" prefix
 - Each phase has time estimates for planning
 - Secrets must be injected manually (security policy)
 - Validate using provided scripts before troubleshooting

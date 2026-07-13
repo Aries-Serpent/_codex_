@@ -46,24 +46,24 @@ All notable changes to this project will be documented in this file.
 ## [0.1.1] — 2026-07-10
 
 ### Release Summary
-**Patch Release:** Patch version bump from v0.1.0 to v0.1.1 for incremental updates and improvements.
+**Patch Release:** Patch version bump from v0.2.1 to v0.2.1 for incremental updates and improvements.
 
 - **Status:** Production Release
 - **Authority:** @mbaetiong (Full autonomous deployment authority)
 - **Timestamp:** 2026-07-10T20:59:08Z
-- **Tag:** v0.1.1 (replaces immutable v0.1.0)
+- **Tag:** v0.2.1 (replaces immutable v0.2.1)
 - **Distribution:** PyPI + GitHub Releases
 
 ### Fixed
-- **build:** Version constraint update v0.1.0 → v0.1.1 (pyproject.toml)
+- **build:** Version constraint update v0.2.1 → v0.2.1 (pyproject.toml)
 - **release:** Post-merge release automation configured with 4-step deployment process (tag, GitHub release, PyPI publish, community announcement)
 
 ### Updated
-- **docs:** Post-merge execution brief for v0.1.1 release cycle
-- **accountability:** Session context for v0.1.1 deployment recorded
+- **docs:** Post-merge execution brief for v0.2.1 release cycle
+- **accountability:** Session context for v0.2.1 deployment recorded
 
 ### Release Verification
-- All 32 certification gates passed  (inherited from v0.1.0-final)
+- All 32 certification gates passed  (inherited from v0.2.1-final)
 - Production readiness score: 100/100 
 - Zero new vulnerabilities introduced 
 - Full backward compatibility maintained 
@@ -75,13 +75,13 @@ All notable changes to this project will be documented in this file.
 ### Fixed (S255 — PR #3831 — 2026-03-31)
 - **fix(ci):** `tests/config/conftest.py` — always-first sys.path pattern: remove existing `_SRC` entries then insert at index 0 (review thread suggestion).
 - **fix(changelog):** Corrected S254 perf numbers to 55K→45K/20ms→40ms (accurate net diff vs. main; review thread).
-- **feat(auto-post):** `copilot-agent-session-done.yml` wired to auto-fix pre-flight REQ-4/5 when `🔄 Auto-Post @copilot review After Agent Session` checkbox is checked.
-- **feat(wrapup):** `session_wrapup_autofix.py` — new `🔄 Auto-Post` checkbox added to `_REQUIRED_PR_CHECKBOXES`.
+- **feat(auto-post):** `copilot-agent-session-done.yml` wired to auto-fix pre-flight REQ-4/5 when ` Auto-Post @copilot review After Agent Session` checkbox is checked.
+- **feat(wrapup):** `session_wrapup_autofix.py` — new ` Auto-Post` checkbox added to `_REQUIRED_PR_CHECKBOXES`.
 
 ### Fixed (S254 — PR #3831 — 2026-03-31)
 - **fix(mlflow):** `maybe_mlflow()` generator refactored — `mlflow.start_run()` moved before `yield` to prevent `RuntimeError: generator didn't stop after throw()` (gemini HIGH alert). `return` after `yield _NoOpLogger()` ensures correct generator termination.
 - **fix(perf):** Performance threshold `dict_lookup_10000` adjusted 55K→45K; latency assert tightened 20ms→40ms (gemini MEDIUM suggestions — better regression detection vs. CI reliability balance).
-- **feat(pr-template):** `🔄 Auto-Post @copilot review After Agent Session` checkbox added to all 6 PR body template locations (both static templates + 4 workflow-generated bodies).
+- **feat(pr-template):** ` Auto-Post @copilot review After Agent Session` checkbox added to all 6 PR body template locations (both static templates + 4 workflow-generated bodies).
 - **feat(brain):** `cognitive-brain-manager.md` v4.4→v4.5 — S254 status, gemini review thread resolution patterns.
 
 
@@ -101,7 +101,7 @@ All notable changes to this project will be documented in this file.
   cognitive brain metadata updated; accountability report updated.
 
 ### Fixed (auto-update — PR #3831)
-- Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #3831 (SHA `06038612`) at 2026-03-31T07:15Z [auto-generated]
+- Auto-fix: `session_wrapup_autofix.py` updated 2026-07-13
 
 
 
@@ -110,8 +110,8 @@ All notable changes to this project will be documented in this file.
   diagrams (flowchart, sequence, state machine, timeline, dependency graph, anti-pattern maps)
   and a component responsibility matrix. Golden-path example from PR #3818 comment #4158728043.
 - **CI/CD Index updated** (`docs/ci/INDEX.md`): CI Rescue Pipeline added as the top entry under
-  a new "🚨 CI Rescue Pipeline (Golden Path)" section.
-- **Homepage quick-links updated** (`docs/index.md`): "🚨 CI Rescue & Health" section added with
+  a new " CI Rescue Pipeline (Golden Path)" section.
+- **Homepage quick-links updated** (`docs/index.md`): " CI Rescue & Health" section added with
   direct link to the new CI Rescue Pipeline doc.
 - **Nav entry added** (`mkdocs.yml`): "CI Rescue & Health" section with CI Rescue Pipeline at top.
 - **8 CI scripts shipped** (all under `scripts/ci/`):
@@ -251,7 +251,7 @@ All notable changes to this project will be documented in this file.
 ## 2025-10-26
 
 ### Added
-- **Operational templates (v1.0.0):** Introduced Python File Relocation, CLI Hardening, and Intent Validation templates under `docs/templates/` with a navigation index.
+- **Operational templates (v0.2.1):** Introduced Python File Relocation, CLI Hardening, and Intent Validation templates under `docs/templates/` with a navigation index.
   - Files: `docs/templates/Migration_PythonFileRelocation.md`, `docs/templates/Migration_CLIHardening.md`, `docs/templates/Planning_IntentValidation.md`, `docs/templates/README.md`
   - Include role-gated workflows, `[PLACEHOLDER: …]` customization prompts, and cross-references to runtime shims (`sitecustomize.py`), CLI modules, and pytest suites.
 - **Documentation:** Extended `docs/README.md` with usage triggers and a handoff checklist for the templates, and refreshed `docs/CONTRIBUTING.md` with a role-based workflow plus a task-to-template mapping table.

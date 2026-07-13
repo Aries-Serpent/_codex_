@@ -1,4 +1,4 @@
-# Getting Started Guide for End Users & Business Users
+## Getting Started Guide for End Users & Business Users
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
@@ -14,7 +14,7 @@ Use pre-trained models through web interfaces, no coding required. Make predicti
 
 ## Phase 1: Web Dashboard Access (2 minutes)
 
-### Getting Started
+## Getting Started
 
 **Visit:** https://app.codex-ml.dev
 
@@ -37,7 +37,7 @@ Use pre-trained models through web interfaces, no coding required. Make predicti
 
 1. **Go to Models** → You'll see available pre-trained models:
    - 📧 Sentiment Analyzer
-   - 🔍 Text Classifier
+   -  Text Classifier
    -  Anomaly Detector
    - And more...
 
@@ -54,7 +54,7 @@ Use pre-trained models through web interfaces, no coding required. Make predicti
 1. Click "Try It Out"
 2. Enter text or upload data:
    ```
-   Input: "I absolutely love this product!"
+   Input: "I love this product!"
    ```
 3. Click "Predict"
 4. See instant result:
@@ -148,7 +148,7 @@ Use pre-trained models through web interfaces, no coding required. Make predicti
 **Result:**
 ```
  5000 products scanned
-⚠️ 12 anomalies detected
+️ 12 anomalies detected
  Manual review queue ready
 → QA team investigates
 ```
@@ -229,8 +229,8 @@ Alert: Daily Sentiment Summary
 **Tip 2: Look for Confidence Scores**
 ```
  95% confidence = Very reliable
-⚠️ 70% confidence = Generally reliable
-⚠️⚠️ 50% confidence = Be cautious
+️ 70% confidence = Generally reliable
+️️ 50% confidence = Be cautious
 ```
 
 **Tip 3: Export for Excel**

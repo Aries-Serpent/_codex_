@@ -1,4 +1,4 @@
-# Getting Started Guide for API Consumers
+## Getting Started Guide for API Consumers
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
@@ -88,7 +88,7 @@ request = PredictionRequest(
     model_id="sentiment-classifier",
     model_version="1.0.0",
     inputs={
-        "text": "This product is amazing!"
+        "text": "This product is !"
     }
 )
 

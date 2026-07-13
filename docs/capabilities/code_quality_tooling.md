@@ -4,7 +4,7 @@
 
 **Last Updated: 2026-06-22
 
-> **Navigation**: [ Main README](../README.md#-capabilities-documentation) | [💾 Checkpointing](checkpointing.md) | [🔄 Training Loops](train_loop.md) | [ PEFT Techniques](peft_hooks.md) | [🔧 GitHub CLI Guide](../.github/docs/GH_CLI_Resolution_Copilot.md)
+> **Navigation**: [ Main README](../README.md#-capabilities-documentation) | [💾 Checkpointing](checkpointing.md) | [ Training Loops](train_loop.md) | [ PEFT Techniques](peft_hooks.md) | [ GitHub CLI Guide](../.github/docs/GH_CLI_Resolution_Copilot.md)
 
 ## Overview
 
@@ -188,7 +188,7 @@ def security(session):
 ```.pre-commit-config.yaml
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+    rev: v0.2.1
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
@@ -197,7 +197,7 @@ repos:
       - id: check-merge-conflict
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.1.9
+    rev: v0.2.1
     hooks:
       - id: ruff
         args: [--fix, --exit-non-zero-on-fix]
@@ -208,7 +208,7 @@ repos:
       - id: black
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.8.0
+    rev: v0.2.1
     hooks:
       - id: mypy
         additional_dependencies: [types-all]
@@ -376,10 +376,10 @@ git commit -m "feat: add new feature"
 
 | Feature | Ruff | Black | mypy | pytest |
 |---------|------|-------|------|--------|
-| Speed | ⚡⚡⚡ (100x faster) | ⚡⚡ | ⚡ | ⚡⚡ |
+| Speed |  (100x faster) |  |  |  |
 | Auto-fix |  |  |  | N/A |
-| Customizable |  High | ⚠️ Limited |  High |  High |
-| Error Messages |  Clear | N/A | ⚠️ Can be cryptic |  Clear |
+| Customizable |  High | ️ Limited |  High |  High |
+| Error Messages |  Clear | N/A | ️ Can be cryptic |  Clear |
 
 ## Troubleshooting
 

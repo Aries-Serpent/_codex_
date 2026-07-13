@@ -52,14 +52,14 @@ post-promotion observation window (2026-03-04 → 2026-04-03, tracked by
 | C5 has_tests | true | **true** | `tests/agents/test_agent_orchestration.py` (8 references; primary agent in chain tests) |  |
 | C6 has_docs | true | **true** | `.github/agents/workflow-health-monitor.agent.md` |  |
 | C7 maturity | production | **production** | AGENT_REGISTRY.yaml |  |
-| C8 rank | ≤ 20 | **NOT SET → assigned 21** | Assigned in this ADR (see §4) | ⚠️ |
+| C8 rank | ≤ 20 | **NOT SET → assigned 21** | Assigned in this ADR (see §4) | ️ |
 
 **C5 evidence:** `tests/agents/test_agent_orchestration.py` — `workflow-health-monitor`
 is used as primary agent in chain validation tests (lines 80, 88, 91–93, 100, 106, 116,
 120, 132). The agent is directly tested as the entry point for multi-agent orchestration
 sequences.
 
-**C6 evidence:** `.github/agents/workflow-health-monitor.agent.md` exists (v1.0.0,
+**C6 evidence:** `.github/agents/workflow-health-monitor.agent.md` exists (v0.2.1,
 2026-02-05, "Production Ready" status annotation).
 
 **Result: DESIGNATED — 6/8 criteria met initially; C8 gap resolved  (see §5); promotion PENDING C4 only.**
@@ -75,7 +75,7 @@ sequences.
 | C3 accepts_handoff_from | non-empty | `[orchestrator, agent-orchestrator]` | AGENT_REGISTRY.yaml |  |
 | C4 violations_30d | 0 (set) | **NOT SET** | — |  |
 | C5 has_tests | true | **true** | `tests/integration/test_cicd_workflow_e2e.py:21` (dedicated test); `tests/agents/test_custom_agent_functional.py:75` |  |
-| C6 has_docs | true | **true** | `.github/agents/owner-approval-guard.agent.md` (v3.0.0-cognitive) |  |
+| C6 has_docs | true | **true** | `.github/agents/owner-approval-guard.agent.md` (v0.2.1-cognitive) |  |
 | C7 maturity | production | **production** | AGENT_REGISTRY.yaml |  |
 | C8 rank | ≤ 20 | **NOT SET** | — |  |
 
@@ -124,7 +124,7 @@ unblocked pending only the C4 observation window (ends 2026-04-04).
 
 | Gap | Owner | Action | Timeline | Status |
 |-----|-------|--------|----------|--------|
-| C4 `violations_30d` observation | copilot-swe-agent | Monitor 30-day observation window; confirm 0 | 2026-03-05 → 2026-04-04 | 🔄 ONGOING |
+| C4 `violations_30d` observation | copilot-swe-agent | Monitor 30-day observation window; confirm 0 | 2026-03-05 → 2026-04-04 |  ONGOING |
 | C8 rank threshold | @mbaetiong | Sign off on top-25 threshold relaxation | 2026-03-05 |  RESOLVED |
 
 ---

@@ -2,7 +2,7 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-**Date:** 2026-01-09  
+**Date:2026-07-13
 **Status:** Accepted  
 **Deciders:** mbaetiong, GitHub Copilot
 
@@ -27,8 +27,8 @@ Consolidate all configuration into Hydra-managed YAML structure in `conf/` direc
 -  6-month migration grace period
 
 ### Negative
-- ⚠️ Learning curve for Hydra
-- ⚠️ Initial migration effort (32 files)
+- ️ Learning curve for Hydra
+- ️ Initial migration effort (32 files)
 
 ### Neutral
 -  Performance: <100ms config loading (acceptable)

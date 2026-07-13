@@ -10,7 +10,7 @@
 
 ---
 
-##  Quick Start: Which Token Should I Use?
+## Quick Start: Which Token Should I Use?
 
 ### The Three-Token Hierarchy
 
@@ -68,7 +68,7 @@ Best For: Organization variables, token rotation, emergency dispatch
 
 ---
 
-## 🔄 Decision Tree: Choosing Your Token
+##  Decision Tree: Choosing Your Token
 
 ```
 START: I need to perform an operation
@@ -316,7 +316,7 @@ def update_workflow_with_retry():
 
 ---
 
-## ⚠️ Error Handling & Recovery
+## ️ Error Handling & Recovery
 
 ### Error 1: "Token scope insufficient for this request" (403)
 
@@ -502,7 +502,7 @@ raise Exception(f"API failed with token {token}: {response.text}")
 
 ---
 
-## 🔗 Related Documentation
+##  Related Documentation
 
 - **SCRIPT_TOKEN_docs/api/reference/INTEGRATION.md** - How to implement token resolution in scripts
 - **WORKFLOW_TOKEN_PATTERNS_UPDATE.md** - Token patterns for GitHub Actions workflows

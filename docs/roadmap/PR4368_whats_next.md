@@ -40,12 +40,12 @@ pie title Merge Readiness Gates (S899-final)
 | Cascade verified (0 pending) |  | 0 action_required after fix — confirmed S899-final |
 | PR Comment Review Gate |  | All blocking comments replied |
 | Workflow conflict analysis |  | `PR4368_workflow_conflict_analysis.md` created |
-| CI required checks | 🔄 | Resilient Validation  · CodeQL in-progress |
-| Infra startup_failures | ⚠️ | 3–4 pre-existing (Rust-Python, Progressive, Data Quality) — do NOT block merge |
+| CI required checks |  | Resilient Validation  · CodeQL in-progress |
+| Infra startup_failures | ️ | 3–4 pre-existing (Rust-Python, Progressive, Data Quality) — do NOT block merge |
 
 ---
 
-## 📋 Complete Progress Tracking
+##  Complete Progress Tracking
 
 ###  Phase 1: Safe Pickle Hardening (COMPLETE — S889)
 - [x] Added `src/codex_ml/safe_pickle.py` restricted unpickler with optional HMAC signing
@@ -167,11 +167,11 @@ flowchart LR
 
 ---
 
-## ⚠️ Known Non-Blocking Issues
+## ️ Known Non-Blocking Issues
 
 | Issue | Severity | Action |
 |-------|----------|--------|
-| 3–4 `startup_failure` (Rust-Python, Progressive, Data Quality) | ⚠️ Infra | Pre-existing — do NOT block merge |
-| T-03: `security_events` scope missing on `CODEX_MASTER_KEY` | 🟡 P2 | Admin action post-merge |
-| `iterative-self-healing-ci.yml` push race window (RCP-01) | 🟡 P2 | Document + monitor |
-| `auto-fix-pr-check.yml` concurrent push (RCP-02) | 🟡 P2 | Concurrency guard already in place |
+| 3–4 `startup_failure` (Rust-Python, Progressive, Data Quality) | ️ Infra | Pre-existing — do NOT block merge |
+| T-03: `security_events` scope missing on `CODEX_MASTER_KEY` |  P2 | Admin action post-merge |
+| `iterative-self-healing-ci.yml` push race window (RCP-01) |  P2 | Document + monitor |
+| `auto-fix-pr-check.yml` concurrent push (RCP-02) |  P2 | Concurrency guard already in place |

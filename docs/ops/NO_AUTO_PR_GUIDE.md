@@ -5,7 +5,7 @@
 > **Effective:** 2026-03 (GitHub change)
 > **Status:**  Codebase fully adapted (PR #3661 / S173)
 
-## 🔍 What Changed
+##  What Changed
 
 GitHub Copilot Coding Agent **no longer creates pull requests by default** when a
 session completes.
@@ -34,11 +34,11 @@ session completes.
 | `branch-divergence-monitor.yml` | Posts `@copilot` on an **ISSUE** |  Affected | Added "open a PR targeting `0D_base_`" instruction |
 | `agent-auth-delegation.yml` | Preflight on existing PRs |  Not affected | Added "PR requirement" row to enforcement table |
 | `chatops_copilot_trigger.yml` | Posts `@copilot continue` on existing PRs |  Not affected | No change needed |
-| Agent documentation | Various agent `.md` files | ⚠️ Documentation | Updated guidance |
+| Agent documentation | Various agent `.md` files | ️ Documentation | Updated guidance |
 
 ---
 
-## ⚠️ Why Required PR Checkboxes Go Missing
+## ️ Why Required PR Checkboxes Go Missing
 
 **Root cause:** The `report_progress` tool used by the Copilot coding agent **overwrites
 the entire PR description** with the agent's task checklist. This strips two mandatory
@@ -77,7 +77,7 @@ sections from the PR body:
 
 ---
 
-## 📋 Rule for Agents and Automation
+##  Rule for Agents and Automation
 
 ### When posting `@copilot` on an ISSUE
 
@@ -113,7 +113,7 @@ Always include the full required sections in `prDescription`:
 
 ---
 
-## 🔄 Self-Healing Architecture
+##  Self-Healing Architecture
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing report_progress overwrites PR body,  No action needed'}}%%
@@ -131,7 +131,7 @@ flowchart TD
 
 ---
 
-## 🔗 Related Files
+##  Related Files
 
 | File | Role |
 |------|------|

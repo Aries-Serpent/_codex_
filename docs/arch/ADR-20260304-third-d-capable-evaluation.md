@@ -6,7 +6,7 @@
 
 ## Context
 
-**Date:** 2026-03-04
+**Date:2026-07-13
 **PR:** #3495
 **Session:** COGNITIVE_BRAIN_SESSION_NUMBER 112
 **Status:** SUPERSEDED — third promotion **COMPLETE** (see ADR-20260304-rust-error-validator-d-capable-promotion.md)
@@ -115,7 +115,7 @@ and/or missing `violations_30d` tracking (C4).
 1. `rust-error-validator` `maturity` field updated to `production` (requires @mbaetiong sign-off)
 2. `rust-error-validator` `violations_30d: 0` explicitly set after 30-day observation window
 3. A new ADR is created documenting the evaluation at that time
-4. `AGENT_REGISTRY.yaml` updated (v1.9.3) with the promotion
+4. `AGENT_REGISTRY.yaml` updated (v0.2.1) with the promotion
 5. `CODEX_MANIFEST.json` regenerated
 
 ---

@@ -11,7 +11,7 @@
 
 ## Executive Summary
 
-The Codex Secure Bridge provides inter-process communication (IPC) between the Cognitive Brain and GitHub Copilot with enterprise-grade security features. This document details the security architecture, threat model, and operational procedures for PS-02.
+The Codex Secure Bridge provides inter-process communication (IPC) between the Cognitive Brain and GitHub Copilot with Production security features. This document details the security architecture, threat model, and operational procedures for PS-02.
 
 ---
 
@@ -198,11 +198,11 @@ bridge = BridgeManager(
     bridge_dir=Path("/tmp/dev_bridge"),
     mode=BridgeMode.NAMED_PIPE,
     owner_only=True,
-    require_auth=False,  # ⚠️ Disabled for testing
+    require_auth=False,  # ️ Disabled for testing
 )
 ```
 
-**⚠️ Warning:** Only use `require_auth=False` in isolated development environments.
+**️ Warning:** Only use `require_auth=False` in isolated development environments.
 
 ---
 
@@ -264,7 +264,7 @@ def check_suspicious_activity(audit_file: Path, threshold: int = 5):
                 failures += 1
 
     if failures > threshold:
-        print(f"⚠️  ALERT: {failures} authentication failures detected!")
+        print(f"️  ALERT: {failures} authentication failures detected!")
         return True
     return False
 ```

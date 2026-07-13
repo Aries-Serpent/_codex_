@@ -81,7 +81,7 @@ This protocol enables AI agents (GitHub Copilot, ChatGPT, etc.) to:
 
 ---
 
-## 📋 Self-Review Protocol (5 Passes)
+##  Self-Review Protocol (5 Passes)
 
 **Critical**: Perform all 5 passes before ending session. **DO NOT SKIP**.
 
@@ -158,7 +158,7 @@ Rationale: Maximize session value
 
 ---
 
-## 📝 Continuation Prompt Format
+##  Continuation Prompt Format
 
 When posting continuation prompts to PR comments:
 
@@ -317,7 +317,7 @@ Context:
 
 ---
 
-## 🔄 Protocol Updates
+##  Protocol Updates
 
 **Version History**:
 - 2.0.0 (2025-12-30) - Added cognitive brain integration, duration-aware planning

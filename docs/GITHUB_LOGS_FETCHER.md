@@ -295,7 +295,7 @@ Test CLI commands:
 ```bash
 # Test check run logs
 codex github-logs check-run Aries-Serpent _codex_ 59990656344 -o /tmp/test-logs.txt
-test -f /tmp/test-logs.txt && echo "✓ CLI test passed"
+test -f /tmp/test-logs.txt && echo " CLI test passed"
 
 # Test list check runs
 codex github-logs list-check-runs Aries-Serpent _codex_ b6b52590b9551c4d29b90ea122d885ef83cd0d8d

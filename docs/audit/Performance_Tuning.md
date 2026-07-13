@@ -9,7 +9,7 @@
 
 ## Overview
 
-Optimize audit pipeline v1.4.0 performance for different scenarios:
+Optimize audit pipeline v0.2.1 performance for different scenarios:
 - Large codebases (>10,000 files)
 - Frequent runs (CI/pre-commit)
 - Resource-constrained environments
@@ -405,7 +405,7 @@ This is **expected** during token-similarity computation (CPU-intensive).
 
 ## See Also
 
-- [Configuration Guide](./Configuration_v1.4.0.md) - Configuration options
-- [Troubleshooting Guide](./Troubleshooting_v1.4.0.md) - Common issues
-- [API Reference](./API_Reference_v1.4.0.md) - Module documentation
+- [Configuration Guide](./Configuration_v0.2.1.md) - Configuration options
+- [Troubleshooting Guide](./Troubleshooting_v0.2.1.md) - Common issues
+- [API Reference](./API_Reference_v0.2.1.md) - Module documentation
 - [Integration Examples](./Integration_Examples.md) - CI/CD setups

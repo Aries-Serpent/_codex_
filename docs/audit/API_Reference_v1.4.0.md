@@ -1,4 +1,4 @@
-# API Reference v1.4.0
+# API Reference v0.2.1
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
@@ -9,7 +9,7 @@
 
 ## Overview
 
-This document provides API reference for v1.4.0 modules:
+This document provides API reference for v0.2.1 modules:
 - `coverage_ingest` - Coverage augmentation
 - `dup_similarity` - Token-similarity duplication detection
 
@@ -346,7 +346,7 @@ scoring:
 
 ## See Also
 
-- [Configuration Guide](./Configuration_v1.4.0.md) - How to configure features
-- [Troubleshooting Guide](./Troubleshooting_v1.4.0.md) - Common issues
+- [Configuration Guide](./Configuration_v0.2.1.md) - How to configure features
+- [Troubleshooting Guide](./Troubleshooting_v0.2.1.md) - Common issues
 - [Performance Tuning](./Performance_Tuning.md) - Optimization strategies
 - [Integration Examples](./Integration_Examples.md) - Usage patterns

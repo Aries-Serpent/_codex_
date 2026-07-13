@@ -85,7 +85,7 @@ These settings are **appropriate for workflow-specific configuration**:
 | `-k` | Test selection | `-k "not slow"` |
 | `-m` | Marker selection | `-m "smoke"` |
 
-### ⚠️ Per-Workflow Overrides (Use Sparingly)
+### ️ Per-Workflow Overrides (Use Sparingly)
 
 If a workflow truly needs to override a global setting:
 
@@ -117,7 +117,7 @@ Install these pytest plugins as specified in workflows:
 | `pytest-timeout` | `--timeout`, `--timeout-method` | Test timeouts |
 | `pytest-rerunfailures` | `--reruns`, `--reruns-delay` | Test retries |
 
-### ⚠️ Common Plugin Name Confusion
+### ️ Common Plugin Name Confusion
 
 **CORRECT**: `pytest-rerunfailures`  
 **WRONG**: `pytest-retry` (different package)

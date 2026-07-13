@@ -30,7 +30,7 @@
     - [7. **Issue Template for MCP**](#7-issue-template-for-mcp)
 - [ Phase 2 (Current Cycle) Objectives](#-phase-2-current-cycle-objectives)
   - [High Priority](#high-priority)
-    - [1. **Level 4 MLOps P1 Gap Closure** (SAR Sprint) 🟡 IN PROGRESS](#1-level-4-mlops-p1-gap-closure-sar-sprint--in-progress)
+    - [1. **Level 4 MLOps P1 Gap Closure** (SAR Sprint)  IN PROGRESS](#1-level-4-mlops-p1-gap-closure-sar-sprint--in-progress)
     - [2. **MCP Package Merge & Diff Tools** (Phase 14)](#2-mcp-package-merge--diff-tools-phase-14)
     - [3. **agent Autonomy Expansion** (Phase 15)](#3-agent-autonomy-expansion-phase-15)
     - [4. **Self-Evolution Infrastructure** (Phase 16)](#4-self-evolution-infrastructure-phase-16)
@@ -51,7 +51,7 @@
 - [🚧 Known Blockers & Dependencies](#-known-blockers--dependencies)
   - [Current Blockers](#current-blockers)
   - [Potential Blockers](#potential-blockers)
-- [🔄 Maintenance & Updates](#-maintenance--updates)
+- [ Maintenance & Updates](#-maintenance--updates)
   - [Update Frequency](#update-frequency)
   - [Review Cycle](#review-cycle)
   - [Ownership](#ownership)
@@ -61,7 +61,7 @@
 
 **Purpose**: Unified roadmap for `_codex_` repository with capability statuses, iteration plans, and future scope.
 
-**Roadmap Baseline Date (Version Cut)**: 2026-04-28 | **Version**: 2.1.1 | **Owner**: DevOps + agent Team
+**Roadmap Baseline Date 2026-07-13
 > **Note**: Dates in this roadmap (including 2026 entries) are planning projections/targets and may not reflect externally verified historical events.
 
 ---
@@ -80,10 +80,10 @@
 |------|--------|-------------|
 |  | **Complete** | Production ready, fully operational |
 |  | **Active** | In development, on track |
-| 🟡 | **Planning** | Designed, ready to start |
+|  | **Planning** | Designed, ready to start |
 |  | **Blocked** | Waiting on dependencies |
 |  | **Deferred** | Postponed, low priority |
-| ⏳ | **Pending** | Queued for future iteration |
+|  | **Pending** | Queued for future iteration |
 
 ---
 
@@ -102,7 +102,7 @@
 | **Test Suite** |  Complete | 100% | 21,500+ tests, coverage ratchet in progress |
 | **Documentation Hub** |  Complete | 95% | 693+ files, evolution center, cognitive brain |
 | **Cognitive Brain** |  Complete | 100% | 100+ files, 22 cognitive modules, pattern detection |
-| **Genesis Protocol** | 🟡 Foundation Ready | 80% | 3-layer safety, awaiting secret injection | <!-- pragma: allowlist secret -->
+| **Genesis Protocol** |  Foundation Ready | 80% | 3-layer safety, awaiting secret injection | <!-- pragma: allowlist secret -->
 | **agent Autonomy** |  Active | 70% | 53+ agents deployed, coordination in progress |
 
 ### Infrastructure Maturity
@@ -110,7 +110,7 @@
 | Area | Level | Target | Gap |
 |------|-------|--------|-----|
 | **MLOps Maturity** | Level 3.95  | Level 4 | P1 gaps resolved (SAR-G01/G02/G05) — see [SAR_METHODOLOGY.md §10](ops/SAR_METHODOLOGY.md#10-gap-registry--roadmap) |
-| **Test Coverage** | 90% | 95%+ | 🟡 5%+ |
+| **Test Coverage** | 90% | 95%+ |  5%+ |
 | **Security Posture** | Elite | Elite |  None |
 | **CI/CD Performance** | Optimized | <3 min |  Near target |
 | **Cache Efficiency** | Multi-layer | 95%+ |  Incremental caching active |
@@ -217,8 +217,8 @@
 3.  Autonomous agent framework (`scripts/autonomous_agent.py`)
 4.  Audit trail system (`.codex/evidence/`)
 5.  Genesis bootstrap template created
-6. ⏳ Secret injection (CODEX_MASTER_KEY) — awaiting human admin
-7. ⏳ Full activation (SAFE_MODE → False) — blocked on secret injection
+6.  Secret injection (CODEX_MASTER_KEY) — awaiting human admin
+7.  Full activation (SAFE_MODE → False) — blocked on secret injection
 
 **Deliverable**:  Genesis foundation ready; activation awaiting human admin
 
@@ -261,7 +261,7 @@
 
 #### 3. **agent System Enhancement** (Phase 12)
 **Timeline**: 2026-02-01 to 2026-03-15
-**Status**: 🟡 Planning
+**Status**:  Planning
 **Effort**: 8-12 sessions (~250K-400K tokens)
 
 **Tasks**:
@@ -277,7 +277,7 @@
 
 #### 4. **Performance Optimization** (Phase 9 focus)
 **Timeline**: 2026-01-06 to 2026-02-28
-**Status**: ⏳ Pending
+**Status**:  Pending
 
 **Targets**:
 - CI/CD builds: <3 minutes
@@ -300,7 +300,7 @@
 
 #### 6. **MCP Interactive Mode** (Phase 13)
 **Timeline**: 2026-03-15 to 2026-03-31
-**Status**: 🟡 Planning
+**Status**:  Planning
 **Effort**: 5-7 iterations
 
 **Features**:
@@ -320,9 +320,9 @@
 
 ### High Priority
 
-#### 1. **Level 4 MLOps P1 Gap Closure** (SAR Sprint) 🟡 IN PROGRESS
+#### 1. **Level 4 MLOps P1 Gap Closure** (SAR Sprint)  IN PROGRESS
 **Timeline**: Current cycle (live schedule maintained in `docs/ops/SAR_METHODOLOGY.md`)  
-**Status**: 🟡 In progress (as of 2026-05-08 update) — 2 of 3 P1 gaps RESOLVED; SAR-G03 partial (75/100); cycle remains open through 2026-05-31  
+**Status**:  In progress (as of 2026-05-08 update) — 2 of 3 P1 gaps RESOLVED; SAR-G03 partial (75/100); cycle remains open through 2026-05-31  
 **Reference**: `docs/ops/SAR_METHODOLOGY.md` — executable planset §12
 
 | Gap | Owner | Playbook | ETA |
@@ -435,10 +435,10 @@
 
 | Metric | Current | Cycle 1 Target | Cycle 2 Target | Cycle 3 Target |
 |--------|---------|-----------|-----------|-----------|
-| **Developer Productivity** | High | Very High | Exceptional | Best-in-class |
+| **Developer Productivity** | High | Very High | Exceptional |  |
 | **Time to Feature** | Iterations | Commits | Commits | Pre-commits |
 | **Bug Resolution Time** | Commits | Pre-commits | Pre-commits | Automated |
-| **Documentation Quality** | Good | Excellent | Exceptional | Best-in-class |
+| **Documentation Quality** | Good | Excellent | Exceptional |  |
 
 ---
 
@@ -466,7 +466,7 @@
 
 ---
 
-## 🔄 Maintenance & Updates
+##  Maintenance & Updates
 
 ### Update Frequency
 - **Roadmap**: Per-phase or after major milestones
@@ -496,7 +496,7 @@
 ---
 
 **Roadmap Status**:  Active & Current
-**Last Content Update**: 2026-05-14 (S873 — Phase 9 Autonomous Ops 95% complete; PR #4356; mermaid maps v1.2.0)
+**Last Content Update**: 2026-05-14 (S873 — Phase 9 Autonomous Ops 95% complete; PR #4356; mermaid maps v0.2.1)
 **Next Projected Update**: 2026-06-06 (planned: Phase 9 completion milestone)
 **Next Review**: 2026-06-06
 **Version**: 2.1.1

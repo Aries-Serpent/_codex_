@@ -16,7 +16,7 @@
 | Active living docs | 18 | Keep — update regularly |  Current |
 | PR what's-next docs | 8 | Keep — one per active/recent PR |  Current |
 | Archive candidates (PHASE0/1/2 completion reports) | 28 originally · **31 moved** | `docs/plans/archive/` |  **Done S870** (3 more identified at execution) |
-| Merge candidates (near-duplicate CI/ops docs) | 5 | Merge → single canonical doc | ⏳ Next session |
+| Merge candidates (near-duplicate CI/ops docs) | 5 | Merge → single canonical doc |  Next session |
 | Retain as-is (design docs, guides, runbooks) | 19 | Keep — still relevant |  Current |
 
 ---
@@ -100,7 +100,7 @@ git mv docs/plans/MILESTONE_30_PERCENT_COVERAGE_ACHIEVED.md docs/plans/archive/
 
 ---
 
-## 🔀 Merge Candidates (near-duplicates)
+##  Merge Candidates (near-duplicates)
 
 | Files to Merge | Target | Overlap |
 |----------------|--------|---------|
@@ -135,16 +135,16 @@ git mv docs/plans/MILESTONE_30_PERCENT_COVERAGE_ACHIEVED.md docs/plans/archive/
 
 ---
 
-## 🔗 Mermaid: Docs Lifecycle
+##  Mermaid: Docs Lifecycle
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing "📝 New Doc Created\n(agent session)", "📌 Active Living Doc\n(updated each session)"'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing " New Doc Created\n(agent session)", "📌 Active Living Doc\n(updated each session)"'}}%%
 flowchart TD
-    NEW["📝 New Doc Created\n(agent session)"]
+    NEW[" New Doc Created\n(agent session)"]
     ACTIVE["📌 Active Living Doc\n(updated each session)"]
-    STALE["⏳ Stale Completion Report\n(not updated in 30+ days)"]
+    STALE[" Stale Completion Report\n(not updated in 30+ days)"]
     ARCHIVE["🗄️ docs/plans/archive/\n(preserved, findable)"]
-    INDEX["📋 INDEX.md\nCentral catalogue"]
+    INDEX[" INDEX.md\nCentral catalogue"]
 
     NEW -->|"still relevant"| ACTIVE
     NEW -->|"completion report"| STALE

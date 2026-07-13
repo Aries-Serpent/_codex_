@@ -1,0 +1,24 @@
+%% Circuit Breaker Patterns — Aries-Serpent/_codex_
+%% Phase 4.13 — Integration Scenario Diagrams
+
+flowchart TD
+    A["CLOSED: Normal\n(requests flow)"]
+    B["📊 Monitor Failures\n(count, window)"]
+    C{"Threshold\nexceeded?"}
+    D["🔴 OPEN: Fail-Fast\n(reject immediately)"]
+    E["⏳ After Timeout\n(30s)"]
+    F["🟡 HALF-OPEN: Test\n(allow 1 req)"]
+    G{"Request\nsucceeds?"}
+    H["🟢 CLOSED: Resume\n(back to normal)"]
+    I["🔴 OPEN: Still broken\n(stay open)"]
+    
+    A --> B --> C
+    C -->|"no"| A
+    C -->|"yes"| D --> E --> F --> G
+    G -->|"yes"| H
+    G -->|"no"| I
+    
+    style A fill:#1b4332,color:#fff
+    style D fill:#e63946,color:#fff
+    style H fill:#1b4332,color:#fff
+    style I fill:#e63946,color:#fff

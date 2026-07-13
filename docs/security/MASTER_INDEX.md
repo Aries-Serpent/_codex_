@@ -102,7 +102,7 @@ user = db.query(f"SELECT * FROM users WHERE id={user_id}")
 
 ---
 
-## 🚨 Incident Response
+##  Incident Response
 
 **Document:** `/docs/operations/SECURITY_INCIDENT_PLAYBOOK.md`
 
@@ -236,7 +236,7 @@ Verify Fix
 
 ---
 
-## 🔗 Related Security Guides
+##  Related Security Guides
 
 ### MCP Security
 **Document:** `/docs/mcp/MCP_SECURITY_GUIDE.md`
@@ -278,7 +278,7 @@ Verify Fix
 
 ---
 
-## 📋 Security Checklist for PRs
+##  Security Checklist for PRs
 
 Before merging any code:
 
@@ -294,7 +294,7 @@ Before merging any code:
 
 ---
 
-## 🚨 Security Incident?
+##  Security Incident?
 
 **Report to:** security@example.com  
 **Response Time:** <1 hour  
@@ -318,7 +318,7 @@ Before merging any code:
 
 ---
 
-## 🔄 Security Update Frequency
+##  Security Update Frequency
 
 - **Daily:** Automated scans (code, dependencies, secrets)
 - **Weekly:** Dependency updates available

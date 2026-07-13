@@ -4,8 +4,8 @@
 
 **Last Updated: 2026-06-22
 
-> **Session:** S182 | **PR:** #3724 | **Status:** 📋 PROPOSAL (awaiting owner review)
-> **Author:** Copilot Coding Agent (claude-opus-4.6) | **Date:** 2026-03-23
+> **Session:** S182 | **PR:** #3724 | **Status:**  PROPOSAL (awaiting owner review)
+> **Author:** Copilot Coding Agent (claude-opus-4.6) | **Date:2026-07-13
 > **Policy Compliance:**  Full adherence to [AI Codebase Agency Policy](../../.codex/CODEBASE_AGENCY_POLICY.md)
 
 ---
@@ -78,8 +78,8 @@ flowchart TD
 | Pattern | Auto-Fix | Method |
 |---------|----------|--------|
 | `ruff-*` (F401/F841/I001/F541) |  Full | `ruff --fix` |
-| `import-*` (missing/circular) | ⚠️ Partial | Heuristic rewrite |
-| `yaml-*` (indentation) | ⚠️ Detect only | Manual |
+| `import-*` (missing/circular) | ️ Partial | Heuristic rewrite |
+| `yaml-*` (indentation) | ️ Detect only | Manual |
 | `timeout-config` |  Full | Config patch |
 | `mypy-baseline` |  Full | Baseline bump |
 | `changelog-*` |  Full | Auto-append |
@@ -306,7 +306,7 @@ sequenceDiagram
     Gate->>Var: Check COPILOT_MULTI_SESSION
     Var-->>Gate: "false"
     Gate->>Var: Append "3725" to COPILOT_SESSION_QUEUE
-    Gate->>PR2: ⏳ Queued (PR #3724 active)
+    Gate->>PR2:  Queued (PR #3724 active)
 
     PR1->>Gate: Session complete
     Gate->>Var: Clear COPILOT_ACTIVE_SESSION
@@ -366,7 +366,7 @@ Agent Token Delegation checkbox in the PR template:
   - **Owner must approve in the GitHub Actions UI** ("Waiting for approval")
 
 - [ ] **Multiple Copilot Coding Agent Sessions** (`COPILOT_MULTI_SESSION`)
-  - ⚠️ **Default: disabled** — Only ONE Copilot session active at a time
+  - ️ **Default: disabled** — Only ONE Copilot session active at a time
   - When enabled: allows parallel Copilot sessions on different PRs
   - When disabled: sessions are queued and executed sequentially
   - **Caution:** Multiple sessions may cause merge conflicts on shared files
@@ -774,7 +774,7 @@ sequenceDiagram
       ACTIVE_BRANCH=$(gh pr view "$ACTIVE_PR" --json headRefName -q .headRefName 2>/dev/null || echo "")
       if [ "$ACTIVE_BRANCH" = "$TARGET_BRANCH" ]; then
         echo "skip_push=true" >> "$GITHUB_OUTPUT"
-        echo "⚠️ Active agent session on $TARGET_BRANCH (PR #$ACTIVE_PR) — skipping push"
+        echo "️ Active agent session on $TARGET_BRANCH (PR #$ACTIVE_PR) — skipping push"
       else
         echo "skip_push=false" >> "$GITHUB_OUTPUT"
       fi
@@ -980,13 +980,13 @@ check whether CI failure issues exist.
 | Conflict Source | Detection | Resolution | Automation Level |
 |----------------|-----------|------------|-----------------|
 | Bot metadata drift (main → branch) | `branch_rebase_check.py` (REQ-10) | Auto-merge via GitHub Merges API |  Fully automatic |
-| Functional commits in gap | `branch_rebase_check.py` (REQ-10) | Rich helper comment + `@copilot` prompt | ⚠️ Semi-automatic |
+| Functional commits in gap | `branch_rebase_check.py` (REQ-10) | Rich helper comment + `@copilot` prompt | ️ Semi-automatic |
 | Concurrent agent sessions — sentinel files | Session Concurrency Gate (new) | Sequential execution prevents conflict |  Fully automatic |
-| Concurrent agent sessions — code files | Multi-session mode warning | `git pull --rebase` + Copilot escalation | ⚠️ Semi-automatic |
+| Concurrent agent sessions — code files | Multi-session mode warning | `git pull --rebase` + Copilot escalation | ️ Semi-automatic |
 | Self-healing push vs active session | Active-session check (new) | Skip push, defer to active session |  Fully automatic |
 | `report_progress` push failure | `git pull --rebase` (auto-stash) | Automatic rebase before push |  Fully automatic |
 | Promotion merge (0D_base_ → main) | PR mergeable status check | Manual review + human approval |  Manual (by design) |
-| Semantic conflict (compiles but breaks) | CI test suite on merged code | Copilot escalation for test fix | ⚠️ Semi-automatic |
+| Semantic conflict (compiles but breaks) | CI test suite on merged code | Copilot escalation for test fix | ️ Semi-automatic |
 
 ### Conflict Prevention Architecture (Full Picture)
 

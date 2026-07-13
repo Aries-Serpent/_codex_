@@ -154,7 +154,7 @@ pip install -e ".[dev]" --quiet
 | Set repo variables |  0% | 80% | CODEX_ADMIN_KEY or A-002 |
 | Trigger CI |  0% | 70% | A-003 |
 | Create PRs |  0% | 60% | A-006 |
-| Session continuity | ⚠️ 30% | 90% | A-005 (checkpoint JSON) |
+| Session continuity | ️ 30% | 90% | A-005 (checkpoint JSON) |
 | Approval bypass |  80% | 100% | A-001 (session token) | <!-- pragma: allowlist secret -->
 
 **Current autonomy score: ~57%**  
