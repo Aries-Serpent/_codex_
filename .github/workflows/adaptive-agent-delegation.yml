@@ -1,5 +1,6 @@
 name: Adaptive Agent Delegation Framework
-true:
+
+on:
   workflow_call:
     inputs:
       context_manifest:
@@ -21,9 +22,9 @@ true:
         default: parallel
         description: Delegation mode
         options:
-        - sequential
-        - parallel
-        - cascading
+          - sequential
+          - parallel
+          - cascading
         required: true
         type: choice
       dry_run:
@@ -34,233 +35,334 @@ true:
         default: '5'
         description: Maximum agents to run in parallel
         required: false
+
 concurrency:
-  cancel-in-progress: false
   group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 permissions:
   actions: read
   contents: read
   pull-requests: read
-jobs:
-  coalesce_results:
-    continue-on-error: true
-    if: ${{ always() && inputs.dry_run != 'true' }}
-    name: Coalesce Parallel Results
-    needs:
-    - load_context
-    - delegate_agents
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v5
-      with:
-        persist-credentials: false
-    - name: Set up Python
-      uses: actions/setup-python@v6
-      with:
-        cache: pip
-        python-version: '3.12'
-    - id: collect
-      name: Collect parallel outputs
-      run: "python3 << 'PYTHON_EOF'\nimport json\nimport os\nfrom pathlib import Path\n\
-        from datetime import datetime, timezone\n\n# Initialize result collection\n\
-        results = {\n    \"generated_at\": datetime.now(timezone.utc).isoformat(),\n\
-        \    \"total_agents\": 0,\n    \"completed_agents\": 0,\n    \"failed_agents\"\
-        : 0,\n    \"delegated_tasks\": [],\n    \"merged_output\": {},\n    \"next_actions\"\
-        : []\n}\n\n# Collect task metadata\ntasks_dir = Path(\".codex/delegation_tasks\"\
-        )\nif tasks_dir.exists():\n    for task_file in tasks_dir.glob(\"*.json\"\
-        ):\n        try:\n            task = json.loads(task_file.read_text())\n \
-        \           results[\"delegated_tasks\"].append(task)\n            results[\"\
-        total_agents\"] += 1\n        except Exception as e:\n            print(f\"\
-        ⚠️ Failed to load {task_file}: {e}\")\n\n# Save aggregated results\noutput_file\
-        \ = Path(\".codex/delegation_results.json\")\noutput_file.write_text(json.dumps(results,\
-        \ indent=2))\n\nprint(f\"✅ Coalesced results from {results['total_agents']}\
-        \ agents\")\nprint(f\"   Output saved to: {output_file}\")\n\nPYTHON_EOF\n"
-    - name: Generate delegation summary
-      run: "echo \"## \U0001F3AF Agent Delegation Summary\" > /tmp/delegation_summary.md\n\
-        echo \"\" >> /tmp/delegation_summary.md\necho \"**Timestamp:** $(date -u +'%Y-%m-%dT%H:%M:%SZ')\"\
-        \ >> /tmp/delegation_summary.md\necho \"**Mode:** ${{ inputs.delegation_mode\
-        \ || 'parallel' }}\" >> /tmp/delegation_summary.md\necho \"**Agents Delegated:**\
-        \ ${{ needs.load_context.outputs.delegation_count }}\" >> /tmp/delegation_summary.md\n\
-        echo \"\" >> /tmp/delegation_summary.md\n\nif [ -f \".codex/delegation_results.json\"\
-        \ ]; then\n  echo \"**Results:** ✅ Coalesced\" >> /tmp/delegation_summary.md\n\
-        \  cat .codex/delegation_results.json >> /tmp/delegation_summary.md\nfi\n\n\
-        cat /tmp/delegation_summary.md\n"
-    - id: dashboard
-      name: Generate dashboard
-      run: 'python3 scripts/ci/rapid_delegation_engine.py 2>/dev/null || echo "ℹ️
-        Dashboard generation skipped (optional)"
 
-        '
-    timeout-minutes: 10
+jobs:
+  load_context:
+    name: Load Aggregated Context
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+    outputs:
+      manifest_content: ${{ steps.load.outputs.manifest }}
+      agents_to_delegate: ${{ steps.parse.outputs.agents }}
+      delegation_count: ${{ steps.parse.outputs.count }}
+      has_critical: ${{ steps.parse.outputs.has_critical }}
+    steps:
+      - name: Configure secret masking
+        run: |
+          echo '::add-mask::' "${{ secrets.CODEX_MASTER_KEY }}"
+          echo '::add-mask::' "${{ secrets.CODEX_BACKUP_KEY }}"
+      
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      
+      - id: load
+        name: Load context manifest
+        env:
+          MANIFEST_PATH: ${{ inputs.context_manifest || '.codex/session_context_manifest.json' }}
+        run: |
+          if [ -f "$MANIFEST_PATH" ]; then
+            echo "manifest=$(cat "$MANIFEST_PATH" | jq -c .)" >> $GITHUB_OUTPUT
+            echo "✅ Loaded context from $MANIFEST_PATH"
+          else
+            echo "⚠️ Manifest not found at $MANIFEST_PATH, using empty context"
+            echo "manifest={}" >> $GITHUB_OUTPUT
+          fi
+      
+      - id: parse
+        name: Parse delegation recommendations
+        env:
+          MANIFEST: ${{ steps.load.outputs.manifest }}
+        run: |
+          AGENTS=$(echo "$MANIFEST" | jq -r '.delegation_recommendations[0].recommended_agents[]?' 2>/dev/null | tr '\n' ',' | sed 's/,$//')
+          
+          if [ -z "$AGENTS" ]; then
+            AGENTS="unified-coverage-agent,ci-auto-healer-agent,workflow-health-monitor"
+          fi
+          
+          AGENT_COUNT=$(echo "$AGENTS" | tr ',' '\n' | wc -l)
+          MAX_AGENTS="${{ inputs.max_agents || 5 }}"
+          
+          if [ "$AGENT_COUNT" -gt "$MAX_AGENTS" ]; then
+            AGENTS=$(echo "$AGENTS" | tr ',' '\n' | head -n "$MAX_AGENTS" | tr '\n' ',')
+          fi
+          
+          echo "agents=$AGENTS" >> $GITHUB_OUTPUT
+          echo "count=$AGENT_COUNT" >> $GITHUB_OUTPUT
+          
+          HAS_CRITICAL=$(echo "$AGENTS" | grep -c "security\|auth\|critical" || echo "0")
+          echo "has_critical=$HAS_CRITICAL" >> $GITHUB_OUTPUT
+          
+          echo "📋 Delegating to agents: $AGENTS"
+      
+      - name: Summary
+        run: |
+          echo "## Context Load Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Manifest Path:** ${{ inputs.context_manifest || '.codex/session_context_manifest.json' }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** Loaded" >> $GITHUB_STEP_SUMMARY
+
   delegate_agents:
     if: ${{ needs.load_context.outputs.delegation_count > 0 }}
     name: Delegate to ${{ matrix.agent }}
     needs: load_context
     runs-on: ubuntu-latest
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v5
-      with:
-        persist-credentials: false
-    - id: init
-      name: Initialize delegation context
-      run: 'AGENT="${{ matrix.agent }}"
-
-        DRY_RUN="${{ inputs.dry_run || false }}"
-
-
-        echo "🚀 Delegating to agent: $AGENT"
-
-        echo "   Mode: ${{ inputs.delegation_mode }}"
-
-        echo "   Dry run: $DRY_RUN"
-
-
-        echo "agent_name=$AGENT" >> $GITHUB_OUTPUT
-
-        '
-    - id: task_manifest
-      name: Generate agent task manifest
-      run: "cat > /tmp/agent_task.json << 'EOF'\n{\n  \"agent_id\": \"${{ matrix.agent\
-        \ }}\",\n  \"task_type\": \"adaptive_delegation\",\n  \"phase\": \"phase_2_implementation\"\
-        ,\n  \"context\": {\n    \"current_phase\": \"${{ needs.load_context.outputs.manifest_content\
-        \ }}\",\n    \"delegation_mode\": \"${{ inputs.delegation_mode || 'parallel'\
-        \ }}\",\n    \"dry_run\": \"${{ inputs.dry_run || false }}\"\n  },\n  \"expected_outputs\"\
-        : [\n    \"agent_execution_summary\",\n    \"results_artifact\",\n    \"completion_status\"\
-        \n  ]\n}\nEOF\n\necho \"task_manifest=$(cat /tmp/agent_task.json | jq -c .)\"\
-        \ >> $GITHUB_OUTPUT\n"
-    - id: delegate
-      if: ${{ inputs.dry_run != 'true' }}
-      name: Execute agent delegation (non-blocking)
-      run: "AGENT=\"${{ steps.init.outputs.agent_name }}\"\nTASK_ID=$(uuidgen | cut\
-        \ -c1-8)\n\necho \"\U0001F4E4 Queuing agent: $AGENT (task_id: $TASK_ID)\"\n\
-        \n# Mark task as queued in rapid delegation engine\n# In production, this\
-        \ would call the rapid_delegation_engine API\necho \"task_id=$TASK_ID\" >>\
-        \ $GITHUB_OUTPUT\necho \"status=queued\" >> $GITHUB_OUTPUT\n\n# Store task\
-        \ metadata for callback\nmkdir -p .codex/delegation_tasks\ncat > .codex/delegation_tasks/$TASK_ID.json\
-        \ << 'EOF'\n{\n  \"task_id\": \"${{ env.TASK_ID }}\",\n  \"agent\": \"${{\
-        \ steps.init.outputs.agent_name }}\",\n  \"queued_at\": \"$(date -u +'%Y-%m-%dT%H:%M:%SZ')\"\
-        ,\n  \"status\": \"queued\"\n}\nEOF\n"
-    - if: always()
-      name: Cache test results (Layer 3)
-      uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25
-      with:
-        key: ${{ runner.os }}-pytest-${{ github.sha }}
-        path: .pytest_cache/
-        restore-keys: '${{ runner.os }}-pytest-
-
-          '
-    - if: ${{ inputs.dry_run == 'true' }}
-      name: Dry-run output
-      run: 'echo "🧪 DRY RUN: Would delegate to ${{ steps.init.outputs.agent_name }}"
-
-        echo "   Task manifest: ${{ steps.task_manifest.outputs.task_manifest }}"
-
-        '
     strategy:
       matrix:
-        agent: ${{ fromJson(format('[{0}]', needs.load_context.outputs.agents_to_delegate))
-          }}
+        agent: ${{ fromJson(format('[{0}]', needs.load_context.outputs.agents_to_delegate)) }}
       max-parallel: ${{ inputs.max_agents || 5 }}
-    timeout-minutes: 30
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      
+      - id: init
+        name: Initialize delegation context
+        env:
+          AGENT: ${{ matrix.agent }}
+          DRY_RUN: ${{ inputs.dry_run || false }}
+          DELEGATION_MODE: ${{ inputs.delegation_mode || 'parallel' }}
+        run: |
+          echo "🚀 Delegating to agent: $AGENT"
+          echo "   Mode: $DELEGATION_MODE"
+          echo "   Dry run: $DRY_RUN"
+          echo "agent_name=$AGENT" >> $GITHUB_OUTPUT
+      
+      - id: task_manifest
+        name: Generate agent task manifest
+        env:
+          AGENT_ID: ${{ matrix.agent }}
+          DELEGATION_MODE: ${{ inputs.delegation_mode || 'parallel' }}
+          DRY_RUN: ${{ inputs.dry_run || false }}
+          MANIFEST_CONTENT: ${{ needs.load_context.outputs.manifest_content }}
+        run: |
+          cat > /tmp/agent_task.json << 'EOF'
+          {
+            "agent_id": "AGENT_ID_PLACEHOLDER",
+            "task_type": "adaptive_delegation",
+            "phase": "phase_2_implementation",
+            "context": {
+              "current_phase": "MANIFEST_PLACEHOLDER",
+              "delegation_mode": "MODE_PLACEHOLDER",
+              "dry_run": "DRY_RUN_PLACEHOLDER"
+            },
+            "expected_outputs": [
+              "agent_execution_summary",
+              "results_artifact",
+              "completion_status"
+            ]
+          }
+          EOF
+          
+          # Safe substitution using sed
+          sed -i "s|AGENT_ID_PLACEHOLDER|$AGENT_ID|g" /tmp/agent_task.json
+          sed -i "s|MANIFEST_PLACEHOLDER|${MANIFEST_CONTENT//|/\\|}|g" /tmp/agent_task.json
+          sed -i "s|MODE_PLACEHOLDER|$DELEGATION_MODE|g" /tmp/agent_task.json
+          sed -i "s|DRY_RUN_PLACEHOLDER|$DRY_RUN|g" /tmp/agent_task.json
+          
+          echo "task_manifest=$(cat /tmp/agent_task.json | jq -c .)" >> $GITHUB_OUTPUT
+      
+      - id: delegate
+        if: ${{ inputs.dry_run != 'true' }}
+        name: Execute agent delegation (non-blocking)
+        env:
+          AGENT_NAME: ${{ steps.init.outputs.agent_name }}
+        run: |
+          TASK_ID=$(uuidgen | cut -c1-8)
+          echo "📬 Queuing agent: $AGENT_NAME (task_id: $TASK_ID)"
+          
+          echo "task_id=$TASK_ID" >> $GITHUB_OUTPUT
+          echo "status=queued" >> $GITHUB_OUTPUT
+          
+          mkdir -p .codex/delegation_tasks
+          cat > ".codex/delegation_tasks/${TASK_ID}.json" << 'EOF'
+          {
+            "task_id": "TASK_ID_PLACEHOLDER",
+            "agent": "AGENT_PLACEHOLDER",
+            "queued_at": "TIMESTAMP_PLACEHOLDER",
+            "status": "queued"
+          }
+          EOF
+          
+          # Safe substitution
+          sed -i "s|TASK_ID_PLACEHOLDER|$TASK_ID|g" ".codex/delegation_tasks/${TASK_ID}.json"
+          sed -i "s|AGENT_PLACEHOLDER|$AGENT_NAME|g" ".codex/delegation_tasks/${TASK_ID}.json"
+          sed -i "s|TIMESTAMP_PLACEHOLDER|$(date -u +'%Y-%m-%dT%H:%M:%SZ')|g" ".codex/delegation_tasks/${TASK_ID}.json"
+      
+      - if: always()
+        name: Cache test results (Layer 3)
+        uses: actions/cache@v4
+        with:
+          key: ${{ runner.os }}-pytest-${{ github.sha }}
+          path: .pytest_cache/
+          restore-keys: |
+            ${{ runner.os }}-pytest-
+      
+      - if: ${{ inputs.dry_run == 'true' }}
+        name: Dry-run output
+        env:
+          AGENT_NAME: ${{ steps.init.outputs.agent_name }}
+          TASK_MANIFEST: ${{ steps.task_manifest.outputs.task_manifest }}
+        run: |
+          echo "🧪 DRY RUN: Would delegate to $AGENT_NAME"
+          echo "   Task manifest: $TASK_MANIFEST"
+      
+      - name: Summary
+        run: |
+          echo "## Agent Delegation Step Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Agent:** ${{ steps.init.outputs.agent_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Dry Run:** ${{ inputs.dry_run || false }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** Delegated" >> $GITHUB_STEP_SUMMARY
+
+  coalesce_results:
+    if: ${{ always() && inputs.dry_run != 'true' }}
+    name: Coalesce Parallel Results
+    needs:
+      - load_context
+      - delegate_agents
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+          cache: pip
+      
+      - id: collect
+        name: Collect parallel outputs
+        run: |
+          python3 << 'PYTHON_EOF'
+          import json
+          import os
+          from pathlib import Path
+          from datetime import datetime, timezone
+
+          # Initialize result collection
+          results = {
+              "generated_at": datetime.now(timezone.utc).isoformat(),
+              "total_agents": 0,
+              "completed_agents": 0,
+              "failed_agents": 0,
+              "delegated_tasks": [],
+              "merged_output": {},
+              "next_actions": []
+          }
+
+          # Collect task metadata
+          tasks_dir = Path(".codex/delegation_tasks")
+          if tasks_dir.exists():
+              for task_file in tasks_dir.glob("*.json"):
+                  try:
+                      task = json.loads(task_file.read_text())
+                      results["delegated_tasks"].append(task)
+                      results["total_agents"] += 1
+                  except Exception as e:
+                      print(f"⚠️ Failed to load {task_file}: {e}")
+
+          # Save aggregated results
+          output_file = Path(".codex/delegation_results.json")
+          output_file.write_text(json.dumps(results, indent=2))
+
+          print(f"✅ Coalesced results from {results['total_agents']} agents")
+          print(f"   Output saved to: {output_file}")
+          PYTHON_EOF
+      
+      - name: Generate delegation summary
+        env:
+          DELEGATION_MODE: ${{ inputs.delegation_mode || 'parallel' }}
+          DELEGATION_COUNT: ${{ needs.load_context.outputs.delegation_count }}
+        run: |
+          {
+            echo "## 🎯 Agent Delegation Summary"
+            echo ""
+            echo "**Timestamp:** $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+            echo "**Mode:** $DELEGATION_MODE"
+            echo "**Agents Delegated:** $DELEGATION_COUNT"
+            echo ""
+            
+            if [ -f ".codex/delegation_results.json" ]; then
+              echo "**Results:** ✅ Coalesced"
+              echo ""
+              cat .codex/delegation_results.json
+            fi
+          } | tee /tmp/delegation_summary.md
+          
+          cat /tmp/delegation_summary.md >> $GITHUB_STEP_SUMMARY
+      
+      - id: dashboard
+        name: Generate dashboard
+        run: |
+          python3 scripts/ci/rapid_delegation_engine.py 2>/dev/null || echo "ℹ️ Dashboard generation skipped (optional)"
+      
+      - name: Summary
+        run: |
+          echo "## Coalesce Results Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** Results coalesced" >> $GITHUB_STEP_SUMMARY
+
   finalize:
     if: ${{ always() }}
     name: Finalize Delegation
     needs:
-    - load_context
-    - delegate_agents
-    - coalesce_results
+      - load_context
+      - delegate_agents
+      - coalesce_results
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v5
-      with:
-        persist-credentials: false
-    - name: Report delegation status
-      run: 'echo "📊 Adaptive Agent Delegation Framework - Status Report"
-
-        echo ""
-
-        echo "✅ Framework Components:"
-
-        echo "  1. Context Loading: ✅ COMPLETE"
-
-        echo "  2. Agent Delegation: ✅ QUEUED (${{ needs.load_context.outputs.delegation_count
-        }} agents)"
-
-        echo "  3. Result Coalescing: ✅ COMPLETE"
-
-        echo ""
-
-        echo "🎯 Delegation Mode: ${{ inputs.delegation_mode || ''parallel'' }}"
-
-        echo "📡 Max Parallel: ${{ inputs.max_agents || 5 }}"
-
-        echo "🔒 Dry Run: ${{ inputs.dry_run || false }}"
-
-        echo ""
-
-        echo "💾 Output Locations:"
-
-        echo "  - .codex/delegation_results.json"
-
-        echo "  - .codex/RAPID_DELEGATION_STATUS.md"
-
-        echo "  - .codex/delegation_tasks/*.json"
-
-        '
-    - name: Summary
-      run: 'echo "## Adaptive Agent Delegation Complete" >> $GITHUB_STEP_SUMMARY
-
-        echo "" >> $GITHUB_STEP_SUMMARY
-
-        echo "✅ **Status:** ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
-
-        echo "📤 **Agents Queued:** ${{ needs.load_context.outputs.delegation_count
-        }}" >> $GITHUB_STEP_SUMMARY
-
-        echo "⚙️ **Mode:** ${{ inputs.delegation_mode || ''parallel'' }}" >> $GITHUB_STEP_SUMMARY
-
-        '
-    timeout-minutes: 5
-  load_context:
-    env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-    name: Load Aggregated Context
-    outputs:
-      agents_to_delegate: ${{ steps.parse.outputs.agents }}
-      delegation_count: ${{ steps.parse.outputs.count }}
-      has_critical: ${{ steps.parse.outputs.has_critical }}
-      manifest_content: ${{ steps.load.outputs.manifest }}
-    runs-on: ubuntu-latest
-    steps:
-    - name: Configure secret masking
-      run: 'echo ''::add-mask::'' ${{ secrets.CODEX_MASTER_KEY }}
-
-        echo ''::add-mask::'' ${{ secrets.CODEX_BACKUP_KEY }}'
-    - name: Checkout repository
-      uses: actions/checkout@v5
-      with:
-        persist-credentials: false
-    - id: load
-      name: Load context manifest
-      run: "MANIFEST_PATH=\"${{ inputs.context_manifest || '.codex/session_context_manifest.json'\
-        \ }}\"\n\nif [ -f \"$MANIFEST_PATH\" ]; then\n  echo \"manifest=$(cat $MANIFEST_PATH\
-        \ | jq -c .)\" >> $GITHUB_OUTPUT\n  echo \"✅ Loaded context from $MANIFEST_PATH\"\
-        \nelse\n  echo \"⚠️ Manifest not found at $MANIFEST_PATH, using empty context\"\
-        \n  echo \"manifest={}\" >> $GITHUB_OUTPUT\nfi\n"
-    - id: parse
-      name: Parse delegation recommendations
-      run: "MANIFEST='${{ steps.load.outputs.manifest }}'\n\n# Extract recommended\
-        \ agents from manifest\nAGENTS=$(echo \"$MANIFEST\" | jq -r '.delegation_recommendations[0].recommended_agents[]?'\
-        \ 2>/dev/null | tr '\\n' ',' | sed 's/,$//')\n\nif [ -z \"$AGENTS\" ]; then\n\
-        \  # Fallback: recommend based on phase state\n  AGENTS=\"unified-coverage-agent,ci-auto-healer-agent,workflow-health-monitor\"\
-        \nfi\n\nAGENT_COUNT=$(echo \"$AGENTS\" | tr ',' '\\n' | wc -l)\nMAX_AGENTS=\"\
-        ${{ inputs.max_agents || 5 }}\"\n\nif [ \"$AGENT_COUNT\" -gt \"$MAX_AGENTS\"\
-        \ ]; then\n  AGENTS=$(echo \"$AGENTS\" | tr ',' '\\n' | head -n \"$MAX_AGENTS\"\
-        \ | tr '\\n' ',')\nfi\n\necho \"agents=$AGENTS\" >> $GITHUB_OUTPUT\necho \"\
-        count=$AGENT_COUNT\" >> $GITHUB_OUTPUT\n\nHAS_CRITICAL=$(echo \"$AGENTS\"\
-        \ | grep -c \"security\\|auth\\|critical\" || echo \"0\")\necho \"has_critical=$HAS_CRITICAL\"\
-        \ >> $GITHUB_OUTPUT\n\necho \"\U0001F4CB Delegating to agents: $AGENTS\"\n"
-    timeout-minutes: 5
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      
+      - name: Report delegation status
+        env:
+          DELEGATION_MODE: ${{ inputs.delegation_mode || 'parallel' }}
+          DELEGATION_COUNT: ${{ needs.load_context.outputs.delegation_count }}
+          DRY_RUN: ${{ inputs.dry_run || false }}
+          MAX_PARALLEL: ${{ inputs.max_agents || 5 }}
+        run: |
+          echo "📊 Adaptive Agent Delegation Framework - Status Report"
+          echo ""
+          echo "✅ Framework Components:"
+          echo "  1. Context Loading: ✅ COMPLETE"
+          echo "  2. Agent Delegation: ✅ QUEUED ($DELEGATION_COUNT agents)"
+          echo "  3. Result Coalescing: ✅ COMPLETE"
+          echo ""
+          echo "🎯 Delegation Mode: $DELEGATION_MODE"
+          echo "📡 Max Parallel: $MAX_PARALLEL"
+          echo "🔒 Dry Run: $DRY_RUN"
+          echo ""
+          echo "💾 Output Locations:"
+          echo "  - .codex/delegation_results.json"
+          echo "  - .codex/RAPID_DELEGATION_STATUS.md"
+          echo "  - .codex/delegation_tasks/*.json"
+      
+      - name: Summary
+        env:
+          DELEGATION_MODE: ${{ inputs.delegation_mode || 'parallel' }}
+          DELEGATION_COUNT: ${{ needs.load_context.outputs.delegation_count }}
+        run: |
+          echo "## Adaptive Agent Delegation Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ **Status:** ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
+          echo "📤 **Agents Queued:** $DELEGATION_COUNT" >> $GITHUB_STEP_SUMMARY
+          echo "⚙️ **Mode:** $DELEGATION_MODE" >> $GITHUB_STEP_SUMMARY
