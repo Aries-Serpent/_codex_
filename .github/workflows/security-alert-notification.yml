@@ -130,6 +130,8 @@ jobs:
           \ creation');\n  }\n}\n"
     - name: Add workflow summary
       if: always()
+      env:
+        STEPS_GET-ALERTS_OUTPUTS_HAS-ALERTS: ${{ steps.get-alerts.outputs.has-alerts }}
       run: "if [ \"${{ steps.get-alerts.outputs.has-alerts }}\" = \"true\" ]; then\n\
         \  echo \"${{ steps.create-summary.outputs.summary }}\" >> $GITHUB_STEP_SUMMARY\n\
         else\n  echo \"## ✅ No New Security Alerts\" >> $GITHUB_STEP_SUMMARY\n  echo\
@@ -140,6 +142,8 @@ jobs:
     - name: Send notification (optional - requires configuration)
       if: steps.get-alerts.outputs.has-alerts == 'true' && steps.get-alerts.outputs.critical-count
         > 0
+      env:
+        STEPS_GET-ALERTS_OUTPUTS_CRITICAL-COUNT: ${{ steps.get-alerts.outputs.critical-count }}
       run: 'echo "::notice::🚨 ${{ steps.get-alerts.outputs.critical-count }} critical
         security alert(s) detected!"
 

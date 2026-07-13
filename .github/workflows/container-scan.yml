@@ -1,10 +1,10 @@
 name: Container Security Scan
-true:
-  pull_request:
+on:
+  push:
     paths:
     - .config/Dockerfile*
     - docker/**
-  push:
+  pull_request:
     paths:
     - .config/Dockerfile*
     - docker/**
@@ -12,26 +12,25 @@ true:
   - cron: 0 5 * * 1
   workflow_dispatch: null
 concurrency:
-  cancel-in-progress: true
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 permissions:
   contents: read
   security-events: write
 jobs:
   trivy-scan:
-    env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-        }}
     name: Trivy Scan — ${{ matrix.dockerfile }}
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        dockerfile:
+        - .config/Dockerfile
+        - docker/Dockerfile.cpu
+        - docker/Dockerfile.gpu
     steps:
-    - name: Configure secret masking
-      run: |
-        echo "::add-mask::${{ secrets.CODEX_MASTER_KEY }}"
-        echo "::add-mask::${{ secrets.CODEX_BACKUP_KEY }}"
     - uses: actions/checkout@v5
-      with:
-        persist-credentials: false
     - name: Build image for scanning
       run: 'docker build -f ${{ matrix.dockerfile }} -t codex-scan:${{ strategy.job-index
         }} . || true
@@ -40,29 +39,24 @@ jobs:
     - name: Run Trivy filesystem scan (fallback if build unavailable)
       uses: aquasecurity/trivy-action@0.35.0
       with:
-        exit-code: '0'
+        scan-type: fs
+        scan-ref: .
         format: sarif
         output: trivy-results-${{ strategy.job-index }}.sarif
-        scan-ref: .
-        scan-type: fs
         severity: CRITICAL,HIGH
-    - if: always()
-      name: Upload SARIF to GitHub Security tab
+        exit-code: '0'
+    - name: Upload SARIF to GitHub Security tab
+      if: always()
       uses: github/codeql-action/upload-sarif@v3
       with:
         sarif_file: trivy-results-${{ strategy.job-index }}.sarif
-    - if: always()
-      name: Upload scan artifact
+    - name: Upload scan artifact
+      if: always()
       uses: actions/upload-artifact@v5
       with:
         name: trivy-scan-${{ github.run_id }}-${{ strategy.job-index }}
         path: trivy-results-${{ strategy.job-index }}.sarif
         retention-days: 30
-    strategy:
-      fail-fast: false
-      matrix:
-        dockerfile:
-        - .config/Dockerfile
-        - docker/Dockerfile.cpu
-        - docker/Dockerfile.gpu
-    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}

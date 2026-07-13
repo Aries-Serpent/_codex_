@@ -91,6 +91,8 @@ jobs:
     - name: Set safe artifact platform name
       id: safe-platform
       if: ${{ matrix.platform == 'linux/amd64' || env.ALLOW_MULTIARCH == 'true' }}
+      env:
+        MATRIX_PLATFORM: ${{ matrix.platform }}
       run: echo "name=$(echo '${{ matrix.platform }}' | tr '/' '-')" >> "$GITHUB_OUTPUT"
     - name: Upload wheelhouse with manifest
       if: ${{ matrix.platform == 'linux/amd64' || env.ALLOW_MULTIARCH == 'true' }}
@@ -123,6 +125,8 @@ jobs:
       uses: docker/setup-buildx-action@v3
     - name: Determine Dockerfile
       id: dockerfile
+      env:
+        MATRIX_VARIANT: ${{ matrix.variant }}
       run: "if [ \"${{ matrix.variant }}\" = \"gpu\" ]; then\n  echo \"file=Dockerfile.gpu\"\
         \ >> $GITHUB_OUTPUT\nelse\n  echo \"file=Dockerfile\" >> $GITHUB_OUTPUT\n\
         fi\n"
@@ -139,12 +143,16 @@ jobs:
     - name: Install Syft
       uses: anchore/sbom-action/download-syft@v0
     - name: Generate SBOM with Syft
+      env:
+        MATRIX_VARIANT: ${{ matrix.variant }}
       run: "syft codex-ml:sbom-${{ matrix.variant }} \\\n  -o spdx-json=sbom-${{ matrix.variant\
         \ }}.spdx.json \\\n  -o cyclonedx-json=sbom-${{ matrix.variant }}.cyclonedx.json\
         \ \\\n  -o syft-json=sbom-${{ matrix.variant }}.syft.json\n"
     - name: Install Grype
       uses: anchore/scan-action/download-grype@v0
     - name: Scan with Grype
+      env:
+        MATRIX_VARIANT: ${{ matrix.variant }}
       run: "grype codex-ml:sbom-${{ matrix.variant }} \\\n  --output sarif \\\n  --file\
         \ grype-${{ matrix.variant }}.sarif \\\n  --fail-on critical\n"
       continue-on-error: true
@@ -200,6 +208,8 @@ jobs:
       continue-on-error: ${{ matrix.python_version != '3.11' }}
     - name: Report compatibility
       if: always()
+      env:
+        JOB_STATUS: ${{ job.status }}
       run: "if [ \"${{ job.status }}\" = \"success\" ]; then\n  echo \"✅ Python ${{\
         \ matrix.python_version }} is compatible\"\nelse\n  echo \"⚠️ Python ${{ matrix.python_version\
         \ }} compatibility issues detected\"\nfi\n"

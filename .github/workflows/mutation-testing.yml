@@ -1,5 +1,5 @@
 name: Mutation Testing
-true:
+on:
   workflow_dispatch: null
   schedule:
   - cron: 0 2 * * 0
@@ -15,13 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
-    - name: 🔐 Configure secret masking
-      run: |
-        echo "::add-mask::${{ secrets.CODEX_MASTER_KEY }}"
-        echo "::add-mask::${{ secrets.CODEX_BACKUP_KEY }}"
     - uses: actions/checkout@v5
-      with:
-        persist-credentials: false
     - uses: actions/setup-python@v6
       with:
         python-version: 3.12.13
