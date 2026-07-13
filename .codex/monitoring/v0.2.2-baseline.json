@@ -1,0 +1,17 @@
+{
+  "release_version": "0.2.2",
+  "release_date": "2026-07-13",
+  "metrics_baseline": {
+    "coverage": 0.95,
+    "codeql_alerts": 0,
+    "bandit_critical": 0,
+    "dependency_vulnerabilities": 0,
+    "pypi_availability": 0.9999
+  },
+  "alert_thresholds": {
+    "coverage_drop": 0.05,
+    "new_codeql_alerts": 5,
+    "new_vulnerabilities": 1,
+    "pypi_downtime": 3600
+  }
+}
