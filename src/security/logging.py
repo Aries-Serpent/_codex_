@@ -315,13 +315,13 @@ if __name__ == "__main__":
     # Test the utilities
     print("Testing security logging utilities...\n")
 
-    test_token = "******"
+    test_token = "******"  # nosec  # Masked token for testing
     print(f"Original token: {test_token}")
     print(f"Redacted token: {redact_token(test_token)}")
     print(f"Token hash: {hash_token(test_token)}")
     print()
 
-    test_password = "MyS3cur3P@ssw0rd!"
+    test_password = "MyS3cur3P@ssw0rd!"  # nosec  # Test example only
 
     print(f"Original password: {test_password}")  # nosec
     print(f"Redacted password: {redact_password(test_password)}")
