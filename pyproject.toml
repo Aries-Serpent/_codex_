@@ -1,7 +1,7 @@
 [build-system]
 requires = [
-    "setuptools>=78.1.1,<82",
-    "wheel",
+    "setuptools>=78.1.1,<82",  # Security: PYSEC-2025-49, PYSEC-2026-1918 fixes
+    "wheel>=0.46.2",  # Security: CVE-2026-24049 - arbitrary code execution fix
 ]
 build-backend = "setuptools.build_meta"
 
@@ -43,18 +43,18 @@ dependencies = [
     "libcst>=1.0.0",
     "parso>=0.8.0",
     "radon>=6.0.1",
-    "jinja2>=3.1.6",
+    "jinja2>=3.1.6",  # Security: Phase 5.4.1 - PYSEC-2026-1473/1471/1474/1475/1472 (template injection fixes)
     # Security (CVE fixes)
     "cryptography>=48.0.0,<50.0.0",  # Security: CVE fixes (46.0.5+ required for CVE-2026-26007)
     "PyJWT>=2.13.0,<3.0.0",  # Security: CVE fixes (2.12.0+ required for PYSEC-2026-120)
     "PyNaCl>=1.5.0,<2.0.0",  # Security: Cryptographic library
     "pyOpenSSL>=26.0.0,<27.0.0",  # Security: CVE-2026-27448/27459 fixes
     # Standard library replacements & utilities
-    "certifi>=2026.6.17",
+    "certifi>=2024.7.4",  # Security: Phase 5.4.1 - PYSEC-2024-230 (SSL verification bypass fix)
     "filelock>=3.29.0",
-    "idna>=3.18",
-    "urllib3>=2.7.0",
-    "requests>=2.33.0",  # Security: CVE-2026-25645 fix
+    "idna>=3.15",  # Security: Phase 5.4.1 - PYSEC-2024-60, PYSEC-2026-215 (DNS domain encoding fixes)
+    "urllib3>=2.7.0",  # Security: Phase 5.4.1 - PYSEC-2026-141/1999/1998/1995/1994/1996 (connection/proxy fixes)
+    "requests>=2.33.0",  # Security: Phase 5.4.1 - PYSEC-2026-1873/1872/2275 (HTTP request library fixes)
     "defusedxml>=0.7.1",
 ]
 version = "0.2.2"
