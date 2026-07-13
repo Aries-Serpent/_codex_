@@ -1029,6 +1029,30 @@
   </span>
 </a>
 </li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../deployment/LOCAL_DEPLOYMENT_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Local Deployment Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../deployment/DEPLOYMENT_VERIFICATION_CHECKLIST/">
+<span class="md-ellipsis">
+    
+  
+    Verification Checklist
+  
+
+    
+  </span>
+</a>
+</li>
 </ul>
 </nav>
 </li>
@@ -3076,7 +3100,7 @@
 <a href="#__codelineno-19-7" id="__codelineno-19-7" name="__codelineno-19-7"></a>
 <a href="#__codelineno-19-8" id="__codelineno-19-8" name="__codelineno-19-8"></a><span class="c1"># Verify integrity on resume</span>
 <a href="#__codelineno-19-9" id="__codelineno-19-9" name="__codelineno-19-9"></a><span class="k">if</span> <span class="n">manifest</span><span class="o">.</span><span class="n">has_drift</span><span class="p">(</span><span class="s2">"data/train_manifest.json"</span><span class="p">):</span>
-<a href="#__codelineno-19-10" id="__codelineno-19-10" name="__codelineno-19-10"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">"⚠️ Dataset drift detected!"</span><span class="p">)</span>
+<a href="#__codelineno-19-10" id="__codelineno-19-10" name="__codelineno-19-10"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">"️ Dataset drift detected!"</span><span class="p">)</span>
 <a href="#__codelineno-19-11" id="__codelineno-19-11" name="__codelineno-19-11"></a>    <span class="n">diff</span> <span class="o">=</span> <span class="n">manifest</span><span class="o">.</span><span class="n">verify</span><span class="p">(</span><span class="s2">"data/train_manifest.json"</span><span class="p">)</span>
 <a href="#__codelineno-19-12" id="__codelineno-19-12" name="__codelineno-19-12"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Modified: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">diff</span><span class="p">[</span><span class="s1">'modified'</span><span class="p">])</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <a href="#__codelineno-19-13" id="__codelineno-19-13" name="__codelineno-19-13"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Missing: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">diff</span><span class="p">[</span><span class="s1">'missing'</span><span class="p">])</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
@@ -3371,7 +3395,7 @@
 <a href="#__codelineno-29-16" id="__codelineno-29-16" name="__codelineno-29-16"></a><span class="p">)</span>
 <a href="#__codelineno-29-17" id="__codelineno-29-17" name="__codelineno-29-17"></a>
 <a href="#__codelineno-29-18" id="__codelineno-29-18" name="__codelineno-29-18"></a><span class="k">if</span> <span class="n">monitor</span><span class="o">.</span><span class="n">has_critical_drift</span><span class="p">():</span>
-<a href="#__codelineno-29-19" id="__codelineno-29-19" name="__codelineno-29-19"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">"⚠️ Critical drift detected!"</span><span class="p">)</span>
+<a href="#__codelineno-29-19" id="__codelineno-29-19" name="__codelineno-29-19"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">"️ Critical drift detected!"</span><span class="p">)</span>
 <a href="#__codelineno-29-20" id="__codelineno-29-20" name="__codelineno-29-20"></a>    <span class="n">monitor</span><span class="o">.</span><span class="n">save_alerts</span><span class="p">(</span><span class="s2">"drift_alerts.json"</span><span class="p">)</span>
 <a href="#__codelineno-29-21" id="__codelineno-29-21" name="__codelineno-29-21"></a>    <span class="n">summary</span> <span class="o">=</span> <span class="n">monitor</span><span class="o">.</span><span class="n">get_drift_summary</span><span class="p">()</span>
 <a href="#__codelineno-29-22" id="__codelineno-29-22" name="__codelineno-29-22"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Total alerts: </span><span class="si">{</span><span class="n">summary</span><span class="p">[</span><span class="s1">'total_alerts'</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>

@@ -1029,6 +1029,30 @@
   </span>
 </a>
 </li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../deployment/LOCAL_DEPLOYMENT_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Local Deployment Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../deployment/DEPLOYMENT_VERIFICATION_CHECKLIST/">
+<span class="md-ellipsis">
+    
+  
+    Verification Checklist
+  
+
+    
+  </span>
+</a>
+</li>
 </ul>
 </nav>
 </li>
@@ -2454,7 +2478,7 @@
 <a class="md-nav__link" href="#phase-3-in-progress">
 <span class="md-ellipsis">
       
-        Phase 3 In Progress 🔄
+        Phase 3 In Progress
       
     </span>
 </a>
@@ -2463,7 +2487,7 @@
 <a class="md-nav__link" href="#phase-4-planned">
 <span class="md-ellipsis">
       
-        Phase 4 Planned 📋
+        Phase 4 Planned
       
     </span>
 </a>
@@ -2516,11 +2540,11 @@
 <p><strong>Python Examples:</strong> 3,010 in 498 files
 -  Syntax validation: PASSED (sample of 100)
 -  Import verification: 97% valid imports
-- ⚠️ 3 examples reference removed modules</p>
+- ️ 3 examples reference removed modules</p>
 <p><strong>Bash Examples:</strong> 4,413 in 342 files
 -  Syntax validation: PASSED (sample of 50)
 -  Path references: 95% valid
-- ⚠️ 48 examples use localhost URLs</p>
+- ️ 48 examples use localhost URLs</p>
 <p><strong>JavaScript Examples:</strong> 296 in 89 files
 -  Syntax validation: PASSED (sample of 30)
 -  Version compatibility: 98% compatible</p>
@@ -2528,7 +2552,7 @@
 <p><strong>Legacy Patterns Found:</strong>
 | Pattern | Files | Status | Action |
 |---------|-------|--------|--------|
-| <code>sys.path.insert</code> | 3 | ⚠️ Old | Document as legacy |
+| <code>sys.path.insert</code> | 3 | ️ Old | Document as legacy |
 | <code>pytest.mark.flaky</code> | 8 | ℹ️ Informational | Add context |
 | Deprecated imports | 97 |  Documented | Add deprecation notices |</p>
 <hr/>
@@ -2550,7 +2574,7 @@
 <a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>
 <a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a><span class="gh"># Configuration Migration Mapping</span>
 <a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>
-<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>⚠️ <span class="gs">**This document describes legacy migration patterns from v0.9.0 → v1.0.0**</span>
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>️ <span class="gs">**This document describes legacy migration patterns from v0.9.0 → v1.0.0**</span>
 <a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a><span class="gs">**Current Version:**</span> v1.2.0+ uses <span class="sb">`configs/`</span> directory exclusively
 <a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a><span class="gs">**Deprecation Timeline:**</span> Legacy <span class="sb">`conf/`</span> fully removed in v1.2.0
 </code></pre></div></p>
@@ -2603,7 +2627,7 @@
 2. <strong>Configuration Examples</strong> - Template shows localhost (replace with actual)
 3. <strong>Actual Production</strong> - Wrongly documented as localhost (FIX)</p>
 <p><strong>Pattern to Add:</strong>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="k">&gt; </span><span class="ge">⚠️ **Development/Demo Only**</span>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="k">&gt; </span><span class="ge">️ **Development/Demo Only**</span>
 <a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>&gt; 
 <a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="k">&gt; </span><span class="ge">This example uses `localhost:8000` for local testing.</span>
 <a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="k">&gt; </span><span class="ge">In production, replace with your actual server URL: `https://api.example.com`</span>
@@ -2686,7 +2710,7 @@
 <a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">docs_with_localhost</span><span class="p">:</span>
 <a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a>    <span class="n">content</span> <span class="o">=</span> <span class="n">read_file</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
 <a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a>
-<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a>    <span class="c1"># Pattern 1: Examples clearly marked as such</span>
+<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a>    <span class="c1"># Pattern 1: Examples marked as such</span>
 <a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a>    <span class="k">if</span> <span class="n">is_example_section</span><span class="p">(</span><span class="n">content</span><span class="p">):</span>
 <a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a>        <span class="n">add_dev_warning</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
 <a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a>
@@ -2745,10 +2769,10 @@
 <a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a>python<span class="w"> </span>tools/validate_doc_examples.py<span class="w"> </span>docs/
 <a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>
 <a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a><span class="c1"># Output:</span>
-<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a><span class="c1"># ✓ Syntax validation: PASSED</span>
-<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a><span class="c1"># ✓ Import validation: PASSED  </span>
-<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a><span class="c1"># ✗ Path validation: 3 issues found</span>
-<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a><span class="c1"># ⚠ API validation: Requires manual review</span>
+<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a><span class="c1">#  Syntax validation: PASSED</span>
+<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a><span class="c1">#  Import validation: PASSED  </span>
+<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a><span class="c1">#  Path validation: 3 issues found</span>
+<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a><span class="c1">#  API validation: Requires manual review</span>
 </code></pre></div></p>
 <h3 id="42-freshness-maintenance-procedures">4.2 Freshness Maintenance Procedures<a class="headerlink" href="#42-freshness-maintenance-procedures" title="Permanent link">¶</a></h3>
 <h4 id="weekly-pr-review">Weekly: PR Review<a class="headerlink" href="#weekly-pr-review" title="Permanent link">¶</a></h4>
@@ -2811,7 +2835,7 @@
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Legacy pattern detection</li>
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Accuracy report generated</li>
 </ul>
-<h3 id="phase-3-in-progress">Phase 3 In Progress 🔄<a class="headerlink" href="#phase-3-in-progress" title="Permanent link">¶</a></h3>
+<h3 id="phase-3-in-progress">Phase 3 In Progress<a class="headerlink" href="#phase-3-in-progress" title="Permanent link">¶</a></h3>
 <ul class="task-list">
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Update 5 Priority 1 files</li>
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Fix 69 localhost references</li>
@@ -2819,7 +2843,7 @@
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Add metadata to 20 critical docs</li>
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Validation report</li>
 </ul>
-<h3 id="phase-4-planned">Phase 4 Planned 📋<a class="headerlink" href="#phase-4-planned" title="Permanent link">¶</a></h3>
+<h3 id="phase-4-planned">Phase 4 Planned<a class="headerlink" href="#phase-4-planned" title="Permanent link">¶</a></h3>
 <ul class="task-list">
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Complete code example validation</li>
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Implement CI/CD integration</li>

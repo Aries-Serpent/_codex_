@@ -1029,6 +1029,30 @@
   </span>
 </a>
 </li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../deployment/LOCAL_DEPLOYMENT_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Local Deployment Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../deployment/DEPLOYMENT_VERIFICATION_CHECKLIST/">
+<span class="md-ellipsis">
+    
+  
+    Verification Checklist
+  
+
+    
+  </span>
+</a>
+</li>
 </ul>
 </nav>
 </li>
@@ -3781,7 +3805,7 @@
 <h3 id="pitfall-3-missing-dependencies">Pitfall 3: Missing Dependencies<a class="headerlink" href="#pitfall-3-missing-dependencies" title="Permanent link">¶</a></h3>
 <p><strong>Problem</strong>: Pattern depends on another pattern but doesn't document it.</p>
 <p><strong>Example of Pitfall</strong>: AP-001 (Code Review Approval) references review process without noting it depends on GP-001 (Issue Resolution).<br/>
-<strong>Example of Fix</strong>: AP-001 section clearly states "Prerequisites: GP-001. Code review gate requires issue context from GP-001."</p>
+<strong>Example of Fix</strong>: AP-001 section states "Prerequisites: GP-001. Code review gate requires issue context from GP-001."</p>
 <p><strong>Prevention</strong>:
 - Map all upstream dependencies (what must be true first)
 - Map all downstream dependents (what builds on this)

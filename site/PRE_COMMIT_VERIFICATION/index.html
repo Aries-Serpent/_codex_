@@ -1029,6 +1029,30 @@
   </span>
 </a>
 </li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../deployment/LOCAL_DEPLOYMENT_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Local Deployment Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../deployment/DEPLOYMENT_VERIFICATION_CHECKLIST/">
+<span class="md-ellipsis">
+    
+  
+    Verification Checklist
+  
+
+    
+  </span>
+</a>
+</li>
 </ul>
 </nav>
 </li>
@@ -2266,11 +2290,11 @@
 <a class="md-nav__link" href="#usage">
 <span class="md-ellipsis">
       
-        🔧 Usage
+        Usage
       
     </span>
 </a>
-<nav aria-label="🔧 Usage" class="md-nav">
+<nav aria-label="Usage" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
 <a class="md-nav__link" href="#as-pre-commit-hook-automatic">
@@ -2297,7 +2321,7 @@
 <a class="md-nav__link" href="#cli-options">
 <span class="md-ellipsis">
       
-        📋 CLI Options
+        CLI Options
       
     </span>
 </a>
@@ -2325,7 +2349,7 @@
 <a class="md-nav__link" href="#missing-files">
 <span class="md-ellipsis">
       
-        Missing Files ⚠️
+        Missing Files ️
       
     </span>
 </a>
@@ -2337,11 +2361,11 @@
 <a class="md-nav__link" href="#how-it-works">
 <span class="md-ellipsis">
       
-        🔍 How It Works
+        How It Works
       
     </span>
 </a>
-<nav aria-label="🔍 How It Works" class="md-nav">
+<nav aria-label="How It Works" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
 <a class="md-nav__link" href="#1-parse-action-log">
@@ -2426,7 +2450,7 @@
 <a class="md-nav__link" href="#integration-with-cognitive-brain">
 <span class="md-ellipsis">
       
-        🔗 Integration with Cognitive Brain
+        Integration with Cognitive Brain
       
     </span>
 </a>
@@ -2497,7 +2521,7 @@
 <a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>└─────────────────────────────────────────────────────────────┘
 </code></pre></div>
 <hr/>
-<h2 id="usage">🔧 Usage<a class="headerlink" href="#usage" title="Permanent link">¶</a></h2>
+<h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">¶</a></h2>
 <h3 id="as-pre-commit-hook-automatic">As Pre-commit Hook (Automatic)<a class="headerlink" href="#as-pre-commit-hook-automatic" title="Permanent link">¶</a></h3>
 <p>The hook is automatically run during <code>git commit</code> when configured:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="c1"># Install pre-commit hooks</span>
@@ -2523,7 +2547,7 @@
 <a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a>python<span class="w"> </span>scripts/hooks/pre_commit_verify.py<span class="w"> </span>--action-log<span class="w"> </span>/path/to/action_log.ndjson
 </code></pre></div>
 <hr/>
-<h2 id="cli-options">📋 CLI Options<a class="headerlink" href="#cli-options" title="Permanent link">¶</a></h2>
+<h2 id="cli-options">CLI Options<a class="headerlink" href="#cli-options" title="Permanent link">¶</a></h2>
 <table>
 <thead>
 <tr>
@@ -2586,7 +2610,7 @@
 <a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a>============================================================
 <a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a>INFO: All expected files are staged 
 </code></pre></div>
-<h3 id="missing-files">Missing Files ⚠️<a class="headerlink" href="#missing-files" title="Permanent link">¶</a></h3>
+<h3 id="missing-files">Missing Files ️<a class="headerlink" href="#missing-files" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>============================================================
 <a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>Pre-commit Verification Report
 <a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>============================================================
@@ -2600,10 +2624,10 @@
 <a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a>   - tests/hooks/test_pre_commit_verify.py
 <a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a>   - .pre-commit-config.yaml
 <a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a>
-<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a>⚠️  Modified but not staged (need `git add`):
+<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a>️  Modified but not staged (need `git add`):
 <a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a>   - docs/PRE_COMMIT_VERIFICATION.md
 <a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a>
-<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a>⚠️  Untracked files (need `git add`):
+<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a>️  Untracked files (need `git add`):
 <a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a>   - .codex/new_file.md
 <a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a>
 <a href="#__codelineno-4-20" id="__codelineno-4-20" name="__codelineno-4-20"></a>To stage missing files:
@@ -2614,7 +2638,7 @@
 <a href="#__codelineno-4-25" id="__codelineno-4-25" name="__codelineno-4-25"></a>ERROR: Some expected files are not staged!
 </code></pre></div>
 <hr/>
-<h2 id="how-it-works">🔍 How It Works<a class="headerlink" href="#how-it-works" title="Permanent link">¶</a></h2>
+<h2 id="how-it-works">How It Works<a class="headerlink" href="#how-it-works" title="Permanent link">¶</a></h2>
 <h3 id="1-parse-action-log">1. Parse Action Log<a class="headerlink" href="#1-parse-action-log" title="Permanent link">¶</a></h3>
 <p>The hook reads <code>.codex/action_log.ndjson</code> and extracts file operations:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="p">{</span><span class="nt">"timestamp"</span><span class="p">:</span><span class="s2">"2026-02-05T09:00:00Z"</span><span class="p">,</span><span class="nt">"actor"</span><span class="p">:</span><span class="s2">"assistant"</span><span class="p">,</span><span class="nt">"action"</span><span class="p">:</span><span class="s2">"created"</span><span class="p">,</span><span class="nt">"path"</span><span class="p">:</span><span class="s2">"scripts/new.py"</span><span class="p">}</span>
@@ -2701,7 +2725,7 @@
 <a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a>pytest<span class="w"> </span>tests/hooks/test_pre_commit_verify.py<span class="w"> </span>--cov<span class="o">=</span>scripts/hooks/pre_commit_verify<span class="w"> </span>--cov-report<span class="o">=</span>term-missing
 </code></pre></div>
 <hr/>
-<h2 id="integration-with-cognitive-brain">🔗 Integration with Cognitive Brain<a class="headerlink" href="#integration-with-cognitive-brain" title="Permanent link">¶</a></h2>
+<h2 id="integration-with-cognitive-brain">Integration with Cognitive Brain<a class="headerlink" href="#integration-with-cognitive-brain" title="Permanent link">¶</a></h2>
 <p>This hook is part of the cognitive brain improvement initiative:</p>
 <ul>
 <li><strong>Planset:</strong> Short-term Planset (CB-ST-2026-02-05)</li>

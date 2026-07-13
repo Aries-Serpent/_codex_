@@ -1029,6 +1029,30 @@
   </span>
 </a>
 </li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../deployment/LOCAL_DEPLOYMENT_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Local Deployment Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../deployment/DEPLOYMENT_VERIFICATION_CHECKLIST/">
+<span class="md-ellipsis">
+    
+  
+    Verification Checklist
+  
+
+    
+  </span>
+</a>
+</li>
 </ul>
 </nav>
 </li>
@@ -2257,11 +2281,11 @@
 <a class="md-nav__link" href="#core-principles">
 <span class="md-ellipsis">
       
-        📋 CORE PRINCIPLES
+        CORE PRINCIPLES
       
     </span>
 </a>
-<nav aria-label="📋 CORE PRINCIPLES" class="md-nav">
+<nav aria-label="CORE PRINCIPLES" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
 <a class="md-nav__link" href="#1-template-based-pr-bodies">
@@ -2297,7 +2321,7 @@
 <a class="md-nav__link" href="#when-to-update-pr-descriptions">
 <span class="md-ellipsis">
       
-        🔄 WHEN TO UPDATE PR DESCRIPTIONS
+        WHEN TO UPDATE PR DESCRIPTIONS
       
     </span>
 </a>
@@ -2306,11 +2330,11 @@
 <a class="md-nav__link" href="#how-to-use-the-template">
 <span class="md-ellipsis">
       
-        📝 HOW TO USE THE TEMPLATE
+        HOW TO USE THE TEMPLATE
       
     </span>
 </a>
-<nav aria-label="📝 HOW TO USE THE TEMPLATE" class="md-nav">
+<nav aria-label="HOW TO USE THE TEMPLATE" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
 <a class="md-nav__link" href="#step-1-load-template-structure">
@@ -2343,7 +2367,7 @@
 <h2 id="overview">OVERVIEW<a class="headerlink" href="#overview" title="Permanent link">¶</a></h2>
 <p>This document provides <strong>explicit directions for Copilot to follow</strong> when creating or updating Pull Request descriptions. The goal is to leverage <code>PR_TEMPLATE_COMPREHENSIVE.md</code> to create structured, checkbox-based PR bodies that enable quick interpretation and processing of iterative requests.</p>
 <hr/>
-<h2 id="core-principles">📋 CORE PRINCIPLES<a class="headerlink" href="#core-principles" title="Permanent link">¶</a></h2>
+<h2 id="core-principles">CORE PRINCIPLES<a class="headerlink" href="#core-principles" title="Permanent link">¶</a></h2>
 <h3 id="1-template-based-pr-bodies">1. Template-Based PR Bodies<a class="headerlink" href="#1-template-based-pr-bodies" title="Permanent link">¶</a></h3>
 <ul>
 <li><strong>ALWAYS</strong> use <code>PR_TEMPLATE_COMPREHENSIVE.md</code> as the foundation for PR descriptions</li>
@@ -2363,7 +2387,7 @@
 <li><strong>REFLECT</strong> current state accurately so subsequent Copilot sessions can interpret progress</li>
 </ul>
 <hr/>
-<h2 id="when-to-update-pr-descriptions">🔄 WHEN TO UPDATE PR DESCRIPTIONS<a class="headerlink" href="#when-to-update-pr-descriptions" title="Permanent link">¶</a></h2>
+<h2 id="when-to-update-pr-descriptions">WHEN TO UPDATE PR DESCRIPTIONS<a class="headerlink" href="#when-to-update-pr-descriptions" title="Permanent link">¶</a></h2>
 <p>Update the PR description using the template in these scenarios:</p>
 <ol>
 <li><strong>Initial PR Creation</strong> - Use full template with relevant sections</li>
@@ -2373,7 +2397,7 @@
 <li><strong>When User Requests Status Update</strong> - Provide updated template-based view</li>
 </ol>
 <hr/>
-<h2 id="how-to-use-the-template">📝 HOW TO USE THE TEMPLATE<a class="headerlink" href="#how-to-use-the-template" title="Permanent link">¶</a></h2>
+<h2 id="how-to-use-the-template">HOW TO USE THE TEMPLATE<a class="headerlink" href="#how-to-use-the-template" title="Permanent link">¶</a></h2>
 <h3 id="step-1-load-template-structure">Step 1: Load Template Structure<a class="headerlink" href="#step-1-load-template-structure" title="Permanent link">¶</a></h3>
 <p>```bash</p>
 <h1 id="read-the-comprehensive-template">Read the comprehensive template<a class="headerlink" href="#read-the-comprehensive-template" title="Permanent link">¶</a></h1>
@@ -2474,14 +2498,14 @@
 - [ ] Thread-safe operations
 ```text</p>
 <hr/>
-<h2 id="critical-rules">🚨 CRITICAL RULES<a class="headerlink" href="#critical-rules" title="Permanent link">¶</a></h2>
+<h2 id="critical-rules">CRITICAL RULES<a class="headerlink" href="#critical-rules" title="Permanent link">¶</a></h2>
 <h3 id="before-finishing-a-session">Before Finishing a Session<a class="headerlink" href="#before-finishing-a-session" title="Permanent link">¶</a></h3>
 <p><strong>MUST DO:</strong>
 1.  <strong>Review PR_TEMPLATE_COMPREHENSIVE.md</strong> - Understand which checkboxes apply
 2.  <strong>Update PR Description</strong> - Fill out relevant template sections with current state
 3.  <strong>Verify Checkboxes Match Implementation</strong> - Ensure accuracy
 4.  <strong>Include Summary Statistics</strong> - Provide commit count, test count, file counts
-5.  <strong>Document Remaining Work</strong> - Clearly mark unchecked items that are planned</p>
+5.  <strong>Document Remaining Work</strong> - mark unchecked items that are planned</p>
 <p><strong>MUST NOT DO:</strong>
 1.  <strong>Leave PR description with generic/freeform text</strong> - Always use template structure
 2.  <strong>Mark items as complete when they're not</strong> - Be accurate
@@ -2552,7 +2576,7 @@
 </tbody>
 </table>
 <hr/>
-<h2 id="verification-checklist">🔍 VERIFICATION CHECKLIST<a class="headerlink" href="#verification-checklist" title="Permanent link">¶</a></h2>
+<h2 id="verification-checklist">VERIFICATION CHECKLIST<a class="headerlink" href="#verification-checklist" title="Permanent link">¶</a></h2>
 <p>Before finishing a session, verify:</p>
 <ul class="task-list">
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>Template Loaded</strong> - PR_TEMPLATE_COMPREHENSIVE.md has been reviewed</li>
@@ -2601,12 +2625,12 @@
 <p><strong>Based on:</strong> PR_TEMPLATE_COMPREHENSIVE.md v0.2.1</p>
 </blockquote>
 <hr/>
-<h2 id="pr-overview">📋 PR OVERVIEW<a class="headerlink" href="#pr-overview" title="Permanent link">¶</a></h2>
+<h2 id="pr-overview">PR OVERVIEW<a class="headerlink" href="#pr-overview" title="Permanent link">¶</a></h2>
 <h3 id="basic-information">Basic Information<a class="headerlink" href="#basic-information" title="Permanent link">¶</a></h3>
 <ul class="task-list">
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>PR Title</strong>: Comprehensive ML Platform Enhancement</li>
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>Linked Issue(s)</strong>: Relates to #2264</li>
-<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>PR Type</strong>: ✨ New Feature, ⚡ Performance Improvement</li>
+<li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>PR Type</strong>:  New Feature,  Performance Improvement</li>
 </ul>
 <h3 id="scope-summary">Scope Summary<a class="headerlink" href="#scope-summary" title="Permanent link">¶</a></h3>
 <ul class="task-list">
@@ -2615,7 +2639,7 @@
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>Impact Assessment</strong>: High (new capabilities), Medium (performance), Low (breaking changes: none)</li>
 </ul>
 <hr/>
-<h2 id="required-safety-confirmations">⚠️ REQUIRED SAFETY CONFIRMATIONS<a class="headerlink" href="#required-safety-confirmations" title="Permanent link">¶</a></h2>
+<h2 id="required-safety-confirmations">️ REQUIRED SAFETY CONFIRMATIONS<a class="headerlink" href="#required-safety-confirmations" title="Permanent link">¶</a></h2>
 <h3 id="network-security">Network &amp; Security<a class="headerlink" href="#network-security" title="Permanent link">¶</a></h3>
 <ul class="task-list">
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>Network Safety Acknowledgment</strong> - NO network operations performed</li>
@@ -2660,7 +2684,7 @@
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> <strong>CI/CD Checks Passing</strong> - All CI checks passing</li>
 </ul>
 <hr/>
-<h2 id="capability-implementations">📝 CAPABILITY IMPLEMENTATIONS<a class="headerlink" href="#capability-implementations" title="Permanent link">¶</a></h2>
+<h2 id="capability-implementations">CAPABILITY IMPLEMENTATIONS<a class="headerlink" href="#capability-implementations" title="Permanent link">¶</a></h2>
 <h3 id="a-inference-serving-phase-2">A) Inference Serving (Phase 2)<a class="headerlink" href="#a-inference-serving-phase-2" title="Permanent link">¶</a></h3>
 <ul class="task-list">
 <li class="task-list-item"><label class="task-list-control"><input checked="" disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> ModelConfig class with environment variable support</li>
@@ -2815,12 +2839,12 @@
 - <strong>Whether to update PR description</strong> → When in doubt, update it
 - <strong>Template is too long</strong> → Omit irrelevant sections; only keep what applies</p>
 <hr/>
-<h2 id="version-history">🔄 VERSION HISTORY<a class="headerlink" href="#version-history" title="Permanent link">¶</a></h2>
+<h2 id="version-history">VERSION HISTORY<a class="headerlink" href="#version-history" title="Permanent link">¶</a></h2>
 <ul>
 <li><strong>v0.2.1</strong> (2025-11-17): Initial creation - Comprehensive guide for Copilot PR template usage</li>
 </ul>
 <hr/>
-<p><strong>Remember:</strong> The template exists to help Copilot agents communicate state clearly and efficiently. Use it well, and future sessions will thank you! </p>
+<p><strong>Remember:</strong> The template exists to help Copilot agents communicate state and efficiently. Use it well, and future sessions will thank you! </p>
 </article>
 </div>
 <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>

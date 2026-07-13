@@ -1029,6 +1029,30 @@
   </span>
 </a>
 </li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../deployment/LOCAL_DEPLOYMENT_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Local Deployment Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../deployment/DEPLOYMENT_VERIFICATION_CHECKLIST/">
+<span class="md-ellipsis">
+    
+  
+    Verification Checklist
+  
+
+    
+  </span>
+</a>
+</li>
 </ul>
 </nav>
 </li>
@@ -2295,10 +2319,10 @@
 <nav aria-label="3. Agent Registry" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
-<a class="md-nav__link" href="#schema-fields-v180">
+<a class="md-nav__link" href="#schema-fields-v021">
 <span class="md-ellipsis">
       
-        Schema Fields (v1.8.0+)
+        Schema Fields (v0.2.1+)
       
     </span>
 </a>
@@ -2335,10 +2359,10 @@
 <nav aria-label="4. Enforcement Tier System" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
-<a class="md-nav__link" href="#current-distribution-v190">
+<a class="md-nav__link" href="#current-distribution-v021">
 <span class="md-ellipsis">
       
-        Current Distribution (v1.9.0)
+        Current Distribution (v0.2.1)
       
     </span>
 </a>
@@ -2550,7 +2574,7 @@ workflow.</p>
 <p><strong>File</strong>: <code>.github/agents/AGENT_REGISTRY.yaml</code><br/>
 <strong>Version</strong>: 1.9.0<br/>
 <strong>Total agents</strong>: 152</p>
-<h3 id="schema-fields-v180">Schema Fields (v1.8.0+)<a class="headerlink" href="#schema-fields-v180" title="Permanent link">¶</a></h3>
+<h3 id="schema-fields-v021">Schema Fields (v0.2.1+)<a class="headerlink" href="#schema-fields-v021" title="Permanent link">¶</a></h3>
 <table>
 <thead>
 <tr>
@@ -2709,7 +2733,7 @@ workflow.</p>
 <a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>SOFT      ──  Advisory: recommendation only, no CI annotation
 <a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>ARCHIVED  ──  Deprecated agent, skip all enforcement
 </code></pre></div>
-<h3 id="current-distribution-v190">Current Distribution (v1.9.0)<a class="headerlink" href="#current-distribution-v190" title="Permanent link">¶</a></h3>
+<h3 id="current-distribution-v021">Current Distribution (v0.2.1)<a class="headerlink" href="#current-distribution-v021" title="Permanent link">¶</a></h3>
 <table>
 <thead>
 <tr>
@@ -2808,7 +2832,7 @@ by <code>.github/workflows/agent-handoff-gate.yml</code>.</p>
 <a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a>|----|-----------|:------:|
 <a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a>| C1 | `AGENT_REGISTRY.yaml` present |  |
 <a href="#__codelineno-7-14" id="__codelineno-7-14" name="__codelineno-7-14"></a>| C2 | `CODEX_MANIFEST.json` valid + current (&lt;24h) |  |
-<a href="#__codelineno-7-15" id="__codelineno-7-15" name="__codelineno-7-15"></a>| C3 | Tier-3 (SOFT) count ≤ 2 |  (0 SOFT in registry; 2 agents marked ⚠️ SOFT in `GROUNDED_VS_SOFT_ENFORCEMENT.md` — gate regex matches that doc, not registry field) |
+<a href="#__codelineno-7-15" id="__codelineno-7-15" name="__codelineno-7-15"></a>| C3 | Tier-3 (SOFT) count ≤ 2 |  (0 SOFT in registry; 2 agents marked ️ SOFT in `GROUNDED_VS_SOFT_ENFORCEMENT.md` — gate regex matches that doc, not registry field) |
 <a href="#__codelineno-7-16" id="__codelineno-7-16" name="__codelineno-7-16"></a>| C4 | `agent-handoff-gate.yml` deployed |  |
 <a href="#__codelineno-7-17" id="__codelineno-7-17" name="__codelineno-7-17"></a>| C5 | Tier-1 (GROUNDED) count ≥ 8 |  (8 grounded) |
 <a href="#__codelineno-7-18" id="__codelineno-7-18" name="__codelineno-7-18"></a>
@@ -2940,7 +2964,7 @@ The <code>.faiss</code> binary index is git-ignored (rebuilt nightly).</p>
 <tr>
 <td>Phase 1 — Registry Migration</td>
 <td style="text-align: center;">Complete</td>
-<td><code>AGENT_REGISTRY.yaml</code> v1.9.0, <code>CODEX_MANIFEST.json</code></td>
+<td><code>AGENT_REGISTRY.yaml</code> v0.2.1, <code>CODEX_MANIFEST.json</code></td>
 </tr>
 <tr>
 <td>Phase 2 — Handoff Gate</td>
@@ -2969,7 +2993,7 @@ The <code>.faiss</code> binary index is git-ignored (rebuilt nightly).</p>
 </tr>
 </tbody>
 </table>
-<p><strong>Current KPIs</strong> (v1.9.0):
+<p><strong>Current KPIs</strong> (v0.2.1):
 - <strong>152 agents</strong> — GROUNDED: 8 | PARTIAL: 142 | SOFT: 2
 - <strong>5 Tier-1 gates</strong> — <code>agent-registry-validation</code>, <code>agent-handoff-gate</code>, <code>actionlint-audit</code>, <code>e-to-d-transition-gate</code>, <code>embedding-index-rebuild</code>
 - <strong>E→D score</strong>: 5/5  — all conditions satisfied; human activation required for D promotion</p>

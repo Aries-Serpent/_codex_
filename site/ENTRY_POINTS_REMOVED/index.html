@@ -1029,6 +1029,30 @@
   </span>
 </a>
 </li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../deployment/LOCAL_DEPLOYMENT_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Local Deployment Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../deployment/DEPLOYMENT_VERIFICATION_CHECKLIST/">
+<span class="md-ellipsis">
+    
+  
+    Verification Checklist
+  
+
+    
+  </span>
+</a>
+</li>
 </ul>
 </nav>
 </li>
@@ -2384,31 +2408,31 @@
 <td><code>codex-train</code></td>
 <td><code>codex_ml.cli.entrypoints:train_main</code></td>
 <td>Requires torch, transformers</td>
-<td>⏳ Runtime</td>
+<td>Runtime</td>
 </tr>
 <tr>
 <td><code>codex-eval</code></td>
 <td><code>codex_ml.cli.entrypoints:eval_main</code></td>
 <td>Requires torch, transformers</td>
-<td>⏳ Runtime</td>
+<td>Runtime</td>
 </tr>
 <tr>
 <td><code>codex-infer</code></td>
 <td><code>codex_ml.cli.infer:main</code></td>
 <td>Requires torch, transformers</td>
-<td>⏳ Runtime</td>
+<td>Runtime</td>
 </tr>
 <tr>
 <td><code>codex-validate-config</code></td>
 <td><code>codex_ml.cli.validate:main</code></td>
 <td>Requires runtime infrastructure</td>
-<td>⏳ Runtime</td>
+<td>Runtime</td>
 </tr>
 <tr>
 <td><code>codex-perf</code></td>
 <td><code>codex_ml.cli.perf.bench:main</code></td>
 <td>Requires performance testing deps</td>
-<td>⏳ Runtime</td>
+<td>Runtime</td>
 </tr>
 </tbody>
 </table>
@@ -2482,73 +2506,73 @@
 <td><code>codex-list-plugins</code></td>
 <td><code>codex_ml.cli.list_plugins:main</code></td>
 <td>Plugin system requires full profile</td>
-<td>⏳ Full</td>
+<td>Full</td>
 </tr>
 <tr>
 <td><code>codex-ndjson</code></td>
 <td><code>codex_utils.cli.ndjson_summary:main</code></td>
 <td>Utility requiring extended functionality</td>
-<td>⏳ Full</td>
+<td>Full</td>
 </tr>
 <tr>
 <td><code>codex-offline-bootstrap</code></td>
 <td><code>codex_ml.cli.offline_bootstrap:main</code></td>
 <td>Bootstrap requires full environment</td>
-<td>⏳ Full</td>
+<td>Full</td>
 </tr>
 <tr>
 <td><code>codex-tokenizer</code></td>
 <td><code>tokenization.cli:app</code></td>
 <td>Requires tokenization infrastructure</td>
-<td>⏳ Full</td>
+<td>Full</td>
 </tr>
 <tr>
 <td><code>codex-setup</code></td>
 <td><code>cli.setup:main</code></td>
 <td>Setup requires full infrastructure</td>
-<td>⏳ Full</td>
+<td>Full</td>
 </tr>
 <tr>
 <td><code>codex-patch-runner</code></td>
 <td><code>cli.patch_runner:main</code></td>
 <td>Requires full CLI infrastructure</td>
-<td>⏳ Full</td>
+<td>Full</td>
 </tr>
 <tr>
 <td><code>codex-update-runner</code></td>
 <td><code>cli.update_runner:main</code></td>
 <td>Requires full CLI infrastructure</td>
-<td>⏳ Full</td>
+<td>Full</td>
 </tr>
 <tr>
 <td><code>codex-script</code></td>
 <td><code>cli.script_polish:main</code></td>
 <td>Script processing requires full profile</td>
-<td>⏳ Full</td>
+<td>Full</td>
 </tr>
 <tr>
 <td><code>codex-workflow</code></td>
 <td><code>cli.workflow:main</code></td>
 <td>Workflow requires full infrastructure</td>
-<td>⏳ Full</td>
+<td>Full</td>
 </tr>
 <tr>
 <td><code>codex-task-sequence</code></td>
 <td><code>cli.task_sequence:main</code></td>
 <td>Task system requires full profile</td>
-<td>⏳ Full</td>
+<td>Full</td>
 </tr>
 <tr>
 <td><code>codex-ast-upgrade</code></td>
 <td><code>cli.ast_upgrade:main</code></td>
 <td>AST tools require full profile</td>
-<td>⏳ Full</td>
+<td>Full</td>
 </tr>
 <tr>
 <td><code>codex-audit-runner</code></td>
 <td><code>cli.audit_runner_root:main</code></td>
 <td>Auditing requires full infrastructure</td>
-<td>⏳ Full</td>
+<td>Full</td>
 </tr>
 </tbody>
 </table>
@@ -2566,11 +2590,11 @@
 <td>Available in [core] profile</td>
 </tr>
 <tr>
-<td>⏳ Runtime</td>
+<td>Runtime</td>
 <td>Enabled in [runtime] profile</td>
 </tr>
 <tr>
-<td>⏳ Full</td>
+<td>Full</td>
 <td>Enabled in [full] profile</td>
 </tr>
 <tr>

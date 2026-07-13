@@ -1,0 +1,3955 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
+<link href="https://aries-serpent.github.io/_codex_/admin/integration/GITHUB_MCP_INTEGRATION_GUIDE/" rel="canonical"/>
+<link href="../../../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<title>[Guide]: GitHub MCP Integration for _codex_ - Codex Docs v0.2.1</title>
+<link href="../../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<link href="../../../stylesheets/extra.css" rel="stylesheet"/>
+<script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#guide-github-mcp-integration-for-_codex_">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="Codex Docs v0.2.1" class="md-header__button md-logo" data-md-component="logo" href="../../.." title="Codex Docs v0.2.1">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m19 2-5 4.5v11l5-4.5zM6.5 5C4.55 5 2.45 5.4 1 6.5v14.66c0 .25.25.5.5.5.1 0 .15-.07.25-.07 1.35-.65 3.3-1.09 4.75-1.09 1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.31 4.75 1.06.1.05.15.03.25.03.25 0 .5-.25.5-.5V6.5c-.6-.45-1.25-.75-2-1V19c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V6.5C10.55 5.4 8.45 5 6.5 5"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            Codex Docs v0.2.1
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              [Guide]: GitHub MCP Integration for _codex_
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme)" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"></path></svg>
+</label>
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: light)" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_2" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+<input aria-label="Switch to system preference" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-primary="black" data-md-color-scheme="slate" id="__palette_2" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to system preference">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<a aria-label="Share" class="md-search__icon md-icon" data-clipboard="" data-clipboard-text="" data-md-component="search-share" href="javascript:void(0)" tabindex="-1" title="Share">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"></path></svg>
+</a>
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="md-header__source">
+<a class="md-source" data-md-component="source" href="https://github.com/Aries-Serpent/_codex_" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+</div>
+<div class="md-source__repository">
+    Aries-Serpent/_codex_
+  </div>
+</a>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../..">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../status/GITHUB_PAGES_STATUS/">
+        
+  
+  
+    
+  
+  Status Dashboard
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../cognitive_app/">
+        
+  
+  
+    
+  
+  Cognitive App
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../evolution/INDEX/">
+          
+  
+  
+  Evolution Center
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../README_ROOT/">
+        
+  
+  
+    
+  
+  README
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../getting-started/">
+        
+  
+  
+    
+  
+  Getting Started
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../api/">
+          
+  
+  
+  API Reference
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../CONTRIBUTING/">
+          
+  
+  
+  Guides
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../tokens/INDEX/">
+          
+  
+  
+  Token Management
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../architecture.md">
+          
+  
+  
+  Architecture
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../training/symbolic_training/">
+          
+  
+  
+  Training
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../deployment/deploy_pipeline/">
+          
+  
+  
+  Deployment
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../logging/logging_guide/">
+          
+  
+  
+  Logging &amp; Troubleshooting
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../plugins/Plugin_API_Broader/">
+          
+  
+  
+  Plugins
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../ROADMAP/">
+          
+  
+  
+  Reference
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../agents/POST_MERGE_ALIGNMENT_PROMPT/">
+          
+  
+  
+  Agent Prompts
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../accountability/INDEX/">
+          
+  
+  
+  Accountability
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../phase-9/PHASE_9_COORDINATION_DASHBOARD/">
+          
+  
+  
+  Phase 9 Execution
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/INDEX.md">
+          
+  
+  
+  CI/CD Workflows
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../reporting/INDEX/">
+          
+  
+  
+  Reporting
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../ci/CI_RESCUE_PIPELINE/">
+          
+  
+  
+  CI Rescue &amp; Health
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../safety/safety_guide/">
+          
+  
+  
+  Safety
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../database/sqlite_option/">
+          
+  
+  
+  Database Options
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../templates/">
+          
+  
+  
+  Templates
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../examples/codex_symbolic_pipeline/">
+          
+  
+  
+  Examples
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../ops/cost-dashboard/">
+          
+  
+  
+  Ops
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../../tutorials/quickstart/">
+          
+  
+  
+  Tutorials
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../..">
+          
+  
+  
+  Legacy Catalog
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="Codex Docs v0.2.1" class="md-nav__button md-logo" data-md-component="logo" href="../../.." title="Codex Docs v0.2.1">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m19 2-5 4.5v11l5-4.5zM6.5 5C4.55 5 2.45 5.4 1 6.5v14.66c0 .25.25.5.5.5.1 0 .15-.07.25-.07 1.35-.65 3.3-1.09 4.75-1.09 1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.31 4.75 1.06.1.05.15.03.25.03.25 0 .5-.25.5-.5V6.5c-.6-.45-1.25-.75-2-1V19c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V6.5C10.55 5.4 8.45 5 6.5 5"></path></svg>
+</a>
+    Codex Docs v0.2.1
+  </label>
+<div class="md-nav__source">
+<a class="md-source" data-md-component="source" href="https://github.com/Aries-Serpent/_codex_" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+</div>
+<div class="md-source__repository">
+    Aries-Serpent/_codex_
+  </div>
+</a>
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../status/GITHUB_PAGES_STATUS/">
+<span class="md-ellipsis">
+    
+  
+    Status Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../cognitive_app/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive App
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Evolution Center
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Evolution Center
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../evolution/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../evolution/EVOLUTION_TIMELINE/">
+<span class="md-ellipsis">
+    
+  
+    Evolution Timeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../evolution/PLANSET_REGISTRY/">
+<span class="md-ellipsis">
+    
+  
+    Planset Registry
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../evolution/COGNITIVE_EVOLUTION_TREE/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive Evolution Tree
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../evolution/AI_EMERGENCE_STORYBOARD/">
+<span class="md-ellipsis">
+    
+  
+    AI Emergence Storyboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../evolution/AI_AGENCY_INTUITIVENESS_SCORE_V3/">
+<span class="md-ellipsis">
+    
+  
+    AI Agency Score V3
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../evolution/COGNITIVE_CODEBASE_MAP/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive Codebase Map
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../README_ROOT/">
+<span class="md-ellipsis">
+    
+  
+    README
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../getting-started/">
+<span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../api/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_8" type="checkbox"/>
+<label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Guides
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_8_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_8">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Guides
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../CONTRIBUTING/">
+<span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../guides/code_style_guide/">
+<span class="md-ellipsis">
+    
+  
+    Code Style
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../guides/checkpointing/">
+<span class="md-ellipsis">
+    
+  
+    Checkpointing
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../guides/codex_setup/">
+<span class="md-ellipsis">
+    
+  
+    Setup &amp; Integration
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../guides/session_hooks/">
+<span class="md-ellipsis">
+    
+  
+    Session Hooks
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../guides/continuous_improvement/">
+<span class="md-ellipsis">
+    
+  
+    Continuous Improvement
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../guides/lfs_policy/">
+<span class="md-ellipsis">
+    
+  
+    LFS Policy
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../guides/asset_instruction_playbook/">
+<span class="md-ellipsis">
+    
+  
+    Asset Instruction Playbook
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../guides/LOGGING/">
+<span class="md-ellipsis">
+    
+  
+    Logging (Stdlib)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_9" type="checkbox"/>
+<label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Token Management
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_9_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_9">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Token Management
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../tokens/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../tokens/TOKEN_HIERARCHY_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Token Hierarchy Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../tokens/TOKEN_REGENERATION_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Token Regeneration Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../tokens/TOKEN_USAGE_AUDIT/">
+<span class="md-ellipsis">
+    
+  
+    Token Usage Audit
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../tokens/HUMAN_ADMIN_SETUP/">
+<span class="md-ellipsis">
+    
+  
+    Human Admin Setup
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../tokens/CI_CD_TROUBLESHOOTING/">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Troubleshooting
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../tokens/CUSTOM_AGENT_GUIDANCE/">
+<span class="md-ellipsis">
+    
+  
+    Custom Agent Guidance
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../tokens/QUICK_REFERENCE/">
+<span class="md-ellipsis">
+    
+  
+    Quick Reference
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_10" type="checkbox"/>
+<label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_10_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_10">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../architecture.md">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../architecture/codex_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Codex Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../system/mermaid_logic_map/">
+<span class="md-ellipsis">
+    
+  
+    Runtime Logic Map
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_11" type="checkbox"/>
+<label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Training
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_11_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_11">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Training
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../training/symbolic_training/">
+<span class="md-ellipsis">
+    
+  
+    Symbolic Training
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../training/distributed_troubleshooting/">
+<span class="md-ellipsis">
+    
+  
+    Distributed Troubleshooting
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_12" type="checkbox"/>
+<label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Deployment
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_12_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_12">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Deployment
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../deployment/deploy_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Deploy Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../deployment/DEPLOYMENT_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Deployment Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../deployment/LOCAL_DEPLOYMENT_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Local Deployment Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../deployment/DEPLOYMENT_VERIFICATION_CHECKLIST/">
+<span class="md-ellipsis">
+    
+  
+    Verification Checklist
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_13" type="checkbox"/>
+<label class="md-nav__link" for="__nav_13" id="__nav_13_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Logging &amp; Troubleshooting
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_13_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_13">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Logging &amp; Troubleshooting
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../logging/logging_guide/">
+<span class="md-ellipsis">
+    
+  
+    Logging Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../logging/end_to_end_logging/">
+<span class="md-ellipsis">
+    
+  
+    End-to-End Logging
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../logging/log_rotation/">
+<span class="md-ellipsis">
+    
+  
+    Log Rotation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../troubleshooting/error_log/">
+<span class="md-ellipsis">
+    
+  
+    Error Log
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../troubleshooting/open_questions/">
+<span class="md-ellipsis">
+    
+  
+    Open Questions
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_14" type="checkbox"/>
+<label class="md-nav__link" for="__nav_14" id="__nav_14_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Plugins
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_14_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_14">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Plugins
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../plugins/Plugin_API_Broader/">
+<span class="md-ellipsis">
+    
+  
+    Plugin API (Broader)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_15" type="checkbox"/>
+<label class="md-nav__link" for="__nav_15" id="__nav_15_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_15_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_15">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ROADMAP/">
+<span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../CHANGELOG/">
+<span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_15_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_15_3" id="__nav_15_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Changelog Archive
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_15_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_15_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Changelog Archive
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../CHANGELOG/changelog_codex/">
+<span class="md-ellipsis">
+    
+  
+    Codex
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../CHANGELOG/changelog_session_logging/">
+<span class="md-ellipsis">
+    
+  
+    Session Logging
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../CHANGELOG/change_log/">
+<span class="md-ellipsis">
+    
+  
+    Legacy change log
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../reference/audit_prompt/">
+<span class="md-ellipsis">
+    
+  
+    Audit Prompt
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../reference/tools/">
+<span class="md-ellipsis">
+    
+  
+    Tools
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../reference/codex_questions/">
+<span class="md-ellipsis">
+    
+  
+    Codex Questions (Archive)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../deferred_items/">
+<span class="md-ellipsis">
+    
+  
+    Deferred Items
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../agents/">
+<span class="md-ellipsis">
+    
+  
+    Agents
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_16" type="checkbox"/>
+<label class="md-nav__link" for="__nav_16" id="__nav_16_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Agent Prompts
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_16_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_16">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Agent Prompts
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../agents/POST_MERGE_ALIGNMENT_PROMPT/">
+<span class="md-ellipsis">
+    
+  
+    Post-Merge Doc Alignment
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_17" type="checkbox"/>
+<label class="md-nav__link" for="__nav_17" id="__nav_17_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Accountability
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_17_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_17">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Accountability
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../accountability/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<span class="md-ellipsis">
+    
+  
+    Agent Accountability Report
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../accountability/AGENT_ACCESS_EXPERIENCE_REPORT/">
+<span class="md-ellipsis">
+    
+  
+    Agent Access Experience Report
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_18" type="checkbox"/>
+<label class="md-nav__link" for="__nav_18" id="__nav_18_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Phase 9 Execution
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_18_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_18">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Phase 9 Execution
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../phase-9/PHASE_9_COORDINATION_DASHBOARD/">
+<span class="md-ellipsis">
+    
+  
+    Coordination Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../phase-9/PHASE_9_DAILY_STANDUP_TEMPLATE/">
+<span class="md-ellipsis">
+    
+  
+    Daily Standup Template
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../phase-9/POST_MERGE_ACTION_PLAN/">
+<span class="md-ellipsis">
+    
+  
+    Post-Merge Action Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../phase-9/PHASE_8_12_MASTER_EXECUTION_PLAN/">
+<span class="md-ellipsis">
+    
+  
+    Phase 8-12 Master Plan
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_19" type="checkbox"/>
+<label class="md-nav__link" for="__nav_19" id="__nav_19_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Workflows
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_19_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_19">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    CI/CD Workflows
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/INDEX.md">
+<span class="md-ellipsis">
+    
+  
+    Workflow Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/CONSOLIDATION_GUIDE.md">
+<span class="md-ellipsis">
+    
+  
+    Consolidation Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/DEPRECATION_PLAN.md">
+<span class="md-ellipsis">
+    
+  
+    Deprecation Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/OPTIMIZATION_SUMMARY.md">
+<span class="md-ellipsis">
+    
+  
+    Optimization Summary
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/CACHE_ARCHITECTURE_DIAGRAMS.md">
+<span class="md-ellipsis">
+    
+  
+    Cache Architecture
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_20" type="checkbox"/>
+<label class="md-nav__link" for="__nav_20" id="__nav_20_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Reporting
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_20_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_20">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Reporting
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../reporting/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Reporting Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../reporting/copilot_workflow_report_console.html">
+<span class="md-ellipsis">
+    
+  
+    Copilot Workflow Report Console
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_21" type="checkbox"/>
+<label class="md-nav__link" for="__nav_21" id="__nav_21_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    CI Rescue &amp; Health
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_21_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_21">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    CI Rescue &amp; Health
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ci/CI_RESCUE_PIPELINE/">
+<span class="md-ellipsis">
+    
+  
+    CI Rescue Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ci/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ci/CI_FAILURE_ANALYSIS/">
+<span class="md-ellipsis">
+    
+  
+    Failure Analysis
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ci/CI_FIX_SUMMARY.md">
+<span class="md-ellipsis">
+    
+  
+    CI Fix Summary
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ci/ROOT_ORG_VALIDATION/">
+<span class="md-ellipsis">
+    
+  
+    Root Org Validation
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_22" type="checkbox"/>
+<label class="md-nav__link" for="__nav_22" id="__nav_22_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Safety
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_22_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_22">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Safety
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../safety/safety_guide/">
+<span class="md-ellipsis">
+    
+  
+    Safety Guide
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_23" type="checkbox"/>
+<label class="md-nav__link" for="__nav_23" id="__nav_23_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Database Options
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_23_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_23">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Database Options
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../database/sqlite_option/">
+<span class="md-ellipsis">
+    
+  
+    SQLite Option
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../database/duckdb_option/">
+<span class="md-ellipsis">
+    
+  
+    DuckDB Option
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../database/datasette_option/">
+<span class="md-ellipsis">
+    
+  
+    Datasette Option
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_24" type="checkbox"/>
+<label class="md-nav__link" for="__nav_24" id="__nav_24_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Templates
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_24_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_24">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Templates
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../templates/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../templates/ITERATION_PLAN_TEMPLATE/">
+<span class="md-ellipsis">
+    
+  
+    Iteration Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../templates/Migration_PythonFileRelocation/">
+<span class="md-ellipsis">
+    
+  
+    Migration — Python Relocation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../templates/Migration_CLIHardening/">
+<span class="md-ellipsis">
+    
+  
+    Migration — CLI Hardening
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../templates/Planning_IntentValidation/">
+<span class="md-ellipsis">
+    
+  
+    Planning — Intent Validation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../templates/intent_validation_gate/">
+<span class="md-ellipsis">
+    
+  
+    Intent Validation Gate
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../templates/COPILOT_EXECUTION_DIRECTIVE/">
+<span class="md-ellipsis">
+    
+  
+    Copilot Execution Directive
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../templates/status/">
+<span class="md-ellipsis">
+    
+  
+    Status Report Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../templates/status/codex_status_template_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Status Template v1.2
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../templates/status/authoring_guide_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Authoring Guide v1.2
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../templates/status/SCHEMA_ENHANCEMENTS_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Schema Enhancements
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../templates/status/authoring_quickstart_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Authoring Quickstart
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_25" type="checkbox"/>
+<label class="md-nav__link" for="__nav_25" id="__nav_25_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_25_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_25">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Examples
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../examples/codex_symbolic_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Codex Symbolic Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_26" type="checkbox"/>
+<label class="md-nav__link" for="__nav_26" id="__nav_26_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Ops
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_26_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_26">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Ops
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ops/cost-dashboard/">
+<span class="md-ellipsis">
+    
+  
+    Cost Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ops/COST_GOVERNANCE/">
+<span class="md-ellipsis">
+    
+  
+    Cost Governance
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ops/monitoring/">
+<span class="md-ellipsis">
+    
+  
+    Monitoring
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ops/deployment/">
+<span class="md-ellipsis">
+    
+  
+    Deployment (Legacy)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../ops/RUNBOOK/">
+<span class="md-ellipsis">
+    
+  
+    Runbook
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_27" type="checkbox"/>
+<label class="md-nav__link" for="__nav_27" id="__nav_27_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_27_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_27">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../tutorials/quickstart/">
+<span class="md-ellipsis">
+    
+  
+    Quickstart (CPU)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../tutorials/end_to_end_cpu/">
+<span class="md-ellipsis">
+    
+  
+    End-to-End (CPU)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_28" type="checkbox"/>
+<label class="md-nav__link" for="__nav_28" id="__nav_28_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Legacy Catalog
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_28_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_28">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Legacy Catalog
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../reference/metrics_cli/">
+<span class="md-ellipsis">
+    
+  
+    Reference Archive
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../review/diff_intake_confirmation/">
+<span class="md-ellipsis">
+    
+  
+    Review Checklist
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#table-of-contents">
+<span class="md-ellipsis">
+      
+        Table of Contents
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#table-of-contents_1">
+<span class="md-ellipsis">
+      
+        Table of Contents
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#overview">
+<span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+</a>
+<nav aria-label="Overview" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#what-is-mcp-in-the-context-of-codex">
+<span class="md-ellipsis">
+      
+        What is MCP in the Context of codex?
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#why-mcp-enhances-copilot-agent">
+<span class="md-ellipsis">
+      
+        Why MCP Enhances Copilot Agent
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#mcp-architecture-in-codex">
+<span class="md-ellipsis">
+      
+        MCP Architecture in codex
+      
+    </span>
+</a>
+<nav aria-label="MCP Architecture in codex" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#current-directory-structure">
+<span class="md-ellipsis">
+      
+        Current Directory Structure
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#mcp-service-components">
+<span class="md-ellipsis">
+      
+        MCP Service Components
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#copilot-agent-integration-patterns">
+<span class="md-ellipsis">
+      
+        Copilot Agent Integration Patterns
+      
+    </span>
+</a>
+<nav aria-label="Copilot Agent Integration Patterns" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#pattern-1-direct-http-integration-recommended-for-codex">
+<span class="md-ellipsis">
+      
+        Pattern 1: Direct HTTP Integration (Recommended for codex)
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#pattern-2-github-actions-integration">
+<span class="md-ellipsis">
+      
+        Pattern 2: GitHub Actions Integration
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#pattern-3-vs-code-extension-integration-local-development">
+<span class="md-ellipsis">
+      
+        Pattern 3: VS Code Extension Integration (Local Development)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#current-codex-mcp-implementation">
+<span class="md-ellipsis">
+      
+        Current codex MCP Implementation
+      
+    </span>
+</a>
+<nav aria-label="Current codex MCP Implementation" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#mcp-service-endpoints-as-of-2025-12-29">
+<span class="md-ellipsis">
+      
+        MCP Service Endpoints (as of 2025-12-29)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#implemented-capabilities">
+<span class="md-ellipsis">
+      
+        Implemented Capabilities
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#authoritative-documentation">
+<span class="md-ellipsis">
+      
+        Authoritative Documentation
+      
+    </span>
+</a>
+<nav aria-label="Authoritative Documentation" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#github-resources">
+<span class="md-ellipsis">
+      
+        GitHub Resources
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#third-party-tools">
+<span class="md-ellipsis">
+      
+        Third-Party Tools
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#codex-specific-documentation">
+<span class="md-ellipsis">
+      
+        codex-Specific Documentation
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#advanced-configuration-for-maximum-copilot-capability">
+<span class="md-ellipsis">
+      
+        Advanced Configuration for Maximum Copilot Capability
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#recommended-permissions-security">
+<span class="md-ellipsis">
+      
+        Recommended Permissions &amp; Security
+      
+    </span>
+</a>
+<nav aria-label="Recommended Permissions &amp; Security" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#github-environment-variables-required">
+<span class="md-ellipsis">
+      
+        GitHub Environment Variables Required
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#required-github-token-scopes">
+<span class="md-ellipsis">
+      
+        Required GitHub Token Scopes
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#security-best-practices">
+<span class="md-ellipsis">
+      
+        Security Best Practices
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#known-limitations-workarounds">
+<span class="md-ellipsis">
+      
+        Known Limitations &amp; Workarounds
+      
+    </span>
+</a>
+<nav aria-label="Known Limitations &amp; Workarounds" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#limitation-1-llm-context-window-constraints">
+<span class="md-ellipsis">
+      
+        Limitation 1: LLM Context Window Constraints
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#limitation-2-secrets-privacy-risks">
+<span class="md-ellipsis">
+      
+        Limitation 2: Secrets &amp; Privacy Risks
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#limitation-3-api-rate-limits">
+<span class="md-ellipsis">
+      
+        Limitation 3: API Rate Limits
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#limitation-4-github-actions-cachestorage-limits">
+<span class="md-ellipsis">
+      
+        Limitation 4: GitHub Actions Cache/Storage Limits
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#limitation-5-playwright-binary-size-environment">
+<span class="md-ellipsis">
+      
+        Limitation 5: Playwright Binary Size &amp; Environment
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#limitation-6-copilot-product-api-boundaries">
+<span class="md-ellipsis">
+      
+        Limitation 6: Copilot Product API Boundaries
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#practical-implementation-checklist">
+<span class="md-ellipsis">
+      
+        Practical Implementation Checklist
+      
+    </span>
+</a>
+<nav aria-label="Practical Implementation Checklist" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#phase-1-setup-authentication">
+<span class="md-ellipsis">
+      
+        Phase 1: Setup &amp; Authentication
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#phase-2-mcp-service-deployment">
+<span class="md-ellipsis">
+      
+        Phase 2: MCP Service Deployment
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#phase-3-cache-warming-automation">
+<span class="md-ellipsis">
+      
+        Phase 3: Cache Warming Automation
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#phase-4-copilot-integration">
+<span class="md-ellipsis">
+      
+        Phase 4: Copilot Integration
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#phase-5-monitoring-optimization">
+<span class="md-ellipsis">
+      
+        Phase 5: Monitoring &amp; Optimization
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#codex-specific-integration-examples">
+<span class="md-ellipsis">
+      
+        codex-Specific Integration Examples
+      
+    </span>
+</a>
+<nav aria-label="codex-Specific Integration Examples" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#example-1-dependency-aware-code-generation">
+<span class="md-ellipsis">
+      
+        Example 1: Dependency-Aware Code Generation
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#example-2-test-generation-with-playwright">
+<span class="md-ellipsis">
+      
+        Example 2: Test Generation with Playwright
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#example-3-cache-aware-dependency-updates">
+<span class="md-ellipsis">
+      
+        Example 3: Cache-Aware Dependency Updates
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#troubleshooting-monitoring">
+<span class="md-ellipsis">
+      
+        Troubleshooting &amp; Monitoring
+      
+    </span>
+</a>
+<nav aria-label="Troubleshooting &amp; Monitoring" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#common-issues-solutions">
+<span class="md-ellipsis">
+      
+        Common Issues &amp; Solutions
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#monitoring-metrics">
+<span class="md-ellipsis">
+      
+        Monitoring Metrics
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#references">
+<span class="md-ellipsis">
+      
+        References
+      
+    </span>
+</a>
+<nav aria-label="References" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#external-documentation">
+<span class="md-ellipsis">
+      
+        External Documentation
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#internal-documentation">
+<span class="md-ellipsis">
+      
+        Internal Documentation
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#support-channels">
+<span class="md-ellipsis">
+      
+        Support Channels
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#appendix-human-admin-actions-required">
+<span class="md-ellipsis">
+      
+        Appendix: Human Admin Actions Required
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#mission-overview">
+<span class="md-ellipsis">
+      
+        Mission Overview
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#verification-checklist">
+<span class="md-ellipsis">
+      
+        ️ Verification Checklist
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#success-metrics">
+<span class="md-ellipsis">
+      
+        Success Metrics
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#physics-alignment">
+<span class="md-ellipsis">
+      
+        ⚛️ Physics Alignment
+      
+    </span>
+</a>
+<nav aria-label="⚛️ Physics Alignment" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#path-context-delivery-optimization">
+<span class="md-ellipsis">
+      
+        Path ️ (Context Delivery Optimization)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#fields-information-flow-architecture">
+<span class="md-ellipsis">
+      
+        Fields (Information Flow Architecture)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#patterns-integration-recognition">
+<span class="md-ellipsis">
+      
+        Patterns ️ (Integration Recognition)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#redundancy-fault-tolerance">
+<span class="md-ellipsis">
+      
+        Redundancy (Fault Tolerance)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#balance-context-vs-token-limits">
+<span class="md-ellipsis">
+      
+        Balance ️ (Context vs Token Limits)
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#energy-distribution">
+<span class="md-ellipsis">
+      
+        Energy Distribution
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#redundancy-patterns">
+<span class="md-ellipsis">
+      
+        Redundancy Patterns
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="guide-github-mcp-integration-for-_codex_">[Guide]: GitHub MCP Integration for <code>_codex_</code><a class="headerlink" href="#guide-github-mcp-integration-for-_codex_" title="Permanent link">¶</a></h1>
+<p><strong>Last Updated:</strong> 2026-07-11
+<strong>Version:</strong> v0.2.1</p>
+<h2 id="table-of-contents">Table of Contents<a class="headerlink" href="#table-of-contents" title="Permanent link">¶</a></h2>
+<ul>
+<li><a href="#-table-of-contents"> Table of Contents</a></li>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#what-is-mcp-in-the-context-of-_codex_">What is MCP in the Context of <em>codex</em>?</a></li>
+<li><a href="#why-mcp-enhances-copilot-agent">Why MCP Enhances Copilot Agent</a></li>
+<li><a href="#mcp-architecture-in-_codex_">MCP Architecture in <em>codex</em></a></li>
+<li><a href="#current-directory-structure">Current Directory Structure</a></li>
+<li><a href="#mcp-service-components">MCP Service Components</a></li>
+<li><a href="#copilot-agent-integration-patterns">Copilot Agent Integration Patterns</a></li>
+<li><a href="#pattern-1-direct-http-integration-recommended-for-_codex_">Pattern 1: Direct HTTP Integration (Recommended for <em>codex</em>)</a></li>
+<li><a href="#copilot-agent-script-example">Copilot Agent script example</a></li>
+<li><a href="#authenticate-with-mcp-service">Authenticate with MCP service</a></li>
+<li><a href="#request-focused-context">Request focused context</a></li>
+<li><a href="#use-dependencies-for-code-generation-context">Use dependencies for code generation context</a></li>
+<li><a href="#pattern-2-github-actions-integration">Pattern 2: GitHub Actions Integration</a></li>
+<li><a href="#githubworkflowscopilot-taskyml">.github/workflows/copilot-task.yml</a></li>
+<li><a href="#pattern-3-vs-code-extension-integration-local-development">Pattern 3: VS Code Extension Integration (Local Development)</a></li>
+<li><a href="#current-_codex_-mcp-implementation">Current <em>codex</em> MCP Implementation</a></li>
+<li><a href="#mcp-service-endpoints-as-of-2025-12-29">MCP Service Endpoints (as of 2025-12-29)</a></li>
+<li><a href="#implemented-capabilities">Implemented Capabilities</a></li>
+<li><a href="#authoritative-documentation">Authoritative Documentation</a></li>
+<li><a href="#github-resources">GitHub Resources</a></li>
+<li><a href="#third-party-tools">Third-Party Tools</a></li>
+<li><a href="#_codex_-specific-documentation"><em>codex</em>-Specific Documentation</a></li>
+<li><a href="#advanced-configuration-for-maximum-copilot-capability">Advanced Configuration for Maximum Copilot Capability</a></li>
+<li><a href="#recommended-permissions--security">Recommended Permissions &amp; Security</a></li>
+<li><a href="#github-environment-variables-required">GitHub Environment Variables Required</a></li>
+<li><a href="#required-github-token-scopes">Required GitHub Token Scopes</a></li>
+<li><a href="#security-best-practices">Security Best Practices</a></li>
+<li><a href="#known-limitations--workarounds">Known Limitations &amp; Workarounds</a></li>
+<li><a href="#limitation-1-llm-context-window-constraints">Limitation 1: LLM Context Window Constraints</a></li>
+<li><a href="#limitation-2-secrets--privacy-risks">Limitation 2: Secrets &amp; Privacy Risks</a></li>
+<li><a href="#limitation-3-api-rate-limits">Limitation 3: API Rate Limits</a></li>
+<li><a href="#limitation-4-github-actions-cachestorage-limits">Limitation 4: GitHub Actions Cache/Storage Limits</a></li>
+<li><a href="#limitation-5-playwright-binary-size--environment">Limitation 5: Playwright Binary Size &amp; Environment</a></li>
+<li><a href="#limitation-6-copilot-product-api-boundaries">Limitation 6: Copilot Product API Boundaries</a></li>
+<li><a href="#practical-implementation-checklist">Practical Implementation Checklist</a></li>
+<li><a href="#phase-1-setup--authentication">Phase 1: Setup &amp; Authentication</a></li>
+<li><a href="#phase-2-mcp-service-deployment">Phase 2: MCP Service Deployment</a></li>
+<li><a href="#phase-3-cache-warming-automation">Phase 3: Cache Warming Automation</a></li>
+<li><a href="#phase-4-copilot-integration">Phase 4: Copilot Integration</a></li>
+<li><a href="#phase-5-monitoring--optimization">Phase 5: Monitoring &amp; Optimization</a></li>
+<li><a href="#_codex_-specific-integration-examples"><em>codex</em>-Specific Integration Examples</a></li>
+<li><a href="#example-1-dependency-aware-code-generation">Example 1: Dependency-Aware Code Generation</a></li>
+<li><a href="#copilot-agent-queries-mcp-for-dependency-context">Copilot Agent queries MCP for dependency context</a></li>
+<li><a href="#returns-222">Returns: "&gt;=2.2.2"</a></li>
+<li><a href="#generate-version-aware-code">Generate version-aware code</a></li>
+<li><a href="#example-2-test-generation-with-playwright">Example 2: Test Generation with Playwright</a></li>
+<li><a href="#create-playwright-session-via-mcp">Create Playwright session via MCP</a></li>
+<li><a href="#generate-test-code-with-session-context">Generate test code with session context</a></li>
+<li><a href="#-test-code-generation">... (test code generation)</a></li>
+<li><a href="#example-3-cache-aware-dependency-updates">Example 3: Cache-Aware Dependency Updates</a></li>
+<li><a href="#get-current-cache-manifest">Get current cache manifest</a></li>
+<li><a href="#propose-updates">Propose updates</a></li>
+<li><a href="#warm-cache-for-new-versions">Warm cache for new versions</a></li>
+<li><a href="#troubleshooting--monitoring">Troubleshooting &amp; Monitoring</a></li>
+<li><a href="#common-issues--solutions">Common Issues &amp; Solutions</a></li>
+<li><a href="#monitoring-metrics">Monitoring Metrics</a></li>
+<li><a href="#references">References</a></li>
+<li><a href="#external-documentation">External Documentation</a></li>
+<li><a href="#internal-documentation">Internal Documentation</a></li>
+<li><a href="#support-channels">Support Channels</a></li>
+<li><a href="#appendix-human-admin-actions-required">Appendix: Human Admin Actions Required</a></li>
+<li><a href="#-mission-overview"> Mission Overview</a></li>
+<li><a href="#-verification-checklist">️ Verification Checklist</a></li>
+<li><a href="#-success-metrics"> Success Metrics</a></li>
+<li><a href="#-physics-alignment">⚛️ Physics Alignment</a></li>
+<li><a href="#path--context-delivery-optimization">Path ️ (Context Delivery Optimization)</a></li>
+<li><a href="#fields--information-flow-architecture">Fields  (Information Flow Architecture)</a></li>
+<li><a href="#patterns--integration-recognition">Patterns ️ (Integration Recognition)</a></li>
+<li><a href="#redundancy--fault-tolerance">Redundancy  (Fault Tolerance)</a></li>
+<li><a href="#balance--context-vs-token-limits">Balance ️ (Context vs Token Limits)</a></li>
+<li><a href="#-energy-distribution"> Energy Distribution</a></li>
+<li><a href="#-redundancy-patterns"> Redundancy Patterns</a></li>
+</ul>
+<blockquote>
+<p><strong>Generated</strong>: 2026-06-22 | <strong>Author</strong>: mbaetiong
+<strong>Repository</strong>: <code>Aries-Serpent/_codex_</code> | <strong>ID</strong>: 1040037790
+<strong>Roles</strong>: [Primary: DevOps Architect], [Secondary: Security Engineer]
+** Energy<strong>: 5/5 | ** Context</strong>: Production-Ready Implementation</p>
+</blockquote>
+<hr/>
+<h2 id="table-of-contents_1">Table of Contents<a class="headerlink" href="#table-of-contents_1" title="Permanent link">¶</a></h2>
+<ol>
+<li><a href="#overview">Overview</a></li>
+<li><!-- BROKEN ANCHOR: <a href="#mcp-architecture-in-_codex_">MCP Architecture in <em>codex</em></a> --></li>
+<li><a href="#copilot-agent-integration-patterns">Copilot Agent Integration Patterns</a></li>
+<li><!-- BROKEN ANCHOR: <a href="#current-_codex_-mcp-implementation">Current <em>codex</em> MCP Implementation</a> --></li>
+<li><a href="#authoritative-documentation">Authoritative Documentation</a></li>
+<li><a href="#advanced-configuration-for-maximum-copilot-capability">Advanced Configuration for Maximum Copilot Capability</a></li>
+<li><!-- BROKEN ANCHOR: <a href="#recommended-permissions-security">Recommended Permissions &amp; Security</a> --></li>
+<li><!-- BROKEN ANCHOR: <a href="#known-limitations-workarounds">Known Limitations &amp; Workarounds</a> --></li>
+<li><a href="#practical-implementation-checklist">Practical Implementation Checklist</a></li>
+<li><!-- BROKEN ANCHOR: <a href="#_codex_-specific-integration-examples"><em>codex</em>-Specific Integration Examples</a> --></li>
+<li><!-- BROKEN ANCHOR: <a href="#troubleshooting-monitoring">Troubleshooting &amp; Monitoring</a> --></li>
+<li><a href="#references">References</a></li>
+</ol>
+<hr/>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">¶</a></h2>
+<h3 id="what-is-mcp-in-the-context-of-codex">What is MCP in the Context of <em>codex</em>?<a class="headerlink" href="#what-is-mcp-in-the-context-of-codex" title="Permanent link">¶</a></h3>
+<p><strong>MCP (Model Context Protocol)</strong> in the <code>_codex_</code> repository is a <strong>lightweight HTTP/IPC service layer</strong> that provides GitHub Copilot Agent with:</p>
+<ul>
+<li><strong>Curated context</strong> from the repository (dependency manifests, cache status, test results)</li>
+<li><strong>On-demand indexing</strong> of codebase structure and dependencies</li>
+<li><strong>Dynamic browser sessions</strong> via Playwright for integration testing and UI validation</li>
+<li><strong>Intelligent cache management</strong> for Python wheels, npm packages, and Playwright binaries</li>
+<li><strong>Filtered context delivery</strong> to stay within LLM context window limits</li>
+</ul>
+<h3 id="why-mcp-enhances-copilot-agent">Why MCP Enhances Copilot Agent<a class="headerlink" href="#why-mcp-enhances-copilot-agent" title="Permanent link">¶</a></h3>
+<p>GitHub Copilot (the product) provides AI-powered code suggestions using:
+- Editor context (open files, cursor position)
+- Repository metadata (file tree, commit history)
+- GitHub API data (issues, PRs, discussions)</p>
+<p><strong>MCP augments this with <em>codex</em>-specific intelligence</strong>:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing Copilot Agent, MCP Service'}}%%
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>graph LR
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>    A[Copilot Agent] --&gt;|Request Context| B[MCP Service]
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>    B --&gt;|Index Dependencies| C[Python/Node Packages]
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>    B --&gt;|Warm Caches| D[PyPI/npm/GHCR]
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>    B --&gt;|Browser Sessions| E[Playwright Pool]
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>    B --&gt;|Filtered Manifest| F[Cache Keys + Metadata]
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>    B --&gt;|Return Compact Context| A
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>    A --&gt;|Generate Code| G[_codex_ Repository]
+</code></pre></div>
+<hr/>
+<h2 id="mcp-architecture-in-codex">MCP Architecture in <em>codex</em><a class="headerlink" href="#mcp-architecture-in-codex" title="Permanent link">¶</a></h2>
+<h3 id="current-directory-structure">Current Directory Structure<a class="headerlink" href="#current-directory-structure" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>_codex_/
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>├── .codex/
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>│   ├── mcp-config.yml              # MCP service configuration
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>│   ├── cache-manifest.yml          # Cache key registry
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>│   ├── scripts/
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>│   │   ├── mcp-enhancer.py         # Core MCP HTTP service
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>│   │   └── cache-warmer.py         # Cache warming automation
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>│   └── docker/
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>│       └── Dockerfile.playwright   # Pre-warmed browser image
+<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>├── src/
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>│   ├── mcp/                        # MCP Python modules
+<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>│   │   ├── __init__.py
+<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a>│   │   ├── adapters/               # Backend adapters (Pinecone, etc.)
+<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>│   │   ├── metrics/                # MCP-specific metrics
+<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a>│   │   └── server.py               # MCP HTTP server
+<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a>│   └── ...
+<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a>├── scripts/
+<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a>│   ├── space_traversal/detectors/  # MCP capability detectors
+<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a>│   │   ├── mcp_tooling_registry.py
+<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a>│   │   ├── mcp_protocol_surface.py
+<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a>│   │   ├── mcp_configuration.py
+<a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a>│   │   ├── mcp_security_safeguards.py
+<a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a>│   │   ├── mcp_authz_authn.py
+<a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a>│   │   ├── mcp_rate_limiting.py
+<a href="#__codelineno-1-25" id="__codelineno-1-25" name="__codelineno-1-25"></a>│   │   ├── mcp_error_handling.py
+<a href="#__codelineno-1-26" id="__codelineno-1-26" name="__codelineno-1-26"></a>│   │   ├── mcp_observability.py
+<a href="#__codelineno-1-27" id="__codelineno-1-27" name="__codelineno-1-27"></a>│   │   ├── mcp_lifecycle_management.py
+<a href="#__codelineno-1-28" id="__codelineno-1-28" name="__codelineno-1-28"></a>│   │   ├── mcp_versioning_compat.py
+<a href="#__codelineno-1-29" id="__codelineno-1-29" name="__codelineno-1-29"></a>│   │   ├── mcp_schema_validation.py
+<a href="#__codelineno-1-30" id="__codelineno-1-30" name="__codelineno-1-30"></a>│   │   ├── mcp_multi_tenant.py
+<a href="#__codelineno-1-31" id="__codelineno-1-31" name="__codelineno-1-31"></a>│   │   └── mcp_tools_integration.py
+<a href="#__codelineno-1-32" id="__codelineno-1-32" name="__codelineno-1-32"></a>│   ├── security/                   # Token encryption/verification  # pragma: allowlist secret
+<a href="#__codelineno-1-33" id="__codelineno-1-33" name="__codelineno-1-33"></a>│   │   ├── token_encryption_tool.py  # pragma: allowlist secret
+<a href="#__codelineno-1-34" id="__codelineno-1-34" name="__codelineno-1-34"></a>│   │   └── verify_token_scope.py  # pragma: allowlist secret
+<a href="#__codelineno-1-35" id="__codelineno-1-35" name="__codelineno-1-35"></a>│   └── validate_mcp.py
+<a href="#__codelineno-1-36" id="__codelineno-1-36" name="__codelineno-1-36"></a>└── .github/
+<a href="#__codelineno-1-37" id="__codelineno-1-37" name="__codelineno-1-37"></a>    ├── workflows/
+<a href="#__codelineno-1-38" id="__codelineno-1-38" name="__codelineno-1-38"></a>    │   ├── mcp-cache-warm.yml      # Scheduled cache warming
+<a href="#__codelineno-1-39" id="__codelineno-1-39" name="__codelineno-1-39"></a>    │   └── mcp-ci.yml              # MCP-aware CI pipeline
+<a href="#__codelineno-1-40" id="__codelineno-1-40" name="__codelineno-1-40"></a>    └── security-tools/
+<a href="#__codelineno-1-41" id="__codelineno-1-41" name="__codelineno-1-41"></a>        └── bootstrap_extractor.py  # Tool deployment from env vars
+</code></pre></div>
+<h3 id="mcp-service-components">MCP Service Components<a class="headerlink" href="#mcp-service-components" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Location</th>
+<th>Purpose</th>
+<th>Copilot Agent Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>MCP HTTP Server</strong></td>
+<td><code>src/mcp/server.py</code></td>
+<td>REST API for context requests</td>
+<td>GET /manifest, /index, /sessions</td>
+</tr>
+<tr>
+<td><strong>Cache Warmer</strong></td>
+<td><code>.codex/scripts/cache-warmer.py</code></td>
+<td>Prefetch dependencies</td>
+<td>POST /cache/warm (Python/Node/Playwright)</td>
+</tr>
+<tr>
+<td><strong>Playwright Pool</strong></td>
+<td><code>src/mcp/adapters/playwright_adapter.py</code></td>
+<td>Browser session management</td>
+<td>POST /sessions (create), GET /sessions/{id}</td>
+</tr>
+<tr>
+<td><strong>Metrics Collector</strong></td>
+<td><code>src/mcp/metrics/</code></td>
+<td>MCP performance tracking</td>
+<td>GET /metrics (Prometheus format)</td>
+</tr>
+<tr>
+<td><strong>Config Manager</strong></td>
+<td><code>.codex/mcp-config.yml</code></td>
+<td>Service settings + cache keys</td>
+<td>Loaded at MCP startup</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 id="copilot-agent-integration-patterns">Copilot Agent Integration Patterns<a class="headerlink" href="#copilot-agent-integration-patterns" title="Permanent link">¶</a></h2>
+<h3 id="pattern-1-direct-http-integration-recommended-for-codex">Pattern 1: Direct HTTP Integration (Recommended for <em>codex</em>)<a class="headerlink" href="#pattern-1-direct-http-integration-recommended-for-codex" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="c1"># Copilot Agent script example</span>
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="kn">import</span> <span class="nn">requests</span>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="kn">from</span> <span class="nn">scripts.security.token_encryption_tool</span> <span class="kn">import</span> <span class="n">copilot_get_github_token_safe</span>  <span class="c1"># pragma: allowlist secret</span>
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="c1"># Authenticate with MCP service</span>
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a><span class="n">token</span> <span class="o">=</span> <span class="n">copilot_get_github_token_safe</span><span class="p">()</span>  <span class="c1"># pragma: allowlist secret</span>
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a><span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"Authorization"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"Bearer </span><span class="si">{</span><span class="n">token</span><span class="si">}</span><span class="s2">"</span><span class="p">}</span>  <span class="c1"># pragma: allowlist secret</span>
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a><span class="c1"># Request focused context</span>
+<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a>    <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span>
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a>    <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">"scope"</span><span class="p">:</span> <span class="s2">"python"</span><span class="p">,</span> <span class="s2">"depth"</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
+<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a><span class="p">)</span>
+<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a>
+<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a><span class="n">dependencies</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a><span class="c1"># Use dependencies for code generation context</span>
+</code></pre></div>
+<h2 id="pattern-2-github-actions-integration">Pattern 2: GitHub Actions Integration<a class="headerlink" href="#pattern-2-github-actions-integration" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="c1"># .github/workflows/copilot-task.yml</span>
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Copilot Agent Task with MCP</span>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="nt">on</span><span class="p">:</span>
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="w">  </span><span class="nt">workflow_dispatch</span><span class="p">:</span>
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a><span class="nt">jobs</span><span class="p">:</span>
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a><span class="w">  </span><span class="nt">copilot-with-mcp</span><span class="p">:</span>
+<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a><span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="w">    </span><span class="nt">services</span><span class="p">:</span>
+<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a><span class="w">      </span><span class="nt">mcp</span><span class="p">:</span>
+<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a><span class="w">        </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ghcr.io/aries-serpent/_codex_/mcp:latest</span>
+<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a><span class="w">        </span><span class="nt">ports</span><span class="p">:</span>
+<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8080:8080</span>
+<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a><span class="w">        </span><span class="nt">env</span><span class="p">:</span>
+<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a><span class="w">          </span><span class="nt">CODEX_GHP_TOKEN_BASE64</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.CODEX_GHP_TOKEN_BASE64 }}</span>
+<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a>
+<a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a><span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v4</span>
+<a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a>
+<a href="#__codelineno-3-21" id="__codelineno-3-21" name="__codelineno-3-21"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Wait for MCP service</span>
+<a href="#__codelineno-3-22" id="__codelineno-3-22" name="__codelineno-3-22"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a href="#__codelineno-3-23" id="__codelineno-3-23" name="__codelineno-3-23"></a>
+<a href="#__codelineno-3-24" id="__codelineno-3-24" name="__codelineno-3-24"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Execute Copilot task with MCP context</span>
+<a href="#__codelineno-3-25" id="__codelineno-3-25" name="__codelineno-3-25"></a><span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+</code></pre></div>
+<h2 id="pattern-3-vs-code-extension-integration-local-development">Pattern 3: VS Code Extension Integration (Local Development)<a class="headerlink" href="#pattern-3-vs-code-extension-integration-local-development" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="c1">// .vscode/settings.json</span>
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="p">{</span>
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="w">  </span><span class="nt">"copilot.advanced"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="w">    </span><span class="nt">"contextProviders"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="w">      </span><span class="p">{</span>
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="w">        </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http"</span><span class="p">,</span>
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="w">        </span><span class="nt">"authentication"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bearer"</span><span class="p">,</span>
+<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a><span class="w">        </span><span class="nt">"tokenSource"</span><span class="p">:</span><span class="w"> </span><span class="s2">"environment:CODEX_MCP_TOKEN"</span>
+<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="w">      </span><span class="p">}</span>
+<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a><span class="w">    </span><span class="p">]</span>
+<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a><span class="w">  </span><span class="p">}</span>
+<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a><span class="p">}</span>
+</code></pre></div>
+<hr/>
+<h2 id="current-codex-mcp-implementation">Current <em>codex</em> MCP Implementation<a class="headerlink" href="#current-codex-mcp-implementation" title="Permanent link">¶</a></h2>
+<h3 id="mcp-service-endpoints-as-of-2025-12-29">MCP Service Endpoints (as of 2025-12-29)<a class="headerlink" href="#mcp-service-endpoints-as-of-2025-12-29" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Endpoint</th>
+<th>Method</th>
+<th>Purpose</th>
+<th>Response Format</th>
+<th>Auth Required</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/health</code></td>
+<td>GET</td>
+<td>Service health check</td>
+<td><code>{"status": "ok", "version": "1.0"}</code></td>
+<td>No</td>
+</tr>
+<tr>
+<td><code>/manifest</code></td>
+<td>GET</td>
+<td>Cache keys + metadata</td>
+<td>YAML manifest</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td><code>/index</code></td>
+<td>GET</td>
+<td>Dependency tree</td>
+<td>JSON tree</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td><code>/cache/warm</code></td>
+<td>POST</td>
+<td>Trigger cache prefetch</td>
+<td><code>{"job_id": "..."}</code></td>
+<td>Yes</td>
+</tr>
+<tr>
+<td><code>/sessions</code></td>
+<td>POST</td>
+<td>Create Playwright session</td>
+<td><code>{"session_id": "...", "url": "..."}</code></td>
+<td>Yes</td>
+</tr>
+<tr>
+<td><code>/sessions/{id}</code></td>
+<td>GET</td>
+<td>Get session status</td>
+<td><code>{"status": "active", "screenshots": [...]}</code></td>
+<td>Yes</td>
+</tr>
+<tr>
+<td><code>/metrics</code></td>
+<td>GET</td>
+<td>Prometheus metrics</td>
+<td>Text metrics</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h3 id="implemented-capabilities">Implemented Capabilities<a class="headerlink" href="#implemented-capabilities" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Capability</th>
+<th>Status</th>
+<th>Location</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mcp-tooling-registry</code></td>
+<td>Implemented</td>
+<td><code>scripts/space_traversal/detectors/mcp_tooling_registry.py</code></td>
+<td>Tool registration and discovery</td>
+</tr>
+<tr>
+<td><code>mcp-protocol-surface</code></td>
+<td>Implemented</td>
+<td><code>scripts/space_traversal/detectors/mcp_protocol_surface.py</code></td>
+<td>JSON-RPC protocol handling</td>
+</tr>
+<tr>
+<td><code>mcp-configuration</code></td>
+<td>Implemented</td>
+<td><code>scripts/space_traversal/detectors/mcp_configuration.py</code></td>
+<td>Server config management</td>
+</tr>
+<tr>
+<td><code>mcp-security-safeguards</code></td>
+<td>Implemented</td>
+<td><code>scripts/space_traversal/detectors/mcp_security_safeguards.py</code></td>
+<td>Authentication and authorization</td>
+</tr>
+<tr>
+<td><code>mcp-authz-authn</code></td>
+<td>Implemented</td>
+<td><code>scripts/space_traversal/detectors/mcp_authz_authn.py</code></td>
+<td>OAuth2/token validation</td>
+</tr>
+<tr>
+<td><code>mcp-rate-limiting</code></td>
+<td>Implemented</td>
+<td><code>scripts/space_traversal/detectors/mcp_rate_limiting.py</code></td>
+<td>Request throttling</td>
+</tr>
+<tr>
+<td><code>mcp-error-handling</code></td>
+<td>Implemented</td>
+<td><code>scripts/space_traversal/detectors/mcp_error_handling.py</code></td>
+<td>Graceful error recovery</td>
+</tr>
+<tr>
+<td><code>mcp-observability</code></td>
+<td>Implemented</td>
+<td><code>scripts/space_traversal/detectors/mcp_observability.py</code></td>
+<td>Metrics and logging</td>
+</tr>
+<tr>
+<td><code>mcp-lifecycle-management</code></td>
+<td>Implemented</td>
+<td><code>scripts/space_traversal/detectors/mcp_lifecycle_management.py</code></td>
+<td>Server startup/shutdown</td>
+</tr>
+<tr>
+<td><code>mcp-versioning-compat</code></td>
+<td>Implemented</td>
+<td><code>scripts/space_traversal/detectors/mcp_versioning_compat.py</code></td>
+<td>Protocol version negotiation</td>
+</tr>
+<tr>
+<td><code>mcp-schema-validation</code></td>
+<td>Implemented</td>
+<td><code>scripts/space_traversal/detectors/mcp_schema_validation.py</code></td>
+<td>Request/response validation</td>
+</tr>
+<tr>
+<td><code>mcp-multi-tenant</code></td>
+<td>Implemented</td>
+<td><code>scripts/space_traversal/detectors/mcp_multi_tenant.py</code></td>
+<td>Multi-user support</td>
+</tr>
+<tr>
+<td><code>mcp-tools-integration</code></td>
+<td>Implemented</td>
+<td><code>scripts/space_traversal/detectors/mcp_tools_integration.py</code></td>
+<td>External tool orchestration</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 id="authoritative-documentation">Authoritative Documentation<a class="headerlink" href="#authoritative-documentation" title="Permanent link">¶</a></h2>
+<h3 id="github-resources">GitHub Resources<a class="headerlink" href="#github-resources" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Resource</th>
+<th>URL</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>GitHub Actions Caching</strong></td>
+<td>https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows</td>
+<td>Cache management patterns</td>
+</tr>
+<tr>
+<td><strong>GitHub Copilot Docs</strong></td>
+<td>https://docs.github.com/en/copilot</td>
+<td>Product features &amp; enterprise setup</td>
+</tr>
+<tr>
+<td><strong>GitHub REST API</strong></td>
+<td>https://docs.github.com/en/rest</td>
+<td>Programmatic repository access</td>
+</tr>
+<tr>
+<td><strong>GitHub GraphQL API</strong></td>
+<td>https://docs.github.com/en/graphql</td>
+<td>Efficient batch queries</td>
+</tr>
+<tr>
+<td><strong>GitHub Apps</strong></td>
+<td>https://docs.github.com/en/apps</td>
+<td>Fine-grained access tokens</td>
+</tr>
+<tr>
+<td><strong>GitHub Packages (GHCR)</strong></td>
+<td>https://docs.github.com/en/packages</td>
+<td>Container registry for cache images</td>
+</tr>
+<tr>
+<td><strong>GitHub Actions Limits</strong></td>
+<td>https://docs.github.com/en/actions/learn-github-actions/usage-limits-billing-and-administration</td>
+<td>Quotas &amp; constraints</td>
+</tr>
+</tbody>
+</table>
+<h3 id="third-party-tools">Third-Party Tools<a class="headerlink" href="#third-party-tools" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Docs</th>
+<th><em>codex</em> Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Playwright</strong></td>
+<td>https://playwright.dev</td>
+<td>Browser automation &amp; testing</td>
+</tr>
+<tr>
+<td><strong>Pinecone</strong></td>
+<td>https://docs.pinecone.io</td>
+<td>Vector database for RAG</td>
+</tr>
+<tr>
+<td><strong>PyPI</strong></td>
+<td>https://pypi.org/help/</td>
+<td>Python package index (cache warming target)</td>
+</tr>
+<tr>
+<td><strong>npm</strong></td>
+<td>https://docs.npmjs.com</td>
+<td>Node package manager (cache warming target)</td>
+</tr>
+<tr>
+<td><strong>Prometheus</strong></td>
+<td>https://prometheus.io/docs</td>
+<td>Metrics collection (<code>/metrics</code> endpoint)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="codex-specific-documentation"><em>codex</em>-Specific Documentation<a class="headerlink" href="#codex-specific-documentation" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Document</th>
+<th>Location</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>MCP Configuration</strong></td>
+<td><code>.codex/mcp-config.yml</code></td>
+<td>Service settings &amp; endpoints</td>
+</tr>
+<tr>
+<td><strong>Cache Manifest</strong></td>
+<td><code>.codex/cache-manifest.yml</code></td>
+<td>Cache key registry</td>
+</tr>
+<tr>
+<td><strong>MCP Developer Guide</strong></td>
+<td><code>docs/mcp/MCP_DEVELOPER_GUIDE.md</code></td>
+<td>Implementation reference</td>
+</tr>
+<tr>
+<td><strong>Token Security</strong></td>
+<td><code>docs/admin/security/ADMIN_TOKEN_SETUP.md</code></td>
+<td>Authentication setup</td>
+</tr>
+<tr>
+<td><strong>Copilot Token Usage</strong></td>
+<td><code>docs/admin/security/COPILOT_TOKEN_USAGE.md</code></td>
+<td>Token management guide</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 id="advanced-configuration-for-maximum-copilot-capability">Advanced Configuration for Maximum Copilot Capability<a class="headerlink" href="#advanced-configuration-for-maximum-copilot-capability" title="Permanent link">¶</a></h2>
+<p>See <a href="../GITHUB_ENVIRONMENT_SETUP/">GITHUB_ENVIRONMENT_SETUP.md</a> for detailed configuration instructions including:</p>
+<ul>
+<li>GitHub Actions service container deployment</li>
+<li>GHCR image building and publishing</li>
+<li>Smart context filtering implementation</li>
+<li>Token authentication setup</li>
+<li>Rate limiting configuration</li>
+</ul>
+<hr/>
+<h2 id="recommended-permissions-security">Recommended Permissions &amp; Security<a class="headerlink" href="#recommended-permissions-security" title="Permanent link">¶</a></h2>
+<h3 id="github-environment-variables-required">GitHub Environment Variables Required<a class="headerlink" href="#github-environment-variables-required" title="Permanent link">¶</a></h3>
+<p>See <a href="../GITHUB_ENVIRONMENT_SETUP/">GITHUB_ENVIRONMENT_SETUP.md</a> for the complete table of required environment variables and secrets, including:</p>
+<ul>
+<li><code>CODEX_GHP_TOKEN_BASE64</code> - Base64-encoded GitHub PAT</li>
+<li><code>CODEX_GHP_TOKEN_CONFIG</code> - Token metadata (JSON)</li>
+<li><code>CODEX_MASTER_KEY</code> - Encryption key for tokens</li>
+<li>Additional MCP-specific variables</li>
+</ul>
+<h3 id="required-github-token-scopes">Required GitHub Token Scopes<a class="headerlink" href="#required-github-token-scopes" title="Permanent link">¶</a></h3>
+<p>For full MCP functionality, the GitHub Personal Access Token needs:</p>
+<ul>
+<li><code>repo</code> - Full repository access</li>
+<li><code>workflow</code> - Workflow management</li>
+<li><code>read:org</code> - Organization read access</li>
+<li><code>write:discussion</code> - Discussion participation</li>
+<li>️ <code>admin:repo_hook</code> - Webhook management (optional)</li>
+<li>️ <code>delete:packages</code> - Package cleanup (optional)</li>
+</ul>
+<h3 id="security-best-practices">Security Best Practices<a class="headerlink" href="#security-best-practices" title="Permanent link">¶</a></h3>
+<ul>
+<li>Use GitHub App with minimal permissions (not PAT)</li>
+<li>Rotate tokens every 90 iterations (automate with workflow)</li>
+<li>Enable audit logging for MCP access</li>
+<li>Implement rate limiting on MCP endpoints (10 req/min per client)</li>
+<li>Use HTTPS only (no HTTP in production)</li>
+<li>Validate all request signatures (JWT from GitHub App)</li>
+<li>Sanitize all user inputs (file paths, query params)</li>
+<li>Never log full tokens or secrets</li>
+<li>Use network policies (allowlist GitHub Actions IPs)</li>
+<li>Enable Dependabot for MCP dependencies</li>
+<li>Run MCP service with non-root user</li>
+<li>Implement request timeout (30s max)</li>
+<li>Add CORS policy (restrict to <em>codex</em> domain)</li>
+<li>Enable Prometheus metrics with authentication</li>
+<li>Set up alerting for failed auth attempts (&gt;5/min)</li>
+</ul>
+<hr/>
+<h2 id="known-limitations-workarounds">Known Limitations &amp; Workarounds<a class="headerlink" href="#known-limitations-workarounds" title="Permanent link">¶</a></h2>
+<h3 id="limitation-1-llm-context-window-constraints">Limitation 1: LLM Context Window Constraints<a class="headerlink" href="#limitation-1-llm-context-window-constraints" title="Permanent link">¶</a></h3>
+<p><strong>Problem</strong>: GitHub Copilot (and underlying LLMs) have finite context windows. Even GPT-4 Turbo (128k tokens) cannot "see" an entire large monorepo like <code>_codex_</code>.</p>
+<p><strong>Workarounds Implemented</strong>:
+- Smart indexing (function signatures only)
+- RAG pattern with Pinecone embeddings
+- Manifest summarization
+- Dynamic context loading</p>
+<h3 id="limitation-2-secrets-privacy-risks">Limitation 2: Secrets &amp; Privacy Risks<a class="headerlink" href="#limitation-2-secrets-privacy-risks" title="Permanent link">¶</a></h3>
+<p><strong>Problem</strong>: Copilot suggestions may inadvertently send sensitive data to external LLMs.</p>
+<p><strong>Workarounds Implemented</strong>:
+- Content redaction for known secret patterns
+- MCP response filtering
+- GitHub Secret Scanning enabled
+- On-premises option for sensitive environments</p>
+<h3 id="limitation-3-api-rate-limits">Limitation 3: API Rate Limits<a class="headerlink" href="#limitation-3-api-rate-limits" title="Permanent link">¶</a></h3>
+<p><strong>Problem</strong>: Frequent MCP requests to GitHub, PyPI, npm may hit rate limits.</p>
+<p><strong>Workarounds Implemented</strong>:
+- MCP-side caching with TTL
+- GraphQL batching for GitHub API
+- Exponential backoff on rate limit errors
+- Scheduled warming during off-peak hours</p>
+<h3 id="limitation-4-github-actions-cachestorage-limits">Limitation 4: GitHub Actions Cache/Storage Limits<a class="headerlink" href="#limitation-4-github-actions-cachestorage-limits" title="Permanent link">¶</a></h3>
+<p><strong>Problem</strong>: GitHub Actions has cache size (10 GB) and retention (7 iterations) limits.</p>
+<p><strong>Workarounds Implemented</strong>:
+- Use GHCR for large binaries (Playwright browsers)
+- Cache segmentation (separate Python/Node/browsers)
+- Automated cleanup workflow
+- External storage fallback for &gt;10GB assets</p>
+<h3 id="limitation-5-playwright-binary-size-environment">Limitation 5: Playwright Binary Size &amp; Environment<a class="headerlink" href="#limitation-5-playwright-binary-size-environment" title="Permanent link">¶</a></h3>
+<p><strong>Problem</strong>: Playwright browsers are large (~1.2 GB) and slow to download.</p>
+<p><strong>Workarounds Implemented</strong>:
+- Pre-warmed GHCR image with browsers installed
+- Custom browser path with Actions cache
+- Minimal browser install (Chromium only)
+- Lazy loading pattern</p>
+<h3 id="limitation-6-copilot-product-api-boundaries">Limitation 6: Copilot Product API Boundaries<a class="headerlink" href="#limitation-6-copilot-product-api-boundaries" title="Permanent link">¶</a></h3>
+<p><strong>Problem</strong>: GitHub Copilot does not directly accept arbitrary HTTP endpoints.</p>
+<p><strong>Workarounds Implemented</strong>:
+- GitHub Actions integration (primary method)
+- VS Code extension (local development)
+- GitHub App integration
+- Prompt engineering (manual workaround)</p>
+<hr/>
+<h2 id="practical-implementation-checklist">Practical Implementation Checklist<a class="headerlink" href="#practical-implementation-checklist" title="Permanent link">¶</a></h2>
+<h3 id="phase-1-setup-authentication">Phase 1: Setup &amp; Authentication<a class="headerlink" href="#phase-1-setup-authentication" title="Permanent link">¶</a></h3>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Create GitHub App for <em>codex</em> with recommended permissions</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Generate and securely store App private key</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Install App to repository</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Encrypt and store GitHub tokens</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Verify token retrieval</li>
+</ul>
+<h3 id="phase-2-mcp-service-deployment">Phase 2: MCP Service Deployment<a class="headerlink" href="#phase-2-mcp-service-deployment" title="Permanent link">¶</a></h3>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Build MCP Docker image</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Push to GHCR</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Test locally</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Verify endpoints</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Deploy to Actions workflow</li>
+</ul>
+<h3 id="phase-3-cache-warming-automation">Phase 3: Cache Warming Automation<a class="headerlink" href="#phase-3-cache-warming-automation" title="Permanent link">¶</a></h3>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Create cache warming workflow</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Configure schedule</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Run manually first time</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Verify cache artifacts</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Check GHCR for updated images</li>
+</ul>
+<h3 id="phase-4-copilot-integration">Phase 4: Copilot Integration<a class="headerlink" href="#phase-4-copilot-integration" title="Permanent link">¶</a></h3>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Add MCP service to Copilot workflows</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Test token authentication</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Verify context retrieval</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Implement RAG pattern (if needed)</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Add Playwright session management (if needed)</li>
+</ul>
+<h3 id="phase-5-monitoring-optimization">Phase 5: Monitoring &amp; Optimization<a class="headerlink" href="#phase-5-monitoring-optimization" title="Permanent link">¶</a></h3>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Enable Prometheus metrics</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Set up Grafana dashboard (optional)</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Configure alerting</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Monitor cache hit rates</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Review token usage and context sizes</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Optimize context filtering</li>
+</ul>
+<hr/>
+<h2 id="codex-specific-integration-examples"><em>codex</em>-Specific Integration Examples<a class="headerlink" href="#codex-specific-integration-examples" title="Permanent link">¶</a></h2>
+<h3 id="example-1-dependency-aware-code-generation">Example 1: Dependency-Aware Code Generation<a class="headerlink" href="#example-1-dependency-aware-code-generation" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="c1"># Copilot Agent queries MCP for dependency context</span>
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="kn">import</span> <span class="nn">requests</span>
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="n">manifest</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>    <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">"Authorization"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"Bearer </span><span class="si">{</span><span class="n">token</span><span class="si">}</span><span class="s2">"</span><span class="p">}</span>  <span class="c1"># pragma: allowlist secret</span>
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a>
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a><span class="n">torch_version</span> <span class="o">=</span> <span class="n">manifest</span><span class="p">[</span><span class="s1">'dependencies'</span><span class="p">][</span><span class="s1">'torch'</span><span class="p">][</span><span class="s1">'version'</span><span class="p">]</span>
+<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a><span class="c1"># Returns: "&gt;=2.2.2"</span>
+<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a>
+<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a><span class="c1"># Generate version-aware code</span>
+<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a><span class="kn">import</span> <span class="nn">torch</span>  <span class="c1"># &gt;= 2.2.2</span>
+<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a><span class="n">model</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">'cuda'</span><span class="p">)</span>
+<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a><span class="n">model</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>  <span class="c1"># New in 2.0+</span>
+</code></pre></div>
+<h2 id="example-2-test-generation-with-playwright">Example 2: Test Generation with Playwright<a class="headerlink" href="#example-2-test-generation-with-playwright" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="c1"># Create Playwright session via MCP</span>
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="n">session_response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a>    <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">"Authorization"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"Bearer </span><span class="si">{</span><span class="n">token</span><span class="si">}</span><span class="s2">"</span><span class="p">},</span>  <span class="c1"># pragma: allowlist secret</span>
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a>    <span class="n">json</span><span class="o">=</span><span class="p">{</span>
+<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a>        <span class="s2">"browser"</span><span class="p">:</span> <span class="s2">"chromium"</span><span class="p">,</span>
+<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a>        <span class="s2">"headless"</span><span class="p">:</span> <span class="kc">True</span>
+<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a>    <span class="p">}</span>
+<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a>
+<a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a><span class="c1"># Generate test code with session context</span>
+<a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a><span class="c1"># ... (test code generation)</span>
+</code></pre></div>
+<h2 id="example-3-cache-aware-dependency-updates">Example 3: Cache-Aware Dependency Updates<a class="headerlink" href="#example-3-cache-aware-dependency-updates" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="c1"># Get current cache manifest</span>
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="n">manifest</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>    <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">"Authorization"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"Bearer </span><span class="si">{</span><span class="n">token</span><span class="si">}</span><span class="s2">"</span><span class="p">}</span>  <span class="c1"># pragma: allowlist secret</span>
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a>
+<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a><span class="c1"># Propose updates</span>
+<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a><span class="n">updates</span> <span class="o">=</span> <span class="p">{</span>
+<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a>    <span class="s2">"torch"</span><span class="p">:</span> <span class="s2">"2.3.0"</span><span class="p">,</span>
+<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a>    <span class="s2">"transformers"</span><span class="p">:</span> <span class="s2">"4.35.0"</span>
+<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a><span class="p">}</span>
+<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a>
+<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a><span class="c1"># Warm cache for new versions</span>
+<a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a><span class="n">warm_response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+<a href="#__codelineno-7-14" id="__codelineno-7-14" name="__codelineno-7-14"></a>    <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">"Authorization"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"Bearer </span><span class="si">{</span><span class="n">token</span><span class="si">}</span><span class="s2">"</span><span class="p">},</span>  <span class="c1"># pragma: allowlist secret</span>
+<a href="#__codelineno-7-15" id="__codelineno-7-15" name="__codelineno-7-15"></a>    <span class="n">json</span><span class="o">=</span><span class="p">{</span><span class="s2">"targets"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"python"</span><span class="p">],</span> <span class="s2">"packages"</span><span class="p">:</span> <span class="n">updates</span><span class="p">,</span> <span class="s2">"force"</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+<a href="#__codelineno-7-16" id="__codelineno-7-16" name="__codelineno-7-16"></a><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+</code></pre></div>
+<hr/>
+<h2 id="troubleshooting-monitoring">Troubleshooting &amp; Monitoring<a class="headerlink" href="#troubleshooting-monitoring" title="Permanent link">¶</a></h2>
+<h3 id="common-issues-solutions">Common Issues &amp; Solutions<a class="headerlink" href="#common-issues-solutions" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Issue</th>
+<th>Symptoms</th>
+<th>Solution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Authentication failures</strong></td>
+<td>401 Unauthorized responses</td>
+<td>Verify token: <code>python3 scripts/security/verify_token_scope.py</code></td>
+</tr>
+<tr>
+<td><strong>Slow cache warming</strong></td>
+<td>Jobs take &gt;10 Pre-commits</td>
+<td>Check PyPI/npm mirrors, increase parallel downloads</td>
+</tr>
+<tr>
+<td><strong>Context too large</strong></td>
+<td>Token limit errors</td>
+<td>Adjust filtering, enable summarization</td>
+</tr>
+<tr>
+<td><strong>Playwright browsers missing</strong></td>
+<td>Browser launch fails</td>
+<td>Run <code>playwright install chromium</code> in container</td>
+</tr>
+<tr>
+<td><strong>GHCR push denied</strong></td>
+<td>Docker push fails</td>
+<td>Check <code>packages:write</code> permission in GitHub App</td>
+</tr>
+</tbody>
+</table>
+<h3 id="monitoring-metrics">Monitoring Metrics<a class="headerlink" href="#monitoring-metrics" title="Permanent link">¶</a></h3>
+<p>Track these metrics via <code>mcp-observability</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Target</th>
+<th>Alert Threshold</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Request latency (p99)</td>
+<td>&lt;5s</td>
+<td>&gt;10s</td>
+</tr>
+<tr>
+<td>Success rate</td>
+<td>&gt;99%</td>
+<td>&lt;95%</td>
+</tr>
+<tr>
+<td>Requests per minute</td>
+<td>60</td>
+<td>&gt;100</td>
+</tr>
+<tr>
+<td>Context size (tokens)</td>
+<td>&lt;100K</td>
+<td>&gt;120K</td>
+</tr>
+<tr>
+<td>Tool execution time</td>
+<td>&lt;30s</td>
+<td>&gt;60s</td>
+</tr>
+<tr>
+<td>Browser session count</td>
+<td>&lt;5</td>
+<td>&gt;10</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">¶</a></h2>
+<h3 id="external-documentation">External Documentation<a class="headerlink" href="#external-documentation" title="Permanent link">¶</a></h3>
+<ul>
+<li>MCP Specification: https://modelcontextprotocol.io/specification</li>
+<li>Playwright Python: https://playwright.dev/python/docs/intro</li>
+<li>JSON-RPC 2.0: https://www.jsonrpc.org/specification</li>
+</ul>
+<h3 id="internal-documentation">Internal Documentation<a class="headerlink" href="#internal-documentation" title="Permanent link">¶</a></h3>
+<ul>
+<li><code>docs/mcp/MCP_DEVELOPER_GUIDE.md</code> - Developer implementation guide</li>
+<li><code>docs/mcp/MCP_SECURITY_GUIDE.md</code> - Security best practices</li>
+<li><code>docs/mcp/MCP_FAQ.md</code> - Frequently asked questions</li>
+<li><code>docs/admin/security/COPILOT_TOKEN_USAGE.md</code> - Token management</li>
+<li><code>.github/copilot-prompts/active/PR-2639-security-continuation.md</code> - Security implementation</li>
+</ul>
+<h3 id="support-channels">Support Channels<a class="headerlink" href="#support-channels" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>GitHub Issues</strong>: https://github.com/Aries-Serpent/<em>codex</em>/issues</li>
+<li><strong>Discussions</strong>: https://github.com/Aries-Serpent/<em>codex</em>/discussions</li>
+</ul>
+<hr/>
+<h2 id="appendix-human-admin-actions-required">Appendix: Human Admin Actions Required<a class="headerlink" href="#appendix-human-admin-actions-required" title="Permanent link">¶</a></h2>
+<p>See <a href="../GITHUB_ENVIRONMENT_SETUP/">GITHUB_ENVIRONMENT_SETUP.md</a> for:
+- Complete environment variables table
+- Python script for generating configuration values
+- Step-by-step GitHub Org/Repo settings instructions</p>
+<hr/>
+<p><strong>Last Updated</strong>: 2026-06-22T00:00:00Z
+<strong>Maintainer</strong>: @mbaetiong
+<strong>Status</strong>: Production Ready 
+<strong>Version</strong>: 2.0.0</p>
+<hr/>
+<h2 id="mission-overview">Mission Overview<a class="headerlink" href="#mission-overview" title="Permanent link">¶</a></h2>
+<p><strong>Objective</strong>: Provide comprehensive guidance for integrating MCP (Model Context Protocol) with the <em>codex</em> repository, enabling GitHub Copilot Agent to access curated codebase context, dependency manifests, and browser automation capabilities for enhanced code generation.</p>
+<p><strong>Energy Level</strong>:  (4/5) - Setup Critical
+- High impact: Transforms Copilot Agent capabilities
+- High complexity: Multi-service integration (MCP + GitHub + Playwright + Pinecone)
+- Long-term value: Foundation for AI-driven development</p>
+<p><strong>Status</strong>:  Documentation Complete |  Implementation Ready</p>
+<hr/>
+<h2 id="verification-checklist">️ Verification Checklist<a class="headerlink" href="#verification-checklist" title="Permanent link">¶</a></h2>
+<p><strong>MCP Architecture Understanding</strong>:
+- [ ] MCP service endpoints documented (7 endpoints)
+- [ ] Integration patterns explained (3 patterns)
+- [ ] Current implementation mapped (13 capabilities)
+- [ ] Security best practices outlined (14 practices)</p>
+<p><strong>Technical Readiness</strong>:
+- [ ] All 37 dependencies support Python 3.12
+- [ ] GitHub token scopes defined
+- [ ] Service container patterns documented
+- [ ] Rate limiting configured</p>
+<p><strong>Integration Validation</strong>:
+- [ ] MCP health check passes (<code>/health</code> responds)
+- [ ] Token authentication successful
+- [ ] Context retrieval working (<code>/manifest</code> returns data)
+- [ ] Playwright sessions functional (<code>/sessions</code> creates browser)</p>
+<p><strong>Operational Preparedness</strong>:
+- [ ] Monitoring metrics defined (6 metrics)
+- [ ] Troubleshooting guide accessible
+- [ ] Backup authentication methods configured (PAT + GitHub App)
+- [ ] Known limitations understood (6 limitations)</p>
+<hr/>
+<h2 id="success-metrics">Success Metrics<a class="headerlink" href="#success-metrics" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Target</th>
+<th>Measurement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MCP Service Uptime</td>
+<td>&gt; 99.9%</td>
+<td>Health check endpoint monitoring</td>
+</tr>
+<tr>
+<td>Context Delivery Latency (p99)</td>
+<td>&lt; 5 seconds</td>
+<td>MCP response time metrics</td>
+</tr>
+<tr>
+<td>Token Limit Compliance</td>
+<td>&lt; 100K tokens</td>
+<td>Context size per request</td>
+</tr>
+<tr>
+<td>Cache Hit Rate</td>
+<td>&gt; 80%</td>
+<td>Dependency cache performance</td>
+</tr>
+<tr>
+<td>API Success Rate</td>
+<td>&gt; 99%</td>
+<td>Non-rate-limited request ratio</td>
+</tr>
+<tr>
+<td>Browser Session Creation</td>
+<td>&lt; 10 seconds</td>
+<td>Playwright startup time</td>
+</tr>
+</tbody>
+</table>
+<p><strong>KPI Dashboard</strong>:
+- <strong>Documentation Completeness</strong>: 100% (all endpoints + patterns + examples)
+- <strong>Security Hardening</strong>: 14/14 best practices documented
+- <strong>Integration Patterns</strong>: 3 patterns with working examples
+- <strong>Dependency Coverage</strong>: 37/37 packages analyzed</p>
+<hr/>
+<h2 id="physics-alignment">⚛️ Physics Alignment<a class="headerlink" href="#physics-alignment" title="Permanent link">¶</a></h2>
+<h3 id="path-context-delivery-optimization">Path ️ (Context Delivery Optimization)<a class="headerlink" href="#path-context-delivery-optimization" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Shortest Path</strong>: Copilot Agent → MCP <code>/manifest</code> → Filtered context → Code generation</li>
+<li><strong>Parallel Execution</strong>: Cache warming + dependency indexing + browser pool warming (simultaneous)</li>
+<li><strong>Lazy Loading</strong>: Browser sessions created on-demand, not pre-allocated</li>
+<li><strong>Compression</strong>: Tree-sitter reduces context size by ~60%</li>
+</ul>
+<h3 id="fields-information-flow-architecture">Fields  (Information Flow Architecture)<a class="headerlink" href="#fields-information-flow-architecture" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Request Flow</strong>: GitHub Action → MCP HTTP → libcst Parser → Filtered Manifest → Copilot</li>
+<li><strong>Cache Flow</strong>: PyPI/npm → GitHub Actions Cache → MCP Service → Copilot Context</li>
+<li><strong>Browser Flow</strong>: Playwright Pool → Session Management → Screenshot/HAR → Test Generation</li>
+<li><strong>Feedback Loop</strong>: Context quality metrics → Filtering adjustments → Improved relevance</li>
+</ul>
+<h3 id="patterns-integration-recognition">Patterns ️ (Integration Recognition)<a class="headerlink" href="#patterns-integration-recognition" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Service Container Pattern</strong>: Docker Compose → GitHub Actions Service → Ephemeral MCP</li>
+<li><strong>Fallback Chain</strong>: libcst (primary) → stdlib ast (fallback) → graceful degradation</li>
+<li><strong>Token Management</strong>: Encrypted master key → Base64 PAT → Decryption → Authentication</li>
+<li><strong>Rate Limiting</strong>: Token bucket → 60 req/min → Exponential backoff on 429</li>
+</ul>
+<h3 id="redundancy-fault-tolerance">Redundancy  (Fault Tolerance)<a class="headerlink" href="#redundancy-fault-tolerance" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Authentication Redundancy</strong>: GitHub App (preferred) ↔ Personal Access Token (backup)</li>
+<li><strong>Parser Redundancy</strong>: libcst → ast → basic text extraction</li>
+<li><strong>Cache Redundancy</strong>: GitHub Actions Cache → GHCR images → Re-download fallback</li>
+<li><strong>Endpoint Redundancy</strong>: Direct HTTP → Service container → Localhost proxy</li>
+</ul>
+<h3 id="balance-context-vs-token-limits">Balance ️ (Context vs Token Limits)<a class="headerlink" href="#balance-context-vs-token-limits" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Completeness</strong>: Full codebase indexing (comprehensive)</li>
+<li><strong>Efficiency</strong>: Smart filtering (relevant only)</li>
+<li><strong>Trade-off</strong>: 100K token budget ↔ LLM context window</li>
+<li><strong>Optimization</strong>: Summarization (function signatures only) + RAG (Pinecone embeddings)</li>
+</ul>
+<hr/>
+<h2 id="energy-distribution">Energy Distribution<a class="headerlink" href="#energy-distribution" title="Permanent link">¶</a></h2>
+<p><strong>P0 - Critical Setup (50%)</strong>:
+- Environment variables configuration (13 variables)
+- Secret management setup (8 secrets)
+- Token authentication implementation
+- MCP service deployment</p>
+<p><strong>P1 - Core Integration (30%)</strong>:
+- Cache warming automation (Python + Node + Playwright)
+- Copilot workflow integration (Actions service containers)
+- Monitoring and metrics (Prometheus endpoints)
+- Security hardening (request validation + rate limiting)</p>
+<p><strong>P2 - Advanced Features (20%)</strong>:
+- Browser automation (Playwright session management)
+- RAG integration (Pinecone vector search)
+- Custom context filtering (domain-specific logic)
+- Performance optimization (compression + batching)</p>
+<p><strong>Energy Allocation Rationale</strong>:
+- Foundation first (authentication + basic MCP) enables all features
+- Core integration delivers immediate value (cache + context)
+- Advanced features deferred until baseline stable</p>
+<hr/>
+<h2 id="redundancy-patterns">Redundancy Patterns<a class="headerlink" href="#redundancy-patterns" title="Permanent link">¶</a></h2>
+<p><strong>MCP Integration Rollback Strategy</strong>:</p>
+<ol>
+<li><strong>Pre-Integration State</strong>: Standard Copilot without MCP</li>
+<li>Copilot uses editor context only</li>
+<li>No custom context providers</li>
+<li>
+<p>GitHub API for repository metadata</p>
+</li>
+<li>
+<p><strong>Integration Checkpoints</strong>:</p>
+</li>
+<li>Checkpoint 1: MCP service deployed, health check passing</li>
+<li>Checkpoint 2: Token authentication working, manifest retrievable</li>
+<li>Checkpoint 3: Cache warming operational, artifacts generated</li>
+<li>
+<p>Checkpoint 4: Copilot workflows consuming MCP context</p>
+</li>
+<li>
+<p><strong>Rollback Triggers</strong>:</p>
+</li>
+<li>MCP service repeatedly failing health checks (&gt;5 failures/hour)</li>
+<li>Token authentication failures (permission issues)</li>
+<li>Context delivery exceeding token limits (&gt;120K tokens)</li>
+<li>Performance degradation (p99 latency &gt;10 seconds)</li>
+<li>
+<p>Security incident (unauthorized access attempts)</p>
+</li>
+<li>
+<p><strong>Recovery Procedure</strong>:
+   <div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="c1"># Disable MCP service container in workflow</span>
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="c1"># Edit .github/workflows/copilot-with-mcp.yml</span>
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a><span class="c1"># Comment out services: section</span>
+<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a>
+<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a><span class="c1"># Or environment variable override</span>
+<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"CODEX_MCP_ENABLED=false"</span><span class="w"> </span>&gt;&gt;<span class="w"> </span><span class="nv">$GITHUB_ENV</span>
+<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a>
+<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a><span class="c1"># Revert to baseline Copilot</span>
+<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a><span class="c1"># Remove MCP endpoint from .vscode/settings.json</span>
+<a href="#__codelineno-8-10" id="__codelineno-8-10" name="__codelineno-8-10"></a>
+<a href="#__codelineno-8-11" id="__codelineno-8-11" name="__codelineno-8-11"></a><span class="c1"># Verify rollback</span>
+<a href="#__codelineno-8-12" id="__codelineno-8-12" name="__codelineno-8-12"></a>gh<span class="w"> </span>workflow<span class="w"> </span>run<span class="w"> </span>copilot-baseline-test.yml
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Validation Points</strong>:</p>
+</li>
+<li>After service deployment: <code>/health</code> returns 200 OK</li>
+<li>After token configuration: <code>copilot_get_github_token_safe()</code> returns valid token</li>
+<li>After cache warming: Artifacts present in Actions cache</li>
+<li>After full integration: Copilot generates code with enhanced context</li>
+</ol>
+<p><strong>Failure Mode Protection</strong>:
+- <strong>Service Unavailable</strong>: Copilot falls back to standard context (no MCP)
+- <strong>Token Expired</strong>: Workflow fails fast with clear error message
+- <strong>Rate Limited</strong>: Exponential backoff + queue throttling
+- <strong>Context Too Large</strong>: Automatic truncation + summarization fallback</p>
+<p><strong>Disaster Recovery</strong>:
+- <strong>Documentation Recovery</strong>: Git history preserves all guides (persistent)
+- <strong>Configuration Recovery</strong>: Environment setup guide provides regeneration instructions
+- <strong>Service Recovery</strong>: GHCR image available for redeployment
+- <strong>Knowledge Recovery</strong>: AI Architect (NotebookLM) retains architectural decisions</p>
+<p><strong>Operational Continuity</strong>:
+- <strong>Monitoring</strong>: Prometheus metrics endpoint for real-time health
+- <strong>Alerting</strong>: Threshold-based alerts for latency/errors (see monitoring metrics table)
+- <strong>Incident Response</strong>: Troubleshooting guide covers 7 common issues
+- <strong>Capacity Planning</strong>: Known limitations documented for scaling decisions</p>
+</article>
+</div>
+<script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+</body>
+</html>

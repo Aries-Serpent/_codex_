@@ -1,0 +1,2776 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
+<link href="https://aries-serpent.github.io/_codex_/quickstart/" rel="canonical"/>
+<link href="../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<title>Codex Quickstart - Codex Docs v0.2.1</title>
+<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<link href="../stylesheets/extra.css" rel="stylesheet"/>
+<script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#codex-quickstart">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="Codex Docs v0.2.1" class="md-header__button md-logo" data-md-component="logo" href=".." title="Codex Docs v0.2.1">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m19 2-5 4.5v11l5-4.5zM6.5 5C4.55 5 2.45 5.4 1 6.5v14.66c0 .25.25.5.5.5.1 0 .15-.07.25-.07 1.35-.65 3.3-1.09 4.75-1.09 1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.31 4.75 1.06.1.05.15.03.25.03.25 0 .5-.25.5-.5V6.5c-.6-.45-1.25-.75-2-1V19c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V6.5C10.55 5.4 8.45 5 6.5 5"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            Codex Docs v0.2.1
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Codex Quickstart
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme)" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"></path></svg>
+</label>
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: light)" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_2" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+<input aria-label="Switch to system preference" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-primary="black" data-md-color-scheme="slate" id="__palette_2" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to system preference">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<a aria-label="Share" class="md-search__icon md-icon" data-clipboard="" data-clipboard-text="" data-md-component="search-share" href="javascript:void(0)" tabindex="-1" title="Share">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"></path></svg>
+</a>
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="md-header__source">
+<a class="md-source" data-md-component="source" href="https://github.com/Aries-Serpent/_codex_" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+</div>
+<div class="md-source__repository">
+    Aries-Serpent/_codex_
+  </div>
+</a>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="..">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../status/GITHUB_PAGES_STATUS/">
+        
+  
+  
+    
+  
+  Status Dashboard
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../cognitive_app/">
+        
+  
+  
+    
+  
+  Cognitive App
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../evolution/INDEX/">
+          
+  
+  
+  Evolution Center
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../README_ROOT/">
+        
+  
+  
+    
+  
+  README
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../getting-started/">
+        
+  
+  
+    
+  
+  Getting Started
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../api/">
+          
+  
+  
+  API Reference
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../CONTRIBUTING/">
+          
+  
+  
+  Guides
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../tokens/INDEX/">
+          
+  
+  
+  Token Management
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../architecture.md">
+          
+  
+  
+  Architecture
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../training/symbolic_training/">
+          
+  
+  
+  Training
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../deployment/deploy_pipeline/">
+          
+  
+  
+  Deployment
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../logging/logging_guide/">
+          
+  
+  
+  Logging &amp; Troubleshooting
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../plugins/Plugin_API_Broader/">
+          
+  
+  
+  Plugins
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../ROADMAP/">
+          
+  
+  
+  Reference
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../agents/POST_MERGE_ALIGNMENT_PROMPT/">
+          
+  
+  
+  Agent Prompts
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../accountability/INDEX/">
+          
+  
+  
+  Accountability
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../phase-9/PHASE_9_COORDINATION_DASHBOARD/">
+          
+  
+  
+  Phase 9 Execution
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/INDEX.md">
+          
+  
+  
+  CI/CD Workflows
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../reporting/INDEX/">
+          
+  
+  
+  Reporting
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../ci/CI_RESCUE_PIPELINE/">
+          
+  
+  
+  CI Rescue &amp; Health
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../safety/safety_guide/">
+          
+  
+  
+  Safety
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../database/sqlite_option/">
+          
+  
+  
+  Database Options
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../templates/">
+          
+  
+  
+  Templates
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../examples/codex_symbolic_pipeline/">
+          
+  
+  
+  Examples
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../ops/cost-dashboard/">
+          
+  
+  
+  Ops
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../tutorials/quickstart/">
+          
+  
+  
+  Tutorials
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="..">
+          
+  
+  
+  Legacy Catalog
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="Codex Docs v0.2.1" class="md-nav__button md-logo" data-md-component="logo" href=".." title="Codex Docs v0.2.1">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m19 2-5 4.5v11l5-4.5zM6.5 5C4.55 5 2.45 5.4 1 6.5v14.66c0 .25.25.5.5.5.1 0 .15-.07.25-.07 1.35-.65 3.3-1.09 4.75-1.09 1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.31 4.75 1.06.1.05.15.03.25.03.25 0 .5-.25.5-.5V6.5c-.6-.45-1.25-.75-2-1V19c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V6.5C10.55 5.4 8.45 5 6.5 5"></path></svg>
+</a>
+    Codex Docs v0.2.1
+  </label>
+<div class="md-nav__source">
+<a class="md-source" data-md-component="source" href="https://github.com/Aries-Serpent/_codex_" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+</div>
+<div class="md-source__repository">
+    Aries-Serpent/_codex_
+  </div>
+</a>
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../status/GITHUB_PAGES_STATUS/">
+<span class="md-ellipsis">
+    
+  
+    Status Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../cognitive_app/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive App
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Evolution Center
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Evolution Center
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evolution/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evolution/EVOLUTION_TIMELINE/">
+<span class="md-ellipsis">
+    
+  
+    Evolution Timeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evolution/PLANSET_REGISTRY/">
+<span class="md-ellipsis">
+    
+  
+    Planset Registry
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evolution/COGNITIVE_EVOLUTION_TREE/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive Evolution Tree
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evolution/AI_EMERGENCE_STORYBOARD/">
+<span class="md-ellipsis">
+    
+  
+    AI Emergence Storyboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evolution/AI_AGENCY_INTUITIVENESS_SCORE_V3/">
+<span class="md-ellipsis">
+    
+  
+    AI Agency Score V3
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evolution/COGNITIVE_CODEBASE_MAP/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive Codebase Map
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../README_ROOT/">
+<span class="md-ellipsis">
+    
+  
+    README
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../getting-started/">
+<span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../api/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_8" type="checkbox"/>
+<label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Guides
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_8_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_8">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Guides
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../CONTRIBUTING/">
+<span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../guides/code_style_guide/">
+<span class="md-ellipsis">
+    
+  
+    Code Style
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../guides/checkpointing/">
+<span class="md-ellipsis">
+    
+  
+    Checkpointing
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../guides/codex_setup/">
+<span class="md-ellipsis">
+    
+  
+    Setup &amp; Integration
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../guides/session_hooks/">
+<span class="md-ellipsis">
+    
+  
+    Session Hooks
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../guides/continuous_improvement/">
+<span class="md-ellipsis">
+    
+  
+    Continuous Improvement
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../guides/lfs_policy/">
+<span class="md-ellipsis">
+    
+  
+    LFS Policy
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../guides/asset_instruction_playbook/">
+<span class="md-ellipsis">
+    
+  
+    Asset Instruction Playbook
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../guides/LOGGING/">
+<span class="md-ellipsis">
+    
+  
+    Logging (Stdlib)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_9" type="checkbox"/>
+<label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Token Management
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_9_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_9">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Token Management
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tokens/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tokens/TOKEN_HIERARCHY_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Token Hierarchy Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tokens/TOKEN_REGENERATION_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Token Regeneration Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tokens/TOKEN_USAGE_AUDIT/">
+<span class="md-ellipsis">
+    
+  
+    Token Usage Audit
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tokens/HUMAN_ADMIN_SETUP/">
+<span class="md-ellipsis">
+    
+  
+    Human Admin Setup
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tokens/CI_CD_TROUBLESHOOTING/">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Troubleshooting
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tokens/CUSTOM_AGENT_GUIDANCE/">
+<span class="md-ellipsis">
+    
+  
+    Custom Agent Guidance
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tokens/QUICK_REFERENCE/">
+<span class="md-ellipsis">
+    
+  
+    Quick Reference
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_10" type="checkbox"/>
+<label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_10_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_10">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../architecture.md">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../architecture/codex_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Codex Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../system/mermaid_logic_map/">
+<span class="md-ellipsis">
+    
+  
+    Runtime Logic Map
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_11" type="checkbox"/>
+<label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Training
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_11_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_11">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Training
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../training/symbolic_training/">
+<span class="md-ellipsis">
+    
+  
+    Symbolic Training
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../training/distributed_troubleshooting/">
+<span class="md-ellipsis">
+    
+  
+    Distributed Troubleshooting
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_12" type="checkbox"/>
+<label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Deployment
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_12_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_12">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Deployment
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../deployment/deploy_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Deploy Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../deployment/DEPLOYMENT_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Deployment Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../deployment/LOCAL_DEPLOYMENT_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Local Deployment Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../deployment/DEPLOYMENT_VERIFICATION_CHECKLIST/">
+<span class="md-ellipsis">
+    
+  
+    Verification Checklist
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_13" type="checkbox"/>
+<label class="md-nav__link" for="__nav_13" id="__nav_13_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Logging &amp; Troubleshooting
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_13_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_13">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Logging &amp; Troubleshooting
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../logging/logging_guide/">
+<span class="md-ellipsis">
+    
+  
+    Logging Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../logging/end_to_end_logging/">
+<span class="md-ellipsis">
+    
+  
+    End-to-End Logging
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../logging/log_rotation/">
+<span class="md-ellipsis">
+    
+  
+    Log Rotation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../troubleshooting/error_log/">
+<span class="md-ellipsis">
+    
+  
+    Error Log
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../troubleshooting/open_questions/">
+<span class="md-ellipsis">
+    
+  
+    Open Questions
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_14" type="checkbox"/>
+<label class="md-nav__link" for="__nav_14" id="__nav_14_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Plugins
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_14_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_14">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Plugins
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../plugins/Plugin_API_Broader/">
+<span class="md-ellipsis">
+    
+  
+    Plugin API (Broader)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_15" type="checkbox"/>
+<label class="md-nav__link" for="__nav_15" id="__nav_15_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_15_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_15">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ROADMAP/">
+<span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../CHANGELOG/">
+<span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_15_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_15_3" id="__nav_15_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Changelog Archive
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_15_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_15_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Changelog Archive
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../CHANGELOG/changelog_codex/">
+<span class="md-ellipsis">
+    
+  
+    Codex
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../CHANGELOG/changelog_session_logging/">
+<span class="md-ellipsis">
+    
+  
+    Session Logging
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../CHANGELOG/change_log/">
+<span class="md-ellipsis">
+    
+  
+    Legacy change log
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../reference/audit_prompt/">
+<span class="md-ellipsis">
+    
+  
+    Audit Prompt
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../reference/tools/">
+<span class="md-ellipsis">
+    
+  
+    Tools
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../reference/codex_questions/">
+<span class="md-ellipsis">
+    
+  
+    Codex Questions (Archive)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../deferred_items/">
+<span class="md-ellipsis">
+    
+  
+    Deferred Items
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../agents/">
+<span class="md-ellipsis">
+    
+  
+    Agents
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_16" type="checkbox"/>
+<label class="md-nav__link" for="__nav_16" id="__nav_16_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Agent Prompts
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_16_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_16">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Agent Prompts
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../agents/POST_MERGE_ALIGNMENT_PROMPT/">
+<span class="md-ellipsis">
+    
+  
+    Post-Merge Doc Alignment
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_17" type="checkbox"/>
+<label class="md-nav__link" for="__nav_17" id="__nav_17_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Accountability
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_17_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_17">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Accountability
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../accountability/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<span class="md-ellipsis">
+    
+  
+    Agent Accountability Report
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../accountability/AGENT_ACCESS_EXPERIENCE_REPORT/">
+<span class="md-ellipsis">
+    
+  
+    Agent Access Experience Report
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_18" type="checkbox"/>
+<label class="md-nav__link" for="__nav_18" id="__nav_18_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Phase 9 Execution
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_18_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_18">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Phase 9 Execution
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../phase-9/PHASE_9_COORDINATION_DASHBOARD/">
+<span class="md-ellipsis">
+    
+  
+    Coordination Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../phase-9/PHASE_9_DAILY_STANDUP_TEMPLATE/">
+<span class="md-ellipsis">
+    
+  
+    Daily Standup Template
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../phase-9/POST_MERGE_ACTION_PLAN/">
+<span class="md-ellipsis">
+    
+  
+    Post-Merge Action Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../phase-9/PHASE_8_12_MASTER_EXECUTION_PLAN/">
+<span class="md-ellipsis">
+    
+  
+    Phase 8-12 Master Plan
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_19" type="checkbox"/>
+<label class="md-nav__link" for="__nav_19" id="__nav_19_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Workflows
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_19_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_19">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    CI/CD Workflows
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/INDEX.md">
+<span class="md-ellipsis">
+    
+  
+    Workflow Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/CONSOLIDATION_GUIDE.md">
+<span class="md-ellipsis">
+    
+  
+    Consolidation Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/DEPRECATION_PLAN.md">
+<span class="md-ellipsis">
+    
+  
+    Deprecation Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/OPTIMIZATION_SUMMARY.md">
+<span class="md-ellipsis">
+    
+  
+    Optimization Summary
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/CACHE_ARCHITECTURE_DIAGRAMS.md">
+<span class="md-ellipsis">
+    
+  
+    Cache Architecture
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_20" type="checkbox"/>
+<label class="md-nav__link" for="__nav_20" id="__nav_20_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Reporting
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_20_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_20">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Reporting
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../reporting/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Reporting Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../reporting/copilot_workflow_report_console.html">
+<span class="md-ellipsis">
+    
+  
+    Copilot Workflow Report Console
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_21" type="checkbox"/>
+<label class="md-nav__link" for="__nav_21" id="__nav_21_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    CI Rescue &amp; Health
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_21_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_21">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    CI Rescue &amp; Health
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ci/CI_RESCUE_PIPELINE/">
+<span class="md-ellipsis">
+    
+  
+    CI Rescue Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ci/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ci/CI_FAILURE_ANALYSIS/">
+<span class="md-ellipsis">
+    
+  
+    Failure Analysis
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ci/CI_FIX_SUMMARY.md">
+<span class="md-ellipsis">
+    
+  
+    CI Fix Summary
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ci/ROOT_ORG_VALIDATION/">
+<span class="md-ellipsis">
+    
+  
+    Root Org Validation
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_22" type="checkbox"/>
+<label class="md-nav__link" for="__nav_22" id="__nav_22_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Safety
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_22_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_22">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Safety
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../safety/safety_guide/">
+<span class="md-ellipsis">
+    
+  
+    Safety Guide
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_23" type="checkbox"/>
+<label class="md-nav__link" for="__nav_23" id="__nav_23_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Database Options
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_23_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_23">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Database Options
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../database/sqlite_option/">
+<span class="md-ellipsis">
+    
+  
+    SQLite Option
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../database/duckdb_option/">
+<span class="md-ellipsis">
+    
+  
+    DuckDB Option
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../database/datasette_option/">
+<span class="md-ellipsis">
+    
+  
+    Datasette Option
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_24" type="checkbox"/>
+<label class="md-nav__link" for="__nav_24" id="__nav_24_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Templates
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_24_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_24">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Templates
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/ITERATION_PLAN_TEMPLATE/">
+<span class="md-ellipsis">
+    
+  
+    Iteration Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/Migration_PythonFileRelocation/">
+<span class="md-ellipsis">
+    
+  
+    Migration — Python Relocation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/Migration_CLIHardening/">
+<span class="md-ellipsis">
+    
+  
+    Migration — CLI Hardening
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/Planning_IntentValidation/">
+<span class="md-ellipsis">
+    
+  
+    Planning — Intent Validation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/intent_validation_gate/">
+<span class="md-ellipsis">
+    
+  
+    Intent Validation Gate
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/COPILOT_EXECUTION_DIRECTIVE/">
+<span class="md-ellipsis">
+    
+  
+    Copilot Execution Directive
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/status/">
+<span class="md-ellipsis">
+    
+  
+    Status Report Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/status/codex_status_template_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Status Template v1.2
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/status/authoring_guide_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Authoring Guide v1.2
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/status/SCHEMA_ENHANCEMENTS_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Schema Enhancements
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/status/authoring_quickstart_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Authoring Quickstart
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_25" type="checkbox"/>
+<label class="md-nav__link" for="__nav_25" id="__nav_25_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_25_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_25">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Examples
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../examples/codex_symbolic_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Codex Symbolic Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_26" type="checkbox"/>
+<label class="md-nav__link" for="__nav_26" id="__nav_26_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Ops
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_26_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_26">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Ops
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ops/cost-dashboard/">
+<span class="md-ellipsis">
+    
+  
+    Cost Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ops/COST_GOVERNANCE/">
+<span class="md-ellipsis">
+    
+  
+    Cost Governance
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ops/monitoring/">
+<span class="md-ellipsis">
+    
+  
+    Monitoring
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ops/deployment/">
+<span class="md-ellipsis">
+    
+  
+    Deployment (Legacy)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ops/RUNBOOK/">
+<span class="md-ellipsis">
+    
+  
+    Runbook
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_27" type="checkbox"/>
+<label class="md-nav__link" for="__nav_27" id="__nav_27_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_27_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_27">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tutorials/quickstart/">
+<span class="md-ellipsis">
+    
+  
+    Quickstart (CPU)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tutorials/end_to_end_cpu/">
+<span class="md-ellipsis">
+    
+  
+    End-to-End (CPU)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_28" type="checkbox"/>
+<label class="md-nav__link" for="__nav_28" id="__nav_28_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Legacy Catalog
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_28_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_28">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Legacy Catalog
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../reference/metrics_cli/">
+<span class="md-ellipsis">
+    
+  
+    Reference Archive
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../review/diff_intake_confirmation/">
+<span class="md-ellipsis">
+    
+  
+    Review Checklist
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#1-bootstrap-the-environment">
+<span class="md-ellipsis">
+      
+        1. Bootstrap the environment
+      
+    </span>
+</a>
+<nav aria-label="1. Bootstrap the environment" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#prerequisites">
+<span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#create-a-virtual-environment">
+<span class="md-ellipsis">
+      
+        Create a virtual environment
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#guarded-experiment-tracking">
+<span class="md-ellipsis">
+      
+        Guarded experiment tracking
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#train-persist-metrics-and-resume">
+<span class="md-ellipsis">
+      
+        Train, persist metrics, and resume
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#plugin-registration-at-a-glance">
+<span class="md-ellipsis">
+      
+        Plugin registration at a glance
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="codex-quickstart">Codex Quickstart<a class="headerlink" href="#codex-quickstart" title="Permanent link">¶</a></h1>
+<p><strong>Last Updated:</strong> 2026-07-11
+<strong>Version:</strong> v0.2.1</p>
+<p>**Last Updated: 2026-06-22</p>
+<p>This quickstart demonstrates an end-to-end workflow entirely on your local
+machine: tokenizer setup → training → evaluation.  All commands are
+copy-pasteable and avoid network access by default.</p>
+<h2 id="1-bootstrap-the-environment">1. Bootstrap the environment<a class="headerlink" href="#1-bootstrap-the-environment" title="Permanent link">¶</a></h2>
+<h3 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">¶</a></h3>
+<ul>
+<li>Python 3.10+</li>
+<li><code>pre-commit</code> and <code>nox</code> (installed globally or via the project extras)</li>
+</ul>
+<h3 id="create-a-virtual-environment">Create a virtual environment<a class="headerlink" href="#create-a-virtual-environment" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>uv<span class="w"> </span>sync<span class="w"> </span>--extra<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--extra<span class="w"> </span>cli<span class="w">  </span><span class="c1"># installs optional deps and the hydra.extra pytest plugin</span>
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="nb">source</span><span class="w"> </span>.venv/bin/activate
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="c1"># or, if you prefer pip:</span>
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s1">'.[test-core]'</span>
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="sb">```</span>text
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a>List<span class="w"> </span>the<span class="w"> </span>consolidated<span class="w"> </span>Phase<span class="w"> </span><span class="m">4</span><span class="w"> </span>nox<span class="w"> </span>sessions:
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a><span class="sb">```</span>bash
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>nox<span class="w"> </span>--noxfile<span class="w"> </span>configs/development/noxfile.py<span class="w"> </span>--list
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="sb">```</span>text
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>Install<span class="w"> </span>additional<span class="w"> </span>extras<span class="w"> </span>when<span class="w"> </span>you<span class="w"> </span>require<span class="w"> </span>GPU<span class="w"> </span>/<span class="w"> </span>tracking<span class="w"> </span>support:
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a><span class="sb">```</span>bash
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s1">'.[test,tracking,ml]'</span>
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a><span class="sb">```</span>text
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a>
+<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a><span class="c1">## Offline-first testing</span>
+<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>
+<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a>Use<span class="w"> </span>pytest<span class="w"> </span>to<span class="w"> </span>validate<span class="w"> </span>the<span class="w"> </span>environment<span class="w"> </span>without<span class="w"> </span>network<span class="w"> </span>access:
+<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>
+<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a><span class="sb">```</span>bash
+<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a><span class="c1"># Run all tests</span>
+<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a>pytest
+<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a>
+<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a><span class="c1"># Run with coverage</span>
+<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a>pytest<span class="w"> </span>--cov<span class="o">=</span>src<span class="w"> </span>--cov-report<span class="o">=</span>html<span class="w"> </span>--cov-report<span class="o">=</span>term
+<a href="#__codelineno-0-29" id="__codelineno-0-29" name="__codelineno-0-29"></a>
+<a href="#__codelineno-0-30" id="__codelineno-0-30" name="__codelineno-0-30"></a><span class="c1"># Run specific test categories</span>
+<a href="#__codelineno-0-31" id="__codelineno-0-31" name="__codelineno-0-31"></a>pytest<span class="w"> </span>-m<span class="w"> </span>smoke<span class="w">                  </span><span class="c1"># Quick smoke tests</span>
+<a href="#__codelineno-0-32" id="__codelineno-0-32" name="__codelineno-0-32"></a>pytest<span class="w"> </span>-m<span class="w"> </span><span class="s2">"not slow"</span><span class="w">             </span><span class="c1"># Skip slow tests</span>
+<a href="#__codelineno-0-33" id="__codelineno-0-33" name="__codelineno-0-33"></a>pytest<span class="w"> </span>-m<span class="w"> </span>offline<span class="w">                </span><span class="c1"># Offline-safe tests</span>
+</code></pre></div>
+<p>Alternative: Use nox for automated test sessions:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>nox<span class="w"> </span>--noxfile<span class="w"> </span>configs/development/noxfile.py<span class="w"> </span>-s<span class="w"> </span>tests
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>nox<span class="w"> </span>--noxfile<span class="w"> </span>configs/development/noxfile.py<span class="w"> </span>-s<span class="w"> </span>coverage
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>nox<span class="w"> </span>--noxfile<span class="w"> </span>configs/development/noxfile.py<span class="w"> </span>-s<span class="w"> </span>offline_check
+</code></pre></div>
+<p>If pytest reports skips such as <code>Skipped: could not import 'transformers'</code>,
+install the optional extras documented in
+<a href="../optional_dependencies/"><code>docs/optional_dependencies.md</code></a>.</p>
+<p><strong>CI/CD Testing:</strong>
+All pull requests automatically run tests via <code>.github/workflows/ci-pytest.yml</code>:
+- Python 3.12+ on ubuntu-latest
+- 90% coverage threshold enforced
+- Coverage reports uploaded as artifacts
+- Automatic PR comments with results</p>
+<p>See <a href="tests/README.md"><code>tests/README.md</code></a> and <a href="../guides/TESTING_GUIDE/"><code>docs/guides/TESTING_GUIDE.md</code></a> for detailed testing instructions.</p>
+<h2 id="guarded-experiment-tracking">Guarded experiment tracking<a class="headerlink" href="#guarded-experiment-tracking" title="Permanent link">¶</a></h2>
+<p>Set <code>CODEX_OFFLINE_MODE=1</code> to prevent Codex from touching MLflow even when the
+package is installed.  When unset the new <code>codex_ml.logging.mlflow_guard</code>
+module initialises a local <code>file:</code> tracking URI automatically:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">CODEX_OFFLINE_MODE</span><span class="o">=</span><span class="m">1</span><span class="w">  </span><span class="c1"># fully disable MLflow</span>
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>python<span class="w"> </span>-m<span class="w"> </span>codex_ml.training.unified_training
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="sb">```</span>text
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="c1">### Validate dataset manifests</span>
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>Before<span class="w"> </span>training,<span class="w"> </span>validate<span class="w"> </span>dataset<span class="w"> </span>descriptors<span class="w"> </span>against<span class="w"> </span>the<span class="w"> </span>bundled<span class="w"> </span>JSON<span class="w"> </span>schema
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>and<span class="w"> </span>check<span class="w"> </span>that<span class="w"> </span>all<span class="w"> </span>referenced<span class="w"> </span>files<span class="w"> </span>exist:
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>
+<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="sb">```</span>bash
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a>python<span class="w"> </span>scripts/validate_dataset.py<span class="w"> </span>data/dataset_manifest.json<span class="w"> </span>--check-splits
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a><span class="sb">```</span>text
+<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a>
+<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a><span class="c1">### Unified executor</span>
+<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a>
+<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a>Use<span class="w"> </span>the<span class="w"> </span>lightweight<span class="w"> </span><span class="sb">`</span>codex_exec<span class="sb">`</span><span class="w"> </span>CLI<span class="w"> </span><span class="k">for</span><span class="w"> </span>one-off<span class="w"> </span>tasks<span class="w"> </span>such<span class="w"> </span>as<span class="w"> </span>validation<span class="w"> </span>or<span class="w"> </span>a
+<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a>quick<span class="w"> </span>training<span class="w"> </span>smoke<span class="w"> </span>test:
+<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a>
+<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a><span class="sb">```</span>bash
+<a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a>python<span class="w"> </span>-m<span class="w"> </span>codex_ml.exec.codex_exec<span class="w"> </span>validate-dataset<span class="w"> </span>--manifest<span class="w"> </span>data/manifest.json
+<a href="#__codelineno-2-21" id="__codelineno-2-21" name="__codelineno-2-21"></a>python<span class="w"> </span>-m<span class="w"> </span>codex_ml.exec.codex_exec<span class="w"> </span>train<span class="w"> </span>--config<span class="w"> </span>base
+<a href="#__codelineno-2-22" id="__codelineno-2-22" name="__codelineno-2-22"></a><span class="sb">```</span>text
+<a href="#__codelineno-2-23" id="__codelineno-2-23" name="__codelineno-2-23"></a><span class="c1">## 1.5 Explore the repository layout</span>
+<a href="#__codelineno-2-24" id="__codelineno-2-24" name="__codelineno-2-24"></a>
+<a href="#__codelineno-2-25" id="__codelineno-2-25" name="__codelineno-2-25"></a><span class="sb">```</span>bash
+<a href="#__codelineno-2-26" id="__codelineno-2-26" name="__codelineno-2-26"></a>codex<span class="w"> </span>repo-map
+<a href="#__codelineno-2-27" id="__codelineno-2-27" name="__codelineno-2-27"></a><span class="sb">```</span>text
+<a href="#__codelineno-2-28" id="__codelineno-2-28" name="__codelineno-2-28"></a>
+<a href="#__codelineno-2-29" id="__codelineno-2-29" name="__codelineno-2-29"></a>The<span class="w"> </span><span class="nb">command</span><span class="w"> </span>prints<span class="w"> </span>the<span class="w"> </span>top-level<span class="w"> </span>directories<span class="w"> </span>and<span class="w"> </span>key<span class="w"> </span>files<span class="w"> </span><span class="o">(</span>hidden<span class="w"> </span>entries<span class="w"> </span>are
+<a href="#__codelineno-2-30" id="__codelineno-2-30" name="__codelineno-2-30"></a>omitted<span class="w"> </span><span class="k">for</span><span class="w"> </span>brevity<span class="o">)</span><span class="w"> </span>so<span class="w"> </span>you<span class="w"> </span>can<span class="w"> </span>quickly<span class="w"> </span>orient<span class="w"> </span>yourself<span class="w"> </span>after<span class="w"> </span>cloning<span class="w"> </span>the<span class="w"> </span>repo.
+<a href="#__codelineno-2-31" id="__codelineno-2-31" name="__codelineno-2-31"></a>
+<a href="#__codelineno-2-32" id="__codelineno-2-32" name="__codelineno-2-32"></a><span class="c1">## 2. (Optional) prepare the offline defaults</span>
+<a href="#__codelineno-2-33" id="__codelineno-2-33" name="__codelineno-2-33"></a>
+<a href="#__codelineno-2-34" id="__codelineno-2-34" name="__codelineno-2-34"></a>To<span class="w"> </span>follow<span class="w"> </span>the<span class="w"> </span>offline-first<span class="w"> </span>examples<span class="w"> </span>you<span class="w"> </span>can<span class="w"> </span>populate<span class="w"> </span>the<span class="w"> </span>lightweight<span class="w"> </span>catalogue
+<a href="#__codelineno-2-35" id="__codelineno-2-35" name="__codelineno-2-35"></a>bundled<span class="w"> </span>with<span class="w"> </span>Codex<span class="w"> </span>ML.<span class="w">  </span>Copy<span class="w"> </span>or<span class="w"> </span>symlink<span class="w"> </span>the<span class="w"> </span>model,<span class="w"> </span>tokenizer,<span class="w"> </span>dataset<span class="w"> </span>and<span class="w"> </span>metric
+<a href="#__codelineno-2-36" id="__codelineno-2-36" name="__codelineno-2-36"></a>artefacts<span class="w"> </span>into<span class="w"> </span>the<span class="w"> </span>directories<span class="w"> </span>below<span class="w"> </span><span class="o">(</span>relative<span class="w"> </span>to<span class="w"> </span>the<span class="w"> </span>repository<span class="w"> </span>root<span class="o">)</span>:
+<a href="#__codelineno-2-37" id="__codelineno-2-37" name="__codelineno-2-37"></a>
+<a href="#__codelineno-2-38" id="__codelineno-2-38" name="__codelineno-2-38"></a><span class="sb">```</span>text
+<a href="#__codelineno-2-39" id="__codelineno-2-39" name="__codelineno-2-39"></a>artifacts/models/gpt2/
+<a href="#__codelineno-2-40" id="__codelineno-2-40" name="__codelineno-2-40"></a>artifacts/models/tinyllama/
+<a href="#__codelineno-2-41" id="__codelineno-2-41" name="__codelineno-2-41"></a>data/offline/tiny_corpus.txt
+<a href="#__codelineno-2-42" id="__codelineno-2-42" name="__codelineno-2-42"></a>data/offline/weighted_accuracy.json
+<a href="#__codelineno-2-43" id="__codelineno-2-43" name="__codelineno-2-43"></a><span class="sb">```</span>text
+<a href="#__codelineno-2-44" id="__codelineno-2-44" name="__codelineno-2-44"></a>You<span class="w"> </span>can<span class="w"> </span>also<span class="w"> </span><span class="nb">set</span><span class="w"> </span>the<span class="w"> </span>environment<span class="w"> </span>variables<span class="w"> </span>described<span class="w"> </span><span class="k">in</span>
+<a href="#__codelineno-2-45" id="__codelineno-2-45" name="__codelineno-2-45"></a><span class="o">[</span><span class="sb">`</span>guides/offline_catalogue.md<span class="sb">`</span><span class="o">](</span>guides/offline_catalogue.md<span class="o">)</span><span class="w"> </span>to<span class="w"> </span>point
+<a href="#__codelineno-2-46" id="__codelineno-2-46" name="__codelineno-2-46"></a>at<span class="w"> </span>alternative<span class="w"> </span>locations.<span class="w">  </span>Skip<span class="w"> </span>this<span class="w"> </span>step<span class="w"> </span>entirely<span class="w"> </span><span class="k">if</span><span class="w"> </span>you<span class="w"> </span>prefer<span class="w"> </span>the<span class="w"> </span>minimal
+<a href="#__codelineno-2-47" id="__codelineno-2-47" name="__codelineno-2-47"></a>MiniLM<span class="w"> </span>baseline<span class="w"> </span>–<span class="w"> </span>the<span class="w"> </span>remaining<span class="w"> </span>commands<span class="w"> </span><span class="k">continue</span><span class="w"> </span>to<span class="w"> </span>work.
+<a href="#__codelineno-2-48" id="__codelineno-2-48" name="__codelineno-2-48"></a>
+<a href="#__codelineno-2-49" id="__codelineno-2-49" name="__codelineno-2-49"></a><span class="c1">## 3. Tokenize sample data</span>
+<a href="#__codelineno-2-50" id="__codelineno-2-50" name="__codelineno-2-50"></a>
+<a href="#__codelineno-2-51" id="__codelineno-2-51" name="__codelineno-2-51"></a>Register<span class="w"> </span>the<span class="w"> </span>toy<span class="w"> </span>tokenizer<span class="w"> </span>plugin<span class="w"> </span>and<span class="w"> </span>encode<span class="w"> </span>text<span class="w"> </span>without<span class="w"> </span>touching<span class="w"> </span>external
+<a href="#__codelineno-2-52" id="__codelineno-2-52" name="__codelineno-2-52"></a>services.
+<a href="#__codelineno-2-53" id="__codelineno-2-53" name="__codelineno-2-53"></a>
+<a href="#__codelineno-2-54" id="__codelineno-2-54" name="__codelineno-2-54"></a><span class="sb">```</span>bash
+<a href="#__codelineno-2-55" id="__codelineno-2-55" name="__codelineno-2-55"></a>python<span class="w"> </span>examples/tokenize.py
+<a href="#__codelineno-2-56" id="__codelineno-2-56" name="__codelineno-2-56"></a><span class="sb">```</span>text
+<a href="#__codelineno-2-57" id="__codelineno-2-57" name="__codelineno-2-57"></a>Expected<span class="w"> </span>output:
+<a href="#__codelineno-2-58" id="__codelineno-2-58" name="__codelineno-2-58"></a>
+<a href="#__codelineno-2-59" id="__codelineno-2-59" name="__codelineno-2-59"></a><span class="sb">```</span>json
+<a href="#__codelineno-2-60" id="__codelineno-2-60" name="__codelineno-2-60"></a><span class="o">{</span>
+<a href="#__codelineno-2-61" id="__codelineno-2-61" name="__codelineno-2-61"></a><span class="w">  </span><span class="s2">"text"</span>:<span class="w"> </span><span class="s2">"Codex makes registries fun!"</span>,
+<a href="#__codelineno-2-62" id="__codelineno-2-62" name="__codelineno-2-62"></a><span class="w">  </span><span class="s2">"encoded"</span>:<span class="w"> </span><span class="o">[</span><span class="m">0</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">3</span>,<span class="w"> </span><span class="m">4</span>,<span class="w"> </span><span class="m">5</span>,<span class="w"> </span><span class="m">6</span>,<span class="w"> </span><span class="m">7</span>,<span class="w"> </span><span class="m">8</span>,<span class="w"> </span><span class="m">9</span>,<span class="w"> </span><span class="m">10</span>,<span class="w"> </span><span class="m">11</span>,<span class="w"> </span><span class="m">12</span>,<span class="w"> </span><span class="m">13</span>,<span class="w"> </span><span class="m">14</span>,<span class="w"> </span><span class="m">15</span>,<span class="w"> </span><span class="m">16</span>,<span class="w"> </span><span class="m">17</span>,<span class="w"> </span><span class="m">18</span>,<span class="w"> </span><span class="m">19</span>,<span class="w"> </span><span class="m">20</span>,<span class="w"> </span><span class="m">21</span>,<span class="w"> </span><span class="m">22</span>,<span class="w"> </span><span class="m">23</span>,<span class="w"> </span><span class="m">24</span><span class="o">]</span>,
+<a href="#__codelineno-2-63" id="__codelineno-2-63" name="__codelineno-2-63"></a><span class="w">  </span><span class="s2">"decoded"</span>:<span class="w"> </span><span class="s2">"Codex makes registries fun!"</span>
+<a href="#__codelineno-2-64" id="__codelineno-2-64" name="__codelineno-2-64"></a><span class="o">}</span>
+<a href="#__codelineno-2-65" id="__codelineno-2-65" name="__codelineno-2-65"></a><span class="sb">```</span>text
+<a href="#__codelineno-2-66" id="__codelineno-2-66" name="__codelineno-2-66"></a><span class="c1">## 4a. Reasoning template quickstart</span>
+<a href="#__codelineno-2-67" id="__codelineno-2-67" name="__codelineno-2-67"></a>
+<a href="#__codelineno-2-68" id="__codelineno-2-68" name="__codelineno-2-68"></a><span class="sb">`</span>codex<span class="sb">`</span><span class="w"> </span>ships<span class="w"> </span>reasoning-first<span class="w"> </span>presets<span class="w"> </span>so<span class="w"> </span>you<span class="w"> </span>can<span class="w"> </span>exercise<span class="w"> </span>the<span class="w"> </span>roadmap<span class="w"> </span>milestones<span class="w"> </span>without<span class="w"> </span>building<span class="w"> </span>a<span class="w"> </span>curriculum<span class="w"> </span>from<span class="w"> </span>scratch.
+<a href="#__codelineno-2-69" id="__codelineno-2-69" name="__codelineno-2-69"></a>
+<a href="#__codelineno-2-70" id="__codelineno-2-70" name="__codelineno-2-70"></a><span class="sb">```</span>bash
+<a href="#__codelineno-2-71" id="__codelineno-2-71" name="__codelineno-2-71"></a>codex<span class="w"> </span>reasoning-templates<span class="w"> </span>list
+<a href="#__codelineno-2-72" id="__codelineno-2-72" name="__codelineno-2-72"></a>codex-train<span class="w"> </span>+reasoning<span class="o">=</span>baseline<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-2-73" id="__codelineno-2-73" name="__codelineno-2-73"></a><span class="w">  </span>curriculum.phase_schedule<span class="o">=</span>starter<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-2-74" id="__codelineno-2-74" name="__codelineno-2-74"></a><span class="w">  </span>logging.reasoning_trace<span class="o">=</span><span class="nb">true</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-2-75" id="__codelineno-2-75" name="__codelineno-2-75"></a><span class="w">  </span>training.output_dir<span class="o">=</span>artifacts/runs/quickstart-reasoning
+<a href="#__codelineno-2-76" id="__codelineno-2-76" name="__codelineno-2-76"></a>codex<span class="w"> </span>evaluate<span class="w"> </span>--config<span class="w"> </span>configs/evaluation/reasoning.yaml<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-2-77" id="__codelineno-2-77" name="__codelineno-2-77"></a><span class="w">  </span>--log-metrics<span class="w"> </span>.codex/metrics/reasoning.ndjson<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-2-78" id="__codelineno-2-78" name="__codelineno-2-78"></a><span class="w">  </span>--run-id<span class="w"> </span>quickstart-reasoning
+<a href="#__codelineno-2-79" id="__codelineno-2-79" name="__codelineno-2-79"></a><span class="sb">```</span>text
+<a href="#__codelineno-2-80" id="__codelineno-2-80" name="__codelineno-2-80"></a>
+<a href="#__codelineno-2-81" id="__codelineno-2-81" name="__codelineno-2-81"></a>The<span class="w"> </span><span class="sb">`</span>+reasoning<span class="o">=</span>baseline<span class="sb">`</span><span class="w"> </span>overlay<span class="w"> </span>activates<span class="w"> </span>trace<span class="w"> </span>logging,<span class="w"> </span>NDJSON<span class="w"> </span>ledgers,<span class="w"> </span>and<span class="w"> </span>evaluator<span class="w"> </span>hooks<span class="w"> </span>described<span class="w"> </span><span class="k">in</span>
+<a href="#__codelineno-2-82" id="__codelineno-2-82" name="__codelineno-2-82"></a><span class="o">[</span><span class="sb">`</span>guides/reasoning_overview.md<span class="sb">`</span><span class="o">](</span>status_updates/guides/reasoning_overview.md<span class="o">)</span>.<span class="w"> </span>Pair<span class="w"> </span>these<span class="w"> </span>commands<span class="w"> </span>with<span class="w"> </span>the<span class="w"> </span>bespoke<span class="w"> </span>hosting<span class="w"> </span>checklist<span class="w"> </span><span class="k">in</span>
+<a href="#__codelineno-2-83" id="__codelineno-2-83" name="__codelineno-2-83"></a><span class="o">[</span><span class="sb">`</span>deployment/reasoning_pod.md<span class="sb">`</span><span class="o">](</span>deployment/reasoning_pod.md<span class="o">)</span><span class="w"> </span>when<span class="w"> </span>graduating<span class="w"> </span>a<span class="w"> </span>model.
+<a href="#__codelineno-2-84" id="__codelineno-2-84" name="__codelineno-2-84"></a>
+<a href="#__codelineno-2-85" id="__codelineno-2-85" name="__codelineno-2-85"></a><span class="c1">## 4. Run a deterministic training session</span>
+<a href="#__codelineno-2-86" id="__codelineno-2-86" name="__codelineno-2-86"></a>
+<a href="#__codelineno-2-87" id="__codelineno-2-87" name="__codelineno-2-87"></a><span class="c1">### Data handling essentials</span>
+<a href="#__codelineno-2-88" id="__codelineno-2-88" name="__codelineno-2-88"></a>
+<a href="#__codelineno-2-89" id="__codelineno-2-89" name="__codelineno-2-89"></a>Large<span class="w"> </span>JSONL<span class="w"> </span>corpora<span class="w"> </span>no<span class="w"> </span>longer<span class="w"> </span>need<span class="w"> </span>to<span class="w"> </span>be<span class="w"> </span><span class="nb">read</span><span class="w"> </span>into<span class="w"> </span>memory.<span class="w">  </span>Stream<span class="w"> </span>them<span class="w"> </span>with
+<a href="#__codelineno-2-90" id="__codelineno-2-90" name="__codelineno-2-90"></a><span class="sb">`</span>codex_ml.data.jsonl_stream.iter_jsonl<span class="o">()</span><span class="sb">`</span><span class="w"> </span>and<span class="w"> </span>split<span class="w"> </span>deterministically<span class="w"> </span>with<span class="w"> </span>a
+<a href="#__codelineno-2-91" id="__codelineno-2-91" name="__codelineno-2-91"></a>single<span class="w"> </span>seed:
+<a href="#__codelineno-2-92" id="__codelineno-2-92" name="__codelineno-2-92"></a>
+<a href="#__codelineno-2-93" id="__codelineno-2-93" name="__codelineno-2-93"></a><span class="sb">```</span>python
+<a href="#__codelineno-2-94" id="__codelineno-2-94" name="__codelineno-2-94"></a>from<span class="w"> </span>codex_ml.data.jsonl_stream<span class="w"> </span>import<span class="w"> </span>iter_jsonl
+<a href="#__codelineno-2-95" id="__codelineno-2-95" name="__codelineno-2-95"></a>from<span class="w"> </span>codex_ml.data.split_utils<span class="w"> </span>import<span class="w"> </span>deterministic_split
+<a href="#__codelineno-2-96" id="__codelineno-2-96" name="__codelineno-2-96"></a>
+<a href="#__codelineno-2-97" id="__codelineno-2-97" name="__codelineno-2-97"></a><span class="nv">records</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>list<span class="o">(</span>iter_jsonl<span class="o">(</span><span class="s2">"data/offline/tiny_corpus.jsonl"</span><span class="o">))</span>
+<a href="#__codelineno-2-98" id="__codelineno-2-98" name="__codelineno-2-98"></a>train,<span class="w"> </span>val,<span class="w"> </span><span class="nb">test</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>deterministic_split<span class="o">(</span>records,<span class="w"> </span><span class="nv">seed</span><span class="o">=</span><span class="m">1234</span>,<span class="w"> </span><span class="nv">val_fraction</span><span class="o">=</span><span class="m">0</span>.15,<span class="w"> </span><span class="nv">test_fraction</span><span class="o">=</span><span class="m">0</span>.05<span class="o">)</span>
+<a href="#__codelineno-2-99" id="__codelineno-2-99" name="__codelineno-2-99"></a><span class="sb">```</span>text
+<a href="#__codelineno-2-100" id="__codelineno-2-100" name="__codelineno-2-100"></a>
+<a href="#__codelineno-2-101" id="__codelineno-2-101" name="__codelineno-2-101"></a>When<span class="w"> </span>caching<span class="w"> </span>shards,<span class="w"> </span>call<span class="w"> </span><span class="sb">`</span>codex_ml.data.cache.write_jsonl_with_crc<span class="o">()</span><span class="sb">`</span><span class="w"> </span>to<span class="w"> </span>emit<span class="w"> </span>a
+<a href="#__codelineno-2-102" id="__codelineno-2-102" name="__codelineno-2-102"></a><span class="sb">`</span>.crc32<span class="sb">`</span><span class="w"> </span>sidecar.<span class="w">  </span>The<span class="w"> </span>checksum<span class="w"> </span>is<span class="w"> </span>derived<span class="w"> </span>from<span class="w"> </span>the<span class="w"> </span>streaming
+<a href="#__codelineno-2-103" id="__codelineno-2-103" name="__codelineno-2-103"></a><span class="sb">`</span>codex_ml.data.integrity.crc32_file<span class="o">()</span><span class="sb">`</span><span class="w"> </span>helper<span class="w"> </span>and<span class="w"> </span>lets<span class="w"> </span>you<span class="w"> </span>verify<span class="w"> </span>cached<span class="w"> </span>shards
+<a href="#__codelineno-2-104" id="__codelineno-2-104" name="__codelineno-2-104"></a>before<span class="w"> </span>loading<span class="w"> </span>them<span class="w"> </span>back<span class="w"> </span>into<span class="w"> </span>memory.
+<a href="#__codelineno-2-105" id="__codelineno-2-105" name="__codelineno-2-105"></a>
+<a href="#__codelineno-2-106" id="__codelineno-2-106" name="__codelineno-2-106"></a>Finally,<span class="w"> </span>construct<span class="w"> </span>DataLoaders<span class="w"> </span>with<span class="w"> </span>the<span class="w"> </span>reproducible<span class="w"> </span>factory<span class="w"> </span>so<span class="w"> </span>worker<span class="w"> </span>seeding
+<a href="#__codelineno-2-107" id="__codelineno-2-107" name="__codelineno-2-107"></a>and<span class="w"> </span>RNG<span class="w"> </span>generators<span class="w"> </span>share<span class="w"> </span>the<span class="w"> </span>same<span class="w"> </span>configuration<span class="w"> </span>seed:
+<a href="#__codelineno-2-108" id="__codelineno-2-108" name="__codelineno-2-108"></a>
+<a href="#__codelineno-2-109" id="__codelineno-2-109" name="__codelineno-2-109"></a><span class="sb">```</span>python
+<a href="#__codelineno-2-110" id="__codelineno-2-110" name="__codelineno-2-110"></a>from<span class="w"> </span>codex_ml.training<span class="w"> </span>import<span class="w"> </span>TrainingRunConfig,<span class="w"> </span>build_dataloader
+<a href="#__codelineno-2-111" id="__codelineno-2-111" name="__codelineno-2-111"></a>
+<a href="#__codelineno-2-112" id="__codelineno-2-112" name="__codelineno-2-112"></a><span class="nv">cfg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>TrainingRunConfig<span class="o">(</span><span class="nv">batch_size</span><span class="o">=</span><span class="m">16</span>,<span class="w"> </span><span class="nv">num_workers</span><span class="o">=</span><span class="m">2</span>,<span class="w"> </span><span class="nv">pin_memory</span><span class="o">=</span>True<span class="o">)</span>
+<a href="#__codelineno-2-113" id="__codelineno-2-113" name="__codelineno-2-113"></a><span class="nv">dataloader</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>build_dataloader<span class="o">(</span>dataset,<span class="w"> </span>cfg<span class="o">)</span>
+<a href="#__codelineno-2-114" id="__codelineno-2-114" name="__codelineno-2-114"></a><span class="sb">```</span>text
+<a href="#__codelineno-2-115" id="__codelineno-2-115" name="__codelineno-2-115"></a>
+<a href="#__codelineno-2-116" id="__codelineno-2-116" name="__codelineno-2-116"></a><span class="sb">```</span>bash
+<a href="#__codelineno-2-117" id="__codelineno-2-117" name="__codelineno-2-117"></a><span class="nb">export</span><span class="w"> </span><span class="nv">CODEX_MLFLOW_ENABLE</span><span class="o">=</span><span class="m">0</span><span class="w">  </span><span class="c1"># keep MLflow disabled unless you opt-in</span>
+<a href="#__codelineno-2-118" id="__codelineno-2-118" name="__codelineno-2-118"></a>python<span class="w"> </span>examples/train_toy.py
+<a href="#__codelineno-2-119" id="__codelineno-2-119" name="__codelineno-2-119"></a><span class="c1"># or redirect metrics: python -m codex_ml.train_loop --epochs 1 --art-dir artifacts/custom-metrics</span>
+<a href="#__codelineno-2-120" id="__codelineno-2-120" name="__codelineno-2-120"></a><span class="c1"># or compose via Hydra: python -m codex_ml.cli.hydra_main experiment=debug training.max_epochs=3</span>
+<a href="#__codelineno-2-121" id="__codelineno-2-121" name="__codelineno-2-121"></a><span class="sb">```</span>text
+<a href="#__codelineno-2-122" id="__codelineno-2-122" name="__codelineno-2-122"></a>
+<a href="#__codelineno-2-123" id="__codelineno-2-123" name="__codelineno-2-123"></a>&gt;<span class="w"> </span>**Tip:**<span class="w"> </span><span class="nb">set</span><span class="w"> </span><span class="sb">`</span>training.mlflow_enable<span class="o">=</span><span class="nb">true</span><span class="sb">`</span><span class="w"> </span><span class="o">(</span>and<span class="w"> </span>optionally
+<a href="#__codelineno-2-124" id="__codelineno-2-124" name="__codelineno-2-124"></a>&gt;<span class="w"> </span><span class="sb">`</span>training.mlflow_tracking_uri<span class="o">=</span>file:.codex/mlruns<span class="sb">`</span><span class="o">)</span><span class="w"> </span>to<span class="w"> </span>record<span class="w"> </span>the<span class="w"> </span>same<span class="w"> </span>run<span class="w"> </span><span class="k">in</span><span class="w"> </span>a
+<a href="#__codelineno-2-125" id="__codelineno-2-125" name="__codelineno-2-125"></a>&gt;<span class="w"> </span><span class="nb">local</span><span class="w"> </span>MLflow<span class="w"> </span>store.<span class="w"> </span>The<span class="w"> </span>shim<span class="w"> </span>mirrors<span class="w"> </span>training/eval<span class="w"> </span>metrics<span class="w"> </span>and<span class="w"> </span>writes
+<a href="#__codelineno-2-126" id="__codelineno-2-126" name="__codelineno-2-126"></a>&gt;<span class="w"> </span><span class="sb">`</span>&lt;checkpoint_dir&gt;/mlflow/metrics.ndjson<span class="sb">`</span><span class="w"> </span>plus<span class="w"> </span>a<span class="w"> </span><span class="sb">`</span>config.json<span class="sb">`</span><span class="w"> </span>snapshot<span class="w"> </span>that<span class="w"> </span>are
+<a href="#__codelineno-2-127" id="__codelineno-2-127" name="__codelineno-2-127"></a>&gt;<span class="w"> </span>uploaded<span class="w"> </span>as<span class="w"> </span>run<span class="w"> </span>artefacts.
+<a href="#__codelineno-2-128" id="__codelineno-2-128" name="__codelineno-2-128"></a>
+<a href="#__codelineno-2-129" id="__codelineno-2-129" name="__codelineno-2-129"></a><span class="c1">## Structured configs &amp; multirun sweeps</span>
+<a href="#__codelineno-2-130" id="__codelineno-2-130" name="__codelineno-2-130"></a>
+<a href="#__codelineno-2-131" id="__codelineno-2-131" name="__codelineno-2-131"></a>The<span class="w"> </span>Hydra<span class="w"> </span>entrypoint<span class="w"> </span>registers<span class="w"> </span>a<span class="w"> </span>typed<span class="w"> </span><span class="sb">`</span>AppConfig<span class="sb">`</span><span class="w"> </span><span class="k">in</span><span class="w"> </span>code,<span class="w"> </span>so<span class="w"> </span>overrides<span class="w"> </span>are
+<a href="#__codelineno-2-132" id="__codelineno-2-132" name="__codelineno-2-132"></a>validated<span class="w"> </span>before<span class="w"> </span>a<span class="w"> </span>run<span class="w"> </span>starts.<span class="w"> </span>Compose<span class="w"> </span>presets<span class="w"> </span>and<span class="w"> </span>ad-hoc<span class="w"> </span>flags<span class="w"> </span>side-by-side:
+<a href="#__codelineno-2-133" id="__codelineno-2-133" name="__codelineno-2-133"></a>
+<a href="#__codelineno-2-134" id="__codelineno-2-134" name="__codelineno-2-134"></a><span class="sb">```</span>bash
+<a href="#__codelineno-2-135" id="__codelineno-2-135" name="__codelineno-2-135"></a>python<span class="w"> </span>-m<span class="w"> </span>codex_ml.cli.hydra_main<span class="w"> </span><span class="nv">experiment</span><span class="o">=</span>fast<span class="w"> </span>training.max_epochs<span class="o">=</span><span class="m">2</span>
+<a href="#__codelineno-2-136" id="__codelineno-2-136" name="__codelineno-2-136"></a><span class="sb">```</span>text
+<a href="#__codelineno-2-137" id="__codelineno-2-137" name="__codelineno-2-137"></a>
+<a href="#__codelineno-2-138" id="__codelineno-2-138" name="__codelineno-2-138"></a>Hydra<span class="s1">'s `-m/--multirun` mode fans out parameter grids locally. The command below</span>
+<a href="#__codelineno-2-139" id="__codelineno-2-139" name="__codelineno-2-139"></a><span class="s1">launches four runs (2×2 sweep) and stores results under `multirun/` with</span>
+<a href="#__codelineno-2-140" id="__codelineno-2-140" name="__codelineno-2-140"></a><span class="s1">auto-numbered job IDs in `hydra.job.num`:</span>
+<a href="#__codelineno-2-141" id="__codelineno-2-141" name="__codelineno-2-141"></a>
+<a href="#__codelineno-2-142" id="__codelineno-2-142" name="__codelineno-2-142"></a><span class="s1">```bash</span>
+<a href="#__codelineno-2-143" id="__codelineno-2-143" name="__codelineno-2-143"></a><span class="s1">python -m codex_ml.cli.hydra_main -m training.batch_size=4,8 training.learning_rate=3e-4,1e-4</span>
+<a href="#__codelineno-2-144" id="__codelineno-2-144" name="__codelineno-2-144"></a><span class="s1">```text</span>
+<a href="#__codelineno-2-145" id="__codelineno-2-145" name="__codelineno-2-145"></a>
+<a href="#__codelineno-2-146" id="__codelineno-2-146" name="__codelineno-2-146"></a><span class="s1">Each subdirectory captures the effective config and stdout/stderr for easy</span>
+<a href="#__codelineno-2-147" id="__codelineno-2-147" name="__codelineno-2-147"></a><span class="s1">post-run comparison.</span>
+<a href="#__codelineno-2-148" id="__codelineno-2-148" name="__codelineno-2-148"></a>
+<a href="#__codelineno-2-149" id="__codelineno-2-149" name="__codelineno-2-149"></a><span class="s1">Prefer a saved preset? Compose the offline-friendly sweep stub and layer any</span>
+<a href="#__codelineno-2-150" id="__codelineno-2-150" name="__codelineno-2-150"></a><span class="s1">extra overrides you need:</span>
+<a href="#__codelineno-2-151" id="__codelineno-2-151" name="__codelineno-2-151"></a>
+<a href="#__codelineno-2-152" id="__codelineno-2-152" name="__codelineno-2-152"></a><span class="s1">```bash</span>
+<a href="#__codelineno-2-153" id="__codelineno-2-153" name="__codelineno-2-153"></a><span class="s1">python -m codex_ml.cli.hydra_main --config-path configs/training/sweeps --config-name sweep_offline -m \</span>
+<a href="#__codelineno-2-154" id="__codelineno-2-154" name="__codelineno-2-154"></a><span class="s1">  training.max_epochs=1</span>
+<a href="#__codelineno-2-155" id="__codelineno-2-155" name="__codelineno-2-155"></a><span class="s1">```text</span>
+<a href="#__codelineno-2-156" id="__codelineno-2-156" name="__codelineno-2-156"></a>
+<a href="#__codelineno-2-157" id="__codelineno-2-157" name="__codelineno-2-157"></a><span class="s1">The helper YAML locks Hydra'</span>s<span class="w"> </span>output<span class="w"> </span>folders<span class="w"> </span>under<span class="w"> </span><span class="sb">`</span>.codex/hydra/<span class="sb">`</span><span class="w"> </span>so<span class="w"> </span>you<span class="w"> </span>can
+<a href="#__codelineno-2-158" id="__codelineno-2-158" name="__codelineno-2-158"></a>inspect<span class="w"> </span>multirun<span class="w"> </span>artefacts<span class="w"> </span>without<span class="w"> </span>touching<span class="w"> </span>remote<span class="w"> </span>services.
+<a href="#__codelineno-2-159" id="__codelineno-2-159" name="__codelineno-2-159"></a>The<span class="w"> </span>script<span class="w"> </span>writes<span class="w"> </span>checkpoints<span class="w"> </span>and<span class="w"> </span>NDJSON<span class="w"> </span>logs<span class="w"> </span>under<span class="w"> </span><span class="sb">`</span>runs/examples/<span class="sb">`</span>.<span class="w">  </span>Each<span class="w"> </span>run
+<a href="#__codelineno-2-160" id="__codelineno-2-160" name="__codelineno-2-160"></a>creates<span class="w"> </span>a<span class="w"> </span>timestamped<span class="w"> </span>directory<span class="w"> </span>containing:
+<a href="#__codelineno-2-161" id="__codelineno-2-161" name="__codelineno-2-161"></a>
+<a href="#__codelineno-2-162" id="__codelineno-2-162" name="__codelineno-2-162"></a>*<span class="w"> </span><span class="sb">`</span>metrics.ndjson<span class="sb">`</span><span class="w"> </span>–<span class="w"> </span>per-step<span class="w"> </span>metrics
+<a href="#__codelineno-2-163" id="__codelineno-2-163" name="__codelineno-2-163"></a>*<span class="w"> </span><span class="sb">`</span>metrics.json<span class="sb">`</span><span class="w"> </span>–<span class="w"> </span>append-only<span class="w"> </span>list<span class="w"> </span>of<span class="w"> </span>metric<span class="w"> </span>payloads
+<a href="#__codelineno-2-164" id="__codelineno-2-164" name="__codelineno-2-164"></a>*<span class="w"> </span><span class="sb">`</span>environment.json<span class="sb">`</span><span class="w"> </span>/<span class="w"> </span><span class="sb">`</span>environment.ndjson<span class="sb">`</span><span class="w"> </span>–<span class="w"> </span>runtime<span class="w"> </span>metadata<span class="w"> </span>and<span class="w"> </span>git<span class="w"> </span>commit
+<a href="#__codelineno-2-165" id="__codelineno-2-165" name="__codelineno-2-165"></a>*<span class="w"> </span><span class="sb">`</span>pip-freeze.txt<span class="sb">`</span><span class="w"> </span>–<span class="w"> </span>dependency<span class="w"> </span>manifest<span class="w"> </span>captured<span class="w"> </span>automatically
+<a href="#__codelineno-2-166" id="__codelineno-2-166" name="__codelineno-2-166"></a>*<span class="w"> </span><span class="sb">`</span>dataset_checksums.json<span class="sb">`</span><span class="w"> </span>–<span class="w"> </span>hashes<span class="w"> </span><span class="k">for</span><span class="w"> </span>any<span class="w"> </span>dataset<span class="w"> </span>files<span class="w"> </span>passed<span class="w"> </span>via<span class="w"> </span>the<span class="w"> </span>training<span class="w"> </span>API
+<a href="#__codelineno-2-167" id="__codelineno-2-167" name="__codelineno-2-167"></a>*<span class="w"> </span><span class="sb">`</span>params.ndjson<span class="sb">`</span><span class="w"> </span>–<span class="w"> </span>run<span class="w"> </span>parameters<span class="w"> </span><span class="o">(</span>seed,<span class="w"> </span>dataset,<span class="w"> </span>etc.<span class="o">)</span>
+<a href="#__codelineno-2-168" id="__codelineno-2-168" name="__codelineno-2-168"></a>*<span class="w"> </span><span class="sb">`</span>config.json<span class="sb">`</span><span class="w"> </span>/<span class="w"> </span><span class="sb">`</span>config.ndjson<span class="sb">`</span><span class="w"> </span>–<span class="w"> </span>resolved<span class="w"> </span>configuration<span class="w"> </span>snapshot
+<a href="#__codelineno-2-169" id="__codelineno-2-169" name="__codelineno-2-169"></a>*<span class="w"> </span><span class="sb">`</span>provenance.ndjson<span class="sb">`</span><span class="w"> </span>–<span class="w"> </span>git<span class="w"> </span>commit,<span class="w"> </span>hostname<span class="w"> </span>and<span class="w"> </span>other<span class="w"> </span>reproducibility<span class="w"> </span>data
+<a href="#__codelineno-2-170" id="__codelineno-2-170" name="__codelineno-2-170"></a>
+<a href="#__codelineno-2-171" id="__codelineno-2-171" name="__codelineno-2-171"></a>Checkpoints<span class="w"> </span>land<span class="w"> </span>under<span class="w"> </span><span class="sb">`</span>&lt;run&gt;/checkpoints/<span class="sb">`</span><span class="w"> </span>by<span class="w"> </span>default.<span class="w"> </span>Use
+<a href="#__codelineno-2-172" id="__codelineno-2-172" name="__codelineno-2-172"></a><span class="sb">`</span>codex_ml.utils.checkpoint.prune_best_k<span class="o">(</span>&lt;dir&gt;,<span class="w"> </span>k<span class="o">)</span><span class="sb">`</span><span class="w"> </span>to<span class="w"> </span>keep<span class="w"> </span>only<span class="w"> </span>the<span class="w"> </span>newest<span class="w"> </span>_k_
+<a href="#__codelineno-2-173" id="__codelineno-2-173" name="__codelineno-2-173"></a>snapshots,<span class="w"> </span>and<span class="w"> </span>call<span class="w"> </span><span class="sb">`</span>load_checkpoint<span class="o">(</span>...,<span class="w"> </span><span class="nv">strict</span><span class="o">=</span>True<span class="o">)</span><span class="sb">`</span><span class="w"> </span><span class="k">if</span><span class="w"> </span>you<span class="w"> </span>want<span class="w"> </span>resumes<span class="w"> </span>to
+<a href="#__codelineno-2-174" id="__codelineno-2-174" name="__codelineno-2-174"></a>abort<span class="w"> </span>whenever<span class="w"> </span>a<span class="w"> </span>SHA-256<span class="w"> </span>digest<span class="w"> </span>is<span class="w"> </span>missing<span class="w"> </span>or<span class="w"> </span>mismatched.
+<a href="#__codelineno-2-175" id="__codelineno-2-175" name="__codelineno-2-175"></a>
+<a href="#__codelineno-2-176" id="__codelineno-2-176" name="__codelineno-2-176"></a><span class="c1">### Evaluate during training</span>
+<a href="#__codelineno-2-177" id="__codelineno-2-177" name="__codelineno-2-177"></a>
+<a href="#__codelineno-2-178" id="__codelineno-2-178" name="__codelineno-2-178"></a>Evaluation<span class="w"> </span>runs<span class="w"> </span>every<span class="w"> </span>epoch<span class="w"> </span>by<span class="w"> </span>default<span class="w"> </span>when<span class="w"> </span>a<span class="w"> </span>validation<span class="w"> </span>DataLoader<span class="w"> </span>is<span class="w"> </span>present
+<a href="#__codelineno-2-179" id="__codelineno-2-179" name="__codelineno-2-179"></a>and<span class="w"> </span>writes<span class="w"> </span>NDJSON:
+<a href="#__codelineno-2-180" id="__codelineno-2-180" name="__codelineno-2-180"></a>
+<a href="#__codelineno-2-181" id="__codelineno-2-181" name="__codelineno-2-181"></a><span class="sb">```</span>bash
+<a href="#__codelineno-2-182" id="__codelineno-2-182" name="__codelineno-2-182"></a>tail<span class="w"> </span>-n<span class="w"> </span>+1<span class="w"> </span>.codex/metrics.ndjson
+<a href="#__codelineno-2-183" id="__codelineno-2-183" name="__codelineno-2-183"></a><span class="sb">```</span>text
+<a href="#__codelineno-2-184" id="__codelineno-2-184" name="__codelineno-2-184"></a>
+<a href="#__codelineno-2-185" id="__codelineno-2-185" name="__codelineno-2-185"></a>You<span class="w"> </span>can<span class="w"> </span>also<span class="w"> </span>emit<span class="w"> </span>an<span class="w"> </span>aggregated<span class="w"> </span>evaluation<span class="w"> </span>record<span class="w"> </span>straight<span class="w"> </span>from<span class="w"> </span>the<span class="w"> </span>CLI:
+<a href="#__codelineno-2-186" id="__codelineno-2-186" name="__codelineno-2-186"></a>
+<a href="#__codelineno-2-187" id="__codelineno-2-187" name="__codelineno-2-187"></a><span class="sb">```</span>bash
+<a href="#__codelineno-2-188" id="__codelineno-2-188" name="__codelineno-2-188"></a>codex<span class="w"> </span>evaluate<span class="w"> </span>--config<span class="w"> </span>configs/evaluation/base.yaml<span class="w"> </span>--log-metrics<span class="w"> </span>artifacts/eval_runs.ndjson
+<a href="#__codelineno-2-189" id="__codelineno-2-189" name="__codelineno-2-189"></a><span class="sb">```</span>text
+<a href="#__codelineno-2-190" id="__codelineno-2-190" name="__codelineno-2-190"></a>
+<a href="#__codelineno-2-191" id="__codelineno-2-191" name="__codelineno-2-191"></a>Each<span class="w"> </span>record<span class="w"> </span>includes<span class="w"> </span><span class="sb">`</span>eval_loss<span class="sb">`</span>,<span class="w"> </span><span class="sb">`</span>perplexity<span class="sb">`</span>,<span class="w"> </span>and<span class="w"> </span><span class="sb">`</span>token_accuracy<span class="sb">`</span><span class="w"> </span><span class="o">(</span>when<span class="w"> </span>logits
+<a href="#__codelineno-2-192" id="__codelineno-2-192" name="__codelineno-2-192"></a>and<span class="w"> </span>labels<span class="w"> </span>are<span class="w"> </span>available<span class="o">)</span>.<span class="w">  </span>Adjust<span class="w"> </span>the<span class="w"> </span>cadence<span class="w"> </span>with
+<a href="#__codelineno-2-193" id="__codelineno-2-193" name="__codelineno-2-193"></a><span class="sb">`</span>training.eval_every_epochs<span class="sb">`</span>.
+<a href="#__codelineno-2-194" id="__codelineno-2-194" name="__codelineno-2-194"></a>
+<a href="#__codelineno-2-195" id="__codelineno-2-195" name="__codelineno-2-195"></a><span class="c1">### LoRA switch</span>
+<a href="#__codelineno-2-196" id="__codelineno-2-196" name="__codelineno-2-196"></a>
+<a href="#__codelineno-2-197" id="__codelineno-2-197" name="__codelineno-2-197"></a>Enable<span class="w"> </span>LoRA<span class="w"> </span><span class="k">in</span><span class="w"> </span>config:
+<a href="#__codelineno-2-198" id="__codelineno-2-198" name="__codelineno-2-198"></a>
+<a href="#__codelineno-2-199" id="__codelineno-2-199" name="__codelineno-2-199"></a><span class="sb">```</span>bash
+<a href="#__codelineno-2-200" id="__codelineno-2-200" name="__codelineno-2-200"></a>codex-train<span class="w"> </span>training.lora_enable<span class="o">=</span><span class="nb">true</span><span class="w"> </span>training.lora_r<span class="o">=</span><span class="m">8</span><span class="w"> </span>training.lora_alpha<span class="o">=</span><span class="m">16</span><span class="w"> </span>training.lora_dropout<span class="o">=</span><span class="m">0</span>.05
+<a href="#__codelineno-2-201" id="__codelineno-2-201" name="__codelineno-2-201"></a><span class="sb">```</span>text
+<a href="#__codelineno-2-202" id="__codelineno-2-202" name="__codelineno-2-202"></a>
+<a href="#__codelineno-2-203" id="__codelineno-2-203" name="__codelineno-2-203"></a>See<span class="w"> </span><span class="o">[</span><span class="sb">`</span>docs/examples/lora_quickstart.md<span class="sb">`</span><span class="o">](</span>examples/lora_quickstart.md<span class="o">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>a<span class="w"> </span>minimal<span class="w"> </span>snippet.
+<a href="#__codelineno-2-204" id="__codelineno-2-204" name="__codelineno-2-204"></a>
+<a href="#__codelineno-2-205" id="__codelineno-2-205" name="__codelineno-2-205"></a><span class="c1">### Tune gradient accumulation &amp; evaluation cadence</span>
+<a href="#__codelineno-2-206" id="__codelineno-2-206" name="__codelineno-2-206"></a>
+<a href="#__codelineno-2-207" id="__codelineno-2-207" name="__codelineno-2-207"></a>The<span class="w"> </span>functional<span class="w"> </span>trainer<span class="w"> </span>exposes<span class="w"> </span>the<span class="w"> </span>most<span class="w"> </span>common<span class="w"> </span>loop<span class="w"> </span>knobs<span class="w"> </span>directly<span class="w"> </span>on<span class="w"> </span>the
+<a href="#__codelineno-2-208" id="__codelineno-2-208" name="__codelineno-2-208"></a><span class="sb">`</span>training<span class="sb">`</span><span class="w"> </span>config<span class="w"> </span>block:
+<a href="#__codelineno-2-209" id="__codelineno-2-209" name="__codelineno-2-209"></a>
+<a href="#__codelineno-2-210" id="__codelineno-2-210" name="__codelineno-2-210"></a><span class="p">|</span><span class="w"> </span>Setting<span class="w"> </span><span class="p">|</span><span class="w"> </span>Description<span class="w"> </span><span class="p">|</span>
+<a href="#__codelineno-2-211" id="__codelineno-2-211" name="__codelineno-2-211"></a><span class="p">|</span><span class="w"> </span>---<span class="w"> </span><span class="p">|</span><span class="w"> </span>---<span class="w"> </span><span class="p">|</span>
+<a href="#__codelineno-2-212" id="__codelineno-2-212" name="__codelineno-2-212"></a><span class="p">|</span><span class="w"> </span><span class="sb">`</span>training.gradient_accumulation<span class="sb">`</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>Accumulate<span class="w"> </span>gradients<span class="w"> </span>over<span class="w"> </span>multiple<span class="w"> </span>batches<span class="w"> </span>to<span class="w"> </span>fit<span class="w"> </span>larger<span class="w"> </span>effective<span class="w"> </span>batch<span class="w"> </span>sizes<span class="w"> </span>on<span class="w"> </span>limited<span class="w"> </span>hardware.<span class="w"> </span><span class="p">|</span>
+<a href="#__codelineno-2-213" id="__codelineno-2-213" name="__codelineno-2-213"></a><span class="p">|</span><span class="w"> </span><span class="sb">`</span>training.amp_enable<span class="sb">`</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>Toggle<span class="w"> </span>automatic<span class="w"> </span>mixed<span class="w"> </span>precision<span class="w"> </span><span class="o">(</span>AMP<span class="o">)</span>.<span class="w"> </span>Combine<span class="w"> </span>with<span class="w"> </span><span class="sb">`</span>training.amp_dtype<span class="sb">`</span><span class="w"> </span>to<span class="w"> </span>pick<span class="w"> </span><span class="sb">`</span>fp16<span class="sb">`</span><span class="w"> </span>or<span class="w"> </span><span class="sb">`</span>bf16<span class="sb">`</span>.<span class="w"> </span><span class="p">|</span>
+<a href="#__codelineno-2-214" id="__codelineno-2-214" name="__codelineno-2-214"></a><span class="p">|</span><span class="w"> </span><span class="sb">`</span>training.eval_every_epochs<span class="sb">`</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>Run<span class="w"> </span>the<span class="w"> </span>lightweight<span class="w"> </span>evaluation<span class="w"> </span>loop<span class="w"> </span>every<span class="w"> </span>_n_<span class="w"> </span>epochs.<span class="w"> </span>Set<span class="w"> </span>to<span class="w"> </span>a<span class="w"> </span>large<span class="w"> </span>value<span class="w"> </span>to<span class="w"> </span>skip<span class="w"> </span>eval.<span class="w"> </span><span class="p">|</span>
+<a href="#__codelineno-2-215" id="__codelineno-2-215" name="__codelineno-2-215"></a><span class="p">|</span><span class="w"> </span><span class="sb">`</span>training.metrics_out<span class="sb">`</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>Path<span class="w"> </span>to<span class="w"> </span>the<span class="w"> </span>append-only<span class="w"> </span>NDJSON<span class="w"> </span>log<span class="w"> </span><span class="o">(</span>defaults<span class="w"> </span>to<span class="w"> </span><span class="sb">`</span>.codex/metrics.ndjson<span class="sb">`</span><span class="o">)</span>.<span class="w"> </span><span class="p">|</span>
+<a href="#__codelineno-2-216" id="__codelineno-2-216" name="__codelineno-2-216"></a>
+<a href="#__codelineno-2-217" id="__codelineno-2-217" name="__codelineno-2-217"></a>&gt;<span class="w"> </span>**Effective<span class="w"> </span>batch<span class="w"> </span>size:**<span class="w"> </span>within<span class="w"> </span>a<span class="w"> </span>single<span class="w"> </span>process<span class="w"> </span>the<span class="w"> </span>trainer<span class="w"> </span>applies
+<a href="#__codelineno-2-218" id="__codelineno-2-218" name="__codelineno-2-218"></a>&gt;<span class="w"> </span><span class="sb">`</span>gradient_accumulation<span class="sb">`</span><span class="w"> </span>batches<span class="w"> </span>before<span class="w"> </span>stepping<span class="w"> </span>the<span class="w"> </span>optimiser.<span class="w">  </span>The<span class="w"> </span>effective
+<a href="#__codelineno-2-219" id="__codelineno-2-219" name="__codelineno-2-219"></a>&gt;<span class="w"> </span>batch<span class="w"> </span>therefore<span class="w"> </span>equals<span class="w"> </span><span class="sb">`</span>batch_size<span class="w"> </span>×<span class="w"> </span>gradient_accumulation<span class="w"> </span>×<span class="w"> </span>world_size<span class="sb">`</span>
+<a href="#__codelineno-2-220" id="__codelineno-2-220" name="__codelineno-2-220"></a>&gt;<span class="w"> </span><span class="o">(</span>with<span class="w"> </span><span class="sb">`</span><span class="nv">world_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="sb">`</span><span class="w"> </span><span class="k">for</span><span class="w"> </span>this<span class="w"> </span>loop<span class="o">)</span>.
+<a href="#__codelineno-2-221" id="__codelineno-2-221" name="__codelineno-2-221"></a>
+<a href="#__codelineno-2-222" id="__codelineno-2-222" name="__codelineno-2-222"></a>Evaluation<span class="w"> </span>metrics<span class="w"> </span>and<span class="w"> </span>training<span class="w"> </span>timing<span class="w"> </span>data<span class="w"> </span>are<span class="w"> </span>appended<span class="w"> </span>to<span class="w"> </span>the<span class="w"> </span>NDJSON<span class="w"> </span>file<span class="w"> </span>so
+<a href="#__codelineno-2-223" id="__codelineno-2-223" name="__codelineno-2-223"></a>you<span class="w"> </span>can<span class="w"> </span>tail<span class="w"> </span>progress<span class="w"> </span>without<span class="w"> </span>any<span class="w"> </span>external<span class="w"> </span>services:
+<a href="#__codelineno-2-224" id="__codelineno-2-224" name="__codelineno-2-224"></a>
+<a href="#__codelineno-2-225" id="__codelineno-2-225" name="__codelineno-2-225"></a><span class="sb">```</span>bash
+<a href="#__codelineno-2-226" id="__codelineno-2-226" name="__codelineno-2-226"></a>tail<span class="w"> </span>-f<span class="w"> </span>.codex/metrics.ndjson
+<a href="#__codelineno-2-227" id="__codelineno-2-227" name="__codelineno-2-227"></a><span class="sb">```</span>text
+<a href="#__codelineno-2-228" id="__codelineno-2-228" name="__codelineno-2-228"></a><span class="c1">### Padding, truncation and caching</span>
+<a href="#__codelineno-2-229" id="__codelineno-2-229" name="__codelineno-2-229"></a>
+<a href="#__codelineno-2-230" id="__codelineno-2-230" name="__codelineno-2-230"></a>Codex<span class="w"> </span>ML<span class="w"> </span>exposes<span class="w"> </span>the<span class="w"> </span>Hugging<span class="w"> </span>Face-style<span class="w"> </span>padding<span class="w"> </span>and<span class="w"> </span>truncation<span class="w"> </span>flags<span class="w"> </span>directly
+<a href="#__codelineno-2-231" id="__codelineno-2-231" name="__codelineno-2-231"></a>through<span class="w"> </span><span class="sb">`</span>TrainingRunConfig<span class="sb">`</span>.<span class="w">  </span>Set<span class="w"> </span><span class="sb">`</span>padding<span class="sb">`</span><span class="w"> </span>to<span class="w"> </span><span class="sb">`</span>True<span class="sb">`</span><span class="w"> </span><span class="o">(</span>default<span class="o">)</span><span class="w"> </span>to<span class="w"> </span>pad<span class="w"> </span>batches<span class="w"> </span>to
+<a href="#__codelineno-2-232" id="__codelineno-2-232" name="__codelineno-2-232"></a>the<span class="w"> </span>longest<span class="w"> </span>sequence<span class="w"> </span>or<span class="w"> </span>to<span class="w"> </span><span class="sb">`</span><span class="s1">'max_length'</span><span class="sb">`</span>/<span class="sb">`</span>False<span class="sb">`</span><span class="w"> </span>to<span class="w"> </span>fine-tune<span class="w"> </span>behaviour,<span class="w"> </span>and
+<a href="#__codelineno-2-233" id="__codelineno-2-233" name="__codelineno-2-233"></a>use<span class="w"> </span><span class="sb">`</span><span class="nv">truncation</span><span class="o">=</span>True<span class="sb">`</span><span class="w"> </span>plus<span class="w"> </span><span class="sb">`</span><span class="nv">max_length</span><span class="o">=</span>&lt;int&gt;<span class="sb">`</span><span class="w"> </span>to<span class="w"> </span>cap<span class="w"> </span>overly<span class="w"> </span>long<span class="w"> </span>prompts<span class="w"> </span>during
+<a href="#__codelineno-2-234" id="__codelineno-2-234" name="__codelineno-2-234"></a>training.<span class="w">  </span>When<span class="w"> </span>a<span class="w"> </span><span class="sb">`</span>DataCollatorWithPadding<span class="sb">`</span><span class="w"> </span>dependency<span class="w"> </span>is<span class="w"> </span>available<span class="w"> </span>it<span class="w"> </span>is<span class="w"> </span>wired
+<a href="#__codelineno-2-235" id="__codelineno-2-235" name="__codelineno-2-235"></a>automatically<span class="w"> </span><span class="k">for</span><span class="w"> </span>dynamic<span class="w"> </span>padding<span class="w"> </span>at<span class="w"> </span>batch<span class="w"> </span>time.
+<a href="#__codelineno-2-236" id="__codelineno-2-236" name="__codelineno-2-236"></a>
+<a href="#__codelineno-2-237" id="__codelineno-2-237" name="__codelineno-2-237"></a>Repeated<span class="w"> </span>calls<span class="w"> </span>to<span class="w"> </span>the<span class="w"> </span>same<span class="w"> </span>tokenizer<span class="w"> </span>inputs<span class="w"> </span>are<span class="w"> </span>cached<span class="w"> </span><span class="k">in</span><span class="w"> </span>a<span class="w"> </span>lightweight
+<a href="#__codelineno-2-238" id="__codelineno-2-238" name="__codelineno-2-238"></a><span class="k">in</span>-memory<span class="w"> </span>LRU<span class="w"> </span>keyed<span class="w"> </span>by<span class="w"> </span>text<span class="w"> </span>and<span class="w"> </span>padding<span class="w"> </span>arguments.<span class="w">  </span>To<span class="w"> </span>disable<span class="w"> </span>caching<span class="w"> </span><span class="k">for</span>
+<a href="#__codelineno-2-239" id="__codelineno-2-239" name="__codelineno-2-239"></a>debugging<span class="w"> </span>or<span class="w"> </span>benchmarking<span class="w"> </span><span class="nb">set</span><span class="w"> </span><span class="sb">`</span><span class="nv">CODEX_ML_TOKEN_CACHE_DISABLE</span><span class="o">=</span><span class="m">1</span><span class="sb">`</span><span class="w"> </span><span class="k">in</span><span class="w"> </span>the
+<a href="#__codelineno-2-240" id="__codelineno-2-240" name="__codelineno-2-240"></a>environment<span class="w"> </span>before<span class="w"> </span>launching<span class="w"> </span>training.
+<a href="#__codelineno-2-241" id="__codelineno-2-241" name="__codelineno-2-241"></a>
+<a href="#__codelineno-2-242" id="__codelineno-2-242" name="__codelineno-2-242"></a><span class="c1">## 5. Inspect results &amp; aggregate metrics</span>
+<a href="#__codelineno-2-243" id="__codelineno-2-243" name="__codelineno-2-243"></a>
+<a href="#__codelineno-2-244" id="__codelineno-2-244" name="__codelineno-2-244"></a><span class="sb">```</span>bash
+<a href="#__codelineno-2-245" id="__codelineno-2-245" name="__codelineno-2-245"></a>python<span class="w"> </span>examples/mlflow_offline.py<span class="w"> </span>runs/examples/&lt;latest-run&gt;
+<a href="#__codelineno-2-246" id="__codelineno-2-246" name="__codelineno-2-246"></a>python<span class="w"> </span>examples/evaluate_toy.py
+<a href="#__codelineno-2-247" id="__codelineno-2-247" name="__codelineno-2-247"></a><span class="sb">```</span>text
+<a href="#__codelineno-2-248" id="__codelineno-2-248" name="__codelineno-2-248"></a>Use<span class="w"> </span>the<span class="w"> </span>printed<span class="w"> </span><span class="sb">`</span>mlflow<span class="w"> </span>ui<span class="w"> </span>--backend-store-uri<span class="w"> </span>...<span class="sb">`</span><span class="w"> </span><span class="nb">command</span><span class="w"> </span>to<span class="w"> </span>explore<span class="w"> </span>the<span class="w"> </span>run
+<a href="#__codelineno-2-249" id="__codelineno-2-249" name="__codelineno-2-249"></a>offline.<span class="w">  </span>TensorBoard<span class="w"> </span>summaries<span class="w"> </span>are<span class="w"> </span>saved<span class="w"> </span>alongside<span class="w"> </span>the<span class="w"> </span>run<span class="w"> </span>when<span class="w"> </span>enabled.
+<a href="#__codelineno-2-250" id="__codelineno-2-250" name="__codelineno-2-250"></a>
+<a href="#__codelineno-2-251" id="__codelineno-2-251" name="__codelineno-2-251"></a><span class="c1">## 5b. Logging &amp; Monitoring (optional)</span>
+<a href="#__codelineno-2-252" id="__codelineno-2-252" name="__codelineno-2-252"></a>
+<a href="#__codelineno-2-253" id="__codelineno-2-253" name="__codelineno-2-253"></a>Codex<span class="w"> </span>ML<span class="w"> </span>keeps<span class="w"> </span>telemetry<span class="w"> </span>opt-in<span class="w"> </span>so<span class="w"> </span>you<span class="w"> </span>can<span class="w"> </span>decide<span class="w"> </span>when<span class="w"> </span>to<span class="w"> </span>light<span class="w"> </span>up<span class="w"> </span>dashboards.
+<a href="#__codelineno-2-254" id="__codelineno-2-254" name="__codelineno-2-254"></a>
+<a href="#__codelineno-2-255" id="__codelineno-2-255" name="__codelineno-2-255"></a>*<span class="w"> </span>**TensorBoard**<span class="w"> </span>–<span class="w"> </span>pass<span class="w"> </span><span class="sb">`</span><span class="nv">tensorboard</span><span class="o">=</span><span class="nb">true</span><span class="sb">`</span><span class="w"> </span><span class="o">(</span>or<span class="w"> </span><span class="nb">set</span><span class="w"> </span><span class="sb">`</span>TrainConfig.tensorboard<span class="w"> </span><span class="o">=</span><span class="w"> </span>True<span class="sb">`</span><span class="o">)</span>
+<a href="#__codelineno-2-256" id="__codelineno-2-256" name="__codelineno-2-256"></a><span class="w">  </span>and<span class="w"> </span>optionally<span class="w"> </span>override<span class="w"> </span><span class="sb">`</span>tensorboard_dir<span class="sb">`</span><span class="w"> </span><span class="o">(</span>default<span class="w"> </span><span class="sb">`</span>runs/codex<span class="sb">`</span><span class="o">)</span>.<span class="w"> </span>Launch<span class="w"> </span>a
+<a href="#__codelineno-2-257" id="__codelineno-2-257" name="__codelineno-2-257"></a><span class="w">  </span>dashboard<span class="w"> </span>locally<span class="w"> </span>with:
+<a href="#__codelineno-2-258" id="__codelineno-2-258" name="__codelineno-2-258"></a>
+<a href="#__codelineno-2-259" id="__codelineno-2-259" name="__codelineno-2-259"></a><span class="w">  </span><span class="sb">```</span>bash
+<a href="#__codelineno-2-260" id="__codelineno-2-260" name="__codelineno-2-260"></a><span class="w">  </span>tensorboard<span class="w"> </span>--logdir<span class="w"> </span>runs/codex
+<a href="#__codelineno-2-261" id="__codelineno-2-261" name="__codelineno-2-261"></a><span class="w">  </span><span class="sb">```</span>
+<a href="#__codelineno-2-262" id="__codelineno-2-262" name="__codelineno-2-262"></a>
+<a href="#__codelineno-2-263" id="__codelineno-2-263" name="__codelineno-2-263"></a>*<span class="w"> </span>**Weights<span class="w"> </span><span class="p">&amp;</span><span class="w"> </span>Biases<span class="w"> </span><span class="o">(</span>offline<span class="o">)</span>**<span class="w"> </span>–<span class="w"> </span><span class="nb">export</span><span class="w"> </span><span class="sb">`</span><span class="nv">WANDB_MODE</span><span class="o">=</span>offline<span class="sb">`</span>,<span class="w"> </span><span class="nb">set</span>
+<a href="#__codelineno-2-264" id="__codelineno-2-264" name="__codelineno-2-264"></a><span class="w">  </span><span class="sb">`</span>WANDB_PROJECT<span class="sb">`</span><span class="w"> </span><span class="k">if</span><span class="w"> </span>you<span class="w"> </span>want<span class="w"> </span>a<span class="w"> </span>custom<span class="w"> </span>namespace,<span class="w"> </span>and<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>via
+<a href="#__codelineno-2-265" id="__codelineno-2-265" name="__codelineno-2-265"></a><span class="w">  </span><span class="sb">`</span>TrainConfig.wandb_enable<span class="w"> </span><span class="o">=</span><span class="w"> </span>True<span class="sb">`</span>.<span class="w"> </span>The<span class="w"> </span>shim<span class="w"> </span>buffers<span class="w"> </span>events<span class="w"> </span>locally<span class="p">;</span><span class="w"> </span>run
+<a href="#__codelineno-2-266" id="__codelineno-2-266" name="__codelineno-2-266"></a><span class="w">  </span><span class="sb">`</span>wandb<span class="w"> </span>sync<span class="sb">`</span><span class="w"> </span>later<span class="w"> </span>to<span class="w"> </span>upload<span class="w"> </span><span class="k">if</span><span class="w"> </span>desired.
+<a href="#__codelineno-2-267" id="__codelineno-2-267" name="__codelineno-2-267"></a>
+<a href="#__codelineno-2-268" id="__codelineno-2-268" name="__codelineno-2-268"></a>*<span class="w"> </span>**System<span class="w"> </span>metrics<span class="w"> </span>NDJSON**<span class="w"> </span>–<span class="w"> </span>background<span class="w"> </span>sampling<span class="w"> </span>writes<span class="w"> </span>CPU/RAM<span class="w"> </span><span class="o">(</span>and<span class="w"> </span>GPU<span class="w"> </span>when
+<a href="#__codelineno-2-269" id="__codelineno-2-269" name="__codelineno-2-269"></a><span class="w">  </span>NVML<span class="w"> </span>is<span class="w"> </span>present<span class="o">)</span><span class="w"> </span>into<span class="w"> </span><span class="sb">`</span>.codex/metrics.ndjson<span class="sb">`</span><span class="w"> </span>by<span class="w"> </span>default.<span class="w"> </span>Adjust<span class="w"> </span>with
+<a href="#__codelineno-2-270" id="__codelineno-2-270" name="__codelineno-2-270"></a><span class="w">  </span><span class="sb">`</span>TrainConfig.metrics_out<span class="sb">`</span><span class="w"> </span>or<span class="w"> </span>disable<span class="w"> </span>by<span class="w"> </span>setting
+<a href="#__codelineno-2-271" id="__codelineno-2-271" name="__codelineno-2-271"></a><span class="w">  </span><span class="sb">`</span>TrainConfig.system_metrics_interval<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="sb">`</span>.<span class="w"> </span>TensorBoard/W<span class="p">&amp;</span>B<span class="w"> </span>receive<span class="w"> </span>the<span class="w"> </span>same
+<a href="#__codelineno-2-272" id="__codelineno-2-272" name="__codelineno-2-272"></a><span class="w">  </span>scalar<span class="w"> </span>stream<span class="w"> </span>when<span class="w"> </span>enabled.
+<a href="#__codelineno-2-273" id="__codelineno-2-273" name="__codelineno-2-273"></a>
+<a href="#__codelineno-2-274" id="__codelineno-2-274" name="__codelineno-2-274"></a><span class="c1">## 6. Next steps</span>
+<a href="#__codelineno-2-275" id="__codelineno-2-275" name="__codelineno-2-275"></a>
+<a href="#__codelineno-2-276" id="__codelineno-2-276" name="__codelineno-2-276"></a>*<span class="w"> </span>Fine-tune<span class="w"> </span>chat<span class="w"> </span>models<span class="w"> </span>via<span class="w"> </span><span class="sb">`</span>examples/chat_finetune.py<span class="sb">`</span>
+<a href="#__codelineno-2-277" id="__codelineno-2-277" name="__codelineno-2-277"></a>*<span class="w"> </span>Explore<span class="w"> </span>the<span class="w"> </span>registries<span class="w"> </span>and<span class="w"> </span>plugin<span class="w"> </span>system<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="sb">`</span>docs/dev/plugins.md<span class="sb">`</span>
+<a href="#__codelineno-2-278" id="__codelineno-2-278" name="__codelineno-2-278"></a>*<span class="w"> </span>Link<span class="w"> </span>your<span class="w"> </span>own<span class="w"> </span>datasets<span class="w"> </span>via<span class="w"> </span><span class="sb">`</span>docs/examples/training-configs.md<span class="sb">`</span>
+<a href="#__codelineno-2-279" id="__codelineno-2-279" name="__codelineno-2-279"></a>*<span class="w"> </span>Register<span class="w"> </span>lightweight<span class="w"> </span>model<span class="w"> </span>constructors<span class="w"> </span>via<span class="w"> </span><span class="sb">`</span>codex_ml.hf_loader.register_causal_lm<span class="sb">`</span>
+<a href="#__codelineno-2-280" id="__codelineno-2-280" name="__codelineno-2-280"></a>
+<a href="#__codelineno-2-281" id="__codelineno-2-281" name="__codelineno-2-281"></a><span class="c1">## 7. Optional: plug in custom causal LMs</span>
+<a href="#__codelineno-2-282" id="__codelineno-2-282" name="__codelineno-2-282"></a>
+<a href="#__codelineno-2-283" id="__codelineno-2-283" name="__codelineno-2-283"></a>You<span class="w"> </span>can<span class="w"> </span>register<span class="w"> </span>bespoke<span class="w"> </span>constructors<span class="w"> </span>that<span class="w"> </span>sidestep<span class="w"> </span>Hugging<span class="w"> </span>Face<span class="w"> </span>entirely<span class="w"> </span>–
+<a href="#__codelineno-2-284" id="__codelineno-2-284" name="__codelineno-2-284"></a>useful<span class="w"> </span><span class="k">for</span><span class="w"> </span>deterministic<span class="w"> </span>fixtures<span class="w"> </span>or<span class="w"> </span>research<span class="w"> </span>prototypes.<span class="w">  </span>Registered
+<a href="#__codelineno-2-285" id="__codelineno-2-285" name="__codelineno-2-285"></a>constructors<span class="w"> </span>receive<span class="w"> </span>the<span class="w"> </span>same<span class="w"> </span>keyword<span class="w"> </span>arguments<span class="w"> </span>as<span class="w"> </span>the<span class="w"> </span>default<span class="w"> </span>loader,<span class="w"> </span>so<span class="w"> </span>you
+<a href="#__codelineno-2-286" id="__codelineno-2-286" name="__codelineno-2-286"></a>can<span class="w"> </span>react<span class="w"> </span>to<span class="w"> </span>AMP<span class="w"> </span>dtype<span class="w"> </span>or<span class="w"> </span>LoRA<span class="w"> </span>settings.
+<a href="#__codelineno-2-287" id="__codelineno-2-287" name="__codelineno-2-287"></a>
+<a href="#__codelineno-2-288" id="__codelineno-2-288" name="__codelineno-2-288"></a><span class="sb">```</span>python
+<a href="#__codelineno-2-289" id="__codelineno-2-289" name="__codelineno-2-289"></a>from<span class="w"> </span>codex_ml.hf_loader<span class="w"> </span>import<span class="w"> </span>register_causal_lm,<span class="w"> </span>load_causal_lm
+<a href="#__codelineno-2-290" id="__codelineno-2-290" name="__codelineno-2-290"></a>
+<a href="#__codelineno-2-291" id="__codelineno-2-291" name="__codelineno-2-291"></a>
+<a href="#__codelineno-2-292" id="__codelineno-2-292" name="__codelineno-2-292"></a>@register_causal_lm<span class="o">(</span><span class="s2">"toy-causal"</span><span class="o">)</span>
+<a href="#__codelineno-2-293" id="__codelineno-2-293" name="__codelineno-2-293"></a>def<span class="w"> </span>build_toy_model<span class="o">(</span>*,<span class="w"> </span><span class="nv">device</span><span class="o">=</span>None,<span class="w"> </span><span class="nv">dtype</span><span class="o">=</span>None,<span class="w"> </span><span class="nv">peft_cfg</span><span class="o">=</span>None<span class="o">)</span>:
+<a href="#__codelineno-2-294" id="__codelineno-2-294" name="__codelineno-2-294"></a><span class="w">    </span><span class="nv">model</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>MyToyModel<span class="o">()</span>
+<a href="#__codelineno-2-295" id="__codelineno-2-295" name="__codelineno-2-295"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span>device:
+<a href="#__codelineno-2-296" id="__codelineno-2-296" name="__codelineno-2-296"></a><span class="w">        </span>model.to<span class="o">(</span>device<span class="o">)</span>
+<a href="#__codelineno-2-297" id="__codelineno-2-297" name="__codelineno-2-297"></a><span class="w">    </span><span class="k">return</span><span class="w"> </span>model
+<a href="#__codelineno-2-298" id="__codelineno-2-298" name="__codelineno-2-298"></a>
+<a href="#__codelineno-2-299" id="__codelineno-2-299" name="__codelineno-2-299"></a>
+<a href="#__codelineno-2-300" id="__codelineno-2-300" name="__codelineno-2-300"></a><span class="nv">model</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>load_causal_lm<span class="o">(</span><span class="s2">"toy-causal"</span>,<span class="w"> </span><span class="nv">device</span><span class="o">=</span><span class="s2">"cuda"</span>,<span class="w"> </span><span class="nv">dtype</span><span class="o">=</span><span class="s2">"bf16"</span><span class="o">)</span>
+<a href="#__codelineno-2-301" id="__codelineno-2-301" name="__codelineno-2-301"></a><span class="sb">```</span>text
+<a href="#__codelineno-2-302" id="__codelineno-2-302" name="__codelineno-2-302"></a>
+<a href="#__codelineno-2-303" id="__codelineno-2-303" name="__codelineno-2-303"></a>Passing<span class="w"> </span><span class="sb">`</span><span class="nv">dtype</span><span class="o">=</span><span class="s2">"bf16"</span><span class="sb">`</span><span class="w"> </span>or<span class="w"> </span><span class="sb">`</span><span class="nv">dtype</span><span class="o">=</span><span class="s2">"fp16"</span><span class="sb">`</span><span class="w"> </span>maps<span class="w"> </span>to<span class="w"> </span><span class="sb">`</span>torch.bfloat16<span class="sb">`</span><span class="w"> </span>/
+<a href="#__codelineno-2-304" id="__codelineno-2-304" name="__codelineno-2-304"></a><span class="sb">`</span>torch.float16<span class="sb">`</span><span class="w"> </span>automatically.<span class="w">  </span>Hardware<span class="w"> </span>support<span class="w"> </span>varies<span class="w"> </span>–<span class="w"> </span>on<span class="w"> </span>CPU<span class="w"> </span>the<span class="w"> </span>loader
+<a href="#__codelineno-2-305" id="__codelineno-2-305" name="__codelineno-2-305"></a>falls<span class="w"> </span>back<span class="w"> </span>gracefully<span class="w"> </span>when<span class="w"> </span>the<span class="w"> </span>dtype<span class="w"> </span>is<span class="w"> </span>unsupported.<span class="w">  </span>LoRA/PEFT<span class="w"> </span>dictionaries<span class="w"> </span>are
+<a href="#__codelineno-2-306" id="__codelineno-2-306" name="__codelineno-2-306"></a>also<span class="w"> </span>forwarded<span class="w"> </span>so<span class="w"> </span>registries<span class="w"> </span>can<span class="w"> </span>decide<span class="w"> </span>whether<span class="w"> </span>to<span class="w"> </span>attach<span class="w"> </span>adapters.
+<a href="#__codelineno-2-307" id="__codelineno-2-307" name="__codelineno-2-307"></a>
+<a href="#__codelineno-2-308" id="__codelineno-2-308" name="__codelineno-2-308"></a><span class="c1">## Reproducible sweeps</span>
+<a href="#__codelineno-2-309" id="__codelineno-2-309" name="__codelineno-2-309"></a>
+<a href="#__codelineno-2-310" id="__codelineno-2-310" name="__codelineno-2-310"></a>Generate<span class="w"> </span>Hydra-compatible<span class="w"> </span>sweeps<span class="w"> </span>with<span class="w"> </span>reproducibility<span class="w"> </span>metadata<span class="w"> </span>baked<span class="w"> </span><span class="k">in</span>:
+<a href="#__codelineno-2-311" id="__codelineno-2-311" name="__codelineno-2-311"></a>
+<a href="#__codelineno-2-312" id="__codelineno-2-312" name="__codelineno-2-312"></a><span class="sb">```</span>bash
+<a href="#__codelineno-2-313" id="__codelineno-2-313" name="__codelineno-2-313"></a>codex<span class="w"> </span>config-sweep<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-2-314" id="__codelineno-2-314" name="__codelineno-2-314"></a><span class="w">  </span>--base-config<span class="w"> </span>configs/training/base.yaml<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-2-315" id="__codelineno-2-315" name="__codelineno-2-315"></a><span class="w">  </span>--output<span class="w"> </span>configs/training/sweeps/generated.yaml<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-2-316" id="__codelineno-2-316" name="__codelineno-2-316"></a><span class="w">  </span>--seeds<span class="w"> </span><span class="m">1</span>,2,3<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-2-317" id="__codelineno-2-317" name="__codelineno-2-317"></a><span class="w">  </span>--dataset-version<span class="w"> </span>v0<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-2-318" id="__codelineno-2-318" name="__codelineno-2-318"></a><span class="w">  </span>--dataset-path<span class="w"> </span>data/tiny/train.jsonl<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-2-319" id="__codelineno-2-319" name="__codelineno-2-319"></a><span class="w">  </span>--param<span class="w"> </span>training.batch_size<span class="o">=</span><span class="m">4</span>,8
+</code></pre></div>
+<p>The output YAML records the seed grid, dataset version/hash, the source config,
+<code>git_sha</code>, and any <code>locked_overrides</code> for auditing.</p>
+<h2 id="train-persist-metrics-and-resume">Train, persist metrics, and resume<a class="headerlink" href="#train-persist-metrics-and-resume" title="Permanent link">¶</a></h2>
+<p>Run training with explicit metrics persistence and MLflow controls:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>codex<span class="w"> </span>train<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="w">  </span>--config<span class="w"> </span>configs/training/base.yaml<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w">  </span>--mlflow<span class="w"> </span>--mlflow-tracking-uri<span class="w"> </span>file:mlruns<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="w">  </span>--resume
+</code></pre></div>
+<p>Manifests emitted under <code>runs/*/provenance/manifest.json</code> capture the best and
+latest checkpoints plus config pointers. Resume using:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>codex<span class="w"> </span>resume<span class="w"> </span>runs/default/provenance/manifest.json<span class="w"> </span>--mlflow-run-name<span class="w"> </span>resumed
+</code></pre></div>
+<p>Metrics writers are selectable in the HF trainer (<code>--metrics-writer ndjson|csv|none</code>).</p>
+<h2 id="plugin-registration-at-a-glance">Plugin registration at a glance<a class="headerlink" href="#plugin-registration-at-a-glance" title="Permanent link">¶</a></h2>
+<p>To expose a custom tokenizer/model/metric without touching core code, register
+an entry point in <code>pyproject.toml</code>:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="k">[project.entry-points.</span><span class="s2">"codex_ml.models"</span><span class="k">]</span>
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="n">my_toy_model</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"my_package.builders:build_model"</span>
+</code></pre></div>
+<p>The registry resolver in <code>codex_ml.registry</code> automatically loads plugins when
+encountered in configs or CLI overrides.</p>
+</article>
+</div>
+<script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+</body>
+</html>

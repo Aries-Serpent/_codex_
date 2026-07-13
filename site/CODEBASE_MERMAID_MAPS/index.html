@@ -1029,6 +1029,30 @@
   </span>
 </a>
 </li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../deployment/LOCAL_DEPLOYMENT_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Local Deployment Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../deployment/DEPLOYMENT_VERIFICATION_CHECKLIST/">
+<span class="md-ellipsis">
+    
+  
+    Verification Checklist
+  
+
+    
+  </span>
+</a>
+</li>
 </ul>
 </nav>
 </li>
@@ -2550,7 +2574,7 @@
 <a class="md-nav__link" href="#p11-rag-e2e-rag-end-to-end-corpus-round-trip-test">
 <span class="md-ellipsis">
       
-        🟡 P11-RAG-E2E: RAG end-to-end corpus round-trip test
+        P11-RAG-E2E: RAG end-to-end corpus round-trip test
       
     </span>
 </a>
@@ -2797,7 +2821,7 @@
 <a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>    end
 <a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a>
 <a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a>    subgraph "PR Body Checklist"
-<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a>        CB["## 🔄 Workflow Execution Checklist\n- [x] pre-merge-validation.yml\n- [x] comment-review-gate.yml\n- [ ] security-scanning-suite.yml\n- [ ] documentation-link-checker.yml"]
+<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a>        CB["##  Workflow Execution Checklist\n- [x] pre-merge-validation.yml\n- [x] comment-review-gate.yml\n- [ ] security-scanning-suite.yml\n- [ ] documentation-link-checker.yml"]
 <a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a>    end
 <a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a>
 <a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a>    subgraph "workflow-execution-gate.yml"
@@ -2817,13 +2841,13 @@
 </code></pre></div>
 <hr/>
 <h2 id="7-comment-review-gate-req-13">7. Comment-Review Gate (REQ-13)<a class="headerlink" href="#7-comment-review-gate-req-13" title="Permanent link">¶</a></h2>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing scripts/ci/check_pr_comments.py\n--pr PR_NUMBER, 🚨 BLOCKING\nmbaetiong + critical bots'}}%%
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a>%%{init: {'accessibility': {'title': 'Flowchart showing scripts/ci/check_pr_comments.py\n--pr PR_NUMBER,  BLOCKING\nmbaetiong + critical bots'}}%%
 <a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>flowchart TD
 <a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a>    subgraph "comment-review-gate.yml"
 <a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a>        SCAN[scripts/ci/check_pr_comments.py\n--pr PR_NUMBER]
 <a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a>        CLASSIFY{Classify\ncomment}
-<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a>        BLOCKING[🚨 BLOCKING\nmbaetiong + critical bots]
-<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a>        WARNING[⚠️ WARNING\ninfomational bots]
+<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a>        BLOCKING[ BLOCKING\nmbaetiong + critical bots]
+<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a>        WARNING[️ WARNING\ninfomational bots]
 <a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a>        INFO[ℹ️ INFO\ndependabot etc]
 <a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a>    end
 <a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a>
@@ -2957,7 +2981,7 @@
 <a href="#__codelineno-10-8" id="__codelineno-10-8" name="__codelineno-10-8"></a>
 <a href="#__codelineno-10-9" id="__codelineno-10-9" name="__codelineno-10-9"></a>    subgraph "Token Chain (T-01 Fixed — PR #4356)"
 <a href="#__codelineno-10-10" id="__codelineno-10-10" name="__codelineno-10-10"></a>        CHAIN["GH_TOKEN = CODEX_MASTER_KEY\n|| CODEX_BACKUP_KEY\n|| github.token\nAll checkout + write ops"]
-<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a>        T01_NOTE["⚠️ Before T-01 fix: workflow-link-validation.yml\nused bare github.token — now uses chain"]
+<a href="#__codelineno-10-11" id="__codelineno-10-11" name="__codelineno-10-11"></a>        T01_NOTE["️ Before T-01 fix: workflow-link-validation.yml\nused bare github.token — now uses chain"]
 <a href="#__codelineno-10-12" id="__codelineno-10-12" name="__codelineno-10-12"></a>    end
 <a href="#__codelineno-10-13" id="__codelineno-10-13" name="__codelineno-10-13"></a>
 <a href="#__codelineno-10-14" id="__codelineno-10-14" name="__codelineno-10-14"></a>    subgraph "Session TTL Control (PR #4356)"
@@ -3242,10 +3266,10 @@
 <a href="#__codelineno-16-15" id="__codelineno-16-15" name="__codelineno-16-15"></a>    end
 <a href="#__codelineno-16-16" id="__codelineno-16-16" name="__codelineno-16-16"></a>
 <a href="#__codelineno-16-17" id="__codelineno-16-17" name="__codelineno-16-17"></a>    subgraph "Phase 10B — Gap Fill: src/ — In Progress"
-<a href="#__codelineno-16-18" id="__codelineno-16-18" name="__codelineno-16-18"></a>        GF1[src/codex/cli.py — CLI command coverage ⏳]
-<a href="#__codelineno-16-19" id="__codelineno-16-19" name="__codelineno-16-19"></a>        GF2[src/codex/cognitive_brain/ — brain ops ⏳]
-<a href="#__codelineno-16-20" id="__codelineno-16-20" name="__codelineno-16-20"></a>        GF3[src/training/ — trainer loops ⏳]
-<a href="#__codelineno-16-21" id="__codelineno-16-21" name="__codelineno-16-21"></a>        GF4[src/codex/rag/ — retrieval paths ⏳]
+<a href="#__codelineno-16-18" id="__codelineno-16-18" name="__codelineno-16-18"></a>        GF1[src/codex/cli.py — CLI command coverage ]
+<a href="#__codelineno-16-19" id="__codelineno-16-19" name="__codelineno-16-19"></a>        GF2[src/codex/cognitive_brain/ — brain ops ]
+<a href="#__codelineno-16-20" id="__codelineno-16-20" name="__codelineno-16-20"></a>        GF3[src/training/ — trainer loops ]
+<a href="#__codelineno-16-21" id="__codelineno-16-21" name="__codelineno-16-21"></a>        GF4[src/codex/rag/ — retrieval paths ]
 <a href="#__codelineno-16-22" id="__codelineno-16-22" name="__codelineno-16-22"></a>        GF5[src/security/ — auth + secrets  90.72%]
 <a href="#__codelineno-16-23" id="__codelineno-16-23" name="__codelineno-16-23"></a>        GF6[services/ita/ — ITA service ]
 <a href="#__codelineno-16-24" id="__codelineno-16-24" name="__codelineno-16-24"></a>        GF7[services/msp_gateway/ — MSP Gateway ]
@@ -3256,8 +3280,8 @@
 <a href="#__codelineno-16-29" id="__codelineno-16-29" name="__codelineno-16-29"></a>        DA1[CODEBASE_MERMAID_MAPS v0.2.1  2026-07-13
 <a href="#__codelineno-16-30" id="__codelineno-16-30" name="__codelineno-16-30"></a>        DA2[ARCHITECTURE.md metrics refresh  2026-07-13
 <a href="#__codelineno-16-31" id="__codelineno-16-31" name="__codelineno-16-31"></a>        DA3[docs/diagrams/*.mmd updated  2026-07-13
-<a href="#__codelineno-16-32" id="__codelineno-16-32" name="__codelineno-16-32"></a>        DA4[AGENT_NAVIGATION.md — Phase 10 agents ⏳]
-<a href="#__codelineno-16-33" id="__codelineno-16-33" name="__codelineno-16-33"></a>        DA5[.codex/cognitive_brain/ status update ⏳]
+<a href="#__codelineno-16-32" id="__codelineno-16-32" name="__codelineno-16-32"></a>        DA4[AGENT_NAVIGATION.md — Phase 10 agents ]
+<a href="#__codelineno-16-33" id="__codelineno-16-33" name="__codelineno-16-33"></a>        DA5[.codex/cognitive_brain/ status update ]
 <a href="#__codelineno-16-34" id="__codelineno-16-34" name="__codelineno-16-34"></a>    end
 <a href="#__codelineno-16-35" id="__codelineno-16-35" name="__codelineno-16-35"></a>
 <a href="#__codelineno-16-36" id="__codelineno-16-36" name="__codelineno-16-36"></a>    subgraph "Phase 10D — Adaptive Learning"
@@ -3325,12 +3349,12 @@
 <a href="#__codelineno-17-19" id="__codelineno-17-19" name="__codelineno-17-19"></a>    end
 <a href="#__codelineno-17-20" id="__codelineno-17-20" name="__codelineno-17-20"></a>
 <a href="#__codelineno-17-21" id="__codelineno-17-21" name="__codelineno-17-21"></a>    subgraph "Phase 11 — Production Hardening"
-<a href="#__codelineno-17-22" id="__codelineno-17-22" name="__codelineno-17-22"></a>        N1[Coverage zero-gaps\nokr_tracker.py + task_router.py 0% ⏳]
-<a href="#__codelineno-17-23" id="__codelineno-17-23" name="__codelineno-17-23"></a>        N2[Cognitive depth\nknowledge_distiller + objective_adjuster 58% ⏳]
-<a href="#__codelineno-17-24" id="__codelineno-17-24" name="__codelineno-17-24"></a>        N3[CodeQL + bandit clean run\nzero open findings ⏳]
-<a href="#__codelineno-17-25" id="__codelineno-17-25" name="__codelineno-17-25"></a>        N4[Placeholder audit\nno unreachable TODO/FIXME in prod ⏳]
-<a href="#__codelineno-17-26" id="__codelineno-17-26" name="__codelineno-17-26"></a>        N5[Overall ≥25% statement coverage\nmilestone gate ⏳]
-<a href="#__codelineno-17-27" id="__codelineno-17-27" name="__codelineno-17-27"></a>        N6[RAG retrieval integration tests\nend-to-end corpus round-trip ⏳]
+<a href="#__codelineno-17-22" id="__codelineno-17-22" name="__codelineno-17-22"></a>        N1[Coverage zero-gaps\nokr_tracker.py + task_router.py 0% ]
+<a href="#__codelineno-17-23" id="__codelineno-17-23" name="__codelineno-17-23"></a>        N2[Cognitive depth\nknowledge_distiller + objective_adjuster 58% ]
+<a href="#__codelineno-17-24" id="__codelineno-17-24" name="__codelineno-17-24"></a>        N3[CodeQL + bandit clean run\nzero open findings ]
+<a href="#__codelineno-17-25" id="__codelineno-17-25" name="__codelineno-17-25"></a>        N4[Placeholder audit\nno unreachable TODO/FIXME in prod ]
+<a href="#__codelineno-17-26" id="__codelineno-17-26" name="__codelineno-17-26"></a>        N5[Overall ≥25% statement coverage\nmilestone gate ]
+<a href="#__codelineno-17-27" id="__codelineno-17-27" name="__codelineno-17-27"></a>        N6[RAG retrieval integration tests\nend-to-end corpus round-trip ]
 <a href="#__codelineno-17-28" id="__codelineno-17-28" name="__codelineno-17-28"></a>    end
 <a href="#__codelineno-17-29" id="__codelineno-17-29" name="__codelineno-17-29"></a>
 <a href="#__codelineno-17-30" id="__codelineno-17-30" name="__codelineno-17-30"></a>    S1A &amp; S1B &amp; S1C &amp; S1D &amp; S1E --&gt; P1 &amp; P2 &amp; P3 &amp; P4
@@ -3453,7 +3477,7 @@
 <a href="#__codelineno-22-7" id="__codelineno-22-7" name="__codelineno-22-7"></a>4. Re-run coverage; assert ≥25%
 <a href="#__codelineno-22-8" id="__codelineno-22-8" name="__codelineno-22-8"></a>5. Update docs/CODEBASE_MERMAID_MAPS.md Section 18 N5 node to 
 </code></pre></div>
-<h3 id="p11-rag-e2e-rag-end-to-end-corpus-round-trip-test">🟡 P11-RAG-E2E: RAG end-to-end corpus round-trip test<a class="headerlink" href="#p11-rag-e2e-rag-end-to-end-corpus-round-trip-test" title="Permanent link">¶</a></h3>
+<h3 id="p11-rag-e2e-rag-end-to-end-corpus-round-trip-test">P11-RAG-E2E: RAG end-to-end corpus round-trip test<a class="headerlink" href="#p11-rag-e2e-rag-end-to-end-corpus-round-trip-test" title="Permanent link">¶</a></h3>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-23-1" id="__codelineno-23-1" name="__codelineno-23-1"></a>You are continuing Phase 11 RAG integration work on Aries-Serpent/_codex_.
 <a href="#__codelineno-23-2" id="__codelineno-23-2" name="__codelineno-23-2"></a>Context: Unit tests with FAISS mocks exist (S1293). Full corpus round-trip is not yet tested.
 <a href="#__codelineno-23-3" id="__codelineno-23-3" name="__codelineno-23-3"></a>Task:

@@ -1029,6 +1029,30 @@
   </span>
 </a>
 </li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../deployment/LOCAL_DEPLOYMENT_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Local Deployment Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../deployment/DEPLOYMENT_VERIFICATION_CHECKLIST/">
+<span class="md-ellipsis">
+    
+  
+    Verification Checklist
+  
+
+    
+  </span>
+</a>
+</li>
 </ul>
 </nav>
 </li>
@@ -2614,7 +2638,7 @@
 <p><strong>Job ID</strong>: 60537404442
 <strong>Failure</strong>: Maturin build failed with linking error</p>
 <h4 id="root-cause_1">Root Cause<a class="headerlink" href="#root-cause_1" title="Permanent link">¶</a></h4>
-<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>⚠️  Warning: Couldn't find the symbol `PyInit_codex_engine` in the native library.
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>️  Warning: Couldn't find the symbol `PyInit_codex_engine` in the native library.
 <a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>Error: Your library links libpython (libpython3.11.so.1.0), which libraries must not do.
 <a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>Have you forgotten to activate the extension-module feature?
 </code></pre></div>
@@ -2736,7 +2760,7 @@
 <a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a><span class="w">      </span><span class="no">// The rotation script handles GitHub secret updates directly via the API</span>
 <a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a><span class="w">      </span><span class="no">// when GITHUB_TOKEN is available. This step is kept for audit purposes</span>
 <a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a><span class="w">      </span><span class="no">// but the actual update happens within the Python script.</span>
-<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a><span class="w">      </span><span class="no">console.log('✓ Secret rotation completed - secret updated via API');</span>
+<a href="#__codelineno-8-9" id="__codelineno-8-9" name="__codelineno-8-9"></a><span class="w">      </span><span class="no">console.log(' Secret rotation completed - secret updated via API');</span>
 </code></pre></div></p>
 <p><strong>Security Rationale</strong>: Prevents secret exposure in GitHub Actions outputs/logs.</p>
 <p><strong>Commit</strong>: a3fc3df</p>
@@ -2833,10 +2857,10 @@
 </ol>
 <h3 id="security-best-practices">Security Best Practices<a class="headerlink" href="#security-best-practices" title="Permanent link">¶</a></h3>
 <ol>
-<li><strong>Document Everything</strong>: Secret requirements must be clearly documented.</li>
+<li><strong>Document Everything</strong>: Secret requirements must be documented.</li>
 <li><strong>Least Privilege</strong>: Only enable permissions when actually needed.</li>
 <li><strong>Secure by Default</strong>: Don't output secrets to logs or GitHub Actions outputs.</li>
-<li><strong>Placeholder Pattern</strong>: Clearly mark incomplete implementations (MFA delivery).</li>
+<li><strong>Placeholder Pattern</strong>: mark incomplete implementations (MFA delivery).</li>
 </ol>
 <h3 id="python-rust-integration">Python-Rust Integration<a class="headerlink" href="#python-rust-integration" title="Permanent link">¶</a></h3>
 <ol>

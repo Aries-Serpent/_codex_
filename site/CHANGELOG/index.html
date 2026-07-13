@@ -1031,6 +1031,30 @@
   </span>
 </a>
 </li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../deployment/LOCAL_DEPLOYMENT_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Local Deployment Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../deployment/DEPLOYMENT_VERIFICATION_CHECKLIST/">
+<span class="md-ellipsis">
+    
+  
+    Verification Checklist
+  
+
+    
+  </span>
+</a>
+</li>
 </ul>
 </nav>
 </li>
@@ -3029,14 +3053,14 @@
 <ul>
 <li><strong>fix(ci):</strong> <code>tests/config/conftest.py</code> — always-first sys.path pattern: remove existing <code>_SRC</code> entries then insert at index 0 (review thread suggestion).</li>
 <li><strong>fix(changelog):</strong> Corrected S254 perf numbers to 55K→45K/20ms→40ms (accurate net diff vs. main; review thread).</li>
-<li><strong>feat(auto-post):</strong> <code>copilot-agent-session-done.yml</code> wired to auto-fix pre-flight REQ-4/5 when <code>🔄 Auto-Post @copilot review After Agent Session</code> checkbox is checked.</li>
-<li><strong>feat(wrapup):</strong> <code>session_wrapup_autofix.py</code> — new <code>🔄 Auto-Post</code> checkbox added to <code>_REQUIRED_PR_CHECKBOXES</code>.</li>
+<li><strong>feat(auto-post):</strong> <code>copilot-agent-session-done.yml</code> wired to auto-fix pre-flight REQ-4/5 when <code>Auto-Post @copilot review After Agent Session</code> checkbox is checked.</li>
+<li><strong>feat(wrapup):</strong> <code>session_wrapup_autofix.py</code> — new <code>Auto-Post</code> checkbox added to <code>_REQUIRED_PR_CHECKBOXES</code>.</li>
 </ul>
 <h3 id="fixed-s254-pr-3831-2026-03-31">Fixed (S254 — PR #3831 — 2026-03-31)<a class="headerlink" href="#fixed-s254-pr-3831-2026-03-31" title="Permanent link">¶</a></h3>
 <ul>
 <li><strong>fix(mlflow):</strong> <code>maybe_mlflow()</code> generator refactored — <code>mlflow.start_run()</code> moved before <code>yield</code> to prevent <code>RuntimeError: generator didn't stop after throw()</code> (gemini HIGH alert). <code>return</code> after <code>yield _NoOpLogger()</code> ensures correct generator termination.</li>
 <li><strong>fix(perf):</strong> Performance threshold <code>dict_lookup_10000</code> adjusted 55K→45K; latency assert tightened 20ms→40ms (gemini MEDIUM suggestions — better regression detection vs. CI reliability balance).</li>
-<li><strong>feat(pr-template):</strong> <code>🔄 Auto-Post @copilot review After Agent Session</code> checkbox added to all 6 PR body template locations (both static templates + 4 workflow-generated bodies).</li>
+<li><strong>feat(pr-template):</strong> <code>Auto-Post @copilot review After Agent Session</code> checkbox added to all 6 PR body template locations (both static templates + 4 workflow-generated bodies).</li>
 <li>
 <p><strong>feat(brain):</strong> <code>cognitive-brain-manager.md</code> v4.4→v4.5 — S254 status, gemini review thread resolution patterns.</p>
 </li>
@@ -3069,8 +3093,8 @@
   and a component responsibility matrix. Golden-path example from PR #3818 comment #4158728043.</p>
 </li>
 <li><strong>CI/CD Index updated</strong> (<code>docs/ci/INDEX.md</code>): CI Rescue Pipeline added as the top entry under
-  a new "🚨 CI Rescue Pipeline (Golden Path)" section.</li>
-<li><strong>Homepage quick-links updated</strong> (<code>docs/index.md</code>): "🚨 CI Rescue &amp; Health" section added with
+  a new " CI Rescue Pipeline (Golden Path)" section.</li>
+<li><strong>Homepage quick-links updated</strong> (<code>docs/index.md</code>): " CI Rescue &amp; Health" section added with
   direct link to the new CI Rescue Pipeline doc.</li>
 <li><strong>Nav entry added</strong> (<code>mkdocs.yml</code>): "CI Rescue &amp; Health" section with CI Rescue Pipeline at top.</li>
 <li><strong>8 CI scripts shipped</strong> (all under <code>scripts/ci/</code>):</li>

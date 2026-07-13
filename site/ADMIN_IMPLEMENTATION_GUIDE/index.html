@@ -1029,6 +1029,30 @@
   </span>
 </a>
 </li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../deployment/LOCAL_DEPLOYMENT_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Local Deployment Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../deployment/DEPLOYMENT_VERIFICATION_CHECKLIST/">
+<span class="md-ellipsis">
+    
+  
+    Verification Checklist
+  
+
+    
+  </span>
+</a>
+</li>
 </ul>
 </nav>
 </li>
@@ -2528,11 +2552,11 @@
 <a class="md-nav__link" href="#section-6-verification-checklist">
 <span class="md-ellipsis">
       
-        📋 Section 6: Verification Checklist
+        Section 6: Verification Checklist
       
     </span>
 </a>
-<nav aria-label="📋 Section 6: Verification Checklist" class="md-nav">
+<nav aria-label="Section 6: Verification Checklist" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
 <a class="md-nav__link" href="#organization-level">
@@ -2595,7 +2619,7 @@
 <a class="md-nav__link" href="#section-7-information-to-return-to-copilot">
 <span class="md-ellipsis">
       
-        🔄 Section 7: Information to Return to Copilot
+        Section 7: Information to Return to Copilot
       
     </span>
 </a>
@@ -2728,11 +2752,11 @@
 <a class="md-nav__link" href="#notes-section">
 <span class="md-ellipsis">
       
-        📝 Notes Section
+        Notes Section
       
     </span>
 </a>
-<nav aria-label="📝 Notes Section" class="md-nav">
+<nav aria-label="Notes Section" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
 <a class="md-nav__link" href="#admin-notes">
@@ -2829,18 +2853,18 @@
 <li><a href="#default-owners-for-everything">Default owners for everything</a></li>
 <li><a href="#workflow-files-require-owner-approval">Workflow files require owner approval</a></li>
 <li><a href="#security-sensitive-files">Security-sensitive files</a></li>
-<li><a href="#-section-6-verification-checklist">📋 Section 6: Verification Checklist</a></li>
+<li><a href="#-section-6-verification-checklist"> Section 6: Verification Checklist</a></li>
 <li><a href="#organization-level">Organization Level</a></li>
 <li><a href="#repository-level">Repository Level</a></li>
 <li><a href="#github-app">GitHub App</a></li>
 <li><a href="#secrets">Secrets</a></li>
 <li><a href="#infrastructure">Infrastructure</a></li>
 <li><a href="#testing">Testing</a></li>
-<li><a href="#-section-7-information-to-return-to-copilot">🔄 Section 7: Information to Return to Copilot</a></li>
+<li><a href="#-section-7-information-to-return-to-copilot"> Section 7: Information to Return to Copilot</a></li>
 <li><a href="#">==============================================================================</a></li>
 <li><a href="#admin-configuration-report-for-_codex_">Admin Configuration Report for <em>codex</em></a></li>
 <li><a href="#">==============================================================================</a></li>
-<li><a href="#date-todays-date---eg-2025-12-21">Date: [TODAY'S DATE - e.g., 2025-12-21]</a></li>
+<li><a href="#date-todays-date---eg-2025-12-21">Date: 2026-07-13</a></li>
 <li><a href="#administrator-your_name">Administrator: [YOUR_NAME]</a></li>
 <li><a href="#">==============================================================================</a></li>
 <li><a href="#list-any-issues-or-blockers">List any issues or blockers</a></li>
@@ -2873,7 +2897,7 @@
 <li><a href="#test-4-verify-branch-protection">Test 4: Verify Branch Protection</a></li>
 <li><a href="#cleanup-test-pr">Cleanup Test PR</a></li>
 <li><a href="#delete-test-branch">Delete test branch</a></li>
-<li><a href="#-notes-section">📝 Notes Section</a></li>
+<li><a href="#-notes-section"> Notes Section</a></li>
 <li><a href="#admin-notes">Admin Notes</a></li>
 <li><a href="#version-history">Version History</a></li>
 <li><a href="#-document-metadata"> Document Metadata</a></li>
@@ -2927,13 +2951,13 @@
 </tr>
 <tr>
 <td>Security Scanning</td>
-<td>⚠️ Partial</td>
+<td>️ Partial</td>
 <td>3 actions</td>
 <td><strong>HIGH</strong></td>
 </tr>
 <tr>
 <td>Workflows</td>
-<td>⚠️ Failing</td>
+<td>️ Failing</td>
 <td>4 actions</td>
 <td><strong>MEDIUM</strong></td>
 </tr>
@@ -3043,7 +3067,7 @@
 <h3 id="21-create-github-app">2.1 Create GitHub App<a class="headerlink" href="#21-create-github-app" title="Permanent link">¶</a></h3>
 <p><strong>Portal:</strong> <code>https://github.com/organizations/Aries-Serpent/settings/apps/new</code></p>
 <blockquote>
-<p>⚠️ <strong>IMPORTANT:</strong> You must be an Organization Owner or Admin to create a GitHub App.</p>
+<p>️ <strong>IMPORTANT:</strong> You must be an Organization Owner or Admin to create a GitHub App.</p>
 </blockquote>
 <p><strong>Step-by-Step Instructions:</strong></p>
 <h4 id="step-1-basic-information">Step 1: Basic Information<a class="headerlink" href="#step-1-basic-information" title="Permanent link">¶</a></h4>
@@ -3144,7 +3168,7 @@
 <a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>openssl<span class="w"> </span>rand<span class="w"> </span>-hex<span class="w"> </span><span class="m">32</span>
 </code></pre></div>
 <blockquote>
-<p>📋 <strong>SAVE THIS VALUE SECURELY</strong> - You will need it later for the <code>CODEX_WEBHOOK_SECRET</code> secret.</p>
+<p><strong>SAVE THIS VALUE SECURELY</strong> - You will need it later for the <code>CODEX_WEBHOOK_SECRET</code> secret.</p>
 </blockquote>
 <h2 id="step-5-repository-permissions-critical">Step 5: Repository Permissions (CRITICAL)<a class="headerlink" href="#step-5-repository-permissions-critical" title="Permanent link">¶</a></h2>
 <p>Set these permissions exactly as specified:</p>
@@ -3456,7 +3480,7 @@
 <a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>mkdir<span class="w"> </span>actions-runner<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>actions-runner
 <a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>
 <a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="c1"># Download runner (get URL from Settings → Actions → Runners → New self-hosted runner)</span>
-<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a>curl<span class="w"> </span>-o<span class="w"> </span>actions-runner-linux-x64-2.311.0.tar.gz<span class="w"> </span>-L<span class="w"> </span>https://github.com/actions/runner/releases/download/v2.311.0/actions-runner-linux-x64-2.311.0.tar.gz
+<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a>curl<span class="w"> </span>-o<span class="w"> </span>actions-runner-linux-x64-2.311.0.tar.gz<span class="w"> </span>-L<span class="w"> </span>https://github.com/actions/runner/releases/download/v0.2.1/actions-runner-linux-x64-2.311.0.tar.gz
 <a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a>
 <a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a><span class="c1"># Extract</span>
 <a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a>tar<span class="w"> </span>xzf<span class="w"> </span>./actions-runner-linux-x64-2.311.0.tar.gz
@@ -3508,7 +3532,7 @@
 </tr>
 <tr>
 <td>Code scanning</td>
-<td>⚠️ Optional</td>
+<td>️ Optional</td>
 <td>Configure in workflow</td>
 </tr>
 </tbody>
@@ -3543,7 +3567,7 @@
 </tr>
 <tr>
 <td>Require review from Code Owners</td>
-<td>⚠️ Optional</td>
+<td>️ Optional</td>
 </tr>
 <tr>
 <td>Require status checks to pass</td>
@@ -3563,11 +3587,11 @@
 </tr>
 <tr>
 <td>Do not allow bypassing</td>
-<td>⚠️ Optional</td>
+<td>️ Optional</td>
 </tr>
 <tr>
 <td>Restrict who can push</td>
-<td>⚠️ Optional</td>
+<td>️ Optional</td>
 </tr>
 </tbody>
 </table>
@@ -3601,7 +3625,7 @@
 <a href="#__codelineno-9-10" id="__codelineno-9-10" name="__codelineno-9-10"></a>Dockerfile* @Aries-Serpent/owners
 </code></pre></div>
 <hr/>
-<h2 id="section-6-verification-checklist">📋 Section 6: Verification Checklist<a class="headerlink" href="#section-6-verification-checklist" title="Permanent link">¶</a></h2>
+<h2 id="section-6-verification-checklist">Section 6: Verification Checklist<a class="headerlink" href="#section-6-verification-checklist" title="Permanent link">¶</a></h2>
 <p>Use this checklist to verify all configurations are complete:</p>
 <h3 id="organization-level">Organization Level<a class="headerlink" href="#organization-level" title="Permanent link">¶</a></h3>
 <ul class="task-list">
@@ -3648,12 +3672,12 @@
 <li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Security scans run automatically</li>
 </ul>
 <hr/>
-<h2 id="section-7-information-to-return-to-copilot">🔄 Section 7: Information to Return to Copilot<a class="headerlink" href="#section-7-information-to-return-to-copilot" title="Permanent link">¶</a></h2>
+<h2 id="section-7-information-to-return-to-copilot">Section 7: Information to Return to Copilot<a class="headerlink" href="#section-7-information-to-return-to-copilot" title="Permanent link">¶</a></h2>
 <p>Copy and complete this template, then provide it to the Copilot Agent:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="c1"># ==============================================================================</span>
 <a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a><span class="c1"># Admin Configuration Report for _codex_</span>
 <a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a><span class="c1"># ==============================================================================</span>
-<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a><span class="c1"># Date: [TODAY'S DATE - e.g., 2025-12-21]</span>
+<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a><span class="c1"># Date: 2026-07-13</span>
 <a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a><span class="c1"># Administrator: [YOUR_NAME]</span>
 <a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a><span class="c1"># ==============================================================================</span>
 <a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a>
@@ -3897,7 +3921,7 @@
 <a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>--delete<span class="w"> </span>test/admin-config-validation
 </code></pre></div>
 <hr/>
-<h2 id="notes-section">📝 Notes Section<a class="headerlink" href="#notes-section" title="Permanent link">¶</a></h2>
+<h2 id="notes-section">Notes Section<a class="headerlink" href="#notes-section" title="Permanent link">¶</a></h2>
 <h3 id="admin-notes">Admin Notes<a class="headerlink" href="#admin-notes" title="Permanent link">¶</a></h3>
 <p><em>Use this space for any additional notes, concerns, or observations:</em></p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a>[ADMIN: Add your notes here]

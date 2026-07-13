@@ -1029,6 +1029,30 @@
   </span>
 </a>
 </li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../deployment/LOCAL_DEPLOYMENT_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Local Deployment Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../deployment/DEPLOYMENT_VERIFICATION_CHECKLIST/">
+<span class="md-ellipsis">
+    
+  
+    Verification Checklist
+  
+
+    
+  </span>
+</a>
+</li>
 </ul>
 </nav>
 </li>
@@ -2279,11 +2303,11 @@
 <a class="md-nav__link" href="#implementation-components">
 <span class="md-ellipsis">
       
-        📋 Implementation Components
+        Implementation Components
       
     </span>
 </a>
-<nav aria-label="📋 Implementation Components" class="md-nav">
+<nav aria-label="Implementation Components" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
 <a class="md-nav__link" href="#1-agent-manifest-configuration">
@@ -2408,7 +2432,7 @@
 <a class="md-nav__link" href="#configuration">
 <span class="md-ellipsis">
       
-        🔧 Configuration
+        Configuration
       
     </span>
 </a>
@@ -2435,7 +2459,7 @@
 <a class="md-nav__link" href="#metrics-monitoring">
 <span class="md-ellipsis">
       
-        📈 Metrics &amp; Monitoring
+        Metrics &amp; Monitoring
       
     </span>
 </a>
@@ -2444,7 +2468,7 @@
 <a class="md-nav__link" href="#example-review-output">
 <span class="md-ellipsis">
       
-        🔍 Example Review Output
+        Example Review Output
       
     </span>
 </a>
@@ -2453,11 +2477,11 @@
 <a class="md-nav__link" href="#troubleshooting">
 <span class="md-ellipsis">
       
-        🚨 Troubleshooting
+        Troubleshooting
       
     </span>
 </a>
-<nav aria-label="🚨 Troubleshooting" class="md-nav">
+<nav aria-label="Troubleshooting" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
 <a class="md-nav__link" href="#agent-not-responding">
@@ -2649,11 +2673,11 @@
 <a class="md-nav__link" href="#maintenance-plan">
 <span class="md-ellipsis">
       
-        🔄 Maintenance Plan
+        Maintenance Plan
       
     </span>
 </a>
-<nav aria-label="🔄 Maintenance Plan" class="md-nav">
+<nav aria-label="Maintenance Plan" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
 <a class="md-nav__link" href="#regular-updates-monthly">
@@ -2802,7 +2826,7 @@
 <a href="#__codelineno-0-34" id="__codelineno-0-34" name="__codelineno-0-34"></a>└─────────────────────────────────────────────────────────────┘
 </code></pre></div>
 <hr/>
-<h2 id="implementation-components">📋 Implementation Components<a class="headerlink" href="#implementation-components" title="Permanent link">¶</a></h2>
+<h2 id="implementation-components">Implementation Components<a class="headerlink" href="#implementation-components" title="Permanent link">¶</a></h2>
 <h3 id="1-agent-manifest-configuration">1. Agent Manifest Configuration<a class="headerlink" href="#1-agent-manifest-configuration" title="Permanent link">¶</a></h3>
 <p><strong>Location:</strong> <code>.github/agents/codex-reviewer.agent.yml</code></p>
 <p>The agent manifest defines the core configuration, capabilities, triggers, and runtime specifications for the reviewer agent.</p>
@@ -3155,7 +3179,7 @@
 <a href="#__codelineno-2-227" id="__codelineno-2-227" name="__codelineno-2-227"></a>
 <a href="#__codelineno-2-228" id="__codelineno-2-228" name="__codelineno-2-228"></a>        <span class="c1"># Next Steps</span>
 <a href="#__codelineno-2-229" id="__codelineno-2-229" name="__codelineno-2-229"></a>        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">next_steps</span><span class="p">:</span>
-<a href="#__codelineno-2-230" id="__codelineno-2-230" name="__codelineno-2-230"></a>            <span class="n">body</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"### 🔄 Next Steps"</span><span class="p">)</span>
+<a href="#__codelineno-2-230" id="__codelineno-2-230" name="__codelineno-2-230"></a>            <span class="n">body</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"###  Next Steps"</span><span class="p">)</span>
 <a href="#__codelineno-2-231" id="__codelineno-2-231" name="__codelineno-2-231"></a>            <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">next_steps</span><span class="p">:</span>
 <a href="#__codelineno-2-232" id="__codelineno-2-232" name="__codelineno-2-232"></a>                <span class="n">body</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"- [ ] </span><span class="si">{</span><span class="n">step</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <a href="#__codelineno-2-233" id="__codelineno-2-233" name="__codelineno-2-233"></a>            <span class="n">body</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
@@ -3832,7 +3856,7 @@
 <p>Complete guide for using and interacting with the reviewer agent.</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="gh"># Codex Quantum Reviewer - Usage Guide</span>
 <a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>
-<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a><span class="gu">##  Quick Start</span>
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a><span class="gu">## Quick Start</span>
 <a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a>
 <a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a><span class="gu">### 1. Enable the Agent</span>
 <a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a>
@@ -3893,7 +3917,7 @@
 <li><strong>Improves Suggestions Over Time</strong>: Calibrates confidence and priorities</li>
 <li><strong>Identifies Knowledge Gaps</strong>: Requests clarification when needed</li>
 </ul>
-<h2 id="configuration">🔧 Configuration<a class="headerlink" href="#configuration" title="Permanent link">¶</a></h2>
+<h2 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">¶</a></h2>
 <p>Edit <code>.github/agents/codex-reviewer.agent.yml</code> to customize:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a><span class="nt">configuration</span><span class="p">:</span>
 <a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a><span class="w">  </span><span class="nt">review_depth</span><span class="p">:</span><span class="w"> </span><span class="s">"comprehensive"</span><span class="w">  </span><span class="c1"># minimal, standard, comprehensive</span>
@@ -3923,7 +3947,7 @@
 <a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a><span class="ni">@codex</span>-reviewer learn: We use pytest-asyncio for async test cases
 </code></pre></div>
 <p>The agent will integrate this knowledge and apply it in future reviews.</p>
-<h2 id="metrics-monitoring">📈 Metrics &amp; Monitoring<a class="headerlink" href="#metrics-monitoring" title="Permanent link">¶</a></h2>
+<h2 id="metrics-monitoring">Metrics &amp; Monitoring<a class="headerlink" href="#metrics-monitoring" title="Permanent link">¶</a></h2>
 <p>View agent performance metrics:
 - <strong>Review Accuracy Rate</strong>: Percentage of valid suggestions
 - <strong>Suggestion Acceptance Rate</strong>: How often suggestions are applied
@@ -3931,7 +3955,7 @@
 - <strong>Knowledge Gaps Identified</strong>: Areas where agent requests learning
 - <strong>Evolution Progress</strong>: Improvement trajectory over time</p>
 <p>Access metrics dashboard: <code>/_codex_/insights/agent-metrics</code></p>
-<h2 id="example-review-output">🔍 Example Review Output<a class="headerlink" href="#example-review-output" title="Permanent link">¶</a></h2>
+<h2 id="example-review-output">Example Review Output<a class="headerlink" href="#example-review-output" title="Permanent link">¶</a></h2>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a><span class="gu">##  Codex Quantum Review</span>
 <a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a>
 <a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a><span class="gs">**Confidence**</span>: 87.5%
@@ -3959,7 +3983,7 @@
 <a href="#__codelineno-14-25" id="__codelineno-14-25" name="__codelineno-14-25"></a>
 <a href="#__codelineno-14-26" id="__codelineno-14-26" name="__codelineno-14-26"></a>Estimated time: 25 minutes
 <a href="#__codelineno-14-27" id="__codelineno-14-27" name="__codelineno-14-27"></a>
-<a href="#__codelineno-14-28" id="__codelineno-14-28" name="__codelineno-14-28"></a><span class="gu">### 🔄 Next Steps</span>
+<a href="#__codelineno-14-28" id="__codelineno-14-28" name="__codelineno-14-28"></a><span class="gu">###  Next Steps</span>
 <a href="#__codelineno-14-29" id="__codelineno-14-29" name="__codelineno-14-29"></a><span class="k">- [ ]</span> Fix SQL injection vulnerability in user_query.py:45
 <a href="#__codelineno-14-30" id="__codelineno-14-30" name="__codelineno-14-30"></a><span class="k">- [ ]</span> Add docstrings to new public functions
 <a href="#__codelineno-14-31" id="__codelineno-14-31" name="__codelineno-14-31"></a><span class="k">- [ ]</span> Update README with new API endpoints
@@ -3976,7 +4000,7 @@
 <a href="#__codelineno-14-42" id="__codelineno-14-42" name="__codelineno-14-42"></a><span class="ge">*Generated by Codex Quantum Reviewer v1.0.0*</span>
 <a href="#__codelineno-14-43" id="__codelineno-14-43" name="__codelineno-14-43"></a><span class="ge">*Self-evolving with each review • Quantum-pattern aware*</span>
 </code></pre></div>
-<h2 id="troubleshooting">🚨 Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">¶</a></h2>
+<h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">¶</a></h2>
 <h3 id="agent-not-responding">Agent Not Responding<a class="headerlink" href="#agent-not-responding" title="Permanent link">¶</a></h3>
 <ol>
 <li>Check agent is enabled in repository settings</li>
@@ -4121,7 +4145,7 @@
 <li><a href="https://docs.github.com/en/webhooks/webhook-events-and-payloads">Webhook Events Reference</a></li>
 </ul>
 <hr/>
-<h2 id="maintenance-plan">🔄 Maintenance Plan<a class="headerlink" href="#maintenance-plan" title="Permanent link">¶</a></h2>
+<h2 id="maintenance-plan">Maintenance Plan<a class="headerlink" href="#maintenance-plan" title="Permanent link">¶</a></h2>
 <h3 id="regular-updates-monthly">Regular Updates (Monthly)<a class="headerlink" href="#regular-updates-monthly" title="Permanent link">¶</a></h3>
 <ul>
 <li>Review and update pattern detection rules</li>
