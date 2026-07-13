@@ -181,7 +181,7 @@ class SLAMonitor:
             )
             fallback_triggered = self.fallback_fn()
         elif any(
-            metrics_summary.get(m.value, 1.0) < m.warning_threshold
+            metrics_summary.get(m.metric.value, 1.0) < m.warning_threshold
             for m in self._thresholds.values()
         ):
             compliance_status = ComplianceStatus.APPROACHING_BREACH
