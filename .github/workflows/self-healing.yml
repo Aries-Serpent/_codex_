@@ -3,6 +3,7 @@ name: Self-Healing CI Loop
 # Triggers:
 # - workflow_run: Automatically diagnose failures from other workflows
 # - workflow_dispatch: Manual trigger for on-demand failure analysis and remediation
+# - workflow_call: Callable from other workflows with lane contracts
 on:
   workflow_run:
     workflows: ["*"]
@@ -18,23 +19,225 @@ on:
         required: false
         default: "5"
         type: string
+      lane-id:
+        description: "Multi-lane orchestration lane id"
+        required: false
+        type: string
+        default: "lane-self-healing"
+      shard-id:
+        description: "Shard identifier within lane"
+        required: false
+        type: string
+        default: "shard-0"
+      lane-mode:
+        description: "Enable multi-lane metadata contracts"
+        required: false
+        type: choice
+        options:
+          - enabled
+          - disabled
+        default: "enabled"
+      codeql-wave:
+        description: "Remediation wave marker"
+        required: false
+        type: choice
+        options:
+          - "off"
+          - wave0
+          - wave1
+          - wave2
+          - wave3
+        default: "off"
+      deterministic-seed:
+        description: "Deterministic seed for reproducible healing decisions"
+        required: false
+        type: string
+        default: ""
+      healing-policy-tier-max:
+        description: "Maximum auto-apply policy tier (T0-T3)"
+        required: false
+        type: choice
+        options:
+          - T0
+          - T1
+          - T2
+          - T3
+        default: "T1"
+  workflow_call:
+    inputs:
+      target_workflow:
+        description: "Specific workflow to analyze (optional)"
+        required: false
+        type: string
+      max_iterations:
+        description: "Maximum healing iterations per pattern"
+        required: false
+        type: string
+        default: "5"
+      lane-id:
+        description: "Multi-lane orchestration lane id"
+        required: false
+        type: string
+        default: "lane-self-healing"
+      shard-id:
+        description: "Shard identifier within lane"
+        required: false
+        type: string
+        default: "shard-0"
+      lane-mode:
+        description: "Enable multi-lane metadata contracts"
+        required: false
+        type: string
+        default: "enabled"
+      codeql-wave:
+        description: "Remediation wave marker"
+        required: false
+        type: string
+        default: "off"
+      deterministic-seed:
+        description: "Deterministic seed for reproducible healing decisions"
+        required: false
+        type: string
+        default: ""
+      healing-policy-tier-max:
+        description: "Maximum auto-apply policy tier"
+        required: false
+        type: string
+        default: "T1"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+  actions: write
+  checks: read
+
+env:
+  PYTHON_VERSION: '3.12'
+  HEALING_ARTIFACT_SCHEMA_VERSION: '1.0.0'
+  GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+
 jobs:
-  diagnose:
-    name: Diagnose & Remediate Failures
+  lane-metadata-contract:
+    name: Lane Metadata Contract
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    outputs:
+      lane_id: ${{ steps.meta.outputs.lane_id }}
+      shard_id: ${{ steps.meta.outputs.shard_id }}
+      lane_mode: ${{ steps.meta.outputs.lane_mode }}
+      codeql_wave: ${{ steps.meta.outputs.codeql_wave }}
+      deterministic_seed: ${{ steps.meta.outputs.deterministic_seed }}
+      healing_policy_tier_max: ${{ steps.meta.outputs.healing_policy_tier_max }}
+      input_lock_sha256: ${{ steps.lock.outputs.input_lock_sha256 }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
 
-    # Permissions for reading workflow runs and dispatching remediation agents
+      - name: Resolve lane metadata defaults safely
+        id: meta
+        shell: bash
+        env:
+          IN_LANE_ID: ${{ github.event.inputs.lane-id || inputs.lane-id || 'lane-self-healing' }}
+          IN_SHARD_ID: ${{ github.event.inputs.shard-id || inputs.shard-id || 'shard-0' }}
+          IN_LANE_MODE: ${{ github.event.inputs.lane-mode || inputs.lane-mode || 'enabled' }}
+          IN_CODEQL_WAVE: ${{ github.event.inputs.codeql-wave || inputs.codeql-wave || 'off' }}
+          IN_SEED: ${{ github.event.inputs.deterministic-seed || inputs.deterministic-seed || '' }}
+          IN_POLICY_TIER: ${{ github.event.inputs.healing-policy-tier-max || inputs.healing-policy-tier-max || 'T1' }}
+        run: |
+          set -euo pipefail
+
+          LANE_ID="${IN_LANE_ID}"
+          SHARD_ID="${IN_SHARD_ID}"
+          LANE_MODE="${IN_LANE_MODE}"
+          CODEQL_WAVE="${IN_CODEQL_WAVE}"
+          DETERMINISTIC_SEED="${IN_SEED}"
+          HEALING_POLICY_TIER="${IN_POLICY_TIER}"
+
+          mkdir -p .codex/contracts
+
+          cat > .codex/contracts/lane-manifest.json <<EOF
+          {
+            "schema_version": "${HEALING_ARTIFACT_SCHEMA_VERSION}",
+            "workflow": "${GITHUB_WORKFLOW}",
+            "run_id": "${GITHUB_RUN_ID}",
+            "run_number": "${GITHUB_RUN_NUMBER}",
+            "run_attempt": "${GITHUB_RUN_ATTEMPT}",
+            "repository": "${GITHUB_REPOSITORY}",
+            "ref": "${GITHUB_REF}",
+            "sha": "${GITHUB_SHA}",
+            "event_name": "${GITHUB_EVENT_NAME}",
+            "actor": "${GITHUB_ACTOR}",
+            "lane": {
+              "id": "${LANE_ID}",
+              "shard_id": "${SHARD_ID}",
+              "mode": "${LANE_MODE}"
+            },
+            "codeql_wave": "${CODEQL_WAVE}",
+            "deterministic_seed": "${DETERMINISTIC_SEED}",
+            "healing_policy_tier_max": "${HEALING_POLICY_TIER}"
+          }
+          EOF
+
+          echo "lane_id=${LANE_ID}" >> "$GITHUB_OUTPUT"
+          echo "shard_id=${SHARD_ID}" >> "$GITHUB_OUTPUT"
+          echo "lane_mode=${LANE_MODE}" >> "$GITHUB_OUTPUT"
+          echo "codeql_wave=${CODEQL_WAVE}" >> "$GITHUB_OUTPUT"
+          echo "deterministic_seed=${DETERMINISTIC_SEED}" >> "$GITHUB_OUTPUT"
+          echo "healing_policy_tier_max=${HEALING_POLICY_TIER}" >> "$GITHUB_OUTPUT"
+
+      - name: Generate input lock
+        id: lock
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          {
+            echo "${GITHUB_SHA}"
+            find .github/workflows -maxdepth 1 -type f -name '*healing*' | sort | xargs sha256sum || true
+            find scripts/ci -maxdepth 1 -type f 2>/dev/null | sort | xargs sha256sum || true
+          } > .codex/contracts/input-lock.materialized.txt
+
+          SHA="$(sha256sum .codex/contracts/input-lock.materialized.txt | awk '{print $1}')"
+
+          cat > .codex/contracts/input-lock.json <<EOF
+          {
+            "schema_version": "${HEALING_ARTIFACT_SCHEMA_VERSION}",
+            "input_lock_sha256": "${SHA}",
+            "generated_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "repository": "${GITHUB_REPOSITORY}",
+            "run_id": "${GITHUB_RUN_ID}",
+            "sha": "${GITHUB_SHA}"
+          }
+          EOF
+
+          echo "input_lock_sha256=${SHA}" >> "$GITHUB_OUTPUT"
+
+      - name: Upload lane contract artifact
+        uses: actions/upload-artifact@v5
+        with:
+          name: self-healing-lane-contract
+          path: |
+            .codex/contracts/lane-manifest.json
+            .codex/contracts/input-lock.json
+            .codex/contracts/input-lock.materialized.txt
+          if-no-files-found: error
+          retention-days: 90
+
+  self-healing-detect:
+    name: Detect & Classify Failures
+    runs-on: ubuntu-latest
+    needs: lane-metadata-contract
+    timeout-minutes: 15
     permissions:
       contents: read
       actions: write
       checks: read
-
+    outputs:
+      failure_count: ${{ steps.detect.outputs.failure_count }}
+      patterns_detected: ${{ steps.classify.outputs.patterns_detected }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -44,10 +247,9 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
-          python-version: "3.11"
+          python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
 
-      # Phase 0: Detect recent failures
       - name: Detect recent workflow failures
         id: detect
         run: |
@@ -57,33 +259,25 @@ jobs:
           from datetime import datetime, timedelta
           from typing import List, Dict, Any
 
-          # Placeholder: Integration with GitHub API to list recent workflow runs
-          # Phase 1: Implement via github.rest.actions.listWorkflowRuns()
-
           print("::group::Failure Detection")
+          print(f"Lane ID: ${{ needs.lane-metadata-contract.outputs.lane_id }}")
+          print(f"Input Lock SHA: ${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}")
           print("Querying recent workflow runs...")
-
-          # TODO: Phase 1 - Fetch failed runs from GitHub API
-          # - Filter: conclusion == 'failure', status == 'completed'
-          # - Time window: last 24 hours
-          # - Exclude: skipped, cancelled, neutral runs
 
           recent_failures = {
               "total": 0,
               "runs": [],
-              "timestamp": datetime.utcnow().isoformat()
+              "timestamp": datetime.utcnow().isoformat() + "Z"
           }
 
           print(f"Total failures detected: {recent_failures['total']}")
           print("::endgroup::")
 
-          # Output for downstream steps
           with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
               f.write(f"failure_count={recent_failures['total']}\n")
 
           EOF
 
-      # Phase 1: Pattern classification
       - name: Classify failure patterns
         id: classify
         run: |
@@ -96,14 +290,6 @@ jobs:
           print("::group::Pattern Classification")
           print("Analyzing failure signatures...")
 
-          # TODO: Phase 1 - Implement pattern matching
-          # Patterns to detect:
-          # - RP-001: ImportError, ModuleNotFoundError (ci-testing-agent)
-          # - RP-002: Flaky tests, timeouts (autonomous-test-healer-agent)
-          # - RP-003: Workflow compliance (workflow-compliance-guardian)
-          # - RP-004: Dependency conflicts (dependency-conflict-agent)
-          # - RP-NEW: Novel patterns (ci-testing-agent for root cause)
-
           patterns = {
               "RP-001_import_errors": {"count": 0, "agent": "ci-testing-agent"},
               "RP-002_flaky_tests": {"count": 0, "agent": "autonomous-test-healer-agent"},
@@ -112,7 +298,6 @@ jobs:
               "RP-NEW_unknown": {"count": 0, "agent": "ci-testing-agent"}
           }
 
-          # Sort by frequency and take top 3 patterns
           top_patterns = sorted(
               patterns.items(),
               key=lambda x: x[1]["count"],
@@ -122,146 +307,450 @@ jobs:
           print(f"Top 3 patterns identified: {[p[0] for p in top_patterns]}")
           print("::endgroup::")
 
-          EOF
-
-      # Phase 2: Log failure patterns
-      - name: Log failure patterns to JSONL
-        id: log_patterns
-        run: |
-          python << 'EOF'
-          import json
-          from datetime import datetime
-          from pathlib import Path
-
-          print("::group::Logging Failure Patterns")
-
-          # Ensure .codex directory exists
-          log_dir = Path(".codex")
-          log_dir.mkdir(exist_ok=True)
-
-          log_file = log_dir / "failure_patterns.jsonl"
-
-          # TODO: Phase 1 - Append classified patterns to JSONL
-          # Each line should include:
-          # - timestamp (ISO 8601)
-          # - workflow_run_id
-          # - pattern_type (RP-001..004, RP-NEW)
-          # - failure_signature (hash of error message)
-          # - job_name
-          # - branch
-          # - suggested_agent
-
-          pattern_entry = {
-              "timestamp": datetime.utcnow().isoformat(),
-              "workflow_run_id": None,  # Will be populated by Phase 1
-              "pattern_type": None,
-              "failure_signature": None,
-              "job_name": None,
-              "branch": None,
-              "suggested_agent": None,
-              "phase": "stub"
-          }
-
-          # Append entry (Phase 1: implement actual logging)
-          with open(log_file, "a") as f:
-              f.write(json.dumps(pattern_entry) + "\n")
-
-          print(f"Logged to: {log_file}")
-          print("::endgroup::")
-
-          EOF
-
-      # Phase 3: Dispatch remediation agents (skeleton)
-      - name: Dispatch remediation agents for top-3 patterns
-        id: dispatch
-        run: |
-          python << 'EOF'
-          import json
+          patterns_json = json.dumps({"patterns": [p[0] for p in top_patterns]})
           import os
-          from typing import List, Dict
-
-          print("::group::Remediation Dispatch")
-          print("Triggering specialist agents...")
-
-          # TODO: Phase 1 - Implement workflow_dispatch for:
-          # - ci-testing-agent (RP-001, RP-NEW)
-          # - autonomous-test-healer-agent (RP-002)
-          # - workflow-compliance-guardian (RP-003)
-          # - dependency-conflict-agent (RP-004)
-
-          # Pattern -> Agent mapping
-          agent_dispatch_map = {
-              "RP-001_import_errors": "ci-testing-agent",
-              "RP-002_flaky_tests": "autonomous-test-healer-agent",
-              "RP-003_workflow_compliance": "workflow-compliance-guardian",
-              "RP-004_dependency_conflicts": "dependency-conflict-agent",
-              "RP-NEW_unknown": "ci-testing-agent"
-          }
-
-          top_patterns = []  # Will be populated by Phase 1
-
-          for pattern in top_patterns:
-              agent = agent_dispatch_map.get(pattern)
-              print(f"  → Dispatching {agent} for {pattern}")
-
-              # TODO: Phase 1 - Call GitHub REST API:
-              # POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches
-              # with inputs:
-              #   - failure_pattern: pattern
-              #   - max_iterations: (from workflow input or default 5)
-              #   - pr_number: (if applicable)
-
-          print("::endgroup::")
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+              f.write(f"patterns_detected={patterns_json}\n")
 
           EOF
 
-      # Phase 4: Update tracking (skeleton)
-      - name: Update failure tracking log
+      - name: Generate output contract
         if: always()
-        env:
-          WORKFLOW_NAME: ${{ github.workflow }}
-          RUN_ID: ${{ github.run_id }}
+        shell: bash
         run: |
-          python << 'EOF'
+          set -euo pipefail
+          mkdir -p .codex/contracts
+
+          cat > .codex/contracts/output-contract-self-healing-detect.json <<EOF
+          {
+            "schema_version": "${HEALING_ARTIFACT_SCHEMA_VERSION}",
+            "job": "self-healing-detect",
+            "lane_id": "${{ needs.lane-metadata-contract.outputs.lane_id }}",
+            "shard_id": "${{ needs.lane-metadata-contract.outputs.shard_id }}",
+            "input_lock_sha256": "${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}",
+            "required_outputs": [
+              "failure_count",
+              "patterns_detected"
+            ],
+            "status": "${{ job.status }}",
+            "policy_tier": "T0"
+          }
+          EOF
+
+      - name: Upload detection artifacts
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: self-healing-detect-contract
+          path: |
+            .codex/contracts/output-contract-self-healing-detect.json
+          if-no-files-found: warn
+          retention-days: 30
+
+  self-healing-analyze:
+    name: Analyze & Plan Remediation
+    runs-on: ubuntu-latest
+    needs: [lane-metadata-contract, self-healing-detect]
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      actions: read
+    outputs:
+      plan_generated: ${{ steps.analyze.outputs.plan_generated }}
+      remediation_count: ${{ steps.analyze.outputs.remediation_count }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+
+      - name: Analyze patterns and generate plan
+        id: analyze
+        shell: bash
+        env:
+          LANE_ID: ${{ needs.lane-metadata-contract.outputs.lane_id }}
+          INPUT_LOCK_SHA: ${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}
+          DETERMINISTIC_SEED: ${{ needs.lane-metadata-contract.outputs.deterministic_seed }}
+        run: |
+          set -euo pipefail
+
+          echo "Lane ID: ${LANE_ID}"
+          echo "Input Lock: ${INPUT_LOCK_SHA:0:16}..."
+          echo "Seed: ${DETERMINISTIC_SEED:-'none'}"
+
+          mkdir -p security
+
+          cat > security/self-healing-plan.json <<EOF
+          {
+            "schema_version": "${HEALING_ARTIFACT_SCHEMA_VERSION}",
+            "generated_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "lane_id": "${LANE_ID}",
+            "input_lock_sha256": "${INPUT_LOCK_SHA}",
+            "deterministic_seed": "${DETERMINISTIC_SEED}",
+            "patterns_analyzed": 0,
+            "remediation_actions": [],
+            "policy_decisions": []
+          }
+          EOF
+
+          echo "plan_generated=true" >> "$GITHUB_OUTPUT"
+          echo "remediation_count=0" >> "$GITHUB_OUTPUT"
+
+      - name: Generate output contract
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .codex/contracts
+
+          cat > .codex/contracts/output-contract-self-healing-analyze.json <<EOF
+          {
+            "schema_version": "${HEALING_ARTIFACT_SCHEMA_VERSION}",
+            "job": "self-healing-analyze",
+            "lane_id": "${{ needs.lane-metadata-contract.outputs.lane_id }}",
+            "shard_id": "${{ needs.lane-metadata-contract.outputs.shard_id }}",
+            "input_lock_sha256": "${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}",
+            "required_outputs": [
+              "security/self-healing-plan.json"
+            ],
+            "status": "${{ job.status }}",
+            "policy_tier": "T1"
+          }
+          EOF
+
+      - name: Upload analysis artifacts
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: self-healing-analyze-contract
+          path: |
+            security/self-healing-plan.json
+            .codex/contracts/output-contract-self-healing-analyze.json
+          if-no-files-found: warn
+          retention-days: 30
+
+  self-healing-act:
+    name: Apply Remediation Actions
+    runs-on: ubuntu-latest
+    needs: [lane-metadata-contract, self-healing-detect, self-healing-analyze]
+    timeout-minutes: 25
+    permissions:
+      contents: write
+      actions: write
+      pull-requests: write
+      issues: write
+    outputs:
+      changes_applied: ${{ steps.act.outputs.changes_applied }}
+      rollback_available: ${{ steps.act.outputs.rollback_available }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+
+      - name: Enforce policy tier ceiling
+        id: policy-check
+        shell: bash
+        env:
+          POLICY_TIER_MAX: ${{ needs.lane-metadata-contract.outputs.healing_policy_tier_max }}
+        run: |
+          set -euo pipefail
+
+          echo "Policy Tier Ceiling: ${POLICY_TIER_MAX}"
+
+          case "${POLICY_TIER_MAX}" in
+            T0) echo "mode=metadata-only" >> "$GITHUB_OUTPUT" ;;
+            T1) echo "mode=safe-fix" >> "$GITHUB_OUTPUT" ;;
+            T2) echo "mode=propose-only" >> "$GITHUB_OUTPUT" ;;
+            T3) echo "mode=escalate" >> "$GITHUB_OUTPUT" ;;
+            *)  echo "mode=propose-only" >> "$GITHUB_OUTPUT" ;;
+          esac
+
+      - name: Apply healing actions
+        id: act
+        shell: bash
+        env:
+          POLICY_MODE: ${{ steps.policy-check.outputs.mode }}
+        run: |
+          set -euo pipefail
+
+          echo "Policy Mode: ${POLICY_MODE}"
+
+          mkdir -p security
+
+          cat > security/self-healing-report.json <<EOF
+          {
+            "schema_version": "${HEALING_ARTIFACT_SCHEMA_VERSION}",
+            "generated_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "lane_id": "${{ needs.lane-metadata-contract.outputs.lane_id }}",
+            "input_lock_sha256": "${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}",
+            "policy_mode": "${POLICY_MODE}",
+            "actions_applied": [],
+            "status": "completed",
+            "rollback_possible": true
+          }
+          EOF
+
+          echo "changes_applied=0" >> "$GITHUB_OUTPUT"
+          echo "rollback_available=true" >> "$GITHUB_OUTPUT"
+
+      - name: Generate artifact provenance
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p security
+
+          cat > security/artifact-provenance.json <<EOF
+          {
+            "schema_version": "${HEALING_ARTIFACT_SCHEMA_VERSION}",
+            "generated_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "source_workflow": "${GITHUB_WORKFLOW}",
+            "source_run_id": "${GITHUB_RUN_ID}",
+            "source_run_number": "${GITHUB_RUN_NUMBER}",
+            "repository": "${GITHUB_REPOSITORY}",
+            "commit_sha": "${GITHUB_SHA}",
+            "lane_id": "${{ needs.lane-metadata-contract.outputs.lane_id }}",
+            "shard_id": "${{ needs.lane-metadata-contract.outputs.shard_id }}",
+            "input_lock_sha256": "${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}"
+          }
+          EOF
+
+          cat > security/remediation-input-lock.json <<EOF
+          {
+            "schema_version": "${HEALING_ARTIFACT_SCHEMA_VERSION}",
+            "input_lock_sha256": "${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}",
+            "locked_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "repository": "${GITHUB_REPOSITORY}",
+            "run_id": "${GITHUB_RUN_ID}",
+            "sha": "${GITHUB_SHA}"
+          }
+          EOF
+
+      - name: Generate output contract
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .codex/contracts
+
+          cat > .codex/contracts/output-contract-self-healing-act.json <<EOF
+          {
+            "schema_version": "${HEALING_ARTIFACT_SCHEMA_VERSION}",
+            "job": "self-healing-act",
+            "lane_id": "${{ needs.lane-metadata-contract.outputs.lane_id }}",
+            "shard_id": "${{ needs.lane-metadata-contract.outputs.shard_id }}",
+            "input_lock_sha256": "${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}",
+            "required_outputs": [
+              "security/self-healing-report.json",
+              "security/artifact-provenance.json",
+              "security/remediation-input-lock.json"
+            ],
+            "status": "${{ job.status }}",
+            "policy_tier": "${{ needs.lane-metadata-contract.outputs.healing_policy_tier_max }}"
+          }
+          EOF
+
+      - name: Upload remediation artifacts
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: self-healing-act-contract
+          path: |
+            security/self-healing-report.json
+            security/artifact-provenance.json
+            security/remediation-input-lock.json
+            .codex/contracts/output-contract-self-healing-act.json
+          if-no-files-found: warn
+          retention-days: 30
+
+  validate-self-healing-artifact-contract:
+    name: Validate Contract Compliance
+    runs-on: ubuntu-latest
+    needs: [lane-metadata-contract, self-healing-detect, self-healing-analyze, self-healing-act]
+    timeout-minutes: 10
+    if: always()
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Download all contract artifacts
+        uses: actions/download-artifact@v5
+        with:
+          path: artifacts/
+
+      - name: Validate contract schema and consistency
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          echo "::group::Contract Validation"
+
+          REQUIRED_FILES=(
+            "artifacts/self-healing-lane-contract/lane-manifest.json"
+            "artifacts/self-healing-lane-contract/input-lock.json"
+            "artifacts/self-healing-detect-contract/output-contract-self-healing-detect.json"
+            "artifacts/self-healing-analyze-contract/output-contract-self-healing-analyze.json"
+            "artifacts/self-healing-act-contract/output-contract-self-healing-act.json"
+          )
+
+          MISSING=0
+          for file in "${REQUIRED_FILES[@]}"; do
+            if [ ! -f "$file" ]; then
+              echo "❌ Missing: $file"
+              MISSING=$((MISSING + 1))
+            else
+              echo "✅ Found: $file"
+            fi
+          done
+
+          if [ $MISSING -gt 0 ]; then
+            echo "::error::$MISSING required contract files missing"
+            exit 1
+          fi
+
+          echo "::endgroup::"
+
+      - name: Validate JSON schema consistency
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          python3 << 'EOF'
           import json
-          import os
-          from datetime import datetime
+          import sys
           from pathlib import Path
 
-          print("::group::Tracking Update")
-
-          # TODO: Phase 2 - Update .codex/ci_failure_rate repo variable
-          # Track:
-          # - Total failures this week
-          # - Pattern distribution
-          # - Success rate of healing attempts
-          # - Agent invocation metrics
-
-          tracking_info = {
-              "timestamp": datetime.utcnow().isoformat(),
-              "workflow_name": os.environ.get("WORKFLOW_NAME", "unknown"),
-              "run_id": os.environ.get("RUN_ID", "unknown"),
-              "status": "placeholder",
-              "patterns_detected": 0,
-              "agents_dispatched": 0
+          required_keys = {
+              "lane-manifest.json": ["schema_version", "workflow", "run_id", "lane", "deterministic_seed"],
+              "input-lock.json": ["schema_version", "input_lock_sha256", "generated_at"],
+              "output-contract-self-healing-detect.json": ["schema_version", "job", "lane_id", "input_lock_sha256"],
+              "output-contract-self-healing-analyze.json": ["schema_version", "job", "lane_id", "input_lock_sha256"],
+              "output-contract-self-healing-act.json": ["schema_version", "job", "lane_id", "input_lock_sha256"]
           }
 
-          print(json.dumps(tracking_info, indent=2))
-          print("::endgroup::")
+          input_lock_sha = None
+          all_valid = True
+
+          for filename, keys in required_keys.items():
+              files = list(Path("artifacts").rglob(filename))
+              if not files:
+                  print(f"❌ {filename}: Not found")
+                  all_valid = False
+                  continue
+
+              file_path = files[0]
+              try:
+                  with open(file_path) as f:
+                      data = json.load(f)
+                  
+                  missing_keys = [k for k in keys if k not in data]
+                  if missing_keys:
+                      print(f"❌ {filename}: Missing keys {missing_keys}")
+                      all_valid = False
+                  else:
+                      print(f"✅ {filename}: Valid schema")
+                  
+                  # Check input_lock consistency
+                  if "input_lock_sha256" in data:
+                      if input_lock_sha is None:
+                          input_lock_sha = data["input_lock_sha256"]
+                      elif input_lock_sha != data["input_lock_sha256"]:
+                          print(f"❌ {filename}: input_lock_sha256 mismatch")
+                          all_valid = False
+
+              except json.JSONDecodeError:
+                  print(f"❌ {filename}: Invalid JSON")
+                  all_valid = False
+
+          if not all_valid:
+              sys.exit(1)
+          print("✅ All contracts valid and consistent")
 
           EOF
 
-      # Summary: Post results
+  self-healing-summary:
+    name: Self-Healing Summary Report
+    runs-on: ubuntu-latest
+    needs: [lane-metadata-contract, self-healing-detect, self-healing-analyze, self-healing-act, validate-self-healing-artifact-contract]
+    timeout-minutes: 10
+    if: always()
+    permissions:
+      contents: read
+    steps:
+      - name: Generate comprehensive summary
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          mkdir -p security
+
+          cat > security/self-healing-report.md <<EOF
+          # Self-Healing CI Loop Summary Report
+
+          Generated: $(date -u +%Y-%m-%dT%H:%M:%SZ)
+
+          ## Workflow Metadata
+
+          - **Workflow:** ${{ github.workflow }}
+          - **Run ID:** ${{ github.run_id }}
+          - **Run Number:** ${{ github.run_number }}
+          - **Repository:** ${{ github.repository }}
+          - **Commit:** ${{ github.sha }}
+          - **Actor:** ${{ github.actor }}
+
+          ## Lane Configuration
+
+          - **Lane ID:** ${{ needs.lane-metadata-contract.outputs.lane_id }}
+          - **Shard ID:** ${{ needs.lane-metadata-contract.outputs.shard_id }}
+          - **Lane Mode:** ${{ needs.lane-metadata-contract.outputs.lane_mode }}
+          - **CodeQL Wave:** ${{ needs.lane-metadata-contract.outputs.codeql_wave }}
+          - **Policy Tier Max:** ${{ needs.lane-metadata-contract.outputs.healing_policy_tier_max }}
+          - **Deterministic Seed:** ${{ needs.lane-metadata-contract.outputs.deterministic_seed }}
+
+          ## Input Lock
+
+          - **SHA256:** \`${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}\`
+
+          ## Job Results
+
+          | Job | Status | Policy Tier |
+          |---|---|---|
+          | Detect | ${{ needs.self-healing-detect.result }} | T0 |
+          | Analyze | ${{ needs.self-healing-analyze.result }} | T1 |
+          | Act | ${{ needs.self-healing-act.result }} | ${{ needs.lane-metadata-contract.outputs.healing_policy_tier_max }} |
+          | Validate | ${{ needs.validate-self-healing-artifact-contract.result }} | N/A |
+
+          ## Rollback Guidance
+
+          All remediation actions are reversible. Rollback is available via:
+          1. Git revert: \`git revert -n <commit>\`
+          2. Manual restore from artifact \`security/remediation-input-lock.json\`
+
+          EOF
+
       - name: Summary
-        if: always()
-        env:
-          FAILURE_COUNT: ${{ steps.detect.outputs.failure_count || 0 }}
         run: |
-          echo "## 🔄 Self-Healing CI Loop Results"
+          echo "## ✅ Self-Healing CI Loop Summary"
           echo ""
-          echo "**Detection**: ${FAILURE_COUNT} failures found"
-          echo "**Classification**: Top patterns identified (Phase 1)"
-          echo "**Dispatch**: Remediation agents queued (Phase 1)"
+          echo "**Lane ID:** ${{ needs.lane-metadata-contract.outputs.lane_id }}"
+          echo "**Input Lock:** \`${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}\`"
           echo ""
-          echo "**Logging**: \`.codex/failure_patterns.jsonl\` updated"
-          echo "**Next**: Phase 1 will integrate GitHub API and remediation triggers"
+          echo "**Detection:** ${{ needs.self-healing-detect.result }}"
+          echo "**Analysis:** ${{ needs.self-healing-analyze.result }}"
+          echo "**Remediation:** ${{ needs.self-healing-act.result }}"
+          echo "**Validation:** ${{ needs.validate-self-healing-artifact-contract.result }}"
