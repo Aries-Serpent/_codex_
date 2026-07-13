@@ -120,7 +120,7 @@ jobs:
       env:
         PROBE_URL:    ${{ inputs.probe_url }}
         EXPECTED_OK:  ${{ inputs.expected_ok_status }}
-        run: |
+      run: |
           HTTP_STATUS=$(curl -s -o "${RUNNER_TEMP}/admin_probe_response.json" -w "%{http_code}" \
             -H "Authorization: Bearer ${GH_TOKEN}" \
             -H "Accept: application/vnd.github+json" \
@@ -162,7 +162,7 @@ jobs:
         ASSIGNEE:     ${{ inputs.assignee }}
         HTTP_STATUS:  ${{ env.HTTP_STATUS }}
         RESPONSE_MSG: ${{ env.RESPONSE_MSG }}
-        with:
+      with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: |
             const { owner, repo } = context.repo;
@@ -256,7 +256,7 @@ jobs:
         HTTP_STATUS:    ${{ steps.probe.outputs.http_status }}
         EXPECTED_OK:    ${{ inputs.expected_ok_status }}
         RESPONSE_MSG:   ${{ steps.probe.outputs.response_msg }}
-        run: |
+      run: |
           {
             echo "## 🔐 Admin Action Gate — \`${GAP_ID}\`"
             echo ""

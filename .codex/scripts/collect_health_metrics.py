@@ -31,7 +31,7 @@ class HealthMetricsCollector:
     def collect_all(self) -> Dict[str, Any]:
         """Collect all metrics"""
         results = {
-            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "timestamp": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
             "metrics": {},
             "status": "success"
         }
@@ -90,7 +90,7 @@ class HealthMetricsCollector:
     
     def _collect_test_coverage(self) -> Dict:
         """M5: Extract test coverage from reports"""
-        coverage_dir = Path("htmlcov") or Path(".coverage")
+        coverage_dir = Path("htmlcov") if Path("htmlcov").exists() else Path(".coverage")
         coverage = 0
         if coverage_dir.exists():
             try:

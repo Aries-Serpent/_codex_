@@ -1,18 +1,20 @@
 {
-  "generated_at": "2026-07-13T19:31:43.526068+00:00",
+  "generated_at": "2026-07-13T19:45:33.147667+00:00",
   "methods": [
     "rest",
     "graphql",
     "gh_cli"
   ],
   "rest_available": true,
-  "rest_remaining": 4997,
+  "rest_remaining": 4986,
   "graphql_available": true,
-  "graphql_remaining": 4995,
+  "graphql_remaining": 4993,
   "gh_cli_available": true,
   "codeql_available": false,
   "best_token_var": "CODEX_MASTER_KEY",
-  "open_prs": [],
+  "open_prs": [
+    5316
+  ],
   "branch": "copilot/phase-4-autonomous-continuation",
   "recommendation": "Use REST for data fetches. "
 }
