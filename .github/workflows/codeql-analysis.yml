@@ -44,7 +44,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3
       with:
@@ -69,10 +69,8 @@ jobs:
     - name: Cache health report
       if: always()
       continue-on-error: true
-      run: 'python scripts/ci/generate_cache_keys.py --type pip --workflow codeql-analysis
-        --health 2>/dev/null || echo ''{"status": "cache health check skipped"}''
-
-        '
+      run: 'python scripts/ci/generate_cache_keys.py --type pip --workflow codeql-analysis --health 2>/dev/null || echo ''{"status": "cache health check skipped"}''
+      '
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   post-codeql-auto-approve:
@@ -168,7 +166,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         fetch-depth: 1
     - name: Post or update rescue comment
