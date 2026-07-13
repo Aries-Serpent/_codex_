@@ -10,6 +10,7 @@ Safeguards:
 - Input validation on queries
 - Bounds checking on result count
 - Defensive error handling
+- Security: Issue #5299 - Input sanitization for ChromaDB code injection vulnerability
 """
 
 from __future__ import annotations
@@ -20,6 +21,13 @@ from dataclasses import dataclass, field
 from typing import Any
 
 from .embedding import EmbeddingPipeline
+from rag.security import (
+    sanitize_query,
+    validate_filters,
+    validate_metadata,
+    validate_document_id,
+    validate_top_k,
+)
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -63,6 +71,12 @@ class InMemoryVectorStore(VectorStoreBackend):
         self._index: list[dict[str, Any]] = []
 
     def add(self, doc_id: str, content: str, embedding: list[float], metadata: dict) -> None:
+        # Security: Issue #5299 - Validate document ID to prevent code injection
+        doc_id = validate_document_id(doc_id)
+        
+        # Validate metadata to prevent code injection
+        metadata = validate_metadata(metadata)
+        
         self._index.append(
             {
                 "id": doc_id,

@@ -1,0 +1,68 @@
+{
+  "workflow_run_id": 29250582697,
+  "workflow_name": "Security Scanning Suite",
+  "status": "completed",
+  "conclusion": "success",
+  "run_time": "2026-07-13T12:37:47Z - 2026-07-13T12:58:33Z",
+  "duration_minutes": 20.767,
+  "artifacts": [
+    {
+      "id": 8279714740,
+      "name": "security-suite-artifact-contract-report",
+      "size_bytes": 331,
+      "type": "Contract Report",
+      "created": "2026-07-13T12:58:29Z"
+    },
+    {
+      "id": 8279709395,
+      "name": "security-suite-comprehensive-findings",
+      "size_bytes": 18628,
+      "type": "Comprehensive Findings Report",
+      "created": "2026-07-13T12:58:17Z"
+    },
+    {
+      "id": 8279695055,
+      "name": "security-suite-summary",
+      "size_bytes": 1015,
+      "type": "Summary Report",
+      "created": "2026-07-13T12:57:45Z"
+    },
+    {
+      "id": 8279688835,
+      "name": "security-suite-codeql-python",
+      "size_bytes": 834145,
+      "type": "CodeQL Python Scan Results",
+      "created": "2026-07-13T12:57:32Z"
+    },
+    {
+      "id": 8279581998,
+      "name": "security-suite-semgrep",
+      "size_bytes": 291739,
+      "type": "Semgrep Analysis Results",
+      "created": "2026-07-13T12:53:34Z"
+    },
+    {
+      "id": 8279233601,
+      "name": "security-suite-codeql-javascript",
+      "size_bytes": 546056,
+      "type": "CodeQL JavaScript Scan Results",
+      "created": "2026-07-13T12:40:06Z"
+    },
+    {
+      "id": 8279183187,
+      "name": "security-suite-lane-contract",
+      "size_bytes": 24445,
+      "type": "Lane Execution Contract",
+      "created": "2026-07-13T12:38:04Z"
+    }
+  ],
+  "total_artifacts": 7,
+  "total_size_bytes": 1707418,
+  "analysis_lanes_required": [
+    "Lane A: CodeQL Python Analysis (834KB)",
+    "Lane B: CodeQL JavaScript Analysis (546KB)",
+    "Lane C: Semgrep Pattern Analysis (291KB)",
+    "Lane D: Comprehensive Findings (18KB)",
+    "Lane E: Lane Contract Validation (24KB)"
+  ]
+}

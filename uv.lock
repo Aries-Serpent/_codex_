@@ -574,7 +574,7 @@ wheels = [
 
 [[package]]
 name = "chromadb"
-version = "1.5.8"
+version = "1.5.9"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "bcrypt" },
@@ -605,10 +605,10 @@ dependencies = [
     { name = "typing-extensions" },
     { name = "uvicorn", extra = ["standard"] },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/98/45/39696984553ede2bed1c54550f194111c66ef6ba86c0cd5bd8099d39b2c3/chromadb-1.5.8.tar.gz", hash = "sha256:9f5dfaea989128793c4e1928de6a150d70ae55e44403d85448be94ff32f2c962", size = 2515918, upload-time = "2026-04-16T23:35:11.731Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/92/d1/5e33b26985f0c7046a0be1cee2158ada1748ee700d2545057fde1468d74d/chromadb-1.5.9.tar.gz", hash = "sha256:5c20e62a455c28bacac927f26116a73fd8e1799e0d908be8e8a4f02197a54731", size = 2595635, upload-time = "2026-05-05T05:54:51.713Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/7f/de/3c4c0661152cef02b5d0684fa8d0195aa36d3242e56903d211ff2acd3424/chromadb-1.5.8-cp39-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:33976c781a9d6e6386a15481a58f5bde88e68fce87925aa5f30bca4f142c8303", size = 22568047, upload-time = "2026-04-16T23:34:59.376Z" },
-    { url = "https://files.pythonhosted.org/packages/4d/45/53556edcbbd273c54b81e07c1b21c79f7209ab4edf9603f94babb4ecf4f6/chromadb-1.5.8-cp39-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:9494f0cf734dcfd2976890f9e3a446fdd5ca565375ffebe0de388ce994ac1f5e", size = 23214104, upload-time = "2026-04-16T23:35:02.583Z" },
+    { url = "https://files.pythonhosted.org/packages/38/4e/937bc4d2e6f8ab9664ec79931fbbd69efff47e513ec2924b071e4b0ff774/chromadb-1.5.9-cp39-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:9192d111bd662241625867962333d99369a00769a50f8b2f58cb388731274d7e", size = 22680924, upload-time = "2026-05-05T05:54:36.25Z" },
+    { url = "https://files.pythonhosted.org/packages/e6/ec/0c42039e80b9acc534f67b73b7a42471948042859b3a64867b50a4a77fa3/chromadb-1.5.9-cp39-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:cc09b3df76e5a5cb386aed2715a2eea152e3949f9e1ba93c7119505377749929", size = 23316203, upload-time = "2026-05-05T05:54:41.157Z" },
 ]
 
 [[package]]
@@ -668,10 +668,11 @@ wheels = [
 
 [[package]]
 name = "codex-ml"
-version = "0.1.0"
+version = "0.2.2"
 source = { editable = "." }
 dependencies = [
     { name = "certifi" },
+    { name = "click" },
     { name = "cryptography" },
     { name = "defusedxml" },
     { name = "filelock" },
@@ -686,6 +687,7 @@ dependencies = [
     { name = "pydantic-settings" },
     { name = "pyjwt" },
     { name = "pynacl" },
+    { name = "pyopenssl" },
     { name = "pyyaml" },
     { name = "radon" },
     { name = "requests" },
@@ -1109,8 +1111,9 @@ requires-dist = [
     { name = "accelerate", marker = "extra == 'runtime'", specifier = ">=1.14.0,<2" },
     { name = "black", marker = "extra == 'full'", specifier = ">=24.0.0,<27.0.0" },
     { name = "certifi", specifier = ">=2026.6.17" },
-    { name = "chromadb", marker = "extra == 'full'", specifier = ">=1.5.8,<2.0.0" },
-    { name = "chromadb", marker = "extra == 'runtime'", specifier = ">=1.5.8,<2.0.0" },
+    { name = "chromadb", marker = "extra == 'full'", specifier = ">=1.5.9,<2.0.0" },
+    { name = "chromadb", marker = "extra == 'runtime'", specifier = ">=1.5.9,<2.0.0" },
+    { name = "click", specifier = ">=8.1,<9.0" },
     { name = "click", marker = "extra == 'core'", specifier = ">=8.1" },
     { name = "click", marker = "extra == 'full'", specifier = ">=8.1" },
     { name = "codex-ml", extras = ["core"], marker = "extra == 'test-core'" },
@@ -1138,8 +1141,8 @@ requires-dist = [
     { name = "httpx", marker = "extra == 'full'", specifier = ">=0.26,<1" },
     { name = "httpx", marker = "extra == 'runtime'", specifier = ">=0.26,<1" },
     { name = "hydra-core", specifier = "==1.3.2" },
-    { name = "hydra-core", extras = ["hydra-plugins"], marker = "extra == 'core'", specifier = ">=1.3" },
-    { name = "hydra-core", extras = ["hydra-plugins"], marker = "extra == 'full'", specifier = ">=1.3" },
+    { name = "hydra-core", marker = "extra == 'core'", specifier = "==1.3.2" },
+    { name = "hydra-core", marker = "extra == 'full'", specifier = "==1.3.2" },
     { name = "hypothesis", marker = "extra == 'full'", specifier = ">=6.152.4,<7.0.0" },
     { name = "idna", specifier = ">=3.18" },
     { name = "importlib-metadata", marker = "python_full_version < '3.10' and extra == 'full'" },
@@ -1147,15 +1150,15 @@ requires-dist = [
     { name = "jinja2", specifier = ">=3.1.6" },
     { name = "jsonschema", marker = "extra == 'full'", specifier = ">=4.26.0" },
     { name = "libcst", specifier = ">=1.0.0" },
-    { name = "libcst", marker = "extra == 'core'", specifier = ">=1.0" },
-    { name = "libcst", marker = "extra == 'full'", specifier = ">=1.0" },
+    { name = "libcst", marker = "extra == 'core'", specifier = ">=1.0.0" },
+    { name = "libcst", marker = "extra == 'full'", specifier = ">=1.0.0" },
     { name = "litestar", marker = "extra == 'full'", specifier = ">=2.22.0,<3" },
     { name = "litestar", marker = "extra == 'runtime'", specifier = ">=2.22.0,<3" },
     { name = "lm-eval", marker = "extra == 'full'", specifier = ">=0.4.2,<1" },
     { name = "marshmallow", specifier = ">=3.7.1,<5" },
     { name = "marshmallow", marker = "extra == 'core'", specifier = ">=3.7.1,<5" },
-    { name = "marshmallow", marker = "extra == 'full'", specifier = ">=3.7.1,<4" },
-    { name = "mlflow", marker = "extra == 'full'", specifier = ">=2.22.4,<4" },
+    { name = "marshmallow", marker = "extra == 'full'", specifier = ">=3.7.1,<5" },
+    { name = "mlflow", marker = "extra == 'full'", specifier = ">=3.11.0,<4" },
     { name = "mypy", marker = "extra == 'full'", specifier = ">=2.1.0,<3.0.0" },
     { name = "nbstripout", marker = "extra == 'full'", specifier = ">=0.6" },
     { name = "nltk", marker = "extra == 'full'", specifier = ">=3.8" },
@@ -1192,10 +1195,11 @@ requires-dist = [
     { name = "pyjwt", marker = "extra == 'full'", specifier = ">=2.13.0,<3.0.0" },
     { name = "pynacl", specifier = ">=1.5.0,<2.0.0" },
     { name = "pynacl", marker = "extra == 'full'", specifier = ">=1.5.0,<2.0.0" },
+    { name = "pyopenssl", specifier = ">=26.0.0,<27.0.0" },
     { name = "pyotp", marker = "extra == 'full'", specifier = ">=2.8.0" },
     { name = "pytest", marker = "extra == 'full'", specifier = ">=9.0.3,<10.0.0" },
     { name = "pytest-asyncio", marker = "extra == 'full'", specifier = ">=0.23.0,<2.0.0" },
-    { name = "pytest-cov", marker = "extra == 'full'", specifier = ">=4.1.0,<6.0.0" },
+    { name = "pytest-cov", marker = "extra == 'full'", specifier = ">=4.1.0,<8.0.0" },
     { name = "pytest-mock", marker = "extra == 'full'", specifier = ">=3.12.0,<4.0.0" },
     { name = "pytest-randomly", marker = "extra == 'full'", specifier = ">=3.15" },
     { name = "pytest-rerunfailures", marker = "extra == 'full'", specifier = ">=12.0" },
@@ -1208,7 +1212,7 @@ requires-dist = [
     { name = "radon", specifier = ">=6.0.1" },
     { name = "ray", extras = ["serve"], marker = "extra == 'full'", specifier = ">=2.9,<3" },
     { name = "ray", extras = ["serve"], marker = "extra == 'runtime'", specifier = ">=2.9,<3" },
-    { name = "requests", specifier = ">=2.34.2" },
+    { name = "requests", specifier = ">=2.33.0" },
     { name = "requests", marker = "extra == 'full'", specifier = ">=2.34.2" },
     { name = "responses", marker = "extra == 'full'", specifier = ">=0.26.1" },
     { name = "rouge-score", marker = "extra == 'full'", specifier = ">=0.1.2" },
@@ -1242,8 +1246,8 @@ requires-dist = [
     { name = "tree-sitter-yaml", marker = "extra == 'core'", specifier = ">=0.7.2" },
     { name = "tree-sitter-yaml", marker = "extra == 'full'", specifier = ">=0.7.2" },
     { name = "typer", specifier = ">=0.12" },
-    { name = "typer", marker = "extra == 'core'", specifier = ">=0.9" },
-    { name = "typer", marker = "extra == 'full'", specifier = ">=0.9" },
+    { name = "typer", marker = "extra == 'core'", specifier = ">=0.12" },
+    { name = "typer", marker = "extra == 'full'", specifier = ">=0.12" },
     { name = "urllib3", specifier = ">=2.7.0" },
     { name = "wandb", marker = "extra == 'full'", specifier = ">=0.16" },
     { name = "xxhash", marker = "extra == 'full'", specifier = ">=3.0.0" },
@@ -4789,6 +4793,19 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/c9/a8/b917096b1accc9acd878819a49d3d84875731a41eb665f6ebc826b1af99e/pynacl-1.6.2-cp38-abi3-manylinux_2_34_x86_64.whl", hash = "sha256:c8a231e36ec2cab018c4ad4358c386e36eede0319a0c41fed24f840b1dac59f6", size = 1402859, upload-time = "2026-01-01T17:32:27.215Z" },
     { url = "https://files.pythonhosted.org/packages/85/42/fe60b5f4473e12c72f977548e4028156f4d340b884c635ec6b063fe7e9a5/pynacl-1.6.2-cp38-abi3-musllinux_1_2_aarch64.whl", hash = "sha256:68be3a09455743ff9505491220b64440ced8973fe930f270c8e07ccfa25b1f9e", size = 791926, upload-time = "2026-01-01T17:32:29.314Z" },
     { url = "https://files.pythonhosted.org/packages/fa/f9/e40e318c604259301cc091a2a63f237d9e7b424c4851cafaea4ea7c4834e/pynacl-1.6.2-cp38-abi3-musllinux_1_2_x86_64.whl", hash = "sha256:8b097553b380236d51ed11356c953bf8ce36a29a3e596e934ecabe76c985a577", size = 1363101, upload-time = "2026-01-01T17:32:31.263Z" },
+]
+
+[[package]]
+name = "pyopenssl"
+version = "26.2.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "cryptography" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/1a/51/27a5ad5f939d08f690a326ef9582cda7140555180db71695f6fb747d6a36/pyopenssl-26.2.0.tar.gz", hash = "sha256:8c6fcecd1183a7fc897548dfe388b0cdb7f37e018200d8409cf33959dbe35387", size = 182195, upload-time = "2026-05-04T23:06:09.72Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/73/b8/a0e2790ae249d6f38c9f66de7a211621a7ab2650217bcd04e1262f578a56/pyopenssl-26.2.0-py3-none-any.whl", hash = "sha256:4f9d971bc5298b8bc1fab282803da04bf000c755d4ad9d99b52de2569ca19a70", size = 55823, upload-time = "2026-05-04T23:06:08.395Z" },
 ]
 
 [[package]]

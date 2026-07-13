@@ -134,7 +134,7 @@ runtime = [
     "duckdb>=1.5.4",
     # RAG pipeline
     "sentence-transformers>=5.5.1,<6.0.0",
-    "chromadb>=1.5.8,<2.0.0",
+    "chromadb>=1.5.9,<2.0.0",  # Security: Issue #5299 - Code injection vulnerability, using latest available (1.5.9)
     "faiss-cpu>=1.13.2,<2.0.0",
 ]
 
@@ -172,7 +172,7 @@ full = [
     "prometheus-client>=0.19.0",
     "psutil>=5.9",
     "sentence-transformers>=5.5.1,<6.0.0",
-    "chromadb>=1.5.8,<2.0.0",
+    "chromadb>=1.5.9,<2.0.0",  # Security: Issue #5299 - Code injection vulnerability, using latest available (1.5.9)
     "faiss-cpu>=1.13.2,<2.0.0",
     "evidently>=0.7.21,<1",
     # Testing & quality
@@ -213,7 +213,7 @@ full = [
     "PyGithub>=2.9.1,<3.0.0",
     "nvidia-ml-py3>=7.352.0",
     "tensorboard>=2.14",
-    "mlflow>=2.22.4,<4",
+    "mlflow>=3.11.0,<4",  # Security: Issue #5299 - 18 critical CVEs (RCE, auth bypass, SSRF, path traversal, cred exfil) fixed in 3.11.0
     "wandb>=0.16",
     "playwright>=1.40",
     "requests>=2.34.2",

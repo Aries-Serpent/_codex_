@@ -361,10 +361,10 @@ charset-normalizer==3.4.7 ; python_full_version < '3.13' and sys_platform == 'li
     --hash=sha256:fbccdc05410c9ee21bbf16a35f4c1d16123dcdeb8a1d38f33654fa21d0234f79 \
     --hash=sha256:fea24543955a6a729c45a73fe90e08c743f0b3334bbf3201e6c4bc1b0c7fa464
     # via requests
-chromadb==1.5.8 ; python_full_version < '3.13' and sys_platform == 'linux' \
-    --hash=sha256:33976c781a9d6e6386a15481a58f5bde88e68fce87925aa5f30bca4f142c8303 \
-    --hash=sha256:9494f0cf734dcfd2976890f9e3a446fdd5ca565375ffebe0de388ce994ac1f5e \
-    --hash=sha256:9f5dfaea989128793c4e1928de6a150d70ae55e44403d85448be94ff32f2c962
+chromadb==1.5.9 ; python_full_version < '3.13' and sys_platform == 'linux' \
+    --hash=sha256:5c20e62a455c28bacac927f26116a73fd8e1799e0d908be8e8a4f02197a54731 \
+    --hash=sha256:9192d111bd662241625867962333d99369a00769a50f8b2f58cb388731274d7e \
+    --hash=sha256:cc09b3df76e5a5cb386aed2715a2eea152e3949f9e1ba93c7119505377749929
     # via codex-ml
 click==8.3.3 ; python_full_version < '3.13' and sys_platform == 'linux' \
     --hash=sha256:398329ad4837b2ff7cbe1dd166a4c0f8900c3ca3a218de04466f38f6497f18a2 \
@@ -550,6 +550,7 @@ cryptography==48.0.1 ; python_full_version < '3.13' and sys_platform == 'linux' 
     #   great-expectations
     #   mlflow
     #   pyjwt
+    #   pyopenssl
 cuda-bindings==13.2.0 ; python_full_version < '3.13' and sys_platform == 'linux' \
     --hash=sha256:46d8776a55d6d5da9dd6e9858fba2efcda2abe6743871dee47dd06eb8cb6d955 \
     --hash=sha256:6629ca2df6f795b784752409bcaedbd22a7a651b74b56a165ebc0c9dcbd504d0 \
@@ -2519,6 +2520,10 @@ pynacl==1.6.2 ; python_full_version < '3.13' and sys_platform == 'linux' \
     # via
     #   codex-ml
     #   pygithub
+pyopenssl==26.2.0 ; python_full_version < '3.13' and sys_platform == 'linux' \
+    --hash=sha256:4f9d971bc5298b8bc1fab282803da04bf000c755d4ad9d99b52de2569ca19a70 \
+    --hash=sha256:8c6fcecd1183a7fc897548dfe388b0cdb7f37e018200d8409cf33959dbe35387
+    # via codex-ml
 pyotp==2.10.0 ; python_full_version < '3.13' and sys_platform == 'linux' \
     --hash=sha256:1df2f6a1bcc3bb0716172a5215ddc2f8c7c7fd26a13df9927d52e1746934836c \
     --hash=sha256:d01e9703443616b03c57c700b5cbffd56a1f929c1b0f8f03131bc78c1fca9d3f
@@ -3286,6 +3291,7 @@ typing-extensions==4.15.0 ; python_full_version < '3.13' and sys_platform == 'li
     #   pydantic-core
     #   pyee
     #   pygithub
+    #   pyopenssl
     #   pytest-asyncio
     #   referencing
     #   sentence-transformers
