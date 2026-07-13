@@ -11,6 +11,7 @@ Covers CVE fixes:
 
 import datetime  # pragma: allowlist secret
 import json
+import os
 import time
 
 import pytest
