@@ -1,5 +1,11 @@
 ## [Unreleased]
 
+### Dependency maintenance — coverage 7.15.1 follow-up (2026-07-13)
+
+- Kept the PR scoped to the `coverage` dependency update by dropping unrelated `CODEX_MANIFEST.json` churn from the follow-up work.
+- Updated test and development requirements to allow `coverage` 7.15.1, which includes the upstream HTML report escaping fix for context labels.
+- Refreshed the accountability metadata needed for PR governance validation on the Dependabot update.
+
 ### 📚 Site-First Documentation Initiative — Professional Documentation Transformation (2026-07-13)
 
 **Status**: ✅ COMPLETE | **Campaign Duration**: ~60 minutes | **Authority**: @mbaetiong (D-tier autonomous)
@@ -16434,4 +16440,3 @@ Completed TIER 1 semantic routing quality validation for multi-agent orchestrati
 - Better code reuse across modules
 - Foundation for future refactoring opportunities
 - Aligned with SOLID principles (Single Responsibility)
-
