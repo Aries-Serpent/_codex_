@@ -1,0 +1,45 @@
+name: API Documentation
+true:
+  push:
+    branches:
+    - main
+    paths:
+    - src/**/*.py
+    - agents/**/*.py
+    - docs/api/**
+  workflow_dispatch: null
+concurrency:
+  cancel-in-progress: true
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+permissions:
+  contents: read
+  id-token: write
+  pages: write
+jobs:
+  build:
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
+    name: Build Documentation
+    runs-on: ubuntu-latest
+    steps:
+    - name: Configure secret masking
+      run: 'echo ''::add-mask::'' ${{ secrets.CODEX_MASTER_KEY }}
+
+        echo ''::add-mask::'' ${{ secrets.CODEX_BACKUP_KEY }}'
+    - name: Checkout repository
+      uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+    - continue-on-error: true
+      name: CacheManager health check
+      run: 'python scripts/ci/generate_cache_keys.py --health --workflow api-documentation
+        2>/dev/null || echo "Cache health: check skipped"
+
+        '
+    - name: Set up Python
+      uses: ./.github/actions/setup-python-cached
+      with:
+        cache-tier: live
+        python-version: 3.12.13
+    timeout-minutes: 60

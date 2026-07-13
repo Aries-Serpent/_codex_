@@ -1,0 +1,226 @@
+name: 🧹 Agent Task Janitor
+true:
+  schedule:
+  - cron: 27 3 * * *
+  workflow_dispatch:
+    inputs:
+      discovery_limit:
+        default: '100'
+        description: Max non-archived tasks to inspect
+        required: false
+      execute:
+        default: 'false'
+        description: true applies cleanup actions, false is dry-run
+        options:
+        - 'false'
+        - 'true'
+        required: true
+        type: choice
+      require_closed_pr:
+        default: 'true'
+        description: Only janitor tasks linked to closed/merged PRs
+        options:
+        - 'true'
+        - 'false'
+        required: true
+        type: choice
+      stale_hours:
+        default: '168'
+        description: Only janitor stale tasks older than this many hours
+        required: false
+      task_id:
+        default: ''
+        description: Optional task UUID for one-time validation/cleanup
+        required: false
+concurrency:
+  cancel-in-progress: true
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+permissions:
+  contents: read
+  pull-requests: read
+jobs:
+  janitor:
+    env:
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
+    name: Validate and cleanup stale agent tasks
+    runs-on: ubuntu-latest
+    steps:
+    - name: Configure secret masking
+      run: 'echo ''::add-mask::'' ${{ secrets.CODEX_MASTER_KEY }}
+
+        echo ''::add-mask::'' ${{ secrets.CODEX_BACKUP_KEY }}'
+    - env:
+        DISCOVERY_LIMIT: ${{ github.event.inputs.discovery_limit || '100' }}
+        EXECUTE: ${{ github.event.inputs.execute || 'false' }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
+        OWNER_REPO: ${{ github.repository }}
+        REQUIRE_CLOSED_PR: ${{ github.event.inputs.require_closed_pr || 'true' }}
+        STALE_HOURS: ${{ github.event.inputs.stale_hours || '168' }}
+        TASK_ID: ${{ github.event.inputs.task_id || '' }}
+        TOKEN_SOURCE: ${{ secrets.CODEX_MASTER_KEY && 'CODEX_MASTER_KEY' || secrets.CODEX_BACKUP_KEY
+          && 'CODEX_BACKUP_KEY' || 'GITHUB_TOKEN' }}
+      name: Inspect and optionally cleanup stale Copilot tasks
+      run: "set -euo pipefail\npython3 - <<'PY'\nimport json\nimport os\nimport re\n\
+        import urllib.error\nimport urllib.parse\nimport urllib.request\nfrom datetime\
+        \ import datetime, timedelta, timezone\n\nowner_repo = os.environ[\"OWNER_REPO\"\
+        ]\nowner, repo = owner_repo.split(\"/\", 1)\ntoken = os.environ.get(\"GH_TOKEN\"\
+        , \"\")\ntoken_source = os.environ.get(\"TOKEN_SOURCE\", \"GITHUB_TOKEN\"\
+        )\ntask_id = os.environ.get(\"TASK_ID\", \"\").strip()\nexecute = os.environ.get(\"\
+        EXECUTE\", \"false\").lower() == \"true\"\nrequire_closed_pr = os.environ.get(\"\
+        REQUIRE_CLOSED_PR\", \"true\").lower() == \"true\"\nsummary_path = os.environ[\"\
+        GITHUB_STEP_SUMMARY\"]\nhas_elevated_token = token_source in {\"CODEX_MASTER_KEY\"\
+        , \"CODEX_BACKUP_KEY\"}\nexecute_blocked = execute and not has_elevated_token\n\
+        \ntry:\n    stale_hours = max(1, int(os.environ.get(\"STALE_HOURS\", \"168\"\
+        )))\nexcept ValueError:\n    stale_hours = 168\n\ntry:\n    discovery_limit\
+        \ = int(os.environ.get(\"DISCOVERY_LIMIT\", \"100\"))\nexcept ValueError:\n\
+        \    discovery_limit = 100\n# Agent Tasks API returns max 100 records per\
+        \ page; clamp to avoid invalid requests.\ndiscovery_limit = max(1, min(discovery_limit,\
+        \ 100))\n\nheaders = {\n    \"Accept\": \"application/vnd.github+json\",\n\
+        \    \"X-GitHub-Api-Version\": \"2026-03-10\",\n    \"User-Agent\": \"agent-task-janitor/1.0\"\
+        ,\n}\nif token:\n    headers[\"Authorization\"] = \"Bearer \" + token\n\n\
+        def call_github_api(method: str, path: str, payload: dict | None = None):\n\
+        \    body = None\n    if payload is not None:\n        body = json.dumps(payload).encode(\"\
+        utf-8\")\n    req = urllib.request.Request(\n        f\"https://api.github.com{path}\"\
+        ,\n        data=body,\n        method=method,\n        headers=headers,\n\
+        \    )\n    try:\n        with urllib.request.urlopen(req, timeout=30) as\
+        \ resp:\n            raw = resp.read().decode(\"utf-8\")\n            parsed\
+        \ = json.loads(raw) if raw else {}\n            return resp.status, parsed\n\
+        \    except urllib.error.HTTPError as exc:\n        raw = exc.read().decode(\"\
+        utf-8\", errors=\"replace\")\n        try:\n            parsed = json.loads(raw)\n\
+        \        except json.JSONDecodeError:\n            parsed = {\"message\":\
+        \ raw}\n        return exc.code, parsed\n\ndef parse_utc(value: str | None)\
+        \ -> datetime | None:\n    if not value:\n        return None\n    normalized\
+        \ = value.replace(\"Z\", \"+00:00\")\n    try:\n        return datetime.fromisoformat(normalized)\n\
+        \    except ValueError:\n        return None\n\ndef task_path(task_uuid: str)\
+        \ -> str:\n    encoded = urllib.parse.quote(task_uuid, safe=\"\")\n    return\
+        \ f\"/agents/repos/{owner}/{repo}/tasks/{encoded}\"\n\ndef escape_markdown_pipes(text)\
+        \ -> str:\n    return str(text).replace(\"|\", \"\\\\|\")\n\ndef extract_pr_numbers(task:\
+        \ dict) -> list[int]:\n    prs: set[int] = set()\n    for artifact in task.get(\"\
+        artifacts\") or []:\n        art_type = str(artifact.get(\"type\", \"\")).lower()\n\
+        \        if art_type not in {\"pull\", \"pull_request\", \"pr\"}:\n      \
+        \      continue\n        data = artifact.get(\"data\") or {}\n        for\
+        \ key in (\"id\", \"number\", \"pull_number\", \"pr_number\"):\n         \
+        \   value = data.get(key)\n            if isinstance(value, int):\n      \
+        \          prs.add(value)\n            elif isinstance(value, str) and value.isdigit():\n\
+        \                prs.add(int(value))\n    if not prs:\n        name = str(task.get(\"\
+        name\", \"\"))\n        for match in re.findall(r\"#(\\d+)\", name):\n   \
+        \         prs.add(int(match))\n    return sorted(prs)\n\ndef pr_closed(number:\
+        \ int) -> tuple[bool, str]:\n    status, payload = call_github_api(\"GET\"\
+        , f\"/repos/{owner}/{repo}/pulls/{number}\")\n    if status >= 300:\n    \
+        \    return False, f\"lookup_failed:{payload.get('message', status)}\"\n \
+        \   state = payload.get(\"state\")\n    merged = bool(payload.get(\"merged_at\"\
+        ))\n    return state == \"closed\", \"merged\" if merged else \"closed\"\n\
+        \ndef fetch_task(task_uuid: str):\n    return call_github_api(\"GET\", task_path(task_uuid))\n\
+        \ncleanup_eligible_states = {\"queued\", \"in_progress\", \"idle\", \"waiting_for_user\"\
+        , \"timed_out\"}\ncleanup_eligible_states_csv = \",\".join(sorted(cleanup_eligible_states))\n\
+        list_path = (\n    f\"/agents/repos/{owner}/{repo}/tasks\"\n    f\"?per_page={discovery_limit}&sort=updated_at&direction=desc\"\
+        \n    f\"&is_archived=false&state={cleanup_eligible_states_csv}\"\n)\n\nlist_status,\
+        \ list_payload = call_github_api(\"GET\", list_path)\ntasks = []\nlist_error\
+        \ = None\nif list_status < 300:\n    tasks = list_payload.get(\"tasks\") or\
+        \ []\nelse:\n    list_error = list_payload.get(\"message\", f\"status {list_status}\"\
+        )\n\ntarget_task = None\ntarget_error = None\nif task_id:\n    t_status, t_payload\
+        \ = fetch_task(task_id)\n    if t_status < 300:\n        target_task = t_payload\n\
+        \        if not any(t.get(\"id\") == task_id for t in tasks):\n          \
+        \  tasks.insert(0, target_task)\n    else:\n        target_error = t_payload.get(\"\
+        message\", f\"status {t_status}\")\n\nnow = datetime.now(timezone.utc)\ncutoff\
+        \ = now - timedelta(hours=stale_hours)\n\ncandidates = []\ninspected = []\n\
+        for task in tasks:\n    tid = str(task.get(\"id\", \"\"))\n    state = str(task.get(\"\
+        state\", \"\"))\n    updated_at_raw = task.get(\"updated_at\")\n    updated_at\
+        \ = parse_utc(updated_at_raw)\n    is_stale = bool(updated_at and updated_at\
+        \ <= cutoff)\n    pr_numbers = extract_pr_numbers(task)\n\n    pr_details\
+        \ = []\n    closed_pr_link = False\n    for number in pr_numbers:\n      \
+        \  closed, detail = pr_closed(number)\n        pr_details.append({\"number\"\
+        : number, \"closed\": closed, \"detail\": detail})\n        if closed:\n \
+        \           closed_pr_link = True\n\n    eligible = state in cleanup_eligible_states\n\
+        \    if require_closed_pr:\n        eligible = eligible and closed_pr_link\n\
+        \    eligible = eligible and is_stale\n\n    inspected.append(\n        {\n\
+        \            \"id\": tid,\n            \"state\": state,\n            \"updated_at\"\
+        : updated_at_raw,\n            \"is_stale\": is_stale,\n            \"prs\"\
+        : pr_details,\n            \"eligible\": eligible,\n            \"artifacts\"\
+        : task.get(\"artifacts\") or [],\n        }\n    )\n\n    explicit_task_eligible\
+        \ = (\n        task_id\n        and tid == task_id\n        and is_stale\n\
+        \        and (closed_pr_link or not require_closed_pr)\n    )\n    if eligible\
+        \ or explicit_task_eligible:\n        candidates.append(task)\n\naction_results\
+        \ = []\n\ndef attempt_cleanup(task_uuid: str):\n    delete_status, delete_payload\
+        \ = call_github_api(\n        \"DELETE\", task_path(task_uuid)\n    )\n  \
+        \  if 200 <= delete_status < 300:\n        return {\n            \"task_id\"\
+        : task_uuid,\n            \"method\": \"DELETE\",\n            \"ok\": True,\n\
+        \            \"status\": delete_status,\n            \"detail\": \"cancelled_or_deleted\"\
+        ,\n        }\n\n    archive_status, archive_payload = call_github_api(\n \
+        \       \"POST\", f\"{task_path(task_uuid)}/archive\"\n    )\n    if 200 <=\
+        \ archive_status < 300:\n        return {\n            \"task_id\": task_uuid,\n\
+        \            \"method\": \"POST /archive\",\n            \"ok\": True,\n \
+        \           \"status\": archive_status,\n            \"detail\": \"archived\"\
+        ,\n        }\n\n    patch_status, patch_payload = call_github_api(\n     \
+        \   \"PATCH\",\n        task_path(task_uuid),\n        {\"is_archived\": True},\n\
+        \    )\n    if 200 <= patch_status < 300:\n        return {\n            \"\
+        task_id\": task_uuid,\n            \"method\": \"PATCH is_archived=true\"\
+        ,\n            \"ok\": True,\n            \"status\": patch_status,\n    \
+        \        \"detail\": \"archived\",\n        }\n\n    return {\n        \"\
+        task_id\": task_uuid,\n        \"method\": \"DELETE -> POST /archive -> PATCH\"\
+        ,\n        \"ok\": False,\n        \"status\": patch_status,\n        \"detail\"\
+        : {\n            \"delete\": {\"status\": delete_status, \"message\": delete_payload.get(\"\
+        message\")},\n            \"archive\": {\"status\": archive_status, \"message\"\
+        : archive_payload.get(\"message\")},\n            \"patch\": {\"status\":\
+        \ patch_status, \"message\": patch_payload.get(\"message\")},\n        },\n\
+        \    }\n\nprocessed_ids: set[str] = set()\nfor task in candidates:\n    tid\
+        \ = str(task.get(\"id\", \"\"))\n  # Prevent duplicate cleanup attempts when\
+        \ the same task is present in\n  # list results and separately inserted from\
+        \ explicit task_id lookup.\n    if not tid or tid in processed_ids:\n    \
+        \    continue\n    processed_ids.add(tid)\n    if execute:\n        action_results.append(attempt_cleanup(tid))\n\
+        \    else:\n        action_results.append(\n            {\n              \
+        \  \"task_id\": tid,\n                \"method\": \"dry-run\",\n         \
+        \       \"ok\": True,\n                \"status\": 0,\n                \"\
+        detail\": \"would attempt DELETE, then archive fallbacks\",\n            }\n\
+        \        )\n\nrecheck = None\nif task_id:\n    r_status, r_payload = fetch_task(task_id)\n\
+        \    recheck = {\n        \"status\": r_status,\n        \"payload\": r_payload\
+        \ if r_status < 300 else {\"message\": r_payload.get(\"message\")},\n    }\n\
+        \nwith open(summary_path, \"a\", encoding=\"utf-8\") as handle:\n    handle.write(\"\
+        ## \U0001F9F9 Agent Task Janitor\\n\\n\")\n    handle.write(f\"- Repository:\
+        \ `{owner_repo}`\\n\")\n    handle.write(f\"- Execute mode: `{execute}`\\\
+        n\")\n    handle.write(f\"- Token source: `{token_source}`\\n\")\n    handle.write(f\"\
+        - Elevated token available: `{has_elevated_token}`\\n\")\n    handle.write(f\"\
+        - Task ID override: `{task_id or '(none)'}`\\n\")\n    handle.write(f\"- Require\
+        \ closed PR linkage: `{require_closed_pr}`\\n\")\n    handle.write(f\"- Stale\
+        \ cutoff (hours): `{stale_hours}`\\n\")\n    handle.write(f\"- API task list\
+        \ status: `{list_status}`\\n\")\n    if list_error:\n        handle.write(f\"\
+        - API task list error: `{list_error}`\\n\")\n    if target_error:\n      \
+        \  handle.write(f\"- Task lookup error for `{task_id}`: `{target_error}`\\\
+        n\")\n    handle.write(\"\\n\")\n\n    handle.write(\"### Inspected task snapshot\\\
+        n\")\n    handle.write(\"| task_id | state | updated_at | stale | eligible\
+        \ | linked_prs |\\n\")\n    handle.write(\"|---|---|---|:---:|:---:|---|\\\
+        n\")\n    for row in inspected:\n        linked = \", \".join(\n         \
+        \   f\"#{item['number']}:{'closed' if item['closed'] else item['detail']}\"\
+        \n            for item in row[\"prs\"]\n        ) or \"-\"\n        handle.write(\n\
+        \            f\"| {row['id']} | {row['state']} | {row['updated_at']} | {'✅'\
+        \ if row['is_stale'] else '❌'} | {'✅' if row['eligible'] else '❌'} | {escape_markdown_pipes(linked)}\
+        \ |\\n\"\n        )\n    if not inspected:\n        handle.write(\"| (none)\
+        \ | - | - | - | - | - |\\n\")\n\n    handle.write(\"\\n### Cleanup results\\\
+        n\")\n    handle.write(\"| task_id | method | ok | status | detail |\\n\"\
+        )\n    handle.write(\"|---|---|:---:|---:|---|\\n\")\n    for item in action_results:\n\
+        \        detail = item.get(\"detail\")\n        if isinstance(detail, dict):\n\
+        \            detail = json.dumps(detail)\n        detail = escape_markdown_pipes(detail)\n\
+        \        handle.write(\n            f\"| {item['task_id']} | {item['method']}\
+        \ | {'✅' if item['ok'] else '❌'} | {item['status']} | {detail} |\\n\"\n  \
+        \      )\n    if not action_results:\n        handle.write(\"| (none) | -\
+        \ | - | - | no candidates found |\\n\")\n\n    if recheck is not None:\n \
+        \       handle.write(\"\\n### One-time task recheck\\n\")\n        handle.write(\"\
+        ```json\\n\")\n        handle.write(json.dumps(recheck, indent=2))\n     \
+        \   handle.write(\"\\n```\\n\")\n\n    if task_id and recheck and recheck[\"\
+        status\"] < 300:\n        state = recheck[\"payload\"].get(\"state\")\n  \
+        \      archived_at = recheck[\"payload\"].get(\"archived_at\")\n        if\
+        \ state in {\"completed\", \"cancelled\"} or archived_at:\n            handle.write(\n\
+        \                \"\\n> If this task still appears in the Active UI despite\
+        \ backend completed/cancelled/archived state, open GitHub Support with this\
+        \ task ID and screenshot as a cache/index mismatch.\\n\"\n            )\n\
+        \    if execute_blocked:\n        handle.write(\n            \"\\n> Execute\
+        \ mode was refused because this run is using the limited `GITHUB_TOKEN`. Re-run\
+        \ with `CODEX_MASTER_KEY` or `CODEX_BACKUP_KEY` configured.\\n\"\n       \
+        \ )\n\nfailures = [item for item in action_results if not item.get(\"ok\"\
+        )]\nif execute_blocked:\n    raise SystemExit(\n        \"Execute mode requires\
+        \ CODEX_MASTER_KEY or CODEX_BACKUP_KEY; refusing with GITHUB_TOKEN.\"\n  \
+        \  )\nif execute and failures:\n    raise SystemExit(\"One or more cleanup\
+        \ operations failed. Review workflow summary for API details.\")\nPY\n"
+    timeout-minutes: 20

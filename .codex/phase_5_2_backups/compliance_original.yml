@@ -1,0 +1,44 @@
+name: Automated Compliance Check
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+  push:
+    branches:
+      - main
+      - develop
+
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  compliance-check:
+    permissions:
+      contents: read
+      pull-requests: write
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+    - uses: actions/checkout@v5
+      with:
+            persist-credentials: false
+    - name: Validate workflow compliance
+      run: "\n                    python3 << 'COMPLIANCE_EOF'\nimport yaml\nfrom pathlib\
+        \ import Path\n\n# Check YAML syntax\nfor wf in Path('.github/workflows').glob('*.yml'):\n\
+        \    try:\n        yaml.safe_load(wf.read_text())\n    except yaml.YAMLError\
+        \ as e:\n        print(f\"\u274C {wf.name}: {e}\")\n        exit(1)\n\n# Check\
+        \ permissions are minimal\nfor wf in Path('.github/workflows').glob('*.yml'):\n\
+        \    config = yaml.safe_load(wf.read_text())\n    if 'permissions' in config:\n\
+        \        perms = config['permissions']\n        if isinstance(perms, str)\
+        \ and perms == 'write-all':\n            print(f\"\u274C {wf.name}: Uses write-all\
+        \ permissions\")\n            exit(1)\n\nprint(\"\u2713 All workflows comply\
+        \ with standards\")\nCOMPLIANCE_EOF\n                    "
