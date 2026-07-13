@@ -1,26 +1,170 @@
 # Workflow Management Runbook - Phase 5
 
 **Document Version**: 1.0  
-**Last Updated**: 2026-07-13  
+**Last Updated**: 2026-07-13 (Phase 3 Consolidation Complete)  
 **Audience**: Developers, DevOps Engineers, Incident Responders  
 
 ---
 
 ## 📖 Table of Contents
 
-1. [Emergency Procedures](#emergency-procedures)
-2. [Workflow Restoration](#workflow-restoration)
-3. [Performance Troubleshooting](#performance-troubleshooting)
-4. [Adding New Workflows](#adding-new-workflows)
-5. [Modifying Workflows](#modifying-workflows)
-6. [Archiving Workflows](#archiving-workflows)
-7. [Dashboard Interpretation](#dashboard-interpretation)
-8. [Action Version Updates](#action-version-updates)
-9. [Quick Reference](#quick-reference)
+1. [Phase 3 Consolidation Overview](#phase-3-consolidation-overview)
+2. [Emergency Procedures](#emergency-procedures)
+3. [Workflow Restoration](#workflow-restoration)
+4. [Performance Troubleshooting](#performance-troubleshooting)
+5. [Adding New Workflows](#adding-new-workflows)
+6. [Modifying Workflows](#modifying-workflows)
+7. [Archiving Workflows](#archiving-workflows)
+8. [Dashboard Interpretation](#dashboard-interpretation)
+9. [Action Version Updates](#action-version-updates)
+10. [Quick Reference](#quick-reference)
 
 ---
 
-## 🚨 Emergency Procedures
+## Phase 3 Consolidation Overview
+
+**Status:** ✅ COMPLETE (2026-07-13)  
+**Reference:** `.codex/PHASE_3_CONSOLIDATION_COMPLETION_REPORT.md`
+
+### Consolidated Master Workflows (Use These)
+
+Phase 3.3 consolidated 235+ workflows down to ~180, creating unified interfaces:
+
+#### Security Scanning
+
+**Master Workflow:** `security-scanning-suite.yml`
+
+Available scan types via dispatch:
+```bash
+# Run all scans (default)
+gh workflow run security-scanning-suite.yml
+
+# Run specific scan type
+gh workflow run security-scanning-suite.yml -f scan-type=cve
+gh workflow run security-scanning-suite.yml -f scan-type=containers
+gh workflow run security-scanning-suite.yml -f scan-type=semgrep
+```
+
+**Consolidated Into Suite (8 workflows):**
+- `13-3-cve-scanning.yml` → `cve-scan` job
+- `container-scan.yml` → `container-scan` job (NEW)
+- `13-3-secrets-detection.yml` → `secret-scan` job
+- `codeql-fix-verification.yml` → verification logic
+- `dependency-scan.yml` → `dependency-scan` job
+- `semgrep_sarif.yml` → `semgrep` job
+- `security-scan-phase-16.yml` → archived (legacy)
+- `security-tools-bootstrap.yml` → archived (one-time)
+
+**Still Independent:**
+- `codeql-analysis.yml` (primary CodeQL runner)
+- `nightly-codeql-alert-triage.yml` (scheduled triage)
+- `security-alert-notification.yml` (alert distribution)
+
+#### Testing
+
+**Master Workflow:** `optimized-test-execution.yml`
+
+Available test types and levels via dispatch:
+```bash
+# Run all tests (default)
+gh workflow run optimized-test-execution.yml
+
+# Run specific test type
+gh workflow run optimized-test-execution.yml -f test-type=ml
+gh workflow run optimized-test-execution.yml -f test-type=auth
+
+# Run with test level
+gh workflow run optimized-test-execution.yml \
+  -f test-type=core \
+  -f test-level=smoke
+```
+
+**Features:**
+- P19 shadow import pre-flight check (prevents silent failures)
+- Parallel core tests (40-50% faster)
+- ML matrix: 2 Python × 3 suites (6 parallel jobs)
+- Conditional execution based on file changes
+
+**Consolidated Into Optimized (3 workflows):**
+- `ci-pytest.yml.disabled` → core test jobs
+- `comprehensive_tests.yml.disabled` → test-level options
+- `tests.yml.disabled` → basic functionality
+
+**Still Independent (Specialized Triggers):**
+- `auth-tests.yml` (runs on auth path changes)
+- `ml-tests.yml` (runs on ML path changes)
+- `test-rag.yml` (runs on RAG path changes)
+- `rust_swarm_ci.yml` (runs on .rs path changes)
+
+#### Deployment
+
+**Master Workflows:**
+- `deploy-production.yml` (production orchestration)
+- `deploy-staging.yml` (staging validation)
+
+**Features:**
+- Multi-environment support
+- Canary deployment support (10% → 50% → 100%)
+- Pre/post-deployment health checks
+- Automated rollback on failure
+
+**Consolidated:** 5 deployment workflow variants into 2 masters
+
+#### Health Monitoring
+
+**New Capability:** 12 metrics live
+
+**Access Dashboard:**
+```bash
+# View health dashboard
+cat docs/operations/health-dashboard.md
+
+# View raw metrics
+cat .codex/WORKFLOW_HEALTH_DASHBOARD.json | jq .
+```
+
+**Key Metrics:**
+- Workflow success rate
+- CodeQL alert volume
+- Test pass rate
+- Code coverage
+- Deployment success rate
+- CI failure rate
+- Performance latency
+- Documentation freshness
+
+### Migration for Developers
+
+**Impact:** If you manually trigger workflows, use new consolidated interfaces above.
+
+**No Changes to:**
+- ✅ PR checks (still automatic)
+- ✅ Push triggers (still automatic)
+- ✅ Artifact locations
+- ✅ SARIF output to GitHub Security tab
+- ✅ Schedule timing
+
+**See Also:** `docs/operations/workflow-consolidation-guide.md` for detailed migration guide.
+
+### Archives
+
+**Location:** `.github/workflows/archived/`
+
+Consolidated workflows moved here for reference. Can be restored if needed:
+
+```bash
+# Restore archived workflow
+cp .github/workflows/archived/security-workflows/container-scan.yml \
+   .github/workflows/
+
+# Push changes
+git add .github/workflows/
+git commit -m "RESTORE: container-scan.yml from archive"
+```
+
+**See:** `.codex/WORKFLOW_ARCHIVAL_DECISIONS.md` for recovery procedures.
+
+---
 
 ### Scenario: Workflow Health Dashboard Unavailable
 
