@@ -1,4 +1,4 @@
-# codex-ml v0.2.2: Executive Summary & Key Findings
+# codex-ml v0.2.3: Executive Summary & Key Findings
 
 **Date:** 2026-07-13T20:53:47Z  
 **Scope:** Installation testing, functionality verification, issue discovery  
@@ -21,7 +21,7 @@
 
 ## The Bottom Line
 
-**codex-ml v0.2.2 is architecturally sound with great design but has 3 critical implementation issues that break the core profile's offline-first guarantee.**
+**codex-ml v0.2.3 is architecturally sound with great design but has 3 critical implementation issues that break the core profile's offline-first guarantee.**
 
 ### What Works ✅
 - Installation process smooth
@@ -150,7 +150,7 @@ Cross-references installed versions against known CVE database. Currently PASSES
 ### 🟢 P3: MEDIUM - Do Before Release (45 min)
 1. Create profile selection guide
 2. Add installation instructions per profile
-3. Create migration guide for v0.1.0 → v0.2.2
+3. Create migration guide for v0.1.0 → v0.2.3
 
 ---
 
@@ -158,14 +158,14 @@ Cross-references installed versions against known CVE database. Currently PASSES
 
 ### What You'll Find in the Deliverables
 
-1. **CODEX_ML_0.2.2_ANALYSIS_REPORT.md**
+1. **CODEX_ML_0.2.3_ANALYSIS_REPORT.md**
    - Complete technical analysis
    - Detailed issue descriptions
    - Security verification
    - Unique test cases
    - ~18 KB of findings
 
-2. **CODEX_ML_0.2.2_RESOLUTION_GUIDE.md**
+2. **CODEX_ML_0.2.3_RESOLUTION_GUIDE.md**
    - Step-by-step fix instructions
    - Copy-paste ready code samples
    - Validation checklist
@@ -202,7 +202,7 @@ $ pytest tests/test_profile_core_isolation.py -v
 
 # ✅ Check 3: CLI works
 $ codex-ml --version
-# Output: codex-ml version 0.2.2
+# Output: codex-ml version 0.2.3
 
 # ✅ Check 4: Security verified
 $ safety check
@@ -217,7 +217,7 @@ $ mypy src/codex_ml --strict --ignore-missing-imports
 
 ## Decision Points
 
-### Should we use v0.2.2 in production?
+### Should we use v0.2.3 in production?
 
 **Current Status:** ⚠️ **NOT RECOMMENDED** for production until critical issues fixed
 
@@ -226,13 +226,13 @@ $ mypy src/codex_ml --strict --ignore-missing-imports
 - Could impact edge deployments that rely on offline-first
 - Easy 40-minute fix (low risk)
 
-### Can we backport fixes to v0.2.2?
+### Can we backport fixes to v0.2.3?
 
 **Recommended Path:**
-1. ✅ Apply fixes to current codebase (v0.2.2)
+1. ✅ Apply fixes to current codebase (v0.2.3)
 2. ✅ Create v0.2.3 with all fixes included
 3. ✅ Release v0.2.3 immediately
-4. ⚠️ Deprecated v0.2.2 if critical issues widespread
+4. ⚠️ Deprecated v0.2.3 if critical issues widespread
 
 ### Should we continue development on main?
 
@@ -248,8 +248,8 @@ $ mypy src/codex_ml --strict --ignore-missing-imports
 
 ```
 .codex/
-├── CODEX_ML_0.2.2_ANALYSIS_REPORT.md        (17.7 KB - Technical analysis)
-├── CODEX_ML_0.2.2_RESOLUTION_GUIDE.md       (17.8 KB - Implementation guide)
+├── CODEX_ML_0.2.3_ANALYSIS_REPORT.md        (17.7 KB - Technical analysis)
+├── CODEX_ML_0.2.3_RESOLUTION_GUIDE.md       (17.8 KB - Implementation guide)
 ├── test_codex_ml_installation.py            (13.7 KB - Test suite)
 ├── test_codex_ml_discovery.py               (14.1 KB - Discovery tests)
 └── CODEX_ML_EXECUTIVE_SUMMARY.md            (This file)
@@ -276,13 +276,13 @@ $ mypy src/codex_ml --strict --ignore-missing-imports
 ## Next Actions
 
 ### For Immediate Implementation
-1. Read CODEX_ML_0.2.2_RESOLUTION_GUIDE.md (15 min)
+1. Read CODEX_ML_0.2.3_RESOLUTION_GUIDE.md (15 min)
 2. Apply P1 fixes in order (40 min)
 3. Run validation checklist (10 min)
 4. Commit and tag v0.2.3 (5 min)
 
 ### For Extended Review
-1. Review CODEX_ML_0.2.2_ANALYSIS_REPORT.md (30 min)
+1. Review CODEX_ML_0.2.3_ANALYSIS_REPORT.md (30 min)
 2. Understand architecture implications (20 min)
 3. Plan long-term improvements (P2 and P3)
 4. Update CI/CD to prevent regressions
@@ -298,15 +298,15 @@ $ mypy src/codex_ml --strict --ignore-missing-imports
 
 ## Contacts & Questions
 
-- **Technical Details:** See CODEX_ML_0.2.2_ANALYSIS_REPORT.md
-- **Implementation Help:** See CODEX_ML_0.2.2_RESOLUTION_GUIDE.md
+- **Technical Details:** See CODEX_ML_0.2.3_ANALYSIS_REPORT.md
+- **Implementation Help:** See CODEX_ML_0.2.3_RESOLUTION_GUIDE.md
 - **Test Cases:** See test_codex_ml_*.py files
 
 ---
 
 ## Conclusion
 
-**codex-ml v0.2.2 is a well-designed package with solid security practices but has 3 fixable critical issues that prevent core profile from functioning. All issues are low-risk to fix and have clear solutions documented. Estimated 40 minutes to resolve critical issues, 3 hours for full remediation.**
+**codex-ml v0.2.3 is a well-designed package with solid security practices but has 3 fixable critical issues that prevent core profile from functioning. All issues are low-risk to fix and have clear solutions documented. Estimated 40 minutes to resolve critical issues, 3 hours for full remediation.**
 
 **Recommendation: Apply fixes and release as v0.2.3 immediately.**
 

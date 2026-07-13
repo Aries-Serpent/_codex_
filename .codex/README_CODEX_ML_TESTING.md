@@ -1,7 +1,7 @@
 # codex-ml v0.2.2: Complete Testing & Analysis Results
 
 **Date:** 2026-07-13T20:53:47Z  
-**Package:** codex-ml==0.2.2  
+**Package:** codex-ml==0.2.3  
 **Python:** >=3.12  
 **Status:** ✅ TESTING COMPLETE
 

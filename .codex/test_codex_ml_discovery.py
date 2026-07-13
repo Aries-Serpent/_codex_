@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Issue Discovery and Improvement Analysis for codex-ml==0.2.2
+Issue Discovery and Improvement Analysis for codex-ml==0.2.3
 
 This module identifies:
 1. Dependency conflicts and compatibility issues
@@ -77,7 +77,7 @@ class TestDependencyAnalysis:
         if result.returncode == 0:
             # Run pip-check for conflicts
             result = subprocess.run(
-                [str(pip_exe), "install", "codex-ml[core]==0.2.2"],
+                [str(pip_exe), "install", "codex-ml[core]==0.2.3"],
                 capture_output=True,
                 text=True,
                 timeout=300,
@@ -393,7 +393,7 @@ class TestImprovementOpportunities:
 def generate_comprehensive_report() -> Dict[str, Any]:
     """Generate comprehensive test and analysis report."""
     report = {
-        "title": "codex-ml==0.2.2 Installation and Analysis Report",
+        "title": "codex-ml==0.2.3 Installation and Analysis Report",
         "timestamp": __import__("datetime").datetime.now().isoformat(),
         "python_version": f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}",
         "sections": {

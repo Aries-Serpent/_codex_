@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-Comprehensive Installation and Functionality Tests for codex-ml==0.2.2
+Comprehensive Installation and Functionality Tests for codex-ml==0.2.3
 
 This module tests:
-1. Installation of codex-ml[core]==0.2.2
+1. Installation of codex-ml[core]==0.2.3
 2. Core profile functionality
 3. Offline-first capabilities
 4. Entry point registration

@@ -514,7 +514,7 @@ def test_core_profile_installation():
         
         # Install core profile
         subprocess.run(
-            [str(pip), "install", "codex-ml[core]==0.2.2"],
+            [str(pip), "install", "codex-ml[core]==0.2.3"],
             check=True,
             capture_output=True,
             timeout=300,
@@ -599,7 +599,7 @@ def test_runtime_profile_has_ml():
 
 ### Core Profile (Recommended for edge)
 ```bash
-pip install codex-ml[core]==0.2.2
+pip install codex-ml[core]==0.2.3
 # Size: ~15 MB
 # Use: Offline analysis, edge deployment
 ```
@@ -673,7 +673,7 @@ $ safety check
 # Output: No known security vulnerabilities found
 
 # ✅ Test 5: Installation size accurate
-$ pip install codex-ml[core]==0.2.2 --report-dependencies
+$ pip install codex-ml[core]==0.2.3 --report-dependencies
 # Core: ~15 MB, Runtime: ~35 MB, Full: ~150 MB
 ```
 

@@ -16,9 +16,14 @@ __all__ = [
 
 def __getattr__(name: str) -> object:
     """Lazy-load metrics_export to avoid prometheus_client import in core profile."""
-    if name in ("get_metrics_text", "metrics_endpoint_fastapi"):
-        from .metrics_export import get_metrics_text, metrics_endpoint_fastapi
+    if name == "get_metrics_text":
+        from .metrics_export import get_metrics_text
 
-        globals()[name] = locals()[name]
-        return locals()[name]
+        globals()[name] = get_metrics_text
+        return get_metrics_text
+    elif name == "metrics_endpoint_fastapi":
+        from .metrics_export import metrics_endpoint_fastapi
+
+        globals()[name] = metrics_endpoint_fastapi
+        return metrics_endpoint_fastapi
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

@@ -1,29 +1,29 @@
-# Session Context — 2026-07-13T21:13:51Z
+# Session Context — 2026-07-13T21:30:13Z
 **Branch:** `copilot/v022-publication-deployment`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `5000` (✅)
-- GraphQL remaining: `5000` (✅)
+- REST remaining: `4999` (✅)
+- GraphQL remaining: `4999` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **.github/workflows/embedding-index-rebuild.yml** — `failure` on `copilot/v022-publication-deployment` (2026-07-13)
-- **.github/workflows/github-guru.yml** — `failure` on `copilot/v022-publication-deployment` (2026-07-13)
-- **.github/workflows/branch-divergence-monitor.yml** — `failure` on `copilot/v022-publication-deployment` (2026-07-13)
-- **.github/workflows/session-context-capture.yml** — `failure` on `copilot/v022-publication-deployment` (2026-07-13)
-- **.github/workflows/codex-manifest-refresh.yml** — `failure` on `copilot/v022-publication-deployment` (2026-07-13)
+- **.github/workflows/cognitive-action-decision.yml** — `failure` on `copilot/v022-publication-deployment` (2026-07-13)
+- **.github/workflows/consistency-checks.yml** — `failure` on `copilot/v022-publication-deployment` (2026-07-13)
+- **.github/workflows/pages-mkdocs.yml** — `failure` on `copilot/v022-publication-deployment` (2026-07-13)
+- **.github/workflows/agent-health-check.yml** — `failure` on `copilot/v022-publication-deployment` (2026-07-13)
+- **.github/workflows/auth-tests.yml** — `failure` on `copilot/v022-publication-deployment` (2026-07-13)
 
 ## 📝 Recent Commits
+- `db820769` docs: add profile-specific imports guide and update accountability report — copilot-swe-agent[bot] (2026-07-13)
+- `05aaa312` fix: add prometheus_client import guards and fix exception handlers — copilot-swe-agent[bot] (2026-07-13)
+- `14b5fb29` WIP: Fix v0.2.3 dependency leak and circular import issues — copilot-swe-agent[bot] (2026-07-13)
 - `e8f5ce07` complete: codex-ml v0.2.2 comprehensive testing and analysis delivered - 77.3 KB — copilot-swe-agent[bot] (2026-07-13)
 - `b0d4cf54` docs: final summary - codex-ml v0.2.2 comprehensive testing complete with 3 crit — copilot-swe-agent[bot] (2026-07-13)
 - `ae8c8d3e` analysis: comprehensive codex-ml[core]==0.2.2 testing and issue discovery comple — copilot-swe-agent[bot] (2026-07-13)
 - `2049aa2d` plan: comprehensive codex-ml[core]==0.2.2 installation and testing suite — copilot-swe-agent[bot] (2026-07-13)
 - `17c35ab4` Apply remaining changes — Copilot (2026-07-13)
-- `1807b905` feat(workflow): Complete CodeQL continuity campaign & enable v0.2.2 autonomous d — Copilot (2026-07-13)
-- `84597c56` Consolidate 27 workflows into 9 masters: 67% reduction, health dashboard deploym — Copilot (2026-07-13)
-- `6af5ec2d` fix(security): Resolve Issue #5299 security vulnerabilities - zero critical/high — Copilot (2026-07-13)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`

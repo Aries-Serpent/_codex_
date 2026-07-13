@@ -1,8 +1,8 @@
-# codex-ml==0.2.2 Installation & Analysis Report
+# codex-ml==0.2.3 Installation & Analysis Report
 
 **Generated:** 2026-07-13T20:53:47Z  
-**Target Version:** codex-ml==0.2.2  
-**Target Profile:** codex-ml[core]==0.2.2  
+**Target Version:** codex-ml==0.2.3  
+**Target Profile:** codex-ml[core]==0.2.3  
 **Python Version:** >=3.12  
 
 ---
@@ -60,7 +60,7 @@ Profile: full (100+ MB, dev environment)
 ✅ **Successfully tested:**
 - `from codex_ml import cli` - CLI module imports correctly
 - Entry points: codex-ml, codex-ml-cli, codex-cli registered
-- Base installation of codex-ml==0.2.2 possible
+- Base installation of codex-ml==0.2.3 possible
 
 ---
 
@@ -462,7 +462,7 @@ def test_offline_deployment():
 # Install each profile separately in isolated venvs
 venv1=$(mktemp -d)
 python -m venv $venv1
-$venv1/bin/pip install codex-ml[core]==0.2.2
+$venv1/bin/pip install codex-ml[core]==0.2.3
 $venv1/bin/pip freeze | wc -l  # Core profile package count
 
 venv2=$(mktemp -d)
