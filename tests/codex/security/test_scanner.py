@@ -11,7 +11,7 @@ class TestSecurityScannerImports:
     def test_module_can_be_imported(self):
         """Test that the module can be imported."""
         try:
-            from src.codex.security import scanner
+    from codex.security import scanner
 
             assert scanner is not None, "scanner must be initialized"
         except ImportError:
@@ -24,7 +24,7 @@ class TestSecurityScannerOperations:
     def test_scanner_creation(self):
         """Test scanner creation."""
         try:
-            from src.codex.security import scanner
+    from codex.security import scanner
 
             if hasattr(scanner, "SecurityScanner"):
                 s = scanner.SecurityScanner()
@@ -35,7 +35,7 @@ class TestSecurityScannerOperations:
     def test_scan_file(self):
         """Test file scanning."""
         try:
-            from src.codex.security import scanner
+    from codex.security import scanner
 
             if hasattr(scanner, "scan_file"):
                 with patch.object(scanner, "scan_file") as mock_scan:
@@ -48,7 +48,7 @@ class TestSecurityScannerOperations:
     def test_scan_directory(self):
         """Test directory scanning."""
         try:
-            from src.codex.security import scanner
+    from codex.security import scanner
 
             if hasattr(scanner, "scan_directory"):
                 with patch.object(scanner, "scan_directory") as mock_scan:
@@ -65,7 +65,7 @@ class TestSecurityScannerRules:
     def test_load_rules(self):
         """Test loading rules."""
         try:
-            from src.codex.security import scanner
+    from codex.security import scanner
 
             if hasattr(scanner, "load_rules"):
                 with patch.object(scanner, "load_rules") as mock_load:
@@ -78,7 +78,7 @@ class TestSecurityScannerRules:
     def test_add_custom_rule(self):
         """Test adding custom rule."""
         try:
-            from src.codex.security import scanner
+    from codex.security import scanner
 
             if hasattr(scanner, "SecurityScanner"):
                 s = scanner.SecurityScanner()

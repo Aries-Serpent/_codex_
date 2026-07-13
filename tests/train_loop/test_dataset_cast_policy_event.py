@@ -24,7 +24,7 @@ except ImportError:
 )
 def test_dataset_cast_policy_emits_event(tmp_path: Path):
     # Run one synthetic epoch and ensure dataset_cast telemetry is written
-    from src.codex_ml.train_loop import run_training
+    from codex_ml.train_loop import run_training
 
     outdir = tmp_path / "artifacts"
     res = run_training(

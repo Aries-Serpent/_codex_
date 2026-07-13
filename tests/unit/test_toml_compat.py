@@ -6,7 +6,7 @@ Test module for toml compat.
 
 import io
 
-from src.codex_ml.utils.toml_compat import load, loads
+from codex_ml.utils.toml_compat import load, loads
 
 
 def test_loads_parses_minimal_table():

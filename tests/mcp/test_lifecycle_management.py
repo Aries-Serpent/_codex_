@@ -10,7 +10,7 @@ from unittest.mock import AsyncMock, Mock
 
 import pytest
 
-from src.services.mcp.lifecycle import LifecycleManager
+from services.mcp.lifecycle import LifecycleManager
 
 
 class TestLifecycleManagerBasics:

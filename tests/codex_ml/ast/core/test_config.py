@@ -10,7 +10,7 @@ from pathlib import Path
 
 import pytest
 
-from src.codex_ml.ast.core.config import ASTConfig
+from codex_ml.ast.core.config import ASTConfig
 
 
 class TestDefaultValues:

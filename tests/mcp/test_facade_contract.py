@@ -51,7 +51,7 @@ def fake_adapter_loader(monkeypatch):
 
     fake = FakeAdapter()
     try:
-        from src.mcp.middleware.rate_limit_middleware import clear_buckets
+    from mcp.middleware.rate_limit_middleware import clear_buckets
 
         clear_buckets()
     except ImportError:

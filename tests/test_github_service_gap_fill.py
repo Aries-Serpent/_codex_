@@ -7,8 +7,8 @@ from unittest.mock import patch
 
 import pytest
 
-from src.services.github.client import GitHubClient
-from src.services.github.exceptions import (
+from services.github.client import GitHubClient
+from services.github.exceptions import (
     AuthenticationError,
     GitHubAPIError,
     NotFoundError,

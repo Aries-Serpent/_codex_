@@ -4,7 +4,7 @@ from unittest.mock import patch
 
 import pytest
 
-from src.codex_ml.utils.safe_pickle import (
+from codex_ml.utils.safe_pickle import (
     SIGNED_PICKLE_ALGO_SHA256,
     SIGNED_PICKLE_MAGIC,
     SIGNED_PICKLE_VERSION,

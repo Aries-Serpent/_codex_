@@ -12,7 +12,7 @@ from codex_ml.utils.hf_pinning import HFModelUnavailableError, load_from_pretrai
 pytest.importorskip("datasets")
 pytest.importorskip("torch")
 
-from src.training.datasets import to_hf_dataset
+from training.datasets import to_hf_dataset
 
 
 @pytest.fixture(autouse=True)

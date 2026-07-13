@@ -39,7 +39,7 @@ class TestCheckpointCoreBasics:
         """Verify checkpoint directory is created on save."""
         # Arrange
         _require_checkpoint_torch()
-        from src.codex_ml.checkpointing.checkpoint_core import save_checkpoint
+    from codex_ml.checkpointing.checkpoint_core import save_checkpoint
 
         test_state = {"model": {"weights": [1.0, 2.0]}}
         test_meta = {"epoch": 1, "step": 100}
@@ -60,7 +60,7 @@ class TestCheckpointCoreBasics:
         """Verify metadata JSON contains schema version and timestamp."""
         # Arrange
         _require_checkpoint_torch()
-        from src.codex_ml.checkpointing.checkpoint_core import save_checkpoint
+    from codex_ml.checkpointing.checkpoint_core import save_checkpoint
 
         test_state = {"model": {"layer": [0.5]}}
         test_meta = {"epoch": 2, "step": 50}
@@ -86,7 +86,7 @@ class TestCheckpointCoreBasics:
         """Verify FileNotFoundError raised for missing checkpoint."""
         # Arrange
         _require_checkpoint_torch()
-        from src.codex_ml.checkpointing.checkpoint_core import load_checkpoint
+    from codex_ml.checkpointing.checkpoint_core import load_checkpoint
 
         nonexistent_path = self.tmpdir / "missing" / "checkpoint.pt"
 
@@ -102,7 +102,7 @@ class TestCheckpointCoreBasics:
         """Verify state is preserved through save and load cycle."""
         # Arrange
         _require_checkpoint_torch()
-        from src.codex_ml.checkpointing.checkpoint_core import (
+    from codex_ml.checkpointing.checkpoint_core import (
             load_checkpoint,
             save_checkpoint,
         )
@@ -131,7 +131,7 @@ class TestCheckpointCoreBasics:
         """Verify load succeeds even if metadata.json is missing."""
         # Arrange
         _require_checkpoint_torch()
-        from src.codex_ml.checkpointing.checkpoint_core import (
+    from codex_ml.checkpointing.checkpoint_core import (
             load_checkpoint,
             save_checkpoint,
         )
@@ -161,7 +161,7 @@ class TestCheckpointCoreBasics:
         """Verify schema version is checked during load."""
         # Arrange
         _require_checkpoint_torch()
-        from src.codex_ml.checkpointing.checkpoint_core import load_checkpoint
+    from codex_ml.checkpointing.checkpoint_core import load_checkpoint
 
         test_state = {"model": {"w": 0.5}}
         weights_path = self.checkpoint_dir / "weights.pt"
@@ -210,7 +210,7 @@ class TestCheckpointAtomicIO:
         """Verify checkpoint files are written atomically."""
         # Arrange
         _require_checkpoint_torch()
-        from src.codex_ml.checkpointing.checkpoint_core import save_checkpoint
+    from codex_ml.checkpointing.checkpoint_core import save_checkpoint
 
         checkpoint_dir = self.tmpdir / "ckpt_atomic"
         test_state = {"model": {}}
@@ -235,7 +235,7 @@ class TestCheckpointAtomicIO:
         """Verify keep_last_k parameter limits retained checkpoints."""
         # Arrange
         _require_checkpoint_torch()
-        from src.codex_ml.checkpointing.checkpoint_core import save_checkpoint
+    from codex_ml.checkpointing.checkpoint_core import save_checkpoint
 
         parent_dir = self.tmpdir / "training"
         parent_dir.mkdir()
@@ -269,7 +269,7 @@ class TestCheckpointErrorHandling:
     def test_checkpoint_torch_not_available_raises_runtime_error(self):
         """Verify clear error when PyTorch is not available."""
         # This test verifies the _require_torch_attr function
-        from src.codex_ml.checkpointing.checkpoint_core import _require_torch_attr
+    from codex_ml.checkpointing.checkpoint_core import _require_torch_attr
 
         # Test with invalid torch attribute
         with pytest.raises(RuntimeError) as exc_info:
@@ -283,7 +283,7 @@ class TestCheckpointErrorHandling:
         """Verify save creates parent directories as needed."""
         # Arrange
         _require_checkpoint_torch()
-        from src.codex_ml.checkpointing.checkpoint_core import save_checkpoint
+    from codex_ml.checkpointing.checkpoint_core import save_checkpoint
 
         nested_dir = self.tmpdir / "level1" / "level2" / "checkpoint"
         test_state = {"w": 0.5}

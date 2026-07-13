@@ -45,7 +45,7 @@ class TestGitHubClientCheckRuns:
 
     def test_check_run_types(self):
         """Test CheckRun type definitions."""
-        from src.services.github.types import (
+    from services.github.types import (
             CheckRun,
             CheckRunConclusion,
             CheckRunStatus,
@@ -67,7 +67,7 @@ class TestGitHubClientCheckRuns:
 
     def test_check_run_failed_status(self):
         """Test CheckRun failed status detection."""
-        from src.services.github.types import (
+    from services.github.types import (
             CheckRun,
             CheckRunConclusion,
             CheckRunStatus,
@@ -89,7 +89,7 @@ class TestGitHubClientCheckRuns:
     @patch("src.services.github.client.httpx.AsyncClient")
     async def test_get_check_run(self, mock_client_class, mock_check_run_data):
         """Test fetching a single check run."""
-        from src.services.github.client import GitHubClient
+    from services.github.client import GitHubClient
 
         # Setup mock
         mock_response = Mock()
@@ -114,7 +114,7 @@ class TestGitHubClientCheckRuns:
     @patch("src.services.github.client.httpx.AsyncClient")
     async def test_list_check_runs_for_ref(self, mock_client_class, mock_check_runs_response):
         """Test listing check runs for a git reference."""
-        from src.services.github.client import GitHubClient
+    from services.github.client import GitHubClient
 
         # Setup mock
         mock_response = Mock()
@@ -150,9 +150,9 @@ class TestGitHubLogsCLI:
     def test_fetch_check_run_logs_command(self, mock_get_client):
         """Test check-run CLI command."""
         from click.testing import CliRunner
-        from src.codex.cli_github_logs import cli
+    from codex.cli_github_logs import cli
 
-        from src.services.github.types import (
+    from services.github.types import (
             CheckRun,
             CheckRunConclusion,
             CheckRunStatus,
@@ -184,9 +184,9 @@ class TestGitHubLogsCLI:
     def test_list_check_runs_command(self, mock_get_client):
         """Test list-check-runs CLI command."""
         from click.testing import CliRunner
-        from src.codex.cli_github_logs import cli
+    from codex.cli_github_logs import cli
 
-        from src.services.github.types import (
+    from services.github.types import (
             CheckRun,
             CheckRunConclusion,
             CheckRunStatus,
@@ -239,7 +239,7 @@ class TestGitHubLogsAPI:
         from fastapi import FastAPI
         from fastapi.testclient import TestClient
 
-        from src.services.github.types import (
+    from services.github.types import (
             CheckRun,
             CheckRunConclusion,
             CheckRunStatus,
@@ -279,7 +279,7 @@ class TestGitHubLogsAPI:
         from fastapi import FastAPI
         from fastapi.testclient import TestClient
 
-        from src.services.github.types import (
+    from services.github.types import (
             CheckRun,
             CheckRunConclusion,
             CheckRunStatus,
@@ -326,8 +326,8 @@ class TestGitHubLogsMCPTools:
     @patch("src.mcp.tools.github_logs._get_github_client")
     def test_fetch_check_run_logs_tool(self, mock_get_client):
         """Test fetch_check_run_logs MCP tool."""
-        from src.mcp.tools.github_logs import fetch_check_run_logs
-        from src.services.github.types import (
+    from mcp.tools.github_logs import fetch_check_run_logs
+    from services.github.types import (
             CheckRun,
             CheckRunConclusion,
             CheckRunStatus,
@@ -359,8 +359,8 @@ class TestGitHubLogsMCPTools:
     @patch("src.mcp.tools.github_logs._get_github_client")
     def test_list_check_runs_tool(self, mock_get_client):
         """Test list_check_runs MCP tool."""
-        from src.mcp.tools.github_logs import list_check_runs
-        from src.services.github.types import (
+    from mcp.tools.github_logs import list_check_runs
+    from services.github.types import (
             CheckRun,
             CheckRunConclusion,
             CheckRunStatus,
@@ -390,7 +390,7 @@ class TestGitHubLogsMCPTools:
     @patch("src.mcp.tools.github_logs._get_github_client")
     def test_mcp_tool_error_handling(self, mock_get_client):
         """Test MCP tool error handling."""
-        from src.mcp.tools.github_logs import fetch_check_run_logs
+    from mcp.tools.github_logs import fetch_check_run_logs
 
         # Setup mock to raise error
         mock_client = Mock()
@@ -417,7 +417,7 @@ class TestGitHubLogsIntegration:
         """Test fetching real check run from GitHub API."""
         import os
 
-        from src.services.github.client import GitHubClientSync
+    from services.github.client import GitHubClientSync
 
         # Skip if not running integration tests
         if not request.config.getoption("--run-integration", default=False):

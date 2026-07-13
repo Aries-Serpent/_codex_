@@ -1,6 +1,6 @@
 """Unit tests for sensitive data utilities (Phase 23 Week 3 gapfill)."""
 
-from src.utils.sensitive_data import hash_sensitive_value, mask_sensitive_data
+from utils.sensitive_data import hash_sensitive_value, mask_sensitive_data
 
 
 def test_mask_sensitive_data_email():

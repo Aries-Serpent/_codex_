@@ -11,7 +11,7 @@ pytest.importorskip("numpy")
 
 def test_audit_logger_log_dir_parameter(tmp_path):
     """Verify AuditLogger accepts log_dir parameter."""
-    from src.security.audit_logger import AuditLogger
+    from security.audit_logger import AuditLogger
 
     # Should not raise TypeError
     test_dir = tmp_path / "test_audit"
@@ -21,7 +21,7 @@ def test_audit_logger_log_dir_parameter(tmp_path):
 
 def test_sanitize_log_alias_exists():
     """Verify sanitize_log alias is exported."""
-    from src.utils.log_sanitizer import sanitize_log
+    from utils.log_sanitizer import sanitize_log
 
     # Should be importable and callable
     result = sanitize_log("test message")
@@ -30,7 +30,7 @@ def test_sanitize_log_alias_exists():
 
 def test_security_error_and_enforce_absolute_path():
     """Verify SecurityError and enforce_absolute_path exist."""
-    from src.security.core import SecurityError, enforce_absolute_path
+    from security.core import SecurityError, enforce_absolute_path
 
     # Should raise SecurityError for relative paths
     with pytest.raises(SecurityError):
@@ -40,7 +40,7 @@ def test_security_error_and_enforce_absolute_path():
 def test_encryption_error_not_frozen():
     """Verify EncryptionError is a regular exception, not a frozen dataclass."""
     try:
-        from src.security.encryption import EncryptionError
+    from security.encryption import EncryptionError
 
         # Should be able to instantiate with message
         error = EncryptionError("test error")

@@ -1,4 +1,4 @@
-from src.codex_ml.utils.config_loader import (
+from codex_ml.utils.config_loader import (
     _apply_overrides_to_mapping,
     _AttrDictConfig,
     _flatten_training_section,

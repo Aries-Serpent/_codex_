@@ -11,7 +11,7 @@ class TestRagPipelineImports:
     def test_module_can_be_imported(self):
         """Test that the module can be imported."""
         try:
-            from src.codex.rag import pipeline
+    from codex.rag import pipeline
 
             assert pipeline is not None, "pipeline must be initialized"
         except ImportError:
@@ -24,7 +24,7 @@ class TestRagPipelineOperations:
     def test_pipeline_creation(self):
         """Test RAG pipeline creation."""
         try:
-            from src.codex.rag import pipeline
+    from codex.rag import pipeline
 
             if hasattr(pipeline, "RagPipeline"):
                 rag = pipeline.RagPipeline()
@@ -35,7 +35,7 @@ class TestRagPipelineOperations:
     def test_document_ingestion(self):
         """Test document ingestion."""
         try:
-            from src.codex.rag import pipeline
+    from codex.rag import pipeline
 
             if hasattr(pipeline, "ingest_document"):
                 with patch.object(pipeline, "ingest_document") as mock_ingest:
@@ -48,7 +48,7 @@ class TestRagPipelineOperations:
     def test_query_processing(self):
         """Test query processing."""
         try:
-            from src.codex.rag import pipeline
+    from codex.rag import pipeline
 
             if hasattr(pipeline, "process_query"):
                 with patch.object(pipeline, "process_query") as mock_query:
@@ -65,7 +65,7 @@ class TestRagPipelineConfiguration:
     def test_default_config(self):
         """Test default configuration."""
         try:
-            from src.codex.rag import pipeline
+    from codex.rag import pipeline
 
             if hasattr(pipeline, "DEFAULT_CONFIG"):
                 assert pipeline.DEFAULT_CONFIG is not None, "DEFAULT_CONFIG must be initialized"
@@ -75,7 +75,7 @@ class TestRagPipelineConfiguration:
     def test_custom_embedding_model(self):
         """Test custom embedding model."""
         try:
-            from src.codex.rag import pipeline
+    from codex.rag import pipeline
 
             if hasattr(pipeline, "RagPipeline"):
                 rag = pipeline.RagPipeline(embedding_model="custom")

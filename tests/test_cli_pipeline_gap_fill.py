@@ -9,7 +9,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from src.cli.pipeline import (
+from cli.pipeline import (
     PipelineValidationError,
     run_pipeline,
     validate_pipeline_config,

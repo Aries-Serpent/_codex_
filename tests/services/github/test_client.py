@@ -5,15 +5,15 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from src.services.github.client import GitHubClient
-from src.services.github.exceptions import (
+from services.github.client import GitHubClient
+from services.github.exceptions import (
     AuthenticationError,
     GitHubAPIError,
     NotFoundError,
     RateLimitError,
     WorkflowTriggerError,
 )
-from src.services.github.types import (
+from services.github.types import (
     ArtifactInfo,
     RateLimitInfo,  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
     RunConclusion,

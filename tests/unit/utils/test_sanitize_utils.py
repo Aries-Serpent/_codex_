@@ -1,6 +1,6 @@
 """Unit tests for sanitize_prompt utility (Phase 23 Week 3 gapfill)."""
 
-from src.utils.sanitize import sanitize_prompt
+from utils.sanitize import sanitize_prompt
 
 
 def test_sanitize_prompt_basic_html_escaping():

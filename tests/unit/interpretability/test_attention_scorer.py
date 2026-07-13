@@ -23,7 +23,7 @@ except ImportError:
 
 # Only import if dependencies are available
 if HAS_DEPS:
-    from src.codex.interpretability.attention_scorer import (
+    from codex.interpretability.attention_scorer import (
         AttentionAnalysis,
         AttentionScorer,
     )

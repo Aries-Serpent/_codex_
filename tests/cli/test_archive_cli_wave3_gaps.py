@@ -40,7 +40,7 @@ performance:
                 f.write(config_content)
             
             try:
-                from src.codex.archive.cli import _load_config
+    from codex.archive.cli import _load_config
                 config = _load_config(config_path)
                 assert config is not None
             except ImportError:
@@ -58,7 +58,7 @@ logging:
                 f.write(config_content)
             
             try:
-                from src.codex.archive.cli import _load_config
+    from codex.archive.cli import _load_config
                 
                 with pytest.raises((ValueError, KeyError)):
                     config = _load_config(config_path)
@@ -79,7 +79,7 @@ batch: {unclosed
                 f.write(config_content)
             
             try:
-                from src.codex.archive.cli import _load_config
+    from codex.archive.cli import _load_config
                 
                 with pytest.raises((ValueError, Exception)):
                     config = _load_config(config_path)
@@ -93,7 +93,7 @@ batch: {unclosed
             'ARCHIVE_BATCH_WORKERS': '8',
         }):
             try:
-                from src.codex.archive.cli import _load_config_from_env
+    from codex.archive.cli import _load_config_from_env
                 
                 config = _load_config_from_env()
                 assert config is not None
@@ -119,7 +119,7 @@ class TestArchiveCliBatchProcessing:
                     f.write(f"Content {i}")
             
             try:
-                from src.codex.archive.cli import archive_command
+    from codex.archive.cli import archive_command
                 
                 result = runner.invoke(archive_command, ['--directory', archive_dir])
                 assert result.exit_code == 0 or result.exit_code is not None
@@ -147,7 +147,7 @@ class TestArchiveCliBatchProcessing:
                 pass
             
             try:
-                from src.codex.archive.cli import archive_command
+    from codex.archive.cli import archive_command
                 
                 result = runner.invoke(archive_command, ['--directory', archive_dir])
                 # Should handle partial failures gracefully
@@ -161,7 +161,7 @@ class TestArchiveCliBatchProcessing:
         
         with tempfile.TemporaryDirectory() as tmpdir:
             try:
-                from src.codex.archive.cli import archive_command
+    from codex.archive.cli import archive_command
                 
                 result = runner.invoke(archive_command, ['--directory', tmpdir])
                 # Should handle empty directory gracefully
@@ -183,7 +183,7 @@ class TestArchiveCliBatchProcessing:
                     f.write(f"Content {i}")
             
             try:
-                from src.codex.archive.cli import archive_command
+    from codex.archive.cli import archive_command
                 
                 result = runner.invoke(archive_command, [
                     '--directory', archive_dir,
@@ -199,7 +199,7 @@ class TestArchiveCliMetadataParsing:
     def test_parse_metadata_key_value_pairs(self):
         """Test parsing metadata key=value pairs."""
         try:
-            from src.codex.archive.cli import _parse_metadata
+    from codex.archive.cli import _parse_metadata
             
             metadata_items = ["key1=value1", "key2=value2", "key3="]
             result = _parse_metadata(metadata_items)
@@ -213,7 +213,7 @@ class TestArchiveCliMetadataParsing:
     def test_parse_metadata_invalid_format(self):
         """Test parsing metadata with invalid format."""
         try:
-            from src.codex.archive.cli import _parse_metadata
+    from codex.archive.cli import _parse_metadata
             
             # Missing '=' separator
             with pytest.raises((ValueError, Exception)):
@@ -224,7 +224,7 @@ class TestArchiveCliMetadataParsing:
     def test_parse_metadata_duplicate_keys(self):
         """Test parsing metadata with duplicate keys."""
         try:
-            from src.codex.archive.cli import _parse_metadata
+    from codex.archive.cli import _parse_metadata
             
             # Last value should win, or raise error
             result = _parse_metadata(["key=value1", "key=value2"])
@@ -235,7 +235,7 @@ class TestArchiveCliMetadataParsing:
     def test_parse_metadata_special_characters(self):
         """Test parsing metadata with special characters."""
         try:
-            from src.codex.archive.cli import _parse_metadata
+    from codex.archive.cli import _parse_metadata
             
             special_values = [
                 "key=value/with/slashes",
@@ -262,7 +262,7 @@ class TestArchiveCliServiceIntegration:
             runner = CliRunner()
             
             try:
-                from src.codex.archive.cli import archive_command
+    from codex.archive.cli import archive_command
                 
                 with tempfile.TemporaryDirectory() as tmpdir:
                     result = runner.invoke(archive_command, ['--directory', tmpdir])
@@ -279,7 +279,7 @@ class TestArchiveCliServiceIntegration:
             runner = CliRunner()
             
             try:
-                from src.codex.archive.cli import archive_command
+    from codex.archive.cli import archive_command
                 
                 with tempfile.TemporaryDirectory() as tmpdir:
                     file_path = os.path.join(tmpdir, "test.txt")
@@ -315,7 +315,7 @@ class TestArchiveCliProgressReporting:
                     f.write(f"Content {i}")
             
             try:
-                from src.codex.archive.cli import archive_command
+    from codex.archive.cli import archive_command
                 
                 result = runner.invoke(archive_command, [
                     '--directory', archive_dir,
@@ -334,7 +334,7 @@ class TestArchiveCliProgressReporting:
         
         with tempfile.TemporaryDirectory() as tmpdir:
             try:
-                from src.codex.archive.cli import archive_command
+    from codex.archive.cli import archive_command
                 
                 result = runner.invoke(archive_command, [
                     '--directory', tmpdir,
@@ -352,7 +352,7 @@ class TestArchiveCliInputValidation:
         runner = CliRunner()
         
         try:
-            from src.codex.archive.cli import archive_command
+    from codex.archive.cli import archive_command
             
             result = runner.invoke(archive_command, [
                 '--directory', '/nonexistent/path/to/archive'
@@ -376,7 +376,7 @@ class TestArchiveCliInputValidation:
                 os.chmod(restricted_dir, 0o000)
                 
                 try:
-                    from src.codex.archive.cli import archive_command
+    from codex.archive.cli import archive_command
                     
                     result = runner.invoke(archive_command, [
                         '--directory', restricted_dir

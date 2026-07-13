@@ -4,7 +4,7 @@ Tests for token masking, log injection prevention, and secret sanitization.
 """
 
 import pytest
-from src.aries_serpent_core.security_utils import (
+from aries_serpent_core.security_utils import (
     sanitize_log_message,
     redact_sensitive_value,
     redact_secret_name,

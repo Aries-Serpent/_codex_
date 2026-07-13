@@ -106,7 +106,7 @@ Example test file:
 
 ```python
 import pytest
-from src.codex.mymodule import my_function
+from codex.mymodule import my_function
 
 
 @pytest.mark.smoke

@@ -15,7 +15,7 @@ def test_phase24_simple_trainer_init():
 @pytest.mark.integration
 def test_phase24_checkpoint_config_validation():
     """Test Phase 24 CheckpointConfig validation."""
-    from src.training.trainer import CheckpointConfig
+    from training.trainer import CheckpointConfig
 
     config = CheckpointConfig(directory=os.path.join(tempfile.gettempdir(), "ckpt"), best_k=5, monitor="val_loss")
     assert config.directory == os.path.join(tempfile.gettempdir(), "ckpt"), "directory is not valid"

@@ -529,7 +529,7 @@ class TestGlobalMetrics:
     def test_get_metrics_singleton(self):
         """Test that get_metrics returns the same instance."""
         # Reset global state
-        import src.codex.rag.monitoring as mon_module
+    import codex.rag.monitoring as mon_module
 
         mon_module._global_metrics = None
 
@@ -539,7 +539,7 @@ class TestGlobalMetrics:
 
     def test_get_metrics_thread_safe(self):
         """Test thread-safe singleton creation."""
-        import src.codex.rag.monitoring as mon_module
+    import codex.rag.monitoring as mon_module
 
         mon_module._global_metrics = None
 

@@ -9,7 +9,7 @@ import sqlite3
 
 # Try both namespaces for imports
 try:
-    from src.codex.logging.db_utils import (
+    from codex.logging.db_utils import (
         infer_columns,
         infer_probable_table,
         list_tables,

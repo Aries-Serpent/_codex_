@@ -20,7 +20,7 @@ except ImportError:  # pragma: no cover - cryptography optional
     InvalidTag = Exception  # type: ignore[misc,assignment]
 
 try:
-    import src.security.encryption as encryption_mod
+    import security.encryption as encryption_mod
 
     generate_key = encryption_mod.generate_key
     encrypt = encryption_mod.encrypt

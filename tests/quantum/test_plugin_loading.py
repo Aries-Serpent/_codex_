@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from src.quantum import PluginState, QuantumPlugin, QuantumPluginRegistry
+from quantum import PluginState, QuantumPlugin, QuantumPluginRegistry
 
 
 class TestQuantumPlugin:
@@ -142,7 +142,7 @@ class TestQuantumPluginRegistry:
 
     def test_thermodynamic_load_priority(self):
         """Test calculating load priority using Boltzmann distribution."""
-        from src.quantum.plugin_registry import calculate_thermodynamic_load_priority
+    from quantum.plugin_registry import calculate_thermodynamic_load_priority
 
         plugins = [
             QuantumPlugin(name="high_energy", import_path="sys", energy_cost=5.0),

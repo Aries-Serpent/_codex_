@@ -1,4 +1,4 @@
-from src.codex_ml.utils.env import EnvironmentFingerprint, environment_summary
+from codex_ml.utils.env import EnvironmentFingerprint, environment_summary
 
 
 def test_environment_fingerprint():

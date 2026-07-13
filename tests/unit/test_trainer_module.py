@@ -11,8 +11,8 @@ from pathlib import Path
 
 import pytest
 
-from src.training import trainer as trainer_module
-from src.training.trainer import Trainer, TrainerLoggingConfig
+from training import trainer as trainer_module
+from training.trainer import Trainer, TrainerLoggingConfig
 
 
 @pytest.fixture(autouse=True)

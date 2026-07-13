@@ -14,7 +14,7 @@ from pathlib import Path
 
 import pytest
 
-from src.codex_plans import list_plan_documents
+from codex_plans import list_plan_documents
 
 
 class TestListPlanDocuments:

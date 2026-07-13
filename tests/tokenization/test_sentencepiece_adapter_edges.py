@@ -11,7 +11,7 @@ from pathlib import Path
 
 import pytest
 
-from src.tokenization.sentencepiece_adapter import SentencePieceAdapter
+from tokenization.sentencepiece_adapter import SentencePieceAdapter
 
 spm = pytest.importorskip("sentencepiece")
 

@@ -10,7 +10,7 @@ import pytest
 
 np = pytest.importorskip("numpy")
 
-from src.codex.retrieval.stores.factory import (
+from codex.retrieval.stores.factory import (
     VectorStoreFactory,
     VectorStoreRegistry,
     VectorStoreType,

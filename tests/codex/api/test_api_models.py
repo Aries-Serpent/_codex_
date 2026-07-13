@@ -9,7 +9,7 @@ class TestApiModelsImports:
     def test_module_can_be_imported(self):
         """Test that the module can be imported."""
         try:
-            from src.codex.api import models
+    from codex.api import models
 
             assert models is not None, "models must be initialized"
         except ImportError:
@@ -18,7 +18,7 @@ class TestApiModelsImports:
     def test_module_has_expected_attributes(self):
         """Test module has expected attributes."""
         try:
-            from src.codex.api import models
+    from codex.api import models
 
             assert hasattr(models, "__name__")
         except ImportError:
@@ -31,7 +31,7 @@ class TestApiRequestModels:
     def test_base_request_model(self):
         """Test base request model."""
         try:
-            from src.codex.api import models
+    from codex.api import models
 
             if hasattr(models, "BaseRequest"):
                 request = models.BaseRequest()
@@ -42,7 +42,7 @@ class TestApiRequestModels:
     def test_request_with_data(self):
         """Test request model with data."""
         try:
-            from src.codex.api import models
+    from codex.api import models
 
             if hasattr(models, "RequestModel"):
                 request = models.RequestModel(data={"key": "value"})
@@ -57,7 +57,7 @@ class TestApiResponseModels:
     def test_base_response_model(self):
         """Test base response model."""
         try:
-            from src.codex.api import models
+    from codex.api import models
 
             if hasattr(models, "BaseResponse"):
                 response = models.BaseResponse()
@@ -68,7 +68,7 @@ class TestApiResponseModels:
     def test_success_response(self):
         """Test success response model."""
         try:
-            from src.codex.api import models
+    from codex.api import models
 
             if hasattr(models, "SuccessResponse"):
                 response = models.SuccessResponse(data={"result": "ok"})
@@ -79,7 +79,7 @@ class TestApiResponseModels:
     def test_error_response(self):
         """Test error response model."""
         try:
-            from src.codex.api import models
+    from codex.api import models
 
             if hasattr(models, "ErrorResponse"):
                 response = models.ErrorResponse(error="Test error", code=400)
@@ -94,7 +94,7 @@ class TestApiModelSerialization:
     def test_model_to_dict(self):
         """Test model to dictionary conversion."""
         try:
-            from src.codex.api import models
+    from codex.api import models
 
             if hasattr(models, "BaseModel"):
                 model = models.BaseModel()
@@ -107,7 +107,7 @@ class TestApiModelSerialization:
     def test_model_to_json(self):
         """Test model to JSON conversion."""
         try:
-            from src.codex.api import models
+    from codex.api import models
 
             if hasattr(models, "BaseModel"):
                 model = models.BaseModel()
@@ -124,7 +124,7 @@ class TestApiModelValidation:
     def test_required_field_validation(self):
         """Test validation of required fields."""
         try:
-            from src.codex.api import models
+    from codex.api import models
 
             if hasattr(models, "RequestModel"):
                 with pytest.raises((TypeError, ValueError)):
@@ -135,7 +135,7 @@ class TestApiModelValidation:
     def test_field_type_validation(self):
         """Test validation of field types."""
         try:
-            from src.codex.api import models
+    from codex.api import models
 
             if hasattr(models, "RequestModel"):
                 with pytest.raises((TypeError, ValueError)):

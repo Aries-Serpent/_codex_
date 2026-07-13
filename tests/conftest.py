@@ -30,6 +30,16 @@ except ImportError:
 logger = logging.getLogger(__name__)
 
 
+# Handle optional test dependencies
+# If zstandard is not available, skip collecting tests/archive to avoid collection errors
+collect_ignore = []
+try:
+    import zstandard  # noqa: F401
+except ImportError:
+    logger.debug("zstandard not available; skipping tests/archive collection")
+    collect_ignore.append("archive")
+
+
 def _repo_root() -> Path:
     """Return the repository root by walking up from this file until a sentinel is found.
 

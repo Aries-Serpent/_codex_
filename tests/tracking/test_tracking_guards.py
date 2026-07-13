@@ -9,7 +9,7 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
-from src.codex_utils.tracking.guards import (
+from codex_utils.tracking.guards import (
     _is_allowlisted,
     _is_remote_uri,
     ensure_mlflow_offline,

@@ -11,12 +11,12 @@ import warnings
 import pytest
 
 # Always import the shim; it exists in this repo
-from src.tokenization.api import legacy_tokenizer
+from tokenization.api import legacy_tokenizer
 
 # The direct adapter may not exist in minimal environments; skip if missing.
 HFTokenizerAdapter = None
 try:
-    from src.tokenization.api import HFTokenizerAdapter as _HF  # type: ignore
+    from tokenization.api import HFTokenizerAdapter as _HF  # type: ignore
 
     HFTokenizerAdapter = _HF
 except ImportError:

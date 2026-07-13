@@ -4,7 +4,7 @@ import os
 import tempfile
 from pathlib import Path
 
-from src.codex.paths import (
+from codex.paths import (
     ANALYSIS_DB,
     CACHE_DIR,
     CODEX_DIR,

@@ -30,7 +30,7 @@ class TestLoggingPackage:
     def test_logging_package_imports(self) -> None:
         """Test that logging package imports."""
         try:
-            from src.codex import logging as codex_logging
+    from codex import logging as codex_logging
             assert codex_logging is not None
         except ImportError:
             pytest.skip("codex.logging not available")
@@ -38,7 +38,7 @@ class TestLoggingPackage:
     def test_logging_config_module(self) -> None:
         """Test logging config module."""
         try:
-            from src.codex.logging import config
+    from codex.logging import config
             assert config is not None
         except ImportError:
             pytest.skip("codex.logging.config not available")
@@ -50,7 +50,7 @@ class TestConversationLogger:
     def test_conversation_logger_module(self) -> None:
         """Test conversation logger module."""
         try:
-            from src.codex.logging import conversation_logger
+    from codex.logging import conversation_logger
             assert conversation_logger is not None
         except ImportError:
             pytest.skip("codex.logging.conversation_logger not available")
@@ -62,7 +62,7 @@ class TestSessionLogger:
     def test_session_logger_module(self) -> None:
         """Test session logger module."""
         try:
-            from src.codex.logging import session_logger
+    from codex.logging import session_logger
             assert session_logger is not None
         except ImportError:
             pytest.skip("codex.logging.session_logger not available")
@@ -70,7 +70,7 @@ class TestSessionLogger:
     def test_session_hooks_module(self) -> None:
         """Test session hooks module."""
         try:
-            from src.codex.logging import session_hooks
+    from codex.logging import session_hooks
             assert session_hooks is not None
         except ImportError:
             pytest.skip("codex.logging.session_hooks not available")
@@ -78,7 +78,7 @@ class TestSessionLogger:
     def test_session_query_module(self) -> None:
         """Test session query module."""
         try:
-            from src.codex.logging import session_query
+    from codex.logging import session_query
             assert session_query is not None
         except ImportError:
             pytest.skip("codex.logging.session_query not available")
@@ -90,7 +90,7 @@ class TestDatabaseUtils:
     def test_db_utils_module(self) -> None:
         """Test database utils module."""
         try:
-            from src.codex.logging import db_utils
+    from codex.logging import db_utils
             assert db_utils is not None
         except ImportError:
             pytest.skip("codex.logging.db_utils not available")
@@ -102,7 +102,7 @@ class TestLogExport:
     def test_export_module(self) -> None:
         """Test export module."""
         try:
-            from src.codex.logging import export
+    from codex.logging import export
             assert export is not None
         except ImportError:
             pytest.skip("codex.logging.export not available")
@@ -114,7 +114,7 @@ class TestLogImport:
     def test_import_ndjson_module(self) -> None:
         """Test import_ndjson module."""
         try:
-            from src.codex.logging import import_ndjson
+    from codex.logging import import_ndjson
             assert import_ndjson is not None
         except ImportError:
             pytest.skip("codex.logging.import_ndjson not available")
@@ -126,7 +126,7 @@ class TestLogQuery:
     def test_query_logs_module(self) -> None:
         """Test query_logs module."""
         try:
-            from src.codex.logging import query_logs
+    from codex.logging import query_logs
             assert query_logs is not None
         except ImportError:
             pytest.skip("codex.logging.query_logs not available")
@@ -134,7 +134,7 @@ class TestLogQuery:
     def test_fetch_messages_module(self) -> None:
         """Test fetch_messages module."""
         try:
-            from src.codex.logging import fetch_messages
+    from codex.logging import fetch_messages
             assert fetch_messages is not None
         except ImportError:
             pytest.skip("codex.logging.fetch_messages not available")
@@ -146,7 +146,7 @@ class TestLogViewer:
     def test_viewer_module(self) -> None:
         """Test viewer module."""
         try:
-            from src.codex.logging import viewer
+    from codex.logging import viewer
             assert viewer is not None
         except ImportError:
             pytest.skip("codex.logging.viewer not available")
@@ -158,7 +158,7 @@ class TestNdJsonLogger:
     def test_ndjson_logger_module(self) -> None:
         """Test NDJSON logger module."""
         try:
-            from src.codex_ml.logging import ndjson_logger
+    from codex_ml.logging import ndjson_logger
             assert ndjson_logger is not None
         except ImportError:
             pytest.skip("codex_ml.logging.ndjson_logger not available")
@@ -170,7 +170,7 @@ class TestRunLogger:
     def test_run_logger_module(self) -> None:
         """Test run logger module."""
         try:
-            from src.codex_ml.logging import run_logger
+    from codex_ml.logging import run_logger
             assert run_logger is not None
         except ImportError:
             pytest.skip("codex_ml.logging.run_logger not available")
@@ -182,7 +182,7 @@ class TestFileLogger:
     def test_file_logger_module(self) -> None:
         """Test file logger module."""
         try:
-            from src.codex_ml.logging import file_logger
+    from codex_ml.logging import file_logger
             assert file_logger is not None
         except ImportError:
             pytest.skip("codex_ml.logging.file_logger not available")
@@ -194,7 +194,7 @@ class TestUtilsSubprocess:
     def test_subprocess_utils_module(self) -> None:
         """Test subprocess utils module."""
         try:
-            from src.codex.utils import subprocess as subprocess_utils
+    from codex.utils import subprocess as subprocess_utils
             assert subprocess_utils is not None
         except ImportError:
             pytest.skip("codex.utils.subprocess not available")
@@ -206,7 +206,7 @@ class TestSearchProviders:
     def test_search_providers_module(self) -> None:
         """Test search providers module."""
         try:
-            from src.codex.search import providers
+    from codex.search import providers
             assert providers is not None
         except ImportError:
             pytest.skip("codex.search.providers not available")
@@ -218,7 +218,7 @@ class TestChat:
     def test_chat_module(self) -> None:
         """Test chat module."""
         try:
-            from src.codex import chat
+    from codex import chat
             assert chat is not None
         except ImportError:
             pytest.skip("codex.chat not available")
@@ -284,7 +284,7 @@ class TestLoggingIntegration:
     def test_logging_package_structure(self) -> None:
         """Test logging package structure."""
         try:
-            from src.codex import logging as codex_logging
+    from codex import logging as codex_logging
             
             # Should be a package
             assert hasattr(codex_logging, "__path__") or hasattr(codex_logging, "__file__")
@@ -294,7 +294,7 @@ class TestLoggingIntegration:
     def test_codex_ml_logging_package(self) -> None:
         """Test codex_ml.logging package."""
         try:
-            from src.codex_ml import logging as ml_logging
+    from codex_ml import logging as ml_logging
             
             # Should be a package
             assert hasattr(ml_logging, "__path__") or hasattr(ml_logging, "__file__")
@@ -308,7 +308,7 @@ class TestAnalysisModules:
     def test_analysis_extractors_module(self) -> None:
         """Test analysis extractors module."""
         try:
-            from src.codex_ml.analysis import extractors
+    from codex_ml.analysis import extractors
             assert extractors is not None
         except ImportError:
             pytest.skip("codex_ml.analysis.extractors not available")
@@ -316,7 +316,7 @@ class TestAnalysisModules:
     def test_analysis_metrics_module(self) -> None:
         """Test analysis metrics module."""
         try:
-            from src.codex_ml.analysis import metrics
+    from codex_ml.analysis import metrics
             assert metrics is not None
         except ImportError:
             pytest.skip("codex_ml.analysis.metrics not available")
@@ -324,7 +324,7 @@ class TestAnalysisModules:
     def test_analysis_parsers_module(self) -> None:
         """Test analysis parsers module."""
         try:
-            from src.codex_ml.analysis import parsers
+    from codex_ml.analysis import parsers
             assert parsers is not None
         except ImportError:
             pytest.skip("codex_ml.analysis.parsers not available")
@@ -332,7 +332,7 @@ class TestAnalysisModules:
     def test_analysis_providers_module(self) -> None:
         """Test analysis providers module."""
         try:
-            from src.codex_ml.analysis import providers
+    from codex_ml.analysis import providers
             assert providers is not None
         except ImportError:
             pytest.skip("codex_ml.analysis.providers not available")
@@ -340,7 +340,7 @@ class TestAnalysisModules:
     def test_analysis_registry_module(self) -> None:
         """Test analysis registry module."""
         try:
-            from src.codex_ml.analysis import registry
+    from codex_ml.analysis import registry
             assert registry is not None
         except ImportError:
             pytest.skip("codex_ml.analysis.registry not available")

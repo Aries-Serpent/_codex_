@@ -20,7 +20,7 @@ class TestCheckpointResumeFullWorkflow:
     def test_checkpoint_resume_end_to_end_workflow(self):
         """Test complete save-load-resume-train cycle."""
         # Arrange
-        from src.codex_ml.checkpointing.checkpoint_core import (
+    from codex_ml.checkpointing.checkpoint_core import (
             SCHEMA_VERSION,
             load_checkpoint,
             save_checkpoint,
@@ -90,7 +90,7 @@ class TestCheckpointResumeFullWorkflow:
     def test_checkpoint_resume_with_schema_validation(self):
         """Verify schema compatibility checks during resume."""
         # Arrange
-        from src.codex_ml.checkpointing.checkpoint_core import (
+    from codex_ml.checkpointing.checkpoint_core import (
             load_checkpoint,
             save_checkpoint,
         )
@@ -132,7 +132,7 @@ class TestCheckpointResumeFullWorkflow:
     def test_checkpoint_resume_missing_metadata_recovery(self):
         """Verify resume still works when metadata is missing."""
         # Arrange
-        from src.codex_ml.checkpointing.checkpoint_core import (
+    from codex_ml.checkpointing.checkpoint_core import (
             load_checkpoint,
             save_checkpoint,
         )
@@ -172,7 +172,7 @@ class TestCheckpointPartialRecovery:
     def test_checkpoint_load_handles_extra_fields(self):
         """Verify load handles extra fields in saved state gracefully."""
         # Arrange
-        from src.codex_ml.checkpointing.checkpoint_core import (
+    from codex_ml.checkpointing.checkpoint_core import (
             load_checkpoint,
             save_checkpoint,
         )
@@ -208,7 +208,7 @@ class TestCheckpointPartialRecovery:
     def test_checkpoint_load_handles_missing_metadata_file(self):
         """Verify load gracefully handles missing metadata.json."""
         # Arrange
-        from src.codex_ml.checkpointing.checkpoint_core import (
+    from codex_ml.checkpointing.checkpoint_core import (
             load_checkpoint,
             save_checkpoint,
         )
@@ -247,7 +247,7 @@ class TestCheckpointResumeDeterminism:
     def test_checkpoint_resume_round_trip_idempotency(self):
         """Verify repeated save-load cycles produce identical results."""
         # Arrange
-        from src.codex_ml.checkpointing.checkpoint_core import (
+    from codex_ml.checkpointing.checkpoint_core import (
             load_checkpoint,
             save_checkpoint,
         )
@@ -292,7 +292,7 @@ class TestCheckpointResumeDeterminism:
         # Arrange
         import time
 
-        from src.codex_ml.checkpointing.checkpoint_core import (
+    from codex_ml.checkpointing.checkpoint_core import (
             load_checkpoint,
             save_checkpoint,
         )
@@ -344,7 +344,7 @@ class TestCheckpointResumeErrorRecovery:
     def test_checkpoint_load_nonexistent_path_clear_error(self):
         """Verify clear error message for nonexistent checkpoint path."""
         # Arrange
-        from src.codex_ml.checkpointing.checkpoint_core import load_checkpoint
+    from codex_ml.checkpointing.checkpoint_core import load_checkpoint
 
         nonexistent = "/nonexistent/path/to/checkpoint"
 
@@ -361,7 +361,7 @@ class TestCheckpointResumeErrorRecovery:
         # Arrange
         import os
 
-        from src.codex_ml.checkpointing.checkpoint_core import save_checkpoint
+    from codex_ml.checkpointing.checkpoint_core import save_checkpoint
 
         tmpdir = Path(tempfile.mkdtemp())
 

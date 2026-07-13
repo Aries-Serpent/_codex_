@@ -10,7 +10,7 @@ from pathlib import Path
 
 import pytest
 
-import src.logging_utils as logging_utils_mod
+import logging_utils as logging_utils_mod
 
 
 def test_tb_writer_creates_eventfiles(tmp_path: Path):

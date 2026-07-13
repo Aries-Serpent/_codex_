@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import pytest
 
-from src.quantum import (
+from quantum import (
     PluginState,
     QuantumPlugin,
     QuantumPluginRegistry,
@@ -326,7 +326,7 @@ class TestCrossReferenceCapabilities:
 
         Demonstrates: AI agent adjusts behavior based on system state.
         """
-        from src.quantum.plugin_registry import calculate_thermodynamic_load_priority
+    from quantum.plugin_registry import calculate_thermodynamic_load_priority
 
         plugins = [
             QuantumPlugin(name="heavy", import_path="sys", energy_cost=5.0),
@@ -505,7 +505,7 @@ class TestCrossReferenceCapabilities:
         # AI agent pathway: Context-aware selection
         context = "production"  # Low energy budget, low temperature
 
-        from src.quantum.plugin_registry import calculate_thermodynamic_load_priority
+    from quantum.plugin_registry import calculate_thermodynamic_load_priority
 
         priorities = calculate_thermodynamic_load_priority(
             plugins, current_temperature=contexts[context]["temperature"]
@@ -580,7 +580,7 @@ class TestAgentAutonomyCapabilities:
             )
 
         # Agent creates optimal loading strategy
-        from src.quantum.plugin_registry import calculate_thermodynamic_load_priority
+    from quantum.plugin_registry import calculate_thermodynamic_load_priority
 
         priorities = calculate_thermodynamic_load_priority(
             list(registry.plugins.values()), current_temperature=1.0

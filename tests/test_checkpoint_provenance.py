@@ -11,7 +11,7 @@ import pytest
 pytest.importorskip("torch")
 
 from codex_ml.utils.provenance import environment_summary
-from src.codex_ml.utils.checkpointing import save_checkpoint
+from codex_ml.utils.checkpointing import save_checkpoint
 from torch import nn, optim
 
 

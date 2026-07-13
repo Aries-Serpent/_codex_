@@ -7,7 +7,7 @@ import pytest
 np = pytest.importorskip("numpy")
 
 try:
-    from src.codex.retrieval.stores.faiss_store import FAISSStore
+    from codex.retrieval.stores.faiss_store import FAISSStore
 
     FAISS_AVAILABLE = importlib.util.find_spec("faiss") is not None
 except ImportError:

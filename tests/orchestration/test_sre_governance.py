@@ -7,13 +7,13 @@ Tests for:
 
 import pytest
 from datetime import datetime, timezone, timedelta
-from src.orchestration.sre.error_budget import ErrorBudgetSystem, LaneRiskProfile, BudgetAllocation
-from src.orchestration.sre.canary_drills import CanaryDrillOrchestrator, DrillType
-from src.orchestration.sre.sre_monitoring import SREMonitor, AlertSeverity
-from src.orchestration.governance.monthly_review import MonthlyReviewCycle
-from src.orchestration.governance.drift_detection import DriftDetector
-from src.orchestration.governance.issue_generator import IssueGenerator
-from src.orchestration.governance.replay_verification import ReplayVerifier
+from orchestration.sre.error_budget import ErrorBudgetSystem, LaneRiskProfile, BudgetAllocation
+from orchestration.sre.canary_drills import CanaryDrillOrchestrator, DrillType
+from orchestration.sre.sre_monitoring import SREMonitor, AlertSeverity
+from orchestration.governance.monthly_review import MonthlyReviewCycle
+from orchestration.governance.drift_detection import DriftDetector
+from orchestration.governance.issue_generator import IssueGenerator
+from orchestration.governance.replay_verification import ReplayVerifier
 
 
 # ===== PHASE 8: SRE OPERATIONS TESTS (40 tests) =====

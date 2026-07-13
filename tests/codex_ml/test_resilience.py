@@ -5,7 +5,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from src.codex_ml.serving.resilience import (
+from codex_ml.serving.resilience import (
     CircuitBreaker,
     CircuitBreakerConfig,
     CircuitState,

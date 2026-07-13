@@ -12,7 +12,7 @@ Tests cover:
 from unittest.mock import patch
 
 import pytest
-from src.codex.reporting.cli import (
+from codex.reporting.cli import (
     ReportingCLI,
 )
 

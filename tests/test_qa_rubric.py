@@ -9,7 +9,7 @@ Tests cover:
 """
 
 import pytest
-from src.codex.qa.rubric import (
+from codex.qa.rubric import (
     QARubric,
 )
 

@@ -2,7 +2,7 @@
 
 import pytest
 
-import src.cli as cli
+import cli as cli
 
 
 def test_cli_missing_required_arguments(monkeypatch):

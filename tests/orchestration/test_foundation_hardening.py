@@ -8,20 +8,20 @@ Tests for:
 """
 
 import pytest
-from src.orchestration.gates.contract_gate import (
+from orchestration.gates.contract_gate import (
     ContractGateSystem,
     GateResult,
     ComplianceResult,
 )
-from src.orchestration.healing.policy_tier_engine import (
+from orchestration.healing.policy_tier_engine import (
     PolicyTierEngine,
     TierClassification,  # pragma: allowlist secret
 )
-from src.orchestration.safety.rollback_controls import (
+from orchestration.safety.rollback_controls import (
     RollbackControlSystem,
     RollbackStep,
 )
-from src.orchestration.scheduling.lane_scheduler_v1 import (
+from orchestration.scheduling.lane_scheduler_v1 import (
     LaneSchedulerV1,
     Lane,
     LaneState,

@@ -10,7 +10,7 @@ import pytest
 
 pytest.importorskip("sentencepiece")
 pytest.importorskip("sentencepiece")
-from src.tokenization.train_tokenizer import TrainTokenizerConfig, train
+from tokenization.train_tokenizer import TrainTokenizerConfig, train
 
 
 def test_train_tokenizer_smoke(tmp_path):

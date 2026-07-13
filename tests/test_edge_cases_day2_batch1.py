@@ -7,7 +7,7 @@ Focus: Boundary conditions, exception handling, state transitions, integration s
 import sys
 
 import pytest
-from src.codex.utils.path_extended import get_repo_root
+from codex.utils.path_extended import get_repo_root
 
 # Add project paths
 sys.path.insert(0, str(get_repo_root() / "src"))

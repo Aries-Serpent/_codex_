@@ -12,7 +12,7 @@ from fastapi.testclient import TestClient
 
 # Try to import FastAPI components
 try:
-    from src.codex_ml.serving.inference_server import (
+    from codex_ml.serving.inference_server import (
         ModelServer,
         RateLimiter,
         create_app,

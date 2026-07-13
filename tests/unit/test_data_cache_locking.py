@@ -11,7 +11,7 @@ import pytest
 
 np = pytest.importorskip("numpy")
 
-from src.training.data_utils import cache_dataset, load_cached
+from training.data_utils import cache_dataset, load_cached
 
 
 def test_cache_dataset_creates_lock_file(tmp_path) -> None:

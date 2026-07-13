@@ -11,7 +11,7 @@ class TestApiEndpointsImports:
     def test_module_can_be_imported(self):
         """Test that the module can be imported."""
         try:
-            from src.codex.api import endpoints
+    from codex.api import endpoints
 
             assert endpoints is not None, "endpoints must be initialized"
         except ImportError:
@@ -20,7 +20,7 @@ class TestApiEndpointsImports:
     def test_module_has_expected_attributes(self):
         """Test module has expected attributes."""
         try:
-            from src.codex.api import endpoints
+    from codex.api import endpoints
 
             assert hasattr(endpoints, "__name__")
         except ImportError:
@@ -33,7 +33,7 @@ class TestApiEndpointDefinitions:
     def test_health_endpoint_defined(self):
         """Test health endpoint is defined."""
         try:
-            from src.codex.api import endpoints
+    from codex.api import endpoints
 
             if hasattr(endpoints, "HEALTH_ENDPOINT"):
                 assert endpoints.HEALTH_ENDPOINT is not None, "HEALTH_ENDPOINT must be initialized"
@@ -43,7 +43,7 @@ class TestApiEndpointDefinitions:
     def test_api_version_endpoint(self):
         """Test API version endpoint."""
         try:
-            from src.codex.api import endpoints
+    from codex.api import endpoints
 
             if hasattr(endpoints, "VERSION_ENDPOINT"):
                 assert endpoints.VERSION_ENDPOINT is not None, "VERSION_ENDPOINT must be initialized"
@@ -57,7 +57,7 @@ class TestApiEndpointRoutes:
     def test_get_routes(self):
         """Test getting all routes."""
         try:
-            from src.codex.api import endpoints
+    from codex.api import endpoints
 
             if hasattr(endpoints, "get_routes"):
                 routes = endpoints.get_routes()
@@ -68,7 +68,7 @@ class TestApiEndpointRoutes:
     def test_register_route(self):
         """Test registering a new route."""
         try:
-            from src.codex.api import endpoints
+    from codex.api import endpoints
 
             if hasattr(endpoints, "register_route"):
                 result = endpoints.register_route("/test", "GET")
@@ -83,7 +83,7 @@ class TestApiEndpointValidation:
     def test_validate_endpoint_path(self):
         """Test endpoint path validation."""
         try:
-            from src.codex.api import endpoints
+    from codex.api import endpoints
 
             if hasattr(endpoints, "validate_path"):
                 assert endpoints.validate_path("/api/v1/test") is True, "Condition must be true"
@@ -93,7 +93,7 @@ class TestApiEndpointValidation:
     def test_invalid_endpoint_path(self):
         """Test rejection of invalid endpoint path."""
         try:
-            from src.codex.api import endpoints
+    from codex.api import endpoints
 
             if hasattr(endpoints, "validate_path"):
                 result = endpoints.validate_path("")
@@ -108,7 +108,7 @@ class TestApiEndpointMiddleware:
     def test_auth_middleware(self):
         """Test authentication middleware."""
         try:
-            from src.codex.api import endpoints
+    from codex.api import endpoints
 
             if hasattr(endpoints, "auth_middleware"):
                 mock_request = Mock()
@@ -121,7 +121,7 @@ class TestApiEndpointMiddleware:
     def test_logging_middleware(self):
         """Test logging middleware."""
         try:
-            from src.codex.api import endpoints
+    from codex.api import endpoints
 
             if hasattr(endpoints, "logging_middleware"):
                 mock_request = Mock()

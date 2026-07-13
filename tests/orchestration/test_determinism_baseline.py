@@ -14,17 +14,17 @@ from unittest.mock import patch
 
 import pytest
 
-from src.orchestration.adapters.input_lock import InputLockAdapter, InputLockError
-from src.orchestration.adapters.seed_control import (
+from orchestration.adapters.input_lock import InputLockAdapter, InputLockError
+from orchestration.adapters.seed_control import (
     SeedControlSystem,
     SeedControlError,
     set_deterministic_seed,
 )
-from src.orchestration.adapters.decision_trace import (
+from orchestration.adapters.decision_trace import (
     DecisionTraceWriter,
     DecisionTraceError,
 )
-from src.orchestration.contracts.lane_manifest import (
+from orchestration.contracts.lane_manifest import (
     LaneManifestContract,
     LaneManifestError,
 )

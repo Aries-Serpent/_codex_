@@ -10,7 +10,7 @@ Tests cover:
 """
 
 import pytest
-from src.codex.refactoring.deterritorialization_engine import (
+from codex.refactoring.deterritorialization_engine import (
     DeterritorializationEngine,
     RigidityType,  # pragma: allowlist secret
 )

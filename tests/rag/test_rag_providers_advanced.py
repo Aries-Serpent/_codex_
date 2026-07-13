@@ -327,7 +327,7 @@ class TestProviderCompatibility:
     def test_all_providers_have_encode(self):
         """Test that all providers implement encode method."""
         try:
-            from src.codex.rag import embeddings
+    from codex.rag import embeddings
 
             # Get all provider classes
             provider_classes = [

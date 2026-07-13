@@ -17,7 +17,7 @@ from fastapi.testclient import TestClient
 @pytest.fixture
 def perf_client():
     """Create test client for performance testing."""
-    from src.codex_ml.serving.inference_server import create_app
+    from codex_ml.serving.inference_server import create_app
 
     # create_app() takes optional config parameter, not enable_auth
     # Authentication is controlled via env vars (CODEX_API_KEYS, CODEX_JWT_SECRET)

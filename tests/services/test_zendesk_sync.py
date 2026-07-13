@@ -19,7 +19,7 @@ from urllib.error import URLError
 
 import pytest
 
-from src.services.crawler.zendesk_sync import (
+from services.crawler.zendesk_sync import (
     ArticleMetadata,
     SyncResult,
     ZendeskKnowledgeSyncService,

@@ -14,7 +14,7 @@ import logging
 import time
 
 import pytest
-from src.codex.governance.approval_service import (
+from codex.governance.approval_service import (
     ApprovalDecision,
     ApprovalRequest,
     ApprovalService,

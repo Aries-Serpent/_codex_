@@ -6,7 +6,7 @@ Test module for codeowners validation.
 
 from __future__ import annotations
 
-from src.tools.codeowners_validate import (
+from tools.codeowners_validate import (
     validate_codeowners_text,
     validate_repo_codeowners,
 )

@@ -12,8 +12,8 @@ import tempfile
 from pathlib import Path
 from unittest import mock
 
-from src.codex.agents.memory.manager import MemoryManager
-from src.codex.config.env_vars import EnvironmentManager
+from codex.agents.memory.manager import MemoryManager
+from codex.config.env_vars import EnvironmentManager
 
 
 class TestAgentCommunicationPatterns:
@@ -246,7 +246,7 @@ class TestAgentBridgeInterfaces:
 
     def test_memory_entry_protocol(self):
         """Test MemoryEntry protocol compliance."""
-        from src.codex.agents.memory.protocol import MemoryEntry
+    from codex.agents.memory.protocol import MemoryEntry
 
         entry = MemoryEntry(content="test", agent_id="test", session_id="test")
 
@@ -260,7 +260,7 @@ class TestAgentBridgeInterfaces:
 
     def test_memory_query_protocol(self):
         """Test MemoryQuery protocol compliance."""
-        from src.codex.agents.memory.protocol import MemoryQuery
+    from codex.agents.memory.protocol import MemoryQuery
 
         query = MemoryQuery(text="test query", agent_id="test", session_id="test", limit=10)
 

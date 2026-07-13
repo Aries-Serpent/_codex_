@@ -24,7 +24,7 @@ jobs:
     - name: Checkout PR branch (or main on schedule)
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         ref: ${{ github.head_ref || 'main' }}
         fetch-depth: 1
         token: ${{ env.CODEX_MASTER_KEY || env.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
