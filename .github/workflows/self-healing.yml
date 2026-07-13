@@ -117,13 +117,14 @@ permissions:
 env:
   PYTHON_VERSION: '3.12'
   HEALING_ARTIFACT_SCHEMA_VERSION: '1.0.0'
-  GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
 
 jobs:
   lane-metadata-contract:
     name: Lane Metadata Contract
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    env:
+      GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
     outputs:
       lane_id: ${{ steps.meta.outputs.lane_id }}
       shard_id: ${{ steps.meta.outputs.shard_id }}
@@ -158,28 +159,44 @@ jobs:
 
           mkdir -p .codex/contracts
 
-          cat > .codex/contracts/lane-manifest.json <<EOF
-          {
-            "schema_version": "${HEALING_ARTIFACT_SCHEMA_VERSION}",
-            "workflow": "${GITHUB_WORKFLOW}",
-            "run_id": "${GITHUB_RUN_ID}",
-            "run_number": "${GITHUB_RUN_NUMBER}",
-            "run_attempt": "${GITHUB_RUN_ATTEMPT}",
-            "repository": "${GITHUB_REPOSITORY}",
-            "ref": "${GITHUB_REF}",
-            "sha": "${GITHUB_SHA}",
-            "event_name": "${GITHUB_EVENT_NAME}",
-            "actor": "${GITHUB_ACTOR}",
-            "lane": {
-              "id": "${LANE_ID}",
-              "shard_id": "${SHARD_ID}",
-              "mode": "${LANE_MODE}"
-            },
-            "codeql_wave": "${CODEQL_WAVE}",
-            "deterministic_seed": "${DETERMINISTIC_SEED}",
-            "healing_policy_tier_max": "${HEALING_POLICY_TIER}"
-          }
-          EOF
+          # Use jq to safely generate JSON with proper escaping
+          jq -n \
+            --arg schema_version "$HEALING_ARTIFACT_SCHEMA_VERSION" \
+            --arg workflow "$GITHUB_WORKFLOW" \
+            --arg run_id "$GITHUB_RUN_ID" \
+            --arg run_number "$GITHUB_RUN_NUMBER" \
+            --arg run_attempt "$GITHUB_RUN_ATTEMPT" \
+            --arg repository "$GITHUB_REPOSITORY" \
+            --arg ref "$GITHUB_REF" \
+            --arg sha "$GITHUB_SHA" \
+            --arg event_name "$GITHUB_EVENT_NAME" \
+            --arg actor "$GITHUB_ACTOR" \
+            --arg lane_id "$LANE_ID" \
+            --arg shard_id "$SHARD_ID" \
+            --arg lane_mode "$LANE_MODE" \
+            --arg codeql_wave "$CODEQL_WAVE" \
+            --arg deterministic_seed "$DETERMINISTIC_SEED" \
+            --arg healing_policy_tier "$HEALING_POLICY_TIER" \
+            '{
+              schema_version: $schema_version,
+              workflow: $workflow,
+              run_id: $run_id,
+              run_number: $run_number,
+              run_attempt: $run_attempt,
+              repository: $repository,
+              ref: $ref,
+              sha: $sha,
+              event_name: $event_name,
+              actor: $actor,
+              lane: {
+                id: $lane_id,
+                shard_id: $shard_id,
+                mode: $lane_mode
+              },
+              codeql_wave: $codeql_wave,
+              deterministic_seed: $deterministic_seed,
+              healing_policy_tier_max: $healing_policy_tier
+            }' > .codex/contracts/lane-manifest.json
 
           echo "lane_id=${LANE_ID}" >> "$GITHUB_OUTPUT"
           echo "shard_id=${SHARD_ID}" >> "$GITHUB_OUTPUT"
@@ -191,27 +208,36 @@ jobs:
       - name: Generate input lock
         id: lock
         shell: bash
+        env:
+          HEALING_WORKFLOW_FILE: ".github/workflows/self-healing.yml"
+          HEALING_SCRIPTS_DIR: "scripts/ci"
         run: |
           set -euo pipefail
 
           {
             echo "${GITHUB_SHA}"
-            find .github/workflows -maxdepth 1 -type f -name 'self-healing.yml' | sort | xargs sha256sum || true
-            find scripts/ci -maxdepth 1 -type f 2>/dev/null | sort | xargs sha256sum || true
+            [ -f "$HEALING_WORKFLOW_FILE" ] && sha256sum "$HEALING_WORKFLOW_FILE" || true
+            [ -d "$HEALING_SCRIPTS_DIR" ] && find "$HEALING_SCRIPTS_DIR" -maxdepth 1 -type f 2>/dev/null | sort | xargs sha256sum || true
           } > .codex/contracts/input-lock.materialized.txt
 
           SHA="$(sha256sum .codex/contracts/input-lock.materialized.txt | awk '{print $1}')"
 
-          cat > .codex/contracts/input-lock.json <<EOF
-          {
-            "schema_version": "${HEALING_ARTIFACT_SCHEMA_VERSION}",
-            "input_lock_sha256": "${SHA}",
-            "generated_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
-            "repository": "${GITHUB_REPOSITORY}",
-            "run_id": "${GITHUB_RUN_ID}",
-            "sha": "${GITHUB_SHA}"
-          }
-          EOF
+          # Use jq to safely generate input lock JSON
+          jq -n \
+            --arg schema_version "$HEALING_ARTIFACT_SCHEMA_VERSION" \
+            --arg input_lock_sha "$SHA" \
+            --arg generated_at "$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
+            --arg repository "$GITHUB_REPOSITORY" \
+            --arg run_id "$GITHUB_RUN_ID" \
+            --arg sha "$GITHUB_SHA" \
+            '{
+              schema_version: $schema_version,
+              input_lock_sha256: $input_lock_sha,
+              generated_at: $generated_at,
+              repository: $repository,
+              run_id: $run_id,
+              sha: $sha
+            }' > .codex/contracts/input-lock.json
 
           echo "input_lock_sha256=${SHA}" >> "$GITHUB_OUTPUT"
 
@@ -273,7 +299,7 @@ jobs:
           recent_failures = {
               "total": 0,
               "runs": [],
-              "timestamp": datetime.utcnow().isoformat() + "Z"
+              "timestamp": datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
           }
 
           print(f"Total failures detected: {recent_failures['total']}")
@@ -289,6 +315,7 @@ jobs:
         run: |
           python << 'EOF'
           import json
+          import os
           import re
           from collections import defaultdict
           from typing import List, Dict, Tuple
@@ -314,7 +341,6 @@ jobs:
           print("::endgroup::")
 
           patterns_json = json.dumps({"patterns": [p[0] for p in top_patterns]})
-          import os
           with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
               f.write(f"patterns_detected={patterns_json}\n")
 
