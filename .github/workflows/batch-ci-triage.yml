@@ -35,9 +35,13 @@ jobs:
       GH_TRICKLE_POLITE_SLEEP: '0.5'
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
     steps:
+    - name: Mask secrets
+      run: |
+        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
     - name: Checkout Repository
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         fetch-depth: 1
     - name: Setup Python
       uses: ./.github/actions/setup-python-cached

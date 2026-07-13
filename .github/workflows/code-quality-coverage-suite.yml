@@ -38,6 +38,7 @@ jobs:
     steps:
     - uses: actions/checkout@v5
       with:
+            persist-credentials: false
         fetch-depth: 0
     - name: Compute coverage/quality scope
       id: filter
@@ -91,6 +92,8 @@ jobs:
       '
     steps:
     - uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Setup Python
       uses: ./.github/actions/setup-python-cached
       with:
@@ -184,6 +187,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         fetch-depth: 0
     - name: Set up Python
       uses: ./.github/actions/setup-python-cached
@@ -232,6 +236,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         fetch-depth: 0
     - name: Set up Python
       uses: ./.github/actions/setup-python-cached
@@ -283,6 +288,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         fetch-depth: 0
     - name: Set up Python
       uses: ./.github/actions/setup-python-cached
@@ -360,6 +366,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         fetch-depth: 0
     - name: Set up Python
       uses: ./.github/actions/setup-python-cached
@@ -405,6 +412,7 @@ jobs:
     - name: Checkout for cache health
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         sparse-checkout: scripts/ci
     - name: Cache health report
       continue-on-error: true
@@ -472,6 +480,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1
     - name: Post or update rescue comment

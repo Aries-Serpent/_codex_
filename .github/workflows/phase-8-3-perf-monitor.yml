@@ -32,9 +32,13 @@ jobs:
       metrics-file: ${{ steps.collect.outputs.metrics-file }}
       metrics-summary: ${{ steps.collect.outputs.summary }}
     steps:
+    - name: Mask secrets
+      run: |
+        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         fetch-depth: 1
     - name: Set up Python
       uses: actions/setup-python@v6
@@ -74,6 +78,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         fetch-depth: 1
     - name: Set up Python
       uses: actions/setup-python@v6
@@ -110,6 +115,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         fetch-depth: 1
     - name: Set up Python
       uses: actions/setup-python@v6
@@ -155,6 +161,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Download all artifacts
       uses: actions/download-artifact@v5
     - name: Generate dashboard

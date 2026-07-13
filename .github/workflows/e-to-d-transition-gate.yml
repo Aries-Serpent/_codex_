@@ -19,9 +19,13 @@ jobs:
       model_capable: ${{ steps.check.outputs.capable }}
       c2_pass: ${{ steps.check.outputs.c2_pass }}
     steps:
+    - name: Mask secrets
+      run: |
+        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         fetch-depth: 0
     - name: Check 5 transition conditions
       id: check
@@ -152,6 +156,7 @@ jobs:
     - name: Checkout PR branch
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         ref: ${{ github.head_ref }}
         fetch-depth: 1
         token: ${{ github.token }}
@@ -229,6 +234,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1
     - name: Post or update rescue comment

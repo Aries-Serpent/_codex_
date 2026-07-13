@@ -35,8 +35,13 @@ jobs:
       issues: write
 
     steps:
+    - name: Mask secrets
+      run: |
+        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
       - name: Checkout code
         uses: actions/checkout@v5  # v6.0.3
+      with:
+            persist-credentials: false
 
       - name: Set up Python
         uses: ./.github/actions/setup-python-cached

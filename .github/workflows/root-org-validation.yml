@@ -38,8 +38,13 @@ jobs:
     outputs:
       baseline_metrics: ${{ steps.baseline.outputs.metrics }}
     steps:
+    - name: Mask secrets
+      run: |
+        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
     - name: Checkout code
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: CacheManager health check
       continue-on-error: true
       run: 'python scripts/ci/generate_cache_keys.py --health --workflow root-org-validation
@@ -141,6 +146,8 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Set up Python 3.12 with tiered cache
       uses: ./.github/actions/setup-python-cached
       with:
@@ -224,6 +231,8 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Set up Python 3.12 with tiered cache
       uses: ./.github/actions/setup-python-cached
       with:
@@ -390,6 +399,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1
     - name: Post or update rescue comment

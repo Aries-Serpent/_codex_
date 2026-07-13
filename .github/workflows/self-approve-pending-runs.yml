@@ -37,9 +37,13 @@ jobs:
     if: "github.event_name != 'workflow_run' || github.event.workflow_run.name !=\
       \ '\u26A1 Self-Approve Pending Workflow Runs'"
     steps:
+    - name: Mask secrets
+      run: |
+        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
     - name: Checkout (for approve_pending_runs.py)
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         fetch-depth: 1
         ref: ${{ github.event.repository.default_branch || 'main' }}
     - name: Generate Cognitive Brain App token

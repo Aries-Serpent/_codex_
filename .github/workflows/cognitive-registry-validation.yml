@@ -44,6 +44,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
@@ -99,6 +101,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
@@ -143,6 +147,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Create approval request
       id: approval
       run: 'echo "## Registry Validation Complete - Awaiting Approval"
@@ -186,6 +192,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Store registry variables
       env:
         GH_TOKEN: ${{ github.token }}
@@ -227,6 +235,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
@@ -258,6 +268,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Generate workflow summary
       run: 'echo "# Cognitive Registry Validation Workflow Summary"
 

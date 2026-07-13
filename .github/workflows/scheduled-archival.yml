@@ -41,9 +41,13 @@ jobs:
       candidates: ${{ steps.find.outputs.candidates }}
       count: ${{ steps.find.outputs.count }}
     steps:
+    - name: Mask secrets
+      run: |
+        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         fetch-depth: 0
     - name: CacheManager health check
       continue-on-error: true
@@ -80,6 +84,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Create Archival Issue
       if: ${{ github.event.inputs.dry_run != 'true' }}
       uses: actions/github-script@v8
@@ -127,6 +133,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Find and Compress Large Files
       run: "echo \"## Large File Compression\"\necho \"\"\n\n# Find files larger than\
         \ 100KB in archive directories\nLARGE_FILES=$(find ./misc/repo-owner-review\

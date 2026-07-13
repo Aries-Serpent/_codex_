@@ -54,6 +54,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Load context manifest
       id: load
       run: "MANIFEST_PATH=\"${{ inputs.context_manifest || '.codex/session_context_manifest.json'\
@@ -90,6 +92,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Initialize delegation context
       id: init
       run: "AGENT=\"${{ matrix.agent }}\"\nDRY_RUN=\"${{ inputs.dry_run || false }}\"\
@@ -142,6 +146,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
@@ -189,6 +195,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Report delegation status
       run: "echo \"\U0001F4CA Adaptive Agent Delegation Framework - Status Report\"\
         \necho \"\"\necho \"\u2705 Framework Components:\"\necho \"  1. Context Loading:\

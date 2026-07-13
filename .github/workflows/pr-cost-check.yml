@@ -21,8 +21,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+    - name: Mask secrets
+      run: |
+        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
     - name: Checkout
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Set up Python 3.12
       uses: actions/setup-python@v6
       with:
@@ -179,6 +184,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1
     - name: Post or update rescue comment

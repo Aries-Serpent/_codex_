@@ -31,6 +31,7 @@ jobs:
     - name: Checkout PR branch
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         ref: ${{ github.event.pull_request.head.sha || github.head_ref || github.event.pull_request.head.ref }}
         fetch-depth: 0
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
@@ -225,6 +226,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1
     - name: Post or update rescue comment

@@ -45,6 +45,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         fetch-depth: 0
     - name: Set up Python
       uses: actions/setup-python@v6
@@ -89,6 +90,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         fetch-depth: 0
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
@@ -141,6 +143,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Download detection report
       uses: actions/download-artifact@v5
       with:

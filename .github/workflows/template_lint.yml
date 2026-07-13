@@ -19,6 +19,8 @@ jobs:
     timeout-minutes: 60
     steps:
     - uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: CacheManager health check
       continue-on-error: true
       run: 'python scripts/ci/generate_cache_keys.py --health --workflow template_lint
@@ -51,6 +53,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1
     - name: Post or update rescue comment

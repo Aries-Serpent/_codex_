@@ -26,6 +26,8 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Read markdown file
       id: read-file
       run: 'FILE_CONTENT=$(cat "${{ github.event.inputs.file_path }}")

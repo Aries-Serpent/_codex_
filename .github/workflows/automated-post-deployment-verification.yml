@@ -37,6 +37,9 @@ jobs:
       service_url: ${{ steps.setup.outputs.service_url }}
       checklist_file: ${{ steps.setup.outputs.checklist_file }}
     steps:
+    - name: Mask secrets
+      run: |
+        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
     - name: Validate Inputs
       id: setup
       run: "ENVIRONMENT=\"${{ github.event.inputs.environment }}\"\nSERVICE_URL=\"\
@@ -61,6 +64,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Check Service Accessibility
       id: accessibility
       run: "SERVICE_URL=\"${{ needs.setup.outputs.service_url }}\"\nMAX_RETRIES=5\n\
@@ -83,6 +88,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
@@ -128,6 +135,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
@@ -164,6 +173,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
@@ -199,6 +210,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Download Artifacts
       uses: actions/download-artifact@v5
       with:

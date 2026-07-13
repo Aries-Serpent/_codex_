@@ -17,8 +17,13 @@ jobs:
     timeout-minutes: 60
     name: Check and notify on security alerts
     steps:
+    - name: Mask secrets
+      run: |
+        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
     - name: Checkout repository
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: CacheManager health check
       continue-on-error: true
       run: 'python scripts/ci/generate_cache_keys.py --health --workflow security-alert-notification

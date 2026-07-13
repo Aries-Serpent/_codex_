@@ -26,7 +26,12 @@ jobs:
     timeout-minutes: 10
 
     steps:
+    - name: Mask secrets
+      run: |
+        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
       - uses: actions/checkout@v5
+      with:
+            persist-credentials: false
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -102,6 +107,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v5
+      with:
+            persist-credentials: false
 
       - name: Set up Python
         uses: actions/setup-python@v6

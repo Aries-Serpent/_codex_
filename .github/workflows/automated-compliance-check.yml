@@ -29,6 +29,8 @@ jobs:
     timeout-minutes: 15
     steps:
     - uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Validate workflow compliance
       run: "\n                    python3 << 'COMPLIANCE_EOF'\nimport yaml\nfrom pathlib\
         \ import Path\n\n# Check YAML syntax\nfor wf in Path('.github/workflows').glob('*.yml'):\n\

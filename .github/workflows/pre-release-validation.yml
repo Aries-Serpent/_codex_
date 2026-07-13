@@ -63,6 +63,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - env:
         BRANCH_REF: ${{ github.head_ref || github.ref }}
       id: check
@@ -158,6 +160,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Check for wheel build script
       run: "if [ -f \"pyproject.toml\" ] && grep -q \"\\[build-system\\]\" pyproject.toml;\
         \ then\n  echo \"✅ Project configured for wheel builds\"\nelse\n  echo \"\
@@ -173,6 +177,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Check CHANGELOG updated
       run: "VERSION=\"${{ needs.validate-version.outputs.version }}\"\n\n# Check for\
         \ version section in CHANGELOG\nif grep -q \"## \\[${VERSION}\\]\" CHANGELOG.md\
@@ -194,6 +200,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Check manifest template
       run: "if [ -f \".codex/RELEASE_MANIFEST_TEMPLATE.json\" ]; then\n  python -c\
         \ \"import json; json.load(open('.codex/RELEASE_MANIFEST_TEMPLATE.json'))\"\
@@ -208,6 +216,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - id: p0-1
       name: 'P0.1: Profile alignment'
       run: "if [ -f \".codex/PROFILE_DRIFT_AUDIT.json\" ]; then\n  echo \"✅ P0.1.1:\
@@ -238,6 +248,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - id: p1-3
       name: 'P1.3: SBOM present'
       run: "if [ -f \"sbom.json\" ] || [ -f \".codex/sbom.json\" ]; then\n  echo \"\
@@ -259,6 +271,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - id: p2-1
       name: 'P2.2.1: Release workflow'
       run: "if [ -f \".github/workflows/release-to-pypi.yml\" ]; then\n  echo \"✅\
@@ -303,6 +317,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Check for release notes
       run: "VERSION=\"${{ needs.validate-version.outputs.version }}\"\n\n# Look for\
         \ release notes file\nif [ -f \"RELEASE_NOTES.md\" ] || \\\n   [ -f \".codex/RELEASE_NOTES_v${VERSION}.md\"\
@@ -326,6 +342,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         fetch-depth: 0
     - id: version
       name: Check version in pyproject.toml

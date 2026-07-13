@@ -28,8 +28,13 @@ jobs:
       issues: write
     timeout-minutes: 5
     steps:
+    - name: Mask secrets
+      run: |
+        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
     - name: Checkout code
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Setup Python (cached)
       uses: ./.github/actions/setup-python-cached
       with:
@@ -99,6 +104,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1
     - name: Post or update rescue comment

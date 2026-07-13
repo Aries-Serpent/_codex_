@@ -78,6 +78,8 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v5
+      with:
+            persist-credentials: false
       - name: Setup Python
         uses: ./.github/actions/setup-python-cached
         with:
@@ -157,6 +159,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
+            persist-credentials: false
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
           fetch-depth: 1
       - name: Post or update rescue comment

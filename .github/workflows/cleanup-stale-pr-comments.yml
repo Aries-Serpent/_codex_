@@ -47,8 +47,13 @@ jobs:
       \ != null &&\n contains(github.event.comment.body, '/cleanup-comments')) ||\n\
       github.event_name == 'pull_request'\n"
     steps:
+    - name: Mask secrets
+      run: |
+        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
     - name: Checkout
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Set up Python
       uses: actions/setup-python@v6
       with:

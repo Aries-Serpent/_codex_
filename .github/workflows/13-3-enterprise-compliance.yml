@@ -27,6 +27,8 @@ jobs:
             ${{ runner.os }}-pip-
 
       - uses: actions/checkout@v5
+      with:
+            persist-credentials: false
       - uses: actions/setup-python@v6
         with:
           cache: pip
@@ -47,6 +49,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+      with:
+            persist-credentials: false
       - uses: github/codeql-action/init@v3
         with:
         languages: ${{ matrix.language }}
@@ -70,6 +74,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+      with:
+            persist-credentials: false
       - name: Create compliance dashboard
         run: 'echo "# 🛡️ Compliance Audit Report"
 
@@ -102,6 +108,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+      with:
+            persist-credentials: false
       - name: Install Semgrep
         run: pip install semgrep
       - name: Run Semgrep

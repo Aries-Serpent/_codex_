@@ -101,9 +101,13 @@ jobs:
     timeout-minutes: 20
     if: github.event_name == 'push'
     steps:
+    - name: Mask secrets
+      run: |
+        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
     - name: Checkout code
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         fetch-depth: 0
     - name: Resolve PR for current push
       id: resolve
@@ -152,6 +156,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         fetch-depth: 0
     - name: Evaluate 5-tier priority rule system
       id: evaluate
@@ -338,6 +343,8 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Resolve token chain (Tier 1-4 with fallbacks)
       id: token
       env:
@@ -481,6 +488,8 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Publish metrics to artifact
       env:
         APPROVAL_SOURCE: ${{ github.event.inputs.approval_source }}

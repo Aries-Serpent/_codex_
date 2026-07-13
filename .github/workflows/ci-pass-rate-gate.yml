@@ -26,6 +26,8 @@ jobs:
             ${{ runner.os }}-pip-
 
       - uses: actions/checkout@v5
+      with:
+            persist-credentials: false
       - name: Compute 7-day pass rate
         id: rate
         env:

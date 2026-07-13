@@ -20,6 +20,9 @@ jobs:
 
       '
     steps:
+    - name: Mask secrets
+      run: |
+        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
     - name: Detect timebox, exploration, and no-auto-proceed directives
       uses: actions/github-script@v8
       with:

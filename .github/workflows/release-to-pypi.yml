@@ -35,9 +35,13 @@ jobs:
     outputs:
       version: ${{ steps.version.outputs.version }}
     steps:
+    - name: Mask secrets
+      run: |
+        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
+            persist-credentials: false
           fetch-depth: 0
 
       - name: Set version from tag or input
@@ -152,6 +156,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
+      with:
+            persist-credentials: false
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -202,6 +208,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
+      with:
+            persist-credentials: false
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -288,6 +296,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
+      with:
+            persist-credentials: false
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -337,6 +347,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
+      with:
+            persist-credentials: false
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -394,6 +406,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
+      with:
+            persist-credentials: false
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -465,6 +479,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
+            persist-credentials: false
           fetch-depth: 0
 
       - name: Set version from pre-release-checks output
@@ -581,6 +596,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
+      with:
+            persist-credentials: false
 
       - name: Create deployment summary comment
         uses: actions/github-script@v8

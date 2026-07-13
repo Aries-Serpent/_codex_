@@ -64,6 +64,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         fetch-depth: 50
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
     - name: Per-branch hourly run-cap guard (cascade brake)
@@ -283,6 +284,7 @@ jobs:
     - name: Checkout target branch (working tree)
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         fetch-depth: 50
         ref: ${{ github.event.workflow_run.head_sha || needs.triage.outputs.head_branch || 'main' }}
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
@@ -565,6 +567,7 @@ jobs:
     - name: Checkout target branch
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         fetch-depth: 5
         ref: ${{ github.event.workflow_run.head_sha || needs.triage.outputs.head_branch || 'main' }}
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
@@ -696,6 +699,7 @@ jobs:
     - name: Checkout main (trusted) to get post_rescue_comment.py
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         ref: refs/heads/main
     - name: Append escalation to canonical CI rescue thread (S298)
       continue-on-error: true
@@ -739,6 +743,8 @@ jobs:
     steps:
     - name: Checkout for pattern_recorder access
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
       continue-on-error: true
       with:
         ref: refs/heads/main

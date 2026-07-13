@@ -30,8 +30,12 @@ jobs:
     timeout-minutes: 60
 
     steps:
+    - name: Mask secrets
+      run: |
+        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
       - uses: actions/checkout@v5  # v6.0.3
         with:
+            persist-credentials: false
           ref: ${{ github.event.pull_request.head.ref || github.ref }}
           fetch-depth: 0
 
@@ -192,6 +196,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5  # v6.0.3
         with:
+            persist-credentials: false
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
           fetch-depth: 1
 

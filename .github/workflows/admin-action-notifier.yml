@@ -110,6 +110,9 @@ jobs:
       REPO: ${{ github.repository }}
 
     steps:
+    - name: Mask secrets
+      run: |
+        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
       # ── 1. Probe the API endpoint ─────────────────────────────────────────
       - name: Probe ${{ inputs.gap_id }} endpoint
         id: probe

@@ -54,6 +54,8 @@ jobs:
             ${{ runner.os }}-pip-
 
       - uses: actions/checkout@v5  # v6.0.3
+      with:
+            persist-credentials: false
 
       
       - name: Cache test results (Layer 3)

@@ -24,6 +24,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
@@ -58,6 +60,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v5
+      with:
+            persist-credentials: false
     - name: Determine tag
       id: tag
       run: 'TAG="${{ github.event.inputs.tag || github.ref_name }}"

@@ -89,6 +89,7 @@ jobs:
     - name: Checkout integration branch
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         ref: ${{ needs.check-trigger.outputs.integration_branch }}
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
@@ -316,6 +317,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
+            persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         fetch-depth: 1
     - name: Post or update rescue comment
