@@ -15,7 +15,7 @@ Validate that GitHub Actions security scanning workflows have successfully ident
 ### Key Finding
 ✅ **Security Scanning Infrastructure Operational**
 - Comprehensive multi-tool scanning activated
-- 129 findings documented and categorized
+- 129 findings documented and categorized  # pragma: allowlist secret
 - Clear remediation paths identified
 - Estimated 1.5-2 hours to achieve zero critical alerts
 

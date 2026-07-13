@@ -15,7 +15,7 @@
    - Commit: `2bd5fbb1f9f1eaf0edd4cb6719f618fbf2d67f8c`
    - Status: SUCCESS
    - Timestamp: 2026-07-13T04:22:26Z - 2026-07-13T04:22:46Z
-   - Duration: ~20 minutes
+   - Duration: ~20 minutes  # pragma: allowlist secret
    - Artifacts: 7 security-suite artifacts
 
 2. **Run #29222994866** (In Progress 🟡)
