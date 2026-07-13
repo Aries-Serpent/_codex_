@@ -5,13 +5,15 @@
 ### EXECUTION SUMMARY
 
 **Failures Addressed:**
-- ✅ **Action Version Enforcement Check**: Fixed 10 violations across `action-version-check.yml`, `codeql-alert-triage.yml`, `health-dashboard-update.yml`, `workflow-health-update.yml` — all updated to approved versions (checkout@v5, setup-python@v6, github-script@v8)
+- ✅ **Action Version Enforcement Check**: Fixed 10 action version violations across 4 workflow files — all updated to approved versions (checkout@v5, setup-python@v6, github-script@v8)
 - ✅ **Final Pre-Merge Checks (REQ-4/5)**: Updated CHANGELOG.md and AGENT_ACCOUNTABILITY_REPORT.md in this commit
 - ✅ **Secrets Detection**: Confirmed no secrets in changed files via runtime-tools-secret_scanning
 
 ### Agents Used
 
-- @copilot (primary agent)
+- `ci-failure-resolution-agent` (CI rescue — action version enforcement)
+- `workflow-ci-fixer` (workflow YAML fixes)
+- `session-analysis-agent` (session wrap-up, REQ-4/5 compliance)
 
 ## SESSION SUMMARY — 2026-07-13T22:25:00Z [v0.2.3 CI RESCUE — 8 FAILING CHECKS]
 
