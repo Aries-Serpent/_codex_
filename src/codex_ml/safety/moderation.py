@@ -56,7 +56,7 @@ def _make_moderation_counter() -> Any:
             "Total moderation decisions by stage and verdict",
             ["stage", "verdict"],
         )
-    except (IOError, OSError):  # pragma: no cover — prometheus-client absent or already registered
+    except ImportError:  # pragma: no cover — prometheus-client absent or already registered
         return _NoopModCounter()
 
 
