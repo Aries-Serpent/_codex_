@@ -1,5 +1,19 @@
 ## [Unreleased]
 
+### 🔐 Security: Pin GitHub Actions to Immutable Commit SHAs (2026-07-13)
+
+**Issue**: CodeQL security alerts 19706-19707 flagged unpinned `peter-evans/create-pull-request@v8` action usage
+
+**Resolution**: Pinned action to immutable commit SHA `5f6978faf089d4d20b00c7766989d076bb2fc7f1` in:
+- `.github/workflows/cognitive-k8s-provisioning.yml:239`
+- `.github/workflows/repository-health-monitoring.yml:67`
+
+**Compliance**: Added Workflow Execution Checklist to PR #5305 body; updated REQ-4/REQ-5 documents
+
+**Authority**: @mbaetiong CI Rescue request | **PR**: #5305
+
+
+
 ### 📚 Site-First Documentation Initiative — Professional Documentation Transformation (2026-07-13)
 
 **Status**: ✅ COMPLETE | **Campaign Duration**: ~60 minutes | **Authority**: @mbaetiong (D-tier autonomous)
