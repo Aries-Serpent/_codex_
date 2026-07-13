@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+### Security (2026-07-13)
+
+- Pin `rustsec/audit-check` action to commit SHA `69366f33c96575abad1ee0dba8212993eecbe998` (v2.0.0) in `rust_swarm_ci.yml` to resolve CodeQL unpinned-action finding (#19705)
+
 ### 📚 Site-First Documentation Initiative — Professional Documentation Transformation (2026-07-13)
 
 **Status**: ✅ COMPLETE | **Campaign Duration**: ~60 minutes | **Authority**: @mbaetiong (D-tier autonomous)
