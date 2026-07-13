@@ -60,7 +60,7 @@ jobs:
     - name: Analyze PR with GitHub Copilot
       id: pr_analysis
       continue-on-error: true
-      uses: mvkaran/gh-copilot@v1
+      uses: mvkaran/gh-copilot@5694b7d7a242d1c025e40d0965a0c5c5e68f5fba  # v1
       with:
         copilot-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         github-mcp-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
