@@ -1,0 +1,198 @@
+{
+  "version": "4.0",
+  "generated": "2026-07-13T18:25:28.942475Z",
+  "metrics": {
+    "M3_job_status": {
+      "id": "M3",
+      "name": "Job Status Collection",
+      "type": "categorical",
+      "source": "GitHub Actions API",
+      "collection_method": "workflow_run.jobs",
+      "valid_values": [
+        "success",
+        "failure",
+        "cancelled",
+        "skipped"
+      ],
+      "aggregation": "count_per_status",
+      "sla_collection_seconds": 30,
+      "dashboard_refresh_seconds": 60
+    },
+    "M4_step_duration": {
+      "id": "M4",
+      "name": "Step Duration Tracking",
+      "type": "numeric",
+      "unit": "milliseconds",
+      "source": "GitHub Actions API",
+      "collection_method": "workflow_run.jobs[].steps",
+      "field": "run_time_ms",
+      "aggregation": [
+        "min",
+        "max",
+        "mean",
+        "p95",
+        "p99"
+      ],
+      "sla_collection_seconds": 45,
+      "dashboard_refresh_seconds": 120
+    },
+    "M5_test_coverage": {
+      "id": "M5",
+      "name": "Test Coverage Extraction",
+      "type": "percentage",
+      "unit": "%",
+      "source": "pytest coverage reports",
+      "collection_method": "artifact_download",
+      "artifact_pattern": "coverage*",
+      "aggregation": [
+        "overall",
+        "by_module"
+      ],
+      "sla_collection_seconds": 120,
+      "dashboard_refresh_seconds": 300
+    },
+    "M6_build_duration": {
+      "id": "M6",
+      "name": "Build Duration",
+      "type": "numeric",
+      "unit": "seconds",
+      "source": "GitHub Actions API",
+      "collection_method": "workflow_run.run_number",
+      "field": "updated_at - created_at",
+      "aggregation": [
+        "per_run",
+        "rolling_average_10",
+        "trend"
+      ],
+      "sla_collection_seconds": 30,
+      "dashboard_refresh_seconds": 300
+    },
+    "M7_artifact_size": {
+      "id": "M7",
+      "name": "Artifact Size",
+      "type": "numeric",
+      "unit": "bytes",
+      "source": "GitHub Actions artifacts API",
+      "collection_method": "artifacts.size_in_bytes",
+      "aggregation": [
+        "per_artifact",
+        "total_per_run"
+      ],
+      "warning_threshold_mb": 500,
+      "critical_threshold_mb": 1000,
+      "sla_collection_seconds": 60,
+      "dashboard_refresh_seconds": 300
+    },
+    "M8_cache_hit_rate": {
+      "id": "M8",
+      "name": "Cache Hit Rate",
+      "type": "percentage",
+      "unit": "%",
+      "source": "GitHub Actions cache API",
+      "collection_method": "actions_cache_stats",
+      "formula": "cache_hits / (cache_hits + cache_misses) * 100",
+      "aggregation": [
+        "per_cache_key",
+        "per_job",
+        "overall"
+      ],
+      "sla_collection_seconds": 30,
+      "dashboard_refresh_seconds": 600
+    },
+    "M9_cpu_usage": {
+      "id": "M9",
+      "name": "CPU Usage %",
+      "type": "percentage",
+      "unit": "%",
+      "source": "Runner system metrics (if available)",
+      "collection_method": "workflow step output parsing",
+      "aggregation": [
+        "per_job",
+        "peak",
+        "average"
+      ],
+      "sla_collection_seconds": 45,
+      "dashboard_refresh_seconds": 300,
+      "notes": "Requires custom step in workflow to collect"
+    },
+    "M10_memory_usage": {
+      "id": "M10",
+      "name": "Memory Usage",
+      "type": "numeric",
+      "unit": "MB",
+      "source": "Runner system metrics (if available)",
+      "collection_method": "workflow step output parsing",
+      "aggregation": [
+        "per_job",
+        "peak",
+        "average"
+      ],
+      "sla_collection_seconds": 45,
+      "dashboard_refresh_seconds": 300,
+      "notes": "Requires custom step in workflow to collect"
+    },
+    "M11_network_latency": {
+      "id": "M11",
+      "name": "Network Latency",
+      "type": "numeric",
+      "unit": "milliseconds",
+      "source": "HTTP request timings",
+      "collection_method": "api_request_duration_ms",
+      "aggregation": [
+        "per_api_call",
+        "p50",
+        "p95",
+        "p99"
+      ],
+      "sla_collection_seconds": 60,
+      "dashboard_refresh_seconds": 600,
+      "notes": "Collected from GitHub API calls during workflow"
+    },
+    "M12_error_rate": {
+      "id": "M12",
+      "name": "Error Rate",
+      "type": "percentage",
+      "unit": "%",
+      "source": "Workflow step failures",
+      "collection_method": "step_conclusion analysis",
+      "formula": "failed_steps / total_steps * 100",
+      "aggregation": [
+        "per_workflow",
+        "per_job",
+        "overall"
+      ],
+      "sla_collection_seconds": 30,
+      "dashboard_refresh_seconds": 300
+    }
+  },
+  "collection_framework": {
+    "pipeline": "health_metrics_collector.py",
+    "schedule": "*/5 * * * *",
+    "storage": ".codex/metrics/health_metrics_db.json",
+    "retention_days": 90,
+    "export_format": "prometheus",
+    "export_location": ".codex/metrics/prometheus/"
+  },
+  "dashboard_integration": {
+    "type": "github_pages",
+    "path": "docs/health-dashboard/",
+    "refresh_interval_seconds": 300,
+    "charts": [
+      "job_status_timeline",
+      "step_duration_distribution",
+      "test_coverage_trend",
+      "build_duration_trend",
+      "artifact_size_trend",
+      "cache_hit_rate_trend",
+      "error_rate_trend",
+      "overall_health_score"
+    ]
+  },
+  "validation": {
+    "all_metrics_defined": 10,
+    "all_metrics_with_sla": 10,
+    "all_metrics_with_aggregation": 10,
+    "implementation_status": "complete",
+    "ready_for_deployment": true
+  }
+}

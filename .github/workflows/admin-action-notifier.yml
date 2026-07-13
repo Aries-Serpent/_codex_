@@ -113,13 +113,14 @@ jobs:
     - name: Mask secrets
       run: |
         echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
-      # ── 1. Probe the API endpoint ─────────────────────────────────────────
-      - name: Probe ${{ inputs.gap_id }} endpoint
-        id: probe
-        env:
-          PROBE_URL:    ${{ inputs.probe_url }}
-          EXPECTED_OK:  ${{ inputs.expected_ok_status }}
-        run: |
+
+    # ── 1. Probe the API endpoint ─────────────────────────────────────────
+    - name: Probe ${{ inputs.gap_id }} endpoint
+      id: probe
+      env:
+        PROBE_URL:    ${{ inputs.probe_url }}
+        EXPECTED_OK:  ${{ inputs.expected_ok_status }}
+      run: |
           HTTP_STATUS=$(curl -s -o "${RUNNER_TEMP}/admin_probe_response.json" -w "%{http_code}" \
             -H "Authorization: Bearer ${GH_TOKEN}" \
             -H "Accept: application/vnd.github+json" \
@@ -148,20 +149,20 @@ jobs:
             echo "ℹ️  ${{ inputs.gap_id }} INCONCLUSIVE — HTTP ${HTTP_STATUS}: ${RESPONSE_MSG}"
           fi
 
-      # ── 2a. Create/update issue when gap is OPEN ─────────────────────────
-      - name: Create or update issue for ${{ inputs.gap_id }}
-        id: notify
-        if: steps.probe.outputs.scope_ok == 'false'
-        uses: actions/github-script@v8  # v9
-        env:
-          GAP_ID:       ${{ inputs.gap_id }}
-          ISSUE_TITLE:  ${{ inputs.issue_title }}
-          ISSUE_BODY:   ${{ inputs.issue_body_md }}
-          ISSUE_LABEL:  ${{ inputs.issue_label }}
-          ASSIGNEE:     ${{ inputs.assignee }}
-          HTTP_STATUS:  ${{ env.HTTP_STATUS }}
-          RESPONSE_MSG: ${{ env.RESPONSE_MSG }}
-        with:
+    # ── 2a. Create/update issue when gap is OPEN ─────────────────────────
+    - name: Create or update issue for ${{ inputs.gap_id }}
+      id: notify
+      if: steps.probe.outputs.scope_ok == 'false'
+      uses: actions/github-script@v8  # v9
+      env:
+        GAP_ID:       ${{ inputs.gap_id }}
+        ISSUE_TITLE:  ${{ inputs.issue_title }}
+        ISSUE_BODY:   ${{ inputs.issue_body_md }}
+        ISSUE_LABEL:  ${{ inputs.issue_label }}
+        ASSIGNEE:     ${{ inputs.assignee }}
+        HTTP_STATUS:  ${{ env.HTTP_STATUS }}
+        RESPONSE_MSG: ${{ env.RESPONSE_MSG }}
+      with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: |
             const { owner, repo } = context.repo;
@@ -209,17 +210,17 @@ jobs:
             }
             core.setOutput('issue_number', String(issueNum));
 
-      # ── 2b. Auto-close issue when gap is RESOLVED ─────────────────────────
-      - name: Auto-close issue for ${{ inputs.gap_id }} (gap resolved)
-        if: steps.probe.outputs.scope_ok == 'true'
-        uses: actions/github-script@v8  # v9
-        env:
-          ISSUE_TITLE: ${{ inputs.issue_title }}
-          ISSUE_LABEL: ${{ inputs.issue_label }}
-          GAP_ID:      ${{ inputs.gap_id }}
-        with:
-          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          script: |
+    # ── 2b. Auto-close issue when gap is RESOLVED ─────────────────────────
+    - name: Auto-close issue for ${{ inputs.gap_id }} (gap resolved)
+      if: steps.probe.outputs.scope_ok == 'true'
+      uses: actions/github-script@v8  # v9
+      env:
+        ISSUE_TITLE: ${{ inputs.issue_title }}
+        ISSUE_LABEL: ${{ inputs.issue_label }}
+        GAP_ID:      ${{ inputs.gap_id }}
+      with:
+        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        script: |
             const { owner, repo } = context.repo;
             const open = await github.rest.issues.listForRepo({
               owner, repo, state: 'open', labels: process.env.ISSUE_LABEL, per_page: 50,
@@ -245,17 +246,17 @@ jobs:
               core.info(`ℹ️  No open ${process.env.GAP_ID} issue found — nothing to close`);
             }
 
-      # ── 3. Step Summary ───────────────────────────────────────────────────
-      - name: Step summary
-        if: always()
-        env:
-          GAP_ID:         ${{ inputs.gap_id }}
-          SCOPE_OK:       ${{ steps.probe.outputs.scope_ok }}
-          ISSUE_NUM:      ${{ steps.notify.outputs.issue_number }}
-          HTTP_STATUS:    ${{ steps.probe.outputs.http_status }}
-          EXPECTED_OK:    ${{ inputs.expected_ok_status }}
-          RESPONSE_MSG:   ${{ steps.probe.outputs.response_msg }}
-        run: |
+    # ── 3. Step Summary ───────────────────────────────────────────────────
+    - name: Step summary
+      if: always()
+      env:
+        GAP_ID:         ${{ inputs.gap_id }}
+        SCOPE_OK:       ${{ steps.probe.outputs.scope_ok }}
+        ISSUE_NUM:      ${{ steps.notify.outputs.issue_number }}
+        HTTP_STATUS:    ${{ steps.probe.outputs.http_status }}
+        EXPECTED_OK:    ${{ inputs.expected_ok_status }}
+        RESPONSE_MSG:   ${{ steps.probe.outputs.response_msg }}
+      run: |
           {
             echo "## 🔐 Admin Action Gate — \`${GAP_ID}\`"
             echo ""
