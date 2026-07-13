@@ -2,14 +2,10 @@
 """CI Health Metrics Collector - Implements M3-M12 metrics collection"""
 
 import json
-import os
 import sys
-import time
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Dict, List, Any
-import subprocess
-import statistics
+from typing import Dict, Any
 
 class HealthMetricsCollector:
     """Collects and aggregates health metrics for CI/CD workflows"""
@@ -25,7 +21,8 @@ class HealthMetricsCollector:
         try:
             with open(".codex/CI_HEALTH_METRICS_SPEC.json") as f:
                 return json.load(f)
-        except:
+        except (FileNotFoundError, json.JSONDecodeError, OSError):
+            # Spec file missing, invalid JSON, or permission issue; return empty spec
             return {}
     
     def collect_all(self) -> Dict[str, Any]:
@@ -95,7 +92,8 @@ class HealthMetricsCollector:
         if coverage_dir.exists():
             try:
                 coverage = self._parse_coverage_report()
-            except:
+            except Exception:
+                # Coverage report parsing failed; leave coverage at 0
                 pass
         
         return {
