@@ -1,6 +1,16 @@
 ## [Unreleased]
 
-### PR #5317 Validation & Code Review Resolution (v0.2.3) — Workflow Readiness Gate (2026-07-13T21:31:00Z)
+### v0.2.3 CI Rescue — Fix Import Hook, YAML, CodeQL, __version__ (2026-07-13T22:25:00Z)
+
+**Status:** COMPLETE | **Authority:** @copilot | **Scope:** CI failure remediation | **Impact:** Resolves 8 failing checks on PR #5318
+
+**Fixes Applied:**
+- Fix `conftest.py` import hook: `startswith("codex")` incorrectly intercepted `codex_ml.*` imports, redirecting them to `aries_serpent_core/` which lacks `DEFAULT_LOG_DIR`, `ReasoningConfig`, etc.
+- Fix YAML syntax error in `session-recovery-continuous-monitoring.yml` (`persist-credentials` indentation)
+- Add `upload: never` to `13-3-enterprise-compliance.yml` CodeQL analyze step to resolve SARIF conflict with repository default setup
+- Bump `codex_ml.__version__` from "0.1.0" to "0.2.3" to match `pyproject.toml`
+
+
 
 **Status:** ✅ COMPLETE | **Authority:** @copilot | **Scope:** PR validation & code review fixes | **Impact:** Production-ready v0.2.3 pre-release
 

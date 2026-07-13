@@ -27,7 +27,7 @@ class _CodexNamespaceFinder(importlib.abc.MetaPathFinder):
         ]
 
     def find_spec(self, fullname, path, target=None):
-        if not fullname.startswith("codex"):
+        if fullname != "codex" and not fullname.startswith("codex."):
             return None
 
         if fullname in self.cache:

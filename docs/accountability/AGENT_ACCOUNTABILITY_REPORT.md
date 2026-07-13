@@ -1,6 +1,28 @@
-## SESSION SUMMARY — 2026-07-13T21:31:00Z [v0.2.3 PR VALIDATION & CODE REVIEW FIXES]
+## SESSION SUMMARY — 2026-07-13T22:25:00Z [v0.2.3 CI RESCUE — 8 FAILING CHECKS]
 
-**Session:** PR #5317 Validation | **Task:** Prepare PR with WEC template correctly selected checkboxes, resolve all code review issues, validate security concerns | **Date:** 2026-07-13T21:31:00Z | **Authority:** @copilot (autonomous task agent) | **Status:** ✅ COMPLETE | **Duration:** ~10 min | **Autonomy Level:** Full autonomous execution + wec:auto-approve enabled
+**Session:** PR #5318 CI Rescue | **Task:** Fix 8 failing CI checks: compliance YAML, CodeQL conflict, import hook bug, __version__ mismatch, REQ-4/5 | **Date:** 2026-07-13T22:25:00Z | **Authority:** @copilot | **Status:** ✅ COMPLETE | **Autonomy Level:** D-tier autonomous
+
+### EXECUTION SUMMARY
+
+**Failures Addressed (8 checks):**
+- ✅ **Automated Compliance Check**: Fixed YAML syntax error (`persist-credentials` indentation) in `session-recovery-continuous-monitoring.yml`
+- ✅ **CodeQL Security Analysis (javascript + python)**: Added `upload: never` to `13-3-enterprise-compliance.yml` to prevent SARIF conflict with default setup
+- ✅ **Fast Unit Tests / Integration Tests / Slow Tests**: Fixed root cause — `conftest.py` import hook incorrectly intercepted `codex_ml.*` imports via `startswith("codex")`, redirecting them to `aries_serpent_core/` modules (missing `DEFAULT_LOG_DIR`, `ReasoningConfig`, etc.). Fixed condition to `fullname != "codex" and not fullname.startswith("codex.")`
+- ✅ **Pre-Merge Validation (REQ-4/5)**: Updated AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md in same commit
+- ✅ **`__version__` mismatch**: Bumped from "0.1.0" to "0.2.3" in `src/codex_ml/__init__.py`
+
+### AGENTS USED
+- @copilot (direct implementation)
+
+### FILES CHANGED
+- `src/codex_ml/__init__.py` — __version__ 0.1.0 → 0.2.3
+- `conftest.py` — fix import hook: `startswith("codex")` → `fullname != "codex" and not fullname.startswith("codex.")`
+- `.github/workflows/session-recovery-continuous-monitoring.yml` — fix YAML indentation
+- `.github/workflows/13-3-enterprise-compliance.yml` — add `upload: never` to CodeQL analyze step
+- `CHANGELOG.md` — session entry
+- `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` — this entry
+
+
 
 ### EXECUTION SUMMARY
 
