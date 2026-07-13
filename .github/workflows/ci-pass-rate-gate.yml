@@ -29,7 +29,7 @@ jobs:
       - name: Compute 7-day pass rate
         id: rate
         env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: "python3 - <<'PYEOF'\nimport json, os, subprocess, sys\nfrom datetime import\
         \ datetime, timedelta, timezone\n\ntoken = os.environ[\"GH_TOKEN\"]\nrepo\
         \  = os.environ.get(\"GITHUB_REPOSITORY\", \"Aries-Serpent/_codex_\")\nsince\
@@ -69,7 +69,7 @@ jobs:
           path: reports/ci/ci_pass_rate_latest.json
       - name: Gate on 95% threshold
         env:
-        RATE: ${{ steps.rate.outputs.rate }}
+          RATE: ${{ steps.rate.outputs.rate }}
         run: "python3 -c \"\nimport sys, os\nrate = float(os.environ.get('RATE', '0'))\n\
         print(f'Pass rate: {rate}%  threshold: 95.0%')\nif rate < 95.0:\n    print('::error::7-day\
         \ CI pass rate below 95% — D6 exit criteria not yet met')\n    sys.exit(1)\n\
