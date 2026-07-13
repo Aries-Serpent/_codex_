@@ -1,0 +1,8 @@
+{
+  "schema_version": "1.0.0",
+  "input_lock_sha256": "6958b671ae8e71fd551239bf4a3b4b1c12e5a0b370bcde445e9d91f38d326d2d",
+  "source_run_id": "29222808051",
+  "source_sha": "2bd5fbb1f9f1eaf0edd4cb6719f618fbf2d67f8c",
+  "source_repository": "Aries-Serpent/_codex_",
+  "artifacts_pattern": "security-suite-*"
+}

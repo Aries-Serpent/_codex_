@@ -1,0 +1,10 @@
+{
+  "schema_version": "1.0.0",
+  "job": "security-suite-summary",
+  "lane_id": "lane-security",
+  "input_lock_sha256": "6958b671ae8e71fd551239bf4a3b4b1c12e5a0b370bcde445e9d91f38d326d2d",
+  "required_outputs": [
+    "security-suite-summary/security-suite-summary.md"
+  ],
+  "status": "success"
+}

@@ -1,29 +1,29 @@
-# Session Context — 2026-07-13T03:53:27Z
+# Session Context — 2026-07-13T04:33:26Z
 **Branch:** `copilot/production-deployment-v022`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4999` (✅)
-- GraphQL remaining: `4985` (✅)
+- REST remaining: `4983` (✅)
+- GraphQL remaining: `4999` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **mypy Baseline (Type-Check Anti-Regression)** — `failure` on `main` (2026-07-13)
-- **🔄 Doc Refresh Gate (AAIS)** — `failure` on `main` (2026-07-13)
-- **Code Example Validation** — `failure` on `main` (2026-07-13)
-- **Documentation Link Checker** — `failure` on `main` (2026-07-13)
-- **Pre-Flight CI Validation** — `failure` on `main` (2026-07-13)
+- **Self-Healing CI Loop** — `failure` on `main` (2026-07-13)
+- **Smoke Tests - Deployment Verification** — `failure` on `main` (2026-07-13)
+- **.github/workflows/build-preview-image.yml** — `failure` on `copilot/production-deployment-v022` (2026-07-13)
+- **.github/workflows/cleanup-stale-branches.yml** — `failure` on `copilot/production-deployment-v022` (2026-07-13)
+- **.github/workflows/ci-failure-issue-creator.yml** — `failure` on `copilot/production-deployment-v022` (2026-07-13)
 
 ## 📝 Recent Commits
+- `2bd5fbb1` docs: Add v0.2.2 production deployment authorization and release notes — copilot-swe-agent[bot] (2026-07-13)
+- `f9471d05` prod: Initialize v0.2.2 production deployment phase execution — copilot-swe-agent[bot] (2026-07-13)
 - `ad139778` feat: Merge multi-lane orchestration with Site-First Documentation Initiative (# — Copilot (2026-07-13)
 - `3100d2cb` docs: Site-First Documentation Initiative - 4-lane professional refresh (#5300) — Copilot (2026-07-13)
 - `856cc6a8` metric: Approval telemetry for workflow-execution-gate — GitHub Action (2026-07-12)
 - `157b8596` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-07-12)
 - `45aeeaa2` metric: Approval telemetry for workflow-execution-gate — GitHub Action (2026-07-12)
 - `00cb0353` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-07-12)
-- `1a2a4dd4` metric: Approval telemetry for workflow-execution-gate — GitHub Action (2026-07-12)
-- `28534089` chore(manifest): auto-refresh CODEX_MANIFEST.json [skip ci] — github-actions[bot] (2026-07-12)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
