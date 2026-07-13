@@ -342,7 +342,9 @@ datasets==5.0.0 ; python_full_version < '3.13' and sys_platform == 'linux' \
 defusedxml==0.7.1 ; python_full_version < '3.13' and sys_platform == 'linux' \
     --hash=sha256:1bb3032db185915b62d7c6209c5a8792be6a32ab2fedacc84e01b52c51aa3e69 \
     --hash=sha256:a352e7e428770286cc899e2542b6cdaedb2b4953ff269a210103ec58f6198a61
-    # via codex-ml
+    # via
+    #   codex-ml
+    #   nltk
 deprecated==1.3.1 ; python_full_version < '3.13' and sys_platform == 'linux' \
     --hash=sha256:597bfef186b6f60181535a29fbe44865ce137a5079f295b479886c82729d5f3f \
     --hash=sha256:b1b50e0ff0c1fddaa5708a2c6b0a6588bb09b892825ab2b214ac9ea9d92a5223
@@ -766,7 +768,9 @@ mmh3==5.2.1 ; python_full_version < '3.13' and sys_platform == 'linux' \
     --hash=sha256:f963eafc0a77a6c0562397da004f5876a9bcf7265a7bcc3205e29636bc4a1312 \
     --hash=sha256:fceef7fe67c81e1585198215e42ad3fdba3a25644beda8fbdaf85f4d7b93175a \
     --hash=sha256:fd96476f04db5ceba1cfa0f21228f67c1f7402296f0e73fee3513aa680ad237b
-    # via chromadb
+    # via
+    #   chromadb
+    #   ray
 mpmath==1.3.0 ; python_full_version < '3.13' and sys_platform == 'linux' \
     --hash=sha256:7a28eb2a9774d00c7bc92411c19a89209d5da7c4c9a9e227be8330a23a25b91f \
     --hash=sha256:a0b2b9fe80bbcd81a6647ff13108738cfb482d481d826cc0e02f5b35e5c88d2c
@@ -909,9 +913,9 @@ networkx==3.6.1 ; python_full_version < '3.13' and sys_platform == 'linux' \
     --hash=sha256:26b7c357accc0c8cde558ad486283728b65b6a95d85ee1cd66bafab4c8168509 \
     --hash=sha256:d47fbf302e7d9cbbb9e2555a0d267983d2aa476bac30e90dfbe5669bd57f3762
     # via torch
-nltk==3.9.4 ; python_full_version < '3.13' and sys_platform == 'linux' \
-    --hash=sha256:ed03bc098a40481310320808b2db712d95d13ca65b27372f8a403949c8b523d0 \
-    --hash=sha256:f2fa301c3a12718ce4a0e9305c5675299da5ad9e26068218b69d692fda84828f
+nltk==3.10.0 ; python_full_version < '3.13' and sys_platform == 'linux' \
+    --hash=sha256:4fbac1d98203cbcd1b5d94a2877fb822300072d80604a5e7fae49d2c5f84e8c1 \
+    --hash=sha256:54ff84d4916d3ef127e8953bee0023f6a6b320b75d634a19e06ef056d3d244bf
     # via evidently
 numpy==2.4.6 ; python_full_version < '3.13' and sys_platform == 'linux' \
     --hash=sha256:29cb7f67d10b479ff07c17d33e39f78c07f71c40ef30d63c153d340e96cd3fb4 \
@@ -1575,13 +1579,13 @@ radon==6.0.1 ; python_full_version < '3.13' and sys_platform == 'linux' \
     --hash=sha256:632cc032364a6f8bb1010a2f6a12d0f14bc7e5ede76585ef29dc0cecf4cd8859 \
     --hash=sha256:d1ac0053943a893878940fedc8b19ace70386fc9c9bf0a09229a44125ebf45b5
     # via codex-ml
-ray==2.55.1 ; python_full_version < '3.13' and sys_platform == 'linux' \
-    --hash=sha256:1380e043eb57cde69b7e9199c6f2558ceeb8f0fc41c97d1d5e50ea042115f302 \
-    --hash=sha256:156ed3e72ad95b645d2006cd71a8dddbcc89b56bfc00027f6225adf78bd9cb74 \
-    --hash=sha256:263705f6bab29e7622a94f82da25fd7f9cead76cdf89a07aab28f79cdf8f9d95 \
-    --hash=sha256:26541f69bb55607ef8335baac75b2ed12ff2ce02d56313219b29eda003039221 \
-    --hash=sha256:4e618d61e1b14b6fde9a586151f3fd9d435b0b85048b997bcaa7f4a533747b2b \
-    --hash=sha256:b415d590e062f248907e0fe42994943f11726b7178fcf4b1cf5546721fb1a5f8
+ray==2.56.0 ; python_full_version < '3.13' and sys_platform == 'linux' \
+    --hash=sha256:54d2725f8b65d9615c933fec5ec62e54a67b8f2e14286026fb014606253670ef \
+    --hash=sha256:73edb6fb5fd05481b1f358ac2e8a4c7f6a031d89f9b823d25a587ddb7529070f \
+    --hash=sha256:78ef34a71383c1fcf335e531e0e590867857fce9069f06ed351be6ce7a58fc50 \
+    --hash=sha256:a0e9cfe92c88ab74abca23923c15a592f49bc7617ffdda4190daca7785a7c4f6 \
+    --hash=sha256:c3a16d43d75283a3d64fa1d904a3adaf3f526f3f508f447505b8bb8dc70bad6c \
+    --hash=sha256:e1fd03c6ecc5fe4c31466569e41ce0a4faf26fb930798c9d1f1eb1f405a687c8
     # via codex-ml
 referencing==0.37.0 ; python_full_version < '3.13' and sys_platform == 'linux' \
     --hash=sha256:381329a9f99628c9069361716891d34ad94af76e461dcb0335825aecc7692231 \
