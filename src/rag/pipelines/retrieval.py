@@ -92,6 +92,10 @@ class InMemoryVectorStore(VectorStoreBackend):
         top_k: int,
         filters: dict | None,
     ) -> list[dict]:
+        # Security: Issue #5299 - Validate filters to prevent code injection
+        filters = validate_filters(filters)
+        top_k = validate_top_k(top_k)
+        
         scored: list[tuple[dict, float]] = []
         for doc in self._index:
             if filters:
@@ -323,22 +327,27 @@ class RetrievalPipeline:
 
         start_time = time.time()
 
-        # Input validation (safeguard)
-        if not query or not isinstance(query, str):
+        # Security: Issue #5299 - Sanitize and validate query input to prevent code injection
+        try:
+            query = sanitize_query(query)
+        except ValueError as e:
+            logger.warning(f"Query validation failed: {e}")
             return RetrievalResponse(
                 query="",
                 results=[],
                 total_found=0,
             )
 
-        # Truncate query (safeguard)
-        if len(query) > MAX_QUERY_LENGTH:
-            logger.warning("Query truncated: %d > %d", len(query), MAX_QUERY_LENGTH)
-            query = query[:MAX_QUERY_LENGTH]
+        # Security: Validate filters to prevent code injection
+        try:
+            filters = validate_filters(filters)
+        except ValueError as e:
+            logger.warning(f"Filter validation failed: {e}")
+            filters = None
 
         # Bounds check on top_k (safeguard)
         top_k = top_k or self.config.top_k
-        top_k = min(top_k, MAX_RESULTS)
+        top_k = validate_top_k(top_k)
 
         # Generate query embedding
         query_embedding = self.embedding_pipeline.embed_text(query)
