@@ -30,6 +30,7 @@ class DrillType(str, Enum):
 class DrillResult(str, Enum):
     """Result of a drill test case."""
 
+    PENDING = "pending"
     PASSED = "passed"
     FAILED = "failed"
     PARTIAL = "partial"
