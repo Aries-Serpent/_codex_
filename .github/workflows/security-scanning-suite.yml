@@ -24,6 +24,9 @@ name: Security Scanning Suite
           - codeql
           - dependency
           - semgrep
+          - cve
+          - containers
+          - secrets
         default: all
       lane-id:
         description: Multi-lane orchestration lane id
