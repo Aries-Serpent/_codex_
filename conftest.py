@@ -418,9 +418,11 @@ def pytest_ignore_collect(collection_path: pathlib.Path, config):  # type: ignor
     if collection_path.name in _P19_SHADOW_IMPORT_AFFECTED:
         return True
 
-    return (not _torch_available() and _path_requires_torch(collection_path)) or (
+    if (not _torch_available() and _path_requires_torch(collection_path)) or (
         not _pydantic_available() and _path_requires_pydantic(collection_path)
-    ) or None
+    ):
+        return True
+    return None
 
 
 def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item]) -> None:

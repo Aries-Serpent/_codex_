@@ -292,7 +292,7 @@ class ExecutionEnvelope:
                         data={"result": raw},
                         trace_id=trace_id,
                     )
-            except Exception as exc:
+            except Exception as exc:  # capture any handler exception; logged/returned below
                 exc_holder[0] = exc
 
         thread = threading.Thread(target=_target, daemon=True)
