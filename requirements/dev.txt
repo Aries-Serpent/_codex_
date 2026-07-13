@@ -12,7 +12,7 @@ defusedxml==0.0.1  # XML parsing hardening (pinned)
 semgrep==1.75.0  # SAST (pinned for rule consistency)
 detect-secrets==1.4.0  # Secrets detection (pinned)
 pre-commit==4.5.1
-nox==2024.3.2  # Pinned for reproducibility
+nox==2026.7.11  # Pinned for reproducibility
 yamllint==1.26.3  # YAML validation (pinned)
 jsonschema>=4.26.0
 shellcheck-py==0.10.0.1  # Shell script linting (pinned)
