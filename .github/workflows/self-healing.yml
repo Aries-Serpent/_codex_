@@ -196,7 +196,7 @@ jobs:
 
           {
             echo "${GITHUB_SHA}"
-            find .github/workflows -maxdepth 1 -type f -name '*healing*' | sort | xargs sha256sum || true
+            find .github/workflows -maxdepth 1 -type f -name 'self-healing.yml' | sort | xargs sha256sum || true
             find scripts/ci -maxdepth 1 -type f 2>/dev/null | sort | xargs sha256sum || true
           } > .codex/contracts/input-lock.materialized.txt
 
@@ -252,6 +252,9 @@ jobs:
 
       - name: Detect recent workflow failures
         id: detect
+        env:
+          LANE_ID: ${{ needs.lane-metadata-contract.outputs.lane_id }}
+          INPUT_LOCK_SHA: ${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}
         run: |
           python << 'EOF'
           import json
@@ -259,9 +262,12 @@ jobs:
           from datetime import datetime, timedelta
           from typing import List, Dict, Any
 
+          lane_id = os.environ.get("LANE_ID", "unknown")
+          input_lock_sha = os.environ.get("INPUT_LOCK_SHA", "unknown")
+
           print("::group::Failure Detection")
-          print(f"Lane ID: ${{ needs.lane-metadata-contract.outputs.lane_id }}")
-          print(f"Input Lock SHA: ${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}")
+          print(f"Lane ID: {lane_id}")
+          print(f"Input Lock SHA: {input_lock_sha}")
           print("Querying recent workflow runs...")
 
           recent_failures = {
@@ -470,6 +476,12 @@ jobs:
 
           echo "Policy Tier Ceiling: ${POLICY_TIER_MAX}"
 
+          # Policy tier enforcement rules:
+          # - T0: Metadata-only (no automatic fixes; report only)
+          # - T1: Safe-fix (scripts, configs; non-code changes auto-applied)
+          # - T2: Propose-only (code/security changes require approval)
+          # - T3: Escalate (workflow/policy changes require governance review)
+
           case "${POLICY_TIER_MAX}" in
             T0) echo "mode=metadata-only" >> "$GITHUB_OUTPUT" ;;
             T1) echo "mode=safe-fix" >> "$GITHUB_OUTPUT" ;;
@@ -644,13 +656,13 @@ jobs:
           }
 
           input_lock_sha = None
-          all_valid = True
+          contracts_valid = True
 
           for filename, keys in required_keys.items():
               files = list(Path("artifacts").rglob(filename))
               if not files:
                   print(f"❌ {filename}: Not found")
-                  all_valid = False
+                  contracts_valid = False
                   continue
 
               file_path = files[0]
@@ -661,7 +673,7 @@ jobs:
                   missing_keys = [k for k in keys if k not in data]
                   if missing_keys:
                       print(f"❌ {filename}: Missing keys {missing_keys}")
-                      all_valid = False
+                      contracts_valid = False
                   else:
                       print(f"✅ {filename}: Valid schema")
                   
@@ -671,13 +683,13 @@ jobs:
                           input_lock_sha = data["input_lock_sha256"]
                       elif input_lock_sha != data["input_lock_sha256"]:
                           print(f"❌ {filename}: input_lock_sha256 mismatch")
-                          all_valid = False
+                          contracts_valid = False
 
               except json.JSONDecodeError:
                   print(f"❌ {filename}: Invalid JSON")
-                  all_valid = False
+                  contracts_valid = False
 
-          if not all_valid:
+          if not contracts_valid:
               sys.exit(1)
           print("✅ All contracts valid and consistent")
 
