@@ -1,0 +1,166 @@
+%% Core Data Layer — Aries-Serpent/_codex_
+%% Phase 3.2 — Component Relationship Diagrams
+%% Data registries, caching, persistence, and access patterns
+%% Evidence: src/codex_ml/data/, src/codex/rag/cache/, scripts/
+
+graph TB
+
+    %% ── Data Sources ────────────────────────────────────────────────────────
+    subgraph SOURCES ["📊 Data Sources"]
+        LOCAL_FILES["Local Files\n(CSV, JSON, Parquet)"]
+        REMOTE_API["Remote APIs\n(Hugging Face, GitHub)"]
+        DB_SOURCES["Databases\n(PostgreSQL, SQLite)"]
+        STREAMING["Streaming Sources\n(Kafka, websockets)"]
+    end
+
+    %% ── Data Ingestion Layer ────────────────────────────────────────────────
+    subgraph INGEST ["📥 Data Ingestion"]
+        FETCH["Fetch Data\n(download, query)"]
+        VALIDATE_SCHEMA["Validate Schema\n(columns, types)"]
+        TRANSFORM["Transform Data\n(normalize, clean)"]
+        DEDUPLICATE["Deduplicate\n(drop duplicates)"]
+    end
+
+    LOCAL_FILES --> FETCH
+    REMOTE_API --> FETCH
+    DB_SOURCES --> FETCH
+    STREAMING --> FETCH
+    FETCH --> VALIDATE_SCHEMA
+    VALIDATE_SCHEMA --> TRANSFORM
+    TRANSFORM --> DEDUPLICATE
+
+    %% ── Registry Layer ──────────────────────────────────────────────────────
+    subgraph REGISTRY ["🗂️  Data Registry  •  src/codex_ml/data/"]
+        DATA_REG["DataRegistry\n(manifest, catalog)"]
+        SPLIT_MGR["SplitManager\n(train/val/test)"]
+        VERSION_TRACK["Version Tracking\n(hash, timestamp)"]
+        METADATA["Metadata Store\n(stats, schema)"]
+    end
+
+    DEDUPLICATE --> DATA_REG
+    DATA_REG --> SPLIT_MGR
+    DATA_REG --> VERSION_TRACK
+    DATA_REG --> METADATA
+
+    %% ── Caching Layer ───────────────────────────────────────────────────────
+    subgraph CACHE ["💾 Multi-Level Cache"]
+        L1_MEM["L1: In-Memory\n(current epoch)"]
+        L2_DISK["L2: Disk Cache\n(artifacts/)"]
+        L3_REMOTE["L3: Remote Cache\n(S3, GCS)"]
+        L4_SOURCE["L4: Source Cache\n(original location)"]
+    end
+
+    DEDUPLICATE --> L1_MEM
+    L1_MEM --> L2_DISK
+    L2_DISK --> L3_REMOTE
+    L3_REMOTE --> L4_SOURCE
+
+    %% ── Data Loader ─────────────────────────────────────────────────────────
+    subgraph LOADER ["🔄 Data Loader  •  DataLoader"]
+        BATCH_CREATE["Create Batches\n(shuffle, sampler)"]
+        PREFETCH["Prefetch Data\n(async load)"]
+        BATCH_COLLATE["Collate Batch\n(stack tensors)"]
+        YIELD_BATCH["Yield Batch\n(to training loop)"]
+    end
+
+    L1_MEM --> BATCH_CREATE
+    BATCH_CREATE --> PREFETCH
+    PREFETCH --> BATCH_COLLATE
+    BATCH_COLLATE --> YIELD_BATCH
+
+    %% ── Model Registry ──────────────────────────────────────────────────────
+    subgraph MODEL_REG ["🤖 Model Registry  •  src/codex_ml/models/"]
+        MODEL_CATALOG["Model Catalog\n(name, size, type)"]
+        WEIGHT_REPO["Weight Repository\n(checkpoints/)")
+        PRETRAIN_CACHE["Pretrain Cache\n(HF models)"]
+        VERSION_MGMT["Version Management\n(latest, stable)"]
+    end
+
+    VERSION_TRACK --> MODEL_CATALOG
+    MODEL_CATALOG --> WEIGHT_REPO
+    MODEL_CATALOG --> PRETRAIN_CACHE
+    WEIGHT_REPO --> VERSION_MGMT
+
+    %% ── RAG Index Storage ───────────────────────────────────────────────────
+    subgraph RAG_STORE ["📚 RAG Index Storage  •  src/codex/rag/cache/"]
+        FAISS_CACHE["FAISS Index\n(.codex/rag_cache/)"]
+        META_DB["Metadata DB\n(chunk → source)")
+        EMBED_STORE["Embedding Store\n(vectors)"]
+        RETRIEVAL_LOG["Retrieval Log\n(queries, hits)"]
+    end
+
+    METADATA --> FAISS_CACHE
+    METADATA --> META_DB
+    METADATA --> EMBED_STORE
+    METADATA --> RETRIEVAL_LOG
+
+    %% ── Checkpoint Management ───────────────────────────────────────────────
+    subgraph CKPT ["🔖 Checkpoint Management  •  artifacts/"]
+        SAVE_CKPT["Save Checkpoint\n(model, optimizer, epoch)"]
+        CKPT_INDEX["Checkpoint Index\n(path, metric, epoch)"]
+        CKPT_GC["Garbage Collection\n(keep best N)"]
+        RESUME_CKPT["Resume from Checkpoint\n(restore state)"]
+    end
+
+    WEIGHT_REPO --> SAVE_CKPT
+    SAVE_CKPT --> CKPT_INDEX
+    CKPT_INDEX --> CKPT_GC
+    CKPT_GC --> RESUME_CKPT
+
+    %% ── Persistence Layer ───────────────────────────────────────────────────
+    subgraph PERSIST ["💾 Persistence  •  SQLite, NDJSON"]
+        LOGS_NDJSON["Logs (NDJSON)\n(.codex/logs/)"]
+        METRICS_SQL["Metrics (SQLite)\n(CODEX_DB_PATH)"]
+        ARTIFACTS["Artifacts\n(runs/, checkpoints/)"]
+        MANIFEST["Manifest\n(metadata.json)"]
+    end
+
+    L2_DISK --> LOGS_NDJSON
+    L2_DISK --> METRICS_SQL
+    WEIGHT_REPO --> ARTIFACTS
+    DATA_REG --> MANIFEST
+
+    %% ── Access Patterns ─────────────────────────────────────────────────────
+    subgraph ACCESS ["🔍 Access Patterns"]
+        SEQ_ACCESS["Sequential\n(epoch → batches)"]
+        RANDOM_ACCESS["Random Access\n(by index)"]
+        RANGE_QUERY["Range Query\n(date window)"]
+        AGGREGATION["Aggregation\n(group by)"]
+    end
+
+    YIELD_BATCH --> SEQ_ACCESS
+    METADATA --> RANDOM_ACCESS
+    RETRIEVAL_LOG --> RANGE_QUERY
+    METRICS_SQL --> AGGREGATION
+
+    %% ── Data Lifecycle ──────────────────────────────────────────────────────
+    subgraph LIFECYCLE ["🔄 Data Lifecycle"]
+        INGEST_STAGE["1. Ingest\n(raw data)"]
+        PROCESS_STAGE["2. Process\n(clean, transform)"]
+        CACHE_STAGE["3. Cache\n(multi-level)"]
+        CONSUME_STAGE["4. Consume\n(train/inference)"]
+        ARCHIVE_STAGE["5. Archive\n(cold storage)"]
+        
+        INGEST_STAGE --> PROCESS_STAGE
+        PROCESS_STAGE --> CACHE_STAGE
+        CACHE_STAGE --> CONSUME_STAGE
+        CONSUME_STAGE --> ARCHIVE_STAGE
+    end
+
+    %% ── Output ──────────────────────────────────────────────────────────────
+    SEQ_ACCESS --> OUTPUT["✅ Data Ready\n(for model)"]
+    AGGREGATION --> OUTPUT
+
+    %% ── Styling ────────────────────────────────────────────────────────────
+    style SOURCES fill:#16213e,color:#e0e0e0
+    style INGEST fill:#0f3460,color:#e0e0e0
+    style REGISTRY fill:#4a4e69,color:#fff
+    style CACHE fill:#2d6a4f,color:#fff
+    style LOADER fill:#533483,color:#fff
+    style MODEL_REG fill:#457b9d,color:#fff
+    style RAG_STORE fill:#1a1a2e,color:#e0e0e0
+    style CKPT fill:#665c84,color:#fff
+    style PERSIST fill:#2d6a4f,color:#fff
+    style ACCESS fill:#4a4e69,color:#fff
+    style LIFECYCLE fill:#1b4332,color:#fff
+    style OUTPUT fill:#1b4332,color:#fff

@@ -1,0 +1,4589 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
+<link href="https://aries-serpent.github.io/_codex_/SECRETS_AND_ENVIRONMENT_VARIABLES/" rel="canonical"/>
+<link href="../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<title>Secrets and Environment Variables Documentation - Codex Docs v0.2.1</title>
+<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<link href="../stylesheets/extra.css" rel="stylesheet"/>
+<script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#secrets-and-environment-variables-documentation">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="Codex Docs v0.2.1" class="md-header__button md-logo" data-md-component="logo" href=".." title="Codex Docs v0.2.1">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m19 2-5 4.5v11l5-4.5zM6.5 5C4.55 5 2.45 5.4 1 6.5v14.66c0 .25.25.5.5.5.1 0 .15-.07.25-.07 1.35-.65 3.3-1.09 4.75-1.09 1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.31 4.75 1.06.1.05.15.03.25.03.25 0 .5-.25.5-.5V6.5c-.6-.45-1.25-.75-2-1V19c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V6.5C10.55 5.4 8.45 5 6.5 5"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            Codex Docs v0.2.1
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Secrets and Environment Variables Documentation
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme)" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"></path></svg>
+</label>
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: light)" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_2" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+<input aria-label="Switch to system preference" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-primary="black" data-md-color-scheme="slate" id="__palette_2" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to system preference">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<a aria-label="Share" class="md-search__icon md-icon" data-clipboard="" data-clipboard-text="" data-md-component="search-share" href="javascript:void(0)" tabindex="-1" title="Share">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"></path></svg>
+</a>
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="md-header__source">
+<a class="md-source" data-md-component="source" href="https://github.com/Aries-Serpent/_codex_" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+</div>
+<div class="md-source__repository">
+    Aries-Serpent/_codex_
+  </div>
+</a>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="..">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../status/GITHUB_PAGES_STATUS/">
+        
+  
+  
+    
+  
+  Status Dashboard
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../cognitive_app/">
+        
+  
+  
+    
+  
+  Cognitive App
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../evolution/INDEX/">
+          
+  
+  
+  Evolution Center
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../README_ROOT/">
+        
+  
+  
+    
+  
+  README
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../getting-started/">
+        
+  
+  
+    
+  
+  Getting Started
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../api/">
+          
+  
+  
+  API Reference
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../CONTRIBUTING/">
+          
+  
+  
+  Guides
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../tokens/INDEX/">
+          
+  
+  
+  Token Management
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../architecture.md">
+          
+  
+  
+  Architecture
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../training/symbolic_training/">
+          
+  
+  
+  Training
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../deployment/deploy_pipeline/">
+          
+  
+  
+  Deployment
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../logging/logging_guide/">
+          
+  
+  
+  Logging &amp; Troubleshooting
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../plugins/Plugin_API_Broader/">
+          
+  
+  
+  Plugins
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../ROADMAP/">
+          
+  
+  
+  Reference
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../agents/POST_MERGE_ALIGNMENT_PROMPT/">
+          
+  
+  
+  Agent Prompts
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../accountability/INDEX/">
+          
+  
+  
+  Accountability
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../phase-9/PHASE_9_COORDINATION_DASHBOARD/">
+          
+  
+  
+  Phase 9 Execution
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/INDEX.md">
+          
+  
+  
+  CI/CD Workflows
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../reporting/INDEX/">
+          
+  
+  
+  Reporting
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../ci/CI_RESCUE_PIPELINE/">
+          
+  
+  
+  CI Rescue &amp; Health
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../safety/safety_guide/">
+          
+  
+  
+  Safety
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../database/sqlite_option/">
+          
+  
+  
+  Database Options
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../templates/">
+          
+  
+  
+  Templates
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../examples/codex_symbolic_pipeline/">
+          
+  
+  
+  Examples
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../ops/cost-dashboard/">
+          
+  
+  
+  Ops
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../tutorials/quickstart/">
+          
+  
+  
+  Tutorials
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="..">
+          
+  
+  
+  Legacy Catalog
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="Codex Docs v0.2.1" class="md-nav__button md-logo" data-md-component="logo" href=".." title="Codex Docs v0.2.1">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m19 2-5 4.5v11l5-4.5zM6.5 5C4.55 5 2.45 5.4 1 6.5v14.66c0 .25.25.5.5.5.1 0 .15-.07.25-.07 1.35-.65 3.3-1.09 4.75-1.09 1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.31 4.75 1.06.1.05.15.03.25.03.25 0 .5-.25.5-.5V6.5c-.6-.45-1.25-.75-2-1V19c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V6.5C10.55 5.4 8.45 5 6.5 5"></path></svg>
+</a>
+    Codex Docs v0.2.1
+  </label>
+<div class="md-nav__source">
+<a class="md-source" data-md-component="source" href="https://github.com/Aries-Serpent/_codex_" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+</div>
+<div class="md-source__repository">
+    Aries-Serpent/_codex_
+  </div>
+</a>
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../status/GITHUB_PAGES_STATUS/">
+<span class="md-ellipsis">
+    
+  
+    Status Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../cognitive_app/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive App
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Evolution Center
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Evolution Center
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evolution/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evolution/EVOLUTION_TIMELINE/">
+<span class="md-ellipsis">
+    
+  
+    Evolution Timeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evolution/PLANSET_REGISTRY/">
+<span class="md-ellipsis">
+    
+  
+    Planset Registry
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evolution/COGNITIVE_EVOLUTION_TREE/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive Evolution Tree
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evolution/AI_EMERGENCE_STORYBOARD/">
+<span class="md-ellipsis">
+    
+  
+    AI Emergence Storyboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evolution/AI_AGENCY_INTUITIVENESS_SCORE_V3/">
+<span class="md-ellipsis">
+    
+  
+    AI Agency Score V3
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evolution/COGNITIVE_CODEBASE_MAP/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive Codebase Map
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../README_ROOT/">
+<span class="md-ellipsis">
+    
+  
+    README
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../getting-started/">
+<span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../api/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_8" type="checkbox"/>
+<label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Guides
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_8_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_8">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Guides
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../CONTRIBUTING/">
+<span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../guides/code_style_guide/">
+<span class="md-ellipsis">
+    
+  
+    Code Style
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../guides/checkpointing/">
+<span class="md-ellipsis">
+    
+  
+    Checkpointing
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../guides/codex_setup/">
+<span class="md-ellipsis">
+    
+  
+    Setup &amp; Integration
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../guides/session_hooks/">
+<span class="md-ellipsis">
+    
+  
+    Session Hooks
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../guides/continuous_improvement/">
+<span class="md-ellipsis">
+    
+  
+    Continuous Improvement
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../guides/lfs_policy/">
+<span class="md-ellipsis">
+    
+  
+    LFS Policy
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../guides/asset_instruction_playbook/">
+<span class="md-ellipsis">
+    
+  
+    Asset Instruction Playbook
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../guides/LOGGING/">
+<span class="md-ellipsis">
+    
+  
+    Logging (Stdlib)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_9" type="checkbox"/>
+<label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Token Management
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_9_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_9">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Token Management
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tokens/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tokens/TOKEN_HIERARCHY_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Token Hierarchy Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tokens/TOKEN_REGENERATION_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Token Regeneration Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tokens/TOKEN_USAGE_AUDIT/">
+<span class="md-ellipsis">
+    
+  
+    Token Usage Audit
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tokens/HUMAN_ADMIN_SETUP/">
+<span class="md-ellipsis">
+    
+  
+    Human Admin Setup
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tokens/CI_CD_TROUBLESHOOTING/">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Troubleshooting
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tokens/CUSTOM_AGENT_GUIDANCE/">
+<span class="md-ellipsis">
+    
+  
+    Custom Agent Guidance
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tokens/QUICK_REFERENCE/">
+<span class="md-ellipsis">
+    
+  
+    Quick Reference
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_10" type="checkbox"/>
+<label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_10_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_10">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../architecture.md">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../architecture/codex_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Codex Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../system/mermaid_logic_map/">
+<span class="md-ellipsis">
+    
+  
+    Runtime Logic Map
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_11" type="checkbox"/>
+<label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Training
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_11_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_11">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Training
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../training/symbolic_training/">
+<span class="md-ellipsis">
+    
+  
+    Symbolic Training
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../training/distributed_troubleshooting/">
+<span class="md-ellipsis">
+    
+  
+    Distributed Troubleshooting
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_12" type="checkbox"/>
+<label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Deployment
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_12_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_12">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Deployment
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../deployment/deploy_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Deploy Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../deployment/DEPLOYMENT_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Deployment Guide
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_13" type="checkbox"/>
+<label class="md-nav__link" for="__nav_13" id="__nav_13_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Logging &amp; Troubleshooting
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_13_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_13">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Logging &amp; Troubleshooting
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../logging/logging_guide/">
+<span class="md-ellipsis">
+    
+  
+    Logging Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../logging/end_to_end_logging/">
+<span class="md-ellipsis">
+    
+  
+    End-to-End Logging
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../logging/log_rotation/">
+<span class="md-ellipsis">
+    
+  
+    Log Rotation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../troubleshooting/error_log/">
+<span class="md-ellipsis">
+    
+  
+    Error Log
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../troubleshooting/open_questions/">
+<span class="md-ellipsis">
+    
+  
+    Open Questions
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_14" type="checkbox"/>
+<label class="md-nav__link" for="__nav_14" id="__nav_14_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Plugins
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_14_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_14">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Plugins
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../plugins/Plugin_API_Broader/">
+<span class="md-ellipsis">
+    
+  
+    Plugin API (Broader)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_15" type="checkbox"/>
+<label class="md-nav__link" for="__nav_15" id="__nav_15_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_15_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_15">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ROADMAP/">
+<span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../CHANGELOG/">
+<span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_15_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_15_3" id="__nav_15_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Changelog Archive
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_15_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_15_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Changelog Archive
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../CHANGELOG/changelog_codex/">
+<span class="md-ellipsis">
+    
+  
+    Codex
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../CHANGELOG/changelog_session_logging/">
+<span class="md-ellipsis">
+    
+  
+    Session Logging
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../CHANGELOG/change_log/">
+<span class="md-ellipsis">
+    
+  
+    Legacy change log
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../reference/audit_prompt/">
+<span class="md-ellipsis">
+    
+  
+    Audit Prompt
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../reference/tools/">
+<span class="md-ellipsis">
+    
+  
+    Tools
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../reference/codex_questions/">
+<span class="md-ellipsis">
+    
+  
+    Codex Questions (Archive)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../deferred_items/">
+<span class="md-ellipsis">
+    
+  
+    Deferred Items
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../agents/">
+<span class="md-ellipsis">
+    
+  
+    Agents
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_16" type="checkbox"/>
+<label class="md-nav__link" for="__nav_16" id="__nav_16_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Agent Prompts
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_16_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_16">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Agent Prompts
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../agents/POST_MERGE_ALIGNMENT_PROMPT/">
+<span class="md-ellipsis">
+    
+  
+    Post-Merge Doc Alignment
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_17" type="checkbox"/>
+<label class="md-nav__link" for="__nav_17" id="__nav_17_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Accountability
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_17_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_17">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Accountability
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../accountability/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<span class="md-ellipsis">
+    
+  
+    Agent Accountability Report
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../accountability/AGENT_ACCESS_EXPERIENCE_REPORT/">
+<span class="md-ellipsis">
+    
+  
+    Agent Access Experience Report
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_18" type="checkbox"/>
+<label class="md-nav__link" for="__nav_18" id="__nav_18_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Phase 9 Execution
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_18_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_18">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Phase 9 Execution
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../phase-9/PHASE_9_COORDINATION_DASHBOARD/">
+<span class="md-ellipsis">
+    
+  
+    Coordination Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../phase-9/PHASE_9_DAILY_STANDUP_TEMPLATE/">
+<span class="md-ellipsis">
+    
+  
+    Daily Standup Template
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../phase-9/POST_MERGE_ACTION_PLAN/">
+<span class="md-ellipsis">
+    
+  
+    Post-Merge Action Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../phase-9/PHASE_8_12_MASTER_EXECUTION_PLAN/">
+<span class="md-ellipsis">
+    
+  
+    Phase 8-12 Master Plan
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_19" type="checkbox"/>
+<label class="md-nav__link" for="__nav_19" id="__nav_19_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Workflows
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_19_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_19">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    CI/CD Workflows
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/INDEX.md">
+<span class="md-ellipsis">
+    
+  
+    Workflow Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/CONSOLIDATION_GUIDE.md">
+<span class="md-ellipsis">
+    
+  
+    Consolidation Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/DEPRECATION_PLAN.md">
+<span class="md-ellipsis">
+    
+  
+    Deprecation Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/OPTIMIZATION_SUMMARY.md">
+<span class="md-ellipsis">
+    
+  
+    Optimization Summary
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/CACHE_ARCHITECTURE_DIAGRAMS.md">
+<span class="md-ellipsis">
+    
+  
+    Cache Architecture
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_20" type="checkbox"/>
+<label class="md-nav__link" for="__nav_20" id="__nav_20_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Reporting
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_20_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_20">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Reporting
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../reporting/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Reporting Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../reporting/copilot_workflow_report_console.html">
+<span class="md-ellipsis">
+    
+  
+    Copilot Workflow Report Console
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_21" type="checkbox"/>
+<label class="md-nav__link" for="__nav_21" id="__nav_21_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    CI Rescue &amp; Health
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_21_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_21">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    CI Rescue &amp; Health
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ci/CI_RESCUE_PIPELINE/">
+<span class="md-ellipsis">
+    
+  
+    CI Rescue Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ci/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ci/CI_FAILURE_ANALYSIS/">
+<span class="md-ellipsis">
+    
+  
+    Failure Analysis
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ci/CI_FIX_SUMMARY.md">
+<span class="md-ellipsis">
+    
+  
+    CI Fix Summary
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ci/ROOT_ORG_VALIDATION/">
+<span class="md-ellipsis">
+    
+  
+    Root Org Validation
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_22" type="checkbox"/>
+<label class="md-nav__link" for="__nav_22" id="__nav_22_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Safety
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_22_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_22">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Safety
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../safety/safety_guide/">
+<span class="md-ellipsis">
+    
+  
+    Safety Guide
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_23" type="checkbox"/>
+<label class="md-nav__link" for="__nav_23" id="__nav_23_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Database Options
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_23_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_23">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Database Options
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../database/sqlite_option/">
+<span class="md-ellipsis">
+    
+  
+    SQLite Option
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../database/duckdb_option/">
+<span class="md-ellipsis">
+    
+  
+    DuckDB Option
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../database/datasette_option/">
+<span class="md-ellipsis">
+    
+  
+    Datasette Option
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_24" type="checkbox"/>
+<label class="md-nav__link" for="__nav_24" id="__nav_24_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Templates
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_24_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_24">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Templates
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/ITERATION_PLAN_TEMPLATE/">
+<span class="md-ellipsis">
+    
+  
+    Iteration Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/Migration_PythonFileRelocation/">
+<span class="md-ellipsis">
+    
+  
+    Migration — Python Relocation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/Migration_CLIHardening/">
+<span class="md-ellipsis">
+    
+  
+    Migration — CLI Hardening
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/Planning_IntentValidation/">
+<span class="md-ellipsis">
+    
+  
+    Planning — Intent Validation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/intent_validation_gate/">
+<span class="md-ellipsis">
+    
+  
+    Intent Validation Gate
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/COPILOT_EXECUTION_DIRECTIVE/">
+<span class="md-ellipsis">
+    
+  
+    Copilot Execution Directive
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/status/">
+<span class="md-ellipsis">
+    
+  
+    Status Report Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/status/codex_status_template_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Status Template v1.2
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/status/authoring_guide_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Authoring Guide v1.2
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/status/SCHEMA_ENHANCEMENTS_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Schema Enhancements
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/status/authoring_quickstart_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Authoring Quickstart
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_25" type="checkbox"/>
+<label class="md-nav__link" for="__nav_25" id="__nav_25_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_25_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_25">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Examples
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../examples/codex_symbolic_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Codex Symbolic Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_26" type="checkbox"/>
+<label class="md-nav__link" for="__nav_26" id="__nav_26_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Ops
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_26_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_26">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Ops
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ops/cost-dashboard/">
+<span class="md-ellipsis">
+    
+  
+    Cost Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ops/COST_GOVERNANCE/">
+<span class="md-ellipsis">
+    
+  
+    Cost Governance
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ops/monitoring/">
+<span class="md-ellipsis">
+    
+  
+    Monitoring
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ops/deployment/">
+<span class="md-ellipsis">
+    
+  
+    Deployment (Legacy)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ops/RUNBOOK/">
+<span class="md-ellipsis">
+    
+  
+    Runbook
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_27" type="checkbox"/>
+<label class="md-nav__link" for="__nav_27" id="__nav_27_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_27_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_27">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tutorials/quickstart/">
+<span class="md-ellipsis">
+    
+  
+    Quickstart (CPU)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tutorials/end_to_end_cpu/">
+<span class="md-ellipsis">
+    
+  
+    End-to-End (CPU)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_28" type="checkbox"/>
+<label class="md-nav__link" for="__nav_28" id="__nav_28_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Legacy Catalog
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_28_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_28">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Legacy Catalog
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../reference/metrics_cli/">
+<span class="md-ellipsis">
+    
+  
+    Reference Archive
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../review/diff_intake_confirmation/">
+<span class="md-ellipsis">
+    
+  
+    Review Checklist
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#table-of-contents">
+<span class="md-ellipsis">
+      
+        Table of Contents
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#overview">
+<span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#full-inventory">
+<span class="md-ellipsis">
+      
+        Full Inventory
+      
+    </span>
+</a>
+<nav aria-label="Full Inventory" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#environment-variables-aries_serpent_codex_-environment">
+<span class="md-ellipsis">
+      
+        Environment Variables — Aries_Serpent_codex_ Environment
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#repository-variables">
+<span class="md-ellipsis">
+      
+        Repository Variables
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#environment-secrets-aries_serpent_codex_">
+<span class="md-ellipsis">
+      
+        Environment Secrets — Aries_Serpent_codex_
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#repository-secrets">
+<span class="md-ellipsis">
+      
+        Repository Secrets
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#organization-secrets">
+<span class="md-ellipsis">
+      
+        Organization Secrets
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#gap-analysis-variables-referenced-in-code-but-not-in-inventory">
+<span class="md-ellipsis">
+      
+        Gap Analysis — Variables Referenced in Code but NOT in Inventory
+      
+    </span>
+</a>
+<nav aria-label="Gap Analysis — Variables Referenced in Code but NOT in Inventory" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#service-api-servicesapimainpy">
+<span class="md-ellipsis">
+      
+        Service API (services/api/main.py)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#nox-ml-pipeline-noxfilepy-scripts">
+<span class="md-ellipsis">
+      
+        Nox / ML Pipeline (noxfile.py, scripts/)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#cognitive-brain-session-codexcritical_repository_variablesmd">
+<span class="md-ellipsis">
+      
+        Cognitive Brain &amp; Session (.codex/CRITICAL_REPOSITORY_VARIABLES.md)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#cicd-timeouts-parallelism-codexcritical_repository_variablesmd">
+<span class="md-ellipsis">
+      
+        CI/CD Timeouts &amp; Parallelism (.codex/CRITICAL_REPOSITORY_VARIABLES.md)
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#token-chain">
+<span class="md-ellipsis">
+      
+        Token Chain
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#secret-rotation-schedule">
+<span class="md-ellipsis">
+      
+        Secret Rotation Schedule
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#settingsvariablesagents-recommended-additions">
+<span class="md-ellipsis">
+      
+        🧩 settings/variables/agents — Recommended Additions
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#workflow-permissions-reference">
+<span class="md-ellipsis">
+      
+        Workflow Permissions Reference
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#workflow-agent-variable-usage-map">
+<span class="md-ellipsis">
+      
+        🗺️ Workflow &amp; Agent Variable Usage Map
+      
+    </span>
+</a>
+<nav aria-label="🗺️ Workflow &amp; Agent Variable Usage Map" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#copilot-sandbox-bootstrap-surface-githubworkflowscopilot-setup-stepsyml">
+<span class="md-ellipsis">
+      
+        Copilot Sandbox Bootstrap Surface (.github/workflows/copilot-setup-steps.yml)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#agents-settings-surface-settingsvariablesagents">
+<span class="md-ellipsis">
+      
+        Agents Settings Surface (settings/variables/agents)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#workflow-automation-ci-surface">
+<span class="md-ellipsis">
+      
+        Workflow Automation / CI Surface
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#runtime-service-guard-surface">
+<span class="md-ellipsis">
+      
+        Runtime / Service Guard Surface
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#variable-access-pattern-in-workflows">
+<span class="md-ellipsis">
+      
+        Variable Access Pattern in Workflows
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#agent-variable-expectations">
+<span class="md-ellipsis">
+      
+        Agent Variable Expectations
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#security-best-practices">
+<span class="md-ellipsis">
+      
+        Security Best Practices
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#monitoring-and-auditing">
+<span class="md-ellipsis">
+      
+        Monitoring and Auditing
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#whats-next-after-variable-sync">
+<span class="md-ellipsis">
+      
+        What’s Next (After Variable Sync)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#references">
+<span class="md-ellipsis">
+      
+        References
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#change-log">
+<span class="md-ellipsis">
+      
+        Change Log
+      
+    </span>
+</a>
+<nav aria-label="Change Log" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#gitleaks_license">
+<span class="md-ellipsis">
+      
+        GITLEAKS_LICENSE
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#third-party-integration-secrets">
+<span class="md-ellipsis">
+      
+        Third-Party Integration Secrets
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#pypi-publishing-secrets">
+<span class="md-ellipsis">
+      
+        PyPI Publishing Secrets
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#aws-integration-secrets">
+<span class="md-ellipsis">
+      
+        AWS Integration Secrets
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#zendesk-integration-secrets">
+<span class="md-ellipsis">
+      
+        Zendesk Integration Secrets
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#environment-variables">
+<span class="md-ellipsis">
+      
+        Environment Variables
+      
+    </span>
+</a>
+<nav aria-label="Environment Variables" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#runtime-configuration">
+<span class="md-ellipsis">
+      
+        Runtime Configuration
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#cicd-environment-variables">
+<span class="md-ellipsis">
+      
+        CI/CD Environment Variables
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#workflow-permissions">
+<span class="md-ellipsis">
+      
+        Workflow Permissions
+      
+    </span>
+</a>
+<nav aria-label="Workflow Permissions" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#required-permissions-by-workflow">
+<span class="md-ellipsis">
+      
+        Required Permissions by Workflow
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#security-best-practices_1">
+<span class="md-ellipsis">
+      
+        Security Best Practices
+      
+    </span>
+</a>
+<nav aria-label="Security Best Practices" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#secret-rotation-schedule_1">
+<span class="md-ellipsis">
+      
+        Secret Rotation Schedule
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#secrets-usage-matrix">
+<span class="md-ellipsis">
+      
+        Secrets Usage Matrix
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#secret-management-guidelines">
+<span class="md-ellipsis">
+      
+        Secret Management Guidelines
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#mfa-and-authentication">
+<span class="md-ellipsis">
+      
+        MFA and Authentication
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#troubleshooting">
+<span class="md-ellipsis">
+      
+        Troubleshooting
+      
+    </span>
+</a>
+<nav aria-label="Troubleshooting" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#missing-secret-errors">
+<span class="md-ellipsis">
+      
+        Missing Secret Errors
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="secrets-and-environment-variables-documentation">Secrets and Environment Variables Documentation<a class="headerlink" href="#secrets-and-environment-variables-documentation" title="Permanent link">¶</a></h1>
+<p><strong>Last Updated:</strong> 2026-07-11
+<strong>Version:</strong> v0.2.1</p>
+<h2 id="table-of-contents">Table of Contents<a class="headerlink" href="#table-of-contents" title="Permanent link">¶</a></h2>
+<ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#-full-inventory"> Full Inventory</a></li>
+<li><a href="#environment-variables--aries_serpent_codex_-environment">Environment Variables — <code>Aries_Serpent_codex_</code> Environment</a></li>
+<li><a href="#repository-variables">Repository Variables</a><ul>
+<li><a href="#agent--autonomy-control">Agent &amp; Autonomy Control</a></li>
+<li><a href="#cicd--quality-gates">CI/CD &amp; Quality Gates</a></li>
+<li><a href="#cognitive-brain--session-management">Cognitive Brain &amp; Session Management</a></li>
+<li><a href="#copilot-agent-configuration">Copilot Agent Configuration</a></li>
+<li><a href="#infrastructure--runtime">Infrastructure &amp; Runtime</a></li>
+<li><a href="#llm--ml-pipeline">LLM &amp; ML Pipeline</a></li>
+<li><a href="#zendesk-integration">Zendesk Integration</a></li>
+</ul>
+</li>
+<li><a href="#environment-secrets--aries_serpent_codex_">Environment Secrets — <code>Aries_Serpent_codex_</code></a></li>
+<li><a href="#repository-secrets">Repository Secrets</a></li>
+<li><a href="#organization-secrets">Organization Secrets</a></li>
+<li><a href="#-gap-analysis--variables-referenced-in-code-but-not-in-inventory"> Gap Analysis — Variables Referenced in Code but NOT in Inventory</a></li>
+<li><a href="#service-api-servicesapimainpy">Service API (<code>services/api/main.py</code>)</a></li>
+<li><a href="#nox--ml-pipeline-noxfilepy-scripts">Nox / ML Pipeline (<code>noxfile.py</code>, <code>scripts/</code>)</a></li>
+<li><a href="#cognitive-brain--session-codexcritical_repository_variablesmd">Cognitive Brain &amp; Session (<code>.codex/CRITICAL_REPOSITORY_VARIABLES.md</code>)</a></li>
+<li><a href="#cicd-timeouts--parallelism-codexcritical_repository_variablesmd">CI/CD Timeouts &amp; Parallelism (<code>.codex/CRITICAL_REPOSITORY_VARIABLES.md</code>)</a></li>
+<li><a href="#-token-chain"> Token Chain</a></li>
+<li><a href="#-secret-rotation-schedule"> Secret Rotation Schedule</a></li>
+<li><a href="#-settingsvariablesagents--recommended-additions">🧩 <code>settings/variables/agents</code> — Recommended Additions</a></li>
+<li><a href="#workflow-permissions-reference">Workflow Permissions Reference</a></li>
+<li><a href="#-workflow--agent-variable-usage-map">🗺️ Workflow &amp; Agent Variable Usage Map</a></li>
+<li><a href="#copilot-sandbox-bootstrap-surface-githubworkflowscopilot-setup-stepsyml">Copilot Sandbox Bootstrap Surface (<code>.github/workflows/copilot-setup-steps.yml</code>)</a></li>
+<li><a href="#agents-settings-surface-settingsvariablesagents">Agents Settings Surface (<code>settings/variables/agents</code>)</a></li>
+<li><a href="#workflow-automation--ci-surface">Workflow Automation / CI Surface</a></li>
+<li><a href="#runtime--service-guard-surface">Runtime / Service Guard Surface</a></li>
+<li><a href="#variable-access-pattern-in-workflows">Variable Access Pattern in Workflows</a></li>
+<li><a href="#agent-variable-expectations">Agent Variable Expectations</a></li>
+<li><a href="#security-best-practices">Security Best Practices</a></li>
+<li><a href="#monitoring-and-auditing">Monitoring and Auditing</a></li>
+<li><a href="#whats-next-after-variable-sync">What’s Next (After Variable Sync)</a></li>
+<li><a href="#references">References</a></li>
+<li><a href="#change-log">Change Log</a></li>
+<li><a href="#gitleaks_license"><code>GITLEAKS_LICENSE</code></a><ul>
+<li><a href="#session_encryption_key"><code>SESSION_ENCRYPTION_KEY</code></a></li>
+<li><a href="#enable_live_tests"><code>ENABLE_LIVE_TESTS</code></a></li>
+</ul>
+</li>
+<li><a href="#third-party-integration-secrets">Third-Party Integration Secrets</a><ul>
+<li><a href="#notebooklm_webhook_url"><code>NOTEBOOKLM_WEBHOOK_URL</code></a></li>
+<li><a href="#google_client_secret"><code>GOOGLE_CLIENT_SECRET</code></a></li>
+<li><a href="#gdrive_service_account_json"><code>GDRIVE_SERVICE_ACCOUNT_JSON</code></a></li>
+<li><a href="#github_oauth_client_id"><code>GITHUB_OAUTH_CLIENT_ID</code></a></li>
+<li><a href="#github_oauth_client_secret"><code>GITHUB_OAUTH_CLIENT_SECRET</code></a></li>
+</ul>
+</li>
+<li><a href="#pypi-publishing-secrets">PyPI Publishing Secrets</a><ul>
+<li><a href="#pypi_api_token"><code>PYPI_API_TOKEN</code></a></li>
+<li><a href="#test_pypi_api_token"><code>TEST_PYPI_API_TOKEN</code></a></li>
+</ul>
+</li>
+<li><a href="#aws-integration-secrets">AWS Integration Secrets</a><ul>
+<li><a href="#aws_access_key_id"><code>AWS_ACCESS_KEY_ID</code></a></li>
+<li><a href="#aws_secret_access_key"><code>AWS_SECRET_ACCESS_KEY</code></a></li>
+</ul>
+</li>
+<li><a href="#zendesk-integration-secrets">Zendesk Integration Secrets</a><ul>
+<li><a href="#zendesk_token"><code>ZENDESK_TOKEN</code></a></li>
+<li><a href="#zendesk_user"><code>ZENDESK_USER</code></a></li>
+<li><a href="#zendesk_url"><code>ZENDESK_URL</code></a></li>
+</ul>
+</li>
+<li><a href="#environment-variables">Environment Variables</a></li>
+<li><a href="#runtime-configuration">Runtime Configuration</a><ul>
+<li><a href="#codex_env_"><code>CODEX_ENV_*</code></a></li>
+<li><a href="#codex_session_"><code>CODEX_SESSION_*</code></a></li>
+<li><a href="#codex_log_db_path--codex_db_path"><code>CODEX_LOG_DB_PATH</code> / <code>CODEX_DB_PATH</code></a></li>
+<li><a href="#codex_sqlite_pool"><code>CODEX_SQLITE_POOL</code></a></li>
+</ul>
+</li>
+<li><a href="#cicd-environment-variables">CI/CD Environment Variables</a><ul>
+<li><a href="#cargo_term_color"><code>CARGO_TERM_COLOR</code></a></li>
+<li><a href="#rust_backtrace"><code>RUST_BACKTRACE</code></a></li>
+<li><a href="#rust_test_threads"><code>RUST_TEST_THREADS</code></a></li>
+</ul>
+</li>
+<li><a href="#workflow-permissions">Workflow Permissions</a></li>
+<li><a href="#required-permissions-by-workflow">Required Permissions by Workflow</a><ul>
+<li><a href="#auth-token-rotationyml"><code>auth-token-rotation.yml</code></a></li>
+<li><a href="#auth-secret-rotationyml"><code>auth-secret-rotation.yml</code></a></li>
+<li><a href="#auth-compliance-reportyml"><code>auth-compliance-report.yml</code></a></li>
+<li><a href="#phase10-automated-secrets-setupyml"><code>phase10-automated-secrets-setup.yml</code></a></li>
+</ul>
+</li>
+<li><a href="#security-best-practices">Security Best Practices</a></li>
+<li><a href="#secret-rotation-schedule">Secret Rotation Schedule</a></li>
+<li><a href="#secrets-usage-matrix">Secrets Usage Matrix</a></li>
+<li><a href="#secret-management-guidelines">Secret Management Guidelines</a></li>
+<li><a href="#mfa-and-authentication">MFA and Authentication</a><ul>
+<li><a href="#mfa-enrollment-process">MFA Enrollment Process</a></li>
+</ul>
+</li>
+<li><a href="#troubleshooting">Troubleshooting</a></li>
+<li><a href="#missing-secret-errors">Missing Secret Errors</a></li>
+</ul>
+<p>**Last Updated: 2026-06-22</p>
+<blockquote>
+<p><strong>Last Full Audit</strong>: 2026-06-03T17:39:00Z | <strong>Auditor</strong>: @mbaetiong
+<strong>Total Tracked</strong>: 113 (14 env vars · 76 repo vars · 3 env secrets · 7 repo secrets · 13 org secrets)
+<strong>Current Pass Scope</strong>: Variables only (secrets unchanged in this pass)
+<strong>Next Review</strong>: 2026-09-03 (quarterly)</p>
+</blockquote>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">¶</a></h2>
+<p>This document provides comprehensive documentation for all secrets and environment variables used in the Codex repository, covering authentication, CI/CD, cognitive-brain/agent orchestration, ML/AI pipeline, and runtime configuration.</p>
+<hr/>
+<h2 id="full-inventory">Full Inventory<a class="headerlink" href="#full-inventory" title="Permanent link">¶</a></h2>
+<h3 id="environment-variables-aries_serpent_codex_-environment">Environment Variables — <code>Aries_Serpent_codex_</code> Environment<a class="headerlink" href="#environment-variables-aries_serpent_codex_-environment" title="Permanent link">¶</a></h3>
+<p>These are injected into the Copilot agent sandbox via <code>copilot-setup-steps.yml</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Value</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CARGO_TERM_COLOR</code></td>
+<td><code>always</code></td>
+<td>Enables color output for Cargo (Rust CI)</td>
+</tr>
+<tr>
+<td><code>CODEX_BRIDGE_DIR</code></td>
+<td><code>/tmp/codex_secure_bridge</code></td>
+<td>Runtime tmpfs mount for IPC bridge (transient, not repo path)</td>
+</tr>
+<tr>
+<td><code>CODEX_BRIDGE_OWNER_ONLY</code></td>
+<td><code>true</code></td>
+<td>Restricts bridge dir to owner UID only</td>
+</tr>
+<tr>
+<td><code>CODEX_DB_PATH</code></td>
+<td><code>.codex/session_logs.db</code></td>
+<td>Repository default SQLite DB path; <code>copilot-setup-steps.yml</code> currently overrides it to <code>${GITHUB_WORKSPACE}/.codex/codex.db</code> inside Copilot sessions</td>
+</tr>
+<tr>
+<td><code>CODEX_ENV_GO_VERSION</code></td>
+<td><code>1.21</code></td>
+<td>Go toolchain version for env setup</td>
+</tr>
+<tr>
+<td><code>CODEX_ENV_NODE_VERSION</code></td>
+<td><code>22</code></td>
+<td>Node.js version for Copilot agent sandbox env setup (distinct from <code>NODE_JS_VERSION</code> repo var used by CI workflows)</td>
+</tr>
+<tr>
+<td><code>CODEX_ENV_PYTHON_VERSION</code></td>
+<td><code>3.12</code></td>
+<td>Python version (must match <code>pyproject.toml requires-python</code>)</td>
+</tr>
+<tr>
+<td><code>CODEX_ENV_RUST_VERSION</code></td>
+<td><code>1.92</code></td>
+<td>Rust toolchain version</td>
+</tr>
+<tr>
+<td><code>CODEX_ENV_SWIFT_VERSION</code></td>
+<td><code>5.9</code></td>
+<td>Swift version for env setup</td>
+</tr>
+<tr>
+<td><code>CODEX_LOG_DB_PATH</code></td>
+<td><code>.codex/session_logs.db</code></td>
+<td>Session log SQLite DB path used by logging/query tools</td>
+</tr>
+<tr>
+<td><code>CODEX_SQLITE_POOL</code></td>
+<td><code>1</code></td>
+<td>Enable per-session SQLite connection pooling</td>
+</tr>
+<tr>
+<td><code>RUST_BACKTRACE</code></td>
+<td><code>1</code></td>
+<td>Full backtraces for Rust panics</td>
+</tr>
+<tr>
+<td><code>RUST_TEST_THREADS</code></td>
+<td><code>1</code></td>
+<td>Sequential test execution for determinism</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h3 id="repository-variables">Repository Variables<a class="headerlink" href="#repository-variables" title="Permanent link">¶</a></h3>
+<h4 id="agent-autonomy-control">Agent &amp; Autonomy Control<a class="headerlink" href="#agent-autonomy-control" title="Permanent link">¶</a></h4>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Value</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AGENT_HANDOFF_TIMEOUT_SECONDS</code></td>
+<td><code>120</code></td>
+<td>Seconds before a handoff is declared timed-out</td>
+</tr>
+<tr>
+<td><code>AGENT_KILL_SWITCH</code></td>
+<td><code>0</code></td>
+<td>Emergency halt (<code>1</code> = halt all agents)</td>
+</tr>
+<tr>
+<td><code>AGENT_RUNNER_BUDGET_SECONDS</code></td>
+<td><code>180</code></td>
+<td>Max wall-clock seconds per agent runner invocation</td>
+</tr>
+<tr>
+<td><code>AGENT_RUNNER_DRY_RUN</code></td>
+<td><code>0</code></td>
+<td>If <code>1</code>, runner logs actions without executing</td>
+</tr>
+<tr>
+<td><code>AGENT_RUNNER_ITERATIONS</code></td>
+<td><code>2</code></td>
+<td>Default max iterations per runner run</td>
+</tr>
+<tr>
+<td><code>AUTONOMY_BUDGET_SECONDS</code></td>
+<td><code>90</code></td>
+<td>Per-task autonomy time budget</td>
+</tr>
+<tr>
+<td><code>AUTONOMY_DRY_RUN</code></td>
+<td><code>0</code></td>
+<td>Dry-run flag for autonomous actions</td>
+</tr>
+<tr>
+<td><code>AUTONOMY_MAX_ITERATIONS</code></td>
+<td><code>3</code></td>
+<td>Max autonomous iterations per decision loop</td>
+</tr>
+<tr>
+<td><code>AUTONOMOUS_ACTIONS_ENABLED</code></td>
+<td><code>true</code></td>
+<td>Master switch for all autonomous agent actions</td>
+</tr>
+<tr>
+<td><code>AUTO_PROMOTE_TIER_ENABLED</code></td>
+<td><code>true</code></td>
+<td>Allow agents to auto-promote tier on CI green</td>
+</tr>
+<tr>
+<td><code>COPILOT_AGENT_MAX_AUTONOMY_LEVEL</code></td>
+<td><code>D</code></td>
+<td>Maximum autonomy level granted to Copilot agents</td>
+</tr>
+<tr>
+<td><code>UNCERTAINTY_BUDGET_SECONDS</code></td>
+<td><code>20</code></td>
+<td>Time budget for uncertainty resolution before escalation</td>
+</tr>
+</tbody>
+</table>
+<h4 id="cicd-quality-gates">CI/CD &amp; Quality Gates<a class="headerlink" href="#cicd-quality-gates" title="Permanent link">¶</a></h4>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Value</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AUDIT_RETENTION_DAYS</code></td>
+<td><code>90</code></td>
+<td>Days to retain CI audit records</td>
+</tr>
+<tr>
+<td><code>CODEX_CACHE_VERSION</code></td>
+<td><code>v2</code></td>
+<td>Cache coherency key across all workflows</td>
+</tr>
+<tr>
+<td><code>CODEX_CI_FAILURE_RATE</code></td>
+<td><code>2.5:ok</code></td>
+<td>Live CI failure rate tracker (updated by CI agent)</td>
+</tr>
+<tr>
+<td><code>CODEX_CI_FAILURE_THRESHOLD</code></td>
+<td><code>10.0</code></td>
+<td>Failure rate % that triggers CI health alert</td>
+</tr>
+<tr>
+<td><code>CODEX_CI_LAST_GREEN_SHA</code></td>
+<td><code>8b5588da25a5d5f12ba8bd66cc37fa688fbc8e97</code></td>
+<td>Last commit SHA with all checks green</td>
+</tr>
+<tr>
+<td><code>CODEX_COVERAGE_THRESHOLD</code></td>
+<td><code>80</code></td>
+<td>Minimum test coverage % for CI gate</td>
+</tr>
+<tr>
+<td><code>CODEX_LINT_STRICT</code></td>
+<td><code>true</code></td>
+<td>Fail CI on any lint warning</td>
+</tr>
+<tr>
+<td><code>CODEX_TEST_PARALLELISM</code></td>
+<td><code>auto</code></td>
+<td>Test sharding strategy</td>
+</tr>
+</tbody>
+</table>
+<h4 id="cognitive-brain-session-management">Cognitive Brain &amp; Session Management<a class="headerlink" href="#cognitive-brain-session-management" title="Permanent link">¶</a></h4>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Value</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>COGNITIVE_BRAIN_ALLOWED_ACTORS</code></td>
+<td><code>mbaetiong,github-actions[bot],copilot-swe-agent[bot],github-copilot[bot]</code></td>
+<td>Actors allowed to write cognitive brain state</td>
+</tr>
+<tr>
+<td><code>COGNITIVE_BRAIN_INJECTION_ENABLED</code></td>
+<td><code>true</code></td>
+<td>Enable session context injection at session start</td>
+</tr>
+<tr>
+<td><code>COGNITIVE_BRAIN_LTM_RETENTION_DAYS</code></td>
+<td><code>90</code></td>
+<td>Days to retain long-term memory</td>
+</tr>
+<tr>
+<td><code>COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS</code></td>
+<td><code>128000</code></td>
+<td>Max tokens for cognitive brain context window <!-- pragma: allowlist secret --></td>
+</tr>
+<tr>
+<td><code>COGNITIVE_BRAIN_MEMORY_TIER</code></td>
+<td><code>both</code></td>
+<td>Memory tiers (<code>stm</code>, <code>ltm</code>, or <code>both</code>)</td>
+</tr>
+<tr>
+<td><code>COGNITIVE_BRAIN_PATTERN_MIN_CONFIDENCE</code></td>
+<td><code>0.75</code></td>
+<td>Minimum confidence to store a pattern</td>
+</tr>
+<tr>
+<td><code>COGNITIVE_BRAIN_SESSION_NUMBER</code></td>
+<td><code>1325</code></td>
+<td>Current session counter (auto-incremented)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="copilot-agent-configuration">Copilot Agent Configuration<a class="headerlink" href="#copilot-agent-configuration" title="Permanent link">¶</a></h4>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Value</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>COPILOT_ACTIVE_SESSION</code></td>
+<td><code>4731\|1780503084\|26896743030</code></td>
+<td>Current active session ID triplet</td>
+</tr>
+<tr>
+<td><code>COPILOT_AGENT_AUTH_ENABLED</code></td>
+<td><code>true</code></td>
+<td>Require auth token for all agent write operations <!-- pragma: allowlist secret --></td>
+</tr>
+<tr>
+<td><code>COPILOT_AGENT_FIREWALL_ALLOW_LIST_ADDITIONS</code></td>
+<td><em>(100+ domains)</em></td>
+<td>Additional domains beyond GitHub defaults</td>
+</tr>
+<tr>
+<td><code>COPILOT_AGENT_FIREWALL_ENABLED</code></td>
+<td><code>true</code></td>
+<td>Enable Copilot agent network firewall</td>
+</tr>
+<tr>
+<td><code>COPILOT_AGENT_PREFLIGHT_RULES</code></td>
+<td><em>(JSON v2.0)</em></td>
+<td>Pre-commit rules, mandatory loads, WEC rules</td>
+</tr>
+<tr>
+<td><code>COPILOT_AGENT_SESSION_RESTORE_ENABLED</code></td>
+<td><code>true</code></td>
+<td>Restore prior session context on agent init</td>
+</tr>
+<tr>
+<td><code>COPILOT_BOT_COMMENT_KNOWN_ISSUES</code></td>
+<td><em>(JSON)</em></td>
+<td>Known bot comment issues (BCI-001 through BCI-003)</td>
+</tr>
+<tr>
+<td><code>COPILOT_CLI_BASE_URL</code></td>
+<td><code>http://localhost:8765</code></td>
+<td>Copilot CLI API base URL</td>
+</tr>
+<tr>
+<td><code>COPILOT_CLI_ENABLED</code></td>
+<td><code>true</code></td>
+<td>Enable Copilot CLI interface</td>
+</tr>
+<tr>
+<td><code>COPILOT_SESSION_QUEUE</code></td>
+<td><em>(PR numbers)</em></td>
+<td>Queue of pending PR sessions</td>
+</tr>
+<tr>
+<td><code>COPILOT_SESSION_TOOL_CAPABILITIES</code></td>
+<td><em>(JSON)</em></td>
+<td>Tool capability map for current session</td>
+</tr>
+<tr>
+<td><code>COPILOT_WEC_SELECTION_MATRIX</code></td>
+<td><em>(JSON)</em></td>
+<td>Workflow Execution Checklist trigger map</td>
+</tr>
+<tr>
+<td><code>COPILOT_WEC_TEMPLATE_DRIFT</code></td>
+<td><em>(JSON)</em></td>
+<td>Known WEC template drift items</td>
+</tr>
+</tbody>
+</table>
+<h4 id="infrastructure-runtime">Infrastructure &amp; Runtime<a class="headerlink" href="#infrastructure-runtime" title="Permanent link">¶</a></h4>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Value</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CODEX_AGENT_NAME</code></td>
+<td><code>ai_org_repo_admin</code></td>
+<td>Agent identity for audit trails</td>
+</tr>
+<tr>
+<td><code>CODEX_API_VERSION</code></td>
+<td><code>2022-11-28</code></td>
+<td>GitHub API version used by agent tools</td>
+</tr>
+<tr>
+<td><code>CODEX_CLI_API_URL</code></td>
+<td><code>http://localhost:8765</code></td>
+<td>CLI API gateway (Codespace/dev only)</td>
+</tr>
+<tr>
+<td><code>CODEX_D365_POLICIES_PATH</code></td>
+<td><code>configs/deployment/d365/sla_policies.json</code></td>
+<td>Path to D365 SLA policy config</td>
+</tr>
+<tr>
+<td><code>CODEX_FORCE_CPU</code></td>
+<td><code>0</code></td>
+<td>Force CPU-only execution (<code>1</code> = no GPU)</td>
+</tr>
+<tr>
+<td><code>CODEX_ISOLATED_PATH</code></td>
+<td><code>/codex/network/isolated</code></td>
+<td>Network isolation path</td>
+</tr>
+<tr>
+<td><code>CODEX_LOG_LEVEL</code></td>
+<td><code>INFO</code></td>
+<td>Logging verbosity (<code>DEBUG</code>/<code>INFO</code>/<code>WARNING</code>)</td>
+</tr>
+<tr>
+<td><code>CODEX_NETWORK_MODE</code></td>
+<td><code>isolated</code></td>
+<td>Network mode for sandbox execution</td>
+</tr>
+<tr>
+<td><code>CODEX_OFFLINE</code></td>
+<td><code>1</code></td>
+<td>Disable external network requests (<code>1</code> = offline)</td>
+</tr>
+<tr>
+<td><code>CODEX_ORG_NAME</code></td>
+<td><code>Aries-Serpent</code></td>
+<td>GitHub organization name</td>
+</tr>
+<tr>
+<td><code>CODEX_PR_LIFECYCLE_VERSION</code></td>
+<td><em>(JSON S293)</em></td>
+<td>Current PR lifecycle spec version/metadata</td>
+</tr>
+<tr>
+<td><code>CODEX_PYTHON_VERSION</code></td>
+<td><code>3.12</code></td>
+<td>Python version target (minor pinned, patch floating)</td>
+</tr>
+<tr>
+<td><code>CODEX_SANDBOX_TIMEOUT</code></td>
+<td><code>60</code></td>
+<td>Seconds before sandbox task is killed</td>
+</tr>
+<tr>
+<td><code>CODEX_SESSION_ID</code></td>
+<td><code>UUID v4</code></td>
+<td>Per-session unique identifier</td>
+</tr>
+<tr>
+<td><code>CODEX_SESSION_LOG_DIR</code></td>
+<td><code>.codex/sessions</code></td>
+<td>Session log directory</td>
+</tr>
+<tr>
+<td><code>CODEX_ZENDESK_DOCS_ROOT</code></td>
+<td><code>docs/vendors/zendesk</code></td>
+<td>Path to Zendesk documentation <!-- pragma: allowlist secret --></td>
+</tr>
+<tr>
+<td><code>COMPOSE_DOCKER_CLI_BUILD</code></td>
+<td><code>1</code></td>
+<td>Use Docker CLI for compose builds</td>
+</tr>
+<tr>
+<td><code>DOCKER_BUILDKIT</code></td>
+<td><code>1</code></td>
+<td>Enable BuildKit for Docker builds</td>
+</tr>
+<tr>
+<td><code>EMBEDDING_INDEX_AUTO_REBUILD</code></td>
+<td><code>true</code></td>
+<td>Auto-rebuild embedding index on change</td>
+</tr>
+<tr>
+<td><code>ENABLE_LIVE_TESTS</code></td>
+<td><code>true</code></td>
+<td>Enable live integration tests in CI</td>
+</tr>
+<tr>
+<td><code>GENESIS_TIMESTAMP</code></td>
+<td><code>2025-12-26T16:04:45Z</code></td>
+<td>Repository genesis timestamp</td>
+</tr>
+<tr>
+<td><code>GPU_OPT</code></td>
+<td><code>--gpus all</code></td>
+<td>Docker GPU passthrough flag</td>
+</tr>
+<tr>
+<td><code>WEBHOOK_RECEIVER_URL</code></td>
+<td><code>https://${CODESPACE_NAME}-8765.preview.app.github.dev/webhook/github</code></td>
+<td>Webhook receiver endpoint (Codespace)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="llm-ml-pipeline">LLM &amp; ML Pipeline<a class="headerlink" href="#llm-ml-pipeline" title="Permanent link">¶</a></h4>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Value</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CODEX_LLM_MODEL</code></td>
+<td><code>gpt-4o</code></td>
+<td>Default LLM model identifier</td>
+</tr>
+<tr>
+<td><code>CODEX_LLM_RATE_LIMIT_DELAY</code></td>
+<td><code>1.0</code></td>
+<td>Seconds between LLM API calls</td>
+</tr>
+<tr>
+<td><code>HF_HOME</code></td>
+<td><code>~/.cache/huggingface</code></td>
+<td>HuggingFace cache directory</td>
+</tr>
+<tr>
+<td><code>MLFLOW_EXPERIMENT_NAME</code></td>
+<td><code>saas_knowledge_training</code></td>
+<td>MLFlow experiment name</td>
+</tr>
+<tr>
+<td><code>TORCH_HOME</code></td>
+<td><code>~/.cache/torch</code></td>
+<td>PyTorch model cache directory</td>
+</tr>
+<tr>
+<td><code>TRANSFORMERS_OFFLINE</code></td>
+<td><code>1</code></td>
+<td>Force offline mode for HuggingFace Transformers</td>
+</tr>
+<tr>
+<td><code>WANDB_MODE</code></td>
+<td><code>offline</code></td>
+<td>W&amp;B logging mode</td>
+</tr>
+</tbody>
+</table>
+<h4 id="zendesk-integration">Zendesk Integration<a class="headerlink" href="#zendesk-integration" title="Permanent link">¶</a></h4>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Value</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ZENDESK_RATE_LIMIT</code></td>
+<td><code>100</code></td>
+<td>Max Zendesk API requests per minute <!-- pragma: allowlist secret --></td>
+</tr>
+<tr>
+<td><code>ZENDESK_SYNC_INTERVAL</code></td>
+<td><code>3600</code></td>
+<td>Zendesk sync interval in seconds <!-- pragma: allowlist secret --></td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h3 id="environment-secrets-aries_serpent_codex_">Environment Secrets — <code>Aries_Serpent_codex_</code><a class="headerlink" href="#environment-secrets-aries_serpent_codex_" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Secret</th>
+<th>Purpose</th>
+<th>Rotation <!-- pragma: allowlist secret --></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CODEX_ENVIRONMENT_RUNNER</code></td>
+<td>Runner registration token for environment</td>
+<td>On runner recycle <!-- pragma: allowlist secret --></td>
+</tr>
+<tr>
+<td><code>CODEX_RUNNER_SHA256</code></td>
+<td>SHA256 checksum of runner binary</td>
+<td>On binary update</td>
+</tr>
+<tr>
+<td><code>CODEX_RUNNER_TOKEN</code></td>
+<td>Auth token for self-hosted runner</td>
+<td>Every 90 days <!-- pragma: allowlist secret --></td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h3 id="repository-secrets">Repository Secrets<a class="headerlink" href="#repository-secrets" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Secret</th>
+<th>Purpose</th>
+<th>Security Level <!-- pragma: allowlist secret --></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CODEX_GHP_TOKEN_BASE64</code></td>
+<td>GitHub PAT (Base64 encoded)</td>
+<td>CRITICAL <!-- pragma: allowlist secret --></td>
+</tr>
+<tr>
+<td><code>CODEX_GHP_TOKEN_HEX</code></td>
+<td>GitHub PAT (Hex encoded)</td>
+<td>CRITICAL <!-- pragma: allowlist secret --></td>
+</tr>
+<tr>
+<td><code>CODEX_GHP_TOKEN_SHA256</code></td>
+<td>GitHub PAT (SHA256 hash for verification)</td>
+<td>CRITICAL <!-- pragma: allowlist secret --></td>
+</tr>
+<tr>
+<td><code>CODEX_REPO_ID</code></td>
+<td>GitHub repository numeric ID</td>
+<td>HIGH</td>
+</tr>
+<tr>
+<td><code>CODEX_WEBHOOK_SECRET</code></td>
+<td>HMAC secret for webhook signature validation</td>
+<td>HIGH <!-- pragma: allowlist secret --></td>
+</tr>
+<tr>
+<td><code>OPENAI_API_KEY</code></td>
+<td>OpenAI API key for LLM calls</td>
+<td>CRITICAL <!-- pragma: allowlist secret --></td>
+</tr>
+<tr>
+<td><code>_CODEX_BOT_RUNNER</code></td>
+<td>Bot runner auth token</td>
+<td>HIGH <!-- pragma: allowlist secret --></td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h3 id="organization-secrets">Organization Secrets<a class="headerlink" href="#organization-secrets" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Secret</th>
+<th>Purpose</th>
+<th>Security Level</th>
+<th>Age <!-- pragma: allowlist secret --></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CODECOV_TOKEN</code></td>
+<td>Upload coverage reports to Codecov</td>
+<td>MEDIUM</td>
+<td>5 months ️ <!-- pragma: allowlist secret --></td>
+</tr>
+<tr>
+<td><code>CODEX_ADMIN_KEY</code></td>
+<td>Admin-level operations key</td>
+<td>CRITICAL</td>
+<td>3 months</td>
+</tr>
+<tr>
+<td><code>CODEX_BACKUP_KEY</code></td>
+<td>Fallback key for write operations</td>
+<td>CRITICAL</td>
+<td>3 months</td>
+</tr>
+<tr>
+<td><code>CODEX_MASTER_KEY</code></td>
+<td>Master key for all token-chain write ops</td>
+<td>CRITICAL</td>
+<td>3 months <!-- pragma: allowlist secret --></td>
+</tr>
+<tr>
+<td><code>HF_TOKEN</code></td>
+<td>HuggingFace Hub access token</td>
+<td>HIGH</td>
+<td>5 months ️ <!-- pragma: allowlist secret --></td>
+</tr>
+<tr>
+<td><code>NPM_TOKEN</code></td>
+<td>npm package publishing token</td>
+<td>HIGH</td>
+<td>5 months ️ <!-- pragma: allowlist secret --></td>
+</tr>
+<tr>
+<td><code>PYPI_TOKEN</code></td>
+<td>PyPI package publishing token</td>
+<td>HIGH</td>
+<td>5 months ️ <!-- pragma: allowlist secret --></td>
+</tr>
+<tr>
+<td><code>RAG_OPENAI_KEY</code></td>
+<td>Dedicated OpenAI key for RAG pipeline</td>
+<td>HIGH</td>
+<td>4 months</td>
+</tr>
+<tr>
+<td><code>_CODEX_ACTION_RUNNER</code></td>
+<td>Actions runner registration token</td>
+<td>HIGH</td>
+<td>5 months ️ <!-- pragma: allowlist secret --></td>
+</tr>
+<tr>
+<td><code>_GITHUB_APP_CLIENT_SECRET</code></td>
+<td>GitHub App OAuth client secret</td>
+<td>CRITICAL</td>
+<td>3 months <!-- pragma: allowlist secret --></td>
+</tr>
+<tr>
+<td><code>_GITHUB_APP_ID</code></td>
+<td>GitHub App identifier</td>
+<td>HIGH</td>
+<td>3 months</td>
+</tr>
+<tr>
+<td><code>_GITHUB_APP_INSTALLATION_ID</code></td>
+<td>App installation identifier</td>
+<td>HIGH</td>
+<td>3 months</td>
+</tr>
+<tr>
+<td><code>_GITHUB_APP_PRIVATE_KEY</code></td>
+<td>GitHub App private key (RSA)</td>
+<td>CRITICAL</td>
+<td>3 months</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 id="gap-analysis-variables-referenced-in-code-but-not-in-inventory">Gap Analysis — Variables Referenced in Code but NOT in Inventory<a class="headerlink" href="#gap-analysis-variables-referenced-in-code-but-not-in-inventory" title="Permanent link">¶</a></h2>
+<p>The following variables are referenced in source code, workflow files, or <code>.codex/</code> docs but <strong>are not present</strong> in the active repository/environment variable inventory. The maintainer should evaluate each for creation.</p>
+<h3 id="service-api-servicesapimainpy">Service API (<code>services/api/main.py</code>)<a class="headerlink" href="#service-api-servicesapimainpy" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Type</th>
+<th>Default</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CODEX_AUTH_SECRET</code></td>
+<td>Repo Var</td>
+<td>—</td>
+<td>API service authentication secret <!-- pragma: allowlist secret --></td>
+</tr>
+<tr>
+<td><code>CODEX_AUTH_MIDDLEWARE_ENABLED</code></td>
+<td>Repo Var</td>
+<td><code>true</code></td>
+<td>Enable auth middleware on API service</td>
+</tr>
+<tr>
+<td><code>CODEX_AUTH_RATE_LIMIT</code></td>
+<td>Repo Var</td>
+<td><code>100</code></td>
+<td>API rate limit (requests/minute)</td>
+</tr>
+<tr>
+<td><code>CODEX_ENV</code></td>
+<td>Workflow-exported env (repo-var fallback optional)</td>
+<td><code>copilot-agent</code> in <code>copilot-setup-steps.yml</code>, otherwise <code>development</code> fallback</td>
+<td>Sandbox/runtime environment label used by security-aware components</td>
+</tr>
+<tr>
+<td><code>DISABLE_SECRET_FILTER</code></td>
+<td>Repo Var</td>
+<td><code>false</code></td>
+<td><strong>️ DANGER — NEVER set to <code>true</code> in production.</strong> Bypasses all secret redaction in API logs. Use ONLY in isolated local debugging sessions with no real credentials present. Any attempt to enable this in CI/CD should trigger an immediate security alert. <!-- pragma: allowlist secret --></td>
+</tr>
+<tr>
+<td><code>ARTIFACTS_DIR</code></td>
+<td>Repo Var</td>
+<td><code>/tmp/artifacts</code></td>
+<td>API artifact output directory</td>
+</tr>
+</tbody>
+</table>
+<h3 id="nox-ml-pipeline-noxfilepy-scripts">Nox / ML Pipeline (<code>noxfile.py</code>, <code>scripts/</code>)<a class="headerlink" href="#nox-ml-pipeline-noxfilepy-scripts" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Type</th>
+<th>Default</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CODEX_CPU_MINIMAL</code></td>
+<td>Repo Var</td>
+<td><code>0</code></td>
+<td>Minimal CPU-only mode (skip heavy GPU sessions)</td>
+</tr>
+<tr>
+<td><code>CODEX_ABORT_ON_GPU_PULL</code></td>
+<td>Repo Var</td>
+<td><code>0</code></td>
+<td>Abort if GPU environment detected</td>
+</tr>
+<tr>
+<td><code>CODEX_ALLOW_TRITON_CPU</code></td>
+<td>Repo Var</td>
+<td><code>0</code></td>
+<td>Allow Triton CPU fallback</td>
+</tr>
+<tr>
+<td><code>CODEX_DEPENDENCY_EVIDENCE_PATH</code></td>
+<td>Repo Var</td>
+<td><code>.codex/evidence</code></td>
+<td>Path for dependency evidence artifacts</td>
+</tr>
+<tr>
+<td><code>CODEX_GIT_SHA</code></td>
+<td>Repo Var</td>
+<td>—</td>
+<td>Current git SHA injected at CI start</td>
+</tr>
+<tr>
+<td><code>CODEX_NET_ALLOWLIST</code></td>
+<td>Repo Var</td>
+<td>—</td>
+<td>Allowed network hosts (comma-separated)</td>
+</tr>
+<tr>
+<td><code>CODEX_NET_MODE</code></td>
+<td>Repo Var</td>
+<td><code>isolated</code></td>
+<td>Network mode alias for <code>CODEX_NETWORK_MODE</code></td>
+</tr>
+<tr>
+<td><code>CODEX_NUM_THREADS</code></td>
+<td>Repo Var</td>
+<td><code>4</code></td>
+<td>Thread pool size for parallel operations</td>
+</tr>
+<tr>
+<td><code>CODEX_PIPELINE_STRICT</code></td>
+<td>Repo Var</td>
+<td><code>false</code></td>
+<td>Fail pipeline on any non-critical warning</td>
+</tr>
+<tr>
+<td><code>CODEX_SEED</code></td>
+<td>Repo Var</td>
+<td><code>42</code></td>
+<td>Random seed for deterministic ML runs</td>
+</tr>
+</tbody>
+</table>
+<h3 id="cognitive-brain-session-codexcritical_repository_variablesmd">Cognitive Brain &amp; Session (<code>.codex/CRITICAL_REPOSITORY_VARIABLES.md</code>)<a class="headerlink" href="#cognitive-brain-session-codexcritical_repository_variablesmd" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Type</th>
+<th>Recommended Value</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SESSION_CONTEXT_AUTO_CAPTURE</code></td>
+<td>Repo Var</td>
+<td><code>true</code></td>
+<td>Auto-capture session context at start</td>
+</tr>
+<tr>
+<td><code>SESSION_CONTEXT_AUTO_INJECT</code></td>
+<td>Repo Var</td>
+<td><code>true</code></td>
+<td>Auto-inject prior context on agent init</td>
+</tr>
+<tr>
+<td><code>COGNITIVE_BRAIN_SESSION_RETENTION_HOURS</code></td>
+<td>Repo Var</td>
+<td><code>24</code></td>
+<td>Hours to retain session context</td>
+</tr>
+<tr>
+<td><code>CODEX_MAX_HEALER_RUNS_PER_HOUR</code></td>
+<td>Repo Var</td>
+<td><code>5</code></td>
+<td>Self-healing agent rate limit</td>
+</tr>
+<tr>
+<td><code>CODEX_TELEMETRY_ENABLED</code></td>
+<td>Repo Var</td>
+<td><code>true</code></td>
+<td>Enable metrics collection</td>
+</tr>
+<tr>
+<td><code>METRICS_COLLECTION_INTERVAL_SECONDS</code></td>
+<td>Repo Var</td>
+<td><code>60</code></td>
+<td>Metrics sampling interval</td>
+</tr>
+<tr>
+<td><code>WORKFLOW_FAILURE_TRACKING_ENABLED</code></td>
+<td>Repo Var</td>
+<td><code>true</code></td>
+<td>Track all workflow failures</td>
+</tr>
+</tbody>
+</table>
+<h3 id="cicd-timeouts-parallelism-codexcritical_repository_variablesmd">CI/CD Timeouts &amp; Parallelism (<code>.codex/CRITICAL_REPOSITORY_VARIABLES.md</code>)<a class="headerlink" href="#cicd-timeouts-parallelism-codexcritical_repository_variablesmd" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Type</th>
+<th>Recommended Value</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>NODE_JS_VERSION</code></td>
+<td>Repo Var</td>
+<td><code>22</code></td>
+<td>Node.js LTS version for CI/workflows. <strong>Scope note:</strong> this is separate from environment variable <code>CODEX_ENV_NODE_VERSION</code> (sandbox runtime). <code>.github/workflows/copilot-setup-steps.yml</code> reads it as <code>NODE_VERSION: ${{ vars.NODE_JS_VERSION \|\| '22' }}</code>.</td>
+</tr>
+<tr>
+<td><code>CODEX_TEST_TIMEOUT_MINUTES</code></td>
+<td>Repo Var</td>
+<td><code>60</code></td>
+<td>Per-job test timeout</td>
+</tr>
+<tr>
+<td><code>CODEX_JOB_TIMEOUT_MINUTES</code></td>
+<td>Repo Var</td>
+<td><code>120</code></td>
+<td>Global job timeout</td>
+</tr>
+<tr>
+<td><code>CODEX_MAX_PARALLEL_JOBS</code></td>
+<td>Repo Var</td>
+<td><code>4</code></td>
+<td>Max concurrent jobs</td>
+</tr>
+<tr>
+<td><code>CODEX_SHARD_COUNT</code></td>
+<td>Repo Var</td>
+<td><code>4</code></td>
+<td>Test sharding count</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 id="token-chain">Token Chain<a class="headerlink" href="#token-chain" title="Permanent link">¶</a></h2>
+<p>All write operations in this repository use the following fallback chain:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a>GH_TOKEN = CODEX_MASTER_KEY || CODEX_BACKUP_KEY || github.token  # pragma: allowlist secret
+</code></pre></div>
+<p>Defined in <code>COPILOT_AGENT_PREFLIGHT_RULES.token_rule</code>. Never use <code>git push</code> directly — always use <code>report_progress</code> tool.</p>
+<hr/>
+<h2 id="secret-rotation-schedule">Secret Rotation Schedule<a class="headerlink" href="#secret-rotation-schedule" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Secret</th>
+<th>Rotation Frequency</th>
+<th>Method</th>
+<th>Due <!-- pragma: allowlist secret --></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CODEX_MASTER_KEY</code></td>
+<td>Every 90 days</td>
+<td>Manual → update org secret</td>
+<td>2026-06-28 <!-- pragma: allowlist secret --></td>
+</tr>
+<tr>
+<td><code>CODEX_BACKUP_KEY</code></td>
+<td>Every 90 days</td>
+<td>Manual → update org secret</td>
+<td>2026-06-28 <!-- pragma: allowlist secret --></td>
+</tr>
+<tr>
+<td><code>CODEX_ADMIN_KEY</code></td>
+<td>Every 90 days</td>
+<td>Manual → update org secret</td>
+<td>2026-06-28 <!-- pragma: allowlist secret --></td>
+</tr>
+<tr>
+<td><code>_GITHUB_APP_PRIVATE_KEY</code></td>
+<td>Every 90 days</td>
+<td>GitHub App → regenerate</td>
+<td>2026-06-03</td>
+</tr>
+<tr>
+<td><code>_GITHUB_APP_CLIENT_SECRET</code></td>
+<td>Every 90 days</td>
+<td>GitHub App → regenerate</td>
+<td>2026-06-04 <!-- pragma: allowlist secret --></td>
+</tr>
+<tr>
+<td><code>CODEX_RUNNER_TOKEN</code></td>
+<td>Every 90 days</td>
+<td>Runner recycle</td>
+<td>2026-06-04 <!-- pragma: allowlist secret --></td>
+</tr>
+<tr>
+<td><code>OPENAI_API_KEY</code></td>
+<td>Every 90 days</td>
+<td>OpenAI dashboard</td>
+<td>2026-06-03 <!-- pragma: allowlist secret --></td>
+</tr>
+<tr>
+<td><code>CODECOV_TOKEN</code></td>
+<td>Annual</td>
+<td>Codecov dashboard</td>
+<td>️ OVERDUE (5 months) <!-- pragma: allowlist secret --></td>
+</tr>
+<tr>
+<td><code>HF_TOKEN</code></td>
+<td>Annual</td>
+<td>HuggingFace settings</td>
+<td>️ OVERDUE (5 months) <!-- pragma: allowlist secret --></td>
+</tr>
+<tr>
+<td><code>NPM_TOKEN</code></td>
+<td>Annual</td>
+<td>npm settings</td>
+<td>️ OVERDUE (5 months) <!-- pragma: allowlist secret --></td>
+</tr>
+<tr>
+<td><code>PYPI_TOKEN</code></td>
+<td>Annual</td>
+<td>PyPI account</td>
+<td>️ OVERDUE (5 months) <!-- pragma: allowlist secret --></td>
+</tr>
+<tr>
+<td><code>_CODEX_ACTION_RUNNER</code></td>
+<td>Annual</td>
+<td>GitHub Actions runners</td>
+<td>️ OVERDUE (5 months)</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 id="settingsvariablesagents-recommended-additions">🧩 <code>settings/variables/agents</code> — Recommended Additions<a class="headerlink" href="#settingsvariablesagents-recommended-additions" title="Permanent link">¶</a></h2>
+<p>The Copilot agents settings page currently shows only the firewall defaults. The following variables <strong>MUST or SHOULD</strong> be added at <code>https://github.com/Aries-Serpent/_codex_/settings/variables/agents</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Value</th>
+<th>Priority</th>
+<th>Reason</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>COPILOT_AGENT_MAX_AUTONOMY_LEVEL</code></td>
+<td><code>D</code></td>
+<td><strong>MUST</strong></td>
+<td>Controls maximum autonomy level granted to all Copilot coding agents</td>
+</tr>
+<tr>
+<td><code>COPILOT_AGENT_AUTH_ENABLED</code></td>
+<td><code>true</code></td>
+<td><strong>MUST</strong></td>
+<td>Enforces auth token requirement for all agent write operations <!-- pragma: allowlist secret --></td>
+</tr>
+<tr>
+<td><code>COPILOT_AGENT_SESSION_RESTORE_ENABLED</code></td>
+<td><code>true</code></td>
+<td><strong>MUST</strong></td>
+<td>Enables cognitive brain session restore on agent init</td>
+</tr>
+<tr>
+<td><code>COPILOT_AGENT_PREFLIGHT_RULES</code></td>
+<td><em>(see repo var)</em></td>
+<td><strong>MUST</strong></td>
+<td>Pre-commit rules and mandatory doc loads; agents MUST read this at session start</td>
+</tr>
+<tr>
+<td><code>COPILOT_WEC_SELECTION_MATRIX</code></td>
+<td><em>(see repo var)</em></td>
+<td><strong>MUST</strong></td>
+<td>Workflow Execution Checklist trigger map; agents must reference to select WEC items</td>
+</tr>
+<tr>
+<td><code>CODEX_LINT_STRICT</code></td>
+<td><code>true</code></td>
+<td><strong>SHOULD</strong></td>
+<td>Instructs agents to fail on any lint warning</td>
+</tr>
+<tr>
+<td><code>CODEX_COVERAGE_THRESHOLD</code></td>
+<td><code>80</code></td>
+<td><strong>SHOULD</strong></td>
+<td>Coverage gate threshold visible to agents</td>
+</tr>
+<tr>
+<td><code>COGNITIVE_BRAIN_INJECTION_ENABLED</code></td>
+<td><code>true</code></td>
+<td><strong>SHOULD</strong></td>
+<td>Confirms cognitive brain injection is active</td>
+</tr>
+<tr>
+<td><code>COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS</code></td>
+<td><code>128000</code></td>
+<td><strong>SHOULD</strong></td>
+<td>Lets agents know their max context budget <!-- pragma: allowlist secret --></td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 id="workflow-permissions-reference">Workflow Permissions Reference<a class="headerlink" href="#workflow-permissions-reference" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Workflow</th>
+<th>Required Permissions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>auth-token-rotation.yml</code></td>
+<td><code>contents: write</code>, <code>issues: write</code>, <code>secrets: write</code> <!-- pragma: allowlist secret --></td>
+</tr>
+<tr>
+<td><code>auth-secret-rotation.yml</code></td>
+<td><code>contents: write</code>, <code>secrets: write</code>, <code>issues: write</code> <!-- pragma: allowlist secret --></td>
+</tr>
+<tr>
+<td><code>auth-compliance-report.yml</code></td>
+<td><code>contents: read</code>, <code>issues: write</code></td>
+</tr>
+<tr>
+<td><code>release.yml</code></td>
+<td><code>contents: write</code>, <code>packages: write</code>, <code>id-token: write</code> <!-- pragma: allowlist secret --></td>
+</tr>
+<tr>
+<td><code>cognitive-brain</code> writes</td>
+<td>Uses <code>_GITHUB_APP_*</code> via <code>actions/create-github-app-token@v1</code> <!-- pragma: allowlist secret --></td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 id="workflow-agent-variable-usage-map">🗺️ Workflow &amp; Agent Variable Usage Map<a class="headerlink" href="#workflow-agent-variable-usage-map" title="Permanent link">¶</a></h2>
+<p>This section maps each key repository variable to the GitHub Actions workflows and custom agents that read it. Reference this when changing a variable value to understand downstream impact.</p>
+<h3 id="copilot-sandbox-bootstrap-surface-githubworkflowscopilot-setup-stepsyml">Copilot Sandbox Bootstrap Surface (<code>.github/workflows/copilot-setup-steps.yml</code>)<a class="headerlink" href="#copilot-sandbox-bootstrap-surface-githubworkflowscopilot-setup-stepsyml" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Surface</th>
+<th>Current behavior</th>
+<th>Downstream consumers</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>NODE_JS_VERSION</code></td>
+<td>Repository variable → workflow <code>env.NODE_VERSION</code></td>
+<td>Read as <code>${{ vars.NODE_JS_VERSION \|\| '22' }}</code></td>
+<td>Node/npm tools in the Copilot sandbox</td>
+</tr>
+<tr>
+<td><code>COPILOT_RUNNER_PROFILE</code></td>
+<td>Repository variable → <code>runs-on</code></td>
+<td>Read as <code>${{ vars.COPILOT_RUNNER_PROFILE \|\| 'ubuntu-latest' }}</code></td>
+<td>Runner sizing for Copilot sessions</td>
+</tr>
+<tr>
+<td><code>CODEX_CACHE_VERSION</code></td>
+<td>Repository variable → <code>setup-agent-env</code> input</td>
+<td>Read as <code>${{ vars.CODEX_CACHE_VERSION \|\| 'v2' }}</code></td>
+<td>Agent venv/cache hierarchy and cache invalidation</td>
+</tr>
+<tr>
+<td><code>CODEX_MASTER_KEY</code>, <code>CODEX_BACKUP_KEY</code></td>
+<td>Organization secrets → job env → export step</td>
+<td>Injected into the agent runtime for token-chain writes</td>
+<td><code>agent-auth-delegation</code>, variable sync, workflow dispatch <!-- pragma: allowlist secret --></td>
+</tr>
+<tr>
+<td><code>CODEX_ENV</code></td>
+<td>Workflow-exported env</td>
+<td>Explicitly set to <code>copilot-agent</code></td>
+<td>Security/compliance agents, runtime guards</td>
+</tr>
+<tr>
+<td><code>CODEX_LOG_LEVEL</code></td>
+<td>Workflow-exported env</td>
+<td>Currently exported as <code>INFO</code></td>
+<td>Session diagnostics and troubleshooting</td>
+</tr>
+<tr>
+<td><code>CODEX_DB_PATH</code></td>
+<td>Workflow-exported env</td>
+<td>Currently exported as <code>${GITHUB_WORKSPACE}/.codex/codex.db</code></td>
+<td>Cognitive brain / pattern-recorder DB consumers</td>
+</tr>
+<tr>
+<td><code>CODEX_LOG_DB_PATH</code></td>
+<td>Runtime default / optional env override</td>
+<td>Defaults to <code>.codex/session_logs.db</code></td>
+<td>Logging, export, query, and viewer tools</td>
+</tr>
+</tbody>
+</table>
+<h3 id="agents-settings-surface-settingsvariablesagents">Agents Settings Surface (<code>settings/variables/agents</code>)<a class="headerlink" href="#agents-settings-surface-settingsvariablesagents" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Surface</th>
+<th>Current expectation</th>
+<th>Primary consumers</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>COPILOT_AGENT_MAX_AUTONOMY_LEVEL</code></td>
+<td>Agent variable</td>
+<td><code>D</code> ceiling</td>
+<td>All Copilot/custom agents</td>
+</tr>
+<tr>
+<td><code>COPILOT_AGENT_AUTH_ENABLED</code></td>
+<td>Agent variable</td>
+<td><code>true</code></td>
+<td>Auth-gated write paths</td>
+</tr>
+<tr>
+<td><code>COPILOT_AGENT_SESSION_RESTORE_ENABLED</code></td>
+<td>Agent variable</td>
+<td><code>true</code></td>
+<td><code>cognitive-brain-session-injector</code></td>
+</tr>
+<tr>
+<td><code>COPILOT_AGENT_PREFLIGHT_RULES</code></td>
+<td>Agent + repo JSON</td>
+<td>Mandatory load at session start</td>
+<td>All Copilot/custom agents</td>
+</tr>
+<tr>
+<td><code>COPILOT_WEC_SELECTION_MATRIX</code></td>
+<td>Agent + repo JSON</td>
+<td>Current routing matrix</td>
+<td>Workflow/orchestration agents</td>
+</tr>
+<tr>
+<td><code>COPILOT_WEC_TEMPLATE_DRIFT</code></td>
+<td>Agent + repo JSON</td>
+<td>Expected steady-state <code>count=0</code> after remediation</td>
+<td><code>workflow-compliance-guardian</code>, WEC-aware agents</td>
+</tr>
+<tr>
+<td><code>COGNITIVE_BRAIN_INJECTION_ENABLED</code></td>
+<td>Agent variable</td>
+<td><code>true</code></td>
+<td>Cognitive Brain session/bootstrap agents</td>
+</tr>
+<tr>
+<td><code>COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS</code></td>
+<td>Agent variable</td>
+<td><code>128000</code></td>
+<td>Cognitive/context-budget aware agents <!-- pragma: allowlist secret --></td>
+</tr>
+</tbody>
+</table>
+<h3 id="workflow-automation-ci-surface">Workflow Automation / CI Surface<a class="headerlink" href="#workflow-automation-ci-surface" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Verified workflow readers</th>
+<th>Primary agent/process consumers</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CODEX_TEST_TIMEOUT_MINUTES</code></td>
+<td><code>auth-tests.yml</code>, <code>coverage-with-timeout.yml</code>, <code>nox_gates.yml</code>, <code>test-rag.yml</code></td>
+<td><code>ci-testing-agent</code>, <code>autonomous-test-healer-agent</code></td>
+</tr>
+<tr>
+<td><code>CODEX_COVERAGE_THRESHOLD</code></td>
+<td><code>ci-checkpoint-validation.yml</code>, <code>code-quality-coverage-suite.yml</code>, <code>copilot-agent-vars-bootstrap.yml</code></td>
+<td><code>unified-coverage-agent</code>, <code>ci-testing-agent</code></td>
+</tr>
+<tr>
+<td><code>CODEX_CI_FAILURE_RATE</code></td>
+<td><code>copilot-agent-vars-bootstrap.yml</code>, <code>repo-var-sync-schedule.yml</code></td>
+<td><code>ci-health-alert-agent</code>, <code>ci-triage-pipeline-agent</code></td>
+</tr>
+<tr>
+<td><code>CODEX_CI_FAILURE_THRESHOLD</code></td>
+<td><code>ci-health-monitor.yml</code>, <code>repo-var-sync-schedule.yml</code></td>
+<td><code>ci-health-alert-agent</code></td>
+</tr>
+<tr>
+<td><code>CODEX_MAX_HEALER_RUNS_PER_HOUR</code></td>
+<td><code>copilot-iterative-self-healing.yml</code>, <code>iterative-self-healing-ci.yml</code>, <code>self-healing.yml</code></td>
+<td>Self-healing agent family</td>
+</tr>
+<tr>
+<td><code>COGNITIVE_BRAIN_SESSION_NUMBER</code></td>
+<td><code>agent-auth-delegation.yml</code>, <code>chatops_copilot_trigger.yml</code>, <code>copilot-iterative-self-healing.yml</code>, <code>repo-var-sync-schedule.yml</code></td>
+<td>Session injection and orchestration agents</td>
+</tr>
+</tbody>
+</table>
+<h3 id="runtime-service-guard-surface">Runtime / Service Guard Surface<a class="headerlink" href="#runtime-service-guard-surface" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Surface</th>
+<th>Current expectation</th>
+<th>Primary consumers</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CODEX_ENV</code></td>
+<td>Workflow-exported env or repo-var fallback</td>
+<td><code>copilot-agent</code> in Copilot sessions; <code>production</code> must trigger stricter guards</td>
+<td>Security/compliance agents, service config</td>
+</tr>
+<tr>
+<td><code>DISABLE_SECRET_FILTER</code></td>
+<td>Repository variable</td>
+<td>Must remain <code>false</code> outside isolated local debugging</td>
+<td><code>pii-scrubber</code>, <code>secret-detection-agent</code> <!-- pragma: allowlist secret --></td>
+</tr>
+<tr>
+<td><code>CODEX_AUTH_MIDDLEWARE_ENABLED</code></td>
+<td>Repository variable</td>
+<td>Default <code>true</code></td>
+<td>API/auth validation</td>
+</tr>
+<tr>
+<td><code>CODEX_AUTH_RATE_LIMIT</code></td>
+<td>Repository variable</td>
+<td>Default <code>100</code></td>
+<td>API/auth validation</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h3 id="variable-access-pattern-in-workflows">Variable Access Pattern in Workflows<a class="headerlink" href="#variable-access-pattern-in-workflows" title="Permanent link">¶</a></h3>
+<p>All variables should be accessed using the safe fallback pattern:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="nt">env</span><span class="p">:</span>
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a><span class="w">  </span><span class="nt">CODEX_CACHE_VERSION</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ vars.CODEX_CACHE_VERSION || 'v2' }}</span>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a><span class="w">  </span><span class="c1"># NODE_VERSION is a workflow-level alias that reads vars.NODE_JS_VERSION:</span>
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="w">  </span><span class="c1">#   env: { NODE_VERSION: "${{ vars.NODE_JS_VERSION || '22' }}" }</span>
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a><span class="w">  </span><span class="nt">CODEX_TEST_TIMEOUT</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ vars.CODEX_TEST_TIMEOUT_MINUTES || '60' }}</span>
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a><span class="w">  </span><span class="nt">COGNITIVE_BRAIN_INJECTION_ENABLED</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ vars.COGNITIVE_BRAIN_INJECTION_ENABLED || 'true' }}</span>
+</code></pre></div>
+<blockquote>
+<p><strong>Note on Node.js version variables</strong>:
+- <code>NODE_JS_VERSION</code> — <strong>repo var</strong> (create in GitHub UI → Settings → Actions → Variables). CI workflows (e.g., <code>copilot-setup-steps.yml</code>) read it as <code>env.NODE_VERSION: ${{ vars.NODE_JS_VERSION || '22' }}</code>.
+- <code>CODEX_ENV_NODE_VERSION</code> — <strong>environment var</strong> (Aries_Serpent_codex_ environment). Injected into the Copilot agent sandbox. These are two separate mechanisms serving different scopes.
+- <code>CODEX_ENV</code> — <strong>runtime env value</strong> exported by <code>copilot-setup-steps.yml</code> (<code>copilot-agent</code> today). This is distinct from any optional repository variable fallback used by services outside the Copilot sandbox.
+- <code>CODEX_DB_PATH</code> vs <code>CODEX_LOG_DB_PATH</code> — the setup workflow currently exports <code>CODEX_DB_PATH=${GITHUB_WORKSPACE}/.codex/codex.db</code> for cognitive/pattern state, while logging tools still default to <code>CODEX_LOG_DB_PATH=.codex/session_logs.db</code>.</p>
+</blockquote>
+<p>For integer fields (e.g., <code>timeout-minutes</code>):
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="nt">timeout-minutes</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ fromJSON(vars.CODEX_TEST_TIMEOUT_MINUTES || '60') }}</span>
+</code></pre></div></p>
+<p>For action inputs:
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./.github/actions/setup-python-cached</span>
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w">    </span><span class="nt">cache-version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ vars.CODEX_CACHE_VERSION || 'v2' }}</span>
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/setup-node@v6</span>
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="w">    </span><span class="nt">node-version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ vars.NODE_JS_VERSION || '22' }}</span>
+</code></pre></div></p>
+<h3 id="agent-variable-expectations">Agent Variable Expectations<a class="headerlink" href="#agent-variable-expectations" title="Permanent link">¶</a></h3>
+<p>Every custom Copilot coding agent MUST:
+1. Check <code>AGENT_KILL_SWITCH</code> (<code>vars.AGENT_KILL_SWITCH == '1'</code> → abort immediately)
+2. Read <code>COPILOT_AGENT_PREFLIGHT_RULES</code> for pre-commit compliance rules
+3. Reference <code>COPILOT_WEC_SELECTION_MATRIX</code> for WEC item routing
+4. Respect <code>COPILOT_AGENT_MAX_AUTONOMY_LEVEL</code> (ceiling: <code>D</code>)
+5. Use token chain: <code>CODEX_MASTER_KEY || CODEX_BACKUP_KEY || github.token</code></p>
+<p>Every agent SHOULD:
+6. Read <code>COGNITIVE_BRAIN_INJECTION_ENABLED</code> before calling cognitive brain APIs
+7. Honor <code>CODEX_LINT_STRICT</code> when running linters
+8. Respect <code>CODEX_COVERAGE_THRESHOLD</code> (default: <code>80</code>) for coverage gates
+9. Check <code>CODEX_MAX_HEALER_RUNS_PER_HOUR</code> before triggering self-healing loops
+10. Log telemetry if <code>CODEX_TELEMETRY_ENABLED</code> is <code>true</code></p>
+<p>Full per-agent variable expectations: <a href="../agents/VARIABLE_EXPECTATIONS.md"><code>agents/VARIABLE_EXPECTATIONS.md</code></a></p>
+<hr/>
+<h2 id="security-best-practices">Security Best Practices<a class="headerlink" href="#security-best-practices" title="Permanent link">¶</a></h2>
+<ol>
+<li><strong>Never commit secrets</strong> to the repository</li>
+<li><strong>Token chain for write ops</strong>: <code>CODEX_MASTER_KEY</code> → <code>CODEX_BACKUP_KEY</code> → <code>github.token</code></li>
+<li><strong>Rotate compromised secrets immediately</strong> — see <code>.codex/security/rotation_schedule.md</code></li>
+<li><strong>Use least privilege</strong> for workflow permissions</li>
+<li><strong>Audit secret access</strong> via GitHub → Settings → Security → Audit log</li>
+<li><strong><code>DISABLE_SECRET_FILTER</code></strong> — must never be set to <code>true</code> in production</li>
+<li><strong><code>AGENT_KILL_SWITCH</code></strong> — set to <code>1</code> to immediately halt all autonomous agent activity</li>
+</ol>
+<hr/>
+<h2 id="monitoring-and-auditing">Monitoring and Auditing<a class="headerlink" href="#monitoring-and-auditing" title="Permanent link">¶</a></h2>
+<ul>
+<li><strong>Audit Log</strong>: Settings → Security → Audit log → Filter by "secret"</li>
+<li><strong>CI Failure Rate</strong>: <code>CODEX_CI_FAILURE_RATE</code> (auto-updated by CI agent, thresholds via <code>CODEX_CI_FAILURE_THRESHOLD</code>)</li>
+<li><strong>Secret Access Patterns</strong>: <code>docs/accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md</code></li>
+<li><strong>Usage Matrix</strong>: <code>.codex/security/secrets_usage_matrix.json</code></li>
+</ul>
+<hr/>
+<h2 id="whats-next-after-variable-sync">What’s Next (After Variable Sync)<a class="headerlink" href="#whats-next-after-variable-sync" title="Permanent link">¶</a></h2>
+<ol>
+<li><strong>Secrets pass (pending):</strong> update/verify repo, environment, and org secrets inventory and rotation state.</li>
+<li><strong>WEC drift verification:</strong> keep <code>COPILOT_WEC_TEMPLATE_DRIFT</code> aligned with the remediated <code>_WEC_ITEMS</code> state (<code>count=0</code> expected after the 2026-06-03 update).</li>
+<li><strong>Agent settings alignment:</strong> verify <code>/settings/variables/agents</code> mirrors critical runtime variables (<code>COPILOT_AGENT_*</code>, <code>COPILOT_WEC_*</code>, <code>COGNITIVE_BRAIN_*</code>, <code>CODEX_LINT_STRICT</code>, <code>CODEX_COVERAGE_THRESHOLD</code>).</li>
+<li><strong><code>DISABLE_SECRET_FILTER</code> hardening:</strong> keep default/effective value <code>false</code>, add explicit CI/policy guard to block any promotion flow that attempts <code>true</code>.</li>
+<li><strong>Post-secrets refresh:</strong> regenerate totals and audit timestamp once secrets are synchronized.</li>
+</ol>
+<hr/>
+<h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">¶</a></h2>
+<ul>
+<li><a href="https://docs.github.com/en/actions/security-guides/encrypted-secrets">GitHub Encrypted Secrets</a></li>
+<li><a href="https://cryptography.io/en/latest/fernet/">Fernet Encryption</a></li>
+<li><a href="../ci/PR_LIFECYCLE/">PR Lifecycle Spec</a> — referenced by <code>CODEX_PR_LIFECYCLE_VERSION</code></li>
+<li><a href="../.codex/CODEBASE_AGENCY_POLICY.md">Codebase Agency Policy</a> — mandatory load per <code>COPILOT_AGENT_PREFLIGHT_RULES</code></li>
+</ul>
+<hr/>
+<h2 id="change-log">Change Log<a class="headerlink" href="#change-log" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Date</th>
+<th>Change</th>
+<th>Author</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-01-16</td>
+<td>Initial documentation created</td>
+<td>@copilot</td>
+</tr>
+<tr>
+<td>2026-01-20</td>
+<td>Phase 22 Secrets Audit — added 11 undocumented secrets</td>
+<td>@copilot <!-- pragma: allowlist secret --></td>
+</tr>
+<tr>
+<td>2026-01-27</td>
+<td>Added GITLEAKS_LICENSE documentation</td>
+<td>@copilot</td>
+</tr>
+<tr>
+<td>2026-06-03</td>
+<td><strong>Full inventory refresh</strong> — added all 113 variables (14 env, 76 repo, 3 env secrets, 7 repo secrets, 13 org secrets); added gap analysis (30+ missing variables); added rotation schedule; added <code>settings/variables/agents</code> recommendations; updated token chain docs</td>
+<td>@mbaetiong <!-- pragma: allowlist secret --></td>
+</tr>
+<tr>
+<td>2026-06-03</td>
+<td><strong>Variable usage expansion</strong> — updated <code>CODEX_ENV_NODE_VERSION</code> 18→22; added Workflow &amp; Agent Variable Usage Map (CI/CD, autonomy, cognitive brain, self-healing, API categories); added agent variable access pattern reference; added per-agent MUST/SHOULD requirements</td>
+<td>@mbaetiong</td>
+</tr>
+<tr>
+<td>2026-06-03</td>
+<td><strong>Variables-only sync pass</strong> — updated totals to 113 tracked (14 env vars, 76 repo vars), updated <code>CODEX_CI_LAST_GREEN_SHA</code>, and added explicit next-step actions for pending secrets pass and WEC drift remediation</td>
+<td>@mbaetiong <!-- pragma: allowlist secret --></td>
+</tr>
+<tr>
+<td>2026-06-03</td>
+<td><strong>Workflow/agent reconciliation pass</strong> — aligned cache defaults to <code>v2</code>, documented <code>COPILOT_RUNNER_PROFILE</code> safe fallback (<code>ubuntu-latest</code>), clarified <code>CODEX_ENV=copilot-agent</code>, and split <code>CODEX_DB_PATH</code> vs <code>CODEX_LOG_DB_PATH</code> by effective runtime surface</td>
+<td>@copilot</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<p><strong>Last Updated</strong>: 2026-06-03T22:09:48Z
+<strong>Maintainer</strong>: @mbaetiong
+<strong>Review Frequency</strong>: Quarterly</p>
+<h3 id="gitleaks_license"><code>GITLEAKS_LICENSE</code><a class="headerlink" href="#gitleaks_license" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Purpose</strong>: License key for Gitleaks Pro/Enterprise for enhanced secret scanning capabilities</li>
+<li><strong>Format</strong>: Gitleaks license key string</li>
+<li><strong>Used In</strong>:</li>
+<li><code>security-suite.yml</code></li>
+<li><strong>Generation</strong>: Obtained from Gitleaks subscription (https://gitleaks.io)</li>
+<li><strong>Security Level</strong>: LOW - Does not grant access to sensitive data, only enables scanning features</li>
+<li><strong>Required</strong>: No (Gitleaks works without it in free mode with limited features)</li>
+<li><strong>Rotation</strong>: As needed when subscription is renewed</li>
+<li><strong>Note</strong>: Free version of Gitleaks works without this secret; this is only required for Pro/Enterprise features</li>
+</ul>
+<h4 id="session_encryption_key"><code>SESSION_ENCRYPTION_KEY</code><a class="headerlink" href="#session_encryption_key" title="Permanent link">¶</a></h4>
+<ul>
+<li><strong>Purpose</strong>: Encrypt session data for secure storage</li>
+<li><strong>Format</strong>: Base64-encoded Fernet key</li>
+<li><strong>Used In</strong>: <code>auth-secret-rotation.yml</code></li>
+<li><strong>Generation</strong>: <code>python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"</code></li>
+<li><strong>Security Level</strong>: HIGH - Rotate every 90 iterations</li>
+<li><strong>Required</strong>: Yes (for session security features)</li>
+</ul>
+<h4 id="enable_live_tests"><code>ENABLE_LIVE_TESTS</code><a class="headerlink" href="#enable_live_tests" title="Permanent link">¶</a></h4>
+<ul>
+<li><strong>Purpose</strong>: Feature flag to enable live integration tests</li>
+<li><strong>Format</strong>: Boolean string ("true" or "false")</li>
+<li><strong>Used In</strong>: <code>integration-gated.yml</code></li>
+<li><strong>Security Level</strong>: LOW (configuration flag)</li>
+<li><strong>Required</strong>: No (defaults to false)</li>
+</ul>
+<h3 id="third-party-integration-secrets">Third-Party Integration Secrets<a class="headerlink" href="#third-party-integration-secrets" title="Permanent link">¶</a></h3>
+<h4 id="notebooklm_webhook_url"><code>NOTEBOOKLM_WEBHOOK_URL</code><a class="headerlink" href="#notebooklm_webhook_url" title="Permanent link">¶</a></h4>
+<ul>
+<li><strong>Purpose</strong>: NotebookLM webhook URL for documentation sync</li>
+<li><strong>Format</strong>: HTTPS webhook URL</li>
+<li><strong>Used In</strong>: <code>notebooklm-sync.yml</code></li>
+<li><strong>Security Level</strong>: LOW - Regenerate webhook as needed</li>
+<li><strong>Required</strong>: No (sync skipped if not available)</li>
+</ul>
+<h4 id="google_client_secret"><code>GOOGLE_CLIENT_SECRET</code><a class="headerlink" href="#google_client_secret" title="Permanent link">¶</a></h4>
+<ul>
+<li><strong>Purpose</strong>: Google OAuth client secret for API access</li>
+<li><strong>Format</strong>: Google OAuth 2.0 client secret</li>
+<li><strong>Used In</strong>: <code>notebooklm-sync.yml</code></li>
+<li><strong>Security Level</strong>: MEDIUM - Rotate every 180 iterations</li>
+<li><strong>Required</strong>: No (for Google Drive integration features)</li>
+</ul>
+<h4 id="gdrive_service_account_json"><code>GDRIVE_SERVICE_ACCOUNT_JSON</code><a class="headerlink" href="#gdrive_service_account_json" title="Permanent link">¶</a></h4>
+<ul>
+<li><strong>Purpose</strong>: Google Drive service account credentials</li>
+<li><strong>Format</strong>: JSON key file content (base64 or raw JSON)</li>
+<li><strong>Used In</strong>: <code>notebooklm-sync.yml</code></li>
+<li><strong>Security Level</strong>: MEDIUM - Rotate annually</li>
+<li><strong>Required</strong>: No (for automated Drive operations)</li>
+</ul>
+<h4 id="github_oauth_client_id"><code>GITHUB_OAUTH_CLIENT_ID</code><a class="headerlink" href="#github_oauth_client_id" title="Permanent link">¶</a></h4>
+<ul>
+<li><strong>Purpose</strong>: GitHub OAuth app client ID (public identifier)</li>
+<li><strong>Format</strong>: 20-character hex string</li>
+<li><strong>Used In</strong>: <code>auth-oauth-app-sync.yml</code></li>
+<li><strong>Security Level</strong>: LOW (public identifier, not secret)</li>
+<li><strong>Required</strong>: Yes (for OAuth flow)</li>
+</ul>
+<h4 id="github_oauth_client_secret"><code>GITHUB_OAUTH_CLIENT_SECRET</code><a class="headerlink" href="#github_oauth_client_secret" title="Permanent link">¶</a></h4>
+<ul>
+<li><strong>Purpose</strong>: GitHub OAuth app client secret</li>
+<li><strong>Format</strong>: 40-character hex string</li>
+<li><strong>Used In</strong>:</li>
+<li><code>auth-oauth-app-sync.yml</code></li>
+<li><code>auth-secret-rotation.yml</code></li>
+<li><strong>Generation</strong>: Via GitHub OAuth App settings</li>
+<li><strong>Security Level</strong>: HIGH - Rotate every 180 iterations</li>
+<li><strong>Required</strong>: Yes (for OAuth authentication)</li>
+</ul>
+<h3 id="pypi-publishing-secrets">PyPI Publishing Secrets<a class="headerlink" href="#pypi-publishing-secrets" title="Permanent link">¶</a></h3>
+<h4 id="pypi_api_token"><code>PYPI_API_TOKEN</code><a class="headerlink" href="#pypi_api_token" title="Permanent link">¶</a></h4>
+<ul>
+<li><strong>Purpose</strong>: PyPI API token for publishing packages to production PyPI</li>
+<li><strong>Format</strong>: <code>pypi-</code> prefixed token string from PyPI account settings</li>
+<li><strong>Used In</strong>:</li>
+<li><code>pypi-publish.yml</code></li>
+<li>Package publishing workflows</li>
+<li><strong>Generation</strong>: Via PyPI Account Settings → API tokens → Generate new token</li>
+<li><strong>Security Level</strong>: HIGH - Rotate every 90 iterations or after each use</li>
+<li><strong>Required</strong>: Yes (for production PyPI publishing)</li>
+<li><strong>Rotation</strong>: Recommended after each release or every 90 iterations</li>
+<li><strong>Note</strong>: Use with username <code>__token__</code> in Twine configuration</li>
+</ul>
+<h4 id="test_pypi_api_token"><code>TEST_PYPI_API_TOKEN</code><a class="headerlink" href="#test_pypi_api_token" title="Permanent link">¶</a></h4>
+<ul>
+<li><strong>Purpose</strong>: TestPyPI API token for testing package uploads before production</li>
+<li><strong>Format</strong>: <code>pypi-</code> prefixed token string from TestPyPI account settings</li>
+<li><strong>Used In</strong>:</li>
+<li><code>pypi-publish.yml</code></li>
+<li>Pre-release testing workflows</li>
+<li><strong>Generation</strong>: Via TestPyPI Account Settings → API tokens → Generate new token</li>
+<li><strong>Security Level</strong>: MEDIUM - Rotate every 90 iterations</li>
+<li><strong>Required</strong>: No (recommended for testing releases before production)</li>
+<li><strong>Rotation</strong>: Recommended every 90 iterations</li>
+<li><strong>Note</strong>: Separate token from production PYPI_API_TOKEN for security isolation</li>
+</ul>
+<h3 id="aws-integration-secrets">AWS Integration Secrets<a class="headerlink" href="#aws-integration-secrets" title="Permanent link">¶</a></h3>
+<h4 id="aws_access_key_id"><code>AWS_ACCESS_KEY_ID</code><a class="headerlink" href="#aws_access_key_id" title="Permanent link">¶</a></h4>
+<ul>
+<li><strong>Purpose</strong>: AWS IAM access key ID (public identifier)</li>
+<li><strong>Format</strong>: 20-character uppercase alphanumeric</li>
+<li><strong>Used In</strong>: <code>zendesk-knowledge-sync.yml</code></li>
+<li><strong>Security Level</strong>: LOW (public identifier, paired with SECRET)</li>
+<li><strong>Required</strong>: Yes (for AWS S3/service access)</li>
+</ul>
+<h4 id="aws_secret_access_key"><code>AWS_SECRET_ACCESS_KEY</code><a class="headerlink" href="#aws_secret_access_key" title="Permanent link">¶</a></h4>
+<ul>
+<li><strong>Purpose</strong>: AWS IAM secret access key</li>
+<li><strong>Format</strong>: 40-character base64-encoded string</li>
+<li><strong>Used In</strong>: <code>zendesk-knowledge-sync.yml</code></li>
+<li><strong>Generation</strong>: Via AWS IAM Console</li>
+<li><strong>Security Level</strong>: HIGH - Rotate every 90 iterations</li>
+<li><strong>Required</strong>: Yes (for AWS authentication)</li>
+</ul>
+<h3 id="zendesk-integration-secrets">Zendesk Integration Secrets<a class="headerlink" href="#zendesk-integration-secrets" title="Permanent link">¶</a></h3>
+<h4 id="zendesk_token"><code>ZENDESK_TOKEN</code><a class="headerlink" href="#zendesk_token" title="Permanent link">¶</a></h4>
+<ul>
+<li><strong>Purpose</strong>: Zendesk API authentication token</li>
+<li><strong>Format</strong>: Zendesk API token string</li>
+<li><strong>Used In</strong>: <code>zendesk-knowledge-sync.yml</code></li>
+<li><strong>Generation</strong>: Via Zendesk Admin → API settings</li>
+<li><strong>Security Level</strong>: MEDIUM - Rotate annually</li>
+<li><strong>Required</strong>: Yes (for knowledge base sync)</li>
+</ul>
+<h4 id="zendesk_user"><code>ZENDESK_USER</code><a class="headerlink" href="#zendesk_user" title="Permanent link">¶</a></h4>
+<ul>
+<li><strong>Purpose</strong>: Zendesk account email for API authentication</li>
+<li><strong>Format</strong>: Email address</li>
+<li><strong>Used In</strong>: <code>zendesk-knowledge-sync.yml</code></li>
+<li><strong>Security Level</strong>: LOW (username, public)</li>
+<li><strong>Required</strong>: Yes (paired with ZENDESK_TOKEN)</li>
+</ul>
+<h4 id="zendesk_url"><code>ZENDESK_URL</code><a class="headerlink" href="#zendesk_url" title="Permanent link">¶</a></h4>
+<ul>
+<li><strong>Purpose</strong>: Zendesk instance URL</li>
+<li><strong>Format</strong>: HTTPS URL (e.g., https://company.zendesk.com)</li>
+<li><strong>Used In</strong>: <code>zendesk-knowledge-sync.yml</code></li>
+<li><strong>Security Level</strong>: LOW (public URL)</li>
+<li><strong>Required</strong>: Yes (to specify Zendesk instance)</li>
+</ul>
+<h2 id="environment-variables">Environment Variables<a class="headerlink" href="#environment-variables" title="Permanent link">¶</a></h2>
+<h3 id="runtime-configuration">Runtime Configuration<a class="headerlink" href="#runtime-configuration" title="Permanent link">¶</a></h3>
+<h4 id="codex_env_"><code>CODEX_ENV_*</code><a class="headerlink" href="#codex_env_" title="Permanent link">¶</a></h4>
+<ul>
+<li><strong>Purpose</strong>: Select language versions during environment setup</li>
+<li><strong>Variables</strong>:</li>
+<li><code>CODEX_ENV_PYTHON_VERSION</code> (default: 3.12)</li>
+<li><code>CODEX_ENV_NODE_VERSION</code> (default: 22)</li>
+<li><code>CODEX_ENV_RUST_VERSION</code> (default: 1.92)</li>
+<li><code>CODEX_ENV_GO_VERSION</code> (default: 1.21)</li>
+<li><code>CODEX_ENV_SWIFT_VERSION</code> (default: 5.9)</li>
+</ul>
+<h4 id="codex_session_"><code>CODEX_SESSION_*</code><a class="headerlink" href="#codex_session_" title="Permanent link">¶</a></h4>
+<ul>
+<li><strong>Purpose</strong>: Session management and logging</li>
+<li><strong>Variables</strong>:</li>
+<li><code>CODEX_SESSION_ID</code>: Unique session identifier</li>
+<li><code>CODEX_SESSION_LOG_DIR</code>: Log directory (default: <code>.codex/sessions</code>)</li>
+</ul>
+<h4 id="codex_log_db_path-codex_db_path"><code>CODEX_LOG_DB_PATH</code> / <code>CODEX_DB_PATH</code><a class="headerlink" href="#codex_log_db_path-codex_db_path" title="Permanent link">¶</a></h4>
+<ul>
+<li><strong>Purpose</strong>: SQLite database path for logging</li>
+<li><strong>Default</strong>: <code>CODEX_LOG_DB_PATH=.codex/session_logs.db</code>; <code>copilot-setup-steps.yml</code> currently overrides <code>CODEX_DB_PATH</code> to <code>${GITHUB_WORKSPACE}/.codex/codex.db</code></li>
+<li><strong>Usage split</strong>: Use <code>CODEX_LOG_DB_PATH</code> for session-log storage/query/export flows, and use <code>CODEX_DB_PATH</code> for cognitive-brain / pattern-recorder state when the Copilot sandbox override is active</li>
+</ul>
+<h4 id="codex_sqlite_pool"><code>CODEX_SQLITE_POOL</code><a class="headerlink" href="#codex_sqlite_pool" title="Permanent link">¶</a></h4>
+<ul>
+<li><strong>Purpose</strong>: Enable per-session SQLite connection pooling</li>
+<li><strong>Values</strong>: <code>1</code> (enabled) or <code>0</code> (disabled)</li>
+<li><strong>Default</strong>: <code>0</code></li>
+</ul>
+<h3 id="cicd-environment-variables">CI/CD Environment Variables<a class="headerlink" href="#cicd-environment-variables" title="Permanent link">¶</a></h3>
+<h4 id="cargo_term_color"><code>CARGO_TERM_COLOR</code><a class="headerlink" href="#cargo_term_color" title="Permanent link">¶</a></h4>
+<ul>
+<li><strong>Purpose</strong>: Enable colored output in Cargo</li>
+<li><strong>Value</strong>: <code>always</code></li>
+<li><strong>Used In</strong>: Rust CI workflows</li>
+</ul>
+<h4 id="rust_backtrace"><code>RUST_BACKTRACE</code><a class="headerlink" href="#rust_backtrace" title="Permanent link">¶</a></h4>
+<ul>
+<li><strong>Purpose</strong>: Enable full backtraces for Rust panics</li>
+<li><strong>Value</strong>: <code>1</code> or <code>full</code></li>
+<li><strong>Used In</strong>: Rust testing and debugging</li>
+</ul>
+<h4 id="rust_test_threads"><code>RUST_TEST_THREADS</code><a class="headerlink" href="#rust_test_threads" title="Permanent link">¶</a></h4>
+<ul>
+<li><strong>Purpose</strong>: Control test parallelism</li>
+<li><strong>Value</strong>: <code>1</code> (sequential) for deterministic tests</li>
+<li><strong>Used In</strong>: <code>rust_swarm_ci.yml</code></li>
+</ul>
+<h2 id="workflow-permissions">Workflow Permissions<a class="headerlink" href="#workflow-permissions" title="Permanent link">¶</a></h2>
+<h3 id="required-permissions-by-workflow">Required Permissions by Workflow<a class="headerlink" href="#required-permissions-by-workflow" title="Permanent link">¶</a></h3>
+<h4 id="auth-token-rotationyml"><code>auth-token-rotation.yml</code><a class="headerlink" href="#auth-token-rotationyml" title="Permanent link">¶</a></h4>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="nt">permissions</span><span class="p">:</span>
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="w">  </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span><span class="w">     </span><span class="c1"># Read/write repository contents</span>
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="w">  </span><span class="nt">issues</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span><span class="w">       </span><span class="c1"># Create audit issues</span>
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="w">  </span><span class="nt">secrets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span><span class="w">      </span><span class="c1"># Update GitHub secrets</span>
+</code></pre></div>
+<h4 id="auth-secret-rotationyml"><code>auth-secret-rotation.yml</code><a class="headerlink" href="#auth-secret-rotationyml" title="Permanent link">¶</a></h4>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="nt">permissions</span><span class="p">:</span>
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a><span class="w">  </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span><span class="w">     </span><span class="c1"># Read/write repository contents</span>
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="w">  </span><span class="nt">secrets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span><span class="w">      </span><span class="c1"># Rotate secrets</span>
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="w">  </span><span class="nt">issues</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span><span class="w">       </span><span class="c1"># Create audit trail</span>
+</code></pre></div>
+<h4 id="auth-compliance-reportyml"><code>auth-compliance-report.yml</code><a class="headerlink" href="#auth-compliance-reportyml" title="Permanent link">¶</a></h4>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="nt">permissions</span><span class="p">:</span>
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="w">  </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">read</span><span class="w">      </span><span class="c1"># Read repository data</span>
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="w">  </span><span class="nt">issues</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span><span class="w">       </span><span class="c1"># Post compliance reports</span>
+</code></pre></div>
+<h4 id="phase10-automated-secrets-setupyml"><code>phase10-automated-secrets-setup.yml</code><a class="headerlink" href="#phase10-automated-secrets-setupyml" title="Permanent link">¶</a></h4>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="nt">permissions</span><span class="p">:</span>
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a><span class="w">  </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">read</span><span class="w">      </span><span class="c1"># Read configuration</span>
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a><span class="w">  </span><span class="nt">actions</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span><span class="w">      </span><span class="c1"># Manage workflow state</span>
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="w">  </span><span class="nt">secrets</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span><span class="w">      </span><span class="c1"># Initialize secrets</span>
+</code></pre></div>
+<h2 id="security-best-practices_1">Security Best Practices<a class="headerlink" href="#security-best-practices_1" title="Permanent link">¶</a></h2>
+<h3 id="secret-rotation-schedule_1">Secret Rotation Schedule<a class="headerlink" href="#secret-rotation-schedule_1" title="Permanent link">¶</a></h3>
+<p>Comprehensive rotation schedule with all 18 secrets: <strong>.codex/security/rotation_schedule.md</strong></p>
+<table>
+<thead>
+<tr>
+<th>Secret Category</th>
+<th>Examples</th>
+<th>Rotation Frequency</th>
+<th>Method <!-- pragma: allowlist secret --></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Critical</strong></td>
+<td><code>CODEX_MASTER_KEY</code>, <code>TOKEN_SECRET_KEY</code></td>
+<td>Every 90 iterations (JWT: monthly)</td>
+<td>Manual / Automated workflow <!-- pragma: allowlist secret --></td>
+</tr>
+<tr>
+<td><strong>High Priority</strong></td>
+<td><code>COMPLIANCE_REPORT_KEY</code>, <code>SESSION_ENCRYPTION_KEY</code>, <code>AWS_SECRET_ACCESS_KEY</code></td>
+<td>Every 90 iterations</td>
+<td>Manual via service provider <!-- pragma: allowlist secret --></td>
+</tr>
+<tr>
+<td><strong>Medium Priority</strong></td>
+<td><code>CODECOV_TOKEN</code>, <code>ZENDESK_TOKEN</code>, <code>GOOGLE_CLIENT_SECRET</code></td>
+<td>Annually or as needed</td>
+<td>Manual via service dashboard <!-- pragma: allowlist secret --></td>
+</tr>
+<tr>
+<td><strong>Config/Public IDs</strong></td>
+<td><code>GITHUB_TOKEN</code>, <code>AWS_ACCESS_KEY_ID</code>, <code>ZENDESK_URL</code>, <code>GITLEAKS_LICENSE</code></td>
+<td>N/A or with paired secret / On renewal</td>
+<td>GitHub auto / Manual / Subscription renewal <!-- pragma: allowlist secret --></td>
+</tr>
+</tbody>
+</table>
+<h3 id="secrets-usage-matrix">Secrets Usage Matrix<a class="headerlink" href="#secrets-usage-matrix" title="Permanent link">¶</a></h3>
+<p>Complete mapping of all secrets to workflows: <strong>.codex/security/secrets_usage_matrix.json</strong></p>
+<p><strong>Summary</strong>:
+- Total Secrets: 18
+- Total Workflows: 86
+- Secret References: 108
+- Most Used: <code>GITHUB_TOKEN</code> (20 workflows)
+- Newly Documented: <code>SESSION_ENCRYPTION_KEY</code>, <code>ENABLE_LIVE_TESTS</code>, <code>GITLEAKS_LICENSE</code>, AWS/Zendesk/Google integration secrets</p>
+<h3 id="secret-management-guidelines">Secret Management Guidelines<a class="headerlink" href="#secret-management-guidelines" title="Permanent link">¶</a></h3>
+<ol>
+<li><strong>Never commit secrets</strong> to the repository</li>
+<li><strong>Use environment-specific secrets</strong> for dev/staging/prod</li>
+<li><strong>Rotate compromised secrets immediately</strong> (see emergency procedures in .codex/security/rotation_schedule.md)</li>
+<li><strong>Audit secret access</strong> via GitHub audit logs</li>
+<li><strong>Use least privilege</strong> for workflow permissions</li>
+<li><strong>Document all secrets</strong> in this file</li>
+<li><strong>Test rotation procedures</strong> regularly</li>
+<li><strong>Review usage matrix</strong> monthly for unauthorized secret sprawl</li>
+</ol>
+<h3 id="mfa-and-authentication">MFA and Authentication<a class="headerlink" href="#mfa-and-authentication" title="Permanent link">¶</a></h3>
+<h4 id="mfa-enrollment-process">MFA Enrollment Process<a class="headerlink" href="#mfa-enrollment-process" title="Permanent link">¶</a></h4>
+<p>The MFA enrollment automation (<code>scripts/mfa_enrollment_automation.py</code>) generates TOTP secrets and backup codes but <strong>does not store or transmit them automatically</strong>. In production:</p>
+<ol>
+<li>Credentials must be delivered via secure, authenticated channels:</li>
+<li>Encrypted email with PGP</li>
+<li>SMS to verified numbers</li>
+<li>Secure internal portal with authentication</li>
+<li>
+<p>Physical security keys</p>
+</li>
+<li>
+<p>The current implementation is a <strong>placeholder</strong> - implement secure delivery before production use.</p>
+</li>
+<li>
+<p>Never log or expose MFA secrets in plain text.</p>
+</li>
+</ol>
+<h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">¶</a></h2>
+<h3 id="missing-secret-errors">Missing Secret Errors<a class="headerlink" href="#missing-secret-errors" title="Permanent link">¶</a></h3>
+<hr/>
+<p><strong>Last Updated</strong>: 2026-06-03T18:02:00Z
+<strong>Maintainer</strong>: @mbaetiong
+<strong>Review Frequency</strong>: Quarterly</p>
+</article>
+</div>
+<script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+</body>
+</html>

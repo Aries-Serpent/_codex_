@@ -1,0 +1,132 @@
+%% RAG Indexing and Retrieval Flow — Aries-Serpent/_codex_
+%% Phase 2.3 — Module Interaction Diagrams
+%% Complete flow from document ingestion through retrieval
+%% Evidence: src/codex/rag/, scripts/rag/, .github/agents/
+
+flowchart TD
+
+    %% ── Document Ingestion ──────────────────────────────────────────────────
+    subgraph INGEST ["📄 Document Ingestion  •  src/codex/rag/"]
+        DOC_SOURCE["Document Sources\n(repo, web, PDFs)"]
+        DOC_LOADER["DocumentLoader\n(unified interface)"]
+        CHUNK_SPLITTER["ChunkSplitter\n(sliding window, semantic)"]
+        META_EXTRACT["Metadata Extractor\n(source, author, date)"]
+        
+        DOC_SOURCE --> DOC_LOADER
+        DOC_LOADER --> CHUNK_SPLITTER
+        CHUNK_SPLITTER --> META_EXTRACT
+    end
+
+    %% ── Embedding Generation ────────────────────────────────────────────────
+    subgraph EMBED ["🔗 Embedding Generation  •  src/codex/rag/embeddings.py"]
+        EMB_PROV["EmbeddingProvider\n(protocol)"]
+        SELECT_BACKEND["Select Backend\n(HF, OpenAI, local)"]
+        TOKENIZE_EMBED["Tokenize for Embedding\n(context window)"]
+        GEN_VECTORS["Generate Vectors\n(batch processing)"]
+        NORMALIZE["Normalize Vectors\n(L2 norm)"]
+        
+        EMB_PROV --> SELECT_BACKEND
+        SELECT_BACKEND --> TOKENIZE_EMBED
+        TOKENIZE_EMBED --> GEN_VECTORS
+        GEN_VECTORS --> NORMALIZE
+    end
+
+    META_EXTRACT --> EMB_PROV
+
+    %% ── Index Building ──────────────────────────────────────────────────────
+    subgraph INDEX ["🔍 Index Building  •  src/codex/rag/indexer.py"]
+        FAISS_INIT["FAISS Index Init\n(IndexFlatL2, IVF)"]
+        ADD_VECTORS["Add Vectors to Index\n(batch insert)"]
+        BUILD_IVF["Build IVF Clusters\n(quantization)"]
+        PERSIST["Persist Index\n(cache/ directory)"]
+        
+        FAISS_INIT --> ADD_VECTORS
+        ADD_VECTORS --> BUILD_IVF
+        BUILD_IVF --> PERSIST
+    end
+
+    NORMALIZE --> FAISS_INIT
+
+    %% ── Index Cache ─────────────────────────────────────────────────────────
+    subgraph CACHE ["💾 Index Cache  •  src/codex/rag/cache/"]
+        CACHE_STORE["Cache Store\n(.codex/rag_cache/)"]
+        METADATA_STORE["Metadata Store\n(chunk → source)"]
+        RETRIEVAL_LOG["Retrieval Log\n(query stats)"]
+    end
+
+    PERSIST --> CACHE_STORE
+    META_EXTRACT --> METADATA_STORE
+
+    %% ── Query Processing ────────────────────────────────────────────────────
+    subgraph QUERY ["🔎 Query Processing  •  src/codex/rag/retriever.py"]
+        PARSE_QUERY["Parse Query\n(clean, normalize)"]
+        EXPAND_QUERY["Expand Query\n(synonyms, keywords)"]
+        EMBED_QUERY["Embed Query\n(same encoder)"]
+        SEARCH["Search Index\n(k-NN, threshold)"]
+    end
+
+    CACHE_STORE --> PARSE_QUERY
+    PARSE_QUERY --> EXPAND_QUERY
+    EXPAND_QUERY --> EMBED_QUERY
+    EMBED_QUERY --> SEARCH
+
+    %% ── Result Ranking ──────────────────────────────────────────────────────
+    subgraph RANK ["📊 Result Ranking & Filtering"]
+        RETRIEVE_CHUNKS["Retrieve Top-K Chunks\n(similarity score)"]
+        RERANK_BM25["Re-rank with BM25\n(lexical match)"]
+        FILTER_DUPS["Filter Duplicates\n(dedup by source)"]
+        DIVERSITY_BOOST["Diversity Boost\n(penalize cluster)"]
+        SCORE_FINAL["Final Scoring\n(combine signals)"]
+        
+        RETRIEVE_CHUNKS --> RERANK_BM25
+        RERANK_BM25 --> FILTER_DUPS
+        FILTER_DUPS --> DIVERSITY_BOOST
+        DIVERSITY_BOOST --> SCORE_FINAL
+    end
+
+    SEARCH --> RETRIEVE_CHUNKS
+
+    %% ── Context Assembly ────────────────────────────────────────────────────
+    subgraph ASSEMBLE ["📋 Context Assembly  •  src/codex/rag/"]
+        FETCH_SOURCE["Fetch Full Source\n(metadata lookup)"]
+        ASSEMBLE_CTX["Assemble Context\n(source → text)"]
+        FORMAT_MARKDOWN["Format as Markdown\n(citations)"]
+        TRIM_TOKENS["Trim to Context Window\n(token budget)"]
+        
+        FETCH_SOURCE --> ASSEMBLE_CTX
+        ASSEMBLE_CTX --> FORMAT_MARKDOWN
+        FORMAT_MARKDOWN --> TRIM_TOKENS
+    end
+
+    SCORE_FINAL --> FETCH_SOURCE
+    METADATA_STORE --> FETCH_SOURCE
+
+    %% ── Output ──────────────────────────────────────────────────────────────
+    TRIM_TOKENS --> OUTPUT["📤 Retrieved Context\n(with citations)"]
+
+    %% ── Feedback Loop ───────────────────────────────────────────────────────
+    subgraph FEEDBACK ["📊 Feedback & Refinement"]
+        LOG_QUERY["Log Query\n(user intent)"]
+        LOG_RESULT["Log Result\n(was it helpful?)"]
+        UPDATE_STATS["Update Retrieval Stats\n(latency, accuracy)"]
+        RETRAIN_INDEX["Retrain Index\n(if divergence detected)"]
+        
+        LOG_QUERY --> LOG_RESULT
+        LOG_RESULT --> UPDATE_STATS
+        UPDATE_STATS --> RETRAIN_INDEX
+    end
+
+    PARSE_QUERY --> LOG_QUERY
+    OUTPUT --> LOG_RESULT
+    RETRIEVAL_LOG --> UPDATE_STATS
+
+    %% ── Styling ────────────────────────────────────────────────────────────
+    style INGEST fill:#16213e,color:#e0e0e0
+    style EMBED fill:#0f3460,color:#e0e0e0
+    style INDEX fill:#533483,color:#fff
+    style CACHE fill:#2d6a4f,color:#fff
+    style QUERY fill:#457b9d,color:#fff
+    style RANK fill:#1a1a2e,color:#e0e0e0
+    style ASSEMBLE fill:#4a4e69,color:#fff
+    style OUTPUT fill:#1b4332,color:#fff
+    style FEEDBACK fill:#665c84,color:#fff

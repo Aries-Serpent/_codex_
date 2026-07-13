@@ -1,0 +1,148 @@
+{
+  "schema_version": "1.0",
+  "pr_number": 3344,
+  "branch": "copilot/sub-pr-3336-again",
+  "created_at": "2026-02-22T08:30:00Z",
+  "updated_at": "2026-02-23T03:30:00Z",
+  "total_questions": 7,
+  "resolved": 7,
+  "awaiting_research": 0,
+  "questions": [
+    {
+      "id": "Q001",
+      "title": "_emit_provenance_summary stdout vs stderr",
+      "category": "API Design/Contract",
+      "priority": "High",
+      "impact": "High",
+      "status": "resolved",
+      "created_at": "2026-02-22",
+      "resolved_at": "2026-02-23",
+      "session": "S66",
+      "canonical_fix": "click.echo(..., err=True) in _emit_provenance_summary; CliRunner(mix_stderr=False) in tests. Confirmed correct by deep research (comment-3942086106).",
+      "related_drq": ["DRQ-005"],
+      "blocks": [],
+      "blocked_by": [],
+      "files": [
+        "src/codex_ml/cli/codex_cli.py",
+        "tests/cli/test_evaluation_cli.py"
+      ]
+    },
+    {
+      "id": "Q002",
+      "title": "TestManageTenantIndices root cause — source bug or mock issue?",
+      "category": "Bug Root Cause",
+      "priority": "High",
+      "impact": "High",
+      "status": "resolved",
+      "created_at": "2026-02-22",
+      "resolved_at": "2026-02-23",
+      "session": "S68",
+      "canonical_fix": "autouse mock_rag_dependencies fixture in test_rag_tenant_management.py: monkeypatch.setitem(sys.modules, faiss+sentence_transformers) + setattr(_indexer, faiss) + setattr(_model_utils, safe_load_sentence_transformer). Root cause: faiss=None at module level + sentence_transformers import inside function + bare except swallowing errors => success=False.",
+      "related_drq": ["DRQ-001"],
+      "blocks": [],
+      "blocked_by": [],
+      "files": [
+        "tests/test_rag_tenant_management.py",
+        "src/codex/rag/indexer.py"
+      ]
+    },
+    {
+      "id": "Q003",
+      "title": "IncrementalSyncDecider test_micro_update 95% change ratio for punctuation edit",
+      "category": "Bug Root Cause",
+      "priority": "Medium",
+      "impact": "Medium",
+      "status": "resolved",
+      "created_at": "2026-02-22",
+      "resolved_at": "2026-02-23",
+      "session": "S68",
+      "canonical_fix": "SequenceMatcher(autojunk=False) in content_diff.py (Option A from deep research plan). autojunk=True causes 95% false change ratio on repeated strings. autojunk=False already present at line 232. Test updated to use non-repetitive natural text as defence-in-depth.",
+      "related_drq": [],
+      "blocks": [],
+      "blocked_by": [],
+      "files": [
+        "src/services/crawler/content_diff.py",
+        "tests/services/crawler/test_knowledge_crawler_enhancements.py"
+      ]
+    },
+    {
+      "id": "Q004",
+      "title": "Multi-output CLI JSON testing pattern",
+      "category": "API Design/Contract",
+      "priority": "Medium",
+      "impact": "Medium",
+      "status": "resolved",
+      "created_at": "2026-02-22",
+      "resolved_at": "2026-02-23",
+      "session": "S66",
+      "canonical_fix": "CliRunner(mix_stderr=False) + result.stdout for JSON + result.stderr for provenance. Confirmed by deep research (comment-3942086106).",
+      "related_drq": ["DRQ-005"],
+      "blocks": [],
+      "blocked_by": [],
+      "files": [
+        "src/codex_ml/cli/codex_cli.py",
+        "tests/cli/test_evaluation_cli.py"
+      ]
+    },
+    {
+      "id": "Q005",
+      "title": "audit_runner.py full vs minimal output environment flags",
+      "category": "Compatibility/Version Issues",
+      "priority": "Medium",
+      "impact": "Medium",
+      "status": "resolved",
+      "created_at": "2026-02-22",
+      "resolved_at": "2026-02-23",
+      "session": "S68",
+      "canonical_fix": "importlib.util.find_spec skipif guard in test_audit_pipeline.py. Root cause: audit_runner gracefully degrades when sub-scanners not on PYTHONPATH, writing minimal manifest. Tests skip when 'version' key absent.",
+      "related_drq": ["DRQ-007"],
+      "blocks": [],
+      "blocked_by": [],
+      "files": [
+        "scripts/space_traversal/audit_runner.py",
+        "tests/validation/test_audit_pipeline.py"
+      ]
+    },
+    {
+      "id": "Q006",
+      "title": "Pytest string-path monkeypatch fails in CI",
+      "category": "Test Infrastructure",
+      "priority": "High",
+      "impact": "High",
+      "status": "resolved",
+      "created_at": "2026-02-22",
+      "resolved_at": "2026-02-23",
+      "session": "S67",
+      "canonical_fix": "Object-based monkeypatch.setattr(module_obj, attr, value). Documented in CODEBASE_AGENCY_POLICY.md. Root cause: pytest 8.x derive_importpath fails when sub-module not fully bound in sys.modules during parallel/random test execution.",
+      "related_drq": [],
+      "blocks": [],
+      "blocked_by": [],
+      "files": [
+        "tests/tracking/test_tracking_writers_offline.py",
+        "tests/test_model_registry_helpers.py",
+        "tests/config/test_deprecation.py",
+        "tests/test_fetch_messages.py"
+      ]
+    },
+    {
+      "id": "Q007",
+      "title": "OptimizedVectorStore ResponseCache does not persist search results",
+      "category": "Bug Root Cause",
+      "priority": "Medium",
+      "impact": "Medium",
+      "status": "resolved",
+      "created_at": "2026-02-22",
+      "resolved_at": "2026-02-23",
+      "session": "S68",
+      "canonical_fix": "All `if self.cache:` changed to `if self.cache is not None:` in optimizations.py. Root cause: ResponseCache.__len__==0 when empty makes bool(cache)==False, skipping both .get() and .put() on every search call.",
+      "related_drq": ["DRQ-003"],
+      "blocks": [],
+      "blocked_by": [],
+      "files": [
+        "src/codex/retrieval/optimizations.py",
+        "src/codex_ml/serving/caching.py",
+        "tests/retrieval/test_optimizations.py"
+      ]
+    }
+  ]
+}

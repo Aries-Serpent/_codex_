@@ -1,0 +1,127 @@
+%% ML Training Pipeline — Aries-Serpent/_codex_
+%% Phase 2.2 — Module Interaction Diagrams
+%% Complete flow from data ingestion through model training and evaluation
+%% Evidence: src/codex_ml/, scripts/, configs/
+
+flowchart LR
+
+    %% ── Data Acquisition ────────────────────────────────────────────────────
+    subgraph DATA_ACQ ["📥 Data Acquisition  •  src/codex_ml/data/"]
+        DATA_REG["DataRegistry\n(dataset manifest)"]
+        LOADER["DataLoader\n(fetch raw samples)"]
+        CACHE_RAW["Raw Data Cache\n(artifacts/)"]
+        DATA_REG --> LOADER
+        LOADER --> CACHE_RAW
+    end
+
+    %% ── Preprocessing ───────────────────────────────────────────────────────
+    subgraph PREPROC ["🔤 Tokenization & Prep  •  src/tokenization/"]
+        TOK_REG["CentralizedTokenizerRegistry"]
+        TOK_SEL["Select Tokenizer\n(HF/Legacy)"]
+        ENCODE["Encode Samples\n(text → tokens)"]
+        VAL_SEQ["Validate Sequences\n(max_len, padding)"]
+        TOK_REG --> TOK_SEL
+        TOK_SEL --> ENCODE
+        ENCODE --> VAL_SEQ
+    end
+
+    CACHE_RAW --> TOK_REG
+
+    %% ── Training Configuration ──────────────────────────────────────────────
+    subgraph CONFIG ["⚙️  Configuration  •  configs/"]
+        HYDRA["Hydra Config Loader\n(params.yaml → OmegaConf)"]
+        OVERRIDE["Apply Overrides\n(CLI, environment)"]
+        MODEL_CFG["Model Config\n(architecture, pretrain)"]
+        TRAIN_CFG["Training Config\n(lr, batch, epochs)"]
+        HYDRA --> OVERRIDE
+        OVERRIDE --> MODEL_CFG
+        OVERRIDE --> TRAIN_CFG
+    end
+
+    %% ── Model Registry ──────────────────────────────────────────────────────
+    subgraph MODEL_REG ["🤖 Model Registry  •  src/codex_ml/models/"]
+        MOD_FACTORY["ModelFactory\n(get_model_class)"]
+        INIT_WEIGHTS["Initialize Weights\n(random, pretrained)"]
+        DEVICE["Device Placement\n(GPU/CPU)"]
+        MOD_FACTORY --> INIT_WEIGHTS
+        INIT_WEIGHTS --> DEVICE
+    end
+
+    MODEL_CFG --> MOD_FACTORY
+
+    %% ── Training Loop ───────────────────────────────────────────────────────
+    subgraph TRAIN_LOOP ["🔄 Training Loop  •  src/codex_ml/training/"]
+        TRAINER["UnifiedTrainer\n(train_loop.py)"]
+        FWD_PASS["Forward Pass\n(input → logits)"]
+        LOSS_CALC["Loss Calculation\n(cross-entropy, regularization)"]
+        BWD_PASS["Backward Pass\n(gradients)"]
+        OPTIM_STEP["Optimizer Step\n(SGD/Adam)"]
+        CKPT_SAVE["Checkpoint Save\n(runs/ → artifacts/)"]
+        
+        TRAINER --> FWD_PASS
+        FWD_PASS --> LOSS_CALC
+        LOSS_CALC --> BWD_PASS
+        BWD_PASS --> OPTIM_STEP
+        OPTIM_STEP --> CKPT_SAVE
+        CKPT_SAVE -.->|"loop N epochs"| FWD_PASS
+    end
+
+    VAL_SEQ --> TRAINER
+    DEVICE --> TRAINER
+    TRAIN_CFG --> TRAINER
+
+    %% ── Validation ──────────────────────────────────────────────────────────
+    subgraph VAL ["📊 Validation  •  src/codex_ml/eval/"]
+        VAL_STEP["Validation Step\n(eval every N batches)"]
+        EVAL_METRICS["Evaluate Metrics\n(perplexity, token_acc, loss)"]
+        EARLY_STOP["Early Stop Check\n(patience window)"]
+        VAL_STEP --> EVAL_METRICS
+        EVAL_METRICS --> EARLY_STOP
+    end
+
+    LOSS_CALC --> VAL_STEP
+
+    %% ── Logging & Monitoring ────────────────────────────────────────────────
+    subgraph LOG_MON ["📋 Logging & Monitoring  •  src/codex/logging/"]
+        TRAIN_LOG["Training Logger\n(metrics → NDJSON)"]
+        METRICS_DB["Metrics DB\n(SQLite, MLflow)"]
+        DASHBOARD["Real-time Dashboard\n(loss curves, val metrics)"]
+        TRAIN_LOG --> METRICS_DB
+        METRICS_DB --> DASHBOARD
+    end
+
+    FWD_PASS --> TRAIN_LOG
+    EVAL_METRICS --> TRAIN_LOG
+
+    %% ── Convergence Decision ────────────────────────────────────────────────
+    EARLY_STOP --> CONVERGED{"Converged or\nmax epochs?"}
+
+    %% ── Post-Training ───────────────────────────────────────────────────────
+    subgraph POST_TRAIN ["✅ Post-Training  •  artifacts/"]
+        FINAL_EVAL["Final Evaluation\n(test set)"]
+        MODEL_EXPORT["Model Export\n(onnx, safetensors)"]
+        META_FILE["Metadata File\n(config, metrics)"]
+        FINAL_EVAL --> MODEL_EXPORT
+        FINAL_EVAL --> META_FILE
+    end
+
+    CONVERGED -->|"✅ done"| FINAL_EVAL
+
+    %% ── Output ──────────────────────────────────────────────────────────────
+    MODEL_EXPORT --> OUTPUT["📦 Ready Model\n(checkpoint + metadata)"]
+    META_FILE --> OUTPUT
+
+    %% ── Failure Path ────────────────────────────────────────────────────────
+    CONVERGED -->|"❌ error"| DEBUG["🐛 Debug Logs\n(stderr, exception)"]
+
+    %% ── Styling ────────────────────────────────────────────────────────────
+    style DATA_ACQ fill:#16213e,color:#e0e0e0
+    style PREPROC fill:#0f3460,color:#e0e0e0
+    style CONFIG fill:#4a4e69,color:#fff
+    style MODEL_REG fill:#1a1a2e,color:#e0e0e0
+    style TRAIN_LOOP fill:#533483,color:#fff
+    style VAL fill:#2d6a4f,color:#fff
+    style LOG_MON fill:#457b9d,color:#fff
+    style POST_TRAIN fill:#1b4332,color:#fff
+    style OUTPUT fill:#1b4332,color:#fff
+    style DEBUG fill:#e63946,color:#fff

@@ -1,0 +1,138 @@
+%% Error Recovery Paths — Aries-Serpent/_codex_
+%% Phase 3.13 — Component Relationship Diagrams
+%% Exception handling, fallbacks, retries, escalation
+%% Evidence: scripts/ci/, error handling patterns
+
+graph TD
+
+    %% ── Error Detection ─────────────────────────────────────────────────────
+    subgraph DETECT ["🔴 Error Detection"]
+        EXCEPTION["Catch Exception\n(try-except block)"]
+        PARSE_ERROR["Parse Error\n(type, message, traceback)"]
+        CLASSIFY_ERROR["Classify Error\n(transient vs fatal)"]
+    end
+
+    EXCEPTION --> PARSE_ERROR
+    PARSE_ERROR --> CLASSIFY_ERROR
+
+    %% ── Transient Error Path ────────────────────────────────────────────────
+    subgraph TRANSIENT ["⏳ Transient Error Path"]
+        WAIT["Wait/Backoff\n(exponential: 1s → 2s → 4s)"]
+        RETRY["Retry Operation\n(with new attempt)"]
+        MAX_RETRIES{"Retries\nexhausted?"}
+    end
+
+    CLASSIFY_ERROR -->|"transient"| WAIT
+    WAIT --> RETRY
+    RETRY --> MAX_RETRIES
+
+    MAX_RETRIES -->|"no"| WAIT
+    MAX_RETRIES -->|"yes"| ESCALATE_T["Escalate to Fatal"]
+
+    %% ── Fallback Path ───────────────────────────────────────────────────────
+    subgraph FALLBACK ["🔄 Fallback Path"]
+        SELECT_FALLBACK["Select Fallback\n(alternate implementation)"]
+        TRY_FALLBACK["Try Fallback\n(skill, agent, path)"]
+        FALLBACK_RESULT{"Fallback\nworked?"}
+    end
+
+    CLASSIFY_ERROR -->|"fatal/retry-exhausted"| SELECT_FALLBACK
+    ESCALATE_T --> SELECT_FALLBACK
+    SELECT_FALLBACK --> TRY_FALLBACK
+    TRY_FALLBACK --> FALLBACK_RESULT
+
+    FALLBACK_RESULT -->|"yes"| RECOVERY["✅ Recovered"]
+    FALLBACK_RESULT -->|"no"| ESCALATE
+
+    %% ── Fatal Error Path ────────────────────────────────────────────────────
+    subgraph FATAL ["💥 Fatal Error Path"]
+        LOG_FATAL["Log Fatal Error\n(detailed context)"]
+        ROLLBACK["Rollback State\n(undo partial changes)"]
+        NOTIFY_USER["Notify User\n(error message)"]
+    end
+
+    CLASSIFY_ERROR -->|"fatal"| LOG_FATAL
+    LOG_FATAL --> ROLLBACK
+    ROLLBACK --> NOTIFY_USER
+
+    %% ── Circuit Breaker ─────────────────────────────────────────────────────
+    subgraph CIRCUIT ["⚡ Circuit Breaker"]
+        TRACK_FAILURES["Track Failures\n(count, window)"]
+        CHECK_THRESHOLD["Check Threshold\n(3 failures in 1min)"]
+        OPEN_CIRCUIT["Open Circuit\n(fail-fast)"]
+        HALF_OPEN{"Test\nrecovery?"}
+    end
+
+    TRACK_FAILURES --> CHECK_THRESHOLD
+    CHECK_THRESHOLD -->|"exceeded"| OPEN_CIRCUIT
+    OPEN_CIRCUIT --> HALF_OPEN
+
+    HALF_OPEN -->|"after delay"| TRY_FALLBACK
+    TRY_FALLBACK -->|"success"| CLOSE_CIRCUIT["Close Circuit"]
+
+    %% ── Escalation Path ─────────────────────────────────────────────────────
+    subgraph ESCALATE_PATH ["🚨 Escalation"]
+        CREATE_ISSUE["Create GitHub Issue\n(with context)"]
+        ALERT_OPS["Alert Operations\n(PagerDuty/Slack)"]
+        PAGE_ONCALL["Page On-Call\n(if critical)"]
+    end
+
+    NOTIFY_USER --> CREATE_ISSUE
+    CREATE_ISSUE --> ALERT_OPS
+    ALERT_OPS --> PAGE_ONCALL
+
+    %% ── Monitoring ──────────────────────────────────────────────────────────
+    subgraph MONITOR ["📊 Monitoring & Analysis"]
+        COLLECT_DATA["Collect Error Data\n(frequency, patterns)"]
+        ANALYZE_ROOT["Analyze Root Cause\n(logs, traces)"]
+        SUGGEST_FIX["Suggest Fix\n(from pattern DB)"]
+    end
+
+    LOG_FATAL --> COLLECT_DATA
+    CREATE_ISSUE --> COLLECT_DATA
+    COLLECT_DATA --> ANALYZE_ROOT
+    ANALYZE_ROOT --> SUGGEST_FIX
+
+    %% ── Prevention ──────────────────────────────────────────────────────────
+    subgraph PREVENT ["🛡️  Prevention"]
+        ADD_VALIDATION["Add Input Validation\n(before operation)"]
+        IMPROVE_RETRY["Improve Retry Strategy\n(better backoff)"]
+        CACHE_RESULT["Cache Success\n(reduce repeats)"]
+    end
+
+    SUGGEST_FIX --> ADD_VALIDATION
+    SUGGEST_FIX --> IMPROVE_RETRY
+    SUGGEST_FIX --> CACHE_RESULT
+
+    %% ── Logging Throughout ─────────────────────────────────────────────────
+    subgraph LOGGING ["📋 Logging Throughout"]
+        LOG_DETECT["Log Detection"]
+        LOG_ATTEMPT["Log Retry Attempt"]
+        LOG_FALLBACK["Log Fallback"]
+        LOG_RECOVERY["Log Recovery"]
+        LOG_ESCALATION["Log Escalation"]
+    end
+
+    EXCEPTION --> LOG_DETECT
+    RETRY --> LOG_ATTEMPT
+    TRY_FALLBACK --> LOG_FALLBACK
+    RECOVERY --> LOG_RECOVERY
+    CREATE_ISSUE --> LOG_ESCALATION
+
+    %% ── Final States ────────────────────────────────────────────────────────
+    RECOVERY --> SUCCESS["✅ Operation Succeeded"]
+    NOTIFY_USER --> FAILED["❌ Operation Failed"]
+    PAGE_ONCALL -.->|"manual fix"| RECOVERY
+
+    %% ── Styling ────────────────────────────────────────────────────────────
+    style DETECT fill:#e63946,color:#fff
+    style TRANSIENT fill:#f4a261,color:#000
+    style FALLBACK fill:#2d6a4f,color:#fff
+    style FATAL fill:#e63946,color:#fff
+    style CIRCUIT fill:#f4a261,color:#000
+    style ESCALATE_PATH fill:#e63946,color:#fff
+    style MONITOR fill:#4a4e69,color:#fff
+    style PREVENT fill:#1b4332,color:#fff
+    style LOGGING fill:#457b9d,color:#fff
+    style SUCCESS fill:#1b4332,color:#fff
+    style FAILED fill:#e63946,color:#fff

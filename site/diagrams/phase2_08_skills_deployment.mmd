@@ -1,0 +1,142 @@
+%% Skills Deployment Lifecycle — Aries-Serpent/_codex_
+%% Phase 2.8 — Module Interaction Diagrams
+%% Skill registration, installation, versioning, and execution
+%% Evidence: agents/, .github/agents/AGENT_REGISTRY.yaml, skills-master-agent
+
+flowchart TD
+
+    %% ── Skill Development ───────────────────────────────────────────────────
+    subgraph DEVELOP ["💻 Skill Development"]
+        WRITE_SKILL["Write Skill Code\n(Python, markdown doc)"]
+        DEFINE_INTERFACE["Define Interface\n(inputs, outputs)"]
+        WRITE_TESTS["Write Tests\n(unit, integration)"]
+        DOCSTRING["Add Docstring\n(purpose, examples)"]
+        
+        WRITE_SKILL --> DEFINE_INTERFACE
+        DEFINE_INTERFACE --> WRITE_TESTS
+        WRITE_TESTS --> DOCSTRING
+    end
+
+    %% ── Skill Registration ──────────────────────────────────────────────────
+    subgraph REGISTER ["📋 Skill Registration  •  skills-master-agent"]
+        SCAN_DIR["Scan Skill Directory\n(skills/*.py)"]
+        PARSE_MANIFEST["Parse Manifest\n(metadata)"]
+        EXTRACT_SCHEMA["Extract Input/Output\n(from type hints)"]
+        ADD_REGISTRY["Add to Registry\n(in-memory index)"]
+        
+        SCAN_DIR --> PARSE_MANIFEST
+        PARSE_MANIFEST --> EXTRACT_SCHEMA
+        EXTRACT_SCHEMA --> ADD_REGISTRY
+    end
+
+    DOCSTRING --> SCAN_DIR
+
+    %% ── Skill Versioning ────────────────────────────────────────────────────
+    subgraph VERSION ["🔖 Versioning"]
+        SEM_VERSION["Semantic Versioning\n(MAJOR.MINOR.PATCH)"]
+        CHANGELOG["Changelog Entry\n(what changed)"]
+        COMMIT_TAG["Create Git Tag\n(v1.2.3)"]
+        PROMOTE["Promote to Prod\n(main branch)"]
+        
+        SEM_VERSION --> CHANGELOG
+        CHANGELOG --> COMMIT_TAG
+        COMMIT_TAG --> PROMOTE
+    end
+
+    ADD_REGISTRY --> SEM_VERSION
+
+    %% ── Skill Installation ──────────────────────────────────────────────────
+    subgraph INSTALL ["📦 Installation  •  skill lifecycle"]
+        RESOLVE_DEPS["Resolve Dependencies\n(requirements.txt)"]
+        VALIDATE_ENV["Validate Environment\n(Python version, libs)"]
+        INSTALL_DEPS["Install Dependencies\n(pip install)"]
+        SETUP_SKILL["Setup Skill\n(init config)"]
+        REGISTER_SKILL["Register with Agent\n(add to available)"]
+        
+        RESOLVE_DEPS --> VALIDATE_ENV
+        VALIDATE_ENV --> INSTALL_DEPS
+        INSTALL_DEPS --> SETUP_SKILL
+        SETUP_SKILL --> REGISTER_SKILL
+    end
+
+    PROMOTE --> RESOLVE_DEPS
+
+    %% ── Skill Discovery ─────────────────────────────────────────────────────
+    subgraph DISCOVER ["🔍 Discovery"]
+        LIST_SKILLS["List Available Skills\n(name, version, tags)"]
+        FILTER_TAGS["Filter by Tags\n(category, agent)"]
+        SEARCH_KEYWORD["Search by Keyword\n(description)"]
+        RANK_RELEVANCE["Rank by Relevance\n(match score)"]
+        
+        LIST_SKILLS --> FILTER_TAGS
+        FILTER_TAGS --> SEARCH_KEYWORD
+        SEARCH_KEYWORD --> RANK_RELEVANCE
+    end
+
+    REGISTER_SKILL --> LIST_SKILLS
+
+    %% ── Skill Invocation ────────────────────────────────────────────────────
+    subgraph INVOKE ["⚡ Invocation  •  agents/"]
+        SELECT_SKILL["Select Skill\n(from ranking)"]
+        VALIDATE_INPUTS["Validate Inputs\n(schema check)"]
+        PREPARE_ENV["Prepare Env\n(load config)"]
+        CALL_SKILL["Call Skill Function\n(execute)"]
+        CAPTURE_OUTPUT["Capture Output\n(result, stderr)"]
+        
+        SELECT_SKILL --> VALIDATE_INPUTS
+        VALIDATE_INPUTS --> PREPARE_ENV
+        PREPARE_ENV --> CALL_SKILL
+        CALL_SKILL --> CAPTURE_OUTPUT
+    end
+
+    RANK_RELEVANCE --> SELECT_SKILL
+
+    %% ── Error Handling & Retry ──────────────────────────────────────────────
+    subgraph ERROR ["🐛 Error Handling"]
+        CATCH_ERROR["Catch Exception\n(try-except)"]
+        CLASSIFY_ERROR["Classify Error\n(transient, fatal)"]
+        RETRY_LOGIC["Retry with Backoff\n(exponential)"]
+        FALLBACK["Fallback Skill\n(alternative)"]
+        LOG_ERROR["Log to Telemetry\n(for analysis)"]
+        
+        CAPTURE_OUTPUT --> CATCH_ERROR
+        CATCH_ERROR --> CLASSIFY_ERROR
+        CLASSIFY_ERROR --> RETRY_LOGIC
+        RETRY_LOGIC --> FALLBACK
+        FALLBACK --> LOG_ERROR
+    end
+
+    %% ── Output & Feedback ───────────────────────────────────────────────────
+    LOG_ERROR --> RESULT{"Skill\nsucceeded?"}
+    
+    RESULT -->|"✅"| OUTPUT["📤 Return Result"]
+    RESULT -->|"❌"| ESCALATE["🚨 Escalate\n(manual intervention)"]
+
+    %% ── Performance Monitoring ──────────────────────────────────────────────
+    subgraph MONITOR ["📊 Performance Monitoring"]
+        TRACK_LATENCY["Track Latency\n(execution time)"]
+        TRACK_ERRORS["Track Errors\n(rate, type)"]
+        TRACK_USAGE["Track Usage\n(invocations)"]
+        COMPUTE_SCORE["Compute Score\n(reliability)"]
+        
+        OUTPUT --> TRACK_LATENCY
+        ESCALATE --> TRACK_ERRORS
+        TRACK_LATENCY --> COMPUTE_SCORE
+        TRACK_ERRORS --> COMPUTE_SCORE
+    end
+
+    TRACK_USAGE --> COMPUTE_SCORE
+
+    %% ── Optimization ────────────────────────────────────────────────────────
+    COMPUTE_SCORE --> OPT["⚙️  Optimization Triggers\n(deprecate, speed up, cache)"]
+
+    %% ── Styling ────────────────────────────────────────────────────────────
+    style DEVELOP fill:#16213e,color:#e0e0e0
+    style REGISTER fill:#0f3460,color:#e0e0e0
+    style VERSION fill:#4a4e69,color:#fff
+    style INSTALL fill:#2d6a4f,color:#fff
+    style DISCOVER fill:#533483,color:#fff
+    style INVOKE fill:#1b4332,color:#fff
+    style ERROR fill:#e63946,color:#fff
+    style MONITOR fill:#457b9d,color:#fff
+    style OUTPUT fill:#1b4332,color:#fff

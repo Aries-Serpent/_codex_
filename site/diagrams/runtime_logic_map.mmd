@@ -1,0 +1,115 @@
+%% Runtime Logic Map — Aries-Serpent/_codex_
+%% Authoritative source: this file (docs/diagrams/runtime_logic_map.mmd)
+%% Narrative companion with evidence table: docs/system/mermaid_logic_map.md
+%% Every node corresponds to a verified source file — see evidence table in the .md companion.
+%% Ambiguities: (A1) codex_ml.cli import is conditional, (A2) Rust python feature is build-time, (A3) QFT extension is optional.
+
+flowchart TD
+
+    %% ── Entry Points ──────────────────────────────────────────────────────────
+    subgraph ENTRY ["Entry Points"]
+        E_SHIM["codex_ml/__main__.py\n(repo-root shim)\nprepends src/ to sys.path"]
+        E_PKG["src/codex_ml/__main__.py\n(installed-package entry)"]
+        E_CODEX_CLI["codex console-script\nsrc/codex_ml/cli/codex_cli.py"]
+        E_SRC_CLI["python src/cli.py\n(training bootstrap)"]
+        E_INGEST_CLI["python -m codex.cli\nsrc/codex/cli.py\n(ingestion pipeline)"]
+        E_QO_CLI["python -m codex.quantum_orchestrator.cli\nsrc/codex/quantum_orchestrator/cli.py"]
+    end
+
+    %% ── Package-main orchestration ────────────────────────────────────────────
+    E_SHIM -->|"delegates via import"| PKG_MAIN["src/codex_ml/_package_main.py\nrun() → _run_cli()"]
+    E_PKG --> PKG_MAIN
+    PKG_MAIN -->|"importlib.import_module('codex_ml.cli')"| CLI_BRANCH{"(A1) codex_ml.cli\nimportable?"}
+    CLI_BRANCH -->|"yes → mod.main()"| E_CODEX_CLI
+    CLI_BRANCH -. "no → usage hint, exit 0" .-> HINT["sys.stdout: usage note"]
+
+    %% ── codex CLI (Click group) ───────────────────────────────────────────────
+    subgraph CODEX_CLI_GRP ["codex CLI  •  src/codex_ml/cli/codex_cli.py"]
+        CC_ROOT["@click.group codex"]
+        CC_TOK["tokenizer group\ntrain | validate | encode | decode"]
+        CC_TRAIN["train subcommand"]
+        CC_SR["status-report\nbuild_status_report()"]
+        CC_DEPLOY["deploy --dry-run\ndeploy_codex_pipeline.py"]
+        CC_METRICS["start_metrics_server()\nPrometheus /metrics"]
+        CC_ROOT --> CC_TOK
+        CC_ROOT --> CC_TRAIN
+        CC_ROOT --> CC_SR
+        CC_ROOT --> CC_DEPLOY
+        CC_ROOT --> CC_METRICS
+    end
+    E_CODEX_CLI --> CC_ROOT
+
+    %% ── Tokenizer pipeline ────────────────────────────────────────────────────
+    CC_TOK -->|"run_train / run_validate\nrun_encode / run_decode"| TOK_PIPE["src/codex_ml/tokenization/pipeline\nTokenizerPipeline"]
+    TOK_PIPE --> TOK_ART[("artifacts/tokenizers/\ntokenizer.json")]
+
+    %% ── Unified training ──────────────────────────────────────────────────────
+    CC_TRAIN -->|"UnifiedTrainingConfig"| UT["src/codex_ml/training/unified_training.py\nrun_unified_training()"]
+    UT -->|"resolve_strategy()"| STRAT["src/codex_ml/training/strategies.py\nfunctional | legacy backend"]
+    STRAT -->|"per-epoch save_checkpoint"| UT_CKPT[("runs/unified/\ncheckpoints + NDJSON logs")]
+
+    %% ── train_loop path ──────────────────────────────────────────────────────
+    UT -->|"optionally delegates\nper-run execution"| TL["src/codex_ml/train_loop.py\nTrainLoop (per-run executor)\nreasoning harness • trace capture\ncheckpoint rotation"]
+    TL --> UT_CKPT
+
+    %% ── Evaluation ────────────────────────────────────────────────────────────
+    CC_SR -->|"optional eval call"| EVAL["src/codex_ml/eval/evaluator.py\nrun_evaluator()\nperplexity • token_accuracy"]
+    EVAL -->|"NDJSON ledger"| EVAL_LOG[("runs/evaluation.json")]
+
+    %% ── src/cli.py training bootstrap ────────────────────────────────────────
+    subgraph SRC_CLI_GRP ["Training Bootstrap  •  src/cli.py"]
+        SB_CONF["Hydra / config_legacy\nparse_known_args()"]
+        SB_DATA["data.registry.build()"]
+        SB_MODEL["model / optimizer\n(torch-backed)"]
+        SB_TRAINER["training.trainer.Trainer\nCheckpointConfig • TrainerConfig"]
+        SB_CONF --> SB_DATA
+        SB_CONF --> SB_MODEL
+        SB_DATA --> SB_TRAINER
+        SB_MODEL --> SB_TRAINER
+    end
+    E_SRC_CLI --> SB_CONF
+    SB_TRAINER -->|"train() → close()"| SB_CKPT[("runs/\ncheckpoints • metrics")]
+
+    %% ── Ingestion pipeline CLI ────────────────────────────────────────────────
+    subgraph INGEST_GRP ["Ingestion Pipeline  •  src/codex/cli.py"]
+        IG["ingest\ncodex.ingest::ingest()"]
+        IA["analyze\ncodex.analyze.static::analyze()"]
+        IT["transform\ncodex.transform.transformer::transform()"]
+        IV["verify\ncodex.verify.comparator::compare()"]
+        IP["pr\ncodex.cli.pr_operator"]
+        IG -->|"snapshot-meta.json"| SNAP_DIR[("artifacts/<snapshot_id>/")]
+        SNAP_DIR --> IA
+        IA -->|"static-report.json"| IT
+        IT -->|"patches/"| IV
+        IV -->|"behavior-diff.json"| IP
+        IP -->|"GitHub API"| GH_PR["GitHub Pull Request"]
+    end
+    E_INGEST_CLI --> IG
+
+    %% ── Quantum orchestrator ─────────────────────────────────────────────────
+    subgraph QO_GRP ["Quantum Orchestrator  •  src/codex/quantum_orchestrator/cli.py"]
+        QO_ALWAYS["run | benchmark | inspect | metrics\nOrchestratorState • TaskVector"]
+        QFT_CHECK{"(A3) QFT_AVAILABLE?\nqft.* importable"}
+        QO_QFT["qft spawn | entangle | optimize\nTaskSpawner • BellState\nPathIntegralOptimizer"]
+        QO_NOOP["qft commands\ndisabled (ImportError logged)"]
+        QO_ALWAYS --> QFT_CHECK
+        QFT_CHECK -->|"yes"| QO_QFT
+        QFT_CHECK -. "no" .-> QO_NOOP
+    end
+    E_QO_CLI --> QO_ALWAYS
+
+    %% ── Rust/Python hybrid ────────────────────────────────────────────────────
+    subgraph RUST_GRP ["Rust/Python Hybrid  •  src/lib.rs"]
+        RS_CORE["SwarmEngine • TaskManager\nCompression • Telemetry"]
+        RS_PY{"(A2) #[cfg(feature='python')]?"}
+        RS_PYO3["codex_swarm PyO3 module\nPySwarmEngine • PyTaskManager\nPyCompression"]
+        RS_RUST["Rust-only binary\n(no Python bindings)"]
+        RS_CORE --> RS_PY
+        RS_PY -->|"build feature present"| RS_PYO3
+        RS_PY -. "feature absent" .-> RS_RUST
+    end
+    QO_ALWAYS -.->|"optional Rust integration"| RS_CORE
+
+    %% ── Shared output ────────────────────────────────────────────────────────
+    STRAT -. "reasoning harness" .-> RH["src/codex_ml/models/reasoning.py\nReasoningHarness.capture_trace()"]
+    RH --> TRACE[("runs/train_loop/\nreasoning.json • run_metadata.json")]

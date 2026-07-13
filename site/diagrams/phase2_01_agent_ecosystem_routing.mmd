@@ -1,0 +1,121 @@
+%% Agent Ecosystem Routing — Aries-Serpent/_codex_
+%% Phase 2.1 — Module Interaction Diagrams
+%% Covers agent discovery, selection, and routing mechanisms
+%% Evidence: agents/, .github/agents/AGENT_REGISTRY.yaml, orchestrator-agent
+
+graph TB
+
+    %% ── Entry Points ───────────────────────────────────────────────────────
+    INPUT["📩 Input Request\n(PR comment, CLI, API)"]
+
+    %% ── Agent Registry ─────────────────────────────────────────────────────
+    subgraph REGISTRY ["🗂️  Agent Registry  •  .github/agents/"]
+        REG_FILE["AGENT_REGISTRY.yaml\n(manifest of all agents)"]
+        FAISS_IDX["FAISS Index\n(semantic search embedding)"]
+        TAG_MAP["Capability Tag Mapping\n(agent → [tags])"]
+        REG_FILE --> FAISS_IDX
+        REG_FILE --> TAG_MAP
+    end
+
+    %% ── Discovery Phase ────────────────────────────────────────────────────
+    subgraph DISCOVER ["🔍 Agent Discovery"]
+        PARSE_REQ["Parse Request\n(extract intent)"]
+        SEMANTIC["Semantic Search\n(query embedding)"]
+        TAG_FILTER["Tag-based Filter\n(exclude irrelevant)"]
+        SCORE_AGENTS["Score Candidates\n(relevance, capability)"]
+        PARSE_REQ --> SEMANTIC
+        SEMANTIC --> FAISS_IDX
+        PARSE_REQ --> TAG_FILTER
+        TAG_FILTER --> TAG_MAP
+        SEMANTIC --> SCORE_AGENTS
+        TAG_FILTER --> SCORE_AGENTS
+    end
+
+    INPUT --> PARSE_REQ
+
+    %% ── Orchestrator ───────────────────────────────────────────────────────
+    subgraph ORCHESTRATOR ["🎯 Orchestrator Agent  •  orchestrator-agent"]
+        ROUTE_SELECT["Route Selection\n(choose primary agent)"]
+        SKILL_CHAIN["Skill Chain Planning\n(sequence of skills needed)"]
+        AGENT_SPAWN["Spawn Task Agent\n(create sub-task context)"]
+        COORD_EXEC["Coordinate Execution\n(monitor, handle failures)"]
+        ROUTE_SELECT --> SKILL_CHAIN
+        SKILL_CHAIN --> AGENT_SPAWN
+        AGENT_SPAWN --> COORD_EXEC
+    end
+
+    SCORE_AGENTS --> ROUTE_SELECT
+
+    %% ── Agent Categories ───────────────────────────────────────────────────
+    subgraph AGENTS ["🤖 Specialized Agents  •  agents/"]
+        ORE["Explore Agent\n(codebase research)"]
+        TASK_A["Task Agent\n(CLI execution)"]
+        GENERAL["General-Purpose\n(complex reasoning)"]
+        CODE_REV["Code Review Agent\n(static analysis)"]
+        RESEARCH["Research Agent\n(external data)"]
+    end
+
+    COORD_EXEC --> ORE
+    COORD_EXEC --> TASK_A
+    COORD_EXEC --> GENERAL
+    COORD_EXEC --> CODE_REV
+    COORD_EXEC --> RESEARCH
+
+    %% ── Custom Agent Types ─────────────────────────────────────────────────
+    subgraph CUSTOM ["🎓 Domain-Specific Agents"]
+        SKILLS_MA["skills-master-agent\n(skill lifecycle)"]
+        MYPY_MA["mypy-manager-agent\n(type checking)"]
+        CI_HEALER["ci-auto-healer-agent\n(CI/CD failures)"]
+        UNIFIED_DOC["unified-doc-agent\n(documentation)"]
+        BRANCH_DIV["branch-divergence-agent\n(merge conflicts)"]
+    end
+
+    COORD_EXEC --> SKILLS_MA
+    COORD_EXEC --> MYPY_MA
+    COORD_EXEC --> CI_HEALER
+    COORD_EXEC --> UNIFIED_DOC
+    COORD_EXEC --> BRANCH_DIV
+
+    %% ── Execution Backends ─────────────────────────────────────────────────
+    subgraph EXEC_BACK ["⚙️  Execution Backends"]
+        BASH["Bash/Shell\n(system commands)"]
+        PYTHON["Python\n(analysis, transforms)"]
+        MCP["Model Context Protocol\n(tool invocation)"]
+        API["GitHub API\n(PRs, issues, etc.)"]
+    end
+
+    ORE --> BASH
+    TASK_A --> BASH
+    GENERAL --> PYTHON
+    CODE_REV --> PYTHON
+    CI_HEALER --> BASH
+    SKILLS_MA --> PYTHON
+
+    BASH --> MCP
+    PYTHON --> MCP
+    MCP --> API
+
+    %% ── Feedback & Learning ────────────────────────────────────────────────
+    subgraph FEEDBACK ["📊 Feedback Loop"]
+        RESULT_EVAL["Evaluate Result\n(success, quality)"]
+        LOG_OUTCOME["Log Outcome\n(patterns, regressions)"]
+        UPDATE_INDEX["Update FAISS/Tags\n(refine routing)"]
+        RESULT_EVAL --> LOG_OUTCOME
+        LOG_OUTCOME --> UPDATE_INDEX
+    end
+
+    API --> RESULT_EVAL
+
+    %% ── Output ─────────────────────────────────────────────────────────────
+    UPDATE_INDEX --> OUTPUT["✅ Final Response\n(to user/PR)"]
+
+    %% ── Styling ────────────────────────────────────────────────────────────
+    style REGISTRY fill:#457b9d,color:#fff
+    style DISCOVER fill:#4a4e69,color:#fff
+    style ORCHESTRATOR fill:#533483,color:#fff
+    style AGENTS fill:#1b4332,color:#fff
+    style CUSTOM fill:#2d6a4f,color:#fff
+    style EXEC_BACK fill:#16213e,color:#e0e0e0
+    style FEEDBACK fill:#0f3460,color:#e0e0e0
+    style INPUT fill:#4a4e69,color:#fff
+    style OUTPUT fill:#1b4332,color:#fff

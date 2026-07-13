@@ -1,0 +1,3948 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
+<link href="https://aries-serpent.github.io/_codex_/INSTALLATION/" rel="canonical"/>
+<link href="../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<title>Installation Guide - Aries-Serpent ML v0.1.0 - Codex Docs v0.2.1</title>
+<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<link href="../stylesheets/extra.css" rel="stylesheet"/>
+<script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#installation-guide-aries-serpent-ml-v010">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="Codex Docs v0.2.1" class="md-header__button md-logo" data-md-component="logo" href=".." title="Codex Docs v0.2.1">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m19 2-5 4.5v11l5-4.5zM6.5 5C4.55 5 2.45 5.4 1 6.5v14.66c0 .25.25.5.5.5.1 0 .15-.07.25-.07 1.35-.65 3.3-1.09 4.75-1.09 1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.31 4.75 1.06.1.05.15.03.25.03.25 0 .5-.25.5-.5V6.5c-.6-.45-1.25-.75-2-1V19c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V6.5C10.55 5.4 8.45 5 6.5 5"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            Codex Docs v0.2.1
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Installation Guide - Aries-Serpent ML v0.1.0
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme)" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"></path></svg>
+</label>
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: light)" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_2" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+<input aria-label="Switch to system preference" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-primary="black" data-md-color-scheme="slate" id="__palette_2" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to system preference">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<a aria-label="Share" class="md-search__icon md-icon" data-clipboard="" data-clipboard-text="" data-md-component="search-share" href="javascript:void(0)" tabindex="-1" title="Share">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"></path></svg>
+</a>
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="md-header__source">
+<a class="md-source" data-md-component="source" href="https://github.com/Aries-Serpent/_codex_" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+</div>
+<div class="md-source__repository">
+    Aries-Serpent/_codex_
+  </div>
+</a>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="..">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../status/GITHUB_PAGES_STATUS/">
+        
+  
+  
+    
+  
+  Status Dashboard
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../cognitive_app/">
+        
+  
+  
+    
+  
+  Cognitive App
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../evolution/INDEX/">
+          
+  
+  
+  Evolution Center
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../README_ROOT/">
+        
+  
+  
+    
+  
+  README
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../getting-started/">
+        
+  
+  
+    
+  
+  Getting Started
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../api/">
+          
+  
+  
+  API Reference
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../CONTRIBUTING/">
+          
+  
+  
+  Guides
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../tokens/INDEX/">
+          
+  
+  
+  Token Management
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../architecture.md">
+          
+  
+  
+  Architecture
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../training/symbolic_training/">
+          
+  
+  
+  Training
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../deployment/deploy_pipeline/">
+          
+  
+  
+  Deployment
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../logging/logging_guide/">
+          
+  
+  
+  Logging &amp; Troubleshooting
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../plugins/Plugin_API_Broader/">
+          
+  
+  
+  Plugins
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../ROADMAP/">
+          
+  
+  
+  Reference
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../agents/POST_MERGE_ALIGNMENT_PROMPT/">
+          
+  
+  
+  Agent Prompts
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../accountability/INDEX/">
+          
+  
+  
+  Accountability
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../phase-9/PHASE_9_COORDINATION_DASHBOARD/">
+          
+  
+  
+  Phase 9 Execution
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/INDEX.md">
+          
+  
+  
+  CI/CD Workflows
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../reporting/INDEX/">
+          
+  
+  
+  Reporting
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../ci/CI_RESCUE_PIPELINE/">
+          
+  
+  
+  CI Rescue &amp; Health
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../safety/safety_guide/">
+          
+  
+  
+  Safety
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../database/sqlite_option/">
+          
+  
+  
+  Database Options
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../templates/">
+          
+  
+  
+  Templates
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../examples/codex_symbolic_pipeline/">
+          
+  
+  
+  Examples
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../ops/cost-dashboard/">
+          
+  
+  
+  Ops
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../tutorials/quickstart/">
+          
+  
+  
+  Tutorials
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="..">
+          
+  
+  
+  Legacy Catalog
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="Codex Docs v0.2.1" class="md-nav__button md-logo" data-md-component="logo" href=".." title="Codex Docs v0.2.1">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m19 2-5 4.5v11l5-4.5zM6.5 5C4.55 5 2.45 5.4 1 6.5v14.66c0 .25.25.5.5.5.1 0 .15-.07.25-.07 1.35-.65 3.3-1.09 4.75-1.09 1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.31 4.75 1.06.1.05.15.03.25.03.25 0 .5-.25.5-.5V6.5c-.6-.45-1.25-.75-2-1V19c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V6.5C10.55 5.4 8.45 5 6.5 5"></path></svg>
+</a>
+    Codex Docs v0.2.1
+  </label>
+<div class="md-nav__source">
+<a class="md-source" data-md-component="source" href="https://github.com/Aries-Serpent/_codex_" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+</div>
+<div class="md-source__repository">
+    Aries-Serpent/_codex_
+  </div>
+</a>
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../status/GITHUB_PAGES_STATUS/">
+<span class="md-ellipsis">
+    
+  
+    Status Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../cognitive_app/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive App
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Evolution Center
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Evolution Center
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evolution/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evolution/EVOLUTION_TIMELINE/">
+<span class="md-ellipsis">
+    
+  
+    Evolution Timeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evolution/PLANSET_REGISTRY/">
+<span class="md-ellipsis">
+    
+  
+    Planset Registry
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evolution/COGNITIVE_EVOLUTION_TREE/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive Evolution Tree
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evolution/AI_EMERGENCE_STORYBOARD/">
+<span class="md-ellipsis">
+    
+  
+    AI Emergence Storyboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evolution/AI_AGENCY_INTUITIVENESS_SCORE_V3/">
+<span class="md-ellipsis">
+    
+  
+    AI Agency Score V3
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evolution/COGNITIVE_CODEBASE_MAP/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive Codebase Map
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../README_ROOT/">
+<span class="md-ellipsis">
+    
+  
+    README
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../getting-started/">
+<span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../api/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_8" type="checkbox"/>
+<label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Guides
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_8_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_8">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Guides
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../CONTRIBUTING/">
+<span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../guides/code_style_guide/">
+<span class="md-ellipsis">
+    
+  
+    Code Style
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../guides/checkpointing/">
+<span class="md-ellipsis">
+    
+  
+    Checkpointing
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../guides/codex_setup/">
+<span class="md-ellipsis">
+    
+  
+    Setup &amp; Integration
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../guides/session_hooks/">
+<span class="md-ellipsis">
+    
+  
+    Session Hooks
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../guides/continuous_improvement/">
+<span class="md-ellipsis">
+    
+  
+    Continuous Improvement
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../guides/lfs_policy/">
+<span class="md-ellipsis">
+    
+  
+    LFS Policy
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../guides/asset_instruction_playbook/">
+<span class="md-ellipsis">
+    
+  
+    Asset Instruction Playbook
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../guides/LOGGING/">
+<span class="md-ellipsis">
+    
+  
+    Logging (Stdlib)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_9" type="checkbox"/>
+<label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Token Management
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_9_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_9">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Token Management
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tokens/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tokens/TOKEN_HIERARCHY_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Token Hierarchy Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tokens/TOKEN_REGENERATION_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Token Regeneration Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tokens/TOKEN_USAGE_AUDIT/">
+<span class="md-ellipsis">
+    
+  
+    Token Usage Audit
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tokens/HUMAN_ADMIN_SETUP/">
+<span class="md-ellipsis">
+    
+  
+    Human Admin Setup
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tokens/CI_CD_TROUBLESHOOTING/">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Troubleshooting
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tokens/CUSTOM_AGENT_GUIDANCE/">
+<span class="md-ellipsis">
+    
+  
+    Custom Agent Guidance
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tokens/QUICK_REFERENCE/">
+<span class="md-ellipsis">
+    
+  
+    Quick Reference
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_10" type="checkbox"/>
+<label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_10_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_10">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../architecture.md">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../architecture/codex_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Codex Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../system/mermaid_logic_map/">
+<span class="md-ellipsis">
+    
+  
+    Runtime Logic Map
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_11" type="checkbox"/>
+<label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Training
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_11_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_11">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Training
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../training/symbolic_training/">
+<span class="md-ellipsis">
+    
+  
+    Symbolic Training
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../training/distributed_troubleshooting/">
+<span class="md-ellipsis">
+    
+  
+    Distributed Troubleshooting
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_12" type="checkbox"/>
+<label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Deployment
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_12_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_12">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Deployment
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../deployment/deploy_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Deploy Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../deployment/DEPLOYMENT_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Deployment Guide
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_13" type="checkbox"/>
+<label class="md-nav__link" for="__nav_13" id="__nav_13_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Logging &amp; Troubleshooting
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_13_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_13">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Logging &amp; Troubleshooting
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../logging/logging_guide/">
+<span class="md-ellipsis">
+    
+  
+    Logging Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../logging/end_to_end_logging/">
+<span class="md-ellipsis">
+    
+  
+    End-to-End Logging
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../logging/log_rotation/">
+<span class="md-ellipsis">
+    
+  
+    Log Rotation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../troubleshooting/error_log/">
+<span class="md-ellipsis">
+    
+  
+    Error Log
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../troubleshooting/open_questions/">
+<span class="md-ellipsis">
+    
+  
+    Open Questions
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_14" type="checkbox"/>
+<label class="md-nav__link" for="__nav_14" id="__nav_14_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Plugins
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_14_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_14">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Plugins
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../plugins/Plugin_API_Broader/">
+<span class="md-ellipsis">
+    
+  
+    Plugin API (Broader)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_15" type="checkbox"/>
+<label class="md-nav__link" for="__nav_15" id="__nav_15_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_15_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_15">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ROADMAP/">
+<span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../CHANGELOG/">
+<span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_15_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_15_3" id="__nav_15_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Changelog Archive
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_15_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_15_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Changelog Archive
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../CHANGELOG/changelog_codex/">
+<span class="md-ellipsis">
+    
+  
+    Codex
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../CHANGELOG/changelog_session_logging/">
+<span class="md-ellipsis">
+    
+  
+    Session Logging
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../CHANGELOG/change_log/">
+<span class="md-ellipsis">
+    
+  
+    Legacy change log
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../reference/audit_prompt/">
+<span class="md-ellipsis">
+    
+  
+    Audit Prompt
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../reference/tools/">
+<span class="md-ellipsis">
+    
+  
+    Tools
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../reference/codex_questions/">
+<span class="md-ellipsis">
+    
+  
+    Codex Questions (Archive)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../deferred_items/">
+<span class="md-ellipsis">
+    
+  
+    Deferred Items
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../agents/">
+<span class="md-ellipsis">
+    
+  
+    Agents
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_16" type="checkbox"/>
+<label class="md-nav__link" for="__nav_16" id="__nav_16_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Agent Prompts
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_16_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_16">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Agent Prompts
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../agents/POST_MERGE_ALIGNMENT_PROMPT/">
+<span class="md-ellipsis">
+    
+  
+    Post-Merge Doc Alignment
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_17" type="checkbox"/>
+<label class="md-nav__link" for="__nav_17" id="__nav_17_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Accountability
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_17_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_17">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Accountability
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../accountability/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<span class="md-ellipsis">
+    
+  
+    Agent Accountability Report
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../accountability/AGENT_ACCESS_EXPERIENCE_REPORT/">
+<span class="md-ellipsis">
+    
+  
+    Agent Access Experience Report
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_18" type="checkbox"/>
+<label class="md-nav__link" for="__nav_18" id="__nav_18_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Phase 9 Execution
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_18_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_18">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Phase 9 Execution
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../phase-9/PHASE_9_COORDINATION_DASHBOARD/">
+<span class="md-ellipsis">
+    
+  
+    Coordination Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../phase-9/PHASE_9_DAILY_STANDUP_TEMPLATE/">
+<span class="md-ellipsis">
+    
+  
+    Daily Standup Template
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../phase-9/POST_MERGE_ACTION_PLAN/">
+<span class="md-ellipsis">
+    
+  
+    Post-Merge Action Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../phase-9/PHASE_8_12_MASTER_EXECUTION_PLAN/">
+<span class="md-ellipsis">
+    
+  
+    Phase 8-12 Master Plan
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_19" type="checkbox"/>
+<label class="md-nav__link" for="__nav_19" id="__nav_19_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Workflows
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_19_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_19">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    CI/CD Workflows
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/INDEX.md">
+<span class="md-ellipsis">
+    
+  
+    Workflow Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/CONSOLIDATION_GUIDE.md">
+<span class="md-ellipsis">
+    
+  
+    Consolidation Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/DEPRECATION_PLAN.md">
+<span class="md-ellipsis">
+    
+  
+    Deprecation Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/OPTIMIZATION_SUMMARY.md">
+<span class="md-ellipsis">
+    
+  
+    Optimization Summary
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/CACHE_ARCHITECTURE_DIAGRAMS.md">
+<span class="md-ellipsis">
+    
+  
+    Cache Architecture
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_20" type="checkbox"/>
+<label class="md-nav__link" for="__nav_20" id="__nav_20_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Reporting
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_20_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_20">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Reporting
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../reporting/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Reporting Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../reporting/copilot_workflow_report_console.html">
+<span class="md-ellipsis">
+    
+  
+    Copilot Workflow Report Console
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_21" type="checkbox"/>
+<label class="md-nav__link" for="__nav_21" id="__nav_21_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    CI Rescue &amp; Health
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_21_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_21">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    CI Rescue &amp; Health
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ci/CI_RESCUE_PIPELINE/">
+<span class="md-ellipsis">
+    
+  
+    CI Rescue Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ci/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ci/CI_FAILURE_ANALYSIS/">
+<span class="md-ellipsis">
+    
+  
+    Failure Analysis
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ci/CI_FIX_SUMMARY.md">
+<span class="md-ellipsis">
+    
+  
+    CI Fix Summary
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ci/ROOT_ORG_VALIDATION/">
+<span class="md-ellipsis">
+    
+  
+    Root Org Validation
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_22" type="checkbox"/>
+<label class="md-nav__link" for="__nav_22" id="__nav_22_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Safety
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_22_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_22">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Safety
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../safety/safety_guide/">
+<span class="md-ellipsis">
+    
+  
+    Safety Guide
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_23" type="checkbox"/>
+<label class="md-nav__link" for="__nav_23" id="__nav_23_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Database Options
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_23_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_23">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Database Options
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../database/sqlite_option/">
+<span class="md-ellipsis">
+    
+  
+    SQLite Option
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../database/duckdb_option/">
+<span class="md-ellipsis">
+    
+  
+    DuckDB Option
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../database/datasette_option/">
+<span class="md-ellipsis">
+    
+  
+    Datasette Option
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_24" type="checkbox"/>
+<label class="md-nav__link" for="__nav_24" id="__nav_24_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Templates
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_24_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_24">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Templates
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/ITERATION_PLAN_TEMPLATE/">
+<span class="md-ellipsis">
+    
+  
+    Iteration Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/Migration_PythonFileRelocation/">
+<span class="md-ellipsis">
+    
+  
+    Migration — Python Relocation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/Migration_CLIHardening/">
+<span class="md-ellipsis">
+    
+  
+    Migration — CLI Hardening
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/Planning_IntentValidation/">
+<span class="md-ellipsis">
+    
+  
+    Planning — Intent Validation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/intent_validation_gate/">
+<span class="md-ellipsis">
+    
+  
+    Intent Validation Gate
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/COPILOT_EXECUTION_DIRECTIVE/">
+<span class="md-ellipsis">
+    
+  
+    Copilot Execution Directive
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/status/">
+<span class="md-ellipsis">
+    
+  
+    Status Report Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/status/codex_status_template_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Status Template v1.2
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/status/authoring_guide_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Authoring Guide v1.2
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/status/SCHEMA_ENHANCEMENTS_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Schema Enhancements
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/status/authoring_quickstart_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Authoring Quickstart
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_25" type="checkbox"/>
+<label class="md-nav__link" for="__nav_25" id="__nav_25_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_25_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_25">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Examples
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../examples/codex_symbolic_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Codex Symbolic Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_26" type="checkbox"/>
+<label class="md-nav__link" for="__nav_26" id="__nav_26_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Ops
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_26_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_26">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Ops
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ops/cost-dashboard/">
+<span class="md-ellipsis">
+    
+  
+    Cost Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ops/COST_GOVERNANCE/">
+<span class="md-ellipsis">
+    
+  
+    Cost Governance
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ops/monitoring/">
+<span class="md-ellipsis">
+    
+  
+    Monitoring
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ops/deployment/">
+<span class="md-ellipsis">
+    
+  
+    Deployment (Legacy)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ops/RUNBOOK/">
+<span class="md-ellipsis">
+    
+  
+    Runbook
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_27" type="checkbox"/>
+<label class="md-nav__link" for="__nav_27" id="__nav_27_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_27_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_27">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tutorials/quickstart/">
+<span class="md-ellipsis">
+    
+  
+    Quickstart (CPU)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tutorials/end_to_end_cpu/">
+<span class="md-ellipsis">
+    
+  
+    End-to-End (CPU)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_28" type="checkbox"/>
+<label class="md-nav__link" for="__nav_28" id="__nav_28_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Legacy Catalog
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_28_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_28">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Legacy Catalog
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../reference/metrics_cli/">
+<span class="md-ellipsis">
+    
+  
+    Reference Archive
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../review/diff_intake_confirmation/">
+<span class="md-ellipsis">
+    
+  
+    Review Checklist
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#table-of-contents">
+<span class="md-ellipsis">
+      
+        📋 Table of Contents
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#overview">
+<span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+</a>
+<nav aria-label="Overview" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#why-three-profiles">
+<span class="md-ellipsis">
+      
+        Why Three Profiles?
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#quick-start-30-seconds">
+<span class="md-ellipsis">
+      
+        Quick Start (30 seconds)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#prerequisites">
+<span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+</a>
+<nav aria-label="Prerequisites" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#system-requirements">
+<span class="md-ellipsis">
+      
+        System Requirements
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#software-requirements">
+<span class="md-ellipsis">
+      
+        Software Requirements
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#optional-components">
+<span class="md-ellipsis">
+      
+        Optional Components
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#verify-prerequisites">
+<span class="md-ellipsis">
+      
+        Verify Prerequisites
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#installation-methods">
+<span class="md-ellipsis">
+      
+        Installation Methods
+      
+    </span>
+</a>
+<nav aria-label="Installation Methods" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#method-1-pypi-installation-recommended-for-users">
+<span class="md-ellipsis">
+      
+        Method 1: PyPI Installation (Recommended for Users) ⭐
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#method-2-source-installation-for-contributors">
+<span class="md-ellipsis">
+      
+        Method 2: Source Installation (For Contributors)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#method-3-docker-installation-containerized">
+<span class="md-ellipsis">
+      
+        Method 3: Docker Installation (Containerized)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#method-4-offline-installation-air-gapped-environments">
+<span class="md-ellipsis">
+      
+        Method 4: Offline Installation (Air-Gapped Environments)
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#platform-specific-instructions">
+<span class="md-ellipsis">
+      
+        Platform-Specific Instructions
+      
+    </span>
+</a>
+<nav aria-label="Platform-Specific Instructions" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#linux-ubuntudebianfedora">
+<span class="md-ellipsis">
+      
+        🐧 Linux (Ubuntu/Debian/Fedora)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#macos-intel-apple-silicon">
+<span class="md-ellipsis">
+      
+        🍎 macOS (Intel &amp; Apple Silicon)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#windows-powershell">
+<span class="md-ellipsis">
+      
+        🪟 Windows (PowerShell)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#docker-all-platforms">
+<span class="md-ellipsis">
+      
+        🐳 Docker (All Platforms)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#kubernetes-enterprise">
+<span class="md-ellipsis">
+      
+        ☸️ Kubernetes (Enterprise)
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#verification">
+<span class="md-ellipsis">
+      
+        Verification
+      
+    </span>
+</a>
+<nav aria-label="Verification" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#quick-verification">
+<span class="md-ellipsis">
+      
+        Quick Verification
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#complete-verification-suite">
+<span class="md-ellipsis">
+      
+        Complete Verification Suite
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#platform-specific-verification">
+<span class="md-ellipsis">
+      
+        Platform-Specific Verification
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#test-by-profile">
+<span class="md-ellipsis">
+      
+        Test by Profile
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#installation-profiles">
+<span class="md-ellipsis">
+      
+        Installation Profiles
+      
+    </span>
+</a>
+<nav aria-label="Installation Profiles" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#core-profile">
+<span class="md-ellipsis">
+      
+        Core Profile
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#runtime-profile">
+<span class="md-ellipsis">
+      
+        Runtime Profile
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#full-profile">
+<span class="md-ellipsis">
+      
+        Full Profile
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#profile-comparison">
+<span class="md-ellipsis">
+      
+        Profile Comparison
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#switching-between-profiles">
+<span class="md-ellipsis">
+      
+        Switching Between Profiles
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#entry-points-cli-commands">
+<span class="md-ellipsis">
+      
+        Entry Points &amp; CLI Commands
+      
+    </span>
+</a>
+<nav aria-label="Entry Points &amp; CLI Commands" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#available-cli-commands">
+<span class="md-ellipsis">
+      
+        Available CLI Commands
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#programmatic-api">
+<span class="md-ellipsis">
+      
+        Programmatic API
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#entry-points-by-profile">
+<span class="md-ellipsis">
+      
+        Entry Points by Profile
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#extending-with-plugins">
+<span class="md-ellipsis">
+      
+        Extending with Plugins
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#cognitive-brain-integration">
+<span class="md-ellipsis">
+      
+        Cognitive Brain Integration
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#troubleshooting">
+<span class="md-ellipsis">
+      
+        Troubleshooting
+      
+    </span>
+</a>
+<nav aria-label="Troubleshooting" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#common-installation-issues">
+<span class="md-ellipsis">
+      
+        Common Installation Issues
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#platform-specific-issues">
+<span class="md-ellipsis">
+      
+        Platform-Specific Issues
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#performance-issues">
+<span class="md-ellipsis">
+      
+        Performance Issues
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#getting-diagnostics">
+<span class="md-ellipsis">
+      
+        Getting Diagnostics
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#getting-help">
+<span class="md-ellipsis">
+      
+        Getting Help
+      
+    </span>
+</a>
+<nav aria-label="Getting Help" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#documentation-resources">
+<span class="md-ellipsis">
+      
+        Documentation Resources
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#community-support">
+<span class="md-ellipsis">
+      
+        Community Support
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#additional-resources">
+<span class="md-ellipsis">
+      
+        Additional Resources
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#whats-next">
+<span class="md-ellipsis">
+      
+        What's Next?
+      
+    </span>
+</a>
+<nav aria-label="What's Next?" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#for-users-runtime-profile">
+<span class="md-ellipsis">
+      
+        For Users (Runtime Profile)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#for-developers-full-profile">
+<span class="md-ellipsis">
+      
+        For Developers (Full Profile)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#for-ml-engineers">
+<span class="md-ellipsis">
+      
+        For ML Engineers
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#version-history">
+<span class="md-ellipsis">
+      
+        Version History
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#license">
+<span class="md-ellipsis">
+      
+        License
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="installation-guide-aries-serpent-ml-v010">Installation Guide - Aries-Serpent ML v0.1.0<a class="headerlink" href="#installation-guide-aries-serpent-ml-v010" title="Permanent link">¶</a></h1>
+<p><strong>Version</strong>: v0.2.1
+<strong>Last Updated:</strong> 2026-07-11</p>
+<p><strong>Document Type:</strong> User Guide<br/>
+<strong>Audience:</strong> Developers, DevOps Engineers, System Administrators, ML Engineers<br/>
+<strong>Last Updated: 2026-07-10
+</strong>Version:** 0.1.0</p>
+<h2 id="table-of-contents">📋 Table of Contents<a class="headerlink" href="#table-of-contents" title="Permanent link">¶</a></h2>
+<ol>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#quick-start-30-seconds">Quick Start</a></li>
+<li><a href="#prerequisites">Prerequisites</a></li>
+<li><a href="#installation-methods">Installation Methods</a></li>
+<li><a href="#installation-profiles">Installation Profiles</a></li>
+<li><a href="#core-profile">Core Profile</a></li>
+<li><a href="#runtime-profile">Runtime Profile</a></li>
+<li><a href="#full-profile">Full Profile</a></li>
+<li><a href="#platform-specific-instructions">Platform-Specific Instructions</a></li>
+<li><a href="#verification">Verification</a></li>
+<li><a href="#entry-points--cli-commands">Entry Points &amp; CLI Commands</a></li>
+<li><a href="#troubleshooting">Troubleshooting</a></li>
+<li><a href="#getting-help">Getting Help</a></li>
+</ol>
+<hr/>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">¶</a></h2>
+<p><strong>codex-ml</strong> (Aries-Serpent ML) is a production-ready, Level 4 MLOps-certified machine learning platform featuring:</p>
+<ul>
+<li><strong>Three Installation Profiles</strong>: Choose the right package size for your use case</li>
+<li><strong>Production-Grade</strong>: 90.2% test coverage, 0 CVEs, enterprise-ready</li>
+<li><strong>Cognitive Brain Integration</strong>: Advanced autonomous decision-making</li>
+<li><strong>MLOps Ready</strong>: Training, evaluation, and model serving all included</li>
+<li><strong>Security First</strong>: Network policy enforcement, cryptographic security</li>
+</ul>
+<h3 id="why-three-profiles">Why Three Profiles?<a class="headerlink" href="#why-three-profiles" title="Permanent link">¶</a></h3>
+<p>The <strong>three-profile packaging strategy</strong> allows you to install only what you need:</p>
+<table>
+<thead>
+<tr>
+<th>Profile</th>
+<th>Size</th>
+<th>Best For</th>
+<th>Key Components</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Core</strong></td>
+<td>8-15 MB</td>
+<td>Lightweight, edge, offline</td>
+<td>CLI, config, safety</td>
+</tr>
+<tr>
+<td><strong>Runtime</strong></td>
+<td>20-35 MB</td>
+<td>Production inference</td>
+<td>PyTorch, Transformers, FastAPI</td>
+</tr>
+<tr>
+<td><strong>Full</strong></td>
+<td>100+ MB</td>
+<td>Development &amp; research</td>
+<td>Everything + dev tools</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2 id="quick-start-30-seconds">Quick Start (30 seconds)<a class="headerlink" href="#quick-start-30-seconds" title="Permanent link">¶</a></h2>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="c1"># Most common: Install with runtime profile (recommended for most users)</span>
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>pip<span class="w"> </span>install<span class="w"> </span>codex-ml<span class="o">[</span>runtime<span class="o">]==</span><span class="m">0</span>.1.0
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a>
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="c1"># Or lightweight core only</span>
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>pip<span class="w"> </span>install<span class="w"> </span>codex-ml<span class="o">[</span>core<span class="o">]==</span><span class="m">0</span>.1.0
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="c1"># Or development with all features</span>
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>pip<span class="w"> </span>install<span class="w"> </span>codex-ml<span class="o">[</span>full<span class="o">]==</span><span class="m">0</span>.1.0
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="c1"># Verify installation</span>
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import codex_ml; print(f'✓ Installed: {codex_ml.__version__}')"</span>
+</code></pre></div>
+<p><strong>Installation time:</strong> ~2-5 minutes (depending on profile and connection)</p>
+<hr/>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">¶</a></h2>
+<h3 id="system-requirements">System Requirements<a class="headerlink" href="#system-requirements" title="Permanent link">¶</a></h3>
+<p>Your system must meet these minimum requirements:</p>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Minimum</th>
+<th>Recommended</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>CPU</strong></td>
+<td>2 cores</td>
+<td>4+ cores</td>
+<td>For ML models, 8+ cores for training</td>
+</tr>
+<tr>
+<td><strong>RAM</strong></td>
+<td>2 GB</td>
+<td>8 GB</td>
+<td>Core profile: 2 GB; Runtime/Full: 8+ GB</td>
+</tr>
+<tr>
+<td><strong>Storage</strong></td>
+<td>500 MB</td>
+<td>2 GB</td>
+<td>Full profile needs more space</td>
+</tr>
+<tr>
+<td><strong>OS</strong></td>
+<td>Linux, macOS, Windows</td>
+<td>Any modern OS</td>
+<td>Docker container support for all</td>
+</tr>
+</tbody>
+</table>
+<p><strong>GPU Support (Optional):</strong>
+- NVIDIA GPUs: CUDA 12.x (runtime profile recommended for inference)
+- AMD GPUs: ROCm support available
+- Apple Silicon: Native arm64 support</p>
+<h3 id="software-requirements">Software Requirements<a class="headerlink" href="#software-requirements" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Version</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Python</strong></td>
+<td>3.12+</td>
+<td>Core runtime (3.11 with <code>tomli</code> fallback)</td>
+</tr>
+<tr>
+<td><strong>pip</strong></td>
+<td>24.0+</td>
+<td>Package manager</td>
+</tr>
+<tr>
+<td><strong>git</strong></td>
+<td>2.40+</td>
+<td>For source installation (optional)</td>
+</tr>
+<tr>
+<td><strong>Docker</strong></td>
+<td>24.0+</td>
+<td>Containerized deployment (optional)</td>
+</tr>
+<tr>
+<td><strong>CUDA Toolkit</strong></td>
+<td>12.x+</td>
+<td>GPU support (optional, runtime profile)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="optional-components">Optional Components<a class="headerlink" href="#optional-components" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Docker Desktop:</strong> For containerized deployment</li>
+<li><strong>Docker Compose:</strong> For multi-container orchestration</li>
+<li><strong>NVIDIA Container Runtime:</strong> For GPU-accelerated containers</li>
+<li><strong>kubectl:</strong> For Kubernetes management (enterprise)</li>
+<li><strong>OpenAI API Key:</strong> For AI features (get from https://platform.openai.com/api-keys)</li>
+</ul>
+<h3 id="verify-prerequisites">Verify Prerequisites<a class="headerlink" href="#verify-prerequisites" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a><span class="c1"># Check Python version (must be 3.12+)</span>
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>python<span class="w"> </span>--version
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a><span class="c1"># Check pip version</span>
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>pip<span class="w"> </span>--version
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a><span class="c1"># (Optional) Check git</span>
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>git<span class="w"> </span>--version
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>
+<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a><span class="c1"># (Optional) Check Docker</span>
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>docker<span class="w"> </span>--version
+<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>
+<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a><span class="c1"># (Optional) Check CUDA availability</span>
+<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>nvidia-smi<span class="w">  </span><span class="c1"># if GPU support needed</span>
+</code></pre></div>
+<hr/>
+<h2 id="installation-methods">Installation Methods<a class="headerlink" href="#installation-methods" title="Permanent link">¶</a></h2>
+<p>Choose the installation method that best fits your use case:</p>
+<h3 id="method-1-pypi-installation-recommended-for-users">Method 1: PyPI Installation (Recommended for Users) ⭐<a class="headerlink" href="#method-1-pypi-installation-recommended-for-users" title="Permanent link">¶</a></h3>
+<p><strong>Best for:</strong> Most users, production deployments, reproducible environments</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="c1"># Create virtual environment (highly recommended)</span>
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>codex-env
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a><span class="nb">source</span><span class="w"> </span>codex-env/bin/activate<span class="w">  </span><span class="c1"># On Windows: codex-env\Scripts\activate</span>
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="c1"># Upgrade pip to latest</span>
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a><span class="c1"># Install with your chosen profile</span>
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>pip<span class="w"> </span>install<span class="w"> </span>codex-ml<span class="o">[</span>runtime<span class="o">]==</span><span class="m">0</span>.1.0<span class="w">      </span><span class="c1"># Most common ⭐</span>
+<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a><span class="c1"># OR</span>
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a>pip<span class="w"> </span>install<span class="w"> </span>codex-ml<span class="o">[</span>core<span class="o">]==</span><span class="m">0</span>.1.0<span class="w">         </span><span class="c1"># Lightweight</span>
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a><span class="c1"># OR</span>
+<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a>pip<span class="w"> </span>install<span class="w"> </span>codex-ml<span class="o">[</span>full<span class="o">]==</span><span class="m">0</span>.1.0<span class="w">         </span><span class="c1"># Development</span>
+<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a>
+<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a><span class="c1"># Verify installation</span>
+<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import codex_ml; print(codex_ml.__version__)"</span>
+</code></pre></div>
+<p><strong>Installation time:</strong> 2-5 minutes (runtime), 1-2 minutes (core)<br/>
+<strong>Estimated size:</strong> See <a href="#installation-profiles">Installation Profiles</a></p>
+<h3 id="method-2-source-installation-for-contributors">Method 2: Source Installation (For Contributors)<a class="headerlink" href="#method-2-source-installation-for-contributors" title="Permanent link">¶</a></h3>
+<p><strong>Best for:</strong> Development, testing, contributing to the project</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="c1"># Clone the repository</span>
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/Aries-Serpent/_codex_.git
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="nb">cd</span><span class="w"> </span>_codex_
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="c1"># Create and activate virtual environment</span>
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>venv
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a><span class="nb">source</span><span class="w"> </span>venv/bin/activate<span class="w">  </span><span class="c1"># On Windows: venv\Scripts\activate</span>
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a>
+<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a><span class="c1"># Install in development mode with all dependencies</span>
+<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">".[full]"</span>
+<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a>
+<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a><span class="c1"># Run test suite to verify</span>
+<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a>pytest<span class="w"> </span>tests/<span class="w"> </span>-x<span class="w"> </span>--tb<span class="o">=</span>short
+<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a>
+<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a><span class="c1"># Run smoke test</span>
+<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a>codex-ml<span class="w"> </span>--help
+</code></pre></div>
+<p><strong>Installation time:</strong> 5-15 minutes (includes compilation)<br/>
+<strong>Best combined with:</strong> Pre-commit hooks setup</p>
+<h3 id="method-3-docker-installation-containerized">Method 3: Docker Installation (Containerized)<a class="headerlink" href="#method-3-docker-installation-containerized" title="Permanent link">¶</a></h3>
+<p><strong>Best for:</strong> Reproducible environments, CI/CD, cloud deployment</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="c1"># Pull pre-built image</span>
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>docker<span class="w"> </span>pull<span class="w"> </span>ghcr.io/aries-serpent/codex:0.1.0
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a><span class="c1"># Run interactive container</span>
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>docker<span class="w"> </span>run<span class="w"> </span>-it<span class="w"> </span>ghcr.io/aries-serpent/codex:0.1.0<span class="w"> </span>codex-ml<span class="w"> </span>--help
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a><span class="c1"># Run with mounted working directory</span>
+<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>docker<span class="w"> </span>run<span class="w"> </span>-it<span class="w"> </span>-v<span class="w"> </span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>:/workspace<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a><span class="w">  </span>ghcr.io/aries-serpent/codex:0.1.0<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a><span class="w">  </span>codex-ml<span class="w"> </span>train<span class="w"> </span>config.yaml
+<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a>
+<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a><span class="c1"># Build locally from Dockerfile</span>
+<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>codex:latest<span class="w"> </span>-f<span class="w"> </span>Dockerfile<span class="w"> </span>.
+</code></pre></div>
+<p><strong>Container size:</strong> ~1.5 GB (pre-built image)<br/>
+<strong>Requires:</strong> Docker or Docker Desktop</p>
+<h3 id="method-4-offline-installation-air-gapped-environments">Method 4: Offline Installation (Air-Gapped Environments)<a class="headerlink" href="#method-4-offline-installation-air-gapped-environments" title="Permanent link">¶</a></h3>
+<p><strong>Best for:</strong> Restricted network environments, corporate networks</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="c1"># Step 1: Download wheels from connected machine</span>
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>pip<span class="w"> </span>download<span class="w"> </span>codex-ml<span class="o">[</span>runtime<span class="o">]</span><span class="w"> </span>-d<span class="w"> </span>./wheelhouse/
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="c1"># Step 2: Transfer wheelhouse to air-gapped machine</span>
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a><span class="c1"># (Use USB drive, SCP, or other secure method)</span>
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="c1"># Step 3: Install from local wheels</span>
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a>python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>codex-env
+<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a><span class="nb">source</span><span class="w"> </span>codex-env/bin/activate
+<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a>pip<span class="w"> </span>install<span class="w"> </span>--no-index<span class="w"> </span>--find-links<span class="w"> </span>./wheelhouse/<span class="w"> </span>codex-ml<span class="o">[</span>runtime<span class="o">]</span>
+<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a>
+<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a><span class="c1"># Verify</span>
+<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a>codex-ml<span class="w"> </span>--version
+</code></pre></div>
+<p><strong>See also:</strong> <code>docs/release/OFFLINE_DEPLOYMENT.md</code> for detailed air-gapped setup</p>
+<hr/>
+<h2 id="platform-specific-instructions">Platform-Specific Instructions<a class="headerlink" href="#platform-specific-instructions" title="Permanent link">¶</a></h2>
+<h3 id="linux-ubuntudebianfedora">🐧 Linux (Ubuntu/Debian/Fedora)<a class="headerlink" href="#linux-ubuntudebianfedora" title="Permanent link">¶</a></h3>
+<h4 id="ubuntudebian">Ubuntu/Debian<a class="headerlink" href="#ubuntudebian" title="Permanent link">¶</a></h4>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="c1"># Update system packages</span>
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a>sudo<span class="w"> </span>apt<span class="w"> </span>update<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>sudo<span class="w"> </span>apt<span class="w"> </span>upgrade<span class="w"> </span>-y
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a>
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="c1"># Install Python 3.12 and development tools</span>
+<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>python3.12<span class="w"> </span>python3.12-venv<span class="w"> </span>python3.12-dev<span class="w"> </span>python3-pip
+<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a>
+<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a><span class="c1"># Verify Python installation</span>
+<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a>python3.12<span class="w"> </span>--version
+<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a>
+<a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a><span class="c1"># Create virtual environment</span>
+<a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a>python3.12<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>~/codex-env
+<a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a><span class="nb">source</span><span class="w"> </span>~/codex-env/bin/activate
+<a href="#__codelineno-6-13" id="__codelineno-6-13" name="__codelineno-6-13"></a>
+<a href="#__codelineno-6-14" id="__codelineno-6-14" name="__codelineno-6-14"></a><span class="c1"># Install codex-ml (runtime profile recommended)</span>
+<a href="#__codelineno-6-15" id="__codelineno-6-15" name="__codelineno-6-15"></a>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip
+<a href="#__codelineno-6-16" id="__codelineno-6-16" name="__codelineno-6-16"></a>pip<span class="w"> </span>install<span class="w"> </span>codex-ml<span class="o">[</span>runtime<span class="o">]==</span><span class="m">0</span>.1.0
+<a href="#__codelineno-6-17" id="__codelineno-6-17" name="__codelineno-6-17"></a>
+<a href="#__codelineno-6-18" id="__codelineno-6-18" name="__codelineno-6-18"></a><span class="c1"># Verify installation</span>
+<a href="#__codelineno-6-19" id="__codelineno-6-19" name="__codelineno-6-19"></a>codex-ml<span class="w"> </span>--version
+</code></pre></div>
+<h4 id="fedorarhelcentos">Fedora/RHEL/CentOS<a class="headerlink" href="#fedorarhelcentos" title="Permanent link">¶</a></h4>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="c1"># Install Python 3.12</span>
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>sudo<span class="w"> </span>dnf<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>python3.12<span class="w"> </span>python3.12-devel<span class="w"> </span>python3-pip
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="c1"># Create and activate virtual environment</span>
+<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a>python3.12<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>~/codex-env
+<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a><span class="nb">source</span><span class="w"> </span>~/codex-env/bin/activate
+<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a>
+<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a><span class="c1"># Install codex-ml</span>
+<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip
+<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a>pip<span class="w"> </span>install<span class="w"> </span>codex-ml<span class="o">[</span>runtime<span class="o">]==</span><span class="m">0</span>.1.0
+</code></pre></div>
+<h4 id="optional-nvidia-gpu-support-linux">Optional: NVIDIA GPU Support (Linux)<a class="headerlink" href="#optional-nvidia-gpu-support-linux" title="Permanent link">¶</a></h4>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-8-1" id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="c1"># Install NVIDIA drivers and CUDA toolkit</span>
+<a href="#__codelineno-8-2" id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="c1"># Follow: https://docs.nvidia.com/cuda/cuda-installation-guide-linux/</span>
+<a href="#__codelineno-8-3" id="__codelineno-8-3" name="__codelineno-8-3"></a>
+<a href="#__codelineno-8-4" id="__codelineno-8-4" name="__codelineno-8-4"></a><span class="c1"># Install cuDNN (optional, for optimal performance)</span>
+<a href="#__codelineno-8-5" id="__codelineno-8-5" name="__codelineno-8-5"></a><span class="c1"># Follow: https://docs.nvidia.com/deeplearning/cudnn/install-guide/</span>
+<a href="#__codelineno-8-6" id="__codelineno-8-6" name="__codelineno-8-6"></a>
+<a href="#__codelineno-8-7" id="__codelineno-8-7" name="__codelineno-8-7"></a><span class="c1"># Verify GPU access</span>
+<a href="#__codelineno-8-8" id="__codelineno-8-8" name="__codelineno-8-8"></a>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import torch; print(torch.cuda.is_available())"</span>
+</code></pre></div>
+<hr/>
+<h3 id="macos-intel-apple-silicon">🍎 macOS (Intel &amp; Apple Silicon)<a class="headerlink" href="#macos-intel-apple-silicon" title="Permanent link">¶</a></h3>
+<h4 id="prerequisites-for-macos">Prerequisites for macOS<a class="headerlink" href="#prerequisites-for-macos" title="Permanent link">¶</a></h4>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-9-1" id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="c1"># Install Homebrew if not already installed</span>
+<a href="#__codelineno-9-2" id="__codelineno-9-2" name="__codelineno-9-2"></a>/bin/bash<span class="w"> </span>-c<span class="w"> </span><span class="s2">"</span><span class="k">$(</span>curl<span class="w"> </span>-fsSL<span class="w"> </span>https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh<span class="k">)</span><span class="s2">"</span>
+<a href="#__codelineno-9-3" id="__codelineno-9-3" name="__codelineno-9-3"></a>
+<a href="#__codelineno-9-4" id="__codelineno-9-4" name="__codelineno-9-4"></a><span class="c1"># Install Python 3.12</span>
+<a href="#__codelineno-9-5" id="__codelineno-9-5" name="__codelineno-9-5"></a>brew<span class="w"> </span>install<span class="w"> </span>python@3.12
+<a href="#__codelineno-9-6" id="__codelineno-9-6" name="__codelineno-9-6"></a>
+<a href="#__codelineno-9-7" id="__codelineno-9-7" name="__codelineno-9-7"></a><span class="c1"># Verify installation</span>
+<a href="#__codelineno-9-8" id="__codelineno-9-8" name="__codelineno-9-8"></a>python3.12<span class="w"> </span>--version
+</code></pre></div>
+<h4 id="intel-mac-installation">Intel Mac Installation<a class="headerlink" href="#intel-mac-installation" title="Permanent link">¶</a></h4>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="c1"># Create virtual environment</span>
+<a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>python3.12<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>~/codex-env
+<a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a><span class="nb">source</span><span class="w"> </span>~/codex-env/bin/activate
+<a href="#__codelineno-10-4" id="__codelineno-10-4" name="__codelineno-10-4"></a>
+<a href="#__codelineno-10-5" id="__codelineno-10-5" name="__codelineno-10-5"></a><span class="c1"># Install codex-ml</span>
+<a href="#__codelineno-10-6" id="__codelineno-10-6" name="__codelineno-10-6"></a>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip
+<a href="#__codelineno-10-7" id="__codelineno-10-7" name="__codelineno-10-7"></a>pip<span class="w"> </span>install<span class="w"> </span>codex-ml<span class="o">[</span>runtime<span class="o">]==</span><span class="m">0</span>.1.0
+</code></pre></div>
+<h4 id="apple-silicon-m1m2m3-installation">Apple Silicon (M1/M2/M3) Installation<a class="headerlink" href="#apple-silicon-m1m2m3-installation" title="Permanent link">¶</a></h4>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-11-1" id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="c1"># Method 1: Using Homebrew (recommended)</span>
+<a href="#__codelineno-11-2" id="__codelineno-11-2" name="__codelineno-11-2"></a>brew<span class="w"> </span>install<span class="w"> </span>python@3.12
+<a href="#__codelineno-11-3" id="__codelineno-11-3" name="__codelineno-11-3"></a>python3.12<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>~/codex-env
+<a href="#__codelineno-11-4" id="__codelineno-11-4" name="__codelineno-11-4"></a><span class="nb">source</span><span class="w"> </span>~/codex-env/bin/activate
+<a href="#__codelineno-11-5" id="__codelineno-11-5" name="__codelineno-11-5"></a>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip
+<a href="#__codelineno-11-6" id="__codelineno-11-6" name="__codelineno-11-6"></a>pip<span class="w"> </span>install<span class="w"> </span>codex-ml<span class="o">[</span>runtime<span class="o">]==</span><span class="m">0</span>.1.0
+<a href="#__codelineno-11-7" id="__codelineno-11-7" name="__codelineno-11-7"></a>
+<a href="#__codelineno-11-8" id="__codelineno-11-8" name="__codelineno-11-8"></a><span class="c1"># Method 2: Using Conda (if PyTorch has issues)</span>
+<a href="#__codelineno-11-9" id="__codelineno-11-9" name="__codelineno-11-9"></a>conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>codex<span class="w"> </span><span class="nv">python</span><span class="o">=</span><span class="m">3</span>.12
+<a href="#__codelineno-11-10" id="__codelineno-11-10" name="__codelineno-11-10"></a>conda<span class="w"> </span>activate<span class="w"> </span>codex
+<a href="#__codelineno-11-11" id="__codelineno-11-11" name="__codelineno-11-11"></a>pip<span class="w"> </span>install<span class="w"> </span>codex-ml<span class="o">[</span>runtime<span class="o">]==</span><span class="m">0</span>.1.0
+<a href="#__codelineno-11-12" id="__codelineno-11-12" name="__codelineno-11-12"></a>
+<a href="#__codelineno-11-13" id="__codelineno-11-13" name="__codelineno-11-13"></a><span class="c1"># Verify GPU access (optional)</span>
+<a href="#__codelineno-11-14" id="__codelineno-11-14" name="__codelineno-11-14"></a>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import torch; print(f'GPU: {torch.backends.mps.is_available()}')"</span>
+</code></pre></div>
+<h4 id="optional-apple-silicon-gpu-support">Optional: Apple Silicon GPU Support<a class="headerlink" href="#optional-apple-silicon-gpu-support" title="Permanent link">¶</a></h4>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-12-1" id="__codelineno-12-1" name="__codelineno-12-1"></a><span class="c1"># PyTorch automatically uses Metal Performance Shaders</span>
+<a href="#__codelineno-12-2" id="__codelineno-12-2" name="__codelineno-12-2"></a><span class="c1"># No additional setup required</span>
+<a href="#__codelineno-12-3" id="__codelineno-12-3" name="__codelineno-12-3"></a>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import torch; print(torch.backends.mps.is_available())"</span>
+</code></pre></div>
+<hr/>
+<h3 id="windows-powershell">🪟 Windows (PowerShell)<a class="headerlink" href="#windows-powershell" title="Permanent link">¶</a></h3>
+<h4 id="installation-steps">Installation Steps<a class="headerlink" href="#installation-steps" title="Permanent link">¶</a></h4>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-13-1" id="__codelineno-13-1" name="__codelineno-13-1"></a><span class="c"># Option 1: Using Windows Package Manager (winget)</span>
+<a href="#__codelineno-13-2" id="__codelineno-13-2" name="__codelineno-13-2"></a><span class="n">winget</span> <span class="n">install</span> <span class="n">Python</span><span class="p">.</span><span class="n">Python</span><span class="p">.</span><span class="n">3</span><span class="p">.</span><span class="n">12</span>
+<a href="#__codelineno-13-3" id="__codelineno-13-3" name="__codelineno-13-3"></a>
+<a href="#__codelineno-13-4" id="__codelineno-13-4" name="__codelineno-13-4"></a><span class="c"># Option 2: Direct download from https://www.python.org/downloads/</span>
+<a href="#__codelineno-13-5" id="__codelineno-13-5" name="__codelineno-13-5"></a>
+<a href="#__codelineno-13-6" id="__codelineno-13-6" name="__codelineno-13-6"></a><span class="c"># Verify Python installation</span>
+<a href="#__codelineno-13-7" id="__codelineno-13-7" name="__codelineno-13-7"></a><span class="n">python</span> <span class="p">-</span><span class="n">-version</span>
+<a href="#__codelineno-13-8" id="__codelineno-13-8" name="__codelineno-13-8"></a>
+<a href="#__codelineno-13-9" id="__codelineno-13-9" name="__codelineno-13-9"></a><span class="c"># Create virtual environment</span>
+<a href="#__codelineno-13-10" id="__codelineno-13-10" name="__codelineno-13-10"></a><span class="n">python</span> <span class="n">-m</span> <span class="n">venv</span> <span class="n">codex-env</span>
+<a href="#__codelineno-13-11" id="__codelineno-13-11" name="__codelineno-13-11"></a>
+<a href="#__codelineno-13-12" id="__codelineno-13-12" name="__codelineno-13-12"></a><span class="c"># Activate virtual environment</span>
+<a href="#__codelineno-13-13" id="__codelineno-13-13" name="__codelineno-13-13"></a><span class="p">.\</span><span class="n">codex-env</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">Activate</span><span class="p">.</span><span class="n">ps1</span>
+<a href="#__codelineno-13-14" id="__codelineno-13-14" name="__codelineno-13-14"></a>
+<a href="#__codelineno-13-15" id="__codelineno-13-15" name="__codelineno-13-15"></a><span class="c"># If you get execution policy error, run:</span>
+<a href="#__codelineno-13-16" id="__codelineno-13-16" name="__codelineno-13-16"></a><span class="nb">Set-ExecutionPolicy</span> <span class="n">-ExecutionPolicy</span> <span class="n">RemoteSigned</span> <span class="n">-Scope</span> <span class="n">CurrentUser</span>
+<a href="#__codelineno-13-17" id="__codelineno-13-17" name="__codelineno-13-17"></a>
+<a href="#__codelineno-13-18" id="__codelineno-13-18" name="__codelineno-13-18"></a><span class="c"># Install codex-ml</span>
+<a href="#__codelineno-13-19" id="__codelineno-13-19" name="__codelineno-13-19"></a><span class="n">python</span> <span class="n">-m</span> <span class="n">pip</span> <span class="n">install</span> <span class="p">-</span><span class="n">-upgrade</span> <span class="n">pip</span>
+<a href="#__codelineno-13-20" id="__codelineno-13-20" name="__codelineno-13-20"></a><span class="n">pip</span> <span class="n">install</span> <span class="n">codex-ml</span><span class="no">[runtime]</span><span class="p">==</span><span class="n">0</span><span class="p">.</span><span class="n">1</span><span class="p">.</span><span class="n">0</span>
+<a href="#__codelineno-13-21" id="__codelineno-13-21" name="__codelineno-13-21"></a>
+<a href="#__codelineno-13-22" id="__codelineno-13-22" name="__codelineno-13-22"></a><span class="c"># Verify installation</span>
+<a href="#__codelineno-13-23" id="__codelineno-13-23" name="__codelineno-13-23"></a><span class="n">codex-ml</span> <span class="p">-</span><span class="n">-version</span>
+</code></pre></div>
+<h4 id="troubleshooting-powershell-issues">Troubleshooting PowerShell Issues<a class="headerlink" href="#troubleshooting-powershell-issues" title="Permanent link">¶</a></h4>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-14-1" id="__codelineno-14-1" name="__codelineno-14-1"></a><span class="c"># If activation fails, try cmd.exe instead:</span>
+<a href="#__codelineno-14-2" id="__codelineno-14-2" name="__codelineno-14-2"></a><span class="n">cmd</span> <span class="p">/</span><span class="n">c</span> <span class="s2">"codex-env\Scripts\activate.bat"</span>
+<a href="#__codelineno-14-3" id="__codelineno-14-3" name="__codelineno-14-3"></a>
+<a href="#__codelineno-14-4" id="__codelineno-14-4" name="__codelineno-14-4"></a><span class="c"># Or use Python's built-in venv activation</span>
+<a href="#__codelineno-14-5" id="__codelineno-14-5" name="__codelineno-14-5"></a><span class="n">python</span> <span class="n">-m</span> <span class="n">venv</span> <span class="p">-</span><span class="n">-help</span>
+<a href="#__codelineno-14-6" id="__codelineno-14-6" name="__codelineno-14-6"></a>
+<a href="#__codelineno-14-7" id="__codelineno-14-7" name="__codelineno-14-7"></a><span class="c"># Check your execution policy</span>
+<a href="#__codelineno-14-8" id="__codelineno-14-8" name="__codelineno-14-8"></a><span class="nb">Get-ExecutionPolicy</span> <span class="n">-List</span>
+</code></pre></div>
+<hr/>
+<h3 id="docker-all-platforms">🐳 Docker (All Platforms)<a class="headerlink" href="#docker-all-platforms" title="Permanent link">¶</a></h3>
+<h4 id="using-pre-built-image-easiest">Using Pre-Built Image (Easiest)<a class="headerlink" href="#using-pre-built-image-easiest" title="Permanent link">¶</a></h4>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-15-1" id="__codelineno-15-1" name="__codelineno-15-1"></a><span class="c1"># Pull the latest image</span>
+<a href="#__codelineno-15-2" id="__codelineno-15-2" name="__codelineno-15-2"></a>docker<span class="w"> </span>pull<span class="w"> </span>ghcr.io/aries-serpent/codex:0.1.0-runtime
+<a href="#__codelineno-15-3" id="__codelineno-15-3" name="__codelineno-15-3"></a>
+<a href="#__codelineno-15-4" id="__codelineno-15-4" name="__codelineno-15-4"></a><span class="c1"># Run interactively</span>
+<a href="#__codelineno-15-5" id="__codelineno-15-5" name="__codelineno-15-5"></a>docker<span class="w"> </span>run<span class="w"> </span>-it<span class="w"> </span>ghcr.io/aries-serpent/codex:0.1.0-runtime<span class="w"> </span>bash
+<a href="#__codelineno-15-6" id="__codelineno-15-6" name="__codelineno-15-6"></a>
+<a href="#__codelineno-15-7" id="__codelineno-15-7" name="__codelineno-15-7"></a><span class="c1"># Run specific command</span>
+<a href="#__codelineno-15-8" id="__codelineno-15-8" name="__codelineno-15-8"></a>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>ghcr.io/aries-serpent/codex:0.1.0-runtime<span class="w"> </span>codex-ml<span class="w"> </span>--help
+<a href="#__codelineno-15-9" id="__codelineno-15-9" name="__codelineno-15-9"></a>
+<a href="#__codelineno-15-10" id="__codelineno-15-10" name="__codelineno-15-10"></a><span class="c1"># With GPU support (requires nvidia-docker)</span>
+<a href="#__codelineno-15-11" id="__codelineno-15-11" name="__codelineno-15-11"></a>docker<span class="w"> </span>run<span class="w"> </span>-it<span class="w"> </span>--gpus<span class="w"> </span>all<span class="w"> </span>ghcr.io/aries-serpent/codex:0.1.0-runtime<span class="w"> </span>python<span class="w"> </span>-c<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-15-12" id="__codelineno-15-12" name="__codelineno-15-12"></a><span class="w">  </span><span class="s2">"import torch; print(f'GPU available: {torch.cuda.is_available()}')"</span>
+</code></pre></div>
+<h4 id="building-locally">Building Locally<a class="headerlink" href="#building-locally" title="Permanent link">¶</a></h4>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-16-1" id="__codelineno-16-1" name="__codelineno-16-1"></a><span class="c1"># Clone the repository</span>
+<a href="#__codelineno-16-2" id="__codelineno-16-2" name="__codelineno-16-2"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/Aries-Serpent/_codex_.git
+<a href="#__codelineno-16-3" id="__codelineno-16-3" name="__codelineno-16-3"></a><span class="nb">cd</span><span class="w"> </span>_codex_
+<a href="#__codelineno-16-4" id="__codelineno-16-4" name="__codelineno-16-4"></a>
+<a href="#__codelineno-16-5" id="__codelineno-16-5" name="__codelineno-16-5"></a><span class="c1"># Build the Docker image</span>
+<a href="#__codelineno-16-6" id="__codelineno-16-6" name="__codelineno-16-6"></a>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>codex:0.1.0<span class="w"> </span>-f<span class="w"> </span>Dockerfile<span class="w"> </span>.
+<a href="#__codelineno-16-7" id="__codelineno-16-7" name="__codelineno-16-7"></a>
+<a href="#__codelineno-16-8" id="__codelineno-16-8" name="__codelineno-16-8"></a><span class="c1"># Run the image</span>
+<a href="#__codelineno-16-9" id="__codelineno-16-9" name="__codelineno-16-9"></a>docker<span class="w"> </span>run<span class="w"> </span>-it<span class="w"> </span>codex:0.1.0<span class="w"> </span>codex-ml<span class="w"> </span>--help
+<a href="#__codelineno-16-10" id="__codelineno-16-10" name="__codelineno-16-10"></a>
+<a href="#__codelineno-16-11" id="__codelineno-16-11" name="__codelineno-16-11"></a><span class="c1"># Tag for registry</span>
+<a href="#__codelineno-16-12" id="__codelineno-16-12" name="__codelineno-16-12"></a>docker<span class="w"> </span>tag<span class="w"> </span>codex:0.1.0<span class="w"> </span>ghcr.io/aries-serpent/codex:0.1.0
+</code></pre></div>
+<h4 id="docker-compose-development">Docker Compose (Development)<a class="headerlink" href="#docker-compose-development" title="Permanent link">¶</a></h4>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-17-1" id="__codelineno-17-1" name="__codelineno-17-1"></a><span class="c1"># docker-compose.yml</span>
+<a href="#__codelineno-17-2" id="__codelineno-17-2" name="__codelineno-17-2"></a><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">'3.8'</span>
+<a href="#__codelineno-17-3" id="__codelineno-17-3" name="__codelineno-17-3"></a><span class="nt">services</span><span class="p">:</span>
+<a href="#__codelineno-17-4" id="__codelineno-17-4" name="__codelineno-17-4"></a><span class="w">  </span><span class="nt">codex</span><span class="p">:</span>
+<a href="#__codelineno-17-5" id="__codelineno-17-5" name="__codelineno-17-5"></a><span class="w">    </span><span class="nt">build</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.</span>
+<a href="#__codelineno-17-6" id="__codelineno-17-6" name="__codelineno-17-6"></a><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">codex:latest</span>
+<a href="#__codelineno-17-7" id="__codelineno-17-7" name="__codelineno-17-7"></a><span class="w">    </span><span class="nt">volumes</span><span class="p">:</span>
+<a href="#__codelineno-17-8" id="__codelineno-17-8" name="__codelineno-17-8"></a><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.:/workspace</span>
+<a href="#__codelineno-17-9" id="__codelineno-17-9" name="__codelineno-17-9"></a><span class="w">    </span><span class="nt">working_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/workspace</span>
+<a href="#__codelineno-17-10" id="__codelineno-17-10" name="__codelineno-17-10"></a><span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/bin/bash</span>
+<a href="#__codelineno-17-11" id="__codelineno-17-11" name="__codelineno-17-11"></a><span class="w">    </span><span class="nt">stdin_open</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a href="#__codelineno-17-12" id="__codelineno-17-12" name="__codelineno-17-12"></a><span class="w">    </span><span class="nt">tty</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-18-1" id="__codelineno-18-1" name="__codelineno-18-1"></a><span class="c1"># Run with docker-compose</span>
+<a href="#__codelineno-18-2" id="__codelineno-18-2" name="__codelineno-18-2"></a>docker-compose<span class="w"> </span>up<span class="w"> </span>-d<span class="w"> </span>codex
+<a href="#__codelineno-18-3" id="__codelineno-18-3" name="__codelineno-18-3"></a>docker-compose<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>codex<span class="w"> </span>codex-ml<span class="w"> </span>--help
+</code></pre></div>
+<hr/>
+<h3 id="kubernetes-enterprise">☸️ Kubernetes (Enterprise)<a class="headerlink" href="#kubernetes-enterprise" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-19-1" id="__codelineno-19-1" name="__codelineno-19-1"></a><span class="c1"># Create namespace</span>
+<a href="#__codelineno-19-2" id="__codelineno-19-2" name="__codelineno-19-2"></a>kubectl<span class="w"> </span>create<span class="w"> </span>namespace<span class="w"> </span>codex
+<a href="#__codelineno-19-3" id="__codelineno-19-3" name="__codelineno-19-3"></a>
+<a href="#__codelineno-19-4" id="__codelineno-19-4" name="__codelineno-19-4"></a><span class="c1"># Apply manifests</span>
+<a href="#__codelineno-19-5" id="__codelineno-19-5" name="__codelineno-19-5"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>manifests/k8s/<span class="w"> </span>-n<span class="w"> </span>codex
+<a href="#__codelineno-19-6" id="__codelineno-19-6" name="__codelineno-19-6"></a>
+<a href="#__codelineno-19-7" id="__codelineno-19-7" name="__codelineno-19-7"></a><span class="c1"># Verify deployment</span>
+<a href="#__codelineno-19-8" id="__codelineno-19-8" name="__codelineno-19-8"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>codex
+<a href="#__codelineno-19-9" id="__codelineno-19-9" name="__codelineno-19-9"></a>kubectl<span class="w"> </span>get<span class="w"> </span>svc<span class="w"> </span>-n<span class="w"> </span>codex
+<a href="#__codelineno-19-10" id="__codelineno-19-10" name="__codelineno-19-10"></a>
+<a href="#__codelineno-19-11" id="__codelineno-19-11" name="__codelineno-19-11"></a><span class="c1"># Check logs</span>
+<a href="#__codelineno-19-12" id="__codelineno-19-12" name="__codelineno-19-12"></a>kubectl<span class="w"> </span>logs<span class="w"> </span>-n<span class="w"> </span>codex<span class="w"> </span>deployment/codex-api
+<a href="#__codelineno-19-13" id="__codelineno-19-13" name="__codelineno-19-13"></a>
+<a href="#__codelineno-19-14" id="__codelineno-19-14" name="__codelineno-19-14"></a><span class="c1"># Port forward to local</span>
+<a href="#__codelineno-19-15" id="__codelineno-19-15" name="__codelineno-19-15"></a>kubectl<span class="w"> </span>port-forward<span class="w"> </span>-n<span class="w"> </span>codex<span class="w"> </span>svc/codex-api<span class="w"> </span><span class="m">8000</span>:8000
+</code></pre></div>
+<hr/>
+<h2 id="verification">Verification<a class="headerlink" href="#verification" title="Permanent link">¶</a></h2>
+<p>After installation, verify everything works correctly with these tests.</p>
+<h3 id="quick-verification">Quick Verification<a class="headerlink" href="#quick-verification" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-20-1" id="__codelineno-20-1" name="__codelineno-20-1"></a><span class="c1"># Check version</span>
+<a href="#__codelineno-20-2" id="__codelineno-20-2" name="__codelineno-20-2"></a>codex-ml<span class="w"> </span>--version
+<a href="#__codelineno-20-3" id="__codelineno-20-3" name="__codelineno-20-3"></a>
+<a href="#__codelineno-20-4" id="__codelineno-20-4" name="__codelineno-20-4"></a><span class="c1"># Test basic import</span>
+<a href="#__codelineno-20-5" id="__codelineno-20-5" name="__codelineno-20-5"></a>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import codex_ml; print(f'✓ Imported: {codex_ml.__version__}')"</span>
+<a href="#__codelineno-20-6" id="__codelineno-20-6" name="__codelineno-20-6"></a>
+<a href="#__codelineno-20-7" id="__codelineno-20-7" name="__codelineno-20-7"></a><span class="c1"># Test CLI help</span>
+<a href="#__codelineno-20-8" id="__codelineno-20-8" name="__codelineno-20-8"></a>codex-ml<span class="w"> </span>--help
+</code></pre></div>
+<h3 id="complete-verification-suite">Complete Verification Suite<a class="headerlink" href="#complete-verification-suite" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-21-1" id="__codelineno-21-1" name="__codelineno-21-1"></a><span class="c1"># 1. Check Python environment</span>
+<a href="#__codelineno-21-2" id="__codelineno-21-2" name="__codelineno-21-2"></a>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"</span>
+<a href="#__codelineno-21-3" id="__codelineno-21-3" name="__codelineno-21-3"></a><span class="s2">import sys</span>
+<a href="#__codelineno-21-4" id="__codelineno-21-4" name="__codelineno-21-4"></a><span class="s2">print(f'Python: {sys.version}')</span>
+<a href="#__codelineno-21-5" id="__codelineno-21-5" name="__codelineno-21-5"></a><span class="s2">print(f'Executable: {sys.executable}')</span>
+<a href="#__codelineno-21-6" id="__codelineno-21-6" name="__codelineno-21-6"></a><span class="s2">"</span>
+<a href="#__codelineno-21-7" id="__codelineno-21-7" name="__codelineno-21-7"></a>
+<a href="#__codelineno-21-8" id="__codelineno-21-8" name="__codelineno-21-8"></a><span class="c1"># 2. Check core dependencies</span>
+<a href="#__codelineno-21-9" id="__codelineno-21-9" name="__codelineno-21-9"></a>python<span class="w"> </span><span class="s">&lt;&lt; 'EOF'</span>
+<a href="#__codelineno-21-10" id="__codelineno-21-10" name="__codelineno-21-10"></a><span class="s">packages = ['pydantic', 'hydra', 'omegaconf', 'typer', 'click']</span>
+<a href="#__codelineno-21-11" id="__codelineno-21-11" name="__codelineno-21-11"></a><span class="s">for pkg in packages:</span>
+<a href="#__codelineno-21-12" id="__codelineno-21-12" name="__codelineno-21-12"></a><span class="s">    try:</span>
+<a href="#__codelineno-21-13" id="__codelineno-21-13" name="__codelineno-21-13"></a><span class="s">        __import__(pkg)</span>
+<a href="#__codelineno-21-14" id="__codelineno-21-14" name="__codelineno-21-14"></a><span class="s">        print(f'✓ {pkg}')</span>
+<a href="#__codelineno-21-15" id="__codelineno-21-15" name="__codelineno-21-15"></a><span class="s">    except ImportError:</span>
+<a href="#__codelineno-21-16" id="__codelineno-21-16" name="__codelineno-21-16"></a><span class="s">        print(f'✗ {pkg}')</span>
+<a href="#__codelineno-21-17" id="__codelineno-21-17" name="__codelineno-21-17"></a><span class="s">EOF</span>
+<a href="#__codelineno-21-18" id="__codelineno-21-18" name="__codelineno-21-18"></a>
+<a href="#__codelineno-21-19" id="__codelineno-21-19" name="__codelineno-21-19"></a><span class="c1"># 3. Runtime-specific packages (if runtime/full profile)</span>
+<a href="#__codelineno-21-20" id="__codelineno-21-20" name="__codelineno-21-20"></a>python<span class="w"> </span><span class="s">&lt;&lt; 'EOF'</span>
+<a href="#__codelineno-21-21" id="__codelineno-21-21" name="__codelineno-21-21"></a><span class="s">try:</span>
+<a href="#__codelineno-21-22" id="__codelineno-21-22" name="__codelineno-21-22"></a><span class="s">    import torch</span>
+<a href="#__codelineno-21-23" id="__codelineno-21-23" name="__codelineno-21-23"></a><span class="s">    print(f'✓ PyTorch {torch.__version__}')</span>
+<a href="#__codelineno-21-24" id="__codelineno-21-24" name="__codelineno-21-24"></a><span class="s">    if torch.cuda.is_available():</span>
+<a href="#__codelineno-21-25" id="__codelineno-21-25" name="__codelineno-21-25"></a><span class="s">        print(f'  - GPU available: {torch.cuda.get_device_name(0)}')</span>
+<a href="#__codelineno-21-26" id="__codelineno-21-26" name="__codelineno-21-26"></a><span class="s">except ImportError:</span>
+<a href="#__codelineno-21-27" id="__codelineno-21-27" name="__codelineno-21-27"></a><span class="s">    print('ℹ PyTorch not installed (core profile)')</span>
+<a href="#__codelineno-21-28" id="__codelineno-21-28" name="__codelineno-21-28"></a><span class="s">EOF</span>
+<a href="#__codelineno-21-29" id="__codelineno-21-29" name="__codelineno-21-29"></a>
+<a href="#__codelineno-21-30" id="__codelineno-21-30" name="__codelineno-21-30"></a><span class="c1"># 4. Test CLI commands</span>
+<a href="#__codelineno-21-31" id="__codelineno-21-31" name="__codelineno-21-31"></a>codex-ml<span class="w"> </span>config<span class="w"> </span>--help
+<a href="#__codelineno-21-32" id="__codelineno-21-32" name="__codelineno-21-32"></a>codex-ml<span class="w"> </span>train<span class="w"> </span>--help
+<a href="#__codelineno-21-33" id="__codelineno-21-33" name="__codelineno-21-33"></a>codex-ml<span class="w"> </span><span class="nb">eval</span><span class="w"> </span>--help
+<a href="#__codelineno-21-34" id="__codelineno-21-34" name="__codelineno-21-34"></a>
+<a href="#__codelineno-21-35" id="__codelineno-21-35" name="__codelineno-21-35"></a><span class="c1"># 5. Run smoke tests (if full profile)</span>
+<a href="#__codelineno-21-36" id="__codelineno-21-36" name="__codelineno-21-36"></a>pytest<span class="w"> </span>tests/<span class="w"> </span>-x<span class="w"> </span>--tb<span class="o">=</span>short<span class="w"> </span>-k<span class="w"> </span><span class="s2">"test_smoke"</span><span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-21-37" id="__codelineno-21-37" name="__codelineno-21-37"></a><span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"ℹ Smoke tests skipped (full profile only)"</span>
+</code></pre></div>
+<h3 id="platform-specific-verification">Platform-Specific Verification<a class="headerlink" href="#platform-specific-verification" title="Permanent link">¶</a></h3>
+<p><strong>Linux/macOS:</strong>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-22-1" id="__codelineno-22-1" name="__codelineno-22-1"></a><span class="c1"># Check virtual environment</span>
+<a href="#__codelineno-22-2" id="__codelineno-22-2" name="__codelineno-22-2"></a>which<span class="w"> </span>python
+<a href="#__codelineno-22-3" id="__codelineno-22-3" name="__codelineno-22-3"></a><span class="nb">echo</span><span class="w"> </span><span class="nv">$VIRTUAL_ENV</span>
+<a href="#__codelineno-22-4" id="__codelineno-22-4" name="__codelineno-22-4"></a>
+<a href="#__codelineno-22-5" id="__codelineno-22-5" name="__codelineno-22-5"></a><span class="c1"># Verify package location</span>
+<a href="#__codelineno-22-6" id="__codelineno-22-6" name="__codelineno-22-6"></a>pip<span class="w"> </span>show<span class="w"> </span>codex-ml<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>Location
+</code></pre></div></p>
+<p><strong>Windows PowerShell:</strong>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-23-1" id="__codelineno-23-1" name="__codelineno-23-1"></a><span class="c"># Check virtual environment</span>
+<a href="#__codelineno-23-2" id="__codelineno-23-2" name="__codelineno-23-2"></a><span class="p">(</span><span class="nb">Get-Command</span> <span class="n">python</span><span class="p">).</span><span class="n">Source</span>
+<a href="#__codelineno-23-3" id="__codelineno-23-3" name="__codelineno-23-3"></a><span class="nv">$env:VIRTUAL_ENV</span>
+<a href="#__codelineno-23-4" id="__codelineno-23-4" name="__codelineno-23-4"></a>
+<a href="#__codelineno-23-5" id="__codelineno-23-5" name="__codelineno-23-5"></a><span class="c"># Verify package</span>
+<a href="#__codelineno-23-6" id="__codelineno-23-6" name="__codelineno-23-6"></a><span class="n">pip</span> <span class="n">show</span> <span class="n">codex-ml</span> <span class="p">|</span> <span class="n">findstr</span> <span class="n">Location</span>
+</code></pre></div></p>
+<p><strong>Docker:</strong>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-24-1" id="__codelineno-24-1" name="__codelineno-24-1"></a>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>ghcr.io/aries-serpent/codex:0.1.0<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-24-2" id="__codelineno-24-2" name="__codelineno-24-2"></a><span class="w">  </span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import codex_ml; print(codex_ml.__version__)"</span>
+</code></pre></div></p>
+<h3 id="test-by-profile">Test by Profile<a class="headerlink" href="#test-by-profile" title="Permanent link">¶</a></h3>
+<p><strong>Core Profile Test:</strong>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-25-1" id="__codelineno-25-1" name="__codelineno-25-1"></a>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"</span>
+<a href="#__codelineno-25-2" id="__codelineno-25-2" name="__codelineno-25-2"></a><span class="s2">from codex_ml.config import ConfigManager</span>
+<a href="#__codelineno-25-3" id="__codelineno-25-3" name="__codelineno-25-3"></a><span class="s2">from codex_ml.cli import cli</span>
+<a href="#__codelineno-25-4" id="__codelineno-25-4" name="__codelineno-25-4"></a><span class="s2">print('✓ Core profile working')</span>
+<a href="#__codelineno-25-5" id="__codelineno-25-5" name="__codelineno-25-5"></a><span class="s2">"</span>
+</code></pre></div></p>
+<p><strong>Runtime Profile Test:</strong>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-26-1" id="__codelineno-26-1" name="__codelineno-26-1"></a>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"</span>
+<a href="#__codelineno-26-2" id="__codelineno-26-2" name="__codelineno-26-2"></a><span class="s2">import torch</span>
+<a href="#__codelineno-26-3" id="__codelineno-26-3" name="__codelineno-26-3"></a><span class="s2">import transformers</span>
+<a href="#__codelineno-26-4" id="__codelineno-26-4" name="__codelineno-26-4"></a><span class="s2">print(f'✓ PyTorch {torch.__version__}')</span>
+<a href="#__codelineno-26-5" id="__codelineno-26-5" name="__codelineno-26-5"></a><span class="s2">print(f'✓ Transformers {transformers.__version__}')</span>
+<a href="#__codelineno-26-6" id="__codelineno-26-6" name="__codelineno-26-6"></a><span class="s2">"</span>
+</code></pre></div></p>
+<p><strong>Full Profile Test:</strong>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-27-1" id="__codelineno-27-1" name="__codelineno-27-1"></a>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"</span>
+<a href="#__codelineno-27-2" id="__codelineno-27-2" name="__codelineno-27-2"></a><span class="s2">import pytest</span>
+<a href="#__codelineno-27-3" id="__codelineno-27-3" name="__codelineno-27-3"></a><span class="s2">import mypy</span>
+<a href="#__codelineno-27-4" id="__codelineno-27-4" name="__codelineno-27-4"></a><span class="s2">import black</span>
+<a href="#__codelineno-27-5" id="__codelineno-27-5" name="__codelineno-27-5"></a><span class="s2">print('✓ Full profile working (dev tools installed)')</span>
+<a href="#__codelineno-27-6" id="__codelineno-27-6" name="__codelineno-27-6"></a><span class="s2">"</span>
+</code></pre></div></p>
+<hr/>
+<h2 id="installation-profiles">Installation Profiles<a class="headerlink" href="#installation-profiles" title="Permanent link">¶</a></h2>
+<p>codex-ml uses a <strong>3-tier installation strategy</strong> to optimize for different use cases. Choose the profile that matches your needs.</p>
+<h3 id="core-profile">Core Profile<a class="headerlink" href="#core-profile" title="Permanent link">¶</a></h3>
+<p><strong>What is it?</strong> Lightweight, offline-first installation with essential tools</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-28-1" id="__codelineno-28-1" name="__codelineno-28-1"></a>pip<span class="w"> </span>install<span class="w"> </span>codex-ml<span class="o">[</span>core<span class="o">]==</span><span class="m">0</span>.1.0
+</code></pre></div>
+<p>** Specifications:<strong>
+- </strong>Size:<strong> ~8-15 MB
+- </strong>Installation time:<strong> 30-60 seconds
+- </strong>Memory footprint:<strong> ~50-100 MB at runtime
+- </strong>Internet required:** Only for initial download</p>
+<p>** Includes:**
+- Core runtime engine
+- CLI interface (Typer + Click)
+- Configuration management (Hydra + OmegaConf)
+- Data validation (Pydantic)
+- Code analysis tools (libcst, parso, tree-sitter)
+- YAML/JSON serialization
+- Network security enforcement</p>
+<p>** Does NOT include:**
+- Machine Learning frameworks (PyTorch, Transformers)
+- Evaluation tools (lm-eval)
+- Model serving (Ray Serve, FastAPI)
+- Training infrastructure
+- Development tools (pytest, mypy, black)</p>
+<p>** Best for:**
+- Lightweight deployments on edge devices
+- Air-gapped or offline environments
+- Container/Kubernetes operator images
+- Minimal dependencies for security compliance
+- Embedded systems with limited resources</p>
+<p><strong>Example use case:</strong>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-29-1" id="__codelineno-29-1" name="__codelineno-29-1"></a><span class="c1"># Deploy CLI tools on minimal container</span>
+<a href="#__codelineno-29-2" id="__codelineno-29-2" name="__codelineno-29-2"></a>docker<span class="w"> </span>run<span class="w"> </span>-m<span class="w"> </span>256m<span class="w"> </span>codex:core<span class="w"> </span>codex-ml<span class="w"> </span>--version
+</code></pre></div></p>
+<hr/>
+<h3 id="runtime-profile">Runtime Profile<a class="headerlink" href="#runtime-profile" title="Permanent link">¶</a></h3>
+<p><strong>What is it?</strong> Complete ML inference and serving environment (most popular ⭐)</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-30-1" id="__codelineno-30-1" name="__codelineno-30-1"></a>pip<span class="w"> </span>install<span class="w"> </span>codex-ml<span class="o">[</span>runtime<span class="o">]==</span><span class="m">0</span>.1.0
+</code></pre></div>
+<p>** Specifications:<strong>
+- </strong>Size:<strong> ~20-35 MB (plus PyTorch ~500 MB)
+- </strong>Installation time:<strong> 3-5 minutes
+- </strong>Memory footprint:<strong> ~1-2 GB at runtime
+- </strong>GPU support:** Optional NVIDIA/AMD/Apple Silicon</p>
+<p>** Includes:<strong>
+- Everything in Core profile
+- </strong>ML Frameworks:<strong> PyTorch 2.6+, Transformers 5.12+
+- </strong>ML Utilities:<strong> datasets, scikit-learn, pandas, numpy
+- </strong>Model Serving:<strong> Ray Serve, FastAPI, Starlette
+- </strong>API Tools:<strong> httpx, slowapi (rate limiting)
+- </strong>Inference Optimization:<strong> accelerate, PEFT
+- </strong>Data Infrastructure:<strong> DuckDB, Chromadb
+- </strong>Embedding Models:<strong> sentence-transformers
+- </strong>Vector Search:<strong> FAISS (CPU)
+- </strong>Monitoring:<strong> prometheus-client, psutil, evidently
+- </strong>Tokenization:** sentencepiece</p>
+<p>** Does NOT include:**
+- Training optimizers (full training pipeline)
+- Development tools (pytest, mypy)
+- Jupyter/notebook support
+- Experimental features
+- Enterprise integrations</p>
+<p>** Best for:**
+- Production inference servers
+- Running pre-trained models
+- API services and microservices
+- Real-time pattern recognition
+- Most users and organizations ⭐</p>
+<p><strong>System requirements:</strong>
+- Minimum: 4 GB RAM
+- Recommended: 8+ GB RAM
+- GPU: Optional but recommended for inference</p>
+<p><strong>Example use case:</strong>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-31-1" id="__codelineno-31-1" name="__codelineno-31-1"></a><span class="c1"># Start inference server on port 8000</span>
+<a href="#__codelineno-31-2" id="__codelineno-31-2" name="__codelineno-31-2"></a>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"from fastapi import FastAPI; from ray import serve</span>
+<a href="#__codelineno-31-3" id="__codelineno-31-3" name="__codelineno-31-3"></a><span class="s2">app = FastAPI()</span>
+<a href="#__codelineno-31-4" id="__codelineno-31-4" name="__codelineno-31-4"></a><span class="s2">@serve.deployment</span>
+<a href="#__codelineno-31-5" id="__codelineno-31-5" name="__codelineno-31-5"></a><span class="s2">def predict(text): return {'result': 'inference'}</span>
+<a href="#__codelineno-31-6" id="__codelineno-31-6" name="__codelineno-31-6"></a><span class="s2">serve.run(app, port=8000)"</span>
+</code></pre></div></p>
+<hr/>
+<h3 id="full-profile">Full Profile<a class="headerlink" href="#full-profile" title="Permanent link">¶</a></h3>
+<p><strong>What is it?</strong> Complete development, research, and testing environment</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-32-1" id="__codelineno-32-1" name="__codelineno-32-1"></a>pip<span class="w"> </span>install<span class="w"> </span>codex-ml<span class="o">[</span>full<span class="o">]==</span><span class="m">0</span>.1.0
+</code></pre></div>
+<p>** Specifications:<strong>
+- </strong>Size:<strong> ~100+ MB (plus all dependencies)
+- </strong>Installation time:<strong> 5-15 minutes
+- </strong>Memory footprint:<strong> ~3-5 GB at runtime
+- </strong>GPU support:** Strongly recommended</p>
+<p>** Includes:<strong>
+- Everything in Core + Runtime profiles
+- </strong>Development Tools:<strong>
+  - Testing: pytest, pytest-cov, pytest-xdist, hypothesis
+  - Linting: ruff, black, isort, mypy
+  - Pre-commit hooks, git integration
+  - Type checking at 3.12+ level
+- </strong>Documentation:<strong> MkDocs, Sphinx support
+- </strong>Profiling &amp; Analysis:<strong>
+  - Memory/CPU profiling
+  - Mutation testing (mutmut)
+  - Coverage analysis and gap-fill
+- </strong>ML Training:<strong>
+  - Distributed training utilities
+  - Experiment tracking (MLflow)
+  - Hyperparameter tuning
+- </strong>Data Science:<strong>
+  - Jupyter notebook support
+  - Advanced visualization
+- </strong>Cognitive Brain:**
+  - OODA loop execution engine
+  - Pattern matching and learning
+  - Autonomous decision-making</p>
+<p>** Best for:**
+- Local development environments
+- Research and experimentation
+- Contributing to the codebase
+- Building custom models
+- ML engineers and data scientists
+- Full feature access</p>
+<p><strong>System requirements:</strong>
+- Minimum: 8 GB RAM
+- Recommended: 16+ GB RAM
+- SSD: 10+ GB free space
+- GPU: Recommended for training (NVIDIA/AMD/Apple Silicon)</p>
+<p><strong>Example use case:</strong>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-33-1" id="__codelineno-33-1" name="__codelineno-33-1"></a><span class="c1"># Run full development environment with all tools</span>
+<a href="#__codelineno-33-2" id="__codelineno-33-2" name="__codelineno-33-2"></a>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">".[full]"</span>
+<a href="#__codelineno-33-3" id="__codelineno-33-3" name="__codelineno-33-3"></a>pytest<span class="w"> </span>tests/<span class="w"> </span>--cov<span class="o">=</span>codex_ml
+<a href="#__codelineno-33-4" id="__codelineno-33-4" name="__codelineno-33-4"></a>black<span class="w"> </span>--check<span class="w"> </span>src/
+<a href="#__codelineno-33-5" id="__codelineno-33-5" name="__codelineno-33-5"></a>mypy<span class="w"> </span>src/<span class="w"> </span>--strict
+</code></pre></div></p>
+<hr/>
+<h3 id="profile-comparison">Profile Comparison<a class="headerlink" href="#profile-comparison" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Core</th>
+<th>Runtime</th>
+<th>Full</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Size</strong></td>
+<td>8-15 MB</td>
+<td>20-35 MB</td>
+<td>100+ MB</td>
+</tr>
+<tr>
+<td><strong>Installation Time</strong></td>
+<td>&lt;1 min</td>
+<td>3-5 min</td>
+<td>5-15 min</td>
+</tr>
+<tr>
+<td><strong>CLI Tools</strong></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Configuration</strong></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>ML Inference</strong></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Model Serving</strong></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Training</strong></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Development Tools</strong></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Testing Framework</strong></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>GPU Support</strong></td>
+<td></td>
+<td>*</td>
+<td>*</td>
+</tr>
+<tr>
+<td><strong>Cognitive Brain</strong></td>
+<td>Basic</td>
+<td>Yes</td>
+<td>Full</td>
+</tr>
+</tbody>
+</table>
+<p>*GPU support requires CUDA toolkit installed separately</p>
+<hr/>
+<h3 id="switching-between-profiles">Switching Between Profiles<a class="headerlink" href="#switching-between-profiles" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-34-1" id="__codelineno-34-1" name="__codelineno-34-1"></a><span class="c1"># Start with core, then upgrade to runtime</span>
+<a href="#__codelineno-34-2" id="__codelineno-34-2" name="__codelineno-34-2"></a>pip<span class="w"> </span>install<span class="w"> </span>codex-ml<span class="o">[</span>core<span class="o">]==</span><span class="m">0</span>.1.0
+<a href="#__codelineno-34-3" id="__codelineno-34-3" name="__codelineno-34-3"></a>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>codex-ml<span class="o">[</span>runtime<span class="o">]==</span><span class="m">0</span>.1.0
+<a href="#__codelineno-34-4" id="__codelineno-34-4" name="__codelineno-34-4"></a>
+<a href="#__codelineno-34-5" id="__codelineno-34-5" name="__codelineno-34-5"></a><span class="c1"># Or uninstall and reinstall with full profile</span>
+<a href="#__codelineno-34-6" id="__codelineno-34-6" name="__codelineno-34-6"></a>pip<span class="w"> </span>uninstall<span class="w"> </span>codex-ml<span class="w"> </span>-y
+<a href="#__codelineno-34-7" id="__codelineno-34-7" name="__codelineno-34-7"></a>pip<span class="w"> </span>install<span class="w"> </span>codex-ml<span class="o">[</span>full<span class="o">]==</span><span class="m">0</span>.1.0
+<a href="#__codelineno-34-8" id="__codelineno-34-8" name="__codelineno-34-8"></a>
+<a href="#__codelineno-34-9" id="__codelineno-34-9" name="__codelineno-34-9"></a><span class="c1"># Install multiple profiles simultaneously</span>
+<a href="#__codelineno-34-10" id="__codelineno-34-10" name="__codelineno-34-10"></a>pip<span class="w"> </span>install<span class="w"> </span><span class="s1">'codex-ml[core,runtime]==0.1.0'</span>
+</code></pre></div>
+<hr/>
+<h2 id="entry-points-cli-commands">Entry Points &amp; CLI Commands<a class="headerlink" href="#entry-points-cli-commands" title="Permanent link">¶</a></h2>
+<h3 id="available-cli-commands">Available CLI Commands<a class="headerlink" href="#available-cli-commands" title="Permanent link">¶</a></h3>
+<p>After installation, the following commands are available:</p>
+<h4 id="core-commands">Core Commands<a class="headerlink" href="#core-commands" title="Permanent link">¶</a></h4>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-35-1" id="__codelineno-35-1" name="__codelineno-35-1"></a><span class="c1"># Main CLI entry point</span>
+<a href="#__codelineno-35-2" id="__codelineno-35-2" name="__codelineno-35-2"></a>codex-ml<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>COMMAND
+<a href="#__codelineno-35-3" id="__codelineno-35-3" name="__codelineno-35-3"></a>
+<a href="#__codelineno-35-4" id="__codelineno-35-4" name="__codelineno-35-4"></a><span class="c1"># Aliases</span>
+<a href="#__codelineno-35-5" id="__codelineno-35-5" name="__codelineno-35-5"></a>codex-cli<span class="w">        </span><span class="c1"># Alternative entry point</span>
+<a href="#__codelineno-35-6" id="__codelineno-35-6" name="__codelineno-35-6"></a>codex-ml-cli<span class="w">     </span><span class="c1"># Explicit naming</span>
+<a href="#__codelineno-35-7" id="__codelineno-35-7" name="__codelineno-35-7"></a>
+<a href="#__codelineno-35-8" id="__codelineno-35-8" name="__codelineno-35-8"></a><span class="c1"># Help and info</span>
+<a href="#__codelineno-35-9" id="__codelineno-35-9" name="__codelineno-35-9"></a>codex-ml<span class="w"> </span>--help
+<a href="#__codelineno-35-10" id="__codelineno-35-10" name="__codelineno-35-10"></a>codex-ml<span class="w"> </span>--version
+<a href="#__codelineno-35-11" id="__codelineno-35-11" name="__codelineno-35-11"></a>codex-ml<span class="w"> </span>config<span class="w"> </span>--help
+</code></pre></div>
+<h4 id="configuration-commands">Configuration Commands<a class="headerlink" href="#configuration-commands" title="Permanent link">¶</a></h4>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-36-1" id="__codelineno-36-1" name="__codelineno-36-1"></a><span class="c1"># List available configurations</span>
+<a href="#__codelineno-36-2" id="__codelineno-36-2" name="__codelineno-36-2"></a>codex-ml<span class="w"> </span>config<span class="w"> </span>list
+<a href="#__codelineno-36-3" id="__codelineno-36-3" name="__codelineno-36-3"></a>
+<a href="#__codelineno-36-4" id="__codelineno-36-4" name="__codelineno-36-4"></a><span class="c1"># Show active configuration</span>
+<a href="#__codelineno-36-5" id="__codelineno-36-5" name="__codelineno-36-5"></a>codex-ml<span class="w"> </span>config<span class="w"> </span>show
+<a href="#__codelineno-36-6" id="__codelineno-36-6" name="__codelineno-36-6"></a>
+<a href="#__codelineno-36-7" id="__codelineno-36-7" name="__codelineno-36-7"></a><span class="c1"># Override configuration</span>
+<a href="#__codelineno-36-8" id="__codelineno-36-8" name="__codelineno-36-8"></a>codex-ml<span class="w"> </span>train<span class="w"> </span><span class="nv">model</span><span class="o">=</span>gpt2<span class="w"> </span><span class="nv">batch_size</span><span class="o">=</span><span class="m">32</span>
+</code></pre></div>
+<h4 id="training-evaluation-commands">Training &amp; Evaluation Commands<a class="headerlink" href="#training-evaluation-commands" title="Permanent link">¶</a></h4>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-37-1" id="__codelineno-37-1" name="__codelineno-37-1"></a><span class="c1"># Training command (full profile)</span>
+<a href="#__codelineno-37-2" id="__codelineno-37-2" name="__codelineno-37-2"></a>codex-ml<span class="w"> </span>train<span class="w"> </span>--config-name<span class="o">=</span>my_config
+<a href="#__codelineno-37-3" id="__codelineno-37-3" name="__codelineno-37-3"></a>
+<a href="#__codelineno-37-4" id="__codelineno-37-4" name="__codelineno-37-4"></a><span class="c1"># Evaluation command (runtime/full profile)</span>
+<a href="#__codelineno-37-5" id="__codelineno-37-5" name="__codelineno-37-5"></a>codex-ml<span class="w"> </span><span class="nb">eval</span><span class="w"> </span>--config-name<span class="o">=</span>my_config
+<a href="#__codelineno-37-6" id="__codelineno-37-6" name="__codelineno-37-6"></a>
+<a href="#__codelineno-37-7" id="__codelineno-37-7" name="__codelineno-37-7"></a><span class="c1"># Serve model (runtime/full profile)</span>
+<a href="#__codelineno-37-8" id="__codelineno-37-8" name="__codelineno-37-8"></a>codex-ml<span class="w"> </span>serve<span class="w"> </span>--model<span class="w"> </span>my-model<span class="w"> </span>--port<span class="w"> </span><span class="m">8000</span>
+</code></pre></div>
+<h3 id="programmatic-api">Programmatic API<a class="headerlink" href="#programmatic-api" title="Permanent link">¶</a></h3>
+<p>You can also import and use codex-ml from Python code:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-38-1" id="__codelineno-38-1" name="__codelineno-38-1"></a><span class="kn">from</span> <span class="nn">codex_ml</span> <span class="kn">import</span> <span class="n">ModelHandle</span>
+<a href="#__codelineno-38-2" id="__codelineno-38-2" name="__codelineno-38-2"></a><span class="kn">from</span> <span class="nn">codex_ml.config</span> <span class="kn">import</span> <span class="n">ConfigManager</span>
+<a href="#__codelineno-38-3" id="__codelineno-38-3" name="__codelineno-38-3"></a><span class="kn">from</span> <span class="nn">codex_ml.cli</span> <span class="kn">import</span> <span class="n">cli</span>
+<a href="#__codelineno-38-4" id="__codelineno-38-4" name="__codelineno-38-4"></a>
+<a href="#__codelineno-38-5" id="__codelineno-38-5" name="__codelineno-38-5"></a><span class="c1"># Create config manager</span>
+<a href="#__codelineno-38-6" id="__codelineno-38-6" name="__codelineno-38-6"></a><span class="n">config_mgr</span> <span class="o">=</span> <span class="n">ConfigManager</span><span class="p">()</span>
+<a href="#__codelineno-38-7" id="__codelineno-38-7" name="__codelineno-38-7"></a>
+<a href="#__codelineno-38-8" id="__codelineno-38-8" name="__codelineno-38-8"></a><span class="c1"># Load a configuration</span>
+<a href="#__codelineno-38-9" id="__codelineno-38-9" name="__codelineno-38-9"></a><span class="n">cfg</span> <span class="o">=</span> <span class="n">config_mgr</span><span class="o">.</span><span class="n">load_config</span><span class="p">(</span><span class="s1">'training.yaml'</span><span class="p">)</span>
+<a href="#__codelineno-38-10" id="__codelineno-38-10" name="__codelineno-38-10"></a>
+<a href="#__codelineno-38-11" id="__codelineno-38-11" name="__codelineno-38-11"></a><span class="c1"># Or use the CLI programmatically</span>
+<a href="#__codelineno-38-12" id="__codelineno-38-12" name="__codelineno-38-12"></a><span class="n">cli</span><span class="p">([</span><span class="s1">'train'</span><span class="p">,</span> <span class="s1">'--config-name=my_config'</span><span class="p">])</span>
+</code></pre></div>
+<h3 id="entry-points-by-profile">Entry Points by Profile<a class="headerlink" href="#entry-points-by-profile" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Entry Point</th>
+<th>Core</th>
+<th>Runtime</th>
+<th>Full</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>codex-ml</code></td>
+<td></td>
+<td></td>
+<td></td>
+<td>Main CLI</td>
+</tr>
+<tr>
+<td><code>codex-cli</code></td>
+<td></td>
+<td></td>
+<td></td>
+<td>Alternative CLI</td>
+</tr>
+<tr>
+<td><code>codex-ml-cli</code></td>
+<td></td>
+<td></td>
+<td></td>
+<td>Explicit CLI</td>
+</tr>
+<tr>
+<td><code>codex-smoke</code></td>
+<td></td>
+<td></td>
+<td></td>
+<td>Smoke test app</td>
+</tr>
+</tbody>
+</table>
+<h3 id="extending-with-plugins">Extending with Plugins<a class="headerlink" href="#extending-with-plugins" title="Permanent link">¶</a></h3>
+<p>codex-ml supports plugin registration through setuptools entry points:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-39-1" id="__codelineno-39-1" name="__codelineno-39-1"></a><span class="c1"># In your plugin's setup.py or pyproject.toml</span>
+<a href="#__codelineno-39-2" id="__codelineno-39-2" name="__codelineno-39-2"></a><span class="p">[</span><span class="n">project</span><span class="o">.</span><span class="n">entry</span><span class="o">-</span><span class="n">points</span><span class="o">.</span><span class="s2">"codex_ml.plugins"</span><span class="p">]</span>
+<a href="#__codelineno-39-3" id="__codelineno-39-3" name="__codelineno-39-3"></a><span class="n">my_plugin</span> <span class="o">=</span> <span class="s2">"my_module:plugin_class"</span>
+<a href="#__codelineno-39-4" id="__codelineno-39-4" name="__codelineno-39-4"></a>
+<a href="#__codelineno-39-5" id="__codelineno-39-5" name="__codelineno-39-5"></a><span class="c1"># Then use in code</span>
+<a href="#__codelineno-39-6" id="__codelineno-39-6" name="__codelineno-39-6"></a><span class="kn">from</span> <span class="nn">codex_ml.registry</span> <span class="kn">import</span> <span class="n">PluginRegistry</span>
+<a href="#__codelineno-39-7" id="__codelineno-39-7" name="__codelineno-39-7"></a><span class="n">registry</span> <span class="o">=</span> <span class="n">PluginRegistry</span><span class="p">()</span>
+<a href="#__codelineno-39-8" id="__codelineno-39-8" name="__codelineno-39-8"></a><span class="n">my_plugin</span> <span class="o">=</span> <span class="n">registry</span><span class="o">.</span><span class="n">get_plugin</span><span class="p">(</span><span class="s2">"my_plugin"</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="cognitive-brain-integration">Cognitive Brain Integration<a class="headerlink" href="#cognitive-brain-integration" title="Permanent link">¶</a></h3>
+<p>Access advanced decision-making:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-40-1" id="__codelineno-40-1" name="__codelineno-40-1"></a><span class="kn">from</span> <span class="nn">codex_ml.cognitive</span> <span class="kn">import</span> <span class="n">OODAOrchestrator</span>
+<a href="#__codelineno-40-2" id="__codelineno-40-2" name="__codelineno-40-2"></a>
+<a href="#__codelineno-40-3" id="__codelineno-40-3" name="__codelineno-40-3"></a><span class="c1"># Initialize OODA loop orchestrator</span>
+<a href="#__codelineno-40-4" id="__codelineno-40-4" name="__codelineno-40-4"></a><span class="n">orchestrator</span> <span class="o">=</span> <span class="n">OODAOrchestrator</span><span class="p">()</span>
+<a href="#__codelineno-40-5" id="__codelineno-40-5" name="__codelineno-40-5"></a>
+<a href="#__codelineno-40-6" id="__codelineno-40-6" name="__codelineno-40-6"></a><span class="c1"># Observe → Orient → Decide → Act</span>
+<a href="#__codelineno-40-7" id="__codelineno-40-7" name="__codelineno-40-7"></a><span class="n">result</span> <span class="o">=</span> <span class="n">orchestrator</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+<a href="#__codelineno-40-8" id="__codelineno-40-8" name="__codelineno-40-8"></a>    <span class="n">observation</span><span class="o">=</span><span class="s2">"Input data"</span><span class="p">,</span>
+<a href="#__codelineno-40-9" id="__codelineno-40-9" name="__codelineno-40-9"></a>    <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">"mode"</span><span class="p">:</span> <span class="s2">"inference"</span><span class="p">}</span>
+<a href="#__codelineno-40-10" id="__codelineno-40-10" name="__codelineno-40-10"></a><span class="p">)</span>
+</code></pre></div>
+<hr/>
+<h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">¶</a></h2>
+<h3 id="common-installation-issues">Common Installation Issues<a class="headerlink" href="#common-installation-issues" title="Permanent link">¶</a></h3>
+<h4 id="issue-no-module-named-codex_ml">Issue: "No module named 'codex_ml'"<a class="headerlink" href="#issue-no-module-named-codex_ml" title="Permanent link">¶</a></h4>
+<p><strong>Symptoms:</strong> <code>ModuleNotFoundError: No module named 'codex_ml'</code></p>
+<p><strong>Solutions:</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-41-1" id="__codelineno-41-1" name="__codelineno-41-1"></a><span class="c1"># 1. Verify installation</span>
+<a href="#__codelineno-41-2" id="__codelineno-41-2" name="__codelineno-41-2"></a>pip<span class="w"> </span>show<span class="w"> </span>codex-ml
+<a href="#__codelineno-41-3" id="__codelineno-41-3" name="__codelineno-41-3"></a>
+<a href="#__codelineno-41-4" id="__codelineno-41-4" name="__codelineno-41-4"></a><span class="c1"># 2. Check Python path</span>
+<a href="#__codelineno-41-5" id="__codelineno-41-5" name="__codelineno-41-5"></a>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"import sys; print('\n'.join(sys.path))"</span>
+<a href="#__codelineno-41-6" id="__codelineno-41-6" name="__codelineno-41-6"></a>
+<a href="#__codelineno-41-7" id="__codelineno-41-7" name="__codelineno-41-7"></a><span class="c1"># 3. Reinstall package</span>
+<a href="#__codelineno-41-8" id="__codelineno-41-8" name="__codelineno-41-8"></a>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>--force-reinstall<span class="w"> </span>codex-ml<span class="o">[</span>runtime<span class="o">]</span>
+<a href="#__codelineno-41-9" id="__codelineno-41-9" name="__codelineno-41-9"></a>
+<a href="#__codelineno-41-10" id="__codelineno-41-10" name="__codelineno-41-10"></a><span class="c1"># 4. Use absolute import path</span>
+<a href="#__codelineno-41-11" id="__codelineno-41-11" name="__codelineno-41-11"></a>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"from codex_ml.config import ConfigManager"</span>
+</code></pre></div>
+<h4 id="issue-command-codex-ml-not-found">Issue: "Command 'codex-ml' not found"<a class="headerlink" href="#issue-command-codex-ml-not-found" title="Permanent link">¶</a></h4>
+<p><strong>Symptoms:</strong> <code>command not found: codex-ml</code></p>
+<p><strong>Solutions:</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-42-1" id="__codelineno-42-1" name="__codelineno-42-1"></a><span class="c1"># 1. Check if package is installed</span>
+<a href="#__codelineno-42-2" id="__codelineno-42-2" name="__codelineno-42-2"></a>pip<span class="w"> </span>list<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>codex
+<a href="#__codelineno-42-3" id="__codelineno-42-3" name="__codelineno-42-3"></a>
+<a href="#__codelineno-42-4" id="__codelineno-42-4" name="__codelineno-42-4"></a><span class="c1"># 2. Verify virtual environment is activated</span>
+<a href="#__codelineno-42-5" id="__codelineno-42-5" name="__codelineno-42-5"></a>which<span class="w"> </span>python<span class="w">  </span><span class="c1"># Should show path in your venv</span>
+<a href="#__codelineno-42-6" id="__codelineno-42-6" name="__codelineno-42-6"></a><span class="nb">echo</span><span class="w"> </span><span class="nv">$VIRTUAL_ENV</span><span class="w">  </span><span class="c1"># Should show venv path</span>
+<a href="#__codelineno-42-7" id="__codelineno-42-7" name="__codelineno-42-7"></a>
+<a href="#__codelineno-42-8" id="__codelineno-42-8" name="__codelineno-42-8"></a><span class="c1"># 3. Reinstall entry points</span>
+<a href="#__codelineno-42-9" id="__codelineno-42-9" name="__codelineno-42-9"></a>pip<span class="w"> </span>install<span class="w"> </span>--force-reinstall<span class="w"> </span>codex-ml<span class="o">[</span>runtime<span class="o">]</span>
+<a href="#__codelineno-42-10" id="__codelineno-42-10" name="__codelineno-42-10"></a>
+<a href="#__codelineno-42-11" id="__codelineno-42-11" name="__codelineno-42-11"></a><span class="c1"># 4. Use python -m instead</span>
+<a href="#__codelineno-42-12" id="__codelineno-42-12" name="__codelineno-42-12"></a>python<span class="w"> </span>-m<span class="w"> </span>codex_ml.cli<span class="w"> </span>--help
+</code></pre></div>
+<h4 id="issue-dependency-version-conflict">Issue: Dependency Version Conflict<a class="headerlink" href="#issue-dependency-version-conflict" title="Permanent link">¶</a></h4>
+<p><strong>Symptoms:</strong> <code>ERROR: pip's dependency resolver does not currently take into account all the packages that are installed</code></p>
+<p><strong>Solutions:</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-43-1" id="__codelineno-43-1" name="__codelineno-43-1"></a><span class="c1"># 1. Create fresh virtual environment</span>
+<a href="#__codelineno-43-2" id="__codelineno-43-2" name="__codelineno-43-2"></a>python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>fresh-env
+<a href="#__codelineno-43-3" id="__codelineno-43-3" name="__codelineno-43-3"></a><span class="nb">source</span><span class="w"> </span>fresh-env/bin/activate<span class="w">  </span><span class="c1"># or fresh-env\Scripts\activate on Windows</span>
+<a href="#__codelineno-43-4" id="__codelineno-43-4" name="__codelineno-43-4"></a>
+<a href="#__codelineno-43-5" id="__codelineno-43-5" name="__codelineno-43-5"></a><span class="c1"># 2. Upgrade pip first</span>
+<a href="#__codelineno-43-6" id="__codelineno-43-6" name="__codelineno-43-6"></a>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip<span class="w"> </span>setuptools<span class="w"> </span>wheel
+<a href="#__codelineno-43-7" id="__codelineno-43-7" name="__codelineno-43-7"></a>
+<a href="#__codelineno-43-8" id="__codelineno-43-8" name="__codelineno-43-8"></a><span class="c1"># 3. Install with compatible versions</span>
+<a href="#__codelineno-43-9" id="__codelineno-43-9" name="__codelineno-43-9"></a>pip<span class="w"> </span>install<span class="w"> </span>codex-ml<span class="o">[</span>runtime<span class="o">]==</span><span class="m">0</span>.1.0
+<a href="#__codelineno-43-10" id="__codelineno-43-10" name="__codelineno-43-10"></a>
+<a href="#__codelineno-43-11" id="__codelineno-43-11" name="__codelineno-43-11"></a><span class="c1"># 4. If still issues, use --no-deps</span>
+<a href="#__codelineno-43-12" id="__codelineno-43-12" name="__codelineno-43-12"></a>pip<span class="w"> </span>install<span class="w"> </span>--no-deps<span class="w"> </span>codex-ml<span class="o">[</span>runtime<span class="o">]==</span><span class="m">0</span>.1.0
+<a href="#__codelineno-43-13" id="__codelineno-43-13" name="__codelineno-43-13"></a>pip<span class="w"> </span>install<span class="w"> </span>pydantic<span class="w"> </span>hydra-core<span class="w"> </span>typer<span class="w"> </span>torch<span class="w"> </span>transformers
+</code></pre></div>
+<h4 id="issue-cuda-out-of-memory">Issue: "CUDA out of memory"<a class="headerlink" href="#issue-cuda-out-of-memory" title="Permanent link">¶</a></h4>
+<p><strong>Symptoms:</strong> <code>RuntimeError: CUDA out of memory</code></p>
+<p><strong>Solutions:</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-44-1" id="__codelineno-44-1" name="__codelineno-44-1"></a><span class="c1"># 1. Check GPU memory</span>
+<a href="#__codelineno-44-2" id="__codelineno-44-2" name="__codelineno-44-2"></a>nvidia-smi
+<a href="#__codelineno-44-3" id="__codelineno-44-3" name="__codelineno-44-3"></a>
+<a href="#__codelineno-44-4" id="__codelineno-44-4" name="__codelineno-44-4"></a><span class="c1"># 2. Reduce batch size</span>
+<a href="#__codelineno-44-5" id="__codelineno-44-5" name="__codelineno-44-5"></a>codex-ml<span class="w"> </span>train<span class="w"> </span><span class="nv">batch_size</span><span class="o">=</span><span class="m">8</span><span class="w"> </span>
+<a href="#__codelineno-44-6" id="__codelineno-44-6" name="__codelineno-44-6"></a>
+<a href="#__codelineno-44-7" id="__codelineno-44-7" name="__codelineno-44-7"></a><span class="c1"># 3. Use CPU instead</span>
+<a href="#__codelineno-44-8" id="__codelineno-44-8" name="__codelineno-44-8"></a><span class="nb">export</span><span class="w"> </span><span class="nv">CUDA_VISIBLE_DEVICES</span><span class="o">=</span><span class="s2">""</span>
+<a href="#__codelineno-44-9" id="__codelineno-44-9" name="__codelineno-44-9"></a>codex-ml<span class="w"> </span>train<span class="w"> </span><span class="nv">device</span><span class="o">=</span>cpu
+<a href="#__codelineno-44-10" id="__codelineno-44-10" name="__codelineno-44-10"></a>
+<a href="#__codelineno-44-11" id="__codelineno-44-11" name="__codelineno-44-11"></a><span class="c1"># 4. Clear GPU cache</span>
+<a href="#__codelineno-44-12" id="__codelineno-44-12" name="__codelineno-44-12"></a>python<span class="w"> </span><span class="s">&lt;&lt; 'EOF'</span>
+<a href="#__codelineno-44-13" id="__codelineno-44-13" name="__codelineno-44-13"></a><span class="s">import torch</span>
+<a href="#__codelineno-44-14" id="__codelineno-44-14" name="__codelineno-44-14"></a><span class="s">torch.cuda.empty_cache()</span>
+<a href="#__codelineno-44-15" id="__codelineno-44-15" name="__codelineno-44-15"></a><span class="s">EOF</span>
+</code></pre></div>
+<h4 id="issue-docker-image-not-found">Issue: Docker Image Not Found<a class="headerlink" href="#issue-docker-image-not-found" title="Permanent link">¶</a></h4>
+<p><strong>Symptoms:</strong> <code>Error response from daemon: manifest not found</code></p>
+<p><strong>Solutions:</strong></p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-45-1" id="__codelineno-45-1" name="__codelineno-45-1"></a><span class="c1"># 1. Pull correct image</span>
+<a href="#__codelineno-45-2" id="__codelineno-45-2" name="__codelineno-45-2"></a>docker<span class="w"> </span>pull<span class="w"> </span>ghcr.io/aries-serpent/codex:0.1.0
+<a href="#__codelineno-45-3" id="__codelineno-45-3" name="__codelineno-45-3"></a>
+<a href="#__codelineno-45-4" id="__codelineno-45-4" name="__codelineno-45-4"></a><span class="c1"># 2. List available images</span>
+<a href="#__codelineno-45-5" id="__codelineno-45-5" name="__codelineno-45-5"></a>docker<span class="w"> </span>images<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>codex
+<a href="#__codelineno-45-6" id="__codelineno-45-6" name="__codelineno-45-6"></a>
+<a href="#__codelineno-45-7" id="__codelineno-45-7" name="__codelineno-45-7"></a><span class="c1"># 3. Build locally</span>
+<a href="#__codelineno-45-8" id="__codelineno-45-8" name="__codelineno-45-8"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/Aries-Serpent/_codex_.git
+<a href="#__codelineno-45-9" id="__codelineno-45-9" name="__codelineno-45-9"></a><span class="nb">cd</span><span class="w"> </span>_codex_
+<a href="#__codelineno-45-10" id="__codelineno-45-10" name="__codelineno-45-10"></a>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>codex:0.1.0<span class="w"> </span>.
+<a href="#__codelineno-45-11" id="__codelineno-45-11" name="__codelineno-45-11"></a>
+<a href="#__codelineno-45-12" id="__codelineno-45-12" name="__codelineno-45-12"></a><span class="c1"># 4. Check Docker daemon</span>
+<a href="#__codelineno-45-13" id="__codelineno-45-13" name="__codelineno-45-13"></a>docker<span class="w"> </span>ps<span class="w">  </span><span class="c1"># Verify Docker is running</span>
+</code></pre></div>
+<h3 id="platform-specific-issues">Platform-Specific Issues<a class="headerlink" href="#platform-specific-issues" title="Permanent link">¶</a></h3>
+<h4 id="macos-python312-command-not-found">macOS: "Python3.12 command not found"<a class="headerlink" href="#macos-python312-command-not-found" title="Permanent link">¶</a></h4>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-46-1" id="__codelineno-46-1" name="__codelineno-46-1"></a><span class="c1"># 1. Install via Homebrew</span>
+<a href="#__codelineno-46-2" id="__codelineno-46-2" name="__codelineno-46-2"></a>brew<span class="w"> </span>install<span class="w"> </span>python@3.12
+<a href="#__codelineno-46-3" id="__codelineno-46-3" name="__codelineno-46-3"></a>
+<a href="#__codelineno-46-4" id="__codelineno-46-4" name="__codelineno-46-4"></a><span class="c1"># 2. Or check installation</span>
+<a href="#__codelineno-46-5" id="__codelineno-46-5" name="__codelineno-46-5"></a>brew<span class="w"> </span>list<span class="w"> </span>python@3.12
+<a href="#__codelineno-46-6" id="__codelineno-46-6" name="__codelineno-46-6"></a>
+<a href="#__codelineno-46-7" id="__codelineno-46-7" name="__codelineno-46-7"></a><span class="c1"># 3. Create symlink if needed</span>
+<a href="#__codelineno-46-8" id="__codelineno-46-8" name="__codelineno-46-8"></a>ln<span class="w"> </span>-s<span class="w"> </span>/usr/local/opt/python@3.12/bin/python3.12<span class="w"> </span>/usr/local/bin/python
+</code></pre></div>
+<h4 id="windows-powershell-execution-policy-error">Windows: PowerShell Execution Policy Error<a class="headerlink" href="#windows-powershell-execution-policy-error" title="Permanent link">¶</a></h4>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-47-1" id="__codelineno-47-1" name="__codelineno-47-1"></a><span class="c"># Check policy</span>
+<a href="#__codelineno-47-2" id="__codelineno-47-2" name="__codelineno-47-2"></a><span class="nb">Get-ExecutionPolicy</span> <span class="n">-List</span>
+<a href="#__codelineno-47-3" id="__codelineno-47-3" name="__codelineno-47-3"></a>
+<a href="#__codelineno-47-4" id="__codelineno-47-4" name="__codelineno-47-4"></a><span class="c"># Fix execution policy</span>
+<a href="#__codelineno-47-5" id="__codelineno-47-5" name="__codelineno-47-5"></a><span class="nb">Set-ExecutionPolicy</span> <span class="n">-ExecutionPolicy</span> <span class="n">RemoteSigned</span> <span class="n">-Scope</span> <span class="n">CurrentUser</span>
+<a href="#__codelineno-47-6" id="__codelineno-47-6" name="__codelineno-47-6"></a>
+<a href="#__codelineno-47-7" id="__codelineno-47-7" name="__codelineno-47-7"></a><span class="c"># Or use cmd.exe instead</span>
+<a href="#__codelineno-47-8" id="__codelineno-47-8" name="__codelineno-47-8"></a><span class="n">cmd</span> <span class="p">/</span><span class="n">c</span> <span class="s2">"codex-env\Scripts\activate.bat"</span>
+</code></pre></div>
+<h4 id="linux-missing-development-headers">Linux: Missing Development Headers<a class="headerlink" href="#linux-missing-development-headers" title="Permanent link">¶</a></h4>
+<p><strong>Symptoms:</strong> <code>error: Microsoft Visual C++ 14.0 or greater is required</code> (on Windows)<br/>
+or <code>fatal error: Python.h: No such file or directory</code> (on Linux)</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-48-1" id="__codelineno-48-1" name="__codelineno-48-1"></a><span class="c1"># Ubuntu/Debian</span>
+<a href="#__codelineno-48-2" id="__codelineno-48-2" name="__codelineno-48-2"></a>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>python3.12-dev<span class="w"> </span>build-essential
+<a href="#__codelineno-48-3" id="__codelineno-48-3" name="__codelineno-48-3"></a>
+<a href="#__codelineno-48-4" id="__codelineno-48-4" name="__codelineno-48-4"></a><span class="c1"># Fedora/RHEL</span>
+<a href="#__codelineno-48-5" id="__codelineno-48-5" name="__codelineno-48-5"></a>sudo<span class="w"> </span>dnf<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>python3.12-devel<span class="w"> </span>gcc
+<a href="#__codelineno-48-6" id="__codelineno-48-6" name="__codelineno-48-6"></a>
+<a href="#__codelineno-48-7" id="__codelineno-48-7" name="__codelineno-48-7"></a><span class="c1"># Then reinstall</span>
+<a href="#__codelineno-48-8" id="__codelineno-48-8" name="__codelineno-48-8"></a>pip<span class="w"> </span>install<span class="w"> </span>--force-reinstall<span class="w"> </span>codex-ml<span class="o">[</span>runtime<span class="o">]</span>
+</code></pre></div>
+<h3 id="performance-issues">Performance Issues<a class="headerlink" href="#performance-issues" title="Permanent link">¶</a></h3>
+<h4 id="installation-too-slow">Installation Too Slow<a class="headerlink" href="#installation-too-slow" title="Permanent link">¶</a></h4>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-49-1" id="__codelineno-49-1" name="__codelineno-49-1"></a><span class="c1"># 1. Check network speed</span>
+<a href="#__codelineno-49-2" id="__codelineno-49-2" name="__codelineno-49-2"></a>pip<span class="w"> </span>install<span class="w"> </span>--verbose<span class="w"> </span>codex-ml<span class="o">[</span>core<span class="o">]</span>
+<a href="#__codelineno-49-3" id="__codelineno-49-3" name="__codelineno-49-3"></a>
+<a href="#__codelineno-49-4" id="__codelineno-49-4" name="__codelineno-49-4"></a><span class="c1"># 2. Use different PyPI mirror</span>
+<a href="#__codelineno-49-5" id="__codelineno-49-5" name="__codelineno-49-5"></a>pip<span class="w"> </span>install<span class="w"> </span>-i<span class="w"> </span>https://mirrors.aliyun.com/pypi/simple/<span class="w"> </span>codex-ml<span class="o">[</span>runtime<span class="o">]</span>
+<a href="#__codelineno-49-6" id="__codelineno-49-6" name="__codelineno-49-6"></a>
+<a href="#__codelineno-49-7" id="__codelineno-49-7" name="__codelineno-49-7"></a><span class="c1"># 3. Upgrade pip/setuptools</span>
+<a href="#__codelineno-49-8" id="__codelineno-49-8" name="__codelineno-49-8"></a>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip<span class="w"> </span>setuptools<span class="w"> </span>wheel
+<a href="#__codelineno-49-9" id="__codelineno-49-9" name="__codelineno-49-9"></a>
+<a href="#__codelineno-49-10" id="__codelineno-49-10" name="__codelineno-49-10"></a><span class="c1"># 4. Install in parallel</span>
+<a href="#__codelineno-49-11" id="__codelineno-49-11" name="__codelineno-49-11"></a>pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>--upgrade-strategy<span class="w"> </span>eager<span class="w"> </span>codex-ml<span class="o">[</span>runtime<span class="o">]</span>
+</code></pre></div>
+<h4 id="runtime-performance-issues">Runtime Performance Issues<a class="headerlink" href="#runtime-performance-issues" title="Permanent link">¶</a></h4>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-50-1" id="__codelineno-50-1" name="__codelineno-50-1"></a><span class="c1"># 1. Profile CPU usage</span>
+<a href="#__codelineno-50-2" id="__codelineno-50-2" name="__codelineno-50-2"></a>python<span class="w"> </span>-m<span class="w"> </span>cProfile<span class="w"> </span>-s<span class="w"> </span>cumulative<span class="w"> </span>script.py
+<a href="#__codelineno-50-3" id="__codelineno-50-3" name="__codelineno-50-3"></a>
+<a href="#__codelineno-50-4" id="__codelineno-50-4" name="__codelineno-50-4"></a><span class="c1"># 2. Monitor memory</span>
+<a href="#__codelineno-50-5" id="__codelineno-50-5" name="__codelineno-50-5"></a>ps<span class="w"> </span>aux<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>python
+<a href="#__codelineno-50-6" id="__codelineno-50-6" name="__codelineno-50-6"></a>
+<a href="#__codelineno-50-7" id="__codelineno-50-7" name="__codelineno-50-7"></a><span class="c1"># 3. Check disk I/O</span>
+<a href="#__codelineno-50-8" id="__codelineno-50-8" name="__codelineno-50-8"></a>iotop<span class="w">  </span><span class="c1"># Linux</span>
+<a href="#__codelineno-50-9" id="__codelineno-50-9" name="__codelineno-50-9"></a>iostat<span class="w">  </span><span class="c1"># macOS</span>
+<a href="#__codelineno-50-10" id="__codelineno-50-10" name="__codelineno-50-10"></a>
+<a href="#__codelineno-50-11" id="__codelineno-50-11" name="__codelineno-50-11"></a><span class="c1"># 4. Enable verbose logging</span>
+<a href="#__codelineno-50-12" id="__codelineno-50-12" name="__codelineno-50-12"></a><span class="nb">export</span><span class="w"> </span><span class="nv">CODEX_LOG_LEVEL</span><span class="o">=</span>DEBUG
+<a href="#__codelineno-50-13" id="__codelineno-50-13" name="__codelineno-50-13"></a>codex-ml<span class="w"> </span>train<span class="w"> </span>config.yaml
+</code></pre></div>
+<h3 id="getting-diagnostics">Getting Diagnostics<a class="headerlink" href="#getting-diagnostics" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-51-1" id="__codelineno-51-1" name="__codelineno-51-1"></a><span class="c1"># Create system information report</span>
+<a href="#__codelineno-51-2" id="__codelineno-51-2" name="__codelineno-51-2"></a>python<span class="w"> </span><span class="s">&lt;&lt; 'EOF'</span>
+<a href="#__codelineno-51-3" id="__codelineno-51-3" name="__codelineno-51-3"></a><span class="s">import sys</span>
+<a href="#__codelineno-51-4" id="__codelineno-51-4" name="__codelineno-51-4"></a><span class="s">import platform</span>
+<a href="#__codelineno-51-5" id="__codelineno-51-5" name="__codelineno-51-5"></a><span class="s">import codex_ml</span>
+<a href="#__codelineno-51-6" id="__codelineno-51-6" name="__codelineno-51-6"></a>
+<a href="#__codelineno-51-7" id="__codelineno-51-7" name="__codelineno-51-7"></a><span class="s">print("=== System Information ===")</span>
+<a href="#__codelineno-51-8" id="__codelineno-51-8" name="__codelineno-51-8"></a><span class="s">print(f"OS: {platform.system()} {platform.release()}")</span>
+<a href="#__codelineno-51-9" id="__codelineno-51-9" name="__codelineno-51-9"></a><span class="s">print(f"Python: {sys.version}")</span>
+<a href="#__codelineno-51-10" id="__codelineno-51-10" name="__codelineno-51-10"></a><span class="s">print(f"Codex Version: {codex_ml.__version__}")</span>
+<a href="#__codelineno-51-11" id="__codelineno-51-11" name="__codelineno-51-11"></a><span class="s">print("\n=== Installed Packages ===")</span>
+<a href="#__codelineno-51-12" id="__codelineno-51-12" name="__codelineno-51-12"></a><span class="s">import subprocess</span>
+<a href="#__codelineno-51-13" id="__codelineno-51-13" name="__codelineno-51-13"></a><span class="s">subprocess.run(["pip", "freeze"])</span>
+<a href="#__codelineno-51-14" id="__codelineno-51-14" name="__codelineno-51-14"></a><span class="s">EOF</span>
+<a href="#__codelineno-51-15" id="__codelineno-51-15" name="__codelineno-51-15"></a>
+<a href="#__codelineno-51-16" id="__codelineno-51-16" name="__codelineno-51-16"></a><span class="c1"># Check for GPU availability</span>
+<a href="#__codelineno-51-17" id="__codelineno-51-17" name="__codelineno-51-17"></a>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">"</span>
+<a href="#__codelineno-51-18" id="__codelineno-51-18" name="__codelineno-51-18"></a><span class="s2">import torch</span>
+<a href="#__codelineno-51-19" id="__codelineno-51-19" name="__codelineno-51-19"></a><span class="s2">print(f'PyTorch: {torch.__version__}')</span>
+<a href="#__codelineno-51-20" id="__codelineno-51-20" name="__codelineno-51-20"></a><span class="s2">print(f'CUDA Available: {torch.cuda.is_available()}')</span>
+<a href="#__codelineno-51-21" id="__codelineno-51-21" name="__codelineno-51-21"></a><span class="s2">if torch.cuda.is_available():</span>
+<a href="#__codelineno-51-22" id="__codelineno-51-22" name="__codelineno-51-22"></a><span class="s2">    print(f'GPU: {torch.cuda.get_device_name(0)}')</span>
+<a href="#__codelineno-51-23" id="__codelineno-51-23" name="__codelineno-51-23"></a><span class="s2">    print(f'GPU Memory: {torch.cuda.get_device_properties(0).total_memory / 1e9:.2f} GB')</span>
+<a href="#__codelineno-51-24" id="__codelineno-51-24" name="__codelineno-51-24"></a><span class="s2">"</span>
+</code></pre></div>
+<hr/>
+<h2 id="getting-help">Getting Help<a class="headerlink" href="#getting-help" title="Permanent link">¶</a></h2>
+<h3 id="documentation-resources">Documentation Resources<a class="headerlink" href="#documentation-resources" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>🏠 Main README:</strong> <a href="../README.md">README.md</a></li>
+<li>** Quick Start ML:** <a href="../quickstart/QUICK_START_ML/">./quickstart/QUICK_START_ML.md</a></li>
+<li>** Cognitive Brain Guide:** <a href="../quickstart/QUICK_START_COGNITIVE_BRAIN/">./quickstart/QUICK_START_COGNITIVE_BRAIN.md</a></li>
+<li>** Configuration Guide:** <a href="configuration/">docs/configuration/</a></li>
+<li><strong>🐳 Docker Guide:</strong> <a href="../../docker/Dockerfile.api">docker/README.md</a></li>
+<li><strong>☸️ Kubernetes Guide:</strong> <a href="../../k8s/Deployment.yaml">k8s/README.md</a></li>
+</ul>
+<h3 id="community-support">Community Support<a class="headerlink" href="#community-support" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>📝 Issues:</strong> <a href="https://github.com/Aries-Serpent/_codex_/issues">GitHub Issues</a></li>
+<li><strong>💬 Discussions:</strong> <a href="https://github.com/Aries-Serpent/_codex_/discussions">GitHub Discussions</a></li>
+<li><strong>🐛 Bug Reports:</strong> <a href="https://github.com/Aries-Serpent/_codex_/issues/new?template=bug_report.md">Report a Bug</a></li>
+<li>** Feature Requests:** <a href="https://github.com/Aries-Serpent/_codex_/issues/new?template=feature_request.md">Request a Feature</a></li>
+</ul>
+<h3 id="additional-resources">Additional Resources<a class="headerlink" href="#additional-resources" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>📦 PyPI Package:</strong> https://pypi.org/project/codex-ml/</li>
+<li><strong>🐳 Docker Hub:</strong> https://ghcr.io/aries-serpent/codex</li>
+<li>** Full Documentation:** </li>
+<li><strong>🔧 Contributing Guide:</strong> <a href="../CONTRIBUTING.md">CONTRIBUTING.md</a></li>
+</ul>
+<hr/>
+<h2 id="whats-next">What's Next?<a class="headerlink" href="#whats-next" title="Permanent link">¶</a></h2>
+<p>After successful installation, here's what you can do:</p>
+<h3 id="for-users-runtime-profile">For Users (Runtime Profile)<a class="headerlink" href="#for-users-runtime-profile" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-52-1" id="__codelineno-52-1" name="__codelineno-52-1"></a><span class="c1"># 1. Run the quick start</span>
+<a href="#__codelineno-52-2" id="__codelineno-52-2" name="__codelineno-52-2"></a>python<span class="w"> </span>-m<span class="w"> </span>codex_ml.examples.quickstart
+<a href="#__codelineno-52-3" id="__codelineno-52-3" name="__codelineno-52-3"></a>
+<a href="#__codelineno-52-4" id="__codelineno-52-4" name="__codelineno-52-4"></a><span class="c1"># 2. Load a pre-trained model</span>
+<a href="#__codelineno-52-5" id="__codelineno-52-5" name="__codelineno-52-5"></a>from<span class="w"> </span>codex_ml<span class="w"> </span>import<span class="w"> </span>ModelHandle
+<a href="#__codelineno-52-6" id="__codelineno-52-6" name="__codelineno-52-6"></a><span class="nv">model</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>ModelHandle.from_pretrained<span class="o">(</span><span class="s2">"gpt2"</span><span class="o">)</span>
+<a href="#__codelineno-52-7" id="__codelineno-52-7" name="__codelineno-52-7"></a>
+<a href="#__codelineno-52-8" id="__codelineno-52-8" name="__codelineno-52-8"></a><span class="c1"># 3. Run inference</span>
+<a href="#__codelineno-52-9" id="__codelineno-52-9" name="__codelineno-52-9"></a><span class="nv">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>model.predict<span class="o">(</span><span class="s2">"Hello, world!"</span><span class="o">)</span>
+</code></pre></div>
+<h3 id="for-developers-full-profile">For Developers (Full Profile)<a class="headerlink" href="#for-developers-full-profile" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-53-1" id="__codelineno-53-1" name="__codelineno-53-1"></a><span class="c1"># 1. Clone and develop</span>
+<a href="#__codelineno-53-2" id="__codelineno-53-2" name="__codelineno-53-2"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/Aries-Serpent/_codex_.git
+<a href="#__codelineno-53-3" id="__codelineno-53-3" name="__codelineno-53-3"></a><span class="nb">cd</span><span class="w"> </span>_codex_
+<a href="#__codelineno-53-4" id="__codelineno-53-4" name="__codelineno-53-4"></a>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">".[full]"</span>
+<a href="#__codelineno-53-5" id="__codelineno-53-5" name="__codelineno-53-5"></a>
+<a href="#__codelineno-53-6" id="__codelineno-53-6" name="__codelineno-53-6"></a><span class="c1"># 2. Run tests</span>
+<a href="#__codelineno-53-7" id="__codelineno-53-7" name="__codelineno-53-7"></a>pytest<span class="w"> </span>tests/<span class="w"> </span>-x
+<a href="#__codelineno-53-8" id="__codelineno-53-8" name="__codelineno-53-8"></a>
+<a href="#__codelineno-53-9" id="__codelineno-53-9" name="__codelineno-53-9"></a><span class="c1"># 3. Start contributing</span>
+<a href="#__codelineno-53-10" id="__codelineno-53-10" name="__codelineno-53-10"></a><span class="c1"># See CONTRIBUTING.md for guidelines</span>
+</code></pre></div>
+<h3 id="for-ml-engineers">For ML Engineers<a class="headerlink" href="#for-ml-engineers" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-54-1" id="__codelineno-54-1" name="__codelineno-54-1"></a><span class="c1"># 1. Build custom models</span>
+<a href="#__codelineno-54-2" id="__codelineno-54-2" name="__codelineno-54-2"></a>from<span class="w"> </span>codex_ml.training<span class="w"> </span>import<span class="w"> </span>Trainer
+<a href="#__codelineno-54-3" id="__codelineno-54-3" name="__codelineno-54-3"></a>
+<a href="#__codelineno-54-4" id="__codelineno-54-4" name="__codelineno-54-4"></a><span class="nv">trainer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>Trainer<span class="o">(</span><span class="nv">config</span><span class="o">=</span><span class="s1">'my_config.yaml'</span><span class="o">)</span>
+<a href="#__codelineno-54-5" id="__codelineno-54-5" name="__codelineno-54-5"></a>trainer.train<span class="o">()</span>
+<a href="#__codelineno-54-6" id="__codelineno-54-6" name="__codelineno-54-6"></a>
+<a href="#__codelineno-54-7" id="__codelineno-54-7" name="__codelineno-54-7"></a><span class="c1"># 2. Evaluate performance</span>
+<a href="#__codelineno-54-8" id="__codelineno-54-8" name="__codelineno-54-8"></a>from<span class="w"> </span>codex_ml.evaluation<span class="w"> </span>import<span class="w"> </span>Evaluator
+<a href="#__codelineno-54-9" id="__codelineno-54-9" name="__codelineno-54-9"></a><span class="nv">evaluator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>Evaluator<span class="o">(</span><span class="nv">model</span><span class="o">=</span><span class="s1">'my_model'</span><span class="o">)</span>
+<a href="#__codelineno-54-10" id="__codelineno-54-10" name="__codelineno-54-10"></a>evaluator.evaluate<span class="o">()</span>
+<a href="#__codelineno-54-11" id="__codelineno-54-11" name="__codelineno-54-11"></a>
+<a href="#__codelineno-54-12" id="__codelineno-54-12" name="__codelineno-54-12"></a><span class="c1"># 3. Deploy to production</span>
+<a href="#__codelineno-54-13" id="__codelineno-54-13" name="__codelineno-54-13"></a>from<span class="w"> </span>codex_ml.serving<span class="w"> </span>import<span class="w"> </span>deploy
+<a href="#__codelineno-54-14" id="__codelineno-54-14" name="__codelineno-54-14"></a>deploy<span class="o">(</span><span class="nv">model</span><span class="o">=</span><span class="s1">'my_model'</span>,<span class="w"> </span><span class="nv">port</span><span class="o">=</span><span class="m">8000</span><span class="o">)</span>
+</code></pre></div>
+<hr/>
+<h2 id="version-history">Version History<a class="headerlink" href="#version-history" title="Permanent link">¶</a></h2>
+<ul>
+<li><strong>v0.1.0</strong> (2026-07-10) - Production release with 90.2% coverage</li>
+<li><strong>v0.1.0-beta3</strong> (2026-07-01) - Final beta release</li>
+<li><strong>Earlier versions</strong> - See <a href="../CHANGELOG.md">CHANGELOG.md</a></li>
+</ul>
+<hr/>
+<h2 id="license">License<a class="headerlink" href="#license" title="Permanent link">¶</a></h2>
+<p>codex-ml is open source and available under the <a href="../LICENSE">MIT License</a>.</p>
+<hr/>
+<p><strong>Last Updated: 2026-07-10
+</strong>Installation Status:<strong>  Ready for Production<br/>
+</strong>Support Level:** Enterprise-Grade</p>
+</article>
+</div>
+<script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+</body>
+</html>

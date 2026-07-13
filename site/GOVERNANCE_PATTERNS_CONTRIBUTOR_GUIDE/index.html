@@ -1,0 +1,3998 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
+<link href="https://aries-serpent.github.io/_codex_/GOVERNANCE_PATTERNS_CONTRIBUTOR_GUIDE/" rel="canonical"/>
+<link href="../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<title>Governance Patterns Contributor Guide - Codex Docs v0.2.1</title>
+<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<link href="../stylesheets/extra.css" rel="stylesheet"/>
+<script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#governance-patterns-contributor-guide">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="Codex Docs v0.2.1" class="md-header__button md-logo" data-md-component="logo" href=".." title="Codex Docs v0.2.1">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m19 2-5 4.5v11l5-4.5zM6.5 5C4.55 5 2.45 5.4 1 6.5v14.66c0 .25.25.5.5.5.1 0 .15-.07.25-.07 1.35-.65 3.3-1.09 4.75-1.09 1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.31 4.75 1.06.1.05.15.03.25.03.25 0 .5-.25.5-.5V6.5c-.6-.45-1.25-.75-2-1V19c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V6.5C10.55 5.4 8.45 5 6.5 5"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            Codex Docs v0.2.1
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Governance Patterns Contributor Guide
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme)" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"></path></svg>
+</label>
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: light)" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_2" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+<input aria-label="Switch to system preference" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-primary="black" data-md-color-scheme="slate" id="__palette_2" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to system preference">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<a aria-label="Share" class="md-search__icon md-icon" data-clipboard="" data-clipboard-text="" data-md-component="search-share" href="javascript:void(0)" tabindex="-1" title="Share">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"></path></svg>
+</a>
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="md-header__source">
+<a class="md-source" data-md-component="source" href="https://github.com/Aries-Serpent/_codex_" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+</div>
+<div class="md-source__repository">
+    Aries-Serpent/_codex_
+  </div>
+</a>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="..">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../status/GITHUB_PAGES_STATUS/">
+        
+  
+  
+    
+  
+  Status Dashboard
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../cognitive_app/">
+        
+  
+  
+    
+  
+  Cognitive App
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../evolution/INDEX/">
+          
+  
+  
+  Evolution Center
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../README_ROOT/">
+        
+  
+  
+    
+  
+  README
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../getting-started/">
+        
+  
+  
+    
+  
+  Getting Started
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../api/">
+          
+  
+  
+  API Reference
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../CONTRIBUTING/">
+          
+  
+  
+  Guides
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../tokens/INDEX/">
+          
+  
+  
+  Token Management
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../architecture.md">
+          
+  
+  
+  Architecture
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../training/symbolic_training/">
+          
+  
+  
+  Training
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../deployment/deploy_pipeline/">
+          
+  
+  
+  Deployment
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../logging/logging_guide/">
+          
+  
+  
+  Logging &amp; Troubleshooting
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../plugins/Plugin_API_Broader/">
+          
+  
+  
+  Plugins
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../ROADMAP/">
+          
+  
+  
+  Reference
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../agents/POST_MERGE_ALIGNMENT_PROMPT/">
+          
+  
+  
+  Agent Prompts
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../accountability/INDEX/">
+          
+  
+  
+  Accountability
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../phase-9/PHASE_9_COORDINATION_DASHBOARD/">
+          
+  
+  
+  Phase 9 Execution
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/INDEX.md">
+          
+  
+  
+  CI/CD Workflows
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../reporting/INDEX/">
+          
+  
+  
+  Reporting
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../ci/CI_RESCUE_PIPELINE/">
+          
+  
+  
+  CI Rescue &amp; Health
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../safety/safety_guide/">
+          
+  
+  
+  Safety
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../database/sqlite_option/">
+          
+  
+  
+  Database Options
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../templates/">
+          
+  
+  
+  Templates
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../examples/codex_symbolic_pipeline/">
+          
+  
+  
+  Examples
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../ops/cost-dashboard/">
+          
+  
+  
+  Ops
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../tutorials/quickstart/">
+          
+  
+  
+  Tutorials
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="..">
+          
+  
+  
+  Legacy Catalog
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="Codex Docs v0.2.1" class="md-nav__button md-logo" data-md-component="logo" href=".." title="Codex Docs v0.2.1">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m19 2-5 4.5v11l5-4.5zM6.5 5C4.55 5 2.45 5.4 1 6.5v14.66c0 .25.25.5.5.5.1 0 .15-.07.25-.07 1.35-.65 3.3-1.09 4.75-1.09 1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.31 4.75 1.06.1.05.15.03.25.03.25 0 .5-.25.5-.5V6.5c-.6-.45-1.25-.75-2-1V19c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V6.5C10.55 5.4 8.45 5 6.5 5"></path></svg>
+</a>
+    Codex Docs v0.2.1
+  </label>
+<div class="md-nav__source">
+<a class="md-source" data-md-component="source" href="https://github.com/Aries-Serpent/_codex_" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+</div>
+<div class="md-source__repository">
+    Aries-Serpent/_codex_
+  </div>
+</a>
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../status/GITHUB_PAGES_STATUS/">
+<span class="md-ellipsis">
+    
+  
+    Status Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../cognitive_app/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive App
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Evolution Center
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Evolution Center
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evolution/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evolution/EVOLUTION_TIMELINE/">
+<span class="md-ellipsis">
+    
+  
+    Evolution Timeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evolution/PLANSET_REGISTRY/">
+<span class="md-ellipsis">
+    
+  
+    Planset Registry
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evolution/COGNITIVE_EVOLUTION_TREE/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive Evolution Tree
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evolution/AI_EMERGENCE_STORYBOARD/">
+<span class="md-ellipsis">
+    
+  
+    AI Emergence Storyboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evolution/AI_AGENCY_INTUITIVENESS_SCORE_V3/">
+<span class="md-ellipsis">
+    
+  
+    AI Agency Score V3
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evolution/COGNITIVE_CODEBASE_MAP/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive Codebase Map
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../README_ROOT/">
+<span class="md-ellipsis">
+    
+  
+    README
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../getting-started/">
+<span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../api/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_8" type="checkbox"/>
+<label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Guides
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_8_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_8">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Guides
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../CONTRIBUTING/">
+<span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../guides/code_style_guide/">
+<span class="md-ellipsis">
+    
+  
+    Code Style
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../guides/checkpointing/">
+<span class="md-ellipsis">
+    
+  
+    Checkpointing
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../guides/codex_setup/">
+<span class="md-ellipsis">
+    
+  
+    Setup &amp; Integration
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../guides/session_hooks/">
+<span class="md-ellipsis">
+    
+  
+    Session Hooks
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../guides/continuous_improvement/">
+<span class="md-ellipsis">
+    
+  
+    Continuous Improvement
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../guides/lfs_policy/">
+<span class="md-ellipsis">
+    
+  
+    LFS Policy
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../guides/asset_instruction_playbook/">
+<span class="md-ellipsis">
+    
+  
+    Asset Instruction Playbook
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../guides/LOGGING/">
+<span class="md-ellipsis">
+    
+  
+    Logging (Stdlib)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_9" type="checkbox"/>
+<label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Token Management
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_9_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_9">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Token Management
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tokens/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tokens/TOKEN_HIERARCHY_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Token Hierarchy Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tokens/TOKEN_REGENERATION_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Token Regeneration Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tokens/TOKEN_USAGE_AUDIT/">
+<span class="md-ellipsis">
+    
+  
+    Token Usage Audit
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tokens/HUMAN_ADMIN_SETUP/">
+<span class="md-ellipsis">
+    
+  
+    Human Admin Setup
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tokens/CI_CD_TROUBLESHOOTING/">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Troubleshooting
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tokens/CUSTOM_AGENT_GUIDANCE/">
+<span class="md-ellipsis">
+    
+  
+    Custom Agent Guidance
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tokens/QUICK_REFERENCE/">
+<span class="md-ellipsis">
+    
+  
+    Quick Reference
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_10" type="checkbox"/>
+<label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_10_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_10">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../architecture.md">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../architecture/codex_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Codex Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../system/mermaid_logic_map/">
+<span class="md-ellipsis">
+    
+  
+    Runtime Logic Map
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_11" type="checkbox"/>
+<label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Training
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_11_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_11">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Training
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../training/symbolic_training/">
+<span class="md-ellipsis">
+    
+  
+    Symbolic Training
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../training/distributed_troubleshooting/">
+<span class="md-ellipsis">
+    
+  
+    Distributed Troubleshooting
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_12" type="checkbox"/>
+<label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Deployment
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_12_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_12">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Deployment
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../deployment/deploy_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Deploy Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../deployment/DEPLOYMENT_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Deployment Guide
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_13" type="checkbox"/>
+<label class="md-nav__link" for="__nav_13" id="__nav_13_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Logging &amp; Troubleshooting
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_13_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_13">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Logging &amp; Troubleshooting
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../logging/logging_guide/">
+<span class="md-ellipsis">
+    
+  
+    Logging Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../logging/end_to_end_logging/">
+<span class="md-ellipsis">
+    
+  
+    End-to-End Logging
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../logging/log_rotation/">
+<span class="md-ellipsis">
+    
+  
+    Log Rotation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../troubleshooting/error_log/">
+<span class="md-ellipsis">
+    
+  
+    Error Log
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../troubleshooting/open_questions/">
+<span class="md-ellipsis">
+    
+  
+    Open Questions
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_14" type="checkbox"/>
+<label class="md-nav__link" for="__nav_14" id="__nav_14_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Plugins
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_14_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_14">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Plugins
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../plugins/Plugin_API_Broader/">
+<span class="md-ellipsis">
+    
+  
+    Plugin API (Broader)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_15" type="checkbox"/>
+<label class="md-nav__link" for="__nav_15" id="__nav_15_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_15_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_15">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ROADMAP/">
+<span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../CHANGELOG/">
+<span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_15_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_15_3" id="__nav_15_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Changelog Archive
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_15_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_15_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Changelog Archive
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../CHANGELOG/changelog_codex/">
+<span class="md-ellipsis">
+    
+  
+    Codex
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../CHANGELOG/changelog_session_logging/">
+<span class="md-ellipsis">
+    
+  
+    Session Logging
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../CHANGELOG/change_log/">
+<span class="md-ellipsis">
+    
+  
+    Legacy change log
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../reference/audit_prompt/">
+<span class="md-ellipsis">
+    
+  
+    Audit Prompt
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../reference/tools/">
+<span class="md-ellipsis">
+    
+  
+    Tools
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../reference/codex_questions/">
+<span class="md-ellipsis">
+    
+  
+    Codex Questions (Archive)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../deferred_items/">
+<span class="md-ellipsis">
+    
+  
+    Deferred Items
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../agents/">
+<span class="md-ellipsis">
+    
+  
+    Agents
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_16" type="checkbox"/>
+<label class="md-nav__link" for="__nav_16" id="__nav_16_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Agent Prompts
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_16_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_16">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Agent Prompts
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../agents/POST_MERGE_ALIGNMENT_PROMPT/">
+<span class="md-ellipsis">
+    
+  
+    Post-Merge Doc Alignment
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_17" type="checkbox"/>
+<label class="md-nav__link" for="__nav_17" id="__nav_17_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Accountability
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_17_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_17">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Accountability
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../accountability/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<span class="md-ellipsis">
+    
+  
+    Agent Accountability Report
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../accountability/AGENT_ACCESS_EXPERIENCE_REPORT/">
+<span class="md-ellipsis">
+    
+  
+    Agent Access Experience Report
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_18" type="checkbox"/>
+<label class="md-nav__link" for="__nav_18" id="__nav_18_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Phase 9 Execution
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_18_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_18">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Phase 9 Execution
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../phase-9/PHASE_9_COORDINATION_DASHBOARD/">
+<span class="md-ellipsis">
+    
+  
+    Coordination Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../phase-9/PHASE_9_DAILY_STANDUP_TEMPLATE/">
+<span class="md-ellipsis">
+    
+  
+    Daily Standup Template
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../phase-9/POST_MERGE_ACTION_PLAN/">
+<span class="md-ellipsis">
+    
+  
+    Post-Merge Action Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../phase-9/PHASE_8_12_MASTER_EXECUTION_PLAN/">
+<span class="md-ellipsis">
+    
+  
+    Phase 8-12 Master Plan
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_19" type="checkbox"/>
+<label class="md-nav__link" for="__nav_19" id="__nav_19_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Workflows
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_19_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_19">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    CI/CD Workflows
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/INDEX.md">
+<span class="md-ellipsis">
+    
+  
+    Workflow Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/CONSOLIDATION_GUIDE.md">
+<span class="md-ellipsis">
+    
+  
+    Consolidation Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/DEPRECATION_PLAN.md">
+<span class="md-ellipsis">
+    
+  
+    Deprecation Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/OPTIMIZATION_SUMMARY.md">
+<span class="md-ellipsis">
+    
+  
+    Optimization Summary
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/CACHE_ARCHITECTURE_DIAGRAMS.md">
+<span class="md-ellipsis">
+    
+  
+    Cache Architecture
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_20" type="checkbox"/>
+<label class="md-nav__link" for="__nav_20" id="__nav_20_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Reporting
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_20_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_20">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Reporting
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../reporting/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Reporting Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../reporting/copilot_workflow_report_console.html">
+<span class="md-ellipsis">
+    
+  
+    Copilot Workflow Report Console
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_21" type="checkbox"/>
+<label class="md-nav__link" for="__nav_21" id="__nav_21_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    CI Rescue &amp; Health
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_21_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_21">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    CI Rescue &amp; Health
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ci/CI_RESCUE_PIPELINE/">
+<span class="md-ellipsis">
+    
+  
+    CI Rescue Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ci/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ci/CI_FAILURE_ANALYSIS/">
+<span class="md-ellipsis">
+    
+  
+    Failure Analysis
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ci/CI_FIX_SUMMARY.md">
+<span class="md-ellipsis">
+    
+  
+    CI Fix Summary
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ci/ROOT_ORG_VALIDATION/">
+<span class="md-ellipsis">
+    
+  
+    Root Org Validation
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_22" type="checkbox"/>
+<label class="md-nav__link" for="__nav_22" id="__nav_22_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Safety
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_22_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_22">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Safety
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../safety/safety_guide/">
+<span class="md-ellipsis">
+    
+  
+    Safety Guide
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_23" type="checkbox"/>
+<label class="md-nav__link" for="__nav_23" id="__nav_23_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Database Options
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_23_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_23">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Database Options
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../database/sqlite_option/">
+<span class="md-ellipsis">
+    
+  
+    SQLite Option
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../database/duckdb_option/">
+<span class="md-ellipsis">
+    
+  
+    DuckDB Option
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../database/datasette_option/">
+<span class="md-ellipsis">
+    
+  
+    Datasette Option
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_24" type="checkbox"/>
+<label class="md-nav__link" for="__nav_24" id="__nav_24_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Templates
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_24_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_24">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Templates
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/ITERATION_PLAN_TEMPLATE/">
+<span class="md-ellipsis">
+    
+  
+    Iteration Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/Migration_PythonFileRelocation/">
+<span class="md-ellipsis">
+    
+  
+    Migration — Python Relocation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/Migration_CLIHardening/">
+<span class="md-ellipsis">
+    
+  
+    Migration — CLI Hardening
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/Planning_IntentValidation/">
+<span class="md-ellipsis">
+    
+  
+    Planning — Intent Validation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/intent_validation_gate/">
+<span class="md-ellipsis">
+    
+  
+    Intent Validation Gate
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/COPILOT_EXECUTION_DIRECTIVE/">
+<span class="md-ellipsis">
+    
+  
+    Copilot Execution Directive
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/status/">
+<span class="md-ellipsis">
+    
+  
+    Status Report Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/status/codex_status_template_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Status Template v1.2
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/status/authoring_guide_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Authoring Guide v1.2
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/status/SCHEMA_ENHANCEMENTS_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Schema Enhancements
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/status/authoring_quickstart_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Authoring Quickstart
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_25" type="checkbox"/>
+<label class="md-nav__link" for="__nav_25" id="__nav_25_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_25_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_25">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Examples
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../examples/codex_symbolic_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Codex Symbolic Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_26" type="checkbox"/>
+<label class="md-nav__link" for="__nav_26" id="__nav_26_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Ops
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_26_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_26">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Ops
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ops/cost-dashboard/">
+<span class="md-ellipsis">
+    
+  
+    Cost Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ops/COST_GOVERNANCE/">
+<span class="md-ellipsis">
+    
+  
+    Cost Governance
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ops/monitoring/">
+<span class="md-ellipsis">
+    
+  
+    Monitoring
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ops/deployment/">
+<span class="md-ellipsis">
+    
+  
+    Deployment (Legacy)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ops/RUNBOOK/">
+<span class="md-ellipsis">
+    
+  
+    Runbook
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_27" type="checkbox"/>
+<label class="md-nav__link" for="__nav_27" id="__nav_27_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_27_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_27">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tutorials/quickstart/">
+<span class="md-ellipsis">
+    
+  
+    Quickstart (CPU)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tutorials/end_to_end_cpu/">
+<span class="md-ellipsis">
+    
+  
+    End-to-End (CPU)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_28" type="checkbox"/>
+<label class="md-nav__link" for="__nav_28" id="__nav_28_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Legacy Catalog
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_28_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_28">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Legacy Catalog
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../reference/metrics_cli/">
+<span class="md-ellipsis">
+    
+  
+    Reference Archive
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../review/diff_intake_confirmation/">
+<span class="md-ellipsis">
+    
+  
+    Review Checklist
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#table-of-contents">
+<span class="md-ellipsis">
+      
+        Table of Contents
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#quickstart">
+<span class="md-ellipsis">
+      
+        Quickstart
+      
+    </span>
+</a>
+<nav aria-label="Quickstart" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#for-code-contributors">
+<span class="md-ellipsis">
+      
+        For Code Contributors
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#for-custom-agents">
+<span class="md-ellipsis">
+      
+        For Custom Agents
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#for-governance-teams">
+<span class="md-ellipsis">
+      
+        For Governance Teams
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#pattern-creation-template">
+<span class="md-ellipsis">
+      
+        Pattern Creation Template
+      
+    </span>
+</a>
+<nav aria-label="Pattern Creation Template" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#markdown-template">
+<span class="md-ellipsis">
+      
+        Markdown Template
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#4-dependencies">
+<span class="md-ellipsis">
+      
+        4. Dependencies
+      
+    </span>
+</a>
+<nav aria-label="4. Dependencies" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#prerequisites-must-complete-first">
+<span class="md-ellipsis">
+      
+        Prerequisites (Must Complete First)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#dependents-patterns-that-depend-on-this">
+<span class="md-ellipsis">
+      
+        Dependents (Patterns That Depend on This)
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#5-examples">
+<span class="md-ellipsis">
+      
+        5. Examples
+      
+    </span>
+</a>
+<nav aria-label="5. Examples" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#example-1-scenario">
+<span class="md-ellipsis">
+      
+        Example 1: [Scenario]
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#example-2-alternative-scenario">
+<span class="md-ellipsis">
+      
+        Example 2: [Alternative Scenario]
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#6-validation-checklist">
+<span class="md-ellipsis">
+      
+        6. Validation Checklist
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#7-metrics-observability">
+<span class="md-ellipsis">
+      
+        7. Metrics &amp; Observability
+      
+    </span>
+</a>
+<nav aria-label="7. Metrics &amp; Observability" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#key-metrics">
+<span class="md-ellipsis">
+      
+        Key Metrics
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#logging">
+<span class="md-ellipsis">
+      
+        Logging
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#8-related-patterns">
+<span class="md-ellipsis">
+      
+        8. Related Patterns
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#9-common-variations">
+<span class="md-ellipsis">
+      
+        9. Common Variations
+      
+    </span>
+</a>
+<nav aria-label="9. Common Variations" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#variation-a-name">
+<span class="md-ellipsis">
+      
+        Variation A: [Name]
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#variation-b-name">
+<span class="md-ellipsis">
+      
+        Variation B: [Name]
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#10-troubleshooting">
+<span class="md-ellipsis">
+      
+        10. Troubleshooting
+      
+    </span>
+</a>
+<nav aria-label="10. Troubleshooting" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#issue-problem">
+<span class="md-ellipsis">
+      
+        Issue: [Problem]
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#issue-problem_1">
+<span class="md-ellipsis">
+      
+        Issue: [Problem]
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#11-operational-runbook">
+<span class="md-ellipsis">
+      
+        11. Operational Runbook
+      
+    </span>
+</a>
+<nav aria-label="11. Operational Runbook" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#activation">
+<span class="md-ellipsis">
+      
+        Activation
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#monitoring">
+<span class="md-ellipsis">
+      
+        Monitoring
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#deactivation">
+<span class="md-ellipsis">
+      
+        Deactivation
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#emergency-procedures">
+<span class="md-ellipsis">
+      
+        Emergency Procedures
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#12-references">
+<span class="md-ellipsis">
+      
+        12. References
+      
+    </span>
+</a>
+<nav aria-label="12. References" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#category-definitions">
+<span class="md-ellipsis">
+      
+        Category Definitions
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#assigning-sequence-numbers">
+<span class="md-ellipsis">
+      
+        Assigning Sequence Numbers
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#contribution-workflow">
+<span class="md-ellipsis">
+      
+        Contribution Workflow
+      
+    </span>
+</a>
+<nav aria-label="Contribution Workflow" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#phase-1-proposal-days-1-2">
+<span class="md-ellipsis">
+      
+        Phase 1: Proposal (Days 1-2)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#phase-2-initial-review-days-2-3">
+<span class="md-ellipsis">
+      
+        Phase 2: Initial Review (Days 2-3)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#phase-3-implementation-days-3-5">
+<span class="md-ellipsis">
+      
+        Phase 3: Implementation (Days 3-5)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#phase-4-testing-days-5-6">
+<span class="md-ellipsis">
+      
+        Phase 4: Testing (Days 5-6)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#phase-5-governance-approval-days-6-7">
+<span class="md-ellipsis">
+      
+        Phase 5: Governance Approval (Days 6-7)
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#phase-6-integration-release-day-7">
+<span class="md-ellipsis">
+      
+        Phase 6: Integration &amp; Release (Day 7+)
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#review-criteria">
+<span class="md-ellipsis">
+      
+        Review Criteria
+      
+    </span>
+</a>
+<nav aria-label="Review Criteria" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#structural-review">
+<span class="md-ellipsis">
+      
+        Structural Review
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#quality-review">
+<span class="md-ellipsis">
+      
+        Quality Review
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#governance-review">
+<span class="md-ellipsis">
+      
+        Governance Review
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#operational-review">
+<span class="md-ellipsis">
+      
+        Operational Review
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#recommendation">
+<span class="md-ellipsis">
+      
+        Recommendation
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#integration-checklist">
+<span class="md-ellipsis">
+      
+        Integration Checklist
+      
+    </span>
+</a>
+<nav aria-label="Integration Checklist" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#documentation-integration">
+<span class="md-ellipsis">
+      
+        Documentation Integration
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#code-integration">
+<span class="md-ellipsis">
+      
+        Code Integration
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#agent-registration">
+<span class="md-ellipsis">
+      
+        Agent Registration
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#monitoring-setup">
+<span class="md-ellipsis">
+      
+        Monitoring Setup
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#team-communication">
+<span class="md-ellipsis">
+      
+        Team Communication
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#validation-post-integration">
+<span class="md-ellipsis">
+      
+        Validation Post-Integration
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#testing-requirements">
+<span class="md-ellipsis">
+      
+        Testing Requirements
+      
+    </span>
+</a>
+<nav aria-label="Testing Requirements" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#unit-tests">
+<span class="md-ellipsis">
+      
+        Unit Tests
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#integration-tests">
+<span class="md-ellipsis">
+      
+        Integration Tests
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#end-to-end-e2e-tests">
+<span class="md-ellipsis">
+      
+        End-to-End (E2E) Tests
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#test-execution">
+<span class="md-ellipsis">
+      
+        Test Execution
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#documentation-requirements">
+<span class="md-ellipsis">
+      
+        Documentation Requirements
+      
+    </span>
+</a>
+<nav aria-label="Documentation Requirements" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#reference-guide-entry">
+<span class="md-ellipsis">
+      
+        Reference Guide Entry
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#implementation-example">
+<span class="md-ellipsis">
+      
+        Implementation Example
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#operational-runbook">
+<span class="md-ellipsis">
+      
+        Operational Runbook
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#comments-and-docstrings">
+<span class="md-ellipsis">
+      
+        Comments and Docstrings
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#common-pitfalls">
+<span class="md-ellipsis">
+      
+        Common Pitfalls
+      
+    </span>
+</a>
+<nav aria-label="Common Pitfalls" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#pitfall-1-vague-problem-statements">
+<span class="md-ellipsis">
+      
+        Pitfall 1: Vague Problem Statements
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#pitfall-2-vague-enforcement-mechanism">
+<span class="md-ellipsis">
+      
+        Pitfall 2: Vague Enforcement Mechanism
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#pitfall-3-missing-dependencies">
+<span class="md-ellipsis">
+      
+        Pitfall 3: Missing Dependencies
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#pitfall-4-implementation-assumes-one-context">
+<span class="md-ellipsis">
+      
+        Pitfall 4: Implementation Assumes One Context
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#pitfall-5-no-validation-checklist">
+<span class="md-ellipsis">
+      
+        Pitfall 5: No Validation Checklist
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#pitfall-6-hardcoded-secrets-or-credentials">
+<span class="md-ellipsis">
+      
+        Pitfall 6: Hardcoded Secrets or Credentials
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#pattern-versioning">
+<span class="md-ellipsis">
+      
+        Pattern Versioning
+      
+    </span>
+</a>
+<nav aria-label="Pattern Versioning" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#version-format">
+<span class="md-ellipsis">
+      
+        Version Format
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#versioning-rules">
+<span class="md-ellipsis">
+      
+        Versioning Rules
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#release-process">
+<span class="md-ellipsis">
+      
+        Release Process
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#backward-compatibility">
+<span class="md-ellipsis">
+      
+        Backward Compatibility
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#appendix-pattern-template-quick-reference">
+<span class="md-ellipsis">
+      
+        Appendix: Pattern Template Quick Reference
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#getting-help">
+<span class="md-ellipsis">
+      
+        Getting Help
+      
+    </span>
+</a>
+<nav aria-label="Getting Help" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#questions-about-pattern-creation">
+<span class="md-ellipsis">
+      
+        Questions About Pattern Creation?
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#questions-about-existing-patterns">
+<span class="md-ellipsis">
+      
+        Questions About Existing Patterns?
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#get-in-touch">
+<span class="md-ellipsis">
+      
+        Get in Touch
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#document-history">
+<span class="md-ellipsis">
+      
+        Document History
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="governance-patterns-contributor-guide">Governance Patterns Contributor Guide<a class="headerlink" href="#governance-patterns-contributor-guide" title="Permanent link">¶</a></h1>
+<p><strong>Last Updated:</strong> 2026-07-11
+<strong>Version:</strong> v0.2.1</p>
+<blockquote>
+<p><strong>Purpose</strong>: Enable contributors, custom agents, and governance teams to extend and customize governance patterns.<br/>
+<strong>Authority</strong>: Phase D Tier 2 operational guidance (autonomous execution)<br/>
+<strong>Version</strong>: 1.0<br/>
+<strong>Last Updated</strong>: 2026-07-02</p>
+</blockquote>
+<hr/>
+<h2 id="table-of-contents">Table of Contents<a class="headerlink" href="#table-of-contents" title="Permanent link">¶</a></h2>
+<ol>
+<li><a href="#quick-start">Quick Start</a></li>
+<li><a href="#pattern-creation-template">Pattern Creation Template</a></li>
+<li><a href="#categorization-guide">Categorization Guide</a></li>
+<li><a href="#contribution-workflow">Contribution Workflow</a></li>
+<li><a href="#review-criteria">Review Criteria</a></li>
+<li><a href="#integration-checklist">Integration Checklist</a></li>
+<li><a href="#testing-requirements">Testing Requirements</a></li>
+<li><a href="#documentation-requirements">Documentation Requirements</a></li>
+<li><a href="#common-pitfalls">Common Pitfalls</a></li>
+<li><a href="#pattern-versioning">Pattern Versioning</a></li>
+</ol>
+<hr/>
+<h2 id="quickstart">Quickstart<a class="headerlink" href="#quickstart" title="Permanent link">¶</a></h2>
+<h3 id="for-code-contributors">For Code Contributors<a class="headerlink" href="#for-code-contributors" title="Permanent link">¶</a></h3>
+<ol>
+<li><strong>Identify the Gap</strong>: Review <code>.codex/GOVERNANCE_PATTERNS_REFERENCE.md</code> to see existing patterns</li>
+<li><strong>Draft Your Pattern</strong>: Use the <a href="#pattern-creation-template">Pattern Creation Template</a> below</li>
+<li><strong>Validate Category</strong>: Check <a href="#categorization-guide">Categorization Guide</a> to assign the correct prefix (GP/AP/CP/IP)</li>
+<li><strong>Create a Pull Request</strong>: Follow <a href="#contribution-workflow">Contribution Workflow</a></li>
+<li><strong>Submit for Review</strong>: Governance team reviews against <a href="#review-criteria">Review Criteria</a></li>
+<li><strong>Integrate</strong>: Once approved, integrate via <a href="#integration-checklist">Integration Checklist</a></li>
+</ol>
+<h3 id="for-custom-agents">For Custom Agents<a class="headerlink" href="#for-custom-agents" title="Permanent link">¶</a></h3>
+<ol>
+<li><strong>Register Your Pattern</strong>: Add an entry to <code>.codex/AGENT_REGISTRY.yaml</code> under <code>governance_patterns</code></li>
+<li><strong>Document Behavior</strong>: Explain how your agent enforces or implements this pattern</li>
+<li><strong>Link to Implementation</strong>: Point to relevant agent code or configuration files</li>
+<li><strong>Request Governance Review</strong>: Route through governance team for approval</li>
+</ol>
+<h3 id="for-governance-teams">For Governance Teams<a class="headerlink" href="#for-governance-teams" title="Permanent link">¶</a></h3>
+<ol>
+<li><strong>Audit Proposals</strong>: Use <a href="#review-criteria">Review Criteria</a> to evaluate new patterns</li>
+<li><strong>Score Pattern Quality</strong>: Apply the <a href="#quality-rubric">Quality Rubric</a> from <code>GOVERNANCE_PATTERNS_REFERENCE.md</code></li>
+<li><strong>Approve or Iterate</strong>: Provide feedback following <a href="#common-pitfalls">Common Pitfalls</a> guidelines</li>
+<li><strong>Merge to Registry</strong>: Integrate approved patterns into operational governance</li>
+</ol>
+<hr/>
+<h2 id="pattern-creation-template">Pattern Creation Template<a class="headerlink" href="#pattern-creation-template" title="Permanent link">¶</a></h2>
+<p>Use this template to propose a new governance pattern:</p>
+<h3 id="markdown-template">Markdown Template<a class="headerlink" href="#markdown-template" title="Permanent link">¶</a></h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="gh"># Pattern: [Full Pattern Name]</span>
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="gs">**ID**</span>: [Category]-[Sequence]  
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="gs">**Category**</span>: [Governance Policy | Approval &amp; Workflow | Compliance &amp; Audit | Advanced Integration]  
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="gs">**Status**</span>: [Draft | Approved | Deprecated]  
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="gs">**Version**</span>: 1.0  
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="gs">**Author(s)**</span>: [Name(s), Organization]  
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="gs">**Created**</span>: [YYYY-MM-DD]  
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a><span class="gs">**Last Modified**</span>: [YYYY-MM-DD]  
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="gu">## 1. Problem Statement</span>
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a><span class="gu">### Context</span>
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>[Describe the operational context where this pattern is needed. What situation triggers its use?]
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a><span class="gu">### Pain Points</span>
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a><span class="k">-</span><span class="w"> </span>[Pain point 1]
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a><span class="k">-</span><span class="w"> </span>[Pain point 2]
+<a href="#__codelineno-0-19" id="__codelineno-0-19" name="__codelineno-0-19"></a><span class="k">-</span><span class="w"> </span>[Pain point 3]
+<a href="#__codelineno-0-20" id="__codelineno-0-20" name="__codelineno-0-20"></a>
+<a href="#__codelineno-0-21" id="__codelineno-0-21" name="__codelineno-0-21"></a><span class="gu">### Impact Without Pattern</span>
+<a href="#__codelineno-0-22" id="__codelineno-0-22" name="__codelineno-0-22"></a>[Describe the failure mode or undesirable outcome if this pattern is not applied]
+<a href="#__codelineno-0-23" id="__codelineno-0-23" name="__codelineno-0-23"></a>
+<a href="#__codelineno-0-24" id="__codelineno-0-24" name="__codelineno-0-24"></a><span class="gu">## 2. Solution Summary</span>
+<a href="#__codelineno-0-25" id="__codelineno-0-25" name="__codelineno-0-25"></a>
+<a href="#__codelineno-0-26" id="__codelineno-0-26" name="__codelineno-0-26"></a>[2-3 sentence executive summary of the pattern]
+<a href="#__codelineno-0-27" id="__codelineno-0-27" name="__codelineno-0-27"></a>
+<a href="#__codelineno-0-28" id="__codelineno-0-28" name="__codelineno-0-28"></a><span class="gu">### Design Principles</span>
+<a href="#__codelineno-0-29" id="__codelineno-0-29" name="__codelineno-0-29"></a><span class="k">-</span><span class="w"> </span>[Principle 1]
+<a href="#__codelineno-0-30" id="__codelineno-0-30" name="__codelineno-0-30"></a><span class="k">-</span><span class="w"> </span>[Principle 2]
+<a href="#__codelineno-0-31" id="__codelineno-0-31" name="__codelineno-0-31"></a><span class="k">-</span><span class="w"> </span>[Principle 3]
+<a href="#__codelineno-0-32" id="__codelineno-0-32" name="__codelineno-0-32"></a>
+<a href="#__codelineno-0-33" id="__codelineno-0-33" name="__codelineno-0-33"></a><span class="gu">## 3. Implementation Details</span>
+<a href="#__codelineno-0-34" id="__codelineno-0-34" name="__codelineno-0-34"></a>
+<a href="#__codelineno-0-35" id="__codelineno-0-35" name="__codelineno-0-35"></a><span class="gu">### Prerequisites</span>
+<a href="#__codelineno-0-36" id="__codelineno-0-36" name="__codelineno-0-36"></a><span class="k">-</span><span class="w"> </span>[Required condition 1]
+<a href="#__codelineno-0-37" id="__codelineno-0-37" name="__codelineno-0-37"></a><span class="k">-</span><span class="w"> </span>[Required condition 2]
+<a href="#__codelineno-0-38" id="__codelineno-0-38" name="__codelineno-0-38"></a>
+<a href="#__codelineno-0-39" id="__codelineno-0-39" name="__codelineno-0-39"></a><span class="gu">### Steps</span>
+<a href="#__codelineno-0-40" id="__codelineno-0-40" name="__codelineno-0-40"></a><span class="k">1.</span> [Step 1 with explicit action]
+<a href="#__codelineno-0-41" id="__codelineno-0-41" name="__codelineno-0-41"></a><span class="k">2.</span> [Step 2 with explicit action]
+<a href="#__codelineno-0-42" id="__codelineno-0-42" name="__codelineno-0-42"></a><span class="k">3.</span> [Step 3 with explicit action]
+<a href="#__codelineno-0-43" id="__codelineno-0-43" name="__codelineno-0-43"></a>
+<a href="#__codelineno-0-44" id="__codelineno-0-44" name="__codelineno-0-44"></a><span class="gu">### Enforcement Mechanism</span>
+<a href="#__codelineno-0-45" id="__codelineno-0-45" name="__codelineno-0-45"></a><span class="k">-</span><span class="w"> </span><span class="gs">**Type**</span>: [Hard Block | Soft Block | Audit Only]
+<a href="#__codelineno-0-46" id="__codelineno-0-46" name="__codelineno-0-46"></a><span class="k">-</span><span class="w"> </span><span class="gs">**Trigger**</span>: [What condition activates enforcement?]
+<a href="#__codelineno-0-47" id="__codelineno-0-47" name="__codelineno-0-47"></a><span class="k">-</span><span class="w"> </span><span class="gs">**Action**</span>: [What happens when triggered?]
+<a href="#__codelineno-0-48" id="__codelineno-0-48" name="__codelineno-0-48"></a><span class="k">-</span><span class="w"> </span><span class="gs">**Override**</span>: [Can it be overridden? If yes, by whom?]
+<a href="#__codelineno-0-49" id="__codelineno-0-49" name="__codelineno-0-49"></a>
+<a href="#__codelineno-0-50" id="__codelineno-0-50" name="__codelineno-0-50"></a><span class="gu">### Configuration</span>
+<a href="#__codelineno-0-51" id="__codelineno-0-51" name="__codelineno-0-51"></a>[Code example showing how to configure this pattern in YAML or code]
+<a href="#__codelineno-0-52" id="__codelineno-0-52" name="__codelineno-0-52"></a>
+<a href="#__codelineno-0-53" id="__codelineno-0-53" name="__codelineno-0-53"></a>```yaml
+<a href="#__codelineno-0-54" id="__codelineno-0-54" name="__codelineno-0-54"></a>governance:
+<a href="#__codelineno-0-55" id="__codelineno-0-55" name="__codelineno-0-55"></a>  pattern: [CATEGORY]-[SEQUENCE]
+<a href="#__codelineno-0-56" id="__codelineno-0-56" name="__codelineno-0-56"></a>  enabled: true
+<a href="#__codelineno-0-57" id="__codelineno-0-57" name="__codelineno-0-57"></a>  enforcement: [hard_block | soft_block | audit]
+<a href="#__codelineno-0-58" id="__codelineno-0-58" name="__codelineno-0-58"></a>  # Pattern-specific config
+</code></pre></div>
+<h2 id="4-dependencies">4. Dependencies<a class="headerlink" href="#4-dependencies" title="Permanent link">¶</a></h2>
+<h3 id="prerequisites-must-complete-first">Prerequisites (Must Complete First)<a class="headerlink" href="#prerequisites-must-complete-first" title="Permanent link">¶</a></h3>
+<ul>
+<li>Pattern: [Predecessor ID]</li>
+<li>Reason: [Why is this pattern required first?]</li>
+</ul>
+<h3 id="dependents-patterns-that-depend-on-this">Dependents (Patterns That Depend on This)<a class="headerlink" href="#dependents-patterns-that-depend-on-this" title="Permanent link">¶</a></h3>
+<ul>
+<li>Pattern: [Dependent ID]</li>
+<li>Reason: [How does that pattern build on this?]</li>
+</ul>
+<h2 id="5-examples">5. Examples<a class="headerlink" href="#5-examples" title="Permanent link">¶</a></h2>
+<h3 id="example-1-scenario">Example 1: [Scenario]<a class="headerlink" href="#example-1-scenario" title="Permanent link">¶</a></h3>
+<p>[Code example showing this pattern in action]</p>
+<h3 id="example-2-alternative-scenario">Example 2: [Alternative Scenario]<a class="headerlink" href="#example-2-alternative-scenario" title="Permanent link">¶</a></h3>
+<p>[Alternative code example]</p>
+<h2 id="6-validation-checklist">6. Validation Checklist<a class="headerlink" href="#6-validation-checklist" title="Permanent link">¶</a></h2>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Implementation follows defined steps</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Enforcement mechanism is activated</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Configuration is correct</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Logging captures all relevant events</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Rollback procedure documented</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> No manual secrets in configuration</li>
+</ul>
+<h2 id="7-metrics-observability">7. Metrics &amp; Observability<a class="headerlink" href="#7-metrics-observability" title="Permanent link">¶</a></h2>
+<h3 id="key-metrics">Key Metrics<a class="headerlink" href="#key-metrics" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Metric 1</strong>: [Definition and calculation]</li>
+<li><strong>Metric 2</strong>: [Definition and calculation]</li>
+</ul>
+<h3 id="logging">Logging<a class="headerlink" href="#logging" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Event Type</strong>: [Log event name]</li>
+<li><strong>Fields</strong>: [List of logged fields]</li>
+<li><strong>Sample Log Entry</strong>: [Example]</li>
+</ul>
+<h2 id="8-related-patterns">8. Related Patterns<a class="headerlink" href="#8-related-patterns" title="Permanent link">¶</a></h2>
+<ul>
+<li>[Related Pattern ID]: [Relationship type - extends/complements/conflicts-with]</li>
+<li>[Related Pattern ID]: [Relationship type]</li>
+</ul>
+<h2 id="9-common-variations">9. Common Variations<a class="headerlink" href="#9-common-variations" title="Permanent link">¶</a></h2>
+<h3 id="variation-a-name">Variation A: [Name]<a class="headerlink" href="#variation-a-name" title="Permanent link">¶</a></h3>
+<p>[Description and when to use]</p>
+<h3 id="variation-b-name">Variation B: [Name]<a class="headerlink" href="#variation-b-name" title="Permanent link">¶</a></h3>
+<p>[Description and when to use]</p>
+<h2 id="10-troubleshooting">10. Troubleshooting<a class="headerlink" href="#10-troubleshooting" title="Permanent link">¶</a></h2>
+<h3 id="issue-problem">Issue: [Problem]<a class="headerlink" href="#issue-problem" title="Permanent link">¶</a></h3>
+<p><strong>Symptoms</strong>: [What goes wrong]<br/>
+<strong>Root Cause</strong>: [Why it happens]<br/>
+<strong>Resolution</strong>: [How to fix]</p>
+<h3 id="issue-problem_1">Issue: [Problem]<a class="headerlink" href="#issue-problem_1" title="Permanent link">¶</a></h3>
+<p><strong>Symptoms</strong>: [What goes wrong]<br/>
+<strong>Root Cause</strong>: [Why it happens]<br/>
+<strong>Resolution</strong>: [How to fix]</p>
+<h2 id="11-operational-runbook">11. Operational Runbook<a class="headerlink" href="#11-operational-runbook" title="Permanent link">¶</a></h2>
+<h3 id="activation">Activation<a class="headerlink" href="#activation" title="Permanent link">¶</a></h3>
+<p>[Steps to activate this pattern in production]</p>
+<h3 id="monitoring">Monitoring<a class="headerlink" href="#monitoring" title="Permanent link">¶</a></h3>
+<p>[How to monitor this pattern's behavior]</p>
+<h3 id="deactivation">Deactivation<a class="headerlink" href="#deactivation" title="Permanent link">¶</a></h3>
+<p>[Steps to safely deactivate this pattern]</p>
+<h3 id="emergency-procedures">Emergency Procedures<a class="headerlink" href="#emergency-procedures" title="Permanent link">¶</a></h3>
+<p>[What to do if this pattern breaks production]</p>
+<h2 id="12-references">12. References<a class="headerlink" href="#12-references" title="Permanent link">¶</a></h2>
+<ul>
+<li>[Reference 1]</li>
+<li>[Reference 2]</li>
+<li>[Reference 3]
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>### Template Completion Guidance
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>| Section | Guidance | Example |
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>|---------|----------|---------|
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>| **ID** | Use format [CATEGORY]-[SEQUENCE]. IDs in range: GP (001-041), AP (001-030), CP (001-032), IP (001-026) | `GP-042` (if proposing new Governance Policy) |
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>| **Problem Statement** | Be specific. Reference actual failures or near-misses in operations. | "Three times this month, agents bypassed code review gates because the enforcement check was missing." |
+<a href="#__codelineno-1-7" id="__codelineno-1-7" name="__codelineno-1-7"></a>| **Implementation Details** | Code must be copy-paste ready. Use actual syntax from project. | YAML with proper indentation; Python with correct imports |
+<a href="#__codelineno-1-8" id="__codelineno-1-8" name="__codelineno-1-8"></a>| **Dependencies** | Critical for sequencing. If a pattern depends on another, document it explicitly. | AP-001 depends on GP-001 (pre-condition) |
+<a href="#__codelineno-1-9" id="__codelineno-1-9" name="__codelineno-1-9"></a>| **Validation Checklist** | Customize to your pattern. These are test cases, not suggestions. | Each checkbox is a passing test condition |
+<a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>| **Enforcement Mechanism** | Be explicit. Hard block stops execution; soft block warns; audit only logs. | Hard Block: Reject PR if approval missing |
+<a href="#__codelineno-1-11" id="__codelineno-1-11" name="__codelineno-1-11"></a>
+<a href="#__codelineno-1-12" id="__codelineno-1-12" name="__codelineno-1-12"></a>---
+<a href="#__codelineno-1-13" id="__codelineno-1-13" name="__codelineno-1-13"></a>
+<a href="#__codelineno-1-14" id="__codelineno-1-14" name="__codelineno-1-14"></a>## Categorization Guide
+<a href="#__codelineno-1-15" id="__codelineno-1-15" name="__codelineno-1-15"></a>
+<a href="#__codelineno-1-16" id="__codelineno-1-16" name="__codelineno-1-16"></a>Use this decision tree to assign the correct category and sequence ID:
+<a href="#__codelineno-1-17" id="__codelineno-1-17" name="__codelineno-1-17"></a>
+<a href="#__codelineno-1-18" id="__codelineno-1-18" name="__codelineno-1-18"></a>```mermaid
+<a href="#__codelineno-1-19" id="__codelineno-1-19" name="__codelineno-1-19"></a>graph TD
+<a href="#__codelineno-1-20" id="__codelineno-1-20" name="__codelineno-1-20"></a>    A["Is this pattern about&lt;br/&gt;POLICY or GOVERNANCE?"]
+<a href="#__codelineno-1-21" id="__codelineno-1-21" name="__codelineno-1-21"></a>    A --&gt;|Yes| B["Governance Policy&lt;br/&gt;&lt;strong&gt;Category: GP&lt;/strong&gt;&lt;br/&gt;Covers approval gates,&lt;br/&gt;code review rules,&lt;br/&gt;change control"]
+<a href="#__codelineno-1-22" id="__codelineno-1-22" name="__codelineno-1-22"></a>    A --&gt;|No| C["Is this about&lt;br/&gt;APPROVALS or WORKFLOWS?"]
+<a href="#__codelineno-1-23" id="__codelineno-1-23" name="__codelineno-1-23"></a>    C --&gt;|Yes| D["Approval &amp; Workflow&lt;br/&gt;&lt;strong&gt;Category: AP&lt;/strong&gt;&lt;br/&gt;Covers PR approvals,&lt;br/&gt;deployment gates,&lt;br/&gt;workflow automation"]
+<a href="#__codelineno-1-24" id="__codelineno-1-24" name="__codelineno-1-24"></a>    C --&gt;|No| E["Is this about&lt;br/&gt;COMPLIANCE or AUDIT?"]
+<a href="#__codelineno-1-25" id="__codelineno-1-25" name="__codelineno-1-25"></a>    E --&gt;|Yes| F["Compliance &amp; Audit&lt;br/&gt;&lt;strong&gt;Category: CP&lt;/strong&gt;&lt;br/&gt;Covers policy compliance,&lt;br/&gt;audit trails,&lt;br/&gt;access controls"]
+<a href="#__codelineno-1-26" id="__codelineno-1-26" name="__codelineno-1-26"></a>    E --&gt;|No| G["Advanced Integration&lt;br/&gt;&lt;strong&gt;Category: IP&lt;/strong&gt;&lt;br/&gt;Covers agent routing,&lt;br/&gt;cross-system patterns,&lt;br/&gt;orchestration"]
+</code></pre></div></li>
+</ul>
+<h3 id="category-definitions">Category Definitions<a class="headerlink" href="#category-definitions" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Prefix</th>
+<th>Scope</th>
+<th>Example Patterns</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Governance Policy</strong></td>
+<td>GP</td>
+<td>Rules, gates, enforcement</td>
+<td>GP-001: Issue Resolution, GP-002: Deferral Prevention</td>
+</tr>
+<tr>
+<td><strong>Approval &amp; Workflow</strong></td>
+<td>AP</td>
+<td>Approval chains, workflows</td>
+<td>AP-001: Code Review Gate, AP-002: Deployment Approval</td>
+</tr>
+<tr>
+<td><strong>Compliance &amp; Audit</strong></td>
+<td>CP</td>
+<td>Compliance, auditing, logging</td>
+<td>CP-001: Policy Compliance, CP-002: Audit Trail</td>
+</tr>
+<tr>
+<td><strong>Advanced Integration</strong></td>
+<td>IP</td>
+<td>Agent routing, orchestration</td>
+<td>IP-001: Agent Routing, IP-002: Cross-System Sync</td>
+</tr>
+</tbody>
+</table>
+<h3 id="assigning-sequence-numbers">Assigning Sequence Numbers<a class="headerlink" href="#assigning-sequence-numbers" title="Permanent link">¶</a></h3>
+<ol>
+<li><strong>Find the highest existing ID</strong> in your category (e.g., GP-041 is the highest in Governance Policy)</li>
+<li><strong>Increment by 1</strong> (e.g., your new pattern is GP-042)</li>
+<li><strong>Reserve sequential blocks</strong> for related patterns (e.g., if creating a family of patterns, use consecutive IDs like AP-031, AP-032, AP-033)</li>
+</ol>
+<hr/>
+<h2 id="contribution-workflow">Contribution Workflow<a class="headerlink" href="#contribution-workflow" title="Permanent link">¶</a></h2>
+<p>This 6-step workflow ensures governance patterns are properly vetted before integration:</p>
+<h3 id="phase-1-proposal-days-1-2">Phase 1: Proposal (Days 1-2)<a class="headerlink" href="#phase-1-proposal-days-1-2" title="Permanent link">¶</a></h3>
+<p><strong>Action</strong>: Create a GitHub Discussion in the <code>Governance Patterns</code> category</p>
+<p><strong>Deliverables</strong>:
+- Discussion title: <code>[DRAFT] Pattern Proposal: [Pattern Name]</code>
+- Discussion body: Complete pattern proposal using the <a href="#pattern-creation-template">Pattern Creation Template</a>
+- Tagging: Label with <code>governance-pattern-proposal</code> and target category label (e.g., <code>category:governance-policy</code>)</p>
+<p><strong>Success Criteria</strong>:
+- [ ] Pattern proposal is complete and uses template
+- [ ] Problem statement is concrete (references actual failures or risks)
+- [ ] No implementation details are missing
+- [ ] At least 2 reviewers have been notified</p>
+<p><strong>Next Step</strong>: Proceed to Phase 2 once proposal receives initial feedback</p>
+<hr/>
+<h3 id="phase-2-initial-review-days-2-3">Phase 2: Initial Review (Days 2-3)<a class="headerlink" href="#phase-2-initial-review-days-2-3" title="Permanent link">¶</a></h3>
+<p><strong>Action</strong>: Governance team reviews proposal against <a href="#review-criteria">Review Criteria</a></p>
+<p><strong>Deliverables</strong>:
+- Feedback on clarity, completeness, and alignment with existing patterns
+- Request for revisions if needed (return to Phase 1)
+- Tentative approval to proceed with implementation</p>
+<p><strong>Success Criteria</strong>:
+- [ ] All sections of pattern template are complete
+- [ ] No conflicts with existing patterns identified (or conflicts documented)
+- [ ] Team consensus on category assignment
+- [ ] Implementation approach is feasible</p>
+<p><strong>Next Step</strong>: Proceed to Phase 3 if approved; return to Phase 1 if revisions needed</p>
+<hr/>
+<h3 id="phase-3-implementation-days-3-5">Phase 3: Implementation (Days 3-5)<a class="headerlink" href="#phase-3-implementation-days-3-5" title="Permanent link">¶</a></h3>
+<p><strong>Action</strong>: Create branch and implement the pattern</p>
+<p><strong>Deliverables</strong>:
+- Branch: <code>feature/governance-pattern-[ID]-[name]</code>
+- Files modified:
+  - <code>.codex/GOVERNANCE_PATTERNS_REFERENCE.md</code> (add pattern entry)
+  - <code>.codex/GOVERNANCE_PATTERN_EXAMPLES.md</code> (add implementation example)
+  - Code implementation files (if agent-specific)
+  - Tests (unit + integration as per <a href="#testing-requirements">Testing Requirements</a>)</p>
+<p><strong>Success Criteria</strong>:
+- [ ] Pattern documented in reference guide
+- [ ] At least one code example provided
+- [ ] All tests pass
+- [ ] No linting errors
+- [ ] Code review passes</p>
+<p><strong>Next Step</strong>: Proceed to Phase 4 once all checks pass</p>
+<hr/>
+<h3 id="phase-4-testing-days-5-6">Phase 4: Testing (Days 5-6)<a class="headerlink" href="#phase-4-testing-days-5-6" title="Permanent link">¶</a></h3>
+<p><strong>Action</strong>: Run full test suite and validate integration</p>
+<p><strong>Deliverables</strong>:
+- Test results: All unit, integration, and E2E tests pass
+- Integration validation: Pattern works in real operational context
+- Performance assessment: No performance regressions</p>
+<p><strong>Success Criteria</strong>:
+- [ ] Unit tests pass (100% code coverage for new pattern logic)
+- [ ] Integration tests pass
+- [ ] E2E tests pass (pattern works with dependent patterns)
+- [ ] No performance regressions
+- [ ] Logging is correct and observable</p>
+<p><strong>Next Step</strong>: Proceed to Phase 5 once testing complete</p>
+<hr/>
+<h3 id="phase-5-governance-approval-days-6-7">Phase 5: Governance Approval (Days 6-7)<a class="headerlink" href="#phase-5-governance-approval-days-6-7" title="Permanent link">¶</a></h3>
+<p><strong>Action</strong>: Submit for final governance team approval</p>
+<p><strong>Deliverables</strong>:
+- Pull request with complete pattern implementation
+- Link to original discussion from Phase 1
+- Summary of changes and testing results
+- Sign-off from code reviewers</p>
+<p><strong>Success Criteria</strong>:
+- [ ] All tests passing in CI/CD
+- [ ] Governance team approves pattern
+- [ ] At least 2 domain expert sign-offs
+- [ ] No security concerns raised</p>
+<p><strong>Next Step</strong>: Proceed to Phase 6 once approved</p>
+<hr/>
+<h3 id="phase-6-integration-release-day-7">Phase 6: Integration &amp; Release (Day 7+)<a class="headerlink" href="#phase-6-integration-release-day-7" title="Permanent link">¶</a></h3>
+<p><strong>Action</strong>: Merge to main branch and release</p>
+<p><strong>Deliverables</strong>:
+- Merged pull request
+- Updated <code>GOVERNANCE_PATTERNS_REFERENCE.md</code> in main branch
+- Updated <code>GOVERNANCE_PATTERNS_CONTRIBUTOR_GUIDE.md</code> (if adding new categories)
+- Release notes documenting new pattern
+- Announcement in governance team channels</p>
+<p><strong>Success Criteria</strong>:
+- [ ] PR merged to main branch
+- [ ] Pattern accessible in production governance system
+- [ ] Documentation updated
+- [ ] Team notified and training scheduled if needed</p>
+<hr/>
+<h2 id="review-criteria">Review Criteria<a class="headerlink" href="#review-criteria" title="Permanent link">¶</a></h2>
+<p>Use this checklist when reviewing proposed governance patterns:</p>
+<h3 id="structural-review">Structural Review<a class="headerlink" href="#structural-review" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Criterion</th>
+<th>Passes?</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Complete Template</strong></td>
+<td>[ ]</td>
+<td>All 12 sections filled out</td>
+</tr>
+<tr>
+<td><strong>Clear Problem Statement</strong></td>
+<td>[ ]</td>
+<td>References specific operational failure or risk</td>
+</tr>
+<tr>
+<td><strong>Concrete Solution</strong></td>
+<td>[ ]</td>
+<td>Solution is implementable and testable</td>
+</tr>
+<tr>
+<td><strong>Explicit Dependencies</strong></td>
+<td>[ ]</td>
+<td>Prerequisites and dependents listed</td>
+</tr>
+<tr>
+<td><strong>Validation Checklist</strong></td>
+<td>[ ]</td>
+<td>Includes measurable test conditions</td>
+</tr>
+</tbody>
+</table>
+<h3 id="quality-review">Quality Review<a class="headerlink" href="#quality-review" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Criterion</th>
+<th>Passes?</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Accuracy</strong></td>
+<td>[ ]</td>
+<td>Pattern correctly solves stated problem</td>
+</tr>
+<tr>
+<td><strong>Completeness</strong></td>
+<td>[ ]</td>
+<td>Pattern covers all relevant scenarios</td>
+</tr>
+<tr>
+<td><strong>Clarity</strong></td>
+<td>[ ]</td>
+<td>Technical and non-technical readers understand it</td>
+</tr>
+<tr>
+<td><strong>Feasibility</strong></td>
+<td>[ ]</td>
+<td>Pattern is implementable with existing tools/skills</td>
+</tr>
+<tr>
+<td><strong>Traceability</strong></td>
+<td>[ ]</td>
+<td>References point to supporting evidence</td>
+</tr>
+</tbody>
+</table>
+<h3 id="governance-review">Governance Review<a class="headerlink" href="#governance-review" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Criterion</th>
+<th>Passes?</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Alignment</strong></td>
+<td>[ ]</td>
+<td>Pattern aligns with governance philosophy</td>
+</tr>
+<tr>
+<td><strong>Conflict Check</strong></td>
+<td>[ ]</td>
+<td>No conflicts with existing patterns (or conflicts documented)</td>
+</tr>
+<tr>
+<td><strong>Risk Assessment</strong></td>
+<td>[ ]</td>
+<td>Implementation risks identified and mitigated</td>
+</tr>
+<tr>
+<td><strong>Enforcement Clarity</strong></td>
+<td>[ ]</td>
+<td>Enforcement mechanism is explicit and testable</td>
+</tr>
+<tr>
+<td><strong>Auditability</strong></td>
+<td>[ ]</td>
+<td>Pattern supports audit trail and compliance logging</td>
+</tr>
+</tbody>
+</table>
+<h3 id="operational-review">Operational Review<a class="headerlink" href="#operational-review" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Criterion</th>
+<th>Passes?</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Observability</strong></td>
+<td>[ ]</td>
+<td>Metrics and logging defined</td>
+</tr>
+<tr>
+<td><strong>Runbook Complete</strong></td>
+<td>[ ]</td>
+<td>Activation, monitoring, deactivation documented</td>
+</tr>
+<tr>
+<td><strong>Troubleshooting Guide</strong></td>
+<td>[ ]</td>
+<td>Common issues and resolutions documented</td>
+</tr>
+<tr>
+<td><strong>Performance Impact</strong></td>
+<td>[ ]</td>
+<td>No unacceptable performance regressions</td>
+</tr>
+<tr>
+<td><strong>Rollback Procedure</strong></td>
+<td>[ ]</td>
+<td>Safe deactivation procedure documented</td>
+</tr>
+</tbody>
+</table>
+<h3 id="recommendation">Recommendation<a class="headerlink" href="#recommendation" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>APPROVE</strong>: All checks pass. Pattern ready for integration.</li>
+<li><strong>APPROVE WITH CONDITIONS</strong>: Pattern approved contingent on minor revisions (list them).</li>
+<li><strong>REQUEST REVISIONS</strong>: Pattern needs significant work. Return to Phase 1 with feedback.</li>
+<li><strong>REJECT</strong>: Pattern conflicts with governance philosophy or existing patterns. Recommend alternative approach.</li>
+</ul>
+<hr/>
+<h2 id="integration-checklist">Integration Checklist<a class="headerlink" href="#integration-checklist" title="Permanent link">¶</a></h2>
+<p>Once a pattern is approved, use this checklist to integrate it into the operational governance system:</p>
+<h3 id="documentation-integration">Documentation Integration<a class="headerlink" href="#documentation-integration" title="Permanent link">¶</a></h3>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Add pattern entry to <code>.codex/GOVERNANCE_PATTERNS_REFERENCE.md</code> (correct section by category)</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Add implementation example to <code>.codex/GOVERNANCE_PATTERN_EXAMPLES.md</code></li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Update pattern index in reference guide (maintain alphabetical order within category)</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Update "Related Patterns" sections in affected existing patterns</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Update interaction matrix if pattern has new dependencies</li>
+</ul>
+<h3 id="code-integration">Code Integration<a class="headerlink" href="#code-integration" title="Permanent link">¶</a></h3>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Merge feature branch to <code>main</code> (fast-forward or squash as appropriate)</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Code deployed to production governance system</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Version tag created: <code>governance-pattern-[ID]-v[VERSION]</code> (e.g., <code>governance-pattern-GP-042-v1.0</code>)</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Release notes published documenting pattern addition</li>
+</ul>
+<h3 id="agent-registration">Agent Registration<a class="headerlink" href="#agent-registration" title="Permanent link">¶</a></h3>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Add pattern to <code>.codex/AGENT_REGISTRY.yaml</code> under <code>governance_patterns</code> section</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Link to relevant custom agents that implement or enforce this pattern</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Update agent documentation to reference new pattern (if agent-specific)</li>
+</ul>
+<h3 id="monitoring-setup">Monitoring Setup<a class="headerlink" href="#monitoring-setup" title="Permanent link">¶</a></h3>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Metrics collection enabled for this pattern</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Alerting configured (if enforcement-critical)</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Dashboard created (if pattern is heavily used)</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Log aggregation configured for audit trail</li>
+</ul>
+<h3 id="team-communication">Team Communication<a class="headerlink" href="#team-communication" title="Permanent link">¶</a></h3>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Notification sent to governance team with link to pattern documentation</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Training scheduled if pattern requires team awareness</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> FAQ documentation created (if pattern is complex)</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Runbook added to internal governance playbooks</li>
+</ul>
+<h3 id="validation-post-integration">Validation Post-Integration<a class="headerlink" href="#validation-post-integration" title="Permanent link">¶</a></h3>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Pattern works correctly in production</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> No unexpected side effects on other patterns or systems</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Performance metrics within acceptable range</li>
+<li class="task-list-item"><label class="task-list-control"><input disabled="" type="checkbox"/><span class="task-list-indicator"></span></label> Logging and observability working as expected</li>
+</ul>
+<hr/>
+<h2 id="testing-requirements">Testing Requirements<a class="headerlink" href="#testing-requirements" title="Permanent link">¶</a></h2>
+<p>Governance patterns must have comprehensive test coverage. Use this matrix to plan tests:</p>
+<h3 id="unit-tests">Unit Tests<a class="headerlink" href="#unit-tests" title="Permanent link">¶</a></h3>
+<p><strong>Purpose</strong>: Verify individual pattern logic in isolation</p>
+<p><strong>Requirements</strong>:
+- Test each validation condition in the pattern
+- Test enforcement mechanism (hard block, soft block, audit)
+- Test configuration parsing and validation
+- Aim for 100% code coverage of pattern logic</p>
+<p><strong>Example</strong>:
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a><span class="kn">import</span> <span class="nn">pytest</span>
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a><span class="kn">from</span> <span class="nn">governance</span> <span class="kn">import</span> <span class="n">GovernancePattern</span><span class="p">,</span> <span class="n">EnforcementLevel</span>
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a><span class="k">def</span> <span class="nf">test_pattern_gp_042_validation</span><span class="p">():</span>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a><span class="w">    </span><span class="sd">"""Unit test: Validate pattern GP-042 enforces rule correctly"""</span>
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>    <span class="n">pattern</span> <span class="o">=</span> <span class="n">GovernancePattern</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">"GP-042"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"Example Pattern"</span><span class="p">)</span>
+<a href="#__codelineno-2-7" id="__codelineno-2-7" name="__codelineno-2-7"></a>
+<a href="#__codelineno-2-8" id="__codelineno-2-8" name="__codelineno-2-8"></a>    <span class="c1"># Test valid case</span>
+<a href="#__codelineno-2-9" id="__codelineno-2-9" name="__codelineno-2-9"></a>    <span class="k">assert</span> <span class="n">pattern</span><span class="o">.</span><span class="n">validate</span><span class="p">({</span><span class="s2">"rule"</span><span class="p">:</span> <span class="s2">"enforced"</span><span class="p">})</span> <span class="o">==</span> <span class="kc">True</span>
+<a href="#__codelineno-2-10" id="__codelineno-2-10" name="__codelineno-2-10"></a>
+<a href="#__codelineno-2-11" id="__codelineno-2-11" name="__codelineno-2-11"></a>    <span class="c1"># Test invalid case (should trigger hard block)</span>
+<a href="#__codelineno-2-12" id="__codelineno-2-12" name="__codelineno-2-12"></a>    <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="n">GovernanceViolationError</span><span class="p">):</span>
+<a href="#__codelineno-2-13" id="__codelineno-2-13" name="__codelineno-2-13"></a>        <span class="n">pattern</span><span class="o">.</span><span class="n">validate</span><span class="p">({</span><span class="s2">"rule"</span><span class="p">:</span> <span class="s2">"disabled"</span><span class="p">})</span>
+<a href="#__codelineno-2-14" id="__codelineno-2-14" name="__codelineno-2-14"></a>
+<a href="#__codelineno-2-15" id="__codelineno-2-15" name="__codelineno-2-15"></a><span class="k">def</span> <span class="nf">test_pattern_gp_042_enforcement</span><span class="p">():</span>
+<a href="#__codelineno-2-16" id="__codelineno-2-16" name="__codelineno-2-16"></a><span class="w">    </span><span class="sd">"""Unit test: Verify enforcement mechanism"""</span>
+<a href="#__codelineno-2-17" id="__codelineno-2-17" name="__codelineno-2-17"></a>    <span class="n">pattern</span> <span class="o">=</span> <span class="n">GovernancePattern</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">"GP-042"</span><span class="p">,</span> <span class="n">enforcement</span><span class="o">=</span><span class="n">EnforcementLevel</span><span class="o">.</span><span class="n">HARD_BLOCK</span><span class="p">)</span>
+<a href="#__codelineno-2-18" id="__codelineno-2-18" name="__codelineno-2-18"></a>
+<a href="#__codelineno-2-19" id="__codelineno-2-19" name="__codelineno-2-19"></a>    <span class="c1"># Should raise exception for violations</span>
+<a href="#__codelineno-2-20" id="__codelineno-2-20" name="__codelineno-2-20"></a>    <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="n">PatternViolationException</span><span class="p">):</span>
+<a href="#__codelineno-2-21" id="__codelineno-2-21" name="__codelineno-2-21"></a>        <span class="n">pattern</span><span class="o">.</span><span class="n">enforce</span><span class="p">({</span><span class="s2">"status"</span><span class="p">:</span> <span class="s2">"violation"</span><span class="p">})</span>
+</code></pre></div></p>
+<h3 id="integration-tests">Integration Tests<a class="headerlink" href="#integration-tests" title="Permanent link">¶</a></h3>
+<p><strong>Purpose</strong>: Verify pattern works with dependent patterns and system components</p>
+<p><strong>Requirements</strong>:
+- Test pattern interaction with prerequisites (patterns it depends on)
+- Test pattern behavior with dependents (patterns depending on it)
+- Test integration with governance enforcement system
+- Test logging and audit trail generation</p>
+<p><strong>Example</strong>:
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="kn">import</span> <span class="nn">pytest</span>
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="kn">from</span> <span class="nn">governance</span> <span class="kn">import</span> <span class="n">GovernanceSystem</span><span class="p">,</span> <span class="n">PatternGP042</span><span class="p">,</span> <span class="n">PatternGP001</span>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="k">def</span> <span class="nf">test_pattern_gp_042_with_prerequisites</span><span class="p">():</span>
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="w">    </span><span class="sd">"""Integration test: GP-042 works with prerequisite GP-001"""</span>
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>    <span class="n">system</span> <span class="o">=</span> <span class="n">GovernanceSystem</span><span class="p">()</span>
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a>    <span class="c1"># Enable prerequisite pattern</span>
+<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a>    <span class="n">gp_001</span> <span class="o">=</span> <span class="n">PatternGP001</span><span class="p">()</span>
+<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a>    <span class="n">system</span><span class="o">.</span><span class="n">register_pattern</span><span class="p">(</span><span class="n">gp_001</span><span class="p">)</span>
+<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a>
+<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a>    <span class="c1"># Enable pattern under test</span>
+<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a>    <span class="n">gp_042</span> <span class="o">=</span> <span class="n">PatternGP042</span><span class="p">()</span>
+<a href="#__codelineno-3-14" id="__codelineno-3-14" name="__codelineno-3-14"></a>    <span class="n">system</span><span class="o">.</span><span class="n">register_pattern</span><span class="p">(</span><span class="n">gp_042</span><span class="p">)</span>
+<a href="#__codelineno-3-15" id="__codelineno-3-15" name="__codelineno-3-15"></a>
+<a href="#__codelineno-3-16" id="__codelineno-3-16" name="__codelineno-3-16"></a>    <span class="c1"># Verify both patterns work together</span>
+<a href="#__codelineno-3-17" id="__codelineno-3-17" name="__codelineno-3-17"></a>    <span class="n">result</span> <span class="o">=</span> <span class="n">system</span><span class="o">.</span><span class="n">evaluate_governance</span><span class="p">({</span><span class="s2">"test"</span><span class="p">:</span> <span class="s2">"data"</span><span class="p">})</span>
+<a href="#__codelineno-3-18" id="__codelineno-3-18" name="__codelineno-3-18"></a>    <span class="k">assert</span> <span class="n">result</span><span class="o">.</span><span class="n">pattern_gp_001_passed</span>
+<a href="#__codelineno-3-19" id="__codelineno-3-19" name="__codelineno-3-19"></a>    <span class="k">assert</span> <span class="n">result</span><span class="o">.</span><span class="n">pattern_gp_042_passed</span>
+<a href="#__codelineno-3-20" id="__codelineno-3-20" name="__codelineno-3-20"></a>
+<a href="#__codelineno-3-21" id="__codelineno-3-21" name="__codelineno-3-21"></a><span class="k">def</span> <span class="nf">test_pattern_gp_042_audit_logging</span><span class="p">():</span>
+<a href="#__codelineno-3-22" id="__codelineno-3-22" name="__codelineno-3-22"></a><span class="w">    </span><span class="sd">"""Integration test: Pattern generates correct audit logs"""</span>
+<a href="#__codelineno-3-23" id="__codelineno-3-23" name="__codelineno-3-23"></a>    <span class="n">system</span> <span class="o">=</span> <span class="n">GovernanceSystem</span><span class="p">()</span>
+<a href="#__codelineno-3-24" id="__codelineno-3-24" name="__codelineno-3-24"></a>    <span class="n">pattern</span> <span class="o">=</span> <span class="n">PatternGP042</span><span class="p">()</span>
+<a href="#__codelineno-3-25" id="__codelineno-3-25" name="__codelineno-3-25"></a>    <span class="n">system</span><span class="o">.</span><span class="n">register_pattern</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span>
+<a href="#__codelineno-3-26" id="__codelineno-3-26" name="__codelineno-3-26"></a>
+<a href="#__codelineno-3-27" id="__codelineno-3-27" name="__codelineno-3-27"></a>    <span class="c1"># Execute pattern logic</span>
+<a href="#__codelineno-3-28" id="__codelineno-3-28" name="__codelineno-3-28"></a>    <span class="n">system</span><span class="o">.</span><span class="n">evaluate_governance</span><span class="p">({</span><span class="s2">"test"</span><span class="p">:</span> <span class="s2">"data"</span><span class="p">})</span>
+<a href="#__codelineno-3-29" id="__codelineno-3-29" name="__codelineno-3-29"></a>
+<a href="#__codelineno-3-30" id="__codelineno-3-30" name="__codelineno-3-30"></a>    <span class="c1"># Verify audit log contains expected entries</span>
+<a href="#__codelineno-3-31" id="__codelineno-3-31" name="__codelineno-3-31"></a>    <span class="n">logs</span> <span class="o">=</span> <span class="n">system</span><span class="o">.</span><span class="n">get_audit_logs</span><span class="p">(</span><span class="n">pattern_id</span><span class="o">=</span><span class="s2">"GP-042"</span><span class="p">)</span>
+<a href="#__codelineno-3-32" id="__codelineno-3-32" name="__codelineno-3-32"></a>    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">logs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+<a href="#__codelineno-3-33" id="__codelineno-3-33" name="__codelineno-3-33"></a>    <span class="k">assert</span> <span class="s2">"enforcement_decision"</span> <span class="ow">in</span> <span class="n">logs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</code></pre></div></p>
+<h3 id="end-to-end-e2e-tests">End-to-End (E2E) Tests<a class="headerlink" href="#end-to-end-e2e-tests" title="Permanent link">¶</a></h3>
+<p><strong>Purpose</strong>: Verify pattern works in full operational context</p>
+<p><strong>Requirements</strong>:
+- Test pattern in realistic governance scenario
+- Test with other patterns enabled
+- Test with mock agents and systems
+- Test complete enforcement flow from trigger to logging</p>
+<p><strong>Example</strong>:
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="kn">import</span> <span class="nn">pytest</span>
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a><span class="kn">from</span> <span class="nn">governance</span> <span class="kn">import</span> <span class="n">FullGovernanceSystem</span>
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a><span class="kn">from</span> <span class="nn">mock_agents</span> <span class="kn">import</span> <span class="n">MockCodeReviewAgent</span>
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a><span class="k">def</span> <span class="nf">test_pattern_gp_042_e2e</span><span class="p">():</span>
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a><span class="w">    </span><span class="sd">"""E2E test: GP-042 works in full governance context"""</span>
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>    <span class="n">system</span> <span class="o">=</span> <span class="n">FullGovernanceSystem</span><span class="p">()</span>
+<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>    <span class="n">agent</span> <span class="o">=</span> <span class="n">MockCodeReviewAgent</span><span class="p">()</span>
+<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a>
+<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a>    <span class="c1"># Setup realistic scenario</span>
+<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a>    <span class="n">pr</span> <span class="o">=</span> <span class="n">MockPullRequest</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">"PR-123"</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="s2">"needs_review"</span><span class="p">)</span>
+<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a>
+<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a>    <span class="c1"># Execute governance flow with pattern enabled</span>
+<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a>    <span class="n">result</span> <span class="o">=</span> <span class="n">system</span><span class="o">.</span><span class="n">process_pull_request</span><span class="p">(</span><span class="n">pr</span><span class="p">,</span> <span class="n">agent</span><span class="p">)</span>
+<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a>
+<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a>    <span class="c1"># Verify pattern enforcement</span>
+<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a>    <span class="k">assert</span> <span class="n">result</span><span class="o">.</span><span class="n">pattern_enforcements</span><span class="p">[</span><span class="s2">"GP-042"</span><span class="p">][</span><span class="s2">"status"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"passed"</span>
+<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a>    <span class="k">assert</span> <span class="n">pr</span><span class="o">.</span><span class="n">comment_count</span> <span class="o">&gt;</span> <span class="mi">0</span>  <span class="c1"># Pattern should add enforcement comments</span>
+<a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a>
+<a href="#__codelineno-4-20" id="__codelineno-4-20" name="__codelineno-4-20"></a>    <span class="c1"># Verify audit trail</span>
+<a href="#__codelineno-4-21" id="__codelineno-4-21" name="__codelineno-4-21"></a>    <span class="n">audit</span> <span class="o">=</span> <span class="n">system</span><span class="o">.</span><span class="n">get_audit_trail</span><span class="p">(</span><span class="n">pr_id</span><span class="o">=</span><span class="s2">"PR-123"</span><span class="p">)</span>
+<a href="#__codelineno-4-22" id="__codelineno-4-22" name="__codelineno-4-22"></a>    <span class="k">assert</span> <span class="s2">"GP-042"</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">audit</span><span class="p">)</span>
+</code></pre></div></p>
+<h3 id="test-execution">Test Execution<a class="headerlink" href="#test-execution" title="Permanent link">¶</a></h3>
+<p>Run tests before submitting PR:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="c1"># Unit tests</span>
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>pytest<span class="w"> </span>tests/governance/patterns/test_gp_042.py<span class="w"> </span>-v<span class="w"> </span>--cov
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a><span class="c1"># Integration tests</span>
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>pytest<span class="w"> </span>tests/governance/integration/test_pattern_integration.py<span class="w"> </span>-v<span class="w"> </span>--cov
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a><span class="c1"># E2E tests</span>
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a>pytest<span class="w"> </span>tests/governance/e2e/test_full_flow.py<span class="w"> </span>-v
+<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a>
+<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a><span class="c1"># All tests with coverage report</span>
+<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a>pytest<span class="w"> </span>tests/governance/<span class="w"> </span>--cov<span class="w"> </span>--cov-report<span class="o">=</span>html
+</code></pre></div>
+<hr/>
+<h2 id="documentation-requirements">Documentation Requirements<a class="headerlink" href="#documentation-requirements" title="Permanent link">¶</a></h2>
+<p>Governance patterns must be thoroughly documented. Use this checklist:</p>
+<h3 id="reference-guide-entry">Reference Guide Entry<a class="headerlink" href="#reference-guide-entry" title="Permanent link">¶</a></h3>
+<p>Required for <code>.codex/GOVERNANCE_PATTERNS_REFERENCE.md</code>:
+- [ ] Pattern ID and name
+- [ ] Category (GP/AP/CP/IP)
+- [ ] One-sentence description
+- [ ] Link to examples
+- [ ] Relationships to other patterns
+- [ ] Enforcement level (Hard Block / Soft Block / Audit Only)</p>
+<h3 id="implementation-example">Implementation Example<a class="headerlink" href="#implementation-example" title="Permanent link">¶</a></h3>
+<p>Required for <code>.codex/GOVERNANCE_PATTERN_EXAMPLES.md</code>:
+- [ ] Clear scenario/use case
+- [ ] Complete, runnable code example
+- [ ] Step-by-step walkthrough with annotations
+- [ ] Validation checklist
+- [ ] Expected output/behavior</p>
+<h3 id="operational-runbook">Operational Runbook<a class="headerlink" href="#operational-runbook" title="Permanent link">¶</a></h3>
+<p>Required for team awareness:
+- [ ] Activation steps (how to enable in production)
+- [ ] Monitoring and alerting (what to watch)
+- [ ] Troubleshooting guide (common issues and fixes)
+- [ ] Deactivation steps (how to safely disable)
+- [ ] Emergency procedures (what to do if pattern breaks)</p>
+<h3 id="comments-and-docstrings">Comments and Docstrings<a class="headerlink" href="#comments-and-docstrings" title="Permanent link">¶</a></h3>
+<p>Required for code implementation:
+- [ ] Docstring on pattern class/function
+- [ ] Inline comments on complex logic
+- [ ] References to pattern ID and documentation
+- [ ] Examples in docstrings (if code-based)</p>
+<p><strong>Example Docstring</strong>:
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="k">class</span> <span class="nc">PatternGP042</span><span class="p">:</span>
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="w">    </span><span class="sd">"""</span>
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="sd">    Governance Pattern GP-042: [Pattern Name]</span>
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a>
+<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="sd">    Enforces: [What this pattern enforces]</span>
+<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a>
+<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a><span class="sd">    References:</span>
+<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a><span class="sd">    - Pattern ID: GP-042</span>
+<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a><span class="sd">    - Documentation: .codex/GOVERNANCE_PATTERNS_REFERENCE.md (section GP-042)</span>
+<a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a><span class="sd">    - Example: .codex/GOVERNANCE_PATTERN_EXAMPLES.md (Example N)</span>
+<a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a>
+<a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a><span class="sd">    Enforcement Level: Hard Block</span>
+<a href="#__codelineno-6-13" id="__codelineno-6-13" name="__codelineno-6-13"></a>
+<a href="#__codelineno-6-14" id="__codelineno-6-14" name="__codelineno-6-14"></a><span class="sd">    Prerequisites:</span>
+<a href="#__codelineno-6-15" id="__codelineno-6-15" name="__codelineno-6-15"></a><span class="sd">    - GP-001: [Prerequisite pattern]</span>
+<a href="#__codelineno-6-16" id="__codelineno-6-16" name="__codelineno-6-16"></a>
+<a href="#__codelineno-6-17" id="__codelineno-6-17" name="__codelineno-6-17"></a><span class="sd">    Usage:</span>
+<a href="#__codelineno-6-18" id="__codelineno-6-18" name="__codelineno-6-18"></a><span class="sd">        pattern = PatternGP042()</span>
+<a href="#__codelineno-6-19" id="__codelineno-6-19" name="__codelineno-6-19"></a><span class="sd">        result = pattern.evaluate(governance_context)</span>
+<a href="#__codelineno-6-20" id="__codelineno-6-20" name="__codelineno-6-20"></a><span class="sd">        if result.violation:</span>
+<a href="#__codelineno-6-21" id="__codelineno-6-21" name="__codelineno-6-21"></a><span class="sd">            # Handle violation</span>
+<a href="#__codelineno-6-22" id="__codelineno-6-22" name="__codelineno-6-22"></a><span class="sd">    """</span>
+</code></pre></div></p>
+<hr/>
+<h2 id="common-pitfalls">Common Pitfalls<a class="headerlink" href="#common-pitfalls" title="Permanent link">¶</a></h2>
+<p>Avoid these mistakes when creating governance patterns:</p>
+<h3 id="pitfall-1-vague-problem-statements">Pitfall 1: Vague Problem Statements<a class="headerlink" href="#pitfall-1-vague-problem-statements" title="Permanent link">¶</a></h3>
+<p><strong>Problem</strong>: Pattern addresses a general concern but doesn't tie to specific failures.</p>
+<p><strong>Example of Pitfall</strong>: "We should improve code quality"<br/>
+<strong>Example of Fix</strong>: "Three code reviews this month missed security vulnerabilities because reviewers didn't check for hardcoded credentials. This pattern requires automated scanning before approval."</p>
+<p><strong>Prevention</strong>:
+- Reference specific failures or near-misses
+- Include metrics (# of incidents, cost, risk assessment)
+- Link to related issues or incident reports</p>
+<hr/>
+<h3 id="pitfall-2-vague-enforcement-mechanism">Pitfall 2: Vague Enforcement Mechanism<a class="headerlink" href="#pitfall-2-vague-enforcement-mechanism" title="Permanent link">¶</a></h3>
+<p><strong>Problem</strong>: Pattern doesn't specify what happens when rule is violated.</p>
+<p><strong>Example of Pitfall</strong>: "Code review should happen"<br/>
+<strong>Example of Fix</strong>: "Code review is a Hard Block. If PR lacks approval from authorized reviewer, reject PR automatically and notify submitter with link to review runbook."</p>
+<p><strong>Prevention</strong>:
+- Always specify: Hard Block / Soft Block / Audit Only
+- Define the exact action taken (reject, warn, log)
+- Specify who can override (if applicable)
+- Include error message shown to user</p>
+<hr/>
+<h3 id="pitfall-3-missing-dependencies">Pitfall 3: Missing Dependencies<a class="headerlink" href="#pitfall-3-missing-dependencies" title="Permanent link">¶</a></h3>
+<p><strong>Problem</strong>: Pattern depends on another pattern but doesn't document it.</p>
+<p><strong>Example of Pitfall</strong>: AP-001 (Code Review Approval) references review process without noting it depends on GP-001 (Issue Resolution).<br/>
+<strong>Example of Fix</strong>: AP-001 section clearly states "Prerequisites: GP-001. Code review gate requires issue context from GP-001."</p>
+<p><strong>Prevention</strong>:
+- Map all upstream dependencies (what must be true first)
+- Map all downstream dependents (what builds on this)
+- Test with prerequisites disabled to verify dependency is real</p>
+<hr/>
+<h3 id="pitfall-4-implementation-assumes-one-context">Pitfall 4: Implementation Assumes One Context<a class="headerlink" href="#pitfall-4-implementation-assumes-one-context" title="Permanent link">¶</a></h3>
+<p><strong>Problem</strong>: Pattern only works in one scenario but should be more general.</p>
+<p><strong>Example of Pitfall</strong>: Pattern documents GitHub Actions workflow but should apply to all CI/CD systems.<br/>
+<strong>Example of Fix</strong>: Pattern documents generic governance principle with examples for GitHub Actions, GitLab CI, and local execution.</p>
+<p><strong>Prevention</strong>:
+- Separate "principle" from "implementation"
+- Provide examples for multiple contexts
+- Use abstract configuration that works with different systems</p>
+<hr/>
+<h3 id="pitfall-5-no-validation-checklist">Pitfall 5: No Validation Checklist<a class="headerlink" href="#pitfall-5-no-validation-checklist" title="Permanent link">¶</a></h3>
+<p><strong>Problem</strong>: Pattern is vague about how to verify it's working.</p>
+<p><strong>Example of Pitfall</strong>: Pattern says "Monitor code review quality" without saying how.<br/>
+<strong>Example of Fix</strong>: Pattern includes checklist: "Verify enforcement: [ ] Review comments present, [ ] Violations logged, [ ] Metrics populated"</p>
+<p><strong>Prevention</strong>:
+- Add validation checklist to pattern template
+- Each item must be objectively verifiable (not subjective)
+- Include concrete metrics, not fuzzy indicators</p>
+<hr/>
+<h3 id="pitfall-6-hardcoded-secrets-or-credentials">Pitfall 6: Hardcoded Secrets or Credentials<a class="headerlink" href="#pitfall-6-hardcoded-secrets-or-credentials" title="Permanent link">¶</a></h3>
+<p><strong>Problem</strong>: Pattern examples include real secrets (API keys, passwords, tokens).</p>
+<p><strong>Example of Pitfall</strong>: Example shows <code>api_key: sk-1234567890abcdef</code><br/>
+<strong>Example of Fix</strong>: Example shows <code>api_key: ${API_KEY_PLACEHOLDER}</code> with note "Replace with your actual API key from secure store"</p>
+<p><strong>Prevention</strong>:
+- Use placeholder values (${PLACEHOLDER})
+- Never include production credentials in examples
+- Use clear comments pointing to secure credential management
+- Run secret scanning on all documentation before merge</p>
+<hr/>
+<h2 id="pattern-versioning">Pattern Versioning<a class="headerlink" href="#pattern-versioning" title="Permanent link">¶</a></h2>
+<p>Governance patterns use semantic versioning to track changes:</p>
+<h3 id="version-format">Version Format<a class="headerlink" href="#version-format" title="Permanent link">¶</a></h3>
+<p><code>MAJOR.MINOR.PATCH</code></p>
+<ul>
+<li><strong>MAJOR</strong>: Breaking changes (enforcement logic changes, prerequisite changes)</li>
+<li><strong>MINOR</strong>: Non-breaking additions (new examples, additional configuration options)</li>
+<li><strong>PATCH</strong>: Bug fixes and clarifications (typos, clarified documentation)</li>
+</ul>
+<h3 id="versioning-rules">Versioning Rules<a class="headerlink" href="#versioning-rules" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Change Type</th>
+<th>Example</th>
+<th>Version</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Initial release</td>
+<td>Pattern created and approved</td>
+<td>1.0</td>
+</tr>
+<tr>
+<td>Add example</td>
+<td>Include new implementation example</td>
+<td>1.1</td>
+</tr>
+<tr>
+<td>Clarify documentation</td>
+<td>Reword confusing section</td>
+<td>1.0.1</td>
+</tr>
+<tr>
+<td>Add configuration option</td>
+<td>New config parameter (optional)</td>
+<td>1.1</td>
+</tr>
+<tr>
+<td>Change enforcement</td>
+<td>Hard Block → Soft Block</td>
+<td>2.0</td>
+</tr>
+<tr>
+<td>Add prerequisite</td>
+<td>Pattern now depends on new pattern</td>
+<td>2.0</td>
+</tr>
+<tr>
+<td>Bug fix</td>
+<td>Enforcement logic corrected</td>
+<td>1.0.1</td>
+</tr>
+</tbody>
+</table>
+<h3 id="release-process">Release Process<a class="headerlink" href="#release-process" title="Permanent link">¶</a></h3>
+<ol>
+<li><strong>Version Bump</strong>: Update version in pattern documentation</li>
+<li><strong>Changelog Entry</strong>: Add entry to pattern changelog: "Pattern GP-042 v1.1: Added example for multi-repo scenario"</li>
+<li><strong>Git Tag</strong>: Create tag: <code>governance-pattern-GP-042-v1.1</code></li>
+<li><strong>Release Notes</strong>: Document changes in release notes</li>
+<li><strong>Notification</strong>: Notify governance team of breaking changes (MAJOR versions)</li>
+</ol>
+<h3 id="backward-compatibility">Backward Compatibility<a class="headerlink" href="#backward-compatibility" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>MINOR and PATCH</strong> versions must be backward compatible</li>
+<li><strong>MAJOR</strong> versions may introduce breaking changes (document impact on dependent patterns)</li>
+<li>Deprecation period: 30 days notice before removing pattern</li>
+</ul>
+<hr/>
+<h2 id="appendix-pattern-template-quick-reference">Appendix: Pattern Template Quick Reference<a class="headerlink" href="#appendix-pattern-template-quick-reference" title="Permanent link">¶</a></h2>
+<p>Save this for quick access:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a><span class="gh"># Pattern: [NAME]</span>
+<a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>
+<a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a><span class="gs">**ID**</span>: [CATEGORY]-[SEQUENCE]  
+<a href="#__codelineno-7-4" id="__codelineno-7-4" name="__codelineno-7-4"></a><span class="gs">**Category**</span>: [GP|AP|CP|IP]  
+<a href="#__codelineno-7-5" id="__codelineno-7-5" name="__codelineno-7-5"></a><span class="gs">**Status**</span>: [Draft|Approved|Deprecated]  
+<a href="#__codelineno-7-6" id="__codelineno-7-6" name="__codelineno-7-6"></a><span class="gs">**Version**</span>: 1.0  
+<a href="#__codelineno-7-7" id="__codelineno-7-7" name="__codelineno-7-7"></a>
+<a href="#__codelineno-7-8" id="__codelineno-7-8" name="__codelineno-7-8"></a><span class="gu">## Problem Statement</span>
+<a href="#__codelineno-7-9" id="__codelineno-7-9" name="__codelineno-7-9"></a>[Context + Pain Points + Impact]
+<a href="#__codelineno-7-10" id="__codelineno-7-10" name="__codelineno-7-10"></a>
+<a href="#__codelineno-7-11" id="__codelineno-7-11" name="__codelineno-7-11"></a><span class="gu">## Solution Summary</span>
+<a href="#__codelineno-7-12" id="__codelineno-7-12" name="__codelineno-7-12"></a>[2-3 sentence summary]
+<a href="#__codelineno-7-13" id="__codelineno-7-13" name="__codelineno-7-13"></a>
+<a href="#__codelineno-7-14" id="__codelineno-7-14" name="__codelineno-7-14"></a><span class="gu">## Implementation Details</span>
+<a href="#__codelineno-7-15" id="__codelineno-7-15" name="__codelineno-7-15"></a>[Prerequisites, Steps, Enforcement, Configuration]
+<a href="#__codelineno-7-16" id="__codelineno-7-16" name="__codelineno-7-16"></a>
+<a href="#__codelineno-7-17" id="__codelineno-7-17" name="__codelineno-7-17"></a><span class="gu">## Dependencies</span>
+<a href="#__codelineno-7-18" id="__codelineno-7-18" name="__codelineno-7-18"></a>[Prerequisites + Dependents]
+<a href="#__codelineno-7-19" id="__codelineno-7-19" name="__codelineno-7-19"></a>
+<a href="#__codelineno-7-20" id="__codelineno-7-20" name="__codelineno-7-20"></a><span class="gu">## Examples</span>
+<a href="#__codelineno-7-21" id="__codelineno-7-21" name="__codelineno-7-21"></a>[At least 2 examples with code]
+<a href="#__codelineno-7-22" id="__codelineno-7-22" name="__codelineno-7-22"></a>
+<a href="#__codelineno-7-23" id="__codelineno-7-23" name="__codelineno-7-23"></a><span class="gu">## Validation Checklist</span>
+<a href="#__codelineno-7-24" id="__codelineno-7-24" name="__codelineno-7-24"></a>[Measurable test conditions]
+<a href="#__codelineno-7-25" id="__codelineno-7-25" name="__codelineno-7-25"></a>
+<a href="#__codelineno-7-26" id="__codelineno-7-26" name="__codelineno-7-26"></a><span class="gu">## Metrics &amp; Observability</span>
+<a href="#__codelineno-7-27" id="__codelineno-7-27" name="__codelineno-7-27"></a>[Key metrics + Logging]
+<a href="#__codelineno-7-28" id="__codelineno-7-28" name="__codelineno-7-28"></a>
+<a href="#__codelineno-7-29" id="__codelineno-7-29" name="__codelineno-7-29"></a><span class="gu">## Troubleshooting</span>
+<a href="#__codelineno-7-30" id="__codelineno-7-30" name="__codelineno-7-30"></a>[Common issues + Solutions]
+<a href="#__codelineno-7-31" id="__codelineno-7-31" name="__codelineno-7-31"></a>
+<a href="#__codelineno-7-32" id="__codelineno-7-32" name="__codelineno-7-32"></a><span class="gu">## Operational Runbook</span>
+<a href="#__codelineno-7-33" id="__codelineno-7-33" name="__codelineno-7-33"></a>[Activation + Monitoring + Deactivation]
+</code></pre></div>
+<hr/>
+<h2 id="getting-help">Getting Help<a class="headerlink" href="#getting-help" title="Permanent link">¶</a></h2>
+<h3 id="questions-about-pattern-creation">Questions About Pattern Creation?<a class="headerlink" href="#questions-about-pattern-creation" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Process Questions</strong>: Review <a href="#contribution-workflow">Contribution Workflow</a></li>
+<li><strong>Template Questions</strong>: See <a href="#pattern-creation-template">Pattern Creation Template</a></li>
+<li><strong>Category Questions</strong>: Check <a href="#categorization-guide">Categorization Guide</a></li>
+</ul>
+<h3 id="questions-about-existing-patterns">Questions About Existing Patterns?<a class="headerlink" href="#questions-about-existing-patterns" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Pattern List</strong>: See <code>.codex/GOVERNANCE_PATTERNS_REFERENCE.md</code></li>
+<li><strong>Examples</strong>: See <code>.codex/GOVERNANCE_PATTERN_EXAMPLES.md</code></li>
+<li><strong>Pattern Interactions</strong>: See interaction matrix in Reference Guide</li>
+</ul>
+<h3 id="get-in-touch">Get in Touch<a class="headerlink" href="#get-in-touch" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Governance Team</strong>: Reach out on <code>#governance</code> Slack channel</li>
+<li><strong>GitHub Discussions</strong>: Post questions in Governance Patterns category</li>
+<li><strong>Issues</strong>: Create issue with label <code>governance-patterns</code> if you find bugs or documentation gaps</li>
+</ul>
+<hr/>
+<h2 id="document-history">Document History<a class="headerlink" href="#document-history" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Version</th>
+<th>Date</th>
+<th>Author</th>
+<th>Changes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1.0</td>
+<td>2026-07-02</td>
+<td>Phase D Tier 2</td>
+<td>Initial creation; comprehensive contributor guidance for 133+ governance patterns</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<p><strong>Last Updated</strong>: 2026-07-02 | <strong>Status</strong>: Active | <strong>Maintained By</strong>: Governance Team</p>
+</article>
+</div>
+<script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+</body>
+</html>

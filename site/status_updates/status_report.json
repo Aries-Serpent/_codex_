@@ -1,0 +1,27 @@
+{
+  "artifacts": {
+    "emit_json": "docs/status_updates/status_report.json",
+    "emit_md": "docs/status_updates/status_report.md",
+    "out": "STATUS_REPORT.md"
+  },
+  "gates": [
+    {
+      "name": "Fence integrity",
+      "status": "PASS"
+    },
+    {
+      "name": "Schema validation",
+      "status": "SKIP"
+    },
+    {
+      "name": "Evaluator",
+      "status": "SKIP"
+    },
+    {
+      "name": "Selection Guard (chosen=-)",
+      "status": "SKIP"
+    }
+  ],
+  "generated": "2025-10-29T20:36:36",
+  "version": "1.2.0"
+}

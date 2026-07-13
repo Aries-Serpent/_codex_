@@ -1,0 +1,3017 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="Project documentation - v0.2.1 (MkDocs Material)" name="description"/>
+<link href="https://aries-serpent.github.io/_codex_/VECTOR_STORE_INTEGRATION_GUIDE/" rel="canonical"/>
+<link href="../assets/images/favicon.png" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<title>Vector Store Integration Guide - Codex Docs v0.2.1</title>
+<link href="../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<link href="../stylesheets/extra.css" rel="stylesheet"/>
+<script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#vector-store-integration-guide">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="Codex Docs v0.2.1" class="md-header__button md-logo" data-md-component="logo" href=".." title="Codex Docs v0.2.1">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m19 2-5 4.5v11l5-4.5zM6.5 5C4.55 5 2.45 5.4 1 6.5v14.66c0 .25.25.5.5.5.1 0 .15-.07.25-.07 1.35-.65 3.3-1.09 4.75-1.09 1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.31 4.75 1.06.1.05.15.03.25.03.25 0 .5-.25.5-.5V6.5c-.6-.45-1.25-.75-2-1V19c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V6.5C10.55 5.4 8.45 5 6.5 5"></path></svg>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            Codex Docs v0.2.1
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Vector Store Integration Guide
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme)" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"></path></svg>
+</label>
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: light)" data-md-color-primary="indigo" data-md-color-scheme="default" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_2" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+<input aria-label="Switch to system preference" class="md-option" data-md-color-accent="indigo" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-primary="black" data-md-color-scheme="slate" id="__palette_2" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to system preference">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<a aria-label="Share" class="md-search__icon md-icon" data-clipboard="" data-clipboard-text="" data-md-component="search-share" href="javascript:void(0)" tabindex="-1" title="Share">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"></path></svg>
+</a>
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="md-header__source">
+<a class="md-source" data-md-component="source" href="https://github.com/Aries-Serpent/_codex_" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+</div>
+<div class="md-source__repository">
+    Aries-Serpent/_codex_
+  </div>
+</a>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="..">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../status/GITHUB_PAGES_STATUS/">
+        
+  
+  
+    
+  
+  Status Dashboard
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../cognitive_app/">
+        
+  
+  
+    
+  
+  Cognitive App
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../evolution/INDEX/">
+          
+  
+  
+  Evolution Center
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../README_ROOT/">
+        
+  
+  
+    
+  
+  README
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../getting-started/">
+        
+  
+  
+    
+  
+  Getting Started
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../api/">
+          
+  
+  
+  API Reference
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../CONTRIBUTING/">
+          
+  
+  
+  Guides
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../tokens/INDEX/">
+          
+  
+  
+  Token Management
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../architecture.md">
+          
+  
+  
+  Architecture
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../training/symbolic_training/">
+          
+  
+  
+  Training
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../deployment/deploy_pipeline/">
+          
+  
+  
+  Deployment
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../logging/logging_guide/">
+          
+  
+  
+  Logging &amp; Troubleshooting
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../plugins/Plugin_API_Broader/">
+          
+  
+  
+  Plugins
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../ROADMAP/">
+          
+  
+  
+  Reference
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../agents/POST_MERGE_ALIGNMENT_PROMPT/">
+          
+  
+  
+  Agent Prompts
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../accountability/INDEX/">
+          
+  
+  
+  Accountability
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../phase-9/PHASE_9_COORDINATION_DASHBOARD/">
+          
+  
+  
+  Phase 9 Execution
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/INDEX.md">
+          
+  
+  
+  CI/CD Workflows
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../reporting/INDEX/">
+          
+  
+  
+  Reporting
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../ci/CI_RESCUE_PIPELINE/">
+          
+  
+  
+  CI Rescue &amp; Health
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../safety/safety_guide/">
+          
+  
+  
+  Safety
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../database/sqlite_option/">
+          
+  
+  
+  Database Options
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../templates/">
+          
+  
+  
+  Templates
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../examples/codex_symbolic_pipeline/">
+          
+  
+  
+  Examples
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../ops/cost-dashboard/">
+          
+  
+  
+  Ops
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../tutorials/quickstart/">
+          
+  
+  
+  Tutorials
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="..">
+          
+  
+  
+  Legacy Catalog
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="Codex Docs v0.2.1" class="md-nav__button md-logo" data-md-component="logo" href=".." title="Codex Docs v0.2.1">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m19 2-5 4.5v11l5-4.5zM6.5 5C4.55 5 2.45 5.4 1 6.5v14.66c0 .25.25.5.5.5.1 0 .15-.07.25-.07 1.35-.65 3.3-1.09 4.75-1.09 1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.31 4.75 1.06.1.05.15.03.25.03.25 0 .5-.25.5-.5V6.5c-.6-.45-1.25-.75-2-1V19c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V6.5C10.55 5.4 8.45 5 6.5 5"></path></svg>
+</a>
+    Codex Docs v0.2.1
+  </label>
+<div class="md-nav__source">
+<a class="md-source" data-md-component="source" href="https://github.com/Aries-Serpent/_codex_" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+</div>
+<div class="md-source__repository">
+    Aries-Serpent/_codex_
+  </div>
+</a>
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../status/GITHUB_PAGES_STATUS/">
+<span class="md-ellipsis">
+    
+  
+    Status Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../cognitive_app/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive App
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Evolution Center
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Evolution Center
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evolution/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evolution/EVOLUTION_TIMELINE/">
+<span class="md-ellipsis">
+    
+  
+    Evolution Timeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evolution/PLANSET_REGISTRY/">
+<span class="md-ellipsis">
+    
+  
+    Planset Registry
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evolution/COGNITIVE_EVOLUTION_TREE/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive Evolution Tree
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evolution/AI_EMERGENCE_STORYBOARD/">
+<span class="md-ellipsis">
+    
+  
+    AI Emergence Storyboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evolution/AI_AGENCY_INTUITIVENESS_SCORE_V3/">
+<span class="md-ellipsis">
+    
+  
+    AI Agency Score V3
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../evolution/COGNITIVE_CODEBASE_MAP/">
+<span class="md-ellipsis">
+    
+  
+    Cognitive Codebase Map
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../README_ROOT/">
+<span class="md-ellipsis">
+    
+  
+    README
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../getting-started/">
+<span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../api/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_8" type="checkbox"/>
+<label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Guides
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_8_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_8">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Guides
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../CONTRIBUTING/">
+<span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../guides/code_style_guide/">
+<span class="md-ellipsis">
+    
+  
+    Code Style
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../guides/checkpointing/">
+<span class="md-ellipsis">
+    
+  
+    Checkpointing
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../guides/codex_setup/">
+<span class="md-ellipsis">
+    
+  
+    Setup &amp; Integration
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../guides/session_hooks/">
+<span class="md-ellipsis">
+    
+  
+    Session Hooks
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../guides/continuous_improvement/">
+<span class="md-ellipsis">
+    
+  
+    Continuous Improvement
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../guides/lfs_policy/">
+<span class="md-ellipsis">
+    
+  
+    LFS Policy
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../guides/asset_instruction_playbook/">
+<span class="md-ellipsis">
+    
+  
+    Asset Instruction Playbook
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../guides/LOGGING/">
+<span class="md-ellipsis">
+    
+  
+    Logging (Stdlib)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_9" type="checkbox"/>
+<label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Token Management
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_9_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_9">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Token Management
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tokens/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tokens/TOKEN_HIERARCHY_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Token Hierarchy Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tokens/TOKEN_REGENERATION_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Token Regeneration Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tokens/TOKEN_USAGE_AUDIT/">
+<span class="md-ellipsis">
+    
+  
+    Token Usage Audit
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tokens/HUMAN_ADMIN_SETUP/">
+<span class="md-ellipsis">
+    
+  
+    Human Admin Setup
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tokens/CI_CD_TROUBLESHOOTING/">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Troubleshooting
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tokens/CUSTOM_AGENT_GUIDANCE/">
+<span class="md-ellipsis">
+    
+  
+    Custom Agent Guidance
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tokens/QUICK_REFERENCE/">
+<span class="md-ellipsis">
+    
+  
+    Quick Reference
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_10" type="checkbox"/>
+<label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_10_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_10">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../architecture.md">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../architecture/codex_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Codex Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../system/mermaid_logic_map/">
+<span class="md-ellipsis">
+    
+  
+    Runtime Logic Map
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_11" type="checkbox"/>
+<label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Training
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_11_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_11">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Training
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../training/symbolic_training/">
+<span class="md-ellipsis">
+    
+  
+    Symbolic Training
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../training/distributed_troubleshooting/">
+<span class="md-ellipsis">
+    
+  
+    Distributed Troubleshooting
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_12" type="checkbox"/>
+<label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Deployment
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_12_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_12">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Deployment
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../deployment/deploy_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Deploy Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../deployment/DEPLOYMENT_GUIDE/">
+<span class="md-ellipsis">
+    
+  
+    Deployment Guide
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_13" type="checkbox"/>
+<label class="md-nav__link" for="__nav_13" id="__nav_13_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Logging &amp; Troubleshooting
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_13_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_13">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Logging &amp; Troubleshooting
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../logging/logging_guide/">
+<span class="md-ellipsis">
+    
+  
+    Logging Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../logging/end_to_end_logging/">
+<span class="md-ellipsis">
+    
+  
+    End-to-End Logging
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../logging/log_rotation/">
+<span class="md-ellipsis">
+    
+  
+    Log Rotation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../troubleshooting/error_log/">
+<span class="md-ellipsis">
+    
+  
+    Error Log
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../troubleshooting/open_questions/">
+<span class="md-ellipsis">
+    
+  
+    Open Questions
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_14" type="checkbox"/>
+<label class="md-nav__link" for="__nav_14" id="__nav_14_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Plugins
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_14_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_14">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Plugins
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../plugins/Plugin_API_Broader/">
+<span class="md-ellipsis">
+    
+  
+    Plugin API (Broader)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_15" type="checkbox"/>
+<label class="md-nav__link" for="__nav_15" id="__nav_15_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_15_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_15">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ROADMAP/">
+<span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../CHANGELOG/">
+<span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_15_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_15_3" id="__nav_15_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Changelog Archive
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_15_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_15_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Changelog Archive
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../CHANGELOG/changelog_codex/">
+<span class="md-ellipsis">
+    
+  
+    Codex
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../CHANGELOG/changelog_session_logging/">
+<span class="md-ellipsis">
+    
+  
+    Session Logging
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../CHANGELOG/change_log/">
+<span class="md-ellipsis">
+    
+  
+    Legacy change log
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../reference/audit_prompt/">
+<span class="md-ellipsis">
+    
+  
+    Audit Prompt
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../reference/tools/">
+<span class="md-ellipsis">
+    
+  
+    Tools
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../reference/codex_questions/">
+<span class="md-ellipsis">
+    
+  
+    Codex Questions (Archive)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../deferred_items/">
+<span class="md-ellipsis">
+    
+  
+    Deferred Items
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../agents/">
+<span class="md-ellipsis">
+    
+  
+    Agents
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_16" type="checkbox"/>
+<label class="md-nav__link" for="__nav_16" id="__nav_16_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Agent Prompts
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_16_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_16">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Agent Prompts
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../agents/POST_MERGE_ALIGNMENT_PROMPT/">
+<span class="md-ellipsis">
+    
+  
+    Post-Merge Doc Alignment
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_17" type="checkbox"/>
+<label class="md-nav__link" for="__nav_17" id="__nav_17_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Accountability
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_17_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_17">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Accountability
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../accountability/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../accountability/.codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md">
+<span class="md-ellipsis">
+    
+  
+    Agent Accountability Report
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../accountability/AGENT_ACCESS_EXPERIENCE_REPORT/">
+<span class="md-ellipsis">
+    
+  
+    Agent Access Experience Report
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_18" type="checkbox"/>
+<label class="md-nav__link" for="__nav_18" id="__nav_18_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Phase 9 Execution
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_18_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_18">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Phase 9 Execution
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../phase-9/PHASE_9_COORDINATION_DASHBOARD/">
+<span class="md-ellipsis">
+    
+  
+    Coordination Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../phase-9/PHASE_9_DAILY_STANDUP_TEMPLATE/">
+<span class="md-ellipsis">
+    
+  
+    Daily Standup Template
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../phase-9/POST_MERGE_ACTION_PLAN/">
+<span class="md-ellipsis">
+    
+  
+    Post-Merge Action Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../phase-9/PHASE_8_12_MASTER_EXECUTION_PLAN/">
+<span class="md-ellipsis">
+    
+  
+    Phase 8-12 Master Plan
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_19" type="checkbox"/>
+<label class="md-nav__link" for="__nav_19" id="__nav_19_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Workflows
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_19_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_19">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    CI/CD Workflows
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/INDEX.md">
+<span class="md-ellipsis">
+    
+  
+    Workflow Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/CONSOLIDATION_GUIDE.md">
+<span class="md-ellipsis">
+    
+  
+    Consolidation Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/DEPRECATION_PLAN.md">
+<span class="md-ellipsis">
+    
+  
+    Deprecation Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/OPTIMIZATION_SUMMARY.md">
+<span class="md-ellipsis">
+    
+  
+    Optimization Summary
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/Aries-Serpent/_codex_/blob/main/.github/workflows/CACHE_ARCHITECTURE_DIAGRAMS.md">
+<span class="md-ellipsis">
+    
+  
+    Cache Architecture
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_20" type="checkbox"/>
+<label class="md-nav__link" for="__nav_20" id="__nav_20_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Reporting
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_20_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_20">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Reporting
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../reporting/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    Reporting Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../reporting/copilot_workflow_report_console.html">
+<span class="md-ellipsis">
+    
+  
+    Copilot Workflow Report Console
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_21" type="checkbox"/>
+<label class="md-nav__link" for="__nav_21" id="__nav_21_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    CI Rescue &amp; Health
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_21_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_21">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    CI Rescue &amp; Health
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ci/CI_RESCUE_PIPELINE/">
+<span class="md-ellipsis">
+    
+  
+    CI Rescue Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ci/INDEX/">
+<span class="md-ellipsis">
+    
+  
+    CI/CD Index
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ci/CI_FAILURE_ANALYSIS/">
+<span class="md-ellipsis">
+    
+  
+    Failure Analysis
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ci/CI_FIX_SUMMARY.md">
+<span class="md-ellipsis">
+    
+  
+    CI Fix Summary
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ci/ROOT_ORG_VALIDATION/">
+<span class="md-ellipsis">
+    
+  
+    Root Org Validation
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_22" type="checkbox"/>
+<label class="md-nav__link" for="__nav_22" id="__nav_22_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Safety
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_22_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_22">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Safety
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../safety/safety_guide/">
+<span class="md-ellipsis">
+    
+  
+    Safety Guide
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_23" type="checkbox"/>
+<label class="md-nav__link" for="__nav_23" id="__nav_23_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Database Options
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_23_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_23">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Database Options
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../database/sqlite_option/">
+<span class="md-ellipsis">
+    
+  
+    SQLite Option
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../database/duckdb_option/">
+<span class="md-ellipsis">
+    
+  
+    DuckDB Option
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../database/datasette_option/">
+<span class="md-ellipsis">
+    
+  
+    Datasette Option
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_24" type="checkbox"/>
+<label class="md-nav__link" for="__nav_24" id="__nav_24_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Templates
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_24_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_24">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Templates
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/ITERATION_PLAN_TEMPLATE/">
+<span class="md-ellipsis">
+    
+  
+    Iteration Plan
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/Migration_PythonFileRelocation/">
+<span class="md-ellipsis">
+    
+  
+    Migration — Python Relocation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/Migration_CLIHardening/">
+<span class="md-ellipsis">
+    
+  
+    Migration — CLI Hardening
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/Planning_IntentValidation/">
+<span class="md-ellipsis">
+    
+  
+    Planning — Intent Validation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/intent_validation_gate/">
+<span class="md-ellipsis">
+    
+  
+    Intent Validation Gate
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/COPILOT_EXECUTION_DIRECTIVE/">
+<span class="md-ellipsis">
+    
+  
+    Copilot Execution Directive
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/status/">
+<span class="md-ellipsis">
+    
+  
+    Status Report Guide
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/status/codex_status_template_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Status Template v1.2
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/status/authoring_guide_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Authoring Guide v1.2
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/status/SCHEMA_ENHANCEMENTS_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Schema Enhancements
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../templates/status/authoring_quickstart_v1.2/">
+<span class="md-ellipsis">
+    
+  
+    Authoring Quickstart
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_25" type="checkbox"/>
+<label class="md-nav__link" for="__nav_25" id="__nav_25_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_25_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_25">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Examples
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../examples/codex_symbolic_pipeline/">
+<span class="md-ellipsis">
+    
+  
+    Codex Symbolic Pipeline
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_26" type="checkbox"/>
+<label class="md-nav__link" for="__nav_26" id="__nav_26_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Ops
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_26_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_26">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Ops
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ops/cost-dashboard/">
+<span class="md-ellipsis">
+    
+  
+    Cost Dashboard
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ops/COST_GOVERNANCE/">
+<span class="md-ellipsis">
+    
+  
+    Cost Governance
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ops/monitoring/">
+<span class="md-ellipsis">
+    
+  
+    Monitoring
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ops/deployment/">
+<span class="md-ellipsis">
+    
+  
+    Deployment (Legacy)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ops/RUNBOOK/">
+<span class="md-ellipsis">
+    
+  
+    Runbook
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_27" type="checkbox"/>
+<label class="md-nav__link" for="__nav_27" id="__nav_27_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_27_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_27">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tutorials/quickstart/">
+<span class="md-ellipsis">
+    
+  
+    Quickstart (CPU)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../tutorials/end_to_end_cpu/">
+<span class="md-ellipsis">
+    
+  
+    End-to-End (CPU)
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_28" type="checkbox"/>
+<label class="md-nav__link" for="__nav_28" id="__nav_28_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Legacy Catalog
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_28_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_28">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Legacy Catalog
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="..">
+<span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../reference/metrics_cli/">
+<span class="md-ellipsis">
+    
+  
+    Reference Archive
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../review/diff_intake_confirmation/">
+<span class="md-ellipsis">
+    
+  
+    Review Checklist
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#overview">
+<span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#features">
+<span class="md-ellipsis">
+      
+        Features
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#quickstart">
+<span class="md-ellipsis">
+      
+        Quickstart
+      
+    </span>
+</a>
+<nav aria-label="Quickstart" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#basic-vector-store-usage">
+<span class="md-ellipsis">
+      
+        Basic Vector Store Usage
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="vector-store-integration-guide">Vector Store Integration Guide<a class="headerlink" href="#vector-store-integration-guide" title="Permanent link">¶</a></h1>
+<p><strong>Last Updated:</strong> 2026-07-11
+<strong>Version:</strong> v0.2.1</p>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">¶</a></h2>
+<p>The Vector Store integration provides a unified interface for storing, retrieving, and searching vector embeddings. It includes a complete FAISS implementation with metadata support, persistence, and integration with the Inference Server for embedding generation.</p>
+<h2 id="features">Features<a class="headerlink" href="#features" title="Permanent link">¶</a></h2>
+<ul>
+<li><strong>Unified Interface</strong>: Abstract <code>VectorStore</code> class for consistent API across backends</li>
+<li><strong>FAISS Implementation</strong>: High-performance local vector storage with FAISS</li>
+<li><strong>ID-Based Management</strong>: Auto-generated or custom vector IDs</li>
+<li><strong>Metadata Support</strong>: Store and retrieve arbitrary metadata with vectors</li>
+<li><strong>Persistence</strong>: Save and load indices with full state preservation</li>
+<li><strong>Embedding Generation</strong>: Integrated <code>/embed</code> endpoint in Inference Server</li>
+<li><strong>Validation</strong>: Comprehensive input validation and error handling</li>
+</ul>
+<h2 id="quickstart">Quickstart<a class="headerlink" href="#quickstart" title="Permanent link">¶</a></h2>
+<h3 id="basic-vector-store-usage">Basic Vector Store Usage<a class="headerlink" href="#basic-vector-store-usage" title="Permanent link">¶</a></h3>
+<p>```python
+from src.codex.retrieval.stores.faiss_store import FAISSStore
+import numpy as np</p>
+<h1 id="create-a-vector-store">Create a vector store<a class="headerlink" href="#create-a-vector-store" title="Permanent link">¶</a></h1>
+<p>store = FAISSStore(index_dir=".codex/vectors", index_name="my-index")</p>
+<h1 id="generate-some-vectors-or-get-them-from-embeddings">Generate some vectors (or get them from embeddings)<a class="headerlink" href="#generate-some-vectors-or-get-them-from-embeddings" title="Permanent link">¶</a></h1>
+<p>vectors = np.random.randn(100, 384).astype(np.float32)</p>
+<h1 id="add-vectors-with-metadata">Add vectors with metadata<a class="headerlink" href="#add-vectors-with-metadata" title="Permanent link">¶</a></h1>
+<p>metadata = [{"text": f"document-{i}", "category": "test"} for i in range(100)]
+ids = store.add(vectors, metadata=metadata)</p>
+<h1 id="search-for-similar-vectors">Search for similar vectors<a class="headerlink" href="#search-for-similar-vectors" title="Permanent link">¶</a></h1>
+<p>query = vectors[0]
+results = store.search(query, k=5)</p>
+<p>for result in results:
+    print(f"Score: {result['score']:.3f}")
+    print(f"Metadata: {result['document']['metadata']}")</p>
+<h1 id="save-for-later-use">Save for later use<a class="headerlink" href="#save-for-later-use" title="Permanent link">¶</a></h1>
+<p>store.save()
+```text</p>
+<h2 id="using-with-inference-server-embeddings">Using with Inference Server Embeddings<a class="headerlink" href="#using-with-inference-server-embeddings" title="Permanent link">¶</a></h2>
+<p>```python
+from src.codex_ml.serving.inference_server import ModelServer, ModelConfig
+from src.codex.retrieval.stores.faiss_store import FAISSStore</p>
+<h1 id="setup-model-server">Setup model server<a class="headerlink" href="#setup-model-server" title="Permanent link">¶</a></h1>
+<p>config = ModelConfig(model_type="stub")  # or "huggingface"
+server = ModelServer(config=config)
+server.load_model()</p>
+<h1 id="generate-embeddings">Generate embeddings<a class="headerlink" href="#generate-embeddings" title="Permanent link">¶</a></h1>
+<p>texts = ["Hello world", "Machine learning", "Vector search"]
+embeddings = server.embed(texts)</p>
+<h1 id="store-in-vector-store">Store in vector store<a class="headerlink" href="#store-in-vector-store" title="Permanent link">¶</a></h1>
+<p>store = FAISSStore()
+metadata = [{"text": t} for t in texts]
+ids = store.add(embeddings, metadata=metadata)</p>
+<h1 id="search-with-new-text">Search with new text<a class="headerlink" href="#search-with-new-text" title="Permanent link">¶</a></h1>
+<p>new_text = ["AI and ML"]
+query_embedding = server.embed(new_text)
+results = store.search(query_embedding[0], k=2)
+```text</p>
+<h2 id="vectorstore-interface">VectorStore Interface<a class="headerlink" href="#vectorstore-interface" title="Permanent link">¶</a></h2>
+<p>All vector store implementations must implement the <code>VectorStore</code> abstract base class:</p>
+<p>```python
+from src.codex.retrieval.stores.base import VectorStore</p>
+<p>class MyVectorStore(VectorStore):
+    def add(self, vectors, metadata=None, ids=None):
+        # Implementation
+        pass</p>
+<div class="highlight"><pre><span></span><code>def search(self, query_vector, k=5, filters=None):
+    # Implementation
+    pass
+
+# ... other required methods
+</code></pre></div>
+<p>```text</p>
+<h3 id="required-methods">Required Methods<a class="headerlink" href="#required-methods" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Purpose</th>
+<th>Returns</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>add(vectors, metadata, ids)</code></td>
+<td>Add vectors to store</td>
+<td>List of IDs</td>
+</tr>
+<tr>
+<td><code>search(query_vector, k, filters)</code></td>
+<td>Search similar vectors</td>
+<td>List of results</td>
+</tr>
+<tr>
+<td><code>delete(ids)</code></td>
+<td>Delete vectors by ID</td>
+<td>Number deleted</td>
+</tr>
+<tr>
+<td><code>get(ids)</code></td>
+<td>Retrieve vectors by ID</td>
+<td>List of vectors</td>
+</tr>
+<tr>
+<td><code>count()</code></td>
+<td>Get total vector count</td>
+<td>Integer</td>
+</tr>
+<tr>
+<td><code>clear()</code></td>
+<td>Remove all vectors</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>save(path)</code></td>
+<td>Persist to disk</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>load(path)</code></td>
+<td>Load from disk</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>health_check()</code></td>
+<td>Get health status</td>
+<td>Dict</td>
+</tr>
+</tbody>
+</table>
+<h2 id="faiss-store-api">FAISS Store API<a class="headerlink" href="#faiss-store-api" title="Permanent link">¶</a></h2>
+<h3 id="initialization">Initialization<a class="headerlink" href="#initialization" title="Permanent link">¶</a></h3>
+<p>```python
+from src.codex.retrieval.stores.faiss_store import FAISSStore</p>
+<p>store = FAISSStore(
+    index_dir=".codex/faiss",      # Directory for index files
+    index_name="default",           # Name of this index
+    max_vectors=10_000_000,         # Safety limit
+    validate_checksums=True         # Validate on load
+)
+```text</p>
+<h3 id="adding-vectors">Adding Vectors<a class="headerlink" href="#adding-vectors" title="Permanent link">¶</a></h3>
+<h4 id="auto-generated-ids">Auto-Generated IDs<a class="headerlink" href="#auto-generated-ids" title="Permanent link">¶</a></h4>
+<p>```python
+vectors = np.random.randn(10, 128).astype(np.float32)
+ids = store.add(vectors)</p>
+<h1 id="returns-uuid-1-uuid-2">Returns: ['uuid-1', 'uuid-2', ...]<a class="headerlink" href="#returns-uuid-1-uuid-2" title="Permanent link">¶</a></h1>
+<p>```text</p>
+<h2 id="custom-ids">Custom IDs<a class="headerlink" href="#custom-ids" title="Permanent link">¶</a></h2>
+<p>```python
+vectors = np.random.randn(10, 128).astype(np.float32)
+custom_ids = [f"doc-{i}" for i in range(10)]
+ids = store.add(vectors, ids=custom_ids)</p>
+<h1 id="returns-doc-0-doc-1">Returns: ['doc-0', 'doc-1', ...]<a class="headerlink" href="#returns-doc-0-doc-1" title="Permanent link">¶</a></h1>
+<p>```text</p>
+<h2 id="with-metadata">With Metadata<a class="headerlink" href="#with-metadata" title="Permanent link">¶</a></h2>
+<p><code>python
+vectors = np.random.randn(10, 128).astype(np.float32)
+metadata = [
+    {"text": "Hello world", "category": "greeting"},
+    {"text": "Machine learning", "category": "tech"},
+    # ... more metadata
+]
+ids = store.add(vectors, metadata=metadata)</code>text</p>
+<h3 id="searching-vectors">Searching Vectors<a class="headerlink" href="#searching-vectors" title="Permanent link">¶</a></h3>
+<p>```python</p>
+<h1 id="basic-search">Basic search<a class="headerlink" href="#basic-search" title="Permanent link">¶</a></h1>
+<p>query = np.random.randn(128).astype(np.float32)
+results = store.search(query, k=5)</p>
+<h1 id="results-structure">Results structure:<a class="headerlink" href="#results-structure" title="Permanent link">¶</a></h1>
+<p>for result in results:
+    print(result['id'])           # Vector ID
+    print(result['score'])        # Similarity score (0-1)
+    print(result['metadata'])     # Associated metadata
+    print(result['distance'])     # Raw L2 distance
+```text</p>
+<h2 id="search-parameters">Search Parameters<a class="headerlink" href="#search-parameters" title="Permanent link">¶</a></h2>
+<ul>
+<li><code>query_vector</code>: Query embedding (1D or 2D numpy array)</li>
+<li><code>k</code>: Number of results to return (default: 5)</li>
+<li>Top <code>k</code> results are returned, sorted by similarity (highest first)</li>
+</ul>
+<h3 id="retrieving-vectors">Retrieving Vectors<a class="headerlink" href="#retrieving-vectors" title="Permanent link">¶</a></h3>
+<p>```python</p>
+<h1 id="get-by-single-id">Get by single ID<a class="headerlink" href="#get-by-single-id" title="Permanent link">¶</a></h1>
+<p>results = store.get("doc-0")</p>
+<h1 id="returns-id-doc-0-metadata-index-0">Returns: [{"id": "doc-0", "metadata": {...}, "index": 0}]<a class="headerlink" href="#returns-id-doc-0-metadata-index-0" title="Permanent link">¶</a></h1>
+<h1 id="get-by-multiple-ids">Get by multiple IDs<a class="headerlink" href="#get-by-multiple-ids" title="Permanent link">¶</a></h1>
+<p>results = store.get(["doc-0", "doc-5", "doc-9"])</p>
+<h1 id="returns-list-with-3-items">Returns list with 3 items<a class="headerlink" href="#returns-list-with-3-items" title="Permanent link">¶</a></h1>
+<p>```text</p>
+<h2 id="deleting-vectors">Deleting Vectors<a class="headerlink" href="#deleting-vectors" title="Permanent link">¶</a></h2>
+<p>```python</p>
+<h1 id="delete-single-vector">Delete single vector<a class="headerlink" href="#delete-single-vector" title="Permanent link">¶</a></h1>
+<p>deleted_count = store.delete("doc-0")</p>
+<h1 id="returns-1">Returns: 1<a class="headerlink" href="#returns-1" title="Permanent link">¶</a></h1>
+<h1 id="delete-multiple-vectors">Delete multiple vectors<a class="headerlink" href="#delete-multiple-vectors" title="Permanent link">¶</a></h1>
+<p>deleted_count = store.delete(["doc-0", "doc-1", "doc-2"])</p>
+<h1 id="returns-3">Returns: 3<a class="headerlink" href="#returns-3" title="Permanent link">¶</a></h1>
+<p>```text</p>
+<p><strong>Note:</strong> FAISS doesn't support efficient deletion. The store marks vectors as deleted and rebuilds the index when necessary.</p>
+<h2 id="persistence">Persistence<a class="headerlink" href="#persistence" title="Permanent link">¶</a></h2>
+<h3 id="saving">Saving<a class="headerlink" href="#saving" title="Permanent link">¶</a></h3>
+<p>```python</p>
+<h1 id="save-to-default-location">Save to default location<a class="headerlink" href="#save-to-default-location" title="Permanent link">¶</a></h1>
+<p>store.save()</p>
+<h1 id="save-to-custom-location">Save to custom location<a class="headerlink" href="#save-to-custom-location" title="Permanent link">¶</a></h1>
+<p>store.save(path="/custom/path")
+```text</p>
+<p>Saves three files:
+- <code>{index_name}.index</code> - FAISS index
+- <code>{index_name}.docs.jsonl</code> - Documents and IDs
+- <code>{index_name}.meta.json</code> - Metadata and checksums</p>
+<h2 id="loading">Loading<a class="headerlink" href="#loading" title="Permanent link">¶</a></h2>
+<p>```python</p>
+<h1 id="load-from-default-location">Load from default location<a class="headerlink" href="#load-from-default-location" title="Permanent link">¶</a></h1>
+<p>store.load()</p>
+<h1 id="load-from-custom-location">Load from custom location<a class="headerlink" href="#load-from-custom-location" title="Permanent link">¶</a></h1>
+<p>store.load(path="/custom/path")
+```text</p>
+<p>Validates:
+- Index integrity
+- Dimension consistency
+- Document count match
+- Checksums (if enabled)</p>
+<h2 id="utility-methods">Utility Methods<a class="headerlink" href="#utility-methods" title="Permanent link">¶</a></h2>
+<h3 id="count">Count<a class="headerlink" href="#count" title="Permanent link">¶</a></h3>
+<p><code>python
+total = store.count()
+print(f"Total vectors: {total}")</code>text</p>
+<h4 id="clear">Clear<a class="headerlink" href="#clear" title="Permanent link">¶</a></h4>
+<p><code>python
+store.clear()  # Removes all vectors and resets index</code>text</p>
+<h4 id="health-check">Health Check<a class="headerlink" href="#health-check" title="Permanent link">¶</a></h4>
+<p>```python
+health = store.health_check()
+print(health)</p>
+<h1 id="_1">{<a class="headerlink" href="#_1" title="Permanent link">¶</a></h1>
+<h1 id="healthy-true">"healthy": True,<a class="headerlink" href="#healthy-true" title="Permanent link">¶</a></h1>
+<h1 id="index_loaded-true">"index_loaded": True,<a class="headerlink" href="#index_loaded-true" title="Permanent link">¶</a></h1>
+<h1 id="num_vectors-100">"num_vectors": 100,<a class="headerlink" href="#num_vectors-100" title="Permanent link">¶</a></h1>
+<h1 id="dimension-384">"dimension": 384,<a class="headerlink" href="#dimension-384" title="Permanent link">¶</a></h1>
+<h1 id="backend-faiss">"backend": "faiss",<a class="headerlink" href="#backend-faiss" title="Permanent link">¶</a></h1>
+<h1 id="_2">...<a class="headerlink" href="#_2" title="Permanent link">¶</a></h1>
+<h1 id="_3">}<a class="headerlink" href="#_3" title="Permanent link">¶</a></h1>
+<p>```text</p>
+<h2 id="embedding-generation">Embedding Generation<a class="headerlink" href="#embedding-generation" title="Permanent link">¶</a></h2>
+<h3 id="modelserverembed-method">ModelServer.embed() Method<a class="headerlink" href="#modelserverembed-method" title="Permanent link">¶</a></h3>
+<p>```python
+from src.codex_ml.serving.inference_server import ModelServer, ModelConfig</p>
+<h1 id="setup-server">Setup server<a class="headerlink" href="#setup-server" title="Permanent link">¶</a></h1>
+<p>config = ModelConfig(model_type="stub")  # or "huggingface"
+server = ModelServer(config=config)
+server.load_model()</p>
+<h1 id="generate-embeddings_1">Generate embeddings<a class="headerlink" href="#generate-embeddings_1" title="Permanent link">¶</a></h1>
+<p>texts = ["First document", "Second document"]
+embeddings = server.embed(texts)</p>
+<h1 id="returns-numpy-array-of-shape-2-dimension">Returns: numpy array of shape (2, dimension)<a class="headerlink" href="#returns-numpy-array-of-shape-2-dimension" title="Permanent link">¶</a></h1>
+<h1 id="vectors-are-l2-normalized">Vectors are L2-normalized<a class="headerlink" href="#vectors-are-l2-normalized" title="Permanent link">¶</a></h1>
+<p>```text</p>
+<h2 id="fastapi-embed-endpoint">FastAPI /embed Endpoint<a class="headerlink" href="#fastapi-embed-endpoint" title="Permanent link">¶</a></h2>
+<p>```bash</p>
+<h1 id="start-server">Start server<a class="headerlink" href="#start-server" title="Permanent link">¶</a></h1>
+<p>export CODEX_MODEL_TYPE=stub
+python -m src.codex_ml.serving.inference_server
+```text</p>
+<p>```bash</p>
+<h1 id="make-request">Make request<a class="headerlink" href="#make-request" title="Permanent link">¶</a></h1>
+<p>-H "Content-Type: application/json" \
+  -d '{
+    "texts": ["Hello world", "Vector embeddings"]
+  }'
+```text</p>
+<p>Response:
+<code>json
+{
+  "embeddings": [[0.1, 0.2, ...], [0.3, 0.4, ...]],
+  "model_name": "my-model",
+  "dimension": 384,
+  "num_texts": 2,
+  "inference_time_ms": 12.34
+}</code>text</p>
+<h2 id="error-handling">Error Handling<a class="headerlink" href="#error-handling" title="Permanent link">¶</a></h2>
+<h3 id="custom-exceptions">Custom Exceptions<a class="headerlink" href="#custom-exceptions" title="Permanent link">¶</a></h3>
+<p>```python
+from src.codex.retrieval.stores.base import (
+    DimensionMismatchError,
+    VectorNotFoundError,
+    IndexNotLoadedError,
+)</p>
+<p>try:
+    store.add(wrong_dimension_vectors)
+except DimensionMismatchError as e:
+    print(f"Dimension error: {e}")</p>
+<p>try:
+    store.get("nonexistent-id")
+except VectorNotFoundError as e:
+    print(f"Vector not found: {e}")
+```text</p>
+<h3 id="common-errors">Common Errors<a class="headerlink" href="#common-errors" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Error</th>
+<th>Cause</th>
+<th>Solution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DimensionMismatchError</code></td>
+<td>Vector dimension doesn't match index</td>
+<td>Ensure all vectors have same dimension</td>
+</tr>
+<tr>
+<td><code>VectorNotFoundError</code></td>
+<td>Requested ID doesn't exist</td>
+<td>Check ID exists before calling get()</td>
+</tr>
+<tr>
+<td><code>ValueError</code></td>
+<td>Invalid input (NaN, wrong shape, etc.)</td>
+<td>Validate inputs before adding</td>
+</tr>
+<tr>
+<td><code>RuntimeError</code></td>
+<td>Safety limit exceeded</td>
+<td>Reduce batch size or increase limit</td>
+</tr>
+<tr>
+<td><code>FileNotFoundError</code></td>
+<td>Index file missing</td>
+<td>Check path exists before loading</td>
+</tr>
+</tbody>
+</table>
+<h2 id="complete-example-text-search-system">Complete Example: Text Search System<a class="headerlink" href="#complete-example-text-search-system" title="Permanent link">¶</a></h2>
+<p>```python
+from src.codex_ml.serving.inference_server import ModelServer, ModelConfig
+from src.codex.retrieval.stores.faiss_store import FAISSStore
+import numpy as np</p>
+<h1 id="1-setup">1. Setup<a class="headerlink" href="#1-setup" title="Permanent link">¶</a></h1>
+<p>config = ModelConfig(model_type="stub", model_name="text-embedder")
+server = ModelServer(config=config)
+server.load_model()</p>
+<p>store = FAISSStore(index_dir=".codex/text-search", index_name="documents")</p>
+<h1 id="2-index-documents">2. Index documents<a class="headerlink" href="#2-index-documents" title="Permanent link">¶</a></h1>
+<p>documents = [
+    "The quick brown fox jumps over the lazy dog",
+    "Machine learning is a subset of artificial intelligence",
+    "Python is a popular programming language",
+    "Vector databases enable semantic search",
+    "Natural language processing powers modern AI",
+]</p>
+<h1 id="generate-embeddings_2">Generate embeddings<a class="headerlink" href="#generate-embeddings_2" title="Permanent link">¶</a></h1>
+<p>embeddings = server.embed(documents)</p>
+<h1 id="add-to-vector-store">Add to vector store<a class="headerlink" href="#add-to-vector-store" title="Permanent link">¶</a></h1>
+<p>metadata = [{"text": doc, "idx": i} for i, doc in enumerate(documents)]
+ids = store.add(embeddings, metadata=metadata)</p>
+<h1 id="save-index">Save index<a class="headerlink" href="#save-index" title="Permanent link">¶</a></h1>
+<p>store.save()</p>
+<p>print(f"Indexed {store.count()} documents")</p>
+<h1 id="3-search">3. Search<a class="headerlink" href="#3-search" title="Permanent link">¶</a></h1>
+<p>query = "What is machine learning?"
+query_embedding = server.embed([query])</p>
+<p>results = store.search(query_embedding[0], k=3)</p>
+<p>print(f"\nQuery: {query}\n")
+for i, result in enumerate(results, 1):
+    print(f"{i}. Score: {result['score']:.3f}")
+    print(f"   Text: {result['document']['metadata']['text']}\n")</p>
+<h1 id="4-later-load-and-continue-searching">4. Later: Load and continue searching<a class="headerlink" href="#4-later-load-and-continue-searching" title="Permanent link">¶</a></h1>
+<p>store2 = FAISSStore(index_dir=".codex/text-search", index_name="documents")
+store2.load()</p>
+<p>new_query = "programming languages"
+new_query_embedding = server.embed([new_query])
+new_results = store2.search(new_query_embedding[0], k=2)</p>
+<p>print(f"Query: {new_query}\n")
+for result in new_results:
+    print(f"- {result['document']['metadata']['text']}")
+```text</p>
+<h2 id="performance-considerations">Performance Considerations<a class="headerlink" href="#performance-considerations" title="Permanent link">¶</a></h2>
+<h3 id="vector-dimensions">Vector Dimensions<a class="headerlink" href="#vector-dimensions" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>32-128</strong>: Very fast, suitable for small-scale applications</li>
+<li><strong>384-768</strong>: Good balance of speed and quality (recommended)</li>
+<li><strong>1024+</strong>: Higher quality but slower, use for large-scale deployments</li>
+</ul>
+<h3 id="batch-sizes">Batch Sizes<a class="headerlink" href="#batch-sizes" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Indexing</strong>: Batch size of 100-1000 vectors recommended</li>
+<li><strong>Search</strong>: Single query or small batches (&lt;10)</li>
+<li>Larger batches improve throughput but increase latency</li>
+</ul>
+<h3 id="index-size">Index Size<a class="headerlink" href="#index-size" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>&lt; 100K vectors</strong>: Loads in memory instantly</li>
+<li><strong>100K - 1M vectors</strong>: Loads in 1-10 seconds</li>
+<li><strong>&gt; 1M vectors</strong>: Consider memory-mapped files or distributed setup</li>
+</ul>
+<h3 id="optimization-tips">Optimization Tips<a class="headerlink" href="#optimization-tips" title="Permanent link">¶</a></h3>
+<ol>
+<li><strong>Normalize vectors</strong>: Already done automatically in FAISS store</li>
+<li><strong>Batch additions</strong>: Add vectors in batches rather than one-by-one</li>
+<li><strong>Persist regularly</strong>: Save index after significant additions</li>
+<li><strong>Use appropriate k</strong>: Don't retrieve more results than needed</li>
+</ol>
+<h2 id="limitations">Limitations<a class="headerlink" href="#limitations" title="Permanent link">¶</a></h2>
+<h3 id="current-implementation">Current Implementation<a class="headerlink" href="#current-implementation" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>No filtering</strong>: Metadata filtering not yet implemented</li>
+<li><strong>No updates</strong>: Vectors can't be updated in-place (delete + add instead)</li>
+<li><strong>FAISS deletion</strong>: Requires index rebuild (expensive for large indices)</li>
+<li><strong>Single backend</strong>: Only FAISS supported (more backends in future)</li>
+</ul>
+<h3 id="not-yet-implemented-future-work">Not Yet Implemented (Future Work)<a class="headerlink" href="#not-yet-implemented-future-work" title="Permanent link">¶</a></h3>
+<ul>
+<li>Metadata filtering in search</li>
+<li>Approximate nearest neighbor (ANN) algorithms</li>
+<li>GPU acceleration</li>
+<li>Distributed indices</li>
+<li>Hybrid search (dense + sparse)</li>
+<li>Vector compression/quantization</li>
+</ul>
+<h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">¶</a></h2>
+<h3 id="dimension-mismatch">Dimension Mismatch<a class="headerlink" href="#dimension-mismatch" title="Permanent link">¶</a></h3>
+<p><code>text
+Problem: DimensionMismatchError when adding vectors
+Solution: Ensure all vectors have the same dimension as the first batch</code>text</p>
+<h3 id="large-memory-usage">Large Memory Usage<a class="headerlink" href="#large-memory-usage" title="Permanent link">¶</a></h3>
+<p><code>text
+Problem: Index consumes too much memory
+Solution:
+- Reduce max_vectors limit
+- Save and clear index periodically
+- Use memory-mapped files (future feature)</code>text</p>
+<h3 id="slow-search">Slow Search<a class="headerlink" href="#slow-search" title="Permanent link">¶</a></h3>
+<p><code>text
+Problem: Search takes too long
+Solution:
+- Reduce k (number of results)
+- Use smaller vector dimensions
+- Consider ANN algorithms (future feature)</code>text</p>
+<h3 id="load-failures">Load Failures<a class="headerlink" href="#load-failures" title="Permanent link">¶</a></h3>
+<p><code>text
+Problem: Cannot load saved index
+Solution:
+- Check file paths exist
+- Verify index_name matches
+- Check file permissions
+- Validate files aren't corrupted</code>text</p>
+<h2 id="next-steps">Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">¶</a></h2>
+<ol>
+<li><strong>Try the basic example</strong> to understand the API</li>
+<li><strong>Index your own data</strong> with custom metadata</li>
+<li><strong>Experiment with different k values</strong> for search</li>
+<li><strong>Integrate with Inference Server</strong> for embedding generation</li>
+<li><strong>Save and load indices</strong> to persist your work</li>
+<li><strong>Use metadata filtering</strong> to narrow search results</li>
+</ol>
+<p>For questions or issues, refer to the test suite in <code>tests/retrieval/test_vector_store_interface.py</code> for working examples.</p>
+<h2 id="metadata-filtering">Metadata Filtering<a class="headerlink" href="#metadata-filtering" title="Permanent link">¶</a></h2>
+<h3 id="overview_1">Overview<a class="headerlink" href="#overview_1" title="Permanent link">¶</a></h3>
+<p>Metadata filtering allows you to filter search results based on metadata fields using MongoDB-style query syntax. This is useful for narrowing search results to specific categories, score ranges, or other criteria.</p>
+<h3 id="supported-operators">Supported Operators<a class="headerlink" href="#supported-operators" title="Permanent link">¶</a></h3>
+<h4 id="equality">Equality<a class="headerlink" href="#equality" title="Permanent link">¶</a></h4>
+<p>```python</p>
+<h1 id="simple-equality">Simple equality<a class="headerlink" href="#simple-equality" title="Permanent link">¶</a></h1>
+<p>filters = {"category": "tech"}</p>
+<h1 id="not-equal">Not equal<a class="headerlink" href="#not-equal" title="Permanent link">¶</a></h1>
+<p>filters = {"category": {"$ne": "spam"}}
+```text</p>
+<h2 id="range-operators">Range Operators<a class="headerlink" href="#range-operators" title="Permanent link">¶</a></h2>
+<p>```python</p>
+<h1 id="greater-than">Greater than<a class="headerlink" href="#greater-than" title="Permanent link">¶</a></h1>
+<p>filters = {"score": {"$gt": 0.7}}</p>
+<h1 id="greater-than-or-equal">Greater than or equal<a class="headerlink" href="#greater-than-or-equal" title="Permanent link">¶</a></h1>
+<p>filters = {"score": {"$gte": 0.7}}</p>
+<h1 id="less-than">Less than<a class="headerlink" href="#less-than" title="Permanent link">¶</a></h1>
+<p>filters = {"score": {"$lt": 0.9}}</p>
+<h1 id="less-than-or-equal">Less than or equal<a class="headerlink" href="#less-than-or-equal" title="Permanent link">¶</a></h1>
+<p>filters = {"score": {"$lte": 0.9}}</p>
+<h1 id="combined-range">Combined range<a class="headerlink" href="#combined-range" title="Permanent link">¶</a></h1>
+<p>filters = {"score": {"$gte": 0.5, "$lte": 1.0}}
+```text</p>
+<h2 id="list-operators">List Operators<a class="headerlink" href="#list-operators" title="Permanent link">¶</a></h2>
+<p>```python</p>
+<h1 id="in-list">In list<a class="headerlink" href="#in-list" title="Permanent link">¶</a></h1>
+<p>filters = {"category": {"$in": ["tech", "news", "sports"]}}</p>
+<h1 id="not-in-list">Not in list<a class="headerlink" href="#not-in-list" title="Permanent link">¶</a></h1>
+<p>filters = {"category": {"$nin": ["spam", "ads"]}}
+```text</p>
+<h2 id="field-existence">Field Existence<a class="headerlink" href="#field-existence" title="Permanent link">¶</a></h2>
+<p>```python</p>
+<h1 id="field-exists">Field exists<a class="headerlink" href="#field-exists" title="Permanent link">¶</a></h1>
+<p>filters = {"author": {"$exists": True}}</p>
+<h1 id="field-does-not-exist">Field does not exist<a class="headerlink" href="#field-does-not-exist" title="Permanent link">¶</a></h1>
+<p>filters = {"optional_field": {"$exists": False}}
+```text</p>
+<h2 id="logical-operators">Logical Operators<a class="headerlink" href="#logical-operators" title="Permanent link">¶</a></h2>
+<p>```python</p>
+<h1 id="and-all-conditions-must-match">AND (all conditions must match)<a class="headerlink" href="#and-all-conditions-must-match" title="Permanent link">¶</a></h1>
+<p>filters = {
+    "$and": [
+        {"category": "tech"},
+        {"score": {"$gte": 0.8}},
+        {"author": "alice"}
+    ]
+}</p>
+<h1 id="or-at-least-one-condition-must-match">OR (at least one condition must match)<a class="headerlink" href="#or-at-least-one-condition-must-match" title="Permanent link">¶</a></h1>
+<p>filters = {
+    "$or": [
+        {"category": "tech"},
+        {"category": "news"}
+    ]
+}</p>
+<h1 id="complex-nested-logic">Complex nested logic<a class="headerlink" href="#complex-nested-logic" title="Permanent link">¶</a></h1>
+<p>filters = {
+    "$and": [
+        {
+            "$or": [
+                {"category": "tech"},
+                {"category": "news"}
+            ]
+        },
+        {"score": {"$gte": 0.8}}
+    ]
+}
+```text</p>
+<h2 id="usage-examples">Usage Examples<a class="headerlink" href="#usage-examples" title="Permanent link">¶</a></h2>
+<h3 id="basic-filtering">Basic Filtering<a class="headerlink" href="#basic-filtering" title="Permanent link">¶</a></h3>
+<p>```python
+from src.codex.retrieval.stores.faiss_store import FAISSStore
+import numpy as np</p>
+<h1 id="create-store-with-data">Create store with data<a class="headerlink" href="#create-store-with-data" title="Permanent link">¶</a></h1>
+<p>store = FAISSStore(index_name="filtered-search")
+store.create_index(dimension=384)</p>
+<h1 id="add-vectors-with-metadata_1">Add vectors with metadata<a class="headerlink" href="#add-vectors-with-metadata_1" title="Permanent link">¶</a></h1>
+<p>vectors = np.random.randn(1000, 384).astype(np.float32)
+metadata = [
+    {
+        "text": f"document-{i}",
+        "category": "tech" if i % 3 == 0 else "news",
+        "score": 0.5 + (i % 50) / 100.0,
+        "author": ["alice", "bob", "charlie"][i % 3]
+    }
+    for i in range(1000)
+]
+store.add(vectors, metadata=metadata)</p>
+<h1 id="search-with-category-filter">Search with category filter<a class="headerlink" href="#search-with-category-filter" title="Permanent link">¶</a></h1>
+<p>query = np.random.randn(384).astype(np.float32)
+results = store.search(
+    query,
+    top_k=10,
+    filters={"category": "tech"}
+)</p>
+<p>print(f"Found {len(results)} tech articles")
+```text</p>
+<h2 id="range-filtering">Range Filtering<a class="headerlink" href="#range-filtering" title="Permanent link">¶</a></h2>
+<p>```python</p>
+<h1 id="find-high-quality-results">Find high-quality results<a class="headerlink" href="#find-high-quality-results" title="Permanent link">¶</a></h1>
+<p>results = store.search(
+    query,
+    top_k=20,
+    filters={"score": {"$gte": 0.8}}
+)</p>
+<h1 id="find-results-in-score-range">Find results in score range<a class="headerlink" href="#find-results-in-score-range" title="Permanent link">¶</a></h1>
+<p>results = store.search(
+    query,
+    top_k=20,
+    filters={
+        "score": {
+            "$gte": 0.6,
+            "$lte": 0.9
+        }
+    }
+)
+```text</p>
+<h2 id="multi-criteria-filtering">Multi-Criteria Filtering<a class="headerlink" href="#multi-criteria-filtering" title="Permanent link">¶</a></h2>
+<p>```python</p>
+<h1 id="tech-articles-with-high-scores-by-specific-authors">Tech articles with high scores by specific authors<a class="headerlink" href="#tech-articles-with-high-scores-by-specific-authors" title="Permanent link">¶</a></h1>
+<p>results = store.search(
+    query,
+    top_k=10,
+    filters={
+        "$and": [
+            {"category": "tech"},
+            {"score": {"$gte": 0.75}},
+            {"author": {"$in": ["alice", "bob"]}}
+        ]
+    }
+)</p>
+<h1 id="either-high-scoring-tech-or-any-news">Either high-scoring tech or any news<a class="headerlink" href="#either-high-scoring-tech-or-any-news" title="Permanent link">¶</a></h1>
+<p>results = store.search(
+    query,
+    top_k=10,
+    filters={
+        "$or": [
+            {
+                "$and": [
+                    {"category": "tech"},
+                    {"score": {"$gte": 0.8}}
+                ]
+            },
+            {"category": "news"}
+        ]
+    }
+)
+```text</p>
+<h2 id="performance-considerations_1">Performance Considerations<a class="headerlink" href="#performance-considerations_1" title="Permanent link">¶</a></h2>
+<p><strong>Post-Filtering Strategy:</strong>
+The current implementation uses post-filtering, which means:</p>
+<ol>
+<li>FAISS returns the top-k results by similarity</li>
+<li>Results are filtered based on metadata</li>
+<li>If fewer than k results match the filter, you may get fewer results</li>
+</ol>
+<p><strong>Fetch Multiplier:</strong>
+To increase the chance of getting k filtered results, the system automatically fetches more results when filters are present:
+- Single condition: fetches 3x
+- Two conditions: fetches 5x
+- Complex filters: fetches 10x</p>
+<p><strong>Example:</strong>
+```python</p>
+<h1 id="requesting-10-results-with-a-filter">Requesting 10 results with a filter<a class="headerlink" href="#requesting-10-results-with-a-filter" title="Permanent link">¶</a></h1>
+<p>results = store.search(
+    query,
+    top_k=10,
+    filters={"category": "tech"}  # Single condition
+)</p>
+<h1 id="internally-fetches-top-30-then-filters-to-return-up-to-10">Internally fetches top-30, then filters to return up to 10<a class="headerlink" href="#internally-fetches-top-30-then-filters-to-return-up-to-10" title="Permanent link">¶</a></h1>
+<p>```text</p>
+<p><strong>Tips for Best Performance:</strong>
+1. Use filters with high selectivity (match many documents)
+2. Consider using multiple smaller indices for distinct categories
+3. For very selective filters, increase <code>top_k</code> to get more results
+4. Monitor the ratio of filtered to total results</p>
+<h2 id="limitations_1">Limitations<a class="headerlink" href="#limitations_1" title="Permanent link">¶</a></h2>
+<ul>
+<li><strong>No Pre-Filtering</strong>: FAISS doesn't natively support metadata filtering, so all filtering happens after similarity search</li>
+<li><strong>Result Count</strong>: may return fewer than <code>top_k</code> results if few vectors match the filter</li>
+<li><strong>Performance</strong>: Complex filters on large indices may be slower than simple equality filters</li>
+</ul>
+<h3 id="future-enhancements">Future Enhancements<a class="headerlink" href="#future-enhancements" title="Permanent link">¶</a></h3>
+<p>Planned improvements for metadata filtering:
+- Auxiliary metadata indices for faster pre-filtering
+- Support for text search in metadata fields
+- Integration with hybrid search (dense + sparse vectors)
+- Custom similarity thresholds per filter</p>
+<hr/>
+<h2 id="api-reference">API Reference<a class="headerlink" href="#api-reference" title="Permanent link">¶</a></h2>
+<h3 id="vectorstore-abstract-base-class">VectorStore (Abstract Base Class)<a class="headerlink" href="#vectorstore-abstract-base-class" title="Permanent link">¶</a></h3>
+<p><code>text
+class VectorStore(ABC):
+    def add(vectors: np.ndarray, metadata: Optional[List[Dict]] = None,
+            ids: Optional[List[str]] = None) -&gt; List[str]
+    def search(query_vector: np.ndarray, k: int = 5,
+               filters: Optional[Dict] = None) -&gt; List[Dict]
+    def delete(ids: Union[str, List[str]]) -&gt; int
+    def get(ids: Union[str, List[str]]) -&gt; List[Dict]
+    def count() -&gt; int
+    def clear() -&gt; None
+    def save(path: Optional[str] = None) -&gt; None
+    def load(path: Optional[str] = None) -&gt; None
+    def health_check() -&gt; Dict[str, Any]</code>text</p>
+<h3 id="faissstore">FAISSStore<a class="headerlink" href="#faissstore" title="Permanent link">¶</a></h3>
+<p>Inherits all methods from <code>VectorStore</code> plus:</p>
+<p>```text
+class FAISSStore(VectorStore):
+    def <strong>init</strong>(index_dir: Optional[str] = None,
+                 index_name: str = "default",
+                 max_vectors: int = 10_000_000,
+                 validate_checksums: bool = True)</p>
+<div class="highlight"><pre><span></span><code>def create_index(embeddings: np.ndarray, documents: List[Dict])
+# Legacy method, use add() instead
+</code></pre></div>
+<p>```text</p>
+<h3 id="modelserverembed">ModelServer.embed()<a class="headerlink" href="#modelserverembed" title="Permanent link">¶</a></h3>
+<p>```python
+def embed(texts: List[str]) -&gt; np.ndarray:
+    """Generate embeddings from texts</p>
+<div class="highlight"><pre><span></span><code>Args:
+    texts: List of input texts
+
+Returns:
+    Normalized embeddings (shape: [len(texts), dimension])
+"""
+</code></pre></div>
+<p>```text</p>
+<h2 id="related-documentation">Related Documentation<a class="headerlink" href="#related-documentation" title="Permanent link">¶</a></h2>
+<ul>
+<li><a href="../INFERENCE_SERVING_GUIDE/">Inference Serving Guide</a> - Model serving and embedding generation</li>
+<li><a href="https://github.com/facebookresearch/faiss">FAISS Documentation</a> - FAISS library details</li>
+<li>Test examples in <code>tests/retrieval/test_vector_store_interface.py</code></li>
+</ul>
+</article>
+</div>
+<script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "search.share", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+<script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+</body>
+</html>

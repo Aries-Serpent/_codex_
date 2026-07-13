@@ -1,0 +1,14 @@
+# Paste these entries into your mkdocs.yml `nav:` section (adjust paths as needed).
+# This file is a snippet, not auto-included.
+nav:
+  - Guides:
+      - Local Gates: docs/ops/local_gates.md
+  - Templates:
+      - Intent Validation Gate: docs/templates/intent_validation_gate.md
+      - Reviewer Checklist: docs/checklists/approval_gate_checklist.md
+      - Worked Example: docs/samples/intent_validation_example.md
+  - Decision Records:
+      - ADR — Intent Approval Gate: docs/decision_records/ADR-intent-approval-gate.md
+      - ADR — Codex Evaluator v3: docs/decision_records/ADR-codex-evaluator-v3.md
+  - Rubrics:
+      - Codex Evaluator v3 Rubric: docs/rubrics/codex_eval_rubric_v3.md
