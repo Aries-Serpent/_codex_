@@ -98,10 +98,9 @@ def list_secret_tokens(inventory_path: Path) -> None:
         return
 
     for i, (token, info) in enumerate(sorted(all_secrets.items()), 1):
-        # Security: Use masked fingerprint instead of partial token
+        # Security: Use generic placeholder instead of exposing any token characters
         # to prevent clear-text token exposure in logs/output
-        token_fp = f"{sanitize_log_message(f'Token: {token[:4]}')}"
-        print(f"{i}. {token_fp}... (SHA256)")
+        print(f"{i}. [Token fingerprint] (SHA256)")
         print(f"   Hint: {info['hint']}")
         print(f"   Used in {len(info['workflows'])} workflow(s)")
         print()
@@ -166,10 +165,9 @@ def generate_secret_report(inventory_path: Path, authorized: bool = False) -> No
 
     for i, (secret_name, info) in enumerate(sorted(all_secrets.items()), 1):
         print(f"{i}. Secret: {secret_name}")
-        # Security: Use masked token instead of partial token display
+        # Security: Use generic placeholder instead of exposing any token characters
         # to prevent clear-text token exposure in logs/output
-        token_fp = sanitize_log_message(f"Token: {info['token'][:4]}")
-        print(f"   {token_fp}...")
+        print(f"   [Token fingerprint]")
         print(f"   Hint: {info['hint']}")
         print(f"   Used in {len(info['workflows'])} workflow(s):")
         for wf in sorted(info['workflows']):
@@ -241,10 +239,9 @@ Examples:
         # This prevents clear-text exposure of secret names
         if decoded and not decoded.startswith("["):
             # Secret was successfully decoded - mask it completely
-            sanitized = sanitize_log_message(decoded)
-            print(f"Decoded: {sanitized}")
+            print(f"Decoded: [Secret content redacted]")
         else:
-            print(f"Decoded: {decoded}")
+            print(f"Decoded: [Decode error - check audit log]")
         return
 
     # Handle token listing (safe, no decoding)
