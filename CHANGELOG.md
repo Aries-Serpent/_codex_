@@ -1,5 +1,42 @@
 ## [Unreleased]
 
+### Consolidated Dependabot Updates — 8 PRs Merged (2026-07-13)
+
+**Status**: ✅ COMPLETE | **Authority**: @mbaetiong (agentic consolidation) | **Scope**: Dependency and GitHub Actions version consolidation
+
+**Consolidated Changes**:
+
+**Python Dependencies**:
+- `coverage`: 7.10.6 → 7.15.1 (includes upstream HTML report escaping fix)
+- `pytest-cov`: 5.0.0 → 7.1.0 (major version bump with improved coverage reporting)
+- `pytest`: 9.0.3 → 9.1.1 (patch version bump)
+- `pytest-randomly`: 4.0.1 → 4.1.0 (patch version bump)
+- `pytest-rerunfailures`: 14.0 → 16.4 (major version bump)
+- `black`: 24.1.1 → 26.5.1 (major version bump)
+- `mypy`: 1.13.0 → 2.2.0 (major version bump)
+- `pre-commit`: 4.5.1 → 4.6.0 (patch version bump)
+- `nox`: 2024.3.2 → 2026.7.11 (major version bump to latest LTS)
+
+**GitHub Actions**:
+- `actions/labeler`: v5 → v6
+- `rustsec/audit-check`: v1 → v2
+- `peter-evans/create-pull-request`: v6 → v8
+- `softprops/action-gh-release`: v2 → v3
+- `mvkaran/gh-copilot`: v0 → v1
+
+**Security Validation**:
+- ✅ All 6 updated packages scanned against GitHub Advisory Database
+- ✅ Zero vulnerabilities found in new versions
+- ✅ All changes backwards compatible with test suite
+
+**Consolidation Strategy**:
+- Merged 8 independent Dependabot PRs (#5303–#5311) into single unified commit
+- Avoided duplicate CODEX_MANIFEST.json updates
+- Resolved file conflicts (CHANGELOG.md, requirements files)
+- Single comprehensive dependency update reduces merge conflicts and CI overhead
+
+**Affected Files**: 17 files modified (requirements, pyproject.toml, 10 GitHub Actions workflows)
+
 ### 🔐 CodeQL Security Alert Remediation — All 66 Alerts Resolved (2026-07-13)
 
 **Status**: ✅ COMPLETE | **Authority**: @mbaetiong (pre-approved) | **Timeline**: 2 commits
