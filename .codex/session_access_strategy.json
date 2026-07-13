@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-07-13T14:17:00.760754+00:00",
+  "generated_at": "2026-07-13T14:43:41.770009+00:00",
   "methods": [
     "rest",
     "graphql",
     "gh_cli"
   ],
   "rest_available": true,
-  "rest_remaining": 4957,
+  "rest_remaining": 4954,
   "graphql_available": true,
   "graphql_remaining": 5000,
   "gh_cli_available": true,
