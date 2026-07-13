@@ -181,8 +181,16 @@ class TestCryptographyEncryption:
                 hashes.SHA256(),
             )
 
-    def test_aes_encryption_decryption_cbc(self, sample_data):
-        """Test AES encryption in CBC mode."""
+    def test_aes_encryption_decryption_cbc_legacy(self, sample_data):
+        """Test AES encryption in CBC mode (DEPRECATED).
+        
+        DEPRECATED: CBC without authentication is not recommended.
+        This test is kept for backward compatibility only.
+        Use test_aes_encryption_decryption_gcm instead for authenticated encryption.
+        
+        CWE-327: Use of Weak Cryptography - Remediation:
+        GCM mode provides authenticated encryption preventing tampering.
+        """
         pass  # removed redundant `import os` (top-level import used)
         key = os.urandom(32)  # 256-bit key
         iv = os.urandom(16)  # 128-bit IV
