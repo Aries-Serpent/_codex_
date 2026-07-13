@@ -1,4 +1,6 @@
 # Feature Store API Reference
+
+**Version**: v0.2.1
 **Last Updated:** 2026-07-11
 
 **Last Updated: 2026-06-22
@@ -486,7 +488,7 @@ else:
 
 ## 3. Dependency Management
 
-Clearly specify dependencies:
+specify dependencies:
 
 ```python
 # Good - explicit dependencies

@@ -2,10 +2,10 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> ⚠️ **SUPERSEDED** — This document is preserved for historical reference only.  
+> ️ **SUPERSEDED** — This document is preserved for historical reference only.  
 > **The current unified reference is: [`docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md`](../admin/GITHUB_VARIABLES_MASTER_GUIDE.md)**
 
-## Current Status: ⚠️ TOKENS NOT YET CONFIGURED
+## Current Status: ️ TOKENS NOT YET CONFIGURED
 
 ### What's Working 
 -  **Codebase:** NO restrictions on token usage
@@ -21,14 +21,14 @@
 ### Token Usage Clarification 
 -  **All Tokens:** FULLY usable in implemented code/workflows
 -  **GITHUB_TOKEN:** Available for workflow implementations
-- ⚠️ **Interactive Chat Limitation:** Token values not readable in chat (security by design)
+- ️ **Interactive Chat Limitation:** Token values not readable in chat (security by design)
 -  **Code/Workflow Capability:** Agents CAN write code using `${{ secrets.TOKEN_NAME }}`
 
 **Note:** The "by design" limitation applies ONLY to reading token values in interactive chat, NOT to implementing token-based solutions in code and workflows
 
 ---
 
-##  Quick Start for Human Admin
+## Quick Start for Human Admin
 
 ### Step 1: Generate CODEX_MASTER_KEY (2 min)
 ```bash

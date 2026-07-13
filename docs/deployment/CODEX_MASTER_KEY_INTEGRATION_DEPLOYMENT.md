@@ -9,7 +9,7 @@
 
 ---
 
-## 📋 Implementation Summary
+##  Implementation Summary
 
 This document summarizes the complete implementation of comprehensive testing for GitHub API processes using CODEX_MASTER_KEY.
 
@@ -36,7 +36,7 @@ This document summarizes the complete implementation of comprehensive testing fo
 
 ---
 
-## 🔧 Helper Scripts Reference
+##  Helper Scripts Reference
 
 ### 1. `scripts/ci/_secrets_encryption_helper.py`
 
@@ -215,7 +215,7 @@ class TestProcessN:
 
 ---
 
-## 🔄 Workflow Integration
+##  Workflow Integration
 
 ### Extended: `.github/workflows/auth-tests.yml`
 
@@ -442,7 +442,7 @@ python scripts/ci/test_codex_master_key_scopes.py
 
 ---
 
-## 📈 Performance Metrics
+##  Performance Metrics
 
 Expected test execution times:
 
@@ -473,7 +473,7 @@ TOTAL (parallel)                     | ~120s | Recommended
 
 ---
 
-## 📝 Document History
+##  Document History
 
 | Version | Date | Changes |
 |---------|------|---------|

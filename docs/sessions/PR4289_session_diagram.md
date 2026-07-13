@@ -159,12 +159,12 @@ sequenceDiagram
 
     Client->>FastAPI: DELETE /index/my-index?tenant_id=valid_tenant
     FastAPI->>Validator: _validate_path_segment("valid_tenant", "tenant_id")
-    Note over Validator: basename("valid_tenant") = "valid_tenant" ✓<br/>re.fullmatch([A-Za-z0-9._-]+) matches ✓<br/>not in {".", ".."} ✓
+    Note over Validator: basename("valid_tenant") = "valid_tenant" <br/>re.fullmatch([A-Za-z0-9._-]+) matches <br/>not in {".", ".."} 
     Validator-->>FastAPI: m.group() = "valid_tenant" [TAINT BROKEN]
     FastAPI->>Resolver: realpath(join(base, "valid_tenant"))
     Resolver-->>FastAPI: /rag-files/valid_tenant (canonical)
     FastAPI->>Guard: commonpath(["/rag-files", "/rag-files/valid_tenant"])
-    Guard-->>FastAPI: "/rag-files" == base ✓ CONTAINED
+    Guard-->>FastAPI: "/rag-files" == base  CONTAINED
     FastAPI->>FS: rmtree("/rag-files/valid_tenant")
     FS-->>FastAPI: success
     FastAPI-->>Client: 200 OK  ALLOWED
@@ -258,9 +258,9 @@ flowchart LR
     subgraph OPEN["All Alerts at PR Open — 68 Total"]
         A1[" py/path-injection\n13339–13344 · 13355–13357\n13359–13361 · 13385–13391\n18 alerts · rag_api.py"]
         A2[" py/weak-sensitive-data-hashing\n13330–13332\n3 alerts · security.py"]
-        A3["🟡 py/unused-local-variable\n13349\n1 alert · test file"]
-        A4["🟡 py/empty-except\n13377–13382\n6 alerts · 4 test files"]
-        A5["⚠️ Warning-level × 40\nunreachable · dead-branch\nweak-pattern · implicit-concat\nmutable-default · attr-overwrite"]
+        A3[" py/unused-local-variable\n13349\n1 alert · test file"]
+        A4[" py/empty-except\n13377–13382\n6 alerts · 4 test files"]
+        A5["️ Warning-level × 40\nunreachable · dead-branch\nweak-pattern · implicit-concat\nmutable-default · attr-overwrite"]
     end
 
     subgraph FIXES["Fix Strategy Per Alert Type"]
@@ -1296,10 +1296,10 @@ flowchart TD
 %%{init: {'accessibility': {'title': 'Sequence Diagram: >>Workflow: count=1 (PR #4289 '}}%%
 sequenceDiagram
     participant Scheduler as ⏱ Scheduler (cron)
-    participant Workflow as 🔄 Auto-Push Workflow
+    participant Workflow as  Auto-Push Workflow
     participant GH_API as 🐙 GitHub API
     participant Main as 🌿 main branch
-    participant PR as 📋 Active PR
+    participant PR as  Active PR
 
     Scheduler->>Workflow: trigger (schedule/workflow_run)
     Workflow->>Workflow: regenerate files (manifest/sweep/index)

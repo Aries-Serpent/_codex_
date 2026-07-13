@@ -127,16 +127,16 @@ make deploy --dry-run
 **Deployment**:
 ```bash
 # 1. Build artifact
-docker build -t codex:v1.2.3 .
+docker build -t codex:v0.2.1 .
 
 # 2. Push to registry
-docker push registry.example.com/codex:v1.2.3
+docker push registry.example.com/codex:v0.2.1
 
 # 3. Update configuration
-sed -i 's/v1.2.2/v1.2.3/g' config/prod.yaml
+sed -i 's/v0.2.1/v0.2.1/g' config/prod.yaml
 
 # 4. Deploy
-terraform apply -var="image_tag=v1.2.3"
+terraform apply -var="image_tag=v0.2.1"
 
 # 5. Verify
 curl https://api.example.com/health
@@ -145,7 +145,7 @@ curl https://api.example.com/health
 **Rollback**:
 ```bash
 # Revert to previous version
-terraform apply -var="image_tag=v1.2.2"
+terraform apply -var="image_tag=v0.2.1"
 ```
 
 ### 2. Docker Deployment
@@ -199,7 +199,7 @@ docker run -d --name codex ... codex:previous
 ```bash
 # 1. Update Helm chart values
 helm upgrade codex ./charts/codex \
-  --set image.tag=v1.2.3 \
+  --set image.tag=v0.2.1 \
   --values values-prod.yaml
 
 # 2. Monitor rollout
@@ -229,19 +229,19 @@ helm rollback codex 1
 **Preparation**:
 ```bash
 # On bootstrap machine with internet
-./offline_bootstrap.sh --version v1.2.3
+./offline_bootstrap.sh --version v0.2.1
 
 # Output:
-# - codex-v1.2.3-offline.tar.gz (8GB)
-# - dependencies-v1.2.3.tar.gz (2GB)
+# - codex-v0.2.1-offline.tar.gz (8GB)
+# - dependencies-v0.2.1.tar.gz (2GB)
 # - bootstrap-scripts.tar.gz (50MB)
 ```
 
 **Deployment**:
 ```bash
 # On offline machine
-tar xzf codex-v1.2.3-offline.tar.gz
-cd codex-v1.2.3
+tar xzf codex-v0.2.1-offline.tar.gz
+cd codex-v0.2.1
 ./deploy-offline.sh
 
 # Verify

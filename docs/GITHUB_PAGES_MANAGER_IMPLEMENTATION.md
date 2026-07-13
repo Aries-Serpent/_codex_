@@ -91,7 +91,7 @@ markdown_extensions:
 -  Deployment status with GitHub Actions badges
 -  Documentation health metrics
 - 🎨 Theme features summary
-- 🔗 Quick links to resources
+-  Quick links to resources
 -  Prioritized documentation checklist
 -  Continuation prompts for common tasks
 
@@ -188,7 +188,7 @@ nav:
 **Example Validation**:
 ```bash
 # Check if deployed docs match source
-Sync Status: ⚠️ PARTIAL (2 files out of sync)
+Sync Status: ️ PARTIAL (2 files out of sync)
 
 Files Analyzed: 127 documentation files
 In Sync: 125 files (98%)
@@ -354,7 +354,7 @@ The repository owner should decide which approach to take based on:
 
 ---
 
-## 🔗 Integration with Other Agents
+##  Integration with Other Agents
 
 ### Documentation Quality Agent
 ```yaml
@@ -386,7 +386,7 @@ coordination:
 
 ---
 
-## 📈 Metrics & Monitoring
+##  Metrics & Monitoring
 
 ### Deployment Metrics
 - **Build success rate**: Target >99%
@@ -453,7 +453,7 @@ site/
 
 ---
 
-## 🔄 Next Steps (Optional)
+##  Next Steps (Optional)
 
 These can be addressed in future iterations:
 
@@ -497,7 +497,7 @@ These can be addressed in future iterations:
 
 ---
 
-## ✨ Summary
+##  Summary
 
 Successfully created a comprehensive GitHub Pages Manager Agent that:
 

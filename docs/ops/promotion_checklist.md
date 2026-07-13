@@ -3,8 +3,8 @@
 **Version:** v0.2.1
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
- Roles: [Primary: Release Manager], [Secondary: Auditor] ⚡ Energy: 5/5  
-⚛️ Physics: Path🛤️ [Ring → Verify → Promote] Fields🔄 [nox, artifacts] Patterns👁️ [Determinism, Offline] Redundancy🔀 [Hash chain] Balance⚖️ [Safety vs. velocity]
+ Roles: [Primary: Release Manager], [Secondary: Auditor]  Energy: 5/5  
+⚛️ Physics: Path️ [Ring → Verify → Promote] Fields [nox, artifacts] Patterns️ [Determinism, Offline] Redundancy [Hash chain] Balance️ [Safety vs. velocity]
 
 ## Preconditions
 - nox -s tests lint typecheck docs_build validate-configs security

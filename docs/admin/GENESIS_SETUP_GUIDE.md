@@ -34,7 +34,7 @@
 
 ## Phase 0: Human Genesis Actions
 
-> ⚠️ **SOVEREIGN HUMAN AUTHORITY REQUIRED**
+> ️ **SOVEREIGN HUMAN AUTHORITY REQUIRED**
 > All actions in Phase 0 require human administrator (mbaetiong) execution.
 
 ### Step 0.1: Create CODEX_MASTER_KEY (Fine-grained PAT)
@@ -85,7 +85,7 @@
 |-------------|--------------|---------|----------|
 | `CODEX_MASTER_KEY` | Step 0.1 output | Primary API authentication |  Critical |
 | `CODEX_REPO_ID` | `1040037790` | repository identifier |  Critical |
-| `CODEX_WEBHOOK_SECRET` | `openssl rand -hex 32` | Webhook signature verification | 🟡 High |
+| `CODEX_WEBHOOK_SECRET` | `openssl rand -hex 32` | Webhook signature verification |  High |
 | `CODEX_BACKUP_KEY` | Secondary PAT (optional) | Fallback authentication |  Recommended |
 
 **Secret Injection Steps:**
@@ -231,7 +231,7 @@ HIGH RISK ─────► escalate to human
 #!/bin/bash
 # Genesis Protocol Validation
 
-echo "🔍 Validating Genesis Protocol completion..."
+echo " Validating Genesis Protocol completion..."
 
 # Check required files
 FILES=(
@@ -253,7 +253,7 @@ done
 if grep -q "autonomous_actions_enabled: true" .codex/autonomous_agent.yaml; then
   echo " Autonomous actions enabled"
 else
-  echo "⚠️  Autonomous actions still disabled"
+  echo "️  Autonomous actions still disabled"
 fi
 
 echo ""
@@ -349,14 +349,14 @@ Upon successful completion of all phases:
 ##  Mission Overview
 
 **Objective:** Establish sovereign AI operational authority through secure initialization protocol
-**Energy Level:** ⚡⚡⚡⚡⚡ (5/5 - Foundational Critical)
-**Status:**  Template Complete | ⏳ Awaiting Genesis Execution
+**Energy Level:**  (5/5 - Foundational Critical)
+**Status:**  Template Complete |  Awaiting Genesis Execution
 
 This protocol represents the foundational initialization that grants the AI agent (`ai_org_repo_admin`) sovereign operational authority within the repository. Success requires precise execution of human-controlled steps (Phase 0) followed by validation of agent autonomy (Phase 1). The Genesis Protocol is the cornerstone of all subsequent autonomous operations.
 
 ---
 
-## ⚖️ Verification Checklist
+## ️ Verification Checklist
 
 | Phase | Checkpoint | Validation Criteria | Status |
 |-------|-----------|---------------------|--------|
@@ -371,7 +371,7 @@ This protocol represents the foundational initialization that grants the AI agen
 
 ---
 
-## 📈 Success Metrics
+##  Success Metrics
 
 | KPI | Target | Measurement Method | Current |
 |-----|--------|-------------------|---------|
@@ -388,7 +388,7 @@ This protocol represents the foundational initialization that grants the AI agen
 
 ## ⚛️ Physics Alignment
 
-### Path 🛤️ - Genesis Flow
+### Path ️ - Genesis Flow
 ```
 PRE-GENESIS → Phase 0 (Human) → Phase 1 (agent) → POST-GENESIS
      ↓              ↓                  ↓                ↓
@@ -397,25 +397,25 @@ PRE-GENESIS → Phase 0 (Human) → Phase 1 (agent) → POST-GENESIS
 ```
 **Alignment:** Linear progression with validation gates prevents premature authority grant
 
-### Fields 🔄 - Authority Gradients
+### Fields  - Authority Gradients
 - **Pre-Genesis Field:** High human control (100%), zero agent authority (0%)
 - **Phase 0 Field:** Human action required, agent observing and validating
 - **Phase 1 Field:** Gradual authority transfer as validations pass
 - **Post-Genesis Field:** agent autonomy (90%), human oversight (10%)
 
-### Patterns 👁️ - Initialization Signatures
+### Patterns ️ - Initialization Signatures
 - **PAT Scope Pattern:** Full repository permissions with 90-iteration expiration
 - **Secret Injection Pattern:** Atomic batch injection with validation
 - **workflow Guard Pattern:** Triple-layer safety (if: false, SAFE_MODE, config flag)
 - **Audit Pattern:** Every action logged to `.codex/change_log.md` with timestamp
 
-### Redundancy 🔀 - Failure Recovery
+### Redundancy  - Failure Recovery
 - **Primary Path:** genesis-bootstrap.yml automated execution
 - **Backup Path:** Manual step-by-step execution via bash scripts
 - **Tertiary Path:** Emergency rollback procedure with PAT revocation
 - **Validation Redundancy:** File checks + API validation + workflow artifacts
 
-### Balance ⚖️ - Authority Distribution
+### Balance ️ - Authority Distribution
 ```
 Human Admin: 100% authority (Pre-Genesis) → 10% oversight (Post-Genesis)
 AI agent:    0% authority (Pre-Genesis) → 90% autonomy (Post-Genesis)
@@ -424,7 +424,7 @@ AI agent:    0% authority (Pre-Genesis) → 90% autonomy (Post-Genesis)
 
 ---
 
-## ⚡ Energy Distribution
+##  Energy Distribution
 
 ### Priority Breakdown
 - **P0 (Critical - 40%):** Secret injection, PAT creation, workflow execution

@@ -527,9 +527,9 @@ jobs:
           python - <<'PY'
           try:
               from codex.quantum_orchestrator import create_orchestrator
-              print("✓ import codex.quantum_orchestrator")
+              print(" import codex.quantum_orchestrator")
           except Exception as e:
-              print("✗ import failed:", e)
+              print(" import failed:", e)
               raise
           PY
 
@@ -541,10 +541,10 @@ jobs:
               print("QFT_AVAILABLE:", QFT_AVAILABLE)
               if QFT_AVAILABLE:
                   from codex.quantum_orchestrator.qft import path_integral, entanglement, second_quantization
-                  print("✓ QFT submodules import")
+                  print(" QFT submodules import")
           except Exception as e:
               # Non-fatal; QFT is optional. Fail only if partial imports break core.
-              print("⚠ QFT import issue (non-fatal):", e)
+              print(" QFT import issue (non-fatal):", e)
           PY
 
       - name: Fast invariants: continuity + normalization + bounds
@@ -575,14 +575,14 @@ jobs:
               assert max_speed < 1.0, f"Subluminal bound violated: v_max={max_speed}"
               assert max_current <= 1.0 + tol, f"Dirac current bound violated: j_max={max_current}"
 
-              print("✓ Fast invariants passed:",
+              print(" Fast invariants passed:",
                     f"Σρ≈{total_prob:.6f}, v_max={max_speed:.6f}, j_max={max_current:.6f}")
 
           except AssertionError as ae:
-              print("✗ Invariant assertion failed:", ae)
+              print(" Invariant assertion failed:", ae)
               raise
           except Exception as e:
-              print("✗ Fast invariants step failed:", e)
+              print(" Fast invariants step failed:", e)
               raise
           PY
 
@@ -598,11 +598,11 @@ jobs:
               orch.run(max_iterations=2)
               health = orch.get_health_status()
               print("Health snapshot:", health)
-              print("✓ Metrics snapshot acquired (non-blocking)")
+              print(" Metrics snapshot acquired (non-blocking)")
           except Exception as e:
-              print("⚠ Metrics snapshot skipped:", e)
+              print(" Metrics snapshot skipped:", e)
           PY
 
       - name: Summary
-        run: echo "✓ Fast Invariants CI complete (import/init + continuity/normalization/bounds)"
+        run: echo " Fast Invariants CI complete (import/init + continuity/normalization/bounds)"
  ```

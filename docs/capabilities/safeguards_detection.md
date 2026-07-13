@@ -123,7 +123,7 @@ Density = (Files with safeguards) / (Total files analyzed)
 - **0.0 - 0.2**: Low coverage (improvement needed)
 - **0.2 - 0.4**: Moderate coverage (acceptable)
 - **0.4 - 0.6**: Good coverage (recommended)
-- **0.6 - 1.0**: Excellent coverage (best practice)
+- **0.6 - 1.0**: Excellent coverage
 
 ### Total Hits
 
@@ -472,7 +472,7 @@ Safeguards detected: validation, bounded, deterministic, reproducible, seed, off
             if density < 0.4:
                 print(f' Safeguard density {density:.2%} below 40%')
                 exit(1)
-            print(f'✓ Safeguard density {density:.2%}')
+            print(f' Safeguard density {density:.2%}')
     "
 ```
 

@@ -110,27 +110,27 @@ The pre-commit hook runs automatically before each commit and validates:
 **Sample output:**
 
 ```text
-🔍 Running Pre-Commit Consistency Checks
+ Running Pre-Commit Consistency Checks
 ════════════════════════════════════════════════════════════════════
 
 [1/5] Scanning for secrets...
-✓ No secrets detected
+ No secrets detected
 
 [2/5] Linting Markdown files...
-✓ Markdown linting passed (5 files)
+ Markdown linting passed (5 files)
 
 [3/5] Validating cross-references...
-✓ All cross-references valid
+ All cross-references valid
 
 [4/5] Checking Python files...
-✓ Black formatting OK (2 files)
-✓ Ruff linting OK
+ Black formatting OK (2 files)
+ Ruff linting OK
 
 [5/5] Validating YAML files...
-✓ YAML validation OK (3 files)
+ YAML validation OK (3 files)
 
 ════════════════════════════════════════════════════════════════════
-✓ All pre-commit checks passed!
+ All pre-commit checks passed!
 ```
 
 **To bypass the hook (not recommended):**
@@ -210,8 +210,8 @@ From repository root
 
 **Skipped:**
 
-- 🔄 External URLs (not fully validated)
-- 🔄 Email links (mailto:)
+-  External URLs (not fully validated)
+-  Email links (mailto:)
 
 ### Heading Hierarchy Rules
 
@@ -315,7 +315,7 @@ The workflow file `.github/workflows/consistency-checks.yml` includes:
 **PR Annotations:**
 
 - Errors appear as  annotations on PR
-- Warnings appear as ⚠️ (external links)
+- Warnings appear as ️ (external links)
 - PR comments with detailed issues
 
 **Artifacts:**
@@ -328,8 +328,8 @@ The workflow file `.github/workflows/consistency-checks.yml` includes:
 For merging PRs:
 
 -  All consistency checks must pass
-- ⚠️ Warnings do not block merge
-- 🔄 External link warnings are informational
+- ️ Warnings do not block merge
+-  External link warnings are informational
 
 ## Best Practices
 
@@ -431,5 +431,5 @@ If you encounter problems:
 For questions or issues:
 
 - 📧 Contact: @mbaetiong
-- 📝 Issues: Create GitHub issue with label `documentation`
-- 🔍 Logs: Check GitHub Actions workflow runs for details
+-  Issues: Create GitHub issue with label `documentation`
+-  Logs: Check GitHub Actions workflow runs for details

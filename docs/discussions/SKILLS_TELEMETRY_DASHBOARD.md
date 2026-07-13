@@ -4,7 +4,7 @@
 
 > **Category:** Autonomous Agentic Agency — Telemetry
 > **Status:**  Active | **Last Updated: 2026-07-11
-> **Owner:** skills-master-agent v1.0.0
+> **Owner:** skills-master-agent v0.2.1
 > **Data Source:** `logs/skill_events.jsonl` via `codex-skill telemetry push`
 
 ---
@@ -20,12 +20,12 @@ It is designed to be updated in-place (upserts) by the Skills Master agent after
 ## 🗺️ Skills-to-agent Mapping
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing "doc.retriever.core\nv1.0.0", "doc.refresh.agent\nv1.0.0"'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing "doc.retriever.core\nv0.2.1", "doc.refresh.agent\nv0.2.1"'}}%%
 graph LR
     subgraph "Built-in Skills"
-        S1["doc.retriever.core\nv1.0.0"]
-        S2["doc.refresh.agent\nv1.0.0"]
-        S3["code.search.extract\nv1.0.0"]
+        S1["doc.retriever.core\nv0.2.1"]
+        S2["doc.refresh.agent\nv0.2.1"]
+        S3["code.search.extract\nv0.2.1"]
     end
 
     subgraph "CI/CD Agents"
@@ -86,13 +86,13 @@ graph LR
 
 ---
 
-## 📋 Skill Registry Status
+##  Skill Registry Status
 
 | Skill ID | Version | AAIS | Risk | Calls Budget | Tokens Budget | Status | agent Consumers |
 |----------|---------|------|------|-------------|--------------|--------|-----------------|
 | `doc.retriever.core` | 1.0.0 | 0.92 |  low | 1,000 | 200K |  Active | doc-alignment, doc-quality, skills-master |
-| `doc.refresh.agent` | 1.0.0 | 0.90 | 🟡 medium | 200 | 500K |  Active | doc-alignment, freshness-checker, skills-master |
-| `code.search.extract` | 1.0.0 | 0.88 | 🟡 medium | 500 | 150K |  Active | ci-testing, test-healer, skills-master |
+| `doc.refresh.agent` | 1.0.0 | 0.90 |  medium | 200 | 500K |  Active | doc-alignment, freshness-checker, skills-master |
+| `code.search.extract` | 1.0.0 | 0.88 |  medium | 500 | 150K |  Active | ci-testing, test-healer, skills-master |
 
 ---
 
@@ -129,7 +129,7 @@ graph TD
 
 ---
 
-## 🔄 Stratified Routing — Scoring Formula
+##  Stratified Routing — Scoring Formula
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "Query Objective\n+ Capability Tags", "Match Score\n(Jaccard similarity)"'}}%%
@@ -149,7 +149,7 @@ flowchart LR
 
 ---
 
-## 🔀 Fusion Merge Options — agent Consolidation Recommendations
+##  Fusion Merge Options — agent Consolidation Recommendations
 
 The Skills Master recommends these fusion merges based on overlapping capability_tags, shared
 consumers, and complementary execution patterns. Percentage = recommendation confidence.
@@ -161,15 +161,15 @@ consumers, and complementary execution patterns. Percentage = recommendation con
 | `coverage-gapfill-agent` | `unified-coverage-agent` | 90% tags | **98%**  |  Deprecated | Gap-fill is a sub-workflow of unified |
 | `coverage-maintenance-agent` | `unified-coverage-agent` | 88% tags | **96%**  |  Deprecated | Maintenance folded into unified |
 | `test-coverage-agent` | `unified-coverage-agent` | 92% tags | **97%**  |  Deprecated | Monitoring folded into unified |
-| `doc-freshness-checker` | `post-merge-doc-alignment-agent` | 65% tags | **72%** 🟡 | 📋 Review | Freshness check is a subset of alignment loop |
-| `ci-auto-healer-agent` | `self-healing-orchestrator-agent` | 70% tags | **78%** 🟡 | 📋 Review | Auto-healer handles patterns; orchestrator coordinates |
-| `rag-meta-tensor-guardian` | `meta-tensor-validator` | 75% tags | **80%** 🟡 | 📋 Review | Guardian + validator = complementary checks |
-| `link-validator-agent` | `doc-freshness-checker` | 55% tags | **60%**  | ⏳ Future | Link validation + freshness = two angles on doc quality |
-| `security-audit-agent` | `unified-security-scanner` | 60% tags | **68%**  | ⏳ Future | Audit = manual; scanner = automated |
+| `doc-freshness-checker` | `post-merge-doc-alignment-agent` | 65% tags | **72%**  |  Review | Freshness check is a subset of alignment loop |
+| `ci-auto-healer-agent` | `self-healing-orchestrator-agent` | 70% tags | **78%**  |  Review | Auto-healer handles patterns; orchestrator coordinates |
+| `rag-meta-tensor-guardian` | `meta-tensor-validator` | 75% tags | **80%**  |  Review | Guardian + validator = complementary checks |
+| `link-validator-agent` | `doc-freshness-checker` | 55% tags | **60%**  |  Future | Link validation + freshness = two angles on doc quality |
+| `security-audit-agent` | `unified-security-scanner` | 60% tags | **68%**  |  Future | Audit = manual; scanner = automated |
 
 ---
 
-## 📈 Telemetry Flow
+##  Telemetry Flow
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing "Skill Handler\n(handler.py)", "ExecutionEnvelope\n.run()"'}}%%
@@ -224,7 +224,7 @@ stateDiagram-v2
 
 ---
 
-## 🔍 Gap Analysis — Skills Coverage
+##  Gap Analysis — Skills Coverage
 
 ### Covered Capabilities
 
@@ -241,15 +241,15 @@ stateDiagram-v2
 
 | Gap | Proposed Skill ID | Priority | Status |
 |-----|------------------|----------|--------|
-| Test failure pattern matching | `test.failure.matcher` |  High | 📋 Planned |
-| CI workflow health analysis | `ci.health.analyzer` |  High | 📋 Planned |
-| Dependency vulnerability scan | `security.dep.scanner` | 🟡 Medium | 📋 Planned |
-| RAG index rebuild | `rag.index.rebuild` | 🟡 Medium | 📋 Planned |
-| agent AAIS batch scorer | `agent.aais.batch` |  Low | 📋 Planned |
+| Test failure pattern matching | `test.failure.matcher` |  High |  Planned |
+| CI workflow health analysis | `ci.health.analyzer` |  High |  Planned |
+| Dependency vulnerability scan | `security.dep.scanner` |  Medium |  Planned |
+| RAG index rebuild | `rag.index.rebuild` |  Medium |  Planned |
+| agent AAIS batch scorer | `agent.aais.batch` |  Low |  Planned |
 
 ---
 
-## 🔄 Retrain / Retire Plan
+##  Retrain / Retire Plan
 
 ### Retirement Criteria
 
@@ -306,7 +306,7 @@ codex-skill refresh-docs --paths docs/ --style aais --prune-stale
 
 ---
 
-## 📝 Update Protocol
+##  Update Protocol
 
 This dashboard is updated by the **Skills Master agent** using the PDA Loop:
 

@@ -3,7 +3,7 @@
 **Version:** v0.2.1
 
 **Last Updated**: 2026-01-20  
-**Version**: v0.9.0  
+**Version**: v0.2.1  
 **Reference**: [5-Layer Architecture](5_LAYER_ARCHITECTURE.md)
 
 ---
@@ -21,7 +21,7 @@ graph TD
     L1 --> CLI{Check Request<br/>Type}
     CLI -->|"CLI Command"| CParse["Parse Command Line Args"]
     CLI -->|"REST API"| AParse["Parse HTTP Request"]
-    CParse --> Hydra["🔧 Load Hydra Config<br/>• Read config files<br/>• Resolve overrides<br/>• Validate schema"]
+    CParse --> Hydra[" Load Hydra Config<br/>• Read config files<br/>• Resolve overrides<br/>• Validate schema"]
     AParse --> Hydra
     
     Hydra --> ValidCfg{"Config<br/>Valid?"}
@@ -32,7 +32,7 @@ graph TD
     RouteCmd --> L2["Layer 2: ML Platform"]
     L2 --> SelectOp{Operation<br/>Type?}
     
-    SelectOp -->|"train"| Train["🔄 Training Engine<br/>• Load model<br/>• Load dataset<br/>• Run training loop"]
+    SelectOp -->|"train"| Train[" Training Engine<br/>• Load model<br/>• Load dataset<br/>• Run training loop"]
     SelectOp -->|"eval"| Eval[" Evaluation Engine<br/>• Load checkpoint<br/>• Run evaluation<br/>• Compute metrics"]
     SelectOp -->|"predict"| Serve[" Serving Engine<br/>• Load model<br/>• Preprocess input<br/>• Run inference"]
     
@@ -43,7 +43,7 @@ graph TD
     
     L3A --> DataOp{Data<br/>Operation?}
     DataOp -->|"Need raw code"| Ingest["📥 Code Ingestion<br/>• Parse files<br/>• Generate AST<br/>• Count tokens"]
-    DataOp -->|"Need context"| RAG["🔍 RAG System<br/>• Vector encode<br/>• Semantic search<br/>• Rank results"]
+    DataOp -->|"Need context"| RAG[" RAG System<br/>• Vector encode<br/>• Semantic search<br/>• Rank results"]
     DataOp -->|"Need transform"| Trans[" Transformation<br/>• Preprocess data<br/>• Format conversion<br/>• Feature extract"]
     
     Ingest --> StoreL4["Persist to Layer 4"]
@@ -54,7 +54,7 @@ graph TD
     StoreL4 --> L4["Layer 4: Infrastructure"]
     L4 --> ConfigOp[" Configuration<br/>• Load secrets<br/>• Merge settings<br/>• Validate params"]
     ConfigOp --> StorageOp["💾 Storage<br/>• Load/save model<br/>• Load/save data<br/>• Update cache"]
-    StorageOp --> MetricsOp["📈 Monitoring<br/>• Record metrics<br/>• Log events<br/>• Update health"]
+    StorageOp --> MetricsOp[" Monitoring<br/>• Record metrics<br/>• Log events<br/>• Update health"]
     
     %% Operation completion (back to Layer 2)
     MetricsOp --> L2Complete["Return to Layer 2"]

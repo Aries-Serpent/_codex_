@@ -119,7 +119,7 @@ results = retriever.query("your query", top_k=5)
 
 ---
 
-## 📈 Test Coverage Analysis
+##  Test Coverage Analysis
 
 ### Current Coverage: **90%+** 
 
@@ -198,7 +198,7 @@ Code scanned:
 
 ---
 
-## ⚡ Performance Characteristics
+##  Performance Characteristics
 
 ### Indexing Performance
 - **Throughput**: ~100 chunks/second (local embeddings)
@@ -217,7 +217,7 @@ Code scanned:
 
 ---
 
-##  Getting Started
+## Getting Started
 
 ### Installation
 ```bash

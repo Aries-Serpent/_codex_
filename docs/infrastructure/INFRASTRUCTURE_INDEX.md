@@ -23,7 +23,7 @@ This directory contains **6 comprehensive infrastructure guides** (103 KB total)
 
 ---
 
-##  Quick Start by Role
+## Quick Start by Role
 
 ### Developers (50 min)
 1. [API Reference](TECHNICAL_REFERENCE.md#api-reference)
@@ -76,7 +76,7 @@ This directory contains **6 comprehensive infrastructure guides** (103 KB total)
 
 ---
 
-## 🔗 Document Map
+##  Document Map
 
 | Use Case | Primary Doc | Quick Read |
 |----------|-----------|-----------|

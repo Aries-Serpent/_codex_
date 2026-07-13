@@ -7,7 +7,7 @@
 **Status:**  COMPLETE
 **PR:** #3492
 **Branch:** `copilot/update-user-access-levels`
-**Date:** 2026-03-03
+**Date:2026-07-13
 **Session:** COGNITIVE_BRAIN_SESSION_NUMBER 110+
 **Agent:** copilot-swe-agent (PR #3492 session)
 
@@ -44,11 +44,11 @@ graph TB
 
     subgraph AGENTS["Agent Updates"]
         CBM["cognitive-brain-manager.md v3.0\nMermaid updated with RBAC + CI Health\nPR #3492 metrics added"]
-        CBSI["cognitive-brain-session-injector.md v1.1\nALLOWED_ACTORS now  (was ⚠️)"]
+        CBSI["cognitive-brain-session-injector.md v1.1\nALLOWED_ACTORS now  (was ️)"]
     end
 
     subgraph STATE["Current Repository State"]
-        REG["AGENT_REGISTRY.yaml v1.9.0\n152 agents\nGROUNDED=8 PARTIAL=144 SOFT=0"]
+        REG["AGENT_REGISTRY.yaml v0.2.1\n152 agents\nGROUNDED=8 PARTIAL=144 SOFT=0"]
         GATES["5/5 Tier-1 GROUNDED gates \nReadiness 100/100"]
         WF["96 workflows"]
         RBAC["StructuralPolicyManager RBAC\n4 allowed actors via env var\nCODEX_MASTER_KEY + CODEX_BACKUP_KEY granted"]

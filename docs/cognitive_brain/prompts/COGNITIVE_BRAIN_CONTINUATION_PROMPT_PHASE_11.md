@@ -136,7 +136,7 @@
 - Security review summary
 - Progress report via `report_progress` tool
 
-**⚠️ Important**: Use `--dry-run`, `--verify`, `--check-only`, or `--test` modes ONLY. Do not execute actual rotation operations without explicit human approval.
+**️ Important**: Use `--dry-run`, `--verify`, `--check-only`, or `--test` modes ONLY. Do not execute actual rotation operations without explicit human approval.
 
 ---
 

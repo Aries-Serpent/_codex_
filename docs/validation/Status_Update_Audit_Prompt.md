@@ -1,4 +1,4 @@
-# [Prompt]: Codex Status Update Audit (v1.1.0)
+# [Prompt]: Codex Status Update Audit (v0.2.1)
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 

@@ -687,7 +687,7 @@ groups:
 
 **Operational Status:**  **ACTIVE** - Production-ready with multiple storage backends
 
-## ⚖️ Verification Checklist
+## ️ Verification Checklist
 
 - [x] Token bucket algorithm implemented
 - [x] Per-API-key rate limiting
@@ -709,7 +709,7 @@ groups:
 - API key authentication
 - Monitoring infrastructure
 
-## 📈 Success Metrics
+##  Success Metrics
 
 | Metric | Target | Current | Status |
 |--------|--------|---------|--------|
@@ -724,7 +724,7 @@ groups:
 
 ## ⚛️ Physics Alignment
 
-### Path 🛤️
+### Path ️
 **Rate Limiting Flow:**
 1. Request received → Extract API key
 2. Determine endpoint type (read/write)
@@ -737,7 +737,7 @@ groups:
 - Authentication → Rate limiting → Request processing
 - Token refill happens continuously (background)
 
-### Fields 🔄
+### Fields 
 **State Management:**
 - **Per-key buckets:** Isolated rate limits
 - **Token state:** Capacity, current tokens, last update
@@ -748,7 +748,7 @@ groups:
 - Burst capacity for traffic spikes
 - Automatic cleanup of old buckets
 
-### Patterns 👁️
+### Patterns ️
 **Observability:**
 - Track rate limit checks (allowed/rejected)
 - Monitor token levels per bucket
@@ -761,7 +761,7 @@ groups:
 - Dependency injection (FastAPI)
 - Distributed coordination (Redis/Durable Objects)
 
-### Redundancy 🔀
+### Redundancy 
 **Failure Modes:**
 1. **Storage unavailable** → Fallback to in-memory (degraded)
 2. **Clock skew** → Use monotonic time (resilient)
@@ -773,18 +773,18 @@ groups:
 - SQLite lock timeout → Retry with backoff
 - Memory overflow → LRU eviction of old buckets
 
-### Balance ⚖️
+### Balance ️
 **Protection vs Usability:**
 -  Burst capacity for legitimate spikes
 -  Separate read/write limits
-- ⚖️ Trade-off: Strict limits vs user experience
+- ️ Trade-off: Strict limits vs user experience
 
 **Performance vs Accuracy:**
 - Fast in-memory (1ms) vs distributed Redis (5-8ms)
 - Atomic operations vs eventual consistency
 - Exact counting vs approximate (sliding window)
 
-## ⚡ Energy Distribution
+##  Energy Distribution
 
 | Priority | Component | Energy | Justification |
 |----------|-----------|--------|---------------|

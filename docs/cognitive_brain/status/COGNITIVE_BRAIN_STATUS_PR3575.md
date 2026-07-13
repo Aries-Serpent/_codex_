@@ -5,7 +5,7 @@
 **Generated:** 2026-03-14T04:45Z
 **PR:** #3575 — fix: CI failures — Python 3.11→3.12, deferral scanner hardening, actionlint SC2170, agent-auth branch resolution
 **Branch:** `copilot/ci-failure-triage-report`
-**Status:** 🟡 IN PROGRESS — Sessions 22–24 complete, awaiting final CI green
+**Status:**  IN PROGRESS — Sessions 22–24 complete, awaiting final CI green
 **Agent:** github-actions[bot] / copilot-swe-agent
 
 ---
@@ -25,7 +25,7 @@
 | Phase 9 — Outer-single-bt display wrapper fix (Session 24) |  COMPLETE | Three-tier `_INLINE_CODE_SPAN` pattern; test isolation fixture (Deferral Gate run #74) |
 | Phase 10 — Full docs/QA/configs/mermaid review (Session 24) |  COMPLETE | 27 Mermaid diagrams, 8 QA docs, 24 ADRs, Pattern #25, status doc all updated |
 | Phase 11 — Cognitive brain state files update (Session 24) |  COMPLETE | session_tracker.md, objectives_tracker.md, pattern_learning_store.json refreshed |
-| Phase 12 — Infrastructure failures | ⏳ ADMIN REQUIRED | GHCR, CodeQL, Dependency Submission need admin action |
+| Phase 12 — Infrastructure failures |  ADMIN REQUIRED | GHCR, CodeQL, Dependency Submission need admin action |
 
 ---
 
@@ -161,10 +161,10 @@ flowchart TD
 
 | Workflow | Root Cause | Status |
 |----------|-----------|--------|
-| Build & Push Preview Image | GHCR package write permissions | ⏳ Admin required |
-| CodeQL | `JOB_STATUS_CONFIGURATION_ERROR` on feature branches | ⏳ Admin required |
-| Automatic Dependency Submission | Transient GitHub API 500 | ⏳ Transient/infra |
-| Copilot coding agent | Internal Copilot infrastructure | ⏳ Copilot infra |
+| Build & Push Preview Image | GHCR package write permissions |  Admin required |
+| CodeQL | `JOB_STATUS_CONFIGURATION_ERROR` on feature branches |  Admin required |
+| Automatic Dependency Submission | Transient GitHub API 500 |  Transient/infra |
+| Copilot coding agent | Internal Copilot infrastructure |  Copilot infra |
 
 ---
 
@@ -173,7 +173,7 @@ _Cognitive Brain Status | PR #3575 | 2026-03-14T04:45Z | Sessions 22–24 | WF-0
 **Generated:** 2026-03-14T03:20Z
 **PR:** #3575 — fix: CI failures — Python 3.11→3.12, deferral scanner hardening, actionlint SC2170, agent-auth branch resolution
 **Branch:** `copilot/ci-failure-triage-report`
-**Status:** 🟡 IN PROGRESS — auto-fix mechanism deployed, awaiting CI validation
+**Status:**  IN PROGRESS — auto-fix mechanism deployed, awaiting CI validation
 **Agent:** github-actions[bot] / copilot-swe-agent
 
 ---

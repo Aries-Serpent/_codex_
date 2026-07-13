@@ -2,7 +2,7 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> **⚠️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
+> **️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 
 
 **Version**: 1.0.0  
@@ -309,7 +309,7 @@ tools/
 ### Phase 1 Complete
 - [ ] All 4 tables validated 
 - [ ] Toolkit operational 
-- [ ] 30% coverage achieved ⏳ (27.57% currently)
+- [ ] 30% coverage achieved  (27.57% currently)
 - [ ] Documentation complete 
 
 ### Phase 2 Complete

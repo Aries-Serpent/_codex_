@@ -1,4 +1,6 @@
 # Repo Survey — 0D_base_ & PR 1926 — 2025-10-29 (UTC)
+
+**Version**: v0.2.1
 **Last Updated:** 2026-07-11
 
 **Last Updated: 2026-06-22
@@ -10,7 +12,7 @@
 ## 1) Scope & Goal
 - Branch: `0D_base_`
 - PR: `#1926`
-- Date (UTC): `2025-10-29`
+- Date 2026-07-13
 - Objective: Capture trainer, reasoning harness, and deployment assets for the 0D_base_ ring with PR #1926 context.
 
 ## 2) Targets Collected
@@ -27,7 +29,7 @@
 
 ## 3) Findings (Highlights)
 - **Summary:** Trainer + train loop integrate reasoning runtime with trace capture; configs align with CLI surfaces; deployment docs + presets exist for reasoning pod dry runs.
-- **Actionables:** Update docs to drop `--model` from deploy snippet or add support; investigate PR #1926 diff availability (no local checkout).
+- **Actionables:** Update 2026-07-13
 
 ## 4) Evidence
 ### 4.1 Files and Excerpts

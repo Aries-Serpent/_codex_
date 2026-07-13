@@ -54,7 +54,7 @@ graph TD
         MC[.secrets.baseline<br/>merge conflict P-045]
     end
 
-    subgraph CI["🔧 CI Self-Healing"]
+    subgraph CI[" CI Self-Healing"]
         TV[verify_token_scope.py<br/>token=None handling]
         TS[tokenizer streaming<br/>+ stub compat]
         CLI[codex_cli smoke<br/>patch at test time]

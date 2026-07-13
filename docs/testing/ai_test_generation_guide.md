@@ -231,7 +231,7 @@ python scripts/generate_tests.py --module agents.physics_orchestrator --analyze
 ```
 $ python scripts/generate_tests.py --spec physics_orchestration
 
-✓ Generated: tests/generated/test_physicsinspiredorchestrator_orchestrate.py
+ Generated: tests/generated/test_physicsinspiredorchestrator_orchestrate.py
   Target coverage: Lines 427-460
   Test categories: 7
 
@@ -673,7 +673,7 @@ For issues or questions:
 
 ## Version History
 
-- **v1.0.0** (2025-12-16): Initial release
+- **v0.2.1** (2025-12-16): Initial release
   - Basic test generation
   - CLI tool
   - 4 pre-defined flow specifications

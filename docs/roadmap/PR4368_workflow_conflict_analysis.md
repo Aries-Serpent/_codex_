@@ -59,7 +59,7 @@ But `pr-followup-generator` fires again on the NEXT synchronize → cycle repeat
 | `e-to-d-transition-gate.yml` | `pull_request` | `chore(manifest): auto-heal C2` |  Has `[skip ci]` | No change needed |
 | `codebase-health-sweep.yml` | `workflow_run: completed` | `fix(ci): nightly codebase health sweep` |  Has `[skip ci]` | No change needed |
 
-### 🟡 MEDIUM — Fire on every push/PR update (generate action_required cascades)
+###  MEDIUM — Fire on every push/PR update (generate action_required cascades)
 
 | Workflow | Trigger types | Concurrency cancel? | Session impact |
 |----------|--------------|---------------------|---------------|
@@ -83,7 +83,7 @@ But `pr-followup-generator` fires again on the NEXT synchronize → cycle repeat
 
 ## Remaining Risk Patterns (Require Admin Attention)
 
-### ⚠️ RCP-01 — `iterative-self-healing-ci.yml` push window
+### ️ RCP-01 — `iterative-self-healing-ci.yml` push window
 
 Even with `[skip ci]` fixed, if self-healing runs concurrently with an active agent
 session and both push to the same branch, a force-push race is possible.
@@ -95,7 +95,7 @@ with `cancel-in-progress: true` prevents multiple instances.
 configure `iterative-self-healing-ci.yml` to only run on `workflow_dispatch`, not
 `workflow_run` triggers, to prevent unintended activation during active sessions.
 
-### ⚠️ RCP-02 — `auto-fix-pr-check.yml` concurrent push window
+### ️ RCP-02 — `auto-fix-pr-check.yml` concurrent push window
 
 `auto-fix-pr-check.yml` triggers on `pull_request: synchronize` (every push) and has
 `contents: write` + `git push`. Even though it only pushes when auto-fixable issues are
@@ -106,7 +106,7 @@ conflicts.
 **Recommended:** Restrict trigger to `workflow_dispatch` only, or add a flag check
 for active Copilot sessions before pushing.
 
-### ⚠️ RCP-03 — `pr-followup-generator.yml` concurrency with report_progress
+### ️ RCP-03 — `pr-followup-generator.yml` concurrency with report_progress
 
 `pr-followup-generator.yml` fires on EVERY `synchronize` and `edited` event. Each
 `report_progress` call fires both events → 2 runs of the follow-up generator per session push.
@@ -120,7 +120,7 @@ if: |
   github.actor != 'github-actions[bot]'
 ```
 
-### ⚠️ RCP-04 — `agent-auth-delegation.yml` fires on `pull_request: edited`
+### ️ RCP-04 — `agent-auth-delegation.yml` fires on `pull_request: edited`
 
 `report_progress` updates the PR body → `pull_request: edited` → `agent-auth-delegation`
 runs → pushes `chore(auth)` + `chore(d00)` (both `[skip ci]` ). The commits don't cascade,

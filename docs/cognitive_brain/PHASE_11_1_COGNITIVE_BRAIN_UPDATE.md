@@ -42,7 +42,7 @@ safe_message = sanitize_log_message(message)
 # Lines 151, 153, 155, 157: All use safe_message
 logger.info(f" Task completed: {safe_message}")
 logger.error(f" Task error: {safe_message}")
-logger.warning(f"⚠️  Task warning: {safe_message}")
+logger.warning(f"️  Task warning: {safe_message}")
 logger.info(f"ℹ️  Task info: {safe_message}")
 ```
 

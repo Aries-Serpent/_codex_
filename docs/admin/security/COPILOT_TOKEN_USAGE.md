@@ -7,7 +7,7 @@
 > **Audience**: Copilot Agent, Automation Engineers
 > **Security Level**:  (5/5)
 
-## 📋 Table of Contents
+##  Table of Contents
 
 1. [Overview](#overview)
 2. [Automatic Token Retrieval](#automatic-token-retrieval)
@@ -56,7 +56,7 @@ if token:
     print(" Token retrieved successfully")
     # Use token...
 else:
-    print("⚠️ No token configured, using fallback method")
+    print("️ No token configured, using fallback method")
     # Handle gracefully...
 ```
 
@@ -111,7 +111,7 @@ def main():
     )
     issues = response.json()
 
-    print(f"📋 Found {len(issues)} open issues")
+    print(f" Found {len(issues)} open issues")
 
 if __name__ == '__main__':
     main()
@@ -177,7 +177,7 @@ def main():
         text=True
     )
 
-    print("📋 Open Pull Requests:")
+    print(" Open Pull Requests:")
     print(result.stdout)
 
 if __name__ == '__main__':
@@ -302,11 +302,11 @@ def main():
     token = decoder.get_token(method='aes_config')
 
     if not token:
-        print("⚠️ AES decryption failed, trying Base64...")
+        print("️ AES decryption failed, trying Base64...")
         token = decoder.get_token(method='base64')
 
     if not token:
-        print("⚠️ Base64 failed, trying plaintext fallback...")
+        print("️ Base64 failed, trying plaintext fallback...")
         token = decoder.get_token(method='plaintext')
 
     if not token:
@@ -463,13 +463,13 @@ logging.info(f"Token method: {CodexTokenDecoder.detect_encoding_type()}")
 
 **Objective**: Provide zero-configuration secure token retrieval for AI automation with automatic fallback chain and integrity verification.
 
-**Energy Level**: ⚡⚡⚡⚡⚡ (5/5 - Security Critical)
+**Energy Level**:  (5/5 - Security Critical)
 
 **Status**:  Active
 
 ---
 
-## ⚖️ Verification Checklist
+## ️ Verification Checklist
 
 ### Integration Validation
 - [ ] `copilot_get_github_token()` successfully retrieves token
@@ -487,7 +487,7 @@ logging.info(f"Token method: {CodexTokenDecoder.detect_encoding_type()}")
 
 ---
 
-## 📈 Success Metrics
+##  Success Metrics
 
 | Metric | Current | Target | Status |
 |--------|---------|--------|--------|
@@ -503,23 +503,23 @@ logging.info(f"Token method: {CodexTokenDecoder.detect_encoding_type()}")
 
 | Principle | Application | Implementation |
 |-----------|-------------|----------------|
-| Path 🛤️ | Clear integration journey for developers | Import → Call function → Use token (3 lines of code) |
-| Fields 🔄 | State transformation from encrypted secret to usable credential | GitHub Secret → Decoder → Decrypted Token → API Authentication |
-| Patterns 👁️ | Automatic detection of available encryption method | Environment scan detects AES/Base64/Hex/Plaintext secrets |
-| Redundancy 🔀 | Multiple retrieval methods ensure availability | 4-tier fallback chain with graceful degradation |
-| Balance ⚖️ | Security rigor vs developer experience | Military-grade encryption with zero configuration required |
+| Path ️ | Clear integration journey for developers | Import → Call function → Use token (3 lines of code) |
+| Fields  | State transformation from encrypted secret to usable credential | GitHub Secret → Decoder → Decrypted Token → API Authentication |
+| Patterns ️ | Automatic detection of available encryption method | Environment scan detects AES/Base64/Hex/Plaintext secrets |
+| Redundancy  | Multiple retrieval methods ensure availability | 4-tier fallback chain with graceful degradation |
+| Balance ️ | Security rigor vs developer experience | Military-grade encryption with zero configuration required |
 
 ---
 
-## ⚡ Energy Distribution
+##  Energy Distribution
 
 | Phase | Energy | Rationale |
 |-------|--------|-----------|
-| Token Retrieval | ⚡⚡⚡⚡⚡ | Core functionality - all operations depend on this |
-| Method Auto-Detection | ⚡⚡⚡⚡ | Critical for zero-config experience |
-| Hash Verification | ⚡⚡⚡⚡ | Ensures token integrity and prevents tampering |
-| Error Handling | ⚡⚡⚡⚡ | Graceful failures prevent cascading issues |
-| Logging/Audit | ⚡⚡⚡ | Important for security monitoring |
+| Token Retrieval |  | Core functionality - all operations depend on this |
+| Method Auto-Detection |  | Critical for zero-config experience |
+| Hash Verification |  | Ensures token integrity and prevents tampering |
+| Error Handling |  | Graceful failures prevent cascading issues |
+| Logging/Audit |  | Important for security monitoring |
 
 **Total Energy Investment**: 21/25 units
 

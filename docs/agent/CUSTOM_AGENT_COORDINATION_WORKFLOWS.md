@@ -30,7 +30,7 @@ graph TB
         Orchestrator[" Orchestrator<br/>(coordinator)"]
 
         subgraph "Domain Specialists"
-            CICD["🔧 CI/CD<br/>auto-healer<br/>ci-testing"]
+            CICD[" CI/CD<br/>auto-healer<br/>ci-testing"]
             Testing["🧪 Testing<br/>coverage<br/>alignment"]
             Docs[" Docs<br/>consolidation<br/>freshness"]
             Security[" Security<br/>scanning<br/>remediation"]
@@ -40,7 +40,7 @@ graph TB
 
     subgraph "Execution Environment"
         Repository["📦 Repository<br/>(codebase)"]
-        GitHub["🔗 GitHub API<br/>(events, workflows)"]
+        GitHub[" GitHub API<br/>(events, workflows)"]
         Results[" Results<br/>(artifacts)"]
     end
 
@@ -74,15 +74,15 @@ graph TB
 
 ```mermaid
 graph TD
-    A["📋 Task Received"] --> B["🏷️ Classify Domain"]
+    A[" Task Received"] --> B["🏷️ Classify Domain"]
 
     B --> C{Domain Type?}
 
-    C -->|CI/CD| D["🔍 CI/CD Triage"]
-    C -->|Testing| E["🔍 Testing Triage"]
-    C -->|Docs| F["🔍 Docs Triage"]
-    C -->|Security| G["🔍 Security Triage"]
-    C -->|Config| H["🔍 Config Triage"]
+    C -->|CI/CD| D[" CI/CD Triage"]
+    C -->|Testing| E[" Testing Triage"]
+    C -->|Docs| F[" Docs Triage"]
+    C -->|Security| G[" Security Triage"]
+    C -->|Config| H[" Config Triage"]
 
     D --> D1{Issue Type?}
     D1 -->|Workflow Syntax| D1A["➡️ workflow-ci-fixer"]
@@ -136,7 +136,7 @@ graph TD
     I --> J{Parallel<br/>Viable?}
 
     J -->|No| K["🔁 Sequential<br/>Execution"]
-    J -->|Yes| L["⚡ Parallel<br/>Delegation<br/>2-4 agents"]
+    J -->|Yes| L[" Parallel<br/>Delegation<br/>2-4 agents"]
 
     K --> M[" Collect Results"]
     L --> M
@@ -151,17 +151,17 @@ graph TD
 
 ```mermaid
 graph TD
-    A["🚨 CI Failure Detected"] --> B["📋 Get Workflow Logs"]
+    A[" CI Failure Detected"] --> B[" Get Workflow Logs"]
 
     B --> C{"Parse Logs<br/>for Pattern"}
 
-    C -->|Syntax Error| C1["🔧 workflow-ci-fixer"]
+    C -->|Syntax Error| C1[" workflow-ci-fixer"]
     C -->|Test Failure| C2["🧪 ci-testing-agent"]
-    C -->|Known Pattern| C3["⚡ ci-auto-healer-agent"]
+    C -->|Known Pattern| C3[" ci-auto-healer-agent"]
     C -->|Build Error| C4["🔨 CI Docker Build<br/>Healer"]
-    C -->|Unknown| C5["❓ ci-triage-pipeline-agent"]
+    C -->|Unknown| C5[" ci-triage-pipeline-agent"]
 
-    C1 --> D["🔍 Fix Type 1"]
+    C1 --> D[" Fix Type 1"]
     C2 --> D
     C3 --> D
     C4 --> D
@@ -171,17 +171,17 @@ graph TD
 
     D --> F[" Fix Applied"]
 
-    F --> G["🔄 Re-run CI"]
+    F --> G[" Re-run CI"]
 
     G --> H{Result?}
 
     H -->|Pass| I[" Resolved"]
     H -->|Fail| J{"Same<br/>Error?"}
 
-    J -->|Yes| K["📈 Escalate<br/>to Human"]
+    J -->|Yes| K[" Escalate<br/>to Human"]
     J -->|No| B
 
-    I --> L["📝 Log Resolution"]
+    I --> L[" Log Resolution"]
     K --> L
     L --> M[" Complete"]
 ```
@@ -195,7 +195,7 @@ graph TD
     A[" Testing Audit<br/>Initiated"] --> B[" Collect Metrics"]
 
     B --> C[" Failing Tests?"]
-    B --> D["⚠️ Flaky Tests?"]
+    B --> D["️ Flaky Tests?"]
     B --> E["📉 Coverage Gaps?"]
 
     C -->|Yes| C1["➡️ autonomous-test-healer-agent"]
@@ -207,26 +207,26 @@ graph TD
     E -->|Yes| E1["➡️ unified-coverage-agent"]
     E -->|No| E2["Skip"]
 
-    C1 -.->|parallel| X["⏳ All agents<br/>execute"]
+    C1 -.->|parallel| X[" All agents<br/>execute"]
     D1 -.->|parallel| X
     E1 -.->|parallel| X
     C2 -.->|skip| X
     D2 -.->|skip| X
     E2 -.->|skip| X
 
-    X --> F["🔄 Wait for<br/>Results"]
+    X --> F[" Wait for<br/>Results"]
 
-    F --> G["🔀 Merge Results"]
+    F --> G[" Merge Results"]
 
-    G --> H["📈 New Metrics"]
+    G --> H[" New Metrics"]
 
     H --> I{All Criteria<br/>Met?}
 
     I -->|Yes| J[" Add Edge<br/>Cases"]
-    I -->|No| K["❓ Escalate<br/>Failures"]
+    I -->|No| K[" Escalate<br/>Failures"]
 
     J --> L["➡️ test-enhancement-agent"]
-    K --> M["📋 Human<br/>Review"]
+    K --> M[" Human<br/>Review"]
 
     L --> N[" Audit<br/>Complete"]
     M --> N
@@ -251,20 +251,20 @@ graph TD
     B3 -.->|parallel if All| B5
     B4 -.->|parallel if All| B5
 
-    B5 --> C["⏳ Agents Execute"]
+    B5 --> C[" Agents Execute"]
 
     C --> D[" Collect Findings"]
 
-    D --> E["🔀 Merge Reports"]
+    D --> E[" Merge Reports"]
 
-    E --> F["⚠️ Issues Found?"]
+    E --> F["️ Issues Found?"]
 
     F -->|None| G[" Docs Healthy"]
-    F -->|Yes| H["🔧 Auto-fix<br/>Issues"]
+    F -->|Yes| H[" Auto-fix<br/>Issues"]
 
-    H --> I["📝 Generate<br/>Report"]
+    H --> I[" Generate<br/>Report"]
 
-    I --> J["👁️ Human<br/>Review"]
+    I --> J["️ Human<br/>Review"]
 
     J --> K[" Audit<br/>Complete"]
     G --> K
@@ -289,30 +289,30 @@ graph TD
     B3 -.->|parallel if Full| B5
     B4 -.->|parallel if Full| B5
 
-    B5 --> C["⏳ Agents<br/>Execute"]
+    B5 --> C[" Agents<br/>Execute"]
 
     C --> D[" Aggregate<br/>Findings"]
 
     D --> E{Severity?}
 
-    E -->|Critical| E1["🚨 Auto-fix<br/>Enabled"]
-    E -->|High| E2["🔧 Review<br/>& Fix"]
-    E -->|Medium| E3["📋 Queue<br/>for Review"]
-    E -->|Low| E4["📝 Log<br/>& Monitor"]
+    E -->|Critical| E1[" Auto-fix<br/>Enabled"]
+    E -->|High| E2[" Review<br/>& Fix"]
+    E -->|Medium| E3[" Queue<br/>for Review"]
+    E -->|Low| E4[" Log<br/>& Monitor"]
 
     E1 --> F["➡️ Remediation<br/>Agent"]
     E2 --> F
-    E3 --> G["👁️ Human<br/>Review"]
+    E3 --> G["️ Human<br/>Review"]
     E4 --> H[" Complete"]
 
-    F --> I["🔄 Verify<br/>Fix"]
+    F --> I[" Verify<br/>Fix"]
 
     I --> J{Fix<br/>Valid?}
 
     J -->|Yes| H
     J -->|No| G
 
-    G --> K["📋 Manual<br/>Remediation"]
+    G --> K[" Manual<br/>Remediation"]
     K --> H
 ```
 
@@ -322,10 +322,10 @@ graph TD
 
 ```mermaid
 graph LR
-    A[" Primary<br/>Agent"] -->|delegate| B["⚡ Lane 1"]
-    A -->|delegate| C["⚡ Lane 2"]
-    A -->|delegate| D["⚡ Lane 3"]
-    A -->|delegate| E["⚡ Lane 4"]
+    A[" Primary<br/>Agent"] -->|delegate| B[" Lane 1"]
+    A -->|delegate| C[" Lane 2"]
+    A -->|delegate| D[" Lane 3"]
+    A -->|delegate| E[" Lane 4"]
 
     B -->|exec| B1["Agent-A<br/>Work"]
     C -->|exec| C1["Agent-B<br/>Work"]
@@ -337,7 +337,7 @@ graph LR
     D1 --> D2[" Result-C"]
     E1 --> E2[" Result-D"]
 
-    B2 -.->|merge| F["🔀 Consolidate<br/>Results"]
+    B2 -.->|merge| F[" Consolidate<br/>Results"]
     C2 -.->|merge| F
     D2 -.->|merge| F
     E2 -.->|merge| F
@@ -347,7 +347,7 @@ graph LR
     G --> H{Conflicts?}
 
     H -->|No| I[" Return<br/>Merged Result"]
-    H -->|Yes| J["🔧 Resolve<br/>Conflicts"]
+    H -->|Yes| J[" Resolve<br/>Conflicts"]
 
     J --> I
 ```
@@ -368,7 +368,7 @@ graph TD
 
     E --> F{"Approve<br/>Plan?"}
 
-    F -->|No| G["🔄 Revise Plan"]
+    F -->|No| G[" Revise Plan"]
     G --> E
 
     F -->|Yes| H[" Execute<br/>Phase 1"]
@@ -380,7 +380,7 @@ graph TD
     J -->|Yes| K["🔁 Cycle:<br/>Phase N+1"]
     K --> H
 
-    J -->|No| L["📝 Generate<br/>Summary"]
+    J -->|No| L[" Generate<br/>Summary"]
 
     L --> M["💾 Archive<br/>Artifacts"]
 
@@ -401,7 +401,7 @@ graph TD
 
     B --> C{Lane<br/>Available?}
 
-    C -->|No| D["⏳ Wait for<br/>Completion"]
+    C -->|No| D[" Wait for<br/>Completion"]
     D -->|Timeout| A
     D -->|Ready| B
 
@@ -414,19 +414,19 @@ graph TD
 
     G --> H["📤 Delegate<br/>Work"]
 
-    H --> I["⏳ Await<br/>Result"]
+    H --> I[" Await<br/>Result"]
 
     I --> J{Result<br/>Success?}
 
-    J -->|No| K["🔧 Escalate<br/>or Retry"]
+    J -->|No| K[" Escalate<br/>or Retry"]
     J -->|Yes| L[" Accept<br/>Result"]
 
     K --> M{Can<br/>Retry?}
     M -->|Yes| G
-    M -->|No| N["📋 Log<br/>Failure"]
+    M -->|No| N[" Log<br/>Failure"]
     N --> A
 
-    L --> O["⏳ Check<br/>Session Time"]
+    L --> O[" Check<br/>Session Time"]
 
     O -->|Time Left| A
     O -->|Time Up| END
@@ -445,7 +445,7 @@ graph TD
 
 ```mermaid
 graph TB
-    A[" Session Start<br/>Full Autonomy"] --> B["📋 Load Task<br/>Backlog"]
+    A[" Session Start<br/>Full Autonomy"] --> B[" Load Task<br/>Backlog"]
 
     B --> C["🏃 Phase 1:<br/>Initial Sweep"]
 
@@ -454,7 +454,7 @@ graph TB
     C -->|Lane 3| C3["Agent-C"]
     C -->|Lane 4| C4["Agent-D"]
 
-    C1 -.->|result| X["🔀 Collect<br/>Results"]
+    C1 -.->|result| X[" Collect<br/>Results"]
     C2 -.->|result| X
     C3 -.->|result| X
     C4 -.->|result| X
@@ -463,24 +463,24 @@ graph TB
 
     Y --> Z[" Assess<br/>State"]
 
-    Z -->|More work| AA["🔄 Phase 2:<br/>Secondary Tasks"]
+    Z -->|More work| AA[" Phase 2:<br/>Secondary Tasks"]
     Z -->|Done| AB[" Complete"]
 
     AA -->|Lane 1| AA1["Agent-A2"]
     AA -->|Lane 2| AA2["Agent-B2"]
     AA -->|Lane 3| AA3["Agent-C2"]
 
-    AA1 -.->|result| AY["🔀 Collect<br/>Phase 2"]
+    AA1 -.->|result| AY[" Collect<br/>Phase 2"]
     AA2 -.->|result| AY
     AA3 -.->|result| AY
 
     AY --> AZ[" Merge &<br/>Validate"]
     AZ --> BAA[" Assess<br/>State"]
 
-    BAA -->|More work| BB["🔄 Phase N:<br/>Final Push"]
+    BAA -->|More work| BB[" Phase N:<br/>Final Push"]
     BAA -->|Done| AB
 
-    BB --> BC["⏳ Execute<br/>Remaining"]
+    BB --> BC[" Execute<br/>Remaining"]
     BC --> BD[" Complete"]
     BD --> AB
 

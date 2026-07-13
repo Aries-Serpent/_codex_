@@ -2,7 +2,7 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> **⚠️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
+> **️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 
 
 **Generated**: 2026-06-22  
@@ -28,10 +28,10 @@ After comprehensive analysis of Phase 0 requirements (Gap Resolution Guide, Exec
 
 | Blocker ID | Status | Can Resolve Now? | Effort if Attempted |
 |-----------|--------|------------------|-------------------|
-| **BLOCK-DEP-001** |  OPEN | ⚠️ YES (risky) | 1 iteration |
-| **BLOCK-DEP-002** |  OPEN | ⚠️ YES (risky) | 1 iteration |
-| **BLOCK-DEP-003** |  OPEN | ⚠️ YES (risky) | 0.5 iteration |
-| **BLOCK-DEP-004** |  OPEN | ⚠️ YES (risky) | 0.5 iteration |
+| **BLOCK-DEP-001** |  OPEN | ️ YES (risky) | 1 iteration |
+| **BLOCK-DEP-002** |  OPEN | ️ YES (risky) | 1 iteration |
+| **BLOCK-DEP-003** |  OPEN | ️ YES (risky) | 0.5 iteration |
+| **BLOCK-DEP-004** |  OPEN | ️ YES (risky) | 0.5 iteration |
 | **BLOCK-DEP-005** |  OPEN |  NO (requires design) | 1.5 iterations |
 | **BLOCK-ARCH-001** |  OPEN |  NO (requires design) | 2 iterations |
 | **BLOCK-ARCH-002** |  OPEN |  NO (requires design) | 2 iterations |
@@ -65,10 +65,10 @@ After comprehensive analysis of Phase 0 requirements (Gap Resolution Guide, Exec
 
 | Issue ID | Status | Can Plan Now? | Implementation Effort |
 |----------|--------|---------------|----------------------|
-| **ISSUE-TEST-001** | 🟡 PLANNED |  YES | 1 phase (post-impl) |
-| **ISSUE-TEST-002** | 🟡 PLANNED |  YES | 1 phase (post-impl) |
-| **ISSUE-TEST-003** | 🟡 PLANNED |  YES | 2-3 iterations (post-impl) |
-| **ISSUE-TEST-004** | 🟡 PLANNED |  YES | 1 phase (post-impl) |
+| **ISSUE-TEST-001** |  PLANNED |  YES | 1 phase (post-impl) |
+| **ISSUE-TEST-002** |  PLANNED |  YES | 1 phase (post-impl) |
+| **ISSUE-TEST-003** |  PLANNED |  YES | 2-3 iterations (post-impl) |
+| **ISSUE-TEST-004** |  PLANNED |  YES | 1 phase (post-impl) |
 
 **Summary**: Test strategy documented in `AST_TEST_STRATEGY.md`
 
@@ -91,14 +91,14 @@ After comprehensive analysis of Phase 0 requirements (Gap Resolution Guide, Exec
 
 | Challenge ID | Challenge | Status | Resolution Planned? |
 |-------------|-----------|--------|-------------------|
-| **ARCH-CHAL-001** | Offline grammar bundling | 🟡 PLANNED |  Documented |
-| **ARCH-CHAL-002** | Language parser distribution | 🟡 PLANNED |  Documented |
-| **ARCH-CHAL-003** | Local-only type inference | 🟡 PLANNED |  Documented |
-| **ARCH-CHAL-004** | Python version compatibility | 🟡 PLANNED |  Documented |
-| **ARCH-CHAL-005** | Modern syntax in 3.8 | 🟡 PLANNED |  Documented |
-| **ARCH-CHAL-006** | Performance optimization | 🟡 PLANNED |  Caching strategy |
-| **ARCH-CHAL-007** | Streaming accuracy tradeoff | 🟡 PLANNED |  Hybrid approach |
-| **ARCH-CHAL-008** | Parallel error handling | 🟡 PLANNED |  Error aggregation |
+| **ARCH-CHAL-001** | Offline grammar bundling |  PLANNED |  Documented |
+| **ARCH-CHAL-002** | Language parser distribution |  PLANNED |  Documented |
+| **ARCH-CHAL-003** | Local-only type inference |  PLANNED |  Documented |
+| **ARCH-CHAL-004** | Python version compatibility |  PLANNED |  Documented |
+| **ARCH-CHAL-005** | Modern syntax in 3.8 |  PLANNED |  Documented |
+| **ARCH-CHAL-006** | Performance optimization |  PLANNED |  Caching strategy |
+| **ARCH-CHAL-007** | Streaming accuracy tradeoff |  PLANNED |  Hybrid approach |
+| **ARCH-CHAL-008** | Parallel error handling |  PLANNED |  Error aggregation |
 
 **Summary**: All challenges documented with mitigation strategies
 
@@ -140,8 +140,8 @@ After comprehensive analysis of Phase 0 requirements (Gap Resolution Guide, Exec
 
  **10+ files** using AST (3,816 lines)  
  **Functional implementations** in cli/, tools/, scripts/  
-⚠️ **No standardization** across files  
-⚠️ **Limited library usage** (no libcst, radon, parso)
+️ **No standardization** across files  
+️ **Limited library usage** (no libcst, radon, parso)
 
 **Assessment**: Good starting point, needs refactoring
 
@@ -187,8 +187,8 @@ After comprehensive analysis of Phase 0 requirements (Gap Resolution Guide, Exec
 | **Engineering Time** | 1 FTE × 11-13 phases | 0 |  CRITICAL |
 | **AST Expertise** | Senior level | TBD |  CRITICAL |
 | **Code Review** | 20% Tech Lead | Available |  OK |
-| **QA Time** | 2 phases testing | TBD | ⚠️ MEDIUM |
-| **Documentation** | 1 phase | TBD | ⚠️ LOW |
+| **QA Time** | 2 phases testing | TBD | ️ MEDIUM |
+| **Documentation** | 1 phase | TBD | ️ LOW |
 
 **Total Gap**: ~3 person-months of dedicated effort
 
@@ -200,19 +200,19 @@ After comprehensive analysis of Phase 0 requirements (Gap Resolution Guide, Exec
 
 | Risk | Probability | Impact | Status |
 |------|-------------|--------|--------|
-| Dependency conflicts | MEDIUM | HIGH | 🟡 DOCUMENTED |
-| Performance targets not met | HIGH | HIGH | 🟡 DOCUMENTED |
-| Breaking existing tools | HIGH | CRITICAL | 🟡 DOCUMENTED |
-| Python version incompatibility | MEDIUM | HIGH | 🟡 DOCUMENTED |
+| Dependency conflicts | MEDIUM | HIGH |  DOCUMENTED |
+| Performance targets not met | HIGH | HIGH |  DOCUMENTED |
+| Breaking existing tools | HIGH | CRITICAL |  DOCUMENTED |
+| Python version incompatibility | MEDIUM | HIGH |  DOCUMENTED |
 
 ### Project Risks
 
 | Risk | Probability | Impact | Status |
 |------|-------------|--------|--------|
-| Scope creep | HIGH | HIGH | 🟡 DOCUMENTED |
+| Scope creep | HIGH | HIGH |  DOCUMENTED |
 | Resource unavailability | HIGH | CRITICAL |  ACTIVE |
-| Timeline overrun | MEDIUM | HIGH | 🟡 DOCUMENTED |
-| Incomplete migration | MEDIUM | HIGH | 🟡 DOCUMENTED |
+| Timeline overrun | MEDIUM | HIGH |  DOCUMENTED |
+| Incomplete migration | MEDIUM | HIGH |  DOCUMENTED |
 
 **Overall Risk**: HIGH - Requires dedicated project management
 
@@ -244,7 +244,7 @@ After comprehensive analysis of Phase 0 requirements (Gap Resolution Guide, Exec
 
 ### Alternative Recommendation (If Must Proceed)
 
-⚠️ **MINIMAL SCOPE ONLY**: Dependencies + Basic Design (2-3 phases)
+️ **MINIMAL SCOPE ONLY**: Dependencies + Basic Design (2-3 phases)
 
 **Scope**:
 1. Add dependencies to pyproject.toml
@@ -271,12 +271,12 @@ After comprehensive analysis of Phase 0 requirements (Gap Resolution Guide, Exec
 
 ### If Implementation Attempted (NOT RECOMMENDED)
 
-1. ⏳ Allocate 1 FTE for 11-13 phases
-2. ⏳ Get architecture design approval
-3. ⏳ Resolve all 13 critical blockers
-4. ⏳ Complete Sprint 1-6 per Phase 0 guide
-5. ⏳ Achieve 80%+ test coverage
-6. ⏳ Pass all quality gates
+1.  Allocate 1 FTE for 11-13 phases
+2.  Get architecture design approval
+3.  Resolve all 13 critical blockers
+4.  Complete Sprint 1-6 per Phase 0 guide
+5.  Achieve 80%+ test coverage
+6.  Pass all quality gates
 
 ---
 

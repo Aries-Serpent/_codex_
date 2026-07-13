@@ -8,7 +8,7 @@
 
 ---
 
-## ⚡ TL;DR — One-Command Setup
+##  TL;DR — One-Command Setup
 
 ### Local Setup (Recommended)
 ```bash
@@ -31,7 +31,7 @@ docker run -it codex-ml python -m codex.cli train --config config/examples/minim
 
 ---
 
-## 📋 Prerequisites Check (< 1 minute)
+##  Prerequisites Check (< 1 minute)
 
 ```bash
 # Check Python version (need 3.12+)
@@ -166,7 +166,7 @@ python -c "from codex.cli import app; print('Import successful!')"
 - Kubernetes deployment
 - Cloud storage integration
 
-### 🔧 Interested in Configuration & Customization?
+###  Interested in Configuration & Customization?
 → Read [Configuration Guide](./configuration/HYDRA_GUIDE.md)
 - Hydra defaults and sweeps
 - Environment variables
@@ -319,7 +319,7 @@ source .venv/bin/activate
 
 ---
 
-## ✨ You're Ready!
+##  You're Ready!
 
 You've successfully set up Codex ML! 🎉
 

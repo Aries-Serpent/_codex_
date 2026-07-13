@@ -19,7 +19,7 @@
 - [Test Categories](#test-categories)
   - [Smoke Tests (26 tests)  **100% Passing**](#smoke-tests-26-tests--100-passing)
   - [Critical Integration Tests (5 tests)  **100% Passing**](#critical-integration-tests-5-tests--100-passing)
-  - [Core Flow Tests (76 tests) 🔄 **55% Passing**](#core-flow-tests-76-tests--55-passing)
+  - [Core Flow Tests (76 tests)  **55% Passing**](#core-flow-tests-76-tests--55-passing)
 - [Uncovered Critical Areas](#uncovered-critical-areas)
   - [High Priority (P0)](#high-priority-p0)
   - [Medium Priority (P1)](#medium-priority-p1)
@@ -81,10 +81,10 @@ Phase 9 completed a four-part coverage expansion across the agents/ tier:
 | Sub-phase | Target | Status | Notes |
 |-----------|--------|--------|-------|
 | **10A** | Coverage regression gate — prevent drops below 34.56% |  Complete | Floor enforced via monitoring.yaml + CI |
-| **10B** | Raise statement coverage → **50%** via `src/` gap-fill | 🔄 In progress | +6 test modules added (knowledge_distiller, context_compressor, safety_guards, rl_algorithms, qec_k1_tuning, transfer_learning_scaffold) |
+| **10B** | Raise statement coverage → **50%** via `src/` gap-fill |  In progress | +6 test modules added (knowledge_distiller, context_compressor, safety_guards, rl_algorithms, qec_k1_tuning, transfer_learning_scaffold) |
 | **10C** | Documentation alignment |  Complete | This update |
-| **10D** | QEC k₁ tuning + transfer-learning scaffold | 🔄 In progress | k₁ lifecycle tests + knowledge_transfer.py validation added; k₁ target ≤ 0.35 |
-| **10E** | Ops housekeeping — webhooks, TTL, T-03 scope | 🔄 In progress | Webhook config documented; TTL target 3600s; T-03 security_events scope requires admin action |
+| **10D** | QEC k₁ tuning + transfer-learning scaffold |  In progress | k₁ lifecycle tests + knowledge_transfer.py validation added; k₁ target ≤ 0.35 |
+| **10E** | Ops housekeeping — webhooks, TTL, T-03 scope |  In progress | Webhook config documented; TTL target 3600s; T-03 security_events scope requires admin action |
 
 ### Phase 10B — New Test Modules (2026-05-24)
 
@@ -110,9 +110,9 @@ Phase 9 completed a four-part coverage expansion across the agents/ tier:
 
 | Item | Status | Detail |
 |------|--------|--------|
-| Webhook deployment | ⏳ Blocked | 4 webhooks defined in `.codex/webhook_config.json`; WEBHOOK_RECEIVER_URL + WEBHOOK_SECRET required |
-| `COPILOT_SESSION_TTL_SECONDS` | ⏳ Planned | Current default 43200s (12h); target 3600s once CI stable |
-| T-03 `security_events` scope | ⚠️ Admin required | `CODEX_MASTER_KEY` needs `security_events:read` scope for CodeQL alert enumeration |
+| Webhook deployment |  Blocked | 4 webhooks defined in `.codex/webhook_config.json`; WEBHOOK_RECEIVER_URL + WEBHOOK_SECRET required |
+| `COPILOT_SESSION_TTL_SECONDS` |  Planned | Current default 43200s (12h); target 3600s once CI stable |
+| T-03 `security_events` scope | ️ Admin required | `CODEX_MASTER_KEY` needs `security_events:read` scope for CodeQL alert enumeration |
 
 ---
 
@@ -157,8 +157,8 @@ This section preserves the original Phase 1 metrics for comparison.
   - Property tests - 4 tests
   - Attractor/repulsor management - 2 tests
 
-- **Energy Landscape** (lines 1162-1317): ⚠️ **Needs Tests**
-- **Import Migration** (lines 666-915): ⚠️ **Needs Tests**
+- **Energy Landscape** (lines 1162-1317): ️ **Needs Tests**
+- **Import Migration** (lines 666-915): ️ **Needs Tests**
 
 **Test File:** `tests/agents/test_physics_orchestrator_core_flows.py` (463 lines)
 
@@ -171,17 +171,17 @@ This section preserves the original Phase 1 metrics for comparison.
 | **Total Lines** | 1139 | - |
 | **Target Lines** | 402-1183 | - |
 | **Tests Created** | 27 |  |
-| **Tests Passing** | 15 | 🔄 |
-| **Pass Rate** | 55% | 🔄 |
-| **Estimated Coverage** | 40-50% | 🔄 |
+| **Tests Passing** | 15 |  |
+| **Pass Rate** | 55% |  |
+| **Estimated Coverage** | 40-50% |  |
 
 **Coverage by Flow:**
-- **ClassicalGameEngine** (lines 402-591): 🔄 **Needs API Alignment**
+- **ClassicalGameEngine** (lines 402-591):  **Needs API Alignment**
   - Initialization -  Passing
   - Expected payoffs -  Passing
-  - Replicator dynamics - ⚠️ API mismatch
-  - Nash equilibrium - ⚠️ API mismatch
-  - Gibbs sampling - ⚠️ API mismatch
+  - Replicator dynamics - ️ API mismatch
+  - Nash equilibrium - ️ API mismatch
+  - Gibbs sampling - ️ API mismatch
 
 - **QuantumInspiredGameEngine** (lines 593-897):  **Strong**
   - Initialization -  Passing
@@ -197,7 +197,7 @@ This section preserves the original Phase 1 metrics for comparison.
   - Classical mode -  Passing
   - Round structure -  Passing
   - Learning rate -  Passing
-  - Payoff accumulation - ⚠️ API mismatch
+  - Payoff accumulation - ️ API mismatch
 
 **Test File:** `tests/agents/test_quantum_game_core_flows.py` (408 lines)
 
@@ -214,26 +214,26 @@ This section preserves the original Phase 1 metrics for comparison.
 | **Total Lines** | 1319 | - |
 | **Target Lines** | 443-832, 888-1124 | - |
 | **Tests Created** | 25 |  |
-| **Tests Passing** | 3 | 🔄 |
-| **Pass Rate** | 12% | 🔄 |
-| **Estimated Coverage** | 15-20% | 🔄 |
+| **Tests Passing** | 3 |  |
+| **Pass Rate** | 12% |  |
+| **Estimated Coverage** | 15-20% |  |
 
 **Coverage by Flow:**
-- **Cognitive Reasoning** (lines 443-546): 🔄 **Needs API Alignment**
-  - think_through_problem() - ⚠️ API mismatch
-  - Problem decomposition - ⚠️ Not tested
-  - Hypothesis generation - ⚠️ Not tested
+- **Cognitive Reasoning** (lines 443-546):  **Needs API Alignment**
+  - think_through_problem() - ️ API mismatch
+  - Problem decomposition - ️ Not tested
+  - Hypothesis generation - ️ Not tested
 
-- **Decision Making** (lines 548-603): 🔄 **Needs API Alignment**
-  - make_decision() - ⚠️ API mismatch
-  - Alternative evaluation - ⚠️ Not tested
+- **Decision Making** (lines 548-603):  **Needs API Alignment**
+  - make_decision() - ️ API mismatch
+  - Alternative evaluation - ️ Not tested
 
-- **Outcome Recording** (lines 605-657): 🔄 **Needs API Alignment**
-  - record_outcome() - ⚠️ API mismatch
+- **Outcome Recording** (lines 605-657):  **Needs API Alignment**
+  - record_outcome() - ️ API mismatch
 
-- **Self-Appraisal** (lines 659-757): ⚠️ **Not Tested**
+- **Self-Appraisal** (lines 659-757): ️ **Not Tested**
 
-- **Iterative Review** (lines 759-832): ⚠️ **Not Tested**
+- **Iterative Review** (lines 759-832): ️ **Not Tested**
 
 - **Graph Operations** (lines 888-1124):  **Partial**
   - create_node() -  Passing
@@ -288,12 +288,12 @@ This section preserves the original Phase 1 metrics for comparison.
 
 ---
 
-### Core Flow Tests (76 tests) 🔄 **55% Passing**
+### Core Flow Tests (76 tests)  **55% Passing**
 
 **Breakdown by Module:**
 - Physics Orchestrator: 24/24 passing (100%) 
-- Quantum Game Theory: 15/27 passing (55%) 🔄
-- Mental Mapping: 3/25 passing (12%) 🔄
+- Quantum Game Theory: 15/27 passing (55%) 
+- Mental Mapping: 3/25 passing (12%) 
 
 **Status:** Excellent physics coverage, needs API alignment for quantum and mental
 
@@ -413,7 +413,7 @@ This section preserves the original Phase 1 metrics for comparison.
 | Avg test length | 15-20 lines | 10-25 lines |  |
 | Docstring coverage | 100% | 100% |  |
 | Fixture usage | High | High |  |
-| Mock usage | Medium | High | 🔄 |
+| Mock usage | Medium | High |  |
 | Assertion clarity | High | High |  |
 
 ### Test Maintainability
@@ -433,7 +433,7 @@ This section preserves the original Phase 1 metrics for comparison.
 | Execution time (passing) | 40.37s | <60s |  |
 | Determinism | 100% | 100% |  |
 | Flakiness rate | 0% | <1% |  |
-| Test parallelization | No | Yes | 🔄 |
+| Test parallelization | No | Yes |  |
 
 ---
 
@@ -455,23 +455,23 @@ This section preserves the original Phase 1 metrics for comparison.
 
 | Criterion | Status | Notes |
 |-----------|--------|-------|
-| 85%+ module coverage | 🔄 | Physics at 75-85%, others lower |
+| 85%+ module coverage |  | Physics at 75-85%, others lower |
 | All integration tests pass |  | 5/5 passing |
-| API alignment complete | 🔄 | Quantum and mental need fixes |
+| API alignment complete |  | Quantum and mental need fixes |
 | Documentation complete |  | Comprehensive guides created |
 
-**P1 Status:** 🔄 **PARTIAL** (2/4 met)
+**P1 Status:**  **PARTIAL** (2/4 met)
 
 ### P2 Criteria (Nice to Have)
 
 | Criterion | Status | Notes |
 |-----------|--------|-------|
-| 90%+ module coverage | ⚠️ | Not yet achieved |
-| Performance benchmarks | ⚠️ | Not implemented |
-| Property-based tests | ⚠️ | Not implemented |
-| Integration test suite | ⚠️ | Minimal integration tests |
+| 90%+ module coverage | ️ | Not yet achieved |
+| Performance benchmarks | ️ | Not implemented |
+| Property-based tests | ️ | Not implemented |
+| Integration test suite | ️ | Minimal integration tests |
 
-**P2 Status:** ⚠️ **NOT MET** (0/4 met)
+**P2 Status:** ️ **NOT MET** (0/4 met)
 
 ---
 
@@ -482,26 +482,26 @@ This section preserves the original Phase 1 metrics for comparison.
 **Risk:** API mismatches in quantum and mental mapping tests may indicate actual bugs  
 **Impact:** Medium - Could affect production behavior  
 **Mitigation:** Review actual APIs, update tests, verify no regression  
-**Status:** 🔄 In Progress
+**Status:**  In Progress
 
 ### Medium Risk
 
 **Risk:** Untested EnergyLandscape and ImportMigration code in production  
 **Impact:** Medium - Could cause issues in edge cases  
 **Mitigation:** Add comprehensive tests immediately  
-**Status:** ⏳ Planned
+**Status:**  Planned
 
 **Risk:** Lower than target coverage may miss critical bugs  
 **Impact:** Medium - Reduced confidence in stability  
 **Mitigation:** Incremental coverage improvement  
-**Status:** 🔄 In Progress
+**Status:**  In Progress
 
 ### Low Risk
 
 **Risk:** Test execution time may increase with more tests  
 **Impact:** Low - CI/CD slowdown  
 **Mitigation:** Implement test parallelization  
-**Status:** 📋 Backlog
+**Status:**  Backlog
 
 ---
 
@@ -512,8 +512,8 @@ This section preserves the original Phase 1 metrics for comparison.
 1.  Phase 1: Fix critical test failures - **COMPLETE**
 2.  Phase 2: Create core flow tests - **COMPLETE**
 3.  Phase 3: Build test generation framework - **COMPLETE**
-4. 🔄 Phase 4: Fix API alignment issues - **IN PROGRESS**
-5. 🔄 Phase 5: Complete documentation - **IN PROGRESS**
+4.  Phase 4: Fix API alignment issues - **IN PROGRESS**
+5.  Phase 5: Complete documentation - **IN PROGRESS**
 
 ### Short Term (Next 2 phases)
 

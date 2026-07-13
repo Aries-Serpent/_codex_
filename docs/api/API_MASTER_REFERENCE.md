@@ -10,7 +10,7 @@
 - docs/API_REFERENCE.md
 - docs/api/API_DOCUMENTATION.md
 - docs/RAG_API_REFERENCE.md
-- docs/audit/API_Reference_v1.4.0.md
+- docs/audit/API_Reference_v0.2.1.md
 - docs/INGESTION_API_REFERENCE.md
 - GitHub API reference documents
 - MCP API references

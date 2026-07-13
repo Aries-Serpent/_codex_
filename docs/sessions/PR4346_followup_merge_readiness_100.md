@@ -119,7 +119,7 @@ If any dimension still failing, address it before closing.
 
 ---
 
-## 🔧 P-045 Wrap-Up Gate (run before every report_progress)
+##  P-045 Wrap-Up Gate (run before every report_progress)
 
 ```bash
 python -m ruff check src/ tests/ --fix
@@ -133,7 +133,7 @@ detect-secrets-hook --baseline .secrets.baseline $(git diff --name-only HEAD~1 H
 
 ---
 
-## 📋 CHANGELOG Entry Format for S861
+##  CHANGELOG Entry Format for S861
 
 ```markdown
 ### Fixed (S861) — 2026-05-XX

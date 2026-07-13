@@ -105,10 +105,10 @@ kubectl scale deployment payment-service -n production --replicas=5
 
 **Recovery Validation**:
 ```
-- Error rate < 0.5% for 5 consecutive minutes ✓
-- p99 latency < 2 seconds ✓
-- No new alerts triggering ✓
-- User impact: RESTORED ✓
+- Error rate < 0.5% for 5 consecutive minutes 
+- p99 latency < 2 seconds 
+- No new alerts triggering 
+- User impact: RESTORED 
 ```
 
 **Post-Incident**:
@@ -201,10 +201,10 @@ watch "kubectl logs metrics | grep p99"
 
 **Recovery Validation**:
 ```
-- p99 latency < 1 second ✓
-- p95 latency < 500ms ✓
-- No timeout errors ✓
-- Cache hit ratio > 85% ✓
+- p99 latency < 1 second 
+- p95 latency < 500ms 
+- No timeout errors 
+- Cache hit ratio > 85% 
 ```
 
 ---
@@ -301,15 +301,15 @@ kubectl delete pod pod-name -n production
 
 **Recovery Validation**:
 ```
-- Health check returns 200 OK ✓
-- Service receiving traffic ✓
-- No dependency errors ✓
-- All downstream calls working ✓
+- Health check returns 200 OK 
+- Service receiving traffic 
+- No dependency errors 
+- All downstream calls working 
 ```
 
 ---
 
-## 🟡 WARNING: Resource Utilization High (CPU/Memory >80%)
+##  WARNING: Resource Utilization High (CPU/Memory >80%)
 
 **Alert Trigger**:
 - CPU > 80% for 5 minutes
@@ -378,7 +378,7 @@ kubectl delete pod pod-name -n production
 
 ---
 
-## 🟡 WARNING: Error Rate Elevated (>1% for 10 min)
+##  WARNING: Error Rate Elevated (>1% for 10 min)
 
 **Alert Trigger**:
 - Error rate 1-5% for 10+ minutes
@@ -405,7 +405,7 @@ kubectl logs -n production -l app=user-service | grep ERROR | head -20
 
 ---
 
-## 🔍 Runbook Index
+##  Runbook Index
 
 | Alert | Severity | Response Time | Escalation |
 |-------|----------|--------------|------------|

@@ -25,7 +25,7 @@
     - [S81–S83 Improvement Evidence](#s81s83-improvement-evidence)
 - [Research Sources](#research-sources)
 - [Cognitive App Integration](#cognitive-app-integration)
-- [🔗 Cross-References](#-cross-references)
+- [ Cross-References](#-cross-references)
 
 **Last Updated: 2026-06-22
 
@@ -52,7 +52,7 @@ The _codex_ codebase achieves **Level 4 AI Functional System** maturity with dem
 - +200 tests (1300→1500+), marshmallow 4.x migration, transformers 5.2 compat
 - +54 specialized agents deployed (RAGIndexer facade, MSPClient.request)
 - +48 CVEs remediated (security posture: Elite)
-- +Knowledge graph v1.4.0 (20 nodes, 12 patterns, 10 edges)
+- +Knowledge graph v0.2.1 (20 nodes, 12 patterns, 10 edges)
 - +Great-expectations made optional — dependency conflict resolution pattern
 - +CI auto-fix patterns P-011 (getattr-compat-guard), P-012 (facade-class-testability)
 
@@ -93,7 +93,7 @@ The MSV measures the codebase's capacity for AI self-awareness across 5 dimensio
 
 ### Agentic Metrics (Microsoft/RagaAI)
 
-Enterprise-grade autonomous agent evaluation metrics.
+Production autonomous agent evaluation metrics.
 
 > **Sources**: [Microsoft Agentic Metrics](https://techcommunity.microsoft.com/blog/azure-ai-foundry-blog/evaluating-agentic-ai-systems-a-deep-dive-into-agentic-metrics/4403923), [RagaAI AAEF](https://docs.raga.ai/ragaai-aaef-agentic-application-evaluation-framework), [AI Agent Monitoring Best Practices](https://uptimerobot.com/knowledge-hub/monitoring/ai-agent-monitoring-best-practices-tools-and-metrics/)
 
@@ -151,7 +151,7 @@ The Global Strategy Layer translates mission into strategic objectives.
 
 | Component | File/Location | Status |
 |-----------|--------------|--------|
-| Unified Roadmap | `docs/ROADMAP.md` (v2.0.0) |  Current |
+| Unified Roadmap | `docs/ROADMAP.md` (v0.2.1) |  Current |
 | Evolution Timeline | `docs/evolution/EVOLUTION_TIMELINE.md` |  Active |
 | Planset Registry | `docs/evolution/PLANSET_REGISTRY.md` |  Complete |
 | Phase Planning (1-18) | `.codex/plans/` (95 files) |  Comprehensive |
@@ -408,7 +408,7 @@ The scoring system is designed for visibility through the **cognitive_app** — 
 
 ---
 
-## 🔗 Cross-References
+##  Cross-References
 
 - [Evolution Timeline](EVOLUTION_TIMELINE.md) — Phase history context for scoring
 - [Planset Registry](PLANSET_REGISTRY.md) — Evidence for task adherence scoring

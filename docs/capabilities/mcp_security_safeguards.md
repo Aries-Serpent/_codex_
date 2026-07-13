@@ -56,7 +56,7 @@ Provides security safeguards through:
 ```python
 def confirm_action(action: str, details: dict) -> bool:
     """Prompt user for confirmation of sensitive operation."""
-    print(f"⚠️  About to perform: {action}")
+    print(f"️  About to perform: {action}")
     print(f"Details: {json.dumps(details, indent=2)}")
 
     response = input("Proceed? (yes/no): ").strip().lower()
@@ -237,9 +237,9 @@ def safe_delete_file(file_path: str, dry_run: bool = False, confirm: bool = True
     # Execute with error handling
     try:
         os.remove(path)
-        print(f"✓ Deleted: {path}")
+        print(f" Deleted: {path}")
     except Exception as e:
-        print(f"✗ Failed to delete {path}: {e}")
+        print(f" Failed to delete {path}: {e}")
         raise
 ```
 

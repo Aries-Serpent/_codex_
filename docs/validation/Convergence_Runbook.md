@@ -326,7 +326,7 @@ Wave 2 focused on resolving critical shadowing issues and establishing productio
 **Updated Files**:
 - `Usage_Guide.md` - Added CI Regression Baseline Workflow section
 - `Convergence_Runbook.md` - Added Reviewer Sign-off Checklist
-- `Traversal_Workflow.md` - Enhanced with v1.4.0 features
+- `Traversal_Workflow.md` - Enhanced with v0.2.1 features
 - `WAVE2_FINAL_VALIDATION.md` - Comprehensive validation report
 
 ### Artifacts & Evidence
@@ -354,7 +354,7 @@ Wave 2 focused on resolving critical shadowing issues and establishing productio
 3. **CI Enhancements**: Consider auto-baseline refresh on scheduled intervals
 4. **Split-Brain Resolution**: Long-term architectural convergence
 
-### Wave 2.1 Update (Determinism Hardening) - 2025-12-05
+### Wave 2.1 Update 2026-07-13
 
 **PR**: #2390 (sub-PR copilot/sub-pr-2390)  
 **Status**:  **COMPLETE**

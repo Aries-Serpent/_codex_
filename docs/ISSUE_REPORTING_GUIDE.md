@@ -125,7 +125,7 @@ model = load_model('/tmp/my config/model.yaml')
 ## Additional Context
 This works fine when the path has no spaces:
 ```python
-model = load_model('/tmp/my_config/model.yaml')  # Works ✓
+model = load_model('/tmp/my_config/model.yaml')  # Works 
 ```
 ```
 

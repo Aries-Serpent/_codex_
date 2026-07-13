@@ -1,4 +1,6 @@
 # MCP Tooling Registry
+
+**Version**: v0.2.1
 **Last Updated:** 2026-07-11
 
 **Last Updated: 2026-06-22
@@ -103,7 +105,7 @@ class ToolRegistry:
         self._validate_handler(handler, metadata.schema)
 
         self._tools[metadata.name] = (metadata, handler)
-        print(f"✓ Registered tool: {metadata.name} v{metadata.version}")
+        print(f" Registered tool: {metadata.name} v{metadata.version}")
 
     def get_tool(self, name: str) -> tuple[ToolMetadata, Callable]:
         """Retrieve tool by name."""
@@ -251,9 +253,9 @@ def auto_discover_tools(tools_dir: str = "./tools"):
         if hasattr(module, "register_tool"):
             try:
                 module.register_tool(registry)
-                print(f"✓ Loaded tool from {tool_file.name}")
+                print(f" Loaded tool from {tool_file.name}")
             except Exception as e:
-                print(f"✗ Failed to load {tool_file.name}: {e}")
+                print(f" Failed to load {tool_file.name}: {e}")
 
 # Usage
 auto_discover_tools()

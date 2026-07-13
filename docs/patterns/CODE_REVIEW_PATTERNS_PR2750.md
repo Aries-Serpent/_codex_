@@ -144,7 +144,7 @@ except (json.JSONDecodeError, OSError):
 The repository has **two RAG implementations**:
 
 1.  **Primary**: `src/codex/rag/` - Uses sentence-transformers (local, no API key)
-2. ⚠️ **Legacy**: `src/rag/pipelines/` - Original implementation
+2. ️ **Legacy**: `src/rag/pipelines/` - Original implementation
 
 **Preference**: Use sentence-transformers for new RAG features. OpenAI integration is optional for development.
 

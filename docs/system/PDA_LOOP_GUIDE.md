@@ -63,7 +63,7 @@ Before writing a single line of code or documentation, every agent MUST:
 | Priority | Task | Files | Success Criteria |
 |----------|------|-------|-----------------|
 |  P1 | ... | ... | ... |
-| 🟡 P2 | ... | ... | ... |
+|  P2 | ... | ... | ... |
 |  P3 | ... | ... | ... |
 
 ### Risk Assessment

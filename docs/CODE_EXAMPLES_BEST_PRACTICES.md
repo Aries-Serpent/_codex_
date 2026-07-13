@@ -57,7 +57,7 @@ def example_function():
 -  Function/class is properly documented
 -  Example runs without errors
 -  Shows expected output
--  No external dependencies (or clearly documented)
+-  No external dependencies (or documented)
 
 **Enhancements:**
 1. Add docstring with usage examples
@@ -129,9 +129,7 @@ config:
 -  Indentation is correct (2 or 4 spaces)
 -  Comments explain each section
 -  Shows all required fields
--  Marks optional fields clearly
-
-**Enhancements:**
+-  Marks optional fields **Enhancements:**
 1. Add schema comments
 2. Document required vs optional
 3. Show common variations

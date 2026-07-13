@@ -47,20 +47,20 @@ All code paths in this tier run on the primary test machine without modification
 | sandbox.py (enforce_limits=False) |  Full | resource guards apply |
 | fcntl (POSIX) / msvcrt (Windows) |  Full | Platform-guarded in all modules |
 
-### Tier 2 — Conditional / Graceful Degradation ⚠️
+### Tier 2 — Conditional / Graceful Degradation ️
 These components work but skip GPU-accelerated paths, or log a warning.
 
 | Component | Status | Guard | Behaviour on Primary Machine |
 |-----------|--------|-------|------------------------------|
-| `torch.cuda.*` calls | ⚠️ Guarded | `if torch.cuda.is_available():` | No-op, CPU path used |
-| `torch.backends.cudnn.*` | ⚠️ Guarded | same | No-op |
-| `torch.cuda.amp.autocast` | ⚠️ Guarded | `if cuda_available:` | CPU autocast used instead |
-| Mixed-precision fp16/bf16 | ⚠️ Skipped | device_strategy.py | Falls back to fp32 on CPU |
-| AMP GradScaler | ⚠️ Skipped | `if cuda_available:` | Scaler disabled on CPU |
-| `DataLoader(pin_memory=True)` | ⚠️ Auto-off | `torch.cuda.is_available()` | pin_memory silently no-op |
-| `@skip_if_no_cuda` tests | ⚠️ Skipped | pytest mark | 147+ tests skip — correct |
-| `@skip_real_st_models` tests | ⚠️ Skipped | pytest mark | SentenceTransformer CPU guard |
-| `sandbox.py(enforce_limits=False)` | ⚠️ Warning | resource module check | Logs warning; runs without limits |
+| `torch.cuda.*` calls | ️ Guarded | `if torch.cuda.is_available():` | No-op, CPU path used |
+| `torch.backends.cudnn.*` | ️ Guarded | same | No-op |
+| `torch.cuda.amp.autocast` | ️ Guarded | `if cuda_available:` | CPU autocast used instead |
+| Mixed-precision fp16/bf16 | ️ Skipped | device_strategy.py | Falls back to fp32 on CPU |
+| AMP GradScaler | ️ Skipped | `if cuda_available:` | Scaler disabled on CPU |
+| `DataLoader(pin_memory=True)` | ️ Auto-off | `torch.cuda.is_available()` | pin_memory silently no-op |
+| `@skip_if_no_cuda` tests | ️ Skipped | pytest mark | 147+ tests skip — correct |
+| `@skip_real_st_models` tests | ️ Skipped | pytest mark | SentenceTransformer CPU guard |
+| `sandbox.py(enforce_limits=False)` | ️ Warning | resource module check | Logs warning; runs without limits |
 
 ### Tier 3 — Deferred / N/A 
 These components require hardware NOT present on the primary test machine.

@@ -9,7 +9,7 @@
 
 ---
 
-## 📋 Quick Navigation
+##  Quick Navigation
 
 | Topic | Purpose | Time |
 |-------|---------|------|

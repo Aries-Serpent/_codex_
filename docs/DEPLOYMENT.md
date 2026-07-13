@@ -1,4 +1,6 @@
 # Deployment Guide - Aries-Serpent v0.1.0
+
+**Version**: v0.2.1
 **Last Updated:** 2026-07-11
 
 **Document Type:** Operations & Deployment Guide  

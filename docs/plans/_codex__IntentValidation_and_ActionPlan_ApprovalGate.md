@@ -4,7 +4,7 @@
 
 ## Table of Contents
 
-- [Assumptions (✓ confirmed, ? uncertain, ⚠️ needs clarification)](#assumptions--confirmed--uncertain--needs-clarification)
+- [Assumptions ( confirmed, ? uncertain, ️ needs clarification)](#assumptions--confirmed--uncertain--needs-clarification)
 - [Open Questions → Resolved Answers (based on your feedback)](#open-questions--resolved-answers-based-on-your-feedback)
 - [Finalized Specs (frozen for Iterations 1–3)](#finalized-specs-frozen-for-iterations-13)
 - [Phases of Action](#phases-of-action)
@@ -35,7 +35,7 @@
   - [Framework Examples](#framework-examples)
   - [Additional Context and Best Practices](#additional-context-and-best-practices)
   - [References and More Reading](#references-and-more-reading)
-  - [Typer CLI structure with subcommands (best practices)](#typer-cli-structure-with-subcommands-best-practices)
+  - [Typer CLI structure with subcommands](#typer-cli-structure-with-subcommands-best-practices)
 - [1. Modular Structure: Split Commands Into Separate Modules](#1-modular-structure-split-commands-into-separate-modules)
 - [commands/create.py](#commandscreatepy)
 - [main.py](#mainpy)
@@ -74,27 +74,27 @@
 - [Tailored Copilot Prompt (Next Iteration: push coverage from 95% → 96–99%)](#tailored-copilot-prompt-next-iteration-push-coverage-from-95--9699)
 - [Rollback / Fallback Plan](#rollback--fallback-plan)
 
-> **⚠️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
+> **️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
 >  Roles: [Primary: Execution Lead], [Secondary: Audit Orchestrator]
-> ⚡ Energy: 5
+>  Energy: 5
 > ⚛️ Physics:
-> Path🛤️ [Assess → Plan → Execute → Verify]
-> Fields🔄 [Eval/Train, Logging, Security, Docs]
-> Patterns👁️ [Determinism, Offline-first, “No need to reinvent the wheel”]
-> Redundancy🔀 [Unit+Integration+Artifacts]
-> Balance⚖️ [Score gain vs. change risk]
+> Path️ [Assess → Plan → Execute → Verify]
+> Fields [Eval/Train, Logging, Security, Docs]
+> Patterns️ [Determinism, Offline-first, “No need to reinvent the wheel”]
+> Redundancy [Unit+Integration+Artifacts]
+> Balance️ [Score gain vs. change risk]
 
 ---
 
-## Assumptions (✓ confirmed, ? uncertain, ⚠️ needs clarification)
-- ✓ Offline-first remains the default; deep web search is for research only (no network in runtime paths).
-- ✓ Local gates (nox tests/lint/typecheck/docs/security) are canonical; CI changes out-of-scope.
-- ✓ PR #2201 will merge or rebase to 0D_base_ before Iteration 1 to avoid drift.
-- ✓ Scoring rubric: audit v1.4.0 (weights: functionality 0.25, consistency 0.20, tests 0.25, safeguards 0.15, documentation 0.15).
-- ✓ Minimum coverage thresholds for new/updated modules this cycle: 95% lines/branches for Iterations 1–2; later target 96–99%.
-- ✓ Dependency policy for pip-audit findings: fix where feasible; fail on High/Critical; warn-only + JSON artifact for others with documented allowlist and expiry.
+## Assumptions ( confirmed, ? uncertain, ️ needs clarification)
+-  Offline-first remains the default; deep web search is for research only (no network in runtime paths).
+-  Local gates (nox tests/lint/typecheck/docs/security) are canonical; CI changes out-of-scope.
+-  PR #2201 will merge or rebase to 0D_base_ before Iteration 1 to avoid drift.
+-  Scoring rubric: audit v0.2.1 (weights: functionality 0.25, consistency 0.20, tests 0.25, safeguards 0.15, documentation 0.15).
+-  Minimum coverage thresholds for new/updated modules this cycle: 95% lines/branches for Iterations 1–2; later target 96–99%.
+-  Dependency policy for pip-audit findings: fix where feasible; fail on High/Critical; warn-only + JSON artifact for others with documented allowlist and expiry.
 
 ---
 
@@ -461,7 +461,7 @@ If you need a pattern for cloud-specific atomic deletion, or integration with fr
 
 ---
 
-### Typer CLI structure with subcommands (best practices)
+### Typer CLI structure with subcommands
 When structuring a Typer CLI app with subcommands in Python, following best practices ensures your command-line application is maintainable, scalable, and user-friendly. Here’s a synthesis of the recommended strategies, patterns, and code organization tips from top resources:
 
 ## 1. Modular Structure: Split Commands Into Separate Modules
@@ -649,7 +649,7 @@ If you need advanced error messages or custom features, explore alternatives lik
 
 ---
 
-1. [Documenting how to validate TOML with JSON schema](https://github.com/toml-lang/toml/discussions/1038)
+1. [Documenting how to validate 2026-07-13
 2. [Python and TOML: Read, Write, and Configure with tomllib](https://realpython.com/python-toml/)
 3. [Schema Validation for TOML - JSON Schema Everywhere](https://json-schema-everywhere.github.io/toml)
 4. [python-jsonschema/check-jsonschema | DeepWiki](https://deepwiki.com/python-jsonschema/check-jsonschema/1-overview)

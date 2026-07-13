@@ -15,7 +15,7 @@ This checklist ensures the `_codex_` repository meets production deployment stan
 
 ---
 
-## 📋 Pre-Deployment Checklist
+##  Pre-Deployment Checklist
 
 ### 1. Code Quality Gates 
 
@@ -60,7 +60,7 @@ This checklist ensures the `_codex_` repository meets production deployment stan
 
 ---
 
-## 🔧 Configuration
+##  Configuration
 
 ### Environment Variables
 
@@ -146,7 +146,7 @@ tail -f /var/log/codex/app.log
 
 ---
 
-## 🔄 Rollback Plan
+##  Rollback Plan
 
 ### Automatic Rollback Triggers
 
@@ -179,7 +179,7 @@ curl https://api.example.com/version
 
 ---
 
-## 📈 Success Metrics
+##  Success Metrics
 
 ### Phase 9.0 Goals
 

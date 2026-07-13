@@ -27,7 +27,7 @@
 **Purpose:** High-level overview of the work, business value, and risk profile.
 
 ```markdown
-## 📋 Summary
+##  Summary
 
 [2–3 sentences explaining what this PR does, why it matters, and the primary risk areas]
 
@@ -48,7 +48,7 @@
 **Purpose:** Specific code/doc/config modifications made.
 
 ```markdown
-## 🔧 Changes
+##  Changes
 
 ### Code Changes
 - **src/codex/module.py**: [Description of changes]
@@ -157,7 +157,7 @@
 **Purpose:** Control which workflows run and which are skipped. MUST be present at the end of every PR body update.
 
 ```markdown
-## 🔄 Workflow Execution Checklist
+##  Workflow Execution Checklist
 
 Workflows can be skipped/dispatched by updating these checkboxes:
 
@@ -171,7 +171,7 @@ Workflows can be skipped/dispatched by updating these checkboxes:
 - [ ] copilot-iterative-self-healing.yml ← Optional (only if fixing flaky tests)
 - [x] cost-gate.yml                   ← Always-required
 
-**⚠️ Note:** WEC state is preserved across all agent updates; maintainer selections ([x]) are carried forward per [WEC_PR_BODY_CONFLICTS.md](docs/workflows/WEC_PR_BODY_CONFLICTS.md).
+**️ Note:** WEC state is preserved across all agent updates; maintainer selections ([x]) are carried forward per [WEC_PR_BODY_CONFLICTS.md](docs/workflows/WEC_PR_BODY_CONFLICTS.md).
 ```
 
 ---
@@ -185,7 +185,7 @@ Workflows can be skipped/dispatched by updating these checkboxes:
 **Related to:** #4662  
 **Risk Level:** Medium
 
-## 📋 Summary
+##  Summary
 
 This PR introduces a comprehensive PR merge readiness framework with WEC (Workflow Execution Checklist) integration. It establishes a 3-phase approach to reach 100% merge readiness: PR body preparation, pre-merge validation gates, and agentic WEC management.
 
@@ -198,7 +198,7 @@ This PR introduces a comprehensive PR merge readiness framework with WEC (Workfl
 - Requires PR body format compliance (low risk — documented)
 - Depends on existing session_wrapup_autofix.py utilities (low risk — already validated)
 
-## 🔧 Changes
+##  Changes
 
 ### Documentation Changes
 - **docs/workflows/pr_merge_readiness_implementation.md**: New guide for merge readiness framework
@@ -250,7 +250,7 @@ This PR introduces a comprehensive PR merge readiness framework with WEC (Workfl
 |--------|-------|--------|
 | Code Coverage | 96.0% |  Meets 95% threshold |
 | CodeQL Alerts | 0 open |  No new alerts |
-| AAIS Composite Score | 94/100 | ⚠️ Target ≥95 (gap: 1 pt in Operational Maturity) |
+| AAIS Composite Score | 94/100 | ️ Target ≥95 (gap: 1 pt in Operational Maturity) |
 | Files Modified | 5 | — |
 | Lines Added/Removed | +287/-42 | — |
 | Commits | 3 | — |
@@ -263,7 +263,7 @@ This PR introduces a comprehensive PR merge readiness framework with WEC (Workfl
 ### Known Gaps
 - AAIS score 1 pt below target: Gap in Operational Maturity → Addressed via additional integration test coverage
 
-## 🔄 Workflow Execution Checklist
+##  Workflow Execution Checklist
 
 Workflows can be skipped/dispatched by updating these checkboxes:
 
@@ -277,7 +277,7 @@ Workflows can be skipped/dispatched by updating these checkboxes:
 - [ ] copilot-iterative-self-healing.yml ← Optional (only if fixing flaky tests)
 - [x] cost-gate.yml                   ← Always-required
 
-**⚠️ Note:** WEC state is preserved across all agent updates; maintainer selections ([x]) are carried forward per [WEC_PR_BODY_CONFLICTS.md](docs/workflows/WEC_PR_BODY_CONFLICTS.md).
+**️ Note:** WEC state is preserved across all agent updates; maintainer selections ([x]) are carried forward per [WEC_PR_BODY_CONFLICTS.md](docs/workflows/WEC_PR_BODY_CONFLICTS.md).
 ```
 
 ---

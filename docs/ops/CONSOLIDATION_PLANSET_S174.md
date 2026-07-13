@@ -88,7 +88,7 @@ merged. This is dead code that still fires on `0D_base_ → main` PRs.
 
 ---
 
-## 🟡 P1 — Should consolidate (redundant coverage / CI minutes waste)
+##  P1 — Should consolidate (redundant coverage / CI minutes waste)
 
 ### P1-1: Documentation Health → Unified Docs Monitor
 
@@ -191,7 +191,7 @@ be **deprecated** in the registry and their `.md` files replaced with tombstone 
 
 | Agent | Purpose |
 |-------|---------|
-| `ci-testing-agent.md` | Primary CI debugger (v4.1.0) |
+| `ci-testing-agent.md` | Primary CI debugger (v0.2.1) |
 | `ci-auto-healer-agent.md` | Auto-fix CI failures |
 | `ci-emergency-response-agent.md` | Emergency CI fixes |
 | `ci-resilience-emergency-response-agent.md` | Resilience fixes |
@@ -202,7 +202,7 @@ be **deprecated** in the registry and their `.md` files replaced with tombstone 
 | `ci-docker-build-healer.md` | Docker build fixes |
 | `ci-parameter-mismatch-healer.md` | Parameter mismatch |
 
-**Action:** Audit each against `ci-testing-agent.md` v4.1.0. Deprecate those whose
+**Action:** Audit each against `ci-testing-agent.md` v0.2.1. Deprecate those whose
 capabilities are fully covered. Keep specialized ones (Docker, ImportError, Log Retrieval).
 
 ---
@@ -255,7 +255,7 @@ a unified OODA loop workflow if they form a chain.
 
 ---
 
-## 📋 Execution Checklist (Next Session: S174)
+##  Execution Checklist (Next Session: S174)
 
 ```
 Pre-session requirements:
@@ -306,7 +306,7 @@ Post-consolidation:
 
 ---
 
-## 🔗 References
+##  References
 
 - `.github/workflow-archive/PARITY_CHECKLIST.md` — existing parity record
 - `.github/workflow-archive/ARTIFACT_CATALOG.md` — artifact catalog

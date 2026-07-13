@@ -3,7 +3,7 @@
 **Version:** v0.2.1
 
 > **Last updated: 2026-07-11
-> **Status:** 🟡 In progress — additional bot findings remediated, CI rescue checks re-validated
+> **Status:**  In progress — additional bot findings remediated, CI rescue checks re-validated
 
 ## Current Objectives
 

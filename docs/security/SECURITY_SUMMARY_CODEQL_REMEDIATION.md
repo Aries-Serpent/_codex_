@@ -227,9 +227,9 @@ This remediation aligns with:
 
 1.  CodeQL alerts remediated
 2.  Code review completed and feedback addressed
-3. ⏳ **Pending**: GitHub CodeQL verification of alert resolution
-4. ⏳ **Pending**: Merge to main branch after PR approval
-5. ⏳ **Pending**: Monitor for any new similar alerts
+3.  **Pending**: GitHub CodeQL verification of alert resolution
+4.  **Pending**: Merge to main branch after PR approval
+5.  **Pending**: Monitor for any new similar alerts
 
 ---
 

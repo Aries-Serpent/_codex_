@@ -476,10 +476,10 @@ print(f"Throughput: {metrics.throughput_per_minute:.1f} tasks/min")
 
 # Identify issues
 if metrics.error_rate > 0.1:  # > 10% errors
-    print(f"⚠️ High error rate: {metrics.error_rate*100:.1f}%")
+    print(f"️ High error rate: {metrics.error_rate*100:.1f}%")
 
 if metrics.avg_duration_seconds > 300:  # > 5 min average
-    print(f"⚠️ Slow execution: {metrics.avg_duration_seconds:.0f}s avg")
+    print(f"️ Slow execution: {metrics.avg_duration_seconds:.0f}s avg")
 
 # Get team metrics
 team_metrics = collector.get_team_metrics("dev-team")

@@ -1,4 +1,4 @@
-# Getting Started with Codex ML
+## Getting Started with Codex ML
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
@@ -171,7 +171,7 @@ manifest.generate().save("data/train_manifest.json")
 
 # Verify integrity
 if manifest.has_drift("data/train_manifest.json"):
-    print("⚠️ Dataset has changed!")
+    print("️ Dataset has changed!")
 ```
 
 ## Autonomy (Phase 3)
@@ -209,7 +209,7 @@ results = monitor.monitor_all(
 )
 
 if monitor.has_critical_drift():
-    print("⚠️ Critical drift detected!")
+    print("️ Critical drift detected!")
     # Trigger retraining
 ```
 

@@ -13,18 +13,18 @@
 
 **Objective**: Establish comprehensive observability framework for MCP operations through FastAPI middleware, JSON-RPC logging, metrics collection, and tracing hooks while maintaining offline-first architecture.
 
-**Energy Level**: ⚡⚡⚡ (3/5) - Essential monitoring infrastructure supporting MCP reliability.
+**Energy Level**:  (3/5) - Essential monitoring infrastructure supporting MCP reliability.
 
 **Operational Status**:
 -  FastAPI middleware integrated
 -  JSON-RPC logging operational
 -  Health endpoint exposes status payload
-- 🔄 Prometheus scraping endpoint placeholder ready
+-  Prometheus scraping endpoint placeholder ready
 - 🔮 OpenTelemetry tracing hooks disabled by default (offline-first)
 
 ---
 
-## ⚖️ Verification Checklist
+## ️ Verification Checklist
 
 **Observability Infrastructure**:
 - [ ] Health endpoint returns valid JSON status
@@ -47,7 +47,7 @@
 
 ---
 
-## 📈 Success Metrics
+##  Success Metrics
 
 | Metric | Target | Current | Status |
 |--------|--------|---------|--------|
@@ -67,7 +67,7 @@
 
 ## ⚛️ Physics Alignment
 
-### Path 🛤️ (Observability Flow)
+### Path ️ (Observability Flow)
 **Monitoring Path**: Event → Log/Metric → Collection → Aggregation → Analysis → Alert/Dashboard
 
 ```mermaid
@@ -98,7 +98,7 @@ graph TD
     M -->|No| O[Archive]
 ```
 
-### Fields 🔄 (Observability States)
+### Fields  (Observability States)
 **Instrumentation States**:
 1. **Uninstrumented**: No observability hooks
 2. **Logging Only**: Basic log output
@@ -106,14 +106,14 @@ graph TD
 4. **Tracing Enabled**: OpenTelemetry spans captured
 5. **Fully Observable**: Logs + Metrics + Traces + Alerts
 
-### Patterns 👁️ (Observable Patterns)
+### Patterns ️ (Observable Patterns)
 - **Request Duration Pattern**: p50/p95/p99 latency tracking
 - **Error Rate Pattern**: 4xx/5xx HTTP status codes
 - **Throughput Pattern**: Requests per second (RPS)
 - **Resource Usage Pattern**: Memory/CPU per operation
 - **Dependency Health Pattern**: VectorStore response times
 
-### Redundancy 🔀 (Observability Resilience)
+### Redundancy  (Observability Resilience)
 **Multi-Layer Monitoring**:
 - Application logs: Immediate issue detection
 - Metrics: Trend analysis and capacity planning
@@ -125,7 +125,7 @@ graph TD
 - If tracing overhead high: Disable via env var
 - If log aggregation down: Local file logs persist
 
-### Balance ⚖️ (Overhead vs. Insight)
+### Balance ️ (Overhead vs. Insight)
 **Performance Trade-offs**:
 - Verbose logging vs. disk I/O
 - Tracing granularity vs. CPU overhead
@@ -138,7 +138,7 @@ graph TD
 
 ---
 
-## ⚡ Energy Distribution
+##  Energy Distribution
 
 ### P0 Critical (40%)
 - Health endpoint reliability (15%)

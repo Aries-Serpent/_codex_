@@ -1,4 +1,4 @@
-# 📋 AST: Deep Codebase Analysis Requirements
+#  AST: Deep Codebase Analysis Requirements
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
@@ -39,7 +39,7 @@
 - [9. Documentation Requirements](#9-documentation-requirements)
   - [9.1 Mandatory Documentation](#91-mandatory-documentation)
 - [10. Conclusion & Next Steps](#10-conclusion--next-steps)
-- [🔄 AST: Standardization Implementation Guidance](#-ast-standardization-implementation-guidance)
+- [ AST: Standardization Implementation Guidance](#-ast-standardization-implementation-guidance)
 - [1. Implementation Philosophy](#1-implementation-philosophy)
   - [1.1 Core Principles](#11-core-principles)
   - [1.2 Architecture Decision Records (ADRs)](#12-architecture-decision-records-adrs)
@@ -57,11 +57,11 @@
   - [4.2 CI/CD Integration Template](#42-cicd-integration-template)
 - [5. Conclusion](#5-conclusion)
 
-> **⚠️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
+> **️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
 
-** Roles:** [Primary: Requirements Engineer], [Secondary: Architecture Lead] | ⚡ Energy: 5/5
+** Roles:** [Primary: Requirements Engineer], [Secondary: Architecture Lead] |  Energy: 5/5
 
 ---
 
@@ -598,12 +598,12 @@ This requirements document provides **complete, verifiable, and measurable** spe
 Now creating the complementary validation and implementation guidance file:
 
 ```markdown name=AST_Standardization_InstructionEnhancement.md
-# 🔄 AST: Standardization Implementation Guidance
+#  AST: Standardization Implementation Guidance
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
 
-** Roles:** [Primary: Implementation Lead], [Secondary: Technical Architect] | ⚡ Energy: 5/5
+** Roles:** [Primary: Implementation Lead], [Secondary: Technical Architect] |  Energy: 5/5
 
-⚛️ **Physics:** Path🛤️ [Sequential phases] | Fields🔄 [Modular components] | Patterns👁️ [DRY code, reusable analyzers] | Redundancy🔀 [Fallback strategies] | Balance⚖️ [Performance vs accuracy]
+⚛️ **Physics:** Path️ [Sequential phases] | Fields [Modular components] | Patterns️ [DRY code, reusable analyzers] | Redundancy [Fallback strategies] | Balance️ [Performance vs accuracy]
 
 ---
 
@@ -1428,4 +1428,4 @@ This **Implementation Guidance** provides:
 
 | **CLI Tools** | FR-AST-013 to 015 | 3 tools + GitHub Actions | >75% coverage |
 
-**⚡ Ready for:** Immediate implementation kickoff with full architectural guidance
+** Ready for:** Immediate implementation kickoff with full architectural guidance

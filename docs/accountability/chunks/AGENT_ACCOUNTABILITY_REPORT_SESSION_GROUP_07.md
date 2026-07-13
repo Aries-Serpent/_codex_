@@ -4,7 +4,7 @@
 
 **Group:** 7 of 32  
 **Sessions:** S178h to S183e  
-**Date Range:** 2026-04-30 to 2026-05-01  
+**Date 2026-07-13
 **Total Sessions in Group:** 10  
 
 ---

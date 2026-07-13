@@ -4,7 +4,7 @@
 
 **Group:** 1 of 32  
 **Sessions:** S228 to S_PR3954_SELF_HEALING  
-**Date Range:** 2026-03-29 to 2026-04-13  
+**Date 2026-07-13
 **Total Sessions in Group:** 10  
 
 ---

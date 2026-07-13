@@ -36,7 +36,7 @@
 ```bash
 #!/bin/bash
 # Pre-rotation verification script
-echo "🔍 Pre-rotation environment check..."
+echo " Pre-rotation environment check..."
 
 # 1. Check staging operational
 if ! ./scripts/health_check.sh --environment staging; then
@@ -133,7 +133,7 @@ except Exception as e:
 **Step 1c: Obtain approvals**
 ```bash
 #!/bin/bash
-echo "📋 Awaiting required approvals..."
+echo " Awaiting required approvals..."
 
 # Create approval request
 cat > /tmp/approval_request.txt << 'REQ'
@@ -153,7 +153,7 @@ Communication: Sent to #devops channel
 REQ
 
 # Wait for approvals (in real scenario, use approval system)
-echo "⏳ Waiting for 2 approvals..."
+echo " Waiting for 2 approvals..."
 echo "   (In production: Use GitHub PR approval or formal request system)"
 
 # Simulate approval collection
@@ -189,7 +189,7 @@ fi
 echo " Staged key deployed"
 
 # Wait for propagation
-echo "⏳ Waiting for secret propagation (30 seconds)..."
+echo " Waiting for secret propagation (30 seconds)..."
 sleep 30
 
 echo " Secret propagated to GitHub infrastructure"
@@ -210,7 +210,7 @@ python -m pytest tests/security/test_key_rotation.py \
 
 if [ $? -ne 0 ]; then
     echo " Staging tests failed"
-    echo "🔄 Attempting automatic rollback..."
+    echo " Attempting automatic rollback..."
     gh secret set CODEX_MASTER_KEY_STAGED --body "$PREVIOUS_KEY" \
       --repo Aries-Serpent/_codex_
     exit 1
@@ -239,12 +239,12 @@ echo " Staging environment healthy"
 
 ## Phase 3: Production Cutover (T+1:00 to T+1:30, CRITICAL)
 
-**⚠️ CRITICAL PHASE - Follow exactly, no deviations**
+**️ CRITICAL PHASE - Follow exactly, no deviations**
 
 **Step 3a: Create rotation audit entry**
 ```bash
 #!/bin/bash
-echo "📝 Step 3a: Creating rotation audit entry"
+echo " Step 3a: Creating rotation audit entry"
 
 OLD_KEY_HASH=$(gh secret list --repo Aries-Serpent/_codex_ 2>/dev/null | \
   grep CODEX_MASTER_KEY | cut -d' ' -f1)
@@ -266,13 +266,13 @@ echo " Audit entry created"
 **Step 3b: Send production notification**
 ```bash
 #!/bin/bash
-echo "📢 Step 3b: Notifying production teams"
+echo " Step 3b: Notifying production teams"
 
 # Slack notification
 curl -X POST "$SLACK_WEBHOOK" \
   -H 'Content-Type: application/json' \
   -d '{
-    "text": "🔄 CODEX_MASTER_KEY rotation starting in 5 minutes",
+    "text": " CODEX_MASTER_KEY rotation starting in 5 minutes",
     "channel": "#devops",
     "attachments": [{
       "color": "warning",
@@ -306,11 +306,11 @@ while datetime.utcnow() < end_time:
     )
 
     if result.returncode != 0:
-        print(f"⚠️  Warning: Staging health degraded")
+        print(f"️  Warning: Staging health degraded")
         # Continue monitoring but don't fail
 
     # Show metrics
-    print(f"✓ {datetime.utcnow().isoformat()}: Staging operational")
+    print(f" {datetime.utcnow().isoformat()}: Staging operational")
     time.sleep(30)
 
 print(" Stabilization period complete")
@@ -322,10 +322,10 @@ PYTHON
 #!/bin/bash
 set -e  # Critical: fail on any error
 
-echo "⚡ Step 3d: ACTIVATING new CODEX_MASTER_KEY (CRITICAL POINT)"
+echo " Step 3d: ACTIVATING new CODEX_MASTER_KEY (CRITICAL POINT)"
 echo "================================================================"
-echo "⚠️  WARNING: This action activates the new key in production"
-echo "⚠️  Ensure all teams notified and monitoring active"
+echo "️  WARNING: This action activates the new key in production"
+echo "️  Ensure all teams notified and monitoring active"
 echo ""
 
 # Final sanity checks
@@ -346,7 +346,7 @@ gh secret set CODEX_MASTER_KEY --body "$NEW_KEY" \
 
 if [ $? -ne 0 ]; then
     echo " CRITICAL ERROR: Failed to set CODEX_MASTER_KEY"
-    echo "🚨 EMERGENCY ROLLBACK INITIATED"
+    echo " EMERGENCY ROLLBACK INITIATED"
 
     # Automatic rollback
     gh secret set CODEX_MASTER_KEY --body "$PREVIOUS_KEY" \
@@ -354,7 +354,7 @@ if [ $? -ne 0 ]; then
 
     # Alert security team
     curl -X POST "$SLACK_WEBHOOK" -d '{
-      "text": "🚨 KEY ROTATION FAILED - ROLLBACK SUCCESSFUL",
+      "text": " KEY ROTATION FAILED - ROLLBACK SUCCESSFUL",
       "channel": "#security"
     }'
 
@@ -367,7 +367,7 @@ echo " CODEX_MASTER_KEY activated in production"
 **Step 3e: Verify activation**
 ```bash
 #!/bin/bash
-echo "✓ Step 3e: Verifying key activation"
+echo " Step 3e: Verifying key activation"
 
 # Wait for key to propagate
 sleep 10
@@ -377,7 +377,7 @@ sleep 10
 
 if [ $? -ne 0 ]; then
     echo " Key verification failed"
-    echo "🔄 Attempting rollback..."
+    echo " Attempting rollback..."
     gh secret set CODEX_MASTER_KEY --body "$PREVIOUS_KEY" \
       --repo Aries-Serpent/_codex_
     exit 1
@@ -408,11 +408,11 @@ echo " Step 4b: Audit log verification"
 
 # Verify rotation logged
 if ! grep -q "ROTATION_START" .codex/key-archive/rotation-log.txt; then
-    echo "⚠️  Warning: Rotation not logged"
+    echo "️  Warning: Rotation not logged"
 fi
 
 if ! grep -q "key_active: true" .codex/key-archive/rotation-log.txt; then
-    echo "⚠️  Warning: Activation status not logged"
+    echo "️  Warning: Activation status not logged"
 fi
 
 echo " Audit logs verified"
@@ -421,7 +421,7 @@ echo " Audit logs verified"
 **Step 4c: Team notification**
 ```bash
 #!/bin/bash
-echo "📢 Step 4c: Notifying team of success"
+echo " Step 4c: Notifying team of success"
 
 curl -X POST "$SLACK_WEBHOOK" \
   -d '{
@@ -458,7 +458,7 @@ echo " Rotation completed successfully"
 # Emergency rollback script
 set -e
 
-echo "🚨 EMERGENCY ROLLBACK INITIATED"
+echo " EMERGENCY ROLLBACK INITIATED"
 echo "==============================="
 
 # Rollback to previous key
@@ -473,7 +473,7 @@ if ./scripts/verify_key_active.sh; then
     echo " ROLLBACK SUCCESSFUL - Previous key now active"
 else
     echo " ROLLBACK VERIFICATION FAILED"
-    echo "🚨 ESCALATE TO SECURITY LEAD IMMEDIATELY"
+    echo " ESCALATE TO SECURITY LEAD IMMEDIATELY"
     exit 1
 fi
 
@@ -492,7 +492,7 @@ INC
 #!/bin/bash
 # After emergency rollback, investigate root cause
 
-echo "🔍 Post-Incident Investigation"
+echo " Post-Incident Investigation"
 echo "=============================="
 
 # Check logs for errors

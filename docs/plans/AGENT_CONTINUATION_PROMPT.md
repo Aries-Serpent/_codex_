@@ -2,7 +2,7 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> **⚠️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
+> **️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 
 
 > **Context**: This prompt enables an Agent to continue implementation from where the current PR left off.  
@@ -44,7 +44,7 @@
 
 **Tasks Remaining**:
 1.  Module: `training/accelerate_init_guard.py` (EXISTS - validate it matches spec)
-2. ⏳ Test: `tests/integration/test_distributed_init.py` (EXISTS - validate alignment)
+2.  Test: `tests/integration/test_distributed_init.py` (EXISTS - validate alignment)
 3.  Doc: `docs/training/distributed_troubleshooting.md` (EXISTS - validate content)
 
 **Acceptance**:
@@ -68,9 +68,9 @@ pytest -q tests/integration/test_distributed_init.py
 **Status**: Module exists (`codex_addons/registry.py`), needs name map + tests
 
 **Tasks Remaining**:
-1. ⏳ Module: `codex_addons/registry_names.py` (CREATE - canonical names + aliases)
+1.  Module: `codex_addons/registry_names.py` (CREATE - canonical names + aliases)
 2.  Module: `codex_addons/registry.py` (EXISTS - validate deterministic list())
-3. ⏳ Test: `tests/test_factory_registry.py` (EXISTS - validate alignment)
+3.  Test: `tests/test_factory_registry.py` (EXISTS - validate alignment)
 4.  Doc: `docs/plugins/Plugin_API_Broader.md` (EXISTS - validate content)
 
 **Spec for `registry_names.py`**:
@@ -109,9 +109,9 @@ pytest -q tests/test_factory_registry.py
 **Status**: Needs full implementation
 
 **Tasks Remaining**:
-1. ⏳ Module: `codex_ml/metrics/_optional_bleu_rouge.py` (CREATE)
-2. ⏳ Test: `tests/metrics/test_bleu_rouge.py` (CREATE)
-3. ⏳ Doc: `docs/metrics.md` (UPDATE or CREATE)
+1.  Module: `codex_ml/metrics/_optional_bleu_rouge.py` (CREATE)
+2.  Test: `tests/metrics/test_bleu_rouge.py` (CREATE)
+3.  Doc: `docs/metrics.md` (UPDATE or CREATE)
 4.  Requirements: `requirements-optional.txt` (EXISTS - verify nltk, rouge-score)
 
 **Spec for `_optional_bleu_rouge.py`**:
@@ -243,13 +243,13 @@ Complete S-14, S-15, S-02 follow-on modules
 .
 ├── codex_addons/
 │   ├── registry.py               Exists (validate)
-│   ├── registry_names.py        ⏳ CREATE (S-15)
+│   ├── registry_names.py         CREATE (S-15)
 │   └── vector_stores/            Complete
 │       ├── __init__.py
 │       ├── pgvector_stub.py
 │       └── weaviate_stub.py
 ├── codex_ml/metrics/
-│   └── _optional_bleu_rouge.py  ⏳ CREATE (S-02)
+│   └── _optional_bleu_rouge.py   CREATE (S-02)
 ├── training/
 │   └── accelerate_init_guard.py  Exists (validate)
 ├── models/lora/
@@ -258,7 +258,7 @@ Complete S-14, S-15, S-02 follow-on modules
 │   ├── integration/
 │   │   └── test_distributed_init.py     Exists (validate)
 │   ├── metrics/
-│   │   └── test_bleu_rouge.py          ⏳ CREATE (S-02)
+│   │   └── test_bleu_rouge.py           CREATE (S-02)
 │   ├── modeling/
 │   │   └── test_lora_minimal.py         Exists (validate)
 │   ├── test_factory_registry.py         Exists (validate)
@@ -270,7 +270,7 @@ Complete S-14, S-15, S-02 follow-on modules
 │   │   └── Plugin_API_Broader.md            Exists (validate)
 │   ├── modeling/
 │   │   └── LoRA.md                          Complete
-│   └── metrics.md                          ⏳ CREATE/UPDATE (S-02)
+│   └── metrics.md                           CREATE/UPDATE (S-02)
 └── requirements-optional.txt                Exists (verify nltk, rouge-score)
 ```text
 

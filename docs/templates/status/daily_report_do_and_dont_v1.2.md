@@ -3,7 +3,7 @@
 **Version:** v0.2.1
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
- Roles: [Primary: Author Coach], [Secondary: Reviewer] ⚡ Energy: 5
+ Roles: [Primary: Author Coach], [Secondary: Reviewer]  Energy: 5
 
 Do
 - Use exact title format with UTC

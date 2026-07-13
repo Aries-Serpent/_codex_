@@ -165,7 +165,7 @@ This framework enables systematic selection of the most appropriate custom agent
 - Session post-mortem → `session-analysis-agent`
 - Context recovery → `session-log-retrieval-agent`
 
-**Parallel Potential:** ⚠️ LOW (orchestration requires sequential coordination)
+**Parallel Potential:** ️ LOW (orchestration requires sequential coordination)
 
 ---
 
@@ -371,7 +371,7 @@ CORRECT:
 | Security | unified-security-scanner | 7 available |  Production |
 | Config | config-validator | 5 available |  Production |
 | RAG | rag-index-manager | 6 available |  Production |
-| Platform | cross-platform-filename-validator | 3 available | ⚠️ Partial |
+| Platform | cross-platform-filename-validator | 3 available | ️ Partial |
 | Session | agent-orchestrator | 4 available |  Production |
 
 ### Delegation Patterns

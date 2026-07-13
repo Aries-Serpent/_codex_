@@ -24,7 +24,7 @@ Execute the complete pytest test suite with branch coverage measurement to:
 
 ---
 
-## 📋 Prerequisites Checklist
+##  Prerequisites Checklist
 
 Before execution, verify:
 - [ ] Python 3.8+ installed (`python --version`)
@@ -42,7 +42,7 @@ pip install pytest pytest-cov pytest-timeout pytest-rerunfailures
 
 ---
 
-## 🔧 Configuration Files
+##  Configuration Files
 
 ### 1. pytest.ini
 Location: `/home/runner/work/_codex_/_codex_/pytest.ini`
@@ -328,7 +328,7 @@ $(date -u +"%Y-%m-%d %H:%M:%S UTC")
 ## Coverage Improvement
 - **Delta**: $(python3 -c "import json; b=json.load(open('coverage_baseline.json'))['totals']['percent_covered']; p=json.load(open('coverage_phase4.json'))['totals']['percent_covered']; print(f'+{round(p-b, 2)}%')")
 - **Target**: +2.7-4.7% (Phase 4.1), +8-12% (Phase 4.1-4.3)
-- **Status**: $(python3 -c "import json; b=json.load(open('coverage_baseline.json'))['totals']['percent_covered']; p=json.load(open('coverage_phase4.json'))['totals']['percent_covered']; delta=p-b; print(' Target Met' if delta >= 2.7 else '⚠️ Below Target')")
+- **Status**: $(python3 -c "import json; b=json.load(open('coverage_baseline.json'))['totals']['percent_covered']; p=json.load(open('coverage_phase4.json'))['totals']['percent_covered']; delta=p-b; print(' Target Met' if delta >= 2.7 else '️ Below Target')")
 
 ## Coverage Reports
 - Terminal: `pytest_phase4_complete.log`
@@ -386,7 +386,7 @@ echo "Report generated: coverage_validation_report.md"
 
 ---
 
-## 📈 Success Validation Criteria
+##  Success Validation Criteria
 
 ### Phase 4.1 Target (167 tests)
 -  Coverage increase: +2.7-4.7%
@@ -408,7 +408,7 @@ echo "Report generated: coverage_validation_report.md"
 
 ---
 
-## 🚨 Troubleshooting
+##  Troubleshooting
 
 ### Issue: Tests Fail
 **Symptoms**: Exit code != 0, failures in output
@@ -444,7 +444,7 @@ echo "Report generated: coverage_validation_report.md"
 
 ---
 
-## 📝 Documentation Updates Required
+##  Documentation Updates Required
 
 After execution, update:
 1. `docs/testing/phase_4_1_validation_report.md` - Add actual coverage results
@@ -454,7 +454,7 @@ After execution, update:
 
 ---
 
-## 🔄 Iteration & Improvement
+##  Iteration & Improvement
 
 ### If Target Not Met (<20% for Phase 4.1)
 1. **Analyze Gap**: Review coverage_gaps.txt for patterns
@@ -484,7 +484,7 @@ After completing all steps, provide:
    - Baseline: X.XX%
    - Phase 4 Complete: X.XX%
    - Improvement: +X.XX%
-   - Target Status:  Met / ⚠️ Partial /  Missed
+   - Target Status:  Met / ️ Partial /  Missed
 
 2. **Test Execution**:
    - Total tests: 560

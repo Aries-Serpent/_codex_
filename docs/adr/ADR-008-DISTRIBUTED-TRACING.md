@@ -1,4 +1,6 @@
 # ADR-008: Distributed Tracing for Observability
+
+**Version**: v0.2.1
 **Last Updated:** 2026-07-11
 
 **Status:** Accepted  
@@ -174,9 +176,9 @@ spec:
  Sampling reduces overhead  
 
 ### Negative
-⚠️ Additional infrastructure (Jaeger)  
-⚠️ Storage overhead (traces can be large)  
-⚠️ Sampling might miss rare errors  
+️ Additional infrastructure (Jaeger)  
+️ Storage overhead (traces can be large)  
+️ Sampling might miss rare errors  
 
 ### Mitigations
 - Jaeger provided via Docker for easy setup

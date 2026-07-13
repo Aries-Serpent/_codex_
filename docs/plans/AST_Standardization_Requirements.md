@@ -4,7 +4,7 @@
 
 ## Table of Contents
 
-- [📋 Executive Summary](#-executive-summary)
+- [ Executive Summary](#-executive-summary)
 - [🗺️ Phase 1: Requirements Definition](#-phase-1-requirements-definition)
   - [1.1 Functional Requirements (FR)](#11-functional-requirements-fr)
   - [1.2 Non-Functional Requirements (NFR)](#12-non-functional-requirements-nfr)
@@ -19,7 +19,7 @@
     - [**Component 4: Code Smell Detector**](#component-4-code-smell-detector)
     - [**Component 5: Knowledge Graph Builder**](#component-5-knowledge-graph-builder)
   - [2.3 Data Flow Diagram](#23-data-flow-diagram)
-- [📋 Phase 3: Implementation Roadmap](#-phase-3-implementation-roadmap)
+- [ Phase 3: Implementation Roadmap](#-phase-3-implementation-roadmap)
   - [3.1 Sprint Planning (2-3 phases)](#31-sprint-planning-2-3-phases)
   - [3.2 Detailed Implementation Tasks](#32-detailed-implementation-tasks)
     - [**Task 1: Parser & Standardization (Sprint 1)**](#task-1-parser--standardization-sprint-1)
@@ -32,7 +32,7 @@
 - [Compare two commits](#compare-two-commits)
 - [Export to SQLite](#export-to-sqlite)
 - [**Task 6: Testing & Documentation (Sprint 6)**](#task-6-testing--documentation-sprint-6)
-- [🔗 Phase 4: Integration with MATURITY_REMAINING_WORK.md](#-phase-4-integration-with-maturity_remaining_workmd)
+- [ Phase 4: Integration with MATURITY_REMAINING_WORK.md](#-phase-4-integration-with-maturity_remaining_workmd)
   - [4.1 Mapping AST Findings to Maturity Tasks](#41-mapping-ast-findings-to-maturity-tasks)
 - [pseudo-code: auto-update_maturity_checklist.py](#pseudo-code-auto-update_maturity_checklistpy)
 - [4.2 Sample Integration Output](#42-sample-integration-output)
@@ -62,13 +62,13 @@
   - [8.1 Installation](#81-installation)
   - [8.2 CI/CD Integration](#82-cicd-integration)
   - [8.3 Team Adoption Strategy](#83-team-adoption-strategy)
-- [⚠️ Phase 9: Risk Mitigation & Rollback](#-phase-9-risk-mitigation--rollback)
+- [️ Phase 9: Risk Mitigation & Rollback](#-phase-9-risk-mitigation--rollback)
   - [9.1 Identified Risks](#91-identified-risks)
   - [9.2 Rollback Procedures](#92-rollback-procedures)
 - [Disable AST parsing; fall back to regex-based analysis](#disable-ast-parsing-fall-back-to-regex-based-analysis)
 - [Reduce analysis scope](#reduce-analysis-scope)
 - [Update configuration to reduce sensitivity](#update-configuration-to-reduce-sensitivity)
-- [📋 Phase 10: Success Criteria & Acceptance](#-phase-10-success-criteria--acceptance)
+- [ Phase 10: Success Criteria & Acceptance](#-phase-10-success-criteria--acceptance)
   - [10.1 Definition of Done](#101-definition-of-done)
   - [10.2 Acceptance Criteria](#102-acceptance-criteria)
 - [ Conclusion](#-conclusion)
@@ -121,15 +121,15 @@
 - [8. Traceability Matrix](#8-traceability-matrix)
 - [Conclusion](#conclusion)
 
-> **⚠️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
+> **️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
 
-** Roles:** [Primary: Architecture Lead], [Secondary: DevOps Engineer] | ⚡ Energy: 5/5
+** Roles:** [Primary: Architecture Lead], [Secondary: DevOps Engineer] |  Energy: 5/5
 
 ---
 
-## 📋 Executive Summary
+##  Executive Summary
 
 This document provides **requirements, architecture, and standardization strategy** for a dedicated AST (Abstract Syntax Tree) analysis project to enable **deep codebase analysis beyond test scope**. It bridges the gap between MATURITY_REMAINING_WORK.md findings and systematic, automated codebase intelligence.
 
@@ -475,7 +475,7 @@ Source Code Files
 
 ---
 
-## 📋 Phase 3: Implementation Roadmap
+##  Phase 3: Implementation Roadmap
 
 ### 3.1 Sprint Planning (2-3 phases)
 
@@ -687,7 +687,7 @@ docs/
 
 ---
 
-## 🔗 Phase 4: Integration with MATURITY_REMAINING_WORK.md
+##  Phase 4: Integration with MATURITY_REMAINING_WORK.md
 
 ### 4.1 Mapping AST Findings to Maturity Tasks
 
@@ -762,11 +762,11 @@ def analyze_and_update_maturity():
 
 | Metric | Target | Baseline | After |
 |--------|--------|----------|-------|
-| **Parser Accuracy** | >95% | TBD | >95% ✓ |
-| **Analysis Speed** | <5s/1000 LOC | TBD | <3s/1000 LOC ✓ |
-| **Code Smell Detection** | Zero false positives | TBD | <5% false positive ✓ |
-| **Dependency Cycle Detection** | 100% recall | TBD | 100% ✓ |
-| **Type Hint Inference** | >80% accuracy | TBD | >85% ✓ |
+| **Parser Accuracy** | >95% | TBD | >95%  |
+| **Analysis Speed** | <5s/1000 LOC | TBD | <3s/1000 LOC  |
+| **Code Smell Detection** | Zero false positives | TBD | <5% false positive  |
+| **Dependency Cycle Detection** | 100% recall | TBD | 100%  |
+| **Type Hint Inference** | >80% accuracy | TBD | >85%  |
 
 ### 5.2 Validation Test Suite
 
@@ -874,7 +874,7 @@ $ codex-diff HEAD~5 HEAD --metric complexity
 ╔════════════════════════════════════════════════════════════════╗
 ║ Complexity Change: HEAD~5 → HEAD                              ║
 ╠════════════════════════════════════════════════════════════════╣
-║ Average CC: 4.1 → 4.8 (+17%)  ⚠️  Degrading                  ║
+║ Average CC: 4.1 → 4.8 (+17%)  ️  Degrading                  ║
 ║ Functions with CC>10: 3 → 5 (+2)                             ║
 ║ Smell Count: 8 → 12 (+4)                                      ║
 ║                                                               ║
@@ -1080,7 +1080,7 @@ jobs:
 
 ---
 
-## ⚠️ Phase 9: Risk Mitigation & Rollback
+## ️ Phase 9: Risk Mitigation & Rollback
 
 ### 9.1 Identified Risks
 
@@ -1115,7 +1115,7 @@ codex-analyze --smell-threshold high src/
 
 ---
 
-## 📋 Phase 10: Success Criteria & Acceptance
+##  Phase 10: Success Criteria & Acceptance
 
 ### 10.1 Definition of Done
 
@@ -1188,7 +1188,7 @@ This **AST Standardization Project** provides a **foundation for deep codebase a
 #  Deep Codebase Analysis: Requirements Specification
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
 
-** Roles:** [Primary: Requirements Engineer], [Secondary: QA Lead] | ⚡ Energy: 5/5
+** Roles:** [Primary: Requirements Engineer], [Secondary: QA Lead] |  Energy: 5/5
 
 ---
 
@@ -1795,8 +1795,8 @@ codex-audit src/ --update-maturity MATURITY_REMAINING_WORK.md
 
 | FR ID | Requirement | Test Case | Acceptance Criteria | Status |
 |-------|-------------|-----------|-------------------|--------|
-| FR-AST-001 | Parse Python | test_parse_function | Parses 100% without error | ⏳ |
-| FR-AST-002 | Extract metadata | test_extract_signature | Correct signature extracted | ⏳ |
+| FR-AST-001 | Parse Python | test_parse_function | Parses 100% without error |  |
+| FR-AST-002 | Extract metadata | test_extract_signature | Correct signature extracted |  |
 | ... | ... | ... | ... | ... |
 
 ---

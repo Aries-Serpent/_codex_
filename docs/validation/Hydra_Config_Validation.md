@@ -3,7 +3,7 @@
 **Version:** v0.2.1
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
- Roles: [Primary: Config Auditor], [Secondary: Toolsmith] ⚡ Energy: 5
+ Roles: [Primary: Config Auditor], [Secondary: Toolsmith]  Energy: 5
 
 Goals
 - Capture active Hydra configuration in status reports and validate against schemas.

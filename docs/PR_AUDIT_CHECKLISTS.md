@@ -16,8 +16,8 @@
 **Location**: `/tmp/PR_AUDIT_CHECKLIST.md` (480 lines)
 
 **Key Sections**:
-- ⚠️ Required Safety Confirmations
-- 📋 Recommended Configuration (Opt-In)
+- ️ Required Safety Confirmations
+-  Recommended Configuration (Opt-In)
 - 🔬 Archival Operations
 - 📍 Scope Definition
 - 🧪 Verification Commands (7 categories)
@@ -44,9 +44,9 @@
 ### Version 1.3.0 (Enhanced - 2025-12-05)
 **Status**:  **ACTIVE** - Template ready for immediate use
 
-**Location**: `docs/PR_AUDIT_CHECKLIST_v1.3.0.md` (comprehensive checklist)
+**Location**: `docs/PR_AUDIT_CHECKLIST_v0.2.1.md` (comprehensive checklist)
 
-**Enhancements Over v1.2.0**:
+**Enhancements Over v0.2.1**:
 
 #### New Sections Added
 1. ** Security & Vulnerability Checks**
@@ -153,7 +153,7 @@ For full S1-S7 audit + determinism validation:
 - **Recommended**: Execute in CI/CD environment
 - **Dependencies**: pyyaml, jinja2, (optional: torch, transformers, mlflow)
 - **Runtime**: 5-10 minutes for full pipeline
-- **Commands**: See `docs/PR_AUDIT_CHECKLIST_v1.3.0.md` Appendix
+- **Commands**: See `docs/PR_AUDIT_CHECKLIST_v0.2.1.md` Appendix
 
 **Quick local validation**: Use `make space-audit-fast` for S1-S4 only
 
@@ -169,11 +169,11 @@ Both templates can be customized based on:
 ## Template Locations
 
 ### Active Templates
-- **v1.2.0**: `/tmp/PR_AUDIT_CHECKLIST.md` (baseline)
-- **v1.3.0**: Integrated in this document (enhanced)
+- **v0.2.1**: `/tmp/PR_AUDIT_CHECKLIST.md` (baseline)
+- **v0.2.1**: Integrated in this document (enhanced)
 
 ### Future Versions
-- **v1.4.0**: Planned for Phase 1 (Current Cycle)
+- **v0.2.1**: Planned for Phase 1 (Current Cycle)
   - AI-assisted validation
   - Automated compliance checking
   - Integration with CI/CD pipelines
@@ -201,8 +201,8 @@ All validation gates passed:
 ## Maintenance
 
 ### Version History
-- **v1.2.0** (2025-11-06): Initial comprehensive template
-- **v1.3.0** (2025-12-05): Enhanced with security and evolution tracking
+- **v0.2.1** (2025-11-06): Initial comprehensive template
+- **v0.2.1** (2025-12-05): Enhanced with security and evolution tracking
 
 ### Next Review
 - **Scheduled**: Phase 1 (Current Cycle)

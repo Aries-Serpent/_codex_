@@ -28,7 +28,7 @@ injected at runtime via a secrets manager.
 |----------|-------------|---------|
 | `CODEX_AUDIT_HMAC_KEY` | HMAC-SHA256 key for audit chain | `""` (SHA-256 fallback) |
 
-> ⚠️ When `CODEX_AUDIT_HMAC_KEY` is empty, entries are chained via SHA-256 only
+> ️ When `CODEX_AUDIT_HMAC_KEY` is empty, entries are chained via SHA-256 only
 > (no secret key — not cryptographically tamper-proof). Always set this in
 > production.
 

@@ -74,7 +74,7 @@ Open a text editor to document observations:
 -  Expected to see these messages
 
 **If not seen:**
-- ⚠️ Job may be queued; wait another 30 seconds
+- ️ Job may be queued; wait another 30 seconds
 
 ---
 
@@ -116,7 +116,7 @@ Marker 2: "::group::Session Context Pre-load"
 Marker 3: Python Script Output (OR Error)
 ├─ LOOK FOR EITHER:
 │  ├─ Lines showing context being loaded (success case)
-│  └─ "⚠️ session_preload.py failed (non-blocking)" (failure case)
+│  └─ "️ session_preload.py failed (non-blocking)" (failure case)
 ├─ MEANING:  Script is executing (either way)
 └─ RECORD: What output you see
 ```
@@ -135,7 +135,7 @@ Marker 4: "::endgroup::"
 ├─ LOOK FOR: This exact text
 ├─ MEANING:  Group closed; step logic completed
 ├─ RECORD: Timestamp when you see this
-└─ If missing after 10 min: ⚠️ Script hung (wait 2 more min)
+└─ If missing after 10 min: ️ Script hung (wait 2 more min)
 ```
 
 **ACTION:** When you see `::endgroup::`, scroll up and review the entire group content to note:
@@ -143,7 +143,7 @@ Marker 4: "::endgroup::"
 ```
 Questions to answer:
 - Did the Python script produce output (success case)?
-- Did the fallback run ("⚠️ failed" message)?
+- Did the fallback run ("️ failed" message)?
 - Are there any error messages?
 - How many lines of output in total?
 ```
@@ -162,7 +162,7 @@ Marker 5: "Session Access Probe"
 ├─ LOOK FOR: The step appears after Session Context Pre-load
 ├─ MEANING:  Preload didn't hard-fail; workflow continued
 ├─ RECORD: Did this step appear? When?
-└─ If NOT found after 15 min: ⚠️ Preload may have blocked workflow
+└─ If NOT found after 15 min: ️ Preload may have blocked workflow
 ```
 
 **ACTION:** If you see Session Access Probe starting, Method D is working so far. 
@@ -187,8 +187,8 @@ Marker 5: "Session Access Probe"
 |--------|--------|----------|----------|--------|
 | `Session Context Pre-load` |  Expected | Step name | Min 2–5 | Click to expand |
 | `::group::Session Context Pre-load` |  Expected | Inside step logs | Min 3–7 | Record timestamp |
-| `⚠️ session_preload.py failed` | ⚠️ Possible | Inside group | Min 5–10 | Non-blocking; continue |
-| `SESSION_PRELOAD_STATUS=failed` | ⚠️ Possible | Inside group | Min 5–10 | Fallback executed |
+| `️ session_preload.py failed` | ️ Possible | Inside group | Min 5–10 | Non-blocking; continue |
+| `SESSION_PRELOAD_STATUS=failed` | ️ Possible | Inside group | Min 5–10 | Fallback executed |
 | `::endgroup::` |  Expected | Step end | Min 7–10 | Record timestamp |
 | `Session Access Probe` |  Expected | Next step | Min 10–15 | Workflow continued  |
 | `YAML parse error` |  ERROR | Early in logs | Min 0–2 | **STOP** — syntax issue |
@@ -197,7 +197,7 @@ Marker 5: "Session Access Probe"
 
 ---
 
-## 🚨 LIVE ISSUE DETECTION
+##  LIVE ISSUE DETECTION
 
 **If you observe any of these during monitoring, note it immediately:**
 
@@ -239,7 +239,7 @@ Marker 5: "Session Access Probe"
    gh run cancel <RUN_ID>
    ```
 
-**Result:** ⚠️ Preload script needs debugging (separate from Method D validation)
+**Result:** ️ Preload script needs debugging (separate from Method D validation)
 
 ---
 
@@ -264,7 +264,7 @@ Marker 5: "Session Access Probe"
    - Re-trigger the job
    - Contact GitHub support if it persists
 
-**Result:** ⚠️ Problem in preload script or GitHub Actions, not Method D
+**Result:** ️ Problem in preload script or GitHub Actions, not Method D
 
 ---
 
@@ -288,7 +288,7 @@ Marker 5: "Session Access Probe"
    - This is unexpected (should show  due to `continue-on-error: true`)
    - Review the preload logs for the failure
 
-**Result:** ⚠️ Other issue in workflow; Method D itself is executing
+**Result:** ️ Other issue in workflow; Method D itself is executing
 
 ---
 
@@ -321,7 +321,7 @@ Marker 5: "Session Access Probe"
 
 ---
 
-## 📋 POST-SESSION LOG ANALYSIS
+##  POST-SESSION LOG ANALYSIS
 
 **After the job completes, perform detailed log forensics:**
 
@@ -365,7 +365,7 @@ grep "Session Access Probe" copilot-setup-steps.txt && echo " Next step ran" || 
 ```bash
 # Search for any errors in the preload section
 sed -n '/Session Context Pre-load/,/::endgroup::/p' copilot-setup-steps.txt | \
-  grep -i "error\|fail\|exception\|fatal" && echo "⚠️ Errors found in preload" || echo " No errors in preload"
+  grep -i "error\|fail\|exception\|fatal" && echo "️ Errors found in preload" || echo " No errors in preload"
 ```
 
 ## Step 5: Verify Agent Didn't Break It
@@ -401,7 +401,7 @@ done < commits.txt
 
 ---
 
-## 📝 MONITORING LOG TEMPLATE
+##  MONITORING LOG TEMPLATE
 
 **Save this template and fill it during monitoring:**
 

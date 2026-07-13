@@ -3,7 +3,7 @@
 **Version:** v0.2.1
 
 **Last Updated: 2026-06-22
-<!-- session: S92 | date: 2026-02-28 | branch: copilot/sub-pr-3389 -->
+<!-- session: S92 | date: 2026-07-13
 
 > **Purpose**: Gate document for creating the first versioned deployment package
 > (PyPI wheel or Docker image).  Every BLOCKING item must be resolved before
@@ -25,7 +25,7 @@
 | S-08 | `DummyDataset.column_names` CI test fix (`test_hf_trainer_lora_config.py`) |  | S92 |
 | S-09 | `monkeypatch.setattr` line restored in `test_tracking_writers_offline.py` |  | S92 |
 | S-10 | CodeQL — no alerts on PR branch |  | S92 |
-| S-11 | 42 applicable agents have `⚡ Parallel Batch Scanning Protocol` section |  | S92 |
+| S-11 | 42 applicable agents have ` Parallel Batch Scanning Protocol` section |  | S92 |
 | S-12 | `AGENT_REGISTRY.yaml` `batch_scan_enabled: true` on 41 applicable entries |  | S92 |
 | S-13 | Parallel batch RVS pre-flight toolchain (`scripts/ci/rvs_preflight.py`) |  | S92 |
 | S-14 | `nox -s rvs_preflight` session in `noxfile.py` |  | S92 |
@@ -75,9 +75,9 @@ These items MUST be closed before changing `pyproject.toml` version away from `0
 ### B-04 — `pyproject.toml` version is `0.0.0-template` *(P0)*
 - **Symptom**: No version tag; `pip install .` produces `0.0.0.dev0`.
 - **Impact**: Cannot publish to PyPI, cannot tag a Docker image, cannot pin versions in downstream projects.
-- **Fix**: Set semantic version (e.g. `0.9.0-rc1`) once B-01 and B-02 are resolved. Create git tag `v0.9.0-rc1`.
+- **Fix**: Set semantic version (e.g. `0.9.0-rc1`) once B-01 and B-02 are resolved. Create git tag `v0.2.1-rc1`.
 - **Owner**: Release — target S95
-- **S94 Status**:  RESOLVED — `pyproject.toml` version set to `0.9.0-rc1`. Git tag `v0.9.0-rc1` to be created at merge time.
+- **S94 Status**:  RESOLVED — `pyproject.toml` version set to `0.9.0-rc1`. Git tag `v0.2.1-rc1` to be created at merge time.
 
 ### B-05 — No `CHANGELOG.md` at repo root *(P1)*
 - **Symptom**: Version history scattered across `.codex/change_log.md`, agent status docs, and commit messages.
@@ -104,7 +104,7 @@ These items MUST be closed before changing `pyproject.toml` version away from `0
 
 ---
 
-## 🟡 TECH DEBT — Address before General Availability (may defer for RC)
+##  TECH DEBT — Address before General Availability (may defer for RC)
 
 | # | Item | Effort | Target |
 |---|------|--------|--------|

@@ -12,7 +12,7 @@ The _codex_ repository implements a Level 4 MLOps-certified, production-grade ML
 
 ---
 
-## 📋 Architecture Documents
+##  Architecture Documents
 
 ### Core Architecture Documents
 
@@ -73,7 +73,7 @@ The _codex_ system is organized in the following layers:
 
 ---
 
-## 🔄 Runtime Data Flow
+##  Runtime Data Flow
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing Ingestion, Tokenizer'}}%%
@@ -235,7 +235,7 @@ CMD ["python", "-m", "codex.training"]
 
 ---
 
-## 🔧 Configuration Management
+##  Configuration Management
 
 The system uses Hydra for configuration management:
 
@@ -302,7 +302,7 @@ data:
 
 ---
 
-## 🔗 Integration Points
+##  Integration Points
 
 ### External Systems
 
@@ -400,7 +400,7 @@ For questions or clarifications about architecture:
 
 ---
 
-## 📝 Maintenance
+##  Maintenance
 
 - **Last Updated**: 2026-06-20
 - **Next Review**: 2026-07-20

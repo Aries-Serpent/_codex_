@@ -1,4 +1,6 @@
 # MCP Server Deployment
+
+**Version**: v0.2.1
 **Last Updated:** 2026-07-11
 
 **Last Updated: 2026-07-11
@@ -223,7 +225,7 @@ fly secrets set CODEX_ITA_API_KEY=<ita-key>
 fly secrets list
 ```
 
-**⚠️ WARNING**: `<ita-key>` is a placeholder only. Replace with your actual secret value. Real keys must be stored only as Fly secrets or in a secure secrets manager, never committed to code or documentation.
+**️ WARNING**: `<ita-key>` is a placeholder only. Replace with your actual secret value. Real keys must be stored only as Fly secrets or in a secure secrets manager, never committed to code or documentation.
 
 ## 4. Deploy Application
 
@@ -397,7 +399,7 @@ export default {
 ```toml
 name = "codex-mcp-worker"
 main = "src/index.ts"
-compatibility_date = "2024-01-01"
+compatibility_date 2026-07-13
 
 [env.production]
 name = "codex-mcp-worker"
@@ -739,7 +741,7 @@ fly autoscale set min=1 max=10
 
 **Operational Status:**  **ACTIVE** - Production deployments running on Fly.io and Workers
 
-## ⚖️ Verification Checklist
+## ️ Verification Checklist
 
 - [x] Fly.io deployment guide (Python/FastAPI)
 - [x] Cloudflare Workers deployment guide (TypeScript)
@@ -760,7 +762,7 @@ fly autoscale set min=1 max=10
 - Cloudflare account (free tier)
 - Domain name (optional, for custom domains)
 
-## 📈 Success Metrics
+##  Success Metrics
 
 | Metric | Target | Current | Status |
 |--------|--------|---------|--------|
@@ -775,7 +777,7 @@ fly autoscale set min=1 max=10
 
 ## ⚛️ Physics Alignment
 
-### Path 🛤️
+### Path ️
 **Deployment Flow:**
 1. Code → Build (Docker/TypeScript) → Deploy → Health Check → Serve Traffic
 2. Secret management → Environment variables → Application configuration
@@ -786,7 +788,7 @@ fly autoscale set min=1 max=10
 - Secrets set before deployment
 - Storage provisioned before first request
 
-### Fields 🔄
+### Fields 
 **Deployment State:**
 - **Source state**: Git repository
 - **Build state**: Docker image or Worker bundle
@@ -797,7 +799,7 @@ fly autoscale set min=1 max=10
 - Inactive → Building → Deploying → Healthy → Serving
 - Rollback: Serving → Draining → Stopped → Previous version
 
-### Patterns 👁️
+### Patterns ️
 **Observability:**
 - Health checks (startup, liveness, readiness)
 - Logs (Fly logs, Wrangler tail)
@@ -810,7 +812,7 @@ fly autoscale set min=1 max=10
 - Zero-downtime deployment
 - Canary releases
 
-### Redundancy 🔀
+### Redundancy 
 **Failure Modes:**
 1. **Build failure** → Fix Dockerfile/code, redeploy
 2. **Health check failure** → Auto-rollback to previous version
@@ -822,10 +824,10 @@ fly autoscale set min=1 max=10
 - Manual rollback: `fly releases rollback`, `wrangler rollback`
 - Recreate from source if instance corrupted
 
-### Balance ⚖️
+### Balance ️
 **Cost vs Performance:**
 -  Free tiers for MVP/preview
-- ⚖️ Trade-off: Cold starts (Fly.io) vs instant (Workers)
+- ️ Trade-off: Cold starts (Fly.io) vs instant (Workers)
 -  Pay-as-you-grow pricing
 
 **Simplicity vs Features:**
@@ -833,7 +835,7 @@ fly autoscale set min=1 max=10
 - Fly.io: Complex, full features
 - Docker Compose: Full control, manual setup
 
-## ⚡ Energy Distribution
+##  Energy Distribution
 
 | Priority | Component | Energy | Justification |
 |----------|-----------|--------|---------------|

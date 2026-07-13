@@ -9,7 +9,7 @@
   - [Gaps Discovered](#gaps-discovered)
     - [ **CRITICAL (P0) - Blocking Issues**](#-critical-p0---blocking-issues)
     - [ **HIGH (P1) - Production Blockers**](#-high-p1---production-blockers)
-    - [🟡 **MEDIUM (P2) - Quality & Maintainability**](#-medium-p2---quality--maintainability)
+    - [ **MEDIUM (P2) - Quality & Maintainability**](#-medium-p2---quality--maintainability)
     - [ **LOW (P3) - Nice-to-Have**](#-low-p3---nice-to-have)
 - [Prioritized Remediation Plan](#prioritized-remediation-plan)
   - [Phase 1: Critical Fixes (P0) - **IMPLEMENT NOW**](#phase-1-critical-fixes-p0---implement-now)
@@ -18,7 +18,7 @@
   - [Phase 4: Optional Enhancements (P3) - **DEFER/DISCUSS**](#phase-4-optional-enhancements-p3---deferdiscuss)
 - [Implementation Status](#implementation-status)
   - [ Completed](#-completed)
-  - [⏳ Deferred (Optional Enhancements)](#-deferred-optional-enhancements)
+  - [ Deferred (Optional Enhancements)](#-deferred-optional-enhancements)
 - [Iteration 2: Implementation Complete ](#iteration-2-implementation-complete-)
   - [Phase 3 Implementation (Completed 2025-12-20)](#phase-3-implementation-completed-2025-12-20)
   - [Production Readiness Achieved](#production-readiness-achieved)
@@ -61,7 +61,7 @@
 
 **Generated:** 2025-12-20T01:30:00Z  
 **Iteration:** 1 of N  
-**Status:** 🔄 In Progress
+**Status:**  In Progress
 
 ---
 
@@ -122,7 +122,7 @@ This document tracks iterative gap analysis and remediation for the Semgrep SAST
    - **Current:** Only `push` and `pull_request` triggers
    - **Proposed Fix:** Add `workflow_dispatch` trigger
 
-#### 🟡 **MEDIUM (P2) - Quality & Maintainability**
+####  **MEDIUM (P2) - Quality & Maintainability**
 
 8. **GAP-008: Limited Caching Scope**
    - **Risk:** Cache misses due to narrow key
@@ -230,7 +230,7 @@ This document tracks iterative gap analysis and remediation for the Semgrep SAST
 - [x] **Phase 2: Production blockers (GAP-005, GAP-006, GAP-007, GAP-011)**
 - [x] **Phase 3: Quality improvements (GAP-008, GAP-009, GAP-010)**
 
-### ⏳ Deferred (Optional Enhancements)
+###  Deferred (Optional Enhancements)
 
 - [ ] Phase 4: Optional enhancements (GAP-012, GAP-013, GAP-014)
   - These are low-priority items for future consideration
@@ -327,7 +327,7 @@ No additional critical, high, or medium priority gaps identified in Iteration 2.
 |----------|--------|--------|--------|
 | All P0 gaps addressed | 3/3 | 3/3 |  |
 | All P1 gaps addressed | 4/4 | 4/4 |  |
-| Workflow runs successfully | Yes | Pending test | ⏳ |
+| Workflow runs successfully | Yes | Pending test |  |
 | SARIF artifact uploaded | Yes | Configured |  |
 | No regression in scan quality | Yes | N/A (new) |  |
 

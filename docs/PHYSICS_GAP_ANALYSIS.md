@@ -384,8 +384,8 @@ class GPUAcceleratedEMField(EMFieldRouter):
 -  Code quality > 95%
 -  Test coverage > 90%
 -  Documentation complete
-- 🔄 Performance benchmarks (planned)
-- 🔄 User feedback (ongoing)
+-  Performance benchmarks (planned)
+-  User feedback (ongoing)
 
 ---
 

@@ -10,7 +10,7 @@ This is a condensed quick start guide. For complete documentation, see [ADMIN_IM
 
 ---
 
-## 🚨 Critical Items Only (5 Minutes)
+##  Critical Items Only (5 Minutes)
 
 ### Step 1: Enable Workflow Permissions (2 min)
 
@@ -55,7 +55,7 @@ Or via GitHub UI:
 
 ---
 
-## 📋 What This Enables
+##  What This Enables
 
 With these minimal settings, you enable:
 

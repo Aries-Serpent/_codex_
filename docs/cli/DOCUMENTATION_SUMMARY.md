@@ -20,7 +20,7 @@ This report documents the comprehensive CLI documentation effort for the Aries-S
 | **Documented** | 12 | 48 | +300% |
 | **Coverage %** | 32% | 98% | +66pp |
 | **Modules** | 8 | 8 | — |
-| **Reference Guide** | ✗ |  | New |
+| **Reference Guide** |  |  | New |
 | **Docstrings Added** | — | 10 | — |
 
 ---
@@ -145,7 +145,7 @@ Now documented with comprehensive docstrings:
 1. `build-kb` - Build KB from docs [NEW DOCSTRING]
 2. `archive-and-manifest` - Archive KB [NEW DOCSTRING]
 3. `pack-release` - Pack bundle [NEW DOCSTRING]
-4. `sync-mermaid-map` - Sync Mermaid maps ✓
+4. `sync-mermaid-map` - Sync Mermaid maps 
 
 ### Module: cli_release.py
 **Status:**  Documented (4/4 commands) [NEW]  
@@ -176,7 +176,7 @@ Now documented:
 **Commands:** 1
 
 Already documented:
-1. `inspect` - Inspect mapping tables ✓
+1. `inspect` - Inspect mapping tables 
 
 ---
 
@@ -204,13 +204,13 @@ Undocumented:  25 commands (68%)
 ```
 Documented:    48 commands (98%)
 ├─ cli.py:           20+ commands
-├─ cli_rag.py:       8 commands ✓
-├─ cli_zendesk.py:   9 commands ✓
-├─ cli_knowledge.py: 4 commands ✓ (3 docstrings added)
-├─ cli_release.py:   4 commands ✓ (4 docstrings added)
-├─ cli_roles.py:     1 command ✓ (1 docstring added)
-├─ cli_qa.py:        1 command ✓ (1 docstring added)
-└─ cli_maps.py:      1 command ✓
+├─ cli_rag.py:       8 commands 
+├─ cli_zendesk.py:   9 commands 
+├─ cli_knowledge.py: 4 commands  (3 docstrings added)
+├─ cli_release.py:   4 commands  (4 docstrings added)
+├─ cli_roles.py:     1 command  (1 docstring added)
+├─ cli_qa.py:        1 command  (1 docstring added)
+└─ cli_maps.py:      1 command 
 
 Remaining:     2 commands (2%)
 └─ Minor internal utilities

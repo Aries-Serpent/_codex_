@@ -9,7 +9,7 @@
 
 ---
 
-## 📋 EXECUTIVE SUMMARY
+##  EXECUTIVE SUMMARY
 
 This deliverable implements a complete telemetry collection infrastructure for monitoring approval workflows in the Codex agent ecosystem. The system collects **17 approval-specific metrics**, enforces cardinality limits for 150+ agent ecosystem, and provides real-time SLA monitoring integrated with the approval service (D2.2) and RBAC (D1.2).
 
@@ -18,7 +18,7 @@ This deliverable implements a complete telemetry collection infrastructure for m
 | Component | Files | Purpose |
 |-----------|-------|---------|
 | **Telemetry Collector** | `approval_telemetry_collector.py` | Core metrics collection (17 metrics) |
-| **Event Schema Validator** | `approval_event_schema.py` | Event validation (v1.0.0) & immutable audit logging |
+| **Event Schema Validator** | `approval_event_schema.py` | Event validation (v0.2.1) & immutable audit logging |
 | **SLA Monitor** | `sla_monitoring.py` | Real-time SLA tracking & compliance reporting |
 | **Grafana Dashboard** | `approval-sla-dashboard.json` | Real-time SLA visualization |
 | **Prometheus Alerts** | `approval-alert-rules.yml` | 15+ alerting rules for SLA/security/compliance |
@@ -305,7 +305,7 @@ approval_unauthorized_attempt_count_total
 
 ---
 
-## 📈 SLA THRESHOLDS BY POLICY CATEGORY
+##  SLA THRESHOLDS BY POLICY CATEGORY
 
 | Category | Per-Stage SLA | Total SLA | Escalation Path |
 |----------|---|---|---|
@@ -320,7 +320,7 @@ approval_unauthorized_attempt_count_total
 
 ---
 
-## 🔗 INTEGRATION POINTS
+##  INTEGRATION POINTS
 
 ### With D2.2 (Approval Service)
 - Subscribe to: request_submitted, decision_made, escalation_triggered, completed events
@@ -360,7 +360,7 @@ pytest tests/observability/test_approval_telemetry.py::TestApprovalServiceIntegr
 -  Metrics are collected for all 8 event types
 -  SLA calculations are correct (latency ≤ threshold = met)
 -  Cardinality stays < 900 timeseries (verified with validation script)
--  Events conform to schema v1.0.0 (validated with ApprovalEventValidator)
+-  Events conform to schema v0.2.1 (validated with ApprovalEventValidator)
 -  Alerts fire correctly on SLA breach (tested with synthetic data)
 -  Dashboard displays all 10 panels correctly
 -  Per-agent metrics aggregated by role (not per-agent)
@@ -486,7 +486,7 @@ print(f"Violations (24h): {daily['total_violations_24h']}")
 - Alert fired on: UnauthorizedApprovalAttempt
 
 ### Event Schema Validation
-- All events validated against schema v1.0.0
+- All events validated against schema v0.2.1
 - Version compatibility check (only v1.x.x supported)
 - SLA calculation validation (prevents false SLA=met when latency > threshold)
 - Required fields enforced; optional fields allowed
@@ -534,12 +534,12 @@ print(f"Limit: {cardinality['limit']}")
 print(f"Safe: {cardinality['cardinality_safe']}")
 
 if cardinality['warning']:
-    print(f"⚠️  {cardinality['warning']}")
+    print(f"️  {cardinality['warning']}")
 ```
 
 ---
 
-## 🚨 COMMON ISSUES & TROUBLESHOOTING
+##  COMMON ISSUES & TROUBLESHOOTING
 
 ### Issue: SLA alerts not firing
 

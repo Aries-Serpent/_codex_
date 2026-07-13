@@ -15,7 +15,7 @@ From our test execution attempt, we identified these large downloads:
 
 | Package | Size | Action |
 |---------|------|--------|
-| torch | 899.7 MB | ⚠️ SKIP (close to limit) |
+| torch | 899.7 MB | ️ SKIP (close to limit) |
 | nvidia-cublas-cu12 | 594.3 MB |  SKIP |
 | nvidia-cudnn-cu12 | 706.8 MB |  SKIP |
 | nvidia-cusparse-cu12 | 288.2 MB |  ALLOW |
@@ -223,7 +223,7 @@ def install_with_size_limit(packages: list, max_size_mb: int = 500):
 - Security scans (bandit, basic pip-audit)
 - Fence error fixes
 
-### Tier 2: Lite ML Verification (<500 MB) ⚠️ IF SPACE ALLOWS
+### Tier 2: Lite ML Verification (<500 MB) ️ IF SPACE ALLOWS
 - CPU-only torch
 - Basic ML tests
 - Transformers without models

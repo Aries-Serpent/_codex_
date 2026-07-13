@@ -1,4 +1,4 @@
-# Tutorial 02 — Running A/B Tests on Model Outputs
+## Guide 02 — Running A/B Tests on Model Outputs
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 

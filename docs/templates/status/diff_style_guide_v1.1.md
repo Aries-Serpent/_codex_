@@ -3,7 +3,7 @@
 **Version:** v0.2.1
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
- Roles: [Primary: Diff Style Curator], [Secondary: Reliability Reviewer] ⚡ Energy: 5  
+ Roles: [Primary: Diff Style Curator], [Secondary: Reliability Reviewer]  Energy: 5  
 
 ## 1. Mandatory Elements per Patch
 - Title and component paths

@@ -18,7 +18,7 @@ This guide documents the deprecated legacy shim modules (`config_legacy/` and `y
 
 ### config_legacy/
 
-**Status:** ⚠️ DEPRECATED - Shim for hydra-core  
+**Status:** ️ DEPRECATED - Shim for hydra-core  
 **Recommended:** Use `import hydra` directly
 
 The `config_legacy/` module is a backward-compatibility shim that was created when the local `hydra/` directory was renamed to avoid shadowing the installed `hydra-core` package.
@@ -64,14 +64,14 @@ Since `hydra-core>=1.3.2` is now explicitly required in `pyproject.toml`, the fa
 - Graceful degradation during development
 - No breaking changes
 
-**Option B: Remove Fallback (Future v2.0.0)**
+**Option B: Remove Fallback (Future v0.2.1)**
 - Cleaner codebase
 - Breaking change for any external users relying on fallback
 - Requires major version bump
 
 ### yaml_legacy/
 
-**Status:** ⚠️ DEPRECATED - Shim for PyYAML  
+**Status:** ️ DEPRECATED - Shim for PyYAML  
 **Recommended:** Use `import yaml` directly
 
 The `yaml_legacy/` module provides a fallback when PyYAML is not installed, using JSON parsing as a minimal substitute.
@@ -125,7 +125,7 @@ pytest tests/ -k "hydra or config" -v
 - Fallback imports provide development flexibility
 - No breaking changes
 
-### Future (v2.0.0)
+### Future (v0.2.1)
 - Consider removing config_legacy/ directory
 - Consider removing yaml_legacy/ directory
 - Major version bump for breaking change

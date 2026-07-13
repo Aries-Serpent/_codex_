@@ -116,6 +116,6 @@ The `enforcement_tier` remains `GROUNDED` and `handoff_protocol` remains
 ## 8. Provenance & Compliance
 - **Gate**: `e-to-d-transition-gate.yml` — score 5/5 at time of promotion
 - **Follow-up**: `.codex/docs/FOLLOWUP_PROMPT_PR3492.md` — Priority 2
-- **Registry version**: v1.9.0 → v1.9.1 (patch increment for D_CAPABLE field change)
+- **Registry version**: v0.2.1 → v0.2.1 (patch increment for D_CAPABLE field change)
 - **Change log**: PR #3494 (this PR)
 - **Next review**: Promote second D_CAPABLE agent after 2-sprint observation period

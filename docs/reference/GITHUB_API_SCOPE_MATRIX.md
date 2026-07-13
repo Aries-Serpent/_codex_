@@ -9,7 +9,7 @@
 
 ---
 
-## 📋 Scope Hierarchy
+##  Scope Hierarchy
 
 GitHub API scopes follow a hierarchy from broad to narrow access:
 

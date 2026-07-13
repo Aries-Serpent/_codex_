@@ -1,11 +1,11 @@
-# 🔧 Phase 0: Gap Resolution Implementation Guide
+#  Phase 0: Gap Resolution Implementation Guide
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
 ## Table of Contents
 
-- [📋 Executive Summary](#-executive-summary)
-- [🚨 Section 1: Dependency Resolution (Days 1-3)](#-section-1-dependency-resolution-days-1-3)
+- [ Executive Summary](#-executive-summary)
+- [ Section 1: Dependency Resolution (Days 1-3)](#-section-1-dependency-resolution-days-1-3)
   - [1.1 Task BLOCK-DEP-001: Add libcst to Core Dependencies](#11-task-block-dep-001-add-libcst-to-core-dependencies)
     - [1.1.1 Implementation Steps](#111-implementation-steps)
 - [List current dependencies](#list-current-dependencies)
@@ -70,13 +70,13 @@
   - [2.5 Task BLOCK-ARCH-005: Plugin Architecture](#25-task-block-arch-005-plugin-architecture)
 - [File: src/codex_ml/ast/plugins.py](#file-srccodex_mlastpluginspy)
 - [2.5.2 Acceptance Criteria](#252-acceptance-criteria)
-- [⚡ Section 3: Performance Baseline (Days 11-14)](#-section-3-performance-baseline-days-11-14)
+- [ Section 3: Performance Baseline (Days 11-14)](#-section-3-performance-baseline-days-11-14)
   - [3.1 Create Benchmark Suite](#31-create-benchmark-suite)
 - [File: tests/ast/benchmarks.py](#file-testsastbenchmarkspy)
 - [3.2 Profile Memory Usage](#32-profile-memory-usage)
 - [Create memory profiling script](#create-memory-profiling-script)
 - [Parse large codebase](#parse-large-codebase)
-- [📋 Section 4: Existing AST Usage Refactoring (Phased)](#-section-4-existing-ast-usage-refactoring-phased)
+- [ Section 4: Existing AST Usage Refactoring (Phased)](#-section-4-existing-ast-usage-refactoring-phased)
   - [4.1 Audit Existing Usage](#41-audit-existing-usage)
 - [Find all existing AST usage](#find-all-existing-ast-usage)
 - [Count files](#count-files)
@@ -95,10 +95,10 @@
   - [Pre-Conditions for Sprint 1 Start](#pre-conditions-for-sprint-1-start)
   - [Sign-Off Required From](#sign-off-required-from)
   - [Decision Gate: 2025-11-23 14:00 UTC](#decision-gate-2025-11-23-1400-utc)
-- [📈 Success Metrics](#-success-metrics)
+- [ Success Metrics](#-success-metrics)
 - [ Phase 0 Timeline](#-phase-0-timeline)
 - [ Phase 0: Validation & Risk Mitigation Guide](#-phase-0-validation--risk-mitigation-guide)
-- [📋 Executive Summary](#-executive-summary)
+- [ Executive Summary](#-executive-summary)
 - [Section 1: Dependency Validation](#section-1-dependency-validation)
   - [1.1 Conflict Detection](#11-conflict-detection)
 - [File: .github/scripts/validate_dependencies.py](#file-githubscriptsvalidate_dependenciespy)
@@ -142,17 +142,17 @@
 - [7.3 If Architecture Design Not Approved](#73-if-architecture-design-not-approved)
 - [Section 8: Success Metrics Dashboard](#section-8-success-metrics-dashboard)
 
-> **⚠️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
+> **️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
 
-** Roles:** [Primary: Implementation Lead], [Secondary: DevOps Engineer] | ⚡ Energy: 5/5
+** Roles:** [Primary: Implementation Lead], [Secondary: DevOps Engineer] |  Energy: 5/5
 
-⚛️ **Physics:** Path🛤️ [Linear dependency chain] | Fields🔄 [Modular resolution] | Patterns👁️ [DRY principles] | Redundancy🔀 [Fallback strategies] | Balance⚖️ [Speed vs. stability]
+⚛️ **Physics:** Path️ [Linear dependency chain] | Fields [Modular resolution] | Patterns️ [DRY principles] | Redundancy [Fallback strategies] | Balance️ [Speed vs. stability]
 
 ---
 
-## 📋 Executive Summary
+##  Executive Summary
 
 **Phase 0** resolves **5 critical blockers**, **4 implementation issues**, and **3 architectural challenges** before AST Standardization can proceed to Sprint 1.
 
@@ -163,7 +163,7 @@
 
 ---
 
-## 🚨 Section 1: Dependency Resolution (Days 1-3)
+##  Section 1: Dependency Resolution (Days 1-3)
 
 ### 1.1 Task BLOCK-DEP-001: Add libcst to Core Dependencies
 
@@ -240,7 +240,7 @@ import parso
 import torch
 import transformers
 
-print("✓ All imports successful")
+print(" All imports successful")
 print(f"  libcst: {libcst.__version__}")
 print(f"  radon: {radon.__version__}")
 print(f"  parso: {parso.__version__}")
@@ -312,14 +312,14 @@ from tree_sitter import Language, Parser
 
 # Check Python grammar
 python_lang = Language("build/my-languages.so", "python")
-print("✓ Python parser loaded")
+print(" Python parser loaded")
 
 # Test parsing
 parser = Parser()
 parser.set_language(python_lang)
 code = "def hello(): pass"
 tree = parser.parse(code.encode())
-print(f"✓ Parsed {len(tree.root_node.children)} nodes")
+print(f" Parsed {len(tree.root_node.children)} nodes")
 EOF
 ```text
 
@@ -472,7 +472,7 @@ import parso
 
 code = "def hello(): pass"
 module = parso.parse(code)
-print(f"✓ parso version {parso.__version__} working")
+print(f" parso version {parso.__version__} working")
 EOF
 ```text
 
@@ -1220,7 +1220,7 @@ class PluginRegistry:
 
 ---
 
-## ⚡ Section 3: Performance Baseline (Days 11-14)
+##  Section 3: Performance Baseline (Days 11-14)
 
 ### 3.1 Create Benchmark Suite
 
@@ -1305,13 +1305,13 @@ print(f"Peak: {peak / 1024 / 1024:.1f} MB")
 assert peak < 500 * 1024 * 1024  # 500 MB limit
 
 tracemalloc.stop()
-print("✓ Memory usage within budget")
+print(" Memory usage within budget")
 EOF
 ```text
 
 ---
 
-## 📋 Section 4: Existing AST Usage Refactoring (Phased)
+##  Section 4: Existing AST Usage Refactoring (Phased)
 
 ### 4.1 Audit Existing Usage
 
@@ -1446,15 +1446,15 @@ def decorated_class_code():
 
 ---
 
-## 📈 Success Metrics
+##  Success Metrics
 
 | Metric | Target | Current | After Phase 0 |
 |--------|--------|---------|---------------|
-| Dependency conflicts | 0 | TBD | 0 ✓ |
-| Architecture approved | 100% | 0% | 100% ✓ |
-| Performance baseline | Established | None | <5s/1000 LOC ✓ |
-| Test infrastructure | Complete | Partial | 100% ✓ |
-| Security issues | 0 critical | TBD | 0 ✓ |
+| Dependency conflicts | 0 | TBD | 0  |
+| Architecture approved | 100% | 0% | 100%  |
+| Performance baseline | Established | None | <5s/1000 LOC  |
+| Test infrastructure | Complete | Partial | 100%  |
+| Security issues | 0 critical | TBD | 0  |
 
 ---
 
@@ -1485,13 +1485,13 @@ Now creating the detailed validation and risk mitigation guide:
 #  Phase 0: Validation & Risk Mitigation Guide
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
 
-** Roles:** [Primary: QA Lead], [Secondary: Risk Manager] | ⚡ Energy: 5/5
+** Roles:** [Primary: QA Lead], [Secondary: Risk Manager] |  Energy: 5/5
 
-⚛️ **Physics:** Path🛤️ [Validation gates] | Fields🔄 [Risk mitigation] | Patterns👁️ [Regression prevention] | Redundancy🔀 [Fallback testing] | Balance⚖️ [Quality vs. speed]
+⚛️ **Physics:** Path️ [Validation gates] | Fields [Risk mitigation] | Patterns️ [Regression prevention] | Redundancy [Fallback testing] | Balance️ [Quality vs. speed]
 
 ---
 
-## 📋 Executive Summary
+##  Executive Summary
 
 **Phase 0 Validation** ensures **zero regressions** and **all blockers resolved** before Sprint 1 proceeds.
 
@@ -1525,7 +1525,7 @@ def check_dependency_conflicts():
         print(result.stdout)
         return False
 
-    print("✓ No dependency conflicts")
+    print(" No dependency conflicts")
     return True
 
 def check_security_vulnerabilities():
@@ -1539,7 +1539,7 @@ def check_security_vulnerabilities():
         print(result.stdout)
         return False
 
-    print("✓ No critical vulnerabilities")
+    print(" No critical vulnerabilities")
     return True
 
 def check_import_availability():
@@ -1555,7 +1555,7 @@ def check_import_availability():
     for module_name, display_name in required_imports:
         try:
             __import__(module_name)
-            print(f"✓ {display_name} importable")
+            print(f" {display_name} importable")
         except ImportError as e:
             print(f" {display_name} import failed: {e}")
             all_ok = False

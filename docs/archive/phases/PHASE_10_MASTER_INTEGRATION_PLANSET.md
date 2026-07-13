@@ -657,7 +657,7 @@ If issues encountered:
 
 ## Task 2: Develop GitHub Action for Live Sync
 
-> **⚠️ HUMAN DEFERRAL NOTICE (2026-01-16)**:  
+> **️ HUMAN DEFERRAL NOTICE (2026-01-16)**:  
 > Google Drive integration has been **DEFERRED to future scope** pending external setup.  
 > Status: Workflow created but automated triggers disabled (manual dispatch only).  
 > Reference: `docs/deferred/GOOGLE_DRIVE_FUTURE_SCOPE.md`  
@@ -860,7 +860,7 @@ jobs:
             echo " No secrets detected by Secretlint"
             echo "secrets_found=false" >> $GITHUB_OUTPUT
           else
-            echo "⚠️ Secretlint found potential secrets"
+            echo "️ Secretlint found potential secrets"
             echo "secrets_found=true" >> $GITHUB_OUTPUT
           fi
           echo "::endgroup::"
@@ -1340,7 +1340,7 @@ jobs:
             github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: `🚨 AI Architect: Critical Issues Detected`,
+              title: ` AI Architect: Critical Issues Detected`,
               body: report,
               labels: ['ai-architect', 'critical', 'technical-debt']
             });
@@ -1496,7 +1496,7 @@ def generate_report(data):
     elif overall_health >= 85:
         status_emoji = ""
     elif overall_health >= 70:
-        status_emoji = "🟡"
+        status_emoji = ""
     else:
         status_emoji = ""
 
@@ -1505,7 +1505,7 @@ def generate_report(data):
     for cat, info in data['categories'].items():
         score = info['score']
         issue_count = len(info['issues'])
-        status = "" if score >= 90 else "⚠️" if score >= 70 else ""
+        status = "" if score >= 90 else "️" if score >= 70 else ""
         category_rows.append(f"| {cat.title()} | {score}/100 | {status} | {issue_count} |")
 
     # Format critical issues

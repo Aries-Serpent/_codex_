@@ -26,7 +26,7 @@
 - Security review: no plain-text secrets, minimal permissions
 - Create comprehensive testing report
 
-**⚠️ CRITICAL**: Use `--dry-run`, `--verify`, `--test` flags ONLY. NO actual rotation operations.
+**️ CRITICAL**: Use `--dry-run`, `--verify`, `--test` flags ONLY. NO actual rotation operations.
 
 **Deliverables**:
 - `docs/token_rotation_testing_report.md`
@@ -132,7 +132,7 @@ Use `report_progress` tool:
 
  **Status**: `COGNITIVE_BRAIN_STATUS_V11_WORKFLOW_CI_FIXES.md`  
 🏗️ **Architecture**: `COGNITIVE_BRAIN_ARCHITECTURE_PHASE_11.md`  
-📋 **Full Instructions**: `COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_11.md`  
+ **Full Instructions**: `COGNITIVE_BRAIN_CONTINUATION_PROMPT_PHASE_11.md`  
  **Agent**: `.github/agents/workflow-ci-fixer.agent.md`
 
 ---

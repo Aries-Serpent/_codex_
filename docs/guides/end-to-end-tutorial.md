@@ -1,4 +1,6 @@
 # End-to-End Tutorial
+
+**Version**: v0.2.1
 **Last Updated:** 2026-07-11
 
 > Complete walkthrough from project setup to first successful run  
@@ -298,7 +300,7 @@ def main():
 
     # Example predictions
     texts = [
-        "This movie was amazing! I loved it.",
+        "This movie was ! I loved it.",
         "The service was okay, nothing special.",
         "Terrible experience, waste of money."
     ]
@@ -462,7 +464,7 @@ python -m src.main model=transformer training.epochs=20 data=custom debug=true
 
 **Expected Output**:
 ```
-Text: This movie was amazing! I loved it.
+Text: This movie was ! I loved it.
 Sentiment: positive
 Confidence: 0.95
 
@@ -573,7 +575,7 @@ def app():
     return SentimentAnalysisApp(cfg)
 
 def test_positive_sentiment(app):
-    result = app.predict("This is amazing!")
+    result = app.predict("This is !")
     assert result['sentiment'] == 'positive'
     assert result['confidence'] > 0.5
 

@@ -2,7 +2,7 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> **⚠️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
+> **️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 
 
 > Generated: 2026-06-22 | Author: @mbaetiong + @copilot  
@@ -46,7 +46,7 @@ docs/plans/copilot-workflow-agent/
 
 ## Implementation Status
 
-### Phase 0: Foundation ⏳ IN PROGRESS
+### Phase 0: Foundation  IN PROGRESS
 - [x] Create plan directory structure
 - [x] Document architecture concepts
 - [ ] Implement GitHub API client wrapper

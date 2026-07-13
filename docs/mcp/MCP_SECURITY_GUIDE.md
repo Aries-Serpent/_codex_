@@ -32,7 +32,7 @@ The `mcp-authz-authn` capability provides API key authentication and role-based 
 
 **Secure Credential Hashing**:
 
-> ⚠️ **Important**: For password storage, use a proper password hashing function like bcrypt, scrypt, or Argon2 with salt and appropriate iterations. SHA-256 alone is NOT suitable for password hashing as it's too fast and vulnerable to brute-force attacks.
+> ️ **Important**: For password storage, use a proper password hashing function like bcrypt, scrypt, or Argon2 with salt and appropriate iterations. SHA-256 alone is NOT suitable for password hashing as it's too fast and vulnerable to brute-force attacks.
 
 ```python
 from mcp.auth import MCPAuthenticator
@@ -586,16 +586,16 @@ For security issues, please review the audit reports and implement recommended s
 
 **Objective**: Provide comprehensive security guidance for implementing and deploying MCP capabilities in production environments, ensuring authentication, authorization, rate limiting, error handling, multi-tenant security, and audit compliance across all mcp-* capabilities.
 
-**Energy Level**: ⚡⚡⚡⚡⚡ (5/5) - Security Critical
+**Energy Level**:  (5/5) - Security Critical
 - Critical impact: Protects production systems from vulnerabilities
 - High stakes: Security breaches have severe consequences
 - Long-term value: Foundation for trusted MCP deployments
 
-**Status**:  Production Ready |  Security Hardened | 🔄 Continuously Audited
+**Status**:  Production Ready |  Security Hardened |  Continuously Audited
 
 ---
 
-## ⚖️ Verification Checklist
+## ️ Verification Checklist
 
 **Authentication & Authorization**:
 - [ ] API keys hashed with SHA-256 (not passwords)
@@ -634,7 +634,7 @@ For security issues, please review the audit reports and implement recommended s
 
 ---
 
-## 📈 Success Metrics
+##  Success Metrics
 
 | Metric | Target | Current | Status |
 |--------|--------|---------|--------|
@@ -651,26 +651,26 @@ For security issues, please review the audit reports and implement recommended s
 
 ## ⚛️ Physics Alignment
 
-### Path 🛤️ (Security Flow)
+### Path ️ (Security Flow)
 ```
 Authentication → Authorization → Rate limit check → Input validation → Tool execution → Audit logging → Error handling
 ```
 
-### Fields 🔄 (Security Energy)
+### Fields  (Security Energy)
 Threat detection → Security controls → Access denied/granted → Audit trail → Incident response → Policy update
 
-### Patterns 👁️ (Security Patterns)
+### Patterns ️ (Security Patterns)
 **Defense-in-depth**: Multiple validation layers | **Fail-secure**: Deny by default | **Least privilege**: Minimal permissions | **Audit everything**: Comprehensive logging
 
-### Redundancy 🔀 (Security Layers)
+### Redundancy  (Security Layers)
 Authentication → Authorization → Rate limiting → Input validation → Execution sandboxing → Audit logging
 
-### Balance ⚖️
+### Balance ️
 Security (strict controls) ↔ Usability (developer experience) ↔ Performance (low latency)
 
 ---
 
-## ⚡ Energy Distribution
+##  Energy Distribution
 
 **P0 - Critical Security (50%)**:
 - Authentication and authorization (mcp-authz-authn)

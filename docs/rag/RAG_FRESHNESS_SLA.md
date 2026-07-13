@@ -36,7 +36,7 @@ flowchart TD
     DRIFT_OK{"Drift\n≤ threshold?"}
 
     DEPLOY[" RAG Serving\nIndex current + quality gated"]
-    STALE_ALERT["⚠️ STALE ALERT\nrag-freshness-scheduler.yml / rag-quality-nightly.yml\nGitHub Issue"]
+    STALE_ALERT["️ STALE ALERT\nrag-freshness-scheduler.yml / rag-quality-nightly.yml\nGitHub Issue"]
     QUALITY_ALERT[" QUALITY BREACH\nBlock PR merge\nAlert rag-freshness-loop-agent"]
     DRIFT_ALERT["📉 DRIFT ALERT\nrag-index-manager auto-retrain\nReport to COMPLETION_DASHBOARD.md"]
 

@@ -1,4 +1,4 @@
-# PR: Legacy Import Refactor — Batch 02 (v1.2.7)
+# PR: Legacy Import Refactor — Batch 02 (v0.2.1)
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 

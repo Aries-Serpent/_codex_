@@ -281,7 +281,7 @@ Before EVERY `report_progress` call, run:
 #!/bin/bash
 # pre_report_validation.sh
 
-echo "🔍 Validating claimed implementations..."
+echo " Validating claimed implementations..."
 
 # Check claimed files exist
 CLAIMED_FILES=(
@@ -303,7 +303,7 @@ done
 
 if [ $FAILURES -gt 0 ]; then
   echo ""
-  echo "⚠️  VALIDATION FAILED: $FAILURES files claimed but missing"
+  echo "️  VALIDATION FAILED: $FAILURES files claimed but missing"
   echo " DO NOT call report_progress until files are created"
   exit 1
 fi
@@ -335,7 +335,7 @@ Before final `report_progress`, run comprehensive audit:
 #!/bin/bash
 # reality_check.sh
 
-echo "📋 REALITY CHECK: Comparing claims vs actual files"
+echo " REALITY CHECK: Comparing claims vs actual files"
 
 # Parse PR description for claimed implementations
 # Verify each file exists
@@ -349,7 +349,7 @@ echo "Files to be committed in this report_progress:"
 git diff --cached --name-only
 
 echo ""
-echo "⚠️  Review this list carefully before proceeding"
+echo "️  Review this list carefully before proceeding"
 echo "Does this match what you described in PR? (yes/no)"
 ```
 
@@ -388,7 +388,7 @@ jobs:
           script: |
             github.rest.issues.createComment({
               issue_number: context.issue.number,
-              body: '⚠️ PR description claims files that do not exist in the diff.'
+              body: '️ PR description claims files that do not exist in the diff.'
             })
 ```
 

@@ -4,7 +4,7 @@
 
 **PR:** [#4389](https://github.com/Aries-Serpent/_codex_/pull/4389) — fix(security): resolve merge conflict, fix 6 CodeQL error alerts, patch 4 code-injection workflow vulns + rate-limit recovery system
 **Branch:** `copilot/add-full-path-to-init-tracing-docs`
-**Status:** 🟡 IN PROGRESS — workflows running · rate-limit recovery system added · awaiting CI green
+**Status:**  IN PROGRESS — workflows running · rate-limit recovery system added · awaiting CI green
 **Latest Session:** S923 (2026-05-11)
 **Latest Commit:** `1cb56a95`
 
@@ -21,8 +21,8 @@
 | Rate-limit recovery system |  | `rate_limit_handler.py` + `push_conflict_resolver.py` + Pattern 33 |
 | CHANGELOG Pattern 25 |  | Updated in S923 commit |
 | AGENT_ACCOUNTABILITY_REPORT |  | Updated in S923 commit |
-| CI workflows (approved) | 🔄 | 17 workflows in-progress on `1cb56a95` (approved by mbaetiong) |
-| parallel_validation | 🔄 | Code Review  · CodeQL DB too large (skipped) |
+| CI workflows (approved) |  | 17 workflows in-progress on `1cb56a95` (approved by mbaetiong) |
+| parallel_validation |  | Code Review  · CodeQL DB too large (skipped) |
 
 ---
 
@@ -46,7 +46,7 @@
 
 ---
 
-## 🔄 Rate-Limit Recovery System (new in S923)
+##  Rate-Limit Recovery System (new in S923)
 
 The following were built in response to the 10 failed Copilot Cloud Agent sessions
 (runs 3476–3489) caused by weekly rate-limit cascade + push conflicts:
@@ -61,7 +61,7 @@ The following were built in response to the 10 failed Copilot Cloud Agent sessio
 
 ---
 
-## 📋 Session History (PR #4389)
+##  Session History (PR #4389)
 
 | Session | Date | Key Work |
 |---------|------|----------|

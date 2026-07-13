@@ -3,7 +3,7 @@
 **Version:** v0.2.1
 
 > **Last updated: 2026-07-11
-> **Status: 🟡 In progress — workflow approvals processed; queue still active with API-rate-limit constraints on deeper run inspection**
+> **Status:  In progress — workflow approvals processed; queue still active with API-rate-limit constraints on deeper run inspection**
 
 ## Current Objectives
 

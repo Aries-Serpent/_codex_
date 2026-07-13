@@ -3,8 +3,8 @@
 **Version:** v0.2.1
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
- Roles: [Primary: CI Remediator], [Secondary: Tooling Steward] ⚡ Energy: 3  
-⚛️ Physics: Path🛤️ [Identify → Patch → Verify] Fields🔄 [Packaging, Security] Patterns👁️ [Binary vs PyPI, Py>=3.11 compat] Redundancy🔀 [Sanity + CI] Balance⚖️ [Minimal change vs stability]
+ Roles: [Primary: CI Remediator], [Secondary: Tooling Steward]  Energy: 3  
+⚛️ Physics: Path️ [Identify → Patch → Verify] Fields [Packaging, Security] Patterns️ [Binary vs PyPI, Py>=3.11 compat] Redundancy [Sanity + CI] Balance️ [Minimal change vs stability]
 
 ## Context
 - Gitleaks error resolved by removing it from pip install and installing the binary in CI.

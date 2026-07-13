@@ -26,17 +26,17 @@ The cognitive brain enables:
 
 ##  Quick Links
 
-### 🚨 CI Rescue & Health
-- 🔄 **[CI Rescue Pipeline](ci/CI_RESCUE_PIPELINE.md)** — Golden-path documentation: how workflow failures automatically trigger Copilot sessions. Includes Mermaid flowcharts, sequence diagrams, deduplication state machine, anti-pattern map. *(S244 — 2026-03-30)*
-- 📋 **[CI/CD Index](ci/INDEX.md)** — All CI failure analysis, fix summaries, and validation reports
+###  CI Rescue & Health
+-  **[CI Rescue Pipeline](ci/CI_RESCUE_PIPELINE.md)** — Golden-path documentation: how workflow failures automatically trigger Copilot sessions. Includes Mermaid flowcharts, sequence diagrams, deduplication state machine, anti-pattern map. *(S244 — 2026-03-30)*
+-  **[CI/CD Index](ci/INDEX.md)** — All CI failure analysis, fix summaries, and validation reports
 
 ### Core Documentation
 -  **[Architecture](./architecture/INDEX.md)** - Detailed technical architecture
 - 🤝 **[Contributing](CONTRIBUTING.md)** - Development workflow and guidelines
 -  **[Admin Guide](ADMIN_IMPLEMENTATION_GUIDE.md)** - Setup and management
 -  **[API Reference](api/index.md)** - Complete API documentation
-- 📋 **[Getting Started](guides/quickstart.md)** - Quick start guide
-- 📝 **[Examples](guides/examples.md)** - Code examples
+-  **[Getting Started](guides/quickstart.md)** - Quick start guide
+-  **[Examples](guides/examples.md)** - Code examples
 - 📜 **[Changelog](CHANGELOG.md)** - Release history
 
 ### MCP Package System (93+ KB Documentation)
@@ -48,9 +48,9 @@ The cognitive brain enables:
 -  **[Advanced Features](mcp/ADVANCED_FEATURES_PLANSET.md)** - Future roadmap
 
 ### Capability Guides
-- 📝 **[Model Checkpointing](capabilities/checkpointing.md)** - Checkpoint management with SafeTensors
+-  **[Model Checkpointing](capabilities/checkpointing.md)** - Checkpoint management with SafeTensors
 - 🏋️ **[Training Loops](capabilities/train_loop.md)** - Production training patterns
-- 🔧 **[PEFT Techniques](capabilities/peft_hooks.md)** - Parameter-efficient fine-tuning
+-  **[PEFT Techniques](capabilities/peft_hooks.md)** - Parameter-efficient fine-tuning
 -  **[Code Quality](capabilities/code_quality_tooling.md)** - Complete quality stack
 
 ---
@@ -76,7 +76,7 @@ Refer to [`deployment/reasoning_pod.md`](./deployment/reasoning_pod.md) and the 
 
 ---
 
-## 📋 Operational Templates
+##  Operational Templates
 
 Operational templates encode recurring delivery rituals so teams can execute migrations, hardening passes, and planning checkpoints with consistent safeguards. Begin with the [Operational Templates index](./templates/README.md) to review prerequisites, required metadata, and cross-references before copying a template into your service.
 

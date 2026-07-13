@@ -4,7 +4,7 @@
 
 ## Table of Contents
 
-- [📋 Registry Overview](#-registry-overview)
+- [ Registry Overview](#-registry-overview)
 - [ Detailed Records](#-detailed-records)
   - [PS-01: Configuration Consolidation](#ps-01-configuration-consolidation)
   - [PS-02: IPC Bridge Hardening](#ps-02-ipc-bridge-hardening)
@@ -30,7 +30,7 @@
   - [PS-17: Operational Excellence](#ps-17-operational-excellence)
   - [PS-18: Continuous Improvement](#ps-18-continuous-improvement)
   - [PS-19: Next Evolution Phase](#ps-19-next-evolution-phase)
-- [🔗 Cross-References](#-cross-references)
+- [ Cross-References](#-cross-references)
   - [PS-20: V4.0 Scoring Implementation](#ps-20-v40-scoring-implementation)
 
 **Last Updated**: 2026-06-22
@@ -40,8 +40,8 @@
 
 ---
 
-## 📋 Registry Overview
-<!-- anchor: 📋-registry-overview -->
+##  Registry Overview
+<!-- anchor: -registry-overview -->
 
 | PS ID | Name | Status | Date | Era | Category |
 |-------|------|--------|------|-----|----------|
@@ -467,7 +467,7 @@
 5.  Integrate into MetricsDashboard.tsx
 6.  Add fragile test hardening (65 files, top-10 packages)
 7.  Document CacheManager workflow integration (5/42 workflows)
-8. ⏳ Update AAIS V3.0 score (93.2 → 93.5)
+8.  Update AAIS V3.0 score (93.2 → 93.5)
 
 **Implementation Status (2026-02-12)**:
 
@@ -503,7 +503,7 @@
 ```
 Component: MSVRadarChart.tsx (10.5KB, 349 lines)
 Location: cognitive_app/src/components/quantum-viz/
-Framework: React + TypeScript + Recharts v2.15.4
+Framework: React + TypeScript + Recharts v0.2.1
 
 5 MSV Dimensions (from AAIS V3.0):
   1. Correctness Awareness  — Tests, CodeQL, validation (95/100)
@@ -551,7 +551,7 @@ Current Scores (PS-14 Implementation):
 **AAIS Impact**: +0.3 points (93.2 → 93.5, Path to 97.0 progress)
 
 **Effort**: 3 iteration-days (4-5 estimated, completed in 3)
-**Dependencies**:  cognitive_app infrastructure,  Recharts v2.15.4 (already present)
+**Dependencies**:  cognitive_app infrastructure,  Recharts v0.2.1 (already present)
 
 **Files Modified**: 69 files (2 new, 67 test guards, CacheManager plan doc)
 
@@ -628,9 +628,9 @@ Current Scores (PS-14 Implementation):
 |--------|------|--------|-------------|
 | PS-16a | GitHub Pages Deployment |  Ready | Deploy cognitive_app MSV dashboard via GitHub Pages (vite.config.ts configured, awaiting merge) |
 | PS-16b | AAIS Path to 97.0 |  Active | 3 new improvements: #9 multi-agent consensus (+0.7), #10 context window optimization (+0.8), #11 cross-session knowledge transfer (+0.7) |
-| PS-16c | CacheManager Phase 4 | ⏳ Planning | Full key replacement in remaining 37 workflows (10 per batch) |
-| PS-16d | Genesis Phase 10.1 | ⏳ Planning | 3-step guard removal: workflow guard → script guard → config guard |
-| PS-16e | Autonomous Operation Mode | ⏳ Planning | 4-mode progression: advisory → supervised → semi-autonomous → autonomous |
+| PS-16c | CacheManager Phase 4 |  Planning | Full key replacement in remaining 37 workflows (10 per batch) |
+| PS-16d | Genesis Phase 10.1 |  Planning | 3-step guard removal: workflow guard → script guard → config guard |
+| PS-16e | Autonomous Operation Mode |  Planning | 4-mode progression: advisory → supervised → semi-autonomous → autonomous |
 
 **AAIS Improvements Defined**:
 - **#9**: Multi-agent consensus protocol — TaskRouter confidence cross-validation with agent_introspection (+0.7 pts, ACE L4)
@@ -679,7 +679,7 @@ Current Scores (PS-14 Implementation):
 |--------|------|--------|-------------|
 | PS-17a | GitHub Pages Deployment |  Complete | cognitive_app build step added to pages-mkdocs.yml |
 | PS-17b | CacheManager Phase 4 Batch 1 |  Complete | Cache-health steps in 10 additional workflows (15/61 total) |
-| PS-17c | Genesis Phase 10.1 | ⏳ Planned | 3-step guard removal after admin approval |
+| PS-17c | Genesis Phase 10.1 |  Planned | 3-step guard removal after admin approval |
 | PS-17d | RAG Centralized Loader |  Complete | safe_load_sentence_transformer() in _model_utils.py |
 | PS-17e | Dead Link Remediation |  Complete | Fixed 3 dead links in docs |
 | PS-17f | CacheManager Phase 4 Batch 2 |  Complete | Cache-health steps in 10 more workflows (25/61 total) |
@@ -742,8 +742,8 @@ Current Scores (PS-14 Implementation):
 
 ---
 
-## 🔗 Cross-References
-<!-- anchor: 🔗-cross-references -->
+##  Cross-References
+<!-- anchor: -cross-references -->
 
 - [Evolution Timeline](EVOLUTION_TIMELINE.md) — Phase-level view of all plansets in context
 - [Cognitive Evolution Tree](COGNITIVE_EVOLUTION_TREE.md) — Visual representation

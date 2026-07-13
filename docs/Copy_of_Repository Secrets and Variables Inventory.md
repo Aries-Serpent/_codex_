@@ -5,14 +5,14 @@
 > Generated: 2026-06-03T22:09:48Z | Author: mbaetiong
 ## Table of Contents
 
-- [⚠️ CONSOLIDATED TODO LIST (All Open Items — moved to top per convention)](#-consolidated-todo-list-all-open-items--moved-to-top-per-convention)
+- [️ CONSOLIDATED TODO LIST (All Open Items — moved to top per convention)](#-consolidated-todo-list-all-open-items--moved-to-top-per-convention)
   - [ BLOCKING — Secrets Pass (Must complete before full agent operation)](#-blocking--secrets-pass-must-complete-before-full-agent-operation)
-  - [🟡 HIGH — Post-Variables Verification](#-high--post-variables-verification)
+  - [ HIGH — Post-Variables Verification](#-high--post-variables-verification)
   - [ COMPLETED](#-completed)
   - [ DEFERRED / BLOCKED](#-deferred--blocked)
 - [🚧 Blocker Status: API `403` → Secrets pending manual entry only](#-blocker-status-api-403--secrets-pending-manual-entry-only)
-- [📋 TABLE OF CONTENTS](#-table-of-contents)
-- [🔍 copilot-setup-steps.yml Verification](#-copilot-setup-stepsyml-verification)
+- [ TABLE OF CONTENTS](#-table-of-contents)
+- [ copilot-setup-steps.yml Verification](#-copilot-setup-stepsyml-verification)
   - [Variables Used by copilot-setup-steps.yml](#variables-used-by-copilot-setup-stepsyml)
   - [Secrets Used by copilot-setup-steps.yml](#secrets-used-by-copilot-setup-stepsyml)
   - [ PREVIOUSLY MISSING VARIABLES — NOW IMPLEMENTED](#-previously-missing-variables--now-implemented)
@@ -77,11 +77,11 @@
 - [ Maintainer Required Additions — Agent Variables and Secrets](#-maintainer-required-additions--agent-variables-and-secrets)
   - [Agent Variables (Copilot Agent Settings)](#agent-variables-copilot-agent-settings)
   - [Agent Secrets (Copilot Agent Settings)](#agent-secrets-copilot-agent-settings)
-- [📈 Summary Statistics](#-summary-statistics)
+- [ Summary Statistics](#-summary-statistics)
 - [ Key Observations](#-key-observations)
   - [Most Recently Updated (from source snapshot)](#most-recently-updated-from-source-snapshot)
   - [Oldest Items Requiring Rotation/Audit Attention](#oldest-items-requiring-rotationaudit-attention)
-- [🔗 Quick Reference URLs (All-in-One)](#-quick-reference-urls-all-in-one)
+- [ Quick Reference URLs (All-in-One)](#-quick-reference-urls-all-in-one)
   - [Repository Settings](#repository-settings)
   - [Organization Settings (requires org owner/admin)](#organization-settings-requires-org-owneradmin)
   - [Workflow & Validation](#workflow--validation)
@@ -105,7 +105,7 @@
 
 ---
 
-## ⚠️ CONSOLIDATED TODO LIST (All Open Items — moved to top per convention)
+## ️ CONSOLIDATED TODO LIST (All Open Items — moved to top per convention)
 
 > **Status as of 2026-06-04T17:43Z**: All repository variables (Actions, Agents, Environment) have been set by the maintainer. **Secrets have NOT yet been entered** — pending maintainer confirmation that all variables are visible before secrets pass begins.
 
@@ -136,7 +136,7 @@
 
 - [ ] **SECRETS-5**: Grant Agents Secrets scope access for: `CODEX_MASTER_KEY`, `CODEX_BACKUP_KEY`, `OPENAI_API_KEY`, GitHub App bundle, `RAG_OPENAI_KEY`, `CODEX_WEBHOOK_SECRET`
 
-### 🟡 HIGH — Post-Variables Verification
+###  HIGH — Post-Variables Verification
 
 - [ ] **VERIFY-1**: Confirm all 4 previously-MISSING repo variables are now visible in GitHub UI:
   - [ ] `CODEX_MAX_HEALER_RUNS_PER_HOUR` = `3`
@@ -182,7 +182,7 @@ All variables have been implemented. The remaining blocker affects **secrets onl
 
 ---
 
-## 📋 TABLE OF CONTENTS
+##  TABLE OF CONTENTS
 
 1. [Quick Start URLs](#0-open-required-pages-first-direct-urls)
 2. [copilot-setup-steps.yml Verification](#copilot-setup-stepsyml-verification)
@@ -200,7 +200,7 @@ All variables have been implemented. The remaining blocker affects **secrets onl
 
 ---
 
-## 🔍 copilot-setup-steps.yml Verification
+##  copilot-setup-steps.yml Verification
 
 ### Variables Used by copilot-setup-steps.yml
 
@@ -312,7 +312,7 @@ EMBEDDING_INDEX_AUTO_REBUILD=true
 WEBHOOK_RECEIVER_URL=https://bootstrap-pending-8765.app.github.dev/webhook/github
 ```
 
-> ⚠️ **Action required**: Update `WEBHOOK_RECEIVER_URL` with the actual active Codespace name before running webhook-dependent workflows.
+> ️ **Action required**: Update `WEBHOOK_RECEIVER_URL` with the actual active Codespace name before running webhook-dependent workflows.
 
 #### C) Copy/Paste block — Repository Secrets (Actions)
 
@@ -654,7 +654,7 @@ Scroll to **Environment secrets** section:
 
 Click path: **Org Settings** → **Secrets and variables** → **Actions** → **Variables** → **New organization variable**.
 
-⚠️ **Note**: This section requires **organization owner** or **admin** privileges.
+️ **Note**: This section requires **organization owner** or **admin** privileges.
 
 #### Step-by-Step Instructions
 
@@ -684,7 +684,7 @@ If you need to convert repository variables to organization-wide variables (to s
 
 Click path: **Org Settings** → **Secrets and variables** → **Actions** → **Secrets** → **New organization secret**.
 
-⚠️ **Note**: This section requires **organization owner** or **admin** privileges.
+️ **Note**: This section requires **organization owner** or **admin** privileges.
 
 #### Step-by-Step Instructions
 
@@ -977,7 +977,7 @@ Click path: **Settings** → **Secrets and variables** → **Copilot** (or **Age
 3. Click the **Secrets** sub-tab
 4. For each secret below, click **New secret**
 
-⚠️ **IMPORTANT**: Most Agent Secrets are **organization secrets** that need to be **granted access** to the Copilot/Agents scope for this repository. You do NOT re-create them here - you **grant repository access** from the organization settings.
+️ **IMPORTANT**: Most Agent Secrets are **organization secrets** that need to be **granted access** to the Copilot/Agents scope for this repository. You do NOT re-create them here - you **grant repository access** from the organization settings.
 
 #### MUST-HAVE Agent Secrets (Priority: CRITICAL)
 
@@ -1253,7 +1253,7 @@ After completing all above sections, validate the configuration:
 
 ---
 
-## 📈 Summary Statistics
+##  Summary Statistics
 
 | Category | Count |
 |----------|-------|
@@ -1283,7 +1283,7 @@ After completing all above sections, validate the configuration:
 
 ---
 
-## 🔗 Quick Reference URLs (All-in-One)
+##  Quick Reference URLs (All-in-One)
 
 Copy this section for fast access to all GitHub settings pages:
 

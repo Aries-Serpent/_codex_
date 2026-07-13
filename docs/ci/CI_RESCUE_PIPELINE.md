@@ -44,7 +44,7 @@ For files that **only take effect from `main`** (workflow schedules, `workflow_r
 
 | Trigger | System | Description |
 |---------|--------|-------------|
-| WEC checkbox `⚡ Fast-Forward Approved` | **`workflow-execution-gate.yml`** → `fast-forward-safe-files.yml` | Maintainer ticks checkbox in PR body → WEC gate parses it → FF workflow auto-fires |
+| WEC checkbox ` Fast-Forward Approved` | **`workflow-execution-gate.yml`** → `fast-forward-safe-files.yml` | Maintainer ticks checkbox in PR body → WEC gate parses it → FF workflow auto-fires |
 | Manual | **`fast-forward-safe-files.yml`** | Direct trigger from GitHub Actions UI or `gh workflow run` |
 | CLI | **`codex-skill ff --pr <N>`** | Copilot Agent or maintainer previews/applies from terminal |
 
@@ -104,7 +104,7 @@ flowchart TD
     W --> X[New CI run\non fixed commit]
     X --> C
 
-    subgraph FF ["⚡ Fast-Forward Safe Files (S280 NEW)"]
+    subgraph FF [" Fast-Forward Safe Files (S280 NEW)"]
         FF1([WEC checkbox ticked\nOR manual trigger\nOR codex-skill ff]) --> FF2[workflow-execution-gate.yml\nparses FF section]
         FF2 --> FF3[fast-forward-safe-files.py\nclassifies files vs allowlist]
         FF3 --> FF4{Merge\nmode?}

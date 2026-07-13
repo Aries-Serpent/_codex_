@@ -300,7 +300,7 @@ Vulnerability detection and pattern-matching automation.
 
 **Access Control**:
 -  CODEX_MASTER_KEY only
-- ⚠️ No MFA required
+- ️ No MFA required
 -  Weekly rotation encouraged
 
 **Audit Requirements**:
@@ -325,11 +325,11 @@ General compliance and audit processing.
 **Access Control**:
 -  CODEX_MASTER_KEY or CODEX_BACKUP_KEY
 -  Standard token scope sufficient
-- ⚠️ Monthly rotation
+- ️ Monthly rotation
 
 **Audit Requirements**:
 -  Basic logging
-- ⚠️ Error-only alerting
+- ️ Error-only alerting
 
 ### Level 4: PUBLIC
 
@@ -342,7 +342,7 @@ Non-sensitive utilities and helpers.
 
 **Access Control**:
 -  Any token accepted
-- ⚠️ No MFA needed
+- ️ No MFA needed
 
 ---
 

@@ -4,7 +4,7 @@
 
 ## Table of Contents
 
-- [⚡ 5-minute quick-start checklist](#-5-minute-quick-start-checklist)
+- [ 5-minute quick-start checklist](#-5-minute-quick-start-checklist)
 - [Section 1 — Create `CODEX_MASTER_KEY` (Fine-Grained PAT)](#section-1--create-codex_master_key-fine-grained-pat)
   - [Step 1.1 — Generate the token](#step-11--generate-the-token)
   - [Step 1.2 — Inject the secret into the repository](#step-12--inject-the-secret-into-the-repository)
@@ -65,7 +65,7 @@
 
 ---
 
-## ⚡ 5-minute quick-start checklist
+##  5-minute quick-start checklist
 
 Use this as your "did I do everything?" reference. Tick each box as you complete it.
 

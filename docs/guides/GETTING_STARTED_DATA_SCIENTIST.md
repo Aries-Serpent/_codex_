@@ -1,4 +1,4 @@
-# Getting Started Guide for Data Scientists
+## Getting Started Guide for Data Scientists
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
@@ -355,7 +355,7 @@ from codex_ml.serving import LocalPredictor
 predictor = LocalPredictor('outputs/sentiment-v1/final')
 
 # Single prediction
-result = predictor.predict("This product is amazing!")
+result = predictor.predict("This product is !")
 print(f"Prediction: {result['label']} (confidence: {result['confidence']:.2%})")
 
 # Batch prediction

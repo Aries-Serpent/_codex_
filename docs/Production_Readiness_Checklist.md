@@ -3,7 +3,7 @@
 **Version:** v0.2.1
 
 **Last Updated**: 2026-06-22 (PR #2390)  
-**Status**: 🟡 IN PROGRESS (40% Complete)
+**Status**:  IN PROGRESS (40% Complete)
 
 ---
 
@@ -32,7 +32,7 @@
 
 ---
 
-## Code Quality 🟡 IN PROGRESS
+## Code Quality  IN PROGRESS
 
 ### Import Hygiene
 - [x] Hydra shadowing resolved (hydra/ → config_legacy/)
@@ -59,7 +59,7 @@
 
 ---
 
-## Documentation 🟡 IN PROGRESS
+## Documentation  IN PROGRESS
 
 ### User Guides
 - [x] Usage_Guide.md (audit commands)
@@ -77,14 +77,14 @@
 - [ ] Rollback procedures (tested)
 
 ### Status Reports
-- [x] v1.2.7 Status Report
+- [x] v0.2.1 Status Report
 - [x] Wave summaries (partial)
 - [ ] **Final production readiness report**
 - [ ] Metrics dashboard or visualization
 
 ---
 
-## Monitoring & Observability 🟡 IN PROGRESS
+## Monitoring & Observability  IN PROGRESS
 
 ### Trend Capture
 - [x] capability_trends.jsonl format defined
@@ -133,7 +133,7 @@
 | Criterion | Status | Blocker |
 |-----------|--------|---------|
 | Determinism (2-run equality) | ⏸️ Pending | Requires full audit execution |
-| Shadowing (yaml/hydra) | ⚠️ Partial | hydra-core not installed |
+| Shadowing (yaml/hydra) | ️ Partial | hydra-core not installed |
 | Legacy imports (≥50% reduction) |  0% | Refactoring not started |
 | Tests PASS | ⏸️ Pending | pytest not available in env |
 | Security (0 critical) |  PASS | - |
@@ -144,15 +144,15 @@
 |-----------|--------|------|
 | CI artifacts uploaded |  Ready | Workflow configured |
 | Baseline metadata |  Ready | System implemented |
-| Documentation complete | 🟡 80% | Final polish needed |
-| Monitoring active | 🟡 Ready | Needs execution |
-| Rollback tested | 📋 Documented | Not executed |
+| Documentation complete |  80% | Final polish needed |
+| Monitoring active |  Ready | Needs execution |
+| Rollback tested |  Documented | Not executed |
 
 ---
 
 ## Remaining Work (Priority Order)
 
-### Phase 1: Immediate (v1.2.8)
+### Phase 1: Immediate (v0.2.1)
 1. **Targeted Import Refactoring** (~10-15 files)
    - scripts/train.py
    - cli/task_sequence.py
@@ -170,13 +170,13 @@
    - SHA comparison
    - Evidence attachment
 
-### Phase 2: Documentation (v1.2.9)
+### Phase 2: Documentation (v0.2.1)
 1. Update Convergence_Runbook.md with reviewer checklist
 2. Finalize Usage_Guide.md with all workflows
 3. Create production deployment guide
 4. Document monitoring and alerts
 
-### Phase 3: Polish (v1.3.0)
+### Phase 3: Polish (v0.2.1)
 1. Trend visualization script
 2. Automated reporting
 3. Dashboard (optional)
@@ -229,10 +229,10 @@
 **In Progress**: Import refactoring, validation execution  
 **Pending**: Final polish, monitoring activation
 
-**Target Completion**: v1.3.0 (estimated 3-5 iterations)
+**Target Completion**: v0.2.1 (estimated 3-5 iterations)
 
 ---
 
 **Last Validated**: 2025-12-05 (commit e902006)  
-**Next Review**: After v1.2.8 completion  
+**Next Review**: After v0.2.1 completion  
 **Reviewer**: @mbaetiong

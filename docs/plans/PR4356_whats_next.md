@@ -9,7 +9,7 @@
   - [Code Review Fixes (all 7 across 2 parallel_validation rounds)](#code-review-fixes-all-7-across-2-parallel_validation-rounds)
   - [Infrastructure & Docs Added](#infrastructure--docs-added)
 - [ CI Results (HEAD `047bf03b` — S873)](#-ci-results-head-047bf03b--s873)
-- [📋 Pending (Post-Merge / Next Session)](#-pending-post-merge--next-session)
+- [ Pending (Post-Merge / Next Session)](#-pending-post-merge--next-session)
   - [Variables — Post PR comment once merged](#variables--post-pr-comment-once-merged)
   - [Webhooks — Post PR comment once merged](#webhooks--post-pr-comment-once-merged)
   - [Admin-Only Gaps](#admin-only-gaps)
@@ -17,8 +17,8 @@
   - [Infrastructure & Docs Added](#infrastructure--docs-added)
   - [Security / Token Fixes](#security--token-fixes)
   - [Code Review Fixes (post-parallel_validation)](#code-review-fixes-post-parallel_validation)
-- [🔄 In-Flight (CI Running Now)](#-in-flight-ci-running-now)
-- [📋 Pending (Next Session or Post-Merge)](#-pending-next-session-or-post-merge)
+- [ In-Flight (CI Running Now)](#-in-flight-ci-running-now)
+- [ Pending (Next Session or Post-Merge)](#-pending-next-session-or-post-merge)
   - [Variables — Trigger with PR comment](#variables--trigger-with-pr-comment)
   - [Webhooks — Trigger with PR comment](#webhooks--trigger-with-pr-comment)
   - [Admin-Only Gaps (require token scope changes — T-02, T-03)](#admin-only-gaps-require-token-scope-changes--t-02-t-03)
@@ -28,7 +28,7 @@
   - [Documentation Sweep](#documentation-sweep)
 - [�� CI Results (Latest HEAD `95c55bd`)](#-ci-results-latest-head-95c55bd)
   - [CodeQL / Security Alerts](#codeql--security-alerts)
-- [📋 Pending (Next Session or Post-Merge)](#-pending-next-session-or-post-merge)
+- [ Pending (Next Session or Post-Merge)](#-pending-next-session-or-post-merge)
   - [Variables — Trigger with PR comment](#variables--trigger-with-pr-comment)
   - [Webhooks — Trigger with PR comment](#webhooks--trigger-with-pr-comment)
   - [Docs Consolidation (planned — next session)](#docs-consolidation-planned--next-session)
@@ -49,7 +49,7 @@
 **Last Updated: 2026-06-22
 
 > **PR:** [#4356 — Clarify webhook receiver URL format + autonomous privilege architecture](https://github.com/Aries-Serpent/_codex_/pull/4356)
-> **Session:** S867→S873 | **Date:** 2026-05-08 | **Branch:** `copilot/fix-webhook-receiver-url-format`
+> **Session:** S867→S873 | **Date:2026-07-13
 > **Status:**  CI passing (core gates) · **99/100 merge readiness** · 39/40 checks passing
 > **HEAD:** `047bf03b` · **Review comments:** 8/8 resolved  · **CodeQL:** 0 alerts 
 
@@ -106,9 +106,9 @@
 | E→D Transition Readiness |  success (5/5) |
 | QA Walkthrough |  success |
 | Branch Rebase Gate |  up-to-date |
-| Rust-Python Hybrid Swarm CI/CD | ⚠️ startup_failure (pre-existing — requires Rust runner) |
-| Progressive Validation Suite | ⚠️ startup_failure (pre-existing — runner infra) |
-| Data Quality & Determinism Suite | ⚠️ startup_failure (pre-existing — runner infra) |
+| Rust-Python Hybrid Swarm CI/CD | ️ startup_failure (pre-existing — requires Rust runner) |
+| Progressive Validation Suite | ️ startup_failure (pre-existing — runner infra) |
+| Data Quality & Determinism Suite | ️ startup_failure (pre-existing — runner infra) |
 
 > **99/100 merge readiness** · 39/40 checks passing.
 > The 3 `startup_failure` items are pre-existing infrastructure issues unrelated to this PR.
@@ -117,7 +117,7 @@
 
 ---
 
-## 📋 Pending (Post-Merge / Next Session)
+##  Pending (Post-Merge / Next Session)
 
 ### Variables — Post PR comment once merged
 ```
@@ -182,22 +182,22 @@
 
 ---
 
-## 🔄 In-Flight (CI Running Now)
+##  In-Flight (CI Running Now)
 
 | Workflow | Status |
 |----------|--------|
-| Validation Pipeline (`validate.yml`) | 🔄 in_progress |
-| Resilient Validation Suite | 🔄 in_progress |
-| Nox quality gates | 🔄 queued |
-| CodeQL SAST analysis | 🔄 queued |
-| PR Checks | 🔄 in_progress |
-| Agent Registry Validation | 🔄 in_progress |
-| Root Organization Validation | 🔄 pending |
-| Security Scanning Suite | 🔄 in_progress |
+| Validation Pipeline (`validate.yml`) |  in_progress |
+| Resilient Validation Suite |  in_progress |
+| Nox quality gates |  queued |
+| CodeQL SAST analysis |  queued |
+| PR Checks |  in_progress |
+| Agent Registry Validation |  in_progress |
+| Root Organization Validation |  pending |
+| Security Scanning Suite |  in_progress |
 
 ---
 
-## 📋 Pending (Next Session or Post-Merge)
+##  Pending (Next Session or Post-Merge)
 
 ### Variables — Trigger with PR comment
 ```
@@ -275,9 +275,9 @@ Queued vars: `GH_TRICKLE_POLITE_SLEEP`, `GH_TRICKLE_MIN_REMAINING`, `GH_TRICKLE_
 | Documentation Link Checker |  success | |
 | Trigger validations on approval |  success | |
 |  PR Cost Check |  success | |
-| `Agent Token Delegation` | ⏳ action_required | Pending maintainer approval — not a failure |
-| `Automatic Dependency Submission` | ⚠️ infra-failure | GitHub-managed workflow; transient HTTP 503 — `dependency-submission.yml` already resilient |
-| Rust/Progressive/Data-Quality Suites | ⚠️ startup_failure | Pre-existing — Rust/GPU runner infra; unrelated to this PR |
+| `Agent Token Delegation` |  action_required | Pending maintainer approval — not a failure |
+| `Automatic Dependency Submission` | ️ infra-failure | GitHub-managed workflow; transient HTTP 503 — `dependency-submission.yml` already resilient |
+| Rust/Progressive/Data-Quality Suites | ️ startup_failure | Pre-existing — Rust/GPU runner infra; unrelated to this PR |
 
 ### CodeQL / Security Alerts
 | Status | Notes |
@@ -289,7 +289,7 @@ Queued vars: `GH_TRICKLE_POLITE_SLEEP`, `GH_TRICKLE_MIN_REMAINING`, `GH_TRICKLE_
 
 ---
 
-## 📋 Pending (Next Session or Post-Merge)
+##  Pending (Next Session or Post-Merge)
 
 ### Variables — Trigger with PR comment
 ```

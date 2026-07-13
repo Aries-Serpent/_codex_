@@ -3,7 +3,7 @@
 **Version:** v0.2.1
 
 **Last Updated**: 2026-01-20  
-**Version**: v0.9.0  
+**Version**: v0.2.1  
 **Supported Platforms**: Local, Docker, Kubernetes, Cloud
 
 ---
@@ -15,7 +15,7 @@
 graph TB
     subgraph "Local Development"
         LocalDev["💻 Developer Laptop<br/>• Python venv<br/>• Local SQLite DB<br/>• Local Redis cache"]
-        LocalTools["🔧 Local Tools<br/>• pip/conda<br/>• pytest<br/>• tensorboard"]
+        LocalTools[" Local Tools<br/>• pip/conda<br/>• pytest<br/>• tensorboard"]
     end
 
     subgraph "Docker Containerized"
@@ -28,14 +28,14 @@ graph TB
         K8sCluster["🐳 K8s Cluster<br/>• Pod scheduling<br/>• Resource management<br/>• Auto-scaling"]
         K8sServices["📡 K8s Services<br/>• ClusterIP services<br/>• LoadBalancer<br/>• Ingress controller"]
         K8sStorage["💾 K8s Storage<br/>• PersistentVolumes<br/>• StatefulSets<br/>• Database pods"]
-        K8sNet["🔗 K8s Network<br/>• NetworkPolicies<br/>• Pod-to-Pod<br/>• Egress rules"]
+        K8sNet[" K8s Network<br/>• NetworkPolicies<br/>• Pod-to-Pod<br/>• Egress rules"]
     end
 
     subgraph "Cloud Deployment"
         CloudCompute["☁️ Cloud Compute<br/>• AWS EC2/Lambda<br/>• GCP Compute Engine<br/>• Azure Container Inst."]
         CloudStorage["💾 Cloud Storage<br/>• S3/GCS/Azure Blob<br/>• Model versioning<br/>• Data persistence"]
         CloudDB["🗄️ Managed Database<br/>• AWS RDS<br/>• GCP Cloud SQL<br/>• Azure Database"]
-        CloudMonitor["📈 Cloud Monitoring<br/>• CloudWatch/Stackdriver<br/>• Log aggregation<br/>• Metrics/Traces"]
+        CloudMonitor[" Cloud Monitoring<br/>• CloudWatch/Stackdriver<br/>• Log aggregation<br/>• Metrics/Traces"]
     end
 
     subgraph "CI/CD Pipeline"
@@ -151,7 +151,7 @@ CMD ["codex", "serve"]
 
 **Registry**:
 - GitHub Container Registry (ghcr.io)
-- Version tags: `v0.9.0`, `latest`, `main`
+- Version tags: `v0.2.1`, `latest`, `main`
 - Signature validation: Cosign
 
 **Commands**:
@@ -185,7 +185,7 @@ spec:
     spec:
       containers:
       - name: codex
-        image: ghcr.io/aries-serpent/codex:v0.9.0
+        image: ghcr.io/aries-serpent/codex:v0.2.1
         ports:
         - containerPort: 8000
         env:
@@ -324,7 +324,7 @@ cache:
 storage:
   type: s3
   bucket: codex-models
-  prefix: v0.9.0/
+  prefix: v0.2.1/
 ```
 
 ### Cloud
@@ -341,7 +341,7 @@ cache:
 storage:
   type: s3
   bucket: prod-models
-  prefix: v0.9.0/
+  prefix: v0.2.1/
   encryption: AES256
 ```
 
@@ -359,7 +359,7 @@ storage:
    └─ Push image
    ↓
 3. Create release
-   ├─ Version tag (v0.9.0)
+   ├─ Version tag (v0.2.1)
    ├─ Release notes
    └─ GitHub release
    ↓

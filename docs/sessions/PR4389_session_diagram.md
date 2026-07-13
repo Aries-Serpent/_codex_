@@ -7,11 +7,11 @@
 **PR:** [#4389](https://github.com/Aries-Serpent/_codex_/pull/4389)
 **Branch:** `copilot/add-full-path-to-init-tracing-docs`
 **Sessions:** S920–S923
-**Date Range:** 2026-05-10 → 2026-05-11
+**Date 2026-07-13
 
 ---
 
-## 🔄 Session Flow
+##  Session Flow
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing S920 — Initial Analysis<br/>CodeQL artifact download<br/>Runs 3476–3489 diagnosed, S921 — Security Fixes Round 1<br/>Merge conflict: CODEX_MANIFEST.json<br/>Two-parent merge commit 43c86951'}}%%
@@ -40,7 +40,7 @@ graph TD
 
 ---
 
-## 🔍 Root Cause Analysis — 10 Failed Agent Sessions
+##  Root Cause Analysis — 10 Failed Agent Sessions
 
 ```mermaid
 %%{init: {'accessibility': {'title': 'Flowchart showing PR #4379 merged<br/>2026-05-10T02:31Z, PR #4389 created<br/>branch: add-full-path-to-init-tracing-docs'}}%%

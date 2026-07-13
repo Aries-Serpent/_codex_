@@ -19,11 +19,11 @@ This comprehensive planset provides an actionable pathway to achieve 100% metric
 | Metric | Current | Target | Gap | Status |
 |--------|---------|--------|-----|--------|
 | CI Success Rate | 100%* | 100% | 0% |  Achieved |
-| Documentation Coverage | 98% | 100% | 2% | 🟡 Near Complete |
+| Documentation Coverage | 98% | 100% | 2% |  Near Complete |
 | Test Pass Rate | 100% | 100% | 0% |  Achieved |
 | Security Score | A | A | 0% |  Achieved |
 | Automation Level | 75% | 100% | 25% |  Significant Gap |
-| Cognitive Brain Patterns | 50 | 60+ | 10+ | 🟡 Growing |
+| Cognitive Brain Patterns | 50 | 60+ | 10+ |  Growing |
 
 *Pending final CI verification
 
@@ -595,7 +595,7 @@ print(f"{'='*60}")
 
 for category, data in automation_areas.items():
     coverage = (data["automated"] / data["total_processes"]) * 100
-    status = "" if coverage == 100 else "" if coverage < 50 else "🟡"
+    status = "" if coverage == 100 else "" if coverage < 50 else ""
     print(f"{status} {category.title()}: {coverage:.0f}% ({data['automated']}/{data['total_processes']})")
 
 print(f"\n{'='*60}")
@@ -1057,7 +1057,7 @@ jobs:
             github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: '⚠️ Performance Regression Detected',
+              title: '️ Performance Regression Detected',
               body: 'Automated monitoring detected performance degradation.',
               labels: ['performance', 'automated-alert']
             });

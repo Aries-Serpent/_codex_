@@ -49,10 +49,10 @@ Integrate **Sigstore keyless signing** using GitHub OIDC tokens for cryptographi
 
 ### Negative
 
-⚠️ **External Dependency**: Relies on Sigstore infrastructure (Fulcio, Rekor)  
-⚠️ **Signature Performance**: ~5-10% overhead per archive operation  
-⚠️ **Online Verification**: Signature verification requires Rekor access  
-⚠️ **Team Learning Curve**: Training needed on Sigstore concepts  
+️ **External Dependency**: Relies on Sigstore infrastructure (Fulcio, Rekor)  
+️ **Signature Performance**: ~5-10% overhead per archive operation  
+️ **Online Verification**: Signature verification requires Rekor access  
+️ **Team Learning Curve**: Training needed on Sigstore concepts  
 
 ### Mitigation
 

@@ -18,8 +18,8 @@
  **MLOps**: 100% (71/71)  
 
 ### In Progress (40% weight)
-🔄 **Type Coverage**: 45% (target: 80%)  
-🔄 **Documentation**: 92% (target: 100%)  
+ **Type Coverage**: 45% (target: 80%)  
+ **Documentation**: 92% (target: 100%)  
 
 ---
 

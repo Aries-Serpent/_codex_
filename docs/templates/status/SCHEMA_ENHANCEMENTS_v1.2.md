@@ -3,8 +3,8 @@
 **Version:** v0.2.1
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
- Roles: [Primary: Schema Architect], [Secondary: Repository Analyst] ⚡ Energy: 5  
-⚛️ Physics: Path🛤️ Fields🔄 Patterns👁️ Redundancy🔀 Balance⚖️
+ Roles: [Primary: Schema Architect], [Secondary: Repository Analyst]  Energy: 5  
+⚛️ Physics: Path️ Fields Patterns️ Redundancy Balance️
 
 ## Executive Summary
 This document details the enhancements made to the status update schema (v1.1 → v1.2) based on deep analysis of the `_codex_` repository structure, tooling, and workflows. All enhancements are grounded in actual repository capabilities and designed to support the offline-first, reproducible ML training environment.

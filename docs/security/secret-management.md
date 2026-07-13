@@ -84,7 +84,7 @@ SERVICE_NAME=$1
 NEW_KEY=$2
 ENVIRONMENT=${3:-staging}
 
-echo "🔄 Starting API key rotation for $SERVICE_NAME in $ENVIRONMENT..."
+echo " Starting API key rotation for $SERVICE_NAME in $ENVIRONMENT..."
 
 # Step 1: Generate new key in external service
 echo "1️⃣  Request new key from $SERVICE_NAME console"
@@ -152,7 +152,7 @@ DB_HOST=$2
 NEW_PASSWORD=$3
 BACKUP_REQUIRED=${4:-true}
 
-echo "🔄 Rotating database password for $DB_USER@$DB_HOST..."
+echo " Rotating database password for $DB_USER@$DB_HOST..."
 
 # Step 1: Create backup
 if [ "$BACKUP_REQUIRED" = "true" ]; then
@@ -382,7 +382,7 @@ def get_api_key(secret_name: str) -> str:  # pragma: allowlist secret
 #!/bin/bash
 # scripts/analyze_secret_audit.sh
 
-echo "🔍 Secret Access Audit Analysis"
+echo " Secret Access Audit Analysis"
 echo "================================"
 
 # Most accessed secrets
@@ -393,11 +393,11 @@ jq -s 'group_by(.secret_name) |
        .[0:10]' logs/secret_audit.jsonl
 
 # Failed access attempts
-echo -e "\n⚠️  Failed Access Attempts:"
+echo -e "\n️  Failed Access Attempts:"
 jq 'select(.success == false)' logs/secret_audit.jsonl | wc -l
 
 # Recent rotations
-echo -e "\n🔄 Recent Secret Rotations (Last 7 days):"
+echo -e "\n Recent Secret Rotations (Last 7 days):"
 jq "select(.access_type == \"ROTATE\" and
     (now - (.timestamp | fromdateiso8601)) < 604800)" \
     logs/secret_rotations_audit.jsonl
@@ -409,7 +409,7 @@ jq -s 'group_by(.user) |
        sort_by(-.count)' logs/secret_audit.jsonl
 
 # Unusual activity (high volume in short time)
-echo -e "\n🚨 Unusual Activity Detection:"
+echo -e "\n Unusual Activity Detection:"
 jq -s 'group_by(.timestamp | split(".")[0]) |
        map({timestamp: .[0].timestamp, count: length}) |
        select(.count > 100)' logs/secret_audit.jsonl
@@ -432,11 +432,11 @@ set -e
 SECRET_NAME=$1
 EXPOSURE_LEVEL=${2:-internal}  # internal, external, public
 
-echo "🚨 IMMEDIATE ACTION: Rotating compromised secret: $SECRET_NAME"
+echo " IMMEDIATE ACTION: Rotating compromised secret: $SECRET_NAME"
 
 # Step 1: Alert team
 echo "1️⃣  Alerting security team..."
-slack-notify "🚨 SECURITY: Secret '$SECRET_NAME' potentially compromised"
+slack-notify " SECURITY: Secret '$SECRET_NAME' potentially compromised"
 
 # Step 2: Revoke compromised secret
 echo "2️⃣  Revoking compromised secret..."
@@ -547,7 +547,7 @@ class DeploymentRecovery:
 
     def rollback_secrets(self):  # pragma: allowlist secret
         """Rollback to last known good secrets"""  # pragma: allowlist secret
-        print(f"🔄 Rolling back to: {self.rollback_target}")
+        print(f" Rolling back to: {self.rollback_target}")
 
         try:
             # Retrieve last known good configuration
@@ -590,7 +590,7 @@ class DeploymentRecovery:
 
     def run_recovery(self):
         """Execute full recovery procedure"""
-        print("🚨 Starting deployment recovery...")
+        print(" Starting deployment recovery...")
 
         # 1. Check health
         health = self.check_deployment_health()
@@ -599,7 +599,7 @@ class DeploymentRecovery:
         # 2. Identify problems
         mismatches = self.identify_secret_mismatches()  # pragma: allowlist secret
         if mismatches:
-            print(f"\n⚠️  Found {len(mismatches)} auth failures")
+            print(f"\n️  Found {len(mismatches)} auth failures")
 
         # 3. Rollback
         self.rollback_secrets()  # pragma: allowlist secret
@@ -608,7 +608,7 @@ class DeploymentRecovery:
         self.restart_services()
 
         # 5. Verify recovery
-        print("\n🔍 Verifying recovery...")
+        print("\n Verifying recovery...")
         new_health = self.check_deployment_health()
 
         if all(new_health.values()):

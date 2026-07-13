@@ -293,7 +293,7 @@ For each file enhanced:
 
 - Do NOT modify source code to increase coverage (except fixing bugs)
 - Do NOT skip or exclude code from coverage
-- Do NOT use `# pragma: no cover` unless absolutely necessary
+- Do NOT use `# pragma: no cover` unless necessary
 - DO use mocking for external dependencies
 - DO maintain test isolation
 - DO follow existing test patterns in repository
@@ -301,7 +301,7 @@ For each file enhanced:
 
 ---
 
-## 📋 FILE-SPECIFIC PROMPTS
+##  FILE-SPECIFIC PROMPTS
 
 ### For Specific Low-Coverage Files
 
@@ -337,7 +337,7 @@ Create comprehensive test files under `tests/{module}/` following existing patte
 
 ---
 
-## 🔧 AUTOMATION SCRIPTS
+##  AUTOMATION SCRIPTS
 
 ### Generate Coverage Gap Report
 
@@ -399,7 +399,7 @@ For each file:
 
 ---
 
-##  QUICK START
+## Quick Start
 
 Copy and paste this to start:
 
@@ -425,7 +425,7 @@ Begin by running coverage analysis and listing all files that need tests.
 
 ---
 
-## 📝 NOTES
+##  NOTES
 
 - This prompt is designed for the Aries-Serpent/_codex_ repository
 - Adjust paths and patterns based on your project structure

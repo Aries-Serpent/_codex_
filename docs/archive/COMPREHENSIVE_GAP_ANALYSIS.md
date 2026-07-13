@@ -68,7 +68,7 @@ This document provides a comprehensive analysis of remaining gaps, incomplete im
 
 ### Current State
 - **MLOps Maturity**: Level 4 Certified (100/100 score)
-- **Audit Pipeline**: v1.5.5 operational
+- **Audit Pipeline**: v0.2.1 operational
 - **Test Coverage**: 1,208+ test files, 72% coverage
 - **Documentation**: 693 markdown files
 - **Scripts**: 195 Python scripts
@@ -76,8 +76,8 @@ This document provides a comprehensive analysis of remaining gaps, incomplete im
 
 ### Key Findings
 -  **6/6 Code Review Comments Addressed** (commit f7d799b)
-- ⚠️ **19 Stub Implementations Identified** (12 P0, 3 P1, 4 P2)
-- ⚠️ **2 Known Capability Gaps** (from codex_gap_registry.yaml)
+- ️ **19 Stub Implementations Identified** (12 P0, 3 P1, 4 P2)
+- ️ **2 Known Capability Gaps** (from codex_gap_registry.yaml)
 -  **Archive Structure Established** (misc/repo-owner-review/)
 -  **Agent Infrastructure Complete** (agents/prompts/, workflow_navigator)
 
@@ -221,7 +221,7 @@ Both capability gaps reported in the registry have been verified as already impl
 
 Updated `codex_gap_registry.yaml` to reflect:
 - Both gaps marked as `status: resolved`
-- Added `resolved_date: 2025-12-11`
+- Added `resolved_date: 2026-07-13
 - Added `resolution:` field with implementation details
 - Updated `notes:` with file locations and test references
 
@@ -332,7 +332,7 @@ Updated `codex_gap_registry.yaml` to reflect:
    - **Recommendation**: Create tests before implementing stubs
 
 2. **Integration Tests for New Features**
-   - **Gap**: audit_runner v1.5.5 features need integration tests
+   - **Gap**: audit_runner v0.2.1 features need integration tests
    - **Priority**: MEDIUM
    - **Recommendation**: Add tests for:
      - Trend aggregation

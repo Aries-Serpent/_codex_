@@ -204,10 +204,10 @@ pip list | grep codex
 pip show codex-ml
 
 # Verify core imports
-python -c "from codex_ml.config import Config; print('✓ Config module')"
+python -c "from codex_ml.config import Config; print(' Config module')"
 
 # Verify runtime imports (if runtime/full installed)
-python -c "from cognitive_brain import Planner; print('✓ Planner module')"
+python -c "from cognitive_brain import Planner; print(' Planner module')"
 
 # Check CLI
 codex --version

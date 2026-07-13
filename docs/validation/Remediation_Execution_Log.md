@@ -125,9 +125,9 @@ Recommendation: Execute 'Codebase_Convergence_Validation' plan.
 
 | Check | Risk Level | Status | Details |
 |-------|:----------:|:------:|---------|
-| Hydra Shadowing | **CRITICAL** | ⚠️ DETECTED | Local `hydra/` shadows PyPI `hydra-core` |
-| Training Split-Brain | **HIGH** | ⚠️ DETECTED | Both `training/` and `src.training/` importable |
-| Tokenization Split-Brain | **HIGH** | ⚠️ DETECTED | Both `tokenization/` and `src.tokenization/` importable |
+| Hydra Shadowing | **CRITICAL** | ️ DETECTED | Local `hydra/` shadows PyPI `hydra-core` |
+| Training Split-Brain | **HIGH** | ️ DETECTED | Both `training/` and `src.training/` importable |
+| Tokenization Split-Brain | **HIGH** | ️ DETECTED | Both `tokenization/` and `src.tokenization/` importable |
 | Models Split | **MEDIUM** | ℹ️ NOTED | `models/` vs `src.modeling` (different names) |
 
 ---
@@ -244,11 +244,11 @@ warnings.warn(
 
 **Engineer**: @copilot (autonomous agent)  
 **Date**: 2025-12-04 22:44:41 UTC  
-**Pass/Fail**: ⚠️ **PARTIAL** - Remediation scripts validated; architectural issues detected and documented
+**Pass/Fail**: ️ **PARTIAL** - Remediation scripts validated; architectural issues detected and documented
 
 **Status**:
 -  All remediation scripts functional and tested
-- ⚠️ Architectural issues detected (expected)
+- ️ Architectural issues detected (expected)
 -  Remediation plans documented
 - ⏭️ Post-merge execution required
 

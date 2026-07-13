@@ -39,39 +39,39 @@ echo "Timestamp: $(date)"
 echo -e "\n[CLUSTER] Checking Kubernetes cluster health..."
 kubectl get nodes
 NODES=$(kubectl get nodes --no-headers | wc -l)
-echo "✓ Active nodes: $NODES"
+echo " Active nodes: $NODES"
 
 # 2. Check pod status
 echo -e "\n[PODS] Checking pod status..."
 kubectl get pods --all-namespaces --field-selector=status.phase!=Running,status.phase!=Succeeded
 CRASHED=$(kubectl get pods -A --field-selector=status.phase=Failed | wc -l)
 if [ $CRASHED -gt 0 ]; then
-  echo "⚠ WARNING: $CRASHED crashed pods found"
+  echo " WARNING: $CRASHED crashed pods found"
 else
-  echo "✓ All pods running normally"
+  echo " All pods running normally"
 fi
 
 # 3. Check storage
 echo -e "\n[STORAGE] Checking persistent volumes..."
 kubectl get pvc -A
-kubectl get pv | grep -v "Bound" || echo "✓ All PVs properly bound"
+kubectl get pv | grep -v "Bound" || echo " All PVs properly bound"
 
 # 4. Check database
 echo -e "\n[DATABASE] Checking database connectivity..."
 kubectl exec -it deployment/postgres -n data-layer -- \
   psql -U codex_admin -d codex -c "SELECT count(*) FROM pg_stat_activity;"
-echo "✓ Database responding"
+echo " Database responding"
 
 # 5. Check Redis
 echo -e "\n[CACHE] Checking Redis cache..."
 kubectl exec -it deployment/redis -n data-layer -- \
   redis-cli ping
-echo "✓ Cache responding"
+echo " Cache responding"
 
 # 6. Check API health
 echo -e "\n[API] Checking API endpoint..."
 curl -s http://codex-ml-service:80/health | jq .
-echo "✓ API responding"
+echo " API responding"
 
 # 7. Review alerts
 echo -e "\n[ALERTS] Recent critical alerts..."
@@ -270,7 +270,7 @@ pg_dump -h localhost -U $DB_USER -d $DB_NAME \
 
 # Verify backup
 gunzip -t $BACKUP_DIR/full_backup_$TIMESTAMP.sql.gz
-echo "✓ Backup verified"
+echo " Backup verified"
 
 # Upload to S3
 aws s3 cp $BACKUP_DIR/full_backup_$TIMESTAMP.sql.gz \
@@ -322,7 +322,7 @@ kubectl scale deployment codex-ml --replicas=3 -n codex-ml
 # Verify recovery
 kubectl rollout status deployment/codex-ml -n codex-ml
 
-echo "✓ Recovery complete"
+echo " Recovery complete"
 ```
 
 ---

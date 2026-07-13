@@ -9,7 +9,7 @@
 
 ---
 
-## 📋 Overview
+##  Overview
 
 This guide documents the comprehensive test suite for GitHub API processes that leverage **CODEX_MASTER_KEY**, a GitHub Personal Access Token (PAT) with the following scopes:
 
@@ -265,7 +265,7 @@ GET    /enterprises/{enterprise}/audit-log
 
 ---
 
-## 🔧 Helper Scripts & Utilities
+##  Helper Scripts & Utilities
 
 ### `scripts/ci/_secrets_encryption_helper.py`
 
@@ -467,7 +467,7 @@ python -c "import nacl; print(nacl.__version__)"
 
 ---
 
-## 📝 Document History
+##  Document History
 
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|

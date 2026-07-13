@@ -4,7 +4,7 @@
 
 **Last Updated: 2026-06-22
 
-**Collection date:** 2026-04-27  
+**Collection date:2026-07-13
 **Primary topic:** Continuing the prior deep research on the counter-balance between security and unfettered access, now focused on **$C_pT$** as a thermodynamic lens for usable security, access energy, friction, enthalpy, and adaptive control.
 
 ## Import Guidance
@@ -16,7 +16,7 @@ Import every Markdown file in this folder as a separate NotebookLM source. The n
 | `01_cp_t_thermodynamic_foundation.md` | Defines $C_pT$, enthalpy, assumptions, units, ideal-gas and incompressible approximations. |
 | `02_security_access_enthalpy_analogy.md` | Maps $C_pT$ to security/access balance: access heat capacity, threat temperature, governance enthalpy. |
 | `03_equation_variables_and_mermaid_maps.md` | Provides variables, formulas, Mermaid diagrams, and calculation templates. |
-| `04_quantum_physics_inspired_expansion.md` | Adds clearly labeled speculative quantum/physics-inspired variables. |
+| `04_quantum_physics_inspired_expansion.md` | Adds labeled speculative quantum/physics-inspired variables. |
 | `05_edge_cases_failure_modes_and_samples.md` | Iterates through edge cases, failure modes, and worked examples. |
 | `06_condensed_understanding.md` | Final condensed synthesis for fast review. |
 | `07_adaptive_energy_management_spectrum.md` | Extends CpT into adaptive energy-management across thermal, electrical, electromagnetic, chemical, mechanical, informational, and security/access domains. |
@@ -146,7 +146,7 @@ source/input → state/context estimation → balance equation → route/store/c
 
 
 
-## Recent-Date Web Search Grounding — 2026-04-27
+## Recent-Date 2026-07-13
 
 This research packet was explicitly grounded with web search on **2026-04-27** for recent adaptive energy-management and electromagnetic-energy sources. The newest source set includes 2024, 2025, and 2026 material.
 
@@ -171,7 +171,7 @@ NotebookLM interpretation: treat the equations in this packet as structured synt
 
 ## 2027 Outlook Layer — Forecast, Not Observed Data
 
-Because the session date is **2026-04-27**, 2027 content is treated as **forecast/outlook material**, not observed post-2027 evidence. Use it to reason about likely near-future stressors, maturity requirements, and design margins.
+Because the session date 2026-07-13
 
 2027-oriented smart-grid and adaptive-energy anchors from web search:
 

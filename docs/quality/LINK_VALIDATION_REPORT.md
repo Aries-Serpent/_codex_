@@ -23,7 +23,7 @@ Successfully completed comprehensive documentation link audit and remediation ac
 | **Total links found** | 3,824 |  |
 | **External valid links** | 1,050 |  |
 | **Internal valid links** | 2,692 |  |
-| **Broken links identified** | 82 | ⚠️ |
+| **Broken links identified** | 82 | ️ |
 | **False positives** | 76 (92.7%) | ℹ️ |
 | **Real broken links** | 6 |  |
 | **Links remediated** | 16 |  |
@@ -75,7 +75,7 @@ These require remediation:
 | External directory references | 2 |  Convert to GitHub URLs |
 | Duplicate docs/ prefixes | 3 |  Remove prefix, use relative |
 | Source code references | 1 |  Convert to GitHub URLs |
-| Missing guides | 1 | ⚠️ Link to existing guide |
+| Missing guides | 1 | ️ Link to existing guide |
 | **TOTAL** | **6** | **100% fixable** |
 
 ---

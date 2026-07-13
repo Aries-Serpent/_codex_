@@ -330,7 +330,7 @@ Continuation Guides:
 - Strong type safety
 - Good test coverage
 
-### ⚠️ Watch Items
+### ️ Watch Items
 
 1. **RAG Test Performance** (Medium Priority)
    - Some tests still timeout after 4-6 minutes
@@ -505,7 +505,7 @@ gantt
 4. **Self-Review**: Iterative improvements
 5. **Collaboration**: Human-AI partnership
 
-### What Could Improve 🔄
+### What Could Improve 
 
 1. **Earlier Testing**: Run CI checks before committing
 2. **Cache Management**: Proactive cache clearing

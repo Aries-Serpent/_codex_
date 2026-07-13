@@ -3,7 +3,7 @@
 **Version:** v0.2.1
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong
- Roles: [Audit Orchestrator], [Capability Cartographer] ⚡ Energy: 5
+ Roles: [Audit Orchestrator], [Capability Cartographer]  Energy: 5
 
 ## Overview
 Run local security scans and persist artifacts under audit_artifacts/security/ when explicitly enabled.

@@ -7,7 +7,7 @@
 
 ---
 
-## 📋 Guide Categories
+##  Guide Categories
 
 This directory contains comprehensive guides for using the repository.
 

@@ -42,14 +42,14 @@
 - [11. Scoring Rubric (Use Everywhere)](#11-scoring-rubric-use-everywhere)
 - [12. Appendix](#12-appendix)
 
- Roles: [Primary: Repo Audit Template Architect], [Secondary: Execution Readiness Reviewer] ⚡ Energy: 5  
+ Roles: [Primary: Repo Audit Template Architect], [Secondary: Execution Readiness Reviewer]  Energy: 5  
 
 
 This is the canonical template for producing the per-iteration, single-document, full-technical status update and repo audit. It is designed for offline-first workflows and includes a complete snapshot, delta, risk/confidence scoring, standardized atomic patch diffs, automation ingest placeholders, tokenization insights, and secret-masking guidance, plus integrated schema validation with audit integrity chains.
 
 Title format for each report (must use exactly):
 - H1 Title: "📍 `_codex_` : Status Update <YYYY‑MM‑DD‑HH:mm:z‑UTC>"
-  - Example: "📍 `_codex_` : Status Update 2025‑11‑02‑12:07:UTC"
+  - Example: "📍 `_codex_` : Status Update 2026-07-13
 
 ---
 
@@ -201,14 +201,14 @@ Provide core controls plus an extensible registry to accommodate evolving needs.
 
 | Control | Status | Notes | Evidence |
 | --- | --- | --- | --- |
-| Seeds across Python/NumPy/Torch | </⚠️/> | <notes> | <path_to_seeding_util> |
-| Env capture (OS, Python, pip freeze) | </⚠️/> | <notes> | <path_to_env_capture_code> |
-| Lockfiles and pinning | </⚠️/> | <notes> | `requirements/lock.txt` |
-| Deterministic data splits | </⚠️/> | <notes> | `src/data/loaders.py` |
-| Hardware determinism (cuDNN, AMP) | </⚠️/> | <notes> | |
-| RNG state in checkpoints | </⚠️/> | <notes> | `src/training/trainer.py` |
-| Results determinism tests | </⚠️/> | <notes> | `tests/repro/test_determinism.py` |
-| Documentation of reproducibility | </⚠️/> | <notes> | `docs/repro.md` |
+| Seeds across Python/NumPy/Torch | </️/> | <notes> | <path_to_seeding_util> |
+| Env capture (OS, Python, pip freeze) | </️/> | <notes> | <path_to_env_capture_code> |
+| Lockfiles and pinning | </️/> | <notes> | `requirements/lock.txt` |
+| Deterministic data splits | </️/> | <notes> | `src/data/loaders.py` |
+| Hardware determinism (cuDNN, AMP) | </️/> | <notes> | |
+| RNG state in checkpoints | </️/> | <notes> | `src/training/trainer.py` |
+| Results determinism tests | </️/> | <notes> | `tests/repro/test_determinism.py` |
+| Documentation of reproducibility | </️/> | <notes> | `docs/repro.md` |
 
 #### 2.5.2 Reproducibility Registry (Dynamic)
 

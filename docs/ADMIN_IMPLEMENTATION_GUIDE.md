@@ -51,18 +51,18 @@
 - [Default owners for everything](#default-owners-for-everything)
 - [Workflow files require owner approval](#workflow-files-require-owner-approval)
 - [Security-sensitive files](#security-sensitive-files)
-- [📋 Section 6: Verification Checklist](#-section-6-verification-checklist)
+- [ Section 6: Verification Checklist](#-section-6-verification-checklist)
   - [Organization Level](#organization-level)
   - [Repository Level](#repository-level)
   - [GitHub App](#github-app)
   - [Secrets](#secrets)
   - [Infrastructure](#infrastructure)
   - [Testing](#testing)
-- [🔄 Section 7: Information to Return to Copilot](#-section-7-information-to-return-to-copilot)
+- [ Section 7: Information to Return to Copilot](#-section-7-information-to-return-to-copilot)
 - [==============================================================================](#)
 - [Admin Configuration Report for _codex_](#admin-configuration-report-for-_codex_)
 - [==============================================================================](#)
-- [Date: [TODAY'S DATE - e.g., 2025-12-21]](#date-todays-date---eg-2025-12-21)
+- [Date: 2026-07-13](#date-todays-date---eg-2025-12-21)
 - [Administrator: [YOUR_NAME]](#administrator-your_name)
 - [==============================================================================](#)
 - [List any issues or blockers](#list-any-issues-or-blockers)
@@ -93,7 +93,7 @@
   - [Test 4: Verify Branch Protection](#test-4-verify-branch-protection)
   - [Cleanup Test PR](#cleanup-test-pr)
 - [Delete test branch](#delete-test-branch)
-- [📝 Notes Section](#-notes-section)
+- [ Notes Section](#-notes-section)
   - [Admin Notes](#admin-notes)
   - [Version History](#version-history)
 - [ Document Metadata](#-document-metadata)
@@ -133,8 +133,8 @@ You need to:
 |--------|---------------|----------------------|----------|
 | Copilot Agent |  Not Configured | 5 actions | **CRITICAL** |
 | PR Reviewer |  App Not Created | 8 actions | **HIGH** |
-| Security Scanning | ⚠️ Partial | 3 actions | **HIGH** |
-| Workflows | ⚠️ Failing | 4 actions | **MEDIUM** |
+| Security Scanning | ️ Partial | 3 actions | **HIGH** |
+| Workflows | ️ Failing | 4 actions | **MEDIUM** |
 | Evolution System |  Not Deployed | 6 actions | **MEDIUM** |
 
 ---
@@ -204,7 +204,7 @@ organization_settings:
 
 **Portal:** `https://github.com/organizations/Aries-Serpent/settings/apps/new`
 
-> ⚠️ **IMPORTANT:** You must be an Organization Owner or Admin to create a GitHub App.
+> ️ **IMPORTANT:** You must be an Organization Owner or Admin to create a GitHub App.
 
 **Step-by-Step Instructions:**
 
@@ -249,7 +249,7 @@ Copy these values exactly:
 openssl rand -hex 32
 ```
 
-> 📋 **SAVE THIS VALUE SECURELY** - You will need it later for the `CODEX_WEBHOOK_SECRET` secret.
+>  **SAVE THIS VALUE SECURELY** - You will need it later for the `CODEX_WEBHOOK_SECRET` secret.
 
 ## Step 5: Repository Permissions (CRITICAL)
 
@@ -526,7 +526,7 @@ If using GitHub-hosted runners (recommended):
 mkdir actions-runner && cd actions-runner
 
 # Download runner (get URL from Settings → Actions → Runners → New self-hosted runner)
-curl -o actions-runner-linux-x64-2.311.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.311.0/actions-runner-linux-x64-2.311.0.tar.gz
+curl -o actions-runner-linux-x64-2.311.0.tar.gz -L https://github.com/actions/runner/releases/download/v0.2.1/actions-runner-linux-x64-2.311.0.tar.gz
 
 # Extract
 tar xzf ./actions-runner-linux-x64-2.311.0.tar.gz
@@ -555,7 +555,7 @@ tar xzf ./actions-runner-linux-x64-2.311.0.tar.gz
 | Dependabot security updates |  Enabled | Settings → Security → Enable |
 | Secret scanning |  Enabled | Settings → Security → Enable |
 | Push protection |  Enabled | Settings → Security → Enable |
-| Code scanning | ⚠️ Optional | Configure in workflow |
+| Code scanning | ️ Optional | Configure in workflow |
 
 ### 5.2 Branch Protection Rules
 
@@ -572,13 +572,13 @@ tar xzf ./actions-runner-linux-x64-2.311.0.tar.gz
 | Require a pull request before merging |  |
 | Require approvals | 1 |
 | Dismiss stale pull request approvals |  |
-| Require review from Code Owners | ⚠️ Optional |
+| Require review from Code Owners | ️ Optional |
 | Require status checks to pass |  |
 | Require branches to be up to date |  |
 | **Required status checks:** | See list below |
 | Require conversation resolution |  |
-| Do not allow bypassing | ⚠️ Optional |
-| Restrict who can push | ⚠️ Optional |
+| Do not allow bypassing | ️ Optional |
+| Restrict who can push | ️ Optional |
 
 **Required Status Checks (add these):**
 
@@ -615,7 +615,7 @@ Dockerfile* @Aries-Serpent/owners
 
 ---
 
-## 📋 Section 6: Verification Checklist
+##  Section 6: Verification Checklist
 
 Use this checklist to verify all configurations are complete:
 
@@ -665,7 +665,7 @@ Use this checklist to verify all configurations are complete:
 
 ---
 
-## 🔄 Section 7: Information to Return to Copilot
+##  Section 7: Information to Return to Copilot
 
 Copy and complete this template, then provide it to the Copilot Agent:
 
@@ -673,7 +673,7 @@ Copy and complete this template, then provide it to the Copilot Agent:
 # ==============================================================================
 # Admin Configuration Report for _codex_
 # ==============================================================================
-# Date: [TODAY'S DATE - e.g., 2025-12-21]
+# Date: 2026-07-13
 # Administrator: [YOUR_NAME]
 # ==============================================================================
 
@@ -921,7 +921,7 @@ git push origin --delete test/admin-config-validation
 
 ---
 
-## 📝 Notes Section
+##  Notes Section
 
 ### Admin Notes
 

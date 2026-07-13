@@ -1,8 +1,8 @@
-## v0.1.0-final - Production Release (2026-07-10)
+## v0.2.1-final - Production Release (2026-07-10)
 
 **🎉 PRODUCTION READY - Level 4 MLOps Certified**
 
-This is the official v0.1.0-final production release of the Aries-Serpent ML platform. All core systems are stable, battle-tested, and production-grade.
+This is the official v0.2.1-final production release of the Aries-Serpent ML platform. All core systems are stable, battle-tested, and production-grade.
 
 ### Installation
 
@@ -63,8 +63,8 @@ pip install codex-ml==0.1.0
 ### Downloads
 
 - **PyPI:** `pip install codex-ml==0.1.0`
-- **GitHub Release:** [v0.1.0-prod](https://github.com/Aries-Serpent/_codex_/releases/tag/v0.1.0-prod)
-- **Archive:** [ZIP](https://github.com/Aries-Serpent/_codex_/releases/download/v0.1.0-prod/_codex_.v0.1.0-prod.zip)
+- **GitHub Release:** [v0.2.1-prod](https://github.com/Aries-Serpent/_codex_/releases/tag/v0.2.1-prod)
+- **Archive:** [ZIP](https://github.com/Aries-Serpent/_codex_/releases/download/v0.2.1-prod/_codex_.v0.2.1-prod.zip)
 
 ### Sign-Off
 
@@ -84,7 +84,7 @@ No breaking changes. Pre-release configurations remain compatible.
 
 ---
 
-## Cognitive Brain v0.1.0-beta1
+## Cognitive Brain v0.2.1-beta1
 
 First standalone release of the **Cognitive Brain** module from Aries-Serpent platform.
 
@@ -142,7 +142,7 @@ print(f"Decision: {decision}")
 -  Zero third-party dependency bloat
 
 ### Campaign Context
-This is **Phase 1** of the v0.1.0 distribution campaign. Subsequent phases will package:
+This is **Phase 1** of the v0.2.1 distribution campaign. Subsequent phases will package:
 - **Phase 2**: Core module (2026-07-26)
 - **Phase 3**: ML/Services package (2026-08-09)
 - **Phase 4**: Full distribution with Docker/Kubernetes (2026-09-15)
@@ -154,6 +154,6 @@ This is **Phase 1** of the v0.1.0 distribution campaign. Subsequent phases will 
 4. Report any issues in GitHub Discussions
 
 ---
-**Release Type**: Beta Release (v0.1.0-beta1)  
+**Release Type**: Beta Release (v0.2.1-beta1)  
 **Campaign**: Packaging Campaign Phase 1  
-**Authority**: v0.1.0-prod production deployment authorized (2026-07-08)
+**Authority**: v0.2.1-prod production deployment authorized (2026-07-08)

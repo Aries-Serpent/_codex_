@@ -3,8 +3,8 @@
 **Version:** v0.2.1
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
- Roles: [Primary: Security Gate Owner], [Secondary: Implementer] ⚡ Energy: 5/5  
-⚛️ Physics: Path🛤️ [Scan → Parse → Decide → Artifact] Fields🔄 [pip-audit, JSON] Patterns👁️ [Fail High/Critical, Allowlist Expiry] Redundancy🔀 [Artifact + Index] Balance⚖️ [Strict vs. Developer Velocity]
+ Roles: [Primary: Security Gate Owner], [Secondary: Implementer]  Energy: 5/5  
+⚛️ Physics: Path️ [Scan → Parse → Decide → Artifact] Fields [pip-audit, JSON] Patterns️ [Fail High/Critical, Allowlist Expiry] Redundancy [Artifact + Index] Balance️ [Strict vs. Developer Velocity]
 
 ## Policy
 - Fail build (nox session) on any HIGH or CRITICAL vulnerability not explicitly allowlisted with future expiry.

@@ -187,7 +187,7 @@ Rate limiting is automatic when configured in `.mcp-config.json`:
 
 ### How secure are password hashes?
 
-⚠️ **Important**: Use bcrypt or argon2 for passwords, NOT SHA-256:
+️ **Important**: Use bcrypt or argon2 for passwords, NOT SHA-256:
 
 ```python
 import bcrypt
@@ -327,16 +327,16 @@ See [QUICK_START.md](QUICK_START.md) for full details.
 
 **Objective**: Provide clear, concise answers to frequently asked questions about MCP implementation, configuration, security, and usage, enabling rapid developer onboarding and troubleshooting.
 
-**Energy Level**: ⚡⚡⚡⚡ (4/5) - High Value Reference
+**Energy Level**:  (4/5) - High Value Reference
 - High impact: Accelerates developer onboarding
 - High adoption: Most consulted troubleshooting resource
 - Long-term value: Reduces support burden
 
-**Status**:  Production Ready | 🔄 Continuously Updated
+**Status**:  Production Ready |  Continuously Updated
 
 ---
 
-## ⚖️ Verification Checklist
+## ️ Verification Checklist
 
 **Content Coverage**:
 - [ ] General MCP concepts explained
@@ -354,11 +354,11 @@ See [QUICK_START.md](QUICK_START.md) for full details.
 
 ---
 
-## 📈 Success Metrics
+##  Success Metrics
 
 | Metric | Target | Current | Status |
 |--------|--------|---------|--------|
-| Question Coverage | >50 FAQs | 42 FAQs | 🟡 Growing |
+| Question Coverage | >50 FAQs | 42 FAQs |  Growing |
 | Developer Satisfaction | >4/5 | 4.3/5 |  High |
 | Support Ticket Reduction | >30% | ~35% |  Excellent |
 | Search Hit Rate | >80% | ~75% |  Good |
@@ -368,26 +368,26 @@ See [QUICK_START.md](QUICK_START.md) for full details.
 
 ## ⚛️ Physics Alignment
 
-### Path 🛤️ (Question Resolution)
+### Path ️ (Question Resolution)
 ```
 Developer question → Search FAQ → Find answer → Apply solution → Verify success
 ```
 
-### Fields 🔄 (Knowledge Transfer)
+### Fields  (Knowledge Transfer)
 Question emerges → Documentation provides answer → Developer understands → Knowledge internalized → Productivity increases
 
-### Patterns 👁️ (FAQ Categories)
+### Patterns ️ (FAQ Categories)
 **Installation** (setup) | **Configuration** (settings) | **Development** (tools) | **Security** (auth) | **Troubleshooting** (debugging)
 
-### Redundancy 🔀 (Answer Validation)
+### Redundancy  (Answer Validation)
 Code example → Explanation → Link to detailed doc → Related FAQ reference
 
-### Balance ⚖️
+### Balance ️
 Brevity (quick answers) ↔ Completeness (sufficient detail) ↔ Clarity (easy to understand)
 
 ---
 
-## ⚡ Energy Distribution
+##  Energy Distribution
 
 **P0 - Critical Questions (40%)**:
 - Installation and setup

@@ -1,4 +1,6 @@
 # Installation Guide - Aries-Serpent ML v0.1.0
+
+**Version**: v0.2.1
 **Last Updated:** 2026-07-11
 
 **Document Type:** User Guide  
@@ -6,7 +8,7 @@
 **Last Updated: 2026-07-10
 **Version:** 0.1.0
 
-## 📋 Table of Contents
+##  Table of Contents
 
 1. [Overview](#overview)
 2. [Quick Start](#quick-start-30-seconds)
@@ -59,7 +61,7 @@ pip install codex-ml[core]==0.1.0
 pip install codex-ml[full]==0.1.0
 
 # Verify installation
-python -c "import codex_ml; print(f'✓ Installed: {codex_ml.__version__}')"
+python -c "import codex_ml; print(f' Installed: {codex_ml.__version__}')"
 ```
 
 **Installation time:** ~2-5 minutes (depending on profile and connection)
@@ -479,7 +481,7 @@ After installation, verify everything works correctly with these tests.
 codex-ml --version
 
 # Test basic import
-python -c "import codex_ml; print(f'✓ Imported: {codex_ml.__version__}')"
+python -c "import codex_ml; print(f' Imported: {codex_ml.__version__}')"
 
 # Test CLI help
 codex-ml --help
@@ -501,16 +503,16 @@ packages = ['pydantic', 'hydra', 'omegaconf', 'typer', 'click']
 for pkg in packages:
     try:
         __import__(pkg)
-        print(f'✓ {pkg}')
+        print(f' {pkg}')
     except ImportError:
-        print(f'✗ {pkg}')
+        print(f' {pkg}')
 EOF
 
 # 3. Runtime-specific packages (if runtime/full profile)
 python << 'EOF'
 try:
     import torch
-    print(f'✓ PyTorch {torch.__version__}')
+    print(f' PyTorch {torch.__version__}')
     if torch.cuda.is_available():
         print(f'  - GPU available: {torch.cuda.get_device_name(0)}')
 except ImportError:
@@ -562,7 +564,7 @@ docker run --rm ghcr.io/aries-serpent/codex:0.1.0 \
 python -c "
 from codex_ml.config import ConfigManager
 from codex_ml.cli import cli
-print('✓ Core profile working')
+print(' Core profile working')
 "
 ```
 
@@ -571,8 +573,8 @@ print('✓ Core profile working')
 python -c "
 import torch
 import transformers
-print(f'✓ PyTorch {torch.__version__}')
-print(f'✓ Transformers {transformers.__version__}')
+print(f' PyTorch {torch.__version__}')
+print(f' Transformers {transformers.__version__}')
 "
 ```
 
@@ -582,7 +584,7 @@ python -c "
 import pytest
 import mypy
 import black
-print('✓ Full profile working (dev tools installed)')
+print(' Full profile working (dev tools installed)')
 "
 ```
 
@@ -1142,7 +1144,7 @@ if torch.cuda.is_available():
 
 ### Community Support
 
-- **📝 Issues:** [GitHub Issues](https://github.com/Aries-Serpent/_codex_/issues)
+- ** Issues:** [GitHub Issues](https://github.com/Aries-Serpent/_codex_/issues)
 - **💬 Discussions:** [GitHub Discussions](https://github.com/Aries-Serpent/_codex_/discussions)
 - **🐛 Bug Reports:** [Report a Bug](https://github.com/Aries-Serpent/_codex_/issues/new?template=bug_report.md)
 - ** Feature Requests:** [Request a Feature](https://github.com/Aries-Serpent/_codex_/issues/new?template=feature_request.md)
@@ -1152,7 +1154,7 @@ if torch.cuda.is_available():
 - **📦 PyPI Package:** https://pypi.org/project/codex-ml/
 - **🐳 Docker Hub:** https://ghcr.io/aries-serpent/codex
 - ** Full Documentation:** 
-- **🔧 Contributing Guide:** [CONTRIBUTING.md](../CONTRIBUTING.md)
+- ** Contributing Guide:** [CONTRIBUTING.md](../CONTRIBUTING.md)
 
 ---
 
@@ -1226,4 +1228,4 @@ codex-ml is open source and available under the [MIT License](../LICENSE).
 
 **Last Updated: 2026-07-10
 **Installation Status:**  Ready for Production  
-**Support Level:** Enterprise-Grade
+**Support Level:** Production

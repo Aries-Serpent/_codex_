@@ -3,7 +3,7 @@
 **Version:** v0.2.1
 
 > Generated: 2026-06-22 (audited) | Author: mbaetiong  
- Roles: [Primary: Ops Lead], [Secondary: Developer Experience] ⚡ Energy: 5
+ Roles: [Primary: Ops Lead], [Secondary: Developer Experience]  Energy: 5
 
 Guidelines
 - Vendor minimal tooling where possible or cache wheels

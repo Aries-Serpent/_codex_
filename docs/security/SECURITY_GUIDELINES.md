@@ -1,4 +1,6 @@
 # Security Best Practices Guide
+
+**Version**: v0.2.1
 **Last Updated:** 2026-07-11
 
 **Last Updated: 2026-06-22
@@ -128,7 +130,7 @@ safe = sanitize_prompt(malicious)
 #  HTML escaped, prevents XSS execution
 ```
 
-## 📋 When to Use `sanitize_prompt()`
+##  When to Use `sanitize_prompt()`
 
 **ALWAYS sanitize before:**
 - Writing to logs
@@ -231,7 +233,7 @@ pip install --upgrade nbconvert>=7.16.6
 pip freeze > requirements/lock.txt
 ```
 
-## 📋 Security Requirements
+##  Security Requirements
 
 - **Critical/High CVEs**: Must be fixed within 7 iterations
 - **Moderate CVEs**: Should be fixed within 30 iterations

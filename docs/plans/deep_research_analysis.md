@@ -10,14 +10,14 @@ Synthesize final root-cause findings for Q003, Q006, Q007, and Q004 and package 
 actionable intelligence for implementation without further debugging loops.
 
 ## Assumptions
-- ✓ **Q007 Root Cause:** `ResponseCache` implements `__len__`. Empty cache → `bool(cache)==False`.
+-  **Q007 Root Cause:** `ResponseCache` implements `__len__`. Empty cache → `bool(cache)==False`.
   `if use_cache and self.cache:` bypasses `.get()` and `.put()` entirely.
-- ✓ **Q003 Root Cause:** `difflib.SequenceMatcher(autojunk=True)` classifies repeated chars as
+-  **Q003 Root Cause:** `difflib.SequenceMatcher(autojunk=True)` classifies repeated chars as
   junk when frequency >1% and count >200. Test string `"... " * 20` triggers this, outputting
   false 95% change ratio for a single punctuation edit.
-- ✓ **Q006 Root Cause:** Pytest 8.x `derive_importpath` raises `AttributeError` when parent
+-  **Q006 Root Cause:** Pytest 8.x `derive_importpath` raises `AttributeError` when parent
   namespace not fully bound in CI parallel workers. Object-based patching is deterministic.
-- ✓ **Q001/Q004:** `click.echo(..., err=True)` + `CliRunner(mix_stderr=False)` is the canonical
+-  **Q001/Q004:** `click.echo(..., err=True)` + `CliRunner(mix_stderr=False)` is the canonical
   stream-separation pattern. Already applied in S66.
 
 ## Open Questions Resolution

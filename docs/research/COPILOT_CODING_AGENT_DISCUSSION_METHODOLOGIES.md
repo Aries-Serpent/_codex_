@@ -227,7 +227,7 @@ and comments:
 | GitHub Copilot Coding Agent Docs | https://docs.github.com/en/copilot/how-tos/use-copilot-agents/coding-agent |
 | What's New with Copilot Coding Agent (GitHub Blog) | https://github.blog/ai-and-ml/github-copilot/whats-new-with-github-copilot-coding-agent/ |
 | From Idea to PR — Agentic Workflows Guide | https://github.blog/ai-and-ml/github-copilot/from-idea-to-pr-a-guide-to-github-copilots-agentic-workflows/ |
-| Using Copilot Coding Agent (Awesome GitHub Copilot) | https://github.github.io/awesome-copilot/learning-hub/using-copilot-coding-agent/ |
+| Using Copilot Coding Agent ( GitHub Copilot) | https://github.github.io/-copilot/learning-hub/using-copilot-coding-agent/ |
 | Copilot Coding Agent for DevOps Automation | https://dev.to/pwd9000/using-github-copilot-coding-agent-for-devops-automation-3f43 |
 | Coding Agent Examples Walkthrough | https://devopsjournal.io/blog/2025/12/20/Copilot-Agent-example |
 | Hands-On: New GitHub Agents Tab | https://visualstudiomagazine.com/articles/2026/01/29/hands-on-new-github-agents-tab-for-repo-level-copilot-coding-agent-workflows.aspx |

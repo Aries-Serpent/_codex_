@@ -167,26 +167,26 @@ This document describes the complete Role-Based Access Control (RBAC) system and
 
 ```mermaid
 graph TD
-    A["👤 Developer Creates PR"] --> B["📝 PR Submitted with WEC"]
-    B --> C["🔍 GitHub Actions Check Suite"]
+    A["👤 Developer Creates PR"] --> B[" PR Submitted with WEC"]
+    B --> C[" GitHub Actions Check Suite"]
     C --> D{All checks pass?}
     
     D -->| Failed| E["🚫 Require fixes"]
     E --> A
     
-    D -->| Passed| F["⏳ Awaiting Review"]
-    F --> G["👨‍💼 Maintainer Reviews Code"]
+    D -->| Passed| F[" Awaiting Review"]
+    F --> G["👨‍ Maintainer Reviews Code"]
     G --> H{Approve?}
     
-    H -->| Request Changes| I["📝 Developer addresses feedback"]
+    H -->| Request Changes| I[" Developer addresses feedback"]
     I --> A
     
     H -->| Approved| J["🔑 trigger-on-approval.yml"]
     J --> K[" Token Chain Check"]
     K --> L{Token Valid?}
     
-    L -->| No| M["⚠️ Token Fallback"]
-    M --> N["📋 Use github.token or CODEX_BACKUP_KEY"]
+    L -->| No| M["️ Token Fallback"]
+    M --> N[" Use github.token or CODEX_BACKUP_KEY"]
     
     L -->| Yes| O[" Dispatch validation suite"]
     O --> P["auto-approve-workflows.yml"]
@@ -195,7 +195,7 @@ graph TD
     R --> S{Merge target?}
     
     S -->|main| T["📦 Merge to main"]
-    T --> U["🔄 Trigger release workflow"]
+    T --> U[" Trigger release workflow"]
     
     S -->|develop| V["📦 Merge to develop"]
     V --> W["🧪 Trigger integration tests"]
@@ -512,7 +512,7 @@ steps:
       TOKEN="${{ secrets.CODEX_MASTER_KEY }}"
       
       if [ -z "$TOKEN" ]; then
-        echo "⚠️  CODEX_MASTER_KEY not set"
+        echo "️  CODEX_MASTER_KEY not set"
         echo "   Using fallback: CODEX_BACKUP_KEY || github.token"
         exit 0  # Acceptable fallback
       fi
@@ -610,14 +610,14 @@ graph TD
     subgraph "Branch Strategy"
         main[" main"]
         develop[" develop"]
-        feature["🟡 feature/*"]
+        feature[" feature/*"]
         hotfix[" hotfix/*"]
     end
     
     subgraph "Environment Deployment"
         prod[" production"]
         staging[" staging"]
-        dev["🟡 dev"]
+        dev[" dev"]
     end
     
     subgraph "Deployment Triggers"
@@ -757,7 +757,7 @@ gh workflow run token-rotation-audit.yml \
   -f affected_key=CODEX_MASTER_KEY
 
 # 6. Notify security team
-echo "🚨 Emergency token rotation initiated" | \
+echo " Emergency token rotation initiated" | \
   slack send --channel #security
 ```
 

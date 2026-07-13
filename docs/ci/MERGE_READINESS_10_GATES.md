@@ -110,7 +110,7 @@ The **Pre-Merge Readiness System** uses 10 weighted validation gates to determin
 **Purpose:** Ensure Workflow Execution Checklist (WEC) is present and valid.
 
 **Validation Steps:**
-1. Check WEC section exists: `grep "## 🔄 Workflow Execution Checklist" pr_body`
+1. Check WEC section exists: `grep "##  Workflow Execution Checklist" pr_body`
 2. Validate all 9 items present:
    - pre-merge-validation.yml
    - comment-review-gate.yml
@@ -236,8 +236,8 @@ The **Pre-Merge Readiness System** uses 10 weighted validation gates to determin
 **Failure Criterion:** Either file missing after auto-fix attempt → manual update required OR auto-fix succeeds (no blocking failure)
 
 **PR Body Impact:**
-- Record: " Accountability (8/8): .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md updated in commit abc1234"
-- Or: "⚠️ Accountability (8/8): Auto-fixed — entries generated in commit xyz5678"
+- Record: " Accountability (8/8): .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md + CHANGELOG.md updated 2026-07-13
+- Or: "️ Accountability (8/8): Auto-fixed — entries generated in commit xyz5678"
 
 **Weight:** 8 points
 
@@ -359,7 +359,7 @@ where:
 |------|--------|--------|------|--------------|
 | Code Quality | 12 |  Pass | 1.0 | 12 |
 | Test Coverage | 12 |  Pass | 1.0 | 12 |
-| Security | 15 | ⚠️ Partial | 0.5 | 7.5 |
+| Security | 15 | ️ Partial | 0.5 | 7.5 |
 | WEC Integrity | 14 |  Pass | 1.0 | 14 |
 | Deferral Language | 10 |  Pass | 1.0 | 10 |
 | Comment Review | 12 |  Fail | 0.0 | 0 |
@@ -372,7 +372,7 @@ where:
 ### Interpretation
 
 - **0–29/100:**  Critical issues — cannot merge
-- **30–69/100:** 🟡 Major issues — significant remediation needed
+- **30–69/100:**  Major issues — significant remediation needed
 - **70–89/100:**  Moderate issues — address before merge
 - **90–94/100:**  Minor issues — close to ready
 - **95–99/100:**  Merge-ready (A+ grade)
@@ -391,7 +391,7 @@ Use this format in every PR body to document gate status:
 |------|--------|--------|-------|
 | Code Quality | 12 |  | 12/12 |
 | Test Coverage | 12 |  | 12/12 |
-| Security & Secrets | 15 | ⚠️ Partial | 7.5/15 |
+| Security & Secrets | 15 | ️ Partial | 7.5/15 |
 | WEC Integrity | 14 |  | 14/14 |
 | Deferral Language | 10 |  | 10/10 |
 | Comment Review | 12 |  | 0/12 |

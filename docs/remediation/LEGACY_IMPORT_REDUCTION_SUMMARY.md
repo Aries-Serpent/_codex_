@@ -4,7 +4,7 @@
 
 **Last Updated: 2026-06-22
 > Branch: 0D_base_ (copilot/sub-pr-2390)  
-> Date: 2025-12-05  
+> Date: 2026-07-13
 > Target: Reduce legacy imports 45 → ≤15
 
 ## Executive Summary
@@ -32,7 +32,7 @@ Successfully eliminated all Split Brain legacy architecture imports (training, m
 -  Added explanatory comments to 30+ empty except clauses
 -  Validated torch import patterns (correct TYPE_CHECKING usage)
 
-### 2. Analyzer Enhancement (v1.2.0)
+### 2. Analyzer Enhancement (v0.2.1)
 -  Fixed false positives: now ignores relative imports (level >= 1)
 -  Enhanced CSV output with relative/level transparency fields
 -  Added --include-relative flag for debugging
@@ -84,7 +84,7 @@ The remaining 29 "hydra" imports are **NOT legacy Split Brain architecture modul
 ## Commits
 
 1. `0b57ed7` - fix: Address PR review comments - remove unused imports and add explanatory comments
-2. `4efe9f6` - feat(batch-b1-b2): Reduce legacy imports 45→29 + analyzer fix (v1.2.0)
+2. `4efe9f6` - feat(batch-b1-b2): Reduce legacy imports 45→29 + analyzer fix (v0.2.1)
 3. `9d21700` - fix: Correct test_shim_equivalence to test legacy shim vs canonical
 
 ## Target Assessment
@@ -134,7 +134,7 @@ If strict numeric compliance with ≤15 is required:
 ### Core Fixes (8 files)
 - scripts/remediation/verify_conflicts.py
 - scripts/remediation/validate_inventory_paths.py
-- scripts/remediation/analyze_legacy_usage.py (v1.2.0 upgrade)
+- scripts/remediation/analyze_legacy_usage.py (v0.2.1 upgrade)
 - tests/validation/test_shim_equivalence.py
 - src/codex/training.py
 - src/training/checkpoint_manager.py

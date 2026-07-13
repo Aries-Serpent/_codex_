@@ -2,7 +2,7 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> **Session:** S146 | **PR:** #3615 | **Date:** 2026-03-17
+> **Session:** S146 | **PR:** #3615 | **Date:2026-07-13
 > **CLI tool:** `scripts/ci/monitor_run.py`
 > **Runbook:** Follow each numbered step in sequence; commands are copy-paste exact.
 
@@ -19,7 +19,7 @@ flowchart TD
         T3 --> T4[New SWE agent run\ncreated — in_progress]
     end
 
-    subgraph DAEMON["⚡ Concurrent Monitor Daemon  (non-blocking)"]
+    subgraph DAEMON[" Concurrent Monitor Daemon  (non-blocking)"]
         T4 --> D1["python monitor_run.py\n--run-id RUN_ID\n--daemon --cherry-pick --triage"]
         D1 --> D2[launch_daemon\nfork + start_new_session]
         D2 --> D3[(PID file\n.codex/monitor/RUN_ID/daemon.pid)]
@@ -36,7 +36,7 @@ flowchart TD
         P2 -->|"exit 1\nfailure"| FIX
     end
 
-    subgraph POLL["🔄 Background Poll Loop  (Loop A — daemon)"]
+    subgraph POLL[" Background Poll Loop  (Loop A — daemon)"]
         D4 --> PL1[_poll_loop\nevery 300s]
         PL1 -->|in_progress| PL1
         PL1 -->|completed| PL2[cherry_pick_delta\nfilter _SKIP_PATTERNS]
@@ -44,7 +44,7 @@ flowchart TD
         PL3 --> PL4[Write final state.json\nremove daemon.pid]
     end
 
-    subgraph INT["🔀 Integration  (Loop C)"]
+    subgraph INT[" Integration  (Loop C)"]
         PL4 --> I1["python monitor_run.py\n--wait RUN_ID\n(re-attach + tail log)"]
         I1 --> I2[git diff --stat HEAD\norigin/BRANCH]
         I2 -->|"no delta"| I4
@@ -54,7 +54,7 @@ flowchart TD
         I5 --> I6[report_progress\ncommit + push]
     end
 
-    subgraph FIX["🔧 Failure Handling"]
+    subgraph FIX[" Failure Handling"]
         F1[get failed job logs\ngh api .../jobs] --> F2[diagnose root cause]
         F2 --> F3[apply fix locally]
         F3 --> I4
@@ -500,8 +500,8 @@ parallel because they do not conflict with the agent run's expected output:
 | Update CHANGELOG.md / .codex/archive/reports/AGENT_ACCOUNTABILITY_REPORT.md |  | Append-only; merge trivially |
 | Create new docs (this file) |  | New file; no conflict |
 | Wire new CI step in a workflow |  | Agent run does not touch workflows |
-| Modify files the agent run is likely editing | ⚠️ | Risk of conflict on integration |
-| Modify `.mypy_baseline` | ⚠️ | Agent may also modify; check diff carefully |
+| Modify files the agent run is likely editing | ️ | Risk of conflict on integration |
+| Modify `.mypy_baseline` | ️ | Agent may also modify; check diff carefully |
 | Merge / rebase |  | Wait until run completes |
 
 ---

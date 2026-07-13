@@ -186,7 +186,7 @@
 **Priority**: Medium
 **Impact**: Medium
 **Created**: 2026-02-27
-**Status**: ⏳ Interim fix applied (DRQ-S81-008)
+**Status**:  Interim fix applied (DRQ-S81-008)
 
 #### Context
 **Where discovered**: `tests/test_evaluate_cli.py::test_evaluate_cli_runs`
@@ -217,7 +217,7 @@ Changed `outputs_dir = Path(tmp_path) / "outputs"` → `ndjson_files = list(outp
 **Priority**: Low
 **Impact**: Low
 **Created**: 2026-02-27
-**Status**: ⏳ Interim fix applied (DRQ-S81-009)
+**Status**:  Interim fix applied (DRQ-S81-009)
 
 #### Context
 **Where discovered**: `tests/test_api_infer.py` + `services/api/main.py`
@@ -243,7 +243,7 @@ Added `_clear_app_state()` helper to the `_set_env` autouse fixture — clears `
 **Priority**: High
 **Impact**: High
 **Created**: 2026-02-22
-**Status**: ⏳ Awaiting Research
+**Status**:  Awaiting Research
 
 #### Context
 **Where discovered**: `src/codex_ml/cli/codex_cli.py:109–113`, `tests/cli/test_evaluation_cli.py::test_evaluate_cli_writes_metrics_log`
@@ -310,7 +310,7 @@ Interim fix applied (S66): changed to `err=True` and used `CliRunner(mix_stderr=
 **Priority**: High
 **Impact**: High
 **Created**: 2026-02-22
-**Status**: ⏳ Awaiting Research
+**Status**:  Awaiting Research
 
 #### Context
 **Where discovered**: `tests/test_rag_tenant_management.py::TestManageTenantIndices` (9 tests)
@@ -375,7 +375,7 @@ Research is complete when:
 **Priority**: Medium
 **Impact**: Medium
 **Created**: 2026-02-22
-**Status**: ⏳ Awaiting Research
+**Status**:  Awaiting Research
 
 #### Context
 **Where discovered**: `tests/services/crawler/test_semantic_differ.py::TestIncrementalSyncDecider::test_micro_update`
@@ -436,7 +436,7 @@ Research is complete when:
 **Priority**: Medium
 **Impact**: Medium
 **Created**: 2026-02-22
-**Status**: ⏳ Awaiting Research
+**Status**:  Awaiting Research
 
 #### Context
 **Where discovered**: `tests/cli/test_evaluation_cli.py::test_evaluate_cli_writes_metrics_log`
@@ -448,7 +448,7 @@ Research is complete when:
 What is the canonical pattern for testing Click CLI commands that: (a) emit multiple JSON objects to stdout, (b) have logging output that may bleed into stdout via `mix_stderr=True`, and (c) need the test to reliably identify and parse a specific JSON object? Is `CliRunner(mix_stderr=False)` sufficient, or should the CLI architecture change?
 
 #### Why This Needs Research
-- [ ] Click documentation on `mix_stderr` does not clearly address multi-JSON-object output testing
+- [ ] Click documentation on `mix_stderr` does not address multi-JSON-object output testing
 - [ ] Industry patterns for this scenario are unclear
 - [ ] The fix of `mix_stderr=False` + `err=True` for provenance may not cover all edge cases (e.g., logging handlers writing to stdout)
 
@@ -496,7 +496,7 @@ Research is complete when:
 **Priority**: Medium
 **Impact**: Medium
 **Created**: 2026-02-22
-**Status**: ⏳ Awaiting Research
+**Status**:  Awaiting Research
 
 #### Context
 **Where discovered**: `tests/validation/test_audit_pipeline.py` (3 tests)
@@ -566,7 +566,7 @@ Research is complete when:
 **Priority**: High
 **Impact**: High
 **Created**: 2026-02-22 (S67)
-**Status**: ⏳ Awaiting Research — **Interim Fix Applied**: object-based patching
+**Status**:  Awaiting Research — **Interim Fix Applied**: object-based patching
 
 #### Context
 **Where discovered**: `tests/tracking/test_tracking_writers_offline.py:71`, `tests/test_model_registry_helpers.py:90`, `tests/config/test_deprecation.py:65`, `tests/test_fetch_messages.py:181`
@@ -590,7 +590,7 @@ What specific combination of (pytest version, Python version, test execution ord
 **Priority**: Medium
 **Impact**: Medium
 **Created**: 2026-02-22 (S67)
-**Status**: ⏳ Awaiting Research
+**Status**:  Awaiting Research
 
 #### Context
 **Where discovered**: `tests/retrieval/test_optimizations.py::TestOptimizedVectorStore::test_search_with_cache`
@@ -697,7 +697,7 @@ Tests call `torch.utils.data.TensorDataset(...)` and `torch.ones(...)` after
 **Priority**: Medium
 **Impact**: Medium — 3 slow-suite tests blocked
 **Created**: 2026-02-23 (S70)
-**Status**: 🟡 PARTIAL FIX APPLIED (stub added)
+**Status**:  PARTIAL FIX APPLIED (stub added)
 **Tracked tests**: `tests/space_traversal/test_peft_comprehensive/test_functional_training_main.py`
 
 #### Context
@@ -775,13 +775,13 @@ This suggests the `chat` ImportError (DRQ-S70-001) is non-deterministic — some
 
 | ID   | Title                                              | Category        | Priority | Impact  | Status             |
 |------|----------------------------------------------------|-----------------|----------|---------|--------------------|
-| Q001 | `_emit_provenance_summary` stdout vs stderr        | API Design      | High     | High    | ⏳ Awaiting Research |
-| Q002 | `TestManageTenantIndices` root cause               | Bug Root Cause  | High     | High    | ⏳ Awaiting Research |
-| Q003 | `IncrementalSyncDecider` 95% change ratio          | Bug Root Cause  | Medium   | Medium  | ⏳ Awaiting Research |
-| Q004 | Multi-output CLI JSON testing pattern              | API Design      | Medium   | Medium  | ⏳ Awaiting Research |
-| Q005 | `audit_runner.py` full vs minimal output env flags | Compatibility   | Medium   | Medium  | ⏳ Awaiting Research |
-| Q006 | Pytest string-path monkeypatch CI failure          | Test Infra      | High     | High    | ⏳ Awaiting Research (S67: interim fix) |
-| Q007 | OptimizedVectorStore cache never persists          | Bug Root Cause  | Medium   | Medium  | ⏳ Awaiting Research |
+| Q001 | `_emit_provenance_summary` stdout vs stderr        | API Design      | High     | High    |  Awaiting Research |
+| Q002 | `TestManageTenantIndices` root cause               | Bug Root Cause  | High     | High    |  Awaiting Research |
+| Q003 | `IncrementalSyncDecider` 95% change ratio          | Bug Root Cause  | Medium   | Medium  |  Awaiting Research |
+| Q004 | Multi-output CLI JSON testing pattern              | API Design      | Medium   | Medium  |  Awaiting Research |
+| Q005 | `audit_runner.py` full vs minimal output env flags | Compatibility   | Medium   | Medium  |  Awaiting Research |
+| Q006 | Pytest string-path monkeypatch CI failure          | Test Infra      | High     | High    |  Awaiting Research (S67: interim fix) |
+| Q007 | OptimizedVectorStore cache never persists          | Bug Root Cause  | Medium   | Medium  |  Awaiting Research |
 | DRQ-S70-001 | `test_property_based.py` `chat` ImportError stub interference | Test Infra | High | High |  RESOLVED (S71: `_missing_attr` raises `AttributeError` for dunders) |
 | DRQ-S70-002 | `test_data_splits.py` torch stub vs real torch | Test Infra | High | High |  RESOLVED (S71: `torch/__init__.py` `__getattr__` + stub factory funcs) |
 | DRQ-S70-003 | `codex.training` missing `load_training_cfg`/`run_hf_trainer` | Missing Impl | Medium | Medium |  RESOLVED (S70) |
@@ -1210,7 +1210,7 @@ process-wide protection against XXE via third-party code without changing any
 existing import patterns. Filed as S81 enhancement recommendation.
 
 **File**: `src/codex/dynamics/solution_xml.py:32`
-**Status**: B314 false positive suppressed ; `defuse_stdlib()` startup call ⏳ S81
+**Status**: B314 false positive suppressed ; `defuse_stdlib()` startup call  S81
 
 ---
 
@@ -1238,7 +1238,7 @@ if device.type == "cuda" and cfg.dtype in {"fp32", "fp16", "bf16"}:
 
 **File**: `training/functional_training.py:443`
 **Status**: DRQ-S75-002-R1 rule enforced in engine_hf_trainer.py (S79b) ;
-functional_training.py auto-call recommendation ⏳ S81
+functional_training.py auto-call recommendation  S81
 
 ---
 
@@ -1263,7 +1263,7 @@ guarded `try/except ImportError` block.
 3. Add `faiss-cpu` to `requirements/lock-test.txt` as optional CI dep.
 
 **File**: `src/codex/retrieval/stores/__init__.py`
-**Status**: FAISS guard added ; RetrievalEngine factory migration ⏳ S81
+**Status**: FAISS guard added ; RetrievalEngine factory migration  S81
 
 ---
 
@@ -1298,7 +1298,7 @@ suppress both ruff F401 and CodeQL unused-import alerts.
 3. CodeQL alerts for intentional re-exports are suppressed via `__all__`
 
 **File**: `scripts/ci/auto_fix_common_issues.py`
-**Status**: Research pending ⏳ S90
+**Status**: Research pending  S90
 
 ---
 

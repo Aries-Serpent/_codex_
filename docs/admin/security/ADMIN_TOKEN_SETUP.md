@@ -7,7 +7,7 @@
 > **Security Level**:  (5/5)
 > **Roles**: [Org Admin], [Security Officer]
 
-## 📋 Table of Contents
+##  Table of Contents
 
 1. [Overview](#overview)
 2. [Prerequisites](#prerequisites)
@@ -88,14 +88,14 @@ python3 scripts/security/token_encryption_tool.py
 
 ```
  _CODEX_ TOKEN ENCRYPTION TOOL v2.0  # pragma: allowlist secret
-⚡ Energy: 5/5 |  Security Mode Active
+ Energy: 5/5 |  Security Mode Active
 ================================================================================
 
 Enter GitHub token: ghp_PLACEHOLDER_EXAMPLE_TOKEN  # pragma: allowlist secret
 
  Encryption complete!
 
-📋 COPY THESE VALUES TO GITHUB SECRETS:  # pragma: allowlist secret
+ COPY THESE VALUES TO GITHUB SECRETS:  # pragma: allowlist secret
 
 🥇 RECOMMENDED - Base64 Encoding:
    Secret Name:  CODEX_GHP_TOKEN_BASE64  # pragma: allowlist secret
@@ -298,13 +298,13 @@ python3 scripts/security/token_encryption_tool.py
 
 **Objective**: Enable secure token management for AI agents through AES-256-GCM encryption with zero plaintext exposure.
 
-**Energy Level**: ⚡⚡⚡⚡⚡ (5/5 - Security Critical)
+**Energy Level**:  (5/5 - Security Critical)
 
 **Status**:  Active
 
 ---
 
-## ⚖️ Verification Checklist
+## ️ Verification Checklist
 
 ### Configuration Validation
 - [ ] GitHub Personal Access Token generated with correct scopes
@@ -322,7 +322,7 @@ python3 scripts/security/token_encryption_tool.py
 
 ---
 
-## 📈 Success Metrics
+##  Success Metrics
 
 | Metric | Current | Target | Status |
 |--------|---------|--------|--------|
@@ -338,23 +338,23 @@ python3 scripts/security/token_encryption_tool.py
 
 | Principle | Application | Implementation |
 |-----------|-------------|----------------|
-| Path 🛤️ | Clear progression from token generation to secure storage | 5-phase setup: Generate → Encrypt → Configure → Verify → Cleanup | <!-- pragma: allowlist secret -->
-| Fields 🔄 | Token transformation from plaintext to encrypted state | Multiple encoding layers: Plaintext → AES-256-GCM → Base64 → GitHub Secret | <!-- pragma: allowlist secret -->
-| Patterns 👁️ | Recognition of security best practices | SHA-256 verification, expiration dates, automated rotation reminders |
-| Redundancy 🔀 | Fallback encryption methods if primary fails | Fallback chain: AES-256-GCM → Base64 → Hex → Manual entry |
-| Balance ⚖️ | Security strength vs operational usability | Military-grade encryption with automated setup scripts |
+| Path ️ | Clear progression from token generation to secure storage | 5-phase setup: Generate → Encrypt → Configure → Verify → Cleanup | <!-- pragma: allowlist secret -->
+| Fields  | Token transformation from plaintext to encrypted state | Multiple encoding layers: Plaintext → AES-256-GCM → Base64 → GitHub Secret | <!-- pragma: allowlist secret -->
+| Patterns ️ | Recognition of security best practices | SHA-256 verification, expiration dates, automated rotation reminders |
+| Redundancy  | Fallback encryption methods if primary fails | Fallback chain: AES-256-GCM → Base64 → Hex → Manual entry |
+| Balance ️ | Security strength vs operational usability | Military-grade encryption with automated setup scripts |
 
 ---
 
-## ⚡ Energy Distribution
+##  Energy Distribution
 
 | Phase | Energy | Rationale |
 |-------|--------|-----------|
-| Token Generation | ⚡⚡⚡⚡⚡ | Foundation - incorrect scopes render system non-functional | <!-- pragma: allowlist secret -->
-| Encryption Process | ⚡⚡⚡⚡⚡ | Critical - protects token from compromise | <!-- pragma: allowlist secret -->
-| Secret Configuration | ⚡⚡⚡⚡ | High priority - enables retrieval by automation | <!-- pragma: allowlist secret -->
-| Verification Testing | ⚡⚡⚡⚡ | Essential - confirms end-to-end functionality |
-| Security Cleanup | ⚡⚡⚡⚡⚡ | Critical - eliminates plaintext exposure vectors |
+| Token Generation |  | Foundation - incorrect scopes render system non-functional | <!-- pragma: allowlist secret -->
+| Encryption Process |  | Critical - protects token from compromise | <!-- pragma: allowlist secret -->
+| Secret Configuration |  | High priority - enables retrieval by automation | <!-- pragma: allowlist secret -->
+| Verification Testing |  | Essential - confirms end-to-end functionality |
+| Security Cleanup |  | Critical - eliminates plaintext exposure vectors |
 
 **Total Energy Investment**: 23/25 units
 

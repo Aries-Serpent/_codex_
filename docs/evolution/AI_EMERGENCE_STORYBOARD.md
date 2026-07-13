@@ -296,7 +296,7 @@ These align with the state of the art in cognitive AI architecture (2026):
 
 ---
 
-## 🔗 Cross-References
+##  Cross-References
 
 - [Evolution Timeline](EVOLUTION_TIMELINE.md) — Verified phase history
 - [Planset Registry](PLANSET_REGISTRY.md) — Queryable planset catalog

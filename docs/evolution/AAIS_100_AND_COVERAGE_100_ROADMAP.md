@@ -6,7 +6,7 @@
 
 - [Executive Summary](#executive-summary)
 - [Part 1 — AAIS Score: Current 98.5 → Target 100](#part-1--aais-score-current-985--target-100)
-  - [1.1 Score Breakdown (V3.2 Composite — last assessed 2026-02-24, updated Session 24)](#11-score-breakdown-v32-composite--last-assessed-2026-02-24-updated-session-24)
+  - [1.1 Score Breakdown (V3.2 Composite — last assessed 2026-02-24, updated 2026-07-13
   - [1.2 ACE Layer Gaps — What Closes Each](#12-ace-layer-gaps--what-closes-each)
     - [L1: Aspirational Layer (96/100 — Gap -4)](#l1-aspirational-layer-96100--gap--4)
     - [L2: Global Strategy (98/100 — Gap -2)](#l2-global-strategy-98100--gap--2)
@@ -235,15 +235,15 @@ gantt
 
 | Layer | Current | Target | Gap Tests | Priority |
 |-------|---------|--------|-----------|----------|
-| Core utilities (path_utils, logging) | ~90% | 100% | ~15 | 🟡 Medium |
-| Auth (UserStore, UserRepository) | ~85% | 100% | ~20 | 🟡 Medium |
+| Core utilities (path_utils, logging) | ~90% | 100% | ~15 |  Medium |
+| Auth (UserStore, UserRepository) | ~85% | 100% | ~20 |  Medium |
 | Cognitive brain (brain_interface, agent_brain_api) | ~75% | 100% | ~35 |  High |
 | RAG advanced (indexing, query optimization) | ~50% | 100% | ~80 |  High |
 | ML training advanced (schedulers, optimizers) | ~55% | 100% | ~70 |  High |
 | CLI commands (all subcommands) | ~60% | 100% | ~40 |  High |
 | Error recovery + resilience patterns | ~45% | 100% | ~50 |  High |
-| Configuration edge cases | ~65% | 100% | ~30 | 🟡 Medium |
-| Evaluation metrics (BLEU, ROUGE) | ~60% | 100% | ~30 | 🟡 Medium |
+| Configuration edge cases | ~65% | 100% | ~30 |  Medium |
+| Evaluation metrics (BLEU, ROUGE) | ~60% | 100% | ~30 |  Medium |
 | Integration + E2E pipelines | ~30% | 100% | ~80 |  High |
 | **TOTAL ESTIMATED** | **72%** | **100%** | **~450** | — |
 

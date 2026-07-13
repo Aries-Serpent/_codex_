@@ -152,14 +152,14 @@ monitor.set_baseline("navigation", 0.85)
 current_performance = 0.75
 
 if monitor.detect_negative_transfer("navigation", current_performance):
-    print("⚠️ Negative transfer detected!")
+    print("️ Negative transfer detected!")
     if monitor.trigger_rollback("navigation"):
-        print("✓ Rolled back to baseline")
+        print(" Rolled back to baseline")
 
 if monitor.detect_forgetting("navigation", current_performance):
-    print("⚠️ Forgetting detected!")
+    print("️ Forgetting detected!")
     monitor.isolate_domain("navigation")
-    print("✓ Domain isolated")
+    print(" Domain isolated")
 ```
 
 ## Safety Constraints
@@ -198,14 +198,14 @@ results = harness.run_benchmark(uti)
 
 # Validate k₁ target
 k1_valid = harness.validate_k1_target(results)
-print(f"k₁ validation: {'✓ PASS' if k1_valid else '✗ FAIL'}")
+print(f"k₁ validation: {' PASS' if k1_valid else ' FAIL'}")
 
 # Test transfer
 zero_shot_valid = harness.test_zero_shot_transfer(uti)
 few_shot_valid = harness.test_few_shot_transfer(uti, k=10)
 
-print(f"Zero-shot: {'✓ PASS' if zero_shot_valid else '✗ FAIL'}")
-print(f"Few-shot: {'✓ PASS' if few_shot_valid else '✗ FAIL'}")
+print(f"Zero-shot: {' PASS' if zero_shot_valid else ' FAIL'}")
+print(f"Few-shot: {' PASS' if few_shot_valid else ' FAIL'}")
 
 # Export metrics
 harness.export_metrics(results, ".github/agents/metrics/phase8_7")

@@ -209,7 +209,7 @@ What are the possible causes, and how can this be resolved while preserving inte
 3. Ensure all new or modified Python files pass `pytest`, `ruff`, `mypy` and security scans (`bandit`, `semgrep`). The final state must be committed locally but **not** pushed upstream.
 4. Prepare a summary report highlighting the implemented capabilities, deferred items, and recommended next steps. This report will serve as input for future iterations.
 
-### 📋 Example Suggested Task Prompts
+###  Example Suggested Task Prompts
 
 Below are example prompts tailored for ChatGPT @codex to act upon specific gaps from the audit. Each prompt instructs Codex to perform work across the above phases.
 

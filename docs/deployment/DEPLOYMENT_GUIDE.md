@@ -100,7 +100,7 @@ This guide provides comprehensive deployment procedures for the Cognitive Brain 
 - [ ] **git tag prepared** (not yet pushed)
   ```bash
   # Draft the tag locally (don't push yet)
-  git tag -a v0.1.0 -m "Release v0.1.0 - Cognitive Brain"
+  git tag -a v0.2.1 -m "Release v0.2.1 - Cognitive Brain"
   # Don't push yet - pre-release validation will trigger this
   ```
 
@@ -141,10 +141,10 @@ This guide provides comprehensive deployment procedures for the Cognitive Brain 
 
 ### Step 1: Create Pre-Release Validation PR (5 min)
 
-1. Create branch: `release/v0.1.0-prepare`
+1. Create branch: `release/v0.2.1-prepare`
 2. Commit changes:
    ```bash
-   git checkout -b release/v0.1.0-prepare
+   git checkout -b release/v0.2.1-prepare
    
    # Bump version
    sed -i 's/version = "[^"]*"/version = "0.1.0"/' pyproject.toml
@@ -153,11 +153,11 @@ This guide provides comprehensive deployment procedures for the Cognitive Brain 
    # Edit CHANGELOG.md
    
    git add pyproject.toml CHANGELOG.md
-   git commit -m "chore: Prepare v0.1.0 release"
-   git push origin release/v0.1.0-prepare
+   git commit -m "chore: Prepare v0.2.1 release"
+   git push origin release/v0.2.1-prepare
    ```
 
-3. Open PR: `release/v0.1.0-prepare` → `main`
+3. Open PR: `release/v0.2.1-prepare` → `main`
 4. Wait for **pre-release-validation.yml** to verify:
    - Version bumped 
    - CHANGELOG updated 
@@ -175,10 +175,10 @@ git fetch origin
 git checkout origin/main
 
 # Create annotated tag
-git tag -a v0.1.0 -m "Release v0.1.0 - Cognitive Brain v0.1.0-final"
+git tag -a v0.2.1 -m "Release v0.2.1 - Cognitive Brain v0.2.1-final"
 
 # Push tag - this triggers release-to-pypi.yml
-git push origin v0.1.0
+git push origin v0.2.1
 ```
 
 ### Step 3: Monitor Release Workflow (10 min)
@@ -581,14 +581,14 @@ If critical issues found in first 2 hours:
 ```bash
 # Quick rollback script
 python scripts/deploy/rollback_release.py \
-  --version v0.1.0 \
+  --version v0.2.1 \
   --reason "Critical bug in runtime profile" \
-  --restore-version v0.0.9
+  --restore-version v0.2.1
 
 # This:
-# 1. Marks v0.1.0 as yanked on PyPI
+# 1. Marks v0.2.1 as yanked on PyPI
 # 2. Deletes the git tag locally and remotely
-# 3. Restores v0.0.9 as latest on PyPI
+# 3. Restores v0.2.1 as latest on PyPI
 # 4. Creates GitHub release noting rollback
 # 5. Sends notifications to maintainers
 ```
@@ -600,8 +600,8 @@ python scripts/deploy/rollback_release.py \
 -  Network policy violated in core (immediate)
 -  Smoke tests fail for > 1 profile (within 30 min)
 -  Critical security vulnerability found (within 24 hours)
-- ⚠️ Performance regression > 50% (discuss first)
-- ⚠️ Optional dependency issues (non-blocking)
+- ️ Performance regression > 50% (discuss first)
+- ️ Optional dependency issues (non-blocking)
 
 ---
 
@@ -745,9 +745,9 @@ A: Yes, downgrade is safe:
 pip install --force-reinstall codex-ml[core]==0.2.1
 ```
 
-**Q: How long is v0.1.0 supported?**
+**Q: How long is v0.2.1 supported?**
 
-A: Until v0.2.0 is released (typically 6-12 months). See [Support Policy](../../SECURITY.md).
+A: Until v0.2.1 is released (typically 6-12 months). See [Support Policy](../../SECURITY.md).
 
 ---
 
@@ -755,7 +755,7 @@ A: Until v0.2.0 is released (typically 6-12 months). See [Support Policy](../../
 
 This section covers deployment of the documentation site to local development environments (127.0.0.1:8000).
 
-### Quick Start
+## Quick Start
 
 ```bash
 # Step 1: Install MkDocs and plugins
@@ -870,8 +870,8 @@ pip install mkdocs-material mkdocs-mermaid2-plugin
 ```bash
 # Check Mermaid plugin is enabled in mkdocs.yml
 # Verify fence is correct:
-# ✅ Correct: ```mermaid
-# ❌ Wrong:   ```diagram
+#  Correct: ```mermaid
+#  Wrong:   ```diagram
 
 # Check markdown file has correct syntax:
 mkdocs build --verbose

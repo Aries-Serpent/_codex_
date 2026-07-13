@@ -256,7 +256,7 @@ if __name__ == "__main__":
 #!/bin/bash
 # Run quarterly secrets audit
 
-echo "🔍 Quarterly Secrets Audit"
+echo " Quarterly Secrets Audit"
 echo "=========================="
 
 # 1. Export all secrets metadata
@@ -309,10 +309,10 @@ missing = all_expected - secrets_in_use
 unexpected = secrets_in_use - all_expected
 
 if missing:
-    print(f"⚠️  Missing expected secrets: {missing}")
+    print(f"️  Missing expected secrets: {missing}")
 
 if unexpected:
-    print(f"⚠️  Unexpected secrets detected: {unexpected}")
+    print(f"️  Unexpected secrets detected: {unexpected}")
 
 if not missing and not unexpected:
     print(" All secrets properly scoped and configured")
@@ -442,7 +442,7 @@ fi
 # Check environment-specific config
 if git diff --cached | grep -E "DB_PASSWORD|API_KEY" | \
    grep -v "_DEV\|_STAGING\|_PRODUCTION"; then
-    echo "⚠️  Warning: Environment-specific credential without suffix"
+    echo "️  Warning: Environment-specific credential without suffix"
     exit 1
 fi
 

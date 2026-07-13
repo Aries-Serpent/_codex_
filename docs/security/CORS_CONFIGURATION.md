@@ -93,7 +93,7 @@ app.add_middleware(
 
 1. **Use specific origins** - Always list explicit allowed domains
 2. **Use HTTPS in production** - Never allow HTTP origins in production
-3. **Disable credentials** - Set `allow_credentials=False` unless absolutely necessary
+3. **Disable credentials** - Set `allow_credentials=False` unless necessary
 4. **Restrict methods** - Only allow needed HTTP methods
 5. **Restrict headers** - Explicitly list allowed headers
 6. **Test configuration** - Verify CORS works before deploying

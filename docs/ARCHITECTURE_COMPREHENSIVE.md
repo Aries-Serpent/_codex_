@@ -1,4 +1,6 @@
 # Comprehensive System Architecture — Codex ML Platform
+
+**Version**: v0.2.1
 **Last Updated:** 2026-07-11
 
 **Version:** 5.0.0  
@@ -293,7 +295,7 @@ sequenceDiagram
     
     Orchestrator->>ModelRegistry: finalize_model(version)
     ModelRegistry-->>MLflow: register_model(model, version)
-    MLflow-->>User: ✓ Training Complete
+    MLflow-->>User:  Training Complete
 ```
 
 ### 3.2 Inference Data Flow

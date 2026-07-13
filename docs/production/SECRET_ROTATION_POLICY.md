@@ -193,7 +193,7 @@ python scripts/rotate_jwt_secret.py \
   --notify-team
 
 # Output:
-# ⚠️ EMERGENCY ROTATION INITIATED
+# ️ EMERGENCY ROTATION INITIATED
 # Old Key: mk-2026-03-14-001 [REVOKED]
 # New Key: mk-2026-06-14-emerg-001 [ACTIVE]
 # Grace Period: 60 minutes
@@ -440,9 +440,9 @@ openssl s_client -connect api.example.com:443 -tls1_3
 -  Failed decrypt attempts (investigate any)
 
 **Alert Thresholds**:
-- ⚠️ Authentication failures > 1% → Rollback
-- ⚠️ Decryption errors > 0 → Investigation
-- ⚠️ Latency spike > 500ms → Review
+- ️ Authentication failures > 1% → Rollback
+- ️ Decryption errors > 0 → Investigation
+- ️ Latency spike > 500ms → Review
 
 ### Post-Rotation Verification
 
@@ -549,7 +549,7 @@ python scripts/security/compliance_report.py --month=$(date +%Y-%m)
 # Expected output:
 #  CODEX_MASTER_KEY: Last rotated 2026-06-14 (within schedule)
 #  GitHub Tokens: Last rotated 2026-06-14 (within schedule)
-# ⚠️ Database Creds: Last rotated 2026-03-14 (DUE 2026-06-14)
+# ️ Database Creds: Last rotated 2026-03-14 (DUE 2026-06-14)
 #  TLS Certificates: Valid until 2027-01-15
 ```
 

@@ -81,15 +81,15 @@ Check ALL of the following:
 URL: https://aries-serpent.github.io/_codex_/ci/INDEX/
    OR https://aries-serpent.github.io/_codex_/ci/
 ```
-- [ ] "CI Rescue Pipeline" entry appears at the top under "🚨 CI Rescue Pipeline (Golden Path)"
+- [ ] "CI Rescue Pipeline" entry appears at the top under " CI Rescue Pipeline (Golden Path)"
 - [ ] Link to `CI_RESCUE_PIPELINE.md` resolves correctly
 
 **Page 3: Homepage**
 ```
 URL: https://aries-serpent.github.io/_codex_/
 ```
-- [ ] "🚨 CI Rescue & Health" section visible in nav sidebar
-- [ ] "🔄 CI Rescue Pipeline" quick-link present under " Quick Links → 🚨 CI Rescue & Health"
+- [ ] " CI Rescue & Health" section visible in nav sidebar
+- [ ] " CI Rescue Pipeline" quick-link present under " Quick Links →  CI Rescue & Health"
 - [ ] No broken links in the quick-links section
 
 ### 1B. Verify Site Navigation
@@ -284,7 +284,7 @@ Post this summary as a comment on PR #3818 (or as a new issue if the PR is alrea
 - CI/CD Index: {STATUS}
 - Homepage quick-link: {STATUS}
 
-### 📋 Drift Fixes Applied
+###  Drift Fixes Applied
 | Fix | Files | Details |
 |-----|-------|---------|
 | Branch refs 0D_base_ → main | N | Only in non-historical sections |
@@ -297,7 +297,7 @@ Post this summary as a comment on PR #3818 (or as a new issue if the PR is alrea
 - Errors: 0 
 - Pages built: N
 
-### 🔗 Commit
+###  Commit
 fix(docs): post-merge alignment — PR #3818 → main · {SHORT_SHA}
 ```
 

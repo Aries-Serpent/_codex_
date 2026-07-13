@@ -20,7 +20,7 @@ This repository now **requires Python 3.12.10 or later** (but < 3.13). Python 3.
 
 ---
 
-## 🚨 Breaking Changes
+##  Breaking Changes
 
 ### What Changed
 - **Minimum Python Version:** 3.11 → 3.12.10
@@ -31,11 +31,11 @@ This repository now **requires Python 3.12.10 or later** (but < 3.13). Python 3.
 ### Impact
 -  Python 3.11 and earlier will **NOT work**
 -  Python 3.12.10+ will work
-- ⚠️ Python 3.13+ will **NOT work** (not yet supported)
+- ️ Python 3.13+ will **NOT work** (not yet supported)
 
 ---
 
-## 📋 Prerequisites
+##  Prerequisites
 
 Before migrating, ensure you have:
 - [ ] Backup of your current environment
@@ -45,7 +45,7 @@ Before migrating, ensure you have:
 
 ---
 
-## 🔧 Migration Steps
+##  Migration Steps
 
 ### For End Users
 
@@ -289,7 +289,7 @@ pip list | grep codex
 
 ---
 
-## ❓ FAQ
+##  FAQ
 
 ### Q: Why Python 3.12 specifically?
 

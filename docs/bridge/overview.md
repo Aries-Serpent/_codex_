@@ -49,7 +49,7 @@ The end-to-end interaction works the same on Ubuntu developer machines, self-hos
 CI containers because every component only requires standard tooling (`python`, `node`, `uvicorn`,
 `npm`).
 
-## Getting started
+## Getting Started
 
 1. Follow the [Ubuntu CLI integration guide](ubuntu_cli.md) to install Python and Node tooling and
    export the required environment variables.

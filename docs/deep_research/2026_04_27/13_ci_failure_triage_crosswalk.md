@@ -46,8 +46,8 @@ The 26 failing workflows in #4100 cluster into 6 packet-aligned families. The ma
 
 | Family | Failing Workflows in #4100 | Packet Variables | Primary Failure Class |
 |---|---|---|---|
-| F1 — Telemetry/observability friction | `Generate PR Follow-Up Prompt`, `QA Walkthrough Agent`, `Session Watchdog`, `Session Incremental Summary Reminder`, `🔍 Proactive CI Monitor`, `🔍 Issue Resolution Gate`, `Copilot Issue Triage` | $Φ_d$ (context), $O_observe$ (observability), $U_uncertainty$ | comment/posting/permissions-shaped failures; degraded $O_observe$ |
-| F2 — Agent/auth and cost gating | `Agent Token Delegation`, ` PR Cost Check`, `Workflow Execution Gate`, `🚨 Deferral Language Gate`, `PR Comment Review Gate` | $μF$ (governed friction), $R_d$ (risk penalty), $S_safety$ | governance enthalpy mismatch / WEC parsing / token chain |
+| F1 — Telemetry/observability friction | `Generate PR Follow-Up Prompt`, `QA Walkthrough Agent`, `Session Watchdog`, `Session Incremental Summary Reminder`, ` Proactive CI Monitor`, ` Issue Resolution Gate`, `Copilot Issue Triage` | $Φ_d$ (context), $O_observe$ (observability), $U_uncertainty$ | comment/posting/permissions-shaped failures; degraded $O_observe$ |
+| F2 — Agent/auth and cost gating | `Agent Token Delegation`, ` PR Cost Check`, `Workflow Execution Gate`, ` Deferral Language Gate`, `PR Comment Review Gate` | $μF$ (governed friction), $R_d$ (risk penalty), $S_safety$ | governance enthalpy mismatch / WEC parsing / token chain |
 | F3 — Tracked-file & baseline drift | ` Secrets Baseline Enforcer`, `Auto-Fix Common CI Issues`, `PR Auto-Fix Check`, `Pre-Merge Validation`, `Validation Pipeline`, `Resilient Validation Suite` | $S_d$ (reserve), $D_d$ / $D_drift$, $E_min_margin$ | reserve drift in baselines/manifests/auto-fix patterns |
 | F4 — Dependency and supply chain | `Automatic Dependency Submission`, `Dependency Graph`, `📦 Dependabot Auto-Absorb`, `Security Scanning Suite (CodeQL python/js)`, `CodeQL` | $P_in(t)$ (supply), $P_safety$, $C_coupling$ | supply-side fluctuation and coupling under Dependabot bursts |
 | F5 — Self-healing/iteration loops | `Iterative Self-Healing CI`, `Auto-Fix Common CI Issues` (loop dimension) | $V_response$, $D_damping$, $L_latency$ | oscillation and undamped retry under correlated fluctuation |
@@ -101,7 +101,7 @@ Priority is assigned using the maturity equation (note 10) and continuity counte
 ### Priority 4 — Damp self-healing oscillation (F5)
 
 - Keep `CODEX_SKIP_PATTERN_NUMS=30` as a damping mechanism for the auto-fix loop's merge-readiness scorecard call.
-- Treat repeated `🔄 Universal baseline sweep` failures on `main` as a signal to reduce concurrency and add hysteresis (delay before a re-run).
+- Treat repeated ` Universal baseline sweep` failures on `main` as a signal to reduce concurrency and add hysteresis (delay before a re-run).
 
 ### Priority 5 — Restore telemetry/observability (F1)
 

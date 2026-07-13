@@ -2,7 +2,7 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> Source: Codex automation status update (2025-10-24)
+> Source: Codex automation status update 2026-07-13
 > Scope: Publish and merge the already-prepared archive policy consolidation commit (`cfba4786`).
 
 ## Current State Snapshot
@@ -13,7 +13,7 @@
 | Pre-commit validation |  Passed | Local hooks finished successfully; no outstanding lint/test actions.
 | Evidence trail |  Recorded | `.codex/evidence/archive_ops.jsonl` contains the consolidation record (line 30).
 | Backward compatibility |  Maintained | Stub left at the historical policy location; branch protection checklist already references the new path.
-| Branch status | 🔄 Ready for PR | Branch is clean, rebased, and conventional-commit compliant.
+| Branch status |  Ready for PR | Branch is clean, rebased, and conventional-commit compliant.
 | PR creation | 🔲 Pending | Awaiting formal pull request submission.
 
 ## Phase Breakdown
@@ -64,7 +64,7 @@
 | Link checker |  Pass | Fix any outdated references under `docs/` and amend the commit. |
 | Markdown lint |  Pass | Re-run pre-commit and adjust formatting if necessary. |
 | Pre-commit (server) |  Pass | Should mirror local results; investigate environmental differences if it fails. |
-| CODEOWNERS review | ⏳ Pending | Manually request reviewers if auto-assignment does not trigger. |
+| CODEOWNERS review |  Pending | Manually request reviewers if auto-assignment does not trigger. |
 | Security scans |  Pass | Docs-only change; issues are unlikely. |
 
 ### Phase 3 — Merge & Cleanup (≈ 2–5 min)

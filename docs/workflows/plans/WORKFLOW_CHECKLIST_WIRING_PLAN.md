@@ -5,7 +5,7 @@
 **Last Updated: 2026-06-22
 
 **Version:** 1.0.0  
-**Status:** 🟡 Drafted (S228)  
+**Status:**  Drafted (S228)  
 **Author:** Copilot Coding Agent (S228)  
 **Scope:** PR lifecycle workflow gate, Copilot Agent wrap-up hardening
 
@@ -62,12 +62,12 @@ flowchart TD
 
 ## 3. PR Body Checklist Section Format
 
-Each PR managed by Copilot MUST include a `## 🔄 Workflow Execution Checklist` section
+Each PR managed by Copilot MUST include a `##  Workflow Execution Checklist` section
 in the PR body. This section is managed automatically by `agent-auth-delegation.yml` during
 the Copilot wrap-up phase.
 
 ```markdown
-## 🔄 Workflow Execution Checklist (S228)
+##  Workflow Execution Checklist (S228)
 <!-- gate-managed-by: workflow-execution-gate.yml -->
 <!-- gate-version: 1.0.0 -->
 
@@ -78,13 +78,13 @@ the Copilot wrap-up phase.
 - [x] agent-auth-delegation.yml — Agent token delegation (always required)
 - [x] workflow-execution-gate.yml — WEC gate (always required)
 
-### 🔄 Always Active — fire via push/workflow_run
+###  Always Active — fire via push/workflow_run
 - [x] copilot-agent-checkin.yml — Agent check-in (fires on push)
 - [x] copilot-agent-session-done.yml — Session done (fires on workflow_run)
 - [x] copilot-iterative-self-healing.yml — Self-healing loop (fires on workflow_run)
 - [x] cost-gate.yml — Cost governance gate
 
-### ⚡ Auto-Approve
+###  Auto-Approve
 - [ ] auto-approve-workflows — Auto-Approve pending workflow runs
 
 ### 🧪 Opt-In: Testing & Validation
@@ -167,10 +167,10 @@ jobs:
           BODY=$(gh pr view "$PR" --repo "${{ github.repository }}" --json body --jq '.body // ""')
 
           # Extract the Workflow Execution Checklist section
-          SECTION=$(echo "$BODY" | awk '/^## 🔄 Workflow Execution Checklist/,/^## /' | head -n -1)
+          SECTION=$(echo "$BODY" | awk '/^##  Workflow Execution Checklist/,/^## /' | head -n -1)
 
           if [ -z "$SECTION" ]; then
-            echo "⚠️ No Workflow Execution Checklist section found in PR body — running defaults only"
+            echo "️ No Workflow Execution Checklist section found in PR body — running defaults only"
             echo "workflows_to_run=" >> "$GITHUB_OUTPUT"
             echo "workflows_to_skip=" >> "$GITHUB_OUTPUT"
             exit 0
@@ -220,7 +220,7 @@ jobs:
           BODY="${BODY}
 
           _Gate run: ${{ github.run_id }} — triggered by: ${{ github.event_name }}_
-          _[🔗 Workflow run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})_"
+          _[ Workflow run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})_"
 
           # Upsert comment (dedup by marker)
           EXISTING=$(gh pr view "$PR" --repo "${{ github.repository }}" \
@@ -247,14 +247,14 @@ the final session wrap-up step:
     BODY=$(gh pr view "$PR" --repo "${{ github.repository }}" --json body --jq '.body // ""')
 
     # Only inject if section doesn't exist yet
-    if echo "$BODY" | grep -q "## 🔄 Workflow Execution Checklist"; then
+    if echo "$BODY" | grep -q "##  Workflow Execution Checklist"; then
       echo " Workflow Execution Checklist already present — skipping injection"
       exit 0
     fi
 
     CHECKLIST="
 
-## 🔄 Workflow Execution Checklist
+##  Workflow Execution Checklist
 <!-- gate-managed-by: workflow-execution-gate.yml -->
 <!-- gate-version: 1.0.0 -->
 
@@ -538,7 +538,7 @@ Before recording an Aftermath entry, the Copilot Agent MUST complete the followi
 - [ ] `workflow-execution-gate.yml` passes actionlint
 
 **Pass 2 — Checklist Syntax**
-- [ ] PR body contains `## 🔄 Workflow Execution Checklist` section
+- [ ] PR body contains `##  Workflow Execution Checklist` section
 - [ ] Gate marker `<!-- gate-managed-by: workflow-execution-gate.yml -->` present
 
 **Pass 3 — Gate Logic**

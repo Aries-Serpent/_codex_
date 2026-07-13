@@ -198,7 +198,7 @@
 - Next Phases roadmap section added 
 - `session_diagram.md`: S3 gap filled, S9–S12 merged into main flow, CI table updated 
 
-## Session 12 Summary (2026-05-07T02:29Z)
+2026-07-13
 
 - Sync clean: `sync_tracked_files --check` exits 0 
 - Ruff: `ruff check src/ tests/` exits 0 
@@ -242,11 +242,11 @@
 | `py/mixed-tuple-returns` | 4 |  Partial: `init_mlflow()` split into `_init_mlflow_bool`+`_init_mlflow_experiment` (S6); remaining 3 via API |
 | `py/call-to-non-callable` | 1 |  Fixed: `callable()` guard in `src/cli.py _resolve_callable()` (S6) |
 | GAS: uninitialized `_rl_state` | 1 |  Fixed: explicit init `_rl_state: dict = {"ok": True}` in `session_bootstrap.py:686` (S8) |
-| `py/call/wrong-named-argument` | 15 | ⏳ Blocked: requires `CODEX_MASTER_KEY` via GitHub Actions (sandbox lacks `security_events`) |
-| `py/mixed-returns` | 25 | ⏳ Partial: `fetch_codeql_alerts.py` 1 instance fixed via Copilot Autofix (S11); 25 remaining via API |
-| `py/call/wrong-arguments` | 1 | ⏳ Blocked: CodeQL API required |
-| `py/missing-equals` | 1 | ⏳ Blocked: local scan clean (4 `__hash__` classes all have `__eq__`) — API required |
-| `py/mixed-tuple-returns` (remaining) | 3 | ⏳ Blocked: CodeQL API required for exact locations |
+| `py/call/wrong-named-argument` | 15 |  Blocked: requires `CODEX_MASTER_KEY` via GitHub Actions (sandbox lacks `security_events`) |
+| `py/mixed-returns` | 25 |  Partial: `fetch_codeql_alerts.py` 1 instance fixed via Copilot Autofix (S11); 25 remaining via API |
+| `py/call/wrong-arguments` | 1 |  Blocked: CodeQL API required |
+| `py/missing-equals` | 1 |  Blocked: local scan clean (4 `__hash__` classes all have `__eq__`) — API required |
+| `py/mixed-tuple-returns` (remaining) | 3 |  Blocked: CodeQL API required for exact locations |
 
 **Pending total: 46** (15 wrong-named-arg + 25 mixed-returns + 1 wrong-arg + 1 missing-equals + 3 mixed-tuple + 1 unexpected-raise-2nd)
 
@@ -337,7 +337,7 @@ jq -r '.[] | select(.rule.id | test("mixed-returns|wrong-named-argument|wrong-ar
 3. **Fix 46 remaining alerts** in priority order:
    -  `py/call/wrong-named-argument` (15 Errors) — highest priority, breaks callers
    -  `py/call/wrong-arguments` (1 Error)
-   - 🟡 `py/missing-equals` (1 Warning)
+   -  `py/missing-equals` (1 Warning)
    -  `py/unexpected-raise-in-special-method` (1 Note — 2nd instance)
    -  `py/mixed-returns` (25 Notes)
    -  `py/mixed-tuple-returns` (3 Notes)

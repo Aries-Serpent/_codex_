@@ -814,19 +814,19 @@ def create_agent(request):
 
 **Always use HTTPS:**
 ```bash
-# ✓ GOOD
+#  GOOD
 curl -H "Authorization: ******" https://api.codex.local/...
 
-# ✗ BAD
+#  BAD
 curl -H "Authorization: ******" http://api.codex.local/...
 ```
 
 **Never in URLs:**
 ```bash
-# ✗ BAD
+#  BAD
 https://api.codex.local/api/v1/agents?token=secret_token
 
-# ✓ GOOD
+#  GOOD
 curl -H "Authorization: ******" https://api.codex.local/api/v1/agents
 ```
 
@@ -860,13 +860,13 @@ def rotate_api_token():
 Always request minimum scopes needed:
 
 ```python
-# ✓ GOOD: Specific scopes
+#  GOOD: Specific scopes
 scopes = ["api:agents:read", "api:workflows:exec"]
 
-# ✗ BAD: Overly broad
+#  BAD: Overly broad
 scopes = ["api:*"]
 
-# ✗ WORSE: Admin scope for non-admin task
+#  WORSE: Admin scope for non-admin task
 scopes = ["admin:*"]
 ```
 

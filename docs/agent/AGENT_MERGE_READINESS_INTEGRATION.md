@@ -126,7 +126,7 @@ existing_state = {
 **What:** Explain in PR body why you're enabling optional workflows
 
 ```markdown
-## 🔄 Workflow Execution Checklist
+##  Workflow Execution Checklist
 
 Workflows can be skipped/dispatched by updating these checkboxes:
 
@@ -186,10 +186,10 @@ checklist = f"""##  Merge Readiness Progress
 **Agent Responsibility:** On first turn, create PR body using template
 
 ```markdown
-## 📋 Summary
+##  Summary
 [Your work summary]
 
-## 🔧 Changes
+##  Changes
 [Your changes]
 
 ##  Testing
@@ -201,7 +201,7 @@ checklist = f"""##  Merge Readiness Progress
 ##  Baseline Metrics
 [Coverage, CodeQL, AAIS score]
 
-## 🔄 Workflow Execution Checklist
+##  Workflow Execution Checklist
 [Initial WEC — all always-required checked]
 ```
 

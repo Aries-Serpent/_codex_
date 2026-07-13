@@ -6,7 +6,7 @@
 
 > **Document:** S860 Holistic Analysis
 > **Branch:** `finding-autofix-faa8614c`
-> **Date:** 2026-05-08
+> **Date:2026-07-13
 > **Sessions:** S855–S860
 > **Head SHA:** `3280026`
 > **Scope:** Transparent end-to-end analysis of all changes, emergent patterns, and system health
@@ -23,8 +23,8 @@
 | Actionlint errors | 7 | 0 | **−7** |
 | Workflows with rate-limit guards | 3 | 10 | **+7** |
 | PR template completeness (agent usability) | 40% | 95% | **+55 pp** |
-| Tracked-file sync drift | ✗ |  | resolved |
-| Token expiry monitoring gap (T-02) | ✗ |  | closed |
+| Tracked-file sync drift |  |  | resolved |
+| Token expiry monitoring gap (T-02) |  |  | closed |
 | Variable governance intent files | 0 | 13 | **+13** |
 
 ---
@@ -263,8 +263,8 @@ quadrantChart
 | Security Finding | Severity | Fix Applied |
 |-----------------|----------|------------|
 | `post_rotation_verify.sh` printed `val[:20]` of token |  High | Removed — print name only |
-| `wec_enforcer.py` approved "completed" runs (false positive) | 🟡 Medium | Check only `queued`/`in_progress` |
-| `token-expiry-monitor.yml` missing (T-02 gap) | 🟡 Medium | Created — daily cron + issue creation |
+| `wec_enforcer.py` approved "completed" runs (false positive) |  Medium | Check only `queued`/`in_progress` |
+| `token-expiry-monitor.yml` missing (T-02 gap) |  Medium | Created — daily cron + issue creation |
 | `wec_enforcer.py` approval counter overcounted |  Low | Split into 4 distinct outcome types |
 
 ---
@@ -317,13 +317,13 @@ timeline
 
 | Feature | v2.1 | v3.0 |
 |---------|:----:|:----:|
-| Session ID / SHA auto-fields | ✗ |  (9 `<!-- AUTO -->` fields) |
-| Agent pre-load checklist | ✗ |  (6-step mandatory sequence) |
-| P-045 wrap-up gate block | ✗ |  (copy-paste ready) |
-| Rate-limit awareness section | ✗ |  (polite-sleep table + JS circuit-breaker) |
+| Session ID / SHA auto-fields |  |  (9 `<!-- AUTO -->` fields) |
+| Agent pre-load checklist |  |  (6-step mandatory sequence) |
+| P-045 wrap-up gate block |  |  (copy-paste ready) |
+| Rate-limit awareness section |  |  (polite-sleep table + JS circuit-breaker) |
 | Token chain documented | partial |  (full chain + GITHUB_ENV export) |
-| CI triage as collapsed table | ✗ |  (`<details>` with 11-row table) |
-| `token-expiry-monitor.yml` in WEC | ✗ |  |
+| CI triage as collapsed table |  |  (`<details>` with 11-row table) |
+| `token-expiry-monitor.yml` in WEC |  |  |
 | Hardened WEC instruction | partial |  (generate via CLI instruction) |
 
 ---
@@ -405,11 +405,11 @@ stateDiagram-v2
 
 | Gap | State | Priority | ETA |
 |-----|-------|----------|-----|
-| `process-variable-intents.yml` processes 13 files | ⏳ pending | P1 | Next push |
-| `token-expiry-monitor.yml` merged to `main` for cron | ⏳ pending | P1 | Post-merge |
-| RL-2 gaps (5 remaining workflows) | ⏳ planned | P2 | S861 |
-| `mypy-baseline.yml` clean run | ⏳ opt-in | P2 | S861 |
-| Phase F: clean-up intent files after processing | ⏳ planned | P3 | S862 |
+| `process-variable-intents.yml` processes 13 files |  pending | P1 | Next push |
+| `token-expiry-monitor.yml` merged to `main` for cron |  pending | P1 | Post-merge |
+| RL-2 gaps (5 remaining workflows) |  planned | P2 | S861 |
+| `mypy-baseline.yml` clean run |  opt-in | P2 | S861 |
+| Phase F: clean-up intent files after processing |  planned | P3 | S862 |
 
 ---
 

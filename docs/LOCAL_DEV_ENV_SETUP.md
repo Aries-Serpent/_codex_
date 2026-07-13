@@ -1,4 +1,6 @@
 # Local Development Environment Setup (Phase 6.2+)
+
+**Version**: v0.2.1
 **Last Updated:** 2026-07-11
 
 > **Version**: 2.0.0 (Phase 6.2 Update)  
@@ -137,16 +139,16 @@ python -m codex_ml.cli serve --port 8000
 bash .codex/validate_local_env.sh
 
 # Expected output:
-# ✓ Variable defaults check completed
-# ✓ Fallback behavior verification passed
-# ✓ Override behavior verification passed
-# ✓ Security feature gate verification passed
-# ✓ CODEX_TRUSTED_HOSTS verification passed
-# ✓ Port validation passed
-# ✓ URL validation passed
-# ✓ Configuration integration test passed
+#  Variable defaults check completed
+#  Fallback behavior verification passed
+#  Override behavior verification passed
+#  Security feature gate verification passed
+#  CODEX_TRUSTED_HOSTS verification passed
+#  Port validation passed
+#  URL validation passed
+#  Configuration integration test passed
 #
-# ✓ All validation tests PASSED!
+#  All validation tests PASSED!
 ```
 
 ### 5. Run Tests

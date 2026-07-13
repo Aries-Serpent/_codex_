@@ -1,4 +1,4 @@
-# 🚨 CRITICAL: Dependabot Security Review - PRs #3233 & #3234
+#  CRITICAL: Dependabot Security Review - PRs #3233 & #3234
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
@@ -10,7 +10,7 @@
 
 ---
 
-## 🟡 PR #3234: Python 3.14 Update
+##  PR #3234: Python 3.14 Update
 
 ### **Python 3.14 Version Analysis**
 
@@ -23,14 +23,14 @@ PR #3234 proposes upgrade to `python:3.14-slim`.
 
 ### **Repository Version Policy**
 
-**Current Assessment**: 🟡 **HOLD - Policy Decision Required**
+**Current Assessment**:  **HOLD - Policy Decision Required**
 
 The repository maintainer (@mbaetiong) has indicated a preference to:
 - **Keep Python 3.12** as the primary version
 - **Not upgrade to Python 3.14** at this time
 
 ### **Recommendation**
-**🟡 CLOSE PR #3234 - Repository Policy**
+** CLOSE PR #3234 - Repository Policy**
 
 **Rationale**:
 1. Python 3.14 is available and valid
@@ -45,16 +45,16 @@ The repository maintainer (@mbaetiong) has indicated a preference to:
 
 ---
 
-## 🟡 PR #3233: NVIDIA CUDA Update
+##  PR #3233: NVIDIA CUDA Update
 
 ### **Change**: `nvidia/cuda:12.1.0-runtime-ubuntu22.04` → `13.1.1-runtime-ubuntu22.04`
 
-**Status**: 🟡 **MERGE WITH CAUTION** (testing required)
+**Status**:  **MERGE WITH CAUTION** (testing required)
 
 ### **Security Analysis**
 -  **Positive**: Newer version with security patches
-- ⚠️ **Risk**: Major version jump (12.x → 13.x)
-- ⚠️ **Concern**: Potential breaking changes in CUDA APIs
+- ️ **Risk**: Major version jump (12.x → 13.x)
+- ️ **Concern**: Potential breaking changes in CUDA APIs
 
 ### **Testing Required Before Merge**
 ```bash
@@ -68,7 +68,7 @@ docker run --gpus all codex-gpu:test python -c "import torch; print(torch.cuda.i
 ```
 
 ## **Recommendation**
-**🟡 HOLD FOR TESTING**
+** HOLD FOR TESTING**
 - Test GPU workloads thoroughly
 - Validate backward compatibility
 - Document any breaking changes found
@@ -80,8 +80,8 @@ docker run --gpus all codex-gpu:test python -c "import torch; print(torch.cuda.i
 
 | Commit | PR | Change | Status |
 |--------|----|----|--------|
-| `81b72994` | #3234 | Python 3.12 → 3.14 | 🟡 POLICY HOLD |
-| `1d9ebe9b` | #3233 | CUDA 12.1 → 13.1.1 | 🟡 TEST REQUIRED |
+| `81b72994` | #3234 | Python 3.12 → 3.14 |  POLICY HOLD |
+| `1d9ebe9b` | #3233 | CUDA 12.1 → 13.1.1 |  TEST REQUIRED |
 
 ---
 

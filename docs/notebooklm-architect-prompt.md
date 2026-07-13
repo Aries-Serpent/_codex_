@@ -317,7 +317,7 @@ while not complete_understanding():
 
 ### Step 4: Report Generation
 
-**Objective**: Communicate findings clearly and actionably
+**Objective**: Communicate findings and actionably
 
 **Report Structure**:
 
@@ -623,11 +623,11 @@ graph TB
 This question is the foundation of recursive refinement. Never accept surface-level understanding. Continue research loops until you have complete architectural clarity and all logic bottlenecks are resolved.
 
 **Signs you need to ask the question**:
-- ❓ Unclear implementation details
-- ❓ Ambiguous error handling
-- ❓ Uncertain data flows
-- ❓ Unknown edge cases
-- ❓ Missing context on design decisions
+-  Unclear implementation details
+-  Ambiguous error handling
+-  Uncertain data flows
+-  Unknown edge cases
+-  Missing context on design decisions
 
 **Signs you can stop asking**:
 -  Complete understanding of implementation

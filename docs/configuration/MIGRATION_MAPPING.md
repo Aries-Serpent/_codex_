@@ -1,4 +1,6 @@
 # Configuration Migration Mapping - PS-01 Cycle 2
+
+**Version**: v0.2.1
 **Last Updated:** 2026-07-11
 
 **Last Updated: 2026-06-22

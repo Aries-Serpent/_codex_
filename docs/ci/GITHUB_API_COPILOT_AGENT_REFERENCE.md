@@ -24,7 +24,7 @@ permission errors. Follow this hierarchy **exactly**:
 | 3rd | `secrets._GITHUB_APP_PRIVATE_KEY` + `_GITHUB_APP_ID` | App installation scopes | Cognitive Brain App — commit signing, PR creation as App identity |
 | 4th | `github.token` / `secrets.GITHUB_TOKEN` | `contents:read`, `pull-requests:write` (limited) | Read-only operations, posting comments |
 
-> ⚠️ `GITHUB_TOKEN` **cannot** approve workflow runs, write Actions variables, or push
+> ️ `GITHUB_TOKEN` **cannot** approve workflow runs, write Actions variables, or push
 > to protected branches. Always use `CODEX_MASTER_KEY` for those operations.
 
 ### Fallback Pattern (canonical)
@@ -35,7 +35,7 @@ env:
 
 ---
 
-## 📋 REPOSITORY VARIABLES — READ/WRITE REFERENCE
+##  REPOSITORY VARIABLES — READ/WRITE REFERENCE
 
 These variables are the Cognitive Brain's persistent state. Read them to understand
 current session context; write them to record outcomes.
@@ -77,7 +77,7 @@ gh api PATCH /repos/$REPO/actions/variables/COGNITIVE_BRAIN_SESSION_NUMBER \
 
 ---
 
-## 🔄 PR BODY — WEC READ/WRITE PROTOCOL
+##  PR BODY — WEC READ/WRITE PROTOCOL
 
 The Workflow Execution Checklist (WEC) lives in the PR body. The agent MUST read
 it before every write to preserve maintainer checkbox state.
@@ -109,8 +109,8 @@ new_wec_block = swa._build_wec_block(existing_state=existing_state)
 ### Step 4 — Strip old WEC, append new canonical block
 ```bash
 STRIPPED=$(printf '%s' "$BODY" \
-  | sed '/^## 🔄 Workflow Execution Checklist/,$d' \
-  | sed '/^\*\*🔄 Workflow Execution Checklist\*\*:/,$d')
+  | sed '/^##  Workflow Execution Checklist/,$d' \
+  | sed '/^\*\* Workflow Execution Checklist\*\*:/,$d')
 
 UPDATED="${STRIPPED}${NEW_WEC_BLOCK}"
 
@@ -190,7 +190,7 @@ await github.rest.reactions.createForIssueComment({
 
 ---
 
-## ⚡ WORKFLOW RUNS — APPROVE / CANCEL / TRIGGER
+##  WORKFLOW RUNS — APPROVE / CANCEL / TRIGGER
 
 ### List pending (action_required) runs for a SHA
 ```bash
@@ -390,7 +390,7 @@ python scripts/ci/check_deferral_language.py \
 
 ---
 
-## 🔍 PR COMMENT REVIEW GATE — BLOCKING COMMENT DETECTION
+##  PR COMMENT REVIEW GATE — BLOCKING COMMENT DETECTION
 
 `comment-review-gate.yml` scans PR review comments and inline comments for
 **unresolved blocking items** before allowing merge.
@@ -592,7 +592,7 @@ Before ending any session the agent MUST verify:
 ```markdown
 ---
 
-## 🔄 Workflow Execution Checklist
+##  Workflow Execution Checklist
 
 ###  Always Required — fire automatically on every push (cannot be skipped)
 - [x] pre-merge-validation.yml — Pre-merge checks (always required)
@@ -601,13 +601,13 @@ Before ending any session the agent MUST verify:
 - [x] agent-auth-delegation.yml — agent token delegation (always required)
 - [x] workflow-execution-gate.yml — WEC gate — parse checklist & arm allowed workflows (always required)
 
-### 🔄 Always Active — fire via push/workflow_run (need approval in Actions tab)
+###  Always Active — fire via push/workflow_run (need approval in Actions tab)
 - [x] copilot-agent-checkin.yml — agent check-in / S221 guard (fires on push)
 - [ ] copilot-agent-session-done.yml — Auto-post @copilot review after agent session (fires on workflow_run; maintainer opt-in)
 - [ ] copilot-iterative-self-healing.yml — Iterative self-healing CI loop (fires on workflow_run — needs approval; maintainer opt-in)
 - [x] cost-gate.yml — Cost governance gate (called by agent-auth-delegation)
 
-### ⚡ Auto-Approve
+###  Auto-Approve
 - [ ] auto-approve-workflows — Auto-Approve workflow to run (approves all pending runs on last commit SHA)
 
 ### 🧪 Opt-In: Testing & Validation
@@ -622,7 +622,7 @@ Before ending any session the agent MUST verify:
 ### 📄 Opt-In: Documentation
 - [ ] documentation-link-checker.yml — Documentation link checker
 
-> **⚠️ HARDENED AGENT INSTRUCTION (non-negotiable):** This entire WEC block MUST be
+> **️ HARDENED AGENT INSTRUCTION (non-negotiable):** This entire WEC block MUST be
 > appended verbatim to **every** PR body update — including every `report_progress` call.
 > Copy the WEC block from the current PR body into the `prDescription` parameter, keeping
 > **all previously-checked `[x]` items checked**. Never reset a maintainer selection to `[ ]`.
@@ -661,10 +661,10 @@ Before ending any session the agent MUST verify:
 |---|---|---|---|---|
 | repository |  `repo` PAT |  `repo` PAT |  `repo` PAT |  `repo` PAT |
 | Organization |  `admin:org` |  `admin:org` |  `admin:org` |  `admin:org` |
-| Environment |  `repo` PAT |  `repo` PAT | ✗ | ✗ |
-| User (Codespaces) | ✗ | ✗ | ✗ |  `codespace` |
+| Environment |  `repo` PAT |  `repo` PAT |  |  |
+| User (Codespaces) |  |  |  |  `codespace` |
 
-### ⚠️ Why `GITHUB_TOKEN` Returns 403 on Variables API
+### ️ Why `GITHUB_TOKEN` Returns 403 on Variables API
 
 ```
 GITHUB_TOKEN = GitHub Actions installation token

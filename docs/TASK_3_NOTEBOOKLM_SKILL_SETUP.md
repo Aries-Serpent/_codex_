@@ -145,7 +145,7 @@ python scripts/run.py notebook_manager.py query \
 ```
  Query: What is the architecture of the auto-remediation system?
 
-📝 Response:
+ Response:
 The auto-remediation system in _codex_ follows a multi-stage pipeline:
 
 1. **Detection Phase**:
@@ -200,7 +200,7 @@ python scripts/run.py config.py show
 
 **Expected Configuration Output**:
 ```
-🔧 NotebookLM Skill Configuration:
+ NotebookLM Skill Configuration:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 auto_context: true
 context_window: 128000

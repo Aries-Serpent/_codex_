@@ -273,7 +273,7 @@ Add `.github/.codeql/python-queries.yml`:
 
 **Before All Fixes:**
 -  46 high-severity vulnerabilities
-- 🟡 4 medium-severity vulnerabilities  
+-  4 medium-severity vulnerabilities  
 -  30 error-level issues
 
 **After All Fixes:**

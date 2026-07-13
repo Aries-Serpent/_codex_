@@ -231,7 +231,7 @@ redis-cli --cluster rebalance 192.168.1.1:6379
 ```bash
 # 1. Update image
 kubectl set image deployment/api-server \
-  api-server=codex/api-server:v2.1.0 \
+  api-server=codex/api-server:v0.2.1 \
   -n codex
 
 # 2. Monitor rollout

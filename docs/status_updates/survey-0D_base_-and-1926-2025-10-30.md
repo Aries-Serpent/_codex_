@@ -9,6 +9,8 @@ generated_utc: 2025-10-30T03:51:18Z
 
 # File Survey: Branch 0D_base_ / PR #1926
 
+**Version**: v0.2.1
+
 ## >>> FILE: src/codex_ml/training/unified_training.py@0D_base_
 
 ```text
@@ -2213,7 +2215,7 @@ These assets are designed for offline validation and do not require hosted servi
   NDJSON metrics pipelines.
 - **Deployment guardrails** — Cross-check bespoke model expectations against `guides/serving_reproducibility.md`.
 
-## 📋 Operational templates
+##  Operational templates
 Operational templates encode recurring delivery rituals so teams can execute migrations, hardening passes, and planning
 checkpoints with consistent safeguards. Begin with the [Operational Templates index](./templates/README.md) to review
 prerequisites, required metadata, and cross-references before copying a template into your service.
@@ -2618,7 +2620,7 @@ ReasoningTrainer: NOT FOUND in code. References exist only in docs (e.g., docs/R
 --- docs/README.md ---
 - **Deployment guardrails** — Cross-check bespoke model expectations against `guides/serving_reproducibility.md`.
 
-## 📋 Operational templates
+##  Operational templates
 Operational templates encode recurring delivery rituals so teams can execute migrations, hardening passes, and planning
 checkpoints with consistent safeguards. Begin with the [Operational Templates index](./templates/README.md) to review
 prerequisites, required metadata, and cross-references before copying a template into your service.

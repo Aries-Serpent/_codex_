@@ -12,13 +12,13 @@
 ## 1. Full Session Flow (S864 — Current)
 
 ```mermaid
-%%{init: {'accessibility': {'title': 'Flowchart showing " S864 · 2026-05-08T04:45Z", "🔍 Diagnose Fast Validation\nRun 25536229750 — 3 pre-commit failures\n① detect-secrets exit 3\n② check-shell-true FP\n③ validate-internal-links"'}}%%
+%%{init: {'accessibility': {'title': 'Flowchart showing " S864 · 2026-05-08T04:45Z", " Diagnose Fast Validation\nRun 25536229750 — 3 pre-commit failures\n① detect-secrets exit 3\n② check-shell-true FP\n③ validate-internal-links"'}}%%
 flowchart TD
     START([" S864 · 2026-05-08T04:45Z"]) --> DIAG
 
-    DIAG["🔍 Diagnose Fast Validation\nRun 25536229750 — 3 pre-commit failures\n① detect-secrets exit 3\n② check-shell-true FP\n③ validate-internal-links"] --> FIX
+    DIAG[" Diagnose Fast Validation\nRun 25536229750 — 3 pre-commit failures\n① detect-secrets exit 3\n② check-shell-true FP\n③ validate-internal-links"] --> FIX
 
-    FIX[" Fixes Applied\n① .secrets.baseline v1.5.0 committed\n   run_validation.sh → detect-secrets==1.5.0\n② subprocess.py: removed shell=True string\n③ ELEVATED_PRIVILEGES… link fixed: ../../.codex/"] --> DOCS
+    FIX[" Fixes Applied\n① .secrets.baseline v0.2.1 committed\n   run_validation.sh → detect-secrets==1.5.0\n② subprocess.py: removed shell=True string\n③ ELEVATED_PRIVILEGES… link fixed: ../../.codex/"] --> DOCS
 
     DOCS[" Living Docs Updated\n• PR4346_whats_next.md — S864 status\n• PR4346_session_diagram.md — this\n• CHANGELOG — S864 entry\n• AGENT_ACCOUNTABILITY_REPORT"] --> GATE
 
@@ -101,12 +101,12 @@ flowchart TD
 
     CHECK{HTTP status?}
     CHECK -- "200 " --> CLOSE
-    CHECK -- "403 ⚠️" --> ISSUE
+    CHECK -- "403 ️" --> ISSUE
     CHECK -- "other ℹ️" --> SKIP
 
     ISSUE["Create / update GitHub issue\n[T-03] CODEX_MASTER_KEY missing\nsecurity_events scope\nassign @mbaetiong"] --> WAIT
 
-    WAIT["⏳ Admin rotates key\nadds security_events scope"] --> NEXT_RUN
+    WAIT[" Admin rotates key\nadds security_events scope"] --> NEXT_RUN
 
     NEXT_RUN["Next workflow approval\nre-probes endpoint"] --> CHECK
 
@@ -203,12 +203,12 @@ flowchart TD
 
     CHECK{HTTP status?}
     CHECK -- "200 " --> CLOSE
-    CHECK -- "403 ⚠️" --> ISSUE
+    CHECK -- "403 ️" --> ISSUE
     CHECK -- "other ℹ️" --> SKIP
 
     ISSUE["Create / update GitHub issue\n[T-03] CODEX_MASTER_KEY missing\nsecurity_events scope\nassign @mbaetiong\nlabel: admin-action-required"] --> WAIT
 
-    WAIT["⏳ Admin rotates key\nadds security_events scope\n90-day expiry"] --> NEXT_RUN
+    WAIT[" Admin rotates key\nadds security_events scope\n90-day expiry"] --> NEXT_RUN
 
     NEXT_RUN["Next workflow approval\nre-probes endpoint"] --> CHECK
 
@@ -297,7 +297,7 @@ flowchart TB
 %%{init: {'accessibility': {'title': 'Sequence Diagram showing x, codeql-alert-fetcher.yml'}}%%
 sequenceDiagram
     actor Dev as 🧑 Developer / Agent
-    participant PR as 📋 PR Body WEC Block
+    participant PR as  PR Body WEC Block
     participant WEG as workflow-execution-gate.yml
     participant WE as wec_enforcer.py
     participant GHA as GitHub Actions API
@@ -372,7 +372,7 @@ flowchart TD
 
         T3["🔑 github.token\n(installation token)\n\n PR read/write\n issue comment\n actions:write (403)\n security_events (403)\n variable CRUD (403)"]
 
-        T4["🔑 GITHUB_APP_TOKEN\n(_GITHUB_APP_ID)\n\n all org-wide\n approve any PR\n⚠️ not yet configured"]
+        T4["🔑 GITHUB_APP_TOKEN\n(_GITHUB_APP_ID)\n\n all org-wide\n approve any PR\n️ not yet configured"]
     end
 
     subgraph "Used In This Session"
@@ -415,7 +415,7 @@ pie title Files Changed by Category (PR #4346 cumulative)
 %%{init: {'accessibility': {'title': 'Pie Chart'}}%%
 pie title CI Checks — Latest Push (finding-autofix-faa8614c)
     " Passing" : 31
-    "🔄 In Progress" : 4
+    " In Progress" : 4
     " Failing (0 expected)" : 0
 ```
 
@@ -550,8 +550,8 @@ flowchart TD
     A["⏰ token-expiry-monitor.yml\ncron 0 9 * * * (09:00 UTC daily)\nor workflow_dispatch"] --> B["Read vars:\nCODEX_MASTER_KEY_EXPIRY_DATE\nCODEX_BACKUP_KEY_EXPIRY_DATE"]
     B --> C{days_left?}
     C -- "> 14 days" --> D[" Print healthy\nno action"]
-    C -- "≤ 14 days" --> E["⚠️ Warn in\njob summary"]
-    C -- "≤ 7 days\nor expired" --> F["🚨 Warn +\ncreate/update\nGitHub Issue"]
+    C -- "≤ 14 days" --> E["️ Warn in\njob summary"]
+    C -- "≤ 7 days\nor expired" --> F[" Warn +\ncreate/update\nGitHub Issue"]
     F --> G["Issue assigned to @mbaetiong\nLabel: security\n7-step rotation guide linked"]
     G --> H[" Fail job\n(not dry-run)"]
     E --> I[" Job passes\n(early warning only)"]

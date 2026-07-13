@@ -433,7 +433,7 @@ print(f"Server status: {health['status']}")
 
 # Make predictions
 inputs = [
-    "This product is amazing!",
+    "This product is !",
     "Worst purchase ever.",
     "It's okay, nothing special.",
 ]

@@ -61,15 +61,15 @@
 - [Re-run audit and update this document](#re-run-audit-and-update-this-document)
 - [Then manually categorize and update this document](#then-manually-categorize-and-update-this-document)
 - [ Mission Overview](#-mission-overview)
-- [⚖️ Verification Checklist](#-verification-checklist)
-- [📈 Success Metrics](#-success-metrics)
+- [️ Verification Checklist](#-verification-checklist)
+- [ Success Metrics](#-success-metrics)
 - [⚛️ Physics Alignment](#-physics-alignment)
-  - [Path 🛤️ - Action Resolution Flow](#path----action-resolution-flow)
-  - [Fields 🔄 - Priority Gradients](#fields----priority-gradients)
-  - [Patterns 👁️ - Action Signatures](#patterns----action-signatures)
-  - [Redundancy 🔀 - Tracking Safeguards](#redundancy----tracking-safeguards)
-  - [Balance ⚖️ - Action Load Distribution](#balance----action-load-distribution)
-- [⚡ Energy Distribution](#-energy-distribution)
+  - [Path ️ - Action Resolution Flow](#path----action-resolution-flow)
+  - [Fields  - Priority Gradients](#fields----priority-gradients)
+  - [Patterns ️ - Action Signatures](#patterns----action-signatures)
+  - [Redundancy  - Tracking Safeguards](#redundancy----tracking-safeguards)
+  - [Balance ️ - Action Load Distribution](#balance----action-load-distribution)
+- [ Energy Distribution](#-energy-distribution)
   - [Priority-Based Allocation](#priority-based-allocation)
   - [Temporal Energy Flow](#temporal-energy-flow)
 - [ Redundancy Patterns](#-redundancy-patterns)
@@ -174,8 +174,8 @@ This document catalogs all items requiring human intervention, code owner review
 **Action**: Complete Phase0 risk mitigation and executive summary documents  
 **Owner**: Risk Manager / Project Manager  
 **Context**:
-- `Phase0_RiskMitigation_Copilot.md` - 📝 TODO
-- `Phase0_ExecutiveSummary_Copilot.md` - 📝 TODO
+- `Phase0_RiskMitigation_Copilot.md` -  TODO
+- `Phase0_ExecutiveSummary_Copilot.md` -  TODO
 **Impact**: Executive visibility into risks and project status  
 **Estimated Time**: 4-6 hours
 
@@ -528,14 +528,14 @@ grep -rn "# TODO\|# FIXME" src/ agents/ scripts/ services/ --include="*.py" > /t
 ##  Mission Overview
 
 **Objective:** Comprehensive action item tracking system for human-required interventions  
-**Energy Level:** ⚡⚡⚡⚡⚡ (5/5 - Action Critical)  
-**Status:**  Audit Complete | 🔄 Action Items Pending  
+**Energy Level:**  (5/5 - Action Critical)  
+**Status:**  Audit Complete |  Action Items Pending  
 
 This document serves as the authoritative catalog of all items requiring human intervention across the codebase. It prioritizes actions by criticality, assigns ownership, and tracks resolution status. The system ensures no critical action falls through gaps while maintaining visibility into technical debt and incomplete work.
 
 ---
 
-## ⚖️ Verification Checklist
+## ️ Verification Checklist
 
 | Priority | Category | Total Items | Validation Criteria | Completed |
 |----------|----------|-------------|---------------------|-----------|
@@ -548,7 +548,7 @@ This document serves as the authoritative catalog of all items requiring human i
 
 ---
 
-## 📈 Success Metrics
+##  Success Metrics
 
 | KPI | Target | Measurement Method | Current |
 |-----|--------|-------------------|---------|
@@ -565,7 +565,7 @@ This document serves as the authoritative catalog of all items requiring human i
 
 ## ⚛️ Physics Alignment
 
-### Path 🛤️ - Action Resolution Flow
+### Path ️ - Action Resolution Flow
 ```
 Discovery → Triage → Assignment → Execution → Validation → Closure
     ↓          ↓          ↓           ↓            ↓          ↓
@@ -577,25 +577,25 @@ Discovery → Triage → Assignment → Execution → Validation → Closure
 ```
 **Alignment:** Systematic progression ensures no action stuck in limbo
 
-### Fields 🔄 - Priority Gradients
+### Fields  - Priority Gradients
 - **Critical Field:** Immediate escalation, highest resource allocation (40% energy)
 - **High Field:** Near-term focus, significant resource commitment (30% energy)
 - **Medium Field:** Planned resolution, moderate resources (20% energy)
 - **Low Field:** Backlog tracking, opportunistic resolution (10% energy)
 
-### Patterns 👁️ - Action Signatures
+### Patterns ️ - Action Signatures
 - **Stakeholder Pattern:** Leadership approval → funding → team allocation (Section 1.1)
 - **Security Pattern:** Configuration → validation → audit trail (Section 1.2)
 - **Cleanup Pattern:** Scan → categorize → resolve or archive (Section 2.1)
 - **TODO Pattern:** Discovery → issue creation → implementation or removal (Section 2.6)
 
-### Redundancy 🔀 - Tracking Safeguards
+### Redundancy  - Tracking Safeguards
 - **Primary:** This document (Human Action Required)
 - **Backup:** GitHub Issues for each action item
 - **Tertiary:** Inline code TODOs for granular tracking
 - **Audit:** Monthly re-scan to catch new items
 
-### Balance ⚖️ - Action Load Distribution
+### Balance ️ - Action Load Distribution
 ```
 Critical (3 items):  █████████████████████████████████ 40% effort
 High (8 items):      ███████████████████ 30% effort
@@ -606,7 +606,7 @@ Low (20 items):      ██ 10% effort
 
 ---
 
-## ⚡ Energy Distribution
+##  Energy Distribution
 
 ### Priority-Based Allocation
 - **P0 (Critical - 40%):** Stakeholder alignment (1.1), Security config (1.2), Production deployment (1.3)
@@ -646,7 +646,7 @@ Iteration 18+:   ██████ Low actions (20 items, opportunistic)
 
 **Status Transition States:**
 - **☐ Not Started:** Initial state after discovery
-- **🔄 In Progress:** Owner actively working on resolution
+- ** In Progress:** Owner actively working on resolution
 - **⏸️ Blocked:** Waiting on external dependency or approval
 - ** Completed:** Validated resolution with evidence
 - **🔁 Reopened:** Previously completed, now requires rework

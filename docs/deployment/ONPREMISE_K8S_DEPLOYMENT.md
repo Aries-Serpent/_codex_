@@ -231,7 +231,7 @@ kubectl version --client
 cat > kubeadm-config.yaml <<'EOF'
 apiVersion: kubeadm.k8s.io/v1beta3
 kind: ClusterConfiguration
-kubernetesVersion: v1.27.0
+kubernetesVersion: v0.2.1
 controlPlaneEndpoint: "10.0.0.10:6443"
 apiServer:
   certSANs:
@@ -324,7 +324,7 @@ kubectl get nodes -o wide
 
 ```bash
 # Install MetalLB for bare-metal load balancing
-kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.7/config/manifests/metallb-native.yaml
+kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.2.1/config/manifests/metallb-native.yaml
 
 # Create configuration for IP address pool
 cat > metallb-config.yaml <<'EOF'

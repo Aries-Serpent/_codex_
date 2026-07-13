@@ -1,4 +1,6 @@
 # MCP Schema Validation
+
+**Version**: v0.2.1
 **Last Updated:** 2026-07-11
 
 **Last Updated: 2026-06-22
@@ -129,15 +131,15 @@ class ExecuteRequest(BaseModel):
 # Valid request
 try:
     req = ExecuteRequest(command="ls -la", timeout_seconds=10)
-    print(f"✓ Valid: {req}")
+    print(f" Valid: {req}")
 except ValidationError as e:
-    print(f"✗ Invalid: {e}")
+    print(f" Invalid: {e}")
 
 # Invalid request (missing required field)
 try:
     req = ExecuteRequest(timeout_seconds=10)  # Missing 'command'
 except ValidationError as e:
-    print(f"✗ Validation error: {e}")
+    print(f" Validation error: {e}")
 ```
 
 ## Example 2: Complex Nested Validation

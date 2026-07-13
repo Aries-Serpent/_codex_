@@ -589,4 +589,4 @@ Some things still need humans:
 - **"How do I handle criticism?"** → View it as opportunity to learn
 - **"What if someone is rude?"** → Report to conduct@aries-serpent.dev
 
-Happy reviewing! 🔍
+Happy reviewing! 

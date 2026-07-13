@@ -1,4 +1,4 @@
-# Tutorial 01 — Monitoring Data and Model Drift
+## Guide 01 — Monitoring Data and Model Drift
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
@@ -179,7 +179,7 @@ print(result.summary())
 ```python
 if result.drift_detected:
     # Log to your alerting system, trigger a Slack notification, etc.
-    print(f"⚠️  Model drift! JS={result.js_divergence:.4f}")
+    print(f"️  Model drift! JS={result.js_divergence:.4f}")
     # → see Tutorial 03 to automate retraining from here
 ```
 

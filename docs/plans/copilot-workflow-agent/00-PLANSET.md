@@ -2,7 +2,7 @@
 **Last Updated:** 2026-07-11
 **Version:** v0.2.1
 
-> **⚠️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
+> **️ ARCHIVED PLAN** — This document was accurate as of its creation date. Current implementation may differ. See `docs/cognitive_brain/` and `docs/admin/CONTINUATION_ROADMAP.md` for current state.
 
 
 > Generated: 2026-06-22 | Version: 1.0.0  
@@ -22,7 +22,7 @@ Build a GitHub Copilot Workflow Agent that autonomously manages CI/CD lifecycle 
 
 | Phase | Name | Duration | Status |
 |-------|------|----------|--------|
-| 0 | Foundation & Planning | 1 phase | ⏳ IN PROGRESS |
+| 0 | Foundation & Planning | 1 phase |  IN PROGRESS |
 | 1 | Core Components | 2 phases | 🔜 PENDING |
 | 2 | Self-Healing Engine | 2 phases | 🔜 PENDING |
 | 3 | User Experience | 1 phase | 🔜 PENDING |
@@ -44,10 +44,10 @@ Build a GitHub Copilot Workflow Agent that autonomously manages CI/CD lifecycle 
 |-------------|------|--------|
 | Plan directory structure | `docs/plans/copilot-workflow-agent/` |  DONE |
 | Master planset | `00-PLANSET.md` |  DONE |
-| Work batches | `01-BATCHSET.md` | ⏳ IN PROGRESS |
-| Patch prompts | `02-PATCHSET.md` | ⏳ IN PROGRESS |
-| Architecture doc | `03-ARCHITECTURE.md` | ⏳ IN PROGRESS |
-| Checkpoint system | `08-CHECKPOINTS.md` | ⏳ IN PROGRESS |
+| Work batches | `01-BATCHSET.md` |  IN PROGRESS |
+| Patch prompts | `02-PATCHSET.md` |  IN PROGRESS |
+| Architecture doc | `03-ARCHITECTURE.md` |  IN PROGRESS |
+| Checkpoint system | `08-CHECKPOINTS.md` |  IN PROGRESS |
 
 ### Acceptance Criteria
 - [ ] All plan documents created
@@ -181,7 +181,7 @@ class AutoRemediator:
 | Dependency Missing |  Yes | Add missing pip package |
 | Timeout |  Yes | Increase timeout value |
 | YAML Syntax |  Yes | Fix YAML formatting |
-| Test Flaky | ⚠️ Partial | Add retry or skip |
+| Test Flaky | ️ Partial | Add retry or skip |
 | API Deprecated |  Yes | Upgrade action version |
 | Permission |  No | Requires manual review |
 

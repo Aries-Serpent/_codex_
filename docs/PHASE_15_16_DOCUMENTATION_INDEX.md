@@ -346,7 +346,7 @@ curl ".../api/decisions/history?lane_name=security&page_size=50"
 | **Code Examples** | All endpoints |  cURL + Python + JS |
 | **Architecture Diagrams** | 4+ |  6 diagrams |
 | **Patterns** | 40+ |  40+ with schemas |
-| **Internal Link Health** | 100% | 🟡 In Progress |
+| **Internal Link Health** | 100% |  In Progress |
 | **API Latency (p99)** | <100ms |  <80ms |
 | **Cache Hit Rate** | >80% |  85% |
 

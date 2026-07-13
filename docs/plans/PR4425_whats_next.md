@@ -3,7 +3,7 @@
 **Version:** v0.2.1
 
 > **PR:** [#4425](https://github.com/Aries-Serpent/_codex_/pull/4425) → **Transitioned to PR #4427**  
-> **Session:** S966 | **Date:** 2026-05-12 | **Branch:** `0D_base_` (promotion PR)  
+> **Session:** S966 | **Date:2026-07-13
 > **Current head:** `fa17398` (S966 final wrap-up)
 
 ---
@@ -49,24 +49,24 @@
 
 ---
 
-## 🟡 Current CI Snapshot (as of S966 — PR #4427)
+##  Current CI Snapshot (as of S966 — PR #4427)
 
 | Signal | Status |
 |--------|--------|
 | ` Enforce Secrets Baseline` |  Pattern 27 auto-fixed 56 entries |
-| `🚨 Deferral Language Policy Check` |  passing (0 violations) |
+| ` Deferral Language Policy Check` |  passing (0 violations) |
 | `ruff` |  0 violations (src/ + tests/ + scripts/) |
 | `sync_tracked_files` |  all consistent (.secrets.baseline CODEX_MANIFEST pointer updated) |
 | `verify_living_files.py --strict` |  passing (all 5 living files present + non-stale) |
 | `auto_fix_common_issues.py --check-only` |  100/100 merge readiness (Pattern 30) |
 | Pattern 25 |  CHANGELOG + AGENT_ACCOUNTABILITY_REPORT in every commit |
-| CodeQL remediation (127 baseline) | ⏳ next session — staged closure 127→100→75→50→25→0 |
-| mypy baseline | ⚠️ 135 vs 125 (known regression, tracked as P1 next session) |
+| CodeQL remediation (127 baseline) |  next session — staged closure 127→100→75→50→25→0 |
+| mypy baseline | ️ 135 vs 125 (known regression, tracked as P1 next session) |
 | Parallel validation (code review + CodeQL) |  passed — 3 review comments (informational/enhancement) |
 
 ---
 
-## 📋 Next Session Priority 1 (PR #4427 continuation)
+##  Next Session Priority 1 (PR #4427 continuation)
 
 1. **mypy baseline regression** — reduce 135 → 125 (fix type annotation regressions introduced in this branch) — highest priority blocker
 2. **CodeQL alert remediation** — continue staged closure `127 → 100 → 75 → 50 → 25 → 0` — fetch latest alerts via GitHub MCP `list_code_scanning_alerts`, apply targeted fixes
@@ -75,7 +75,7 @@
    - `scripts/ci/scan_all.py:357-359` — runtime validation already added in S966 (trusted_commands whitelist)
    - `scripts/ci/verify_living_files.py:30-35` — add positive-integer validation for `cli_pr_number`
 
-## 📋 Next Session Priority 2
+##  Next Session Priority 2
 
 4. Keep Pattern 25/30 green on every commit (`verify_living_files.py --strict`, `sync_tracked_files.py --fix`, `auto_fix_common_issues.py --check-only`)
 5. Continue Bandit sweep toward 0 (currently 0 HIGH/MEDIUM per S960)

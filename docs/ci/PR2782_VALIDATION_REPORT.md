@@ -105,7 +105,7 @@ except ImportError:
 
 **Test Output**:
 ```
-⚠️  codex_swarm module not found!
+️  codex_swarm module not found!
 
 To build and install the module, run:
   pip install maturin

@@ -57,7 +57,7 @@ key = base64.b64encode(secrets.token_bytes(32)).decode()
 print(f'New key ({len(key)} chars): {key}')
 "
 # Example output: New key (44 chars): <base64-string>
-# ⚠️ Store this value in your password manager BEFORE proceeding
+# ️ Store this value in your password manager BEFORE proceeding
 ```
 
 **Never generate keys inside CI/CD.** Keys generated on ephemeral runners are
@@ -181,8 +181,8 @@ def _get_active_key() -> bytes:
 | Rotation | Due Date | Status |
 |----------|----------|--------|
 | Initial provisioning | 2026-02-28 |  Keys set |
-| Rotation 1 | 2026-05-28 | ⏳ Scheduled |
-| Rotation 2 | 2026-08-26 | ⏳ Scheduled |
+| Rotation 1 | 2026-05-28 |  Scheduled |
+| Rotation 2 | 2026-08-26 |  Scheduled |
 
 ---
 

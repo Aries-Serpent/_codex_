@@ -11,15 +11,15 @@
 
 | Priority | Plan | Status | Progress | ETA |
 |----------|------|--------|----------|-----|
-| 🟡 ACTIVE | Cognitive Brain Phase 8.3-8.5 | 📋 Planned | 60% (8.0-8.2 done) | Phase 1 (Current Cycle) |
-| 🟡 ACTIVE | Unified Agent Framework | 🟡 In Progress | 60% | Phase 1 (Current Cycle) |
+|  ACTIVE | Cognitive Brain Phase 8.3-8.5 |  Planned | 60% (8.0-8.2 done) | Phase 1 (Current Cycle) |
+|  ACTIVE | Unified Agent Framework |  In Progress | 60% | Phase 1 (Current Cycle) |
 |  COMPLETE | HIGH_MATURITY_ACHIEVEMENT |  COMPLETE | 40/40 (100%) | DONE |
 |  COMPLETE | Python Ingestion Pipeline |  COMPLETE | All phases | DONE |
 |  COMPLETE | 4-Stream Infrastructure |  COMPLETE | All streams | DONE |
 |  COMPLETE | Physics Equations Coverage |  COMPLETE | Verified | DONE |
 |  COMPLETE | MSP Audit Gap Remediation |  COMPLETE | Verified | DONE |
 |  COMPLETE | Security Alert Remediation |  COMPLETE | 68/68 alerts | DONE |
-|  LOW | AST Standardization | 📋 OPTIONAL | Review needed | TBD |
+|  LOW | AST Standardization |  OPTIONAL | Review needed | TBD |
 
 ---
 
@@ -47,16 +47,16 @@
 | PLAN_STATUS_DASHBOARD updated |  Complete | S873 |
 | COGNITIVE_BRAIN_UNIFIED_IMPLEMENTATION_TASKS |  Complete | S873 |
 | cognitive_brain/INDEX.md updated |  Complete | S873 |
-| 10 variables queued | ⏳ Post-merge | `@agent-var-writer apply` |
-| 4 webhooks ready | ⏳ Post-merge | `@agent-infra apply-webhooks` |
-| T-03 security_events scope | 📋 Admin action | @mbaetiong |
-| TTL tighten to 3600 | 📋 Once CI stable | Set `COPILOT_SESSION_TTL_SECONDS=3600` |
+| 10 variables queued |  Post-merge | `@agent-var-writer apply` |
+| 4 webhooks ready |  Post-merge | `@agent-infra apply-webhooks` |
+| T-03 security_events scope |  Admin action | @mbaetiong |
+| TTL tighten to 3600 |  Once CI stable | Set `COPILOT_SESSION_TTL_SECONDS=3600` |
 
 ---
 
 ##  Detailed Status
 
-### 🟡 Priority 0: Cognitive Brain Implementation - ACTIVE
+###  Priority 0: Cognitive Brain Implementation - ACTIVE
 
 **Unified Document:** `docs/plans/COGNITIVE_BRAIN_UNIFIED_IMPLEMENTATION_TASKS.md`
 
@@ -67,9 +67,9 @@
 | 8.0 | k₁ Optimization |  Complete |
 | 8.1 | Quantum Memory Management |  Complete |
 | 8.2 | Multi-Agent Orchestration |  Complete |
-| 8.3 | Adaptive Learning Engine | 📋 Planned |
-| 8.4 | Transfer Learning | 📋 Planned |
-| 8.5 | Production Deployment | 📋 Planned |
+| 8.3 | Adaptive Learning Engine |  Planned |
+| 8.4 | Transfer Learning |  Planned |
+| 8.5 | Production Deployment |  Planned |
 
 **Next Actions:**
 - Implement orchestrator tests
@@ -79,7 +79,7 @@
 
 ---
 
-### 🟡 Priority 0: Unified Agent Framework - IN PROGRESS
+###  Priority 0: Unified Agent Framework - IN PROGRESS
 
 **Location:** `.github/agents/core/`
 
@@ -237,7 +237,7 @@
 
 ---
 
-### 📋 Historical Plans (No Action Required)
+###  Historical Plans (No Action Required)
 
 The following are completion reports and historical documentation:
 
@@ -276,7 +276,7 @@ The following are completion reports and historical documentation:
 
 ---
 
-## 📈 Progress Metrics
+##  Progress Metrics
 
 ### Capability Maturity Distribution - GOAL ACHIEVED 
 
@@ -309,7 +309,7 @@ Status:  AHEAD OF SCHEDULE
 
 ---
 
-## 🔄 Update Log
+##  Update Log
 
 | Date | Update | Impact |
 |------|--------|--------|
@@ -322,7 +322,7 @@ Status:  AHEAD OF SCHEDULE
 
 ---
 
-## 📝 Notes
+##  Notes
 
 **Dashboard Status:**  ALL PLANS COMPLETE
 

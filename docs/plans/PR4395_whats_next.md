@@ -27,7 +27,7 @@
 
 ---
 
-## 🟡 Current CI / Review Snapshot
+##  Current CI / Review Snapshot
 
 | Signal | Current Understanding |
 |--------|------------------------|
@@ -40,7 +40,7 @@
 
 ---
 
-## 📋 Next Actions Before Merge
+##  Next Actions Before Merge
 
 1. **Monitor the latest workflow runs** and distinguish approval-state / zero-job `action_required` outcomes from any future code-fixable failures.
 2. **Keep PR handoff docs current** if workflow state changes again before merge.
