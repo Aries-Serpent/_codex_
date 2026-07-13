@@ -1,0 +1,35 @@
+name: Dependency Scan (template)
+
+on:
+  schedule:
+    - cron: '0 3 * * *'  # daily at 03:00 UTC
+  workflow_dispatch:
+
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+permissions: read-all
+
+jobs:
+  depscan:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5  # v6.0.3
+      with:
+            persist-credentials: false
+      - name: Setup Python
+        uses: ./.github/actions/setup-python-cached
+        with:
+          python-version: '3.12.13'
+          cache-tier: 'live'
+
+      - name: Cache health report
+        if: always()
+        continue-on-error: true
+        run: |
+          python scripts/ci/generate_cache_keys.py --type pip --workflow dependency-scan --health 2>/dev/null || echo '{"status": "cache health check skipped"}'
