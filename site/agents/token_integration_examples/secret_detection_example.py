@@ -81,9 +81,7 @@ class SecretDetectionAgent:
             patterns = result.get("patterns_matched", [])
             
             # Log metadata (NOT token values)
-            # CodeQL flags this as potential log injection, but the logged values are
-            # sanitized/controlled (repo name, counts) and cannot contain user input.
-            # lgtm[py/log-injection]: This logging is safe - only metadata (counts, repo name) logged
+            # lgtm[py/log-injection]: Logging safe metadata only (counts, repo name) - no user input, safe from injection attacks
             logger.info(
                 "secret_scan_complete",
                 extra={
