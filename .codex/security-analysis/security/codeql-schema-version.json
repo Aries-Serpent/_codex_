@@ -1,0 +1,10 @@
+{
+  "schema_version": "1.0.0",
+  "generated_at": "2026-07-13T04:22:26Z",
+  "repository": "Aries-Serpent/_codex_",
+  "run_id": "29222808051",
+  "sha": "2bd5fbb1f9f1eaf0edd4cb6719f618fbf2d67f8c",
+  "lane_id": "lane-security",
+  "shard_id": "shard-0",
+  "codeql_wave": "off"
+}

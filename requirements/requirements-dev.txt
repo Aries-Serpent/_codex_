@@ -1,10 +1,10 @@
 pytest>=9.0.3,<10.0.0  # CVE-2025-71176: >=9.0.3 required
-pytest-cov==5.0.0
+pytest-cov==7.1.0
 pytest-xdist>=3.5.0,<4.0.0
 pytest-timeout>=2.3,<3
-pytest-rerunfailures>=14.0,<15
+pytest-rerunfailures>=14.0,<17
 pytest-randomly>=3.16,<5
-coverage>=7.10.6,<8
+coverage>=7.15.1,<8
 requests>=2.33.0,<3  # Security: Phase 14 WS1 - Updated to fix CVE-2026-25645 (TLS bypass vulnerability)
 responses>=0.26.1,<1  # Mock HTTP for zendesk/API tests
 jsonschema>=4.26.0

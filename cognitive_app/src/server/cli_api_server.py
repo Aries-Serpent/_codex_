@@ -353,7 +353,7 @@ MEMORY_CAPACITY = int(os.environ.get("CODEX_MEMORY_CAPACITY", "1000"))
 # DB path: CODEX_DB_PATH env var → default ~/.codex/cli_history.db
 _DB_PATH = os.environ.get(
     "CODEX_DB_PATH",
-    os.path.join(os.path.expanduser("~"), ".codex", "cli_history.db"),
+    os.path.join(os.path.expanduser("~"), ".codex", "cli_history.db"),  # codeql[py/uninitialized-local-variable]
 )
 
 

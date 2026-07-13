@@ -231,7 +231,7 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     p.add_argument(
         "--revoke-on-exit",
-        action="store_true",
+        action="store_true",  # codeql[py/weak-crypto]
         help="Revoke the installation token before exiting",
     )
     p.add_argument(

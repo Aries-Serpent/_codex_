@@ -1,0 +1,550 @@
+# 🔐 Security Findings Comprehensive Report
+
+**Repository:** `Aries-Serpent/_codex_`
+**Commit:** `2bd5fbb1f9f1eaf0edd4cb6719f618fbf2d67f8c`
+**Run:** [29222808051](https://github.com/Aries-Serpent/_codex_/actions/runs/29222808051)
+**Generated:** 2026-07-13T04:22:26Z
+
+## Summary
+
+- **Total Findings:** 129
+- **Critical:** 28
+- **High:** 0
+- **Medium:** 101
+- **Low:** 0
+
+## Findings by Severity
+
+### CRITICAL (28)
+
+- **python.cryptography.security.mode-without-authentication.crypto-mode-without-authentication** (semgrep)
+  - File: `mutants/tests/security/test_cryptography_coverage_wave2a.py`
+  - Description: An encryption mode of operation is being used without proper message authentication. This can potentially result in the encrypted content to be decrypted by an attacker. Consider instead use an AEAD mode of operation like GCM. 
+  - Assigned to: `unified-security-scanner`
+- **python.cryptography.security.mode-without-authentication.crypto-mode-without-authentication** (semgrep)
+  - File: `mutants/tests/security/test_cryptography_coverage_wave2a.py`
+  - Description: An encryption mode of operation is being used without proper message authentication. This can potentially result in the encrypted content to be decrypted by an attacker. Consider instead use an AEAD mode of operation like GCM. 
+  - Assigned to: `unified-security-scanner`
+- **python.jwt.security.jwt-hardcode.jwt-python-hardcoded-secret** (semgrep)
+  - File: `mutants/tests/security/test_pyjwt_coverage_wave2a.py`
+  - Description: Hardcoded JWT secret or private key is used. This is a Insufficiently Protected Credentials weakness: https://cwe.mitre.org/data/definitions/522.html Consider using an appropriate security mechanism to protect the credentials (e.g. keeping secrets in environment variables)
+  - Assigned to: `unified-security-scanner`
+- **python.jwt.security.jwt-hardcode.jwt-python-hardcoded-secret** (semgrep)
+  - File: `mutants/tests/security/test_pyjwt_coverage_wave2a.py`
+  - Description: Hardcoded JWT secret or private key is used. This is a Insufficiently Protected Credentials weakness: https://cwe.mitre.org/data/definitions/522.html Consider using an appropriate security mechanism to protect the credentials (e.g. keeping secrets in environment variables)
+  - Assigned to: `unified-security-scanner`
+- **python.jwt.security.jwt-hardcode.jwt-python-hardcoded-secret** (semgrep)
+  - File: `mutants/tests/security/test_pyjwt_coverage_wave2a.py`
+  - Description: Hardcoded JWT secret or private key is used. This is a Insufficiently Protected Credentials weakness: https://cwe.mitre.org/data/definitions/522.html Consider using an appropriate security mechanism to protect the credentials (e.g. keeping secrets in environment variables)
+  - Assigned to: `unified-security-scanner`
+- **python.jwt.security.jwt-hardcode.jwt-python-hardcoded-secret** (semgrep)
+  - File: `mutants/tests/security/test_pyjwt_coverage_wave2a.py`
+  - Description: Hardcoded JWT secret or private key is used. This is a Insufficiently Protected Credentials weakness: https://cwe.mitre.org/data/definitions/522.html Consider using an appropriate security mechanism to protect the credentials (e.g. keeping secrets in environment variables)
+  - Assigned to: `unified-security-scanner`
+- **python.jwt.security.jwt-hardcode.jwt-python-hardcoded-secret** (semgrep)
+  - File: `mutants/tests/security/test_pyjwt_coverage_wave2a.py`
+  - Description: Hardcoded JWT secret or private key is used. This is a Insufficiently Protected Credentials weakness: https://cwe.mitre.org/data/definitions/522.html Consider using an appropriate security mechanism to protect the credentials (e.g. keeping secrets in environment variables)
+  - Assigned to: `unified-security-scanner`
+- **python.jwt.security.jwt-hardcode.jwt-python-hardcoded-secret** (semgrep)
+  - File: `mutants/tests/security/test_pyjwt_coverage_wave2a.py`
+  - Description: Hardcoded JWT secret or private key is used. This is a Insufficiently Protected Credentials weakness: https://cwe.mitre.org/data/definitions/522.html Consider using an appropriate security mechanism to protect the credentials (e.g. keeping secrets in environment variables)
+  - Assigned to: `unified-security-scanner`
+- **python.jwt.security.jwt-hardcode.jwt-python-hardcoded-secret** (semgrep)
+  - File: `mutants/tests/security/test_pyjwt_coverage_wave2a.py`
+  - Description: Hardcoded JWT secret or private key is used. This is a Insufficiently Protected Credentials weakness: https://cwe.mitre.org/data/definitions/522.html Consider using an appropriate security mechanism to protect the credentials (e.g. keeping secrets in environment variables)
+  - Assigned to: `unified-security-scanner`
+- **python.jwt.security.jwt-hardcode.jwt-python-hardcoded-secret** (semgrep)
+  - File: `mutants/tests/security/test_pyjwt_coverage_wave2a.py`
+  - Description: Hardcoded JWT secret or private key is used. This is a Insufficiently Protected Credentials weakness: https://cwe.mitre.org/data/definitions/522.html Consider using an appropriate security mechanism to protect the credentials (e.g. keeping secrets in environment variables)
+  - Assigned to: `unified-security-scanner`
+- **python.jwt.security.jwt-hardcode.jwt-python-hardcoded-secret** (semgrep)
+  - File: `mutants/tests/security/test_pyjwt_coverage_wave2a.py`
+  - Description: Hardcoded JWT secret or private key is used. This is a Insufficiently Protected Credentials weakness: https://cwe.mitre.org/data/definitions/522.html Consider using an appropriate security mechanism to protect the credentials (e.g. keeping secrets in environment variables)
+  - Assigned to: `unified-security-scanner`
+- **python.jwt.security.jwt-hardcode.jwt-python-hardcoded-secret** (semgrep)
+  - File: `mutants/tests/security/test_pyjwt_coverage_wave2a.py`
+  - Description: Hardcoded JWT secret or private key is used. This is a Insufficiently Protected Credentials weakness: https://cwe.mitre.org/data/definitions/522.html Consider using an appropriate security mechanism to protect the credentials (e.g. keeping secrets in environment variables)
+  - Assigned to: `unified-security-scanner`
+- **python.jwt.security.jwt-hardcode.jwt-python-hardcoded-secret** (semgrep)
+  - File: `mutants/tests/security/test_pyjwt_coverage_wave2a.py`
+  - Description: Hardcoded JWT secret or private key is used. This is a Insufficiently Protected Credentials weakness: https://cwe.mitre.org/data/definitions/522.html Consider using an appropriate security mechanism to protect the credentials (e.g. keeping secrets in environment variables)
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.dangerous-subprocess-use-tainted-env-args.dangerous-subprocess-use-tainted-env-args** (semgrep)
+  - File: `mutants/tests/test_container_smoke.py`
+  - Description: Detected subprocess function 'run' with user controlled data. A malicious actor could leverage this to perform command injection. You may consider using 'shlex.quote()'.
+  - Assigned to: `unified-security-scanner`
+- **python.cryptography.security.mode-without-authentication.crypto-mode-without-authentication** (semgrep)
+  - File: `tests/security/test_cryptography_coverage_wave2a.py`
+  - Description: An encryption mode of operation is being used without proper message authentication. This can potentially result in the encrypted content to be decrypted by an attacker. Consider instead use an AEAD mode of operation like GCM. 
+  - Assigned to: `unified-security-scanner`
+- **python.cryptography.security.mode-without-authentication.crypto-mode-without-authentication** (semgrep)
+  - File: `tests/security/test_cryptography_coverage_wave2a.py`
+  - Description: An encryption mode of operation is being used without proper message authentication. This can potentially result in the encrypted content to be decrypted by an attacker. Consider instead use an AEAD mode of operation like GCM. 
+  - Assigned to: `unified-security-scanner`
+- **python.jwt.security.jwt-hardcode.jwt-python-hardcoded-secret** (semgrep)
+  - File: `tests/security/test_pyjwt_coverage_wave2a.py`
+  - Description: Hardcoded JWT secret or private key is used. This is a Insufficiently Protected Credentials weakness: https://cwe.mitre.org/data/definitions/522.html Consider using an appropriate security mechanism to protect the credentials (e.g. keeping secrets in environment variables)
+  - Assigned to: `unified-security-scanner`
+- **python.jwt.security.jwt-hardcode.jwt-python-hardcoded-secret** (semgrep)
+  - File: `tests/security/test_pyjwt_coverage_wave2a.py`
+  - Description: Hardcoded JWT secret or private key is used. This is a Insufficiently Protected Credentials weakness: https://cwe.mitre.org/data/definitions/522.html Consider using an appropriate security mechanism to protect the credentials (e.g. keeping secrets in environment variables)
+  - Assigned to: `unified-security-scanner`
+- **python.jwt.security.jwt-hardcode.jwt-python-hardcoded-secret** (semgrep)
+  - File: `tests/security/test_pyjwt_coverage_wave2a.py`
+  - Description: Hardcoded JWT secret or private key is used. This is a Insufficiently Protected Credentials weakness: https://cwe.mitre.org/data/definitions/522.html Consider using an appropriate security mechanism to protect the credentials (e.g. keeping secrets in environment variables)
+  - Assigned to: `unified-security-scanner`
+- **python.jwt.security.jwt-hardcode.jwt-python-hardcoded-secret** (semgrep)
+  - File: `tests/security/test_pyjwt_coverage_wave2a.py`
+  - Description: Hardcoded JWT secret or private key is used. This is a Insufficiently Protected Credentials weakness: https://cwe.mitre.org/data/definitions/522.html Consider using an appropriate security mechanism to protect the credentials (e.g. keeping secrets in environment variables)
+  - Assigned to: `unified-security-scanner`
+- **python.jwt.security.jwt-hardcode.jwt-python-hardcoded-secret** (semgrep)
+  - File: `tests/security/test_pyjwt_coverage_wave2a.py`
+  - Description: Hardcoded JWT secret or private key is used. This is a Insufficiently Protected Credentials weakness: https://cwe.mitre.org/data/definitions/522.html Consider using an appropriate security mechanism to protect the credentials (e.g. keeping secrets in environment variables)
+  - Assigned to: `unified-security-scanner`
+- **python.jwt.security.jwt-hardcode.jwt-python-hardcoded-secret** (semgrep)
+  - File: `tests/security/test_pyjwt_coverage_wave2a.py`
+  - Description: Hardcoded JWT secret or private key is used. This is a Insufficiently Protected Credentials weakness: https://cwe.mitre.org/data/definitions/522.html Consider using an appropriate security mechanism to protect the credentials (e.g. keeping secrets in environment variables)
+  - Assigned to: `unified-security-scanner`
+- **python.jwt.security.jwt-hardcode.jwt-python-hardcoded-secret** (semgrep)
+  - File: `tests/security/test_pyjwt_coverage_wave2a.py`
+  - Description: Hardcoded JWT secret or private key is used. This is a Insufficiently Protected Credentials weakness: https://cwe.mitre.org/data/definitions/522.html Consider using an appropriate security mechanism to protect the credentials (e.g. keeping secrets in environment variables)
+  - Assigned to: `unified-security-scanner`
+- **python.jwt.security.jwt-hardcode.jwt-python-hardcoded-secret** (semgrep)
+  - File: `tests/security/test_pyjwt_coverage_wave2a.py`
+  - Description: Hardcoded JWT secret or private key is used. This is a Insufficiently Protected Credentials weakness: https://cwe.mitre.org/data/definitions/522.html Consider using an appropriate security mechanism to protect the credentials (e.g. keeping secrets in environment variables)
+  - Assigned to: `unified-security-scanner`
+- **python.jwt.security.jwt-hardcode.jwt-python-hardcoded-secret** (semgrep)
+  - File: `tests/security/test_pyjwt_coverage_wave2a.py`
+  - Description: Hardcoded JWT secret or private key is used. This is a Insufficiently Protected Credentials weakness: https://cwe.mitre.org/data/definitions/522.html Consider using an appropriate security mechanism to protect the credentials (e.g. keeping secrets in environment variables)
+  - Assigned to: `unified-security-scanner`
+- **python.jwt.security.jwt-hardcode.jwt-python-hardcoded-secret** (semgrep)
+  - File: `tests/security/test_pyjwt_coverage_wave2a.py`
+  - Description: Hardcoded JWT secret or private key is used. This is a Insufficiently Protected Credentials weakness: https://cwe.mitre.org/data/definitions/522.html Consider using an appropriate security mechanism to protect the credentials (e.g. keeping secrets in environment variables)
+  - Assigned to: `unified-security-scanner`
+- **python.jwt.security.jwt-hardcode.jwt-python-hardcoded-secret** (semgrep)
+  - File: `tests/security/test_pyjwt_coverage_wave2a.py`
+  - Description: Hardcoded JWT secret or private key is used. This is a Insufficiently Protected Credentials weakness: https://cwe.mitre.org/data/definitions/522.html Consider using an appropriate security mechanism to protect the credentials (e.g. keeping secrets in environment variables)
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.dangerous-subprocess-use-tainted-env-args.dangerous-subprocess-use-tainted-env-args** (semgrep)
+  - File: `tests/test_container_smoke.py`
+  - Description: Detected subprocess function 'run' with user controlled data. A malicious actor could leverage this to perform command injection. You may consider using 'shlex.quote()'.
+  - Assigned to: `unified-security-scanner`
+
+### MEDIUM (101)
+
+- **python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected** (semgrep)
+  - File: `.github/agents/codex_reviewer/github_client.py`
+  - Description: Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib calls to ensure user data cannot control the URLs, or consider using the 'requests' library instead.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected** (semgrep)
+  - File: `.github/agents/codex_reviewer/github_client.py`
+  - Description: Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib calls to ensure user data cannot control the URLs, or consider using the 'requests' library instead.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected** (semgrep)
+  - File: `.github/agents/codex_reviewer/github_client.py`
+  - Description: Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib calls to ensure user data cannot control the URLs, or consider using the 'requests' library instead.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected** (semgrep)
+  - File: `.github/agents/codex_reviewer/github_client.py`
+  - Description: Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib calls to ensure user data cannot control the URLs, or consider using the 'requests' library instead.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected** (semgrep)
+  - File: `.github/agents/github-guru-agent/github_client.py`
+  - Description: Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib calls to ensure user data cannot control the URLs, or consider using the 'requests' library instead.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected** (semgrep)
+  - File: `.github/agents/github-guru-agent/github_client.py`
+  - Description: Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib calls to ensure user data cannot control the URLs, or consider using the 'requests' library instead.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected** (semgrep)
+  - File: `.github/agents/github-guru-agent/guru_adapter.py`
+  - Description: Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib calls to ensure user data cannot control the URLs, or consider using the 'requests' library instead.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected** (semgrep)
+  - File: `.github/copilot-cascade/mcp_server.py`
+  - Description: Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib calls to ensure user data cannot control the URLs, or consider using the 'requests' library instead.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected** (semgrep)
+  - File: `.github/copilot-cascade/mcp_server.py`
+  - Description: Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib calls to ensure user data cannot control the URLs, or consider using the 'requests' library instead.
+  - Assigned to: `unified-security-scanner`
+- **terraform.lang.security.eks-public-endpoint-enabled.eks-public-endpoint-enabled** (semgrep)
+  - File: `infrastructure/terraform/aws-eks/main.tf`
+  - Description: The vpc_config resource inside the eks cluster has not explicitly disabled public endpoint access
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.deserialization.pickle.avoid-pickle** (semgrep)
+  - File: `mutants/src/cache/redis_cache.py`
+  - Description: Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.deserialization.pickle.avoid-pickle** (semgrep)
+  - File: `mutants/src/cache/redis_cache.py`
+  - Description: Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected** (semgrep)
+  - File: `mutants/src/codex/agents/brain_client.py`
+  - Description: Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib calls to ensure user data cannot control the URLs, or consider using the 'requests' library instead.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected** (semgrep)
+  - File: `mutants/src/codex/alerting/slack.py`
+  - Description: Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib calls to ensure user data cannot control the URLs, or consider using the 'requests' library instead.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected** (semgrep)
+  - File: `mutants/src/codex/auth/github_app.py`
+  - Description: Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib calls to ensure user data cannot control the URLs, or consider using the 'requests' library instead.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected** (semgrep)
+  - File: `mutants/src/codex/auth/github_app.py`
+  - Description: Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib calls to ensure user data cannot control the URLs, or consider using the 'requests' library instead.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected** (semgrep)
+  - File: `mutants/src/codex/auth/github_app.py`
+  - Description: Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib calls to ensure user data cannot control the URLs, or consider using the 'requests' library instead.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure** (semgrep)
+  - File: `mutants/src/codex/autonomy/token_broker.py`
+  - Description: Detected a python logger call with a potential hardcoded secret "Token health check failed for %s: %s" being logged. This may lead to secret credentials being exposed. Make sure that the logger is not logging  sensitive information.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure** (semgrep)
+  - File: `mutants/src/codex/autonomy/token_broker.py`
+  - Description: Detected a python logger call with a potential hardcoded secret "Token from %s expiring in %.1f days" being logged. This may lead to secret credentials being exposed. Make sure that the logger is not logging  sensitive information.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure** (semgrep)
+  - File: `mutants/src/codex/autonomy/token_broker.py`
+  - Description: Detected a python logger call with a potential hardcoded secret "Token rotation overdue for %s: %d days past expiration" being logged. This may lead to secret credentials being exposed. Make sure that the logger is not logging  sensitive information.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure** (semgrep)
+  - File: `mutants/src/codex/autonomy/token_broker.py`
+  - Description: Detected a python logger call with a potential hardcoded secret "Token rotation approaching for %s in %.1f days" being logged. This may lead to secret credentials being exposed. Make sure that the logger is not logging  sensitive information.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected** (semgrep)
+  - File: `mutants/src/codex/github/api_client.py`
+  - Description: Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib calls to ensure user data cannot control the URLs, or consider using the 'requests' library instead.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected** (semgrep)
+  - File: `mutants/src/codex/github/api_client.py`
+  - Description: Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib calls to ensure user data cannot control the URLs, or consider using the 'requests' library instead.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected** (semgrep)
+  - File: `mutants/src/codex/github/api_client.py`
+  - Description: Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib calls to ensure user data cannot control the URLs, or consider using the 'requests' library instead.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected** (semgrep)
+  - File: `mutants/src/codex/github/http_client.py`
+  - Description: Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib calls to ensure user data cannot control the URLs, or consider using the 'requests' library instead.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.deserialization.pickle.avoid-pickle** (semgrep)
+  - File: `mutants/src/codex/logging/session_embeddings.py`
+  - Description: Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.deserialization.pickle.avoid-pickle** (semgrep)
+  - File: `mutants/src/codex/logging/session_embeddings.py`
+  - Description: Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.insecure-file-permissions.insecure-file-permissions** (semgrep)
+  - File: `mutants/src/codex/release/api.py`
+  - Description: These permissions `0o700` are widely permissive and grant access to more people than may be necessary. A good default is `0o644` which gives read and write access to yourself and read access to everyone else.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected** (semgrep)
+  - File: `mutants/src/codex/skills/telemetry.py`
+  - Description: Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib calls to ensure user data cannot control the URLs, or consider using the 'requests' library instead.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure** (semgrep)
+  - File: `mutants/src/codex_ml/safety/filters.py`
+  - Description: Detected a python logger call with a potential hardcoded secret "safety.filters: failed to assign neg_inf for token %s (%s)" being logged. This may lead to secret credentials being exposed. Make sure that the logger is not logging  sensitive information.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.deserialization.pickle.avoid-pickle** (semgrep)
+  - File: `mutants/src/codex_ml/utils/safe_pickle.py`
+  - Description: Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.deserialization.pickle.avoid-pickle** (semgrep)
+  - File: `mutants/src/codex_ml/utils/safe_pickle.py`
+  - Description: Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.deserialization.pickle.avoid-pickle** (semgrep)
+  - File: `mutants/src/codex_ml/utils/safe_pickle.py`
+  - Description: Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected** (semgrep)
+  - File: `mutants/src/services/crawler/zendesk_sync.py`
+  - Description: Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib calls to ensure user data cannot control the URLs, or consider using the 'requests' library instead.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure** (semgrep)
+  - File: `mutants/src/training/engine_hf_trainer.py`
+  - Description: Detected a python logger call with a potential hardcoded secret "Tokenizer from '%s' has no pad_token; falling back to eos_token. "
+            "This may affect training behaviour." being logged. This may lead to secret credentials being exposed. Make sure that the logger is not logging  sensitive information.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure** (semgrep)
+  - File: `mutants/src/training/functional_training.py`
+  - Description: Detected a python logger call with a potential hardcoded secret "Tokenizer '%s' has no pad_token; falling back to eos_token. "
+                "This may affect training behaviour." being logged. This may lead to secret credentials being exposed. Make sure that the logger is not logging  sensitive information.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.insecure-hash-algorithms-md5.insecure-hash-algorithm-md5** (semgrep)
+  - File: `mutants/tests/business_logic/test_checkpointing_business_logic.py`
+  - Description: Detected MD5 hash algorithm which is considered insecure. MD5 is not collision resistant and is therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.insecure-hash-algorithms-md5.insecure-hash-algorithm-md5** (semgrep)
+  - File: `mutants/tests/business_logic/test_checkpointing_business_logic.py`
+  - Description: Detected MD5 hash algorithm which is considered insecure. MD5 is not collision resistant and is therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure** (semgrep)
+  - File: `mutants/tests/integration/test_admin_automation_agent.py`
+  - Description: Detected a python logger call with a potential hardcoded secret "Secret value: %s" being logged. This may lead to secret credentials being exposed. Make sure that the logger is not logging  sensitive information.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.insecure-file-permissions.insecure-file-permissions** (semgrep)
+  - File: `mutants/tests/integration/test_checkpoint_resume_e2e.py`
+  - Description: These permissions `0o755` are widely permissive and grant access to more people than may be necessary. A good default is `0o644` which gives read and write access to yourself and read access to everyone else.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.deserialization.pickle.avoid-pickle** (semgrep)
+  - File: `mutants/tests/regression/test_checkpoint_roundtrip.py`
+  - Description: Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.deserialization.pickle.avoid-pickle** (semgrep)
+  - File: `mutants/tests/regression/test_checkpoint_roundtrip.py`
+  - Description: Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.deserialization.pickle.avoid-pickle** (semgrep)
+  - File: `mutants/tests/regression/test_checkpoint_roundtrip.py`
+  - Description: Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected** (semgrep)
+  - File: `mutants/tests/test_actions_server_smoke.py`
+  - Description: Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib calls to ensure user data cannot control the URLs, or consider using the 'requests' library instead.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.insecure-hash-algorithms-md5.insecure-hash-algorithm-md5** (semgrep)
+  - File: `mutants/tests/test_cache_management.py`
+  - Description: Detected MD5 hash algorithm which is considered insecure. MD5 is not collision resistant and is therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.insecure-hash-algorithms-md5.insecure-hash-algorithm-md5** (semgrep)
+  - File: `mutants/tests/test_cache_management.py`
+  - Description: Detected MD5 hash algorithm which is considered insecure. MD5 is not collision resistant and is therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.insecure-hash-algorithms-md5.insecure-hash-algorithm-md5** (semgrep)
+  - File: `mutants/tests/test_cache_management.py`
+  - Description: Detected MD5 hash algorithm which is considered insecure. MD5 is not collision resistant and is therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.insecure-hash-algorithms-md5.insecure-hash-algorithm-md5** (semgrep)
+  - File: `mutants/tests/test_cache_management.py`
+  - Description: Detected MD5 hash algorithm which is considered insecure. MD5 is not collision resistant and is therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.insecure-hash-algorithms-md5.insecure-hash-algorithm-md5** (semgrep)
+  - File: `mutants/tests/test_cache_management.py`
+  - Description: Detected MD5 hash algorithm which is considered insecure. MD5 is not collision resistant and is therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.exec-detected.exec-detected** (semgrep)
+  - File: `mutants/tests/test_readme_examples.py`
+  - Description: Detected the use of exec(). exec() can be dangerous if used to evaluate dynamic content. If this content can be input from outside the program, this may be a code injection vulnerability. Ensure evaluated content is not definable by external sources.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.insecure-hash-algorithms-md5.insecure-hash-algorithm-md5** (semgrep)
+  - File: `mutants/tests/test_security_crypto.py`
+  - Description: Detected MD5 hash algorithm which is considered insecure. MD5 is not collision resistant and is therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.insecure-hash-algorithms-md5.insecure-hash-algorithm-md5** (semgrep)
+  - File: `mutants/tests/test_security_input_validation.py`
+  - Description: Detected MD5 hash algorithm which is considered insecure. MD5 is not collision resistant and is therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.deserialization.pickle.avoid-pickle** (semgrep)
+  - File: `mutants/tests/test_security_vulnerabilities.py`
+  - Description: Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.deserialization.pickle.avoid-pickle** (semgrep)
+  - File: `mutants/tests/unit/utils/test_safe_pickle.py`
+  - Description: Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure** (semgrep)
+  - File: `services/msp_gateway/middleware/tenant_context.py`
+  - Description: Detected a python logger call with a potential hardcoded secret "Migrating plaintext tenant API keys to hashed storage in %s. "
+                        "Back up the tenant registry before the first migration run if "
+                        "you may need to recover plaintext keys." being logged. This may lead to secret credentials being exposed. Make sure that the logger is not logging  sensitive information.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure** (semgrep)
+  - File: `services/msp_gateway/middleware/tenant_context.py`
+  - Description: Detected a python logger call with a potential hardcoded secret "Migrated legacy SHA-256 API key hash to PBKDF2 for tenant %s" being logged. This may lead to secret credentials being exposed. Make sure that the logger is not logging  sensitive information.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure** (semgrep)
+  - File: `services/msp_gateway/middleware/tenant_context.py`
+  - Description: Detected a python logger call with a potential hardcoded secret "Failed to migrate API key hash for tenant %s: %s" being logged. This may lead to secret credentials being exposed. Make sure that the logger is not logging  sensitive information.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected** (semgrep)
+  - File: `src/aries_serpent_core/agents/brain_client.py`
+  - Description: Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib calls to ensure user data cannot control the URLs, or consider using the 'requests' library instead.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected** (semgrep)
+  - File: `src/aries_serpent_core/alerting/slack.py`
+  - Description: Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib calls to ensure user data cannot control the URLs, or consider using the 'requests' library instead.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected** (semgrep)
+  - File: `src/aries_serpent_core/auth/github_app.py`
+  - Description: Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib calls to ensure user data cannot control the URLs, or consider using the 'requests' library instead.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected** (semgrep)
+  - File: `src/aries_serpent_core/auth/github_app.py`
+  - Description: Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib calls to ensure user data cannot control the URLs, or consider using the 'requests' library instead.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected** (semgrep)
+  - File: `src/aries_serpent_core/auth/github_app.py`
+  - Description: Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib calls to ensure user data cannot control the URLs, or consider using the 'requests' library instead.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure** (semgrep)
+  - File: `src/aries_serpent_core/autonomy/token_broker.py`
+  - Description: Detected a python logger call with a potential hardcoded secret "Token health check failed for %s: %s" being logged. This may lead to secret credentials being exposed. Make sure that the logger is not logging  sensitive information.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure** (semgrep)
+  - File: `src/aries_serpent_core/autonomy/token_broker.py`
+  - Description: Detected a python logger call with a potential hardcoded secret "Token from %s expiring in %.1f days" being logged. This may lead to secret credentials being exposed. Make sure that the logger is not logging  sensitive information.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure** (semgrep)
+  - File: `src/aries_serpent_core/autonomy/token_broker.py`
+  - Description: Detected a python logger call with a potential hardcoded secret "Token rotation overdue for %s: %d days past expiration" being logged. This may lead to secret credentials being exposed. Make sure that the logger is not logging  sensitive information.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure** (semgrep)
+  - File: `src/aries_serpent_core/autonomy/token_broker.py`
+  - Description: Detected a python logger call with a potential hardcoded secret "Token rotation approaching for %s in %.1f days" being logged. This may lead to secret credentials being exposed. Make sure that the logger is not logging  sensitive information.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected** (semgrep)
+  - File: `src/aries_serpent_core/github/api_client.py`
+  - Description: Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib calls to ensure user data cannot control the URLs, or consider using the 'requests' library instead.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected** (semgrep)
+  - File: `src/aries_serpent_core/github/api_client.py`
+  - Description: Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib calls to ensure user data cannot control the URLs, or consider using the 'requests' library instead.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected** (semgrep)
+  - File: `src/aries_serpent_core/github/api_client.py`
+  - Description: Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib calls to ensure user data cannot control the URLs, or consider using the 'requests' library instead.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected** (semgrep)
+  - File: `src/aries_serpent_core/github/http_client.py`
+  - Description: Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib calls to ensure user data cannot control the URLs, or consider using the 'requests' library instead.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.insecure-file-permissions.insecure-file-permissions** (semgrep)
+  - File: `src/aries_serpent_core/release/api.py`
+  - Description: These permissions `0o700` are widely permissive and grant access to more people than may be necessary. A good default is `0o644` which gives read and write access to yourself and read access to everyone else.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected** (semgrep)
+  - File: `src/aries_serpent_core/skills/telemetry.py`
+  - Description: Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib calls to ensure user data cannot control the URLs, or consider using the 'requests' library instead.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure** (semgrep)
+  - File: `src/codex_ml/safety/filters.py`
+  - Description: Detected a python logger call with a potential hardcoded secret "safety.filters: failed to assign neg_inf for token %s (%s)" being logged. This may lead to secret credentials being exposed. Make sure that the logger is not logging  sensitive information.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.deserialization.pickle.avoid-pickle** (semgrep)
+  - File: `src/codex_ml/utils/safe_pickle.py`
+  - Description: Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.deserialization.pickle.avoid-pickle** (semgrep)
+  - File: `src/codex_ml/utils/safe_pickle.py`
+  - Description: Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.deserialization.pickle.avoid-pickle** (semgrep)
+  - File: `src/codex_ml/utils/safe_pickle.py`
+  - Description: Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected** (semgrep)
+  - File: `src/services/crawler/zendesk_sync.py`
+  - Description: Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib calls to ensure user data cannot control the URLs, or consider using the 'requests' library instead.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure** (semgrep)
+  - File: `src/training/engine_hf_trainer.py`
+  - Description: Detected a python logger call with a potential hardcoded secret "Tokenizer from '%s' has no pad_token; falling back to eos_token. "
+            "This may affect training behaviour." being logged. This may lead to secret credentials being exposed. Make sure that the logger is not logging  sensitive information.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure** (semgrep)
+  - File: `src/training/functional_training.py`
+  - Description: Detected a python logger call with a potential hardcoded secret "Tokenizer '%s' has no pad_token; falling back to eos_token. "
+                "This may affect training behaviour." being logged. This may lead to secret credentials being exposed. Make sure that the logger is not logging  sensitive information.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.insecure-hash-algorithms-md5.insecure-hash-algorithm-md5** (semgrep)
+  - File: `tests/business_logic/test_checkpointing_business_logic.py`
+  - Description: Detected MD5 hash algorithm which is considered insecure. MD5 is not collision resistant and is therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.insecure-hash-algorithms-md5.insecure-hash-algorithm-md5** (semgrep)
+  - File: `tests/business_logic/test_checkpointing_business_logic.py`
+  - Description: Detected MD5 hash algorithm which is considered insecure. MD5 is not collision resistant and is therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.insecure-file-permissions.insecure-file-permissions** (semgrep)
+  - File: `tests/cli/test_archive_cli_wave3_gaps.py`
+  - Description: These permissions `0o700` are widely permissive and grant access to more people than may be necessary. A good default is `0o644` which gives read and write access to yourself and read access to everyone else.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure** (semgrep)
+  - File: `tests/integration/test_admin_automation_agent.py`
+  - Description: Detected a python logger call with a potential hardcoded secret "Secret value: %s" being logged. This may lead to secret credentials being exposed. Make sure that the logger is not logging  sensitive information.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.insecure-file-permissions.insecure-file-permissions** (semgrep)
+  - File: `tests/integration/test_checkpoint_resume_e2e.py`
+  - Description: These permissions `0o755` are widely permissive and grant access to more people than may be necessary. A good default is `0o644` which gives read and write access to yourself and read access to everyone else.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.deserialization.pickle.avoid-pickle** (semgrep)
+  - File: `tests/regression/test_checkpoint_roundtrip.py`
+  - Description: Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.deserialization.pickle.avoid-pickle** (semgrep)
+  - File: `tests/regression/test_checkpoint_roundtrip.py`
+  - Description: Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.deserialization.pickle.avoid-pickle** (semgrep)
+  - File: `tests/regression/test_checkpoint_roundtrip.py`
+  - Description: Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected** (semgrep)
+  - File: `tests/test_actions_server_smoke.py`
+  - Description: Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib calls to ensure user data cannot control the URLs, or consider using the 'requests' library instead.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.insecure-hash-algorithms-md5.insecure-hash-algorithm-md5** (semgrep)
+  - File: `tests/test_cache_management.py`
+  - Description: Detected MD5 hash algorithm which is considered insecure. MD5 is not collision resistant and is therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.insecure-hash-algorithms-md5.insecure-hash-algorithm-md5** (semgrep)
+  - File: `tests/test_cache_management.py`
+  - Description: Detected MD5 hash algorithm which is considered insecure. MD5 is not collision resistant and is therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.insecure-hash-algorithms-md5.insecure-hash-algorithm-md5** (semgrep)
+  - File: `tests/test_cache_management.py`
+  - Description: Detected MD5 hash algorithm which is considered insecure. MD5 is not collision resistant and is therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.insecure-hash-algorithms-md5.insecure-hash-algorithm-md5** (semgrep)
+  - File: `tests/test_cache_management.py`
+  - Description: Detected MD5 hash algorithm which is considered insecure. MD5 is not collision resistant and is therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.insecure-hash-algorithms-md5.insecure-hash-algorithm-md5** (semgrep)
+  - File: `tests/test_cache_management.py`
+  - Description: Detected MD5 hash algorithm which is considered insecure. MD5 is not collision resistant and is therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.audit.exec-detected.exec-detected** (semgrep)
+  - File: `tests/test_readme_examples.py`
+  - Description: Detected the use of exec(). exec() can be dangerous if used to evaluate dynamic content. If this content can be input from outside the program, this may be a code injection vulnerability. Ensure evaluated content is not definable by external sources.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.insecure-hash-algorithms-md5.insecure-hash-algorithm-md5** (semgrep)
+  - File: `tests/test_security_crypto.py`
+  - Description: Detected MD5 hash algorithm which is considered insecure. MD5 is not collision resistant and is therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.insecure-hash-algorithms-md5.insecure-hash-algorithm-md5** (semgrep)
+  - File: `tests/test_security_input_validation.py`
+  - Description: Detected MD5 hash algorithm which is considered insecure. MD5 is not collision resistant and is therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.deserialization.pickle.avoid-pickle** (semgrep)
+  - File: `tests/test_security_vulnerabilities.py`
+  - Description: Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.deserialization.pickle.avoid-pickle** (semgrep)
+  - File: `tests/unit/utils/test_safe_pickle.py`
+  - Description: Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.deserialization.pickle.avoid-pickle** (semgrep)
+  - File: `utils/safe_pickle.py`
+  - Description: Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.deserialization.pickle.avoid-pickle** (semgrep)
+  - File: `utils/safe_pickle.py`
+  - Description: Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.
+  - Assigned to: `unified-security-scanner`
+- **python.lang.security.deserialization.pickle.avoid-pickle** (semgrep)
+  - File: `utils/safe_pickle.py`
+  - Description: Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the relevant data as JSON or a similar text-based serialization format.
+  - Assigned to: `unified-security-scanner`
+
+## Recommended Agent Handoffs
+
+- `unified-security-scanner`: 129 findings
+
+[View full security report](reports/security-findings-comprehensive.json)

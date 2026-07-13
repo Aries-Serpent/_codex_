@@ -562,7 +562,7 @@ jobs:
           prerelease: false
 
       - name: Upload release artifacts and publish
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b  # v3
         with:
           files: |
             dist/*.whl

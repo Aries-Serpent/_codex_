@@ -103,9 +103,9 @@ def test_container_smoke_basic(tmp_path):
     cmd = [
         _bash_executable(),
         _validated_script_path("container_smoke.sh"),
-        image,
-        "8000",
-        str(host_port),
+        shlex.quote(image),
+        shlex.quote("8000"),
+        shlex.quote(str(host_port)),
     ]
     logger.error(f"[test] Running: {shlex.join(cmd)}")
     # Allow enough time for slower CI/container startup while still failing reasonably fast.

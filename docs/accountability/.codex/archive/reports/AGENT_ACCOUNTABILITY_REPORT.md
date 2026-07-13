@@ -16446,3 +16446,21 @@ and the CI gate requirement.
 - **WEC human grant** `copilot-agent-checkin.yml` — detected 2026-07-10T21:40:49Z @ adf30990 — sticky [x] maintained by all future agent sessions
 - **WEC human grant** `cost-gate.yml` — detected 2026-07-10T21:40:49Z @ adf30990 — sticky [x] maintained by all future agent sessions
 - **WEC human grant** `auto-approve-workflows` — detected 2026-07-10T21:40:49Z @ adf30990 — sticky [x] maintained by all future agent sessions
+
+<!-- WEC human-grant log — auto-appended by session_wrapup_autofix -->
+- **WEC human grant** `New` — detected 2026-07-13T12:13:04Z @ 1d70a72d — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `Documentation` — detected 2026-07-13T12:13:04Z @ 1d70a72d — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `Dependency` — detected 2026-07-13T12:13:04Z @ 1d70a72d — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `CodeQL` — detected 2026-07-13T12:13:04Z @ 1d70a72d — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `Bandit` — detected 2026-07-13T12:13:04Z @ 1d70a72d — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `Gitleaks` — detected 2026-07-13T12:13:04Z @ 1d70a72d — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `pip-audit` — detected 2026-07-13T12:13:04Z @ 1d70a72d — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `pip` — detected 2026-07-13T12:13:04Z @ 1d70a72d — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `Security` — detected 2026-07-13T12:13:04Z @ 1d70a72d — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `OWASP` — detected 2026-07-13T12:13:04Z @ 1d70a72d — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `Code` — detected 2026-07-13T12:13:04Z @ 1d70a72d — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `Self-review` — detected 2026-07-13T12:13:04Z @ 1d70a72d — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `All` — detected 2026-07-13T12:13:04Z @ 1d70a72d — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `No` — detected 2026-07-13T12:13:04Z @ 1d70a72d — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `Phase` — detected 2026-07-13T12:13:04Z @ 1d70a72d — sticky [x] maintained by all future agent sessions
+- **WEC human grant** `CHANGELOG` — detected 2026-07-13T12:13:04Z @ 1d70a72d — sticky [x] maintained by all future agent sessions
