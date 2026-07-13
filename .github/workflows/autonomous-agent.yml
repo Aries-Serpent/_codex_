@@ -41,11 +41,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v5
         with:
-          sparse-checkout: '.github
-
-          scripts/ci
-
-          '
+          sparse-checkout: |
+            .github
+            scripts/ci
       - name: CacheManager health check
         continue-on-error: true
         run: 'python scripts/ci/generate_cache_keys.py --health --workflow autonomous-agent
@@ -55,8 +53,8 @@ jobs:
       - name: Check Owner Approval
         id: guard
         env:
-        TOOL_KEY: autonomous-agent
-        GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+          TOOL_KEY: autonomous-agent
+          GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         run: "if bash scripts/ci/owner_approval_guard.sh; then\n  echo \"approved=true\"\
         \ >> $GITHUB_OUTPUT\n  echo \"✅ Owner approval valid for autonomous operations\"\
         \nelse\n  echo \"approved=false\" >> $GITHUB_OUTPUT\n  echo \"⚠️ Owner approval\

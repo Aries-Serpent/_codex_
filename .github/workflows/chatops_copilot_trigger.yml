@@ -37,8 +37,7 @@ jobs:
         continue-on-error: true
         env:
           ACTOR: ${{ github.event.comment.user.login }}
-          run: "python scripts/ci/autonomy_gate_check.py \\\n  --surface AUT-007 \\\n\
-        \  --class ADVISORY_WRITE \\\n  --actor \"${ACTOR}\" || true\n"
+        run: "python scripts/ci/autonomy_gate_check.py \\\n  --surface AUT-007 \\\n  --class ADVISORY_WRITE \\\n  --actor \"${ACTOR}\" || true\n"
       - name: Parse command and actor
         id: parse
         env:
