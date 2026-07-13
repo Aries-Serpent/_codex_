@@ -1,10 +1,10 @@
-# Session Context — 2026-07-13T22:18:06Z
+# Session Context — 2026-07-13T22:41:24Z
 **Branch:** `copilot/release-v023`  **PR:** #5318  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4998` (✅)
-- GraphQL remaining: `5000` (✅)
+- REST remaining: `4986` (✅)
+- GraphQL remaining: `4996` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
@@ -12,29 +12,29 @@
 State: `open`  Draft: `False`  Branch: `copilot/release-v023` → `main`
 
 ### ❌ 6 Failing CI Check(s)
-- `Final Pre-Merge Checks` (failure)
-- `🔗 Integration Tests` (failure)
+- `Enforce Action Versions` (failure)
 - `🐢 Slow Tests` (failure)
 - `🚀 Fast Unit Tests` (failure)
-- `CodeQL Security Analysis (python)` (cancelled)
-- `CodeQL Security Analysis (javascript)` (failure)
+- `🔗 Integration Tests` (failure)
+- `Final Pre-Merge Checks` (failure)
+- `compliance-check` (failure)
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **Pre-Merge Validation** — `failure` on `copilot/release-v023` (2026-07-13)
-- **.github/workflows/branch-divergence-monitor.yml** — `failure` on `copilot/release-v023` (2026-07-13)
-- **.github/workflows/sigstore-verify.yml** — `failure` on `copilot/release-v023` (2026-07-13)
-- **.github/workflows/auto-approve-workflows.yml** — `failure` on `copilot/release-v023` (2026-07-13)
-- **.github/workflows/repo-var-sync-schedule.yml** — `failure` on `copilot/release-v023` (2026-07-13)
+- **.github/workflows/observable-release.yml** — `failure` on `copilot/release-v023` (2026-07-13)
+- **.github/workflows/rust-ffi.yml** — `failure` on `copilot/release-v023` (2026-07-13)
+- **.github/workflows/promote-integration-branch.yml** — `failure` on `copilot/release-v023` (2026-07-13)
+- **.github/workflows/automated-monitoring-setup.yml** — `failure` on `copilot/release-v023` (2026-07-13)
+- **.github/workflows/pages-pre-merge-validation.yml** — `failure` on `copilot/release-v023` (2026-07-13)
 
 ## 📝 Recent Commits
+- `0ca7b6f9` fix: version sync, import hook, YAML indent, CodeQL upload, REQ-4/5 compliance — copilot-swe-agent[bot] (2026-07-13)
+- `4f8424a6` chore: initial plan - fix __version__ and CI failures — copilot-swe-agent[bot] (2026-07-13)
 - `e6b50f1d` chore(release): bump version to 0.2.3 for v0.2.3 release — copilot-swe-agent[bot] (2026-07-13)
 - `1556e943` v0.2.3 Pre-Release: Fix dependency leak and circular imports in core profile (#5 — Copilot (2026-07-13)
 - `1807b905` feat(workflow): Complete CodeQL continuity campaign & enable v0.2.2 autonomous d — Copilot (2026-07-13)
 - `84597c56` Consolidate 27 workflows into 9 masters: 67% reduction, health dashboard deploym — Copilot (2026-07-13)
 - `6af5ec2d` fix(security): Resolve Issue #5299 security vulnerabilities - zero critical/high — Copilot (2026-07-13)
 - `d4da67c7` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-07-13)
-- `bd4c19ea` Merge production-deployment-v022: phases 1-4 complete, security remediation fina — Copilot (2026-07-13)
-- `284c0568` chore(vars): auto-sync variable audit report [skip ci] — github-actions[bot] (2026-07-13)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
