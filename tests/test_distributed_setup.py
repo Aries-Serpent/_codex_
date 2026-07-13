@@ -1,9 +1,9 @@
 """Tests for distributed training setup."""
-pytest.importorskip("mlflow")
-
 import os
 
 import pytest
+
+pytest.importorskip("mlflow")
 
 pytest.importorskip("torch")
 

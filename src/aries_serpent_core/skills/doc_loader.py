@@ -64,7 +64,8 @@ def _extract_frontmatter(text: str) -> dict[str, Any]:
     try:
         data = yaml.safe_load(match.group(1)) or {}
         return data if isinstance(data, dict) else {}
-    except (IOError, OSError, yaml.YAMLError):
+    except (IOError, OSError, yaml.YAMLError) as exc:
+        logger.debug("DocLoader: Failed to parse YAML frontmatter: %s", exc)
         return {}
 
 
