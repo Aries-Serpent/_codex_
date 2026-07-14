@@ -304,22 +304,29 @@ jobs:
         fetch-depth: 50
         ref: main
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-    - name: Fetch PR commit (if applicable)
-      # SECURITY: lgtm[py/workflow/untrusted-checkout]
-      # This step safely fetches (not checks out) the PR commit by verified SHA.
-      # Only performs git fetch (read-only operation); checkout stays on main.
-      # Fetching commits is safe; code execution remains on trusted main branch.
+    - name: Validate PR commit metadata (API-only, no checkout)
+      # SECURITY: Uses GitHub API only (no git fetch/checkout operations).
+      # This eliminates CodeQL's workflow_run untrusted-checkout flag by design.
+      # Validation performed via API; code execution stays on main branch.
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
       run: |
-        FETCH_DEPTH=5
+        REPO="${{ github.repository }}"
+        # Validate workflow_run head_sha exists (API lookup only, no checkout)
         if [ -n "${{ github.event.workflow_run.head_sha }}" ]; then
-          git fetch origin "${{ github.event.workflow_run.head_sha }}" --depth="$FETCH_DEPTH" 2>&1 | tee -a "$RUNNER_TEMP/fetch.log" || {
-            echo "⚠️ Warning: Failed to fetch workflow_run head_sha; continuing with main branch" >&2
-          }
+          if gh api repos/"${REPO}"/commits/"${{ github.event.workflow_run.head_sha }}" --silent 2>/dev/null; then
+            echo "✅ Workflow_run head_sha is valid on repository"
+          else
+            echo "⚠️ Warning: workflow_run head_sha not found on repository; continuing"
+          fi
         fi
+        # Validate triage head_sha exists (API lookup only, no checkout)
         if [ -n "${{ needs.triage.outputs.head_sha }}" ] && [ "${{ needs.triage.outputs.head_sha }}" != "${{ github.sha }}" ]; then
-          git fetch origin "${{ needs.triage.outputs.head_sha }}" --depth="$FETCH_DEPTH" 2>&1 | tee -a "$RUNNER_TEMP/fetch.log" || {
-            echo "⚠️ Warning: Failed to fetch triage head_sha; continuing with main branch" >&2
-          }
+          if gh api repos/"${REPO}"/commits/"${{ needs.triage.outputs.head_sha }}" --silent 2>/dev/null; then
+            echo "✅ Triage head_sha is valid on repository"
+          else
+            echo "⚠️ Warning: triage head_sha not found on repository; continuing"
+          fi
         fi
     - name: '🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)'
       id: resolve-target
