@@ -226,9 +226,6 @@
   "tests/data/test_cache_roundtrip.py": [
     "transformers"
   ],
-  "tests/data/test_dataset_loaders_extended.py": [
-    "numpy"
-  ],
   "tests/data/test_datasets_module.py": [
     "data.datasets"
   ],
@@ -247,6 +244,10 @@
   ],
   "tests/evaluation/test_evaluate_epoch.py": [
     "torch"
+  ],
+  "tests/full/test_training_pipeline.py": [
+    "torch",
+    "torch.utils.data"
   ],
   "tests/fuzz/test_fuzz_api.py": [
     "hypothesis",
@@ -303,6 +304,10 @@
   "tests/monitoring/test_codex_logging_bootstrap.py": [
     "mlflow"
   ],
+  "tests/orchestration/test_determinism_baseline.py": [
+    "numpy",
+    "torch"
+  ],
   "tests/peft/test_peft_smoke.py": [
     "torch"
   ],
@@ -334,9 +339,6 @@
   "tests/rag/test_device_placement.py": [
     "torch"
   ],
-  "tests/rag/test_rag_functionality_comprehensive.py": [
-    "numpy"
-  ],
   "tests/repro/test_seed_consistency.py": [
     "torch"
   ],
@@ -346,7 +348,56 @@
   "tests/retrieval/test_optimizations.py": [
     "numpy"
   ],
-  "tests/security/test_fixes_validation.py": [
+  "tests/runtime/test_inference_pipeline.py": [
+    "transformers",
+    "transformers",
+    "transformers",
+    "transformers",
+    "transformers",
+    "transformers",
+    "transformers",
+    "torch",
+    "transformers",
+    "torch",
+    "transformers",
+    "torch",
+    "transformers",
+    "torch",
+    "transformers",
+    "torch",
+    "transformers",
+    "torch",
+    "transformers",
+    "torch",
+    "transformers",
+    "torch",
+    "transformers",
+    "torch",
+    "transformers",
+    "torch",
+    "transformers",
+    "torch",
+    "transformers",
+    "torch"
+  ],
+  "tests/runtime/test_ml_dependencies.py": [
+    "torch",
+    "torch",
+    "torch",
+    "torch",
+    "torch",
+    "transformers",
+    "transformers",
+    "transformers",
+    "transformers",
+    "transformers",
+    "transformers",
+    "transformers",
+    "transformers",
+    "torch",
+    "numpy",
+    "torch",
+    "numpy",
     "numpy"
   ],
   "tests/serving/test_model_loader.py": [
@@ -452,6 +503,9 @@
   "tests/test_model_registry.py": [
     "typer.testing"
   ],
+  "tests/test_monitoring_cli.py": [
+    "typer.testing"
+  ],
   "tests/test_performance_benchmark.py": [
     "torch.optim",
     "torch",
@@ -507,9 +561,6 @@
   ],
   "tests/training/test_training_edge_cases_phase26.py": [
     "numpy",
-    "torch"
-  ],
-  "tests/unit/test_checkpoint_core_resume.py": [
     "torch"
   ],
   "tests/unit/test_modeling_coverage_gap.py": [
