@@ -1,10 +1,10 @@
-# Session Context — 2026-07-14T21:31:07Z
+# Session Context — 2026-07-14T21:44:19Z
 **Branch:** `copilot/add-cache-to-python-workflows`  **PR:** #5321  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4999` (✅)
-- GraphQL remaining: `4997` (✅)
+- REST remaining: `4996` (✅)
+- GraphQL remaining: `4995` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
@@ -16,20 +16,20 @@ State: `open`  Draft: `False`  Branch: `copilot/add-cache-to-python-workflows` �
 
 ## 🚨 Recent CI Failures (last 5 runs)
 - **.github/workflows/rust_swarm_ci.yml** — `failure` on `copilot/add-cache-to-python-workflows` (2026-07-14)
-- **.github/workflows/autonomy-phase-ci-matrix.yml** — `failure` on `copilot/add-cache-to-python-workflows` (2026-07-14)
-- **.github/workflows/chatops_copilot_trigger.yml** — `failure` on `copilot/add-cache-to-python-workflows` (2026-07-14)
-- **.github/workflows/security-scanning-suite.yml** — `failure` on `copilot/add-cache-to-python-workflows` (2026-07-14)
-- **.github/workflows/security-scan-phase-16.yml** — `failure` on `copilot/add-cache-to-python-workflows` (2026-07-14)
+- **.github/workflows/smoke-tests-deployment.yml** — `failure` on `copilot/add-cache-to-python-workflows` (2026-07-14)
+- **.github/workflows/cost-gate.yml** — `failure` on `copilot/add-cache-to-python-workflows` (2026-07-14)
+- **.github/workflows/model-drift-retrain.yml** — `failure` on `copilot/add-cache-to-python-workflows` (2026-07-14)
+- **.github/workflows/flush-queued-runs.yml** — `failure` on `copilot/add-cache-to-python-workflows` (2026-07-14)
 
 ## 📝 Recent Commits
+- `e85073ff` fix: refactor workflows to eliminate untrusted checkout patterns — copilot-swe-agent[bot] (2026-07-14)
+- `a47f1e6d` fix: resolve CodeQL alerts for untrusted checkout in workflow_run contexts — copilot-swe-agent[bot] (2026-07-14)
+- `3eaa5019` CodeQL Alert Fix Plan: Secure workflow_run checkout operations — copilot-swe-agent[bot] (2026-07-14)
 - `f6d777ea` Apply remaining changes — copilot-swe-agent[bot] (2026-07-14)
 - `852c8235` docs: add synchronization note for branch allowlist maintenance — copilot-swe-agent[bot] (2026-07-14)
 - `fca79ac2` docs: clarify branch validation comments to avoid contradiction — copilot-swe-agent[bot] (2026-07-14)
 - `d088c45e` fix(maintenance): remove temporary feature branch from app-package-download allo — copilot-swe-agent[bot] (2026-07-14)
 - `438b4ca6` fix(security): remove debug log exception exposure to prevent information leakag — copilot-swe-agent[bot] (2026-07-14)
-- `e7dda038` fix(security): resolve 6 CodeQL alerts - workflow checkouts and exception exposu — copilot-swe-agent[bot] (2026-07-14)
-- `2be53e8c` plan: CodeQL alert resolution for workflow checkouts and exception exposure — copilot-swe-agent[bot] (2026-07-14)
-- `42ce7018` docs: Add Phase 4 CodeQL unblocking summary for stakeholder review — copilot-swe-agent[bot] (2026-07-14)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
