@@ -74,9 +74,9 @@ Test Categories:
 - Integration tests
 """
 
-import pytest
-from unittest.mock import Mock, patch, MagicMock
-from {self.spec.module_path} import {self.spec.class_name}
+        import pytest
+        from unittest.mock import Mock, patch, MagicMock
+        from {self.spec.module_path} import {self.spec.class_name}
 
 
 class Test{self.spec.class_name}_{self.spec.method_name}:

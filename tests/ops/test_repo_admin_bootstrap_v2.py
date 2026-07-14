@@ -48,7 +48,7 @@ def test_detect_default_branch_in_apply_mode(monkeypatch):
             return FakeResp(200, {"default_branch": "trunk"})
         return FakeResp(202, {})
 
-    import scripts.ops.codex_repo_admin_bootstrap as mod
+        import scripts.ops.codex_repo_admin_bootstrap as mod
 
     monkeypatch.setenv("CODEX_NET_MODE", "online_allowlist")
     monkeypatch.setenv("CODEX_ALLOWLIST_HOSTS", "api.github.com")

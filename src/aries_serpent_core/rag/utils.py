@@ -80,7 +80,7 @@ def has_meta_tensors(model: Any) -> Optional[bool]:
             import torch as _torch
 
             _is_nn_module = isinstance(model, _torch.nn.Module)
-        except (IOError, OSError):
+        except (IOError, OSError, ModuleNotFoundError, ImportError):
             _is_nn_module = False
 
         if not _is_nn_module:

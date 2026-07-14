@@ -132,7 +132,7 @@ def _skill_span(skill_id: str, version: str, trace_id: str, attrs: dict[str, Any
         trace_mod = importlib.import_module("opentelemetry.trace")
         _configure_otlp_if_needed(trace_mod)
         tracer = trace_mod.get_tracer("codex.skills")
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         yield None
         return
 
@@ -308,7 +308,7 @@ def skill_invocation_span(
     try:
         trace_mod = importlib.import_module("opentelemetry.trace")
         tracer = trace_mod.get_tracer(tracer_name)
-    except (IOError, OSError) as exc:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
         logger.debug("OTel tracer unavailable: %s", exc)
         yield None
         return

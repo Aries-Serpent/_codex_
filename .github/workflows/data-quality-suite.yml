@@ -73,7 +73,7 @@ jobs:
     steps:
     - uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
     - name: Setup Python
       uses: ./.github/actions/setup-python-cached
       with:
@@ -142,7 +142,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
     - name: Free disk space for CI
       run: 'echo "=== Disk usage before cleanup ==="
 
@@ -332,7 +332,7 @@ jobs:
     steps:
     - uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
     - name: Setup Python
       uses: ./.github/actions/setup-python-cached
       with:
@@ -441,7 +441,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1
     - name: Post or update rescue comment

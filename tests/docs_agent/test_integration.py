@@ -34,7 +34,7 @@ class TestDocumentProcessingPipeline:
 OAuth 2.0 is used for authentication.
 
 ```python
-import requests
+        import requests
 requests.get('https://api.example.com/', auth=('user', 'pass'))
 ```
 

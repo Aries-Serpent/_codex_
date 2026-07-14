@@ -28,7 +28,7 @@ class TestModuleImports:
     def test_list_plan_documents_import(self):
         """Test list_plan_documents function import."""
         try:
-    from codex_plans import list_plan_documents
+            from codex_plans import list_plan_documents
 
             assert list_plan_documents is not None, "list_plan_documents must be initialized"
         except ImportError:
@@ -37,7 +37,7 @@ class TestModuleImports:
     def test_all_exports(self):
         """Test __all__ exports."""
         try:
-    from codex_plans import __all__
+            from codex_plans import __all__
 
             assert "list_plan_documents" in __all__, "Condition must be true"
         except ImportError:
@@ -53,7 +53,7 @@ class TestListPlanDocuments:
     def test_returns_list(self):
         """Test that function returns a list."""
         try:
-    from codex_plans import list_plan_documents
+            from codex_plans import list_plan_documents
 
             result = list_plan_documents()
             assert isinstance(result, list)
@@ -63,7 +63,7 @@ class TestListPlanDocuments:
     def test_returns_path_objects(self):
         """Test that returned items are Path objects."""
         try:
-    from codex_plans import list_plan_documents
+            from codex_plans import list_plan_documents
 
             result = list_plan_documents()
             for item in result:
@@ -74,7 +74,7 @@ class TestListPlanDocuments:
     def test_finds_markdown_files(self):
         """Test that function finds .md files."""
         try:
-    from codex_plans import list_plan_documents
+            from codex_plans import list_plan_documents
 
             result = list_plan_documents()
             # All returned files should be markdown
@@ -86,7 +86,7 @@ class TestListPlanDocuments:
     def test_results_are_sorted(self):
         """Test that results are sorted."""
         try:
-    from codex_plans import list_plan_documents
+            from codex_plans import list_plan_documents
 
             result = list_plan_documents()
             assert result == sorted(result), "Result must not be empty"
@@ -97,8 +97,7 @@ class TestListPlanDocuments:
         """Test with custom base directory."""
         try:
             import tempfile
-
-    from codex_plans import list_plan_documents
+            from codex_plans import list_plan_documents
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 # Create a test markdown file
@@ -115,8 +114,7 @@ class TestListPlanDocuments:
         """Test with empty directory."""
         try:
             import tempfile
-
-    from codex_plans import list_plan_documents
+            from codex_plans import list_plan_documents
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 result = list_plan_documents(base_dir=Path(tmpdir))
@@ -127,7 +125,7 @@ class TestListPlanDocuments:
     def test_none_base_dir_uses_default(self):
         """Test that None base_dir uses module directory."""
         try:
-    from codex_plans import list_plan_documents
+            from codex_plans import list_plan_documents
 
             # Should not raise an error
             result = list_plan_documents(base_dir=None)
@@ -145,7 +143,7 @@ class TestEdgeCases:
     def test_non_existent_directory(self):
         """Test with non-existent directory path."""
         try:
-    from codex_plans import list_plan_documents
+            from codex_plans import list_plan_documents
 
             # This should raise an error or return empty
             result = list_plan_documents(base_dir=Path("/nonexistent/path"))
@@ -158,8 +156,7 @@ class TestEdgeCases:
         """Test directory with mixed file types."""
         try:
             import tempfile
-
-    from codex_plans import list_plan_documents
+            from codex_plans import list_plan_documents
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 # Create various file types

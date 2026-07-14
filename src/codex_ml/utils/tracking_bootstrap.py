@@ -33,7 +33,7 @@ def init_mlflow_offline(tracking_uri: Optional[str] = None) -> dict[str, str]:
     resolved: dict[str, str] = {}
     try:
         import mlflow
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         logger.warning("Exception occurred", exc_info=True)
         return {"mlflow": "unavailable"}
 
@@ -42,7 +42,7 @@ def init_mlflow_offline(tracking_uri: Optional[str] = None) -> dict[str, str]:
     resolved["MLFLOW_TRACKING_URI"] = uri
     try:
         mlflow.set_tracking_uri(resolved["MLFLOW_TRACKING_URI"])
-    except (IOError, OSError) as e:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
         type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         logger.warning("Exception: <ERROR_TYPE>", exc_info=True)

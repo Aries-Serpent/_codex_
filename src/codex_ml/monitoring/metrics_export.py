@@ -48,7 +48,7 @@ async def metrics_endpoint_fastapi(
     text = get_metrics_text(registry)
     try:
         from fastapi import Response
-    except (IOError, OSError):  # pragma: no cover - optional dependency path
+    except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - optional dependency path
         return text
     return Response(content=text, media_type="text/plain; version=0.0.4")
 

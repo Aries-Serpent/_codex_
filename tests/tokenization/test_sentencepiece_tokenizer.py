@@ -61,7 +61,7 @@ if "transformers" not in sys.modules:
         IS_CODEX_STUB=True,
     )
 
-from codex_ml.tokenization.adapter import (
+            from codex_ml.tokenization.adapter import (
     SentencePieceTokenizer,
     TokenizerAdapter,
 )

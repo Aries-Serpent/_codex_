@@ -81,7 +81,7 @@ class TestCodexMLPipeline:
     def test_codex_ml_src_pipeline_import(self):
         """Test that src.codex_ml.pipeline is importable."""
         try:
-    from codex_ml import pipeline
+            from codex_ml import pipeline
             assert pipeline is not None
         except (ImportError, AttributeError):
             pytest.skip("src.codex_ml.pipeline not available")
@@ -101,7 +101,7 @@ class TestCodexMLData:
     def test_codex_ml_data_utils_import(self):
         """Test that data_utils can be imported."""
         try:
-    from codex_ml import data_utils
+            from codex_ml import data_utils
             assert data_utils is not None
         except (ImportError, AttributeError):
             pytest.skip("data_utils not available")
@@ -109,7 +109,7 @@ class TestCodexMLData:
     def test_codex_ml_codex_data_import(self):
         """Test that codex_data module exists."""
         try:
-    from codex_ml import codex_data
+            from codex_ml import codex_data
             assert codex_data is not None
         except (ImportError, AttributeError):
             pytest.skip("codex_data not available")
@@ -121,7 +121,7 @@ class TestCodexMLConfiguration:
     def test_codex_ml_config_schema_import(self):
         """Test that config_schema can be imported."""
         try:
-    from codex_ml import config_schema
+            from codex_ml import config_schema
             assert config_schema is not None
         except (ImportError, AttributeError):
             pytest.skip("config_schema not available")
@@ -140,7 +140,7 @@ class TestCodexMLConfiguration:
     def test_codex_ml_has_configs_directory(self):
         """Test that configs directory exists."""
         try:
-    from codex_ml import configs
+            from codex_ml import configs
             assert configs is not None
         except (ImportError, AttributeError):
             pytest.skip("configs not available")
@@ -152,7 +152,7 @@ class TestCodexMLModels:
     def test_codex_ml_model_import(self):
         """Test that codex_model can be imported."""
         try:
-    from codex_ml import codex_model
+            from codex_ml import codex_model
             assert codex_model is not None
         except (ImportError, AttributeError):
             pytest.skip("codex_model not available")
@@ -160,7 +160,7 @@ class TestCodexMLModels:
     def test_codex_ml_script_import(self):
         """Test that codex_script can be imported."""
         try:
-    from codex_ml import codex_script
+            from codex_ml import codex_script
             assert codex_script is not None
         except (ImportError, AttributeError):
             pytest.skip("codex_script not available")
@@ -180,7 +180,7 @@ class TestCodexMLCLI:
     def test_codex_ml_src_cli_exists(self):
         """Test that src.codex_ml.cli exists."""
         try:
-    from codex_ml import cli
+            from codex_ml import cli
             assert cli is not None
         except (ImportError, AttributeError):
             pytest.skip("src CLI not available")
@@ -192,7 +192,7 @@ class TestCodexMLStructuredLogging:
     def test_codex_ml_structured_logging_import(self):
         """Test that structured logging can be imported."""
         try:
-    from codex_ml import codex_structured_logging
+            from codex_ml import codex_structured_logging
             assert codex_structured_logging is not None
         except (ImportError, AttributeError):
             pytest.skip("structured logging not available")
@@ -212,7 +212,7 @@ class TestCodexMLIntegration:
     def test_codex_ml_package_main_executable(self):
         """Test that src/codex_ml._package_main is executable."""
         try:
-    from codex_ml import _package_main
+            from codex_ml import _package_main
             assert _package_main is not None
         except (ImportError, AttributeError):
             pytest.skip("_package_main not available")
@@ -237,7 +237,7 @@ class TestCodexMLSubmodules:
     def test_codex_ml_analysis_package(self):
         """Test that analysis subpackage exists."""
         try:
-    from codex_ml import analysis
+            from codex_ml import analysis
             assert analysis is not None
         except (ImportError, AttributeError):
             pytest.skip("analysis not available")
@@ -245,7 +245,7 @@ class TestCodexMLSubmodules:
     def test_codex_ml_backends_package(self):
         """Test that backends subpackage exists."""
         try:
-    from codex_ml import backends
+            from codex_ml import backends
             assert backends is not None
         except (ImportError, AttributeError):
             pytest.skip("backends not available")
@@ -253,7 +253,7 @@ class TestCodexMLSubmodules:
     def test_codex_ml_batching_package(self):
         """Test that batching subpackage exists."""
         try:
-    from codex_ml import batching
+            from codex_ml import batching
             assert batching is not None
         except (ImportError, AttributeError):
             pytest.skip("batching not available")
@@ -261,7 +261,7 @@ class TestCodexMLSubmodules:
     def test_codex_ml_callbacks_package(self):
         """Test that callbacks subpackage exists."""
         try:
-    from codex_ml import callbacks
+            from codex_ml import callbacks
             assert callbacks is not None
         except (ImportError, AttributeError):
             pytest.skip("callbacks not available")
@@ -269,7 +269,7 @@ class TestCodexMLSubmodules:
     def test_codex_ml_checkpointing_package(self):
         """Test that checkpointing subpackage exists."""
         try:
-    from codex_ml import checkpointing
+            from codex_ml import checkpointing
             assert checkpointing is not None
         except (ImportError, AttributeError):
             pytest.skip("checkpointing not available")
@@ -277,7 +277,7 @@ class TestCodexMLSubmodules:
     def test_codex_ml_connectors_package(self):
         """Test that connectors subpackage exists."""
         try:
-    from codex_ml import connectors
+            from codex_ml import connectors
             assert connectors is not None
         except (ImportError, AttributeError):
             pytest.skip("connectors not available")
@@ -285,7 +285,7 @@ class TestCodexMLSubmodules:
     def test_codex_ml_distributed_package(self):
         """Test that distributed subpackage exists."""
         try:
-    from codex_ml import distributed
+            from codex_ml import distributed
             assert distributed is not None
         except (ImportError, AttributeError):
             pytest.skip("distributed not available")
@@ -293,7 +293,7 @@ class TestCodexMLSubmodules:
     def test_codex_ml_eval_package(self):
         """Test that eval subpackage exists."""
         try:
-    from codex_ml import eval
+            from codex_ml import eval
             assert eval is not None
         except (ImportError, AttributeError):
             pytest.skip("eval not available")
@@ -301,7 +301,7 @@ class TestCodexMLSubmodules:
     def test_codex_ml_evaluation_package(self):
         """Test that evaluation subpackage exists."""
         try:
-    from codex_ml import evaluation
+            from codex_ml import evaluation
             assert evaluation is not None
         except (ImportError, AttributeError):
             pytest.skip("evaluation not available")

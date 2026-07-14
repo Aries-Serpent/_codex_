@@ -157,9 +157,9 @@ class Config:
         with tempfile.TemporaryDirectory() as tmpdir:
             test_file = Path(tmpdir) / "model.py"
             test_file.write_text("""
-import torch
-from transformers import AutoModel
-import pytest
+        import torch
+        from transformers import AutoModel
+        import pytest
 
 def test_model_load():
     pass
@@ -178,9 +178,9 @@ def test_model_load():
         with tempfile.TemporaryDirectory() as tmpdir:
             test_file = Path(tmpdir) / "imports.py"
             test_file.write_text("""
-import torch
-from pathlib import Path
-from typing import Dict, List
+        import torch
+        from pathlib import Path
+        from typing import Dict, List
 """)
 
             content = test_file.read_text()
@@ -357,7 +357,7 @@ class TestConfigurationCapabilityDetection:
             # Create config schema file
             schema_file = tmppath / "config_schema.py"
             schema_file.write_text("""
-from pydantic import BaseModel
+        from pydantic import BaseModel
 
 class ConfigSchema(BaseModel):
     pass
@@ -373,7 +373,7 @@ class ConfigSchema(BaseModel):
         with tempfile.TemporaryDirectory() as tmpdir:
             schema_file = Path(tmpdir) / "schema.py"
             schema_file.write_text("""
-from pydantic import BaseModel, field_validator
+        from pydantic import BaseModel, field_validator
 
 class Config(BaseModel):
     @field_validator('field_name')
@@ -394,7 +394,7 @@ class Config(BaseModel):
         with tempfile.TemporaryDirectory() as tmpdir:
             loader_file = Path(tmpdir) / "loader.py"
             loader_file.write_text("""
-import yaml
+        import yaml
 
 def load_config(path):
     with open(path) as f:
@@ -412,8 +412,8 @@ def load_config(path):
         with tempfile.TemporaryDirectory() as tmpdir:
             util_file = Path(tmpdir) / "utils.py"
             util_file.write_text("""
-import hashlib
-import json
+        import hashlib
+        import json
 
 def hash_config(config):
     return hashlib.sha256(json.dumps(config).encode()).hexdigest()
@@ -430,7 +430,7 @@ def hash_config(config):
         with tempfile.TemporaryDirectory() as tmpdir:
             config_file = Path(tmpdir) / "config.py"
             config_file.write_text("""
-from dataclasses import dataclass
+        from dataclasses import dataclass
 
 @dataclass
 class Config:

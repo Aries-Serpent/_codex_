@@ -175,7 +175,7 @@ class CurriculumScheduler:
                     data = json.load(f)
                 get_default_logger().info(f"Loaded curriculum state from {self.state_file}")
                 return CurriculumState.from_dict(data)
-            except (IOError, OSError) as e:
+            except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
                 type(e).__name__
                 get_default_logger().debug("Exception: <ERROR_TYPE>")
                 get_default_logger().warning("Failed to load state, creating new: <ERROR_TYPE>")
@@ -188,7 +188,7 @@ class CurriculumScheduler:
             with open(self.state_file, "w") as f:
                 json.dump(self.state.to_dict(), f, indent=2)
             get_default_logger().info(f"Saved curriculum state to {self.state_file}")
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             get_default_logger().debug("Exception: <ERROR_TYPE>")
             get_default_logger().error("Failed to save state: <ERROR_TYPE>")

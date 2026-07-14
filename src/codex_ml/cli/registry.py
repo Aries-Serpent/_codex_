@@ -32,7 +32,7 @@ def list_models_command(args: argparse.Namespace) -> int:
                 get_default_logger().info(f"  - {model}")
 
         return 0
-    except (IOError, OSError) as e:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
         type(e).__name__
         get_default_logger().debug(
             "Exception: <ERROR_TYPE>"
@@ -65,7 +65,7 @@ def list_versions_command(args: argparse.Namespace) -> int:
                 get_default_logger().info(f"    Created: {version.created_at}")
 
         return 0
-    except (IOError, OSError) as e:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
         type(e).__name__
         get_default_logger().debug(
             "Exception: <ERROR_TYPE>"
@@ -99,7 +99,7 @@ def promote_model_command(args: argparse.Namespace) -> int:
             )  # codeql[py/clear-text-logging-sensitive-data]
 
         return 0
-    except (IOError, OSError) as e:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
         type(e).__name__
         get_default_logger().debug(
             "Exception: <ERROR_TYPE>"
@@ -141,7 +141,7 @@ def compare_models_command(args: argparse.Namespace) -> int:
                 )  # codeql[py/clear-text-logging-sensitive-data]
 
         return 0
-    except (IOError, OSError) as e:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
         type(e).__name__
         get_default_logger().debug(
             "Exception: <ERROR_TYPE>"
@@ -165,7 +165,7 @@ def export_model_command(args: argparse.Namespace) -> int:
             f"✓ Exported {args.name} version {args.version} to {output_path}"
         )  # codeql[py/clear-text-logging-sensitive-data]
         return 0
-    except (IOError, OSError) as e:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
         type(e).__name__
         get_default_logger().debug(
             "Exception: <ERROR_TYPE>"
@@ -216,7 +216,7 @@ def get_lineage_command(args: argparse.Namespace) -> int:
                 )  # codeql[py/clear-text-logging-sensitive-data]
 
         return 0
-    except (IOError, OSError) as e:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
         type(e).__name__
         get_default_logger().debug(
             "Exception: <ERROR_TYPE>"

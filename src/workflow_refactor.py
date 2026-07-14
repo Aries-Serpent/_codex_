@@ -286,7 +286,7 @@ class WorkflowRefactorer:
                 if add_digest and self.add_codex_digest_step(workflow_path):
                     results["digest_added"] += 1
 
-            except (IOError, OSError) as e:
+            except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
                 type(e).__name__
                 logger.error(f"Error processing {workflow_path.name}: <ERROR_TYPE>")
                 results["errors"].append({"workflow": workflow_path.name, "error": str(e)})

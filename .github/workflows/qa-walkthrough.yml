@@ -37,7 +37,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         fetch-depth: 0
     - name: Set up Python (cached)
       uses: ./.github/actions/setup-python-cached
@@ -68,19 +68,19 @@ jobs:
       id: artifacts
       with:
         script: "let workflowRuns = [];\ntry {\n  const runs = await github.rest.actions.listWorkflowRunsForRepo({\n\
-          \    owner: context.repo.owner,\n    repo: context.repo.repo,\n    per_page:\
-          \ 5,\n    status: 'completed'\n  });\n  workflowRuns = runs.data.workflow_runs\
+        \    owner: context.repo.owner,\n    repo: context.repo.repo,\n    per_page:\
+        \ 5,\n    status: 'completed'\n  });\n  workflowRuns = runs.data.workflow_runs\
           \ || [];\n} catch (error) {\n  core.warning(`Unable to list workflow runs\
-          \ (${error.name || 'Error'}${error.status ? ` ${error.status}` : ''}): ${error.message}`);\n\
+        \ (${error.name || 'Error'}${error.status ? ` ${error.status}` : ''}): ${error.message}`);\n\
           }\n\nconst artifacts = [];\nfor (const run of workflowRuns) {\n  try {\n\
           \    const arts = await github.rest.actions.listWorkflowRunArtifacts({\n\
-          \      owner: context.repo.owner,\n      repo: context.repo.repo,\n    \
-          \  run_id: run.id\n    });\n    for (const a of arts.data.artifacts || [])\
+        \      owner: context.repo.owner,\n      repo: context.repo.repo,\n    \
+        \  run_id: run.id\n    });\n    for (const a of arts.data.artifacts || [])\
           \ {\n      if (a.name.startsWith('validation-') || a.name.startsWith('test-results'))\
-          \ {\n        artifacts.push({ run_id: run.id, name: a.name, url: a.archive_download_url\
+        \ {\n        artifacts.push({ run_id: run.id, name: a.name, url: a.archive_download_url\
           \ });\n      }\n    }\n  } catch (error) {\n    core.warning(`Unable to\
           \ list artifacts for run ${run.id} (${error.name || 'Error'}${error.status\
-          \ ? ` ${error.status}` : ''}): ${error.message}`);\n  }\n}\ncore.setOutput('artifact_count',\
+        \ ? ` ${error.status}` : ''}): ${error.message}`);\n  }\n}\ncore.setOutput('artifact_count',\
           \ artifacts.length);\ncore.setOutput('artifacts_json', JSON.stringify(artifacts.slice(0,\
           \ 10)));\n"
     - name: Run code quality scan (Batch ${{ github.event.inputs.batch || 'all' }})
@@ -119,21 +119,21 @@ jobs:
           \ = 0;\n\ntry {\n  const qa = JSON.parse(fs.readFileSync('qa-report.json',\
           \ 'utf8'));\n  qaIssues = qa.issues.length;\n} catch(e) {}\n\ntry {\n  const\
           \ ruff = JSON.parse(fs.readFileSync('ruff-report.json', 'utf8'));\n  ruffIssues\
-          \ = Array.isArray(ruff) ? ruff.length : 0;\n} catch(e) {}\n\ntry {\n  const\
+        \ = Array.isArray(ruff) ? ruff.length : 0;\n} catch(e) {}\n\ntry {\n  const\
           \ bandit = JSON.parse(fs.readFileSync('bandit-report.json', 'utf8'));\n\
           \  banditIssues = (bandit.results || []).length;\n} catch(e) {}\n\nconst\
           \ artifactCount = '${{ steps.artifacts.outputs.artifact_count }}' || '0';\n\
           const body = `## \U0001F50D QA Walkthrough Results\n\n| Tool | Issues Found\
           \ |\n|------|-------------|\n| AST Analysis | ${qaIssues} |\n| Ruff Lint\
           \ | ${ruffIssues} |\n| Bandit Security | ${banditIssues} |\n| CI Artifacts\
-          \ Sourced | ${artifactCount} |\n\n**Total Issues**: ${qaIssues + ruffIssues\
+        \ Sourced | ${artifactCount} |\n\n**Total Issues**: ${qaIssues + ruffIssues\
           \ + banditIssues}\n\n> \U0001F4CE Detailed reports available in workflow\
           \ artifacts\n> Run \\`@copilot run qa-walkthrough --heal\\` to auto-fix\
           \ lint/style issues`;\n\nif (context.eventName === 'pull_request') {\n \
           \ const totalIssues = qaIssues + ruffIssues + banditIssues;\n  const status\
-          \ = totalIssues > 0 ? 'warning' : 'success';\n  const summary = totalIssues\
-          \ > 0\n    ? `${totalIssues} issue(s): AST=${qaIssues}, Ruff=${ruffIssues},\
-          \ Bandit=${banditIssues}`\n    : 'All checks clean (0 issues)';\n  const\
+        \ = totalIssues > 0 ? 'warning' : 'success';\n  const summary = totalIssues\
+        \ > 0\n    ? `${totalIssues} issue(s): AST=${qaIssues}, Ruff=${ruffIssues},\
+        \ Bandit=${banditIssues}`\n    : 'All checks clean (0 issues)';\n  const\
           \ details = [\n    '| Tool | Issues Found |',\n    '|------|-------------|',\n\
           \    `| AST Analysis | ${qaIssues} |`,\n    `| Ruff Lint | ${ruffIssues}\
           \ |`,\n    `| Bandit Security | ${banditIssues} |`,\n    `| CI Artifacts\
@@ -188,7 +188,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1
     - name: Post or update rescue comment

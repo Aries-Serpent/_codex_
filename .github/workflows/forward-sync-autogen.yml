@@ -26,7 +26,7 @@ jobs:
     - name: Checkout main
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         ref: main
         fetch-depth: 1
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
@@ -37,17 +37,43 @@ jobs:
       id: check-target
       run: "TARGET=\"${{ steps.resolve-target.outputs.branch }}\"\nif [ \"$TARGET\"\
         \ = \"main\" ]; then\n  echo \"skip=true\" >> \"$GITHUB_OUTPUT\"\n  echo \"\
-        ℹ️  No staging branch active — nothing to forward\"\nelse\n  echo \"skip=false\"\
-        \ >> \"$GITHUB_OUTPUT\"\n  echo \"✅ Staging branch detected: $TARGET\"\nfi\n"
-    - name: 📥 Checkout chain tip (${{ steps.resolve-target.outputs.branch }})
+       ℹ️  No staging branch active — nothing to forward\"\nelse\n  echo \"skip=false\"\
+       \ >> \"$GITHUB_OUTPUT\"\n  echo \"✅ Staging branch detected: $TARGET\"\nfi\n"
+    - name: 📥 Checkout main (trusted base)
       if: steps.check-target.outputs.skip != 'true'
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
         persist-credentials: false
-        ref: ${{ steps.resolve-target.outputs.branch }}
         fetch-depth: 1
+        ref: main
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+    - name: Fetch and validate target branch
+      if: steps.check-target.outputs.skip != 'true'
+      run: |
+        BRANCH="${{ steps.resolve-target.outputs.branch }}"
+         
+        # Validate branch name contains only safe characters (no .. directory traversal)
+        if ! [[ "$BRANCH" =~ ^[a-zA-Z0-9/_-]+$ ]]; then
+          printf '❌ Error: Branch name contains unsafe characters: %s\n' "$BRANCH" >&2
+          exit 1
+        fi
+        
+        # Explicitly reject .. sequences that could enable traversal
+        if [[ "$BRANCH" == *".."* ]]; then
+          printf '❌ Error: Branch name contains directory traversal sequence: %s\n' "$BRANCH" >&2
+          exit 1
+        fi
+         
+        # Verify the branch exists in origin using git ls-remote
+        if ! git ls-remote --exit-code origin "$BRANCH" >/dev/null 2>&1; then
+          printf '❌ Error: Branch %s does not exist in origin\n' "$BRANCH" >&2
+          exit 1
+        fi
+         
+        # Fetch the branch
+        git fetch origin "$BRANCH" --depth=1 || exit 1
+        # Checkout the branch
+        git checkout "$BRANCH" || exit 1
     - name: 🔄 Fetch changed files from main and apply to chain tip
       id: sync
       if: steps.check-target.outputs.skip != 'true'

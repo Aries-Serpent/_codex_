@@ -1,7 +1,12 @@
 import pytest
 from codex.logging.structured_logger import logger
 
-#         assert result.exit_code == 0 or "inspect" not in str(, "Result must not be empty"
+# Define HAS_TYPER for skipif conditions
+try:
+    import typer
+    HAS_TYPER = True
+except ImportError:
+    HAS_TYPER = False
 #             app.registered_commands if hasattr(app, "registered_commands") else []
 #         ), "Result must not be empty"
 # - Tokenizer inspection commands

@@ -213,7 +213,7 @@ class RunLogger:
         """Flush and close the underlying writers, ignoring best-effort failures."""
         try:
             self._metrics_writer.close()
-        except (IOError, OSError):  # pragma: no cover - best effort
+        except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - best effort
             logger.debug("Suppressed exception in handler", exc_info=True)
 
     @staticmethod

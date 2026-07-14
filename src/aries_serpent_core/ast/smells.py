@@ -239,7 +239,7 @@ class CodeSmellDetector:
         try:
             code = file_path.read_text(encoding="utf-8", errors="ignore")
             return self.detect_string(code, file_path)
-        except (IOError, OSError):
+        except (IOError, OSError, ModuleNotFoundError, ImportError):
             logger.warning("Exception occurred", exc_info=True)
             return []
 
@@ -514,14 +514,14 @@ class CodeSmellDetector:
                             file_path=file_path,
                             line_start=node.lineno,
                             line_end=getattr(node, "end_lineno", node.lineno),
-                            suggestion="Specify the exception type: except (IOError, OSError):",
+                            suggestion="Specify the exception type: except (IOError, OSError, ModuleNotFoundError, ImportError):",
                         )
                     )
                 elif isinstance(node.type, ast.Name) and node.type.id == "Exception":
                     smells.append(
                         CodeSmell(
                             rule_id="SMELL-S002",
-                            message="Broad 'except (IOError, OSError):' may hide unexpected failures",  # noqa: E501
+                            message="Broad 'except (IOError, OSError, ModuleNotFoundError, ImportError):' may hide unexpected failures",  # noqa: E501
                             severity=SmellSeverity.WARNING,
                             category=SmellCategory.STRUCTURE,
                             file_path=file_path,

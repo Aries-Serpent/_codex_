@@ -113,7 +113,7 @@ def _ensure_mlflow_available() -> Any:
     """
     try:
         return importlib.import_module("mlflow")
-    except (IOError, OSError) as exc:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
         type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         err = build_optional_dependency_error("mlflow", "experiment tracking")
@@ -299,7 +299,7 @@ def log_metrics(
     for k, v in metrics.items():
         try:
             ml.log_metric(k, float(v), step=step)
-        except (IOError, OSError):
+        except (IOError, OSError, ModuleNotFoundError, ImportError):
             logger.debug("log_metric failed for key %s; skipping", k, exc_info=True)
             # be robust; drop bad values quietly
 
@@ -334,7 +334,7 @@ def log_artifacts(
                 ml.log_artifacts(str(p))
             else:
                 ml.log_artifact(str(p))
-        except (IOError, OSError) as exc:  # pragma: no cover
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover
             raise RuntimeError(f"Failed to log artifact {p}") from exc
 
     # Accept both single path or iterable
@@ -363,7 +363,7 @@ def seed_snapshot(seeds: Mapping[str, Any], out_dir: Path, *, enabled: bool = Fa
     path = out_dir / "seeds.json"
     try:
         path.write_text(json.dumps(dict(seeds), indent=2), encoding="utf-8")
-    except (IOError, OSError) as exc:  # pragma: no cover
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover
         raise RuntimeError(f"Failed to write seeds snapshot to {path}") from exc
 
     # Log the written file as an artifact when requested.
@@ -398,7 +398,7 @@ def ensure_local_artifacts(
     summary_path = run_dir / "summary.json"
     try:
         summary_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-    except (IOError, OSError) as exc:  # pragma: no cover
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover
         raise RuntimeError(f"Failed to write summary to {summary_path}") from exc
 
     # Write seeds (optionally log to MLflow)

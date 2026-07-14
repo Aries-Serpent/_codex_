@@ -178,7 +178,7 @@ class TaskRouter:
 
             data = yaml.safe_load(path.read_text())
             return data.get("agents", []) if isinstance(data, dict) else []
-        except (IOError, OSError):
+        except (IOError, OSError, ModuleNotFoundError, ImportError):
             logger.exception("Failed to load AGENT_REGISTRY from %s", path)
             return []
 

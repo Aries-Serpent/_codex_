@@ -95,7 +95,7 @@ class PromptRegistry:
 
         try:
             raw: dict[str, Any] = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
-        except (IOError, OSError) as exc:  # noqa: BLE001
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # noqa: BLE001
             logger.error("Failed to parse prompt registry %s: %s", path, exc)
             return cls()
 

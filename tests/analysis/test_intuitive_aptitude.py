@@ -326,9 +326,9 @@ class Calculator:
         """Test ingesting code with import statements."""
         analyzer = intuitive_aptitude()
         code = """
-import os
-from sys import path as syspath
-from typing import List, Dict
+        import os
+        from sys import path as syspath
+        from typing import List, Dict
 """
         result = analyzer.ingest(code)
         assert result is True, "Result must not be empty"
@@ -388,7 +388,7 @@ class TestIntuitiveAptitudeSummary:
         """Test getting summary with analyzed code."""
         analyzer = intuitive_aptitude()
         code = """
-import os
+        import os
 x = 42
 def func(): pass
 class MyClass: pass
@@ -813,9 +813,9 @@ class TestIntuitiveAptitudeCodeGeneration:
         """Test _generate_imports method."""
         analyzer = intuitive_aptitude()
         code = """
-import os
-from sys import path
-from typing import List, Dict
+        import os
+        from sys import path
+        from typing import List, Dict
 """
         analyzer.ingest(code)
         imports_str = analyzer._generate_imports()
@@ -1012,7 +1012,7 @@ def decorated_function():
         """Test handling complex type annotations."""
         analyzer = intuitive_aptitude()
         code = """
-from typing import List, Dict, Optional, Union
+        from typing import List, Dict, Optional, Union
 
 def annotated_func(
     x: List[Dict[str, Union[int, str]]],
@@ -1127,12 +1127,12 @@ class TestIntegrationScenarios:
 This module demonstrates various Python features.
 """
 
-from __future__ import annotations
+        from __future__ import annotations
 
-import os
-import sys
-from typing import List, Dict, Optional
-from codex.logging.structured_logger import logger
+        import os
+        import sys
+        from typing import List, Dict, Optional
+        from codex.logging.structured_logger import logger
 
 __all__ = ["main", "helper"]
 

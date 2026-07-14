@@ -51,7 +51,7 @@ jobs:
     - name: Checkout monitor script
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         sparse-checkout: scripts/ci/proactive_ci_monitor.py
         sparse-checkout-cone-mode: false
     - name: Set up Python 3.12

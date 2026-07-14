@@ -50,7 +50,7 @@ def _session_log_dir() -> Path:
     if raw:
         try:
             return Path(raw).expanduser()
-        except (IOError, OSError):  # pragma: no cover - defensive fallback
+        except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - defensive fallback
             return DEFAULT_LOG_DIR
     return DEFAULT_LOG_DIR
 

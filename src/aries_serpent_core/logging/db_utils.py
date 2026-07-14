@@ -23,7 +23,7 @@ try:
     from aries_serpent_core.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
 
     _codex_sqlite_auto()
-except (IOError, OSError) as e:
+except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
     error_type = type(e).__name__
     logger.debug("Exception: <ERROR_TYPE>")
     logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
@@ -50,7 +50,7 @@ def open_db(
         conn = sqlite3.connect(path)
         try:
             conn.execute("PRAGMA journal_mode=WAL;")
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
@@ -77,7 +77,7 @@ def open_db(
             conn = sqlite3.connect(guess)
             try:
                 conn.execute("PRAGMA journal_mode=WAL;")
-            except (IOError, OSError) as e:
+            except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
                 type(e).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 logger.warning("Exception: <ERROR_TYPE>", exc_info=True)

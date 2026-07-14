@@ -209,7 +209,7 @@ def test_pattern_library_init():
 def test_abstract_method_detection():
     """Test detection of abstract methods."""
     source = """
-from abc import abstractmethod
+    from abc import abstractmethod
 
 class Base:
     @abstractmethod
@@ -242,7 +242,7 @@ def real_impl():
 def test_dataclass_detection():
     """Test detection of dataclasses."""
     source = """
-from dataclasses import dataclass
+    from dataclasses import dataclass
 
 @dataclass
 class Point:
@@ -296,7 +296,7 @@ def test_analyze_file(tmp_path):
     """Test file analysis."""
     test_file = tmp_path / "test.py"
     test_file.write_text("""
-from dataclasses import dataclass
+    from dataclasses import dataclass
 
 @dataclass
 class Config:

@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 
 try:
     import mlflow
-except (IOError, OSError):
+except (IOError, OSError, ModuleNotFoundError, ImportError):
     mlflow = None
 
 

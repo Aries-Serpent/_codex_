@@ -168,11 +168,11 @@ jobs:
           \ }}/actions/runs/${{ github.run_id }}`;\nconst requireBoth = process.env.REQUIRE_BOTH\
           \ === 'true';\n\nconst mFn = process.env.MASTER_FUNCTIONAL === 'true';\n\
           const bFn = process.env.BACKUP_FUNCTIONAL === 'true';\nconst bothFn = mFn\
-          \ && bFn;\n\nconst mRow = `| \\`CODEX_MASTER_KEY\\` | Read: HTTP ${process.env.MASTER_READ}\
-          \ | Write: HTTP ${process.env.MASTER_WRITE} | ${mFn ? '\u2705 FUNCTIONAL'\
-          \ : '\u274C NON-FUNCTIONAL'} |`;\nconst bRow = `| \\`CODEX_BACKUP_KEY\\\
-          `  | Read: HTTP ${process.env.BACKUP_READ}  | Write: HTTP ${process.env.BACKUP_WRITE}\
-          \  | ${bFn ? '\u2705 FUNCTIONAL' : '\u274C NON-FUNCTIONAL'} |`;\n\nlet overall;\n\
+        \ && bFn;\n\nconst mRow = `| \\`CODEX_MASTER_KEY\\` | Read: HTTP ${process.env.MASTER_READ}\
+        \ | Write: HTTP ${process.env.MASTER_WRITE} | ${mFn ? '\u2705 FUNCTIONAL'\
+        \ : '\u274C NON-FUNCTIONAL'} |`;\nconst bRow = `| \\`CODEX_BACKUP_KEY\\\
+        `  | Read: HTTP ${process.env.BACKUP_READ}  | Write: HTTP ${process.env.BACKUP_WRITE}\
+        \  | ${bFn ? '\u2705 FUNCTIONAL' : '\u274C NON-FUNCTIONAL'} |`;\n\nlet overall;\n\
           if (bothFn) {\n  overall = '\U0001F7E2 BOTH KEYS OPERATIONAL (100% coverage)';\n\
           } else if (mFn && !bFn) {\n  overall = '\U0001F7E1 PRIMARY KEY ONLY \u2014\
           \ backup key non-functional (50% coverage)';\n} else if (!mFn && bFn) {\n\
@@ -181,20 +181,20 @@ jobs:
           \ REQUIRES IMMEDIATE ACTION';\n}\n\nconst body = [\n  `## \U0001F511 Token\
           \ Probe Result \u2014 S117`,\n  '',\n  `| Secret | Read Probe | Write Probe\
           \ | Status |`,\n  `|--------|-----------|------------|--------|`,\n  mRow,\n\
-          \  bRow,\n  '',\n  `**Overall:** ${overall}`,\n  `**Require both keys:**\
-          \ ${requireBoth ? 'YES' : 'NO'}`,\n  '',\n  `**Tested at:** ${new Date().toISOString()}`,\n\
-          \  `**Run:** [${process.env.GITHUB_RUN_NUMBER || '?'}](${runUrl})`,\n  '',\n\
+        \  bRow,\n  '',\n  `**Overall:** ${overall}`,\n  `**Require both keys:**\
+        \ ${requireBoth ? 'YES' : 'NO'}`,\n  '',\n  `**Tested at:** ${new Date().toISOString()}`,\n\
+        \  `**Run:** [${process.env.GITHUB_RUN_NUMBER || '?'}](${runUrl})`,\n  '',\n\
           \  bothFn\n    ? '\u2705 Both `CODEX_MASTER_KEY` and `CODEX_BACKUP_KEY`\
           \ validated. `@copilot continue` automation is **fully operational**.'\n\
-          \    : mFn\n      ? '\u26A0\uFE0F `CODEX_MASTER_KEY` works but `CODEX_BACKUP_KEY`\
+        \    : mFn\n      ? '\u26A0\uFE0F `CODEX_MASTER_KEY` works but `CODEX_BACKUP_KEY`\
           \ is non-functional. Sessions can activate but failover is unavailable.'\n\
-          \      : '\u26D4 Fix `CODEX_MASTER_KEY` before activating any agent session.\
+        \      : '\u26D4 Fix `CODEX_MASTER_KEY` before activating any agent session.\
           \ See repo Settings \u2192 Secrets.',\n  '',\n  '_token-probe.yml | S117\
           \ | admin_setup_verification.yml \xA73a/\xA73b_',\n].join('\\n');\n\nawait\
-          \ github.rest.issues.createComment({\n  owner: context.repo.owner,\n  repo:\
-          \ context.repo.repo,\n  issue_number: prNumber,\n  body,\n});\n\n// Also\
+        \ github.rest.issues.createComment({\n  owner: context.repo.owner,\n  repo:\
+        \ context.repo.repo,\n  issue_number: prNumber,\n  body,\n});\n\n// Also\
           \ write to job summary\nconst fs = require('fs');\nfs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,\
-          \ `\\n${body}\\n`);\n\n// Fail conditions:\n// 1. Always fail if master\
+        \ `\\n${body}\\n`);\n\n// Fail conditions:\n// 1. Always fail if master\
           \ key is broken\n// 2. Fail if require_both_keys=true and backup key is\
           \ also broken\nif (!mFn) {\n  core.setFailed('CODEX_MASTER_KEY is non-functional.\
           \ Agent sessions cannot activate.');\n} else if (requireBoth && !bFn) {\n\

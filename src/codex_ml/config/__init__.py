@@ -13,7 +13,7 @@ from typing import Any
 
 try:  # pragma: no cover - optional dependency
     from omegaconf import DictConfig, OmegaConf
-except (IOError, OSError):  # pragma: no cover - optional dependency
+except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - optional dependency
     DictConfig = Any  # type: ignore[misc,assignment]
     OmegaConf = None  # type: ignore[misc,assignment]
 
@@ -114,7 +114,7 @@ class OptimizerConfig:
             raise ConfigError(path + ".weight_decay", "must be non-negative", self.weight_decay)
         try:
             beta1, beta2 = (float(self.betas[0]), float(self.betas[1]))
-        except (IOError, OSError) as exc:  # pragma: no cover - defensive
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - defensive
             raise ConfigError(path + ".betas", "must be a pair of floats", self.betas) from exc
         if not (0.0 <= beta1 < 1 and 0.0 <= beta2 < 1):
             raise ConfigError(path + ".betas", "beta values must be in [0, 1)", self.betas)
@@ -597,7 +597,7 @@ def override_dict(overrides: Sequence[str] | None) -> DictConfig:
         return OmegaConf.create()
     try:
         return OmegaConf.from_dotlist(list(overrides))
-    except (IOError, OSError) as exc:  # pragma: no cover - OmegaConf raises specific errors
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - OmegaConf raises specific errors
         raise ConfigError("overrides", f"Invalid override: {exc}") from exc
 
 
@@ -629,7 +629,7 @@ def load_app_config(
         type(exc).__name__
         logger.debug("FileNotFoundError: <ERROR_TYPE>")
         raise ConfigError("config", f"configuration file not found: {config_path}") from exc
-    except (IOError, OSError) as exc:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
         type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         raise ConfigError("config", f"failed to load configuration: {exc}") from exc
@@ -643,7 +643,7 @@ def load_app_config(
         cfg = OmegaConf.merge(schema, file_cfg, override_dict(overrides))
         try:
             obj = OmegaConf.to_object(cfg)
-        except (IOError, OSError) as exc:  # pragma: no cover - defensive against OmegaConf issues
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - defensive against OmegaConf issues
             raise ConfigError("config", f"failed to materialise dataclass: {exc}") from exc
         if not isinstance(obj, CodexConfig):  # pragma: no cover - structured config guarantees type
             raise ConfigError("config", "unexpected configuration object", type(obj).__name__)

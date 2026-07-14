@@ -39,7 +39,7 @@ logger = logging.getLogger(__name__)
 # Try to import the repository-provided encoding detector if present.
 try:
     from .encoding_detect import detect_encoding as _repo_detect_encoding
-except (IOError, OSError):
+except (IOError, OSError, ModuleNotFoundError, ImportError):
     logger.warning("Exception occurred", exc_info=True)
     _repo_detect_encoding = None  # type: ignore[assignment]
 
@@ -48,7 +48,7 @@ except (IOError, OSError):
 # below handles both.
 try:
     from .io_text import read_text as _io_read_text
-except (IOError, OSError):
+except (IOError, OSError, ModuleNotFoundError, ImportError):
     logger.warning("Exception occurred", exc_info=True)
     _io_read_text = None  # type: ignore[assignment]
 
@@ -80,7 +80,7 @@ def _fallback_detect_encoding(path: Path, sample_size: int = 131072) -> str:
     """
     try:
         data = path.read_bytes()[: max(1024, int(sample_size))]
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         logger.warning("Exception occurred", exc_info=True)
         return "utf-8"
 
@@ -147,7 +147,7 @@ def _detect_encoding(path: str | Path) -> str:
     if _repo_detect_encoding is not None:
         try:
             return _repo_detect_encoding(p)
-        except (IOError, OSError):
+        except (IOError, OSError, ModuleNotFoundError, ImportError):
             logger.warning("Exception occurred", exc_info=True)
             # fall through to fallback detector
     return _fallback_detect_encoding(p)
@@ -208,7 +208,7 @@ def split_dataset(
     result = (train_items, val_items, test_items)
     try:
         cache.set(key, result)
-    except (IOError, OSError) as exc:  # nosec B110 - cache writes are best effort; log at debug
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # nosec B110 - cache writes are best effort; log at debug
         logger.debug("ingestion.utils: failed to cache split dataset: %s", exc, exc_info=True)
     return result
 
@@ -259,7 +259,7 @@ def _manual_read_text(
     p = Path(path)
     try:
         data = p.read_bytes()
-    except (IOError, OSError) as exc:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
         type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         raise RuntimeError(f"Failed to read bytes from {p}: {exc}") from exc
@@ -328,10 +328,10 @@ def read_text(path: str | Path, encoding: str = "utf-8", errors: str = "strict")
                 logger.warning("TypeError: <ERROR_TYPE>", exc_info=True)
                 try:
                     result = _io_read_text(p)
-                except (IOError, OSError):
+                except (IOError, OSError, ModuleNotFoundError, ImportError):
                     logger.warning("Exception occurred", exc_info=True)
                     result = None
-        except (IOError, OSError):
+        except (IOError, OSError, ModuleNotFoundError, ImportError):
             logger.warning("Exception occurred", exc_info=True)
             # If the helper raised for any reason, fall back to manual reader below
             result = None

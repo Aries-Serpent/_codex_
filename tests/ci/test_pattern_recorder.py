@@ -2,6 +2,9 @@
 #         assert target.read_bytes() == b"logger.info('sample')\n", "Condition must be true"
 #         assert empty.read_bytes() == b"", "Condition must be true"
 
+import pytest
+from pathlib import Path
+
 
 class TestPattern30MergeReadiness:
     def test_pattern_30_uses_noarg_scorecard(self, tmp_path):
@@ -101,8 +104,8 @@ def _compute_merge_readiness_score():
 
         (scripts_ci / "session_wrapup_autofix.py").write_text(
             """
-from pathlib import Path
-from codex.logging.structured_logger import logger
+        from pathlib import Path
+        from codex.logging.structured_logger import logger
 
 _import_count_file = Path(__file__).with_name("import_count.txt")
 _count = int(_import_count_file.read_text(encoding="utf-8")) if _import_count_file.exists() else 0

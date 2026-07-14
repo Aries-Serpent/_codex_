@@ -29,7 +29,7 @@ def load_checkpoint(path: str) -> set[str]:
         return set()
     try:
         return set(json.loads(p.read_text()))
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         logger.warning("Exception occurred", exc_info=True)
         return set()
 

@@ -128,7 +128,7 @@ def _spans_overlap(span_a: tuple[int, int], span_b: tuple[int, int]) -> bool:
 def _text_sha256(text: str) -> str:
     try:
         return hashlib.sha256(text.encode("utf-8", errors="ignore")).hexdigest()
-    except (IOError, OSError):  # pragma: no cover - defensive
+    except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - defensive
         return ""
 
 
@@ -150,7 +150,7 @@ def _load_policy_file(path: Path) -> Optional[Mapping[str, Any]]:
         logger.debug("FileNotFoundError: <ERROR_TYPE>")
         logger.warning("FileNotFoundError: <ERROR_TYPE>", exc_info=True)
         return None
-    except (IOError, OSError) as exc:  # pragma: no cover - defensive
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - defensive
         logger.warning("Unable to read safety policy %s: %s", path, exc)
         return None
 
@@ -160,7 +160,7 @@ def _load_policy_file(path: Path) -> Optional[Mapping[str, Any]]:
             data = yaml.safe_load(text)
             if isinstance(data, Mapping):
                 return data
-        except (IOError, OSError) as exc:  # pragma: no cover - defensive
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - defensive
             logger.warning("Failed to parse YAML policy %s: %s", path, exc)
 
     # Try JSON
@@ -175,7 +175,7 @@ def _load_policy_file(path: Path) -> Optional[Mapping[str, Any]]:
         data = _minimal_yaml_load(text)
         if isinstance(data, Mapping):
             return data
-    except (IOError, OSError):  # pragma: no cover - defensive
+    except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - defensive
         logger.debug("Suppressed exception in handler", exc_info=True)
     logger.warning("Policy file %s is not valid YAML or JSON", path)
     return None
@@ -475,7 +475,7 @@ class SafetyPolicy:
                 policy = cls.from_dict(dict(data))
                 policy.source_path = candidate
                 return policy
-            except (IOError, OSError) as exc:  # pragma: no cover
+            except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover
                 logger.warning("Failed to parse safety policy from %s: %s", candidate, exc)
         # Fallback
         fallback = cls.from_dict(dict(DEFAULT_POLICY_DATA))
@@ -880,7 +880,7 @@ class SafetyFilters:
         path = self.log_path
         try:
             path.parent.mkdir(parents=True, exist_ok=True)
-        except (IOError, OSError) as exc:  # nosec B110 - best-effort cache dir creation
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # nosec B110 - best-effort cache dir creation
             logger.debug(
                 "safety.filters: failed to ensure log directory %s: %s",
                 path.parent,
@@ -921,7 +921,7 @@ class SafetyFilters:
                     if match.metadata:
                         entry["metadata"] = dict(match.metadata)
                     fh.write(json.dumps(entry, ensure_ascii=False) + "\n")
-        except (IOError, OSError) as exc:  # pragma: no cover
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover
             logger.debug("Failed to log safety event: %s", exc)
 
 

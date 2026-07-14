@@ -206,7 +206,7 @@ def _normalize_csv_value(value: Any) -> Any:
         if "\\" in value:
             try:
                 return codecs.decode(value, "unicode_escape")
-            except (IOError, OSError):
+            except (IOError, OSError, ModuleNotFoundError, ImportError):
                 return value.replace('\\"', '"')
         return value
     return value
@@ -446,13 +446,13 @@ def _coerce_filters(value: Any) -> SafetyFilters | None:
     if value is True:
         try:
             return SafetyFilters.from_defaults()
-        except (IOError, OSError):  # pragma: no cover - defensive
+        except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - defensive
             return None
 
     if isinstance(value, (str, Path)):
         try:
             return SafetyFilters.from_policy_file(value)
-        except (IOError, OSError):  # pragma: no cover - defensive
+        except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - defensive
             return None
 
     if isinstance(value, Mapping):
@@ -464,7 +464,7 @@ def _coerce_filters(value: Any) -> SafetyFilters | None:
         if policy_path:
             try:
                 return SafetyFilters.from_policy_file(policy_path)
-            except (IOError, OSError):  # pragma: no cover - defensive
+            except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - defensive
                 return None
 
         if enabled:
@@ -539,7 +539,7 @@ def _log_safety_decision(path: Path, prompt: SafetyResult, completion: SafetyRes
             ensure_ascii=False,
         )
         log_error("data.safety", "dataset sample sanitized", context)
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         logger.warning("Exception occurred", exc_info=True)
         # Logging should not interfere with dataset streaming.
 

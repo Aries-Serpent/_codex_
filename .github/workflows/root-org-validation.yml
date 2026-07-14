@@ -44,7 +44,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
     - name: CacheManager health check
       continue-on-error: true
       run: 'python scripts/ci/generate_cache_keys.py --health --workflow root-org-validation
@@ -147,7 +147,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
     - name: Set up Python 3.12 with tiered cache
       uses: ./.github/actions/setup-python-cached
       with:
@@ -232,7 +232,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
     - name: Set up Python 3.12 with tiered cache
       uses: ./.github/actions/setup-python-cached
       with:
@@ -326,26 +326,26 @@ jobs:
         script: "const fs = require('fs');\nconst MARKER = '<!-- root-org-validation-v1\
           \ -->';\nconst reportRaw = fs.readFileSync(\n  '.codex/reports/root_org_validation_${{\
           \ github.run_number }}.md', 'utf8'\n);\n\nconst bodyLines = [\n  MARKER,\n\
-          \  '## \U0001F50D Root Organization Validation',\n  '',\n  `**Run:** ${{\
-          \ github.run_number }} | **Trigger:** ${{ github.event_name }} | **Status:**\
+        \  '## \U0001F50D Root Organization Validation',\n  '',\n  `**Run:** ${{\
+        \ github.run_number }} | **Trigger:** ${{ github.event_name }} | **Status:**\
           \ ${{ (needs.pre-validation.result == 'success' && needs.reference-check.result\
           \ == 'success') && '✅ passed' || '❌ failed' }}`,\n  '',\n  '<details>',\n\
           \  '<summary>\U0001F4CB Full validation report (click to expand)</summary>',\n\
           \  '',\n  reportRaw,\n  '',\n  '</details>',\n  '',\n  `_Auto-posted by\
           \ \\`root-org-validation.yml\\` · [\U0001F517 Workflow run](${{ github.server_url\
           \ }}/${{ github.repository }}/actions/runs/${{ github.run_id }})_`,\n];\n\
-          const body = bodyLines.join('\\n');\n\n// Upsert: update existing marker\
+        const body = bodyLines.join('\\n');\n\n// Upsert: update existing marker\
           \ comment rather than creating a new one.\n// Paginate through all comments\
           \ to find the marker regardless of comment count.\nlet existing = null;\n\
-          let page = 1;\nwhile (!existing) {\n  const { data: batch } = await github.rest.issues.listComments({\n\
-          \    owner: context.repo.owner,\n    repo: context.repo.repo,\n    issue_number:\
-          \ context.issue.number,\n    per_page: 100,\n    page,\n  });\n  existing\
+        let page = 1;\nwhile (!existing) {\n  const { data: batch } = await github.rest.issues.listComments({\n\
+        \    owner: context.repo.owner,\n    repo: context.repo.repo,\n    issue_number:\
+        \ context.issue.number,\n    per_page: 100,\n    page,\n  });\n  existing\
           \ = batch.find(c => c.body && c.body.includes(MARKER)) || null;\n  if (batch.length\
           \ < 100) break;\n  page++;\n}\nif (existing) {\n  await github.rest.issues.updateComment({\n\
-          \    owner: context.repo.owner,\n    repo: context.repo.repo,\n    comment_id:\
+        \    owner: context.repo.owner,\n    repo: context.repo.repo,\n    comment_id:\
           \ existing.id,\n    body,\n  });\n  console.log(`Updated root-org-validation\
           \ comment  #${existing.id}`);\n} else {\n  await github.rest.issues.createComment({\n\
-          \    owner: context.repo.owner,\n    repo: context.repo.repo,\n    issue_number:\
+        \    owner: context.repo.owner,\n    repo: context.repo.repo,\n    issue_number:\
           \ context.issue.number,\n    body,\n  });\n}\n"
     - name: Set job status
       run: "# Check if any critical failures occurred\nif [ \"${{ needs.pre-validation.result\
@@ -399,7 +399,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1
     - name: Post or update rescue comment

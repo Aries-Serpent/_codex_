@@ -63,7 +63,7 @@ def stubbed_registry(monkeypatch: pytest.MonkeyPatch) -> tuple[str, str]:
 
 def test_list_displays_stubbed_plugin(
     cli_runner: CliRunner, stubbed_registry: tuple[str, str]
-) -> None:
+    ) -> None:
     group, plugin = stubbed_registry
 
     result = cli_runner.invoke(plugins_cli.app, ["list", group])
@@ -74,7 +74,7 @@ def test_list_displays_stubbed_plugin(
 
 def test_diagnose_reports_registered_count(
     cli_runner: CliRunner, stubbed_registry: tuple[str, str]
-) -> None:
+    ) -> None:
     group, _ = stubbed_registry
 
     result = cli_runner.invoke(plugins_cli.app, ["diagnose", group])
@@ -85,7 +85,7 @@ def test_diagnose_reports_registered_count(
 
 def test_explain_outputs_module_and_docstring(
     cli_runner: CliRunner, stubbed_registry: tuple[str, str]
-) -> None:
+    ) -> None:
     group, plugin = stubbed_registry
 
     result = cli_runner.invoke(plugins_cli.app, ["explain", group, plugin])
@@ -98,7 +98,7 @@ def test_explain_outputs_module_and_docstring(
 
 def test_diagnose_entry_point_mode(
     cli_runner: CliRunner, stubbed_registry: tuple[str, str]
-) -> None:
+    ) -> None:
     group, _ = stubbed_registry
 
     result = cli_runner.invoke(plugins_cli.app, ["diagnose", group, "--use-entry-points"])

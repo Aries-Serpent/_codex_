@@ -45,7 +45,7 @@ jobs:
     - name: Check out repository (shallow)
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         fetch-depth: 0
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
     - name: Measure divergence
@@ -216,7 +216,7 @@ jobs:
     - name: Checkout 0D_base_
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         ref: 0D_base_
         fetch-depth: 5
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
@@ -321,7 +321,7 @@ jobs:
     - name: "Checkout (sparse \u2014 scripts only)"
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         sparse-checkout: .github
         sparse-checkout-cone-mode: false
     - name: Ensure required labels exist
@@ -329,17 +329,17 @@ jobs:
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         script: "const required = [\n  { name: 'branch-divergence', color: 'e4e669',\
-          \ description: 'Branch divergence tracking between 0D_base_ and main' },\n\
-          \  { name: 'automated',         color: '0075ca', description: 'Automated\
-          \ by GitHub Actions'                           },\n  { name: 'ci-triage',\
-          \         color: 'd93f0b', description: 'CI / pipeline triage required'\
+        \ description: 'Branch divergence tracking between 0D_base_ and main' },\n\
+        \  { name: 'automated',         color: '0075ca', description: 'Automated\
+        \ by GitHub Actions'                           },\n  { name: 'ci-triage',\
+        \         color: 'd93f0b', description: 'CI / pipeline triage required'\
           \                        },\n];\nfor (const label of required) {\n  try\
-          \ {\n    await github.rest.issues.getLabel({\n      owner: context.repo.owner,\n\
-          \      repo: context.repo.repo,\n      name: label.name,\n    });\n  } catch\
+        \ {\n    await github.rest.issues.getLabel({\n      owner: context.repo.owner,\n\
+        \      repo: context.repo.repo,\n      name: label.name,\n    });\n  } catch\
           \ (err) {\n    if (err.status === 404) {\n      await github.rest.issues.createLabel({\n\
-          \        owner: context.repo.owner,\n        repo: context.repo.repo,\n\
-          \        name: label.name,\n        color: label.color,\n        description:\
-          \ label.description,\n      });\n      console.log(`Created label: ${label.name}`);\n\
+        \        owner: context.repo.owner,\n        repo: context.repo.repo,\n\
+        \        name: label.name,\n        color: label.color,\n        description:\
+        \ label.description,\n      });\n      console.log(`Created label: ${label.name}`);\n\
           \    } else {\n      throw err;\n    }\n  }\n}\n"
     - name: Build and upsert divergence tracking issue
       uses: actions/github-script@v8
@@ -368,7 +368,7 @@ jobs:
           const acResult      = process.env.AUTO_CORRECT_RESULT;\nconst dryRun   \
           \     = process.env.DRY_RUN === 'true';\nconst now           = new Date().toISOString();\n\
           \nconst MARKER = '<!-- branch-divergence-monitor -->';\n\nconst severityEmoji\
-          \ = {\n  healthy: '\u2705', low: '\U0001F7E1', high: '\U0001F534', critical:\
+        \ = {\n  healthy: '\u2705', low: '\U0001F7E1', high: '\U0001F534', critical:\
           \ '\U0001F6A8'\n}[severity] || '\u26A0\uFE0F';\n\n// Status of auto-correction\n\
           let correctionStatus = '';\nif (dryRun) {\n  correctionStatus = '> \u26A0\
           \uFE0F **Dry-run mode** \u2014 auto-correction was skipped.\\n';\n} else\
@@ -389,20 +389,20 @@ jobs:
           \ on \\`main\\` were authored by a human or contain code changes\nthat were\
           \ NOT routed through \\`0D_base_\\`. These cannot be auto-corrected and\
           \ require\na Copilot agent session to investigate and resolve.\n\n**Resolution\
-          \ steps:**\n1. Identify which PR/branch the commit(s) came from\n2. Cherry-pick\
+        \ steps:**\n1. Identify which PR/branch the commit(s) came from\n2. Cherry-pick\
           \ or re-apply those changes onto \\`0D_base_\\`\n3. If the commit should\
           \ be reverted from \\`main\\`, do so in a new sub-PR\n\n@copilot Investigate\
           \ the branch divergence between \\`main\\` and \\`0D_base_\\`.\n\\`main\\\
           ` has ${codeleak} non-auto-gen commit(s) that are not in \\`0D_base_\\`.\n\
-          Merge base: \\`${mergeBase}\\`. Run \\`branch-divergence-monitor.yml\\`\
+        Merge base: \\`${mergeBase}\\`. Run \\`branch-divergence-monitor.yml\\`\
           \ with\n\\`dry_run=true\\` to see the full list, then propose a resolution\
-          \ plan.\n\n> **\u26A0\uFE0F GitHub Copilot no-auto-PR policy:** Sessions\
+        \ plan.\n\n> **\u26A0\uFE0F GitHub Copilot no-auto-PR policy:** Sessions\
           \ no longer create pull requests\n> by default. After implementing the fix,\
           \ **explicitly open a pull request targeting\n> \\`0D_base_\\`** with your\
           \ changes (use \\`gh pr create --base 0D_base_ --title \"...\"\\`).\n> Do\
           \ NOT leave changes on a branch without a PR.\n`;\n}\n\nconst body = `${MARKER}\n\
           # ${severityEmoji} Branch Divergence Report \u2014 \\`0D_base_\\` \u2194\
-          \ \\`main\\`\n\n**Updated:** ${now}\n**Run:** [#${context.runId}](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})\n\
+        \ \\`main\\`\n\n**Updated:** ${now}\n**Run:** [#${context.runId}](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})\n\
           \n${correctionStatus}\n## Summary\n\n| Metric | Value |\n|--------|-------|\n\
           | Merge base | \\`${mergeBase.slice(0,12)}\\` |\n| **0D_base_ AHEAD** (staged\
           \ work) | ${ahead} commit(s) \u2014 \u2705 expected |\n| **main AHEAD**\
@@ -425,21 +425,21 @@ jobs:
           \ commit(s). The **auto-correct job** will fast-forward\n\\`0D_base_\\`\
           \ to include **all** of \\`main\\`'s history, effectively absorbing\nthe\
           \ code commits. No @copilot session is needed \u2014 the next scheduled\
-          \ run\nshould show \\`severity=healthy\\`.\n` : ''}\n\n---\n*Auto-generated\
+        \ run\nshould show \\`severity=healthy\\`.\n` : ''}\n\n---\n*Auto-generated\
           \ by [branch-divergence-monitor.yml](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/blob/main/.github/workflows/branch-divergence-monitor.yml)*\n\
-          *See runbook: [BRANCH_DIVERGENCE_PREVENTION.md](.codex/docs/BRANCH_DIVERGENCE_PREVENTION.md)*\n\
-          `;\n\n// Upsert: find open issue with our marker, update it, or create new\n\
-          const issues = await github.rest.issues.listForRepo({\n  owner: context.repo.owner,\n\
-          \  repo: context.repo.repo,\n  state: 'open',\n  labels: 'branch-divergence',\n\
+        *See runbook: [BRANCH_DIVERGENCE_PREVENTION.md](.codex/docs/BRANCH_DIVERGENCE_PREVENTION.md)*\n\
+        `;\n\n// Upsert: find open issue with our marker, update it, or create new\n\
+        const issues = await github.rest.issues.listForRepo({\n  owner: context.repo.owner,\n\
+        \  repo: context.repo.repo,\n  state: 'open',\n  labels: 'branch-divergence',\n\
           });\n\nconst existing = issues.data.find(i => i.body && i.body.includes(MARKER));\n\
-          \nconst title = `${severityEmoji} Branch Divergence: 0D_base_ ${ahead}\u2191\
+        \nconst title = `${severityEmoji} Branch Divergence: 0D_base_ ${ahead}\u2191\
           \ ${behind}\u2193 main \u2014 ${severity.toUpperCase()}`;\n\nif (existing)\
-          \ {\n  await github.rest.issues.update({\n    owner: context.repo.owner,\n\
-          \    repo: context.repo.repo,\n    issue_number: existing.number,\n    title,\n\
+        \ {\n  await github.rest.issues.update({\n    owner: context.repo.owner,\n\
+        \    repo: context.repo.repo,\n    issue_number: existing.number,\n    title,\n\
           \    body,\n  });\n  console.log(`Updated divergence issue  #${existing.number}`);\n\
-          } else {\n  const created = await github.rest.issues.create({\n    owner:\
-          \ context.repo.owner,\n    repo: context.repo.repo,\n    title,\n    body,\n\
-          \    labels: ['branch-divergence', 'automated', 'ci-triage'],\n  });\n \
+        } else {\n  const created = await github.rest.issues.create({\n    owner:\
+        \ context.repo.owner,\n    repo: context.repo.repo,\n    title,\n    body,\n\
+        \    labels: ['branch-divergence', 'automated', 'ci-triage'],\n  });\n \
           \ console.log(`Created divergence issue  #${created.data.number}`);\n}\n"
   rescue-comment-push:
     name: "\U0001F6A8 Post rescue comment on failure"
@@ -457,7 +457,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         fetch-depth: 1
     - name: Post or update rescue comment

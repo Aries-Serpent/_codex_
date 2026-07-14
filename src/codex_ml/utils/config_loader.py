@@ -55,7 +55,7 @@ except (ImportError, AttributeError):  # pragma: no cover - import guard
         from hydra_core.errors import MissingConfigException
 
         _HYDRA_AVAILABLE = True
-    except (IOError, OSError):  # pragma: no cover - import guard
+    except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - import guard
         compose = None
 
         initialize_config_dir = None
@@ -136,7 +136,7 @@ def _normalize_training_payload(payload: Mapping[str, Any]) -> dict[str, Any]:
 try:  # pragma: no cover - runtime capability detection
     _TEST_CFG = OmegaConf.create({"training": {}})
     _ = _TEST_CFG.training
-except (IOError, OSError):  # AttributeError when attribute access unsupported
+except (IOError, OSError, ModuleNotFoundError, ImportError):  # AttributeError when attribute access unsupported
     _DICTCONFIG_SUPPORTS_ATTR = False
 else:
     _DICTCONFIG_SUPPORTS_ATTR = True

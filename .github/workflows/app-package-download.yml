@@ -13,19 +13,13 @@ on:
           - 'all'
         default: 'zd_voice_lines'
       branch:
-        description: 'Branch to package from'
+        description: 'Branch to package from (must be a predefined safe branch)'
         required: true
         type: choice
         options:
           - 'main'
           - '0D_base_'
-          - 'copilot/add-zd-voice-lines-console-app'
-        default: 'copilot/add-zd-voice-lines-console-app'
-      custom_branch:
-        description: 'Custom branch name (overrides dropdown selection if provided)'
-        required: false
-        type: string
-        default: ''
+        default: 'main'
       include_dependencies:
         description: 'Include requirements.txt for dependencies'
         required: false
@@ -54,42 +48,36 @@ jobs:
     name: Package Application
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: read
 
     steps:
       - name: Determine target branch
         id: branch
         run: |
-          CUSTOM_BRANCH="${{ github.event.inputs.custom_branch }}"
-          SELECTED_BRANCH="${{ github.event.inputs.branch }}"
-
-          if [ -n "$CUSTOM_BRANCH" ]; then
-            # Reject control characters/newlines to prevent output injection
-            if [[ "$CUSTOM_BRANCH" == *$'\n'* || "$CUSTOM_BRANCH" == *$'\r'* ]]; then
-              echo "❌ Error: custom_branch must be a single line."
-              exit 1
-            fi
-            # Validate: branch name must contain only safe characters
-            if ! [[ "$CUSTOM_BRANCH" =~ ^[a-zA-Z0-9][a-zA-Z0-9/_.-]*$ ]]; then
-              echo "❌ Error: custom_branch '$CUSTOM_BRANCH' contains invalid characters."
-              echo "Allowed characters: alphanumeric, '/', '_', '.', '-' (must start with alphanumeric)."
-              exit 1
-            fi
-            BRANCH="$CUSTOM_BRANCH"
-            echo "Using custom branch: $BRANCH"
-          else
-            BRANCH="$SELECTED_BRANCH"
-            echo "Using selected branch: $BRANCH"
+          # SECURITY: Only predefined safe branches allowed via GitHub Actions UI
+          # Runtime validation ensures branch is in the allowed list (permanent branches only)
+          # This prevents accidental checkout of untrusted code via ref parameter
+          # NOTE: ALLOWED_BRANCHES must be kept in sync with the branch input options above (lines 20-21)
+          BRANCH="${{ github.event.inputs.branch }}"
+          ALLOWED_BRANCHES="main|0D_base_"
+          if ! echo "$BRANCH" | grep -qE "^($ALLOWED_BRANCHES)$"; then
+            echo "❌ Error: Branch '$BRANCH' is not in the allowed list"
+            exit 1
           fi
-
           printf 'branch=%s\n' "$BRANCH" >> "$GITHUB_OUTPUT"
 
       - name: Checkout repository
-        uses: actions/checkout@v5  # v6.0.3
+        # SECURITY: lgtm[py/workflow/untrusted-checkout]
+        # This workflow uses manual input validation (lines 62-67) that restricts
+        # checkout to predefined safe branches (main, 0D_base_) only.
+        # workflow_dispatch is non-privileged; ref parameter is verified against allowlist.
+        uses: actions/checkout@v5
         with:
-            persist-credentials: false
           persist-credentials: false
           ref: ${{ steps.branch.outputs.branch }}
           fetch-depth: 1
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Verify apps directory exists
         run: |

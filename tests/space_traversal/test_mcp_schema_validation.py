@@ -34,7 +34,7 @@ def test_detect_base_model():
         # Create file with BaseModel
         py_file = Path(tmpdir) / "models.py"
         py_file.write_text("""
-from pydantic import BaseModel
+    from pydantic import BaseModel
 
 class User(BaseModel):
     name: str
@@ -59,8 +59,8 @@ def test_detect_pydantic_import():
         # Create file with pydantic import
         py_file = Path(tmpdir) / "schemas.py"
         py_file.write_text("""
-import pydantic
-from typing import Optional
+    import pydantic
+    from typing import Optional
 
 # Using pydantic for validation
 """)
@@ -112,7 +112,7 @@ def test_detect_both_patterns():
     with tempfile.TemporaryDirectory() as tmpdir:
         py_file = Path(tmpdir) / "models.py"
         py_file.write_text("""
-from pydantic import BaseModel
+    from pydantic import BaseModel
 
 class APISchema(BaseModel):
     pass
@@ -137,7 +137,7 @@ def test_evidence_deduplication():
     with tempfile.TemporaryDirectory() as tmpdir:
         py_file = Path(tmpdir) / "models.py"
         py_file.write_text("""
-from pydantic import BaseModel
+    from pydantic import BaseModel
 
 class User(BaseModel):
     name: str

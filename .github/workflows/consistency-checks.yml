@@ -36,7 +36,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         fetch-depth: 0
     - name: Setup Node.js
       uses: actions/setup-node@v5
@@ -60,8 +60,8 @@ jobs:
       uses: actions/github-script@v8
       with:
         script: "const fs = require('fs');\nconst output = fs.readFileSync('/tmp/md-lint-output.txt',\
-          \ 'utf8');\n\ngithub.rest.issues.createComment({\n  issue_number: context.issue.number,\n\
-          \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  body: `## ⚠️\
+        \ 'utf8');\n\ngithub.rest.issues.createComment({\n  issue_number: context.issue.number,\n\
+        \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  body: `## ⚠️\
           \ Markdown Linting Issues\\n\\n\\`\\`\\`\\n${output}\\`\\`\\`\\n\\nPlease\
           \ fix the linting errors. You can run \\`markdownlint --fix docs/*.md *.md\\\
           ` locally to auto-fix many issues.`\n});\n"
@@ -76,7 +76,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         fetch-depth: 0
     - name: Setup Python
       uses: actions/setup-python@v6
@@ -115,7 +115,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
     - name: Setup Python
       uses: actions/setup-python@v6
       with:
@@ -168,7 +168,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
     - name: Generate consistency report
       run: 'cat << ''EOF'' > /tmp/consistency-summary.md
 

@@ -30,7 +30,7 @@ class TestTokenizationCliInitialization:
         runner = CliRunner()
         
         try:
-    from tokenization.cli import init_command
+            from tokenization.cli import init_command
             
             result = runner.invoke(init_command, [
                 '--tokenizer', 'bpe',
@@ -56,7 +56,7 @@ class TestTokenizationCliInitialization:
                 json.dump(config, f)
             
             try:
-    from tokenization.cli import init_command
+                from tokenization.cli import init_command
                 
                 result = runner.invoke(init_command, ['--config', config_file])
                 assert result.exit_code is not None
@@ -77,7 +77,7 @@ class TestTokenizationCliInitialization:
                 json.dump(config, f)
             
             try:
-    from tokenization.cli import init_command
+                from tokenization.cli import init_command
                 
                 result = runner.invoke(init_command, ['--config', config_file])
                 # Should reject invalid config
@@ -89,7 +89,7 @@ class TestTokenizationCliInitialization:
         runner = CliRunner()
         
         try:
-    from tokenization.cli import init_command
+            from tokenization.cli import init_command
             
             result = runner.invoke(init_command, [
                 '--pretrained', 'gpt2',
@@ -108,7 +108,7 @@ class TestTokenizationCliEncoding:
         runner = CliRunner()
         
         try:
-    from tokenization.cli import encode_command
+            from tokenization.cli import encode_command
             
             result = runner.invoke(encode_command, [
                 '--text', 'Hello world'
@@ -127,7 +127,7 @@ class TestTokenizationCliEncoding:
                 f.write("First line\nSecond line\nThird line\n")
             
             try:
-    from tokenization.cli import encode_command
+                from tokenization.cli import encode_command
                 
                 result = runner.invoke(encode_command, [
                     '--input-file', input_file
@@ -141,7 +141,7 @@ class TestTokenizationCliEncoding:
         runner = CliRunner()
         
         try:
-    from tokenization.cli import encode_command
+            from tokenization.cli import encode_command
             
             result = runner.invoke(encode_command, [
                 '--text', 'A' * 10000,  # Very long text
@@ -157,7 +157,7 @@ class TestTokenizationCliEncoding:
         runner = CliRunner()
         
         try:
-    from tokenization.cli import encode_command
+            from tokenization.cli import encode_command
             
                 result = runner.invoke(encode_command, [
                 '--text', 'Short text',
@@ -174,7 +174,7 @@ class TestTokenizationCliEncoding:
         runner = CliRunner()
         
         try:
-    from tokenization.cli import encode_command
+            from tokenization.cli import encode_command
             
             result = runner.invoke(encode_command, ['--text', ''])
             # Should handle empty input gracefully
@@ -186,7 +186,7 @@ class TestTokenizationCliEncoding:
         runner = CliRunner()
         
         try:
-    from tokenization.cli import encode_command
+            from tokenization.cli import encode_command
             
             result = runner.invoke(encode_command, [
                 '--text', 'Hello 世界 🌍 مرحبا'  # Mixed languages
@@ -204,7 +204,7 @@ class TestTokenizationCliDecoding:
         runner = CliRunner()
         
         try:
-    from tokenization.cli import decode_command
+            from tokenization.cli import decode_command
             
             result = runner.invoke(decode_command, [
                 '--tokens', '101,2054,2088'  # Hypothetical token IDs
@@ -218,7 +218,7 @@ class TestTokenizationCliDecoding:
         runner = CliRunner()
         
         try:
-    from tokenization.cli import decode_command
+            from tokenization.cli import decode_command
             
             result = runner.invoke(decode_command, [
                 '--tokens', '101,2054,102,2088',
@@ -239,7 +239,7 @@ class TestTokenizationCliDecoding:
                 f.write("102 1045 2572\n")
             
             try:
-    from tokenization.cli import decode_command
+                from tokenization.cli import decode_command
                 
                 result = runner.invoke(decode_command, [
                     '--input-file', input_file
@@ -257,7 +257,7 @@ class TestTokenizationCliVocabularyOperations:
         runner = CliRunner()
         
         try:
-    from tokenization.cli import vocab_command
+            from tokenization.cli import vocab_command
             
             result = runner.invoke(vocab_command, ['--info', 'size'])
             # Should display vocab size
@@ -269,7 +269,7 @@ class TestTokenizationCliVocabularyOperations:
         runner = CliRunner()
         
         try:
-    from tokenization.cli import vocab_command
+            from tokenization.cli import vocab_command
             
             result = runner.invoke(vocab_command, [
                 '--token', 'hello',
@@ -284,7 +284,7 @@ class TestTokenizationCliVocabularyOperations:
         runner = CliRunner()
         
         try:
-    from tokenization.cli import vocab_command
+            from tokenization.cli import vocab_command
             
             result = runner.invoke(vocab_command, [
                 '--id', '101',
@@ -299,7 +299,7 @@ class TestTokenizationCliVocabularyOperations:
         runner = CliRunner()
         
         try:
-    from tokenization.cli import vocab_command
+            from tokenization.cli import vocab_command
             
             result = runner.invoke(vocab_command, [
                 '--add-special-tokens', '<custom1>', '<custom2>'
@@ -313,7 +313,7 @@ class TestTokenizationCliVocabularyOperations:
         runner = CliRunner()
         
         try:
-    from tokenization.cli import vocab_command
+            from tokenization.cli import vocab_command
             
             result = runner.invoke(vocab_command, ['--list-special'])
             # Should display special tokens
@@ -332,7 +332,7 @@ class TestTokenizationCliErrorHandling:
             mock_load.side_effect = FileNotFoundError("Model not found")
             
             try:
-    from tokenization.cli import encode_command
+                from tokenization.cli import encode_command
                 
                 result = runner.invoke(encode_command, ['--text', 'test'])
                 # Should handle missing model
@@ -344,7 +344,7 @@ class TestTokenizationCliErrorHandling:
         runner = CliRunner()
         
         try:
-    from tokenization.cli import decode_command
+            from tokenization.cli import decode_command
             
             result = runner.invoke(decode_command, [
                 '--tokens', '999999,888888'  # Out of range IDs
@@ -363,7 +363,7 @@ class TestTokenizationCliErrorHandling:
                 f.write(b'\x00\x01\x02\x03')  # Binary data
             
             try:
-    from tokenization.cli import encode_command
+                from tokenization.cli import encode_command
                 
                 result = runner.invoke(encode_command, [
                     '--input-file', input_file
@@ -388,7 +388,7 @@ class TestTokenizationCliBatchProcessing:
                 f.write("Third sentence\n")
             
             try:
-    from tokenization.cli import encode_command
+                from tokenization.cli import encode_command
                 
                 result = runner.invoke(encode_command, [
                     '--batch-file', input_file,
@@ -410,7 +410,7 @@ class TestTokenizationCliBatchProcessing:
                 f.write("103 2572\n")
             
             try:
-    from tokenization.cli import decode_command
+                from tokenization.cli import decode_command
                 
                 result = runner.invoke(decode_command, [
                     '--batch-file', input_file,
@@ -429,7 +429,7 @@ class TestTokenizationCliPerformance:
         runner = CliRunner()
         
         try:
-    from tokenization.cli import encode_command
+            from tokenization.cli import encode_command
             
             result = runner.invoke(encode_command, [
                 '--text', 'Test text',
@@ -450,7 +450,7 @@ class TestTokenizationCliPerformance:
                     f.write(f"Sentence {i}\n")
             
             try:
-    from tokenization.cli import encode_command
+                from tokenization.cli import encode_command
                 
                 result = runner.invoke(encode_command, [
                     '--input-file', input_file,

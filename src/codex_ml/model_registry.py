@@ -129,7 +129,7 @@ def _activate_lora_adapter(model: Any, adapter_path: str) -> None:
     if callable(load_adapter):
         try:
             adapter_name = load_adapter(adapter_path)
-        except (IOError, OSError):
+        except (IOError, OSError, ModuleNotFoundError, ImportError):
             logger.warning("Exception occurred", exc_info=True)
         else:
             set_active = getattr(model, "set_active_adapters", None)
@@ -137,13 +137,13 @@ def _activate_lora_adapter(model: Any, adapter_path: str) -> None:
                 try:
                     set_active(adapter_name)
                     return
-                except (IOError, OSError) as e:
+                except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
                     type(e).__name__
                     logger.debug("Exception: <ERROR_TYPE>")
                     logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
     try:
         model.lora_adapter_path = adapter_path
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         logger.warning("Exception occurred", exc_info=True)
         # Silently ignore failures; attaching metadata is best effort.
 
@@ -322,7 +322,7 @@ def get_model(
     if isinstance(normalised_device, str):
         try:
             model = model.to(device=normalised_device)
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.warning("Exception: <ERROR_TYPE>", exc_info=True)

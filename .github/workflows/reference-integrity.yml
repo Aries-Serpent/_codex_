@@ -42,7 +42,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         fetch-depth: 1
     - name: Set up Python
       uses: actions/setup-python@v6
@@ -79,18 +79,18 @@ jobs:
           \ = report.split('\\n').filter(l =>\n  l.includes('FILE DOES NOT EXIST')\
           \ ||\n  l.includes('\U0001F4C4') ||\n  l.includes('line ') ||\n  l.includes('FIX\
           \ OPTIONS') ||\n  l.includes('NEVER move')\n).slice(0, 40).join('\\n');\n\
-          \nawait github.rest.issues.createComment({\n  owner: context.repo.owner,\n\
-          \  repo: context.repo.repo,\n  issue_number: context.issue.number,\n  body:\
-          \ `## ❌ Reference Integrity Gate — FAILED\\n\\n` +\n        `**Policy:**\
+        \nawait github.rest.issues.createComment({\n  owner: context.repo.owner,\n\
+        \  repo: context.repo.repo,\n  issue_number: context.issue.number,\n  body:\
+        \ `## ❌ Reference Integrity Gate — FAILED\\n\\n` +\n        `**Policy:**\
           \ Codebase Agency Policy §2 — Leave the codebase better than you found it.\\\
           n\\n` +\n        `One or more internal file references point to files that\
           \ do not exist. ` +\n        `This means a file was moved or deleted without\
           \ updating all references to it.\\n\\n` +\n        `\\`\\`\\`\\n${lines}\\\
-          n\\`\\`\\`\\n\\n` +\n        `**Fix:** Update every reference to point to\
+        n\\`\\`\\`\\n\\n` +\n        `**Fix:** Update every reference to point to\
           \ the new location, ` +\n        `or restore the file to its original path.\\\
-          n\\n` +\n        `**Rule:** Always run \\`python scripts/ci/check_cross_references.py\\\
+        n\\n` +\n        `**Rule:** Always run \\`python scripts/ci/check_cross_references.py\\\
           ` ` +\n        `BEFORE moving or deleting any file.\\n\\n---\\n_[\U0001F517\
-          \ Workflow run](` +\n        `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_\\\
+        \ Workflow run](` +\n        `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_\\\
           n`\n});\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
@@ -103,7 +103,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         fetch-depth: 1
     - name: Set up Python
       uses: actions/setup-python@v6
@@ -134,25 +134,25 @@ jobs:
         script: "const fs = require('fs');\nlet report = '';\ntry {\n  report = fs.readFileSync('/tmp/size_report.txt',\
           \ 'utf8');\n} catch(e) { report = '(report not available)'; }\n\nconst MARKER\
           \ = '<!-- agent-file-size-gate -->';\nconst body = MARKER + '\\n' +\n  \
-          \      `## ❌ Agent File Size Gate — FAILED\\n\\n` +\n        `**Rule:**\
+        \      `## ❌ Agent File Size Gate — FAILED\\n\\n` +\n        `**Rule:**\
           \ GitHub Copilot custom agent \\`.md\\` files in \\`.github/agents/\\` `\
           \ +\n        `must NOT exceed **30,000 characters**. Files over this limit\
           \ cause the ` +\n        `custom agent to **silently stop working**.\\n\\\
           n` +\n        `\\`\\`\\`\\n${report}\\n\\`\\`\\`\\n\\n` +\n        `**Fix\
-          \ options:**\\n` +\n        `1. Trim the file content to under 30,000 characters,\
+        \ options:**\\n` +\n        `1. Trim the file content to under 30,000 characters,\
           \ OR\\n` +\n        `2. If the file is NOT a registered custom agent (i.e.\
           \ it is a doc/planning ` +\n        `file), move it to \\`docs/\\` or \\\
           `.codex/docs/\\` — but ONLY AFTER running ` +\n        `\\`python scripts/ci/check_cross_references.py\\\
-          ` to verify no references break.\\n`;\n\n// Upsert: update existing comment\
+        ` to verify no references break.\\n`;\n\n// Upsert: update existing comment\
           \ in-place to avoid duplicate spam.\nlet existing = null;\nlet page = 1;\n\
-          while (!existing && page <= 20) {\n  const { data: batch } = await github.rest.issues.listComments({\n\
-          \    owner: context.repo.owner,\n    repo: context.repo.repo,\n    issue_number:\
-          \ context.issue.number,\n    per_page: 100,\n    page,\n  });\n  existing\
+        while (!existing && page <= 20) {\n  const { data: batch } = await github.rest.issues.listComments({\n\
+        \    owner: context.repo.owner,\n    repo: context.repo.repo,\n    issue_number:\
+        \ context.issue.number,\n    per_page: 100,\n    page,\n  });\n  existing\
           \ = batch.find(c => (c.body || '').includes(MARKER));\n  if (existing ||\
           \ batch.length < 100) break;\n  page++;\n}\n\nif (existing) {\n  await github.rest.issues.updateComment({\n\
-          \    owner: context.repo.owner,\n    repo: context.repo.repo,\n    comment_id:\
+        \    owner: context.repo.owner,\n    repo: context.repo.repo,\n    comment_id:\
           \ existing.id,\n    body,\n  });\n} else {\n  await github.rest.issues.createComment({\n\
-          \    owner: context.repo.owner,\n    repo: context.repo.repo,\n    issue_number:\
+        \    owner: context.repo.owner,\n    repo: context.repo.repo,\n    issue_number:\
           \ context.issue.number,\n    body,\n  });\n}\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
@@ -178,7 +178,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1
     - name: Post or update rescue comment

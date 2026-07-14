@@ -157,7 +157,7 @@ class CircuitBreaker:
                     if not self.config.health_probe_func():
                         logger.warning("Health probe failed, keeping circuit open")
                         raise Exception("Health probe failed")
-                except (IOError, OSError) as e:
+                except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
                     type(e).__name__
                     logger.debug("Exception: <ERROR_TYPE>")
                     logger.warning("Health probe error: <ERROR_TYPE>")
@@ -360,7 +360,7 @@ class CircuitBreaker:
                 json.dump(state_data, f, indent=2)
 
             logger.debug(f"Circuit breaker state saved to {state_file}")
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.warning("Failed to save circuit breaker state: <ERROR_TYPE>")

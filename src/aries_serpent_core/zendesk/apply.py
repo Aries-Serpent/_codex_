@@ -52,7 +52,7 @@ def _emit_evidence(resource: str, operation: Mapping[str, Any], env: str, phase:
         out_path = _evidence_dir() / f"zendesk_{resource}.jsonl"
         with out_path.open("a", encoding="utf-8") as handle:
             handle.write(json.dumps(record) + "\n")
-    except (IOError, OSError):  # pragma: no cover - evidence is best effort
+    except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - evidence is best effort
         LOGGER.debug("Evidence emit skipped for resource '%s'.", resource)
 
 

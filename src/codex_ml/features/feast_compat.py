@@ -280,7 +280,7 @@ class FeastCompatibleStore:
                 )
                 written[vname] = path
                 get_default_logger().info("Materialized %s → %s", vname, path)
-            except (IOError, OSError) as exc:
+            except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
                 get_default_logger().warning("materialize: failed for %s: %s", vname, exc)
 
         return written

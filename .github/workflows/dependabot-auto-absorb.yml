@@ -45,7 +45,7 @@ jobs:
     - name: "\U0001F4E5 Checkout"
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         fetch-depth: 0
         token: ${{ env.CODEX_MASTER_KEY || env.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         ref: ${{ inputs.target_branch || github.base_ref }}
@@ -72,24 +72,24 @@ jobs:
           \ || attempt === maxAttempts) {\n        throw error;\n      }\n      const\
           \ nowSeconds = Date.now() / 1000;\n      const resetDelay = Number.isFinite(reset)\
           \ && reset > nowSeconds\n        ? Math.ceil(reset - nowSeconds) + RESET_BUFFER_SECONDS\n\
-          \        : FALLBACK_WAIT_SECONDS;\n      const waitSeconds = Math.max(MIN_WAIT_SECONDS,\
+        \        : FALLBACK_WAIT_SECONDS;\n      const waitSeconds = Math.max(MIN_WAIT_SECONDS,\
           \ Math.min(MAX_WAIT_SECONDS, resetDelay));\n      core.warning(`Rate limited\
           \ while calling ${label}; retrying in ${waitSeconds}s (attempt ${attempt}/${maxAttempts})`);\n\
           \      await sleep(waitSeconds * 1000);\n    }\n  }\n}\n\nlet prNumber;\n\
           if (context.eventName === 'workflow_dispatch') {\n  prNumber = parseInt(core.getInput('pr_number')\
           \ || '${{ inputs.pr_number }}');\n} else {\n  prNumber = context.payload.pull_request.number;\n\
-          }\n\nconst { data: files } = await callWithRateLimitRetry(\n  () => github.rest.pulls.listFiles({\n\
-          \    owner: context.repo.owner,\n    repo: context.repo.repo,\n    pull_number:\
-          \ prNumber,\n    per_page: 10,\n  }),\n  'pulls.listFiles',\n);\n\ncore.setOutput('pr_number',\
+        }\n\nconst { data: files } = await callWithRateLimitRetry(\n  () => github.rest.pulls.listFiles({\n\
+        \    owner: context.repo.owner,\n    repo: context.repo.repo,\n    pull_number:\
+        \ prNumber,\n    per_page: 10,\n  }),\n  'pulls.listFiles',\n);\n\ncore.setOutput('pr_number',\
           \ prNumber);\ncore.setOutput('file_count', files.length);\ncore.setOutput('is_single_file',\
-          \ files.length === 1 ? 'true' : 'false');\ncore.setOutput('changed_file',\
-          \ files.length === 1 ? files[0].filename : '');\n\nif (files.length ===\
-          \ 1) {\n  console.log(`\u2705 Single-file bump detected: ${files[0].filename}`);\n\
+        \ files.length === 1 ? 'true' : 'false');\ncore.setOutput('changed_file',\
+        \ files.length === 1 ? files[0].filename : '');\n\nif (files.length ===\
+        \ 1) {\n  console.log(`\u2705 Single-file bump detected: ${files[0].filename}`);\n\
           } else {\n  console.log(`\u2139\uFE0F  ${files.length} files changed \u2014\
           \ skipping auto-absorb (not a single-file bump)`);\n}\n\n// Fetch head SHA\
-          \ for the PR\nconst { data: pr } = await callWithRateLimitRetry(\n  () =>\
-          \ github.rest.pulls.get({\n    owner: context.repo.owner,\n    repo: context.repo.repo,\n\
-          \    pull_number: prNumber,\n  }),\n  'pulls.get',\n);\ncore.setOutput('head_sha',\
+        \ for the PR\nconst { data: pr } = await callWithRateLimitRetry(\n  () =>\
+        \ github.rest.pulls.get({\n    owner: context.repo.owner,\n    repo: context.repo.repo,\n\
+        \    pull_number: prNumber,\n  }),\n  'pulls.get',\n);\ncore.setOutput('head_sha',\
           \ pr.head.sha);\ncore.setOutput('pr_title', pr.title);\n"
     - name: "\U0001F352 Cherry-pick into active branch"
       if: steps.check.outputs.is_single_file == 'true'
@@ -156,7 +156,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         fetch-depth: 1
     - name: Post or update rescue comment

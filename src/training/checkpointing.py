@@ -215,7 +215,7 @@ def _parse_epoch_metric(path: Path) -> tuple[int | None, float | None]:
         epoch = int(prefix.replace("epoch", ""))
         metric = float(metric_str)
         return epoch, metric
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         logger.warning("Exception occurred", exc_info=True)
         return None, None
 
@@ -279,7 +279,7 @@ def save_checkpoint(
         try:
             manifest_payload = json.dumps(manifest, indent=2, sort_keys=True)
             manifest_path.write_text(manifest_payload, encoding="utf-8")
-        except (IOError, OSError) as exc:  # pragma: no cover - best effort logging
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - best effort logging
             LOGGER.debug("Failed to write checkpoint manifest at %s: %s", manifest_path, exc)
     _best_k_retention(out_path, keep_best_k=keep_best_k, mode=mode)
     return filename

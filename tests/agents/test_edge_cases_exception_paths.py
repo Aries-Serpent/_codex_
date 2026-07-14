@@ -2,7 +2,7 @@
 PHASE 7D TRACK 5: Exception Path Tests for Memory System
 
 Comprehensive exception and error handling testing for:
-- Invalid path traversal attempts
+    - Invalid path traversal attempts
 - Invalid input validation
 - Database connection errors
 - Serialization/deserialization failures

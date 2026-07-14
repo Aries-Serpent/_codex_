@@ -21,7 +21,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         persist-credentials: false  # Security: Issue #5299 - Prevent credential exposure in pull_request_target
     - name: Set up Python
       uses: actions/setup-python@v6
@@ -72,10 +72,10 @@ jobs:
           \ Findings\\n\\n' + findingsContent;\n  }\n} else {\n  // If no WEC, just\
           \ append findings\n  updatedBody = newBody + '\\n\\n## \U0001F510 Security\
           \ Findings\\n\\n' + findingsContent;\n}\n\n// Update PR body\ntry {\n  await\
-          \ github.rest.pulls.update({\n    owner: context.repo.owner,\n    repo:\
-          \ context.repo.repo,\n    pull_number: pr.number,\n    body: updatedBody\n\
+        \ github.rest.pulls.update({\n    owner: context.repo.owner,\n    repo:\
+        \ context.repo.repo,\n    pull_number: pr.number,\n    body: updatedBody\n\
           \  });\n  console.log('✅ PR body updated with security findings (WEC-aware)');\n\
-          } catch (error) {\n  console.error('❌ Failed to update PR body:', error.message);\n\
+        } catch (error) {\n  console.error('❌ Failed to update PR body:', error.message);\n\
           \  if (error.status === 422) {\n    console.log('⚠️  PR body update rejected\
           \ (likely due to size limits)');\n  }\n}\n"
     - if: always()
@@ -88,15 +88,15 @@ jobs:
           \ {\n  findingsContent = fs.readFileSync('pr-findings.md', 'utf8');\n}\n\
           \nif (findingsContent && findingsContent.trim()) {\n  const lines = [\n\
           \    '## \U0001F510 Security Findings Detected',\n    '',\n    'This PR\
-          \ has the following security findings from automated scans:',\n    '',\n\
-          \    findingsContent,\n    '',\n    '**Note**: This is an automated scan\
+        \ has the following security findings from automated scans:',\n    '',\n\
+        \    findingsContent,\n    '',\n    '**Note**: This is an automated scan\
           \ for informational purposes. Please review carefully and address any critical\
           \ or high-severity findings before merging.'\n  ];\n  const comment = lines.join('\\\
-          n');\n\n  try {\n    await github.rest.issues.createComment({\n      owner:\
-          \ context.repo.owner,\n      repo: context.repo.repo,\n      issue_number:\
-          \ context.issue.number,\n      body: comment\n    });\n    console.log('✅\
+        n');\n\n  try {\n    await github.rest.issues.createComment({\n      owner:\
+        \ context.repo.owner,\n      repo: context.repo.repo,\n      issue_number:\
+        \ context.issue.number,\n      body: comment\n    });\n    console.log('✅\
           \ Security findings comment added to PR');\n  } catch (error) {\n    console.log('⚠️\
-          \  Could not add comment:', error.message);\n  }\n}\n"
+        \  Could not add comment:', error.message);\n  }\n}\n"
     timeout-minutes: 20
   validate-findings-json:
     name: Validate Findings JSON
@@ -105,7 +105,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         persist-credentials: false  # Security: Issue #5299 - Prevent credential exposure in pull_request_target
     - name: Set up Python
       uses: actions/setup-python@v6

@@ -39,7 +39,7 @@ def _stringify_path(value: Any) -> str | None:
         return text or None
     try:
         return str(value)
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         logger.warning("Exception occurred", exc_info=True)
         return None
 

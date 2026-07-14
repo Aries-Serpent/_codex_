@@ -570,7 +570,7 @@ def ingest_directory(
         if file_path.is_file():
             try:
                 yield from pipeline.stream(file_path)
-            except (IOError, OSError) as e:
+            except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
                 type(e).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 logger.warning("Error processing %s: %s", file_path, e)

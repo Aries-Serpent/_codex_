@@ -748,7 +748,7 @@ class ZendeskKnowledgeSyncService:
 
                 articles.append(article_data)
 
-            except (IOError, OSError) as e:
+            except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
                 type(e).__name__
                 logger.warning(
                     f"Failed to process {html_file}: <ERROR_TYPE>"

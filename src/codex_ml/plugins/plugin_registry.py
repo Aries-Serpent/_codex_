@@ -213,7 +213,7 @@ class PluginRegistry:
                 module_name = f"{plugin_dir.name}.{plugin_file.stem}"
                 importlib.import_module(module_name)
                 get_default_logger().info(f"Loaded plugin module: {module_name}")
-            except (IOError, OSError) as e:
+            except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
                 type(e).__name__
                 get_default_logger().debug("Exception: <ERROR_TYPE>")
                 get_default_logger().error(f"Failed to load plugin {plugin_file}: <ERROR_TYPE>")

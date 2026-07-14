@@ -70,7 +70,7 @@ if TYPER_AVAILABLE:
             typer.echo(f"✅ Created snapshot: {snapshot.snapshot_id}")
             typer.echo(f"   Location: {snapshot.snapshot_dir}")
             typer.echo(f"   Hash: {snapshot.content_hash[:16]}...")
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             typer.echo(f"❌ Error: {e}", err=True)

@@ -24,18 +24,16 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     permissions:
-      contents: write
+      contents: read
       pull-requests: write
       checks: write
     steps:
     - name: Checkout PR branch
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
-        ref: ${{ github.event.pull_request.head.sha || github.head_ref || github.event.pull_request.head.ref }}
+        persist-credentials: false
         fetch-depth: 0
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-          }}
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
     - name: CacheManager health check
       continue-on-error: true
       run: 'python scripts/ci/generate_cache_keys.py --health --workflow auto-fix-pr-check
@@ -93,24 +91,24 @@ jobs:
           const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;\n\
           \n// Read diagnostic report\nlet report = {};\ntry {\n  report = JSON.parse(fs.readFileSync('.codex/diagnostic-report.json',\
           \ 'utf8'));\n} catch (error) {\n  console.log('Could not read diagnostic\
-          \ report:', error);\n  return; // Exit if we can't read the report\n}\n\n\
+        \ report:', error);\n  return; // Exit if we can't read the report\n}\n\n\
           // Build summary table\nconst groupedIssues = {};\nreport.issues.forEach(issue\
           \ => {\n  const key = `${issue.pattern}-${issue.pattern_name}`;\n  if (!groupedIssues[key])\
-          \ {\n    groupedIssues[key] = {\n      pattern: issue.pattern,\n      name:\
-          \ issue.pattern_name,\n      count: 0,\n      autoFix: issue.auto_fix_available,\n\
-          \      severity: issue.severity\n    };\n  }\n  groupedIssues[key].count++;\n\
+        \ {\n    groupedIssues[key] = {\n      pattern: issue.pattern,\n      name:\
+        \ issue.pattern_name,\n      count: 0,\n      autoFix: issue.auto_fix_available,\n\
+        \      severity: issue.severity\n    };\n  }\n  groupedIssues[key].count++;\n\
           });\n\nlet summaryTable = '| Pattern | Type | Count | Auto-Fix | Severity\
           \ |\\n';\nsummaryTable += '|---------|------|-------|----------|----------|\\\
           n';\n\nObject.values(groupedIssues).forEach(group => {\n  summaryTable +=\
           \ `| ${group.pattern} | ${group.name} | ${group.count} | ${group.autoFix\
-          \ ? '✅ Yes' : '⚠️ Manual'} | ${group.severity === 'error' ? '\U0001F534\
-          \ Error' : '⚠️ Warning'} |\\n`;\n});\n\n// Build critical issues section\n\
+        \ ? '✅ Yes' : '⚠️ Manual'} | ${group.severity === 'error' ? '\U0001F534\
+        \ Error' : '⚠️ Warning'} |\\n`;\n});\n\n// Build critical issues section\n\
           const autoFixableIssues = report.issues.filter(i => i.auto_fix_available);\n\
           let criticalIssues = '#### \U0001F534 Auto-Fixable Issues (Must Fix Before\
           \ Merge)\\n\\n';\nif (autoFixableIssues.length === 0) {\n  criticalIssues\
           \ += '_No auto-fixable issues detected._\\n\\n';\n} else {\n  autoFixableIssues.slice(0,\
           \ 10).forEach(issue => {\n    criticalIssues += `- **${issue.file}${issue.line\
-          \ ? ':' + issue.line : ''}**\\n`;\n    criticalIssues += `  - Pattern ${issue.pattern}:\
+        \ ? ':' + issue.line : ''}**\\n`;\n    criticalIssues += `  - Pattern ${issue.pattern}:\
           \ ${issue.pattern_name}\\n`;\n    criticalIssues += `  - ${issue.message}\\\
           n\\n`;\n  });\n  if (autoFixableIssues.length > 10) {\n    criticalIssues\
           \ += `_... and ${autoFixableIssues.length - 10} more issues_\\n\\n`;\n \
@@ -119,36 +117,36 @@ jobs:
           \ Needed (Informational Only)\\n\\n';\nif (manualReviewIssues.length ===\
           \ 0) {\n  manualIssues += '_No manual review issues detected._\\n\\n';\n\
           } else {\n  manualReviewIssues.slice(0, 5).forEach(issue => {\n    manualIssues\
-          \ += `- **${issue.file}${issue.line ? ':' + issue.line : ''}**: ${issue.message}\\\
+        \ += `- **${issue.file}${issue.line ? ':' + issue.line : ''}**: ${issue.message}\\\
           n`;\n  });\n  if (manualReviewIssues.length > 5) {\n    manualIssues +=\
           \ `_... and ${manualReviewIssues.length - 5} more informational warnings_\\\
           n\\n`;\n  }\n}\n\n// Build complete comment\nconst comment = `## \U0001F916\
-          \ Copilot Agent: Auto-Fix Instructions\n\n### \U0001F4CA Diagnostic Summary\n\
-          \n${summaryTable}\n\n**Total Issues**: ${report.total_issues} | **Auto-Fixable**:\
-          \ ${report.auto_fixable} | **Manual Review**: ${report.manual_review}\n\n\
+        \ Copilot Agent: Auto-Fix Instructions\n\n### \U0001F4CA Diagnostic Summary\n\
+        \n${summaryTable}\n\n**Total Issues**: ${report.total_issues} | **Auto-Fixable**:\
+        \ ${report.auto_fixable} | **Manual Review**: ${report.manual_review}\n\n\
           ---\n\n${criticalIssues}\n\n${manualIssues}\n\n---\n\n## \U0001F3AF Quick\
-          \ Fix Options\n\n### Option A: One-Command Copilot Fix (Recommended)\nCopy\
-          \ and paste into Copilot Chat:\n\n\\`\\`\\`\n@workspace Fix all auto-fixable\
-          \ CI issues in PR  #${prNumber}:\n1. Run: python scripts/ci/auto_fix_common_issues.py\n\
-          2. Verify fixes: python scripts/ci/auto_fix_common_issues.py --check-only\n\
-          3. Run tests: nox -s tests\n4. Commit: \"fix(ci): resolve auto-fixable issues\
-          \ [Copilot]\"\n5. Push changes\n\\`\\`\\`\n\n### Option B: Local Fix\n\\\
+        \ Fix Options\n\n### Option A: One-Command Copilot Fix (Recommended)\nCopy\
+        \ and paste into Copilot Chat:\n\n\\`\\`\\`\n@workspace Fix all auto-fixable\
+        \ CI issues in PR  #${prNumber}:\n1. Run: python scripts/ci/auto_fix_common_issues.py\n\
+        2. Verify fixes: python scripts/ci/auto_fix_common_issues.py --check-only\n\
+        3. Run tests: nox -s tests\n4. Commit: \"fix(ci): resolve auto-fixable issues\
+        \ [Copilot]\"\n5. Push changes\n\\`\\`\\`\n\n### Option B: Local Fix\n\\\
           `\\`\\`bash\n# Checkout PR branch\ngh pr checkout ${prNumber}\n\n# Run auto-fix\
           \ script\npython scripts/ci/auto_fix_common_issues.py\n\n# Verify changes\n\
-          git diff\n\n# Commit and push\ngit add -A\ngit commit -m \"fix(ci): resolve\
-          \ auto-fixable issues [skip ci]\"\ngit push\n\\`\\`\\`\n\n### Option C:\
+        git diff\n\n# Commit and push\ngit add -A\ngit commit -m \"fix(ci): resolve\
+        \ auto-fixable issues [skip ci]\"\ngit push\n\\`\\`\\`\n\n### Option C:\
           \ Manual Workflow Trigger\n1. Go to [Actions → Auto-Fix Common CI Issues](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/workflows/auto-fix-common-issues.yml)\n\
           2. Click **Run workflow**\n3. Select this PR's branch\n4. Uncheck \"Only\
           \ check for issues\"\n5. Run workflow\n\n---\n\n## \U0001F4CB Next Steps\n\
           \n${report.next_steps.map(step => `- ${step}`).join('\\n')}\n\n---\n\n**Diagnostic\
-          \ Report**: [Download Artifact](${runUrl})\n**Workflow Run**: [View Details](${runUrl})\n\
+        \ Report**: [Download Artifact](${runUrl})\n**Workflow Run**: [View Details](${runUrl})\n\
           \n_This comment was auto-generated by the PR Auto-Fix Check workflow._`;\n\
           \n// Post to consolidated PR Status Dashboard instead of standalone comment\n\
-          const status = report.auto_fixable > 0 ? 'failure' : (report.manual_review\
-          \ > 0 ? 'warning' : 'success');\nconst summary = report.auto_fixable > 0\n\
+        const status = report.auto_fixable > 0 ? 'failure' : (report.manual_review\
+        \ > 0 ? 'warning' : 'success');\nconst summary = report.auto_fixable > 0\n\
           \  ? `${report.auto_fixable} auto-fixable issue(s) detected — must fix before\
-          \ merge`\n  : report.manual_review > 0\n    ? `${report.manual_review} informational\
-          \ warning(s) — no blocking issues`\n    : 'No CI issues detected';\ncore.setOutput('status',\
+        \ merge`\n  : report.manual_review > 0\n    ? `${report.manual_review} informational\
+        \ warning(s) — no blocking issues`\n    : 'No CI issues detected';\ncore.setOutput('status',\
           \ status);\ncore.setOutput('summary', summary);\ncore.setOutput('comment_body',\
           \ comment);\n"
     - name: Post to PR Status Dashboard
@@ -226,7 +224,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1
     - name: Post or update rescue comment

@@ -321,23 +321,23 @@ jobs:
         script: "const fs = require('fs');\nconst results = fs.readFileSync('coverage/benchmark_validation_report.txt',\
           \ 'utf8');\nconst MARKER = '<!-- benchmark-results-v1 -->';\nconst body\
           \ = `${MARKER}\\n## \U0001F4CA Benchmark Results\\n\\n\\`\\`\\`\\n${results}\\\
-          n\\`\\`\\`\\n\\n---\\n_[\U0001F517 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`;\n\
+        n\\`\\`\\`\\n\\n---\\n_[\U0001F517 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`;\n\
           \n// Retry loop \u2014 benchmark results update on every matrix shard\n\
           // and every re-run, making concurrent races likely over a long\n// PR lifecycle.\
           \ Retries with linear back-off (2s/4s/6s).\nfor (let attempt = 0; attempt\
           \ <= 3; attempt++) {\n  try {\n    // Paginate through all comments to find\
           \ the marker, regardless of\n    // comment count (PRs with >100 comments\
           \ would miss older marker comments).\n    let existing = null;\n    let\
-          \ page = 1;\n    while (!existing) {\n      const { data: batch } = await\
-          \ github.rest.issues.listComments({\n        owner: context.repo.owner,\
-          \ repo: context.repo.repo,\n        issue_number: context.issue.number,\
-          \ per_page: 100, page,\n      });\n      existing = batch.find(c => c.body\
+        \ page = 1;\n    while (!existing) {\n      const { data: batch } = await\
+        \ github.rest.issues.listComments({\n        owner: context.repo.owner,\
+        \ repo: context.repo.repo,\n        issue_number: context.issue.number,\
+        \ per_page: 100, page,\n      });\n      existing = batch.find(c => c.body\
           \ && c.body.includes(MARKER)) || null;\n      if (batch.length < 100) break;\n\
           \      page++;\n    }\n    if (existing) {\n      await github.rest.issues.updateComment({\n\
-          \        owner: context.repo.owner, repo: context.repo.repo,\n        comment_id:\
+        \        owner: context.repo.owner, repo: context.repo.repo,\n        comment_id:\
           \ existing.id, body,\n      });\n    } else {\n      await github.rest.issues.createComment({\n\
-          \        issue_number: context.issue.number,\n        owner: context.repo.owner,\
-          \ repo: context.repo.repo, body,\n      });\n    }\n    break; // success\n\
+        \        issue_number: context.issue.number,\n        owner: context.repo.owner,\
+        \ repo: context.repo.repo, body,\n      });\n    }\n    break; // success\n\
           \  } catch (e) {\n    if (attempt === 3) throw e;\n    await new Promise(r\
           \ => setTimeout(r, (attempt + 1) * 2000));\n  }\n}\n"
     env:

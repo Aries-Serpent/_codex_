@@ -344,7 +344,7 @@ class TestYAMLLoading:
     def test_load_complex_yaml(self):
         """Test loading complex YAML with all features."""
         yaml_content = """
-sensitive_terms:
+    sensitive_terms:
   - password
   - secret
   - api_key

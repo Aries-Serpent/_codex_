@@ -24,7 +24,7 @@ class TestEmbeddingAccuracy:
     def test_tfidf_embedding_consistency(self):
         """Test that TF-IDF embeddings are consistent."""
         try:
-    from codex.rag.embeddings import TfidfEmbeddingProvider
+            from codex.rag.embeddings import TfidfEmbeddingProvider
 
             provider = TfidfEmbeddingProvider()
 
@@ -40,7 +40,7 @@ class TestEmbeddingAccuracy:
     def test_embedding_dimension_consistency(self):
         """Test that embedding dimensions are consistent."""
         try:
-    from codex.rag.embeddings import TfidfEmbeddingProvider
+            from codex.rag.embeddings import TfidfEmbeddingProvider
 
             provider = TfidfEmbeddingProvider()
 
@@ -63,7 +63,7 @@ class TestEmbeddingAccuracy:
     def test_embedding_semantic_similarity(self):
         """Test that similar texts have similar embeddings."""
         try:
-    from codex.rag.embeddings import TfidfEmbeddingProvider
+            from codex.rag.embeddings import TfidfEmbeddingProvider
 
             provider = TfidfEmbeddingProvider()
 
@@ -101,7 +101,7 @@ class TestEmbeddingAccuracy:
     def test_embedding_normalization(self):
         """Test that embeddings are properly normalized."""
         try:
-    from codex.rag.embeddings import TfidfEmbeddingProvider
+            from codex.rag.embeddings import TfidfEmbeddingProvider
 
             provider = TfidfEmbeddingProvider()
 
@@ -124,7 +124,7 @@ class TestRetrievalAccuracy:
     def test_retrieval_returns_top_k(self):
         """Test that retrieval returns requested number of results."""
         try:
-    from codex.rag.retriever import CodexRetriever
+            from codex.rag.retriever import CodexRetriever
 
             retriever = CodexRetriever()
 
@@ -143,7 +143,7 @@ class TestRetrievalAccuracy:
     def test_retrieval_ranking_order(self):
         """Test that retrieval results are properly ranked."""
         try:
-    from codex.rag.retriever import CodexRetriever
+            from codex.rag.retriever import CodexRetriever
 
             retriever = CodexRetriever()
 
@@ -167,7 +167,7 @@ class TestRetrievalAccuracy:
     def test_retrieval_with_empty_index(self):
         """Test retrieval behavior with empty index."""
         try:
-    from codex.rag.retriever import CodexRetriever
+            from codex.rag.retriever import CodexRetriever
 
             retriever = CodexRetriever()
 
@@ -184,7 +184,7 @@ class TestRetrievalAccuracy:
     def test_retrieval_filters(self):
         """Test retrieval with various filters."""
         try:
-    from codex.rag.retriever import CodexRetriever
+            from codex.rag.retriever import CodexRetriever
 
             retriever = CodexRetriever()
 
@@ -211,7 +211,7 @@ class TestIndexManagement:
     def test_index_creation(self):
         """Test index creation and initialization."""
         try:
-    from codex.rag.indexer import CodexIndexer
+            from codex.rag.indexer import CodexIndexer
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 index_path = Path(tmpdir) / "test_index"
@@ -228,7 +228,7 @@ class TestIndexManagement:
     def test_document_addition(self):
         """Test adding documents to index."""
         try:
-    from codex.rag.indexer import CodexIndexer
+            from codex.rag.indexer import CodexIndexer
 
             indexer = CodexIndexer()
 
@@ -246,7 +246,7 @@ class TestIndexManagement:
     def test_document_removal(self):
         """Test removing documents from index."""
         try:
-    from codex.rag.indexer import CodexIndexer
+            from codex.rag.indexer import CodexIndexer
 
             indexer = CodexIndexer()
 
@@ -265,7 +265,7 @@ class TestIndexManagement:
     def test_index_persistence(self):
         """Test that index can be saved and loaded."""
         try:
-    from codex.rag.indexer import CodexIndexer
+            from codex.rag.indexer import CodexIndexer
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 index_path = Path(tmpdir) / "persistent_index"
@@ -288,7 +288,7 @@ class TestIndexManagement:
     def test_index_statistics(self):
         """Test retrieving index statistics."""
         try:
-    from codex.rag.indexer import CodexIndexer
+            from codex.rag.indexer import CodexIndexer
 
             indexer = CodexIndexer()
 
@@ -316,8 +316,7 @@ class TestRAGPerformance:
         """Test performance of batch embedding."""
         try:
             import time
-
-    from codex.rag.embeddings import TfidfEmbeddingProvider
+            from codex.rag.embeddings import TfidfEmbeddingProvider
 
             provider = TfidfEmbeddingProvider()
 
@@ -344,7 +343,7 @@ class TestRAGPerformance:
         try:
             import time
 
-    from codex.rag.retriever import CodexRetriever
+            from codex.rag.retriever import CodexRetriever
 
             retriever = CodexRetriever()
 
@@ -377,7 +376,7 @@ class TestRAGEdgeCases:
     def test_empty_text_embedding(self):
         """Test embedding of empty text."""
         try:
-    from codex.rag.embeddings import TfidfEmbeddingProvider
+            from codex.rag.embeddings import TfidfEmbeddingProvider
 
             provider = TfidfEmbeddingProvider()
 
@@ -395,7 +394,7 @@ class TestRAGEdgeCases:
     def test_very_long_text_handling(self):
         """Test handling of very long texts."""
         try:
-    from codex.rag.embeddings import TfidfEmbeddingProvider
+            from codex.rag.embeddings import TfidfEmbeddingProvider
 
             provider = TfidfEmbeddingProvider()
 
@@ -413,7 +412,7 @@ class TestRAGEdgeCases:
     def test_special_characters_in_text(self):
         """Test handling of special characters."""
         try:
-    from codex.rag.embeddings import TfidfEmbeddingProvider
+            from codex.rag.embeddings import TfidfEmbeddingProvider
 
             provider = TfidfEmbeddingProvider()
 
@@ -435,7 +434,7 @@ class TestRAGEdgeCases:
     def test_duplicate_document_handling(self):
         """Test handling of duplicate documents."""
         try:
-    from codex.rag.indexer import CodexIndexer
+            from codex.rag.indexer import CodexIndexer
 
             indexer = CodexIndexer()
 
@@ -456,7 +455,7 @@ class TestRAGEdgeCases:
         try:
             import threading
 
-    from codex.rag.embeddings import TfidfEmbeddingProvider
+        from codex.rag.embeddings import TfidfEmbeddingProvider
 
             provider = TfidfEmbeddingProvider()
             results = []
@@ -493,8 +492,8 @@ class TestRAGIntegration:
     def test_end_to_end_rag_flow(self):
         """Test complete RAG flow from indexing to retrieval."""
         try:
-    from codex.rag.indexer import CodexIndexer
-    from codex.rag.retriever import CodexRetriever
+            from codex.rag.indexer import CodexIndexer
+            from codex.rag.retriever import CodexRetriever
 
             # Create indexer and add documents
             indexer = CodexIndexer()
@@ -522,7 +521,7 @@ class TestRAGIntegration:
     def test_rag_with_metadata(self):
         """Test RAG operations with document metadata."""
         try:
-    from codex.rag.indexer import CodexIndexer
+            from codex.rag.indexer import CodexIndexer
 
             indexer = CodexIndexer()
 

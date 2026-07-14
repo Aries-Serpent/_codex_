@@ -1,6 +1,4 @@
-"""
-pytest.importorskip("tensorboard")
-Test Trainer Module
+"""Test Trainer Module
 
 Test module for trainer module.
 """
@@ -10,6 +8,8 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
+
+pytest.importorskip("tensorboard")
 
 from training import trainer as trainer_module
 from training.trainer import Trainer, TrainerLoggingConfig

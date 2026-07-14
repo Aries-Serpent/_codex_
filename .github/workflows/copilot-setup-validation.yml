@@ -37,7 +37,7 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         fetch-depth: 0
     - name: Set up Python
       uses: actions/setup-python@v6
@@ -108,7 +108,7 @@ jobs:
           \ tests passed`;\n\n  // Add annotations for failed tests\n  if (results.failed\
           \ > 0) {\n    results.results\n      .filter(r => !r.passed && r.severity\
           \ === 'error')\n      .slice(0, 10)\n      .forEach(r => {\n        core.setFailed(`Core\
-          \ Validation: ${r.name} — ${r.message}`);\n      });\n  }\n}\n\nconsole.log(`${title}:\
+        \ Validation: ${r.name} — ${r.message}`);\n      });\n  }\n}\n\nconsole.log(`${title}:\
           \ ${summary}`);\n"
     - name: Create Check Run (Integration Tests)
       if: always()
@@ -122,8 +122,8 @@ jobs:
           \    title = '❌ Integration Tests Failed';\n  }\n  summary = `${results.passed}/${results.total}\
           \ tests passed`;\n\n  // Add annotations for failed tests\n  if (results.failed\
           \ > 0) {\n    results.results\n      .filter(r => !r.passed && r.severity\
-          \ === 'error')\n      .slice(0, 10)\n      .forEach(r => {\n        core.setFailed(`Integration:\
-          \ ${r.name} — ${r.message}`);\n      });\n  }\n}\n\nconsole.log(`${title}:\
+        \ === 'error')\n      .slice(0, 10)\n      .forEach(r => {\n        core.setFailed(`Integration:\
+        \ ${r.name} — ${r.message}`);\n      });\n  }\n}\n\nconsole.log(`${title}:\
           \ ${summary}`);\n"
     - name: Create Check Run (Security Tests)
       if: always()
@@ -137,8 +137,8 @@ jobs:
           \ = '❌ Security Tests Failed';\n  }\n  summary = `${results.passed}/${results.total}\
           \ tests passed`;\n\n  // Add annotations for failed tests\n  if (results.failed\
           \ > 0) {\n    results.results\n      .filter(r => !r.passed && r.severity\
-          \ === 'error')\n      .slice(0, 10)\n      .forEach(r => {\n        core.setFailed(`Security:\
-          \ ${r.name} — ${r.message}`);\n      });\n  }\n}\n\nconsole.log(`${title}:\
+        \ === 'error')\n      .slice(0, 10)\n      .forEach(r => {\n        core.setFailed(`Security:\
+        \ ${r.name} — ${r.message}`);\n      });\n  }\n}\n\nconsole.log(`${title}:\
           \ ${summary}`);\n"
     - name: Post Summary Comment (if PR)
       if: always() && github.event_name == 'pull_request'
@@ -149,47 +149,47 @@ jobs:
           \ Setup Steps Validation\\n\\n';\nmarkdown += '### Test Results\\n\\n';\n\
           \nlet totalPassed = 0, totalTests = 0, totalFailed = 0;\n\n// Core validation\n\
           if (fs.existsSync('/tmp/core_validation.json')) {\n  const results = JSON.parse(fs.readFileSync('/tmp/core_validation.json',\
-          \ 'utf8'));\n  const status = results.failed === 0 ? '✅' : '❌';\n  markdown\
+        \ 'utf8'));\n  const status = results.failed === 0 ? '✅' : '❌';\n  markdown\
           \ += `| Phase | Status | Result |\\n`;\n  markdown += `|-------|--------|--------|\\\
           n`;\n  markdown += `| Core Validation | ${status} | ${results.passed}/${results.total}\
           \ passed |\\n`;\n  totalPassed += results.passed;\n  totalTests += results.total;\n\
           \  totalFailed += results.failed;\n}\n\n// Integration tests\nif (fs.existsSync('/tmp/integration_tests.json'))\
           \ {\n  const results = JSON.parse(fs.readFileSync('/tmp/integration_tests.json',\
-          \ 'utf8'));\n  const status = results.failed === 0 ? '✅' : '❌';\n  markdown\
+        \ 'utf8'));\n  const status = results.failed === 0 ? '✅' : '❌';\n  markdown\
           \ += `| Integration | ${status} | ${results.passed}/${results.total} passed\
           \ |\\n`;\n  totalPassed += results.passed;\n  totalTests += results.total;\n\
           \  totalFailed += results.failed;\n}\n\n// Security tests\nif (fs.existsSync('/tmp/security_tests.json'))\
           \ {\n  const results = JSON.parse(fs.readFileSync('/tmp/security_tests.json',\
-          \ 'utf8'));\n  const status = results.failed === 0 ? '✅' : '❌';\n  markdown\
+        \ 'utf8'));\n  const status = results.failed === 0 ? '✅' : '❌';\n  markdown\
           \ += `| Security | ${status} | ${results.passed}/${results.total} passed\
           \ |\\n`;\n  totalPassed += results.passed;\n  totalTests += results.total;\n\
           \  totalFailed += results.failed;\n}\n\nmarkdown += `\\n### Summary\\n`;\n\
-          markdown += `**Total: ${totalPassed}/${totalTests} tests passed**\\n`;\n\
+        markdown += `**Total: ${totalPassed}/${totalTests} tests passed**\\n`;\n\
           \nif (totalFailed > 0) {\n  markdown += `\\n⚠️ **${totalFailed} test(s)\
           \ failed** — see details above.\\n`;\n} else {\n  markdown += `\\n✅ **All\
           \ validation tests passed!**\\n`;\n}\n\nmarkdown += `\\n### Merge Gates\\\
-          n`;\nmarkdown += `- ${totalFailed === 0 ? '✅' : '❌'} All automated tests\
+        n`;\nmarkdown += `- ${totalFailed === 0 ? '✅' : '❌'} All automated tests\
           \ pass\\n`;\nmarkdown += `- ⏳ All 3 CCA variables present (validated by\
           \ tests)\\n`;\nmarkdown += `- ⏳ All 5 dependent workflows validate (validated\
-          \ by tests)\\n`;\nmarkdown += `- ${totalFailed === 0 ? '✅' : '❌'} Security/secrets\
+        \ by tests)\\n`;\nmarkdown += `- ${totalFailed === 0 ? '✅' : '❌'} Security/secrets\
           \ tests pass\\n`;\nmarkdown += `- ⏳ File size within acceptable range (validated\
           \ by tests)\\n`;\nmarkdown += `- ⏳ At least 1 human reviewer approval\\\
-          n`;\n\n// Post or update comment\nconst { data: comments } = await github.rest.issues.listComments({\n\
-          \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  issue_number:\
+        n`;\n\n// Post or update comment\nconst { data: comments } = await github.rest.issues.listComments({\n\
+        \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  issue_number:\
           \ context.issue.number,\n});\n\nconst botComment = comments.find(comment\
           \ =>\n  comment.user.type === 'Bot' && comment.body.includes('Copilot Setup\
           \ Steps Validation')\n);\n\nif (botComment) {\n  await github.rest.issues.updateComment({\n\
-          \    owner: context.repo.owner,\n    repo: context.repo.repo,\n    comment_id:\
-          \ botComment.id,\n    body: markdown\n  });\n} else {\n  await github.rest.issues.createComment({\n\
-          \    owner: context.repo.owner,\n    repo: context.repo.repo,\n    issue_number:\
-          \ context.issue.number,\n    body: markdown\n  });\n}\n"
+        \    owner: context.repo.owner,\n    repo: context.repo.repo,\n    comment_id:\
+        \ botComment.id,\n    body: markdown\n  });\n} else {\n  await github.rest.issues.createComment({\n\
+        \    owner: context.repo.owner,\n    repo: context.repo.repo,\n    issue_number:\
+        \ context.issue.number,\n    body: markdown\n  });\n}\n"
     - name: Block Merge on Failures
       if: failure() && github.event_name == 'pull_request'
       uses: actions/github-script@v8
       with:
         script: "// Request changes if critical tests failed\nawait github.rest.pulls.createReview({\n\
-          \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  pull_number:\
-          \ context.issue.number,\n  event: 'REQUEST_CHANGES',\n  body: '❌ Copilot\
+        \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  pull_number:\
+        \ context.issue.number,\n  event: 'REQUEST_CHANGES',\n  body: '❌ Copilot\
           \ Setup Steps validation failed. Please review the test results and fix\
           \ the issues before requesting review.'\n});\n"
     - name: Upload Test Results

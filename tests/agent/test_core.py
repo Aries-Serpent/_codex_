@@ -9,7 +9,7 @@ class TestTaskStatus:
     def test_task_status_import(self):
         """Test that TaskStatus can be imported."""
         try:
-    from agent.core import TaskStatus
+            from agent.core import TaskStatus
 
             assert TaskStatus is not None, "TaskStatus must be initialized"
         except ImportError:
@@ -18,7 +18,7 @@ class TestTaskStatus:
     def test_task_status_values(self):
         """Test all TaskStatus enum values."""
         try:
-    from agent.core import TaskStatus
+            from agent.core import TaskStatus
 
             assert TaskStatus.PENDING.value == "pending", "Value must be initialized"
             assert TaskStatus.RUNNING.value == "running", "Value must be initialized"
@@ -36,7 +36,7 @@ class TestSafeguardConstants:
     def test_max_task_length(self):
         """Test MAX_TASK_LENGTH constant."""
         try:
-    from agent.core import MAX_TASK_LENGTH
+            from agent.core import MAX_TASK_LENGTH
 
             assert MAX_TASK_LENGTH == 50000, "Length must be greater than zero"
         except ImportError:
@@ -45,7 +45,7 @@ class TestSafeguardConstants:
     def test_max_context_length(self):
         """Test MAX_CONTEXT_LENGTH constant."""
         try:
-    from agent.core import MAX_CONTEXT_LENGTH
+            from agent.core import MAX_CONTEXT_LENGTH
 
             assert MAX_CONTEXT_LENGTH == 100000, "Length must be greater than zero"
         except ImportError:
@@ -54,7 +54,7 @@ class TestSafeguardConstants:
     def test_max_tool_calls(self):
         """Test MAX_TOOL_CALLS constant."""
         try:
-    from agent.core import MAX_TOOL_CALLS
+            from agent.core import MAX_TOOL_CALLS
 
             assert MAX_TOOL_CALLS == 20, "MAX_TOOL_CALLS is not valid"
         except ImportError:
@@ -67,7 +67,7 @@ class TestAgentConfig:
     def test_config_creation(self):
         """Test creating AgentConfig."""
         try:
-    from agent.core import AgentConfig
+            from agent.core import AgentConfig
 
             config = AgentConfig()
             assert config is not None, "config must be initialized"
@@ -77,7 +77,7 @@ class TestAgentConfig:
     def test_config_defaults(self):
         """Test AgentConfig default values."""
         try:
-    from agent.core import AgentConfig
+            from agent.core import AgentConfig
 
             config = AgentConfig()
             assert config.model_preference == "auto", "model_preference is not valid"
@@ -92,7 +92,7 @@ class TestAgentConfig:
     def test_config_custom_values(self):
         """Test AgentConfig with custom values."""
         try:
-    from agent.core import AgentConfig
+            from agent.core import AgentConfig
 
             config = AgentConfig(
                 model_preference="gpt-4", max_tool_calls=5, enable_rag=False, timeout_seconds=600
@@ -111,7 +111,7 @@ class TestTaskResult:
     def test_result_creation(self):
         """Test creating TaskResult."""
         try:
-    from agent.core import TaskResult, TaskStatus
+            from agent.core import TaskResult, TaskStatus
 
             result = TaskResult(status=TaskStatus.COMPLETED)
             assert result.status == TaskStatus.COMPLETED, "Result must not be empty"
@@ -121,7 +121,7 @@ class TestTaskResult:
     def test_result_defaults(self):
         """Test TaskResult default values."""
         try:
-    from agent.core import TaskResult, TaskStatus
+            from agent.core import TaskResult, TaskStatus
 
             result = TaskResult(status=TaskStatus.PENDING)
             assert result.response is None, "Response must not be empty"
@@ -137,7 +137,7 @@ class TestTaskResult:
     def test_result_with_response(self):
         """Test TaskResult with response."""
         try:
-    from agent.core import TaskResult, TaskStatus
+            from agent.core import TaskResult, TaskStatus
 
             result = TaskResult(status=TaskStatus.COMPLETED, response="Task completed successfully")
             assert result.response == "Task completed successfully", "Response must not be empty"
@@ -147,7 +147,7 @@ class TestTaskResult:
     def test_result_with_error(self):
         """Test TaskResult with error."""
         try:
-    from agent.core import TaskResult, TaskStatus
+            from agent.core import TaskResult, TaskStatus
 
             result = TaskResult(status=TaskStatus.FAILED, error="Something went wrong")
             assert result.status == TaskStatus.FAILED, "Result must not be empty"
@@ -158,7 +158,7 @@ class TestTaskResult:
     def test_result_with_tool_calls(self):
         """Test TaskResult with tool calls."""
         try:
-    from agent.core import TaskResult, TaskStatus
+            from agent.core import TaskResult, TaskStatus
 
             tool_calls = [{"name": "search", "args": {"query": "test"}}]
             result = TaskResult(status=TaskStatus.COMPLETED, tool_calls=tool_calls)
@@ -173,7 +173,7 @@ class TestToolCall:
     def test_tool_call_creation(self):
         """Test creating ToolCall."""
         try:
-    from agent.core import ToolCall
+            from agent.core import ToolCall
 
             call = ToolCall(name="search", parameters={"query": "test"})
             assert call.name == "search", "name is not valid"
@@ -184,7 +184,7 @@ class TestToolCall:
     def test_tool_call_defaults(self):
         """Test ToolCall default values."""
         try:
-    from agent.core import ToolCall
+            from agent.core import ToolCall
 
             call = ToolCall(name="test", parameters={})
             assert call.result is None, "Result must not be empty"
@@ -196,7 +196,7 @@ class TestToolCall:
     def test_tool_call_with_result(self):
         """Test ToolCall with result."""
         try:
-    from agent.core import ToolCall
+            from agent.core import ToolCall
 
             call = ToolCall(name="search", parameters={"query": "test"}, result={"matches": 5})
             assert call.result == {"matches": 5}, "Result must not be empty"
@@ -210,7 +210,7 @@ class TestAgentCore:
     def test_agent_core_import(self):
         """Test that AgentCore can be imported."""
         try:
-    from agent.core import AgentCore
+            from agent.core import AgentCore
 
             assert AgentCore is not None, "AgentCore must be initialized"
         except ImportError:
@@ -219,7 +219,7 @@ class TestAgentCore:
     def test_agent_core_docstring(self):
         """Test AgentCore has proper docstring."""
         try:
-    from agent.core import AgentCore
+            from agent.core import AgentCore
 
             assert AgentCore.__doc__ is not None, "__doc__ must be initialized"
             assert "autonomous agents" in AgentCore.__doc__.lower(), "Condition must be true"
@@ -233,7 +233,7 @@ class TestModuleImports:
     def test_logging_configured(self):
         """Test that logger is configured."""
         try:
-    from agent.core import logger
+            from agent.core import logger
 
             assert logger is not None, "logger must be initialized"
         except ImportError:
@@ -242,7 +242,7 @@ class TestModuleImports:
     def test_all_exports(self):
         """Test that key classes are exported."""
         try:
-    from agent.core import (
+            from agent.core import (
                 AgentConfig,
                 AgentCore,
                 TaskResult,

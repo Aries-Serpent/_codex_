@@ -9,7 +9,7 @@ class TestEvidenceSchemaImports:
     def test_module_can_be_imported(self):
         """Test that the module can be imported."""
         try:
-    from codex.archive import evidence_schema
+            from codex.archive import evidence_schema
 
             assert evidence_schema is not None, "evidence_schema must be initialized"
         except ImportError:
@@ -18,7 +18,7 @@ class TestEvidenceSchemaImports:
     def test_module_has_expected_attributes(self):
         """Test module has expected attributes."""
         try:
-    from codex.archive import evidence_schema
+            from codex.archive import evidence_schema
 
             # Check for common schema-related attributes
             assert hasattr(evidence_schema, "__name__")
@@ -32,7 +32,7 @@ class TestEvidenceSchemaValidation:
     def test_empty_evidence_validation(self):
         """Test validation of empty evidence."""
         try:
-    from codex.archive import evidence_schema
+            from codex.archive import evidence_schema
 
             if hasattr(evidence_schema, "validate_evidence"):
                 result = evidence_schema.validate_evidence({})
@@ -44,7 +44,7 @@ class TestEvidenceSchemaValidation:
         """Test validation of valid evidence structure."""
         # Evidence structure (unused - only format reference)
         try:
-    from codex.archive import evidence_schema
+            from codex.archive import evidence_schema
 
             if hasattr(evidence_schema, "EvidenceSchema"):
                 schema = evidence_schema.EvidenceSchema()
@@ -56,7 +56,7 @@ class TestEvidenceSchemaValidation:
         """Test rejection of invalid evidence type."""
         evidence = {"type": "invalid_type"}
         try:
-    from codex.archive import evidence_schema
+            from codex.archive import evidence_schema
 
             if hasattr(evidence_schema, "validate_evidence_type"):
                 with pytest.raises(ValueError):
@@ -71,7 +71,7 @@ class TestEvidenceSchemaModels:
     def test_evidence_model_creation(self):
         """Test creation of evidence model."""
         try:
-    from codex.archive import evidence_schema
+            from codex.archive import evidence_schema
 
             if hasattr(evidence_schema, "EvidenceModel"):
                 model = evidence_schema.EvidenceModel(type="file", path="/test/path")
@@ -82,7 +82,7 @@ class TestEvidenceSchemaModels:
     def test_evidence_model_serialization(self):
         """Test evidence model serialization."""
         try:
-    from codex.archive import evidence_schema
+            from codex.archive import evidence_schema
 
             if hasattr(evidence_schema, "EvidenceModel"):
                 model = evidence_schema.EvidenceModel(type="file", path="/test/path")
@@ -99,7 +99,7 @@ class TestEvidenceSchemaConstants:
     def test_evidence_types_defined(self):
         """Test that evidence types are defined."""
         try:
-    from codex.archive import evidence_schema
+            from codex.archive import evidence_schema
 
             if hasattr(evidence_schema, "EVIDENCE_TYPES"):
                 assert len(evidence_schema.EVIDENCE_TYPES) > 0, "Collection must not be empty"
@@ -109,7 +109,7 @@ class TestEvidenceSchemaConstants:
     def test_schema_version_defined(self):
         """Test that schema version is defined."""
         try:
-    from codex.archive import evidence_schema
+            from codex.archive import evidence_schema
 
             if hasattr(evidence_schema, "SCHEMA_VERSION"):
                 assert evidence_schema.SCHEMA_VERSION is not None, "SCHEMA_VERSION must be initialized"

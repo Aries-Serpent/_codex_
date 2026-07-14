@@ -98,7 +98,7 @@ if (
     transformers.PreTrainedModel = PreTrainedModel
     sys.modules["transformers"] = transformers
 
-from codex_ml.registry.base import (
+    from codex_ml.registry.base import (
     Registry,
     RegistryConflictError,
     RegistryLoadError,

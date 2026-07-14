@@ -11,7 +11,7 @@ class TestZendeskClientImports:
     def test_module_can_be_imported(self):
         """Test that the module can be imported."""
         try:
-    from codex.zendesk import client
+            from codex.zendesk import client
 
             assert client is not None, "client must be initialized"
         except ImportError:
@@ -24,7 +24,7 @@ class TestZendeskClientOperations:
     def test_client_creation(self):
         """Test client creation."""
         try:
-    from codex.zendesk import client
+            from codex.zendesk import client
 
             if hasattr(client, "ZendeskClient"):
                 zd = client.ZendeskClient()
@@ -35,7 +35,7 @@ class TestZendeskClientOperations:
     def test_get_tickets(self):
         """Test getting tickets."""
         try:
-    from codex.zendesk import client
+            from codex.zendesk import client
 
             if hasattr(client, "get_tickets"):
                 with patch.object(client, "get_tickets") as mock_get:
@@ -48,7 +48,7 @@ class TestZendeskClientOperations:
     def test_create_ticket(self):
         """Test creating ticket."""
         try:
-    from codex.zendesk import client
+            from codex.zendesk import client
 
             if hasattr(client, "create_ticket"):
                 with patch.object(client, "create_ticket") as mock_create:
@@ -65,7 +65,7 @@ class TestZendeskClientConfiguration:
     def test_configure_client(self):
         """Test configuring client."""
         try:
-    from codex.zendesk import client
+            from codex.zendesk import client
 
             if hasattr(client, "ZendeskClient"):
                 zd = client.ZendeskClient(subdomain="test", api_token="token123")
@@ -76,7 +76,7 @@ class TestZendeskClientConfiguration:
     def test_validate_credentials(self):
         """Test credential validation."""
         try:
-    from codex.zendesk import client
+            from codex.zendesk import client
 
             if hasattr(client, "validate_credentials"):
                 with patch.object(client, "validate_credentials") as mock_validate:

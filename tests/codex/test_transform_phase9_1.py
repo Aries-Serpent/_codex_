@@ -486,7 +486,7 @@ class TestTransformTierC:
         """Test Tier C suggests async conversion."""
         test_file = tmp_path / "test.py"
         test_file.write_text("""
-import requests
+        import requests
 
 def fetch_data():
     response = requests.get('https://api.example.com')
@@ -522,8 +522,8 @@ class TestTransformAllTiers:
         """Test transformation processes all tiers when tier=None."""
         test_file = tmp_path / "test.py"
         test_file.write_text("""
-import requests
-import os
+        import requests
+        import os
 
 def func(x):
     path = os.path.exists('test')

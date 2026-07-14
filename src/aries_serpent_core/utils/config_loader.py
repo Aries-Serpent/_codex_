@@ -137,9 +137,9 @@ class ConfigLoader:
         except ImportError:
             logger.warning("PyYAML not available, using default error config")
             self.error_config = self._get_default_error_config()
-        except (IOError, OSError) as e:
-            type(e).__name__
-            logger.warning("Failed to load error config: <ERROR_TYPE>")
+        except (IOError, OSError, ModuleNotFoundError) as e:
+            error_type = type(e).__name__
+            logger.warning("Failed to load error config: %s", error_type)
             self.error_config = self._get_default_error_config()
 
     @staticmethod
@@ -280,7 +280,7 @@ class ConfigLoader:
                         return OmegaConf.create(container)
                     return cfg
                 return cfg
-            except (IOError, OSError) as e:
+            except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
                 type(e).__name__
                 logger.warning("Hydra compose failed: <ERROR_TYPE>")
                 if not allow_fallback:

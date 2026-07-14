@@ -59,7 +59,7 @@ def _append_error_report(
     reports_dir = Path("_codex_reports")
     try:
         reports_dir.mkdir(parents=True, exist_ok=True)
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         logger.warning("Exception occurred", exc_info=True)
         # If error reporting fails we swallow the exception to avoid cascading failures.
         return
@@ -68,7 +68,7 @@ def _append_error_report(
     try:
         context_payload = context or {}
         context_str = json.dumps(context_payload, sort_keys=True, default=str)
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         logger.warning("Exception occurred", exc_info=True)
         context_str = repr(context)
 
@@ -86,7 +86,7 @@ def _append_error_report(
     try:
         with error_file.open("a", encoding="utf-8") as fh:
             fh.write("\n".join(block_lines))
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         logger.warning("Exception occurred", exc_info=True)
         # Suppress logging failures to keep evaluation running.
         return
@@ -102,7 +102,7 @@ def _safe_operation(
 
     try:
         return operation()
-    except (IOError, OSError) as exc:  # pragma: no cover - defensive logging path
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - defensive logging path
         message = f"{exc.__class__.__name__}: {exc}"
         _append_error_report(step_name, message, context)
         raise
@@ -593,13 +593,13 @@ def run_evaluation(
 
                 # Dataset path (absolute)
                 mlflow.log_param("dataset_path", str(dataset_path.resolve()))
-            except (IOError, OSError) as e:
+            except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
                 type(e).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 logger.warning(
                     f"Exception: {e}", exc_info=True
                 )  # Silently ignore param logging errors
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.warning(
@@ -666,7 +666,7 @@ def run_evaluation(
 
         _jl = JsonLogger("artifacts/logs/eval.ndjson")
         _jl.write(event="eval_start", metrics_sink=sink_kind)
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         logger.warning("Exception occurred", exc_info=True)
         # Logging module not available or failed to initialize
 
@@ -676,7 +676,7 @@ def run_evaluation(
             from tools.perf.sampler import PerfSampler
 
             PerfSampler().run(steps=3)
-        except (IOError, OSError):
+        except (IOError, OSError, ModuleNotFoundError, ImportError):
             logger.warning("Exception occurred", exc_info=True)
             # Performance sampler not available or failed
 

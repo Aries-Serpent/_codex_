@@ -30,7 +30,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         fetch-depth: 1
     - name: Set up Python
       uses: ./.github/actions/setup-python-cached
@@ -139,37 +139,37 @@ jobs:
           \ 'utf8'));\n  const dist   = report.pattern_distribution || {};\n  const\
           \ rows   = Object.entries(dist)\n    .sort((a, b) => b[1] - a[1])\n    .map(([pat,\
           \ cnt]) => `| ${pat} | ${cnt} |`)\n    .join('\\n');\n  patternTable = rows\n\
-          \    ? `| Pattern | Count |\\n|---------|-------|\\n${rows}`\n    : '_No\
+        \    ? `| Pattern | Count |\\n|---------|-------|\\n${rows}`\n    : '_No\
           \ patterns detected._';\n\n  // Include cascade analysis when detected (issue\
           \  #3669 fix)\n  const ca = report.cascade_analysis || {};\n  if (ca.cascade_detected)\
           \ {\n    cascadeSection = [\n      '',\n      '### \u26A0\uFE0F Self-Healing\
           \ Cascade Detected',\n      '',\n      `Self-healing failures account for\
           \ **${(ca.cascade_rate * 100).toFixed(1)}%** ` +\n      `of all failures\
           \ (${ca.self_healing_count}/${ca.total_failures}).`,\n      '',\n      '**Root\
-          \ Cause:**',\n      ca.root_cause || '_Unknown_',\n      '',\n      '**Recommended\
-          \ Action:**',\n      ca.recommended_action || '_See .codex/patterns/ci_failure_patterns.yaml_',\n\
-          \      '',\n      '> Note: The effective alert threshold was doubled to\
+        \ Cause:**',\n      ca.root_cause || '_Unknown_',\n      '',\n      '**Recommended\
+        \ Action:**',\n      ca.recommended_action || '_See .codex/patterns/ci_failure_patterns.yaml_',\n\
+        \      '',\n      '> Note: The effective alert threshold was doubled to\
           \ 2\xD7 base because',\n      '> a cascade was active. The rate still exceeded\
           \ this elevated threshold.',\n    ].join('\\n');\n  }\n} catch(e) {\n  patternTable\
-          \ = '_Pattern data unavailable._';\n}\n\n// Dedup: skip if an open alert\
+        \ = '_Pattern data unavailable._';\n}\n\n// Dedup: skip if an open alert\
           \ issue was created in the last 24h\nconst since = new Date(Date.now() -\
-          \ 24 * 60 * 60 * 1000).toISOString();\nconst { data: issues } = await github.rest.issues.listForRepo({\n\
-          \  owner: context.repo.owner,\n  repo:  context.repo.repo,\n  state: 'open',\n\
-          \  labels: 'ci-health-alert',\n  since,\n});\nif (issues.length > 0) {\n\
+        \ 24 * 60 * 60 * 1000).toISOString();\nconst { data: issues } = await github.rest.issues.listForRepo({\n\
+        \  owner: context.repo.owner,\n  repo:  context.repo.repo,\n  state: 'open',\n\
+        \  labels: 'ci-health-alert',\n  since,\n});\nif (issues.length > 0) {\n\
           \  core.info(`Skipping issue creation \u2014 open alert issue  #${issues[0].number}\
           \ already exists.`);\n  return;\n}\n\nconst body = [\n  '## \U0001F6A8 CI\
           \ Health Alert',\n  '',\n  'Telemetry analysis for the past 7 days has detected\
-          \ concerning patterns.',\n  '',\n  '### Summary',\n  '',\n  `- **Total Runs:**\
-          \ ${totalRuns}`,\n  `- **Failed Runs:** ${failedRuns}`,\n  `- **Failure\
-          \ Rate:** ${failureRate}%`,\n  '',\n  '### Pattern Distribution',\n  '',\n\
+        \ concerning patterns.',\n  '',\n  '### Summary',\n  '',\n  `- **Total Runs:**\
+        \ ${totalRuns}`,\n  `- **Failed Runs:** ${failedRuns}`,\n  `- **Failure\
+        \ Rate:** ${failureRate}%`,\n  '',\n  '### Pattern Distribution',\n  '',\n\
           \  patternTable,\n  cascadeSection,\n  '',\n  '### Recommended Actions',\n\
-          \  '',\n  '- \u26A0\uFE0F **Critical:** Failure rate exceeds threshold -\
-          \ immediate investigation required',\n  '',\n  `**Report:** Telemetry collected\
+        \  '',\n  '- \u26A0\uFE0F **Critical:** Failure rate exceeds threshold -\
+        \ immediate investigation required',\n  '',\n  `**Report:** Telemetry collected\
           \ on ${new Date().toISOString().slice(0, 10)}`,\n].join('\\n');\n\nconst\
-          \ { data: issue } = await github.rest.issues.create({\n  owner:  context.repo.owner,\n\
-          \  repo:   context.repo.repo,\n  title:  `CI Health Alert: High Failure\
-          \ Rate Detected`,\n  body,\n  labels: ['ci-health-alert'],\n});\ncore.info(`Created\
-          \ alert issue  #${issue.number}: ${issue.html_url}`);\n"
+        \ { data: issue } = await github.rest.issues.create({\n  owner:  context.repo.owner,\n\
+        \  repo:   context.repo.repo,\n  title:  `CI Health Alert: High Failure\
+        \ Rate Detected`,\n  body,\n  labels: ['ci-health-alert'],\n});\ncore.info(`Created\
+        \ alert issue  #${issue.number}: ${issue.html_url}`);\n"
     - name: Update CODEX_CI_FAILURE_RATE repo variable
       if: always()
       continue-on-error: true
@@ -309,7 +309,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         fetch-depth: 1
     - name: Post or update rescue comment

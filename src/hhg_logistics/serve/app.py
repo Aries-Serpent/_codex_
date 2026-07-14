@@ -304,7 +304,7 @@ class LLMService:
             }
             try:
                 append_event_ndjson(self.metrics_file, record)
-            except (IOError, OSError):  # pragma: no cover - logging best effort
+            except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - logging best effort
                 logger.debug("Failed to append request log", exc_info=True)
 
         return JSONResponse(response)

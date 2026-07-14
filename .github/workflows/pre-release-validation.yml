@@ -48,9 +48,9 @@ jobs:
       uses: actions/github-script@v8
       with:
         script: "const checkStatus = {\n  name: 'Pre-Release Validation',\n  head_sha:\
-          \ context.sha,\n  status: 'completed',\n  conclusion: 'success',\n  output:\
-          \ {\n    title: 'Pre-Release Validation',\n    summary: 'All gates passed.\
-          \ Release is authorized when tag is pushed.',\n    text: 'See workflow for\
+        \ context.sha,\n  status: 'completed',\n  conclusion: 'success',\n  output:\
+        \ {\n    title: 'Pre-Release Validation',\n    summary: 'All gates passed.\
+        \ Release is authorized when tag is pushed.',\n    text: 'See workflow for\
           \ details.'\n  }\n};\n\nif ('${{ needs.validate-version.result }}' !== 'success')\
           \ {\n  checkStatus.conclusion = 'failure';\n}\n"
     timeout-minutes: 30
@@ -64,7 +64,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
     - env:
         BRANCH_REF: ${{ github.head_ref || github.ref }}
       id: check
@@ -144,13 +144,13 @@ jobs:
       with:
         script: "const summary = `## ✅ Pre-Release Validation Complete\n\n**Version**:\
           \ v${{ needs.validate-version.outputs.version }}\n\n### Status\n- Version\
-          \ bump: ✅\n- CHANGELOG: ✅\n- P0 Gate: ✅\n- P1 Gate: ✅\n- P2 Gate: ✅\n\n\
-          ### Ready for Release\nWhen ready to release:\n1. Merge this PR to main\n\
-          2. Create tag: \\`git tag -a v${{ needs.validate-version.outputs.version\
-          \ }}\\`\n3. Push tag: \\`git push origin v${{ needs.validate-version.outputs.version\
+        \ bump: ✅\n- CHANGELOG: ✅\n- P0 Gate: ✅\n- P1 Gate: ✅\n- P2 Gate: ✅\n\n\
+        ### Ready for Release\nWhen ready to release:\n1. Merge this PR to main\n\
+        2. Create tag: \\`git tag -a v${{ needs.validate-version.outputs.version\
+        \ }}\\`\n3. Push tag: \\`git push origin v${{ needs.validate-version.outputs.version\
           \ }}\\`\n\nThis will trigger the release workflow.`;\n\ngithub.rest.issues.createComment({\n\
-          \  issue_number: context.issue.number,\n  owner: context.repo.owner,\n \
-          \ repo: context.repo.repo,\n  body: summary\n});\n"
+        \  issue_number: context.issue.number,\n  owner: context.repo.owner,\n \
+        \ repo: context.repo.repo,\n  body: summary\n});\n"
     timeout-minutes: 30
   validate-artifacts:
     if: needs.is-release-pr.outputs.is-release == 'true'
@@ -161,7 +161,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
     - name: Check for wheel build script
       run: "if [ -f \"pyproject.toml\" ] && grep -q \"\\[build-system\\]\" pyproject.toml;\
         \ then\n  echo \"✅ Project configured for wheel builds\"\nelse\n  echo \"\
@@ -178,7 +178,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
     - name: Check CHANGELOG updated
       run: "VERSION=\"${{ needs.validate-version.outputs.version }}\"\n\n# Check for\
         \ version section in CHANGELOG\nif grep -q \"## \\[${VERSION}\\]\" CHANGELOG.md\
@@ -201,7 +201,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
     - name: Check manifest template
       run: "if [ -f \".codex/RELEASE_MANIFEST_TEMPLATE.json\" ]; then\n  python -c\
         \ \"import json; json.load(open('.codex/RELEASE_MANIFEST_TEMPLATE.json'))\"\
@@ -217,7 +217,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
     - id: p0-1
       name: 'P0.1: Profile alignment'
       run: "if [ -f \".codex/PROFILE_DRIFT_AUDIT.json\" ]; then\n  echo \"✅ P0.1.1:\
@@ -249,7 +249,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
     - id: p1-3
       name: 'P1.3: SBOM present'
       run: "if [ -f \"sbom.json\" ] || [ -f \".codex/sbom.json\" ]; then\n  echo \"\
@@ -272,7 +272,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
     - id: p2-1
       name: 'P2.2.1: Release workflow'
       run: "if [ -f \".github/workflows/release-to-pypi.yml\" ]; then\n  echo \"✅\
@@ -318,7 +318,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
     - name: Check for release notes
       run: "VERSION=\"${{ needs.validate-version.outputs.version }}\"\n\n# Look for\
         \ release notes file\nif [ -f \"RELEASE_NOTES.md\" ] || \\\n   [ -f \".codex/RELEASE_NOTES_v${VERSION}.md\"\

@@ -132,7 +132,7 @@ class TestTaskRouterWithRegistry:
         registry_yaml = tmp_path / "AGENT_REGISTRY.yaml"
         registry_yaml.write_text(
             """
-agents:
+    agents:
   - name: ci-testing-agent
     status: active
     capability_tags:
@@ -149,7 +149,7 @@ agents:
     status: deprecated
     capability_tags:
       - ci_failure
-""",
+    """,
             encoding="utf-8",
         )
         return TaskRouter(

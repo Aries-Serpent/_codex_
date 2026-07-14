@@ -156,7 +156,7 @@ class KnowledgeGraphExporter:
                 success=True,
             )
 
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.debug("Exception caught, returning", exc_info=True)

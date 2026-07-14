@@ -24,7 +24,7 @@ class TestParquetLoader:
         """Test basic Parquet loading"""
         import pandas as pd
 
-    from codex_ml.data.loaders.parquet_loader import load_parquet
+        from codex_ml.data.loaders.parquet_loader import load_parquet
 
         # Create sample Parquet
         df = pd.DataFrame({"text": ["Sample 1", "Sample 2", "Sample 3"], "label": [0, 1, 0]})
@@ -43,7 +43,7 @@ class TestParquetLoader:
         """Test batched Parquet loading"""
         import pandas as pd
 
-    from codex_ml.data.loaders.parquet_loader import load_parquet
+        from codex_ml.data.loaders.parquet_loader import load_parquet
 
         # Create larger dataset
         df = pd.DataFrame({"id": range(100), "value": range(100, 200)})
@@ -67,7 +67,7 @@ class TestArrowLoader:
         import pyarrow as pa
         import pyarrow.ipc as ipc
 
-    from codex_ml.data.loaders.arrow_loader import load_arrow
+        from codex_ml.data.loaders.arrow_loader import load_arrow
 
         # Create sample Arrow file
         schema = pa.schema([("text", pa.string()), ("label", pa.int64())])
@@ -96,7 +96,7 @@ class TestHDF5Loader:
         import h5py
         import numpy as np
 
-    from codex_ml.data.loaders.hdf5_loader import load_hdf5
+        from codex_ml.data.loaders.hdf5_loader import load_hdf5
 
         # Create sample HDF5
         data = np.random.rand(100, 10)

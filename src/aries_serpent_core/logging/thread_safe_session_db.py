@@ -192,7 +192,7 @@ class ThreadSafeSessionDB:
             conn.commit()
             logger.info(f"Schema initialized for {self.db_path}")
 
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.error("Schema initialization failed: <ERROR_TYPE>")
             log_error(e, "schema_init", self.errors_path)
@@ -227,7 +227,7 @@ class ThreadSafeSessionDB:
 
         try:
             return DeadlockRecovery.retry_with_backoff(_insert, max_retries=3)
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.error("Failed to insert session: <ERROR_TYPE>")
             log_error(e, "insert_session", self.errors_path)
@@ -245,7 +245,7 @@ class ThreadSafeSessionDB:
 
         try:
             return DeadlockRecovery.retry_with_backoff(_get, max_retries=3)
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.error(f"Failed to get session {session_id}: <ERROR_TYPE>")
             log_error(e, "get_session", self.errors_path)
@@ -288,7 +288,7 @@ class ThreadSafeSessionDB:
 
         try:
             return DeadlockRecovery.retry_with_backoff(_query, max_retries=3)
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.error("Failed to query sessions: <ERROR_TYPE>")
             log_error(e, "query_sessions", self.errors_path)
@@ -310,7 +310,7 @@ class ThreadSafeSessionDB:
 
         try:
             return DeadlockRecovery.retry_with_backoff(_update, max_retries=3)
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.error(f"Failed to update session {session_id}: <ERROR_TYPE>")
             log_error(e, "update_session_status", self.errors_path)
@@ -338,7 +338,7 @@ class ThreadSafeSessionDB:
 
         try:
             return DeadlockRecovery.retry_with_backoff(_search, max_retries=3)
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.error("Failed to search sessions: <ERROR_TYPE>")
             log_error(e, "search_sessions", self.errors_path)
@@ -377,7 +377,7 @@ class ThreadSafeSessionDB:
 
         try:
             return DeadlockRecovery.retry_with_backoff(_archive, max_retries=3)
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.error(f"Failed to archive session {session_id}: <ERROR_TYPE>")
             log_error(e, "archive_session", self.errors_path)
@@ -402,7 +402,7 @@ class ThreadSafeSessionDB:
         try:
             self._connection_pool.cleanup_all()
             logger.info("Connection pool cleaned up")
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.error("Error during cleanup: <ERROR_TYPE>")
             log_error(e, "cleanup", self.errors_path)
@@ -419,6 +419,6 @@ class ThreadSafeSessionDB:
         """Cleanup on deletion."""
         try:
             self.cleanup()
-        except (IOError, OSError) as e:  # codeql[py/catch-all-except]
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:  # codeql[py/catch-all-except]
             logger.error(f"OSError during cleanup on deletion: {type(e).__name__}: {e}")
             log_error(e, "__del__", getattr(self, "errors_path", ".codex/errors.log"))

@@ -136,7 +136,7 @@ def export_metadata(
             json.dump(metadata, f, indent=2)
 
         get_default_logger().info(f"✅ Exported metadata for {len(metadata)} features to {output}")
-    except (IOError, OSError) as e:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
         type(e).__name__
         get_default_logger().debug("Exception: <ERROR_TYPE>")
         get_default_logger().info("[red]Error: <ERROR_TYPE>[/red]")
@@ -152,7 +152,7 @@ def clear_cache(
         store = FeatureStore(store_path)
         store.clear_cache()
         get_default_logger().info("✅ Feature cache cleared")
-    except (IOError, OSError) as e:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
         type(e).__name__
         get_default_logger().debug("Exception: <ERROR_TYPE>")
         get_default_logger().info("[red]Error: <ERROR_TYPE>[/red]")

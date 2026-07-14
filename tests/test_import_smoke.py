@@ -132,7 +132,7 @@ class TestImportSmoke:
                 network_called.append(f"socket({a}, {kw})")
                 raise OSError("Network call during import of config.openai_client is forbidden")
 
-        import socket as _socket
+                import socket as _socket
 
         with patch.object(_socket, "socket", _BlockingSocket):
             importlib.import_module("src.config.openai_client")

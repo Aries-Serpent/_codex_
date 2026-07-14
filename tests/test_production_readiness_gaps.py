@@ -17,7 +17,7 @@ class TestAccelerateInitGuardSmoke:
     def test_import_src(self):
         """Test src.training.accelerate_init_guard can be imported."""
         try:
-    from training import accelerate_init_guard
+            from training import accelerate_init_guard
 
             assert accelerate_init_guard is not None, "accelerate_init_guard must be initialized"
         except ImportError as e:
@@ -39,7 +39,7 @@ class TestStreamingSmoke:
     def test_import_src(self):
         """Test src.training.streaming can be imported."""
         try:
-    from training import streaming
+            from training import streaming
 
             assert streaming is not None, "streaming must be initialized"
         except (ImportError, ModuleNotFoundError) as e:
@@ -61,7 +61,7 @@ class TestTokenizationLoaderSmoke:
     def test_import(self):
         """Test src.codex_ml.tokenization.api can be imported."""
         try:
-    from codex_ml.tokenization import api
+            from codex_ml.tokenization import api
 
             assert api is not None, "api must be initialized"
         except (ImportError, ModuleNotFoundError) as e:

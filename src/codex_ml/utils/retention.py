@@ -63,7 +63,7 @@ def _read_latest_epoch(root: Path) -> Optional[int]:
     try:
         data = json.loads(latest.read_text())
         return int(data.get("epoch"))
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         logger.warning("Exception occurred", exc_info=True)
         return None
 
@@ -172,7 +172,7 @@ def prune_checkpoints(
             path = epoch_to_path[e]
             try:
                 shutil.rmtree(path)
-            except (IOError, OSError) as ex:
+            except (IOError, OSError, ModuleNotFoundError, ImportError) as ex:
                 logger.warning("Failed to delete checkpoint dir %s: %s", path, ex)
 
     return {

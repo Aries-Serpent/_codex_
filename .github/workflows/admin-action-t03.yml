@@ -36,27 +36,27 @@ jobs:
       issue_body_md: "## ⚠️ Admin Action Required — T-03\n\n### What is blocked\n\n\
         | Blocked Item | Impact |\n|-------------|--------|\n| `codeql-alert-fetcher.yml`\
         \ | Cannot retrieve CodeQL alerts for in-session review |\n| OBJ-B `py/wrong-named-arg`\
-        \ ×15 | Agent cannot see alert file:line locations to fix them |\n| `scripts/ci/fetch_codeql_alerts.py`\
+      \ ×15 | Agent cannot see alert file:line locations to fix them |\n| `scripts/ci/fetch_codeql_alerts.py`\
         \ | Returns 403 for all CodeQL API calls |\n\n### Root Cause\n\n`CODEX_MASTER_KEY`\
         \ does **not** have the `security_events` OAuth scope.\nGitHub returns HTTP\
         \ 403 `Resource not accessible by integration` for all\n`/code-scanning/alerts`\
         \ requests.\n\n### ✅ Fix — Click-by-Click (5 steps)\n\n1. **Open the token**\
-        \ that backs `CODEX_MASTER_KEY`:\n   → [github.com/settings/tokens](https://github.com/settings/tokens)\n\
+      \ that backs `CODEX_MASTER_KEY`:\n   → [github.com/settings/tokens](https://github.com/settings/tokens)\n\
         \   Find the PAT used for `CODEX_MASTER_KEY` and click **Edit**.\n\n2. **Add\
-        \ scope: `security_events`**\n   Keep existing scopes: `repo`, `workflow`\n\
-        \   Set expiry: **90 days** from today\n   Click **\"Update token\"** — copy\
-        \ the new value.\n\n3. **Update the secret** in org settings:\n   → [Organization\
-        \ Settings → Secrets → CODEX_MASTER_KEY](https://github.com/organizations/Aries-Serpent/settings/secrets/actions/CODEX_MASTER_KEY)\n\
-        \   Paste the new token value and save.\n\n4. **Verify** by running [`token-probe.yml`](https://github.com/Aries-Serpent/_codex_/actions/workflows/token-probe.yml):\n\
+      \ scope: `security_events`**\n   Keep existing scopes: `repo`, `workflow`\n\
+      \   Set expiry: **90 days** from today\n   Click **\"Update token\"** — copy\
+      \ the new value.\n\n3. **Update the secret** in org settings:\n   → [Organization\
+      \ Settings → Secrets → CODEX_MASTER_KEY](https://github.com/organizations/Aries-Serpent/settings/secrets/actions/CODEX_MASTER_KEY)\n\
+      \   Paste the new token value and save.\n\n4. **Verify** by running [`token-probe.yml`](https://github.com/Aries-Serpent/_codex_/actions/workflows/token-probe.yml):\n\
         \   ```bash\n   gh workflow run token-probe.yml --repo Aries-Serpent/_codex_\
-        \ --field pr_number=4346\n   ```\n\n5. **Run post-rotation check:**\n   ```bash\n\
+      \ --field pr_number=4346\n   ```\n\n5. **Run post-rotation check:**\n   ```bash\n\
         \   GH_TOKEN=<new_token> bash scripts/ci/post_rotation_verify.sh\n   ```\n\
-        \n### After Rotation\n\n`admin-action-t03.yml` will automatically:\n- Detect\
+      \n### After Rotation\n\n`admin-action-t03.yml` will automatically:\n- Detect\
         \ HTTP 200 from the CodeQL API\n- **Close this issue** with a success comment\n\
         - Allow `codeql-alert-fetcher.yml` and OBJ-B fixes to proceed\n\n### References\n\
-        - Full token review: `docs/reference/ELEVATED_PRIVILEGES_TOKEN_REVIEW.md`\
-        \ §T-03\n- Pattern guide: `.codex/docs/ADMIN_ACTION_WORKFLOW_PATTERN.md`\n\
-        - PR context: [PR  #4346](https://github.com/Aries-Serpent/_codex_/pull/4346)\n"
+      - Full token review: `docs/reference/ELEVATED_PRIVILEGES_TOKEN_REVIEW.md`\
+      \ §T-03\n- Pattern guide: `.codex/docs/ADMIN_ACTION_WORKFLOW_PATTERN.md`\n\
+      - PR context: [PR  #4346](https://github.com/Aries-Serpent/_codex_/pull/4346)\n"
       issue_label: admin-action-required
       issue_title: '[T-03] CODEX_MASTER_KEY missing security_events scope — CodeQL
         API blocked'

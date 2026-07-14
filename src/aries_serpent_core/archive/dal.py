@@ -288,7 +288,7 @@ class SqliteDAL(BaseDAL):
             try:
                 yield
                 self.conn.commit()
-            except (IOError, OSError):  # pragma: no cover - passthrough
+            except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - passthrough
                 self.conn.rollback()
                 raise
 
@@ -946,7 +946,7 @@ class MariaDbDAL(BaseDAL):
             try:
                 yield
                 self.conn.commit()
-            except (IOError, OSError):  # pragma: no cover - passthrough
+            except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - passthrough
                 self.conn.rollback()
                 raise
 

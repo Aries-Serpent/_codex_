@@ -1,4 +1,3 @@
-pytest.importorskip("mlflow")
 """
 Test Capability Contracts
 
@@ -9,6 +8,8 @@ import json
 import tarfile
 
 import pytest
+
+pytest.importorskip("mlflow")
 
 from codex_ml.deployment.package import build_service_package
 from codex_ml.evaluation.loop import run_metrics_evaluation

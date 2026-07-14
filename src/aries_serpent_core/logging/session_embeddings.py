@@ -168,7 +168,7 @@ class SessionEmbeddings:
             if self.embeddings_path.exists() and self.metadata_path.exists():
                 try:
                     self._load_from_disk()
-                except (IOError, OSError) as e:
+                except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
                     type(e).__name__
                     logger.warning("Failed to load index: <ERROR_TYPE>; creating new index")
                     self._create_index()

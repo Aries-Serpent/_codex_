@@ -85,12 +85,12 @@ jobs:
       with:
         script: "const fs = require('fs');\nconst report = JSON.parse(fs.readFileSync('.codex/session_recovery_monitoring_report.json',\
           \ 'utf8'));\n\nif (report.recent_failures.length > 0) {\n  github.rest.issues.createComment({\n\
-          \    issue_number: process.env.GITHUB_PR_NUMBER,\n    owner: context.repo.owner,\n\
-          \    repo: context.repo.repo,\n    body: `## \U0001F504 Session Recovery\
-          \ Monitoring Report\\n\\n` +\n          `Generated: ${report.timestamp}\\\
-          n` +\n          `Recovery System Status: ${report.recovery_system_status}\\\
+        \    issue_number: process.env.GITHUB_PR_NUMBER,\n    owner: context.repo.owner,\n\
+        \    repo: context.repo.repo,\n    body: `## \U0001F504 Session Recovery\
+        \ Monitoring Report\\n\\n` +\n          `Generated: ${report.timestamp}\\\
+        n` +\n          `Recovery System Status: ${report.recovery_system_status}\\\
           n\\n` +\n          `### Recent Events\\n` +\n          report.recent_failures.map(f\
-          \ =>\n            `- **${f.type}**: ${f.timestamp} (Session: ${f.session_id})`\n\
+        \ =>\n            `- **${f.type}**: ${f.timestamp} (Session: ${f.session_id})`\n\
           \          ).join('\\n')\n  });\n}\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
@@ -106,7 +106,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
     - name: Generate recovery trend report
       run: "echo \"## Session Recovery Trend Report\"\necho \"\"\necho \"**Report\
         \ Date:** $(date -u +%Y-%m-%dT%H:%M:%SZ)\"\necho \"**Run ID:** ${{ github.run_id\

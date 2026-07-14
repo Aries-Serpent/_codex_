@@ -23,7 +23,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
     - name: CacheManager health check
       continue-on-error: true
       run: 'python scripts/ci/generate_cache_keys.py --health --workflow security-alert-notification
@@ -37,26 +37,26 @@ jobs:
       with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         script: "let alerts;\ntry {\n  const response = await github.rest.dependabot.listAlertsForRepo({\n\
-          \    owner: context.repo.owner,\n    repo: context.repo.repo,\n    state:\
-          \ 'open',\n    sort: 'created',\n    direction: 'desc',\n    per_page: 100\n\
+        \    owner: context.repo.owner,\n    repo: context.repo.repo,\n    state:\
+        \ 'open',\n    sort: 'created',\n    direction: 'desc',\n    per_page: 100\n\
           \  });\n  alerts = response.data;\n} catch (err) {\n  core.warning(`Unable\
-          \ to fetch Dependabot alerts: ${err.message} (status ${err.status})`);\n\
+        \ to fetch Dependabot alerts: ${err.message} (status ${err.status})`);\n\
           \  core.setOutput('alert-count', 0);\n  core.setOutput('critical-count',\
           \ 0);\n  core.setOutput('high-count', 0);\n  core.setOutput('moderate-count',\
           \ 0);\n  core.setOutput('low-count', 0);\n  core.setOutput('alerts', '[]');\n\
-          \  core.setOutput('has-alerts', false);\n  return { count: 0, alerts: []\
+        \  core.setOutput('has-alerts', false);\n  return { count: 0, alerts: []\
           \ };\n}\n\n// Filter alerts created in last 24 hours\nconst oneDayAgo =\
           \ new Date(Date.now() - 24 * 60 * 60 * 1000);\nconst newAlerts = alerts.filter(alert\
           \ =>\n  new Date(alert.created_at) > oneDayAgo\n);\n\n// Group by severity\n\
-          const groupedAlerts = {\n  critical: [],\n  high: [],\n  moderate: [],\n\
-          \  low: []\n};\n\nnewAlerts.forEach(alert => {\n  const severity = alert.security_advisory.severity.toLowerCase();\n\
+        const groupedAlerts = {\n  critical: [],\n  high: [],\n  moderate: [],\n\
+        \  low: []\n};\n\nnewAlerts.forEach(alert => {\n  const severity = alert.security_advisory.severity.toLowerCase();\n\
           \  if (groupedAlerts[severity]) {\n    groupedAlerts[severity].push(alert);\n\
           \  }\n});\n\ncore.setOutput('alert-count', newAlerts.length);\ncore.setOutput('critical-count',\
           \ groupedAlerts.critical.length);\ncore.setOutput('high-count', groupedAlerts.high.length);\n\
           core.setOutput('moderate-count', groupedAlerts.moderate.length);\ncore.setOutput('low-count',\
           \ groupedAlerts.low.length);\ncore.setOutput('alerts', JSON.stringify(newAlerts));\n\
-          core.setOutput('has-alerts', newAlerts.length > 0);\n\nreturn {\n  count:\
-          \ newAlerts.length,\n  alerts: newAlerts\n};\n"
+        core.setOutput('has-alerts', newAlerts.length > 0);\n\nreturn {\n  count:\
+        \ newAlerts.length,\n  alerts: newAlerts\n};\n"
     - name: Create security summary
       id: create-summary
       if: steps.get-alerts.outputs.has-alerts == 'true'
@@ -67,16 +67,16 @@ jobs:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         script: "const alerts = JSON.parse(process.env.ALERTS_JSON || '[]');\n\nlet\
           \ summary = '## \U0001F6A8 New Security Alerts Detected\\n\\n';\nsummary\
-          \ += `**Total New Alerts:** ${alerts.length}\\n\\n`;\n\n// Summary table\n\
+        \ += `**Total New Alerts:** ${alerts.length}\\n\\n`;\n\n// Summary table\n\
           summary += '| Severity | Count |\\n';\nsummary += '|----------|-------|\\\
           n';\nsummary += `| Critical | ${{ steps.get-alerts.outputs.critical-count\
           \ }} |\\n`;\nsummary += `| High | ${{ steps.get-alerts.outputs.high-count\
           \ }} |\\n`;\nsummary += `| Moderate | ${{ steps.get-alerts.outputs.moderate-count\
           \ }} |\\n`;\nsummary += `| Low | ${{ steps.get-alerts.outputs.low-count\
           \ }} |\\n\\n`;\n\n// Group and display alerts\nconst severityGroups = {\n\
-          \  'critical': { emoji: '\U0001F534', alerts: [] },\n  'high': { emoji:\
-          \ '\U0001F7E0', alerts: [] },\n  'moderate': { emoji: '\U0001F7E1', alerts:\
-          \ [] },\n  'low': { emoji: '\U0001F535', alerts: [] }\n};\n\nalerts.forEach(alert\
+        \  'critical': { emoji: '\U0001F534', alerts: [] },\n  'high': { emoji:\
+        \ '\U0001F7E0', alerts: [] },\n  'moderate': { emoji: '\U0001F7E1', alerts:\
+        \ [] },\n  'low': { emoji: '\U0001F535', alerts: [] }\n};\n\nalerts.forEach(alert\
           \ => {\n  const severity = alert.security_advisory.severity.toLowerCase();\n\
           \  if (severityGroups[severity]) {\n    severityGroups[severity].alerts.push(alert);\n\
           \  }\n});\n\n// Add alert details by severity\nfor (const [severity, group]\
@@ -84,21 +84,21 @@ jobs:
           \    summary += `### ${group.emoji} ${severity.charAt(0).toUpperCase() +\
           \ severity.slice(1)} Severity\\n\\n`;\n\n    group.alerts.forEach(alert\
           \ => {\n      const advisory = alert.security_advisory;\n      summary +=\
-          \ `#### Alert  #${alert.number}: ${advisory.summary}\\n`;\n      summary\
-          \ += `- **Package:** ${alert.dependency.package.name} (${alert.dependency.package.ecosystem})\\\
-          n`;\n      if (advisory.cve_id) {\n        summary += `- **CVE:** [${advisory.cve_id}](${advisory.references[0]?.url\
+        \ `#### Alert  #${alert.number}: ${advisory.summary}\\n`;\n      summary\
+        \ += `- **Package:** ${alert.dependency.package.name} (${alert.dependency.package.ecosystem})\\\
+        n`;\n      if (advisory.cve_id) {\n        summary += `- **CVE:** [${advisory.cve_id}](${advisory.references[0]?.url\
           \ || advisory.html_url})\\n`;\n      }\n      if (advisory.cvss?.score)\
-          \ {\n        summary += `- **CVSS Score:** ${advisory.cvss.score}\\n`;\n\
-          \      }\n      summary += `- **URL:** ${alert.html_url}\\n`;\n      summary\
-          \ += `- **Created:** ${new Date(alert.created_at).toISOString().split('T')[0]}\\\
+        \ {\n        summary += `- **CVSS Score:** ${advisory.cvss.score}\\n`;\n\
+        \      }\n      summary += `- **URL:** ${alert.html_url}\\n`;\n      summary\
+        \ += `- **Created:** ${new Date(alert.created_at).toISOString().split('T')[0]}\\\
           n\\n`;\n    });\n  }\n}\n\nsummary += '\\n---\\n\\n';\nsummary += '### \U0001F4CB\
-          \ Next Steps\\n\\n';\nsummary += '1. **Critical/High Alerts:** Address within\
-          \ 48 hours\\n';\nsummary += '2. **Moderate Alerts:** Address within 1 week\\\
-          n';\nsummary += '3. **Low Alerts:** Address within 1 month\\n\\n';\nsummary\
-          \ += '**Review Process:**\\n';\nsummary += '- Check if current version includes\
-          \ the fix\\n';\nsummary += '- If patched: Dismiss alert and document in\
-          \ `reports/security_audit.md`\\n';\nsummary += '- If not patched: Create\
-          \ PR to update dependency\\n\\n';\nsummary += `**View All Alerts:** https://github.com/${context.repo.owner}/${context.repo.repo}/security/dependabot\\\
+        \ Next Steps\\n\\n';\nsummary += '1. **Critical/High Alerts:** Address within\
+        \ 48 hours\\n';\nsummary += '2. **Moderate Alerts:** Address within 1 week\\\
+        n';\nsummary += '3. **Low Alerts:** Address within 1 month\\n\\n';\nsummary\
+        \ += '**Review Process:**\\n';\nsummary += '- Check if current version includes\
+        \ the fix\\n';\nsummary += '- If patched: Dismiss alert and document in\
+        \ `reports/security_audit.md`\\n';\nsummary += '- If not patched: Create\
+        \ PR to update dependency\\n\\n';\nsummary += `**View All Alerts:** https://github.com/${context.repo.owner}/${context.repo.repo}/security/dependabot\\\
           n`;\n\ncore.setOutput('summary', summary);\nreturn summary;\n"
     - name: Create GitHub Issue for new alerts
       if: steps.get-alerts.outputs.has-alerts == 'true' && (steps.get-alerts.outputs.critical-count
@@ -114,17 +114,17 @@ jobs:
           \ = parseInt(process.env.CRITICAL_COUNT || '0', 10);\nconst highCount =\
           \ parseInt(process.env.HIGH_COUNT || '0', 10);\n\n// Only create issue for\
           \ critical/high severity alerts\nif (criticalCount > 0 || highCount > 0)\
-          \ {\n  const title = `\U0001F6A8 Security Alert: ${criticalCount} Critical,\
+        \ {\n  const title = `\U0001F6A8 Security Alert: ${criticalCount} Critical,\
           \ ${highCount} High Severity Vulnerabilities Detected`;\n\n  // Check if\
-          \ similar issue already exists\n  const { data: existingIssues } = await\
-          \ github.rest.issues.listForRepo({\n    owner: context.repo.owner,\n   \
-          \ repo: context.repo.repo,\n    state: 'open',\n    labels: 'security,dependabot',\n\
-          \    per_page: 10\n  });\n\n  // Don't create duplicate if issue already\
+        \ similar issue already exists\n  const { data: existingIssues } = await\
+        \ github.rest.issues.listForRepo({\n    owner: context.repo.owner,\n   \
+        \ repo: context.repo.repo,\n    state: 'open',\n    labels: 'security,dependabot',\n\
+        \    per_page: 10\n  });\n\n  // Don't create duplicate if issue already\
           \ exists from today\n  const today = new Date().toISOString().split('T')[0];\n\
           \  const existingToday = existingIssues.find(issue =>\n    issue.created_at.startsWith(today)\n\
           \  );\n\n  if (!existingToday) {\n    await github.rest.issues.create({\n\
-          \      owner: context.repo.owner,\n      repo: context.repo.repo,\n    \
-          \  title: title,\n      body: summary,\n      labels: ['security', 'dependabot',\
+        \      owner: context.repo.owner,\n      repo: context.repo.repo,\n    \
+        \  title: title,\n      body: summary,\n      labels: ['security', 'dependabot',\
           \ 'high-priority']\n    });\n\n    core.info('Created security alert issue');\n\
           \  } else {\n    core.info('Security issue already exists for today, skipping\
           \ creation');\n  }\n}\n"

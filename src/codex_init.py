@@ -154,7 +154,7 @@ class ConfigLoader:
                 # Try YAML as default
                 return self._load_yaml(file_path)
 
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.error(f"Failed to load {file_path}: <ERROR_TYPE>")
             raise

@@ -325,7 +325,7 @@ def _apply_lora_config(model: Any, peft_cfg: dict[str, Any]) -> None:
             getattr(lora, "r", "?"),
             getattr(lora, "lora_alpha", "?"),
         )
-    except (IOError, OSError) as exc:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
         logger.info("load_causal_lm: LoRA not applied (runtime error): %s", exc)
 
 
@@ -336,7 +336,7 @@ def _load_peft_adapter(model: Any, adapter_path: str) -> None:
     """
     try:
         from peft import PeftModel
-    except (IOError, OSError) as exc:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
         logger.info(
             "load_causal_lm: PEFT adapter not applied (dependency missing): %s",
             exc,
@@ -349,7 +349,7 @@ def _load_peft_adapter(model: Any, adapter_path: str) -> None:
             "load_causal_lm: PEFT adapter loaded from %s",
             adapter_path,
         )
-    except (IOError, OSError) as exc:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
         logger.info("load_causal_lm: PEFT adapter not applied (runtime error): %s", exc)
 
 

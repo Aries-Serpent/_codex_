@@ -78,7 +78,7 @@ class ParquetLoader:
         try:
             self.parquet_file = pq.ParquetFile(self.file_path)
             self.metadata = self.parquet_file.metadata
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             raise ValueError(f"Invalid Parquet file: {e}") from e

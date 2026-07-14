@@ -318,7 +318,7 @@ def _run_ruff(source_dir: Path) -> list[LintIssue]:
         logger.warning("ruff not found, skipping lint check")
     except subprocess.TimeoutExpired:
         logger.warning("ruff timed out")
-    except (IOError, OSError) as e:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
         type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         logger.warning("ruff failed: %s", e)
@@ -366,7 +366,7 @@ def _run_bandit(source_dir: Path) -> list[SecurityIssue]:
         logger.warning("bandit not found, skipping security scan")
     except subprocess.TimeoutExpired:
         logger.warning("bandit timed out")
-    except (IOError, OSError) as e:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
         type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         logger.warning("bandit failed: %s", e)
@@ -427,7 +427,7 @@ def analyze_file(file_path: Path, base_dir: Path) -> Optional[FileAnalysis]:
             security_issues=[],  # Populated by batch run
         )
 
-    except (IOError, OSError) as e:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
         type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         logger.error("Error analyzing %s: %s", file_path, e)

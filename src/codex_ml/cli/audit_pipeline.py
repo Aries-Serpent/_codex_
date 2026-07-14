@@ -56,7 +56,7 @@ def _to_serializable(obj: Any) -> Any:
     try:
         json.dumps(obj)
         return obj
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         get_default_logger().warning("Exception occurred", exc_info=True)
         return str(obj)
 
@@ -124,7 +124,7 @@ def audit_repo(
     for path in _iter_py_files(root):
         try:
             results.append(audit_file(path))
-        except (IOError, OSError) as e:  # pragma: no cover - defensive
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:  # pragma: no cover - defensive
             results.append(
                 {
                     "file": str(path),

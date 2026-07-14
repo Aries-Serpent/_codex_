@@ -248,7 +248,7 @@ def pack_release(
             try:
                 item_row, _ = dal.fetch_by_tombstone(component.tombstone)
                 item_id = item_row.id
-            except (IOError, OSError):
+            except (IOError, OSError, ModuleNotFoundError, ImportError):
                 logger.warning("Exception occurred", exc_info=True)
                 item_id = None
             dal.add_release_component(
@@ -262,7 +262,7 @@ def pack_release(
         _evidence_append_release(
             "RELEASE_PERSIST", {"release_id": m.release_id, "meta_id": release_meta_id}
         )
-    except (IOError, OSError) as exc:  # pragma: no cover - best effort logging
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - best effort logging
         _evidence_append_release(
             "RELEASE_PERSIST_FAIL",
             {"release_id": m.release_id, "error": str(exc)},

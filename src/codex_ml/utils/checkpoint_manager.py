@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 try:  # pragma: no cover - optional torch dependency
     import torch
-except (IOError, OSError):  # pragma: no cover - torch missing
+except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - torch missing
     torch = None  # type: ignore[assignment]
 
 __all__ = ["load_checkpoint", "save_checkpoint"]

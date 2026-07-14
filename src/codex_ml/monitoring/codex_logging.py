@@ -33,18 +33,18 @@ try:  # pragma: no cover - optional
     import torch.utils.tensorboard as _tb
 
     SummaryWriter = _tb.SummaryWriter
-except (IOError, OSError):  # pragma: no cover - tensorboard not installed
+except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - tensorboard not installed
     SummaryWriter = None
 
 
 try:  # pragma: no cover - optional
     import wandb
-except (IOError, OSError):  # pragma: no cover - wandb not installed
+except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - wandb not installed
     wandb = None
 
 try:  # pragma: no cover - optional
     import mlflow
-except (IOError, OSError):  # pragma: no cover - mlflow not installed
+except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - mlflow not installed
     mlflow = None
 
 
@@ -69,7 +69,7 @@ else:
 
 try:  # pragma: no cover - optional
     import torch
-except (IOError, OSError):  # pragma: no cover - torch not installed
+except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - torch not installed
     torch = None  # type: ignore[assignment]
 
 SummaryWriter = None
@@ -78,10 +78,9 @@ SummaryWriter = None
 try:  # pragma: no cover - optional
     if torch is not None:
         SummaryWriter = torch.utils.tensorboard.SummaryWriter
-
-
-except (IOError, OSError):  # pragma: no cover - tensorboard not installed
+except (IOError, OSError, ModuleNotFoundError, ImportError, AttributeError):  # pragma: no cover - tensorboard not installed
     get_default_logger().debug("Suppressed exception in handler", exc_info=True)
+
 _ensure_local_mlflow_tracking_uri_default()
 
 
@@ -109,7 +108,7 @@ def _maybe_init_mlflow_offline(tracking_uri: str | None = None) -> None:
         return
     try:  # pragma: no cover - optional dependency
         mlflow.set_tracking_uri(uri)
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         get_default_logger().warning("Exception occurred", exc_info=True)
         # Non-fatal: fall back to MLflow defaults while keeping tracking disabled.
 
@@ -242,7 +241,7 @@ def _try_git_commit() -> str | None:
             [git, "-C", str(root), "rev-parse", "HEAD"],
             text=True,
         ).strip()
-    except (IOError, OSError) as exc:  # pragma: no cover - diagnostic only
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - diagnostic only
         get_default_logger().debug("git commit detection failed", exc_info=exc)
         return None
 
@@ -321,7 +320,7 @@ def _get_safety_filters() -> Any:
             from codex_ml.safety import SafetyFilters
 
             _LOG_SAFETY_FILTERS = SafetyFilters.from_defaults()
-        except (IOError, OSError):  # pragma: no cover - optional dependency
+        except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - optional dependency
             _LOG_SAFETY_FILTERS = None
     return _LOG_SAFETY_FILTERS
 
@@ -429,7 +428,7 @@ def init_telemetry(profile: str = "min") -> CodexLoggers:
             _nv.nvmlInit()
             # If init succeeds, immediately shutdown to avoid leaking handles; we sample later.
             _nv.nvmlShutdown()
-        except (IOError, OSError):
+        except (IOError, OSError, ModuleNotFoundError, ImportError):
             get_default_logger().warning("Exception occurred", exc_info=True)
             gpu = False
 
@@ -537,7 +536,7 @@ def _codex_logging_bootstrap(args: argparse.Namespace) -> CodexLoggers:
                 try:  # pragma: no cover - depends on tensorboard install
                     os.makedirs(logdir, exist_ok=True)
                     tb_handle = SummaryWriter(logdir)
-                except (IOError, OSError) as exc:  # pragma: no cover - optional
+                except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - optional
                     tb_detail = f"error:{exc.__class__.__name__}"
             component_statuses.append(
                 TelemetryComponentStatus("tensorboard", tb_handle is not None, tb_detail)
@@ -609,7 +608,7 @@ def _codex_logging_bootstrap(args: argparse.Namespace) -> CodexLoggers:
         try:  # pragma: no cover - depends on tensorboard install
             os.makedirs(logdir, exist_ok=True)
             tb_handle = SummaryWriter(logdir)
-        except (IOError, OSError) as exc:  # pragma: no cover - optional
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - optional
             tb_detail = f"error:{exc.__class__.__name__}"
             tb_handle = None
     component_statuses.append(
@@ -831,7 +830,7 @@ def _codex_log_all(step: int, scalars: dict[str, Any], loggers: CodexLoggers) ->
     if loggers.mlflow_active and mlflow is not None:
         try:  # pragma: no cover - mlflow optional
             mlflow.log_metrics(values, step=step)
-        except (IOError, OSError) as exc:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
             type(exc).__name__
             get_default_logger().debug("Exception: <ERROR_TYPE>")
             get_default_logger().debug("mlflow log_metrics failed", exc_info=exc)

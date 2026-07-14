@@ -53,7 +53,7 @@ jobs:
         script: "const INTEGRATION_BRANCHES = ['0D_base_'];\nconst event = context.eventName;\n\
           \nif (event === 'workflow_dispatch') {\n  const src = '${{ inputs.source_branch\
           \ }}' || '0D_base_';\n  core.setOutput('should_chain', 'true');\n  core.setOutput('integration_branch',\
-          \ src);\n  core.info(`Manual dispatch \u2014 targeting integration branch:\
+        \ src);\n  core.info(`Manual dispatch \u2014 targeting integration branch:\
           \ ${src}`);\n  return;\n}\n\n// pull_request closed event\nconst pr = context.payload.pull_request;\n\
           if (!pr) {\n  core.setOutput('should_chain', 'false');\n  core.info('No\
           \ PR payload \u2014 skipping');\n  return;\n}\n\nconst merged = pr.merged\
@@ -62,7 +62,7 @@ jobs:
           const isIntegration = INTEGRATION_BRANCHES.includes(base);\nconst isPromotion\
           \   = INTEGRATION_BRANCHES.includes(head);\n\nif (!merged || !isIntegration\
           \ || isPromotion) {\n  core.setOutput('should_chain', 'false');\n  core.info(\n\
-          \    `Skipping chain: merged=${merged}, base=${base}, ` +\n    `isIntegration=${isIntegration},\
+        \    `Skipping chain: merged=${merged}, base=${base}, ` +\n    `isIntegration=${isIntegration},\
           \ isPromotion=${isPromotion}`\n  );\n  return;\n}\n\n// Only chain if the\
           \ merged PR explicitly opts in via the\n// follow-up checkbox.  Leave it\
           \ unchecked to suppress auto-chaining.\nconst body = pr.body || '';\nconst\
@@ -89,7 +89,7 @@ jobs:
     - name: Checkout integration branch
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         ref: ${{ needs.check-trigger.outputs.integration_branch }}
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
@@ -317,7 +317,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         fetch-depth: 1
     - name: Post or update rescue comment

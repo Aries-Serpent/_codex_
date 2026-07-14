@@ -238,7 +238,7 @@ class TestArchiveScripts:
     def test_archive_module_importable(self):
         """Test that archive module can be imported."""
         try:
-    from codex import archive
+            from codex import archive
 
             assert hasattr(archive, "api") or True  # Module exists
         except ImportError:

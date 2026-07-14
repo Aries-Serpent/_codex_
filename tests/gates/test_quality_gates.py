@@ -1,3 +1,4 @@
+import pytest
 pytest.importorskip("tensorboard")
 """
 Test Quality Gates

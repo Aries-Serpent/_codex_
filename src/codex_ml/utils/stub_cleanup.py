@@ -246,7 +246,7 @@ class StubAnalyzer:
                         )
                     )
 
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             get_default_logger().debug("Exception: <ERROR_TYPE>")
             get_default_logger().warning(f"Failed to analyze {file_path}: <ERROR_TYPE>")

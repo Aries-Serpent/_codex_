@@ -15,7 +15,7 @@ class TestEventIntegrationLifecycle:
     def test_early_stopping_event_integration(self):
         """Verify early stopping works as event sink during training simulation."""
         # Arrange
-    from codex_ml.training.callbacks import EarlyStopping
+        from codex_ml.training.callbacks import EarlyStopping
 
         es = EarlyStopping(patience=2, min_delta=0.05, mode="min")
         simulated_losses = [0.5, 0.48, 0.46, 0.46, 0.46, 0.46]
@@ -37,7 +37,7 @@ class TestEventIntegrationLifecycle:
     def test_callback_state_reset_between_training_runs(self):
         """Verify callback state is properly reset for new training runs."""
         # Arrange
-    from codex_ml.training.callbacks import EarlyStopping
+        from codex_ml.training.callbacks import EarlyStopping
 
         # First training run
         es = EarlyStopping(patience=2, min_delta=0.0, mode="min")
@@ -65,7 +65,7 @@ class TestEventIntegrationLifecycle:
     def test_event_flow_with_improvement_and_plateau(self):
         """Verify event flow during both improvement and plateau phases."""
         # Arrange
-    from codex_ml.training.callbacks import EarlyStopping
+        from codex_ml.training.callbacks import EarlyStopping
 
         es = EarlyStopping(patience=1, min_delta=0.1, mode="min")
         events_fired = []
@@ -96,7 +96,7 @@ class TestEventIntegrationLifecycle:
     def test_multiple_callbacks_independent_state(self):
         """Verify multiple callback instances maintain independent state."""
         # Arrange
-    from codex_ml.training.callbacks import EarlyStopping
+        from codex_ml.training.callbacks import EarlyStopping
 
         es1 = EarlyStopping(patience=1, min_delta=0.0, mode="min")
         es2 = EarlyStopping(patience=2, min_delta=0.0, mode="min")
@@ -127,7 +127,7 @@ class TestCheckpointResumeIntegration:
         import tempfile
         from pathlib import Path
 
-    from codex_ml.checkpointing.checkpoint_core import (
+        from codex_ml.checkpointing.checkpoint_core import (
             load_checkpoint,
             save_checkpoint,
         )
@@ -169,7 +169,7 @@ class TestCheckpointResumeIntegration:
         import tempfile
         from pathlib import Path
 
-    from codex_ml.checkpointing.checkpoint_core import (
+        from codex_ml.checkpointing.checkpoint_core import (
             load_checkpoint,
             save_checkpoint,
         )
@@ -206,7 +206,7 @@ class TestCheckpointResumeIntegration:
         import tempfile
         from pathlib import Path
 
-    from codex_ml.checkpointing.checkpoint_core import (
+        from codex_ml.checkpointing.checkpoint_core import (
             load_checkpoint,
             save_checkpoint,
         )
@@ -249,11 +249,11 @@ class TestTrainingLoopIntegration:
         import tempfile
         from pathlib import Path
 
-    from codex_ml.checkpointing.checkpoint_core import (
+        from codex_ml.checkpointing.checkpoint_core import (
             load_checkpoint,
             save_checkpoint,
         )
-    from codex_ml.training.callbacks import EarlyStopping
+        from codex_ml.training.callbacks import EarlyStopping
 
         tmpdir = Path(tempfile.mkdtemp())
 
@@ -313,11 +313,11 @@ class TestTrainingLoopIntegration:
         import tempfile
         from pathlib import Path
 
-    from codex_ml.checkpointing.checkpoint_core import (
+        from codex_ml.checkpointing.checkpoint_core import (
             load_checkpoint,
             save_checkpoint,
         )
-    from codex_ml.training.callbacks import EarlyStopping
+        from codex_ml.training.callbacks import EarlyStopping
 
         tmpdir = Path(tempfile.mkdtemp())
 

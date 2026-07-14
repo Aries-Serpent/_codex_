@@ -249,7 +249,7 @@ class RuntimeTracer:
                 if input_file.exists():
                     try:
                         stdin_input = input_file.read_text(encoding="utf-8")
-                    except (IOError, OSError) as e:
+                    except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
                         logger.debug("Exception: <ERROR_TYPE>")
                         logger.warning("Could not read input file %s: %s", input_file, e)
 

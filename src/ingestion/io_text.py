@@ -20,7 +20,7 @@ from pathlib import Path
 logger = logging.getLogger(__name__)
 try:
     from .encoding_detect import detect_encoding
-except (IOError, OSError):
+except (IOError, OSError, ModuleNotFoundError, ImportError):
     logger.warning("Exception occurred", exc_info=True)
     detect_encoding = None  # type: ignore[assignment]
 
@@ -38,7 +38,7 @@ def _fallback_detect_encoding(path: Path, sample_size: int = 131072) -> str:
     """
     try:
         data = path.read_bytes()[: max(1024, int(sample_size))]
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         logger.warning("Exception occurred", exc_info=True)
         return "utf-8"
 
@@ -71,7 +71,7 @@ def _fallback_detect_encoding(path: Path, sample_size: int = 131072) -> str:
         best = result.best() if result is not None else None
         enc = getattr(best, "encoding", None)
         enc_norm = enc.lower().replace("_", "-") if enc else None
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         logger.warning("Exception occurred", exc_info=True)
         enc_norm = None
 
@@ -129,7 +129,7 @@ def read_text(path: Path | str, encoding: str = "utf-8", errors: str = "strict")
     if encoding == "auto":
         try:
             used_encoding = detect_encoding(p)
-        except (IOError, OSError):
+        except (IOError, OSError, ModuleNotFoundError, ImportError):
             logger.warning("Exception occurred", exc_info=True)
             # Defensive fallback: if detection fails, default to utf-8
             used_encoding = "utf-8"
@@ -137,7 +137,7 @@ def read_text(path: Path | str, encoding: str = "utf-8", errors: str = "strict")
     # Read bytes
     try:
         raw = p.read_bytes()
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         logger.warning("Exception occurred", exc_info=True)
         return "", used_encoding
 

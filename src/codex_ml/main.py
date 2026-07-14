@@ -53,7 +53,7 @@ def build_parser() -> argparse.ArgumentParser:
 def _forward_to_cli(argv: Sequence[str]) -> int:
     try:
         from codex_ml import cli as cli_module
-    except (IOError, OSError) as exc:  # pragma: no cover - optional dependency path
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - optional dependency path
         raise SystemExit(f"codex_ml.cli is unavailable: {exc}") from exc
 
     cli_entry = getattr(cli_module, "cli", None)
@@ -79,7 +79,7 @@ def _forward_to_cli(argv: Sequence[str]) -> int:
         result = cli_entry(*forwarded)
     except SystemExit as exc:  # pragma: no cover - compatibility path
         return int(exc.code or 0)
-    except (IOError, OSError) as exc:  # pragma: no cover - optional dependency path
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - optional dependency path
         raise SystemExit(f"codex_ml.cli is unavailable: {exc}") from exc
     return int(result or 0)
 

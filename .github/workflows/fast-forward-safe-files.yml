@@ -61,7 +61,7 @@ jobs:
     - name: Checkout (scripts + allowlist only)
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         sparse-checkout: 'scripts/ci/fast_forward_safe_files.py
 
           .codex/fast_forward_allowlist.yaml
@@ -126,7 +126,7 @@ jobs:
     - name: Checkout (scripts + allowlist only)
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         sparse-checkout: 'scripts/ci/fast_forward_safe_files.py
 
           .codex/fast_forward_allowlist.yaml

@@ -66,7 +66,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         fetch-depth: 0
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
     - name: '🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)'
@@ -102,15 +102,20 @@ jobs:
         \ --porcelain cognitive/) ]]; then\n  # Walk the staging chain: sub-PR → 0D_base_\
         \ → main  (resolved above)\n  _TARGET=\"${{ steps.resolve-target.outputs.branch\
         \ }}\"\n  echo \"\U0001F500 Push target: $_TARGET (reason: ${{ steps.resolve-target.outputs.reason\
-        \ }})\"\n  cp -r cognitive/ /tmp/_cognitive_sync_\n  git fetch origin \"$_TARGET\"\
-        \ --depth=1\n  git checkout -fB _autogen_sync_ origin/\"$_TARGET\"  # S237:\
-        \ force-checkout (files already in /tmp)\n  cp -r /tmp/_cognitive_sync_/.\
-        \ cognitive/\n  git add cognitive/\n  git commit -m \"\U0001F9E0 Update cognitive\
-        \ learning from aftermath evaluation [automated]\n\n  - Evaluation mode: ${{\
-        \ inputs.evaluation_mode || 'full' }}\n  - Triggered by: ${{ github.event_name\
-        \ }}\n  - Timestamp: $(date -u +'%Y-%m-%dT%H:%M:%SZ')\"\n\n  git pull --rebase --autostash origin \"$_TARGET\" || git pull --ff-only origin \"$_TARGET\"\
-        \n  git push origin HEAD:\"$_TARGET\"\n  echo \"✅ Learning updates committed\
-        \ to $_TARGET\"\nelse\n  echo \"ℹ️  No learning updates to commit\"\nfi\n"
+        \ }})\"\n  \n  # SECURITY: Validate target branch exists via API (no git fetch/checkout)\n\
+        \  if gh api repos/${{ github.repository }}/branches/\"${_TARGET}\" --silent\
+        \ 2>/dev/null; then\n    echo \"✅ Target branch validated via API: $_TARGET\"\
+        \n  else\n    echo \"⚠️ Warning: Target branch not found via API; continuing\
+        \ with git push\"\n  fi\n  \n  # Stage the updated files directly (no git\
+        \ checkout needed)\n  git add cognitive/\n  \n  git commit -m \"\U0001F9E0\
+        \ Update cognitive learning outcomes [automated]\n  \n  - Analysis period:\
+        \ ${{ inputs.evaluation_mode || 'full' }}\n  - Triggered by: ${{ github.event_name\
+        \ }}\n  - Timestamp: $(date -u +'%Y-%m-%dT%H:%M:%SZ')\"\n  \n  git pull --rebase\
+        \ --autostash origin \"$_TARGET\" || git pull --ff-only origin \"$_TARGET\"\
+        \n  git push origin HEAD:\"$_TARGET\"\n  echo \"✅ Learning updates pushed\
+        \ to $_TARGET\"\nelse\n  echo \"ℹ️  No changes to cognitive learning\"\nfi\n"
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
     - name: Upload evaluation results
       if: always()
       uses: actions/upload-artifact@v5
@@ -124,8 +129,7 @@ jobs:
         if-no-files-found: ignore
         retention-days: 30
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-        }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
   feed_patterns:
     name: Extract & Feed Patterns
     runs-on: ubuntu-latest
@@ -143,7 +147,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         fetch-depth: 0
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
     - name: '🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)'
@@ -178,18 +182,21 @@ jobs:
         \  # forward-sync-autogen.yml acts only as a safety-net (not primary path).\n\
         \  _TARGET=\"${{ steps.resolve-target.outputs.branch }}\"\n  echo \"\U0001F500\
         \ Push target: $_TARGET (reason: ${{ steps.resolve-target.outputs.reason }})\"\
-        \n  cp .codex/cognitive_brain/workflow_patterns.jsonl /tmp/_patterns_sync_\n\
-        \  cp .codex/cognitive_brain/metadata.json          /tmp/_metadata_sync_\n\
-        \  git fetch origin \"$_TARGET\" --depth=1\n  git checkout -fB _autogen_sync_\
-        \ origin/\"$_TARGET\"  # S237: force-checkout (files already in /tmp)\n  cp\
-        \ /tmp/_patterns_sync_ .codex/cognitive_brain/workflow_patterns.jsonl\n  cp\
-        \ /tmp/_metadata_sync_ .codex/cognitive_brain/metadata.json\n  git add .codex/cognitive_brain/workflow_patterns.jsonl\
-        \ \\\n          .codex/cognitive_brain/metadata.json\n  git commit -m \"\U0001F9E0\
-        \ Update cognitive brain patterns [automated]\n\n  - Analysis period: ${{\
+        \n  \n  # SECURITY: Validate target branch exists via API (no git fetch)\n\
+        \  if gh api repos/${{ github.repository }}/branches/\"${_TARGET}\" --silent\
+        \ 2>/dev/null; then\n    echo \"✅ Target branch validated via API: $_TARGET\"\
+        \n  else\n    echo \"⚠️ Warning: Target branch not found via API; continuing\
+        \ with git push\"\n  fi\n  \n  # Stage the updated files directly (no git\
+        \ checkout needed)\n  git add .codex/cognitive_brain/workflow_patterns.jsonl\
+        \           .codex/cognitive_brain/metadata.json\n  \n  git commit -m \"\U0001F9E0\
+        \ Update cognitive brain patterns [automated]\n  \n  - Analysis period: ${{\
         \ inputs.days_back || '30' }} days\n  - Triggered by: ${{ github.event_name\
-        \ }}\n  - Timestamp: $(date -u +'%Y-%m-%dT%H:%M:%SZ')\"\n\n  git pull --rebase --autostash origin \"$_TARGET\" || git pull --ff-only origin \"$_TARGET\"\
+        \ }}\n  - Timestamp: $(date -u +'%Y-%m-%dT%H:%M:%SZ')\"\n  \n  git pull --rebase\
+        \ --autostash origin \"$_TARGET\" || git pull --ff-only origin \"$_TARGET\"\
         \n  git push origin HEAD:\"$_TARGET\"\n  echo \"✅ Cognitive brain updated\
         \ on $_TARGET\"\nelse\n  echo \"ℹ️  No changes to cognitive brain\"\nfi\n"
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
     - name: Upload pattern artifacts
       uses: actions/upload-artifact@v5
       with:
@@ -202,8 +209,7 @@ jobs:
         if-no-files-found: ignore
         retention-days: 60
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-        }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
   generate_summary:
     name: Generate Analysis Summary
     runs-on: ubuntu-latest
@@ -216,7 +222,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         fetch-depth: 1
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
     - name: Set up Python
@@ -230,7 +236,8 @@ jobs:
       id: cb_patterns
       continue-on-error: true
       env:
-        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY
+          }}
       run: "CB_BLOCK=$(python -m codex.github.mcp_poster retrieve-patterns --limit\
         \ 8 \\\n  2>/dev/null)\n{\n  echo 'cb_markdown<<CB_EOF'\n  echo \"$CB_BLOCK\"\
         \n  echo 'CB_EOF'\n} >> \"$GITHUB_OUTPUT\"\n"
@@ -251,5 +258,4 @@ jobs:
         \  echo \"\" >> $GITHUB_STEP_SUMMARY\n  echo \"$CB_PATTERNS\" >> $GITHUB_STEP_SUMMARY\n\
         fi\n"
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-        }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}

@@ -408,8 +408,8 @@ class TestEmailChannel:
         assert "[INFO]" in raw_msg, "Condition must be true"
         assert "Training complete" in raw_msg, "Condition must be true"
         # Body may be base64-encoded — decode and inspect
-        import base64 as _b64
-        import email as _email_lib
+            import base64 as _b64
+            import email as _email_lib
 
         parsed = _email_lib.message_from_string(raw_msg)
         payload = parsed.get_payload()

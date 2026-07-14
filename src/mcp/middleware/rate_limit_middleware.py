@@ -103,7 +103,7 @@ class _RedisBackend(_RateLimitBackend):
                 self._redis.expire(redis_key, self._window * 2)
             # Allow up to ``burst`` requests per window slot
             return count <= burst
-        except (IOError, OSError) as exc:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
             # Redis unavailable — allow the request (fail open)
             logging.getLogger(__name__).warning(
                 "Redis rate-limit backend error: %s — allowing request", exc

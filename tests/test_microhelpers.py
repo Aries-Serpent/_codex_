@@ -1,13 +1,13 @@
-import pytest
-
-pytest.importorskip("pynvml")
-"""
-Test Microhelpers
+"""Test Microhelpers
 
 Test module for microhelpers.
 """
 
 from __future__ import annotations
+
+import pytest
+
+pytest.importorskip("pynvml")
 
 import importlib
 from numbers import Number

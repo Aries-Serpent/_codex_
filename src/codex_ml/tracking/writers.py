@@ -521,7 +521,7 @@ class NdjsonWriter(BaseWriter):
                 get_default_logger().debug("Suppressed exception in handler", exc_info=True)
         try:
             self._logger.close()
-        except (IOError, OSError):  # pragma: no cover
+        except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover
             get_default_logger().debug("Suppressed exception in handler", exc_info=True)
 
 
@@ -539,7 +539,7 @@ class TensorBoardWriter(BaseWriter):
                 "enabled",
                 extra={"dependencies": _collect_dependency_flags()},
             )
-        except (IOError, OSError) as exc:  # pragma: no cover - optional
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - optional
             get_default_logger().debug("TensorBoard writer disabled", exc_info=exc)
             self._writer = None
             if isinstance(exc, ImportError):
@@ -570,7 +570,7 @@ class TensorBoardWriter(BaseWriter):
             try:
                 self._writer.flush()
                 self._writer.close()
-            except (IOError, OSError):  # pragma: no cover
+            except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover
                 get_default_logger().debug("Suppressed exception in handler", exc_info=True)
 
     def status(self) -> Optional[str]:
@@ -634,7 +634,7 @@ class MLflowWriter(BaseWriter):
                 "enabled",
                 extra=summary_extra,
             )
-        except (IOError, OSError) as exc:  # pragma: no cover - optional
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - optional
             self._mlflow = None
             self._run = None
             get_default_logger().debug("MLflow writer disabled", exc_info=exc)
@@ -664,7 +664,7 @@ class MLflowWriter(BaseWriter):
         if self._mlflow is not None:
             try:
                 self._mlflow.end_run()
-            except (IOError, OSError):  # pragma: no cover
+            except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover
                 get_default_logger().debug("Suppressed exception in handler", exc_info=True)
 
     def status(self) -> Optional[str]:
@@ -702,7 +702,7 @@ class WandbWriter(BaseWriter):
                     "mode": mode,
                 },
             )
-        except (IOError, OSError) as exc:  # pragma: no cover - optional
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - optional
             self._run = None
             get_default_logger().debug("Weights & Biases writer disabled", exc_info=exc)
             if isinstance(exc, ImportError):
@@ -735,7 +735,7 @@ class WandbWriter(BaseWriter):
         if self._run is not None:
             try:
                 self._run.finish()
-            except (IOError, OSError):  # pragma: no cover
+            except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover
                 get_default_logger().debug("Suppressed exception in handler", exc_info=True)
 
     def status(self) -> Optional[str]:
@@ -754,7 +754,7 @@ class CompositeWriter(BaseWriter):
             if callable(status_getter):
                 try:
                     reason = status_getter()
-                except (IOError, OSError):  # pragma: no cover - defensive
+                except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - defensive
                     reason = getattr(writer, "_disabled_reason", None)
             else:
                 reason = getattr(writer, "_disabled_reason", None)
@@ -772,14 +772,14 @@ class CompositeWriter(BaseWriter):
         for w in self._writers:
             try:
                 w.log(row)
-            except (IOError, OSError) as exc:  # pragma: no cover - robustness
+            except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - robustness
                 get_default_logger().debug("Writer log error", exc_info=exc)
 
     def close(self) -> None:
         for w in self._writers:
             try:
                 w.close()
-            except (IOError, OSError) as exc:  # pragma: no cover - robustness
+            except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - robustness
                 get_default_logger().debug("Writer close error", exc_info=exc)
 
     @property
@@ -840,7 +840,7 @@ class MLflowMetricWriter:
             self._client = MlflowClient(self.tracking_uri)
             self._initialized = True
             get_default_logger().info(f"MLflow initialized: {self.tracking_uri}")
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             get_default_logger().debug("Exception: <ERROR_TYPE>")
             get_default_logger().error("Failed to initialize MLflow: <ERROR_TYPE>")
@@ -869,7 +869,7 @@ class MLflowMetricWriter:
 
             mlflow.log_metrics(metrics, step=step)
             return True
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             get_default_logger().debug("Exception: <ERROR_TYPE>")
             get_default_logger().warning("Failed to log metrics to MLflow: <ERROR_TYPE>")
@@ -921,7 +921,7 @@ class MLflowParamWriter:
             str_params = {k: str(v) for k, v in params.items()}
             mlflow.log_params(str_params)
             return True
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             get_default_logger().debug("Exception: <ERROR_TYPE>")
             get_default_logger().warning("Failed to log params: <ERROR_TYPE>")
@@ -990,7 +990,7 @@ class MLflowArtifactWriter:
 
             mlflow.log_artifact(str(local_path), artifact_path)
             return True
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             get_default_logger().debug("Exception: <ERROR_TYPE>")
             get_default_logger().warning("Failed to log artifact: <ERROR_TYPE>")
@@ -1014,7 +1014,7 @@ class MLflowArtifactWriter:
 
             mlflow.log_dict(data, filename)
             return True
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             get_default_logger().debug("Exception: <ERROR_TYPE>")
             get_default_logger().warning("Failed to log dict artifact: <ERROR_TYPE>")
@@ -1167,7 +1167,7 @@ class MLflowRunManager:
         if self._run is not None:
             try:
                 return self._run.info.run_id
-            except (IOError, OSError):
+            except (IOError, OSError, ModuleNotFoundError, ImportError):
                 get_default_logger().debug("Suppressed exception in handler", exc_info=True)
         return None
 

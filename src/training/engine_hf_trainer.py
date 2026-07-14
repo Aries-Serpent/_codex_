@@ -47,7 +47,7 @@ def _install_accelerate_compat() -> None:
         DataLoaderConfiguration = getattr(
             getattr(accelerate, "utils", object()), "DataLoaderConfiguration", None
         )
-    except (ValueError, TypeError) as e:  # pragma: no cover
+    except (ValueError, TypeError, ModuleNotFoundError) as e:  # pragma: no cover
         type(e).__name__
         print("[codex][accelerate] failed to inspect accelerate: <ERROR_TYPE>")
         return
@@ -131,7 +131,7 @@ from typing import Any, Optional, cast
 
 try:  # pragma: no cover - numpy optional in offline environments
     import numpy as np
-except (IOError, OSError):  # pragma: no cover - numpy missing
+except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - numpy missing
     np = None
 
 
@@ -414,7 +414,7 @@ from omegaconf import OmegaConf
 # Optional dependencies with graceful fallbacks
 try:  # optional checkpoint callback
     from training.checkpoint_manager import CheckpointManager
-except (IOError, OSError) as exc:  # pragma: no cover - missing in some envs
+except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - missing in some envs
     CheckpointManager = None  # type: ignore[misc,assignment]
     if log_error is not None:
         log_error("checkpoint_import", str(exc), "src.training.checkpoint_manager")
@@ -422,13 +422,13 @@ except (IOError, OSError) as exc:  # pragma: no cover - missing in some envs
 
 try:  # Optional TensorBoard integration
     from tools.monitoring_integrate import SummaryWriter
-except (IOError, OSError):  # pragma: no cover - optional dep
+except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - optional dep
     SummaryWriter = None
 
 
 try:  # Optional accelerate integration
     from accelerate import Accelerator as _Accelerator
-except (IOError, OSError):  # pragma: no cover - optional dep
+except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - optional dep
     _Accelerator = None
 
 
@@ -506,7 +506,7 @@ def _log_mlflow_metrics(
             for key, value in metrics.items():
                 if isinstance(value, (int, float)):
                     mlflow_module.log_metric(key, float(value))
-    except (IOError, OSError) as exc:  # pragma: no cover - defensive logging
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - defensive logging
         type(exc).__name__
         print("[codex][mlflow] skipped logging: <ERROR_TYPE>")
 
@@ -793,7 +793,7 @@ class NDJSONMetricsWriter:
                 valid_keys = {f.name for f in _dc.fields(LogRecord)}
                 filtered = {k: v for k, v in obj.items() if k in valid_keys}
                 data = LogRecord(**filtered).redacted().dict()
-            except (IOError, OSError):
+            except (IOError, OSError, ModuleNotFoundError, ImportError):
                 logger.warning("Exception occurred", exc_info=True)
                 data = obj
         if self._async is not None:
@@ -809,7 +809,7 @@ class NDJSONMetricsWriter:
     def __del__(self) -> None:  # pragma: no cover - best effort
         try:
             self.close()
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.warning(
@@ -1166,11 +1166,11 @@ def run_hf_trainer(
         raise AssertionError("cuDNN must be deterministic; call set_reproducible()")
     try:
         log_env_info(output_dir / "env.json")
-    except (IOError, OSError) as exc:  # pragma: no cover - logging best effort
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - logging best effort
         log_error("env_log", str(exc), "env")
     try:
         snapshot_hydra_config({"model_name": model_name, "seed": seed}, output_dir)
-    except (IOError, OSError) as exc:  # pragma: no cover - logging best effort
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - logging best effort
         log_error("hydra_snapshot", str(exc), "env")
     resume_ckpt = Path(resume_from) if resume_from else None
     if resume_ckpt and not resume_ckpt.exists():
@@ -1200,7 +1200,7 @@ def run_hf_trainer(
             type(exc).__name__
             logger.debug("YAMLError: <ERROR_TYPE>")
             raise RuntimeError(f"Failed to parse training config {config_path}: {exc}") from exc
-        except (IOError, OSError):
+        except (IOError, OSError, ModuleNotFoundError, ImportError):
             logger.warning("Exception occurred", exc_info=True)
             cfg = {}
         if config_snapshot is None and cfg:
@@ -1398,7 +1398,7 @@ def run_hf_trainer(
             os.environ.setdefault("MLFLOW_TRACKING_URI", "file:./mlruns")
             try:
                 loggers = _codex_logging_bootstrap(log_args)
-            except (IOError, OSError) as exc:  # pragma: no cover - bootstrap is best-effort
+            except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - bootstrap is best-effort
                 type(exc).__name__
                 print("[telemetry] bootstrap skipped: <ERROR_TYPE>")
 
@@ -1462,7 +1462,7 @@ def run_hf_trainer(
                 **sysd,
             }
             _codex_log_all(int(metrics.get("global_step", 0)), log_vals, loggers)
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.warning(
@@ -1478,7 +1478,7 @@ def run_hf_trainer(
                     writer.add_scalar(k, v, trainer.state.global_step)
             writer.flush()
             writer.close()
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.warning(
@@ -1514,7 +1514,7 @@ def run_hf_trainer(
                 target_path.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copy2(config_path, target_path)
             copied_resume_config = target_path
-        except (IOError, OSError):
+        except (IOError, OSError, ModuleNotFoundError, ImportError):
             logger.warning("Exception occurred", exc_info=True)
             copied_resume_config = None
 

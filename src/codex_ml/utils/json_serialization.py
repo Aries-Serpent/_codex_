@@ -530,7 +530,7 @@ def safe_json_dump(
         logger.debug("Wrote JSON to %s (atomic)", target_path)
         return target_path
 
-    except (IOError, OSError) as e:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
         logger.error("Failed to write JSON to %s: %s", target_path, e)
         raise
     finally:
@@ -621,7 +621,7 @@ def safe_json_load(
             "JSON decode error in %s at line %d col %d: %s", target_path, e.lineno, e.colno, e.msg
         )
         raise
-    except (IOError, OSError) as e:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
         logger.error("Failed to read JSON file %s: %s", target_path, e)
         raise
 

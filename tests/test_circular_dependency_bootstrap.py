@@ -20,7 +20,7 @@ def test_independent_import_training() -> bool:
     
     # Create a subprocess to test in isolation
     test_code = """
-import sys
+    import sys
 sys.path.insert(0, '/home/runner/work/_codex_/_codex_/src')
 
 # Try importing training components
@@ -57,7 +57,7 @@ def test_independent_import_codex_ml() -> bool:
     print("\n[TEST 2] Importing codex_ml module independently...")
     
     test_code = """
-import sys
+    import sys
 sys.path.insert(0, '/home/runner/work/_codex_/_codex_/src')
 
 # Try importing codex_ml components
@@ -94,7 +94,7 @@ def test_bidirectional_import() -> bool:
     print("\n[TEST 3] Importing both modules (bidirectional)...")
     
     test_code = """
-import sys
+    import sys
 sys.path.insert(0, '/home/runner/work/_codex_/_codex_/src')
 
 # Try importing in both orders
@@ -139,7 +139,7 @@ def test_protocol_availability() -> bool:
     print("\n[TEST 4] Testing protocol availability...")
     
     test_code = """
-import sys
+    import sys
 sys.path.insert(0, '/home/runner/work/_codex_/_codex_/src')
 
 try:

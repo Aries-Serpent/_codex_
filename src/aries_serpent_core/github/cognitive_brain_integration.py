@@ -204,7 +204,7 @@ class CognitiveBrainIntegration:
 
             return "\n".join(lines) + "\n"
 
-        except (IOError, OSError) as _exc:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as _exc:
             logger.debug(
                 "CB pattern retrieval skipped (%s: %s)", type(_exc).__name__, _exc
             )  # codeql[py/clear-text-logging-sensitive-data]

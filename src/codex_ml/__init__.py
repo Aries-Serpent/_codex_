@@ -207,7 +207,7 @@ def __getattr__(name: str):
     module_name, attr_name = _EXPORT_MAP[name]
     try:
         module = import_module(module_name)
-    except (IOError, OSError) as exc:  # pragma: no cover - optional dependency path
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - optional dependency path
         message = (
             f"{attr_name} is unavailable because importing {module_name!r} failed."
             " Install optional Codex ML dependencies to enable this feature."

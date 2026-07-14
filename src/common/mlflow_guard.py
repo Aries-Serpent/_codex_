@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 
 try:  # pragma: no cover - optional dependency
     import mlflow
-except (IOError, OSError):  # pragma: no cover - mlflow not installed or misconfigured
+except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - mlflow not installed or misconfigured
     mlflow = None
 
 from omegaconf import DictConfig, OmegaConf  # noqa: E402

@@ -168,7 +168,7 @@ def _build_hook_manager(hooks_cfg: DictConfig | None) -> HookManager:
             manager.add(
                 NDJSONLogHook(file=str(getattr(ndjson_cfg, "file", ".codex/metrics/train.ndjson")))
             )
-    except (IOError, OSError):  # pragma: no cover
+    except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover
         logger.warning("Failed to configure NDJSON log hook", exc_info=True)
 
     return manager
@@ -239,7 +239,7 @@ def _save_adapters(model, out_dir: Path, save_adapters: bool = True) -> None:
     if hasattr(model, "save_pretrained"):
         try:  # pragma: no cover - optional path
             model.save_pretrained(str(out_dir))
-        except (IOError, OSError) as exc:  # pragma: no cover
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover
             logger.warning("Saving adapters failed: %s", exc)
 
 

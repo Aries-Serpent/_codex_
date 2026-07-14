@@ -65,7 +65,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5  # v6.0.3
         with:
-            persist-credentials: false
+          persist-credentials: false
           lfs: false  # LFS disabled — object may not exist on server
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
 

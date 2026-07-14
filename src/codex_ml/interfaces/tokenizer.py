@@ -438,7 +438,7 @@ class HFTokenizer(TokenizerAdapter):
                     revision=get_hf_revision(),
                     **params,
                 )
-        except (IOError, OSError) as exc:  # pragma: no cover - defensive
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - defensive
             LOGGER.warning(
                 "Falling back to whitespace backend for '%s' after load failure (%s)",
                 name_or_path or artifacts_dir,

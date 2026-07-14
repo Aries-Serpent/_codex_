@@ -29,14 +29,14 @@ jobs:
           \ \u2014 suppress reminder if last comment is from a human\nconst AGENT_LOGINS\
           \ = new Set([\n  'copilot-swe-agent[bot]',\n  'github-copilot[bot]',\n \
           \ 'github-actions[bot]',\n]);\n\nconst now = new Date();\n\n// Fetch recently-updated\
-          \ open PRs (limit: 30 \u2014 enough for active repos)\nconst { data: prs\
-          \ } = await github.rest.pulls.list({\n  owner:     context.repo.owner,\n\
-          \  repo:      context.repo.repo,\n  state:     'open',\n  sort:      'updated',\n\
-          \  direction: 'desc',\n  per_page:  30,\n});\n\nlet remindedCount = 0;\n\
+        \ open PRs (limit: 30 \u2014 enough for active repos)\nconst { data: prs\
+        \ } = await github.rest.pulls.list({\n  owner:     context.repo.owner,\n\
+        \  repo:      context.repo.repo,\n  state:     'open',\n  sort:      'updated',\n\
+        \  direction: 'desc',\n  per_page:  30,\n});\n\nlet remindedCount = 0;\n\
           for (const pr of prs) {\n  try {\n    // Fetch all comments on this PR\n\
-          \    const { data: comments } = await github.rest.issues.listComments({\n\
-          \      owner:      context.repo.owner,\n      repo:       context.repo.repo,\n\
-          \      issue_number: pr.number,\n      per_page:   100,\n    });\n\n   \
+        \    const { data: comments } = await github.rest.issues.listComments({\n\
+        \      owner:      context.repo.owner,\n      repo:       context.repo.repo,\n\
+        \      issue_number: pr.number,\n      per_page:   100,\n    });\n\n   \
           \ // Skip if no SESSION_TYPE_EXPLORATION marker active\n    if (!comments.some(c\
           \ => c.body.includes(EXPLORATION_MARKER))) {\n      continue;\n    }\n\n\
           \    // Skip if SESSION_TIMEBOX_EXPIRED is present (session already ended)\n\
@@ -49,7 +49,7 @@ jobs:
           \ = agentComments[0];\n    const lastAgentTime    = new Date(lastAgentComment.created_at);\n\
           \    const silenceDuration  = now - lastAgentTime;\n\n    if (silenceDuration\
           \ < SILENCE_THRESHOLD_MS) {\n      continue;  // Agent was active within\
-          \ the last 10 min \u2014 no reminder needed\n    }\n\n    // Dedup: check\
+        \ the last 10 min \u2014 no reminder needed\n    }\n\n    // Dedup: check\
           \ if a reminder was already posted within the cooldown window\n    const\
           \ recentReminder = comments.find(\n      c => c.body.includes(REMINDER_MARKER)\
           \ &&\n           (now - new Date(c.created_at)) < REMINDER_COOLDOWN_MS\n\
@@ -60,25 +60,25 @@ jobs:
           \ \u2014 Incremental Progress Summary Due`,\n      '',\n      `> **Auto-posted\
           \ by Session Reminder Workflow (WF-003)**`,\n      `> An exploration session\
           \ is active on this PR. The last agent update was **${elapsedMin} minutes\
-          \ ago**.`,\n      '',\n      '**Policy:** During an exploration session,\
+        \ ago**.`,\n      '',\n      '**Policy:** During an exploration session,\
           \ the agent must post an incremental progress',\n      'summary approximately\
           \ every **~10 minutes**. This is **Tier-2 grounded enforcement**',\n   \
           \   '(present-tense injection \u2014 not background memory).',\n      '',\n\
           \      '### Required Action',\n      '',\n      '- [ ] Post a PR comment\
-          \ with `## \U0001F4CA Incremental Progress Summary` containing:',\n    \
+        \ with `## \U0001F4CA Incremental Progress Summary` containing:',\n    \
           \  '  - Topics covered so far',\n      '  - Key findings / decisions made',\n\
           \      '  - What remains to be done',\n      '  - Explicit question for\
-          \ the human: \"Proceed to X, or go deeper on Y?\"',\n      '',\n      `_Last\
-          \ agent activity: ${lastAgentComment.created_at} (${elapsedMin}min ago)_`,\n\
-          \      `_Exploration marker detected: ${EXPLORATION_MARKER}_`,\n      '',\n\
+        \ the human: \"Proceed to X, or go deeper on Y?\"',\n      '',\n      `_Last\
+        \ agent activity: ${lastAgentComment.created_at} (${elapsedMin}min ago)_`,\n\
+        \      `_Exploration marker detected: ${EXPLORATION_MARKER}_`,\n      '',\n\
           \      '_WF-003 | session-incremental-summary-reminder | [GROUNDED_VS_SOFT_ENFORCEMENT.md](.codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md)_',\n\
-          \      '',\n      '---',\n      `_[\U0001F517 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,\n\
+        \      '',\n      '---',\n      `_[\U0001F517 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,\n\
           \    ].join('\\n');\n\n    await github.rest.issues.createComment({\n  \
-          \    owner:        context.repo.owner,\n      repo:         context.repo.repo,\n\
-          \      issue_number: pr.number,\n      body,\n    });\n\n    core.info(`\u2705\
+        \    owner:        context.repo.owner,\n      repo:         context.repo.repo,\n\
+        \      issue_number: pr.number,\n      body,\n    });\n\n    core.info(`\u2705\
           \ Posted incremental summary reminder on PR  #${pr.number} (${elapsedMin}min\
           \ silence)`);\n    remindedCount++;\n\n  } catch (prError) {\n    core.warning(`PR\
-          \  #${pr.number}: ${prError.message}`);\n  }\n}\n\nif (remindedCount ===\
+        \  #${pr.number}: ${prError.message}`);\n  }\n}\n\nif (remindedCount ===\
           \ 0) {\n  core.info('No active exploration sessions require reminders at\
           \ this time.');\n} else {\n  core.info(`Posted ${remindedCount} incremental\
           \ summary reminder(s).`);\n}\n"

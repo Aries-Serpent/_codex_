@@ -64,7 +64,7 @@ class Tracker:
                             safe_uri = requested_uri
                         else:
                             safe_uri = Path(requested_uri).expanduser().resolve().as_uri()
-                    except (IOError, OSError):
+                    except (IOError, OSError, ModuleNotFoundError, ImportError):
                         logger.warning("Exception occurred", exc_info=True)
                         logger.warning(
                             "Unable to coerce MLflow URI '%s'; using %s",

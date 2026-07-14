@@ -1,3 +1,4 @@
+import pytest
 pytest.importorskip("mlflow")
 """
 Test Eval Cli
@@ -85,6 +86,7 @@ def test_run_command_json_output(tmp_path: Path, monkeypatch):
 
     monkeypatch.setattr(eval_cli, "_load_config", fake_load_config)
     monkeypatch.setenv("PYTHONHASHSEED", "0")
+    # Patch the actual module where build_loggers is defined
     # Patch the actual module where build_loggers is defined
     import codex_ml.logging.registry as reg_mod
 

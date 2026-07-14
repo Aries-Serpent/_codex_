@@ -32,7 +32,7 @@ def _read_index(index_path: Path) -> dict[str, Any]:
         return {"entries": []}
     try:
         return json.loads(index_path.read_text())
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         logger.warning("Exception occurred", exc_info=True)
         return {"entries": []}
 
@@ -108,7 +108,7 @@ def update_and_prune(
                 p = Path(e["path"])
                 if p.exists():
                     p.unlink()
-            except (IOError, OSError):
+            except (IOError, OSError, ModuleNotFoundError, ImportError):
                 logger.warning("Exception occurred", exc_info=True)
                 # Log or ignore; failure leaves extra file (acceptable fallback)
 

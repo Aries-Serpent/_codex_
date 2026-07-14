@@ -161,7 +161,7 @@ def _apply_prompt_sanitization(
         try:
             if isinstance(config_obj, (DictConfig, dict)):
                 config_obj[key] = sanitised
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
@@ -335,7 +335,7 @@ def _run_from_cfg(cfg: DictConfig) -> tuple[int, Optional[Path]]:
         seed = 0
     try:
         repro.set_seed(seed)
-    except (IOError, OSError) as exc:  # pragma: no cover - defensive log path
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - defensive log path
         LOGGER.warning("Failed to set reproducibility seed %s: %s", seed, exc)
     if isinstance(cfg, DictConfig):
         cfg.seed = seed

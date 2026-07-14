@@ -28,7 +28,7 @@ from typing import Optional
 try:
     # Prefer a dedicated encoding detector if present in repo
     from .encoding_detect import detect_encoding as _repo_detect_encoding
-except (IOError, OSError):
+except (IOError, OSError, ModuleNotFoundError, ImportError):
     logger.warning("Exception occurred", exc_info=True)
     _repo_detect_encoding = None  # type: ignore[assignment]
 
@@ -38,21 +38,21 @@ try:
     # - read_text(path, encoding) -> str
     # - read_text(path, encoding, errors) -> (str, used_encoding)
     from .io_text import read_text as _io_text_read_text
-except (IOError, OSError):
+except (IOError, OSError, ModuleNotFoundError, ImportError):
     logger.warning("Exception occurred", exc_info=True)
     _io_text_read_text = None  # type: ignore[assignment]
 
 try:
     # Some callers expect _detect_encoding from io_text
     from .io_text import _fallback_detect_encoding as _io_text__detect_encoding
-except (IOError, OSError):
+except (IOError, OSError, ModuleNotFoundError, ImportError):
     logger.warning("Exception occurred", exc_info=True)
     _io_text__detect_encoding = None  # type: ignore[assignment]
 
 # Deterministic shuffle and legacy read_text_file may live in utils
 try:
     from .utils import deterministic_shuffle as _deterministic_shuffle
-except (IOError, OSError):
+except (IOError, OSError, ModuleNotFoundError, ImportError):
     logger.warning("Exception occurred", exc_info=True)
     _deterministic_shuffle = None  # type: ignore[assignment]
 
@@ -98,13 +98,13 @@ def detect_encoding(path: str | Path) -> str:
     if _repo_detect_encoding is not None:
         try:
             return _repo_detect_encoding(p)
-        except (IOError, OSError):
+        except (IOError, OSError, ModuleNotFoundError, ImportError):
             logger.warning("Exception occurred", exc_info=True)
             # Fall through to other detectors
     if _io_text__detect_encoding is not None:
         try:
             return _io_text__detect_encoding(p)
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
@@ -112,7 +112,7 @@ def detect_encoding(path: str | Path) -> str:
     # Fallback conservative detector: BOM checks, then try a few encodings
     try:
         raw = p.read_bytes()[:65536]
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         logger.warning("Exception occurred", exc_info=True)
         return "utf-8"
 
@@ -173,11 +173,11 @@ def _call_repo_read_text(
             try:
                 # Very old: only path
                 result = _io_text_read_text(path)
-            except (IOError, OSError) as exc:
+            except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
                 type(exc).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 raise RuntimeError(f"repo read_text failed: {exc}") from exc
-    except (IOError, OSError) as exc:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
         type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         # Pass up other errors as runtime errors
@@ -203,7 +203,7 @@ def _manual_read_text(
     """
     try:
         raw = path.read_bytes()
-    except (IOError, OSError) as exc:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
         type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         raise RuntimeError(f"Failed to read bytes from {path}: {exc}") from exc
@@ -215,7 +215,7 @@ def _manual_read_text(
     # Try to decode using chosen encoding, and fall back gracefully
     try:
         text = raw.decode(enc, errors)
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         logger.warning("Exception occurred", exc_info=True)
         # Try common fallbacks
         for trial in ("utf-8", "cp1252", "iso-8859-1"):
@@ -236,7 +236,7 @@ def _manual_read_text(
         text = text.replace("\r\n", "\n").replace("\r", "\n")
         if text and text[0] == "\ufeff":
             text = text.lstrip("\ufeff")
-    except (IOError, OSError) as e:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
         type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
@@ -264,7 +264,7 @@ def read_text(path: str | Path, encoding: str = "utf-8", errors: str = "strict")
         try:
             txt, _used = _call_repo_read_text(p, encoding=encoding, errors=errors)
             return txt
-        except (IOError, OSError):
+        except (IOError, OSError, ModuleNotFoundError, ImportError):
             logger.warning("Exception occurred", exc_info=True)
             # Fall through to manual reader
 
@@ -333,7 +333,7 @@ def ingest(
                     if chunk == "":
                         break
                     yield chunk
-        except (IOError, OSError) as exc:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
             type(exc).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             # Surface as runtime error to calling code (ingestion pipelines should catch)

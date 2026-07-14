@@ -166,9 +166,9 @@ class TestImportExtraction:
         import ast
 
         code = """
-import os
-import sys
-from pathlib import Path
+        import os
+        import sys
+        from pathlib import Path
 """
         tree = ast.parse(code)
         imports = _extract_imports(tree)
@@ -182,8 +182,8 @@ from pathlib import Path
         import ast
 
         code = """
-from typing import Dict, List
-from collections import defaultdict
+        from typing import Dict, List
+        from collections import defaultdict
 """
         tree = ast.parse(code)
         imports = _extract_imports(tree)
@@ -196,9 +196,9 @@ from collections import defaultdict
         import ast
 
         code = """
-import os
-import os
-from os import path
+        import os
+        import os
+        from os import path
 """
         tree = ast.parse(code)
         imports = _extract_imports(tree)
@@ -210,9 +210,9 @@ from os import path
         import ast
 
         code = """
-import sys
-import os
-import ast
+        import sys
+        import os
+        import ast
 """
         tree = ast.parse(code)
         imports = _extract_imports(tree)
@@ -420,7 +420,7 @@ class TestFileAnalysis:
         """Test analyzing a simple Python file."""
         test_file = tmp_path / "test.py"
         test_file.write_text("""
-import os
+        import os
 
 def hello():
     return "world"

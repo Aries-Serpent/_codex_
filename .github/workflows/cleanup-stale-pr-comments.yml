@@ -53,7 +53,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
@@ -84,8 +84,8 @@ jobs:
       uses: actions/github-script@v8
       with:
         script: "await github.rest.reactions.createForIssueComment({\n  owner: context.repo.owner,\n\
-          \  repo: context.repo.repo,\n  comment_id: context.payload.comment.id,\n\
-          \  content: 'eyes'\n});\n"
+        \  repo: context.repo.repo,\n  comment_id: context.payload.comment.id,\n\
+        \  content: 'eyes'\n});\n"
     - name: Delete stale comments
       id: cleanup
       if: steps.pr.outputs.number != ''
@@ -111,14 +111,14 @@ jobs:
           \ 'utf8');\n} catch (_) {\n  output = '(no output)';\n}\n\nconst dryRun\
           \ = '${{ steps.pr.outputs.dry_run }}' === 'true';\nconst prNumber = parseInt('${{\
           \ steps.pr.outputs.number }}', 10);\nconst icon = dryRun ? '\U0001F50D'\
-          \ : '\U0001F9F9';\nconst title = dryRun\n  ? 'Cleanup Stale PR Comments\
-          \ \u2014 Dry Run'\n  : 'Cleanup Stale PR Comments \u2014 Complete';\n\n\
+        \ : '\U0001F9F9';\nconst title = dryRun\n  ? 'Cleanup Stale PR Comments\
+        \ \u2014 Dry Run'\n  : 'Cleanup Stale PR Comments \u2014 Complete';\n\n\
           const body = [\n  `## ${icon} ${title}`,\n  '',\n  '```',\n  output.slice(0,\
-          \ 3000),\n  output.length > 3000 ? '\u2026 (truncated)' : '',\n  '```',\n\
+        \ 3000),\n  output.length > 3000 ? '\u2026 (truncated)' : '',\n  '```',\n\
           \  '',\n  dryRun\n    ? '_This was a dry run \u2014 no comments were deleted._'\n\
-          \    : `_Triggered by: \\`${{ github.event_name }}\\` \xB7 Run: [${context.runId}](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,\n\
-          ].join('\\n');\n\nawait github.rest.issues.createComment({\n  owner: context.repo.owner,\n\
-          \  repo: context.repo.repo,\n  issue_number: prNumber,\n  body,\n});\n"
+        \    : `_Triggered by: \\`${{ github.event_name }}\\` \xB7 Run: [${context.runId}](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,\n\
+        ].join('\\n');\n\nawait github.rest.issues.createComment({\n  owner: context.repo.owner,\n\
+        \  repo: context.repo.repo,\n  issue_number: prNumber,\n  body,\n});\n"
     - name: Check exit code
       if: steps.pr.outputs.number != '' && steps.cleanup.outputs.exit_code != '0'
       run: exit 1

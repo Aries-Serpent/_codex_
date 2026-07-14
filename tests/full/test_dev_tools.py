@@ -156,7 +156,7 @@ if __name__ == "__main__":
         """Test that ruff detects style issues."""
         test_file = tmp_path / "style_issues.py"
         test_file.write_text("""
-import os, sys
+        import os, sys
 x=1+2
 y = 3
 """)
@@ -242,10 +242,10 @@ class TestIsortTool:
         test_file = tmp_path / "import_test.py"
         # Unsorted imports
         test_file.write_text("""
-import sys
-import os
-from pathlib import Path
-from typing import List
+        import sys
+        import os
+        from pathlib import Path
+        from typing import List
 """)
         
         result = subprocess.run(
@@ -261,8 +261,8 @@ from typing import List
         """Test that isort can sort imports."""
         test_file = tmp_path / "unsorted_imports.py"
         test_file.write_text("""
-import sys
-import os
+        import sys
+        import os
 """)
         
         result = subprocess.run(
@@ -295,8 +295,8 @@ class TestToolIntegration:
         # Create a test Python file
         test_file = tmp_path / "sample_module.py"
         test_file.write_text("""
-from typing import List
-import os
+        from typing import List
+        import os
 
 def process_items(items: List[str]) -> int:
     count = 0
@@ -372,8 +372,8 @@ class TestDevToolchain:
         test_file.write_text("""
 '''Test module for toolchain validation.'''
 
-from typing import Dict, List
-import sys
+        from typing import Dict, List
+        import sys
 
 def validate_data(data: Dict[str, List[int]]) -> bool:
     '''Validate data structure.'''

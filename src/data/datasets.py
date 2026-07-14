@@ -132,7 +132,7 @@ class TextClassificationDataset(BaseDataset):
                     try:
                         text, label = line.split("\t", maxsplit=1)
                         self.samples.append((text, int(label)))
-                    except (IOError, OSError) as exc:
+                    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
                         type(exc).__name__
                         logger.debug("Exception: <ERROR_TYPE>")
                         append_error(
@@ -141,7 +141,7 @@ class TextClassificationDataset(BaseDataset):
                             str(exc),
                             f"path={self.file_path} line={line_number}",
                         )
-        except (IOError, OSError) as exc:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
             type(exc).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             append_error("3.5", "dataset load", str(exc), str(self.file_path))

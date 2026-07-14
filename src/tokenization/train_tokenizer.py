@@ -229,13 +229,13 @@ def train(cfg: TrainTokenizerConfig) -> Path:
             # pragma: no cover - optional dependency handling
             try:
                 _sp_model_pb2 = spm.sentencepiece_model_pb2
-            except (IOError, OSError):  # pragma: no cover - dependency still missing
+            except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - dependency still missing
                 logger.warning("Exception occurred", exc_info=True)
             else:
                 sys.modules.setdefault("sentencepiece_model_pb2", _sp_model_pb2)  # type: ignore[arg-type]
         try:
             tok = SentencePieceUnigramTokenizer.from_spm(str(model_path))
-        except (IOError, OSError):
+        except (IOError, OSError, ModuleNotFoundError, ImportError):
             logger.warning("Exception occurred", exc_info=True)
             processor = spm.SentencePieceProcessor()
             processor.Load(str(model_path))

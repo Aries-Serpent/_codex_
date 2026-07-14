@@ -25,7 +25,7 @@ def cleanup_mocks():
     mock.patch.stopall()
 
 
-import pytest
+    import pytest
 
 
 class TestDefaultPreprocess:

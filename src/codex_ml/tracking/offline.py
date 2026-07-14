@@ -164,7 +164,7 @@ class NDJSONLogger:
             if src.exists():
                 try:
                     shutil.move(str(src), str(dst))
-                except (IOError, OSError) as e:
+                except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
                     type(e).__name__
                     logger.debug("Exception: <ERROR_TYPE>")
                     logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
@@ -181,7 +181,7 @@ class NDJSONLogger:
                 self._rotate()
             with self.path.open("a", encoding="utf-8") as handle:
                 handle.write(line + "\n")
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.warning("Exception: <ERROR_TYPE>", exc_info=True)

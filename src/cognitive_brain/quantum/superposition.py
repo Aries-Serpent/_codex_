@@ -203,7 +203,7 @@ class SuperpositionEngine:
                 try:
                     score = decision.evaluate()
                     scores.append(max(score, 0.0))
-                except (IOError, OSError):
+                except (IOError, OSError, ModuleNotFoundError, ImportError):
                     scores.append(0.0)
         else:
             # Parallel evaluation
@@ -688,7 +688,7 @@ def quantum_superposition(
                 # Return that result directly — no second invocation of func.
                 return _captured[0] if _captured else func(*args, **kwargs)
 
-            except (IOError, OSError):
+            except (IOError, OSError, ModuleNotFoundError, ImportError):
                 # Quantum infrastructure unavailable or raised → classical fallback.
                 # If _classical_decision already ran, reuse its captured result to
                 # avoid a second invocation of func (prevents duplicate side effects).
