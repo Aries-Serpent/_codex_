@@ -2593,7 +2593,7 @@ def _cache_credentials(username: str, access_token: str, refresh_token: str) -> 
         logger.debug(
             "keyring not installed — fall through to file-based storage"
         )  # codeql[py/clear-text-logging-sensitive-data]
-    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover — runtime keyring backend error
+    except (IOError, OSError, ModuleNotFoundError) as exc:  # pragma: no cover — runtime keyring backend error
         click.echo(
             f"   ⚠️  Keyring backend error: {exc}. Falling back to file-based storage.",
             err=True,
@@ -2623,9 +2623,10 @@ def _load_cached_credentials() -> dict | None:
         logger.debug(
             "keyring not installed — fall through to file-based lookup"
         )  # codeql[py/clear-text-logging-sensitive-data]
-    except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover — runtime keyring read error
+    except (IOError, OSError, ModuleNotFoundError) as exc:  # pragma: no cover — runtime keyring read error
         logger.debug(
-            "keyring read error — falling back to file-based lookup"
+            "keyring read error — falling back to file-based lookup: %s", 
+            type(exc).__name__
         )  # codeql[py/clear-text-logging-sensitive-data]
 
     if _CACHE_FILE.exists():
@@ -2649,9 +2650,10 @@ def _clear_cached_credentials() -> None:
         logger.debug(
             "keyring not installed — nothing to clear"
         )  # codeql[py/clear-text-logging-sensitive-data]
-    except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover — runtime keyring delete error
+    except (IOError, OSError, ModuleNotFoundError) as exc:  # pragma: no cover — runtime keyring delete error
         logger.debug(
-            "keyring delete error — entry may not exist or backend unavailable"
+            "keyring delete error — entry may not exist or backend unavailable: %s",
+            type(exc).__name__
         )  # codeql[py/clear-text-logging-sensitive-data]
     if _CACHE_FILE.exists():
         _CACHE_FILE.unlink(missing_ok=True)

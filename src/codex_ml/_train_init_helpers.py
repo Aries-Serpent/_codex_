@@ -537,7 +537,7 @@ def setup_optimizer_with_dp(
         except ImportError as exc:
             logger.warning("Differential privacy disabled: %s", exc)
             dp_settings = None
-        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
+        except (IOError, OSError, ModuleNotFoundError) as exc:
             logger.warning("Failed to enable differential privacy: %s", exc)
             dp_settings = None
     

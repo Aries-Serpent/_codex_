@@ -54,13 +54,13 @@ def readiness_check() -> dict[str, Any]:
         if disk_free_gb < 1.0:
             all_ready = False
     except ImportError as e:
-        type(e).__name__
-        logger.debug("ImportError: <ERROR_TYPE>")
-        logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
+        error_type = type(e).__name__
+        logger.debug("ImportError: %s", error_type)
+        logger.warning("ImportError: %s", error_type, exc_info=True)
         checks["disk_space"] = {"status": "skipped", "reason": "psutil not available"}
-    except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
-        type(e).__name__
-        logger.debug("Exception: <ERROR_TYPE>")
+    except (IOError, OSError, ModuleNotFoundError) as e:
+        error_type = type(e).__name__
+        logger.debug("Exception: %s", error_type)
         checks["disk_space"] = {"status": "error", "error": str(e)}
         all_ready = False
 

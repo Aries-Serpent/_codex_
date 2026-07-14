@@ -214,7 +214,7 @@ def _csv_to_duckdb(
         raise SystemExit(
             "[metrics-cli] duckdb dependency missing; install with `pip install duckdb`"
         ) from exc
-    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - defensive import guard
+    except (IOError, OSError, ImportError) as exc:  # pragma: no cover - defensive import guard
         raise SystemExit(f"[metrics-cli] unable to import duckdb: {exc}") from exc
 
     duck_db.parent.mkdir(parents=True, exist_ok=True)
