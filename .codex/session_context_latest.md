@@ -1,21 +1,33 @@
-# Session Context — 2026-07-14T03:01:47Z
-**Branch:** `copilot/next-steps-for-deployment`  **PR:** none  **Access:** `rest, graphql, gh_cli`
+# Session Context — 2026-07-14T03:15:26Z
+**Branch:** `copilot/next-steps-for-deployment`  **PR:** #5320  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `5000` (✅)
-- GraphQL remaining: `5000` (✅)
+- REST remaining: `4987` (✅)
+- GraphQL remaining: `4998` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
+## 📋 PR #5320 — fix: correct YAML syntax errors in workflow files
+State: `open`  Draft: `False`  Branch: `copilot/next-steps-for-deployment` → `main`
+
+### ❌ 6 Failing CI Check(s)
+- `validation` (cancelled)
+- `Sharded quick tests (shard ${{ matrix.shard }}/${{ matrix.total }})` (cancelled)
+- `🔄 Refresh CODEX_MANIFEST.json` (failure)
+- `WEC gate — check resilient_validation.yml checkbox` (cancelled)
+- `compliance-check` (failure)
+- `Promotion Readiness — 0D_base_ → main` (cancelled)
+
 ## 🚨 Recent CI Failures (last 5 runs)
-- **.github/workflows/rust_swarm_ci.yml** — `failure` on `copilot/next-steps-for-deployment` (2026-07-14)
-- **.github/workflows/auto-fix-pr-check.yml** — `failure` on `copilot/next-steps-for-deployment` (2026-07-14)
-- **.github/workflows/rust-error-validator-observation.yml** — `failure` on `copilot/next-steps-for-deployment` (2026-07-14)
-- **.github/workflows/branch-divergence-monitor.yml** — `failure` on `copilot/next-steps-for-deployment` (2026-07-14)
-- **.github/workflows/agent-var-writer.yml** — `failure` on `copilot/next-steps-for-deployment` (2026-07-14)
+- **.github/workflows/copilot-evolution-suite.yml** — `failure` on `copilot/next-steps-for-deployment` (2026-07-14)
+- **.github/workflows/comment-review-gate.yml** — `failure` on `copilot/next-steps-for-deployment` (2026-07-14)
+- **.github/workflows/data-quality-suite.yml** — `failure` on `copilot/next-steps-for-deployment` (2026-07-14)
+- **.github/workflows/session-recovery-handler.yml** — `failure` on `copilot/next-steps-for-deployment` (2026-07-14)
+- **.github/workflows/workflow-restore.yml** — `failure` on `copilot/next-steps-for-deployment` (2026-07-14)
 
 ## 📝 Recent Commits
+- `7929bf1a` fix: correct YAML syntax errors in workflow files — copilot-swe-agent[bot] (2026-07-14)
 - `23791669` fix(deployment): Resolve post-merge v0.2.3 workflow validation failures — copilot-swe-agent[bot] (2026-07-14)
 - `1d672d83` Apply remaining changes — copilot-swe-agent[bot] (2026-07-14)
 - `449f3c96` fix(v0.2.3-validation): Complete post-merge validation and import migration for  — Copilot (2026-07-14)
@@ -23,7 +35,6 @@
 - `1556e943` v0.2.3 Pre-Release: Fix dependency leak and circular imports in core profile (#5 — Copilot (2026-07-13)
 - `1807b905` feat(workflow): Complete CodeQL continuity campaign & enable v0.2.2 autonomous d — Copilot (2026-07-13)
 - `84597c56` Consolidate 27 workflows into 9 masters: 67% reduction, health dashboard deploym — Copilot (2026-07-13)
-- `6af5ec2d` fix(security): Resolve Issue #5299 security vulnerabilities - zero critical/high — Copilot (2026-07-13)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
