@@ -94,9 +94,9 @@ class TestCIWorkflowIntegration:
         feature lists.
         """
         test_code = f"""
-import sys
+        import sys
 sys.path.insert(0, '{SCRIPT_PATH.parent}')
-import validate_cargo_features as vcf
+        import validate_cargo_features as vcf
 
 # Verify json is imported
 assert hasattr(vcf, 'json'), "json module not imported"
@@ -129,11 +129,11 @@ pyo3 = "0.18"
 """)
 
         test_code = f"""
-import sys
+        import sys
 sys.path.insert(0, '{SCRIPT_PATH.parent}')
-from validate_cargo_features import validate_cargo_features
-from pathlib import Path
-from codex.logging.structured_logger import logger
+        from validate_cargo_features import validate_cargo_features
+        from pathlib import Path
+        from codex.logging.structured_logger import logger
 
 is_valid, errors = validate_cargo_features(Path('{invalid_cargo}'))
 logger.info(f"is_valid: {{is_valid}}")

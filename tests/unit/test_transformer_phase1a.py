@@ -42,8 +42,8 @@ def temp_source_files(tmp_path):
 
     # Create various Python files
     (source_dir / "main.py").write_text("""
-import os
-import sys
+    import os
+    import sys
 
 def process_file(path):
     if os.path.exists(path):
@@ -52,8 +52,8 @@ def process_file(path):
 """)
 
     (source_dir / "utils.py").write_text("""
-import os.path
-import requests
+    import os.path
+    import requests
 
 def fetch_data(url):
     response = requests.get(url)
@@ -61,7 +61,7 @@ def fetch_data(url):
 """)
 
     (source_dir / "clean.py").write_text("""
-from pathlib import Path
+    from pathlib import Path
 
 def read_file(p: Path) -> str:
     return p.read_text()

@@ -43,10 +43,10 @@ class TestSubprocessTimingEvent:
             self.start_event.wait(timeout=5)  # Wait for signal to start
             
             script = """
-import sys
+            import sys
 print('READY', flush=True)
 sys.stdout.flush()
-import time
+            import time
 time.sleep(0.2)
 print('DONE', flush=True)
 """

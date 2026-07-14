@@ -57,7 +57,7 @@ def test_evaluate_cli_writes_ndjson(tmp_path, monkeypatch) -> None:
     sys.modules["codex_ml.eval.runner"] = runner_mod
 
     # Lazy import after stubbing to avoid import-time deps
-    from codex_ml.cli.codex_cli import codex
+        from codex_ml.cli.codex_cli import codex
 
     class _DummyEvalCfg:
         dataset_path = "data/eval.jsonl"
@@ -74,7 +74,7 @@ def test_evaluate_cli_writes_ndjson(tmp_path, monkeypatch) -> None:
         return _DummyAppCfg(), {"ok": True}
 
     # Patch loader/runner on the imported module to keep test hermetic
-    import codex_ml.cli.codex_cli as cli_mod
+        import codex_ml.cli.codex_cli as cli_mod
 
     monkeypatch.setenv("PYTEST_DISABLE_PLUGIN_AUTOLOAD", "1")
     monkeypatch.setattr(cli_mod, "load_app_config", fake_load_app_config, raising=True)

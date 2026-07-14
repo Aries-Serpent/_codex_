@@ -83,7 +83,7 @@ class TestConcurrentTraining:
                 assert len(lines) >= 15, "Lines must not be empty"
                 assert len(lines) <= 20, "Lines must not be empty"
                 # Validate each line is valid JSON
-                import json
+                    import json
 
                 for line in lines:
                     if line:  # Skip empty lines

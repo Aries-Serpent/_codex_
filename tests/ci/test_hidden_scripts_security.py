@@ -348,9 +348,9 @@ class TestScenario8bIntegration(unittest.TestCase):
         """Full Scenario 8b integration test."""
         # Vulnerability detector script
         vulnerability_detector = """
-import json
-import sys
-from codex.logging.structured_logger import logger
+        import json
+        import sys
+        from codex.logging.structured_logger import logger
 
 # Simulated vulnerability detection logic
 vulnerabilities = [

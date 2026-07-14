@@ -257,7 +257,7 @@ class TestStressTests:
         try:
             import sys
 
-    from codex.rag.embeddings import TfidfEmbeddingProvider
+        from codex.rag.embeddings import TfidfEmbeddingProvider
 
             provider = TfidfEmbeddingProvider()
 

@@ -150,7 +150,7 @@ class TestSecurityPatterns:
 
     def test_sanitize_log_message(self) -> None:
         """Test log message sanitization."""
-    from utils.log_sanitizer import sanitize_log
+        from utils.log_sanitizer import sanitize_log
 
         sensitive_msg = "Error: API key abc123def456 failed"
         sanitized = sanitize_log(sensitive_msg)
@@ -160,7 +160,7 @@ class TestSecurityPatterns:
 
     def test_path_validation_absolute_only(self) -> None:
         """Test path validation enforces absolute paths."""
-    from security.core import SecurityError, enforce_absolute_path
+        from security.core import SecurityError, enforce_absolute_path
 
         relative_path = "../dangerous/path"
 

@@ -203,7 +203,7 @@ class TestSecurityCompliance:
 
     def test_no_secrets_in_logs(self, tmp_path, caplog):
         """Test that secrets are never logged in clear text."""
-    from codex.security_utils import redact_sensitive_value
+        from codex.security_utils import redact_sensitive_value
 
         # Simulate a raw secret value - NEVER log this directly.
         # The test verifies that redact_sensitive_value() fully masks it.
@@ -230,7 +230,7 @@ class TestSecurityCompliance:
 
     def test_secret_name_redaction(self):
         """Test that sensitive secret names are redacted."""
-    from codex.security_utils import redact_secret_name
+        from codex.security_utils import redact_secret_name
 
         sensitive_names = ["PROD_DATABASE_PASSWORD", "AWS_SECRET_ACCESS_KEY", "PRIVATE_KEY"]
 
@@ -240,7 +240,7 @@ class TestSecurityCompliance:
 
     def test_dict_key_redaction(self):
         """Test that dictionary keys containing secrets are redacted."""
-    from codex.security_utils import redact_dict_with_secret_keys
+        from codex.security_utils import redact_dict_with_secret_keys
 
         secrets_dict = {"GITHUB_TOKEN": "value1", "API_KEY": "value2", "SECRET_KEY": "value3"}
 

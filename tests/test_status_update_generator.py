@@ -234,9 +234,9 @@ def test_validation_failure_exits_with_error():
     # We'll test this by mocking a validation failure
     # Create a simple test script that imports and calls validate_report with invalid data
     test_script = """
-import sys
+    import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from tools.generate_status_update import validate_report
+    from tools.generate_status_update import validate_report
 
 # Test with invalid report (missing required fields)
 invalid_report = {"metadata": {}}

@@ -33,7 +33,7 @@ class TestRP033MockCleanup:
 
         test_file = tests_dir / "test_mock.py"
         test_file.write_text("""
-from unittest.mock import Mock
+        from unittest.mock import Mock
 
 def test_example():
     mock = Mock()
@@ -52,7 +52,7 @@ def test_example():
 
         test_file = tests_dir / "test_mock.py"
         test_file.write_text("""
-from unittest.mock import MagicMock
+        from unittest.mock import MagicMock
 
 def test_example():
     magic_mock = MagicMock()
@@ -221,7 +221,7 @@ def test_example():
 
         test_file = tests_dir / "test_mock.py"
         test_file.write_text("""
-from unittest.mock import Mock, MagicMock, AsyncMock, PropertyMock
+        from unittest.mock import Mock, MagicMock, AsyncMock, PropertyMock
 
 def test_mocks():
     mock = Mock()

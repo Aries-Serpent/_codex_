@@ -130,7 +130,7 @@ class TestPerformance:
         try:
             import tempfile
 
-    from codex_plans import list_plan_documents
+        from codex_plans import list_plan_documents
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 # Create 100 markdown files
@@ -148,7 +148,7 @@ class TestPerformance:
         try:
             import tempfile
 
-    from codex_plans import list_plan_documents
+        from codex_plans import list_plan_documents
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 # Create files in reverse order
@@ -187,7 +187,7 @@ class TestSecurityChecks:
             import os
             import tempfile
 
-    from codex_plans import list_plan_documents
+        from codex_plans import list_plan_documents
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 # Create a real file

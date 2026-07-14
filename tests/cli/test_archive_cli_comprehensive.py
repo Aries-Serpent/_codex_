@@ -198,7 +198,7 @@ class TestBatchProgressLogger:
         try:
             import logging
 
-    from codex.archive.cli import _batch_progress_logger
+        from codex.archive.cli import _batch_progress_logger
 
             logger = logging.getLogger("test")
             callback = _batch_progress_logger(logger, mock_config)
@@ -211,7 +211,7 @@ class TestBatchProgressLogger:
         try:
             import logging
 
-    from codex.archive.cli import _batch_progress_logger
+        from codex.archive.cli import _batch_progress_logger
 
             logger = logging.getLogger("test")
             mock_config.batch.progress_interval = 1
@@ -269,7 +269,7 @@ class TestSetupLogger:
         try:
             import logging
 
-    from codex.archive.cli import _setup_logger
+        from codex.archive.cli import _setup_logger
 
             mock_config = Mock()
             mock_config.logging = Mock()

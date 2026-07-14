@@ -37,7 +37,7 @@ def test_load_plugins_monkeypatched(monkeypatch):
 
         return FakeEPs([FakeEP("demo_plugin", plugin)])
 
-    from importlib import metadata as imd
+            from importlib import metadata as imd
 
     monkeypatch.setattr(imd, "entry_points", fake_entry_points)
 
@@ -46,7 +46,7 @@ def test_load_plugins_monkeypatched(monkeypatch):
     def register(name, fn=None, **kwargs):
         registered.append(SimpleNamespace(name=name, fn=fn))
 
-    from codex_ml.plugins.loader import load_plugins
+        from codex_ml.plugins.loader import load_plugins
 
     count = load_plugins("codex_ml.metrics", register=register)
     assert count == 1, "Count must be greater than zero"

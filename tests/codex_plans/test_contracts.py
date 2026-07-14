@@ -148,7 +148,7 @@ class TestParameterValidation:
         try:
             import tempfile
 
-    from codex_plans import list_plan_documents
+        from codex_plans import list_plan_documents
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 result = list_plan_documents(base_dir=Path(tmpdir))
@@ -231,7 +231,7 @@ class TestGlobPatternBehavior:
         try:
             import tempfile
 
-    from codex_plans import list_plan_documents
+        from codex_plans import list_plan_documents
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 # Create file in root
@@ -255,7 +255,7 @@ class TestGlobPatternBehavior:
         try:
             import tempfile
 
-    from codex_plans import list_plan_documents
+        from codex_plans import list_plan_documents
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 # Create files with various extensions

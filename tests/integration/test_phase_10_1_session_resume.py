@@ -663,7 +663,7 @@ class TestEndToEndIntegration:
 
 
 # Add os import for test file
-import os
+        import os
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v", "--tb=short"])

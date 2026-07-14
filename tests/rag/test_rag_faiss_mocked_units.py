@@ -55,7 +55,7 @@ def test_persist_index_with_faiss_mock(monkeypatch, tmp_path):
         def write_index(self, index, path):
             Path(path).write_text(f"fake-index:{index.ntotal}", encoding="utf-8")
 
-    from codex.rag import indexer
+            from codex.rag import indexer
 
     monkeypatch.setattr(indexer, "faiss", FakeFaiss())
     embeddings = np.random.randn(2, 4).astype(np.float32)

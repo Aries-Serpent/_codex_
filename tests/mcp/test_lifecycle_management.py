@@ -485,7 +485,7 @@ class TestAdditionalLifecycleScenarios:
         await manager.startup()
 
         # Health check should complete quickly without blocking
-        import time
+            import time
         start = time.time()
         health = manager.healthz()
         elapsed = time.time() - start

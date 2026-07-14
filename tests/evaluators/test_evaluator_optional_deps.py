@@ -17,8 +17,8 @@ def test_evaluator_emits_friendly_optional_dependency_message(tmp_path):
     runner = tmp_path / "runner.py"
     runner.write_text(
         f"""
-import importlib.util
-import sys
+    import importlib.util
+    import sys
 
 sys.path.insert(0, {str(REPO_ROOT)!r})
 

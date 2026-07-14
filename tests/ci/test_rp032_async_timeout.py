@@ -33,7 +33,7 @@ class TestRP032AsyncTimeout:
 
         test_file = tests_dir / "test_async.py"
         test_file.write_text("""
-import pytest
+        import pytest
 
 @pytest.mark.asyncio
 @pytest.mark.timeout(30)
@@ -129,7 +129,7 @@ def test_regular():
 
         test_file = tests_dir / "test_async.py"
         test_file.write_text("""
-import pytest
+        import pytest
 
 @pytest.mark.asyncio
 @pytest.mark.timeout(30)

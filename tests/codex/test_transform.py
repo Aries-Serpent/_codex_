@@ -35,7 +35,7 @@ class TestTransformer:
         source_dir.mkdir()
         (source_dir / "test.py").write_text(
             """
-import os
+        import os
 
 path = os.path.join("a", "b")
 exists = os.path.exists(path)
@@ -84,7 +84,7 @@ exists = os.path.exists(path)
         source_dir.mkdir()
         (source_dir / "test.py").write_text(
             """
-import requests
+        import requests
 
 def fetch():
     return requests.get("http://example.com")
@@ -125,7 +125,7 @@ def fetch():
         source_dir.mkdir()
         (source_dir / "test.py").write_text(
             """
-import os
+        import os
 path = os.path.join("a", "b")
 """,
             encoding="utf-8",
@@ -162,7 +162,7 @@ class TestPatchGeneration:
         from codex.transform.transformer import _apply_pathlib_migration
 
         content = """
-import os
+        import os
 path = os.path.join("a", "b")
 exists = os.path.exists(path)
 dirname = os.path.dirname(path)
@@ -193,7 +193,7 @@ class TestTierClassification:
         source_dir.mkdir()
         (source_dir / "test.py").write_text(
             """
-import os
+        import os
 path = os.path.join("a", "b")
 """,
             encoding="utf-8",
@@ -212,7 +212,7 @@ path = os.path.join("a", "b")
         source_dir.mkdir()
         (source_dir / "test.py").write_text(
             """
-import os
+        import os
 os.path.exists("file")
 """,
             encoding="utf-8",

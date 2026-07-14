@@ -17,7 +17,7 @@ def test_chat_session_records_events(monkeypatch, tmp_path):
     monkeypatch.setattr("codex.chat.log_event", fake_log)
     monkeypatch.delenv("CODEX_SESSION_ID", raising=False)
 
-    from codex.chat import ChatSession
+        from codex.chat import ChatSession
 
     with ChatSession("session-123") as chat:
         assert os.environ.get("CODEX_SESSION_ID") == "session-123", "Condition must be true"

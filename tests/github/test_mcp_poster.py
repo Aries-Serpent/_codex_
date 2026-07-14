@@ -325,7 +325,7 @@ def test_list_pull_requests_head_filter_adds_owner_prefix(poster, monkeypatch):
     monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
     poster.list_pull_requests("myorg/repo", head="my-branch")
 
-    from urllib.parse import parse_qs, urlparse
+        from urllib.parse import parse_qs, urlparse
 
     qs = parse_qs(urlparse(captured["url"]).query)
     assert qs.get("head") == ["myorg:my-branch"], "Condition must be true"
@@ -341,7 +341,7 @@ def test_list_pull_requests_head_with_colon_not_modified(poster, monkeypatch):
     monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
     poster.list_pull_requests("myorg/repo", head="otherorg:their-branch")
 
-    from urllib.parse import parse_qs, urlparse
+        from urllib.parse import parse_qs, urlparse
 
     qs = parse_qs(urlparse(captured["url"]).query)
     # Should NOT re-prefix: the value already contains an owner
@@ -921,7 +921,7 @@ def test_record_cb_pattern_cognitive_brain_available(poster, monkeypatch):
     fake_module.MemoryPattern = FakeMemoryPattern
     fake_module.SQLiteMemory = FakeSQLiteMemory
 
-    import sys
+            import sys
 
     # Inject the fake module so the import inside _record_cb_pattern succeeds.
     # Clean up after to avoid contaminating other tests.
@@ -1347,7 +1347,7 @@ def test_cli_upsert_discussion_comment(monkeypatch, tmp_path):
         captured_body["body"] = body
         return {"id": "DC_1", "url": "https://u"}
 
-    from codex.github.mcp_poster import GitHubMCPPoster
+        from codex.github.mcp_poster import GitHubMCPPoster
 
     monkeypatch.setattr(GitHubMCPPoster, "upsert_discussion_comment", fake_upsert)
     f = tmp_path / "update.md"
@@ -1376,7 +1376,7 @@ def test_cli_post_ci_pattern_summary(monkeypatch, tmp_path):
         captured["session_id"] = session_id
         return {"id": "DC_s", "url": "https://u/s"}
 
-    from codex.github.mcp_poster import GitHubMCPPoster
+        from codex.github.mcp_poster import GitHubMCPPoster
 
     monkeypatch.setattr(GitHubMCPPoster, "post_ci_pattern_summary", fake_post)
     f = tmp_path / "summary.md"
@@ -1406,7 +1406,7 @@ def test_cli_post_continuation(monkeypatch, tmp_path):
         captured["body"] = body
         return {"id": "DC_c", "url": "https://u/c"}
 
-    from codex.github.mcp_poster import GitHubMCPPoster
+        from codex.github.mcp_poster import GitHubMCPPoster
 
     monkeypatch.setattr(GitHubMCPPoster, "post_continuation_chain", fake_chain)
     f = tmp_path / "chain.md"

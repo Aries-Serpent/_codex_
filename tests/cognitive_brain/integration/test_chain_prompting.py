@@ -58,7 +58,7 @@ try:
         AuditResult,
         QuantumComplianceAssessor,
     )
-    from cognitive_brain.quantum.config import QuantumConfig
+        from cognitive_brain.quantum.config import QuantumConfig
 
     def _make_assessor() -> QuantumComplianceAssessor:
         import tempfile

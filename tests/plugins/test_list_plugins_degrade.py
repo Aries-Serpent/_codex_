@@ -38,7 +38,7 @@ def test_list_plugins_handles_missing_registry(monkeypatch, capsys) -> None:
     programmatic.registry = lambda: _BrokenRegistry()  # type: ignore[attr-defined]
     monkeypatch.setitem(sys.modules, "codex_ml.plugins.programmatic", programmatic)
 
-    import codex_ml.plugins as plugins_pkg
+            import codex_ml.plugins as plugins_pkg
 
     plugins_pkg.programmatic = programmatic
 

@@ -67,10 +67,10 @@ if __name__ == "__main__":
 
         (source_dir / "imports.py").write_text(
             """
-import os
-import sys
-from pathlib import Path
-from typing import List, Dict
+        import os
+        import sys
+        from pathlib import Path
+        from typing import List, Dict
 """,
             encoding="utf-8",
         )
@@ -309,8 +309,8 @@ class TestImportExtraction:
         from codex.analyze.static.analyzer import _extract_imports
 
         code = """
-import os
-import sys
+        import os
+        import sys
 """
         tree = ast.parse(code)
         imports = _extract_imports(tree)
@@ -323,8 +323,8 @@ import sys
         from codex.analyze.static.analyzer import _extract_imports
 
         code = """
-from pathlib import Path
-from typing import List, Dict
+        from pathlib import Path
+        from typing import List, Dict
 """
         tree = ast.parse(code)
         imports = _extract_imports(tree)
@@ -337,10 +337,10 @@ from typing import List, Dict
         from codex.analyze.static.analyzer import _extract_imports
 
         code = """
-import os
-from os import path
-from os.path import join
-from codex.logging.structured_logger import logger
+        import os
+        from os import path
+        from os.path import join
+        from codex.logging.structured_logger import logger
 """
         tree = ast.parse(code)
         imports = _extract_imports(tree)

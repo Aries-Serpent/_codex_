@@ -317,7 +317,7 @@ class TestRAGPerformance:
         try:
             import time
 
-    from codex.rag.embeddings import TfidfEmbeddingProvider
+        from codex.rag.embeddings import TfidfEmbeddingProvider
 
             provider = TfidfEmbeddingProvider()
 
@@ -344,7 +344,7 @@ class TestRAGPerformance:
         try:
             import time
 
-    from codex.rag.retriever import CodexRetriever
+        from codex.rag.retriever import CodexRetriever
 
             retriever = CodexRetriever()
 
@@ -456,7 +456,7 @@ class TestRAGEdgeCases:
         try:
             import threading
 
-    from codex.rag.embeddings import TfidfEmbeddingProvider
+        from codex.rag.embeddings import TfidfEmbeddingProvider
 
             provider = TfidfEmbeddingProvider()
             results = []

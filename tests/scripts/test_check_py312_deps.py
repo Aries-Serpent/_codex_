@@ -16,14 +16,14 @@ def cleanup_mocks():
     mock.patch.stopall()
 
 
-import importlib.util
+    import importlib.util
 
 # Import the script module
-import sys
-from pathlib import Path
-from unittest.mock import MagicMock, patch
+    import sys
+    from pathlib import Path
+    from unittest.mock import MagicMock, patch
 
-import pytest
+    import pytest
 
 # Load the script as a module
 script_path = Path(__file__).parent.parent.parent / "scripts" / "check_py312_deps.py"
@@ -33,7 +33,7 @@ sys.modules["check_py312_deps"] = check_py312_deps
 spec.loader.exec_module(check_py312_deps)
 
 # Import functions from the loaded module
-from check_py312_deps import (
+    from check_py312_deps import (
     check_package_py312_support,
     load_dependencies_from_pyproject,
     parse_dependency_spec,

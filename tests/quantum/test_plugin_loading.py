@@ -142,7 +142,7 @@ class TestQuantumPluginRegistry:
 
     def test_thermodynamic_load_priority(self):
         """Test calculating load priority using Boltzmann distribution."""
-    from quantum.plugin_registry import calculate_thermodynamic_load_priority
+        from quantum.plugin_registry import calculate_thermodynamic_load_priority
 
         plugins = [
             QuantumPlugin(name="high_energy", import_path="sys", energy_cost=5.0),

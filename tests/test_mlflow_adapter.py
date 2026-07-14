@@ -27,7 +27,7 @@ def test_maybe_mlflow_import_guard(monkeypatch):
         return real_import(name, *args, **kwargs)
 
     monkeypatch.setattr(builtins, "__import__", fake_import)
-    from codex_ml.utils.experiment_tracking_mlflow import maybe_mlflow
+        from codex_ml.utils.experiment_tracking_mlflow import maybe_mlflow
 
     with maybe_mlflow(enable=True) as mlf:
         mlf.log_params({"x": "y"})

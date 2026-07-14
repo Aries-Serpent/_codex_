@@ -595,8 +595,8 @@ class TestEdgeCasesAndCornerCases:
         assert len(model2.items) == 10000, "Collection must not be empty"
 
 
-import concurrent.futures
-from concurrent.futures import ThreadPoolExecutor
+            import concurrent.futures
+            from concurrent.futures import ThreadPoolExecutor
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

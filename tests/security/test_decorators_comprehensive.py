@@ -255,7 +255,7 @@ class TestRateLimit:
             func()
 
         # After timeout, should work again
-        import time
+            import time
 
         time.sleep(1.1)
         result = func()
