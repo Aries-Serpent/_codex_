@@ -43,6 +43,7 @@ jobs:
         persist-credentials: false
         ref: main
         fetch-depth: 1
+        token: ${{ secrets.GITHUB_TOKEN }}
     - name: "Auto-fix pre-flight REQ-4/5 when \U0001F504 Auto-Post checkbox is checked"
       id: autofix
       # SECURITY MODEL: This step runs scripts from main (trusted) with PR data as input via GitHub API

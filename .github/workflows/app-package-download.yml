@@ -13,7 +13,7 @@ on:
           - 'all'
         default: 'zd_voice_lines'
       branch:
-        description: 'Branch to package from'
+        description: 'Branch to package from (must be a predefined safe branch)'
         required: true
         type: choice
         options:
@@ -21,11 +21,6 @@ on:
           - '0D_base_'
           - 'copilot/add-zd-voice-lines-console-app'
         default: 'copilot/add-zd-voice-lines-console-app'
-      custom_branch:
-        description: 'Custom branch name (overrides dropdown selection if provided)'
-        required: false
-        type: string
-        default: ''
       include_dependencies:
         description: 'Include requirements.txt for dependencies'
         required: false
@@ -61,29 +56,19 @@ jobs:
       - name: Determine target branch
         id: branch
         run: |
-          # Only allow predefined safe branches
-          SELECTED_BRANCH="${{ github.event.inputs.branch }}"
-          
-          case "$SELECTED_BRANCH" in
-            main|0D_base_|copilot/add-zd-voice-lines-console-app)
-              BRANCH="$SELECTED_BRANCH"
-              echo "Using selected branch: $BRANCH"
-              ;;
-            *)
-              echo "❌ Error: invalid branch '$SELECTED_BRANCH'. Only main, 0D_base_, or copilot/add-zd-voice-lines-console-app are allowed."
-              exit 1
-              ;;
-          esac
-
+          # SECURITY: Only predefined safe branches allowed via GitHub Actions UI
+          # The actions/checkout action uses this as ref parameter
+          # No runtime validation needed as GitHub enforces the choice constraint
+          BRANCH="${{ github.event.inputs.branch }}"
           printf 'branch=%s\n' "$BRANCH" >> "$GITHUB_OUTPUT"
 
       - name: Checkout repository
-        uses: actions/checkout@v5  # v6.0.3
+        uses: actions/checkout@v5
         with:
-          persist-credentials: false
           persist-credentials: false
           ref: ${{ steps.branch.outputs.branch }}
           fetch-depth: 1
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Verify apps directory exists
         run: |
