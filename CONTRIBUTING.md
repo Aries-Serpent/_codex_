@@ -64,6 +64,27 @@ pre-commit run --all-files
 
 **Bypassing hooks** (only in emergencies): `git commit --no-verify`
 
+## Workflow Security Checklist
+
+If you create or modify workflows with `workflow_run` triggers, follow these security guidelines:
+
+### Privileged Workflow Context Security
+
+**CRITICAL:** Workflows triggered by `workflow_run` execute with elevated permissions. Follow these rules:
+
+- **✅ DO:** Use GitHub API calls for validation (`gh api repos/.../branches/...`)
+- **✅ DO:** Checkout only the main branch for trusted code
+- **✅ DO:** Keep execution context minimal (avoid shell loops in privileged jobs)
+- **❌ DON'T:** Use `git fetch` or `git checkout` from untrusted sources
+- **❌ DON'T:** Use LGTM pragmas or comments for CodeQL suppression (they don't work for workflow-level analysis)
+- **❌ DON'T:** Pass untrusted code paths to CI jobs
+
+**CodeQL Analysis Warning:** CodeQL performs YAML-level dataflow analysis on `workflow_run` patterns. Git operations create untrusted code patterns that can be detected even without explicit code comments. Use API-only validation instead.
+
+**Reference:** [CodeQL Workflow Security Pattern](docs/SECURITY.md#workflow_run-privileged-context-security-pattern)
+
+For complete details on Phase 4 CodeQL resolution, see [CodeQL Alert Resolution Final Report](.codex/CODEQL_ALERT_RESOLUTION_FINAL_REPORT_2026_07_14.md)
+
 ## Terminology Standards
 
 Consistent terminology across documentation and code reduces ambiguity and improves clarity. This repository enforces standardized terminology for key terms.
