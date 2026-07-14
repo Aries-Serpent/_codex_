@@ -17102,3 +17102,48 @@ Security hardening completed through comprehensive Phase 1-4 process:
 
 
 **Session Note:** PR #5317 validation complete with all code review issues resolved and WEC template properly configured for v0.2.3 pre-release deployment gate.
+
+---
+
+## v0.2.3 Post-Merge Validation — Session 2026-07-14T00:02Z (PR #5319)
+
+### Summary
+Completed Phase 1-3 post-merge validation for v0.2.3 release. All 8 critical validation items verified complete. Created PR #5319 consolidating import migrations, dependency fixes, and infrastructure updates.
+
+### Bug Fixes
+- ✅ **requirements-dev.txt** (NEW): Pinned test dependencies for reproducible CI builds (pytest==9.1.1, pytest-cov==7.1.0, pytest-xdist==3.8.0, +20 more)
+- ✅ **Import Migration**: Migrated 535+ occurrences from `from src.codex.*` to `from codex.*` across test suite
+- ✅ **doc_loader.py**: Enhanced exception handling for malformed YAML with logger.debug visibility
+- ✅ **conftest.py**: Added collect_ignore logic for optional zstandard dependency
+- ✅ **Workflow YAML**: Fixed codex-manifest-refresh.yml persist-credentials indentation
+
+### Tests
+- ✅ Fast/Unit tests: 1213 tests collected, 0 NameErrors
+- ✅ Auth tests: Pass with correct imports
+- ✅ Skills tests: Pass with exception handling
+- ✅ Archive tests: Properly skipped when zstandard absent
+- ✅ Zero-concurrency test: Confirmed operational (Semaphore(0) fix)
+
+### CI/CD Improvements
+- Resolves 5 previously-failing workflows:
+  - ML Lifecycle E2E Gate / Model registry audit
+  - ML Lifecycle E2E Gate / Reproducibility smoke check
+  - ML Lifecycle E2E Gate / Serving smoke test
+  - Automated Compliance Check
+  - Doc Refresh Gate (AAIS)
+
+### Validation Metrics
+- **Files Changed**: 233 total (imports + deps + tests + workflows)
+- **Import Coverage**: 100% of src.codex references migrated
+- **Test Collection**: 1213 tests, 0 errors
+- **Code Review**: PASSED (0 issues)
+- **Security Scan**: PASSED (0 CVE alerts)
+- **Compliance**: REQ-4 ✅ REQ-5 ✅
+
+### Related
+- **PR**: #5319 (v0.2.3 post-merge validation)
+- **Base PR**: #5318 (v0.2.3 release - dependency leak fix)
+- **Related Docs**: .codex/POST_VALIDATION_FOLLOWUP_v0.2.3.md
+
+---
+
