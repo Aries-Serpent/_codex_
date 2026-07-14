@@ -39,23 +39,35 @@ jobs:
         \ = \"main\" ]; then\n  echo \"skip=true\" >> \"$GITHUB_OUTPUT\"\n  echo \"\
         ℹ️  No staging branch active — nothing to forward\"\nelse\n  echo \"skip=false\"\
         \ >> \"$GITHUB_OUTPUT\"\n  echo \"✅ Staging branch detected: $TARGET\"\nfi\n"
-    - name: 📥 Checkout chain tip (${{ steps.resolve-target.outputs.branch }})
+    - name: 📥 Checkout main (trusted base)
       if: steps.check-target.outputs.skip != 'true'
       uses: actions/checkout@v5
       with:
         persist-credentials: false
         fetch-depth: 1
+        ref: main
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-    - name: Validate branch before sync
+    - name: Fetch and validate target branch
       if: steps.check-target.outputs.skip != 'true'
       run: |
         BRANCH="${{ steps.resolve-target.outputs.branch }}"
-        # Verify the branch exists in origin before proceeding
-        if ! git rev-parse origin/"$BRANCH" >/dev/null 2>&1; then
+         
+        # Validate branch name contains only safe characters
+        if ! [[ "$BRANCH" =~ ^[a-zA-Z0-9._/-]+$ ]]; then
+          echo "❌ Error: Branch name contains unsafe characters: $BRANCH"
+          exit 1
+        fi
+         
+        # Verify the branch exists in origin using git ls-remote
+        if ! git ls-remote --exit-code origin "$BRANCH" >/dev/null 2>&1; then
           echo "❌ Error: Branch $BRANCH does not exist in origin"
           exit 1
         fi
-        git checkout "$BRANCH" 2>/dev/null || exit 1
+         
+        # Fetch the branch
+        git fetch origin "$BRANCH" --depth=1 || exit 1
+        # Checkout the branch
+        git checkout "$BRANCH" || exit 1
     - name: 🔄 Fetch changed files from main and apply to chain tip
       id: sync
       if: steps.check-target.outputs.skip != 'true'
