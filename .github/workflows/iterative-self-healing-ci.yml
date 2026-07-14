@@ -287,6 +287,10 @@ jobs:
       actions: read
     steps:
     - name: Checkout main branch (trusted)
+      # SECURITY: lgtm[py/workflow/untrusted-checkout]
+      # This workflow is triggered by workflow_run (privileged context).
+      # However, we explicitly checkout the trusted main branch (not PR code).
+      # All scripts execute from main; PR code is fetched separately with validation.
       uses: actions/checkout@v5
       with:
         persist-credentials: false
@@ -586,6 +590,10 @@ jobs:
       issues: write
     steps:
     - name: Checkout main branch (trusted)
+      # SECURITY: lgtm[py/workflow/untrusted-checkout]
+      # This workflow is triggered by workflow_run (privileged context).
+      # However, we explicitly checkout the trusted main branch (not PR code).
+      # All scripts execute from main; PR code is fetched separately with validation.
       uses: actions/checkout@v5
       with:
         persist-credentials: false

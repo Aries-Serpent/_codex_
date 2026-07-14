@@ -38,6 +38,10 @@ jobs:
       run: |
         echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
     - name: Checkout main branch (trusted, no untrusted code checkout)
+      # SECURITY: lgtm[py/workflow/untrusted-checkout]
+      # This workflow is triggered by workflow_run on PR completion (privileged context).
+      # However, we explicitly checkout the trusted main branch (not PR code).
+      # No untrusted code is executed; all scripts run from main.
       uses: actions/checkout@v5
       with:
         persist-credentials: false

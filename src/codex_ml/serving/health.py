@@ -59,8 +59,8 @@ def readiness_check() -> dict[str, Any]:
         checks["disk_space"] = {"status": "skipped", "reason": "psutil not available"}
     except (IOError, OSError, ModuleNotFoundError) as e:
         error_type = type(e).__name__
-        logger.debug("Exception: %s", error_type)
-        checks["disk_space"] = {"status": "error", "error": str(e)}
+        logger.debug("Exception: %s - %s", error_type, str(e))
+        checks["disk_space"] = {"status": "error", "error": f"Failed to check disk space ({error_type})"}
         all_ready = False
 
     # Check required directories
