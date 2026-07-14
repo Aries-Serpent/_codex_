@@ -1,0 +1,368 @@
+---
+# Phase 4E Planset 010 - Kubernetes Multi-Tenant Resources
+# RBAC, Network Policies, Resource Quotas, and Namespace Templates
+
+# Gate Criterion 1: Zero cross-tenant data leaks
+# Implemented through:
+# - Namespace isolation
+# - RBAC policies per tenant
+# - Network policies for traffic isolation
+# - Resource quotas to prevent resource exhaustion attacks
+
+---
+# Namespace for tenant
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tenant-${TENANT_ID}-ns
+  labels:
+    tenant-id: ${TENANT_ID}
+    tenant-name: ${TENANT_NAME}
+    isolation: strict
+    phase: "4E"
+    planset: "010"
+  annotations:
+    description: "Isolated namespace for tenant ${TENANT_NAME}"
+    created-by: "scaling-framework"
+
+---
+# Resource Quota - CPU and Memory limits
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: tenant-quota
+  namespace: tenant-${TENANT_ID}-ns
+spec:
+  hard:
+    requests.cpu: "${CPU_LIMIT}"
+    limits.cpu: "${CPU_LIMIT_HARD}"
+    requests.memory: "${MEMORY_LIMIT}Gi"
+    limits.memory: "${MEMORY_LIMIT_HARD}Gi"
+    requests.storage: "${STORAGE_LIMIT}Gi"
+    persistentvolumeclaims: "10"
+    pods: "1000"
+    services: "500"
+    services.nodeports: "50"
+  scopeSelector:
+    matchExpressions:
+    - operator: In
+      scopeName: PriorityClass
+      values: ["default"]
+
+---
+# Network Policy - Deny all ingress by default (strict isolation)
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-ingress
+  namespace: tenant-${TENANT_ID}-ns
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+
+---
+# Network Policy - Deny all egress by default
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-egress
+  namespace: tenant-${TENANT_ID}-ns
+spec:
+  podSelector: {}
+  policyTypes:
+  - Egress
+
+---
+# Network Policy - Allow ingress from load balancer only
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-ingress-from-lb
+  namespace: tenant-${TENANT_ID}-ns
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: ingress-nginx
+    ports:
+    - protocol: TCP
+      port: 8080
+
+---
+# Network Policy - Allow intra-tenant communication
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-intra-tenant
+  namespace: tenant-${TENANT_ID}-ns
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector: {}
+
+---
+# Network Policy - Allow DNS and outbound to external services
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-egress-dns-external
+  namespace: tenant-${TENANT_ID}-ns
+spec:
+  podSelector: {}
+  policyTypes:
+  - Egress
+  egress:
+  # Allow DNS
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: kube-system
+    ports:
+    - protocol: UDP
+      port: 53
+  # Allow external HTTPS
+  - to:
+    - podSelector: {}
+    ports:
+    - protocol: TCP
+      port: 443
+
+---
+# RBAC - ServiceAccount for admin role
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: tenant-admin
+  namespace: tenant-${TENANT_ID}-ns
+  labels:
+    tenant-id: ${TENANT_ID}
+    role: admin
+
+---
+# RBAC - ServiceAccount for developer role
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: tenant-developer
+  namespace: tenant-${TENANT_ID}-ns
+  labels:
+    tenant-id: ${TENANT_ID}
+    role: developer
+
+---
+# RBAC - ServiceAccount for viewer role
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: tenant-viewer
+  namespace: tenant-${TENANT_ID}-ns
+  labels:
+    tenant-id: ${TENANT_ID}
+    role: viewer
+
+---
+# RBAC - Role for admin
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: tenant-admin-role
+  namespace: tenant-${TENANT_ID}-ns
+rules:
+- apiGroups: ["*"]
+  resources: ["*"]
+  verbs: ["*"]
+
+---
+# RBAC - Role for developer
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: tenant-developer-role
+  namespace: tenant-${TENANT_ID}-ns
+rules:
+- apiGroups: ["", "apps", "batch"]
+  resources: ["pods", "pods/logs", "services", "deployments", "statefulsets", "jobs", "cronjobs"]
+  verbs: ["get", "list", "watch", "create", "update", "patch"]
+- apiGroups: ["", "apps"]
+  resources: ["pods/exec"]
+  verbs: ["create"]
+
+---
+# RBAC - Role for viewer
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: tenant-viewer-role
+  namespace: tenant-${TENANT_ID}-ns
+rules:
+- apiGroups: ["", "apps", "batch"]
+  resources: ["pods", "pods/logs", "services", "deployments", "statefulsets", "jobs", "cronjobs"]
+  verbs: ["get", "list", "watch"]
+
+---
+# RBAC - RoleBinding for admin
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: tenant-admin-binding
+  namespace: tenant-${TENANT_ID}-ns
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: tenant-admin-role
+subjects:
+- kind: ServiceAccount
+  name: tenant-admin
+  namespace: tenant-${TENANT_ID}-ns
+
+---
+# RBAC - RoleBinding for developer
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: tenant-developer-binding
+  namespace: tenant-${TENANT_ID}-ns
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: tenant-developer-role
+subjects:
+- kind: ServiceAccount
+  name: tenant-developer
+  namespace: tenant-${TENANT_ID}-ns
+
+---
+# RBAC - RoleBinding for viewer
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: tenant-viewer-binding
+  namespace: tenant-${TENANT_ID}-ns
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: tenant-viewer-role
+subjects:
+- kind: ServiceAccount
+  name: tenant-viewer
+  namespace: tenant-${TENANT_ID}-ns
+
+---
+# Pod Security Policy (if running older K8s)
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: tenant-restricted
+spec:
+  privileged: false
+  allowPrivilegeEscalation: false
+  requiredDropCapabilities:
+  - ALL
+  volumes:
+  - 'configMap'
+  - 'emptyDir'
+  - 'projected'
+  - 'secret'
+  - 'downwardAPI'
+  - 'persistentVolumeClaim'
+  hostNetwork: false
+  hostIPC: false
+  hostPID: false
+  runAsUser:
+    rule: 'MustRunAsNonRoot'
+  seLinux:
+    rule: 'MustRunAs'
+    seLinuxOptions:
+      level: "s0:c123,c456"
+  fsGroup:
+    rule: 'MustRunAs'
+    ranges:
+    - min: 1000
+      max: 65535
+  readOnlyRootFilesystem: false
+
+---
+# LimitRange for pod resource constraints
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: tenant-limits
+  namespace: tenant-${TENANT_ID}-ns
+spec:
+  limits:
+  # Pod limits
+  - type: Pod
+    max:
+      cpu: "${CPU_LIMIT}"
+      memory: "${MEMORY_LIMIT}Gi"
+    min:
+      cpu: "100m"
+      memory: "128Mi"
+  # Container limits
+  - type: Container
+    max:
+      cpu: "${CPU_LIMIT}"
+      memory: "${MEMORY_LIMIT}Gi"
+    min:
+      cpu: "10m"
+      memory: "32Mi"
+    defaultRequest:
+      cpu: "100m"
+      memory: "128Mi"
+    default:
+      cpu: "500m"
+      memory: "512Mi"
+  # PVC limits
+  - type: PersistentVolumeClaim
+    max:
+      storage: "10Gi"
+    min:
+      storage: "100Mi"
+
+---
+# Monitoring - ServiceMonitor for Prometheus (if using Prometheus Operator)
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: tenant-metrics
+  namespace: tenant-${TENANT_ID}-ns
+spec:
+  selector:
+    matchLabels:
+      app: ${TENANT_NAME}
+  endpoints:
+  - port: metrics
+    interval: 30s
+    path: /metrics
+
+---
+# Audit Policy for logging cross-tenant access attempts
+apiVersion: audit.k8s.io/v1
+kind: Policy
+rules:
+# Log all requests to secrets (potential cross-tenant data leak)
+- level: RequestResponse
+  verbs: ["get", "list", "watch"]
+  resources:
+  - group: ""
+    resources: ["secrets"]
+  omitStages:
+  - RequestReceived
+  
+# Log RBAC violations
+- level: RequestResponse
+  nonResourceURLs: ["*"]
+  verbs: ["*"]
+  annotations:
+    reason: "RBAC violation detected"
+
+# Default log level
+- level: Metadata
