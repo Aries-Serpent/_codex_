@@ -1,29 +1,29 @@
-# Session Context — 2026-07-14T15:20:36Z
+# Session Context — 2026-07-14T15:39:10Z
 **Branch:** `copilot/add-cache-to-python-workflows`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
 - REST remaining: `5000` (✅)
-- GraphQL remaining: `5000` (✅)
+- GraphQL remaining: `4999` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **.github/workflows/admin-action-t03.yml** — `failure` on `copilot/add-cache-to-python-workflows` (2026-07-14)
-- **.github/workflows/dependency-scan.yml** — `failure` on `copilot/add-cache-to-python-workflows` (2026-07-14)
-- **.github/workflows/autonomy-phase-ci-matrix.yml** — `failure` on `copilot/add-cache-to-python-workflows` (2026-07-14)
-- **.github/workflows/auth-tests.yml** — `failure` on `copilot/add-cache-to-python-workflows` (2026-07-14)
-- **.github/workflows/restore-pipeline-ci.yml** — `failure` on `copilot/add-cache-to-python-workflows` (2026-07-14)
+- **.github/workflows/rust_swarm_ci.yml** — `failure` on `copilot/add-cache-to-python-workflows` (2026-07-14)
+- **.github/workflows/telemetry-collection.yml** — `failure` on `copilot/add-cache-to-python-workflows` (2026-07-14)
+- **.github/workflows/optimized-ci.yml** — `failure` on `copilot/add-cache-to-python-workflows` (2026-07-14)
+- **.github/workflows/machine-readable-maintenance-pr.yml** — `failure` on `copilot/add-cache-to-python-workflows` (2026-07-14)
+- **.github/workflows/actionlint-audit.yml** — `failure` on `copilot/add-cache-to-python-workflows` (2026-07-14)
 
 ## 📝 Recent Commits
+- `32992068` docs(phase-1): Gate 1 pre-deployment readiness validation report (CI/CD & test s — copilot-swe-agent[bot] (2026-07-14)
+- `10093a4c` fix(tests): correct indentation errors in tests/agent/test_core.py (Phase 1 Gate — copilot-swe-agent[bot] (2026-07-14)
+- `cb5166d6` docs(deployment): Phase 1 execution start - Alpha deployment campaign initialize — copilot-swe-agent[bot] (2026-07-14)
 - `672710c3` campaign: multi-phase deployment campaign framework complete (Phase 1-4 ready) — copilot-swe-agent[bot] (2026-07-14)
 - `6baaff35` campaign: establish multi-phase deployment campaign structure (Phase 1-4) — copilot-swe-agent[bot] (2026-07-14)
 - `745a2ac0` Apply remaining changes — copilot-swe-agent[bot] (2026-07-14)
 - `f1fa3f21` PHASE 4F CAMPAIGN FINAL: Complete 56/56 gates, 2 Tier 2 audits approved, product — copilot-swe-agent[bot] (2026-07-14)
 - `3c4e0e52` PHASE 4F CAMPAIGN COMPLETE: All 56/56 gates passed, Tier 2 audits approved, prod — copilot-swe-agent[bot] (2026-07-14)
-- `783bd88c` PHASE 4F: Planset 012 COMPLETE (8/8 gates). Wave 3: 1 of 2 done, 40/56 gates tot — copilot-swe-agent[bot] (2026-07-14)
-- `7c2e1d1e` Planset 013 Tier 2 Infrastructure Audit Complete - All 8 Gates Passing, All 5 Au — copilot-swe-agent[bot] (2026-07-14)
-- `e55adb0c` Planset 013 Tier 2 Infrastructure Audit Complete - All Gates Passing, Production — copilot-swe-agent[bot] (2026-07-14)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
