@@ -365,7 +365,7 @@ jobs:
           fi
         done
         
-        # Record scripts for later restore (they are already on current branch from checkout)
+        # Record scripts for later restore (they are from main branch via explicit ref)
         echo ".github/actions/setup-python-cached/action.yml scripts/ci/auto_fix_common_issues.py scripts/ci/branch_rebase_check.py scripts/ci/ci_triage_repro.sh scripts/ci/session_wrapup_autofix.py" > "$RUNNER_TEMP/overlaid_scripts.txt"
         echo "✅ Trusted fix scripts + composite action validated from origin/main (API-only)"
     - name: Set up Python (cached)
@@ -673,7 +673,7 @@ jobs:
           fi
         done
         
-        # Record scripts for later restore (they are already on current branch from checkout)
+        # Record scripts for later restore (they are from main branch via explicit ref)
         echo "scripts/ci/auto_fix_common_issues.py scripts/ci/sync_tracked_files.py scripts/ci/session_wrapup_autofix.py" > "$RUNNER_TEMP/overlaid_sweep.txt"
     - name: Set up Python
       uses: ./.github/actions/setup-python-cached
