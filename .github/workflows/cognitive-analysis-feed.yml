@@ -115,8 +115,7 @@ jobs:
         \n  git push origin HEAD:\"$_TARGET\"\n  echo \"✅ Learning updates pushed\
         \ to $_TARGET\"\nelse\n  echo \"ℹ️  No changes to cognitive learning\"\nfi\n"
       env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-          }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
     - name: Upload evaluation results
       if: always()
       uses: actions/upload-artifact@v5
@@ -130,8 +129,7 @@ jobs:
         if-no-files-found: ignore
         retention-days: 30
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-        }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
   feed_patterns:
     name: Extract & Feed Patterns
     runs-on: ubuntu-latest
@@ -198,8 +196,7 @@ jobs:
         \n  git push origin HEAD:\"$_TARGET\"\n  echo \"✅ Cognitive brain updated\
         \ on $_TARGET\"\nelse\n  echo \"ℹ️  No changes to cognitive brain\"\nfi\n"
       env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-          }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
     - name: Upload pattern artifacts
       uses: actions/upload-artifact@v5
       with:
@@ -212,8 +209,7 @@ jobs:
         if-no-files-found: ignore
         retention-days: 60
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-        }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
   generate_summary:
     name: Generate Analysis Summary
     runs-on: ubuntu-latest
@@ -262,5 +258,4 @@ jobs:
         \  echo \"\" >> $GITHUB_STEP_SUMMARY\n  echo \"$CB_PATTERNS\" >> $GITHUB_STEP_SUMMARY\n\
         fi\n"
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-        }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}

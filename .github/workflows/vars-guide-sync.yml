@@ -36,7 +36,7 @@ jobs:
         }}
     steps:
     - name: Mask secrets
-      run: 'echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"'
+      run: echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
     - name: Checkout
       uses: actions/checkout@v5
       with:
@@ -90,8 +90,7 @@ jobs:
       if: steps.detect.outputs.changed == 'true' && inputs.dry_run != 'true'
       env:
         PUSH_TARGET: ${{ steps.resolve-target.outputs.branch || 'main' }}
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-          }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
       run: "# Walk the staging chain: sub-PR → 0D_base_ → main  (resolved above)\n\
         _TARGET=\"${{ steps.resolve-target.outputs.branch || 'main' }}\"\necho \"\U0001F500\
         \ Push target: $_TARGET (reason: ${{ steps.resolve-target.outputs.reason }})\"\
