@@ -37,26 +37,20 @@ jobs:
     - name: Mask secrets
       run: |
         echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
-    - name: Checkout main branch (trusted)
+    - name: Checkout main branch (trusted, no untrusted code checkout)
       uses: actions/checkout@v5
       with:
         persist-credentials: false
         ref: main
         fetch-depth: 1
-    - name: Fetch PR branch code (overlaid after)
-      run: |
-        # Fetch the PR code but don't execute it directly - it will be overlaid with trusted scripts
-        git fetch origin ${{ github.event.workflow_run.head_branch }} --depth=2 2>/dev/null || true
-        git checkout ${{ github.event.workflow_run.head_sha }} -- . 2>/dev/null || true
-      continue-on-error: true
-    - name: Overlay trusted scripts from main (security)
-      run: "git fetch origin main --depth=3 --no-tags 2>/dev/null || true\ngit restore\
-        \ --source=origin/main -- \\\n  scripts/ci/session_wrapup_autofix.py \\\n\
-        \  scripts/ci/sync_tracked_files.py \\\n  2>/dev/null || echo \"\u26A0\uFE0F\
-        \ Some scripts not on origin/main \u2014 using checkout versions\"\necho \"\
-        \u2705 Trusted scripts overlaid from origin/main\"\n"
     - name: "Auto-fix pre-flight REQ-4/5 when \U0001F504 Auto-Post checkbox is checked"
       id: autofix
+      # SECURITY MODEL: This step runs scripts from main (trusted) with PR data as input via GitHub API
+      # The session_wrapup_autofix.py and sync_tracked_files.py scripts:
+      # 1. Use gh CLI (authenticated via GH_TOKEN) to fetch PR metadata and file content
+      # 2. Perform validation and transformation via Python (never exec untrusted code)
+      # 3. Commit changes back to PR branch via authenticated git remote
+      # This ensures scripts executing on main remain trusted even in privileged workflow_run context
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
@@ -65,6 +59,7 @@ jobs:
         RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id
           }}
         GIT_SHA: ${{ github.event.workflow_run.head_sha }}
+        # Trusted commit SHA passed to scripts - they handle reading PR data safely via API
       run: "set -euo pipefail\necho \"autofix_ran=false\" >> \"$GITHUB_OUTPUT\"\n\n\
         if [ -z \"${PR_NUMBER}\" ]; then\n  echo \"No PR number \u2014 skipping pre-flight\
         \ auto-fix.\"\n  exit 0\nfi\n\n# Check if the \U0001F504 Auto-Post checkbox\
