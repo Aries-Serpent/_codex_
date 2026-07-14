@@ -1,0 +1,192 @@
+name: Reasoning Engine Monitor
+
+on:
+  schedule:
+    # Daily at 2 AM UTC
+    - cron: "0 2 * * *"
+  workflow_dispatch:
+    inputs:
+      run_mode:
+        description: "Run mode"
+        required: false
+        default: "daily"
+
+jobs:
+  monitor:
+    name: Monitor Reasoning Engine Health
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+      checks: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install numpy pytest pytest-asyncio
+
+      - name: Run reasoning engine tests
+        id: tests
+        run: |
+          python -m pytest tests/cognitive_brain/test_reasoning_engine.py \
+            -v --tb=short --json-report --json-report-file=test_report.json
+        continue-on-error: true
+
+      - name: Generate synthetic workload
+        id: workload
+        run: |
+          python3 << 'EOF'
+          import asyncio
+          import json
+          import time
+          from pathlib import Path
+          from src.codex.cognitive_brain.reasoning_engine import ReasoningEngine
+          from src.codex.cognitive_brain.knowledge_base import KnowledgeBase
+
+          async def run_workload():
+              # Initialize
+              kb = KnowledgeBase()
+              engine = ReasoningEngine(knowledge_base=kb)
+
+              # Run 1000+ decisions
+              print("Running 1000+ decisions...")
+              latencies = []
+              accuracies = []
+
+              for i in range(1000):
+                  decision = engine.make_decision(
+                      goal=f"Decision {i}",
+                      constraints=["safety", "performance"],
+                      decision_history=[
+                          {"option": "choice_a", "success": True},
+                          {"option": "choice_b", "success": False},
+                      ],
+                      current_state={"metric": i % 100},
+                      category=["coverage", "performance", "security"][i % 3],
+                  )
+                  latencies.append(decision.latency_ms)
+
+                  # Simulate outcomes
+                  if i % 2 == 0:
+                      await engine.record_outcome(
+                          decision.id,
+                          success=decision.confidence > 0.75,
+                          actual_result=f"result_{i}",
+                      )
+
+              # Run improvement cycle
+              print("Running improvement cycle...")
+              improvement = engine.improve()
+
+              # Get metrics
+              metrics = engine.get_metrics()
+
+              # Generate report
+              report = {
+                  "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ"),
+                  "decisions_run": 1000,
+                  "latency_ms": {
+                      "mean": float(sum(latencies) / len(latencies)),
+                      "p99": float(sorted(latencies)[990]),
+                      "max": float(max(latencies)),
+                  },
+                  "brier_score": metrics["calibration"]["overall_brier_score"],
+                  "strategy_weights": metrics["strategy_weights"],
+                  "total_decisions": metrics["total_decisions"],
+              }
+
+              # Save report
+              Path(".codex/reasoning").mkdir(parents=True, exist_ok=True)
+              with open(".codex/reasoning/daily_monitor_report.json", "w") as f:
+                  json.dump(report, f, indent=2)
+
+              print(json.dumps(report, indent=2))
+              return report
+
+          report = asyncio.run(run_workload())
+
+          # Output for next step
+          print(f"::set-output name=brier_score::{report['brier_score']}")
+          print(f"::set-output name=p99_latency::{report['latency_ms']['p99']}")
+
+          EOF
+
+      - name: Check calibration drift
+        id: calibration
+        if: always()
+        run: |
+          python3 << 'EOF'
+          import json
+          from pathlib import Path
+
+          report_file = Path(".codex/reasoning/daily_monitor_report.json")
+          if not report_file.exists():
+              print("No report generated")
+              exit(0)
+
+          with open(report_file) as f:
+              report = json.load(f)
+
+          brier = report.get("brier_score", 0.0)
+          p99 = report.get("latency_ms", {}).get("p99", 0.0)
+
+          print(f"Brier Score: {brier:.4f}")
+          print(f"p99 Latency: {p99:.1f}ms")
+
+          # Check thresholds
+          if brier > 0.20:
+              print("::warning::Brier score exceeded threshold (0.20)")
+          if p99 > 500:
+              print("::warning::p99 latency exceeded threshold (500ms)")
+
+          if brier < 0.15 and p99 < 500:
+              print("✅ All metrics within target")
+
+          EOF
+
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: reasoning-engine-reports
+          path: |
+            .codex/reasoning/daily_monitor_report.json
+            test_report.json
+
+      - name: Publish test results
+        if: always()
+        uses: dorny/test-reporter@v1
+        with:
+          name: Reasoning Engine Tests
+          path: test_report.json
+          reporter: java-junit
+          fail-on-error: false
+
+      - name: Slack notification (on failure)
+        if: failure()
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          webhook-url: ${{ secrets.SLACK_WEBHOOK }}
+          payload: |
+            {
+              "text": "❌ Reasoning Engine Monitor Failed",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "**Reasoning Engine Monitor** failed\n*Repository*: ${{ github.repository }}\n*Run*: <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Details>"
+                  }
+                }
+              ]
+            }
+        continue-on-error: true
