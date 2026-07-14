@@ -9,12 +9,30 @@ from typing import Dict, List, Tuple, Optional
 import numpy as np
 import pandas as pd
 from datetime import datetime, timedelta
-from sklearn.linear_model import LinearRegression, HuberRegressor
-from sklearn.preprocessing import PolynomialFeatures
-from statsmodels.tsa.seasonal import seasonal_decompose
 from dataclasses import dataclass, field
 
-from .models import ARIMAModel, ProphetModel, EnsembleForecaster, EnsembleConfig
+# Optional imports
+try:
+    from sklearn.linear_model import LinearRegression, HuberRegressor
+    from sklearn.preprocessing import PolynomialFeatures
+    HAS_SKLEARN = True
+except ImportError:
+    HAS_SKLEARN = False
+    HuberRegressor = None
+
+try:
+    from statsmodels.tsa.seasonal import seasonal_decompose
+    HAS_STATSMODELS = True
+except ImportError:
+    HAS_STATSMODELS = False
+
+try:
+    from .models import ARIMAModel, ProphetModel, EnsembleForecaster, EnsembleConfig
+except ImportError:
+    ARIMAModel = None
+    ProphetModel = None
+    EnsembleForecaster = None
+    EnsembleConfig = None
 
 
 @dataclass
