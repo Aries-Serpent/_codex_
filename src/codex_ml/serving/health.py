@@ -56,7 +56,6 @@ def readiness_check() -> dict[str, Any]:
     except ImportError as e:
         error_type = type(e).__name__
         logger.debug("ImportError: %s", error_type)
-        logger.warning("ImportError: %s", error_type, exc_info=True)
         checks["disk_space"] = {"status": "skipped", "reason": "psutil not available"}
     except (IOError, OSError, ModuleNotFoundError) as e:
         error_type = type(e).__name__
@@ -104,9 +103,7 @@ def get_health_router() -> None:
     try:
         from fastapi import APIRouter
     except ImportError as e:
-        type(e).__name__
-        logger.debug("ImportError: <ERROR_TYPE>")
-        logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
+        logger.debug("ImportError: %s", type(e).__name__)
         raise ImportError(
             "FastAPI is required for health endpoints. Install with: pip install fastapi"
         ) from e

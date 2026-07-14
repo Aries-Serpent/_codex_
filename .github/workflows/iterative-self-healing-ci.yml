@@ -286,14 +286,21 @@ jobs:
       issues: write
       actions: read
     steps:
-    - name: Checkout target branch (working tree)
+    - name: Checkout main branch (trusted)
       uses: actions/checkout@v5
       with:
         persist-credentials: false
         fetch-depth: 50
-        ref: ${{ github.event.workflow_run.head_sha || needs.triage.outputs.head_branch || 'main' }}
+        ref: main
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
-        persist-credentials: false
+    - name: Fetch PR branch (if applicable)
+      run: |
+        if [ -n "${{ github.event.workflow_run.head_sha }}" ]; then
+          git fetch origin "${{ github.event.workflow_run.head_sha }}" --depth=5 2>/dev/null || true
+        fi
+        if [ -n "${{ needs.triage.outputs.head_branch }}" ] && [ "${{ needs.triage.outputs.head_branch }}" != "main" ]; then
+          git fetch origin "${{ needs.triage.outputs.head_branch }}" --depth=5 2>/dev/null || true
+        fi
     - name: '🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)'
       id: resolve-target
       env:
@@ -573,14 +580,21 @@ jobs:
       pull-requests: write
       issues: write
     steps:
-    - name: Checkout target branch
+    - name: Checkout main branch (trusted)
       uses: actions/checkout@v5
       with:
         persist-credentials: false
         fetch-depth: 5
-        ref: ${{ github.event.workflow_run.head_sha || needs.triage.outputs.head_branch || 'main' }}
+        ref: main
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
-        persist-credentials: false
+    - name: Fetch PR branch (if applicable)
+      run: |
+        if [ -n "${{ github.event.workflow_run.head_sha }}" ]; then
+          git fetch origin "${{ github.event.workflow_run.head_sha }}" --depth=3 2>/dev/null || true
+        fi
+        if [ -n "${{ needs.triage.outputs.head_branch }}" ] && [ "${{ needs.triage.outputs.head_branch }}" != "main" ]; then
+          git fetch origin "${{ needs.triage.outputs.head_branch }}" --depth=3 2>/dev/null || true
+        fi
     - name: Overlay trusted scripts from main (security)
       run: "git fetch origin main --depth=3 --no-tags 2>/dev/null || true\ngit restore\
         \ --source=origin/main -- \\\n  .github/actions/setup-python-cached/action.yml\

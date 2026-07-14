@@ -61,27 +61,19 @@ jobs:
       - name: Determine target branch
         id: branch
         run: |
-          CUSTOM_BRANCH="${{ github.event.inputs.custom_branch }}"
+          # Only allow predefined safe branches
           SELECTED_BRANCH="${{ github.event.inputs.branch }}"
-
-          if [ -n "$CUSTOM_BRANCH" ]; then
-            # Reject control characters/newlines to prevent output injection
-            if [[ "$CUSTOM_BRANCH" == *$'\n'* || "$CUSTOM_BRANCH" == *$'\r'* ]]; then
-              echo "❌ Error: custom_branch must be a single line."
+          
+          case "$SELECTED_BRANCH" in
+            main|0D_base_|copilot/add-zd-voice-lines-console-app)
+              BRANCH="$SELECTED_BRANCH"
+              echo "Using selected branch: $BRANCH"
+              ;;
+            *)
+              echo "❌ Error: invalid branch '$SELECTED_BRANCH'. Only main, 0D_base_, or copilot/add-zd-voice-lines-console-app are allowed."
               exit 1
-            fi
-            # Validate: branch name must contain only safe characters
-            if ! [[ "$CUSTOM_BRANCH" =~ ^[a-zA-Z0-9][a-zA-Z0-9/_.-]*$ ]]; then
-              echo "❌ Error: custom_branch '$CUSTOM_BRANCH' contains invalid characters."
-              echo "Allowed characters: alphanumeric, '/', '_', '.', '-' (must start with alphanumeric)."
-              exit 1
-            fi
-            BRANCH="$CUSTOM_BRANCH"
-            echo "Using custom branch: $BRANCH"
-          else
-            BRANCH="$SELECTED_BRANCH"
-            echo "Using selected branch: $BRANCH"
-          fi
+              ;;
+          esac
 
           printf 'branch=%s\n' "$BRANCH" >> "$GITHUB_OUTPUT"
 

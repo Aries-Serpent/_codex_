@@ -259,7 +259,7 @@ class EnsemblePredictor:
                 pred = self.predict(features, prediction_type)
                 predictions.append(pred)
             except Exception as e:
-                logger.error(f"Batch prediction failed for features {features}: {e}")
+                logger.error("Batch prediction failed: %s", str(type(e).__name__))
 
         return predictions
 

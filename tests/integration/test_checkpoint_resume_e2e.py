@@ -371,7 +371,7 @@ class TestCheckpointResumeErrorRecovery:
 
             # Make directory read-only
             # intentional for testing permission errors
-            os.chmod(readonly_dir, 0o444)
+            os.chmod(readonly_dir, 0o500)
 
             ckpt_dir = readonly_dir / "checkpoint"
 
@@ -394,7 +394,7 @@ class TestCheckpointResumeErrorRecovery:
             readonly_dir_check = tmpdir / "readonly"
             if readonly_dir_check.exists():
                 # restoring normal permissions for cleanup
-                os.chmod(readonly_dir_check, 0o755)
+                os.chmod(readonly_dir_check, 0o700)
             shutil.rmtree(tmpdir, ignore_errors=True)
 
 
