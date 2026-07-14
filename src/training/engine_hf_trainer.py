@@ -47,7 +47,7 @@ def _install_accelerate_compat() -> None:
         DataLoaderConfiguration = getattr(
             getattr(accelerate, "utils", object()), "DataLoaderConfiguration", None
         )
-    except (ValueError, TypeError) as e:  # pragma: no cover
+    except (ValueError, TypeError, ModuleNotFoundError) as e:  # pragma: no cover
         type(e).__name__
         print("[codex][accelerate] failed to inspect accelerate: <ERROR_TYPE>")
         return

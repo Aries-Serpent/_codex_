@@ -22,7 +22,7 @@ try:  # pragma: no cover - optional torch guard for import-time failures
     GradScaler = torch.cuda.amp.GradScaler
     autocast = torch.cuda.amp.autocast
     DataLoader = torch.utils.data.DataLoader
-except (ValueError, TypeError):  # pragma: no cover - propagate a consistent runtime error lazily
+except (ValueError, TypeError, AttributeError):  # pragma: no cover - propagate a consistent runtime error lazily
     _HAS_REAL_TORCH = False
 
     class _NoOpScaler:
@@ -112,14 +112,14 @@ def _set_seed(seed: int) -> None:
             pass
 
 
-from logging_utils import (  # noqa: E402
+from ..logging_utils import (  # noqa: E402
     LoggingConfig,
     LoggingSession,
     log_metrics,
     setup_logging,
     shutdown_logging,
 )
-from metrics import append_ndjson  # noqa: E402
+from ..metrics import append_ndjson  # noqa: E402
 
 from .checkpointing import load_checkpoint  # noqa: E402
 from .simple_trainer import SimpleTrainer  # noqa: E402

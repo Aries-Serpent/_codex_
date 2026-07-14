@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Any, Dict
 
 # from scripts.ci._token_resolver import get_token
 # This module implements 8 core test scenarios validating the entire token

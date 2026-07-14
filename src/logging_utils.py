@@ -17,12 +17,12 @@ from codex_ml.utils.optional import optional_dependency_error
 
 try:  # pragma: no cover - tensorboard is optional in lightweight envs
     from torch.utils.tensorboard import SummaryWriter
-except (IOError, OSError):  # pragma: no cover - fall back to a stub
+except (IOError, OSError, ModuleNotFoundError):  # pragma: no cover - fall back to a stub
     SummaryWriter = None
 
 try:  # pragma: no cover - MLflow is optional for offline smoke tests
     import mlflow
-except (IOError, OSError):  # pragma: no cover - guard offline runs that skip mlflow install
+except (IOError, OSError, ModuleNotFoundError):  # pragma: no cover - guard offline runs that skip mlflow install
     mlflow = None
 
 try:  # pragma: no cover - optional runtime dependency
