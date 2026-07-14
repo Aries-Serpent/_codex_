@@ -1,21 +1,22 @@
-# Session Context — 2026-07-14T17:22:41Z
+# Session Context — 2026-07-14T17:33:34Z
 **Branch:** `copilot/add-cache-to-python-workflows`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
 - REST remaining: `5000` (✅)
-- GraphQL remaining: `4999` (✅)
+- GraphQL remaining: `4997` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **.github/workflows/wec-enforcement-gate.yml** — `failure` on `copilot/add-cache-to-python-workflows` (2026-07-14)
+- **.github/workflows/rust_swarm_ci.yml** — `failure` on `copilot/add-cache-to-python-workflows` (2026-07-14)
+- **.github/workflows/security-pr-enhancement.yml** — `failure` on `copilot/add-cache-to-python-workflows` (2026-07-14)
+- **.github/workflows/rust-ffi.yml** — `failure` on `copilot/add-cache-to-python-workflows` (2026-07-14)
 - **.github/workflows/ci-checkpoint-validation.yml** — `failure` on `copilot/add-cache-to-python-workflows` (2026-07-14)
-- **.github/workflows/codex-master-key-validation.yml** — `failure` on `copilot/add-cache-to-python-workflows` (2026-07-14)
-- **.github/workflows/pre-release-validation.yml** — `failure` on `copilot/add-cache-to-python-workflows` (2026-07-14)
-- **.github/workflows/security-findings-copilot-handoff.yml** — `failure` on `copilot/add-cache-to-python-workflows` (2026-07-14)
+- **.github/workflows/chatops_copilot_trigger.yml** — `failure` on `copilot/add-cache-to-python-workflows` (2026-07-14)
 
 ## 📝 Recent Commits
+- `ad9afc6a` Apply remaining changes — copilot-swe-agent[bot] (2026-07-14)
 - `605e95a2` phase-1: Complete - all gates pass (Gate 1 test validation, Gate 2 artifacts, Ga — copilot-swe-agent[bot] (2026-07-14)
 - `fbe688c6` doc: Phase 1 Gate 1 completion - test infrastructure validation complete — copilot-swe-agent[bot] (2026-07-14)
 - `0ccdf885` phase-1: Gate 1 validation complete - all tests passing (32,063 collected, 0 syn — copilot-swe-agent[bot] (2026-07-14)
@@ -23,7 +24,6 @@
 - `8e0ed3a3` phase-1: Initialize Phase 1 Completion - CI Testing Agent delegated for test col — copilot-swe-agent[bot] (2026-07-14)
 - `d726ae37` Fix pytest.importorskip and module-level import issues (8 files) — copilot-swe-agent[bot] (2026-07-14)
 - `01f3d71e` session: Phase 1 blocker remediation checkpoint - 2/3 complete, handing off BLOC — copilot-swe-agent[bot] (2026-07-14)
-- `02771212` Fix 83 test collection errors total: indentation, exception handlers, torch modu — copilot-swe-agent[bot] (2026-07-14)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
