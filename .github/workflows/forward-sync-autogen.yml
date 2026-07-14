@@ -37,8 +37,8 @@ jobs:
       id: check-target
       run: "TARGET=\"${{ steps.resolve-target.outputs.branch }}\"\nif [ \"$TARGET\"\
         \ = \"main\" ]; then\n  echo \"skip=true\" >> \"$GITHUB_OUTPUT\"\n  echo \"\
-        ℹ️  No staging branch active — nothing to forward\"\nelse\n  echo \"skip=false\"\
-        \ >> \"$GITHUB_OUTPUT\"\n  echo \"✅ Staging branch detected: $TARGET\"\nfi\n"
+       ℹ️  No staging branch active — nothing to forward\"\nelse\n  echo \"skip=false\"\
+       \ >> \"$GITHUB_OUTPUT\"\n  echo \"✅ Staging branch detected: $TARGET\"\nfi\n"
     - name: 📥 Checkout main (trusted base)
       if: steps.check-target.outputs.skip != 'true'
       uses: actions/checkout@v5
@@ -52,9 +52,15 @@ jobs:
       run: |
         BRANCH="${{ steps.resolve-target.outputs.branch }}"
          
-        # Validate branch name contains only safe characters
-        if ! [[ "$BRANCH" =~ ^[a-zA-Z0-9._/-]+$ ]]; then
+        # Validate branch name contains only safe characters (no .. directory traversal)
+        if ! [[ "$BRANCH" =~ ^[a-zA-Z0-9/_-]+$ ]]; then
           printf '❌ Error: Branch name contains unsafe characters: %s\n' "$BRANCH" >&2
+          exit 1
+        fi
+        
+        # Explicitly reject .. sequences that could enable traversal
+        if [[ "$BRANCH" == *".."* ]]; then
+          printf '❌ Error: Branch name contains directory traversal sequence: %s\n' "$BRANCH" >&2
           exit 1
         fi
          

@@ -295,11 +295,16 @@ jobs:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
     - name: Fetch PR commit (if applicable)
       run: |
+        FETCH_DEPTH=5
         if [ -n "${{ github.event.workflow_run.head_sha }}" ]; then
-          git fetch origin "${{ github.event.workflow_run.head_sha }}" --depth=5 2>/dev/null || true
+          git fetch origin "${{ github.event.workflow_run.head_sha }}" --depth="$FETCH_DEPTH" 2>&1 | tee -a "$RUNNER_TEMP/fetch.log" || {
+            echo "⚠️ Warning: Failed to fetch workflow_run head_sha; continuing with main branch" >&2
+          }
         fi
         if [ -n "${{ needs.triage.outputs.head_sha }}" ] && [ "${{ needs.triage.outputs.head_sha }}" != "${{ github.sha }}" ]; then
-          git fetch origin "${{ needs.triage.outputs.head_sha }}" --depth=5 2>/dev/null || true
+          git fetch origin "${{ needs.triage.outputs.head_sha }}" --depth="$FETCH_DEPTH" 2>&1 | tee -a "$RUNNER_TEMP/fetch.log" || {
+            echo "⚠️ Warning: Failed to fetch triage head_sha; continuing with main branch" >&2
+          }
         fi
     - name: '🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)'
       id: resolve-target
@@ -589,20 +594,32 @@ jobs:
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
     - name: Fetch PR commit (if applicable)
       run: |
+        FETCH_DEPTH=3
         if [ -n "${{ github.event.workflow_run.head_sha }}" ]; then
-          git fetch origin "${{ github.event.workflow_run.head_sha }}" --depth=3 2>/dev/null || true
+          git fetch origin "${{ github.event.workflow_run.head_sha }}" --depth="$FETCH_DEPTH" 2>&1 | tee -a "$RUNNER_TEMP/fetch.log" || {
+            echo "⚠️ Warning: Failed to fetch workflow_run head_sha; continuing with main branch" >&2
+          }
         fi
         if [ -n "${{ needs.triage.outputs.head_sha }}" ] && [ "${{ needs.triage.outputs.head_sha }}" != "${{ github.sha }}" ]; then
-          git fetch origin "${{ needs.triage.outputs.head_sha }}" --depth=3 2>/dev/null || true
+          git fetch origin "${{ needs.triage.outputs.head_sha }}" --depth="$FETCH_DEPTH" 2>&1 | tee -a "$RUNNER_TEMP/fetch.log" || {
+            echo "⚠️ Warning: Failed to fetch triage head_sha; continuing with main branch" >&2
+          }
         fi
     - name: Overlay trusted scripts from main (security)
-      run: "git fetch origin main --depth=3 --no-tags 2>/dev/null || true\ngit restore\
-        \ --source=origin/main -- \\\n  .github/actions/setup-python-cached/action.yml\
-        \ \\\n  scripts/ci/auto_fix_common_issues.py \\\n  scripts/ci/sync_tracked_files.py\
-        \ \\\n  scripts/ci/session_wrapup_autofix.py \\\n  2>/dev/null || true\necho\
-        \ \"scripts/ci/auto_fix_common_issues.py scripts/ci/sync_tracked_files.py\
-        \ scripts/ci/session_wrapup_autofix.py\" > \"$RUNNER_TEMP/overlaid_sweep.txt\"\
-        \n"
+      run: |
+        # Fetch main at depth=3 for faster shallow clone; restore trusted scripts
+        git fetch origin main --depth=3 --no-tags 2>&1 | tee -a "$RUNNER_TEMP/fetch.log" || {
+          echo "⚠️ Warning: Failed to fetch main; using current checkout" >&2
+        }
+        git restore --source=origin/main -- \
+          .github/actions/setup-python-cached/action.yml \
+          scripts/ci/auto_fix_common_issues.py \
+          scripts/ci/sync_tracked_files.py \
+          scripts/ci/session_wrapup_autofix.py \
+          2>&1 || {
+          echo "⚠️ Warning: Some trusted scripts could not be restored from main" >&2
+        }
+        echo "scripts/ci/auto_fix_common_issues.py scripts/ci/sync_tracked_files.py scripts/ci/session_wrapup_autofix.py" > "$RUNNER_TEMP/overlaid_sweep.txt"
     - name: Set up Python
       uses: ./.github/actions/setup-python-cached
       with:
