@@ -1,5 +1,23 @@
 ## [Unreleased]
 
+### Planned (Phase 4E — Cognitive AI Enhancement & Enterprise Scaling)
+- Phase 4E strategic roadmap prepared: 7 plansets designed with specialized agent assignments
+- AAIS target established: 97.1 → 99.0/100 (A+ → A++, +1.9 points)
+- Reasoning depth roadmap: 50/100 → 65/100 (+15 points via recursive reasoning, ensemble prediction, anomaly correlation, capacity forecasting)
+- Planset 008: Cognitive Reasoning Engine with confidence scoring and feedback loop
+- Planset 009: Multi-model ensemble prediction (base + ML + symbolic with weighted voting)
+- Planset 010: Enterprise scaling framework (multi-tenant isolation, geographic failover, load balancing, auto-scaling)
+- Planset 011: Advanced anomaly correlation with root cause inference and probabilistic causal graphs
+- Planset 012: Predictive capacity planning (ARIMA + Prophet forecasting, bottleneck detection)
+- Planset 013: SLA-driven resource optimization (constraint satisfaction, Pareto frontiers, cost allocation)
+- Planset 014: Business impact scoring framework (prioritization, ROI calculator, executive dashboard)
+- Execution timeline: 3-wave parallelization, 16-24 hours estimated, 56 gate criteria (8 per planset)
+- Governance: D-tier autonomous authority extends from Phase 4D; no manual approval gates
+
+### Fixed (auto-update — Phase 4E Planning)
+- Create `.codex/PHASE_4E_ROADMAP.md` with comprehensive planning document (8.5 KB)
+- Update docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md with Phase 4E planning session entry
+
 ### Fixed (auto-update — v0.2.3 Post-Merge Validation)
 - Complete 8-item post-merge validation for PR #5318 deployment
 - Verify and confirm all import migrations from `from src.codex.*` to `from codex.*` (535+ occurrences)
