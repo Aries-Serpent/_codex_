@@ -6,7 +6,7 @@ from pathlib import Path
 
 
 def test_training_config_defaults() -> None:
-    from src.training.config import TrainingConfig
+    from training.config import TrainingConfig
 
     cfg = TrainingConfig()
     assert cfg.batch_size > 0, "batch_size must be greater than zero"
@@ -14,7 +14,7 @@ def test_training_config_defaults() -> None:
 
 
 def test_training_config_from_file(tmp_path: Path) -> None:
-    from src.training.config import TrainingConfig
+    from training.config import TrainingConfig
 
     config_file = tmp_path / "cfg.json"
     config_file.write_text('{"batch_size": 2, "learning_rate": 0.01}')
@@ -29,7 +29,7 @@ def test_training_config_from_file(tmp_path: Path) -> None:
 
 
 def test_training_config_validation() -> None:
-    from src.training.config import TrainingConfig
+    from training.config import TrainingConfig
 
     cfg = TrainingConfig(batch_size=1)
     if hasattr(cfg, "validate"):

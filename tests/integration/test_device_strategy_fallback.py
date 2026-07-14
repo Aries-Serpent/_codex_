@@ -124,7 +124,7 @@ class TestDeviceStrategyValidation:
         except ImportError:
             pytest.skip("PyTorch not available")
 
-        from src.codex_ml.training.device_strategy import DeviceConfig
+    from codex_ml.training.device_strategy import DeviceConfig
 
         # Act
         config = DeviceConfig(
@@ -146,7 +146,7 @@ class TestDeviceStrategyValidation:
         except ImportError:
             pytest.skip("PyTorch not available")
 
-        from src.codex_ml.training.device_strategy import _device_available
+    from codex_ml.training.device_strategy import _device_available
 
         # Act
         cpu_available = _device_available("cpu")
@@ -162,7 +162,7 @@ class TestDeviceStrategyValidation:
         except ImportError:
             pytest.skip("PyTorch not available")
 
-        from src.codex_ml.training.device_strategy import _device_available
+    from codex_ml.training.device_strategy import _device_available
 
         # Act
         cuda_available = _device_available("cuda")
@@ -184,7 +184,7 @@ class TestDeviceStrategyIntegration:
         except ImportError:
             pytest.skip("PyTorch not available")
 
-        from src.codex_ml.training.device_strategy import DeviceConfig
+    from codex_ml.training.device_strategy import DeviceConfig
 
         # Act: Create config with explicit device
         config = DeviceConfig(
@@ -204,7 +204,7 @@ class TestDeviceStrategyIntegration:
         except ImportError:
             pytest.skip("PyTorch not available")
 
-        from src.codex_ml.training.device_strategy import DeviceConfig
+    from codex_ml.training.device_strategy import DeviceConfig
 
         # Act
         config1 = DeviceConfig.auto_detect()
@@ -217,7 +217,7 @@ class TestDeviceStrategyIntegration:
     def test_device_strategy_no_crash_on_torch_unavailable(self):
         """Verify graceful handling when PyTorch is unavailable."""
         # Arrange
-        from src.codex_ml.training.device_strategy import _device_available
+    from codex_ml.training.device_strategy import _device_available
 
         # Act & Assert: Should not crash when called
         # (May return False, but shouldn't raise exception)
@@ -240,7 +240,7 @@ class TestDeviceStrategyErrorHandling:
         except ImportError:
             pytest.skip("PyTorch not available")
 
-        from src.codex_ml.training.device_strategy import _torch_required
+    from codex_ml.training.device_strategy import _torch_required
 
         # Mock torch unavailability
         with mock.patch("src.codex_ml.training.device_strategy.torch", None):
@@ -258,7 +258,7 @@ class TestDeviceStrategyErrorHandling:
         except ImportError:
             pytest.skip("PyTorch not available")
 
-        from src.codex_ml.training.device_strategy import _supports_bfloat16
+    from codex_ml.training.device_strategy import _supports_bfloat16
 
         # Mock exception during CUDA check
         with mock.patch("torch.cuda.is_available", side_effect=RuntimeError("CUDA error")):

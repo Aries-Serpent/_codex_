@@ -10,7 +10,7 @@ pytest.importorskip("tensorboard")
 
 import os
 
-from src.training.checkpoint_manager import CheckpointManager
+from training.checkpoint_manager import CheckpointManager
 
 
 def test_atomicity_and_resume(tmp_path, monkeypatch):

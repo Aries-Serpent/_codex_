@@ -34,7 +34,7 @@ except ImportError:
 
 # Only import if dependencies are available
 if HAS_DEPS:
-    from src.codex.interpretability.mlp_scorer import MLPAnalysis, MLPScorer
+    from codex.interpretability.mlp_scorer import MLPAnalysis, MLPScorer
 else:
     MLPAnalysis = None
     MLPScorer = None

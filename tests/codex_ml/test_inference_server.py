@@ -8,7 +8,7 @@ import pytest
 
 np = pytest.importorskip("numpy")
 
-from src.codex_ml.serving.inference_server import (
+from codex_ml.serving.inference_server import (
     MAX_BATCH_SIZE,
     MAX_INPUT_LENGTH,
     ModelConfig,

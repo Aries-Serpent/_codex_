@@ -26,7 +26,7 @@ import time
 # Set up path
 sys.path.insert(0, '/home/runner/work/_codex_/_codex_')
 
-from src.codex.governance.approval_service import (
+from codex.governance.approval_service import (
     ApprovalService,
     ApprovalState,
     AuditCode,

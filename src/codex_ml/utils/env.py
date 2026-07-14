@@ -41,7 +41,9 @@ try:  # pragma: no cover - optional pynvml dependency
     import pynvml as _pynvml
 
     _pynvml.nvmlInit()
-except (ImportError, AttributeError):  # pragma: no cover
+except Exception:  # pragma: no cover
+    # Catch all exceptions: ImportError (module not installed), RuntimeError/AttributeError
+    # (nvmlInit() failures), NVMLError_LibraryNotFound (NVIDIA lib not available), etc.
     _pynvml = None
 
 

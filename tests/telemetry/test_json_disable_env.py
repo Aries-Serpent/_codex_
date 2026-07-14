@@ -21,7 +21,7 @@ except (ImportError, AttributeError):
     _TORCH_312_BUG, reason="PyTorch 2.x isinstance bug with Python 3.12 union types"
 )
 def test_telemetry_json_disable_env(tmp_path: Path, monkeypatch):
-    from src.codex_ml.train_loop import run_training
+    from codex_ml.train_loop import run_training
 
     monkeypatch.setenv("CODEX_TELEMETRY_JSON_DISABLE", "1")
     outdir = tmp_path / "artifacts"

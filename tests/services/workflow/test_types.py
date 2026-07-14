@@ -14,7 +14,7 @@ from pathlib import Path
 import pytest
 from pydantic import ValidationError
 
-from src.services.workflow.types import (
+from services.workflow.types import (
     InputType,
     InventoryStats,
     TriggerType,

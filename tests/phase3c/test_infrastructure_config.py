@@ -15,7 +15,7 @@ from pathlib import Path
 from unittest import mock
 
 import pytest
-from src.codex.config.env_vars import EnvironmentManager, EnvVarConfig
+from codex.config.env_vars import EnvironmentManager, EnvVarConfig
 
 
 class TestEnvironmentManagerBasics:

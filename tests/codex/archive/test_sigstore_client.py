@@ -11,7 +11,7 @@ class TestSigstoreClientImports:
     def test_module_can_be_imported(self):
         """Test that the module can be imported."""
         try:
-            from src.codex.archive import sigstore_client
+    from codex.archive import sigstore_client
 
             assert sigstore_client is not None, "sigstore_client must be initialized"
         except ImportError:
@@ -20,7 +20,7 @@ class TestSigstoreClientImports:
     def test_module_has_expected_attributes(self):
         """Test module has expected attributes."""
         try:
-            from src.codex.archive import sigstore_client
+    from codex.archive import sigstore_client
 
             assert hasattr(sigstore_client, "__name__")
         except ImportError:
@@ -33,7 +33,7 @@ class TestSigstoreClientOperations:
     def test_client_initialization(self):
         """Test sigstore client initialization."""
         try:
-            from src.codex.archive import sigstore_client
+    from codex.archive import sigstore_client
 
             if hasattr(sigstore_client, "SigstoreClient"):
                 client = sigstore_client.SigstoreClient()
@@ -44,7 +44,7 @@ class TestSigstoreClientOperations:
     def test_sign_artifact(self):
         """Test artifact signing."""
         try:
-            from src.codex.archive import sigstore_client
+    from codex.archive import sigstore_client
 
             if hasattr(sigstore_client, "sign_artifact"):
                 # Mock the signing operation
@@ -58,7 +58,7 @@ class TestSigstoreClientOperations:
     def test_verify_signature(self):
         """Test signature verification."""
         try:
-            from src.codex.archive import sigstore_client
+    from codex.archive import sigstore_client
 
             if hasattr(sigstore_client, "verify_signature"):
                 with patch.object(sigstore_client, "verify_signature") as mock_verify:
@@ -75,7 +75,7 @@ class TestSigstoreClientConfiguration:
     def test_default_configuration(self):
         """Test default configuration values."""
         try:
-            from src.codex.archive import sigstore_client
+    from codex.archive import sigstore_client
 
             if hasattr(sigstore_client, "DEFAULT_CONFIG"):
                 assert sigstore_client.DEFAULT_CONFIG is not None, "DEFAULT_CONFIG must be initialized"
@@ -85,7 +85,7 @@ class TestSigstoreClientConfiguration:
     def test_custom_configuration(self):
         """Test custom configuration."""
         try:
-            from src.codex.archive import sigstore_client
+    from codex.archive import sigstore_client
 
             if hasattr(sigstore_client, "SigstoreClient"):
                 config = {"timeout": 30}
@@ -101,7 +101,7 @@ class TestSigstoreClientErrors:
     def test_invalid_artifact_error(self):
         """Test error handling for invalid artifacts."""
         try:
-            from src.codex.archive import sigstore_client
+    from codex.archive import sigstore_client
 
             if hasattr(sigstore_client, "sign_artifact"):
                 with pytest.raises((TypeError, ValueError)):
@@ -112,7 +112,7 @@ class TestSigstoreClientErrors:
     def test_connection_error_handling(self):
         """Test handling of connection errors."""
         try:
-            from src.codex.archive import sigstore_client
+    from codex.archive import sigstore_client
 
             if hasattr(sigstore_client, "SigstoreClient"):
                 client = sigstore_client.SigstoreClient()

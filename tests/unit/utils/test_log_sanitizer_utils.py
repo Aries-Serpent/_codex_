@@ -1,6 +1,6 @@
 """Unit tests for log_sanitizer utilities (Phase 23 Week 3 gapfill)."""
 
-from src.utils.log_sanitizer import sanitize_dict_for_log, sanitize_log_input
+from utils.log_sanitizer import sanitize_dict_for_log, sanitize_log_input
 
 
 def test_sanitize_log_input_newline_removal():

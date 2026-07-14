@@ -1,6 +1,6 @@
 """Comprehensive test suite for hash_table module."""
 
-from src.codex.utils.hash_table import (
+from codex.utils.hash_table import (
     CuckooHashTable,
     RobinHoodHashTable,
     get_aais_contribution,

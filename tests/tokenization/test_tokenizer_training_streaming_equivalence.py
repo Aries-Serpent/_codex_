@@ -18,7 +18,7 @@ except ImportError:
 
 
 pytest.importorskip("sentencepiece")
-from src.tokenization.train_tokenizer import TrainTokenizerConfig, train
+from tokenization.train_tokenizer import TrainTokenizerConfig, train
 
 
 def test_bpe_streaming_equivalence(tmp_path):

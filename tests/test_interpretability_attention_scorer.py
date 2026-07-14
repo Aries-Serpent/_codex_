@@ -13,7 +13,7 @@ from unittest.mock import MagicMock
 
 import numpy as np
 import pytest
-from src.codex.interpretability.attention_scorer import (
+from codex.interpretability.attention_scorer import (
     AttentionAnalysis,
     AttentionScorer,
 )

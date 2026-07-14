@@ -18,7 +18,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 import pytest
-from src.codex.monkeypatch.log_adapters import (
+from codex.monkeypatch.log_adapters import (
     _ensure_table,
     _resolve_path,
     log_event,

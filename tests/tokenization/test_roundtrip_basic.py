@@ -12,7 +12,7 @@ import pytest
 pytest.importorskip("sentencepiece")
 
 from codex_ml.interfaces.tokenizer import HFTokenizer
-from src.tokenization.train_tokenizer import TrainTokenizerConfig, train
+from tokenization.train_tokenizer import TrainTokenizerConfig, train
 
 
 def test_roundtrip_basic(tmp_path):

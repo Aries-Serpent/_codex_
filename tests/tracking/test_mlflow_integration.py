@@ -16,7 +16,7 @@ from pathlib import Path
 import pytest
 
 # Import tracking writers
-from src.codex_ml.tracking.writers import (
+from codex_ml.tracking.writers import (
     CompositeWriter,
     MLflowWriter,
     NdjsonWriter,

@@ -5,7 +5,7 @@ from dataclasses import asdict
 
 import pytest
 
-from src.codex_ml.cli.config import AppConfig, ExperimentConfig, ModelCfg
+from codex_ml.cli.config import AppConfig, ExperimentConfig, ModelCfg
 
 
 class TestConfigSerialization:

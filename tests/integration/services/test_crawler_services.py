@@ -2,7 +2,7 @@
 
 import pytest
 
-from src.services.crawler import (
+from services.crawler import (
     ContentDiffer,
     MultiLocaleSyncManager,
     ZendeskKnowledgeSyncService,
@@ -34,7 +34,7 @@ def test_zendesk_sync_error_handling():
 @pytest.mark.integration
 def test_multi_locale_sync_manager():
     """Test MultiLocaleSyncManager coordinates locale syncs."""
-    from src.services.crawler.multi_locale_sync import LocaleConfig
+    from services.crawler.multi_locale_sync import LocaleConfig
 
     locales = [
         LocaleConfig("en-US", priority=10),

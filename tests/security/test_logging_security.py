@@ -9,7 +9,7 @@ import logging
 
 import pytest
 
-from src.security.logging import (
+from security.logging import (
     create_log_filter,
     hash_token,
     redact_email,

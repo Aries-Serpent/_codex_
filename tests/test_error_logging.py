@@ -10,7 +10,7 @@ from pathlib import Path
 
 import pytest
 
-from src.utils.error_logging import append_error
+from utils.error_logging import append_error
 
 
 def test_append_error_creates_file(tmp_path, monkeypatch):

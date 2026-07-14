@@ -2,7 +2,7 @@ import sys
 from datetime import datetime
 
 import pytest
-from src.codex.utils.path_extended import get_repo_root
+from codex.utils.path_extended import get_repo_root
 
 sys.path.insert(0, str(get_repo_root() / "src"))
 sys.path.insert(0, "/home/runner/work/_codex_/_codex_")

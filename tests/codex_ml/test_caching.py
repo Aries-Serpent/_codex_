@@ -2,7 +2,7 @@
 
 import time
 
-from src.codex_ml.serving.caching import (
+from codex_ml.serving.caching import (
     CacheEntry,
     CacheMetrics,
     ResponseCache,

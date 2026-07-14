@@ -17,7 +17,7 @@ import tempfile
 from pathlib import Path
 
 import pytest
-from src.codex.serialization_safe import ConfigLoader, DataDeserializer
+from codex.serialization_safe import ConfigLoader, DataDeserializer
 
 
 class TestDataDeserializer:

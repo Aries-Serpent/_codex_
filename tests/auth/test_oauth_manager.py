@@ -17,7 +17,7 @@ from datetime import (  # pragma: allowlist secret # pragma: allowlist secret # 
 from unittest.mock import MagicMock, patch
 
 import pytest  # pragma: allowlist secret
-from src.codex.auth.oauth_manager import (
+from codex.auth.oauth_manager import (
     OAuthConfig,
     OAuthException,
     OAuthManager,

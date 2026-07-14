@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from src.tools.attention import AttentionScorer
+from tools.attention import AttentionScorer
 
 
 class TestAttentionScorer:

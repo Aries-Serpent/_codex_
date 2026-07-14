@@ -11,7 +11,7 @@ class TestQuantumOrchestratorImports:
     def test_module_can_be_imported(self):
         """Test that the module can be imported."""
         try:
-            from src.codex.quantum_orchestrator import core
+    from codex.quantum_orchestrator import core
 
             assert core is not None, "core must be initialized"
         except ImportError:
@@ -24,7 +24,7 @@ class TestQuantumOrchestratorOperations:
     def test_orchestrator_creation(self):
         """Test quantum orchestrator creation."""
         try:
-            from src.codex.quantum_orchestrator import core
+    from codex.quantum_orchestrator import core
 
             if hasattr(core, "QuantumOrchestrator"):
                 orch = core.QuantumOrchestrator()
@@ -35,7 +35,7 @@ class TestQuantumOrchestratorOperations:
     def test_execute_workflow(self):
         """Test workflow execution."""
         try:
-            from src.codex.quantum_orchestrator import core
+    from codex.quantum_orchestrator import core
 
             if hasattr(core, "execute_workflow"):
                 with patch.object(core, "execute_workflow") as mock_exec:
@@ -52,7 +52,7 @@ class TestQuantumOrchestratorState:
     def test_get_state(self):
         """Test getting orchestrator state."""
         try:
-            from src.codex.quantum_orchestrator import core
+    from codex.quantum_orchestrator import core
 
             if hasattr(core, "QuantumOrchestrator"):
                 orch = core.QuantumOrchestrator()
@@ -65,7 +65,7 @@ class TestQuantumOrchestratorState:
     def test_set_state(self):
         """Test setting orchestrator state."""
         try:
-            from src.codex.quantum_orchestrator import core
+    from codex.quantum_orchestrator import core
 
             if hasattr(core, "QuantumOrchestrator"):
                 orch = core.QuantumOrchestrator()

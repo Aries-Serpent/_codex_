@@ -14,7 +14,7 @@ class TestPlanFileDetection:
     def test_detects_track_files(self):
         """Test that track_*.md files are detected."""
         try:
-            from src.codex_plans import list_plan_documents
+    from codex_plans import list_plan_documents
 
             result = list_plan_documents()
             # Should find track_A.md through track_G.md
@@ -26,7 +26,7 @@ class TestPlanFileDetection:
     def test_detects_tasks_file(self):
         """Test that Tasks_PR file is detected if exists."""
         try:
-            from src.codex_plans import list_plan_documents
+    from codex_plans import list_plan_documents
 
             result = list_plan_documents()
             # Check if Tasks_PR file exists - filter result implicitly
@@ -39,7 +39,7 @@ class TestPlanFileDetection:
     def test_all_returned_files_exist(self):
         """Test that all returned paths exist."""
         try:
-            from src.codex_plans import list_plan_documents
+    from codex_plans import list_plan_documents
 
             result = list_plan_documents()
             for path in result:
@@ -51,7 +51,7 @@ class TestPlanFileDetection:
     def test_all_files_are_readable(self):
         """Test that all returned files can be read."""
         try:
-            from src.codex_plans import list_plan_documents
+    from codex_plans import list_plan_documents
 
             result = list_plan_documents()
             for path in result:
@@ -68,7 +68,7 @@ class TestPlanContentValidation:
     def test_markdown_format_validation(self):
         """Test that files contain valid markdown."""
         try:
-            from src.codex_plans import list_plan_documents
+    from codex_plans import list_plan_documents
 
             result = list_plan_documents()
             for path in result:
@@ -81,7 +81,7 @@ class TestPlanContentValidation:
     def test_plan_structure_consistency(self):
         """Test that plan files follow consistent structure."""
         try:
-            from src.codex_plans import list_plan_documents
+    from codex_plans import list_plan_documents
 
             result = list_plan_documents()
             for path in result:
@@ -98,7 +98,7 @@ class TestMultipleCalls:
     def test_consistent_results(self):
         """Test that multiple calls return consistent results."""
         try:
-            from src.codex_plans import list_plan_documents
+    from codex_plans import list_plan_documents
 
             result1 = list_plan_documents()
             result2 = list_plan_documents()
@@ -110,7 +110,7 @@ class TestMultipleCalls:
     def test_idempotent_behavior(self):
         """Test that function is idempotent."""
         try:
-            from src.codex_plans import list_plan_documents
+    from codex_plans import list_plan_documents
 
             # Call multiple times
             results = [list_plan_documents() for _ in range(5)]
@@ -130,7 +130,7 @@ class TestPerformance:
         try:
             import tempfile
 
-            from src.codex_plans import list_plan_documents
+    from codex_plans import list_plan_documents
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 # Create 100 markdown files
@@ -148,7 +148,7 @@ class TestPerformance:
         try:
             import tempfile
 
-            from src.codex_plans import list_plan_documents
+    from codex_plans import list_plan_documents
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 # Create files in reverse order
@@ -169,7 +169,7 @@ class TestSecurityChecks:
     def test_no_path_traversal(self):
         """Test that path traversal is not possible."""
         try:
-            from src.codex_plans import list_plan_documents
+    from codex_plans import list_plan_documents
 
             # Function should only return files within base_dir
             # Not test actual traversal, just that results are within bounds
@@ -187,7 +187,7 @@ class TestSecurityChecks:
             import os
             import tempfile
 
-            from src.codex_plans import list_plan_documents
+    from codex_plans import list_plan_documents
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 # Create a real file

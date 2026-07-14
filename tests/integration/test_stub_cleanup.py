@@ -4,7 +4,7 @@ pytestmark = pytest.mark.integration
 
 import pytest
 
-from src.codex_ml.utils.stub_cleanup import (
+from codex_ml.utils.stub_cleanup import (
     StubAnalyzer,
     find_stubs,
     generate_stub_report,

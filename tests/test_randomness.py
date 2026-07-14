@@ -10,7 +10,7 @@ import os
 import random
 from unittest.mock import Mock, patch
 
-from src.common.randomness import set_seed
+from common.randomness import set_seed
 
 
 def test_set_seed_with_explicit_value():

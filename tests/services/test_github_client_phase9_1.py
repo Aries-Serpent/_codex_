@@ -17,8 +17,8 @@ import pytest
 
 # Test GitHub client if available
 try:
-    from src.services.github.client import GitHubClient, GitHubException
-    from src.services.github.types import Issue, PullRequest, Repository
+    from services.github.client import GitHubClient, GitHubException
+    from services.github.types import Issue, PullRequest, Repository
 
     HAS_GITHUB_CLIENT = True
 except ImportError:

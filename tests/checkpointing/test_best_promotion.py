@@ -10,7 +10,7 @@ Test module for best promotion.
 import json
 import os
 
-from src.training.checkpoint_manager import CheckpointManager
+from training.checkpoint_manager import CheckpointManager
 
 
 def test_best_promotion(tmp_path):

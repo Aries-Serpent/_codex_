@@ -1,7 +1,7 @@
 """Comprehensive test suite for advanced_indexing module."""
 
 import pytest
-from src.codex.retrieval.stores.advanced_indexing import (
+from codex.retrieval.stores.advanced_indexing import (
     HNSWConfig,
     HNSWIndex,
     IndexType,

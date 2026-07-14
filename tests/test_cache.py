@@ -13,10 +13,10 @@ import time
 
 import pytest
 
-from src.cache.base import make_cache_key
-from src.cache.local_cache import LocalLRUCache
-from src.cache.metrics import CacheMetrics, CacheMonitor
-from src.cache.redis_cache import RedisCache
+from cache.base import make_cache_key
+from cache.local_cache import LocalLRUCache
+from cache.metrics import CacheMetrics, CacheMonitor
+from cache.redis_cache import RedisCache
 
 
 class TestCacheKey:

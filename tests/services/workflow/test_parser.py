@@ -5,8 +5,8 @@ from pathlib import Path
 
 import pytest
 
-from src.services.workflow.parser import WorkflowParser, logger
-from src.services.workflow.types import (
+from services.workflow.parser import WorkflowParser, logger
+from services.workflow.types import (
     TriggerType,
     WorkflowInput,
     WorkflowJob,

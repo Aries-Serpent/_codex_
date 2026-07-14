@@ -11,8 +11,8 @@ from __future__ import annotations
 import tempfile
 from pathlib import Path
 
-from src.codex.agents.memory.backends import JSONLMemoryBackend
-from src.codex.agents.memory.protocol import MemoryEntry, MemoryQuery
+from codex.agents.memory.backends import JSONLMemoryBackend
+from codex.agents.memory.protocol import MemoryEntry, MemoryQuery
 
 
 class TestDataIngestion:

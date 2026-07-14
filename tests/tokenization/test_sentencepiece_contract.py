@@ -68,7 +68,7 @@ def _make_stub_module(proc_cls):
 @pytest.fixture()
 def adapter(tmp_path, monkeypatch):
     """Return a loaded SentencePieceAdapter backed by the stub processor."""
-    import src.codex_ml.tokenization.sentencepiece_adapter as mod
+    import codex_ml.tokenization.sentencepiece_adapter as mod
 
     proc_cls = _make_stub_processor()
     stub_module = _make_stub_module(proc_cls)
@@ -202,13 +202,13 @@ class TestRoundtripContract:
 
 class TestValidateTokenizerContract:
     def test_passes_for_valid_adapter(self, adapter):
-        from src.codex_ml.interfaces.contracts import validate_tokenizer_contract
+    from codex_ml.interfaces.contracts import validate_tokenizer_contract
 
         # Should not raise
         validate_tokenizer_contract(adapter)
 
     def test_raises_for_missing_encode(self, tmp_path, monkeypatch):
-        from src.codex_ml.interfaces.contracts import (
+    from codex_ml.interfaces.contracts import (
             TokenizationContractError,
             validate_tokenizer_contract,
         )
@@ -227,7 +227,7 @@ class TestValidateTokenizerContract:
             validate_tokenizer_contract(BadAdapter())
 
     def test_raises_for_missing_vocab_size(self, tmp_path):
-        from src.codex_ml.interfaces.contracts import (
+    from codex_ml.interfaces.contracts import (
             TokenizationContractError,
             validate_tokenizer_contract,
         )

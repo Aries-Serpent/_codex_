@@ -16,7 +16,7 @@ pytest.importorskip("jsonschema", reason="jsonschema not installed")
 
 from jsonschema import Draft7Validator  # type: ignore
 
-from src.codex_ml import train_loop as train_loop_module
+from codex_ml import train_loop as train_loop_module
 
 if train_loop_module.instantiate_model is None:  # pragma: no cover - optional dependency missing
     pytest.skip("model registry unavailable", allow_module_level=True)

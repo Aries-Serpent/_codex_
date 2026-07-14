@@ -12,9 +12,9 @@ import tempfile
 from pathlib import Path
 
 import pytest
-from src.codex.agents.memory.backends import JSONLMemoryBackend
-from src.codex.agents.memory.manager import MemoryManager
-from src.codex.agents.memory.protocol import MemoryEntry, MemoryQuery
+from codex.agents.memory.backends import JSONLMemoryBackend
+from codex.agents.memory.manager import MemoryManager
+from codex.agents.memory.protocol import MemoryEntry, MemoryQuery
 
 
 class TestMemoryManagerBasics:

@@ -1,4 +1,4 @@
-from src.codex_ml.utils.config_drift import ConfigDrift, detect_config_drift, embed_config_hash
+from codex_ml.utils.config_drift import ConfigDrift, detect_config_drift, embed_config_hash
 
 
 def test_config_drift(tmp_path):

@@ -9,7 +9,7 @@ Test module for streaming memory.
 
 import resource
 
-from src.training.streaming import stream_texts
+from training.streaming import stream_texts
 
 
 def test_streaming_memory(tmp_path):

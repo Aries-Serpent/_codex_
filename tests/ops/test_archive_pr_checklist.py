@@ -9,7 +9,7 @@ from pathlib import Path
 
 import pytest
 
-from src.tools.archive_pr_checklist import evaluate_archive_pr
+from tools.archive_pr_checklist import evaluate_archive_pr
 
 
 @pytest.fixture

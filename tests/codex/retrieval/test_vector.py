@@ -12,7 +12,7 @@ class TestRetrievalVectorImports:
     def test_module_can_be_imported(self):
         """Test that the module can be imported."""
         try:
-            from src.codex.retrieval import vector
+    from codex.retrieval import vector
 
             assert vector is not None, "vector must be initialized"
         except ImportError:
@@ -25,7 +25,7 @@ class TestRetrievalVectorOperations:
     def test_vector_store_creation(self):
         """Test vector store creation."""
         try:
-            from src.codex.retrieval import vector
+    from codex.retrieval import vector
 
             if hasattr(vector, "VectorStore"):
                 store = vector.VectorStore()
@@ -36,7 +36,7 @@ class TestRetrievalVectorOperations:
     def test_add_vectors(self):
         """Test adding vectors."""
         try:
-            from src.codex.retrieval import vector
+    from codex.retrieval import vector
 
             if hasattr(vector, "add_vectors"):
                 with patch.object(vector, "add_vectors") as mock_add:
@@ -49,7 +49,7 @@ class TestRetrievalVectorOperations:
     def test_search_vectors(self):
         """Test searching vectors."""
         try:
-            from src.codex.retrieval import vector
+    from codex.retrieval import vector
 
             if hasattr(vector, "search"):
                 with patch.object(vector, "search") as mock_search:
@@ -66,7 +66,7 @@ class TestRetrievalVectorIndexing:
     def test_build_index(self):
         """Test building index."""
         try:
-            from src.codex.retrieval import vector
+    from codex.retrieval import vector
 
             if hasattr(vector, "VectorStore"):
                 store = vector.VectorStore()
@@ -81,7 +81,7 @@ class TestRetrievalVectorIndexing:
     def test_save_index(self):
         """Test saving index."""
         try:
-            from src.codex.retrieval import vector
+    from codex.retrieval import vector
 
             if hasattr(vector, "VectorStore"):
                 store = vector.VectorStore()

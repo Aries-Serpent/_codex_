@@ -29,7 +29,7 @@ class TestCliConfig:
     def test_config_module_imports(self) -> None:
         """Test that config module imports successfully."""
         try:
-            from src.codex_ml.cli import config
+    from codex_ml.cli import config
             assert config is not None
         except ImportError:
             pytest.skip("codex_ml.cli.config not available")
@@ -37,7 +37,7 @@ class TestCliConfig:
     def test_config_has_required_functions(self) -> None:
         """Test that config module has expected functions."""
         try:
-            from src.codex_ml.cli import config
+    from codex_ml.cli import config
             
             # Check for common config functions
             assert hasattr(config, "__file__")
@@ -51,7 +51,7 @@ class TestCliEnvironment:
     def test_env_check_module(self) -> None:
         """Test environment checking functionality."""
         try:
-            from src.codex_ml.cli import env_check
+    from codex_ml.cli import env_check
             assert env_check is not None
         except ImportError:
             pytest.skip("codex_ml.cli.env_check not available")
@@ -59,7 +59,7 @@ class TestCliEnvironment:
     def test_codex_env_module(self) -> None:
         """Test codex environment module."""
         try:
-            from src.codex_ml.cli import codex_env
+    from codex_ml.cli import codex_env
             assert codex_env is not None
         except ImportError:
             pytest.skip("codex_ml.cli.codex_env not available")
@@ -76,7 +76,7 @@ class TestCliEntrypoints:
     def test_entrypoints_module(self) -> None:
         """Test entrypoints module exists and imports."""
         try:
-            from src.codex_ml.cli import entrypoints
+    from codex_ml.cli import entrypoints
             assert entrypoints is not None
         except ImportError:
             pytest.skip("codex_ml.cli.entrypoints not available")
@@ -88,7 +88,7 @@ class TestCliCodexCli:
     def test_codex_cli_module_imports(self) -> None:
         """Test that codex_cli module imports."""
         try:
-            from src.codex_ml.cli import codex_cli
+    from codex_ml.cli import codex_cli
             assert codex_cli is not None
         except ImportError:
             pytest.skip("codex_ml.cli.codex_cli not available")
@@ -96,7 +96,7 @@ class TestCliCodexCli:
     def test_codex_cli_has_main(self) -> None:
         """Test that codex_cli has main function."""
         try:
-            from src.codex_ml.cli import codex_cli
+    from codex_ml.cli import codex_cli
             
             # Should have some kind of entry point
             assert hasattr(codex_cli, "__file__")
@@ -110,7 +110,7 @@ class TestCliAuditPipeline:
     def test_audit_pipeline_module(self) -> None:
         """Test audit_pipeline module."""
         try:
-            from src.codex_ml.cli import audit_pipeline
+    from codex_ml.cli import audit_pipeline
             assert audit_pipeline is not None
         except ImportError:
             pytest.skip("codex_ml.cli.audit_pipeline not available")
@@ -122,7 +122,7 @@ class TestCliEvaluate:
     def test_evaluate_module(self) -> None:
         """Test evaluate module."""
         try:
-            from src.codex_ml.cli import evaluate
+    from codex_ml.cli import evaluate
             assert evaluate is not None
         except ImportError:
             pytest.skip("codex_ml.cli.evaluate not available")
@@ -134,7 +134,7 @@ class TestCliGenerate:
     def test_generate_module(self) -> None:
         """Test generate module."""
         try:
-            from src.codex_ml.cli import generate
+    from codex_ml.cli import generate
             assert generate is not None
         except ImportError:
             pytest.skip("codex_ml.cli.generate not available")
@@ -146,7 +146,7 @@ class TestCliFeatureStore:
     def test_feature_store_module(self) -> None:
         """Test feature_store module."""
         try:
-            from src.codex_ml.cli import feature_store
+    from codex_ml.cli import feature_store
             assert feature_store is not None
         except ImportError:
             pytest.skip("codex_ml.cli.feature_store not available")
@@ -158,7 +158,7 @@ class TestCliDeploy:
     def test_deploy_module(self) -> None:
         """Test deploy module."""
         try:
-            from src.codex_ml.cli import deploy
+    from codex_ml.cli import deploy
             assert deploy is not None
         except ImportError:
             pytest.skip("codex_ml.cli.deploy not available")
@@ -170,7 +170,7 @@ class TestCliDetectors:
     def test_detectors_module(self) -> None:
         """Test detectors module."""
         try:
-            from src.codex_ml.cli import detectors
+    from codex_ml.cli import detectors
             assert detectors is not None
         except ImportError:
             pytest.skip("codex_ml.cli.detectors not available")
@@ -182,7 +182,7 @@ class TestCliCheckpointValidate:
     def test_checkpoint_validate_module(self) -> None:
         """Test checkpoint_validate module."""
         try:
-            from src.codex_ml.cli import checkpoint_validate
+    from codex_ml.cli import checkpoint_validate
             assert checkpoint_validate is not None
         except ImportError:
             pytest.skip("codex_ml.cli.checkpoint_validate not available")
@@ -194,7 +194,7 @@ class TestCliInit:
     def test_cli_init_module(self) -> None:
         """Test that CLI __init__ module loads."""
         try:
-            from src.codex_ml import cli
+    from codex_ml import cli
             assert cli is not None
         except ImportError:
             pytest.skip("codex_ml.cli not available")
@@ -202,7 +202,7 @@ class TestCliInit:
     def test_cli_has_submodules(self) -> None:
         """Test that CLI package has expected submodules."""
         try:
-            from src.codex_ml import cli
+    from codex_ml import cli
             
             # Should have __path__ attribute
             assert hasattr(cli, "__path__") or hasattr(cli, "__file__")
@@ -236,7 +236,7 @@ class TestCliIntegration:
     def test_all_cli_submodules_importable(self) -> None:
         """Test that all CLI submodules can be imported."""
         try:
-            from src.codex_ml import cli
+    from codex_ml import cli
             
             # List of expected submodules
             expected_modules = [
@@ -259,7 +259,7 @@ class TestCliIntegration:
     def test_cli_features_module(self) -> None:
         """Test CLI features module."""
         try:
-            from src.codex_ml.cli import features
+    from codex_ml.cli import features
             assert features is not None
         except ImportError:
             pytest.skip("codex_ml.cli.features not available")

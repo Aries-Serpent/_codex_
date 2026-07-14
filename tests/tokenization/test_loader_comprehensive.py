@@ -17,7 +17,7 @@ import pytest
 
 def test_ensure_special_tokens_pad_fallback():
     """Test: Special Token Defaults - Verify pad_token fallback logic."""
-    from src.tokenization.loader import _ensure_special_tokens
+    from tokenization.loader import _ensure_special_tokens
 
     # Create mock tokenizer with no special tokens
     mock_tokenizer = MagicMock()
@@ -40,7 +40,7 @@ def test_ensure_special_tokens_pad_fallback():
 
 def test_ensure_special_tokens_eos_fallback():
     """Test: Special Token Defaults - Verify eos_token fallback logic."""
-    from src.tokenization.loader import _ensure_special_tokens
+    from tokenization.loader import _ensure_special_tokens
 
     # Create mock tokenizer with pad but no eos
     mock_tokenizer = MagicMock()
@@ -60,7 +60,7 @@ def test_ensure_special_tokens_eos_fallback():
 
 def test_ensure_special_tokens_default_pad():
     """Test: Special Token Defaults - Verify default [PAD] when no tokens exist."""
-    from src.tokenization.loader import _ensure_special_tokens
+    from tokenization.loader import _ensure_special_tokens
 
     # Create mock tokenizer with no special tokens at all
     mock_tokenizer = MagicMock()
@@ -79,7 +79,7 @@ def test_ensure_special_tokens_default_pad():
 
 def test_load_from_file_basic(tmp_path):
     """Test: Load from File Path - Verify tokenizer loading from JSON file."""
-    from src.tokenization.loader import _load_from_file
+    from tokenization.loader import _load_from_file
 
     # Create a mock tokenizer JSON file
     tokenizer_file = tmp_path / "tokenizer.json"
@@ -117,7 +117,7 @@ def test_load_from_file_basic(tmp_path):
 
 def test_load_from_file_special_tokens_configured(tmp_path):
     """Test: Load from File - Verify special tokens are configured correctly."""
-    from src.tokenization.loader import _load_from_file
+    from tokenization.loader import _load_from_file
 
     tokenizer_file = tmp_path / "tokenizer.json"
     tokenizer_file.write_text('{"version": "1.0"}', encoding="utf-8")
@@ -145,7 +145,7 @@ def test_load_from_file_special_tokens_configured(tmp_path):
 
 def test_load_from_model_name_remote(tmp_path):
     """Test: Load from Model Name (Remote) - Verify loading with allow_remote=True."""
-    from src.tokenization.loader import _load_from_model_name
+    from tokenization.loader import _load_from_model_name
 
     model_name = "bert-base-uncased"
     cache_dir = tmp_path / "cache"
@@ -171,7 +171,7 @@ def test_load_from_model_name_remote(tmp_path):
 
 def test_load_from_model_name_offline(tmp_path):
     """Test: Load from Model Name (Offline) - Verify local_files_only=True."""
-    from src.tokenization.loader import _load_from_model_name
+    from tokenization.loader import _load_from_model_name
 
     model_name = "gpt2"
     cache_dir = tmp_path / "cache"
@@ -193,7 +193,7 @@ def test_load_from_model_name_offline(tmp_path):
 
 def test_load_from_model_name_with_cache_dir(tmp_path):
     """Test: Load from Model Name - Verify cache_dir is used correctly."""
-    from src.tokenization.loader import _load_from_model_name
+    from tokenization.loader import _load_from_model_name
 
     model_name = "distilbert-base-uncased"
     cache_dir = tmp_path / "custom_cache"
@@ -214,7 +214,7 @@ def test_load_from_model_name_with_cache_dir(tmp_path):
 
 def test_load_tokenizer_with_tokenizer_file(tmp_path):
     """Test: Config Validation - Load with tokenizer_file config."""
-    from src.tokenization.loader import load_tokenizer
+    from tokenization.loader import load_tokenizer
 
     # Create mock tokenizer file
     tokenizer_file = tmp_path / "tokenizer.json"
@@ -235,7 +235,7 @@ def test_load_tokenizer_with_tokenizer_file(tmp_path):
 
 def test_load_tokenizer_with_model_name(tmp_path):
     """Test: Config Validation - Load with model_name config."""
-    from src.tokenization.loader import load_tokenizer
+    from tokenization.loader import load_tokenizer
 
     config = {"model_name": "gpt2"}
     cache_dir = tmp_path / "cache"
@@ -255,7 +255,7 @@ def test_load_tokenizer_with_model_name(tmp_path):
 
 def test_load_tokenizer_missing_file_error():
     """Test: Config Validation Errors - FileNotFoundError for missing file."""
-    from src.tokenization.loader import load_tokenizer
+    from tokenization.loader import load_tokenizer
 
     config = {"tokenizer_file": "/nonexistent/path/tokenizer.json"}
 
@@ -266,7 +266,7 @@ def test_load_tokenizer_missing_file_error():
 
 def test_load_tokenizer_missing_config_error():
     """Test: Config Validation Errors - ValueError for missing config keys."""
-    from src.tokenization.loader import load_tokenizer
+    from tokenization.loader import load_tokenizer
 
     # Empty config should raise ValueError
     config = {}
@@ -277,7 +277,7 @@ def test_load_tokenizer_missing_config_error():
 
 def test_load_tokenizer_with_vocab_file_alias(tmp_path):
     """Test: Config Validation - Accept vocab_file as alias for tokenizer_file."""
-    from src.tokenization.loader import load_tokenizer
+    from tokenization.loader import load_tokenizer
 
     vocab_file = tmp_path / "vocab.json"
     vocab_file.write_text('{"version": "1.0"}', encoding="utf-8")
@@ -296,7 +296,7 @@ def test_load_tokenizer_with_vocab_file_alias(tmp_path):
 
 def test_load_tokenizer_with_model_name_or_path_alias():
     """Test: Config Validation - Accept model_name_or_path alias."""
-    from src.tokenization.loader import load_tokenizer
+    from tokenization.loader import load_tokenizer
 
     config = {"model_name_or_path": "bert-base-uncased"}
 
@@ -314,7 +314,7 @@ def test_load_tokenizer_with_model_name_or_path_alias():
 
 def test_load_tokenizer_cache_dir_creation(tmp_path):
     """Test: Cache Directory - Verify cache_dir is created if missing."""
-    from src.tokenization.loader import load_tokenizer
+    from tokenization.loader import load_tokenizer
 
     cache_dir = tmp_path / "new_cache" / "nested"
     config = {"model_name": "gpt2"}
@@ -331,7 +331,7 @@ def test_load_tokenizer_cache_dir_creation(tmp_path):
 
 def test_load_tokenizer_none_config():
     """Test: Config Validation - Handle None config gracefully."""
-    from src.tokenization.loader import load_tokenizer
+    from tokenization.loader import load_tokenizer
 
     # None config should be treated as empty dict
     with pytest.raises(ValueError, match="must provide"):
@@ -340,7 +340,7 @@ def test_load_tokenizer_none_config():
 
 def test_load_tokenizer_prefers_file_over_model():
     """Test: Config Priority - tokenizer_file takes precedence over model_name."""
-    from src.tokenization.loader import load_tokenizer
+    from tokenization.loader import load_tokenizer
 
     # When both are provided, file should be used
     with patch("src.tokenization.loader._load_from_file") as mock_load_file:

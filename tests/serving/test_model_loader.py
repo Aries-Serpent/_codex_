@@ -10,7 +10,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from src.codex_ml.serving.model_loader import (
+from codex_ml.serving.model_loader import (
     DeviceType,
     ModelConfig,
     ModelLoader,

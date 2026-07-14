@@ -8,8 +8,8 @@ import json
 from contextlib import nullcontext
 from pathlib import Path
 
-from src.training import trainer as trainer_module
-from src.training.trainer import CheckpointConfig, Trainer, TrainerConfig
+from training import trainer as trainer_module
+from training.trainer import CheckpointConfig, Trainer, TrainerConfig
 
 
 class FakeTensor:

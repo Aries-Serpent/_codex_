@@ -28,7 +28,7 @@ from transformers import AutoModelForCausalLM, GPT2Config
 api_app = importlib.import_module("codex.api.app")
 from codex_ml.security import DenylistEnforcer, DenylistViolation
 from codex_ml.utils import checkpointing
-from src.tokenization.loader import load_tokenizer
+from tokenization.loader import load_tokenizer
 
 
 @pytest.fixture()

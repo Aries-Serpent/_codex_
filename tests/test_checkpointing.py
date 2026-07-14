@@ -22,7 +22,7 @@ def _toy_model(d_in: int = 8, d_out: int = 3) -> "torch.nn.Module":
 
 
 def test_save_and_load_with_rng(tmp_path: Path) -> None:
-    from src.training.checkpointing import (
+    from training.checkpointing import (
         load_checkpoint,
         save_checkpoint,
         snapshot_rng_state,
@@ -53,7 +53,7 @@ def test_save_and_load_with_rng(tmp_path: Path) -> None:
 
 
 def test_best_k_ties_and_nan(tmp_path: Path) -> None:
-    from src.training.checkpointing import save_checkpoint
+    from training.checkpointing import save_checkpoint
 
     model = _toy_model()
     optimizer = torch.optim.SGD(model.parameters(), lr=0.01)

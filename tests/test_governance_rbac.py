@@ -11,7 +11,7 @@ Tests cover:
 """
 
 import pytest
-from src.codex.governance.rbac import (
+from codex.governance.rbac import (
     Action,  # pragma: allowlist secret
     CodexRole,  # pragma: allowlist secret
     RBACEnforcer,

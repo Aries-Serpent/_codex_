@@ -12,7 +12,7 @@ class TestCodexUtilsImports:
     def test_1a1_codex_utils_import(self):
         """Test 1A-1: codex_utils can be imported."""
         try:
-            import src.codex_utils
+    import codex_utils
             assert True, "True is not valid"
         except ImportError as e:
             pytest.skip(f"Dependency missing: {e}")

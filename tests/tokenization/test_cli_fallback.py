@@ -15,7 +15,7 @@ import pytest
 
 def test_format_context_with_none():
     """Test: _format_context - Handle None context."""
-    from src.tokenization.cli import _format_context
+    from tokenization.cli import _format_context
 
     result = _format_context(None)
     assert result == "None", "Result must not be empty"
@@ -23,7 +23,7 @@ def test_format_context_with_none():
 
 def test_format_context_with_string():
     """Test: _format_context - Handle string context."""
-    from src.tokenization.cli import _format_context
+    from tokenization.cli import _format_context
 
     result = _format_context("test string")
     assert result == "test string", "Result must not be empty"
@@ -31,7 +31,7 @@ def test_format_context_with_string():
 
 def test_format_context_with_dict():
     """Test: _format_context - Handle dict context."""
-    from src.tokenization.cli import _format_context
+    from tokenization.cli import _format_context
 
     context = {"key": "value", "number": 42}
     result = _format_context(context)
@@ -44,7 +44,7 @@ def test_format_context_with_dict():
 
 def test_format_context_with_exception():
     """Test: _format_context - Handle serialization failure."""
-    from src.tokenization.cli import _format_context
+    from tokenization.cli import _format_context
 
     # Create an object that can't be JSON serialized easily
     class UnserializableObj:
@@ -60,7 +60,7 @@ def test_format_context_with_exception():
 
 def test_append_error_block(tmp_path, monkeypatch):
     """Test: _append_error_block - Verify error logging."""
-    from src.tokenization.cli import _append_error_block
+    from tokenization.cli import _append_error_block
 
     # Mock the error report directory
     mock_dir = tmp_path / "reports"
@@ -82,7 +82,7 @@ def test_append_error_block(tmp_path, monkeypatch):
 
 def test_fail_helper(tmp_path, monkeypatch):
     """Test: _fail - Verify error reporting and exit."""
-    from src.tokenization.cli import _fail
+    from tokenization.cli import _fail
 
     # Mock the error report directory
     mock_dir = tmp_path / "reports"
@@ -97,7 +97,7 @@ def test_resolve_root_directory():
     """Test: _resolve_root - Handle directory path."""
     from pathlib import Path
 
-    from src.tokenization.cli import _resolve_root
+    from tokenization.cli import _resolve_root
 
     test_dir = Path(os.path.join(tempfile.gettempdir(), "tokenizer"))
     result = _resolve_root(test_dir)
@@ -111,7 +111,7 @@ def test_resolve_root_file():
     """Test: _resolve_root - Handle file path."""
     from pathlib import Path
 
-    from src.tokenization.cli import _resolve_root
+    from tokenization.cli import _resolve_root
 
     test_file = Path(os.path.join(tempfile.gettempdir(), "tokenizer/model.bin"))
     result = _resolve_root(test_file)
@@ -122,7 +122,7 @@ def test_resolve_root_file():
 
 def test_load_tokenizer_helper(tmp_path):
     """Test: _load_tokenizer - Verify tokenizer loading."""
-    from src.tokenization.cli import _load_tokenizer
+    from tokenization.cli import _load_tokenizer
 
     # Create a mock tokenizer directory
     tokenizer_dir = tmp_path / "tokenizer"
@@ -142,7 +142,7 @@ def test_load_tokenizer_helper(tmp_path):
 
 def test_vocab_command_with_limit(tmp_path, capsys):
     """Test: vocab command - Verify vocabulary display with limit."""
-    from src.tokenization.cli import vocab
+    from tokenization.cli import vocab
 
     tokenizer_path = tmp_path / "tokenizer"
 
@@ -165,7 +165,7 @@ def test_vocab_command_with_limit(tmp_path, capsys):
 
 def test_vocab_command_negative_limit(tmp_path):
     """Test: vocab command - Error handling for negative limit."""
-    from src.tokenization.cli import vocab
+    from tokenization.cli import vocab
 
     tokenizer_path = tmp_path / "tokenizer"
 
@@ -176,7 +176,7 @@ def test_vocab_command_negative_limit(tmp_path):
 
 def test_vocab_command_zero_limit(tmp_path, capsys):
     """Test: vocab command - Handle zero limit."""
-    from src.tokenization.cli import vocab
+    from tokenization.cli import vocab
 
     tokenizer_path = tmp_path / "tokenizer"
 
@@ -196,7 +196,7 @@ def test_vocab_command_zero_limit(tmp_path, capsys):
 
 def test_vocab_command_callable_vocab_size(tmp_path, capsys):
     """Test: vocab command - Handle callable vocab_size."""
-    from src.tokenization.cli import vocab
+    from tokenization.cli import vocab
 
     tokenizer_path = tmp_path / "tokenizer"
 
@@ -215,7 +215,7 @@ def test_vocab_command_callable_vocab_size(tmp_path, capsys):
 
 def test_inspect_command(tmp_path, capsys):
     """Test: inspect command - Verify tokenizer inspection."""
-    from src.tokenization.cli import inspect
+    from tokenization.cli import inspect
 
     tokenizer_dir = tmp_path / "tokenizer"
     tokenizer_dir.mkdir()
@@ -240,7 +240,7 @@ def test_inspect_command(tmp_path, capsys):
 
 def test_inspect_command_missing_manifest(tmp_path, capsys):
     """Test: inspect command - Handle missing manifest."""
-    from src.tokenization.cli import inspect
+    from tokenization.cli import inspect
 
     tokenizer_dir = tmp_path / "tokenizer"
     tokenizer_dir.mkdir()
@@ -259,7 +259,7 @@ def test_inspect_command_missing_manifest(tmp_path, capsys):
 
 def test_inspect_command_with_tokenizer_json(tmp_path, capsys):
     """Test: inspect command - Parse tokenizer.json for special tokens."""
-    from src.tokenization.cli import inspect
+    from tokenization.cli import inspect
 
     tokenizer_dir = tmp_path / "tokenizer"
     tokenizer_dir.mkdir()
@@ -289,7 +289,7 @@ def test_inspect_command_with_tokenizer_json(tmp_path, capsys):
 
 def test_vocab_command_no_converter(tmp_path, capsys):
     """Test: vocab command - Handle tokenizer without convert_ids_to_tokens."""
-    from src.tokenization.cli import vocab
+    from tokenization.cli import vocab
 
     tokenizer_path = tmp_path / "tokenizer"
 
@@ -309,7 +309,7 @@ def test_vocab_command_no_converter(tmp_path, capsys):
 
 def test_inspect_command_manifest_parse_error(tmp_path, capsys, monkeypatch):
     """Test: inspect command - Handle manifest.json parse errors."""
-    from src.tokenization.cli import inspect
+    from tokenization.cli import inspect
 
     tokenizer_dir = tmp_path / "tokenizer"
     tokenizer_dir.mkdir()
@@ -335,7 +335,7 @@ def test_format_context_json_serialization():
     """Test: _format_context - Verify JSON serialization with default handler."""
     from datetime import datetime
 
-    from src.tokenization.cli import _format_context
+    from tokenization.cli import _format_context
 
     # Test with datetime object (uses default=str)
     context = {"timestamp": datetime(2024, 1, 1, 12, 0, 0), "value": 42}

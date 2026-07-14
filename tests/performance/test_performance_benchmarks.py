@@ -22,7 +22,7 @@ from codex.logging.structured_logger import logger
 
 # Test availability
 try:
-    from src.bridge_manager import BridgeMode, ContextMessage, SecureBridge
+    from bridge_manager import BridgeMode, ContextMessage, SecureBridge
 
     BRIDGE_AVAILABLE = True
 except ImportError:

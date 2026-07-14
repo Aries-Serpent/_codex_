@@ -7,7 +7,7 @@ including parallel execution and stress tests.
 import time
 
 import pytest
-from src.codex.brain import (
+from codex.brain import (
     OODAactor,
     OODADecider,
     OODAObserver,

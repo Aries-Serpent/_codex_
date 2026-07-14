@@ -29,7 +29,7 @@ class TestDataLoaderInit:
     def test_loader_registry_module(self) -> None:
         """Test loader registry module."""
         try:
-            from src.codex_ml.data import registry
+    from codex_ml.data import registry
             assert registry is not None
         except ImportError:
             pytest.skip("codex_ml.data.registry not available")
@@ -37,7 +37,7 @@ class TestDataLoaderInit:
     def test_data_package_imports(self) -> None:
         """Test that data package imports."""
         try:
-            from src.codex_ml import data
+    from codex_ml import data
             assert data is not None
         except ImportError:
             pytest.skip("codex_ml.data not available")
@@ -49,7 +49,7 @@ class TestDataLoader:
     def test_loader_module(self) -> None:
         """Test data loader module."""
         try:
-            from src.codex_ml.data import loaders
+    from codex_ml.data import loaders
             assert loaders is not None
         except ImportError:
             pytest.skip("codex_ml.data.loaders not available")
@@ -57,7 +57,7 @@ class TestDataLoader:
     def test_jsonl_loader(self) -> None:
         """Test JSONL loader module."""
         try:
-            from src.codex_ml.data import jsonl_loader
+    from codex_ml.data import jsonl_loader
             assert jsonl_loader is not None
         except ImportError:
             pytest.skip("codex_ml.data.jsonl_loader not available")
@@ -65,7 +65,7 @@ class TestDataLoader:
     def test_jsonl_stream(self) -> None:
         """Test JSONL stream module."""
         try:
-            from src.codex_ml.data import jsonl_stream
+    from codex_ml.data import jsonl_stream
             assert jsonl_stream is not None
         except ImportError:
             pytest.skip("codex_ml.data.jsonl_stream not available")
@@ -77,7 +77,7 @@ class TestDataSharding:
     def test_sharding_module(self) -> None:
         """Test data sharding module."""
         try:
-            from src.codex_ml.data import sharding
+    from codex_ml.data import sharding
             assert sharding is not None
         except ImportError:
             pytest.skip("codex_ml.data.sharding not available")
@@ -89,7 +89,7 @@ class TestDataSplitting:
     def test_split_module(self) -> None:
         """Test split module."""
         try:
-            from src.codex_ml.data import split
+    from codex_ml.data import split
             assert split is not None
         except ImportError:
             pytest.skip("codex_ml.data.split not available")
@@ -97,7 +97,7 @@ class TestDataSplitting:
     def test_split_utils_module(self) -> None:
         """Test split_utils module."""
         try:
-            from src.codex_ml.data import split_utils
+    from codex_ml.data import split_utils
             assert split_utils is not None
         except ImportError:
             pytest.skip("codex_ml.data.split_utils not available")
@@ -105,7 +105,7 @@ class TestDataSplitting:
     def test_splits_module(self) -> None:
         """Test splits module."""
         try:
-            from src.codex_ml.data import splits
+    from codex_ml.data import splits
             assert splits is not None
         except ImportError:
             pytest.skip("codex_ml.data.splits not available")
@@ -117,7 +117,7 @@ class TestDataCache:
     def test_cache_module(self) -> None:
         """Test data cache module."""
         try:
-            from src.codex_ml.data import cache
+    from codex_ml.data import cache
             assert cache is not None
         except ImportError:
             pytest.skip("codex_ml.data.cache not available")
@@ -129,7 +129,7 @@ class TestDataIntegrity:
     def test_integrity_module(self) -> None:
         """Test integrity module."""
         try:
-            from src.codex_ml.data import integrity
+    from codex_ml.data import integrity
             assert integrity is not None
         except ImportError:
             pytest.skip("codex_ml.data.integrity not available")
@@ -141,7 +141,7 @@ class TestDataChecksums:
     def test_checksums_module(self) -> None:
         """Test checksums module."""
         try:
-            from src.codex_ml.data import checksums
+    from codex_ml.data import checksums
             assert checksums is not None
         except ImportError:
             pytest.skip("codex_ml.data.checksums not available")
@@ -153,7 +153,7 @@ class TestDataCli:
     def test_data_cli_module(self) -> None:
         """Test data CLI module."""
         try:
-            from src.codex_ml.data import cli
+    from codex_ml.data import cli
             assert cli is not None
         except ImportError:
             pytest.skip("codex_ml.data.cli not available")
@@ -165,7 +165,7 @@ class TestHuggingFaceDatasets:
     def test_hf_datasets_module(self) -> None:
         """Test HF datasets module."""
         try:
-            from src.codex_ml.data import hf_datasets
+    from codex_ml.data import hf_datasets
             assert hf_datasets is not None
         except ImportError:
             pytest.skip("codex_ml.data.hf_datasets not available")
@@ -177,7 +177,7 @@ class TestTokenizationAdapter:
     def test_adapter_module(self) -> None:
         """Test tokenization adapter module."""
         try:
-            from src.codex_ml.tokenization import adapter
+    from codex_ml.tokenization import adapter
             assert adapter is not None
         except ImportError:
             pytest.skip("codex_ml.tokenization.adapter not available")
@@ -185,7 +185,7 @@ class TestTokenizationAdapter:
     def test_adapter_initialization(self) -> None:
         """Test adapter can be imported."""
         try:
-            from src.codex_ml.tokenization.adapter import _TokenizerAdapter
+    from codex_ml.tokenization.adapter import _TokenizerAdapter
             # Check that class exists
             assert _TokenizerAdapter is not None
         except (ImportError, AttributeError):
@@ -198,7 +198,7 @@ class TestTokenizationPipeline:
     def test_pipeline_module(self) -> None:
         """Test tokenization pipeline module."""
         try:
-            from src.codex_ml.tokenization import pipeline
+    from codex_ml.tokenization import pipeline
             assert pipeline is not None
         except ImportError:
             pytest.skip("codex_ml.tokenization.pipeline not available")
@@ -210,7 +210,7 @@ class TestTokenizationCli:
     def test_tokenization_cli_module(self) -> None:
         """Test tokenization CLI module."""
         try:
-            from src.codex_ml.tokenization import cli
+    from codex_ml.tokenization import cli
             assert cli is not None
         except ImportError:
             pytest.skip("codex_ml.tokenization.cli not available")
@@ -222,7 +222,7 @@ class TestTokenizationHFTokenizer:
     def test_hf_tokenizer_module(self) -> None:
         """Test HF tokenizer module."""
         try:
-            from src.codex_ml.tokenization import hf_tokenizer
+    from codex_ml.tokenization import hf_tokenizer
             assert hf_tokenizer is not None
         except ImportError:
             pytest.skip("codex_ml.tokenization.hf_tokenizer not available")
@@ -234,7 +234,7 @@ class TestTokenizationSentencePiece:
     def test_sentencepiece_adapter_module(self) -> None:
         """Test SentencePiece adapter module."""
         try:
-            from src.codex_ml.tokenization import sentencepiece_adapter
+    from codex_ml.tokenization import sentencepiece_adapter
             assert sentencepiece_adapter is not None
         except ImportError:
             pytest.skip("codex_ml.tokenization.sentencepiece_adapter not available")
@@ -246,7 +246,7 @@ class TestTokenizationOfflineVocab:
     def test_offline_vocab_module(self) -> None:
         """Test offline vocab module."""
         try:
-            from src.codex_ml.tokenization import offline_vocab
+    from codex_ml.tokenization import offline_vocab
             assert offline_vocab is not None
         except ImportError:
             pytest.skip("codex_ml.tokenization.offline_vocab not available")
@@ -258,7 +258,7 @@ class TestTokenizationTraining:
     def test_train_tokenizer_module(self) -> None:
         """Test train_tokenizer module."""
         try:
-            from src.codex_ml.tokenization import train_tokenizer
+    from codex_ml.tokenization import train_tokenizer
             assert train_tokenizer is not None
         except ImportError:
             pytest.skip("codex_ml.tokenization.train_tokenizer not available")
@@ -321,7 +321,7 @@ class TestDataIntegration:
     def test_data_package_structure(self) -> None:
         """Test data package structure."""
         try:
-            from src.codex_ml import data
+    from codex_ml import data
             
             # Should be a package
             assert hasattr(data, "__path__") or hasattr(data, "__file__")
@@ -331,7 +331,7 @@ class TestDataIntegration:
     def test_tokenization_package_structure(self) -> None:
         """Test tokenization package structure."""
         try:
-            from src.codex_ml import tokenization
+    from codex_ml import tokenization
             
             # Should be a package
             assert hasattr(tokenization, "__path__") or hasattr(tokenization, "__file__")

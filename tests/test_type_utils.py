@@ -2,7 +2,7 @@
 
 from typing import Any, Dict, List, Optional, Union
 
-from src.codex.utils.type_utils import safe_isinstance
+from codex.utils.type_utils import safe_isinstance
 
 
 class TestSafeIsinstance:

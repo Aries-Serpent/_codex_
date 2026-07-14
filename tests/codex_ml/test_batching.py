@@ -5,7 +5,7 @@ import time
 
 import pytest
 
-from src.codex_ml.serving.batching import (
+from codex_ml.serving.batching import (
     BatchingMiddleware,
     PerformanceMetrics,
 )

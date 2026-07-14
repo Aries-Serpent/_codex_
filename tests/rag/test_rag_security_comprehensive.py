@@ -20,7 +20,7 @@ class TestEmbeddingProviderSecurity:
     def test_embedding_input_sanitization(self):
         """Test that embedding inputs are properly sanitized."""
         try:
-            from src.codex.rag.embeddings import TfidfEmbeddingProvider
+    from codex.rag.embeddings import TfidfEmbeddingProvider
 
             provider = TfidfEmbeddingProvider()
 
@@ -43,7 +43,7 @@ class TestEmbeddingProviderSecurity:
     def test_embedding_provider_model_name_validation(self):
         """Test that model names are validated against path traversal."""
         try:
-            from src.codex.rag.embeddings import LocalSentenceTransformerProvider
+    from codex.rag.embeddings import LocalSentenceTransformerProvider
 
             # These should not allow path traversal
             invalid_names = [
@@ -67,7 +67,7 @@ class TestEmbeddingProviderSecurity:
     def test_cache_directory_security(self):
         """Test that cache directory paths are secure."""
         try:
-            from src.codex.rag.embeddings import LocalSentenceTransformerProvider
+    from codex.rag.embeddings import LocalSentenceTransformerProvider
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 cache_dir = Path(tmpdir) / "cache"
@@ -89,7 +89,7 @@ class TestRetrieverSecurity:
     def test_query_injection_prevention(self):
         """Test prevention of query injection attacks."""
         try:
-            from src.codex.rag.retriever import CodexRetriever
+    from codex.rag.retriever import CodexRetriever
 
             # Create retriever instance
             retriever = CodexRetriever()
@@ -119,7 +119,7 @@ class TestRetrieverSecurity:
     def test_document_id_validation(self):
         """Test that document IDs are properly validated."""
         try:
-            from src.codex.rag.retriever import CodexRetriever
+    from codex.rag.retriever import CodexRetriever
 
             retriever = CodexRetriever()
 
@@ -152,7 +152,7 @@ class TestIndexerSecurity:
     def test_index_path_traversal_prevention(self):
         """Test prevention of path traversal in index operations."""
         try:
-            from src.codex.rag.indexer import CodexIndexer
+    from codex.rag.indexer import CodexIndexer
 
             with tempfile.TemporaryDirectory():
                 # Test with path traversal attempts
@@ -179,7 +179,7 @@ class TestIndexerSecurity:
     def test_document_content_size_limits(self):
         """Test that document content has size limits."""
         try:
-            from src.codex.rag.indexer import CodexIndexer
+    from codex.rag.indexer import CodexIndexer
 
             indexer = CodexIndexer()
 
@@ -204,7 +204,7 @@ class TestRAGUtilsSecurity:
     def test_text_chunking_security(self):
         """Test text chunking with malicious inputs."""
         try:
-            from src.codex.rag.utils import chunk_text
+    from codex.rag.utils import chunk_text
 
             # Test with various malicious inputs
             test_cases = [
@@ -228,7 +228,7 @@ class TestRAGUtilsSecurity:
     def test_document_hash_consistency(self):
         """Test that document hashing is consistent and secure."""
         try:
-            from src.codex.rag.utils import hash_document
+    from codex.rag.utils import hash_document
 
             # Test consistency
             doc = "Test document content"
@@ -255,7 +255,7 @@ class TestPromptSecurity:
     def test_prompt_injection_prevention(self):
         """Test prevention of prompt injection attacks."""
         try:
-            from src.codex.rag.prompt import build_rag_prompt
+    from codex.rag.prompt import build_rag_prompt
 
             # Test with injection attempts
             injection_attempts = [
@@ -279,7 +279,7 @@ class TestPromptSecurity:
     def test_context_sanitization(self):
         """Test that context is properly sanitized."""
         try:
-            from src.codex.rag.prompt import build_rag_prompt
+    from codex.rag.prompt import build_rag_prompt
 
             # Test with malicious context
             malicious_context = [
@@ -303,7 +303,7 @@ class TestRAGRateLimiting:
     def test_embedding_rate_limits(self):
         """Test that embedding operations respect rate limits."""
         try:
-            from src.codex.rag.embeddings import TfidfEmbeddingProvider
+    from codex.rag.embeddings import TfidfEmbeddingProvider
 
             provider = TfidfEmbeddingProvider()
 
@@ -323,7 +323,7 @@ class TestRAGRateLimiting:
     def test_retrieval_rate_limits(self):
         """Test that retrieval operations respect rate limits."""
         try:
-            from src.codex.rag.retriever import CodexRetriever
+    from codex.rag.retriever import CodexRetriever
 
             retriever = CodexRetriever()
 
@@ -346,7 +346,7 @@ class TestRAGErrorHandling:
     def test_embedding_error_handling(self):
         """Test error handling in embedding generation."""
         try:
-            from src.codex.rag.embeddings import TfidfEmbeddingProvider
+    from codex.rag.embeddings import TfidfEmbeddingProvider
 
             provider = TfidfEmbeddingProvider()
 
@@ -372,7 +372,7 @@ class TestRAGErrorHandling:
     def test_retriever_error_handling(self):
         """Test error handling in retrieval operations."""
         try:
-            from src.codex.rag.retriever import CodexRetriever
+    from codex.rag.retriever import CodexRetriever
 
             retriever = CodexRetriever()
 

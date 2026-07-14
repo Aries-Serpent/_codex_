@@ -18,7 +18,7 @@ import hashlib
 from pathlib import Path
 
 import pytest
-from src.codex.analysis.duplication import (
+from codex.analysis.duplication import (
     DuplicationReport,
     _assess_severity,
     _hash_file,

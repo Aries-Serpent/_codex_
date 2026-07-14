@@ -2,12 +2,12 @@
 
 import pytest
 
-from src.services.github.exceptions import (
+from services.github.exceptions import (
     AuthenticationError,
     GitHubAPIError,
     RateLimitError,
 )
-from src.services.github.types import Issue, PullRequest, Repository
+from services.github.types import Issue, PullRequest, Repository
 
 
 @pytest.mark.integration

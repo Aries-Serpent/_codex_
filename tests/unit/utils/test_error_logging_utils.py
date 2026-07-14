@@ -1,6 +1,6 @@
 """Unit tests for error_logging utilities (Phase 23 Week 3 gapfill)."""
 
-from src.utils.error_logging import append_error_to_file, log_error
+from utils.error_logging import append_error_to_file, log_error
 
 
 def test_log_error_basic(tmp_path):

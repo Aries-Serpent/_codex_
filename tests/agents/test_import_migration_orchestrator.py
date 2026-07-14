@@ -111,8 +111,8 @@ class MyClass:
         # Create file that should be skipped (already migrated)
         test_file3 = repo_path / "module3.py"
         test_file3.write_text("""
-from src.training.model import Model
-from src.models.classifier import Classifier
+from training.model import Model
+from models.classifier import Classifier
 
 def already_migrated():
     pass
@@ -386,8 +386,8 @@ def preprocess():
 
         # Create file with only modern imports
         (repo_path / "modern.py").write_text("""
-from src.training.model import Model
-from src.models.classifier import Classifier
+from training.model import Model
+from models.classifier import Classifier
 
 def test():
     pass

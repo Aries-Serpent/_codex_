@@ -3,7 +3,7 @@ import os
 import sys
 from unittest.mock import MagicMock, patch
 
-from src.codex_ml.utils.reproducibility_hardening import (
+from codex_ml.utils.reproducibility_hardening import (
     ReproducibilityManager,
     create_reproducibility_manifest,
     enable_deterministic_training,
