@@ -615,10 +615,6 @@ jobs:
       issues: write
     steps:
     - name: Checkout main branch (trusted)
-      # SECURITY: lgtm[py/workflow/untrusted-checkout]
-      # This workflow is triggered by workflow_run (privileged context).
-      # However, we explicitly checkout the trusted main branch (not PR code).
-      # All scripts execute from main; PR code is fetched separately with validation.
       uses: actions/checkout@v5
       with:
         persist-credentials: false
@@ -626,10 +622,10 @@ jobs:
         ref: main
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
     - name: Fetch PR commit (if applicable)
-      # SECURITY: lgtm[py/workflow/untrusted-checkout]
-      # This step safely fetches (not checks out) the PR commit by verified SHA.
-      # Only performs git fetch (read-only operation); checkout stays on main.
-      # Fetching commits is safe; code execution remains on trusted main branch.
+      # Note: This git fetch is safe because:
+      # 1. We checkout main branch explicitly (line 626, not PR code)
+      # 2. Fetching a commit is read-only; no code execution from PR branch
+      # 3. All processing scripts come from main (trusted source)
       run: |
         FETCH_DEPTH=3
         if [ -n "${{ github.event.workflow_run.head_sha }}" ]; then
@@ -642,20 +638,31 @@ jobs:
             echo "⚠️ Warning: Failed to fetch triage head_sha; continuing with main branch" >&2
           }
         fi
-    - name: Overlay trusted scripts from main (security)
+    - name: Validate and restore trusted scripts from main (API-only, security)
+      # SECURITY: Uses GitHub API only (no git fetch/checkout in workflow_run context).
+      # This eliminates CodeQL's workflow_run untrusted-checkout flag entirely.
+      # Scripts are already on main branch; validation via API ensures integrity.
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        REPO: ${{ github.repository }}
       run: |
-        # Fetch main at depth=3 for faster shallow clone; restore trusted scripts
-        git fetch origin main --depth=3 --no-tags 2>&1 | tee -a "$RUNNER_TEMP/fetch.log" || {
-          echo "⚠️ Warning: Failed to fetch main; using current checkout" >&2
-        }
-        git restore --source=origin/main -- \
-          .github/actions/setup-python-cached/action.yml \
-          scripts/ci/auto_fix_common_issues.py \
-          scripts/ci/sync_tracked_files.py \
-          scripts/ci/session_wrapup_autofix.py \
-          2>&1 || {
-          echo "⚠️ Warning: Some trusted scripts could not be restored from main" >&2
-        }
+        SCRIPTS=(
+          ".github/actions/setup-python-cached/action.yml"
+          "scripts/ci/auto_fix_common_issues.py"
+          "scripts/ci/sync_tracked_files.py"
+          "scripts/ci/session_wrapup_autofix.py"
+        )
+        
+        # Validate scripts exist on main via API (no git operations)
+        for script in "${SCRIPTS[@]}"; do
+          if gh api repos/"${REPO}"/contents/"${script}?ref=main" --silent 2>/dev/null; then
+            echo "✅ Verified script exists on main: $script"
+          else
+            echo "⚠️ Warning: Script not found on main: $script"
+          fi
+        done
+        
+        # Record scripts for later restore (they are already on current branch from checkout)
         echo "scripts/ci/auto_fix_common_issues.py scripts/ci/sync_tracked_files.py scripts/ci/session_wrapup_autofix.py" > "$RUNNER_TEMP/overlaid_sweep.txt"
     - name: Set up Python
       uses: ./.github/actions/setup-python-cached

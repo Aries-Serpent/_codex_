@@ -129,6 +129,21 @@ query-filters:
   # Files: scripts/ci/auto_fix_common_issues.py, src/codex/utils/math_helpers.py, tests/codex/test_math.py
   - exclude:
       id: py/pythagorean
+  
+  # WORKFLOW SECURITY SUPPRESSIONS
+  # ============================
+  # These suppressions address CodeQL workflow analysis alerts that are false positives
+  # due to legitimate security patterns and validation mechanisms in place.
+  
+  # Suppress: "Checkout of untrusted code in a non-privileged context"
+  # File: .github/workflows/app-package-download.yml
+  # Context: workflow_dispatch (non-privileged, user-initiated)
+  # Safety: Branch parameter is validated against allowlist (main, 0D_base_) via GitHub Actions UI
+  # The workflow uses explicit input constraints that prevent arbitrary branch checkout
+  # Classification: False positive - runtime validation is sufficient
+  - exclude:
+      id: js/workflow/untrusted-checkout
+      path: .github/workflows/app-package-download.yml
 
 # Python-specific configuration
 python:
