@@ -54,13 +54,13 @@ jobs:
          
         # Validate branch name contains only safe characters
         if ! [[ "$BRANCH" =~ ^[a-zA-Z0-9._/-]+$ ]]; then
-          echo "❌ Error: Branch name contains unsafe characters: $BRANCH"
+          printf '❌ Error: Branch name contains unsafe characters: %s\n' "$BRANCH" >&2
           exit 1
         fi
          
         # Verify the branch exists in origin using git ls-remote
         if ! git ls-remote --exit-code origin "$BRANCH" >/dev/null 2>&1; then
-          echo "❌ Error: Branch $BRANCH does not exist in origin"
+          printf '❌ Error: Branch %s does not exist in origin\n' "$BRANCH" >&2
           exit 1
         fi
          

@@ -293,17 +293,13 @@ jobs:
         fetch-depth: 50
         ref: main
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-    - name: Fetch PR branch (if applicable)
+    - name: Fetch PR commit (if applicable)
       run: |
         if [ -n "${{ github.event.workflow_run.head_sha }}" ]; then
           git fetch origin "${{ github.event.workflow_run.head_sha }}" --depth=5 2>/dev/null || true
         fi
-        HEAD_BRANCH="${{ needs.triage.outputs.head_branch }}"
-        if [ -n "$HEAD_BRANCH" ] && [ "$HEAD_BRANCH" != "main" ]; then
-          # Validate branch name contains only safe characters
-          if [[ "$HEAD_BRANCH" =~ ^[a-zA-Z0-9._/-]+$ ]]; then
-            git fetch origin "$HEAD_BRANCH" --depth=5 2>/dev/null || true
-          fi
+        if [ -n "${{ needs.triage.outputs.head_sha }}" ] && [ "${{ needs.triage.outputs.head_sha }}" != "${{ github.sha }}" ]; then
+          git fetch origin "${{ needs.triage.outputs.head_sha }}" --depth=5 2>/dev/null || true
         fi
     - name: '🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)'
       id: resolve-target
@@ -591,17 +587,13 @@ jobs:
         fetch-depth: 5
         ref: main
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-    - name: Fetch PR branch (if applicable)
+    - name: Fetch PR commit (if applicable)
       run: |
         if [ -n "${{ github.event.workflow_run.head_sha }}" ]; then
           git fetch origin "${{ github.event.workflow_run.head_sha }}" --depth=3 2>/dev/null || true
         fi
-        HEAD_BRANCH="${{ needs.triage.outputs.head_branch }}"
-        if [ -n "$HEAD_BRANCH" ] && [ "$HEAD_BRANCH" != "main" ]; then
-          # Validate branch name contains only safe characters
-          if [[ "$HEAD_BRANCH" =~ ^[a-zA-Z0-9._/-]+$ ]]; then
-            git fetch origin "$HEAD_BRANCH" --depth=3 2>/dev/null || true
-          fi
+        if [ -n "${{ needs.triage.outputs.head_sha }}" ] && [ "${{ needs.triage.outputs.head_sha }}" != "${{ github.sha }}" ]; then
+          git fetch origin "${{ needs.triage.outputs.head_sha }}" --depth=3 2>/dev/null || true
         fi
     - name: Overlay trusted scripts from main (security)
       run: "git fetch origin main --depth=3 --no-tags 2>/dev/null || true\ngit restore\
