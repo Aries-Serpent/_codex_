@@ -19,8 +19,7 @@ on:
         options:
           - 'main'
           - '0D_base_'
-          - 'copilot/add-zd-voice-lines-console-app'
-        default: 'copilot/add-zd-voice-lines-console-app'
+        default: 'main'
       include_dependencies:
         description: 'Include requirements.txt for dependencies'
         required: false
@@ -58,9 +57,9 @@ jobs:
         run: |
           # SECURITY: Only predefined safe branches allowed via GitHub Actions UI
           # The actions/checkout action uses this as ref parameter
-          # Runtime validation ensures branch is in the allowed list
+          # Runtime validation ensures branch is in the allowed list (permanent branches only)
           BRANCH="${{ github.event.inputs.branch }}"
-          ALLOWED_BRANCHES="main|0D_base_|copilot/add-zd-voice-lines-console-app"
+          ALLOWED_BRANCHES="main|0D_base_"
           if ! echo "$BRANCH" | grep -qE "^($ALLOWED_BRANCHES)$"; then
             echo "❌ Error: Branch '$BRANCH' is not in the allowed list"
             exit 1
