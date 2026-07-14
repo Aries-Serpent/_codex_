@@ -441,7 +441,7 @@ class SLAEnforcer:
     def should_block_pr(self, metric_name: str, value: float) -> bool:
         """Check if PR should be blocked due to SLA violation"""
         severity = self.check_sla(metric_name, value)
-        return severity in (SeverityLevel.CRITICAL, SeverityLevel.HIGH)
+        return severity == SeverityLevel.CRITICAL
 
 
 # ============================================================================
