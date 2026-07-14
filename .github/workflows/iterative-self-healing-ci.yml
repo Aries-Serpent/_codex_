@@ -358,7 +358,7 @@ jobs:
         
         # Validate scripts exist on main via API (no git operations)
         for script in "${SCRIPTS[@]}"; do
-          if gh api "repos/${REPO}/contents/${script}" --input - --raw-field "ref=main" --silent 2>/dev/null; then
+          if gh api repos/"${REPO}"/contents/"${script}?ref=main" --silent 2>/dev/null; then
             echo "✅ Verified script exists on main: $script"
           else
             echo "⚠️ Warning: Script not found on main: $script"
@@ -666,7 +666,7 @@ jobs:
         
         # Validate scripts exist on main via API (no git operations)
         for script in "${SCRIPTS[@]}"; do
-          if gh api "repos/${REPO}/contents/${script}" --input - --raw-field "ref=main" --silent 2>/dev/null; then
+          if gh api repos/"${REPO}"/contents/"${script}?ref=main" --silent 2>/dev/null; then
             echo "✅ Verified script exists on main: $script"
           else
             echo "⚠️ Warning: Script not found on main: $script"
