@@ -37,15 +37,18 @@ jobs:
     - name: Mask secrets
       run: |
         echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
-    - name: Checkout PR branch
+    - name: Checkout main branch (trusted)
       uses: actions/checkout@v5
       with:
         persist-credentials: false
-        ref: ${{ github.event.workflow_run.head_sha }}
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-          }}
-        fetch-depth: 2
-        persist-credentials: false
+        ref: main
+        fetch-depth: 1
+    - name: Fetch PR branch code (overlaid after)
+      run: |
+        # Fetch the PR code but don't execute it directly - it will be overlaid with trusted scripts
+        git fetch origin ${{ github.event.workflow_run.head_branch }} --depth=2 2>/dev/null || true
+        git checkout ${{ github.event.workflow_run.head_sha }} -- . 2>/dev/null || true
+      continue-on-error: true
     - name: Overlay trusted scripts from main (security)
       run: "git fetch origin main --depth=3 --no-tags 2>/dev/null || true\ngit restore\
         \ --source=origin/main -- \\\n  scripts/ci/session_wrapup_autofix.py \\\n\

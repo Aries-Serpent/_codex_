@@ -54,6 +54,8 @@ jobs:
     name: Package Application
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: read
 
     steps:
       - name: Determine target branch
