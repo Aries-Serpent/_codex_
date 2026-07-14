@@ -164,7 +164,7 @@ jobs:
 
       - name: Publish test results
         if: always()
-        uses: dorny/test-reporter@v1
+        uses: dorny/test-reporter@6c6cccf9b145c84e86a54eb376f30db3541dddb6
         with:
           name: Reasoning Engine Tests
           path: test_report.json
@@ -173,7 +173,7 @@ jobs:
 
       - name: Slack notification (on failure)
         if: failure()
-        uses: slackapi/slack-github-action@v1.24.0
+        uses: slackapi/slack-github-action@70cd7be8e40a46e8ac0db8f384edfaa7eb9e44f7
         with:
           webhook-url: ${{ secrets.SLACK_WEBHOOK }}
           payload: |
