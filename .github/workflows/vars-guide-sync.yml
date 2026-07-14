@@ -1,5 +1,5 @@
 name: Auto-Sync Variables Master Guide
-on:
+true:
   schedule:
   - cron: 0 6 * * *
   workflow_dispatch:
@@ -36,14 +36,16 @@ jobs:
         }}
     steps:
     - name: Mask secrets
-      run: |
-        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+      run: 'echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+
+        '
     - name: Checkout
       uses: actions/checkout@v5
       with:
         persist-credentials: false
         fetch-depth: 1
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
     - name: '🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)'
       id: resolve-target
       uses: ./.github/actions/resolve-push-target
@@ -56,7 +58,8 @@ jobs:
     - name: Generate audit report
       id: audit
       env:
-        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+        CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY
+          }}
         CODEX_BACKUP_KEY: ${{ secrets.CODEX_BACKUP_KEY }}
       run: "set -euo pipefail\n\nREPORT_PATH=\"docs/admin/variable_audit_latest.md\"\
         \nJSON_PATH=\".codex/variable_audit_latest.json\"\n\n# Generate Markdown report\n\
@@ -90,24 +93,27 @@ jobs:
       if: steps.detect.outputs.changed == 'true' && inputs.dry_run != 'true'
       env:
         PUSH_TARGET: ${{ steps.resolve-target.outputs.branch || 'main' }}
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
       run: "# Walk the staging chain: sub-PR → 0D_base_ → main  (resolved above)\n\
-        _TARGET=\"${PUSH_TARGET}\"\necho \"\U0001F500 Push target: $_TARGET (reason:\
-        \ ${{ steps.resolve-target.outputs.reason }})\"\ncp docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md\
-        \ /tmp/_vars_guide_sync_\ncp .codex/variable_audit_latest.json /tmp/_var_audit_json_sync_\
-        \ 2>/dev/null || true\ngit fetch origin \"$_TARGET\" --depth=1\ngit checkout\
-        \ -fB _autogen_sync_ origin/\"$_TARGET\"  # S237: force-checkout (files already\
-        \ in /tmp)\ncp /tmp/_vars_guide_sync_ docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md\n\
-        cp /tmp/_var_audit_json_sync_ .codex/variable_audit_latest.json 2>/dev/null\
-        \ || true\ngit config user.name  \"github-actions[bot]\"\ngit config user.email\
-        \ \"41898282+github-actions[bot]@users.noreply.github.com\"\n# Only commit\
-        \ the human reference guide — variable_audit_latest.md is a\n# derivative\
-        \ snapshot with no downstream git consumers; it is uploaded\n# as a workflow\
-        \ artifact below instead to avoid daily merge conflicts.\ngit add docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md\
-        \ \\\n        .codex/variable_audit_latest.json 2>/dev/null || true\ngit commit\
-        \ -m \"chore(vars): auto-sync variable audit report [skip ci]\n\nAbsent required\
-        \ variables: ${{ steps.audit.outputs.absent_required }}\nTriggered by: ${{\
-        \ github.event_name }}\n\" || echo \"Nothing to commit\"\ngit push origin\
-        \ HEAD:\"$_TARGET\"\necho \"\U0001F4E4 Pushed to $_TARGET\"\n"
+        _TARGET=\"${{ steps.resolve-target.outputs.branch || 'main' }}\"\necho \"\U0001F500\
+        \ Push target: $_TARGET (reason: ${{ steps.resolve-target.outputs.reason }})\"\
+        \n\n# SECURITY: Validate target branch exists via API (no git fetch/checkout)\n\
+        if gh api repos/${{ github.repository }}/branches/\"${_TARGET}\" --silent\
+        \ 2>/dev/null; then\n  echo \"✅ Target branch validated via API: $_TARGET\"\
+        \nelse\n  echo \"⚠️ Warning: Target branch not found via API; continuing with\
+        \ git push\"\nfi\n\n# Files are already in working directory from checkout\
+        \ step\n# No need for git fetch/checkout; stage files directly\ngit config\
+        \ user.name  \"github-actions[bot]\"\ngit config user.email \"41898282+github-actions[bot]@users.noreply.github.com\"\
+        \n\n# Only commit the human reference guide — variable_audit_latest.json is\
+        \ a\n# derivative snapshot with no downstream git consumers; it is uploaded\n\
+        # as a workflow artifact below instead to avoid daily merge conflicts.\ngit\
+        \ add docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md         .codex/variable_audit_latest.json\
+        \ 2>/dev/null || true\n\ngit commit -m \"chore(vars): auto-sync variable audit\
+        \ report [skip ci]\n\nAbsent required variables: ${{ steps.audit.outputs.absent_required\
+        \ }}\nTriggered by: ${{ github.event_name }}\n\" || echo \"Nothing to commit\"\
+        \n\ngit push origin HEAD:\"$_TARGET\"\necho \"\U0001F4EC Pushed to $_TARGET\"\
+        \n"
     - name: Upload audit report artifact
       if: steps.detect.outputs.changed == 'true'
       uses: actions/upload-artifact@v5
@@ -155,21 +161,22 @@ jobs:
       if: steps.audit.outputs.absent_required != '0' && github.event_name == 'schedule'
       uses: actions/github-script@v8
       with:
-        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
+          github.token }}
         script: "const absent = parseInt('${{ steps.audit.outputs.absent_required\
           \ }}', 10);\nif (isNaN(absent) || absent === 0) return;\n\n// Check for\
-        \ existing open blocker issue\nconst { data: issues } = await github.rest.issues.listForRepo({\n\
-        \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  labels: 'variable-blocker',\n\
-        \  state: 'open',\n});\n\nif (issues.length > 0) {\n  console.log(`Existing\
-          \ blocker issue  #${issues[0].number} already open`);\n  return;\n}\n\nawait\
-        \ github.rest.issues.create({\n  owner: context.repo.owner,\n  repo: context.repo.repo,\n\
-        \  title: `\U0001F510 Variable Blockers: ${absent} required variable(s)\
-        \ absent`,\n  body: `## Variable Audit Blocker\\n\\nThe auto-sync workflow\
-          \ detected **${absent} required variables** that are absent.\\n\\nSee [§13\
-          \ of GITHUB_VARIABLES_MASTER_GUIDE.md](docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md#13-still-missing)\
-        \ for the full list and CLI commands to fix.\\n\\n**Auto-detected:** ${new\
-        \ Date().toISOString()}\\n**Workflow:** ${context.workflow}`,\n  labels:\
-        \ ['variable-blocker', 'ops', 'priority: high'],\n});\n"
+          \ existing open blocker issue\nconst { data: issues } = await github.rest.issues.listForRepo({\n\
+          \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  labels: 'variable-blocker',\n\
+          \  state: 'open',\n});\n\nif (issues.length > 0) {\n  console.log(`Existing\
+          \ blocker issue  #${issues[0].number} already open`);\n  return;\n}\n\n\
+          await github.rest.issues.create({\n  owner: context.repo.owner,\n  repo:\
+          \ context.repo.repo,\n  title: `\U0001F510 Variable Blockers: ${absent}\
+          \ required variable(s) absent`,\n  body: `## Variable Audit Blocker\\n\\\
+          nThe auto-sync workflow detected **${absent} required variables** that are\
+          \ absent.\\n\\nSee [§13 of GITHUB_VARIABLES_MASTER_GUIDE.md](docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md#13-still-missing)\
+          \ for the full list and CLI commands to fix.\\n\\n**Auto-detected:** ${new\
+          \ Date().toISOString()}\\n**Workflow:** ${context.workflow}`,\n  labels:\
+          \ ['variable-blocker', 'ops', 'priority: high'],\n});\n"
     - name: Fail gate — absent required variables (workflow_dispatch)
       if: steps.audit.outputs.absent_required != '0' && github.event_name == 'workflow_dispatch'
         && inputs.dry_run != true
