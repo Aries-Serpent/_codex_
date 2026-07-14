@@ -47,7 +47,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         fetch-depth: 0
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
@@ -108,28 +108,28 @@ jobs:
       with:
         script: "const MARKER = '<!-- auto-fix-ci-issues -->';\nconst message = `${MARKER}\\\
           n## ❌ Auto-Fixable CI Issues Detected\n\nThe auto-fix script detected issues\
-          \ that can be automatically fixed:\n\n| Pattern | Description | Auto-Fix\
+        \ that can be automatically fixed:\n\n| Pattern | Description | Auto-Fix\
           \ | Causes CI Failure |\n|---------|-------------|----------|-------------------|\n\
           | 1 | Unused imports | ✅ Yes (ruff) | ✅ Yes |\n| 4 | Coverage thresholds\
           \ | ✅ Yes | ✅ Yes |\n| 8 | CodeQL alerts | ✅ Yes (ruff) | ✅ Yes |\n\n###\
-          \ Informational Warnings (Do NOT cause CI failure):\n\n| Pattern | Description\
+        \ Informational Warnings (Do NOT cause CI failure):\n\n| Pattern | Description\
           \ | Auto-Fix |\n|---------|-------------|----------|\n| 2 | Unused variables\
           \ | ⚠️ Manual review |\n| 3 | YAML indentation | ⚠️ Manual review |\n| 5\
           \ | Tokenizer fallbacks | ⚠️ Manual review |\n| 6 | Test assertions | ⚠️\
           \ Manual review |\n| 7 | Redundant imports | ⚠️ Manual review |\n\n### To\
-          \ apply automatic fixes:\n\n\\`\\`\\`bash\n# Locally\npython scripts/ci/auto_fix_common_issues.py\n\
+        \ apply automatic fixes:\n\n\\`\\`\\`bash\n# Locally\npython scripts/ci/auto_fix_common_issues.py\n\
           \n# Via workflow\n# Go to Actions > Auto-Fix Common CI Issues > Run workflow\n\
-          \\`\\`\\`\n\n**Note:** Manual review patterns are informational only and\
+        \\`\\`\\`\n\n**Note:** Manual review patterns are informational only and\
           \ do not cause CI failures.\n\nSee the workflow logs for details.\n\n_[\U0001F517\
-          \ Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`;\n\
-          \nconst { data: comments } = await github.rest.issues.listComments({\n \
-          \ owner: context.repo.owner, repo: context.repo.repo,\n  issue_number: context.issue.number,\
-          \ per_page: 100,\n});\nconst existing = comments.find(c => c.body && c.body.includes(MARKER));\n\
-          if (existing) {\n  await github.rest.issues.updateComment({\n    owner:\
-          \ context.repo.owner, repo: context.repo.repo,\n    comment_id: existing.id,\
-          \ body: message,\n  });\n} else {\n  await github.rest.issues.createComment({\n\
-          \    issue_number: context.issue.number,\n    owner: context.repo.owner,\
-          \ repo: context.repo.repo,\n    body: message,\n  });\n}\n"
+        \ Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`;\n\
+        \nconst { data: comments } = await github.rest.issues.listComments({\n \
+        \ owner: context.repo.owner, repo: context.repo.repo,\n  issue_number: context.issue.number,\
+        \ per_page: 100,\n});\nconst existing = comments.find(c => c.body && c.body.includes(MARKER));\n\
+        if (existing) {\n  await github.rest.issues.updateComment({\n    owner:\
+        \ context.repo.owner, repo: context.repo.repo,\n    comment_id: existing.id,\
+        \ body: message,\n  });\n} else {\n  await github.rest.issues.createComment({\n\
+        \    issue_number: context.issue.number,\n    owner: context.repo.owner,\
+        \ repo: context.repo.repo,\n    body: message,\n  });\n}\n"
     - name: Apply and push fixes on PR (Detect→Heal→Commit)
       id: pr_heal
       if: 'github.event_name == ''pull_request'' &&
@@ -207,7 +207,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1
     - name: Post or update rescue comment

@@ -30,29 +30,29 @@ jobs:
           \ discussionTitle  = context.payload.discussion?.title || '';\nconst commentId\
           \        = context.payload.comment?.id;\nconst commentBody      = (context.payload.comment?.body\
           \ || '').slice(0, 500);\nconst commentAuthor    = context.payload.comment?.user?.login\
-          \ || 'unknown';\n\ncore.info(`Discussion  #${discussionNumber}: new comment\
+        \ || 'unknown';\n\ncore.info(`Discussion  #${discussionNumber}: new comment\
           \ ${commentId} from @${commentAuthor}`);\n\n// Skip Copilot-bot comments\
           \ \u2014 they don't need to be bridged back to themselves\nconst COPILOT_LOGINS\
           \ = new Set([\n  'copilot-swe-agent[bot]', 'github-copilot[bot]', 'copilot[bot]',\n\
           ]);\nif (COPILOT_LOGINS.has(commentAuthor)) {\n  core.info(`Skipping bridge\
           \ for Copilot bot comment from @${commentAuthor}`);\n  core.setOutput('skip',\
-          \ 'true');\n  return;\n}\n\n// Try to find a PR number from:\n//   1. Title\
-          \ pattern: \"\U0001F4CB Agent Accountability \u2014 PR  #<N>\" or \"... PR\
-          \  #<N>\"\n//   2. Body tag: <!-- pr-number:<N> -->\nlet prNumber = 0;\n\
+        \ 'true');\n  return;\n}\n\n// Try to find a PR number from:\n//   1. Title\
+        \ pattern: \"\U0001F4CB Agent Accountability \u2014 PR  #<N>\" or \"... PR\
+        \  #<N>\"\n//   2. Body tag: <!-- pr-number:<N> -->\nlet prNumber = 0;\n\
           const titleMatch = discussionTitle.match(/PR\\s*#(\\d+)/i);\nif (titleMatch)\
           \ {\n  prNumber = parseInt(titleMatch[1], 10);\n  core.info(`Extracted PR\
           \  #${prNumber} from discussion title`);\n}\nif (!prNumber) {\n  const bodyTag\
-          \ = (context.payload.discussion?.body || '').match(/<!--\\s*pr-number:(\\\
+        \ = (context.payload.discussion?.body || '').match(/<!--\\s*pr-number:(\\\
           d+)\\s*-->/);\n  if (bodyTag) {\n    prNumber = parseInt(bodyTag[1], 10);\n\
           \    core.info(`Extracted PR  #${prNumber} from discussion body tag`);\n\
           \  }\n}\n\nif (!prNumber) {\n  core.info('No PR number found in discussion\
           \ title or body \u2014 skipping bridge');\n  core.setOutput('skip', 'true');\n\
-          \  return;\n}\n\n// Verify the PR is still open\ntry {\n  const { data:\
-          \ pr } = await github.rest.pulls.get({\n    owner: context.repo.owner,\n\
-          \    repo: context.repo.repo,\n    pull_number: prNumber,\n  });\n  if (pr.state\
+        \  return;\n}\n\n// Verify the PR is still open\ntry {\n  const { data:\
+        \ pr } = await github.rest.pulls.get({\n    owner: context.repo.owner,\n\
+        \    repo: context.repo.repo,\n    pull_number: prNumber,\n  });\n  if (pr.state\
           \ !== 'open') {\n    core.info(`PR  #${prNumber} is ${pr.state} \u2014 skipping\
           \ bridge`);\n    core.setOutput('skip', 'true');\n    return;\n  }\n} catch\
-          \ (e) {\n  core.warning(`Could not verify PR  #${prNumber}: ${e.message}`);\n\
+        \ (e) {\n  core.warning(`Could not verify PR  #${prNumber}: ${e.message}`);\n\
           \  core.setOutput('skip', 'true');\n  return;\n}\n\ncore.setOutput('skip',\
           \              'false');\ncore.setOutput('pr_number',          String(prNumber));\n\
           core.setOutput('discussion_number',  String(discussionNumber));\ncore.setOutput('comment_id',\
@@ -75,30 +75,30 @@ jobs:
           \ discussionNumber = process.env.DISCUSSION_NUMBER;\nconst commentId   \
           \     = process.env.COMMENT_ID;\nconst author           = process.env.COMMENT_AUTHOR;\n\
           const preview          = process.env.COMMENT_PREVIEW || '(no preview)';\n\
-          \nconst BRIDGE_MARKER = `<!-- discussion-bridge:${discussionNumber}:${commentId}\
-          \ -->`;\nconst DISCUSSION_URL = `https://github.com/${context.repo.owner}/${context.repo.repo}/discussions/${discussionNumber}`;\n\
-          \n// Dedup: check last 50 PR comments for marker\ntry {\n  const { data:\
-          \ existing } = await github.rest.issues.listComments({\n    owner: context.repo.owner,\n\
-          \    repo: context.repo.repo,\n    issue_number: prNumber,\n    per_page:\
+        \nconst BRIDGE_MARKER = `<!-- discussion-bridge:${discussionNumber}:${commentId}\
+        \ -->`;\nconst DISCUSSION_URL = `https://github.com/${context.repo.owner}/${context.repo.repo}/discussions/${discussionNumber}`;\n\
+        \n// Dedup: check last 50 PR comments for marker\ntry {\n  const { data:\
+        \ existing } = await github.rest.issues.listComments({\n    owner: context.repo.owner,\n\
+        \    repo: context.repo.repo,\n    issue_number: prNumber,\n    per_page:\
           \ 50,\n  });\n  if (existing.some(c => (c.body || '').includes(BRIDGE_MARKER)))\
           \ {\n    core.info(`Bridge notification already posted for comment ${commentId}\
           \ \u2014 skipping`);\n    return;\n  }\n} catch (e) {\n  core.warning(`Could\
-          \ not check existing PR comments: ${e.message}`);\n}\n\nconst body = [\n\
+        \ not check existing PR comments: ${e.message}`);\n}\n\nconst body = [\n\
           \  BRIDGE_MARKER,\n  `## \U0001F4AC Discussion Reply \u2014 @${author} (Discussion\
           \  #${discussionNumber})`,\n  ``,\n  `> @${author} replied in [Discussion\
-          \  #${discussionNumber}](${DISCUSSION_URL}):`,\n  `>`,\n  `> ${preview.slice(0,\
-          \ 300)}${preview.length > 300 ? '\u2026' : ''}`,\n  ``,\n  `@copilot+claude-haiku-4.5\
+        \  #${discussionNumber}](${DISCUSSION_URL}):`,\n  `>`,\n  `> ${preview.slice(0,\
+        \ 300)}${preview.length > 300 ? '\u2026' : ''}`,\n  ``,\n  `@copilot+claude-haiku-4.5\
           \ /plan`,\n  ``,\n  `A maintainer replied in the linked discussion. ` +\n\
           \  `Please review the response and act on it in your next session.`,\n \
-          \ ``,\n  `> **\U0001F4A1 Parallel execution:** Use the \\`task\\` tool to\
+        \ ``,\n  `> **\U0001F4A1 Parallel execution:** Use the \\`task\\` tool to\
           \ delegate independent subtasks to Custom Agents (e.g. \\`ci-auto-healer-agent\\\
           `, \\`unified-coverage-agent\\`) to work in parallel.`,\n  ``,\n  `---`,\n\
           \  `*Auto-bridged by \\`discussion-response-bridge.yml\\` (RC-3, S300) \xB7\
           \ ` +\n  `[\u2197 View in Discussion](${DISCUSSION_URL})*`,\n].join('\\\
-          n');\n\ntry {\n  await github.rest.issues.createComment({\n    owner: context.repo.owner,\n\
-          \    repo: context.repo.repo,\n    issue_number: prNumber,\n    body,\n\
+        n');\n\ntry {\n  await github.rest.issues.createComment({\n    owner: context.repo.owner,\n\
+        \    repo: context.repo.repo,\n    issue_number: prNumber,\n    body,\n\
           \  });\n  core.info(`\u2705 Bridge notification posted to PR  #${prNumber}\
           \ for discussion comment ${commentId}`);\n} catch (e) {\n  core.warning(`Failed\
-          \ to post bridge notification: ${e.message}`);\n}\n"
+        \ to post bridge notification: ${e.message}`);\n}\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}

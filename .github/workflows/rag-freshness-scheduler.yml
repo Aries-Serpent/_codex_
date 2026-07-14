@@ -21,7 +21,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         fetch-depth: 1
     - name: Set up Python
       uses: actions/setup-python@v6
@@ -61,8 +61,8 @@ jobs:
       with:
         github-token: ${{ env.CODEX_MASTER_KEY || env.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         script: "await github.rest.actions.createWorkflowDispatch({\n  owner: context.repo.owner,\n\
-          \  repo: context.repo.repo,\n  workflow_id: 'embedding-index-rebuild.yml',\n\
-          \  ref: context.ref,\n});\ncore.notice('Dispatched embedding-index-rebuild.yml\
+        \  repo: context.repo.repo,\n  workflow_id: 'embedding-index-rebuild.yml',\n\
+        \  ref: context.ref,\n});\ncore.notice('Dispatched embedding-index-rebuild.yml\
           \ — index was stale');\n"
     - name: Post freshness summary
       if: always()

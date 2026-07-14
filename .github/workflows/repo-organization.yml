@@ -41,7 +41,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         fetch-depth: 0
     - name: CacheManager health check
       continue-on-error: true

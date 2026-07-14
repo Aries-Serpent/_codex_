@@ -31,7 +31,7 @@ jobs:
         echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
     - uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
     - name: Analyze issue with GitHub Copilot
       id: triage
       uses: mvkaran/gh-copilot@5694b7d7a242d1c025e40d0965a0c5c5e68f5fba  # v1
@@ -41,34 +41,34 @@ jobs:
         timeout: '5'
         output-format: json
         output-schema: "{\n  \"type\": \"bug|feature|documentation|question|security|ci-cd|cognitive-brain\"\
-          ,\n  \"severity\": \"critical|high|medium|low\",\n  \"labels\": [\"array\
-          \ of 1-3 existing GitHub label names\"],\n  \"summary\": \"one-sentence\
-          \ summary of the issue\",\n  \"affected_component\": \"src/codex/cognitive|src/codex_ml|CI|docs|tests|other\"\
-          ,\n  \"needs_more_info\": true,\n  \"cognitive_brain_relevant\": false,\n\
-          \  \"suggested_pattern_id\": \"P-NEW or null\"\n}\n"
+        ,\n  \"severity\": \"critical|high|medium|low\",\n  \"labels\": [\"array\
+        \ of 1-3 existing GitHub label names\"],\n  \"summary\": \"one-sentence\
+        \ summary of the issue\",\n  \"affected_component\": \"src/codex/cognitive|src/codex_ml|CI|docs|tests|other\"\
+        ,\n  \"needs_more_info\": true,\n  \"cognitive_brain_relevant\": false,\n\
+        \  \"suggested_pattern_id\": \"P-NEW or null\"\n}\n"
         system-prompt: "You are an expert triage agent for the Aries-Serpent/_codex_\
-          \ Python repository.\nRepository overview: AI cognitive brain system with\
+        \ Python repository.\nRepository overview: AI cognitive brain system with\
           \ ML training, CI/CD automation,\nRBAC (StructuralPolicyManager), GitHub\
           \ Copilot integration, and coverage tooling.\n\nAvailable GitHub labels\
-          \ (use ONLY these exact strings):\n  bug, enhancement, documentation, question,\
+        \ (use ONLY these exact strings):\n  bug, enhancement, documentation, question,\
           \ security, ci/cd,\n  cognitive-brain, good first issue, help wanted, invalid,\
-          \ wontfix,\n  priority: critical, priority: high, priority: medium, priority:\
-          \ low\n\ncognitive_brain_relevant = true if issue affects:\n  src/codex/cognitive/,\
+        \ wontfix,\n  priority: critical, priority: high, priority: medium, priority:\
+        \ low\n\ncognitive_brain_relevant = true if issue affects:\n  src/codex/cognitive/,\
           \ .github/workflows/cognitive_brain_*,\n  StructuralPolicyManager, SessionContextInjector,\
-          \ AgentBrainAPI\n\nsuggested_pattern_id: if this issue maps to a known CI/test\
+        \ AgentBrainAPI\n\nsuggested_pattern_id: if this issue maps to a known CI/test\
           \ pattern\n(P-038 shard crash, P-039 CodeQL, P-042 HF_REVISION, P-043 HF\
           \ mock,\nP-044 coverage, P-046 CI feedback), return that ID. Otherwise null.\n\
           \nReturn ONLY valid JSON. No markdown fences. No explanation.\n"
         prompt: 'Triage this GitHub issue:
 
 
-          Repository: ${{ github.repository }}
+        Repository: ${{ github.repository }}
 
-          Issue  #${{ github.event.issue.number }}: ${{ github.event.issue.title }}
+        Issue  #${{ github.event.issue.number }}: ${{ github.event.issue.title }}
 
-          Author: ${{ github.event.issue.user.login }}
+        Author: ${{ github.event.issue.user.login }}
 
-          Body:
+        Body:
 
           ${{ github.event.issue.body }}
 
@@ -85,36 +85,36 @@ jobs:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         script: "const triage = JSON.parse(process.env.TRIAGE_JSON);\n\n// Apply labels\
           \ (ignore any that don't exist yet)\nif (triage.labels && triage.labels.length\
-          \ > 0) {\n  try {\n    await github.rest.issues.addLabels({\n      owner:\
-          \ context.repo.owner,\n      repo: context.repo.repo,\n      issue_number:\
-          \ context.issue.number,\n      labels: triage.labels,\n    });\n    core.info(`Applied\
-          \ labels: ${triage.labels.join(', ')}`);\n  } catch (e) {\n    core.warning(`Label\
-          \ apply failed: ${e.message}`);\n  }\n}\n\n// Build triage comment\nconst\
-          \ severityEmoji = {\n  critical: '\U0001F534', high: '\U0001F7E0', medium:\
-          \ '\U0001F7E1', low: '\U0001F7E2'\n}[triage.severity] || '\u26AA';\n\nconst\
-          \ typeEmoji = {\n  bug: '\U0001F41B', feature: '\u2728', documentation:\
-          \ '\U0001F4DA',\n  question: '\u2753', security: '\U0001F512', 'ci-cd':\
-          \ '\u2699\uFE0F',\n  'cognitive-brain': '\U0001F9E0'\n}[triage.type] ||\
+        \ > 0) {\n  try {\n    await github.rest.issues.addLabels({\n      owner:\
+        \ context.repo.owner,\n      repo: context.repo.repo,\n      issue_number:\
+        \ context.issue.number,\n      labels: triage.labels,\n    });\n    core.info(`Applied\
+        \ labels: ${triage.labels.join(', ')}`);\n  } catch (e) {\n    core.warning(`Label\
+        \ apply failed: ${e.message}`);\n  }\n}\n\n// Build triage comment\nconst\
+        \ severityEmoji = {\n  critical: '\U0001F534', high: '\U0001F7E0', medium:\
+        \ '\U0001F7E1', low: '\U0001F7E2'\n}[triage.severity] || '\u26AA';\n\nconst\
+        \ typeEmoji = {\n  bug: '\U0001F41B', feature: '\u2728', documentation:\
+        \ '\U0001F4DA',\n  question: '\u2753', security: '\U0001F512', 'ci-cd':\
+        \ '\u2699\uFE0F',\n  'cognitive-brain': '\U0001F9E0'\n}[triage.type] ||\
           \ '\U0001F4CC';\n\nconst brainNote = triage.cognitive_brain_relevant\n \
           \ ? `\\n> \U0001F9E0 **Cognitive Brain relevant** \u2014 affects \\`${triage.affected_component}\\\
-          ``\n  : '';\n\nconst patternNote = triage.suggested_pattern_id\n  ? `\\\
-          n> \U0001F4DA **Pattern match:** \\`${triage.suggested_pattern_id}\\` \u2014\
+        ``\n  : '';\n\nconst patternNote = triage.suggested_pattern_id\n  ? `\\\
+        n> \U0001F4DA **Pattern match:** \\`${triage.suggested_pattern_id}\\` \u2014\
           \ see \\`.codex/cognitive_brain/${triage.suggested_pattern_id}.md\\``\n\
-          \  : '';\n\nconst needsInfo = triage.needs_more_info\n  ? `\\n\\n> \u26A0\
+        \  : '';\n\nconst needsInfo = triage.needs_more_info\n  ? `\\n\\n> \u26A0\
           \uFE0F **More information needed** \u2014 please provide additional context\
-          \ (logs, steps to reproduce, etc.)`\n  : '';\n\nconst bodyLines = [\n  `###\
+        \ (logs, steps to reproduce, etc.)`\n  : '';\n\nconst bodyLines = [\n  `###\
           \ ${typeEmoji} AI Triage Summary`,\n  '',\n  '| Field | Value |',\n  '|-------|-------|',\n\
           \  `| **Type** | ${triage.type} |`,\n  `| **Severity** | ${severityEmoji}\
           \ ${triage.severity} |`,\n  `| **Component** | \\`${triage.affected_component}\\\
           ` |`,\n  `| **Summary** | ${triage.summary} |`,\n];\nif (brainNote)   bodyLines.push(brainNote);\n\
           if (patternNote) bodyLines.push(patternNote);\nif (needsInfo)   bodyLines.push(needsInfo);\n\
           bodyLines.push('');\nbodyLines.push('<sub>\U0001F916 Auto-triaged by [GitHub\
-          \ Copilot Action](https://github.com/marketplace/actions/github-copilot-action)\
+        \ Copilot Action](https://github.com/marketplace/actions/github-copilot-action)\
           \ (mvkaran/gh-copilot@5694b7d7a242d1c025e40d0965a0c5c5e68f5fba) \u2014 S108\
           \ cognitive brain integration</sub>');\nbodyLines.push('');\nbodyLines.push('---');\n\
-          bodyLines.push(`_[\U0001F517 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`);\n\
+        bodyLines.push(`_[\U0001F517 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`);\n\
           const body = bodyLines.join('\\n');\n\nawait github.rest.issues.createComment({\n\
-          \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  issue_number:\
+        \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  issue_number:\
           \ context.issue.number,\n  body,\n});\ncore.info(`\u2705 Triage comment\
           \ posted on issue  #${context.issue.number}`);\n"
     - name: Fallback notice (if Copilot unavailable)

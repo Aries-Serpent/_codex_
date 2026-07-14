@@ -47,7 +47,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         fetch-depth: 0
     - name: Set up Python
       uses: actions/setup-python@v6
@@ -92,15 +92,15 @@ jobs:
         script: "const comment = `## ⚠️ Workflow Documentation Link Validation - Issues\
           \ Found\n\nBroken links were found in workflow documentation. These are\
           \ **non-blocking warnings** for PRs but should be addressed.\n\n**Common\
-          \ fixes:**\n- Update relative paths to match file locations\n- Ensure linked\
+        \ fixes:**\n- Update relative paths to match file locations\n- Ensure linked\
           \ files exist in the repository\n- Use GitHub URLs for files outside the\
           \ workflows directory\n- Remove references to consolidated workflows (see\
           \ Phase 2 consolidation docs)\n\nSee the [workflow run](${{ github.server_url\
           \ }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for details.\n\
-          \n**Note:** This check is non-blocking for PRs. Manual validation runs with\
+        \n**Note:** This check is non-blocking for PRs. Manual validation runs with\
           \ strict mode enabled will fail on broken links.`;\n\ngithub.rest.issues.createComment({\n\
-          \  issue_number: context.issue.number,\n  owner: context.repo.owner,\n \
-          \ repo: context.repo.repo,\n  body: comment\n});\n"
+        \  issue_number: context.issue.number,\n  owner: context.repo.owner,\n \
+        \ repo: context.repo.repo,\n  body: comment\n});\n"
     - name: Upload validation report
       if: always()
       uses: actions/upload-artifact@v5
@@ -139,7 +139,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
         fetch-depth: 1

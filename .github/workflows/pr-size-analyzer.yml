@@ -37,7 +37,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         fetch-depth: 0
     - name: Analyze PR Size
       id: analyze
@@ -97,7 +97,7 @@ jobs:
         workflow-name: PR Size Analysis
         status: info
         summary: '${{ steps.analyze.outputs.pr_size }} PR — ${{ steps.analyze.outputs.changed_files_count
-          }} files — strategy: ${{ steps.analyze.outputs.validation_strategy }}'
+        }} files — strategy: ${{ steps.analyze.outputs.validation_strategy }}'
         details: '| Field | Value |
 
           |-------|-------|
@@ -109,7 +109,7 @@ jobs:
           |
 
 
-          **Size Thresholds:** Small (<20) → Full validation · Medium (20-99) → Targeted
+        **Size Thresholds:** Small (<20) → Full validation · Medium (20-99) → Targeted
           · Large (100-499) → Smoke · Refactor (500+) → Import only
 
           '
@@ -135,7 +135,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1
     - name: Post or update rescue comment

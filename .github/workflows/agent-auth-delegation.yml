@@ -57,7 +57,7 @@ jobs:
         \ \\\n  --pr-number \"${PR_NUM}\" \\\n  || echo \"\u26A0\uFE0F  Scorecard\
         \ refresh non-zero (non-fatal \u2014 workflow continues)\"\n"
     env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   detect-checkbox:
     name: Detect COPILOT_AGENT_AUTH_ENABLED checkbox
     needs:
@@ -107,7 +107,7 @@ jobs:
         \uFE0F  COPILOT_MULTI_SESSION not checked \u2014 single-session mode (default)\"\
         \nfi\n"
     env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   await-approval:
     name: "\u23F3 Auto-approved \u2014 agent is pre-authorized"
     needs: detect-checkbox
@@ -120,7 +120,7 @@ jobs:
         run: "echo \"\u2705 Agent token delegation auto-approved for PR  #${{ needs.detect-checkbox.outputs.pr_number\ \ }}\"\necho \"Copilot is permanently pre-authorized \u2014 no human approval\
         \ required.\"\n"
     env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   trigger-auto-approval:
     name: "⚡ Dispatch Auto-Approve (if auth authorized)"
     needs: [detect-checkbox, await-approval]
@@ -897,7 +897,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           uses: actions/github-script@v8
           with:
-            github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: "const REQUIRED_MARKER = 'BRANCH_REBASE_REQUIRED';\nconst RESOLVED_MARKER\
           \ = 'BRANCH_REBASE_RESOLVED';\nconst prNumber = context.issue.number;\n\n\
           core.info(`REQ-10: Checking rebase status for PR  #${prNumber}`);\n\n// Helper:\
@@ -998,7 +998,7 @@ jobs:
         \necho \"_WF-001 | cognitive-preflight gate | .codex/CODEBASE_AGENCY_POLICY.md_\"\
         \ >> \"$GITHUB_STEP_SUMMARY\"\n"
     env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   activate-delegation:
     name: Activate token delegation
     needs:
@@ -1335,7 +1335,7 @@ jobs:
         env:
           CB_PATTERNS: ${{ steps.cb_patterns.outputs.cb_markdown || '' }}
           with:
-            github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+          github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: "const prNumber = parseInt('${{ needs.detect-checkbox.outputs.pr_number\ \ }}', 10);\nif (!prNumber || prNumber <= 0) {\n  core.setFailed('Invalid\
           \ PR number \u2014 cannot post comment');\n  return;\n}\nconst actors  \
           \  = '${{ steps.set_vars.outputs.updated_actors }}';\nconst runUrl    =\
@@ -1397,7 +1397,7 @@ jobs:
           \ unavailable: {exc}\")\n    print(\"    (non-fatal \u2014 cognitive brain\
         \ module not installed in CI env)\")\nPYEOF\n"
     env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   self-approve-after-delegation:
     name: "\u26A1 Approve action_required runs (post-delegation)"
     runs-on: ubuntu-latest
@@ -1454,7 +1454,7 @@ jobs:
         \ failed; continuing to avoid blocking delegation workflow.\"\n  exit 0\n\
         }\n"
     env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   session-release:
     name: "\U0001F513 Release session lock"
     runs-on: ubuntu-latest
@@ -1550,7 +1550,7 @@ jobs:
           \ Don't remove from queue \u2014 will retry on next release\n  }\n} else\
           \ {\n  await clearVar('COPILOT_SESSION_QUEUE');\n}\n"
     env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest

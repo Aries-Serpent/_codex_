@@ -23,7 +23,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         fetch-depth: 5
     - name: Set up Python
       uses: actions/setup-python@v6
@@ -105,42 +105,42 @@ jobs:
           \ {\n  core.error('Empty post content \u2014 cannot proceed');\n  throw\
           \ new Error('Empty phase 4-5 content');\n}\n\nconst branch = process.env.REF\
           \ || '';\nconst sha = (process.env.SHA || '').slice(0, 7);\nconst timestamp\
-          \ = new Date().toISOString();\nconst contractMarker = `<!-- codex-phase-4-5:v1\
-          \ -->`;\nconst metadataLine = `> **Posted:** ${timestamp} \xB7 branch \\\
+        \ = new Date().toISOString();\nconst contractMarker = `<!-- codex-phase-4-5:v1\
+        \ -->`;\nconst metadataLine = `> **Posted:** ${timestamp} \xB7 branch \\\
           `${branch}\\` \xB7 sha \\`${sha}\\``;\nconst body = `${contractMarker}\\\
           n${metadataLine}\\n\\n${postContent}`;\n\nlet discussionId = '';\ntry {\n\
-          \  const discussion = await github.graphql(`\n    query($owner: String!,\
-          \ $name: String!, $number: Int!) {\n      repository(owner: $owner, name:\
-          \ $name) {\n        discussion(number: $number) { id }\n      }\n    }\n\
-          \  `, {\n    owner: context.repo.owner,\n    name: context.repo.repo,\n\
-          \    number: discussionNumber,\n  });\n  discussionId = discussion.repository.discussion.id;\n\
-          } catch (e) {\n  core.error(`Could not fetch discussion  #${discussionNumber}:\
+        \  const discussion = await github.graphql(`\n    query($owner: String!,\
+        \ $name: String!, $number: Int!) {\n      repository(owner: $owner, name:\
+        \ $name) {\n        discussion(number: $number) { id }\n      }\n    }\n\
+        \  `, {\n    owner: context.repo.owner,\n    name: context.repo.repo,\n\
+        \    number: discussionNumber,\n  });\n  discussionId = discussion.repository.discussion.id;\n\
+        } catch (e) {\n  core.error(`Could not fetch discussion  #${discussionNumber}:\
           \ ${e.message}`);\n  throw new Error(`Failed to fetch discussion  #${discussionNumber}`);\n\
           }\n\nlet existingComment = null;\nlet cursor = null;\nwhile (discussionId)\
-          \ {\n  const page = await github.graphql(`\n    query($id: ID!, $cursor:\
-          \ String) {\n      node(id: $id) {\n        ... on Discussion {\n      \
-          \    comments(last: 100, before: $cursor) {\n            nodes { id body\
+        \ {\n  const page = await github.graphql(`\n    query($id: ID!, $cursor:\
+        \ String) {\n      node(id: $id) {\n        ... on Discussion {\n      \
+        \    comments(last: 100, before: $cursor) {\n            nodes { id body\
           \ url }\n            pageInfo { hasPreviousPage startCursor }\n        \
-          \  }\n        }\n      }\n    }\n  `, { id: discussionId, cursor });\n \
+        \  }\n        }\n      }\n    }\n  `, { id: discussionId, cursor });\n \
           \ const comments = page.node.comments.nodes || [];\n  for (const comment\
           \ of [...comments].reverse()) {\n    if ((comment.body || '').includes(contractMarker))\
           \ {\n      existingComment = comment;\n      break;\n    }\n  }\n  if (existingComment\
           \ || !page.node.comments.pageInfo.hasPreviousPage) {\n    break;\n  }\n\
           \  cursor = page.node.comments.pageInfo.startCursor;\n}\n\ntry {\n  if (existingComment\
           \ && process.env.FORCE_POST !== 'true') {\n    const result = await github.graphql(`\n\
-          \      mutation($commentId: ID!, $body: String!) {\n        updateDiscussionComment(input:\
-          \ { commentId: $commentId, body: $body }) {\n          comment { id url\
-          \ }\n        }\n      }\n    `, {\n      commentId: existingComment.id,\n\
+        \      mutation($commentId: ID!, $body: String!) {\n        updateDiscussionComment(input:\
+        \ { commentId: $commentId, body: $body }) {\n          comment { id url\
+        \ }\n        }\n      }\n    `, {\n      commentId: existingComment.id,\n\
           \      body,\n    });\n    core.info(\n      `\u2705 Updated Phase 4-5 summary\
-          \ in discussion  #${discussionNumber}: ` +\n      `${result.updateDiscussionComment.comment.url}`\n\
+        \ in discussion  #${discussionNumber}: ` +\n      `${result.updateDiscussionComment.comment.url}`\n\
           \    );\n    return;\n  }\n\n  const result = await github.graphql(`\n \
-          \   mutation($discussionId: ID!, $body: String!) {\n      addDiscussionComment(input:\
-          \ { discussionId: $discussionId, body: $body }) {\n        comment { id\
+        \   mutation($discussionId: ID!, $body: String!) {\n      addDiscussionComment(input:\
+        \ { discussionId: $discussionId, body: $body }) {\n        comment { id\
           \ url }\n      }\n    }\n  `, {\n    discussionId,\n    body,\n  });\n \
-          \ core.info(\n    `\u2705 Posted Phase 4-5 summary to discussion  #${discussionNumber}:\
+        \ core.info(\n    `\u2705 Posted Phase 4-5 summary to discussion  #${discussionNumber}:\
           \ ` +\n    `${result.addDiscussionComment.comment.url}`\n  );\n} catch (e)\
-          \ {\n  core.error(`Failed to post discussion comment: ${e.message}`);\n\
-          \  core.info('Body preview (first 200 chars): ' + body.slice(0, 200));\n\
+        \ {\n  core.error(`Failed to post discussion comment: ${e.message}`);\n\
+        \  core.info('Body preview (first 200 chars): ' + body.slice(0, 200));\n\
           \  throw e;\n}\n"
     - name: Log success
       if: success()

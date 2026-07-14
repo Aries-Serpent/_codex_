@@ -25,7 +25,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
@@ -98,10 +98,10 @@ jobs:
           \ response = fs.readFileSync(responseFile, 'utf8');\n\nif (!response ||\
           \ response.length === 0) {\n  console.log('Response is empty, skipping comment');\n\
           \  return;\n}\n\ntry {\n  await github.rest.issues.createComment({\n   \
-          \ owner: context.repo.owner,\n    repo: context.repo.repo,\n    issue_number:\
-          \ context.issue.number,\n    body: response\n  });\n  console.log('✓ Posted\
+        \ owner: context.repo.owner,\n    repo: context.repo.repo,\n    issue_number:\
+        \ context.issue.number,\n    body: response\n  });\n  console.log('✓ Posted\
           \ security scan summary comment');\n} catch (error) {\n  console.error('Failed\
-          \ to post comment:', error);\n  throw error;\n}\n"
+        \ to post comment:', error);\n  throw error;\n}\n"
     - env:
         GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
@@ -110,7 +110,7 @@ jobs:
       uses: actions/github-script@v8
       with:
         script: "await github.rest.issues.createComment({\n  owner: context.repo.owner,\n\
-          \  repo: context.repo.repo,\n  issue_number: context.issue.number,\n  body:\
+        \  repo: context.repo.repo,\n  issue_number: context.issue.number,\n  body:\
           \ '❌ Failed to generate security scan summary. Please check the workflow\
           \ logs.'\n});\n"
     timeout-minutes: 30

@@ -48,7 +48,7 @@ jobs:
         echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
     - uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f  # v3
     - name: Build wheelhouse (builder stage) for ${{ matrix.platform }}
@@ -120,7 +120,7 @@ jobs:
     steps:
     - uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f  # v3
     - name: Determine Dockerfile
@@ -191,7 +191,7 @@ jobs:
     steps:
     - uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f  # v3
     - name: Test build with Python ${{ matrix.python_version }}
@@ -227,7 +227,7 @@ jobs:
     steps:
     - uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
     - name: Download current baseline (amd64)
       uses: actions/download-artifact@v5
       with:
@@ -258,14 +258,14 @@ jobs:
       uses: actions/github-script@v8
       with:
         script: "github.rest.issues.create({\n  owner: context.repo.owner,\n  repo:\
-          \ context.repo.repo,\n  title: '\U0001F50D Dependency Drift Detected',\n\
-          \  body: `Automated dependency audit detected changes in the wheelhouse\
-          \ baseline.\n\n  **Action Required:**\n  - Review the wheel manifest changes\n\
+        \ context.repo.repo,\n  title: '\U0001F50D Dependency Drift Detected',\n\
+        \  body: `Automated dependency audit detected changes in the wheelhouse\
+        \ baseline.\n\n  **Action Required:**\n  - Review the wheel manifest changes\n\
           \  - Verify compatibility with current codebase\n  - Update pinned versions\
-          \ if necessary\n\n  **Artifacts:**\n  - Current baseline: [Download from\
+        \ if necessary\n\n  **Artifacts:**\n  - Current baseline: [Download from\
           \ workflow run](${context.payload.repository.html_url}/actions/runs/${context.runId})\n\
-          \n  **Workflow:** ${context.workflow}\n  **Run:** ${context.runId}`,\n \
-          \ labels: ['dependencies', 'security', 'automated']\n});\n"
+        \n  **Workflow:** ${context.workflow}\n  **Run:** ${context.runId}`,\n \
+        \ labels: ['dependencies', 'security', 'automated']\n});\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
@@ -279,7 +279,7 @@ jobs:
     steps:
     - uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
     - name: Set up Python
       uses: actions/setup-python@v6
       with:

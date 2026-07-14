@@ -82,11 +82,11 @@ jobs:
 
           ### Verification
 
-          - CHANGELOG entry: see CHANGELOG.md
+        - CHANGELOG entry: see CHANGELOG.md
 
-          - SBOM: attached as workflow artifact
+        - SBOM: attached as workflow artifact
 
-          - Completion score: run `python scripts/ci/score_completion.py --scores
+        - Completion score: run `python scripts/ci/score_completion.py --scores
           .codex/completion_scores.yaml`
 
           '

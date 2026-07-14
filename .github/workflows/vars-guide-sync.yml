@@ -41,7 +41,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         fetch-depth: 1
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
     - name: '🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)'
@@ -158,18 +158,18 @@ jobs:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         script: "const absent = parseInt('${{ steps.audit.outputs.absent_required\
           \ }}', 10);\nif (isNaN(absent) || absent === 0) return;\n\n// Check for\
-          \ existing open blocker issue\nconst { data: issues } = await github.rest.issues.listForRepo({\n\
-          \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  labels: 'variable-blocker',\n\
-          \  state: 'open',\n});\n\nif (issues.length > 0) {\n  console.log(`Existing\
+        \ existing open blocker issue\nconst { data: issues } = await github.rest.issues.listForRepo({\n\
+        \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  labels: 'variable-blocker',\n\
+        \  state: 'open',\n});\n\nif (issues.length > 0) {\n  console.log(`Existing\
           \ blocker issue  #${issues[0].number} already open`);\n  return;\n}\n\nawait\
-          \ github.rest.issues.create({\n  owner: context.repo.owner,\n  repo: context.repo.repo,\n\
-          \  title: `\U0001F510 Variable Blockers: ${absent} required variable(s)\
-          \ absent`,\n  body: `## Variable Audit Blocker\\n\\nThe auto-sync workflow\
+        \ github.rest.issues.create({\n  owner: context.repo.owner,\n  repo: context.repo.repo,\n\
+        \  title: `\U0001F510 Variable Blockers: ${absent} required variable(s)\
+        \ absent`,\n  body: `## Variable Audit Blocker\\n\\nThe auto-sync workflow\
           \ detected **${absent} required variables** that are absent.\\n\\nSee [§13\
           \ of GITHUB_VARIABLES_MASTER_GUIDE.md](docs/admin/GITHUB_VARIABLES_MASTER_GUIDE.md#13-still-missing)\
-          \ for the full list and CLI commands to fix.\\n\\n**Auto-detected:** ${new\
-          \ Date().toISOString()}\\n**Workflow:** ${context.workflow}`,\n  labels:\
-          \ ['variable-blocker', 'ops', 'priority: high'],\n});\n"
+        \ for the full list and CLI commands to fix.\\n\\n**Auto-detected:** ${new\
+        \ Date().toISOString()}\\n**Workflow:** ${context.workflow}`,\n  labels:\
+        \ ['variable-blocker', 'ops', 'priority: high'],\n});\n"
     - name: Fail gate — absent required variables (workflow_dispatch)
       if: steps.audit.outputs.absent_required != '0' && github.event_name == 'workflow_dispatch'
         && inputs.dry_run != true

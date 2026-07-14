@@ -42,7 +42,7 @@ jobs:
         echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
     - uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         sparse-checkout: 'scripts/ci/
 
           pyproject.toml
@@ -94,7 +94,7 @@ jobs:
     steps:
     - uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         sparse-checkout: 'scripts/ci/
 
           pyproject.toml
@@ -183,7 +183,7 @@ jobs:
     steps:
     - uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         sparse-checkout: 'scripts/ci/
 
           pyproject.toml
@@ -217,13 +217,13 @@ jobs:
           \ workflows \u2014 skipping dispatch');\n  return;\n}\n\ncore.info(`Dispatching\
           \ hub for ${newlyChecked.length} newly-checked workflows`);\n\nfor (const\
           \ workflow of newlyChecked) {\n  try {\n    await github.rest.actions.createWorkflowDispatch({\n\
-          \      owner,\n      repo,\n      workflow_id: 'auto-approve-workflows.yml',\n\
-          \      ref: 'main',\n      inputs: {\n        approval_source: 'workflow-execution-gate',\n\
-          \        approval_intent: 'conditional_approve',\n        target_pr: prNumber.toString(),\n\
-          \        approval_reason: `WEC checkbox decision: enable ${workflow}`,\n\
-          \        approval_ttl_hours: '24',\n        dry_run: 'false'\n      }\n\
+        \      owner,\n      repo,\n      workflow_id: 'auto-approve-workflows.yml',\n\
+        \      ref: 'main',\n      inputs: {\n        approval_source: 'workflow-execution-gate',\n\
+        \        approval_intent: 'conditional_approve',\n        target_pr: prNumber.toString(),\n\
+        \        approval_reason: `WEC checkbox decision: enable ${workflow}`,\n\
+        \        approval_ttl_hours: '24',\n        dry_run: 'false'\n      }\n\
           \    });\n    core.info(`\u2705 Hub dispatch for '${workflow}'`);\n  } catch\
-          \ (err) {\n    core.warning(`Hub dispatch failed for '${workflow}': ${err.message}`);\n\
+        \ (err) {\n    core.warning(`Hub dispatch failed for '${workflow}': ${err.message}`);\n\
           \  }\n}\n"
       continue-on-error: true
     - name: Persist owner-selected flags as labels
@@ -257,7 +257,7 @@ jobs:
     steps:
     - uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         sparse-checkout: 'scripts/ci/
 
           pyproject.toml
@@ -467,7 +467,7 @@ jobs:
     - name: Checkout fast-forward script
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         sparse-checkout: 'scripts/ci/fast_forward_safe_files.py
 
           .codex/fast_forward_allowlist.yaml

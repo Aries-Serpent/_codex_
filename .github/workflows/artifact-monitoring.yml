@@ -38,7 +38,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
     - name: "RL-3b \u2014 Rate-limit pre-check"
       env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
@@ -130,17 +130,17 @@ jobs:
       uses: actions/github-script@v8
       with:
         script: "const issue_body = `## \u26A0\uFE0F Artifact Monitoring Workflow\
-          \ Failed\n\nThe automated artifact monitoring workflow has failed.\n\n**Run**:\
+        \ Failed\n\nThe automated artifact monitoring workflow has failed.\n\n**Run**:\
           \ [#${context.runId}](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})\n\
-          **Workflow**: ${context.workflow}\n**Event**: ${context.eventName}\n**Time**:\
+        **Workflow**: ${context.workflow}\n**Event**: ${context.eventName}\n**Time**:\
           \ ${new Date().toISOString()}\n\nThis is a meta-failure - the monitoring\
           \ system itself has encountered an error.\nPlease review the workflow logs\
           \ and resolve the issue to restore monitoring.\n\n---\n\n**Auto-generated\
           \ by Artifact Monitoring Workflow**\n`;\n\n// Only create issue if not in\
           \ dry-run mode\nconst isDryRun = '${{ github.event.inputs.dry_run }}' ===\
-          \ 'true';\nif (!isDryRun) {\n  await github.rest.issues.create({\n    owner:\
-          \ context.repo.owner,\n    repo: context.repo.repo,\n    title: '[META-MONITOR]\
-          \ Artifact Monitoring Workflow Failed',\n    body: issue_body,\n    labels:\
+        \ 'true';\nif (!isDryRun) {\n  await github.rest.issues.create({\n    owner:\
+        \ context.repo.owner,\n    repo: context.repo.repo,\n    title: '[META-MONITOR]\
+        \ Artifact Monitoring Workflow Failed',\n    body: issue_body,\n    labels:\
           \ ['automated', 'monitoring-failure', 'critical']\n  });\n}\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}

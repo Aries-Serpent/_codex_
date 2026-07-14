@@ -29,7 +29,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         fetch-depth: 1
     - name: Initialize with repository variables
       env:
@@ -112,26 +112,26 @@ jobs:
           \ file found');\n  return;\n}\n\nconst context = JSON.parse(fs.readFileSync(path.join('context',\
           \ contextFile), 'utf8'));\nconst marker = '<!-- session-context-capture\
           \ -->';\n\nconst body = [\n  marker,\n  '## \U0001F4CB Session Context Captured',\n\
-          \  '',\n  `**Time:** ${context.timestamp}`,\n  `**PR:**  #${context.pr_number}`,\n\
-          \  `**SHA:** ${context.sha}`,\n  '',\n  '### \U0001F4DD PR State',\n  `-\
-          \ **Title:** ${context.sections.pr_state.title || 'N/A'}`,\n  `- **State:**\
-          \ ${context.sections.pr_state.state} (Draft: ${context.sections.pr_state.draft})`,\n\
-          \  `- **Branch:** \\`${context.sections.pr_state.head_branch}\\` \u2192\
+        \  '',\n  `**Time:** ${context.timestamp}`,\n  `**PR:**  #${context.pr_number}`,\n\
+        \  `**SHA:** ${context.sha}`,\n  '',\n  '### \U0001F4DD PR State',\n  `-\
+        \ **Title:** ${context.sections.pr_state.title || 'N/A'}`,\n  `- **State:**\
+        \ ${context.sections.pr_state.state} (Draft: ${context.sections.pr_state.draft})`,\n\
+        \  `- **Branch:** \\`${context.sections.pr_state.head_branch}\\` \u2192\
           \ \\`${context.sections.pr_state.base_branch}\\``,\n  '',\n  '### \u2705\
           \ Outstanding Tasks',\n  context.sections.outstanding_tasks.map(t => `-\
           \ [ ] ${t.description}`).join('\\n') || '- No outstanding tasks',\n  '',\n\
           \  '### \U0001F6A8 Blocking Issues',\n  context.sections.blocking_issues.map(i\
-          \ => `- **${i.type}** (${i.status}): ${i.name || i.author}`).join('\\n')\
+        \ => `- **${i.type}** (${i.status}): ${i.name || i.author}`).join('\\n')\
           \ || '- No blocking issues',\n  '',\n  '---',\n  `_Context captured for\
-          \ session handoff. Run at: [GitHub Actions](${{ github.server_url }}/${{\
+        \ session handoff. Run at: [GitHub Actions](${{ github.server_url }}/${{\
           \ github.repository }}/actions/runs/${{ github.run_id }})_`,\n].join('\\\
-          n');\n\nconst { data: comments } = await github.rest.issues.listComments({\n\
-          \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  issue_number:\
-          \ ${{ inputs.pr_number }},\n  per_page: 100,\n});\n\nconst existing = comments.find(c\
+        n');\n\nconst { data: comments } = await github.rest.issues.listComments({\n\
+        \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  issue_number:\
+        \ ${{ inputs.pr_number }},\n  per_page: 100,\n});\n\nconst existing = comments.find(c\
           \ => c.body && c.body.includes(marker));\nif (existing) {\n  await github.rest.issues.updateComment({\n\
-          \    owner: context.repo.owner,\n    repo: context.repo.repo,\n    comment_id:\
+        \    owner: context.repo.owner,\n    repo: context.repo.repo,\n    comment_id:\
           \ existing.id,\n    body,\n  });\n} else {\n  await github.rest.issues.createComment({\n\
-          \    issue_number: ${{ inputs.pr_number }},\n    owner: context.repo.owner,\n\
-          \    repo: context.repo.repo,\n    body,\n  });\n}\n"
+        \    issue_number: ${{ inputs.pr_number }},\n    owner: context.repo.owner,\n\
+        \    repo: context.repo.repo,\n    body,\n  });\n}\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}

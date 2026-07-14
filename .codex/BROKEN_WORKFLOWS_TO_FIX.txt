@@ -1,0 +1,39 @@
+Workflows still needing manual YAML corruption repair:
+============================================================
+
+  .github/workflows/codex-master-key-validation.yml
+  .github/workflows/cognitive_brain_ci_feedback.yml
+  .github/workflows/cost-gate.yml
+  .github/workflows/dependency-scan.yml
+  .github/workflows/dependency-scan.yml
+  .github/workflows/flush-queued-runs.yml
+  .github/workflows/machine-readable-governance.yml
+  .github/workflows/machine-readable-maintenance-pr.yml
+  .github/workflows/manifest-drift-guard.yml
+  .github/workflows/model-drift-retrain.yml
+  .github/workflows/nox_gates.yml
+  .github/workflows/optimized-ci.yml
+  .github/workflows/parallel-quality-checks.yml
+  .github/workflows/performance-gate.yml
+  .github/workflows/phase-8-2-issue-triage.yml
+  .github/workflows/phase-9-3-router.yml
+  .github/workflows/post-merge-validation-optimized.yml
+  .github/workflows/pr-followup-generator.yml
+  .github/workflows/profile-validation.yml
+  .github/workflows/progressive-validation.yml
+  .github/workflows/release-to-pypi.yml
+  .github/workflows/restore-pipeline-ci.yml
+  .github/workflows/rust-ffi.yml
+  .github/workflows/security-findings-copilot-handoff.yml
+  .github/workflows/security-scan-phase-16.yml
+  .github/workflows/security-scan-phase-16.yml
+  .github/workflows/security-scanning-suite.yml
+  .github/workflows/self-healing.yml
+  .github/workflows/smoke-tests-deployment.yml
+  .github/workflows/telemetry-collection.yml
+  .github/workflows/tiered-approval-gate.yml
+  .github/workflows/wec-enforcement-gate.yml
+  .github/workflows/workflow-analytics-unified.yml
+
+Total: 33 files (out of 250)
+Coverage: 86.8% fixed

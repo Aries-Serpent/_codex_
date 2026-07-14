@@ -86,7 +86,7 @@ jobs:
     - name: Sparse checkout (scripts only)
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         sparse-checkout: scripts/ci/
         sparse-checkout-cone-mode: false
     - name: "Setup Python (stdlib \u2014 no pip install)"
@@ -164,7 +164,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         sparse-checkout: '.codex
 
           .github/scripts

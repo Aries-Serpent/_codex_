@@ -47,7 +47,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         fetch-depth: 0
     - name: CacheManager health check
       continue-on-error: true
@@ -85,25 +85,25 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
     - name: Create Archival Issue
       if: ${{ github.event.inputs.dry_run != 'true' }}
       uses: actions/github-script@v8
       with:
         script: "const candidates = `${{ needs.identify-candidates.outputs.candidates\
           \ }}`;\nconst count = '${{ needs.identify-candidates.outputs.count }}';\n\
-          \nconst body = `## Archival Proposal\n\n**Generated**: ${new Date().toISOString().split('T')[0]}\n\
-          **Candidates**: ${count} files\n\n### Files Proposed for Archival\n\nThe\
+        \nconst body = `## Archival Proposal\n\n**Generated**: ${new Date().toISOString().split('T')[0]}\n\
+        **Candidates**: ${count} files\n\n### Files Proposed for Archival\n\nThe\
           \ following files have not been modified in over 90 days and may be candidates\
-          \ for archival:\n\n\\`\\`\\`\n${candidates}\n\\`\\`\\`\n\n### Approval Required\n\
+        \ for archival:\n\n\\`\\`\\`\n${candidates}\n\\`\\`\\`\n\n### Approval Required\n\
           \n- [ ] Review each candidate file\n- [ ] Confirm no active references exist\n\
           - [ ] Approve archival by commenting \\`/approve-archival\\`\n\n### Archival\
           \ Process\n\n1. Files will be moved to \\`misc/repo-owner-review/archived/\\\
           `\n2. A redirect/reference will be added to original location\n3. Documentation\
           \ index will be updated\n\n---\n\nThis issue was automatically created by\
           \ the Scheduled Archival workflow.\n`;\n\nawait github.rest.issues.create({\n\
-          \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  title: `[Archival]\
-          \ ${count} files proposed for archival`,\n  body: body,\n  labels: ['archival',\
+        \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  title: `[Archival]\
+        \ ${count} files proposed for archival`,\n  body: body,\n  labels: ['archival',\
           \ 'needs-review']\n});\n"
     - name: Dry Run Summary
       if: ${{ github.event.inputs.dry_run == 'true' }}
@@ -134,7 +134,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
     - name: Find and Compress Large Files
       run: "echo \"## Large File Compression\"\necho \"\"\n\n# Find files larger than\
         \ 100KB in archive directories\nLARGE_FILES=$(find ./misc/repo-owner-review\

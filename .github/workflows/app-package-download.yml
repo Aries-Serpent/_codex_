@@ -86,7 +86,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5  # v6.0.3
         with:
-            persist-credentials: false
+          persist-credentials: false
           persist-credentials: false
           ref: ${{ steps.branch.outputs.branch }}
           fetch-depth: 1

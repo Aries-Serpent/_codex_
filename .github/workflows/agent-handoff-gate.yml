@@ -118,9 +118,9 @@ jobs:
           \ || 'SOFT';\nconst traceDepth = process.env.TRACE_DEPTH || '0';\nconst\
           \ violations = process.env.VIOLATION_COUNT || '0';\nconst tier1Count = process.env.TIER1_GATES_COUNT\
           \ || '0';\nconst schemaErrors = process.env.SCHEMA_ERRORS || '[]';\n\nconst\
-          \ statusIcon = status === 'valid' ? '✅' : status === 'invalid_json' ? '\U0001F534\
-          ' : '⚠️';\nconst statusLabel = status === 'valid' ? 'VALID' : status ===\
-          \ 'invalid_json' ? 'INVALID JSON' : 'SCHEMA VIOLATION';\n\nlet body = `\U0001F500\
+        \ statusIcon = status === 'valid' ? '✅' : status === 'invalid_json' ? '\U0001F534\
+        ' : '⚠️';\nconst statusLabel = status === 'valid' ? 'VALID' : status ===\
+        \ 'invalid_json' ? 'INVALID JSON' : 'SCHEMA VIOLATION';\n\nlet body = `\U0001F500\
           \ **AGENT_HANDOFF** \\`v1.1\\` | ${statusIcon} **${statusLabel}**\\n\\n`;\n\
           body += `| Field | Value |\\n|-------|-------|\\n`;\nbody += `| **From**\
           \ | \\`${delegating}\\` |\\n`;\nbody += `| **To** | \\`${receiving}\\` |\\\
@@ -130,16 +130,16 @@ jobs:
           \ **Tier-1 gates passed** | ${tier1Count} |\\n`;\nbody += `| **Violations\
           \ this chain** | ${violations} |\\n\\n`;\n\nif (status !== 'valid') {\n\
           \  let errors = [];\n  try { errors = JSON.parse(schemaErrors); } catch\
-          \ {}\n  if (errors.length > 0) {\n    body += `**Schema errors:**\\n`;\n\
+        \ {}\n  if (errors.length > 0) {\n    body += `**Schema errors:**\\n`;\n\
           \    errors.forEach(e => { body += `- ${e}\\n`; });\n    body += `\\n`;\n\
-          \  }\n  // TIER-1: hard block on schema violations\n  body += `> ❌ **Blocked**\
+        \  }\n  // TIER-1: hard block on schema violations\n  body += `> ❌ **Blocked**\
           \ — schema violation detected. Fix the handoff manifest before proceeding.\\\
           n\\n`;\n}\n\nbody += `_[agent-handoff-gate.yml](.github/workflows/agent-handoff-gate.yml)\
           \ | `;\nbody += `[AgentHandoffManifest v1.1](.codex/schemas/AgentHandoffManifest_v1.1.json)\
           \ | `;\nbody += `Tier-1 GROUNDED gate_`;\nbody += `\\n\\n---\\n_[\U0001F517\
-          \ Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`;\n\
-          \nawait github.rest.issues.createComment({\n  owner: context.repo.owner,\n\
-          \  repo: context.repo.repo,\n  issue_number: context.issue.number,\n  body:\
+        \ Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`;\n\
+        \nawait github.rest.issues.createComment({\n  owner: context.repo.owner,\n\
+        \  repo: context.repo.repo,\n  issue_number: context.issue.number,\n  body:\
           \ body,\n});\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}

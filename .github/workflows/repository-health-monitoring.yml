@@ -23,7 +23,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         fetch-depth: 0
     - name: Set up Python 3.12 with tiered cache
       uses: ./.github/actions/setup-python-cached
@@ -75,28 +75,28 @@ jobs:
         body: '## Repository Health Monitoring Report
 
 
-          **Scan Date**: ${{ steps.scan.outputs.scan_time }}
+        **Scan Date**: ${{ steps.scan.outputs.scan_time }}
 
-          **Triggered by**: ${{ github.event_name }}
+        **Triggered by**: ${{ github.event_name }}
 
 
           ### Summary
 
 
-          - **Offload Candidates**: ${{ steps.scan.outputs.candidate_count }}
+        - **Offload Candidates**: ${{ steps.scan.outputs.candidate_count }}
 
-          - **Total Size**: ${{ steps.scan.outputs.total_size_mb }} MB
+        - **Total Size**: ${{ steps.scan.outputs.total_size_mb }} MB
 
-          - **Dashboard**: [View Dashboard](.codex/repository_health/DASHBOARD.md)
+        - **Dashboard**: [View Dashboard](.codex/repository_health/DASHBOARD.md)
 
-          - **Detailed Report**: [View Candidates](.codex/repository_health/offload_candidates.json)
+        - **Detailed Report**: [View Candidates](.codex/repository_health/offload_candidates.json)
 
 
           ### Recommendations
 
 
           Review the candidates in `.codex/repository_health/offload_candidates.json`
-          and execute offloads as appropriate using:
+        and execute offloads as appropriate using:
 
 
           ```bash
@@ -131,11 +131,11 @@ jobs:
           This PR was automatically created by the Repository Health Monitoring workflow.
 
 
-          **Workflow**: `.github/workflows/repository-health-monitoring.yml`
+        **Workflow**: `.github/workflows/repository-health-monitoring.yml`
 
-          **Agent**: `repository-organization-agent`
+        **Agent**: `repository-organization-agent`
 
-          **Run**: ${{ github.run_id }}
+        **Run**: ${{ github.run_id }}
 
           '
         labels: 'automated

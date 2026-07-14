@@ -25,7 +25,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         fetch-depth: 0
     - name: Check 5 transition conditions
       id: check
@@ -33,76 +33,76 @@ jobs:
       with:
         github-token: ${{ github.token }}
         script: "const fs = require('fs');\nconst conditions = [];\n\n// C1: AGENT_REGISTRY.yaml\
-          \ present and covers all active agents\n// Hardened: structural parse +\
+        \ present and covers all active agents\n// Hardened: structural parse +\
           \ active_agents count consistency check\nconst registryPath = '.github/agents/AGENT_REGISTRY.yaml';\n\
-          let c1Pass = false;\nif (!fs.existsSync(registryPath)) {\n  core.warning('C1:\
+        let c1Pass = false;\nif (!fs.existsSync(registryPath)) {\n  core.warning('C1:\
           \ AGENT_REGISTRY.yaml not found at .github/agents/AGENT_REGISTRY.yaml');\n\
           } else {\n  try {\n    const regContent = fs.readFileSync(registryPath,\
-          \ 'utf8');\n    // Must have top-level 'agents:' list and 'active_agents:'\
-          \ count\n    const hasAgentsList = /^agents:/m.test(regContent);\n    const\
-          \ activeMatch = regContent.match(/^active_agents:\\s*(\\d+)/m);\n    if\
-          \ (!hasAgentsList || !activeMatch) {\n      core.warning('C1: AGENT_REGISTRY.yaml\
-          \ missing required keys: agents or active_agents');\n    } else {\n    \
+        \ 'utf8');\n    // Must have top-level 'agents:' list and 'active_agents:'\
+        \ count\n    const hasAgentsList = /^agents:/m.test(regContent);\n    const\
+        \ activeMatch = regContent.match(/^active_agents:\\s*(\\d+)/m);\n    if\
+        \ (!hasAgentsList || !activeMatch) {\n      core.warning('C1: AGENT_REGISTRY.yaml\
+        \ missing required keys: agents or active_agents');\n    } else {\n    \
           \  const declaredActive = parseInt(activeMatch[1], 10);\n      // Count\
-          \ actual entries with status: active\n      const actualActive = (regContent.match(/^\
-          \  status: active\\s*$/gm) || []).length;\n      if (actualActive === 0)\
-          \ {\n        core.warning('C1: No agents with status=active found in AGENT_REGISTRY.yaml');\n\
+        \ actual entries with status: active\n      const actualActive = (regContent.match(/^\
+        \  status: active\\s*$/gm) || []).length;\n      if (actualActive === 0)\
+        \ {\n        core.warning('C1: No agents with status=active found in AGENT_REGISTRY.yaml');\n\
           \      } else {\n        const drift = Math.abs(declaredActive - actualActive);\n\
-          \        if (drift > 10) {\n          // Hard-fail: registry header count\
-          \ is significantly stale\n          core.warning(\n            `C1: active_agents\
-          \ count drift too large — declared: ${declaredActive}, actual: ${actualActive}\
-          \ (drift: ${drift}). ` +\n            'Regenerate AGENT_REGISTRY.yaml to\
+        \        if (drift > 10) {\n          // Hard-fail: registry header count\
+        \ is significantly stale\n          core.warning(\n            `C1: active_agents\
+        \ count drift too large — declared: ${declaredActive}, actual: ${actualActive}\
+        \ (drift: ${drift}). ` +\n            'Regenerate AGENT_REGISTRY.yaml to\
           \ fix.'\n          );\n        } else {\n          if (drift > 0) {\n  \
-          \          core.warning(\n              `C1: minor active_agents drift (declared:\
-          \ ${declaredActive}, actual: ${actualActive}) — ` +\n              'acceptable\
+        \          core.warning(\n              `C1: minor active_agents drift (declared:\
+        \ ${declaredActive}, actual: ${actualActive}) — ` +\n              'acceptable\
           \ but consider regenerating registry.'\n            );\n          }\n  \
           \        c1Pass = true;\n        }\n      }\n    }\n  } catch (e) {\n  \
-          \  core.warning(`C1: AGENT_REGISTRY.yaml validation error: ${e.message}`);\n\
-          \  }\n}\nconditions.push({\n  id: 'C1',\n  label: 'AGENT_REGISTRY.yaml present\
-          \ with full coverage',\n  pass: c1Pass\n});\n\n// C2: CODEX_MANIFEST.json\
+        \  core.warning(`C1: AGENT_REGISTRY.yaml validation error: ${e.message}`);\n\
+        \  }\n}\nconditions.push({\n  id: 'C1',\n  label: 'AGENT_REGISTRY.yaml present\
+        \ with full coverage',\n  pass: c1Pass\n});\n\n// C2: CODEX_MANIFEST.json\
           \ valid and current (<24h)\nlet manifestOk = false;\nif (fs.existsSync('CODEX_MANIFEST.json'))\
           \ {\n  try {\n    const m = JSON.parse(fs.readFileSync('CODEX_MANIFEST.json',\
           \ 'utf8'));\n    const ageMs = Date.now() - new Date(m.generated_at).getTime();\n\
           \    const has24hWindow = ageMs < 24 * 60 * 60 * 1000;\n    const hasIntegrity\
           \ = typeof m.integrity_sha256 === 'string' && m.integrity_sha256.length\
           \ === 64;\n    manifestOk = has24hWindow && hasIntegrity;\n  } catch (e)\
-          \ {\n    core.warning(`CODEX_MANIFEST.json parse error: ${e.message}`);\n\
-          \  }\n}\nconditions.push({\n  id: 'C2',\n  label: 'CODEX_MANIFEST.json valid\
-          \ + current (<24h)',\n  pass: manifestOk\n});\n\n// C3: Tier-3 (SOFT) policy\
+        \ {\n    core.warning(`CODEX_MANIFEST.json parse error: ${e.message}`);\n\
+        \  }\n}\nconditions.push({\n  id: 'C2',\n  label: 'CODEX_MANIFEST.json valid\
+        \ + current (<24h)',\n  pass: manifestOk\n});\n\n// C3: Tier-3 (SOFT) policy\
           \ count <= 2\n// C5 shares the same document — load once, fail both explicitly\
           \ if missing\nconst gvsPath = '.codex/docs/GROUNDED_VS_SOFT_ENFORCEMENT.md';\n\
-          const gvsExists = fs.existsSync(gvsPath);\nif (!gvsExists) {\n  core.warning(`C3/C5:\
+        const gvsExists = fs.existsSync(gvsPath);\nif (!gvsExists) {\n  core.warning(`C3/C5:\
           \ ${gvsPath} not found — cannot verify SOFT or GROUNDED counts`);\n}\nconst\
-          \ gvsDoc = gvsExists ? fs.readFileSync(gvsPath, 'utf8') : null;\n\n// C3:\
+        \ gvsDoc = gvsExists ? fs.readFileSync(gvsPath, 'utf8') : null;\n\n// C3:\
           \ SOFT count — hard-fail when doc is missing (missing doc ≠ zero SOFT policies)\n\
           const softCount = gvsDoc ? (gvsDoc.match(/\\u274C \\*\\*SOFT\\*\\*/g) ||\
-          \ []).length : null;\nconditions.push({\n  id: 'C3',\n  label: softCount\
-          \ !== null\n    ? `Tier-3 count \\u22642 (current: ${softCount})`\n    :\
-          \ 'Tier-3 count \\u22642 (GVS doc MISSING)',\n  pass: softCount !== null\
-          \ && softCount <= 2\n});\n\n// C4: agent-handoff-gate.yml deployed (Phase\
+        \ []).length : null;\nconditions.push({\n  id: 'C3',\n  label: softCount\
+        \ !== null\n    ? `Tier-3 count \\u22642 (current: ${softCount})`\n    :\
+        \ 'Tier-3 count \\u22642 (GVS doc MISSING)',\n  pass: softCount !== null\
+        \ && softCount <= 2\n});\n\n// C4: agent-handoff-gate.yml deployed (Phase\
           \ 2 complete)\nconst handoffGate = fs.existsSync('.github/workflows/agent-handoff-gate.yml');\n\
-          conditions.push({\n  id: 'C4',\n  label: 'agent-handoff-gate.yml deployed\
-          \ (Phase 2 complete)',\n  pass: handoffGate\n});\n\n// C5: GROUNDED Tier-1\
+        conditions.push({\n  id: 'C4',\n  label: 'agent-handoff-gate.yml deployed\
+        \ (Phase 2 complete)',\n  pass: handoffGate\n});\n\n// C5: GROUNDED Tier-1\
           \ gate count >= 8 — hard-fail when doc is missing\nconst tier1Count = gvsDoc\
-          \ ? (gvsDoc.match(/\\u2705 \\*\\*GROUNDED\\*\\*/g) || []).length : null;\n\
-          conditions.push({\n  id: 'C5',\n  label: tier1Count !== null\n    ? `Tier-1\
-          \ gates \\u22658 (current: ${tier1Count})`\n    : 'Tier-1 gates \\u22658\
-          \ (GVS doc MISSING)',\n  pass: tier1Count !== null && tier1Count >= 8\n\
+        \ ? (gvsDoc.match(/\\u2705 \\*\\*GROUNDED\\*\\*/g) || []).length : null;\n\
+        conditions.push({\n  id: 'C5',\n  label: tier1Count !== null\n    ? `Tier-1\
+        \ gates \\u22658 (current: ${tier1Count})`\n    : 'Tier-1 gates \\u22658\
+        \ (GVS doc MISSING)',\n  pass: tier1Count !== null && tier1Count >= 8\n\
           });\n\nconst score = conditions.filter(c => c.pass).length;\nconst capable\
           \ = score === 5;\n\n// Write job summary\nlet summary = `## \\U0001F504\
-          \ E\\u2192D Transition Readiness: ${score}/5\\n\\n`;\nsummary += `| ID |\
+        \ E\\u2192D Transition Readiness: ${score}/5\\n\\n`;\nsummary += `| ID |\
           \ Condition | Status |\\n|----|-----------|---------|\\n`;\nfor (const c\
           \ of conditions) {\n  summary += `| ${c.id} | ${c.label} | ${c.pass ? '\\\
-          u2705' : '\\u274C'} |\\n`;\n}\nsummary += `\\n**Operating Model:** ${capable\
-          \ ? '\\U0001F7E2 D_CAPABLE unlocked' : '\\U0001F7E1 E (continue building)'}\\\
-          n`;\nsummary += `\\n_Tier-1 GROUNDED gate: score < 5 blocks PR._\\n`;\n\
+        u2705' : '\\u274C'} |\\n`;\n}\nsummary += `\\n**Operating Model:** ${capable\
+        \ ? '\\U0001F7E2 D_CAPABLE unlocked' : '\\U0001F7E1 E (continue building)'}\\\
+        n`;\nsummary += `\\n_Tier-1 GROUNDED gate: score < 5 blocks PR._\\n`;\n\
           await core.summary.addRaw(summary).write();\n\ncore.setOutput('score', score.toString());\n\
           core.setOutput('capable', capable.toString());\n// Export per-condition\
           \ pass flags so downstream jobs can gate precisely\nconst c2Condition =\
           \ conditions.find(c => c.id === 'C2');\ncore.setOutput('c2_pass', (c2Condition\
-          \ && c2Condition.pass).toString());\n\n// Tier-1 GROUNDED gate: block PR\
+        \ && c2Condition.pass).toString());\n\n// Tier-1 GROUNDED gate: block PR\
           \ when score < 5/5\nif (!capable) {\n  core.setFailed(`E\\u2192D transition\
-          \ not ready: ${score}/5 conditions met`);\n}\n"
+        \ not ready: ${score}/5 conditions met`);\n}\n"
     - name: Emit demotion annotations for non-compliant agents
       if: always()
       run: "python3 - <<'PY'\nimport yaml, sys, os\nregistry_path = \".github/agents/AGENT_REGISTRY.yaml\"\
@@ -156,7 +156,7 @@ jobs:
     - name: Checkout PR branch
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         ref: ${{ github.head_ref }}
         fetch-depth: 1
         token: ${{ github.token }}
@@ -202,14 +202,14 @@ jobs:
       with:
         github-token: ${{ github.token }}
         script: "const pr = context.payload.pull_request.number;\nawait github.rest.issues.createComment({\n\
-          \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  issue_number:\
-          \ pr,\n  body: [\n    '\U0001F527 **C2 Self-Heal Triggered**: `CODEX_MANIFEST.json`\
+        \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  issue_number:\
+        \ pr,\n  body: [\n    '\U0001F527 **C2 Self-Heal Triggered**: `CODEX_MANIFEST.json`\
           \ was stale (>24h) causing the E→D gate to fail.',\n    '',\n    'The manifest\
           \ has been automatically regenerated and pushed. The E→D gate will re-run\
           \ and should pass C2 on the next push or manual re-run.',\n    '',\n   \
-          \ '> **Next step:** Re-run the `E→D Transition Readiness Gate` check from\
+        \ '> **Next step:** Re-run the `E→D Transition Readiness Gate` check from\
           \ the Actions tab, or push a new commit to trigger it automatically.',\n\
-          \  '',\n  '---',\n  `_[\U0001F517 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,\n\
+        \  '',\n  '---',\n  `_[\U0001F517 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`,\n\
           \  ].join('\\n'),\n});\n"
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
@@ -234,7 +234,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1
     - name: Post or update rescue comment
