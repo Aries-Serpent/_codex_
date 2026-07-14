@@ -2,6 +2,8 @@
 #         assert target.read_bytes() == b"logger.info('sample')\n", "Condition must be true"
 #         assert empty.read_bytes() == b"", "Condition must be true"
 
+from pathlib import Path
+
 
 class TestPattern30MergeReadiness:
     def test_pattern_30_uses_noarg_scorecard(self, tmp_path):
