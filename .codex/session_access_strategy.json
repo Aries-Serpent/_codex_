@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-14T10:37:50.773176+00:00",
+  "generated_at": "2026-07-14T13:16:05.251172+00:00",
   "methods": [
     "rest",
     "graphql",
@@ -11,7 +11,7 @@
   "graphql_remaining": 5000,
   "gh_cli_available": true,
   "codeql_available": false,
-  "best_token_var": "GITHUB_TOKEN",
+  "best_token_var": "CODEX_MASTER_KEY",
   "open_prs": [],
   "branch": "copilot/add-cache-to-python-workflows",
   "recommendation": "Use REST for data fetches. "
