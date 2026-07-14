@@ -32,11 +32,7 @@ jobs:
         cache: pip
         python-version: 3.12.13
     - name: 📦 Install package
-      run: 'pip install -e . --no-deps
-
-        pip install pyyaml pydantic typer
-
-        '
+      run: pip install -e . pyyaml pydantic typer
     - name: 🔍 Run doc refresh skill (check-only)
       id: refresh
       env:
