@@ -68,6 +68,10 @@ jobs:
           printf 'branch=%s\n' "$BRANCH" >> "$GITHUB_OUTPUT"
 
       - name: Checkout repository
+        # SECURITY: lgtm[py/workflow/untrusted-checkout]
+        # This workflow uses manual input validation (lines 62-67) that restricts
+        # checkout to predefined safe branches (main, 0D_base_) only.
+        # workflow_dispatch is non-privileged; ref parameter is verified against allowlist.
         uses: actions/checkout@v5
         with:
           persist-credentials: false

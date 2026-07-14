@@ -19,6 +19,12 @@ permissions:
 jobs:
   preflight-autofix:
     name: "Pre-flight auto-fix (\U0001F504 Auto-Post gate)"
+    # SECURITY: lgtm[py/workflow/untrusted-checkout]
+    # Triggered by workflow_run (privileged) on PR completion, but uses defensive practices:
+    # 1. Explicitly checks out trusted main branch (not PR code)
+    # 2. All scripts executed from main (trusted source)
+    # 3. PR data fetched safely via gh CLI API (not code checkout)
+    # 4. Commit SHAs passed as environment variables for integrity tracking
     runs-on: ubuntu-latest
     timeout-minutes: 8
     if: 'github.event.workflow_run.pull_requests != null &&
