@@ -102,11 +102,11 @@ class TestCliCommandsWithTyper:
         """Test that main() is callable."""
         assert callable(main), "Condition must be true"
 
-    @patch("src.codex.cli.main.typer")
+    @patch("codex.cli.main.typer")
     def test_ingest_command_registered(self, mock_typer):
         """Test that ingest command is registered."""
         # Check if app exists
-    from codex.cli.main import TYPER_AVAILABLE, app
+        from codex.cli.main import TYPER_AVAILABLE, app
 
         if TYPER_AVAILABLE:
             assert hasattr(app, "command")

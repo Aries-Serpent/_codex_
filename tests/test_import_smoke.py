@@ -61,7 +61,7 @@ class TestImportSmoke:
     def test_config_openai_client_importable(self) -> None:
         """src.config.openai_client imports without error."""
         t0 = time.monotonic()
-    from config.openai_client import CodexOpenAIClient  # noqa: F401
+        from config.openai_client import CodexOpenAIClient  # noqa: F401
 
         elapsed = time.monotonic() - t0
         assert elapsed < 5.0, (
@@ -72,7 +72,7 @@ class TestImportSmoke:
     def test_services_github_client_importable(self) -> None:
         """src.services.github.client imports without error."""
         t0 = time.monotonic()
-    from services.github.client import GitHubClient  # noqa: F401
+        from services.github.client import GitHubClient  # noqa: F401
 
         elapsed = time.monotonic() - t0
         assert elapsed < 5.0, (
@@ -145,7 +145,7 @@ class TestImportSmoke:
         Regression test for P19: token='' was treated as falsy and fell back
         to GITHUB_TOKEN env var, leaking CI tokens into unit-test assertions.
         """
-    from services.github.client import GitHubClient
+        from services.github.client import GitHubClient
 
         with patch.dict(os.environ, {"GITHUB_TOKEN": "env-token-should-not-be-used"}):
             client = GitHubClient(token="")
@@ -158,7 +158,7 @@ class TestImportSmoke:
 
     def test_github_client_none_token_uses_env(self) -> None:
         """GitHubClient(token=None) should fall back to GITHUB_TOKEN env var."""
-    from services.github.client import GitHubClient
+        from services.github.client import GitHubClient
 
         with patch.dict(os.environ, {"GITHUB_TOKEN": "env-token-abc"}):
             client = GitHubClient(token=None)
@@ -166,7 +166,7 @@ class TestImportSmoke:
 
     def test_github_client_explicit_token_used(self) -> None:
         """GitHubClient(token='explicit') should use the provided token."""
-    from services.github.client import GitHubClient
+        from services.github.client import GitHubClient
 
         with patch.dict(os.environ, {"GITHUB_TOKEN": "env-token-ignored"}):
             client = GitHubClient(token="explicit-token")

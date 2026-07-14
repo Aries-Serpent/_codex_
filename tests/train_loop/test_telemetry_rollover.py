@@ -12,7 +12,7 @@ def test_telemetry_rollover(tmp_path: Path, monkeypatch):
     monkeypatch.setenv("CODEX_TELEMETRY_MAX_ITEMS", "1")
 
     try:
-    from codex_ml.train_loop import run_training
+        from codex_ml.train_loop import run_training
     except ImportError as e:
         import pytest
 
