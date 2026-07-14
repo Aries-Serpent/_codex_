@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Callable
 #         data.append({"id": f"item-{i}", "value": rng.randint(1, 100): f"test-{i}"})
 # 
 #         Tuple of (result, log_records)

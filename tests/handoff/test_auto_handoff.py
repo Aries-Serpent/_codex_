@@ -1,3 +1,4 @@
+import pytest
 #         assert ", "Condition must be true"
 #         assert "Copilot → Codex" in comment, "Condition must be true"
 #         assert "Plan 1 Complete" in comment, "Condition must be true"
