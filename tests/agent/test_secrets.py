@@ -9,7 +9,7 @@ class TestGitHubSecretsManager:
     def test_secrets_manager_import(self):
         """Test that GitHubSecretsManager can be imported."""
         try:
-    from agent.secrets import GitHubSecretsManager
+            from agent.secrets import GitHubSecretsManager
 
             assert GitHubSecretsManager is not None, "GitHubSecretsManager must be initialized"
         except ImportError:
@@ -18,7 +18,7 @@ class TestGitHubSecretsManager:
     def test_secrets_manager_creation(self):
         """Test creating GitHubSecretsManager."""
         try:
-    from agent.secrets import GitHubSecretsManager
+            from agent.secrets import GitHubSecretsManager
 
             manager = GitHubSecretsManager()
             assert manager is not None, "manager must be initialized"
@@ -28,7 +28,7 @@ class TestGitHubSecretsManager:
     def test_secrets_manager_defaults(self):
         """Test GitHubSecretsManager default values."""
         try:
-    from agent.secrets import GitHubSecretsManager
+            from agent.secrets import GitHubSecretsManager
 
             manager = GitHubSecretsManager()
             assert manager.owner is None, "owner is not valid"
@@ -40,7 +40,7 @@ class TestGitHubSecretsManager:
     def test_secrets_manager_with_values(self):
         """Test GitHubSecretsManager with custom values."""
         try:
-    from agent.secrets import GitHubSecretsManager
+            from agent.secrets import GitHubSecretsManager
 
             manager = GitHubSecretsManager(owner="test-owner", repo="test-repo", token="test-token")
             assert manager.owner == "test-owner", "owner is not valid"
@@ -52,7 +52,7 @@ class TestGitHubSecretsManager:
     def test_setup_phase10_secrets(self):
         """Test setup_phase10_secrets method."""
         try:
-    from agent.secrets import GitHubSecretsManager
+            from agent.secrets import GitHubSecretsManager
 
             manager = GitHubSecretsManager()
             result = manager.setup_phase10_secrets()
@@ -63,7 +63,7 @@ class TestGitHubSecretsManager:
     def test_setup_phase10_secrets_returns_empty_dict(self):
         """Test setup_phase10_secrets returns empty dict (stub)."""
         try:
-    from agent.secrets import GitHubSecretsManager
+            from agent.secrets import GitHubSecretsManager
 
             manager = GitHubSecretsManager()
             result = manager.setup_phase10_secrets("arg1", "arg2", key="value")
@@ -78,7 +78,7 @@ class TestModuleImports:
     def test_dataclass_decorator(self):
         """Test that GitHubSecretsManager is a dataclass."""
         try:
-    from agent.secrets import GitHubSecretsManager
+            from agent.secrets import GitHubSecretsManager
 
             # Dataclasses have a __dataclass_fields__ attribute
             assert hasattr(GitHubSecretsManager, "__dataclass_fields__")
