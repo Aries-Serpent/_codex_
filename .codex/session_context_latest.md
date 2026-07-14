@@ -1,21 +1,22 @@
-# Session Context — 2026-07-14T23:46:30Z
+# Session Context — 2026-07-14T23:55:17Z
 **Branch:** `copilot/phase4-codeql-deployment`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
 - REST remaining: `5000` (✅)
-- GraphQL remaining: `4999` (✅)
+- GraphQL remaining: `4997` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **.github/workflows/manifest-drift-guard.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-14)
-- **.github/workflows/build-preview-image.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-14)
-- **.github/workflows/agent-registry-validation.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-14)
-- **.github/workflows/agent-health-check.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-14)
-- **.github/workflows/restore-pipeline-ci.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-14)
+- **.github/workflows/rust_swarm_ci.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-14)
+- **.github/workflows/ml-tests.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-14)
+- **.github/workflows/ci-failure-issue-creator.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-14)
+- **.github/workflows/chatops_copilot_trigger.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-14)
+- **.github/workflows/optimized-ci.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-14)
 
 ## 📝 Recent Commits
+- `81c6ab15` docs(phase-4-ga): Create GA deployment execution brief per @mbaetiong directive — copilot-swe-agent[bot] (2026-07-14)
 - `00405374` docs: Phase 4 CodeQL GA Deployment Monitoring Charter - Establish continuous mon — copilot-swe-agent[bot] (2026-07-14)
 - `cbdab4bd` docs: Phase 4 CodeQL GA Deployment - Add workflow security guidelines and Phase  — copilot-swe-agent[bot] (2026-07-14)
 - `31e36fcd` Phase 4 CodeQL GA Deployment - Verification & Documentation Plan — copilot-swe-agent[bot] (2026-07-14)
@@ -23,7 +24,6 @@
 - `806bfc06` chore: Update workflow health dashboard [skip ci] — GitHub Copilot (2026-07-14)
 - `d7196be7` fix: correct YAML syntax errors in workflow files (#5320) — Copilot (2026-07-14)
 - `449f3c96` fix(v0.2.3-validation): Complete post-merge validation and import migration for  — Copilot (2026-07-14)
-- `3e45977b` chore(release): v0.2.3 — Fix dependency leak and multi-profile isolation (#5318) — Copilot (2026-07-13)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
