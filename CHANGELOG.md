@@ -1,5 +1,29 @@
 ## [Unreleased]
 
+### In Progress (Multi-Phase Deployment Campaign — Alpha → Beta → GA)
+- Multi-phase deployment campaign infrastructure established: 4-phase framework with 7 gate templates
+  - **Phase 1 (Immediate, ~2h)**: Alpha deployment + canary testing (3 gates: readiness, artifacts, environment)
+    - Deployment: Docker image + k8s rollout with health checks and resource limits
+    - Canary: Synthetic load testing (40min), error rate <0.1%, latency p95 <500ms
+    - Documentation: `.codex/ALPHA_DEPLOYMENT_MANIFEST.md`, `.codex/ALPHA_CANARY_RESULTS_SESSION_DATE.md`
+  - **Phase 2 (Short-term, ~2-4h)**: Alpha monitoring + beta prep (7 gates: uptime, alerts, error rate, latency, infrastructure, security, rollback)
+    - Monitoring: 4-6h continuous telemetry collection, alert management, anomaly detection
+    - Beta prep: Infrastructure provisioning, routing rules, traffic ramp strategy
+    - Deliverable: `.codex/BETA_READINESS_CHECKPOINT_SESSION_DATE.md`
+  - **Phase 3 (Medium-term, ~24h next session)**: Beta phase 10% rollout (5 gates: critical issues, error rate, latency, satisfaction, auto-scaling)
+    - Traffic ramp: 5% → 10% → hold at 10% for 24h with continuous monitoring
+    - Customer feedback: Support channel monitoring, issue categorization, resolution tracking
+    - Deliverable: `.codex/BETA_PHASE_COMPLETION_SESSION_DATE.md`
+  - **Phase 4 (Long-term, ~48-72h + 30-day)**: GA deployment 100% rollout + SLA validation (6 gates: availability, latency, error rate, support, patches, satisfaction)
+    - Traffic ramp: 25% → 50% → 75% → 100% over 6-8h with hour-by-hour checkpoints
+    - Intensive monitoring: First 48h (critical phase), then 30-day SLA tracking
+    - Post-deployment: Performance tuning, cost optimization, lessons learned
+    - Deliverable: `.codex/GA_DEPLOYMENT_FINAL_REPORT_SESSION_DATE.md`
+- Campaign success criteria: >99.5% availability, <0.1% error rate, <500ms latency p95, zero unplanned rollbacks
+- Governance: D-tier autonomous (@mbaetiong authority), no manual gates required, auto-escalation on gate failures
+- Rollback protocol: Documented at any phase with triggers (error rate >2%, latency >1000ms, data corruption, customer impact >100 users)
+- Master playbook: `.codex/MULTI_PHASE_DEPLOYMENT_PLAYBOOK.md` with execution commands, timeline, contact info
+
 ### In Progress (Phase 4F — Integration Hardening & Production Deployment)
 - Phase 4F execution campaign initiated: 7 plansets with integration hardening, production deployment, and enterprise features
 - Three-wave execution strategy: Wave 1 (Plansets 008, 014), Wave 2 (009, 010, 011), Wave 3 (012, 013)
