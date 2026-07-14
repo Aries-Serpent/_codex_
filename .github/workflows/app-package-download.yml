@@ -56,8 +56,8 @@ jobs:
         id: branch
         run: |
           # SECURITY: Only predefined safe branches allowed via GitHub Actions UI
-          # The actions/checkout action uses this as ref parameter
           # Runtime validation ensures branch is in the allowed list (permanent branches only)
+          # This prevents accidental checkout of untrusted code via ref parameter
           BRANCH="${{ github.event.inputs.branch }}"
           ALLOWED_BRANCHES="main|0D_base_"
           if ! echo "$BRANCH" | grep -qE "^($ALLOWED_BRANCHES)$"; then
