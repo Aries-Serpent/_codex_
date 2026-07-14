@@ -1,0 +1,279 @@
+{
+  "metadata": {
+    "execution_date": "2026-07-14",
+    "phase": "Phase 4D Planset 007",
+    "campaign": "Performance Monitoring & Regression Detection",
+    "authority": "D-tier autonomous (@mbaetiong standing approval)",
+    "version": "2.0.0",
+    "description": "Comprehensive baseline metrics with 20+ key performance indicators"
+  },
+  "baseline_metrics": {
+    "test_execution": {
+      "total_test_files": {
+        "value": 150,
+        "unit": "files",
+        "threshold_warning": 200,
+        "threshold_critical": 250,
+        "description": "Total number of test files in repository"
+      },
+      "total_tests": {
+        "value": 2700,
+        "unit": "tests",
+        "threshold_warning": 3500,
+        "threshold_critical": 4000,
+        "description": "Total number of individual test cases"
+      },
+      "test_suite_duration": {
+        "value": 900,
+        "unit": "seconds",
+        "threshold_warning": 1200,
+        "threshold_critical": 1500,
+        "description": "Full test suite execution time"
+      },
+      "test_suite_p95_latency": {
+        "value": 950,
+        "unit": "seconds",
+        "threshold_warning": 1250,
+        "threshold_critical": 1600,
+        "description": "95th percentile test execution time"
+      },
+      "test_suite_p99_latency": {
+        "value": 1050,
+        "unit": "seconds",
+        "threshold_warning": 1300,
+        "threshold_critical": 1700,
+        "description": "99th percentile test execution time"
+      },
+      "slow_test_avg_duration": {
+        "value": 5000,
+        "unit": "milliseconds",
+        "threshold_warning": 7000,
+        "threshold_critical": 10000,
+        "description": "Average duration of slow tests (>1s)"
+      },
+      "test_failure_rate": {
+        "value": 0.02,
+        "unit": "percent",
+        "threshold_warning": 0.05,
+        "threshold_critical": 0.10,
+        "description": "Percentage of tests that fail"
+      }
+    },
+    "ci_cd_performance": {
+      "ml_tests_workflow_duration": {
+        "value": 5400,
+        "unit": "seconds",
+        "threshold_warning": 6300,
+        "threshold_critical": 7200,
+        "description": "Total ML tests workflow execution time"
+      },
+      "auth_tests_workflow_duration": {
+        "value": 3600,
+        "unit": "seconds",
+        "threshold_warning": 4200,
+        "threshold_critical": 4800,
+        "description": "Total auth tests workflow execution time"
+      },
+      "coverage_gate_workflow_duration": {
+        "value": 1800,
+        "unit": "seconds",
+        "threshold_warning": 2100,
+        "threshold_critical": 2400,
+        "description": "Coverage gate workflow execution time"
+      },
+      "security_scan_duration": {
+        "value": 1200,
+        "unit": "seconds",
+        "threshold_warning": 1500,
+        "threshold_critical": 1800,
+        "description": "Security scanning (bandit, detect-secrets) duration"
+      },
+      "workflow_job_startup_time": {
+        "value": 30,
+        "unit": "seconds",
+        "threshold_warning": 45,
+        "threshold_critical": 60,
+        "description": "Average job startup time including runner setup"
+      },
+      "artifact_upload_time": {
+        "value": 120,
+        "unit": "seconds",
+        "threshold_warning": 180,
+        "threshold_critical": 240,
+        "description": "Average artifact upload time"
+      },
+      "artifact_download_time": {
+        "value": 60,
+        "unit": "seconds",
+        "threshold_warning": 90,
+        "threshold_critical": 120,
+        "description": "Average artifact download time"
+      },
+      "dependency_installation_time": {
+        "value": 300,
+        "unit": "seconds",
+        "threshold_warning": 420,
+        "threshold_critical": 600,
+        "description": "pip dependency installation time"
+      }
+    },
+    "resource_utilization": {
+      "peak_memory_usage": {
+        "value": 2048,
+        "unit": "megabytes",
+        "threshold_warning": 3072,
+        "threshold_critical": 4096,
+        "description": "Peak memory usage during test execution"
+      },
+      "average_memory_usage": {
+        "value": 1024,
+        "unit": "megabytes",
+        "threshold_warning": 1536,
+        "threshold_critical": 2048,
+        "description": "Average memory usage during test execution"
+      },
+      "cpu_utilization": {
+        "value": 75,
+        "unit": "percent",
+        "threshold_warning": 85,
+        "threshold_critical": 95,
+        "description": "Average CPU utilization during tests"
+      },
+      "disk_io_throughput": {
+        "value": 85,
+        "unit": "megabytes_per_second",
+        "threshold_warning": 120,
+        "threshold_critical": 150,
+        "description": "Peak disk I/O throughput"
+      }
+    },
+    "caching_performance": {
+      "cache_hit_rate": {
+        "value": 0.75,
+        "unit": "ratio",
+        "threshold_warning": 0.65,
+        "threshold_critical": 0.50,
+        "description": "Workflow cache hit rate (1.0 = 100%)"
+      },
+      "cache_miss_rate": {
+        "value": 0.25,
+        "unit": "ratio",
+        "threshold_warning": 0.35,
+        "threshold_critical": 0.50,
+        "description": "Workflow cache miss rate (1.0 = 100%)"
+      },
+      "pip_cache_hit_rate": {
+        "value": 0.80,
+        "unit": "ratio",
+        "threshold_warning": 0.70,
+        "threshold_critical": 0.50,
+        "description": "pip dependency cache hit rate"
+      },
+      "build_cache_effectiveness": {
+        "value": 0.70,
+        "unit": "ratio",
+        "threshold_warning": 0.60,
+        "threshold_critical": 0.40,
+        "description": "Overall build cache effectiveness"
+      }
+    },
+    "code_quality": {
+      "test_coverage_percent": {
+        "value": 85.5,
+        "unit": "percent",
+        "threshold_warning": 80.0,
+        "threshold_critical": 75.0,
+        "description": "Overall code coverage percentage"
+      },
+      "mutation_test_score": {
+        "value": 78.0,
+        "unit": "percent",
+        "threshold_warning": 70.0,
+        "threshold_critical": 60.0,
+        "description": "Mutation testing score"
+      },
+      "type_checking_score": {
+        "value": 95.0,
+        "unit": "percent",
+        "threshold_warning": 90.0,
+        "threshold_critical": 85.0,
+        "description": "mypy type checking score"
+      },
+      "code_complexity_score": {
+        "value": 7.5,
+        "unit": "score",
+        "threshold_warning": 9.0,
+        "threshold_critical": 10.0,
+        "description": "Average cyclomatic complexity (lower is better)"
+      }
+    },
+    "build_performance": {
+      "python_package_build_time": {
+        "value": 45,
+        "unit": "seconds",
+        "threshold_warning": 60,
+        "threshold_critical": 90,
+        "description": "Python package build time"
+      },
+      "wheel_generation_time": {
+        "value": 30,
+        "unit": "seconds",
+        "threshold_warning": 45,
+        "threshold_critical": 60,
+        "description": "Wheel file generation time"
+      },
+      "docker_build_time": {
+        "value": 180,
+        "unit": "seconds",
+        "threshold_warning": 240,
+        "threshold_critical": 300,
+        "description": "Docker image build time"
+      },
+      "documentation_build_time": {
+        "value": 60,
+        "unit": "seconds",
+        "threshold_warning": 90,
+        "threshold_critical": 120,
+        "description": "Documentation build time (MkDocs)"
+      }
+    }
+  },
+  "optimization_thresholds": {
+    "regression_detection": {
+      "percent_change_threshold": 0.10,
+      "significance_level": 0.05,
+      "min_samples": 5,
+      "description": "Statistical parameters for regression detection"
+    },
+    "anomaly_detection": {
+      "z_score_threshold": 3.0,
+      "window_size": 100,
+      "min_samples": 5,
+      "description": "Statistical parameters for anomaly detection"
+    },
+    "sla_enforcement": {
+      "block_pr_on_critical": true,
+      "block_pr_on_high": false,
+      "alert_on_warning": true,
+      "description": "SLA enforcement policy"
+    }
+  },
+  "success_metrics": {
+    "anomaly_detection_latency_ms": 500,
+    "anomaly_detection_precision": 0.95,
+    "regression_detection_accuracy": 0.90,
+    "dashboard_update_interval_seconds": 5,
+    "sla_enforcement_success_rate": 0.95,
+    "false_positive_rate": 0.05,
+    "false_negative_rate": 0.05,
+    "alert_accuracy": 0.90
+  },
+  "tracking_data": {
+    "metrics_collected": 28,
+    "sla_definitions": 24,
+    "regression_detection_algorithms": 3,
+    "anomaly_detection_methods": 2,
+    "historical_data_window_days": 28,
+    "baseline_update_frequency": "weekly"
+  }
+}
