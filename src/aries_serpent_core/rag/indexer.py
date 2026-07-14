@@ -414,7 +414,7 @@ def build_index_from_files(
                 f"Error processing {file_path}: {error_type} - unable to read file with UTF-8 encoding"  # noqa: E501
             )
             processing_errors.append(str(file_path))
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             error_type = type(e).__name__
             logger.error(
                 f"Error processing {file_path}: {error_type}"
@@ -588,7 +588,7 @@ def manage_tenant_indices(
                 logger.info(
                     f"Created index '{index_name}' at {index_path}"
                 )  # codeql[py/clear-text-logging-sensitive-data]
-            except (IOError, OSError) as e:
+            except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
                 error_type = type(e).__name__
                 logger.error(
                     f"Failed to create index '{index_name}': <ERROR_TYPE>"
@@ -647,7 +647,7 @@ def manage_tenant_indices(
                 logger.info(
                     f"Updated index '{index_name}' at {index_path}"
                 )  # codeql[py/clear-text-logging-sensitive-data]
-            except (IOError, OSError) as e:
+            except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
                 error_type = type(e).__name__
                 logger.error(
                     f"Failed to update index '{index_name}': <ERROR_TYPE>"
@@ -686,7 +686,7 @@ def manage_tenant_indices(
                     logger.warning(
                         f"Index '{index_name}' not found for tenant '{tenant_id}'"
                     )  # codeql[py/clear-text-logging-sensitive-data]
-            except (IOError, OSError) as e:
+            except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
                 error_type = type(e).__name__
                 logger.error(
                     f"Failed to delete index '{index_name}': <ERROR_TYPE>"
@@ -793,7 +793,7 @@ def manage_tenant_indices(
                 },
             )
 
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             error_type = type(e).__name__
             logger.error(
                 "Merge operation failed: <ERROR_TYPE>"

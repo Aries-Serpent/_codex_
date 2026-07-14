@@ -497,13 +497,13 @@ def _resolve_system_metrics_path(cfg: TrainingRunConfig, base_dir: Path) -> Opti
 def _start_system_metrics_logger(path: Path, interval: float):
     try:
         from codex_ml.monitoring.system_metrics import SystemMetricsLogger
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         logger.warning("Exception occurred", exc_info=True)
         return None
 
     try:
         metrics_logger = SystemMetricsLogger(path, interval=max(0.5, float(interval)))
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         logger.warning("Exception occurred", exc_info=True)
         return None
 
@@ -985,7 +985,7 @@ def run_functional_training(
     try:
         from datasets import Dataset  # type: ignore[attr-defined]
         from transformers import AutoTokenizer
-    except (IOError, OSError):  # pragma: no cover - optional dependencies
+    except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - optional dependencies
         # Track failed optional dependencies
         if "datasets" not in missing_optional:
             missing_optional = list(missing_optional) + ["datasets"]
@@ -1273,7 +1273,7 @@ def run_functional_training(
         from transformers import DataCollatorWithPadding  # type: ignore
 
         data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
-    except (IOError, OSError) as exc:  # pragma: no cover - optional path
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - optional path
         logger.debug("DataCollatorWithPadding unavailable: %s", exc)
         data_collator = None
 

@@ -78,6 +78,6 @@ async def lazy_connect_all(timeout: float = 1.0) -> bool:
     try:
         await asyncio.wait_for(_connect(), timeout=timeout)
         return True
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         logger.warning("Exception occurred", exc_info=True)
         return False

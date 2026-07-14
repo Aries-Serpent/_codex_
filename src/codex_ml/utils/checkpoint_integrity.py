@@ -40,7 +40,7 @@ def _resolve_git_sha() -> str | None:
 
     try:
         ref = head.read_text(encoding="utf-8").strip()
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         logger.warning("Exception occurred", exc_info=True)
         return None
 
@@ -48,7 +48,7 @@ def _resolve_git_sha() -> str | None:
         ref_path = Path(".git") / ref.split(" ", 1)[1]
         try:
             resolved = ref_path.read_text(encoding="utf-8").strip()
-        except (IOError, OSError):
+        except (IOError, OSError, ModuleNotFoundError, ImportError):
             logger.warning("Exception occurred", exc_info=True)
             return None
         return resolved or None
@@ -116,7 +116,7 @@ def attach_integrity(
     if base_path is not None:
         try:
             entry["path"] = str(ckpt_path.resolve().relative_to(base_path.resolve()))
-        except (IOError, OSError):
+        except (IOError, OSError, ModuleNotFoundError, ImportError):
             logger.warning("Exception occurred", exc_info=True)
             entry["path"] = str(ckpt_path)
     else:
@@ -135,7 +135,7 @@ def attach_integrity(
                     items = [dict(data)]
                 else:  # pragma: no cover - defensive branch
                     items = []
-            except (IOError, OSError):  # pragma: no cover - tolerate malformed manifests
+            except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - tolerate malformed manifests
                 items = []
         else:
             items = []

@@ -336,7 +336,7 @@ class WorkflowAnalyzer:
                 is_required="required" in workflow_text.lower(),  # nosec - YAML key detection
                 approval_required=approval_required,
             )
-        except (IOError, OSError):
+        except (IOError, OSError, ModuleNotFoundError, ImportError):
             # Workflow parsing failed - skip this file
             return None
 
@@ -388,7 +388,7 @@ class WorkflowAnalyzer:
                 is_required="required" in content.lower(),  # nosec - YAML key detection
                 approval_required=approval_required,
             )
-        except (IOError, OSError):
+        except (IOError, OSError, ModuleNotFoundError, ImportError):
             # Workflow parsing failed - skip this file
             return None
 

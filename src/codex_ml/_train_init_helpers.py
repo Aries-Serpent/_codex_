@@ -120,7 +120,7 @@ def setup_artifacts_directory(
         
         return art_dir
     
-    except (IOError, OSError) as exc:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
         logger.warning("Failed to prepare artifacts directory '%s': %s", art_dir, exc)
         return None
 
@@ -169,7 +169,7 @@ def setup_metrics_registry(
             metrics_registry.active_sessions.set(1)
             from codex_ml.tracking.metrics import start_metrics_server
             start_metrics_server(port=metrics_port or 8000)
-        except (IOError, OSError) as exc:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
             logger.debug("Prometheus metrics disabled: %s", exc)
     
     return metrics_registry, metrics_port
@@ -218,7 +218,7 @@ def setup_mlflow(
             else:
                 try:
                     safe_uri = Path(mlflow_uri).expanduser().resolve().as_uri()
-                except (IOError, OSError):
+                except (IOError, OSError, ModuleNotFoundError, ImportError):
                     logger.warning(
                         "Unable to coerce MLflow URI '%s'; using %s",
                         mlflow_uri,
@@ -537,7 +537,7 @@ def setup_optimizer_with_dp(
         except ImportError as exc:
             logger.warning("Differential privacy disabled: %s", exc)
             dp_settings = None
-        except (IOError, OSError) as exc:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
             logger.warning("Failed to enable differential privacy: %s", exc)
             dp_settings = None
     

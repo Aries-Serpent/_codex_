@@ -128,7 +128,7 @@ class RigidityDetector:
 
         except SyntaxError as e:
             LOGGER.warning(f"Syntax error in {file_path}: {e}")
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             LOGGER.error(f"Error analyzing {file_path}: {e}")
 
         return self.detections

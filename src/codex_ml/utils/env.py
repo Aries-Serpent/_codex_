@@ -75,7 +75,7 @@ def _git_commit(root: Optional[Path] = None) -> Optional[str]:
         return subprocess.check_output(
             [str(git_bin), "rev-parse", "HEAD"], cwd=root, text=True
         ).strip()
-    except (IOError, OSError) as exc:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
         LOGGER.debug("Unable to read git commit from %s: %s", root, exc)
         return None
 
@@ -88,7 +88,7 @@ def _cuda_driver_version() -> Optional[str]:
             if isinstance(val, (bytes, bytearray)):
                 val = val.decode("utf-8", errors="replace")
             return val or None
-        except (IOError, OSError):  # pragma: no cover - NVML runtime failure
+        except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - NVML runtime failure
             LOGGER.debug("pynvml driver version query failed", exc_info=True)
     # Fallback: read nvidia-smi output
     smi = shutil.which("nvidia-smi")

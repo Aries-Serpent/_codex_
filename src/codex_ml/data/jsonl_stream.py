@@ -53,7 +53,7 @@ def iter_jsonl(path: str | Path, *, strict: bool = True) -> Iterator[dict[str, o
                 continue
             try:
                 obj = json.loads(stripped)
-            except (IOError, OSError) as exc:
+            except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
                 type(exc).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 if strict:

@@ -395,7 +395,7 @@ class TestQuantumOrchestratorCLIEndToEnd:
             from codex.quantum_orchestrator import cli as qft_cli
 
             assert hasattr(qft_cli, "cli"
-        ), "CLI entrypoint should exist"
+                    ), "CLI entrypoint should exist"
         except ImportError:
             pytest.skip("CLI module not available")
 

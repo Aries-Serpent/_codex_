@@ -159,7 +159,7 @@ def load_checkpoint(
         try:
             with open(metadata, encoding="utf-8") as f:
                 meta = json.load(f)
-        except (IOError, OSError):
+        except (IOError, OSError, ModuleNotFoundError, ImportError):
             logger.warning("Exception occurred", exc_info=True)
             meta = {}
     # Validate schema version for compatibility

@@ -127,7 +127,7 @@ def _load_yaml_defaults() -> Mapping[str, Any]:
         container = OmegaConf.to_container(loaded, resolve=True)
         if isinstance(container, Mapping):
             return container
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         get_default_logger().debug(
             "Failed to load YAML defaults from %s", default_yaml, exc_info=True
         )
@@ -156,7 +156,7 @@ def _load_conf_defaults(overrides: Sequence[str]) -> Mapping[str, Any]:
         }
     try:
         cfg = yaml.safe_load(config_path.read_text(encoding="utf-8")) or {}
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         get_default_logger().debug("Failed to load YAML config from %s", config_path, exc_info=True)
         return {}
 

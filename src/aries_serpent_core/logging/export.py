@@ -36,7 +36,7 @@ try:
     from aries_serpent_core.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
 
     _codex_sqlite_auto()
-except (IOError, OSError) as e:
+except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
     logger.warning("sqlite auto setup skipped: %s", e, exc_info=True)
 
 from .config import DEFAULT_LOG_DB  # noqa: E402

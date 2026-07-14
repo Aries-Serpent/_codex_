@@ -119,7 +119,7 @@ def train(
             path.parent.mkdir(parents=True, exist_ok=True)
             with path.open("a", encoding="utf-8") as fh:
                 fh.write(json.dumps(record) + "\n")
-        except (IOError, OSError):  # pragma: no cover - best-effort logging
+        except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - best-effort logging
             logger.debug("Suppressed exception in handler", exc_info=True)
 
     # Load tokenizer and model
@@ -222,7 +222,7 @@ def train(
         if metrics_path.exists():
             try:
                 metrics_path.unlink()
-            except (IOError, OSError) as e:
+            except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
                 type(e).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
@@ -232,7 +232,7 @@ def train(
                 json.dumps(asdict(config), indent=2, sort_keys=True),
                 encoding="utf-8",
             )
-        except (IOError, OSError):
+        except (IOError, OSError, ModuleNotFoundError, ImportError):
             logger.warning("Exception occurred", exc_info=True)
             config_snapshot = None
     else:
@@ -291,7 +291,7 @@ def train(
         try:
             with metrics_path.open("a", encoding="utf-8") as fh:
                 fh.write(json.dumps(record, sort_keys=True) + "\n")
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
@@ -312,7 +312,7 @@ def train(
                 ),
                 stop_event=stop_event,
             )
-        except (IOError, OSError):
+        except (IOError, OSError, ModuleNotFoundError, ImportError):
             logger.warning("Exception occurred", exc_info=True)
             system_thread = None
 
@@ -379,18 +379,18 @@ def train(
                 if writer is not None or config.mlflow_enable or config.wandb_enable:
                     try:
                         loss_value = float(raw_loss.detach().cpu().item())
-                    except (IOError, OSError):
+                    except (IOError, OSError, ModuleNotFoundError, ImportError):
                         logger.warning("Exception occurred", exc_info=True)
                         try:
                             loss_value = float(loss.detach().cpu().item())
-                        except (IOError, OSError):
+                        except (IOError, OSError, ModuleNotFoundError, ImportError):
                             logger.warning("Exception occurred", exc_info=True)
                             loss_value = None
                     if loss_value is not None:
                         if writer is not None:
                             try:
                                 writer.add_scalar("train/loss", loss_value, global_step)
-                            except (IOError, OSError) as e:
+                            except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
                                 type(e).__name__
                                 logger.debug("Exception: <ERROR_TYPE>")
                                 logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
@@ -485,7 +485,7 @@ def train(
                             float(metrics["val_perplexity"]),
                             global_step,
                         )
-                    except (IOError, OSError) as e:
+                    except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
                         type(e).__name__
                         logger.debug("Exception: <ERROR_TYPE>")
                         logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
@@ -568,7 +568,7 @@ def train(
                 }
                 if final_payload:
                     wb.log(final_payload, step=global_step)
-            except (IOError, OSError) as e:
+            except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
                 type(e).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
@@ -577,7 +577,7 @@ def train(
         try:
             stop_event.set()
             system_thread.join(timeout=5.0)
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
@@ -586,7 +586,7 @@ def train(
         try:
             writer.flush()
             writer.close()
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.warning("Exception: <ERROR_TYPE>", exc_info=True)

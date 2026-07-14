@@ -235,7 +235,7 @@ class SkillRegistry:
         try:
             data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
             return SkillManifest.model_validate(data)
-        except (IOError, OSError) as exc:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
             logger.warning("Failed to load manifest '%s': %s", path, exc)
             return None
 
@@ -279,7 +279,7 @@ class SkillRegistry:
                 self.register(manifest, source_path=f"entry_point:{ep.name}")
                 if len(self._skills) > before:
                     count += 1
-            except (IOError, OSError) as exc:
+            except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
                 logger.warning("Failed to load entry-point skill '%s': %s", ep.name, exc)
 
         return count

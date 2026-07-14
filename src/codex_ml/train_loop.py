@@ -114,7 +114,7 @@ try:
     import mlflow
 
     _HAS_MLFLOW = True
-except (IOError, OSError):
+except (IOError, OSError, ModuleNotFoundError, ImportError):
     mlflow = None
     _HAS_MLFLOW = False
 
@@ -321,7 +321,7 @@ class ReasoningRuntime:
             _persist_reasoning_trace(self.store_path, payload)
         try:
             self.harness.record(payload)
-        except (IOError, OSError):  # pragma: no cover - history append best effort
+        except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - history append best effort
             logger.debug(
                 "Suppressed exception in handler", exc_info=True
             )  # codeql[py/clear-text-logging-sensitive-data]
@@ -377,7 +377,7 @@ def _initialize_reasoning_runtime(
         return model, None
     try:
         harness = attach_reasoning_adapters(model, reasoning_cfg)
-    except (IOError, OSError) as exc:  # pragma: no cover - adapter construction best effort
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - adapter construction best effort
         logger.warning(
             "Failed to attach reasoning adapters: %s", exc
         )  # codeql[py/clear-text-logging-sensitive-data]
@@ -440,7 +440,7 @@ def _write_json_report(output_dir: Path | None, name: str, payload: Mapping[str,
         (output_dir / name).write_text(
             json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8"
         )
-    except (IOError, OSError) as exc:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
         logger.warning(
             "Failed to write %s: %s", name, exc
         )  # codeql[py/clear-text-logging-sensitive-data]
@@ -569,7 +569,7 @@ def record_metrics(
             loaded = json.loads(json_path.read_text(encoding="utf-8"))
             if isinstance(loaded, list):
                 history = loaded
-        except (IOError, OSError):
+        except (IOError, OSError, ModuleNotFoundError, ImportError):
             history = []
     history.append(payload)
     json_path.write_text(json.dumps(history, indent=2, sort_keys=True), encoding="utf-8")
@@ -675,7 +675,7 @@ def _assert_bf16_capability(
                     "Suppressed exception in handler", exc_info=True
                 )  # codeql[py/clear-text-logging-sensitive-data]
         _ = a @ b
-    except (IOError, OSError) as exc:  # pragma: no cover - runtime check
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - runtime check
         raise RuntimeError("bf16 required but runtime cannot construct bfloat16 tensors") from exc
 
 
@@ -825,7 +825,7 @@ def _append_metrics_event(art_dir_path: Path | None, record: dict[str, Any]) -> 
         if _telemetry_should_sample(record):
             _append_telemetry_ndjson(base, record)
             _append_telemetry_json_rollover(base, record)
-    except (IOError, OSError) as exc:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
         logger.debug(
             "Failed to append telemetry event: %s", exc
         )  # codeql[py/clear-text-logging-sensitive-data]
@@ -836,7 +836,7 @@ def _persist_reasoning_trace(path: Path, payload: dict[str, Any]) -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
         with path.open("a", encoding="utf-8") as fh:
             fh.write(json.dumps(payload, sort_keys=True) + "\n")
-    except (IOError, OSError) as exc:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
         logger.debug(
             "Failed to persist reasoning trace: %s", exc
         )  # codeql[py/clear-text-logging-sensitive-data]
@@ -847,7 +847,7 @@ def _telemetry_max_items() -> int:
         raw = os.environ.get("CODEX_TELEMETRY_MAX_ITEMS", "1000").strip()
         n = int(raw)
         return n if n > 0 else 1000
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         return 1000
 
 
@@ -863,26 +863,26 @@ def _append_telemetry_json_rollover(base_dir: Path, record: dict[str, Any]) -> N
                 loaded = json.loads(path.read_text(encoding="utf-8"))
                 if isinstance(loaded, list):
                     history = list(loaded)
-            except (IOError, OSError):
+            except (IOError, OSError, ModuleNotFoundError, ImportError):
                 history = []
         roll = len(history) >= _telemetry_max_items()
         max_bytes = _telemetry_max_bytes()
         if not roll and max_bytes > 0 and path.exists():
             try:
                 roll = path.stat().st_size >= max_bytes
-            except (IOError, OSError):
+            except (IOError, OSError, ModuleNotFoundError, ImportError):
                 roll = False
         if roll:
             ts = datetime.now(UTC).strftime("%Y%m%dT%H%M%S%fZ")
             try:
                 path.rename(base_dir / f"telemetry-{ts}.json")
-            except (IOError, OSError):
+            except (IOError, OSError, ModuleNotFoundError, ImportError):
                 history = []
             else:
                 history = []
         history.append(dict(record))
         path.write_text(json.dumps(history, indent=2, sort_keys=True), encoding="utf-8")
-    except (IOError, OSError) as exc:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
         logger.debug(
             "Failed to append telemetry.json: %s", exc
         )  # codeql[py/clear-text-logging-sensitive-data]
@@ -913,7 +913,7 @@ def _telemetry_max_bytes() -> int:
         raw = os.environ.get("CODEX_TELEMETRY_MAX_BYTES", "0").strip()
         n = int(raw)
         return n if n > 0 else 0
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         return 0
 
 
@@ -925,7 +925,7 @@ def _append_telemetry_ndjson(base_dir: Path, record: dict[str, Any]) -> None:
         path = base_dir / "telemetry.ndjson"
         with path.open("a", encoding="utf-8") as fh:
             fh.write(json.dumps(record, sort_keys=True) + "\n")
-    except (IOError, OSError) as e:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
         logger.debug(
             "Telemetry write failed (best-effort): %s", e
         )  # codeql[py/clear-text-logging-sensitive-data]
@@ -985,7 +985,7 @@ def _cast_batch_for_policy(
     reason: Optional[str] = None
     try:
         import torch as _torch
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         reason = "torch_unavailable"
         event_payload["status"] = status
         event_payload["reason"] = reason
@@ -993,7 +993,7 @@ def _cast_batch_for_policy(
         return sample
     try:
         src_dtype = getattr(sample, "dtype", None)
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         src_dtype = None
     if src_dtype is not None:
         event_payload["from"] = str(src_dtype)
@@ -1018,7 +1018,7 @@ def _cast_batch_for_policy(
             status = "cast"
         else:
             reason = "no_to_method"
-    except (IOError, OSError) as exc:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
         logger.warning(
             "Dataset cast policy '%s' failed: %s", policy_norm, exc
         )  # codeql[py/clear-text-logging-sensitive-data]
@@ -1041,7 +1041,7 @@ def _make_casting_collate(policy: str | None, desired: Any, device: Any, art_dir
             return batch
         try:
             return [_cast_batch_for_policy(x, policy, desired, device, art_dir_path) for x in batch]
-        except (IOError, OSError):
+        except (IOError, OSError, ModuleNotFoundError, ImportError):
             return batch
 
     return _collate
@@ -1109,7 +1109,7 @@ def _scheduler_current_lr(scheduler, optimizer) -> list[float] | None:
         return None
     try:
         return [pg["lr"] for pg in optimizer.param_groups]
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         return None
 
 
@@ -1118,13 +1118,13 @@ def _checkpoint_digest(ckpt_dir: Path) -> str | None:
     if sha_file.exists():
         try:
             return sha_file.read_text(encoding="utf-8").strip() or None
-        except (IOError, OSError):
+        except (IOError, OSError, ModuleNotFoundError, ImportError):
             return None
     model_file = ckpt_dir / "model.pt"
     if model_file.exists():
         try:
             return sha256sum(model_file)
-        except (IOError, OSError):
+        except (IOError, OSError, ModuleNotFoundError, ImportError):
             return None
     return None
 
@@ -1275,7 +1275,7 @@ def run_training(
                     "dataset_files": dataset_files_count,
                 },
             )
-        except (IOError, OSError):  # pragma: no cover - best effort logging
+        except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - best effort logging
             logger.debug(
                 "Suppressed exception in handler", exc_info=True
             )  # codeql[py/clear-text-logging-sensitive-data]
@@ -1343,7 +1343,7 @@ def run_training(
             if dataset_cast_policy:
                 try:
                     sample0 = dataset[0]
-                except (IOError, OSError):
+                except (IOError, OSError, ModuleNotFoundError, ImportError):
                     sample0 = None
                 _ = _cast_batch_for_policy(
                     sample0, dataset_cast_policy, dtype_obj, device_obj, art_dir_path
@@ -1446,7 +1446,7 @@ def run_training(
     for cb in cb_list:
         try:
             cb.on_train_start(state)
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             cb.record_error("on_train_start", e, state)
             logger.warning(
                 "Callback on_train_start error: %s", e
@@ -1460,7 +1460,7 @@ def run_training(
             (ckpt_root / "config.snapshot.json").write_text(
                 json.dumps(run_config, indent=2, sort_keys=True)
             )
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             logger.warning(
                 "Failed to write config snapshot: %s", e
             )  # codeql[py/clear-text-logging-sensitive-data]
@@ -1510,7 +1510,7 @@ def run_training(
 
         try:
             (art_dir_path / "metrics.json").write_text(json.dumps(metrics_entries, indent=2))
-        except (IOError, OSError) as exc:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
             logger.warning(
                 "Failed to write metrics.json: %s", exc
             )  # codeql[py/clear-text-logging-sensitive-data]
@@ -1547,7 +1547,7 @@ def run_training(
 
         try:
             (art_dir_path / "environment.json").write_text(json.dumps(env_payload, indent=2))
-        except (IOError, OSError) as exc:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
             logger.warning(
                 "Failed to write environment.json: %s", exc
             )  # codeql[py/clear-text-logging-sensitive-data]
@@ -1555,14 +1555,14 @@ def run_training(
         if reasoning_runtime is not None:
             try:
                 reasoning_history = reasoning_runtime.harness.history_snapshot()
-            except (IOError, OSError):  # pragma: no cover - defensive snapshot
+            except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - defensive snapshot
                 reasoning_history = []
             if reasoning_history:
                 try:
                     (art_dir_path / "reasoning_traces.json").write_text(
                         json.dumps(reasoning_history, indent=2)
                     )
-                except (IOError, OSError) as exc:
+                except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
                     logger.warning(
                         "Failed to write reasoning_traces.json: %s", exc
                     )  # codeql[py/clear-text-logging-sensitive-data]
@@ -1571,7 +1571,7 @@ def run_training(
             (art_dir_path / "dataset_checksums.json").write_text(
                 json.dumps(dataset_checksum_map, indent=2)
             )
-        except (IOError, OSError) as exc:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
             logger.warning(
                 "Failed to write dataset_checksums.json: %s", exc
             )  # codeql[py/clear-text-logging-sensitive-data]
@@ -1582,7 +1582,7 @@ def run_training(
 
         try:
             art_dir_path.mkdir(parents=True, exist_ok=True)
-        except (IOError, OSError) as exc:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
             logger.warning(
                 "Failed to prepare metadata directory '%s': %s", art_dir_path, exc
             )  # codeql[py/clear-text-logging-sensitive-data]
@@ -1666,7 +1666,7 @@ def run_training(
                 json.dumps(_json_ready(meta_payload), indent=2),
                 encoding="utf-8",
             )
-        except (IOError, OSError) as exc:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
             logger.warning(
                 "Failed to write run_metadata.json: %s", exc
             )  # codeql[py/clear-text-logging-sensitive-data]
@@ -1686,7 +1686,7 @@ def run_training(
             reasoning_payload["runtime"] = _json_ready(runtime_details)
             try:
                 reasoning_payload["harness"] = _json_ready(reasoning_runtime.harness.describe())
-            except (IOError, OSError):
+            except (IOError, OSError, ModuleNotFoundError, ImportError):
                 logger.debug(
                     "Suppressed exception in handler", exc_info=True
                 )  # codeql[py/clear-text-logging-sensitive-data]
@@ -1696,7 +1696,7 @@ def run_training(
                     json.dumps(_json_ready(reasoning_payload), indent=2),
                     encoding="utf-8",
                 )
-            except (IOError, OSError) as exc:
+            except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
                 logger.warning(
                     "Failed to write reasoning.json: %s", exc
                 )  # codeql[py/clear-text-logging-sensitive-data]
@@ -1707,7 +1707,7 @@ def run_training(
                     json.dumps(_json_ready(evaluation_cfg), indent=2),
                     encoding="utf-8",
                 )
-            except (IOError, OSError) as exc:
+            except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
                 logger.warning(
                     "Failed to write evaluation.json: %s", exc
                 )  # codeql[py/clear-text-logging-sensitive-data]
@@ -1735,7 +1735,7 @@ def run_training(
         if reasoning_runtime is not None:
             try:
                 result["reasoning_traces"] = reasoning_runtime.harness.history_snapshot()
-            except (IOError, OSError):  # pragma: no cover - defensive snapshot
+            except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - defensive snapshot
                 result["reasoning_traces"] = []
         _persist_artifacts(resume_meta if resume_meta else None, target_epochs)
         report_dir = Path(checkpoint_dir) if checkpoint_dir else art_dir_path
@@ -2007,7 +2007,7 @@ def run_training(
                     (Path(checkpoint_dir) / "latest.json").write_text(
                         json.dumps(latest_payload, indent=2)
                     )
-                except (IOError, OSError) as e:
+                except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
                     logger.warning(
                         "Failed to write latest.json: %s", e
                     )  # codeql[py/clear-text-logging-sensitive-data]

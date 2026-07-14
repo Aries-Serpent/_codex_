@@ -65,7 +65,7 @@ class LifecycleManager:
             self._is_ready = True
             self._is_healthy = True
             logger.info(f"Initialized ({len(executed)} hooks)")
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.error("Startup failed: <ERROR_TYPE>")
@@ -77,7 +77,7 @@ class LifecycleManager:
         for hook in reversed(executed):
             try:
                 logger.debug(f"Rolling back: {hook.__name__}")
-            except (IOError, OSError) as e:
+            except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
                 type(e).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 logger.warning("Rollback error: <ERROR_TYPE>")

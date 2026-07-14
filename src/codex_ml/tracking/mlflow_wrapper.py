@@ -170,7 +170,7 @@ class MLflowTracker:
 
         try:
             self._mlflow.log_metric(key, value, step=step)
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.debug(f"Failed to log metric {key}: <ERROR_TYPE>")
@@ -191,7 +191,7 @@ class MLflowTracker:
 
         try:
             self._mlflow.log_artifact(local_path, artifact_path=artifact_path)
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.debug("Failed to log artifact: <ERROR_TYPE>")
@@ -212,7 +212,7 @@ class MLflowTracker:
 
         try:
             self._mlflow.log_artifacts(local_dir, artifact_path=artifact_path)
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.debug("Failed to log artifacts: <ERROR_TYPE>")

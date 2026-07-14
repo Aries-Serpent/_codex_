@@ -66,7 +66,7 @@ class AudioProcessor:
                 quality_score=8.5,
                 processing_time=time.time() - start_time,
             )
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.error("Processing failed: <ERROR_TYPE>")
             return ProcessingResult(success=False, error=str(e))

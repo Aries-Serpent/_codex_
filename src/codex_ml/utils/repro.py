@@ -162,7 +162,7 @@ def compute_directory_hash(
         try:
             rel_path = filepath.relative_to(dirpath)
             hashes[str(rel_path)] = compute_file_hash(filepath)
-        except (IOError, OSError):
+        except (IOError, OSError, ModuleNotFoundError, ImportError):
             logger.warning("Exception occurred", exc_info=True)
             continue
 

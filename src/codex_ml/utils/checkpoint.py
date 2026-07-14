@@ -101,7 +101,7 @@ def _torch_load(source: Any, *, map_location: str | None = None) -> Any:
 
 try:  # pragma: no cover - numpy is optional for deployments
     import numpy as _np
-except (IOError, OSError):  # pragma: no cover - gracefully handle absence
+except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - gracefully handle absence
     _np = None
 
 __all__ = ["load_checkpoint", "prune_best_k", "restore_into", "save_checkpoint"]
@@ -333,7 +333,7 @@ def _update_best_k(
         existing = json.loads(index_path.read_text(encoding="utf-8"))
         if not isinstance(existing, list):
             existing = []
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         logger.warning("Exception occurred", exc_info=True)
         existing = []
     filtered: list[dict[str, Any]] = [rec for rec in existing if rec.get("path") != out_dir.name]

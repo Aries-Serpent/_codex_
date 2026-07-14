@@ -23,9 +23,9 @@ def _load_metrics(n: int = 10) -> list[dict[str, Any]]:
                 if line:
                     try:
                         entries.append(json.loads(line))
-                    except (IOError, OSError):
+                    except (IOError, OSError, ModuleNotFoundError, ImportError):
                         logger.debug("Suppressed exception in handler", exc_info=True)
-        except (IOError, OSError) as exc:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
             click.echo(f"Warning: could not read metrics file: {exc}", err=True)
     return entries
 

@@ -92,7 +92,7 @@ def _get_sentencepiece() -> Any:
                     try:
                         data = json.loads(Path(model_file).read_text(encoding="utf-8"))
                         self.vocab = list(data.get("vocab", []))
-                    except (IOError, OSError):
+                    except (IOError, OSError, ModuleNotFoundError, ImportError):
                         logger.warning("Exception occurred", exc_info=True)
                         self.vocab = []
 

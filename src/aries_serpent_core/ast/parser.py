@@ -86,7 +86,7 @@ class UniversalParser:
         try:
             code = file_path.read_text(encoding="utf-8", errors="ignore")
             return self.parse_string(code, file_path)
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             if self.strict:
@@ -138,7 +138,7 @@ class UniversalParser:
 
             return root
 
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             if self.strict:

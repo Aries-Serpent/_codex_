@@ -147,7 +147,7 @@ def drift_span(
     try:
         trace_mod = importlib.import_module("opentelemetry.trace")
         tracer = trace_mod.get_tracer(tracer_name)
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         yield None
         return
 
@@ -212,7 +212,7 @@ def record_drift_event(
     try:
         trace_mod = importlib.import_module("opentelemetry.trace")
         span = trace_mod.get_current_span()
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         return
 
     attrs: dict[str, Any] = {

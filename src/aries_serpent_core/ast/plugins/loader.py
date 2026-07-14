@@ -55,7 +55,7 @@ class PluginLoader:
             try:
                 module = importlib.import_module(f"codex.ast.plugins.{module_name}")
                 self._register_from_module(module)
-            except (IOError, OSError) as e:
+            except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
                 type(e).__name__
                 logger.warning(f"Failed to load plugin {module_name}: <ERROR_TYPE>")
 
@@ -106,7 +106,7 @@ class PluginLoader:
                         plugin_instance = attr()
                         self._analysis_plugins[plugin_instance.name] = plugin_instance  # type: ignore[attr-defined]
                         logger.info(f"Registered analysis plugin: {plugin_instance.name}")  # type: ignore[attr-defined]
-                    except (IOError, OSError) as e:
+                    except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
                         type(e).__name__
                         logger.warning(
                             f"Failed to instantiate analysis plugin {attr_name}: <ERROR_TYPE>"

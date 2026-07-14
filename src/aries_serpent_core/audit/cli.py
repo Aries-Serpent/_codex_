@@ -59,7 +59,7 @@ def audit_main(_check_dependencies: bool, _check_vulns: bool, format: str, outpu
                     line = line.strip()
                     if line and not line.startswith("#"):
                         packages.append(line.split("==")[0].split(">=")[0].split("<=")[0].strip())
-            except (IOError, OSError):
+            except (IOError, OSError, ModuleNotFoundError, ImportError):
                 logger.debug("Suppressed exception in handler", exc_info=True)
         result["summary"]["scanned_requirements_files"] = len(req_files)
         result["summary"]["total_packages"] = len(packages)

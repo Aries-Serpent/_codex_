@@ -55,7 +55,7 @@ def _track_smoke_impl(dir_path: Optional[Path]) -> None:
     os.environ["MLFLOW_TRACKING_URI"] = uri
     try:
         import mlflow  # optional runtime dependency
-    except (IOError, OSError) as exc:  # pragma: no cover - optional dependency missing
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - optional dependency missing
         echo(f"MLflow not available: {exc}")
         raise Exit(code=1) from exc
     target.mkdir(parents=True, exist_ok=True)
@@ -96,7 +96,7 @@ def _checkpoint_smoke_impl(out_dir: Path) -> None:
 
         if not hasattr(torch, "nn"):
             raise AttributeError("torch.nn unavailable")
-    except (IOError, OSError) as exc:  # pragma: no cover - optional dependency missing
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - optional dependency missing
         out_dir.mkdir(parents=True, exist_ok=True)
         path = out_dir / "epoch1-metric0.500000.pt"
         path.write_bytes(b"stub")
@@ -147,13 +147,13 @@ if _USE_TYPER:
     def _load_yaml(path: Path) -> dict[str, Any]:
         try:
             import yaml
-        except (IOError, OSError) as exc:  # pragma: no cover - optional dependency missing
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - optional dependency missing
             echo(f"PyYAML not available: {exc}")
             raise Exit(code=1) from exc
         try:
             with path.open("r", encoding="utf-8") as handle:
                 data = yaml.safe_load(handle) or {}
-        except (IOError, OSError) as exc:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
             type(exc).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             echo(f"Failed to load {path}: {exc}")
@@ -255,7 +255,7 @@ if _USE_TYPER:
     def version() -> None:
         try:
             from . import __version__
-        except (IOError, OSError):  # pragma: no cover - defensive fallback
+        except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - defensive fallback
             __version__ = "unknown"
         echo(__version__)
 
@@ -313,13 +313,13 @@ else:  # pragma: no cover - click fallback
     def _load_yaml(path: Path) -> dict[str, Any]:
         try:
             import yaml
-        except (IOError, OSError) as exc:  # pragma: no cover - optional dependency missing
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - optional dependency missing
             echo(f"PyYAML not available: {exc}")
             raise Exit(code=1) from exc
         try:
             with path.open("r", encoding="utf-8") as handle:
                 data = yaml.safe_load(handle) or {}
-        except (IOError, OSError) as exc:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
             type(exc).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             echo(f"Failed to load {path}: {exc}")

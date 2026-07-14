@@ -401,6 +401,6 @@ class OKRTracker:
             return {}
         try:
             return json.loads(path.read_text())
-        except (IOError, OSError):
+        except (IOError, OSError, ModuleNotFoundError, ImportError):
             logger.warning("Failed to load JSON from %s", path)
             return {}

@@ -234,7 +234,7 @@ def split_texts(
                 if cached_sum == checksum:
                     # defensive cast and copies
                     return list(data["train"]), list(data["val"])
-            except (IOError, OSError):
+            except (IOError, OSError, ModuleNotFoundError, ImportError):
                 logger.warning("Exception occurred", exc_info=True)
                 # fall through to recompute
 
@@ -369,13 +369,13 @@ def cache_dataset(
                 finally:
                     try:
                         fcntl.flock(fd, fcntl.LOCK_UN)
-                    except (IOError, OSError) as e:
+                    except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
                         type(e).__name__
                         logger.debug("Exception: <ERROR_TYPE>")
                         logger.warning(
                             f"Exception: {e}", exc_info=True
                         )  # File lock release failed; continue cleanup
-        except (IOError, OSError):
+        except (IOError, OSError, ModuleNotFoundError, ImportError):
             logger.warning("Exception occurred", exc_info=True)
             # Skip samples that fail to serialize
             continue
@@ -396,7 +396,7 @@ def load_cached(cache_dir: str | Path) -> Iterator[dict[str, Tensor]]:
             data = np.load(npz)
             _require_torch()
             yield {k: torch.tensor(data[k]) for k in data.files}
-        except (IOError, OSError):
+        except (IOError, OSError, ModuleNotFoundError, ImportError):
             logger.warning("Exception occurred", exc_info=True)
             # Skip unreadable/corrupted shards
             continue

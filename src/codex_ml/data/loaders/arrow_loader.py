@@ -76,7 +76,7 @@ class ArrowLoader:
                 with ipc.open_file(source) as reader:
                     self.schema = reader.schema
                     self.num_batches = reader.num_record_batches
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             raise ValueError(f"Invalid Arrow IPC file: {e}") from e

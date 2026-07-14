@@ -76,7 +76,7 @@ class Retriever:
             logger.warning("Index not found: <ERROR_TYPE>")
             logger.warning("Use indexer.py to build an index first")
             # Allow initialization without an index for testing
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.error("Error loading index: <ERROR_TYPE>")
             raise

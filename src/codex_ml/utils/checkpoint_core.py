@@ -57,7 +57,7 @@ except (ImportError, AttributeError):  # pragma: no cover - treated as unavailab
 
 try:  # provenance extras are optional
     from .provenance import environment_summary as _environment_summary
-except (IOError, OSError):  # pragma: no cover - optional dependency failures tolerated
+except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - optional dependency failures tolerated
     _environment_summary = None  # type: ignore[assignment]
 
 from .atomic_io import safe_write_bytes, safe_write_text  # noqa: E402
@@ -75,7 +75,7 @@ except (ImportError, AttributeError):  # pragma: no cover - optional dependency 
 
 try:  # runtime metadata sidecar (best-effort)
     from .run_metadata import collect_run_metadata, write_run_manifest
-except (IOError, OSError):  # pragma: no cover - optional dependency
+except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - optional dependency
 
     def collect_run_metadata(*_args: object, **_kwargs: object) -> dict[str, Any]:  # type: ignore
         return {}
@@ -125,7 +125,7 @@ def _git_sha_try() -> str | None:
                 if ref_path.exists():
                     return ref_path.read_text(encoding="utf-8").strip()[:40]
             return ref[:40]
-        except (IOError, OSError):
+        except (IOError, OSError, ModuleNotFoundError, ImportError):
             logger.warning(
                 "Exception occurred", exc_info=True
             )  # codeql[py/clear-text-logging-sensitive-data]
@@ -576,7 +576,7 @@ def _load_index(root: Path) -> dict[str, Any]:
         }
     try:
         return json.loads(p.read_text(encoding="utf-8"))
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         logger.warning(
             "Exception occurred", exc_info=True
         )  # codeql[py/clear-text-logging-sensitive-data]
@@ -623,7 +623,7 @@ def _prune_best_k(
                 shutil.rmtree(target)
             else:
                 target.unlink(missing_ok=True)
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             logger.debug("Exception: %s", e)  # codeql[py/clear-text-logging-sensitive-data]
     idx["entries"] = keep
 
@@ -754,7 +754,7 @@ def save_checkpoint(
     if not state_alias.exists():
         try:
             shutil.copyfile(ckpt_path, state_alias)
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             logger.debug("Exception: %s", e)  # codeql[py/clear-text-logging-sensitive-data]
             logger.warning(
                 "Exception: %s", e, exc_info=True
@@ -833,7 +833,7 @@ def save_checkpoint(
 
     try:
         manifest = dict(collect_run_metadata())
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         logger.warning(
             "Exception occurred", exc_info=True
         )  # codeql[py/clear-text-logging-sensitive-data]
@@ -842,14 +842,14 @@ def save_checkpoint(
         provenance = collect_run_meta()
         if provenance:
             manifest.setdefault("provenance", {}).update(provenance)
-    except (IOError, OSError) as e:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
         logger.debug("Exception: %s", e)  # codeql[py/clear-text-logging-sensitive-data]
         logger.warning(
             "Exception: %s", e, exc_info=True
         )  # codeql[py/clear-text-logging-sensitive-data]
     try:
         write_run_manifest(root, manifest)
-    except (IOError, OSError) as e:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
         logger.debug("Exception: %s", e)  # codeql[py/clear-text-logging-sensitive-data]
         logger.warning(
             "Exception: %s", e, exc_info=True
@@ -866,7 +866,7 @@ def verify_checkpoint(path: str | Path) -> CheckpointMeta:
     raw = _read_bytes(p)
     try:
         obj = _deserialize_payload(raw)
-    except (IOError, OSError) as exc:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
         raise CheckpointIntegrityError(f"Failed to deserialize checkpoint: {p.name}") from exc
     meta_dict = obj.get("meta", {})
     version = meta_dict.get("schema_version")
@@ -910,7 +910,7 @@ def load_checkpoint(
     raw = _read_bytes(p)
     try:
         obj = _deserialize_payload(raw, map_location=map_location)
-    except (IOError, OSError) as exc:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
         raise CheckpointIntegrityError(f"Failed to deserialize checkpoint: {p.name}") from exc
     meta_dict = obj.get("meta", {})
     state = obj.get("state", {})

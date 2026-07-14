@@ -56,7 +56,7 @@ class ASTStorage:
             try:
                 yield conn
                 conn.commit()
-            except (IOError, OSError) as e:
+            except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
                 conn.rollback()
                 raise StorageError(
                     f"Database operation failed: {e}", operation="transaction"

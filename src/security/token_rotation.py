@@ -364,7 +364,7 @@ class TokenRotationManager:
             self.audit_log_path.parent.mkdir(parents=True, exist_ok=True)
             with self.audit_log_path.open("a") as f:
                 f.write(event.to_jsonl() + "\n")
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.error("Failed to write audit log: <ERROR_TYPE>")
 

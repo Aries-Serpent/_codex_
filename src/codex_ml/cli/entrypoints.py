@@ -95,7 +95,7 @@ def _load_main(module_path: str, failures: list[str]) -> Optional[int]:
 
     try:
         module = import_module(module_path)
-    except (IOError, OSError) as exc:  # pragma: no cover - import failures are rare
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - import failures are rare
         failures.append(f"{module_path}: import failed ({exc})")
         return None
 
@@ -107,7 +107,7 @@ def _load_main(module_path: str, failures: list[str]) -> Optional[int]:
         result = main_fn()
     except SystemExit:
         raise
-    except (IOError, OSError) as exc:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
         type(exc).__name__
         get_default_logger().debug("Exception: <ERROR_TYPE>")
         failures.append(f"{module_path}.main() raised {exc!r}")
@@ -115,7 +115,7 @@ def _load_main(module_path: str, failures: list[str]) -> Optional[int]:
 
     try:
         return int(result)
-    except (IOError, OSError) as exc:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
         type(exc).__name__
         get_default_logger().debug("Exception: <ERROR_TYPE>")
         failures.append(f"{module_path}.main() returned non-int value ({exc})")
@@ -130,7 +130,7 @@ def _run_module(module_path: str, failures: list[str]) -> bool:
         return True
     except SystemExit:
         raise
-    except (IOError, OSError) as exc:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
         type(exc).__name__
         get_default_logger().debug("Exception: <ERROR_TYPE>")
         failures.append(f"{module_path}: execution failed ({exc})")
@@ -269,7 +269,7 @@ def eval_main() -> int:
                     rc=rc,
                 )
                 return rc
-            except (IOError, OSError) as exc:
+            except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
                 type(exc).__name__
                 get_default_logger().debug("Exception: <ERROR_TYPE>")
                 sys.stderr.write(f"[codex-eval] env override failed ({override}): {exc}\n")

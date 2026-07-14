@@ -447,14 +447,14 @@ def start_metrics_logger(
             record = sample_system_metrics()
             try:
                 write_fn(record)
-            except (IOError, OSError):  # pragma: no cover - sink errors are non-fatal
+            except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - sink errors are non-fatal
                 logger.debug("Suppressed exception in handler", exc_info=True)
             if scalar_sink is not None:
                 try:
                     scalars = system_metrics_scalars(record)
                     if scalars:
                         scalar_sink(scalars)
-                except (IOError, OSError):  # pragma: no cover - sink errors are non-fatal
+                except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - sink errors are non-fatal
                     logger.debug("Suppressed exception in handler", exc_info=True)
             event.wait(interval)
 
@@ -496,7 +496,7 @@ def log_system_metrics(out_path: Path | str, interval: float = 60.0) -> None:
         while not stop_event.is_set():
             try:
                 _write_record(target, sample_system_metrics())
-            except (IOError, OSError):
+            except (IOError, OSError, ModuleNotFoundError, ImportError):
                 logger.warning("Exception occurred", exc_info=True)
                 # Avoid killing the loop due to transient psutil errors.
             stop_event.wait(max(0.1, float(interval)))
@@ -580,7 +580,7 @@ class SystemMetricsLogger:
         while not self._stop.is_set():
             try:
                 _write_record(self._path, sample_system_metrics())
-            except (IOError, OSError):
+            except (IOError, OSError, ModuleNotFoundError, ImportError):
                 logger.warning("Exception occurred", exc_info=True)
             self._stop.wait(self._interval)
 

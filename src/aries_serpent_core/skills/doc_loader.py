@@ -188,7 +188,7 @@ def load_agent_docs_as_skills(
             if manifest is None:
                 continue
             skills.append(RegisteredSkill(manifest=manifest, source_path=str(md_file)))
-        except (IOError, OSError) as exc:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
             logger.debug("DocLoader: skipping '%s': %s", md_file, exc)
 
     logger.info("DocLoader: loaded %d agent doc skills from '%s'", len(skills), root)

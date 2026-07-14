@@ -109,7 +109,7 @@ def _cpu_metadata() -> MutableMapping[str, Any]:
         logical = os.cpu_count()
         if logical is not None:
             details["logical_cores"] = int(logical)
-    except (IOError, OSError) as exc:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
         type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         LOGGER.debug("Failed to read logical cpu count: %s", exc)

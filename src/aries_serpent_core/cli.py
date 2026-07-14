@@ -59,7 +59,7 @@ except (ImportError, AttributeError):  # pragma: no cover
 
 try:  # pragma: no cover - optional dependency
     from codex_digest.error_capture import log_error as _log_error
-except (IOError, OSError):  # pragma: no cover
+except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover
 
     def _log_error(step_no: str, step_desc: str, msg: str, ctx: str) -> None:
         """Fallback error logger when codex_digest is unavailable."""
@@ -194,7 +194,7 @@ def _fix_pool(max_workers: int | None = None) -> None:
             if executor is not None:
                 executor.shutdown(wait=False)
             _cf._executor = _cf.ThreadPoolExecutor(max_workers=max_workers)
-    except (IOError, OSError) as exc:  # pragma: no cover - best effort
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - best effort
         _log_error("POOL", "fix executor", str(exc), "configure thread pool")
         # Don't return — continue to enable SQLite pooling below
 
@@ -511,7 +511,7 @@ def logs_export_data(output: str, format: str, db: str) -> None:
 
         conn.close()
         click.echo(f"✅ Exported {len(rows)} records to {output}")
-    except (IOError, OSError) as exc:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
         type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         click.echo(f"❌ Export failed: {exc}", err=True)
@@ -565,7 +565,7 @@ def chronicle_tips(format: str, output: str | None) -> None:
         else:
             click.echo(result)
 
-    except (IOError, OSError) as exc:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
         type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         click.echo(f"❌ Failed to generate tips: {exc}", err=True)
@@ -619,7 +619,7 @@ def chronicle_analyze(pattern: str | None, output: str | None) -> None:
         else:
             click.echo(result)
 
-    except (IOError, OSError) as exc:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
         type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         click.echo(f"❌ Failed to analyze patterns: {exc}", err=True)
@@ -994,7 +994,7 @@ def train_cmd(engine: str, engine_args: tuple[str, ...]) -> None:
         try:
             run_hf_trainer(args.texts, args.output_dir, **kw)
             return
-        except (IOError, OSError) as exc:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
             type(exc).__name__
             logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
             _log_error("STEP train", "run_hf_trainer", str(exc), f"texts={args.texts}")
@@ -1002,7 +1002,7 @@ def train_cmd(engine: str, engine_args: tuple[str, ...]) -> None:
     else:
         try:
             from aries_serpent_core.training import main as run_custom_train
-        except (IOError, OSError) as exc:  # pragma: no cover - fallback path
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - fallback path
             click.echo(f"[warn] custom engine unavailable, falling back to hf_trainer: {exc}")
             from training.engine_hf_trainer import run_hf_trainer
 
@@ -1135,7 +1135,7 @@ def resume_cmd(run_dir: Path) -> None:
 
     try:
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-    except (IOError, OSError) as exc:  # pragma: no cover - robust CLI behavior
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - robust CLI behavior
         click.echo(f"ERROR: failed to read resume_manifest.json: {exc}", err=True)
         raise SystemExit(2) from exc
 
@@ -1152,7 +1152,7 @@ def resume_cmd(run_dir: Path) -> None:
             try:
                 parsed = json.loads(content)
                 click.echo(json.dumps(parsed, indent=2, sort_keys=True))
-            except (IOError, OSError):
+            except (IOError, OSError, ModuleNotFoundError, ImportError):
                 logger.warning(
                     "Exception occurred", exc_info=True
                 )  # codeql[py/clear-text-logging-sensitive-data]
@@ -1168,7 +1168,7 @@ def resume_cmd(run_dir: Path) -> None:
                 try:
                     parsed = json.loads(content)
                     click.echo(json.dumps(parsed, indent=2, sort_keys=True))
-                except (IOError, OSError):
+                except (IOError, OSError, ModuleNotFoundError, ImportError):
                     logger.warning(
                         "Exception occurred", exc_info=True
                     )  # codeql[py/clear-text-logging-sensitive-data]
@@ -1306,14 +1306,14 @@ def repro_env(path: Path) -> None:
     """Record git commit and installed packages."""
     try:
         from codex_utils.repro import log_env_info
-    except (IOError, OSError) as exc:  # pragma: no cover
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover
         click.echo(f"Environment logging module unavailable: {exc}", err=True)
         sys.exit(1)
 
     try:
         log_env_info(path)
         click.echo(f"wrote {path}")
-    except (IOError, OSError) as exc:  # pragma: no cover
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover
         click.echo(f"Failed to write env info: {exc}", err=True)
         sys.exit(1)
 
@@ -1371,7 +1371,7 @@ def repro_checkpoint(path: Path, include_weights: bool) -> None:
         path.write_text(json.dumps(checkpoint_data, indent=2), encoding="utf-8")
         click.echo(f"✅ Checkpoint metadata saved to {path}")
         click.echo(f"   Include weights: {include_weights}")
-    except (IOError, OSError) as exc:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
         type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         click.echo(f"❌ Failed to create checkpoint: {exc}", err=True)
@@ -1383,7 +1383,7 @@ def _register_tokenizer_pipeline_commands() -> None:
 
     try:
         from codex_ml.cli.codex_cli import tokenizer as codex_tokenizer
-    except (IOError, OSError):  # pragma: no cover - optional dependency path
+    except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - optional dependency path
         return
     for name, command in codex_tokenizer.commands.items():
         if name in tokenizer_group.commands:
@@ -1664,7 +1664,7 @@ def init_db_cmd(db_path: str | None) -> None:
             click.echo(f"   Location: {manager.db_path}")
 
         _init()
-    except (IOError, OSError) as exc:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
         type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         click.echo(f"❌ Failed to initialize database: {exc}", err=True)
@@ -1885,7 +1885,7 @@ def clean_logs_cmd(older_than: int, dry_run: bool, yes: bool) -> None:
                 try:
                     f.unlink()
                     deleted += 1
-                except (IOError, OSError) as e:
+                except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
                     type(e).__name__
                     logger.debug(
                         "Exception: <ERROR_TYPE>"
@@ -1895,7 +1895,7 @@ def clean_logs_cmd(older_than: int, dry_run: bool, yes: bool) -> None:
             click.echo(f"✅ Deleted {deleted} files")
 
         _clean()
-    except (IOError, OSError) as exc:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
         type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         click.echo(f"❌ Failed to clean logs: {exc}", err=True)
@@ -2254,7 +2254,7 @@ def duplication_baseline(report: str, output: str, tag: str | None) -> None:
         report_data = {}
         try:
             report_data = json.loads(report_path.read_text())
-        except (IOError, OSError):
+        except (IOError, OSError, ModuleNotFoundError, ImportError):
             # If not JSON, just copy as reference
             pass
 
@@ -2270,7 +2270,7 @@ def duplication_baseline(report: str, output: str, tag: str | None) -> None:
         click.echo(f"✅ Baseline created: {output}")
         click.echo(f"   Tag: {baseline_data['baseline_tag']}")
         click.echo(f"   Source: {report}")
-    except (IOError, OSError) as exc:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
         type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         click.echo(f"❌ Failed to create baseline: {exc}", err=True)
@@ -2558,7 +2558,7 @@ def auth_refresh_token(session_token: str | None) -> None:
         click.echo("✅ Token refreshed successfully")
         click.echo(f"   User: {creds['username']}")
         click.echo("   Credentials updated in cache")
-    except (IOError, OSError) as exc:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
         type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         click.echo(f"❌ Failed to refresh token: {exc}", err=True)
@@ -2593,7 +2593,7 @@ def _cache_credentials(username: str, access_token: str, refresh_token: str) -> 
         logger.debug(
             "keyring not installed — fall through to file-based storage"
         )  # codeql[py/clear-text-logging-sensitive-data]
-    except (IOError, OSError) as exc:  # pragma: no cover — runtime keyring backend error
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover — runtime keyring backend error
         click.echo(
             f"   ⚠️  Keyring backend error: {exc}. Falling back to file-based storage.",
             err=True,
@@ -2623,7 +2623,7 @@ def _load_cached_credentials() -> dict | None:
         logger.debug(
             "keyring not installed — fall through to file-based lookup"
         )  # codeql[py/clear-text-logging-sensitive-data]
-    except (IOError, OSError):  # pragma: no cover — runtime keyring read error
+    except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover — runtime keyring read error
         logger.debug(
             "keyring read error — falling back to file-based lookup"
         )  # codeql[py/clear-text-logging-sensitive-data]
@@ -2649,7 +2649,7 @@ def _clear_cached_credentials() -> None:
         logger.debug(
             "keyring not installed — nothing to clear"
         )  # codeql[py/clear-text-logging-sensitive-data]
-    except (IOError, OSError):  # pragma: no cover — runtime keyring delete error
+    except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover — runtime keyring delete error
         logger.debug(
             "keyring delete error — entry may not exist or backend unavailable"
         )  # codeql[py/clear-text-logging-sensitive-data]

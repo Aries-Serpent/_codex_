@@ -55,7 +55,7 @@ class PlanEntry:
 def _has_deprecation_tag(p: Path) -> bool:
     try:
         txt = p.read_text(encoding="utf-8", errors="ignore")
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         logger.warning("Exception occurred", exc_info=True)
         return False
     return bool(DEPRECATION_PAT.search(txt))

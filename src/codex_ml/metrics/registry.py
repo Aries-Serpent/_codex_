@@ -58,7 +58,7 @@ def append_error_entry(step_name: str, message: str, context: str, question: str
         log_path.parent.mkdir(parents=True, exist_ok=True)
         with log_path.open("a", encoding="utf-8") as handle:
             handle.write(block)
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         logger.warning("Exception occurred", exc_info=True)
         # Error reporting should never raise further exceptions.
 
@@ -86,7 +86,7 @@ def _load_policy_from_file() -> Optional[str]:
         return None
     try:
         raw = path.read_text(encoding="utf-8")
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         logger.warning("Exception occurred", exc_info=True)
         return None
     # Minimal TOML parse: look for 'policy = "<value>"'

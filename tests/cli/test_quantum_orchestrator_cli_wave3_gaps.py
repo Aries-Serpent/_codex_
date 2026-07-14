@@ -40,7 +40,7 @@ class TestQuantumOrchestratorCliWorkflowInitialization:
                 json.dump(config, f)
             
             try:
-    from codex.quantum_orchestrator.cli import init_command
+                from codex.quantum_orchestrator.cli import init_command
                 
                 result = runner.invoke(init_command, ['--config', config_file])
                 assert result.exit_code == 0 or result.exit_code is not None
@@ -62,7 +62,7 @@ class TestQuantumOrchestratorCliWorkflowInitialization:
                 json.dump(config, f)
             
             try:
-    from codex.quantum_orchestrator.cli import init_command
+                from codex.quantum_orchestrator.cli import init_command
                 
                 result = runner.invoke(init_command, ['--config', invalid_config])
                 # Should reject invalid config
@@ -85,7 +85,7 @@ class TestQuantumOrchestratorCliWorkflowInitialization:
                 json.dump(config, f)
             
             try:
-    from codex.quantum_orchestrator.cli import init_command
+                from codex.quantum_orchestrator.cli import init_command
                 
                 result = runner.invoke(init_command, ['--config', config_file])
                 # Should handle resource constraints
@@ -101,7 +101,7 @@ class TestQuantumOrchestratorCliJobSubmission:
         runner = CliRunner()
         
         try:
-    from codex.quantum_orchestrator.cli import submit_command
+            from codex.quantum_orchestrator.cli import submit_command
             
             result = runner.invoke(submit_command, ['--name', 'test_job'])
             assert result.exit_code is not None
@@ -113,7 +113,7 @@ class TestQuantumOrchestratorCliJobSubmission:
         runner = CliRunner()
         
         try:
-    from codex.quantum_orchestrator.cli import submit_command
+            from codex.quantum_orchestrator.cli import submit_command
             
             result = runner.invoke(submit_command, [
                 '--name', 'dependent_job',
@@ -129,7 +129,7 @@ class TestQuantumOrchestratorCliJobSubmission:
         runner = CliRunner()
         
         try:
-    from codex.quantum_orchestrator.cli import submit_command
+            from codex.quantum_orchestrator.cli import submit_command
             
             # Submit first job
             result1 = runner.invoke(submit_command, ['--name', 'duplicate_job'])
@@ -151,7 +151,7 @@ class TestQuantumOrchestratorCliJobSubmission:
                 f.write("INVALID QASM SYNTAX {{{")
             
             try:
-    from codex.quantum_orchestrator.cli import submit_command
+                from codex.quantum_orchestrator.cli import submit_command
                 
                 result = runner.invoke(submit_command, [
                     '--name', 'invalid_circuit_job',
@@ -178,7 +178,7 @@ class TestQuantumOrchestratorCliResultRetrieval:
             }
             
             try:
-    from codex.quantum_orchestrator.cli import result_command
+                from codex.quantum_orchestrator.cli import result_command
                 
                 result = runner.invoke(result_command, ['--job-id', 'job_123'])
                 assert result.exit_code == 0 or 'completed' in result.output.lower()
@@ -197,7 +197,7 @@ class TestQuantumOrchestratorCliResultRetrieval:
             }
             
             try:
-    from codex.quantum_orchestrator.cli import result_command
+                from codex.quantum_orchestrator.cli import result_command
                 
                 result = runner.invoke(result_command, ['--job-id', 'job_456'])
                 # Should indicate pending status
@@ -217,7 +217,7 @@ class TestQuantumOrchestratorCliResultRetrieval:
             }
             
             try:
-    from codex.quantum_orchestrator.cli import result_command
+                from codex.quantum_orchestrator.cli import result_command
                 
                 result = runner.invoke(result_command, ['--job-id', 'job_789'])
                 # Should display error information
@@ -229,7 +229,7 @@ class TestQuantumOrchestratorCliResultRetrieval:
         runner = CliRunner()
         
         try:
-    from codex.quantum_orchestrator.cli import result_command
+            from codex.quantum_orchestrator.cli import result_command
             
             result = runner.invoke(result_command, ['--job-id', 'nonexistent_job'])
             # Should error or indicate not found
@@ -249,7 +249,7 @@ class TestQuantumOrchestratorCliErrorHandling:
             mock_submit.side_effect = ConnectionError("Network unreachable")
             
             try:
-    from codex.quantum_orchestrator.cli import submit_command
+                from codex.quantum_orchestrator.cli import submit_command
                 
                 result = runner.invoke(submit_command, ['--name', 'test_job'])
                 # Should handle network error gracefully
@@ -265,7 +265,7 @@ class TestQuantumOrchestratorCliErrorHandling:
             mock_wait.side_effect = Timeout("Operation timeout")
             
             try:
-    from codex.quantum_orchestrator.cli import wait_command
+                from codex.quantum_orchestrator.cli import wait_command
                 
                 result = runner.invoke(wait_command, [
                     '--job-id', 'job_123',
@@ -283,7 +283,7 @@ class TestQuantumOrchestratorCliErrorHandling:
             mock_submit.side_effect = PermissionError("Invalid credentials")
             
             try:
-    from codex.quantum_orchestrator.cli import submit_command
+                from codex.quantum_orchestrator.cli import submit_command
                 
                 result = runner.invoke(submit_command, ['--name', 'test_job'])
                 # Should indicate authentication failure
@@ -309,7 +309,7 @@ class TestQuantumOrchestratorCliResourceValidation:
                 json.dump(config, f)
             
             try:
-    from codex.quantum_orchestrator.cli import init_command
+                from codex.quantum_orchestrator.cli import init_command
                 
                 result = runner.invoke(init_command, ['--config', config_file])
                 # Should validate against system limits
@@ -331,7 +331,7 @@ class TestQuantumOrchestratorCliResourceValidation:
                 json.dump(config, f)
             
             try:
-    from codex.quantum_orchestrator.cli import init_command
+                from codex.quantum_orchestrator.cli import init_command
                 
                 result = runner.invoke(init_command, ['--config', config_file])
                 # Should validate circuit depth
@@ -357,7 +357,7 @@ class TestQuantumOrchestratorCliResourceValidation:
                     json.dump(config, f)
                 
                 try:
-    from codex.quantum_orchestrator.cli import init_command
+                    from codex.quantum_orchestrator.cli import init_command
                     
                     result = runner.invoke(init_command, ['--config', config_file])
                     # Should warn about insufficient memory
@@ -373,7 +373,7 @@ class TestQuantumOrchestratorCliOutputFormatting:
         runner = CliRunner()
         
         try:
-    from codex.quantum_orchestrator.cli import list_command
+            from codex.quantum_orchestrator.cli import list_command
             
             result = runner.invoke(list_command, ['--format', 'json'])
             
@@ -392,7 +392,7 @@ class TestQuantumOrchestratorCliOutputFormatting:
         runner = CliRunner()
         
         try:
-    from codex.quantum_orchestrator.cli import list_command
+            from codex.quantum_orchestrator.cli import list_command
             
             result = runner.invoke(list_command, ['--format', 'table'])
             
@@ -408,7 +408,7 @@ class TestQuantumOrchestratorCliOutputFormatting:
         runner = CliRunner()
         
         try:
-    from codex.quantum_orchestrator.cli import list_command
+            from codex.quantum_orchestrator.cli import list_command
             
             result = runner.invoke(list_command, ['--verbose'])
             

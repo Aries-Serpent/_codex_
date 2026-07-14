@@ -163,7 +163,7 @@ def _append_error_block(
 
     try:
         log_path.parent.mkdir(parents=True, exist_ok=True)
-    except (IOError, OSError) as exc:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
         type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         typer.echo(f"Failed to ensure error log directory {log_path.parent}: {exc}", err=True)
@@ -172,7 +172,7 @@ def _append_error_block(
     try:
         with log_path.open("a", encoding="utf-8") as handle:
             handle.write(block + "\n")
-    except (IOError, OSError) as exc:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
         type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         typer.echo(f"Failed to append error log to {log_path}: {exc}", err=True)
@@ -205,7 +205,7 @@ def _load_tokenizer(tokenizer_path: Path, *, step: str) -> object:
             {"tokenizer_path": str(tokenizer_path), "error": str(exc)},
             "Could you confirm the tokenizer path or share how to generate it?",
         )
-    except (IOError, OSError) as exc:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
         type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         _fail(
@@ -247,7 +247,7 @@ def vocab(
             vocab_size = int(vocab_attr)
         else:
             raise AttributeError("Tokenizer does not expose a vocab_size attribute.")
-    except (IOError, OSError) as exc:  # pragma: no cover - defensive casting guards
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - defensive casting guards
         _fail(
             "vocab",
             f"Unable to determine vocabulary size: {exc}",
@@ -269,7 +269,7 @@ def vocab(
     for idx in range(sample_count):
         try:
             token = converter(idx)
-        except (IOError, OSError) as exc:  # pragma: no cover - optional backend failures
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - optional backend failures
             _append_error_block(
                 "vocab",
                 f"Failed to preview token {idx}: {exc}",
@@ -297,7 +297,7 @@ def inspect(tokenizer_path: Path) -> None:
     if manifest_path.exists():
         try:
             manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-        except (IOError, OSError) as exc:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
             error_type = type(exc).__name__
             logger.debug(f"Exception: {error_type}")
             _append_error_block(
@@ -313,7 +313,7 @@ def inspect(tokenizer_path: Path) -> None:
     if callable(getter):
         try:
             special_tokens = list(getter())
-        except (IOError, OSError) as exc:  # pragma: no cover - backend specific guard
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - backend specific guard
             _append_error_block(
                 "inspect",
                 f"Failed to collect special tokens: {exc}",
@@ -327,7 +327,7 @@ def inspect(tokenizer_path: Path) -> None:
         if config_path.exists():
             try:
                 tokenizer_cfg = json.loads(config_path.read_text(encoding="utf-8"))
-            except (IOError, OSError) as exc:
+            except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
                 error_type = type(exc).__name__
                 logger.debug(f"Exception: {error_type}")
                 _append_error_block(
@@ -380,7 +380,7 @@ def encode(
         input_path = Path(text)
         try:
             payload = input_path.read_text(encoding="utf-8")
-        except (IOError, OSError) as exc:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
             error_type = type(exc).__name__
             logger.debug(f"Exception: {error_type}")
             _fail(
@@ -396,7 +396,7 @@ def encode(
             padding="max_length" if pad_to else False,
             max_length=pad_to or None,
         )
-    except (IOError, OSError) as exc:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
         error_type = type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         _fail(
@@ -425,7 +425,7 @@ def encode(
 
     try:
         ids_source = ids_candidate if isinstance(ids_candidate, Sequence) else list(ids_candidate)
-    except (IOError, OSError) as exc:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
         error_type = type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         _fail(
@@ -458,7 +458,7 @@ def encode(
         else:
             try:
                 tokens = [str(converter(i)) for i in ids_list]
-            except (IOError, OSError) as exc:
+            except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
                 error_type = type(exc).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 _append_error_block(
@@ -523,7 +523,7 @@ def decode(
         logger.warning("TypeError: <ERROR_TYPE>", exc_info=True)
         try:
             decoded = decode_fn(id_list)
-        except (IOError, OSError) as exc:  # pragma: no cover - backend guard
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - backend guard
             _fail(
                 "decode",
                 f"Tokenizer decode failed: {exc}",
@@ -534,7 +534,7 @@ def decode(
                 },
                 "What changes are needed so decoding succeeds?",
             )
-    except (IOError, OSError) as exc:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
         type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         _fail(
@@ -558,7 +558,7 @@ def export(src: Path, dst: Path) -> None:
     root = _resolve_root(src)
     try:
         dst.mkdir(parents=True, exist_ok=True)
-    except (IOError, OSError) as exc:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
         type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         _fail(
@@ -599,7 +599,7 @@ def export(src: Path, dst: Path) -> None:
     )
     try:
         readme_path.write_text(readme_contents, encoding="utf-8")
-    except (IOError, OSError) as exc:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
         type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         _append_error_block(

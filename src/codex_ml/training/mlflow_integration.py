@@ -170,7 +170,7 @@ class MLflowTracker:
             # Convert all values to strings (MLflow requirement)
             str_params = {k: str(v) for k, v in params.items()}
             mlflow.log_params(str_params)
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.warning("Failed to log params to MLflow: <ERROR_TYPE>")
@@ -191,7 +191,7 @@ class MLflowTracker:
                 return
 
             mlflow.log_artifact(local_path, artifact_path)
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.warning("Failed to log artifact to MLflow: <ERROR_TYPE>")
@@ -212,7 +212,7 @@ class MLflowTracker:
                 return
 
             mlflow.log_artifacts(local_dir, artifact_path)
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.warning("Failed to log artifacts to MLflow: <ERROR_TYPE>")

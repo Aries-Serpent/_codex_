@@ -480,7 +480,7 @@ def append_to_report(
         with os.fdopen(fd, "w", encoding="utf-8") as fh:
             fh.write(updated)
         shutil.move(tmp_path, str(report_path))
-    except (IOError, OSError) as exc:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
         logger.error("Failed to write accountability report: %s", exc)
         # Best-effort cleanup: ignore failure to remove temporary report file.
         try:
@@ -571,7 +571,7 @@ def update_changelog(
         with os.fdopen(fd, "w", encoding="utf-8") as fh:
             fh.write(updated)
         shutil.move(tmp_path, str(changelog_path))
-    except (IOError, OSError) as exc:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
         logger.error("Failed to write changelog: %s", exc)
         # Best-effort cleanup: ignore failure to remove temporary changelog file.
         try:
@@ -771,7 +771,7 @@ def main(argv: Optional[list[str]] = None) -> int:
             narrative=args.narrative,
             dry_run=dry_run,
         )
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         logger.exception("Accountability auto-update failed")
         return 1
 

@@ -93,7 +93,7 @@ def read_text_safe(
         logger.error(f"Permission denied reading {path}")
         raise
 
-    except (IOError, OSError) as e:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
         type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         logger.error(f"Unexpected error reading {path}: {type(e).__name__}: <ERROR_TYPE>")

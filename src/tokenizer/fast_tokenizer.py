@@ -30,7 +30,7 @@ except (ImportError, AttributeError):  # pragma: no cover - degrade gracefully
 
 try:  # pragma: no cover - optional dependency
     from transformers import AutoTokenizer
-except (IOError, OSError):  # pragma: no cover - transformers missing is acceptable
+except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - transformers missing is acceptable
     AutoTokenizer = None  # type: ignore[misc,assignment]
 
 
@@ -135,7 +135,7 @@ def build_tokenizer(path: str | Path) -> object:
                 # Ensure pad_token is set; many decoder-only models omit it.
                 if tokenizer.pad_token is None and tokenizer.eos_token is not None:  # type: ignore[attr-defined]
                     tokenizer.pad_token = tokenizer.eos_token  # type: ignore[attr-defined]
-            except (IOError, OSError) as exc:  # pragma: no cover - optional dependency path
+            except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - optional dependency path
                 errors.append(f"transformers@{target}: {exc}")
                 continue
             else:
@@ -152,7 +152,7 @@ def build_tokenizer(path: str | Path) -> object:
 
     try:
         return FastTokenizerWrapper(str(candidate))
-    except (IOError, OSError) as exc:  # pragma: no cover - propagate readable error
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - propagate readable error
         context = "; ".join(errors)
         if context:
             raise RuntimeError(

@@ -24,7 +24,7 @@ try:  # Optional dependency used for loading curriculum presets
     import yaml as _yaml_module
 
     yaml = _yaml_module
-except (IOError, OSError):  # pragma: no cover - PyYAML is optional
+except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - PyYAML is optional
     yaml = None
 
 
@@ -410,7 +410,7 @@ if typer is not None:
             meta_payload = json.loads(metadata_json) if metadata_json else {}
             if not isinstance(meta_payload, dict):
                 raise ValueError("metadata must decode to a JSON object")
-        except (IOError, OSError) as exc:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
             type(exc).__name__
             get_default_logger().debug("Exception: <ERROR_TYPE>")
             raise typer.BadParameter(str(exc)) from exc
@@ -713,7 +713,7 @@ else:
             sys.argv = [sys.argv[0], *args, *overrides]
             try:
                 main()
-            except (IOError, OSError) as exc:  # pragma: no cover - logging path
+            except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - logging path
                 _log_error("STEP cli", "codex_ml.cli.main", str(exc), f"argv={args}")
                 log_event(logger, "cli.finish", prog=sys.argv[0], status="error")
                 raise

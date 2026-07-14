@@ -39,7 +39,7 @@ try:
     from aries_serpent_core.db.sqlite_patch import auto_enable_from_env as _codex_sqlite_auto
 
     _codex_sqlite_auto()
-except (IOError, OSError) as e:
+except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
     error_type = type(e).__name__
     logger.debug("Exception: <ERROR_TYPE>")
     logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
@@ -123,7 +123,7 @@ def parse_when(s: str) -> datetime:
         s2 = s2[:-1] + "+00:00"
     try:
         return datetime.fromisoformat(s2)
-    except (IOError, OSError) as exc:  # pragma: no cover - simple validation
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - simple validation
         raise ValueError(
             f"Invalid datetime: {s}. Use ISO 8601 (e.g., 2025-08-18T09:00:00 or 2025-08-18)."
         ) from exc
@@ -315,7 +315,7 @@ def main(argv: Optional[list[str]] = None) -> int:
         logger.debug("Exception: <ERROR_TYPE>")
         logger.error(str(exc))
         return 2
-    except (IOError, OSError) as exc:  # pragma: no cover - top-level guard
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - top-level guard
         type(exc).__name__
         logger.error("Unexpected error: <ERROR_TYPE>")
         return 1

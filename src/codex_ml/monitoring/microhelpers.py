@@ -31,7 +31,7 @@ try:  # NVML for GPU stats via pynvml / nvidia-ml-py3
         nvmlInit,
         nvmlShutdown,
     )
-except (IOError, OSError):  # pragma: no cover
+except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover
     nvmlInit = nvmlShutdown = nvmlDeviceGetCount = None
     nvmlDeviceGetHandleByIndex = nvmlDeviceGetName = None
     nvmlDeviceGetUtilizationRates = nvmlDeviceGetMemoryInfo = None
@@ -51,7 +51,7 @@ def _ensure_nvml() -> bool:
         nvmlInit()
         _NVML_READY = True
         return True
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         logger.warning("Exception occurred", exc_info=True)
         return False
 

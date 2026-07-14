@@ -362,7 +362,7 @@ def save_metrics(
         with open(output_file, "w") as f:
             json.dump(metrics_dict, f, indent=2, default=str)
         logger.info(f"Metrics saved to {output_path}")
-    except (IOError, OSError) as e:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
         type(e).__name__
         logger.error("Failed to save metrics: <ERROR_TYPE>")
 
@@ -380,6 +380,6 @@ def log_error(
         timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
         with open(error_file, "a") as f:
             f.write(f"[{timestamp}] {context}: {error}\n")
-    except (IOError, OSError) as e:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
         type(e).__name__
         logger.error("Failed to log error: <ERROR_TYPE>")

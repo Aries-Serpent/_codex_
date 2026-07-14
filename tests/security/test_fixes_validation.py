@@ -40,7 +40,7 @@ def test_security_error_and_enforce_absolute_path():
 def test_encryption_error_not_frozen():
     """Verify EncryptionError is a regular exception, not a frozen dataclass."""
     try:
-    from security.encryption import EncryptionError
+        from security.encryption import EncryptionError
 
         # Should be able to instantiate with message
         error = EncryptionError("test error")

@@ -87,7 +87,7 @@ def main(cfg: DictConfig):
             num_fewshot=cfg.eval.num_fewshot,
             limit=cfg.eval.limit,
         )
-    except (IOError, OSError) as exc:  # pragma: no cover
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover
         logger.error("Evaluation failed: %s", exc)
         raise
 

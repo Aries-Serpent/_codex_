@@ -77,7 +77,7 @@ class HDF5Loader:
             with h5py.File(self.file_path, "r") as f:
                 if dataset_path != "/" and dataset_path not in f:
                     raise KeyError(f"Dataset path not found: {dataset_path}")
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             raise ValueError(f"Invalid HDF5 file: {e}") from e

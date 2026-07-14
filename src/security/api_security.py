@@ -305,6 +305,9 @@ DEFAULT_RATE_LIMITER = RateLimiter(
     burst_size=20,
 )
 
+# Aliases for backwards compatibility
+CORS_POLICY = DEFAULT_CORS_POLICY
+
 __all__ = [
     "CORSPolicy",
     "RateLimiter",
@@ -313,4 +316,5 @@ __all__ = [
     "require_api_key",
     "DEFAULT_CORS_POLICY",
     "DEFAULT_RATE_LIMITER",
+    "CORS_POLICY",
 ]

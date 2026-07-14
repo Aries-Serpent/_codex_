@@ -124,7 +124,7 @@ def load_model_with_optional_lora(
                 model = model.to(dtype=torch_dtype)
             if device_map is not None:
                 model = model.to(device_map)
-        except (IOError, OSError):  # pragma: no cover - fallback to HF
+        except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - fallback to HF
             model = load_from_pretrained(
                 AutoModelForCausalLM,
                 name_or_path,
@@ -162,7 +162,7 @@ def load_model_with_optional_lora(
             if revision is not None:
                 extra.setdefault("revision", revision)
             return PeftModel.from_pretrained(model, lora_path, **extra)
-        except (IOError, OSError):
+        except (IOError, OSError, ModuleNotFoundError, ImportError):
             logger.warning("Exception occurred", exc_info=True)
             return model
 

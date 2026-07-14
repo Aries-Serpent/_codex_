@@ -69,7 +69,7 @@ class InternalRepoSearch(SearchProvider):
                                     "snippet": line.strip(),
                                 }
                             )
-            except (IOError, OSError):
+            except (IOError, OSError, ModuleNotFoundError, ImportError):
                 logger.warning("Exception occurred", exc_info=True)
                 continue
         return {"status": "ok", "query": query, "results": results}

@@ -513,7 +513,7 @@ class ContextMemory:
                 )
                 self._chunks[cid] = chunk
                 self._total_tokens += chunk.token_count
-        except (IOError, OSError) as exc:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
             type(exc).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.error("Failed to load memory from %s", path, exc_info=exc)

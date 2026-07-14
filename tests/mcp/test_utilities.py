@@ -241,7 +241,7 @@ class PerformanceTimer:
 
 def benchmark_operation(
     operation: Callable, iterations: int = 100, *args, **kwargs
-) -> dict[str, float]:
+    ) -> dict[str, float]:
     """
     Benchmark an operation over multiple iterations.
 
@@ -299,7 +299,7 @@ def ensure_offline_mode() -> None:
 # Error Testing Utilities
 def assert_raises_mcp_error(
     func: Callable, error_type: type, error_code: Optional[str] = None, *args, **kwargs
-):
+    ):
     """
     Assert that function raises specific MCP error type.
 

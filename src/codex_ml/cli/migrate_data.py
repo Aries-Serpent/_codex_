@@ -97,7 +97,7 @@ def migrate(
             )
             raise typer.Exit(1)
 
-    except (IOError, OSError) as e:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
         type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         typer.echo(f"Error during migration: {e}", err=True)

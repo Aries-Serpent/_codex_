@@ -317,7 +317,7 @@ class PROperator:
                     sha=base.commit.sha,
                 )
                 logger.info("Created branch: %s", content.branch_name)
-            except (IOError, OSError) as e:
+            except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
                 type(e).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 if "already exists" not in str(e).lower():
@@ -337,7 +337,7 @@ class PROperator:
                             sha=existing.sha,
                             branch=content.branch_name,
                         )
-                    except (IOError, OSError):
+                    except (IOError, OSError, ModuleNotFoundError, ImportError):
                         logger.warning("Exception occurred", exc_info=True)
                         # File doesn't exist, create it
                         repo.create_file(

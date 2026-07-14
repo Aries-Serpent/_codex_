@@ -43,10 +43,10 @@ if "CheckpointManager" not in globals():
             build_payload_bytes,
             dump_rng_state,
         )
-    except (IOError, OSError):  # pragma: no cover - legacy fallback path
+    except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - legacy fallback path
         try:  # numpy is optional for RNG capture
             import numpy as _np
-        except (IOError, OSError):  # pragma: no cover - optional dependency
+        except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - optional dependency
             _np = None
 
         try:  # torch may be absent in lightweight environments
@@ -225,7 +225,7 @@ class CheckpointManager:  # type: ignore[no-redef]
                             logger.warning("OSError: %s", e, exc_info=True)
                             try:
                                 path = self._best_file.read_text(encoding="utf-8").strip()
-                            except (IOError, OSError):
+                            except (IOError, OSError, ModuleNotFoundError, ImportError):
                                 logger.warning("Exception occurred", exc_info=True)
                                 path = None
                     if path is not None:
@@ -252,7 +252,7 @@ class CheckpointManager:  # type: ignore[no-redef]
     def _extract_step(path: Path) -> int:
         try:
             return int(path.stem.split("-")[1])
-        except (IOError, OSError):
+        except (IOError, OSError, ModuleNotFoundError, ImportError):
             logger.warning("Exception occurred", exc_info=True)
             return -1
 

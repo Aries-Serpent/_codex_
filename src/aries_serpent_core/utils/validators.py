@@ -56,7 +56,7 @@ def validate_file_structure(file_path: str) -> dict[str, bool]:
 
     try:
         content = path.read_text()
-    except (IOError, OSError) as e:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
         type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         logger.error("Failed to read file: <ERROR_TYPE>")
@@ -148,7 +148,7 @@ def validate_with_checksum(
             return False, sha
         logger.info(f"Checksum computed: {sha} ({file_path})")
         return True, sha
-    except (IOError, OSError) as e:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
         type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         logger.error("Checksum validation failed: <ERROR_TYPE>")
@@ -183,7 +183,7 @@ def validate_with_diff(
             return True, ""
         logger.info(f"Files differ: {original_file} vs {modified_file}")
         return False, result.stdout
-    except (IOError, OSError) as e:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
         type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         logger.error("Diff validation failed: <ERROR_TYPE>")
@@ -230,7 +230,7 @@ def validate_code_quality(file_path: str) -> dict[str, bool]:
                 checks["syntax_valid"] = False
                 logger.error(f"Bash syntax error: {result.stderr.decode()}")
 
-    except (IOError, OSError) as e:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
         type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         logger.error("Code quality check failed: <ERROR_TYPE>")

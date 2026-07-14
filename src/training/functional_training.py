@@ -172,19 +172,19 @@ except (ImportError, AttributeError):  # pragma: no cover - monitoring module mi
 
 try:  # pragma: no cover - optional system metrics dependency
     from codex_ml.monitoring.system_metrics import SystemMetricsLogger
-except (IOError, OSError):  # pragma: no cover - metrics optional
+except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - metrics optional
     SystemMetricsLogger = None
 
 
 try:  # pragma: no cover - optional manifest helper
     from codex_ml.data.checksums import manifest_for_paths
-except (IOError, OSError):  # pragma: no cover - optional dependency missing
+except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - optional dependency missing
     manifest_for_paths = None
 
 
 try:  # pragma: no cover - optional model registry
     from codex_ml.models.registry import get_model
-except (IOError, OSError):  # pragma: no cover - minimal training may not need registry
+except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - minimal training may not need registry
 
     def get_model(*args: Any, **kwargs: Any) -> None:
         raise RuntimeError("codex_ml.models.registry is unavailable")
@@ -361,7 +361,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                         collected,
                         Path("artifacts/data_manifest.jsonl"),
                     )
-                except (IOError, OSError) as e:
+                except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
                     type(e).__name__
                     logger.debug(
                         "Exception: <ERROR_TYPE>"
@@ -602,7 +602,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dic
                 bias="none",
             )
             model = get_peft_model(model, lcfg)
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
             logger.warning(
@@ -624,7 +624,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dic
                 json.dumps(asdict(cfg), indent=2, sort_keys=True),
                 encoding="utf-8",
             )
-        except (IOError, OSError):
+        except (IOError, OSError, ModuleNotFoundError, ImportError):
             logger.warning(
                 "Exception occurred", exc_info=True
             )  # codeql[py/clear-text-logging-sensitive-data]
@@ -639,7 +639,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dic
     if metrics_path is not None and metrics_path.exists():
         try:
             metrics_path.unlink()
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
             logger.warning(
@@ -649,7 +649,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dic
     def _safe_len(data: Any) -> int | None:
         try:
             return len(data)
-        except (IOError, OSError):
+        except (IOError, OSError, ModuleNotFoundError, ImportError):
             logger.warning(
                 "Exception occurred", exc_info=True
             )  # codeql[py/clear-text-logging-sensitive-data]

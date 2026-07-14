@@ -46,7 +46,7 @@ def read_pa_legacy(zip_path: str | Path) -> dict[str, Any]:
             for name in archive.namelist():
                 if name.startswith("flows/") and name.endswith(".json"):
                     flows[Path(name).stem] = json.loads(archive.read(name))
-    except (IOError, OSError) as exc:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
         type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         raise PowerAutomateParseError(str(exc)) from exc

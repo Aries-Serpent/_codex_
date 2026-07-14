@@ -12,7 +12,7 @@ class TestKnowledgeBaseImports:
     def test_module_can_be_imported(self):
         """Test that the module can be imported."""
         try:
-    from codex.knowledge import base
+            from codex.knowledge import base
 
             assert base is not None, "base must be initialized"
         except ImportError:
@@ -25,7 +25,7 @@ class TestKnowledgeBaseOperations:
     def test_knowledge_base_creation(self):
         """Test knowledge base creation."""
         try:
-    from codex.knowledge import base
+            from codex.knowledge import base
 
             if hasattr(base, "KnowledgeBase"):
                 kb = base.KnowledgeBase()
@@ -36,7 +36,7 @@ class TestKnowledgeBaseOperations:
     def test_add_knowledge(self):
         """Test adding knowledge."""
         try:
-    from codex.knowledge import base
+            from codex.knowledge import base
 
             if hasattr(base, "add_knowledge"):
                 with patch.object(base, "add_knowledge") as mock_add:
@@ -49,7 +49,7 @@ class TestKnowledgeBaseOperations:
     def test_query_knowledge(self):
         """Test querying knowledge."""
         try:
-    from codex.knowledge import base
+            from codex.knowledge import base
 
             if hasattr(base, "query"):
                 with patch.object(base, "query") as mock_query:
@@ -66,7 +66,7 @@ class TestKnowledgeBasePersistence:
     def test_save_knowledge_base(self):
         """Test saving knowledge base."""
         try:
-    from codex.knowledge import base
+            from codex.knowledge import base
 
             if hasattr(base, "KnowledgeBase"):
                 kb = base.KnowledgeBase()
@@ -81,7 +81,7 @@ class TestKnowledgeBasePersistence:
     def test_load_knowledge_base(self):
         """Test loading knowledge base."""
         try:
-    from codex.knowledge import base
+            from codex.knowledge import base
 
             if hasattr(base, "KnowledgeBase") and hasattr(base.KnowledgeBase, "load"):
                 with patch.object(base.KnowledgeBase, "load") as mock_load:

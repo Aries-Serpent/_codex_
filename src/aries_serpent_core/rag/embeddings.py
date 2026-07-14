@@ -335,7 +335,7 @@ class CachedEmbeddingProvider:
                 f"Saved embeddings to cache: {cache_key}"
             )  # codeql[py/clear-text-logging-sensitive-data]
 
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             error_type = type(e).__name__
             logger.warning(
                 "Error saving to cache: <ERROR_TYPE>"
@@ -486,7 +486,7 @@ def create_embedding_provider(
             logger.debug(
                 "Ollama server not running"
             )  # codeql[py/clear-text-logging-sensitive-data]
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             error_type = type(e).__name__
             logger.debug(
                 "Ollama unavailable: <ERROR_TYPE>"

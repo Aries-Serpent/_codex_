@@ -331,7 +331,7 @@ class ModerationAdapter:
             entry["original_digest"] = self._hash_text(original_text)
             with path.open("a", encoding="utf-8") as handle:
                 handle.write(json.dumps(entry, ensure_ascii=False) + "\n")
-        except (IOError, OSError):  # pragma: no cover - audit trail is best-effort
+        except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - audit trail is best-effort
             logger.debug("Failed to write moderation audit entry", exc_info=True)
 
     @staticmethod

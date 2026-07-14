@@ -313,7 +313,7 @@ def config_sweep(
             maybe_path = loaded.get("training", {}).get("dataset", {}).get("train_path")
             if maybe_path:
                 resolved_dataset_path = Path(maybe_path)
-        except (IOError, OSError):
+        except (IOError, OSError, ModuleNotFoundError, ImportError):
             logger.warning("Exception occurred", exc_info=True)
             resolved_dataset_path = None
     if resolved_dataset_path is not None and resolved_dataset_path.exists():
@@ -489,7 +489,7 @@ def train(
         provenance_dir = Path(cfg_obj.training.output_dir) / "provenance"
         _emit_provenance_summary(provenance_dir)
         click.echo("Training complete")
-    except (IOError, OSError) as exc:  # pragma: no cover - Click handles presentation
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - Click handles presentation
         log_training_error(
             "cli.train",
             str(exc),
@@ -554,7 +554,7 @@ def resume(
         provenance_dir = Path(cfg_obj.training.output_dir) / "provenance"
         _emit_provenance_summary(provenance_dir)
         click.echo(f"resumed training from {checkpoint}")
-    except (IOError, OSError) as exc:  # pragma: no cover - Click handles presentation
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - Click handles presentation
         raise click.ClickException(str(exc)) from exc
 
 
@@ -766,7 +766,7 @@ def evaluate(
             }
             # Prefer explicit run_id flag; fall back to summary's run_id if present.
             NDJSONLogger(out_path, run_id=record_run_id).log(record)
-        except (IOError, OSError) as exc:  # pragma: no cover - Click handles presentation
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - Click handles presentation
             raise click.ClickException(f"failed to append metrics NDJSON: {exc}") from exc
 
     provenance_dir = Path(cfg_obj.evaluation.output_dir) / "provenance"

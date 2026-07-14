@@ -155,7 +155,7 @@ def run_worker(
                 for it in batch:
                     seen.add(compute_checksum(it))
                 save_checkpoint(checkpoint_path, seen)
-        except (IOError, OSError) as exc:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
             type(exc).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             increment("worker_batch_failures")

@@ -27,7 +27,7 @@ def _connect(path: str) -> sqlite3.Connection:
     # Enable WAL for one-writer/many-readers (creates a '-wal' sidecar file).
     try:
         cx.execute("PRAGMA journal_mode=WAL;")
-    except (IOError, OSError) as e:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
         logger.warning("journal_mode=WAL failed: %s", e)
     return cx
 

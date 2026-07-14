@@ -376,7 +376,7 @@ def _torch_dump(path: Path, payload: Mapping[str, Any]) -> None:
                 # Retry without pickle_protocol which is not a valid torch.save parameter
                 # PyTorch 2.x handles pickle protocol automatically
                 torch.save(dict(payload), path)
-            except (IOError, OSError) as e2:
+            except (IOError, OSError, ModuleNotFoundError, ImportError) as e2:
                 logger.error(
                     "torch.save failed on retry: %s", e2
                 )  # codeql[py/clear-text-logging-sensitive-data]
@@ -391,7 +391,7 @@ def _save_payload(path: Path, payload: Mapping[str, Any], *, fmt: SaveFormat) ->
         try:
             _torch_dump(path, payload)
             return
-        except (IOError, OSError) as exc:  # pragma: no cover - torch optional
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - torch optional
             errors.append(exc)
             if fmt == "torch":
                 raise CheckpointLoadError(f"failed to save torch checkpoint: {exc}") from exc
@@ -400,7 +400,7 @@ def _save_payload(path: Path, payload: Mapping[str, Any], *, fmt: SaveFormat) ->
         try:
             _pickle_dump(path, payload)
             return
-        except (IOError, OSError) as exc:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
             type(exc).__name__
             logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
             errors.append(exc)
@@ -423,7 +423,7 @@ def _load_payload(path: Path, *, map_location: Optional[str], fmt: SaveFormat) -
             return torch.load(
                 path, **kwargs
             )  # nosec B614 - weights_only=False required for optimizer/RNG state
-        except (IOError, OSError) as exc:  # pragma: no cover - torch optional
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - torch optional
             errors.append(exc)
             if fmt == "torch":
                 raise CheckpointLoadError(f"failed to load torch checkpoint: {exc}") from exc
@@ -431,7 +431,7 @@ def _load_payload(path: Path, *, map_location: Optional[str], fmt: SaveFormat) -
         raise CheckpointLoadError("torch checkpoint format requested but torch is not available")
     try:
         return safe_pickle_load(str(path), use_restricted_unpickler=True)
-    except (IOError, OSError) as exc:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
         type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         errors.append(exc)
@@ -533,7 +533,7 @@ def load_checkpoint(
             f"CheckpointLoadError: {e}", exc_info=True
         )  # codeql[py/clear-text-logging-sensitive-data]
         raise
-    except (IOError, OSError) as exc:  # pragma: no cover - fallback path
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - fallback path
         capture_error(
             step_no="load_checkpoint",
             step_desc="checkpoint load unexpected",
@@ -575,7 +575,7 @@ def _fallback_git_commit() -> Optional[str]:
         return subprocess.check_output(
             ["git", "rev-parse", "HEAD"], cwd=repo_root, text=True
         ).strip()
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         logger.warning(
             "Exception occurred", exc_info=True
         )  # codeql[py/clear-text-logging-sensitive-data]
@@ -680,7 +680,7 @@ def _compute_file_checksum(path: Path) -> Optional[str]:
             for chunk in iter(lambda: fh.read(1024 * 1024), b""):
                 h.update(chunk)
         return h.hexdigest()
-    except (IOError, OSError) as exc:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
         type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         logger.debug(
@@ -821,7 +821,7 @@ def save_checkpoint(
         p.with_suffix(".meta.json").write_text(
             json.dumps(sidecar, indent=2, sort_keys=True), encoding="utf-8"
         )
-    except (IOError, OSError) as exc:  # pragma: no cover - metadata best effort
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - metadata best effort
         logger.info(
             "save_checkpoint: unable to write metadata sidecar for %s: %s",
             p,
@@ -890,7 +890,7 @@ def load_training_checkpoint(
             "CheckpointLoadError: <ERROR_TYPE>", exc_info=True
         )  # codeql[py/clear-text-logging-sensitive-data]
         raise
-    except (IOError, OSError) as exc:  # pragma: no cover - fallback path
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - fallback path
         raise CheckpointLoadError(f"failed to load checkpoint from {p}: {exc}") from exc
 
     if not isinstance(raw, Mapping):
@@ -1329,7 +1329,7 @@ class CheckpointManager:
                 import yaml
 
                 (ep_dir / "config.yaml").write_text(yaml.dump(config), encoding="utf-8")
-            except (IOError, OSError):
+            except (IOError, OSError, ModuleNotFoundError, ImportError):
                 logger.warning(
                     "Exception occurred", exc_info=True
                 )  # codeql[py/clear-text-logging-sensitive-data]
@@ -1442,7 +1442,7 @@ class CheckpointManager:
                 state_payload = torch.load(
                     io.BytesIO(payload), map_location="cpu", weights_only=False
                 )  # nosec B614 - RNG state may contain complex objects
-            except (IOError, OSError):
+            except (IOError, OSError, ModuleNotFoundError, ImportError):
                 logger.warning(
                     "Exception occurred", exc_info=True
                 )  # codeql[py/clear-text-logging-sensitive-data]
@@ -1480,7 +1480,7 @@ class CheckpointManager:
             else:
                 try:
                     meta_sidecar["rng"] = _rng_dump()
-                except (IOError, OSError):
+                except (IOError, OSError, ModuleNotFoundError, ImportError):
                     logger.warning(
                         "Exception occurred", exc_info=True
                     )  # codeql[py/clear-text-logging-sensitive-data]
@@ -1490,7 +1490,7 @@ class CheckpointManager:
                 json.dumps(meta_sidecar, indent=2, sort_keys=True),
                 encoding="utf-8",
             )
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
             logger.warning(
@@ -1522,7 +1522,7 @@ class CheckpointManager:
             if optimizer is not None and state.get("optimizer") is not None:
                 try:
                     optimizer.load_state_dict(state["optimizer"])
-                except (IOError, OSError) as exc:  # pragma: no cover
+                except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover
                     raise ValueError(f"optimizer state load failed: {exc}") from exc
             if scheduler is not None and state.get("scheduler") is not None:
                 with contextlib.suppress(Exception):
@@ -1547,7 +1547,7 @@ class CheckpointManager:
             try:
                 rng_state = _read_json(rng_path)
                 _rng_load(rng_state)
-            except (IOError, OSError) as exc:  # pragma: no cover
+            except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover
                 raise RuntimeError(f"failed to restore RNG state: {exc}") from exc
 
         meta = _read_json(path / "meta.json") if (path / "meta.json").exists() else {}
@@ -1600,7 +1600,7 @@ class CheckpointManager:
                 return
             try:
                 resolved = str(candidate.resolve())
-            except (IOError, OSError):
+            except (IOError, OSError, ModuleNotFoundError, ImportError):
                 logger.warning(
                     "Exception occurred", exc_info=True
                 )  # codeql[py/clear-text-logging-sensitive-data]
@@ -1634,7 +1634,7 @@ class CheckpointManager:
                     )  # codeql[py/clear-text-logging-sensitive-data]
                     with contextlib.suppress(Exception):
                         marker_path = marker.resolve(strict=False)
-                except (IOError, OSError):
+                except (IOError, OSError, ModuleNotFoundError, ImportError):
                     logger.warning(
                         "Exception occurred", exc_info=True
                     )  # codeql[py/clear-text-logging-sensitive-data]
@@ -1645,7 +1645,7 @@ class CheckpointManager:
                         if not candidate.is_absolute():
                             try:
                                 candidate = (root / candidate).resolve(strict=False)
-                            except (IOError, OSError):
+                            except (IOError, OSError, ModuleNotFoundError, ImportError):
                                 logger.warning(
                                     "Exception occurred", exc_info=True
                                 )  # codeql[py/clear-text-logging-sensitive-data]

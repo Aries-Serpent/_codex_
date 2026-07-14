@@ -9,7 +9,7 @@ class TestChunkingPipeline:
     def test_chunking_module_has_classes(self):
         """Test that chunking module contains expected classes."""
         try:
-    from rag.pipelines import chunking
+            from rag.pipelines import chunking
 
             assert hasattr(chunking, "__name__")
         except ImportError:
@@ -22,7 +22,7 @@ class TestEmbeddingPipeline:
     def test_embedding_module_has_classes(self):
         """Test that embedding module contains expected functionality."""
         try:
-    from rag.pipelines import embedding
+            from rag.pipelines import embedding
 
             assert hasattr(embedding, "__name__")
         except ImportError:
@@ -35,7 +35,7 @@ class TestRetrievalPipeline:
     def test_retrieval_pipeline_class_available(self):
         """Test that RetrievalPipeline class can be imported."""
         try:
-    from rag.pipelines.retrieval import RetrievalPipeline
+            from rag.pipelines.retrieval import RetrievalPipeline
 
             assert RetrievalPipeline is not None, "RetrievalPipeline must be initialized"
         except ImportError:
@@ -44,7 +44,7 @@ class TestRetrievalPipeline:
     def test_retrieval_config_available(self):
         """Test that RetrievalConfig can be imported."""
         try:
-    from rag.pipelines.retrieval import RetrievalConfig
+            from rag.pipelines.retrieval import RetrievalConfig
 
             assert RetrievalConfig is not None, "RetrievalConfig must be initialized"
         except ImportError:
@@ -53,7 +53,7 @@ class TestRetrievalPipeline:
     def test_retrieval_pipeline_instantiation(self):
         """Test creating a RetrievalPipeline instance."""
         try:
-    from rag.pipelines.retrieval import RetrievalPipeline
+            from rag.pipelines.retrieval import RetrievalPipeline
 
             pipeline = RetrievalPipeline()
             assert pipeline is not None, "pipeline must be initialized"
@@ -68,7 +68,7 @@ class TestQuantumRetrievalPipeline:
     def test_quantum_retrieval_has_content(self):
         """Test that quantum_retrieval module has content."""
         try:
-    from rag.pipelines import quantum_retrieval
+            from rag.pipelines import quantum_retrieval
 
             assert hasattr(quantum_retrieval, "__name__")
         except ImportError:
@@ -81,7 +81,7 @@ class TestPipelinesInit:
     def test_pipelines_package_exports(self):
         """Test that pipelines package exports modules."""
         try:
-    from rag import pipelines
+            from rag import pipelines
 
             assert hasattr(pipelines, "__path__")
         except ImportError:
@@ -103,7 +103,7 @@ class TestRagPackage:
     def test_rag_pipelines_accessible(self):
         """Test that pipelines subpackage is accessible."""
         try:
-    from rag import pipelines
+            from rag import pipelines
 
             assert pipelines is not None, "pipelines must be initialized"
         except ImportError:

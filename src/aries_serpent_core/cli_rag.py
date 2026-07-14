@@ -432,7 +432,7 @@ def list_indices(
                                 "path": index_path,
                             }
                         )
-                    except (IOError, OSError) as e:
+                    except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
                         type(e).__name__
                         logger.warning(
                             f"Failed to read metadata for {index_path}: <ERROR_TYPE>"
@@ -542,7 +542,7 @@ def delete(
             f"[green]✅ Deleted index '{index_name}' for tenant '{tenant_id}'[/green]"
         )  # codeql[py/clear-text-logging-sensitive-data]
 
-    except (IOError, OSError) as e:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
         type(e).__name__
         console.print(
             "[red]❌ Failed to delete index: <ERROR_TYPE>[/red]"
@@ -724,7 +724,7 @@ def stats(
 
         console.print(table)  # codeql[py/clear-text-logging-sensitive-data]
 
-    except (IOError, OSError) as e:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
         type(e).__name__
         console.print(
             "[red]❌ Failed to get stats: <ERROR_TYPE>[/red]"

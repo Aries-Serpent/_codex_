@@ -295,7 +295,7 @@ class ModelServer:
                     "path": self.config.model_path,
                 }
             return self.model
-        except (IOError, OSError) as exc:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
             type(exc).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             self.load_errors.append(str(exc))
@@ -466,7 +466,7 @@ if FASTAPI_AVAILABLE:
         # Load the model early so integration tests hit a ready server.
         try:
             server.load_model()
-        except (IOError, OSError) as exc:  # pragma: no cover - surfaced via API if needed
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - surfaced via API if needed
             logger.warning("Model preload failed: %s", exc)
 
         # Setup dependencies based on auth config

@@ -36,7 +36,7 @@ try:
     from charset_normalizer import from_bytes as _cn_from_bytes_module
 
     _cn_from_bytes = _cn_from_bytes_module
-except (IOError, OSError):  # pragma: no cover - optional dependency
+except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - optional dependency
     _cn_from_bytes = None
 
 _cn_from_path: Any
@@ -44,7 +44,7 @@ try:
     from charset_normalizer import from_path as _cn_from_path_module
 
     _cn_from_path = _cn_from_path_module
-except (IOError, OSError):  # pragma: no cover - optional dependency
+except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - optional dependency
     _cn_from_path = None
 
 __all__ = ["autodetect_encoding", "detect_encoding"]
@@ -65,7 +65,7 @@ def _norm_encoding(name: Optional[str]) -> Optional[str]:
         return None
     try:
         return name.lower().replace("_", "-")
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         logger.warning("Exception occurred", exc_info=True)
         return None
 
@@ -106,7 +106,7 @@ def _try_chardet(raw: bytes) -> Optional[str]:
         enc = _norm_encoding(res.get("encoding"))
         if enc in _SAFE_ENCODINGS:
             return "cp1252" if enc == "windows-1252" else enc
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         logger.warning("Exception occurred", exc_info=True)
     return None
 
@@ -128,7 +128,7 @@ def _try_charset_normalizer_bytes(raw: bytes) -> Optional[str]:
         enc = _norm_encoding(getattr(best, "encoding", None))
         if enc in _SAFE_ENCODINGS:
             return "cp1252" if enc == "windows-1252" else enc
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         logger.warning("Exception occurred", exc_info=True)
     return None
 
@@ -150,7 +150,7 @@ def _try_charset_normalizer_path(path: Path) -> Optional[str]:
         enc = _norm_encoding(getattr(best, "encoding", None))
         if enc in _SAFE_ENCODINGS:
             return "cp1252" if enc == "windows-1252" else enc
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         logger.warning("Exception occurred", exc_info=True)
     return None
 
@@ -194,7 +194,7 @@ def detect_encoding(path: str | Path, default: str = "utf-8", sample_size: int =
     # detectors to operate.
     try:
         raw = p.read_bytes()[: max(1024, int(sample_size))]
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         logger.warning("Exception occurred", exc_info=True)
         return default
 

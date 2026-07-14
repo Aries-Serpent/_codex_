@@ -11,7 +11,7 @@ import click
 def _analyze_module(path: Path) -> dict[str, Any]:
     try:
         source = path.read_text(encoding="utf-8", errors="replace")
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         return {
             "file": str(path),
             "lines": 0,

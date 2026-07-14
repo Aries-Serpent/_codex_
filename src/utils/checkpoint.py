@@ -48,7 +48,7 @@ _restore_rng_state: Callable[[Mapping[str, Any]], None] | None = None
 # Otherwise provide minimal stubs or re-export from canonical APIs.
 try:  # pragma: no cover - legacy path
     from training.checkpoint_manager import CheckpointManager
-except (IOError, OSError):  # pragma: no cover - fallback to canonical
+except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - fallback to canonical
     from codex_ml.utils.checkpointing import CheckpointManager  # type: ignore
 
 try:  # pragma: no cover - prefer canonical helpers
@@ -200,7 +200,7 @@ def _restore_rng(state: Mapping[str, Any]) -> None:
         try:
             _restore_rng_state(state)
             return
-        except (IOError, OSError) as exc:  # pragma: no cover - fall back to legacy behaviour
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - fall back to legacy behaviour
             LOGGER.debug("Canonical RNG restore failed; falling back to legacy: %s", exc)
     _legacy_restore_rng_state(state)
 
@@ -277,7 +277,7 @@ def save_checkpoint(
         if tmp_path is not None:
             try:
                 tmp_path.unlink()
-            except (IOError, OSError) as exc:
+            except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
                 type(exc).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 LOGGER.warning("Temporary checkpoint cleanup failed for %s: %s", tmp_path, exc)
@@ -285,7 +285,7 @@ def save_checkpoint(
     if archive_latest and target.is_symlink():
         try:
             target.unlink()
-        except (IOError, OSError) as exc:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
             type(exc).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             LOGGER.debug("Failed to clean up symlink %s during archive: %s", target, exc)
@@ -323,7 +323,7 @@ def load_checkpoint(
     try:
         state, _meta = _canonical_load_checkpoint(path, restore_rng=restore, **kwargs)
         return state
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         logger.warning("Exception occurred", exc_info=True)
         fallback = _load_legacy_checkpoint_payload(path, map_location=kwargs.get("map_location"))
         if fallback is None:
@@ -352,7 +352,7 @@ def _load_legacy_checkpoint_payload(
     if _torch is not None:
         try:
             loaded = _torch_load(str(path), map_location=map_location)
-        except (IOError, OSError):
+        except (IOError, OSError, ModuleNotFoundError, ImportError):
             logger.warning("Exception occurred", exc_info=True)
             loaded = None
         if isinstance(loaded, Mapping):
@@ -363,7 +363,7 @@ def _load_legacy_checkpoint_payload(
             from utils.safe_pickle import safe_pickle_load
 
             loaded = safe_pickle_load(str(path), use_restricted_unpickler=True)
-        except (IOError, OSError):
+        except (IOError, OSError, ModuleNotFoundError, ImportError):
             logger.warning("Exception occurred", exc_info=True)
             return None
         if not isinstance(loaded, Mapping):

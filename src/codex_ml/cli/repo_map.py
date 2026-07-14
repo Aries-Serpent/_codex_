@@ -33,7 +33,7 @@ try:  # pragma: no cover - optional dependency path
     import yaml as _yaml_module
 
     yaml = _yaml_module
-except (IOError, OSError):  # pragma: no cover - PyYAML not installed in minimal envs
+except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - PyYAML not installed in minimal envs
     yaml = None
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
@@ -68,7 +68,7 @@ def _load_yaml(path: Path) -> Optional[Mapping[str, Any]]:
     try:
         with path.open("r", encoding="utf-8") as handle:
             data = yaml.safe_load(handle)
-    except (IOError, OSError):  # pragma: no cover - best effort parse
+    except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - best effort parse
         return None
     if isinstance(data, Mapping):
         return data

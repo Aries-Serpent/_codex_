@@ -122,7 +122,7 @@ class ArchiveManager:
             logger.info(f"Archived session {session_id} ({file_size} bytes)")
             return archive_record
 
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.error(f"Error archiving session {session_id}: <ERROR_TYPE>")
             return None
@@ -355,7 +355,7 @@ class ArchiveManager:
                             "created_at": str(created_at),
                         }
                     )
-                except (IOError, OSError) as e:
+                except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
                     type(e).__name__
                     logger.warning(f"Error processing {parquet_file}: <ERROR_TYPE>")
                     continue
@@ -424,7 +424,7 @@ class ArchiveManager:
             conn.close()
             return session_data
 
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.error(f"Error extracting session {session_id}: <ERROR_TYPE>")
             return None
@@ -462,7 +462,7 @@ class ArchiveManager:
 
             conn.commit()
             conn.close()
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.error(f"Error updating archive metadata for {session_id}: <ERROR_TYPE>")
 
@@ -521,6 +521,6 @@ class ArchiveManager:
             with open(self.retention_log_path, "w") as f:
                 json.dump(retention_log, f, indent=2)
 
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.error("Error logging retention action: <ERROR_TYPE>")

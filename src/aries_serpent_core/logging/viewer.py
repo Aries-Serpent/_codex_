@@ -42,7 +42,7 @@ except ImportError as e:
 else:
     try:  # pragma: no cover - best effort
         auto_enable_from_env()
-    except (IOError, OSError) as exc:  # pragma: no cover
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover
         error_type = type(exc).__name__
         logger.error("SQLite patch disabled: <ERROR_TYPE>")
 from datetime import datetime  # noqa: E402
@@ -51,7 +51,7 @@ from typing import Any, Optional  # noqa: E402
 
 try:  # pragma: no cover - allow running standalone
     from .config import DEFAULT_LOG_DB
-except (IOError, OSError):  # pragma: no cover - fallback for direct execution
+except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - fallback for direct execution
     DEFAULT_LOG_DB = Path(".codex/session_logs.db")
 
 from .db_utils import get_columns, list_tables, resolve_db_path  # noqa: E402
@@ -282,7 +282,7 @@ def main(argv: Optional[list[str]] = None) -> int:
                 prefix = f"[{lvl}] " if lvl else ""
                 logger.info(f"{ts} {prefix}{msg}")
         return 0
-    except (IOError, OSError) as exc:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
         type(exc).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         logger.error("ERROR: <ERROR_TYPE>")

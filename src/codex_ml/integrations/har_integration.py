@@ -373,7 +373,7 @@ class HARCache:
                 for entry in har_log.entries:
                     key = self._make_key(entry.request.method, entry.request.url)
                     self._index[key] = har_file
-            except (IOError, OSError) as e:
+            except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
                 type(e).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 logger.warning(f"Failed to index {har_file}: <ERROR_TYPE>")
@@ -390,7 +390,7 @@ class HARCache:
                 for entry in har_log.entries:
                     if entry.request.method == method and entry.request.url == url:
                         return entry
-            except (IOError, OSError) as e:
+            except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
                 type(e).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 logger.warning("Failed to load cached entry: <ERROR_TYPE>")
@@ -408,7 +408,7 @@ class HARCache:
         for cache_file in self._index.values():
             try:
                 cache_file.unlink()
-            except (IOError, OSError) as e:
+            except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
                 type(e).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 logger.warning(

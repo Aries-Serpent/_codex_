@@ -473,7 +473,7 @@ def health_check(debug: bool) -> None:
         items = service.dal.list_items(limit=1)
         click.echo("Status: \N{CHECK MARK} OK")
         click.echo(f"Items Retrievable: {len(items)}")
-    except (IOError, OSError) as exc:  # pragma: no cover - diagnostics path
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - diagnostics path
         sanitized = redact_text_credentials(str(exc)).strip()
         detail = f"{type(exc).__name__}" + (f": {sanitized}" if sanitized else "")
         click.echo(
@@ -697,7 +697,7 @@ def migrate_evidence_to_v2() -> None:
                 migrated_records.append(migrated)
             else:
                 migrated_records.append(record)  # Already v2
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             errors.append(f"Line {line_no}: {e}")

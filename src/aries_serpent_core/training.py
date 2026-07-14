@@ -110,7 +110,7 @@ except ImportError as e:
 # Artifact hashing helpers (sidecar)
 try:
     from codex_ml.utils.artifacts import write_hash_sidecar, write_metadata
-except (IOError, OSError):  # pragma: no cover - best effort
+except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - best effort
     write_hash_sidecar = None
     write_metadata = None
 
@@ -157,7 +157,7 @@ def _build_safe_ckpt_payload(
     if scheduler is not None and hasattr(scheduler, "state_dict"):
         try:
             payload["scheduler_state_dict"] = scheduler.state_dict()
-        except (IOError, OSError):
+        except (IOError, OSError, ModuleNotFoundError, ImportError):
             logger.warning(
                 "Exception occurred", exc_info=True
             )  # codeql[py/clear-text-logging-sensitive-data]
@@ -187,7 +187,7 @@ def save_checkpoint(
             write_hash_sidecar(p)
         if write_metadata is not None:
             write_metadata(p, extra={"epoch": epoch, "keys": list(payload.keys())})
-    except (IOError, OSError) as e:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
         type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         logger.warning(
@@ -198,7 +198,7 @@ def save_checkpoint(
 
 try:  # Optional TensorBoard integration
     from tools.monitoring_integrate import SummaryWriter
-except (IOError, OSError):  # pragma: no cover - optional dep
+except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - optional dep
     SummaryWriter = None
 
 
@@ -553,7 +553,7 @@ def _run_minilm_training(
                     target_path, interval=max(0.1, metrics_interval)
                 )
                 system_metrics_logger.start()  # codeql[py/clear-text-logging-sensitive-data]
-            except (IOError, OSError) as exc:  # pragma: no cover - monitoring optional
+            except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - monitoring optional
                 logger.error(
                     f"[monitoring-error] failed to start system metrics logger: {exc}",
                 )
@@ -688,7 +688,7 @@ def _run_minilm_training(
         tb_dir.mkdir(parents=True, exist_ok=True)
         try:
             writer = SummaryWriter(log_dir=str(tb_dir))
-        except (IOError, OSError):
+        except (IOError, OSError, ModuleNotFoundError, ImportError):
             logger.warning(
                 "Exception occurred", exc_info=True
             )  # codeql[py/clear-text-logging-sensitive-data]
@@ -749,7 +749,7 @@ def _run_minilm_training(
             )  # codeql[py/clear-text-logging-sensitive-data]
             try:
                 ppl = float(perplexity(loss_val))
-            except (IOError, OSError):
+            except (IOError, OSError, ModuleNotFoundError, ImportError):
                 logger.warning(
                     "Exception occurred", exc_info=True
                 )  # codeql[py/clear-text-logging-sensitive-data]
@@ -769,7 +769,7 @@ def _run_minilm_training(
                 **{k: v for k, v in sysd.items() if v is not None},
             }
             _codex_log_all(epoch + 1, scalars, loggers)
-        except (IOError, OSError) as exc:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
             type(exc).__name__
             logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
             logger.error("[monitoring-error] <ERROR_TYPE>")
@@ -784,7 +784,7 @@ def _run_minilm_training(
                     config={"vocab_size": vocab_size, **cfg_payload},
                     metrics={"loss": loss_val, "accuracy": acc, "perplexity": ppl},
                 )
-            except (IOError, OSError) as e:
+            except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
                 type(e).__name__
                 logger.debug(
                     "Exception: <ERROR_TYPE>"
@@ -830,7 +830,7 @@ def _run_minilm_training(
                     **{k: v for k, v in sysd.items() if v is not None},
                 }
                 _codex_log_all(epoch + 1, val_metrics, loggers)
-            except (IOError, OSError) as exc:
+            except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
                 type(exc).__name__
                 logger.debug(
                     "Exception: <ERROR_TYPE>"
@@ -855,7 +855,7 @@ def _run_minilm_training(
         try:
             writer.flush()
             writer.close()
-        except (IOError, OSError) as exc:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
             type(exc).__name__
             logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
             logger.error("[monitoring-error] <ERROR_TYPE>")
@@ -1209,7 +1209,7 @@ def _codex_epoch_metrics(y_true, y_pred) -> dict[str, Any]:
             "token_accuracy": float(token_accuracy(y_true, y_pred)),
             "perplexity": float(perplexity_from_preds(y_true, y_pred)),
         }
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         logger.warning(
             "Exception occurred", exc_info=True
         )  # codeql[py/clear-text-logging-sensitive-data]

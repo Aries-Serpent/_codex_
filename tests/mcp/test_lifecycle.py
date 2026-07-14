@@ -9,7 +9,7 @@ class TestServerState:
     def test_server_state_import(self):
         """Test that ServerState can be imported."""
         try:
-    from mcp.lifecycle import ServerState
+            from mcp.lifecycle import ServerState
 
             assert ServerState is not None, "ServerState must be initialized"
         except ImportError:
@@ -18,7 +18,7 @@ class TestServerState:
     def test_server_state_values(self):
         """Test all ServerState enum values."""
         try:
-    from mcp.lifecycle import ServerState
+            from mcp.lifecycle import ServerState
 
             assert ServerState.UNINITIALIZED.value == "uninitialized", "Value must be initialized"
             assert ServerState.INITIALIZING.value == "initializing", "Value must be initialized"
@@ -34,7 +34,7 @@ class TestServerState:
     def test_valid_transitions_defined(self):
         """Test that VALID_TRANSITIONS dict is defined."""
         try:
-    from mcp.lifecycle import VALID_TRANSITIONS, ServerState
+            from mcp.lifecycle import VALID_TRANSITIONS, ServerState
 
             assert isinstance(VALID_TRANSITIONS, dict)
             assert ServerState.UNINITIALIZED in VALID_TRANSITIONS, "Condition must be true"
@@ -48,7 +48,7 @@ class TestInvalidStateTransition:
     def test_exception_creation(self):
         """Test creating InvalidStateTransition exception."""
         try:
-    from mcp.lifecycle import InvalidStateTransition, ServerState
+            from mcp.lifecycle import InvalidStateTransition, ServerState
 
             exc = InvalidStateTransition(ServerState.STOPPED, ServerState.RUNNING)
             assert exc.current == ServerState.STOPPED, "current is not valid"
@@ -59,7 +59,7 @@ class TestInvalidStateTransition:
     def test_exception_message(self):
         """Test exception message format."""
         try:
-    from mcp.lifecycle import InvalidStateTransition, ServerState
+            from mcp.lifecycle import InvalidStateTransition, ServerState
 
             exc = InvalidStateTransition(ServerState.STOPPED, ServerState.RUNNING)
             assert "stopped" in str(exc), "Condition must be true"
@@ -74,7 +74,7 @@ class TestHealthStatus:
     def test_health_status_creation(self):
         """Test creating HealthStatus."""
         try:
-    from mcp.lifecycle import HealthStatus
+            from mcp.lifecycle import HealthStatus
 
             status = HealthStatus(healthy=True, message="OK")
             assert status.healthy is True, "healthy is not valid"
@@ -85,7 +85,7 @@ class TestHealthStatus:
     def test_health_status_defaults(self):
         """Test HealthStatus default values."""
         try:
-    from mcp.lifecycle import HealthStatus
+            from mcp.lifecycle import HealthStatus
 
             status = HealthStatus(healthy=False)
             assert status.message == "", "message is not valid"
@@ -97,7 +97,7 @@ class TestHealthStatus:
     def test_health_status_with_details(self):
         """Test HealthStatus with details."""
         try:
-    from mcp.lifecycle import HealthStatus
+            from mcp.lifecycle import HealthStatus
 
             details = {"cpu": 50, "memory": 75}
             status = HealthStatus(healthy=True, details=details)
@@ -112,7 +112,7 @@ class TestLifecycleConfig:
     def test_config_creation(self):
         """Test creating LifecycleConfig."""
         try:
-    from mcp.lifecycle import LifecycleConfig
+            from mcp.lifecycle import LifecycleConfig
 
             config = LifecycleConfig()
             assert config is not None, "config must be initialized"
@@ -122,7 +122,7 @@ class TestLifecycleConfig:
     def test_config_defaults(self):
         """Test LifecycleConfig default values."""
         try:
-    from mcp.lifecycle import LifecycleConfig
+            from mcp.lifecycle import LifecycleConfig
 
             config = LifecycleConfig()
             assert config.shutdown_timeout_seconds == 30.0, "shutdown_timeout_seconds is not valid"
@@ -135,7 +135,7 @@ class TestLifecycleConfig:
     def test_config_custom_values(self):
         """Test LifecycleConfig with custom values."""
         try:
-    from mcp.lifecycle import LifecycleConfig
+            from mcp.lifecycle import LifecycleConfig
 
             config = LifecycleConfig(shutdown_timeout_seconds=60.0, max_concurrent_requests=200)
             assert config.shutdown_timeout_seconds == 60.0, "shutdown_timeout_seconds is not valid"
@@ -150,7 +150,7 @@ class TestLifecycleManager:
     def test_manager_creation(self):
         """Test creating LifecycleManager."""
         try:
-    from mcp.lifecycle import LifecycleManager
+            from mcp.lifecycle import LifecycleManager
 
             manager = LifecycleManager()
             assert manager is not None, "manager must be initialized"
@@ -160,7 +160,7 @@ class TestLifecycleManager:
     def test_manager_with_config(self):
         """Test creating LifecycleManager with config."""
         try:
-    from mcp.lifecycle import LifecycleConfig, LifecycleManager
+            from mcp.lifecycle import LifecycleConfig, LifecycleManager
 
             config = LifecycleConfig(shutdown_timeout_seconds=45.0)
             manager = LifecycleManager(config=config)
@@ -171,7 +171,7 @@ class TestLifecycleManager:
     def test_manager_initial_state(self):
         """Test LifecycleManager initial state."""
         try:
-    from mcp.lifecycle import LifecycleManager, ServerState
+            from mcp.lifecycle import LifecycleManager, ServerState
 
             manager = LifecycleManager()
             # Access internal state (for testing)
@@ -182,7 +182,7 @@ class TestLifecycleManager:
     def test_manager_has_health_checks(self):
         """Test LifecycleManager has health checks list."""
         try:
-    from mcp.lifecycle import LifecycleManager
+            from mcp.lifecycle import LifecycleManager
 
             manager = LifecycleManager()
             assert isinstance(manager._health_checks, list)
@@ -192,7 +192,7 @@ class TestLifecycleManager:
     def test_manager_has_startup_hooks(self):
         """Test LifecycleManager has startup hooks list."""
         try:
-    from mcp.lifecycle import LifecycleManager
+            from mcp.lifecycle import LifecycleManager
 
             manager = LifecycleManager()
             assert isinstance(manager._startup_hooks, list)
@@ -206,7 +206,7 @@ class TestStateTransitions:
     def test_uninitialized_can_initialize(self):
         """Test UNINITIALIZED can transition to INITIALIZING."""
         try:
-    from mcp.lifecycle import VALID_TRANSITIONS, ServerState
+            from mcp.lifecycle import VALID_TRANSITIONS, ServerState
 
             assert ServerState.INITIALIZING in VALID_TRANSITIONS[ServerState.UNINITIALIZED], "Condition must be true"
         except ImportError:
@@ -215,7 +215,7 @@ class TestStateTransitions:
     def test_initializing_can_become_ready(self):
         """Test INITIALIZING can transition to READY."""
         try:
-    from mcp.lifecycle import VALID_TRANSITIONS, ServerState
+            from mcp.lifecycle import VALID_TRANSITIONS, ServerState
 
             assert ServerState.READY in VALID_TRANSITIONS[ServerState.INITIALIZING], "Condition must be true"
         except ImportError:
@@ -224,7 +224,7 @@ class TestStateTransitions:
     def test_ready_can_run(self):
         """Test READY can transition to RUNNING."""
         try:
-    from mcp.lifecycle import VALID_TRANSITIONS, ServerState
+            from mcp.lifecycle import VALID_TRANSITIONS, ServerState
 
             assert ServerState.RUNNING in VALID_TRANSITIONS[ServerState.READY], "Condition must be true"
         except ImportError:
@@ -233,7 +233,7 @@ class TestStateTransitions:
     def test_running_can_drain(self):
         """Test RUNNING can transition to DRAINING."""
         try:
-    from mcp.lifecycle import VALID_TRANSITIONS, ServerState
+            from mcp.lifecycle import VALID_TRANSITIONS, ServerState
 
             assert ServerState.DRAINING in VALID_TRANSITIONS[ServerState.RUNNING], "Condition must be true"
         except ImportError:
@@ -242,7 +242,7 @@ class TestStateTransitions:
     def test_draining_can_stop(self):
         """Test DRAINING can transition to STOPPING."""
         try:
-    from mcp.lifecycle import VALID_TRANSITIONS, ServerState
+            from mcp.lifecycle import VALID_TRANSITIONS, ServerState
 
             assert ServerState.STOPPING in VALID_TRANSITIONS[ServerState.DRAINING], "Condition must be true"
         except ImportError:
@@ -251,7 +251,7 @@ class TestStateTransitions:
     def test_stopping_becomes_stopped(self):
         """Test STOPPING can transition to STOPPED."""
         try:
-    from mcp.lifecycle import VALID_TRANSITIONS, ServerState
+            from mcp.lifecycle import VALID_TRANSITIONS, ServerState
 
             assert ServerState.STOPPED in VALID_TRANSITIONS[ServerState.STOPPING], "Condition must be true"
         except ImportError:
@@ -260,7 +260,7 @@ class TestStateTransitions:
     def test_stopped_can_reinitialize(self):
         """Test STOPPED can transition to INITIALIZING."""
         try:
-    from mcp.lifecycle import VALID_TRANSITIONS, ServerState
+            from mcp.lifecycle import VALID_TRANSITIONS, ServerState
 
             assert ServerState.INITIALIZING in VALID_TRANSITIONS[ServerState.STOPPED], "Condition must be true"
         except ImportError:
@@ -269,7 +269,7 @@ class TestStateTransitions:
     def test_error_recovery(self):
         """Test ERROR can transition to STOPPING or INITIALIZING."""
         try:
-    from mcp.lifecycle import VALID_TRANSITIONS, ServerState
+            from mcp.lifecycle import VALID_TRANSITIONS, ServerState
 
             assert ServerState.STOPPING in VALID_TRANSITIONS[ServerState.ERROR], "Error should be raised or set"
             assert ServerState.INITIALIZING in VALID_TRANSITIONS[ServerState.ERROR], "Error should be raised or set"

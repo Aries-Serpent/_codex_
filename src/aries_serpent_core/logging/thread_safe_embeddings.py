@@ -103,7 +103,7 @@ class ThreadSafeSessionEmbeddings:
                     logger.info("Created new Faiss index")
                 self._metadata = {}
 
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.error("Failed to load/create index: <ERROR_TYPE>")
             log_error(e, "load_index", self.errors_path)
@@ -179,7 +179,7 @@ class ThreadSafeSessionEmbeddings:
                     self.save_index()
                 return result
 
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.error(f"Failed to add session {session_id}: <ERROR_TYPE>")
             log_error(e, "add_session", self.errors_path)
@@ -244,7 +244,7 @@ class ThreadSafeSessionEmbeddings:
             with self._rw_lock.read_lock():
                 return _find()
 
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.error("Failed to find similar sessions: <ERROR_TYPE>")
             log_error(e, "find_similar", self.errors_path)
@@ -270,7 +270,7 @@ class ThreadSafeSessionEmbeddings:
             try:
                 embedding = self._index.reconstruct(int(idx))  # type: ignore[attr-defined]
                 return embedding.astype(np.float32)
-            except (IOError, OSError) as e:
+            except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
                 type(e).__name__
                 logger.warning(f"Failed to reconstruct embedding for {session_id}: <ERROR_TYPE>")
                 return None
@@ -279,7 +279,7 @@ class ThreadSafeSessionEmbeddings:
             with self._rw_lock.read_lock():
                 return _get()
 
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.error("Failed to get embedding: <ERROR_TYPE>")
             log_error(e, "get_embedding", self.errors_path)
@@ -303,7 +303,7 @@ class ThreadSafeSessionEmbeddings:
             logger.debug(f"Index saved to {self.embeddings_path}")
             return True
 
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.error("Failed to save index: <ERROR_TYPE>")
             log_error(e, "save_index", self.errors_path)

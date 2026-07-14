@@ -370,7 +370,7 @@ class EvaluationRunner:
                 self.tracking_writer.log_artifact(summary_path)  # type: ignore[union-attr]
 
             get_default_logger().info("Logged results to tracking writer")
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             get_default_logger().debug("Exception: <ERROR_TYPE>")
             get_default_logger().info("Warning: Failed to log to tracking writer: <ERROR_TYPE>")

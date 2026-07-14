@@ -17,7 +17,7 @@ from typing import Any, Optional
 
 try:  # pragma: no cover - allow running standalone
     from .config import DEFAULT_LOG_DB
-except (IOError, OSError):  # pragma: no cover - final fallback
+except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - final fallback
     DEFAULT_LOG_DB = Path(".codex/session_logs.db")
 
 logger = logging.getLogger(__name__)
@@ -66,7 +66,7 @@ def _configure_connection(conn: sqlite3.Connection) -> None:
         logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
     try:
         conn.execute("PRAGMA foreign_keys=ON;")
-    except (IOError, OSError) as e:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
         type(e).__name__
         logger.debug("Exception: <ERROR_TYPE>")
         logger.warning("Exception: <ERROR_TYPE>", exc_info=True)

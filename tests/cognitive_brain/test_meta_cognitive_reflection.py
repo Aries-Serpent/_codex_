@@ -16,7 +16,7 @@ class TestReflectionType:
     def test_reflection_types_exist(self):
         """Test that all reflection types are defined."""
         try:
-    from cognitive_brain.meta_cognitive_reflection import ReflectionType
+            from cognitive_brain.meta_cognitive_reflection import ReflectionType
 
             assert hasattr(ReflectionType, "DECISION")
             assert hasattr(ReflectionType, "STRATEGY")
@@ -30,7 +30,7 @@ class TestReflectionType:
     def test_reflection_type_values(self):
         """Test reflection type string values."""
         try:
-    from cognitive_brain.meta_cognitive_reflection import ReflectionType
+            from cognitive_brain.meta_cognitive_reflection import ReflectionType
 
             assert ReflectionType.DECISION.value == "decision", "Value must be initialized"
             assert ReflectionType.ERROR.value == "error", "Value must be initialized"
@@ -45,7 +45,7 @@ class TestQualityAssessment:
     def test_quality_assessments_exist(self):
         """Test that all quality assessments are defined."""
         try:
-    from cognitive_brain.meta_cognitive_reflection import QualityAssessment
+            from cognitive_brain.meta_cognitive_reflection import QualityAssessment
 
             assert hasattr(QualityAssessment, "EXCELLENT")
             assert hasattr(QualityAssessment, "GOOD")
@@ -58,7 +58,7 @@ class TestQualityAssessment:
     def test_quality_values(self):
         """Test quality assessment string values."""
         try:
-    from cognitive_brain.meta_cognitive_reflection import QualityAssessment
+            from cognitive_brain.meta_cognitive_reflection import QualityAssessment
 
             assert QualityAssessment.EXCELLENT.value == "excellent", "Value must be initialized"
             assert QualityAssessment.FAILED.value == "failed", "Value must be initialized"
@@ -72,7 +72,7 @@ class TestReflection:
     def test_reflection_creation(self):
         """Test creating a Reflection instance."""
         try:
-    from cognitive_brain.meta_cognitive_reflection import (
+            from cognitive_brain.meta_cognitive_reflection import (
                 QualityAssessment,
                 Reflection,
                 ReflectionType,
@@ -97,7 +97,7 @@ class TestReflection:
     def test_reflection_str(self):
         """Test Reflection string representation."""
         try:
-    from cognitive_brain.meta_cognitive_reflection import (
+            from cognitive_brain.meta_cognitive_reflection import (
                 QualityAssessment,
                 Reflection,
                 ReflectionType,
@@ -126,7 +126,7 @@ class TestStrategyPattern:
     def test_pattern_creation(self):
         """Test creating a StrategyPattern."""
         try:
-    from cognitive_brain.meta_cognitive_reflection import StrategyPattern
+            from cognitive_brain.meta_cognitive_reflection import StrategyPattern
 
             pattern = StrategyPattern(
                 pattern_id="pattern_001",
@@ -148,7 +148,7 @@ class TestMetaKnowledge:
     def test_meta_knowledge_creation(self):
         """Test creating MetaKnowledge."""
         try:
-    from cognitive_brain.meta_cognitive_reflection import MetaKnowledge
+            from cognitive_brain.meta_cognitive_reflection import MetaKnowledge
 
             knowledge = MetaKnowledge(
                 domain="Python",
@@ -170,7 +170,7 @@ class TestMetaCognitiveReflectionLayer:
     def test_layer_initialization(self):
         """Test layer initialization."""
         try:
-    from cognitive_brain.meta_cognitive_reflection import (
+            from cognitive_brain.meta_cognitive_reflection import (
                 MetaCognitiveReflectionLayer,
             )
 
@@ -185,7 +185,7 @@ class TestMetaCognitiveReflectionLayer:
     def test_reflect_method(self):
         """Test creating reflections."""
         try:
-    from cognitive_brain.meta_cognitive_reflection import (
+            from cognitive_brain.meta_cognitive_reflection import (
                 MetaCognitiveReflectionLayer,
                 QualityAssessment,
                 ReflectionType,
@@ -210,7 +210,7 @@ class TestMetaCognitiveReflectionLayer:
     def test_reflect_on_decision(self):
         """Test reflect_on_decision convenience method."""
         try:
-    from cognitive_brain.meta_cognitive_reflection import (
+            from cognitive_brain.meta_cognitive_reflection import (
                 MetaCognitiveReflectionLayer,
                 QualityAssessment,
                 ReflectionType,
@@ -233,7 +233,7 @@ class TestMetaCognitiveReflectionLayer:
     def test_reflect_on_error(self):
         """Test reflect_on_error convenience method."""
         try:
-    from cognitive_brain.meta_cognitive_reflection import (
+            from cognitive_brain.meta_cognitive_reflection import (
                 MetaCognitiveReflectionLayer,
                 QualityAssessment,
                 ReflectionType,
@@ -256,7 +256,7 @@ class TestMetaCognitiveReflectionLayer:
     def test_reflect_on_success(self):
         """Test reflect_on_success convenience method."""
         try:
-    from cognitive_brain.meta_cognitive_reflection import (
+            from cognitive_brain.meta_cognitive_reflection import (
                 MetaCognitiveReflectionLayer,
                 QualityAssessment,
                 ReflectionType,
@@ -279,7 +279,7 @@ class TestMetaCognitiveReflectionLayer:
     def test_record_strategy_pattern_new(self):
         """Test recording a new strategy pattern."""
         try:
-    from cognitive_brain.meta_cognitive_reflection import (
+            from cognitive_brain.meta_cognitive_reflection import (
                 MetaCognitiveReflectionLayer,
             )
 
@@ -301,7 +301,7 @@ class TestMetaCognitiveReflectionLayer:
     def test_record_strategy_pattern_update(self):
         """Test updating an existing strategy pattern."""
         try:
-    from cognitive_brain.meta_cognitive_reflection import (
+            from cognitive_brain.meta_cognitive_reflection import (
                 MetaCognitiveReflectionLayer,
             )
 
@@ -332,7 +332,7 @@ class TestMetaCognitiveReflectionLayer:
     def test_identify_strategy_patterns(self):
         """Test pattern identification from reflections."""
         try:
-    from cognitive_brain.meta_cognitive_reflection import (
+            from cognitive_brain.meta_cognitive_reflection import (
                 MetaCognitiveReflectionLayer,
                 QualityAssessment,
                 ReflectionType,
@@ -368,7 +368,7 @@ class TestMetaCognitiveReflectionLayer:
     def test_update_meta_knowledge_new(self):
         """Test updating meta-knowledge for a new domain."""
         try:
-    from cognitive_brain.meta_cognitive_reflection import (
+            from cognitive_brain.meta_cognitive_reflection import (
                 MetaCognitiveReflectionLayer,
             )
 
@@ -390,7 +390,7 @@ class TestMetaCognitiveReflectionLayer:
     def test_update_meta_knowledge_existing(self):
         """Test updating existing meta-knowledge."""
         try:
-    from cognitive_brain.meta_cognitive_reflection import (
+            from cognitive_brain.meta_cognitive_reflection import (
                 MetaCognitiveReflectionLayer,
             )
 
@@ -420,7 +420,7 @@ class TestMetaCognitiveReflectionLayer:
     def test_get_strengths(self):
         """Test getting strength domains."""
         try:
-    from cognitive_brain.meta_cognitive_reflection import (
+            from cognitive_brain.meta_cognitive_reflection import (
                 MetaCognitiveReflectionLayer,
             )
 
@@ -439,7 +439,7 @@ class TestMetaCognitiveReflectionLayer:
     def test_get_weaknesses(self):
         """Test getting weakness domains."""
         try:
-    from cognitive_brain.meta_cognitive_reflection import (
+            from cognitive_brain.meta_cognitive_reflection import (
                 MetaCognitiveReflectionLayer,
             )
 
@@ -458,7 +458,7 @@ class TestMetaCognitiveReflectionLayer:
     def test_generate_self_assessment_report(self):
         """Test report generation."""
         try:
-    from cognitive_brain.meta_cognitive_reflection import (
+            from cognitive_brain.meta_cognitive_reflection import (
                 MetaCognitiveReflectionLayer,
                 QualityAssessment,
                 ReflectionType,
@@ -489,7 +489,7 @@ class TestMetaCognitiveReflectionLayer:
     def test_get_stats(self):
         """Test getting statistics."""
         try:
-    from cognitive_brain.meta_cognitive_reflection import (
+            from cognitive_brain.meta_cognitive_reflection import (
                 MetaCognitiveReflectionLayer,
                 QualityAssessment,
                 ReflectionType,

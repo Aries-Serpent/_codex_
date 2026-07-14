@@ -14,7 +14,7 @@ from typing import Any
 
 try:  # pragma: no cover - optional dependency
     import numpy as np
-except (IOError, OSError):  # pragma: no cover
+except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover
     np = None
 
 try:  # pragma: no cover - optional dependency
@@ -64,14 +64,14 @@ def set_seed(seed: int) -> None:
     if np is not None:
         try:
             np.random.seed(seed)
-        except (IOError, OSError):  # pragma: no cover
+        except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover
             logger.debug("Suppressed exception in handler", exc_info=True)
     if torch is not None:
         try:
             torch.manual_seed(seed)
             if hasattr(torch.cuda, "manual_seed_all"):
                 torch.cuda.manual_seed_all(seed)  # pragma: no cover - GPU path
-        except (IOError, OSError):  # pragma: no cover
+        except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover
             logger.debug("Suppressed exception in handler", exc_info=True)
 
 

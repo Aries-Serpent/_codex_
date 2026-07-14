@@ -20,7 +20,7 @@ class TestEnsureGlobalSeed:
     def ensure_global_seed(self):
         """Import ensure_global_seed function."""
         try:
-    from training.seed import ensure_global_seed
+            from training.seed import ensure_global_seed
 
             return ensure_global_seed
         except ImportError:

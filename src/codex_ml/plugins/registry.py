@@ -78,7 +78,7 @@ def _activate_editable_distribution(ep: Any) -> None:
         return
     try:
         files = dist.files or ()
-    except (IOError, OSError):  # pragma: no cover - defensive
+    except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - defensive
         return
     for file in files:
         if not str(file).endswith(".pth") or "__editable__" not in str(file):
@@ -86,7 +86,7 @@ def _activate_editable_distribution(ep: Any) -> None:
         try:
             pth_path = Path(dist.locate_file(file))
             lines = pth_path.read_text(encoding="utf-8").splitlines()
-        except (IOError, OSError):  # pragma: no cover - best effort  # nosec B112
+        except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - best effort  # nosec B112
             continue
         for line in lines:
             entry = line.strip()
@@ -97,7 +97,7 @@ def _activate_editable_distribution(ep: Any) -> None:
                 if match:
                     try:
                         _import_module(match.group(1))  # pragma: no cover - .pth bootstrap
-                    except (IOError, OSError) as e:  # pragma: no cover
+                    except (IOError, OSError, ModuleNotFoundError, ImportError) as e:  # pragma: no cover
                         logger.debug("import_module(%r) failed: %s", match.group(1), e)
                 else:
                     # Complex .pth lines (e.g. chained statements) are skipped to

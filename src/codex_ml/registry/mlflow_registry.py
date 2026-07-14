@@ -386,7 +386,7 @@ class ModelRegistry:
         try:
             models = self.client.search_registered_models()
             return [model.name for model in models]
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             get_default_logger().debug("Exception: <ERROR_TYPE>")
             get_default_logger().error("Failed to list models: <ERROR_TYPE>")
@@ -418,7 +418,7 @@ class ModelRegistry:
 
             get_default_logger().info(f"Exported model {name}/{version} to {output_path}")
             return output_path
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             get_default_logger().debug("Exception: <ERROR_TYPE>")
             get_default_logger().error(f"Failed to export model {name}/{version}: <ERROR_TYPE>")

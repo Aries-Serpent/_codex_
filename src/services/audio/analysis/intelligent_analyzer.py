@@ -83,7 +83,7 @@ class IntelligentAudioAnalyzer:
                 quality_score=quality_score,
                 metadata=self._extract_metadata(file_path),
             )
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             self.logger.error("Analysis failed: <ERROR_TYPE>")
             raise

@@ -117,7 +117,7 @@ def _try_write_parquet(in_csv: Path, out_parquet: Path) -> bool:
         df = pd.read_csv(in_csv)
         df.to_parquet(out_parquet)
         return True
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         get_default_logger().warning("Exception occurred", exc_info=True)
         return False
 
@@ -125,7 +125,7 @@ def _try_write_parquet(in_csv: Path, out_parquet: Path) -> bool:
 def _validate_with_jsonschema(data_path: Path, schema_path: Path) -> None:
     try:
         import jsonschema
-    except (IOError, OSError):  # pragma: no cover - import guards
+    except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - import guards
         print(
             "[metrics-cli] jsonschema not installed; skipping validation",
             file=sys.stderr,
@@ -214,7 +214,7 @@ def _csv_to_duckdb(
         raise SystemExit(
             "[metrics-cli] duckdb dependency missing; install with `pip install duckdb`"
         ) from exc
-    except (IOError, OSError) as exc:  # pragma: no cover - defensive import guard
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - defensive import guard
         raise SystemExit(f"[metrics-cli] unable to import duckdb: {exc}") from exc
 
     duck_db.parent.mkdir(parents=True, exist_ok=True)
@@ -333,7 +333,7 @@ def _summarize(path: Path) -> dict[str, Any]:
         if "epoch" in record:
             try:
                 epochs.add(int(record["epoch"]))
-            except (IOError, OSError) as e:
+            except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
                 type(e).__name__
                 get_default_logger().debug("Exception: <ERROR_TYPE>")
                 get_default_logger().warning("Exception: <ERROR_TYPE>", exc_info=True)
@@ -367,7 +367,7 @@ def cmd_summary(args: argparse.Namespace) -> int:
 def cmd_validate(args: argparse.Namespace) -> int:
     try:
         import jsonschema
-    except (IOError, OSError) as exc:  # pragma: no cover - import guard
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - import guard
         print(
             f"[metrics-cli] jsonschema not installed; cannot validate ({exc!r})",
             file=sys.stderr,

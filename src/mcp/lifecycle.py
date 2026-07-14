@@ -172,7 +172,7 @@ class LifecycleManager:
             await self.transition_to(ServerState.READY)
             self._logger.info("Server initialized successfully")
 
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             self._logger.error("Initialization failed: %s", e)

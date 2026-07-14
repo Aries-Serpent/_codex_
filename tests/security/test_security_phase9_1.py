@@ -175,7 +175,7 @@ class TestEncryptionUtilities:
     def test_encrypt_decrypt_roundtrip(self) -> None:
         """Test encryption and decryption roundtrip."""
         try:
-    from security.encryption import decrypt, encrypt, generate_key
+            from security.encryption import decrypt, encrypt, generate_key
 
             # Generate proper 32-byte key
             key = generate_key()
@@ -196,7 +196,7 @@ class TestEncryptionUtilities:
     def test_hash_password(self) -> None:
         """Test password hashing."""
         try:
-    from security.encryption import hash_password, verify_password
+            from security.encryption import hash_password, verify_password
 
             password = "mypassword123"
             hashed = hash_password(password)
@@ -217,7 +217,7 @@ class TestSecretsManagement:
     def test_get_secret_from_env(self, monkeypatch) -> None:
         """Test retrieving secret from environment."""
         try:
-    from security.secrets import get_secret
+            from security.secrets import get_secret
 
             monkeypatch.setenv("TEST_SECRET", "secret_value")
 
@@ -229,7 +229,7 @@ class TestSecretsManagement:
     def test_secret_not_found_raises(self) -> None:
         """Test missing secret raises error."""
         try:
-    from security.secrets import get_secret
+            from security.secrets import get_secret
 
             with pytest.raises((KeyError, ValueError)):
                 get_secret("NONEXISTENT_SECRET", required=True)
@@ -239,7 +239,7 @@ class TestSecretsManagement:
     def test_mask_secret_in_logs(self) -> None:
         """Test secrets are masked in log output."""
         try:
-    from security.secrets import mask_secrets
+            from security.secrets import mask_secrets
 
             log_line = "API_KEY=abc123 response=success"
             masked = mask_secrets(log_line)
@@ -257,7 +257,7 @@ class TestAuditLogging:
     def test_audit_log_creation(self, tmp_path: Path) -> None:
         """Test creating audit log entries."""
         try:
-    from security.audit_logger import log_audit_event
+            from security.audit_logger import log_audit_event
 
             log_dir = tmp_path / "audit"
             log_dir.mkdir()
@@ -279,7 +279,7 @@ class TestAuditLogging:
     def test_audit_log_contains_required_fields(self, tmp_path: Path) -> None:
         """Test audit logs contain required fields."""
         try:
-    from security.audit_logger import AuditLogger
+            from security.audit_logger import AuditLogger
 
             logger = AuditLogger(log_dir=tmp_path)
             logger.log_event(

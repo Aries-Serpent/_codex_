@@ -184,7 +184,7 @@ class BridgeLock:
                 os.close(self.lock_fd)
                 self.lock_fd = None
             return False
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             logger.error(
                 f"Lock acquisition error: {type(e).__name__}"
             )  # codeql[py/clear-text-logging-sensitive-data]
@@ -239,7 +239,7 @@ class BridgeLock:
                     logger.debug(
                         f"Lock released: {self.lock_path}"
                     )  # codeql[py/clear-text-logging-sensitive-data]
-            except (IOError, OSError) as e:
+            except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
                 logger.error(
                     f"Lock release error: {type(e).__name__}"
                 )  # codeql[py/clear-text-logging-sensitive-data]
@@ -437,7 +437,7 @@ class BridgeManager:
                 f"Named pipe created: {self.pipe_path}"
             )  # codeql[py/clear-text-logging-sensitive-data]
 
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             logger.error(
                 f"Failed to create named pipe: {type(e).__name__}"
             )  # codeql[py/clear-text-logging-sensitive-data]
@@ -455,7 +455,7 @@ class BridgeManager:
                 f"Unix socket path prepared: {self.socket_path}"
             )  # codeql[py/clear-text-logging-sensitive-data]
 
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             logger.error(
                 f"Failed to prepare unix socket: {type(e).__name__}"
             )  # codeql[py/clear-text-logging-sensitive-data]
@@ -530,7 +530,7 @@ class BridgeManager:
             with open(self.audit_file, "a") as f:
                 f.write(json.dumps(log_entry) + "\n")
 
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             logger.error(
                 f"Failed to write audit log: {type(e).__name__}"
             )  # codeql[py/clear-text-logging-sensitive-data]
@@ -633,7 +633,7 @@ class BridgeManager:
             )  # codeql[py/clear-text-logging-sensitive-data]
             self._audit_log("WRITE_TIMEOUT", {"error": str(e), "source": message.source})
             return False
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             logger.error(
                 f"Bridge write error: {type(e).__name__}"
             )  # codeql[py/clear-text-logging-sensitive-data]
@@ -667,7 +667,7 @@ class BridgeManager:
             )  # codeql[py/clear-text-logging-sensitive-data]
             return True
 
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             logger.error(
                 f"Pipe write error: {type(e).__name__}"
             )  # codeql[py/clear-text-logging-sensitive-data]
@@ -697,7 +697,7 @@ class BridgeManager:
             )  # codeql[py/clear-text-logging-sensitive-data]
             return True
 
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             logger.error(
                 f"Socket write error: {type(e).__name__}"
             )  # codeql[py/clear-text-logging-sensitive-data]
@@ -808,7 +808,7 @@ class BridgeManager:
             )  # codeql[py/clear-text-logging-sensitive-data]
             self._audit_log("READ_TIMEOUT", {"error": str(e)})
             return None
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             logger.error(
                 f"Bridge read error: {type(e).__name__}"
             )  # codeql[py/clear-text-logging-sensitive-data]
@@ -847,7 +847,7 @@ class BridgeManager:
 
             return None
 
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             logger.error(
                 f"Pipe read error: {type(e).__name__}"
             )  # codeql[py/clear-text-logging-sensitive-data]
@@ -915,7 +915,7 @@ class BridgeManager:
 
             return None
 
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             logger.error(
                 f"Socket read error: {type(e).__name__}"
             )  # codeql[py/clear-text-logging-sensitive-data]
@@ -939,7 +939,7 @@ class BridgeManager:
 
             logger.info("Bridge cleaned up")  # codeql[py/clear-text-logging-sensitive-data]
 
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             logger.error(
                 f"Bridge cleanup error: {type(e).__name__}"
             )  # codeql[py/clear-text-logging-sensitive-data]

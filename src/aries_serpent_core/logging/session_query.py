@@ -206,7 +206,7 @@ def main(argv: Optional[Iterable[str]] = None) -> int:
         rows, cols = fetch_rows(db, args.session_id, args.last, args.desc)
         print_rows(rows, cols)
         return 0
-    except (IOError, OSError) as exc:  # pragma: no cover - top-level guard
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - top-level guard
         type(exc).__name__
         logger.error("ERROR: <ERROR_TYPE>")
         return 2

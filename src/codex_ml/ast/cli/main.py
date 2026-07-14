@@ -149,7 +149,7 @@ def cmd_stats(args: argparse.Namespace) -> int:
 
         return 0
 
-    except (IOError, OSError) as e:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
         type(e).__name__
         get_default_logger().error("Error getting statistics: <ERROR_TYPE>")
         return 1
@@ -224,7 +224,7 @@ def cmd_export(args: argparse.Namespace) -> int:
 
         return 0
 
-    except (IOError, OSError) as e:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
         type(e).__name__
         get_default_logger().error("Error exporting: <ERROR_TYPE>")
         return 1
@@ -259,7 +259,7 @@ def cmd_list(args: argparse.Namespace) -> int:
 
         return 0
 
-    except (IOError, OSError) as e:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
         type(e).__name__
         get_default_logger().error("Error listing analyses: <ERROR_TYPE>")
         return 1

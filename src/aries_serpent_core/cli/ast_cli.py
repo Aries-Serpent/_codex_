@@ -74,7 +74,7 @@ def parse_command(args) -> int:
         logger.info(json.dumps(ast_dict, indent=2))
         return 0
 
-    except (IOError, OSError) as e:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
         type(e).__name__
         logger.error("Error parsing file: <ERROR_TYPE>")
         return 1
@@ -105,7 +105,7 @@ def stats_command(args) -> int:
         logger.info(json.dumps(stats, indent=2))
         return 0
 
-    except (IOError, OSError) as e:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
         type(e).__name__
         logger.error("Error getting statistics: <ERROR_TYPE>")
         return 1
@@ -152,7 +152,7 @@ def query_command(args) -> int:
         logger.info(json.dumps(result, indent=2))
         return 0
 
-    except (IOError, OSError) as e:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
         type(e).__name__
         logger.error("Error querying nodes: <ERROR_TYPE>")
         return 1

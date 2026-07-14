@@ -385,7 +385,7 @@ def transform(
                         }
                     )
 
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             result.errors.append(f"Error processing {file_path}: {e}")

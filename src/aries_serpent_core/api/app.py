@@ -68,7 +68,7 @@ try:
     app.include_router(legacy_router, tags=["legacy"])
 except ImportError:  # pragma: no cover – legacy module not installed
     logger.debug("Legacy endpoints not loaded")
-except (IOError, OSError) as _legacy_exc:  # pragma: no cover – unexpected init error
+except (IOError, OSError, ModuleNotFoundError, ImportError) as _legacy_exc:  # pragma: no cover – unexpected init error
     logger.warning("Legacy router not mounted — unexpected error during import: %s", _legacy_exc)
 
 _DEFAULT_CACHE_DIR = os.environ.get("CODEX_TOKENIZER_CACHE", "artifacts/tokenizer_cache")

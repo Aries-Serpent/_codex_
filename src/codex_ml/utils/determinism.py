@@ -45,12 +45,12 @@ def set_deterministic(seed: int = 42, deterministic: bool = True) -> None:
         if hasattr(torch, "cuda"):
             try:
                 torch.cuda.manual_seed_all(seed)
-            except (IOError, OSError):  # pragma: no cover - optional CUDA path
+            except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - optional CUDA path
                 logger.debug("torch.cuda.manual_seed_all unavailable", exc_info=True)
         if deterministic:
             try:
                 torch.use_deterministic_algorithms(True, warn_only=False)
-            except (IOError, OSError):
+            except (IOError, OSError, ModuleNotFoundError, ImportError):
                 logger.warning("Exception occurred", exc_info=True)
                 logger.debug("torch.use_deterministic_algorithms unavailable", exc_info=True)
             try:
@@ -115,7 +115,7 @@ def enable_determinism(
         try:
             torch.set_num_threads(int(num_threads))
             state["torch_num_threads"] = int(num_threads)
-        except (IOError, OSError):  # pragma: no cover - depends on build
+        except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - depends on build
             logger.debug("torch.set_num_threads unavailable", exc_info=True)
 
     set_cudnn_deterministic(bool(deterministic), benchmark=not deterministic)

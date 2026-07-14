@@ -67,7 +67,7 @@ def _sloc_of_bytes(b: bytes) -> int:
     """Very small SLoC heuristic for textual files."""
     try:
         text = b.decode("utf-8", "ignore")
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         logger.warning("Exception occurred", exc_info=True)
         return 0
     sloc = 0
@@ -91,7 +91,7 @@ def stat_file(p: Path) -> FileMeta:
     mime, lang = detect_mime_lang(p)
     try:
         b = p.read_bytes()
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         logger.warning("Exception occurred", exc_info=True)
         b = b""
     return FileMeta(

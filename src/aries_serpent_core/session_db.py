@@ -310,7 +310,7 @@ class SessionDB:
                 # Mark as deleted in database
                 self.mark_deleted(session_id)
                 deleted_count += 1
-            except (IOError, OSError) as e:
+            except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
                 type(e).__name__
                 logger.error(f"Error deleting archive {session_id}: <ERROR_TYPE>")
 

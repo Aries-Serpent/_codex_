@@ -595,7 +595,7 @@ class QuantumComplianceAssessor:
                     with open(path, encoding="utf-8") as fh:
                         self._tuning_rules_cache = json.load(fh)
                     return self._tuning_rules_cache
-                except (IOError, OSError):
+                except (IOError, OSError, ModuleNotFoundError, ImportError):
                     logger.debug("Suppressed exception in handler", exc_info=True)
         self._tuning_rules_cache = {}
         return self._tuning_rules_cache

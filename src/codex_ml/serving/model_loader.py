@@ -199,7 +199,7 @@ class ModelLoader:
             logger.info(f"Model loaded successfully in {load_time:.2f}s")
             return model_data
 
-        except (IOError, OSError) as e:
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
             type(e).__name__
             logger.debug("Exception: <ERROR_TYPE>")
             logger.error("Failed to load model: <ERROR_TYPE>")
@@ -421,7 +421,7 @@ class ModelLoader:
             try:
                 with open(path, "rb") as f:
                     f.read(1)
-            except (IOError, OSError) as e:
+            except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
                 type(e).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 logger.error("Cannot read checkpoint file: <ERROR_TYPE>")

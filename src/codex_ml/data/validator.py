@@ -76,7 +76,7 @@ class DatasetValidator:
                 error_msg = f"{error_msg} (fallback validator)"
             LOGGER.error("✗ Manifest invalid (%s): %s", manifest_path, error_msg)
             return False
-        except (IOError, OSError) as exc:  # pragma: no cover - defensive
+        except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:  # pragma: no cover - defensive
             LOGGER.error("✗ Manifest validation failed: %s", exc)
             return False
 

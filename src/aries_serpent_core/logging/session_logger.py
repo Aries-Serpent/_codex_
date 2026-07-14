@@ -45,7 +45,7 @@ _fetch_messages_mod = import_module(".fetch_messages", __package__)
 
 try:  # pragma: no cover - allow running standalone
     from .config import DEFAULT_LOG_DB
-except (IOError, OSError):  # pragma: no cover - fallback when not a package
+except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - fallback when not a package
     DEFAULT_LOG_DB = Path(".codex/session_logs.db")
 
 # -------------------------------
@@ -64,7 +64,7 @@ except (ImportError, AttributeError):
         from aries_serpent_core.monkeypatch.log_adapters import (  # type: ignore[no-redef]  # noqa: I001
             log_event as _shared_log_event,
         )
-    except (IOError, OSError):  # pragma: no cover - nothing available
+    except (IOError, OSError, ModuleNotFoundError, ImportError):  # pragma: no cover - nothing available
         _shared_log_event = None  # type: ignore[assignment]
 # Local, minimal fallbacks (if needed)
 # ------------------------------------
@@ -166,7 +166,7 @@ def init_db(db_path: Optional[Path] = None) -> Path:
             conn.commit()
         finally:
             conn.close()
-    except (IOError, OSError):
+    except (IOError, OSError, ModuleNotFoundError, ImportError):
         logger.warning("init_db failed", exc_info=True)
         with _DB_LOCK:
             _INITIALIZING_PATHS.pop(key, None)
@@ -368,7 +368,7 @@ class SessionLogger:
                     "session_end",
                     db_path=self.db_path,
                 )
-        except (IOError, OSError):
+        except (IOError, OSError, ModuleNotFoundError, ImportError):
             logger.warning("session_end DB log failed", exc_info=True)
         return False
 
@@ -383,7 +383,7 @@ def migrate_legacy_events(db_path: Optional[Path] = None) -> None:
     conn = sqlite3.connect(path)
     try:
         conn.execute("PRAGMA journal_mode=WAL;")
-    except (IOError, OSError) as e:
+    except (IOError, OSError, ModuleNotFoundError, ImportError) as e:
         logger.warning("journal_mode=WAL failed: %s", e, exc_info=True)
     try:
         conn.execute("BEGIN")

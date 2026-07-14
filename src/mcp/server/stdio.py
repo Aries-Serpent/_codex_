@@ -195,7 +195,7 @@ class StdioTransport:
             self._writer.close()
             try:
                 await self._writer.wait_closed()
-            except (IOError, OSError) as exc:
+            except (IOError, OSError, ModuleNotFoundError, ImportError) as exc:
                 type(exc).__name__
                 logger.debug("Exception: <ERROR_TYPE>")
                 # Ignore errors during writer closure - the stream may already be closed

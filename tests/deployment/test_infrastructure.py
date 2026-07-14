@@ -103,7 +103,7 @@ class TestDeploymentInfrastructure:
     def test_deployment_module_import(self):
         """Test that deployment modules can be imported"""
         try:
-    from codex_ml.deployment import cloud
+            from codex_ml.deployment import cloud
 
             assert hasattr(cloud, "__name__")
         except ImportError:
@@ -112,7 +112,7 @@ class TestDeploymentInfrastructure:
     def test_deployment_cli_import(self):
         """Test that deployment CLI can be imported"""
         try:
-    from codex_ml.cli import deploy
+            from codex_ml.cli import deploy
 
             assert hasattr(deploy, "__name__")
         except ImportError:

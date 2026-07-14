@@ -423,7 +423,7 @@ class TestConcurrentStateAccess:
                 entry = memory.retrieve_memory("race_test")
                 if entry:
                     results["reads"].append(entry.access_count)
-                time.sleep(0.001)
+                                    time.sleep(0.001)
 
         # Run concurrent read/write
         t_write = threading.Thread(target=writer)
