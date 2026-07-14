@@ -1,13 +1,13 @@
-import pytest
-
-pytest.importorskip("tensorboard")
-"""
-Test Logging Utils Module
+"""Test Logging Utils Module
 
 Test module for logging utils module.
 """
 
 from __future__ import annotations
+
+import pytest
+
+pytest.importorskip("tensorboard")
 
 from pathlib import Path
 

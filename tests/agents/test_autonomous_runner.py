@@ -236,7 +236,7 @@ class TestSaveReport:
         """Test that report file is created."""
         try:
             from agents.autonomous_runner import AutonomousAgent
-                from config.openai_client import ExecutionResult
+            from config.openai_client import ExecutionResult
 
             with patch("src.agents.autonomous_runner.CodexOpenAIClient") as mock_client:
                 mock_client_instance = MagicMock()
@@ -275,7 +275,7 @@ class TestSaveReport:
         """Test report content structure."""
         try:
             from agents.autonomous_runner import AutonomousAgent
-                from config.openai_client import ExecutionResult
+            from config.openai_client import ExecutionResult
 
             with patch("src.agents.autonomous_runner.CodexOpenAIClient") as mock_client:
                 mock_client_instance = MagicMock()
@@ -372,8 +372,7 @@ class TestMainFunction:
         """Test that main function exists and is async."""
         try:
             import asyncio
-
-    from agents.autonomous_runner import main
+            from agents.autonomous_runner import main
 
             assert asyncio.iscoroutinefunction(main), "Condition must be true"
         except ImportError:
@@ -393,8 +392,7 @@ class TestMainFunction:
         """Test that main reads from environment variables."""
         try:
             import os
-
-    from agents.autonomous_runner import main
+            from agents.autonomous_runner import main
 
             with (
                 patch.dict(

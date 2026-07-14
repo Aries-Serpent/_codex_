@@ -316,8 +316,7 @@ class TestRAGPerformance:
         """Test performance of batch embedding."""
         try:
             import time
-
-        from codex.rag.embeddings import TfidfEmbeddingProvider
+            from codex.rag.embeddings import TfidfEmbeddingProvider
 
             provider = TfidfEmbeddingProvider()
 
@@ -344,7 +343,7 @@ class TestRAGPerformance:
         try:
             import time
 
-        from codex.rag.retriever import CodexRetriever
+            from codex.rag.retriever import CodexRetriever
 
             retriever = CodexRetriever()
 
@@ -494,7 +493,7 @@ class TestRAGIntegration:
         """Test complete RAG flow from indexing to retrieval."""
         try:
             from codex.rag.indexer import CodexIndexer
-                from codex.rag.retriever import CodexRetriever
+            from codex.rag.retriever import CodexRetriever
 
             # Create indexer and add documents
             indexer = CodexIndexer()

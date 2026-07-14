@@ -1,4 +1,5 @@
 import pytest
+from __future__ import annotations
 
 pytest.importorskip("mlflow")
 """
@@ -7,7 +8,6 @@ Test Training Continual Strategy
 Test module for training continual strategy.
 """
 
-from __future__ import annotations
 
 from pathlib import Path
 

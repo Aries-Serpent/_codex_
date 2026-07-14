@@ -129,8 +129,7 @@ class TestPerformance:
         """Test performance with many markdown files."""
         try:
             import tempfile
-
-        from codex_plans import list_plan_documents
+            from codex_plans import list_plan_documents
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 # Create 100 markdown files
@@ -147,8 +146,7 @@ class TestPerformance:
         """Test that sorting works correctly with many files."""
         try:
             import tempfile
-
-        from codex_plans import list_plan_documents
+            from codex_plans import list_plan_documents
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 # Create files in reverse order
@@ -187,7 +185,7 @@ class TestSecurityChecks:
             import os
             import tempfile
 
-        from codex_plans import list_plan_documents
+            from codex_plans import list_plan_documents
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 # Create a real file

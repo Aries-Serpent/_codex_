@@ -217,8 +217,8 @@ class TestExtractRequestedTokens:
 @pytest.mark.timeout(30)
 async def test_dispatch_skips_health_endpoint(monkeypatch):
     """Health endpoint should bypass rate limiting."""
-        from fastapi import FastAPI
-        from fastapi.testclient import TestClient
+    from fastapi import FastAPI
+    from fastapi.testclient import TestClient
 
     app = FastAPI()
     app.add_middleware(RateLimitMiddleware)
@@ -236,8 +236,8 @@ async def test_dispatch_skips_health_endpoint(monkeypatch):
 @pytest.mark.timeout(30)
 async def test_dispatch_without_tenant_passes_through():
     """Requests with no tenant state should not be rate-limited."""
-        from fastapi import FastAPI
-        from fastapi.testclient import TestClient
+    from fastapi import FastAPI
+            from fastapi.testclient import TestClient
 
     app = FastAPI()
     app.add_middleware(RateLimitMiddleware)

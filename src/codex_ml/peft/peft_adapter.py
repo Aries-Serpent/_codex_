@@ -1,7 +1,3 @@
-# [Integration]: LoRA adapter integration with graceful fallbacks
-from codex.logging.adapter import get_default_logger
-
-# Generated: 2025-08-31 08:51:51 | Author: mbaetiong
 """LoRA integration for Codex models.
 
 This module provides a lightweight, optional integration with the `peft` package
@@ -30,6 +26,11 @@ from __future__ import annotations
 import logging
 
 logger = logging.getLogger(__name__)
+
+# [Integration]: LoRA adapter integration with graceful fallbacks
+from codex.logging.adapter import get_default_logger
+
+# Generated: 2025-08-31 08:51:51 | Author: mbaetiong
 
 import inspect  # noqa: E402
 from typing import Any, Optional  # noqa: E402

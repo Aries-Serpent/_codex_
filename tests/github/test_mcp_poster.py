@@ -325,7 +325,7 @@ def test_list_pull_requests_head_filter_adds_owner_prefix(poster, monkeypatch):
     monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
     poster.list_pull_requests("myorg/repo", head="my-branch")
 
-        from urllib.parse import parse_qs, urlparse
+    from urllib.parse import parse_qs, urlparse
 
     qs = parse_qs(urlparse(captured["url"]).query)
     assert qs.get("head") == ["myorg:my-branch"], "Condition must be true"
@@ -341,7 +341,7 @@ def test_list_pull_requests_head_with_colon_not_modified(poster, monkeypatch):
     monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
     poster.list_pull_requests("myorg/repo", head="otherorg:their-branch")
 
-        from urllib.parse import parse_qs, urlparse
+    from urllib.parse import parse_qs, urlparse
 
     qs = parse_qs(urlparse(captured["url"]).query)
     # Should NOT re-prefix: the value already contains an owner
@@ -921,7 +921,7 @@ def test_record_cb_pattern_cognitive_brain_available(poster, monkeypatch):
     fake_module.MemoryPattern = FakeMemoryPattern
     fake_module.SQLiteMemory = FakeSQLiteMemory
 
-            import sys
+    import sys
 
     # Inject the fake module so the import inside _record_cb_pattern succeeds.
     # Clean up after to avoid contaminating other tests.

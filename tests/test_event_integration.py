@@ -41,7 +41,7 @@ def test_emitter_uses_publisher_and_emits_events():
         ),
     )
 
-        from codex_ml.training.event_integration import TrainingEventEmitter
+    from codex_ml.training.event_integration import TrainingEventEmitter
 
     publisher = MagicMock()
     publisher.publish.return_value = True

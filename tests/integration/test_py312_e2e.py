@@ -68,7 +68,7 @@ class TestPython312Integration:
                 _ = None  # suppressed: no action needed
 
             try:
-                import codex_ml.data  # noqa: F401
+            import codex_ml.data  # noqa: F401
 
                 optional_imports.append("data")
             except ImportError:
@@ -76,7 +76,7 @@ class TestPython312Integration:
                 _ = None  # suppressed: no action needed
 
             try:
-                import codex_ml.models  # noqa: F401
+            import codex_ml.models  # noqa: F401
 
                 optional_imports.append("models")
             except ImportError:
@@ -234,7 +234,7 @@ class TestAsyncWorkflows:
     @pytest.mark.timeout(30)
     async def test_async_generator_workflow(self):
         """Test async generator workflow."""
-                import asyncio
+            import asyncio
 
         async def async_range(n):
             for i in range(n):

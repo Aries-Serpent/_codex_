@@ -23,8 +23,8 @@ class TestComplexWorkflows:
         """Test complete RAG pipeline from indexing to retrieval."""
         try:
             from codex.rag.embeddings import TfidfEmbeddingProvider
-                from codex.rag.indexer import CodexIndexer
-                from codex.rag.retriever import CodexRetriever
+            from codex.rag.indexer import CodexIndexer
+            from codex.rag.retriever import CodexRetriever
 
             # Initialize components
             TfidfEmbeddingProvider()
@@ -190,7 +190,7 @@ class TestStressTests:
         """Test retrieval from index with 1000+ documents."""
         try:
             from codex.rag.indexer import CodexIndexer
-                from codex.rag.retriever import CodexRetriever
+            from codex.rag.retriever import CodexRetriever
 
             indexer = CodexIndexer()
             retriever = CodexRetriever()
@@ -257,7 +257,7 @@ class TestStressTests:
         try:
             import sys
 
-        from codex.rag.embeddings import TfidfEmbeddingProvider
+            from codex.rag.embeddings import TfidfEmbeddingProvider
 
             provider = TfidfEmbeddingProvider()
 
@@ -389,7 +389,7 @@ class TestConcurrentAccess:
         """Test concurrent reads and writes."""
         try:
             from codex.rag.indexer import CodexIndexer
-                from codex.rag.retriever import CodexRetriever
+            from codex.rag.retriever import CodexRetriever
 
             indexer = CodexIndexer()
             retriever = CodexRetriever()

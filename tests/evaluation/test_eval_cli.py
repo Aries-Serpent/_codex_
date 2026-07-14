@@ -87,7 +87,8 @@ def test_run_command_json_output(tmp_path: Path, monkeypatch):
     monkeypatch.setattr(eval_cli, "_load_config", fake_load_config)
     monkeypatch.setenv("PYTHONHASHSEED", "0")
     # Patch the actual module where build_loggers is defined
-        import codex_ml.logging.registry as reg_mod
+    # Patch the actual module where build_loggers is defined
+    import codex_ml.logging.registry as reg_mod
 
     monkeypatch.setattr(reg_mod, "build_loggers", fake_build_loggers)
 
@@ -211,7 +212,7 @@ def test_run_command_with_invalid_device(tmp_path: Path, monkeypatch):
         return [DummyLogger(tmp_path / "metrics.ndjson")]
 
     monkeypatch.setattr(eval_cli, "_load_config", fake_load_config)
-        import codex_ml.logging.registry as reg_mod
+    import codex_ml.logging.registry as reg_mod
 
     monkeypatch.setattr(reg_mod, "build_loggers", fake_build_loggers)
 
@@ -271,7 +272,7 @@ def test_run_command_with_deterministic_flag(tmp_path: Path, monkeypatch):
         return [DummyLogger(tmp_path / "metrics.ndjson")]
 
     monkeypatch.setattr(eval_cli, "_load_config", fake_load_config)
-        import codex_ml.logging.registry as reg_mod
+    import codex_ml.logging.registry as reg_mod
 
     monkeypatch.setattr(reg_mod, "build_loggers", fake_build_loggers)
     monkeypatch.setenv("PYTHONHASHSEED", "0")

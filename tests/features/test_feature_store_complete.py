@@ -89,7 +89,7 @@ class TestFeatureStoreComplete:
         store.materialize_to_parquet("temporal", {"val": [1.0]}, version="1.0.0")
 
         # Wait a moment
-            import time
+        import time
 
         time.sleep(0.1)
 

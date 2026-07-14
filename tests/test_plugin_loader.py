@@ -37,7 +37,7 @@ def test_load_plugins_monkeypatched(monkeypatch):
 
         return FakeEPs([FakeEP("demo_plugin", plugin)])
 
-            from importlib import metadata as imd
+    from importlib import metadata as imd
 
     monkeypatch.setattr(imd, "entry_points", fake_entry_points)
 

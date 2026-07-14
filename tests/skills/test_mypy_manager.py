@@ -531,9 +531,9 @@ class TestPDALog:
         assert pda_file.exists(), "Condition must be true"
         lines = pda_file.read_text().splitlines()
         assert len(lines) >= 1, "Lines must not be empty"
-            import json
+    import json
 
-        entry = json.loads(lines[0])
+            entry = json.loads(lines[0])
         assert entry["session"] == "TEST-S000", "Condition must be true"
         assert "MYPY-REDUNDANT-CAST" in entry["pattern_id"], "Condition must be true"
 

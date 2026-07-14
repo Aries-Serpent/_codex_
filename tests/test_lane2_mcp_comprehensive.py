@@ -352,7 +352,7 @@ class TestMCPIntegration:
         """Test that multiple imports return consistent results."""
         try:
             from mcp import config as config1
-                from mcp import config as config2
+            from mcp import config as config2
             assert config1 is config2
         except ImportError:
             pytest.skip("mcp not available for consistency test")

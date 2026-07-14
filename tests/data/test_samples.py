@@ -1,3 +1,4 @@
+from __future__ import annotations
 import pytest
 
 pytest.importorskip("mlflow")
@@ -7,7 +8,6 @@ Test Samples
 Test module for samples.
 """
 
-from __future__ import annotations
 
 from pathlib import Path
 from shutil import copyfile

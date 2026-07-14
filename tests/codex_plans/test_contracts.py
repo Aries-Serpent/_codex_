@@ -147,8 +147,7 @@ class TestParameterValidation:
         """Test that base_dir=Path(...) is valid."""
         try:
             import tempfile
-
-        from codex_plans import list_plan_documents
+            from codex_plans import list_plan_documents
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 result = list_plan_documents(base_dir=Path(tmpdir))
@@ -230,8 +229,7 @@ class TestGlobPatternBehavior:
         """Test that glob only searches immediate directory."""
         try:
             import tempfile
-
-        from codex_plans import list_plan_documents
+            from codex_plans import list_plan_documents
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 # Create file in root
@@ -254,8 +252,7 @@ class TestGlobPatternBehavior:
         """Test that glob only matches .md extension."""
         try:
             import tempfile
-
-        from codex_plans import list_plan_documents
+            from codex_plans import list_plan_documents
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 # Create files with various extensions

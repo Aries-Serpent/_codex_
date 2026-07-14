@@ -171,9 +171,9 @@ class TestExecutionEnvelopeRetries:
         reg.register(_make_manifest(entrypoint=f"{_H}:flaky_handler"))
         # Inject the real implementation into the handler module to avoid
         # coupling state to this test module.
-            import tests.skills._envelope_test_handlers as _handlers_mod
+    import tests.skills._envelope_test_handlers as _handlers_mod
 
-        mod = _handlers_mod
+            mod = _handlers_mod
         original = getattr(mod, "flaky_handler", None)
         mod.flaky_handler = flaky_handler  # type: ignore[attr-defined]
         try:

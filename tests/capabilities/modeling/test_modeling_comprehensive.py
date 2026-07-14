@@ -70,7 +70,7 @@ class ModelFactory:
         """Create model from config."""
         if config.name not in cls._registry:
             raise ValueError(f"Unknown model: {config.name}")
-                    return cls._registry[config.name](config)
+        return cls._registry[config.name](config)
 
     @classmethod
     def list_models(cls) -> list[str]:

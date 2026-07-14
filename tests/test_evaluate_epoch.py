@@ -180,7 +180,7 @@ def test_evaluate_epoch_metric_error_handling():
     # Should return NaN for broken metric
     assert "metrics" in result, "Result must not be empty"
     assert "broken" in result["metrics"], "Result must not be empty"
-        import math
+    import math
 
     assert math.isnan(result["metrics"]["broken"]), "Result must not be empty"
 
