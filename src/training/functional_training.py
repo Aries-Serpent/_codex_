@@ -142,8 +142,15 @@ def _ensure_codex_ml_imports() -> None:
 
 logger = logging.getLogger(__name__)
 
-clip_grad_norm_ = torch.nn.utils.clip_grad_norm_
-DataLoader = torch.utils.data.DataLoader
+try:
+    clip_grad_norm_ = torch.nn.utils.clip_grad_norm_
+except (AttributeError, ModuleNotFoundError):
+    clip_grad_norm_ = None
+
+try:
+    DataLoader = torch.utils.data.DataLoader
+except (AttributeError, ModuleNotFoundError):
+    DataLoader = None
 
 # ruff: noqa: I001
 
