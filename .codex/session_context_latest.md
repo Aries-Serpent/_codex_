@@ -1,10 +1,10 @@
-# Session Context — 2026-07-14T18:59:17Z
+# Session Context — 2026-07-14T19:34:48Z
 **Branch:** `copilot/add-cache-to-python-workflows`  **PR:** #5321  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `5000` (✅)
-- GraphQL remaining: `4993` (✅)
+- REST remaining: `4998` (✅)
+- GraphQL remaining: `5000` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
@@ -15,21 +15,21 @@ State: `open`  Draft: `False`  Branch: `copilot/add-cache-to-python-workflows` �
 - `CodeQL` (failure)
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **.github/workflows/security-findings-copilot-handoff.yml** — `failure` on `copilot/add-cache-to-python-workflows` (2026-07-14)
-- **.github/workflows/branch-rebase-gate.yml** — `failure` on `copilot/add-cache-to-python-workflows` (2026-07-14)
-- **.github/workflows/agent-registry-validation.yml** — `failure` on `copilot/add-cache-to-python-workflows` (2026-07-14)
-- **.github/workflows/telemetry-collection.yml** — `failure` on `copilot/add-cache-to-python-workflows` (2026-07-14)
-- **.github/workflows/actionlint-audit.yml** — `failure` on `copilot/add-cache-to-python-workflows` (2026-07-14)
+- **.github/workflows/rust_swarm_ci.yml** — `failure` on `copilot/add-cache-to-python-workflows` (2026-07-14)
+- **.github/workflows/ml-tests.yml** — `failure` on `copilot/add-cache-to-python-workflows` (2026-07-14)
+- **.github/workflows/ci-checkpoint-validation.yml** — `failure` on `copilot/add-cache-to-python-workflows` (2026-07-14)
+- **.github/workflows/auth-tests.yml** — `failure` on `copilot/add-cache-to-python-workflows` (2026-07-14)
+- **.github/workflows/restore-pipeline-ci.yml** — `failure` on `copilot/add-cache-to-python-workflows` (2026-07-14)
 
 ## 📝 Recent Commits
+- `8dd87a48` docs: Add security model documentation to copilot-agent-session-done.yml explain — copilot-swe-agent[bot] (2026-07-14)
+- `ee2aada4` fix(security): Address CodeQL checkout of untrusted code alerts in workflow file — copilot-swe-agent[bot] (2026-07-14)
+- `0284f0d6` Initial analysis of CodeQL alerts in workflow files - preparing fixes for checko — copilot-swe-agent[bot] (2026-07-14)
 - `37ea8d3a` doc(phase4): Create Phase 4 GA deployment execution prompt with CodeQL resolutio — copilot-swe-agent[bot] (2026-07-14)
 - `527a5343` fix(codeql): Address critical, high, and medium security findings - add permissi — copilot-swe-agent[bot] (2026-07-14)
 - `371c3c32` fix(codeql): Address critical and medium security findings in workflow files — copilot-swe-agent[bot] (2026-07-14)
 - `f9095c27` Initial planning: Address CodeQL security findings — copilot-swe-agent[bot] (2026-07-14)
 - `dca4b89a` feat(phase3-complete): Phase 3 Beta deployment successful — 24h monitoring compl — copilot-swe-agent[bot] (2026-07-14)
-- `e10bde67` feat(phase3): Start Phase 3 Beta deployment — traffic ramp initiation and monito — copilot-swe-agent[bot] (2026-07-14)
-- `fac82bca` doc: Session 2026-07-14 wrap-up — CodeQL security resolution verified, Phase 3-4 — copilot-swe-agent[bot] (2026-07-14)
-- `951589a6` fix(compliance): Update AGENT_ACCOUNTABILITY_REPORT.md and CHANGELOG.md for Phas — copilot-swe-agent[bot] (2026-07-14)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
