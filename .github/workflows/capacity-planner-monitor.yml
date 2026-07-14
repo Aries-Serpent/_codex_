@@ -10,6 +10,9 @@ on:
         required: false
         default: '30'
 
+permissions:
+  contents: read
+
 jobs:
   forecast_accuracy:
     name: Forecast Accuracy Check

@@ -10,6 +10,9 @@ on:
       - 'src/codex/correlation/**'
       - 'tests/correlation/**'
 
+permissions:
+  contents: read
+
 jobs:
   monitor-correlation-engine:
     runs-on: ubuntu-latest

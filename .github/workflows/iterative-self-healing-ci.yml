@@ -280,13 +280,18 @@ jobs:
         - 1
         - 2
         - 3
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      actions: read
     steps:
     - name: Checkout target branch (working tree)
       uses: actions/checkout@v5
       with:
         persist-credentials: false
         fetch-depth: 50
-        ref: ${{ github.event.workflow_run.head_sha || needs.triage.outputs.head_branch || 'main' }}
+        ref: main
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         persist-credentials: false
     - name: '🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)'
@@ -563,13 +568,17 @@ jobs:
       != ''''
 
       '
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
     steps:
     - name: Checkout target branch
       uses: actions/checkout@v5
       with:
         persist-credentials: false
         fetch-depth: 5
-        ref: ${{ github.event.workflow_run.head_sha || needs.triage.outputs.head_branch || 'main' }}
+        ref: main
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
         persist-credentials: false
     - name: Overlay trusted scripts from main (security)

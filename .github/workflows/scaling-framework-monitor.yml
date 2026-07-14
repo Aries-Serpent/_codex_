@@ -17,6 +17,9 @@ on:
       - "src/codex/scaling/**"
       - ".github/workflows/scaling-framework-monitor.yml"
 
+permissions:
+  contents: read
+
 env:
   PYTHON_VERSION: "3.12"
   TERRAFORM_VERSION: "1.6.0"
