@@ -106,7 +106,7 @@ jobs:
       - name: Validate CODEX_MASTER_KEY Scopes
         run: |
           python scripts/ci/test_codex_master_key_scopes.py --report-json .codex/scope_report.json
-        env:
+      env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         continue-on-error: true
 
@@ -117,14 +117,14 @@ jobs:
           pytest tests/github/test_workflow_approval_dispatch.py -v --cov=scripts/ci --cov-append --cov-report=term -k "codex_master" || true
           pytest tests/github/test_webhooks.py -v --cov=scripts/ci --cov-append --cov-report=term || true
           pytest tests/github/test_github_comprehensive_phase7a.py -v --cov=scripts/ci --cov-append --cov-report=term -k "codex_master" || true
-        env:
+      env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         continue-on-error: true
 
       - name: Generate CODEX_MASTER_KEY coverage report
         run: |
           pytest tests/github/ -k "codex_master" --cov=scripts/ci --cov-report=json:coverage.json --cov-report=term || true
-        env:
+      env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         continue-on-error: true
 
@@ -221,7 +221,7 @@ jobs:
           path: auth-security-report.json
           retention-days: 30
           if-no-files-found: error
-    env:
+          env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
   integration-test:
@@ -323,7 +323,7 @@ jobs:
         --health 2>/dev/null || echo ''{"status": "cache health check skipped"}''
 
         '
-    env:
+        env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
   rescue-comment:
@@ -363,4 +363,7 @@ jobs:
         env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+
+
+
 

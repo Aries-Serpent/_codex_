@@ -47,7 +47,7 @@ jobs:
   estimate:
     name: "\U0001F4B0 Estimate cost (${{ inputs.workflow_name }})"
     runs-on: ubuntu-latest
-      env:
+    env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
     timeout-minutes: 5
     outputs:
@@ -61,7 +61,7 @@ jobs:
         echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
     - uses: actions/checkout@v5
       with:
-            persist-credentials: false
+      persist-credentials: false
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
@@ -79,7 +79,7 @@ jobs:
     - name: Log usage (T-004)
       id: usage_log
       continue-on-error: true
-      env:
+    env:
         PR_NUMBER: ${{ github.event.pull_request.number }}
         GITHUB_REF_NAME: ${{ github.ref_name }}
         GITHUB_SHA: ${{ github.sha }}
@@ -163,7 +163,7 @@ jobs:
           \    if (attempt === 3) throw e;\n    // Back off before retrying (2 s,\
           \ 4 s, 6 s).\n    await new Promise(r => setTimeout(r, Math.random() * Math.pow(2,\
           \ attempt) * 1000 + 500));\n  }\n}\n"
-    env:
+      env:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
   gate:
     name: "\U0001F6A6 Cost gate (${{ needs.estimate.outputs.tier }})"
@@ -276,7 +276,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         token: ${{ secrets.GH_TOKEN || github.token }}
         fetch-depth: 1
     - name: Post or update rescue comment
@@ -291,4 +291,7 @@ jobs:
           github.run_id }}
         BRANCH: ${{ github.head_ref }}
       run: python scripts/ci/post_rescue_comment.py
+
+
+
 

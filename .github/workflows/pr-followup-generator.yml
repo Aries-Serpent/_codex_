@@ -35,7 +35,7 @@ jobs:
         echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
       - uses: actions/checkout@v5  # v6.0.3
         with:
-            persist-credentials: false
+        persist-credentials: false
           ref: ${{ github.event.pull_request.head.ref || github.ref }}
           fetch-depth: 0
 
@@ -211,4 +211,7 @@ jobs:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           BRANCH: ${{ github.head_ref }}
         run: python scripts/ci/post_rescue_comment.py
+
+
+
 

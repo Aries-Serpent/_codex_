@@ -182,7 +182,7 @@ jobs:
         \ gh workflow run embedding-index-rebuild.yml --ref main\"\n"
         env:
         GH_TOKEN: ${{ github.token }}
-    env:
+        env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
   rescue-comment:
@@ -222,4 +222,7 @@ jobs:
         env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+
+
+
 

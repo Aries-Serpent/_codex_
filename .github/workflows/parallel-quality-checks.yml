@@ -36,7 +36,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
         with:
-            persist-credentials: false
+        persist-credentials: false
           fetch-depth: 0
       - name: Determine which checks to run
         id: scope
@@ -61,8 +61,8 @@ jobs:
     if: needs.determine-scope.outputs.run-linting == 'true'
     steps:
       - uses: actions/checkout@v5
-      with:
-            persist-credentials: false
+        with:
+        persist-credentials: false
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
@@ -85,8 +85,8 @@ jobs:
     if: needs.determine-scope.outputs.run-types == 'true'
     steps:
       - uses: actions/checkout@v5
-      with:
-            persist-credentials: false
+        with:
+        persist-credentials: false
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
@@ -112,8 +112,8 @@ jobs:
     if: needs.determine-scope.outputs.run-security == 'true'
     steps:
       - uses: actions/checkout@v5
-      with:
-            persist-credentials: false
+        with:
+        persist-credentials: false
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
@@ -154,4 +154,7 @@ jobs:
           echo "- Security Analysis: ${{ needs.bandit-security.result || 'skipped' }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Execution Time:** ~15 minutes (parallel execution instead of ~40 min sequential)" >> $GITHUB_STEP_SUMMARY
+
+
+
 

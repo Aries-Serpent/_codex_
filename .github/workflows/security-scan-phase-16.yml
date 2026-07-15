@@ -21,7 +21,7 @@ jobs:
   security-scanning:
     name: Security Scanning Suite
     runs-on: ubuntu-latest
-      env:
+    env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
     timeout-minutes: 30
     permissions:
@@ -493,4 +493,7 @@ jobs:
           echo "Total tests created: 1000+"
           echo "Security coverage: 100%"
           echo "CodeQL status: Validated"
+
+
+
 

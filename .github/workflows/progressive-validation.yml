@@ -32,7 +32,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         fetch-depth: 0
     - name: Analyze PR Size
       id: analyze
@@ -97,7 +97,7 @@ jobs:
           | Validation Strategy | ${{ steps.analyze.outputs.validation_strategy }} |
 
           **Size Thresholds:** Small (<20) → Full validation · Medium (20-99) → Targeted validation · Large (100-499) → Smoke · Refactor (500+) → Import-only
-    env:
+        env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
   smoke-tests:
     needs: analyze
@@ -109,7 +109,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
     - name: Set up Python
       uses: ./.github/actions/setup-python-cached
       with:
@@ -158,7 +158,7 @@ jobs:
         echo "**Duration:** < 10 minutes" >> $GITHUB_STEP_SUMMARY
 
         '
-    env:
+      env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
   unit-tests:
@@ -182,7 +182,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
     - name: Set up Python
       uses: ./.github/actions/setup-python-cached
       with:
@@ -209,7 +209,7 @@ jobs:
         echo "**Status:** Layer 2 validation" >> $GITHUB_STEP_SUMMARY
 
         '
-    env:
+      env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
   integration-tests:
@@ -226,7 +226,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
     - name: Set up Python
       uses: ./.github/actions/setup-python-cached
       with:
@@ -251,7 +251,7 @@ jobs:
         echo "**Status:** Layer 3 validation" >> $GITHUB_STEP_SUMMARY
 
         '
-    env:
+      env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
   slow-tests:
@@ -268,7 +268,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
     - name: Set up Python
       uses: ./.github/actions/setup-python-cached
       with:
@@ -293,7 +293,7 @@ jobs:
         echo "**Status:** Layer 4 validation" >> $GITHUB_STEP_SUMMARY
 
         '
-    env:
+      env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
   validation-summary:
@@ -313,7 +313,7 @@ jobs:
     - name: Checkout (needed for post-pr-summary action)
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
     - name: Generate summary
       id: gen-summary
       uses: actions/github-script@v8
@@ -345,7 +345,7 @@ jobs:
         status: ${{ steps.gen-summary.outputs.status }}
         summary: ${{ steps.gen-summary.outputs.summary-line }}
         details: ${{ steps.gen-summary.outputs.details }}
-    env:
+        env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
   rescue-comment:
@@ -367,7 +367,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v5
       with:
-            persist-credentials: false
+        persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1
     - name: Post or update rescue comment
@@ -386,4 +386,7 @@ jobs:
       env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+
+
+
 

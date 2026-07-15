@@ -142,7 +142,7 @@ jobs:
       - name: Resolve lane metadata defaults safely
         id: meta
         shell: bash
-        env:
+      env:
           IN_LANE_ID: ${{ github.event.inputs.lane-id || inputs.lane-id || 'lane-self-healing' }}
           IN_SHARD_ID: ${{ github.event.inputs.shard-id || inputs.shard-id || 'shard-0' }}
           IN_LANE_MODE: ${{ github.event.inputs.lane-mode || inputs.lane-mode || 'enabled' }}
@@ -210,7 +210,7 @@ jobs:
       - name: Generate input lock
         id: lock
         shell: bash
-        env:
+      env:
           HEALING_WORKFLOW_FILE: ".github/workflows/self-healing.yml"
           HEALING_SCRIPTS_DIR: "scripts/ci"
         run: |
@@ -409,7 +409,7 @@ jobs:
       - name: Analyze patterns and generate plan
         id: analyze
         shell: bash
-        env:
+      env:
           LANE_ID: ${{ needs.lane-metadata-contract.outputs.lane_id }}
           INPUT_LOCK_SHA: ${{ needs.lane-metadata-contract.outputs.input_lock_sha256 }}
           DETERMINISTIC_SEED: ${{ needs.lane-metadata-contract.outputs.deterministic_seed }}
@@ -500,7 +500,7 @@ jobs:
       - name: Enforce policy tier ceiling
         id: policy-check
         shell: bash
-        env:
+      env:
           POLICY_TIER_MAX: ${{ needs.lane-metadata-contract.outputs.healing_policy_tier_max }}
         run: |
           set -euo pipefail
@@ -524,7 +524,7 @@ jobs:
       - name: Apply healing actions
         id: act
         shell: bash
-        env:
+      env:
           POLICY_MODE: ${{ steps.policy-check.outputs.mode }}
         run: |
           set -euo pipefail
@@ -799,4 +799,7 @@ jobs:
           echo "**Analysis:** ${{ needs.self-healing-analyze.result }}"
           echo "**Remediation:** ${{ needs.self-healing-act.result }}"
           echo "**Validation:** ${{ needs.validate-self-healing-artifact-contract.result }}"
+
+
+
 

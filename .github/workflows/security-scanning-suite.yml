@@ -131,7 +131,7 @@ jobs:
       - name: Resolve lane metadata defaults safely
         id: meta
         shell: bash
-        env:
+      env:
           IN_SCAN_TYPE: ${{ github.event.inputs.scan-type || inputs.scan-type || 'all' }}
           IN_LANE_ID: ${{ github.event.inputs.lane-id || inputs.lane-id || 'lane-security' }}
           IN_SHARD_ID: ${{ github.event.inputs.shard-id || inputs.shard-id || 'shard-0' }}
@@ -242,8 +242,8 @@ jobs:
           - javascript
     steps:
       - uses: actions/checkout@v5
-      with:
-            persist-credentials: false
+        with:
+        persist-credentials: false
 
       - uses: github/codeql-action/init@v3
         with:
@@ -343,8 +343,8 @@ jobs:
       issues: write
     steps:
       - uses: actions/checkout@v5
-      with:
-            persist-credentials: false
+        with:
+        persist-credentials: false
 
       - name: Set up Python
         uses: ./.github/actions/setup-python-cached
@@ -670,8 +670,8 @@ jobs:
       (github.event_name == 'workflow_call' && (inputs.scan-type == '' || inputs.scan-type == 'all' || inputs.scan-type == 'dependency'))
     steps:
       - uses: actions/checkout@v5
-      with:
-            persist-credentials: false
+        with:
+        persist-credentials: false
 
       - uses: ./.github/actions/setup-python-cached
         with:
@@ -764,7 +764,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
         with:
-            persist-credentials: false
+        persist-credentials: false
           fetch-depth: 0
 
       - uses: ./.github/actions/setup-python-cached
@@ -860,8 +860,8 @@ jobs:
       (github.event_name == 'workflow_call' && (inputs.scan-type == '' || inputs.scan-type == 'all'))
     steps:
       - uses: actions/checkout@v5
-      with:
-            persist-credentials: false
+        with:
+        persist-credentials: false
 
       - uses: ./.github/actions/setup-python-cached
         with:
@@ -1288,8 +1288,8 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v5
-      with:
-            persist-credentials: false
+        with:
+        persist-credentials: false
 
       - uses: actions/setup-python@v6
         with:
@@ -1356,7 +1356,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
         with:
-            persist-credentials: false
+        persist-credentials: false
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           fetch-depth: 1
 
@@ -1371,4 +1371,7 @@ jobs:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           BRANCH: ${{ github.head_ref }}
         run: python scripts/ci/post_rescue_comment.py
+
+
+
 

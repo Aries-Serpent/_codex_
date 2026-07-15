@@ -56,7 +56,7 @@ jobs:
         run: "python3 scripts/ci/session_wrapup_autofix.py \\\n  --update-pr-description\
         \ \\\n  --pr-number \"${PR_NUM}\" \\\n  || echo \"\u26A0\uFE0F  Scorecard\
         \ refresh non-zero (non-fatal \u2014 workflow continues)\"\n"
-    env:
+      env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   detect-checkbox:
     name: Detect COPILOT_AGENT_AUTH_ENABLED checkbox
@@ -106,7 +106,7 @@ jobs:
         \nelse\n  echo \"multi_session=false\" >> \"$GITHUB_OUTPUT\"\n  echo \"\u2139\
         \uFE0F  COPILOT_MULTI_SESSION not checked \u2014 single-session mode (default)\"\
         \nfi\n"
-    env:
+      env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   await-approval:
     name: "\u23F3 Auto-approved \u2014 agent is pre-authorized"
@@ -119,7 +119,7 @@ jobs:
       - name: Auto-approved
         run: "echo \"\u2705 Agent token delegation auto-approved for PR  #${{ needs.detect-checkbox.outputs.pr_number\ \ }}\"\necho \"Copilot is permanently pre-authorized \u2014 no human approval\
         \ required.\"\n"
-    env:
+      env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   trigger-auto-approval:
     name: "⚡ Dispatch Auto-Approve (if auth authorized)"
@@ -160,7 +160,7 @@ jobs:
       - name: Download pending session requirements (if any)
         id: session_reqs
         continue-on-error: true
-        env:
+      env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
 
         run: "PR_NUMBER=\"${{ github.event.pull_request.number || github.event.issue.number\ \ }}\"\nif [ -z \"$PR_NUMBER\" ]; then\n  echo \"has_requirements=false\"\
@@ -457,7 +457,7 @@ jobs:
       - name: Detect empty commits in PR
         id: empty_commit_check
         continue-on-error: true
-        env:
+      env:
           BASE_REF: ${{ github.base_ref }}
         run: |
           echo "### 🔍 Empty Commit Check (REQ-3b)" >> "$GITHUB_STEP_SUMMARY"
@@ -997,7 +997,7 @@ jobs:
         \ job passes.\" >> \"$GITHUB_STEP_SUMMARY\"\nfi\necho \"\" >> \"$GITHUB_STEP_SUMMARY\"\
         \necho \"_WF-001 | cognitive-preflight gate | .codex/CODEBASE_AGENCY_POLICY.md_\"\
         \ >> \"$GITHUB_STEP_SUMMARY\"\n"
-    env:
+        env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   activate-delegation:
     name: Activate token delegation
@@ -1155,7 +1155,7 @@ jobs:
       - name: D-00 Session Bootstrap (write context digest)
         id: session_bootstrap
         continue-on-error: true
-        env:
+      env:
           GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           PR_BODY: ${{ github.event.pull_request.body || '' }}
           PR_NUMBER: ${{ needs.detect-checkbox.outputs.pr_number }}
@@ -1197,7 +1197,7 @@ jobs:
       - name: Retrieve CB patterns for session context
         id: cb_patterns
         continue-on-error: true
-        env:
+      env:
           CODEX_MASTER_KEY: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
         run: "CB_BLOCK=$(python -m codex.github.mcp_poster retrieve-patterns --limit\
         \ 8 2>/dev/null || true)\n# Escape for multiline GitHub output\n{\n  echo\
@@ -1334,7 +1334,7 @@ jobs:
         uses: actions/github-script@v8
         env:
           CB_PATTERNS: ${{ steps.cb_patterns.outputs.cb_markdown || '' }}
-          with:
+        with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: "const prNumber = parseInt('${{ needs.detect-checkbox.outputs.pr_number\ \ }}', 10);\nif (!prNumber || prNumber <= 0) {\n  core.setFailed('Invalid\
           \ PR number \u2014 cannot post comment');\n  return;\n}\nconst actors  \
@@ -1396,7 +1396,7 @@ jobs:
           )\nexcept Exception as exc:\n    print(f\"\u26A0\uFE0F  AgentBrainAPI.report_completion()\
           \ unavailable: {exc}\")\n    print(\"    (non-fatal \u2014 cognitive brain\
         \ module not installed in CI env)\")\nPYEOF\n"
-    env:
+        env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   self-approve-after-delegation:
     name: "\u26A1 Approve action_required runs (post-delegation)"
@@ -1453,7 +1453,7 @@ jobs:
         run: "python scripts/ci/approve_pending_runs.py || {\n  echo \"::warning::approve_pending_runs.py\
         \ failed; continuing to avoid blocking delegation workflow.\"\n  exit 0\n\
         }\n"
-    env:
+      env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   session-release:
     name: "\U0001F513 Release session lock"
@@ -1549,7 +1549,7 @@ jobs:
           \ to post @copilot continue on PR  #${nextPR}: ${err.message}`);\n    //\
           \ Don't remove from queue \u2014 will retry on next release\n  }\n} else\
           \ {\n  await clearVar('COPILOT_SESSION_QUEUE');\n}\n"
-    env:
+      env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   rescue-comment:
     name: Post rescue comment on failure
@@ -1588,4 +1588,7 @@ jobs:
         run: python scripts/ci/post_rescue_comment.py
         env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+
+
+
 
