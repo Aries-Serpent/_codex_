@@ -176,7 +176,7 @@ def guard_comment_posting(
         "cascade_wave": cascade_alert["cascade_wave"] if has_cascade else None,
         "metrics": {
             k: v
-            for k, v in asdict(monitor.emit_metrics(pr_number)).items()
+            for k, v in monitor.emit_metrics(pr_number).items()
             if k != "recent_cascade_events"
         },
     }
@@ -303,8 +303,15 @@ def wrap_comment_generator(post_comment_fn):
             # Post the comment
             result = post_comment_fn(pr_number, comment_body)
             record_success(pr_number)
+            
+            # If this was an error comment with placeholder ID (0), update it with actual ID
+            # This maintains the link between cascade detection and the posted comment
+            comment_id = result.get("id")
+            if is_error and comment_id:
+                update_error_comment_id(pr_number, old_comment_id=0, new_comment_id=comment_id)
+            
             logger.info(f"Comment posted to PR #{pr_number}")
-            return {"status": "success", "comment_id": result.get("id")}
+            return {"status": "success", "comment_id": comment_id}
         except Exception as e:
             logger.error(f"Error posting comment to PR #{pr_number}: {e}")
             record_error_comment(pr_number, 0, "post_error", is_self_referential=False)
