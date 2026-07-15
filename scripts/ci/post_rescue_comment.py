@@ -330,17 +330,23 @@ def _detect_cascading_copilot_errors(
     """Detect cascading Copilot error comments and already-consolidated cascades.
 
     Cascades are identified by:
-    - Multiple comments with "comment-generic-error" marker (fresh errors)
-    - Multiple comments with cascade-consolidated-error marker (already consolidated)
+    - 5+ comments with "comment-generic-error" marker (fresh errors, threshold configurable)
+    - 5+ comments with cascade-consolidated-error marker (already consolidated)
     - Created by Copilot user within short timespan
     - Repeating UUID patterns
 
+    Args:
+        token: GitHub API token
+        repo: Repository slug (owner/repo)
+        pr_number: Pull request number
+        threshold: Minimum error comment count to trigger consolidation (default: 5)
+
     Returns:
         {
-            "is_cascading": bool,
-            "error_count": int,
-            "last_error_id": int or None,
-            "action": "CONSOLIDATE_ERRORS" | "APPEND_TO_EXISTING" | "PROCEED",
+            "is_cascading": bool - True if active cascade detected needing consolidation
+            "error_count": int - Total error comments found
+            "last_error_id": int or None - Most recent error comment ID
+            "action": str - One of "CONSOLIDATE_ERRORS", "ALREADY_CONSOLIDATED", "APPEND_TO_EXISTING", "PROCEED"
         }
     """
     page = 1
@@ -382,10 +388,10 @@ def _detect_cascading_copilot_errors(
     # If already consolidated, skip further action
     if has_consolidated_error:
         return {
-            "is_cascading": False,
+            "is_cascading": True,
             "error_count": len(error_comments),
             "last_error_id": None,
-            "action": "PROCEED",
+            "action": "ALREADY_CONSOLIDATED",
         }
 
     # If more than threshold error comments, it's an active cascade
@@ -669,6 +675,14 @@ def main() -> None:
             except Exception as exc:
                 print(f"⚠️  Failed to run consolidation script: {exc}", file=sys.stderr)
             # Fall through to normal rescue comment creation
+
+        elif action == "ALREADY_CONSOLIDATED":
+            print(
+                f"✅ CASCADE ALREADY CONSOLIDATED: {count} Copilot error comments detected "
+                f"(already consolidated). No new rescue comment needed.",
+                file=sys.stderr,
+            )
+            return  # Cascade already handled, no new comment needed
 
         elif action == "APPEND_TO_EXISTING":
             print(

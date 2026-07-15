@@ -28,6 +28,7 @@ import datetime
 import hashlib
 import json
 import os
+import re
 import sys
 import urllib.error
 import urllib.request
@@ -39,6 +40,29 @@ DUPLICATE_DIGEST_LENGTH = 16
 CASCADE_THRESHOLD = 5
 CONSOLIDATION_MARKER_PREFIX = "<!-- cascade-consolidated-error:"
 CASCADE_ERROR_ID_MARKER_PREFIX = "<!-- cascade-error-id:"
+
+
+def _extract_uuid_from_error(comment_body: str) -> str:
+    """Extract UUID from Copilot error comment.
+    
+    Copilot error comments contain a UUID after "identifier so they can better serve you:"
+    This function uses regex to extract UUID-like patterns (hex strings or standard UUID format).
+    Falls back to "unknown" if no UUID found.
+    """
+    # Try standard format first: "identifier so they can better serve you: `UUID`"
+    match = re.search(r"identifier so they can better serve you:\s*[`'\"]?([a-f0-9\-]+)[`'\"]?", comment_body)
+    if match:
+        uuid = match.group(1).strip()
+        if uuid:
+            return uuid
+    
+    # Fall back to looking for any hex string that might be a UUID
+    # UUID format: 8-4-4-4-12 hex digits or continuous hex string
+    hex_match = re.search(r"([a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}|[a-f0-9]{32})", comment_body)
+    if hex_match:
+        return hex_match.group(1)
+    
+    return "unknown"
 
 
 def _gh(
@@ -133,19 +157,15 @@ def _consolidate_cascade(
             f"{duplicate_id}:{duplicate.get('created_at')}".encode()
         ).hexdigest()[:DUPLICATE_DIGEST_LENGTH]
 
-        # Extract UUID from duplicate comment
-        uuid = "unknown"
-        if "identifier so they can better serve you:" in duplicate_body:
-            parts = duplicate_body.split("identifier so they can better serve you:")
-            if len(parts) > 1:
-                uuid = parts[1].strip().strip("`")
+        # Extract UUID from duplicate comment using robust pattern matching
+        uuid = _extract_uuid_from_error(duplicate_body)
 
         # Add marker to canonical comment
-        marker = f"{CONSOLIDATION_MARKER_PREFIX}{duplicate_digest} -->"
-        if marker not in canonical_body:
+        error_id_marker = f"{CASCADE_ERROR_ID_MARKER_PREFIX}{duplicate_id}:uuid:{uuid}:{duplicate_digest} -->"
+        if error_id_marker not in canonical_body:
             canonical_body = (
                 canonical_body
-                + f"\n{CASCADE_ERROR_ID_MARKER_PREFIX}{duplicate_id}:uuid:{uuid}:{duplicate_digest} -->"
+                + f"\n{error_id_marker}"
             )
 
     # Update canonical comment with consolidated markers
