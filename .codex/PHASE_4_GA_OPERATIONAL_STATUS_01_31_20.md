@@ -190,7 +190,7 @@ Examples:
 
 ### Implementation Details
 
-```
+```text
 Circuit Breaker State:  OPEN
 Cascade Count:          26 cascading runs
 Cascade Threshold:      20 runs

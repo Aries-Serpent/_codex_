@@ -11,7 +11,7 @@
 
 ### Infrastructure Status Change
 
-```
+```text
 BEFORE (01:31:20Z):
 ├─ Runner Allocation: ❌ DOWN (0 runners)
 ├─ Job Creation: 0 jobs/run
@@ -33,7 +33,7 @@ AFTER (01:34:48Z):
 
 ### Recovery Signal Details
 
-```
+```text
 Monitoring Checkpoint Results:
 ├─ Method: Query latest workflow jobs
 ├─ Detection: jobs_created > 0
