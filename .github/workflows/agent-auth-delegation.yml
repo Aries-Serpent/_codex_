@@ -75,7 +75,6 @@ jobs:
         id: check
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-
           PR_BODY: ${{ github.event.pull_request.body || '' }}
           PR_NUM: ${{ github.event.pull_request.number || github.event.inputs.pr_number }}
 
@@ -697,7 +696,6 @@ jobs:
         '
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-
           PR_NUMBER: ${{ github.event.pull_request.number }}
           run: "BODY=$(gh pr view \"${PR_NUMBER}\" --repo \"${{ github.repository }}\"\
         \ --json body --jq '.body // \"\"')\n\n# Detect new canonical heading format\n\
@@ -1573,7 +1571,6 @@ jobs:
       - name: Post or update rescue comment
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-
           PR_NUMBER: ${{ github.event.pull_request.number }}
           REPO: ${{ github.repository }}
           COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
