@@ -383,7 +383,6 @@ def load_model_safely(model_name: str, cache_dir: str = "./cache"):
             f"This is a bug. Please report to: "
             f"https://github.com/Aries-Serpent/_codex_/issues"
         )
-```
 
 ## Profile-Aware Development
 
@@ -433,7 +432,7 @@ pytest tests/
    - Verify via `pip install -e ".[profile]"` on each profile
 
 3. **Document in docstring or README:**
-   ```
+   ```python
    """
    Requires the runtime or full profile:
    - pip install codex-ml[runtime]
