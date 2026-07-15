@@ -49,7 +49,7 @@ jobs:
           CODEX_CACHE_VERSION: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
           CODEX_TEST_TIMEOUT_MINUTES: ${{ vars.CODEX_TEST_TIMEOUT_MINUTES || '60' }}
           CODEX_LOG_LEVEL: ${{ vars.CODEX_LOG_LEVEL || 'INFO' }}
-          run: 'echo "Auth test variables initialized:"
+        run: 'echo "Auth test variables initialized:"
 
         echo "  CODEX_CACHE_VERSION=$CODEX_CACHE_VERSION"
 
@@ -104,21 +104,21 @@ jobs:
           python scripts/ci/test_codex_master_key_scopes.py --report-json .codex/scope_report.json
         continue-on-error: true
       - name: Run comprehensive CODEX_MASTER_KEY tests
-        run: |
-          pytest tests/github/test_repo_variables_comprehensive.py -v --cov=scripts/ci --cov-report=term -k "codex_master" || true
-          pytest tests/github/test_secrets_management.py -v --cov=scripts/ci --cov-append --cov-report=term -k "codex_master" || true
-          pytest tests/github/test_workflow_approval_dispatch.py -v --cov=scripts/ci --cov-append --cov-report=term -k "codex_master" || true
-          pytest tests/github/test_webhooks.py -v --cov=scripts/ci --cov-append --cov-report=term || true
-          pytest tests/github/test_github_comprehensive_phase7a.py -v --cov=scripts/ci --cov-append --cov-report=term -k "codex_master" || true
-      env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-        continue-on-error: true
+        env:
+         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+       run: |
+         pytest tests/github/test_repo_variables_comprehensive.py -v --cov=scripts/ci --cov-report=term -k "codex_master" || true
+         pytest tests/github/test_secrets_management.py -v --cov=scripts/ci --cov-append --cov-report=term -k "codex_master" || true
+         pytest tests/github/test_workflow_approval_dispatch.py -v --cov=scripts/ci --cov-append --cov-report=term -k "codex_master" || true
+         pytest tests/github/test_webhooks.py -v --cov=scripts/ci --cov-append --cov-report=term || true
+         pytest tests/github/test_github_comprehensive_phase7a.py -v --cov=scripts/ci --cov-append --cov-report=term -k "codex_master" || true
+       continue-on-error: true
       - name: Generate CODEX_MASTER_KEY coverage report
-        run: |
-          pytest tests/github/ -k "codex_master" --cov=scripts/ci --cov-report=json:coverage.json --cov-report=term || true
-      env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-        continue-on-error: true
+        env:
+         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+       run: |
+         pytest tests/github/ -k "codex_master" --cov=scripts/ci --cov-report=json:coverage.json --cov-report=term || true
+       continue-on-error: true
       - name: Upload scope report
         uses: actions/upload-artifact@v5
         if: always()
@@ -210,7 +210,7 @@ jobs:
           path: auth-security-report.json
           retention-days: 30
           if-no-files-found: error
-          env:
+        env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
   integration-test:
     name: Integration Tests
@@ -345,8 +345,8 @@ jobs:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
           github.run_id }}
           BRANCH: ${{ github.head_ref }}
-          run: python scripts/ci/post_rescue_comment.py
-          env:
+        run: python scripts/ci/post_rescue_comment.py
+        env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
 
 

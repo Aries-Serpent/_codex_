@@ -27,8 +27,8 @@ jobs:
 
     steps:
       - name: Mask secrets
-          run: |
-            echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+        run: |
+          echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
       - uses: actions/checkout@v5
         with:
             persist-credentials: false

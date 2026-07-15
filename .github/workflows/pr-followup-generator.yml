@@ -31,7 +31,7 @@ jobs:
 
     steps:
       - name: Mask secrets
-          run: |
+        run: |
             echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
       - uses: actions/checkout@v5  # v6.0.3
         with:
@@ -136,7 +136,7 @@ jobs:
             You can use this prompt to continue work on this PR or track follow-up tasks.
 
             ---
-            _[🔗 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`;
+          _[🔗 Workflow run](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})_`;
 
             // Retry loop — guards against concurrent posts on fast-following
             // trigger events (e.g. push + workflow_run firing simultaneously).

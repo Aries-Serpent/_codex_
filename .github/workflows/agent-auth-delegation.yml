@@ -56,11 +56,9 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           PR_NUM: ${{ github.event.pull_request.number }}
-          run: "python3 scripts/ci/session_wrapup_autofix.py \\\n  --update-pr-description\
+        run: "python3 scripts/ci/session_wrapup_autofix.py \\\n  --update-pr-description\
         \ \\\n  --pr-number \"${PR_NUM}\" \\\n  || echo \"\u26A0\uFE0F  Scorecard\
         \ refresh non-zero (non-fatal \u2014 workflow continues)\"\n"
-      env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   detect-checkbox:
     name: Detect COPILOT_AGENT_AUTH_ENABLED checkbox
     needs:
