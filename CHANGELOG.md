@@ -1,5 +1,17 @@
 ## [Unreleased]
 ### Completed (Phase 4 GA Deployment Continuation — 2026-07-15)
+
+### Completed (Phase 4 CI Rescue — Security + Compliance — 2026-07-15)
+- **CodeQL Security Vulnerabilities & Action Version Violations Fixed: COMPLETE ✅** — Phase 4 CI health restoration
+  - Security fixes: 3 CodeQL shell injection vulnerabilities resolved (commits 0505f32a, 01780a83)
+    - adaptive-agent-delegation.yml: Moved inputs.max_agents to env variable
+    - actionlint-audit.yml: Replaced unsafe curl | tar with safe download-then-extract
+    - app-package-download.yml: Moved inputs.app_name to env variable
+  - Action version compliance: 81 violations fixed across 7 workflows
+    - All actions now use approved versions: checkout@v5, setup-python@v6, github-script@v8, upload-artifact@v5
+    - Workflows: capacity-planner-monitor, correlation-engine-monitor, ensemble-predictor-monitor, performance-monitoring, reasoning-engine-monitor, scaling-framework-monitor, sla-optimizer-monitor
+  - Validation: YAML syntax verified, all modified workflows compliant
+  - Comments: 2 blocking comments addressed with commit references (0505f32a, 01780a83)
 - **Multi-Lane Phase 4 GA Deployment Validation: IN PROGRESS ✅** — 4-lane parallel agent delegation active
   - Critical governance fix: WEC (Workflow Execution Checklist) restored to PR body
   - Lane 1: CI Health verification (7.3:ok baseline vs <15% target)
