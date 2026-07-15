@@ -197,46 +197,47 @@ jobs:
         GH_TOKEN: ${{ github.token }}
       run: |
         # Use GitHub API to fetch trusted files from main instead of git operations
-        # Parse repository into owner/repo format
+        # Parse repository into owner/repo format using bash parameter expansion
         REPO_FULL="${{ github.repository }}"
-        OWNER=$(echo "$REPO_FULL" | cut -d'/' -f1)
-        REPO=$(echo "$REPO_FULL" | cut -d'/' -f2)
+        OWNER="${REPO_FULL%%/*}"
+        REPO="${REPO_FULL##*/}"
          
-        # Use mktemp for temporary files to avoid conflicts on shared runners
+        # Use mktemp for all temporary files to avoid conflicts on shared runners
         ACTION_TEMP=$(mktemp)
         SCRIPT_TEMP=$(mktemp)
-        trap "rm -f '$ACTION_TEMP' '$SCRIPT_TEMP'" EXIT
+        API_ERROR=$(mktemp)
+        DECODE_ERROR=$(mktemp)
+        trap "rm -f '$ACTION_TEMP' '$SCRIPT_TEMP' '$API_ERROR' '$DECODE_ERROR'" EXIT
+         
+        # Helper function to fetch and decode file from main branch
+        fetch_file_from_main() {
+          local file_path=$1
+          local output_file=$2
+          local error_log=$3
+           
+          if gh api repos/$OWNER/$REPO/contents/$file_path?ref=main -q '.content' 2>"$error_log" | base64 -d > "$output_file" 2>&1; then
+            return 0
+          else
+            return 1
+          fi
+        }
          
         # Fetch action.yml from main
-        if gh api repos/$OWNER/$REPO/contents/.github/actions/setup-python-cached/action.yml?ref=main -q '.content' 2>/tmp/api_error.log | base64 -d > "$ACTION_TEMP" 2>/tmp/decode_error.log; then
+        if fetch_file_from_main ".github/actions/setup-python-cached/action.yml" "$ACTION_TEMP" "$API_ERROR"; then
           mkdir -p .github/actions/setup-python-cached/
           mv "$ACTION_TEMP" .github/actions/setup-python-cached/action.yml
           echo "✅ Trusted action.yml overlaid from origin/main"
         else
-          if [ -s /tmp/api_error.log ]; then
-            echo "⚠️ API error fetching action.yml: $(cat /tmp/api_error.log)"
-          elif [ -s /tmp/decode_error.log ]; then
-            echo "⚠️ Base64 decode error for action.yml: $(cat /tmp/decode_error.log)"
-          else
-            echo "⚠️ action.yml not found on origin/main — using checkout version"
-          fi
-          rm -f /tmp/api_error.log /tmp/decode_error.log
+          echo "⚠️ Failed to fetch action.yml from origin/main: $(cat "$API_ERROR" 2>/dev/null || echo 'unknown error') — using checkout version"
         fi
          
         # Fetch codebase_walkthrough.py from main
-        if gh api repos/$OWNER/$REPO/contents/scripts/qa/codebase_walkthrough.py?ref=main -q '.content' 2>/tmp/api_error.log | base64 -d > "$SCRIPT_TEMP" 2>/tmp/decode_error.log; then
+        if fetch_file_from_main "scripts/qa/codebase_walkthrough.py" "$SCRIPT_TEMP" "$DECODE_ERROR"; then
           mkdir -p scripts/qa/
           mv "$SCRIPT_TEMP" scripts/qa/codebase_walkthrough.py
           echo "✅ Trusted codebase_walkthrough.py overlaid from origin/main"
         else
-          if [ -s /tmp/api_error.log ]; then
-            echo "⚠️ API error fetching codebase_walkthrough.py: $(cat /tmp/api_error.log)"
-          elif [ -s /tmp/decode_error.log ]; then
-            echo "⚠️ Base64 decode error for codebase_walkthrough.py: $(cat /tmp/decode_error.log)"
-          else
-            echo "⚠️ codebase_walkthrough.py not found on origin/main — using checkout version"
-          fi
-          rm -f /tmp/api_error.log /tmp/decode_error.log
+          echo "⚠️ Failed to fetch codebase_walkthrough.py from origin/main: $(cat "$DECODE_ERROR" 2>/dev/null || echo 'unknown error') — using checkout version"
         fi
          
         echo "✅ Trusted code overlay complete (API-based, no git operations)"
