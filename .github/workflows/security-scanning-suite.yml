@@ -125,7 +125,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
-      with:
+        with:
             persist-credentials: false
 
       - name: Resolve lane metadata defaults safely
@@ -1031,7 +1031,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
-      with:
+        with:
             persist-credentials: false
 
       - name: Download all security-suite artifacts
@@ -1371,3 +1371,4 @@ jobs:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           BRANCH: ${{ github.head_ref }}
         run: python scripts/ci/post_rescue_comment.py
+

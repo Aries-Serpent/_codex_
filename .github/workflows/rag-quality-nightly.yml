@@ -26,7 +26,7 @@ jobs:
     - run: pip install -q pyyaml
     - name: Verify freshness SLA
       run: python scripts/rag/rag_rebuild_audit.py --check freshness
-    env:
+      env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
   quality-gate:
@@ -44,7 +44,7 @@ jobs:
     - run: pip install -q -r requirements-dev.txt
     - name: Run retrieval benchmark against thresholds
       run: python scripts/rag/rag_rebuild_audit.py --check quality
-    env:
+      env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
   rebuild-audit:
@@ -94,3 +94,4 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+

@@ -72,3 +72,4 @@ jobs:
           \  `| Caches examined | ${toDelete.length + kept} |`,\n  `| ${action} |\
         \ ${dryRun ? toDelete.length : deleted} |`,\n  `| Kept | ${kept} |`,\n \
           \ `| Space freed | ~${freedMB} MB |`,\n].join('\\n');\nawait core.summary.addRaw(summary).write();\n"
+

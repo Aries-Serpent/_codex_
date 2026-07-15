@@ -804,3 +804,4 @@ jobs:
         \ during active monitor window.\" | tee -a \"$GITHUB_STEP_SUMMARY\"\nelse\n\
         \  echo \"::error::Workflow failures detected during active Copilot session\
         \ monitor window.\"\n  exit 1\nfi\n"
+

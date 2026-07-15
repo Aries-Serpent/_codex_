@@ -20,7 +20,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
-      with:
+        with:
             persist-credentials: false
 
       - name: Verify CODEX_MANIFEST references resolve
@@ -82,3 +82,4 @@ jobs:
 
           print(f"Manifest validation passed. Checked {len(set(paths))} referenced path(s).")
           PY
+

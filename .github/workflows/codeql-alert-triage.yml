@@ -42,14 +42,14 @@ jobs:
         run: |
           python - <<'EOF'
           import json
-          
+
           try:
               with open('.codex/security/alert_triage_report.json', 'r') as f:
                   report = json.load(f)
-              
+
               critical_count = report.get('by_severity', {}).get('critical', 0)
               high_count = report.get('by_severity', {}).get('high', 0)
-              
+
               if critical_count > 0 or high_count > 0:
                   print(f"⚠️  Found {critical_count} CRITICAL and {high_count} HIGH severity alerts")
                   # TODO: Create GitHub issues for critical/high alerts
@@ -63,12 +63,12 @@ jobs:
         run: |
           git config --local user.email "copilot@github.com"
           git config --local user.name "GitHub Copilot"
-          
+
           if git diff --quiet .codex/security/; then
             echo "ℹ️ No changes to commit"
             exit 0
           fi
-          
+
           git add .codex/security/alert_triage_report.json .codex/security/alert_summary.md
           git commit -m "chore: Update CodeQL alert triage report [skip ci]"
           git push
@@ -79,3 +79,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "📊 Weekly CodeQL alert summary ready for discussion"
+

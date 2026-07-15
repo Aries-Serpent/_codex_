@@ -276,3 +276,4 @@ jobs:
 
           print(f"📝 Stored failure candidate for pattern review: '{workflow}'")
           EOF
+

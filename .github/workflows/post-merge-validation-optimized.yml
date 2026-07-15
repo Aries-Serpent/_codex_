@@ -24,7 +24,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v5  # v6.0.3
-      with:
+        with:
             persist-credentials: false
 
       - name: Set up Python
@@ -38,3 +38,4 @@ jobs:
         continue-on-error: true
         run: |
           python scripts/ci/generate_cache_keys.py --health --workflow post-merge-validation-optimized 2>/dev/null || echo "Cache health: check skipped"
+

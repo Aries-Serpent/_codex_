@@ -26,7 +26,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
-      with:
+        with:
             persist-credentials: false
 
       - name: Set up Python
@@ -78,3 +78,4 @@ jobs:
                 print('✓ Scope validation passed')
             " || true
           fi
+

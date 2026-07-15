@@ -156,7 +156,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
-      with:
+        with:
             persist-credentials: false
 
       - name: Set up Python
@@ -208,7 +208,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
-      with:
+        with:
             persist-credentials: false
 
       - name: Set up Python
@@ -296,7 +296,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
-      with:
+        with:
             persist-credentials: false
 
       - name: Set up Python
@@ -347,7 +347,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
-      with:
+        with:
             persist-credentials: false
 
       - name: Set up Python
@@ -406,7 +406,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
-      with:
+        with:
             persist-credentials: false
 
       - name: Set up Python
@@ -596,7 +596,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
-      with:
+        with:
             persist-credentials: false
 
       - name: Create deployment summary comment
@@ -655,10 +655,10 @@ jobs:
           mkdir -p .codex/metrics
           # Convert ref name to filename-safe format (replace slashes with dashes)
           SAFE_REF_NAME=$(echo "${REF_NAME}" | tr '/' '-')
-          
+
           # Build the output file path safely
           OUTPUT_FILE=".codex/metrics/release-${SAFE_REF_NAME}.json"
-          
+
           # Create metrics file
           cat > "${OUTPUT_FILE}" << 'EOF'
           {
@@ -674,7 +674,7 @@ jobs:
             }
           }
           EOF
-          
+
           echo "✅ Metrics saved to: ${OUTPUT_FILE}"
           ls -lah "${OUTPUT_FILE}"
 
@@ -702,3 +702,4 @@ jobs:
             echo "❌ Release workflow failed with status: ${STATUS}"
             exit 1
           fi
+

@@ -126,3 +126,4 @@ jobs:
         \ as e:\n    print(f\"❌ Invalid JSON: {e}\")\n    sys.exit(1)\nelse:\n  print(\"\
         ℹ️  No findings file found (will be created if needed)\")\nEOF\n"
     timeout-minutes: 15
+

@@ -81,7 +81,7 @@ jobs:
           \ JSON.stringify(baseLabels));\ncore.setOutput('wf_slug',     wfSlug);\n\
           core.setOutput('badge',       badge);\ncore.info(`\"${wfName}\" \u2192 severity=${severity}\
           \ labels=${JSON.stringify(baseLabels)}`);\n"
-    
+
       - name: Cache test results (Layer 3)
         uses: actions/cache@v5
         if: always()
@@ -439,3 +439,4 @@ jobs:
           \ issue.number,\n    state: 'closed', state_reason: 'completed',\n  });\n\
           \  core.info(`Closed issue  #${issue.number}`);\n}\nif (!matching.length)\
           \ core.info(`No open issues found for \"${wfName}\"`);\n"
+

@@ -138,20 +138,20 @@ jobs:
         run: |
           python -c "
           from src.codex.scaling.load_balancer import LoadBalancer, LoadBalancerConfig, BackendNode, BackendState
-          
+
           config = LoadBalancerConfig(algorithm='round_robin')
           lb = LoadBalancer(config)
-          
+
           # Add 3 backends
           for i in range(3):
               backend = BackendNode(f'b{i}', f'host{i}', 8080)
               backend.state = BackendState.HEALTHY
               lb.add_backend(backend)
-          
+
           # Send 300 requests
           for i in range(300):
               lb.select_backend(f'req-{i}')
-          
+
           # Verify variance
           report = lb.verify_load_distribution()
           print('Load Distribution Report:', report)
@@ -186,10 +186,10 @@ jobs:
         run: |
           python -c "
           from src.codex.scaling.auto_scaler import AutoScaler, ScalingTrigger
-          
+
           trigger = ScalingTrigger()
           scaler = AutoScaler(trigger)
-          
+
           report = scaler.verify_scaling_capability()
           print('Auto-Scaling Report:', report)
           assert report['cpu_trigger_configured'], 'CPU trigger not configured'
@@ -225,13 +225,13 @@ jobs:
         run: |
           python -c "
           from src.codex.scaling.cost_allocator import CostAllocator, CostAllocationConfig, InstancePricing
-          
+
           pricing = InstancePricing(on_demand_hourly=1.0, reserved_hourly=0.7, spot_hourly=0.3)
           config = CostAllocationConfig(pricing={'t3.medium': pricing})
-          
+
           allocator = CostAllocator(config)
           report = allocator.verify_cost_optimization()
-          
+
           print('Cost Optimization Report:', report)
           print(f\"✓ RI Utilization: {report['ri_utilization']:.1f}%\")
           print(f\"✓ Cost Breakdown:\")
@@ -271,7 +271,7 @@ jobs:
           # In production, this would query actual monitoring
           uptime = 99.95
           sla_target = 99.0
-          
+
           if uptime >= sla_target:
               print(f'✓ SLA Compliance: {uptime}% (target: {sla_target}%)')
               exit(0)
@@ -318,7 +318,7 @@ jobs:
           import xml.etree.ElementTree as ET
           root = ET.parse('coverage.xml').getroot()
           coverage_pct = float(root.get('line-rate', 0)) * 100
-          
+
           if coverage_pct >= 85:
               print(f'✓ Code coverage: {coverage_pct:.1f}% (target: ≥85%)')
               exit(0)
@@ -347,33 +347,33 @@ jobs:
           python -c "
           from src.codex.scaling import FailoverManager, RegionConfig, HealthStatus
           import time
-          
+
           print('=== Failover Drill ===')
-          
+
           mgr = FailoverManager(check_interval=0.1)
-          
+
           # Setup regions
           mgr.add_region(RegionConfig('us-east-1', 'region-1', primary=True))
           mgr.add_region(RegionConfig('us-west-2', 'region-2', primary=False))
-          
+
           print('✓ Regions configured')
-          
+
           # Mark primary as healthy
           mgr.region_states['region-1'] = HealthStatus.HEALTHY
           mgr.region_states['region-2'] = HealthStatus.HEALTHY
           print('✓ Primary and secondary healthy')
-          
+
           # Simulate primary failure
           print('Simulating primary region failure...')
           mgr.region_states['region-1'] = HealthStatus.UNHEALTHY
           mgr._make_failover_decision()
-          
+
           if mgr.get_current_primary() == 'region-2':
               print('✓ Failover successful')
           else:
               print('✗ Failover failed')
               exit(1)
-          
+
           # Verify failover event
           if mgr.failover_events:
               event = mgr.failover_events[-1]
@@ -407,18 +407,18 @@ jobs:
           python -c "
           from datetime import datetime
           from src.codex.scaling.cost_allocator import CostAllocator, CostAllocationConfig, InstancePricing
-          
+
           print('=== Weekly Cost Report ===')
-          
+
           pricing = InstancePricing(on_demand_hourly=1.0, reserved_hourly=0.7, spot_hourly=0.3)
           config = CostAllocationConfig(pricing={'t3.medium': pricing})
-          
+
           allocator = CostAllocator(config)
-          
+
           # Generate report
           month = datetime.now().strftime('%Y-%m')
           report = allocator.generate_monthly_report(month)
-          
+
           print(f'Report: {report.report_id}')
           print(f'Month: {report.report_month}')
           print(f'Total Cost: \${report.total_cost:.2f}')
@@ -476,3 +476,4 @@ jobs:
             echo "⚠️  Some health checks failed"
             exit 1
           fi
+

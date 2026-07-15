@@ -127,11 +127,11 @@ jobs:
           echo "## Security Analysis (Bandit)" >> $GITHUB_STEP_SUMMARY
           bandit -r src/ -f json -o bandit-report.json || true
           bandit -r src/ -f txt | tee bandit-output.txt
-          
+
           CRITICAL_COUNT=$(jq '[.results[] | select(.severity == "HIGH" and .confidence == "HIGH")] | length' bandit-report.json 2>/dev/null || echo "0")
           echo "**Critical Issues:** ${CRITICAL_COUNT}" >> $GITHUB_STEP_SUMMARY
           tail -20 bandit-output.txt >> $GITHUB_STEP_SUMMARY || true
-          
+
           if [ "${CRITICAL_COUNT}" -gt 0 ]; then
             echo "::error::Bandit found ${CRITICAL_COUNT} CRITICAL security issues"
             exit 1
@@ -154,3 +154,4 @@ jobs:
           echo "- Security Analysis: ${{ needs.bandit-security.result || 'skipped' }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Execution Time:** ~15 minutes (parallel execution instead of ~40 min sequential)" >> $GITHUB_STEP_SUMMARY
+

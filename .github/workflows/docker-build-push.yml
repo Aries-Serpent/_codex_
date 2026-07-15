@@ -81,7 +81,7 @@ jobs:
     - name: Write approval status to summary
       shell: bash
       run: bash scripts/ci/owner_approval_summary.sh docker-build-push
-    env:
+      env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   build-and-smoke:
     if: ${{ !(github.event_name == 'workflow_dispatch' && (github.event.inputs.check_only
@@ -147,7 +147,7 @@ jobs:
     - name: Smoke test container
       shell: bash
       run: bash scripts/ci/container_smoke.sh codex:ci 8000 18000
-    env:
+      env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   push:
     if: ${{ github.event_name != 'pull_request' && !(github.event_name == 'workflow_dispatch'
@@ -300,5 +300,6 @@ jobs:
           github.run_id }}
         BRANCH: ${{ github.head_ref }}
       run: python scripts/ci/post_rescue_comment.py
-    env:
+      env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
+

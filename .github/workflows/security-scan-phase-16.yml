@@ -141,27 +141,27 @@ jobs:
           echo "" >> security-report.md
           echo "## Scan Results" >> security-report.md
           echo "" >> security-report.md
-          
+
           if [ -f bandit-report.json ]; then
             echo "### Bandit SAST Scan" >> security-report.md
             echo "✓ Completed" >> security-report.md
           fi
-          
+
           if [ -f semgrep-report.json ]; then
             echo "### Semgrep SAST Scan" >> security-report.md
             echo "✓ Completed" >> security-report.md
           fi
-          
+
           if [ -f gitleaks-report.json ]; then
             echo "### Gitleaks Secret Detection" >> security-report.md
             echo "✓ Completed" >> security-report.md
           fi
-          
+
           if [ -f pip-audit-report.json ]; then
             echo "### pip-audit Dependency Scan" >> security-report.md
             echo "✓ Completed" >> security-report.md
           fi
-          
+
           echo "" >> security-report.md
           echo "**Status**: All security scans completed successfully" >> security-report.md
 
@@ -172,7 +172,7 @@ jobs:
           script: |
             const fs = require('fs');
             const report = fs.readFileSync('security-report.md', 'utf8');
-            
+
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
@@ -205,7 +205,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
-      with:
+        with:
             persist-credentials: false
 
       - name: Set up Python
@@ -281,7 +281,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
-      with:
+        with:
             persist-credentials: false
 
       - name: Initialize CodeQL
@@ -308,7 +308,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
-      with:
+        with:
             persist-credentials: false
 
       - name: Set up Python
@@ -376,7 +376,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
-      with:
+        with:
             persist-credentials: false
 
       - name: Set up Python
@@ -409,7 +409,7 @@ jobs:
           pip install gitleaks-py || pip install gitpython
           python -c "
           import subprocess
-          result = subprocess.run(['gitleaks', 'detect', '--verbose', '--exit-code', '0'], 
+          result = subprocess.run(['gitleaks', 'detect', '--verbose', '--exit-code', '0'],
                                   capture_output=True, text=True)
           if 'No secrets found' in result.stdout or result.returncode == 0:
               print('✓ No hardcoded secrets detected')
@@ -449,7 +449,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
-      with:
+        with:
             persist-credentials: false
 
       - name: Create Summary
@@ -493,3 +493,4 @@ jobs:
           echo "Total tests created: 1000+"
           echo "Security coverage: 100%"
           echo "CodeQL status: Validated"
+

@@ -40,3 +40,4 @@ name: Security Findings API
     - security-findings-query
 permissions:
   contents: read
+

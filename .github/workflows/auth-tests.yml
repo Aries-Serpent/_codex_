@@ -34,7 +34,7 @@ jobs:
         python-version:
         - 3.12.13
     steps:
-    
+
       - name: Cache test results (Layer 3)
         uses: actions/cache@v5
         if: always()
@@ -79,7 +79,7 @@ jobs:
         \ {pytest_asyncio.__version__}')\"\n\npip install -e \".[dev]\"\npip install\
         \ httpx  # Additional dependency for auth tests\npip install bandit>=1.7.5\
         \  # Pre-install bandit for security scan\n"
-    
+
       - name: Cache coverage reports (Layer 4)
         uses: actions/cache@v5
         with:
@@ -360,6 +360,7 @@ jobs:
           github.run_id }}
         BRANCH: ${{ github.head_ref }}
         run: python scripts/ci/post_rescue_comment.py
-    env:
+        env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+

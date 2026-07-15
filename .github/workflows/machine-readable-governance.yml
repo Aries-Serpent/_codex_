@@ -24,7 +24,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
-      with:
+        with:
             persist-credentials: false
 
       - name: Setup Python
@@ -82,3 +82,4 @@ jobs:
             docs-data/generated/agent-context.json
             docs-data/generated/search-index.jsonl
             docs-data/generated/unmanaged-candidates-report.json
+

@@ -97,7 +97,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5  # v6.0.3
-      with:
+        with:
             persist-credentials: false
 
       - name: CacheManager health check
@@ -278,3 +278,4 @@ jobs:
             .codex/reports/analytics-report.md
           if-no-files-found: ignore
           retention-days: 90
+

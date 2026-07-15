@@ -363,3 +363,4 @@ jobs:
         \ \"✅ Version is valid\"\nelse\n  echo \"❌ Version must be higher than last\
         \ release\"\n  exit 1\nfi\n"
     timeout-minutes: 15
+

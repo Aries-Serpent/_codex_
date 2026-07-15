@@ -70,3 +70,4 @@ jobs:
       - name: Demo script smoke test
         run: |
           bash examples/run_demo.sh
+

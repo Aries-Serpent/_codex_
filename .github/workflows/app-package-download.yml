@@ -518,3 +518,4 @@ jobs:
           echo "3. Follow the instructions in \`PACKAGE_INFO.md\`" >> $GITHUB_STEP_SUMMARY
           echo "4. Install dependencies with \`pip install -r requirements.txt\`" >> $GITHUB_STEP_SUMMARY
           echo "5. Run the application with \`python ${APP_ENTRY}\`" >> $GITHUB_STEP_SUMMARY
+
