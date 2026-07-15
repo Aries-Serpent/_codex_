@@ -263,6 +263,10 @@ class CascadeDetector:
                     seconds=config["wave_2_window"]
                 )
                 
+                # Ensure right >= i (right never goes backward due to sorted comments)
+                if right < i:
+                    right = i
+                
                 # Move right pointer to include all comments within window from position i
                 while right < len(sorted_comments) and sorted_comments[right].created_at <= window_end:
                     right += 1
@@ -282,6 +286,10 @@ class CascadeDetector:
                 window_end = window_start + timedelta(
                     seconds=config["wave_3_window"]
                 )
+                
+                # Ensure right >= i (right never goes backward due to sorted comments)
+                if right < i:
+                    right = i
                 
                 # Move right pointer to include all comments within window from position i
                 while right < len(sorted_comments) and sorted_comments[right].created_at <= window_end:
