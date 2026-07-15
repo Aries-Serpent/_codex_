@@ -33,7 +33,7 @@ Changed cascade detection actions:
 
 ```python
 def _detect_cascading_copilot_errors(...) -> dict:
-    # Returns action: "APPEND_TO_EXISTING" | "QUEUE_FOR_BATCH" | "SKIP_CONSOLIDATION" | "PROCEED"
+    # Returns action: "APPEND_TO_EXISTING" | "SKIP_CONSOLIDATION" | "PROCEED"
 ```
 
 ### 2. Comment Batching Queue System
@@ -144,7 +144,6 @@ When multiple workflows fail on the same commit within a short timeframe:
   - `"PROCEED"` → No cascade, normal posting
   - `"APPEND_TO_EXISTING"` → 10+ errors, use append-first
   - `"SKIP_CONSOLIDATION"` → 5-9 errors, skip consolidation
-  - `"QUEUE_FOR_BATCH"` → (Not used currently, reserved for future)
 
 #### `_handle_cascade_append()`
 - **Input**: PR info + existing comment ID + workflow details

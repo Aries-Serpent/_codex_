@@ -87,6 +87,7 @@ import time
 import urllib.error
 import urllib.request
 import pathlib as _pathlib
+from typing import Any
 
 MAX_COMMENT_LEN = 65_536  # GitHub comment body limit
 CONSOLIDATION_DELAY_SECONDS = 3
@@ -127,7 +128,7 @@ def _gh(
         return exc.code, err_body
 
 
-def _get_batch_queue_module():
+def _get_batch_queue_module() -> Any:
     """Lazily import batch queue module, gracefully degrading if unavailable."""
     try:
         script_dir = str(_pathlib.Path(__file__).parent)
@@ -219,7 +220,7 @@ def _handle_cascade_append(
                     section_content=section_content,
                 )
                 return True
-            except Exception as exc:
+            except (ImportError, AttributeError, IOError, OSError) as exc:
                 print(f"⚠️  Batch queue failed (non-blocking): {exc}", file=sys.stderr)
         return False
 
@@ -531,7 +532,7 @@ def main() -> None:
     try:
         cascade_info = _detect_cascading_copilot_errors(token, repo, pr_number)
     except Exception as exc:
-        print(f"⚠️  Cascade check failed (non-blocking): {exc}", file=__import__('sys').stderr)
+        print(f"⚠️  Cascade check failed (non-blocking): {exc}", file=sys.stderr)
         # Continue execution—cascade check failure shouldn't block rescue posts
 
     # Defensive: when COMMIT_SHA or BRANCH env vars were not supplied (e.g. when
