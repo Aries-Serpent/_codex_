@@ -197,27 +197,48 @@ jobs:
         GH_TOKEN: ${{ github.token }}
       run: |
         # Use GitHub API to fetch trusted files from main instead of git operations
-        OWNER="${{ github.repository_owner }}"
-        REPO="${{ github.event.repository.name }}"
-        
+        # Parse repository into owner/repo format
+        REPO_FULL="${{ github.repository }}"
+        OWNER=$(echo "$REPO_FULL" | cut -d'/' -f1)
+        REPO=$(echo "$REPO_FULL" | cut -d'/' -f2)
+         
+        # Use mktemp for temporary files to avoid conflicts on shared runners
+        ACTION_TEMP=$(mktemp)
+        SCRIPT_TEMP=$(mktemp)
+        trap "rm -f '$ACTION_TEMP' '$SCRIPT_TEMP'" EXIT
+         
         # Fetch action.yml from main
-        if gh api repos/$OWNER/$REPO/contents/.github/actions/setup-python-cached/action.yml?ref=main -q '.content' 2>/dev/null | base64 -d > /tmp/action.yml 2>/dev/null; then
+        if gh api repos/$OWNER/$REPO/contents/.github/actions/setup-python-cached/action.yml?ref=main -q '.content' 2>/tmp/api_error.log | base64 -d > "$ACTION_TEMP" 2>/tmp/decode_error.log; then
           mkdir -p .github/actions/setup-python-cached/
-          mv /tmp/action.yml .github/actions/setup-python-cached/action.yml
+          mv "$ACTION_TEMP" .github/actions/setup-python-cached/action.yml
           echo "✅ Trusted action.yml overlaid from origin/main"
         else
-          echo "⚠️ action.yml not found on origin/main — using checkout version"
+          if [ -s /tmp/api_error.log ]; then
+            echo "⚠️ API error fetching action.yml: $(cat /tmp/api_error.log)"
+          elif [ -s /tmp/decode_error.log ]; then
+            echo "⚠️ Base64 decode error for action.yml: $(cat /tmp/decode_error.log)"
+          else
+            echo "⚠️ action.yml not found on origin/main — using checkout version"
+          fi
+          rm -f /tmp/api_error.log /tmp/decode_error.log
         fi
-        
+         
         # Fetch codebase_walkthrough.py from main
-        if gh api repos/$OWNER/$REPO/contents/scripts/qa/codebase_walkthrough.py?ref=main -q '.content' 2>/dev/null | base64 -d > /tmp/codebase_walkthrough.py 2>/dev/null; then
+        if gh api repos/$OWNER/$REPO/contents/scripts/qa/codebase_walkthrough.py?ref=main -q '.content' 2>/tmp/api_error.log | base64 -d > "$SCRIPT_TEMP" 2>/tmp/decode_error.log; then
           mkdir -p scripts/qa/
-          mv /tmp/codebase_walkthrough.py scripts/qa/codebase_walkthrough.py
+          mv "$SCRIPT_TEMP" scripts/qa/codebase_walkthrough.py
           echo "✅ Trusted codebase_walkthrough.py overlaid from origin/main"
         else
-          echo "⚠️ codebase_walkthrough.py not found on origin/main — using checkout version"
+          if [ -s /tmp/api_error.log ]; then
+            echo "⚠️ API error fetching codebase_walkthrough.py: $(cat /tmp/api_error.log)"
+          elif [ -s /tmp/decode_error.log ]; then
+            echo "⚠️ Base64 decode error for codebase_walkthrough.py: $(cat /tmp/decode_error.log)"
+          else
+            echo "⚠️ codebase_walkthrough.py not found on origin/main — using checkout version"
+          fi
+          rm -f /tmp/api_error.log /tmp/decode_error.log
         fi
-        
+         
         echo "✅ Trusted code overlay complete (API-based, no git operations)"
     - name: Set up Python
       uses: ./.github/actions/setup-python-cached
