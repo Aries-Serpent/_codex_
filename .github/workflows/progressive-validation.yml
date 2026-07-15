@@ -29,14 +29,14 @@ jobs:
       changed_files_count: ${{ steps.analyze.outputs.changed_files_count }}
       validation_strategy: ${{ steps.analyze.outputs.validation_strategy }}
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v5
-      with:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
         persist-credentials: false
         fetch-depth: 0
-    - name: Analyze PR Size
-      id: analyze
-      run: |
+      - name: Analyze PR Size
+        id: analyze
+        run: |
         # Count changed files between base and head
         # Support both direct PR trigger and workflow_dispatch fallback
         if [ -n "${{ github.event.pull_request.base.sha }}" ]; then
@@ -70,8 +70,8 @@ jobs:
           echo "pr_size=refactor" >> "$GITHUB_OUTPUT"
           echo "validation_strategy=import_validation" >> "$GITHUB_OUTPUT"
         fi
-    - name: Report PR Size
-      run: |
+      - name: Report PR Size
+        run: |
         echo "### PR Size Analysis Results" >> "$GITHUB_STEP_SUMMARY"
         echo "" >> "$GITHUB_STEP_SUMMARY"
         echo "**PR Size:** ${{ steps.analyze.outputs.pr_size }}" >> "$GITHUB_STEP_SUMMARY"
@@ -83,10 +83,10 @@ jobs:
         echo "Changed Files: ${{ steps.analyze.outputs.changed_files_count }}"
         echo "Strategy: ${{ steps.analyze.outputs.validation_strategy }}"
         echo "================================"
-    - name: Post to PR Status Dashboard
-      if: github.event_name == 'pull_request'
-      uses: ./.github/actions/post-pr-summary
-      with:
+      - name: Post to PR Status Dashboard
+        if: github.event_name == 'pull_request'
+        uses: ./.github/actions/post-pr-summary
+        with:
         workflow-name: PR Size Analysis
         status: info
         summary: '${{ steps.analyze.outputs.pr_size }} PR — ${{ steps.analyze.outputs.changed_files_count }} files — strategy: ${{ steps.analyze.outputs.validation_strategy }}'
@@ -106,18 +106,18 @@ jobs:
     permissions:
       contents: read
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v5
-      with:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
         persist-credentials: false
-    - name: Set up Python
-      uses: ./.github/actions/setup-python-cached
-      with:
+      - name: Set up Python
+        uses: ./.github/actions/setup-python-cached
+        with:
         python-version: 3.12.13
         cache-tier: common
         cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
-    - name: Install minimal dependencies
-      run: 'python -m pip install --upgrade pip
+      - name: Install minimal dependencies
+        run: 'python -m pip install --upgrade pip
 
         # Pin pytest plugins (PR  #3248)
 
@@ -129,10 +129,10 @@ jobs:
         pip install pytest pytest-timeout
 
         '
-    - name: Run import validation
-      id: imports
-      continue-on-error: false
-      run: 'echo "Testing basic imports..."
+      - name: Run import validation
+        id: imports
+        continue-on-error: false
+        run: 'echo "Testing basic imports..."
 
         python -c "import sys; print(f''Python: {sys.version}'')"
 
@@ -145,20 +145,20 @@ jobs:
         echo "✓ Import validation passed"
 
         '
-    - name: Run smoke tests
-      run: "# Quick syntax and basic functionality tests\n# These should complete\
+      - name: Run smoke tests
+        run: "# Quick syntax and basic functionality tests\n# These should complete\
         \ in <2 minutes\npytest tests/ -k \"smoke or quick\" \\\n  --timeout=60 \\\
         \n  -v \\\n  --tb=short \\\n  -x \\\n  || echo \"smoke_failed=true\" >> $GITHUB_OUTPUT\n"
-    - name: Report smoke results
-      if: always()
-      run: 'echo "### Smoke Test Results" >> $GITHUB_STEP_SUMMARY
+      - name: Report smoke results
+        if: always()
+        run: 'echo "### Smoke Test Results" >> $GITHUB_STEP_SUMMARY
 
         echo "**Status:** Layer 1 validation" >> $GITHUB_STEP_SUMMARY
 
         echo "**Duration:** < 10 minutes" >> $GITHUB_STEP_SUMMARY
 
         '
-      env:
+        env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
   unit-tests:
@@ -179,37 +179,37 @@ jobs:
         - 3
       fail-fast: false
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v5
-      with:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
         persist-credentials: false
-    - name: Set up Python
-      uses: ./.github/actions/setup-python-cached
-      with:
+      - name: Set up Python
+        uses: ./.github/actions/setup-python-cached
+        with:
         python-version: 3.12.13
         cache-tier: common
         cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
-    - name: Install dependencies
-      run: 'python -m pip install --upgrade pip
+      - name: Install dependencies
+        run: 'python -m pip install --upgrade pip
 
         pip install pytest pytest-timeout pytest-xdist
 
         pip install -e .
 
         '
-    - name: Run unit tests (shard ${{ matrix.shard }})
-      run: "pytest tests/ \\\n  --timeout=180 \\\n  -m \"not slow and not integration\"\
+      - name: Run unit tests (shard ${{ matrix.shard }})
+        run: "pytest tests/ \\\n  --timeout=180 \\\n  -m \"not slow and not integration\"\
         \ \\\n  --dist=loadfile \\\n  -n auto \\\n  --shard-id=$((${{ matrix.shard\
         \ }} - 1)) \\\n  --num-shards=3 \\\n  -v \\\n  || echo \"unit_failed=true\"\
         \ >> $GITHUB_OUTPUT\n"
-    - name: Report unit results
-      if: always()
-      run: 'echo "### Unit Test Results (Shard ${{ matrix.shard }})" >> $GITHUB_STEP_SUMMARY
+      - name: Report unit results
+        if: always()
+        run: 'echo "### Unit Test Results (Shard ${{ matrix.shard }})" >> $GITHUB_STEP_SUMMARY
 
         echo "**Status:** Layer 2 validation" >> $GITHUB_STEP_SUMMARY
 
         '
-      env:
+        env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
   integration-tests:
@@ -223,35 +223,35 @@ jobs:
       contents: read
     timeout-minutes: 30
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v5
-      with:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
         persist-credentials: false
-    - name: Set up Python
-      uses: ./.github/actions/setup-python-cached
-      with:
+      - name: Set up Python
+        uses: ./.github/actions/setup-python-cached
+        with:
         python-version: 3.12.13
         cache-tier: common
         cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
-    - name: Install dependencies
-      run: 'python -m pip install --upgrade pip
+      - name: Install dependencies
+        run: 'python -m pip install --upgrade pip
 
         pip install pytest pytest-timeout
 
         pip install -e .
 
         '
-    - name: Run integration tests
-      run: "pytest tests/ \\\n  --timeout=300 \\\n  -m \"integration and not slow\"\
+      - name: Run integration tests
+        run: "pytest tests/ \\\n  --timeout=300 \\\n  -m \"integration and not slow\"\
         \ \\\n  -v \\\n  --tb=short \\\n  || echo \"integration_failed=true\" >> $GITHUB_OUTPUT\n"
-    - name: Report integration results
-      if: always()
-      run: 'echo "### Integration Test Results" >> $GITHUB_STEP_SUMMARY
+      - name: Report integration results
+        if: always()
+        run: 'echo "### Integration Test Results" >> $GITHUB_STEP_SUMMARY
 
         echo "**Status:** Layer 3 validation" >> $GITHUB_STEP_SUMMARY
 
         '
-      env:
+        env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
   slow-tests:
@@ -265,35 +265,35 @@ jobs:
       contents: read
     timeout-minutes: 60
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v5
-      with:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
         persist-credentials: false
-    - name: Set up Python
-      uses: ./.github/actions/setup-python-cached
-      with:
+      - name: Set up Python
+        uses: ./.github/actions/setup-python-cached
+        with:
         python-version: 3.12.13
         cache-tier: common
         cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
-    - name: Install dependencies
-      run: 'python -m pip install --upgrade pip
+      - name: Install dependencies
+        run: 'python -m pip install --upgrade pip
 
         pip install pytest pytest-timeout
 
         pip install -e .
 
         '
-    - name: Run slow tests
-      run: "pytest tests/ \\\n  --timeout=600 \\\n  -m \"slow\" \\\n  -v \\\n  --tb=short\
+      - name: Run slow tests
+        run: "pytest tests/ \\\n  --timeout=600 \\\n  -m \"slow\" \\\n  -v \\\n  --tb=short\
         \ \\\n  || echo \"slow_failed=true\" >> $GITHUB_OUTPUT\n"
-    - name: Report slow results
-      if: always()
-      run: 'echo "### Slow Test Results" >> $GITHUB_STEP_SUMMARY
+      - name: Report slow results
+        if: always()
+        run: 'echo "### Slow Test Results" >> $GITHUB_STEP_SUMMARY
 
         echo "**Status:** Layer 4 validation" >> $GITHUB_STEP_SUMMARY
 
         '
-      env:
+        env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
   validation-summary:
@@ -310,14 +310,14 @@ jobs:
       contents: read
       pull-requests: write
     steps:
-    - name: Checkout (needed for post-pr-summary action)
-      uses: actions/checkout@v5
-      with:
+      - name: Checkout (needed for post-pr-summary action)
+        uses: actions/checkout@v5
+        with:
         persist-credentials: false
-    - name: Generate summary
-      id: gen-summary
-      uses: actions/github-script@v8
-      with:
+      - name: Generate summary
+        id: gen-summary
+        uses: actions/github-script@v8
+        with:
         script: "const prSize = '${{ needs.analyze.outputs.pr_size }}';\nconst validationStrategy\
           \ = '${{ needs.analyze.outputs.validation_strategy }}';\n\nconst layerResults\
           \ = {\n  smoke: '${{ needs.smoke-tests.result }}',\n  unit: '${{ needs.unit-tests.result\
@@ -337,10 +337,10 @@ jobs:
           \ On-demand |`,\n].join('\\n');\n\ncore.setOutput('status', overallStatus);\n\
           core.setOutput('summary-line', summaryLine);\ncore.setOutput('details',\
           \ details);\n"
-    - name: Post to PR Status Dashboard
-      if: github.event_name == 'pull_request'
-      uses: ./.github/actions/post-pr-summary
-      with:
+      - name: Post to PR Status Dashboard
+        if: github.event_name == 'pull_request'
+        uses: ./.github/actions/post-pr-summary
+        with:
         workflow-name: Progressive Validation
         status: ${{ steps.gen-summary.outputs.status }}
         summary: ${{ steps.gen-summary.outputs.summary-line }}
@@ -364,14 +364,14 @@ jobs:
       issues: write
     timeout-minutes: 5
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v5
-      with:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
         persist-credentials: false
         token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
         fetch-depth: 1
-    - name: Post or update rescue comment
-      env:
+      - name: Post or update rescue comment
+        env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
           }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
@@ -382,8 +382,8 @@ jobs:
         RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
           github.run_id }}
         BRANCH: ${{ github.head_ref }}
-      run: python scripts/ci/post_rescue_comment.py
-      env:
+        run: python scripts/ci/post_rescue_comment.py
+        env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
 
