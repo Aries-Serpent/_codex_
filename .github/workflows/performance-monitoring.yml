@@ -26,23 +26,27 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
-        fetch-depth: 0
+          fetch-depth: 0
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
-        python-version: "3.11"
-        cache: pip
+          python-version: "3.11"
+          cache: pip
       - name: Install dependencies
-        run: "python -m pip install --upgrade pip
-
-        pip install -q numpy scipy pytest pytest-benchmark
-
-        "
+        run: |
+          python -m pip install --upgrade pip
+          pip install -q numpy scipy pytest pytest-benchmark
       - name: Load baseline metrics
-        run: "mkdir -p .codex/perf\nif [ -f .codex/perf/baselines.json ]; then\n  echo\
-        \ \"Baseline metrics found\"\n  python -c \"\nimport json\nwith open(".codex/perf/baselines.json",\
-        \ "r") as f:\n  data = json.load(f)\nprint(f"Loaded baseline from {data.get(\\\
-        \"metadata\\\", {}).get(\\\"execution_date\\\")}")\"\nfi\n"
+        run: |
+          mkdir -p .codex/perf
+          if [ -f .codex/perf/baselines.json ]; then
+            echo "Baseline metrics found"
+            python -c "
+          import json
+          with open('.codex/perf/baselines.json', 'r') as f:
+            data = json.load(f)
+          print(f'Loaded baseline from {data.get(\"metadata\", {}).get(\"execution_date\")}')"
+          fi
       - name: Collect current metrics
         id: collect_metrics
         run: "python scripts/collect_performance_metrics.py \\\n  --output metrics_current.json\
@@ -71,33 +75,33 @@ jobs:
         if: github.event_name == "pull_request" && steps.sla_check.outcome == "success"
         uses: actions/github-script@v8
         with:
-        script: "const fs = require("fs");\nconst comment = fs.readFileSync("sla_check_result.md",\
-          \ "utf8");\n\ngithub.rest.issues.createComment({\n  issue_number: context.issue.number,\n\
-          \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  body: comment\n\
-          });\n"
+          script: |
+            const fs = require("fs");
+            const comment = fs.readFileSync("sla_check_result.md", "utf8");
+             
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
       - name: Upload metrics artifacts
         if: always()
         uses: actions/upload-artifact@v5
         with:
-        name: performance-metrics
-        path: "metrics_current.json
-
-          regression_report.json
-
-          performance_report.md
-
-          sla_check_result.md
-
-          "
-        retention-days: 30
+          name: performance-metrics
+          path: |
+            metrics_current.json
+            regression_report.json
+            performance_report.md
+            sla_check_result.md
+          retention-days: 30
       - name: Block PR on critical regression
-        if: github.event_name == "pull_request" && steps.sla_check.outputs.sla_passed
-        == "false"
+        if: github.event_name == "pull_request" && steps.sla_check.outputs.sla_passed == "false"
         uses: actions/github-script@v8
         with:
-        script: "core.setFailed(""Performance SLA check failed - PR cannot be merged"");
-
-          "
+          script: |
+            core.setFailed("Performance SLA check failed - PR cannot be merged");
       - name: Store metrics in analytics
         if: always()
         run: "python scripts/store_performance_analytics.py \\\n  --metrics metrics_current.json\
