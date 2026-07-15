@@ -32,8 +32,8 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
-        python-version: 3.12.13
-        cache: pip
+          python-version: 3.12.13
+          cache: pip
       - name: Install import-linter
         run: 'pip install import-linter --quiet
 
@@ -41,6 +41,5 @@ jobs:
       - name: Run import-linter
         run: lint-imports
         env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-        }}
+         GH_TOKEN: "${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}"
 
