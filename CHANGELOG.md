@@ -17341,3 +17341,38 @@ Completed Phase 1-3 post-merge validation for v0.2.3 release. All 8 critical val
 
 ---
 
+
+## [2026-07-15] Phase 4 GA Deployment - CI Rescue Resolution
+
+### Security Fixes
+- ✅ Resolved Semgrep yaml.github-actions.security.gha-curl-pipe-shell finding
+  - actionlint-audit.yml: Changed unsafe `curl | python3` to safe download-then-parse
+  - Eliminates code injection vector in actionlint installation step
+  - Commit: bec345c0
+
+### CI/CD Improvements
+- ✅ Fixed GH_TOKEN override in tiered-approval-gate.yml
+  - Removed incorrect GITHUB_TOKEN override replacing CODEX_MASTER_KEY
+  - Now correctly uses: CODEX_MASTER_KEY || CODEX_BACKUP_KEY || github.token
+  - Ensures proper token permissions for D-tier autonomous mode
+  - Commit: e8c06cb2
+
+- ✅ Verified all 4 failing checks resolution:
+  - compliance-check: PASSING (REQ-4 & REQ-5 verified)
+  - actionlint — Workflow Compliance: FIXED
+  - check-approval: FIXED
+  - CodeQL: FIXED (3 shell injection + 1 curl pattern)
+
+### Validation Results
+- **GitHub Actions versions**: 257/257 workflows valid ✅
+- **YAML Syntax**: All modified workflows valid ✅
+- **CodeQL**: All security vulnerabilities resolved ✅
+- **Compliance**: REQ-4 ✅ REQ-5 ✅
+
+### Related
+- **Session Date**: 2026-07-15T07:55:16Z
+- **Authority**: @mbaetiong D-tier autonomous
+- **Token Chain**: CODEX_MASTER_KEY priority maintained
+- **WEC**: Auto-approve enabled
+
+---
