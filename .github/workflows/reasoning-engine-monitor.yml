@@ -17,26 +17,26 @@ jobs:
       actions: read
       checks: write
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v5
-    - name: Set up Python
-      uses: actions/setup-python@v6
-      with:
+      - name: Checkout code
+        uses: actions/checkout@v5
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
         python-version: "3.12"
-    - name: Install dependencies
-      run: "python -m pip install --upgrade pip
+      - name: Install dependencies
+        run: "python -m pip install --upgrade pip
 
         pip install numpy pytest pytest-asyncio
 
         "
-    - name: Run reasoning engine tests
-      id: tests
-      run: "python -m pytest tests/cognitive_brain/test_reasoning_engine.py \\\n \
+      - name: Run reasoning engine tests
+        id: tests
+        run: "python -m pytest tests/cognitive_brain/test_reasoning_engine.py \\\n \
         \ -v --tb=short --json-report --json-report-file=test_report.json\n"
-      continue-on-error: true
-    - name: Generate synthetic workload
-      id: workload
-      run: "python3 << "EOF"\nimport asyncio\nimport json\nimport time\nfrom pathlib\
+        continue-on-error: true
+      - name: Generate synthetic workload
+        id: workload
+        run: "python3 << "EOF"\nimport asyncio\nimport json\nimport time\nfrom pathlib\
         \ import Path\nfrom src.codex.cognitive_brain.reasoning_engine import ReasoningEngine\n\
         from src.codex.cognitive_brain.knowledge_base import KnowledgeBase\n\nasync\
         \ def run_workload():\n    # Initialize\n    kb = KnowledgeBase()\n    engine\
@@ -68,10 +68,10 @@ jobs:
         # Output for next step\nprint(f\"::set-output name=brier_score::{report["brier_score"]}\"\
         )\nprint(f\"::set-output name=p99_latency::{report["latency_ms"]["p99"]}\"\
         )\n\nEOF\n"
-    - name: Check calibration drift
-      id: calibration
-      if: always()
-      run: "python3 << "EOF"\nimport json\nfrom pathlib import Path\n\nreport_file\
+      - name: Check calibration drift
+        id: calibration
+        if: always()
+        run: "python3 << "EOF"\nimport json\nfrom pathlib import Path\n\nreport_file\
         \ = Path(\".codex/reasoning/daily_monitor_report.json\")\nif not report_file.exists():\n\
         \    print(\"No report generated\")\n    exit(0)\n\nwith open(report_file)\
         \ as f:\n    report = json.load(f)\n\nbrier = report.get(\"brier_score\",\
@@ -81,28 +81,28 @@ jobs:
         \ threshold (0.20)\")\nif p99 > 500:\n    print(\"::warning::p99 latency exceeded\
         \ threshold (500ms)\")\n\nif brier < 0.15 and p99 < 500:\n    print(\"✅ All\
         \ metrics within target\")\n\nEOF\n"
-    - name: Upload artifacts
-      if: always()
-      uses: actions/upload-artifact@v5
-      with:
-      name: reasoning-engine-reports
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+        name: reasoning-engine-reports
         path: ".codex/reasoning/daily_monitor_report.json
 
           test_report.json
 
           "
-    - name: Publish test results
-      if: always()
-      uses: dorny/test-reporter@6c6cccf9b145c84e86a54eb376f30db3541dddb6
-      with:
-      name: Reasoning Engine Tests
+      - name: Publish test results
+        if: always()
+        uses: dorny/test-reporter@6c6cccf9b145c84e86a54eb376f30db3541dddb6
+        with:
+        name: Reasoning Engine Tests
         path: test_report.json
         reporter: java-junit
         fail-on-error: false
-    - name: Slack notification (on failure)
-      if: failure()
-      uses: slackapi/slack-github-action@70cd7be8e40a46e8ac0db8f384edfaa7eb9e44f7
-      with:
+      - name: Slack notification (on failure)
+        if: failure()
+        uses: slackapi/slack-github-action@70cd7be8e40a46e8ac0db8f384edfaa7eb9e44f7
+        with:
         webhook-url: ${{ secrets.SLACK_WEBHOOK }}
         payload: "{\n  \"text\": \"❌ Reasoning Engine Monitor Failed\",\n  \"blocks\"\
           : [\n    {\n      \"type\": \"section\",\n      \"text\": {\n        \"\
@@ -110,7 +110,7 @@ jobs:
           n*Repository*: ${{ github.repository }}\\n*Run*: <${{ github.server_url\
           \ }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Details>\"\
           \n      }\n    }\n  ]\n}\n"
-      continue-on-error: true
+        continue-on-error: true
     timeout-minutes: 30
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
