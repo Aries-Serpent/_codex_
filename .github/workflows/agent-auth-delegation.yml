@@ -1492,8 +1492,6 @@ jobs:
           \ to post @copilot continue on PR  #${nextPR}: ${err.message}`);\n    //\
           \ Don't remove from queue \u2014 will retry on next release\n  }\n} else\
           \ {\n  await clearVar('COPILOT_SESSION_QUEUE');\n}\n"
-      env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
   rescue-comment:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest

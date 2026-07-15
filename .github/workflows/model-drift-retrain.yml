@@ -35,7 +35,6 @@ on:
     types:
       - drift-detected  # fired by monitoring agents or post-deploy hooks
 
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
@@ -288,7 +287,4 @@ jobs:
           echo "### ⚠️ Dry Run — Retrain would have been triggered" >> "$GITHUB_STEP_SUMMARY"
           echo "Drift score: \`${{ needs.detect-drift.outputs.drift_score }}\`" >> "$GITHUB_STEP_SUMMARY"
           echo "Re-run with \`dry_run=false\` to execute." >> "$GITHUB_STEP_SUMMARY"
-
-
-
 

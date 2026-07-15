@@ -457,7 +457,3 @@ env:
           echo "Security coverage: 100%"
           echo "CodeQL status: Validated"
 
-
-
-
-

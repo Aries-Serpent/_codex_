@@ -124,7 +124,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
-      GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
     outputs:
       lane_id: ${{ steps.meta.outputs.lane_id }}
       shard_id: ${{ steps.meta.outputs.shard_id }}
@@ -777,7 +776,4 @@ jobs:
           echo "**Analysis:** ${{ needs.self-healing-analyze.result }}"
           echo "**Remediation:** ${{ needs.self-healing-act.result }}"
           echo "**Validation:** ${{ needs.validate-self-healing-artifact-contract.result }}"
-
-
-
 

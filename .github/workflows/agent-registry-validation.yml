@@ -213,7 +213,3 @@ jobs:
           BRANCH: ${{ github.head_ref }}
        run: python scripts/ci/post_rescue_comment.py
 
-
-
-
-
