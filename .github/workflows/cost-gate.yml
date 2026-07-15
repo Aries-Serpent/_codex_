@@ -163,8 +163,6 @@ jobs:
           \    if (attempt === 3) throw e;\n    // Back off before retrying (2 s,\
           \ 4 s, 6 s).\n    await new Promise(r => setTimeout(r, Math.random() * Math.pow(2,\
           \ attempt) * 1000 + 500));\n  }\n}\n"
-      env:
-        GH_TOKEN: ${{ secrets.GH_TOKEN }}
   gate:
     name: "\U0001F6A6 Cost gate (${{ needs.estimate.outputs.tier }})"
     runs-on: ubuntu-latest
