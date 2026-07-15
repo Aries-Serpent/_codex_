@@ -50,7 +50,7 @@ jobs:
     - name: Upload health report artifacts
       uses: actions/upload-artifact@v5
       with:
-      name: repository-health-report
+        name: repository-health-report
         path: '.codex/repository_health/offload_candidates.json
 
           .codex/repository_health/DASHBOARD.md

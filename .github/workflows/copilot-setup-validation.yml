@@ -196,7 +196,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-      name: validation-results
+        name: validation-results
         path: 'core_validation.json
 
           integration_tests.json

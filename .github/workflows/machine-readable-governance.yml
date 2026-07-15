@@ -70,7 +70,7 @@ jobs:
       - name: Upload governance artifacts
         uses: actions/upload-artifact@v5
         with:
-        name: machine-readable-governance-artifacts
+          name: machine-readable-governance-artifacts
           path: |
             docs-data/generated/candidate-inventory.json
             docs-data/generated/changed-candidates.json

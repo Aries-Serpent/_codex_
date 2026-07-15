@@ -61,12 +61,12 @@ jobs:
       - name: Upload health report
         uses: actions/upload-artifact@v5
         with:
-        name: agent-health-${{ github.run_id }}
+          name: agent-health-${{ github.run_id }}
           path: reports/orchestration/health_latest.json
       - name: Evaluate 95% threshold
         env:
           RATE: ${{ steps.metrics.outputs.rate }}
-        run: "python3 -c \"\nimport os\nrate = float(os.environ.get('RATE', '100'))\n\
+          run: "python3 -c \"\nimport os\nrate = float(os.environ.get('RATE', '100'))\n\
         if rate >= 95.0:\n    print(f'::notice::✅ D3 exit criteria  #1 met: {rate}%\
         \ >= 95%')\nelse:\n    print(f'::warning::D3 success rate {rate}% below 95%\
         \ threshold')\n\"\n"

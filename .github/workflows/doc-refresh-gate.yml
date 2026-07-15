@@ -37,7 +37,7 @@ jobs:
       id: refresh
       env:
         AAIS_THRESHOLD: ${{ inputs.aais_threshold || '0.75' }}
-      run: "python -c \"\nimport json, sys\nfrom pathlib import Path\nfrom codex.skills.aais\
+        run: "python -c \"\nimport json, sys\nfrom pathlib import Path\nfrom codex.skills.aais\
         \ import AAISScorer\n\nscorer = AAISScorer()\nthreshold = float('${AAIS_THRESHOLD}')\n\
         results = []\nstale = []\n\nfor doc_dir in ['docs/agent', 'docs/admin', 'docs/how-to']:\n\
         \    doc_path = Path(doc_dir)\n    if not doc_path.exists():\n        continue\n\
@@ -64,7 +64,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-      name: doc-refresh-report
+        name: doc-refresh-report
         path: .codex/doc_refresh_report.json
         retention-days: 30
     env:

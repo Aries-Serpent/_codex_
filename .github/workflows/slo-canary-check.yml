@@ -31,7 +31,7 @@ jobs:
     - name: Upload canary report
       uses: actions/upload-artifact@v5
       with:
-      name: slo-canary-${{ github.run_id }}
+        name: slo-canary-${{ github.run_id }}
         path: reports/observability/slo_canary_latest.json
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
@@ -54,7 +54,7 @@ jobs:
     - name: Generate MTTR report
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: "python3 - <<'PYEOF'\nimport json, os\nfrom datetime import datetime, timezone\n\
+        run: "python3 - <<'PYEOF'\nimport json, os\nfrom datetime import datetime, timezone\n\
         from pathlib import Path\n\nreport = {\n    \"generated_at\": datetime.now(timezone.utc).strftime(\"\
         %Y-%m-%dT%H:%M:%SZ\"),\n    \"period\": \"monthly\",\n    \"source\": \"reports/security_audit.md\
         \ + dependabot_summary.md\",\n    \"mttr_critical_days\": 3.0,  # from SECURITY_SLA.md\
@@ -72,7 +72,7 @@ jobs:
     - name: Upload MTTR report
       uses: actions/upload-artifact@v5
       with:
-      name: mttr-report-${{ github.run_id }}
+        name: mttr-report-${{ github.run_id }}
         path: reports/observability/mttr_*.json
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
@@ -95,7 +95,7 @@ jobs:
     - name: Generate MTTD report
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: "python3 - <<'PYEOF'\nimport json, os\nfrom datetime import datetime, timezone\n\
+        run: "python3 - <<'PYEOF'\nimport json, os\nfrom datetime import datetime, timezone\n\
         from pathlib import Path\n\nreport = {\n    \"generated_at\": datetime.now(timezone.utc).strftime(\"\
         %Y-%m-%dT%H:%M:%SZ\"),\n    \"period\": \"monthly\",\n    \"metric\": \"MTTD\
         \ (Mean Time to Detect)\",\n    \"methodology\": \"Time between vulnerability\
@@ -117,7 +117,7 @@ jobs:
     - name: Upload MTTD report
       uses: actions/upload-artifact@v5
       with:
-      name: mttd-report-${{ github.run_id }}
+        name: mttd-report-${{ github.run_id }}
         path: reports/observability/mttd_*.json
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token

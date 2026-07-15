@@ -183,7 +183,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-      name: scheduled-validation-${{ steps.config.outputs.timestamp }}
+        name: scheduled-validation-${{ steps.config.outputs.timestamp }}
         path: 'validation_report.txt
 
           build_report.txt
@@ -205,7 +205,7 @@ jobs:
       if: always() && steps.config.outputs.create_pr == 'true'
       env:
         GH_TOKEN: ${{ github.token }}
-      run: "git config user.name \"github-actions[bot]\"\ngit config user.email \"\
+        run: "git config user.name \"github-actions[bot]\"\ngit config user.email \"\
         github-actions[bot]@users.noreply.github.com\"\n\nif [ -f \"docs/status/GITHUB_PAGES_STATUS.md\"\
         \ ]; then\n  git add docs/status/GITHUB_PAGES_STATUS.md\n\n  if git diff --staged\
         \ --quiet; then\n    echo \"No changes to commit\"\n  else\n    BRANCH=\"\

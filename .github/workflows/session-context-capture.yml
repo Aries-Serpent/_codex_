@@ -38,7 +38,7 @@ jobs:
         COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS: ${{ vars.COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS
           || '128000' }}
         CODEX_LOG_LEVEL: ${{ vars.CODEX_LOG_LEVEL || 'INFO' }}
-      run: 'echo "Session context variables initialized:"
+        run: 'echo "Session context variables initialized:"
 
         echo "  SESSION_CONTEXT_AUTO_CAPTURE=$SESSION_CONTEXT_AUTO_CAPTURE"
 
@@ -64,7 +64,7 @@ jobs:
           }}
         COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS: ${{ vars.COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS
           || '128000' }}
-      run: "python scripts/ci/session_context_enrichment.py capture \\\n  --pr ${{\
+        run: "python scripts/ci/session_context_enrichment.py capture \\\n  --pr ${{\
         \ inputs.pr_number }} \\\n  --sha ${{ github.sha }} \\\n  --output .codex/session_contexts/session_${{\
         \ inputs.pr_number }}_latest.json \\\n  --max-tokens $COGNITIVE_BRAIN_MAX_CONTEXT_TOKENS\n"
     - name: Generate context summary
@@ -77,13 +77,13 @@ jobs:
       id: loss_analysis
       env:
         GH_TOKEN: ${{ github.token }}
-      run: "python scripts/ci/session_context_enrichment.py analyze-loss \\\n  --pr\
+        run: "python scripts/ci/session_context_enrichment.py analyze-loss \\\n  --pr\
         \ ${{ inputs.pr_number }}\n"
     - name: Upload context artifact
       if: always()
       uses: actions/upload-artifact@v5
       with:
-      name: session-context-pr${{ inputs.pr_number }}
+        name: session-context-pr${{ inputs.pr_number }}
         path: .codex/session_contexts/session_${{ inputs.pr_number }}_*.json
         retention-days: 30
     env:
@@ -100,7 +100,7 @@ jobs:
     - name: Download context artifact
       uses: actions/download-artifact@v5
       with:
-      name: session-context-pr${{ inputs.pr_number }}
+        name: session-context-pr${{ inputs.pr_number }}
         path: context
     - name: Post context to PR
       if: hashFiles('context/*.json') != ''

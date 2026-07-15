@@ -81,7 +81,7 @@ jobs:
           }}
         DEPENDABOT_ASSIGNEE: ${{ inputs.assignee || 'mbaetiong' }}
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
-      run: '# Make script executable
+        run: '# Make script executable
 
         chmod +x scripts/dependabot_sheriff.sh
 
@@ -105,14 +105,14 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v5
       with:
-      name: dependabot-sheriff-logs
+        name: dependabot-sheriff-logs
         path: .codex/logs/dependabot_sheriff_*.log
         retention-days: 30
     - name: Upload summary
       if: always()
       uses: actions/upload-artifact@v5
       with:
-      name: dependabot-sheriff-summary
+        name: dependabot-sheriff-summary
         path: .codex/logs/dependabot_sheriff_summary_*.md
         retention-days: 30
     - name: Comment on failure

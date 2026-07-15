@@ -76,7 +76,7 @@ jobs:
       if: steps.monitor.outputs.report_created == 'true'
       uses: actions/upload-artifact@v5
       with:
-      name: session-recovery-monitoring-${{ github.run_number }}
+        name: session-recovery-monitoring-${{ github.run_number }}
         path: .codex/session_recovery_monitoring_report.json
         retention-days: 30
     - name: Comment on recent failed sessions

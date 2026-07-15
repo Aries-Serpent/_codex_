@@ -65,7 +65,7 @@ jobs:
       uses: actions/upload-artifact@v5
       if: always()
       with:
-      name: mutation-report-${{ github.run_id }}
+        name: mutation-report-${{ github.run_id }}
         path: reports/mutation/
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token

@@ -67,7 +67,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v3
         with:
-        name: isolation-report
+          name: isolation-report
           path: isolation-report.json
 
   # ============================================================================
@@ -309,7 +309,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage.xml
           flags: scaling-framework
-        name: scaling-framework-coverage
+          name: scaling-framework-coverage
           fail_ci_if_error: false
 
       - name: Check coverage threshold
@@ -384,7 +384,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v3
         with:
-        name: failover-drill-report
+          name: failover-drill-report
           path: failover-drill-*.json
 
   # ============================================================================

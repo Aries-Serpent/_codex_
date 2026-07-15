@@ -262,7 +262,7 @@ jobs:
           - training
           - data
           - metrics
-    steps:
+      steps:
       - uses: actions/checkout@v5
         with:
           persist-credentials: false
@@ -422,7 +422,7 @@ jobs:
       - name: Upload coverage artifacts
         uses: actions/upload-artifact@v5
         with:
-        name: coverage-report-${{ github.run_number }}
+          name: coverage-report-${{ github.run_number }}
           path: |
             .coverage.json
             htmlcov/

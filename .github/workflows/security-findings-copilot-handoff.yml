@@ -32,7 +32,7 @@ jobs:
     - name: Download security findings artifacts
       uses: actions/download-artifact@v5
       with:
-      name: security-suite-comprehensive-findings
+        name: security-suite-comprehensive-findings
         path: ./security-findings/
       continue-on-error: true
     - name: Load and parse findings

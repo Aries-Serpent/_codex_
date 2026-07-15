@@ -64,7 +64,7 @@ jobs:
     - name: Upload alignment report
       uses: actions/upload-artifact@v5
       with:
-      name: docs-alignment-${{ github.run_id }}
+        name: docs-alignment-${{ github.run_id }}
         path: reports/docs/alignment_latest.json
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
