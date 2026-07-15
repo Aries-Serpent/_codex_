@@ -57,12 +57,12 @@ jobs:
       proposal_md: ${{ steps.proposal.outputs.proposal_md }}
     steps:
       - name: Mask secrets
-      run: |
-        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
-    - uses: actions/checkout@v5
-      with:
-      persist-credentials: false
-    - name: Set up Python
+        run: |
+          echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - name: Set up Python
       uses: actions/setup-python@v6
       with:
         python-version: 3.12.13
