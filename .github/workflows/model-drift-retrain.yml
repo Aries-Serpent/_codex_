@@ -135,8 +135,8 @@ jobs:
           sys.exit(0)
           PYEOF
 
-      - name: Summary — drift detection result
-        run: |
+    - name: Summary — drift detection result
+      run: |
           SHOULD="${{ steps.drift.outputs.should_retrain }}"
           SCORE="${{ steps.drift.outputs.drift_score }}"
           SAMPLES="${{ steps.drift.outputs.samples_count }}"
@@ -158,21 +158,21 @@ jobs:
     steps:
     - uses: actions/checkout@v5  # v6.0.3
       with:
-      persist-credentials: false
+        persist-credentials: false
 
-      - name: "🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)"
-        id: resolve-target
-        uses: ./.github/actions/resolve-push-target
+    - name: "🔀 Resolve push target (chain: sub-PR → 0D_base_ → main)"
+      id: resolve-target
+      uses: ./.github/actions/resolve-push-target
 
-      - name: Setup Python (cached)
-        uses: ./.github/actions/setup-python-cached
+    - name: Setup Python (cached)
+      uses: ./.github/actions/setup-python-cached
       with:
-          python-version: '3.12.13'
-          cache-tier: training
-          cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
+        python-version: '3.12.13'
+        cache-tier: training
+        cache-version: ${{ vars.CODEX_CACHE_VERSION || 'v2' }}
 
-      - name: Install ML dependencies
-        run: |
+    - name: Install ML dependencies
+      run: |
           pip install --quiet -e ".[ml]" || {
             echo "⚠️  ML extras unavailable — falling back to base install"
             pip install --quiet -e "."
@@ -222,13 +222,13 @@ jobs:
                   f.write(f"new_version={new_version.version}\n")
           PYEOF
 
-      - name: Active-PR guard — skip push when any open/draft PR targets the push target
-        id: pr_guard
-        env:
-          GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-          REPO: ${{ github.repository }}
-          PUSH_TARGET: ${{ steps.resolve-target.outputs.branch }}
-        run: |
+    - name: Active-PR guard — skip push when any open/draft PR targets the push target
+      id: pr_guard
+      env:
+        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        REPO: ${{ github.repository }}
+        PUSH_TARGET: ${{ steps.resolve-target.outputs.branch }}
+      run: |
           _TARGET="${PUSH_TARGET:-main}"
           if [ "$_TARGET" = "main" ] || [ "$_TARGET" = "0D_base_" ]; then
             PR_COUNT=$(gh api "repos/${REPO}/pulls?base=${_TARGET}&state=open&per_page=1" \
@@ -243,11 +243,11 @@ jobs:
             echo "pr_skip=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Commit updated model registry
-        if: steps.pr_guard.outputs.pr_skip != 'true'
-        env:
-          PUSH_TARGET: ${{ steps.resolve-target.outputs.branch }}
-        run: |
+    - name: Commit updated model registry
+      if: steps.pr_guard.outputs.pr_skip != 'true'
+      env:
+        PUSH_TARGET: ${{ steps.resolve-target.outputs.branch }}
+      run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add models/ || true
@@ -270,9 +270,9 @@ jobs:
             echo "No registry changes to commit"
           fi
 
-      - name: Open tracking issue
-        if: steps.retrain.outputs.new_version != ''
-        uses: actions/github-script@v8  # v9
+    - name: Open tracking issue
+      if: steps.retrain.outputs.new_version != ''
+      uses: actions/github-script@v8  # v9
       with:
           github-token: ${{ env.CODEX_MASTER_KEY || env.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
           script: |

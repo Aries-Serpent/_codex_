@@ -45,9 +45,9 @@ jobs:
           python scripts/ci/generate_cache_keys.py --health --workflow pr-followup-generator 2>/dev/null || echo "Cache health: check skipped"
     - name: Setup Python
       uses: ./.github/actions/setup-python-cached
-        with:
-          python-version: '3.12.13'
-          cache-tier: 'common'
+      with:
+        python-version: '3.12.13'
+        cache-tier: 'common'
 
     - name: Install dependencies
       run: |
@@ -92,10 +92,10 @@ jobs:
 
           echo "✅ Follow-up prompt generated successfully"
 
-      - name: Commit and push prompt
-        id: push_prompt
-        env:
-          TARGET_REF: ${{ github.head_ref || github.ref_name }}
+    - name: Commit and push prompt
+      id: push_prompt
+      env:
+        TARGET_REF: ${{ github.head_ref || github.ref_name }}
       run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -128,11 +128,11 @@ jobs:
             echo "pushed=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Comment on PR
-        if: github.event_name == 'pull_request' && steps.push_prompt.outputs.pushed == 'true'
-        uses: actions/github-script@v8  # v9
-        with:
-          script: |
+    - name: Comment on PR
+      if: github.event_name == 'pull_request' && steps.push_prompt.outputs.pushed == 'true'
+      uses: actions/github-script@v8  # v9
+      with:
+        script: |
             const prNumber = ${{ steps.pr_number.outputs.pr_number }};
             const MARKER = '<!-- pr-followup-prompt-generated -->';
             const body = `${MARKER}\n✅ Follow-up prompt has been generated for this PR.
@@ -196,7 +196,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5  # v6.0.3
         with:
-            persist-credentials: false
+          persist-credentials: false
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || secrets.GITHUB_TOKEN }}
           fetch-depth: 1
 

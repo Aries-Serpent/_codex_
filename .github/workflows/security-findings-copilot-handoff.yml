@@ -28,7 +28,7 @@ jobs:
       uses: actions/checkout@v5
       with:
         persist-credentials: false
-          fetch-depth: 1
+        fetch-depth: 1
     - name: Download security findings artifacts
       uses: actions/download-artifact@v5
       with:
@@ -60,9 +60,10 @@ jobs:
           print(f"TOTAL={summary.get('total_findings', 0)}")
           print(f"AGENTS={len(summary.get('recommended_agent_handoffs', []))}")
           PYTHON_EOF
-      - name: Create findings issue
-        if: steps.findings.outputs.TOTAL != ''
-        uses: actions/github-script@v8
+
+    - name: Create findings issue
+      if: steps.findings.outputs.TOTAL != ''
+      uses: actions/github-script@v8
       with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: |
@@ -139,9 +140,10 @@ jobs:
             console.log(`✅ Created issue  #${issue.data.number}`);
             core.setOutput('issue_number', issue.data.number);
             core.setOutput('issue_url', issue.data.html_url);
-      - name: Comment on PR if available
-        if: github.event.workflow_run.event == 'pull_request'
-        uses: actions/github-script@v8
+
+    - name: Comment on PR if available
+      if: github.event.workflow_run.event == 'pull_request'
+      uses: actions/github-script@v8
       with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           script: |
@@ -196,8 +198,6 @@ jobs:
             } catch (e) {
               console.log(`Warning: Could not post comment to PR: ${e.message}`);
             }
-        env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY }}
 
 
 
