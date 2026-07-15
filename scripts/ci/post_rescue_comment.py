@@ -182,6 +182,85 @@ def _matching_rescue_comments(
     return sorted(matches, key=lambda c: c.get("id", 0))
 
 
+def _detect_cascading_copilot_errors(
+    token: str,
+    repo: str,
+    pr_number: int,
+    threshold: int = 10,
+) -> dict:
+    """Detect cascading Copilot error comments (PR #5324 pattern).
+    
+    Cascades are identified by:
+    - Multiple comments with "comment-generic-error" marker
+    - Created by Copilot user within short timespan
+    - Repeating UUID patterns
+    
+    Returns:
+        {
+            "is_cascading": bool,
+            "error_count": int,
+            "last_error_id": int or None,
+            "action": "SKIP_CONSOLIDATION" | "ABORT_POSTING" | "PROCEED",
+        }
+    """
+    page = 1
+    error_comments = []
+    
+    while True:
+        status, comments = _gh(
+            "GET",
+            f"/repos/{repo}/issues/{pr_number}/comments?per_page=100&page={page}",
+            token,
+        )
+        if status != 200:
+            break
+        if not isinstance(comments, list) or not comments:
+            break
+        
+        for c in comments:
+            if "comment-generic-error" in (c.get("body") or ""):
+                if c.get("user", {}).get("login") == "Copilot":
+                    error_comments.append(c)
+        
+        if len(comments) < 100:
+            break
+        page += 1
+    
+    if not error_comments:
+        return {
+            "is_cascading": False,
+            "error_count": 0,
+            "last_error_id": None,
+            "action": "PROCEED",
+        }
+    
+    # If more than threshold error comments, it's a cascade
+    if len(error_comments) >= threshold:
+        last_error = max(error_comments, key=lambda c: c.get("created_at", ""))
+        return {
+            "is_cascading": True,
+            "error_count": len(error_comments),
+            "last_error_id": last_error.get("id"),
+            "action": "ABORT_POSTING",
+        }
+    
+    # If exactly 5-9 errors, skip consolidation to prevent growth
+    if len(error_comments) >= 5:
+        return {
+            "is_cascading": True,
+            "error_count": len(error_comments),
+            "last_error_id": error_comments[-1].get("id"),
+            "action": "SKIP_CONSOLIDATION",
+        }
+    
+    return {
+        "is_cascading": False,
+        "error_count": len(error_comments),
+        "last_error_id": error_comments[-1].get("id") if error_comments else None,
+        "action": "PROCEED",
+    }
+
+
 def _consolidate_duplicate_rescue_comments(
     token: str,
     repo: str,
@@ -191,6 +270,20 @@ def _consolidate_duplicate_rescue_comments(
     created_id: int,
 ) -> None:
     """Collapse same-SHA rescue-comment races into one appended thread."""
+    # CRITICAL: Check for cascading Copilot errors before consolidating (PR #5324)
+    cascade_info = _detect_cascading_copilot_errors(token, repo, pr_number, threshold=5)
+    
+    if cascade_info["is_cascading"]:
+        import sys
+        action = cascade_info["action"]
+        count = cascade_info["error_count"]
+        print(
+            f"⚠️  CASCADE DETECTED: {count} Copilot error comments. "
+            f"Action: {action}. Aborting consolidation.",
+            file=sys.stderr,
+        )
+        return
+    
     time.sleep(CONSOLIDATION_DELAY_SECONDS)
     matches = _matching_rescue_comments(token, repo, pr_number, marker, signature)
     if len(matches) <= 1:
@@ -320,6 +413,22 @@ def main() -> None:
             print(f"ℹ️  No open PR found for branch '{branch}' — skipping rescue comment.")
             return
         pr_number = looked_up
+    
+    # CRITICAL CASCADE CHECK: Abort if cascading Copilot errors detected (PR #5324)
+    # This prevents the rescue comment from triggering another error wave
+    try:
+        cascade_info = _detect_cascading_copilot_errors(token, repo, pr_number)
+        if cascade_info["action"] == "ABORT_POSTING":
+            count = cascade_info["error_count"]
+            print(
+                f"🛑 CASCADE ABORT: {count} Copilot error comments detected. "
+                f"Skipping rescue comment to break feedback loop. (PR #5324)",
+                file=__import__('sys').stderr,
+            )
+            sys.exit(0)  # Exit gracefully to not trigger additional errors
+    except Exception as exc:
+        print(f"⚠️  Cascade check failed (non-blocking): {exc}", file=__import__('sys').stderr)
+        # Continue execution—cascade check failure shouldn't block rescue posts
 
     # Defensive: when COMMIT_SHA or BRANCH env vars were not supplied (e.g. when
     # the calling workflow is triggered by an issue_comment or pull_request_review

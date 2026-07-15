@@ -101,6 +101,7 @@ SKIP_BODY_MARKERS: tuple[str, ...] = (
     "<!-- compiled-bot-feedback",             # Compiled bot feedback (bare: <!-- compiled-bot-feedback --> or SHA-suffixed: <!-- compiled-bot-feedback:SHA -->)
     "<!-- session-done-retrigger -->",         # Session-done re-trigger comment (copilot-agent-session-done.yml)
     "<!-- session-done-loop-break -->",        # Session-done loop-break guard (copilot-agent-session-done.yml)
+    "<!-- copilot-coding-agent-error",    # CRITICAL: Copilot error comments (Issue: PR #5324 cascade loop)
 )
 
 # Text-content patterns for comments that lack an HTML marker but are still
@@ -153,6 +154,67 @@ def gh_get_all_pages(path: str, token: str) -> list[Any]:
             break
         page += 1
     return results
+
+
+def detect_cascading_error_comments(comments: list[dict[str, Any]]) -> dict[str, Any]:
+    """Detect cascading Copilot error comments (PR #5324 issue).
+    
+    When Copilot error comments are posted as replies to comments it's trying
+    to process, they can trigger webhook loops. This function detects the pattern.
+    
+    Returns:
+        {
+            "has_cascade": bool,
+            "error_count": int,
+            "unique_uuids": list[str],
+            "first_error_time": str or None,
+            "last_error_time": str or None,
+            "cascade_duration_seconds": float or None,
+        }
+    """
+    from datetime import datetime
+    import re
+    
+    error_comments = [
+        c for c in comments
+        if "comment-generic-error" in c.get("body", "")
+        and c["user"].get("login") == "Copilot"
+    ]
+    
+    if not error_comments:
+        return {
+            "has_cascade": False,
+            "error_count": 0,
+            "unique_uuids": [],
+            "first_error_time": None,
+            "last_error_time": None,
+            "cascade_duration_seconds": None,
+        }
+    
+    # Extract UUIDs from error comments
+    uuid_pattern = r"identify so they can better serve you: `([a-f0-9\-]+)`"
+    uuids = []
+    for comment in error_comments:
+        match = re.search(uuid_pattern, comment["body"])
+        if match:
+            uuids.append(match.group(1))
+    
+    # Calculate duration
+    try:
+        times = [datetime.fromisoformat(c["created_at"].replace("Z", "+00:00"))
+                 for c in error_comments]
+        duration = (max(times) - min(times)).total_seconds()
+    except (ValueError, IndexError):
+        duration = None
+    
+    return {
+        "has_cascade": len(error_comments) > 0,
+        "error_count": len(error_comments),
+        "unique_uuids": list(set(uuids)),
+        "first_error_time": min((c["created_at"] for c in error_comments), default=None),
+        "last_error_time": max((c["created_at"] for c in error_comments), default=None),
+        "cascade_duration_seconds": duration,
+    }
 
 
 # ── Core logic ────────────────────────────────────────────────────────────────
