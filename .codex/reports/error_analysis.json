@@ -1,0 +1,13 @@
+{
+  "total_errors": 0,
+  "errors_by_type": {},
+  "errors_by_severity": {
+    "high": 0,
+    "medium": 0,
+    "low": 0
+  },
+  "errors_by_category": {},
+  "recurring_patterns": [],
+  "recommendations": [],
+  "analyzed_at": "2026-07-15T19:13:33.459199+00:00"
+}
