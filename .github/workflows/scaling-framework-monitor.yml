@@ -32,10 +32,10 @@ jobs:
     runs-on: ubuntu-latest
     name: Multi-Tenant Isolation Health
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: "pip"
@@ -65,7 +65,7 @@ jobs:
 
       - name: Generate isolation report
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v5
         with:
           name: isolation-report
           path: isolation-report.json
@@ -77,10 +77,10 @@ jobs:
     runs-on: ubuntu-latest
     name: Failover Capability Check
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: "pip"
@@ -118,10 +118,10 @@ jobs:
     runs-on: ubuntu-latest
     name: Load Distribution Check
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: "pip"
@@ -166,10 +166,10 @@ jobs:
     runs-on: ubuntu-latest
     name: Auto-Scaling Trigger Check
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: "pip"
@@ -205,10 +205,10 @@ jobs:
     runs-on: ubuntu-latest
     name: Cost Optimization Check
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: "pip"
@@ -248,10 +248,10 @@ jobs:
     needs: [multi_tenant_health, failover_health, load_balancer_health, auto_scaling_health]
     if: always()
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
@@ -287,10 +287,10 @@ jobs:
     runs-on: ubuntu-latest
     name: Test Coverage Report
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: "pip"
@@ -335,10 +335,10 @@ jobs:
     name: Weekly Failover Drill
     if: github.event.schedule == '0 9 * * 0' || github.event_name == 'workflow_dispatch'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
@@ -382,7 +382,7 @@ jobs:
 
       - name: Report drill results
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v5
         with:
           name: failover-drill-report
           path: failover-drill-*.json
@@ -395,10 +395,10 @@ jobs:
     name: Weekly Cost Report
     if: github.event.schedule == '0 10 * * 1' || github.event_name == 'workflow_dispatch'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 

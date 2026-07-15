@@ -18,10 +18,10 @@ jobs:
     name: Forecast Accuracy Check
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: '3.12'
           cache: 'pip'
@@ -70,7 +70,7 @@ jobs:
           "
 
       - name: Upload accuracy report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: forecast-accuracy
           path: forecast-accuracy.json
@@ -79,10 +79,10 @@ jobs:
     name: Bottleneck Detection Validation
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: '3.12'
           cache: 'pip'
@@ -147,7 +147,7 @@ jobs:
           "
 
       - name: Upload bottleneck report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: bottleneck-report
           path: bottleneck-report.json
@@ -156,10 +156,10 @@ jobs:
     name: Provisioning Recommendation Validation
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: '3.12'
           cache: 'pip'
@@ -232,7 +232,7 @@ jobs:
           "
 
       - name: Upload recommendation report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: recommendation-report
           path: recommendation-report.json
@@ -241,10 +241,10 @@ jobs:
     name: Dashboard Performance Test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: '3.12'
           cache: 'pip'
@@ -302,7 +302,7 @@ jobs:
           "
 
       - name: Upload performance report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: dashboard-performance
           path: dashboard-performance.json
@@ -314,7 +314,7 @@ jobs:
     if: always()
     steps:
       - name: Download all reports
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
 
       - name: Generate summary
         run: |
