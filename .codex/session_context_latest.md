@@ -1,21 +1,22 @@
-# Session Context — 2026-07-15T00:49:29Z
+# Session Context — 2026-07-15T01:08:14Z
 **Branch:** `copilot/phase4-codeql-deployment`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `5000` (✅)
-- GraphQL remaining: `5000` (✅)
+- REST remaining: `4999` (✅)
+- GraphQL remaining: `4999` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
 ## 🚨 Recent CI Failures (last 5 runs)
+- **.github/workflows/ci-failure-issue-creator.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
 - **.github/workflows/rust_swarm_ci.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
-- **.github/workflows/security-scan-phase-16.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
-- **.github/workflows/performance-gate.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
-- **.github/workflows/admin-action-t03.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
-- **.github/workflows/agent-health-check.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
+- **.github/workflows/autonomy-phase-ci-matrix.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
+- **.github/workflows/dependency-scan.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
+- **.github/workflows/smoke-tests-deployment.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
 
 ## 📝 Recent Commits
+- `ed312f6c` Apply remaining changes — copilot-swe-agent[bot] (2026-07-15)
 - `c5646189` Apply remaining changes — copilot-swe-agent[bot] (2026-07-15)
 - `7d9c1793` Phase 4 GA Deployment: ALL AGENTS COMPLETE - Complete Mission Summary and Final  — Artifact Monitor Agent (2026-07-15)
 - `e6ea6495` Phase 4 GA Deployment: Final Orchestration Dashboard - All Infrastructure Active — Artifact Monitor Agent (2026-07-15)
@@ -23,7 +24,6 @@
 - `348cd247` Phase 4 GA Deployment: Anomaly Detection & Incident Response Framework — Artifact Monitor Agent (2026-07-15)
 - `2030677a` docs(phase-4-ga): Add comprehensive monitoring coordinator framework — copilot-swe-agent[bot] (2026-07-15)
 - `f22fbaf5` governance(phase-4-ga): Complete unified governance gate enforcement activation — copilot-swe-agent[bot] (2026-07-14)
-- `c5429b13` governance(phase-4-ga): Establish unified governance gate enforcement framework — copilot-swe-agent[bot] (2026-07-14)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
