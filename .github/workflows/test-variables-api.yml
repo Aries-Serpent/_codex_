@@ -64,13 +64,13 @@ jobs:
     steps:
       - name: Checkout scripts
         uses: actions/checkout@v5
-      with:
+        with:
         persist-credentials: false
         sparse-checkout: scripts/ci/test_variables_api.py
         sparse-checkout-cone-mode: false
       - name: Set up Python 3.12
         uses: actions/setup-python@v6
-      with:
+        with:
         cache: pip
         python-version: 3.12.13
       - name: Run repo variable tests
@@ -88,7 +88,7 @@ jobs:
       - name: Post result to PR Status Dashboard
         if: always() && github.event.pull_request.number != ''
         uses: ./.github/actions/post-pr-summary
-      with:
+        with:
         workflow-name: "Test Variables API \u2014 Repo Scope"
         status: ${{ job.status }}
         summary: Repo variable CRUD test (CREATE/GET/UPDATE/DELETE)
@@ -103,13 +103,13 @@ jobs:
     steps:
     - name: Checkout scripts
       uses: actions/checkout@v5
-      with:
+        with:
         persist-credentials: false
         sparse-checkout: scripts/ci/test_variables_api.py
         sparse-checkout-cone-mode: false
     - name: Set up Python 3.12
       uses: actions/setup-python@v6
-      with:
+        with:
         cache: pip
         python-version: 3.12.13
     - name: Run org variable tests
@@ -128,7 +128,7 @@ jobs:
     - name: Post result to PR Status Dashboard
       if: always() && github.event.pull_request.number != ''
       uses: ./.github/actions/post-pr-summary
-      with:
+        with:
         workflow-name: "Test Variables API \u2014 Org Scope"
         status: ${{ job.status }}
         summary: Org variable CRUD test (CREATE/GET/UPDATE/DELETE)
