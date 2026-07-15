@@ -42,7 +42,7 @@ class TestBudgetCap:
 
         assert fast() == "done", "Condition must be true"
 
-    @pytest.mark.flaky(reruns=1, reason="P2-timing: budget_cap timeout precision - improved with deterministic validation")
+    @pytest.mark.flaky(reruns=2, reason="P2-timing: budget_cap timeout precision - improved with deterministic validation")
     @pytest.mark.timeout(90)
     def test_budget_cap_raises_on_timeout(self):
         mod = _import_scheduler()

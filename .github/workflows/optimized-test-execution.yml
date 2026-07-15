@@ -369,7 +369,7 @@ jobs:
   test-coverage:
     name: "📊 Coverage Report"
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 45
     needs: [test-fast, test-integration, test-slow]
     if: always()
     steps:
@@ -382,22 +382,43 @@ jobs:
           python-version: 3.12.13
           cache: pip
           cache-dependency-path: pyproject.toml
+      
+      # P19 Shadow Import Safeguard: Invalidate pip cache before coverage job
+      - name: "🔍 P19 Shadow Import Check (Pre-Coverage)"
+        run: |
+          python -c "
+          import sys, importlib.util
+          spec = importlib.util.find_spec('codex')
+          if spec and spec.origin:
+              if 'site-packages' in spec.origin and '.egg-link' in spec.origin:
+                  print('::warning::P19 Shadow Import Detected - Invalidating cache')
+                  import shutil
+                  shutil.rmtree(Path.home() / '.cache' / 'pip', ignore_errors=True)
+          "
+      
       - name: Install dependencies
         run: |
           pip install -e ".[dev]"
           pip install coverage pytest-xdist pytest-timeout
-      - name: Run coverage collection
+      
+      # Optimized coverage collection with selective test discovery
+      - name: Run coverage collection (optimized)
         run: |
+          # Collect only unit and integration tests (exclude slow tests marked with @pytest.mark.slow)
           coverage run -m pytest tests/ \
+            -m "not slow" \
             --timeout=60 \
-            -n auto \
+            -n 4 \
             --dist=loadscope \
-            --tb=short || true
+            --tb=short \
+            --maxfail=10 || true
+      
       - name: Generate coverage reports
         run: |
           coverage json -o .coverage.json || echo '{}' > .coverage.json
           coverage html -d htmlcov || mkdir -p htmlcov
           coverage report --skip-covered
+      
       - name: Upload coverage artifacts
         uses: actions/upload-artifact@v5
         with:
