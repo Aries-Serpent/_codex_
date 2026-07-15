@@ -31,7 +31,7 @@ jobs:
     steps:
       - name: Mask secrets
         run: |
-        echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
+          echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
       - name: Prune caches older than ${{ inputs.max_age_days || 7 }} days
         uses: actions/github-script@v8
       with:
