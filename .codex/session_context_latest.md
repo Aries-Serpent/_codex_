@@ -1,35 +1,32 @@
-# Session Context — 2026-07-15T12:39:31Z
+# Session Context — 2026-07-15T12:56:46Z
 **Branch:** `copilot/phase4-codeql-deployment`  **PR:** #5323  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4999` (✅)
-- GraphQL remaining: `4999` (✅)
+- REST remaining: `4850` (✅)
+- GraphQL remaining: `4997` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
 ## 📋 PR #5323 — Phase 4 GA Deployment: Critical CI Health Restoration — YAML Fixes + Cascade Resolution + Infrastructure Recovery
 State: `open`  Draft: `False`  Branch: `copilot/phase4-codeql-deployment` → `main`
 
-### ❌ 1 Failing CI Check(s)
-- `CodeQL` (failure)
-
 ## 🚨 Recent CI Failures (last 5 runs)
-- **.github/workflows/coverage-with-timeout.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
-- **.github/workflows/documentation-link-checker.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
-- **.github/workflows/cleanup-stale-branches.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
-- **.github/workflows/ci-failure-issue-creator.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
-- **.github/workflows/pr-size-analyzer.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
+- **.github/workflows/deferral-language-gate.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
+- **.github/workflows/restore-pipeline-ci.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
+- **.github/workflows/mypy-baseline.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
+- **.github/workflows/mcp-health.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
+- **.github/workflows/e-to-d-transition-gate.yml** — `failure` on `copilot/phase4-codeql-deployment` (2026-07-15)
 
 ## 📝 Recent Commits
+- `8d2632f4` fix(security): stricter regex validation for git ref - reject dots to prevent pa — copilot-swe-agent[bot] (2026-07-15)
+- `45ebe16c` fix(review): address code review comments - step naming and grammar — copilot-swe-agent[bot] (2026-07-15)
+- `41a81295` fix(security): eliminate untrusted code checkout in workflow_run contexts via Gi — copilot-swe-agent[bot] (2026-07-15)
+- `348f0d5c` fix(workflows): pin all action versions to exact tags — copilot-swe-agent[bot] (2026-07-15)
+- `ef6f5952` workflow(security): plan multi-agent remediation for 8 CodeQL/actionlint alerts — copilot-swe-agent[bot] (2026-07-15)
 - `d8d83475` fix(security): final hardening of audit-qa-suite.yml implementation — copilot-swe-agent[bot] (2026-07-15)
 - `f1198d06` fix(review): improve audit-qa-suite.yml implementation robustness — copilot-swe-agent[bot] (2026-07-15)
 - `b7ec486c` fix(review): address code review concerns in security fixes — copilot-swe-agent[bot] (2026-07-15)
-- `1440d55b` fix(security): resolve 9 CodeQL and security alerts across 5 workflows — copilot-swe-agent[bot] (2026-07-15)
-- `53c69c92` emergency(recovery): plan for fixing CodeQL security alerts and YAML corruption — copilot-swe-agent[bot] (2026-07-15)
-- `af394bb4` fix(ci): Fix YAML syntax in actionlint-audit.yml - remove trailing spaces and br — copilot-swe-agent[bot] (2026-07-15)
-- `5b861265` docs: Phase 4 CI Rescue verification - REQ-4 & REQ-5 compliance update — copilot-swe-agent[bot] (2026-07-15)
-- `474f4c0f` ci: Phase 4 CI Rescue - Initial investigation and fix preparation — copilot-swe-agent[bot] (2026-07-15)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
