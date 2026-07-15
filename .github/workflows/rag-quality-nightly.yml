@@ -16,17 +16,17 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-    - uses: actions/checkout@v5
-      with:
+      - uses: actions/checkout@v5
+        with:
         persist-credentials: false
-    - uses: actions/setup-python@v6
-      with:
+      - uses: actions/setup-python@v6
+        with:
         python-version: 3.12.13
         cache: pip
-    - run: pip install -q pyyaml
-    - name: Verify freshness SLA
-      run: python scripts/rag/rag_rebuild_audit.py --check freshness
-      env:
+      - run: pip install -q pyyaml
+      - name: Verify freshness SLA
+        run: python scripts/rag/rag_rebuild_audit.py --check freshness
+        env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
   quality-gate:
@@ -34,17 +34,17 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-    - uses: actions/checkout@v5
-      with:
+      - uses: actions/checkout@v5
+        with:
         persist-credentials: false
-    - uses: actions/setup-python@v6
-      with:
+      - uses: actions/setup-python@v6
+        with:
         python-version: 3.12.13
         cache: pip
-    - run: pip install -q -r requirements-dev.txt
-    - name: Run retrieval benchmark against thresholds
-      run: python scripts/rag/rag_rebuild_audit.py --check quality
-      env:
+      - run: pip install -q -r requirements-dev.txt
+      - name: Run retrieval benchmark against thresholds
+        run: python scripts/rag/rag_rebuild_audit.py --check quality
+        env:
         GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
   rebuild-audit:
@@ -52,20 +52,20 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-    - uses: actions/checkout@v5
-      with:
+      - uses: actions/checkout@v5
+        with:
         persist-credentials: false
-    - uses: actions/setup-python@v6
-      with:
+      - uses: actions/setup-python@v6
+        with:
         python-version: 3.12.13
         cache: pip
-    - run: pip install -q pyyaml
-    - name: Log rebuild audit entry
-      run: python scripts/rag/rag_rebuild_audit.py --check audit
-    - name: Upload audit log
-      uses: actions/upload-artifact@v5
-      with:
-      name: rag-audit-${{ github.run_id }}
+      - run: pip install -q pyyaml
+      - name: Log rebuild audit entry
+        run: python scripts/rag/rag_rebuild_audit.py --check audit
+      - name: Upload audit log
+        uses: actions/upload-artifact@v5
+        with:
+        name: rag-audit-${{ github.run_id }}
         path: reports/rag/rebuild_audit_latest.json
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
@@ -80,8 +80,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-    - name: Evaluate D4 exit criteria
-      run: "python3 - <<'PYEOF'\nimport json\nfrom datetime import datetime, timezone\n\
+      - name: Evaluate D4 exit criteria
+        run: "python3 - <<'PYEOF'\nimport json\nfrom datetime import datetime, timezone\n\
         \nresults = {\n    \"freshness\": \"${{ needs.freshness-check.result }}\"\
         ,\n    \"quality\":   \"${{ needs.quality-gate.result }}\",\n    \"audit\"\
         :     \"${{ needs.rebuild-audit.result }}\",\n}\npassed = [k for k, v in results.items()\
