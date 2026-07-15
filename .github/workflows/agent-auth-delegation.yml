@@ -30,11 +30,8 @@ jobs:
     timeout-minutes: 8
     if: github.event_name == 'pull_request' && github.event.action != 'closed'
     permissions:
-
       pull-requests: write
-
       contents: read
-
     steps:
       - name: Checkout (needed for session_wrapup_autofix.py)
         uses: actions/checkout@v5
@@ -77,7 +74,6 @@ jobs:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
           PR_BODY: ${{ github.event.pull_request.body || '' }}
           PR_NUM: ${{ github.event.pull_request.number || github.event.inputs.pr_number }}
-
         run: "echo \"pr_number=${PR_NUM}\" >> \"$GITHUB_OUTPUT\"\n\n# On workflow_dispatch,\
         \ github.event.pull_request.body is empty.\n# Fetch the PR body via gh CLI\
         \ so checkbox detection works for\n# manually triggered delegation runs.\n\
@@ -168,7 +164,6 @@ jobs:
         \ found\"\nfi\n"
       - name: 'REQ-11: Integration-branch direct-session guard'
         if: 'github.event_name == ''pull_request'' || github.event_name == ''pull_request_review''
-
         '
         uses: actions/github-script@v8
         with:
@@ -239,7 +234,6 @@ jobs:
       - name: Post Mandatory Agent Checklist to PR
         uses: actions/github-script@v8
         if: 'github.event_name == ''pull_request'' || github.event_name == ''pull_request_review''
-
         '
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
@@ -338,7 +332,6 @@ jobs:
       - name: Surface Session-Type Directives to Checklist
         uses: actions/github-script@v8
         if: 'github.event_name == ''pull_request'' || github.event_name == ''pull_request_review''
-
         '
         with:
           github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
@@ -454,21 +447,18 @@ jobs:
           BASE_REF: ${{ github.base_ref }}
         run: |
           echo "### 🔍 Empty Commit Check (REQ-3b)" >> "$GITHUB_STEP_SUMMARY"
-
           # Ensure the base ref is available locally so git log does not fail silently
           if ! git fetch --no-tags origin "$BASE_REF" 2>/dev/null; then
           echo "⚠️  **WARN** — Unable to fetch base ref origin/$BASE_REF; skipping empty-commit check." >> "$GITHUB_STEP_SUMMARY"
           echo "::warning::Empty-commit check skipped — could not fetch origin/$BASE_REF."
           exit 0
           fi
-
           # Obtain commit list relative to the base ref; if this fails, emit WARN instead of a false PASS
           COMMITS=$(git log --format="%H %an: %s" "origin/$BASE_REF"..HEAD 2>/dev/null) || {
           echo "⚠️  **WARN** — git log failed for range origin/$BASE_REF..HEAD; skipping empty-commit check." >> "$GITHUB_STEP_SUMMARY"
           echo "::warning::Empty-commit check skipped — git log failed for origin/$BASE_REF..HEAD."
           exit 0
           }
-
           # Count commits with no file-tree changes
           EMPTY_COMMITS=$(printf '%s\n' "$COMMITS" | while IFS= read -r line; do
           [ -z "$line" ] && continue
@@ -486,7 +476,6 @@ jobs:
           # needing pipefail or a separate wc call.
           [ "$CHANGES" -eq 0 ] && echo "$line"
           done)
-
           if [ -z "$EMPTY_COMMITS" ]; then
           echo "✅ **PASS** — No empty commits detected in this PR." >> "$GITHUB_STEP_SUMMARY"
           else
@@ -508,23 +497,19 @@ jobs:
           GITHUB_ACTOR: ${{ github.actor }}
         run: |
           REPORT="docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md"
-
           echo "### 🔍 Accountability Report Check" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
-
           # Dependabot bots don't maintain the accountability report
           ACTOR="$GITHUB_ACTOR"
           if [[ "${ACTOR}" == "dependabot[bot]" || "${ACTOR}" == "dependabot-preview[bot]" ]]; then
           echo "⏭️  **SKIP** — Actor is \`${ACTOR}\` (bot); accountability report not required." >> "$GITHUB_STEP_SUMMARY"
           exit 0
           fi
-
           if [ ! -f "$REPORT" ]; then
           echo "❌ **FAIL** — \`${REPORT}\` does not exist." >> "$GITHUB_STEP_SUMMARY"
           echo "**Fix:** Create this file and commit it before activating a session." >> "$GITHUB_STEP_SUMMARY"
           exit 1
           fi
-
           # Skip past consecutive infrastructure / [skip ci] commits authored
           # by github-actions[bot] (auto-merge, manifest refresh, follow-up
           # prompt regeneration) — they should never be expected to touch
@@ -562,7 +547,6 @@ jobs:
           BASE_REF="HEAD~$((SKIPPED + 1))"
           break
           done
-
           if git diff --name-only "$BASE_REF" HEAD 2>/dev/null | grep -qF "$REPORT"; then
           if [ "$SKIPPED" -gt 0 ]; then
             echo "✅ **PASS** — \`${REPORT}\` was updated in the last agent commit (skipped ${SKIPPED} infra commit(s) on top)." >> "$GITHUB_STEP_SUMMARY"
@@ -583,22 +567,18 @@ jobs:
           GITHUB_ACTOR: ${{ github.actor }}
         run: |
           CHANGELOG="CHANGELOG.md"
-
           echo "### 🔍 CHANGELOG.md Check" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
-
           # Dependabot bots don't maintain the CHANGELOG — same exemption as REQ-4.
           ACTOR="$GITHUB_ACTOR"
           if [[ "${ACTOR}" == "dependabot[bot]" || "${ACTOR}" == "dependabot-preview[bot]" ]]; then
           echo "⏭️  **SKIP** — Actor is \`${ACTOR}\` (bot); CHANGELOG.md not required." >> "$GITHUB_STEP_SUMMARY"
           exit 0
           fi
-
           if [ ! -f "$CHANGELOG" ]; then
           echo "⚠️  **SKIP** — \`${CHANGELOG}\` does not exist in repo root." >> "$GITHUB_STEP_SUMMARY"
           exit 0
           fi
-
           # Skip past consecutive infrastructure / [skip ci] commits before
           # checking REQ-5 — same logic as REQ-4 above.
           MAX_LOOKBACK=10
@@ -629,7 +609,6 @@ jobs:
           BASE_REF="HEAD~$((SKIPPED + 1))"
           break
           done
-
           if git diff --name-only "$BASE_REF" HEAD 2>/dev/null | grep -qF "$CHANGELOG"; then
           if [ "$SKIPPED" -gt 0 ]; then
             echo "✅ **PASS** — \`${CHANGELOG}\` was updated in the last agent commit (skipped ${SKIPPED} infra commit(s) on top)." >> "$GITHUB_STEP_SUMMARY"
@@ -654,7 +633,6 @@ jobs:
           RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
           GIT_SHA: ${{ github.sha }}
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-
         run: "set -euo pipefail\n\necho \"### \U0001F527 Auto-Fix: Session Wrap-Up Compliance\"\
         \ >> \"$GITHUB_STEP_SUMMARY\"\necho \"\" >> \"$GITHUB_STEP_SUMMARY\"\n\n#\
         \ Determine which fixes are needed\nFIX_ACCT=\"\"\nFIX_CL=\"\"\nif [ \"${{\ \ steps.accountability_check.outcome }}\" = \"failure\" ]; then\n  FIX_ACCT=\"\
@@ -687,7 +665,6 @@ jobs:
       - name: Ensure Workflow Execution Checklist in PR body
         id: inject-wec
         if: 'github.event_name == ''pull_request'' || github.event_name == ''pull_request_review''
-
         '
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
@@ -761,7 +738,6 @@ jobs:
       - name: Verify SESSION_TIMEBOX_EXPIRED acknowledged
         id: timebox_ack_check
         if: 'github.event_name == ''pull_request'' || github.event_name == ''pull_request_review''
-
         '
         uses: actions/github-script@v8
         with:
@@ -797,7 +773,6 @@ jobs:
           \ Summary\" comment before reactivation.');\n}\n"
       - name: "Warn on single-commit PR (REQ-7 \u2014 NEVER stop after one commit)"
         if: 'github.event_name == ''pull_request'' || github.event_name == ''pull_request_review''
-
         '
         env:
           BASE_REF: ${{ github.event.pull_request.base.ref }}
@@ -883,7 +858,6 @@ jobs:
       - name: 'REQ-10: Branch rebase check (hard block if behind/diverged)'
         id: req10
         if: 'github.event_name == ''pull_request'' || github.event_name == ''pull_request_review''
-
         '
         env:
           GITHUB_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
@@ -1000,23 +974,15 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     if: 'always() &&
-
       github.event.action != ''closed'' &&
-
       github.actor != ''dependabot[bot]'' &&
-
       github.actor != ''dependabot-preview[bot]'' &&
-
       needs.detect-checkbox.result == ''success'' &&
-
       needs.detect-checkbox.outputs.auth_requested == ''true'' &&
-
       (needs.cognitive-preflight.result == ''success'' || needs.cognitive-preflight.result
       == ''failure'') &&
-
       (needs.await-approval.result == ''success'' || needs.await-approval.result ==
       ''skipped'')
-
       '
     steps:
       - name: Cache Python dependencies (Layer 1)
@@ -1031,13 +997,11 @@ jobs:
         with:
           fetch-depth: 1
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-
           ref: ${{ github.event.pull_request.head.ref || github.head_ref || github.ref_name }}
       - name: Validate/Refresh Session ID (CAPI Readiness Check)
         id: session_validation
         env:
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-
         run: "if [ -n \"${COPILOT_AGENT_SESSION_ID:-}\" ]; then\n  echo \"Checking session\
         \ validity...\"\n  HTTP_CODE=$(curl -s -o /dev/null -w \"%{http_code}\" \\\
           \n    -H \"Authorization: ******\" \\\n    -H \"Accept: application/vnd.github+json\"\
@@ -1113,7 +1077,6 @@ jobs:
           TARGET_BRANCH: ${{ github.event.pull_request.head.ref || github.head_ref || '' }}
           PR_NUMBER: ${{ github.event.pull_request.number || github.event.inputs.pr_number || '' }}
           GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-
         run: "# S932 rebasing guard:\n# During active PR iteration, avoid writing housekeeping\
         \ commits to the PR branch.\n# This prevents churn/rebase loops caused by\
         \ repeated auth-token refresh commits.\nif [ \"${{ github.event_name }}\"\
@@ -1395,14 +1358,10 @@ jobs:
     needs:
       - activate-delegation
     if: 'always() &&
-
       github.event.action != ''closed'' &&
-
       github.event.pull_request.number != '''' &&
-
       (needs.activate-delegation.result == ''success'' || needs.activate-delegation.result
       == ''failure'')
-
       '
     permissions:
       actions: write
@@ -1414,7 +1373,6 @@ jobs:
         with:
           fetch-depth: 1
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-
           ref: ${{ github.event.pull_request.head.ref || github.head_ref || github.ref_name }}
       - name: Generate Cognitive Brain App token
         id: app-token
@@ -1543,12 +1501,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: activate-delegation
     if: 'failure() &&
-
       (github.event_name == ''pull_request'' || github.event_name == ''pull_request_review'')
       &&
-
       github.event.pull_request.head.repo.full_name == github.repository
-
       '
     permissions:
       pull-requests: write
@@ -1559,7 +1514,6 @@ jobs:
         uses: actions/checkout@v5
         with:
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
-
           fetch-depth: 1
       - name: Post or update rescue comment
         env:
