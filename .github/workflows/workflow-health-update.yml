@@ -1,5 +1,5 @@
 name: Workflow Health Update
-true:
+on:
   schedule:
   - cron: 0 2 * * *
   workflow_dispatch: null

@@ -1,5 +1,5 @@
 name: 🏥 Health Dashboard Metrics Collection
-true:
+on:
   schedule:
   - cron: "*/30 * * * *"
   workflow_dispatch:
