@@ -1,82 +1,55 @@
 name: CodeQL Alert Triage
-
-on:
+true:
   schedule:
-    - cron: '0 2 * * *'  # Daily at 02:00 UTC
-  workflow_dispatch:
-
+  - cron: 0 2 * * *
+  workflow_dispatch: null
 permissions:
   contents: write
   security-events: read
-
 jobs:
   triage-alerts:
     runs-on: ubuntu-latest
     name: Triage CodeQL Alerts
     timeout-minutes: 30
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-        with:
-          fetch-depth: 1
+    - name: Checkout repository
+      uses: actions/checkout@v5
+      with:
+        fetch-depth: 1
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: "3.11"
+    - name: Categorize CodeQL alerts
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: "mkdir -p .codex/security\npython scripts/security/codeql_alert_categorizer.py\
+        \ \\\n  --repo ${{ github.repository }} \\\n  --output .codex/security/alert_triage_report.json\
+        \ \\\n  --markdown .codex/security/alert_summary.md\n"
+    - name: Create issues for critical alerts
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: "python - <<"EOF"\nimport json\n\ntry:\n    with open(".codex/security/alert_triage_report.json",\
+        \ "r") as f:\n        report = json.load(f)\n\n    critical_count = report.get("by_severity",\
+        \ {}).get("critical", 0)\n    high_count = report.get("by_severity", {}).get("high",\
+        \ 0)\n\n    if critical_count > 0 or high_count > 0:\n        print(f\"⚠️\
+        \  Found {critical_count} CRITICAL and {high_count} HIGH severity alerts\"\
+        )\n        # TODO: Create GitHub issues for critical/high alerts\n    else:\n\
+        \        print(\"✅ No critical or high severity alerts\")\nexcept Exception\
+        \ as e:\n    print(f\"⚠️  Error processing alerts: {e}\")\nEOF\n"
+    - name: Commit triage report
+      run: "git config --local user.email \"copilot@github.com\"\ngit config --local\
+        \ user.name \"GitHub Copilot\"\n\nif git diff --quiet .codex/security/; then\n\
+        \  echo \"ℹ️ No changes to commit\"\n  exit 0\nfi\n\ngit add .codex/security/alert_triage_report.json\
+        \ .codex/security/alert_summary.md\ngit commit -m \"chore: Update CodeQL alert\
+        \ triage report [skip ci]\"\ngit push\n"
+    - name: Post weekly summary (Mondays only)
+      if: github.event.schedule == "0 2 * * 1" || github.event_name == "workflow_dispatch"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: "echo "📊 Weekly CodeQL alert summary ready for discussion"
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: '3.11'
-
-      - name: Categorize CodeQL alerts
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          mkdir -p .codex/security
-          python scripts/security/codeql_alert_categorizer.py \
-            --repo ${{ github.repository }} \
-            --output .codex/security/alert_triage_report.json \
-            --markdown .codex/security/alert_summary.md
-
-      - name: Create issues for critical alerts
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          python - <<'EOF'
-          import json
-
-          try:
-              with open('.codex/security/alert_triage_report.json', 'r') as f:
-                  report = json.load(f)
-
-              critical_count = report.get('by_severity', {}).get('critical', 0)
-              high_count = report.get('by_severity', {}).get('high', 0)
-
-              if critical_count > 0 or high_count > 0:
-                  print(f"⚠️  Found {critical_count} CRITICAL and {high_count} HIGH severity alerts")
-                  # TODO: Create GitHub issues for critical/high alerts
-              else:
-                  print("✅ No critical or high severity alerts")
-          except Exception as e:
-              print(f"⚠️  Error processing alerts: {e}")
-          EOF
-
-      - name: Commit triage report
-        run: |
-          git config --local user.email "copilot@github.com"
-          git config --local user.name "GitHub Copilot"
-
-          if git diff --quiet .codex/security/; then
-            echo "ℹ️ No changes to commit"
-            exit 0
-          fi
-
-          git add .codex/security/alert_triage_report.json .codex/security/alert_summary.md
-          git commit -m "chore: Update CodeQL alert triage report [skip ci]"
-          git push
-
-      - name: Post weekly summary (Mondays only)
-        if: github.event.schedule == '0 2 * * 1' || github.event_name == 'workflow_dispatch'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          echo "📊 Weekly CodeQL alert summary ready for discussion"
-
+        "
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true

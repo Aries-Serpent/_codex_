@@ -1,199 +1,149 @@
 name: Phase 16 - Security Scanning & Coverage Integration
-
-on:
+true:
   push:
-    branches: [main, develop]
+    branches:
+    - main
+    - develop
   pull_request:
-    branches: [main, develop]
+    branches:
+    - main
+    - develop
   schedule:
-    - cron: '0 2 * * *'  # Daily at 2 AM UTC
-  workflow_dispatch:
-
+  - cron: 0 2 * * *
+  workflow_dispatch: null
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-
 env:
-  PYTHON_VERSION: '3.12'
+  PYTHON_VERSION: "3.12"
   PIP_DISABLE_PIP_VERSION_CHECK: 1
-
 jobs:
   security-scanning:
     name: Security Scanning Suite
     runs-on: ubuntu-latest
     env:
-      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+      GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+        }}
     timeout-minutes: 30
     permissions:
       contents: read
       security-events: write
       pull-requests: write
-
     steps:
-      - name: Mask secrets
-        run: |
-          echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
-      - name: Checkout code
-        uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-          fetch-depth: 0
+    - name: Mask secrets
+      run: "echo "::add-mask::$(echo $GH_TOKEN | head -c 10)"
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          cache: 'pip'
+        "
+    - name: Checkout code
+      uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+        fetch-depth: 0
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        cache: pip
+    - name: Install security tools
+      run: "python -m pip install --upgrade pip setuptools wheel
 
-      - name: Install security tools
-        run: |
-          python -m pip install --upgrade pip setuptools wheel
-          pip install bandit[toml] semgrep gitleaks safety pip-audit
-          pip install -e .
+        pip install bandit[toml] semgrep gitleaks safety pip-audit
 
-      - name: Run Bandit Security Scan
-        id: bandit
+        pip install -e .
+
+        "
+    - name: Run Bandit Security Scan
+      id: bandit
+      continue-on-error: true
+      run: "echo \"::group::Bandit SAST Scan\"\nbandit -r src/ -f json -o bandit-report.json\
+        \ || true\necho \"::endgroup::\"\nif [ -f bandit-report.json ]; then\n  python\
+        \ -m json.tool bandit-report.json\nfi\n"
+    - name: Run Semgrep Security Scan
+      id: semgrep
+      continue-on-error: true
+      run: "echo \"::group::Semgrep SAST Scan\"\nsemgrep --config=p/python --config=p/security-audit\
+        \ \\\n  --json -o semgrep-report.json src/ || true\necho \"::endgroup::\"\n\
+        if [ -f semgrep-report.json ]; then\n  python -m json.tool semgrep-report.json\n\
+        fi\n"
+    - name: Run Gitleaks Secret Scan
+      id: gitleaks
+      continue-on-error: true
+      run: "echo \"::group::Gitleaks Secret Detection\"\ngitleaks detect --source\
+        \ . --report-format json \\\n  --report-path gitleaks-report.json || true\n\
+        echo \"::endgroup::\"\nif [ -f gitleaks-report.json ]; then\n  python -m json.tool\
+        \ gitleaks-report.json\nfi\n"
+    - name: Run pip-audit Dependency Scan
+      id: pip-audit
+      continue-on-error: true
+      run: "echo \"::group::pip-audit Dependency Scan\"\npip-audit --desc --format\
+        \ json > pip-audit-report.json || true\necho \"::endgroup::\"\nif [ -f pip-audit-report.json\
+        \ ]; then\n  python -m json.tool pip-audit-report.json\nfi\n"
+    - name: Run Safety Dependency Scan
+      id: safety
+      continue-on-error: true
+      run: "echo \"::group::Safety Dependency Scan\"\nsafety check --json > safety-report.json\
+        \ || true\necho \"::endgroup::\"\nif [ -f safety-report.json ]; then\n  python\
+        \ -m json.tool safety-report.json || echo \"Safety report generated\"\nfi\n"
+    - name: Run Vulnerability Scanning Tests
+      id: vuln-tests
+      continue-on-error: true
+      run: "echo \"::group::Phase 16.3 Vulnerability Scanning Tests\"\npython -m pytest\
+        \ tests/security/test_vulnerability_scanning.py -v \\\n  --tb=short --color=yes\
+        \ 2>&1 | head -100\necho \"::endgroup::\"\n"
+    - name: Run Dependency Audit Tests
+      id: dep-audit-tests
+      continue-on-error: true
+      run: "echo \"::group::Phase 16.3 Dependency Audit Tests\"\npython -m pytest\
+        \ tests/security/test_dependency_audit.py -v \\\n  --tb=short --color=yes\
+        \ 2>&1 | head -100\necho \"::endgroup::\"\n"
+    - name: Upload SARIF Reports
+      if: always()
+      uses: github/codeql-action/upload-sarif@v2
+      with:
+        sarif_file: semgrep-report.json
+        category: security-scan-phase-16
         continue-on-error: true
-        run: |
-          echo "::group::Bandit SAST Scan"
-          bandit -r src/ -f json -o bandit-report.json || true
-          echo "::endgroup::"
-          if [ -f bandit-report.json ]; then
-            python -m json.tool bandit-report.json
-          fi
+    - name: Create Security Report Summary
+      if: always()
+      run: "echo \"# Phase 16.3 Security Scanning Report\" > security-report.md\n\
+        echo \"\" >> security-report.md\necho \"## Scan Results\" >> security-report.md\n\
+        echo \"\" >> security-report.md\n\nif [ -f bandit-report.json ]; then\n  echo\
+        \ \"### Bandit SAST Scan\" >> security-report.md\n  echo \"✓ Completed\" >>\
+        \ security-report.md\nfi\n\nif [ -f semgrep-report.json ]; then\n  echo \"\
+        ### Semgrep SAST Scan\" >> security-report.md\n  echo \"✓ Completed\" >> security-report.md\n\
+        fi\n\nif [ -f gitleaks-report.json ]; then\n  echo \"### Gitleaks Secret Detection\"\
+        \ >> security-report.md\n  echo \"✓ Completed\" >> security-report.md\nfi\n\
+        \nif [ -f pip-audit-report.json ]; then\n  echo \"### pip-audit Dependency\
+        \ Scan\" >> security-report.md\n  echo \"✓ Completed\" >> security-report.md\n\
+        fi\n\necho \"\" >> security-report.md\necho \"**Status**: All security scans\
+        \ completed successfully\" >> security-report.md\n"
+    - name: Comment on PR
+      if: github.event_name == "pull_request" && always()
+      uses: actions/github-script@v8
+      with:
+        script: "const fs = require("fs");\nconst report = fs.readFileSync("security-report.md",\
+          \ "utf8");\n\ngithub.rest.issues.createComment({\n  issue_number: context.issue.number,\n\
+          \  owner: context.repo.owner,\n  repo: context.repo.repo,\n  body: report\n\
+          });\n"
+    - name: Archive Security Reports
+      if: always()
+      uses: actions/upload-artifact@v5
+      with:
+        name: security-reports
+        path: "bandit-report.json
 
-      - name: Run Semgrep Security Scan
-        id: semgrep
-        continue-on-error: true
-        run: |
-          echo "::group::Semgrep SAST Scan"
-          semgrep --config=p/python --config=p/security-audit \
-            --json -o semgrep-report.json src/ || true
-          echo "::endgroup::"
-          if [ -f semgrep-report.json ]; then
-            python -m json.tool semgrep-report.json
-          fi
+          semgrep-report.json
 
-      - name: Run Gitleaks Secret Scan
-        id: gitleaks
-        continue-on-error: true
-        run: |
-          echo "::group::Gitleaks Secret Detection"
-          gitleaks detect --source . --report-format json \
-            --report-path gitleaks-report.json || true
-          echo "::endgroup::"
-          if [ -f gitleaks-report.json ]; then
-            python -m json.tool gitleaks-report.json
-          fi
+          gitleaks-report.json
 
-      - name: Run pip-audit Dependency Scan
-        id: pip-audit
-        continue-on-error: true
-        run: |
-          echo "::group::pip-audit Dependency Scan"
-          pip-audit --desc --format json > pip-audit-report.json || true
-          echo "::endgroup::"
-          if [ -f pip-audit-report.json ]; then
-            python -m json.tool pip-audit-report.json
-          fi
+          pip-audit-report.json
 
-      - name: Run Safety Dependency Scan
-        id: safety
-        continue-on-error: true
-        run: |
-          echo "::group::Safety Dependency Scan"
-          safety check --json > safety-report.json || true
-          echo "::endgroup::"
-          if [ -f safety-report.json ]; then
-            python -m json.tool safety-report.json || echo "Safety report generated"
-          fi
+          safety-report.json
 
-      - name: Run Vulnerability Scanning Tests
-        id: vuln-tests
-        continue-on-error: true
-        run: |
-          echo "::group::Phase 16.3 Vulnerability Scanning Tests"
-          python -m pytest tests/security/test_vulnerability_scanning.py -v \
-            --tb=short --color=yes 2>&1 | head -100
-          echo "::endgroup::"
+          security-report.md
 
-      - name: Run Dependency Audit Tests
-        id: dep-audit-tests
-        continue-on-error: true
-        run: |
-          echo "::group::Phase 16.3 Dependency Audit Tests"
-          python -m pytest tests/security/test_dependency_audit.py -v \
-            --tb=short --color=yes 2>&1 | head -100
-          echo "::endgroup::"
-
-      - name: Upload SARIF Reports
-        if: always()
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: semgrep-report.json
-          category: security-scan-phase-16
-          continue-on-error: true
-
-      - name: Create Security Report Summary
-        if: always()
-        run: |
-          echo "# Phase 16.3 Security Scanning Report" > security-report.md
-          echo "" >> security-report.md
-          echo "## Scan Results" >> security-report.md
-          echo "" >> security-report.md
-
-          if [ -f bandit-report.json ]; then
-            echo "### Bandit SAST Scan" >> security-report.md
-            echo "✓ Completed" >> security-report.md
-          fi
-
-          if [ -f semgrep-report.json ]; then
-            echo "### Semgrep SAST Scan" >> security-report.md
-            echo "✓ Completed" >> security-report.md
-          fi
-
-          if [ -f gitleaks-report.json ]; then
-            echo "### Gitleaks Secret Detection" >> security-report.md
-            echo "✓ Completed" >> security-report.md
-          fi
-
-          if [ -f pip-audit-report.json ]; then
-            echo "### pip-audit Dependency Scan" >> security-report.md
-            echo "✓ Completed" >> security-report.md
-          fi
-
-          echo "" >> security-report.md
-          echo "**Status**: All security scans completed successfully" >> security-report.md
-
-      - name: Comment on PR
-        if: github.event_name == 'pull_request' && always()
-        uses: actions/github-script@v8
-        with:
-          script: |
-            const fs = require('fs');
-            const report = fs.readFileSync('security-report.md', 'utf8');
-
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: report
-            });
-
-      - name: Archive Security Reports
-        if: always()
-        uses: actions/upload-artifact@v5
-        with:
-          name: security-reports
-          path: |
-            bandit-report.json
-            semgrep-report.json
-            gitleaks-report.json
-            pip-audit-report.json
-            safety-report.json
-            security-report.md
-          retention-days: 30
-
+          "
+        retention-days: 30
   coverage-analysis:
     name: Coverage Gap Analysis (Phase 16.4)
     runs-on: ubuntu-latest
@@ -201,70 +151,51 @@ jobs:
     permissions:
       contents: read
       checks: write
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v5
-        with:
-            persist-credentials: false
+    - name: Checkout code
+      uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        cache: pip
+    - name: Install dependencies
+      run: "python -m pip install --upgrade pip setuptools wheel
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          cache: 'pip'
+        pip install -e .
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip setuptools wheel
-          pip install -e .
-          pip install pytest pytest-cov pytest-xdist
+        pip install pytest pytest-cov pytest-xdist
 
-      - name: Run tests with coverage
-        id: coverage
-        continue-on-error: true
-        run: |
-          echo "::group::Collecting Coverage"
-          python -m pytest tests/security/ \
-            --cov=src \
-            --cov-report=term-missing \
-            --cov-report=json \
-            --cov-report=html \
-            -v --tb=short
-          echo "::endgroup::"
-
-      - name: Check coverage threshold
-        continue-on-error: true
-        run: |
-          python -c "
-          import json
-          with open('coverage.json') as f:
-              data = json.load(f)
-          coverage = data['totals']['percent_covered']
-          print(f'Coverage: {coverage}%')
-          if coverage < 70:
-              print('⚠️ Coverage below 70%')
-          else:
-              print('✓ Coverage acceptable')
-          "
-
-      - name: Upload coverage to Codecov
-        if: always()
-        uses: codecov/codecov-action@b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238  # v4
-        with:
-          files: ./coverage.xml
-          flags: security-tests
-          name: phase-16-security-coverage
-          fail_ci_if_error: false
-
-      - name: Upload coverage report
-        if: always()
-        uses: actions/upload-artifact@v5
-        with:
-          name: coverage-report
-          path: htmlcov/
-          retention-days: 30
-
+        "
+    - name: Run tests with coverage
+      id: coverage
+      continue-on-error: true
+      run: "echo \"::group::Collecting Coverage\"\npython -m pytest tests/security/\
+        \ \\\n  --cov=src \\\n  --cov-report=term-missing \\\n  --cov-report=json\
+        \ \\\n  --cov-report=html \\\n  -v --tb=short\necho \"::endgroup::\"\n"
+    - name: Check coverage threshold
+      continue-on-error: true
+      run: "python -c \"\nimport json\nwith open("coverage.json") as f:\n    data\
+        \ = json.load(f)\ncoverage = data["totals"]["percent_covered"]\nprint(f"Coverage:\
+        \ {coverage}%")\nif coverage < 70:\n    print("⚠️ Coverage below 70%")\nelse:\n\
+        \    print("✓ Coverage acceptable")\n\"\n"
+    - name: Upload coverage to Codecov
+      if: always()
+      uses: codecov/codecov-action@b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238
+      with:
+        files: ./coverage.xml
+        flags: security-tests
+        name: phase-16-security-coverage
+        fail_ci_if_error: false
+    - name: Upload coverage report
+      if: always()
+      uses: actions/upload-artifact@v5
+      with:
+        name: coverage-report
+        path: htmlcov/
+        retention-days: 30
   codeql-analysis:
     name: CodeQL Security Analysis
     runs-on: ubuntu-latest
@@ -272,31 +203,26 @@ jobs:
     permissions:
       contents: read
       security-events: write
-
     strategy:
       fail-fast: false
       matrix:
-        language: ['python']
-
+        language:
+        - python
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-        with:
-            persist-credentials: false
-
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
-        with:
-          languages: ${{ matrix.language }}
-
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@v3
-
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
-        with:
-          category: /language:${{ matrix.language }}
-
+    - name: Checkout repository
+      uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: ${{ matrix.language }}
+    - name: Autobuild
+      uses: github/codeql-action/autobuild@v3
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3
+      with:
+        category: /language:${{ matrix.language }}
   test-phase-16:
     name: Phase 16 Comprehensive Tests
     runs-on: ubuntu-latest
@@ -304,67 +230,74 @@ jobs:
     permissions:
       contents: read
       checks: write
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v5
-        with:
-            persist-credentials: false
+    - name: Checkout code
+      uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        cache: pip
+    - name: Install dependencies
+      run: "python -m pip install --upgrade pip setuptools wheel
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          cache: 'pip'
+        pip install -e .
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip setuptools wheel
-          pip install -e .
-          pip install pytest pytest-xdist pytest-timeout
+        pip install pytest pytest-xdist pytest-timeout
 
-      - name: Run Phase 16.3 Security Tests
-        run: |
-          echo "::group::Phase 16.3: Vulnerability Scanning Tests"
-          python -m pytest tests/security/test_vulnerability_scanning.py \
-            -v --tb=short -x 2>&1 | tee phase-16-3-results.txt
-          echo "::endgroup::"
+        "
+    - name: Run Phase 16.3 Security Tests
+      run: "echo \"::group::Phase 16.3: Vulnerability Scanning Tests\"\npython -m\
+        \ pytest tests/security/test_vulnerability_scanning.py \\\n  -v --tb=short\
+        \ -x 2>&1 | tee phase-16-3-results.txt\necho \"::endgroup::\"\n"
+    - name: Run Phase 16.3 Dependency Audit Tests
+      run: "echo \"::group::Phase 16.3: Dependency Audit Tests\"\npython -m pytest\
+        \ tests/security/test_dependency_audit.py \\\n  -v --tb=short -x 2>&1 | tee\
+        \ phase-16-3-dep-results.txt\necho \"::endgroup::\"\n"
+    - name: Generate Test Report
+      if: always()
+      run: "echo "# Phase 16 Test Results" > test-report.md
 
-      - name: Run Phase 16.3 Dependency Audit Tests
-        run: |
-          echo "::group::Phase 16.3: Dependency Audit Tests"
-          python -m pytest tests/security/test_dependency_audit.py \
-            -v --tb=short -x 2>&1 | tee phase-16-3-dep-results.txt
-          echo "::endgroup::"
+        echo "" >> test-report.md
 
-      - name: Generate Test Report
-        if: always()
-        run: |
-          echo "# Phase 16 Test Results" > test-report.md
-          echo "" >> test-report.md
-          echo "## Phase 16.3 Results" >> test-report.md
-          echo "" >> test-report.md
-          echo "### Vulnerability Scanning Tests" >> test-report.md
-          echo "\`\`\`" >> test-report.md
-          tail -30 phase-16-3-results.txt >> test-report.md
-          echo "\`\`\`" >> test-report.md
-          echo "" >> test-report.md
-          echo "### Dependency Audit Tests" >> test-report.md
-          echo "\`\`\`" >> test-report.md
-          tail -30 phase-16-3-dep-results.txt >> test-report.md
-          echo "\`\`\`" >> test-report.md
+        echo "## Phase 16.3 Results" >> test-report.md
 
-      - name: Upload Test Results
-        if: always()
-        uses: actions/upload-artifact@v5
-        with:
-          name: phase-16-test-results
-          path: |
-            phase-16-3-results.txt
-            phase-16-3-dep-results.txt
-            test-report.md
-          retention-days: 30
+        echo "" >> test-report.md
 
+        echo "### Vulnerability Scanning Tests" >> test-report.md
+
+        echo "\`\`\`" >> test-report.md
+
+        tail -30 phase-16-3-results.txt >> test-report.md
+
+        echo "\`\`\`" >> test-report.md
+
+        echo "" >> test-report.md
+
+        echo "### Dependency Audit Tests" >> test-report.md
+
+        echo "\`\`\`" >> test-report.md
+
+        tail -30 phase-16-3-dep-results.txt >> test-report.md
+
+        echo "\`\`\`" >> test-report.md
+
+        "
+    - name: Upload Test Results
+      if: always()
+      uses: actions/upload-artifact@v5
+      with:
+        name: phase-16-test-results
+        path: "phase-16-3-results.txt
+
+          phase-16-3-dep-results.txt
+
+          test-report.md
+
+          "
+        retention-days: 30
   security-gates:
     name: Security Gates & Validation
     runs-on: ubuntu-latest
@@ -372,129 +305,149 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v5
-        with:
-            persist-credentials: false
+    - name: Checkout code
+      uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    - name: Check SECURITY.md
+      run: "if [ ! -f SECURITY.md ]; then\n  echo \"❌ SECURITY.md not found\"\n  exit\
+        \ 1\nfi\necho \"✓ SECURITY.md exists\"\ngrep -E \"email|report|contact\" SECURITY.md\
+        \ > /dev/null && \\\n  echo \"✓ Security contact documented\" || \\\n  echo\
+        \ \"⚠️ Security contact not clearly documented\"\n"
+    - name: Verify security baseline
+      run: "if [ ! -f .secrets.baseline ]; then\n  echo \"⚠️ .secrets.baseline not\
+        \ found (creating...)\"\n  echo "{}" > .secrets.baseline\nfi\necho \"✓ Security\
+        \ baseline configured\"\n"
+    - name: Check for hardcoded secrets (gitleaks)
+      continue-on-error: true
+      run: "pip install gitleaks-py || pip install gitpython\npython -c \"\nimport\
+        \ subprocess\nresult = subprocess.run(["gitleaks", "detect", "--verbose",\
+        \ "--exit-code", "0"],\n                        capture_output=True, text=True)\n\
+        if "No secrets found" in result.stdout or result.returncode == 0:\n    print("✓\
+        \ No hardcoded secrets detected")\nelse:\n    print("⚠️ Potential secrets\
+        \ detected")\n\" || echo \"✓ Gitleaks check completed\"\n"
+    - name: Validate dependencies
+      run: "python -m pip install --upgrade pip
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
+        pip install pipdeptree
 
-      - name: Check SECURITY.md
-        run: |
-          if [ ! -f SECURITY.md ]; then
-            echo "❌ SECURITY.md not found"
-            exit 1
-          fi
-          echo "✓ SECURITY.md exists"
-          grep -E "email|report|contact" SECURITY.md > /dev/null && \
-            echo "✓ Security contact documented" || \
-            echo "⚠️ Security contact not clearly documented"
+        echo "## Dependency Tree" > deps.txt
 
-      - name: Verify security baseline
-        run: |
-          if [ ! -f .secrets.baseline ]; then
-            echo "⚠️ .secrets.baseline not found (creating...)"
-            echo '{}' > .secrets.baseline
-          fi
-          echo "✓ Security baseline configured"
+        pipdeptree >> deps.txt 2>&1 || true
 
-      - name: Check for hardcoded secrets (gitleaks)
-        continue-on-error: true
-        run: |
-          pip install gitleaks-py || pip install gitpython
-          python -c "
-          import subprocess
-          result = subprocess.run(['gitleaks', 'detect', '--verbose', '--exit-code', '0'],
-                                  capture_output=True, text=True)
-          if 'No secrets found' in result.stdout or result.returncode == 0:
-              print('✓ No hardcoded secrets detected')
-          else:
-              print('⚠️ Potential secrets detected')
-          " || echo "✓ Gitleaks check completed"
+        echo "✓ Dependency validation completed"
 
-      - name: Validate dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install pipdeptree
-          echo "## Dependency Tree" > deps.txt
-          pipdeptree >> deps.txt 2>&1 || true
-          echo "✓ Dependency validation completed"
+        "
+    - name: Summary
+      run: "echo "## Phase 16 Security Gates Summary"
 
-      - name: Summary
-        run: |
-          echo "## Phase 16 Security Gates Summary"
-          echo ""
-          echo "✓ Security scanning suite configured"
-          echo "✓ Dependency auditing enabled"
-          echo "✓ Secret detection active"
-          echo "✓ CodeQL analysis ready"
-          echo "✓ Coverage analysis integrated"
-          echo ""
-          echo "All security gates passed for Phase 16"
+        echo ""
 
+        echo "✓ Security scanning suite configured"
+
+        echo "✓ Dependency auditing enabled"
+
+        echo "✓ Secret detection active"
+
+        echo "✓ CodeQL analysis ready"
+
+        echo "✓ Coverage analysis integrated"
+
+        echo ""
+
+        echo "All security gates passed for Phase 16"
+
+        "
   results:
     name: Phase 16 Results Summary
     runs-on: ubuntu-latest
     if: always()
-    needs: [security-scanning, coverage-analysis, codeql-analysis, test-phase-16, security-gates]
+    needs:
+    - security-scanning
+    - coverage-analysis
+    - codeql-analysis
+    - test-phase-16
+    - security-gates
     permissions:
       contents: read
       pull-requests: write
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v5
-        with:
-            persist-credentials: false
+    - name: Checkout code
+      uses: actions/checkout@v5
+      with:
+        persist-credentials: false
+    - name: Create Summary
+      run: "echo "# 🔒 Phase 16 Security & Coverage Complete" > PHASE_16_RESULTS.md
 
-      - name: Create Summary
-        run: |
-          echo "# 🔒 Phase 16 Security & Coverage Complete" > PHASE_16_RESULTS.md
-          echo "" >> PHASE_16_RESULTS.md
-          echo "## Phase 16.3 - Continuous Security Scanning" >> PHASE_16_RESULTS.md
-          echo "- ✅ Vulnerability scanning tests implemented (30+ tests)" >> PHASE_16_RESULTS.md
-          echo "- ✅ Dependency audit tests implemented (25+ tests)" >> PHASE_16_RESULTS.md
-          echo "- ✅ SAST integration (Bandit + Semgrep)" >> PHASE_16_RESULTS.md
-          echo "- ✅ CVE detection mechanisms" >> PHASE_16_RESULTS.md
-          echo "- ✅ Vulnerability database updates" >> PHASE_16_RESULTS.md
-          echo "" >> PHASE_16_RESULTS.md
-          echo "## Phase 16.4 - Final Polish & 100% Coverage" >> PHASE_16_RESULTS.md
-          echo "- ✅ Gap coverage tests (50+ tests)" >> PHASE_16_RESULTS.md
-          echo "- ✅ Coverage threshold enforcement" >> PHASE_16_RESULTS.md
-          echo "- ✅ Documentation review" >> PHASE_16_RESULTS.md
-          echo "- ✅ CodeQL validation" >> PHASE_16_RESULTS.md
-          echo "" >> PHASE_16_RESULTS.md
-          echo "## Security Requirements Met" >> PHASE_16_RESULTS.md
-          echo "- ✅ Zero hardcoded secrets" >> PHASE_16_RESULTS.md
-          echo "- ✅ Input validation comprehensive" >> PHASE_16_RESULTS.md
-          echo "- ✅ Cryptography best practices" >> PHASE_16_RESULTS.md
-          echo "- ✅ Dependency security" >> PHASE_16_RESULTS.md
-          echo "- ✅ No CodeQL alerts" >> PHASE_16_RESULTS.md
+        echo "" >> PHASE_16_RESULTS.md
 
-      - name: Upload Summary
-        uses: actions/upload-artifact@v5
-        with:
-          name: phase-16-complete
-          path: PHASE_16_RESULTS.md
+        echo "## Phase 16.3 - Continuous Security Scanning" >> PHASE_16_RESULTS.md
 
-      - name: Status
-        run: |
-          echo "## 🎯 Phase 16 Execution Complete"
-          echo ""
-          echo "Sub-phases:"
-          echo "✅ 16.3 - Continuous Security Scanning"
-          echo "✅ 16.4 - Final Polish & 100% Coverage"
-          echo ""
-          echo "Total tests created: 1000+"
-          echo "Security coverage: 100%"
-          echo "CodeQL status: Validated"
+        echo "- ✅ Vulnerability scanning tests implemented (30+ tests)" >> PHASE_16_RESULTS.md
 
+        echo "- ✅ Dependency audit tests implemented (25+ tests)" >> PHASE_16_RESULTS.md
 
+        echo "- ✅ SAST integration (Bandit + Semgrep)" >> PHASE_16_RESULTS.md
 
+        echo "- ✅ CVE detection mechanisms" >> PHASE_16_RESULTS.md
 
+        echo "- ✅ Vulnerability database updates" >> PHASE_16_RESULTS.md
 
+        echo "" >> PHASE_16_RESULTS.md
+
+        echo "## Phase 16.4 - Final Polish & 100% Coverage" >> PHASE_16_RESULTS.md
+
+        echo "- ✅ Gap coverage tests (50+ tests)" >> PHASE_16_RESULTS.md
+
+        echo "- ✅ Coverage threshold enforcement" >> PHASE_16_RESULTS.md
+
+        echo "- ✅ Documentation review" >> PHASE_16_RESULTS.md
+
+        echo "- ✅ CodeQL validation" >> PHASE_16_RESULTS.md
+
+        echo "" >> PHASE_16_RESULTS.md
+
+        echo "## Security Requirements Met" >> PHASE_16_RESULTS.md
+
+        echo "- ✅ Zero hardcoded secrets" >> PHASE_16_RESULTS.md
+
+        echo "- ✅ Input validation comprehensive" >> PHASE_16_RESULTS.md
+
+        echo "- ✅ Cryptography best practices" >> PHASE_16_RESULTS.md
+
+        echo "- ✅ Dependency security" >> PHASE_16_RESULTS.md
+
+        echo "- ✅ No CodeQL alerts" >> PHASE_16_RESULTS.md
+
+        "
+    - name: Upload Summary
+      uses: actions/upload-artifact@v5
+      with:
+        name: phase-16-complete
+        path: PHASE_16_RESULTS.md
+    - name: Status
+      run: "echo "## 🎯 Phase 16 Execution Complete"
+
+        echo ""
+
+        echo "Sub-phases:"
+
+        echo "✅ 16.3 - Continuous Security Scanning"
+
+        echo "✅ 16.4 - Final Polish & 100% Coverage"
+
+        echo ""
+
+        echo "Total tests created: 1000+"
+
+        echo "Security coverage: 100%"
+
+        echo "CodeQL status: Validated"
+
+        "
+    timeout-minutes: 30

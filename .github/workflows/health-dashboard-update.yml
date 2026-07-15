@@ -1,25 +1,20 @@
 name: 🏥 Health Dashboard Metrics Collection
-
-on:
+true:
   schedule:
-    # Run every 30 minutes
-    - cron: '*/30 * * * *'
+  - cron: "*/30 * * * *"
   workflow_dispatch:
     inputs:
       force_alert:
-        description: 'Force alert for testing (HEALTHY, CAUTION, WARNING, CRITICAL)'
+        description: Force alert for testing (HEALTHY, CAUTION, WARNING, CRITICAL)
         required: false
-        default: ''
-
+        default: ""
 concurrency:
   group: health-dashboard-update
   cancel-in-progress: false
-
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  METRICS_FILE: '.codex/WORKFLOW_HEALTH_DASHBOARD.json'
-  PYTHON_VERSION: '3.11'
-
+  METRICS_FILE: .codex/WORKFLOW_HEALTH_DASHBOARD.json
+  PYTHON_VERSION: "3.11"
 jobs:
   collect_metrics:
     name: 📊 Collect & Update Metrics
@@ -30,370 +25,186 @@ jobs:
       actions: read
       checks: read
       security-events: read
-
     steps:
-      - name: 📥 Checkout repository
-        uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
-
-      - name: 🐍 Setup Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          cache: 'pip'
-
-      - name: 📦 Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install requests pyyaml python-dateutil
-
-      - name: 🔍 Collect Workflow Metrics
-        id: collect
-        run: |
-          python << 'EOF'
-          import json
-          import os
-          from datetime import datetime, timedelta
-          import subprocess
-
-          metrics_file = os.getenv('METRICS_FILE')
-
-          # Load existing metrics
-          with open(metrics_file, 'r') as f:
-              dashboard = json.load(f)
-
-          # Update timestamp
-          dashboard['dashboard_metadata']['last_updated'] = datetime.utcnow().isoformat() + 'Z'
-
-          # Get workflow runs from last 24 hours
-          cmd = [
-              'gh', 'api',
-              'repos/${{ github.repository }}/actions/runs',
-              '--paginate',
-              '-f', 'created=>' + (datetime.utcnow() - timedelta(days=1)).isoformat() + 'Z',
-              '-q', '.workflow_runs | length'
-          ]
-          result = subprocess.run(cmd, capture_output=True, text=True)
-          total_runs = int(result.stdout.strip() or 0)
-
-          # Get successful runs
-          cmd_success = [
-              'gh', 'api',
-              'repos/${{ github.repository }}/actions/runs',
-              '--paginate',
-              '-f', 'created=>' + (datetime.utcnow() - timedelta(days=1)).isoformat() + 'Z',
-              '-f', 'status=completed',
-              '-f', 'conclusion=success',
-              '-q', '.workflow_runs | length'
-          ]
-          result_success = subprocess.run(cmd_success, capture_output=True, text=True)
-          successful_runs = int(result_success.stdout.strip() or 0)
-
-          # Calculate success rate
-          if total_runs > 0:
-              success_rate = (successful_runs / total_runs) * 100
-              dashboard['metrics']['workflow_success_rate']['current_value'] = round(success_rate, 1)
-
-          # Save updated metrics
-          with open(metrics_file, 'w') as f:
-              json.dump(dashboard, f, indent=2)
-
-          print(f"✅ Metrics collected: {total_runs} total runs, {successful_runs} successful")
-          EOF
-
-      - name: 📈 Collect CodeQL Metrics
-        id: codeql
-        run: |
-          python << 'EOF'
-          import json
-          import os
-          import subprocess
-
-          metrics_file = os.getenv('METRICS_FILE')
-
-          # Load existing metrics
-          with open(metrics_file, 'r') as f:
-              dashboard = json.load(f)
-
-          # Get CodeQL alerts
-          try:
-              cmd = [
-                  'gh', 'api',
-                  'repos/${{ github.repository }}/code-scanning/alerts',
-                  '-q', '.[] | select(.state=="open")'
-              ]
-              result = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
-
-              alerts = result.stdout.strip().split('\n') if result.stdout.strip() else []
-              alert_count = len([a for a in alerts if a])
-
-              dashboard['metrics']['codeql_alert_volume']['current_value'] = alert_count
-
-              print(f"✅ CodeQL alerts: {alert_count}")
-          except Exception as e:
-              print(f"⚠️  Could not fetch CodeQL alerts: {e}")
-
-          # Save updated metrics
-          with open(metrics_file, 'w') as f:
-              json.dump(dashboard, f, indent=2)
-          EOF
-
-      - name: 🔐 Collect Security Metrics
-        id: security
-        run: |
-          python << 'EOF'
-          import json
-          import os
-          import subprocess
-
-          metrics_file = os.getenv('METRICS_FILE')
-
-          # Load existing metrics
-          with open(metrics_file, 'r') as f:
-              dashboard = json.load(f)
-
-          # Get dependency alerts
-          try:
-              cmd = [
-                  'gh', 'api',
-                  'repos/${{ github.repository }}/dependabot/alerts',
-                  '--paginate',
-                  '-q', '.repository.dependabotAlerts.edges | length'
-              ]
-              result = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
-              vuln_count = int(result.stdout.strip() or 0)
-
-              dashboard['metrics']['security_vulnerability_count']['current_value'] = vuln_count
-
-              print(f"✅ Security vulnerabilities: {vuln_count}")
-          except Exception as e:
-              print(f"⚠️  Could not fetch security metrics: {e}")
-
-          # Save updated metrics
-          with open(metrics_file, 'w') as f:
-              json.dump(dashboard, f, indent=2)
-          EOF
-
-      - name: ✅ Collect Test & Coverage Metrics
-        id: tests
-        run: |
-          python << 'EOF'
-          import json
-          import os
-          from datetime import datetime
-
-          metrics_file = os.getenv('METRICS_FILE')
-
-          # Load existing metrics
-          with open(metrics_file, 'r') as f:
-              dashboard = json.load(f)
-
-          # Simulate collecting test metrics
-          # In production, these would come from test result reports
-          dashboard['metrics']['test_pass_rate']['last_updated'] = datetime.utcnow().isoformat() + 'Z'
-          dashboard['metrics']['code_coverage']['last_updated'] = datetime.utcnow().isoformat() + 'Z'
-
-          print("✅ Test and coverage metrics current")
-
-          # Save updated metrics
-          with open(metrics_file, 'w') as f:
-              json.dump(dashboard, f, indent=2)
-          EOF
-
-      - name: 🎯 Analyze Health Status
-        id: analyze
-        run: |
-          python << 'EOF'
-          import json
-          import os
-          from datetime import datetime
-
-          metrics_file = os.getenv('METRICS_FILE')
-
-          # Load metrics
-          with open(metrics_file, 'r') as f:
-              dashboard = json.load(f)
-
-          # Analyze metrics
-          metrics = dashboard['metrics']
-          on_target = 0
-          off_target = 0
-          critical_count = 0
-          warning_count = 0
-
-          for metric_key, metric in metrics.items():
-              current = metric.get('current_value', 0)
-              target = metric.get('target', 0)
-              crit_threshold = metric.get('alert_threshold_critical', 0)
-              warn_threshold = metric.get('alert_threshold_warning', 0)
-
-              # Determine if on target (considering direction)
-              if 'rate' in metric_key or 'coverage' in metric_key or 'success' in metric_key:
-                  # Higher is better
-                  if current >= target:
-                      on_target += 1
-                  else:
-                      off_target += 1
-
-                  if current <= crit_threshold:
-                      critical_count += 1
-                  elif current <= warn_threshold:
-                      warning_count += 1
-              else:
-                  # Lower is better (duration, cost, latency)
-                  if current <= target:
-                      on_target += 1
-                  else:
-                      off_target += 1
-
-                  if current >= crit_threshold:
-                      critical_count += 1
-                  elif current >= warn_threshold:
-                      warning_count += 1
-
-          # Determine overall health
-          if critical_count > 0:
-              health_status = 'CRITICAL'
-              health_icon = '🔴'
-          elif warning_count > 0:
-              health_status = 'WARNING'
-              health_icon = '🟠'
-          elif off_target > 0:
-              health_status = 'CAUTION'
-              health_icon = '🟡'
-          else:
-              health_status = 'HEALTHY'
-              health_icon = '🟢'
-
-          # Calculate health score
-          total_metrics = len(metrics)
-          health_score = (on_target / total_metrics * 100) if total_metrics > 0 else 100
-
-          # Update dashboard
-          dashboard['health_status'] = health_status
-          dashboard['summary'] = {
-              'metrics_on_target': on_target,
-              'metrics_off_target': off_target,
-              'critical_alerts': critical_count,
-              'warning_alerts': warning_count,
-              'health_score': round(health_score, 1)
-          }
-
-          dashboard['dashboard_metadata']['last_updated'] = datetime.utcnow().isoformat() + 'Z'
-
-          # Save updated dashboard
-          with open(metrics_file, 'w') as f:
-              json.dump(dashboard, f, indent=2)
-
-          print(f"{health_icon} Health Status: {health_status}")
-          print(f"📊 Health Score: {health_score:.1f}/100")
-          print(f"✅ On Target: {on_target}/{total_metrics}")
-          print(f"⚠️  Critical Alerts: {critical_count}")
-          print(f"🟠 Warning Alerts: {warning_count}")
-
-          # Export for next steps
-          with open(os.environ.get('GITHUB_OUTPUT', '/dev/null'), 'a') as f:
-              f.write(f"health_status={health_status}\n")
-              f.write(f"health_icon={health_icon}\n")
-              f.write(f"health_score={health_score}\n")
-          EOF
-
-      - name: 📤 Commit metrics update
-        if: always()
-        run: |
-          git config user.name "Health Dashboard Bot"
-          git config user.email "health-dashboard@codex.dev"
-
-          if git diff --quiet ${{ env.METRICS_FILE }}; then
-            echo "✅ No changes to metrics file"
-          else
-            git add ${{ env.METRICS_FILE }}
-            git commit -m "chore: update health dashboard metrics [skip ci]" --no-verify
-            git push origin ${{ github.ref }} || echo "⚠️  Could not push (expected on scheduled runs)"
-          fi
-
-      - name: 🚨 Post Alert if Needed
-        if: |
-          always() &&
-          (steps.analyze.outputs.health_status == 'CRITICAL' ||
-           steps.analyze.outputs.health_status == 'WARNING' ||
-           github.event.inputs.force_alert != '')
-        run: |
-          python << 'EOF'
-          import json
-          import os
-          from datetime import datetime
-          import subprocess
-
-          metrics_file = os.getenv('METRICS_FILE')
-          force_alert = "${{ github.event.inputs.force_alert }}" or "${{ steps.analyze.outputs.health_status }}"
-
-          # Load metrics
-          with open(metrics_file, 'r') as f:
-              dashboard = json.load(f)
-
-          health_status = dashboard['health_status']
-          health_score = dashboard['summary']['health_score']
-
-          # Prepare alert message
-          icon_map = {
-              'HEALTHY': '🟢',
-              'CAUTION': '🟡',
-              'WARNING': '🟠',
-              'CRITICAL': '🔴'
-          }
-
-          icon = icon_map.get(health_status, '❓')
-
-          message = f"""
-          {icon} **Health Dashboard Alert**
-
-          **Status:** {health_status}
-          **Health Score:** {health_score}/100
-          **Last Updated:** {datetime.utcnow().isoformat()}Z
-
-          **Metrics Summary:**
-          - On Target: {dashboard['summary']['metrics_on_target']}/12
-          - Off Target: {dashboard['summary']['metrics_off_target']}/12
-          - Critical Alerts: {dashboard['summary']['critical_alerts']}
-          - Warning Alerts: {dashboard['summary']['warning_alerts']}
-
-          **Key Metrics:**
-          """
-
-          # Add metric details
-          for metric_key, metric in dashboard['metrics'].items():
-              current = metric.get('current_value', 'N/A')
-              target = metric.get('target', 'N/A')
-              message += f"\n- **{metric.get('display_name')}:** {current} (target: {target})"
-
-          message += f"\n\n[View Full Dashboard](../operations/health-dashboard.md)"
-
-          # TODO: Post to GitHub Discussions
-          # For now, just log
-          print("Alert Message:")
-          print(message)
-          EOF
-
-      - name: 📊 Generate Summary
-        if: always()
-        run: |
-          echo "## 🏥 Health Dashboard Update" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "✅ Metrics collected and updated" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Health Status:** ${{ steps.analyze.outputs.health_icon }} ${{ steps.analyze.outputs.health_status }}" >> $GITHUB_STEP_SUMMARY
-          echo "**Health Score:** ${{ steps.analyze.outputs.health_score }}/100" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### Metrics Updated" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ Workflow Success Rate" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ CodeQL Alerts" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ Security Vulnerabilities" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ Test & Coverage Metrics" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "[View Dashboard](../docs/operations/health-dashboard.md)" >> $GITHUB_STEP_SUMMARY
-
+    - name: 📥 Checkout repository
+      uses: actions/checkout@v5
+      with:
+        fetch-depth: 0
+    - name: 🐍 Setup Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        cache: pip
+    - name: 📦 Install dependencies
+      run: "python -m pip install --upgrade pip
+
+        pip install requests pyyaml python-dateutil
+
+        "
+    - name: 🔍 Collect Workflow Metrics
+      id: collect
+      run: "python << "EOF"\nimport json\nimport os\nfrom datetime import datetime,\
+        \ timedelta\nimport subprocess\n\nmetrics_file = os.getenv("METRICS_FILE")\n\
+        \n# Load existing metrics\nwith open(metrics_file, "r") as f:\n    dashboard\
+        \ = json.load(f)\n\n# Update timestamp\ndashboard["dashboard_metadata"]["last_updated"]\
+        \ = datetime.utcnow().isoformat() + "Z"\n\n# Get workflow runs from last 24\
+        \ hours\ncmd = [\n    "gh", "api",\n    "repos/${{ github.repository }}/actions/runs",\n\
+        \    "--paginate",\n    "-f", "created=>" + (datetime.utcnow() - timedelta(days=1)).isoformat()\
+        \ + "Z",\n    "-q", ".workflow_runs | length"\n]\nresult = subprocess.run(cmd,\
+        \ capture_output=True, text=True)\ntotal_runs = int(result.stdout.strip()\
+        \ or 0)\n\n# Get successful runs\ncmd_success = [\n    "gh", "api",\n    "repos/${{\
+        \ github.repository }}/actions/runs",\n    "--paginate",\n    "-f", "created=>"\
+        \ + (datetime.utcnow() - timedelta(days=1)).isoformat() + "Z",\n    "-f",\
+        \ "status=completed",\n    "-f", "conclusion=success",\n    "-q", ".workflow_runs\
+        \ | length"\n]\nresult_success = subprocess.run(cmd_success, capture_output=True,\
+        \ text=True)\nsuccessful_runs = int(result_success.stdout.strip() or 0)\n\n\
+        # Calculate success rate\nif total_runs > 0:\n    success_rate = (successful_runs\
+        \ / total_runs) * 100\n    dashboard["metrics"]["workflow_success_rate"]["current_value"]\
+        \ = round(success_rate, 1)\n\n# Save updated metrics\nwith open(metrics_file,\
+        \ "w") as f:\n    json.dump(dashboard, f, indent=2)\n\nprint(f\"✅ Metrics\
+        \ collected: {total_runs} total runs, {successful_runs} successful\")\nEOF\n"
+    - name: 📈 Collect CodeQL Metrics
+      id: codeql
+      run: "python << "EOF"\nimport json\nimport os\nimport subprocess\n\nmetrics_file\
+        \ = os.getenv("METRICS_FILE")\n\n# Load existing metrics\nwith open(metrics_file,\
+        \ "r") as f:\n    dashboard = json.load(f)\n\n# Get CodeQL alerts\ntry:\n\
+        \    cmd = [\n        "gh", "api",\n        "repos/${{ github.repository }}/code-scanning/alerts",\n\
+        \        "-q", ".[] | select(.state==\"open\")"\n    ]\n    result = subprocess.run(cmd,\
+        \ capture_output=True, text=True, timeout=10)\n\n    alerts = result.stdout.strip().split("\\\
+        n") if result.stdout.strip() else []\n    alert_count = len([a for a in alerts\
+        \ if a])\n\n    dashboard["metrics"]["codeql_alert_volume"]["current_value"]\
+        \ = alert_count\n\n    print(f\"✅ CodeQL alerts: {alert_count}\")\nexcept\
+        \ Exception as e:\n    print(f\"⚠️  Could not fetch CodeQL alerts: {e}\")\n\
+        \n# Save updated metrics\nwith open(metrics_file, "w") as f:\n    json.dump(dashboard,\
+        \ f, indent=2)\nEOF\n"
+    - name: 🔐 Collect Security Metrics
+      id: security
+      run: "python << "EOF"\nimport json\nimport os\nimport subprocess\n\nmetrics_file\
+        \ = os.getenv("METRICS_FILE")\n\n# Load existing metrics\nwith open(metrics_file,\
+        \ "r") as f:\n    dashboard = json.load(f)\n\n# Get dependency alerts\ntry:\n\
+        \    cmd = [\n        "gh", "api",\n        "repos/${{ github.repository }}/dependabot/alerts",\n\
+        \        "--paginate",\n        "-q", ".repository.dependabotAlerts.edges\
+        \ | length"\n    ]\n    result = subprocess.run(cmd, capture_output=True,\
+        \ text=True, timeout=10)\n    vuln_count = int(result.stdout.strip() or 0)\n\
+        \n    dashboard["metrics"]["security_vulnerability_count"]["current_value"]\
+        \ = vuln_count\n\n    print(f\"✅ Security vulnerabilities: {vuln_count}\"\
+        )\nexcept Exception as e:\n    print(f\"⚠️  Could not fetch security metrics:\
+        \ {e}\")\n\n# Save updated metrics\nwith open(metrics_file, "w") as f:\n \
+        \   json.dump(dashboard, f, indent=2)\nEOF\n"
+    - name: ✅ Collect Test & Coverage Metrics
+      id: tests
+      run: "python << "EOF"\nimport json\nimport os\nfrom datetime import datetime\n\
+        \nmetrics_file = os.getenv("METRICS_FILE")\n\n# Load existing metrics\nwith\
+        \ open(metrics_file, "r") as f:\n    dashboard = json.load(f)\n\n# Simulate\
+        \ collecting test metrics\n# In production, these would come from test result\
+        \ reports\ndashboard["metrics"]["test_pass_rate"]["last_updated"] = datetime.utcnow().isoformat()\
+        \ + "Z"\ndashboard["metrics"]["code_coverage"]["last_updated"] = datetime.utcnow().isoformat()\
+        \ + "Z"\n\nprint(\"✅ Test and coverage metrics current\")\n\n# Save updated\
+        \ metrics\nwith open(metrics_file, "w") as f:\n    json.dump(dashboard, f,\
+        \ indent=2)\nEOF\n"
+    - name: 🎯 Analyze Health Status
+      id: analyze
+      run: "python << "EOF"\nimport json\nimport os\nfrom datetime import datetime\n\
+        \nmetrics_file = os.getenv("METRICS_FILE")\n\n# Load metrics\nwith open(metrics_file,\
+        \ "r") as f:\n    dashboard = json.load(f)\n\n# Analyze metrics\nmetrics =\
+        \ dashboard["metrics"]\non_target = 0\noff_target = 0\ncritical_count = 0\n\
+        warning_count = 0\n\nfor metric_key, metric in metrics.items():\n    current\
+        \ = metric.get("current_value", 0)\n    target = metric.get("target", 0)\n\
+        \    crit_threshold = metric.get("alert_threshold_critical", 0)\n    warn_threshold\
+        \ = metric.get("alert_threshold_warning", 0)\n\n    # Determine if on target\
+        \ (considering direction)\n    if "rate" in metric_key or "coverage" in metric_key\
+        \ or "success" in metric_key:\n        # Higher is better\n        if current\
+        \ >= target:\n            on_target += 1\n        else:\n            off_target\
+        \ += 1\n\n        if current <= crit_threshold:\n            critical_count\
+        \ += 1\n        elif current <= warn_threshold:\n            warning_count\
+        \ += 1\n    else:\n        # Lower is better (duration, cost, latency)\n \
+        \       if current <= target:\n            on_target += 1\n        else:\n\
+        \            off_target += 1\n\n        if current >= crit_threshold:\n  \
+        \          critical_count += 1\n        elif current >= warn_threshold:\n\
+        \            warning_count += 1\n\n# Determine overall health\nif critical_count\
+        \ > 0:\n    health_status = "CRITICAL"\n    health_icon = "\U0001F534"\nelif\
+        \ warning_count > 0:\n    health_status = "WARNING"\n    health_icon = "\U0001F7E0\
+        "\nelif off_target > 0:\n    health_status = "CAUTION"\n    health_icon =\
+        \ "\U0001F7E1"\nelse:\n    health_status = "HEALTHY"\n    health_icon = "\U0001F7E2\
+        "\n\n# Calculate health score\ntotal_metrics = len(metrics)\nhealth_score\
+        \ = (on_target / total_metrics * 100) if total_metrics > 0 else 100\n\n# Update\
+        \ dashboard\ndashboard["health_status"] = health_status\ndashboard["summary"]\
+        \ = {\n    "metrics_on_target": on_target,\n    "metrics_off_target": off_target,\n\
+        \    "critical_alerts": critical_count,\n    "warning_alerts": warning_count,\n\
+        \    "health_score": round(health_score, 1)\n}\n\ndashboard["dashboard_metadata"]["last_updated"]\
+        \ = datetime.utcnow().isoformat() + "Z"\n\n# Save updated dashboard\nwith\
+        \ open(metrics_file, "w") as f:\n    json.dump(dashboard, f, indent=2)\n\n\
+        print(f\"{health_icon} Health Status: {health_status}\")\nprint(f\"\U0001F4CA\
+        \ Health Score: {health_score:.1f}/100\")\nprint(f\"✅ On Target: {on_target}/{total_metrics}\"\
+        )\nprint(f\"⚠️  Critical Alerts: {critical_count}\")\nprint(f\"\U0001F7E0\
+        \ Warning Alerts: {warning_count}\")\n\n# Export for next steps\nwith open(os.environ.get("GITHUB_OUTPUT",\
+        \ "/dev/null"), "a") as f:\n    f.write(f\"health_status={health_status}\\\
+        n\")\n    f.write(f\"health_icon={health_icon}\\n\")\n    f.write(f\"health_score={health_score}\\\
+        n\")\nEOF\n"
+    - name: 📤 Commit metrics update
+      if: always()
+      run: "git config user.name \"Health Dashboard Bot\"\ngit config user.email \"\
+        health-dashboard@codex.dev\"\n\nif git diff --quiet ${{ env.METRICS_FILE }};\
+        \ then\n  echo \"✅ No changes to metrics file\"\nelse\n  git add ${{ env.METRICS_FILE\
+        \ }}\n  git commit -m \"chore: update health dashboard metrics [skip ci]\"\
+        \ --no-verify\n  git push origin ${{ github.ref }} || echo \"⚠️  Could not\
+        \ push (expected on scheduled runs)\"\nfi\n"
+    - name: 🚨 Post Alert if Needed
+      if: "always() &&\n(steps.analyze.outputs.health_status == "CRITICAL" ||\n steps.analyze.outputs.health_status\
+        \ == "WARNING" ||\n github.event.inputs.force_alert != "")\n"
+      run: "python << "EOF"\nimport json\nimport os\nfrom datetime import datetime\n\
+        import subprocess\n\nmetrics_file = os.getenv("METRICS_FILE")\nforce_alert\
+        \ = \"${{ github.event.inputs.force_alert }}\" or \"${{ steps.analyze.outputs.health_status\
+        \ }}\"\n\n# Load metrics\nwith open(metrics_file, "r") as f:\n    dashboard\
+        \ = json.load(f)\n\nhealth_status = dashboard["health_status"]\nhealth_score\
+        \ = dashboard["summary"]["health_score"]\n\n# Prepare alert message\nicon_map\
+        \ = {\n    "HEALTHY": "\U0001F7E2",\n    "CAUTION": "\U0001F7E1",\n    "WARNING":\
+        \ "\U0001F7E0",\n    "CRITICAL": "\U0001F534"\n}\n\nicon = icon_map.get(health_status,\
+        \ "❓")\n\nmessage = f\"\"\"\n{icon} **Health Dashboard Alert**\n\n**Status:**\
+        \ {health_status}\n**Health Score:** {health_score}/100\n**Last Updated:**\
+        \ {datetime.utcnow().isoformat()}Z\n\n**Metrics Summary:**\n- On Target: {dashboard["summary"]["metrics_on_target"]}/12\n\
+        - Off Target: {dashboard["summary"]["metrics_off_target"]}/12\n- Critical\
+        \ Alerts: {dashboard["summary"]["critical_alerts"]}\n- Warning Alerts: {dashboard["summary"]["warning_alerts"]}\n\
+        \n**Key Metrics:**\n\"\"\"\n\n# Add metric details\nfor metric_key, metric\
+        \ in dashboard["metrics"].items():\n    current = metric.get("current_value",\
+        \ "N/A")\n    target = metric.get("target", "N/A")\n    message += f\"\\n-\
+        \ **{metric.get("display_name")}:** {current} (target: {target})\"\n\nmessage\
+        \ += f\"\\n\\n[View Full Dashboard](../operations/health-dashboard.md)\"\n\
+        \n# TODO: Post to GitHub Discussions\n# For now, just log\nprint(\"Alert Message:\"\
+        )\nprint(message)\nEOF\n"
+    - name: 📊 Generate Summary
+      if: always()
+      run: "echo "## 🏥 Health Dashboard Update" >> $GITHUB_STEP_SUMMARY
+
+        echo "" >> $GITHUB_STEP_SUMMARY
+
+        echo "✅ Metrics collected and updated" >> $GITHUB_STEP_SUMMARY
+
+        echo "" >> $GITHUB_STEP_SUMMARY
+
+        echo "**Health Status:** ${{ steps.analyze.outputs.health_icon }} ${{ steps.analyze.outputs.health_status
+        }}" >> $GITHUB_STEP_SUMMARY
+
+        echo "**Health Score:** ${{ steps.analyze.outputs.health_score }}/100" >>
+        $GITHUB_STEP_SUMMARY
+
+        echo "" >> $GITHUB_STEP_SUMMARY
+
+        echo "### Metrics Updated" >> $GITHUB_STEP_SUMMARY
+
+        echo "- ✅ Workflow Success Rate" >> $GITHUB_STEP_SUMMARY
+
+        echo "- ✅ CodeQL Alerts" >> $GITHUB_STEP_SUMMARY
+
+        echo "- ✅ Security Vulnerabilities" >> $GITHUB_STEP_SUMMARY
+
+        echo "- ✅ Test & Coverage Metrics" >> $GITHUB_STEP_SUMMARY
+
+        echo "" >> $GITHUB_STEP_SUMMARY
+
+        echo "[View Dashboard](../docs/operations/health-dashboard.md)" >> $GITHUB_STEP_SUMMARY
+
+        "
   notify:
     name: 🔔 Send Notifications
     runs-on: ubuntu-latest
@@ -401,22 +212,26 @@ jobs:
     if: always()
     permissions:
       contents: read
-
     steps:
-      - name: 📥 Checkout repository
-        uses: actions/checkout@v5
+    - name: 📥 Checkout repository
+      uses: actions/checkout@v5
+    - name: 📢 Prepare notification
+      id: notify
+      run: "echo "✅ Health dashboard metrics collection completed"
 
-      - name: 📢 Prepare notification
-        id: notify
-        run: |
-          echo "✅ Health dashboard metrics collection completed"
-          echo "📊 Metrics file: .codex/WORKFLOW_HEALTH_DASHBOARD.json"
-          echo "📈 Dashboard: docs/operations/health-dashboard.md"
+        echo "📊 Metrics file: .codex/WORKFLOW_HEALTH_DASHBOARD.json"
 
-      - name: 📄 Post workflow summary
-        run: |
-          echo "## Health Dashboard Metrics Collection" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "✅ Workflow completed successfully" >> $GITHUB_STEP_SUMMARY
-          echo "⏰ Timestamp: $(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_STEP_SUMMARY
+        echo "📈 Dashboard: docs/operations/health-dashboard.md"
 
+        "
+    - name: 📄 Post workflow summary
+      run: "echo "## Health Dashboard Metrics Collection" >> $GITHUB_STEP_SUMMARY
+
+        echo "" >> $GITHUB_STEP_SUMMARY
+
+        echo "✅ Workflow completed successfully" >> $GITHUB_STEP_SUMMARY
+
+        echo "⏰ Timestamp: $(date -u +""%Y-%m-%dT%H:%M:%SZ"")" >> $GITHUB_STEP_SUMMARY
+
+        "
+    timeout-minutes: 30

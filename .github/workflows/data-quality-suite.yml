@@ -1,5 +1,5 @@
 name: Data Quality & Determinism Suite
-on:
+true:
   pull_request:
     types:
     - opened
@@ -35,13 +35,13 @@ permissions:
   contents: read
   pull-requests: write
 env:
-  PYTHONHASHSEED: '0'
-  PYTHONDONTWRITEBYTECODE: '1'
-  RANDOM_SEED: '42'
-  OMP_NUM_THREADS: '1'
-  MKL_NUM_THREADS: '1'
-  NUMEXPR_NUM_THREADS: '1'
-  TF_DETERMINISTIC_OPS: '1'
+  PYTHONHASHSEED: "0"
+  PYTHONDONTWRITEBYTECODE: "1"
+  RANDOM_SEED: "42"
+  OMP_NUM_THREADS: "1"
+  MKL_NUM_THREADS: "1"
+  NUMEXPR_NUM_THREADS: "1"
+  TF_DETERMINISTIC_OPS: "1"
   CUBLAS_WORKSPACE_CONFIG: :4096:8
 jobs:
   cost-gate:
@@ -59,17 +59,18 @@ jobs:
     secrets:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
+    timeout-minutes: 30
   data_validation:
     name: Data Validation (Manifest & Drift)
     runs-on: ubuntu-latest
     timeout-minutes: 60
     needs: cost-gate
-    if: 'github.event_name == ''pull_request'' ||
+    if: "github.event_name == ""pull_request"" ||
 
-      (github.event_name == ''workflow_dispatch'' && (inputs.mode == ''validation-only''
-      || inputs.mode == ''full-suite''))
+      (github.event_name == ""workflow_dispatch"" && (inputs.mode == ""validation-only""
+      || inputs.mode == ""full-suite""))
 
-      '
+      "
     steps:
     - uses: actions/checkout@v5
       with:
@@ -80,7 +81,7 @@ jobs:
         python-version: 3.12.13
         cache-tier: ephemeral
     - name: Install validation dependencies
-      run: 'python -m pip install --upgrade pip
+      run: "python -m pip install --upgrade pip
 
         # Install codex package with test dependencies
 
@@ -97,12 +98,12 @@ jobs:
 
         pip install -e ".[dev]"
 
-        '
+        "
     - name: Validate data manifests
       run: "# Use validate_dataset.py which exists in the repository\nif [ ! -f \"\
         scripts/validate_dataset.py\" ]; then\n  echo \"❌ Error: Dataset validation\
         \ script not found at scripts/validate_dataset.py\"\n  exit 1\nfi\n# Find\
-        \ and validate all dataset manifest files\nmanifests=$(find data/ -name '*manifest*.json'\
+        \ and validate all dataset manifest files\nmanifests=$(find data/ -name "*manifest*.json"\
         \ -type f 2>/dev/null || true)\nif [ -z \"$manifests\" ]; then\n  echo \"\
         ⚠️  No dataset manifest files found in data/ — skipping validation\"\n  exit\
         \ 0\nfi\nfail=0\nfor manifest in $manifests; do\n  echo \"Validating: $manifest\"\
@@ -118,11 +119,11 @@ jobs:
       uses: actions/upload-artifact@v5
       with:
         name: data-validation-results-${{ github.run_number }}
-        path: 'reports/validation/*.json
+        path: "reports/validation/*.json
 
           reports/drift/*.json
 
-          '
+          "
         if-no-files-found: ignore
         retention-days: 30
     env:
@@ -132,19 +133,19 @@ jobs:
     name: Determinism & Audit Validation
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    if: 'github.event_name == ''pull_request'' ||
+    if: "github.event_name == ""pull_request"" ||
 
-      (github.event_name == ''workflow_dispatch'' && (inputs.mode == ''determinism-only''
-      || inputs.mode == ''full-suite''))
+      (github.event_name == ""workflow_dispatch"" && (inputs.mode == ""determinism-only""
+      || inputs.mode == ""full-suite""))
 
-      '
+      "
     steps:
     - name: Checkout
       uses: actions/checkout@v5
       with:
         persist-credentials: false
     - name: Free disk space for CI
-      run: 'echo "=== Disk usage before cleanup ==="
+      run: "echo "=== Disk usage before cleanup ==="
 
         df -h
 
@@ -172,20 +173,20 @@ jobs:
 
         df -h
 
-        '
+        "
     - name: Setup Python
       uses: ./.github/actions/setup-python-cached
       with:
         python-version: 3.12.13
         cache-tier: live
     - name: Install dependencies
-      run: 'python -m pip install --upgrade pip
+      run: "python -m pip install --upgrade pip
 
         pip install -e ".[dev]"
 
-        '
+        "
     - name: Clear Python caches
-      run: 'find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
+      run: "find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
 
         find . -type f -name "*.pyc" -delete 2>/dev/null || true
 
@@ -193,9 +194,9 @@ jobs:
 
         echo "✅ Python caches cleared"
 
-        '
+        "
     - name: Run determinism validation
-      run: 'echo "=== Checking for deterministic behavior ==="
+      run: "echo "=== Checking for deterministic behavior ==="
 
         echo "PYTHONHASHSEED=$PYTHONHASHSEED"
 
@@ -213,10 +214,10 @@ jobs:
 
         echo "- Thread count: $OMP_NUM_THREADS" >> $GITHUB_STEP_SUMMARY
 
-        '
+        "
     - name: Run determinism tests (first pass)
       id: test_pass1
-      run: 'set +e
+      run: "set +e
 
         pytest tests/ -v -m determinism --tb=short --timeout=300 > determinism_pass1.log
         2>&1
@@ -227,10 +228,10 @@ jobs:
 
         echo "✅ First pass complete (exit code: $(cat determinism_pass1_exit.txt))"
 
-        '
+        "
     - name: Run determinism tests (second pass)
       id: test_pass2
-      run: 'set +e
+      run: "set +e
 
         pytest tests/ -v -m determinism --tb=short --timeout=300 > determinism_pass2.log
         2>&1
@@ -241,7 +242,7 @@ jobs:
 
         echo "✅ Second pass complete (exit code: $(cat determinism_pass2_exit.txt))"
 
-        '
+        "
     - name: Compare results
       run: "EXIT1=$(cat determinism_pass1_exit.txt)\nEXIT2=$(cat determinism_pass2_exit.txt)\n\
         \n# Check if logs exist\nif [ ! -f \"determinism_pass1.log\" ] || [ ! -f \"\
@@ -298,21 +299,21 @@ jobs:
         \ results are identical across runs\" >> $GITHUB_STEP_SUMMARY\nelse\n  echo\
         \ \"⚠️  Non-deterministic behavior detected - results differ\"\n  echo \"\"\
         \ >> $GITHUB_STEP_SUMMARY\n  echo \"⚠️  **Warning**: Non-deterministic behavior\
-        \ detected\" >> $GITHUB_STEP_SUMMARY\n  echo '```diff' >> $GITHUB_STEP_SUMMARY\n\
-        \  head -50 determinism_diff.log >> $GITHUB_STEP_SUMMARY\n  echo '```' >>\
+        \ detected\" >> $GITHUB_STEP_SUMMARY\n  echo "```diff" >> $GITHUB_STEP_SUMMARY\n\
+        \  head -50 determinism_diff.log >> $GITHUB_STEP_SUMMARY\n  echo "```" >>\
         \ $GITHUB_STEP_SUMMARY\n  exit 1\nfi\n"
     - name: Upload determinism reports
       if: always()
       uses: actions/upload-artifact@v5
       with:
         name: determinism-reports-${{ github.run_number }}
-        path: 'determinism_pass1.log
+        path: "determinism_pass1.log
 
           determinism_pass2.log
 
           determinism_diff.log
 
-          '
+          "
         if-no-files-found: ignore
         retention-days: 30
     env:
@@ -323,12 +324,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     needs: cost-gate
-    if: 'github.event_name == ''pull_request'' ||
+    if: "github.event_name == ""pull_request"" ||
 
-      (github.event_name == ''workflow_dispatch'' && (inputs.mode == ''validation-only''
-      || inputs.mode == ''full-suite''))
+      (github.event_name == ""workflow_dispatch"" && (inputs.mode == ""validation-only""
+      || inputs.mode == ""full-suite""))
 
-      '
+      "
     steps:
     - uses: actions/checkout@v5
       with:
@@ -339,15 +340,15 @@ jobs:
         python-version: 3.12.13
         cache-tier: ephemeral
     - name: Install DVC
-      run: 'python -m pip install --upgrade pip
+      run: "python -m pip install --upgrade pip
 
         pip install dvc
 
-        '
+        "
     - name: Create workbench evidence directory
       run: mkdir -p workbench/evidence
     - name: DVC pipeline reproducibility check
-      run: 'pip install dvc
+      run: "pip install dvc
 
         dvc repro --no-commit --dry 2>&1 || true
 
@@ -357,7 +358,7 @@ jobs:
 
         cat workbench/evidence/dvc_status.json >> "$GITHUB_STEP_SUMMARY"
 
-        '
+        "
     - name: Upload DVC status artifact
       if: always()
       uses: actions/upload-artifact@v5
@@ -380,7 +381,7 @@ jobs:
     if: always()
     steps:
     - name: Generate comprehensive summary
-      run: 'echo "## 🔬 Data Quality & Determinism Summary" >> $GITHUB_STEP_SUMMARY
+      run: "echo "## 🔬 Data Quality & Determinism Summary" >> $GITHUB_STEP_SUMMARY
 
         echo "" >> $GITHUB_STEP_SUMMARY
 
@@ -390,13 +391,13 @@ jobs:
 
         echo "### Job Status" >> $GITHUB_STEP_SUMMARY
 
-        echo "- Data Validation: ${{ needs.data_validation.result || ''skipped'' }}"
+        echo "- Data Validation: ${{ needs.data_validation.result || ""skipped"" }}"
         >> $GITHUB_STEP_SUMMARY
 
-        echo "- Determinism Check: ${{ needs.determinism_check.result || ''skipped''
+        echo "- Determinism Check: ${{ needs.determinism_check.result || ""skipped""
         }}" >> $GITHUB_STEP_SUMMARY
 
-        echo "- DVC Pipeline Check: ${{ needs.dvc_pipeline.result || ''skipped'' }}"
+        echo "- DVC Pipeline Check: ${{ needs.dvc_pipeline.result || ""skipped"" }}"
         >> $GITHUB_STEP_SUMMARY
 
         echo "" >> $GITHUB_STEP_SUMMARY
@@ -411,14 +412,14 @@ jobs:
 
         echo "- DVC pipeline reproducibility verified (dry-run)" >> $GITHUB_STEP_SUMMARY
 
-        '
+        "
     - name: Cache health report
       if: always()
       continue-on-error: true
-      run: 'python scripts/ci/generate_cache_keys.py --type pip --workflow data-quality-suite
-        --health 2>/dev/null || echo ''{"status": "cache health check skipped"}''
+      run: "python scripts/ci/generate_cache_keys.py --type pip --workflow data-quality-suite
+        --health 2>/dev/null || echo ""{"status": "cache health check skipped"}""
 
-        '
+        "
     env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
@@ -426,13 +427,13 @@ jobs:
     name: Post rescue comment on failure
     runs-on: ubuntu-latest
     needs: unified_summary
-    if: 'failure() &&
+    if: "failure() &&
 
-      github.event_name == ''pull_request'' &&
+      github.event_name == ""pull_request"" &&
 
       github.event.pull_request.head.repo.full_name == github.repository
 
-      '
+      "
     permissions:
       pull-requests: write
       issues: write
@@ -442,22 +443,11 @@ jobs:
       uses: actions/checkout@v5
       with:
         persist-credentials: false
-        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token }}
+        token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
+          }}
         fetch-depth: 1
     - name: Post or update rescue comment
-      env:
-        GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
-          }}
-        PR_NUMBER: ${{ github.event.pull_request.number }}
-        REPO: ${{ github.repository }}
-        COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
-        RUN_ID: ${{ github.run_id }}
-        WORKFLOW_NAME: Data Quality Suite
-        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
-          github.run_id }}
-        BRANCH: ${{ github.head_ref }}
+      env: null
       run: python scripts/ci/post_rescue_comment.py
-      env:
       GH_TOKEN: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY || github.token
         }}
-
