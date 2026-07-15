@@ -1,39 +1,35 @@
-# Session Context — 2026-07-15T18:37:29Z
+# Session Context — 2026-07-15T18:58:31Z
 **Branch:** `0D_base_`  **PR:** #5324  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4906` (✅)
-- GraphQL remaining: `4999` (✅)
+- REST remaining: `4991` (✅)
+- GraphQL remaining: `4997` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
 ## 📋 PR #5324 — Phase 4 GA Deployment: Critical CI Health Restoration — YAML Fixes + Cascade Resolution + Infrastructure Recovery (#5323)
 State: `open`  Draft: `False`  Branch: `0D_base_` → `main`
 
-### ❌ 5 Failing CI Check(s)
-- `🔧 Self-Heal: Refresh CODEX_MANIFEST.json (C2 recovery)` (failure)
-- `Summary` (failure)
-- `Governance Compliance` (failure)
-- `Phase 3 — src/codex/reflection.py` (failure)
-- `🔄 E→D Transition Readiness Check` (failure)
+### ❌ 1 Failing CI Check(s)
+- `actionlint — Workflow Compliance` (failure)
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **.github/workflows/docs-code-alignment.yml** — `failure` on `0D_base_` (2026-07-15)
-- **.github/workflows/dependabot-sheriff.yml** — `failure` on `0D_base_` (2026-07-15)
-- **.github/workflows/cognitive-action-decision.yml** — `failure` on `0D_base_` (2026-07-15)
+- **Scaling Framework Monitor** — `failure` on `main` (2026-07-15)
 - **.github/workflows/import-linter.yml** — `failure` on `0D_base_` (2026-07-15)
-- **.github/workflows/har-capture.yml** — `failure` on `0D_base_` (2026-07-15)
+- **.github/workflows/security-findings-api.yml** — `failure` on `0D_base_` (2026-07-15)
+- **.github/workflows/ml-tests.yml** — `failure` on `0D_base_` (2026-07-15)
+- **.github/workflows/rag-quality-nightly.yml** — `failure` on `0D_base_` (2026-07-15)
 
 ## 📝 Recent Commits
+- `1ad5ff98` fix: Pin unpinned GitHub Actions in build-preview-image.yml to specific versions — copilot-swe-agent[bot] (2026-07-15)
+- `e7cc7747` WIP: Fix unpinned GitHub Actions in build-preview-image.yml — copilot-swe-agent[bot] (2026-07-15)
 - `d0101ae7` fix(ci): Resolve actionlint compliance issues for PR #5324 — copilot-swe-agent[bot] (2026-07-15)
 - `1670bd90` docs: Add PR #5324 CI rescue final report to .codex/ for future reference — copilot-swe-agent[bot] (2026-07-15)
 - `d428110c` docs(accountability): Add PR #5324 multi-system CI rescue session entry (REQ-4 c — copilot-swe-agent[bot] (2026-07-15)
 - `490bec5d` Fix remaining YAML structure issues in workflows — copilot-swe-agent[bot] (2026-07-15)
 - `e8819b79` Fix GitHub Actions YAML indentation and syntax issues — copilot-swe-agent[bot] (2026-07-15)
 - `2481b7b5` chore: Stage workflow files after revert and fixes — copilot-swe-agent[bot] (2026-07-15)
-- `84235369` fix: Restore phase-12-2-compliance-check and scaling-framework-monitor from main — copilot-swe-agent[bot] (2026-07-15)
-- `1699cbac` fix: Remove duplicated env blocks causing workflow syntax errors — copilot-swe-agent[bot] (2026-07-15)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
