@@ -198,7 +198,7 @@
 
 ### Alert Configuration
 
-```python
+```
 # Alert Severity Mapping
 YELLOW (Warning):
   - Error Rate > 0.2%

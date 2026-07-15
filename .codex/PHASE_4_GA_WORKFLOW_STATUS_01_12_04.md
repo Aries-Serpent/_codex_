@@ -87,7 +87,7 @@ Workflow Execution Timeline:
 ### Handoff Information
 ```json
 {
-  "deployment_sha": "3a3d5938c82293a2cd108b55043547615f2d7d4b",
+  "deployment_sha": "3a3d5938c82293a2cd108b55043547615f2d7d4b",  # pragma: allowlist secret
   "deployment_branch": "copilot/phase4-codeql-deployment",
   "workflows_affected": 30,
   "failures": 22,

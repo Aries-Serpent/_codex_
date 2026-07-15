@@ -184,7 +184,7 @@ Timeline:           Current State       Projected State
 ### Restart Protocol Details
 
 **Backoff Strategy (Exponential):**
-```python
+```
 Backoff Config:
 ├─ Initial delay: 2 seconds
 ├─ Growth factor: 2x
@@ -194,7 +194,7 @@ Backoff Config:
 ```
 
 **Retry Logic:**
-```python
+```
 For each workflow run:
 ├─ Attempt 1: Immediate restart
 ├─ Attempt 2: Retry after 2s (if needed)
