@@ -37,52 +37,52 @@ jobs:
       - name: Analyze PR Size
         id: analyze
         run: |
-        # Count changed files between base and head
-        # Support both direct PR trigger and workflow_dispatch fallback
-        if [ -n "${{ github.event.pull_request.base.sha }}" ]; then
+          # Count changed files between base and head
+          # Support both direct PR trigger and workflow_dispatch fallback
+          if [ -n "${{ github.event.pull_request.base.sha }}" ]; then
           BASE_SHA="${{ github.event.pull_request.base.sha }}"
-        else
+          else
           BASE_SHA="${{ github.event.before || 'HEAD~1' }}"
-        fi
-        HEAD_SHA="${{ github.sha }}"
+          fi
+          HEAD_SHA="${{ github.sha }}"
 
-        echo "Comparing $BASE_SHA...$HEAD_SHA"
+          echo "Comparing $BASE_SHA...$HEAD_SHA"
 
-        git fetch origin "$BASE_SHA" 2>/dev/null || true
+          git fetch origin "$BASE_SHA" 2>/dev/null || true
 
-        CHANGED_FILES=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" 2>/dev/null | wc -l)
-        if [ "$CHANGED_FILES" -eq 0 ]; then
+          CHANGED_FILES=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" 2>/dev/null | wc -l)
+          if [ "$CHANGED_FILES" -eq 0 ]; then
           CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD | wc -l)
-        fi
+          fi
 
-        echo "changed_files_count=$CHANGED_FILES" >> "$GITHUB_OUTPUT"
+          echo "changed_files_count=$CHANGED_FILES" >> "$GITHUB_OUTPUT"
 
-        if [ "$CHANGED_FILES" -lt 20 ]; then
+          if [ "$CHANGED_FILES" -lt 20 ]; then
           echo "pr_size=small" >> "$GITHUB_OUTPUT"
           echo "validation_strategy=full_validation" >> "$GITHUB_OUTPUT"
-        elif [ "$CHANGED_FILES" -lt 100 ]; then
+          elif [ "$CHANGED_FILES" -lt 100 ]; then
           echo "pr_size=medium" >> "$GITHUB_OUTPUT"
           echo "validation_strategy=targeted_tests" >> "$GITHUB_OUTPUT"
-        elif [ "$CHANGED_FILES" -lt 500 ]; then
+          elif [ "$CHANGED_FILES" -lt 500 ]; then
           echo "pr_size=large" >> "$GITHUB_OUTPUT"
           echo "validation_strategy=smoke_tests" >> "$GITHUB_OUTPUT"
-        else
+          else
           echo "pr_size=refactor" >> "$GITHUB_OUTPUT"
           echo "validation_strategy=import_validation" >> "$GITHUB_OUTPUT"
-        fi
+          fi
       - name: Report PR Size
         run: |
-        echo "### PR Size Analysis Results" >> "$GITHUB_STEP_SUMMARY"
-        echo "" >> "$GITHUB_STEP_SUMMARY"
-        echo "**PR Size:** ${{ steps.analyze.outputs.pr_size }}" >> "$GITHUB_STEP_SUMMARY"
-        echo "**Changed Files:** ${{ steps.analyze.outputs.changed_files_count }}" >> "$GITHUB_STEP_SUMMARY"
-        echo "**Validation Strategy:** ${{ steps.analyze.outputs.validation_strategy }}" >> "$GITHUB_STEP_SUMMARY"
-        echo "" >> "$GITHUB_STEP_SUMMARY"
-        echo "================================"
-        echo "PR Size: ${{ steps.analyze.outputs.pr_size }}"
-        echo "Changed Files: ${{ steps.analyze.outputs.changed_files_count }}"
-        echo "Strategy: ${{ steps.analyze.outputs.validation_strategy }}"
-        echo "================================"
+          echo "### PR Size Analysis Results" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "**PR Size:** ${{ steps.analyze.outputs.pr_size }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Changed Files:** ${{ steps.analyze.outputs.changed_files_count }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Validation Strategy:** ${{ steps.analyze.outputs.validation_strategy }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "================================"
+          echo "PR Size: ${{ steps.analyze.outputs.pr_size }}"
+          echo "Changed Files: ${{ steps.analyze.outputs.changed_files_count }}"
+          echo "Strategy: ${{ steps.analyze.outputs.validation_strategy }}"
+          echo "================================"
       - name: Post to PR Status Dashboard
         if: github.event_name == 'pull_request'
         uses: ./.github/actions/post-pr-summary
