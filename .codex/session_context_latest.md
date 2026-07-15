@@ -1,10 +1,10 @@
-# Session Context — 2026-07-15T19:58:15Z
+# Session Context — 2026-07-15T20:28:04Z
 **Branch:** `0D_base_`  **PR:** #5324  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4704` (✅)
-- GraphQL remaining: `4991` (✅)
+- REST remaining: `5000` (✅)
+- GraphQL remaining: `5000` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
@@ -12,21 +12,21 @@
 State: `open`  Draft: `False`  Branch: `0D_base_` → `main`
 
 ## 🚨 Recent CI Failures (last 5 runs)
-- **.github/workflows/admin-action-notifier.yml** — `failure` on `0D_base_` (2026-07-15)
-- **.github/workflows/ml-tests.yml** — `failure` on `0D_base_` (2026-07-15)
-- **.github/workflows/security-scan-phase-16.yml** — `failure` on `0D_base_` (2026-07-15)
-- **.github/workflows/adaptive-agent-delegation.yml** — `failure` on `0D_base_` (2026-07-15)
-- **.github/workflows/copilot-setup-steps.yml** — `failure` on `0D_base_` (2026-07-15)
+- **Batch CI Failure Triage** — `failure` on `main` (2026-07-15)
+- **.github/workflows/observable-release.yml** — `failure` on `0D_base_` (2026-07-15)
+- **.github/workflows/proactive-ci-monitor.yml** — `failure` on `0D_base_` (2026-07-15)
+- **.github/workflows/auto-fix-pr-check.yml** — `failure` on `0D_base_` (2026-07-15)
+- **.github/workflows/progressive-validation.yml** — `failure` on `0D_base_` (2026-07-15)
 
 ## 📝 Recent Commits
-- `27b430ce` WIP: Fix YAML corruption in GitHub workflows - 1 of 15 fixed — copilot-swe-agent[bot] (2026-07-15)
-- `1027a8e4` fix: heal YAML in trigger-on-approval.yml — copilot-swe-agent[bot] (2026-07-15)
-- `c84c3ef7` final: Phase 4 actionlint rescue - session complete with 69 YAML healing commits — copilot-swe-agent[bot] (2026-07-15)
-- `7d85e11a` chore: Phase 4 actionlint rescue session checkpoint - 68 YAML healing commits ap — copilot-swe-agent[bot] (2026-07-15)
-- `35afc119` fix: heal YAML in vars-guide-sync.yml — copilot-swe-agent[bot] (2026-07-15)
-- `9091f017` fix: heal YAML in test-variables-api.yml — copilot-swe-agent[bot] (2026-07-15)
-- `794bd363` fix: heal YAML in scheduled-archival.yml — copilot-swe-agent[bot] (2026-07-15)
-- `3d50c634` fix: heal YAML in performance-monitoring.yml — copilot-swe-agent[bot] (2026-07-15)
+- `91e847ba` fix(workflow): heal YAML in security-scan-phase-16.yml — copilot-swe-agent[bot] (2026-07-15)
+- `25eac230` fix(workflow): restore 10 corrupted workflow files from main (canonical versions — copilot-swe-agent[bot] (2026-07-15)
+- `75842aaa` fix(workflow): restore adaptive-agent-delegation and auto-approve-workflows from — copilot-swe-agent[bot] (2026-07-15)
+- `c7730c76` WIP: Phase 4 YAML healing - 3-lane parallel execution in progress (232/246 valid — copilot-swe-agent[bot] (2026-07-15)
+- `59bda982` fix(workflow): heal YAML in release-to-pypi.yml — copilot-swe-agent[bot] (2026-07-15)
+- `1f54915a` fix(workflow): heal YAML in progressive-validation.yml — copilot-swe-agent[bot] (2026-07-15)
+- `7884f8d8` fix(workflow): heal YAML indentation issues in 6 critical workflows — copilot-swe-agent[bot] (2026-07-15)
+- `358a8382` phase-4-yaml-healing: completed identification, 5/17 files valid — copilot-swe-agent[bot] (2026-07-15)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
