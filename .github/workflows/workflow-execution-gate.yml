@@ -207,7 +207,7 @@ jobs:
         \ be throttled.\"\nfi\n"
     - name: Dispatch hub for WEC decision routing
       uses: actions/github-script@v8
-      with:
+        with:
         github-token: ${{ secrets.CODEX_MASTER_KEY || secrets.CODEX_BACKUP_KEY ||
           github.token }}
         script: "const newlyChecked = JSON.parse('${{ needs.detect-wec-changes.outputs.newly_checked\
@@ -466,7 +466,7 @@ jobs:
     steps:
     - name: Checkout fast-forward script
       uses: actions/checkout@v5
-      with:
+        with:
         persist-credentials: false
         sparse-checkout: 'scripts/ci/fast_forward_safe_files.py
 
@@ -478,7 +478,7 @@ jobs:
         sparse-checkout-cone-mode: false
     - name: Set up Python 3.12
       uses: actions/setup-python@v6
-      with:
+        with:
         python-version: 3.12.13
         cache: pip
     - name: Install PyYAML
@@ -506,7 +506,7 @@ jobs:
     - name: Upload fast-forward result artifact
       if: always()
       uses: actions/upload-artifact@v5
-      with:
+        with:
       name: wec-fast-forward-pr${{ needs.parse-checklist.outputs.pr_number }}-${{
           github.run_id }}
         path: ${{ runner.temp }}/ff_result.json
